@@ -389,15 +389,15 @@ namespace ASC.Api.Documents
         }
 
         [Read("{folderId}/subfolders")]
-        public async Task<IEnumerable<FileEntryWrapper>> GetFoldersAsync(string folderId)
+        public IAsyncEnumerable<FileEntryWrapper> GetFoldersAsync(string folderId)
         {
-            return await FilesControllerHelperString.GetFoldersAsync(folderId).ToListAsync();
+            return FilesControllerHelperString.GetFoldersAsync(folderId);
         }
 
         [Read("{folderId:int}/subfolders")]
-        public async Task<IEnumerable<FileEntryWrapper>> GetFoldersAsync(int folderId)
+        public IAsyncEnumerable<FileEntryWrapper> GetFoldersAsync(int folderId)
         {
-            return await FilesControllerHelperInt.GetFoldersAsync(folderId).ToListAsync();
+            return FilesControllerHelperInt.GetFoldersAsync(folderId);
         }
 
         [Read("{folderId}/news")]
@@ -431,10 +431,10 @@ namespace ASC.Api.Documents
         /// <param name="files" visible="false">List of files when posted as multipart/form-data</param>
         /// <returns>Uploaded file</returns>
         [Create("@my/upload")]
-        public async Task<object> UploadFileToMyAsync([ModelBinder(BinderType = typeof(UploadModelBinder))] UploadModel uploadModel)
+        public Task<object> UploadFileToMyAsync([ModelBinder(BinderType = typeof(UploadModelBinder))] UploadModel uploadModel)
         {
             uploadModel.CreateNewIfExist = false;
-            return await FilesControllerHelperInt.UploadFileAsync(GlobalFolderHelper.FolderMy, uploadModel);
+            return FilesControllerHelperInt.UploadFileAsync(GlobalFolderHelper.FolderMy, uploadModel);
         }
 
         /// <summary>
@@ -485,15 +485,15 @@ namespace ASC.Api.Documents
         /// <param name="keepConvertStatus" visible="false">Keep status conversation after finishing</param>
         /// <returns>Uploaded file</returns>
         [Create("{folderId}/upload", order: int.MaxValue)]
-        public async Task<object> UploadFileAsync(string folderId, [ModelBinder(BinderType = typeof(UploadModelBinder))] UploadModel uploadModel)
+        public Task<object> UploadFileAsync(string folderId, [ModelBinder(BinderType = typeof(UploadModelBinder))] UploadModel uploadModel)
         {
-            return await FilesControllerHelperString.UploadFileAsync(folderId, uploadModel);
+            return FilesControllerHelperString.UploadFileAsync(folderId, uploadModel);
         }
 
         [Create("{folderId:int}/upload", order: int.MaxValue - 1)]
-        public async Task<object> UploadFileAsync(int folderId, [ModelBinder(BinderType = typeof(UploadModelBinder))] UploadModel uploadModel)
+        public Task<object> UploadFileAsync(int folderId, [ModelBinder(BinderType = typeof(UploadModelBinder))] UploadModel uploadModel)
         {
-            return await FilesControllerHelperInt.UploadFileAsync(folderId, uploadModel);
+            return FilesControllerHelperInt.UploadFileAsync(folderId, uploadModel);
         }
 
         /// <summary>
@@ -506,9 +506,9 @@ namespace ASC.Api.Documents
         /// <category>Uploads</category>
         /// <returns></returns>
         [Create("@my/insert")]
-        public async Task<FileWrapper<int>> InsertFileToMyFromBodyAsync([FromForm][ModelBinder(BinderType = typeof(InsertFileModelBinder))] InsertFileModel model)
+        public Task<FileWrapper<int>> InsertFileToMyFromBodyAsync([FromForm][ModelBinder(BinderType = typeof(InsertFileModelBinder))] InsertFileModel model)
         {
-            return await InsertFileAsync(GlobalFolderHelper.FolderMy, model);
+            return InsertFileAsync(GlobalFolderHelper.FolderMy, model);
         }
 
         /// <summary>
@@ -537,15 +537,15 @@ namespace ASC.Api.Documents
         /// <category>Uploads</category>
         /// <returns></returns>
         [Create("{folderId}/insert", order: int.MaxValue)]
-        public async Task<FileWrapper<string>> InsertFileAsync(string folderId, [FromForm][ModelBinder(BinderType = typeof(InsertFileModelBinder))] InsertFileModel model)
+        public Task<FileWrapper<string>> InsertFileAsync(string folderId, [FromForm][ModelBinder(BinderType = typeof(InsertFileModelBinder))] InsertFileModel model)
         {
-            return await FilesControllerHelperString.InsertFileAsync(folderId, model.Stream, model.Title, model.CreateNewIfExist, model.KeepConvertStatus);
+            return FilesControllerHelperString.InsertFileAsync(folderId, model.Stream, model.Title, model.CreateNewIfExist, model.KeepConvertStatus);
         }
 
         [Create("{folderId:int}/insert", order: int.MaxValue - 1)]
-        public async Task<FileWrapper<int>> InsertFileFromFormAsync(int folderId, [FromForm][ModelBinder(BinderType = typeof(InsertFileModelBinder))] InsertFileModel model)
+        public Task<FileWrapper<int>> InsertFileFromFormAsync(int folderId, [FromForm][ModelBinder(BinderType = typeof(InsertFileModelBinder))] InsertFileModel model)
         {
-            return await InsertFileAsync(folderId, model);
+            return InsertFileAsync(folderId, model);
         }
 
         private Task<FileWrapper<int>> InsertFileAsync(int folderId, InsertFileModel model)
@@ -563,15 +563,15 @@ namespace ASC.Api.Documents
         /// <visible>false</visible>
 
         [Update("{fileId}/update")]
-        public async Task<FileWrapper<string>> UpdateFileStreamFromFormAsync(string fileId, [FromForm] FileStreamModel model)
+        public Task<FileWrapper<string>> UpdateFileStreamFromFormAsync(string fileId, [FromForm] FileStreamModel model)
         {
-            return await FilesControllerHelperString.UpdateFileStreamAsync(FilesControllerHelperInt.GetFileFromRequest(model).OpenReadStream(), fileId, model.FileExtension, model.Encrypted, model.Forcesave);
+            return FilesControllerHelperString.UpdateFileStreamAsync(FilesControllerHelperInt.GetFileFromRequest(model).OpenReadStream(), fileId, model.FileExtension, model.Encrypted, model.Forcesave);
         }
 
         [Update("{fileId:int}/update")]
-        public async Task<FileWrapper<int>> UpdateFileStreamFromFormAsync(int fileId, [FromForm] FileStreamModel model)
+        public Task<FileWrapper<int>> UpdateFileStreamFromFormAsync(int fileId, [FromForm] FileStreamModel model)
         {
-            return await FilesControllerHelperInt.UpdateFileStreamAsync(FilesControllerHelperInt.GetFileFromRequest(model).OpenReadStream(), fileId, model.FileExtension, model.Encrypted, model.Forcesave);
+            return FilesControllerHelperInt.UpdateFileStreamAsync(FilesControllerHelperInt.GetFileFromRequest(model).OpenReadStream(), fileId, model.FileExtension, model.Encrypted, model.Forcesave);
         }
 
 
@@ -587,17 +587,17 @@ namespace ASC.Api.Documents
         /// <category>Files</category>
         /// <returns></returns>
         [Update("file/{fileId}/saveediting")]
-        public async Task<FileWrapper<string>> SaveEditingFromFormAsync(string fileId, [FromForm] SaveEditingModel model)
+        public Task<FileWrapper<string>> SaveEditingFromFormAsync(string fileId, [FromForm] SaveEditingModel model)
         {
             using var stream = FilesControllerHelperInt.GetFileFromRequest(model).OpenReadStream();
-            return await FilesControllerHelperString.SaveEditingAsync(fileId, model.FileExtension, model.DownloadUri, stream, model.Doc, model.Forcesave);
+            return FilesControllerHelperString.SaveEditingAsync(fileId, model.FileExtension, model.DownloadUri, stream, model.Doc, model.Forcesave);
         }
 
         [Update("file/{fileId:int}/saveediting")]
-        public async Task<FileWrapper<int>> SaveEditingFromFormAsync(int fileId, [FromForm] SaveEditingModel model)
+        public Task<FileWrapper<int>> SaveEditingFromFormAsync(int fileId, [FromForm] SaveEditingModel model)
         {
             using var stream = FilesControllerHelperInt.GetFileFromRequest(model).OpenReadStream();
-            return await FilesControllerHelperInt.SaveEditingAsync(fileId, model.FileExtension, model.DownloadUri, stream, model.Doc, model.Forcesave);
+            return FilesControllerHelperInt.SaveEditingAsync(fileId, model.FileExtension, model.DownloadUri, stream, model.Doc, model.Forcesave);
         }
 
         /// <summary>
@@ -1050,16 +1050,16 @@ namespace ASC.Api.Documents
         }
 
         [Create("owner")]
-        public async Task<IEnumerable<FileEntryWrapper>> ChangeOwnerFromBodyAsync([FromBody] ChangeOwnerModel model)
+        public IAsyncEnumerable<FileEntryWrapper> ChangeOwnerFromBodyAsync([FromBody] ChangeOwnerModel model)
         {
-            return await ChangeOwnerAsync(model).ToListAsync();
+            return ChangeOwnerAsync(model);
         }
 
         [Create("owner")]
         [Consumes("application/x-www-form-urlencoded")]
-        public async Task<IEnumerable<FileEntryWrapper>> ChangeOwnerFromFormAsync([FromForm] ChangeOwnerModel model)
+        public IAsyncEnumerable<FileEntryWrapper> ChangeOwnerFromFormAsync([FromForm] ChangeOwnerModel model)
         {
-            return await ChangeOwnerAsync(model).ToListAsync();
+            return ChangeOwnerAsync(model);
         }
 
         public async IAsyncEnumerable<FileEntryWrapper> ChangeOwnerAsync(ChangeOwnerModel model)
@@ -1067,11 +1067,11 @@ namespace ASC.Api.Documents
             var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(model.FolderIds);
             var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(model.FileIds);
 
-            var result = new List<FileEntry>();
-            result.AddRange(await FileStorageServiceInt.ChangeOwnerAsync(folderIntIds, fileIntIds, model.UserId));
-            result.AddRange(await FileStorageService.ChangeOwnerAsync(folderStringIds, fileStringIds, model.UserId));
+            var result = AsyncEnumerable.Empty<FileEntry>();
+            result.Concat(FileStorageServiceInt.ChangeOwnerAsync(folderIntIds, fileIntIds, model.UserId));
+            result.Concat(FileStorageService.ChangeOwnerAsync(folderStringIds, fileStringIds, model.UserId));
 
-            foreach (var e in result)
+            await foreach (var e in result)
             {
                 yield return await FilesControllerHelperInt.GetFileEntryWrapperAsync(e);
             }
@@ -1104,16 +1104,16 @@ namespace ASC.Api.Documents
         /// <returns>Parent folders</returns>
 
         [Read("folder/{folderId}/path")]
-        public async Task<IEnumerable<FileEntryWrapper>> GetFolderPathAsync(string folderId)
+        public  IAsyncEnumerable<FileEntryWrapper> GetFolderPathAsync(string folderId)
         {
-            return await FilesControllerHelperString.GetFolderPathAsync(folderId).ToListAsync();
+            return FilesControllerHelperString.GetFolderPathAsync(folderId);
         }
 
 
         [Read("folder/{folderId:int}/path")]
-        public async Task<IEnumerable<FileEntryWrapper>> GetFolderPathAsync(int folderId)
+        public IAsyncEnumerable<FileEntryWrapper> GetFolderPathAsync(int folderId)
         {
-            return await FilesControllerHelperInt.GetFolderPathAsync(folderId).ToListAsync();
+            return FilesControllerHelperInt.GetFolderPathAsync(folderId);
         }
 
         /// <summary>
@@ -1226,15 +1226,15 @@ namespace ASC.Api.Documents
         /// <returns>Operation result</returns>
 
         [Update("file/{fileId}/checkconversion")]
-        public async Task<IEnumerable<ConversationResult<string>>> StartConversionAsync(string fileId, [FromBody(EmptyBodyBehavior = Microsoft.AspNetCore.Mvc.ModelBinding.EmptyBodyBehavior.Allow)] CheckConversionModel model)
+        public  IAsyncEnumerable<ConversationResult<string>> StartConversionAsync(string fileId, [FromBody(EmptyBodyBehavior = Microsoft.AspNetCore.Mvc.ModelBinding.EmptyBodyBehavior.Allow)] CheckConversionModel model)
         {
-            return await FilesControllerHelperString.StartConversionAsync(fileId, model?.Sync ?? false).ToListAsync();
+            return FilesControllerHelperString.StartConversionAsync(fileId, model?.Sync ?? false);
         }
 
         [Update("file/{fileId:int}/checkconversion")]
-        public async Task<IEnumerable<ConversationResult<int>>> StartConversionAsync(int fileId, [FromBody(EmptyBodyBehavior = Microsoft.AspNetCore.Mvc.ModelBinding.EmptyBodyBehavior.Allow)] CheckConversionModel model)
+        public  IAsyncEnumerable<ConversationResult<int>> StartConversionAsync(int fileId, [FromBody(EmptyBodyBehavior = Microsoft.AspNetCore.Mvc.ModelBinding.EmptyBodyBehavior.Allow)] CheckConversionModel model)
         {
-            return await FilesControllerHelperInt.StartConversionAsync(fileId, model?.Sync ?? false).ToListAsync();
+            return  FilesControllerHelperInt.StartConversionAsync(fileId, model?.Sync ?? false);
         }
 
         /// <summary>
@@ -1247,16 +1247,16 @@ namespace ASC.Api.Documents
         /// <returns>Operation result</returns>
 
         [Read("file/{fileId}/checkconversion")]
-        public async Task<IEnumerable<ConversationResult<string>>> CheckConversionAsync(string fileId, bool start)
+        public  IAsyncEnumerable<ConversationResult<string>> CheckConversionAsync(string fileId, bool start)
         {
-            return await FilesControllerHelperString.CheckConversionAsync(fileId, start).ToListAsync();
+            return FilesControllerHelperString.CheckConversionAsync(fileId, start);
         }
 
 
         [Read("file/{fileId:int}/checkconversion")]
-        public async Task<IEnumerable<ConversationResult<int>>> CheckConversionAsync(int fileId, bool start)
+        public IAsyncEnumerable<ConversationResult<int>> CheckConversionAsync(int fileId, bool start)
         {
-            return await FilesControllerHelperInt.CheckConversionAsync(fileId, start).ToListAsync();
+            return FilesControllerHelperInt.CheckConversionAsync(fileId, start);
         }
 
         /// <summary>
@@ -1289,9 +1289,9 @@ namespace ASC.Api.Documents
         /// <param name="fileIds">File ID list</param>
         /// <returns>Conflicts file ids</returns>
         [Read("fileops/move")]
-        public async Task<IEnumerable<FileEntryWrapper>> MoveOrCopyBatchCheckAsync([ModelBinder(BinderType = typeof(BatchModelBinder))] BatchModel batchModel)
+        public IAsyncEnumerable<FileEntryWrapper> MoveOrCopyBatchCheckAsync([ModelBinder(BinderType = typeof(BatchModelBinder))] BatchModel batchModel)
         {
-            return await FilesControllerHelperString.MoveOrCopyBatchCheckAsync(batchModel).ToListAsync();
+            return FilesControllerHelperString.MoveOrCopyBatchCheckAsync(batchModel);
         }
 
         /// <summary>

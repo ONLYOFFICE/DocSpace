@@ -308,9 +308,9 @@ namespace ASC.Web.Files.Utils
             var result = new List<AceWrapper>();
 
             var fileSecurity = FileSecurity;
+            var shares = await fileSecurity.GetSharesAsync(entry);
 
-            var records = fileSecurity
-                .GetShares(entry)
+            var records = shares
                 .GroupBy(r => r.Subject)
                 .Select(g => g.OrderBy(r => r.Level)
                               .ThenBy(r => r.Level)

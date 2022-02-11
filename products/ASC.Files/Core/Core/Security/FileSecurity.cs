@@ -205,7 +205,7 @@ namespace ASC.Files.Core.Security
 
         private async Task<IEnumerable<Guid>> WhoCanAsync<T>(FileEntry<T> entry, FilesSecurityActions action)
         {
-            var shares = GetShares(entry);
+            var shares = await GetSharesAsync(entry);
 
             FileShareRecord defaultShareRecord;
 
@@ -540,7 +540,7 @@ namespace ASC.Files.Core.Security
                         subjects = GetUserSubjects(userId);
                         if (shares == null)
                         {
-                            shares = GetShares(entries);
+                            shares = await GetSharesAsync(entries);
                             // shares ordered by level
                         }
                         shares = shares
@@ -714,19 +714,9 @@ namespace ASC.Files.Core.Security
             await securityDao.SetShareAsync(r);
         }
 
-        public IEnumerable<FileShareRecord> GetShares<T>(IEnumerable<FileEntry<T>> entries)
-        {
-            return daoFactory.GetSecurityDao<T>().GetSharesAsync(entries).Result;
-        }
-
         public async Task<IEnumerable<FileShareRecord>> GetSharesAsync<T>(IEnumerable<FileEntry<T>> entries)
         {
             return await daoFactory.GetSecurityDao<T>().GetSharesAsync(entries);
-        }
-
-        public IEnumerable<FileShareRecord> GetShares<T>(FileEntry<T> entry)
-        {
-            return daoFactory.GetSecurityDao<T>().GetSharesAsync(entry).Result;
         }
 
         public async Task<IEnumerable<FileShareRecord>> GetSharesAsync<T>(FileEntry<T> entry)

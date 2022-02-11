@@ -1196,7 +1196,7 @@ namespace ASC.Web.Files
             using var httpClient = new HttpClient();
             using var response = await httpClient.SendAsync(request);
             using var secondResponse = await httpClient.SendAsync(request);
-            var fileStream = secondResponse.Content.ReadAsStream();
+            var fileStream = await secondResponse.Content.ReadAsStreamAsync();
 
             if (fileStream.CanSeek)
             {

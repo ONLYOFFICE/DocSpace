@@ -1423,11 +1423,12 @@ namespace ASC.Web.Files.Utils
         {
             var fileSecurity = FileSecurity;
 
-            var folders = await folderDao.GetFoldersAsync(parentId).ToListAsync();
-            foreach (var folder in folders)
+            var folders = folderDao.GetFoldersAsync(parentId);
+            await foreach (var folder in folders)
             {
+                var shares = await fileSecurity.GetSharesAsync(folder);
                 var shared = folder.Shared
-                             && fileSecurity.GetShares(folder).Any(record => record.Share != FileShare.Restrict);
+                             && shares.Any(record => record.Share != FileShare.Restrict);
                 if (shared)
                 {
                     Logger.InfoFormat("Move shared folder {0} from {1} to {2}", folder.ID, parentId, toId);
@@ -1439,11 +1440,11 @@ namespace ASC.Web.Files.Utils
                 }
             }
 
-            var files = (await fileDao.GetFilesAsync(parentId, null, FilterType.None, false, Guid.Empty, string.Empty, true).ToListAsync())
-                .Where(file => file.Shared &&
-                fileSecurity.GetShares(file).Any(record => record.Subject != FileConstant.ShareLinkId && record.Share != FileShare.Restrict));
+            var files =  fileDao.GetFilesAsync(parentId, null, FilterType.None, false, Guid.Empty, string.Empty, true)
+                .WhereAwait(async file => file.Shared &&
+                (await fileSecurity.GetSharesAsync(file)).Any(record => record.Subject != FileConstant.ShareLinkId && record.Share != FileShare.Restrict));
 
-            foreach (var file in files)
+            await foreach (var file in files)
             {
                 Logger.InfoFormat("Move shared file {0} from {1} to {2}", file.ID, parentId, toId);
                 await fileDao.MoveFileAsync(file.ID, toId);

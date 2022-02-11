@@ -2181,12 +2181,12 @@ namespace ASC.Web.Files.Services.WCFService
             //return new List<string>(accounts);
         }     
 
-        public async Task<IEnumerable<FileEntry>> ChangeOwnerAsync(IEnumerable<T> foldersId, IEnumerable<T> filesId, Guid userId)
+        public async IAsyncEnumerable<FileEntry> ChangeOwnerAsync(IEnumerable<T> foldersId, IEnumerable<T> filesId, Guid userId)
         {
             var userInfo = UserManager.GetUsers(userId);
             ErrorIf(Equals(userInfo, Constants.LostUser) || userInfo.IsVisitor(UserManager), FilesCommonResource.ErrorMassage_ChangeOwner);
 
-            var entries = new List<FileEntry>();
+            var entries = AsyncEnumerable.Empty<FileEntry>();
 
             var folderDao = GetFolderDao();
             var folders = folderDao.GetFoldersAsync(foldersId);
@@ -2209,7 +2209,7 @@ namespace ASC.Web.Files.Services.WCFService
 
                     FilesMessageService.Send(newFolder, GetHttpHeaders(), MessageAction.FileChangeOwner, new[] { newFolder.Title, userInfo.DisplayUserName(false, DisplayUserSettingsHelper) });
                 }
-                entries.Add(newFolder);
+                entries.Append(newFolder);
             }
 
             var fileDao = GetFileDao();
@@ -2260,10 +2260,13 @@ namespace ASC.Web.Files.Services.WCFService
 
                     FilesMessageService.Send(newFile, GetHttpHeaders(), MessageAction.FileChangeOwner, new[] { newFile.Title, userInfo.DisplayUserName(false, DisplayUserSettingsHelper) });
                 }
-                entries.Add(newFile);
+                entries.Append(newFile);
             }
 
-            return entries;
+            await foreach(var entrie in entries)
+            {
+                yield return entrie;
+            }
         }
 
         public bool StoreOriginal(bool set)
