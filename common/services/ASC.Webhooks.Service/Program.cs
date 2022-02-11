@@ -1,83 +1,104 @@
-namespace ASC.Webhooks.Service;
-
-public class Program
+var options = new WebApplicationOptions
 {
-    public async static Task Main(string[] args)
-    {
-        var host = CreateHostBuilder(args).Build();
+    Args = args,
+    ContentRootPath = WindowsServiceHelpers.IsWindowsService() ? AppContext.BaseDirectory : default
+};
 
-        await host.RunAsync();
+var builder = WebApplication.CreateBuilder(options);
+
+builder.Host.UseWindowsService();
+builder.Host.UseSystemd();
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+
+builder.WebHost.ConfigureKestrel((hostingContext, serverOptions) =>
+{
+    var kestrelConfig = hostingContext.Configuration.GetSection("Kestrel");
+
+    if (!kestrelConfig.Exists()) return;
+
+    var unixSocket = kestrelConfig.GetValue<string>("ListenUnixSocket");
+
+    if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+    {
+        if (!string.IsNullOrWhiteSpace(unixSocket))
+        {
+            unixSocket = string.Format(unixSocket, hostingContext.HostingEnvironment.ApplicationName.Replace("ASC.", "").Replace(".", ""));
+
+            serverOptions.ListenUnixSocket(unixSocket);
+        }
+    }
+});
+
+builder.Host.ConfigureAppConfiguration((hostContext, config) =>
+{
+    var buided = config.Build();
+    var path = buided["pathToConf"];
+    if (!Path.IsPathRooted(path))
+    {
+        path = Path.GetFullPath(CrossPlatform.PathCombine(hostContext.HostingEnvironment.ContentRootPath, path));
+    }
+    config.SetBasePath(path);
+    var env = hostContext.Configuration.GetValue("ENVIRONMENT", "Production");
+    config
+        .AddInMemoryCollection(new Dictionary<string, string>
+            {
+                {"pathToConf", path }
+            }
+        )
+        .AddJsonFile("appsettings.json")
+        .AddJsonFile($"appsettings.{env}.json", true)
+        .AddJsonFile($"appsettings.services.json", true)
+        .AddJsonFile("storage.json")
+        .AddJsonFile("kafka.json")
+        .AddJsonFile($"kafka.{env}.json", true)
+        .AddJsonFile("redis.json")
+        .AddJsonFile($"redis.{env}.json", true)
+        .AddEnvironmentVariables()
+        .AddCommandLine(args);
+});
+
+builder.WebHost.ConfigureServices((hostContext, services) =>
+{
+    services.AddMemoryCache();
+
+    var diHelper = new DIHelper(services);
+
+    var redisConfiguration = hostContext.Configuration.GetSection("Redis").Get<RedisConfiguration>();
+    var kafkaConfiguration = hostContext.Configuration.GetSection("kafka").Get<KafkaSettings>();
+
+    if (kafkaConfiguration != null)
+    {
+        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+    }
+    else if (redisConfiguration != null)
+    {
+        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
+
+        services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
+    }
+    else
+    {
+        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(MemoryCacheNotify<>));
     }
 
-    public static IHostBuilder CreateHostBuilder(string[] args) =>
-        Host.CreateDefaultBuilder(args)
-            .UseSystemd()
-            .UseWindowsService()
-            .UseServiceProviderFactory(new AutofacServiceProviderFactory())
-            .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<BaseWorkerStartup>())
-            .ConfigureAppConfiguration((hostContext, config) =>
-            {
-                var buided = config.Build();
-                var path = buided["pathToConf"];
-                if (!Path.IsPathRooted(path))
-                {
-                    path = Path.GetFullPath(CrossPlatform.PathCombine(hostContext.HostingEnvironment.ContentRootPath, path));
-                }
-                config.SetBasePath(path);
-                var env = hostContext.Configuration.GetValue("ENVIRONMENT", "Production");
-                config
-                    .AddInMemoryCollection(new Dictionary<string, string>
-                        {
-                            {"pathToConf", path }
-                        }
-                    )
-                    .AddJsonFile("appsettings.json")
-                    .AddJsonFile($"appsettings.{env}.json", true)
-                    .AddJsonFile($"appsettings.services.json", true)
-                    .AddJsonFile("storage.json")
-                    .AddJsonFile("kafka.json")
-                    .AddJsonFile($"kafka.{env}.json", true)
-                    .AddJsonFile("redis.json")
-                    .AddJsonFile($"redis.{env}.json", true)
-                    .AddEnvironmentVariables()
-                    .AddCommandLine(args);
-            })
-            .ConfigureServices((hostContext, services) =>
-            {
-                services.AddMemoryCache();
+    diHelper.TryAdd<DbWorker>();
 
-                var diHelper = new DIHelper(services);
+    services.AddHostedService<BuildQueueService>();
+    diHelper.TryAdd<BuildQueueService>();
 
-                var redisConfiguration = hostContext.Configuration.GetSection("Redis").Get<RedisConfiguration>();
-                var kafkaConfiguration = hostContext.Configuration.GetSection("kafka").Get<KafkaSettings>();
+    services.AddHostedService<WorkerService>();
+    diHelper.TryAdd<WorkerService>();
 
-                if (kafkaConfiguration != null)
-                {
-                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-                }
-                else if (redisConfiguration != null)
-                {
-                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
+});
 
-                    services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
-                }
-                else
-                {
-                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(MemoryCacheNotify<>));
-                }
+builder.Host.ConfigureNLogLogging();
 
-                diHelper.TryAdd<DbWorker>();
+var startup = new BaseWorkerStartup(builder.Configuration);
 
-                services.AddHostedService<BuildQueueService>();
-                diHelper.TryAdd<BuildQueueService>();
+startup.ConfigureServices(builder.Services);
 
-                services.AddHostedService<WorkerService>();
-                diHelper.TryAdd<WorkerService>();
+var app = builder.Build();
 
-            })
-            .ConfigureContainer<ContainerBuilder>((context, builder) =>
-            {
-                builder.Register(context.Configuration, false, false);
-            })
-            .ConfigureNLogLogging();
-}
+startup.Configure(app);
+
+app.Run();
