@@ -8,15 +8,6 @@ public class Startup
 
     public IConfiguration Configuration { get; }
 
-    public void ConfigureServices(IServiceCollection services)
-    {
-        services.AddHealthChecks()                
-                .AddCheck("self", () => HealthCheckResult.Healthy());
-
-        services.AddHealthChecksUI()
-                .AddInMemoryStorage();
-    }
-
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
         app.UseRouting();
@@ -24,7 +15,7 @@ public class Startup
         app.UseHealthChecksUI(config =>
         {
             config.UIPath = "/hc-ui";
-               
+
         });
 
         app.UseEndpoints(endpoints =>
@@ -36,5 +27,14 @@ public class Startup
             });
         });
 
+    }
+
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.AddHealthChecks()                
+                .AddCheck("self", () => HealthCheckResult.Healthy());
+
+        services.AddHealthChecksUI()
+                .AddInMemoryStorage();
     }
 }
