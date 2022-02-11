@@ -1,6 +1,7 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import api from "@appserver/common/api";
 import { size } from "@appserver/components/utils/device";
+import { FileStatus } from "@appserver/common/constants";
 
 class VersionHistoryStore {
   isVisible = false;
@@ -42,7 +43,9 @@ class VersionHistoryStore {
   get isEditingVersion() {
     if (this.fileId && this.filesStore.files.length) {
       const file = this.filesStore.files.find((x) => x.id === +this.fileId);
-      return file ? file.fileStatus === 1 : false;
+      return file
+        ? (file.fileStatus & FileStatus.IsEditing) === FileStatus.IsEditing
+        : false;
     }
     return false;
   }

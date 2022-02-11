@@ -7,6 +7,7 @@ import toastr from "studio/toastr";
 import {
   AppServerConfig,
   FileAction,
+  FileStatus,
   ShareAccessRights,
 } from "@appserver/common/constants";
 import { combineUrl } from "@appserver/common/utils";
@@ -421,7 +422,8 @@ export default function withContent(WrappedContent) {
         linkStyles.href = href;
       }
 
-      const newItems = item.new || fileStatus === 2;
+      const newItems =
+        item.new || (fileStatus & FileStatus.IsNew) === FileStatus.IsNew;
       const showNew = !!newItems;
       const elementIcon = element ? (
         element
