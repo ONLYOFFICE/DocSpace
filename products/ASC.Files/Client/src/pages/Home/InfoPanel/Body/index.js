@@ -3,7 +3,7 @@ import React from "react";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 
-const RoomInfoBodyContent = (selectedFilesStore) => {
+const InfoPanelBodyContent = (selectedFilesStore) => {
     return <div>{selectedFilesStore.fileInfo}</div>;
 };
 
@@ -14,7 +14,7 @@ export default inject(({ selectedFilesStore }) => {
 })(
     withRouter(
         withTranslation(["Home", "Common", "Translations"])(
-            observer(RoomInfoBodyContent)
+            observer(InfoPanelBodyContent)
         )
     )
 );

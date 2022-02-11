@@ -1,15 +1,14 @@
 import IconButton from "@appserver/components/icon-button";
 import { mobile, tablet } from "@appserver/components/utils/device";
-import PropTypes from "prop-types";
-
 import { inject } from "mobx-react";
+import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";
 
-const RoomInfo = ({ children, isVisible, toggleIsVisible }) => {
+const InfoPanel = ({ children, isVisible, toggleIsVisible }) => {
     if (!isVisible) return null;
 
-    const StyledRoomInfoWrapper = styled.div`
+    const StyledInfoPanelWrapper = styled.div`
         height: auto;
         width: auto;
         background: rgba(6, 22, 38, 0.2);
@@ -25,7 +24,7 @@ const RoomInfo = ({ children, isVisible, toggleIsVisible }) => {
         }
     `;
 
-    const StyledRoomInfo = styled.div`
+    const StyledInfoPanel = styled.div`
         height: 100%;
         width: 368px;
         background-color: #ffffff;
@@ -69,8 +68,8 @@ const RoomInfo = ({ children, isVisible, toggleIsVisible }) => {
     `;
 
     return (
-        <StyledRoomInfoWrapper>
-            <StyledRoomInfo>
+        <StyledInfoPanelWrapper>
+            <StyledInfoPanel>
                 <StyledCloseButtonWrapper>
                     <IconButton
                         onClick={toggleIsVisible}
@@ -79,16 +78,16 @@ const RoomInfo = ({ children, isVisible, toggleIsVisible }) => {
                         color="#ffffff"
                         hoverColor="#657077"
                         isFill={true}
-                        className="room-info-button"
+                        className="info-panel-button"
                     />
                 </StyledCloseButtonWrapper>
                 {children}
-            </StyledRoomInfo>
-        </StyledRoomInfoWrapper>
+            </StyledInfoPanel>
+        </StyledInfoPanelWrapper>
     );
 };
 
-RoomInfo.propTypes = {
+InfoPanel.propTypes = {
     children: PropTypes.oneOfType([
         PropTypes.arrayOf(PropTypes.node),
         PropTypes.node,
@@ -98,15 +97,15 @@ RoomInfo.propTypes = {
     toggleIsVisible: PropTypes.func,
 };
 
-export default inject(({ roomInfoStore }) => {
+export default inject(({ infoPanelStore }) => {
     let isVisible = false;
     let toggleIsVisible = () => {};
-    if (roomInfoStore) {
-        isVisible = roomInfoStore.isVisible;
-        toggleIsVisible = roomInfoStore.toggleIsVisible;
+    if (infoPanelStore) {
+        isVisible = infoPanelStore.isVisible;
+        toggleIsVisible = infoPanelStore.toggleIsVisible;
     }
     return {
         isVisible,
         toggleIsVisible,
     };
-})(RoomInfo);
+})(InfoPanel);

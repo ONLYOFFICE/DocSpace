@@ -3,10 +3,10 @@ import React from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 
-const RoomInfoHeaderContent = () => {
+const InfoPanelHeaderContent = () => {
     return <>Room</>;
 };
 
 export default inject(({}) => {
     return {};
-})(observer(RoomInfoHeaderContent));
+})(observer(InfoPanelHeaderContent));

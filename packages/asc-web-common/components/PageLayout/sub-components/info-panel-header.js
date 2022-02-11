@@ -6,12 +6,12 @@ import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";
 
-const SubRoomInfoHeader = ({ children, toggleIsVisible }) => {
+const SubInfoPanelHeader = ({ children, toggleIsVisible }) => {
     const content = children.props.children;
 
     console.log(toggleIsVisible);
 
-    const StyledRoomInfoHeader = styled.div`
+    const StyledInfoPanelHeader = styled.div`
         width: 100%;
         height: 53px;
         display: flex;
@@ -27,7 +27,7 @@ const SubRoomInfoHeader = ({ children, toggleIsVisible }) => {
     `;
 
     return (
-        <StyledRoomInfoHeader>
+        <StyledInfoPanelHeader>
             <Text fontSize="21px" fontWeight="700">
                 {content}
             </Text>
@@ -40,13 +40,13 @@ const SubRoomInfoHeader = ({ children, toggleIsVisible }) => {
                 hoverColor="#657077"
                 isFill={true}
             />
-        </StyledRoomInfoHeader>
+        </StyledInfoPanelHeader>
     );
 };
 
-SubRoomInfoHeader.displayName = "SubRoomInfoHeader";
+SubInfoPanelHeader.displayName = "SubInfoPanelHeader";
 
-SubRoomInfoHeader.propTypes = {
+SubInfoPanelHeader.propTypes = {
     children: PropTypes.oneOfType([
         PropTypes.arrayOf(PropTypes.node),
         PropTypes.node,
@@ -55,10 +55,10 @@ SubRoomInfoHeader.propTypes = {
     toggleIsVisible: PropTypes.func,
 };
 
-export default inject(({ roomInfoStore }) => {
+export default inject(({ infoPanelStore }) => {
     let toggleIsVisible = () => {};
-    if (roomInfoStore) {
-        toggleIsVisible = roomInfoStore.toggleIsVisible;
+    if (infoPanelStore) {
+        toggleIsVisible = infoPanelStore.toggleIsVisible;
     }
     return { toggleIsVisible };
-})(observer(SubRoomInfoHeader));
+})(observer(SubInfoPanelHeader));

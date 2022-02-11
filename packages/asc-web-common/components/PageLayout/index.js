@@ -15,9 +15,9 @@ import SubArticleBody from "./sub-components/article-body";
 import SubArticleHeader from "./sub-components/article-header";
 import SubArticleMainButton from "./sub-components/article-main-button";
 import ArticlePinPanel from "./sub-components/article-pin-panel";
-import RoomInfo from "./sub-components/room-info";
-import SubRoomInfoBody from "./sub-components/room-info-body";
-import SubRoomInfoHeader from "./sub-components/room-info-header";
+import InfoPanel from "./sub-components/info-panel";
+import SubInfoPanelBody from "./sub-components/info-panel-body";
+import SubInfoPanelHeader from "./sub-components/info-panel-header";
 import Section from "./sub-components/section";
 import SubSectionBody from "./sub-components/section-body";
 import SubSectionBodyContent from "./sub-components/section-body-content";
@@ -87,15 +87,15 @@ function SectionPaging() {
 }
 SectionPaging.displayName = "SectionPaging";
 
-function RoomInfoBody() {
+function InfoPanelBody() {
     return null;
 }
-RoomInfoBody.displayName = "RoomInfoBody";
+InfoPanelBody.displayName = "InfoPanelBody";
 
-function RoomInfoHeader() {
+function InfoPanelHeader() {
     return null;
 }
-RoomInfoHeader.displayName = "RoomInfoHeader";
+InfoPanelHeader.displayName = "InfoPanelHeader";
 
 class PageLayout extends React.Component {
     static ArticleHeader = ArticleHeader;
@@ -105,8 +105,8 @@ class PageLayout extends React.Component {
     static SectionFilter = SectionFilter;
     static SectionBody = SectionBody;
     static SectionPaging = SectionPaging;
-    static RoomInfoBody = RoomInfoBody;
-    static RoomInfoHeader = RoomInfoHeader;
+    static InfoPanelBody = InfoPanelBody;
+    static InfoPanelHeader = InfoPanelHeader;
 
     constructor(props) {
         super(props);
@@ -257,8 +257,8 @@ class PageLayout extends React.Component {
         let sectionFilterContent = null;
         let sectionPagingContent = null;
         let sectionBodyContent = null;
-        let roomInfoBodyContent = null;
-        let roomInfoHeaderContent = null;
+        let infoPanelBodyContent = null;
+        let infoPanelHeaderContent = null;
 
         React.Children.forEach(children, (child) => {
             const childType =
@@ -288,11 +288,11 @@ class PageLayout extends React.Component {
                 case SectionBody.displayName:
                     sectionBodyContent = child;
                     break;
-                case RoomInfoBody.displayName:
-                    roomInfoBodyContent = child;
+                case InfoPanelBody.displayName:
+                    infoPanelBodyContent = child;
                     break;
-                case RoomInfoHeader.displayName:
-                    roomInfoHeaderContent = child;
+                case InfoPanelHeader.displayName:
+                    infoPanelHeaderContent = child;
                     break;
                 default:
                     break;
@@ -524,14 +524,14 @@ class PageLayout extends React.Component {
                                             />
                                         )}
                                     </Section>
-                                    <RoomInfo>
-                                        <SubRoomInfoHeader>
-                                            {roomInfoHeaderContent}
-                                        </SubRoomInfoHeader>
-                                        <SubRoomInfoBody>
-                                            {roomInfoBodyContent}
-                                        </SubRoomInfoBody>
-                                    </RoomInfo>
+                                    <InfoPanel>
+                                        <SubInfoPanelHeader>
+                                            {infoPanelHeaderContent}
+                                        </SubInfoPanelHeader>
+                                        <SubInfoPanelBody>
+                                            {infoPanelBodyContent}
+                                        </SubInfoPanelBody>
+                                    </InfoPanel>
                                 </Provider>
                             )}
                         </ReactResizeDetector>
@@ -611,8 +611,8 @@ PageLayout.SectionHeader = SectionHeader;
 PageLayout.SectionFilter = SectionFilter;
 PageLayout.SectionBody = SectionBody;
 PageLayout.SectionPaging = SectionPaging;
-PageLayout.RoomInfoHeader = RoomInfoHeader;
-PageLayout.RoomInfoBody = RoomInfoBody;
+PageLayout.InfoPanelHeader = InfoPanelHeader;
+PageLayout.InfoPanelBody = InfoPanelBody;
 
 export default inject(({ auth }) => {
     const { isLoaded, settingsStore } = auth;

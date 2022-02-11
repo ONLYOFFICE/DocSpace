@@ -34,8 +34,8 @@ class SettingsStore {
         this.treeFoldersStore = treeFoldersStore;
     }
 
-    get roomInfoIsVisible() {
-        return this.roomInfoIsVisible;
+    get infoPanelIsVisible() {
+        return this.infoPanelIsVisible;
     }
 
     setIsLoaded = (isLoaded) => {

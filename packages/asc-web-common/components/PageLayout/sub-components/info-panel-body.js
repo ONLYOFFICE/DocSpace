@@ -1,14 +1,14 @@
 import { inject, observer } from "mobx-react";
 import React from "react";
 
-const SubRoomInfoBody = ({ children }) => {
+const SubInfoPanelBody = ({ children }) => {
     const content = children.props.children;
 
     return <>{content}</>;
 };
 
-SubRoomInfoBody.displayName = "SubRoomInfoBody";
+SubInfoPanelBody.displayName = "SubInfoPanelBody";
 
 export default inject(() => {
     return {};
-})(observer(SubRoomInfoBody));
+})(observer(SubInfoPanelBody));

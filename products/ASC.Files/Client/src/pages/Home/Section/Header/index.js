@@ -348,7 +348,7 @@ class SectionHeaderContent extends React.Component {
     };
 
     onEmptyTrashAction = () => this.props.setEmptyTrashDialogVisible(true);
-    onToggleRoomInfo = () => this.props.toggleRoomInfo();
+    onToggleInfoPanel = () => this.props.toggleInfoPanel();
 
     getContextOptionsFolder = () => {
         const { t, personal } = this.props;
@@ -452,7 +452,7 @@ class SectionHeaderContent extends React.Component {
             isHeaderVisible,
             isHeaderChecked,
             isHeaderIndeterminate,
-            isRoomInfoVisible,
+            isInfoPanelVisible,
             isRootFolder,
             title,
             canCreate,
@@ -471,7 +471,7 @@ class SectionHeaderContent extends React.Component {
 
         const infoPanelToggle = (
             <StyledInfoPanelToggleWrapper
-                isInfoPanelVisible={isRoomInfoVisible}
+                isInfoPanelVisible={isInfoPanelVisible}
                 isHeaderVisible={isHeaderVisible}
             >
                 <div className="info-panel-toggle-bg">
@@ -479,9 +479,9 @@ class SectionHeaderContent extends React.Component {
                         className="info-panel-toggle"
                         iconName="images/panel.svg"
                         size="16"
-                        color={isRoomInfoVisible ? "#3B72A7" : "#A3A9AE"}
+                        color={isInfoPanelVisible ? "#3B72A7" : "#A3A9AE"}
                         isFill={true}
-                        onClick={this.onToggleRoomInfo}
+                        onClick={this.onToggleInfoPanel}
                     />
                 </div>
             </StyledInfoPanelToggleWrapper>
@@ -625,7 +625,7 @@ export default inject(
         filesActionsStore,
         settingsStore,
         treeFoldersStore,
-        roomInfoStore,
+        infoPanelStore,
     }) => {
         const {
             setSelected,
@@ -664,9 +664,9 @@ export default inject(
             getHeaderMenu,
         } = filesActionsStore;
 
-        //const { toggleRoomInfo, isRoomInfoVisible } = roomInfoStore;
-        const toggleRoomInfo = roomInfoStore.toggleIsVisible;
-        const isRoomInfoVisible = roomInfoStore.isVisible;
+        //const { toggleInfoPanel, isInfoPanelVisible } = infoPanelStore;
+        const toggleInfoPanel = infoPanelStore.toggleIsVisible;
+        const isInfoPanelVisible = infoPanelStore.isVisible;
 
         return {
             isDesktop: auth.settingsStore.isDesktopClient,
@@ -676,8 +676,8 @@ export default inject(
             currentFolderId: selectedFolderStore.id,
             filter,
             canCreate,
-            toggleRoomInfo,
-            isRoomInfoVisible,
+            toggleInfoPanel,
+            isInfoPanelVisible,
             isHeaderVisible,
             isHeaderIndeterminate,
             isHeaderChecked,

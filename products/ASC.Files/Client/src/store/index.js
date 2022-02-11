@@ -10,7 +10,7 @@ import iconFormatsStore from "./IconFormatsStore";
 import MediaViewerDataStore from "./MediaViewerDataStore";
 import mediaViewersFormatsStore from "./MediaViewersFormatsStore";
 import PrimaryProgressDataStore from "./PrimaryProgressDataStore";
-import RoomInfoStore from "./RoomInfoStore";
+import InfoPanelStore from "./InfoPanelStore";
 import SecondaryProgressDataStore from "./SecondaryProgressDataStore";
 import selectedFilesStore from "./SelectedFilesStore";
 import selectedFolderStore from "./SelectedFolderStore";
@@ -73,7 +73,7 @@ const filesActionsStore = new FilesActionsStore(
 
 const versionHistoryStore = new VersionHistoryStore(filesStore);
 
-const roomInfoStore = new RoomInfoStore();
+const infoPanelStore = new InfoPanelStore();
 
 //const selectedFilesStore = new SelectedFilesStore(selectedFilesStore);
 const stores = {
@@ -88,7 +88,7 @@ const stores = {
     selectedFolderStore,
     filesActionsStore,
     selectedFilesStore,
-    roomInfoStore,
+    infoPanelStore,
 };
 
 export default stores;
