@@ -3,13 +3,17 @@
 [Singletone]
 public class BuildQueueService : IHostedService
 {
-    internal ConcurrentQueue<WebhookRequest> Queue { get; }
     private readonly ICacheNotify<WebhookRequest> _webhookNotify;
-
     public BuildQueueService(ICacheNotify<WebhookRequest> webhookNotify)
     {
         _webhookNotify = webhookNotify;
         Queue = new ConcurrentQueue<WebhookRequest>();
+    }
+
+    internal ConcurrentQueue<WebhookRequest> Queue { get; }
+    public void BuildWebhooksQueue(WebhookRequest request)
+    {
+        Queue.Enqueue(request);
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
@@ -22,10 +26,5 @@ public class BuildQueueService : IHostedService
     {
         _webhookNotify.Unsubscribe(CacheNotifyAction.Update);
         return Task.CompletedTask;
-    }
-
-    public void BuildWebhooksQueue(WebhookRequest request)
-    {
-        Queue.Enqueue(request);
     }
 }

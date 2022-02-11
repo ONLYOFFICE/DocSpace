@@ -1,13 +1,13 @@
 ﻿namespace ASC.Webhooks.Service.Services;
 
 [Singletone]
-public class WorkerService: IHostedService, IDisposable
+public class WorkerService : IHostedService, IDisposable
 {
+    private readonly ILog _logger;
+    private readonly ConcurrentQueue<WebhookRequest> _queue;
     private readonly int? _threadCount = 10;
     private readonly WebhookSender _webhookSender;
-    private readonly ConcurrentQueue<WebhookRequest> _queue;
     private CancellationToken _cancellationToken;
-    private readonly ILog _logger;
     private Timer _timer;
 
     public WorkerService(WebhookSender webhookSender,
@@ -19,6 +19,11 @@ public class WorkerService: IHostedService, IDisposable
         _webhookSender = webhookSender;
         _queue = buildQueueService.Queue;
         _threadCount = settings.ThreadCount;
+    }
+
+    public void Dispose()
+    {
+        _timer?.Dispose();
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
@@ -33,11 +38,6 @@ public class WorkerService: IHostedService, IDisposable
     {
         Stop();
         return Task.CompletedTask;
-    }
-
-    private void Stop()
-    {
-        _timer?.Change(Timeout.Infinite, 0);
     }
 
     private void DoWork(object _)
@@ -88,8 +88,8 @@ public class WorkerService: IHostedService, IDisposable
         _timer.Change(0, Timeout.Infinite);
     }
 
-    public void Dispose()
+    private void Stop()
     {
-        _timer?.Dispose();
+        _timer?.Change(Timeout.Infinite, 0);
     }
 }

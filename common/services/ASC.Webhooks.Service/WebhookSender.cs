@@ -3,10 +3,10 @@ namespace ASC.Webhooks.Service;
 [Singletone]
 public class WebhookSender
 {
-    private readonly int? _repeatCount;
     private readonly IHttpClientFactory _clientFactory;
-    private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILog _log;
+    private readonly int? _repeatCount;
+    private readonly IServiceScopeFactory _scopeFactory;
 
     public WebhookSender(IOptionsMonitor<ILog> options, IServiceScopeFactory scopeFactory, Settings settings, IHttpClientFactory clientFactory)
     {
@@ -88,7 +88,7 @@ public class WebhookSender
     private void UpdateDb(DbWorker dbWorker, int id, HttpResponseMessage response, HttpRequestMessage request, ProcessStatus status)
     {
         var responseHeaders = JsonSerializer.Serialize(response.Headers.ToDictionary(r => r.Key, v => v.Value));
-        var requestHeaders = JsonSerializer.Serialize(request.Headers.ToDictionary(r => r.Key , v => v.Value));
+        var requestHeaders = JsonSerializer.Serialize(request.Headers.ToDictionary(r => r.Key, v => v.Value));
         string responsePayload;
 
         using (var streamReader = new StreamReader(response.Content.ReadAsStream()))

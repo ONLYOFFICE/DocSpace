@@ -90,7 +90,6 @@ builder.WebHost.ConfigureServices((hostContext, services) =>
 
     services.AddHostedService<WorkerService>();
     diHelper.TryAdd<WorkerService>();
-
 });
 
 builder.Host.ConfigureNLogLogging();
