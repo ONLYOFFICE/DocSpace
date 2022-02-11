@@ -100,7 +100,7 @@ namespace ASC.Api.Settings
             //TODO: Add validation check
 
             if (smtpSettings == null)
-                throw new ArgumentNullException("smtpSettings");
+                throw new ArgumentNullException(nameof(smtpSettings));
 
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -231,7 +231,7 @@ namespace ASC.Api.Settings
 
         private static void CheckSmtpPermissions()
         {
-            if (!SetupInfo.IsVisibleSettings(ManagementType.SmtpSettings.ToString()))
+            if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.SmtpSettings)))
             {
                 throw new BillingException(Resource.ErrorNotAllowedOption, "Smtp");
             }

@@ -66,7 +66,7 @@ namespace ASC.AuditTrail
             return Get(tenant, from, to, null);
         }
 
-        private class Query
+        private sealed class Query
         {
             public Core.Common.EF.Model.AuditEvent AuditEvent { get; set; }
             public User User { get; set; }
@@ -83,7 +83,7 @@ namespace ASC.AuditTrail
 
             if (fromDate.HasValue && to.HasValue)
             {
-                query = query.Where(q => q.AuditEvent.Date >= fromDate & q.AuditEvent.Date <= to);
+                query = query.Where(q => q.AuditEvent.Date >= fromDate && q.AuditEvent.Date <= to);
             }
 
             if (limit.HasValue)
@@ -103,7 +103,7 @@ namespace ASC.AuditTrail
 
             if (from.HasValue && to.HasValue)
             {
-                query = query.Where(a => a.Date >= from & a.Date <= to);
+                query = query.Where(a => a.Date >= from && a.Date <= to);
             }
 
             return query.Count();
@@ -130,7 +130,7 @@ namespace ASC.AuditTrail
                 if (query.AuditEvent.Description != null)
                 {
                     evt.Description = JsonConvert.DeserializeObject<IList<string>>(
-                        Convert.ToString(query.AuditEvent.Description),
+                        query.AuditEvent.Description,
                         new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Utc });
                 }
 

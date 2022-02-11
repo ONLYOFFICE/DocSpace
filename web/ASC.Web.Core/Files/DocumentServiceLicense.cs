@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 using ASC.Common;
@@ -36,17 +37,21 @@ namespace ASC.Web.Core.Files
         public CoreBaseSettings CoreBaseSettings { get; }
         private FilesLinkUtility FilesLinkUtility { get; }
         private FileUtility FileUtility { get; }
+        private IHttpClientFactory ClientFactory { get; }
+
 
         public DocumentServiceLicense(
             ICache cache,
             CoreBaseSettings coreBaseSettings,
             FilesLinkUtility filesLinkUtility,
-            FileUtility fileUtility)
+            FileUtility fileUtility,
+            IHttpClientFactory clientFactory)
         {
             Cache = cache;
             CoreBaseSettings = coreBaseSettings;
             FilesLinkUtility = filesLinkUtility;
             FileUtility = fileUtility;
+            ClientFactory = clientFactory;
         }
 
         private async Task<CommandResponse> GetDocumentServiceLicenseAsync()
@@ -66,7 +71,9 @@ namespace ASC.Web.Core.Files
                        null,
                        null,
                        null,
-                       FileUtility.SignatureSecret);
+                       FileUtility.SignatureSecret,
+                       ClientFactory
+                       );
                 Cache.Insert(cacheKey, commandResponse, DateTime.UtcNow.Add(CACHE_EXPIRATION));
             }
 

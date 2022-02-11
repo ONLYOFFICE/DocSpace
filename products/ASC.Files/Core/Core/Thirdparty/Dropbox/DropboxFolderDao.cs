@@ -188,7 +188,7 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public async Task<string> SaveFolderAsync(Folder<string> folder)
         {
-            if (folder == null) throw new ArgumentNullException("folder");
+            if (folder == null) throw new ArgumentNullException(nameof(folder));
             if (folder.ID != null)
             {
                 return await RenameFolderAsync(folder, folder.Title).ConfigureAwait(false);
@@ -444,7 +444,7 @@ namespace ASC.Files.Thirdparty.Dropbox
             return false;
         }
 
-        public Task<long> GetMaxUploadSizeAsync(string folderId, bool chunkedUpload)
+        public Task<long> GetMaxUploadSizeAsync(string folderId, bool chunkedUpload = false)
         {
             var storageMaxUploadSize = ProviderInfo.Storage.MaxChunkedUploadFileSize;
 

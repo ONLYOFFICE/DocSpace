@@ -80,7 +80,7 @@ namespace ASC.Files.Thirdparty
 
         public Task<Stream> GetThumbnailAsync(File<string> file)
         {
-            return null;
+            return Task.FromResult<Stream>(null);
         }
 
         public virtual Task<Stream> GetFileStreamAsync(File<string> file)
@@ -221,7 +221,7 @@ namespace ASC.Files.Thirdparty
 
         protected abstract string Id { get; }
 
-        public ThirdPartyProviderDao(
+        protected ThirdPartyProviderDao(
             IServiceProvider serviceProvider,
             UserManager userManager,
             TenantManager tenantManager,
@@ -262,7 +262,7 @@ namespace ASC.Files.Thirdparty
             string result;
             if (id.StartsWith(Id))
             {
-                result = Regex.Replace(BitConverter.ToString(Hasher.Hash(id.ToString(), HashAlg.MD5)), "-", "").ToLower();
+                result = Regex.Replace(BitConverter.ToString(Hasher.Hash(id, HashAlg.MD5)), "-", "").ToLower();
             }
             else
             {

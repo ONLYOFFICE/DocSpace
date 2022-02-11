@@ -185,7 +185,7 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         public async Task<string> SaveFolderAsync(Folder<string> folder)
         {
-            if (folder == null) throw new ArgumentNullException("folder");
+            if (folder == null) throw new ArgumentNullException(nameof(folder));
             if (folder.ID != null)
             {
                 return await RenameFolderAsync(folder, folder.Title).ConfigureAwait(false);
@@ -453,7 +453,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             return true;
         }
 
-        public async Task<long> GetMaxUploadSizeAsync(string folderId, bool chunkedUpload)
+        public async Task<long> GetMaxUploadSizeAsync(string folderId, bool chunkedUpload = false)
         {
             var storage = await ProviderInfo.StorageAsync;
             var storageMaxUploadSize = storage.MaxChunkedUploadFileSize;

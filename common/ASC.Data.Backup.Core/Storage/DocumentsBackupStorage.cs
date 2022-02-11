@@ -155,7 +155,7 @@ namespace ASC.Data.Backup.Storage
             var chunkedUploadSession = fileDao.CreateUploadSessionAsync(newFile, source.Length).Result;
             chunkedUploadSession.CheckQuota = false;
 
-            var bytesRead = 0;
+            int bytesRead;
 
             while ((bytesRead = source.Read(buffer, 0, (int)SetupInfo.ChunkUploadSize)) > 0)
             {

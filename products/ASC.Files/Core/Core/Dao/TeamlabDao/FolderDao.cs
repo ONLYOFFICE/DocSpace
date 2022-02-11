@@ -298,7 +298,7 @@ namespace ASC.Files.Core.Data
 
         public async Task<int> SaveFolderAsync(Folder<int> folder, IDbContextTransaction transaction)
         {
-            if (folder == null) throw new ArgumentNullException("folder");
+            if (folder == null) throw new ArgumentNullException(nameof(folder));
 
             folder.Title = Global.ReplaceInvalidCharsAndTruncate(folder.Title);
 
@@ -491,7 +491,7 @@ namespace ASC.Files.Core.Data
                 var folder = await GetFolderAsync(folderId).ConfigureAwait(false);
 
                 if (folder.FolderType != FolderType.DEFAULT)
-                    throw new ArgumentException("It is forbidden to move the System folder.", "folderId");
+                    throw new ArgumentException("It is forbidden to move the System folder.", nameof(folderId));
 
                 var recalcFolders = new List<int> { toFolderId };
                 var parent = await FilesDbContext.Folders
@@ -683,7 +683,10 @@ namespace ASC.Files.Core.Data
                         .ToListAsync()
                         .ConfigureAwait(false);
 
-                    files.ForEach(r => result[r.Id] = r.Title);
+                    foreach (var file in files)
+                    {
+                        result[file.Id] = file.Title;
+                    }
 
                     var childs = Query(FilesDbContext.Folders)
                         .AsNoTracking()
@@ -777,7 +780,7 @@ namespace ASC.Files.Core.Data
             return true;
         }
 
-        public async Task<long> GetMaxUploadSizeAsync(int folderId, bool chunkedUpload)
+        public async Task<long> GetMaxUploadSizeAsync(int folderId, bool chunkedUpload = false)
         {
             var tmp = long.MaxValue;
 
@@ -820,7 +823,7 @@ namespace ASC.Files.Core.Data
             return FilesDbContext.SaveChangesAsync();
         }
 
-        public IAsyncEnumerable<Folder<int>> SearchFoldersAsync(string text, bool bunch)
+        public IAsyncEnumerable<Folder<int>> SearchFoldersAsync(string text, bool bunch = false)
         {
             var folders = SearchAsync(text);
             return folders.Where(f => bunch
@@ -846,10 +849,10 @@ namespace ASC.Files.Core.Data
 
         public async Task<IEnumerable<int>> GetFolderIDsAsync(string module, string bunch, IEnumerable<string> data, bool createIfNotExists)
         {
-            if (string.IsNullOrEmpty(module)) throw new ArgumentNullException("module");
-            if (string.IsNullOrEmpty(bunch)) throw new ArgumentNullException("bunch");
+            if (string.IsNullOrEmpty(module)) throw new ArgumentNullException(nameof(module));
+            if (string.IsNullOrEmpty(bunch)) throw new ArgumentNullException(nameof(bunch));
 
-            var keys = data.Select(id => string.Format("{0}/{1}/{2}", module, bunch, id)).ToArray();
+            var keys = data.Select(id => $"{module}/{bunch}/{id}").ToArray();
 
             var folderIdsDictionary = await Query(FilesDbContext.BunchObjects)
                 .AsNoTracking()
@@ -931,10 +934,10 @@ namespace ASC.Files.Core.Data
 
         public async Task<int> GetFolderIDAsync(string module, string bunch, string data, bool createIfNotExists)
         {
-            if (string.IsNullOrEmpty(module)) throw new ArgumentNullException("module");
-            if (string.IsNullOrEmpty(bunch)) throw new ArgumentNullException("bunch");
+            if (string.IsNullOrEmpty(module)) throw new ArgumentNullException(nameof(module));
+            if (string.IsNullOrEmpty(bunch)) throw new ArgumentNullException(nameof(bunch));
 
-            var key = string.Format("{0}/{1}/{2}", module, bunch, data);
+            var key = $"{module}/{bunch}/{data}";
             var folderId = await Query(FilesDbContext.BunchObjects)
                 .Where(r => r.RightNode == key)
                 .Select(r => r.LeftNode)
@@ -956,7 +959,7 @@ namespace ASC.Files.Core.Data
                     case my:
                         folder.FolderType = FolderType.USER;
                         folder.Title = my;
-                        folder.CreateBy = new Guid(data.ToString());
+                        folder.CreateBy = new Guid(data);
                         break;
                     case common:
                         folder.FolderType = FolderType.COMMON;
@@ -965,7 +968,7 @@ namespace ASC.Files.Core.Data
                     case trash:
                         folder.FolderType = FolderType.TRASH;
                         folder.Title = trash;
-                        folder.CreateBy = new Guid(data.ToString());
+                        folder.CreateBy = new Guid(data);
                         break;
                     case share:
                         folder.FolderType = FolderType.SHARE;
@@ -1202,7 +1205,7 @@ namespace ASC.Files.Core.Data
         public Task<string> GetBunchObjectIDAsync(int folderID)
         {
             return Query(FilesDbContext.BunchObjects)
-                .Where(r => r.LeftNode == (folderID).ToString())
+                .Where(r => r.LeftNode == folderID.ToString())
                 .Select(r => r.RightNode)
                 .FirstOrDefaultAsync()
 ;
@@ -1253,7 +1256,7 @@ namespace ASC.Files.Core.Data
                 .AsQueryable()
                 .Where(r => r.ModifiedOn > fromTime)
                 .GroupBy(r => r.TenantId)
-                .Where(r => r.Count() > 0)
+                .Where(r => r.Any())
                 .Select(r => r.Key)
                 .ToListAsync()
                 .ConfigureAwait(false);
@@ -1262,7 +1265,7 @@ namespace ASC.Files.Core.Data
                 .AsQueryable()
                 .Where(r => r.TimeStamp > fromTime)
                 .GroupBy(r => r.TenantId)
-                .Where(r => r.Count() > 0)
+                .Where(r => r.Any())
                 .Select(r => r.Key)
                 .ToListAsync()
                 .ConfigureAwait(false);

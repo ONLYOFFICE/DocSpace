@@ -187,7 +187,7 @@ ctx.Tag
 
         public async IAsyncEnumerable<Tag> GetTagsAsync(string[] names, TagType tagType)
         {
-            if (names == null) throw new ArgumentNullException("names");
+            if (names == null) throw new ArgumentNullException(nameof(names));
 
             var q = Query(FilesDbContext.Tag)
                 .Join(FilesDbContext.TagLink, r => r.Id, l => l.TagId, (tag, link) => new TagLinkData { Tag = tag, Link = link })
@@ -204,7 +204,7 @@ ctx.Tag
 
         public IAsyncEnumerable<Tag> GetTagsAsync(string name, TagType tagType)
         {
-            if (string.IsNullOrEmpty(name)) throw new ArgumentNullException("name");
+            if (string.IsNullOrEmpty(name)) throw new ArgumentNullException(nameof(name));
 
             return GetTagsAsync(new[] { name }, tagType);
         }
@@ -461,8 +461,8 @@ ctx.Tag
                 FilesDbContext.TagLink.RemoveRange(toDelete);
                 await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-                var count = await Query(FilesDbContext.TagLink).CountAsync(r => r.TagId == id).ConfigureAwait(false);
-                if (count == 0)
+                var any = await Query(FilesDbContext.TagLink).AnyAsync(r => r.TagId == id).ConfigureAwait(false);
+                if (!any)
                 {
                     var tagToDelete = Query(FilesDbContext.Tag).Where(r => r.Id == id);
                     FilesDbContext.Tag.RemoveRange(tagToDelete);
@@ -689,7 +689,7 @@ ctx.Tag
                 entryTypes.Add((int)entryType);
             }
 
-            if (entryIds.Any())
+            if (entryIds.Count > 0)
             {
                 var sqlQuery = Query(FilesDbContext.Tag)
                     .Join(FilesDbContext.TagLink, r => r.Id, l => l.TagId, (tag, link) => new TagLinkData { Tag = tag, Link = link })
@@ -784,7 +784,7 @@ ctx.Tag
                                                     .Concat(folderIds.ConvertAll(r => $"onedrive-{r}"))
                                                     .ToList();
 
-                if (thirdpartyFolderIds.Any())
+                if (thirdpartyFolderIds.Count > 0)
                 {
                     result.Concat(FromQueryAsync(newTagsForSBoxQuery(FilesDbContext, tenantId, subject, thirdpartyFolderIds)));
                 }

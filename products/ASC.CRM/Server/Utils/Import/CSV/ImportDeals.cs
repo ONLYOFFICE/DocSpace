@@ -125,17 +125,17 @@ namespace ASC.Web.CRM.Classes
 
                     if (!string.IsNullOrEmpty(bidTypeStr))
                     {
-                        if (String.Compare(CRMDealResource.BidType_FixedBid, bidTypeStr, true) == 0)
+                        if (string.Equals(CRMDealResource.BidType_FixedBid, bidTypeStr, StringComparison.OrdinalIgnoreCase))
                             bidType = BidType.FixedBid;
-                        else if (String.Compare(CRMDealResource.BidType_PerDay, bidTypeStr, true) == 0)
+                        else if (string.Equals(CRMDealResource.BidType_PerDay, bidTypeStr, StringComparison.OrdinalIgnoreCase))
                             bidType = BidType.PerDay;
-                        else if (String.Compare(CRMDealResource.BidType_PerHour, bidTypeStr, true) == 0)
+                        else if (string.Equals(CRMDealResource.BidType_PerHour, bidTypeStr, StringComparison.OrdinalIgnoreCase))
                             bidType = BidType.PerHour;
-                        else if (String.Compare(CRMDealResource.BidType_PerMonth, bidTypeStr, true) == 0)
+                        else if (string.Equals(CRMDealResource.BidType_PerMonth, bidTypeStr, StringComparison.OrdinalIgnoreCase))
                             bidType = BidType.PerMonth;
-                        else if (String.Compare(CRMDealResource.BidType_PerWeek, bidTypeStr, true) == 0)
+                        else if (string.Equals(CRMDealResource.BidType_PerWeek, bidTypeStr, StringComparison.OrdinalIgnoreCase))
                             bidType = BidType.PerWeek;
-                        else if (String.Compare(CRMDealResource.BidType_PerYear, bidTypeStr, true) == 0)
+                        else if (string.Equals(CRMDealResource.BidType_PerYear, bidTypeStr, StringComparison.OrdinalIgnoreCase))
                             bidType = BidType.PerYear;
                     }
 
@@ -176,7 +176,7 @@ namespace ASC.Web.CRM.Classes
                         obj.DealMilestoneID = dealMilestones[0].ID;
                     else
                     {
-                        var dealMilestone = dealMilestones.Find(item => String.Compare(item.Title, dealMilestoneTitle, true) == 0);
+                        var dealMilestone = dealMilestones.Find(item => string.Equals(item.Title, dealMilestoneTitle, StringComparison.OrdinalIgnoreCase));
 
                         if (dealMilestone == null)
                             obj.DealMilestoneID = dealMilestones[0].ID;

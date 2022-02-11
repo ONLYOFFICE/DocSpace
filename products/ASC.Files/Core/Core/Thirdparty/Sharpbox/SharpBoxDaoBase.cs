@@ -55,7 +55,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
     {
         protected override string Id { get => "sbox"; }
 
-        public SharpBoxDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility, TempPath tempPath)
+        protected SharpBoxDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility, TempPath tempPath)
             : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
         {
         }
@@ -216,7 +216,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         protected string MakePath(object entryId)
         {
-            return string.Format("/{0}", Convert.ToString(entryId, CultureInfo.InvariantCulture).Trim('/'));
+            return $"/{Convert.ToString(entryId, CultureInfo.InvariantCulture).Trim('/')}";
         }
 
         protected override string MakeId(string path = null)
@@ -242,8 +242,8 @@ namespace ASC.Files.Thirdparty.Sharpbox
             {
                 path = entry.Id;
             }
-
-            return string.Format("{0}{1}", PathPrefix, string.IsNullOrEmpty(path) || path == "/" ? "" : ("-" + path.Replace('/', '|')));
+            var p = string.IsNullOrEmpty(path) || path == "/" ? "" : ("-" + path.Replace('/', '|'));
+            return $"{PathPrefix}{p}";
         }
 
         protected string MakeTitle(ICloudFileSystemEntry fsEntry)
@@ -435,7 +435,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         protected IEnumerable<ICloudFileSystemEntry> GetFolderSubfolders(ICloudDirectoryEntry folder)
         {
-            return folder.Where(x => (x is ICloudDirectoryEntry));
+            return folder.Where(x => x is ICloudDirectoryEntry);
         }
 
         protected string GetAvailableTitle(string requestTitle, ICloudDirectoryEntry parentFolder, Func<string, ICloudDirectoryEntry, bool> isExist)
@@ -448,9 +448,9 @@ namespace ASC.Files.Thirdparty.Sharpbox
             if (!match.Success)
             {
                 var insertIndex = requestTitle.Length;
-                if (requestTitle.LastIndexOf(".", StringComparison.InvariantCulture) != -1)
+                if (requestTitle.LastIndexOf('.') != -1)
                 {
-                    insertIndex = requestTitle.LastIndexOf(".", StringComparison.InvariantCulture);
+                    insertIndex = requestTitle.LastIndexOf('.');
                 }
                 requestTitle = requestTitle.Insert(insertIndex, " (1)");
             }
@@ -493,7 +493,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             return Task.FromResult(subFolders.Concat(files));
         }
 
-        private static string MatchEvaluator(Match match)
+        private string MatchEvaluator(Match match)
         {
             var index = Convert.ToInt32(match.Groups[2].Value);
             var staticText = match.Value.Substring(string.Format(" ({0})", index).Length);

@@ -183,7 +183,7 @@ namespace ASC.Data.Backup.Tasks.Modules
         {
             //todo: hack: will be changed later
             filePath = Regex.Replace(filePath, @"^[-\w]+(?=/)", match => dump ? match.Value : columnMapper.GetUserMapping(match.Value));
-            return !filePath.StartsWith("/");
+            return !filePath.StartsWith('/');
         }
 
         protected override bool TryPrepareRow(bool dump, DbConnection connection, ColumnMapper columnMapper, TableInfo table, DataRowInfo row, out Dictionary<string, object> preparedRow)

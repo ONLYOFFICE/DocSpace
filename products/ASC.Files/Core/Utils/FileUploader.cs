@@ -209,7 +209,7 @@ namespace ASC.Web.Files.Utils
             if (!await FileSecurity.CanCreateAsync(folder))
                 throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_Create);
 
-            if (relativePath != null && relativePath.Any())
+            if (relativePath != null && relativePath.Count > 0)
             {
                 var subFolderTitle = Global.ReplaceInvalidCharsAndTruncate(relativePath.FirstOrDefault());
 

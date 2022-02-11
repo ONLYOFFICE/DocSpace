@@ -731,8 +731,8 @@ namespace ASC.Files.Core.Security
             IEnumerable<FileShareRecord> records = await securityDao.GetSharesAsync(subjects);
 
             var result = new List<FileEntry>();
-            result.AddRange(await GetSharesForMeAsync<int>(records.Where(r => r.EntryId.GetType() == typeof(int)), subjects, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders));
-            result.AddRange(await GetSharesForMeAsync<string>(records.Where(r => r.EntryId.GetType() == typeof(string)), subjects, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders));
+            result.AddRange(await GetSharesForMeAsync<int>(records.Where(r => r.EntryId is int), subjects, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders));
+            result.AddRange(await GetSharesForMeAsync<string>(records.Where(r => r.EntryId is string), subjects, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders));
             return result;
         }
 
@@ -774,7 +774,7 @@ namespace ASC.Files.Core.Security
 
                 files.ForEach(x =>
                 {
-                    if (fileIds.ContainsKey(x.ID))
+                    if (fileIds.TryGetValue(x.ID, out var access))
                     {
                         x.Access = fileIds[x.ID];
                         x.FolderIdDisplay = GlobalFolder.GetFolderShareAsync<T>(daoFactory).Result;
@@ -795,7 +795,7 @@ namespace ASC.Files.Core.Security
                 }
                 folders.ForEach(x =>
                 {
-                    if (folderIds.ContainsKey(x.ID))
+                    if (folderIds.TryGetValue(x.ID, out var access))
                     {
                         x.Access = folderIds[x.ID];
                         x.FolderIdDisplay = GlobalFolder.GetFolderShareAsync<T>(daoFactory).Result;
@@ -837,7 +837,7 @@ namespace ASC.Files.Core.Security
                 failedRecords.Add(failedRecord);
             }
 
-            if (failedRecords.Any())
+            if (failedRecords.Count > 0)
             {
                 await securityDao.DeleteShareRecordsAsync(failedRecords);
             }
@@ -852,8 +852,8 @@ namespace ASC.Files.Core.Security
             IEnumerable<FileShareRecord> records = await securityDao.GetSharesAsync(subjects);
 
             var result = new List<FileEntry>();
-            result.AddRange(await GetPrivacyForMeAsync<int>(records.Where(r => r.EntryId.GetType() == typeof(int)), subjects, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders));
-            result.AddRange(await GetPrivacyForMeAsync<string>(records.Where(r => r.EntryId.GetType() == typeof(string)), subjects, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders));
+            result.AddRange(await GetPrivacyForMeAsync<int>(records.Where(r => r.EntryId is int), subjects, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders));
+            result.AddRange(await GetPrivacyForMeAsync<string>(records.Where(r => r.EntryId is string), subjects, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders));
             return result;
         }
 
@@ -894,9 +894,9 @@ namespace ASC.Files.Core.Security
 
                 files.ForEach(x =>
                 {
-                    if (fileIds.ContainsKey(x.ID))
+                    if (fileIds.TryGetValue(x.ID, out var access))
                     {
-                        x.Access = fileIds[x.ID];
+                        x.Access = access;
                         x.FolderIdDisplay = GlobalFolder.GetFolderPrivacyAsync<T>(daoFactory).Result;
                     }
                 });
@@ -915,9 +915,9 @@ namespace ASC.Files.Core.Security
                 }
                 folders.ForEach(x =>
                 {
-                    if (folderIds.ContainsKey(x.ID))
+                    if (folderIds.TryGetValue(x.ID, out var access))
                     {
-                        x.Access = folderIds[x.ID];
+                        x.Access = access;
                         x.FolderIdDisplay = GlobalFolder.GetFolderPrivacyAsync<T>(daoFactory).Result;
                     }
                 });
@@ -962,7 +962,7 @@ namespace ASC.Files.Core.Security
             return result;
         }
 
-        private class SubjectComparer : IComparer<FileShareRecord>
+        private sealed class SubjectComparer : IComparer<FileShareRecord>
         {
             private readonly List<Guid> _subjects;
 

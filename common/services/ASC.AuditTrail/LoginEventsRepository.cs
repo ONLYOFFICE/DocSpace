@@ -55,7 +55,7 @@ namespace ASC.AuditTrail.Data
             LazyMessagesContext = new Lazy<MessagesContext>(() => dbMessagesContext.Value);
         }
 
-        private class Query
+        private sealed class Query
         {
             public LoginEvents LoginEvents { get; set; }
             public User User { get; set; }
@@ -96,7 +96,7 @@ namespace ASC.AuditTrail.Data
 
             if (from.HasValue && to.HasValue)
             {
-                query = query.Where(l => l.Date >= from & l.Date <= to);
+                query = query.Where(l => l.Date >= from && l.Date <= to);
             }
 
             return query.Count();

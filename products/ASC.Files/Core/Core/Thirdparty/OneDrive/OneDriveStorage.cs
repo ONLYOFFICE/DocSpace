@@ -50,11 +50,6 @@ namespace ASC.Files.Thirdparty.OneDrive
     [Scope]
     internal class OneDriveStorage
     {
-        public OneDriveStorage(ConsumerFactory consumerFactory)
-        {
-            ConsumerFactory = consumerFactory;
-        }
-
         private OAuth20Token _token;
 
         private string AccessToken
@@ -80,8 +75,15 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         public bool IsOpened { get; private set; }
         private ConsumerFactory ConsumerFactory { get; }
+        private IHttpClientFactory ClientFactory { get; }
 
         public long MaxChunkedUploadFileSize = 10L * 1024L * 1024L * 1024L;
+
+        public OneDriveStorage(ConsumerFactory consumerFactory, IHttpClientFactory clientFactory)
+        {
+            ConsumerFactory = consumerFactory;
+            ClientFactory = clientFactory;
+        }
 
         public void Open(OAuth20Token token)
         {
@@ -114,8 +116,8 @@ namespace ASC.Files.Thirdparty.OneDrive
         }
 
 
-        public static string RootPath = "/drive/root:";
-        public static string ApiVersion = "v1.0";
+        public static readonly string RootPath = "/drive/root:";
+        public static readonly string ApiVersion = "v1.0";
 
         public static string MakeOneDrivePath(string parentPath, string name)
         {
@@ -146,7 +148,7 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         public async Task<Stream> DownloadStreamAsync(Item file, int offset = 0)
         {
-            if (file == null || file.File == null) throw new ArgumentNullException("file");
+            if (file == null || file.File == null) throw new ArgumentNullException(nameof(file));
 
             var fileStream = await OnedriveClient
                 .Drive
@@ -248,7 +250,7 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         public async Task<ResumableUploadSession> CreateResumableSessionAsync(Item onedriveFile, long contentLength)
         {
-            if (onedriveFile == null) throw new ArgumentNullException("onedriveFile");
+            if (onedriveFile == null) throw new ArgumentNullException(nameof(onedriveFile));
 
             var folderId = onedriveFile.ParentReference.Id;
             var fileName = onedriveFile.Name;
@@ -269,7 +271,7 @@ namespace ASC.Files.Thirdparty.OneDrive
 
             var uploadSession = new ResumableUploadSession(onedriveFile.Id, folderId, contentLength);
 
-            using (var httpClient = new HttpClient())
+            var httpClient = ClientFactory.CreateClient();
             using (var response = await httpClient.SendAsync(request))
             using (var responseStream = await response.Content.ReadAsStreamAsync())
             {
@@ -290,7 +292,7 @@ namespace ASC.Files.Thirdparty.OneDrive
         public async Task TransferAsync(ResumableUploadSession oneDriveSession, Stream stream, long chunkLength)
         {
             if (stream == null)
-                throw new ArgumentNullException("stream");
+                throw new ArgumentNullException(nameof(stream));
 
             if (oneDriveSession.Status != ResumableUploadSessionStatus.Started)
                 throw new InvalidOperationException("Can't upload chunk for given upload session.");
@@ -305,7 +307,7 @@ namespace ASC.Files.Thirdparty.OneDrive
                                                                oneDriveSession.BytesToTransfer));
             request.Content = new StreamContent(stream);
 
-            using var httpClient = new HttpClient();
+            var httpClient = ClientFactory.CreateClient();
             using var response = await httpClient.SendAsync(request);
 
             if (response.StatusCode != HttpStatusCode.Created && response.StatusCode != HttpStatusCode.OK)
@@ -328,11 +330,12 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         public async Task CancelTransferAsync(ResumableUploadSession oneDriveSession)
         {
-            var request = WebRequest.Create(oneDriveSession.Location);
-            request.Method = "DELETE";
-            using (await request.GetResponseAsync())
-            {
-            }
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri(oneDriveSession.Location);
+            request.Method = HttpMethod.Delete;
+
+            var httpClient = ClientFactory.CreateClient();
+            using var response = await httpClient.SendAsync(request);
         }
     }
 

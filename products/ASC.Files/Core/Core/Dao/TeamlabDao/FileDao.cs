@@ -154,7 +154,7 @@ namespace ASC.Files.Core.Data
         {
             if (string.IsNullOrEmpty(title)) throw new ArgumentNullException(title);
 
-            var query = GetFileQuery(r => r.Title == title && r.CurrentVersion == true && r.FolderId == parentId)
+            var query = GetFileQuery(r => r.Title == title && r.CurrentVersion && r.FolderId == parentId)
                 .AsNoTracking()
                 .OrderBy(r => r.CreateOn);
 
@@ -368,7 +368,7 @@ namespace ASC.Files.Core.Data
         {
             if (file == null)
             {
-                throw new ArgumentNullException("file");
+                throw new ArgumentNullException(nameof(file));
             }
 
             var maxChunkedUploadSize = SetupInfo.MaxChunkedUploadSize(TenantExtra, TenantStatisticProvider);
@@ -458,7 +458,7 @@ namespace ASC.Files.Core.Data
 
                 parentFoldersIds = parentFolders.Select(r => r.ParentId).ToList();
 
-                if (parentFoldersIds.Any())
+                if (parentFoldersIds.Count > 0)
                 {
                     var folderToUpdate = FilesDbContext.Folders
                         .AsQueryable()
@@ -516,7 +516,7 @@ namespace ASC.Files.Core.Data
 
         public async Task<File<int>> ReplaceFileVersionAsync(File<int> file, Stream fileStream)
         {
-            if (file == null) throw new ArgumentNullException("file");
+            if (file == null) throw new ArgumentNullException(nameof(file));
             if (file.ID == default) throw new ArgumentException("No file id or folder id toFolderId determine provider");
 
             var maxChunkedUploadSize = SetupInfo.MaxChunkedUploadSize(TenantExtra, TenantStatisticProvider);
@@ -584,7 +584,7 @@ namespace ASC.Files.Core.Data
 
                 parentFoldersIds = parentFolders.Select(r => r.ParentId).ToList();
 
-                if (parentFoldersIds.Any())
+                if (parentFoldersIds.Count > 0)
                 {
                     var folderToUpdate = FilesDbContext.Folders
                         .AsQueryable()
@@ -674,6 +674,9 @@ namespace ASC.Files.Core.Data
                 .Distinct()
                 .AsAsyncEnumerable();
 
+            var toDeleteLinks = Query(FilesDbContext.TagLink).Where(r => r.EntryId == fileId.ToString() && r.EntryType == FileEntryType.File);
+            FilesDbContext.RemoveRange(toDeleteLinks);
+
             var toDeleteFiles = Query(FilesDbContext.Files).Where(r => r.Id == fileId);
             var toDeleteFileTask = toDeleteFiles.FirstOrDefaultAsync(r => r.CurrentVersion).ConfigureAwait(false);
             FilesDbContext.RemoveRange(toDeleteFiles);
@@ -683,7 +686,6 @@ namespace ASC.Files.Core.Data
                 await FactoryIndexer.DeleteAsync(d).ConfigureAwait(false);
             }
 
-            var toDeleteLinks = Query(FilesDbContext.TagLink).Where(r => r.EntryId == fileId.ToString() && r.EntryType == FileEntryType.File);
             FilesDbContext.RemoveRange(toDeleteFiles);
 
             var tagsToRemove = Query(FilesDbContext.Tag)
@@ -966,7 +968,7 @@ namespace ASC.Files.Core.Data
         public string GetUniqFileDirectory(int fileId)
         {
             if (fileId == 0) throw new ArgumentNullException("fileIdObject");
-            return string.Format("folder_{0}/file_{1}", (Convert.ToInt32(fileId) / 1000 + 1) * 1000, fileId);
+            return string.Format("folder_{0}/file_{1}", (fileId / 1000 + 1) * 1000, fileId);
         }
 
         public string GetUniqFilePath(File<int> file)
@@ -979,7 +981,7 @@ namespace ASC.Files.Core.Data
         public string GetUniqFilePath(File<int> file, string fileTitle)
         {
             return file != null
-                       ? string.Format("{0}/{1}", GetUniqFileVersionPath(file.ID, file.Version), fileTitle)
+                       ? $"{GetUniqFileVersionPath(file.ID, file.Version)}/{fileTitle}"
                        : null;
         }
 
@@ -1142,7 +1144,7 @@ namespace ASC.Files.Core.Data
             return query.ConvertAll(e => ToFile(e));
         }
 
-        public IAsyncEnumerable<File<int>> SearchAsync(string searchText, bool bunch)
+        public IAsyncEnumerable<File<int>> SearchAsync(string searchText, bool bunch = false)
         {
             if (FactoryIndexer.TrySelectIds(s => s.MatchAll(searchText), out var ids))
             {
@@ -1181,9 +1183,9 @@ namespace ASC.Files.Core.Data
 
         public async Task SaveEditHistoryAsync(File<int> file, string changes, Stream differenceStream)
         {
-            if (file == null) throw new ArgumentNullException("file");
-            if (string.IsNullOrEmpty(changes)) throw new ArgumentNullException("changes");
-            if (differenceStream == null) throw new ArgumentNullException("differenceStream");
+            if (file == null) throw new ArgumentNullException(nameof(file));
+            if (string.IsNullOrEmpty(changes)) throw new ArgumentNullException(nameof(changes));
+            if (differenceStream == null) throw new ArgumentNullException(nameof(differenceStream));
 
             var toUpdateTask = Query(FilesDbContext.Files)
                 .Where(r => r.Id == file.ID)
@@ -1285,7 +1287,7 @@ namespace ASC.Files.Core.Data
                 .AsQueryable()
                 .Where(r => r.ModifiedOn > fromTime)
                 .GroupBy(r => r.TenantId)
-                .Where(r => r.Count() > 0)
+                .Where(r => r.Any())
                 .Select(r => r.Key)
                 .ToListAsync()
                 .ConfigureAwait(false);
@@ -1294,7 +1296,7 @@ namespace ASC.Files.Core.Data
                 .AsQueryable()
                 .Where(r => r.TimeStamp > fromTime)
                 .GroupBy(r => r.TenantId)
-                .Where(r => r.Count() > 0)
+                .Where(r => r.Any())
                 .Select(r => r.Key)
                 .ToListAsync()
                 .ConfigureAwait(false);
@@ -1309,7 +1311,7 @@ namespace ASC.Files.Core.Data
 
         public async Task SaveThumbnailAsync(File<int> file, Stream thumbnail)
         {
-            if (file == null) throw new ArgumentNullException("file");
+            if (file == null) throw new ArgumentNullException(nameof(file));
 
             var toUpdate = await FilesDbContext.Files
                 .AsQueryable()
@@ -1506,7 +1508,7 @@ namespace ASC.Files.Core.Data
             return (file, record);
         }
 
-        internal protected async Task<DbFile> InitDocumentAsync(DbFile dbFile)
+        internal protected Task<DbFile> InitDocumentAsync(DbFile dbFile)
         {
             if (!FactoryIndexer.CanIndexByContent(dbFile))
             {
@@ -1514,9 +1516,14 @@ namespace ASC.Files.Core.Data
                 {
                     Data = Convert.ToBase64String(Encoding.UTF8.GetBytes(""))
                 };
-                return dbFile;
+                return Task.FromResult(dbFile);
             }
 
+            return InernalInitDocumentAsync(dbFile);
+        }
+
+        private async Task<DbFile> InernalInitDocumentAsync(DbFile dbFile)
+        {
             var file = ServiceProvider.GetService<File<int>>();
             file.ID = dbFile.Id;
             file.Title = dbFile.Title;

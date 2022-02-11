@@ -185,7 +185,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
         public async Task<string> SaveFolderAsync(Folder<string> folder)
         {
-            if (folder == null) throw new ArgumentNullException("folder");
+            if (folder == null) throw new ArgumentNullException(nameof(folder));
             if (folder.ID != null)
             {
                 return await RenameFolderAsync(folder, folder.Title).ConfigureAwait(false);
@@ -445,7 +445,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             return false;
         }
 
-        public async Task<long> GetMaxUploadSizeAsync(string folderId, bool chunkedUpload)
+        public async Task<long> GetMaxUploadSizeAsync(string folderId, bool chunkedUpload = false)
         {
             var storage = await ProviderInfo.StorageAsync.ConfigureAwait(false);
             var storageMaxUploadSize = await storage.GetMaxUploadSizeAsync();

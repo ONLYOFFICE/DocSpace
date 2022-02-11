@@ -77,7 +77,7 @@ namespace ASC.Data.Storage.DiscStorage
             }
 
             var storage = storageFactory.GetStorage(tenantManager.GetCurrentTenant().TenantId.ToString(CultureInfo.InvariantCulture), _module);
-            var path = CrossPlatform.PathCombine(_path, GetRouteValue("pathInfo").Replace('/', Path.DirectorySeparatorChar));
+            var path = CrossPlatform.PathCombine(_path, GetRouteValue("pathInfo", context).Replace('/', Path.DirectorySeparatorChar));
             var header = context.Request.Query[Constants.QUERY_HEADER].FirstOrDefault() ?? "";
 
             var auth = context.Request.Query[Constants.QUERY_AUTH].FirstOrDefault() ?? "";
@@ -102,7 +102,7 @@ namespace ASC.Data.Storage.DiscStorage
                 return;
             }
 
-            var headers = header.Length > 0 ? header.Split('&').Select(HttpUtility.UrlDecode) : new string[] { };
+            var headers = header.Length > 0 ? header.Split('&').Select(HttpUtility.UrlDecode) : Array.Empty<string>();
 
             if (storage.IsSupportInternalUri)
             {
@@ -143,6 +143,11 @@ namespace ASC.Data.Storage.DiscStorage
             if (encoding != null)
                 context.Response.Headers["Content-Encoding"] = encoding;
 
+            await InternalInvoke(context, storage, path);
+        }
+
+        private async Task InternalInvoke(HttpContext context, IDataStore storage, string path)
+        {
             using (var stream = await storage.GetReadStreamAsync(_domain, path))
             {
                 await stream.CopyToAsync(context.Response.Body);
@@ -150,11 +155,11 @@ namespace ASC.Data.Storage.DiscStorage
 
             await context.Response.Body.FlushAsync();
             await context.Response.CompleteAsync();
+        }
 
-            string GetRouteValue(string name)
-            {
-                return (context.GetRouteValue(name) ?? "").ToString();
-            }
+        private string GetRouteValue(string name, HttpContext context)
+        {
+            return (context.GetRouteValue(name) ?? "").ToString();
         }
     }
 

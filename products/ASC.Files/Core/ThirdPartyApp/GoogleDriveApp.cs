@@ -121,6 +121,7 @@ namespace ASC.Web.Files.ThirdPartyApp
         private DocumentServiceConnector DocumentServiceConnector { get; }
         private ThirdPartyAppHandlerService ThirdPartyAppHandlerService { get; }
         private IServiceProvider ServiceProvider { get; }
+        private IHttpClientFactory ClientFactory { get; }
 
         public GoogleDriveApp()
         {
@@ -158,6 +159,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
+            IHttpClientFactory clientFactory,
             string name, int order, Dictionary<string, string> additional)
             : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, additional)
         {
@@ -186,6 +188,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             DocumentServiceConnector = documentServiceConnector;
             ThirdPartyAppHandlerService = thirdPartyAppHandlerService;
             ServiceProvider = serviceProvider;
+            ClientFactory = clientFactory;
         }
 
         public async Task<bool> RequestAsync(HttpContext context)
@@ -236,13 +239,13 @@ namespace ASC.Web.Files.ThirdPartyApp
             file.CreateOn = TenantUtil.DateTimeFromUtc(jsonFile.Value<DateTime>("createdTime"));
             file.ModifiedOn = TenantUtil.DateTimeFromUtc(jsonFile.Value<DateTime>("modifiedTime"));
             file.ContentLength = Convert.ToInt64(jsonFile.Value<string>("size"));
-            file._modifiedByString = jsonFile["lastModifyingUser"]["displayName"].Value<string>();
+            file.ModifiedByString = jsonFile["lastModifyingUser"]["displayName"].Value<string>();
             file.ProviderKey = "Google";
 
             var owners = jsonFile["owners"];
             if (owners != null)
             {
-                file._createByString = owners[0]["displayName"].Value<string>();
+                file.CreateByString = owners[0]["displayName"].Value<string>();
             }
 
             editable = jsonFile["capabilities"]["canEdit"].Value<bool>();
@@ -253,7 +256,7 @@ namespace ASC.Web.Files.ThirdPartyApp
         {
             if (file == null) return string.Empty;
 
-            var fileId = ThirdPartySelector.GetFileId(file.ID.ToString());
+            var fileId = ThirdPartySelector.GetFileId(file.ID);
             return GetFileStreamUrl(fileId);
         }
 
@@ -320,7 +323,7 @@ namespace ASC.Web.Files.ThirdPartyApp
                 }
             }
 
-            using var httpClient = new HttpClient();
+            var httpClient = ClientFactory.CreateClient();
 
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(GoogleLoginProvider.GoogleUrlFileUpload + "/{fileId}?uploadType=media".Replace("{fileId}", fileId));
@@ -334,7 +337,6 @@ namespace ASC.Web.Files.ThirdPartyApp
             }
             else
             {
-                var downloadRequest = new HttpRequestMessage();
                 using var response = await httpClient.SendAsync(request);
                 using var downloadStream = new ResponseStream(response);
 
@@ -526,7 +528,7 @@ namespace ASC.Web.Files.ThirdPartyApp
                 request.Method = HttpMethod.Get;
                 request.Headers.Add("Authorization", "Bearer " + token);
 
-                using var httpClient = new HttpClient();
+                var httpClient = ClientFactory.CreateClient();
                 using var response = await httpClient.SendAsync(request);
                 using var stream = new ResponseStream(response);
                 await stream.CopyToAsync(context.Response.Body);
@@ -628,8 +630,8 @@ namespace ASC.Web.Files.ThirdPartyApp
         private bool CurrentUser(string googleId)
         {
             var linker = Snapshot.Get("webstudio");
-            var linkedProfiles = linker.GetLinkedObjectsByHashId(HashHelper.MD5(string.Format("{0}/{1}", ProviderConstants.Google, googleId)));
-            linkedProfiles = linkedProfiles.Concat(linker.GetLinkedObjectsByHashId(HashHelper.MD5(string.Format("{0}/{1}", ProviderConstants.OpenId, googleId))));
+            var linkedProfiles = linker.GetLinkedObjectsByHashId(HashHelper.MD5($"{ProviderConstants.Google}/{googleId}"));
+            linkedProfiles = linkedProfiles.Concat(linker.GetLinkedObjectsByHashId(HashHelper.MD5($"{ProviderConstants.OpenId}/{googleId}")));
             return linkedProfiles.Any(profileId => Guid.TryParse(profileId, out var tmp) && tmp == AuthContext.CurrentAccount.ID);
         }
 
@@ -736,7 +738,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(contentUrl);
 
-            using var httpClient = new HttpClient();
+            var httpClient = ClientFactory.CreateClient();
             using var response = await httpClient.SendAsync(request);
             using var content = new ResponseStream(response);
             return await CreateFileAsync(content, fileName, folderId, token);
@@ -746,7 +748,7 @@ namespace ASC.Web.Files.ThirdPartyApp
         {
             Logger.Debug("GoogleDriveApp: create file");
 
-            using var httpClient = new HttpClient();
+            var httpClient = ClientFactory.CreateClient();
 
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(GoogleLoginProvider.GoogleUrlFileUpload + "?uploadType=multipart");
@@ -755,19 +757,19 @@ namespace ASC.Web.Files.ThirdPartyApp
             {
                 var boundary = DateTime.UtcNow.Ticks.ToString("x");
 
-                var folderdata = string.IsNullOrEmpty(folderId) ? "" : string.Format(",\"parents\":[\"{0}\"]", folderId);
-                var metadata = string.Format("{{\"name\":\"{0}\"{1}}}", fileName, folderdata);
-                var metadataPart = string.Format("\r\n--{0}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n{1}", boundary, metadata);
+                var folderdata = string.IsNullOrEmpty(folderId) ? "" : $",\"parents\":[\"{folderId}\"]";
+                var metadata = "{{\"name\":\"" + fileName + "\"" + folderdata + "}}";
+                var metadataPart = $"\r\n--{boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n{metadata}";
                 var bytes = Encoding.UTF8.GetBytes(metadataPart);
                 await tmpStream.WriteAsync(bytes, 0, bytes.Length);
 
-                var mediaPartStart = string.Format("\r\n--{0}\r\nContent-Type: {1}\r\n\r\n", boundary, MimeMapping.GetMimeMapping(fileName));
+                var mediaPartStart = $"\r\n--{boundary}\r\nContent-Type: {MimeMapping.GetMimeMapping(fileName)}\r\n\r\n";
                 bytes = Encoding.UTF8.GetBytes(mediaPartStart);
                 await tmpStream.WriteAsync(bytes, 0, bytes.Length);
 
                 await content.CopyToAsync(tmpStream);
 
-                var mediaPartEnd = string.Format("\r\n--{0}--\r\n", boundary);
+                var mediaPartEnd = $"\r\n--{boundary}--\r\n";
                 bytes = Encoding.UTF8.GetBytes(mediaPartEnd);
                 await tmpStream.WriteAsync(bytes, 0, bytes.Length);
 
@@ -849,12 +851,9 @@ namespace ASC.Web.Files.ThirdPartyApp
                 fileName = FileUtility.ReplaceFileExtension(fileName, internalExt);
                 var requiredMimeType = MimeMapping.GetMimeMapping(internalExt);
 
-                var downloadUrl = GoogleLoginProvider.GoogleUrlFile
-                                  + string.Format("{0}/export?mimeType={1}",
-                                                  fileId,
-                                                  HttpUtility.UrlEncode(requiredMimeType));
+                var downloadUrl = GoogleLoginProvider.GoogleUrlFile + $"{fileId}/export?mimeType={HttpUtility.UrlEncode(requiredMimeType)}";
 
-                using var httpClient = new HttpClient();
+                var httpClient = ClientFactory.CreateClient();
 
                 var request = new HttpRequestMessage();
                 request.RequestUri = new Uri(downloadUrl);

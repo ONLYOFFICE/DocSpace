@@ -150,10 +150,10 @@ namespace ASC.Files.Thirdparty.SharePoint
                     break;
                 case FilterType.MediaOnly:
                     files = files.Where(x =>
-                    {
-                        FileType fileType;
-                        return (fileType = FileUtility.GetFileTypeByFileName(x.Title)) == FileType.Audio || fileType == FileType.Video;
-                    });
+                        {
+                            FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                            return fileType == FileType.Audio || fileType == FileType.Video;
+                        });
                     break;
                 case FilterType.ByExtension:
                     if (!string.IsNullOrEmpty(searchText))
@@ -214,8 +214,8 @@ namespace ASC.Files.Thirdparty.SharePoint
                 case FilterType.MediaOnly:
                     files = files.Where(x =>
                     {
-                        FileType fileType;
-                        return (fileType = FileUtility.GetFileTypeByFileName(x.Title)) == FileType.Audio || fileType == FileType.Video;
+                        FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                        return fileType == FileType.Audio || fileType == FileType.Video;
                     });
                     break;
                 case FilterType.ByExtension:
@@ -256,7 +256,7 @@ namespace ASC.Files.Thirdparty.SharePoint
         {
             var fileToDownload = await ProviderInfo.GetFileByIdAsync(file.ID).ConfigureAwait(false);
             if (fileToDownload == null)
-                throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
+                throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
 
             var fileStream = await ProviderInfo.GetFileStreamAsync(fileToDownload.ServerRelativeUrl, (int)offset).ConfigureAwait(false);
 
@@ -275,7 +275,7 @@ namespace ASC.Files.Thirdparty.SharePoint
 
         public async Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
         {
-            if (fileStream == null) throw new ArgumentNullException("fileStream");
+            if (fileStream == null) throw new ArgumentNullException(nameof(fileStream));
 
             if (file.ID != null)
             {
@@ -287,7 +287,7 @@ namespace ASC.Files.Thirdparty.SharePoint
                     var folder = await ProviderInfo.GetFolderByIdAsync(file.FolderID).ConfigureAwait(false);
                     file.Title = await GetAvailableTitleAsync(file.Title, folder, IsExistAsync).ConfigureAwait(false);
 
-                    var id = await ProviderInfo.RenameFileAsync(DaoSelector.ConvertId(resultFile.ID).ToString(), file.Title).ConfigureAwait(false);
+                    var id = await ProviderInfo.RenameFileAsync(DaoSelector.ConvertId(resultFile.ID), file.Title).ConfigureAwait(false);
                     return await GetFileAsync(DaoSelector.ConvertId(id)).ConfigureAwait(false);
                 }
                 return resultFile;

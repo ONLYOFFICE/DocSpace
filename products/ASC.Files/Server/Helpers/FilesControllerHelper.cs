@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -73,6 +72,7 @@ namespace ASC.Files.Helpers
         private UserManager UserManager { get; }
         private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
         private ILog Logger { get; set; }
+        private IHttpClientFactory ClientFactory { get; set; }
 
         /// <summary>
         /// </summary>
@@ -103,7 +103,8 @@ namespace ASC.Files.Helpers
             FileConverter fileConverter,
             ApiDateTimeHelper apiDateTimeHelper,
             UserManager userManager,
-            DisplayUserSettingsHelper displayUserSettingsHelper)
+            DisplayUserSettingsHelper displayUserSettingsHelper,
+            IHttpClientFactory clientFactory)
         {
             ApiContext = context;
             FileStorageService = fileStorageService;
@@ -130,6 +131,7 @@ namespace ASC.Files.Helpers
             HttpContextAccessor = httpContextAccessor;
             FileConverter = fileConverter;
             Logger = optionMonitor.Get("ASC.Files");
+            ClientFactory = clientFactory;
         }
 
         public async Task<FolderContentWrapper<T>> GetFolderAsync(T folderId, Guid userIdOrGroupId, FilterType filterType, bool withSubFolders)
@@ -262,7 +264,7 @@ namespace ASC.Files.Helpers
 
             if (FilesLinkUtility.IsLocalFileUploader)
             {
-                var session = await FileUploader.InitiateUploadAsync(file.FolderID, (file.ID ?? default), file.Title, file.ContentLength, encrypted);
+                var session = await FileUploader.InitiateUploadAsync(file.FolderID, file.ID ?? default, file.Title, file.ContentLength, encrypted);
 
                 var responseObject = await ChunkedUploadSessionHelper.ToResponseObjectAsync(session, true);
                 return new
@@ -273,32 +275,29 @@ namespace ASC.Files.Helpers
             }
 
             var createSessionUrl = FilesLinkUtility.GetInitiateUploadSessionUrl(TenantManager.GetCurrentTenant().TenantId, file.FolderID, file.ID, file.Title, file.ContentLength, encrypted, SecurityContext);
-            var request = (HttpWebRequest)WebRequest.Create(createSessionUrl);
-            request.Method = "POST";
-            request.ContentLength = 0;
+
+            var httpClient = ClientFactory.CreateClient();
+
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri(createSessionUrl);
+            request.Method = HttpMethod.Post;
 
             // hack for uploader.onlyoffice.com in api requests
             var rewriterHeader = ApiContext.HttpContextAccessor.HttpContext.Request.Headers[HttpRequestExtensions.UrlRewriterHeader];
             if (!string.IsNullOrEmpty(rewriterHeader))
             {
-                request.Headers[HttpRequestExtensions.UrlRewriterHeader] = rewriterHeader;
+                request.Headers.Add(HttpRequestExtensions.UrlRewriterHeader, rewriterHeader.ToString());
             }
 
-            // hack. http://ubuntuforums.org/showthread.php?t=1841740
-            if (WorkContext.IsMono)
-            {
-                ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
-            }
-
-            using var response = request.GetResponse();
-            using var responseStream = response.GetResponseStream();
+            using var response = await httpClient.SendAsync(request);
+            using var responseStream = await response.Content.ReadAsStreamAsync();
             using var streamReader = new StreamReader(responseStream);
             return JObject.Parse(await streamReader.ReadToEndAsync()); //result is json string
         }
 
         public Task<FileWrapper<T>> CreateTextFileAsync(T folderId, string title, string content)
         {
-            if (title == null) throw new ArgumentNullException("title");
+            if (title == null) throw new ArgumentNullException(nameof(title));
             //Try detect content
             var extension = ".txt";
             if (!string.IsNullOrEmpty(content))
@@ -322,7 +321,7 @@ namespace ASC.Files.Helpers
 
         public Task<FileWrapper<T>> CreateHtmlFileAsync(T folderId, string title, string content)
         {
-            if (title == null) throw new ArgumentNullException("title");
+            if (title == null) throw new ArgumentNullException(nameof(title));
             return CreateFileAsync(folderId, title, content, ".html");
         }
 
@@ -489,8 +488,8 @@ namespace ASC.Files.Helpers
 
         public async IAsyncEnumerable<FileEntryWrapper> MoveOrCopyBatchCheckAsync(BatchModel batchModel)
         {
-            var checkedFiles = new List<object>();
-            var checkedFolders = new List<object>();
+            List<object> checkedFiles;
+            List<object> checkedFolders;
 
             if (batchModel.DestFolderId.ValueKind == JsonValueKind.Number)
             {

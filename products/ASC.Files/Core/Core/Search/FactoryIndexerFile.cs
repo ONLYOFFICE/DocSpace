@@ -172,7 +172,7 @@ namespace ASC.Web.Files.Core.Search
                     }
                 }
 
-                if (tasks.Any())
+                if (tasks.Count > 0)
                 {
                     Task.WaitAll(tasks.ToArray());
                 }
@@ -197,7 +197,7 @@ namespace ASC.Web.Files.Core.Search
         public DbFile DbFile { get; set; }
     }
 
-    public class FactoryIndexerFileExtension
+    public static class FactoryIndexerFileExtension
     {
         public static void Register(DIHelper services)
         {

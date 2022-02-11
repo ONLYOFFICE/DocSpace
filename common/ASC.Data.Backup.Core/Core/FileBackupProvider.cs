@@ -132,7 +132,7 @@ namespace ASC.Data.Backup
 
                     files.AddRange(store
                         .ListFilesRelativeAsync(string.Empty, "\\", "*.*", true).ToArrayAsync().Result
-                        .Where(x => domainList.All(domain => x.IndexOf(string.Format("{0}/", domain)) == -1))
+                        .Where(x => domainList.All(domain => x.IndexOf($"{domain}/") == -1))
                         .Select(x => new FileBackupInfo(string.Empty, module, x)));
                 }
             }

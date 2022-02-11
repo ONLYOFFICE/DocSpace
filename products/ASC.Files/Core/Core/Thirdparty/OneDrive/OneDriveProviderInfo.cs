@@ -262,7 +262,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             }
         }
     }
-    public class OneDriveProviderInfoExtention
+    public static class OneDriveProviderInfoExtention
     {
         public static void Register(DIHelper dIHelper)
         {

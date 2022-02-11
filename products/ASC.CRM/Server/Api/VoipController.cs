@@ -391,7 +391,7 @@ namespace ASC.CRM.Api
                 return new { queue = number.Settings.Queue, pause = number.Settings.Pause };
             }
 
-            var files = _storageFactory.GetStorage("", "crm").ListFilesAsync("voip", "default/" + AudioType.Queue.ToString().ToLower(), "*.*", true);
+            var files = _storageFactory.GetStorage("", "crm").ListFilesAsync("voip", "default/" + nameof(AudioType.Queue).ToLower(), "*.*", true);
             var file = await files.FirstOrDefaultAsync();
             return new { queue = new Queue(null, "Default", 5, file != null ? _commonLinkUtility.GetFullAbsolutePath(file.ToString()) : "", 5), pause = false };
         }

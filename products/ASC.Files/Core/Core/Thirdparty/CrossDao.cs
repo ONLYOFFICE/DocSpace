@@ -88,18 +88,20 @@ namespace ASC.Files.Core.Thirdparty
             if (deleteSourceFile)
             {
                 if (fromFileShareRecords.Any())
-                    fromFileShareRecords.ToList().ForEach(x =>
+                {
+                    foreach (var record in fromFileShareRecords)
                     {
-                        x.EntryId = toFile.ID;
-                        securityDao.SetShareAsync(x).Wait();
-                    });
+                        record.EntryId = toFile.ID;
+                        await securityDao.SetShareAsync(record);
+                    }
+                }
 
                 var fromFileTags = fromFileNewTags;
                 if (fromFileLockTag != null) fromFileTags.Add(fromFileLockTag);
                 if (fromFileFavoriteTag != null) fromFileTags.AddRange(fromFileFavoriteTag);
                 if (fromFileTemplateTag != null) fromFileTags.AddRange(fromFileTemplateTag);
 
-                if (fromFileTags.Any())
+                if (fromFileTags.Count > 0)
                 {
                     fromFileTags.ForEach(x => x.EntryId = toFile.ID);
 
@@ -169,17 +171,16 @@ namespace ASC.Files.Core.Thirdparty
 
                 if (fromFileShareRecords.Any())
                 {
-                    fromFileShareRecords.ToList().ForEach(x =>
-                    {
-                        x.EntryId = toFolderId;
-                        securityDao.SetShareAsync(x).Wait();
-                    });
+                    foreach(var record in fromFileShareRecords){
+                        record.EntryId = toFolderId;
+                        await securityDao.SetShareAsync(record);
+                    }
                 }
 
                 var tagDao = ServiceProvider.GetService<ITagDao<TFrom>>();
                 var fromFileNewTags = tagDao.GetNewTagsAsync(Guid.Empty, fromFolder).ToListAsync().Result;
 
-                if (fromFileNewTags.Any())
+                if (fromFileNewTags.Count > 0)
                 {
                     fromFileNewTags.ForEach(x => x.EntryId = toFolderId);
 
@@ -196,7 +197,7 @@ namespace ASC.Files.Core.Thirdparty
         }
     }
 
-    public class CrossDaoExtension
+    public static class CrossDaoExtension
     {
         public static void Register(DIHelper services)
         {

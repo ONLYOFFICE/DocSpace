@@ -82,7 +82,14 @@ namespace ASC.Files.Thirdparty
     internal class ProviderAccountDao : IProviderDao
     {
         private int tenantID;
-        protected int TenantID { get => tenantID != 0 ? tenantID : (tenantID = TenantManager.GetCurrentTenant().TenantId); }
+        protected int TenantID 
+        { 
+            get 
+            {
+                if (tenantID == 0) tenantID = TenantManager.GetCurrentTenant().TenantId;
+                return tenantID; 
+            } 
+        }
         private Lazy<FilesDbContext> LazyFilesDbContext { get; }
         private FilesDbContext FilesDbContext { get => LazyFilesDbContext.Value; }
         public ILog Logger { get; }
@@ -324,7 +331,7 @@ namespace ASC.Files.Thirdparty
         public virtual async Task RemoveProviderInfoAsync(int linkId)
         {
             using var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false);
-            var folderId = (await GetProviderInfoAsync(linkId)).RootFolderId.ToString();
+            var folderId = (await GetProviderInfoAsync(linkId)).RootFolderId;
 
             var entryIDs = await FilesDbContext.ThirdpartyIdMapping
                 .AsQueryable()
@@ -607,7 +614,7 @@ namespace ASC.Files.Thirdparty
         }
     }
 
-    public class ProviderAccountDaoExtension
+    public static class ProviderAccountDaoExtension
     {
         public static void Register(DIHelper services)
         {

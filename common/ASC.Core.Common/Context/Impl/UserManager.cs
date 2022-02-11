@@ -175,13 +175,13 @@ namespace ASC.Core
         public UserInfo GetUserBySid(string sid)
         {
             return GetUsersInternal()
-                .FirstOrDefault(u => u.Sid != null && string.Compare(u.Sid, sid, StringComparison.CurrentCultureIgnoreCase) == 0) ?? Constants.LostUser;
+                .FirstOrDefault(u => u.Sid != null && string.Equals(u.Sid , sid, StringComparison.CurrentCultureIgnoreCase)) ?? Constants.LostUser;
         }
 
         public UserInfo GetSsoUserByNameId(string nameId)
         {
             return GetUsersInternal()
-                .FirstOrDefault(u => !string.IsNullOrEmpty(u.SsoNameId) && string.Compare(u.SsoNameId, nameId, StringComparison.CurrentCultureIgnoreCase) == 0) ?? Constants.LostUser;
+                .FirstOrDefault(u => !string.IsNullOrEmpty(u.SsoNameId) && string.Equals(u.SsoNameId, nameId, StringComparison.CurrentCultureIgnoreCase)) ?? Constants.LostUser;
         }
         public bool IsUserNameExists(string username)
         {
@@ -239,7 +239,7 @@ namespace ASC.Core
 
         public UserInfo[] Search(string text, EmployeeStatus status, Guid groupId)
         {
-            if (text == null || text.Trim() == string.Empty) return new UserInfo[0];
+            if (text == null || text.Trim().Length == 0) return new UserInfo[0];
 
             var words = text.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             if (words.Length == 0) return new UserInfo[0];

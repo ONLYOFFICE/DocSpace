@@ -157,10 +157,10 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                     break;
                 case FilterType.MediaOnly:
                     files = files.Where(x =>
-                    {
-                        FileType fileType;
-                        return (fileType = FileUtility.GetFileTypeByFileName(x.Title)) == FileType.Audio || fileType == FileType.Video;
-                    });
+                        {
+                            FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                            return fileType == FileType.Audio || fileType == FileType.Video;
+                        });
                     break;
                 case FilterType.ByExtension:
                     if (!string.IsNullOrEmpty(searchText))
@@ -221,8 +221,8 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                 case FilterType.MediaOnly:
                     files = files.Where(x =>
                     {
-                        FileType fileType;
-                        return (fileType = FileUtility.GetFileTypeByFileName(x.Title)) == FileType.Audio || fileType == FileType.Video;
+                        FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                        return fileType == FileType.Audio || fileType == FileType.Video;
                     });
                     break;
                 case FilterType.ByExtension:
@@ -264,7 +264,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             var driveId = MakeDriveId(file.ID);
             await ProviderInfo.CacheResetAsync(driveId, true).ConfigureAwait(false);
             var driveFile = await GetDriveEntryAsync(file.ID).ConfigureAwait(false);
-            if (driveFile == null) throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
+            if (driveFile == null) throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
             if (driveFile is ErrorDriveEntry errorDriveEntry) throw new Exception(errorDriveEntry.Error);
 
             var storage = await ProviderInfo.StorageAsync;
@@ -290,8 +290,8 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
         public async Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
         {
-            if (file == null) throw new ArgumentNullException("file");
-            if (fileStream == null) throw new ArgumentNullException("fileStream");
+            if (file == null) throw new ArgumentNullException(nameof(file));
+            if (fileStream == null) throw new ArgumentNullException(nameof(fileStream));
 
             DriveFile newDriveFile = null;
             var storage = await ProviderInfo.StorageAsync;

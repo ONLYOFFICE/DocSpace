@@ -46,7 +46,8 @@ namespace ASC.Web.CRM.Classes
     [Scope]
     public class CurrencyProvider
     {
-        private readonly ILog _logger;
+        private readonly ILog _log;
+        private readonly IHttpClientFactory _clientFactory;
         private readonly object _syncRoot = new object();
         private readonly IConfiguration _configuration;
         private readonly SettingsManager _settingsManager;
@@ -59,12 +60,14 @@ namespace ASC.Web.CRM.Classes
         public CurrencyProvider(IOptionsMonitor<ILog> logger,
                                 IConfiguration configuration,
                                 DaoFactory daoFactory,
-                                SettingsManager settingsManager)
+                                SettingsManager settingsManager,
+                                IHttpClientFactory httpClientFactory)
         {
-            _logger = logger.Get("ASC");
+            _log = logger.Get("ASC");
             _daoFactory = daoFactory;
             _configuration = configuration;
             _settingsManager = settingsManager;
+            _clientFactory = httpClientFactory;
         }
 
         public Dictionary<String, CurrencyInfo> Currencies
@@ -138,7 +141,7 @@ namespace ASC.Web.CRM.Classes
                     continue;
                 }
 
-                var key = String.Format("{1}/{0}", baseCurrency.Abbreviation, ci.Abbreviation);
+                var key = $"{ci.Abbreviation}/{baseCurrency.Abbreviation}";
 
                 if (!rates.ContainsKey(key))
                     continue;
@@ -151,7 +154,7 @@ namespace ASC.Web.CRM.Classes
 
         public bool IsConvertable(String abbreviation)
         {
-            var findedItem = Currencies.Keys.ToList().Find(item => String.Compare(abbreviation, item) == 0);
+            var findedItem = _currencies.Keys.ToList().Find(item => string.Equals(abbreviation, item));
 
             if (findedItem == null)
                 throw new ArgumentException(abbreviation);
@@ -161,13 +164,13 @@ namespace ASC.Web.CRM.Classes
 
         public Decimal MoneyConvert(decimal amount, string from, string to)
         {
-            if (string.IsNullOrEmpty(from) || string.IsNullOrEmpty(to) || string.Compare(from, to, true) == 0) return amount;
+            if (string.IsNullOrEmpty(from) || string.IsNullOrEmpty(to) || string.Equals(from, to, StringComparison.OrdinalIgnoreCase)) return amount;
 
             var rates = GetExchangeRates();
 
             if (from.Contains('-')) from = new RegionInfo(from).ISOCurrencySymbol;
             if (to.Contains('-')) to = new RegionInfo(to).ISOCurrencySymbol;
-            var key = string.Format("{0}/{1}", to, from);
+            var key = $"{to}/{from}";
 
             return Math.Round(rates[key] * amount, 4, MidpointRounding.AwayFromZero);
         }
@@ -251,7 +254,7 @@ namespace ASC.Web.CRM.Classes
                         }
                         catch (Exception error)
                         {
-                            _logger.Error(error);
+                            _log.Error(error);
                             _publisherDate = DateTime.UtcNow;
                         }
                     }
@@ -277,8 +280,7 @@ namespace ASC.Web.CRM.Classes
                     {
                         foreach (var curInfo in currencyInfos)
                         {
-                            _exchangeRates.Add(
-                                String.Format("{0}/{1}", (curInfo as Match).Groups["Currency"].Value.Trim(), curCI.Abbreviation),
+                            _exchangeRates.Add($"{(curInfo as Match).Groups["Currency"].Value.Trim()}/{curCI.Abbreviation}",
                                 Convert.ToDecimal((curInfo as Match).Groups["Rate"].Value.Trim(), CultureInfo.InvariantCulture.NumberFormat));
 
                             success = true;
@@ -306,7 +308,7 @@ namespace ASC.Web.CRM.Classes
                 }
                 catch (Exception err)
                 {
-                    _logger.Error(err);
+                    _log.Error(err);
                 }
             }
         }
@@ -320,7 +322,7 @@ namespace ASC.Web.CRM.Classes
             }
             catch (Exception err)
             {
-                _logger.Error(err);
+                _log.Error(err);
             }
         }
 
@@ -336,7 +338,7 @@ namespace ASC.Web.CRM.Classes
                     Directory.CreateDirectory(dir);
                 }
 
-                var destinationURI = new Uri(String.Format("https://themoneyconverter.com/{0}/{0}.aspx", currency));
+                var destinationURI = new Uri("https://themoneyconverter.com/" + currency + "/" + currency + ".aspx");
 
                 var request = new HttpRequestMessage();
                 request.RequestUri = destinationURI;
@@ -348,7 +350,8 @@ namespace ASC.Web.CRM.Classes
                 handler.MaxAutomaticRedirections = 2;
                 handler.UseDefaultCredentials = true;
 
-                var httpClient = new HttpClient(handler);
+                var httpClient = _clientFactory.CreateClient("DownloadCurrencyPage");
+                _clientFactory.CreateClient();
                 using var response = httpClient.Send(request);
                 using (var responseStream = new StreamReader(response.Content.ReadAsStream()))
                 {
@@ -359,7 +362,7 @@ namespace ASC.Web.CRM.Classes
             }
             catch (Exception error)
             {
-                _logger.Error(error);
+                _log.Error(error);
             }
         }
 

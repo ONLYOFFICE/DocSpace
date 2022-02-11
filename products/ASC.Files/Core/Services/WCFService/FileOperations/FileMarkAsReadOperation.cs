@@ -92,11 +92,11 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             var scopeClass = scope.ServiceProvider.GetService<FileMarkAsReadOperationScope>();
             var (fileMarker, globalFolder, daoFactory, settingsManager) = scopeClass;
             var entries = AsyncEnumerable.Empty<FileEntry<T>>();
-            if (Folders.Any())
+            if (Folders.Count > 0)
             {
                 entries.Concat(FolderDao.GetFoldersAsync(Folders));
             }
-            if (Files.Any())
+            if (Files.Count > 0)
             {
                 entries.Concat(FileDao.GetFilesAsync(Files));
             }

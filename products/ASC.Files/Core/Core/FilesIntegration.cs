@@ -56,7 +56,7 @@ namespace ASC.Web.Files.Api
         public Task<IEnumerable<T>> RegisterBunchFoldersAsync<T>(string module, string bunch, IEnumerable<string> data)
         {
             if (data == null)
-                throw new ArgumentNullException("data");
+                throw new ArgumentNullException(nameof(data));
 
             data = data.ToList();
             if (!data.Any())
@@ -127,7 +127,11 @@ namespace ASC.Web.Files.Api
                 if (provider == null) continue;
 
                 var data = provider.GetFileSecurity(grouping.ToDictionary(r => r.Key, r => r.Value));
-                data.ToList().ForEach(x => result.Add(x.Key, x.Value));
+
+                foreach(var d in data)
+                {
+                    result.Add(d.Key, d.Value);
+                }
             }
 
             return result;

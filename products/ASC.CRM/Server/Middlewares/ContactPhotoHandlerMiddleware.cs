@@ -54,7 +54,7 @@ namespace ASC.Web.CRM.HttpHandlers
 
         private readonly RequestDelegate _next;
 
-        public async System.Threading.Tasks.Task Invoke(HttpContext context,
+        public System.Threading.Tasks.Task Invoke(HttpContext context,
                                  SetupInfo setupInfo,
                                  CrmSecurity crmSecurity,
                                  FileSizeComment fileSizeComment,
@@ -62,8 +62,7 @@ namespace ASC.Web.CRM.HttpHandlers
                                  MessageTarget messageTarget,
                                  MessageService messageService,
                                  DaoFactory daoFactory,
-                                 ContactPhotoManager contactPhotoManager)
-        {
+                                 ContactPhotoManager contactPhotoManager){
 
             if (!webItemSecurity.IsAvailableForMe(ProductEntryPoint.ID))
                 throw crmSecurity.CreateSecurityException();
@@ -82,6 +81,18 @@ namespace ASC.Web.CRM.HttpHandlers
                     throw crmSecurity.CreateSecurityException();
             }
 
+            return InternalInvoke(context, setupInfo, fileSizeComment, messageTarget, messageService, contactPhotoManager, contact, contactId);
+        }
+
+        private async System.Threading.Tasks.Task InternalInvoke(HttpContext context,
+                                 SetupInfo setupInfo,
+                                 FileSizeComment fileSizeComment,
+                                 MessageTarget messageTarget,
+                                 MessageService messageService,
+                                 ContactPhotoManager contactPhotoManager,
+                                 Contact contact, 
+                                 int contactId)
+        {
             var fileUploadResult = new FileUploadResult();
 
             if (context.Request.Form.Files.Count == 0)
@@ -112,7 +123,7 @@ namespace ASC.Web.CRM.HttpHandlers
             }
 
             var uploadOnly = Convert.ToBoolean(context.Request.Form["uploadOnly"]);
-            var tmpDirName = Convert.ToString(context.Request.Form["tmpDirName"]);
+            var tmpDirName = context.Request.Form["tmpDirName"];
 
             try
             {

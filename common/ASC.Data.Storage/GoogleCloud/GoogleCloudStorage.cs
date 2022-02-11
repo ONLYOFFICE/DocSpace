@@ -32,6 +32,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -77,7 +78,8 @@ namespace ASC.Data.Storage.GoogleCloud
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
             IHttpContextAccessor httpContextAccessor,
-            IOptionsMonitor<ILog> options) : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
+            IOptionsMonitor<ILog> options,
+            IHttpClientFactory clientFactory) : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options, clientFactory)
         {
         }
 
@@ -111,24 +113,21 @@ namespace ASC.Data.Storage.GoogleCloud
 
             _bucketRoot = props.ContainsKey("cname") && Uri.IsWellFormedUriString(props["cname"], UriKind.Absolute)
                               ? new Uri(props["cname"], UriKind.Absolute)
-                              : new Uri(string.Format("https://storage.googleapis.com/{0}/", _bucket), UriKind.Absolute);
+                              : new Uri("https://storage.googleapis.com/" + _bucket + "/", UriKind.Absolute);
 
             _bucketSSlRoot = props.ContainsKey("cnamessl") &&
                              Uri.IsWellFormedUriString(props["cnamessl"], UriKind.Absolute)
                                  ? new Uri(props["cnamessl"], UriKind.Absolute)
-                                 : new Uri(string.Format("https://storage.googleapis.com/{0}/", _bucket), UriKind.Absolute);
+                                 : new Uri("https://storage.googleapis.com/" + _bucket + "/", UriKind.Absolute);
 
-            if (props.ContainsKey("lower"))
+            if (props.TryGetValue("lower", out var value))
             {
-                bool.TryParse(props["lower"], out _lowerCasing);
+                bool.TryParse(value, out _lowerCasing);
             }
 
             _json = props["json"];
 
-            if (props.ContainsKey("subdir"))
-            {
-                _subDir = props["subdir"];
-            }
+            props.TryGetValue("subdir", out _subDir);
 
             return this;
         }
@@ -158,14 +157,10 @@ namespace ASC.Data.Storage.GoogleCloud
                 if (_subDir.Length == 1 && (_subDir[0] == '/' || _subDir[0] == '\\'))
                     result = path;
                 else
-                    result = string.Format("{0}/{1}", _subDir, path); // Ignory all, if _subDir is not null
+                    result = $"{_subDir}/{path}"; // Ignory all, if _subDir is not null
             }
             else//Key combined from module+domain+filename
-                result = string.Format("{0}/{1}/{2}/{3}",
-                                                         _tenant,
-                                                         _modulename,
-                                                         domain,
-                                                         path);
+                result = $"{_tenant}/{_modulename}/{domain}/{path}";
 
             result = result.Replace("//", "/").TrimStart('/');
             if (_lowerCasing)
@@ -249,12 +244,10 @@ namespace ASC.Data.Storage.GoogleCloud
 
         protected override Task<Uri> SaveWithAutoAttachmentAsync(string domain, string path, System.IO.Stream stream, string attachmentFileName)
         {
-            var contentDisposition = string.Format("attachment; filename={0};",
-                                                 HttpUtility.UrlPathEncode(attachmentFileName));
+            var contentDisposition = $"attachment; filename={HttpUtility.UrlPathEncode(attachmentFileName)};";
             if (attachmentFileName.Any(c => c >= 0 && c <= 127))
             {
-                contentDisposition = string.Format("attachment; filename*=utf-8''{0};",
-                                                   HttpUtility.UrlPathEncode(attachmentFileName));
+                contentDisposition = $"attachment; filename*=utf-8''{HttpUtility.UrlPathEncode(attachmentFileName)};";
             }
             return SaveAsync(domain, path, stream, null, contentDisposition);
         }
@@ -343,9 +336,9 @@ namespace ASC.Data.Storage.GoogleCloud
                 return PredefinedObjectAcl.Private;
             }
 
-            if (_domainsAcl.ContainsKey(domain))
+            if (_domainsAcl.TryGetValue(domain, out var value))
             {
-                return _domainsAcl[domain];
+                return value;
             }
             return _moduleAcl;
         }
@@ -384,7 +377,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
         public override async Task DeleteFilesAsync(string domain, List<string> paths)
         {
-            if (!paths.Any()) return;
+            if (paths.Count == 0) return;
 
             var keysToDel = new List<string>();
 
@@ -410,7 +403,7 @@ namespace ASC.Data.Storage.GoogleCloud
                 }
             }
 
-            if (!keysToDel.Any()) return;
+            if (keysToDel.Count == 0) return;
 
             using var storage = GetStorage();
 
@@ -528,7 +521,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
             var objects = await storage.ListObjectsAsync(_bucket, MakePath(domain, path)).ReadPageAsync(1);
 
-            return objects.Count() > 0;
+            return objects.Any();
         }
 
         public override Task<bool> IsDirectoryAsync(string domain, string path)
@@ -628,9 +621,6 @@ namespace ASC.Data.Storage.GoogleCloud
         {
             using var storage = GetStorage();
 
-            var srcKey = MakePath(srcdomain, srcpath);
-            var dstKey = MakePath(newdomain, newpath);
-
             var size = await GetFileSizeAsync(srcdomain, srcpath);
 
             var options = new CopyObjectOptions
@@ -653,9 +643,6 @@ namespace ASC.Data.Storage.GoogleCloud
 
             using var storage = GetStorage();
 
-
-            var options = new ListObjectsOptions();
-
             var objects = storage.ListObjectsAsync(_bucket, srckey);
 
             await foreach (var obj in objects)
@@ -674,7 +661,6 @@ namespace ASC.Data.Storage.GoogleCloud
         {
             using var storage = GetStorage();
 
-            var objectKey = MakePath(domain, path);
             var buffered = TempStream.GetBuffered(stream);
 
             var uploadObjectOptions = new UploadObjectOptions
@@ -759,7 +745,7 @@ namespace ASC.Data.Storage.GoogleCloud
             if (chunkLength != defaultChunkSize)
                 totalBytes = Convert.ToString((chunkNumber - 1) * defaultChunkSize + chunkLength);
 
-            var contentRangeHeader = string.Format("bytes {0}-{1}/{2}", bytesRangeStart, bytesRangeEnd, totalBytes);
+            var contentRangeHeader = $"bytes {bytesRangeStart}-{bytesRangeEnd}/{totalBytes}";
 
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(uploadUri);
@@ -768,20 +754,17 @@ namespace ASC.Data.Storage.GoogleCloud
             request.Content = new StreamContent(stream);
 
 
-            long MAX_RETRIES = 100;
+            const int MAX_RETRIES = 100;
             int millisecondsTimeout;
 
             for (var i = 0; i < MAX_RETRIES; i++)
             {
-                var random = new Random();
-
-                millisecondsTimeout = Math.Min(Convert.ToInt32(Math.Pow(2, i)) + random.Next(0, 1000), 32 * 1000);
+                millisecondsTimeout = Math.Min(Convert.ToInt32(Math.Pow(2, i)) + RandomNumberGenerator.GetInt32(1000), 32 * 1000);
 
                 try
                 {
-                    using var httpClient = new HttpClient();
+                    var httpClient = ClientFactory.CreateClient();
                     using var response = await httpClient.SendAsync(request);
-                    var status = response.StatusCode;
 
                     break;
                 }

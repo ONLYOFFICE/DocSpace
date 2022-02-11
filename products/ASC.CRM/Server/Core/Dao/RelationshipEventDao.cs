@@ -267,7 +267,7 @@ namespace ASC.CRM.Core.Dao
                 yield return eventID;
             }
 
-            var itemToUpdate = await Query(CrmDbContext.Invoices).FirstOrDefaultAsync(x => x.FileId == Convert.ToInt32(file.ID));
+            var itemToUpdate = await Query(CrmDbContext.Invoices).FirstOrDefaultAsync(x => x.FileId == file.ID);
 
             itemToUpdate.FileId = 0;
 

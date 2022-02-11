@@ -39,7 +39,7 @@ namespace ASC.Web.Core.Utility
                     }
                     else if (!string.IsNullOrEmpty(Configuration["web:url-shortener:value"]))
                     {
-                        _instance = new OnlyoShortener(Configuration, CommonLinkUtility, MachinePseudoKeys);
+                        _instance = new OnlyoShortener(Configuration, CommonLinkUtility, MachinePseudoKeys, ClientFactory);
                     }
                     else
                     {
@@ -59,17 +59,20 @@ namespace ASC.Web.Core.Utility
         private ConsumerFactory ConsumerFactory { get; }
         private CommonLinkUtility CommonLinkUtility { get; }
         private MachinePseudoKeys MachinePseudoKeys { get; }
+        private IHttpClientFactory ClientFactory { get; }
 
         public UrlShortener(
             IConfiguration configuration,
             ConsumerFactory consumerFactory,
             CommonLinkUtility commonLinkUtility,
-            MachinePseudoKeys machinePseudoKeys)
+            MachinePseudoKeys machinePseudoKeys, 
+            IHttpClientFactory clientFactory)
         {
             Configuration = configuration;
             ConsumerFactory = consumerFactory;
             CommonLinkUtility = commonLinkUtility;
             MachinePseudoKeys = machinePseudoKeys;
+            ClientFactory = clientFactory;
         }
     }
 
@@ -94,21 +97,24 @@ namespace ASC.Web.Core.Utility
         private readonly string internalUrl;
         private readonly byte[] sKey;
 
+        private CommonLinkUtility CommonLinkUtility { get; }
+        private IHttpClientFactory ClientFactory { get; }
+
         public OnlyoShortener(
             IConfiguration configuration,
             CommonLinkUtility commonLinkUtility,
-            MachinePseudoKeys machinePseudoKeys)
+            MachinePseudoKeys machinePseudoKeys,
+            IHttpClientFactory clientFactory)
         {
             url = configuration["web:url-shortener:value"];
             internalUrl = configuration["web:url-shortener:internal"];
             sKey = machinePseudoKeys.GetMachineConstant();
 
-            if (!url.EndsWith("/"))
+            if (!url.EndsWith('/'))
                 url += '/';
             CommonLinkUtility = commonLinkUtility;
+            ClientFactory = clientFactory;
         }
-
-        private CommonLinkUtility CommonLinkUtility { get; }
 
         public async Task<string> GetShortenLinkAsync(string shareLink)
         {
@@ -117,7 +123,7 @@ namespace ASC.Web.Core.Utility
             request.Headers.Add("Authorization", CreateAuthToken());
             request.Headers.Add("Encoding", Encoding.UTF8.ToString());//todo check 
 
-            using var httpClient = new HttpClient();
+            var httpClient = ClientFactory.CreateClient();
             using var response = await httpClient.SendAsync(request);
             using var stream = await response.Content.ReadAsStreamAsync();
             using var rs = new StreamReader(stream);
@@ -129,7 +135,7 @@ namespace ASC.Web.Core.Utility
             using var hasher = new HMACSHA1(sKey);
             var now = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
             var hash = Convert.ToBase64String(hasher.ComputeHash(Encoding.UTF8.GetBytes(string.Join("\n", now, pkey))));
-            return string.Format("ASC {0}:{1}:{2}", pkey, now, hash);
+            return $"ASC {pkey}:{now}:{hash}";
         }
     }
 

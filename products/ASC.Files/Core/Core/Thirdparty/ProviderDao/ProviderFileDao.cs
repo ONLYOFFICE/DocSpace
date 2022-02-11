@@ -213,7 +213,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
         /// <returns>Stream</returns>
         public async Task<Stream> GetFileStreamAsync(File<string> file, long offset)
         {
-            if (file == null) throw new ArgumentNullException("file");
+            if (file == null) throw new ArgumentNullException(nameof(file));
             var fileId = file.ID;
             var selector = GetSelector(fileId);
             file.ID = selector.ConvertId(fileId);
@@ -226,7 +226,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
 
         public async Task<bool> IsSupportedPreSignedUriAsync(File<string> file)
         {
-            if (file == null) throw new ArgumentNullException("file");
+            if (file == null) throw new ArgumentNullException(nameof(file));
             var fileId = file.ID;
             var selector = GetSelector(fileId);
             file.ID = selector.ConvertId(fileId);
@@ -239,7 +239,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
 
         public async Task<Uri> GetPreSignedUriAsync(File<string> file, TimeSpan expires)
         {
-            if (file == null) throw new ArgumentNullException("file");
+            if (file == null) throw new ArgumentNullException(nameof(file));
             var fileId = file.ID;
             var selector = GetSelector(fileId);
             file.ID = selector.ConvertId(fileId);
@@ -252,7 +252,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
 
         public async Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
         {
-            if (file == null) throw new ArgumentNullException("file");
+            if (file == null) throw new ArgumentNullException(nameof(file));
 
             var fileId = file.ID;
             var folderId = file.FolderID;
@@ -286,7 +286,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
 
         public Task<File<string>> ReplaceFileVersionAsync(File<string> file, Stream fileStream)
         {
-            if (file == null) throw new ArgumentNullException("file");
+            if (file == null) throw new ArgumentNullException(nameof(file));
             if (file.ID == null) throw new ArgumentException("No file id or folder id toFolderId determine provider");
 
             var fileId = file.ID;
@@ -451,7 +451,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
             if (file.FolderID != null)
                 return GetSelector(file.FolderID).GetFileDao(file.FolderID);
 
-            throw new ArgumentException("Can't create instance of dao for given file.", "file");
+            throw new ArgumentException("Can't create instance of dao for given file.", nameof(file));
         }
 
         private string ConvertId(string id)

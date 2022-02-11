@@ -157,10 +157,10 @@ namespace ASC.Files.Thirdparty.OneDrive
                     break;
                 case FilterType.MediaOnly:
                     files = files.Where(x =>
-                    {
-                        FileType fileType;
-                        return (fileType = FileUtility.GetFileTypeByFileName(x.Title)) == FileType.Audio || fileType == FileType.Video;
-                    });
+                        {
+                            FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                            return fileType == FileType.Audio || fileType == FileType.Video;
+                        });
                     break;
                 case FilterType.ByExtension:
                     if (!string.IsNullOrEmpty(searchText))
@@ -222,10 +222,10 @@ namespace ASC.Files.Thirdparty.OneDrive
                     break;
                 case FilterType.MediaOnly:
                     files = files.Where(x =>
-                    {
-                        FileType fileType;
-                        return (fileType = FileUtility.GetFileTypeByFileName(x.Title)) == FileType.Audio || fileType == FileType.Video;
-                    });
+                        {
+                            FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                            return fileType == FileType.Audio || fileType == FileType.Video;
+                        });
                     break;
                 case FilterType.ByExtension:
                     if (!string.IsNullOrEmpty(searchText))
@@ -267,7 +267,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             await ProviderInfo.CacheResetAsync(onedriveFileId).ConfigureAwait(false);
 
             var onedriveFile = await GetOneDriveItemAsync(file.ID).ConfigureAwait(false);
-            if (onedriveFile == null) throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
+            if (onedriveFile == null) throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
             if (onedriveFile is ErrorItem errorItem) throw new Exception(errorItem.Error);
 
             var storage = await ProviderInfo.StorageAsync;
@@ -288,8 +288,8 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         public async Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
         {
-            if (file == null) throw new ArgumentNullException("file");
-            if (fileStream == null) throw new ArgumentNullException("fileStream");
+            if (file == null) throw new ArgumentNullException(nameof(file));
+            if (fileStream == null) throw new ArgumentNullException(nameof(fileStream));
 
             Item newOneDriveFile = null;
             var storage = await ProviderInfo.StorageAsync;
@@ -521,10 +521,10 @@ namespace ASC.Files.Thirdparty.OneDrive
             if (file == null) return null;
 
             if (file.ID != null)
-                file.ID = MakeId(file.ID.ToString());
+                file.ID = MakeId(file.ID);
 
             if (file.FolderID != null)
-                file.FolderID = MakeId(file.FolderID.ToString());
+                file.FolderID = MakeId(file.FolderID);
 
             return file;
         }

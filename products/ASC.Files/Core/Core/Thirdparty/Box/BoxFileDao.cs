@@ -100,7 +100,7 @@ namespace ASC.Files.Thirdparty.Box
             return ToFile(items.FirstOrDefault(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase)) as BoxFile);
         }
 
-        public async Task<File<string>> GetFileStableAsync(string fileId, int fileVersion)
+        public async Task<File<string>> GetFileStableAsync(string fileId, int fileVersion = -1)
         {
             return ToFile(await GetBoxFileAsync(fileId).ConfigureAwait(false));
         }
@@ -154,10 +154,10 @@ namespace ASC.Files.Thirdparty.Box
                     break;
                 case FilterType.MediaOnly:
                     files = files.Where(x =>
-                    {
-                        FileType fileType;
-                        return (fileType = FileUtility.GetFileTypeByFileName(x.Title)) == FileType.Audio || fileType == FileType.Video;
-                    });
+                        {
+                            FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                            return fileType == FileType.Audio || fileType == FileType.Video;
+                        });
                     break;
                 case FilterType.ByExtension:
                     if (!string.IsNullOrEmpty(searchText))
@@ -217,10 +217,10 @@ namespace ASC.Files.Thirdparty.Box
                     break;
                 case FilterType.MediaOnly:
                     files = files.Where(x =>
-                    {
-                        FileType fileType;
-                        return (fileType = FileUtility.GetFileTypeByFileName(x.Title)) == FileType.Audio || fileType == FileType.Video;
-                    });
+                        {
+                            FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                            return fileType == FileType.Audio || fileType == FileType.Video;
+                        });
                     break;
                 case FilterType.ByExtension:
                     if (!string.IsNullOrEmpty(searchText))
@@ -262,7 +262,7 @@ namespace ASC.Files.Thirdparty.Box
             await ProviderInfo.CacheResetAsync(boxFileId, true).ConfigureAwait(false);
 
             var boxFile = await GetBoxFileAsync(file.ID).ConfigureAwait(false);
-            if (boxFile == null) throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
+            if (boxFile == null) throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
             if (boxFile is ErrorFile errorFile) throw new Exception(errorFile.Error);
 
             var storage = await ProviderInfo.StorageAsync;
@@ -283,8 +283,8 @@ namespace ASC.Files.Thirdparty.Box
 
         public async Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
         {
-            if (file == null) throw new ArgumentNullException("file");
-            if (fileStream == null) throw new ArgumentNullException("fileStream");
+            if (file == null) throw new ArgumentNullException(nameof(file));
+            if (fileStream == null) throw new ArgumentNullException(nameof(fileStream));
 
             BoxFile newBoxFile = null;
             var storage = await ProviderInfo.StorageAsync;

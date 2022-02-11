@@ -143,7 +143,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         internal CloudStorage CreateStorage(AuthData _authData, nSupportedCloudConfigurations _providerKey)
         {
-            var prms = new object[] { };
+            var prms = Array.Empty<object>();
             if (!string.IsNullOrEmpty(_authData.Url))
             {
                 var uri = _authData.Url;

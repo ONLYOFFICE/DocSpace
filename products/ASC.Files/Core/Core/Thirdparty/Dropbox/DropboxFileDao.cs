@@ -159,10 +159,10 @@ namespace ASC.Files.Thirdparty.Dropbox
                     break;
                 case FilterType.MediaOnly:
                     files = files.Where(x =>
-                    {
-                        FileType fileType;
-                        return (fileType = FileUtility.GetFileTypeByFileName(x.Title)) == FileType.Audio || fileType == FileType.Video;
-                    });
+                        {
+                            FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                            return fileType == FileType.Audio || fileType == FileType.Video;
+                        });
                     break;
                 case FilterType.ByExtension:
                     if (!string.IsNullOrEmpty(searchText))
@@ -222,10 +222,10 @@ namespace ASC.Files.Thirdparty.Dropbox
                     break;
                 case FilterType.MediaOnly:
                     files = files.Where(x =>
-                    {
-                        FileType fileType;
-                        return (fileType = FileUtility.GetFileTypeByFileName(x.Title)) == FileType.Audio || fileType == FileType.Video;
-                    });
+                        {
+                            FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                            return fileType == FileType.Audio || fileType == FileType.Video;
+                        });
                     break;
                 case FilterType.ByExtension:
                     if (!string.IsNullOrEmpty(searchText))
@@ -267,7 +267,7 @@ namespace ASC.Files.Thirdparty.Dropbox
             await ProviderInfo.CacheResetAsync(dropboxFilePath, true).ConfigureAwait(false);
 
             var dropboxFile = await GetDropboxFileAsync(file.ID).ConfigureAwait(false);
-            if (dropboxFile == null) throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
+            if (dropboxFile == null) throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
             if (dropboxFile is ErrorFile errorFile) throw new Exception(errorFile.Error);
 
             var fileStream = await ProviderInfo.Storage.DownloadStreamAsync(MakeDropboxPath(dropboxFile), (int)offset);
@@ -287,8 +287,8 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public async Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
         {
-            if (file == null) throw new ArgumentNullException("file");
-            if (fileStream == null) throw new ArgumentNullException("fileStream");
+            if (file == null) throw new ArgumentNullException(nameof(file));
+            if (fileStream == null) throw new ArgumentNullException(nameof(fileStream));
 
             FileMetadata newDropboxFile = null;
 
@@ -510,10 +510,10 @@ namespace ASC.Files.Thirdparty.Dropbox
             if (file == null) return null;
 
             if (file.ID != null)
-                file.ID = MakeId(file.ID.ToString());
+                file.ID = MakeId(file.ID);
 
             if (file.FolderID != null)
-                file.FolderID = MakeId(file.FolderID.ToString());
+                file.FolderID = MakeId(file.FolderID);
 
             return file;
         }

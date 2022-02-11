@@ -152,10 +152,10 @@ namespace ASC.Files.Thirdparty.Sharpbox
                     break;
                 case FilterType.MediaOnly:
                     files = files.Where(x =>
-                    {
-                        FileType fileType;
-                        return (fileType = FileUtility.GetFileTypeByFileName(x.Title)) == FileType.Audio || fileType == FileType.Video;
-                    });
+                        {
+                            FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                            return fileType == FileType.Audio || fileType == FileType.Video;
+                        });
                     break;
                 case FilterType.ByExtension:
                     if (!string.IsNullOrEmpty(searchText))
@@ -217,10 +217,10 @@ namespace ASC.Files.Thirdparty.Sharpbox
                     break;
                 case FilterType.MediaOnly:
                     files = files.Where(x =>
-                    {
-                        FileType fileType;
-                        return (fileType = FileUtility.GetFileTypeByFileName(x.Title)) == FileType.Audio || fileType == FileType.Video;
-                    });
+                        {
+                            FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                            return fileType == FileType.Audio || fileType == FileType.Video;
+                        });
                     break;
                 case FilterType.ByExtension:
                     if (!string.IsNullOrEmpty(searchText))
@@ -258,7 +258,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             var fileToDownload = GetFileById(file.ID);
 
             if (fileToDownload == null)
-                throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
+                throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
             if (fileToDownload is ErrorEntry errorEntry)
                 throw new Exception(errorEntry.Error);
 
@@ -301,7 +301,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         public async Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
         {
-            if (fileStream == null) throw new ArgumentNullException("fileStream");
+            if (fileStream == null) throw new ArgumentNullException(nameof(fileStream));
             ICloudFileSystemEntry entry = null;
             if (file.ID != null)
             {
@@ -328,7 +328,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 var webException = (WebException)e.InnerException;
                 if (webException != null)
                 {
-                    var response = ((HttpWebResponse)webException.Response);
+                    var response = (HttpWebResponse)webException.Response;
                     if (response != null)
                     {
                         if (response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.Forbidden)
@@ -506,7 +506,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             var entry = GetFileById(file.ID);
 
             if (entry == null)
-                throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
+                throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
 
             var oldFileId = MakeId(entry);
             var newFileId = oldFileId;

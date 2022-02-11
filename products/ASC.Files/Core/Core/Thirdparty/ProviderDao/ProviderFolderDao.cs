@@ -119,7 +119,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
                 var selectorLocal = selector;
                 var matchedIds = folderIds.Where(selectorLocal.IsMatch).ToList();
 
-                if (!matchedIds.Any()) continue;
+                if (matchedIds.Count > 0) continue;
 
                 result = result.Concat(matchedIds.GroupBy(selectorLocal.GetIdCode)
                                                 .ToAsyncEnumerable()
@@ -146,7 +146,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
 
         public async Task<string> SaveFolderAsync(Folder<string> folder)
         {
-            if (folder == null) throw new ArgumentNullException("folder");
+            if (folder == null) throw new ArgumentNullException(nameof(folder));
 
             if (folder.ID != null)
             {
@@ -263,12 +263,12 @@ namespace ASC.Files.Thirdparty.ProviderDao
 
         public async Task<IDictionary<string, string>> CanMoveOrCopyAsync(string[] folderIds, string to)
         {
-            if (!folderIds.Any()) return new Dictionary<string, string>();
+            if (folderIds.Length > 0) return new Dictionary<string, string>();
 
             var selector = GetSelector(to);
             var matchedIds = folderIds.Where(selector.IsMatch).ToArray();
 
-            if (!matchedIds.Any()) return new Dictionary<string, string>();
+            if (matchedIds.Length > 0) return new Dictionary<string, string>();
 
             var folderDao = selector.GetFolderDao(matchedIds.FirstOrDefault());
             return await folderDao.CanMoveOrCopyAsync(matchedIds, to).ConfigureAwait(false);
@@ -340,7 +340,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return folderDao.CanCalculateSubitems(entryId);
         }
 
-        public async Task<long> GetMaxUploadSizeAsync(string folderId, bool chunkedUpload)
+        public async Task<long> GetMaxUploadSizeAsync(string folderId, bool chunkedUpload = false)
         {
             var selector = GetSelector(folderId);
             var folderDao = selector.GetFolderDao(folderId);

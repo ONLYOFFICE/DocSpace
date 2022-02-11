@@ -301,9 +301,9 @@ namespace ASC.CRM.Core.Dao
         {
             var tenant = "tenant_id";
 
-            if (!table.Contains(" ")) return tenant;
+            if (!table.Contains(' ')) return tenant;
 
-            return table.Substring(table.IndexOf(" ")).Trim() + "." + tenant;
+            return table.Substring(table.IndexOf(' ')).Trim() + "." + tenant;
         }
 
         protected static Guid ToGuid(object guid)

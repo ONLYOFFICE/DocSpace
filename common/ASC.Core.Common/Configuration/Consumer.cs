@@ -50,13 +50,13 @@ namespace ASC.Core.Common.Configuration
         protected readonly Dictionary<string, string> Props;
         public IEnumerable<string> ManagedKeys
         {
-            get { return Props.Select(r => r.Key).ToList(); }
+            get { return Props.Select(r => r.Key); }
         }
 
         protected readonly Dictionary<string, string> Additional;
         public virtual IEnumerable<string> AdditionalKeys
         {
-            get { return Additional.Select(r => r.Key).ToList(); }
+            get { return Additional.Select(r => r.Key); }
         }
 
         public ICollection<string> Keys { get { return AllProps.Keys; } }
@@ -88,7 +88,7 @@ namespace ASC.Core.Common.Configuration
 
         public bool IsSet
         {
-            get { return Props.Any() && !Props.All(r => string.IsNullOrEmpty(this[r.Key])); }
+            get { return Props.Count > 0 && !Props.All(r => string.IsNullOrEmpty(this[r.Key])); }
         }
 
         static Consumer()
@@ -152,7 +152,7 @@ namespace ASC.Core.Common.Configuration
             Props = props ?? new Dictionary<string, string>();
             Additional = additional ?? new Dictionary<string, string>();
 
-            if (props != null && props.Any())
+            if (props != null && props.Count > 0)
             {
                 CanSet = props.All(r => string.IsNullOrEmpty(r.Value));
             }
@@ -245,10 +245,7 @@ namespace ASC.Core.Common.Configuration
 
             if (string.IsNullOrEmpty(value))
             {
-                if (AllProps.ContainsKey(name))
-                {
-                    value = AllProps[name];
-                }
+                AllProps.TryGetValue(name, out value);
             }
 
             return value;
@@ -339,7 +336,7 @@ namespace ASC.Core.Common.Configuration
 
         public override IEnumerable<string> AdditionalKeys
         {
-            get { return base.AdditionalKeys.Where(r => r != HandlerTypeKey && r != "cdn").ToList(); }
+            get { return base.AdditionalKeys.Where(r => r != HandlerTypeKey && r != "cdn"); }
         }
 
         protected override string GetSettingsKey(string name)
@@ -354,9 +351,9 @@ namespace ASC.Core.Common.Configuration
 
             HandlerType = Type.GetType(additional[HandlerTypeKey]);
 
-            if (additional.ContainsKey(CdnKey))
+            if (additional.TryGetValue(CdnKey, out var value))
             {
-                Cdn = GetCdn(additional[CdnKey]);
+                Cdn = GetCdn(value);
             }
         }
 

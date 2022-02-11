@@ -83,7 +83,7 @@ namespace ASC.Data.Backup.Tasks
         public void Init(int tenantId, string fromConfigPath, string toConfigPath, int limit, string backupDirectory)
         {
             Limit = limit;
-            ToConfigPath = toConfigPath ?? throw new ArgumentNullException("toConfigPath");
+            ToConfigPath = toConfigPath ?? throw new ArgumentNullException(nameof(toConfigPath));
             Init(tenantId, fromConfigPath);
 
             BackupDirectory = backupDirectory;
@@ -221,21 +221,16 @@ namespace ASC.Data.Backup.Tasks
                 newAlias = GetUniqAlias(connection, newAlias);
             }
 
-            var commandText = string.Format(
-                "update tenants_tenants " +
+            var commandText = "update tenants_tenants " +
                 "set " +
-                "  status={0}, " +
-                "  alias = '{1}', " +
-                "  last_modified='{2}', " +
-                "  statuschanged='{2}' " +
-                "where alias = '{3}'",
-                status.ToString("d"),
-                newAlias,
-                DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"),
-                alias);
+                $"  status={status.ToString("d")}, " +
+                $"  alias = '{newAlias}', " +
+                $"  last_modified='{DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss")}', " +
+                $"  statuschanged='{DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss")}' " +
+                $"where alias = '{alias}'";
 
             if (!string.IsNullOrEmpty(whereCondition))
-                commandText += (" and " + whereCondition);
+                commandText += " and " + whereCondition;
             var command = connection.CreateCommand();
             command.CommandText = commandText;
             command.WithTimeout(120).ExecuteNonQuery();
