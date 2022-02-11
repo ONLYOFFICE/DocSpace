@@ -34,6 +34,7 @@ global using ASC.Web.Files;
 global using ASC.Web.Files.Classes;
 global using ASC.Web.Files.Core;
 global using ASC.Web.Files.Core.Search;
+global using ASC.Feed.Aggregator.Service;
 global using ASC.Web.Files.Services.DocumentService;
 
 global using Autofac;

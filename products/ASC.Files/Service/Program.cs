@@ -89,6 +89,9 @@
                     services.AddHostedService<FeedAggregatorService>();
                     diHelper.TryAdd<FeedAggregatorService>();
 
+                    services.AddHostedService<FeedCleanerService>();
+                    diHelper.TryAdd<FeedCleanerService>();
+
                     services.AddHostedService<Launcher>();
                     diHelper.TryAdd<Launcher>();
 
