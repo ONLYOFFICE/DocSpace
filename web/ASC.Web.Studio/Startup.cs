@@ -5,21 +5,6 @@ public class Startup : BaseStartup
     {
     }
 
-    public override void ConfigureServices(IServiceCollection services)
-    {
-        services.AddCors();
-
-        base.ConfigureServices(services);
-
-        services.AddMemoryCache();
-        DIHelper.TryAdd<Login>();
-        DIHelper.TryAdd<PathUtils>();
-        DIHelper.TryAdd<StorageHandlerScope>();
-        DIHelper.TryAdd<GoogleLoginProvider>();
-        DIHelper.TryAdd<FacebookLoginProvider>();
-        DIHelper.TryAdd<LinkedInLoginProvider>();
-    }
-
     public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
         base.Configure(app, env);
@@ -50,5 +35,20 @@ public class Startup : BaseStartup
             {
                 appBranch.UseLoginHandler();
             });
+    }
+
+    public override void ConfigureServices(IServiceCollection services)
+    {
+        services.AddCors();
+
+        base.ConfigureServices(services);
+
+        services.AddMemoryCache();
+        DIHelper.TryAdd<Login>();
+        DIHelper.TryAdd<PathUtils>();
+        DIHelper.TryAdd<StorageHandlerScope>();
+        DIHelper.TryAdd<GoogleLoginProvider>();
+        DIHelper.TryAdd<FacebookLoginProvider>();
+        DIHelper.TryAdd<LinkedInLoginProvider>();
     }
 }
