@@ -39,25 +39,25 @@ public class DiscDataStore : BaseStorage
 
     public override IDataStore Configure(string tenant, Handler handlerConfig, Module moduleConfig, IDictionary<string, string> props)
     {
-        _tenant = tenant;
+        Tenant = tenant;
         //Fill map path
-        _modulename = moduleConfig.Name;
-        _dataList = new DataList(moduleConfig);
+        Modulename = moduleConfig.Name;
+        DataList = new DataList(moduleConfig);
 
         foreach (var domain in moduleConfig.Domain)
         {
-            _mappedPaths.Add(domain.Name, new MappedPath(_pathUtils, tenant, moduleConfig.AppendTenantId, domain.Path, handlerConfig.GetProperties()));
+            _mappedPaths.Add(domain.Name, new MappedPath(TpathUtils, tenant, moduleConfig.AppendTenantId, domain.Path, handlerConfig.GetProperties()));
         }
 
         //Add default
-        _mappedPaths.Add(string.Empty, new MappedPath(_pathUtils, tenant, moduleConfig.AppendTenantId, PathUtils.Normalize(moduleConfig.Path), handlerConfig.GetProperties()));
+        _mappedPaths.Add(string.Empty, new MappedPath(TpathUtils, tenant, moduleConfig.AppendTenantId, PathUtils.Normalize(moduleConfig.Path), handlerConfig.GetProperties()));
 
         //Make expires
-        _domainsExpires =
+        DomainsExpires =
             moduleConfig.Domain.Where(x => x.Expires != TimeSpan.Zero).
                 ToDictionary(x => x.Name,
                              y => y.Expires);
-        _domainsExpires.Add(string.Empty, moduleConfig.Expires);
+        DomainsExpires.Add(string.Empty, moduleConfig.Expires);
         var settings = moduleConfig.DisabledEncryption ? new EncryptionSettings() : _encryptionSettingsHelper.Load();
         _crypt = _encryptionFactory.GetCrypt(moduleConfig.Name, settings);
 
@@ -157,7 +157,7 @@ public class DiscDataStore : BaseStorage
     {
         Logger.Debug("Save " + path);
 
-        var buffered = _tempStream.GetBuffered(stream);
+        var buffered = TempStream.GetBuffered(stream);
         if (QuotaController != null)
         {
             QuotaController.QuotaUsedCheck(buffered.Length);
@@ -633,7 +633,7 @@ public class DiscDataStore : BaseStorage
         if (QuotaController != null)
         {
             var size = GetUsedQuota(domain);
-            QuotaController.QuotaUsedSet(_modulename, domain, _dataList.GetData(domain), size);
+            QuotaController.QuotaUsedSet(Modulename, domain, DataList.GetData(domain), size);
         }
 
         return 0;

@@ -61,23 +61,23 @@ public class RackspaceCloudStorage : BaseStorage
 
     public override IDataStore Configure(string tenant, Handler handlerConfig, Module moduleConfig, IDictionary<string, string> props)
     {
-        _tenant = tenant;
+        Tenant = tenant;
 
         if (moduleConfig != null)
         {
-            _modulename = moduleConfig.Name;
-            _dataList = new DataList(moduleConfig);
+            Modulename = moduleConfig.Name;
+            DataList = new DataList(moduleConfig);
             _domains.AddRange(moduleConfig.Domain.Select(x => string.Format("{0}/", x.Name)));
-            _domainsExpires = moduleConfig.Domain.Where(x => x.Expires != TimeSpan.Zero).ToDictionary(x => x.Name, y => y.Expires);
-            _domainsExpires.Add(string.Empty, moduleConfig.Expires);
+            DomainsExpires = moduleConfig.Domain.Where(x => x.Expires != TimeSpan.Zero).ToDictionary(x => x.Name, y => y.Expires);
+            DomainsExpires.Add(string.Empty, moduleConfig.Expires);
             _domainsAcl = moduleConfig.Domain.ToDictionary(x => x.Name, y => y.Acl);
             _moduleAcl = moduleConfig.Acl;
         }
         else
         {
-            _modulename = string.Empty;
-            _dataList = null;
-            _domainsExpires = new Dictionary<string, TimeSpan> { { string.Empty, TimeSpan.Zero } };
+            Modulename = string.Empty;
+            DataList = null;
+            DomainsExpires = new Dictionary<string, TimeSpan> { { string.Empty, TimeSpan.Zero } };
             _domainsAcl = new Dictionary<string, ACL>();
             _moduleAcl = ACL.Auto;
         }
@@ -164,7 +164,7 @@ public class RackspaceCloudStorage : BaseStorage
 
     public override Stream GetReadStream(string domain, string path, int offset)
     {
-        var outputStream = _tempStream.Create();
+        var outputStream = TempStream.Create();
 
         var client = GetClient();
 
@@ -209,7 +209,7 @@ public class RackspaceCloudStorage : BaseStorage
                           string contentDisposition, ACL acl, string contentEncoding = null, int cacheDays = 5,
         DateTime? deleteAt = null, long? deleteAfter = null)
     {
-        var buffered = _tempStream.GetBuffered(stream);
+        var buffered = TempStream.GetBuffered(stream);
 
         if (QuotaController != null)
         {
@@ -260,7 +260,7 @@ public class RackspaceCloudStorage : BaseStorage
             try
             {
 
-                using (var emptyStream = _tempStream.Create())
+                using (var emptyStream = TempStream.Create())
                 {
 
                     var headers = new Dictionary<string, string>
@@ -539,7 +539,7 @@ public class RackspaceCloudStorage : BaseStorage
                 size += obj.Bytes;
             }
 
-            QuotaController.QuotaUsedSet(_modulename, domain, _dataList.GetData(domain), size);
+            QuotaController.QuotaUsedSet(Modulename, domain, DataList.GetData(domain), size);
 
             return size;
         }
@@ -716,8 +716,8 @@ public class RackspaceCloudStorage : BaseStorage
         else//Key combined from module+domain+filename
         {
             result = string.Format("{0}/{1}/{2}/{3}",
-                                                     _tenant,
-                                                     _modulename,
+                                                     Tenant,
+                                                     Modulename,
                                                      domain,
                                                      path);
         }
@@ -744,7 +744,7 @@ public class RackspaceCloudStorage : BaseStorage
 
     private Uri GetUriShared(string domain, string path)
     {
-        return new Uri(string.Format("{0}{1}", SecureHelper.IsSecure(_httpContextAccessor?.HttpContext, _options) ? _cnameSSL : _cname, MakePath(domain, path)));
+        return new Uri(string.Format("{0}{1}", SecureHelper.IsSecure(HttpContextAccessor?.HttpContext, Options) ? _cnameSSL : _cname, MakePath(domain, path)));
     }
 
     private ACL GetDomainACL(string domain)

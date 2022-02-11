@@ -51,26 +51,26 @@ public class GoogleCloudStorage : BaseStorage
 
     public override IDataStore Configure(string tenant, Handler handlerConfig, Module moduleConfig, IDictionary<string, string> props)
     {
-        _tenant = tenant;
+        Tenant = tenant;
 
         if (moduleConfig != null)
         {
-            _modulename = moduleConfig.Name;
-            _dataList = new DataList(moduleConfig);
+            Modulename = moduleConfig.Name;
+            DataList = new DataList(moduleConfig);
 
-            _domainsExpires = moduleConfig.Domain.Where(x => x.Expires != TimeSpan.Zero).ToDictionary(x => x.Name, y => y.Expires);
+            DomainsExpires = moduleConfig.Domain.Where(x => x.Expires != TimeSpan.Zero).ToDictionary(x => x.Name, y => y.Expires);
 
-            _domainsExpires.Add(string.Empty, moduleConfig.Expires);
+            DomainsExpires.Add(string.Empty, moduleConfig.Expires);
 
             _domainsAcl = moduleConfig.Domain.ToDictionary(x => x.Name, y => GetGoogleCloudAcl(y.Acl));
             _moduleAcl = GetGoogleCloudAcl(moduleConfig.Acl);
         }
         else
         {
-            _modulename = string.Empty;
-            _dataList = null;
+            Modulename = string.Empty;
+            DataList = null;
 
-            _domainsExpires = new Dictionary<string, TimeSpan> { { string.Empty, TimeSpan.Zero } };
+            DomainsExpires = new Dictionary<string, TimeSpan> { { string.Empty, TimeSpan.Zero } };
             _domainsAcl = new Dictionary<string, PredefinedObjectAcl>();
             _moduleAcl = PredefinedObjectAcl.PublicRead;
         }
@@ -129,7 +129,7 @@ public class GoogleCloudStorage : BaseStorage
 
     public Uri GetUriShared(string domain, string path)
     {
-        return new Uri(SecureHelper.IsSecure(_httpContextAccessor.HttpContext, _options) ? _bucketSSlRoot : _bucketRoot, MakePath(domain, path));
+        return new Uri(SecureHelper.IsSecure(HttpContextAccessor.HttpContext, Options) ? _bucketSSlRoot : _bucketRoot, MakePath(domain, path));
     }
 
     public override Stream GetReadStream(string domain, string path)
@@ -139,7 +139,7 @@ public class GoogleCloudStorage : BaseStorage
 
     public override Stream GetReadStream(string domain, string path, int offset)
     {
-        var tempStream = _tempStream.Create();
+        var tempStream = TempStream.Create();
 
         using var storage = GetStorage();
 
@@ -157,7 +157,7 @@ public class GoogleCloudStorage : BaseStorage
 
     public override async Task<Stream> GetReadStreamAsync(string domain, string path, int offset)
     {
-        var tempStream = _tempStream.Create();
+        var tempStream = TempStream.Create();
 
         var storage = GetStorage();
 
@@ -197,7 +197,7 @@ public class GoogleCloudStorage : BaseStorage
                       string contentDisposition, ACL acl, string contentEncoding = null, int cacheDays = 5)
     {
 
-        var buffered = _tempStream.GetBuffered(stream);
+        var buffered = TempStream.GetBuffered(stream);
 
         if (QuotaController != null)
         {
@@ -503,7 +503,7 @@ public class GoogleCloudStorage : BaseStorage
                 }
             }
 
-            QuotaController.QuotaUsedSet(_modulename, domain, _dataList.GetData(domain), size);
+            QuotaController.QuotaUsedSet(Modulename, domain, DataList.GetData(domain), size);
 
             return size;
         }
@@ -581,7 +581,7 @@ public class GoogleCloudStorage : BaseStorage
         using var storage = GetStorage();
 
         var objectKey = MakePath(domain, path);
-        var buffered = _tempStream.GetBuffered(stream);
+        var buffered = TempStream.GetBuffered(stream);
 
         var uploadObjectOptions = new UploadObjectOptions
         {
@@ -803,8 +803,8 @@ public class GoogleCloudStorage : BaseStorage
         else//Key combined from module+domain+filename
         {
             result = string.Format("{0}/{1}/{2}/{3}",
-                                                     _tenant,
-                                                     _modulename,
+                                                     Tenant,
+                                                     Modulename,
                                                      domain,
                                                      path);
         }

@@ -62,12 +62,12 @@ public class S3Storage : BaseStorage
 
     public Uri GetUriInternal(string path)
     {
-        return new Uri(SecureHelper.IsSecure(_httpContextAccessor?.HttpContext, _options) ? _bucketSSlRoot : _bucketRoot, path);
+        return new Uri(SecureHelper.IsSecure(HttpContextAccessor?.HttpContext, Options) ? _bucketSSlRoot : _bucketRoot, path);
     }
 
     public Uri GetUriShared(string domain, string path)
     {
-        return new Uri(SecureHelper.IsSecure(_httpContextAccessor?.HttpContext, _options) ? _bucketSSlRoot : _bucketRoot, MakePath(domain, path));
+        return new Uri(SecureHelper.IsSecure(HttpContextAccessor?.HttpContext, Options) ? _bucketSSlRoot : _bucketRoot, MakePath(domain, path));
     }
 
     public override Uri GetInternalUri(string domain, string path, TimeSpan expire, IEnumerable<string> headers)
@@ -86,7 +86,7 @@ public class S3Storage : BaseStorage
             BucketName = _bucket,
             Expires = DateTime.UtcNow.Add(expire),
             Key = MakePath(domain, path),
-            Protocol = SecureHelper.IsSecure(_httpContextAccessor?.HttpContext, _options) ? Protocol.HTTPS : Protocol.HTTP,
+            Protocol = SecureHelper.IsSecure(HttpContextAccessor?.HttpContext, Options) ? Protocol.HTTPS : Protocol.HTTP,
             Verb = HttpVerb.GET
         };
 
@@ -208,7 +208,7 @@ public class S3Storage : BaseStorage
     public Uri Save(string domain, string path, Stream stream, string contentType,
                              string contentDisposition, ACL acl, string contentEncoding = null, int cacheDays = 5)
     {
-        var buffered = _tempStream.GetBuffered(stream);
+        var buffered = TempStream.GetBuffered(stream);
         if (QuotaController != null)
         {
             QuotaController.QuotaUsedCheck(buffered.Length);
@@ -590,7 +590,7 @@ public class S3Storage : BaseStorage
         using var client = GetClient();
         using var uploader = new TransferUtility(client);
         var objectKey = MakePath(domain, path);
-        var buffered = _tempStream.GetBuffered(stream);
+        var buffered = TempStream.GetBuffered(stream);
         var request = new TransferUtilityUploadRequest
         {
             BucketName = _bucket,
@@ -748,11 +748,11 @@ public class S3Storage : BaseStorage
 
     public override string GetUploadedUrl(string domain, string directoryPath)
     {
-        if (_httpContextAccessor?.HttpContext != null)
+        if (HttpContextAccessor?.HttpContext != null)
         {
-            var buket = _httpContextAccessor?.HttpContext.Request.Query["bucket"].FirstOrDefault();
-            var key = _httpContextAccessor?.HttpContext.Request.Query["key"].FirstOrDefault();
-            var etag = _httpContextAccessor?.HttpContext.Request.Query["etag"].FirstOrDefault();
+            var buket = HttpContextAccessor?.HttpContext.Request.Query["bucket"].FirstOrDefault();
+            var key = HttpContextAccessor?.HttpContext.Request.Query["key"].FirstOrDefault();
+            var etag = HttpContextAccessor?.HttpContext.Request.Query["etag"].FirstOrDefault();
             var destkey = MakePath(domain, directoryPath) + "/";
 
             if (!string.IsNullOrEmpty(buket) && !string.IsNullOrEmpty(key) && string.Equals(buket, _bucket) &&
@@ -760,9 +760,9 @@ public class S3Storage : BaseStorage
             {
                 var domainpath = key.Substring(MakePath(domain, string.Empty).Length);
                 var skipQuota = false;
-                if (_httpContextAccessor?.HttpContext.Session != null)
+                if (HttpContextAccessor?.HttpContext.Session != null)
                 {
-                    _httpContextAccessor.HttpContext.Session.TryGetValue(etag, out var isCounted);
+                    HttpContextAccessor.HttpContext.Session.TryGetValue(etag, out var isCounted);
                     skipQuota = isCounted != null;
                 }
                 //Add to quota controller
@@ -773,7 +773,7 @@ public class S3Storage : BaseStorage
                         var size = GetFileSize(domain, domainpath);
                         QuotaUsedAdd(domain, size);
 
-                        if (_httpContextAccessor?.HttpContext.Session != null)
+                        if (HttpContextAccessor?.HttpContext.Session != null)
                         {
                             //TODO:
                             //HttpContext.Current.Session.Add(etag, size); 
@@ -910,7 +910,7 @@ public class S3Storage : BaseStorage
         {
             var objects = GetS3Objects(domain);
             var size = objects.Sum(s3Object => s3Object.Size);
-            QuotaController.QuotaUsedSet(_modulename, domain, _dataList.GetData(domain), size);
+            QuotaController.QuotaUsedSet(Modulename, domain, DataList.GetData(domain), size);
 
             return size;
         }
@@ -977,28 +977,28 @@ public class S3Storage : BaseStorage
 
     public override IDataStore Configure(string tenant, Handler handlerConfig, Module moduleConfig, IDictionary<string, string> props)
     {
-        _tenant = tenant;
+        Tenant = tenant;
 
         if (moduleConfig != null)
         {
-            _modulename = moduleConfig.Name;
-            _dataList = new DataList(moduleConfig);
+            Modulename = moduleConfig.Name;
+            DataList = new DataList(moduleConfig);
             _domains.AddRange(moduleConfig.Domain.Select(x => string.Format("{0}/", x.Name)));
 
             //Make expires
-            _domainsExpires = moduleConfig.Domain.Where(x => x.Expires != TimeSpan.Zero).ToDictionary(x => x.Name, y => y.Expires);
-            _domainsExpires.Add(string.Empty, moduleConfig.Expires);
+            DomainsExpires = moduleConfig.Domain.Where(x => x.Expires != TimeSpan.Zero).ToDictionary(x => x.Name, y => y.Expires);
+            DomainsExpires.Add(string.Empty, moduleConfig.Expires);
 
             _domainsAcl = moduleConfig.Domain.ToDictionary(x => x.Name, y => GetS3Acl(y.Acl));
             _moduleAcl = GetS3Acl(moduleConfig.Acl);
         }
         else
         {
-            _modulename = string.Empty;
-            _dataList = null;
+            Modulename = string.Empty;
+            DataList = null;
 
             //Make expires
-            _domainsExpires = new Dictionary<string, TimeSpan> { { string.Empty, TimeSpan.Zero } };
+            DomainsExpires = new Dictionary<string, TimeSpan> { { string.Empty, TimeSpan.Zero } };
 
             _domainsAcl = new Dictionary<string, S3CannedACL>();
             _moduleAcl = S3CannedACL.PublicRead;
@@ -1255,8 +1255,8 @@ public class S3Storage : BaseStorage
         else//Key combined from module+domain+filename
         {
             result = string.Format("{0}/{1}/{2}/{3}",
-                                                     _tenant,
-                                                     _modulename,
+                                                     Tenant,
+                                                     Modulename,
                                                      domain,
                                                      path);
         }

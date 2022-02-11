@@ -31,18 +31,19 @@ public abstract class BaseStorage : IDataStore
     public virtual bool IsSupportInternalUri => true;
     public virtual bool IsSupportedPreSignedUri => true;
     public virtual bool IsSupportChunking => false;
+    internal string Modulename { get; set; }
+    internal DataList DataList { get; set; }
+    internal string Tenant { get; set; }
+    internal Dictionary<string, TimeSpan> DomainsExpires { get; set; }
+        = new Dictionary<string, TimeSpan>();
     protected ILog Logger { get; set; }
 
-    internal string _modulename;
-    internal DataList _dataList;
-    internal string _tenant;
-    internal Dictionary<string, TimeSpan> _domainsExpires = new Dictionary<string, TimeSpan>();
-    protected readonly TempStream _tempStream;
-    protected readonly TenantManager _tenantManager;
-    protected readonly PathUtils _pathUtils;
-    protected readonly EmailValidationKeyProvider _emailValidationKeyProvider;
-    protected readonly IHttpContextAccessor _httpContextAccessor;
-    protected readonly IOptionsMonitor<ILog> _options;
+    protected readonly TempStream TempStream;
+    protected readonly TenantManager TenantManager;
+    protected readonly PathUtils TpathUtils;
+    protected readonly EmailValidationKeyProvider TemailValidationKeyProvider;
+    protected readonly IHttpContextAccessor HttpContextAccessor;
+    protected readonly IOptionsMonitor<ILog> Options;
 
     public BaseStorage(
         TempStream tempStream,
@@ -53,18 +54,18 @@ public abstract class BaseStorage : IDataStore
         IOptionsMonitor<ILog> options)
     {
 
-        _tempStream = tempStream;
-        _tenantManager = tenantManager;
-        _pathUtils = pathUtils;
-        _emailValidationKeyProvider = emailValidationKeyProvider;
-        _options = options;
+        TempStream = tempStream;
+        TenantManager = tenantManager;
+        TpathUtils = pathUtils;
+        TemailValidationKeyProvider = emailValidationKeyProvider;
+        Options = options;
         Logger = options.CurrentValue;
-        _httpContextAccessor = httpContextAccessor;
+        HttpContextAccessor = httpContextAccessor;
     }
 
     public TimeSpan GetExpire(string domain)
     {
-        return _domainsExpires.ContainsKey(domain) ? _domainsExpires[domain] : _domainsExpires[string.Empty];
+        return DomainsExpires.ContainsKey(domain) ? DomainsExpires[domain] : DomainsExpires[string.Empty];
     }
 
     public Uri GetUri(string path)
@@ -84,7 +85,7 @@ public abstract class BaseStorage : IDataStore
             throw new ArgumentNullException(nameof(path));
         }
 
-        if (string.IsNullOrEmpty(_tenant) && IsSupportInternalUri)
+        if (string.IsNullOrEmpty(Tenant) && IsSupportInternalUri)
         {
             return GetInternalUri(domain, path, expire, headers);
         }
@@ -106,17 +107,17 @@ public abstract class BaseStorage : IDataStore
             var expireString = expire.TotalMinutes.ToString(CultureInfo.InvariantCulture);
 
             int currentTenantId;
-            var currentTenant = _tenantManager.GetCurrentTenant(false);
+            var currentTenant = TenantManager.GetCurrentTenant(false);
             if (currentTenant != null)
             {
                 currentTenantId = currentTenant.TenantId;
             }
-            else if (!TenantPath.TryGetTenant(_tenant, out currentTenantId))
+            else if (!TenantPath.TryGetTenant(Tenant, out currentTenantId))
             {
                 currentTenantId = 0;
             }
 
-            var auth = _emailValidationKeyProvider.GetEmailKey(currentTenantId, path.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar) + "." + headerAttr + "." + expireString);
+            var auth = TemailValidationKeyProvider.GetEmailKey(currentTenantId, path.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar) + "." + headerAttr + "." + expireString);
             query = string.Format("{0}{1}={2}&{3}={4}",
                                   path.Contains("?") ? "&" : "?",
                                   Constants.QueryExpire,
@@ -133,9 +134,9 @@ public abstract class BaseStorage : IDataStore
                                    HttpUtility.UrlEncode(headerAttr));
         }
 
-        var tenant = _tenant.Trim('/');
-        var vpath = _pathUtils.ResolveVirtualPath(_modulename, domain);
-        vpath = _pathUtils.ResolveVirtualPath(vpath, false);
+        var tenant = Tenant.Trim('/');
+        var vpath = TpathUtils.ResolveVirtualPath(Modulename, domain);
+        vpath = TpathUtils.ResolveVirtualPath(vpath, false);
         vpath = string.Format(vpath, tenant);
         var virtualPath = new Uri(vpath + "/", UriKind.RelativeOrAbsolute);
 
@@ -358,7 +359,7 @@ public abstract class BaseStorage : IDataStore
     {
         if (QuotaController != null)
         {
-            QuotaController.QuotaUsedAdd(_modulename, domain, _dataList.GetData(domain), size, quotaCheckFileSize);
+            QuotaController.QuotaUsedAdd(Modulename, domain, DataList.GetData(domain), size, quotaCheckFileSize);
         }
     }
 
@@ -366,7 +367,7 @@ public abstract class BaseStorage : IDataStore
     {
         if (QuotaController != null)
         {
-            QuotaController.QuotaUsedDelete(_modulename, domain, _dataList.GetData(domain), size);
+            QuotaController.QuotaUsedDelete(Modulename, domain, DataList.GetData(domain), size);
         }
     }
 
