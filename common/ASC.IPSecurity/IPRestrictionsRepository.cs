@@ -33,8 +33,9 @@ namespace ASC.IPSecurity
         private const string DbId = "core";
 
         private readonly Lazy<TenantDbContext> _lazyTenantDbContext;
+        private readonly IMapper _mapper;
 
-        public IPRestrictionsRepository(DbContextManager<TenantDbContext> dbContextManager)
+        public IPRestrictionsRepository(DbContextManager<TenantDbContext> dbContextManager, IMapper mapper)
         {
             _lazyTenantDbContext = new Lazy<TenantDbContext>(() => dbContextManager.Get(DbId));
         }
@@ -43,12 +44,7 @@ namespace ASC.IPSecurity
         {
             return TenantDbContext.TenantIpRestrictions
                 .Where(r => r.Tenant == tenant)
-                .Select(r => new IPRestriction
-                {
-                    Id = r.Id,
-                    Ip = r.Ip,
-                    TenantId = r.Tenant
-                })
+                .ProjectTo<IPRestriction>(_mapper.ConfigurationProvider)
                 .ToList();
         }
 
