@@ -1,16 +1,18 @@
-import React from "react";
 import PropTypes from "prop-types";
+import React from "react";
+import { useTranslation } from "react-i18next";
+
 import Checkbox from "../checkbox";
-import { StyledTableGroupMenu, StyledScrollbar } from "./StyledTableContainer";
 import ComboBox from "../combobox";
 import GroupMenuItem from "./GroupMenuItem";
-import { useTranslation } from "react-i18next";
+import { StyledScrollbar, StyledTableGroupMenu } from "./StyledTableContainer";
 
 const TableGroupMenu = (props) => {
   const {
     isChecked,
     isIndeterminate,
     headerMenu,
+    infoPanelToggle,
     onChange,
     checkboxOptions,
     checkboxMargin,
@@ -53,6 +55,7 @@ const TableGroupMenu = (props) => {
           {headerMenu.map((item, index) => (
             <GroupMenuItem key={index} item={item} />
           ))}
+          {infoPanelToggle}
         </StyledScrollbar>
       </StyledTableGroupMenu>
     </>
@@ -63,6 +66,7 @@ TableGroupMenu.propTypes = {
   isChecked: PropTypes.bool,
   isIndeterminate: PropTypes.bool,
   headerMenu: PropTypes.arrayOf(PropTypes.object).isRequired,
+  infoPanelToggle: PropTypes.node,
   checkboxOptions: PropTypes.any.isRequired,
   onClick: PropTypes.func,
   onChange: PropTypes.func,

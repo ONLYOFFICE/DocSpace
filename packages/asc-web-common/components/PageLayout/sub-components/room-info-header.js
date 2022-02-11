@@ -1,12 +1,9 @@
 import IconButton from "@appserver/components/icon-button";
 import Text from "@appserver/components/text";
-
+import { tablet } from "@appserver/components/utils/device";
 import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
-
 import React from "react";
-import { tablet } from "@appserver/components/utils/device";
-
 import styled from "styled-components";
 
 const SubRoomInfoHeader = ({ children, toggleIsVisible }) => {
@@ -22,11 +19,11 @@ const SubRoomInfoHeader = ({ children, toggleIsVisible }) => {
         align-items: center;
         margin: 8px 0;
 
-        /* .close-btn {
+        .close-btn {
             @media ${tablet} {
                 display: none;
             }
-        } */
+        }
     `;
 
     return (

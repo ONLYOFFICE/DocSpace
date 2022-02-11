@@ -1,14 +1,16 @@
+import { inject, observer } from "mobx-react";
 import React from "react";
-import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
-import { observer, inject } from "mobx-react";
+import { withRouter } from "react-router";
 
-const RoomInfoBodyContent = () => {
-    return <div>ROOM INFO BODY CONTENT</div>;
+const RoomInfoBodyContent = (selectedFilesStore) => {
+    return <div>{selectedFilesStore.fileInfo}</div>;
 };
 
-export default inject(({}) => {
-    return {};
+export default inject(({ selectedFilesStore }) => {
+    //const { selectedFilesStore } = filesStore;
+    console.log(selectedFilesStore);
+    return { selectedFilesStore };
 })(
     withRouter(
         withTranslation(["Home", "Common", "Translations"])(

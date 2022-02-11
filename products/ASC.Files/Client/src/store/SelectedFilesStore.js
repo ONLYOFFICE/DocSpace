@@ -1,25 +1,29 @@
 import { makeObservable, action, observable } from "mobx";
 
 class SelectedFilesStore {
-  folderId = null;
-  fileInfo = null;
+    folderId = null;
+    fileInfo = null;
 
-  constructor() {
-    makeObservable(this, {
-      fileInfo: observable,
-      folderId: observable,
+    constructor() {
+        makeObservable(this, {
+            fileInfo: observable,
+            folderId: observable,
 
-      setFolderId: action,
-      setFile: action,
-    });
-  }
+            setFolderId: action,
+            setFile: action,
+        });
+    }
 
-  setFolderId = (id) => {
-    this.folderId = id;
-  };
-  setFile = (obj) => {
-    this.fileInfo = obj;
-  };
+    setFolderId = (id) => {
+        this.folderId = id;
+    };
+    setFile = (obj) => {
+        this.fileInfo = obj;
+    };
+
+    get fileInfo() {
+        return this.fileInfo;
+    }
 }
 
 export default new SelectedFilesStore();

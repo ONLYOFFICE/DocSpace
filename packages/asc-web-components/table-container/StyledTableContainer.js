@@ -1,8 +1,9 @@
+import { isMobile } from "react-device-detect";
 import styled, { css } from "styled-components";
+
+import Scrollbar from "../scrollbar";
 import Base from "../themes/base";
 import { mobile, tablet } from "../utils/device";
-import Scrollbar from "../scrollbar";
-import { isMobile } from "react-device-detect";
 
 const StyledTableContainer = styled.div`
   -moz-user-select: none;

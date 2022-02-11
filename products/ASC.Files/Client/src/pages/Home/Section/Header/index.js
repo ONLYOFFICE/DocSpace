@@ -22,16 +22,15 @@ const StyledContainer = styled.div`
             props.viewAs === "table"
                 ? css`
                       margin: 0px -20px;
-                      width: calc(100% + 44px);
+                      width: calc(100% + 40px);
                   `
                 : css`
                       margin: 0px -24px;
                       width: calc(100% + 48px);
                   `}
-
         @media ${tablet} {
             margin: 0 -16px;
-            //width: calc(100% + 32px);
+            width: calc(100% + 32px);
         }
     }
 
@@ -45,16 +44,16 @@ const StyledContainer = styled.div`
                     props.isRootFolder
                         ? "auto auto 1fr"
                         : props.canCreate
-                        ? "auto auto auto auto 1fr"
-                        : "auto auto auto 1fr"};
+                        ? "auto auto auto auto auto  1fr"
+                        : "auto auto auto auto 1fr"};
 
                 @media ${tablet} {
                     grid-template-columns: ${(props) =>
                         props.isRootFolder
-                            ? "1fr auto"
+                            ? "auto auto 1fr"
                             : props.canCreate
-                            ? "auto 1fr auto auto"
-                            : "auto 1fr auto"};
+                            ? "auto auto auto auto 1fr"
+                            : "auto auto auto 1fr"};
                     ${(props) => !props.isLoading && "top: 7px;"}
                 }
             `}
@@ -125,12 +124,6 @@ const StyledContainer = styled.div`
                 }
             }
         }
-
-        .room-info-button {
-            margin-bottom: -1px;
-            position: absolute;
-            right: 0;
-        }
     }
 
     .group-button-menu-container {
@@ -183,6 +176,32 @@ const StyledContainer = styled.div`
             margin: 0 -24px;
         }
     }
+`;
+
+const StyledInfoPanelToggleWrapper = styled.div`
+    display: flex;
+    margin-left: auto;
+    align-items: center;
+    align-self: center;
+    justify-content: center;
+
+    .info-panel-toggle-bg {
+        height: 32px;
+        width: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background-color: ${(props) =>
+            props.isInfoPanelVisible ? "#F8F9F9" : "#FFFFFF"};
+    }
+
+    ${(props) =>
+        props.isHeaderVisible &&
+        css`
+            margin-right: 24px;
+            padding-left: 12px;
+        `}
 `;
 
 class SectionHeaderContent extends React.Component {
@@ -433,6 +452,7 @@ class SectionHeaderContent extends React.Component {
             isHeaderVisible,
             isHeaderChecked,
             isHeaderIndeterminate,
+            isRoomInfoVisible,
             isRootFolder,
             title,
             canCreate,
@@ -448,6 +468,24 @@ class SectionHeaderContent extends React.Component {
         const menuItems = this.getMenuItems();
         const isLoading = !title || !tReady;
         const headerMenu = getHeaderMenu(t);
+
+        const infoPanelToggle = (
+            <StyledInfoPanelToggleWrapper
+                isInfoPanelVisible={isRoomInfoVisible}
+                isHeaderVisible={isHeaderVisible}
+            >
+                <div className="info-panel-toggle-bg">
+                    <IconButton
+                        className="info-panel-toggle"
+                        iconName="images/panel.svg"
+                        size="16"
+                        color={isRoomInfoVisible ? "#3B72A7" : "#A3A9AE"}
+                        isFill={true}
+                        onClick={this.onToggleRoomInfo}
+                    />
+                </div>
+            </StyledInfoPanelToggleWrapper>
+        );
 
         return (
             <Consumer>
@@ -469,6 +507,7 @@ class SectionHeaderContent extends React.Component {
                                 isChecked={isHeaderChecked}
                                 isIndeterminate={isHeaderIndeterminate}
                                 headerMenu={headerMenu}
+                                infoPanelToggle={infoPanelToggle}
                             />
                         ) : (
                             <div className="header-container">
@@ -565,20 +604,7 @@ class SectionHeaderContent extends React.Component {
                                                     />
                                                 </span>
                                             )}
-                                        <>
-                                            <IconButton
-                                                iconName="images/panel.svg"
-                                                size="15"
-                                                color={
-                                                    this.props.isRoomInfoVisible
-                                                        ? "#3B72A7"
-                                                        : "#A3A9AE"
-                                                }
-                                                isFill={true}
-                                                onClick={this.onToggleRoomInfo}
-                                                className="room-info-button"
-                                            />
-                                        </>
+                                        {infoPanelToggle}
                                     </>
                                 )}
                             </div>
@@ -638,6 +664,7 @@ export default inject(
             getHeaderMenu,
         } = filesActionsStore;
 
+        //const { toggleRoomInfo, isRoomInfoVisible } = roomInfoStore;
         const toggleRoomInfo = roomInfoStore.toggleIsVisible;
         const isRoomInfoVisible = roomInfoStore.isVisible;
 
