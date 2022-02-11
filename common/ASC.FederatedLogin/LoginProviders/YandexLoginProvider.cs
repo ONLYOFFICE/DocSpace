@@ -78,7 +78,7 @@ public class YandexLoginProvider : BaseLoginProvider<YandexLoginProvider>
         }
         catch (Exception ex)
         {
-            return LoginProfile.FromError(_signature, _instanceCrypto, ex);
+            return LoginProfile.FromError(Signature, InstanceCrypto, ex);
         }
     }
 
@@ -108,7 +108,7 @@ public class YandexLoginProvider : BaseLoginProvider<YandexLoginProvider>
             throw new Exception("Failed to correctly process the response");
         }
 
-        var profile = new LoginProfile(_signature, _instanceCrypto)
+        var profile = new LoginProfile(Signature, InstanceCrypto)
         {
             EMail = jProfile.Value<string>("default_email"),
             Id = jProfile.Value<string>("id"),

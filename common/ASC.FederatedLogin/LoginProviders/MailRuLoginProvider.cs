@@ -82,7 +82,7 @@ public class MailRuLoginProvider : BaseLoginProvider<MailRuLoginProvider>
         }
         catch (Exception ex)
         {
-            return LoginProfile.FromError(_signature, _instanceCrypto, ex);
+            return LoginProfile.FromError(Signature, InstanceCrypto, ex);
         }
     }
 
@@ -132,7 +132,7 @@ public class MailRuLoginProvider : BaseLoginProvider<MailRuLoginProvider>
             throw new Exception("Failed to correctly process the response");
         }
 
-        var profile = new LoginProfile(_signature, _instanceCrypto)
+        var profile = new LoginProfile(Signature, InstanceCrypto)
         {
             EMail = mailRuProfiles[0].Email,
             Id = mailRuProfiles[0].Uid,

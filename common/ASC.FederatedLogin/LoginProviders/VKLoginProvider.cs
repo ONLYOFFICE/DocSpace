@@ -88,7 +88,7 @@ public class VKLoginProvider : BaseLoginProvider<VKLoginProvider>
         }
         catch (Exception ex)
         {
-            return LoginProfile.FromError(_signature, _instanceCrypto, ex);
+            return LoginProfile.FromError(Signature, InstanceCrypto, ex);
         }
     }
 
@@ -137,7 +137,7 @@ public class VKLoginProvider : BaseLoginProvider<VKLoginProvider>
             throw new Exception("Failed to correctly process the response");
         }
 
-        var profile = new LoginProfile(_signature, _instanceCrypto)
+        var profile = new LoginProfile(Signature, InstanceCrypto)
         {
             Id = vkProfiles[0].Id,
             FirstName = vkProfiles[0].FirstName,

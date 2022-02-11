@@ -100,7 +100,7 @@ public class GoogleLoginProvider : BaseLoginProvider<GoogleLoginProvider>
             throw new Exception("Failed to correctly process the response");
         }
 
-        var profile = new LoginProfile(_signature, _instanceCrypto)
+        var profile = new LoginProfile(Signature, InstanceCrypto)
         {
             Id = jProfile.Value<string>("resourceName").Replace("people/", ""),
             Provider = ProviderConstants.Google,
