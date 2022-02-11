@@ -30,16 +30,11 @@ namespace ASC.Feed.Aggregator.Modules
         public abstract string Name { get; }
         public abstract string Product { get; }
         public abstract Guid ProductID { get; }
-
         protected abstract string DbId { get; }
+        protected int Tenant => TenantManager.GetCurrentTenant().TenantId;
 
-        protected int Tenant
-        {
-            get { return TenantManager.GetCurrentTenant().TenantId; }
-        }
-
-        protected TenantManager TenantManager { get; }
-        protected WebItemSecurity WebItemSecurity { get; }
+        protected readonly TenantManager TenantManager;
+        protected readonly WebItemSecurity WebItemSecurity;
 
         protected FeedModule(TenantManager tenantManager, WebItemSecurity webItemSecurity)
         {
