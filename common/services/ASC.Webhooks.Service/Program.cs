@@ -81,6 +81,8 @@ builder.WebHost.ConfigureServices((hostContext, services) =>
         diHelper.TryAdd(typeof(ICacheNotify<>), typeof(MemoryCacheNotify<>));
     }
 
+    services.AddHttpClient();
+
     diHelper.TryAdd<DbWorker>();
 
     services.AddHostedService<BuildQueueService>();

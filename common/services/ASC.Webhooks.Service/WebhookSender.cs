@@ -4,15 +4,16 @@ namespace ASC.Webhooks.Service;
 public class WebhookSender
 {
     private readonly int? _repeatCount;
-    private static readonly HttpClient httpClient = new HttpClient();
+    private readonly IHttpClientFactory _clientFactory;
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILog _log;
 
-    public WebhookSender(IOptionsMonitor<ILog> options, IServiceScopeFactory scopeFactory, Settings settings)
+    public WebhookSender(IOptionsMonitor<ILog> options, IServiceScopeFactory scopeFactory, Settings settings, IHttpClientFactory clientFactory)
     {
         _log = options.Get("ASC.Webhooks.Core");
         _scopeFactory = scopeFactory;
         _repeatCount = settings.RepeatCount;
+        _clientFactory = clientFactory;
     }
 
     public async Task Send(WebhookRequest webhookRequest, CancellationToken cancellationToken)
@@ -42,6 +43,7 @@ public class WebhookSender
                     Encoding.UTF8,
                     "application/json");
 
+                var httpClient = _clientFactory.CreateClient();
                 response = await httpClient.SendAsync(request, cancellationToken);
 
                 if (response.IsSuccessStatusCode)
