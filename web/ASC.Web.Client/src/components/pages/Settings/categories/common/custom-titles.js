@@ -130,29 +130,22 @@ class CustomTitles extends React.Component {
     });
   };
 
-  onCancelClick = () => {
-    settingNames.forEach((currentSetting) => {
-      const valueFromSessionStorage = getFromSessionStorage(currentSetting);
-
-      if (
-        valueFromSessionStorage &&
-        !this.settingIsEqualInitialValue(
-          currentSetting,
-          valueFromSessionStorage
-        )
-      ) {
-        const defaultValue = this.state[currentSetting + "Default"];
-
-        this.setState({ [currentSetting]: defaultValue });
-        saveToSessionStorage(currentSetting, "");
-      }
+  onRestoreGreetingSettings = () => {
+    const { restoreGreetingTitle, t } = this.props;
+    this.setState({ isLoadingGreetingRestore: true }, function () {
+      restoreGreetingTitle()
+        .then(() => {
+          this.setState({
+            greetingTitle: this.props.greetingSettings,
+            greetingTitleDefault: this.props.greetingSettings,
+            showReminder: false,
+          });
+          saveToSessionStorage("greetingTitle", "");
+          toastr.success(t("SuccessfullySaveGreetingSettingsMessage"));
+        })
+        .catch((error) => toastr.error(error))
+        .finally(() => this.setState({ isLoadingGreetingRestore: false }));
     });
-
-    this.setState({
-      showReminder: false,
-    });
-
-    this.checkChanges();
   };
 
   settingIsEqualInitialValue = (stateName, value) => {
@@ -187,7 +180,6 @@ class CustomTitles extends React.Component {
       greetingTitle,
       isLoadingGreetingSave,
       isLoadingGreetingRestore,
-      hasChanged,
       showReminder,
     } = this.state;
 
@@ -220,18 +212,16 @@ class CustomTitles extends React.Component {
               />
             </FieldContainer>
           </div>
-          {hasChanged && (
-            <SaveCancelButtons
-              onSaveClick={this.onSaveGreetingSettings}
-              onCancelClick={this.onCancelClick}
-              showReminder={showReminder}
-              reminderTest={t("YouHaveUnsavedChanges")}
-              saveButtonLabel={t("Common:SaveButton")}
-              cancelButtonLabel={t("Common:CancelButton")}
-              displaySettings={true}
-              sectionWidth={sectionWidth}
-            />
-          )}
+          <SaveCancelButtons
+            onSaveClick={this.onSaveGreetingSettings}
+            onCancelClick={this.onRestoreGreetingSettings}
+            showReminder={showReminder}
+            reminderTest={t("YouHaveUnsavedChanges")}
+            saveButtonLabel={t("Common:SaveButton")}
+            cancelButtonLabel={t("Settings:RestoreDefaultButton")}
+            displaySettings={true}
+            sectionWidth={sectionWidth}
+          />
         </StyledComponent>
       </>
     );
