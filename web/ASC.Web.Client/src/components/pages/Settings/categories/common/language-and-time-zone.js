@@ -14,7 +14,7 @@ import { inject, observer } from "mobx-react";
 import { LANGUAGE } from "@appserver/common/constants";
 import { convertLanguage } from "@appserver/common/utils";
 import withCultureNames from "@appserver/common/hoc/withCultureNames";
-import LanguageTimeSettingsTooltip from "./sub-components/common-tooltips";
+import { LanguageTimeSettingsTooltip } from "./sub-components/common-tooltips";
 const mapTimezonesToArray = (timezones) => {
   return timezones.map((timezone) => {
     return { key: timezone.id, label: timezone.displayName };

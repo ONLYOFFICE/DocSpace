@@ -4,7 +4,7 @@ import { Trans } from "react-i18next";
 import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
 
-const StyledLanguageTimeSettingsTooltip = styled.div`
+const StyledTooltip = styled.div`
   .font-size {
     font-size: 12px;
   }
@@ -19,13 +19,13 @@ const StyledLanguageTimeSettingsTooltip = styled.div`
   }
 `;
 
-const LanguageTimeSettingsTooltip = ({ t, theme }) => {
+export const LanguageTimeSettingsTooltip = ({ t, theme }) => {
   const learnMore = t("Common:LearnMore");
   const text = t("Settings:StudioTimeLanguageSettings");
   const save = t("Common:SaveButton");
 
   return (
-    <StyledLanguageTimeSettingsTooltip>
+    <StyledTooltip>
       <Text className="font-size">
         <Trans ns="Settings" i18nKey="LanguageTimeSettingsTooltip" text={text}>
           <Text className="bold display font-size">{{ text }}</Text>{" "}
@@ -50,8 +50,40 @@ const LanguageTimeSettingsTooltip = ({ t, theme }) => {
           </Link>
         </Trans>
       </Text>
-    </StyledLanguageTimeSettingsTooltip>
+    </StyledTooltip>
   );
 };
 
-export default LanguageTimeSettingsTooltip;
+export const CustomTitlesTooltip = ({ t }) => {
+  const welcomeText = t("Settings:CustomTitlesWelcome");
+  const text = t("Settings:CustomTitlesText");
+  const from = t("Settings:CustomTitlesFrom");
+  const header = t("Settings:CustomTitlesHeader");
+  return (
+    <StyledTooltip>
+      <Text className="font-size">
+        <Trans
+          ns="Settings"
+          i18nKey="CustomTitlesSettingsTooltip"
+          welcomeText={welcomeText}
+          text={text}
+          from={from}
+        >
+          <Text className="bold display font-size"> {{ welcomeText }}</Text>{" "}
+          <Text className="bold display font-size"> {{ text }}</Text>{" "}
+          <Text className="bold display font-size"> {{ from }}</Text>{" "}
+        </Trans>
+      </Text>
+      <Text className="font-size">
+        <Trans
+          ns="Settings"
+          i18nKey="CustomTitlesSettingsTooltipDescription"
+          header={header}
+        >
+          {" "}
+          <Text className="bold display font-size"> {{ header }}</Text>{" "}
+        </Trans>
+      </Text>
+    </StyledTooltip>
+  );
+};

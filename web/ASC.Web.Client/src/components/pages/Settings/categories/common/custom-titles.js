@@ -11,6 +11,7 @@ import { showLoader, hideLoader } from "@appserver/common/utils";
 import { saveToSessionStorage, getFromSessionStorage } from "../../utils";
 import { setDocumentTitle } from "../../../../../helpers/utils";
 import { inject, observer } from "mobx-react";
+import { CustomTitlesTooltip } from "./sub-components/common-tooltips";
 
 const StyledComponent = styled.div`
   .margin-top {
@@ -183,6 +184,8 @@ class CustomTitles extends React.Component {
       showReminder,
     } = this.state;
 
+    const tooltipCustomTitlesTooltip = <CustomTitlesTooltip t={t} />;
+
     return !isLoadedData ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
@@ -193,7 +196,7 @@ class CustomTitles extends React.Component {
             <HelpButton
               iconName="static/images/combined.shape.svg"
               size={12}
-              // tooltipContent={tooltipLanguageTimeSettings}
+              tooltipContent={tooltipCustomTitlesTooltip}
             />
           </div>
           <div className="settings-block">
