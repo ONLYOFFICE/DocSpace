@@ -138,8 +138,7 @@ class LanguageAndTimeZone extends React.Component {
 
     if (
       (languageFromSessionStorage || timezoneFromSessionStorage) &&
-      !showReminder &&
-      JSON.parse(sessionStorage.getItem("flagChanges"))
+      !showReminder
     ) {
       this.setState({
         showReminder: true,
@@ -228,7 +227,9 @@ class LanguageAndTimeZone extends React.Component {
       saveToSessionStorage("language", "");
     } else {
       saveToSessionStorage("language", language);
-      sessionStorage.setItem("flagChanges", true);
+      this.setState({
+        showReminder: true,
+      });
     }
     this.checkChanges();
   };
@@ -239,6 +240,9 @@ class LanguageAndTimeZone extends React.Component {
       saveToSessionStorage("timezone", "");
     } else {
       saveToSessionStorage("timezone", timezone);
+      this.setState({
+        showReminder: true,
+      });
     }
 
     this.checkChanges();
@@ -268,8 +272,6 @@ class LanguageAndTimeZone extends React.Component {
       timezoneDefault: this.state.timezone,
       languageDefault: this.state.language,
     });
-
-    sessionStorage.setItem("flagChanges", false);
   };
 
   onCancelClick = () => {
