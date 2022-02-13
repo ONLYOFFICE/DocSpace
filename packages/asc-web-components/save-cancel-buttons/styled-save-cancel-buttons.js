@@ -66,6 +66,20 @@ const StyledSaveCancelButtons = styled.div`
       width: max-content;
     }  
   `}
+
+  ${(props) =>
+    props.displaySettings &&
+    props.showReminder &&
+    `
+    margin-bottom:14px; 
+  `}
+
+  ${(props) =>
+    props.displaySettings &&
+    !props.showReminder &&
+    `
+    margin-bottom:32px; 
+  `}
 `;
 StyledSaveCancelButtons.defaultProps = { theme: Base };
 export default StyledSaveCancelButtons;

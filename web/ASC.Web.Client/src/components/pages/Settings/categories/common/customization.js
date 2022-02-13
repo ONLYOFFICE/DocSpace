@@ -58,8 +58,6 @@ const StyledComponent = styled.div`
   }
 
   .category-item-wrapper {
-    margin-bottom: 16px;
-
     /* .category-item-heading {
       display: flex;
       align-items: center;

@@ -53,6 +53,7 @@ class SaveCancelButtons extends React.Component {
         id={id}
         displaySettings={displaySettings}
         sectionWidth={sectionWidth}
+        showReminder={showReminder}
       >
         <div className="buttons-flex">
           <Button
