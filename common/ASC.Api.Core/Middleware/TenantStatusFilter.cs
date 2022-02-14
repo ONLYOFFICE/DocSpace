@@ -17,7 +17,7 @@ namespace ASC.Api.Core.Middleware
     public class TenantStatusFilter : IResourceFilter
     {
         private readonly ILog log;
-        private readonly string[] passthroughtRequestEndings = new[] { "preparation-portal", "getrestoreprogress", "settings" }; //TODO add or update when "preparation-portal" will be done
+        private readonly string[] passthroughtRequestEndings = new[] { "preparation-portal", "getrestoreprogress", "settings", "settings.json" }; //TODO add or update when "preparation-portal" will be done
 
 
         public TenantStatusFilter(IOptionsMonitor<ILog> options, TenantManager tenantManager)
