@@ -449,7 +449,10 @@ namespace ASC.Web.Files.Services.DocumentService
             }
 
             if (!forcesave)
+            {
                 FileTracker.Remove(fileId);
+                SocketManager.StopEdit(fileId);
+            }
 
             if (file != null)
             {

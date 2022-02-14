@@ -55,14 +55,16 @@ rm packages-microsoft-prod.deb
 
 #install kafka
 PRODUCT_DIR="/var/www/${product}"
-if [ "$(ls -A "$PRODUCT_DIR/services/kafka" 2> /dev/null)" == "" ]; then
+if [ "$(ls "$PRODUCT_DIR/services/kafka" 2> /dev/null)" == "" ]; then
 	mkdir -p ${PRODUCT_DIR}/services/
 	if ! cat /etc/passwd | grep -q "kafka"; then
 		adduser --quiet --home ${PRODUCT_DIR}/services/kafka --system kafka
 	fi
 	cd ${PRODUCT_DIR}/services/kafka
-	curl https://downloads.apache.org/kafka/2.7.2/kafka_2.13-2.7.2.tgz -O
-	tar xzf kafka_*.tgz --strip 1 && rm -rf kafka_*.tgz
+	KAFKA_VERSION=$(curl https://downloads.apache.org/kafka/ | grep -Eo '3.1.[0-9]' | tail -1)
+	KAFKA_ARCHIVE=$(curl https://downloads.apache.org/kafka/$KAFKA_VERSION/ | grep -Eo "kafka_2.[0-9][0-9]-$KAFKA_VERSION.tgz" | tail -1)
+	curl https://downloads.apache.org/kafka/$KAFKA_VERSION/$KAFKA_ARCHIVE -O
+	tar xzf $KAFKA_ARCHIVE --strip 1 && rm -rf $KAFKA_ARCHIVE
 	chown -R kafka ${PRODUCT_DIR}/services/kafka
 	cd -
 fi
@@ -107,12 +109,16 @@ if ! dpkg -l | grep -q "mysql-server"; then
 	MYSQL_SERVER_PASS=${MYSQL_SERVER_PASS:-"$(cat /dev/urandom | tr -dc A-Za-z0-9 | head -c 12)"}
 
 	# setup mysql 8.0 package
-	curl -OL http://dev.mysql.com/get/mysql-apt-config_0.8.15-1_all.deb
+	MYSQL_PACKAGE_NAME="mysql-apt-config_0.8.22-1_all.deb"
+	if [ "$DIST" = "debian" ] && [ "$DISTRIB_CODENAME" = "stretch" ]; then
+		MYSQL_PACKAGE_NAME="mysql-apt-config_0.8.16-1_all.deb"
+	fi
+	curl -OL http://dev.mysql.com/get/${MYSQL_PACKAGE_NAME}
 	echo "mysql-apt-config mysql-apt-config/repo-codename  select  $DISTRIB_CODENAME" | debconf-set-selections
 	echo "mysql-apt-config mysql-apt-config/repo-distro  select  $DIST" | debconf-set-selections
 	echo "mysql-apt-config mysql-apt-config/select-server  select  mysql-8.0" | debconf-set-selections
-	DEBIAN_FRONTEND=noninteractive dpkg -i mysql-apt-config_0.8.15-1_all.deb
-	rm -f mysql-apt-config_0.8.15-1_all.deb
+	DEBIAN_FRONTEND=noninteractive dpkg -i ${MYSQL_PACKAGE_NAME}
+	rm -f ${MYSQL_PACKAGE_NAME}
 
 	echo mysql-community-server mysql-community-server/root-pass password ${MYSQL_SERVER_PASS} | debconf-set-selections
 	echo mysql-community-server mysql-community-server/re-root-pass password ${MYSQL_SERVER_PASS} | debconf-set-selections

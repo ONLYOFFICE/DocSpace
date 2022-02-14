@@ -758,6 +758,7 @@ namespace ASC.Web.Files.Services.WCFService
                 if (!forcesave && FileTracker.IsEditingAlone(fileId))
                 {
                     FileTracker.Remove(fileId);
+                    SocketManager.StopEdit(fileId);
                 }
 
                 var file = EntryManager.SaveEditing(fileId, fileExtension, fileuri, stream, doc, forcesave: forcesave ? ForcesaveType.User : ForcesaveType.None, keepLink: true);
@@ -780,6 +781,7 @@ namespace ASC.Web.Files.Services.WCFService
                 if (!forcesave && FileTracker.IsEditing(fileId))
                 {
                     FileTracker.Remove(fileId);
+                    SocketManager.StopEdit(fileId);
                 }
 
                 var file = EntryManager.SaveEditing(fileId,

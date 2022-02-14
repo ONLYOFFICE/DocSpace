@@ -693,6 +693,7 @@ namespace ASC.Files.Helpers
                 var aceCollection = new AceCollection<T>
                 {
                     Files = new List<T> { fileId },
+                    Folders = new List<T>(0),
                     Aces = list
                 };
                 FileStorageService.SetAceObject(aceCollection, false);

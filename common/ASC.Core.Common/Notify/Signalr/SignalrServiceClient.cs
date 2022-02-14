@@ -321,11 +321,11 @@ namespace ASC.Core.Notify.Signalr
             }
         }
 
-        public void StopEdit<T>(T fileId, string room)
+        public void StopEdit<T>(T fileId, string room, string data)
         {
             try
             {
-                MakeRequest("stop-edit", new { room, fileId });
+                MakeRequest("stop-edit", new { room, fileId, data });
             }
             catch (Exception error)
             {

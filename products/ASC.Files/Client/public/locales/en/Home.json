@@ -80,5 +80,7 @@
   "ViewList": "List",
   "ViewTiles": "Tiles",
   "NewMasterForm": "New form template",
-  "ViewTiles": "Tiles"
+  "ViewTiles": "Tiles",
+  "VersionHistory": "Version history",
+  "MoveOrCopy": "Move or copy"
 }

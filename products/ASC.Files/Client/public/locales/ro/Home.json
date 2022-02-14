@@ -79,5 +79,7 @@
     "UnblockVersion": "Deblocare/Blocare",
     "UploadToFolder": "Încarcă în dosarul",
     "ViewList": "Listă",
-    "ViewTiles": "Cadre"
+    "ViewTiles": "Cadre",
+    "VersionHistory": "Istoricul versiune",
+    "MoveOrCopy": "Mutare sau copiere"
 }

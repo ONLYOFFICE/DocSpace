@@ -6,6 +6,7 @@ import {
   FileType,
   FileAction,
   AppServerConfig,
+  FileStatus,
 } from "@appserver/common/constants";
 import history from "@appserver/common/history";
 import { loopTreeFolders } from "../helpers/files-helpers";
@@ -139,15 +140,29 @@ class FilesStore {
       const foundIndex = this.files.findIndex((x) => x.id === id);
       if (foundIndex == -1) return;
 
-      this.updateFileStatus(foundIndex, 1);
+      this.updateFileStatus(
+        foundIndex,
+        this.files[foundIndex].fileStatus | FileStatus.IsEditing
+      );
     });
 
-    socketHelper.on("s:stop-edit-file", (id) => {
+    socketHelper.on("s:stop-edit-file", (id, data) => {
       //console.log(`Call s:stop-edit-file (id=${id})`);
       const foundIndex = this.files.findIndex((x) => x.id === id);
       if (foundIndex == -1) return;
 
-      this.updateFileStatus(foundIndex, 0);
+      let file;
+
+      if (data) {
+        file = JSON.parse(data);
+        console.log(`socket stop-edit-file (id=${id}`, file);
+      }
+
+      this.updateFileStatus(
+        foundIndex,
+        this.files[foundIndex].fileStatus & ~FileStatus.IsEditing,
+        file
+      );
     });
   }
 
@@ -305,8 +320,12 @@ class FilesStore {
     this.folders = folders;
   };
 
-  updateFileStatus = (index, status) => {
+  updateFileStatus = (index, status, file) => {
     if (index < 0) return;
+
+    if (file) {
+      this.files[index] = file;
+    }
 
     this.files[index].fileStatus = status;
   };
@@ -1106,6 +1125,10 @@ class FilesStore {
         ]);
       }
 
+      if (!(isMyFolder && (this.filterType || this.filterSearch))) {
+        folderOptions = this.removeOptions(folderOptions, ["open-location"]);
+      }
+
       return folderOptions;
     }
   };
@@ -1750,12 +1773,12 @@ class FilesStore {
         this.activeFiles.findIndex((f) => f == id) === -1 &&
           //newSelection.push(this.files.find((f) => f.id == id));
           newSelection.push(
-            this.filesList.find((f) => f.id == id && f.fileExst)
+            this.filesList.find((f) => f.id == id && !f.isFolder)
           );
       } else if (this.activeFolders.findIndex((f) => f == id) === -1) {
         //const selectableFolder = this.folders.find((f) => f.id == id);
         const selectableFolder = this.filesList.find(
-          (f) => f.id == id && !f.fileExst
+          (f) => f.id == id && f.isFolder
         );
         selectableFolder.isFolder = true;
         newSelection.push(selectableFolder);
