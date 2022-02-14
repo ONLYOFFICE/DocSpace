@@ -29,6 +29,11 @@ builder.WebHost.ConfigureKestrel((hostingContext, serverOptions) =>
     }
 });
 
+builder.Host.ConfigureContainer<ContainerBuilder>((context, builder) =>
+ {
+     builder.Register(context.Configuration, false, false);
+ });
+
 builder.Host.ConfigureAppConfiguration((hostContext, config) =>
 {
     var buided = config.Build();
