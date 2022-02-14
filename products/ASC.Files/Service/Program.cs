@@ -73,6 +73,7 @@ namespace ASC.Files.Service
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddMemoryCache();
+                    services.AddHttpClient();
 
                     var diHelper = new DIHelper(services);
 
