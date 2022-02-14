@@ -63,15 +63,15 @@ builder.Host.ConfigureServices((hostContext, services) =>
 
                     if (kafkaConfiguration != null)
                     {
-                        diHelper.TryAdd(typeof(IEventBus<>), typeof(EventBusKafka<>));
+                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCacheNotify<>));
                     }
                     else if (redisConfiguration != null)
                     {
-                        diHelper.TryAdd(typeof(IEventBus<>), typeof(EventBusRedis<>));
+                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCacheNotify<>));
                     }
                     else
                     {
-                        diHelper.TryAdd(typeof(IEventBus<>), typeof(EventBusMemoryCache<>));
+                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(MemoryCacheNotify<>));
                     }
 
     services.AddHostedService<ClearEventsService>();

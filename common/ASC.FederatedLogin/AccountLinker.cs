@@ -29,18 +29,18 @@ namespace ASC.FederatedLogin
     public class AccountLinkerStorage
     {
         private readonly ICache cache;
-        private readonly IEventBus<LinkerCacheItem> notify;
+        private readonly ICacheNotify<LinkerCacheItem> notify;
 
-        public AccountLinkerStorage(IEventBus<LinkerCacheItem> notify, ICache cache)
+        public AccountLinkerStorage(ICacheNotify<LinkerCacheItem> notify, ICache cache)
         {
             this.cache = cache;
             this.notify = notify;
-            notify.Subscribe((c) => cache.Remove(c.Obj), Common.Caching.EventType.Remove);
+            notify.Subscribe((c) => cache.Remove(c.Obj), Common.Caching.CacheNotifyAction.Remove);
         }
 
         public void RemoveFromCache(string obj)
         {
-            notify.Publish(new LinkerCacheItem { Obj = obj }, Common.Caching.EventType.Remove);
+            notify.Publish(new LinkerCacheItem { Obj = obj }, Common.Caching.CacheNotifyAction.Remove);
         }
         public List<LoginProfile> GetFromCache(string obj, Func<string, List<LoginProfile>> fromDb)
         {

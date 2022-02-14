@@ -25,12 +25,12 @@
 
 namespace ASC.Common.Caching;
 
-[Singletone]
-public interface IEventBus<T> where T : IMessage<T>, new()
+[Flags]
+public enum CacheNotifyAction
 {
-    void Publish(T obj, EventType action);
-
-    void Subscribe(Action<T> onchange, EventType action);
-
-    void Unsubscribe(EventType action);
+    Insert = 1,
+    Update = 2,
+    Remove = 4,
+    InsertOrUpdate = Insert | Update,
+    Any = InsertOrUpdate | Remove,
 }

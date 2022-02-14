@@ -28,16 +28,16 @@ namespace ASC.Common.Caching;
 [Singletone]
 public class AscCacheNotify
 {
-    private readonly IEventBus<AscCacheItem> _eventBus;
+    private readonly ICacheNotify<AscCacheItem> _cacheNotify;
 
-    public AscCacheNotify(IEventBus<AscCacheItem> eventBus)
+    public AscCacheNotify(ICacheNotify<AscCacheItem> cacheNotify)
     {
-        _eventBus = eventBus;
+        _cacheNotify = cacheNotify;
 
-        _eventBus.Subscribe((item) => { OnClearCache(); }, EventType.Any);
+        _cacheNotify.Subscribe((item) => { OnClearCache(); }, CacheNotifyAction.Any);
     }
 
-    public void ClearCache() => _eventBus.Publish(new AscCacheItem { Id = Guid.NewGuid().ToString() }, EventType.Any);
+    public void ClearCache() => _cacheNotify.Publish(new AscCacheItem { Id = Guid.NewGuid().ToString() }, CacheNotifyAction.Any);
 
     public static void OnClearCache()
     {

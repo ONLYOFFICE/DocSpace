@@ -40,7 +40,7 @@ namespace ASC.Web.Core.WhiteLabel
         }
 
         private ICache Cache { get; }
-        private IEventBus<TenantLogoCacheItem> CacheNotify { get; }
+        private ICacheNotify<TenantLogoCacheItem> CacheNotify { get; }
 
         public TenantLogoManager(
             TenantWhiteLabelSettingsHelper tenantWhiteLabelSettingsHelper,
@@ -49,7 +49,7 @@ namespace ASC.Web.Core.WhiteLabel
             TenantManager tenantManager,
             AuthContext authContext,
             IConfiguration configuration,
-            IEventBus<TenantLogoCacheItem> cacheNotify,
+            ICacheNotify<TenantLogoCacheItem> cacheNotify,
             ICache cache)
         {
             TenantWhiteLabelSettingsHelper = tenantWhiteLabelSettingsHelper;
@@ -203,7 +203,7 @@ namespace ASC.Web.Core.WhiteLabel
 
         public void RemoveMailLogoDataFromCache()
         {
-            CacheNotify.Publish(new TenantLogoCacheItem() { Key = CacheKey }, Common.Caching.EventType.Remove);
+            CacheNotify.Publish(new TenantLogoCacheItem() { Key = CacheKey }, Common.Caching.CacheNotifyAction.Remove);
         }
     }
 }

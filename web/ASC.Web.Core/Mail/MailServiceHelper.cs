@@ -29,18 +29,18 @@ namespace ASC.Web.Core.Mail
 {
     public class MailServiceHelperStorage
     {
-        private IEventBus<MailServiceHelperCache> CacheNotify { get; }
+        private ICacheNotify<MailServiceHelperCache> CacheNotify { get; }
         public ICache Cache { get; }
-        public MailServiceHelperStorage(IEventBus<MailServiceHelperCache> cacheNotify, ICache cache)
+        public MailServiceHelperStorage(ICacheNotify<MailServiceHelperCache> cacheNotify, ICache cache)
         {
             Cache = cache;
             CacheNotify = cacheNotify;
-            CacheNotify.Subscribe(r => Cache.Remove(r.Key), Common.Caching.EventType.Remove);
+            CacheNotify.Subscribe(r => Cache.Remove(r.Key), Common.Caching.CacheNotifyAction.Remove);
         }
 
         public void Remove()
         {
-            CacheNotify.Publish(new MailServiceHelperCache() { Key = MailServiceHelper.CacheKey }, Common.Caching.EventType.Remove);
+            CacheNotify.Publish(new MailServiceHelperCache() { Key = MailServiceHelper.CacheKey }, Common.Caching.CacheNotifyAction.Remove);
         }
     }
 

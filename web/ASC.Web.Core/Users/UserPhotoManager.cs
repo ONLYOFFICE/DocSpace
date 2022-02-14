@@ -80,10 +80,10 @@ namespace ASC.Web.Core.Users
     public class UserPhotoManagerCache
     {
         private readonly ConcurrentDictionary<CacheSize, ConcurrentDictionary<Guid, string>> Photofiles;
-        private readonly IEventBus<UserPhotoManagerCacheItem> CacheNotify;
+        private readonly ICacheNotify<UserPhotoManagerCacheItem> CacheNotify;
         private readonly HashSet<int> TenantDiskCache;
 
-        public UserPhotoManagerCache(IEventBus<UserPhotoManagerCacheItem> notify)
+        public UserPhotoManagerCache(ICacheNotify<UserPhotoManagerCacheItem> notify)
         {
             try
             {
@@ -95,7 +95,7 @@ namespace ASC.Web.Core.Users
                 {
                     var userId = new Guid(data.UserId);
                     Photofiles.GetOrAdd(data.Size, (r) => new ConcurrentDictionary<Guid, string>())[userId] = data.FileName;
-                }, Common.Caching.EventType.InsertOrUpdate);
+                }, Common.Caching.CacheNotifyAction.InsertOrUpdate);
 
                 CacheNotify.Subscribe((data) =>
                 {
@@ -111,7 +111,7 @@ namespace ASC.Web.Core.Users
                         SetCacheLoadedForTenant(false, data.TenantId);
                     }
                     catch { }
-                }, Common.Caching.EventType.Remove);
+                }, Common.Caching.CacheNotifyAction.Remove);
             }
             catch (Exception)
             {
@@ -133,7 +133,7 @@ namespace ASC.Web.Core.Users
         {
             if (CacheNotify != null)
             {
-                CacheNotify.Publish(new UserPhotoManagerCacheItem { UserId = userID.ToString(), TenantId = tenantId }, Common.Caching.EventType.Remove);
+                CacheNotify.Publish(new UserPhotoManagerCacheItem { UserId = userID.ToString(), TenantId = tenantId }, Common.Caching.CacheNotifyAction.Remove);
             }
         }
 
@@ -141,7 +141,7 @@ namespace ASC.Web.Core.Users
         {
             if (CacheNotify != null)
             {
-                CacheNotify.Publish(new UserPhotoManagerCacheItem { UserId = userID.ToString(), Size = UserPhotoManager.ToCache(size), FileName = fileName, TenantId = tenantId }, Common.Caching.EventType.InsertOrUpdate);
+                CacheNotify.Publish(new UserPhotoManagerCacheItem { UserId = userID.ToString(), Size = UserPhotoManager.ToCache(size), FileName = fileName, TenantId = tenantId }, Common.Caching.CacheNotifyAction.InsertOrUpdate);
             }
         }
 

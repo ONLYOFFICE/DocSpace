@@ -71,7 +71,7 @@ namespace ASC.Web.Files.Services.WCFService
         private FileOperationsManager FileOperationsManager { get; }
         private TenantManager TenantManager { get; }
         private FileTrackerHelper FileTracker { get; }
-        private IEventBus<ThumbnailRequest> ThumbnailNotify { get; }
+        private ICacheNotify<ThumbnailRequest> ThumbnailNotify { get; }
         private EntryStatusManager EntryStatusManager { get; }
         public CompressToArchive CompressToArchive { get; }
         private ILog Logger { get; set; }
@@ -117,7 +117,7 @@ namespace ASC.Web.Files.Services.WCFService
             FileOperationsManager fileOperationsManager,
             TenantManager tenantManager,
             FileTrackerHelper fileTracker,
-            IEventBus<ThumbnailRequest> thumbnailNotify,
+            ICacheNotify<ThumbnailRequest> thumbnailNotify,
             EntryStatusManager entryStatusManager,
             CompressToArchive compressToArchive)
         {
@@ -2322,7 +2322,7 @@ namespace ASC.Web.Files.Services.WCFService
                     req.Files.Add(f);
                 }
 
-                ThumbnailNotify.Publish(req, Common.Caching.EventType.Insert);
+                ThumbnailNotify.Publish(req, Common.Caching.CacheNotifyAction.Insert);
             }
             catch (Exception e)
             {

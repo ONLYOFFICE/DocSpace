@@ -33,11 +33,11 @@ namespace ASC.Core.Caching
 
         internal TrustInterval Interval { get; set; }
         internal ICache Cache { get; }
-        internal IEventBus<QuotaCacheItem> CacheNotify { get; }
+        internal ICacheNotify<QuotaCacheItem> CacheNotify { get; }
 
         internal bool QuotaCacheEnabled { get; }
 
-        public QuotaServiceCache(IConfiguration Configuration, IEventBus<QuotaCacheItem> cacheNotify, ICache cache)
+        public QuotaServiceCache(IConfiguration Configuration, ICacheNotify<QuotaCacheItem> cacheNotify, ICache cache)
         {
             if (Configuration["core:enable-quota-cache"] == null)
             {
@@ -62,7 +62,7 @@ namespace ASC.Core.Caching
                 {
                     Cache.Remove(i.Key);
                 }
-            }, ASC.Common.Caching.EventType.Any);
+            }, ASC.Common.Caching.CacheNotifyAction.Any);
         }
     }
 
@@ -100,7 +100,7 @@ namespace ASC.Core.Caching
     {
         internal IQuotaService Service { get; set; }
         internal ICache Cache { get; set; }
-        internal IEventBus<QuotaCacheItem> CacheNotify { get; set; }
+        internal ICacheNotify<QuotaCacheItem> CacheNotify { get; set; }
         internal TrustInterval Interval { get; set; }
 
         internal TimeSpan CacheExpiration { get; set; }
@@ -142,7 +142,7 @@ namespace ASC.Core.Caching
         public TenantQuota SaveTenantQuota(TenantQuota quota)
         {
             var q = Service.SaveTenantQuota(quota);
-            CacheNotify.Publish(new QuotaCacheItem { Key = QuotaServiceCache.KEY_QUOTA }, ASC.Common.Caching.EventType.Any);
+            CacheNotify.Publish(new QuotaCacheItem { Key = QuotaServiceCache.KEY_QUOTA }, ASC.Common.Caching.CacheNotifyAction.Any);
             return q;
         }
 
@@ -155,7 +155,7 @@ namespace ASC.Core.Caching
         public void SetTenantQuotaRow(TenantQuotaRow row, bool exchange)
         {
             Service.SetTenantQuotaRow(row, exchange);
-            CacheNotify.Publish(new QuotaCacheItem { Key = GetKey(row.Tenant) }, ASC.Common.Caching.EventType.InsertOrUpdate);
+            CacheNotify.Publish(new QuotaCacheItem { Key = GetKey(row.Tenant) }, ASC.Common.Caching.CacheNotifyAction.InsertOrUpdate);
         }
 
         public IEnumerable<TenantQuotaRow> FindTenantQuotaRows(int tenantId)

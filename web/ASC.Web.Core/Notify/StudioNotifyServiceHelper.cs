@@ -3,7 +3,7 @@
     [Scope]
     public class StudioNotifyServiceHelper
     {
-        private IEventBus<NotifyItem> Cache { get; }
+        private ICacheNotify<NotifyItem> Cache { get; }
         private StudioNotifyHelper StudioNotifyHelper { get; }
         private AuthContext AuthContext { get; }
         private TenantManager TenantManager { get; }
@@ -14,7 +14,7 @@
             AuthContext authContext,
             TenantManager tenantManager,
             CommonLinkUtility commonLinkUtility,
-            IEventBus<NotifyItem> cache)
+            ICacheNotify<NotifyItem> cache)
         {
             StudioNotifyHelper = studioNotifyHelper;
             AuthContext = authContext;
@@ -107,7 +107,7 @@
                 item.Tags.AddRange(args.Select(r => new Tag { Tag_ = r.Tag, Value = r.Value.ToString() }));
             }
 
-            Cache.Publish(item, EventType.Any);
+            Cache.Publish(item, CacheNotifyAction.Any);
         }
     }
 }

@@ -28,18 +28,18 @@ namespace ASC.TelegramService
     [Singletone]
     public class TelegramListener
     {
-        private IEventBus<NotifyMessage> CacheMessage { get; }
-        private IEventBus<RegisterUserProto> CacheRegisterUser { get; }
-        private IEventBus<CreateClientProto> CacheCreateClient { get; }
-        private IEventBus<DisableClientProto> CacheDisableClient { get; }
+        private ICacheNotify<NotifyMessage> CacheMessage { get; }
+        private ICacheNotify<RegisterUserProto> CacheRegisterUser { get; }
+        private ICacheNotify<CreateClientProto> CacheCreateClient { get; }
+        private ICacheNotify<DisableClientProto> CacheDisableClient { get; }
 
         private TelegramHandler TelegramHandler { get; set; }
 
-        public TelegramListener(IEventBus<NotifyMessage> cacheMessage,
-            IEventBus<RegisterUserProto> cacheRegisterUser,
-            IEventBus<CreateClientProto> cacheCreateClient,
+        public TelegramListener(ICacheNotify<NotifyMessage> cacheMessage,
+            ICacheNotify<RegisterUserProto> cacheRegisterUser,
+            ICacheNotify<CreateClientProto> cacheCreateClient,
             TelegramHandler telegramHandler,
-            IEventBus<DisableClientProto> cacheDisableClient)
+            ICacheNotify<DisableClientProto> cacheDisableClient)
         {
             CacheMessage = cacheMessage;
             CacheRegisterUser = cacheRegisterUser;
@@ -51,19 +51,19 @@ namespace ASC.TelegramService
 
         public void Start()
         {
-            CacheMessage.Subscribe(async n => await SendMessage(n), EventType.Insert);
-            CacheRegisterUser.Subscribe(n => RegisterUser(n), EventType.Insert);
-            CacheCreateClient.Subscribe(n => CreateOrUpdateClient(n), EventType.Insert);
-            CacheDisableClient.Subscribe(n => DisableClient(n), EventType.Insert);
+            CacheMessage.Subscribe(async n => await SendMessage(n), CacheNotifyAction.Insert);
+            CacheRegisterUser.Subscribe(n => RegisterUser(n), CacheNotifyAction.Insert);
+            CacheCreateClient.Subscribe(n => CreateOrUpdateClient(n), CacheNotifyAction.Insert);
+            CacheDisableClient.Subscribe(n => DisableClient(n), CacheNotifyAction.Insert);
 
         }
 
         public void Stop()
         {
-            CacheMessage.Unsubscribe(EventType.Insert);
-            CacheRegisterUser.Unsubscribe(EventType.Insert);
-            CacheCreateClient.Unsubscribe(EventType.Insert);
-            CacheDisableClient.Unsubscribe(EventType.Insert);
+            CacheMessage.Unsubscribe(CacheNotifyAction.Insert);
+            CacheRegisterUser.Unsubscribe(CacheNotifyAction.Insert);
+            CacheCreateClient.Unsubscribe(CacheNotifyAction.Insert);
+            CacheDisableClient.Unsubscribe(CacheNotifyAction.Insert);
         }
 
         private void DisableClient(DisableClientProto n)

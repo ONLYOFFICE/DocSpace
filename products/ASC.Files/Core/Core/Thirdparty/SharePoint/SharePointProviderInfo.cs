@@ -587,9 +587,9 @@ namespace ASC.Files.Thirdparty.SharePoint
         private readonly TimeSpan CacheExpiration;
         private readonly ICache FileCache;
         private readonly ICache FolderCache;
-        private readonly IEventBus<SharePointProviderCacheItem> Notify;
+        private readonly ICacheNotify<SharePointProviderCacheItem> Notify;
 
-        public SharePointProviderInfoHelper(IEventBus<SharePointProviderCacheItem> notify, ICache cache)
+        public SharePointProviderInfoHelper(ICacheNotify<SharePointProviderCacheItem> notify, ICache cache)
         {
             CacheExpiration = TimeSpan.FromMinutes(1);
             FileCache = cache;
@@ -611,16 +611,16 @@ namespace ASC.Files.Thirdparty.SharePoint
                     FileCache.Remove(new Regex("^spointf-.*"));
                     FolderCache.Remove(new Regex("^spointd-.*"));
                 }
-            }, Common.Caching.EventType.Remove);
+            }, Common.Caching.CacheNotifyAction.Remove);
         }
 
         public void Invalidate()
         {
-            Notify.Publish(new SharePointProviderCacheItem { }, Common.Caching.EventType.Remove);
+            Notify.Publish(new SharePointProviderCacheItem { }, Common.Caching.CacheNotifyAction.Remove);
         }
         public void PublishFolder(string id)
         {
-            Notify.Publish(new SharePointProviderCacheItem { FolderKey = id }, Common.Caching.EventType.Remove);
+            Notify.Publish(new SharePointProviderCacheItem { FolderKey = id }, Common.Caching.CacheNotifyAction.Remove);
         }
 
         public void PublishFolder(string id1, string id2)
@@ -637,7 +637,7 @@ namespace ASC.Files.Thirdparty.SharePoint
 
         public void PublishFile(string fileId, string folderId)
         {
-            Notify.Publish(new SharePointProviderCacheItem { FileKey = fileId, FolderKey = folderId }, Common.Caching.EventType.Remove);
+            Notify.Publish(new SharePointProviderCacheItem { FileKey = fileId, FolderKey = folderId }, Common.Caching.CacheNotifyAction.Remove);
         }
 
         public void CreateFolder(string id, string parentFolderId, Folder folder)

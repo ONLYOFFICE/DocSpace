@@ -23,7 +23,7 @@
  *
 */
 
-using EventType = ASC.Common.Caching.EventType;
+using CacheNotifyAction = ASC.Common.Caching.CacheNotifyAction;
 
 namespace ASC.Data.Storage.Encryption
 {
@@ -31,11 +31,11 @@ namespace ASC.Data.Storage.Encryption
     public class EncryptionServiceClient : IEncryptionService
     {
 
-        private IEventBus<EncryptionSettingsProto> NotifySetting { get; }
-        private IEventBus<EncryptionStop> NotifyStop { get; }
+        private ICacheNotify<EncryptionSettingsProto> NotifySetting { get; }
+        private ICacheNotify<EncryptionStop> NotifyStop { get; }
 
         public EncryptionServiceClient(
-            IEventBus<EncryptionSettingsProto> notifySetting, IEventBus<EncryptionStop> notifyStop)
+            ICacheNotify<EncryptionSettingsProto> notifySetting, ICacheNotify<EncryptionStop> notifyStop)
         {
             NotifySetting = notifySetting;
             NotifyStop = notifyStop;
@@ -43,12 +43,12 @@ namespace ASC.Data.Storage.Encryption
 
         public void Start(EncryptionSettingsProto encryptionSettingsProto)
         {
-            NotifySetting.Publish(encryptionSettingsProto, EventType.Insert);
+            NotifySetting.Publish(encryptionSettingsProto, CacheNotifyAction.Insert);
         }
 
         public void Stop()
         {
-            NotifyStop.Publish(new EncryptionStop(), EventType.Insert);
+            NotifyStop.Publish(new EncryptionStop(), CacheNotifyAction.Insert);
         }
 
     }

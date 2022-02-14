@@ -30,12 +30,12 @@ namespace ASC.Notify
     {
         private ILog Log { get; }
 
-        private IEventBus<NotifyMessage> CacheNotify { get; }
-        private IEventBus<NotifyInvoke> CacheInvoke { get; }
+        private ICacheNotify<NotifyMessage> CacheNotify { get; }
+        private ICacheNotify<NotifyInvoke> CacheInvoke { get; }
         private DbWorker Db { get; }
         private IServiceProvider ServiceProvider { get; }
 
-        public NotifyService(DbWorker db, IServiceProvider serviceProvider, IEventBus<NotifyMessage> cacheNotify, IEventBus<NotifyInvoke> cacheInvoke, IOptionsMonitor<ILog> options)
+        public NotifyService(DbWorker db, IServiceProvider serviceProvider, ICacheNotify<NotifyMessage> cacheNotify, ICacheNotify<NotifyInvoke> cacheInvoke, IOptionsMonitor<ILog> options)
         {
             Db = db;
             ServiceProvider = serviceProvider;
@@ -46,13 +46,13 @@ namespace ASC.Notify
 
         public void Start()
         {
-            CacheNotify.Subscribe((n) => SendNotifyMessage(n), Common.Caching.EventType.InsertOrUpdate);
-            CacheInvoke.Subscribe((n) => InvokeSendMethod(n), Common.Caching.EventType.InsertOrUpdate);
+            CacheNotify.Subscribe((n) => SendNotifyMessage(n), Common.Caching.CacheNotifyAction.InsertOrUpdate);
+            CacheInvoke.Subscribe((n) => InvokeSendMethod(n), Common.Caching.CacheNotifyAction.InsertOrUpdate);
         }
 
         public void Stop()
         {
-            CacheNotify.Unsubscribe(Common.Caching.EventType.InsertOrUpdate);
+            CacheNotify.Unsubscribe(Common.Caching.CacheNotifyAction.InsertOrUpdate);
         }
 
         public void SendNotifyMessage(NotifyMessage notifyMessage)
@@ -100,8 +100,8 @@ namespace ASC.Notify
 
         public void Dispose()
         {
-            CacheNotify.Unsubscribe(Common.Caching.EventType.InsertOrUpdate);
-            CacheInvoke.Unsubscribe(Common.Caching.EventType.InsertOrUpdate);
+            CacheNotify.Unsubscribe(Common.Caching.CacheNotifyAction.InsertOrUpdate);
+            CacheInvoke.Unsubscribe(Common.Caching.CacheNotifyAction.InsertOrUpdate);
         }
     }
 

@@ -28,21 +28,21 @@ namespace ASC.Web.Core.Sms
     [Singletone]
     public class SmsKeyStorageCache
     {
-        private IEventBus<SmsKeyCacheKey> KeyCacheNotify { get; }
+        private ICacheNotify<SmsKeyCacheKey> KeyCacheNotify { get; }
         public ICache KeyCache { get; }
         public ICache CheckCache { get; }
 
-        public SmsKeyStorageCache(IEventBus<SmsKeyCacheKey> keyCacheNotify, ICache cache)
+        public SmsKeyStorageCache(ICacheNotify<SmsKeyCacheKey> keyCacheNotify, ICache cache)
         {
             CheckCache = cache;
             KeyCache = cache;
             KeyCacheNotify = keyCacheNotify;
-            KeyCacheNotify.Subscribe(r => KeyCache.Remove(r.Key), Common.Caching.EventType.Remove);
+            KeyCacheNotify.Subscribe(r => KeyCache.Remove(r.Key), Common.Caching.CacheNotifyAction.Remove);
         }
 
         public void RemoveFromCache(string cacheKey)
         {
-            KeyCacheNotify.Publish(new SmsKeyCacheKey { Key = cacheKey }, Common.Caching.EventType.Remove);
+            KeyCacheNotify.Publish(new SmsKeyCacheKey { Key = cacheKey }, Common.Caching.CacheNotifyAction.Remove);
         }
     }
 

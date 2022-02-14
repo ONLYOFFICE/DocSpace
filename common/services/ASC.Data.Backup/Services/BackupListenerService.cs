@@ -3,10 +3,10 @@
 [Singletone]
 internal sealed class BackupListenerService : IHostedService
 {
-    private readonly IEventBus<DeleteSchedule> _cacheDeleteSchedule;
+    private readonly ICacheNotify<DeleteSchedule> _cacheDeleteSchedule;
     private readonly IServiceScopeFactory _scopeFactory;
 
-    public BackupListenerService(IEventBus<DeleteSchedule> cacheDeleteSchedule,
+    public BackupListenerService(ICacheNotify<DeleteSchedule> cacheDeleteSchedule,
         IServiceScopeFactory scopeFactory)
     {
         _cacheDeleteSchedule = cacheDeleteSchedule;
@@ -25,14 +25,14 @@ internal sealed class BackupListenerService : IHostedService
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        _cacheDeleteSchedule.Subscribe((n) => DeleteScheldure(n), Common.Caching.EventType.Insert);
+        _cacheDeleteSchedule.Subscribe((n) => DeleteScheldure(n), Common.Caching.CacheNotifyAction.Insert);
 
         return Task.CompletedTask;
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
-        _cacheDeleteSchedule.Unsubscribe(Common.Caching.EventType.Insert);
+        _cacheDeleteSchedule.Unsubscribe(Common.Caching.CacheNotifyAction.Insert);
 
         return Task.CompletedTask;
     }

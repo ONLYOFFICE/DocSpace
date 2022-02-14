@@ -31,18 +31,18 @@ namespace ASC.Core.Data
     public class DbSettingsManagerCache
     {
         public ICache Cache { get; }
-        private IEventBus<SettingsCacheItem> Notify { get; }
+        private ICacheNotify<SettingsCacheItem> Notify { get; }
 
-        public DbSettingsManagerCache(IEventBus<SettingsCacheItem> notify, ICache cache)
+        public DbSettingsManagerCache(ICacheNotify<SettingsCacheItem> notify, ICache cache)
         {
             Cache = cache;
             Notify = notify;
-            Notify.Subscribe((i) => Cache.Remove(i.Key), ASC.Common.Caching.EventType.Remove);
+            Notify.Subscribe((i) => Cache.Remove(i.Key), ASC.Common.Caching.CacheNotifyAction.Remove);
         }
 
         public void Remove(string key)
         {
-            Notify.Publish(new SettingsCacheItem { Key = key }, ASC.Common.Caching.EventType.Remove);
+            Notify.Publish(new SettingsCacheItem { Key = key }, ASC.Common.Caching.CacheNotifyAction.Remove);
         }
     }
 

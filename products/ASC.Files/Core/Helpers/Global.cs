@@ -28,10 +28,10 @@ namespace ASC.Web.Files.Classes
     [Singletone]
     public class GlobalNotify
     {
-        private IEventBus<AscCacheItem> Notify { get; set; }
+        private ICacheNotify<AscCacheItem> Notify { get; set; }
         public ILog Logger { get; set; }
 
-        public GlobalNotify(IEventBus<AscCacheItem> notify, IOptionsMonitor<ILog> options, CoreBaseSettings coreBaseSettings)
+        public GlobalNotify(ICacheNotify<AscCacheItem> notify, IOptionsMonitor<ILog> options, CoreBaseSettings coreBaseSettings)
         {
             Notify = notify;
             Logger = options.Get("ASC.Files");
@@ -63,7 +63,7 @@ namespace ASC.Web.Files.Classes
                     {
                         Logger.Fatal("ClearCache action", e);
                     }
-                }, Common.Caching.EventType.Any);
+                }, Common.Caching.CacheNotifyAction.Any);
             }
             catch (Exception e)
             {

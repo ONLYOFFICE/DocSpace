@@ -4,9 +4,9 @@
     public class BuildQueueService
     {
         internal ConcurrentQueue<WebhookRequest> Queue { get; }
-        private IEventBus<WebhookRequest> WebhookNotify { get; }
+        private ICacheNotify<WebhookRequest> WebhookNotify { get; }
 
-        public BuildQueueService(IEventBus<WebhookRequest> webhookNotify)
+        public BuildQueueService(ICacheNotify<WebhookRequest> webhookNotify)
         {
             WebhookNotify = webhookNotify;
             Queue = new ConcurrentQueue<WebhookRequest>();
@@ -14,12 +14,12 @@
 
         public void Start()
         {
-            WebhookNotify.Subscribe(BuildWebhooksQueue, EventType.Update);
+            WebhookNotify.Subscribe(BuildWebhooksQueue, CacheNotifyAction.Update);
         }
 
         public void Stop()
         {
-            WebhookNotify.Unsubscribe(EventType.Update);
+            WebhookNotify.Unsubscribe(CacheNotifyAction.Update);
         }
 
         public void BuildWebhooksQueue(WebhookRequest request)

@@ -23,16 +23,16 @@
  *
 */
 
-using EventType = ASC.Common.Caching.EventType;
+using CacheNotifyAction = ASC.Common.Caching.CacheNotifyAction;
 
 namespace ASC.Core.Notify
 {
     [Scope]
     public class NotifyServiceClient : INotifyService
     {
-        private readonly IEventBus<NotifyMessage> СacheNotify;
-        private readonly IEventBus<NotifyInvoke> NotifyInvoke;
-        public NotifyServiceClient(IEventBus<NotifyMessage> cacheNotify, IEventBus<NotifyInvoke> notifyInvoke)
+        private readonly ICacheNotify<NotifyMessage> СacheNotify;
+        private readonly ICacheNotify<NotifyInvoke> NotifyInvoke;
+        public NotifyServiceClient(ICacheNotify<NotifyMessage> cacheNotify, ICacheNotify<NotifyInvoke> notifyInvoke)
         {
             СacheNotify = cacheNotify;
             NotifyInvoke = notifyInvoke;
@@ -40,12 +40,12 @@ namespace ASC.Core.Notify
 
         public void SendNotifyMessage(NotifyMessage m)
         {
-            СacheNotify.Publish(m, EventType.InsertOrUpdate);
+            СacheNotify.Publish(m, CacheNotifyAction.InsertOrUpdate);
         }
 
         public void InvokeSendMethod(NotifyInvoke notifyInvoke)
         {
-            NotifyInvoke.Publish(notifyInvoke, EventType.InsertOrUpdate);
+            NotifyInvoke.Publish(notifyInvoke, CacheNotifyAction.InsertOrUpdate);
         }
     }
 }

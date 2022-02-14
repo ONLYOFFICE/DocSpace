@@ -70,7 +70,7 @@ namespace ASC.Core.Common.Configuration
         internal protected CoreSettings CoreSettings { get; set; }
         internal protected ConsumerFactory ConsumerFactory { get; set; }
         internal protected IConfiguration Configuration { get; }
-        internal protected IEventBus<ConsumerCacheItem> Cache { get; }
+        internal protected ICacheNotify<ConsumerCacheItem> Cache { get; }
 
         public bool IsSet
         {
@@ -93,7 +93,7 @@ namespace ASC.Core.Common.Configuration
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
             IConfiguration configuration,
-            IEventBus<ConsumerCacheItem> cache,
+            ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory) : this()
         {
             TenantManager = tenantManager;
@@ -112,7 +112,7 @@ namespace ASC.Core.Common.Configuration
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
             IConfiguration configuration,
-            IEventBus<ConsumerCacheItem> cache,
+            ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
             string name, int order, Dictionary<string, string> additional)
             : this(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory)
@@ -128,7 +128,7 @@ namespace ASC.Core.Common.Configuration
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
             IConfiguration configuration,
-            IEventBus<ConsumerCacheItem> cache,
+            ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
             : this(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory)
@@ -170,7 +170,7 @@ namespace ASC.Core.Common.Configuration
                 this[providerProp.Key] = null;
             }
 
-            Cache.Publish(new ConsumerCacheItem() { Name = this.Name }, ASC.Common.Caching.EventType.Remove);
+            Cache.Publish(new ConsumerCacheItem() { Name = this.Name }, ASC.Common.Caching.CacheNotifyAction.Remove);
         }
 
         public bool Contains(KeyValuePair<string, string> item)
@@ -287,7 +287,7 @@ namespace ASC.Core.Common.Configuration
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
             IConfiguration configuration,
-            IEventBus<ConsumerCacheItem> cache,
+            ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory)
             : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory)
         {
@@ -299,7 +299,7 @@ namespace ASC.Core.Common.Configuration
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
             IConfiguration configuration,
-            IEventBus<ConsumerCacheItem> cache,
+            ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
             string name, int order, Dictionary<string, string> additional)
             : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, additional)
@@ -312,7 +312,7 @@ namespace ASC.Core.Common.Configuration
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
             IConfiguration configuration,
-            IEventBus<ConsumerCacheItem> cache,
+            ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional)
             : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, props, additional)

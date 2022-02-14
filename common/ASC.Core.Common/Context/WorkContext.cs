@@ -84,8 +84,8 @@ namespace ASC.Core
                 if (notifyStarted) return;
 
                 var configuration = serviceProvider.GetService<IConfiguration>();
-                var cacheNotify = serviceProvider.GetService<IEventBus<NotifyMessage>>();
-                var cacheInvoke = serviceProvider.GetService<IEventBus<NotifyInvoke>>();
+                var cacheNotify = serviceProvider.GetService<ICacheNotify<NotifyMessage>>();
+                var cacheInvoke = serviceProvider.GetService<ICacheNotify<NotifyInvoke>>();
                 var options = serviceProvider.GetService<IOptionsMonitor<ILog>>();
 
                 NotifyContext = new NotifyContext(serviceProvider);

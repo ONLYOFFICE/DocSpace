@@ -178,9 +178,9 @@ namespace ASC.Files.Thirdparty.OneDrive
         private readonly TimeSpan CacheExpiration;
         private readonly ICache CacheItem;
         private readonly ICache CacheChildItems;
-        private readonly IEventBus<OneDriveCacheItem> CacheNotify;
+        private readonly ICacheNotify<OneDriveCacheItem> CacheNotify;
 
-        public OneDriveProviderInfoHelper(IEventBus<OneDriveCacheItem> cacheNotify, ICache cache)
+        public OneDriveProviderInfoHelper(ICacheNotify<OneDriveCacheItem> cacheNotify, ICache cache)
         {
             CacheExpiration = TimeSpan.FromMinutes(1);
             CacheItem = cache;
@@ -199,7 +199,7 @@ namespace ASC.Files.Thirdparty.OneDrive
                     CacheChildItems.Remove(new Regex("onedrivei-" + i.Key));
                     CacheItem.Remove("onedrive-" + i.Key);
                 }
-            }, Common.Caching.EventType.Remove);
+            }, Common.Caching.CacheNotifyAction.Remove);
         }
 
         internal Item GetOneDriveItem(OneDriveStorage storage, int id, string itemId)
@@ -231,13 +231,13 @@ namespace ASC.Files.Thirdparty.OneDrive
             var key = id + "-";
             if (string.IsNullOrEmpty(onedriveId))
             {
-                CacheNotify.Publish(new OneDriveCacheItem { ResetAll = true, Key = key }, Common.Caching.EventType.Remove);
+                CacheNotify.Publish(new OneDriveCacheItem { ResetAll = true, Key = key }, Common.Caching.CacheNotifyAction.Remove);
             }
             else
             {
                 key += onedriveId;
 
-                CacheNotify.Publish(new OneDriveCacheItem { Key = key }, Common.Caching.EventType.Remove);
+                CacheNotify.Publish(new OneDriveCacheItem { Key = key }, Common.Caching.CacheNotifyAction.Remove);
             }
         }
     }

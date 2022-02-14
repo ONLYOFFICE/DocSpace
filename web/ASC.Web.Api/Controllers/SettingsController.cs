@@ -91,7 +91,7 @@ namespace ASC.Api.Settings
         private EncryptionServiceClient EncryptionServiceClient { get; }
         private EncryptionSettingsHelper EncryptionSettingsHelper { get; }
         private BackupAjaxHandler BackupAjaxHandler { get; }
-        private IEventBus<DeleteSchedule> CacheDeleteSchedule { get; }
+        private ICacheNotify<DeleteSchedule> CacheDeleteSchedule { get; }
         private EncryptionWorker EncryptionWorker { get; }
         private PasswordHasher PasswordHasher { get; }
         private ILog Log { get; set; }
@@ -159,7 +159,7 @@ namespace ASC.Api.Settings
             EncryptionServiceClient encryptionServiceClient,
             EncryptionSettingsHelper encryptionSettingsHelper,
             BackupAjaxHandler backupAjaxHandler,
-            IEventBus<DeleteSchedule> cacheDeleteSchedule,
+            ICacheNotify<DeleteSchedule> cacheDeleteSchedule,
             EncryptionWorker encryptionWorker,
             PasswordHasher passwordHasher,
             PaymentManager paymentManager,
@@ -2260,7 +2260,7 @@ namespace ASC.Api.Settings
 
             foreach (var tenant in tenants)
             {
-                CacheDeleteSchedule.Publish(new DeleteSchedule() { TenantId = tenant.TenantId }, Common.Caching.EventType.Insert);
+                CacheDeleteSchedule.Publish(new DeleteSchedule() { TenantId = tenant.TenantId }, Common.Caching.CacheNotifyAction.Insert);
             }
 
             var settings = EncryptionSettingsHelper.Load();

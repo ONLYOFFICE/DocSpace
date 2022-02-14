@@ -34,17 +34,17 @@ namespace ASC.Core.Caching
 
         internal ICache Cache { get; }
         internal CoreBaseSettings CoreBaseSettings { get; }
-        internal IEventBus<UserInfoCacheItem> CacheUserInfoItem { get; }
-        internal IEventBus<UserPhotoCacheItem> CacheUserPhotoItem { get; }
-        internal IEventBus<GroupCacheItem> CacheGroupCacheItem { get; }
-        internal IEventBus<UserGroupRefCacheItem> CacheUserGroupRefItem { get; }
+        internal ICacheNotify<UserInfoCacheItem> CacheUserInfoItem { get; }
+        internal ICacheNotify<UserPhotoCacheItem> CacheUserPhotoItem { get; }
+        internal ICacheNotify<GroupCacheItem> CacheGroupCacheItem { get; }
+        internal ICacheNotify<UserGroupRefCacheItem> CacheUserGroupRefItem { get; }
 
         public UserServiceCache(
             CoreBaseSettings coreBaseSettings,
-            IEventBus<UserInfoCacheItem> cacheUserInfoItem,
-            IEventBus<UserPhotoCacheItem> cacheUserPhotoItem,
-            IEventBus<GroupCacheItem> cacheGroupCacheItem,
-            IEventBus<UserGroupRefCacheItem> cacheUserGroupRefItem,
+            ICacheNotify<UserInfoCacheItem> cacheUserInfoItem,
+            ICacheNotify<UserPhotoCacheItem> cacheUserPhotoItem,
+            ICacheNotify<GroupCacheItem> cacheGroupCacheItem,
+            ICacheNotify<UserGroupRefCacheItem> cacheUserGroupRefItem,
             ICache cache)
         {
             Cache = cache;
@@ -54,12 +54,12 @@ namespace ASC.Core.Caching
             CacheGroupCacheItem = cacheGroupCacheItem;
             CacheUserGroupRefItem = cacheUserGroupRefItem;
 
-            cacheUserInfoItem.Subscribe((u) => InvalidateCache(u), ASC.Common.Caching.EventType.Any);
-            cacheUserPhotoItem.Subscribe((p) => Cache.Remove(p.Key), ASC.Common.Caching.EventType.Remove);
-            cacheGroupCacheItem.Subscribe((g) => InvalidateCache(), ASC.Common.Caching.EventType.Any);
+            cacheUserInfoItem.Subscribe((u) => InvalidateCache(u), ASC.Common.Caching.CacheNotifyAction.Any);
+            cacheUserPhotoItem.Subscribe((p) => Cache.Remove(p.Key), ASC.Common.Caching.CacheNotifyAction.Remove);
+            cacheGroupCacheItem.Subscribe((g) => InvalidateCache(), ASC.Common.Caching.CacheNotifyAction.Any);
 
-            cacheUserGroupRefItem.Subscribe((r) => UpdateUserGroupRefCache(r, true), ASC.Common.Caching.EventType.Remove);
-            cacheUserGroupRefItem.Subscribe((r) => UpdateUserGroupRefCache(r, false), ASC.Common.Caching.EventType.InsertOrUpdate);
+            cacheUserGroupRefItem.Subscribe((r) => UpdateUserGroupRefCache(r, true), ASC.Common.Caching.CacheNotifyAction.Remove);
+            cacheUserGroupRefItem.Subscribe((r) => UpdateUserGroupRefCache(r, false), ASC.Common.Caching.CacheNotifyAction.InsertOrUpdate);
         }
 
         public void InvalidateCache()
@@ -176,10 +176,10 @@ namespace ASC.Core.Caching
         private TimeSpan PhotoExpiration { get; set; }
         internal CoreBaseSettings CoreBaseSettings { get; set; }
         internal UserServiceCache UserServiceCache { get; set; }
-        internal IEventBus<UserInfoCacheItem> CacheUserInfoItem { get; set; }
-        internal IEventBus<UserPhotoCacheItem> CacheUserPhotoItem { get; set; }
-        internal IEventBus<GroupCacheItem> CacheGroupCacheItem { get; set; }
-        internal IEventBus<UserGroupRefCacheItem> CacheUserGroupRefItem { get; set; }
+        internal ICacheNotify<UserInfoCacheItem> CacheUserInfoItem { get; set; }
+        internal ICacheNotify<UserPhotoCacheItem> CacheUserPhotoItem { get; set; }
+        internal ICacheNotify<GroupCacheItem> CacheGroupCacheItem { get; set; }
+        internal ICacheNotify<UserGroupRefCacheItem> CacheUserGroupRefItem { get; set; }
 
         public CachedUserService()
         {
@@ -261,14 +261,14 @@ namespace ASC.Core.Caching
         public UserInfo SaveUser(int tenant, UserInfo user)
         {
             user = Service.SaveUser(tenant, user);
-            CacheUserInfoItem.Publish(new UserInfoCacheItem { Id = user.ID.ToString(), Tenant = tenant }, ASC.Common.Caching.EventType.Any);
+            CacheUserInfoItem.Publish(new UserInfoCacheItem { Id = user.ID.ToString(), Tenant = tenant }, ASC.Common.Caching.CacheNotifyAction.Any);
             return user;
         }
 
         public void RemoveUser(int tenant, Guid id)
         {
             Service.RemoveUser(tenant, id);
-            CacheUserInfoItem.Publish(new UserInfoCacheItem { Tenant = tenant, Id = id.ToString() }, ASC.Common.Caching.EventType.Any);
+            CacheUserInfoItem.Publish(new UserInfoCacheItem { Tenant = tenant, Id = id.ToString() }, ASC.Common.Caching.CacheNotifyAction.Any);
         }
 
         public byte[] GetUserPhoto(int tenant, Guid id)
@@ -285,7 +285,7 @@ namespace ASC.Core.Caching
         public void SetUserPhoto(int tenant, Guid id, byte[] photo)
         {
             Service.SetUserPhoto(tenant, id, photo);
-            CacheUserPhotoItem.Publish(new UserPhotoCacheItem { Key = UserServiceCache.GetUserPhotoCacheKey(tenant, id) }, ASC.Common.Caching.EventType.Remove);
+            CacheUserPhotoItem.Publish(new UserPhotoCacheItem { Key = UserServiceCache.GetUserPhotoCacheKey(tenant, id) }, ASC.Common.Caching.CacheNotifyAction.Remove);
         }
 
         public DateTime GetUserPasswordStamp(int tenant, Guid id)
@@ -316,14 +316,14 @@ namespace ASC.Core.Caching
         public Group SaveGroup(int tenant, Group group)
         {
             group = Service.SaveGroup(tenant, group);
-            CacheGroupCacheItem.Publish(new GroupCacheItem { Id = group.Id.ToString() }, ASC.Common.Caching.EventType.Any);
+            CacheGroupCacheItem.Publish(new GroupCacheItem { Id = group.Id.ToString() }, ASC.Common.Caching.CacheNotifyAction.Any);
             return group;
         }
 
         public void RemoveGroup(int tenant, Guid id)
         {
             Service.RemoveGroup(tenant, id);
-            CacheGroupCacheItem.Publish(new GroupCacheItem { Id = id.ToString() }, ASC.Common.Caching.EventType.Any);
+            CacheGroupCacheItem.Publish(new GroupCacheItem { Id = id.ToString() }, ASC.Common.Caching.CacheNotifyAction.Any);
         }
 
 
@@ -357,7 +357,7 @@ namespace ASC.Core.Caching
         public UserGroupRef SaveUserGroupRef(int tenant, UserGroupRef r)
         {
             r = Service.SaveUserGroupRef(tenant, r);
-            CacheUserGroupRefItem.Publish(r, ASC.Common.Caching.EventType.InsertOrUpdate);
+            CacheUserGroupRefItem.Publish(r, ASC.Common.Caching.CacheNotifyAction.InsertOrUpdate);
             return r;
         }
 
@@ -366,7 +366,7 @@ namespace ASC.Core.Caching
             Service.RemoveUserGroupRef(tenant, userId, groupId, refType);
 
             var r = new UserGroupRef(userId, groupId, refType) { Tenant = tenant };
-            CacheUserGroupRefItem.Publish(r, ASC.Common.Caching.EventType.Remove);
+            CacheUserGroupRefItem.Publish(r, ASC.Common.Caching.CacheNotifyAction.Remove);
         }
 
 

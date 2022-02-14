@@ -5,13 +5,13 @@
     {
         private DbWorker DbWorker { get; }
         private TenantManager TenantManager { get; }
-        private IEventBus<WebhookRequest> WebhookNotify { get; }
+        private ICacheNotify<WebhookRequest> WebhookNotify { get; }
 
         public WebhookPublisher(
             DbWorker dbWorker,
             TenantManager tenantManager,
             IOptionsMonitor<ILog> options,
-            IEventBus<WebhookRequest> webhookNotify)
+            ICacheNotify<WebhookRequest> webhookNotify)
         {
             DbWorker = dbWorker;
             TenantManager = tenantManager;
@@ -42,7 +42,7 @@
                     Id = DbId
                 };
 
-                WebhookNotify.Publish(request, Common.Caching.EventType.Update);
+                WebhookNotify.Publish(request, Common.Caching.CacheNotifyAction.Update);
             }
         }
     }

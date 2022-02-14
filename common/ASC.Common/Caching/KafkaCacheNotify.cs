@@ -1,7 +1,7 @@
 ﻿namespace ASC.Common.Caching;
 
 [Singletone]
-public class EventBusKafka<T> : IDisposable, IEventBus<T> where T : IMessage<T>, new()
+public class KafkaCacheNotify<T> : IDisposable, ICacheNotify<T> where T : IMessage<T>, new()
 {
     private IProducer<AscCacheItem, T> _producer;
 
@@ -17,7 +17,7 @@ public class EventBusKafka<T> : IDisposable, IEventBus<T> where T : IMessage<T>,
     private readonly ProtobufDeserializer<AscCacheItem> _keyDeserializer = new ProtobufDeserializer<AscCacheItem>();
     private readonly Guid _key;
 
-    public EventBusKafka(ConfigurationExtension configuration, IOptionsMonitor<ILog> options)
+    public KafkaCacheNotify(ConfigurationExtension configuration, IOptionsMonitor<ILog> options)
     {
         _logger = options.CurrentValue;
         _cancelationToken = new ConcurrentDictionary<string, CancellationTokenSource>();
@@ -30,7 +30,7 @@ public class EventBusKafka<T> : IDisposable, IEventBus<T> where T : IMessage<T>,
         _adminClientConfig = new AdminClientConfig { BootstrapServers = settings.BootstrapServers };
     }
 
-    public void Publish(T obj, EventType eventType)
+    public void Publish(T obj, CacheNotifyAction notifyAction)
     {
         try
         {
@@ -43,7 +43,7 @@ public class EventBusKafka<T> : IDisposable, IEventBus<T> where T : IMessage<T>,
                 .Build();
             }
 
-            var channelName = GetChannelName(eventType);
+            var channelName = GetChannelName(notifyAction);
 
             if (_actions.TryGetValue(channelName, out var onchange))
             {
@@ -71,9 +71,9 @@ public class EventBusKafka<T> : IDisposable, IEventBus<T> where T : IMessage<T>,
         }
     }
 
-    public void Subscribe(Action<T> onchange, EventType eventType)
+    public void Subscribe(Action<T> onchange, CacheNotifyAction notifyAction)
     {
-        var channelName = GetChannelName(eventType);
+        var channelName = GetChannelName(notifyAction);
 
         _cancelationToken[channelName] = new CancellationTokenSource();
         _actions[channelName] = onchange;
@@ -150,9 +150,9 @@ public class EventBusKafka<T> : IDisposable, IEventBus<T> where T : IMessage<T>,
         task.Start();
     }
 
-    public void Unsubscribe(EventType eventType)
+    public void Unsubscribe(CacheNotifyAction notifyAction)
     {
-        _cancelationToken.TryGetValue(GetChannelName(eventType), out var source);
+        _cancelationToken.TryGetValue(GetChannelName(notifyAction), out var source);
 
         if (source != null)
         {
@@ -179,14 +179,14 @@ public class EventBusKafka<T> : IDisposable, IEventBus<T> where T : IMessage<T>,
         }
     }
 
-    ~EventBusKafka()
+    ~KafkaCacheNotify()
     {
         Dispose(false);
     }
 
-    private string GetChannelName(EventType eventType)
+    private string GetChannelName(CacheNotifyAction notifyAction)
     {
-        return $"ascchannel{eventType}{typeof(T).FullName}".ToLower();
+        return $"ascchannel{notifyAction}{typeof(T).FullName}".ToLower();
     }
 }
 

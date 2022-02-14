@@ -32,16 +32,16 @@ namespace ASC.Web.Core
     public class WebItemSecurityCache
     {
         private ICache Cache { get; }
-        private IEventBus<WebItemSecurityNotifier> CacheNotify { get; }
+        private ICacheNotify<WebItemSecurityNotifier> CacheNotify { get; }
 
-        public WebItemSecurityCache(IEventBus<WebItemSecurityNotifier> cacheNotify, ICache cache)
+        public WebItemSecurityCache(ICacheNotify<WebItemSecurityNotifier> cacheNotify, ICache cache)
         {
             Cache = cache;
             CacheNotify = cacheNotify;
             CacheNotify.Subscribe((r) =>
             {
                 ClearCache(r.Tenant);
-            }, Common.Caching.EventType.Any);
+            }, Common.Caching.CacheNotifyAction.Any);
         }
 
         public void ClearCache(int tenantId)
@@ -56,7 +56,7 @@ namespace ASC.Web.Core
 
         public void Publish(int tenantId)
         {
-            CacheNotify.Publish(new WebItemSecurityNotifier { Tenant = tenantId }, Common.Caching.EventType.Any);
+            CacheNotify.Publish(new WebItemSecurityNotifier { Tenant = tenantId }, Common.Caching.CacheNotifyAction.Any);
         }
 
         public Dictionary<string, bool> Get(int tenantId)

@@ -29,9 +29,9 @@ namespace ASC.Core.Billing
     public class TariffServiceStorage
     {
         public ICache Cache { get; }
-        internal IEventBus<TariffCacheItem> Notify { get; }
+        internal ICacheNotify<TariffCacheItem> Notify { get; }
 
-        public TariffServiceStorage(IEventBus<TariffCacheItem> notify, ICache cache)
+        public TariffServiceStorage(ICacheNotify<TariffCacheItem> notify, ICache cache)
         {
             Cache = cache;
             Notify = notify;
@@ -40,7 +40,7 @@ namespace ASC.Core.Billing
                 Cache.Remove(TariffService.GetTariffCacheKey(i.TenantId));
                 Cache.Remove(TariffService.GetBillingUrlCacheKey(i.TenantId));
                 Cache.Remove(TariffService.GetBillingPaymentCacheKey(i.TenantId)); // clear all payments
-            }, ASC.Common.Caching.EventType.Remove);
+            }, ASC.Common.Caching.CacheNotifyAction.Remove);
 
             //TODO: Change code of WCF -> not supported in .NET standard/.Net Core
             /*try
@@ -126,7 +126,7 @@ namespace ASC.Core.Billing
         private static readonly TimeSpan STANDALONE_CACHE_EXPIRATION = TimeSpan.FromMinutes(15);
 
         internal ICache Cache { get; set; }
-        internal IEventBus<TariffCacheItem> Notify { get; set; }
+        internal ICacheNotify<TariffCacheItem> Notify { get; set; }
         internal ILog Log { get; set; }
         internal IQuotaService QuotaService { get; set; }
         internal ITenantService TenantService { get; set; }
@@ -297,7 +297,7 @@ namespace ASC.Core.Billing
 
         public void ClearCache(int tenantId)
         {
-            Notify.Publish(new TariffCacheItem { TenantId = tenantId }, ASC.Common.Caching.EventType.Remove);
+            Notify.Publish(new TariffCacheItem { TenantId = tenantId }, ASC.Common.Caching.CacheNotifyAction.Remove);
         }
 
         public IEnumerable<PaymentInfo> GetPayments(int tenantId)

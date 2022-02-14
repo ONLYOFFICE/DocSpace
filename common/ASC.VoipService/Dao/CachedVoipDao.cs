@@ -29,18 +29,18 @@ namespace ASC.VoipService.Dao
     public class VoipDaoCache
     {
         internal ICache Cache { get; }
-        private IEventBus<CachedVoipItem> Notify { get; }
+        private ICacheNotify<CachedVoipItem> Notify { get; }
 
-        public VoipDaoCache(IEventBus<CachedVoipItem> notify, ICache cache)
+        public VoipDaoCache(ICacheNotify<CachedVoipItem> notify, ICache cache)
         {
             Cache = cache;
             Notify = notify;
-            Notify.Subscribe((c) => Cache.Remove(CachedVoipDao.GetCacheKey(c.Tenant)), Common.Caching.EventType.Any);
+            Notify.Subscribe((c) => Cache.Remove(CachedVoipDao.GetCacheKey(c.Tenant)), Common.Caching.CacheNotifyAction.Any);
         }
 
         public void ResetCache(int tenant)
         {
-            Notify.Publish(new CachedVoipItem { Tenant = tenant }, Common.Caching.EventType.Any);
+            Notify.Publish(new CachedVoipItem { Tenant = tenant }, Common.Caching.CacheNotifyAction.Any);
         }
     }
 

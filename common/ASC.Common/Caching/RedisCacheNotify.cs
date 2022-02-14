@@ -17,23 +17,23 @@
 namespace ASC.Common.Caching;
 
 [Singletone]
-public class EventBusRedis<T> : IEventBus<T> where T : IMessage<T>, new()
+public class RedisCacheNotify<T> : ICacheNotify<T> where T : IMessage<T>, new()
 {
     private readonly IRedisDatabase _redis;
 
-    public EventBusRedis(IRedisCacheClient redisCacheClient)
+    public RedisCacheNotify(IRedisCacheClient redisCacheClient)
     {
         _redis = redisCacheClient.GetDbFromConfiguration();
     }
 
-    public void Publish(T obj, EventType action)
+    public void Publish(T obj, CacheNotifyAction action)
     {
         Task.Run(() => _redis.PublishAsync(GetChannelName(action), new RedisCachePubSubItem<T>() { Object = obj, Action = action }))
             .GetAwaiter()
             .GetResult();
     }
 
-    public void Subscribe(Action<T> onchange, EventType action)
+    public void Subscribe(Action<T> onchange, CacheNotifyAction action)
     {
         Task.Run(() => _redis.SubscribeAsync<RedisCachePubSubItem<T>>(GetChannelName(action), (i) =>
         {
@@ -44,7 +44,7 @@ public class EventBusRedis<T> : IEventBus<T> where T : IMessage<T>, new()
           .GetResult();
     }
 
-    public void Unsubscribe(EventType action)
+    public void Unsubscribe(CacheNotifyAction action)
     {
         Task.Run(() => _redis.UnsubscribeAsync<RedisCachePubSubItem<T>>(GetChannelName(action), (i) =>
         {
@@ -53,15 +53,15 @@ public class EventBusRedis<T> : IEventBus<T> where T : IMessage<T>, new()
           .GetResult();
     }
 
-    private string GetChannelName(EventType cacheNotifyAction)
+    private string GetChannelName(CacheNotifyAction action)
     {
-        return $"asc:channel:{cacheNotifyAction}:{typeof(T).FullName}".ToLower();
+        return $"asc:channel:{action}:{typeof(T).FullName}".ToLower();
     }
 
     class RedisCachePubSubItem<T0>
     {
         public T0 Object { get; set; }
 
-        public EventType Action { get; set; }
+        public CacheNotifyAction Action { get; set; }
     }
 }

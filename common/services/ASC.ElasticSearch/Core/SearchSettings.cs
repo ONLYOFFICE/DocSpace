@@ -69,7 +69,7 @@ namespace ASC.ElasticSearch.Core
         private TenantManager TenantManager { get; }
         private SettingsManager SettingsManager { get; }
         private CoreBaseSettings CoreBaseSettings { get; }
-        private IEventBus<ReIndexAction> CacheNotify { get; }
+        private ICacheNotify<ReIndexAction> CacheNotify { get; }
         private IServiceProvider ServiceProvider { get; }
         public IConfiguration Configuration { get; }
 
@@ -77,7 +77,7 @@ namespace ASC.ElasticSearch.Core
             TenantManager tenantManager,
             SettingsManager settingsManager,
             CoreBaseSettings coreBaseSettings,
-            IEventBus<ReIndexAction> cacheNotify,
+            ICacheNotify<ReIndexAction> cacheNotify,
             IServiceProvider serviceProvider,
             IConfiguration configuration)
         {
@@ -128,7 +128,7 @@ namespace ASC.ElasticSearch.Core
             var action = new ReIndexAction() { Tenant = TenantManager.GetCurrentTenant().TenantId };
             action.Names.AddRange(toReIndex.Select(r => r.ID).ToList());
 
-            CacheNotify.Publish(action, Common.Caching.EventType.Any);
+            CacheNotify.Publish(action, Common.Caching.CacheNotifyAction.Any);
         }
 
         public bool CanIndexByContent<T>(int tenantId) where T : class, ISearchItem

@@ -38,7 +38,7 @@ namespace ASC.Data.Backup.Services
         private Dictionary<string, string> ConfigPaths { get; set; }
         private int Limit { get; set; }
         private string UpgradesPath { get; set; }
-        private IEventBus<BackupProgress> CacheBackupProgress { get; }
+        private ICacheNotify<BackupProgress> CacheBackupProgress { get; }
         private FactoryProgressItem FactoryProgressItem { get; set; }
         private TempPath TempPath { get; }
 
@@ -46,7 +46,7 @@ namespace ASC.Data.Backup.Services
 
         public BackupWorker(
             IOptionsMonitor<ILog> options,
-            IEventBus<BackupProgress> cacheBackupProgress,
+            ICacheNotify<BackupProgress> cacheBackupProgress,
             DistributedTaskQueueOptionsManager progressQueue,
             FactoryProgressItem factoryProgressItem,
             TempPath tempPath)

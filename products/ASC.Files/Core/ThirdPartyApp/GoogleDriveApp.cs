@@ -109,7 +109,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
             IConfiguration configuration,
-            IEventBus<ConsumerCacheItem> cache,
+            ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
             IHttpClientFactory clientFactory,
             string name, int order, Dictionary<string, string> additional)

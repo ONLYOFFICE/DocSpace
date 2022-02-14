@@ -29,8 +29,8 @@ namespace ASC.ElasticSearch
     public class ServiceLauncher : IHostedService
     {
         private ILog Log { get; }
-        private IEventBus<AscCacheItem> Notify { get; }
-        private IEventBus<IndexAction> IndexNotify { get; }
+        private ICacheNotify<AscCacheItem> Notify { get; }
+        private ICacheNotify<IndexAction> IndexNotify { get; }
         private IServiceProvider ServiceProvider { get; }
         private bool IsStarted { get; set; }
         private CancellationTokenSource CancellationTokenSource { get; set; }
@@ -39,8 +39,8 @@ namespace ASC.ElasticSearch
 
         public ServiceLauncher(
             IOptionsMonitor<ILog> options,
-            IEventBus<AscCacheItem> notify,
-            IEventBus<IndexAction> indexNotify,
+            ICacheNotify<AscCacheItem> notify,
+            ICacheNotify<IndexAction> indexNotify,
             IServiceProvider serviceProvider,
             Settings settings)
         {
@@ -63,7 +63,7 @@ namespace ASC.ElasticSearch
                         await Task.Delay(10000);
                     }
                     IndexAll(true);
-                }, Common.Caching.EventType.Any);
+                }, Common.Caching.CacheNotifyAction.Any);
             }
             catch (Exception e)
             {
@@ -132,7 +132,7 @@ namespace ASC.ElasticSearch
                 }
 
                 Timer.Change(Period, Period);
-                IndexNotify.Publish(new IndexAction() { Indexing = "", LastIndexed = DateTime.Now.Ticks }, Common.Caching.EventType.Any);
+                IndexNotify.Publish(new IndexAction() { Indexing = "", LastIndexed = DateTime.Now.Ticks }, Common.Caching.CacheNotifyAction.Any);
                 IsStarted = false;
             }
             catch (Exception e)
@@ -165,7 +165,7 @@ namespace ASC.ElasticSearch
                 if (!IsStarted) return;
 
                 Log.DebugFormat("Product {0}", product.IndexName);
-                IndexNotify.Publish(new IndexAction() { Indexing = product.IndexName, LastIndexed = 0 }, Common.Caching.EventType.Any);
+                IndexNotify.Publish(new IndexAction() { Indexing = product.IndexName, LastIndexed = 0 }, Common.Caching.CacheNotifyAction.Any);
                 product.IndexAll();
             }
             catch (Exception e)

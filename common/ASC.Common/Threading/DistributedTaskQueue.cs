@@ -31,54 +31,54 @@ public class DistributedTaskCacheNotify
     public ConcurrentDictionary<string, CancellationTokenSource> Cancelations { get; }
     public ICache Cache { get; }
 
-    private readonly IEventBus<DistributedTaskCancelation> _eventBusNotify;
-    private readonly IEventBus<DistributedTaskCache> _eventBusCache;
+    private readonly ICacheNotify<DistributedTaskCancelation> _cancelTaskNotify;
+    private readonly ICacheNotify<DistributedTaskCache> _taskCacheNotify;
 
     public DistributedTaskCacheNotify(
-        IEventBus<DistributedTaskCancelation> eventBusNotify,
-        IEventBus<DistributedTaskCache> eventBusCache,
+        ICacheNotify<DistributedTaskCancelation> cancelTaskNotify,
+        ICacheNotify<DistributedTaskCache> taskCacheNotify,
         ICache cache)
     {
         Cancelations = new ConcurrentDictionary<string, CancellationTokenSource>();
 
         Cache = cache;
 
-        _eventBusNotify = eventBusNotify;
+        _cancelTaskNotify = cancelTaskNotify;
 
-        eventBusNotify.Subscribe((c) =>
+        cancelTaskNotify.Subscribe((c) =>
         {
             if (Cancelations.TryGetValue(c.Id, out var s))
             {
                 s.Cancel();
             }
-        }, EventType.Remove);
+        }, CacheNotifyAction.Remove);
 
-        _eventBusCache = eventBusCache;
+        _taskCacheNotify = taskCacheNotify;
 
-        eventBusCache.Subscribe((c) =>
+        taskCacheNotify.Subscribe((c) =>
         {
             Cache.HashSet(c.Key, c.Id, (DistributedTaskCache)null);
-        }, EventType.Remove);
+        }, CacheNotifyAction.Remove);
 
-        eventBusCache.Subscribe((c) =>
+        taskCacheNotify.Subscribe((c) =>
         {
             Cache.HashSet(c.Key, c.Id, c);
-        }, EventType.InsertOrUpdate);
+        }, CacheNotifyAction.InsertOrUpdate);
     }
 
     public void CancelTask(string id)
     {
-        _eventBusNotify.Publish(new DistributedTaskCancelation() { Id = id }, EventType.Remove);
+        _cancelTaskNotify.Publish(new DistributedTaskCancelation() { Id = id }, CacheNotifyAction.Remove);
     }
 
     public void SetTask(DistributedTask task)
     {
-        _eventBusCache.Publish(task.DistributedTaskCache, EventType.InsertOrUpdate);
+        _taskCacheNotify.Publish(task.DistributedTaskCache, CacheNotifyAction.InsertOrUpdate);
     }
 
     public void RemoveTask(string id, string key)
     {
-        _eventBusCache.Publish(new DistributedTaskCache() { Id = id, Key = key }, EventType.Remove);
+        _taskCacheNotify.Publish(new DistributedTaskCache() { Id = id, Key = key }, CacheNotifyAction.Remove);
     }
 }
 

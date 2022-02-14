@@ -29,15 +29,15 @@ namespace ASC.Core.Caching
     class AzServiceCache
     {
         internal ICache Cache { get; }
-        internal IEventBus<AzRecordCache> CacheNotify { get; }
+        internal ICacheNotify<AzRecordCache> CacheNotify { get; }
 
-        public AzServiceCache(IEventBus<AzRecordCache> cacheNotify, ICache cache)
+        public AzServiceCache(ICacheNotify<AzRecordCache> cacheNotify, ICache cache)
         {
             CacheNotify = cacheNotify;
             Cache = cache;
 
-            cacheNotify.Subscribe((r) => UpdateCache(r, true), ASC.Common.Caching.EventType.Remove);
-            cacheNotify.Subscribe((r) => UpdateCache(r, false), ASC.Common.Caching.EventType.InsertOrUpdate);
+            cacheNotify.Subscribe((r) => UpdateCache(r, true), ASC.Common.Caching.CacheNotifyAction.Remove);
+            cacheNotify.Subscribe((r) => UpdateCache(r, false), ASC.Common.Caching.CacheNotifyAction.InsertOrUpdate);
         }
 
         private void UpdateCache(AzRecord r, bool remove)
@@ -70,7 +70,7 @@ namespace ASC.Core.Caching
     {
         private readonly IAzService service;
 
-        private readonly IEventBus<AzRecordCache> cacheNotify;
+        private readonly ICacheNotify<AzRecordCache> cacheNotify;
 
         private ICache Cache { get; }
 
@@ -102,14 +102,14 @@ namespace ASC.Core.Caching
         public AzRecord SaveAce(int tenant, AzRecord r)
         {
             r = service.SaveAce(tenant, r);
-            cacheNotify.Publish(r, ASC.Common.Caching.EventType.InsertOrUpdate);
+            cacheNotify.Publish(r, ASC.Common.Caching.CacheNotifyAction.InsertOrUpdate);
             return r;
         }
 
         public void RemoveAce(int tenant, AzRecord r)
         {
             service.RemoveAce(tenant, r);
-            cacheNotify.Publish(r, ASC.Common.Caching.EventType.Remove);
+            cacheNotify.Publish(r, ASC.Common.Caching.CacheNotifyAction.Remove);
         }
     }
 }
