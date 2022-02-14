@@ -13,7 +13,6 @@ const Footer = (props) => {
     embeddedComponent,
     selectedLength,
     showCounter,
-    theme,
   } = props;
 
   return (
