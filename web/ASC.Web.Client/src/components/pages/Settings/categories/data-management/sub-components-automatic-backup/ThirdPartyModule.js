@@ -34,6 +34,7 @@ class ThirdPartyModule extends React.Component {
       isReset,
       isThirdPartyDefault,
       defaultSelectedFolder,
+      isSuccessSave,
       ...rest
     } = this.props;
 
@@ -51,6 +52,7 @@ class ThirdPartyModule extends React.Component {
           isSavingProcess={isLoadingData}
           id={passedId}
           isReset={isReset}
+          isSuccessSave={isSuccessSave}
         />
 
         <ScheduleComponent isLoadingData={isLoadingData} {...rest} />

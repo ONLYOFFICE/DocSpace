@@ -335,14 +335,18 @@ class SelectFolderModalDialog extends React.Component {
       setSelectedNode,
       setSelectedFolder,
       selectionButtonPrimary,
-      //setExpandedPanelKeys
+      setExpandedPanelKeys,
+      onSetBaseFolderPath,
     } = this.props;
-    if (!selectionButtonPrimary) {
+    const isInput = !!onSetBaseFolderPath;
+
+    if (!selectionButtonPrimary || isInput) {
       //TODO:  it need for canCreate function now, will need when passed the folder id - need to come up with a different solution.
       setSelectedNode([id + ""]);
       const newPathParts = SelectFolderDialog.convertPathParts(data.pathParts);
 
-      // setExpandedPanelKeys(newPathParts)
+      isInput && setExpandedPanelKeys(newPathParts);
+
       setSelectedFolder({
         folders: data.folders,
         ...data.current,
@@ -463,8 +467,7 @@ class SelectFolderModalDialog extends React.Component {
   };
 
   onResetInfo = async () => {
-    //debugger;
-    const { id, foldersType, onSelectFolder, onSetFullPath } = this.props;
+    const { id, foldersType, onSelectFolder } = this.props;
     switch (foldersType) {
       case "common":
         try {
@@ -478,7 +481,7 @@ class SelectFolderModalDialog extends React.Component {
             folderId: `${id ? id : folderList[0].id}`,
           });
 
-          onSetFullPath("");
+          this.setFolderToTree(id ? id : folderList[0].id);
 
           this.loadersCompletes();
         } catch (err) {
@@ -500,8 +503,7 @@ class SelectFolderModalDialog extends React.Component {
             folderId: `${id ? id : folderList[0].id}`,
           });
 
-          onSetFullPath("");
-
+          this.setFolderToTree(id ? id : folderList[0].id);
           this.loadersCompletes();
         } catch (err) {
           console.error(err);

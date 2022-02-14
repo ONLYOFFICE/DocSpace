@@ -1,87 +1,85 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
 import GoogleCloudSettings from "../../consumer-storage-settings/GoogleCloudSettings";
-import Button from "@appserver/components/button";
 import ScheduleComponent from "../../sub-components-automatic-backup/ScheduleComponent";
 import { StyledStoragesModule } from "../../StyledBackup";
 class GoogleCloudStorage extends React.Component {
   constructor(props) {
     super(props);
-    const { selectedStorage } = this.props;
+    const {
+      selectedStorage,
+      onSetRequiredFormNames,
+      onSetFormSettings,
+    } = this.props;
 
-    this.defaultBucketValue = selectedStorage.properties[0].value;
+    this.defaultFormSettings = {};
+
+    this.namesArray = GoogleCloudSettings.formNames();
+
+    onSetRequiredFormNames([...this.namesArray]);
+
+    const isCorrectFields =
+      this.namesArray.length === selectedStorage.properties.length;
+
+    if (isCorrectFields) {
+      for (let i = 0; i < selectedStorage.properties.length; i++) {
+        const elem = selectedStorage.properties[i].name;
+        const value = selectedStorage.properties[i].value;
+
+        this.defaultFormSettings[elem] = value;
+      }
+    } else {
+      this.namesArray.forEach((elem) => (this.defaultFormSettings[elem] = ""));
+    }
+
+    onSetFormSettings(null, null, this.defaultFormSettings);
 
     this.state = {
-      formSettings: {
-        bucket: this.defaultBucketValue,
-      },
-      formErrors: {},
-      isError: false,
-      isChangedInput: false,
+      formSettings: { ...this.defaultFormSettings },
     };
-    this.isDisabled = !selectedStorage.isSet;
+    this.isDisabled = !selectedStorage?.isSet;
   }
 
   onChange = (event) => {
     const { formSettings } = this.state;
+    const { onSetFormSettings, onSetIsChanged } = this.props;
+
     const { target } = event;
     const value = target.value;
     const name = target.name;
 
+    onSetFormSettings(name, value);
+    onSetIsChanged(true);
+
     this.setState({
-      isChangedInput: true,
       formSettings: { ...formSettings, [name]: value },
     });
   };
 
-  onSaveSettings = () => {
-    const { convertSettings, isInvalidForm } = this.props;
-    const { formSettings } = this.state;
-    const { bucket } = formSettings;
-    const isInvalid = isInvalidForm({
-      bucket,
-    });
+  componentDidUpdate(prevProps) {
+    const { isReset, isSuccessSave, onSetFormSettings } = this.props;
 
-    const hasError = isInvalid[0];
-    const errors = isInvalid[1];
-
-    if (hasError) {
-      this.setState({ formErrors: errors });
-      return;
+    if (isReset && isReset !== prevProps.isReset) {
+      onSetFormSettings(null, null, this.defaultFormSettings);
+      this.setState({
+        formSettings: {
+          ...this.defaultFormSettings,
+        },
+      });
     }
 
-    const valuesArray = [bucket];
-
-    this.setState({
-      isChangedInput: false,
-      formErrors: {},
-    });
-    convertSettings(valuesArray.length, valuesArray);
-  };
-
-  onCancelSettings = () => {
-    const { onCancelModuleSettings } = this.props;
-
-    onCancelModuleSettings();
-
-    this.setState({
-      formSettings: {
-        bucket: this.defaultBucketValue,
-      },
-      formErrors: {},
-      isChangedInput: false,
-    });
-  };
+    if (isSuccessSave && isSuccessSave !== prevProps.isSuccessSave) {
+      this.defaultFormSettings = this.state.formSettings;
+    }
+  }
 
   render() {
-    const { isChangedInput, formErrors, formSettings } = this.state;
+    const { formSettings } = this.state;
     const {
       t,
       isLoadingData,
-      isCopyingToLocal,
-      isChangedThirdParty,
-      isChanged,
       selectedStorage,
+      formErrors,
       ...rest
     } = this.props;
 
@@ -95,31 +93,6 @@ class GoogleCloudStorage extends React.Component {
         />
 
         <ScheduleComponent isLoadingData={isLoadingData} {...rest} />
-
-        {(isChanged || isChangedThirdParty || isChangedInput) && (
-          //isChanged - from auto backup, monitor  period, time and etc. options;
-          //isChangedThirdParty - from storages module, monitors selection storage changes
-          //isChangedInput - monitors inputs changes
-          <div className="backup_storages-buttons">
-            <Button
-              label={t("Common:SaveButton")}
-              onClick={this.onSaveSettings}
-              primary
-              isDisabled={isCopyingToLocal || isLoadingData || this.isDisabled}
-              size="medium"
-              tabIndex={10}
-              className="save-button"
-            />
-
-            <Button
-              label={t("Common:CancelButton")}
-              isDisabled={isLoadingData}
-              onClick={this.onCancelSettings}
-              size="medium"
-              tabIndex={10}
-            />
-          </div>
-        )}
       </StyledStoragesModule>
     );
   }

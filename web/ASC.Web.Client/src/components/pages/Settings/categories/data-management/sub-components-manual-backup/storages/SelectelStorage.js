@@ -52,7 +52,7 @@ class SelectelStorage extends React.Component {
 
   render() {
     const { formSettings, formErrors } = this.state;
-    const { t, isLoadingData, isMaxProgress } = this.props;
+    const { t, isLoadingData, isMaxProgress, selectedStorage } = this.props;
 
     return (
       <>

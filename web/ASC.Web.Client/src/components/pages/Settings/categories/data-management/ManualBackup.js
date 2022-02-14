@@ -98,6 +98,7 @@ class ManualBackup extends React.Component {
             backupProgress.link.slice(0, 1) === "/" &&
             this.setState({
               link: backupProgress.link,
+              downloadingProgress: 100,
             });
 
           this.clearSessionStorage();
@@ -107,6 +108,7 @@ class ManualBackup extends React.Component {
       }
     } catch (error) {
       console.error(error);
+      this.clearSessionStorage();
     }
 
     this.setState({

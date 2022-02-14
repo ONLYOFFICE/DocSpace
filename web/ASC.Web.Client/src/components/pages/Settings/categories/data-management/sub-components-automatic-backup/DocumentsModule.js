@@ -34,6 +34,7 @@ class DocumentsModule extends React.Component {
       isReset,
       isThirdPartyDefault,
       defaultSelectedFolder,
+      isSuccessSave,
       ...rest
     } = this.props;
 
@@ -52,7 +53,7 @@ class DocumentsModule extends React.Component {
           isSavingProcess={isLoadingData}
           id={passedId}
           isReset={isReset}
-          onSetLoadingData={onSetLoadingData}
+          isSuccessSave={isSuccessSave}
         />
 
         <ScheduleComponent isLoadingData={isLoadingData} {...rest} />

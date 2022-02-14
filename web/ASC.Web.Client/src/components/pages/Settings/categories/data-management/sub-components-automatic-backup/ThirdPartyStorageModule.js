@@ -10,13 +10,10 @@ import { ThirdPartyStorages } from "@appserver/common/constants";
 import { StyledAutoBackup } from "../StyledBackup";
 
 let googleStorageId = ThirdPartyStorages.GoogleId;
-let inputValueArray;
 
 class ThirdPartyStorageModule extends React.PureComponent {
   constructor(props) {
     super(props);
-
-    this.isSetDefaultIdStorage = false;
 
     this.state = {
       availableOptions: [],
@@ -25,36 +22,42 @@ class ThirdPartyStorageModule extends React.PureComponent {
       defaultSelectedStorage: "",
       selectedId: "",
       isLoading: false,
-      isChangedThirdParty: false,
     };
-    this.isFirstSet = false;
-    this.firstSetId = "";
-    this._isMounted = false;
   }
   componentDidMount() {
-    this._isMounted = true;
-    const { onSetLoadingData, checkChanges } = this.props;
+    const { storageInfo } = this.props;
 
-    onSetLoadingData && onSetLoadingData(true);
-    this.setState(
-      {
-        isLoading: true,
-      },
-      function () {
-        getBackupStorage()
-          .then((storageBackup) => this.getOptions(storageBackup))
-          .finally(() => {
-            onSetLoadingData && onSetLoadingData(false);
-            this.setState({ isLoading: false });
-          });
+    storageInfo && this.getOptions(storageInfo);
+  }
+
+  componentDidUpdate(prevProps) {
+    const { isSuccessSave, isReset, storageInfo } = this.props;
+    const {
+      defaultSelectedStorage,
+      selectedStorage,
+      defaultSelectedId,
+    } = this.state;
+
+    if (isSuccessSave && isSuccessSave !== prevProps.isSuccessSave) {
+      storageInfo && this.getOptions(storageInfo);
+    }
+
+    if (isReset && isReset !== prevProps.isReset) {
+      if (defaultSelectedStorage !== selectedStorage) {
+        this.setState({
+          selectedId: defaultSelectedId,
+          selectedStorage: defaultSelectedStorage,
+        });
       }
-    );
+    }
   }
 
-  componentWillUnmount() {
-    this._isMounted = false;
-  }
   getOptions = (storageBackup) => {
+    const { onSetStorageId } = this.props;
+
+    let isSetDefaultIdStorage = false;
+    let isFirstSet = false;
+    let firstSetId = "";
     let options = [];
     let availableStorage = {};
 
@@ -77,8 +80,8 @@ class ThirdPartyStorageModule extends React.PureComponent {
       availableStorage = { ...availableStorage, ...obj };
 
       if (storageBackup[item].current) {
-        this.isSetDefaultIdStorage = true;
-
+        isSetDefaultIdStorage = true;
+        onSetStorageId(storageBackup[item].id);
         this.setState({
           selectedStorage: storageBackup[item].title,
           defaultSelectedStorage: storageBackup[item].title,
@@ -87,13 +90,14 @@ class ThirdPartyStorageModule extends React.PureComponent {
         });
       }
 
-      if (!this.isFirstSet && storageBackup[item].isSet) {
-        this.isFirstSet = true;
-        this.firstSetId = storageBackup[item].id;
+      if (!isFirstSet && storageBackup[item].isSet) {
+        isFirstSet = true;
+        firstSetId = storageBackup[item].id;
       }
     }
 
-    if (!this.isSetDefaultIdStorage && !this.isFirstSet) {
+    if (!isSetDefaultIdStorage && !isFirstSet) {
+      onSetStorageId(availableStorage[googleStorageId].id);
       this.setState({
         selectedStorage: availableStorage[googleStorageId].title,
         defaultSelectedStorage: availableStorage[googleStorageId].title,
@@ -102,12 +106,14 @@ class ThirdPartyStorageModule extends React.PureComponent {
       });
     }
 
-    if (!this.isSetDefaultIdStorage && this.isFirstSet) {
+    if (!isSetDefaultIdStorage && isFirstSet) {
+      onSetStorageId(availableStorage[firstSetId].id);
+
       this.setState({
-        selectedStorage: availableStorage[this.firstSetId].title,
-        defaultSelectedStorage: availableStorage[this.firstSetId].title,
-        selectedId: availableStorage[this.firstSetId].id,
-        defaultSelectedId: availableStorage[this.firstSetId].id,
+        selectedStorage: availableStorage[firstSetId].title,
+        defaultSelectedStorage: availableStorage[firstSetId].title,
+        selectedId: availableStorage[firstSetId].id,
+        defaultSelectedId: availableStorage[firstSetId].id,
       });
     }
 
@@ -120,114 +126,49 @@ class ThirdPartyStorageModule extends React.PureComponent {
 
   checkChanges = () => {
     const { defaultSelectedStorage, selectedStorage } = this.state;
+    const { onSetIsChanged } = this.props;
 
     if (defaultSelectedStorage !== selectedStorage) {
-      this.setState({
-        isChangedThirdParty: true,
-      });
+      onSetIsChanged(true);
     } else {
-      this.setState({ isChangedThirdParty: false });
+      onSetIsChanged(false);
     }
   };
+
   onSelect = (option) => {
     const selectedStorageId = option.key;
     const { availableStorage } = this.state;
+    const { onSetStorageId } = this.props;
+    const storage = availableStorage[selectedStorageId];
+
+    onSetStorageId(storage.id);
 
     this.setState(
       {
-        selectedStorage: availableStorage[selectedStorageId].title,
-        selectedId: availableStorage[selectedStorageId].id,
+        selectedStorage: storage.title,
+        selectedId: storage.id,
       },
-      function () {
+      () => {
         this.checkChanges();
       }
     );
   };
 
-  convertSettings = (inputNumber, valuesArray) => {
-    const { selectedId, availableStorage } = this.state;
-    let obj = {};
-    inputValueArray = [];
-
-    const selectedStorage = availableStorage[selectedId];
-
-    for (let i = 1; i <= inputNumber; i++) {
-      obj = {
-        key: selectedStorage.properties[i - 1]?.name,
-        value: valuesArray[i - 1],
-      };
-      inputValueArray.push(obj);
-    }
-    this.onSaveModuleSettings();
-  };
-
-  onSaveModuleSettings = async () => {
-    const { onSaveModuleSettings, onSetLoadingData } = this.props;
-
-    const { selectedId, availableStorage } = this.state;
-
-    await onSaveModuleSettings(selectedId, inputValueArray);
-    this.isSetDefaultIdStorage = true;
-
-    this._isMounted &&
-      this.setState({
-        defaultSelectedId: selectedId,
-        defaultSelectedStorage: availableStorage[selectedId].title,
-        isChangedThirdParty: false,
-      });
-  };
-
-  onCancelModuleSettings = () => {
-    const { onCancelModuleSettings } = this.props;
-    const {
-      defaultSelectedStorage,
-      selectedStorage,
-      defaultSelectedId,
-    } = this.state;
-
-    onCancelModuleSettings();
-
-    if (defaultSelectedStorage !== selectedStorage) {
-      this.setState({
-        selectedId: defaultSelectedId,
-        selectedStorage: defaultSelectedStorage,
-        isChangedThirdParty: false,
-      });
-    }
-  };
-  isInvalidForm = (formSettings) => {
-    let errors = {};
-    let firstError = false;
-
-    for (let key in formSettings) {
-      const elem = formSettings[key];
-      errors[key] = elem ? !elem.trim() : true;
-
-      if (errors[key] && !firstError) {
-        firstError = true;
-      }
-    }
-
-    return [firstError, errors];
-  };
-
   render() {
-    const { isLoadingData, ...rest } = this.props;
+    const { isLoadingData, isErrorsFields, ...rest } = this.props;
     const {
       availableOptions,
       availableStorage,
       selectedStorage,
       isLoading,
       selectedId,
-      isChangedThirdParty,
     } = this.state;
 
     const commonProps = {
       selectedStorage: availableStorage[selectedId],
-      convertSettings: this.convertSettings,
-      isInvalidForm: this.isInvalidForm,
-      onCancelModuleSettings: this.onCancelModuleSettings,
-      isChangedThirdParty: isChangedThirdParty,
+      selectedId,
+      formErrors: isErrorsFields,
+      isLoadingData,
     };
 
     const { GoogleId, RackspaceId, SelectelId, AmazonId } = ThirdPartyStorages;
@@ -248,29 +189,19 @@ class ThirdPartyStorageModule extends React.PureComponent {
           />
 
           {selectedId === GoogleId && !isLoading && (
-            <GoogleCloudStorage
-              isLoadingData={isLoadingData}
-              {...rest}
-              {...commonProps}
-            />
+            <GoogleCloudStorage {...rest} {...commonProps} />
           )}
 
-          {selectedId === RackspaceId && !isLoading && <RackspaceStorage />}
+          {selectedId === RackspaceId && !isLoading && (
+            <RackspaceStorage {...rest} {...commonProps} />
+          )}
 
           {selectedId === SelectelId && !isLoading && (
-            <SelectelStorage
-              isLoadingData={isLoadingData}
-              {...rest}
-              {...commonProps}
-            />
+            <SelectelStorage {...rest} {...commonProps} />
           )}
 
           {selectedId === AmazonId && !isLoading && (
-            <AmazonStorage
-              isLoadingData={isLoadingData}
-              {...rest}
-              {...commonProps}
-            />
+            <AmazonStorage {...rest} {...commonProps} />
           )}
         </div>
       </StyledAutoBackup>

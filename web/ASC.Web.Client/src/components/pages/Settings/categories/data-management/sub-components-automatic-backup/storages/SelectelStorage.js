@@ -1,92 +1,85 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
 import SelectelSettings from "../../consumer-storage-settings/SelectelSettings";
-import Button from "@appserver/components/button";
 import ScheduleComponent from "../../sub-components-automatic-backup/ScheduleComponent";
 import { StyledStoragesModule } from "../../StyledBackup";
 class SelectelStorage extends React.Component {
   constructor(props) {
     super(props);
-    const { selectedStorage } = this.props;
+    const {
+      selectedStorage,
+      onSetRequiredFormNames,
+      onSetFormSettings,
+    } = this.props;
 
-    this.defaultPrivateValue = selectedStorage.properties[0].value;
+    this.defaultFormSettings = {};
 
-    this.defaultPublicValue = selectedStorage.properties[1].value;
+    this.namesArray = SelectelSettings.formNames();
+
+    onSetRequiredFormNames([...this.namesArray]);
+
+    const isCorrectFields =
+      this.namesArray.length === selectedStorage.properties.length;
+
+    if (isCorrectFields) {
+      for (let i = 0; i < selectedStorage.properties.length; i++) {
+        const elem = selectedStorage.properties[i].name;
+        const value = selectedStorage.properties[i].value;
+
+        this.defaultFormSettings[elem] = value;
+      }
+    } else {
+      this.namesArray.forEach((elem) => (this.defaultFormSettings[elem] = ""));
+    }
+
+    onSetFormSettings(null, null, this.defaultFormSettings);
 
     this.state = {
       formSettings: {
-        private_container: this.defaultPrivateValue,
-        public_container: this.defaultPublicValue,
+        ...this.defaultFormSettings,
       },
-      formErrors: {},
-      isError: false,
-      isChangedInput: false,
     };
     this.isDisabled = !selectedStorage.isSet;
   }
 
   onChange = (event) => {
     const { formSettings } = this.state;
+    const { onSetFormSettings, onSetIsChanged } = this.props;
+
     const { target } = event;
     const value = target.value;
     const name = target.name;
 
+    onSetFormSettings(name, value);
+    onSetIsChanged(true);
+
     this.setState({
-      isChangedInput: true,
       formSettings: { ...formSettings, [name]: value },
     });
   };
 
-  onSaveSettings = () => {
-    const { convertSettings, isInvalidForm } = this.props;
-    const { formSettings } = this.state;
-    const { private_container, public_container } = formSettings;
+  componentDidUpdate(prevProps) {
+    const { isReset, isSuccessSave, onSetFormSettings } = this.props;
 
-    const isInvalid = isInvalidForm({
-      private_container,
-      public_container,
-    });
-
-    const hasError = isInvalid[0];
-    const errors = isInvalid[1];
-
-    if (hasError) {
-      this.setState({ formErrors: errors });
-      return;
+    if (isReset && isReset !== prevProps.isReset) {
+      onSetFormSettings(null, null, this.defaultFormSettings);
+      console.log("onSetFormSettings update", this.defaultFormSettings);
+      this.setState({
+        formSettings: {
+          ...this.defaultFormSettings,
+        },
+      });
     }
-
-    const valuesArray = [private_container, public_container];
-
-    this.setState({
-      isChangedInput: false,
-      formErrors: {},
-    });
-    convertSettings(valuesArray.length, valuesArray);
-  };
-
-  onCancelSettings = () => {
-    const { onCancelModuleSettings } = this.props;
-
-    onCancelModuleSettings();
-
-    this.setState({
-      formSettings: {
-        private_container: this.defaultPrivateValue,
-        public_container: this.defaultPublicValue,
-      },
-      formErrors: {},
-      isChangedInput: false,
-    });
-  };
-
+    if (isSuccessSave && isSuccessSave !== prevProps.isSuccessSave) {
+      this.defaultFormSettings = this.state.formSettings;
+    }
+  }
   render() {
-    const { isChangedInput, formSettings, formErrors } = this.state;
+    const { formSettings } = this.state;
     const {
       t,
       isLoadingData,
-      isCopyingToLocal,
-      isChangedThirdParty,
-      isChanged,
+      formErrors,
       selectedStorage,
       ...rest
     } = this.props;
@@ -103,32 +96,6 @@ class SelectelStorage extends React.Component {
         />
 
         <ScheduleComponent isLoadingData={isLoadingData} {...rest} />
-
-        {(isChanged || isChangedThirdParty || isChangedInput) && (
-          //isChanged - from auto backup, monitor  period, time and etc. options;
-          //isChangedThirdParty - from storages module, monitors selection storage changes
-          //isChangedInput - monitors inputs changes
-          <div className="backup_storages-buttons">
-            <Button
-              label={t("Common:SaveButton")}
-              onClick={this.onSaveSettings}
-              primary
-              isDisabled={isCopyingToLocal || isLoadingData || this.isDisabled}
-              size="medium"
-              tabIndex={10}
-              className="save-button"
-            />
-
-            <Button
-              label={t("Common:CancelButton")}
-              isDisabled={isLoadingData}
-              onClick={this.onCancelSettings}
-              primary
-              size="medium"
-              tabIndex={10}
-            />
-          </div>
-        )}
       </StyledStoragesModule>
     );
   }

@@ -37,7 +37,7 @@ class SelectelSettings extends React.Component {
           className="backup_text-input"
           scale={true}
           value={formSettings.private_container}
-          hasError={isError.private_container}
+          hasError={isError?.private_container}
           onChange={onChange}
           isDisabled={isLoadingData || isLoading || this.isDisabled}
           placeholder={this.privatePlaceholder || ""}
@@ -48,7 +48,7 @@ class SelectelSettings extends React.Component {
           className="backup_text-input"
           scale={true}
           value={formSettings.public_container}
-          hasError={isError.public_container}
+          hasError={isError?.public_container}
           onChange={onChange}
           isDisabled={isLoadingData || isLoading || this.isDisabled}
           placeholder={this.publicPlaceholder || ""}

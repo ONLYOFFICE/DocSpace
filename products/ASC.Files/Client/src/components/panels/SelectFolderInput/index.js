@@ -18,7 +18,6 @@ class SelectFolderInputBody extends React.PureComponent {
       isLoading: false,
       baseFolderPath: "",
       fullFolderPath: "",
-      fullFolderPathDefault: "",
     };
   }
   componentDidMount() {
@@ -27,10 +26,28 @@ class SelectFolderInputBody extends React.PureComponent {
     if (folderPath.length !== 0) {
       this.setState({
         fullFolderPath: folderPath,
-        fullFolderPathDefault: folderPath,
       });
     }
+
     setFirstLoad(false);
+  }
+
+  componentDidUpdate(prevProps) {
+    const { isSuccessSave, isReset } = this.props;
+    const { fullFolderPath, baseFolderPath } = this.state;
+
+    if (isSuccessSave && isSuccessSave !== prevProps.isSuccessSave) {
+      fullFolderPath &&
+        this.setState({
+          baseFolderPath: fullFolderPath,
+        });
+    }
+
+    if (isReset && isReset !== prevProps.isReset) {
+      this.setState({
+        fullFolderPath: baseFolderPath,
+      });
+    }
   }
 
   onSetFullPath = (pathName) => {

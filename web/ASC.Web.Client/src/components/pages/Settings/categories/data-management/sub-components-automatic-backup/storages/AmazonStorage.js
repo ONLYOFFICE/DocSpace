@@ -1,121 +1,86 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
 import AmazonSettings from "../../consumer-storage-settings/AmazonSettings";
-import Button from "@appserver/components/button";
 import ScheduleComponent from "../../sub-components-automatic-backup/ScheduleComponent";
 import { StyledStoragesModule } from "../../StyledBackup";
 class AmazonStorage extends React.Component {
   constructor(props) {
     super(props);
-    const { selectedStorage } = this.props;
+    const {
+      selectedStorage,
+      onSetRequiredFormNames,
+      onSetFormSettings,
+    } = this.props;
 
-    this.defaultBucketValue = selectedStorage.properties[0]?.value;
+    this.defaultFormSettings = {};
 
-    this.defaultForcePathStyleValue = selectedStorage.properties[1]?.value;
+    this.namesArray = AmazonSettings.formNames();
+    this.requiredFields = AmazonSettings.requiredFormsName();
 
-    this.defaultRegionValue = selectedStorage.properties[2]?.value;
+    onSetRequiredFormNames([...this.requiredFields]);
 
-    this.defaultServiceUrlValue = selectedStorage.properties[3]?.value;
+    const isCorrectFields =
+      this.namesArray.length === selectedStorage.properties.length;
 
-    this.defaultSSEValue = selectedStorage.properties[4]?.value;
+    if (isCorrectFields) {
+      for (let i = 0; i < selectedStorage.properties.length; i++) {
+        const elem = selectedStorage.properties[i].name;
+        const value = selectedStorage.properties[i].value;
 
-    this.defaultUseHttpValue = selectedStorage.properties[5]?.value;
+        this.defaultFormSettings[elem] = value;
+      }
+    } else {
+      this.namesArray.forEach((elem) => (this.defaultFormSettings[elem] = ""));
+    }
+
+    onSetFormSettings(null, null, this.defaultFormSettings);
 
     this.state = {
-      formSettings: {
-        bucket: this.defaultBucketValue,
-        forcePathStyle: this.defaultForcePathStyleValue,
-        region: this.defaultRegionValue,
-        serviceUrl: this.defaultServiceUrlValue,
-        sse: this.defaultSSEValue,
-        useHttp: this.defaultUseHttpValue,
-      },
-      formErrors: {},
-      isChangedInput: false,
+      formSettings: { ...this.defaultFormSettings },
     };
     this.isDisabled = !selectedStorage?.isSet;
   }
 
   onChange = (event) => {
     const { formSettings } = this.state;
+    const { onSetFormSettings, onSetIsChanged } = this.props;
+
     const { target } = event;
     const value = target.value;
     const name = target.name;
+
+    onSetFormSettings(name, value);
+    onSetIsChanged(true);
+
     this.setState({
-      isChangedInput: true,
       formSettings: { ...formSettings, [name]: value },
     });
   };
 
-  onSaveSettings = () => {
-    const { convertSettings, isInvalidForm } = this.props;
-    const { formSettings } = this.state;
-    const {
-      bucket,
-      forcePathStyle,
-      region,
-      serviceUrl,
-      sse,
-      useHttp,
-    } = formSettings;
+  componentDidUpdate(prevProps) {
+    const { isReset, isSuccessSave, onSetFormSettings } = this.props;
 
-    const isInvalid = isInvalidForm({
-      bucket,
-      region,
-    });
-
-    const hasError = isInvalid[0];
-    const errors = isInvalid[1];
-
-    if (hasError) {
-      this.setState({ formErrors: errors });
-      return;
+    if (isReset && isReset !== prevProps.isReset) {
+      onSetFormSettings(null, null, this.defaultFormSettings);
+      this.setState({
+        formSettings: {
+          ...this.defaultFormSettings,
+        },
+      });
     }
 
-    const valuesArray = [
-      bucket,
-      forcePathStyle,
-      region,
-      serviceUrl,
-      sse,
-      useHttp,
-    ];
+    if (isSuccessSave && isSuccessSave !== prevProps.isSuccessSave) {
+      this.defaultFormSettings = this.state.formSettings;
+    }
+  }
 
-    this.setState({
-      isChangedInput: false,
-      formErrors: {},
-    });
-    convertSettings(valuesArray.length, valuesArray);
-    // debugger;
-  };
-
-  onCancelSettings = () => {
-    const { onCancelModuleSettings } = this.props;
-
-    onCancelModuleSettings();
-
-    this.setState({
-      formSettings: {
-        bucket: this.defaultBucketValue,
-        forcePathStyle: this.defaultForcePathStyleValue,
-        region: this.defaultRegionValue,
-        serviceUrl: this.defaultServiceUrlValue,
-        sse: this.defaultSSEValue,
-        useHttp: this.defaultUseHttpValue,
-      },
-      formErrors: {},
-      isChangedInput: false,
-    });
-  };
   render() {
-    const { isChangedInput, formSettings, formErrors } = this.state;
+    const { formSettings } = this.state;
     const {
       t,
       isLoadingData,
-      isCopyingToLocal,
-      isChangedThirdParty,
-      isChanged,
       selectedStorage,
+      formErrors,
       ...rest
     } = this.props;
 
@@ -131,31 +96,6 @@ class AmazonStorage extends React.Component {
         />
 
         <ScheduleComponent isLoadingData={isLoadingData} {...rest} />
-
-        {(isChanged || isChangedThirdParty || isChangedInput) && (
-          //isChanged - from auto backup, monitor  period, time and etc. options;
-          //isChangedThirdParty - from storages module, monitors selection storage changes
-          //isChangedInput - monitors inputs changes
-          <div className="backup_storages-buttons">
-            <Button
-              label={t("Common:SaveButton")}
-              onClick={this.onSaveSettings}
-              primary
-              isDisabled={isCopyingToLocal || isLoadingData || this.isDisabled}
-              size="medium"
-              tabIndex={10}
-              className="save-button"
-            />
-
-            <Button
-              label={t("Common:CancelButton")}
-              isDisabled={isLoadingData}
-              onClick={this.onCancelSettings}
-              size="medium"
-              tabIndex={10}
-            />
-          </div>
-        )}
       </StyledStoragesModule>
     );
   }
