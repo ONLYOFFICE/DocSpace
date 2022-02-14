@@ -9,15 +9,15 @@ import InfiniteLoader from "react-window-infinite-loader";
 import AutoSizer from "react-virtualized-auto-sizer";
 import ReactTooltip from "react-tooltip";
 
+import Avatar from "@appserver/components/avatar";
 import Checkbox from "@appserver/components/checkbox";
-import Link from "@appserver/components/link";
-import ComboBox from "@appserver/components/combobox";
 import SearchInput from "@appserver/components/search-input";
 import Loader from "@appserver/components/loader";
 import Text from "@appserver/components/text";
 import Tooltip from "@appserver/components/tooltip";
+import Heading from "@appserver/components/heading";
+import IconButton from "@appserver/components/icon-button";
 import CustomScrollbarsVirtualList from "@appserver/components/scrollbar/custom-scrollbars-virtual-list";
-import HelpButton from "@appserver/components/help-button";
 
 import StyledSelector from "./StyledSelector";
 
@@ -45,7 +45,6 @@ const getCurrentGroup = (items) => {
 
 const Selector = (props) => {
   const {
-    displayType,
     groups,
     selectButtonLabel,
     isDisabled,
@@ -70,15 +69,11 @@ const Selector = (props) => {
     allowGroupSelection,
     embeddedComponent,
     showCounter,
-    theme,
+    onArrowClick,
+    headerLabel,
   } = props;
 
-  //console.log("options", options);
-  //console.log("hasNextPage", hasNextPage);
-  //console.log("isNextPageLoading", isNextPageLoading);
-
   const listOptionsRef = useRef(null);
-  const listGroupsRef = useRef(null);
 
   useEffect(() => {
     Object.keys(currentGroup).length === 0 &&
@@ -95,11 +90,11 @@ const Selector = (props) => {
   );
   const [searchValue, setSearchValue] = useState("");
 
-  const [selectedAll, setSelectedAll] = useState(false);
-
   const [currentGroup, setCurrentGroup] = useState(
     getCurrentGroup(convertGroups(groups))
   );
+
+  const [groupHeader, setGroupHeader] = useState(null);
 
   // Every row is loaded except for our loading indicator row.
   const isItemLoaded = useCallback(
@@ -110,9 +105,9 @@ const Selector = (props) => {
   );
 
   const onOptionChange = useCallback(
-    (e) => {
-      const option = options[+e.target.value];
-      const newSelected = e.target.checked
+    (index, isChecked) => {
+      const option = options[index];
+      const newSelected = !isChecked
         ? [option, ...selectedOptionList]
         : selectedOptionList.filter((el) => el.key !== option.key);
       setSelectedOptionList(newSelected);
@@ -122,7 +117,7 @@ const Selector = (props) => {
       const newSelectedGroups = [];
       const removedSelectedGroups = [];
 
-      if (e.target.checked) {
+      if (isChecked) {
         option.groups.forEach((g) => {
           let index = selectedGroupList.findIndex((sg) => sg.key === g);
           if (index > -1) {
@@ -188,68 +183,11 @@ const Selector = (props) => {
     [options, selectedOptionList, groups, selectedGroupList]
   );
 
-  const onGroupChange = useCallback(
-    (e) => {
-      const group = convertGroup(groups[+e.target.value]);
-      group.selected = e.target.checked ? group.total : 0;
-      const newSelectedGroups = e.target.checked
-        ? [group, ...selectedGroupList]
-        : selectedGroupList.filter((el) => el.key !== group.key);
-      //console.log("onGroupChange", item);
-      setSelectedGroupList(newSelectedGroups);
-
-      onGroupSelect(group);
-
-      if (e.target.checked) {
-        //const newSelectedOptions = [];
-        //options.forEach(o => o.groups.forEach(gKey => group.))
-        //setSelectedOptionList()
-        //TODO: Implement  setSelectedOptionList changes
-      }
-    },
-    [groups, selectedGroupList, currentGroup]
-  );
-
   const resetCache = useCallback(() => {
     if (listOptionsRef && listOptionsRef.current) {
       listOptionsRef.current.resetloadMoreItemsCache(true);
     }
   }, [listOptionsRef]);
-
-  const onGroupSelect = useCallback(
-    (group) => {
-      if (!currentGroup || !group || currentGroup.key === group.key) {
-        return;
-      }
-
-      setCurrentGroup(group);
-      onGroupChanged && onGroupChanged(group);
-
-      if (displayType === "aside" && isMultiSelect) {
-        setSelectedAll(isGroupChecked(group));
-      }
-    },
-    [displayType, isMultiSelect, currentGroup]
-  );
-
-  const onSelectAllChange = useCallback(() => {
-    const checked = !selectedAll;
-    //console.log("onSelectAllChange", checked);
-    setSelectedAll(checked);
-
-    if (!currentGroup) return;
-
-    const group = convertGroup(currentGroup);
-
-    if (!group) return;
-
-    group.selected = checked ? group.total : 0;
-    const newSelectedGroups = checked
-      ? [group, ...selectedGroupList]
-      : selectedGroupList.filter((el) => el.key !== group.key);
-
-    setSelectedGroupList(newSelectedGroups);
-  }, [selectedAll, currentGroup, selectedGroupList]);
 
   const onSearchChange = useCallback((value) => {
     setSearchValue(value);
@@ -259,10 +197,6 @@ const Selector = (props) => {
   const onSearchReset = useCallback(() => {
     onSearchChanged && onSearchChange("");
   });
-
-  const onSelectOptions = (items) => {
-    onSelect && onSelect(items);
-  };
 
   const isOptionChecked = useCallback(
     (option) => {
@@ -283,12 +217,16 @@ const Selector = (props) => {
     },
     [selectedOptionList, selectedGroupList]
   );
+  const onSelectOptions = (items) => {
+    onSelect && onSelect(items);
+  };
+
+  const onAddClick = useCallback(() => {
+    onSelectOptions(selectedOptionList);
+  }, [selectedOptionList]);
 
   const onLinkClick = useCallback(
-    (e) => {
-      const index = e.target.dataset.index;
-      if (!index) return;
-
+    (index) => {
       const option = options[index];
 
       if (!option) return;
@@ -298,79 +236,71 @@ const Selector = (props) => {
     [options]
   );
 
-  const onAddClick = useCallback(() => {
-    onSelectOptions(selectedOptionList);
-  }, [selectedOptionList]);
-
   const renderOptionItem = useCallback(
     (index, style, option, isChecked, tooltipProps) => {
       return isMultiSelect ? (
-        <div style={style} className="row-option" {...tooltipProps}>
+        <div
+          style={style}
+          className="row-option"
+          value={`${index}`}
+          onClick={() => onOptionChange(index, isChecked)}
+          {...tooltipProps}
+        >
+          <div className="option-info">
+            <Avatar
+              className="option-avatar"
+              role="user"
+              size="min"
+              source={option.avatarUrl}
+              userName={option.label}
+            />
+            <Text
+              className="option-text"
+              truncate={true}
+              noSelect={true}
+              fontSize="14px"
+            >
+              {option.label}
+            </Text>
+          </div>
           <Checkbox
             id={option.key}
             value={`${index}`}
-            label={option.label}
             isChecked={isChecked}
-            className="option_checkbox"
-            truncate={true}
-            title={option.label}
-            onChange={onOptionChange}
+            className="option-checkbox"
           />
-          {displayType === "aside" && getOptionTooltipContent && (
-            <HelpButton
-              id={`info-${option.key}`}
-              className="option-info"
-              iconName="/static/images/info.react.svg"
-              color="#D8D8D8"
-              getContent={getOptionTooltipContent}
-              place="top"
-              offsetLeft={150}
-              offsetRight={0}
-              offsetTop={60}
-              offsetBottom={0}
-              dataTip={`${index}`}
-              displayType="dropdown"
-            />
-          )}
         </div>
       ) : (
-        <Link
+        <div
           key={option.key}
-          data-index={index}
-          isTextOverflow={true}
           style={style}
           className="row-option"
+          data-index={index}
+          onClick={() => onLinkClick(index)}
           {...tooltipProps}
-          onClick={onLinkClick}
-          noHover
         >
-          {option.label}
-          {displayType === "aside" && getOptionTooltipContent && (
-            <HelpButton
-              id={`info-${option.key}`}
-              className="option-info"
-              iconName="/static/images/info.react.svg"
-              color="#D8D8D8"
-              getContent={getOptionTooltipContent}
-              place="top"
-              offsetLeft={150}
-              offsetRight={0}
-              offsetTop={60}
-              offsetBottom={0}
-              dataTip={`${index}`}
-              displayType="dropdown"
+          <div className="option-info">
+            {" "}
+            <Avatar
+              className="option-avatar"
+              role="user"
+              size="min"
+              source={option.avatarUrl}
+              userName={option.label}
             />
-          )}
-        </Link>
+            <Text
+              className="option-text"
+              truncate={true}
+              noSelect={true}
+              fontSize="14px"
+            >
+              {option.label}
+            </Text>
+          </div>
+        </div>
       );
     },
-    [
-      isMultiSelect,
-      onOptionChange,
-      onLinkClick,
-      displayType,
-      getOptionTooltipContent,
-    ]
+    [isMultiSelect, onOptionChange, onLinkClick]
   );
 
   const renderOptionLoader = useCallback(
@@ -386,7 +316,9 @@ const Selector = (props) => {
                 marginRight: "10px",
               }}
             />
-            <Text as="span">{loadingLabel}</Text>
+            <Text as="span" noSelect={true}>
+              {loadingLabel}
+            </Text>
           </div>
         </div>
       );
@@ -408,9 +340,6 @@ const Selector = (props) => {
       const isChecked = isOptionChecked(option);
       let tooltipProps = {};
 
-      if (displayType === "dropdown")
-        tooltipProps = { "data-for": "user", "data-tip": index };
-
       ReactTooltip.rebuild();
 
       return renderOptionItem(index, style, option, isChecked, tooltipProps);
@@ -422,124 +351,10 @@ const Selector = (props) => {
       loadingLabel,
       options,
       isOptionChecked,
-      displayType,
       isMultiSelect,
       onOptionChange,
       onLinkClick,
       getOptionTooltipContent,
-    ]
-  );
-
-  const isGroupChecked = useCallback(
-    (group) => {
-      const selectedGroup = selectedGroupList.find((g) => g.key === group.key);
-      return !!selectedGroup;
-    },
-    [selectedGroupList]
-  );
-
-  const isGroupIndeterminate = useCallback(
-    (group) => {
-      const selectedGroup = selectedGroupList.find((g) => g.key === group.key);
-      return (
-        selectedGroup &&
-        selectedGroup.selected > 0 &&
-        group.total !== selectedGroup.selected
-      );
-    },
-    [selectedGroupList]
-  );
-
-  const getGroupSelected = useCallback(
-    (group) => {
-      const selectedGroup = selectedGroupList.find((g) => g.key === group.key);
-      return isGroupIndeterminate(group)
-        ? selectedGroup.selected
-        : isGroupChecked(group)
-        ? group.total
-        : 0;
-    },
-    [selectedGroupList]
-  );
-
-  const getGroupLabel = useCallback(
-    (group) => {
-      const selected = getGroupSelected(group);
-      return isMultiSelect && allowGroupSelection
-        ? `${group.label} (${group.total}/${selected})`
-        : group.label;
-    },
-    [isMultiSelect, allowGroupSelection]
-  );
-
-  const getSelectorGroups = useCallback(
-    (groups) => {
-      return groups.map((group) => {
-        return {
-          ...group,
-          label: getGroupLabel(group),
-        };
-      });
-    },
-    [groups]
-  );
-
-  const onLinkGroupClick = useCallback(
-    (e) => {
-      const index = e.target.dataset.index;
-      if (!index) return;
-
-      const group = groups[index];
-
-      if (!group) return;
-
-      onGroupSelect(group);
-    },
-    [groups, currentGroup]
-  );
-
-  // eslint-disable-next-line react/prop-types
-  const renderGroup = useCallback(
-    ({ index, style }) => {
-      const group = groups[index];
-
-      const isChecked = isGroupChecked(group);
-      const isIndeterminate = isGroupIndeterminate(group);
-      const isSelected = currentGroup.key === group.key;
-      const label = getGroupLabel(group);
-
-      return (
-        <Link
-          key={group.key}
-          data-index={index}
-          isTextOverflow={true}
-          onClick={onLinkGroupClick}
-          title={label}
-          style={style}
-          className={`row-group${isSelected ? " selected" : ""}`}
-          noHover
-        >
-          {isMultiSelect && allowGroupSelection && (
-            <Checkbox
-              id={group.key}
-              value={`${index}`}
-              isChecked={isChecked}
-              isIndeterminate={isIndeterminate}
-              className="group_checkbox"
-              truncate={true}
-              onChange={onGroupChange}
-            />
-          )}
-          {label}
-        </Link>
-      );
-    },
-    [
-      groups,
-      currentGroup,
-      isMultiSelect,
-      selectedGroupList,
-      allowGroupSelection,
     ]
   );
 
@@ -562,18 +377,169 @@ const Selector = (props) => {
         currentGroup: currentGroup ? currentGroup.key : null,
       };
 
-      //setLastIndex(startIndex);
-
-      //console.log("loadMoreItems", options);
-
       loadNextPage && loadNextPage(options);
     },
     [isNextPageLoading, searchValue, currentGroup, options]
   );
 
+  const getGroupSelectedOptions = useCallback(
+    (group) => {
+      const selectedGroup = selectedOptionList.filter(
+        (o) => o.groups.indexOf(group) > -1
+      );
+
+      if (group === "all") {
+        selectedGroup.push(...selectedOptionList);
+      }
+
+      return selectedGroup;
+    },
+    [selectedOptionList]
+  );
+
+  const onGroupClick = useCallback(
+    (index) => {
+      const group = groups[index];
+
+      setGroupHeader({ ...group });
+
+      onGroupChanged && onGroupChanged(group);
+      setCurrentGroup(group);
+    },
+    [groups, onGroupChanged]
+  );
+
+  const renderGroup = useCallback(
+    ({ index, style }) => {
+      const group = groups[index];
+
+      const selectedOption = getGroupSelectedOptions(group.id);
+
+      const isIndeterminate = selectedOption.length > 0;
+
+      let label = group.label;
+
+      if (isMultiSelect && selectedOption.length > 0) {
+        label = `${group.label} (${selectedOption.length})`;
+      }
+
+      return (
+        <div
+          style={style}
+          className="row-option"
+          onClick={() => onGroupClick(index)}
+        >
+          <div className="option-info">
+            <Avatar
+              className="option-avatar"
+              role="user"
+              size="min"
+              source={group.avatarUrl}
+              userName={group.label}
+            />
+            <Text
+              className="option-text option-text__group"
+              truncate={true}
+              noSelect={true}
+              fontSize="14px"
+            >
+              {label}
+            </Text>
+          </div>
+          {isMultiSelect && (
+            <Checkbox
+              value={`${index}`}
+              isIndeterminate={isIndeterminate}
+              className="option-checkbox"
+            />
+          )}
+        </div>
+      );
+    },
+    [
+      isMultiSelect,
+      groups,
+      currentGroup,
+      selectedGroupList,
+      selectedOptionList,
+      getGroupSelectedOptions,
+    ]
+  );
+
+  const renderGroupsList = useCallback(() => {
+    return (
+      <AutoSizer>
+        {({ width, height }) => (
+          <List
+            className="options_list"
+            height={height - 8}
+            width={width + 8}
+            itemCount={groups.length}
+            itemSize={48}
+            outerElementType={CustomScrollbarsVirtualList}
+          >
+            {renderGroup}
+          </List>
+        )}
+      </AutoSizer>
+    );
+  }, [isMultiSelect, groups, selectedOptionList, getGroupSelectedOptions]);
+
+  const renderGroupHeader = useCallback(() => {
+    const selectedOption = getGroupSelectedOptions(groupHeader.id);
+
+    const isIndeterminate = selectedOption.length > 0;
+
+    let label = groupHeader.label;
+
+    if (isMultiSelect && selectedOption.length > 0) {
+      label = `${groupHeader.label} (${selectedOption.length})`;
+    }
+    return (
+      <>
+        <div className="row-option row-header">
+          <div className="option-info">
+            <Avatar
+              className="option-avatar"
+              role="user"
+              size="min"
+              source={groupHeader.avatarUrl}
+              userName={groupHeader.label}
+            />
+            <Text
+              className="option-text option-text__header"
+              truncate={true}
+              noSelect={true}
+              fontSize="14px"
+            >
+              {label}
+            </Text>
+          </div>
+          {isMultiSelect && (
+            <Checkbox
+              isIndeterminate={isIndeterminate}
+              className="option-checkbox"
+            />
+          )}
+        </div>
+        <div className="option-separator"></div>
+      </>
+    );
+  }, [isMultiSelect, groupHeader, selectedOptionList, getGroupSelectedOptions]);
+
+  const onArrowClickAction = useCallback(() => {
+    if (groupHeader) {
+      setGroupHeader(null);
+
+      onGroupChanged && onGroupChanged([]);
+      setCurrentGroup([]);
+      return;
+    }
+    onArrowClick && onArrowClick();
+  }, [groupHeader, onArrowClick, onGroupChanged]);
+
   return (
     <StyledSelector
-      displayType={displayType}
       options={options}
       groups={groups}
       isMultiSelect={isMultiSelect}
@@ -581,7 +547,19 @@ const Selector = (props) => {
       hasSelected={hasSelected()}
       className="selector-wrapper"
     >
-      <Column className="column-options" displayType={displayType} size={size}>
+      <div className="header">
+        <IconButton
+          iconName="/static/images/arrow.path.react.svg"
+          size="17"
+          isFill={true}
+          className="arrow-button"
+          onClick={onArrowClickAction}
+        />
+        <Heading size="medium" truncate={true}>
+          {headerLabel}
+        </Heading>
+      </div>
+      <Column className="column-options" size={size}>
         <Header className="header-options">
           <SearchInput
             className="options_searcher"
@@ -594,69 +572,49 @@ const Selector = (props) => {
             onChange={onSearchChange}
             onClearSearch={onSearchReset}
           />
-          {displayType === "aside" && groups && groups.length > 0 && (
-            <>
-              <ComboBox
-                className="options_group_selector"
-                isDisabled={isDisabled}
-                options={getSelectorGroups(groups)}
-                selectedOption={currentGroup}
-                dropDownMaxHeight={220}
-                scaled={true}
-                scaledOptions={true}
-                size="content"
-                onSelect={onGroupSelect}
-              />
-              {isMultiSelect &&
-                allowGroupSelection &&
-                options &&
-                options.length > 0 && (
-                  <Checkbox
-                    className="options_group_select_all"
-                    label={selectAllLabel}
-                    isChecked={selectedAll}
-                    isIndeterminate={false}
-                    truncate={true}
-                    onChange={onSelectAllChange}
-                  />
-                )}
-            </>
-          )}
         </Header>
         <Body className="body-options">
-          <AutoSizer>
-            {({ width, height }) => (
-              <InfiniteLoader
-                ref={listOptionsRef}
-                isItemLoaded={isItemLoaded}
-                itemCount={itemCount}
-                loadMoreItems={loadMoreItems}
-              >
-                {({ onItemsRendered, ref }) => (
-                  <List
-                    className="options_list"
-                    height={height}
-                    itemCount={itemCount}
-                    itemSize={36}
-                    onItemsRendered={onItemsRendered}
-                    ref={ref}
-                    width={width + 8}
-                    outerElementType={CustomScrollbarsVirtualList}
-                  >
-                    {renderOption}
-                  </List>
-                )}
-              </InfiniteLoader>
-            )}
-          </AutoSizer>
-
-          {!hasNextPage && itemCount === 0 && (
-            <div className="row-option">
-              <Text>
-                {!searchValue ? emptyOptionsLabel : emptySearchOptionsLabel}
-              </Text>
-            </div>
+          {!groupHeader && !searchValue ? (
+            renderGroupsList()
+          ) : (
+            <>
+              {!searchValue && renderGroupHeader()}
+              {!hasNextPage && itemCount === 0 ? (
+                <div className="row-option">
+                  <Text>
+                    {!searchValue ? emptyOptionsLabel : emptySearchOptionsLabel}
+                  </Text>
+                </div>
+              ) : (
+                <AutoSizer>
+                  {({ width, height }) => (
+                    <InfiniteLoader
+                      ref={listOptionsRef}
+                      isItemLoaded={isItemLoaded}
+                      itemCount={itemCount}
+                      loadMoreItems={loadMoreItems}
+                    >
+                      {({ onItemsRendered, ref }) => (
+                        <List
+                          className="options_list"
+                          height={height - 25}
+                          itemCount={itemCount}
+                          itemSize={48}
+                          onItemsRendered={onItemsRendered}
+                          ref={ref}
+                          width={width + 8}
+                          outerElementType={CustomScrollbarsVirtualList}
+                        >
+                          {renderOption}
+                        </List>
+                      )}
+                    </InfiniteLoader>
+                  )}
+                </AutoSizer>
+              )}
+            </>
           )}
+
           {getOptionTooltipContent && (
             <Tooltip
               id="user"
@@ -666,45 +624,6 @@ const Selector = (props) => {
           )}
         </Body>
       </Column>
-      {displayType === "dropdown" && groups && groups.length > 0 && (
-        <>
-          <div className="splitter"></div>
-          <Column
-            className="column-groups"
-            displayType={displayType}
-            size={size}
-          >
-            <Header className="header-groups">
-              <Text
-                as="p"
-                className="group_header"
-                fontSize="15px"
-                fontWeight={600}
-              >
-                {groupsHeaderLabel}
-              </Text>
-            </Header>
-            <Body className="body-groups">
-              <AutoSizer>
-                {({ height, width }) => (
-                  <List
-                    className="group_list"
-                    height={height}
-                    width={width + 8}
-                    itemSize={32}
-                    itemCount={groups.length}
-                    itemData={groups}
-                    outerElementType={CustomScrollbarsVirtualList}
-                    ref={listGroupsRef}
-                  >
-                    {renderGroup}
-                  </List>
-                )}
-              </AutoSizer>
-            </Body>
-          </Column>
-        </>
-      )}
       <Footer
         className="footer"
         selectButtonLabel={selectButtonLabel}
@@ -740,7 +659,6 @@ Selector.propTypes = {
   loadingLabel: PropTypes.string,
 
   size: PropTypes.oneOf(["compact", "full"]),
-  displayType: PropTypes.oneOf(["dropdown", "aside"]),
 
   selectedOptions: PropTypes.array,
   selectedGroups: PropTypes.array,

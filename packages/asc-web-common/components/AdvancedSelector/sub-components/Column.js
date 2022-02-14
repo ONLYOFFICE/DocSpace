@@ -8,14 +8,9 @@ class Column extends React.Component {
   }
 
   render() {
-    const { children, displayType, className, style, size, theme } = this.props;
+    const { children, className, style, size } = this.props;
     return (
-      <StyledColumn
-        displayType={displayType}
-        className={className}
-        style={style}
-        size={size}
-      >
+      <StyledColumn className={className} style={style} size={size}>
         {children}
       </StyledColumn>
     );
@@ -26,7 +21,6 @@ Column.propTypes = {
   children: PropTypes.any,
   className: PropTypes.string,
   style: PropTypes.object,
-  displayType: PropTypes.oneOf(["dropdown", "aside"]),
   size: PropTypes.oneOf(["compact", "full"]),
 };
 

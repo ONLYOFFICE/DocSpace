@@ -5,11 +5,6 @@ import PageLayout from "@appserver/common/components/PageLayout";
 import Loaders from "@appserver/common/components/Loaders";
 import { withTranslation } from "react-i18next";
 import {
-  ArticleHeaderContent,
-  ArticleBodyContent,
-  ArticleMainButtonContent,
-} from "../../components/Article";
-import {
   CatalogBodyContent,
   CatalogHeaderContent,
   CatalogMainButtonContent,
@@ -57,18 +52,6 @@ class PureVersionHistory extends React.Component {
         showSecondaryButtonAlert={false}
         withBodyScroll={false}
       >
-        <PageLayout.ArticleHeader>
-          <ArticleHeaderContent />
-        </PageLayout.ArticleHeader>
-
-        <PageLayout.ArticleMainButton>
-          <ArticleMainButtonContent />
-        </PageLayout.ArticleMainButton>
-
-        <PageLayout.ArticleBody>
-          <ArticleBodyContent />
-        </PageLayout.ArticleBody>
-
         <PageLayout.CatalogHeader>
           <CatalogHeaderContent />
         </PageLayout.CatalogHeader>

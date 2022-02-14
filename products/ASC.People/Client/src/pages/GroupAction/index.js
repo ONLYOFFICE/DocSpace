@@ -96,17 +96,22 @@ class GroupAction extends React.Component {
           </PageLayout>
         ) : (
           <PageLayout>
-            <PageLayout.ArticleHeader>
-              <ArticleHeaderContent />
-            </PageLayout.ArticleHeader>
+            {showCatalog && (
+              <PageLayout.CatalogHeader>
+                <CatalogHeaderContent />
+              </PageLayout.CatalogHeader>
+            )}
 
-            <PageLayout.ArticleMainButton>
-              <ArticleMainButtonContent />
-            </PageLayout.ArticleMainButton>
-
-            <PageLayout.ArticleBody>
-              <ArticleBodyContent />
-            </PageLayout.ArticleBody>
+            {showCatalog && isAdmin && (
+              <PageLayout.CatalogMainButton>
+                <CatalogMainButtonContent />
+              </PageLayout.CatalogMainButton>
+            )}
+            {showCatalog && (
+              <PageLayout.CatalogBody>
+                <CatalogBodyContent />
+              </PageLayout.CatalogBody>
+            )}
 
             <PageLayout.SectionBody>
               <Loader className="pageLoader" type="rombs" size="40px" />
