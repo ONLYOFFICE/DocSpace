@@ -17,7 +17,14 @@ import {
   StyledTooltip,
 } from "./styled-inputwithchips";
 
-const InputWithChips = ({ options, placeholder, onChange, ...props }) => {
+const InputWithChips = ({
+  options,
+  placeholder,
+  onChange,
+  existEmailText = "This email address has already been entered",
+  invalidEmailText,
+  ...props
+}) => {
   const [chips, setChips] = useState(options || []);
   const [currentChip, setCurrentChip] = useState(null);
   const [selectedChips, setSelectedChips] = useState([]);
@@ -159,6 +166,10 @@ const InputWithChips = ({ options, placeholder, onChange, ...props }) => {
     setChips([]);
   };
 
+  const onFocus = () => {
+    setIsBlured(false);
+  };
+
   const onKeyUp = (e) => {
     const code = e.code;
     switch (code) {
@@ -252,7 +263,7 @@ const InputWithChips = ({ options, placeholder, onChange, ...props }) => {
   };
 
   return (
-    <StyledContent ref={blockRef} onFocus={() => setIsBlured(false)}>
+    <StyledContent ref={blockRef} onFocus={onFocus}>
       <StyledChipGroup>
         <StyledChipWithInput length={chips.length}>
           <Scrollbar scrollclass={"scroll"} stype="thumbV" ref={scrollbarRef}>
@@ -270,17 +281,14 @@ const InputWithChips = ({ options, placeholder, onChange, ...props }) => {
                     onDoubleClick={onDoubleClick}
                     onSaveNewChip={onSaveNewChip}
                     onClick={onClick}
+                    invalidEmailText={invalidEmailText}
                   />
                 );
               })}
             </StyledAllChips>
           </Scrollbar>
           <StyledInputWithLink>
-            {isExistedOn && (
-              <StyledTooltip>
-                This email address has already been entered
-              </StyledTooltip>
-            )}
+            {isExistedOn && <StyledTooltip>{existEmailText}</StyledTooltip>}
             <TextInput
               value={value}
               onChange={onInputChange}
@@ -288,16 +296,13 @@ const InputWithChips = ({ options, placeholder, onChange, ...props }) => {
               onKeyDown={onInputKeyDown}
               placeholder={placeholder}
               withBorder={false}
-              style={{
-                flex: `flex: 1 0 ${chips.length > 0 ? "auto" : "100%"}`,
-                padding: "0px",
-                margin: "8px 0px 10px 8px",
-              }}
+              className="textInput"
+              chips={chips.length}
             />
             <Link
               type="action"
               isHovered={true}
-              style={{ width: "55px", margin: "10px 8px" }}
+              className="link"
               onClick={onClearList}
             >
               Clear list
@@ -314,7 +319,8 @@ InputWithChips.propTypes = {
   options: PropTypes.arrayOf(PropTypes.object).isRequired,
   /** The placeholder is displayed only when the input is empty */
   placeholder: PropTypes.string,
-
+  existEmailText: PropTypes.string,
+  invalidEmailText: PropTypes.string,
   onChange: PropTypes.func,
 };
 

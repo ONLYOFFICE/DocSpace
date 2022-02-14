@@ -98,6 +98,17 @@ const StyledInputWithLink = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
+
+  .textInput {
+    flex: ${(props) => ("1 0" + props.chips > 0 ? "auto" : "100%")};
+    padding: 0px;
+    margin: 8px 0px 10px 8px;
+  }
+
+  .link {
+    width: 70px;
+    margin: 10px 8px;
+  }
 `;
 
 const StyledTooltip = styled.div`

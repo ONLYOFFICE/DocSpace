@@ -19,6 +19,7 @@ const Chip = (props) => {
     isSelected,
     isValid,
     isBlured,
+    invalidEmailText = "Invalid email address",
     onDelete,
     onDoubleClick,
     onSaveNewChip,
@@ -108,7 +109,7 @@ const Chip = (props) => {
             size={12}
             className="warning_icon_wrap warning_icon "
             data-for="group"
-            data-tip={"Invalid email address"}
+            data-tip={invalidEmailText}
           />
           <Tooltip
             getContent={() => {}}
@@ -132,6 +133,7 @@ Chip.propTypes = {
   isSelected: PropTypes.bool,
   isValid: PropTypes.bool,
   isBlured: PropTypes.bool,
+  invalidEmailText: PropTypes.string,
   onClick: PropTypes.func,
   onDoubleClick: PropTypes.func,
   onDelete: PropTypes.func,

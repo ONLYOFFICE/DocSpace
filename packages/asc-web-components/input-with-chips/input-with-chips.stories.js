@@ -43,6 +43,8 @@ Default.args = {
   options: Options,
   onChange: (selected) => console.log(selected),
   placeholder: "Invite people by name or email",
+  existEmailText: "This email address has already been entered",
+  invalidEmailText: "Invalid email address",
 };
 
 export const Empty = Template.bind({});
