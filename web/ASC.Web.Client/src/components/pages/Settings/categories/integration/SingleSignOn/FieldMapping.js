@@ -42,7 +42,7 @@ const FieldMapping = ({ FormStore, t }) => {
 
       <SimpleFormField
         FormStore={FormStore}
-        labelText={t("Email", { ns: "Common" })}
+        labelText={t("Common:Email")}
         name="email"
         placeholder="sn"
         tabIndex={18}
@@ -66,7 +66,7 @@ const FieldMapping = ({ FormStore, t }) => {
 
       <SimpleFormField
         FormStore={FormStore}
-        labelText={t("Phone", { ns: "Common" })}
+        labelText={t("Common:Phone")}
         name="phone"
         placeholder="sn"
         tabIndex={21}
@@ -90,7 +90,7 @@ const FieldMapping = ({ FormStore, t }) => {
       <Box alignItems="center" displayProp="flex" flexDirection="row">
         <Button
           className="save-button"
-          label={t("SaveButton", { ns: "Common" })}
+          label={t("Common:SaveButton")}
           primary
           size="medium"
           tabIndex={23}

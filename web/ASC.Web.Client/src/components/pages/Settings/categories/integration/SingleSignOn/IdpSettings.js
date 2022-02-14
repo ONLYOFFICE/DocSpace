@@ -2,13 +2,11 @@ import React from "react";
 import { observer } from "mobx-react";
 
 import Box from "@appserver/components/box";
-import FieldContainer from "@appserver/components/field-container";
 import RadioButtonGroup from "@appserver/components/radio-button-group";
 
 import HideButton from "./sub-components/HideButton";
 import SimpleComboBox from "./sub-components/SimpleComboBox";
 import SimpleFormField from "./sub-components/SimpleFormField";
-import SimpleTextInput from "./sub-components/SimpleTextInput";
 import Text from "@appserver/components/text";
 import UploadXML from "./sub-components/UploadXML";
 import { bindingOptions, nameIdOptions } from "./sub-components/constants";
@@ -38,11 +36,13 @@ const IdpSettings = ({ FormStore, t }) => {
         tooltipContent={t("ProviderURLTooltip")}
       />
 
-      <FieldContainer
-        inlineHelpButton
-        isVertical
+      <SimpleFormField
+        FormStore={FormStore}
         labelText={t("EndpointURL")}
-        place="top"
+        name="ssoUrl"
+        placeholder="https://www.test.com/saml/login"
+        t={t}
+        tabIndex={7}
         tooltipContent={t("EndpointURLTooltip")}
       >
         <Box displayProp="flex" flexDirection="row" marginProp="0 0 4px 0">
@@ -58,14 +58,7 @@ const IdpSettings = ({ FormStore, t }) => {
             tabIndex={6}
           />
         </Box>
-
-        <SimpleTextInput
-          FormStore={FormStore}
-          name="ssoUrl"
-          placeholder="https://www.test.com/saml/login"
-          tabIndex={7}
-        />
-      </FieldContainer>
+      </SimpleFormField>
 
       <SimpleComboBox
         FormStore={FormStore}

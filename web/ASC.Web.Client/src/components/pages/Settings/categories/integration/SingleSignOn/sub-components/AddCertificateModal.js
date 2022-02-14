@@ -48,13 +48,13 @@ const AddCertificateModal = ({ FormStore, t }) => {
         <Box displayProp="flex" marginProp="12px 0 4px 0">
           <Button
             className="ok-button"
-            label={t("OKButton", { ns: "Common" })}
+            label={t("Common:OKButton")}
             onClick={FormStore.onAddCertificate}
             primary
             size="medium"
           />
           <Button
-            label={t("CancelButton", { ns: "Common" })}
+            label={t("Common:CancelButton")}
             onClick={FormStore.onCloseModal}
             size="medium"
           />

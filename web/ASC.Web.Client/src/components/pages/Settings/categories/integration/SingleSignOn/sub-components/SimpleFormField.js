@@ -7,6 +7,7 @@ import SimpleTextInput from "./SimpleTextInput";
 
 const SimpleFormField = ({
   FormStore,
+  children,
   labelText,
   name,
   placeholder,
@@ -21,6 +22,7 @@ const SimpleFormField = ({
       place="top"
       tooltipContent={tooltipContent}
     >
+      {children}
       <SimpleTextInput
         FormStore={FormStore}
         name={name}

@@ -6,11 +6,14 @@ import HelpButton from "@appserver/components/help-button";
 import Text from "@appserver/components/text";
 import ToggleButton from "@appserver/components/toggle-button";
 
+const borderProp = { radius: "4px" };
+const displayProp = { display: "inline-flex" };
+
 const ToggleSSO = ({ FormStore, t }) => {
   return (
     <Box
       backgroundProp="#F8F9F9 "
-      borderProp={{ radius: "4px" }}
+      borderProp={borderProp}
       displayProp="flex"
       flexDirection="row"
       paddingProp="12px"
@@ -27,7 +30,7 @@ const ToggleSSO = ({ FormStore, t }) => {
             {t("TurnOnSSO")}
             <HelpButton
               offsetRight={0}
-              style={{ display: "inline-flex" }}
+              style={displayProp}
               tooltipContent={t("TurnOnSSOTooltip")}
             />
           </Text>
