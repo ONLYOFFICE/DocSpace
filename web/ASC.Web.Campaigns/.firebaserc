@@ -1,7 +1,5 @@
 {
   "projects": {
-    "default": "as-ads-test",
-    "asads": "as-ads-test"
-  },
-  "targets": {}
+    "default": "appserver-c011a"
+  }
 }
