@@ -30,69 +30,60 @@ namespace ASC.Notify.Cron
     public class CronExpression : ICloneable, IDeserializationCallback
     {
         protected const int Second = 0;
-
         protected const int Minute = 1;
-
         protected const int Hour = 2;
-
         protected const int DayOfMonth = 3;
-
         protected const int Month = 4;
-
         protected const int DayOfWeek = 5;
-
         protected const int Year = 6;
-
         protected const int AllSpecInt = 99;
-
         protected const int NoSpecInt = 98;
-
         protected const int AllSpec = AllSpecInt;
-
         protected const int NoSpec = NoSpecInt;
-        private static readonly Hashtable monthMap = new Hashtable(20);
-        private static readonly Hashtable dayMap = new Hashtable(60);
-        [NonSerialized] protected bool calendardayOfMonth;
-        [NonSerialized] protected bool calendardayOfWeek;
 
-        [NonSerialized] protected TreeSet daysOfMonth;
+        private static readonly Hashtable _monthMap = new Hashtable(20);
+        private static readonly Hashtable _dayMap = new Hashtable(60);
+        [NonSerialized] protected bool CalendardayOfMonth;
+        [NonSerialized] protected bool CalendardayOfWeek;
 
-        [NonSerialized] protected TreeSet daysOfWeek;
-        [NonSerialized] protected bool expressionParsed;
-        [NonSerialized] protected TreeSet hours;
+        [NonSerialized] protected TreeSet DaysOfMonth;
 
-        [NonSerialized] protected bool lastdayOfMonth;
-        [NonSerialized] protected bool lastdayOfWeek;
-        [NonSerialized] protected TreeSet minutes;
-        [NonSerialized] protected TreeSet months;
+        [NonSerialized] protected TreeSet DaysOfWeek;
+        [NonSerialized] protected bool ExpressionParsed;
+        [NonSerialized] protected TreeSet Hours;
 
-        [NonSerialized] protected bool nearestWeekday;
-        [NonSerialized] protected int nthdayOfWeek;
-        [NonSerialized] protected TreeSet seconds;
-        private TimeZoneInfo timeZone;
-        [NonSerialized] protected TreeSet years;
+        [NonSerialized] protected bool LastdayOfMonth;
+        [NonSerialized] protected bool LastdayOfWeek;
+        [NonSerialized] protected TreeSet Minutes;
+        [NonSerialized] protected TreeSet Months;
+
+        [NonSerialized] protected bool NearestWeekday;
+        [NonSerialized] protected int NthdayOfWeek;
+        [NonSerialized] protected TreeSet Seconds;
+        private TimeZoneInfo _timeZone;
+        [NonSerialized] protected TreeSet Years;
 
         static CronExpression()
         {
-            monthMap.Add("JAN", 0);
-            monthMap.Add("FEB", 1);
-            monthMap.Add("MAR", 2);
-            monthMap.Add("APR", 3);
-            monthMap.Add("MAY", 4);
-            monthMap.Add("JUN", 5);
-            monthMap.Add("JUL", 6);
-            monthMap.Add("AUG", 7);
-            monthMap.Add("SEP", 8);
-            monthMap.Add("OCT", 9);
-            monthMap.Add("NOV", 10);
-            monthMap.Add("DEC", 11);
-            dayMap.Add("SUN", 1);
-            dayMap.Add("MON", 2);
-            dayMap.Add("TUE", 3);
-            dayMap.Add("WED", 4);
-            dayMap.Add("THU", 5);
-            dayMap.Add("FRI", 6);
-            dayMap.Add("SAT", 7);
+            _monthMap.Add("JAN", 0);
+            _monthMap.Add("FEB", 1);
+            _monthMap.Add("MAR", 2);
+            _monthMap.Add("APR", 3);
+            _monthMap.Add("MAY", 4);
+            _monthMap.Add("JUN", 5);
+            _monthMap.Add("JUL", 6);
+            _monthMap.Add("AUG", 7);
+            _monthMap.Add("SEP", 8);
+            _monthMap.Add("OCT", 9);
+            _monthMap.Add("NOV", 10);
+            _monthMap.Add("DEC", 11);
+            _dayMap.Add("SUN", 1);
+            _dayMap.Add("MON", 2);
+            _dayMap.Add("TUE", 3);
+            _dayMap.Add("WED", 4);
+            _dayMap.Add("THU", 5);
+            _dayMap.Add("FRI", 6);
+            _dayMap.Add("SAT", 7);
         }
 
         public CronExpression(string cronExpression)
@@ -107,14 +98,15 @@ namespace ASC.Notify.Cron
 
         public virtual TimeZoneInfo TimeZone
         {
-            set { timeZone = value; }
+            set { _timeZone = value; }
             get
             {
-                if (timeZone == null)
+                if (_timeZone == null)
                 {
-                    timeZone = TimeZoneInfo.Utc;
+                    _timeZone = TimeZoneInfo.Utc;
                 }
-                return timeZone;
+
+                return _timeZone;
             }
         }
 
@@ -125,7 +117,11 @@ namespace ASC.Notify.Cron
             var date = new DateTime(2014, 1, 1);
             DateTime.SpecifyKind(date, DateTimeKind.Utc);
             var after = GetTimeAfter(date);
-            if (!after.HasValue) return null;
+            if (!after.HasValue)
+            {
+                return null;
+            }
+
             return after.Value.Subtract(date);
         }
 
@@ -145,6 +141,7 @@ namespace ASC.Notify.Cron
             {
                 throw new Exception("Not Cloneable.");
             }
+
             return copy;
         }
 
@@ -196,6 +193,7 @@ namespace ASC.Notify.Cron
                     lastDate = newDate;
                 }
             }
+
             return lastDate.AddSeconds(1);
         }
 
@@ -214,41 +212,42 @@ namespace ASC.Notify.Cron
             {
                 return false;
             }
+
             return true;
         }
 
         protected void BuildExpression(string expression)
         {
-            expressionParsed = true;
+            ExpressionParsed = true;
             try
             {
-                if (seconds == null)
+                if (Seconds == null)
                 {
-                    seconds = new TreeSet();
+                    Seconds = new TreeSet();
                 }
-                if (minutes == null)
+                if (Minutes == null)
                 {
-                    minutes = new TreeSet();
+                    Minutes = new TreeSet();
                 }
-                if (hours == null)
+                if (Hours == null)
                 {
-                    hours = new TreeSet();
+                    Hours = new TreeSet();
                 }
-                if (daysOfMonth == null)
+                if (DaysOfMonth == null)
                 {
-                    daysOfMonth = new TreeSet();
+                    DaysOfMonth = new TreeSet();
                 }
-                if (months == null)
+                if (Months == null)
                 {
-                    months = new TreeSet();
+                    Months = new TreeSet();
                 }
-                if (daysOfWeek == null)
+                if (DaysOfWeek == null)
                 {
-                    daysOfWeek = new TreeSet();
+                    DaysOfWeek = new TreeSet();
                 }
-                if (years == null)
+                if (Years == null)
                 {
-                    years = new TreeSet();
+                    Years = new TreeSet();
                 }
                 var exprOn = Second;
 #if NET_20                string[] exprsTok = expression.Trim().Split(new char[] { ' ', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
@@ -382,8 +381,8 @@ namespace ASC.Notify.Cron
                             try
                             {
                                 i += 4;
-                                nthdayOfWeek = Convert.ToInt32(s.Substring(i), CultureInfo.InvariantCulture);
-                                if (nthdayOfWeek < 1 || nthdayOfWeek > 5)
+                                NthdayOfWeek = Convert.ToInt32(s.Substring(i), CultureInfo.InvariantCulture);
+                                if (NthdayOfWeek < 1 || NthdayOfWeek > 5)
                                 {
                                     throw new Exception();
                                 }
@@ -396,7 +395,7 @@ namespace ASC.Notify.Cron
                         }
                         else if (c == 'L')
                         {
-                            lastdayOfWeek = true;
+                            LastdayOfWeek = true;
                             i++;
                         }
                     }
@@ -410,6 +409,7 @@ namespace ASC.Notify.Cron
                     incr = 1;
                 }
                 AddToSet(sval, eval, incr, type);
+
                 return i + 3;
             }
             if (c == '?')
@@ -426,9 +426,9 @@ namespace ASC.Notify.Cron
                     throw new FormatException(
                         "'?' can only be specified for Day-of-Month or Day-of-Week.");
                 }
-                if (type == DayOfWeek && !lastdayOfMonth)
+                if (type == DayOfWeek && !LastdayOfMonth)
                 {
-                    var val = (int)daysOfMonth[^1];
+                    var val = (int)DaysOfMonth[^1];
                     if (val == NoSpecInt)
                     {
                         throw new FormatException(
@@ -436,6 +436,7 @@ namespace ASC.Notify.Cron
                     }
                 }
                 AddToSet(NoSpecInt, -1, 0, type);
+
                 return i;
             }
             if (c == '*' || c == '/')
@@ -443,6 +444,7 @@ namespace ASC.Notify.Cron
                 if (c == '*' && (i + 1) >= s.Length)
                 {
                     AddToSet(AllSpecInt, -1, incr, type);
+
                     return i + 1;
                 }
                 else if (c == '/'
@@ -499,6 +501,7 @@ namespace ASC.Notify.Cron
                     incr = 1;
                 }
                 AddToSet(AllSpecInt, -1, incr, type);
+
                 return i;
             }
             else if (c == 'L')
@@ -506,7 +509,7 @@ namespace ASC.Notify.Cron
                 i++;
                 if (type == DayOfMonth)
                 {
-                    lastdayOfMonth = true;
+                    LastdayOfMonth = true;
                 }
                 if (type == DayOfWeek)
                 {
@@ -517,10 +520,11 @@ namespace ASC.Notify.Cron
                     c = s[i];
                     if (c == 'W')
                     {
-                        nearestWeekday = true;
+                        NearestWeekday = true;
                         i++;
                     }
                 }
+
                 return i;
             }
             else if (c >= '0' && c <= '9')
@@ -541,6 +545,7 @@ namespace ASC.Notify.Cron
                         i = vs.Pos;
                     }
                     i = CheckNext(i, s, val, type);
+
                     return i;
                 }
             }
@@ -548,6 +553,7 @@ namespace ASC.Notify.Cron
             {
                 throw new FormatException(string.Format(CultureInfo.InvariantCulture, "Unexpected character: {0}", c));
             }
+
             return i;
         }
 
@@ -558,6 +564,7 @@ namespace ASC.Notify.Cron
             if (i >= s.Length)
             {
                 AddToSet(val, end, -1, type);
+
                 return i;
             }
             var c = s[pos];
@@ -565,7 +572,7 @@ namespace ASC.Notify.Cron
             {
                 if (type == DayOfWeek)
                 {
-                    lastdayOfWeek = true;
+                    LastdayOfWeek = true;
                 }
                 else
                 {
@@ -575,13 +582,14 @@ namespace ASC.Notify.Cron
                 var data = GetSet(type);
                 data.Add(val);
                 i++;
+
                 return i;
             }
             if (c == 'W')
             {
                 if (type == DayOfMonth)
                 {
-                    nearestWeekday = true;
+                    NearestWeekday = true;
                 }
                 else
                 {
@@ -591,6 +599,7 @@ namespace ASC.Notify.Cron
                 var data = GetSet(type);
                 data.Add(val);
                 i++;
+
                 return i;
             }
             if (c == '#')
@@ -603,8 +612,8 @@ namespace ASC.Notify.Cron
                 i++;
                 try
                 {
-                    nthdayOfWeek = Convert.ToInt32(s.Substring(i), CultureInfo.InvariantCulture);
-                    if (nthdayOfWeek < 1 || nthdayOfWeek > 5)
+                    NthdayOfWeek = Convert.ToInt32(s.Substring(i), CultureInfo.InvariantCulture);
+                    if (NthdayOfWeek < 1 || NthdayOfWeek > 5)
                     {
                         throw new Exception();
                     }
@@ -617,17 +626,18 @@ namespace ASC.Notify.Cron
                 var data = GetSet(type);
                 data.Add(val);
                 i++;
+
                 return i;
             }
             if (c == 'C')
             {
                 if (type == DayOfWeek)
                 {
-                    calendardayOfWeek = true;
+                    CalendardayOfWeek = true;
                 }
                 else if (type == DayOfMonth)
                 {
-                    calendardayOfMonth = true;
+                    CalendardayOfMonth = true;
                 }
                 else
                 {
@@ -637,6 +647,7 @@ namespace ASC.Notify.Cron
                 var data = GetSet(type);
                 data.Add(val);
                 i++;
+
                 return i;
             }
             if (c == '-')
@@ -649,6 +660,7 @@ namespace ASC.Notify.Cron
                 if (i >= s.Length)
                 {
                     AddToSet(val, end, 1, type);
+
                     return i;
                 }
                 c = s[i];
@@ -668,6 +680,7 @@ namespace ASC.Notify.Cron
                     if (i >= s.Length)
                     {
                         AddToSet(val, end, v2, type);
+
                         return i;
                     }
                     c = s[i];
@@ -677,17 +690,20 @@ namespace ASC.Notify.Cron
                         var v3 = vs.TheValue;
                         AddToSet(val, end, v3, type);
                         i = vs.Pos;
+
                         return i;
                     }
                     else
                     {
                         AddToSet(val, end, v2, type);
+
                         return i;
                     }
                 }
                 else
                 {
                     AddToSet(val, end, 1, type);
+
                     return i;
                 }
             }
@@ -700,6 +716,7 @@ namespace ASC.Notify.Cron
                 if (i >= s.Length)
                 {
                     AddToSet(val, end, v2, type);
+
                     return i;
                 }
                 c = s[i];
@@ -709,6 +726,7 @@ namespace ASC.Notify.Cron
                     var v3 = vs.TheValue;
                     AddToSet(val, end, v3, type);
                     i = vs.Pos;
+
                     return i;
                 }
                 else
@@ -717,8 +735,10 @@ namespace ASC.Notify.Cron
                                                             "Unexpected character '{0}' after '/'", c));
                 }
             }
+
             AddToSet(val, end, 0, type);
             i++;
+
             return i;
         }
 
@@ -726,44 +746,45 @@ namespace ASC.Notify.Cron
         {
             var buf = new StringBuilder();
             buf.Append("seconds: ");
-            buf.Append(GetExpressionSetSummary(seconds));
+            buf.Append(GetExpressionSetSummary(Seconds));
             buf.Append('\n');
             buf.Append("minutes: ");
-            buf.Append(GetExpressionSetSummary(minutes));
+            buf.Append(GetExpressionSetSummary(Minutes));
             buf.Append('\n');
             buf.Append("hours: ");
-            buf.Append(GetExpressionSetSummary(hours));
+            buf.Append(GetExpressionSetSummary(Hours));
             buf.Append('\n');
             buf.Append("daysOfMonth: ");
-            buf.Append(GetExpressionSetSummary(daysOfMonth));
+            buf.Append(GetExpressionSetSummary(DaysOfMonth));
             buf.Append('\n');
             buf.Append("months: ");
-            buf.Append(GetExpressionSetSummary(months));
+            buf.Append(GetExpressionSetSummary(Months));
             buf.Append('\n');
             buf.Append("daysOfWeek: ");
-            buf.Append(GetExpressionSetSummary(daysOfWeek));
+            buf.Append(GetExpressionSetSummary(DaysOfWeek));
             buf.Append('\n');
             buf.Append("lastdayOfWeek: ");
-            buf.Append(lastdayOfWeek);
+            buf.Append(LastdayOfWeek);
             buf.Append('\n');
             buf.Append("nearestWeekday: ");
-            buf.Append(nearestWeekday);
+            buf.Append(NearestWeekday);
             buf.Append('\n');
             buf.Append("NthDayOfWeek: ");
-            buf.Append(nthdayOfWeek);
+            buf.Append(NthdayOfWeek);
             buf.Append('\n');
             buf.Append("lastdayOfMonth: ");
-            buf.Append(lastdayOfMonth);
+            buf.Append(LastdayOfMonth);
             buf.Append('\n');
             buf.Append("calendardayOfWeek: ");
-            buf.Append(calendardayOfWeek);
+            buf.Append(CalendardayOfWeek);
             buf.Append('\n');
             buf.Append("calendardayOfMonth: ");
-            buf.Append(calendardayOfMonth);
+            buf.Append(CalendardayOfMonth);
             buf.Append('\n');
             buf.Append("years: ");
-            buf.Append(GetExpressionSetSummary(years));
+            buf.Append(GetExpressionSetSummary(Years));
             buf.Append('\n');
+
             return buf.ToString();
         }
 
@@ -789,6 +810,7 @@ namespace ASC.Notify.Cron
                 buf.Append(val);
                 first = false;
             }
+
             return buf.ToString();
         }
 
@@ -798,6 +820,7 @@ namespace ASC.Notify.Cron
             {
                 
             }
+
             return i;
         }
 
@@ -807,6 +830,7 @@ namespace ASC.Notify.Cron
             {
                 
             }
+
             return i;
         }
 
@@ -865,6 +889,7 @@ namespace ASC.Notify.Cron
                 {
                     data.Add(NoSpec);
                 }
+
                 return;
             }
             var startAt = val;
@@ -980,13 +1005,13 @@ namespace ASC.Notify.Cron
         {
             return type switch
             {
-                Second => seconds,
-                Minute => minutes,
-                Hour => hours,
-                DayOfMonth => daysOfMonth,
-                Month => months,
-                DayOfWeek => daysOfWeek,
-                Year => years,
+                Second => Seconds,
+                Minute => Minutes,
+                Hour => Hours,
+                DayOfMonth => DaysOfMonth,
+                Month => Months,
+                DayOfWeek => DaysOfWeek,
+                Year => Years,
                 _ => null,
             };
         }
@@ -1016,6 +1041,7 @@ namespace ASC.Notify.Cron
                 val.Pos = i + 1;
             }
             val.TheValue = Convert.ToInt32(sb.ToString(), CultureInfo.InvariantCulture);
+
             return val;
         }
 
@@ -1023,14 +1049,15 @@ namespace ASC.Notify.Cron
         {
             var endOfVal = FindNextWhiteSpace(i, s);
             var val = s[i..endOfVal];
+
             return Convert.ToInt32(val, CultureInfo.InvariantCulture);
         }
 
         protected virtual int GetMonthNumber(string s)
         {
-            if (monthMap.ContainsKey(s))
+            if (_monthMap.ContainsKey(s))
             {
-                return (int)monthMap[s];
+                return (int)_monthMap[s];
             }
             else
             {
@@ -1040,9 +1067,9 @@ namespace ASC.Notify.Cron
 
         protected virtual int GetDayOfWeekNumber(string s)
         {
-            if (dayMap.ContainsKey(s))
+            if (_dayMap.ContainsKey(s))
             {
-                return (int)dayMap[s];
+                return (int)_dayMap[s];
             }
             else
             {
@@ -1074,6 +1101,7 @@ namespace ASC.Notify.Cron
                 {
                     mon = 0;
                 }
+
                 return new DateTime(DateTime.UtcNow.Year, mon, dayofmn, hr, mn, sc);
             }
             catch (Exception)
@@ -1100,14 +1128,14 @@ namespace ASC.Notify.Cron
                 int t;
                 var sec = d.Second;
 
-                st = seconds.TailSet(sec);
+                st = Seconds.TailSet(sec);
                 if (st != null && st.Count != 0)
                 {
                     sec = (int)st.First();
                 }
                 else
                 {
-                    sec = (int)seconds.First();
+                    sec = (int)Seconds.First();
                     d = d.AddMinutes(1);
                 }
                 d = new DateTime(d.Year, d.Month, d.Day, d.Hour, d.Minute, sec, d.Millisecond);
@@ -1115,7 +1143,7 @@ namespace ASC.Notify.Cron
                 var hr = d.Hour;
                 t = -1;
 
-                st = minutes.TailSet(min);
+                st = Minutes.TailSet(min);
                 if (st != null && st.Count != 0)
                 {
                     t = min;
@@ -1123,13 +1151,14 @@ namespace ASC.Notify.Cron
                 }
                 else
                 {
-                    min = (int)minutes.First();
+                    min = (int)Minutes.First();
                     hr++;
                 }
                 if (min != t)
                 {
                     d = new DateTime(d.Year, d.Month, d.Day, d.Hour, min, 0, d.Millisecond);
                     d = SetCalendarHour(d, hr);
+
                     continue;
                 }
                 d = new DateTime(d.Year, d.Month, d.Day, d.Hour, min, d.Second, d.Millisecond);
@@ -1137,7 +1166,7 @@ namespace ASC.Notify.Cron
                 var day = d.Day;
                 t = -1;
 
-                st = hours.TailSet(hr);
+                st = Hours.TailSet(hr);
                 if (st != null && st.Count != 0)
                 {
                     t = hr;
@@ -1145,7 +1174,7 @@ namespace ASC.Notify.Cron
                 }
                 else
                 {
-                    hr = (int)hours.First();
+                    hr = (int)Hours.First();
                     day++;
                 }
                 if (hr != t)
@@ -1162,6 +1191,7 @@ namespace ASC.Notify.Cron
                         d = new DateTime(d.Year, d.Month, day, d.Hour, 0, 0, d.Millisecond);
                     }
                     d = SetCalendarHour(d, hr);
+
                     continue;
                 }
                 d = new DateTime(d.Year, d.Month, d.Day, hr, d.Minute, d.Second, d.Millisecond);
@@ -1170,14 +1200,14 @@ namespace ASC.Notify.Cron
                 t = -1;
                 var tmon = mon;
 
-                var dayOfMSpec = !daysOfMonth.Contains(NoSpec);
-                var dayOfWSpec = !daysOfWeek.Contains(NoSpec);
+                var dayOfMSpec = !DaysOfMonth.Contains(NoSpec);
+                var dayOfWSpec = !DaysOfWeek.Contains(NoSpec);
                 if (dayOfMSpec && !dayOfWSpec)
                 {
-                    st = daysOfMonth.TailSet(day);
-                    if (lastdayOfMonth)
+                    st = DaysOfMonth.TailSet(day);
+                    if (LastdayOfMonth)
                     {
-                        if (!nearestWeekday)
+                        if (!NearestWeekday)
                         {
                             t = day;
                             day = GetLastDayOfMonth(mon, d.Year);
@@ -1213,10 +1243,10 @@ namespace ASC.Notify.Cron
                             }
                         }
                     }
-                    else if (nearestWeekday)
+                    else if (NearestWeekday)
                     {
                         t = day;
-                        day = (int)daysOfMonth.First();
+                        day = (int)DaysOfMonth.First();
                         var tcal = new DateTime(d.Year, mon, day, 0, 0, 0);
                         var ldom = GetLastDayOfMonth(mon, d.Year);
                         var dow = tcal.DayOfWeek;
@@ -1239,7 +1269,7 @@ namespace ASC.Notify.Cron
                         tcal = new DateTime(tcal.Year, mon, day, hr, min, sec);
                         if (tcal.ToUniversalTime() < afterTimeUtc)
                         {
-                            day = (int)daysOfMonth.First();
+                            day = (int)DaysOfMonth.First();
                             mon++;
                         }
                     }
@@ -1251,13 +1281,13 @@ namespace ASC.Notify.Cron
                         var lastDay = GetLastDayOfMonth(mon, d.Year);
                         if (day > lastDay)
                         {
-                            day = (int)daysOfMonth.First();
+                            day = (int)DaysOfMonth.First();
                             mon++;
                         }
                     }
                     else
                     {
-                        day = (int)daysOfMonth.First();
+                        day = (int)DaysOfMonth.First();
                         mon++;
                     }
                     if (day != t || mon != tmon)
@@ -1278,14 +1308,15 @@ namespace ASC.Notify.Cron
                                 d = new DateTime(d.Year, mon, lDay, 0, 0, 0).AddDays(day - lDay);
                             }
                         }
+
                         continue;
                     }
                 }
                 else if (dayOfWSpec && !dayOfMSpec)
                 {
-                    if (lastdayOfWeek)
+                    if (LastdayOfWeek)
                     {
-                        var dow = (int)daysOfWeek.First();
+                        var dow = (int)DaysOfWeek.First();
 
                         var cDow = (int)d.DayOfWeek;
                         var daysToAdd = 0;
@@ -1303,7 +1334,10 @@ namespace ASC.Notify.Cron
                             if (mon == 12)
                             {
                                 if (d.Year == DateTime.MaxValue.Year)
+                                {
                                     return null;
+                                }
+
                                 d = new DateTime(d.Year, mon - 11, 1, 0, 0, 0).AddYears(1);
                             }
                             else
@@ -1326,9 +1360,9 @@ namespace ASC.Notify.Cron
                             continue;
                         }
                     }
-                    else if (nthdayOfWeek != 0)
+                    else if (NthdayOfWeek != 0)
                     {
-                        var dow = (int)daysOfWeek.First();
+                        var dow = (int)DaysOfWeek.First();
 
                         var cDow = (int)d.DayOfWeek;
                         var daysToAdd = 0;
@@ -1351,14 +1385,16 @@ namespace ASC.Notify.Cron
                         {
                             weekOfMonth++;
                         }
-                        daysToAdd = (nthdayOfWeek - weekOfMonth) * 7;
+                        daysToAdd = (NthdayOfWeek - weekOfMonth) * 7;
                         day += daysToAdd;
                         if (daysToAdd < 0 || day > GetLastDayOfMonth(mon, d.Year))
                         {
                             if (mon == 12)
                             {
                                 if (d.Year == DateTime.MaxValue.Year)
+                                {
                                     return null;
+                                }
 
                                 d = new DateTime(d.Year, mon - 11, 1, 0, 0, 0).AddYears(1);
                             }
@@ -1379,9 +1415,9 @@ namespace ASC.Notify.Cron
                     else
                     {
                         var cDow = ((int)d.DayOfWeek) + 1;
-                        var dow = (int)daysOfWeek.First();
+                        var dow = (int)DaysOfWeek.First();
 
-                        st = daysOfWeek.TailSet(cDow);
+                        st = DaysOfWeek.TailSet(cDow);
                         if (st != null && st.Count > 0)
                         {
                             dow = (int)st.First();
@@ -1401,7 +1437,9 @@ namespace ASC.Notify.Cron
                             if (mon == 12)
                             {
                                 if (d.Year == DateTime.MaxValue.Year)
+                                {
                                     return null;
+                                }
 
                                 d = new DateTime(d.Year, mon - 11, 1, 0, 0, 0).AddYears(1);
                             }
@@ -1415,6 +1453,7 @@ namespace ASC.Notify.Cron
                         else if (daysToAdd > 0)
                         {
                             d = new DateTime(d.Year, mon, day + daysToAdd, 0, 0, 0);
+
                             continue;
                         }
                     }
@@ -1434,7 +1473,7 @@ namespace ASC.Notify.Cron
                     return null;
                 }
 
-                st = months.TailSet(mon);
+                st = Months.TailSet(mon);
                 if (st != null && st.Count != 0)
                 {
                     t = mon;
@@ -1442,17 +1481,18 @@ namespace ASC.Notify.Cron
                 }
                 else
                 {
-                    mon = (int)months.First();
+                    mon = (int)Months.First();
                     year++;
                 }
                 if (mon != t)
                 {
                     d = new DateTime(year, mon, 1, 0, 0, 0);
+
                     continue;
                 }
                 d = new DateTime(d.Year, mon, d.Day, d.Hour, d.Minute, d.Second);
                 year = d.Year;
-                st = years.TailSet(year);
+                st = Years.TailSet(year);
                 if (st != null && st.Count != 0)
                 {
                     t = year;
@@ -1465,11 +1505,13 @@ namespace ASC.Notify.Cron
                 if (year != t)
                 {
                     d = new DateTime(year, 1, 1, 0, 0, 0);
+
                     continue;
                 }
                 d = new DateTime(year, d.Month, d.Day, d.Hour, d.Minute, d.Second);
                 gotOne = true;
             }
+
             return TimeZoneInfo.ConvertTimeToUtc(d, TimeZone);
         }
 
@@ -1491,6 +1533,7 @@ namespace ASC.Notify.Cron
             {
                 d = d.AddDays(1);
             }
+
             return d;
         }
 

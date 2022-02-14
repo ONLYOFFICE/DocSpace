@@ -28,19 +28,16 @@ namespace ASC.Core.Notify.Senders
     [Singletone(Additional = typeof(JabberSenderExtension))]
     public class JabberSender : INotifySender
     {
-        private readonly ILog log;
-
-        private IServiceProvider ServiceProvider { get; }
+        private readonly ILog _logger;
+        private readonly IServiceProvider _serviceProvider;
 
         public JabberSender(IServiceProvider serviceProvider)
         {
-            ServiceProvider = serviceProvider;
-            log = ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
+            _serviceProvider = serviceProvider;
+            _logger = _serviceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
         }
 
-        public void Init(IDictionary<string, string> properties)
-        {
-        }
+        public void Init(IDictionary<string, string> properties) { }
 
         public NoticeSendResult Send(NotifyMessage m)
         {
@@ -52,15 +49,16 @@ namespace ASC.Core.Notify.Senders
             }
             try
             {
-                using var scope = ServiceProvider.CreateScope();
+                using var scope = _serviceProvider.CreateScope();
                 var service = scope.ServiceProvider.GetService<JabberServiceClient>();
                 service.SendMessage(m.Tenant, null, m.To, text, m.Subject);
             }
             catch (Exception e)
             {
-                log.ErrorFormat("Unexpected error, {0}, {1}, {2}",
+                _logger.ErrorFormat("Unexpected error, {0}, {1}, {2}",
                        e.Message, e.StackTrace, e.InnerException != null ? e.InnerException.Message : string.Empty);
             }
+
             return NoticeSendResult.OK;
         }
     }

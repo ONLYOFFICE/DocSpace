@@ -17,6 +17,7 @@
             modelBuilder
                 .Add(MySqlAddDbTariff, Provider.MySql)
                 .Add(PgSqlAddDbTariff, Provider.PostgreSql);
+
             return modelBuilder;
         }
         public static void MySqlAddDbTariff(this ModelBuilder modelBuilder)

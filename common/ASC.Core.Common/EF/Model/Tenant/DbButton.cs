@@ -19,6 +19,7 @@
             modelBuilder
                 .Add(MySqlAddDbButton, Provider.MySql)
                 .Add(PgSqlAddDbButton, Provider.PostgreSql);
+
             return modelBuilder;
         }
         public static void MySqlAddDbButton(this ModelBuilder modelBuilder)

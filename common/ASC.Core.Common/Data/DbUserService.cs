@@ -28,48 +28,48 @@ namespace ASC.Core.Data
     [Scope]
     public class ConfigureEFUserService : IConfigureNamedOptions<EFUserService>
     {
-        private DbContextManager<UserDbContext> DbContextManager { get; }
+        private readonly DbContextManager<UserDbContext> _dbContextManager;
         public string DbId { get; set; }
 
         public ConfigureEFUserService(DbContextManager<UserDbContext> dbContextManager)
         {
-            DbContextManager = dbContextManager;
+            _dbContextManager = dbContextManager;
         }
 
         public void Configure(string name, EFUserService options)
         {
             DbId = name;
-            options.LazyUserDbContext = new Lazy<UserDbContext>(() => DbContextManager.Get(name));
-            options.UserDbContextManager = DbContextManager;
+            options.LazyUserDbContext = new Lazy<UserDbContext>(() => _dbContextManager.Get(name));
+            options.UserDbContextManager = _dbContextManager;
         }
 
         public void Configure(EFUserService options)
         {
-            options.LazyUserDbContext = new Lazy<UserDbContext>(() => DbContextManager.Value);
-            options.UserDbContextManager = DbContextManager;
+            options.LazyUserDbContext = new Lazy<UserDbContext>(() => _dbContextManager.Value);
+            options.UserDbContextManager = _dbContextManager;
         }
     }
 
     [Scope]
     public class EFUserService : IUserService
     {
-        private static Expression<Func<User, UserInfo>> FromUserToUserInfo { get; set; }
-        private static Func<UserInfo, User> FromUserInfoToUser { get; set; }
-        private static Expression<Func<DbGroup, Group>> FromDbGroupToGroup { get; set; }
-        private static Func<Group, DbGroup> FromGroupToDbGroup { get; set; }
-        private static Expression<Func<UserGroup, UserGroupRef>> FromUserGroupToUserGroupRef { get; set; }
-        private static Func<UserGroupRef, UserGroup> FromUserGroupRefToUserGroup { get; set; }
+        private static Expression<Func<User, UserInfo>> _fromUserToUserInfo;
+        private static Func<UserInfo, User> _fromUserInfoToUser;
+        private static Expression<Func<DbGroup, Group>> _fromDbGroupToGroup;
+        private static Func<Group, DbGroup> _fromGroupToDbGroup;
+        private static Expression<Func<UserGroup, UserGroupRef>> _fromUserGroupToUserGroupRef;
+        private static Func<UserGroupRef, UserGroup> _fromUserGroupRefToUserGroup;
 
-        internal UserDbContext UserDbContext { get => LazyUserDbContext.Value; }
+        internal UserDbContext UserDbContext => LazyUserDbContext.Value;
         internal Lazy<UserDbContext> LazyUserDbContext { get; set; }
         internal DbContextManager<UserDbContext> UserDbContextManager { get; set; }
-        private PasswordHasher PasswordHasher { get; }
-        public MachinePseudoKeys MachinePseudoKeys { get; }
+        private readonly PasswordHasher _passwordHasher;
+        public readonly MachinePseudoKeys _machinePseudoKeys;
         internal string DbId { get; set; }
 
         static EFUserService()
         {
-            FromUserToUserInfo = user => new UserInfo
+            _fromUserToUserInfo = user => new UserInfo
             {
                 ActivationStatus = user.ActivationStatus,
                 BirthDate = user.Birthdate,
@@ -98,7 +98,7 @@ namespace ASC.Core.Data
                 Contacts = user.Contacts
             };
 
-            FromUserInfoToUser = user => new User
+            _fromUserInfoToUser = user => new User
             {
                 ActivationStatus = user.ActivationStatus,
                 Birthdate = user.BirthDate,
@@ -127,7 +127,7 @@ namespace ASC.Core.Data
                 Contacts = user.Contacts
             };
 
-            FromDbGroupToGroup = group => new Group
+            _fromDbGroupToGroup = group => new Group
             {
                 Id = group.Id,
                 Name = group.Name,
@@ -139,7 +139,7 @@ namespace ASC.Core.Data
                 Tenant = group.Tenant
             };
 
-            FromGroupToDbGroup = group => new DbGroup
+            _fromGroupToDbGroup = group => new DbGroup
             {
                 Id = group.Id,
                 Name = group.Name,
@@ -151,7 +151,7 @@ namespace ASC.Core.Data
                 Tenant = group.Tenant
             };
 
-            FromUserGroupToUserGroupRef = userGroup => new UserGroupRef
+            _fromUserGroupToUserGroupRef = userGroup => new UserGroupRef
             {
                 GroupId = userGroup.GroupId,
                 UserId = userGroup.UserId,
@@ -161,7 +161,7 @@ namespace ASC.Core.Data
                 Removed = userGroup.Removed
             };
 
-            FromUserGroupRefToUserGroup = userGroup => new UserGroup
+            _fromUserGroupRefToUserGroup = userGroup => new UserGroup
             {
                 GroupId = userGroup.GroupId,
                 UserId = userGroup.UserId,
@@ -172,16 +172,13 @@ namespace ASC.Core.Data
             };
         }
 
-        public EFUserService()
-        {
-
-        }
+        public EFUserService() { }
 
         public EFUserService(DbContextManager<UserDbContext> userDbContextManager, PasswordHasher passwordHasher, MachinePseudoKeys machinePseudoKeys)
         {
             UserDbContextManager = userDbContextManager;
-            PasswordHasher = passwordHasher;
-            MachinePseudoKeys = machinePseudoKeys;
+            _passwordHasher = passwordHasher;
+            _machinePseudoKeys = machinePseudoKeys;
             LazyUserDbContext = new Lazy<UserDbContext>(() => UserDbContextManager.Value);
         }
 
@@ -189,14 +186,14 @@ namespace ASC.Core.Data
         {
             return GetGroupQuery(tenant)
                 .Where(r => r.Id == id)
-                .Select(FromDbGroupToGroup)
+                .Select(_fromDbGroupToGroup)
                 .FirstOrDefault();
         }
 
         public IEnumerable<Group> GetGroups(int tenant)
         {
             return GetGroupQuery(tenant)
-                .Select(FromDbGroupToGroup)
+                .Select(_fromDbGroupToGroup)
                 .ToList();
         }
 
@@ -204,27 +201,30 @@ namespace ASC.Core.Data
         {
             return GetUserQuery(tenant)
                 .Where(r => r.Id == id)
-                .Select(FromUserToUserInfo)
+                .Select(_fromUserToUserInfo)
                 .FirstOrDefault();
         }
 
         public UserInfo GetUser(int tenant, string email)
         {
             return GetUserQuery(tenant)
-                .Select(FromUserToUserInfo)
+                .Select(_fromUserToUserInfo)
                 .FirstOrDefault(r => r.Email == email && !r.Removed);
         }
 
         public UserInfo GetUserByUserName(int tenant, string userName)
         {
             return GetUserQuery(tenant)
-                .Select(FromUserToUserInfo)
+                .Select(_fromUserToUserInfo)
                 .FirstOrDefault(r => r.UserName == userName && !r.Removed);
         }
 
         public UserInfo GetUserByPasswordHash(int tenant, string login, string passwordHash)
         {
-            if (string.IsNullOrEmpty(login)) throw new ArgumentNullException(nameof(login));
+            if (string.IsNullOrEmpty(login))
+            {
+                throw new ArgumentNullException(nameof(login));
+            }
 
             if (Guid.TryParse(login, out var userId))
             {
@@ -244,12 +244,12 @@ namespace ASC.Core.Data
                     .Where(r => r.UserSecurity.PwdHash == pwdHash || r.UserSecurity.PwdHash == oldHash)  //todo: remove old scheme
                     ;
 
-                if (tenant != Tenant.DEFAULT_TENANT)
+                if (tenant != Tenant.DefaultTenant)
                 {
                     q = q.Where(r => r.UserSecurity.Tenant == tenant);
                 }
 
-                return q.Select(r => r.User).Select(FromUserToUserInfo).FirstOrDefault();
+                return q.Select(r => r.User).Select(_fromUserToUserInfo).FirstOrDefault();
             }
             else
             {
@@ -258,7 +258,7 @@ namespace ASC.Core.Data
                     .Where(r => r.Email == login)
                     ;
 
-                var users = q.Select(FromUserToUserInfo).ToList();
+                var users = q.Select(_fromUserToUserInfo).ToList();
                 UserInfo result = null;
                 foreach (var user in users)
                 {
@@ -272,7 +272,10 @@ namespace ASC.Core.Data
 
                     if (any)
                     {
-                        if (tenant != Tenant.DEFAULT_TENANT) return user;
+                        if (tenant != Tenant.DefaultTenant)
+                        {
+                            return user;
+                        }
 
                         //need for regenerate all passwords only
                         //todo: remove with old scheme
@@ -289,7 +292,8 @@ namespace ASC.Core.Data
             var q = UserDbContext.Users
                 .Where(r => userIds.Contains(r.Id))
                 .Where(r => !r.Removed);
-            return q.Select(FromUserToUserInfo).ToList();
+
+            return q.Select(_fromUserToUserInfo).ToList();
         }
 
         //todo: remove
@@ -298,7 +302,7 @@ namespace ASC.Core.Data
             var q = UserDbContext.UserSecurity
                 .Where(r => r.UserId == userId);
 
-            if (tenant != Tenant.DEFAULT_TENANT)
+            if (tenant != Tenant.DefaultTenant)
             {
                 q = q.Where(r => r.Tenant == tenant);
             }
@@ -307,10 +311,13 @@ namespace ASC.Core.Data
                 .Take(1)
                 .FirstOrDefault();
 
-            if (h2 == null || string.IsNullOrEmpty(h2.PwdHashSha512)) return;
+            if (h2 == null || string.IsNullOrEmpty(h2.PwdHashSha512))
+            {
+                return;
+            }
 
             var password = Crypto.GetV(h2.PwdHashSha512, 1, false);
-            var passwordHash = PasswordHasher.GetClientPassword(password);
+            var passwordHash = _passwordHasher.GetClientPassword(password);
             SetUserPasswordHash(h2.Tenant, userId, passwordHash);
         }
 
@@ -318,25 +325,25 @@ namespace ASC.Core.Data
         {
             IQueryable<UserGroup> q = UserDbContext.UserGroups;
 
-            if (tenant != Tenant.DEFAULT_TENANT)
+            if (tenant != Tenant.DefaultTenant)
             {
                 q = q.Where(r => r.Tenant == tenant);
             }
 
             return q.Where(r => r.GroupId == groupId && r.RefType == refType && !r.Removed)
-                .Select(FromUserGroupToUserGroupRef).SingleOrDefault();
+                .Select(_fromUserGroupToUserGroupRef).SingleOrDefault();
         }
 
         public IDictionary<string, UserGroupRef> GetUserGroupRefs(int tenant)
         {
             IQueryable<UserGroup> q = UserDbContext.UserGroups;
 
-            if (tenant != Tenant.DEFAULT_TENANT)
+            if (tenant != Tenant.DefaultTenant)
             {
                 q = q.Where(r => r.Tenant == tenant);
             }
 
-            return q.Select(FromUserGroupToUserGroupRef).AsEnumerable().ToDictionary(r => r.CreateKey(), r => r);
+            return q.Select(_fromUserGroupToUserGroupRef).AsEnumerable().ToDictionary(r => r.CreateKey(), r => r);
         }
 
         public DateTime GetUserPasswordStamp(int tenant, Guid id)
@@ -364,7 +371,7 @@ namespace ASC.Core.Data
         public IEnumerable<UserInfo> GetUsers(int tenant)
         {
             return GetUserQuery(tenant)
-                .Select(FromUserToUserInfo)
+                .Select(_fromUserToUserInfo)
                 .ToList();
         }
 
@@ -396,16 +403,16 @@ namespace ASC.Core.Data
 
             count = q.Count();
 
-            return q.Select(FromUserToUserInfo);
+            return q.Select(_fromUserToUserInfo);
         }
 
         public IQueryable<UserInfo> GetUsers(int tenant, out int total)
         {
             var userDbContext = UserDbContextManager.GetNew(DbId);
             total = userDbContext.Users.Count(r => r.Tenant == tenant);
-            return GetUserQuery(userDbContext, tenant).Select(FromUserToUserInfo);
-        }
 
+            return GetUserQuery(userDbContext, tenant).Select(_fromUserToUserInfo);
+        }
 
         public void RemoveGroup(int tenant, Guid id)
         {
@@ -526,13 +533,20 @@ namespace ASC.Core.Data
 
         public Group SaveGroup(int tenant, Group group)
         {
-            if (group == null) throw new ArgumentNullException("user");
+            if (group == null)
+            {
+                throw new ArgumentNullException(nameof(group));
+            }
 
-            if (group.Id == default) group.Id = Guid.NewGuid();
+            if (group.Id == default)
+            {
+                group.Id = Guid.NewGuid();
+            }
+
             group.LastModified = DateTime.UtcNow;
             group.Tenant = tenant;
 
-            var dbGroup = FromGroupToDbGroup(group);
+            var dbGroup = _fromGroupToDbGroup(group);
             UserDbContext.AddOrUpdate(r => r.Groups, dbGroup);
             UserDbContext.SaveChanges();
 
@@ -541,11 +555,26 @@ namespace ASC.Core.Data
 
         public UserInfo SaveUser(int tenant, UserInfo user)
         {
-            if (user == null) throw new ArgumentNullException(nameof(user));
-            if (string.IsNullOrEmpty(user.UserName)) throw new ArgumentOutOfRangeException("Empty username.");
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
 
-            if (user.ID == default) user.ID = Guid.NewGuid();
-            if (user.CreateDate == default) user.CreateDate = DateTime.UtcNow;
+            if (string.IsNullOrEmpty(user.UserName))
+            {
+                throw new ArgumentOutOfRangeException("Empty username.");
+            }
+
+            if (user.ID == default)
+            {
+                user.ID = Guid.NewGuid();
+            }
+
+            if (user.CreateDate == default)
+            {
+                user.CreateDate = DateTime.UtcNow;
+            }
+
             user.LastModified = DateTime.UtcNow;
             user.Tenant = tenant;
             user.UserName = user.UserName.Trim();
@@ -568,7 +597,7 @@ namespace ASC.Core.Data
                 throw new ArgumentOutOfRangeException("Duplicate email.");
             }
 
-            UserDbContext.AddOrUpdate(r => r.Users, FromUserInfoToUser(user));
+            UserDbContext.AddOrUpdate(r => r.Users, _fromUserInfoToUser(user));
             UserDbContext.SaveChanges();
             tx.Commit();
 
@@ -577,7 +606,10 @@ namespace ASC.Core.Data
 
         public UserGroupRef SaveUserGroupRef(int tenant, UserGroupRef r)
         {
-            if (r == null) throw new ArgumentNullException("userGroupRef");
+            if (r == null)
+            {
+                throw new ArgumentNullException("userGroupRef");
+            }
 
             r.LastModified = DateTime.UtcNow;
             r.Tenant = tenant;
@@ -588,7 +620,7 @@ namespace ASC.Core.Data
             if (user != null)
             {
                 user.LastModified = r.LastModified;
-                UserDbContext.AddOrUpdate(r => r.UserGroups, FromUserGroupRefToUserGroup(r));
+                UserDbContext.AddOrUpdate(r => r.UserGroups, _fromUserGroupRefToUserGroup(r));
             }
 
             UserDbContext.SaveChanges();
@@ -656,7 +688,7 @@ namespace ASC.Core.Data
             var q = userDbContext.Users.AsQueryable();
             var where = false;
 
-            if (tenant != Tenant.DEFAULT_TENANT)
+            if (tenant != Tenant.DefaultTenant)
             {
                 q = q.Where(r => r.Tenant == tenant);
                 where = true;
@@ -674,7 +706,7 @@ namespace ASC.Core.Data
         {
             var q = UserDbContext.Groups.Where(r => true);
 
-            if (tenant != Tenant.DEFAULT_TENANT)
+            if (tenant != Tenant.DefaultTenant)
             {
                 q = q.Where(r => r.Tenant == tenant);
             }
@@ -766,6 +798,7 @@ namespace ASC.Core.Data
                 .Where(r => r.Tenant == tenant)
                 .Where(r => r.ParentId == id)
                 .Select(r => r.Id);
+
             foreach (var child in childs)
             {
                 result.Add(child);
@@ -773,6 +806,7 @@ namespace ASC.Core.Data
             }
 
             result.Add(id);
+
             return result.Distinct().ToList();
         }
 
@@ -780,13 +814,13 @@ namespace ASC.Core.Data
         {
             return GetUserQuery(tenant)
                     .Where(r => r.Id == id)
-                    .Select(exp ?? FromUserToUserInfo)
+                    .Select(exp ?? _fromUserToUserInfo)
                     .FirstOrDefault();
         }
 
         protected string GetPasswordHash(Guid userId, string password)
         {
-            return Hasher.Base64Hash(password + userId + Encoding.UTF8.GetString(MachinePseudoKeys.GetMachineConstant()), HashAlg.SHA512);
+            return Hasher.Base64Hash(password + userId + Encoding.UTF8.GetString(_machinePseudoKeys.GetMachineConstant()), HashAlg.SHA512);
         }
     }
 

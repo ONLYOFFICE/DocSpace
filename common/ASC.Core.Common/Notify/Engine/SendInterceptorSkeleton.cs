@@ -27,22 +27,24 @@ namespace ASC.Notify.Engine
 {
     public class SendInterceptorSkeleton : ISendInterceptor
     {
-        private readonly Func<NotifyRequest, InterceptorPlace, IServiceScope, bool> method;
-
-
+        private readonly Func<NotifyRequest, InterceptorPlace, IServiceScope, bool> _method;
         public string Name { get; internal set; }
-
         public InterceptorPlace PreventPlace { get; internal set; }
-
         public InterceptorLifetime Lifetime { get; internal set; }
-
 
         public SendInterceptorSkeleton(string name, InterceptorPlace preventPlace, InterceptorLifetime lifetime, Func<NotifyRequest, InterceptorPlace, IServiceScope, bool> sendInterceptor)
         {
-            if (string.IsNullOrEmpty(name)) throw new ArgumentException("Empty name.", nameof(name));
-            if (sendInterceptor == null) throw new ArgumentNullException(nameof(sendInterceptor));
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentException("Empty name.", nameof(name));
+            }
 
-            method = sendInterceptor;
+            if (sendInterceptor == null)
+            {
+                throw new ArgumentNullException(nameof(sendInterceptor));
+            }
+
+            _method = sendInterceptor;
             Name = name;
             PreventPlace = preventPlace;
             Lifetime = lifetime;
@@ -50,7 +52,7 @@ namespace ASC.Notify.Engine
 
         public bool PreventSend(NotifyRequest request, InterceptorPlace place, IServiceScope serviceScope)
         {
-            return method(request, place, serviceScope);
+            return _method(request, place, serviceScope);
         }
     }
 }

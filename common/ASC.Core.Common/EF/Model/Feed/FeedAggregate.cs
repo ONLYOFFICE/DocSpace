@@ -27,6 +27,7 @@
             modelBuilder
                 .Add(MySqlAddFeedAggregate, Provider.MySql)
                 .Add(PgSqlAddFeedAggregate, Provider.PostgreSql);
+
             return modelBuilder;
         }
         public static void MySqlAddFeedAggregate(this ModelBuilder modelBuilder)

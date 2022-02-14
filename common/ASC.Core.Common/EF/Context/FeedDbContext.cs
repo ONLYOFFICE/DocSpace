@@ -8,6 +8,7 @@
         public DbSet<FeedAggregate> FeedAggregates { get; set; }
         public DbSet<FeedUsers> FeedUsers { get; set; }
         public DbSet<FeedReaded> FeedReaded { get; set; }
+
         protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
         {
             get

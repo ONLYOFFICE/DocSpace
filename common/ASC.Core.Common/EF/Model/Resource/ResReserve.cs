@@ -16,6 +16,7 @@
             modelBuilder
                 .Add(MySqlAddResReserve, Provider.MySql)
                 .Add(PgSqlAddResReserve, Provider.PostgreSql);
+
             return modelBuilder;
         }
         public static void MySqlAddResReserve(this ModelBuilder modelBuilder)

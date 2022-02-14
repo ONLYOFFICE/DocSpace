@@ -38,11 +38,8 @@ namespace ASC.Core.Billing
 
         //[Obsolete]
         public bool WhiteLabel { get; set; }
-
         public bool Customization { get; set; }
-
         public bool Branding { get; set; }
-
         public bool SSBranding { get; set; }
 
         [JsonPropertyName("end_date")]
@@ -50,7 +47,6 @@ namespace ASC.Core.Billing
 
         [JsonPropertyName("portal_count")]
         public int PortalCount { get; set; }
-
         public bool Trial { get; set; }
 
         [JsonPropertyName("user_quota")]
@@ -58,9 +54,7 @@ namespace ASC.Core.Billing
 
         [JsonPropertyName("customer_id")]
         public string CustomerId { get; set; }
-
         public string Signature { get; set; }
-
         public bool? DiscEncryption { get; set; }
 
         [JsonPropertyName("users_count")]
@@ -74,7 +68,10 @@ namespace ASC.Core.Billing
 
         public static License Parse(string licenseString)
         {
-            if (string.IsNullOrEmpty(licenseString)) throw new BillingNotFoundException("License file is empty");
+            if (string.IsNullOrEmpty(licenseString))
+            {
+                throw new BillingNotFoundException("License file is empty");
+            }
 
             try
             {
@@ -88,7 +85,10 @@ namespace ASC.Core.Billing
 
                 var license = JsonSerializer.Deserialize<License>(licenseString, options);
 
-                if (license == null) throw new BillingNotFoundException("Can't parse license");
+                if (license == null)
+                {
+                    throw new BillingNotFoundException("Can't parse license");
+                }
 
                 license.OriginalLicense = licenseString;
 
@@ -105,8 +105,7 @@ namespace ASC.Core.Billing
     {
         public override bool CanConvert(Type typeToConvert)
         {
-            return
-                   typeof(int) == typeToConvert ||
+            return typeof(int) == typeToConvert ||
                    typeof(bool) == typeToConvert;
         }
 

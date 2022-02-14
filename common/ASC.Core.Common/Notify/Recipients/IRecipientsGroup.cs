@@ -26,8 +26,7 @@
 
 namespace ASC.Notify.Recipients
 {
-    public interface IRecipientsGroup
-        : IRecipient
+    public interface IRecipientsGroup : IRecipient
     {
     }
 }

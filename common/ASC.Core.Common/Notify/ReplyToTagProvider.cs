@@ -30,15 +30,15 @@ namespace ASC.Core.Common.Notify
     /// </summary>
     public class ReplyToTagProvider
     {
-        private static readonly Regex EntityType = new Regex(@"blog|forum.topic|event|photo|file|wiki|bookmark|project\.milestone|project\.task|project\.message");
+        private static readonly Regex _entityType = new Regex(@"blog|forum.topic|event|photo|file|wiki|bookmark|project\.milestone|project\.task|project\.message");
 
         private const string TagName = "replyto";
 
         public ReplyToTagProvider(TenantManager tenantManager, CoreBaseSettings coreBaseSettings, CoreSettings coreSettings)
         {
-            TenantManager = tenantManager;
-            CoreBaseSettings = coreBaseSettings;
-            CoreSettings = coreSettings;
+            _tenantManager = tenantManager;
+            _coreBaseSettings = coreBaseSettings;
+            _coreSettings = coreSettings;
         }
 
         /// <summary>
@@ -61,10 +61,18 @@ namespace ASC.Core.Common.Notify
         /// <returns>New TeamLab tag</returns>
         public TagValue Comment(string entity, string entityId, string parentId)
         {
-            if (string.IsNullOrEmpty(entity) || !EntityType.Match(entity).Success) throw new ArgumentException(@"Not supported entity type", entity);
-            if (string.IsNullOrEmpty(entityId)) throw new ArgumentException(@"Entity Id is null or empty", entityId);
+            if (string.IsNullOrEmpty(entity) || !_entityType.Match(entity).Success)
+            {
+                throw new ArgumentException(@"Not supported entity type", entity);
+            }
+
+            if (string.IsNullOrEmpty(entityId))
+            {
+                throw new ArgumentException(@"Entity Id is null or empty", entityId);
+            }
 
             var pId = parentId != Guid.Empty.ToString() && parentId != null ? parentId : string.Empty;
+
             return new TagValue(TagName, $"reply_{entity}_{entityId}_{pId}@{AutoreplyDomain}");
         }
 
@@ -84,13 +92,14 @@ namespace ASC.Core.Common.Notify
             {
                 // we use mapped domains for standalone portals because it is the only way to reach autoreply service
                 // mapped domains are no allowed for SAAS because of http(s) problem
-                var tenant = TenantManager.GetCurrentTenant();
-                return tenant.GetTenantDomain(CoreSettings, CoreBaseSettings.Standalone);
+                var tenant = _tenantManager.GetCurrentTenant();
+
+                return tenant.GetTenantDomain(_coreSettings, _coreBaseSettings.Standalone);
             }
         }
 
-        private TenantManager TenantManager { get; }
-        private CoreBaseSettings CoreBaseSettings { get; }
-        private CoreSettings CoreSettings { get; }
+        private readonly TenantManager _tenantManager;
+        private readonly CoreBaseSettings _coreBaseSettings;
+        private readonly CoreSettings _coreSettings;
     }
 }

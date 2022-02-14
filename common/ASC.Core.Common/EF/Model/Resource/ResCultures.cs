@@ -14,6 +14,7 @@
             modelBuilder
                 .Add(MySqlAddResCultures, Provider.MySql)
                 .Add(PgSqlAddResCultures, Provider.PostgreSql);
+
             return modelBuilder;
         }
         public static void MySqlAddResCultures(this ModelBuilder modelBuilder)

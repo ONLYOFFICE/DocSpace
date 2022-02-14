@@ -30,15 +30,15 @@ namespace ASC.Core
 {
     public class MultiRegionHostedSolution
     {
-        private readonly Dictionary<string, HostedSolution> regions = new Dictionary<string, HostedSolution>();
-        private readonly string dbid;
+        private readonly Dictionary<string, HostedSolution> _regions = new Dictionary<string, HostedSolution>();
+        private readonly string _dbid;
 
-        private IConfiguration Configuraion { get; }
+        private readonly IConfiguration Configuraion;
         public ConfigurationExtension ConfigurationExtension { get; }
-        private CookieStorage CookieStorage { get; }
-        private EFLoggerFactory LoggerFactory { get; }
-        private PasswordHasher PasswordHasher { get; }
-        private IOptionsSnapshot<HostedSolution> HostedSolutionOptions { get; }
+        private readonly CookieStorage _cookieStorage;
+        private readonly EFLoggerFactory _loggerFactory;
+        private readonly PasswordHasher _passwordHasher;
+        private readonly IOptionsSnapshot<HostedSolution> _hostedSolutionOptions;
 
         public MultiRegionHostedSolution(string dbid,
             IConfiguration configuraion,
@@ -48,13 +48,14 @@ namespace ASC.Core
             PasswordHasher passwordHasher,
             IOptionsSnapshot<HostedSolution> hostedSolutionOptions)
         {
-            this.dbid = dbid;
+            _dbid = dbid;
             Configuraion = configuraion;
             ConfigurationExtension = configurationExtension;
-            CookieStorage = cookieStorage;
-            LoggerFactory = loggerFactory;
-            PasswordHasher = passwordHasher;
-            HostedSolutionOptions = hostedSolutionOptions;
+            _cookieStorage = cookieStorage;
+            _loggerFactory = loggerFactory;
+            _passwordHasher = passwordHasher;
+            _hostedSolutionOptions = hostedSolutionOptions;
+
             Initialize();
         }
 
@@ -81,8 +82,9 @@ namespace ASC.Core
                 {
                     if (string.IsNullOrEmpty(passwordHash) && !string.IsNullOrEmpty(password))
                     {
-                        passwordHash = PasswordHasher.GetClientPassword(password);
+                        passwordHash = _passwordHasher.GetClientPassword(password);
                     }
+
                     result.AddRange(service.FindTenants(login, passwordHash));
                 }
                 catch (SecurityException exception)
@@ -94,6 +96,7 @@ namespace ASC.Core
             {
                 throw error;
             }
+
             return result;
         }
 
@@ -113,6 +116,7 @@ namespace ASC.Core
                     return tenant;
                 }
             }
+
             return null;
         }
 
@@ -126,12 +130,10 @@ namespace ASC.Core
             return GetRegionService(region).SaveTenant(tenant);
         }
 
-
         public string CreateAuthenticationCookie(string region, int tenantId, Guid userId)
         {
-            return GetRegionService(region).CreateAuthenticationCookie(CookieStorage, tenantId, userId);
+            return GetRegionService(region).CreateAuthenticationCookie(_cookieStorage, tenantId, userId);
         }
-
 
         public Tariff GetTariff(string region, int tenantId, bool withRequestToPaymentSystem = true)
         {
@@ -171,17 +173,15 @@ namespace ASC.Core
             return GetRegionServices().Select(s => s.Region).ToList();
         }
 
-
-
         private IEnumerable<HostedSolution> GetRegionServices()
         {
-            return regions.Where(x => !string.IsNullOrEmpty(x.Key))
+            return _regions.Where(x => !string.IsNullOrEmpty(x.Key))
                    .Select(x => x.Value);
         }
 
         private HostedSolution GetRegionService(string region)
         {
-            return regions[region];
+            return _regions[region];
         }
 
         private void Initialize()
@@ -192,17 +192,17 @@ namespace ASC.Core
             {
                 foreach (var cs in connectionStrings)
                 {
-                    if (cs.Name.StartsWith(dbid + "."))
+                    if (cs.Name.StartsWith(_dbid + "."))
                     {
-                        var name = cs.Name.Substring(dbid.Length + 1);
-                        regions[name] = HostedSolutionOptions.Get(cs.Name);
+                        var name = cs.Name.Substring(_dbid.Length + 1);
+                        _regions[name] = _hostedSolutionOptions.Get(cs.Name);
                     }
                 }
 
-                regions[dbid] = HostedSolutionOptions.Get(dbid);
-                if (!regions.ContainsKey(string.Empty))
+                _regions[_dbid] = _hostedSolutionOptions.Get(_dbid);
+                if (!_regions.ContainsKey(string.Empty))
                 {
-                    regions[string.Empty] = HostedSolutionOptions.Get(dbid);
+                    _regions[string.Empty] = _hostedSolutionOptions.Get(_dbid);
                 }
             }
             else
@@ -215,24 +215,24 @@ namespace ASC.Core
                     var options = dbContextOptionsBuilder
                         //.UseMySql(cs.ConnectionString)
                         .UseNpgsql(cs.ConnectionString)
-                        .UseLoggerFactory(LoggerFactory)
+                        .UseLoggerFactory(_loggerFactory)
                         .Options;
 
                     using var dbContext = new DbContext(options);
 
-                    if (cs.Name.StartsWith(dbid + "."))
+                    if (cs.Name.StartsWith(_dbid + "."))
                     {
-                        var name = cs.Name.Substring(dbid.Length + 1);
-                        regions[name] = HostedSolutionOptions.Get(name);
+                        var name = cs.Name.Substring(_dbid.Length + 1);
+                        _regions[name] = _hostedSolutionOptions.Get(name);
                         find = true;
                     }
                 }
                 if (find)
                 {
-                    regions[dbid] = HostedSolutionOptions.Get(dbid);
-                    if (!regions.ContainsKey(string.Empty))
+                    _regions[_dbid] = _hostedSolutionOptions.Get(_dbid);
+                    if (!_regions.ContainsKey(string.Empty))
                     {
-                        regions[string.Empty] = HostedSolutionOptions.Get(dbid);
+                        _regions[string.Empty] = _hostedSolutionOptions.Get(_dbid);
                     }
                 }
                 else
@@ -245,7 +245,7 @@ namespace ASC.Core
                             var options = dbContextOptionsBuilder
                                 //.UseMySql(connectionString.ConnectionString)
                                 .UseNpgsql(connectionString.ConnectionString)
-                                .UseLoggerFactory(LoggerFactory)
+                                .UseLoggerFactory(_loggerFactory)
                                 .Options;
 
                             using var dbContext = new DbContext(options);
@@ -256,12 +256,12 @@ namespace ASC.Core
                             {
                                 var cs = new System.Configuration.ConnectionStringSettings(r.Region, r.ConnectionString, r.Provider);
 
-                                if (!regions.ContainsKey(string.Empty))
+                                if (!_regions.ContainsKey(string.Empty))
                                 {
-                                    regions[string.Empty] = HostedSolutionOptions.Get(cs.Name);
+                                    _regions[string.Empty] = _hostedSolutionOptions.Get(cs.Name);
                                 }
 
-                                regions[cs.Name] = HostedSolutionOptions.Get(cs.Name);
+                                _regions[cs.Name] = _hostedSolutionOptions.Get(cs.Name);
                             }
                         }
                         catch (DbException) { }

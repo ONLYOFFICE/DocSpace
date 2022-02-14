@@ -30,23 +30,21 @@ namespace ASC.Geolocation
     public class GeolocationHelper
     {
         public string Dbid { get; set; }
-
         public ILog Log { get; }
-        private DbContext DbContext { get; }
+        private readonly DbContext _dbContext;
 
         public GeolocationHelper(DbContextManager<DbContext> dbContext, IOptionsMonitor<ILog> option)
         {
             Log = option.CurrentValue;
-            DbContext = dbContext.Get(Dbid);
+            _dbContext = dbContext.Get(Dbid);
         }
-
 
         public IPGeolocationInfo GetIPGeolocation(string ip)
         {
             try
             {
                 var ipformatted = FormatIP(ip);
-                var q = DbContext.DbipLocation
+                var q = _dbContext.DbipLocation
                     .Where(r => r.IPStart.CompareTo(ipformatted) <= 0)
                     .Where(r => ipformatted.CompareTo(r.IPEnd) <= 0)
                     .OrderByDescending(r => r.IPStart)
@@ -67,6 +65,7 @@ namespace ASC.Geolocation
             {
                 Log.Error(error);
             }
+
             return IPGeolocationInfo.Default;
         }
 
@@ -80,6 +79,7 @@ namespace ASC.Geolocation
                     return GetIPGeolocation(ip);
                 }
             }
+
             return IPGeolocationInfo.Default;
         }
 
@@ -93,6 +93,7 @@ namespace ASC.Geolocation
                 {
                     return ip;
                 }
+
                 return string.Join(".", ip.Split(':')[0].Split('.').Select(s => ("00" + s).Substring(s.Length - 1)).ToArray());
             }
             else if (ip.Contains(':'))
@@ -107,6 +108,7 @@ namespace ASC.Geolocation
                 {
                     ip = ip.Insert(index + 2, new string(':', 8 - ip.Split(':').Length));
                 }
+
                 return string.Join(":", ip.Split(':').Select(s => ("0000" + s).Substring(s.Length)).ToArray());
             }
             else

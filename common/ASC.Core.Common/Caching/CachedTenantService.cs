@@ -28,8 +28,8 @@ namespace ASC.Core.Caching
     [Singletone]
     class TenantServiceCache
     {
-        private const string KEY = "tenants";
-        private TimeSpan CacheExpiration { get; set; }
+        private const string Key = "tenants";
+        private TimeSpan _cacheExpiration;
         internal ICache Cache { get; }
         internal ICacheNotify<TenantCacheItem> CacheNotifyItem { get; }
         internal ICacheNotify<TenantSetting> CacheNotifySettings { get; }
@@ -43,59 +43,65 @@ namespace ASC.Core.Caching
             CacheNotifyItem = cacheNotifyItem;
             CacheNotifySettings = cacheNotifySettings;
             Cache = cache;
-            CacheExpiration = TimeSpan.FromMinutes(2);
+            _cacheExpiration = TimeSpan.FromMinutes(2);
 
             cacheNotifyItem.Subscribe((t) =>
             {
                 var tenants = GetTenantStore();
                 tenants.Remove(t.TenantId);
                 tenants.Clear(coreBaseSettings);
-            }, ASC.Common.Caching.CacheNotifyAction.InsertOrUpdate);
+            }, CacheNotifyAction.InsertOrUpdate);
 
             cacheNotifySettings.Subscribe((s) =>
             {
                 Cache.Remove(s.Key);
-            }, ASC.Common.Caching.CacheNotifyAction.Remove);
+            }, CacheNotifyAction.Remove);
         }
 
         internal TenantStore GetTenantStore()
         {
-            var store = Cache.Get<TenantStore>(KEY);
+            var store = Cache.Get<TenantStore>(Key);
             if (store == null)
             {
                 store = new TenantStore();
-                Cache.Insert(KEY, store, DateTime.UtcNow.Add(CacheExpiration));
+                Cache.Insert(Key, store, DateTime.UtcNow.Add(_cacheExpiration));
             }
+
             return store;
         }
 
 
         internal class TenantStore
         {
-            private readonly Dictionary<int, Tenant> byId = new Dictionary<int, Tenant>();
-            private readonly Dictionary<string, Tenant> byDomain = new Dictionary<string, Tenant>();
-            private readonly object locker = new object();
+            private readonly Dictionary<int, Tenant> _byId = new Dictionary<int, Tenant>();
+            private readonly Dictionary<string, Tenant> _byDomain = new Dictionary<string, Tenant>();
+            private readonly object _locker = new object();
 
 
             public Tenant Get(int id)
             {
                 Tenant t;
-                lock (locker)
+                lock (_locker)
                 {
-                    byId.TryGetValue(id, out t);
+                    _byId.TryGetValue(id, out t);
                 }
+
                 return t;
             }
 
             public Tenant Get(string domain)
             {
-                if (string.IsNullOrEmpty(domain)) return null;
+                if (string.IsNullOrEmpty(domain))
+                {
+                    return null;
+                }
 
                 Tenant t;
-                lock (locker)
+                lock (_locker)
                 {
-                    byDomain.TryGetValue(domain, out t);
+                    _byDomain.TryGetValue(domain, out t);
                 }
+
                 return t;
             }
 
@@ -107,12 +113,19 @@ namespace ASC.Core.Caching
                 }
 
                 Remove(t.TenantId);
-                lock (locker)
+                lock (_locker)
                 {
-                    byId[t.TenantId] = t;
-                    byDomain[t.TenantAlias] = t;
-                    if (!string.IsNullOrEmpty(t.MappedDomain)) byDomain[t.MappedDomain] = t;
-                    if (!string.IsNullOrEmpty(ip)) byDomain[ip] = t;
+                    _byId[t.TenantId] = t;
+                    _byDomain[t.TenantAlias] = t;
+                    if (!string.IsNullOrEmpty(t.MappedDomain))
+                    {
+                        _byDomain[t.MappedDomain] = t;
+                    }
+
+                    if (!string.IsNullOrEmpty(ip))
+                    {
+                        _byDomain[ip] = t;
+                    }
                 }
             }
 
@@ -121,13 +134,13 @@ namespace ASC.Core.Caching
                 var t = Get(id);
                 if (t != null)
                 {
-                    lock (locker)
+                    lock (_locker)
                     {
-                        byId.Remove(id);
-                        byDomain.Remove(t.TenantAlias);
+                        _byId.Remove(id);
+                        _byDomain.Remove(t.TenantAlias);
                         if (!string.IsNullOrEmpty(t.MappedDomain))
                         {
-                            byDomain.Remove(t.MappedDomain);
+                            _byDomain.Remove(t.MappedDomain);
                         }
                     }
                 }
@@ -135,11 +148,15 @@ namespace ASC.Core.Caching
 
             internal void Clear(CoreBaseSettings coreBaseSettings)
             {
-                if (!coreBaseSettings.Standalone) return;
-                lock (locker)
+                if (!coreBaseSettings.Standalone)
                 {
-                    byId.Clear();
-                    byDomain.Clear();
+                    return;
+                }
+
+                lock (_locker)
+                {
+                    _byId.Clear();
+                    _byDomain.Clear();
                 }
             }
         }
@@ -148,29 +165,29 @@ namespace ASC.Core.Caching
     [Scope]
     class ConfigureCachedTenantService : IConfigureNamedOptions<CachedTenantService>
     {
-        private IOptionsSnapshot<DbTenantService> Service { get; }
-        private TenantServiceCache TenantServiceCache { get; }
+        private readonly IOptionsSnapshot<DbTenantService> _service;
+        private readonly TenantServiceCache _tenantServiceCache;
 
         public ConfigureCachedTenantService(
             IOptionsSnapshot<DbTenantService> service,
             TenantServiceCache tenantServiceCache)
         {
-            Service = service;
-            TenantServiceCache = tenantServiceCache;
+            _service = service;
+            _tenantServiceCache = tenantServiceCache;
         }
 
         public void Configure(string name, CachedTenantService options)
         {
             Configure(options);
-            options.Service = Service.Get(name);
+            options.Service = _service.Get(name);
         }
 
         public void Configure(CachedTenantService options)
         {
-            options.Service = Service.Value;
-            options.TenantServiceCache = TenantServiceCache;
-            options.CacheNotifyItem = TenantServiceCache.CacheNotifyItem;
-            options.CacheNotifySettings = TenantServiceCache.CacheNotifySettings;
+            options.Service = _service.Value;
+            options.TenantServiceCache = _tenantServiceCache;
+            options.CacheNotifyItem = _tenantServiceCache.CacheNotifyItem;
+            options.CacheNotifySettings = _tenantServiceCache.CacheNotifySettings;
         }
     }
 
@@ -178,22 +195,20 @@ namespace ASC.Core.Caching
     class CachedTenantService : ITenantService
     {
         internal ITenantService Service { get; set; }
-
-        private readonly ICache cache;
+        private readonly ICache _cache;
         internal ICacheNotify<TenantSetting> CacheNotifySettings { get; set; }
         internal ICacheNotify<TenantCacheItem> CacheNotifyItem { get; set; }
-
-        private TimeSpan SettingsExpiration { get; set; }
+        private TimeSpan _settingsExpiration;
         internal TenantServiceCache TenantServiceCache { get; set; }
 
         public CachedTenantService()
         {
-            SettingsExpiration = TimeSpan.FromMinutes(2);
+            _settingsExpiration = TimeSpan.FromMinutes(2);
         }
 
         public CachedTenantService(DbTenantService service, TenantServiceCache tenantServiceCache, ICache cache) : this()
         {
-            this.cache = cache;
+            this._cache = cache;
             Service = service ?? throw new ArgumentNullException(nameof(service));
             TenantServiceCache = tenantServiceCache;
             CacheNotifyItem = tenantServiceCache.CacheNotifyItem;
@@ -231,6 +246,7 @@ namespace ASC.Core.Caching
                     tenants.Insert(t);
                 }
             }
+
             return t;
         }
 
@@ -246,6 +262,7 @@ namespace ASC.Core.Caching
                     tenants.Insert(t);
                 }
             }
+
             return t;
         }
 
@@ -261,20 +278,22 @@ namespace ASC.Core.Caching
                     tenants.Insert(t, ip);
                 }
             }
+
             return t;
         }
 
         public Tenant SaveTenant(CoreSettings coreSettings, Tenant tenant)
         {
             tenant = Service.SaveTenant(coreSettings, tenant);
-            CacheNotifyItem.Publish(new TenantCacheItem() { TenantId = tenant.TenantId }, ASC.Common.Caching.CacheNotifyAction.InsertOrUpdate);
+            CacheNotifyItem.Publish(new TenantCacheItem() { TenantId = tenant.TenantId }, CacheNotifyAction.InsertOrUpdate);
+
             return tenant;
         }
 
         public void RemoveTenant(int id, bool auto = false)
         {
             Service.RemoveTenant(id, auto);
-            CacheNotifyItem.Publish(new TenantCacheItem() { TenantId = id }, ASC.Common.Caching.CacheNotifyAction.InsertOrUpdate);
+            CacheNotifyItem.Publish(new TenantCacheItem() { TenantId = id }, CacheNotifyAction.InsertOrUpdate);
         }
 
         public IEnumerable<TenantVersion> GetTenantVersions()
@@ -285,13 +304,14 @@ namespace ASC.Core.Caching
         public byte[] GetTenantSettings(int tenant, string key)
         {
             var cacheKey = string.Format("settings/{0}/{1}", tenant, key);
-            var data = cache.Get<byte[]>(cacheKey);
+            var data = _cache.Get<byte[]>(cacheKey);
             if (data == null)
             {
                 data = Service.GetTenantSettings(tenant, key);
 
-                cache.Insert(cacheKey, data ?? Array.Empty<byte>(), DateTime.UtcNow + SettingsExpiration);
+                _cache.Insert(cacheKey, data ?? Array.Empty<byte>(), DateTime.UtcNow + _settingsExpiration);
             }
+
             return data == null ? null : data.Length == 0 ? null : data;
         }
 
@@ -299,6 +319,7 @@ namespace ASC.Core.Caching
         {
             Service.SetTenantSettings(tenant, key, data);
             var cacheKey = string.Format("settings/{0}/{1}", tenant, key);
+
             CacheNotifySettings.Publish(new TenantSetting { Key = cacheKey }, ASC.Common.Caching.CacheNotifyAction.Remove);
         }
     }

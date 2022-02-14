@@ -16,6 +16,7 @@
             modelBuilder
                 .Add(MySqlAddServerServer, Provider.MySql)
                 .Add(PgSqlAddServerServer, Provider.PostgreSql);
+
             return modelBuilder;
         }
         public static void MySqlAddServerServer(this ModelBuilder modelBuilder)

@@ -12,6 +12,7 @@
             modelBuilder
                 .Add(MySqlAddLoginEvents, Provider.MySql)
                 .Add(PgSqlAddLoginEvents, Provider.PostgreSql);
+
             return modelBuilder;
         }
         public static void MySqlAddLoginEvents(this ModelBuilder modelBuilder)

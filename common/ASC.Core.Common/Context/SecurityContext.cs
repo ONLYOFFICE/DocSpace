@@ -28,27 +28,18 @@ namespace ASC.Core
     [Scope]
     public class SecurityContext
     {
-        private readonly ILog log;
+        private readonly ILog _logger;
+        public IAccount CurrentAccount => _authContext.CurrentAccount;
+        public bool IsAuthenticated => _authContext.IsAuthenticated;
 
-
-        public IAccount CurrentAccount
-        {
-            get => AuthContext.CurrentAccount;
-        }
-
-        public bool IsAuthenticated
-        {
-            get => AuthContext.IsAuthenticated;
-        }
-
-        private UserManager UserManager { get; }
-        private AuthManager Authentication { get; }
-        private AuthContext AuthContext { get; }
-        private TenantManager TenantManager { get; }
-        private UserFormatter UserFormatter { get; }
-        private CookieStorage CookieStorage { get; }
-        private TenantCookieSettingsHelper TenantCookieSettingsHelper { get; }
-        private IHttpContextAccessor HttpContextAccessor { get; }
+        private readonly UserManager _userManager;
+        private readonly AuthManager _authentication;
+        private readonly AuthContext _authContext;
+        private readonly TenantManager _tenantManager;
+        private readonly UserFormatter _userFormatter;
+        private readonly CookieStorage _cookieStorage;
+        private readonly TenantCookieSettingsHelper _tenantCookieSettingsHelper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public SecurityContext(
             UserManager userManager,
@@ -61,14 +52,14 @@ namespace ASC.Core
             IOptionsMonitor<ILog> options
             )
         {
-            log = options.CurrentValue;
-            UserManager = userManager;
-            Authentication = authentication;
-            AuthContext = authContext;
-            TenantManager = tenantManager;
-            UserFormatter = userFormatter;
-            CookieStorage = cookieStorage;
-            TenantCookieSettingsHelper = tenantCookieSettingsHelper;
+            _logger = options.CurrentValue;
+            _userManager = userManager;
+            _authentication = authentication;
+            _authContext = authContext;
+            _tenantManager = tenantManager;
+            _userFormatter = userFormatter;
+            _cookieStorage = cookieStorage;
+            _tenantCookieSettingsHelper = tenantCookieSettingsHelper;
         }
 
         public SecurityContext(
@@ -83,19 +74,26 @@ namespace ASC.Core
             IOptionsMonitor<ILog> options
             ) : this(userManager, authentication, authContext, tenantManager, userFormatter, cookieStorage, tenantCookieSettingsHelper, options)
         {
-            HttpContextAccessor = httpContextAccessor;
+            _httpContextAccessor = httpContextAccessor;
         }
 
 
         public string AuthenticateMe(string login, string passwordHash)
         {
-            if (login == null) throw new ArgumentNullException(nameof(login));
-            if (passwordHash == null) throw new ArgumentNullException(nameof(passwordHash));
+            if (login == null)
+            {
+                throw new ArgumentNullException(nameof(login));
+            }
 
-            var tenantid = TenantManager.GetCurrentTenant().TenantId;
-            var u = UserManager.GetUsersByPasswordHash(tenantid, login, passwordHash);
+            if (passwordHash == null)
+            {
+                throw new ArgumentNullException(nameof(passwordHash));
+            }
 
-            return AuthenticateMe(new UserAccount(u, tenantid, UserFormatter));
+            var tenantid = _tenantManager.GetCurrentTenant().TenantId;
+            var u = _userManager.GetUsersByPasswordHash(tenantid, login, passwordHash);
+
+            return AuthenticateMe(new UserAccount(u, tenantid, _userFormatter));
         }
 
         public bool AuthenticateMe(string cookie)
@@ -107,25 +105,28 @@ namespace ASC.Core
                 {
                     var ipFrom = string.Empty;
                     var address = string.Empty;
-                    if (HttpContextAccessor?.HttpContext != null)
+                    if (_httpContextAccessor?.HttpContext != null)
                     {
-                        var request = HttpContextAccessor?.HttpContext.Request;
+                        var request = _httpContextAccessor?.HttpContext.Request;
 
-                        if (request == null) throw new ArgumentNullException("request");
+                        if (request == null)
+                        {
+                            throw new ArgumentNullException(nameof(request));
+                        }
 
                         ipFrom = "from " + (request.Headers["X-Forwarded-For"].ToString() ?? request.GetUserHostAddress());
                         address = "for " + request.GetUrlRewriter();
                     }
-                    log.InfoFormat("Empty Bearer cookie: {0} {1}", ipFrom, address);
+                    _logger.InfoFormat("Empty Bearer cookie: {0} {1}", ipFrom, address);
                 }
-                else if (CookieStorage.DecryptCookie(cookie, out var tenant, out var userid, out var indexTenant, out var expire, out var indexUser))
+                else if (_cookieStorage.DecryptCookie(cookie, out var tenant, out var userid, out var indexTenant, out var expire, out var indexUser))
                 {
-                    if (tenant != TenantManager.GetCurrentTenant().TenantId)
+                    if (tenant != _tenantManager.GetCurrentTenant().TenantId)
                     {
                         return false;
                     }
 
-                    var settingsTenant = TenantCookieSettingsHelper.GetForTenant(tenant);
+                    var settingsTenant = _tenantCookieSettingsHelper.GetForTenant(tenant);
                     if (indexTenant != settingsTenant.Index)
                     {
                         return false;
@@ -138,45 +139,50 @@ namespace ASC.Core
 
                     try
                     {
-                        var settingsUser = TenantCookieSettingsHelper.GetForUser(userid);
+                        var settingsUser = _tenantCookieSettingsHelper.GetForUser(userid);
                         if (indexUser != settingsUser.Index)
                         {
                             return false;
                         }
 
-                        AuthenticateMeWithoutCookie(new UserAccount(new UserInfo { ID = userid }, tenant, UserFormatter));
+                        AuthenticateMeWithoutCookie(new UserAccount(new UserInfo { ID = userid }, tenant, _userFormatter));
 
                         return true;
                     }
                     catch (InvalidCredentialException ice)
                     {
-                        log.DebugFormat("{0}: cookie {1}, tenant {2}, userid {3}", ice.Message, cookie, tenant, userid);
+                        _logger.DebugFormat("{0}: cookie {1}, tenant {2}, userid {3}", ice.Message, cookie, tenant, userid);
                     }
                     catch (SecurityException se)
                     {
-                        log.DebugFormat("{0}: cookie {1}, tenant {2}, userid {3}", se.Message, cookie, tenant, userid);
+                        _logger.DebugFormat("{0}: cookie {1}, tenant {2}, userid {3}", se.Message, cookie, tenant, userid);
                     }
                     catch (Exception err)
                     {
-                        log.ErrorFormat("Authenticate error: cookie {0}, tenant {1}, userid {2}, : {3}", cookie, tenant, userid, err);
+                        _logger.ErrorFormat("Authenticate error: cookie {0}, tenant {1}, userid {2}, : {3}", cookie, tenant, userid, err);
                     }
                 }
                 else
                 {
                     var ipFrom = string.Empty;
                     var address = string.Empty;
-                    if (HttpContextAccessor?.HttpContext != null)
+                    if (_httpContextAccessor?.HttpContext != null)
                     {
-                        var request = HttpContextAccessor?.HttpContext.Request;
+                        var request = _httpContextAccessor?.HttpContext.Request;
 
-                        if (request == null) throw new ArgumentNullException("request");
+                        if (request == null)
+                        {
+                            throw new ArgumentNullException(nameof(request));
+                        }
 
                         address = "for " + request.GetUrlRewriter();
                         ipFrom = "from " + (request.Headers["X-Forwarded-For"].ToString() ?? request.GetUserHostAddress());
                     }
-                    log.WarnFormat("Can not decrypt cookie: {0} {1} {2}", cookie, ipFrom, address);
+
+                    _logger.WarnFormat("Can not decrypt cookie: {0} {1} {2}", cookie, ipFrom, address);
                 }
             }
+
             return false;
         }
 
@@ -188,7 +194,7 @@ namespace ASC.Core
 
             if (account is IUserAccount)
             {
-                cookie = CookieStorage.EncryptCookie(TenantManager.GetCurrentTenant().TenantId, account.ID);
+                cookie = _cookieStorage.EncryptCookie(_tenantManager.GetCurrentTenant().TenantId, account.ID);
             }
 
             return cookie;
@@ -196,7 +202,10 @@ namespace ASC.Core
 
         public void AuthenticateMeWithoutCookie(IAccount account, List<Claim> additionalClaims = null)
         {
-            if (account == null || account.Equals(Configuration.Constants.Guest)) throw new InvalidCredentialException("account");
+            if (account == null || account.Equals(Configuration.Constants.Guest))
+            {
+                throw new InvalidCredentialException("account");
+            }
 
             var roles = new List<string> { Role.Everyone };
 
@@ -207,9 +216,9 @@ namespace ASC.Core
 
             if (account is IUserAccount)
             {
-                var tenant = TenantManager.GetCurrentTenant();
+                var tenant = _tenantManager.GetCurrentTenant();
 
-                var u = UserManager.GetUsers(account.ID);
+                var u = _userManager.GetUsers(account.ID);
 
                 if (u.ID == Users.Constants.LostUser.ID)
                 {
@@ -223,18 +232,20 @@ namespace ASC.Core
                 // for LDAP users only
                 if (u.Sid != null)
                 {
-                    if (!TenantManager.GetTenantQuota(tenant.TenantId).Ldap)
+                    if (!_tenantManager.GetTenantQuota(tenant.TenantId).Ldap)
                     {
                         throw new BillingException("Your tariff plan does not support this option.", "Ldap");
                     }
                 }
-                if (UserManager.IsUserInGroup(u.ID, Users.Constants.GroupAdmin.ID))
+
+                if (_userManager.IsUserInGroup(u.ID, Users.Constants.GroupAdmin.ID))
                 {
                     roles.Add(Role.Administrators);
                 }
+
                 roles.Add(Role.Users);
 
-                account = new UserAccount(u, TenantManager.GetCurrentTenant().TenantId, UserFormatter);
+                account = new UserAccount(u, _tenantManager.GetCurrentTenant().TenantId, _userFormatter);
             }
 
             var claims = new List<Claim>
@@ -248,43 +259,44 @@ namespace ASC.Core
             {
                 claims.AddRange(additionalClaims);
             }
-            AuthContext.Principal = new CustomClaimsPrincipal(new ClaimsIdentity(account, claims), account);
+
+            _authContext.Principal = new CustomClaimsPrincipal(new ClaimsIdentity(account, claims), account);
         }
 
         public string AuthenticateMe(Guid userId, List<Claim> additionalClaims = null)
         {
-            var account = Authentication.GetAccountByID(TenantManager.GetCurrentTenant().TenantId, userId);
+            var account = _authentication.GetAccountByID(_tenantManager.GetCurrentTenant().TenantId, userId);
+
             return AuthenticateMe(account, additionalClaims);
         }
 
         public void AuthenticateMeWithoutCookie(Guid userId, List<Claim> additionalClaims = null)
         {
-            var account = Authentication.GetAccountByID(TenantManager.GetCurrentTenant().TenantId, userId);
+            var account = _authentication.GetAccountByID(_tenantManager.GetCurrentTenant().TenantId, userId);
+
             AuthenticateMeWithoutCookie(account, additionalClaims);
         }
 
         public void Logout()
         {
-            AuthContext.Logout();
+            _authContext.Logout();
         }
 
         public void SetUserPasswordHash(Guid userID, string passwordHash)
         {
-            var tenantid = TenantManager.GetCurrentTenant().TenantId;
-            var u = UserManager.GetUsersByPasswordHash(tenantid, userID.ToString(), passwordHash);
+            var tenantid = _tenantManager.GetCurrentTenant().TenantId;
+            var u = _userManager.GetUsersByPasswordHash(tenantid, userID.ToString(), passwordHash);
             if (!Equals(u, Users.Constants.LostUser))
             {
                 throw new PasswordException("A new password must be used");
             }
 
-            Authentication.SetUserPasswordHash(userID, passwordHash);
+            _authentication.SetUserPasswordHash(userID, passwordHash);
         }
 
         public class PasswordException : Exception
         {
-            public PasswordException(string message) : base(message)
-            {
-            }
+            public PasswordException(string message) : base(message) { }
         }
     }
 
@@ -346,15 +358,9 @@ namespace ASC.Core
             HttpContextAccessor = httpContextAccessor;
         }
 
-        public IAccount CurrentAccount
-        {
-            get { return Principal?.Identity is IAccount ? (IAccount)Principal.Identity : Configuration.Constants.Guest; }
-        }
+        public IAccount CurrentAccount => Principal?.Identity is IAccount ? (IAccount)Principal.Identity : Configuration.Constants.Guest;
 
-        public bool IsAuthenticated
-        {
-            get { return CurrentAccount.IsAuthenticated; }
-        }
+        public bool IsAuthenticated => CurrentAccount.IsAuthenticated;
 
         public void Logout()
         {
@@ -367,7 +373,11 @@ namespace ASC.Core
             set
             {
                 Thread.CurrentPrincipal = value;
-                if (HttpContextAccessor?.HttpContext != null) HttpContextAccessor.HttpContext.User = value;
+
+                if (HttpContextAccessor?.HttpContext != null)
+                {
+                    HttpContextAccessor.HttpContext.User = value;
+                }
             }
         }
     }

@@ -18,6 +18,7 @@
             modelBuilder
                 .Add(MySqlAddTelegramUsers, Provider.MySql)
                 .Add(PgSqlAddTelegramUsers, Provider.PostgreSql);
+
             return modelBuilder;
         }
         public static void MySqlAddTelegramUsers(this ModelBuilder modelBuilder)

@@ -29,19 +29,12 @@ namespace ASC.Core
     public class AzRecord
     {
         public Guid SubjectId { get; set; }
-
         public Guid ActionId { get; set; }
-
         public string ObjectId { get; set; }
-
         public AceType Reaction { get; set; }
-
         public int Tenant { get; set; }
 
-
-        public AzRecord()
-        {
-        }
+        public AzRecord() { }
 
         public AzRecord(Guid subjectId, Guid actionId, AceType reaction)
             : this(subjectId, actionId, reaction, default(string))
@@ -53,7 +46,6 @@ namespace ASC.Core
         {
         }
 
-
         internal AzRecord(Guid subjectId, Guid actionId, AceType reaction, string objectId)
         {
             SubjectId = subjectId;
@@ -61,7 +53,6 @@ namespace ASC.Core
             Reaction = reaction;
             ObjectId = objectId;
         }
-
 
         public static implicit operator AzRecord(AzRecordCache cache)
         {

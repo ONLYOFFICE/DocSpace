@@ -15,6 +15,7 @@
             modelBuilder
                 .Add(MySqlAddVoipNumber, Provider.MySql)
                 .Add(PgSqlAddVoipNumber, Provider.PostgreSql);
+
             return modelBuilder;
         }
         public static void MySqlAddVoipNumber(this ModelBuilder modelBuilder)

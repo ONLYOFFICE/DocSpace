@@ -27,87 +27,86 @@ namespace ASC.Notify.Engine
 {
     public class NotifyEngine : INotifyEngine
     {
-        private readonly ILog log;
-
-        private readonly Context context;
-
-        private readonly List<SendMethodWrapper> sendMethods = new List<SendMethodWrapper>();
-
-        private readonly Queue<NotifyRequest> requests = new Queue<NotifyRequest>(1000);
-
-        private readonly Thread notifyScheduler;
-
-        private readonly Thread notifySender;
-
-        private readonly AutoResetEvent requestsEvent = new AutoResetEvent(false);
-
-        private readonly AutoResetEvent methodsEvent = new AutoResetEvent(false);
-
-        private readonly Dictionary<string, IPatternStyler> stylers = new Dictionary<string, IPatternStyler>();
-
-        private readonly IPatternFormatter sysTagFormatter = new ReplacePatternFormatter(@"_#(?<tagName>[A-Z0-9_\-.]+)#_", true);
-
-        private readonly TimeSpan defaultSleep = TimeSpan.FromSeconds(10);
-
-        private IServiceProvider ServiceProvider { get; }
+        private readonly ILog _logger;
+        private readonly Context _context;
+        private readonly List<SendMethodWrapper> _sendMethods = new List<SendMethodWrapper>();
+        private readonly Queue<NotifyRequest> _requests = new Queue<NotifyRequest>(1000);
+        private readonly Thread _notifyScheduler;
+        private readonly Thread _notifySender;
+        private readonly AutoResetEvent _requestsEvent = new AutoResetEvent(false);
+        private readonly AutoResetEvent _methodsEvent = new AutoResetEvent(false);
+        private readonly Dictionary<string, IPatternStyler> _stylers = new Dictionary<string, IPatternStyler>();
+        private readonly IPatternFormatter _sysTagFormatter = new ReplacePatternFormatter(@"_#(?<tagName>[A-Z0-9_\-.]+)#_", true);
+        private readonly TimeSpan _defaultSleep = TimeSpan.FromSeconds(10);
+        private readonly IServiceProvider _serviceProvider;
 
         public event Action<NotifyEngine, NotifyRequest, IServiceScope> BeforeTransferRequest;
-
         public event Action<NotifyEngine, NotifyRequest, IServiceScope> AfterTransferRequest;
 
 
         public NotifyEngine(Context context, IServiceProvider serviceProvider)
         {
-            this.context = context ?? throw new ArgumentNullException(nameof(context));
-            log = serviceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.Notify");
-            ServiceProvider = serviceProvider;
-            notifyScheduler = new Thread(NotifyScheduler) { IsBackground = true, Name = "NotifyScheduler" };
-            notifySender = new Thread(NotifySender) { IsBackground = true, Name = "NotifySender" };
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _logger = serviceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.Notify");
+            _serviceProvider = serviceProvider;
+            _notifyScheduler = new Thread(NotifyScheduler) { IsBackground = true, Name = "NotifyScheduler" };
+            _notifySender = new Thread(NotifySender) { IsBackground = true, Name = "NotifySender" };
         }
 
 
         public virtual void QueueRequest(NotifyRequest request, IServiceScope serviceScope)
         {
             BeforeTransferRequest?.Invoke(this, request, serviceScope);
-            lock (requests)
+            lock (_requests)
             {
-                if (!notifySender.IsAlive)
+                if (!_notifySender.IsAlive)
                 {
-                    notifySender.Start();
+                    _notifySender.Start();
                 }
 
-                requests.Enqueue(request);
+                _requests.Enqueue(request);
             }
-            requestsEvent.Set();
+
+            _requestsEvent.Set();
         }
 
 
         internal void RegisterSendMethod(Action<DateTime> method, string cron)
         {
-            if (method == null) throw new ArgumentNullException(nameof(method));
-            if (string.IsNullOrEmpty(cron)) throw new ArgumentNullException(nameof(cron));
-
-            var w = new SendMethodWrapper(method, cron, log);
-            lock (sendMethods)
+            if (method == null)
             {
-                if (!notifyScheduler.IsAlive)
+                throw new ArgumentNullException(nameof(method));
+            }
+
+            if (string.IsNullOrEmpty(cron))
+            {
+                throw new ArgumentNullException(nameof(cron));
+            }
+
+            var w = new SendMethodWrapper(method, cron, _logger);
+            lock (_sendMethods)
+            {
+                if (!_notifyScheduler.IsAlive)
                 {
-                    notifyScheduler.Start();
+                    _notifyScheduler.Start();
                 }
 
-                sendMethods.Remove(w);
-                sendMethods.Add(w);
+                _sendMethods.Remove(w);
+                _sendMethods.Add(w);
             }
-            methodsEvent.Set();
+            _methodsEvent.Set();
         }
 
         internal void UnregisterSendMethod(Action<DateTime> method)
         {
-            if (method == null) throw new ArgumentNullException(nameof(method));
-
-            lock (sendMethods)
+            if (method == null)
             {
-                sendMethods.Remove(new SendMethodWrapper(method, null, log));
+                throw new ArgumentNullException(nameof(method));
+            }
+
+            lock (_sendMethods)
+            {
+                _sendMethods.Remove(new SendMethodWrapper(method, null, _logger));
             }
         }
 
@@ -120,18 +119,18 @@ namespace ASC.Notify.Engine
                     var min = DateTime.MaxValue;
                     var now = DateTime.UtcNow;
                     List<SendMethodWrapper> copy;
-                    lock (sendMethods)
+                    lock (_sendMethods)
                     {
-                        copy = sendMethods.ToList();
+                        copy = _sendMethods.ToList();
                     }
 
                     foreach (var w in copy)
                     {
                         if (!w.ScheduleDate.HasValue)
                         {
-                            lock (sendMethods)
+                            lock (_sendMethods)
                             {
-                                sendMethods.Remove(w);
+                                _sendMethods.Remove(w);
                             }
                         }
 
@@ -143,7 +142,7 @@ namespace ASC.Notify.Engine
                             }
                             catch (Exception error)
                             {
-                                log.Error(error);
+                                _logger.Error(error);
                             }
                             w.UpdateScheduleDate(now);
                         }
@@ -154,17 +153,17 @@ namespace ASC.Notify.Engine
                         }
                     }
 
-                    var wait = min != DateTime.MaxValue ? min - DateTime.UtcNow : defaultSleep;
+                    var wait = min != DateTime.MaxValue ? min - DateTime.UtcNow : _defaultSleep;
 
-                    if (wait < defaultSleep)
+                    if (wait < _defaultSleep)
                     {
-                        wait = defaultSleep;
+                        wait = _defaultSleep;
                     }
                     else if (wait.Ticks > int.MaxValue)
                     {
                         wait = TimeSpan.FromTicks(int.MaxValue);
                     }
-                    methodsEvent.WaitOne(wait, false);
+                    _methodsEvent.WaitOne(wait, false);
                 }
             }
             catch (ThreadAbortException)
@@ -173,7 +172,7 @@ namespace ASC.Notify.Engine
             }
             catch (Exception e)
             {
-                log.Error(e);
+                _logger.Error(e);
             }
         }
 
@@ -185,16 +184,16 @@ namespace ASC.Notify.Engine
                 while (true)
                 {
                     NotifyRequest request = null;
-                    lock (requests)
+                    lock (_requests)
                     {
-                        if (requests.Count > 0)
+                        if (_requests.Count > 0)
                         {
-                            request = requests.Dequeue();
+                            request = _requests.Dequeue();
                         }
                     }
                     if (request != null)
                     {
-                        using var scope = ServiceProvider.CreateScope();
+                        using var scope = _serviceProvider.CreateScope();
                         AfterTransferRequest?.Invoke(this, request, scope);
                         try
                         {
@@ -202,12 +201,12 @@ namespace ASC.Notify.Engine
                         }
                         catch (Exception e)
                         {
-                            log.Error(e);
+                            _logger.Error(e);
                         }
                     }
                     else
                     {
-                        requestsEvent.WaitOne();
+                        _requestsEvent.WaitOne();
                     }
                 }
             }
@@ -217,7 +216,7 @@ namespace ASC.Notify.Engine
             }
             catch (Exception e)
             {
-                log.Error(e);
+                _logger.Error(e);
             }
         }
 
@@ -245,7 +244,8 @@ namespace ASC.Notify.Engine
             {
                 result = new NotifyResult(sendResponces.Aggregate((SendResult)0, (s, r) => r.Result), sendResponces);
             }
-            log.Debug(result);
+            _logger.Debug(result);
+
             return result;
         }
 
@@ -258,6 +258,7 @@ namespace ASC.Notify.Engine
         {
             var responces = new List<SendResponse>();
             SendGroupNotify(request, responces, serviceScope);
+
             return responces;
         }
 
@@ -277,6 +278,7 @@ namespace ASC.Notify.Engine
                     {
                         directresponses.Add(new SendResponse(request.NotifyAction, request.Recipient, exc));
                     }
+
                     responces.AddRange(directresponses);
                 }
             }
@@ -328,13 +330,17 @@ namespace ASC.Notify.Engine
 
         private List<SendResponse> SendDirectNotify(NotifyRequest request, IServiceScope serviceScope)
         {
-            if (!(request.Recipient is IDirectRecipient)) throw new ArgumentException("request.Recipient not IDirectRecipient", nameof(request));
+            if (!(request.Recipient is IDirectRecipient))
+            {
+                throw new ArgumentException("request.Recipient not IDirectRecipient", nameof(request));
+            }
 
             var responses = new List<SendResponse>();
             var response = CheckPreventInterceptors(request, InterceptorPlace.DirectSend, serviceScope, null);
             if (response != null)
             {
                 responses.Add(response);
+
                 return responses;
             }
 
@@ -347,14 +353,14 @@ namespace ASC.Notify.Engine
             catch (Exception ex)
             {
                 responses.Add(new SendResponse(request.NotifyAction, null, request.Recipient, SendResult.Impossible));
-                log.Error("Prepare", ex);
+                _logger.Error("Prepare", ex);
             }
 
             if (request.SenderNames != null && request.SenderNames.Length > 0)
             {
                 foreach (var sendertag in request.SenderNames)
                 {
-                    var channel = context.NotifyService.GetSender(sendertag);
+                    var channel = _context.NotifyService.GetSender(sendertag);
                     if (channel != null)
                     {
                         try
@@ -370,6 +376,7 @@ namespace ASC.Notify.Engine
                     {
                         response = new SendResponse(request.NotifyAction, sendertag, request.Recipient, new NotifyException($"Not registered sender \"{sendertag}\"."));
                     }
+
                     responses.Add(response);
                 }
             }
@@ -378,21 +385,31 @@ namespace ASC.Notify.Engine
                 response = new SendResponse(request.NotifyAction, request.Recipient, new NotifyException("Notice hasn't any senders."));
                 responses.Add(response);
             }
+
             return responses;
         }
 
         private SendResponse SendDirectNotify(NotifyRequest request, ISenderChannel channel, IServiceScope serviceScope)
         {
-            if (!(request.Recipient is IDirectRecipient)) throw new ArgumentException("request.Recipient not IDirectRecipient", nameof(request));
+            if (!(request.Recipient is IDirectRecipient))
+            {
+                throw new ArgumentException("request.Recipient not IDirectRecipient", nameof(request));
+            }
 
             request.CurrentSender = channel.SenderName;
 
             var oops = CreateNoticeMessageFromNotifyRequest(request, channel.SenderName, serviceScope, out var noticeMessage);
-            if (oops != null) return oops;
+            if (oops != null)
+            {
+                return oops;
+            }
 
             request.CurrentMessage = noticeMessage;
             var preventresponse = CheckPreventInterceptors(request, InterceptorPlace.MessageSend, serviceScope, channel.SenderName);
-            if (preventresponse != null) return preventresponse;
+            if (preventresponse != null)
+            {
+                return preventresponse;
+            }
 
             channel.SendAsync(noticeMessage);
 
@@ -401,7 +418,10 @@ namespace ASC.Notify.Engine
 
         private SendResponse CreateNoticeMessageFromNotifyRequest(NotifyRequest request, string sender, IServiceScope serviceScope, out NoticeMessage noticeMessage)
         {
-            if (request == null) throw new ArgumentNullException(nameof(request));
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
 
             var recipientProvider = request.GetRecipientsProvider(serviceScope);
             var recipient = request.Recipient as IDirectRecipient;
@@ -441,12 +461,12 @@ namespace ASC.Notify.Engine
                 {
                     formatter.FormatMessage(noticeMessage, noticeMessage.Arguments);
                 }
-                sysTagFormatter.FormatMessage(
+                _sysTagFormatter.FormatMessage(
                     noticeMessage, new[]
                                            {
-                                               new TagValue(Context._SYS_RECIPIENT_ID, request.Recipient.ID),
-                                               new TagValue(Context._SYS_RECIPIENT_NAME, request.Recipient.Name),
-                                               new TagValue(Context._SYS_RECIPIENT_ADDRESS, addresses != null && addresses.Length > 0 ? addresses[0] : null)
+                                               new TagValue(Context.SysRecipientId, request.Recipient.ID),
+                                               new TagValue(Context.SysRecipientName, request.Recipient.Name),
+                                               new TagValue(Context.SysRecipientAddress, addresses != null && addresses.Length > 0 ? addresses[0] : null)
                                            }
                     );
                 //Do styling here
@@ -460,6 +480,7 @@ namespace ASC.Notify.Engine
             {
                 return new SendResponse(request.NotifyAction, sender, recipient, exc);
             }
+
             return null;
         }
 
@@ -467,18 +488,18 @@ namespace ASC.Notify.Engine
         {
             try
             {
-                if (!stylers.ContainsKey(message.Pattern.Styler))
+                if (!_stylers.ContainsKey(message.Pattern.Styler))
                 {
                     if (scope.ServiceProvider.GetService(Type.GetType(message.Pattern.Styler, true)) is IPatternStyler styler)
                     {
-                        stylers.Add(message.Pattern.Styler, styler);
+                        _stylers.Add(message.Pattern.Styler, styler);
                     }
                 }
-                stylers[message.Pattern.Styler].ApplyFormating(message);
+                _stylers[message.Pattern.Styler].ApplyFormating(message);
             }
             catch (Exception exc)
             {
-                log.Warn("error styling message", exc);
+                _logger.Warn("error styling message", exc);
             }
         }
 
@@ -501,7 +522,10 @@ namespace ASC.Notify.Engine
             if (request.Patterns == null)
             {
                 request.Patterns = new IPattern[request.SenderNames.Length];
-                if (request.Patterns.Length == 0) return;
+                if (request.Patterns.Length == 0)
+                {
+                    return;
+                }
 
                 var apProvider = request.GetPatternProvider(serviceScope);
                 for (var i = 0; i < request.SenderNames.Length; i++)
@@ -559,21 +583,22 @@ namespace ASC.Notify.Engine
 
         private sealed class SendMethodWrapper
         {
-            private readonly object locker = new object();
-            private readonly CronExpression cronExpression;
-            private readonly Action<DateTime> method;
+            private readonly object _locker = new object();
+            private readonly CronExpression _cronExpression;
+            private readonly Action<DateTime> _method;
 
             public DateTime? ScheduleDate { get; private set; }
-            public ILog Log { get; }
+            public ILog Logger { get; }
 
             public SendMethodWrapper(Action<DateTime> method, string cron, ILog log)
             {
-                this.method = method;
-                Log = log;
+                _method = method;
+                Logger = log;
                 if (!string.IsNullOrEmpty(cron))
                 {
-                    this.cronExpression = new CronExpression(cron);
+                    _cronExpression = new CronExpression(cron);
                 }
+
                 UpdateScheduleDate(DateTime.UtcNow);
             }
 
@@ -581,30 +606,30 @@ namespace ASC.Notify.Engine
             {
                 try
                 {
-                    if (cronExpression != null)
+                    if (_cronExpression != null)
                     {
-                        ScheduleDate = cronExpression.GetTimeAfter(d);
+                        ScheduleDate = _cronExpression.GetTimeAfter(d);
                     }
                 }
                 catch (Exception e)
                 {
-                    Log.Error(e);
+                    Logger.Error(e);
                 }
             }
 
             public void InvokeSendMethod(DateTime d)
             {
-                lock (locker)
+                lock (_locker)
                 {
                     Task.Run(() =>
                     {
                         try
                         {
-                            method(d);
+                            _method(d);
                         }
                         catch (Exception e)
                         {
-                            Log.Error(e);
+                            Logger.Error(e);
                         }
                     }).Wait();
                 }
@@ -612,12 +637,12 @@ namespace ASC.Notify.Engine
 
             public override bool Equals(object obj)
             {
-                return obj is SendMethodWrapper w && method.Equals(w.method);
+                return obj is SendMethodWrapper w && _method.Equals(w._method);
             }
 
             public override int GetHashCode()
             {
-                return method.GetHashCode();
+                return _method.GetHashCode();
             }
         }
     }

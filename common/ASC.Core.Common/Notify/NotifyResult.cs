@@ -28,9 +28,7 @@ namespace ASC.Notify
     public class NotifyResult
     {
         public SendResult Result { get; internal set; }
-
         public List<SendResponse> Responses { get; set; }
-
 
         internal NotifyResult(SendResult result, List<SendResponse> responses)
         {
@@ -59,10 +57,15 @@ namespace ASC.Notify
                         recipient = "<null-address>";
                     }
                 }
-                if (responce.Exception != null) error = responce.Exception.Message;
+                if (responce.Exception != null)
+                {
+                    error = responce.Exception.Message;
+                }
+
                 sb.AppendLine();
                 sb.AppendFormat("   {3}->{0}({1})={2} {4}", recipient, responce.SenderName, responce.Result, responce.NotifyAction.ID, error);
             }
+
             return sb.ToString();
         }
     }

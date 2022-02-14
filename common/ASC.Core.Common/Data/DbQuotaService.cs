@@ -28,36 +28,36 @@ namespace ASC.Core.Data
     [Scope]
     class ConfigureDbQuotaService : IConfigureNamedOptions<DbQuotaService>
     {
-        private DbContextManager<CoreDbContext> DbContextManager { get; }
+        private readonly DbContextManager<CoreDbContext> _dbContextManager;
         public string DbId { get; set; }
 
         public ConfigureDbQuotaService(DbContextManager<CoreDbContext> dbContextManager)
         {
-            DbContextManager = dbContextManager;
+            _dbContextManager = dbContextManager;
         }
 
         public void Configure(string name, DbQuotaService options)
         {
-            options.LazyCoreDbContext = new Lazy<CoreDbContext>(() => DbContextManager.Get(name));
+            options.LazyCoreDbContext = new Lazy<CoreDbContext>(() => _dbContextManager.Get(name));
         }
 
         public void Configure(DbQuotaService options)
         {
-            options.LazyCoreDbContext = new Lazy<CoreDbContext>(() => DbContextManager.Value);
+            options.LazyCoreDbContext = new Lazy<CoreDbContext>(() => _dbContextManager.Value);
         }
     }
 
     [Scope]
     class DbQuotaService : IQuotaService
     {
-        private static Expression<Func<DbQuota, TenantQuota>> FromDbQuotaToTenantQuota { get; set; }
-        private static Expression<Func<DbQuotaRow, TenantQuotaRow>> FromDbQuotaRowToTenantQuotaRow { get; set; }
-        internal CoreDbContext CoreDbContext { get => LazyCoreDbContext.Value; }
+        private static Expression<Func<DbQuota, TenantQuota>> _fromDbQuotaToTenantQuota;
+        private static Expression<Func<DbQuotaRow, TenantQuotaRow>> _fromDbQuotaRowToTenantQuotaRow;
+        internal CoreDbContext CoreDbContext => LazyCoreDbContext.Value;
         internal Lazy<CoreDbContext> LazyCoreDbContext { get; set; }
 
         static DbQuotaService()
         {
-            FromDbQuotaToTenantQuota = r => new TenantQuota()
+            _fromDbQuotaToTenantQuota = r => new TenantQuota()
             {
                 Id = r.Tenant,
                 Name = r.Name,
@@ -70,7 +70,7 @@ namespace ASC.Core.Data
                 Visible = r.Visible
             };
 
-            FromDbQuotaRowToTenantQuotaRow = r => new TenantQuotaRow
+            _fromDbQuotaRowToTenantQuotaRow = r => new TenantQuotaRow
             {
                 Counter = r.Counter,
                 Path = r.Path,
@@ -86,24 +86,25 @@ namespace ASC.Core.Data
 
         public IEnumerable<TenantQuota> GetTenantQuotas()
         {
-            return
-                CoreDbContext.Quotas
-                .Select(FromDbQuotaToTenantQuota)
+            return CoreDbContext.Quotas
+                .Select(_fromDbQuotaToTenantQuota)
                 .ToList();
         }
 
         public TenantQuota GetTenantQuota(int id)
         {
-            return
-                 CoreDbContext.Quotas
+            return CoreDbContext.Quotas
                  .Where(r => r.Tenant == id)
-                .Select(FromDbQuotaToTenantQuota)
+                .Select(_fromDbQuotaToTenantQuota)
                 .SingleOrDefault();
         }
 
         public TenantQuota SaveTenantQuota(TenantQuota quota)
         {
-            if (quota == null) throw new ArgumentNullException(nameof(quota));
+            if (quota == null)
+            {
+                throw new ArgumentNullException(nameof(quota));
+            }
 
             var dbQuota = new DbQuota
             {
@@ -143,7 +144,10 @@ namespace ASC.Core.Data
 
         public void SetTenantQuotaRow(TenantQuotaRow row, bool exchange)
         {
-            if (row == null) throw new ArgumentNullException(nameof(row));
+            if (row == null)
+            {
+                throw new ArgumentNullException(nameof(row));
+            }
 
             using var tx = CoreDbContext.Database.BeginTransaction();
 
@@ -172,24 +176,26 @@ namespace ASC.Core.Data
         {
             IQueryable<DbQuotaRow> q = CoreDbContext.QuotaRows;
 
-            if (tenantId != Tenant.DEFAULT_TENANT)
+            if (tenantId != Tenant.DefaultTenant)
             {
                 q = q.Where(r => r.Tenant == tenantId);
             }
 
-            return q.Select(FromDbQuotaRowToTenantQuotaRow).ToList();
+            return q.Select(_fromDbQuotaRowToTenantQuotaRow).ToList();
         }
 
 
         private static long GetInBytes(long bytes)
         {
             const long MB = 1024 * 1024;
+
             return bytes < MB ? bytes * MB : bytes;
         }
 
         private static long GetInMBytes(long bytes)
         {
             const long MB = 1024 * 1024;
+
             return bytes < MB * MB ? bytes / MB : bytes;
         }
     }

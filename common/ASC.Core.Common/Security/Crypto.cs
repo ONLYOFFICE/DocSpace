@@ -45,6 +45,7 @@ namespace ASC.Core
             {
                 randomKey[i] = (byte)random.Next(byte.MaxValue);
             }
+
             return randomKey;
         }
 
@@ -62,6 +63,7 @@ namespace ASC.Core
                 plainTextStream.CopyTo(ss);
                 ss.FlushFinalBlock();
                 hasher.Clear();
+
                 return Convert.ToBase64String(ms.ToArray());
             }
             else
@@ -71,6 +73,7 @@ namespace ASC.Core
                 using var plainTextStream = new MemoryStream();
                 ss.CopyTo(plainTextStream);
                 hasher.Clear();
+
                 return Encoding.Unicode.GetString(plainTextStream.ToArray());
             }
         }
@@ -89,6 +92,7 @@ namespace ASC.Core
                 plainTextStream.CopyTo(ss);
                 ss.FlushFinalBlock();
                 hasher.Clear();
+
                 return ms.ToArray();
             }
             else
@@ -98,6 +102,7 @@ namespace ASC.Core
                 using var plainTextStream = new MemoryStream();
                 ss.CopyTo(plainTextStream);
                 hasher.Clear();
+
                 return plainTextStream.ToArray();
             }
         }

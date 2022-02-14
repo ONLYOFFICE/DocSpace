@@ -27,11 +27,7 @@ namespace ASC.Notify.Sinks
 {
     public abstract class Sink : ISink
     {
-        public ISink NextSink
-        {
-            get;
-            set;
-        }
+        public ISink NextSink { get; set; }
 
         public abstract SendResponse ProcessMessage(INoticeMessage message);
 

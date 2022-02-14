@@ -28,15 +28,13 @@ namespace ASC.Core.Configuration
     public class AmiPublicDnsSyncService : IServiceController
     {
         public static IServiceProvider ServiceProvider { get; set; }
+
         public void Start()
         {
             Synchronize();
         }
 
-        public void Stop()
-        {
-
-        }
+        public void Stop() { }
 
         public static void Synchronize()
         {
@@ -77,6 +75,7 @@ namespace ASC.Core.Configuration
                 using var responce = httpClient.Send(request);
                 using var stream = responce.Content.ReadAsStream();
                 using var reader = new StreamReader(stream);
+
                 return reader.ReadToEnd();
             }
             catch (HttpRequestException ex)
@@ -86,26 +85,27 @@ namespace ASC.Core.Configuration
                     throw;
                 }
             }
+
             return null;
         }
     }
 
     public class AmiPublicDnsSyncServiceScope
     {
-        private TenantManager TenantManager { get; }
-        private CoreBaseSettings CoreBaseSettings { get; }
-        private IHttpClientFactory ClientFactory { get; }
+        private TenantManager _tenantManager;
+        private CoreBaseSettings _coreBaseSettings;
+        private IHttpClientFactory _clientFactory;
 
         public AmiPublicDnsSyncServiceScope(TenantManager tenantManager, CoreBaseSettings coreBaseSettings, IHttpClientFactory clientFactory)
         {
-            TenantManager = tenantManager;
-            CoreBaseSettings = coreBaseSettings;
-            ClientFactory = clientFactory;
+            _tenantManager = tenantManager;
+            _coreBaseSettings = coreBaseSettings;
+            _clientFactory = clientFactory;
         }
 
         public void Deconstruct(out TenantManager tenantManager, out CoreBaseSettings coreBaseSettings, out IHttpClientFactory clientFactory)
         {
-            (tenantManager, coreBaseSettings, clientFactory) = (TenantManager, CoreBaseSettings, ClientFactory);
+            (tenantManager, coreBaseSettings, clientFactory) = (_tenantManager, _coreBaseSettings, _clientFactory);
         }
     }
 }

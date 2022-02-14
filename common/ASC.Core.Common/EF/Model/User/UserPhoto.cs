@@ -17,6 +17,7 @@
             modelBuilder
                 .Add(MySqlAddUserPhoto, Provider.MySql)
                 .Add(PgSqlAddUserPhoto, Provider.PostgreSql);
+
             return modelBuilder;
         }
         public static void MySqlAddUserPhoto(this ModelBuilder modelBuilder)

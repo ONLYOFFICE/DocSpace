@@ -13,6 +13,7 @@
             modelBuilder
                 .Add(MySqlAddResAuthorsLang, Provider.MySql)
                 .Add(PgSqlAddResAuthorsLang, Provider.PostgreSql);
+
             return modelBuilder;
         }
         public static void MySqlAddResAuthorsLang(this ModelBuilder modelBuilder)

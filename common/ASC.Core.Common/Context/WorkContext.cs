@@ -31,57 +31,56 @@ namespace ASC.Core
 {
     public static class WorkContext
     {
-        private static readonly object syncRoot = new object();
-        private static bool notifyStarted;
-        private static bool? ismono;
-        private static string monoversion;
+        private static readonly object _syncRoot = new object();
+        private static bool _notifyStarted;
+        private static bool? _isMono;
+        private static string _monoVersion;
 
 
         public static NotifyContext NotifyContext { get; private set; }
 
-        public static string[] DefaultClientSenders
-        {
-            get { return new[] { Constants.NotifyEMailSenderSysName, }; }
-        }
+        public static string[] DefaultClientSenders => new[] { Constants.NotifyEMailSenderSysName, };
 
         public static bool IsMono
         {
             get
             {
-                if (ismono.HasValue)
+                if (_isMono.HasValue)
                 {
-                    return ismono.Value;
+                    return _isMono.Value;
                 }
 
                 var monoRuntime = Type.GetType("Mono.Runtime");
-                ismono = monoRuntime != null;
+                _isMono = monoRuntime != null;
                 if (monoRuntime != null)
                 {
                     var dispalayName = monoRuntime.GetMethod("GetDisplayName", BindingFlags.NonPublic | BindingFlags.Static);
                     if (dispalayName != null)
                     {
-                        monoversion = dispalayName.Invoke(null, null) as string;
+                        _monoVersion = dispalayName.Invoke(null, null) as string;
                     }
                 }
-                return ismono.Value;
+
+                return _isMono.Value;
             }
         }
 
-        public static string MonoVersion
-        {
-            get
-            {
-                return IsMono ? monoversion : null;
-            }
-        }
+        public static string MonoVersion => IsMono ? _monoVersion : null;
 
 
         public static void NotifyStartUp(IServiceProvider serviceProvider)
         {
-            if (notifyStarted) return;
-            lock (syncRoot)
+            if (_notifyStarted)
             {
-                if (notifyStarted) return;
+                return;
+            }
+
+            lock (_syncRoot)
+            {
+                if (_notifyStarted)
+                {
+                    return;
+                }
 
                 var configuration = serviceProvider.GetService<IConfiguration>();
                 var cacheNotify = serviceProvider.GetService<ICacheNotify<NotifyMessage>>();
@@ -115,6 +114,7 @@ namespace ASC.Core
                     {
                         emailSender = new SmtpSender(serviceProvider, options);
                     }
+
                     emailSender.Init(properties);
                 }
 
@@ -124,7 +124,7 @@ namespace ASC.Core
 
                 NotifyContext.NotifyEngine.BeforeTransferRequest += NotifyEngine_BeforeTransferRequest;
                 NotifyContext.NotifyEngine.AfterTransferRequest += NotifyEngine_AfterTransferRequest;
-                notifyStarted = true;
+                _notifyStarted = true;
             }
         }
 

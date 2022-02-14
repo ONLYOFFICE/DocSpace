@@ -16,6 +16,7 @@
             modelBuilder
                 .Add(MySqlAddDbWebstudioIndex, Provider.MySql)
                 .Add(PgSqlAddDbWebstudioIndex, Provider.PostgreSql);
+
             return modelBuilder;
         }
         public static void MySqlAddDbWebstudioIndex(this ModelBuilder modelBuilder)

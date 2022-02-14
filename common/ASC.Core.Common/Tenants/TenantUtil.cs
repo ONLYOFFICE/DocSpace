@@ -28,28 +28,28 @@ namespace ASC.Core.Tenants
     [Scope]
     class ConfigureTenantUtil : IConfigureNamedOptions<TenantUtil>
     {
-        private IOptionsSnapshot<TenantManager> TenantManager { get; }
-        private TimeZoneConverter TimeZoneConverter { get; }
+        private readonly IOptionsSnapshot<TenantManager> _tenantManager;
+        private readonly TimeZoneConverter _timeZoneConverter;
 
         public ConfigureTenantUtil(
             IOptionsSnapshot<TenantManager> tenantManager,
             TimeZoneConverter timeZoneConverter
             )
         {
-            TenantManager = tenantManager;
-            TimeZoneConverter = timeZoneConverter;
+            _tenantManager = tenantManager;
+            _timeZoneConverter = timeZoneConverter;
         }
 
         public void Configure(string name, TenantUtil options)
         {
             Configure(options);
-            options.TenantManager = TenantManager.Get(name);
+            options.TenantManager = _tenantManager.Get(name);
         }
 
         public void Configure(TenantUtil options)
         {
-            options.TimeZoneConverter = TimeZoneConverter;
-            options.TenantManager = TenantManager.Value;
+            options.TimeZoneConverter = _timeZoneConverter;
+            options.TenantManager = _tenantManager.Value;
         }
     }
 
@@ -59,9 +59,7 @@ namespace ASC.Core.Tenants
         internal TenantManager TenantManager { get; set; }
         internal TimeZoneConverter TimeZoneConverter { get; set; }
 
-        public TenantUtil()
-        {
-        }
+        public TenantUtil() { }
 
         public TenantUtil(TenantManager tenantManager, TimeZoneConverter timeZoneConverter)
         {
@@ -69,14 +67,9 @@ namespace ASC.Core.Tenants
             TimeZoneConverter = timeZoneConverter;
         }
 
-        private TimeZoneInfo timeZoneInfo;
-        private TimeZoneInfo TimeZoneInfo
-        {
-            get
-            {
-                return timeZoneInfo ??= TimeZoneConverter.GetTimeZone(TenantManager.GetCurrentTenant().TimeZone);
-            }
-        }
+        private TimeZoneInfo _timeZoneInfo;
+        private TimeZoneInfo TimeZoneInfo => _timeZoneInfo ??= TimeZoneConverter.GetTimeZone(TenantManager.GetCurrentTenant().TimeZone);
+
         public DateTime DateTimeFromUtc(DateTime utc)
         {
             return DateTimeFromUtc(TimeZoneInfo, utc);
@@ -124,7 +117,6 @@ namespace ASC.Core.Tenants
             return TimeZoneInfo.ConvertTimeToUtc(DateTime.SpecifyKind(local, DateTimeKind.Unspecified), timeZone);
 
         }
-
 
         public DateTime DateTimeNow()
         {

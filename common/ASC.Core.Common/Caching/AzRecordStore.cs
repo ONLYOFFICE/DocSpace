@@ -42,12 +42,16 @@ namespace ASC.Core.Caching
         public IEnumerable<AzRecord> Get(string objectId)
         {
             byObjectId.TryGetValue(objectId ?? string.Empty, out var aces);
+
             return aces ?? new List<AzRecord>();
         }
 
         public void Add(AzRecord r)
         {
-            if (r == null) return;
+            if (r == null)
+            {
+                return;
+            }
 
             var id = r.ObjectId ?? string.Empty;
             if (!byObjectId.ContainsKey(id))
@@ -60,7 +64,10 @@ namespace ASC.Core.Caching
 
         public void Remove(AzRecord r)
         {
-            if (r == null) return;
+            if (r == null)
+            {
+                return;
+            }
 
             var id = r.ObjectId ?? string.Empty;
             if (byObjectId.TryGetValue(id, out var list))

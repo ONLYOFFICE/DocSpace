@@ -15,6 +15,7 @@
             modelBuilder
                 .Add(MySqlAddDbTenantVersion, Provider.MySql)
                 .Add(PgSqlAddDbTenantVersion, Provider.PostgreSql);
+
             return modelBuilder;
         }
         public static void MySqlAddDbTenantVersion(this ModelBuilder modelBuilder)

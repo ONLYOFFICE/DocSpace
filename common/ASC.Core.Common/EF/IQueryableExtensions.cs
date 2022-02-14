@@ -13,6 +13,7 @@
             var command = sqlGenerator.GetCommand(selectExpression);
 
             var sql = command.CommandText;
+
             return sql;
         }
 

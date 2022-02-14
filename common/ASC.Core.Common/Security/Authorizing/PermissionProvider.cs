@@ -27,19 +27,25 @@ namespace ASC.Core.Security.Authorizing
 {
     class PermissionProvider : IPermissionProvider
     {
-        private AuthorizationManager AuthorizationManager { get; }
+        private readonly AuthorizationManager _authorizationManager;
 
         public PermissionProvider(AuthorizationManager authorizationManager)
         {
-            AuthorizationManager = authorizationManager;
+            _authorizationManager = authorizationManager;
         }
 
         public IEnumerable<Ace> GetAcl(ISubject subject, IAction action, ISecurityObjectId objectId, ISecurityObjectProvider secObjProvider)
         {
-            if (subject == null) throw new ArgumentNullException(nameof(subject));
-            if (action == null) throw new ArgumentNullException(nameof(action));
+            if (subject == null)
+            {
+                throw new ArgumentNullException(nameof(subject));
+            }
+            if (action == null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
 
-            return AuthorizationManager
+            return _authorizationManager
                 .GetAcesWithInherits(subject.ID, action.ID, objectId, secObjProvider)
                 .Select(r => new Ace(r.ActionId, r.Reaction));
         }

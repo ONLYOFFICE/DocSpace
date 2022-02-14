@@ -27,53 +27,14 @@ namespace ASC.Core
 {
     public class Group
     {
-        public Guid Id
-        {
-            get;
-            set;
-        }
-
-        public Guid ParentId
-        {
-            get;
-            set;
-        }
-
-        public string Name
-        {
-            get;
-            set;
-        }
-
-        public Guid CategoryId
-        {
-            get;
-            set;
-        }
-
-        public bool Removed
-        {
-            get;
-            set;
-        }
-
-        public DateTime LastModified
-        {
-            get;
-            set;
-        }
-
-        public int Tenant
-        {
-            get;
-            set;
-        }
-
-        public string Sid
-        {
-            get;
-            set;
-        }
+        public Guid Id { get; set; }
+        public Guid ParentId { get; set; }
+        public string Name { get; set; }
+        public Guid CategoryId { get; set; }
+        public bool Removed { get; set; }
+        public DateTime LastModified { get; set; }
+        public int Tenant { get; set; }
+        public string Sid { get; set; }
 
         public override string ToString()
         {

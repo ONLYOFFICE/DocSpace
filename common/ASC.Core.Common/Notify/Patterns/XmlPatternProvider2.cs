@@ -27,21 +27,15 @@ namespace ASC.Notify.Patterns
 {
     public class XmlPatternProvider2 : IPatternProvider
     {
-        private readonly IDictionary<string, IPattern> patterns = new Dictionary<string, IPattern>();
-        private readonly IPatternFormatter formatter = null;
+        private readonly IDictionary<string, IPattern> _patterns = new Dictionary<string, IPattern>();
+        private readonly IPatternFormatter _formatter = null;
 
-
-        public Func<INotifyAction, string, NotifyRequest, IPattern> GetPatternMethod
-        {
-            get;
-            set;
-        }
+        public Func<INotifyAction, string, NotifyRequest, IPattern> GetPatternMethod { get; set; }
 
 
         public XmlPatternProvider2(string xml)
             : this(xml, null)
         {
-
         }
 
         public XmlPatternProvider2(string xml, Func<INotifyAction, string, NotifyRequest, IPattern> getpattern)
@@ -56,7 +50,7 @@ namespace ASC.Notify.Patterns
                 var type = xformatter.GetAttribute("type");
                 if (!string.IsNullOrEmpty(type))
                 {
-                    formatter = (IPatternFormatter)Activator.CreateInstance(Type.GetType(type, true));
+                    _formatter = (IPatternFormatter)Activator.CreateInstance(Type.GetType(type, true));
                 }
             }
 
@@ -81,7 +75,7 @@ namespace ASC.Notify.Patterns
 
                     var styler = xbody != null ? xbody.GetAttribute("styler") : string.Empty;
 
-                    patterns[id + sender] = new Pattern(id, subject, body, Pattern.HTMLContentType) { Styler = styler };
+                    _patterns[id + sender] = new Pattern(id, subject, body, Pattern.HtmlContentType) { Styler = styler };
                 }
                 else
                 {
@@ -91,32 +85,34 @@ namespace ASC.Notify.Patterns
 
             foreach (var pair in references)
             {
-                patterns[pair.Key] = patterns[pair.Value];
+                _patterns[pair.Key] = _patterns[pair.Value];
             }
         }
 
         public IPattern GetPattern(INotifyAction action, string senderName)
         {
-            if (patterns.TryGetValue(action.ID + senderName, out var p))
+            if (_patterns.TryGetValue(action.ID + senderName, out var p))
             {
                 return p;
             }
-            if (patterns.TryGetValue(action.ID, out p))
+            if (_patterns.TryGetValue(action.ID, out p))
             {
                 return p;
             }
+
             return null;
         }
 
         public IPatternFormatter GetFormatter(IPattern pattern)
         {
-            return formatter;
+            return _formatter;
         }
 
 
         private XmlElement GetElementByTagName(XmlElement e, string name)
         {
             var list = e.GetElementsByTagName(name);
+
             return list.Count == 0 ? null : list[0] as XmlElement;
         }
 
@@ -144,10 +140,12 @@ namespace ASC.Notify.Patterns
             var resourceManagerType = Type.GetType(array[1], true, true);
             var property = resourceManagerType.GetProperty(array[0], BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static) ??
                            resourceManagerType.GetProperty(ToUpper(array[0]), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
+
             if (property == null)
             {
                 throw new NotifyException($"Resource {array[0]} not found in resourceManager {array[1]}");
             }
+
             return property.GetValue(resourceManagerType, null) as string;
 
             static string ToUpper(string name)

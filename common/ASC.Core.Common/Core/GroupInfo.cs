@@ -29,24 +29,17 @@ namespace ASC.Core.Users
     public class GroupInfo : IRole, IRecipientsGroup
     {
         public Guid ID { get; internal set; }
-
         public string Name { get; set; }
-
         public Guid CategoryID { get; set; }
-
         public GroupInfo Parent { get; internal set; }
-
         public string Sid { get; set; }
 
-        public GroupInfo()
-        {
-        }
+        public GroupInfo() { }
 
         public GroupInfo(Guid categoryID)
         {
             CategoryID = categoryID;
         }
-
 
         public override string ToString()
         {
@@ -60,30 +53,22 @@ namespace ASC.Core.Users
 
         public override bool Equals(object obj)
         {
-            if (!(obj is GroupInfo g)) return false;
-            if (ID == Guid.Empty && g.ID == Guid.Empty) return ReferenceEquals(this, g);
+            if (!(obj is GroupInfo g))
+            {
+                return false;
+            }
+
+            if (ID == Guid.Empty && g.ID == Guid.Empty)
+            {
+                return ReferenceEquals(this, g);
+            }
+
             return g.ID == ID;
         }
 
-
-        string IRecipient.ID
-        {
-            get { return ID.ToString(); }
-        }
-
-        string IRecipient.Name
-        {
-            get { return Name; }
-        }
-
-        public string AuthenticationType
-        {
-            get { return "ASC"; }
-        }
-
-        public bool IsAuthenticated
-        {
-            get { return false; }
-        }
+        string IRecipient.ID => ID.ToString();
+        string IRecipient.Name => Name;
+        public string AuthenticationType => "ASC";
+        public bool IsAuthenticated => false;
     }
 }

@@ -14,9 +14,9 @@
         public TenantDbContext() { }
         public TenantDbContext(DbContextOptions<TenantDbContext> options)
             : base(options)
-        {
-
+        { 
         }
+
         protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
         {
             get
@@ -28,6 +28,7 @@
                 };
             }
         }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             ModelBuilderWrapper

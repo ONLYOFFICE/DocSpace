@@ -38,7 +38,7 @@ namespace ASC.Core.Billing
 
         private const int AvangatePaymentSystemId = 1;
 
-        static readonly HttpClient HttpClient = new HttpClient();
+        private static readonly HttpClient _httpClient = new HttpClient();
 
 
         public BillingClient(IConfiguration configuration)
@@ -164,6 +164,7 @@ namespace ASC.Core.Billing
                 }
                 urls[p] = Tuple.Create(paymentUrl, upgradeUrl);
             }
+
             return urls;
         }
 
@@ -203,6 +204,7 @@ namespace ASC.Core.Billing
             {
                 var now = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
                 var hash = WebEncoders.Base64UrlEncode(hasher.ComputeHash(Encoding.UTF8.GetBytes(string.Join("\n", now, pkey))));
+
                 return "ASC " + pkey + ":" + now + ":" + hash;
             }
         }
@@ -219,7 +221,7 @@ namespace ASC.Core.Billing
                 request.Headers.Add("Authorization", CreateAuthToken(_billingKey, _billingSecret));
             }
 
-            HttpClient.Timeout = TimeSpan.FromMilliseconds(60000);
+            _httpClient.Timeout = TimeSpan.FromMilliseconds(60000);
 
             var data = new Dictionary<string, List<string>>();
             if (!string.IsNullOrEmpty(portalId))
@@ -242,7 +244,7 @@ namespace ASC.Core.Billing
             request.Content = new StringContent(body, Encoding.UTF8, "application/json");
 
             string result;
-            using (var response = HttpClient.Send(request))
+            using (var response = _httpClient.Send(request))
             using (var stream = response.Content.ReadAsStream())
             {
                 if (stream == null)
@@ -270,6 +272,7 @@ namespace ASC.Core.Billing
             {
                 throw new BillingNotFoundException(result, info);
             }
+
             throw new BillingException(result, info);
         }
 
@@ -280,10 +283,12 @@ namespace ASC.Core.Billing
             {
                 return string.Empty;
             }
+
             if (_test && !s.Contains("&DOTEST = 1"))
             {
                 s += "&DOTEST=1";
             }
+
             return s;
         }
     }
@@ -300,7 +305,6 @@ namespace ASC.Core.Billing
     public class Message
     {
         public string Content { get; set; }
-
         public MessageType Type { get; set; }
     }
 

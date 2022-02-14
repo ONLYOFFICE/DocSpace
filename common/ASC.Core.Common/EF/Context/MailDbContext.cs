@@ -13,6 +13,7 @@
 
         public MailDbContext() { }
         public MailDbContext(DbContextOptions options) : base(options) { }
+
         protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
         {
             get

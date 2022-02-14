@@ -38,14 +38,17 @@ namespace ASC.Notify.Recipients
         #region IRecipientsGroup Members
 
         public string ID { get; private set; }
-
         public string Name { get; private set; }
 
         #endregion
 
         public override bool Equals(object obj)
         {
-            if (!(obj is IRecipientsGroup recGr)) return false;
+            if (!(obj is IRecipientsGroup recGr))
+            {
+                return false;
+            }
+
             return Equals(recGr.ID, ID);
         }
 

@@ -15,6 +15,7 @@
                 new DbTenantForbiden { Address = "controlpanel" },
                 new DbTenantForbiden { Address = "localhost" }
                 );
+
             return modelBuilder;
         }
 

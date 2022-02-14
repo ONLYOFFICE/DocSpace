@@ -30,15 +30,15 @@ namespace ASC.Core
     [Scope]
     class ConfigureHostedSolution : IConfigureNamedOptions<HostedSolution>
     {
-        private UserFormatter UserFormatter { get; }
-        private IOptionsSnapshot<CachedTenantService> TenantService { get; }
-        private IOptionsSnapshot<CachedUserService> UserService { get; }
-        private IOptionsSnapshot<CachedQuotaService> QuotaService { get; }
-        private IOptionsSnapshot<TariffService> TariffService { get; }
-        private IOptionsSnapshot<TenantManager> TenantManager { get; }
-        private IOptionsSnapshot<TenantUtil> TenantUtil { get; }
-        private IOptionsSnapshot<DbSettingsManager> DbSettingsManager { get; }
-        private IOptionsSnapshot<CoreSettings> CoreSettings { get; }
+        private readonly UserFormatter _userFormatter;
+        private readonly IOptionsSnapshot<CachedTenantService> _tenantService;
+        private readonly IOptionsSnapshot<CachedUserService> _userService;
+        private readonly IOptionsSnapshot<CachedQuotaService> _quotaService;
+        private readonly IOptionsSnapshot<TariffService> _tariffService;
+        private readonly IOptionsSnapshot<TenantManager> _tenantManager;
+        private readonly IOptionsSnapshot<TenantUtil> _tenantUtil;
+        private readonly IOptionsSnapshot<DbSettingsManager> _dbSettingsManager;
+        private readonly IOptionsSnapshot<CoreSettings> _coreSettings;
 
         public ConfigureHostedSolution(
             UserFormatter userFormatter,
@@ -52,42 +52,42 @@ namespace ASC.Core
             IOptionsSnapshot<CoreSettings> coreSettings
             )
         {
-            UserFormatter = userFormatter;
-            TenantService = tenantService;
-            UserService = userService;
-            QuotaService = quotaService;
-            TariffService = tariffService;
-            TenantManager = tenantManager;
-            TenantUtil = tenantUtil;
-            DbSettingsManager = dbSettingsManager;
-            CoreSettings = coreSettings;
+            _userFormatter = userFormatter;
+            _tenantService = tenantService;
+            _userService = userService;
+            _quotaService = quotaService;
+            _tariffService = tariffService;
+            _tenantManager = tenantManager;
+            _tenantUtil = tenantUtil;
+            _dbSettingsManager = dbSettingsManager;
+            _coreSettings = coreSettings;
         }
 
         public void Configure(HostedSolution hostedSolution)
         {
-            hostedSolution.UserFormatter = UserFormatter;
-            hostedSolution.TenantService = TenantService.Value;
-            hostedSolution.UserService = UserService.Value;
-            hostedSolution.QuotaService = QuotaService.Value;
-            hostedSolution.TariffService = TariffService.Value;
-            hostedSolution.ClientTenantManager = TenantManager.Value;
-            hostedSolution.TenantUtil = TenantUtil.Value;
-            hostedSolution.SettingsManager = DbSettingsManager.Value;
-            hostedSolution.CoreSettings = CoreSettings.Value;
+            hostedSolution.UserFormatter = _userFormatter;
+            hostedSolution.TenantService = _tenantService.Value;
+            hostedSolution.UserService = _userService.Value;
+            hostedSolution.QuotaService = _quotaService.Value;
+            hostedSolution.TariffService = _tariffService.Value;
+            hostedSolution.ClientTenantManager = _tenantManager.Value;
+            hostedSolution.TenantUtil = _tenantUtil.Value;
+            hostedSolution.SettingsManager = _dbSettingsManager.Value;
+            hostedSolution.CoreSettings = _coreSettings.Value;
         }
 
         public void Configure(string name, HostedSolution hostedSolution)
         {
             Configure(hostedSolution);
             hostedSolution.Region = name;
-            hostedSolution.TenantService = TenantService.Get(name);
-            hostedSolution.UserService = UserService.Get(name);
-            hostedSolution.QuotaService = QuotaService.Get(name);
-            hostedSolution.TariffService = TariffService.Get(name);
-            hostedSolution.ClientTenantManager = TenantManager.Get(name);
-            hostedSolution.TenantUtil = TenantUtil.Get(name);
-            hostedSolution.SettingsManager = DbSettingsManager.Get(name);
-            hostedSolution.CoreSettings = CoreSettings.Get(name);
+            hostedSolution.TenantService = _tenantService.Get(name);
+            hostedSolution.UserService = _userService.Get(name);
+            hostedSolution.QuotaService = _quotaService.Get(name);
+            hostedSolution.TariffService = _tariffService.Get(name);
+            hostedSolution.ClientTenantManager = _tenantManager.Get(name);
+            hostedSolution.TenantUtil = _tenantUtil.Get(name);
+            hostedSolution.SettingsManager = _dbSettingsManager.Get(name);
+            hostedSolution.CoreSettings = _coreSettings.Get(name);
         }
     }
 
@@ -106,10 +106,7 @@ namespace ASC.Core
 
         public string Region { get; set; }
 
-        public HostedSolution()
-        {
-
-        }
+        public HostedSolution() { }
 
         public List<Tenant> GetTenants(DateTime from)
         {
@@ -123,10 +120,11 @@ namespace ASC.Core
 
         public List<Tenant> FindTenants(string login, string passwordHash)
         {
-            if (!string.IsNullOrEmpty(passwordHash) && UserService.GetUserByPasswordHash(Tenant.DEFAULT_TENANT, login, passwordHash) == null)
+            if (!string.IsNullOrEmpty(passwordHash) && UserService.GetUserByPasswordHash(Tenant.DefaultTenant, login, passwordHash) == null)
             {
                 throw new SecurityException("Invalid login or password.");
             }
+
             return TenantService.GetTenants(login, passwordHash).Select(AddRegion).ToList();
         }
 
@@ -147,15 +145,35 @@ namespace ASC.Core
 
         public void RegisterTenant(TenantRegistrationInfo ri, out Tenant tenant)
         {
-            if (ri == null) throw new ArgumentNullException("registrationInfo");
-            if (string.IsNullOrEmpty(ri.Address)) throw new Exception("Address can not be empty");
+            if (ri == null)
+            {
+                throw new ArgumentNullException("registrationInfo");
+            }
+            if (string.IsNullOrEmpty(ri.Address))
+            {
+                throw new Exception("Address can not be empty");
+            }
+            if (string.IsNullOrEmpty(ri.Email))
+            {
+                throw new Exception("Account email can not be empty");
+            }
+            if (ri.FirstName == null)
+            {
+                throw new Exception("Account firstname can not be empty");
+            }
+            if (ri.LastName == null)
+            {
+                throw new Exception("Account lastname can not be empty");
+            }
+            if (!UserFormatter.IsValidUserName(ri.FirstName, ri.LastName))
+            {
+                throw new Exception("Incorrect firstname or lastname");
+            }
 
-            if (string.IsNullOrEmpty(ri.Email)) throw new Exception("Account email can not be empty");
-            if (ri.FirstName == null) throw new Exception("Account firstname can not be empty");
-            if (ri.LastName == null) throw new Exception("Account lastname can not be empty");
-            if (!UserFormatter.IsValidUserName(ri.FirstName, ri.LastName)) throw new Exception("Incorrect firstname or lastname");
-
-            if (string.IsNullOrEmpty(ri.PasswordHash)) ri.PasswordHash = Guid.NewGuid().ToString();
+            if (string.IsNullOrEmpty(ri.PasswordHash))
+            {
+                ri.PasswordHash = Guid.NewGuid().ToString();
+            }
 
             // create tenant
             tenant = new Tenant(ri.Address.ToLowerInvariant())
@@ -185,6 +203,7 @@ namespace ASC.Core
                 WorkFromDate = TenantUtil.DateTimeNow(tenant.TimeZone),
                 ActivationStatus = ri.ActivationStatus
             };
+
             user = UserService.SaveUser(tenant.TenantId, user);
             UserService.SetUserPasswordHash(tenant.TenantId, user.ID, ri.PasswordHash);
             UserService.SaveUserGroupRef(tenant.TenantId, new UserGroupRef(user.ID, Constants.GroupAdmin.ID, UserGroupRefType.Contains));
@@ -209,16 +228,21 @@ namespace ASC.Core
         public string CreateAuthenticationCookie(CookieStorage cookieStorage, int tenantId, Guid userId)
         {
             var u = UserService.GetUser(tenantId, userId);
+
             return CreateAuthenticationCookie(cookieStorage, tenantId, u);
         }
 
         private string CreateAuthenticationCookie(CookieStorage cookieStorage, int tenantId, UserInfo user)
         {
-            if (user == null) return null;
+            if (user == null)
+            {
+                return null;
+            }
 
             var tenantSettings = SettingsManager.LoadSettingsFor<TenantCookieSettings>(tenantId, Guid.Empty);
             var expires = tenantSettings.IsDefault() ? DateTime.UtcNow.AddYears(1) : DateTime.UtcNow.AddMinutes(tenantSettings.LifeTime);
             var userSettings = SettingsManager.LoadSettingsFor<TenantCookieSettings>(tenantId, user.ID);
+
             return cookieStorage.EncryptCookie(tenantId, user.ID, tenantSettings.Index, expires, userSettings.Index);
         }
 
@@ -271,6 +295,7 @@ namespace ASC.Core
             {
                 tenant.HostedRegion = Region;
             }
+
             return tenant;
         }
     }

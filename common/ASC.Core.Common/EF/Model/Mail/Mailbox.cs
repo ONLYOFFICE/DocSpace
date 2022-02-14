@@ -35,6 +35,7 @@
         public DateTime DateCreated { get; set; }
         public DateTime DateModified { get; set; }
     }
+
     public static class MailboxExtension
     {
         public static ModelBuilderWrapper AddMailbox(this ModelBuilderWrapper modelBuilder)
@@ -42,6 +43,7 @@
             modelBuilder
                 .Add(MySqlAddMailbox, Provider.MySql)
                 .Add(PgSqlAddMailbox, Provider.PostgreSql);
+
             return modelBuilder;
         }
         public static void MySqlAddMailbox(this ModelBuilder modelBuilder)

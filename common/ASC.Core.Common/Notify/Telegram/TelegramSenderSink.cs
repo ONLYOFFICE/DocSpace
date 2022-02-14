@@ -27,14 +27,14 @@ namespace ASC.Core.Notify
 {
     class TelegramSenderSink : Sink
     {
-        private readonly string senderName = Configuration.Constants.NotifyTelegramSenderSysName;
-        private readonly INotifySender sender;
-        private readonly IServiceProvider serviceProvider;
+        private readonly string _senderName = Configuration.Constants.NotifyTelegramSenderSysName;
+        private readonly INotifySender _sender;
+        private readonly IServiceProvider _serviceProvider;
 
         public TelegramSenderSink(INotifySender sender, IServiceProvider serviceProvider)
         {
-            this.sender = sender ?? throw new ArgumentNullException(nameof(sender));
-            this.serviceProvider = serviceProvider;
+            _sender = sender ?? throw new ArgumentNullException(nameof(sender));
+            _serviceProvider = serviceProvider;
         }
 
 
@@ -49,23 +49,23 @@ namespace ASC.Core.Notify
                     Subject = message.Subject,
                     ContentType = message.ContentType,
                     Content = message.Body,
-                    Sender = senderName,
+                    Sender = _senderName,
                     CreationDate = DateTime.UtcNow.Ticks,
                 };
 
-                using var scope = serviceProvider.CreateScope();
+                using var scope = _serviceProvider.CreateScope();
                 var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
 
                 var tenant = tenantManager.GetCurrentTenant(false);
-                m.Tenant = tenant == null ? Tenant.DEFAULT_TENANT : tenant.TenantId;
+                m.Tenant = tenant == null ? Tenant.DefaultTenant : tenant.TenantId;
 
-                sender.Send(m);
+                _sender.Send(m);
 
-                return new SendResponse(message, senderName, result);
+                return new SendResponse(message, _senderName, result);
             }
             catch (Exception ex)
             {
-                return new SendResponse(message, senderName, ex);
+                return new SendResponse(message, _senderName, ex);
             }
         }
     }

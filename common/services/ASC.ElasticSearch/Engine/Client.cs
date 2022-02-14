@@ -54,7 +54,7 @@ namespace ASC.ElasticSearch
 
                     using var scope = ServiceProvider.CreateScope();
                     var CoreConfiguration = ServiceProvider.GetService<CoreConfiguration>();
-                    var launchSettings = CoreConfiguration.GetSection<Settings>(Tenant.DEFAULT_TENANT) ?? Settings;
+                    var launchSettings = CoreConfiguration.GetSection<Settings>(Tenant.DefaultTenant) ?? Settings;
 
                     var uri = new Uri(string.Format("{0}://{1}:{2}", launchSettings.Scheme, launchSettings.Host, launchSettings.Port));
                     var settings = new ConnectionSettings(new SingleNodeConnectionPool(uri))

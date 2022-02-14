@@ -27,126 +27,114 @@ namespace ASC.Core.Caching
 {
     class UserGroupRefStore : IDictionary<string, UserGroupRef>
     {
-        private readonly IDictionary<string, UserGroupRef> refs;
-        private ILookup<Guid, UserGroupRef> index;
-        private bool changed;
+        private readonly IDictionary<string, UserGroupRef> _refs;
+        private ILookup<Guid, UserGroupRef> _index;
+        private bool _changed;
 
 
         public UserGroupRefStore(IDictionary<string, UserGroupRef> refs)
         {
-            this.refs = refs;
-            changed = true;
+            _refs = refs;
+            _changed = true;
         }
 
 
         public void Add(string key, UserGroupRef value)
         {
-            refs.Add(key, value);
+            _refs.Add(key, value);
             RebuildIndex();
         }
 
         public bool ContainsKey(string key)
         {
-            return refs.ContainsKey(key);
+            return _refs.ContainsKey(key);
         }
 
-        public ICollection<string> Keys
-        {
-            get { return refs.Keys; }
-        }
+        public ICollection<string> Keys => _refs.Keys;
 
         public bool Remove(string key)
         {
-            var result = refs.Remove(key);
+            var result = _refs.Remove(key);
             RebuildIndex();
+
             return result;
         }
 
         public bool TryGetValue(string key, out UserGroupRef value)
         {
-            return refs.TryGetValue(key, out value);
+            return _refs.TryGetValue(key, out value);
         }
 
-        public ICollection<UserGroupRef> Values
-        {
-            get { return refs.Values; }
-        }
+        public ICollection<UserGroupRef> Values => _refs.Values;
 
         public UserGroupRef this[string key]
         {
-            get
-            {
-                return refs[key];
-            }
+            get => _refs[key];
             set
             {
-                refs[key] = value;
+                _refs[key] = value;
                 RebuildIndex();
             }
         }
 
         public void Add(KeyValuePair<string, UserGroupRef> item)
         {
-            refs.Add(item);
+            _refs.Add(item);
             RebuildIndex();
         }
 
         public void Clear()
         {
-            refs.Clear();
+            _refs.Clear();
             RebuildIndex();
         }
 
         public bool Contains(KeyValuePair<string, UserGroupRef> item)
         {
-            return refs.Contains(item);
+            return _refs.Contains(item);
         }
 
         public void CopyTo(KeyValuePair<string, UserGroupRef>[] array, int arrayIndex)
         {
-            refs.CopyTo(array, arrayIndex);
+            _refs.CopyTo(array, arrayIndex);
         }
 
-        public int Count
-        {
-            get { return refs.Count; }
-        }
+        public int Count => _refs.Count;
 
-        public bool IsReadOnly
-        {
-            get { return refs.IsReadOnly; }
-        }
+        public bool IsReadOnly => _refs.IsReadOnly;
 
         public bool Remove(KeyValuePair<string, UserGroupRef> item)
         {
-            var result = refs.Remove(item);
+            var result = _refs.Remove(item);
             RebuildIndex();
+
             return result;
         }
 
         public IEnumerator<KeyValuePair<string, UserGroupRef>> GetEnumerator()
         {
-            return refs.GetEnumerator();
+            return _refs.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return refs.GetEnumerator();
+            return _refs.GetEnumerator();
         }
 
         public IEnumerable<UserGroupRef> GetRefsByUser(Guid userId)
         {
-            if (changed)
+            if (_changed)
             {
-                index = refs.Values.ToLookup(r => r.UserId);
-                changed = false;
+                _index = _refs.Values.ToLookup(r => r.UserId);
+                _changed = false;
             }
-            return index[userId];
+
+            return _index[userId];
         }
 
         private void RebuildIndex()
         {
-            changed = true;
+            _changed = true;
         }
     }
 }

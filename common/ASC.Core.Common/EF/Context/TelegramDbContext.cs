@@ -11,6 +11,7 @@
             : base(options)
         {
         }
+
         protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
         {
             get
@@ -22,6 +23,7 @@
                 };
             }
         }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             ModelBuilderWrapper

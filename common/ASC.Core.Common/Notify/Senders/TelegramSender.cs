@@ -27,19 +27,17 @@ namespace ASC.Core.Notify.Senders
 {
     public class TelegramSender : INotifySender
     {
-        private readonly ILog log;
+        private readonly ILog _logger;
 
         public TelegramSender(IOptionsMonitor<ILog> options, IServiceProvider serviceProvider)
         {
-            log = options.Get("ASC");
+            _logger = options.Get("ASC");
             ServiceProvider = serviceProvider;
         }
 
         public IServiceProvider ServiceProvider { get; }
 
-        public void Init(IDictionary<string, string> properties)
-        {
-        }
+        public void Init(IDictionary<string, string> properties) { }
 
         public NoticeSendResult Send(NotifyMessage m)
         {
@@ -56,9 +54,10 @@ namespace ASC.Core.Notify.Senders
             }
             catch (Exception e)
             {
-                log.ErrorFormat("Unexpected error, {0}, {1}, {2}",
+                _logger.ErrorFormat("Unexpected error, {0}, {1}, {2}",
                        e.Message, e.StackTrace, e.InnerException != null ? e.InnerException.Message : string.Empty);
             }
+
             return NoticeSendResult.OK;
         }
     }

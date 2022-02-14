@@ -28,23 +28,11 @@ namespace ASC.Core
     [Serializable]
     public class TenantVersion
     {
-        public int Id
-        {
-            get;
-            private set;
-        }
+        public int Id { get; private set; }
 
-        public string Name
-        {
-            get;
-            private set;
-        }
+        public string Name { get; private set; } 
 
-
-        public TenantVersion()
-        {
-
-        }
+        public TenantVersion() { }
 
         public TenantVersion(int id, string name)
         {

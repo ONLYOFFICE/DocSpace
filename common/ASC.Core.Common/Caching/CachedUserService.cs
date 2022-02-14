@@ -28,9 +28,9 @@ namespace ASC.Core.Caching
     [Singletone]
     public class UserServiceCache
     {
-        public const string USERS = "users";
-        private const string GROUPS = "groups";
-        public const string REFS = "refs";
+        public const string Users = "users";
+        private const string Groups = "groups";
+        public const string Refs = "refs";
 
         internal ICache Cache { get; }
         internal CoreBaseSettings CoreBaseSettings { get; }
@@ -100,17 +100,17 @@ namespace ASC.Core.Caching
 
         public static string GetGroupCacheKey(int tenant)
         {
-            return tenant.ToString() + GROUPS;
+            return tenant.ToString() + Groups;
         }
 
         public static string GetGroupCacheKey(int tenant, Guid groupId)
         {
-            return tenant.ToString() + GROUPS + groupId;
+            return tenant.ToString() + Groups + groupId;
         }
 
         public static string GetRefCacheKey(int tenant)
         {
-            return tenant.ToString() + REFS;
+            return tenant.ToString() + Refs;
         }
         public static string GetRefCacheKey(int tenant, Guid groupId, UserGroupRefType refType)
         {
@@ -119,12 +119,12 @@ namespace ASC.Core.Caching
 
         public static string GetUserCacheKey(int tenant)
         {
-            return tenant.ToString() + USERS;
+            return tenant.ToString() + Users;
         }
 
         public static string GetUserCacheKey(int tenant, Guid userId)
         {
-            return tenant.ToString() + USERS + userId;
+            return tenant.ToString() + Users + userId;
         }
     }
 
@@ -169,11 +169,9 @@ namespace ASC.Core.Caching
     {
         internal IUserService Service { get; set; }
         internal ICache Cache { get; set; }
-
         internal TrustInterval TrustInterval { get; set; }
-
-        private TimeSpan CacheExpiration { get; set; }
-        private TimeSpan PhotoExpiration { get; set; }
+        private TimeSpan _cacheExpiration;
+        private TimeSpan _photoExpiration;
         internal CoreBaseSettings CoreBaseSettings { get; set; }
         internal UserServiceCache UserServiceCache { get; set; }
         internal ICacheNotify<UserInfoCacheItem> CacheUserInfoItem { get; set; }
@@ -183,8 +181,8 @@ namespace ASC.Core.Caching
 
         public CachedUserService()
         {
-            CacheExpiration = TimeSpan.FromMinutes(20);
-            PhotoExpiration = TimeSpan.FromMinutes(10);
+            _cacheExpiration = TimeSpan.FromMinutes(20);
+            _photoExpiration = TimeSpan.FromMinutes(10);
         }
 
         public CachedUserService(
@@ -232,7 +230,7 @@ namespace ASC.Core.Caching
 
                 if (user != null)
                 {
-                    Cache.Insert(key, user, CacheExpiration);
+                    Cache.Insert(key, user, _cacheExpiration);
                 }
             }
 
@@ -261,14 +259,15 @@ namespace ASC.Core.Caching
         public UserInfo SaveUser(int tenant, UserInfo user)
         {
             user = Service.SaveUser(tenant, user);
-            CacheUserInfoItem.Publish(new UserInfoCacheItem { Id = user.ID.ToString(), Tenant = tenant }, ASC.Common.Caching.CacheNotifyAction.Any);
+            CacheUserInfoItem.Publish(new UserInfoCacheItem { Id = user.ID.ToString(), Tenant = tenant }, CacheNotifyAction.Any);
+
             return user;
         }
 
         public void RemoveUser(int tenant, Guid id)
         {
             Service.RemoveUser(tenant, id);
-            CacheUserInfoItem.Publish(new UserInfoCacheItem { Tenant = tenant, Id = id.ToString() }, ASC.Common.Caching.CacheNotifyAction.Any);
+            CacheUserInfoItem.Publish(new UserInfoCacheItem { Tenant = tenant, Id = id.ToString() }, CacheNotifyAction.Any);
         }
 
         public byte[] GetUserPhoto(int tenant, Guid id)
@@ -277,8 +276,9 @@ namespace ASC.Core.Caching
             if (photo == null)
             {
                 photo = Service.GetUserPhoto(tenant, id);
-                Cache.Insert(UserServiceCache.GetUserPhotoCacheKey(tenant, id), photo, PhotoExpiration);
+                Cache.Insert(UserServiceCache.GetUserPhotoCacheKey(tenant, id), photo, _photoExpiration);
             }
+
             return photo;
         }
 
@@ -307,7 +307,7 @@ namespace ASC.Core.Caching
             {
                 group = Service.GetGroup(tenant, id);
 
-                if (group != null) Cache.Insert(key, group, CacheExpiration);
+                if (group != null) Cache.Insert(key, group, _cacheExpiration);
             }
 
             return group;
@@ -316,14 +316,15 @@ namespace ASC.Core.Caching
         public Group SaveGroup(int tenant, Group group)
         {
             group = Service.SaveGroup(tenant, group);
-            CacheGroupCacheItem.Publish(new GroupCacheItem { Id = group.Id.ToString() }, ASC.Common.Caching.CacheNotifyAction.Any);
+            CacheGroupCacheItem.Publish(new GroupCacheItem { Id = group.Id.ToString() }, CacheNotifyAction.Any);
+
             return group;
         }
 
         public void RemoveGroup(int tenant, Guid id)
         {
             Service.RemoveGroup(tenant, id);
-            CacheGroupCacheItem.Publish(new GroupCacheItem { Id = id.ToString() }, ASC.Common.Caching.CacheNotifyAction.Any);
+            CacheGroupCacheItem.Publish(new GroupCacheItem { Id = id.ToString() }, CacheNotifyAction.Any);
         }
 
 
@@ -333,7 +334,7 @@ namespace ASC.Core.Caching
             if (!(Cache.Get<UserGroupRefStore>(key) is IDictionary<string, UserGroupRef> refs))
             {
                 refs = Service.GetUserGroupRefs(tenant);
-                Cache.Insert(key, new UserGroupRefStore(refs), CacheExpiration);
+                Cache.Insert(key, new UserGroupRefStore(refs), _cacheExpiration);
             }
 
             return refs;
@@ -348,7 +349,10 @@ namespace ASC.Core.Caching
             {
                 groupRef = Service.GetUserGroupRef(tenant, groupId, refType);
 
-                if (groupRef != null) Cache.Insert(key, groupRef, CacheExpiration);
+                if (groupRef != null)
+                {
+                    Cache.Insert(key, groupRef, _cacheExpiration);
+                }
             }
 
             return groupRef;
@@ -357,7 +361,8 @@ namespace ASC.Core.Caching
         public UserGroupRef SaveUserGroupRef(int tenant, UserGroupRef r)
         {
             r = Service.SaveUserGroupRef(tenant, r);
-            CacheUserGroupRefItem.Publish(r, ASC.Common.Caching.CacheNotifyAction.InsertOrUpdate);
+            CacheUserGroupRefItem.Publish(r, CacheNotifyAction.InsertOrUpdate);
+
             return r;
         }
 
@@ -366,7 +371,7 @@ namespace ASC.Core.Caching
             Service.RemoveUserGroupRef(tenant, userId, groupId, refType);
 
             var r = new UserGroupRef(userId, groupId, refType) { Tenant = tenant };
-            CacheUserGroupRefItem.Publish(r, ASC.Common.Caching.CacheNotifyAction.Remove);
+            CacheUserGroupRefItem.Publish(r, CacheNotifyAction.Remove);
         }
 
 
@@ -378,8 +383,9 @@ namespace ASC.Core.Caching
             {
                 users = Service.GetUsers(tenant);
 
-                Cache.Insert(key, users, CacheExpiration);
+                Cache.Insert(key, users, _cacheExpiration);
             }
+
             return users;
         }
 
@@ -390,11 +396,11 @@ namespace ASC.Core.Caching
             if (groups == null)
             {
                 groups = Service.GetGroups(tenant);
-                Cache.Insert(key, groups, CacheExpiration);
+                Cache.Insert(key, groups, _cacheExpiration);
             }
+
             return groups;
         }
-
 
         public void InvalidateCache()
         {
@@ -403,7 +409,11 @@ namespace ASC.Core.Caching
 
         public UserInfo GetUser(int tenant, Guid id, Expression<Func<User, UserInfo>> exp)
         {
-            if (exp == null) return GetUser(tenant, id);
+            if (exp == null)
+            {
+                return GetUser(tenant, id);
+            }
+
             return Service.GetUser(tenant, id, exp);
         }
     }

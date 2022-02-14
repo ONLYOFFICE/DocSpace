@@ -2,12 +2,8 @@
 {
     public class BruteForceCredentialException : InvalidCredentialException
     {
-        public BruteForceCredentialException()
-        {
-        }
+        public BruteForceCredentialException() { }
 
-        public BruteForceCredentialException(string message) : base(message)
-        {
-        }
+        public BruteForceCredentialException(string message) : base(message) { }
     }
 }

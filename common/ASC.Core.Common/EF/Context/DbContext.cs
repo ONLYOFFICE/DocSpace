@@ -8,9 +8,7 @@
         public DbSet<DbipLocation> DbipLocation { get; set; }
         public DbSet<Regions> Regions { get; set; }
 
-        public DbContext()
-        {
-        }
+        public DbContext() { }
 
         public DbContext(DbContextOptions options) : base(options)
         {

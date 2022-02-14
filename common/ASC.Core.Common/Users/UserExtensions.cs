@@ -29,7 +29,10 @@ namespace ASC.Core.Users
     {
         public static bool IsOwner(this UserInfo ui, Tenant tenant)
         {
-            if (ui == null) return false;
+            if (ui == null)
+            {
+                return false;
+            }
 
             return tenant != null && tenant.OwnerId.Equals(ui.ID);
         }
@@ -56,7 +59,10 @@ namespace ASC.Core.Users
 
         public static bool IsLDAP(this UserInfo ui)
         {
-            if (ui == null) return false;
+            if (ui == null)
+            {
+                return false;
+            }
 
             return !string.IsNullOrEmpty(ui.Sid);
         }
@@ -64,40 +70,48 @@ namespace ASC.Core.Users
         // ReSharper disable once InconsistentNaming
         public static bool IsSSO(this UserInfo ui)
         {
-            if (ui == null) return false;
+            if (ui == null)
+            {
+                return false;
+            }
 
             return !string.IsNullOrEmpty(ui.SsoNameId);
         }
 
-        private const string EXT_MOB_PHONE = "extmobphone";
-        private const string MOB_PHONE = "mobphone";
-        private const string EXT_MAIL = "extmail";
-        private const string MAIL = "mail";
+        private const string ExtMobPhone = "extmobphone";
+        private const string MobPhone = "mobphone";
+        private const string ExtMail = "extmail";
+        private const string Mail = "mail";
 
         public static void ConvertExternalContactsToOrdinary(this UserInfo ui)
         {
             var ldapUserContacts = ui.ContactsList;
 
-            if (ui.ContactsList == null) return;
+            if (ui.ContactsList == null)
+            {
+                return;
+            }
 
             var newContacts = new List<string>();
 
             for (int i = 0, m = ldapUserContacts.Count; i < m; i += 2)
             {
                 if (i + 1 >= ldapUserContacts.Count)
+                {
                     continue;
+                }
 
                 var type = ldapUserContacts[i];
                 var value = ldapUserContacts[i + 1];
 
                 switch (type)
                 {
-                    case EXT_MOB_PHONE:
-                        newContacts.Add(MOB_PHONE);
+                    case ExtMobPhone:
+                        newContacts.Add(MobPhone);
                         newContacts.Add(value);
                         break;
-                    case EXT_MAIL:
-                        newContacts.Add(MAIL);
+                    case ExtMail:
+                        newContacts.Add(Mail);
                         newContacts.Add(value);
                         break;
                     default:

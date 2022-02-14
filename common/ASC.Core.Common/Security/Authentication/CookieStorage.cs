@@ -30,19 +30,19 @@ namespace ASC.Core.Security.Authentication
     {
         private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss,fff";
 
-        private InstanceCrypto InstanceCrypto { get; }
-        private TenantCookieSettingsHelper TenantCookieSettingsHelper { get; }
-        private HttpContext HttpContext { get; }
-        private ILog Log { get; }
+        private readonly InstanceCrypto _instanceCrypto;
+        private readonly TenantCookieSettingsHelper _tenantCookieSettingsHelper;
+        private readonly HttpContext _httpContext;
+        private readonly ILog _logger;
 
         public CookieStorage(
             InstanceCrypto instanceCrypto,
             TenantCookieSettingsHelper tenantCookieSettingsHelper,
             IOptionsMonitor<ILog> options)
         {
-            InstanceCrypto = instanceCrypto;
-            TenantCookieSettingsHelper = tenantCookieSettingsHelper;
-            Log = options.CurrentValue;
+            _instanceCrypto = instanceCrypto;
+            _tenantCookieSettingsHelper = tenantCookieSettingsHelper;
+            _logger = options.CurrentValue;
         }
 
         public CookieStorage(
@@ -52,12 +52,12 @@ namespace ASC.Core.Security.Authentication
             IOptionsMonitor<ILog> options)
             : this(instanceCrypto, tenantCookieSettingsHelper, options)
         {
-            HttpContext = httpContextAccessor.HttpContext;
+            _httpContext = httpContextAccessor.HttpContext;
         }
 
         public bool DecryptCookie(string cookie, out int tenant, out Guid userid, out int indexTenant, out DateTime expire, out int indexUser)
         {
-            tenant = Tenant.DEFAULT_TENANT;
+            tenant = Tenant.DefaultTenant;
             userid = Guid.Empty;
             indexTenant = 0;
             expire = DateTime.MaxValue;
@@ -71,30 +71,47 @@ namespace ASC.Core.Security.Authentication
             try
             {
                 cookie = (HttpUtility.UrlDecode(cookie) ?? "").Replace(' ', '+');
-                var s = InstanceCrypto.Decrypt(cookie).Split('$');
+                var s = _instanceCrypto.Decrypt(cookie).Split('$');
 
-                if (1 < s.Length) tenant = int.Parse(s[1]);
-                if (4 < s.Length) userid = new Guid(s[4]);
-                if (5 < s.Length) indexTenant = int.Parse(s[5]);
-                if (6 < s.Length) expire = DateTime.ParseExact(s[6], DateTimeFormat, CultureInfo.InvariantCulture);
-                if (7 < s.Length) indexUser = int.Parse(s[7]);
+                if (1 < s.Length)
+                {
+                    tenant = int.Parse(s[1]);
+                }
+                if (4 < s.Length)
+                {
+                    userid = new Guid(s[4]);
+                }
+                if (5 < s.Length)
+                {
+                    indexTenant = int.Parse(s[5]);
+                }
+                if (6 < s.Length)
+                {
+                    expire = DateTime.ParseExact(s[6], DateTimeFormat, CultureInfo.InvariantCulture);
+                }
+                if (7 < s.Length)
+                {
+                    indexUser = int.Parse(s[7]);
+                }
 
                 return true;
             }
             catch (Exception err)
             {
-                Log.ErrorFormat("Authenticate error: cookie {0}, tenant {1}, userid {2}, indexTenant {3}, expire {4}: {5}",
+                _logger.ErrorFormat("Authenticate error: cookie {0}, tenant {1}, userid {2}, indexTenant {3}, expire {4}: {5}",
                             cookie, tenant, userid, indexTenant, expire.ToString(DateTimeFormat), err);
             }
+
             return false;
         }
 
 
         public string EncryptCookie(int tenant, Guid userid)
         {
-            var settingsTenant = TenantCookieSettingsHelper.GetForTenant(tenant);
-            var expires = TenantCookieSettingsHelper.GetExpiresTime(tenant);
-            var settingsUser = TenantCookieSettingsHelper.GetForUser(tenant, userid);
+            var settingsTenant = _tenantCookieSettingsHelper.GetForTenant(tenant);
+            var expires = _tenantCookieSettingsHelper.GetExpiresTime(tenant);
+            var settingsUser = _tenantCookieSettingsHelper.GetForUser(tenant, userid);
+
             return EncryptCookie(tenant, userid, settingsTenant.Index, expires, settingsUser.Index);
         }
 
@@ -110,22 +127,22 @@ namespace ASC.Core.Security.Authentication
                 expires.ToString(DateTimeFormat, CultureInfo.InvariantCulture),
                 indexUser);
 
-            return InstanceCrypto.Encrypt(s);
+            return _instanceCrypto.Encrypt(s);
         }
-
 
         private string GetUserDepenencySalt()
         {
             var data = string.Empty;
             try
             {
-                if (HttpContext?.Request != null)
+                if (_httpContext?.Request != null)
                 {
-                    var forwarded = HttpContext.Request.Headers["X-Forwarded-For"].ToString();
-                    data = string.IsNullOrEmpty(forwarded) ? HttpContext.Request.GetUserHostAddress() : forwarded.Split(':')[0];
+                    var forwarded = _httpContext.Request.Headers["X-Forwarded-For"].ToString();
+                    data = string.IsNullOrEmpty(forwarded) ? _httpContext.Request.GetUserHostAddress() : forwarded.Split(':')[0];
                 }
             }
             catch { }
+
             return Hasher.Base64Hash(data ?? string.Empty, HashAlg.SHA256);
         }
     }

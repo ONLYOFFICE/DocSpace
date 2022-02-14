@@ -34,7 +34,7 @@ namespace ASC.Core.Users
     {
         public Constants(IConfiguration configuration)
         {
-            Configuration = configuration;
+            _configuration = configuration;
             NamingPoster = new UserInfo
             {
                 ID = new Guid("{17097D73-2D1E-4B36-AA07-AEB34AF993CD}"),
@@ -48,10 +48,11 @@ namespace ASC.Core.Users
         {
             get
             {
-                if (!int.TryParse(Configuration["core:users"], out var count))
+                if (!int.TryParse(_configuration["core:users"], out var count))
                 {
                     count = 10000;
                 }
+
                 return count;
             }
         }
@@ -61,15 +62,16 @@ namespace ASC.Core.Users
             get
             {
                 int count;
-                if (!int.TryParse(Configuration["core:coefficient-of-visitors"], out count))
+                if (!int.TryParse(_configuration["core:coefficient-of-visitors"], out count))
                 {
                     count = 2;
                 }
+
                 return count;
             }
         }
 
-        private IConfiguration Configuration { get; }
+        private readonly IConfiguration _configuration;
 
 
         #region system group and category groups
@@ -107,7 +109,6 @@ namespace ASC.Core.Users
             GroupUser,
             GroupAdmin,
         };
-
 
         public static readonly UserInfo LostUser = new UserInfo
         {

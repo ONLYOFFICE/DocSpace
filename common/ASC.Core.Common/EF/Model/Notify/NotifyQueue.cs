@@ -22,6 +22,7 @@
             modelBuilder
                 .Add(MySqlAddNotifyQueue, Provider.MySql)
                 .Add(PgSqlAddNotifyQueue, Provider.PostgreSql);
+
             return modelBuilder;
         }
         public static void MySqlAddNotifyQueue(this ModelBuilder modelBuilder)

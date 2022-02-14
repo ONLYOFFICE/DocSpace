@@ -84,15 +84,10 @@ namespace ASC.Notify.Messages
         }
 
         public INoticeMessage NoticeMessage { get; internal set; }
-
         public INotifyAction NotifyAction { get; internal set; }
-
         public SendResult Result { get; set; }
-
         public Exception Exception { get; set; }
-
         public string SenderName { get; internal set; }
-
         public IRecipient Recipient { get; internal set; }
     }
 }

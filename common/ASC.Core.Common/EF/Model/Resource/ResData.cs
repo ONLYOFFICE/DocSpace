@@ -21,6 +21,7 @@
             modelBuilder
                 .Add(MySqlAddResData, Provider.MySql)
                 .Add(PgSqlAddResData, Provider.PostgreSql);
+
             return modelBuilder;
         }
         public static void MySqlAddResData(this ModelBuilder modelBuilder)

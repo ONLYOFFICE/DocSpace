@@ -29,25 +29,32 @@ namespace ASC.Core.Users
     public class UserFormatter : IComparer<UserInfo>
     {
         private readonly DisplayUserNameFormat _format;
-        private static bool forceFormatChecked;
-        private static string forceFormat;
+        private static bool _forceFormatChecked;
+        private static string _forceFormat;
 
         public UserFormatter(IConfiguration configuration)
         {
             _format = DisplayUserNameFormat.Default;
-            Configuration = configuration;
-            UserNameRegex = new Regex(Configuration["core:username:regex"] ?? "");
+            _configuration = configuration;
+            UserNameRegex = new Regex(_configuration["core:username:regex"] ?? "");
         }
 
         public string GetUserName(UserInfo userInfo, DisplayUserNameFormat format)
         {
-            if (userInfo == null) throw new ArgumentNullException(nameof(userInfo));
+            if (userInfo == null)
+            {
+                throw new ArgumentNullException(nameof(userInfo));
+            }
+
             return string.Format(GetUserDisplayFormat(format), userInfo.FirstName, userInfo.LastName);
         }
 
         public string GetUserName(string firstName, string lastName)
         {
-            if (string.IsNullOrEmpty(firstName) || string.IsNullOrEmpty(lastName)) throw new ArgumentException();
+            if (string.IsNullOrEmpty(firstName) || string.IsNullOrEmpty(lastName))
+            {
+                throw new ArgumentException();
+            }
 
             return string.Format(GetUserDisplayFormat(DisplayUserNameFormat.Default), firstName, lastName);
         }
@@ -69,26 +76,46 @@ namespace ASC.Core.Users
 
         public static int Compare(UserInfo x, UserInfo y, DisplayUserNameFormat format)
         {
-            if (x == null && y == null) return 0;
-            if (x == null && y != null) return -1;
-            if (x != null && y == null) return +1;
-            if (format == DisplayUserNameFormat.Default) format = GetUserDisplayDefaultOrder();
+            if (x == null && y == null)
+            {
+                return 0;
+            }
+            if (x == null && y != null)
+            {
+                return -1;
+            }
+            if (x != null && y == null)
+            {
+                return +1;
+            }
+
+            if (format == DisplayUserNameFormat.Default)
+            {
+                format = GetUserDisplayDefaultOrder();
+            }
 
             int result;
             if (format == DisplayUserNameFormat.FirstLast)
             {
                 result = string.Compare(x.FirstName, y.FirstName, true);
-                if (result == 0) result = string.Compare(x.LastName, y.LastName, true);
+                if (result == 0)
+                {
+                    result = string.Compare(x.LastName, y.LastName, true);
+                }
             }
             else
             {
                 result = string.Compare(x.LastName, y.LastName, true);
-                if (result == 0) result = string.Compare(x.FirstName, y.FirstName, true);
+                if (result == 0)
+                {
+                    result = string.Compare(x.FirstName, y.FirstName, true);
+                }
             }
+
             return result;
         }
 
-        private static readonly Dictionary<string, Dictionary<DisplayUserNameFormat, string>> DisplayFormats = new Dictionary<string, Dictionary<DisplayUserNameFormat, string>>
+        private static readonly Dictionary<string, Dictionary<DisplayUserNameFormat, string>> _displayFormats = new Dictionary<string, Dictionary<DisplayUserNameFormat, string>>
         {
             { "ru", new Dictionary<DisplayUserNameFormat, string>{ { DisplayUserNameFormat.Default, "{1} {0}" }, { DisplayUserNameFormat.FirstLast, "{0} {1}" }, { DisplayUserNameFormat.LastFirst, "{1} {0}" } } },
             { "default", new Dictionary<DisplayUserNameFormat, string>{ {DisplayUserNameFormat.Default, "{0} {1}" }, { DisplayUserNameFormat.FirstLast, "{0} {1}" }, { DisplayUserNameFormat.LastFirst, "{1}, {0}" } } },
@@ -97,37 +124,53 @@ namespace ASC.Core.Users
 
         private string GetUserDisplayFormat(DisplayUserNameFormat format)
         {
-            if (!forceFormatChecked)
+            if (!_forceFormatChecked)
             {
-                forceFormat = Configuration["core:user-display-format"];
-                if (string.IsNullOrEmpty(forceFormat)) forceFormat = null;
-                forceFormatChecked = true;
+                _forceFormat = _configuration["core:user-display-format"];
+                if (string.IsNullOrEmpty(_forceFormat))
+                {
+                    _forceFormat = null;
+                }
+
+                _forceFormatChecked = true;
             }
-            if (forceFormat != null) return forceFormat;
+            if (_forceFormat != null)
+            {
+                return _forceFormat;
+            }
+
             var culture = Thread.CurrentThread.CurrentCulture.Name;
-            if (!DisplayFormats.TryGetValue(culture, out var formats))
+            if (!_displayFormats.TryGetValue(culture, out var formats))
             {
                 var twoletter = Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
-                if (!DisplayFormats.TryGetValue(twoletter, out formats)) formats = DisplayFormats["default"];
+                if (!_displayFormats.TryGetValue(twoletter, out formats))
+                {
+                    formats = _displayFormats["default"];
+                }
             }
+
             return formats[format];
         }
 
         public static DisplayUserNameFormat GetUserDisplayDefaultOrder()
         {
             var culture = Thread.CurrentThread.CurrentCulture.Name;
-            if (!DisplayFormats.TryGetValue(culture, out var formats))
+            if (!_displayFormats.TryGetValue(culture, out var formats))
             {
                 var twoletter = Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
-                if (!DisplayFormats.TryGetValue(twoletter, out formats)) formats = DisplayFormats["default"];
+                if (!_displayFormats.TryGetValue(twoletter, out formats))
+                {
+                    formats = _displayFormats["default"];
+                }
             }
             var format = formats[DisplayUserNameFormat.Default];
+
             return format.IndexOf("{0}") < format.IndexOf("{1}") ? DisplayUserNameFormat.FirstLast : DisplayUserNameFormat.LastFirst;
         }
 
         public Regex UserNameRegex { get; set; }
 
-        private IConfiguration Configuration { get; }
+        private readonly IConfiguration _configuration;
 
         public bool IsValidUserName(string firstName, string lastName)
         {

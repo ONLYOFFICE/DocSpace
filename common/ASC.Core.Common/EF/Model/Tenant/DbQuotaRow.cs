@@ -20,6 +20,7 @@
             modelBuilder
                 .Add(MySqlAddDbQuotaRow, Provider.MySql)
                 .Add(PgSqlAddDbQuotaRow, Provider.PostgreSql);
+
             return modelBuilder;
         }
         public static void MySqlAddDbQuotaRow(this ModelBuilder modelBuilder)

@@ -28,34 +28,34 @@ namespace ASC.Core.Tenants
     [Singletone]
     public class TenantDomainValidator
     {
-        private static readonly Regex ValidDomain = new Regex("^[a-z0-9]([a-z0-9-]){1,98}[a-z0-9]$",
+        private static readonly Regex _validDomain = new Regex("^[a-z0-9]([a-z0-9-]){1,98}[a-z0-9]$",
                                                               RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 
-        private readonly int MinLength;
-        private const int MaxLength = 100;
+        private readonly int _minLength;
+        private const int _maxLength = 100;
 
         public TenantDomainValidator(IConfiguration configuration)
         {
-            MinLength = 6;
+            _minLength = 6;
 
             if (int.TryParse(configuration["web:alias:min"], out var defaultMinLength))
             {
-                MinLength = Math.Max(1, Math.Min(MaxLength, defaultMinLength));
+                _minLength = Math.Max(1, Math.Min(_maxLength, defaultMinLength));
             }
         }
 
         public void ValidateDomainLength(string domain)
         {
             if (string.IsNullOrEmpty(domain)
-                || domain.Length < MinLength || MaxLength < domain.Length)
+                || domain.Length < _minLength || _maxLength < domain.Length)
             {
-                throw new TenantTooShortException("The domain name must be between " + MinLength + " and " + MaxLength + " characters long.", MinLength, MaxLength);
+                throw new TenantTooShortException("The domain name must be between " + _minLength + " and " + _maxLength + " characters long.", _minLength, _maxLength);
             }
         }
 
         public static void ValidateDomainCharacters(string domain)
         {
-            if (!ValidDomain.IsMatch(domain))
+            if (!_validDomain.IsMatch(domain))
             {
                 throw new TenantIncorrectCharsException("Domain contains invalid characters.");
             }

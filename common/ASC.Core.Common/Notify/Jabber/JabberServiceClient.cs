@@ -28,24 +28,22 @@ namespace ASC.Core.Notify.Jabber
     [Scope]
     public class JabberServiceClient
     {
-        private static readonly TimeSpan Timeout = TimeSpan.FromMinutes(2);
-
-        private static DateTime lastErrorTime = default;
-
-        private UserManager UserManager { get; }
-        private AuthContext AuthContext { get; }
-        private TenantManager TenantManager { get; }
+        private static readonly TimeSpan _timeout = TimeSpan.FromMinutes(2);
+        private static DateTime _lastErrorTime = default;
+        private readonly UserManager _userManager;
+        private readonly AuthContext _authContext;
+        private readonly TenantManager _tenantManager;
 
         public JabberServiceClient(UserManager userManager, AuthContext authContext, TenantManager tenantManager)
         {
-            UserManager = userManager;
-            AuthContext = authContext;
-            TenantManager = tenantManager;
+            _userManager = userManager;
+            _authContext = authContext;
+            _tenantManager = tenantManager;
         }
 
         private static bool IsServiceProbablyNotAvailable()
         {
-            return lastErrorTime != default && lastErrorTime + Timeout > DateTime.Now;
+            return _lastErrorTime != default && _lastErrorTime + _timeout > DateTime.Now;
         }
 
         public bool SendMessage(int tenantId, string from, string to, string text, string subject)
@@ -81,13 +79,17 @@ namespace ASC.Core.Notify.Jabber
                     ProcessError(error);
                 }
             }
+
             return null;
         }
 
         public int GetNewMessagesCount()
         {
             const int result = 0;
-            if (IsServiceProbablyNotAvailable()) return result;
+            if (IsServiceProbablyNotAvailable())
+            {
+                return result;
+            }
 
             using (var service = GetService())
             {
@@ -107,7 +109,10 @@ namespace ASC.Core.Notify.Jabber
         public byte AddXmppConnection(string connectionId, byte state)
         {
             byte result = 4;
-            if (IsServiceProbablyNotAvailable()) throw new Exception();
+            if (IsServiceProbablyNotAvailable())
+            {
+                throw new Exception();
+            }
 
             using var service = GetService();
             try
@@ -118,13 +123,17 @@ namespace ASC.Core.Notify.Jabber
             {
                 ProcessError(error);
             }
+
             return result;
         }
 
         public byte RemoveXmppConnection(string connectionId)
         {
             const byte result = 4;
-            if (IsServiceProbablyNotAvailable()) return result;
+            if (IsServiceProbablyNotAvailable())
+            {
+                return result;
+            }
 
             using (var service = GetService())
             {
@@ -147,8 +156,13 @@ namespace ASC.Core.Notify.Jabber
 
             try
             {
-                if (IsServiceProbablyNotAvailable()) return defaultState;
+                if (IsServiceProbablyNotAvailable())
+                {
+                    return defaultState;
+                }
+
                 using var service = GetService();
+
                 return service.GetState(GetCurrentTenantId(), userName);
             }
             catch (Exception error)
@@ -163,14 +177,20 @@ namespace ASC.Core.Notify.Jabber
         {
             try
             {
-                if (IsServiceProbablyNotAvailable()) throw new Exception();
+                if (IsServiceProbablyNotAvailable())
+                {
+                    throw new Exception();
+                }
+
                 using var service = GetService();
+
                 return service.SendState(GetCurrentTenantId(), GetCurrentUserName(), state);
             }
             catch (Exception error)
             {
                 ProcessError(error);
             }
+
             return 4;
         }
 
@@ -179,7 +199,11 @@ namespace ASC.Core.Notify.Jabber
             Dictionary<string, byte> states = null;
             try
             {
-                if (IsServiceProbablyNotAvailable()) throw new Exception();
+                if (IsServiceProbablyNotAvailable())
+                {
+                    throw new Exception();
+                }
+
                 using var service = GetService();
                 states = service.GetAllStates(GetCurrentTenantId(), GetCurrentUserName());
             }
@@ -187,6 +211,7 @@ namespace ASC.Core.Notify.Jabber
             {
                 ProcessError(error);
             }
+
             return states;
         }
 
@@ -195,7 +220,11 @@ namespace ASC.Core.Notify.Jabber
             MessageClass[] messages = null;
             try
             {
-                if (IsServiceProbablyNotAvailable()) throw new Exception();
+                if (IsServiceProbablyNotAvailable())
+                {
+                    throw new Exception();
+                }
+
                 using var service = GetService();
                 messages = service.GetRecentMessages(GetCurrentTenantId(), GetCurrentUserName(), to, id);
             }
@@ -203,6 +232,7 @@ namespace ASC.Core.Notify.Jabber
             {
                 ProcessError(error);
             }
+
             return messages;
         }
 
@@ -210,9 +240,13 @@ namespace ASC.Core.Notify.Jabber
         {
             try
             {
-                if (IsServiceProbablyNotAvailable()) throw new Exception();
+                if (IsServiceProbablyNotAvailable())
+                {
+                    throw new Exception();
+                }
+
                 using var service = GetService();
-                service.Ping(AuthContext.CurrentAccount.ID.ToString(), GetCurrentTenantId(), GetCurrentUserName(), state);
+                service.Ping(_authContext.CurrentAccount.ID.ToString(), GetCurrentTenantId(), GetCurrentUserName(), state);
             }
             catch (Exception error)
             {
@@ -222,12 +256,12 @@ namespace ASC.Core.Notify.Jabber
 
         private int GetCurrentTenantId()
         {
-            return TenantManager.GetCurrentTenant().TenantId;
+            return _tenantManager.GetCurrentTenant().TenantId;
         }
 
         private string GetCurrentUserName()
         {
-            return UserManager.GetUsers(AuthContext.CurrentAccount.ID).UserName;
+            return _userManager.GetUsers(_authContext.CurrentAccount.ID).UserName;
         }
 
         private static void ProcessError(Exception error)
@@ -238,8 +272,9 @@ namespace ASC.Core.Notify.Jabber
             }
             if (error is CommunicationException || error is TimeoutException)
             {
-                lastErrorTime = DateTime.Now;
+                _lastErrorTime = DateTime.Now;
             }
+
             throw error;
         }
 

@@ -54,7 +54,7 @@ namespace ASC.Core.Notify.Signalr
         public void Configure(string name, SignalrServiceClient options)
         {
             options.Log = Options.CurrentValue;
-            options.hub = name.Trim('/');
+            options.Hub = name.Trim('/');
             options.TenantManager = TenantManager;
             options.CoreSettings = CoreSettings;
             options.ClientFactory = ClientFactory;
@@ -76,9 +76,7 @@ namespace ASC.Core.Notify.Signalr
                     options.JabberReplaceToDomain = q.ElementAt(1);
                 }
             }
-            catch (Exception)
-            {
-            }
+            catch (Exception) { }
         }
 
         public void Configure(SignalrServiceClient options)
@@ -90,9 +88,9 @@ namespace ASC.Core.Notify.Signalr
     [Scope(typeof(ConfigureSignalrServiceClient))]
     public class SignalrServiceClient
     {
-        private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(1);
+        private static readonly TimeSpan _timeout = TimeSpan.FromSeconds(1);
         internal ILog Log;
-        private static DateTime lastErrorTime;
+        private static DateTime _lastErrorTime;
         public bool EnableSignalr { get; set; }
         internal byte[] SKey;
         internal string Url;
@@ -100,17 +98,13 @@ namespace ASC.Core.Notify.Signalr
         internal string JabberReplaceFromDomain;
         internal string JabberReplaceToDomain;
 
-        internal string hub;
+        internal string Hub;
 
         internal TenantManager TenantManager { get; set; }
         internal CoreSettings CoreSettings { get; set; }
         internal IHttpClientFactory ClientFactory { get; set; }
 
-        public SignalrServiceClient()
-        {
-
-        }
-
+        public SignalrServiceClient() { }
 
         public void SendMessage(string callerUserName, string calleeUserName, string messageText, int tenantId,
             string domain)
@@ -336,13 +330,16 @@ namespace ASC.Core.Notify.Signalr
                 (e.InnerException != null) ? e.InnerException.Message : string.Empty);
             if (e is CommunicationException || e is TimeoutException)
             {
-                lastErrorTime = DateTime.Now;
+                _lastErrorTime = DateTime.Now;
             }
         }
 
         private string MakeRequest(string method, object data)
         {
-            if (!IsAvailable()) return "";
+            if (!IsAvailable())
+            {
+                return string.Empty;
+            }
 
             var request = new HttpRequestMessage();
             request.Headers.Add("Authorization", CreateAuthToken());
@@ -367,17 +364,18 @@ namespace ASC.Core.Notify.Signalr
         private T MakeRequest<T>(string method, object data)
         {
             var resultMakeRequest = MakeRequest(method, data);
+
             return JsonConvert.DeserializeObject<T>(resultMakeRequest);
         }
 
         private bool IsAvailable()
         {
-            return EnableSignalr && lastErrorTime + Timeout < DateTime.Now;
+            return EnableSignalr && _lastErrorTime + _timeout < DateTime.Now;
         }
 
         private string GetMethod(string method)
         {
-            return $"{Url.TrimEnd('/')}/controller/{hub}/{method}";
+            return $"{Url.TrimEnd('/')}/controller/{Hub}/{method}";
         }
 
         public string CreateAuthToken(string pkey = "socketio")
@@ -385,6 +383,7 @@ namespace ASC.Core.Notify.Signalr
             using var hasher = new HMACSHA1(SKey);
             var now = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
             var hash = Convert.ToBase64String(hasher.ComputeHash(Encoding.UTF8.GetBytes(string.Join("\n", now, pkey))));
+
             return $"ASC {pkey}:{now}:{hash}";
         }
     }

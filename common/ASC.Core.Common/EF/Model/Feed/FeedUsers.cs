@@ -18,6 +18,7 @@
             modelBuilder
                 .Add(MySqlAddFeedUsers, Provider.MySql)
                 .Add(PgSqlAddFeedUsers, Provider.PostgreSql);
+
             return modelBuilder;
         }
         public static void MySqlAddFeedUsers(this ModelBuilder modelBuilder)

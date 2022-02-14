@@ -15,6 +15,7 @@
             modelBuilder
                 .Add(MySqlAddNotifyInfo, Provider.MySql)
                 .Add(PgSqlAddNotifyInfo, Provider.PostgreSql);
+
             return modelBuilder;
         }
         public static void MySqlAddNotifyInfo(this ModelBuilder modelBuilder)

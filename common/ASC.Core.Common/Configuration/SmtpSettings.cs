@@ -29,33 +29,19 @@ namespace ASC.Core.Configuration
     {
         public const int DefaultSmtpPort = 25;
         public const string DefaultSenderDisplayName = "ONLYOFFICE Postman";
-
         public string Host { get; private set; }
-
         public int Port { get; private set; }
-
         public string SenderAddress { get; private set; }
-
         public string SenderDisplayName { get; private set; }
-
         public string CredentialsDomain { get; private set; }
-
         public string CredentialsUserName { get; private set; }
-
         public string CredentialsUserPassword { get; private set; }
-
         public bool EnableSSL { get; set; }
-
         public bool EnableAuth { get; set; }
-
         public bool IsDefaultSettings { get; internal set; }
-
         public static readonly SmtpSettings Empty = new SmtpSettings();
 
-        private SmtpSettings()
-        {
-
-        }
+        private SmtpSettings() { }
 
         public SmtpSettings(string host, string senderAddress)
             : this(host, senderAddress, DefaultSenderDisplayName)
@@ -107,6 +93,7 @@ namespace ASC.Core.Configuration
             {
                 throw new ArgumentException("Empty password.", nameof(password));
             }
+
             CredentialsUserName = userName;
             CredentialsUserPassword = password;
             CredentialsDomain = domain;

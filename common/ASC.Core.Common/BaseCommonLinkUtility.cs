@@ -35,12 +35,12 @@ namespace ASC.Core.Common
     [Scope]
     public class BaseCommonLinkUtility
     {
-        private const string LOCALHOST = "localhost";
+        private const string LocalHost = "localhost";
 
         private UriBuilder _serverRoot;
         private string _vpath;
 
-        protected IHttpContextAccessor HttpContextAccessor { get; set; }
+        protected IHttpContextAccessor HttpContextAccessor;
 
         public BaseCommonLinkUtility(
             CoreBaseSettings coreBaseSettings,
@@ -65,7 +65,7 @@ namespace ASC.Core.Common
             if (!string.IsNullOrEmpty(serverUri))
             {
                 var uri = new Uri(serverUri.Replace('*', 'x').Replace('+', 'x'));
-                _serverRoot = new UriBuilder(uri.Scheme, uri.Host != "x" ? uri.Host : LOCALHOST, uri.Port);
+                _serverRoot = new UriBuilder(uri.Scheme, uri.Host != "x" ? uri.Host : LocalHost, uri.Port);
                 _vpath = "/" + uri.AbsolutePath.Trim('/');
             }
             else
@@ -73,14 +73,17 @@ namespace ASC.Core.Common
                 try
                 {
                     HttpContextAccessor = httpContextAccessor;
-                    var uriBuilder = new UriBuilder(Uri.UriSchemeHttp, LOCALHOST);
+                    var uriBuilder = new UriBuilder(Uri.UriSchemeHttp, LocalHost);
                     if (HttpContextAccessor?.HttpContext?.Request != null)
                     {
                         var u = HttpContextAccessor?.HttpContext.Request.GetUrlRewriter();
 
-                        if (u == null) throw new ArgumentNullException("u");
+                        if (u == null)
+                        {
+                            throw new ArgumentNullException(nameof(u));
+                        }
 
-                        uriBuilder = new UriBuilder(u.Scheme, LOCALHOST, u.Port);
+                        uriBuilder = new UriBuilder(u.Scheme, LocalHost, u.Port);
                     }
                     _serverRoot = uriBuilder;
                 }
@@ -91,32 +94,36 @@ namespace ASC.Core.Common
             }
 
             CoreBaseSettings = coreBaseSettings;
-            CoreSettings = coreSettings;
+            _coreSettings = coreSettings;
             TenantManager = tenantManager;
         }
 
-        public string VirtualRoot
-        {
-            get { return ToAbsolute("~"); }
-        }
+        public string VirtualRoot => ToAbsolute("~");
 
-        protected CoreBaseSettings CoreBaseSettings { get; }
-        private CoreSettings CoreSettings { get; }
-        protected TenantManager TenantManager { get; }
+        protected CoreBaseSettings CoreBaseSettings;
+        private readonly CoreSettings _coreSettings;
+        protected TenantManager TenantManager;
 
-        private string serverRootPath;
+        private string _serverRootPath;
         public string ServerRootPath
         {
             get
             {
-                if (!string.IsNullOrEmpty(serverRootPath)) return serverRootPath;
+                if (!string.IsNullOrEmpty(_serverRootPath))
+                {
+                    return _serverRootPath;
+                }
+
                 UriBuilder result;
                 // first, take from current request
                 if (HttpContextAccessor?.HttpContext?.Request != null)
                 {
                     var u = HttpContextAccessor?.HttpContext?.Request.GetUrlRewriter();
 
-                    if (u == null) throw new ArgumentNullException("u");
+                    if (u == null)
+                    {
+                        throw new ArgumentNullException(nameof(u));
+                    }
 
                     result = new UriBuilder(u.Scheme, u.Host, u.Port);
 
@@ -135,13 +142,13 @@ namespace ASC.Core.Common
                 {
                     // take values from db if localhost or no http context thread
                     var tenant = TenantManager.GetCurrentTenant();
-                    result.Host = tenant.GetTenantDomain(CoreSettings);
+                    result.Host = tenant.GetTenantDomain(_coreSettings);
 
 #if DEBUG
                     // for Visual Studio debug
-                    if (tenant.TenantAlias == LOCALHOST)
+                    if (tenant.TenantAlias == LocalHost)
                     {
-                        result.Host = LOCALHOST;
+                        result.Host = LocalHost;
                     }
 #endif
 
@@ -156,7 +163,7 @@ namespace ASC.Core.Common
                     }
                 }
 
-                return serverRootPath = result.Uri.ToString().TrimEnd('/');
+                return _serverRootPath = result.Uri.ToString().TrimEnd('/');
             }
         }
 
@@ -166,16 +173,20 @@ namespace ASC.Core.Common
             {
                 return ServerRootPath;
             }
+
             if (virtualPath.StartsWith("http://", StringComparison.InvariantCultureIgnoreCase) ||
                 virtualPath.StartsWith("mailto:", StringComparison.InvariantCultureIgnoreCase) ||
                 virtualPath.StartsWith("javascript:", StringComparison.InvariantCultureIgnoreCase) ||
                 virtualPath.StartsWith("https://", StringComparison.InvariantCultureIgnoreCase))
+            {
                 return virtualPath;
+            }
 
             if (virtualPath.StartsWith('/'))
             {
                 return ServerRootPath + virtualPath;
             }
+
             return ServerRootPath + VirtualRoot.TrimEnd('/') + "/" + virtualPath.TrimStart('~', '/');
         }
 
@@ -190,13 +201,16 @@ namespace ASC.Core.Common
             {
                 return virtualPath;
             }
+
             return (_vpath != "/" ? _vpath : string.Empty) + "/" + virtualPath.TrimStart('~', '/');
         }
 
         public static string GetRegionalUrl(string url, string lang)
         {
             if (string.IsNullOrEmpty(url))
+            {
                 return url;
+            }
 
             //-replace language
             var regex = new Regex("{.*?}");
@@ -220,13 +234,14 @@ namespace ASC.Core.Common
             var uri = new Uri(url);
 
             if (uri.Scheme == "mailto")
+            {
                 return uri.OriginalString;
+            }
 
             var baseUri = new UriBuilder(uri.Scheme, uri.Host, uri.Port).Uri;
             baseUri = uri.Segments.Aggregate(baseUri, (current, segment) => new Uri(current, segment));
             //--
             //todo: lost query string!!!
-
 
             return baseUri.ToString().TrimEnd('/');
         }
@@ -234,7 +249,7 @@ namespace ASC.Core.Common
         public void Initialize(string serverUri, bool localhost = true)
         {
             var uri = new Uri(serverUri.Replace('*', 'x').Replace('+', 'x'));
-            _serverRoot = new UriBuilder(uri.Scheme, localhost ? LOCALHOST : uri.Host, uri.Port);
+            _serverRoot = new UriBuilder(uri.Scheme, localhost ? LocalHost : uri.Host, uri.Port);
             _vpath = "/" + uri.AbsolutePath.Trim('/');
         }
     }

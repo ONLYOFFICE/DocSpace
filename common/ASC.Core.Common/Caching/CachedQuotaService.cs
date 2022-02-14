@@ -28,13 +28,12 @@ namespace ASC.Core.Caching
     [Singletone]
     class QuotaServiceCache
     {
-        internal const string KEY_QUOTA = "quota";
-        internal const string KEY_QUOTA_ROWS = "quotarows";
+        internal const string KeyQuota = "quota";
+        internal const string KeyQuotaRows = "quotarows";
 
         internal TrustInterval Interval { get; set; }
         internal ICache Cache { get; }
         internal ICacheNotify<QuotaCacheItem> CacheNotify { get; }
-
         internal bool QuotaCacheEnabled { get; }
 
         public QuotaServiceCache(IConfiguration Configuration, ICacheNotify<QuotaCacheItem> cacheNotify, ICache cache)
@@ -54,44 +53,44 @@ namespace ASC.Core.Caching
 
             cacheNotify.Subscribe((i) =>
             {
-                if (i.Key == KEY_QUOTA)
+                if (i.Key == KeyQuota)
                 {
-                    Cache.Remove(KEY_QUOTA);
+                    Cache.Remove(KeyQuota);
                 }
                 else
                 {
                     Cache.Remove(i.Key);
                 }
-            }, ASC.Common.Caching.CacheNotifyAction.Any);
+            }, CacheNotifyAction.Any);
         }
     }
 
     [Scope]
     class ConfigureCachedQuotaService : IConfigureNamedOptions<CachedQuotaService>
     {
-        private IOptionsSnapshot<DbQuotaService> Service { get; }
-        private QuotaServiceCache QuotaServiceCache { get; }
+        private readonly IOptionsSnapshot<DbQuotaService> _service;
+        private readonly QuotaServiceCache _quotaServiceCache;
 
         public ConfigureCachedQuotaService(
             IOptionsSnapshot<DbQuotaService> service,
             QuotaServiceCache quotaServiceCache)
         {
-            Service = service;
-            QuotaServiceCache = quotaServiceCache;
+            _service = service;
+            _quotaServiceCache = quotaServiceCache;
         }
 
         public void Configure(string name, CachedQuotaService options)
         {
             Configure(options);
-            options.Service = Service.Get(name);
+            options.Service = _service.Get(name);
         }
 
         public void Configure(CachedQuotaService options)
         {
-            options.Service = Service.Value;
-            options.QuotaServiceCache = QuotaServiceCache;
-            options.Cache = QuotaServiceCache.Cache;
-            options.CacheNotify = QuotaServiceCache.CacheNotify;
+            options.Service = _service.Value;
+            options.QuotaServiceCache = _quotaServiceCache;
+            options.Cache = _quotaServiceCache.Cache;
+            options.CacheNotify = _quotaServiceCache.CacheNotify;
         }
     }
 
@@ -122,15 +121,16 @@ namespace ASC.Core.Caching
 
         public IEnumerable<TenantQuota> GetTenantQuotas()
         {
-            var quotas = Cache.Get<IEnumerable<TenantQuota>>(QuotaServiceCache.KEY_QUOTA);
+            var quotas = Cache.Get<IEnumerable<TenantQuota>>(QuotaServiceCache.KeyQuota);
             if (quotas == null)
             {
                 quotas = Service.GetTenantQuotas();
                 if (QuotaServiceCache.QuotaCacheEnabled)
                 {
-                    Cache.Insert(QuotaServiceCache.KEY_QUOTA, quotas, DateTime.UtcNow.Add(CacheExpiration));
+                    Cache.Insert(QuotaServiceCache.KeyQuota, quotas, DateTime.UtcNow.Add(CacheExpiration));
                 }
             }
+
             return quotas;
         }
 
@@ -142,7 +142,8 @@ namespace ASC.Core.Caching
         public TenantQuota SaveTenantQuota(TenantQuota quota)
         {
             var q = Service.SaveTenantQuota(quota);
-            CacheNotify.Publish(new QuotaCacheItem { Key = QuotaServiceCache.KEY_QUOTA }, ASC.Common.Caching.CacheNotifyAction.Any);
+            CacheNotify.Publish(new QuotaCacheItem { Key = QuotaServiceCache.KeyQuota }, CacheNotifyAction.Any);
+
             return q;
         }
 
@@ -151,11 +152,10 @@ namespace ASC.Core.Caching
             throw new NotImplementedException();
         }
 
-
         public void SetTenantQuotaRow(TenantQuotaRow row, bool exchange)
         {
             Service.SetTenantQuotaRow(row, exchange);
-            CacheNotify.Publish(new QuotaCacheItem { Key = GetKey(row.Tenant) }, ASC.Common.Caching.CacheNotifyAction.InsertOrUpdate);
+            CacheNotify.Publish(new QuotaCacheItem { Key = GetKey(row.Tenant) }, CacheNotifyAction.InsertOrUpdate);
         }
 
         public IEnumerable<TenantQuotaRow> FindTenantQuotaRows(int tenantId)
@@ -174,7 +174,7 @@ namespace ASC.Core.Caching
 
         public string GetKey(int tenant)
         {
-            return QuotaServiceCache.KEY_QUOTA_ROWS + tenant;
+            return QuotaServiceCache.KeyQuotaRows + tenant;
         }
     }
 }

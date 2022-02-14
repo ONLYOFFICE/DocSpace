@@ -8,7 +8,11 @@
         public string MappedDomain { get; set; }
         public int Version { get; set; }
         public DateTime? Version_Changed { get; set; }
-        public DateTime VersionChanged { get => Version_Changed ?? DateTime.MinValue; set => Version_Changed = value; }
+        public DateTime VersionChanged 
+        { 
+            get => Version_Changed ?? DateTime.MinValue; 
+            set => Version_Changed = value; 
+        }
         public string Language { get; set; }
         public string TimeZone { get; set; }
         public string TrustedDomains { get; set; }
@@ -17,7 +21,11 @@
         public DateTime? StatusChanged { get; set; }
         //hack for DateTime?
        
-        public DateTime StatusChangedHack { get { return StatusChanged ?? DateTime.MinValue; } set { StatusChanged = value; } }
+        public DateTime StatusChangedHack 
+        { 
+            get => StatusChanged ?? DateTime.MinValue; 
+            set { StatusChanged = value; } 
+        }
         public DateTime CreationDateTime { get; set; }
         public Guid OwnerId { get; set; }
         public string PaymentId { get; set; }

@@ -29,6 +29,7 @@
             modelBuilder
                 .Add(MySqlAddCrmContact, Provider.MySql)
                 .Add(PgSqlAddCrmContact, Provider.PostgreSql);
+
             return modelBuilder;
         }
         public static void MySqlAddCrmContact(this ModelBuilder modelBuilder)

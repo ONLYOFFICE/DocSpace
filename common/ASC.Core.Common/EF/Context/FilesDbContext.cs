@@ -5,6 +5,7 @@
     public class FilesDbContext : BaseDbContext
     {
         public DbSet<FilesConverts> FilesConverts { get; set; }
+
         protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
         {
             get

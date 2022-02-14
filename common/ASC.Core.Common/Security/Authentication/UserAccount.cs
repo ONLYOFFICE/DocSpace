@@ -29,21 +29,13 @@ namespace ASC.Core.Security.Authentication
     class UserAccount : MarshalByRefObject, IUserAccount
     {
         public Guid ID { get; private set; }
-
         public string Name { get; private set; }
-
-        public string AuthenticationType { get { return "ASC"; } }
-
-        public bool IsAuthenticated { get { return true; } }
-
+        public string AuthenticationType => "ASC";
+        public bool IsAuthenticated => true;
         public string FirstName { get; private set; }
-
         public string LastName { get; private set; }
-
         public string Title { get; private set; }
-
         public int Tenant { get; private set; }
-
         public string Email { get; private set; }
 
 
@@ -57,7 +49,6 @@ namespace ASC.Core.Security.Authentication
             Tenant = tenant;
             Email = info.Email;
         }
-
 
         public object Clone()
         {

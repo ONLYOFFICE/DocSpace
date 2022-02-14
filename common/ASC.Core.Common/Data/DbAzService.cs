@@ -29,13 +29,12 @@ namespace ASC.Core.Data
     class DbAzService : IAzService
     {
         public Expression<Func<Acl, AzRecord>> FromAclToAzRecord { get; set; }
-
-        private UserDbContext UserDbContext { get => LazyUserDbContext.Value; }
-        private Lazy<UserDbContext> LazyUserDbContext { get; set; }
+        private UserDbContext UserDbContext => _lazyUserDbContext.Value;
+        private Lazy<UserDbContext> _lazyUserDbContext;
 
         public DbAzService(DbContextManager<UserDbContext> dbContextManager)
         {
-            LazyUserDbContext = new Lazy<UserDbContext>(() => dbContextManager.Value);
+            _lazyUserDbContext = new Lazy<UserDbContext>(() => dbContextManager.Value);
             FromAclToAzRecord = r => new AzRecord
             {
                 ActionId = r.Action,
@@ -51,7 +50,7 @@ namespace ASC.Core.Data
             // row with tenant = -1 - common for all tenants, but equal row with tenant != -1 escape common row for the portal
             var commonAces =
                 UserDbContext.Acl
-                .Where(r => r.Tenant == Tenant.DEFAULT_TENANT)
+                .Where(r => r.Tenant == Tenant.DefaultTenant)
                 .Select(FromAclToAzRecord)
                 .ToDictionary(a => string.Concat(a.Tenant.ToString(), a.SubjectId.ToString(), a.ActionId.ToString(), a.ObjectId));
 
@@ -109,6 +108,7 @@ namespace ASC.Core.Data
             {
                 DeleteRecord(r);
             }
+
             tx.Commit();
         }
 
@@ -116,7 +116,7 @@ namespace ASC.Core.Data
         private bool ExistEscapeRecord(AzRecord r)
         {
             return UserDbContext.Acl
-                .Where(a => a.Tenant == Tenant.DEFAULT_TENANT)
+                .Where(a => a.Tenant == Tenant.DefaultTenant)
                 .Where(a => a.Subject == r.SubjectId)
                 .Where(a => a.Action == r.ActionId)
                 .Where(a => a.Object == (r.ObjectId ?? string.Empty))

@@ -6,7 +6,7 @@
 
         public CustomClaimsPrincipal(ClaimsIdentity claimsIdentity, IIdentity identity) : base(claimsIdentity)
         {
-            this.Identity = identity;
+            Identity = identity;
         }
     }
 }

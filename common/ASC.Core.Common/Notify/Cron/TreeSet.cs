@@ -26,29 +26,12 @@
 
 namespace ASC.Notify.Cron
 {
-
-    #region
-
-    #endregion
-
     [Serializable]
     public class TreeSet : ArrayList, ISortedSet
     {
-        #region Members
-
-        #endregion
-
-        #region Properties
-
         public IComparer Comparator { get; } = Comparer.Default;
 
-        #endregion
-
-        #region Constructor
-
-        public TreeSet()
-        {
-        }
+        public TreeSet() { }
 
         public TreeSet(ICollection c)
         {
@@ -59,11 +42,6 @@ namespace ASC.Notify.Cron
         {
             Comparator = c;
         }
-
-        #endregion
-
-        #region Methods
-
         public new bool Add(object obj)
         {
             var inserted = AddWithoutSorting(obj);
@@ -83,6 +61,7 @@ namespace ASC.Notify.Cron
                 }
             }
             Sort(Comparator);
+
             return added;
         }
 
@@ -101,6 +80,7 @@ namespace ASC.Notify.Cron
                     return true;
                 }
             }
+
             return false;
         }
 
@@ -112,10 +92,12 @@ namespace ASC.Notify.Cron
             {
                 i++;
             }
+
             for (; i < Count; i++)
             {
                 newList.Add(this[i]);
             }
+
             return newList;
         }
 
@@ -123,12 +105,9 @@ namespace ASC.Notify.Cron
         {
             var items = new ArrayList(collection);
             items = ReadOnly(items);
+
             return new TreeSet(items);
         }
-
-        #endregion
-
-        #region Utility methods
 
         private bool AddWithoutSorting(object obj)
         {
@@ -137,9 +116,8 @@ namespace ASC.Notify.Cron
             {
                 base.Add(obj);
             }
+
             return !inserted;
         }
-
-        #endregion
     }
 }

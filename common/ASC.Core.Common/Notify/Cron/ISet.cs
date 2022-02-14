@@ -27,21 +27,12 @@
 
 namespace ASC.Notify.Cron
 {
-
-    #region
-
-    #endregion
-
     public interface ISet : IList
     {
-        #region Methods
-
         new bool Add(object obj);
 
         bool AddAll(ICollection c);
 
         object First();
-
-        #endregion
     }
 }

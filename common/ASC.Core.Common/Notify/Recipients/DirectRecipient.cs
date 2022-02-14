@@ -29,7 +29,7 @@ namespace ASC.Notify.Recipients
     public class DirectRecipient
         : IDirectRecipient
     {
-        private readonly List<string> _Addresses = new List<string>();
+        private readonly List<string> _addresses = new List<string>();
 
         public DirectRecipient(string id, string name)
         {
@@ -48,24 +48,20 @@ namespace ASC.Notify.Recipients
             Name = name;
             CheckActivation = checkActivation;
             if (addresses != null)
-                _Addresses.AddRange(addresses);
+            {
+                _addresses.AddRange(addresses);
+            }
         }
 
         #region IDirectRecipient
 
-        public string[] Addresses
-        {
-            get { return _Addresses.ToArray(); }
-        }
-
-
+        public string[] Addresses => _addresses.ToArray();
 
         #endregion
 
         #region IRecipient
 
         public string ID { get; private set; }
-
         public string Name { get; private set; }
         public bool CheckActivation { get; set; }
 
@@ -73,7 +69,11 @@ namespace ASC.Notify.Recipients
 
         public override bool Equals(object obj)
         {
-            if (!(obj is IDirectRecipient recD)) return false;
+            if (!(obj is IDirectRecipient recD))
+            {
+                return false;
+            }
+
             return Equals(recD.ID, ID);
         }
 
@@ -84,7 +84,7 @@ namespace ASC.Notify.Recipients
 
         public override string ToString()
         {
-            return $"{Name}({string.Join(";", _Addresses.ToArray())})";
+            return $"{Name}({string.Join(";", _addresses.ToArray())})";
         }
     }
 }

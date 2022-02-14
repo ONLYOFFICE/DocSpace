@@ -12,6 +12,7 @@
             modelBuilder
                 .Add(MySqlAddAuditEvent, Provider.MySql)
                 .Add(PgSqlAddAuditEvent, Provider.PostgreSql);
+
             return modelBuilder;
         }
         public static void MySqlAddAuditEvent(this ModelBuilder modelBuilder)

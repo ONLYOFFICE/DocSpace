@@ -17,6 +17,7 @@
                 };
             }
         }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             ModelBuilderWrapper

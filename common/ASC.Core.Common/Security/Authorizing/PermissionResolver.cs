@@ -31,14 +31,12 @@ namespace ASC.Core.Security.Authorizing
     [Scope]
     class PermissionResolver : IPermissionResolver
     {
-        private readonly AzManager azManager;
-
+        private readonly AzManager _azManager;
 
         public PermissionResolver(AzManager azManager)
         {
-            this.azManager = azManager ?? throw new ArgumentNullException(nameof(azManager));
+            _azManager = azManager ?? throw new ArgumentNullException(nameof(azManager));
         }
-
 
         public bool Check(ISubject subject, params IAction[] actions)
         {
@@ -63,9 +61,9 @@ namespace ASC.Core.Security.Authorizing
             {
                 throw new AuthorizingException(
                     subject,
-                    Array.ConvertAll(denyActions, r => r.TargetAction),
-                    Array.ConvertAll(denyActions, r => r.DenySubject),
-                    Array.ConvertAll(denyActions, r => r.DenyAction));
+                    Array.ConvertAll(denyActions, r => r._targetAction),
+                    Array.ConvertAll(denyActions, r => r._denySubject),
+                    Array.ConvertAll(denyActions, r => r._denyAction));
             }
         }
 
@@ -73,7 +71,10 @@ namespace ASC.Core.Security.Authorizing
         private DenyResult[] GetDenyActions(ISubject subject, IAction[] actions, ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider)
         {
             var denyActions = new List<DenyResult>();
-            if (actions == null) actions = new IAction[0];
+            if (actions == null)
+            {
+                actions = Array.Empty<IAction>();
+            }
 
             if (subject == null)
             {
@@ -89,7 +90,7 @@ namespace ASC.Core.Security.Authorizing
                 IAction denyAction = null;
                 foreach (var action in actions)
                 {
-                    var allow = azManager.CheckPermission(subject, action, objectId, securityObjProvider, out denySubject, out denyAction);
+                    var allow = _azManager.CheckPermission(subject, action, objectId, securityObjProvider, out denySubject, out denyAction);
                     if (!allow)
                     {
                         denyActions.Add(new DenyResult(action, denySubject, denyAction));
@@ -103,15 +104,15 @@ namespace ASC.Core.Security.Authorizing
 
         private class DenyResult
         {
-            public readonly IAction TargetAction;
-            public readonly ISubject DenySubject;
-            public readonly IAction DenyAction;
+            public readonly IAction _targetAction;
+            public readonly ISubject _denySubject;
+            public readonly IAction _denyAction;
 
             public DenyResult(IAction targetAction, ISubject denySubject, IAction denyAction)
             {
-                TargetAction = targetAction;
-                DenySubject = denySubject;
-                DenyAction = denyAction;
+                _targetAction = targetAction;
+                _denySubject = denySubject;
+                _denyAction = denyAction;
             }
         }
     }

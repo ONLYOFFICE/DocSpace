@@ -20,6 +20,7 @@
             modelBuilder
                 .Add(MySqlAddFeedReaded, Provider.MySql)
                 .Add(PgSqlAddFeedReaded, Provider.PostgreSql);
+
             return modelBuilder;
         }
         public static void MySqlAddFeedReaded(this ModelBuilder modelBuilder)

@@ -17,6 +17,7 @@
             modelBuilder
                 .Add(MySqlAddFeedLast, Provider.MySql)
                 .Add(PgSqlAddFeedLast, Provider.PostgreSql);
+
             return modelBuilder;
         }
         public static void MySqlAddFeedLast(this ModelBuilder modelBuilder)

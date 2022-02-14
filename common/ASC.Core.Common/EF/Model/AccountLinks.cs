@@ -21,6 +21,7 @@
             modelBuilder
                 .Add(MySqlAddAccountLinks, Provider.MySql)
                 .Add(PgSqlAddAccountLinks, Provider.PostgreSql);
+
             return modelBuilder;
         }
         public static void MySqlAddAccountLinks(this ModelBuilder modelBuilder)

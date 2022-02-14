@@ -32,9 +32,7 @@ namespace ASC.Core.Tenants
         public int MaxLength { get; set; } = 0;
 
         public TenantTooShortException(string message)
-            : base(message)
-        {
-        }
+            : base(message) { }
 
         public TenantTooShortException(string message, int minLength, int maxLength)
             : base(message)
@@ -44,33 +42,23 @@ namespace ASC.Core.Tenants
         }
 
         protected TenantTooShortException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
+            : base(info, context) { }
     }
 
     [Serializable]
     public class TenantIncorrectCharsException : Exception
     {
         public TenantIncorrectCharsException(string message)
-            : base(message)
-        {
-        }
+            : base(message) { }
 
         protected TenantIncorrectCharsException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
+            : base(info, context) { }
     }
 
     [Serializable]
     public class TenantAlreadyExistsException : Exception
     {
-        public IEnumerable<string> ExistsTenants
-        {
-            get;
-            private set;
-        }
+        public IEnumerable<string> ExistsTenants { get; private set; }
 
         public TenantAlreadyExistsException(string message, IEnumerable<string> existsTenants)
             : base(message)
@@ -79,8 +67,6 @@ namespace ASC.Core.Tenants
         }
 
         protected TenantAlreadyExistsException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
+            : base(info, context) { }
     }
 }

@@ -13,6 +13,7 @@
             modelBuilder
                 .Add(MySqlAddTenantIpRestrictions, Provider.MySql)
                 .Add(PgSqlAddTenantIpRestrictions, Provider.PostgreSql);
+
             return modelBuilder;
         }
         public static void MySqlAddTenantIpRestrictions(this ModelBuilder modelBuilder)

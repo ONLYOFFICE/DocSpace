@@ -12,10 +12,7 @@ namespace ASC.Core.Common.EF
     public class BaseDbContext : DbContext
     {
         public BaseDbContext() { }
-        public BaseDbContext(DbContextOptions options) : base(options)
-        {
-
-        }
+        public BaseDbContext(DbContextOptions options) : base(options) { }
 
         internal string MigrateAssembly { get; set; }
         internal ILoggerFactory LoggerFactory { get; set; }
@@ -23,10 +20,7 @@ namespace ASC.Core.Common.EF
         protected internal Provider Provider { get; set; }
 
         public static readonly ServerVersion ServerVersion = ServerVersion.Parse("8.0.25");
-        protected virtual Dictionary<Provider, Func<BaseDbContext>> ProviderContext
-        {
-            get { return null; }
-        }
+        protected virtual Dictionary<Provider, Func<BaseDbContext>> ProviderContext => null;
 
         public void Migrate()
         {
@@ -98,6 +92,7 @@ namespace ASC.Core.Common.EF
             else
             {
                 b.Entry(existingBlog).CurrentValues.SetValues(entity);
+
                 return entity;
             }
         }
@@ -116,7 +111,10 @@ namespace ASC.Core.Common.EF
 
         public void Dispose()
         {
-            if (Context == null) return;
+            if (Context == null)
+            {
+                return;
+            }
 
             foreach (var c in Context)
             {
@@ -129,9 +127,7 @@ namespace ASC.Core.Common.EF
 
         public ValueTask DisposeAsync()
         {
-            if (Context == null) return ValueTask.CompletedTask;
-
-            return InternalDisposeAsync();
+            return Context == null ? ValueTask.CompletedTask : InternalDisposeAsync();
         }
 
         private async ValueTask InternalDisposeAsync()

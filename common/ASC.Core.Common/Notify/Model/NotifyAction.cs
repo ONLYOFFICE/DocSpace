@@ -29,14 +29,10 @@ namespace ASC.Notify.Model
     public class NotifyAction : INotifyAction
     {
         public string ID { get; private set; }
-
         public string Name { get; private set; }
-
-
+        `
         public NotifyAction(string id)
-            : this(id, null)
-        {
-        }
+            : this(id, null) { }
 
         public NotifyAction(string id, string name)
         {

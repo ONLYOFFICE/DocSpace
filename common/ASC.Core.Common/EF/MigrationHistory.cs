@@ -3,7 +3,7 @@
     [Singletone]
     public class MigrationHistory
     {
-        private ConcurrentDictionary<Type, bool> _historyStore
+        private readonly ConcurrentDictionary<Type, bool> _historyStore
             = new ConcurrentDictionary<Type, bool>();
 
         public bool TryAddMigratedContext(Type contextType)

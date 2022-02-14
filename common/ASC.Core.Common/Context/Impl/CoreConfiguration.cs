@@ -28,10 +28,10 @@ namespace ASC.Core
     [Singletone]
     public class CoreBaseSettings
     {
-        private bool? standalone;
-        private string basedomain;
-        private bool? personal;
-        private bool? customMode;
+        private bool? _standalone;
+        private string _basedomain;
+        private bool? _personal;
+        private bool? _customMode;
 
         private IConfiguration Configuration { get; }
 
@@ -39,44 +39,34 @@ namespace ASC.Core
         {
             Configuration = configuration;
         }
+
         public string Basedomain
         {
             get 
             {
-                if (basedomain == null)
+                if (_basedomain == null)
                 {
-                    basedomain = Configuration["core:base-domain"] ?? string.Empty;
+                    _basedomain = Configuration["core:base-domain"] ?? string.Empty;
                 }
-                return basedomain;
+
+                return _basedomain;
             }
         }
 
-        public bool Standalone
-        {
-            get { return standalone ?? (bool)(standalone = Configuration["core:base-domain"] == "localhost"); }
-        }
+        public bool Standalone => _standalone ?? (bool)(_standalone = Configuration["core:base-domain"] == "localhost");
 
-        public bool Personal
-        {
-            get
-            {
+        public bool Personal =>
                 //TODO:if (CustomMode && HttpContext.Current != null && HttpContext.Current.Request.SailfishApp()) return true;
-                return personal ?? (bool)(personal = string.Equals(Configuration["core:personal"], "true", StringComparison.OrdinalIgnoreCase));
-            }
-        }
+                _personal ?? (bool)(_personal = string.Equals(Configuration["core:personal"], "true", StringComparison.OrdinalIgnoreCase));
 
-        public bool CustomMode
-        {
-            get { return customMode ?? (bool)(customMode = string.Equals(Configuration["core:custom-mode"], "true", StringComparison.OrdinalIgnoreCase));}
-
-        }
+        public bool CustomMode => _customMode ?? (bool)(_customMode = string.Equals(Configuration["core:custom-mode"], "true", StringComparison.OrdinalIgnoreCase));
     }
 
     class ConfigureCoreSettings : IConfigureNamedOptions<CoreSettings>
     {
-        private IOptionsSnapshot<CachedTenantService> TenantService { get; }
-        private CoreBaseSettings CoreBaseSettings { get; }
-        private IConfiguration Configuration { get; }
+        private readonly IOptionsSnapshot<CachedTenantService> _tenantService;
+        private readonly CoreBaseSettings _coreBaseSettings;
+        private readonly IConfiguration _configuration;
 
         public ConfigureCoreSettings(
             IOptionsSnapshot<CachedTenantService> tenantService,
@@ -84,22 +74,22 @@ namespace ASC.Core
             IConfiguration configuration
             )
         {
-            TenantService = tenantService;
-            CoreBaseSettings = coreBaseSettings;
-            Configuration = configuration;
+            _tenantService = tenantService;
+            _coreBaseSettings = coreBaseSettings;
+            _configuration = configuration;
         }
 
         public void Configure(string name, CoreSettings options)
         {
             Configure(options);
-            options.TenantService = TenantService.Get(name);
+            options.TenantService = _tenantService.Get(name);
         }
 
         public void Configure(CoreSettings options)
         {
-            options.Configuration = Configuration;
-            options.CoreBaseSettings = CoreBaseSettings;
-            options.TenantService = TenantService.Value;
+            options.Configuration = _configuration;
+            options.CoreBaseSettings = _coreBaseSettings;
+            options.TenantService = _tenantService.Value;
         }
     }
 
@@ -134,10 +124,7 @@ namespace ASC.Core
         internal CoreBaseSettings CoreBaseSettings { get; set; }
         internal IConfiguration Configuration { get; set; }
 
-        public CoreSettings()
-        {
-
-        }
+        public CoreSettings() { }
 
         public CoreSettings(
             ITenantService tenantService,
@@ -158,29 +145,33 @@ namespace ASC.Core
                 return baseHost;
             }
             var subdomain = baseHost.Remove(baseHost.IndexOf('.') + 1);
+
             return hostedRegion.StartsWith(subdomain) ? hostedRegion : (subdomain + hostedRegion.TrimStart('.'));
         }
 
-        public void SaveSetting(string key, string value, int tenant = Tenant.DEFAULT_TENANT)
+        public void SaveSetting(string key, string value, int tenant = Tenant.DefaultTenant)
         {
             if (string.IsNullOrEmpty(key))
             {
                 throw new ArgumentNullException(nameof(key));
             }
+
             byte[] bytes = null;
             if (value != null)
             {
                 bytes = Crypto.GetV(Encoding.UTF8.GetBytes(value), 2, true);
             }
+
             TenantService.SetTenantSettings(tenant, key, bytes);
         }
 
-        public string GetSetting(string key, int tenant = Tenant.DEFAULT_TENANT)
+        public string GetSetting(string key, int tenant = Tenant.DefaultTenant)
         {
             if (string.IsNullOrEmpty(key))
             {
                 throw new ArgumentNullException(nameof(key));
             }
+
             var bytes = TenantService.GetTenantSettings(tenant, key);
 
             var result = bytes != null ? Encoding.UTF8.GetString(Crypto.GetV(bytes, 2, false)) : null;
@@ -206,13 +197,16 @@ namespace ASC.Core
                         }
                     }
                 }
+
                 return key;
             }
             else
             {
                 var t = TenantService.GetTenant(tenant);
                 if (t != null && !string.IsNullOrWhiteSpace(t.PaymentId))
+                {
                     return t.PaymentId;
+                }
 
                 return Configuration["core:payment:region"] + tenant;
             }
@@ -222,7 +216,9 @@ namespace ASC.Core
         {
             var t = TenantService.GetTenant(tenant);
             if (t != null && !string.IsNullOrWhiteSpace(t.AffiliateId))
+            {
                 return t.AffiliateId;
+            }
 
             return null;
         }
@@ -231,7 +227,9 @@ namespace ASC.Core
         {
             var t = TenantService.GetTenant(tenant);
             if (t != null && !string.IsNullOrWhiteSpace(t.Campaign))
+            {
                 return t.Campaign;
+            }
 
             return null;
         }
@@ -240,13 +238,13 @@ namespace ASC.Core
     [Scope]
     public class CoreConfiguration
     {
-        private long? personalMaxSpace;
+        private long? _personalMaxSpace;
 
         public CoreConfiguration(CoreSettings coreSettings, TenantManager tenantManager, IConfiguration configuration)
         {
-            CoreSettings = coreSettings;
-            TenantManager = tenantManager;
-            Configuration = configuration;
+            _coreSettings = coreSettings;
+            _tenantManager = tenantManager;
+            _configuration = configuration;
         }
 
         public long PersonalMaxSpace(SettingsManager settingsManager)
@@ -254,18 +252,23 @@ namespace ASC.Core
             var quotaSettings = settingsManager.LoadForCurrentUser<PersonalQuotaSettings>();
 
             if (quotaSettings.MaxSpace != long.MaxValue)
+            {
                 return quotaSettings.MaxSpace;
+            }
 
-            if (personalMaxSpace.HasValue)
-                return personalMaxSpace.Value;
+            if (_personalMaxSpace.HasValue)
+            {
+                return _personalMaxSpace.Value;
+            }
 
-
-            if (!long.TryParse(Configuration["core:personal.maxspace"], out var value))
+            if (!long.TryParse(_configuration["core:personal.maxspace"], out var value))
+            {
                 value = long.MaxValue;
+            }
 
-            personalMaxSpace = value;
+            _personalMaxSpace = value;
 
-            return personalMaxSpace.Value;
+            return _personalMaxSpace.Value;
         }
 
         public SmtpSettings SmtpSettings
@@ -273,7 +276,7 @@ namespace ASC.Core
             get
             {
                 var isDefaultSettings = false;
-                var tenant = TenantManager.GetCurrentTenant(false);
+                var tenant = _tenantManager.GetCurrentTenant(false);
 
                 if (tenant != null)
                 {
@@ -286,6 +289,7 @@ namespace ASC.Core
                     }
                     var settings = SmtpSettings.Deserialize(settingsValue);
                     settings.IsDefaultSettings = isDefaultSettings;
+
                     return settings;
                 }
                 else
@@ -294,26 +298,27 @@ namespace ASC.Core
 
                     var settings = SmtpSettings.Deserialize(settingsValue);
                     settings.IsDefaultSettings = true;
+
                     return settings;
                 }
             }
-            set { SaveSetting("SmtpSettings", value?.Serialize(), TenantManager.GetCurrentTenant().TenantId); }
+            set { SaveSetting("SmtpSettings", value?.Serialize(), _tenantManager.GetCurrentTenant().TenantId); }
         }
 
-        private CoreSettings CoreSettings { get; }
-        private TenantManager TenantManager { get; }
-        private IConfiguration Configuration { get; }
+        private readonly CoreSettings _coreSettings;
+        private readonly TenantManager _tenantManager;
+        private readonly IConfiguration _configuration;
 
         #region Methods Get/Save Setting
 
-        public void SaveSetting(string key, string value, int tenant = Tenant.DEFAULT_TENANT)
+        public void SaveSetting(string key, string value, int tenant = Tenant.DefaultTenant)
         {
-            CoreSettings.SaveSetting(key, value, tenant);
+            _coreSettings.SaveSetting(key, value, tenant);
         }
 
-        public string GetSetting(string key, int tenant = Tenant.DEFAULT_TENANT)
+        public string GetSetting(string key, int tenant = Tenant.DefaultTenant)
         {
-            return CoreSettings.GetSetting(key, tenant);
+            return _coreSettings.GetSetting(key, tenant);
         }
 
         #endregion
@@ -332,22 +337,23 @@ namespace ASC.Core
 
         public T GetSection<T>(string sectionName) where T : class
         {
-            return GetSection<T>(TenantManager.GetCurrentTenant().TenantId, sectionName);
+            return GetSection<T>(_tenantManager.GetCurrentTenant().TenantId, sectionName);
         }
 
         public T GetSection<T>(int tenantId, string sectionName) where T : class
         {
             var serializedSection = GetSetting(sectionName, tenantId);
-            if (serializedSection == null && tenantId != Tenant.DEFAULT_TENANT)
+            if (serializedSection == null && tenantId != Tenant.DefaultTenant)
             {
-                serializedSection = GetSetting(sectionName, Tenant.DEFAULT_TENANT);
+                serializedSection = GetSetting(sectionName, Tenant.DefaultTenant);
             }
+
             return serializedSection != null ? JsonConvert.DeserializeObject<T>(serializedSection) : null;
         }
 
         public void SaveSection<T>(string sectionName, T section) where T : class
         {
-            SaveSection(TenantManager.GetCurrentTenant().TenantId, sectionName, section);
+            SaveSection(_tenantManager.GetCurrentTenant().TenantId, sectionName, section);
         }
 
         public void SaveSection<T>(T section) where T : class

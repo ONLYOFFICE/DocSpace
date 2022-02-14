@@ -28,13 +28,13 @@ namespace ASC.Core.Tenants
     [Serializable]
     public class Tenant
     {
-        public const int DEFAULT_TENANT = -1;
+        public const int DefaultTenant = -1;
 
         public static readonly string HostName = Dns.GetHostName().ToLowerInvariant();
 
         public Tenant()
         {
-            TenantId = DEFAULT_TENANT;
+            TenantId = DefaultTenant;
             TimeZone = TimeZoneInfo.Utc.Id;
             Language = CultureInfo.CurrentCulture.Name;
             TrustedDomains = new List<string>();
@@ -58,60 +58,33 @@ namespace ASC.Core.Tenants
             TenantId = id;
         }
 
-
         public int TenantId { get; internal set; }
-
         public string TenantAlias { get; set; }
-
         public string MappedDomain { get; set; }
-
         public int Version { get; set; }
-
         public DateTime VersionChanged { get; set; }
-
         public string HostedRegion { get; set; }
-
         public string Name { get; set; }
-
         public string Language { get; set; }
-
         public string TimeZone { get; set; }
-
         public List<string> TrustedDomains { get; set; }
         public string TrustedDomainsRaw
         {
-            set
-            {
-                TrustedDomains = value != null ? value.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries).ToList() : new List<string>();
-            }
+            set => TrustedDomains = value != null ? value.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries).ToList() : new List<string>();
         }
-
         public TenantTrustedDomainsType TrustedDomainsType { get; set; }
-
         public Guid OwnerId { get; set; }
-
         public DateTime CreatedDateTime { get; internal set; }
-
-        public CultureInfo GetCulture() { return !string.IsNullOrEmpty(Language) ? CultureInfo.GetCultureInfo(Language.Trim()) : CultureInfo.CurrentCulture; }
-
+        public CultureInfo GetCulture() => !string.IsNullOrEmpty(Language) ? CultureInfo.GetCultureInfo(Language.Trim()) : CultureInfo.CurrentCulture;
         public DateTime LastModified { get; set; }
-
         public TenantStatus Status { get; internal set; }
-
         public DateTime StatusChangeDate { get; internal set; }
-
         public string PartnerId { get; set; }
-
         public string AffiliateId { get; set; }
-
         public string Campaign { get; set; }
-
         public string PaymentId { get; set; }
-
         public TenantIndustry Industry { get; set; }
-
         public bool Spam { get; set; }
-
         public bool Calls { get; set; }
 
         public void SetStatus(TenantStatus status)
@@ -119,7 +92,6 @@ namespace ASC.Core.Tenants
             Status = status;
             StatusChangeDate = DateTime.UtcNow;
         }
-
 
         public override bool Equals(object obj)
         {
@@ -136,11 +108,14 @@ namespace ASC.Core.Tenants
             return TenantAlias;
         }
 
-
         internal string GetTrustedDomains()
         {
             TrustedDomains.RemoveAll(d => string.IsNullOrEmpty(d));
-            if (TrustedDomains.Count == 0) return null;
+            if (TrustedDomains.Count == 0)
+            {
+                return null;
+            }
+
             return string.Join("|", TrustedDomains.ToArray());
         }
 

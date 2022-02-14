@@ -23,6 +23,7 @@
             modelBuilder
                 .Add(MySqlAddDbGroup, Provider.MySql)
                 .Add(PgSqlAddDbGroup, Provider.PostgreSql);
+
             return modelBuilder;
         }
         private static void MySqlAddDbGroup(this ModelBuilder modelBuilder)

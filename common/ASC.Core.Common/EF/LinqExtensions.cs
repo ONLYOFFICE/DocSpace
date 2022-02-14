@@ -9,6 +9,7 @@
 
             var method = typeof(Queryable).GetMethods().FirstOrDefault(m => m.Name == (sortOrderAsc ? "OrderBy" : "OrderByDescending") && m.GetParameters().Length == 2);
             var genericMethod = method.MakeGenericMethod(typeof(T), propInfo.PropertyType);
+
             return (IOrderedQueryable<T>)genericMethod.Invoke(null, new object[] { query, expr });
         }
 
@@ -19,6 +20,7 @@
 
             var method = typeof(Queryable).GetMethods().FirstOrDefault(m => m.Name == (sortOrderAsc ? "ThenBy" : "ThenByDescending") && m.GetParameters().Length == 2);
             var genericMethod = method.MakeGenericMethod(typeof(T), propInfo.PropertyType);
+
             return (IOrderedQueryable<T>)genericMethod.Invoke(null, new object[] { query, expr });
         }
 
@@ -28,7 +30,9 @@
             var properties = objType.GetProperties();
             var matchedProperty = properties.FirstOrDefault(p => p.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
             if (matchedProperty == null)
-                throw new ArgumentException("name");
+            {
+                throw new ArgumentException(nameof(name));
+            }
 
             return matchedProperty;
         }
@@ -37,6 +41,7 @@
             var paramExpr = Expression.Parameter(objType);
             var propAccess = Expression.PropertyOrField(paramExpr, pi.Name);
             var expr = Expression.Lambda(propAccess, paramExpr);
+
             return expr;
         }
     }

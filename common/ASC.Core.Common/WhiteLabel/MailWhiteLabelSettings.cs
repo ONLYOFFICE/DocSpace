@@ -29,23 +29,14 @@ namespace ASC.Web.Core.WhiteLabel
     public class MailWhiteLabelSettings : ISettings
     {
         public bool FooterEnabled { get; set; }
-
         public bool FooterSocialEnabled { get; set; }
-
         public string SupportUrl { get; set; }
-
         public string SupportEmail { get; set; }
-
         public string SalesEmail { get; set; }
-
         public string DemoUrl { get; set; }
-
         public string SiteUrl { get; set; }
 
-        public Guid ID
-        {
-            get { return new Guid("{C3602052-5BA2-452A-BD2A-ADD0FAF8EB88}"); }
-        }
+        public Guid ID => new Guid("{C3602052-5BA2-452A-BD2A-ADD0FAF8EB88}");
 
         public ISettings GetDefault(IConfiguration configuration)
         {
@@ -65,7 +56,10 @@ namespace ASC.Web.Core.WhiteLabel
 
         public bool IsDefault(IConfiguration configuration)
         {
-            if (!(GetDefault(configuration) is MailWhiteLabelSettings defaultSettings)) return false;
+            if (!(GetDefault(configuration) is MailWhiteLabelSettings defaultSettings))
+            {
+                return false;
+            }
 
             return FooterEnabled == defaultSettings.FooterEnabled &&
                     FooterSocialEnabled == defaultSettings.FooterSocialEnabled &&
@@ -96,14 +90,15 @@ namespace ASC.Web.Core.WhiteLabel
     {
         public MailWhiteLabelSettingsHelper(IConfiguration configuration)
         {
-            Configuration = configuration;
+            _configuration = configuration;
         }
 
         public string DefaultMailSupportUrl
         {
             get
             {
-                var url = BaseCommonLinkUtility.GetRegionalUrl(Configuration["web:support-feedback"] ?? string.Empty, null);
+                var url = BaseCommonLinkUtility.GetRegionalUrl(_configuration["web:support-feedback"] ?? string.Empty, null);
+
                 return !string.IsNullOrEmpty(url) ? url : "http://helpdesk.onlyoffice.com";
             }
         }
@@ -112,7 +107,8 @@ namespace ASC.Web.Core.WhiteLabel
         {
             get
             {
-                var email = Configuration["web:support:email"];
+                var email = _configuration["web:support:email"];
+
                 return !string.IsNullOrEmpty(email) ? email : "support@onlyoffice.com";
             }
         }
@@ -121,7 +117,8 @@ namespace ASC.Web.Core.WhiteLabel
         {
             get
             {
-                var email = Configuration["web:payment:email"];
+                var email = _configuration["web:payment:email"];
+
                 return !string.IsNullOrEmpty(email) ? email : "sales@onlyoffice.com";
             }
         }
@@ -130,7 +127,8 @@ namespace ASC.Web.Core.WhiteLabel
         {
             get
             {
-                var url = BaseCommonLinkUtility.GetRegionalUrl(Configuration["web:demo-order"] ?? string.Empty, null);
+                var url = BaseCommonLinkUtility.GetRegionalUrl(_configuration["web:demo-order"] ?? string.Empty, null);
+
                 return !string.IsNullOrEmpty(url) ? url : "http://www.onlyoffice.com/demo-order.aspx";
             }
         }
@@ -139,11 +137,12 @@ namespace ASC.Web.Core.WhiteLabel
         {
             get
             {
-                var url = Configuration["web:teamlab-site"];
+                var url = _configuration["web:teamlab-site"];
+
                 return !string.IsNullOrEmpty(url) ? url : "http://www.onlyoffice.com";
             }
         }
 
-        private IConfiguration Configuration { get; }
+        private readonly IConfiguration _configuration;
     }
 }

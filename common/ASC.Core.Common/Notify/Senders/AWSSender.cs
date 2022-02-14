@@ -30,27 +30,27 @@ namespace ASC.Core.Notify.Senders
     [Singletone(Additional = typeof(AWSSenderExtension))]
     public class AWSSender : SmtpSender
     {
-        private readonly object locker = new object();
-        private AmazonSimpleEmailServiceClient ses;
-        private TimeSpan refreshTimeout;
-        private DateTime lastRefresh;
-        private DateTime lastSend;
-        private TimeSpan sendWindow = TimeSpan.MinValue;
-        private GetSendQuotaResponse quota;
+        private readonly object _locker = new object();
+        private AmazonSimpleEmailServiceClient _ses;
+        private TimeSpan _refreshTimeout;
+        private DateTime _lastRefresh;
+        private DateTime _lastSend;
+        private TimeSpan _sendWindow = TimeSpan.MinValue;
+        private GetSendQuotaResponse _quota;
 
         public AWSSender(IServiceProvider serviceProvider,
             IOptionsMonitor<ILog> options) : base(serviceProvider, options)
         {
-            Log = options.Get("ASC.Notify.AmazonSES");
+            Logger = options.Get("ASC.Notify.AmazonSES");
         }
 
         public override void Init(IDictionary<string, string> properties)
         {
             base.Init(properties);
             var region = properties.ContainsKey("region") ? RegionEndpoint.GetBySystemName(properties["region"]) : RegionEndpoint.USEast1;
-            ses = new AmazonSimpleEmailServiceClient(properties["accessKey"], properties["secretKey"], region);
-            refreshTimeout = TimeSpan.Parse(properties.ContainsKey("refreshTimeout") ? properties["refreshTimeout"] : "0:30:0");
-            lastRefresh = DateTime.UtcNow - refreshTimeout; //set to refresh on first send
+            _ses = new AmazonSimpleEmailServiceClient(properties["accessKey"], properties["secretKey"], region);
+            _refreshTimeout = TimeSpan.Parse(properties.ContainsKey("refreshTimeout") ? properties["refreshTimeout"] : "0:30:0");
+            _lastRefresh = DateTime.UtcNow - _refreshTimeout; //set to refresh on first send
         }
 
         public override NoticeSendResult Send(NotifyMessage m)
@@ -60,7 +60,7 @@ namespace ASC.Core.Notify.Senders
             {
                 try
                 {
-                    Log.DebugFormat("Tenant: {0}, To: {1}", m.Tenant, m.To);
+                    Logger.DebugFormat("Tenant: {0}, To: {1}", m.Tenant, m.To);
                     using var scope = ServiceProvider.CreateScope();
                     var scopeClass = scope.ServiceProvider.GetService<AWSSenderScope>();
                     var (tenantManager, configuration) = scopeClass;
@@ -77,11 +77,11 @@ namespace ASC.Core.Notify.Senders
                         result = SendMessage(m);
                     }
 
-                    Log.DebugFormat(result.ToString());
+                    Logger.DebugFormat(result.ToString());
                 }
                 catch (Exception e)
                 {
-                    Log.ErrorFormat("Tenant: {0}, To: {1} - {2}", m.Tenant, m.To, e);
+                    Logger.ErrorFormat("Tenant: {0}, To: {1} - {2}", m.Tenant, m.To, e);
                     throw;
                 }
             }
@@ -104,9 +104,10 @@ namespace ASC.Core.Notify.Senders
 
             if (result == NoticeSendResult.MessageIncorrect || result == NoticeSendResult.SendingImpossible)
             {
-                Log.DebugFormat("Amazon sending failed: {0}, fallback to smtp", result);
+                Logger.DebugFormat("Amazon sending failed: {0}, fallback to smtp", result);
                 result = base.Send(m);
             }
+
             return result;
         }
 
@@ -114,15 +115,16 @@ namespace ASC.Core.Notify.Senders
         {
             //Check if we need to query stats
             RefreshQuotaIfNeeded();
-            if (quota != null)
+            if (_quota != null)
             {
-                lock (locker)
+                lock (_locker)
                 {
-                    if (quota.Max24HourSend <= quota.SentLast24Hours)
+                    if (_quota.Max24HourSend <= _quota.SentLast24Hours)
                     {
                         //Quota exceeded, queue next refresh to +24 hours
-                        lastRefresh = DateTime.UtcNow.AddHours(24);
-                        Log.WarnFormat("Quota limit reached. setting next check to: {0}", lastRefresh);
+                        _lastRefresh = DateTime.UtcNow.AddHours(24);
+                        Logger.WarnFormat("Quota limit reached. setting next check to: {0}", _lastRefresh);
+
                         return NoticeSendResult.SendingImpossible;
                     }
                 }
@@ -136,7 +138,7 @@ namespace ASC.Core.Notify.Senders
             var subject = new Content(MimeHeaderUtils.EncodeMime(m.Subject)) { Charset = Encoding.UTF8.WebName, };
 
             Body body;
-            if (m.ContentType == Pattern.HTMLContentType)
+            if (m.ContentType == Pattern.HtmlContentType)
             {
                 body = new Body(new Content(HtmlUtil.GetText(m.Content)) { Charset = Encoding.UTF8.WebName })
                 {
@@ -157,8 +159,8 @@ namespace ASC.Core.Notify.Senders
 
             ThrottleIfNeeded();
 
-            var response = ses.SendEmailAsync(request).Result;
-            lastSend = DateTime.UtcNow;
+            var response = _ses.SendEmailAsync(request).Result;
+            _lastSend = DateTime.UtcNow;
 
             return response != null ? NoticeSendResult.OK : NoticeSendResult.TryOnceAgain;
         }
@@ -167,14 +169,14 @@ namespace ASC.Core.Notify.Senders
         private void ThrottleIfNeeded()
         {
             //Check last send and throttle if needed
-            if (sendWindow != TimeSpan.MinValue)
+            if (_sendWindow != TimeSpan.MinValue)
             {
-                if (DateTime.UtcNow - lastSend <= sendWindow)
+                if (DateTime.UtcNow - _lastSend <= _sendWindow)
                 {
                     //Possible BUG: at high frequncies maybe bug with to little differences
                     //This means that time passed from last send is less then message per second
-                    Log.DebugFormat("Send rate doesn't fit in send window. sleeping for: {0}", sendWindow);
-                    Thread.Sleep(sendWindow);
+                    Logger.DebugFormat("Send rate doesn't fit in send window. sleeping for: {0}", _sendWindow);
+                    Thread.Sleep(_sendWindow);
                 }
             }
         }
@@ -183,24 +185,24 @@ namespace ASC.Core.Notify.Senders
         {
             if (!IsRefreshNeeded()) return;
 
-            lock (locker)
+            lock (_locker)
             {
                 if (IsRefreshNeeded())//Double check
                 {
-                    Log.DebugFormat("refreshing qouta. interval: {0} Last refresh was at: {1}", refreshTimeout, lastRefresh);
+                    Logger.DebugFormat("refreshing qouta. interval: {0} Last refresh was at: {1}", _refreshTimeout, _lastRefresh);
 
                     //Do quota refresh
-                    lastRefresh = DateTime.UtcNow.AddMinutes(1);
+                    _lastRefresh = DateTime.UtcNow.AddMinutes(1);
                     try
                     {
                         var r = new GetSendQuotaRequest();
-                        quota = ses.GetSendQuotaAsync(r).Result;
-                        sendWindow = TimeSpan.FromSeconds(1.0 / quota.MaxSendRate);
-                        Log.DebugFormat("quota: {0}/{1} at {2} mps. send window:{3}", quota.SentLast24Hours, quota.Max24HourSend, quota.MaxSendRate, sendWindow);
+                        _quota = _ses.GetSendQuotaAsync(r).Result;
+                        _sendWindow = TimeSpan.FromSeconds(1.0 / _quota.MaxSendRate);
+                        Logger.DebugFormat("quota: {0}/{1} at {2} mps. send window:{3}", _quota.SentLast24Hours, _quota.Max24HourSend, _quota.MaxSendRate, _sendWindow);
                     }
                     catch (Exception e)
                     {
-                        Log.Error("error refreshing quota", e);
+                        Logger.Error("error refreshing quota", e);
                     }
                 }
             }
@@ -208,25 +210,25 @@ namespace ASC.Core.Notify.Senders
 
         private bool IsRefreshNeeded()
         {
-            return quota == null || (DateTime.UtcNow - lastRefresh) > refreshTimeout;
+            return _quota == null || (DateTime.UtcNow - _lastRefresh) > _refreshTimeout;
         }
     }
 
     [Scope]
     public class AWSSenderScope
     {
-        private TenantManager TenantManager { get; }
-        private CoreConfiguration CoreConfiguration { get; }
+        private readonly TenantManager _tenantManager;
+        private readonly CoreConfiguration _coreConfiguration;
 
         public AWSSenderScope(TenantManager tenantManager, CoreConfiguration coreConfiguration)
         {
-            TenantManager = tenantManager;
-            CoreConfiguration = coreConfiguration;
+            _tenantManager = tenantManager;
+            _coreConfiguration = coreConfiguration;
         }
 
         public void Deconstruct(out TenantManager tenantManager, out CoreConfiguration coreConfiguration)
         {
-            (tenantManager, coreConfiguration) = (TenantManager, CoreConfiguration);
+            (tenantManager, coreConfiguration) = (_tenantManager, _coreConfiguration);
         }
     }
 

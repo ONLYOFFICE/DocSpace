@@ -29,14 +29,12 @@ namespace ASC.Notify.Messages
     public class NoticeMessage : INoticeMessage
     {
         [NonSerialized]
-        private readonly List<ITagValue> arguments = new List<ITagValue>();
+        private readonly List<ITagValue> _arguments = new List<ITagValue>();
 
         [NonSerialized]
-        private IPattern pattern;
+        private IPattern _pattern;
 
-        public NoticeMessage()
-        {
-        }
+        public NoticeMessage() { }
 
         public NoticeMessage(IDirectRecipient recipient, INotifyAction action, string objectID)
         {
@@ -68,16 +66,13 @@ namespace ASC.Notify.Messages
 
         public IPattern Pattern
         {
-            get { return pattern; }
-            internal set { pattern = value; }
+            get => _pattern;
+            internal set => _pattern = value;
         }
 
         public INotifyAction Action { get; private set; }
 
-        public ITagValue[] Arguments
-        {
-            get { return arguments.ToArray(); }
-        }
+        public ITagValue[] Arguments => _arguments.ToArray();
 
         public void AddArgument(params ITagValue[] tagValues)
         {
@@ -85,22 +80,20 @@ namespace ASC.Notify.Messages
             Array.ForEach(tagValues,
                 tagValue =>
                 {
-                    if (!arguments.Exists(tv => Equals(tv.Tag, tagValue.Tag)))
+                    if (!_arguments.Exists(tv => Equals(tv.Tag, tagValue.Tag)))
                     {
-                        arguments.Add(tagValue);
+                        _arguments.Add(tagValue);
                     }
                 });
         }
 
         public ITagValue GetArgument(string tag)
         {
-            return arguments.Find(r => r.Tag == tag);
+            return _arguments.Find(r => r.Tag == tag);
         }
 
         public string Subject { get; set; }
-
         public string Body { get; set; }
-
         public string ContentType { get; internal set; }
     }
 }

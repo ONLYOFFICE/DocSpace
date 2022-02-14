@@ -25,6 +25,7 @@
             modelBuilder
                 .Add(MySqlAddDbipLocation, Provider.MySql)
                 .Add(PgSqlAddDbipLocation, Provider.PostgreSql);
+
             return modelBuilder;
         }
         public static void MySqlAddDbipLocation(this ModelBuilder modelBuilder)

@@ -27,18 +27,8 @@ namespace ASC.Core.Users
 {
     public class UserSecurityProvider : ISecurityObject
     {
-        public Type ObjectType
-        {
-            get;
-            private set;
-        }
-
-        public object SecurityId
-        {
-            get;
-            private set;
-        }
-
+        public Type ObjectType { get; private set; }
+        public object SecurityId { get; private set; }
 
         public UserSecurityProvider(Guid userId)
         {
@@ -46,11 +36,7 @@ namespace ASC.Core.Users
             ObjectType = typeof(UserInfo);
         }
 
-
-        public bool ObjectRolesSupported
-        {
-            get { return true; }
-        }
+        public bool ObjectRolesSupported => true;
 
         public IEnumerable<IRole> GetObjectRoles(ISubject account, ISecurityObjectId objectId, SecurityCallContext callContext)
         {
@@ -59,13 +45,11 @@ namespace ASC.Core.Users
             {
                 roles.Add(ASC.Common.Security.Authorizing.Constants.Self);
             }
+
             return roles;
         }
 
-        public bool InheritSupported
-        {
-            get { return false; }
-        }
+        public bool InheritSupported => false;
 
         public ISecurityObjectId InheritFrom(ISecurityObjectId objectId)
         {

@@ -27,17 +27,14 @@ namespace ASC.Core.Encryption
 {
     public class EncryptionSettings
     {
-
-        internal string password;
-
+        internal string Pass;
         public string Password
         {
-            get { return password; }
-            set { password = (value ?? string.Empty).Replace('#', '_'); }
+            get => Pass;
+            set => Pass = (value ?? string.Empty).Replace('#', '_');
         }
 
         public EncryprtionStatus Status { get; set; }
-
         public bool NotifyUsers { get; set; }
 
         public EncryptionSettings(EncryptionSettingsProto encryptionSettingsProto)
@@ -58,30 +55,30 @@ namespace ASC.Core.Encryption
     [Scope]
     public class EncryptionSettingsHelper
     {
-        private const string key = "EncryptionSettings";
+        private const string Key = "EncryptionSettings";
 
-        private CoreConfiguration CoreConfiguration { get; }
-        private AscCacheNotify AscCacheNotify { get; }
-        private InstanceCrypto InstanceCrypto { get; }
+        private readonly CoreConfiguration _coreConfiguration;
+        private readonly AscCacheNotify _ascCacheNotify;
+        private readonly InstanceCrypto _instanceCrypto;
 
         public EncryptionSettingsHelper(CoreConfiguration coreConfiguration, AscCacheNotify ascCacheNotify, InstanceCrypto instanceCrypto)
         {
-            CoreConfiguration = coreConfiguration;
-            AscCacheNotify = ascCacheNotify;
-            InstanceCrypto = instanceCrypto;
+            _coreConfiguration = coreConfiguration;
+            _ascCacheNotify = ascCacheNotify;
+            _instanceCrypto = instanceCrypto;
         }
 
         public void Save(EncryptionSettings encryptionSettings)
         {
             var settings = Serialize(encryptionSettings);
-            CoreConfiguration.SaveSetting(key, settings);
+            _coreConfiguration.SaveSetting(Key, settings);
 
-            AscCacheNotify.ClearCache();
+            _ascCacheNotify.ClearCache();
         }
 
         public EncryptionSettings Load()
         {
-            var settings = CoreConfiguration.GetSetting(key);
+            var settings = _coreConfiguration.GetSetting(Key);
 
             return Deserialize(settings);
         }
@@ -89,7 +86,7 @@ namespace ASC.Core.Encryption
         public string Serialize(EncryptionSettings encryptionSettings)
         {
             return string.Join("#",
-                string.IsNullOrEmpty(encryptionSettings.password) ? string.Empty : InstanceCrypto.Encrypt(encryptionSettings.password),
+                string.IsNullOrEmpty(encryptionSettings.Pass) ? string.Empty : _instanceCrypto.Encrypt(encryptionSettings.Pass),
                 (int)encryptionSettings.Status,
                 encryptionSettings.NotifyUsers
             );
@@ -104,7 +101,7 @@ namespace ASC.Core.Encryption
 
             var parts = value.Split(new[] { '#' }, StringSplitOptions.None);
 
-            var password = string.IsNullOrEmpty(parts[0]) ? string.Empty : InstanceCrypto.Decrypt(parts[0]);
+            var password = string.IsNullOrEmpty(parts[0]) ? string.Empty : _instanceCrypto.Decrypt(parts[0]);
             var status = int.Parse(parts[1]);
             var notifyUsers = bool.Parse(parts[2]);
 

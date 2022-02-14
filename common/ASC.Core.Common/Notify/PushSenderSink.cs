@@ -29,22 +29,22 @@ namespace ASC.Core.Common.Notify
 {
     class PushSenderSink : Sink
     {
-        private readonly ILog _log;
-        private bool configured = true;
+        private readonly ILog _logger;
+        private bool _configured = true;
 
         public PushSenderSink(IServiceProvider serviceProvider)
         {
-            ServiceProvider = serviceProvider;
-            _log = ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
+            _serviceProvider = serviceProvider;
+            _logger = _serviceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
         }
 
-        private IServiceProvider ServiceProvider { get; }
+        private readonly IServiceProvider _serviceProvider;
 
         public override SendResponse ProcessMessage(INoticeMessage message)
         {
             try
             {
-                using var scope = ServiceProvider.CreateScope();
+                using var scope = _serviceProvider.CreateScope();
                 var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
 
                 var notification = new PushNotification
@@ -57,7 +57,7 @@ namespace ASC.Core.Common.Notify
                     ShortMessage = message.Subject
                 };
 
-                if (configured)
+                if (_configured)
                 {
                     try
                     {
@@ -70,13 +70,13 @@ namespace ASC.Core.Common.Notify
                     }
                     catch (InvalidOperationException)
                     {
-                        configured = false;
-                        _log.Debug("push sender endpoint is not configured!");
+                        _configured = false;
+                        _logger.Debug("push sender endpoint is not configured!");
                     }
                 }
                 else
                 {
-                    _log.Debug("push sender endpoint is not configured!");
+                    _logger.Debug("push sender endpoint is not configured!");
                 }
 
                 return new SendResponse(message, Constants.NotifyPushSenderSysName, SendResult.OK);
@@ -90,6 +90,7 @@ namespace ASC.Core.Common.Notify
         private T GetTagValue<T>(INoticeMessage message, string tagName)
         {
             var tag = message.Arguments.FirstOrDefault(arg => arg.Tag == tagName);
+
             return tag != null ? (T)tag.Value : default;
         }
     }

@@ -16,6 +16,7 @@
             modelBuilder
                 .Add(MySqlAddDbTenantPartner, Provider.MySql)
                 .Add(PgSqlAddDbTenantPartner, Provider.PostgreSql);
+
             return modelBuilder;
         }
         public static void MySqlAddDbTenantPartner(this ModelBuilder modelBuilder)

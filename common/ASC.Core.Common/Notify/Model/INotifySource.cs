@@ -28,7 +28,7 @@ namespace ASC.Notify.Model
 {
     public interface INotifySource
     {
-        string ID { get; }
+        string Id { get; }
 
         IActionProvider GetActionProvider();
 
