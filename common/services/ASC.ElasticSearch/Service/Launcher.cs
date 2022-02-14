@@ -63,7 +63,7 @@ namespace ASC.ElasticSearch
                         await Task.Delay(10000);
                     }
                     IndexAll(true);
-                }, CacheNotifyAction.Any);
+                }, Common.Caching.CacheNotifyAction.Any);
             }
             catch (Exception e)
             {
@@ -132,7 +132,7 @@ namespace ASC.ElasticSearch
                 }
 
                 Timer.Change(Period, Period);
-                IndexNotify.Publish(new IndexAction() { Indexing = "", LastIndexed = DateTime.Now.Ticks }, CacheNotifyAction.Any);
+                IndexNotify.Publish(new IndexAction() { Indexing = "", LastIndexed = DateTime.Now.Ticks }, Common.Caching.CacheNotifyAction.Any);
                 IsStarted = false;
             }
             catch (Exception e)
@@ -165,7 +165,7 @@ namespace ASC.ElasticSearch
                 if (!IsStarted) return;
 
                 Log.DebugFormat("Product {0}", product.IndexName);
-                IndexNotify.Publish(new IndexAction() { Indexing = product.IndexName, LastIndexed = 0 }, CacheNotifyAction.Any);
+                IndexNotify.Publish(new IndexAction() { Indexing = product.IndexName, LastIndexed = 0 }, Common.Caching.CacheNotifyAction.Any);
                 product.IndexAll();
             }
             catch (Exception e)

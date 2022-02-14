@@ -23,87 +23,89 @@
  *
 */
 
-namespace ASC.Common.Logging
+namespace ASC.Common.Logging;
+
+public class SelfCleaningAppender : RollingFileAppender
 {
-    public class SelfCleaningAppender : RollingFileAppender
+    private static DateTime _lastCleanDate;
+    private static int? _cleanPeriod;
+
+    protected override void Append(LoggingEvent loggingEvent)
     {
-        private static DateTime _lastCleanDate;
-
-        private static int? _cleanPeriod;
-
-        private static int GetCleanPeriod()
+        if (DateTime.UtcNow.Date > _lastCleanDate.Date)
         {
-            if (_cleanPeriod != null)
-                return _cleanPeriod.Value;
-
-            const string key = "CleanPeriod";
-
-            var value = 30;
-
-            var repo = log4net.LogManager.GetRepository(Assembly.GetCallingAssembly());
-
-            if (repo != null && repo.Properties.GetKeys().Contains(key))
-            {
-                int.TryParse(repo.Properties[key].ToString(), out value);
-            }
-
-            _cleanPeriod = value;
-
-            return value;
+            _lastCleanDate = DateTime.UtcNow.Date;
+            Clean();
         }
 
-        private void Clean()
+        base.Append(loggingEvent);
+    }
+
+    protected override void Append(LoggingEvent[] loggingEvents)
+    {
+        if (DateTime.UtcNow.Date > _lastCleanDate.Date)
         {
-            try
-            {
-                if (string.IsNullOrEmpty(File))
-                    return;
-
-                var fileInfo = new FileInfo(File);
-
-                if (!fileInfo.Exists)
-                    return;
-
-                var directory = fileInfo.Directory;
-
-                if (directory == null || !directory.Exists)
-                    return;
-
-                var files = directory.GetFiles();
-
-                var cleanPeriod = GetCleanPeriod();
-
-                foreach (var file in files.Where(file => (DateTime.UtcNow.Date - file.CreationTimeUtc.Date).Days > cleanPeriod))
-                {
-                    file.Delete();
-                }
-            }
-            catch (Exception err)
-            {
-                LogLog.Error(GetType(), err.Message, err);
-            }
+            _lastCleanDate = DateTime.UtcNow.Date;
+            Clean();
         }
 
-        protected override void Append(LoggingEvent loggingEvent)
-        {
-            if (DateTime.UtcNow.Date > _lastCleanDate.Date)
-            {
-                _lastCleanDate = DateTime.UtcNow.Date;
-                Clean();
-            }
+        base.Append(loggingEvents);
+    }
 
-            base.Append(loggingEvent);
+    private static int GetCleanPeriod()
+    {
+        if (_cleanPeriod != null)
+        {
+            return _cleanPeriod.Value;
         }
 
-        protected override void Append(LoggingEvent[] loggingEvents)
+        const string key = "CleanPeriod";
+
+        var value = 30;
+
+        var repo = log4net.LogManager.GetRepository(Assembly.GetCallingAssembly());
+        if (repo != null && repo.Properties.GetKeys().Contains(key))
         {
-            if (DateTime.UtcNow.Date > _lastCleanDate.Date)
+            int.TryParse(repo.Properties[key].ToString(), out value);
+        }
+
+        _cleanPeriod = value;
+
+        return value;
+    }
+
+    private void Clean()
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(File))
             {
-                _lastCleanDate = DateTime.UtcNow.Date;
-                Clean();
+                return;
             }
 
-            base.Append(loggingEvents);
+            var fileInfo = new FileInfo(File);
+            if (!fileInfo.Exists)
+            {
+                return;
+            }
+
+            var directory = fileInfo.Directory;
+            if (directory == null || !directory.Exists)
+            {
+                return;
+            }
+
+            var files = directory.GetFiles();
+            var cleanPeriod = GetCleanPeriod();
+
+            foreach (var file in files.Where(file => (DateTime.UtcNow.Date - file.CreationTimeUtc.Date).Days > cleanPeriod))
+            {
+                file.Delete();
+            }
+        }
+        catch (Exception err)
+        {
+            LogLog.Error(GetType(), err.Message, err);
         }
     }
 }

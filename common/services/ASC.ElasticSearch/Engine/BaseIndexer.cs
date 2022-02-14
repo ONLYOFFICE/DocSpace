@@ -37,13 +37,13 @@ namespace ASC.ElasticSearch
             Notify = cacheNotify;
             Notify.Subscribe((a) =>
             {
-                IsExist.AddOrUpdate(a.Id, false, (q, w) => false);
-            }, CacheNotifyAction.Any);
+                IsExist.AddOrUpdate(a.Id, false, (string q, bool w) => false);
+            }, Common.Caching.CacheNotifyAction.Any);
         }
 
         public void Clear<T>(T t) where T : class, ISearchItem
         {
-            Notify.Publish(new ClearIndexAction() { Id = t.IndexName }, CacheNotifyAction.Any);
+            Notify.Publish(new ClearIndexAction() { Id = t.IndexName }, Common.Caching.CacheNotifyAction.Any);
         }
     }
 
