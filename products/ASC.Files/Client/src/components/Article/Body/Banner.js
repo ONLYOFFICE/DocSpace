@@ -49,13 +49,13 @@ const Banner = () => {
       index++;
     }
 
+    localStorage.setItem("bannerIndex", index);
+
     const image = await getImage(currentCampaign);
     const translate = await getTranslation(currentCampaign, language);
 
     setCampaignImage(image);
     setCampaignTranslate(translate);
-
-    localStorage.setItem("bannerIndex", index);
   };
 
   useEffect(() => {
