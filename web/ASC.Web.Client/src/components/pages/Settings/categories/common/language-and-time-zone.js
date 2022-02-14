@@ -330,6 +330,7 @@ class LanguageAndTimeZone extends React.Component {
       timezones,
       timezone,
       showReminder,
+      hasChanged,
     } = this.state;
 
     const tooltipLanguageTimeSettings = (
@@ -410,6 +411,7 @@ class LanguageAndTimeZone extends React.Component {
             cancelButtonLabel={t("Common:CancelButton")}
             displaySettings={true}
             sectionWidth={sectionWidth}
+            hasChanged={hasChanged}
           />
         </StyledComponent>
       </>
