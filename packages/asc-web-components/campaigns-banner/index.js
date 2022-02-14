@@ -33,10 +33,10 @@ const CampaignsBanner = (props) => {
         </Text>
 
         <div className="banner-img-wrapper">
+          <img src={img} onMouseDown={onMouseDown} onLoad={handleImageLoaded} />
           {!imageLoad && (
             <Loaders.Rectangle height="160px" borderRadius="5px" />
           )}
-          <img src={img} onMouseDown={onMouseDown} onLoad={handleImageLoaded} />
         </div>
       </a>
 
