@@ -1,7 +1,7 @@
-import React from 'react';
+import React from "react";
 
-import SelectorAddButton from '@appserver/components/selector-add-button';
-import Heading from '@appserver/components/heading';
+import SelectorAddButton from "@appserver/components/selector-add-button";
+import Heading from "@appserver/components/heading";
 
 import {
   StyledFilterBlockItem,
@@ -16,10 +16,10 @@ import {
   StyledFilterBlockItemToggleText,
   StyledFilterBlockItemToggleButton,
   StyledFilterBlockItemSeparator,
-} from './StyledFilterBlock';
+} from "./StyledFilterBlock";
 
-import TickIcon from '../svg/tick.react.svg';
-import XIcon from '../svg/x.react.svg';
+import TickIcon from "../svg/tick.react.svg";
+import XIcon from "../svg/x.react.svg";
 
 const FilterBlockItem = ({
   group,
@@ -35,24 +35,31 @@ const FilterBlockItem = ({
   };
 
   const showSelectorAction = (event, isAuthor, group, selectedItems, ref) => {
-    console.log(event.target, ref);
-    const target = event.target;
-    // let i = 0;
-    // while (i < 10) {
-    //   newTarget = event.
-    // }
+    let target = event.target;
+
+    while (!!target.parentNode) {
+      target = target.parentNode;
+
+      if (target === ref) {
+        changeFilterValue && changeFilterValue(group, [], true);
+        return;
+      }
+    }
+
     showSelector && showSelector(isAuthor, group, selectedItems);
   };
 
   const getSelectorItem = (item) => {
     const clearSelectorRef = React.useRef(null);
 
-    const isAuthor = item.key === 'user';
+    const isAuthor = item.key === "user";
 
     return !item.isSelected ? (
       <StyledFilterBlockItemSelector key={item.key}>
         <SelectorAddButton
-          onClick={(event) => showSelectorAction(event, isAuthor, item.group, [])}
+          onClick={(event) =>
+            showSelectorAction(event, isAuthor, item.group, [])
+          }
         />
         <StyledFilterBlockItemSelectorText noSelect={true}>
           {label}
@@ -68,15 +75,19 @@ const FilterBlockItem = ({
             isAuthor,
             item.group,
             item.selectedItem,
-            clearSelectorRef.current,
+            clearSelectorRef.current
           )
-        }>
-        <StyledFilterBlockItemTagText noSelect={true} isSelected={item.isSelected}>
-          {item.selectedItem.length} users
+        }
+      >
+        <StyledFilterBlockItemTagText
+          noSelect={true}
+          isSelected={item.isSelected}
+        >
+          1 user
         </StyledFilterBlockItemTagText>
         {item.isSelected && (
           <StyledFilterBlockItemTagIcon ref={clearSelectorRef}>
-            <XIcon style={{ marginTop: '2px' }} />
+            <XIcon style={{ marginTop: "2px" }} />
           </StyledFilterBlockItemTagIcon>
         )}
       </StyledFilterBlockItemTag>
@@ -102,8 +113,12 @@ const FilterBlockItem = ({
       <StyledFilterBlockItemTag
         key={item.key}
         isSelected={item.isSelected}
-        onClick={() => changeFilterValueAction(item.key, item.isSelected)}>
-        <StyledFilterBlockItemTagText noSelect={true} isSelected={item.isSelected}>
+        onClick={() => changeFilterValueAction(item.key, item.isSelected)}
+      >
+        <StyledFilterBlockItemTagText
+          noSelect={true}
+          isSelected={item.isSelected}
+        >
           {item.label}
         </StyledFilterBlockItemTagText>
         {item.isSelected && (

@@ -1,19 +1,22 @@
-import React from 'react';
+import React from "react";
 
-import Backdrop from '@appserver/components/backdrop';
-import Button from '@appserver/components/button';
-import Heading from '@appserver/components/heading';
-import IconButton from '@appserver/components/icon-button';
+import Aside from "@appserver/components/aside";
+import Backdrop from "@appserver/components/backdrop";
+import Button from "@appserver/components/button";
+import Heading from "@appserver/components/heading";
+import IconButton from "@appserver/components/icon-button";
 
-import FilterBlockItem from './FilterBlockItem';
+import FilterBlockItem from "./FilterBlockItem";
 
-import Selector from './Selector';
+// import Selector from "./Selector";
+
+import PeopleSelector from "people/PeopleSelector"; //TODO: Move out PeopleSelector  of FilterItem
 
 import {
   StyledFilterBlock,
   StyledFilterBlockHeader,
   StyledFilterBlockFooter,
-} from './StyledFilterBlock';
+} from "./StyledFilterBlock";
 
 //TODO: fix translate
 const FilterBlock = ({
@@ -22,11 +25,12 @@ const FilterBlock = ({
   getFilterData,
   hideFilterBlock,
   onFilter,
+  addUserHeader,
 }) => {
   const [showSelector, setShowSelector] = React.useState({
     show: false,
     isAuthor: false,
-    group: '',
+    group: "",
     selectedItems: [],
   });
 
@@ -35,7 +39,12 @@ const FilterBlock = ({
 
   const changeShowSelector = (isAuthor, group, selectedItems) => {
     setShowSelector((val) => {
-      return { show: !val.show, isAuthor: isAuthor, group: group, selectedItems: selectedItems };
+      return {
+        show: !val.show,
+        isAuthor: isAuthor,
+        group: group,
+        selectedItems: selectedItems,
+      };
     });
   };
 
@@ -104,7 +113,9 @@ const FilterBlock = ({
     const items = data.filter((item) => item.isHeader === true);
 
     items.forEach((item) => {
-      const groupItem = data.filter((val) => val.group === item.group && val.isHeader !== true);
+      const groupItem = data.filter(
+        (val) => val.group === item.group && val.isHeader !== true
+      );
 
       groupItem.forEach((item) => (item.isSelected = false));
 
@@ -115,8 +126,12 @@ const FilterBlock = ({
       selectedFilterData.filterValues.forEach((value) => {
         items.forEach((item) => {
           if (item.group === value.group) {
+            console.log(item);
             item.groupItem.forEach((groupItem) => {
-              if (groupItem.key === value.key) {
+              if (
+                groupItem.key === value.key ||
+                (groupItem.selectedItem && groupItem.selectedItem.key)
+              ) {
                 groupItem.isSelected = true;
               }
             });
@@ -134,25 +149,42 @@ const FilterBlock = ({
     hideFilterBlock();
   };
 
+  const onArrowClick = () => {
+    setShowSelector((val) => ({ ...val, show: false }));
+  };
+
+  const selectOption = (items) => {
+    setShowSelector((val) => ({
+      ...val,
+      show: false,
+      selectedItems: [...items],
+    }));
+
+    changeFilterValue(showSelector.group, items[0].key, false);
+  };
+
   return (
     <>
       {showSelector.show ? (
-        <Selector
-          headerLabel="Add users"
-          selectedItems={showSelector.selectedItems}
-          groupType={showSelector.group}
-          isAuthor={showSelector.isAuthor}
-          hideSelector={changeShowSelector}
-          changeFilterValue={changeFilterValue}
-        />
+        <>
+          <StyledFilterBlock>
+            <PeopleSelector
+              className="people-selector"
+              isOpen={showSelector.show}
+              withoutAside={true}
+              isMultiSelect={false}
+              onSelect={selectOption}
+              onArrowClick={onArrowClick}
+              headerLabel={addUserHeader}
+            />
+          </StyledFilterBlock>
+        </>
       ) : (
         <StyledFilterBlock>
           <StyledFilterBlockHeader>
             <Heading size="medium">{contextMenuHeader}</Heading>
             <IconButton
               iconName="/static/images/clear.react.svg"
-              color="#A3A9AE"
-              hoverColor="#657077"
               isFill={true}
               onClick={clearFilter}
               size={17}
@@ -185,7 +217,11 @@ const FilterBlock = ({
         </StyledFilterBlock>
       )}
 
-      <Backdrop visible={true} withBackground={true} onClick={hideFilterBlock} />
+      <Backdrop
+        visible={true}
+        withBackground={true}
+        onClick={hideFilterBlock}
+      />
     </>
   );
 };

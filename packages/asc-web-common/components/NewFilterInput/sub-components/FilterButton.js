@@ -1,12 +1,18 @@
-import React from 'react';
+import React from "react";
 
-import IconButton from '@appserver/components/icon-button';
+import IconButton from "@appserver/components/icon-button";
 
-import FilterBlock from './FilterBlock';
+import FilterBlock from "./FilterBlock";
 
-import StyledButton from './StyledButton';
+import StyledButton from "./StyledButton";
 
-const FilterButton = ({ selectedFilterData, contextMenuHeader, getFilterData, onFilter }) => {
+const FilterButton = ({
+  selectedFilterData,
+  contextMenuHeader,
+  getFilterData,
+  onFilter,
+  addUserHeader,
+}) => {
   const [showFilterBlock, setShowFilterBlock] = React.useState(false);
 
   const changeShowFilterBlock = React.useCallback(() => {
@@ -26,6 +32,7 @@ const FilterButton = ({ selectedFilterData, contextMenuHeader, getFilterData, on
           hideFilterBlock={changeShowFilterBlock}
           getFilterData={getFilterData}
           onFilter={onFilter}
+          addUserHeader={addUserHeader}
         />
       )}
     </>

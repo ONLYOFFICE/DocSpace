@@ -1,14 +1,14 @@
-import Text from '@appserver/components/text';
-import styled, { css } from 'styled-components';
+import Text from "@appserver/components/text";
+import styled, { css } from "styled-components";
 
-import ToggleButton from '@appserver/components/toggle-button';
+import ToggleButton from "@appserver/components/toggle-button";
 
 const StyledFilterBlock = styled.div`
   position: fixed;
   top: 0;
   right: 0;
 
-  width: 425px;
+  width: 480px;
   height: 100vh;
 
   z-index: 400;
@@ -17,20 +17,37 @@ const StyledFilterBlock = styled.div`
   flex-direction: column;
 
   background: #fff;
+
+  .people-selector {
+    height: 100%;
+    width: 100%;
+
+    .selector-wrapper,
+    .column-options {
+      width: 100%;
+    }
+  }
 `;
 
 const StyledFilterBlockHeader = styled.div`
-  height: 52px;
-  min-height: 52px;
+  height: 53px;
+  min-height: 53px;
 
   padding: 0 16px;
   margin: 0;
 
-  border-bottom: 1px solid #eceef1;
+  box-sizing: border-box;
+
+  border-bottom: ${(props) =>
+    props.isSelector ? "none" : "1px solid #eceef1"};
 
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: ${(props) => (props.isSelector ? "start" : "space-between")};
+
+  .arrow-button {
+    margin-right: 12px;
+  }
 
   svg {
     cursor: pointer;
@@ -38,7 +55,8 @@ const StyledFilterBlockHeader = styled.div`
 `;
 
 const StyledFilterBlockItem = styled.div`
-  padding: ${(props) => (!props.withoutHeader ? '12px 16px 0px 16px' : '6px 16px 0px 16px')};
+  padding: ${(props) =>
+    !props.withoutHeader ? "12px 16px 0px 16px" : "6px 16px 0px 16px"};
 
   display: flex;
   flex-direction: column;
@@ -54,7 +72,7 @@ const StyledFilterBlockItemHeader = styled.div`
 `;
 
 const StyledFilterBlockItemContent = styled.div`
-  margin-top: ${(props) => !props.withoutHeader && '12px'};
+  margin-top: ${(props) => !props.withoutHeader && "12px"};
 
   height: fit-content;
 
@@ -169,7 +187,7 @@ const StyledFilterBlockFooter = styled.div`
 
   z-index: 401;
 
-  width: 425px;
+  width: 480px;
   height: 72px;
   min-height: 72px;
 
