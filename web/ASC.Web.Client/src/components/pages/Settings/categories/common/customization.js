@@ -13,7 +13,9 @@ import { inject, observer } from "mobx-react";
 import { AppServerConfig } from "@appserver/common/constants";
 import withCultureNames from "@appserver/common/hoc/withCultureNames";
 import LanguageAndTimeZone from "./language-and-time-zone";
+import CustomTitles from "./custom-titles";
 import { Base } from "@appserver/components/themes";
+import { Consumer } from "@appserver/components/utils/context";
 
 const mapTimezonesToArray = (timezones) => {
   return timezones.map((timezone) => {
@@ -56,8 +58,6 @@ const StyledComponent = styled.div`
   }
 
   .category-item-wrapper {
-    margin-bottom: 40px;
-
     /* .category-item-heading {
       display: flex;
       align-items: center;
@@ -208,62 +208,50 @@ class Customization extends React.Component {
     const { t, helpUrlCommonSettings, customNames, theme } = this.props;
 
     return (
-      <StyledComponent>
-        <div className="category-item-wrapper">
-          <LanguageAndTimeZone />
-        </div>
-        <div className="category-item-wrapper">
-          <div className="category-item-heading">
-            <Link
-              truncate={true}
-              className="inherit-title-link header"
-              onClick={this.onClickLink}
-              href={combineUrl(
-                AppServerConfig.proxyURL,
-                "/settings/common/customization/custom-titles"
-              )}
-            >
-              {t("CustomTitles")}
-            </Link>
-            <StyledArrowRightIcon size="small" />
-          </div>
-          <Text className="category-item-description">
-            {t("CustomTitlesSettingsDescription")}
-          </Text>
-        </div>
-        <div className="category-item-wrapper">
-          <div className="category-item-heading">
-            <Link
-              truncate={true}
-              className="inherit-title-link header"
-              onClick={this.onClickLink}
-              href={combineUrl(
-                AppServerConfig.proxyURL,
-                "/settings/common/customization/team-template"
-              )}
-            >
-              {t("TeamTemplate")}
-            </Link>
-            <StyledArrowRightIcon size="small" />
-          </div>
-          <Box marginProp="4px 0 6px 0">
-            <Text fontWeight="600">{`${customNames.name}`}</Text>
-          </Box>
-          <Text className="category-item-description">
-            {t("TeamTemplateSettingsDescription")}
-          </Text>
-          <Box marginProp="16px 0 0 0">
-            <Link
-              color={theme.studio.settings.common.linkColorHelp}
-              target="_blank"
-              isHovered={true}
-              href={helpUrlCommonSettings}
-            >
-              {t("Common:LearnMore")}
-            </Link>
-          </Box>
-        </div>
-      </StyledComponent>
+      <Consumer>
+        {(context) => (
+          <StyledComponent>
+            <div className="category-item-wrapper">
+              <LanguageAndTimeZone sectionWidth={context.sectionWidth} />
+            </div>
+            <div className="category-item-wrapper">
+              <CustomTitles sectionWidth={context.sectionWidth} />
+            </div>
+            <div className="category-item-wrapper">
+              <div className="category-item-heading">
+                <Link
+                  truncate={true}
+                  className="inherit-title-link header"
+                  onClick={this.onClickLink}
+                  href={combineUrl(
+                    AppServerConfig.proxyURL,
+                    "/settings/common/customization/team-template"
+                  )}
+                >
+                  {t("TeamTemplate")}
+                </Link>
+                <StyledArrowRightIcon size="small" />
+              </div>
+              <Box marginProp="4px 0 6px 0">
+                <Text fontWeight="600">{`${customNames.name}`}</Text>
+              </Box>
+              <Text className="category-item-description">
+                {t("TeamTemplateSettingsDescription")}
+              </Text>
+              <Box marginProp="16px 0 0 0">
+                <Link
+                  color={theme.studio.settings.common.linkColorHelp}
+                  target="_blank"
+                  isHovered={true}
+                  href={helpUrlCommonSettings}
+                >
+                  {t("Common:LearnMore")}
+                </Link>
+              </Box>
+            </div>
+          </StyledComponent>
+        )}
+      </Consumer>
     );
   }
 }

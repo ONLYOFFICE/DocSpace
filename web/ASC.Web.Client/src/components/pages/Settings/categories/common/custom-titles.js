@@ -5,12 +5,13 @@ import FieldContainer from "@appserver/components/field-container";
 import Loader from "@appserver/components/loader";
 import toastr from "@appserver/components/toast/toastr";
 import TextInput from "@appserver/components/text-input";
-import Link from "@appserver/components/link";
+import HelpButton from "@appserver/components/help-button";
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 import { showLoader, hideLoader } from "@appserver/common/utils";
 import { saveToSessionStorage, getFromSessionStorage } from "../../utils";
 import { setDocumentTitle } from "../../../../../helpers/utils";
 import { inject, observer } from "mobx-react";
+import { CustomTitlesTooltip } from "./sub-components/common-tooltips";
 
 const StyledComponent = styled.div`
   .margin-top {
@@ -25,15 +26,25 @@ const StyledComponent = styled.div`
     margin-bottom: 70px;
   }
 
-  .field-container-width {
-    max-width: 500px;
+  .settings-block {
+    max-width: 350px;
   }
 
   .combo-button-label {
     max-width: 100%;
   }
-  .link-wrapper {
-    margin-top: 8px;
+
+  .category-item-heading {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .category-item-title {
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 22px;
+    margin-right: 4px;
   }
 `;
 
@@ -138,31 +149,6 @@ class CustomTitles extends React.Component {
     });
   };
 
-  onCancelClick = () => {
-    settingNames.forEach((currentSetting) => {
-      const valueFromSessionStorage = getFromSessionStorage(currentSetting);
-
-      if (
-        valueFromSessionStorage &&
-        !this.settingIsEqualInitialValue(
-          currentSetting,
-          valueFromSessionStorage
-        )
-      ) {
-        const defaultValue = this.state[currentSetting + "Default"];
-
-        this.setState({ [currentSetting]: defaultValue });
-        saveToSessionStorage(currentSetting, "");
-      }
-    });
-
-    this.setState({
-      showReminder: false,
-    });
-
-    this.checkChanges();
-  };
-
   settingIsEqualInitialValue = (stateName, value) => {
     const defaultValue = JSON.stringify(this.state[stateName + "Default"]);
     const currentValue = JSON.stringify(value);
@@ -189,26 +175,35 @@ class CustomTitles extends React.Component {
   };
 
   render() {
-    const { t, theme } = this.props;
+    const { t, theme, sectionWidth } = this.props;
     const {
       isLoadedData,
       greetingTitle,
       isLoadingGreetingSave,
       isLoadingGreetingRestore,
-      hasChanged,
       showReminder,
     } = this.state;
+
+    const tooltipCustomTitlesTooltip = <CustomTitlesTooltip t={t} />;
 
     return !isLoadedData ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
       <>
         <StyledComponent>
+          <div className="category-item-heading">
+            <div className="category-item-title">{t("WelcomePageTitle")}</div>
+            <HelpButton
+              iconName="static/images/combined.shape.svg"
+              size={12}
+              tooltipContent={tooltipCustomTitlesTooltip}
+            />
+          </div>
           <div className="settings-block">
             <FieldContainer
               id="fieldContainerWelcomePage"
               className="field-container-width"
-              labelText={`${t("WelcomePageTitle")}:`}
+              labelText={`${t("Title")}:`}
               isVertical={true}
             >
               <TextInput
@@ -216,28 +211,20 @@ class CustomTitles extends React.Component {
                 value={greetingTitle}
                 onChange={this.onChangeGreetingTitle}
                 isDisabled={isLoadingGreetingSave || isLoadingGreetingRestore}
+                placeholder={`${t("Cloud Office Applications")}`}
               />
-              <div className="link-wrapper">
-                <Link
-                  onClick={this.onRestoreGreetingSettings}
-                  type="action"
-                  color={theme.studio.settings.common.linkColor}
-                >
-                  {t("SetDefaultTitle")}
-                </Link>
-              </div>
             </FieldContainer>
           </div>
-          {hasChanged && (
-            <SaveCancelButtons
-              onSaveClick={this.onSaveGreetingSettings}
-              onCancelClick={this.onCancelClick}
-              showReminder={showReminder}
-              reminderTest={t("YouHaveUnsavedChanges")}
-              saveButtonLabel={t("Common:SaveButton")}
-              cancelButtonLabel={t("Common:CancelButton")}
-            />
-          )}
+          <SaveCancelButtons
+            onSaveClick={this.onSaveGreetingSettings}
+            onCancelClick={this.onRestoreGreetingSettings}
+            showReminder={showReminder}
+            reminderTest={t("YouHaveUnsavedChanges")}
+            saveButtonLabel={t("Common:SaveButton")}
+            cancelButtonLabel={t("Settings:RestoreDefaultButton")}
+            displaySettings={true}
+            sectionWidth={sectionWidth}
+          />
         </StyledComponent>
       </>
     );

@@ -14,7 +14,7 @@ import { inject, observer } from "mobx-react";
 import { LANGUAGE } from "@appserver/common/constants";
 import { convertLanguage } from "@appserver/common/utils";
 import withCultureNames from "@appserver/common/hoc/withCultureNames";
-import LanguageTimeSettingsTooltip from "./sub-components/common-tooltips";
+import { LanguageTimeSettingsTooltip } from "./sub-components/common-tooltips";
 const mapTimezonesToArray = (timezones) => {
   return timezones.map((timezone) => {
     return { key: timezone.id, label: timezone.displayName };
@@ -38,8 +38,8 @@ const StyledComponent = styled.div`
     margin-bottom: 24px;
   }
 
-  .field-container-width {
-    max-width: 500px;
+  .settings-block {
+    max-width: 350px;
   }
 
   .combo-button-label {
@@ -47,7 +47,7 @@ const StyledComponent = styled.div`
   }
 
   .field-container-flex {
-    max-width: 500px;
+    width: 100%;
     display: flex;
     justify-content: space-between;
     margin-top: 8px;
@@ -62,12 +62,6 @@ const StyledComponent = styled.div`
   .title {
     font-weight: 600;
     line-height: 20px;
-  }
-
-  .save-cancel-buttons {
-    /* position: inherit;
-    display: block;
-    padding: 0; */
   }
 
   .category-item-heading {
@@ -233,6 +227,9 @@ class LanguageAndTimeZone extends React.Component {
       saveToSessionStorage("language", "");
     } else {
       saveToSessionStorage("language", language);
+      this.setState({
+        showReminder: true,
+      });
     }
     this.checkChanges();
   };
@@ -243,6 +240,9 @@ class LanguageAndTimeZone extends React.Component {
       saveToSessionStorage("timezone", "");
     } else {
       saveToSessionStorage("timezone", timezone);
+      this.setState({
+        showReminder: true,
+      });
     }
 
     this.checkChanges();
@@ -322,14 +322,13 @@ class LanguageAndTimeZone extends React.Component {
   };
 
   render() {
-    const { t, theme, cultureNames } = this.props;
+    const { t, theme, cultureNames, sectionWidth } = this.props;
     const {
       isLoadedData,
       language,
       isLoading,
       timezones,
       timezone,
-      hasChanged,
       showReminder,
     } = this.state;
 
@@ -401,18 +400,17 @@ class LanguageAndTimeZone extends React.Component {
               />
             </FieldContainer>
           </div>
-          {hasChanged && (
-            <SaveCancelButtons
-              className="save-cancel-buttons"
-              onSaveClick={this.onSaveLngTZSettings}
-              onCancelClick={this.onCancelClick}
-              showReminder={showReminder}
-              reminderTest={t("YouHaveUnsavedChanges")}
-              saveButtonLabel={t("Common:SaveButton")}
-              cancelButtonLabel={t("Common:CancelButton")}
-              displaySettings={false}
-            />
-          )}
+          <SaveCancelButtons
+            className="save-cancel-buttons"
+            onSaveClick={this.onSaveLngTZSettings}
+            onCancelClick={this.onCancelClick}
+            showReminder={showReminder}
+            reminderTest={t("YouHaveUnsavedChanges")}
+            saveButtonLabel={t("Common:SaveButton")}
+            cancelButtonLabel={t("Common:CancelButton")}
+            displaySettings={true}
+            sectionWidth={sectionWidth}
+          />
         </StyledComponent>
       </>
     );

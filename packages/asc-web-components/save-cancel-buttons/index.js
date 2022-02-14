@@ -43,6 +43,7 @@ class SaveCancelButtons extends React.Component {
       reminderTest,
       saveButtonLabel,
       cancelButtonLabel,
+      sectionWidth,
       className,
       id,
     } = this.props;
@@ -51,8 +52,10 @@ class SaveCancelButtons extends React.Component {
         className={className}
         id={id}
         displaySettings={displaySettings}
+        sectionWidth={sectionWidth}
+        showReminder={showReminder}
       >
-        <div className="save-button-flex">
+        <div className="buttons-flex">
           <Button
             className="save-button"
             size="big"
@@ -95,6 +98,7 @@ SaveCancelButtons.propTypes = {
   /** Show message about unsaved changes (Only shown on desktops) */
   showReminder: PropTypes.bool,
   displaySettings: PropTypes.bool,
+  sectionWidth: PropTypes.number,
 };
 
 SaveCancelButtons.defaultProps = {
