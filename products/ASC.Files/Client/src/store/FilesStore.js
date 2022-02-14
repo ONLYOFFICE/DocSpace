@@ -98,6 +98,8 @@ class FilesStore {
 
             const file = JSON.parse(opt?.data);
 
+            file.fileStatus |= FileStatus.IsNew;
+
             const newFiles = [file, ...this.files];
 
             if (newFiles.length > this.filter.pageCount) {
@@ -623,18 +625,17 @@ class FilesStore {
       (this.userStore.user && this.userStore.user.isVisitor) || false;
     const isFile = !!item.fileExst || item.contentLength;
     const isFavorite =
-      item.fileStatus === 32 ||
-      item.fileStatus === 33 ||
-      item.fileStatus === 34;
+      (item.fileStatus & FileStatus.IsFavorite) === FileStatus.IsFavorite;
     const isFullAccess = item.access < 2;
     const withoutShare = false; //TODO: need this prop
     const isThirdPartyItem = !!item.providerKey;
     const hasNew =
-      item.new > 0 || item.fileStatus === 2 || item.fileStatus === 34;
+      item.new > 0 || (item.fileStatus & FileStatus.IsNew) === FileStatus.IsNew;
     const canConvert = false; //TODO: fix of added convert check;
     const isEncrypted = item.encrypted;
     const isDocuSign = false; //TODO: need this prop;
-    const isEditing = item.fileStatus === 1;
+    const isEditing =
+      (item.fileStatus & FileStatus.IsEditing) === FileStatus.IsEditing;
     const isFileOwner = item.createdBy.id === this.userStore.user.id;
 
     const {
@@ -1165,12 +1166,12 @@ class FilesStore {
 
   updateFileBadge = (id) => {
     const file = this.files.find((x) => x.id === id);
-    if (file) file.fileStatus = 0;
+    if (file) file.fileStatus = file.fileStatus & ~FileStatus.IsEditing;
   };
 
   updateFilesBadge = () => {
     for (let file of this.files) {
-      file.fileStatus = 0;
+      file.fileStatus = file.fileStatus & ~FileStatus.IsEditing;
     }
   };
 
@@ -1422,7 +1423,8 @@ class FilesStore {
         : null;
 
       const needConvert = canConvert(fileExst);
-      const isEditing = item.fileStatus === 1;
+      const isEditing =
+        (item.fileStatus & FileStatus.IsEditing) === FileStatus.IsEditing;
 
       const docUrl = combineUrl(
         AppServerConfig.proxyURL,

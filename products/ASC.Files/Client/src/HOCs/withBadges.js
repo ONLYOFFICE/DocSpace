@@ -3,6 +3,7 @@ import { inject, observer } from "mobx-react";
 import {
   ShareAccessRights,
   AppServerConfig,
+  FileStatus,
 } from "@appserver/common/constants";
 import toastr from "@appserver/components/toast/toastr";
 import { combineUrl } from "@appserver/common/utils";
@@ -91,7 +92,8 @@ export default function withBadges(WrappedComponent) {
       } = this.props;
       const { fileStatus, access } = item;
 
-      const newItems = item.new || fileStatus === 2;
+      const newItems =
+        item.new || (fileStatus & FileStatus.IsNew) === FileStatus.IsNew;
       const showNew = !!newItems;
 
       const accessToEdit =
