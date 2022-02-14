@@ -183,14 +183,13 @@ class SsoFormStore {
 
     this[fieldTouched] = true;
 
-    const validateResult = this.validate(value, this.getFieldType(field));
-
-    if (typeof validateResult !== "string") {
+    try {
+      this.validate(value, this.getFieldType(field));
       this[fieldError] = false;
       this[fieldErrorMessage] = null;
-    } else {
+    } catch (err) {
       this[fieldError] = true;
-      this[fieldErrorMessage] = validateResult;
+      this[fieldErrorMessage] = err.message;
     }
   };
 
@@ -205,11 +204,12 @@ class SsoFormStore {
   validate = (string, type) => {
     string = string.trim();
 
-    if (string.length === 0) return "EmptyFieldErrorMessage";
+    if (string.length === 0) throw new Error("EmptyFieldErrorMessage");
 
     if (type === "string") return true;
 
-    return regExps[type].test(string) ? true : `${type}ErrorMessage`;
+    if (regExps[type].test(string)) return true;
+    else throw new Error(`${type}ErrorMessage`);
   };
 }
 
