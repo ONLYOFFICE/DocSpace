@@ -23,14 +23,30 @@ const FilterInput = ({
   ...props
 }) => {
   const [viewSettings, setViewSettings] = React.useState([]);
+  const [inputValue, setInputValue] = React.useState("");
+
+  React.useEffect(() => {
+    setInputValue(
+      !!selectedFilterData.inputValue ? selectedFilterData.inputValue : ""
+    );
+  }, [selectedFilterData]);
 
   React.useEffect(() => {
     getViewSettingsData && setViewSettings(getViewSettingsData());
   }, [getViewSettingsData]);
 
+  const onClearSearch = () => {
+    onSearch && onSearch();
+  };
+
   return (
     <StyledFilterInput sectionWidth={sectionWidth}>
-      <StyledSearchInput placeholder={placeholder} onChange={onSearch} />
+      <StyledSearchInput
+        placeholder={placeholder}
+        value={inputValue}
+        onChange={onSearch}
+        onClearSearch={onClearSearch}
+      />
 
       <FilterButton
         selectedFilterData={selectedFilterData}
