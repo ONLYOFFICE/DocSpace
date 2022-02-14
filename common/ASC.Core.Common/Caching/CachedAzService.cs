@@ -29,15 +29,15 @@ namespace ASC.Core.Caching;
 class AzServiceCache
 {
     internal ICache Cache { get; }
-    internal ICacheNotify<AzRecordCache> EventBusAzRecord { get; }
+    internal ICacheNotify<AzRecordCache> AzRecordCacheNotify { get; }
 
-    public AzServiceCache(ICacheNotify<AzRecordCache> eventBus, ICache cache)
+    public AzServiceCache(ICacheNotify<AzRecordCache> azRecordCacheNotify, ICache cache)
     {
-        EventBusAzRecord = eventBus;
+        AzRecordCacheNotify = azRecordCacheNotify;
         Cache = cache;
 
-        eventBus.Subscribe((r) => UpdateCache(r, true), CacheNotifyAction.Remove);
-        eventBus.Subscribe((r) => UpdateCache(r, false), CacheNotifyAction.InsertOrUpdate);
+        azRecordCacheNotify.Subscribe((r) => UpdateCache(r, true), CacheNotifyAction.Remove);
+        azRecordCacheNotify.Subscribe((r) => UpdateCache(r, false), CacheNotifyAction.InsertOrUpdate);
     }
 
     public static string GetKey(int tenant)
@@ -69,7 +69,7 @@ class AzServiceCache
 class CachedAzService : IAzService
 {
     private readonly IAzService _service;
-    private readonly ICacheNotify<AzRecordCache> _eventBusAzRecord;
+    private readonly ICacheNotify<AzRecordCache> _azRecordCacheNotify;
     private readonly ICache _cache;
     private TimeSpan _cacheExpiration;
 
@@ -77,7 +77,7 @@ class CachedAzService : IAzService
     {
         _service = service ?? throw new ArgumentNullException(nameof(service));
         _cache = azServiceCache.Cache;
-        _eventBusAzRecord = azServiceCache.EventBusAzRecord;
+        _azRecordCacheNotify = azServiceCache.AzRecordCacheNotify;
         _cacheExpiration = TimeSpan.FromMinutes(10);
     }
 
@@ -97,7 +97,7 @@ class CachedAzService : IAzService
     public AzRecord SaveAce(int tenant, AzRecord r)
     {
         r = _service.SaveAce(tenant, r);
-        _eventBusAzRecord.Publish(r, CacheNotifyAction.InsertOrUpdate);
+        _azRecordCacheNotify.Publish(r, CacheNotifyAction.InsertOrUpdate);
 
         return r;
     }
@@ -105,6 +105,6 @@ class CachedAzService : IAzService
     public void RemoveAce(int tenant, AzRecord r)
     {
         _service.RemoveAce(tenant, r);
-        _eventBusAzRecord.Publish(r, CacheNotifyAction.Remove);
+        _azRecordCacheNotify.Publish(r, CacheNotifyAction.Remove);
     }
 }

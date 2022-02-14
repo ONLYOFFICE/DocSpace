@@ -28,34 +28,34 @@ namespace ASC.Core.Common.Notify;
 [Singletone]
 public class TelegramServiceClient : ITelegramService
 {
-    private readonly ICacheNotify<NotifyMessage> _eventBusNotifyMessage;
-    private readonly ICacheNotify<RegisterUserProto> _eventBusRegisterUser;
-    private readonly ICacheNotify<CreateClientProto> _eventBusCreateClient;
-    private readonly ICacheNotify<DisableClientProto> _eventBusDisableClient;
+    private readonly ICacheNotify<NotifyMessage> _messageCacheNotify;
+    private readonly ICacheNotify<RegisterUserProto> _registerUserCacheNotify;
+    private readonly ICacheNotify<CreateClientProto> _createClientCacheNotify;
+    private readonly ICacheNotify<DisableClientProto> _disableClientCacheNotify;
     private readonly ICache _cache;
 
-    public TelegramServiceClient(ICacheNotify<NotifyMessage> cacheMessage,
-        ICacheNotify<RegisterUserProto> cacheRegisterUser,
-        ICacheNotify<CreateClientProto> cacheCreateClient,
-        ICacheNotify<DisableClientProto> cacheDisableClient,
+    public TelegramServiceClient(ICacheNotify<NotifyMessage> messageCacheNotify,
+        ICacheNotify<RegisterUserProto> registerUserCacheNotify,
+        ICacheNotify<CreateClientProto> createClientCacheNotify,
+        ICacheNotify<DisableClientProto> disableClientCacheNotify,
         ICache cache)
     {
-        _eventBusNotifyMessage = cacheMessage;
-        _eventBusRegisterUser = cacheRegisterUser;
-        _eventBusCreateClient = cacheCreateClient;
-        _eventBusDisableClient = cacheDisableClient;
+        _messageCacheNotify = messageCacheNotify;
+        _registerUserCacheNotify = registerUserCacheNotify;
+        _createClientCacheNotify = createClientCacheNotify;
+        _disableClientCacheNotify = disableClientCacheNotify;
         _cache = cache;
     }
 
     public void SendMessage(NotifyMessage m)
     {
-        _eventBusNotifyMessage.Publish(m, CacheNotifyAction.Insert);
+        _messageCacheNotify.Publish(m, CacheNotifyAction.Insert);
     }
 
     public void RegisterUser(string userId, int tenantId, string token)
     {
         _cache.Insert(GetCacheTokenKey(tenantId, userId), token, DateTime.MaxValue);
-        _eventBusRegisterUser.Publish(new RegisterUserProto()
+        _registerUserCacheNotify.Publish(new RegisterUserProto()
         {
             UserId = userId,
             TenantId = tenantId,
@@ -65,7 +65,7 @@ public class TelegramServiceClient : ITelegramService
 
     public void CreateOrUpdateClient(int tenantId, string token, int tokenLifespan, string proxy)
     {
-        _eventBusCreateClient.Publish(new CreateClientProto()
+        _createClientCacheNotify.Publish(new CreateClientProto()
         {
             TenantId = tenantId,
             Token = token,
@@ -76,7 +76,7 @@ public class TelegramServiceClient : ITelegramService
 
     public void DisableClient(int tenantId)
     {
-        _eventBusDisableClient.Publish(new DisableClientProto() { TenantId = tenantId }, CacheNotifyAction.Insert);
+        _disableClientCacheNotify.Publish(new DisableClientProto() { TenantId = tenantId }, CacheNotifyAction.Insert);
     }
 
     public string RegistrationToken(string userId, int tenantId)

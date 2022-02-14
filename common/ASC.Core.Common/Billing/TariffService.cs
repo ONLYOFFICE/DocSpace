@@ -29,13 +29,13 @@ namespace ASC.Core.Billing;
 public class TariffServiceStorage
 {
     public ICache Cache { get; }
-    internal ICacheNotify<TariffCacheItem> EventBusTariff { get; }
+    internal ICacheNotify<TariffCacheItem> TariffCacheNotify { get; }
 
-    public TariffServiceStorage(ICacheNotify<TariffCacheItem> eventBus, ICache cache)
+    public TariffServiceStorage(ICacheNotify<TariffCacheItem> tariffCacheNotify, ICache cache)
     {
         Cache = cache;
-        EventBusTariff = eventBus;
-        EventBusTariff.Subscribe((i) =>
+        TariffCacheNotify = tariffCacheNotify;
+        TariffCacheNotify.Subscribe((i) =>
         {
             Cache.Remove(TariffService.GetTariffCacheKey(i.TenantId));
             Cache.Remove(TariffService.GetBillingUrlCacheKey(i.TenantId));
@@ -111,7 +111,7 @@ class ConfigureTariffService : IConfigureNamedOptions<TariffService>
         int.TryParse(_configuration["core:payment:delay"], out var paymentDelay);
         options.PaymentDelay = paymentDelay;
         options.Cache = _tariffServiceStorage.Cache;
-        options.EventBus = _tariffServiceStorage.EventBusTariff;
+        options.TariffCacheNotify = _tariffServiceStorage.TariffCacheNotify;
 
         options.QuotaService = _quotaService.Value;
         options.TenantService = _tenantService.Value;
@@ -124,7 +124,7 @@ public class TariffService : ITariffService
     public TimeSpan CacheExpiration { get; set; }
     public BillingClient BillingClient { get; }
     internal ICache Cache { get; set; }
-    internal ICacheNotify<TariffCacheItem> EventBus { get; set; }
+    internal ICacheNotify<TariffCacheItem> TariffCacheNotify { get; set; }
     internal ILog Logger { get; set; }
     internal IQuotaService QuotaService { get; set; }
     internal ITenantService TenantService { get; set; }
@@ -177,7 +177,7 @@ public class TariffService : ITariffService
         PaymentDelay = paymentDelay;
 
         Cache = TariffServiceStorage.Cache;
-        EventBus = TariffServiceStorage.EventBusTariff;
+        TariffCacheNotify = TariffServiceStorage.TariffCacheNotify;
         LazyCoreDbContext = new Lazy<CoreDbContext>(() => coreDbContextManager.Value);
         var range = (Configuration["core.payment-user-range"] ?? "").Split('-');
 
@@ -285,7 +285,7 @@ public class TariffService : ITariffService
     }
 
     public void ClearCache(int tenantId) =>
-        EventBus.Publish(new TariffCacheItem { TenantId = tenantId }, CacheNotifyAction.Remove);
+        TariffCacheNotify.Publish(new TariffCacheItem { TenantId = tenantId }, CacheNotifyAction.Remove);
 
     public IEnumerable<PaymentInfo> GetPayments(int tenantId)
     {

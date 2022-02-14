@@ -29,16 +29,16 @@ namespace ASC.Core.Caching;
 class SubscriptionServiceCache
 {
     internal ICache Cache { get; }
-    internal ICacheNotify<SubscriptionRecord> EventBusRecord { get; }
-    internal ICacheNotify<SubscriptionMethodCache> EventBusMethod { get; }
+    internal ICacheNotify<SubscriptionRecord> SubRecordCacheNotify { get; }
+    internal ICacheNotify<SubscriptionMethodCache> SubMethodCacheNoify { get; }
 
-    public SubscriptionServiceCache(ICacheNotify<SubscriptionRecord> eventBusRecord, ICacheNotify<SubscriptionMethodCache> eventBustMethod, ICache cache)
+    public SubscriptionServiceCache(ICacheNotify<SubscriptionRecord> subRecordCacheNotify, ICacheNotify<SubscriptionMethodCache> subMethodCacheNotify, ICache cache)
     {
         Cache = cache;
-        EventBusRecord = eventBusRecord;
-        EventBusMethod = eventBustMethod;
+        SubRecordCacheNotify = subRecordCacheNotify;
+        SubMethodCacheNoify = subMethodCacheNotify;
 
-        eventBusRecord.Subscribe((s) =>
+        subRecordCacheNotify.Subscribe((s) =>
         {
             var store = GetSubsciptionsStore(s.Tenant, s.SourceId, s.ActionId);
             if (store != null)
@@ -50,7 +50,7 @@ class SubscriptionServiceCache
             }
         }, CacheNotifyAction.InsertOrUpdate);
 
-        eventBusRecord.Subscribe((s) =>
+        subRecordCacheNotify.Subscribe((s) =>
         {
             var store = GetSubsciptionsStore(s.Tenant, s.SourceId, s.ActionId);
             if (store != null)
@@ -69,7 +69,7 @@ class SubscriptionServiceCache
             }
         }, CacheNotifyAction.Remove);
 
-        eventBustMethod.Subscribe((m) =>
+        subMethodCacheNotify.Subscribe((m) =>
         {
             var store = GetSubsciptionsStore(m.Tenant, m.SourceId, m.ActionId);
             if (store != null)
@@ -98,16 +98,16 @@ class CachedSubscriptionService : ISubscriptionService
 {
     private readonly ISubscriptionService _service;
     private readonly ICache _cache;
-    private readonly ICacheNotify<SubscriptionRecord> _eventBusRecord;
-    private readonly ICacheNotify<SubscriptionMethodCache> _eventBusMethod;
+    private readonly ICacheNotify<SubscriptionRecord> _subRecordCacheNotify;
+    private readonly ICacheNotify<SubscriptionMethodCache> _subMethodCacheNotify;
     private TimeSpan _cacheExpiration;
 
     public CachedSubscriptionService(DbSubscriptionService service, SubscriptionServiceCache subscriptionServiceCache)
     {
         _service = service ?? throw new ArgumentNullException(nameof(service));
         _cache = subscriptionServiceCache.Cache;
-        _eventBusRecord = subscriptionServiceCache.EventBusRecord;
-        _eventBusMethod = subscriptionServiceCache.EventBusMethod;
+        _subRecordCacheNotify = subscriptionServiceCache.SubRecordCacheNotify;
+        _subMethodCacheNotify = subscriptionServiceCache.SubMethodCacheNoify;
         _cacheExpiration = TimeSpan.FromMinutes(5);
     }
 
@@ -151,19 +151,19 @@ class CachedSubscriptionService : ISubscriptionService
     public void SaveSubscription(SubscriptionRecord s)
     {
         _service.SaveSubscription(s);
-        _eventBusRecord.Publish(s, CacheNotifyAction.InsertOrUpdate);
+        _subRecordCacheNotify.Publish(s, CacheNotifyAction.InsertOrUpdate);
     }
 
     public void RemoveSubscriptions(int tenant, string sourceId, string actionId)
     {
         _service.RemoveSubscriptions(tenant, sourceId, actionId);
-        _eventBusRecord.Publish(new SubscriptionRecord { Tenant = tenant, SourceId = sourceId, ActionId = actionId }, CacheNotifyAction.Remove);
+        _subRecordCacheNotify.Publish(new SubscriptionRecord { Tenant = tenant, SourceId = sourceId, ActionId = actionId }, CacheNotifyAction.Remove);
     }
 
     public void RemoveSubscriptions(int tenant, string sourceId, string actionId, string objectId)
     {
         _service.RemoveSubscriptions(tenant, sourceId, actionId, objectId);
-        _eventBusRecord.Publish(new SubscriptionRecord { Tenant = tenant, SourceId = sourceId, ActionId = actionId, ObjectId = objectId }, CacheNotifyAction.Remove);
+        _subRecordCacheNotify.Publish(new SubscriptionRecord { Tenant = tenant, SourceId = sourceId, ActionId = actionId, ObjectId = objectId }, CacheNotifyAction.Remove);
     }
 
     public IEnumerable<SubscriptionMethod> GetSubscriptionMethods(int tenant, string sourceId, string actionId, string recipientId)
@@ -178,7 +178,7 @@ class CachedSubscriptionService : ISubscriptionService
     public void SetSubscriptionMethod(SubscriptionMethod m)
     {
         _service.SetSubscriptionMethod(m);
-        _eventBusMethod.Publish(m, CacheNotifyAction.Any);
+        _subMethodCacheNotify.Publish(m, CacheNotifyAction.Any);
     }
 
     public bool IsUnsubscribe(int tenant, string sourceId, string actionId, string recipientId, string objectId)

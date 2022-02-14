@@ -29,31 +29,31 @@ namespace ASC.Core.Caching;
 class TenantServiceCache
 {
     internal ICache Cache { get; }
-    internal ICacheNotify<TenantCacheItem> EventBusItem { get; }
-    internal ICacheNotify<TenantSetting> EventBustSettings { get; }
+    internal ICacheNotify<TenantCacheItem> TenantCacheNotify { get; }
+    internal ICacheNotify<TenantSetting> TenantSettingsCacheNotify { get; }
 
     private const string Key = "tenants";
     private TimeSpan _cacheExpiration;
 
     public TenantServiceCache(
         CoreBaseSettings coreBaseSettings,
-        ICacheNotify<TenantCacheItem> eventBusItem,
-        ICacheNotify<TenantSetting> eventBustSettings,
+        ICacheNotify<TenantCacheItem> tenantCacheNotify,
+        ICacheNotify<TenantSetting> tenantSettingsCacheNotify,
         ICache cache)
     {
-        EventBusItem = eventBusItem;
-        EventBustSettings = eventBustSettings;
+        TenantCacheNotify = tenantCacheNotify;
+        TenantSettingsCacheNotify = tenantSettingsCacheNotify;
         Cache = cache;
         _cacheExpiration = TimeSpan.FromMinutes(2);
 
-        eventBusItem.Subscribe((t) =>
+        tenantCacheNotify.Subscribe((t) =>
         {
             var tenants = GetTenantStore();
             tenants.Remove(t.TenantId);
             tenants.Clear(coreBaseSettings);
         }, CacheNotifyAction.InsertOrUpdate);
 
-        eventBustSettings.Subscribe((s) =>
+        tenantSettingsCacheNotify.Subscribe((s) =>
         {
             Cache.Remove(s.Key);
         }, CacheNotifyAction.Remove);
@@ -185,8 +185,8 @@ class ConfigureCachedTenantService : IConfigureNamedOptions<CachedTenantService>
     {
         options.Service = _service.Value;
         options.TenantServiceCache = _tenantServiceCache;
-        options.CacheNotifyItem = _tenantServiceCache.EventBusItem;
-        options.CacheNotifySettings = _tenantServiceCache.EventBustSettings;
+        options.CacheNotifyItem = _tenantServiceCache.TenantCacheNotify;
+        options.CacheNotifySettings = _tenantServiceCache.TenantSettingsCacheNotify;
     }
 }
 
@@ -208,8 +208,8 @@ class CachedTenantService : ITenantService
         _cache = cache;
         Service = service ?? throw new ArgumentNullException(nameof(service));
         TenantServiceCache = tenantServiceCache;
-        CacheNotifyItem = tenantServiceCache.EventBusItem;
-        CacheNotifySettings = tenantServiceCache.EventBustSettings;
+        CacheNotifyItem = tenantServiceCache.TenantCacheNotify;
+        CacheNotifySettings = tenantServiceCache.TenantSettingsCacheNotify;
     }
 
     public void ValidateDomain(string domain)

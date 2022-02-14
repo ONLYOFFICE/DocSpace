@@ -30,9 +30,9 @@ public class NotifyServiceSender : INotifySender
     public NotifyServiceClient NotifyServiceClient { get; }
 
     public NotifyServiceSender(
-        ICacheNotify<NotifyMessage> eventBusNotifyMessage,
-        ICacheNotify<NotifyInvoke> eventBusNotifyInvoke) =>
-        NotifyServiceClient = new NotifyServiceClient(eventBusNotifyMessage, eventBusNotifyInvoke);
+        ICacheNotify<NotifyMessage> messageCacheNotify,
+        ICacheNotify<NotifyInvoke> invokeCacheNotify) =>
+        NotifyServiceClient = new NotifyServiceClient(messageCacheNotify, invokeCacheNotify);
 
     public void Init(IDictionary<string, string> properties) { }
 

@@ -32,18 +32,18 @@ public class DbSettingsManagerCache
 {
     public ICache Cache { get; }
 
-    private readonly ICacheNotify<SettingsCacheItem> _eventBusSettingsItem;
+    private readonly ICacheNotify<SettingsCacheItem> _settingsCacheNotify;
 
-    public DbSettingsManagerCache(ICacheNotify<SettingsCacheItem> eventBustSettingsItem, ICache cache)
+    public DbSettingsManagerCache(ICacheNotify<SettingsCacheItem> settingsCacheNotify, ICache cache)
     {
         Cache = cache;
-        _eventBusSettingsItem = eventBustSettingsItem;
-        _eventBusSettingsItem.Subscribe((i) => Cache.Remove(i.Key), CacheNotifyAction.Remove);
+        _settingsCacheNotify = settingsCacheNotify;
+        _settingsCacheNotify.Subscribe((i) => Cache.Remove(i.Key), CacheNotifyAction.Remove);
     }
 
     public void Remove(string key)
     {
-        _eventBusSettingsItem.Publish(new SettingsCacheItem { Key = key }, CacheNotifyAction.Remove);
+        _settingsCacheNotify.Publish(new SettingsCacheItem { Key = key }, CacheNotifyAction.Remove);
     }
 }
 

@@ -34,32 +34,32 @@ public class UserServiceCache
 
     internal ICache Cache { get; }
     internal CoreBaseSettings CoreBaseSettings { get; }
-    internal ICacheNotify<UserInfoCacheItem> EventBusUserInfoItem { get; }
-    internal ICacheNotify<UserPhotoCacheItem> EventBusUserPhotoItem { get; }
-    internal ICacheNotify<GroupCacheItem> EventBusGroupCacheItem { get; }
-    internal ICacheNotify<UserGroupRefCacheItem> EventBusUserGroupRefItem { get; }
+    internal ICacheNotify<UserInfoCacheItem> UserInfoCacheNotify { get; }
+    internal ICacheNotify<UserPhotoCacheItem> UserPhotoCacheNotify { get; }
+    internal ICacheNotify<GroupCacheItem> GroupCacheNotify { get; }
+    internal ICacheNotify<UserGroupRefCacheItem> UserGroupRefCacheNotify { get; }
 
     public UserServiceCache(
         CoreBaseSettings coreBaseSettings,
-        ICacheNotify<UserInfoCacheItem> cacheUserInfoItem,
-        ICacheNotify<UserPhotoCacheItem> cacheUserPhotoItem,
-        ICacheNotify<GroupCacheItem> cacheGroupCacheItem,
-        ICacheNotify<UserGroupRefCacheItem> cacheUserGroupRefItem,
+        ICacheNotify<UserInfoCacheItem> userInfoCacheNotify,
+        ICacheNotify<UserPhotoCacheItem> userPhotoCacheNotify,
+        ICacheNotify<GroupCacheItem> groupCacheNotify,
+        ICacheNotify<UserGroupRefCacheItem> userGroupRefCacheNotify,
         ICache cache)
     {
         Cache = cache;
         CoreBaseSettings = coreBaseSettings;
-        EventBusUserInfoItem = cacheUserInfoItem;
-        EventBusUserPhotoItem = cacheUserPhotoItem;
-        EventBusGroupCacheItem = cacheGroupCacheItem;
-        EventBusUserGroupRefItem = cacheUserGroupRefItem;
+        UserInfoCacheNotify = userInfoCacheNotify;
+        UserPhotoCacheNotify = userPhotoCacheNotify;
+        GroupCacheNotify = groupCacheNotify;
+        UserGroupRefCacheNotify = userGroupRefCacheNotify;
 
-        cacheUserInfoItem.Subscribe((u) => InvalidateCache(u), CacheNotifyAction.Any);
-        cacheUserPhotoItem.Subscribe((p) => Cache.Remove(p.Key), CacheNotifyAction.Remove);
-        cacheGroupCacheItem.Subscribe((g) => InvalidateCache(), CacheNotifyAction.Any);
+        userInfoCacheNotify.Subscribe((u) => InvalidateCache(u), CacheNotifyAction.Any);
+        userPhotoCacheNotify.Subscribe((p) => Cache.Remove(p.Key), CacheNotifyAction.Remove);
+        groupCacheNotify.Subscribe((g) => InvalidateCache(), CacheNotifyAction.Any);
 
-        cacheUserGroupRefItem.Subscribe((r) => UpdateUserGroupRefCache(r, true), CacheNotifyAction.Remove);
-        cacheUserGroupRefItem.Subscribe((r) => UpdateUserGroupRefCache(r, false), CacheNotifyAction.InsertOrUpdate);
+        userGroupRefCacheNotify.Subscribe((r) => UpdateUserGroupRefCache(r, true), CacheNotifyAction.Remove);
+        userGroupRefCacheNotify.Subscribe((r) => UpdateUserGroupRefCache(r, false), CacheNotifyAction.InsertOrUpdate);
     }
 
     public void InvalidateCache()
@@ -158,10 +158,10 @@ class ConfigureCachedUserService : IConfigureNamedOptions<CachedUserService>
         options.CoreBaseSettings = CoreBaseSettings;
         options.UserServiceCache = UserServiceCache;
         options.Cache = UserServiceCache.Cache;
-        options.EventBusUserInfoItem = UserServiceCache.EventBusUserInfoItem;
-        options.EventBusPhotoItem = UserServiceCache.EventBusUserPhotoItem;
-        options.EventBusGroupCacheItem = UserServiceCache.EventBusGroupCacheItem;
-        options.EventBusUserGroupRefItem = UserServiceCache.EventBusUserGroupRefItem;
+        options.UserInfoCacheNotify = UserServiceCache.UserInfoCacheNotify;
+        options.UserPhotoCacheNotify = UserServiceCache.UserPhotoCacheNotify;
+        options.GroupCacheNotify = UserServiceCache.GroupCacheNotify;
+        options.UserGroupRefCacheNotify = UserServiceCache.UserGroupRefCacheNotify;
     }
 }
 
@@ -173,10 +173,10 @@ public class CachedUserService : IUserService, ICachedService
     internal TrustInterval TrustInterval { get; set; }
     internal CoreBaseSettings CoreBaseSettings { get; set; }
     internal UserServiceCache UserServiceCache { get; set; }
-    internal ICacheNotify<UserInfoCacheItem> EventBusUserInfoItem { get; set; }
-    internal ICacheNotify<UserPhotoCacheItem> EventBusPhotoItem { get; set; }
-    internal ICacheNotify<GroupCacheItem> EventBusGroupCacheItem { get; set; }
-    internal ICacheNotify<UserGroupRefCacheItem> EventBusUserGroupRefItem { get; set; }
+    internal ICacheNotify<UserInfoCacheItem> UserInfoCacheNotify { get; set; }
+    internal ICacheNotify<UserPhotoCacheItem> UserPhotoCacheNotify { get; set; }
+    internal ICacheNotify<GroupCacheItem> GroupCacheNotify { get; set; }
+    internal ICacheNotify<UserGroupRefCacheItem> UserGroupRefCacheNotify { get; set; }
 
     private TimeSpan _cacheExpiration;
     private TimeSpan _photoExpiration;
@@ -197,10 +197,10 @@ public class CachedUserService : IUserService, ICachedService
         CoreBaseSettings = coreBaseSettings;
         UserServiceCache = userServiceCache;
         Cache = userServiceCache.Cache;
-        EventBusUserInfoItem = userServiceCache.EventBusUserInfoItem;
-        EventBusPhotoItem = userServiceCache.EventBusUserPhotoItem;
-        EventBusGroupCacheItem = userServiceCache.EventBusGroupCacheItem;
-        EventBusUserGroupRefItem = userServiceCache.EventBusUserGroupRefItem;
+        UserInfoCacheNotify = userServiceCache.UserInfoCacheNotify;
+        UserPhotoCacheNotify = userServiceCache.UserPhotoCacheNotify;
+        GroupCacheNotify = userServiceCache.GroupCacheNotify;
+        UserGroupRefCacheNotify = userServiceCache.UserGroupRefCacheNotify;
     }
 
     public IQueryable<UserInfo> GetUsers(
@@ -262,7 +262,7 @@ public class CachedUserService : IUserService, ICachedService
     public UserInfo SaveUser(int tenant, UserInfo user)
     {
         user = Service.SaveUser(tenant, user);
-        EventBusUserInfoItem.Publish(new UserInfoCacheItem { Id = user.Id.ToString(), Tenant = tenant }, CacheNotifyAction.Any);
+        UserInfoCacheNotify.Publish(new UserInfoCacheItem { Id = user.Id.ToString(), Tenant = tenant }, CacheNotifyAction.Any);
 
         return user;
     }
@@ -270,7 +270,7 @@ public class CachedUserService : IUserService, ICachedService
     public void RemoveUser(int tenant, Guid id)
     {
         Service.RemoveUser(tenant, id);
-        EventBusUserInfoItem.Publish(new UserInfoCacheItem { Tenant = tenant, Id = id.ToString() }, CacheNotifyAction.Any);
+        UserInfoCacheNotify.Publish(new UserInfoCacheItem { Tenant = tenant, Id = id.ToString() }, CacheNotifyAction.Any);
     }
 
     public byte[] GetUserPhoto(int tenant, Guid id)
@@ -288,7 +288,7 @@ public class CachedUserService : IUserService, ICachedService
     public void SetUserPhoto(int tenant, Guid id, byte[] photo)
     {
         Service.SetUserPhoto(tenant, id, photo);
-        EventBusPhotoItem.Publish(new UserPhotoCacheItem { Key = UserServiceCache.GetUserPhotoCacheKey(tenant, id) }, CacheNotifyAction.Remove);
+        UserPhotoCacheNotify.Publish(new UserPhotoCacheItem { Key = UserServiceCache.GetUserPhotoCacheKey(tenant, id) }, CacheNotifyAction.Remove);
     }
 
     public DateTime GetUserPasswordStamp(int tenant, Guid id)
@@ -322,7 +322,7 @@ public class CachedUserService : IUserService, ICachedService
     public Group SaveGroup(int tenant, Group group)
     {
         group = Service.SaveGroup(tenant, group);
-        EventBusGroupCacheItem.Publish(new GroupCacheItem { Id = group.Id.ToString() }, CacheNotifyAction.Any);
+        GroupCacheNotify.Publish(new GroupCacheItem { Id = group.Id.ToString() }, CacheNotifyAction.Any);
 
         return group;
     }
@@ -330,7 +330,7 @@ public class CachedUserService : IUserService, ICachedService
     public void RemoveGroup(int tenant, Guid id)
     {
         Service.RemoveGroup(tenant, id);
-        EventBusGroupCacheItem.Publish(new GroupCacheItem { Id = id.ToString() }, CacheNotifyAction.Any);
+        GroupCacheNotify.Publish(new GroupCacheItem { Id = id.ToString() }, CacheNotifyAction.Any);
     }
 
 
@@ -367,7 +367,7 @@ public class CachedUserService : IUserService, ICachedService
     public UserGroupRef SaveUserGroupRef(int tenant, UserGroupRef r)
     {
         r = Service.SaveUserGroupRef(tenant, r);
-        EventBusUserGroupRefItem.Publish(r, CacheNotifyAction.InsertOrUpdate);
+        UserGroupRefCacheNotify.Publish(r, CacheNotifyAction.InsertOrUpdate);
 
         return r;
     }
@@ -377,7 +377,7 @@ public class CachedUserService : IUserService, ICachedService
         Service.RemoveUserGroupRef(tenant, userId, groupId, refType);
 
         var r = new UserGroupRef(userId, groupId, refType) { Tenant = tenant };
-        EventBusUserGroupRefItem.Publish(r, CacheNotifyAction.Remove);
+        UserGroupRefCacheNotify.Publish(r, CacheNotifyAction.Remove);
     }
 
 

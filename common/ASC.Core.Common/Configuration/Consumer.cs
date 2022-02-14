@@ -49,7 +49,7 @@ public class Consumer : IDictionary<string, string>
     internal protected CoreSettings CoreSettings { get; set; }
     internal protected ConsumerFactory ConsumerFactory { get; set; }
     internal protected IConfiguration Configuration { get; }
-    internal protected ICacheNotify<ConsumerCacheItem> EventBusConsumerItem { get; }
+    internal protected ICacheNotify<ConsumerCacheItem> ConsumerCacheNotify { get; }
 
     private Dictionary<string, string> AllProps
     {
@@ -90,7 +90,7 @@ public class Consumer : IDictionary<string, string>
         CoreBaseSettings = coreBaseSettings;
         CoreSettings = coreSettings;
         Configuration = configuration;
-        EventBusConsumerItem = cache;
+        ConsumerCacheNotify = cache;
         ConsumerFactory = consumerFactory;
         _onlyDefault = configuration["core:default-consumers"] == "true";
         Name = string.Empty;
@@ -153,7 +153,7 @@ public class Consumer : IDictionary<string, string>
             this[providerProp.Key] = null;
         }
 
-        EventBusConsumerItem.Publish(new ConsumerCacheItem() { Name = this.Name }, CacheNotifyAction.Remove);
+        ConsumerCacheNotify.Publish(new ConsumerCacheItem() { Name = this.Name }, CacheNotifyAction.Remove);
     }
 
     public bool Contains(KeyValuePair<string, string> item)
@@ -289,7 +289,7 @@ public class DataStoreConsumer : Consumer, ICloneable
     public object Clone()
     {
         return new DataStoreConsumer(TenantManager, CoreBaseSettings, CoreSettings, Configuration,
-            EventBusConsumerItem, ConsumerFactory, Name, Order, Props.ToDictionary(r => r.Key, r => r.Value),
+            ConsumerCacheNotify, ConsumerFactory, Name, Order, Props.ToDictionary(r => r.Key, r => r.Value),
             Additional.ToDictionary(r => r.Key, r => r.Value));
     }
 
@@ -326,7 +326,7 @@ public class DataStoreConsumer : Consumer, ICloneable
         additional.Add(HandlerTypeKey, HandlerType.AssemblyQualifiedName);
 
         return new DataStoreConsumer(fromConfig.TenantManager, fromConfig.CoreBaseSettings, fromConfig.CoreSettings,
-            fromConfig.Configuration, fromConfig.EventBusConsumerItem, fromConfig.ConsumerFactory, fromConfig.Name,
+            fromConfig.Configuration, fromConfig.ConsumerCacheNotify, fromConfig.ConsumerFactory, fromConfig.Name,
             fromConfig.Order, props, additional);
     }
 }
