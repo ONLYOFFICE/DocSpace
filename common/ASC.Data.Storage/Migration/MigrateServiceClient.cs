@@ -63,7 +63,7 @@ namespace ASC.Data.Storage.Migration
 
                 Cache.Insert(GetCacheKey(n.TenantId), migrationProgress, DateTime.MaxValue);
             },
-           CacheNotifyAction.Insert);
+           Common.Caching.CacheNotifyAction.Insert);
         }
 
         private string GetCacheKey(int tenantId)
@@ -101,7 +101,7 @@ namespace ASC.Data.Storage.Migration
                 TenantId = tenant,
                 StorSettings = storSettings
             },
-                CacheNotifyAction.Insert);
+                Common.Caching.CacheNotifyAction.Insert);
         }
 
         public void UploadCdn(int tenantId, string relativePath, string mappedPath, CdnStorageSettings settings = null)
@@ -115,7 +115,7 @@ namespace ASC.Data.Storage.Migration
                 MappedPath = mappedPath,
                 CdnStorSettings = cdnStorSettings
             },
-                CacheNotifyAction.Insert);
+                Common.Caching.CacheNotifyAction.Insert);
         }
 
         public double GetProgress(int tenant)
@@ -127,7 +127,7 @@ namespace ASC.Data.Storage.Migration
 
         public void StopMigrate()
         {
-            CacheMigrationNotify.Publish(new MigrationCache(), CacheNotifyAction.InsertOrUpdate);
+            CacheMigrationNotify.Publish(new MigrationCache(), Common.Caching.CacheNotifyAction.InsertOrUpdate);
         }
     }
 }

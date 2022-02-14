@@ -28,14 +28,6 @@ namespace ASC.Core.Notify.Senders
     [Singletone(Additional = typeof(SmtpSenderExtension))]
     public class SmtpSender : INotifySender
     {
-        private const string HTML_FORMAT =
-            @"<!DOCTYPE html PUBLIC ""-//W3C//DTD HTML 4.01 Transitional//EN"">
-<html>
-<head>
-<meta content=""text/html;charset=UTF-8"" http-equiv=""Content-Type"">
-</head>
-<body>{0}</body>
-</html>";
 
         protected ILog Log { get; set; }
         protected IConfiguration Configuration { get; }
@@ -68,11 +60,9 @@ namespace ASC.Core.Notify.Senders
                 Host = properties["host"];
                 Port = properties.ContainsKey("port") ? int.Parse(properties["port"]) : 25;
                 Ssl = properties.ContainsKey("enableSsl") && bool.Parse(properties["enableSsl"]);
-                if (properties.ContainsKey("userName"))
+                if (properties.TryGetValue("userName", out var property))
                 {
-                    Credentials = new NetworkCredential(
-                         properties["userName"],
-                         properties["password"]);
+                    Credentials = new NetworkCredential(property, properties["password"]);
                 }
             }
         }
@@ -256,21 +246,21 @@ namespace ASC.Core.Notify.Senders
 
         protected string GetHtmlView(string body)
         {
-            return string.Format(HTML_FORMAT, body);
+            return $@"<!DOCTYPE html PUBLIC ""-//W3C//DTD HTML 4.01 Transitional//EN"">
+<html>
+<head>
+<meta content=""text/html;charset=UTF-8"" http-equiv=""Content-Type"">
+</head>
+<body>{body}</body>
+</html>";
         }
 
         private MailKit.Net.Smtp.SmtpClient GetSmtpClient()
         {
-            var sslCertificatePermit = Configuration["mail:certificate-permit"] != null &&
-                                    Convert.ToBoolean(Configuration["mail:certificate-permit"]);
-
             var smtpClient = new MailKit.Net.Smtp.SmtpClient
             {
                 Timeout = NETWORK_TIMEOUT
             };
-
-            if (sslCertificatePermit)
-                smtpClient.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
 
             return smtpClient;
         }
@@ -321,7 +311,7 @@ namespace ASC.Core.Notify.Senders
         }
     }
 
-    public class SmtpSenderExtension
+    public static class SmtpSenderExtension
     {
         public static void Register(DIHelper services)
         {

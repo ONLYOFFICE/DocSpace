@@ -48,7 +48,7 @@ namespace ASC.Web.Files.Helpers
 
         public void SaveToken(OAuth20Token token)
         {
-            if (token == null) throw new ArgumentNullException("token");
+            if (token == null) throw new ArgumentNullException(nameof(token));
             TokenHelper.SaveToken(new Token(token, AppAttr));
         }
 
@@ -62,7 +62,7 @@ namespace ASC.Web.Files.Helpers
 
         public void DeleteToken(OAuth20Token token)
         {
-            if (token == null) throw new ArgumentNullException("token");
+            if (token == null) throw new ArgumentNullException(nameof(token));
             TokenHelper.DeleteToken(AppAttr);
 
         }

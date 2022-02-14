@@ -238,7 +238,7 @@ namespace ASC.Files.Thirdparty.Box
                         CacheFolder.Remove("boxd-" + i.Key);
                     }
                 }
-            }, CacheNotifyAction.Remove);
+            }, Common.Caching.CacheNotifyAction.Remove);
         }
 
         internal BoxFolder GetBoxFolder(BoxStorage storage, int id, string boxFolderId)
@@ -281,7 +281,7 @@ namespace ASC.Files.Thirdparty.Box
         {
             if (boxItem != null)
             {
-                CacheNotify.Publish(new BoxCacheItem { IsFile = boxItem is BoxFile, Key = id + "-" + boxItem.Id }, CacheNotifyAction.Remove);
+                CacheNotify.Publish(new BoxCacheItem { IsFile = boxItem is BoxFile, Key = id + "-" + boxItem.Id }, Common.Caching.CacheNotifyAction.Remove);
             }
         }
 
@@ -290,7 +290,7 @@ namespace ASC.Files.Thirdparty.Box
             var key = id + "-";
             if (boxId == null)
             {
-                CacheNotify.Publish(new BoxCacheItem { ResetAll = true, Key = key }, CacheNotifyAction.Remove);
+                CacheNotify.Publish(new BoxCacheItem { ResetAll = true, Key = key }, Common.Caching.CacheNotifyAction.Remove);
             }
             else
             {
@@ -300,7 +300,7 @@ namespace ASC.Files.Thirdparty.Box
                 }
                 key += boxId;
 
-                CacheNotify.Publish(new BoxCacheItem { IsFile = isFile ?? false, IsFileExists = isFile.HasValue, Key = key }, CacheNotifyAction.Remove);
+                CacheNotify.Publish(new BoxCacheItem { IsFile = isFile ?? false, IsFileExists = isFile.HasValue, Key = key }, Common.Caching.CacheNotifyAction.Remove);
             }
         }
     }

@@ -36,7 +36,7 @@ namespace ASC.FederatedLogin.LoginProviders
             ConsumerFactory = consumerFactory;
         }
 
-        public LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params, IDictionary<string, string> additionalStateArgs = null)
+        public LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params, IDictionary<string, string> additionalStateArgs)
         {
             var response = Openid.GetResponse();
             if (response == null)
@@ -49,8 +49,7 @@ namespace ASC.FederatedLogin.LoginProviders
 
                         var realmUrlString = string.Empty;
 
-                        if (@params.ContainsKey("realmUrl"))
-                            realmUrlString = @params["realmUrl"];
+                        @params.TryGetValue("realmUrl", out realmUrlString);
 
                         if (!string.IsNullOrEmpty(realmUrlString))
                             request = Openid.CreateRequest(id, new Realm(realmUrlString));
@@ -106,8 +105,7 @@ namespace ASC.FederatedLogin.LoginProviders
                         var fetchprofile = response.GetExtension<FetchResponse>();
 
                         var realmUrlString = string.Empty;
-                        if (@params.ContainsKey("realmUrl"))
-                            realmUrlString = @params["realmUrl"];
+                        @params.TryGetValue("realmUrl", out realmUrlString);
 
                         var profile = ProfileFromOpenId(spprofile, fetchprofile, response.ClaimedIdentifier.ToString(), realmUrlString);
                         return profile;

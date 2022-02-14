@@ -65,7 +65,7 @@ namespace ASC.Data.Storage.Configuration
                     {
                         storageSettingsHelper.Clear(cdnSettings);
                     }
-                }, CacheNotifyAction.Remove);
+                }, Common.Caching.CacheNotifyAction.Remove);
             }
         }
     }
@@ -159,7 +159,6 @@ namespace ASC.Data.Storage.Configuration
         public bool Save<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings, new()
         {
             ClearDataStoreCache();
-            dataStoreConsumer = null;
             return SettingsManager.Save(baseStorageSettings);
         }
 
@@ -169,7 +168,7 @@ namespace ASC.Data.Storage.Configuration
             var path = TenantPath.CreatePath(tenantId);
             foreach (var module in StorageFactoryConfig.GetModuleList("", true))
             {
-                Cache.Publish(new DataStoreCacheItem() { TenantId = path, Module = module }, CacheNotifyAction.Remove);
+                Cache.Publish(new DataStoreCacheItem() { TenantId = path, Module = module }, Common.Caching.CacheNotifyAction.Remove);
             }
         }
 
@@ -180,16 +179,15 @@ namespace ASC.Data.Storage.Configuration
             Save(baseStorageSettings);
         }
 
-        private DataStoreConsumer dataStoreConsumer;
         public DataStoreConsumer DataStoreConsumer<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings, new()
         {
-            if (string.IsNullOrEmpty(baseStorageSettings.Module) || baseStorageSettings.Props == null) return dataStoreConsumer = new DataStoreConsumer();
+            if (string.IsNullOrEmpty(baseStorageSettings.Module) || baseStorageSettings.Props == null) return new DataStoreConsumer();
 
             var consumer = ConsumerFactory.GetByKey<DataStoreConsumer>(baseStorageSettings.Module);
 
-            if (!consumer.IsSet) return dataStoreConsumer = new DataStoreConsumer();
+            if (!consumer.IsSet) return new DataStoreConsumer();
 
-            dataStoreConsumer = (DataStoreConsumer)consumer.Clone();
+            var dataStoreConsumer = (DataStoreConsumer)consumer.Clone();
 
             foreach (var prop in baseStorageSettings.Props)
             {
@@ -234,7 +232,7 @@ namespace ASC.Data.Storage.Configuration
         }
     }
 
-    public class StorageSettingsExtension
+    public static class StorageSettingsExtension
     {
         public static void Register(DIHelper services)
         {

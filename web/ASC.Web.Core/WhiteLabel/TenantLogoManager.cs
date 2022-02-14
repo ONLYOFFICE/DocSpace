@@ -203,7 +203,7 @@ namespace ASC.Web.Core.WhiteLabel
 
         public void RemoveMailLogoDataFromCache()
         {
-            CacheNotify.Publish(new TenantLogoCacheItem() { Key = CacheKey }, CacheNotifyAction.Remove);
+            CacheNotify.Publish(new TenantLogoCacheItem() { Key = CacheKey }, Common.Caching.CacheNotifyAction.Remove);
         }
     }
 }

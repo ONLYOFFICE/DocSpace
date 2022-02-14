@@ -220,7 +220,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
                     Thread.Sleep(60000);
                     if (retry < 5)
                     {
-                        Index(data, immediately, retry++);
+                        Index(data, immediately, retry + 1);
                         return;
                     }
 
@@ -266,14 +266,19 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
         }
     }
 
-    public async Task IndexAsync(List<T> data, bool immediately = true, int retry = 0)
+    public Task IndexAsync(List<T> data, bool immediately = true, int retry = 0)
     {
         var t = _serviceProvider.GetService<T>();
-        if (!Support(t) || !data.Any())
+        if (!Support(t) || data.Count == 0)
         {
-            return;
+            return Task.CompletedTask;
         }
 
+        return InternalIndexAsync(data, immediately, retry);
+    }
+
+    private async Task InternalIndexAsync(List<T> data, bool immediately, int retry)
+    {
         try
         {
             await Indexer.IndexAsync(data, immediately).ConfigureAwait(false);
@@ -295,8 +300,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
                     await Task.Delay(60000);
                     if (retry < 5)
                     {
-                        await IndexAsync(data, immediately, retry++);
-
+                        await IndexAsync(data, immediately, retry + 1);
                         return;
                     }
 
@@ -306,10 +310,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
         }
         catch (AggregateException e) //ElasticsearchClientException
         {
-            if (e.InnerExceptions.Count == 0)
-            {
-                throw;
-            }
+            if (e.InnerExceptions.Count == 0) throw;
 
             var inner = e.InnerExceptions.OfType<ElasticsearchClientException>().FirstOrDefault();
 
@@ -328,8 +329,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
                     await Task.Delay(60000);
                     if (retry < 5)
                     {
-                        await IndexAsync(data, immediately, retry++);
-
+                        await IndexAsync(data, immediately, retry + 1);
                         return;
                     }
 
@@ -670,7 +670,7 @@ public class FactoryIndexer
         }
     }
 
-    public async Task<bool> CheckStateAsync(bool cacheState = true)
+    public Task<bool> CheckStateAsync(bool cacheState = true)
     {
         const string key = "elasticsearch";
 
@@ -679,10 +679,15 @@ public class FactoryIndexer
             var cacheValue = _cache.Get<string>(key);
             if (!string.IsNullOrEmpty(cacheValue))
             {
-                return Convert.ToBoolean(cacheValue);
+                return Task.FromResult(Convert.ToBoolean(cacheValue));
             }
         }
 
+        return InternalCheckStateAsync(cacheState, key);    
+    }
+
+    private async Task<bool> InternalCheckStateAsync(bool cacheState, string key)
+    {
         var cacheTime = DateTime.UtcNow.AddMinutes(15);
 
         try
@@ -708,7 +713,6 @@ public class FactoryIndexer
             }
 
             Log.Error("Ping false", e);
-
             return false;
         }
     }

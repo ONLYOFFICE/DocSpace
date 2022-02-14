@@ -37,12 +37,12 @@ namespace ASC.Core.Data
         {
             Cache = cache;
             Notify = notify;
-            Notify.Subscribe((i) => Cache.Remove(i.Key), CacheNotifyAction.Remove);
+            Notify.Subscribe((i) => Cache.Remove(i.Key), ASC.Common.Caching.CacheNotifyAction.Remove);
         }
 
         public void Remove(string key)
         {
-            Notify.Publish(new SettingsCacheItem { Key = key }, CacheNotifyAction.Remove);
+            Notify.Publish(new SettingsCacheItem { Key = key }, ASC.Common.Caching.CacheNotifyAction.Remove);
         }
     }
 
@@ -133,13 +133,21 @@ namespace ASC.Core.Data
         private int tenantID;
         private int TenantID
         {
-            get { return tenantID != 0 ? tenantID : (tenantID = TenantManager.GetCurrentTenant().TenantId); }
+            get 
+            {
+                if (tenantID == 0) tenantID = TenantManager.GetCurrentTenant().TenantId;
+                return tenantID;
+            }
         }
         //
         private Guid? currentUserID;
         private Guid CurrentUserID
         {
-            get { return ((Guid?)(currentUserID ??= AuthContext.CurrentAccount.ID)).Value; }
+            get 
+            {
+                currentUserID ??= AuthContext.CurrentAccount.ID;
+                return currentUserID.Value; 
+            }
         }
 
         public bool SaveSettings<T>(T settings, int tenantId) where T : ISettings
@@ -162,7 +170,7 @@ namespace ASC.Core.Data
 
         public bool SaveSettingsFor<T>(T settings, int tenantId, Guid userId) where T : ISettings
         {
-            if (settings == null) throw new ArgumentNullException("settings");
+            if (settings == null) throw new ArgumentNullException(nameof(settings));
             try
             {
                 var key = settings.ID.ToString() + tenantId + userId;
@@ -311,7 +319,12 @@ namespace ASC.Core.Data
 
         private T Deserialize<T>(string data)
         {
-            return JsonSerializer.Deserialize<T>(data);
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            return JsonSerializer.Deserialize<T>(data, options);
         }
 
         private string Serialize<T>(T settings)

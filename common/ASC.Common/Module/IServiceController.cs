@@ -24,12 +24,11 @@
 */
 
 
-namespace ASC.Common.Module
-{
-    public interface IServiceController
-    {
-        void Start();
+namespace ASC.Common.Module;
 
-        void Stop();
-    }
+public interface IServiceController
+{
+    void Start();
+
+    void Stop();
 }

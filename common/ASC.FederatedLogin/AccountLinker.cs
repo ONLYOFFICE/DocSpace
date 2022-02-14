@@ -35,19 +35,20 @@ namespace ASC.FederatedLogin
         {
             this.cache = cache;
             this.notify = notify;
-            notify.Subscribe((c) => cache.Remove(c.Obj), CacheNotifyAction.Remove);
+            notify.Subscribe((c) => cache.Remove(c.Obj), Common.Caching.CacheNotifyAction.Remove);
         }
 
         public void RemoveFromCache(string obj)
         {
-            notify.Publish(new LinkerCacheItem { Obj = obj }, CacheNotifyAction.Remove);
+            notify.Publish(new LinkerCacheItem { Obj = obj }, Common.Caching.CacheNotifyAction.Remove);
         }
         public List<LoginProfile> GetFromCache(string obj, Func<string, List<LoginProfile>> fromDb)
         {
             var profiles = cache.Get<List<LoginProfile>>(obj);
             if (profiles == null)
             {
-                cache.Insert(obj, profiles = fromDb(obj), DateTime.UtcNow + TimeSpan.FromMinutes(10));
+                profiles = fromDb(obj);
+                cache.Insert(obj, profiles, DateTime.UtcNow + TimeSpan.FromMinutes(10));
             }
             return profiles;
         }

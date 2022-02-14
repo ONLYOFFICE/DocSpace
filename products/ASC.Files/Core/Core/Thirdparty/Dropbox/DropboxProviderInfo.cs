@@ -207,7 +207,7 @@ namespace ASC.Files.Thirdparty.Dropbox
                         CacheFolder.Remove("dropboxd-" + i.Key);
                     }
                 }
-            }, CacheNotifyAction.Remove);
+            }, Common.Caching.CacheNotifyAction.Remove);
         }
 
         internal FolderMetadata GetDropboxFolder(DropboxStorage storage, int id, string dropboxFolderPath)
@@ -250,7 +250,7 @@ namespace ASC.Files.Thirdparty.Dropbox
         {
             if (dropboxItem != null)
             {
-                CacheNotify.Publish(new DropboxCacheItem { IsFile = dropboxItem.AsFolder != null, Key = id + "-" + dropboxItem.PathDisplay }, CacheNotifyAction.Remove);
+                CacheNotify.Publish(new DropboxCacheItem { IsFile = dropboxItem.AsFolder != null, Key = id + "-" + dropboxItem.PathDisplay }, Common.Caching.CacheNotifyAction.Remove);
             }
         }
 
@@ -259,13 +259,13 @@ namespace ASC.Files.Thirdparty.Dropbox
             var key = id + "-";
             if (dropboxPath == null)
             {
-                CacheNotify.Publish(new DropboxCacheItem { ResetAll = true, Key = key }, CacheNotifyAction.Remove);
+                CacheNotify.Publish(new DropboxCacheItem { ResetAll = true, Key = key }, Common.Caching.CacheNotifyAction.Remove);
             }
             else
             {
                 key += dropboxPath;
 
-                CacheNotify.Publish(new DropboxCacheItem { IsFile = isFile ?? false, IsFileExists = isFile.HasValue, Key = key }, CacheNotifyAction.Remove);
+                CacheNotify.Publish(new DropboxCacheItem { IsFile = isFile ?? false, IsFileExists = isFile.HasValue, Key = key }, Common.Caching.CacheNotifyAction.Remove);
             }
         }
     }

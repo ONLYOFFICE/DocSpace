@@ -62,9 +62,10 @@ namespace ASC.Files.Core
             FileEntryType = FileEntryType.File;
         }
 
-        public File(FileHelper fileHelper) : this()
+        public File(FileHelper fileHelper, Global global): this()
         {
             FileHelper = fileHelper;
+            Global = global;
         }
 
         public int Version { get; set; }

@@ -25,7 +25,7 @@
 
 namespace ASC.Web.Core
 {
-    public class CommonPhotoManager
+    public static class CommonPhotoManager
     {
 
         public static Image DoThumbnail(Image image, Size size, bool crop, bool transparent, bool rectangle)
@@ -40,11 +40,9 @@ namespace ASC.Web.Core
             var maxSide = realWidth > realHeight ? realWidth : realHeight;
             var minSide = realWidth < realHeight ? realWidth : realHeight;
             
-            var alignWidth = true;
-            if (crop) alignWidth = (minSide == realWidth);
-            else alignWidth = (maxSide == realWidth);
+            var alignWidth = crop ? (minSide == realWidth) : (maxSide == realWidth);
 
-            var scaleFactor = (alignWidth) ? (realWidth / (1.0 * width)) : (realHeight / (1.0 * height));
+            var scaleFactor = alignWidth ? (realWidth / (1.0 * width)) : (realHeight / (1.0 * height));
 
             if (scaleFactor < 1) scaleFactor = 1;
 

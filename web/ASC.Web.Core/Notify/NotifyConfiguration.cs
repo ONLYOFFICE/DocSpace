@@ -56,7 +56,7 @@ namespace ASC.Web.Studio.Core.Notify
             }
         }
 
-        private static void NotifyClientRegisterCallback(Context context, INotifyClient client)
+        private void NotifyClientRegisterCallback(Context context, INotifyClient client)
         {
             #region url correction
 
@@ -204,7 +204,7 @@ namespace ASC.Web.Studio.Core.Notify
                          if (!string.IsNullOrEmpty(logoText))
                          {
                              r.CurrentMessage.Body = r.CurrentMessage.Body
-                                 .Replace(string.Format("${{{0}}}", CommonTags.LetterLogoText), logoText);
+                                 .Replace("${{"+ CommonTags.LetterLogoText + "}}", logoText);
                          }
                      }
                      catch (Exception error)
@@ -218,7 +218,7 @@ namespace ASC.Web.Studio.Core.Notify
             #endregion
         }
 
-        private static void BeforeTransferRequest(NotifyEngine sender, NotifyRequest request, IServiceScope scope)
+        private void BeforeTransferRequest(NotifyEngine sender, NotifyRequest request, IServiceScope scope)
         {
             var aid = Guid.Empty;
             var aname = string.Empty;
@@ -423,7 +423,7 @@ namespace ASC.Web.Studio.Core.Notify
         }
     }
 
-    public class NotifyConfigurationExtension
+    public static class NotifyConfigurationExtension
     {
         public static void Register(DIHelper services)
         {

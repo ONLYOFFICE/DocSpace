@@ -165,7 +165,7 @@ public class Selector<T> where T : class, ISearchItem
             var t = _serviceProvider.GetService<T>();
             var searchSettingsHelper = _serviceProvider.GetService<SearchSettingsHelper>();
 
-            return ((NewArrayExpression)(t.GetSearchContentFields(searchSettingsHelper)).Body).Expressions.ToArray();
+            return ((NewArrayExpression)t.GetSearchContentFields(searchSettingsHelper).Body).Expressions.ToArray();
         },
         value);
 
@@ -341,7 +341,7 @@ public class Selector<T> where T : class, ISearchItem
 
         if (string.IsNullOrEmpty(path) &&
             !string.IsNullOrEmpty(fieldSelector.Name) &&
-            fieldSelector.Name.IndexOf(".", StringComparison.InvariantCulture) > 0)
+            fieldSelector.Name.IndexOf('.') > -1)
         {
             var splitted = fieldSelector.Name.Split(':')[1];
             path = splitted.Split('.')[0];
@@ -375,7 +375,7 @@ public class Selector<T> where T : class, ISearchItem
 
     private bool IsPhrase(string searchText)
     {
-        return searchText.Contains(" ") || searchText.Contains("\r\n") || searchText.Contains("\n");
+        return searchText.Contains(' ') || searchText.Contains("\r\n") || searchText.Contains('\n');
     }
 
     private bool IsExactlyPhrase(string searchText)
@@ -385,7 +385,7 @@ public class Selector<T> where T : class, ISearchItem
 
     private bool IsExactly(string searchText)
     {
-        return searchText.StartsWith("\"") && searchText.EndsWith("\"");
+        return searchText.StartsWith('\"') && searchText.EndsWith('\"');
     }
 
     private QueryContainer MultiMatch(Fields fields, string value)
@@ -443,7 +443,7 @@ internal static class StringExtension
     {
         var result = value;
 
-        if (!value.Contains("*") && !value.Contains("?"))
+        if (!value.Contains('*') && !value.Contains('?'))
         {
             result = "*" + result + "*";
         }

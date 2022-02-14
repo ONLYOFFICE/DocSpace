@@ -45,7 +45,7 @@ public class BaseIndexerHelper
         _notify = cacheNotify;
         _notify.Subscribe((a) =>
         {
-            IsExist.AddOrUpdate(a.Id, false, (q, w) => false);
+            IsExist.AddOrUpdate(a.Id, false, (string q, bool w) => false);
         }, CacheNotifyAction.Any);
     }
 
@@ -120,7 +120,6 @@ public class BaseIndexer<T> where T : class, ISearchItem
             yield return getData(ids[i], ids[i + 1], lastIndexed);
         }
 
-
         WebstudioDbContext.AddOrUpdate(r => r.WebstudioIndex, new DbWebstudioIndex()
         {
             IndexName = Wrapper.IndexName,
@@ -156,30 +155,30 @@ public class BaseIndexer<T> where T : class, ISearchItem
                     foreach (var c in Enum.GetNames(typeof(Analyzer)))
                     {
                         var c1 = c;
-                        b.Custom(c1 + "custom", ca => ca.Tokenizer(c1).Filters(Filter.lowercase.ToString()).CharFilters(CharFilter.io.ToString()));
+                        b.Custom(c1 + "custom", ca => ca.Tokenizer(c1).Filters(nameof(Filter.lowercase)).CharFilters(nameof(CharFilter.io)));
                     }
 
                     foreach (var c in Enum.GetNames(typeof(CharFilter)))
                     {
-                        if (c == CharFilter.io.ToString())
+                        if (c == nameof(CharFilter.io))
                         {
                             continue;
                         }
 
-                        var charFilters = new List<string>() { CharFilter.io.ToString(), c };
+                        var charFilters = new List<string>() { nameof(CharFilter.io), c };
                         var c1 = c;
-                        b.Custom(c1 + "custom", ca => ca.Tokenizer(Analyzer.whitespace.ToString()).Filters(Filter.lowercase.ToString()).CharFilters(charFilters));
+                        b.Custom(c1 + "custom", ca => ca.Tokenizer(nameof(Analyzer.whitespace)).Filters(nameof(Filter.lowercase)).CharFilters(charFilters));
                     }
 
                     if (data is ISearchItemDocument)
                     {
-                        b.Custom("document", ca => ca.Tokenizer(Analyzer.whitespace.ToString()).Filters(Filter.lowercase.ToString()).CharFilters(CharFilter.io.ToString()));
+                        b.Custom("document", ca => ca.Tokenizer(Analyzer.whitespace.ToString()).Filters(nameof(Filter.lowercase)).CharFilters(nameof(CharFilter.io)));
                     }
 
                     return b;
                 }
 
-                var createIndexResponse = _client.Instance.Indices.Create(data.IndexName,
+                _client.Instance.Indices.Create(data.IndexName,
                     c =>
                     c.Map<T>(m => m.AutoMap())
                     .Settings(r => r.Analysis(a =>
@@ -214,7 +213,7 @@ public class BaseIndexer<T> where T : class, ISearchItem
 
     internal void Index(List<T> data, bool immediately = true)
     {
-        if (!data.Any())
+        if (data.Count == 0)
         {
             return;
         }
@@ -353,7 +352,6 @@ public class BaseIndexer<T> where T : class, ISearchItem
                         {
                             wwd.Document.Data = null;
                             wwd.Document = null;
-                            wwd = null;
                             GC.Collect();
                         }
                         continue;
@@ -383,7 +381,6 @@ public class BaseIndexer<T> where T : class, ISearchItem
                             doc.Document.Data = null;
                             doc.Document = null;
                         }
-                        doc = null;
                     }
 
                     portionStart = i;
@@ -445,11 +442,6 @@ public class BaseIndexer<T> where T : class, ISearchItem
 
             lock (_locker)
             {
-                if (isExist)
-                {
-                    return true;
-                }
-
                 isExist = _client.Instance.Indices.Exists(data.IndexName).Exists;
 
                 _baseIndexerHelper.IsExist.TryUpdate(data.IndexName, _isExist, false);
@@ -537,7 +529,7 @@ public class BaseIndexer<T> where T : class, ISearchItem
     {
         var result = request.Index(IndexName);
 
-        if (fields.Any())
+        if (fields.Length > 0)
         {
             result.Script(GetScriptUpdateByQuery(data, fields));
         }
@@ -561,11 +553,12 @@ public class BaseIndexer<T> where T : class, ISearchItem
 
         for (var i = 0; i < fields.Length; i++)
         {
-            var func = fields[i].Compile();
+            var field = fields[i];
+            var func = field.Compile();
             var newValue = func(data);
             string name;
 
-            var expression = fields[i].Body;
+            var expression = field.Body;
             var isList = expression.Type.IsGenericType && expression.Type.GetGenericTypeDefinition() == typeof(List<>);
 
 
@@ -574,7 +567,6 @@ public class BaseIndexer<T> where T : class, ISearchItem
             while (!string.IsNullOrEmpty(name = TryGetName(expression, out var member)))
             {
                 sourceExprText = "." + name + sourceExprText;
-                expression = member.Expression;
             }
 
             if (isList)
@@ -585,12 +577,12 @@ public class BaseIndexer<T> where T : class, ISearchItem
             {
                 if (newValue == default(T))
                 {
-                    source.AppendFormat("ctx._source.remove('{0}');", sourceExprText.Substring(1));
+                    source.Append($"ctx._source.remove('{sourceExprText.Substring(1)}');");
                 }
                 else
                 {
                     var pkey = "p" + sourceExprText.Replace(".", "");
-                    source.AppendFormat("ctx._source{0} = params.{1};", sourceExprText, pkey);
+                    source.Append($"ctx._source{sourceExprText} = params.{pkey};");
                     parameters.Add(pkey, newValue);
                 }
             }
@@ -647,7 +639,7 @@ public class BaseIndexer<T> where T : class, ISearchItem
                 for (var i = 0; i < newValue.Count; i++)
                 {
                     parameters.Add(paramKey + i, newValue[i]);
-                    source.AppendFormat("if (!ctx._source{0}.contains(params.{1})){{ctx._source{0}.add(params.{1})}}", key, paramKey + i);
+                    source.Append($"if (!ctx._source{key}.contains(params.{paramKey + i})){{ctx._source{key}.add(params.{paramKey + i})}}");
                 }
                 break;
             case UpdateAction.Replace:
