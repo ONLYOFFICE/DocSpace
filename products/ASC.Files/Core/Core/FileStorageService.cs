@@ -2322,7 +2322,7 @@ namespace ASC.Web.Files.Services.WCFService
                     req.Files.Add(f);
                 }
 
-                ThumbnailNotify.Publish(req, CacheNotifyAction.Insert);
+                ThumbnailNotify.Publish(req, Common.Caching.CacheNotifyAction.Insert);
             }
             catch (Exception e)
             {

@@ -63,7 +63,7 @@ namespace ASC.Web.Files.Classes
                     {
                         Logger.Fatal("ClearCache action", e);
                     }
-                }, CacheNotifyAction.Any);
+                }, Common.Caching.CacheNotifyAction.Any);
             }
             catch (Exception e)
             {

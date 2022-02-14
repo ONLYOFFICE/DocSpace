@@ -23,6 +23,8 @@
  *
 */
 
+using CacheNotifyAction = ASC.Common.Caching.CacheNotifyAction;
+
 namespace ASC.Data.Storage.Encryption
 {
     [Scope]

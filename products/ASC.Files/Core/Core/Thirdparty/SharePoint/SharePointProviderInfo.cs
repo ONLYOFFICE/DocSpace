@@ -611,16 +611,16 @@ namespace ASC.Files.Thirdparty.SharePoint
                     FileCache.Remove(new Regex("^spointf-.*"));
                     FolderCache.Remove(new Regex("^spointd-.*"));
                 }
-            }, CacheNotifyAction.Remove);
+            }, Common.Caching.CacheNotifyAction.Remove);
         }
 
         public void Invalidate()
         {
-            Notify.Publish(new SharePointProviderCacheItem { }, CacheNotifyAction.Remove);
+            Notify.Publish(new SharePointProviderCacheItem { }, Common.Caching.CacheNotifyAction.Remove);
         }
         public void PublishFolder(string id)
         {
-            Notify.Publish(new SharePointProviderCacheItem { FolderKey = id }, CacheNotifyAction.Remove);
+            Notify.Publish(new SharePointProviderCacheItem { FolderKey = id }, Common.Caching.CacheNotifyAction.Remove);
         }
 
         public void PublishFolder(string id1, string id2)
@@ -637,7 +637,7 @@ namespace ASC.Files.Thirdparty.SharePoint
 
         public void PublishFile(string fileId, string folderId)
         {
-            Notify.Publish(new SharePointProviderCacheItem { FileKey = fileId, FolderKey = folderId }, CacheNotifyAction.Remove);
+            Notify.Publish(new SharePointProviderCacheItem { FileKey = fileId, FolderKey = folderId }, Common.Caching.CacheNotifyAction.Remove);
         }
 
         public void CreateFolder(string id, string parentFolderId, Folder folder)

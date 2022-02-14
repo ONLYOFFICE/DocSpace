@@ -35,12 +35,12 @@ namespace ASC.VoipService.Dao
         {
             Cache = cache;
             Notify = notify;
-            Notify.Subscribe((c) => Cache.Remove(CachedVoipDao.GetCacheKey(c.Tenant)), CacheNotifyAction.Any);
+            Notify.Subscribe((c) => Cache.Remove(CachedVoipDao.GetCacheKey(c.Tenant)), Common.Caching.CacheNotifyAction.Any);
         }
 
         public void ResetCache(int tenant)
         {
-            Notify.Publish(new CachedVoipItem { Tenant = tenant }, CacheNotifyAction.Any);
+            Notify.Publish(new CachedVoipItem { Tenant = tenant }, Common.Caching.CacheNotifyAction.Any);
         }
     }
 

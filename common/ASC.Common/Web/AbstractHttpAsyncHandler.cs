@@ -23,44 +23,38 @@
  *
 */
 
-namespace ASC.Common.Web
+namespace ASC.Common.Web;
+
+public abstract class AbstractHttpAsyncHandler // : IHttpAsyncHandler, IReadOnlySessionState
 {
-    public abstract class AbstractHttpAsyncHandler // : IHttpAsyncHandler, IReadOnlySessionState
+    public bool IsReusable => false;
+
+    private Action<HttpContext> _processRequest;
+    private IPrincipal _principal;
+    private CultureInfo _culture;
+
+    public void ProcessRequest(HttpContext context)
     {
-        private Action<Microsoft.AspNetCore.Http.HttpContext> processRequest;
-        private IPrincipal principal;
-        private CultureInfo culture;
-
-
-        public bool IsReusable
-        {
-            get { return false; }
-        }
-
-
-        public void ProcessRequest(Microsoft.AspNetCore.Http.HttpContext context)
-        {
-            Thread.CurrentThread.CurrentCulture = culture;
-            Thread.CurrentThread.CurrentUICulture = culture;
-            Thread.CurrentPrincipal = principal;
-            //HttpContext.Current = context;
-            OnProcessRequest(context);
-        }
-
-        public IAsyncResult BeginProcessRequest(Microsoft.AspNetCore.Http.HttpContext context, AsyncCallback cb, object extraData)
-        {
-            culture = Thread.CurrentThread.CurrentCulture;
-            principal = Thread.CurrentPrincipal;
-            processRequest = ProcessRequest;
-            return processRequest.BeginInvoke(context, cb, extraData);
-        }
-
-        public void EndProcessRequest(IAsyncResult result)
-        {
-            processRequest.EndInvoke(result);
-        }
-
-
-        public abstract void OnProcessRequest(Microsoft.AspNetCore.Http.HttpContext context);
+        Thread.CurrentThread.CurrentCulture = _culture;
+        Thread.CurrentThread.CurrentUICulture = _culture;
+        Thread.CurrentPrincipal = _principal;
+        //HttpContext.Current = context;
+        OnProcessRequest(context);
     }
+
+    public IAsyncResult BeginProcessRequest(HttpContext context, AsyncCallback cb, object extraData)
+    {
+        _culture = Thread.CurrentThread.CurrentCulture;
+        _principal = Thread.CurrentPrincipal;
+        _processRequest = ProcessRequest;
+
+        return _processRequest.BeginInvoke(context, cb, extraData);
+    }
+
+    public void EndProcessRequest(IAsyncResult result)
+    {
+        _processRequest.EndInvoke(result);
+    }
+
+    public abstract void OnProcessRequest(HttpContext context);
 }

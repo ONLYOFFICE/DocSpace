@@ -46,13 +46,13 @@ namespace ASC.Notify
 
         public void Start()
         {
-            CacheNotify.Subscribe((n) => SendNotifyMessage(n), CacheNotifyAction.InsertOrUpdate);
-            CacheInvoke.Subscribe((n) => InvokeSendMethod(n), CacheNotifyAction.InsertOrUpdate);
+            CacheNotify.Subscribe((n) => SendNotifyMessage(n), Common.Caching.CacheNotifyAction.InsertOrUpdate);
+            CacheInvoke.Subscribe((n) => InvokeSendMethod(n), Common.Caching.CacheNotifyAction.InsertOrUpdate);
         }
 
         public void Stop()
         {
-            CacheNotify.Unsubscribe(CacheNotifyAction.InsertOrUpdate);
+            CacheNotify.Unsubscribe(Common.Caching.CacheNotifyAction.InsertOrUpdate);
         }
 
         public void SendNotifyMessage(NotifyMessage notifyMessage)
@@ -100,8 +100,8 @@ namespace ASC.Notify
 
         public void Dispose()
         {
-            CacheNotify.Unsubscribe(CacheNotifyAction.InsertOrUpdate);
-            CacheInvoke.Unsubscribe(CacheNotifyAction.InsertOrUpdate);
+            CacheNotify.Unsubscribe(Common.Caching.CacheNotifyAction.InsertOrUpdate);
+            CacheInvoke.Unsubscribe(Common.Caching.CacheNotifyAction.InsertOrUpdate);
         }
     }
 
