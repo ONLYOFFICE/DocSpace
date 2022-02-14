@@ -22,7 +22,8 @@
  * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
  *
 */
-
+using ASC.Api.Core.Extensions;
+using ASC.Common.Caching;
 
 namespace ASC.Data.Backup.BackgroundTasks;
 
@@ -42,6 +43,8 @@ public class Startup : BaseStartup
 
         NotifyConfigurationExtension.Register(DIHelper);
 
+        DIHelper.TryAdd<BackupRequesteIntegrationEventHandler>();
+                
         services.AddHostedService<BackupWorkerService>();
     }
 }

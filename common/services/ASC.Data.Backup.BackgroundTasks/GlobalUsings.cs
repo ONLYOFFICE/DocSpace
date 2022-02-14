@@ -7,9 +7,11 @@ global using System.Threading.Tasks;
 
 global using ASC.Api.Core;
 global using ASC.Common;
-global using ASC.Common.Threading;
+global using ASC.Common.Logging;
 global using ASC.Common.Utils;
+global using ASC.Data.Backup.IntegrationEvents.EventHandling;
 global using ASC.Data.Backup.Services;
+global using ASC.EventBus.Abstractions;
 global using ASC.Web.Studio.Core.Notify;
 
 global using Autofac;
@@ -20,3 +22,5 @@ global using Microsoft.AspNetCore.Hosting;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Hosting;
+global using Microsoft.Extensions.Options;
+

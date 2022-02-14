@@ -5,6 +5,7 @@ using System.Text.Json.Serialization;
 using ASC.Api.Core.Auth;
 using ASC.Api.Core.Convention;
 using ASC.Api.Core.Core;
+using ASC.Api.Core.Extensions;
 using ASC.Api.Core.Middleware;
 using ASC.Common;
 using ASC.Common.Caching;
@@ -115,6 +116,8 @@ namespace ASC.Api.Core
             }
             else if (rabbitMQConfiguration != null)
             {
+                services.AddEventBus();
+
                 DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(RabbitMQCache<>));
             }
             else if (redisConfiguration != null)

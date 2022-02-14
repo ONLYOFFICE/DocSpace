@@ -2,22 +2,29 @@
 
 public record IntegrationEvent
 {        
-    public IntegrationEvent()
+    private IntegrationEvent()
     {
         Id = Guid.NewGuid();
-        CreationDate = DateTime.UtcNow;
+        CreateOn = DateTime.UtcNow;
     }
 
     [JsonConstructor]
-    public IntegrationEvent(Guid id, DateTime createDate)
+    public IntegrationEvent(Guid createBy, int tenantId) : base()
     {
-        Id = id;
-        CreationDate = createDate;
+        CreateBy = createBy;
+        TenantId = tenantId;
     }
 
     [JsonInclude]
     public Guid Id { get; private init; }
 
     [JsonInclude]
-    public DateTime CreationDate { get; private init; }
+    public DateTime CreateOn { get; private init; }
+
+    [JsonInclude]
+    public Guid CreateBy { get; private init; }
+
+    [JsonInclude]
+    public int TenantId { get; private init; }
+
 }

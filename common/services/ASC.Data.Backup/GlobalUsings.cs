@@ -38,3 +38,4 @@ global using Microsoft.Extensions.Hosting;
 global using Microsoft.Extensions.Options;
 
 global using static ASC.Data.Backup.BackupAjaxHandler;
+global using ASC.EventBus.Abstractions; 

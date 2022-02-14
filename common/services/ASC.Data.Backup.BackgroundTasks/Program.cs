@@ -1,4 +1,5 @@
 ﻿using ASC.Data.Backup.BackgroundTasks;
+using ASC.Data.Backup.Core.IntegrationEvents.Events;
 
 using Microsoft.Extensions.Hosting.WindowsServices;
 
@@ -58,6 +59,8 @@ builder.Host.ConfigureAppConfiguration((hostContext, config) =>
         .AddJsonFile($"kafka.{env}.json", true)
         .AddJsonFile("redis.json")
         .AddJsonFile($"redis.{env}.json", true)
+        .AddJsonFile("rabbitmq.json")
+        .AddJsonFile($"rabbitmq.{env}.json", true)
         .AddEnvironmentVariables()
         .AddCommandLine(args)
         .AddInMemoryCollection(new Dictionary<string, string>
@@ -81,5 +84,9 @@ builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
 var app = builder.Build();
 
 startup.Configure(app, app.Environment);
+
+var eventBus = ((IApplicationBuilder)app).ApplicationServices.GetRequiredService<IEventBus>();
+
+eventBus.Subscribe<BackupRequestIntegrationEvent, BackupRequesteIntegrationEventHandler>();
 
 app.Run();

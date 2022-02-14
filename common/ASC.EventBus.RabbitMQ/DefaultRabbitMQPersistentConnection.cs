@@ -94,7 +94,7 @@ public class DefaultRabbitMQPersistentConnection
         }
     }
 
-    private void OnConnectionBlocked(object? sender, ConnectionBlockedEventArgs e)
+    private void OnConnectionBlocked(object sender, ConnectionBlockedEventArgs e)
     {
         if (_disposed) return;
 
@@ -103,7 +103,7 @@ public class DefaultRabbitMQPersistentConnection
         TryConnect();
     }
 
-    void OnCallbackException(object? sender, CallbackExceptionEventArgs e)
+    void OnCallbackException(object sender, CallbackExceptionEventArgs e)
     {
         if (_disposed) return;
 
@@ -112,7 +112,7 @@ public class DefaultRabbitMQPersistentConnection
         TryConnect();
     }
 
-    void OnConnectionShutdown(object? sender, ShutdownEventArgs reason)
+    void OnConnectionShutdown(object sender, ShutdownEventArgs reason)
     {
         if (_disposed) return;
 

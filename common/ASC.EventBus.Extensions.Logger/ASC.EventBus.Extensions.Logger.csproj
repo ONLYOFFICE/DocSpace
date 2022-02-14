@@ -6,4 +6,9 @@
     <Nullable>disable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ASC.Core.Common\ASC.Core.Common.csproj" />
+    <ProjectReference Include="..\ASC.EventBus\ASC.EventBus.csproj" />
+  </ItemGroup>
+
 </Project>

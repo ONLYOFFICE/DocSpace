@@ -1,4 +1,7 @@
-﻿namespace ASC.Data.Backup.Controllers;
+﻿using ASC.Core;
+using ASC.Data.Backup.Core.IntegrationEvents.Events;
+
+namespace ASC.Data.Backup.Controllers;
 
 [Scope]
 [DefaultRoute]
@@ -8,15 +11,24 @@ public class BackupController
     private readonly BackupAjaxHandler _backupHandler;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly TenantExtra _tenantExtra;
+    private readonly IEventBus _eventBus;
+    private readonly Guid _currentUserId;
+    private int _tenantId;
 
     public BackupController(
         BackupAjaxHandler backupAjaxHandler,
         CoreBaseSettings coreBaseSettings,
-        TenantExtra tenantExtra)
+        TenantManager tenantManager,
+        SecurityContext securityContext,
+        TenantExtra tenantExtra,
+        IEventBus eventBus)
     {
+        _currentUserId = securityContext.CurrentAccount.ID; 
+        _tenantId = tenantManager.GetCurrentTenant().TenantId;
         _backupHandler = backupAjaxHandler;
         _coreBaseSettings = coreBaseSettings;
         _tenantExtra = tenantExtra;
+        _eventBus = eventBus;
     }
     /// <summary>
     /// Returns the backup schedule of the current portal
@@ -121,7 +133,15 @@ public class BackupController
         }
         var storageType = backup.StorageType == null ? BackupStorageType.Documents : (BackupStorageType)Int32.Parse(backup.StorageType);
         var storageParams = backup.StorageParams == null ? new Dictionary<string, string>() : backup.StorageParams.ToDictionary(r => r.Key.ToString(), r => r.Value.ToString());
-        _backupHandler.StartBackup(storageType, storageParams, backup.BackupMail);
+
+        _eventBus.Publish(new BackupRequestIntegrationEvent (        
+             tenantId : _tenantId,
+             storageParams: storageParams,
+             storageType : storageType,
+             backupMail : backup.BackupMail,
+             createBy: _currentUserId
+        ));
+        
         return _backupHandler.GetBackupProgress();
     }
 

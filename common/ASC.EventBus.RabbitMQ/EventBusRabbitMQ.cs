@@ -27,7 +27,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
         _subsManager.OnEventRemoved += SubsManager_OnEventRemoved;
     }
 
-    private void SubsManager_OnEventRemoved(object? sender, string eventName)
+    private void SubsManager_OnEventRemoved(object sender, string eventName)
     {
         if (!_persistentConnection.IsConnected)
         {

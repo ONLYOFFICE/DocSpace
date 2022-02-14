@@ -23,7 +23,6 @@
  *
 */
 
-
 namespace ASC.Data.Backup;
 
 public class Startup : BaseStartup
@@ -56,6 +55,7 @@ public class Startup : BaseStartup
 
         services.AddHostedService<BackupCleanerService>();
         services.AddHostedService<BackupSchedulerService>();
-        services.AddHostedService<BackupListenerService>();
+        services.AddHostedService<BackupListenerService>();        
     }
 }
+
