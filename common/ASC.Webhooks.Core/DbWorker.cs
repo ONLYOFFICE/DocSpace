@@ -4,14 +4,13 @@
 public class DbWorker
 {
     private Lazy<WebhooksDbContext> _lazyWebhooksDbContext;
+    private readonly TenantManager _tenantManager;
+    private WebhooksDbContext WebhooksDbContext { get => _lazyWebhooksDbContext.Value; }
     public DbWorker(DbContextManager<WebhooksDbContext> webhooksDbContext, TenantManager tenantManager)
     {
         _lazyWebhooksDbContext = new Lazy<WebhooksDbContext>(() => webhooksDbContext.Value);
         _tenantManager = tenantManager;
     }
-
-    private TenantManager _tenantManager { get; }
-    private WebhooksDbContext WebhooksDbContext { get => _lazyWebhooksDbContext.Value; }
     public void AddWebhookConfig(WebhooksConfig webhooksConfig)
     {
         webhooksConfig.TenantId = _tenantManager.GetCurrentTenant().TenantId;
