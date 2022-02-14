@@ -107,6 +107,9 @@ class CustomTitles extends React.Component {
       saveToSessionStorage("greetingTitle", "");
     } else {
       saveToSessionStorage("greetingTitle", e.target.value);
+      this.setState({
+        showReminder: true,
+      });
     }
 
     this.checkChanges();
