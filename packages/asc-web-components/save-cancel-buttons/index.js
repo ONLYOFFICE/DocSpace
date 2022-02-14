@@ -44,9 +44,13 @@ class SaveCancelButtons extends React.Component {
       saveButtonLabel,
       cancelButtonLabel,
       sectionWidth,
+      hasChanged,
       className,
       id,
     } = this.props;
+
+    const isDisabled = hasChanged !== undefined ? !hasChanged : false;
+
     return (
       <StyledSaveCancelButtons
         className={className}
@@ -59,7 +63,7 @@ class SaveCancelButtons extends React.Component {
           <Button
             className="save-button"
             size="big"
-            isDisabled={false}
+            isDisabled={isDisabled}
             primary
             onClick={onSaveClick}
             label={saveButtonLabel}
@@ -67,7 +71,7 @@ class SaveCancelButtons extends React.Component {
           <Button
             className="cancel-button"
             size="big"
-            isDisabled={false}
+            isDisabled={isDisabled}
             onClick={onCancelClick}
             label={cancelButtonLabel}
           />
@@ -99,6 +103,7 @@ SaveCancelButtons.propTypes = {
   showReminder: PropTypes.bool,
   displaySettings: PropTypes.bool,
   sectionWidth: PropTypes.number,
+  hasChanged: PropTypes.bool,
 };
 
 SaveCancelButtons.defaultProps = {

@@ -107,6 +107,9 @@ class CustomTitles extends React.Component {
       saveToSessionStorage("greetingTitle", "");
     } else {
       saveToSessionStorage("greetingTitle", e.target.value);
+      this.setState({
+        showReminder: true,
+      });
     }
 
     this.checkChanges();
@@ -182,6 +185,7 @@ class CustomTitles extends React.Component {
       isLoadingGreetingSave,
       isLoadingGreetingRestore,
       showReminder,
+      hasChanged,
     } = this.state;
 
     const tooltipCustomTitlesTooltip = <CustomTitlesTooltip t={t} />;
@@ -224,6 +228,7 @@ class CustomTitles extends React.Component {
             cancelButtonLabel={t("Settings:RestoreDefaultButton")}
             displaySettings={true}
             sectionWidth={sectionWidth}
+            hasChanged={hasChanged}
           />
         </StyledComponent>
       </>
