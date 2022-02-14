@@ -17,6 +17,7 @@ const ProviderMetadata = ({ FormStore, t }) => {
         labelText={t("SPEntityId")}
         name="sp_entityId"
         placeholder="https://www.test.com"
+        t={t}
         tabIndex={25}
         tooltipContent={t("SPEntityIdTooltip")}
       />
@@ -26,6 +27,7 @@ const ProviderMetadata = ({ FormStore, t }) => {
         labelText={t("SPAssertionConsumerURL")}
         name="sp_assertionConsumerUrl"
         placeholder="https://www.test.com"
+        t={t}
         tabIndex={26}
         tooltipContent={t("SPAssertionConsumerURLTooltip")}
       />
@@ -35,6 +37,7 @@ const ProviderMetadata = ({ FormStore, t }) => {
         labelText={t("SPSingleLogoutURL")}
         name="sp_singleLogoutUrl"
         placeholder="https://www.test.com"
+        t={t}
         tabIndex={27}
         tooltipContent={t("SPSingleLogoutURLTooltip")}
       />

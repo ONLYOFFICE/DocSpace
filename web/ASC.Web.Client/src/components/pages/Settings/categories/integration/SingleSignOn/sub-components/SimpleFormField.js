@@ -11,11 +11,14 @@ const SimpleFormField = ({
   labelText,
   name,
   placeholder,
+  t,
   tabIndex,
   tooltipContent,
 }) => {
   return (
     <FieldContainer
+      errorMessage={t(FormStore[`${name}ErrorMessage`])}
+      hasError={FormStore[`${name}HasError`]}
       inlineHelpButton
       isVertical
       labelText={labelText}
@@ -25,6 +28,7 @@ const SimpleFormField = ({
       {children}
       <SimpleTextInput
         FormStore={FormStore}
+        hasError={FormStore[`${name}errorMessage`]}
         name={name}
         placeholder={placeholder}
         tabIndex={tabIndex}

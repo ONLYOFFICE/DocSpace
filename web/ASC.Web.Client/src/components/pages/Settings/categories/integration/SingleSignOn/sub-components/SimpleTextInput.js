@@ -6,6 +6,7 @@ import TextInput from "@appserver/components/text-input";
 
 const SimpleTextInput = ({
   FormStore,
+  hasError,
   maxWidth,
   name,
   placeholder,
@@ -15,7 +16,9 @@ const SimpleTextInput = ({
     <StyledInputWrapper maxWidth={maxWidth}>
       <TextInput
         className="field-input"
+        hasError={hasError}
         name={name}
+        onBlur={FormStore.onBlur}
         onChange={FormStore.onTextInputChange}
         placeholder={placeholder}
         scale

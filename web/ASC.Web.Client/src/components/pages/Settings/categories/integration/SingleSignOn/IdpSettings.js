@@ -23,6 +23,7 @@ const IdpSettings = ({ FormStore, t }) => {
         labelText={t("CustomEntryButton")}
         name="spLoginLabel"
         placeholder="Single Sign-on"
+        t={t}
         tabIndex={4}
         tooltipContent={t("CustomEntryTooltip")}
       />
@@ -32,6 +33,7 @@ const IdpSettings = ({ FormStore, t }) => {
         labelText={t("ProviderURL")}
         name="entityId"
         placeholder="https://www.test.com"
+        t={t}
         tabIndex={5}
         tooltipContent={t("ProviderURLTooltip")}
       />

@@ -29,6 +29,7 @@ const FieldMapping = ({ FormStore, t }) => {
         labelText={t("FirstName")}
         name="firstName"
         placeholder="givenName"
+        t={t}
         tabIndex={16}
       />
 
@@ -37,6 +38,7 @@ const FieldMapping = ({ FormStore, t }) => {
         labelText={t("LastName")}
         name="lastName"
         placeholder="sn"
+        t={t}
         tabIndex={17}
       />
 
@@ -45,6 +47,7 @@ const FieldMapping = ({ FormStore, t }) => {
         labelText={t("Common:Email")}
         name="email"
         placeholder="sn"
+        t={t}
         tabIndex={18}
       />
 
@@ -53,6 +56,7 @@ const FieldMapping = ({ FormStore, t }) => {
         labelText={t("Location")}
         name="location"
         placeholder="sn"
+        t={t}
         tabIndex={19}
       />
 
@@ -61,6 +65,7 @@ const FieldMapping = ({ FormStore, t }) => {
         labelText={t("Title")}
         name="title"
         placeholder="sn"
+        t={t}
         tabIndex={20}
       />
 
@@ -69,6 +74,7 @@ const FieldMapping = ({ FormStore, t }) => {
         labelText={t("Common:Phone")}
         name="phone"
         placeholder="sn"
+        t={t}
         tabIndex={21}
       />
 
