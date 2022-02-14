@@ -204,6 +204,8 @@ class AvatarEditorPage extends React.PureComponent {
     }
   };
 
+  onSaveClick = () => this.setState({ isLoading: true });
+
   onLoadFileAvatar = (file, fileData) => {
     const { profile } = this.props;
 
@@ -223,8 +225,7 @@ class AvatarEditorPage extends React.PureComponent {
           throw response.message;
         }
         var img = new Image();
-        img.onload = function () {
-          _this.setState({ isLoading: false });
+        img.onload = () => {
           if (fileData) {
             fileData.avatar = {
               tmpFile: response.data,
@@ -292,8 +293,7 @@ class AvatarEditorPage extends React.PureComponent {
           useModalDialog={false}
           image={this.state.avatar.image}
           visible={true}
-          onClose={this.onCloseAvatarEditor}
-          onSave={this.onSaveAvatar}
+          onSave={this.onSaveClick}
           onCancel={this.onCancel}
           onLoadFile={this.onLoadFileAvatar}
           headerLabel={t("EditPhoto")}

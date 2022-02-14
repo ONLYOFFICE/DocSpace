@@ -121,15 +121,11 @@ class AvatarEditorBody extends React.Component {
 
   setCroppedImage = () => {
     if (this.setEditorRef && this.setEditorRef.current) {
-      const image = this.setEditorRef.current.getImage();
-
-      if (image) {
-        image.toDataURL();
-        this.setState({
-          croppedImage: image,
-        });
-        this.props.onImageChange(image);
-      }
+      const image = this.setEditorRef.current.getImage()?.toDataURL();
+      this.setState({
+        croppedImage: image,
+      });
+      this.props.onImageChange(image);
     }
   };
 
@@ -319,7 +315,7 @@ class AvatarEditorBody extends React.Component {
     const {
       selectNewPhotoLabel,
       orDropFileHereLabel,
-      maxSizeLabel, 
+      maxSizeLabel,
       isLoading,
     } = this.props;
     const { image } = this.state;
@@ -350,7 +346,7 @@ class AvatarEditorBody extends React.Component {
           textAlign={labelAlign}
         >
           {maxSizeLabel}
-      </Text>
+        </Text>
       </Text>
     );
   };
