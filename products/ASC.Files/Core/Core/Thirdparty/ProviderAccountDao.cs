@@ -49,7 +49,7 @@ namespace ASC.Files.Thirdparty
         { 
             get 
             {
-                if (tenantID == 0) tenantID = TenantManager.GetCurrentTenant().TenantId;
+                if (tenantID == 0) tenantID = TenantManager.GetCurrentTenant().Id;
                 return tenantID; 
             } 
         }

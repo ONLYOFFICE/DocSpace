@@ -159,7 +159,7 @@ namespace ASC.ElasticSearch
 
         public bool CanIndexByContent(T t)
         {
-            return Support(t) && SearchSettingsHelper.CanIndexByContent<T>(TenantManager.GetCurrentTenant().TenantId);
+            return Support(t) && SearchSettingsHelper.CanIndexByContent<T>(TenantManager.GetCurrentTenant().Id);
         }
 
         public bool Index(T data, bool immediately = true)
@@ -359,7 +359,7 @@ namespace ASC.ElasticSearch
 
             try
             {
-                var tenant = TenantManager.GetCurrentTenant().TenantId;
+                var tenant = TenantManager.GetCurrentTenant().Id;
                 Indexer.Update(data, expression, tenant, immediately, fields);
             }
             catch (Exception e)
@@ -375,7 +375,7 @@ namespace ASC.ElasticSearch
 
             try
             {
-                var tenant = TenantManager.GetCurrentTenant().TenantId;
+                var tenant = TenantManager.GetCurrentTenant().Id;
                 Indexer.Update(data, expression, tenant, action, fields, immediately);
             }
             catch (Exception e)
@@ -404,7 +404,7 @@ namespace ASC.ElasticSearch
             var t = ServiceProvider.GetService<T>();
             if (!Support(t)) return;
 
-            var tenant = TenantManager.GetCurrentTenant().TenantId;
+            var tenant = TenantManager.GetCurrentTenant().Id;
 
             try
             {
@@ -441,7 +441,7 @@ namespace ASC.ElasticSearch
         {
             var t = ServiceProvider.GetService<T>();
             if (!await SupportAsync(t)) return false;
-            var tenant = TenantManager.GetCurrentTenant().TenantId;
+            var tenant = TenantManager.GetCurrentTenant().Id;
             return await Queue(() => Indexer.Delete(expression, tenant, immediately));
         }
 

@@ -47,7 +47,7 @@ namespace ASC.Core.Security.Authorizing
 
             return _authorizationManager
                 .GetAcesWithInherits(subject.ID, action.ID, objectId, secObjProvider)
-                .Select(r => new Ace(r.ActionId, r.Reaction));
+                .Select(r => new Ace(r.Action, r.AceType));
         }
     }
 }

@@ -26,7 +26,7 @@
 namespace ASC.Core.Users
 {
     [Serializable]
-    public sealed class UserInfo : IDirectRecipient, ICloneable
+    public sealed class UserInfo : IDirectRecipient, ICloneable, IMapFrom<User>
     {
         public UserInfo()
         {
@@ -35,7 +35,7 @@ namespace ASC.Core.Users
             LastModified = DateTime.UtcNow;
         } 
 
-        public Guid ID { get; set; }
+        public Guid Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string UserName { get; set; }
@@ -81,17 +81,17 @@ namespace ASC.Core.Users
 
         public override int GetHashCode()
         {
-            return ID.GetHashCode();
+            return Id.GetHashCode();
         }
 
         public override bool Equals(object obj)
         {
-            return obj is UserInfo ui && ID.Equals(ui.ID);
+            return obj is UserInfo ui && Id.Equals(ui.Id);
         }
 
         public bool Equals(UserInfo obj)
         {
-            return obj != null && ID.Equals(obj.ID);
+            return obj != null && Id.Equals(obj.Id);
         }
 
         public CultureInfo GetCulture()
@@ -101,7 +101,7 @@ namespace ASC.Core.Users
 
         string[] IDirectRecipient.Addresses => !string.IsNullOrEmpty(Email) ? new[] { Email } : Array.Empty<string>();
         public bool CheckActivation => !IsActive; /*if user already active we don't need activation*/
-        string IRecipient.ID => ID.ToString();
+        string IRecipient.ID => Id.ToString();
         string IRecipient.Name => ToString();
 
         public object Clone()

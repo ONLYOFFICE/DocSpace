@@ -90,7 +90,7 @@ namespace ASC.Core
                 throw new ArgumentNullException(nameof(passwordHash));
             }
 
-            var tenantid = _tenantManager.GetCurrentTenant().TenantId;
+            var tenantid = _tenantManager.GetCurrentTenant().Id;
             var u = _userManager.GetUsersByPasswordHash(tenantid, login, passwordHash);
 
             return AuthenticateMe(new UserAccount(u, tenantid, _userFormatter));
@@ -121,7 +121,7 @@ namespace ASC.Core
                 }
                 else if (_cookieStorage.DecryptCookie(cookie, out var tenant, out var userid, out var indexTenant, out var expire, out var indexUser))
                 {
-                    if (tenant != _tenantManager.GetCurrentTenant().TenantId)
+                    if (tenant != _tenantManager.GetCurrentTenant().Id)
                     {
                         return false;
                     }
@@ -145,7 +145,7 @@ namespace ASC.Core
                             return false;
                         }
 
-                        AuthenticateMeWithoutCookie(new UserAccount(new UserInfo { ID = userid }, tenant, _userFormatter));
+                        AuthenticateMeWithoutCookie(new UserAccount(new UserInfo { Id = userid }, tenant, _userFormatter));
 
                         return true;
                     }
@@ -194,7 +194,7 @@ namespace ASC.Core
 
             if (account is IUserAccount)
             {
-                cookie = _cookieStorage.EncryptCookie(_tenantManager.GetCurrentTenant().TenantId, account.ID);
+                cookie = _cookieStorage.EncryptCookie(_tenantManager.GetCurrentTenant().Id, account.ID);
             }
 
             return cookie;
@@ -220,7 +220,7 @@ namespace ASC.Core
 
                 var u = _userManager.GetUsers(account.ID);
 
-                if (u.ID == Users.Constants.LostUser.ID)
+                if (u.Id == Users.Constants.LostUser.Id)
                 {
                     throw new InvalidCredentialException("Invalid username or password.");
                 }
@@ -232,20 +232,20 @@ namespace ASC.Core
                 // for LDAP users only
                 if (u.Sid != null)
                 {
-                    if (!_tenantManager.GetTenantQuota(tenant.TenantId).Ldap)
+                    if (!_tenantManager.GetTenantQuota(tenant.Id).Ldap)
                     {
                         throw new BillingException("Your tariff plan does not support this option.", "Ldap");
                     }
                 }
 
-                if (_userManager.IsUserInGroup(u.ID, Users.Constants.GroupAdmin.ID))
+                if (_userManager.IsUserInGroup(u.Id, Users.Constants.GroupAdmin.ID))
                 {
                     roles.Add(Role.Administrators);
                 }
 
                 roles.Add(Role.Users);
 
-                account = new UserAccount(u, _tenantManager.GetCurrentTenant().TenantId, _userFormatter);
+                account = new UserAccount(u, _tenantManager.GetCurrentTenant().Id, _userFormatter);
             }
 
             var claims = new List<Claim>
@@ -265,14 +265,14 @@ namespace ASC.Core
 
         public string AuthenticateMe(Guid userId, List<Claim> additionalClaims = null)
         {
-            var account = _authentication.GetAccountByID(_tenantManager.GetCurrentTenant().TenantId, userId);
+            var account = _authentication.GetAccountByID(_tenantManager.GetCurrentTenant().Id, userId);
 
             return AuthenticateMe(account, additionalClaims);
         }
 
         public void AuthenticateMeWithoutCookie(Guid userId, List<Claim> additionalClaims = null)
         {
-            var account = _authentication.GetAccountByID(_tenantManager.GetCurrentTenant().TenantId, userId);
+            var account = _authentication.GetAccountByID(_tenantManager.GetCurrentTenant().Id, userId);
 
             AuthenticateMeWithoutCookie(account, additionalClaims);
         }
@@ -284,7 +284,7 @@ namespace ASC.Core
 
         public void SetUserPasswordHash(Guid userID, string passwordHash)
         {
-            var tenantid = _tenantManager.GetCurrentTenant().TenantId;
+            var tenantid = _tenantManager.GetCurrentTenant().Id;
             var u = _userManager.GetUsersByPasswordHash(tenantid, userID.ToString(), passwordHash);
             if (!Equals(u, Users.Constants.LostUser))
             {

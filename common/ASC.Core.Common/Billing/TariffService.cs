@@ -225,7 +225,7 @@ namespace ASC.Core.Billing
                               }
 
                               var asynctariff = Tariff.CreateDefault();
-                              asynctariff.QuotaId = quota.Id;
+                              asynctariff.QuotaId = quota.Tenant;
                               asynctariff.Autorenewal = lastPayment.Autorenewal;
                               asynctariff.DueDate = 9999 <= lastPayment.EndDate.Year ? DateTime.MaxValue : lastPayment.EndDate;
 
@@ -324,7 +324,7 @@ namespace ASC.Core.Billing
                             var quota = quotas.SingleOrDefault(q => q.AvangateId == pi.ProductRef);
                             if (quota != null)
                             {
-                                pi.QuotaId = quota.Id;
+                                pi.QuotaId = quota.Tenant;
                             }
                             payments.Add(pi);
                         }
@@ -576,7 +576,7 @@ namespace ASC.Core.Billing
                     var tenant = TenantService.GetTenant(tenantId);
                     if (tenant != null)
                     {
-                        var fromDate = tenant.CreatedDateTime < tenant.VersionChanged ? tenant.VersionChanged : tenant.CreatedDateTime;
+                        var fromDate = tenant.CreationDateTime < tenant.VersionChanged ? tenant.VersionChanged : tenant.CreationDateTime;
                         var trialPeriod = GetPeriod("TrialPeriod", DefaultTrialPeriod);
                         if (fromDate == DateTime.MinValue)
                         {

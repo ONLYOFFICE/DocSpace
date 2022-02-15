@@ -306,7 +306,7 @@ namespace ASC.Data.Backup.Tasks
             {
                 foreach (var module in storageModules)
                 {
-                    var storage = StorageFactory.GetStorage(ConfigPath, tenant.TenantId.ToString(), module);
+                    var storage = StorageFactory.GetStorage(ConfigPath, tenant.Id.ToString(), module);
                     var domains = StorageFactoryConfig.GetDomainList(ConfigPath, module).ToList();
 
                     domains.Add(string.Empty); //instead storage.DeleteFiles("\\", "*.*", true);

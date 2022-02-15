@@ -675,7 +675,7 @@ namespace ASC.Web.Files.Utils
             {
                 entries = entries.Where(f =>
                                         subjectGroup
-                                            ? UserManager.GetUsersByGroup(subjectId).Any(s => s.ID == f.CreateBy)
+                                            ? UserManager.GetUsersByGroup(subjectId).Any(s => s.Id == f.CreateBy)
                                             : f.CreateBy == subjectId
                     )
                                  .ToList();

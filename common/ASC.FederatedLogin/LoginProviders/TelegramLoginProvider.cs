@@ -59,13 +59,13 @@ public class TelegramLoginProvider : Consumer, IValidateKeysProvider, ITelegramL
     {
         if (TelegramBotToken.Length == 0)
         {
-            _telegramHelper.DisableClient(TenantManager.GetCurrentTenant().TenantId);
+            _telegramHelper.DisableClient(TenantManager.GetCurrentTenant().Id);
 
             return true;
         }
         else
         {
-            return _telegramHelper.CreateClient(TenantManager.GetCurrentTenant().TenantId, TelegramBotToken, TelegramAuthTokenLifespan, TelegramProxy);
+            return _telegramHelper.CreateClient(TenantManager.GetCurrentTenant().Id, TelegramBotToken, TelegramAuthTokenLifespan, TelegramProxy);
         }
     }
 }

@@ -40,7 +40,7 @@ namespace ASC.Web.Files.Utils
 
         public void FilesChangeEditors(object fileId, bool finish = false)
         {
-            _signalrServiceClient.FilesChangeEditors(TenantManager.GetCurrentTenant().TenantId, fileId.ToString(), finish);
+            _signalrServiceClient.FilesChangeEditors(TenantManager.GetCurrentTenant().Id, fileId.ToString(), finish);
         }
     }
 }

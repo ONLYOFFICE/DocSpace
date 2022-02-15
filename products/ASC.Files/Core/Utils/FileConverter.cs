@@ -687,7 +687,7 @@ namespace ASC.Web.Files.Utils
                 Result = string.Empty,
                 Processed = "",
                 Id = string.Empty,
-                TenantId = TenantManager.GetCurrentTenant().TenantId,
+                TenantId = TenantManager.GetCurrentTenant().Id,
                 Account = AuthContext.CurrentAccount,
                 Delete = false,
                 StartDateTime = DateTime.Now,
@@ -731,7 +731,7 @@ namespace ASC.Web.Files.Utils
             }
 
             FileMarker.RemoveMarkAsNew(file);
-            GetFileConverter<T>().Add(file, password, TenantManager.GetCurrentTenant().TenantId, AuthContext.CurrentAccount, deleteAfter, HttpContextAccesor?.HttpContext != null ? HttpContextAccesor.HttpContext.Request.GetUrlRewriter().ToString() : null, BaseCommonLinkUtility.ServerRootPath);
+            GetFileConverter<T>().Add(file, password, TenantManager.GetCurrentTenant().Id, AuthContext.CurrentAccount, deleteAfter, HttpContextAccesor?.HttpContext != null ? HttpContextAccesor.HttpContext.Request.GetUrlRewriter().ToString() : null, BaseCommonLinkUtility.ServerRootPath);
         }
 
         public bool IsConverting<T>(File<T> file)

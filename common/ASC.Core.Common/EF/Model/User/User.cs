@@ -8,24 +8,24 @@
         public string LastName { get; set; }
         public Guid Id { get; set; }
         public bool? Sex { get; set; }
-        public DateTime? Birthdate { get; set; }
+        public DateTime? BirthDate { get; set; }
         public EmployeeStatus Status { get; set; }
         public EmployeeActivationStatus ActivationStatus { get; set; }
         public string Email { get; set; }
         public DateTime? WorkFromDate { get; set; }
         public DateTime? TerminatedDate { get; set; }
         public string Title { get; set; }
-        public string Culture { get; set; }
+        public string CultureName { get; set; }
         public string Contacts { get; set; }
-        public string Phone { get; set; }
-        public MobilePhoneActivationStatus PhoneActivation { get; set; }
+        public string MobilePhone { get; set; }
+        public MobilePhoneActivationStatus MobilePhoneActivation { get; set; }
         public string Location { get; set; }
         public string Notes { get; set; }
         public string Sid { get; set; }
         public string SsoNameId { get; set; }
         public string SsoSessionId { get; set; }
         public bool Removed { get; set; }
-        public DateTime CreateOn { get; set; }
+        public DateTime CreateDate { get; set; }
         public DateTime LastModified { get; set; }
         public UserSecurity UserSecurity { get; set; }
         public List<UserGroup> Groups { get; set; }
@@ -86,7 +86,7 @@
 
                 entity.Property(e => e.ActivationStatus).HasColumnName("activation_status");
 
-                entity.Property(e => e.Birthdate)
+                entity.Property(e => e.BirthDate)
                     .HasColumnName("bithdate")
                     .HasColumnType("datetime");
 
@@ -96,12 +96,12 @@
                     .HasCharSet("utf8")
                     .UseCollation("utf8_general_ci");
 
-                entity.Property(e => e.CreateOn)
+                entity.Property(e => e.CreateDate)
                     .HasColumnName("create_on")
                     .HasColumnType("timestamp")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                entity.Property(e => e.Culture)
+                entity.Property(e => e.CultureName)
                     .HasColumnName("culture")
                     .HasColumnType("varchar(20)")
                     .HasCharSet("utf8")
@@ -144,13 +144,13 @@
                     .HasCharSet("utf8")
                     .UseCollation("utf8_general_ci");
 
-                entity.Property(e => e.Phone)
+                entity.Property(e => e.MobilePhone)
                     .HasColumnName("phone")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
                     .UseCollation("utf8_general_ci");
 
-                entity.Property(e => e.PhoneActivation).HasColumnName("phone_activation");
+                entity.Property(e => e.MobilePhoneActivation).HasColumnName("phone_activation");
 
                 entity.Property(e => e.Removed).HasColumnName("removed");
 
@@ -225,18 +225,18 @@
 
                 entity.Property(e => e.ActivationStatus).HasColumnName("activation_status");
 
-                entity.Property(e => e.Birthdate).HasColumnName("bithdate");
+                entity.Property(e => e.BirthDate).HasColumnName("bithdate");
 
                 entity.Property(e => e.Contacts)
                     .HasColumnName("contacts")
                     .HasMaxLength(1024)
                     .HasDefaultValueSql("NULL");
 
-                entity.Property(e => e.CreateOn)
+                entity.Property(e => e.CreateDate)
                     .HasColumnName("create_on")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                entity.Property(e => e.Culture)
+                entity.Property(e => e.CultureName)
                     .HasColumnName("culture")
                     .HasMaxLength(20)
                     .HasDefaultValueSql("NULL");
@@ -268,12 +268,12 @@
                     .HasMaxLength(512)
                     .HasDefaultValueSql("NULL");
 
-                entity.Property(e => e.Phone)
+                entity.Property(e => e.MobilePhone)
                     .HasColumnName("phone")
                     .HasMaxLength(255)
                     .HasDefaultValueSql("NULL");
 
-                entity.Property(e => e.PhoneActivation).HasColumnName("phone_activation");
+                entity.Property(e => e.MobilePhoneActivation).HasColumnName("phone_activation");
 
                 entity.Property(e => e.Removed).HasColumnName("removed");
 

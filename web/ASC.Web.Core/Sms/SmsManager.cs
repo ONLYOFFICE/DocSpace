@@ -102,7 +102,7 @@ namespace ASC.Web.Studio.Core.SMS
             if (!SmsKeyStorage.GenerateKey(mobilePhone, out var key)) throw new Exception(Resource.SmsTooMuchError);
             if (SmsSender.SendSMS(mobilePhone, string.Format(Resource.SmsAuthenticationMessageToUser, key)))
             {
-                TenantManager.SetTenantQuotaRow(new TenantQuotaRow { Tenant = TenantManager.GetCurrentTenant().TenantId, Path = "/sms", Counter = 1 }, true);
+                TenantManager.SetTenantQuotaRow(new TenantQuotaRow { Tenant = TenantManager.GetCurrentTenant().Id, Path = "/sms", Counter = 1 }, true);
             }
         }
 
@@ -132,7 +132,7 @@ namespace ASC.Web.Studio.Core.SMS
 
             if (!SecurityContext.IsAuthenticated)
             {
-                SecurityContext.AuthenticateMe(user.ID);
+                SecurityContext.AuthenticateMe(user.Id);
                 //CookiesManager.SetCookies(CookiesType.AuthKey, cookiesKey);
             }
 

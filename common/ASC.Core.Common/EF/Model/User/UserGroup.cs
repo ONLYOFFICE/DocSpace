@@ -1,6 +1,6 @@
 ﻿namespace ASC.Core.Common.EF
 {
-    public class UserGroup : BaseEntity
+    public class UserGroup : BaseEntity, IMapFrom<UserGroupRef>
     {
         public int Tenant { get; set; }
         public Guid UserId { get; set; }

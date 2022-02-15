@@ -112,11 +112,11 @@ namespace ASC.Core.Caching
                     return;
                 }
 
-                Remove(t.TenantId);
+                Remove(t.Id);
                 lock (_locker)
                 {
-                    _byId[t.TenantId] = t;
-                    _byDomain[t.TenantAlias] = t;
+                    _byId[t.Id] = t;
+                    _byDomain[t.Alias] = t;
                     if (!string.IsNullOrEmpty(t.MappedDomain))
                     {
                         _byDomain[t.MappedDomain] = t;
@@ -137,7 +137,7 @@ namespace ASC.Core.Caching
                     lock (_locker)
                     {
                         _byId.Remove(id);
-                        _byDomain.Remove(t.TenantAlias);
+                        _byDomain.Remove(t.Alias);
                         if (!string.IsNullOrEmpty(t.MappedDomain))
                         {
                             _byDomain.Remove(t.MappedDomain);
@@ -285,7 +285,7 @@ namespace ASC.Core.Caching
         public Tenant SaveTenant(CoreSettings coreSettings, Tenant tenant)
         {
             tenant = Service.SaveTenant(coreSettings, tenant);
-            CacheNotifyItem.Publish(new TenantCacheItem() { TenantId = tenant.TenantId }, CacheNotifyAction.InsertOrUpdate);
+            CacheNotifyItem.Publish(new TenantCacheItem() { TenantId = tenant.Id }, CacheNotifyAction.InsertOrUpdate);
 
             return tenant;
         }

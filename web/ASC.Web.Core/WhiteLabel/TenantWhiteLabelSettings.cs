@@ -285,7 +285,7 @@ namespace ASC.Web.Core.WhiteLabel
                 try
                 {
                     tenantWhiteLabelSettings.SetIsDefault(type, true);
-                    var store = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().TenantId.ToString(), moduleName);
+                    var store = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().Id.ToString(), moduleName);
                     DeleteLogoFromStore(tenantWhiteLabelSettings, store, type);
                 }
                 catch (Exception e)
@@ -301,7 +301,7 @@ namespace ASC.Web.Core.WhiteLabel
 
         public void SetLogo(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type, string logoFileExt, byte[] data, IDataStore storage = null)
         {
-            var store = storage ?? StorageFactory.GetStorage(TenantManager.GetCurrentTenant().TenantId.ToString(), moduleName);
+            var store = storage ?? StorageFactory.GetStorage(TenantManager.GetCurrentTenant().Id.ToString(), moduleName);
 
             #region delete from storage if already exists
 
@@ -409,7 +409,7 @@ namespace ASC.Web.Core.WhiteLabel
 
         private string GetAbsoluteStorageLogoPath(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type, bool general)
         {
-            var store = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().TenantId.ToString(), moduleName);
+            var store = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().Id.ToString(), moduleName);
             var fileName = BuildLogoFileName(type, tenantWhiteLabelSettings.GetExt(type), general);
 
             if (store.IsFile(fileName))
@@ -468,7 +468,7 @@ namespace ASC.Web.Core.WhiteLabel
 
         private Stream GetStorageLogoData(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type, bool general)
         {
-            var storage = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().TenantId.ToString(CultureInfo.InvariantCulture), moduleName);
+            var storage = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().Id.ToString(CultureInfo.InvariantCulture), moduleName);
 
             if (storage == null) return null;
 

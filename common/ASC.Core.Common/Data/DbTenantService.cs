@@ -23,6 +23,8 @@
  *
 */
 
+using AutoMapper.QueryableExtensions;
+
 namespace ASC.Core.Data
 {
     [Scope]
@@ -65,13 +67,14 @@ namespace ASC.Core.Data
         internal Lazy<UserDbContext> LazyUserDbContext { get; set; }
         private static Expression<Func<DbTenant, Tenant>> _fromDbTenantToTenant;
         private static Expression<Func<TenantUserSecurity, Tenant>> _fromTenantUserToTenant;
+        private readonly IMapper _mapper;
 
         static DbTenantService()
         {
             _fromDbTenantToTenant = r => new Tenant
             {
                 Calls = r.Calls,
-                CreatedDateTime = r.CreationDateTime,
+                CreationDateTime = r.CreationDateTime,
                 Industry = r.Industry != null ? r.Industry.Value : TenantIndustry.Other,
                 Language = r.Language,
                 LastModified = r.LastModified,
@@ -81,12 +84,12 @@ namespace ASC.Core.Data
                 Spam = r.Spam,
                 Status = r.Status,
                 StatusChangeDate = r.StatusChangedHack,
-                TenantAlias = r.Alias,
-                TenantId = r.Id,
+                Alias = r.Alias,
+                Id = r.Id,
                 MappedDomain = r.MappedDomain,
                 Version = r.Version,
                 VersionChanged = r.VersionChanged,
-                TrustedDomainsRaw = r.TrustedDomains,
+                TrustedDomainsRaw = r.TrustedDomainsRaw,
                 TrustedDomainsType = r.TrustedDomainsEnabled,
                 //AffiliateId = r.Partner != null ? r.Partner.AffiliateId : null,
                 //PartnerId = r.Partner != null ? r.Partner.PartnerId : null,
@@ -104,12 +107,14 @@ namespace ASC.Core.Data
             DbContextManager<TenantDbContext> dbContextManager,
             DbContextManager<UserDbContext> DbContextManager,
             TenantDomainValidator tenantDomainValidator,
-            MachinePseudoKeys machinePseudoKeys)
+            MachinePseudoKeys machinePseudoKeys,
+            IMapper mapper)
         {
             LazyTenantDbContext = new Lazy<TenantDbContext>(() => dbContextManager.Value);
             LazyUserDbContext = new Lazy<UserDbContext>(() => DbContextManager.Value);
             TenantDomainValidator = tenantDomainValidator;
             _machinePseudoKeys = machinePseudoKeys;
+            _mapper = mapper;
         }
 
         public void ValidateDomain(string domain)
@@ -132,14 +137,15 @@ namespace ASC.Core.Data
                 q = q.Where(r => r.LastModified >= from);
             }
 
-            return q.Select(_fromDbTenantToTenant).ToList();
+            return q.ProjectTo<Tenant>(_mapper.ConfigurationProvider).ToList();
         }
 
         public IEnumerable<Tenant> GetTenants(List<int> ids)
         {
             var q = TenantsQuery();
 
-            return q.Where(r => ids.Contains(r.Id) && r.Status == TenantStatus.Active).Select(_fromDbTenantToTenant).ToList();
+            return q.Where(r => ids.Contains(r.Id) && r.Status == TenantStatus.Active)
+                .ProjectTo<Tenant>(_mapper.ConfigurationProvider).ToList();
         }
 
         public IEnumerable<Tenant> GetTenants(string login, string passwordHash)
@@ -172,7 +178,7 @@ namespace ASC.Core.Data
                 var q = query()
                     .Where(r => login.Contains('@') ? r.User.Email == login : r.User.Id.ToString() == login);
 
-                return q.Select(_fromTenantUserToTenant).ToList();
+                return q.ProjectTo<Tenant>(_mapper.ConfigurationProvider).ToList();
             }
 
             if (Guid.TryParse(login, out var userId))
@@ -184,7 +190,7 @@ namespace ASC.Core.Data
                     .Where(r => r.UserSecurity.PwdHash == pwdHash || r.UserSecurity.PwdHash == oldHash)  //todo: remove old scheme
                     ;
 
-                return q.Select(_fromTenantUserToTenant).ToList();
+                return q.ProjectTo<Tenant>(_mapper.ConfigurationProvider).ToList();
             }
             else
             {
@@ -204,7 +210,7 @@ namespace ASC.Core.Data
                 }
 
                 //old password
-                var result = q.Select(_fromTenantUserToTenant).ToList();
+                var result = q.ProjectTo<Tenant>(_mapper.ConfigurationProvider).ToList();
 
                 var usersQuery = UserDbContext.Users
                     .Where(r => r.Email == login)
@@ -219,7 +225,7 @@ namespace ASC.Core.Data
                     .Where(r => passwordHashs.Any(p => r.UserSecurity.PwdHash == p) && r.DbTenant.Status == TenantStatus.Active);
 
                 //new password
-                result = result.Concat(q.Select(_fromTenantUserToTenant)).ToList();
+                result = result.Concat(q.ProjectTo<Tenant>(_mapper.ConfigurationProvider)).ToList();
 
                 return result.Distinct();
             }
@@ -229,7 +235,7 @@ namespace ASC.Core.Data
         {
             return TenantsQuery()
                 .Where(r => r.Id == id)
-                .Select(_fromDbTenantToTenant)
+                .ProjectTo<Tenant>(_mapper.ConfigurationProvider)
                 .SingleOrDefault();
         }
 
@@ -246,7 +252,7 @@ namespace ASC.Core.Data
                 .Where(r => r.Alias == domain || r.MappedDomain == domain)
                 .OrderBy(a => a.Status == TenantStatus.Restoring ? TenantStatus.Active : a.Status)
                 .ThenByDescending(a => a.Status == TenantStatus.Restoring ? 0 : a.Id)
-                .Select(_fromDbTenantToTenant)
+                .ProjectTo<Tenant>(_mapper.ConfigurationProvider)
                 .FirstOrDefault();
         }
 
@@ -255,7 +261,7 @@ namespace ASC.Core.Data
             return TenantsQuery()
                 .OrderBy(a => a.Status)
                 .ThenByDescending(a => a.Id)
-                .Select(_fromDbTenantToTenant)
+                .ProjectTo<Tenant>(_mapper.ConfigurationProvider)
                 .FirstOrDefault();
         }
 
@@ -274,15 +280,15 @@ namespace ASC.Core.Data
 
                 if (baseUrl != null && t.MappedDomain.EndsWith("." + baseUrl, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    ValidateDomain(t.MappedDomain.Substring(0, t.MappedDomain.Length - baseUrl.Length - 1), t.TenantId, false);
+                    ValidateDomain(t.MappedDomain.Substring(0, t.MappedDomain.Length - baseUrl.Length - 1), t.Id, false);
                 }
                 else
                 {
-                    ValidateDomain(t.MappedDomain, t.TenantId, false);
+                    ValidateDomain(t.MappedDomain, t.Id, false);
                 }
             }
 
-            if (t.TenantId == Tenant.DefaultTenant)
+            if (t.Id == Tenant.DefaultTenant)
             {
                 t.Version = TenantDbContext.TenantVersion
                     .Where(r => r.DefaultVersion == 1 || r.Id == 0)
@@ -292,51 +298,30 @@ namespace ASC.Core.Data
 
                 t.LastModified = DateTime.UtcNow;
 
-                var tenant = new DbTenant
-                {
-                    Id = t.TenantId,
-                    Alias = t.TenantAlias.ToLowerInvariant(),
-                    MappedDomain = !string.IsNullOrEmpty(t.MappedDomain) ? t.MappedDomain.ToLowerInvariant() : null,
-                    Version = t.Version,
-                    VersionChanged = t.VersionChanged,
-                    Name = t.Name ?? t.TenantAlias,
-                    Language = t.Language,
-                    TimeZone = t.TimeZone,
-                    OwnerId = t.OwnerId,
-                    TrustedDomains = t.GetTrustedDomains(),
-                    TrustedDomainsEnabled = t.TrustedDomainsType,
-                    CreationDateTime = t.CreatedDateTime,
-                    Status = t.Status,
-                    StatusChanged = t.StatusChangeDate,
-                    PaymentId = t.PaymentId,
-                    LastModified = t.LastModified,
-                    Industry = t.Industry,
-                    Spam = t.Spam,
-                    Calls = t.Calls
-                };
+                var tenant = _mapper.Map<Tenant, DbTenant>(t);
 
                 tenant = TenantDbContext.Tenants.Add(tenant).Entity;
                 TenantDbContext.SaveChanges();
-                t.TenantId = tenant.Id;
+                t.Id = tenant.Id;
             }
             else
             {
                 var tenant = TenantDbContext.Tenants
-                    .Where(r => r.Id == t.TenantId)
+                    .Where(r => r.Id == t.Id)
                     .FirstOrDefault();
 
                 if (tenant != null)
                 {
-                    tenant.Alias = t.TenantAlias.ToLowerInvariant();
+                    tenant.Alias = t.Alias.ToLowerInvariant();
                     tenant.MappedDomain = !string.IsNullOrEmpty(t.MappedDomain) ? t.MappedDomain.ToLowerInvariant() : null;
                     tenant.Version = t.Version;
                     tenant.VersionChanged = t.VersionChanged;
-                    tenant.Name = t.Name ?? t.TenantAlias;
+                    tenant.Name = t.Name ?? t.Alias;
                     tenant.Language = t.Language;
                     tenant.TimeZone = t.TimeZone;
-                    tenant.TrustedDomains = t.GetTrustedDomains();
+                    tenant.TrustedDomainsRaw = t.GetTrustedDomains();
                     tenant.TrustedDomainsEnabled = t.TrustedDomainsType;
-                    tenant.CreationDateTime = t.CreatedDateTime;
+                    tenant.CreationDateTime = t.CreationDateTime;
                     tenant.Status = t.Status;
                     tenant.StatusChanged = t.StatusChangeDate;
                     tenant.PaymentId = t.PaymentId;
@@ -351,7 +336,7 @@ namespace ASC.Core.Data
             if (string.IsNullOrEmpty(t.PartnerId) && string.IsNullOrEmpty(t.AffiliateId) && string.IsNullOrEmpty(t.Campaign))
             {
                 var p = TenantDbContext.TenantPartner
-                    .Where(r => r.TenantId == t.TenantId)
+                    .Where(r => r.TenantId == t.Id)
                     .FirstOrDefault();
 
                 if (p != null)
@@ -363,7 +348,7 @@ namespace ASC.Core.Data
             {
                 var tenantPartner = new DbTenantPartner
                 {
-                    TenantId = t.TenantId,
+                    TenantId = t.Id,
                     PartnerId = t.PartnerId,
                     AffiliateId = t.AffiliateId,
                     Campaign = t.Campaign

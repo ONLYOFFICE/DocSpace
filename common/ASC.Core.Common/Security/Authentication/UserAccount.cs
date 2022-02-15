@@ -41,7 +41,7 @@ namespace ASC.Core.Security.Authentication
 
         public UserAccount(UserInfo info, int tenant, UserFormatter userFormatter)
         {
-            ID = info.ID;
+            ID = info.Id;
             Name = userFormatter.GetUserName(info);
             FirstName = info.FirstName;
             LastName = info.LastName;

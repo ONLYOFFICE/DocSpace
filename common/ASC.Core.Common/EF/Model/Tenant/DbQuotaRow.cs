@@ -1,12 +1,13 @@
 ﻿namespace ASC.Core.Common.EF
 {
-    public class DbQuotaRow : BaseEntity
+    public class DbQuotaRow : BaseEntity, IMapFrom<TenantQuotaRow>
     {
         public int Tenant { get; set; }
         public string Path { get; set; }
         public long Counter { get; set; }
         public string Tag { get; set; }
         public DateTime LastModified { get; set; }
+
         public override object[] GetKeys()
         {
             return new object[] { Tenant, Path };

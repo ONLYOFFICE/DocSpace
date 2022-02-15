@@ -125,7 +125,7 @@ namespace ASC.ElasticSearch.Core
             settings.Data = JsonConvert.SerializeObject(items);
             SettingsManager.Save(settings);
 
-            var action = new ReIndexAction() { Tenant = TenantManager.GetCurrentTenant().TenantId };
+            var action = new ReIndexAction() { Tenant = TenantManager.GetCurrentTenant().Id };
             action.Names.AddRange(toReIndex.Select(r => r.ID).ToList());
 
             CacheNotify.Publish(action, Common.Caching.CacheNotifyAction.Any);
@@ -159,7 +159,7 @@ namespace ASC.ElasticSearch.Core
 
         public bool CanSearchByContent(Type t)
         {
-            var tenantId = TenantManager.GetCurrentTenant().TenantId;
+            var tenantId = TenantManager.GetCurrentTenant().Id;
             if (!CanIndexByContent(t, tenantId)) return false;
 
             if (CoreBaseSettings.Standalone)

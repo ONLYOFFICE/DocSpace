@@ -146,7 +146,7 @@ namespace ASC.Core.Common
 
 #if DEBUG
                     // for Visual Studio debug
-                    if (tenant.TenantAlias == LocalHost)
+                    if (tenant.Alias == LocalHost)
                     {
                         result.Host = LocalHost;
                     }

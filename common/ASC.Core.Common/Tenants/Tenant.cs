@@ -26,20 +26,22 @@
 namespace ASC.Core.Tenants
 {
     [Serializable]
-    public class Tenant
+    public class Tenant : IMapFrom<DbTenant>
     {
         public const int DefaultTenant = -1;
 
         public static readonly string HostName = Dns.GetHostName().ToLowerInvariant();
 
+        private List<string> _domains;
+
         public Tenant()
         {
-            TenantId = DefaultTenant;
+            Id = DefaultTenant;
             TimeZone = TimeZoneInfo.Utc.Id;
             Language = CultureInfo.CurrentCulture.Name;
             TrustedDomains = new List<string>();
             TrustedDomainsType = TenantTrustedDomainsType.None;
-            CreatedDateTime = DateTime.UtcNow;
+            CreationDateTime = DateTime.UtcNow;
             Status = TenantStatus.Active;
             StatusChangeDate = DateTime.UtcNow;
             VersionChanged = DateTime.UtcNow;
@@ -49,17 +51,17 @@ namespace ASC.Core.Tenants
         public Tenant(string alias)
             : this()
         {
-            TenantAlias = alias.ToLowerInvariant();
+            Alias = alias.ToLowerInvariant();
         }
 
         public Tenant(int id, string alias)
             : this(alias)
         {
-            TenantId = id;
+            Id = id;
         }
 
-        public int TenantId { get; internal set; }
-        public string TenantAlias { get; set; }
+        public int Id { get; internal set; }
+        public string Alias { get; set; }
         public string MappedDomain { get; set; }
         public int Version { get; set; }
         public DateTime VersionChanged { get; set; }
@@ -67,14 +69,24 @@ namespace ASC.Core.Tenants
         public string Name { get; set; }
         public string Language { get; set; }
         public string TimeZone { get; set; }
-        public List<string> TrustedDomains { get; set; }
-        public string TrustedDomainsRaw
+        public List<string> TrustedDomains
         {
-            set => TrustedDomains = value != null ? value.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries).ToList() : new List<string>();
+            get
+            {
+                if (_domains.Count == 0 && !string.IsNullOrEmpty(TrustedDomainsRaw))
+                {
+                    _domains = TrustedDomainsRaw.Split(new[] { '|' },
+                        StringSplitOptions.RemoveEmptyEntries).ToList();
+                }
+
+                return _domains;
+            }
+            set => _domains = value;
         }
+        public string TrustedDomainsRaw { get; set; }
         public TenantTrustedDomainsType TrustedDomainsType { get; set; }
         public Guid OwnerId { get; set; }
-        public DateTime CreatedDateTime { get; internal set; }
+        public DateTime CreationDateTime { get; internal set; }
         public CultureInfo GetCulture() => !string.IsNullOrEmpty(Language) ? CultureInfo.GetCultureInfo(Language.Trim()) : CultureInfo.CurrentCulture;
         public DateTime LastModified { get; set; }
         public TenantStatus Status { get; internal set; }
@@ -95,17 +107,17 @@ namespace ASC.Core.Tenants
 
         public override bool Equals(object obj)
         {
-            return obj is Tenant t && t.TenantId == TenantId;
+            return obj is Tenant t && t.Id == Id;
         }
 
         public override int GetHashCode()
         {
-            return TenantId;
+            return Id;
         }
 
         public override string ToString()
         {
-            return TenantAlias;
+            return Alias;
         }
 
         internal string GetTrustedDomains()
@@ -141,15 +153,15 @@ namespace ASC.Core.Tenants
             }
 
             string result;
-            if (baseHost == "localhost" || TenantAlias == "localhost")
+            if (baseHost == "localhost" || Alias == "localhost")
             {
                 //single tenant on local host
-                TenantAlias = "localhost";
+                Alias = "localhost";
                 result = HostName;
             }
             else
             {
-                result = $"{TenantAlias}.{baseHost}".TrimEnd('.').ToLowerInvariant();
+                result = $"{Alias}.{baseHost}".TrimEnd('.').ToLowerInvariant();
             }
             if (!string.IsNullOrEmpty(MappedDomain) && allowMappedDomain)
             {
@@ -165,6 +177,14 @@ namespace ASC.Core.Tenants
             }
 
             return result;
+        }
+
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<DbTenant, Tenant>();
+
+            profile.CreateMap<TenantUserSecurity, Tenant>()
+                .IncludeMembers(src => src.DbTenant);
         }
     }
 }

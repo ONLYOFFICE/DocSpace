@@ -35,10 +35,10 @@ namespace ASC.Core
 
         public UserManagerConstants(Constants constants)
         {
-            SystemUsers = Configuration.Constants.SystemAccounts.ToDictionary(a => a.ID, a => new UserInfo { ID = a.ID, LastName = a.Name });
-            SystemUsers[Constants.LostUser.ID] = Constants.LostUser;
-            SystemUsers[Constants.OutsideUser.ID] = Constants.OutsideUser;
-            SystemUsers[constants.NamingPoster.ID] = constants.NamingPoster;
+            SystemUsers = Configuration.Constants.SystemAccounts.ToDictionary(a => a.ID, a => new UserInfo { Id = a.ID, LastName = a.Name });
+            SystemUsers[Constants.LostUser.Id] = Constants.LostUser;
+            SystemUsers[Constants.OutsideUser.Id] = Constants.OutsideUser;
+            SystemUsers[constants.NamingPoster.Id] = constants.NamingPoster;
             Constants = constants;
         }
     }
@@ -143,7 +143,7 @@ namespace ASC.Core
             out int total,
             out int count)
         {
-            return _userService.GetUsers(Tenant.TenantId, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text, sortBy, sortOrderAsc, limit, offset, out total, out count);
+            return _userService.GetUsers(Tenant.Id, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text, sortBy, sortOrderAsc, limit, offset, out total, out count);
         }
 
         public string[] GetUserNames(EmployeeStatus status)
@@ -156,7 +156,7 @@ namespace ASC.Core
 
         public UserInfo GetUserByUserName(string username)
         {
-            var u = _userService.GetUserByUserName(_tenantManager.GetCurrentTenant().TenantId, username);
+            var u = _userService.GetUserByUserName(_tenantManager.GetCurrentTenant().Id, username);
 
             return u ?? Constants.LostUser;
         }
@@ -185,7 +185,7 @@ namespace ASC.Core
                 return SystemUsers[id];
             }
 
-            var u = _userService.GetUser(Tenant.TenantId, id);
+            var u = _userService.GetUser(Tenant.Id, id);
 
             return u != null && !u.Removed ? u : Constants.LostUser;
         }
@@ -197,7 +197,7 @@ namespace ASC.Core
                 return SystemUsers[id];
             }
 
-            var u = _userService.GetUser(Tenant.TenantId, id, exp);
+            var u = _userService.GetUser(Tenant.Id, id, exp);
 
             return u != null && !u.Removed ? u : Constants.LostUser;
         }
@@ -231,7 +231,7 @@ namespace ASC.Core
                 return Constants.LostUser;
             }
 
-            var u = _userService.GetUser(Tenant.TenantId, email);
+            var u = _userService.GetUser(Tenant.Id, email);
 
             return u != null && !u.Removed ? u : Constants.LostUser;
         }
@@ -280,18 +280,18 @@ namespace ASC.Core
 
         public UserInfo SaveUserInfo(UserInfo u, bool isVisitor = false)
         {
-            if (IsSystemUser(u.ID))
+            if (IsSystemUser(u.Id))
             {
-                return SystemUsers[u.ID];
+                return SystemUsers[u.Id];
             }
 
-            if (u.ID == Guid.Empty)
+            if (u.Id == Guid.Empty)
             {
                 _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
             }
             else
             {
-                _permissionContext.DemandPermissions(new UserSecurityProvider(u.ID), Constants.Action_EditUser);
+                _permissionContext.DemandPermissions(new UserSecurityProvider(u.Id), Constants.Action_EditUser);
             }
 
             if (!_coreBaseSettings.Personal)
@@ -305,8 +305,8 @@ namespace ASC.Core
                 {
                     if (isVisitor)
                     {
-                        var maxUsers = _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().TenantId).ActiveUsers;
-                        var visitors = _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().TenantId).Free ? 0 : _constants.CoefficientOfVisitors;
+                        var maxUsers = _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).ActiveUsers;
+                        var visitors = _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Free ? 0 : _constants.CoefficientOfVisitors;
                         if (!_coreBaseSettings.Standalone && GetUsersByGroup(Constants.GroupVisitor.ID).Length > visitors * maxUsers)
                         {
                             throw new TenantQuotaException("Maximum number of visitors exceeded");
@@ -314,7 +314,7 @@ namespace ASC.Core
                     }
                     else
                     {
-                        var q = _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().TenantId);
+                        var q = _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id);
                         if (q.ActiveUsers < GetUsersByGroup(Constants.GroupUser.ID).Length)
                         {
                             throw new TenantQuotaException(string.Format("Exceeds the maximum active users ({0})", q.ActiveUsers));
@@ -323,12 +323,12 @@ namespace ASC.Core
                 }
             }
 
-            if (u.Status == EmployeeStatus.Terminated && u.ID == _tenantManager.GetCurrentTenant().OwnerId)
+            if (u.Status == EmployeeStatus.Terminated && u.Id == _tenantManager.GetCurrentTenant().OwnerId)
             {
                 throw new InvalidOperationException("Can not disable tenant owner.");
             }
 
-            var newUser = _userService.SaveUser(_tenantManager.GetCurrentTenant().TenantId, u);
+            var newUser = _userService.SaveUser(_tenantManager.GetCurrentTenant().Id, u);
 
             return newUser;
         }
@@ -346,7 +346,7 @@ namespace ASC.Core
                 throw new InvalidOperationException("Can not remove tenant owner.");
             }
 
-            _userService.RemoveUser(Tenant.TenantId, id);
+            _userService.RemoveUser(Tenant.Id, id);
         }
 
         public void SaveUserPhoto(Guid id, byte[] photo)
@@ -358,7 +358,7 @@ namespace ASC.Core
 
             _permissionContext.DemandPermissions(new UserSecurityProvider(id), Constants.Action_EditUser);
 
-            _userService.SetUserPhoto(Tenant.TenantId, id, photo);
+            _userService.SetUserPhoto(Tenant.Id, id, photo);
         }
 
         public byte[] GetUserPhoto(Guid id)
@@ -368,7 +368,7 @@ namespace ASC.Core
                 return null;
             }
 
-            return _userService.GetUserPhoto(Tenant.TenantId, id);
+            return _userService.GetUserPhoto(Tenant.Id, id);
         }
 
         public List<GroupInfo> GetUserGroups(Guid id)
@@ -452,32 +452,32 @@ namespace ASC.Core
         {
             var refs = GetRefsInternal();
 
-            return GetUsers(employeeStatus).Where(u => IsUserInGroupInternal(u.ID, groupId, refs)).ToArray();
+            return GetUsers(employeeStatus).Where(u => IsUserInGroupInternal(u.Id, groupId, refs)).ToArray();
         }
 
         public void AddUserIntoGroup(Guid userId, Guid groupId)
         {
-            if (Constants.LostUser.ID == userId || Constants.LostGroupInfo.ID == groupId)
+            if (Constants.LostUser.Id == userId || Constants.LostGroupInfo.ID == groupId)
             {
                 return;
             }
             _permissionContext.DemandPermissions(Constants.Action_EditGroups);
 
-            _userService.SaveUserGroupRef(Tenant.TenantId, new UserGroupRef(userId, groupId, UserGroupRefType.Contains));
+            _userService.SaveUserGroupRef(Tenant.Id, new UserGroupRef(userId, groupId, UserGroupRefType.Contains));
 
             ResetGroupCache(userId);
         }
 
         public void RemoveUserFromGroup(Guid userId, Guid groupId)
         {
-            if (Constants.LostUser.ID == userId || Constants.LostGroupInfo.ID == groupId)
+            if (Constants.LostUser.Id == userId || Constants.LostGroupInfo.ID == groupId)
             {
                 return;
             }
 
             _permissionContext.DemandPermissions(Constants.Action_EditGroups);
 
-            _userService.RemoveUserGroupRef(Tenant.TenantId, userId, groupId, UserGroupRefType.Contains);
+            _userService.RemoveUserGroupRef(Tenant.Id, userId, groupId, UserGroupRefType.Contains);
 
             ResetGroupCache(userId);
         }
@@ -500,7 +500,7 @@ namespace ASC.Core
 
         public Guid GetDepartmentManager(Guid deparmentID)
         {
-            var groupRef = _userService.GetUserGroupRef(Tenant.TenantId, deparmentID, UserGroupRefType.Manager);
+            var groupRef = _userService.GetUserGroupRef(Tenant.Id, deparmentID, UserGroupRefType.Manager);
 
             if (groupRef == null)
             {
@@ -516,13 +516,13 @@ namespace ASC.Core
             if (managerId != Guid.Empty)
             {
                 _userService.RemoveUserGroupRef(
-                    Tenant.TenantId,
+                    Tenant.Id,
                     managerId, deparmentID, UserGroupRefType.Manager);
             }
             if (userID != Guid.Empty)
             {
                 _userService.SaveUserGroupRef(
-                    Tenant.TenantId,
+                    Tenant.Id,
                     new UserGroupRef(userID, deparmentID, UserGroupRefType.Manager));
             }
         }
@@ -558,7 +558,7 @@ namespace ASC.Core
 
         public GroupInfo GetGroupInfo(Guid groupID)
         {
-            var group = _userService.GetGroup(Tenant.TenantId, groupID);
+            var group = _userService.GetGroup(Tenant.Id, groupID);
 
             return new GroupInfo
             {
@@ -589,7 +589,7 @@ namespace ASC.Core
 
             _permissionContext.DemandPermissions(Constants.Action_EditGroups);
 
-            var newGroup = _userService.SaveGroup(Tenant.TenantId, ToGroup(g));
+            var newGroup = _userService.SaveGroup(Tenant.Id, ToGroup(g));
 
             return new GroupInfo(newGroup.CategoryId) { ID = newGroup.Id, Name = newGroup.Name, Sid = newGroup.Sid };
         }
@@ -608,7 +608,7 @@ namespace ASC.Core
 
             _permissionContext.DemandPermissions(Constants.Action_EditGroups);
 
-            _userService.RemoveGroup(Tenant.TenantId, id);
+            _userService.RemoveGroup(Tenant.Id, id);
         }
 
         #endregion Groups
@@ -639,13 +639,13 @@ namespace ASC.Core
 
         private IEnumerable<UserInfo> GetUsersInternal()
         {
-            return _userService.GetUsers(Tenant.TenantId)
+            return _userService.GetUsers(Tenant.Id)
                 .Where(u => !u.Removed);
         }
 
         private IEnumerable<GroupInfo> GetGroupsInternal()
         {
-            return _userService.GetGroups(Tenant.TenantId)
+            return _userService.GetGroups(Tenant.Id)
                 .Where(g => !g.Removed)
                 .Select(g => new GroupInfo(g.CategoryId) { ID = g.Id, Name = g.Name, Sid = g.Sid })
                 .Concat(Constants.BuildinGroups)
@@ -654,7 +654,7 @@ namespace ASC.Core
 
         private IDictionary<string, UserGroupRef> GetRefsInternal()
         {
-            return _userService.GetUserGroupRefs(Tenant.TenantId);
+            return _userService.GetUserGroupRefs(Tenant.Id);
         }
 
         private bool IsUserInGroupInternal(Guid userId, Guid groupId, IDictionary<string, UserGroupRef> refs)
@@ -663,11 +663,11 @@ namespace ASC.Core
             {
                 return true;
             }
-            if (groupId == Constants.GroupAdmin.ID && (Tenant.OwnerId == userId || userId == Configuration.Constants.CoreSystem.ID || userId == _constants.NamingPoster.ID))
+            if (groupId == Constants.GroupAdmin.ID && (Tenant.OwnerId == userId || userId == Configuration.Constants.CoreSystem.ID || userId == _constants.NamingPoster.Id))
             {
                 return true;
             }
-            if (groupId == Constants.GroupVisitor.ID && userId == Constants.OutsideUser.ID)
+            if (groupId == Constants.GroupVisitor.ID && userId == Constants.OutsideUser.Id)
             {
                 return true;
             }
@@ -675,7 +675,7 @@ namespace ASC.Core
             UserGroupRef r;
             if (groupId == Constants.GroupUser.ID || groupId == Constants.GroupVisitor.ID)
             {
-                var visitor = refs.TryGetValue(UserGroupRef.CreateKey(Tenant.TenantId, userId, Constants.GroupVisitor.ID, UserGroupRefType.Contains), out r) && !r.Removed;
+                var visitor = refs.TryGetValue(UserGroupRef.CreateKey(Tenant.Id, userId, Constants.GroupVisitor.ID, UserGroupRefType.Contains), out r) && !r.Removed;
                 if (groupId == Constants.GroupVisitor.ID)
                 {
                     return visitor;
@@ -686,7 +686,7 @@ namespace ASC.Core
                 }
             }
 
-            return refs.TryGetValue(UserGroupRef.CreateKey(Tenant.TenantId, userId, groupId, UserGroupRefType.Contains), out r) && !r.Removed;
+            return refs.TryGetValue(UserGroupRef.CreateKey(Tenant.Id, userId, groupId, UserGroupRefType.Contains), out r) && !r.Removed;
         }
 
         private Group ToGroup(GroupInfo g)

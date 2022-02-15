@@ -60,7 +60,7 @@ namespace ASC.TelegramService
                 tenantManager.SetCurrentTenant(tenant);
                 if (telegramLoginProvider.IsEnabled())
                 {
-                    handler.CreateOrUpdateClientForTenant(tenant.TenantId, telegramLoginProvider.TelegramBotToken, telegramLoginProvider.TelegramAuthTokenLifespan, telegramLoginProvider.TelegramProxy, true, true);
+                    handler.CreateOrUpdateClientForTenant(tenant.Id, telegramLoginProvider.TelegramBotToken, telegramLoginProvider.TelegramAuthTokenLifespan, telegramLoginProvider.TelegramProxy, true, true);
                 }
             }
         }

@@ -64,7 +64,7 @@ namespace ASC.Core.Notify
                     };
 
                     var tenant = tenantManager.GetCurrentTenant(false);
-                    m.Tenant = tenant == null ? Tenant.DefaultTenant : tenant.TenantId;
+                    m.Tenant = tenant == null ? Tenant.DefaultTenant : tenant.Id;
 
                     _sender.Send(m);
                 }

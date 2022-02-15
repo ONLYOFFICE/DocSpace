@@ -20,7 +20,7 @@
 
         public void Publish(string eventName, string requestPayload)
         {
-            var tenantId = TenantManager.GetCurrentTenant().TenantId;
+            var tenantId = TenantManager.GetCurrentTenant().Id;
             var webhookConfigs = DbWorker.GetWebhookConfigs(tenantId);
 
             foreach (var config in webhookConfigs)

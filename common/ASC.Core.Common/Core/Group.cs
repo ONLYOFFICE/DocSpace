@@ -25,7 +25,7 @@
 
 namespace ASC.Core
 {
-    public class Group
+    public class Group : IMapFrom<DbGroup>
     {
         public Guid Id { get; set; }
         public Guid ParentId { get; set; }
@@ -49,6 +49,15 @@ namespace ASC.Core
         public override bool Equals(object obj)
         {
             return obj is Group g && g.Id == Id;
+        }
+
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<DbGroup, Group>()
+                .ForMember(src => src.CategoryId, opt => opt.NullSubstitute(Guid.Empty))
+                .ForMember(src => src.ParentId, opt => opt.NullSubstitute(Guid.Empty));
+
+            profile.CreateMap<GroupInfo, Group>();
         }
     }
 }

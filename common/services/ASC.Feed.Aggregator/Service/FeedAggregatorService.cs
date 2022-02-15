@@ -166,12 +166,12 @@ namespace ASC.Feed.Aggregator
                                 {
                                     return;
                                 }
-                                if (!TryAuthenticate(securityContext, authManager, tenant1, u.ID))
+                                if (!TryAuthenticate(securityContext, authManager, tenant1, u.Id))
                                 {
                                     continue;
                                 }
 
-                                module.VisibleFor(feedsRow, u.ID);
+                                module.VisibleFor(feedsRow, u.Id);
                             }
 
                             result.AddRange(feedsRow.Select(r => r.Item1));

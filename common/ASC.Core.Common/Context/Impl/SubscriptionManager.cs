@@ -102,7 +102,7 @@ namespace ASC.Core
             }
 
             var m = methods
-                .FirstOrDefault(x => x.ActionId.Equals(actionID, StringComparison.OrdinalIgnoreCase));
+                .FirstOrDefault(x => x.Action.Equals(actionID, StringComparison.OrdinalIgnoreCase));
 
             if (m == null)
             {
@@ -137,9 +137,9 @@ namespace ASC.Core
             var m = new SubscriptionMethod
             {
                 Tenant = GetTenant(),
-                SourceId = sourceID,
-                ActionId = actionID,
-                RecipientId = recipientID,
+                Source = sourceID,
+                Action = actionID,
+                Recipient = recipientID,
                 Methods = senderNames,
             };
 
@@ -164,7 +164,7 @@ namespace ASC.Core
 
         private int GetTenant()
         {
-            return _tenantManager.GetCurrentTenant().TenantId;
+            return _tenantManager.GetCurrentTenant().Id;
         }
     }
 }

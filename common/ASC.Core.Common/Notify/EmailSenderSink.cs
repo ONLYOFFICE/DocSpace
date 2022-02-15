@@ -88,7 +88,7 @@ namespace ASC.Core.Notify
             var (tenantManager, configuration, options) = scopeClass;
 
             var tenant = tenantManager.GetCurrentTenant(false);
-            m.Tenant = tenant == null ? Tenant.DefaultTenant : tenant.TenantId;
+            m.Tenant = tenant == null ? Tenant.DefaultTenant : tenant.Id;
 
             var from = MailAddressUtils.Create(configuration.SmtpSettings.SenderAddress, configuration.SmtpSettings.SenderDisplayName);
             var fromTag = message.Arguments.FirstOrDefault(x => x.Tag.Equals("MessageFrom"));

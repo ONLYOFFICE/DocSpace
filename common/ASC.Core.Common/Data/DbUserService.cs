@@ -23,6 +23,8 @@
  *
 */
 
+using AutoMapper.QueryableExtensions;
+
 namespace ASC.Core.Data
 {
     [Scope]
@@ -53,147 +55,41 @@ namespace ASC.Core.Data
     [Scope]
     public class EFUserService : IUserService
     {
-        private static Expression<Func<User, UserInfo>> _fromUserToUserInfo;
-        private static Func<UserInfo, User> _fromUserInfoToUser;
-        private static Expression<Func<DbGroup, Group>> _fromDbGroupToGroup;
-        private static Func<Group, DbGroup> _fromGroupToDbGroup;
-        private static Expression<Func<UserGroup, UserGroupRef>> _fromUserGroupToUserGroupRef;
-        private static Func<UserGroupRef, UserGroup> _fromUserGroupRefToUserGroup;
-
         internal UserDbContext UserDbContext => LazyUserDbContext.Value;
         internal Lazy<UserDbContext> LazyUserDbContext { get; set; }
         internal DbContextManager<UserDbContext> UserDbContextManager { get; set; }
         private readonly PasswordHasher _passwordHasher;
         public readonly MachinePseudoKeys _machinePseudoKeys;
         internal string DbId { get; set; }
-
-        static EFUserService()
-        {
-            _fromUserToUserInfo = user => new UserInfo
-            {
-                ActivationStatus = user.ActivationStatus,
-                BirthDate = user.Birthdate,
-                CreateDate = user.CreateOn,
-                CultureName = user.Culture,
-                Email = user.Email,
-                FirstName = user.FirstName,
-                ID = user.Id,
-                LastModified = user.LastModified,
-                LastName = user.LastName,
-                Location = user.Location,
-                MobilePhone = user.Phone,
-                MobilePhoneActivationStatus = user.PhoneActivation,
-                Notes = user.Notes,
-                Removed = user.Removed,
-                Sex = user.Sex,
-                Sid = user.Sid,
-                SsoNameId = user.SsoNameId,
-                SsoSessionId = user.SsoSessionId,
-                Status = user.Status,
-                Tenant = user.Tenant,
-                TerminatedDate = user.TerminatedDate,
-                Title = user.Title,
-                UserName = user.UserName,
-                WorkFromDate = user.WorkFromDate,
-                Contacts = user.Contacts
-            };
-
-            _fromUserInfoToUser = user => new User
-            {
-                ActivationStatus = user.ActivationStatus,
-                Birthdate = user.BirthDate,
-                CreateOn = user.CreateDate,
-                Culture = user.CultureName,
-                Email = user.Email,
-                FirstName = user.FirstName,
-                Id = user.ID,
-                LastModified = user.LastModified,
-                LastName = user.LastName,
-                Location = user.Location,
-                Phone = user.MobilePhone,
-                PhoneActivation = user.MobilePhoneActivationStatus,
-                Notes = user.Notes,
-                Removed = user.Removed,
-                Sex = user.Sex,
-                Sid = user.Sid,
-                SsoNameId = user.SsoNameId,
-                SsoSessionId = user.SsoSessionId,
-                Status = user.Status,
-                Tenant = user.Tenant,
-                TerminatedDate = user.TerminatedDate,
-                Title = user.Title,
-                UserName = user.UserName,
-                WorkFromDate = user.WorkFromDate,
-                Contacts = user.Contacts
-            };
-
-            _fromDbGroupToGroup = group => new Group
-            {
-                Id = group.Id,
-                Name = group.Name,
-                CategoryId = group.CategoryId ?? Guid.Empty,
-                ParentId = group.ParentId ?? Guid.Empty,
-                Sid = group.Sid,
-                Removed = group.Removed,
-                LastModified = group.LastModified,
-                Tenant = group.Tenant
-            };
-
-            _fromGroupToDbGroup = group => new DbGroup
-            {
-                Id = group.Id,
-                Name = group.Name,
-                CategoryId = group.CategoryId,
-                ParentId = group.ParentId,
-                Sid = group.Sid,
-                Removed = group.Removed,
-                LastModified = group.LastModified,
-                Tenant = group.Tenant
-            };
-
-            _fromUserGroupToUserGroupRef = userGroup => new UserGroupRef
-            {
-                GroupId = userGroup.GroupId,
-                UserId = userGroup.UserId,
-                Tenant = userGroup.Tenant,
-                RefType = userGroup.RefType,
-                LastModified = userGroup.LastModified,
-                Removed = userGroup.Removed
-            };
-
-            _fromUserGroupRefToUserGroup = userGroup => new UserGroup
-            {
-                GroupId = userGroup.GroupId,
-                UserId = userGroup.UserId,
-                Tenant = userGroup.Tenant,
-                RefType = userGroup.RefType,
-                LastModified = userGroup.LastModified,
-                Removed = userGroup.Removed
-            };
-        }
+        private readonly IMapper _mapper;
 
         public EFUserService() { }
 
-        public EFUserService(DbContextManager<UserDbContext> userDbContextManager, PasswordHasher passwordHasher, MachinePseudoKeys machinePseudoKeys)
+        public EFUserService(
+            DbContextManager<UserDbContext> userDbContextManager, 
+            PasswordHasher passwordHasher, 
+            MachinePseudoKeys machinePseudoKeys,
+            IMapper mapper)
         {
             UserDbContextManager = userDbContextManager;
             _passwordHasher = passwordHasher;
             _machinePseudoKeys = machinePseudoKeys;
             LazyUserDbContext = new Lazy<UserDbContext>(() => UserDbContextManager.Value);
+            _mapper = mapper;
         }
 
         public Group GetGroup(int tenant, Guid id)
         {
             return GetGroupQuery(tenant)
                 .Where(r => r.Id == id)
-                .Select(_fromDbGroupToGroup)
+                .ProjectTo<Group>(_mapper.ConfigurationProvider)
                 .FirstOrDefault();
         }
 
         public IEnumerable<Group> GetGroups(int tenant)
         {
             return GetGroupQuery(tenant)
-                .Select(_fromDbGroupToGroup)
+                .ProjectTo<Group>(_mapper.ConfigurationProvider)
                 .ToList();
         }
 
@@ -201,21 +97,21 @@ namespace ASC.Core.Data
         {
             return GetUserQuery(tenant)
                 .Where(r => r.Id == id)
-                .Select(_fromUserToUserInfo)
+                .ProjectTo<UserInfo>(_mapper.ConfigurationProvider)
                 .FirstOrDefault();
         }
 
         public UserInfo GetUser(int tenant, string email)
         {
             return GetUserQuery(tenant)
-                .Select(_fromUserToUserInfo)
+                .ProjectTo<UserInfo>(_mapper.ConfigurationProvider)
                 .FirstOrDefault(r => r.Email == email && !r.Removed);
         }
 
         public UserInfo GetUserByUserName(int tenant, string userName)
         {
             return GetUserQuery(tenant)
-                .Select(_fromUserToUserInfo)
+                .ProjectTo<UserInfo>(_mapper.ConfigurationProvider)
                 .FirstOrDefault(r => r.UserName == userName && !r.Removed);
         }
 
@@ -249,26 +145,27 @@ namespace ASC.Core.Data
                     q = q.Where(r => r.UserSecurity.Tenant == tenant);
                 }
 
-                return q.Select(r => r.User).Select(_fromUserToUserInfo).FirstOrDefault();
+                return q.Select(r => r.User)
+                    .ProjectTo<UserInfo>(_mapper.ConfigurationProvider)
+                    .FirstOrDefault();
             }
             else
             {
                 var q = GetUserQuery(tenant)
                     .Where(r => !r.Removed)
-                    .Where(r => r.Email == login)
-                    ;
+                    .Where(r => r.Email == login);
 
-                var users = q.Select(_fromUserToUserInfo).ToList();
+                var users = q.ProjectTo<UserInfo>(_mapper.ConfigurationProvider).ToList();
                 UserInfo result = null;
                 foreach (var user in users)
                 {
-                    RegeneratePassword(tenant, user.ID);
+                    RegeneratePassword(tenant, user.Id);
 
-                    var pwdHash = GetPasswordHash(user.ID, passwordHash);
+                    var pwdHash = GetPasswordHash(user.Id, passwordHash);
                     var oldHash = Hasher.Base64Hash(passwordHash, HashAlg.SHA256);
 
                     var any = UserDbContext.UserSecurity
-                        .Any(r => r.UserId == user.ID && (r.PwdHash == pwdHash || r.PwdHash == oldHash));//todo: remove old scheme
+                        .Any(r => r.UserId == user.Id && (r.PwdHash == pwdHash || r.PwdHash == oldHash));//todo: remove old scheme
 
                     if (any)
                     {
@@ -293,7 +190,7 @@ namespace ASC.Core.Data
                 .Where(r => userIds.Contains(r.Id))
                 .Where(r => !r.Removed);
 
-            return q.Select(_fromUserToUserInfo).ToList();
+            return q.ProjectTo<UserInfo>(_mapper.ConfigurationProvider).ToList();
         }
 
         //todo: remove
@@ -331,7 +228,7 @@ namespace ASC.Core.Data
             }
 
             return q.Where(r => r.GroupId == groupId && r.RefType == refType && !r.Removed)
-                .Select(_fromUserGroupToUserGroupRef).SingleOrDefault();
+                .ProjectTo<UserGroupRef>(_mapper.ConfigurationProvider).SingleOrDefault();
         }
 
         public IDictionary<string, UserGroupRef> GetUserGroupRefs(int tenant)
@@ -343,7 +240,8 @@ namespace ASC.Core.Data
                 q = q.Where(r => r.Tenant == tenant);
             }
 
-            return q.Select(_fromUserGroupToUserGroupRef).AsEnumerable().ToDictionary(r => r.CreateKey(), r => r);
+            return q.ProjectTo<UserGroupRef>(_mapper.ConfigurationProvider)
+                .AsEnumerable().ToDictionary(r => r.CreateKey(), r => r);
         }
 
         public DateTime GetUserPasswordStamp(int tenant, Guid id)
@@ -371,7 +269,7 @@ namespace ASC.Core.Data
         public IEnumerable<UserInfo> GetUsers(int tenant)
         {
             return GetUserQuery(tenant)
-                .Select(_fromUserToUserInfo)
+                .ProjectTo<UserInfo>(_mapper.ConfigurationProvider)
                 .ToList();
         }
 
@@ -403,7 +301,7 @@ namespace ASC.Core.Data
 
             count = q.Count();
 
-            return q.Select(_fromUserToUserInfo);
+            return q.ProjectTo<UserInfo>(_mapper.ConfigurationProvider);
         }
 
         public IQueryable<UserInfo> GetUsers(int tenant, out int total)
@@ -411,7 +309,8 @@ namespace ASC.Core.Data
             var userDbContext = UserDbContextManager.GetNew(DbId);
             total = userDbContext.Users.Count(r => r.Tenant == tenant);
 
-            return GetUserQuery(userDbContext, tenant).Select(_fromUserToUserInfo);
+            return GetUserQuery(userDbContext, tenant)
+                .ProjectTo<UserInfo>(_mapper.ConfigurationProvider);
         }
 
         public void RemoveGroup(int tenant, Guid id)
@@ -546,7 +445,7 @@ namespace ASC.Core.Data
             group.LastModified = DateTime.UtcNow;
             group.Tenant = tenant;
 
-            var dbGroup = _fromGroupToDbGroup(group);
+            var dbGroup = _mapper.Map<Group, DbGroup>(group);
             UserDbContext.AddOrUpdate(r => r.Groups, dbGroup);
             UserDbContext.SaveChanges();
 
@@ -565,9 +464,9 @@ namespace ASC.Core.Data
                 throw new ArgumentOutOfRangeException("Empty username.");
             }
 
-            if (user.ID == default)
+            if (user.Id == default)
             {
-                user.ID = Guid.NewGuid();
+                user.Id = Guid.NewGuid();
             }
 
             if (user.CreateDate == default)
@@ -582,7 +481,7 @@ namespace ASC.Core.Data
 
             using var tx = UserDbContext.Database.BeginTransaction();
             var any = GetUserQuery(tenant)
-                .Any(r => r.UserName == user.UserName && r.Id != user.ID && !r.Removed);
+                .Any(r => r.UserName == user.UserName && r.Id != user.Id && !r.Removed);
 
             if (any)
             {
@@ -590,14 +489,14 @@ namespace ASC.Core.Data
             }
 
             any = GetUserQuery(tenant)
-                .Any(r => r.Email == user.Email && r.Id != user.ID && !r.Removed);
+                .Any(r => r.Email == user.Email && r.Id != user.Id && !r.Removed);
 
             if (any)
             {
                 throw new ArgumentOutOfRangeException("Duplicate email.");
             }
 
-            UserDbContext.AddOrUpdate(r => r.Users, _fromUserInfoToUser(user));
+            UserDbContext.AddOrUpdate(r => r.Users, _mapper.Map<UserInfo, User>(user));
             UserDbContext.SaveChanges();
             tx.Commit();
 
@@ -620,7 +519,7 @@ namespace ASC.Core.Data
             if (user != null)
             {
                 user.LastModified = r.LastModified;
-                UserDbContext.AddOrUpdate(r => r.UserGroups, _fromUserGroupRefToUserGroup(r));
+                UserDbContext.AddOrUpdate(r => r.UserGroups, _mapper.Map<UserGroupRef, UserGroup>(r));
             }
 
             UserDbContext.SaveChanges();
@@ -812,10 +711,16 @@ namespace ASC.Core.Data
 
         public UserInfo GetUser(int tenant, Guid id, Expression<Func<User, UserInfo>> exp)
         {
-            return GetUserQuery(tenant)
-                    .Where(r => r.Id == id)
-                    .Select(exp ?? _fromUserToUserInfo)
-                    .FirstOrDefault();
+            var q = GetUserQuery(tenant).Where(r => r.Id == id);
+
+            if (exp != null)
+            {
+                return q.Select(exp).FirstOrDefault();
+            }
+            else
+            {
+                return q.ProjectTo<UserInfo>(_mapper.ConfigurationProvider).FirstOrDefault();
+            }
         }
 
         protected string GetPasswordHash(Guid userId, string password)

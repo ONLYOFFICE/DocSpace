@@ -1,6 +1,6 @@
 ﻿namespace ASC.Core.Common.EF.Model
 {
-    public class DbTenant
+    public class DbTenant : IMapFrom<Tenant>
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -15,7 +15,7 @@
         }
         public string Language { get; set; }
         public string TimeZone { get; set; }
-        public string TrustedDomains { get; set; }
+        public string TrustedDomainsRaw { get; set; }
         public TenantTrustedDomainsType TrustedDomainsEnabled { get; set; }
         public TenantStatus Status { get; set; }
         public DateTime? StatusChanged { get; set; }
@@ -34,7 +34,18 @@
         public bool Spam { get; set; }
         public bool Calls { get; set; }
 
-//        public DbTenantPartner Partner { get; set; }
+        //        public DbTenantPartner Partner { get; set; }
+
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<Tenant, DbTenant>()
+                .ForMember(dest => dest.TrustedDomainsRaw, opt => opt.MapFrom(dest => dest.GetTrustedDomains()))
+                .ForMember(dest => dest.Alias, opt => opt.MapFrom(dest => dest.Alias.ToLowerInvariant()))
+                .ForMember(dest => dest.LastModified, opt => opt.MapFrom(dest => DateTime.UtcNow))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(dest => dest.Name ?? dest.Alias))
+                .ForMember(dest => dest.MappedDomain, opt => opt.MapFrom(dest =>
+                    !string.IsNullOrEmpty(dest.MappedDomain) ? dest.MappedDomain.ToLowerInvariant() : null));
+        }
     }
 
     public static class DbTenantExtension
@@ -151,7 +162,7 @@
                     .HasCharSet("utf8")
                     .UseCollation("utf8_general_ci");
 
-                entity.Property(e => e.TrustedDomains)
+                entity.Property(e => e.TrustedDomainsRaw)
                     .HasColumnName("trusteddomains")
                     .HasColumnType("varchar(1024)")
                     .HasCharSet("utf8")
@@ -252,7 +263,7 @@
                     .HasMaxLength(50)
                     .HasDefaultValueSql("NULL");
 
-                entity.Property(e => e.TrustedDomains)
+                entity.Property(e => e.TrustedDomainsRaw)
                     .HasColumnName("trusteddomains")
                     .HasMaxLength(1024)
                     .HasDefaultValueSql("NULL");

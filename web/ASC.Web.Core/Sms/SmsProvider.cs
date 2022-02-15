@@ -224,7 +224,7 @@ namespace ASC.Web.Core.Sms
 
         public string GetBalance(Tenant tenant, bool eraseCache = false)
         {
-            var tenantCache = tenant == null ? Tenant.DefaultTenant : tenant.TenantId;
+            var tenantCache = tenant == null ? Tenant.DefaultTenant : tenant.Id;
 
             var key = "sms/smsc/" + tenantCache;
             if (eraseCache) MemoryCache.Remove(key);

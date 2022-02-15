@@ -26,7 +26,7 @@
 namespace ASC.Core
 {
     [DebuggerDisplay("{UserId} - {GroupId}")]
-    public class UserGroupRef
+    public class UserGroupRef : IMapFrom<UserGroup>
     {
         public Guid UserId { get; set; }
         public Guid GroupId { get; set; }

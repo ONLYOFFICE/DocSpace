@@ -73,7 +73,7 @@ namespace ASC.IPSecurity
             string requestIps = null;
             try
             {
-                var restrictions = IPRestrictionsService.Get(tenant.TenantId).ToList();
+                var restrictions = IPRestrictionsService.Get(tenant.Id).ToList();
 
                 if (restrictions.Count == 0) return true;
 

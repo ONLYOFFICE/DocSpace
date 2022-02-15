@@ -295,7 +295,7 @@ namespace ASC.Web.Files.Helpers
                         {
                             Email = user.Email,
                             Name = user.DisplayUserName(false, DisplayUserSettingsHelper),
-                            RecipientId = user.ID.ToString(),
+                            RecipientId = user.Id.ToString(),
                         });
                     }
                     catch (Exception ex)

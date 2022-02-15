@@ -37,7 +37,7 @@ namespace ASC.Core.Users
             _configuration = configuration;
             NamingPoster = new UserInfo
             {
-                ID = new Guid("{17097D73-2D1E-4B36-AA07-AEB34AF993CD}"),
+                Id = new Guid("{17097D73-2D1E-4B36-AA07-AEB34AF993CD}"),
                 FirstName = configuration["core:system:poster:name"] ?? "ONLYOFFICE Poster",
                 LastName = string.Empty,
                 ActivationStatus = EmployeeActivationStatus.Activated
@@ -112,7 +112,7 @@ namespace ASC.Core.Users
 
         public static readonly UserInfo LostUser = new UserInfo
         {
-            ID = new Guid("{4A515A15-D4D6-4b8e-828E-E0586F18F3A3}"),
+            Id = new Guid("{4A515A15-D4D6-4b8e-828E-E0586F18F3A3}"),
             FirstName = "Unknown",
             LastName = "Unknown",
             ActivationStatus = EmployeeActivationStatus.NotActivated
@@ -120,7 +120,7 @@ namespace ASC.Core.Users
 
         public static readonly UserInfo OutsideUser = new UserInfo
         {
-            ID = new Guid("{E78F4C20-2F3B-4A9D-AD13-5F298BD5A3BA}"),
+            Id = new Guid("{E78F4C20-2F3B-4A9D-AD13-5F298BD5A3BA}"),
             FirstName = "Outside",
             LastName = "Outside",
             ActivationStatus = EmployeeActivationStatus.Activated

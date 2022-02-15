@@ -30,4 +30,9 @@ public interface ISecurityObjectId
 {
     object SecurityId { get; }
     Type ObjectType { get; }
+
+    string ToString()
+    {
+        return AzObjectIdHelper.GetFullObjectId(this);
+    }
 }

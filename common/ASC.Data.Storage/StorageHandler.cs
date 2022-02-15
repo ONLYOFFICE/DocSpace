@@ -55,7 +55,7 @@ namespace ASC.Data.Storage.DiscStorage
                 return Task.CompletedTask;
             }
 
-            var storage = storageFactory.GetStorage(tenantManager.GetCurrentTenant().TenantId.ToString(CultureInfo.InvariantCulture), _module);
+            var storage = storageFactory.GetStorage(tenantManager.GetCurrentTenant().Id.ToString(CultureInfo.InvariantCulture), _module);
             var path = CrossPlatform.PathCombine(_path, GetRouteValue("pathInfo", context).Replace('/', Path.DirectorySeparatorChar));
             var header = context.Request.Query[Constants.QUERY_HEADER].FirstOrDefault() ?? "";
 

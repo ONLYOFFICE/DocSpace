@@ -56,7 +56,7 @@ namespace ASC.Data.Reassigns
         {
             _tenantId = tenantId;
             User = user;
-            FromUser = user.ID;
+            FromUser = user.Id;
             _currentUserId = currentUserId;
             _notify = notify;
 

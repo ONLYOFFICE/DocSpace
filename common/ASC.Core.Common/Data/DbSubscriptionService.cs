@@ -28,33 +28,14 @@ namespace ASC.Core.Data
     [Scope]
     class DbSubscriptionService : ISubscriptionService
     {
-        private Expression<Func<Subscription, SubscriptionRecord>> _fromSubscriptionToSubscriptionRecord;
-        private Expression<Func<DbSubscriptionMethod, SubscriptionMethod>> _fromDbSubscriptionMethodToSubscriptionMethod;
         private readonly Lazy<UserDbContext> _lazyUserDbContext;
         private UserDbContext UserDbContext => _lazyUserDbContext.Value;
+        private readonly IMapper _mapper;
 
-        public DbSubscriptionService(DbContextManager<UserDbContext> dbContextManager)
+        public DbSubscriptionService(DbContextManager<UserDbContext> dbContextManager, IMapper mapper)
         {
             _lazyUserDbContext = new Lazy<UserDbContext>(() => dbContextManager.Value);
-
-            _fromSubscriptionToSubscriptionRecord = r => new SubscriptionRecord
-            {
-                ActionId = r.Action,
-                ObjectId = r.Object,
-                RecipientId = r.Recipient,
-                SourceId = r.Source,
-                Subscribed = !r.Unsubscribed,
-                Tenant = r.Tenant
-            };
-
-            _fromDbSubscriptionMethodToSubscriptionMethod = r => new SubscriptionMethod
-            {
-                ActionId = r.Action,
-                RecipientId = r.Recipient,
-                SourceId = r.Source,
-                Tenant = r.Tenant,
-                MethodsFromDb = r.Sender
-            };
+            _mapper = mapper;
         }
 
         public string[] GetRecipients(int tenant, string sourceId, string actionId, string objectId)
@@ -273,12 +254,11 @@ namespace ASC.Core.Data
             var methods = a.ToList();
             var result = new List<SubscriptionMethod>();
             var common = new Dictionary<string, SubscriptionMethod>();
-            var conv = _fromDbSubscriptionMethodToSubscriptionMethod.Compile();
 
             foreach (var r in methods)
             {
-                var m = conv(r);
-                var key = m.SourceId + m.ActionId + m.RecipientId;
+                var m = _mapper.Map<DbSubscriptionMethod, SubscriptionMethod>(r);
+                var key = m.Source + m.Action + m.Recipient;
                 if (m.Tenant == Tenant.DefaultTenant)
                 {
                     m.Tenant = tenant;
@@ -309,9 +289,9 @@ namespace ASC.Core.Data
             {
                 var q = UserDbContext.SubscriptionMethods
                     .Where(r => r.Tenant == m.Tenant)
-                    .Where(r => r.Source == m.SourceId)
-                    .Where(r => r.Recipient == m.RecipientId)
-                    .Where(r => r.Action == m.ActionId);
+                    .Where(r => r.Source == m.Source)
+                    .Where(r => r.Recipient == m.Recipient)
+                    .Where(r => r.Action == m.Action);
 
                 var sm = q.FirstOrDefault();
 
@@ -324,9 +304,9 @@ namespace ASC.Core.Data
             {
                 var sm = new DbSubscriptionMethod
                 {
-                    Action = m.ActionId,
-                    Recipient = m.RecipientId,
-                    Source = m.SourceId,
+                    Action = m.Action,
+                    Recipient = m.Recipient,
+                    Source = m.Source,
                     Tenant = m.Tenant,
                     Sender = string.Join("|", m.Methods)
                 };
@@ -362,11 +342,10 @@ namespace ASC.Core.Data
             var subs = q.ToList();
             var result = new List<SubscriptionRecord>();
             var common = new Dictionary<string, SubscriptionRecord>();
-            var conv = _fromSubscriptionToSubscriptionRecord.Compile();
 
             foreach (var r in subs)
             {
-                var s = conv(r);
+                var s = _mapper.Map<Subscription, SubscriptionRecord>(r);
                 var key = s.SourceId + s.ActionId + s.RecipientId + s.ObjectId;
                 if (s.Tenant == Tenant.DefaultTenant)
                 {

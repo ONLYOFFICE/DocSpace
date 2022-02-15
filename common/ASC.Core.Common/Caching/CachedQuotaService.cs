@@ -136,7 +136,7 @@ namespace ASC.Core.Caching
 
         public TenantQuota GetTenantQuota(int tenant)
         {
-            return GetTenantQuotas().SingleOrDefault(q => q.Id == tenant);
+            return GetTenantQuotas().SingleOrDefault(q => q.Tenant == tenant);
         }
 
         public TenantQuota SaveTenantQuota(TenantQuota quota)

@@ -112,7 +112,7 @@ namespace ASC.Data.Storage
                 var currentTenant = TenantManager.GetCurrentTenant(false);
                 if (currentTenant != null)
                 {
-                    currentTenantId = currentTenant.TenantId;
+                    currentTenantId = currentTenant.Id;
                 }
                 else if (!TenantPath.TryGetTenant(_tenant, out currentTenantId))
                 {

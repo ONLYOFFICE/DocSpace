@@ -98,10 +98,10 @@ namespace ASC.Web.Studio.UserControls.FirstTime
                 if (tenant.OwnerId == Guid.Empty)
                 {
                     Thread.Sleep(TimeSpan.FromSeconds(6)); // wait cache interval
-                    tenant = TenantManager.GetTenant(tenant.TenantId);
+                    tenant = TenantManager.GetTenant(tenant.Id);
                     if (tenant.OwnerId == Guid.Empty)
                     {
-                        Log.Error(tenant.TenantId + ": owner id is empty.");
+                        Log.Error(tenant.Id + ": owner id is empty.");
                     }
                 }
 
@@ -115,7 +115,7 @@ namespace ASC.Web.Studio.UserControls.FirstTime
                 if (string.IsNullOrEmpty(passwordHash))
                     throw new Exception(Resource.ErrorPasswordEmpty);
 
-                SecurityContext.SetUserPasswordHash(currentUser.ID, passwordHash);
+                SecurityContext.SetUserPasswordHash(currentUser.Id, passwordHash);
 
                 email = email.Trim();
                 if (currentUser.Email != email)

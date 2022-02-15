@@ -256,7 +256,7 @@ namespace ASC.Core.Notify.Jabber
 
         private int GetCurrentTenantId()
         {
-            return _tenantManager.GetCurrentTenant().TenantId;
+            return _tenantManager.GetCurrentTenant().Id;
         }
 
         private string GetCurrentUserName()

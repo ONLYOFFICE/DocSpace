@@ -74,7 +74,7 @@ namespace ASC.Core
 
         public Uri GetShoppingUri(int quotaId, bool forCurrentTenant = true, string affiliateId = null, string currency = null, string language = null, string customerId = null, string quantity = null)
         {
-            return _tariffService.GetShoppingUri(forCurrentTenant ? TenantManager.GetCurrentTenant().TenantId : (int?)null, quotaId, affiliateId, currency, language, customerId, quantity);
+            return _tariffService.GetShoppingUri(forCurrentTenant ? TenantManager.GetCurrentTenant().Id : (int?)null, quotaId, affiliateId, currency, language, customerId, quantity);
         }
 
         public Uri GetShoppingUri(int quotaId, string affiliateId, string currency = null, string language = null, string customerId = null, string quantity = null)
@@ -90,7 +90,7 @@ namespace ASC.Core
             }
 
             var now = DateTime.UtcNow;
-            var actionUrl = "/partnerapi/ActivateKey?code=" + HttpUtility.UrlEncode(key) + "&portal=" + HttpUtility.UrlEncode(TenantManager.GetCurrentTenant().TenantAlias);
+            var actionUrl = "/partnerapi/ActivateKey?code=" + HttpUtility.UrlEncode(key) + "&portal=" + HttpUtility.UrlEncode(TenantManager.GetCurrentTenant().Alias);
 
             var request = new HttpRequestMessage();
             request.Headers.Add("Authorization", GetPartnerAuthHeader(actionUrl));
@@ -100,7 +100,7 @@ namespace ASC.Core
 
             using var response = httpClient.Send(request);
 
-            _tariffService.ClearCache(TenantManager.GetCurrentTenant().TenantId);
+            _tariffService.ClearCache(TenantManager.GetCurrentTenant().Id);
 
             var timeout = DateTime.UtcNow - now - TimeSpan.FromSeconds(5);
             if (TimeSpan.Zero < timeout)
@@ -109,7 +109,7 @@ namespace ASC.Core
                 Thread.Sleep(timeout);
             }
 
-            TenantManager.GetTenant(TenantManager.GetCurrentTenant().TenantId);
+            TenantManager.GetTenant(TenantManager.GetCurrentTenant().Id);
         }
 
         private string GetPartnerAuthHeader(string url)

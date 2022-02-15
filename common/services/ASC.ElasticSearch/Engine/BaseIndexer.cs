@@ -369,7 +369,7 @@ namespace ASC.ElasticSearch
         {
             var func = expression.Compile();
             var selector = new Selector<T>(ServiceProvider);
-            var descriptor = func(selector).Where(r => r.TenantId, TenantManager.GetCurrentTenant().TenantId);
+            var descriptor = func(selector).Where(r => r.TenantId, TenantManager.GetCurrentTenant().Id);
             return Client.Instance.Search(descriptor.GetDescriptor(this, onlyId)).Documents;
         }
 
@@ -377,7 +377,7 @@ namespace ASC.ElasticSearch
         {
             var func = expression.Compile();
             var selector = new Selector<T>(ServiceProvider);
-            var descriptor = func(selector).Where(r => r.TenantId, TenantManager.GetCurrentTenant().TenantId);
+            var descriptor = func(selector).Where(r => r.TenantId, TenantManager.GetCurrentTenant().Id);
             var result = Client.Instance.Search(descriptor.GetDescriptor(this, onlyId));
             total = result.Total;
             return result.Documents;

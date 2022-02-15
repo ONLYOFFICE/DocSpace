@@ -88,7 +88,7 @@ namespace ASC.Data.Storage.Encryption
                     var dictionary = new Dictionary<string, DiscDataStore>();
                     foreach (var module in Modules)
                     {
-                        dictionary.Add(module, (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.TenantId.ToString(), module));
+                        dictionary.Add(module, (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.Id.ToString(), module));
                     }
                     Parallel.ForEach(dictionary, (elem) =>
                     {
@@ -131,7 +131,7 @@ namespace ASC.Data.Storage.Encryption
 
             foreach (var domain in domains)
             {
-                var logParent = $"Tenant: {tenant.TenantAlias}, Module: {module}, Domain: {domain}";
+                var logParent = $"Tenant: {tenant.Alias}, Module: {module}, Domain: {domain}";
 
                 var files = GetFiles(domains, progress, store, domain);
 
@@ -247,7 +247,7 @@ namespace ASC.Data.Storage.Encryption
             {
                 foreach (var module in Modules)
                 {
-                    var store = (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.TenantId.ToString(), module);
+                    var store = (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.Id.ToString(), module);
 
                     if (store.IsFile(string.Empty, ProgressFileName))
                     {
@@ -284,7 +284,7 @@ namespace ASC.Data.Storage.Encryption
 
                     tenant.SetStatus(TenantStatus.Active);
                     tenantManager.SaveTenant(tenant);
-                    log.DebugFormat("Tenant {0} SetStatus Active", tenant.TenantAlias);
+                    log.DebugFormat("Tenant {0} SetStatus Active", tenant.Alias);
 
                     if (!HasErrors)
                     {
@@ -292,26 +292,26 @@ namespace ASC.Data.Storage.Encryption
                         {
                             if (IsEncryption)
                             {
-                                notifyHelper.SendStorageEncryptionSuccess(tenant.TenantId);
+                                notifyHelper.SendStorageEncryptionSuccess(tenant.Id);
                             }
                             else
                             {
-                                notifyHelper.SendStorageDecryptionSuccess(tenant.TenantId);
+                                notifyHelper.SendStorageDecryptionSuccess(tenant.Id);
                             }
-                            log.DebugFormat("Tenant {0} SendStorageEncryptionSuccess", tenant.TenantAlias);
+                            log.DebugFormat("Tenant {0} SendStorageEncryptionSuccess", tenant.Alias);
                         }
                     }
                     else
                     {
                         if (IsEncryption)
                         {
-                            notifyHelper.SendStorageEncryptionError(tenant.TenantId);
+                            notifyHelper.SendStorageEncryptionError(tenant.Id);
                         }
                         else
                         {
-                            notifyHelper.SendStorageDecryptionError(tenant.TenantId);
+                            notifyHelper.SendStorageDecryptionError(tenant.Id);
                         }
-                        log.DebugFormat("Tenant {0} SendStorageEncryptionError", tenant.TenantAlias);
+                        log.DebugFormat("Tenant {0} SendStorageEncryptionError", tenant.Alias);
                     }
                 }
             }

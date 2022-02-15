@@ -204,15 +204,15 @@ namespace ASC.Core
                 ActivationStatus = ri.ActivationStatus
             };
 
-            user = UserService.SaveUser(tenant.TenantId, user);
-            UserService.SetUserPasswordHash(tenant.TenantId, user.ID, ri.PasswordHash);
-            UserService.SaveUserGroupRef(tenant.TenantId, new UserGroupRef(user.ID, Constants.GroupAdmin.ID, UserGroupRefType.Contains));
+            user = UserService.SaveUser(tenant.Id, user);
+            UserService.SetUserPasswordHash(tenant.Id, user.Id, ri.PasswordHash);
+            UserService.SaveUserGroupRef(tenant.Id, new UserGroupRef(user.Id, Constants.GroupAdmin.ID, UserGroupRefType.Contains));
 
             // save tenant owner
-            tenant.OwnerId = user.ID;
+            tenant.OwnerId = user.Id;
             tenant = TenantService.SaveTenant(CoreSettings, tenant);
 
-            SettingsManager.SaveSettings(new TenantControlPanelSettings { LimitedAccess = ri.LimitedControlPanel }, tenant.TenantId);
+            SettingsManager.SaveSettings(new TenantControlPanelSettings { LimitedAccess = ri.LimitedControlPanel }, tenant.Id);
         }
 
         public Tenant SaveTenant(Tenant tenant)
@@ -222,7 +222,7 @@ namespace ASC.Core
 
         public void RemoveTenant(Tenant tenant)
         {
-            TenantService.RemoveTenant(tenant.TenantId);
+            TenantService.RemoveTenant(tenant.Id);
         }
 
         public string CreateAuthenticationCookie(CookieStorage cookieStorage, int tenantId, Guid userId)
@@ -241,9 +241,9 @@ namespace ASC.Core
 
             var tenantSettings = SettingsManager.LoadSettingsFor<TenantCookieSettings>(tenantId, Guid.Empty);
             var expires = tenantSettings.IsDefault() ? DateTime.UtcNow.AddYears(1) : DateTime.UtcNow.AddMinutes(tenantSettings.LifeTime);
-            var userSettings = SettingsManager.LoadSettingsFor<TenantCookieSettings>(tenantId, user.ID);
+            var userSettings = SettingsManager.LoadSettingsFor<TenantCookieSettings>(tenantId, user.Id);
 
-            return cookieStorage.EncryptCookie(tenantId, user.ID, tenantSettings.Index, expires, userSettings.Index);
+            return cookieStorage.EncryptCookie(tenantId, user.Id, tenantSettings.Index, expires, userSettings.Index);
         }
 
         public Tariff GetTariff(int tenant, bool withRequestToPaymentSystem = true)
@@ -271,7 +271,7 @@ namespace ASC.Core
             var quota = QuotaService.GetTenantQuotas().FirstOrDefault(q => paid ? q.NonProfit : q.Trial);
             if (quota != null)
             {
-                TariffService.SetTariff(tenant, new Tariff { QuotaId = quota.Id, DueDate = DateTime.MaxValue, });
+                TariffService.SetTariff(tenant, new Tariff { QuotaId = quota.Tenant, DueDate = DateTime.MaxValue, });
             }
         }
 

@@ -107,18 +107,18 @@ namespace ASC.Web.Studio.Core.TFA
 
             if (string.IsNullOrEmpty(code)) throw new Exception(Resource.ActivateTfaAppEmptyCode);
 
-            int.TryParse(Cache.Get<string>("tfa/" + user.ID), out var counter);
+            int.TryParse(Cache.Get<string>("tfa/" + user.Id), out var counter);
             if (++counter > SetupInfo.LoginThreshold)
             {
                 throw new BruteForceCredentialException(Resource.TfaTooMuchError);
             }
-            Cache.Insert("tfa/" + user.ID, counter.ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)));
+            Cache.Insert("tfa/" + user.Id, counter.ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)));
 
             if (!Tfa.ValidateTwoFactorPIN(GenerateAccessToken(user), code))
             {
-                if (checkBackup && TfaAppUserSettings.BackupCodesForUser(SettingsManager, user.ID).Any(x => x.GetEncryptedCode(InstanceCrypto, Signature) == code && !x.IsUsed))
+                if (checkBackup && TfaAppUserSettings.BackupCodesForUser(SettingsManager, user.Id).Any(x => x.GetEncryptedCode(InstanceCrypto, Signature) == code && !x.IsUsed))
                 {
-                    TfaAppUserSettings.DisableCodeForUser(SettingsManager, InstanceCrypto, Signature, user.ID, code);
+                    TfaAppUserSettings.DisableCodeForUser(SettingsManager, InstanceCrypto, Signature, user.Id, code);
                 }
                 else
                 {
@@ -126,15 +126,15 @@ namespace ASC.Web.Studio.Core.TFA
                 }
             }
 
-            Cache.Insert("tfa/" + user.ID, (counter - 1).ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)));
+            Cache.Insert("tfa/" + user.Id, (counter - 1).ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)));
 
             if (!SecurityContext.IsAuthenticated)
             {
-                var cookiesKey = SecurityContext.AuthenticateMe(user.ID);
+                var cookiesKey = SecurityContext.AuthenticateMe(user.Id);
                 CookiesManager.SetCookies(CookiesType.AuthKey, cookiesKey);
             }
 
-            if (!TfaAppUserSettings.EnableForUser(SettingsManager, user.ID))
+            if (!TfaAppUserSettings.EnableForUser(SettingsManager, user.Id))
             {
                 GenerateBackupCodes();
                 return true;
@@ -177,7 +177,7 @@ namespace ASC.Web.Studio.Core.TFA
 
         private string GenerateAccessToken(UserInfo user)
         {
-            var userSalt = TfaAppUserSettings.GetSalt(SettingsManager, user.ID);
+            var userSalt = TfaAppUserSettings.GetSalt(SettingsManager, user.Id);
 
             //from Signature.Create
             var machineSalt = Encoding.UTF8.GetString(MachinePseudoKeys.GetMachineConstant());

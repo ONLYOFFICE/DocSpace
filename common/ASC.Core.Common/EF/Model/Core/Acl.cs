@@ -1,6 +1,6 @@
 ﻿namespace ASC.Core.Common.EF
 {
-    public class Acl : BaseEntity
+    public class Acl : BaseEntity, IMapFrom<AzRecord>
     {
         public int Tenant { get; set; }
         public Guid Subject { get; set; }

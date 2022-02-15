@@ -210,7 +210,7 @@ namespace ASC.Core.Common.Billing
                 var tenant = tenantManager.GetCurrentTenant();
                 var startDate = DateTime.UtcNow.Date;
                 var endDate = startDate.AddDays(schedule);
-                var code = tenant.TenantAlias;
+                var code = tenant.Alias;
 
                 var promotion = new Promotion
                 {

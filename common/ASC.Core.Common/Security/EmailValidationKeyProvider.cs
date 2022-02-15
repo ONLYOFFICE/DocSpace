@@ -62,7 +62,7 @@ namespace ASC.Security.Cryptography
 
         public string GetEmailKey(string email)
         {
-            return GetEmailKey(_tenantManager.GetCurrentTenant().TenantId, email);
+            return GetEmailKey(_tenantManager.GetCurrentTenant().Id, email);
         }
 
         public string GetEmailKey(int tenantId, string email)
@@ -107,7 +107,7 @@ namespace ASC.Security.Cryptography
         public ValidationResult ValidateEmailKey(string email, string key, TimeSpan validInterval)
         {
             var result = ValidateEmailKeyInternal(email, key, validInterval);
-            _logger.DebugFormat("validation result: {0}, source: {1} with key: {2} interval: {3} tenant: {4}", result, email, key, validInterval, _tenantManager.GetCurrentTenant().TenantId);
+            _logger.DebugFormat("validation result: {0}, source: {1} with key: {2} interval: {3} tenant: {4}", result, email, key, validInterval, _tenantManager.GetCurrentTenant().Id);
 
             return result;
         }
@@ -123,7 +123,7 @@ namespace ASC.Security.Cryptography
                 throw new ArgumentNullException(nameof(key));
             }
 
-            email = FormatEmail(_tenantManager.GetCurrentTenant().TenantId, email);
+            email = FormatEmail(_tenantManager.GetCurrentTenant().Id, email);
             var parts = key.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
             if (parts.Length != 2)
             {
@@ -264,7 +264,7 @@ namespace ASC.Security.Cryptography
                     break;
                 case ConfirmType.PasswordChange:
 
-                    var hash = _authentication.GetUserPasswordStamp(_userManager.GetUserByEmail(email).ID).ToString("s");
+                    var hash = _authentication.GetUserPasswordStamp(_userManager.GetUserByEmail(email).Id).ToString("s");
 
                     checkKeyResult = _provider.ValidateEmailKey(email + type + hash, key, _provider.ValidEmailKeyInterval);
                     break;

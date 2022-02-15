@@ -53,12 +53,12 @@ namespace ASC.Core.Caching
                 return;
             }
 
-            var id = r.ObjectId ?? string.Empty;
+            var id = r.Object ?? string.Empty;
             if (!byObjectId.ContainsKey(id))
             {
                 byObjectId[id] = new List<AzRecord>();
             }
-            byObjectId[id].RemoveAll(a => a.SubjectId == r.SubjectId && a.ActionId == r.ActionId); // remove escape, see DbAzService
+            byObjectId[id].RemoveAll(a => a.Subject == r.Subject && a.Action == r.Action); // remove escape, see DbAzService
             byObjectId[id].Add(r);
         }
 
@@ -69,10 +69,10 @@ namespace ASC.Core.Caching
                 return;
             }
 
-            var id = r.ObjectId ?? string.Empty;
+            var id = r.Object ?? string.Empty;
             if (byObjectId.TryGetValue(id, out var list))
             {
-                list.RemoveAll(a => a.SubjectId == r.SubjectId && a.ActionId == r.ActionId && a.Reaction == r.Reaction);
+                list.RemoveAll(a => a.Subject == r.Subject && a.Action == r.Action && a.AceType == r.AceType);
             }
         }
 

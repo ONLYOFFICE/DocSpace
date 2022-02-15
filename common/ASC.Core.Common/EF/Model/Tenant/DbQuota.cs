@@ -1,6 +1,6 @@
 ﻿namespace ASC.Core.Common.EF
 {
-    public class DbQuota : BaseEntity
+    public class DbQuota : BaseEntity, IMapFrom<TenantQuota>
     {
         public int Tenant { get; set; }
         public string Name { get; set; }
@@ -12,9 +12,17 @@
         public decimal Price { get; set; }
         public string AvangateId { get; set; }
         public bool Visible { get; set; }
+
         public override object[] GetKeys()
         {
             return new object[] { Tenant };
+        }
+
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<TenantQuota, DbQuota>()
+                .ForMember(dest => dest.MaxFileSize, opt => opt.MapFrom(src => ByteConverter.GetInMBytes(src.MaxFileSize)))
+                .ForMember(dest => dest.MaxTotalSize, opt => opt.MapFrom(src => ByteConverter.GetInMBytes(src.MaxTotalSize)));
         }
     }
     public static class DbQuotaExtension

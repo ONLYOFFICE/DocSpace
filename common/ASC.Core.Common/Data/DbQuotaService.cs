@@ -23,6 +23,8 @@
  *
 */
 
+using AutoMapper.QueryableExtensions;
+
 namespace ASC.Core.Data
 {
     [Scope]
@@ -50,52 +52,28 @@ namespace ASC.Core.Data
     [Scope]
     class DbQuotaService : IQuotaService
     {
-        private static Expression<Func<DbQuota, TenantQuota>> _fromDbQuotaToTenantQuota;
-        private static Expression<Func<DbQuotaRow, TenantQuotaRow>> _fromDbQuotaRowToTenantQuotaRow;
         internal CoreDbContext CoreDbContext => LazyCoreDbContext.Value;
         internal Lazy<CoreDbContext> LazyCoreDbContext { get; set; }
+        private readonly IMapper _mapper;
 
-        static DbQuotaService()
-        {
-            _fromDbQuotaToTenantQuota = r => new TenantQuota()
-            {
-                Id = r.Tenant,
-                Name = r.Name,
-                ActiveUsers = r.ActiveUsers != 0 ? r.ActiveUsers : int.MaxValue,
-                AvangateId = r.AvangateId,
-                Features = r.Features,
-                MaxFileSize = GetInBytes(r.MaxFileSize),
-                MaxTotalSize = GetInBytes(r.MaxTotalSize),
-                Price = r.Price,
-                Visible = r.Visible
-            };
-
-            _fromDbQuotaRowToTenantQuotaRow = r => new TenantQuotaRow
-            {
-                Counter = r.Counter,
-                Path = r.Path,
-                Tag = r.Tag,
-                Tenant = r.Tenant
-            };
-        }
-
-        public DbQuotaService(DbContextManager<CoreDbContext> dbContextManager)
+        public DbQuotaService(DbContextManager<CoreDbContext> dbContextManager, IMapper mapper)
         {
             LazyCoreDbContext = new Lazy<CoreDbContext>(() => dbContextManager.Value);
+            _mapper = mapper;
         }
 
         public IEnumerable<TenantQuota> GetTenantQuotas()
         {
             return CoreDbContext.Quotas
-                .Select(_fromDbQuotaToTenantQuota)
+                .ProjectTo<TenantQuota>(_mapper.ConfigurationProvider)
                 .ToList();
         }
 
         public TenantQuota GetTenantQuota(int id)
         {
             return CoreDbContext.Quotas
-                 .Where(r => r.Tenant == id)
-                .Select(_fromDbQuotaToTenantQuota)
+                .Where(r => r.Tenant == id)
+                .ProjectTo<TenantQuota>(_mapper.ConfigurationProvider)
                 .SingleOrDefault();
         }
 
@@ -106,20 +84,7 @@ namespace ASC.Core.Data
                 throw new ArgumentNullException(nameof(quota));
             }
 
-            var dbQuota = new DbQuota
-            {
-                Tenant = quota.Id,
-                Name = quota.Name,
-                MaxFileSize = GetInMBytes(quota.MaxFileSize),
-                MaxTotalSize = GetInMBytes(quota.MaxTotalSize),
-                ActiveUsers = quota.ActiveUsers,
-                Features = quota.Features,
-                Price = quota.Price,
-                AvangateId = quota.AvangateId,
-                Visible = quota.Visible
-            };
-
-            CoreDbContext.AddOrUpdate(r => r.Quotas, dbQuota);
+            CoreDbContext.AddOrUpdate(r => r.Quotas, _mapper.Map<TenantQuota, DbQuota>(quota));
             CoreDbContext.SaveChanges();
 
             return quota;
@@ -166,7 +131,7 @@ namespace ASC.Core.Data
                 LastModified = DateTime.UtcNow
             };
 
-            CoreDbContext.AddOrUpdate(r => r.QuotaRows, dbQuotaRow);
+            CoreDbContext.AddOrUpdate(r => r.QuotaRows, _mapper.Map<TenantQuotaRow, DbQuotaRow>(row));
             CoreDbContext.SaveChanges();
 
             tx.Commit();
@@ -181,22 +146,7 @@ namespace ASC.Core.Data
                 q = q.Where(r => r.Tenant == tenantId);
             }
 
-            return q.Select(_fromDbQuotaRowToTenantQuotaRow).ToList();
-        }
-
-
-        private static long GetInBytes(long bytes)
-        {
-            const long MB = 1024 * 1024;
-
-            return bytes < MB ? bytes * MB : bytes;
-        }
-
-        private static long GetInMBytes(long bytes)
-        {
-            const long MB = 1024 * 1024;
-
-            return bytes < MB * MB ? bytes / MB : bytes;
+            return q.ProjectTo<TenantQuotaRow>(_mapper.ConfigurationProvider).ToList();
         }
     }
 }

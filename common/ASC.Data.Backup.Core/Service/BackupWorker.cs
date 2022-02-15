@@ -381,7 +381,7 @@ namespace ASC.Data.Backup.Services
             var (tenantManager, backupStorageFactory, notifyHelper, backupRepository, backupWorker, backupPortalTask, _, _, coreBaseSettings) = scopeClass;
 
             var dateTime = coreBaseSettings.Standalone ? DateTime.Now : DateTime.UtcNow;
-            var backupName = string.Format("{0}_{1:yyyy-MM-dd_HH-mm-ss}.{2}", tenantManager.GetTenant(TenantId).TenantAlias, dateTime, ArchiveFormat);
+            var backupName = string.Format("{0}_{1:yyyy-MM-dd_HH-mm-ss}.{2}", tenantManager.GetTenant(TenantId).Alias, dateTime, ArchiveFormat);
 
             var tempFile = CrossPlatform.PathCombine(TempFolder, backupName);
             var storagePath = tempFile;
@@ -534,7 +534,7 @@ namespace ASC.Data.Backup.Services
                 tenantManager.SaveTenant(tenant);
 
                 var columnMapper = new ColumnMapper();
-                columnMapper.SetMapping("tenants_tenants", "alias", tenant.TenantAlias, Guid.Parse(Id).ToString("N"));
+                columnMapper.SetMapping("tenants_tenants", "alias", tenant.Alias, Guid.Parse(Id).ToString("N"));
                 columnMapper.Commit();
 
                 var restoreTask = restorePortalTask;
@@ -563,11 +563,11 @@ namespace ASC.Data.Backup.Services
                 }
                 else
                 {
-                    tenantManager.RemoveTenant(tenant.TenantId);
+                    tenantManager.RemoveTenant(tenant.Id);
 
                     restoredTenant = tenantManager.GetTenant(columnMapper.GetTenantMapping());
                     restoredTenant.SetStatus(TenantStatus.Active);
-                    restoredTenant.TenantAlias = tenant.TenantAlias;
+                    restoredTenant.Alias = tenant.Alias;
                     restoredTenant.PaymentId = string.Empty;
                     if (string.IsNullOrEmpty(restoredTenant.MappedDomain) && !string.IsNullOrEmpty(tenant.MappedDomain))
                     {
@@ -673,7 +673,7 @@ namespace ASC.Data.Backup.Services
             var (tenantManager, _, notifyHelper, _, backupWorker, _, _, transferPortalTask, _) = scopeClass;
             var tempFile = PathHelper.GetTempFileName(TempFolder);
             var tenant = tenantManager.GetTenant(TenantId);
-            var alias = tenant.TenantAlias;
+            var alias = tenant.Alias;
 
             try
             {

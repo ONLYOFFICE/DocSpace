@@ -131,7 +131,7 @@ namespace ASC.Core.Data
         {
             get 
             {
-                if (_tenantID == 0) _tenantID = TenantManager.GetCurrentTenant().TenantId;
+                if (_tenantID == 0) _tenantID = TenantManager.GetCurrentTenant().Id;
 
                 return _tenantID;
             }
