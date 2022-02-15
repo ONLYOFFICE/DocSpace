@@ -3,7 +3,7 @@ import { withTranslation } from "react-i18next";
 import SelectFolderInput from "files/SelectFolderInput";
 import ScheduleComponent from "./ScheduleComponent";
 
-class ThirdPartyModule extends React.Component {
+class ThirdPartyModule extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -30,7 +30,6 @@ class ThirdPartyModule extends React.Component {
       onSelectFolder,
       isError,
       isLoadingData,
-      onSetLoadingData,
       isReset,
       isThirdPartyDefault,
       defaultSelectedFolder,
@@ -47,7 +46,6 @@ class ThirdPartyModule extends React.Component {
           onClickInput={this.onClickInput}
           isPanelVisible={isPanelVisible}
           isError={isError}
-          onSetLoadingData={onSetLoadingData}
           foldersType="third-party"
           isSavingProcess={isLoadingData}
           id={passedId}

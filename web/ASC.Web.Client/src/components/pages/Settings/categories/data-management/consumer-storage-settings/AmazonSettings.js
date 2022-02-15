@@ -3,9 +3,9 @@ import TextInput from "@appserver/components/text-input";
 
 const bucketInput = "bucket";
 const regionInput = "region";
-const urlInput = "serviceUrl";
-const forcePathStyleInput = "forcePathStyle";
-const httpInput = "useHttp";
+const urlInput = "serviceurl";
+const forcePathStyleInput = "forcepathstyle";
+const httpInput = "usehttp";
 const sseInput = "sse";
 class AmazonSettings extends React.Component {
   static formNames = () => {
@@ -80,7 +80,7 @@ class AmazonSettings extends React.Component {
           name={urlInput}
           className="backup_text-input"
           scale
-          value={formSettings.serviceUrl}
+          value={formSettings.serviceurl}
           onChange={onChange}
           isDisabled={isLoadingData || isLoading || this.isDisabled}
           placeholder={this.serviceUrlPlaceholder || ""}
@@ -90,7 +90,7 @@ class AmazonSettings extends React.Component {
           name={forcePathStyleInput}
           className="backup_text-input"
           scale
-          value={formSettings.forcePathStyle}
+          value={formSettings.forcepathstyle}
           onChange={onChange}
           isDisabled={isLoadingData || isLoading || this.isDisabled}
           placeholder={this.forcePathStylePlaceholder || ""}
@@ -100,7 +100,7 @@ class AmazonSettings extends React.Component {
           name={httpInput}
           className="backup_text-input"
           scale
-          value={formSettings.useHttp}
+          value={formSettings.usehttp}
           onChange={onChange}
           isDisabled={isLoadingData || isLoading || this.isDisabled}
           placeholder={this.useHttpPlaceholder || ""}
