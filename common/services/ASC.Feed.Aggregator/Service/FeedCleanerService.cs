@@ -6,9 +6,9 @@ public class FeedCleanerService : FeedBaseService
 
     public FeedCleanerService(
         FeedSettings feedSettings,
-        IServiceProvider serviceProvider,
+        IServiceScopeFactory serviceScopeFactory,
         IOptionsMonitor<ILog> optionsMonitor)
-        : base(feedSettings, serviceProvider, optionsMonitor)
+        : base(feedSettings, serviceScopeFactory, optionsMonitor)
     {
     }
 
@@ -44,7 +44,7 @@ public class FeedCleanerService : FeedBaseService
 
         try
         {
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = ServiceScopeFactory.CreateScope();
             var feedAggregateDataProvider = scope.ServiceProvider.GetService<FeedAggregateDataProvider>();
 
             Logger.DebugFormat("Start of removing old news");

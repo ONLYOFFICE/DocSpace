@@ -8,10 +8,10 @@ public class FeedAggregatorService : FeedBaseService
 
     public FeedAggregatorService(
         FeedSettings feedSettings,
-        IServiceProvider serviceProvider,
+        IServiceScopeFactory serviceScopeFactory,
         IOptionsMonitor<ILog> optionsMonitor,
         SignalrServiceClient signalrServiceClient)
-        : base(feedSettings, serviceProvider, optionsMonitor)
+        : base(feedSettings, serviceScopeFactory, optionsMonitor)
     {
         _signalrServiceClient = signalrServiceClient;
     }
@@ -49,7 +49,7 @@ public class FeedAggregatorService : FeedBaseService
         try
         {
             var cfg = FeedSettings;
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = ServiceScopeFactory.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<FeedAggregatorServiceScope>();
             var cache = scope.ServiceProvider.GetService<ICache>();
             var (baseCommonLinkUtility, tenantManager, feedAggregateDataProvider, userManager, securityContext, authManager) = scopeClass;

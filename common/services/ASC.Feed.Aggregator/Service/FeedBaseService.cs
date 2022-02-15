@@ -8,16 +8,16 @@ public abstract class FeedBaseService : IHostedService, IDisposable
     protected volatile bool IsStopped;
     protected readonly ILog Logger;
     protected readonly FeedSettings FeedSettings;
-    protected readonly IServiceProvider ServiceProvider;
+    protected readonly IServiceScopeFactory ServiceScopeFactory;
     protected readonly object LockObj = new object();
 
     public FeedBaseService(
         FeedSettings feedSettings,
-        IServiceProvider serviceProvider,
+        IServiceScopeFactory serviceScopeFactory,
         IOptionsMonitor<ILog> optionsMonitor)
     {
         FeedSettings = feedSettings;
-        ServiceProvider = serviceProvider;
+        ServiceScopeFactory = serviceScopeFactory;
         Logger = optionsMonitor.Get(LoggerName);
     }
 
