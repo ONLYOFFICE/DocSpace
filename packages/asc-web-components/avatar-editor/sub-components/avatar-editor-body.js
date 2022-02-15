@@ -88,8 +88,8 @@ class AvatarEditorBody extends React.Component {
         var canvas = resizeImage.resize2Canvas(img, img.width, img.height);
         var data = resizeImage.resize(
           canvas,
-          img.width,
-          img.height,
+          img.width / 4,
+          img.height / 4,
           resizeImage.JPEG
         );
         _this.setState({
@@ -103,6 +103,7 @@ class AvatarEditorBody extends React.Component {
             const file = new File([blob], "File name", {
               type: "image/jpg",
             });
+            //console.log(`file size ${file.size / 1024 / 1024} mb`);
             _this.props.onLoadFile(file);
           });
       };
