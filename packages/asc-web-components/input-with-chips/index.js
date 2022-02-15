@@ -195,6 +195,7 @@ const InputWithChips = ({
       const filteredChips = chips.filter((e) => !~selectedChips.indexOf(e));
       setChips(filteredChips);
       setSelectedChips([]);
+      inputRef.current.focus();
       return;
     }
 
