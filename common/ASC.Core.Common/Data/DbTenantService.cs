@@ -59,47 +59,13 @@ public class DbTenantService : ITenantService
 {
     private List<string> _forbiddenDomains;
 
-    internal TenantDomainValidator TenantDomainValidator { get; set; }
+    internal TenantDomainValidator TenantDomainValidator;
     private readonly MachinePseudoKeys _machinePseudoKeys;
     internal TenantDbContext TenantDbContext => LazyTenantDbContext.Value;
-    internal Lazy<TenantDbContext> LazyTenantDbContext { get; set; }
+    internal Lazy<TenantDbContext> LazyTenantDbContext;
     internal UserDbContext UserDbContext => LazyUserDbContext.Value;
-    internal Lazy<UserDbContext> LazyUserDbContext { get; set; }
-    private static Expression<Func<DbTenant, Tenant>> _fromDbTenantToTenant;
-    private static Expression<Func<TenantUserSecurity, Tenant>> _fromTenantUserToTenant;
+    internal Lazy<UserDbContext> LazyUserDbContext;
     private readonly IMapper _mapper;
-
-    static DbTenantService()
-    {
-        _fromDbTenantToTenant = r => new Tenant
-        {
-            Calls = r.Calls,
-            CreationDateTime = r.CreationDateTime,
-            Industry = r.Industry != null ? r.Industry.Value : TenantIndustry.Other,
-            Language = r.Language,
-            LastModified = r.LastModified,
-            Name = r.Name,
-            OwnerId = r.OwnerId,
-            PaymentId = r.PaymentId,
-            Spam = r.Spam,
-            Status = r.Status,
-            StatusChangeDate = r.StatusChangedHack,
-            Alias = r.Alias,
-            Id = r.Id,
-            MappedDomain = r.MappedDomain,
-            Version = r.Version,
-            VersionChanged = r.VersionChanged,
-            TrustedDomainsRaw = r.TrustedDomainsRaw,
-            TrustedDomainsType = r.TrustedDomainsEnabled,
-            //AffiliateId = r.Partner != null ? r.Partner.AffiliateId : null,
-            //PartnerId = r.Partner != null ? r.Partner.PartnerId : null,
-            TimeZone = r.TimeZone,
-            //Campaign = r.Partner != null ? r.Partner.Campaign : null
-        };
-
-        var fromDbTenantToTenant = _fromDbTenantToTenant.Compile();
-        _fromTenantUserToTenant = r => fromDbTenantToTenant(r.DbTenant);
-    }
 
     public DbTenantService() { }
 

@@ -32,18 +32,18 @@ public class PaymentManager
     private readonly string _partnerUrl;
     private readonly string _partnerKey;
 
-    private readonly TenantManager TenantManager;
-    private readonly IConfiguration Configuration;
-    private readonly IHttpClientFactory ClientFactory;
+    private readonly TenantManager _tenantManager;
+    private readonly IConfiguration _configuration;
+    private readonly IHttpClientFactory _clientFactory;
 
     public PaymentManager(TenantManager tenantManager, ITariffService tariffService, IConfiguration configuration, IHttpClientFactory clientFactory)
     {
-        TenantManager = tenantManager;
+        _tenantManager = tenantManager;
         _tariffService = tariffService;
-        Configuration = configuration;
-        _partnerUrl = (Configuration["core:payment:partners"] ?? "https://partners.onlyoffice.com/api").TrimEnd('/');
-        _partnerKey = Configuration["core:machinekey"] ?? "C5C1F4E85A3A43F5B3202C24D97351DF";
-        ClientFactory = clientFactory;
+        _configuration = configuration;
+        _partnerUrl = (_configuration["core:payment:partners"] ?? "https://partners.onlyoffice.com/api").TrimEnd('/');
+        _partnerKey = _configuration["core:machinekey"] ?? "C5C1F4E85A3A43F5B3202C24D97351DF";
+        _clientFactory = clientFactory;
     }
 
 
@@ -74,7 +74,7 @@ public class PaymentManager
 
     public Uri GetShoppingUri(int quotaId, bool forCurrentTenant = true, string affiliateId = null, string currency = null, string language = null, string customerId = null, string quantity = null)
     {
-        return _tariffService.GetShoppingUri(forCurrentTenant ? TenantManager.GetCurrentTenant().Id : (int?)null, quotaId, affiliateId, currency, language, customerId, quantity);
+        return _tariffService.GetShoppingUri(forCurrentTenant ? _tenantManager.GetCurrentTenant().Id : (int?)null, quotaId, affiliateId, currency, language, customerId, quantity);
     }
 
     public Uri GetShoppingUri(int quotaId, string affiliateId, string currency = null, string language = null, string customerId = null, string quantity = null)
@@ -90,17 +90,17 @@ public class PaymentManager
         }
 
         var now = DateTime.UtcNow;
-        var actionUrl = "/partnerapi/ActivateKey?code=" + HttpUtility.UrlEncode(key) + "&portal=" + HttpUtility.UrlEncode(TenantManager.GetCurrentTenant().Alias);
+        var actionUrl = "/partnerapi/ActivateKey?code=" + HttpUtility.UrlEncode(key) + "&portal=" + HttpUtility.UrlEncode(_tenantManager.GetCurrentTenant().Alias);
 
         var request = new HttpRequestMessage();
         request.Headers.Add("Authorization", GetPartnerAuthHeader(actionUrl));
         request.RequestUri = new Uri(_partnerUrl + actionUrl);
 
-        var httpClient = ClientFactory.CreateClient();
+        var httpClient = _clientFactory.CreateClient();
 
         using var response = httpClient.Send(request);
 
-        _tariffService.ClearCache(TenantManager.GetCurrentTenant().Id);
+        _tariffService.ClearCache(_tenantManager.GetCurrentTenant().Id);
 
         var timeout = DateTime.UtcNow - now - TimeSpan.FromSeconds(5);
         if (TimeSpan.Zero < timeout)
@@ -109,7 +109,7 @@ public class PaymentManager
             Thread.Sleep(timeout);
         }
 
-        TenantManager.GetTenant(TenantManager.GetCurrentTenant().Id);
+        _tenantManager.GetTenant(_tenantManager.GetCurrentTenant().Id);
     }
 
     private string GetPartnerAuthHeader(string url)

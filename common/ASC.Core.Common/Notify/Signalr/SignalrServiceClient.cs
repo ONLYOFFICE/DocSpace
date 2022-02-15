@@ -28,12 +28,12 @@ namespace ASC.Core.Notify.Signalr;
 [Scope]
 public class ConfigureSignalrServiceClient : IConfigureNamedOptions<SignalrServiceClient>
 {
-    internal TenantManager TenantManager { get; }
-    internal CoreSettings CoreSettings { get; }
-    internal MachinePseudoKeys MachinePseudoKeys { get; }
-    internal IConfiguration Configuration { get; }
-    internal IOptionsMonitor<ILog> Options { get; }
-    internal IHttpClientFactory ClientFactory { get; }
+    internal readonly TenantManager TenantManager;
+    internal readonly CoreSettings CoreSettings;
+    internal readonly MachinePseudoKeys MachinePseudoKeys;
+    internal readonly IConfiguration Configuration;
+    internal readonly IOptionsMonitor<ILog> Options;
+    internal readonly IHttpClientFactory ClientFactory;
 
     public ConfigureSignalrServiceClient(
         TenantManager tenantManager,
@@ -53,7 +53,7 @@ public class ConfigureSignalrServiceClient : IConfigureNamedOptions<SignalrServi
 
     public void Configure(string name, SignalrServiceClient options)
     {
-        options.Log = Options.CurrentValue;
+        options.Logger = Options.CurrentValue;
         options.Hub = name.Trim('/');
         options.TenantManager = TenantManager;
         options.CoreSettings = CoreSettings;
@@ -89,7 +89,7 @@ public class ConfigureSignalrServiceClient : IConfigureNamedOptions<SignalrServi
 public class SignalrServiceClient
 {
     private static readonly TimeSpan _timeout = TimeSpan.FromSeconds(1);
-    internal ILog Log;
+    internal ILog Logger;
     private static DateTime _lastErrorTime;
     public bool EnableSignalr { get; set; }
     internal byte[] SKey;
@@ -100,9 +100,9 @@ public class SignalrServiceClient
 
     internal string Hub;
 
-    internal TenantManager TenantManager { get; set; }
-    internal CoreSettings CoreSettings { get; set; }
-    internal IHttpClientFactory ClientFactory { get; set; }
+    internal TenantManager TenantManager;
+    internal CoreSettings CoreSettings;
+    internal IHttpClientFactory ClientFactory;
 
     public SignalrServiceClient() { }
 
@@ -326,7 +326,7 @@ public class SignalrServiceClient
 
     private void ProcessError(Exception e)
     {
-        Log.ErrorFormat("Service Error: {0}, {1}, {2}", e.Message, e.StackTrace,
+        Logger.ErrorFormat("Service Error: {0}, {1}, {2}", e.Message, e.StackTrace,
             (e.InnerException != null) ? e.InnerException.Message : string.Empty);
         if (e is CommunicationException || e is TimeoutException)
         {
@@ -347,7 +347,7 @@ public class SignalrServiceClient
         request.RequestUri = new Uri(GetMethod(method));
 
         var jsonData = JsonConvert.SerializeObject(data);
-        Log.DebugFormat("Method:{0}, Data:{1}", method, jsonData);
+        Logger.DebugFormat("Method:{0}, Data:{1}", method, jsonData);
 
         request.Content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 

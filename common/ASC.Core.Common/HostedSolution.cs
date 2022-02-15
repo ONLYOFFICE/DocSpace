@@ -94,15 +94,15 @@ class ConfigureHostedSolution : IConfigureNamedOptions<HostedSolution>
 [Scope(typeof(ConfigureHostedSolution))]
 public class HostedSolution
 {
-    internal ITenantService TenantService { get; set; }
-    internal IUserService UserService { get; set; }
-    internal IQuotaService QuotaService { get; set; }
-    internal ITariffService TariffService { get; set; }
-    internal UserFormatter UserFormatter { get; set; }
-    internal TenantManager ClientTenantManager { get; set; }
-    internal TenantUtil TenantUtil { get; set; }
-    internal DbSettingsManager SettingsManager { get; set; }
-    internal CoreSettings CoreSettings { get; set; }
+    internal ITenantService TenantService;
+    internal IUserService UserService;
+    internal IQuotaService QuotaService;
+    internal ITariffService TariffService;
+    internal UserFormatter UserFormatter;
+    internal TenantManager ClientTenantManager;
+    internal TenantUtil TenantUtil;
+    internal DbSettingsManager SettingsManager;
+    internal CoreSettings CoreSettings;
 
     public string Region { get; set; }
 

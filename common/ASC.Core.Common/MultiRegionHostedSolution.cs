@@ -33,7 +33,7 @@ public class MultiRegionHostedSolution
     private readonly Dictionary<string, HostedSolution> _regions = new Dictionary<string, HostedSolution>();
     private readonly string _dbid;
 
-    private readonly IConfiguration Configuraion;
+    private readonly IConfiguration _configuraion;
     public ConfigurationExtension ConfigurationExtension { get; }
     private readonly CookieStorage _cookieStorage;
     private readonly EFLoggerFactory _loggerFactory;
@@ -49,7 +49,7 @@ public class MultiRegionHostedSolution
         IOptionsSnapshot<HostedSolution> hostedSolutionOptions)
     {
         _dbid = dbid;
-        Configuraion = configuraion;
+        _configuraion = configuraion;
         ConfigurationExtension = configurationExtension;
         _cookieStorage = cookieStorage;
         _loggerFactory = loggerFactory;
@@ -188,7 +188,7 @@ public class MultiRegionHostedSolution
     {
         var connectionStrings = ConfigurationExtension.GetConnectionStrings();
 
-        if (Convert.ToBoolean(Configuraion["core.multi-hosted.config-only"] ?? "false"))
+        if (Convert.ToBoolean(_configuraion["core.multi-hosted.config-only"] ?? "false"))
         {
             foreach (var cs in connectionStrings)
             {

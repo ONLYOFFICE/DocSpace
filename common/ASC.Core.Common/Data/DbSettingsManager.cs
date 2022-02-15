@@ -86,7 +86,7 @@ class ConfigureDbSettingsManager : IConfigureNamedOptions<DbSettingsManager>
         options.ServiceProvider = _serviceProvider;
         options.DbSettingsManagerCache = _dbSettingsManagerCache;
         options.AuthContext = _authContext;
-        options.Log = _logger.CurrentValue;
+        options.Logger = _logger.CurrentValue;
 
         options.TenantManager = _tenantManager.Value;
         options.LazyWebstudioDbContext = new Lazy<WebstudioDbContext>(() => _dbContextManager.Value);
@@ -98,13 +98,13 @@ public class DbSettingsManager
 {
     private readonly TimeSpan _expirationTimeout = TimeSpan.FromMinutes(5);
 
-    internal ILog Log { get; set; }
-    internal ICache Cache { get; set; }
-    internal IServiceProvider ServiceProvider { get; set; }
-    internal DbSettingsManagerCache DbSettingsManagerCache { get; set; }
-    internal AuthContext AuthContext { get; set; }
-    internal TenantManager TenantManager { get; set; }
-    internal Lazy<WebstudioDbContext> LazyWebstudioDbContext { get; set; }
+    internal ILog Logger;
+    internal ICache Cache;
+    internal IServiceProvider ServiceProvider;
+    internal DbSettingsManagerCache DbSettingsManagerCache;
+    internal AuthContext AuthContext;
+    internal TenantManager TenantManager;
+    internal Lazy<WebstudioDbContext> LazyWebstudioDbContext;
     internal WebstudioDbContext WebstudioDbContext => LazyWebstudioDbContext.Value;
 
     public DbSettingsManager() { }
@@ -122,7 +122,7 @@ public class DbSettingsManager
         AuthContext = authContext;
         TenantManager = tenantManager;
         Cache = dbSettingsManagerCache.Cache;
-        Log = option.CurrentValue;
+        Logger = option.CurrentValue;
         LazyWebstudioDbContext = new Lazy<WebstudioDbContext>(() => dbContextManager.Value);
     }
 
@@ -224,7 +224,7 @@ public class DbSettingsManager
         }
         catch (Exception ex)
         {
-            Log.Error(ex);
+            Logger.Error(ex);
 
             return false;
         }
@@ -266,7 +266,7 @@ public class DbSettingsManager
         }
         catch (Exception ex)
         {
-            Log.Error(ex);
+            Logger.Error(ex);
         }
 
         return def;

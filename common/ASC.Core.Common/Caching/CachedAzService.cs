@@ -28,8 +28,8 @@ namespace ASC.Core.Caching;
 [Singletone]
 class AzServiceCache
 {
-    internal ICache Cache { get; }
-    internal ICacheNotify<AzRecordCache> CacheNotify { get; }
+    internal readonly ICache Cache;
+    internal readonly ICacheNotify<AzRecordCache> CacheNotify;
 
     public AzServiceCache(ICacheNotify<AzRecordCache> cacheNotify, ICache cache)
     {

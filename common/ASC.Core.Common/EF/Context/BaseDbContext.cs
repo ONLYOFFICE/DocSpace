@@ -13,10 +13,10 @@ public class BaseDbContext : DbContext
     public BaseDbContext() { }
     public BaseDbContext(DbContextOptions options) : base(options) { }
 
-    internal string MigrateAssembly { get; set; }
-    internal ILoggerFactory LoggerFactory { get; set; }
+    internal string MigrateAssembly;
+    internal ILoggerFactory LoggerFactory;
     public ConnectionStringSettings ConnectionStringSettings { get; set; }
-    protected internal Provider Provider { get; set; }
+    protected internal Provider Provider;
 
     public static readonly ServerVersion ServerVersion = ServerVersion.Parse("8.0.25");
     protected virtual Dictionary<Provider, Func<BaseDbContext>> ProviderContext => null;
@@ -106,7 +106,7 @@ public class MultiRegionalDbContext<T> : IDisposable, IAsyncDisposable where T :
 {
     public MultiRegionalDbContext() { }
 
-    internal List<T> Context { get; set; }
+    internal List<T> Context;
 
     public void Dispose()
     {

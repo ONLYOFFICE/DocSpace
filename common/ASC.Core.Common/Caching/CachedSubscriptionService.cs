@@ -28,9 +28,9 @@ namespace ASC.Core.Caching;
 [Singletone]
 class SubscriptionServiceCache
 {
-    internal ICache Cache { get; }
-    internal ICacheNotify<SubscriptionRecord> NotifyRecord { get; }
-    internal ICacheNotify<SubscriptionMethodCache> NotifyMethod { get; }
+    internal readonly ICache Cache;
+    internal readonly ICacheNotify<SubscriptionRecord> NotifyRecord;
+    internal readonly ICacheNotify<SubscriptionMethodCache> NotifyMethod;
 
     public SubscriptionServiceCache(ICacheNotify<SubscriptionRecord> notifyRecord, ICacheNotify<SubscriptionMethodCache> notifyMethod, ICache cache)
     {

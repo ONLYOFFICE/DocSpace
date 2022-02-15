@@ -10,9 +10,8 @@ public class DbContext : BaseDbContext
 
     public DbContext() { }
 
-    public DbContext(DbContextOptions options) : base(options)
-    {
-    }
+    public DbContext(DbContextOptions options) : base(options) { }
+
     protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
     {
         get

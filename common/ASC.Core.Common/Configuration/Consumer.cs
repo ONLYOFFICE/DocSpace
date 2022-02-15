@@ -56,12 +56,12 @@ public class Consumer : IDictionary<string, string>
 
     private readonly bool _onlyDefault;
 
-    internal protected TenantManager TenantManager { get; set; }
-    internal protected CoreBaseSettings CoreBaseSettings { get; set; }
-    internal protected CoreSettings CoreSettings { get; set; }
-    internal protected ConsumerFactory ConsumerFactory { get; set; }
-    internal protected IConfiguration Configuration { get; }
-    internal protected ICacheNotify<ConsumerCacheItem> Cache { get; }
+    internal protected TenantManager TenantManager;
+    internal protected CoreBaseSettings CoreBaseSettings;
+    internal protected CoreSettings CoreSettings;
+    internal protected ConsumerFactory ConsumerFactory;
+    internal protected readonly IConfiguration Configuration;
+    internal protected readonly ICacheNotify<ConsumerCacheItem> Cache;
 
     public bool IsSet => Props.Count > 0 && !Props.All(r => string.IsNullOrEmpty(this[r.Key]));
 

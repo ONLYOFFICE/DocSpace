@@ -56,11 +56,11 @@ public class ConfigureEFUserService : IConfigureNamedOptions<EFUserService>
 public class EFUserService : IUserService
 {
     internal UserDbContext UserDbContext => LazyUserDbContext.Value;
-    internal Lazy<UserDbContext> LazyUserDbContext { get; set; }
-    internal DbContextManager<UserDbContext> UserDbContextManager { get; set; }
+    internal Lazy<UserDbContext> LazyUserDbContext;
+    internal DbContextManager<UserDbContext> UserDbContextManager;
     private readonly PasswordHasher _passwordHasher;
     public readonly MachinePseudoKeys _machinePseudoKeys;
-    internal string DbId { get; set; }
+    internal string DbId;
     private readonly IMapper _mapper;
 
     public EFUserService() { }

@@ -38,7 +38,6 @@ class UserAccount : MarshalByRefObject, IUserAccount
     public int Tenant { get; private set; }
     public string Email { get; private set; }
 
-
     public UserAccount(UserInfo info, int tenant, UserFormatter userFormatter)
     {
         ID = info.Id;

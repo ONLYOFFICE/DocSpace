@@ -29,7 +29,7 @@ namespace ASC.Core.Billing;
 public class TariffServiceStorage
 {
     public ICache Cache { get; }
-    internal ICacheNotify<TariffCacheItem> Notify { get; }
+    internal readonly ICacheNotify<TariffCacheItem> Notify;
 
     public TariffServiceStorage(ICacheNotify<TariffCacheItem> notify, ICache cache)
     {
@@ -125,22 +125,22 @@ public class TariffService : ITariffService
     private static readonly TimeSpan _defaultCacheExpiration = TimeSpan.FromMinutes(5);
     private static readonly TimeSpan _standaloneCacheExpiration = TimeSpan.FromMinutes(15);
 
-    internal ICache Cache { get; set; }
-    internal ICacheNotify<TariffCacheItem> Notify { get; set; }
-    internal ILog Logger { get; set; }
-    internal IQuotaService QuotaService { get; set; }
-    internal ITenantService TenantService { get; set; }
-    internal bool Test { get; set; }
-    internal int PaymentDelay { get; set; }
+    internal ICache Cache;
+    internal ICacheNotify<TariffCacheItem> Notify;
+    internal ILog Logger;
+    internal IQuotaService QuotaService;
+    internal ITenantService TenantService;
+    internal bool Test;
+    internal int PaymentDelay;
 
     public TimeSpan CacheExpiration { get; set; }
-    internal CoreBaseSettings CoreBaseSettings { get; set; }
-    internal CoreSettings CoreSettings { get; set; }
-    internal IConfiguration Configuration { get; set; }
+    internal CoreBaseSettings CoreBaseSettings;
+    internal CoreSettings CoreSettings;
+    internal IConfiguration Configuration;
     internal CoreDbContext CoreDbContext => LazyCoreDbContext.Value;
-    internal Lazy<CoreDbContext> LazyCoreDbContext { get; set; }
-    internal TariffServiceStorage TariffServiceStorage { get; set; }
-    internal IOptionsMonitor<ILog> Options { get; set; }
+    internal Lazy<CoreDbContext> LazyCoreDbContext;
+    internal TariffServiceStorage TariffServiceStorage;
+    internal IOptionsMonitor<ILog> Options;
     public BillingClient BillingClient { get; }
 
     public readonly int ActiveUsersMin;

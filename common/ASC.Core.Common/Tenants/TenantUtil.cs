@@ -56,8 +56,8 @@ class ConfigureTenantUtil : IConfigureNamedOptions<TenantUtil>
 [Scope(typeof(ConfigureTenantUtil))]
 public class TenantUtil
 {
-    internal TenantManager TenantManager { get; set; }
-    internal TimeZoneConverter TimeZoneConverter { get; set; }
+    internal TenantManager TenantManager;
+    internal TimeZoneConverter TimeZoneConverter;
 
     public TenantUtil() { }
 

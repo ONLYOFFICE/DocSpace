@@ -32,7 +32,7 @@ namespace ASC.Core.Common.Billing;
 public class CouponManager
 {
     private IEnumerable<AvangateProduct> _products;
-    private readonly IHttpClientFactory ClientFactory;
+    private readonly IHttpClientFactory _clientFactory;
     private IEnumerable<string> _groups;
     private readonly int _percent;
     private readonly int _schedule;
@@ -43,12 +43,11 @@ public class CouponManager
     private readonly SemaphoreSlim _semaphoreSlim;
     private readonly ILog _logger;
 
-
     public CouponManager(IOptionsMonitor<ILog> option, IHttpClientFactory clientFactory)
     {
         _semaphoreSlim = new SemaphoreSlim(1, 1);
         _logger = option.CurrentValue;
-        ClientFactory = clientFactory;
+        _clientFactory = clientFactory;
 
         try
         {
@@ -152,7 +151,7 @@ public class CouponManager
     {
         const string applicationJson = "application/json";
 
-        var httpClient = ClientFactory.CreateClient();
+        var httpClient = _clientFactory.CreateClient();
         httpClient.BaseAddress = _baseAddress;
         httpClient.Timeout = TimeSpan.FromMinutes(3);
 

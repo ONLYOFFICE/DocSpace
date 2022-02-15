@@ -8,6 +8,7 @@ public class CoreDbContext : BaseDbContext
     public DbSet<DbButton> Buttons { get; set; }
     public DbSet<DbQuota> Quotas { get; set; }
     public DbSet<DbQuotaRow> QuotaRows { get; set; }
+
     protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
     {
         get

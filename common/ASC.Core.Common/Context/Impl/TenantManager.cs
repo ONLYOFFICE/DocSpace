@@ -79,15 +79,15 @@ public class TenantManager
     private Tenant _currentTenant;
 
     public const string CurrentTenant = "CURRENT_TENANT";
-    internal ITenantService TenantService { get; set; }
-    internal IQuotaService QuotaService { get; set; }
-    internal ITariffService TariffService { get; set; }
+    internal ITenantService TenantService;
+    internal IQuotaService QuotaService;
+    internal ITariffService TariffService;
 
     private static readonly List<string> _thisCompAddresses = new List<string>();
 
-    internal IHttpContextAccessor HttpContextAccessor { get; set; }
-    internal CoreBaseSettings CoreBaseSettings { get; set; }
-    internal CoreSettings CoreSettings { get; set; }
+    internal IHttpContextAccessor HttpContextAccessor;
+    internal CoreBaseSettings CoreBaseSettings;
+    internal CoreSettings CoreSettings;
 
     static TenantManager()
     {

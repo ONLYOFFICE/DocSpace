@@ -30,9 +30,9 @@ class TenantServiceCache
 {
     private const string Key = "tenants";
     private TimeSpan _cacheExpiration;
-    internal ICache Cache { get; }
-    internal ICacheNotify<TenantCacheItem> CacheNotifyItem { get; }
-    internal ICacheNotify<TenantSetting> CacheNotifySettings { get; }
+    internal readonly ICache Cache;
+    internal readonly ICacheNotify<TenantCacheItem> CacheNotifyItem;
+    internal readonly ICacheNotify<TenantSetting> CacheNotifySettings;
 
     public TenantServiceCache(
         CoreBaseSettings coreBaseSettings,
@@ -194,12 +194,12 @@ class ConfigureCachedTenantService : IConfigureNamedOptions<CachedTenantService>
 [Scope]
 class CachedTenantService : ITenantService
 {
-    internal ITenantService Service { get; set; }
+    internal ITenantService Service;
     private readonly ICache _cache;
-    internal ICacheNotify<TenantSetting> CacheNotifySettings { get; set; }
-    internal ICacheNotify<TenantCacheItem> CacheNotifyItem { get; set; }
+    internal ICacheNotify<TenantSetting> CacheNotifySettings;
+    internal ICacheNotify<TenantCacheItem> CacheNotifyItem;
     private TimeSpan _settingsExpiration;
-    internal TenantServiceCache TenantServiceCache { get; set; }
+    internal TenantServiceCache TenantServiceCache;
 
     public CachedTenantService()
     {

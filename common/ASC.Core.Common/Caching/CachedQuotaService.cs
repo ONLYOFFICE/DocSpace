@@ -31,10 +31,10 @@ class QuotaServiceCache
     internal const string KeyQuota = "quota";
     internal const string KeyQuotaRows = "quotarows";
 
-    internal TrustInterval Interval { get; set; }
-    internal ICache Cache { get; }
-    internal ICacheNotify<QuotaCacheItem> CacheNotify { get; }
-    internal bool QuotaCacheEnabled { get; }
+    internal TrustInterval Interval;
+    internal readonly ICache Cache;
+    internal readonly ICacheNotify<QuotaCacheItem> CacheNotify;
+    internal readonly bool QuotaCacheEnabled;
 
     public QuotaServiceCache(IConfiguration Configuration, ICacheNotify<QuotaCacheItem> cacheNotify, ICache cache)
     {
@@ -97,13 +97,13 @@ class ConfigureCachedQuotaService : IConfigureNamedOptions<CachedQuotaService>
 [Scope]
 class CachedQuotaService : IQuotaService
 {
-    internal IQuotaService Service { get; set; }
-    internal ICache Cache { get; set; }
-    internal ICacheNotify<QuotaCacheItem> CacheNotify { get; set; }
-    internal TrustInterval Interval { get; set; }
+    internal IQuotaService Service;
+    internal ICache Cache;
+    internal ICacheNotify<QuotaCacheItem> CacheNotify;
+    internal TrustInterval Interval;
 
-    internal TimeSpan CacheExpiration { get; set; }
-    internal QuotaServiceCache QuotaServiceCache { get; set; }
+    internal TimeSpan CacheExpiration;
+    internal QuotaServiceCache QuotaServiceCache;
 
     public CachedQuotaService()
     {

@@ -53,7 +53,7 @@ class ConfigureDbQuotaService : IConfigureNamedOptions<DbQuotaService>
 class DbQuotaService : IQuotaService
 {
     internal CoreDbContext CoreDbContext => LazyCoreDbContext.Value;
-    internal Lazy<CoreDbContext> LazyCoreDbContext { get; set; }
+    internal Lazy<CoreDbContext> LazyCoreDbContext;
     private readonly IMapper _mapper;
 
     public DbQuotaService(DbContextManager<CoreDbContext> dbContextManager, IMapper mapper)

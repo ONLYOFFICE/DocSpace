@@ -35,11 +35,11 @@ public class NotifyRequest
     public string CurrentSender { get; internal set; }
     public INoticeMessage CurrentMessage { get; internal set; }
     public Hashtable Properties { get; private set; }
-    internal string[] SenderNames { get; set; }
-    internal IPattern[] Patterns { get; set; }
-    internal List<string> RequaredTags { get; set; }
-    internal List<ISendInterceptor> Interceptors { get; set; }
-    internal bool IsNeedCheckSubscriptions { get; set; }
+    internal string[] SenderNames;
+    internal IPattern[] Patterns;
+    internal List<string> RequaredTags;
+    internal List<ISendInterceptor> Interceptors;
+    internal bool IsNeedCheckSubscriptions;
 
     public NotifyRequest(INotifySource notifySource, INotifyAction action, string objectID, IRecipient recipient)
     {

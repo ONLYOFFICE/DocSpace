@@ -30,7 +30,6 @@ namespace ASC.Core.Data;
 [Scope]
 class DbAzService : IAzService
 {
-    public Expression<Func<Acl, AzRecord>> FromAclToAzRecord { get; set; }
     private UserDbContext UserDbContext => _lazyUserDbContext.Value;
     private Lazy<UserDbContext> _lazyUserDbContext;
     private readonly IMapper _mapper;
@@ -39,14 +38,6 @@ class DbAzService : IAzService
     {
         _lazyUserDbContext = new Lazy<UserDbContext>(() => dbContextManager.Value);
         _mapper = mapper;
-        FromAclToAzRecord = r => new AzRecord
-        {
-            Action = r.Action,
-            Object = r.Object,
-            AceType = r.AceType,
-            Subject = r.Subject,
-            Tenant = r.Tenant
-        };
     }
 
     public IEnumerable<AzRecord> GetAces(int tenant, DateTime from)

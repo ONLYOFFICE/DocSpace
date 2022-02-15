@@ -32,12 +32,12 @@ public class UserServiceCache
     private const string Groups = "groups";
     public const string Refs = "refs";
 
-    internal ICache Cache { get; }
-    internal CoreBaseSettings CoreBaseSettings { get; }
-    internal ICacheNotify<UserInfoCacheItem> CacheUserInfoItem { get; }
-    internal ICacheNotify<UserPhotoCacheItem> CacheUserPhotoItem { get; }
-    internal ICacheNotify<GroupCacheItem> CacheGroupCacheItem { get; }
-    internal ICacheNotify<UserGroupRefCacheItem> CacheUserGroupRefItem { get; }
+    internal readonly ICache Cache;
+    internal readonly CoreBaseSettings CoreBaseSettings;
+    internal readonly ICacheNotify<UserInfoCacheItem> CacheUserInfoItem;
+    internal readonly ICacheNotify<UserPhotoCacheItem> CacheUserPhotoItem;
+    internal readonly ICacheNotify<GroupCacheItem> CacheGroupCacheItem;
+    internal readonly ICacheNotify<UserGroupRefCacheItem> CacheUserGroupRefItem;
 
     public UserServiceCache(
         CoreBaseSettings coreBaseSettings,
@@ -131,9 +131,9 @@ public class UserServiceCache
 [Scope]
 class ConfigureCachedUserService : IConfigureNamedOptions<CachedUserService>
 {
-    internal IOptionsSnapshot<EFUserService> Service { get; }
-    internal UserServiceCache UserServiceCache { get; }
-    internal CoreBaseSettings CoreBaseSettings { get; }
+    internal readonly IOptionsSnapshot<EFUserService> Service;
+    internal readonly UserServiceCache UserServiceCache;
+    internal readonly CoreBaseSettings CoreBaseSettings;
 
     public ConfigureCachedUserService(
         IOptionsSnapshot<EFUserService> service,
@@ -167,17 +167,17 @@ class ConfigureCachedUserService : IConfigureNamedOptions<CachedUserService>
 [Scope]
 public class CachedUserService : IUserService, ICachedService
 {
-    internal IUserService Service { get; set; }
-    internal ICache Cache { get; set; }
-    internal TrustInterval TrustInterval { get; set; }
+    internal IUserService Service;
+    internal ICache Cache;
+    internal TrustInterval TrustInterval;
     private TimeSpan _cacheExpiration;
     private TimeSpan _photoExpiration;
-    internal CoreBaseSettings CoreBaseSettings { get; set; }
-    internal UserServiceCache UserServiceCache { get; set; }
-    internal ICacheNotify<UserInfoCacheItem> CacheUserInfoItem { get; set; }
-    internal ICacheNotify<UserPhotoCacheItem> CacheUserPhotoItem { get; set; }
-    internal ICacheNotify<GroupCacheItem> CacheGroupCacheItem { get; set; }
-    internal ICacheNotify<UserGroupRefCacheItem> CacheUserGroupRefItem { get; set; }
+    internal CoreBaseSettings CoreBaseSettings;
+    internal UserServiceCache UserServiceCache;
+    internal ICacheNotify<UserInfoCacheItem> CacheUserInfoItem;
+    internal ICacheNotify<UserPhotoCacheItem> CacheUserPhotoItem;
+    internal ICacheNotify<GroupCacheItem> CacheGroupCacheItem;
+    internal ICacheNotify<UserGroupRefCacheItem> CacheUserGroupRefItem;
 
     public CachedUserService()
     {

@@ -120,9 +120,9 @@ public class CoreSettings
         }
     }
 
-    internal ITenantService TenantService { get; set; }
-    internal CoreBaseSettings CoreBaseSettings { get; set; }
-    internal IConfiguration Configuration { get; set; }
+    internal ITenantService TenantService;
+    internal CoreBaseSettings CoreBaseSettings;
+    internal IConfiguration Configuration;
 
     public CoreSettings() { }
 
