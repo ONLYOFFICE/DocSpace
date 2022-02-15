@@ -46,7 +46,7 @@ const FilesMediaViewer = (props) => {
 
   const onButtonBackHandler = () => {
     const hash = window.location.hash;
-    const id = +hash.slice(9);
+    const id = hash.slice(9);
     if (!id) {
       setMediaViewerData({ visible: false, id: null });
       return;
