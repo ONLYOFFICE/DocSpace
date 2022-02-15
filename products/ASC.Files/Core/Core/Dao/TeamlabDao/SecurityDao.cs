@@ -215,7 +215,7 @@ namespace ASC.Files.Core.Data
 
             var q = GetQuery(r => folders.Contains(r.EntryId) && r.EntryType == FileEntryType.Folder);
 
-            if (files.Any())
+            if (files.Count > 0)
             {
                 q = q.Union(GetQuery(r => files.Contains(r.EntryId) && r.EntryType == FileEntryType.File));
             }

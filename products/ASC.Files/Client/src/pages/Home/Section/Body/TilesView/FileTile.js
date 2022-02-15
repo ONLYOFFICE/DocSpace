@@ -11,10 +11,10 @@ import withFileActions from "../../../../../HOCs/withFileActions";
 import withContextOptions from "../../../../../HOCs/withContextOptions";
 import withQuickButtons from "../../../../../HOCs/withQuickButtons";
 import ItemIcon from "../../../../../components/ItemIcon";
+import withBadges from "../../../../../HOCs/withBadges";
 
-const FilesTile = (props) => {
+const FileTile = (props) => {
   const {
-    t,
     item,
     sectionWidth,
     dragging,
@@ -27,17 +27,16 @@ const FilesTile = (props) => {
     value,
     displayShareButton,
     isPrivacy,
-    //sharedButton,
     contextOptionsProps,
     checkedProps,
-    //element,
     getIcon,
     onFilesClick,
     onMouseClick,
-    showShare,
     isActive,
     isEdit,
     quickButtonsComponent,
+    badgesComponent,
+    t,
   } = props;
 
   const temporaryExtension =
@@ -97,6 +96,7 @@ const FilesTile = (props) => {
             sectionWidth={sectionWidth}
             onFilesClick={onFilesClick}
           />
+          {badgesComponent}
         </Tile>
       </DragAndDrop>
     </div>
@@ -107,9 +107,11 @@ export default inject(({ formatsStore }) => {
   const { getIcon } = formatsStore.iconFormatsStore;
   return { getIcon };
 })(
-  withTranslation("Home")(
+  withTranslation(["Home", "VersionBadge"])(
     withFileActions(
-      withContextOptions(withRouter(withQuickButtons(observer(FilesTile))))
+      withContextOptions(
+        withRouter(withBadges(withQuickButtons(observer(FileTile))))
+      )
     )
   )
 );

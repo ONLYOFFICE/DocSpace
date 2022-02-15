@@ -4,10 +4,11 @@ import PropTypes from "prop-types";
 
 import TileLoader from "../TileLoader";
 import RectangleLoader from "../RectangleLoader";
+import { tablet } from "@appserver/components/utils/device";
 
 const StyledTilesLoader = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(216px, 1fr));
   width: 100%;
   grid-gap: 16px;
 `;
@@ -18,18 +19,22 @@ const StyledWrapper = styled.div`
   grid-gap: 16px;
 
   .folders {
-    margin-bottom: -4px;
+    margin-top: -1px;
+    margin-bottom: 12px;
   }
+
   .files {
-    margin-top: 12px;
+    margin-top: 25px;
   }
-  margin-right: 9px;
-  @media (max-width: 1024px) {
-    margin-right: 2px;
+
+  margin-right: 3px;
+
+  @media ${tablet} {
+    margin-right: -1px;
   }
 `;
 
-const TilesLoader = ({ foldersCount, filesCount, ...rest }) => {
+const TilesLoader = ({ foldersCount, filesCount, sectionWidth, ...rest }) => {
   const folders = [];
   const files = [];
 
@@ -40,24 +45,26 @@ const TilesLoader = ({ foldersCount, filesCount, ...rest }) => {
   for (let i = 0; i < filesCount; i++) {
     files.push(<TileLoader key={`files-loader-${i}`} {...rest} />);
   }
+
   return (
     <StyledWrapper>
       {foldersCount > 0 ? (
         <RectangleLoader
-          height="15px"
-          width="120px"
+          height="22px"
+          width="57px"
           className="folders"
-          animate={false}
+          animate
           {...rest}
         />
       ) : null}
       <StyledTilesLoader>{folders}</StyledTilesLoader>
+
       {filesCount > 0 ? (
         <RectangleLoader
-          height="15px"
-          width="120px"
+          height="22px"
+          width="35px"
           className="files"
-          animate={false}
+          animate
           {...rest}
         />
       ) : null}
@@ -72,8 +79,8 @@ TilesLoader.propTypes = {
 };
 
 TilesLoader.defaultProps = {
-  foldersCount: 3,
-  filesCount: 3,
+  foldersCount: 2,
+  filesCount: 8,
 };
 
 export default TilesLoader;

@@ -81,7 +81,7 @@ namespace ASC.Calendar.BusinessObjects
         }
 
         public static List<EventWrapper> GetEventWrappers(this BaseCalendar calendar, Guid userId, ApiDateTime startDate, ApiDateTime endDate, EventWrapperHelper eventWrapperHelper)
-        {new List<EventWrapper>();
+        {
             var result = new List<EventWrapper>();
             if (calendar != null)
             {

@@ -45,7 +45,7 @@ using StackExchange.Redis.Extensions.Core.Configuration;
 
 namespace ASC.Thumbnails.Svc
 {
-public class Program
+    public static class Program
     {
         public async static Task Main(string[] args)
         {
@@ -68,7 +68,7 @@ public class Program
                         path = Path.GetFullPath(CrossPlatform.PathCombine(hostContext.HostingEnvironment.ContentRootPath, path));
                     }
                     config.SetBasePath(path);
-                    var env = hostContext.Configuration.GetValue("ENVIRONMENT", "Production");
+
                     config
                         .AddJsonFile("appsettings.json")
                         .AddEnvironmentVariables()
@@ -85,8 +85,13 @@ public class Program
                     var diHelper = new DIHelper(services);
 
                     var redisConfiguration = hostContext.Configuration.GetSection("Redis").Get<RedisConfiguration>();
+                    var kafkaConfiguration = hostContext.Configuration.GetSection("kafka").Get<KafkaSettings>();
 
-                    if (redisConfiguration != null)
+                    if (kafkaConfiguration != null)
+                    {
+                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                    }
+                    else if (redisConfiguration != null)
                     {
                         diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
                     }

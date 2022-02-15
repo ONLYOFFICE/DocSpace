@@ -29,9 +29,8 @@ namespace ASC.Common.Caching
         {
             if (onchange != null)
             {
-                var key = GetKey(notifyAction);
-                _actions.TryAdd(key, new List<Action<T>>());
-                _actions[key].Add(onchange);
+                _actions.GetOrAdd(GetKey(notifyAction), new List<Action<T>>())
+                        .Add(onchange);
             }
         }
 

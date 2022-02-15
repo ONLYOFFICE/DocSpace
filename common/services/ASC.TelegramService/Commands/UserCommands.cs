@@ -46,10 +46,15 @@ namespace ASC.TelegramService.Commands
         }
 
         [Command("start")]
-        public async Task StartCommand(string token)
+        public Task StartCommand(string token)
         {
-            if (string.IsNullOrEmpty(token)) return;
+            if (string.IsNullOrEmpty(token)) return Task.CompletedTask;
 
+            return InternalStartCommand(token);
+        }
+
+        private async Task InternalStartCommand(string token)
+        {
             var user = MemoryCache.Default.Get(token);
             if (user != null)
             {

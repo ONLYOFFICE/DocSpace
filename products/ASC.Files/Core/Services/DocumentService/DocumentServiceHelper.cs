@@ -225,7 +225,7 @@ namespace ASC.Web.Files.Services.DocumentService
             }
 
 
-            if (!editPossible && !FileUtility.CanWebView(file.Title)) throw new Exception(string.Format("{0} ({1})", FilesCommonResource.ErrorMassage_NotSupportedFormat, FileUtility.GetFileExtension(file.Title)));
+            if (!editPossible && !FileUtility.CanWebView(file.Title)) throw new Exception($"{FilesCommonResource.ErrorMassage_NotSupportedFormat} ({FileUtility.GetFileExtension(file.Title)})");
 
             if (reviewPossible &&
                 !FileUtility.CanWebReview(file.Title))
@@ -308,7 +308,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
             if (!lastVersion)
             {
-                configuration.Document.Title += string.Format(" ({0})", file.CreateOnString);
+                configuration.Document.Title += $" ({file.CreateOnString})";
             }
 
             return file;
@@ -371,7 +371,7 @@ namespace ASC.Web.Files.Services.DocumentService
                                            })
                                        .Select(u => u.ToString()).ToArray();
 
-            if (!usersDrop.Any()) return;
+            if (usersDrop.Length == 0) return;
 
             var fileStable = file;
             if (file.Forcesave != ForcesaveType.None)

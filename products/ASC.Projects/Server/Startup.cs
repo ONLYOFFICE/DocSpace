@@ -27,8 +27,6 @@ namespace ASC.Projects
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
             base.ConfigureServices(services);
-
-            services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(Configuration.GetSection("Redis").Get<RedisConfiguration>());
         }
 
         public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
