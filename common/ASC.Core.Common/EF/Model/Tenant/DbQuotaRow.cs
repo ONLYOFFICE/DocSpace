@@ -24,6 +24,7 @@ public static class DbQuotaRowExtension
 
         return modelBuilder;
     }
+
     public static void MySqlAddDbQuotaRow(this ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<DbQuotaRow>(entity =>

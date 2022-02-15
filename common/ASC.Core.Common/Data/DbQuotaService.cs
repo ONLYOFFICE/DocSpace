@@ -23,6 +23,8 @@
  *
 */
 
+using System.Diagnostics.Metrics;
+
 using AutoMapper.QueryableExtensions;
 
 namespace ASC.Core.Data;
@@ -119,16 +121,11 @@ class DbQuotaService : IQuotaService
             .Take(1)
             .FirstOrDefault();
 
-        var dbQuotaRow = new DbQuotaRow
-        {
-            Tenant = row.Tenant,
-            Path = row.Path,
-            Counter = exchange ? counter + row.Counter : row.Counter,
-            Tag = row.Tag,
-            LastModified = DateTime.UtcNow
-        };
+        var dbQuotaRow = _mapper.Map<TenantQuotaRow, DbQuotaRow>(row);
+        dbQuotaRow.Counter = exchange ? counter + row.Counter : row.Counter;
+        dbQuotaRow.LastModified = DateTime.UtcNow;
 
-        CoreDbContext.AddOrUpdate(r => r.QuotaRows, _mapper.Map<TenantQuotaRow, DbQuotaRow>(row));
+        CoreDbContext.AddOrUpdate(r => r.QuotaRows, dbQuotaRow);
         CoreDbContext.SaveChanges();
 
         tx.Commit();
