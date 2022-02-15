@@ -128,7 +128,7 @@ namespace ASC.ElasticSearch.Core
             var action = new ReIndexAction() { Tenant = TenantManager.GetCurrentTenant().TenantId };
             action.Names.AddRange(toReIndex.Select(r => r.ID).ToList());
 
-            CacheNotify.Publish(action, CacheNotifyAction.Any);
+            CacheNotify.Publish(action, Common.Caching.CacheNotifyAction.Any);
         }
 
         public bool CanIndexByContent<T>(int tenantId) where T : class, ISearchItem

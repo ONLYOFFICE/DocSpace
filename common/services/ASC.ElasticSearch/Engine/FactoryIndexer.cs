@@ -40,7 +40,7 @@ namespace ASC.ElasticSearch
                     LastIndexed = new DateTime(a.LastIndexed);
                 }
                 Indexing = a.Indexing;
-            }, CacheNotifyAction.Any);
+            }, Common.Caching.CacheNotifyAction.Any);
         }
     }
 
@@ -460,7 +460,7 @@ namespace ASC.ElasticSearch
             Indexer.Refresh();
         }
 
-        private Task<bool> Queue(Action actionData)
+        private Task<bool> Queue(System.Action actionData)
         {
             var task = new Task<bool>(() =>
             {

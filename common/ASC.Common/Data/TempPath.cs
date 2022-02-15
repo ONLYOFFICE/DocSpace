@@ -14,70 +14,71 @@
  *
 */
 
-namespace System.IO
+namespace System.IO;
+
+[Singletone]
+public class TempPath
 {
-    [Singletone]
-    public class TempPath
+    private readonly string _tempFolder;
+
+    public TempPath(IConfiguration configuration)
     {
-        readonly string tempFolder;
-
-        public TempPath(IConfiguration configuration)
+        string rootFolder = AppContext.BaseDirectory;
+        if (string.IsNullOrEmpty(rootFolder))
         {
-            string rootFolder = AppContext.BaseDirectory;
-
-            if (string.IsNullOrEmpty(rootFolder))
-            {
-                rootFolder = Assembly.GetEntryAssembly().Location;
-            }
-
-            tempFolder = configuration["temp"] ?? Path.Combine("..", "Data", "temp");
-
-            if (!Path.IsPathRooted(tempFolder))
-            {
-                tempFolder = Path.GetFullPath(Path.Combine(rootFolder, tempFolder));
-            }
-
-            if (!Directory.Exists(tempFolder))
-            {
-                Directory.CreateDirectory(tempFolder);
-            }
+            rootFolder = Assembly.GetEntryAssembly().Location;
         }
 
-        public string GetTempPath()
+        _tempFolder = configuration["temp"] ?? Path.Combine("..", "Data", "temp");
+        if (!Path.IsPathRooted(_tempFolder))
         {
-            return tempFolder;
+            _tempFolder = Path.GetFullPath(Path.Combine(rootFolder, _tempFolder));
         }
 
-        public string GetTempFileName()
+        if (!Directory.Exists(_tempFolder))
         {
-            FileStream f = null;
-            string path;
-            var count = 0;
+            Directory.CreateDirectory(_tempFolder);
+        }
+    }
 
-            do
+    public string GetTempPath()
+    {
+        return _tempFolder;
+    }
+
+    public string GetTempFileName()
+    {
+        FileStream f = null;
+        string path;
+        var count = 0;
+
+        do
+        {
+            path = Path.Combine(_tempFolder, Path.GetRandomFileName());
+
+            try
             {
-                path = Path.Combine(tempFolder, Path.GetRandomFileName());
+                using (f = new FileStream(path, FileMode.CreateNew, FileAccess.ReadWrite, FileShare.Read))
+                {
+                    return path;
+                }
+            }
+            catch (IOException ex)
+            {
+                if (ex.HResult != -2147024816 || count++ > 65536)
+                {
+                    throw;
+                }
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                if (count++ > 65536)
+                {
+                    throw new IOException(ex.Message, ex);
+                }
+            }
+        } while (f == null);
 
-                try
-                {
-                    using (f = new FileStream(path, FileMode.CreateNew, FileAccess.ReadWrite, FileShare.Read))
-                    {
-                        return path;
-                    }
-                }
-                catch (IOException ex)
-                {
-                    if (ex.HResult != -2147024816 || count++ > 65536)
-                        throw;
-                }
-                catch (UnauthorizedAccessException ex)
-                {
-                    if (count++ > 65536)
-                        throw new IOException(ex.Message, ex);
-                }
-            } while (f == null);
-
-            return path;
-        }
+        return path;
     }
 }

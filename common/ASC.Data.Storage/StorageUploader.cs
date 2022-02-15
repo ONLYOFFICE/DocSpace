@@ -211,7 +211,7 @@ namespace ASC.Data.Storage
                 Error = Exception.ToString(),
                 IsCompleted = IsCompleted
             },
-            CacheNotifyAction.Insert);
+            Common.Caching.CacheNotifyAction.Insert);
         }
     }
 

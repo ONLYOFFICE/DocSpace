@@ -24,11 +24,10 @@
 */
 
 
-namespace ASC.Common.Security.Authorizing
+namespace ASC.Common.Security.Authorizing;
+
+public enum AceType
 {
-    public enum AceType
-    {
-        Allow,
-        Deny,
-    }
+    Allow,
+    Deny,
 }
