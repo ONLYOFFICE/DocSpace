@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import equal from "fast-deep-equal/react";
 
 import IconButton from "../icon-button";
+import Button from "../button";
 import TextInput from "../text-input";
 import StyledFileInput from "./styled-file-input";
 
@@ -70,26 +71,33 @@ class FileInput extends Component {
       accept,
       id,
       onInput, // eslint-disable-line no-unused-vars
+      buttonLabel,
       ...rest
     } = this.props;
 
     let iconSize = 0;
+    let buttonSize = "";
 
     switch (size) {
       case "base":
         iconSize = 15;
+        buttonSize = "base";
         break;
       case "middle":
         iconSize = 15;
+        buttonSize = "medium";
         break;
       case "big":
         iconSize = 16;
+        buttonSize = "big";
         break;
       case "huge":
         iconSize = 16;
+        buttonSize = "large";
         break;
       case "large":
         iconSize = 16;
+        buttonSize = "large";
         break;
     }
 
@@ -122,15 +130,25 @@ class FileInput extends Component {
           accept={accept}
           onInput={this.onInputFile}
         />
-        <div className="icon" onClick={this.onIconFileClick}>
-          <IconButton
-            className="icon-button"
-            iconName={"/static/images/catalog.folder.react.svg"}
-            color={"#A3A9AE"}
-            size={iconSize}
+
+        {buttonLabel ? (
+          <Button
             isDisabled={isDisabled}
+            label={buttonLabel}
+            onClick={this.onIconFileClick}
+            size={buttonSize}
           />
-        </div>
+        ) : (
+          <div className="icon" onClick={this.onIconFileClick}>
+            <IconButton
+              className="icon-button"
+              iconName={"/static/images/catalog.folder.react.svg"}
+              color={"#A3A9AE"}
+              size={iconSize}
+              isDisabled={isDisabled}
+            />
+          </div>
+        )}
       </StyledFileInput>
     );
   }
@@ -161,6 +179,8 @@ FileInput.propTypes = {
   onInput: PropTypes.func,
   /**Specifies files visible for upload */
   accept: PropTypes.string,
+  /**Specifies label for upload button */
+  buttonLabel: PropTypes.string,
 };
 
 FileInput.defaultProps = {
