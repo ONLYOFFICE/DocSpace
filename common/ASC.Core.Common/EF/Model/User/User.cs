@@ -1,6 +1,6 @@
 ﻿namespace ASC.Core.Common.EF
 {
-    public class User : BaseEntity
+    public class User : BaseEntity, IMapFrom<UserInfo>
     {
         public int Tenant { get; set; }
         public string UserName { get; set; }
@@ -38,7 +38,6 @@
 
     public static class DbUserExtension
     {
-
         public static ModelBuilderWrapper AddUser(this ModelBuilderWrapper modelBuilder)
         {
             modelBuilder
