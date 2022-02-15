@@ -574,7 +574,7 @@ const Selector = (props) => {
           />
         </Header>
         <Body className="body-options">
-          {!groupHeader && !searchValue ? (
+          {!groupHeader && !searchValue && groups ? (
             renderGroupsList()
           ) : (
             <>
