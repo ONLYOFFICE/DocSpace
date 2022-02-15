@@ -199,10 +199,9 @@ public class DbTenantService : ITenantService
 
     public Tenant GetTenant(int id)
     {
-        return TenantsQuery()
-            .Where(r => r.Id == id)
-            .ProjectTo<Tenant>(_mapper.ConfigurationProvider)
-            .SingleOrDefault();
+        var tenant = TenantDbContext.Tenants.Find(id);
+
+        return _mapper.Map<DbTenant, Tenant>(tenant);
     }
 
     public Tenant GetTenant(string domain)
@@ -272,9 +271,7 @@ public class DbTenantService : ITenantService
         }
         else
         {
-            var tenant = TenantDbContext.Tenants
-                .Where(r => r.Id == t.Id)
-                .FirstOrDefault();
+            var tenant = TenantDbContext.Tenants.Find(t.Id);
 
             if (tenant != null)
             {
@@ -296,6 +293,7 @@ public class DbTenantService : ITenantService
                 tenant.Spam = t.Spam;
                 tenant.Calls = t.Calls;
             }
+
             TenantDbContext.SaveChanges();
         }
 
@@ -344,7 +342,7 @@ public class DbTenantService : ITenantService
             .Where(r => r.Alias.StartsWith(alias + postfix))
             .Count();
 
-        var tenant = TenantDbContext.Tenants.Where(r => r.Id == id).FirstOrDefault();
+        var tenant = TenantDbContext.Tenants.Find(id);
 
         if (tenant != null)
         {
@@ -402,6 +400,7 @@ public class DbTenantService : ITenantService
                 Value = data,
                 LastModified = DateTime.UtcNow
             };
+
             TenantDbContext.AddOrUpdate(r => r.CoreSettings, settings);
         }
 
@@ -433,6 +432,7 @@ public class DbTenantService : ITenantService
         {
             _forbiddenDomains = TenantDbContext.TenantForbiden.Select(r => r.Address).ToList();
         }
+
         exists = tenantId != 0 && _forbiddenDomains.Contains(domain);
 
         if (!exists)

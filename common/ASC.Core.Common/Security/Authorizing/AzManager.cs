@@ -40,7 +40,6 @@ public class AzManager
         _permissionProvider = permissionProvider ?? throw new ArgumentNullException(nameof(permissionProvider));
     }
 
-
     public bool CheckPermission(ISubject subject, IAction action, ISecurityObjectId objectId,
                                 ISecurityObjectProvider securityObjProvider, out ISubject denySubject,
                                 out IAction denyAction)
