@@ -34,7 +34,6 @@ const InputWithChips = ({
   const [isShiftDown, setIsShiftDown] = useState(false);
   const [isCtrlDown, setIsCtrlDown] = useState(false);
 
-  const [isBlured, setIsBlured] = useState(true);
   const [isExistedOn, setIsExistedOn] = useState(false);
 
   const emailSettings = new EmailSettings();
@@ -56,14 +55,8 @@ const InputWithChips = ({
     onChange(selectedChips);
   }, [selectedChips]);
 
-  useEffect(() => {
-    if (isBlured) {
-      setSelectedChips([]);
-    }
-  }, [isBlured]);
-
   useClickOutside(blockRef, () => {
-    setIsBlured(true);
+    setSelectedChips([]);
     setIsExistedOn(false);
   });
 
@@ -145,8 +138,9 @@ const InputWithChips = ({
   const onInputKeyDown = (e) => {
     e.stopPropagation();
     const code = e.code;
+    const isCursorStart = inputRef.current.selectionStart === 0;
     if (code === "Enter" || code === "NumpadEnter") onEnterPress();
-    if (code === "ArrowLeft") {
+    if (code === "ArrowLeft" && isCursorStart) {
       setSelectedChips([chips[chips.length - 1]]);
       if (inputRef) {
         inputRef.current.blur();
@@ -164,10 +158,6 @@ const InputWithChips = ({
 
   const onClearList = () => {
     setChips([]);
-  };
-
-  const onFocus = () => {
-    setIsBlured(false);
   };
 
   const onKeyUp = (e) => {
@@ -263,11 +253,11 @@ const InputWithChips = ({
   };
 
   return (
-    <StyledContent ref={blockRef} onFocus={onFocus}>
+    <StyledContent>
       <StyledChipGroup>
         <StyledChipWithInput length={chips.length}>
           <Scrollbar scrollclass={"scroll"} stype="thumbV" ref={scrollbarRef}>
-            <StyledAllChips>
+            <StyledAllChips ref={blockRef}>
               {chips?.map((it) => {
                 return (
                   <Chip
@@ -276,7 +266,6 @@ const InputWithChips = ({
                     currentChip={currentChip}
                     isSelected={checkSelected(it)}
                     isValid={checkEmail(it?.value)}
-                    isBlured={isBlured}
                     onDelete={onDelete}
                     onDoubleClick={onDoubleClick}
                     onSaveNewChip={onSaveNewChip}

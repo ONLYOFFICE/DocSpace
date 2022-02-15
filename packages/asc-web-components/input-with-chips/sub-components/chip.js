@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import PropTypes from "prop-types";
 
 import IconButton from "../../icon-button";
 import Tooltip from "../../tooltip";
+import { useClickOutside } from "./use-click-outside";
 
 import { DeleteIcon, WarningIcon } from "../svg";
 
@@ -18,7 +19,6 @@ const Chip = (props) => {
     currentChip,
     isSelected,
     isValid,
-    isBlured,
     invalidEmailText = "Invalid email address",
     onDelete,
     onDoubleClick,
@@ -27,18 +27,11 @@ const Chip = (props) => {
   } = props;
 
   const [newValue, setNewValue] = useState(value?.value);
-  const [isOpenTooltip, setIsOpenTooltip] = useState(false);
 
   const tooltipRef = useRef(null);
+  const warningRef = useRef(null);
 
-  useEffect(() => {
-    if (isBlured && isOpenTooltip && tooltipRef.current) {
-      tooltipRef.current.hideTooltip();
-    }
-  }, [isBlured]);
-
-  const onOpenTooltip = () => setIsOpenTooltip(true);
-  const onCloseTooltip = () => setIsOpenTooltip(false);
+  useClickOutside(warningRef, () => tooltipRef.current.hideTooltip());
 
   const onChange = (e) => {
     setNewValue(e.target.value);
@@ -103,7 +96,7 @@ const Chip = (props) => {
       isValid={isValid}
     >
       {!isValid && (
-        <div className="warning_icon_wrap">
+        <div className="warning_icon_wrap" ref={warningRef}>
           <IconButton
             iconName={WarningIcon}
             size={12}
@@ -114,8 +107,6 @@ const Chip = (props) => {
           <Tooltip
             getContent={() => {}}
             id="group"
-            afterShow={onOpenTooltip}
-            afterHide={onCloseTooltip}
             reference={tooltipRef}
             place={"top"}
           />
@@ -132,7 +123,6 @@ Chip.propTypes = {
   currentChip: PropTypes.object,
   isSelected: PropTypes.bool,
   isValid: PropTypes.bool,
-  isBlured: PropTypes.bool,
   invalidEmailText: PropTypes.string,
   onClick: PropTypes.func,
   onDoubleClick: PropTypes.func,
