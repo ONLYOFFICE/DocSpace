@@ -54,11 +54,16 @@ namespace ASC.Web.Core.Files
             ClientFactory = clientFactory;
         }
 
-        private async Task<CommandResponse> GetDocumentServiceLicenseAsync()
+        private Task<CommandResponse> GetDocumentServiceLicenseAsync()
         {
-            if (!CoreBaseSettings.Standalone) return null;
-            if (string.IsNullOrEmpty(FilesLinkUtility.DocServiceCommandUrl)) return null;
+            if (!CoreBaseSettings.Standalone) return Task.FromResult<CommandResponse>(null);
+            if (string.IsNullOrEmpty(FilesLinkUtility.DocServiceCommandUrl)) return Task.FromResult<CommandResponse>(null);
 
+            return InternalGetDocumentServiceLicenseAsync();
+        }
+
+        private async Task<CommandResponse> InternalGetDocumentServiceLicenseAsync()
+        {
             var cacheKey = "DocumentServiceLicense";
             var commandResponse = Cache.Get<CommandResponse>(cacheKey);
             if (commandResponse == null)

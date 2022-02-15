@@ -88,19 +88,24 @@ namespace ASC.Core.ChunkedUploader
             await DataStore.DeleteAsync(Domain, GetPathWithId(s.Id));
         }
 
-        public async Task<Stream> GetStreamAsync(string sessionId)
+        public Task<Stream> GetStreamAsync(string sessionId)
         {
-            return await DataStore.GetReadStreamAsync(Domain, GetPathWithId(sessionId));
+            return DataStore.GetReadStreamAsync(Domain, GetPathWithId(sessionId));
         }
 
-        public async Task InitAsync(CommonChunkedUploadSession chunkedUploadSession)
+        public Task InitAsync(CommonChunkedUploadSession chunkedUploadSession)
         {
             if (chunkedUploadSession.BytesTotal < MaxChunkUploadSize)
             {
                 chunkedUploadSession.UseChunks = false;
-                return;
+                return Task.CompletedTask;
             }
 
+            return internalInitAsync(chunkedUploadSession);
+        }
+
+        private async Task internalInitAsync(CommonChunkedUploadSession chunkedUploadSession)
+        {
             var tempPath = Guid.NewGuid().ToString();
             var uploadId = await DataStore.InitiateChunkedUploadAsync(Domain, tempPath);
 

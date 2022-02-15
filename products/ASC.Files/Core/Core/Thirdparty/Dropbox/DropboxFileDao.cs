@@ -285,11 +285,16 @@ namespace ASC.Files.Thirdparty.Dropbox
             return Task.FromResult(false);
         }
 
-        public async Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
+        public Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
         {
             if (file == null) throw new ArgumentNullException(nameof(file));
             if (fileStream == null) throw new ArgumentNullException(nameof(fileStream));
 
+            return InternalSaveFileAsync(file, fileStream);
+        }
+
+        private async Task<File<string>> InternalSaveFileAsync(File<string> file, Stream fileStream)
+        {
             FileMetadata newDropboxFile = null;
 
             if (file.ID != null)
@@ -368,7 +373,7 @@ namespace ASC.Files.Thirdparty.Dropbox
 
             if (!(dropboxFile is ErrorFile))
             {
-                ProviderInfo.Storage.DeleteItem(dropboxFile);
+                await ProviderInfo.Storage.DeleteItemAsync(dropboxFile);
             }
 
             await ProviderInfo.CacheResetAsync(MakeDropboxPath(dropboxFile), true).ConfigureAwait(false);
@@ -518,11 +523,16 @@ namespace ASC.Files.Thirdparty.Dropbox
             return file;
         }
 
-        public async Task<ChunkedUploadSession<string>> CreateUploadSessionAsync(File<string> file, long contentLength)
+        public Task<ChunkedUploadSession<string>> CreateUploadSessionAsync(File<string> file, long contentLength)
         {
             if (SetupInfo.ChunkUploadSize > contentLength)
-                return new ChunkedUploadSession<string>(RestoreIds(file), contentLength) { UseChunks = false };
+                return Task.FromResult(new ChunkedUploadSession<string>(RestoreIds(file), contentLength) { UseChunks = false });
 
+            return InternalCreateUploadSessionAsync(file, contentLength);
+        }
+
+        private async Task<ChunkedUploadSession<string>> InternalCreateUploadSessionAsync(File<string> file, long contentLength)
+        {
             var uploadSession = new ChunkedUploadSession<string>(file, contentLength);
 
             var dropboxSession = await ProviderInfo.Storage.CreateResumableSessionAsync().ConfigureAwait(false);

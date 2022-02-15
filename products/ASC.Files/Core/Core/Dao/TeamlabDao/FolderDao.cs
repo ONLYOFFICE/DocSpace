@@ -122,10 +122,15 @@ namespace ASC.Files.Core.Data
             return ToFolder(await FromQueryWithShared(query).Take(1).SingleOrDefaultAsync().ConfigureAwait(false));
         }
 
-        public async Task<Folder<int>> GetFolderAsync(string title, int parentId)
+        public Task<Folder<int>> GetFolderAsync(string title, int parentId)
         {
             if (string.IsNullOrEmpty(title)) throw new ArgumentNullException(title);
 
+            return InternalGetFolderAsync(title, parentId);
+        }
+
+        private async Task<Folder<int>> InternalGetFolderAsync(string title, int parentId)
+        {
             var query = GetFolderQuery(r => r.Title == title && r.ParentId == parentId).AsNoTracking()
                 .OrderBy(r => r.CreateOn);
 
@@ -296,10 +301,15 @@ namespace ASC.Files.Core.Data
             return SaveFolderAsync(folder, null);
         }
 
-        public async Task<int> SaveFolderAsync(Folder<int> folder, IDbContextTransaction transaction)
+        public Task<int> SaveFolderAsync(Folder<int> folder, IDbContextTransaction transaction)
         {
             if (folder == null) throw new ArgumentNullException(nameof(folder));
 
+            return InternalSaveFolderAsync(folder, transaction);
+        }
+
+        public async Task<int> InternalSaveFolderAsync(Folder<int> folder, IDbContextTransaction transaction)
+        {
             folder.Title = Global.ReplaceInvalidCharsAndTruncate(folder.Title);
 
             folder.ModifiedOn = TenantUtil.DateTimeNow();
@@ -408,10 +418,15 @@ namespace ASC.Files.Core.Data
                 .AnyAsync(r => r.Id == folderId);
         }
 
-        public async Task DeleteFolderAsync(int id)
+        public Task DeleteFolderAsync(int id)
         {
             if (id == default) throw new ArgumentNullException("folderId");
 
+            return InternalDeleteFolderAsync(id);
+        }
+
+        private async Task InternalDeleteFolderAsync(int id)
+        {
             using var tx = FilesDbContext.Database.BeginTransaction();
             var subfolders =
                 await FilesDbContext.Tree
@@ -847,11 +862,16 @@ namespace ASC.Files.Core.Data
             return fromQuery.Select(ToFolder);
         }
 
-        public async Task<IEnumerable<int>> GetFolderIDsAsync(string module, string bunch, IEnumerable<string> data, bool createIfNotExists)
+        public Task<IEnumerable<int>> GetFolderIDsAsync(string module, string bunch, IEnumerable<string> data, bool createIfNotExists)
         {
             if (string.IsNullOrEmpty(module)) throw new ArgumentNullException(nameof(module));
             if (string.IsNullOrEmpty(bunch)) throw new ArgumentNullException(nameof(bunch));
 
+            return InternalGetFolderIDsAsync(module, bunch, data, createIfNotExists);
+        }
+
+        private async Task<IEnumerable<int>> InternalGetFolderIDsAsync(string module, string bunch, IEnumerable<string> data, bool createIfNotExists)
+        {
             var keys = data.Select(id => $"{module}/{bunch}/{id}").ToArray();
 
             var folderIdsDictionary = await Query(FilesDbContext.BunchObjects)
@@ -932,11 +952,16 @@ namespace ASC.Files.Core.Data
             return folderIds;
         }
 
-        public async Task<int> GetFolderIDAsync(string module, string bunch, string data, bool createIfNotExists)
+        public Task<int> GetFolderIDAsync(string module, string bunch, string data, bool createIfNotExists)
         {
             if (string.IsNullOrEmpty(module)) throw new ArgumentNullException(nameof(module));
             if (string.IsNullOrEmpty(bunch)) throw new ArgumentNullException(nameof(bunch));
 
+            return InternalGetFolderIDAsync(module, bunch, data, createIfNotExists);
+        }
+
+        private async Task<int> InternalGetFolderIDAsync(string module, string bunch, string data, bool createIfNotExists)
+        {
             var key = $"{module}/{bunch}/{data}";
             var folderId = await Query(FilesDbContext.BunchObjects)
                 .Where(r => r.RightNode == key)

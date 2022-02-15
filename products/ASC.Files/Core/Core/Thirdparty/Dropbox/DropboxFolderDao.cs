@@ -186,9 +186,15 @@ namespace ASC.Files.Thirdparty.Dropbox
             return path;
         }
 
-        public async Task<string> SaveFolderAsync(Folder<string> folder)
+        public Task<string> SaveFolderAsync(Folder<string> folder)
         {
             if (folder == null) throw new ArgumentNullException(nameof(folder));
+
+            return InternalSaveFolderAsync(folder);
+        }
+
+        public async Task<string> InternalSaveFolderAsync(Folder<string> folder)
+        {
             if (folder.ID != null)
             {
                 return await RenameFolderAsync(folder, folder.Title).ConfigureAwait(false);

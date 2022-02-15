@@ -281,11 +281,16 @@ namespace ASC.Files.Thirdparty.Box
             return Task.FromResult(false);
         }
 
-        public async Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
+        public Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
         {
             if (file == null) throw new ArgumentNullException(nameof(file));
             if (fileStream == null) throw new ArgumentNullException(nameof(fileStream));
 
+            return InternalSaveFileAsync(file, fileStream);
+        }
+
+        private async Task<File<string>> InternalSaveFileAsync(File<string> file, Stream fileStream)
+        {
             BoxFile newBoxFile = null;
             var storage = await ProviderInfo.StorageAsync;
 

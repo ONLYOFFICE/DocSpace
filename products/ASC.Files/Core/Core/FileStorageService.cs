@@ -400,11 +400,17 @@ namespace ASC.Web.Files.Services.WCFService
             return new List<FileEntry>(entries);
         }
 
-        public async Task<Folder<T>> CreateNewFolderAsync(T parentId, string title)
+        public Task<Folder<T>> CreateNewFolderAsync(T parentId, string title)
         {
             if (string.IsNullOrEmpty(title) || parentId == null) throw new ArgumentException();
 
+            return InternalCreateNewFolderAsync(parentId, title);
+        }
+
+        public async Task<Folder<T>> InternalCreateNewFolderAsync(T parentId, string title)
+        {
             var folderDao = GetFolderDao();
+
             var parent = await folderDao.GetFolderAsync(parentId);
             ErrorIf(parent == null, FilesCommonResource.ErrorMassage_FolderNotFound);
             ErrorIf(!await FileSecurity.CanCreateAsync(parent), FilesCommonResource.ErrorMassage_SecurityException_Create);
@@ -560,10 +566,15 @@ namespace ASC.Web.Files.Services.WCFService
             return new List<File<T>>(result);
         }
 
-        public async Task<File<T>> CreateNewFileAsync<TTemplate>(FileModel<T, TTemplate> fileWrapper, bool enableExternalExt = false)
+        public Task<File<T>> CreateNewFileAsync<TTemplate>(FileModel<T, TTemplate> fileWrapper, bool enableExternalExt = false)
         {
             if (string.IsNullOrEmpty(fileWrapper.Title) || fileWrapper.ParentId == null) throw new ArgumentException();
 
+            return InternalCreateNewFileAsync(fileWrapper, enableExternalExt);
+        }
+
+        private async Task<File<T>> InternalCreateNewFileAsync<TTemplate>(FileModel<T, TTemplate> fileWrapper, bool enableExternalExt = false)
+        {
             var fileDao = GetFileDao();
             var folderDao = GetFolderDao();
 
@@ -1197,11 +1208,16 @@ namespace ASC.Web.Files.Services.WCFService
             return FileOperationsManager.MarkAsRead(AuthContext.CurrentAccount.ID, TenantManager.GetCurrentTenant(), foldersId, filesId);
         }
 
-        public async Task<List<ThirdPartyParams>> GetThirdPartyAsync()
+        public Task<List<ThirdPartyParams>> GetThirdPartyAsync()
         {
             var providerDao = GetProviderDao();
-            if (providerDao == null) return new List<ThirdPartyParams>();
+            if (providerDao == null) return Task.FromResult(new List<ThirdPartyParams>());
 
+            return internalGetThirdPartyAsync(providerDao);
+        }
+
+        public async Task<List<ThirdPartyParams>> internalGetThirdPartyAsync(IProviderDao providerDao)
+        {
             var providersInfo = await providerDao.GetProvidersInfoAsync().ToListAsync();
 
             var resultList = providersInfo
@@ -1217,32 +1233,43 @@ namespace ASC.Web.Files.Services.WCFService
             return new List<ThirdPartyParams>(resultList.ToList());
         }
 
-        public async Task<List<FileEntry>> GetThirdPartyFolderAsync(int folderType = 0)
+        public Task<List<FileEntry>> GetThirdPartyFolderAsync(int folderType = 0)
         {
-            if (!FilesSettingsHelper.EnableThirdParty) return new List<FileEntry>();
+            if (!FilesSettingsHelper.EnableThirdParty) return Task.FromResult(new List<FileEntry>());
 
             var providerDao = GetProviderDao();
-            if (providerDao == null) return new List<FileEntry>();
+            if (providerDao == null) return Task.FromResult(new List<FileEntry>());
 
+            return InternalGetThirdPartyFolderAsync(folderType, providerDao);
+        }
+
+        private async Task<List<FileEntry>> InternalGetThirdPartyFolderAsync(int folderType, IProviderDao providerDao)
+        {
             var providersInfo = await providerDao.GetProvidersInfoAsync((FolderType)folderType).ToListAsync();
 
             var folders = providersInfo.Select(providerInfo =>
-                {
-                    var folder = EntryManager.GetFakeThirdpartyFolder(providerInfo);
-                    folder.NewForMe = folder.RootFolderType == FolderType.COMMON ? 1 : 0;
-                    return folder;
-                });
+            {
+                var folder = EntryManager.GetFakeThirdpartyFolder(providerInfo);
+                folder.NewForMe = folder.RootFolderType == FolderType.COMMON ? 1 : 0;
+                return folder;
+            });
 
             return new List<FileEntry>(folders);
         }
 
-        public async Task<Folder<T>> SaveThirdPartyAsync(ThirdPartyParams thirdPartyParams)
+        public Task<Folder<T>> SaveThirdPartyAsync(ThirdPartyParams thirdPartyParams)
+        {
+            var providerDao = GetProviderDao();
+
+            if (providerDao == null) return Task.FromResult<Folder<T>>(null);
+
+            return InternalSaveThirdPartyAsync(thirdPartyParams, providerDao);
+        }
+
+        private async Task<Folder<T>> InternalSaveThirdPartyAsync(ThirdPartyParams thirdPartyParams, IProviderDao providerDao)
         {
             var folderDaoInt = DaoFactory.GetFolderDao<int>();
             var folderDao = GetFolderDao();
-            var providerDao = GetProviderDao();
-
-            if (providerDao == null) return null;
 
             ErrorIf(thirdPartyParams == null, FilesCommonResource.ErrorMassage_BadRequest);
             var parentFolder = await folderDaoInt.GetFolderAsync(thirdPartyParams.Corporate && !CoreBaseSettings.Personal ? await GlobalFolderHelper.FolderCommonAsync : GlobalFolderHelper.FolderMy);
@@ -1315,11 +1342,16 @@ namespace ASC.Web.Files.Services.WCFService
             return folder;
         }
 
-        public async Task<object> DeleteThirdPartyAsync(string providerId)
+        public Task<object> DeleteThirdPartyAsync(string providerId)
         {
             var providerDao = GetProviderDao();
-            if (providerDao == null) return null;
+            if (providerDao == null) return Task.FromResult<object>(null);
 
+            return InternalDeleteThirdPartyAsync(providerId, providerDao);
+        }
+
+        private async Task<object> InternalDeleteThirdPartyAsync(string providerId, IProviderDao providerDao)
+        {
             var curProviderId = Convert.ToInt32(providerId);
             var providerInfo = await providerDao.GetProviderInfoAsync(curProviderId);
 
@@ -1780,10 +1812,15 @@ namespace ASC.Web.Files.Services.WCFService
             return favorite;
         }
 
-        public async Task<List<FileEntry<T>>> AddToFavoritesAsync(IEnumerable<T> foldersId, IEnumerable<T> filesId)
+        public Task<List<FileEntry<T>>> AddToFavoritesAsync(IEnumerable<T> foldersId, IEnumerable<T> filesId)
         {
             if (UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
 
+            return InternalAddToFavoritesAsync(foldersId, filesId);
+        }
+
+        private async Task<List<FileEntry<T>>> InternalAddToFavoritesAsync(IEnumerable<T> foldersId, IEnumerable<T> filesId)
+        {
             var tagDao = GetTagDao();
             var fileDao = GetFileDao();
             var folderDao = GetFolderDao();
@@ -1830,10 +1867,15 @@ namespace ASC.Web.Files.Services.WCFService
 
         #region Templates Manager
 
-        public async Task<List<FileEntry<T>>> AddToTemplatesAsync(IEnumerable<T> filesId)
+        public Task<List<FileEntry<T>>> AddToTemplatesAsync(IEnumerable<T> filesId)
         {
             if (UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
 
+            return InternalAddToTemplatesAsync(filesId);
+        }
+
+        private async Task<List<FileEntry<T>>> InternalAddToTemplatesAsync(IEnumerable<T> filesId)
+        {
             var tagDao = GetTagDao();
             var fileDao = GetFileDao();
             var files = await fileDao.GetFilesAsync(filesId).ToListAsync();
@@ -2007,10 +2049,16 @@ namespace ASC.Web.Files.Services.WCFService
             return await securityDao.IsSharedAsync(file.ID, FileEntryType.File);
         }
 
-        public async Task<List<MentionWrapper>> SharedUsersAsync(T fileId)
+        public Task<List<MentionWrapper>> SharedUsersAsync(T fileId)
         {
             if (!AuthContext.IsAuthenticated || CoreBaseSettings.Personal)
-                return null;
+                return Task.FromResult<List<MentionWrapper>>(null);
+
+            return InternalSharedUsersAsync(fileId);
+        }
+
+        public async Task<List<MentionWrapper>> InternalSharedUsersAsync(T fileId)
+        {
 
             FileEntry<T> file;
             var fileDao = GetFileDao();

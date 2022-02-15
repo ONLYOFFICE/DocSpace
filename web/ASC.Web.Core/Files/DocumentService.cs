@@ -101,7 +101,7 @@ namespace ASC.Web.Core.Files
         /// <exception>
         /// </exception>
         
-        public static async Task<(int ResultPercent, string ConvertedDocumentUri)> GetConvertedUriAsync(
+        public static Task<(int ResultPercent, string ConvertedDocumentUri)> GetConvertedUriAsync(
            FileUtility fileUtility,
            string documentConverterUrl,
            string documentUri,
@@ -119,6 +119,23 @@ namespace ASC.Web.Core.Files
             if (string.IsNullOrEmpty(fromExtension)) throw new ArgumentNullException(nameof(fromExtension), "Document's extension for conversion is not known");
             if (string.IsNullOrEmpty(toExtension)) throw new ArgumentNullException(nameof(toExtension), "Extension for conversion is not known");
 
+            return InternalGetConvertedUriAsync(fileUtility, documentConverterUrl, documentUri, fromExtension, toExtension, documentRevisionId, password, thumbnail, spreadsheetLayout, isAsync, signatureSecret, clientFactory);
+        }
+
+        private static async Task<(int ResultPercent, string ConvertedDocumentUri)> InternalGetConvertedUriAsync(
+           FileUtility fileUtility,
+           string documentConverterUrl,
+           string documentUri,
+           string fromExtension,
+           string toExtension,
+           string documentRevisionId,
+           string password,
+           ThumbnailData thumbnail,
+           SpreadsheetLayout spreadsheetLayout,
+           bool isAsync,
+           string signatureSecret,
+           IHttpClientFactory clientFactory)
+        {
             var title = Path.GetFileName(documentUri ?? "");
             title = string.IsNullOrEmpty(title) || title.Contains('?') ? Guid.NewGuid().ToString() : title;
 
@@ -303,7 +320,7 @@ namespace ASC.Web.Core.Files
             }
         }
 
-        public static async Task<(string DocBuilderKey, Dictionary<string, string>  Urls)> DocbuilderRequestAsync(
+        public static Task<(string DocBuilderKey, Dictionary<string, string>  Urls)> DocbuilderRequestAsync(
            FileUtility fileUtility,
            string docbuilderUrl,
            string requestKey,
@@ -318,6 +335,18 @@ namespace ASC.Web.Core.Files
             if (string.IsNullOrEmpty(requestKey) && string.IsNullOrEmpty(scriptUrl))
                 throw new ArgumentException("requestKey or inputScript is empty");
 
+            return InternalDocbuilderRequestAsync(fileUtility, docbuilderUrl, requestKey, scriptUrl, isAsync, signatureSecret, clientFactory);
+        }
+
+        private static async Task<(string DocBuilderKey, Dictionary<string, string> Urls)> InternalDocbuilderRequestAsync(
+           FileUtility fileUtility,
+           string docbuilderUrl,
+           string requestKey,
+           string scriptUrl,
+           bool isAsync,
+           string signatureSecret,
+           IHttpClientFactory clientFactory)
+        {
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(docbuilderUrl);
             request.Method = HttpMethod.Post;
@@ -391,11 +420,16 @@ namespace ASC.Web.Core.Files
             return (responseFromService.Value<string>("key"), urls);
         }
 
-        public static async Task<bool> HealthcheckRequestAsync(string healthcheckUrl, IHttpClientFactory clientFactory)
+        public static Task<bool> HealthcheckRequestAsync(string healthcheckUrl, IHttpClientFactory clientFactory)
         {
             if (string.IsNullOrEmpty(healthcheckUrl))
                 throw new ArgumentNullException(nameof(healthcheckUrl));
 
+            return InternalHealthcheckRequestAsync(healthcheckUrl, clientFactory);
+        }
+
+        private static async Task<bool> InternalHealthcheckRequestAsync(string healthcheckUrl, IHttpClientFactory clientFactory)
+        {
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(healthcheckUrl);
 

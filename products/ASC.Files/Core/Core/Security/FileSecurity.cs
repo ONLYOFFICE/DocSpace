@@ -353,15 +353,20 @@ namespace ASC.Files.Core.Security
             return entry.Select(r => new Tuple<FileEntry<T>, bool>(r, filtres.Any(a => a.ID.Equals(r.ID)))).ToList();
         }
 
-        private async Task<IEnumerable<FileEntry<T>>> FilterAsync<T>(IEnumerable<FileEntry<T>> entries, FilesSecurityActions action, Guid userId, IEnumerable<FileShareRecord> shares = null)
+        private  Task<IEnumerable<FileEntry<T>>> FilterAsync<T>(IEnumerable<FileEntry<T>> entries, FilesSecurityActions action, Guid userId, IEnumerable<FileShareRecord> shares = null)
         {
-            if (entries == null || !entries.Any()) return Enumerable.Empty<FileEntry<T>>();
+            if (entries == null || !entries.Any()) return Task.FromResult(Enumerable.Empty<FileEntry<T>>());
 
             var user = UserManager.GetUsers(userId);
             var isOutsider = user.IsOutsider(UserManager);
 
-            if (isOutsider && action != FilesSecurityActions.Read) return Enumerable.Empty<FileEntry<T>>();
+            if (isOutsider && action != FilesSecurityActions.Read) return Task.FromResult(Enumerable.Empty<FileEntry<T>>());
 
+            return InternalFilterAsync(entries, action, userId, shares, user, isOutsider);
+        }
+
+        private async Task<IEnumerable<FileEntry<T>>> InternalFilterAsync<T>(IEnumerable<FileEntry<T>> entries, FilesSecurityActions action, Guid userId, IEnumerable<FileShareRecord> shares, UserInfo user, bool isOutsider)
+        {
             entries = entries.Where(f => f != null).ToList();
             var result = new List<FileEntry<T>>(entries.Count());
 

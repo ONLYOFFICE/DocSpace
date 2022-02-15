@@ -140,14 +140,19 @@ namespace ASC.Files.Core.Data
             await FilesDbContext.SaveChangesAsync();
         }   
 
-        protected async ValueTask<object> MappingIDAsync(object id, bool saveIfNotExist = false)
+        protected ValueTask<object> MappingIDAsync(object id, bool saveIfNotExist = false)
         {
-            if (id == null) return null;
+            if (id == null) return ValueTask.FromResult<object>(null);
 
             var isNumeric = int.TryParse(id.ToString(), out var n);
 
-            if (isNumeric) return n;
+            if (isNumeric) return ValueTask.FromResult<object>(n);
 
+            return InternalMappingIDAsync(id, saveIfNotExist);
+        }
+
+        private async ValueTask<object> InternalMappingIDAsync(object id, bool saveIfNotExist = false)
+        {
             object result;
 
             if (id.ToString().StartsWith("sbox")

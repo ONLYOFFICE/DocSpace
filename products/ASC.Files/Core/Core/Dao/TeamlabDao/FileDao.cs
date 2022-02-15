@@ -150,10 +150,15 @@ namespace ASC.Files.Core.Data
                 .ConfigureAwait(false));
         }
 
-        public async Task<File<int>> GetFileAsync(int parentId, string title)
+        public Task<File<int>> GetFileAsync(int parentId, string title)
         {
             if (string.IsNullOrEmpty(title)) throw new ArgumentNullException(title);
 
+            return InternalGetFileAsync(parentId, title);
+        }
+
+        private async Task<File<int>> InternalGetFileAsync(int parentId, string title)
+        {
             var query = GetFileQuery(r => r.Title == title && r.CurrentVersion && r.FolderId == parentId)
                 .AsNoTracking()
                 .OrderBy(r => r.CreateOn);
@@ -364,7 +369,7 @@ namespace ASC.Files.Core.Data
             return SaveFileAsync(file, fileStream, true);
         }
 
-        public async Task<File<int>> SaveFileAsync(File<int> file, Stream fileStream, bool checkQuota = true)
+        public Task<File<int>> SaveFileAsync(File<int> file, Stream fileStream, bool checkQuota = true)
         {
             if (file == null)
             {
@@ -376,7 +381,11 @@ namespace ASC.Files.Core.Data
             {
                 throw FileSizeComment.GetFileSizeException(maxChunkedUploadSize);
             }
+            return InternalSaveFileAsync(file, fileStream, checkQuota);
+        }
 
+        private async Task<File<int>> InternalSaveFileAsync(File<int> file, Stream fileStream, bool checkQuota = true)
+        {
             if (checkQuota && CoreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
             {
                 var personalMaxSpace = CoreConfiguration.PersonalMaxSpace(SettingsManager);
@@ -514,7 +523,7 @@ namespace ASC.Files.Core.Data
             return await GetFileAsync(file.ID).ConfigureAwait(false);
         }
 
-        public async Task<File<int>> ReplaceFileVersionAsync(File<int> file, Stream fileStream)
+        public Task<File<int>> ReplaceFileVersionAsync(File<int> file, Stream fileStream)
         {
             if (file == null) throw new ArgumentNullException(nameof(file));
             if (file.ID == default) throw new ArgumentException("No file id or folder id toFolderId determine provider");
@@ -525,7 +534,11 @@ namespace ASC.Files.Core.Data
             {
                 throw FileSizeComment.GetFileSizeException(maxChunkedUploadSize);
             }
+            return InternalReplaceFileVersionAsync(file, fileStream);
+        }
 
+        private async Task<File<int>> InternalReplaceFileVersionAsync(File<int> file, Stream fileStream)
+        {
             if (CoreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
             {
                 var personalMaxSpace = CoreConfiguration.PersonalMaxSpace(SettingsManager);
@@ -624,12 +637,17 @@ namespace ASC.Files.Core.Data
             return await GetFileAsync(file.ID).ConfigureAwait(false);
         }
 
-        private async Task DeleteVersionAsync(File<int> file)
+        private Task DeleteVersionAsync(File<int> file)
         {
             if (file == null
                 || file.ID == default
-                || file.Version <= 1) return;
+                || file.Version <= 1) return Task.CompletedTask;
 
+            return InternalDeleteVersionAsync(file);
+        }
+
+        private async Task InternalDeleteVersionAsync(File<int> file)
+        {
             var toDelete = await Query(FilesDbContext.Files)
                 .FirstOrDefaultAsync(r => r.Id == file.ID && r.Version == file.Version)
                 .ConfigureAwait(false);
@@ -653,7 +671,7 @@ namespace ASC.Files.Core.Data
             await GlobalStore.GetStore().DeleteDirectoryAsync(GetUniqFileVersionPath(file.ID, file.Version));
         }
 
-        private async Task  SaveFileStreamAsync(File<int> file, Stream stream)
+        private async Task SaveFileStreamAsync(File<int> file, Stream stream)
         {
             await GlobalStore.GetStore().SaveAsync(string.Empty, GetUniqFilePath(file), stream, file.Title);
         }
@@ -663,9 +681,15 @@ namespace ASC.Files.Core.Data
             return DeleteFileAsync(fileId, true);
         }
 
-        private async Task DeleteFileAsync(int fileId, bool deleteFolder)
+        private Task DeleteFileAsync(int fileId, bool deleteFolder)
         {
-            if (fileId == default) return;
+            if (fileId == default) return Task.CompletedTask;
+
+            return internalDeleteFileAsync(fileId, deleteFolder);
+        }
+
+        private async Task internalDeleteFileAsync(int fileId, bool deleteFolder)
+        {
             using var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false);
 
             var fromFolders = Query(FilesDbContext.Files)
@@ -748,10 +772,15 @@ namespace ASC.Files.Core.Data
             throw new NotImplementedException();
         }
 
-        public async Task<int> MoveFileAsync(int fileId, int toFolderId)
+        public Task<int> MoveFileAsync(int fileId, int toFolderId)
         {
-            if (fileId == default) return default;
+            if (fileId == default) return Task.FromResult<int>(default);
 
+            return InternalMoveFileAsync(fileId, toFolderId);
+        }
+
+        private async Task<int> InternalMoveFileAsync(int fileId, int toFolderId)
+        {
             List<DbFile> toUpdate;
 
             var trashIdTask = GlobalFolder.GetFolderTrashAsync<int>(DaoFactory);
@@ -788,7 +817,7 @@ namespace ASC.Files.Core.Data
                 await RecalculateFilesCountAsync(toFolderId).ConfigureAwait(false);
             }
 
-            var parentFoldersTask = 
+            var parentFoldersTask =
                 FilesDbContext.Tree
                 .AsQueryable()
                 .Where(r => r.FolderId == toFolderId)
@@ -1085,10 +1114,15 @@ namespace ASC.Files.Core.Data
             return FilesDbContext.SaveChangesAsync();
         }
 
-        public async Task<List<File<int>>> GetFilesAsync(IEnumerable<int> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
+        public Task<List<File<int>>> GetFilesAsync(IEnumerable<int> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
         {
-            if (parentIds == null || !parentIds.Any() || filterType == FilterType.FoldersOnly) return new List<File<int>>();
+            if (parentIds == null || !parentIds.Any() || filterType == FilterType.FoldersOnly) return Task.FromResult(new List<File<int>>());
 
+            return InternalGetFilesAsync(parentIds, filterType, subjectGroup, subjectID, searchText, searchInContent);
+        }
+
+        private async Task<List<File<int>>> InternalGetFilesAsync(IEnumerable<int> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
+        {
             var q = GetFileQuery(r => r.CurrentVersion)
                 .AsNoTracking()
                 .Join(FilesDbContext.Tree, a => a.FolderId, t => t.FolderId, (file, tree) => new { file, tree })
@@ -1181,12 +1215,17 @@ namespace ASC.Files.Core.Data
 
         private const string DiffTitle = "diff.zip";
 
-        public async Task SaveEditHistoryAsync(File<int> file, string changes, Stream differenceStream)
+        public Task SaveEditHistoryAsync(File<int> file, string changes, Stream differenceStream)
         {
             if (file == null) throw new ArgumentNullException(nameof(file));
             if (string.IsNullOrEmpty(changes)) throw new ArgumentNullException(nameof(changes));
             if (differenceStream == null) throw new ArgumentNullException(nameof(differenceStream));
 
+            return InternalSaveEditHistoryAsync(file, changes, differenceStream);
+        }
+
+        private async Task InternalSaveEditHistoryAsync(File<int> file, string changes, Stream differenceStream)
+        {
             var toUpdateTask = Query(FilesDbContext.Files)
                 .Where(r => r.Id == file.ID)
                 .Where(r => r.Version == file.Version)
@@ -1232,8 +1271,8 @@ namespace ASC.Files.Core.Data
                             item.ChangesString = r.Changes;
                             item.Key = documentServiceHelper.GetDocKey(item.ID, item.Version, TenantUtil.DateTimeFromUtc(r.CreateOn));
 
-                        return item;
-                    })
+                            return item;
+                        })
                     .ToList();
         }
 
@@ -1309,10 +1348,15 @@ namespace ASC.Files.Core.Data
 
         private const string ThumbnailTitle = "thumb";
 
-        public async Task SaveThumbnailAsync(File<int> file, Stream thumbnail)
+        public Task SaveThumbnailAsync(File<int> file, Stream thumbnail)
         {
             if (file == null) throw new ArgumentNullException(nameof(file));
 
+            return InternalSaveThumbnailAsync(file, thumbnail);
+        }
+
+        private async Task InternalSaveThumbnailAsync(File<int> file, Stream thumbnail)
+        {
             var toUpdate = await FilesDbContext.Files
                 .AsQueryable()
                 .FirstOrDefaultAsync(r => r.Id == file.ID && r.Version == file.Version && r.TenantId == TenantID)

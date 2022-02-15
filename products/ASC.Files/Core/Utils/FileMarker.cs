@@ -311,11 +311,17 @@ namespace ASC.Web.Files.Utils
             }
         }      
 
-        public async Task MarkAsNewAsync<T>(FileEntry<T> fileEntry, List<Guid> userIDs = null)
+        public Task MarkAsNewAsync<T>(FileEntry<T> fileEntry, List<Guid> userIDs = null)
         {
-            if (CoreBaseSettings.Personal) return;
+            if (CoreBaseSettings.Personal) return Task.CompletedTask;
 
-            if (fileEntry == null) return;
+            if (fileEntry == null) return Task.CompletedTask;
+
+            return InternalMarkAsNewAsync(fileEntry, userIDs);
+        }
+
+        private async Task InternalMarkAsNewAsync<T>(FileEntry<T> fileEntry, List<Guid> userIDs = null)
+        {
             userIDs ??= new List<Guid>();
 
             var taskData = ServiceProvider.GetService<AsyncTaskData<T>>();
@@ -339,15 +345,20 @@ namespace ASC.Web.Files.Utils
             }
 
             ServiceProvider.GetService<FileMarkerHelper<T>>().Add(taskData);
-        }      
+        }
 
-        public async Task RemoveMarkAsNewAsync<T>(FileEntry<T> fileEntry, Guid userID = default)
+        public Task RemoveMarkAsNewAsync<T>(FileEntry<T> fileEntry, Guid userID = default)
         {
-            if (CoreBaseSettings.Personal) return;
+            if (CoreBaseSettings.Personal) return Task.CompletedTask;
 
+            if (fileEntry == null) return Task.CompletedTask;
+
+            return InternalRemoveMarkAsNewAsync(fileEntry, userID);
+        }
+
+        public async Task InternalRemoveMarkAsNewAsync<T>(FileEntry<T> fileEntry, Guid userID = default)
+        {
             userID = userID.Equals(default) ? AuthContext.CurrentAccount.ID : userID;
-
-            if (fileEntry == null) return;
 
             var tagDao = DaoFactory.GetTagDao<T>();
             var internalFolderDao = DaoFactory.GetFolderDao<int>();
@@ -519,9 +530,15 @@ namespace ASC.Web.Files.Utils
             return 0;
         }     
 
-        public async Task<List<FileEntry>> MarkedItemsAsync<T>(Folder<T> folder)
+        public Task<List<FileEntry>> MarkedItemsAsync<T>(Folder<T> folder)
         {
             if (folder == null) throw new ArgumentNullException(nameof(folder), FilesCommonResource.ErrorMassage_FolderNotFound);
+
+            return InternalMarkedItemsAsync(folder);
+        }
+
+        private async Task<List<FileEntry>> InternalMarkedItemsAsync<T>(Folder<T> folder)
+        {
             if (!await FileSecurity.CanReadAsync(folder)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ViewFolder);
             if (folder.RootFolderType == FolderType.TRASH && !Equals(folder.ID, await GlobalFolder.GetFolderTrashAsync<T>(DaoFactory))) throw new SecurityException(FilesCommonResource.ErrorMassage_ViewTrashItem);
 
@@ -555,8 +572,8 @@ namespace ASC.Web.Files.Utils
                 .Distinct();
 
             //TODO: refactoring
-            var entryTagsProvider = await GetEntryTagsAsync<string>(tags.Where(r=> r.EntryId is string));
-            var entryTagsInternal = await GetEntryTagsAsync<int>(tags.Where(r=> r.EntryId is int));
+            var entryTagsProvider = await GetEntryTagsAsync<string>(tags.Where(r => r.EntryId is string));
+            var entryTagsInternal = await GetEntryTagsAsync<int>(tags.Where(r => r.EntryId is int));
 
             foreach (var entryTag in entryTagsInternal)
             {

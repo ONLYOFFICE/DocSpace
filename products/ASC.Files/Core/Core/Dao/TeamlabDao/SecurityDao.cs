@@ -192,10 +192,15 @@ namespace ASC.Files.Core.Data
             return FromQueryAsync(q);
         }
 
-        public async Task<IEnumerable<FileShareRecord>> GetPureShareRecordsAsync(IEnumerable<FileEntry<T>> entries)
+        public Task<IEnumerable<FileShareRecord>> GetPureShareRecordsAsync(IEnumerable<FileEntry<T>> entries)
         {
-            if (entries == null) return new List<FileShareRecord>();
+            if (entries == null) return Task.FromResult<IEnumerable<FileShareRecord>>(new List<FileShareRecord>());
 
+            return InternalGetPureShareRecordsAsync(entries);
+        }
+
+        private async Task<IEnumerable<FileShareRecord>> InternalGetPureShareRecordsAsync(IEnumerable<FileEntry<T>> entries)
+        {
             var files = new List<string>();
             var folders = new List<string>();
 
@@ -207,10 +212,15 @@ namespace ASC.Files.Core.Data
             return await GetPureShareRecordsDbAsync(files, folders);
         }
 
-        public async Task<IEnumerable<FileShareRecord>> GetPureShareRecordsAsync(IAsyncEnumerable<FileEntry<T>> entries)
+        public Task<IEnumerable<FileShareRecord>> GetPureShareRecordsAsync(IAsyncEnumerable<FileEntry<T>> entries)
         {
-            if (entries == null) return new List<FileShareRecord>();
+            if (entries == null) return Task.FromResult<IEnumerable<FileShareRecord>>(new List<FileShareRecord>());
 
+            return InternalGetPureShareRecordsAsync(entries);
+        }
+
+        private async Task<IEnumerable<FileShareRecord>> InternalGetPureShareRecordsAsync(IAsyncEnumerable<FileEntry<T>> entries)
+        {
             var files = new List<string>();
             var folders = new List<string>();
 
@@ -222,10 +232,15 @@ namespace ASC.Files.Core.Data
             return await GetPureShareRecordsDbAsync(files, folders);
         }
 
-        public async Task<IEnumerable<FileShareRecord>> GetPureShareRecordsAsync(FileEntry<T> entry)
+        public Task<IEnumerable<FileShareRecord>> GetPureShareRecordsAsync(FileEntry<T> entry)
         {
-            if (entry == null) return new List<FileShareRecord>();
+            if (entry == null) return Task.FromResult<IEnumerable<FileShareRecord>>(new List<FileShareRecord>());
 
+            return InternalGetPureShareRecordsAsync(entry);
+        }
+
+        private async Task<IEnumerable<FileShareRecord>> InternalGetPureShareRecordsAsync(FileEntry<T> entry)
+        {
             var files = new List<string>();
             var folders = new List<string>();
 
@@ -255,10 +270,15 @@ namespace ASC.Files.Core.Data
         /// </summary>
         /// <param name="entries"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<FileShareRecord>> GetSharesAsync(IEnumerable<FileEntry<T>> entries)
+        public Task<IEnumerable<FileShareRecord>> GetSharesAsync(IEnumerable<FileEntry<T>> entries)
         {
-            if (entries == null) return new List<FileShareRecord>();
+            if (entries == null) return Task.FromResult<IEnumerable<FileShareRecord>>(new List<FileShareRecord>());
 
+            return InternalGetSharesAsync(entries);
+        }
+
+        private async Task<IEnumerable<FileShareRecord>> InternalGetSharesAsync(IEnumerable<FileEntry<T>> entries)
+        {
             var files = new List<string>();
             var foldersInt = new List<int>();
 
@@ -275,16 +295,21 @@ namespace ASC.Files.Core.Data
         /// </summary>
         /// <param name="entry"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<FileShareRecord>> GetSharesAsync(FileEntry<T> entry)
+        public Task<IEnumerable<FileShareRecord>> GetSharesAsync(FileEntry<T> entry)
         {
-            if (entry == null) return new List<FileShareRecord>();
+            if (entry == null) return Task.FromResult<IEnumerable<FileShareRecord>>(new List<FileShareRecord>());
 
+            return InternalGetSharesAsync(entry);
+        }
+
+        public async Task<IEnumerable<FileShareRecord>> InternalGetSharesAsync(FileEntry<T> entry)
+        {
             var files = new List<string>();
             var foldersInt = new List<int>();
 
             await SelectFilesAndFoldersForShareAsync(entry, files, null, foldersInt);
             return await SaveFilesAndFoldersForShareAsync(files, foldersInt);
-        }  
+        }
 
         private async Task SelectFilesAndFoldersForShareAsync(FileEntry<T> entry, ICollection<string> files, ICollection<string> folders, ICollection<int> foldersInt)
         {

@@ -286,33 +286,15 @@ namespace ASC.Data.Storage.S3
             return await GetUriAsync(domain, path);
         }
 
-        private void InvalidateCloudFront(params string[] paths)
+        private Task InvalidateCloudFrontAsync(params string[] paths)
         {
-            if (!_revalidateCloudFront || string.IsNullOrEmpty(_distributionId)) return;
+            if (!_revalidateCloudFront || string.IsNullOrEmpty(_distributionId)) return Task.CompletedTask;
 
-            using var cfClient = GetCloudFrontClient();
-            var invalidationRequest = new CreateInvalidationRequest
-            {
-                DistributionId = _distributionId,
-                InvalidationBatch = new InvalidationBatch
-                {
-                    CallerReference = Guid.NewGuid().ToString(),
-
-                    Paths = new Paths
-                    {
-                        Items = paths.ToList(),
-                        Quantity = paths.Length
-                    }
-                }
-            };
-
-            cfClient.CreateInvalidationAsync(invalidationRequest).Wait();
+            return InternalInvalidateCloudFrontAsync(paths);
         }
 
-        private async Task InvalidateCloudFrontAsync(params string[] paths)
+        private async Task InternalInvalidateCloudFrontAsync(params string[] paths)
         {
-            if (!_revalidateCloudFront || string.IsNullOrEmpty(_distributionId)) return;
-
             using var cfClient = GetCloudFrontClient();
             var invalidationRequest = new CreateInvalidationRequest
             {
@@ -331,6 +313,7 @@ namespace ASC.Data.Storage.S3
 
             await cfClient.CreateInvalidationAsync(invalidationRequest);
         }
+
 
         public override Task<Uri> SaveAsync(string domain, string path, Stream stream)
         {

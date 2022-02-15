@@ -185,10 +185,15 @@ ctx.Tag
             }
         }
 
-        public async IAsyncEnumerable<Tag> GetTagsAsync(string[] names, TagType tagType)
+        public IAsyncEnumerable<Tag> GetTagsAsync(string[] names, TagType tagType)
         {
             if (names == null) throw new ArgumentNullException(nameof(names));
 
+            return InternalGetTagsAsync(names, tagType);
+        }
+
+        public async IAsyncEnumerable<Tag> InternalGetTagsAsync(string[] names, TagType tagType)
+        {
             var q = Query(FilesDbContext.Tag)
                 .Join(FilesDbContext.TagLink, r => r.Id, l => l.TagId, (tag, link) => new TagLinkData { Tag = tag, Link = link })
                 .Where(r => r.Link.TenantId == r.Tag.TenantId)
@@ -391,10 +396,15 @@ ctx.Tag
             }
         }
 
-        private async Task UpdateNewTagsInDbAsync(Tag tag, DateTime createOn)
+        private Task UpdateNewTagsInDbAsync(Tag tag, DateTime createOn)
         {
-            if (tag == null) return;
+            if (tag == null) return Task.CompletedTask;
 
+            return InternalUpdateNewTagsInDbAsync(tag, createOn);
+        }
+
+        private async Task InternalUpdateNewTagsInDbAsync(Tag tag, DateTime createOn)
+        {
             var forUpdate = Query(FilesDbContext.TagLink)
                 .Where(r => r.TagId == tag.Id)
                 .Where(r => r.EntryType == tag.EntryType)
@@ -438,10 +448,15 @@ ctx.Tag
             }
         }     
 
-        private async Task RemoveTagInDbAsync(Tag tag)
+        private Task RemoveTagInDbAsync(Tag tag)
         {
-            if (tag == null) return;
+            if (tag == null) return Task.CompletedTask;
 
+            return InternalRemoveTagInDbAsync(tag);
+        }
+
+        private async Task InternalRemoveTagInDbAsync(Tag tag)
+        {
             var id = await Query(FilesDbContext.Tag)
                 .Where(r => r.Name == tag.TagName &&
                             r.Owner == tag.Owner &&
@@ -713,11 +728,16 @@ ctx.Tag
             yield break;
         }
 
-        public async IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, Folder<T> parentFolder, bool deepSearch)
+        public IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, Folder<T> parentFolder, bool deepSearch)
         {
             if (parentFolder == null || EqualityComparer<T>.Default.Equals(parentFolder.ID, default(T)))
                 throw new ArgumentException("folderId");
 
+            return InternalGetNewTagsAsync(subject, parentFolder, deepSearch);
+        }
+
+        private async IAsyncEnumerable<Tag> InternalGetNewTagsAsync(Guid subject, Folder<T> parentFolder, bool deepSearch)
+        {
             var result = AsyncEnumerable.Empty<Tag>();
 
             var monitorFolderIds = new object[] { parentFolder.ID }.ToAsyncEnumerable();

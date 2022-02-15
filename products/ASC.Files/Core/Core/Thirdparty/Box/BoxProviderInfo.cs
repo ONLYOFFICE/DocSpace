@@ -187,10 +187,15 @@ namespace ASC.Files.Thirdparty.Box
             ServiceProvider = serviceProvider;
         }
 
-        internal async Task<BoxStorage> CreateStorageAsync(OAuth20Token token, int id)
+        internal Task<BoxStorage> CreateStorageAsync(OAuth20Token token, int id)
         {
-            if (Storage != null && Storage.IsOpened) return Storage;
+            if (Storage != null && Storage.IsOpened) return Task.FromResult(Storage);
 
+            return InternalCreateStorageAsync(token, id);
+        }
+
+        private async Task<BoxStorage> InternalCreateStorageAsync(OAuth20Token token, int id)
+        {
             var boxStorage = new BoxStorage(TempStream);
             await CheckTokenAsync(token, id).ConfigureAwait(false);
 
@@ -198,9 +203,14 @@ namespace ASC.Files.Thirdparty.Box
             return Storage = boxStorage;
         }
 
-        private async Task CheckTokenAsync(OAuth20Token token, int id)
+        private Task CheckTokenAsync(OAuth20Token token, int id)
         {
             if (token == null) throw new UnauthorizedAccessException("Cannot create Box session with given token");
+            return InternalCheckTokenAsync(token, id);
+        }
+
+        private async Task InternalCheckTokenAsync(OAuth20Token token, int id)
+        {
             if (token.IsExpired)
             {
                 token = OAuth20TokenHelper.RefreshToken<BoxLoginProvider>(ConsumerFactory, token);

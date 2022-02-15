@@ -432,10 +432,15 @@ namespace ASC.Employee.Core.Controllers
 
         [AllowAnonymous]
         [Create(@"register")]
-        public async Task<string> RegisterUserOnPersonalAsync(RegisterPersonalUserModel model)
+        public Task<string> RegisterUserOnPersonalAsync(RegisterPersonalUserModel model)
         {
             if (!CoreBaseSettings.Personal) throw new MethodAccessException("Method is only available on personal.onlyoffice.com");
 
+            return InternalRegisterUserOnPersonalAsync(model);
+        }
+
+        private async Task<string> InternalRegisterUserOnPersonalAsync(RegisterPersonalUserModel model)
+        {
             try
             {
                 if (CoreBaseSettings.CustomMode) model.Lang = "ru-RU";

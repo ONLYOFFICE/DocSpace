@@ -121,10 +121,15 @@ namespace ASC.Files.Thirdparty.Box
             return folderItems.Entries;
         }
 
-        public async Task<Stream> DownloadStreamAsync(BoxFile file, int offset = 0)
+        public Task<Stream> DownloadStreamAsync(BoxFile file, int offset = 0)
         {
             if (file == null) throw new ArgumentNullException(nameof(file));
 
+            return InternalDownloadStreamAsync(file, offset);
+        }
+
+        public async Task<Stream> InternalDownloadStreamAsync(BoxFile file, int offset = 0)
+        {
             if (offset > 0 && file.Size.HasValue)
             {
                 return await _boxClient.FilesManager.DownloadAsync(file.Id, startOffsetInBytes: offset, endOffsetInBytes: (int)file.Size - 1);

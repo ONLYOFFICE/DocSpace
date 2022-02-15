@@ -2158,29 +2158,34 @@ namespace ASC.Api.Settings
         }
 
         [Read("statistics/spaceusage/{id}")]
-        public async Task<List<UsageSpaceStatItemWrapper>> GetSpaceUsageStatistics(Guid id)
+        public Task<List<UsageSpaceStatItemWrapper>> GetSpaceUsageStatistics(Guid id)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            var webtem = WebItemManagerSecurity.GetItems(WebZoneType.All, ItemAvailableState.All)
+            var webitem = WebItemManagerSecurity.GetItems(WebZoneType.All, ItemAvailableState.All)
                                        .FirstOrDefault(item =>
                                                        item != null &&
                                                        item.ID == id &&
                                                        item.Context != null &&
                                                        item.Context.SpaceUsageStatManager != null);
 
-            if (webtem == null) return new List<UsageSpaceStatItemWrapper>();
+            if (webitem == null) return Task.FromResult(new List<UsageSpaceStatItemWrapper>());
 
-            var statData = await webtem.Context.SpaceUsageStatManager.GetStatDataAsync();
+            return InternalGetSpaceUsageStatistics(webitem);
+        }
+
+        private async Task<List<UsageSpaceStatItemWrapper>> InternalGetSpaceUsageStatistics(IWebItem webitem)
+        {
+            var statData = await webitem.Context.SpaceUsageStatManager.GetStatDataAsync();
 
             return statData.ConvertAll(it => new UsageSpaceStatItemWrapper
-                         {
-                             Name = it.Name.HtmlEncode(),
-                             Icon = it.ImgUrl,
-                             Disabled = it.Disabled,
-                             Size = FileSizeComment.FilesSizeToString(it.SpaceUsage),
-                             Url = it.Url
-                         });
+            {
+                Name = it.Name.HtmlEncode(),
+                Icon = it.ImgUrl,
+                Disabled = it.Disabled,
+                Size = FileSizeComment.FilesSizeToString(it.SpaceUsage),
+                Url = it.Url
+            });
         }
 
         [Read("statistics/visit")]

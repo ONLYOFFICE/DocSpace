@@ -196,10 +196,15 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             ServiceProvider = serviceProvider;
         }
 
-        public async Task<GoogleDriveStorage> CreateStorageAsync(OAuth20Token token, int id)
+        public Task<GoogleDriveStorage> CreateStorageAsync(OAuth20Token token, int id)
         {
-            if (Storage != null && Storage.IsOpened) return Storage;
+            if (Storage != null && Storage.IsOpened) return Task.FromResult(Storage);
 
+            return InternalCreateStorageAsync(token, id);
+        }
+
+        public async Task<GoogleDriveStorage> InternalCreateStorageAsync(OAuth20Token token, int id)
+        {
             var driveStorage = ServiceProvider.GetService<GoogleDriveStorage>();
 
             await CheckTokenAsync(token, id).ConfigureAwait(false);
@@ -208,9 +213,14 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             return Storage = driveStorage;
         }
 
-        private async Task CheckTokenAsync(OAuth20Token token, int id)
+        private Task CheckTokenAsync(OAuth20Token token, int id)
         {
             if (token == null) throw new UnauthorizedAccessException("Cannot create GoogleDrive session with given token");
+            return InternalCheckTokenAsync(token, id);
+        }
+
+        private async Task InternalCheckTokenAsync(OAuth20Token token, int id)
+        {
             if (token.IsExpired)
             {
                 token = OAuth20TokenHelper.RefreshToken<GoogleLoginProvider>(ConsumerFactory, token);
