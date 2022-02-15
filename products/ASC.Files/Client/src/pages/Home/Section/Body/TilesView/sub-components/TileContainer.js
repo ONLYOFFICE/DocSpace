@@ -180,7 +180,8 @@ class TileContainer extends React.PureComponent {
           <>
             <Heading
               size="xsmall"
-              className="tile-items-heading folder-tile-heading"
+              id={"folder-tile-heading"}
+              className="tile-items-heading"
             >
               {headingFolders}
             </Heading>
