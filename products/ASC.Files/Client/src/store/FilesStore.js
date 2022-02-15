@@ -98,8 +98,6 @@ class FilesStore {
 
             const file = JSON.parse(opt?.data);
 
-            file.fileStatus |= FileStatus.IsNew;
-
             const newFiles = [file, ...this.files];
 
             if (newFiles.length > this.filter.pageCount) {
