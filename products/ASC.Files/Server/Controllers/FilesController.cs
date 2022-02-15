@@ -99,7 +99,6 @@ namespace ASC.Api.Documents
         private ProductEntryPoint ProductEntryPoint { get; }
         private TenantManager TenantManager { get; }
         private FileUtility FileUtility { get; }
-        private FileConverter FileConverter { get; }
         private IServiceProvider ServiceProvider { get; }
 
         /// <summary>
@@ -130,7 +129,6 @@ namespace ASC.Api.Documents
             TenantManager tenantManager,
             FileUtility fileUtility,
             ConsumerFactory consumerFactory,
-            FileConverter fileConverter,
             IServiceProvider serviceProvider)
         {
             FilesControllerHelperString = filesControllerHelperString;
@@ -156,7 +154,6 @@ namespace ASC.Api.Documents
             ProductEntryPoint = productEntryPoint;
             TenantManager = tenantManager;
             FileUtility = fileUtility;
-            FileConverter = fileConverter;
             ServiceProvider = serviceProvider;
         }
 
