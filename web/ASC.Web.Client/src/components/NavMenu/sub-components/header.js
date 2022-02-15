@@ -80,7 +80,8 @@ const Header = styled.header`
 
   .header-logo-icon {
     width: ${(props) => (props.isPersonal ? "220px" : "146px")};
-    ${(props) => props.isPersonal && `margin-left: 20px;`}
+    ${(props) =>
+      (props.isPersonal || props.isPreparationPortal) && `margin-left: 20px;`}
     height: 24px;
     position: relative;
     padding: ${(props) => (!props.isPersonal ? "0 20px 0 6px" : "0")};
@@ -173,6 +174,8 @@ const HeaderComponent = ({
   };
 
   const numberOfModules = mainModules.filter((item) => !item.separator).length;
+  const isPreparationPortal =
+    history.location.pathname === "/preparation-portal";
 
   return (
     <>
@@ -180,10 +183,11 @@ const HeaderComponent = ({
         module={currentProductName}
         isLoaded={isLoaded}
         isPersonal={isPersonal}
+        isPreparationPortal={isPreparationPortal}
         isAuthenticated={isAuthenticated}
         className="navMenuHeader hidingHeader"
       >
-        {!isPersonal && (
+        {!isPersonal && !isPreparationPortal && (
           <NavItem
             badgeNumber={totalNotifications}
             onClick={onClick}

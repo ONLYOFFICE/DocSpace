@@ -154,9 +154,9 @@ class NavMenu extends React.Component {
     const isAsideAvailable = !!asideContent;
     const hideHeader =
       isDesktop || history.location.pathname === "/products/files/private";
-
     //console.log("NavMenu render", this.state, this.props);
-
+    const isPreparationPortal =
+      history.location.pathname === "/preparation-portal";
     return (
       <LayoutContextConsumer>
         {(value) => (
@@ -176,7 +176,7 @@ class NavMenu extends React.Component {
             {!hideHeader &&
               (isLoaded && isAuthenticated ? (
                 <>
-                  <HeaderNav />
+                  {!isPreparationPortal && <HeaderNav />}
                   <Header
                     isNavOpened={isNavOpened}
                     onClick={this.showNav}
