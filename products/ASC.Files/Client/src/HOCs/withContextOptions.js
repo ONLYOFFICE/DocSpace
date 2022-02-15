@@ -25,7 +25,7 @@ export default function withContextOptions(WrappedComponent) {
       const {
         copyAsAction,
         item,
-        formfillingDocs,
+        extsWebRestrictedEditing,
         setConvertPasswordDialogVisible,
         setFormCreationInfo,
         t,
@@ -33,7 +33,8 @@ export default function withContextOptions(WrappedComponent) {
       const { title, id, folderId, fileExst } = item;
 
       const newTitle =
-        title.substring(0, title.length - fileExst.length) + formfillingDocs[0];
+        title.substring(0, title.length - fileExst.length) +
+        extsWebRestrictedEditing[0];
 
       copyAsAction(id, newTitle, folderId).catch((err) => {
         console.log("err", err);
@@ -44,7 +45,7 @@ export default function withContextOptions(WrappedComponent) {
           setFormCreationInfo({
             newTitle,
             fromExst: fileExst,
-            toExst: formfillingDocs[0],
+            toExst: extsWebRestrictedEditing[0],
             fileInfo: item,
           });
           setConvertPasswordDialogVisible(true);
@@ -641,10 +642,11 @@ export default function withContextOptions(WrappedComponent) {
         treeFoldersStore,
         uploadDataStore,
         versionHistoryStore,
+        settingsStore,
       },
       { item }
     ) => {
-      const { openDocEditor, fileActionStore, formatsStore } = filesStore;
+      const { openDocEditor, fileActionStore } = filesStore;
       const {
         deleteItemAction,
         downloadAction,
@@ -676,7 +678,7 @@ export default function withContextOptions(WrappedComponent) {
       const { setAction, type, extension, id } = fileActionStore;
       const { setMediaViewerData } = mediaViewerDataStore;
       const { copyAsAction } = uploadDataStore;
-      const { formfillingDocs } = formatsStore.docserviceStore;
+      const { extsWebRestrictedEditing } = settingsStore;
 
       const { isRecycleBinFolder, isShare } = treeFoldersStore;
       const isShareFolder = isShare(item.rootFolderType);
@@ -717,7 +719,7 @@ export default function withContextOptions(WrappedComponent) {
         setUnsubscribe,
         isDesktop: isDesktopClient,
         copyAsAction,
-        formfillingDocs,
+        extsWebRestrictedEditing,
         setFormCreationInfo,
       };
     }

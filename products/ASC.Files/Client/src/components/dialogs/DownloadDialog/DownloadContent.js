@@ -25,7 +25,7 @@ const DownloadContent = (props) => {
     getItemIcon,
     titleFormat,
     type,
-    filesConverts,
+    extsConvertible,
     title,
   } = props;
 
@@ -37,9 +37,7 @@ const DownloadContent = (props) => {
     for (let item of items) {
       const exst = item.fileExst;
 
-      const exstItem = filesConverts.find((f) => f[exst]);
-      const arrayExst = exstItem ? exstItem[exst] : [];
-      arr = [...arr, ...arrayExst];
+      arr = [...arr, ...extsConvertible[exst]];
     }
 
     arr = arr.filter((x, pos) => arr.indexOf(x) !== pos);
@@ -92,9 +90,7 @@ const DownloadContent = (props) => {
   };
 
   const getFormats = (item) => {
-    const arrayFormats = item && filesConverts.find((f) => f[item.fileExst]);
-    const conversionFormats = arrayFormats ? arrayFormats[item.fileExst] : [];
-
+    const arrayFormats = item ? extsConvertible[item.fileExst] : [];
     const formats = [
       {
         key: "original",
@@ -105,7 +101,7 @@ const DownloadContent = (props) => {
         "data-file-id": item.id,
       },
     ];
-    for (let f of conversionFormats) {
+    for (let f of arrayFormats) {
       formats.push({
         key: f,
         label: f,

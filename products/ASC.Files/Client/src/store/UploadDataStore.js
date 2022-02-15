@@ -19,7 +19,6 @@ import {
 } from "@appserver/common/api/files";
 import toastr from "studio/toastr";
 class UploadDataStore {
-  formatsStore;
   treeFoldersStore;
   selectedFolderStore;
   filesStore;
@@ -46,7 +45,6 @@ class UploadDataStore {
   isUploadingAndConversion = false;
 
   constructor(
-    formatsStore,
     treeFoldersStore,
     selectedFolderStore,
     filesStore,
@@ -56,7 +54,6 @@ class UploadDataStore {
     settingsStore
   ) {
     makeAutoObservable(this);
-    this.formatsStore = formatsStore;
     this.treeFoldersStore = treeFoldersStore;
     this.selectedFolderStore = selectedFolderStore;
     this.filesStore = filesStore;
@@ -440,7 +437,7 @@ class UploadDataStore {
   };
 
   startUpload = (uploadFiles, folderId, t) => {
-    const { canConvert } = this.formatsStore.docserviceStore;
+    const { canConvert } = this.settingsStore;
 
     const toFolderId = folderId ? folderId : this.selectedFolderStore.id;
 

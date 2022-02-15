@@ -353,7 +353,10 @@ class FileRow extends Component {
   }
 }
 export default inject(
-  ({ auth, formatsStore, uploadDataStore, mediaViewerDataStore }, { item }) => {
+  (
+    { auth, uploadDataStore, mediaViewerDataStore, settingsStore },
+    { item }
+  ) => {
     let ext;
     let name;
     let splitted;
@@ -368,11 +371,11 @@ export default inject(
     }
     const { personal } = auth.settingsStore;
     const {
-      iconFormatsStore,
-      mediaViewersFormatsStore,
-      docserviceStore,
-    } = formatsStore;
-    const { canViewedDocs } = docserviceStore;
+      canViewedDocs,
+      isMediaOrImage,
+      getIconSrc,
+      isArchive,
+    } = settingsStore;
     const {
       uploaded,
       primaryProgressDataStore,
@@ -385,11 +388,11 @@ export default inject(
     } = uploadDataStore;
     const { playlist, setMediaViewerData } = mediaViewerDataStore;
     const { loadingFile: file } = primaryProgressDataStore;
-    const isMedia = mediaViewersFormatsStore.isMediaOrImage(ext);
+    const isMedia = isMediaOrImage(ext);
     const isMediaActive =
       playlist.findIndex((el) => el.fileId === item.fileId) !== -1;
 
-    const fileIcon = iconFormatsStore.getIconSrc(ext, 24);
+    const fileIcon = getIconSrc(ext, 24);
 
     const loadingFile = !file || !file.uniqueId ? null : file;
 
@@ -397,8 +400,6 @@ export default inject(
       file && loadingFile.uniqueId === item.uniqueId
         ? loadingFile.percent
         : null;
-
-    const { isArchive } = iconFormatsStore;
 
     const downloadInCurrentTab = isArchive(ext) || !canViewedDocs(ext);
 

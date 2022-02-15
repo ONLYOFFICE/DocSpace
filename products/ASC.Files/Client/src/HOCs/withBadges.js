@@ -132,17 +132,16 @@ export default function withBadges(WrappedComponent) {
     (
       {
         auth,
-        formatsStore,
         treeFoldersStore,
         filesActionsStore,
         versionHistoryStore,
         selectedFolderStore,
         dialogsStore,
         filesStore,
+        settingsStore,
       },
       { item }
     ) => {
-      const { docserviceStore } = formatsStore;
       const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
       const {
         lockFileAction,
@@ -158,8 +157,8 @@ export default function withBadges(WrappedComponent) {
       } = dialogsStore;
       const { setIsLoading } = filesStore;
 
-      const canWebEdit = docserviceStore.canWebEdit(item.fileExst);
-      const canConvert = docserviceStore.canConvert(item.fileExst);
+      const canWebEdit = settingsStore.canWebEdit(item.fileExst);
+      const canConvert = settingsStore.canConvert(item.fileExst);
 
       return {
         isAdmin: auth.isAdmin,

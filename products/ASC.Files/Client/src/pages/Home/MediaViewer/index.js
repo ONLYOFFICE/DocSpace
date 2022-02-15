@@ -164,7 +164,7 @@ export default inject(
     filesStore,
     mediaViewerDataStore,
     filesActionsStore,
-    formatsStore,
+    settingsStore,
     dialogsStore,
     treeFoldersStore,
   }) => {
@@ -184,7 +184,7 @@ export default inject(
       setToPreviewFile,
     } = mediaViewerDataStore;
     const { deleteItemAction } = filesActionsStore;
-    const { media, images } = formatsStore.mediaViewersFormatsStore;
+    const { extsVideo, extsImage } = settingsStore;
     const { expandedKeys, setExpandedKeys } = treeFoldersStore;
 
     return {
@@ -195,8 +195,8 @@ export default inject(
       currentMediaFileId,
       deleteItemAction,
       setMediaViewerData,
-      mediaViewerImageFormats: images,
-      mediaViewerMediaFormats: media,
+      mediaViewerImageFormats: extsImage,
+      mediaViewerMediaFormats: extsVideo,
       setRemoveMediaItem: dialogsStore.setRemoveMediaItem,
       deleteDialogVisible: dialogsStore.deleteDialogVisible,
       fetchFiles,

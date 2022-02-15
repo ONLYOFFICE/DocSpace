@@ -28,7 +28,6 @@ class FilesStore {
   fileActionStore;
   selectedFolderStore;
   treeFoldersStore;
-  formatsStore;
   filesSettingsStore;
 
   isLoaded = false;
@@ -67,7 +66,6 @@ class FilesStore {
     fileActionStore,
     selectedFolderStore,
     treeFoldersStore,
-    formatsStore,
     filesSettingsStore
   ) {
     const pathname = window.location.pathname.toLowerCase();
@@ -80,7 +78,6 @@ class FilesStore {
     this.fileActionStore = fileActionStore;
     this.selectedFolderStore = selectedFolderStore;
     this.treeFoldersStore = treeFoldersStore;
-    this.formatsStore = formatsStore;
     this.filesSettingsStore = filesSettingsStore;
 
     const { socketHelper } = authStore.settingsStore;
@@ -651,7 +648,7 @@ class FilesStore {
       canWebEdit,
       canViewedDocs,
       canFormFillingDocs,
-    } = this.formatsStore.docserviceStore;
+    } = this.filesSettingsStore;
 
     const isThirdPartyFolder =
       item.providerKey && item.id === item.rootFolderId;
@@ -1254,7 +1251,7 @@ class FilesStore {
   }
 
   get iconOfDraggedFile() {
-    const { getIcon } = this.formatsStore.iconFormatsStore;
+    const { getIcon } = this.filesSettingsStore;
 
     if (this.selection.length === 1) {
       return getIcon(
@@ -1318,7 +1315,7 @@ class FilesStore {
   }
 
   onCreateAddTempItem = (items) => {
-    const { getFileIcon, getFolderIcon } = this.formatsStore.iconFormatsStore;
+    const { getFileIcon, getFolderIcon } = this.filesSettingsStore;
     const { extension, title } = this.fileActionStore;
 
     if (items.length && items[0].id === -1) return; //TODO: if change media collection from state remove this;
@@ -1346,8 +1343,7 @@ class FilesStore {
   }
 
   get filesList() {
-    const { mediaViewersFormatsStore, iconFormatsStore } = this.formatsStore;
-    const { getIcon } = iconFormatsStore;
+    const { getIcon } = this.filesSettingsStore;
     //return [...this.folders, ...this.files];
 
     const items = [...this.folders, ...this.files];
@@ -1386,11 +1382,9 @@ class FilesStore {
         canEdit,
       } = item;
 
-      const { canConvert } = this.formatsStore.docserviceStore;
+      const { canConvert, isMediaOrImage } = this.filesSettingsStore;
 
-      const canOpenPlayer = mediaViewersFormatsStore.isMediaOrImage(
-        item.fileExst
-      );
+      const canOpenPlayer = isMediaOrImage(item.fileExst);
 
       const previewUrl = canOpenPlayer
         ? combineUrl(
@@ -1494,14 +1488,14 @@ class FilesStore {
   }
 
   get cbMenuItems() {
-    const { mediaViewersFormatsStore, iconFormatsStore } = this.formatsStore;
     const {
+      isImage,
+      isVideo,
       isDocument,
       isPresentation,
       isSpreadsheet,
       isArchive,
-    } = iconFormatsStore;
-    const { isImage, isVideo } = mediaViewersFormatsStore;
+    } = this.filesSettingsStore;
 
     let cbMenu = ["all"];
     const filesItems = [...this.files, ...this.folders];
@@ -1557,11 +1551,11 @@ class FilesStore {
 
   get sortedFiles() {
     const {
+      extsConvertible,
       isSpreadsheet,
       isPresentation,
       isDocument,
-    } = this.formatsStore.iconFormatsStore;
-    const { filesConverts } = this.formatsStore.docserviceStore;
+    } = this.filesSettingsStore;
 
     let sortedFiles = {
       documents: [],
@@ -1580,7 +1574,7 @@ class FilesStore {
       item.checked = true;
       item.format = null;
 
-      const canConvert = filesConverts.find((f) => f[item.fileExst]);
+      const canConvert = extsConvertible[item.fileExst];
 
       if (item.fileExst && canConvert) {
         if (isSpreadsheet(item.fileExst)) {
@@ -1638,7 +1632,7 @@ class FilesStore {
   }
 
   get canConvertSelected() {
-    const { filesConverts } = this.formatsStore.docserviceStore;
+    const { extsConvertible } = this.filesSettingsStore;
 
     const selection = this.selection.length
       ? this.selection
@@ -1648,13 +1642,13 @@ class FilesStore {
 
     return selection.some((selected) => {
       if (selected.isFolder === true || !selected.fileExst) return false;
-      const index = filesConverts.findIndex((f) => f[selected.fileExst]);
-      return index !== -1;
+      const array = extsConvertible[selected.fileExst];
+      return array;
     });
   }
 
   get isViewedSelected() {
-    const { canViewedDocs } = this.formatsStore.docserviceStore;
+    const { canViewedDocs } = this.filesSettingsStore;
 
     return this.selection.some((selected) => {
       if (selected.isFolder === true || !selected.fileExst) return false;
@@ -1663,7 +1657,7 @@ class FilesStore {
   }
 
   get isMediaSelected() {
-    const { isMediaOrImage } = this.formatsStore.mediaViewersFormatsStore;
+    const { isMediaOrImage } = this.filesSettingsStore;
 
     return this.selection.some((selected) => {
       if (selected.isFolder === true || !selected.fileExst) return false;
@@ -1708,7 +1702,7 @@ class FilesStore {
       canFormFillingDocs,
       canWebFilterEditing,
       canConvert,
-    } = this.formatsStore.docserviceStore;
+    } = this.filesSettingsStore;
 
     if (selection[0].encrypted) {
       return ["FullAccess", "DenyAccess"];
