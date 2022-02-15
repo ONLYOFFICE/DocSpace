@@ -303,8 +303,8 @@ export default function withFileActions(WrappedFileItem) {
         //selectedFolderStore,
         filesStore,
         uploadDataStore,
-        formatsStore,
         mediaViewerDataStore,
+        settingsStore,
       },
       { item, t, history }
     ) => {
@@ -346,7 +346,6 @@ export default function withFileActions(WrappedFileItem) {
       } = filesStore;
       const { startUpload } = uploadDataStore;
       const { type, extension, id } = fileActionStore;
-      const { mediaViewersFormatsStore, docserviceStore } = formatsStore;
       const { setMediaViewerData } = mediaViewerDataStore;
 
       const selectedItem = selection.find(
@@ -358,13 +357,10 @@ export default function withFileActions(WrappedFileItem) {
 
       const isFolder = selectedItem ? false : !item.isFolder ? false : true;
 
-      const isMediaOrImage = mediaViewersFormatsStore.isMediaOrImage(
-        item.fileExst
-      );
-
-      const canWebEdit = docserviceStore.canWebEdit(item.fileExst);
-      const canConvert = docserviceStore.canConvert(item.fileExst);
-      const canViewedDocs = docserviceStore.canViewedDocs(item.fileExst);
+      const isMediaOrImage = settingsStore.isMediaOrImage(item.fileExst);
+      const canWebEdit = settingsStore.canWebEdit(item.fileExst);
+      const canConvert = settingsStore.canConvert(item.fileExst);
+      const canViewedDocs = settingsStore.canViewedDocs(item.fileExst);
 
       const inProgress =
         activeFiles.findIndex((x) => x === item.id) !== -1 ||

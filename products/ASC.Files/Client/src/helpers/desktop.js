@@ -1,11 +1,9 @@
-import rootFilesStore from "../store/";
+import settingsStore from "../store/";
 import store from "studio/store";
 import { desktopConstants } from "@appserver/common/desktop";
 
-const { docserviceStore } = rootFilesStore.formatsStore;
-
 export function encryptionUploadDialog(callback) {
-  const filter = docserviceStore.encryptedDocs.map((f) => "*" + f).join(" ");
+  const filter = settingsStore.extsWebEncrypt.map((f) => "*" + f).join(" ");
 
   const data = {
     cryptoEngineId: desktopConstants.cryptoEngineId,

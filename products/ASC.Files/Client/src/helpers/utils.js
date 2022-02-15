@@ -6,7 +6,7 @@ import { addFileToRecentlyViewed } from "@appserver/common/api/files";
 import i18n from "./i18n";
 
 import { request } from "@appserver/common/api/client";
-import docserviceStore from "../store/DocserviceStore";
+import settingsStore from "../store/";
 
 export const setDocumentTitle = (subTitle = null) => {
   const { isAuthenticated, settingsStore, product: currentModule } = authStore;
@@ -118,7 +118,7 @@ export const SaveAs = (title, url, folderId, openNewTab) => {
 };
 
 export const canConvert = (fileExst) => {
-  const { canConvert } = docserviceStore;
+  const { canConvert } = settingsStore;
 
   return canConvert(fileExst);
 };

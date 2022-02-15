@@ -108,8 +108,8 @@ const FilesTile = (props) => {
   );
 };
 
-export default inject(({ formatsStore }) => {
-  const { getIcon } = formatsStore.iconFormatsStore;
+export default inject(({ settingsStore }) => {
+  const { getIcon } = settingsStore;
   return { getIcon };
 })(
   withTranslation("Home")(
