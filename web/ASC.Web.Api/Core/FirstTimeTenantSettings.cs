@@ -77,7 +77,7 @@ namespace ASC.Web.Studio.UserControls.FirstTime
             ClientFactory = clientFactory;
         }
 
-        public WizardSettings SaveData(WizardModel wizardModel)
+        public WizardSettings SaveData(WizardDto wizardModel)
         {
             try
             {

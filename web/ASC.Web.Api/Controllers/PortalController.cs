@@ -99,7 +99,7 @@ namespace ASC.Web.Api.Controllers
         }
 
         [Update("getshortenlink")]
-        public object GetShortenLink(ShortenLinkModel model)
+        public object GetShortenLink(ShortenLinkDto model)
         {
             try
             {
@@ -230,7 +230,7 @@ namespace ASC.Web.Api.Controllers
         }
 
         [Create("mobile/registration")]
-        public void RegisterMobileAppInstallFromBody([FromBody] MobileAppModel model)
+        public void RegisterMobileAppInstallFromBody([FromBody] MobileAppDto model)
         {
             var currentUser = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
             MobileAppInstallRegistrator.RegisterInstall(currentUser.Email, model.Type);
@@ -238,7 +238,7 @@ namespace ASC.Web.Api.Controllers
 
         [Create("mobile/registration")]
         [Consumes("application/x-www-form-urlencoded")]
-        public void RegisterMobileAppInstallFromForm([FromForm] MobileAppModel model)
+        public void RegisterMobileAppInstallFromForm([FromForm] MobileAppDto model)
         {
             var currentUser = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
             MobileAppInstallRegistrator.RegisterInstall(currentUser.Email, model.Type);

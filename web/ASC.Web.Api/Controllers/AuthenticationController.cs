@@ -113,27 +113,27 @@ namespace ASC.Web.Api.Controllers
         }
 
         [Create("{code}", false, order: int.MaxValue)]
-        public AuthenticationTokenData AuthenticateMeFromBodyWithCode([FromBody] AuthModel auth)
+        public AuthenticationTokenData AuthenticateMeFromBodyWithCode([FromBody] AuthDto auth)
         {
             return AuthenticateMeWithCode(auth);
         }
 
         [Create("{code}", false, order: int.MaxValue)]
         [Consumes("application/x-www-form-urlencoded")]
-        public AuthenticationTokenData AuthenticateMeFromFormWithCode([FromForm] AuthModel auth)
+        public AuthenticationTokenData AuthenticateMeFromFormWithCode([FromForm] AuthDto auth)
         {
             return AuthenticateMeWithCode(auth);
         }
 
         [Create(false)]
-        public AuthenticationTokenData AuthenticateMeFromBody([FromBody] AuthModel auth)
+        public AuthenticationTokenData AuthenticateMeFromBody([FromBody] AuthDto auth)
         {
             return AuthenticateMe(auth);
         }
 
         [Create(false)]
         [Consumes("application/x-www-form-urlencoded")]
-        public AuthenticationTokenData AuthenticateMeFromForm([FromForm] AuthModel auth)
+        public AuthenticationTokenData AuthenticateMeFromForm([FromForm] AuthDto auth)
         {
             return AuthenticateMe(auth);
         }
@@ -166,7 +166,7 @@ namespace ASC.Web.Api.Controllers
 
         [Authorize(AuthenticationSchemes = "confirm", Roles = "PhoneActivation")]
         [Create("setphone", false)]
-        public AuthenticationTokenData SaveMobilePhoneFromBody([FromBody] MobileModel model)
+        public AuthenticationTokenData SaveMobilePhoneFromBody([FromBody] MobileDto model)
         {
             return SaveMobilePhone(model);
         }
@@ -174,12 +174,12 @@ namespace ASC.Web.Api.Controllers
         [Authorize(AuthenticationSchemes = "confirm", Roles = "PhoneActivation")]
         [Create("setphone", false)]
         [Consumes("application/x-www-form-urlencoded")]
-        public AuthenticationTokenData SaveMobilePhoneFromForm([FromForm] MobileModel model)
+        public AuthenticationTokenData SaveMobilePhoneFromForm([FromForm] MobileDto model)
         {
             return SaveMobilePhone(model);
         }
 
-        private AuthenticationTokenData SaveMobilePhone(MobileModel model)
+        private AuthenticationTokenData SaveMobilePhone(MobileDto model)
         {
             ApiContext.AuthByClaim();
             var user = UserManager.GetUsers(AuthContext.CurrentAccount.ID);
@@ -195,19 +195,19 @@ namespace ASC.Web.Api.Controllers
         }
 
         [Create(@"sendsms", false)]
-        public AuthenticationTokenData SendSmsCodeFromBody([FromBody] AuthModel model)
+        public AuthenticationTokenData SendSmsCodeFromBody([FromBody] AuthDto model)
         {
             return SendSmsCode(model);
         }
 
         [Create(@"sendsms", false)]
         [Consumes("application/x-www-form-urlencoded")]
-        public AuthenticationTokenData SendSmsCodeFromForm([FromForm] AuthModel model)
+        public AuthenticationTokenData SendSmsCodeFromForm([FromForm] AuthDto model)
         {
             return SendSmsCode(model);
         }
 
-        private AuthenticationTokenData SendSmsCode(AuthModel model)
+        private AuthenticationTokenData SendSmsCode(AuthDto model)
         {
             var user = GetUser(model, out _);
             SmsManager.PutAuthCode(user, true);
@@ -220,7 +220,7 @@ namespace ASC.Web.Api.Controllers
             };
         }
 
-        private AuthenticationTokenData AuthenticateMe(AuthModel auth)
+        private AuthenticationTokenData AuthenticateMe(AuthDto auth)
         {
             bool viaEmail;
             var user = GetUser(auth, out viaEmail);
@@ -289,7 +289,7 @@ namespace ASC.Web.Api.Controllers
             }
         }
 
-        private AuthenticationTokenData AuthenticateMeWithCode(AuthModel auth)
+        private AuthenticationTokenData AuthenticateMeWithCode(AuthDto auth)
         {
             var tenant = TenantManager.GetCurrentTenant().TenantId;
             var user = GetUser(auth, out _);
@@ -352,7 +352,7 @@ namespace ASC.Web.Api.Controllers
             }
         }
 
-        private UserInfo GetUser(AuthModel memberModel, out bool viaEmail)
+        private UserInfo GetUser(AuthDto memberModel, out bool viaEmail)
         {
             viaEmail = true;
             var action = MessageAction.LoginFailViaApi;

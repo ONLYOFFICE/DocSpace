@@ -43,9 +43,9 @@
         ///</short>
         ///<returns>CapabilitiesData</returns>
         [Read(Check = false)] //NOTE: this method doesn't requires auth!!!  //NOTE: this method doesn't check payment!!!
-        public CapabilitiesData GetPortalCapabilities()
+        public CapabilitiesWrapper GetPortalCapabilities()
         {
-            var result = new CapabilitiesData
+            var result = new CapabilitiesWrapper
             {
                 LdapEnabled = false,
                 Providers = null,

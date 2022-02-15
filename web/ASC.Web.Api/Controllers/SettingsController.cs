@@ -311,19 +311,19 @@ namespace ASC.Api.Settings
         }
 
         [Create("messagesettings")]
-        public object EnableAdminMessageSettingsFromBody([FromBody] AdminMessageSettingsModel model)
+        public object EnableAdminMessageSettingsFromBody([FromBody] AdminMessageSettingsDto model)
         {
             return EnableAdminMessageSettings(model);
         }
 
         [Create("messagesettings")]
         [Consumes("application/x-www-form-urlencoded")]
-        public object EnableAdminMessageSettingsFromForm([FromForm] AdminMessageSettingsModel model)
+        public object EnableAdminMessageSettingsFromForm([FromForm] AdminMessageSettingsDto model)
         {
             return EnableAdminMessageSettings(model);
         }
 
-        private object EnableAdminMessageSettings(AdminMessageSettingsModel model)
+        private object EnableAdminMessageSettings(AdminMessageSettingsDto model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -336,7 +336,7 @@ namespace ASC.Api.Settings
 
         [AllowAnonymous]
         [Create("sendadmmail")]
-        public object SendAdmMailFromBody([FromBody] AdminMessageSettingsModel model)
+        public object SendAdmMailFromBody([FromBody] AdminMessageSettingsDto model)
         {
             return SendAdmMail(model);
         }
@@ -344,12 +344,12 @@ namespace ASC.Api.Settings
         [AllowAnonymous]
         [Create("sendadmmail")]
         [Consumes("application/x-www-form-urlencoded")]
-        public object SendAdmMailFromForm([FromForm] AdminMessageSettingsModel model)
+        public object SendAdmMailFromForm([FromForm] AdminMessageSettingsDto model)
         {
             return SendAdmMail(model);
         }
 
-        private object SendAdmMail(AdminMessageSettingsModel model)
+        private object SendAdmMail(AdminMessageSettingsDto model)
         {
             var studioAdminMessageSettings = SettingsManager.Load<StudioAdminMessageSettings>();
             var enableAdmMess = studioAdminMessageSettings.Enable || TenantExtra.IsNotPaid();
@@ -372,19 +372,19 @@ namespace ASC.Api.Settings
         }
 
         [Create("maildomainsettings")]
-        public object SaveMailDomainSettingsFromBody([FromBody] MailDomainSettingsModel model)
+        public object SaveMailDomainSettingsFromBody([FromBody] MailDomainSettingsDto model)
         {
             return SaveMailDomainSettings(model);
         }
 
         [Create("maildomainsettings")]
         [Consumes("application/x-www-form-urlencoded")]
-        public object SaveMailDomainSettingsFromForm([FromForm] MailDomainSettingsModel model)
+        public object SaveMailDomainSettingsFromForm([FromForm] MailDomainSettingsDto model)
         {
             return SaveMailDomainSettings(model);
         }
 
-        private object SaveMailDomainSettings(MailDomainSettingsModel model)
+        private object SaveMailDomainSettings(MailDomainSettingsDto model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -416,7 +416,7 @@ namespace ASC.Api.Settings
 
         [AllowAnonymous]
         [Create("sendjoininvite")]
-        public object SendJoinInviteMailFromBody([FromBody] AdminMessageSettingsModel model)
+        public object SendJoinInviteMailFromBody([FromBody] AdminMessageSettingsDto model)
         {
             return SendJoinInviteMail(model);
         }
@@ -424,12 +424,12 @@ namespace ASC.Api.Settings
         [AllowAnonymous]
         [Create("sendjoininvite")]
         [Consumes("application/x-www-form-urlencoded")]
-        public object SendJoinInviteMailFromForm([FromForm] AdminMessageSettingsModel model)
+        public object SendJoinInviteMailFromForm([FromForm] AdminMessageSettingsDto model)
         {
             return SendJoinInviteMail(model);
         }
 
-        private object SendJoinInviteMail(AdminMessageSettingsModel model)
+        private object SendJoinInviteMail(AdminMessageSettingsDto model)
         {
             try
             {
@@ -499,7 +499,7 @@ namespace ASC.Api.Settings
         }
 
         [Read("customschemas")]
-        public List<SchemaModel> PeopleSchemas()
+        public List<SchemaDto> PeopleSchemas()
         {
             return CustomNamingPeople
                     .GetSchemas()
@@ -507,7 +507,7 @@ namespace ASC.Api.Settings
                     {
                         var names = CustomNamingPeople.GetPeopleNames(r.Key);
 
-                        return new SchemaModel
+                        return new SchemaDto
                         {
                             Id = names.Id,
                             Name = names.SchemaName,
@@ -526,7 +526,7 @@ namespace ASC.Api.Settings
         }
 
         [Create("customschemas")]
-        public SchemaModel SaveNamingSettings(SchemaModel model)
+        public SchemaDto SaveNamingSettings(SchemaDto model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -540,7 +540,7 @@ namespace ASC.Api.Settings
         }
 
         [Update("customschemas")]
-        public SchemaModel SaveCustomNamingSettings(SchemaModel model)
+        public SchemaDto SaveCustomNamingSettings(SchemaDto model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -591,10 +591,10 @@ namespace ASC.Api.Settings
         }
 
         [Read("customschemas/{id}")]
-        public SchemaModel PeopleSchema(string id)
+        public SchemaDto PeopleSchema(string id)
         {
             var names = CustomNamingPeople.GetPeopleNames(id);
-            var schemaItem = new SchemaModel
+            var schemaItem = new SchemaDto
             {
                 Id = names.Id,
                 Name = names.SchemaName,
@@ -626,7 +626,7 @@ namespace ASC.Api.Settings
 
         [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard,Administrators")]
         [Read("timezones", Check = false)]
-        public List<TimezonesModel> GetTimeZones()
+        public List<TimezonesDto> GetTimeZones()
         {
             ApiContext.AuthByClaim();
             var timeZones = TimeZoneInfo.GetSystemTimeZones().ToList();
@@ -636,11 +636,11 @@ namespace ASC.Api.Settings
                 timeZones.Add(TimeZoneInfo.Utc);
             }
 
-            var listOfTimezones = new List<TimezonesModel>();
+            var listOfTimezones = new List<TimezonesDto>();
 
             foreach (var tz in timeZones.OrderBy(z => z.BaseUtcOffset))
             {
-                listOfTimezones.Add(new TimezonesModel
+                listOfTimezones.Add(new TimezonesDto
                 {
                     Id = tz.Id,
                     DisplayName = TimeZoneConverter.GetTimeZoneDisplayName(tz)
@@ -664,19 +664,19 @@ namespace ASC.Api.Settings
         }
 
         [Create("greetingsettings")]
-        public ContentResult SaveGreetingSettingsFromBody([FromBody] GreetingSettingsModel model)
+        public ContentResult SaveGreetingSettingsFromBody([FromBody] GreetingSettingsDto model)
         {
             return SaveGreetingSettings(model);
         }
 
         [Create("greetingsettings")]
         [Consumes("application/x-www-form-urlencoded")]
-        public ContentResult SaveGreetingSettingsFromForm([FromForm] GreetingSettingsModel model)
+        public ContentResult SaveGreetingSettingsFromForm([FromForm] GreetingSettingsDto model)
         {
             return SaveGreetingSettings(model);
         }
 
-        private ContentResult SaveGreetingSettings(GreetingSettingsModel model)
+        private ContentResult SaveGreetingSettings(GreetingSettingsDto model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -749,19 +749,19 @@ namespace ASC.Api.Settings
         }
 
         [Update("version")]
-        public TenantVersionWrapper SetVersionFromBody([FromBody] SettingsModel model)
+        public TenantVersionWrapper SetVersionFromBody([FromBody] SettingsDto model)
         {
             return SetVersion(model);
         }
 
         [Update("version")]
         [Consumes("application/x-www-form-urlencoded")]
-        public TenantVersionWrapper SetVersionFromForm([FromForm] SettingsModel model)
+        public TenantVersionWrapper SetVersionFromForm([FromForm] SettingsDto model)
         {
             return SetVersion(model);
         }
 
-        private TenantVersionWrapper SetVersion(SettingsModel model)
+        private TenantVersionWrapper SetVersion(SettingsDto model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -824,19 +824,19 @@ namespace ASC.Api.Settings
         }
 
         [Update("security")]
-        public IEnumerable<SecurityWrapper> SetWebItemSecurityFromBody([FromBody] WebItemSecurityModel model)
+        public IEnumerable<SecurityWrapper> SetWebItemSecurityFromBody([FromBody] WebItemSecurityDto model)
         {
             return SetWebItemSecurity(model);
         }
 
         [Update("security")]
         [Consumes("application/x-www-form-urlencoded")]
-        public IEnumerable<SecurityWrapper> SetWebItemSecurityFromForm([FromForm] WebItemSecurityModel model)
+        public IEnumerable<SecurityWrapper> SetWebItemSecurityFromForm([FromForm] WebItemSecurityDto model)
         {
             return SetWebItemSecurity(model);
         }
 
-        private IEnumerable<SecurityWrapper> SetWebItemSecurity(WebItemSecurityModel model)
+        private IEnumerable<SecurityWrapper> SetWebItemSecurity(WebItemSecurityDto model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -870,19 +870,19 @@ namespace ASC.Api.Settings
         }
 
         [Update("security/access")]
-        public IEnumerable<SecurityWrapper> SetAccessToWebItemsFromBody([FromBody] WebItemSecurityModel model)
+        public IEnumerable<SecurityWrapper> SetAccessToWebItemsFromBody([FromBody] WebItemSecurityDto model)
         {
             return SetAccessToWebItems(model);
         }
 
         [Update("security/access")]
         [Consumes("application/x-www-form-urlencoded")]
-        public IEnumerable<SecurityWrapper> SetAccessToWebItemsFromForm([FromForm] WebItemSecurityModel model)
+        public IEnumerable<SecurityWrapper> SetAccessToWebItemsFromForm([FromForm] WebItemSecurityDto model)
         {
             return SetAccessToWebItems(model);
         }
 
-        private IEnumerable<SecurityWrapper> SetAccessToWebItems(WebItemSecurityModel model)
+        private IEnumerable<SecurityWrapper> SetAccessToWebItems(WebItemSecurityDto model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -944,19 +944,19 @@ namespace ASC.Api.Settings
         }
 
         [Update("security/administrator")]
-        public object SetProductAdministratorFromBody([FromBody] SecurityModel model)
+        public object SetProductAdministratorFromBody([FromBody] SecurityDto model)
         {
             return SetProductAdministrator(model);
         }
 
         [Update("security/administrator")]
         [Consumes("application/x-www-form-urlencoded")]
-        public object SetProductAdministratorFromForm([FromForm] SecurityModel model)
+        public object SetProductAdministratorFromForm([FromForm] SecurityDto model)
         {
             return SetProductAdministrator(model);
         }
 
-        private object SetProductAdministrator(SecurityModel model)
+        private object SetProductAdministrator(SecurityDto model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -986,19 +986,19 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Create("whitelabel/save")]
-        public bool SaveWhiteLabelSettingsFromBody([FromBody] WhiteLabelModel model, [FromQuery] WhiteLabelQuery query)
+        public bool SaveWhiteLabelSettingsFromBody([FromBody] WhiteLabelDto model, [FromQuery] WhiteLabelQuery query)
         {
             return SaveWhiteLabelSettings(model, query);
         }
 
         [Create("whitelabel/save")]
         [Consumes("application/x-www-form-urlencoded")]
-        public bool SaveWhiteLabelSettingsFromForm([FromForm] WhiteLabelModel model, [FromQuery] WhiteLabelQuery query)
+        public bool SaveWhiteLabelSettingsFromForm([FromForm] WhiteLabelDto model, [FromQuery] WhiteLabelQuery query)
         {
             return SaveWhiteLabelSettings(model, query);
         }
 
-        private bool SaveWhiteLabelSettings(WhiteLabelModel model, WhiteLabelQuery query)
+        private bool SaveWhiteLabelSettings(WhiteLabelDto model, WhiteLabelQuery query)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -1019,14 +1019,14 @@ namespace ASC.Api.Settings
             return true;
         }
 
-        private void SaveWhiteLabelSettingsForCurrentTenant(WhiteLabelModel model)
+        private void SaveWhiteLabelSettingsForCurrentTenant(WhiteLabelDto model)
         {
             var settings = SettingsManager.Load<TenantWhiteLabelSettings>();
 
             SaveWhiteLabelSettingsForTenant(settings, null, Tenant.TenantId, model);
         }
 
-        private void SaveWhiteLabelSettingsForDefaultTenant(WhiteLabelModel model)
+        private void SaveWhiteLabelSettingsForDefaultTenant(WhiteLabelDto model)
         {
             var settings = SettingsManager.LoadForDefaultTenant<TenantWhiteLabelSettings>();
             var storage = StorageFactory.GetStorage(string.Empty, "static_partnerdata");
@@ -1034,7 +1034,7 @@ namespace ASC.Api.Settings
             SaveWhiteLabelSettingsForTenant(settings, storage, Tenant.DEFAULT_TENANT, model);
         }
 
-        private void SaveWhiteLabelSettingsForTenant(TenantWhiteLabelSettings settings, IDataStore storage, int tenantId, WhiteLabelModel model)
+        private void SaveWhiteLabelSettingsForTenant(TenantWhiteLabelSettings settings, IDataStore storage, int tenantId, WhiteLabelDto model)
         {
             if (model.Logo != null)
             {
@@ -1246,38 +1246,38 @@ namespace ASC.Api.Settings
         }
 
         [Update("iprestrictions")]
-        public IEnumerable<string> SaveIpRestrictionsFromBody([FromBody] IpRestrictionsModel model)
+        public IEnumerable<string> SaveIpRestrictionsFromBody([FromBody] IpRestrictionsDto model)
         {
             return SaveIpRestrictions(model);
         }
 
         [Update("iprestrictions")]
         [Consumes("application/x-www-form-urlencoded")]
-        public IEnumerable<string> SaveIpRestrictionsFromForm([FromForm] IpRestrictionsModel model)
+        public IEnumerable<string> SaveIpRestrictionsFromForm([FromForm] IpRestrictionsDto model)
         {
             return SaveIpRestrictions(model);
         }
 
-        private IEnumerable<string> SaveIpRestrictions(IpRestrictionsModel model)
+        private IEnumerable<string> SaveIpRestrictions(IpRestrictionsDto model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
             return IPRestrictionsService.Save(model.Ips, Tenant.TenantId);
         }
 
         [Update("iprestrictions/settings")]
-        public IPRestrictionsSettings UpdateIpRestrictionsSettingsFromBody([FromBody] IpRestrictionsModel model)
+        public IPRestrictionsSettings UpdateIpRestrictionsSettingsFromBody([FromBody] IpRestrictionsDto model)
         {
             return UpdateIpRestrictionsSettings(model);
         }
 
         [Update("iprestrictions/settings")]
         [Consumes("application/x-www-form-urlencoded")]
-        public IPRestrictionsSettings UpdateIpRestrictionsSettingsFromForm([FromForm] IpRestrictionsModel model)
+        public IPRestrictionsSettings UpdateIpRestrictionsSettingsFromForm([FromForm] IpRestrictionsDto model)
         {
             return UpdateIpRestrictionsSettings(model);
         }
 
-        private IPRestrictionsSettings UpdateIpRestrictionsSettings(IpRestrictionsModel model)
+        private IPRestrictionsSettings UpdateIpRestrictionsSettings(IpRestrictionsDto model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -1288,19 +1288,19 @@ namespace ASC.Api.Settings
         }
 
         [Update("tips")]
-        public TipsSettings UpdateTipsSettingsFromBody([FromBody] SettingsModel model)
+        public TipsSettings UpdateTipsSettingsFromBody([FromBody] SettingsDto model)
         {
             return UpdateTipsSettings(model);
         }
 
         [Update("tips")]
         [Consumes("application/x-www-form-urlencoded")]
-        public TipsSettings UpdateTipsSettingsFromForm([FromForm] SettingsModel model)
+        public TipsSettings UpdateTipsSettingsFromForm([FromForm] SettingsDto model)
         {
             return UpdateTipsSettings(model);
         }
 
-        private TipsSettings UpdateTipsSettings(SettingsModel model)
+        private TipsSettings UpdateTipsSettings(SettingsDto model)
         {
             var settings = new TipsSettings { Show = model.Show };
             SettingsManager.SaveForCurrentUser(settings);
@@ -1341,7 +1341,7 @@ namespace ASC.Api.Settings
 
         [Update("wizard/complete", Check = false)]
         [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
-        public WizardSettings CompleteWizardFromBody([FromBody] WizardModel wizardModel)
+        public WizardSettings CompleteWizardFromBody([FromBody] WizardDto wizardModel)
         {
             return CompleteWizard(wizardModel);
         }
@@ -1349,12 +1349,12 @@ namespace ASC.Api.Settings
         [Update("wizard/complete", Check = false)]
         [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
         [Consumes("application/x-www-form-urlencoded")]
-        public WizardSettings CompleteWizardFromForm([FromForm] WizardModel wizardModel)
+        public WizardSettings CompleteWizardFromForm([FromForm] WizardDto wizardModel)
         {
             return CompleteWizard(wizardModel);
         }
 
-        private WizardSettings CompleteWizard(WizardModel wizardModel)
+        private WizardSettings CompleteWizard(WizardDto wizardModel)
         {
             ApiContext.AuthByClaim();
 
@@ -1364,9 +1364,9 @@ namespace ASC.Api.Settings
         }
 
         [Read("tfaapp")]
-        public IEnumerable<TfaSettings> GetTfaSettings()
+        public IEnumerable<TfaSettingsDto> GetTfaSettings()
         {
-            var result = new List<TfaSettings>();
+            var result = new List<TfaSettingsDto>();
 
             var SmsVisible = StudioSmsNotificationSettingsHelper.IsVisibleSettings();
             var SmsEnable = SmsVisible && SmsProviderManager.Enabled();
@@ -1374,7 +1374,7 @@ namespace ASC.Api.Settings
 
             if (SmsVisible)
             {
-                result.Add(new TfaSettings
+                result.Add(new TfaSettingsDto
                 {
                     Enabled = StudioSmsNotificationSettingsHelper.Enable,
                     Id = "sms",
@@ -1385,7 +1385,7 @@ namespace ASC.Api.Settings
 
             if (TfaVisible)
             {
-                result.Add(new TfaSettings
+                result.Add(new TfaSettingsDto
                 {
                     Enabled = SettingsManager.Load<TfaAppAuthSettings>().EnableSetting,
                     Id = "app",
@@ -1399,7 +1399,7 @@ namespace ASC.Api.Settings
 
         [Create("tfaapp/validate")]
         [Authorize(AuthenticationSchemes = "confirm", Roles = "TfaActivation,Everyone")]
-        public bool TfaValidateAuthCode(TfaValidateModel model)
+        public bool TfaValidateAuthCode(TfaValidateDto model)
         {
             ApiContext.AuthByClaim();
             var user = UserManager.GetUsers(AuthContext.CurrentAccount.ID);
@@ -1433,19 +1433,19 @@ namespace ASC.Api.Settings
         }
 
         [Update("tfaapp")]
-        public bool TfaSettingsFromBody([FromBody] TfaModel model)
+        public bool TfaSettingsFromBody([FromBody] TfaDto model)
         {
             return TfaSettingsUpdate(model);
         }
 
         [Update("tfaapp")]
         [Consumes("application/x-www-form-urlencoded")]
-        public bool TfaSettingsFromForm([FromForm] TfaModel model)
+        public bool TfaSettingsFromForm([FromForm] TfaDto model)
         {
             return TfaSettingsUpdate(model);
         }
 
-        private bool TfaSettingsUpdate(TfaModel model)
+        private bool TfaSettingsUpdate(TfaDto model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -1571,19 +1571,19 @@ namespace ASC.Api.Settings
         }
 
         [Update("tfaappnewapp")]
-        public object TfaAppNewAppFromBody([FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] TfaModel model)
+        public object TfaAppNewAppFromBody([FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] TfaDto model)
         {
             return TfaAppNewApp(model);
         }
 
         [Update("tfaappnewapp")]
         [Consumes("application/x-www-form-urlencoded")]
-        public object TfaAppNewAppFromForm([FromForm] TfaModel model)
+        public object TfaAppNewAppFromForm([FromForm] TfaDto model)
         {
             return TfaAppNewApp(model);
         }
 
-        private object TfaAppNewApp(TfaModel model)
+        private object TfaAppNewApp(TfaDto model)
         {
             var id = model?.Id ?? Guid.Empty;
             var isMe = id.Equals(Guid.Empty);
@@ -1628,19 +1628,19 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Update("colortheme")]
-        public void SaveColorThemeFromBody([FromBody] SettingsModel model)
+        public void SaveColorThemeFromBody([FromBody] SettingsDto model)
         {
             SaveColorTheme(model);
         }
 
         [Update("colortheme")]
         [Consumes("application/x-www-form-urlencoded")]
-        public void SaveColorThemeFromForm([FromForm] SettingsModel model)
+        public void SaveColorThemeFromForm([FromForm] SettingsDto model)
         {
             SaveColorTheme(model);
         }
 
-        private void SaveColorTheme(SettingsModel model)
+        private void SaveColorTheme(SettingsDto model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
             ColorThemesSettingsHelper.SaveColorTheme(model.Theme);
@@ -1649,19 +1649,19 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Update("timeandlanguage")]
-        public object TimaAndLanguageFromBody([FromBody] SettingsModel model)
+        public object TimaAndLanguageFromBody([FromBody] SettingsDto model)
         {
             return TimaAndLanguage(model);
         }
 
         [Update("timeandlanguage")]
         [Consumes("application/x-www-form-urlencoded")]
-        public object TimaAndLanguageFromForm([FromForm] SettingsModel model)
+        public object TimaAndLanguageFromForm([FromForm] SettingsDto model)
         {
             return TimaAndLanguage(model);
         }
 
-        private object TimaAndLanguage(SettingsModel model)
+        private object TimaAndLanguage(SettingsDto model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -1703,19 +1703,19 @@ namespace ASC.Api.Settings
         }
 
         [Create("owner")]
-        public object SendOwnerChangeInstructionsFromBody([FromBody] SettingsModel model)
+        public object SendOwnerChangeInstructionsFromBody([FromBody] SettingsDto model)
         {
             return SendOwnerChangeInstructions(model);
         }
 
         [Create("owner")]
         [Consumes("application/x-www-form-urlencoded")]
-        public object SendOwnerChangeInstructionsFromForm([FromForm] SettingsModel model)
+        public object SendOwnerChangeInstructionsFromForm([FromForm] SettingsDto model)
         {
             return SendOwnerChangeInstructions(model);
         }
 
-        private object SendOwnerChangeInstructions(SettingsModel model)
+        private object SendOwnerChangeInstructions(SettingsDto model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -1741,7 +1741,7 @@ namespace ASC.Api.Settings
 
         [Update("owner")]
         [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalOwnerChange")]
-        public void OwnerFromBody([FromBody] SettingsModel model)
+        public void OwnerFromBody([FromBody] SettingsDto model)
         {
             Owner(model);
         }
@@ -1749,12 +1749,12 @@ namespace ASC.Api.Settings
         [Update("owner")]
         [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalOwnerChange")]
         [Consumes("application/x-www-form-urlencoded")]
-        public void OwnerFromForm([FromForm] SettingsModel model)
+        public void OwnerFromForm([FromForm] SettingsDto model)
         {
             Owner(model);
         }
 
-        private void Owner(SettingsModel model)
+        private void Owner(SettingsDto model)
         {
             var newOwner = Constants.LostUser;
             try
@@ -1783,19 +1783,19 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Update("defaultpage")]
-        public object SaveDefaultPageSettingsFromBody([FromBody] SettingsModel model)
+        public object SaveDefaultPageSettingsFromBody([FromBody] SettingsDto model)
         {
             return SaveDefaultPageSettings(model);
         }
 
         [Update("defaultpage")]
         [Consumes("application/x-www-form-urlencoded")]
-        public object SaveDefaultPageSettingsFromForm([FromForm] SettingsModel model)
+        public object SaveDefaultPageSettingsFromForm([FromForm] SettingsDto model)
         {
             return SaveDefaultPageSettings(model);
         }
 
-        private object SaveDefaultPageSettings(SettingsModel model)
+        private object SaveDefaultPageSettings(SettingsDto model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -1904,7 +1904,7 @@ namespace ASC.Api.Settings
 
         [Create("license", Check = false)]
         [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard, Administrators")]
-        public object UploadLicense([FromForm] UploadLicenseModel model)
+        public object UploadLicense([FromForm] UploadLicenseDto model)
         {
             try
             {
@@ -2181,19 +2181,19 @@ namespace ASC.Api.Settings
         public readonly object Locker = new object();
 
         [Create("encryption/start")]
-        public bool StartStorageEncryptionFromBody([FromBody] StorageEncryptionModel storageEncryption)
+        public bool StartStorageEncryptionFromBody([FromBody] StorageEncryptionDto storageEncryption)
         {
             return StartStorageEncryption(storageEncryption);
         }
 
         [Create("encryption/start")]
         [Consumes("application/x-www-form-urlencoded")]
-        public bool StartStorageEncryptionFromForm([FromForm] StorageEncryptionModel storageEncryption)
+        public bool StartStorageEncryptionFromForm([FromForm] StorageEncryptionDto storageEncryption)
         {
             return StartStorageEncryption(storageEncryption);
         }
 
-        private bool StartStorageEncryption(StorageEncryptionModel storageEncryption)
+        private bool StartStorageEncryption(StorageEncryptionDto storageEncryption)
         {
             if (CoreBaseSettings.CustomMode)
             {
@@ -2387,19 +2387,19 @@ namespace ASC.Api.Settings
         }
 
         [Update("storage")]
-        public StorageSettings UpdateStorageFromBody([FromBody] StorageModel model)
+        public StorageSettings UpdateStorageFromBody([FromBody] StorageDto model)
         {
             return UpdateStorage(model);
         }
 
         [Update("storage")]
         [Consumes("application/x-www-form-urlencoded")]
-        public StorageSettings UpdateStorageFromForm([FromForm] StorageModel model)
+        public StorageSettings UpdateStorageFromForm([FromForm] StorageDto model)
         {
             return UpdateStorage(model);
         }
 
-        private StorageSettings UpdateStorage(StorageModel model)
+        private StorageSettings UpdateStorage(StorageDto model)
         {
             try
             {
@@ -2467,19 +2467,19 @@ namespace ASC.Api.Settings
         }
 
         [Update("storage/cdn")]
-        public CdnStorageSettings UpdateCdnFromBody([FromBody] StorageModel model)
+        public CdnStorageSettings UpdateCdnFromBody([FromBody] StorageDto model)
         {
             return UpdateCdn(model);
         }
 
         [Update("storage/cdn")]
         [Consumes("application/x-www-form-urlencoded")]
-        public CdnStorageSettings UpdateCdnFromForm([FromForm] StorageModel model)
+        public CdnStorageSettings UpdateCdnFromForm([FromForm] StorageDto model)
         {
             return UpdateCdn(model);
         }
 
-        private CdnStorageSettings UpdateCdn(StorageModel model)
+        private CdnStorageSettings UpdateCdn(StorageDto model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
             if (!CoreBaseSettings.Standalone) return null;
@@ -2690,19 +2690,19 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Update("rebranding/mail")]
-        public bool UpdateMailWhiteLabelSettingsFromBody([FromBody] MailWhiteLabelSettingsModel model)
+        public bool UpdateMailWhiteLabelSettingsFromBody([FromBody] MailWhiteLabelSettingsDto model)
         {
             return UpdateMailWhiteLabelSettings(model);
         }
 
         [Update("rebranding/mail")]
         [Consumes("application/x-www-form-urlencoded")]
-        public bool UpdateMailWhiteLabelSettingsFromForm([FromForm] MailWhiteLabelSettingsModel model)
+        public bool UpdateMailWhiteLabelSettingsFromForm([FromForm] MailWhiteLabelSettingsDto model)
         {
             return UpdateMailWhiteLabelSettings(model);
         }
 
-        private bool UpdateMailWhiteLabelSettings(MailWhiteLabelSettingsModel model)
+        private bool UpdateMailWhiteLabelSettings(MailWhiteLabelSettingsDto model)
         {
             DemandRebrandingPermission();
 
@@ -2751,29 +2751,29 @@ namespace ASC.Api.Settings
         }
 
         [Read("authservice")]
-        public IEnumerable<AuthServiceModel> GetAuthServices()
+        public IEnumerable<AuthServiceDto> GetAuthServices()
         {
             return ConsumerFactory.GetAll<Consumer>()
                 .Where(consumer => consumer.ManagedKeys.Any())
                 .OrderBy(services => services.Order)
-                .Select(r => new AuthServiceModel(r))
+                .Select(r => new AuthServiceDto(r))
                 .ToList();
         }
 
         [Create("authservice")]
-        public bool SaveAuthKeysFromBody([FromBody] AuthServiceModel model)
+        public bool SaveAuthKeysFromBody([FromBody] AuthServiceDto model)
         {
             return SaveAuthKeys(model);
         }
 
         [Create("authservice")]
         [Consumes("application/x-www-form-urlencoded")]
-        public bool SaveAuthKeysFromForm([FromForm] AuthServiceModel model)
+        public bool SaveAuthKeysFromForm([FromForm] AuthServiceDto model)
         {
             return SaveAuthKeys(model);
         }
 
-        private bool SaveAuthKeys(AuthServiceModel model)
+        private bool SaveAuthKeys(AuthServiceDto model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
