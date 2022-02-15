@@ -38,6 +38,7 @@ public class IPRestrictionsRepository
     public IPRestrictionsRepository(DbContextManager<TenantDbContext> dbContextManager, IMapper mapper)
     {
         _lazyTenantDbContext = new Lazy<TenantDbContext>(() => dbContextManager.Get(DbId));
+        _mapper = mapper;
     }
 
     public List<IPRestriction> Get(int tenant)
