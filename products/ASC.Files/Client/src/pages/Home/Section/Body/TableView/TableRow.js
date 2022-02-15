@@ -53,7 +53,7 @@ const StyledTableRow = styled(TableRow)`
     cursor: ${(props) =>
       !props.isThirdPartyFolder &&
       (props.checked || props.isActive) &&
-      "url(images/cursor.palm.svg), auto"};
+      "url(/static/images/cursor.palm.react.svg), auto"};
 
     ${(props) =>
       props.inProgress &&

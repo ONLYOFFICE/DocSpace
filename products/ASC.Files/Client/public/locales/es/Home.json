@@ -79,5 +79,7 @@
     "UnblockVersion": "Desbloquear/Proteger",
     "UploadToFolder": "Cargar a la carpeta",
     "ViewList": "Lista",
-    "ViewTiles": "Iconos"
+    "ViewTiles": "Iconos",
+    "VersionHistory": "Historial de las Versiones",
+    "MoveOrCopy": "Mover o Copiar"
 }

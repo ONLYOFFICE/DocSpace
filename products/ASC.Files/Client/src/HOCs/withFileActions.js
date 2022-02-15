@@ -2,7 +2,7 @@ import React from "react";
 import { inject, observer } from "mobx-react";
 import toastr from "@appserver/components/toast/toastr";
 import { checkProtocol } from "../helpers/files-helpers";
-import { AppServerConfig } from "@appserver/common/constants";
+import { AppServerConfig, FileStatus } from "@appserver/common/constants";
 import { combineUrl } from "@appserver/common/utils";
 import config from "../../package.json";
 import { isMobile } from "react-device-detect";
@@ -185,7 +185,8 @@ export default function withFileActions(WrappedFileItem) {
           return;
         }
 
-        if (fileStatus === 2) this.onMarkAsRead(id);
+        if ((fileStatus & FileStatus.IsNew) === FileStatus.IsNew)
+          this.onMarkAsRead(id);
 
         if (canWebEdit || canViewedDocs) {
           let tab =

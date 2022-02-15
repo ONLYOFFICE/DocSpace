@@ -79,5 +79,7 @@
     "UnblockVersion": "Odblokuj/Check-in",
     "UploadToFolder": "Wgraj do folderu",
     "ViewList": "Lista",
-    "ViewTiles": "Tytuły"
+    "ViewTiles": "Tytuły",
+    "VersionHistory": "Historia wersji",
+    "MoveOrCopy": "Przenieś lub kopiuj"
 }

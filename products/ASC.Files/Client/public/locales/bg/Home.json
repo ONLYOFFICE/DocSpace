@@ -79,5 +79,7 @@
     "UnblockVersion": "Деблокиране/Настаняване",
     "UploadToFolder": "Качи в папка",
     "ViewList": "Списък",
-    "ViewTiles": "Клетки"
+    "ViewTiles": "Клетки",
+    "VersionHistory": "История на версиите",
+    "MoveOrCopy": "Преместване или копиране"
 }
