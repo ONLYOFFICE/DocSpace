@@ -353,7 +353,7 @@ namespace ASC.Web.Files.Services.WCFService
             response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/xml");
             return response;
         }
-        
+
         public async Task<List<FileEntry>> GetItemsAsync<TId>(IEnumerable<TId> filesId, IEnumerable<TId> foldersId, FilterType filter, bool subjectGroup, string subjectID, string search)
         {
             var subjectId = string.IsNullOrEmpty(subjectID) ? Guid.Empty : new Guid(subjectID);
@@ -558,7 +558,7 @@ namespace ASC.Web.Files.Services.WCFService
             result = result.OfType<File<T>>().Where(f => previewedType.Contains(FileUtility.GetFileTypeByFileName(f.Title)));
 
             return new List<File<T>>(result);
-        }       
+        }
 
         public async Task<File<T>> CreateNewFileAsync<TTemplate>(FileModel<T, TTemplate> fileWrapper, bool enableExternalExt = false)
         {
@@ -957,7 +957,7 @@ namespace ASC.Web.Files.Services.WCFService
 
             return new KeyValuePair<File<T>, List<File<T>>>(file, await GetFileHistoryAsync(fileId));
         }
-      
+
         public async Task<File<T>> LockFileAsync(T fileId, bool lockfile)
         {
             var tagDao = GetTagDao();
@@ -1437,7 +1437,7 @@ namespace ASC.Web.Files.Services.WCFService
 
             return (checkedFiles, checkedFolders);
         }
-        
+
         private async Task<(List<TFrom>, List<TFrom>)> MoveOrCopyFilesCheckAsync<TFrom, TTo>(IEnumerable<TFrom> filesId, IEnumerable<TFrom> foldersId, TTo destFolderId)
         {
             var checkedFiles = new List<TFrom>();
@@ -1464,24 +1464,22 @@ namespace ASC.Web.Files.Services.WCFService
 
             var folders = folderDao.GetFoldersAsync(foldersId);
             var foldersProject = folders.Where(folder => folder.FolderType == FolderType.BUNCH);
-            if (await foldersProject.CountAsync() > 0)
+            var toSubfolders = destFolderDao.GetFoldersAsync(toFolder.ID);
+
+            await foreach (var folderProject in foldersProject)
             {
-                var toSubfolders = await destFolderDao.GetFoldersAsync(toFolder.ID).ToListAsync();
+                var toSub = await toSubfolders.FirstOrDefaultAsync(to => Equals(to.Title, folderProject.Title));
+                if (toSub == null) continue;
 
-                await foreach (var folderProject in foldersProject)
-                {
-                    var toSub = toSubfolders.FirstOrDefault(to => Equals(to.Title, folderProject.Title));
-                    if (toSub == null) continue;
+                var filesPr = fileDao.GetFilesAsync(folderProject.ID);
+                var foldersTmp = folderDao.GetFoldersAsync(folderProject.ID);
+                var foldersPr = foldersTmp.Select(d => d.ID).ToListAsync();
 
-                    var filesPr = await fileDao.GetFilesAsync(folderProject.ID);
-                    var foldersTmp = await folderDao.GetFoldersAsync(folderProject.ID).ToListAsync();
-                    var foldersPr = foldersTmp.Select(d => d.ID);
-
-                    var (cFiles, cFolders) = await MoveOrCopyFilesCheckAsync(filesPr, foldersPr, toSub.ID);
-                    checkedFiles.AddRange(cFiles);
-                    checkedFolders.AddRange(cFolders);
-                }
+                var (cFiles, cFolders) = await MoveOrCopyFilesCheckAsync(await filesPr, await foldersPr, toSub.ID);
+                checkedFiles.AddRange(cFiles);
+                checkedFolders.AddRange(cFolders);
             }
+
             try
             {
                 foreach (var pair in await folderDao.CanMoveOrCopyAsync(foldersId.ToArray(), toFolder.ID))
@@ -1592,7 +1590,7 @@ namespace ASC.Web.Files.Services.WCFService
                 results = FileConverter.GetStatusAsync(files);
             }
 
-            await foreach(var res in results)
+            await foreach (var res in results)
             {
                 yield return res;
             }
@@ -2177,7 +2175,7 @@ namespace ASC.Web.Files.Services.WCFService
             //ErrorIf(!accounts.Any(), FilesCommonResource.ErrorMassage_MailAccountNotFound);
 
             //return new List<string>(accounts);
-        }     
+        }
 
         public async IAsyncEnumerable<FileEntry> ChangeOwnerAsync(IEnumerable<T> foldersId, IEnumerable<T> filesId, Guid userId)
         {
@@ -2261,7 +2259,7 @@ namespace ASC.Web.Files.Services.WCFService
                 entries.Append(newFile);
             }
 
-            await foreach(var entrie in entries)
+            await foreach (var entrie in entries)
             {
                 yield return entrie;
             }

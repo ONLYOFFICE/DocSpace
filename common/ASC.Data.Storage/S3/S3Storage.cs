@@ -1039,11 +1039,10 @@ namespace ASC.Data.Storage.S3
         private async Task<IEnumerable<S3Object>> GetS3ObjectsAsync(string domain, string path = "", bool recycle = false)
         {
             path = MakePath(domain, path) + '/';
-            var tmp = await GetS3ObjectsByPathAsync(domain, path);
-            var obj = tmp.ToList();
-            if (string.IsNullOrEmpty(_recycleDir) || !recycle) return obj;
-            obj.AddRange(await GetS3ObjectsByPathAsync(domain, GetRecyclePath(path)));
-            return obj;
+            var s30Objects = await GetS3ObjectsByPathAsync(domain, path);
+            if (string.IsNullOrEmpty(_recycleDir) || !recycle) return s30Objects;
+            s30Objects.Concat(await GetS3ObjectsByPathAsync(domain, GetRecyclePath(path)));
+            return s30Objects;
         }
 
 
