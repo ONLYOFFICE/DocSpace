@@ -1,47 +1,46 @@
-﻿namespace ASC.Core.Common.EF.Context
-{
-    public class MySqlResourceDbContext : ResourceDbContext { }
-    public class PostgreSqlResourceDbContext : ResourceDbContext { }
-    public class ResourceDbContext : BaseDbContext
-    {
-        public DbSet<ResAuthors> Authors { get; set; }
-        public DbSet<ResAuthorsFile> ResAuthorsFiles { get; set; }
-        public DbSet<ResAuthorsLang> ResAuthorsLang { get; set; }
-        public DbSet<ResCultures> ResCultures { get; set; }
-        public DbSet<ResData> ResData { get; set; }
-        public DbSet<ResFiles> ResFiles { get; set; }
-        public DbSet<ResReserve> ResReserve { get; set; }
-        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
-        {
-            get
-            {
-                return new Dictionary<Provider, Func<BaseDbContext>>()
-                {
-                    { Provider.MySql, () => new MySqlResourceDbContext() } ,
-                    { Provider.PostgreSql, () => new PostgreSqlResourceDbContext() } ,
-                };
-            }
-        }
+﻿namespace ASC.Core.Common.EF.Context;
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+public class MySqlResourceDbContext : ResourceDbContext { }
+public class PostgreSqlResourceDbContext : ResourceDbContext { }
+public class ResourceDbContext : BaseDbContext
+{
+    public DbSet<ResAuthors> Authors { get; set; }
+    public DbSet<ResAuthorsFile> ResAuthorsFiles { get; set; }
+    public DbSet<ResAuthorsLang> ResAuthorsLang { get; set; }
+    public DbSet<ResCultures> ResCultures { get; set; }
+    public DbSet<ResData> ResData { get; set; }
+    public DbSet<ResFiles> ResFiles { get; set; }
+    public DbSet<ResReserve> ResReserve { get; set; }
+    protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
+    {
+        get
         {
-            ModelBuilderWrapper
-                .From(modelBuilder, Provider)
-                .AddResAuthorsLang()
-                .AddResAuthorsFile()
-                .AddResCultures()
-                .AddResFiles()
-                .AddResData()
-                .AddResAuthors()
-                .AddResReserve();
+            return new Dictionary<Provider, Func<BaseDbContext>>()
+            {
+                { Provider.MySql, () => new MySqlResourceDbContext() } ,
+                { Provider.PostgreSql, () => new PostgreSqlResourceDbContext() } ,
+            };
         }
     }
 
-    public static class ResourceDbExtension
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        public static DIHelper AddResourceDbService(this DIHelper services)
-        {
-            return services.AddDbContextManagerService<ResourceDbContext>();
-        }
+        ModelBuilderWrapper
+            .From(modelBuilder, Provider)
+            .AddResAuthorsLang()
+            .AddResAuthorsFile()
+            .AddResCultures()
+            .AddResFiles()
+            .AddResData()
+            .AddResAuthors()
+            .AddResReserve();
+    }
+}
+
+public static class ResourceDbExtension
+{
+    public static DIHelper AddResourceDbService(this DIHelper services)
+    {
+        return services.AddDbContextManagerService<ResourceDbContext>();
     }
 }

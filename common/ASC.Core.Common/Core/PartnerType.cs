@@ -24,12 +24,11 @@
 */
 
 
-namespace ASC.Core
+namespace ASC.Core;
+
+public enum PartnerType
 {
-    public enum PartnerType
-    {
-        Default,
-        Administrator,
-        System,
-    }
+    Default,
+    Administrator,
+    System,
 }

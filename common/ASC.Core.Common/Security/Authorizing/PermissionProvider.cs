@@ -23,31 +23,30 @@
  *
 */
 
-namespace ASC.Core.Security.Authorizing
+namespace ASC.Core.Security.Authorizing;
+
+class PermissionProvider : IPermissionProvider
 {
-    class PermissionProvider : IPermissionProvider
+    private readonly AuthorizationManager _authorizationManager;
+
+    public PermissionProvider(AuthorizationManager authorizationManager)
     {
-        private readonly AuthorizationManager _authorizationManager;
+        _authorizationManager = authorizationManager;
+    }
 
-        public PermissionProvider(AuthorizationManager authorizationManager)
+    public IEnumerable<Ace> GetAcl(ISubject subject, IAction action, ISecurityObjectId objectId, ISecurityObjectProvider secObjProvider)
+    {
+        if (subject == null)
         {
-            _authorizationManager = authorizationManager;
+            throw new ArgumentNullException(nameof(subject));
+        }
+        if (action == null)
+        {
+            throw new ArgumentNullException(nameof(action));
         }
 
-        public IEnumerable<Ace> GetAcl(ISubject subject, IAction action, ISecurityObjectId objectId, ISecurityObjectProvider secObjProvider)
-        {
-            if (subject == null)
-            {
-                throw new ArgumentNullException(nameof(subject));
-            }
-            if (action == null)
-            {
-                throw new ArgumentNullException(nameof(action));
-            }
-
-            return _authorizationManager
-                .GetAcesWithInherits(subject.ID, action.ID, objectId, secObjProvider)
-                .Select(r => new Ace(r.Action, r.AceType));
-        }
+        return _authorizationManager
+            .GetAcesWithInherits(subject.ID, action.ID, objectId, secObjProvider)
+            .Select(r => new Ace(r.Action, r.AceType));
     }
 }

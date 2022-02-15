@@ -1,37 +1,36 @@
-﻿namespace ASC.Core.Common.EF.Model
+﻿namespace ASC.Core.Common.EF.Model;
+
+public class Regions
 {
-    public class Regions
+    public string Region { get; set; }
+    public string Provider { get; set; }
+    public string ConnectionString { get; set; }
+}
+
+public static class RegionsExtension
+{
+    public static ModelBuilderWrapper AddRegions(this ModelBuilderWrapper modelBuilder)
     {
-        public string Region { get; set; }
-        public string Provider { get; set; }
-        public string ConnectionString { get; set; }
+        modelBuilder
+            .Add(MySqlAddRegions, Provider.MySql)
+            .Add(PgSqlAddRegions, Provider.PostgreSql);
+
+        return modelBuilder;
     }
 
-    public static class RegionsExtension
+    public static void MySqlAddRegions(this ModelBuilder modelBuilder)
     {
-        public static ModelBuilderWrapper AddRegions(this ModelBuilderWrapper modelBuilder)
+        modelBuilder.Entity<Regions>(entity =>
         {
-            modelBuilder
-                .Add(MySqlAddRegions, Provider.MySql)
-                .Add(PgSqlAddRegions, Provider.PostgreSql);
+            entity.HasKey(e => e.Region);
+        });
+    }
 
-            return modelBuilder;
-        }
-
-        public static void MySqlAddRegions(this ModelBuilder modelBuilder)
+    public static void PgSqlAddRegions(this ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Regions>(entity =>
         {
-            modelBuilder.Entity<Regions>(entity =>
-            {
-                entity.HasKey(e => e.Region);
-            });
-        }
-
-        public static void PgSqlAddRegions(this ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Regions>(entity =>
-            {
-                entity.HasKey(e => e.Region);
-            });
-        }
+            entity.HasKey(e => e.Region);
+        });
     }
 }

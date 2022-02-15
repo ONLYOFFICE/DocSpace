@@ -1,39 +1,38 @@
-﻿namespace ASC.Core.Common.EF.Context
+﻿namespace ASC.Core.Common.EF.Context;
+
+public class MySqlAuditTrailContext : AuditTrailContext { }
+public class PostgreSqlAuditTrailContext : AuditTrailContext { }
+public class AuditTrailContext : BaseDbContext
 {
-    public class MySqlAuditTrailContext : AuditTrailContext { }
-    public class PostgreSqlAuditTrailContext : AuditTrailContext { }
-    public class AuditTrailContext : BaseDbContext
+    public DbSet<AuditEvent> AuditEvents { get; set; }
+    public DbSet<User> Users { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        public DbSet<AuditEvent> AuditEvents { get; set; }
-        public DbSet<User> Users { get; set; }
+        ModelBuilderWrapper
+        .From(modelBuilder, Provider)
+        .AddAuditEvent()
+        .AddUser()
+        .AddDbFunction();
+    }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
+    {
+        get
         {
-            ModelBuilderWrapper
-            .From(modelBuilder, Provider)
-            .AddAuditEvent()
-            .AddUser()
-            .AddDbFunction();
-        }
-
-        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
-        {
-            get
-            {
-                return new Dictionary<Provider, Func<BaseDbContext>>()
+            return new Dictionary<Provider, Func<BaseDbContext>>()
                 {
                     { Provider.MySql, () => new MySqlAuditTrailContext() } ,
                     { Provider.PostgreSql, () => new PostgreSqlAuditTrailContext() } ,
                 };
-            }
         }
     }
+}
 
-    public static class AuditTrailContextExtension
+public static class AuditTrailContextExtension
+{
+    public static DIHelper AddAuditTrailContextService(this DIHelper services)
     {
-        public static DIHelper AddAuditTrailContextService(this DIHelper services)
-        {
-            return services.AddDbContextManagerService<AuditTrailContext>();
-        }
+        return services.AddDbContextManagerService<AuditTrailContext>();
     }
 }

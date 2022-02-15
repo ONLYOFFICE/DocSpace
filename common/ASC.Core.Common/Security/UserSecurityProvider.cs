@@ -23,37 +23,36 @@
  *
 */
 
-namespace ASC.Core.Users
+namespace ASC.Core.Users;
+
+public class UserSecurityProvider : ISecurityObject
 {
-    public class UserSecurityProvider : ISecurityObject
+    public Type ObjectType { get; private set; }
+    public object SecurityId { get; private set; }
+
+    public UserSecurityProvider(Guid userId)
     {
-        public Type ObjectType { get; private set; }
-        public object SecurityId { get; private set; }
+        SecurityId = userId;
+        ObjectType = typeof(UserInfo);
+    }
 
-        public UserSecurityProvider(Guid userId)
+    public bool ObjectRolesSupported => true;
+
+    public IEnumerable<IRole> GetObjectRoles(ISubject account, ISecurityObjectId objectId, SecurityCallContext callContext)
+    {
+        var roles = new List<IRole>();
+        if (account.ID.Equals(objectId.SecurityId))
         {
-            SecurityId = userId;
-            ObjectType = typeof(UserInfo);
+            roles.Add(ASC.Common.Security.Authorizing.Constants.Self);
         }
 
-        public bool ObjectRolesSupported => true;
+        return roles;
+    }
 
-        public IEnumerable<IRole> GetObjectRoles(ISubject account, ISecurityObjectId objectId, SecurityCallContext callContext)
-        {
-            var roles = new List<IRole>();
-            if (account.ID.Equals(objectId.SecurityId))
-            {
-                roles.Add(ASC.Common.Security.Authorizing.Constants.Self);
-            }
+    public bool InheritSupported => false;
 
-            return roles;
-        }
-
-        public bool InheritSupported => false;
-
-        public ISecurityObjectId InheritFrom(ISecurityObjectId objectId)
-        {
-            throw new NotImplementedException();
-        }
+    public ISecurityObjectId InheritFrom(ISecurityObjectId objectId)
+    {
+        throw new NotImplementedException();
     }
 }

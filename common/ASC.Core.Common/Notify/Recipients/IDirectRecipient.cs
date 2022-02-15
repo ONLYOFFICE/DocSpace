@@ -24,11 +24,10 @@
 */
 
 
-namespace ASC.Notify.Recipients
+namespace ASC.Notify.Recipients;
+
+public interface IDirectRecipient : IRecipient
 {
-    public interface IDirectRecipient : IRecipient
-    {
-        string[] Addresses { get; }
-        bool CheckActivation { get; }
-    }
+    string[] Addresses { get; }
+    bool CheckActivation { get; }
 }

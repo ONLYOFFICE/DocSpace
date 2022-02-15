@@ -24,18 +24,17 @@
 */
 
 
-namespace ASC.Notify.Model
+namespace ASC.Notify.Model;
+
+public interface INotifySource
 {
-    public interface INotifySource
-    {
-        string Id { get; }
+    string Id { get; }
 
-        IActionProvider GetActionProvider();
+    IActionProvider GetActionProvider();
 
-        IPatternProvider GetPatternProvider();
+    IPatternProvider GetPatternProvider();
 
-        IRecipientProvider GetRecipientsProvider();
+    IRecipientProvider GetRecipientsProvider();
 
-        ISubscriptionProvider GetSubscriptionProvider();
-    }
+    ISubscriptionProvider GetSubscriptionProvider();
 }

@@ -1,41 +1,40 @@
-﻿namespace ASC.Core.Common.EF.Context
+﻿namespace ASC.Core.Common.EF.Context;
+
+public class MySqlMessagesContext : MessagesContext { }
+public class PostgreSqlMessagesContext : MessagesContext { }
+public class MessagesContext : BaseDbContext
 {
-    public class MySqlMessagesContext : MessagesContext { }
-    public class PostgreSqlMessagesContext : MessagesContext { }
-    public class MessagesContext : BaseDbContext
+    public DbSet<AuditEvent> AuditEvents { get; set; }
+    public DbSet<LoginEvent> LoginEvents { get; set; }
+    public DbSet<User> Users { get; set; }
+
+    protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
     {
-        public DbSet<AuditEvent> AuditEvents { get; set; }
-        public DbSet<LoginEvent> LoginEvents { get; set; }
-        public DbSet<User> Users { get; set; }
-
-        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
+        get
         {
-            get
+            return new Dictionary<Provider, Func<BaseDbContext>>()
             {
-                return new Dictionary<Provider, Func<BaseDbContext>>()
-                {
-                    { Provider.MySql, () => new MySqlMessagesContext() } ,
-                    { Provider.PostgreSql, () => new PostgreSqlMessagesContext() } ,
-                };
-            }
-        }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            ModelBuilderWrapper
-                .From(modelBuilder, Provider)
-                .AddAuditEvent()
-                .AddLoginEvents()
-                .AddUser()
-                .AddDbFunction();
+                { Provider.MySql, () => new MySqlMessagesContext() } ,
+                { Provider.PostgreSql, () => new PostgreSqlMessagesContext() } ,
+            };
         }
     }
 
-    public static class MessagesContextExtension
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        public static DIHelper AddMessagesContextService(this DIHelper services)
-        {
-            return services.AddDbContextManagerService<MessagesContext>();
-        }
+        ModelBuilderWrapper
+            .From(modelBuilder, Provider)
+            .AddAuditEvent()
+            .AddLoginEvents()
+            .AddUser()
+            .AddDbFunction();
+    }
+}
+
+public static class MessagesContextExtension
+{
+    public static DIHelper AddMessagesContextService(this DIHelper services)
+    {
+        return services.AddDbContextManagerService<MessagesContext>();
     }
 }

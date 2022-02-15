@@ -25,14 +25,13 @@
 
 
 
-namespace ASC.Notify.Cron
+namespace ASC.Notify.Cron;
+
+public interface ISet : IList
 {
-    public interface ISet : IList
-    {
-        new bool Add(object obj);
+    new bool Add(object obj);
 
-        bool AddAll(ICollection c);
+    bool AddAll(ICollection c);
 
-        object First();
-    }
+    object First();
 }
