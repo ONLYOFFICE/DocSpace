@@ -52,8 +52,8 @@ class SettingsStore {
   internalFormats = {};
   masterFormExtension = "";
 
-  html = [".htm", ".mht", ".html"]; //TODO:
-  ebook = [".fb2", ".ibk", ".prc", ".epub"]; //TODO:
+  html = [".htm", ".mht", ".html"];
+  ebook = [".fb2", ".ibk", ".prc", ".epub"];
 
   constructor(thirdPartyStore, treeFoldersStore) {
     makeAutoObservable(this);
