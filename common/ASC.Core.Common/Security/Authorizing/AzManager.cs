@@ -144,9 +144,9 @@ public class AzManager
 
     internal class AzManagerAcl
     {
-        public IAction DenyAction { get; set };
-        public ISubject DenySubject { get; set; };
-        public bool IsAllow { get; set; };
+        public IAction DenyAction { get; set; }
+        public ISubject DenySubject { get; set; }
+        public bool IsAllow { get; set; }
         public static AzManagerAcl Allow => new AzManagerAcl { IsAllow = true };
         public static AzManagerAcl Default => new AzManagerAcl { IsAllow = false };
     }
