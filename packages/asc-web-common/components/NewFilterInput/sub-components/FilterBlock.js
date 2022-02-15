@@ -126,11 +126,11 @@ const FilterBlock = ({
       selectedFilterData.filterValues.forEach((value) => {
         items.forEach((item) => {
           if (item.group === value.group) {
-            console.log(item);
             item.groupItem.forEach((groupItem) => {
               if (
                 groupItem.key === value.key ||
-                (groupItem.selectedItem && groupItem.selectedItem.key)
+                (groupItem.selectedItem &&
+                  Object.keys(groupItem.selectedItem).length > 0)
               ) {
                 groupItem.isSelected = true;
               }
@@ -139,7 +139,7 @@ const FilterBlock = ({
         });
       });
     }
-
+    console.log();
     setFilterData(items);
     setFilterValues(selectedFilterData.filterValues);
   }, [selectedFilterData, getFilterData]);
