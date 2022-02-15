@@ -211,4 +211,3 @@ dotnet_naming_style.begin_with_underscore.required_prefix = _
 dotnet_naming_style.begin_with_underscore.required_suffix = 
 dotnet_naming_style.begin_with_underscore.word_separator = 
 dotnet_naming_style.begin_with_underscore.capitalization = camel_case
-csharp_prefer_static_local_function=false:error
