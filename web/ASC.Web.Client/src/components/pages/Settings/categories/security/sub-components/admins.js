@@ -710,6 +710,9 @@ class PortalAdmins extends Component {
                 onSelect={this.onSelect}
                 groupsCaption={groupsCaption}
                 onCancel={this.onCancelSelector}
+                headerLabel={t("AddAdmins")}
+                onArrowClick={this.onCancelSelector}
+                showCounter
               />
               {selectedUser && (
                 <ModalDialog
