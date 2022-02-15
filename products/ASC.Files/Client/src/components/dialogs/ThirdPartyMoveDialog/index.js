@@ -7,6 +7,7 @@ import Text from "@appserver/components/text";
 import Button from "@appserver/components/button";
 import { inject, observer } from "mobx-react";
 import toastr from "@appserver/components/toast/toastr";
+import { connectedCloudsTypeTitleTranslation } from "../../../helpers/utils";
 
 const StyledOperationDialog = styled(ModalDialog)`
   .operation-button {
@@ -89,6 +90,8 @@ const PureThirdPartyMoveContainer = ({
       });
   };
 
+  const providerTitle = connectedCloudsTypeTitleTranslation(provider, t);
+
   return (
     <StyledOperationDialog
       isLoading={!tReady}
@@ -99,7 +102,7 @@ const PureThirdPartyMoveContainer = ({
     >
       <ModalDialog.Header>{t("MoveConfirmation")}</ModalDialog.Header>
       <ModalDialog.Body>
-        <Text>{t("MoveConfirmationMessage", { provider })}</Text>
+        <Text>{t("MoveConfirmationMessage", { provider: providerTitle })}</Text>
         <br />
         <Text>{t("MoveConfirmationAlert")}</Text>
       </ModalDialog.Body>
