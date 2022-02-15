@@ -41,6 +41,7 @@ const InputWithChips = ({
   const inputRef = useRef(null);
   const blockRef = useRef(null);
   const scrollbarRef = useRef(null);
+  const chipsCount = useRef(options.length);
 
   useEffect(() => {
     document.addEventListener("keydown", onKeyDown);
@@ -54,6 +55,14 @@ const InputWithChips = ({
   useEffect(() => {
     onChange(selectedChips);
   }, [selectedChips]);
+
+  useEffect(() => {
+    const isChipAdd = chips.length > chipsCount.current;
+    if (scrollbarRef.current && isChipAdd) {
+      scrollbarRef.current.scrollToBottom();
+    }
+    chipsCount.current = chips.length;
+  }, [chips.length]);
 
   useClickOutside(blockRef, () => {
     setSelectedChips([]);
@@ -109,10 +118,6 @@ const InputWithChips = ({
 
       setChips([...chips, ...filteredChips]);
       setValue("");
-
-      if (scrollbarRef.current) {
-        scrollbarRef.current.scrollToBottom();
-      }
     }
   };
 
