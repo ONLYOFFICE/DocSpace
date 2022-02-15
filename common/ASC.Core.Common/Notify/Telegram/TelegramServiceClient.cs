@@ -50,7 +50,7 @@ namespace ASC.Core.Common.Notify
 
         public void SendMessage(NotifyMessage m)
         {
-            CacheMessage.Publish(m, CacheNotifyAction.Insert);
+            CacheMessage.Publish(m, ASC.Common.Caching.CacheNotifyAction.Insert);
         }
 
         public void RegisterUser(string userId, int tenantId, string token)
@@ -61,7 +61,7 @@ namespace ASC.Core.Common.Notify
                 UserId = userId,
                 TenantId = tenantId,
                 Token = token
-            }, CacheNotifyAction.Insert);
+            }, ASC.Common.Caching.CacheNotifyAction.Insert);
         }
 
         public void CreateOrUpdateClient(int tenantId, string token, int tokenLifespan, string proxy)
@@ -72,12 +72,12 @@ namespace ASC.Core.Common.Notify
                 Token = token,
                 TokenLifespan = tokenLifespan,
                 Proxy = proxy
-            }, CacheNotifyAction.Insert);
+            }, ASC.Common.Caching.CacheNotifyAction.Insert);
         }
 
         public void DisableClient(int tenantId)
         {
-            CacheDisableClient.Publish(new DisableClientProto() { TenantId = tenantId }, CacheNotifyAction.Insert);
+            CacheDisableClient.Publish(new DisableClientProto() { TenantId = tenantId }, ASC.Common.Caching.CacheNotifyAction.Insert);
         }
 
         public string RegistrationToken(string userId, int tenantId)

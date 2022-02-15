@@ -23,56 +23,50 @@
  *
 */
 
-namespace ASC.Common.Security.Authorizing
+namespace ASC.Common.Security.Authorizing;
+
+[Serializable]
+public sealed class Role : IRole
 {
-    [Serializable]
-    public sealed class Role : IRole
+    public const string Everyone = "Everyone";
+    public const string Visitors = "Visitors";
+    public const string Users = "Users";
+    public const string Administrators = "Administrators";
+    public const string System = "System";
+
+    public Guid ID { get; internal set; }
+    public string Name { get; internal set; }
+    public string AuthenticationType => "ASC";
+    public bool IsAuthenticated => false;
+
+
+    public Role(Guid id, string name)
     {
-        public const string Everyone = "Everyone";
-        public const string Visitors = "Visitors";
-        public const string Users = "Users";
-        public const string Administrators = "Administrators";
-        public const string System = "System";
-
-
-        public Guid ID { get; internal set; }
-
-        public string Name { get; internal set; }
-
-        public string AuthenticationType
+        if (id == Guid.Empty)
         {
-            get { return "ASC"; }
+            throw new ArgumentException(nameof(id));
+        }
+        if (string.IsNullOrEmpty(name))
+        {
+            throw new ArgumentNullException(nameof(name));
         }
 
-        public bool IsAuthenticated
-        {
-            get { return false; }
-        }
+        ID = id;
+        Name = name;
+    }
 
+    public override int GetHashCode()
+    {
+        return ID.GetHashCode();
+    }
 
-        public Role(Guid id, string name)
-        {
-            if (id == Guid.Empty) throw new ArgumentException("id");
-            if (string.IsNullOrEmpty(name)) throw new ArgumentNullException(nameof(name));
+    public override bool Equals(object obj)
+    {
+        return obj is Role r && r.ID == ID;
+    }
 
-            ID = id;
-            Name = name;
-        }
-
-
-        public override int GetHashCode()
-        {
-            return ID.GetHashCode();
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is Role r && r.ID == ID;
-        }
-
-        public override string ToString()
-        {
-            return $"Role: {Name}";
-        }
+    public override string ToString()
+    {
+        return $"Role: {Name}";
     }
 }

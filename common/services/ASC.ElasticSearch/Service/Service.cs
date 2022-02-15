@@ -42,7 +42,7 @@ namespace ASC.ElasticSearch.Service
             CacheNotify.Subscribe((a) =>
             {
                 ReIndex(a.Names.ToList(), a.Tenant);
-            }, CacheNotifyAction.Any);
+            }, Common.Caching.CacheNotifyAction.Any);
         }
 
         public bool Support(string table)

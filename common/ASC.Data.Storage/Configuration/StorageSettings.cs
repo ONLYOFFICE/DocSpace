@@ -65,7 +65,7 @@ namespace ASC.Data.Storage.Configuration
                     {
                         storageSettingsHelper.Clear(cdnSettings);
                     }
-                }, CacheNotifyAction.Remove);
+                }, Common.Caching.CacheNotifyAction.Remove);
             }
         }
     }
@@ -168,7 +168,7 @@ namespace ASC.Data.Storage.Configuration
             var path = TenantPath.CreatePath(tenantId);
             foreach (var module in StorageFactoryConfig.GetModuleList("", true))
             {
-                Cache.Publish(new DataStoreCacheItem() { TenantId = path, Module = module }, CacheNotifyAction.Remove);
+                Cache.Publish(new DataStoreCacheItem() { TenantId = path, Module = module }, Common.Caching.CacheNotifyAction.Remove);
             }
         }
 

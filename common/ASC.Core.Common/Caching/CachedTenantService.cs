@@ -50,12 +50,12 @@ namespace ASC.Core.Caching
                 var tenants = GetTenantStore();
                 tenants.Remove(t.TenantId);
                 tenants.Clear(coreBaseSettings);
-            }, CacheNotifyAction.InsertOrUpdate);
+            }, ASC.Common.Caching.CacheNotifyAction.InsertOrUpdate);
 
             cacheNotifySettings.Subscribe((s) =>
             {
                 Cache.Remove(s.Key);
-            }, CacheNotifyAction.Remove);
+            }, ASC.Common.Caching.CacheNotifyAction.Remove);
         }
 
         internal TenantStore GetTenantStore()
@@ -267,14 +267,14 @@ namespace ASC.Core.Caching
         public Tenant SaveTenant(CoreSettings coreSettings, Tenant tenant)
         {
             tenant = Service.SaveTenant(coreSettings, tenant);
-            CacheNotifyItem.Publish(new TenantCacheItem() { TenantId = tenant.TenantId }, CacheNotifyAction.InsertOrUpdate);
+            CacheNotifyItem.Publish(new TenantCacheItem() { TenantId = tenant.TenantId }, ASC.Common.Caching.CacheNotifyAction.InsertOrUpdate);
             return tenant;
         }
 
         public void RemoveTenant(int id, bool auto = false)
         {
             Service.RemoveTenant(id, auto);
-            CacheNotifyItem.Publish(new TenantCacheItem() { TenantId = id }, CacheNotifyAction.InsertOrUpdate);
+            CacheNotifyItem.Publish(new TenantCacheItem() { TenantId = id }, ASC.Common.Caching.CacheNotifyAction.InsertOrUpdate);
         }
 
         public IEnumerable<TenantVersion> GetTenantVersions()
@@ -299,7 +299,7 @@ namespace ASC.Core.Caching
         {
             Service.SetTenantSettings(tenant, key, data);
             var cacheKey = string.Format("settings/{0}/{1}", tenant, key);
-            CacheNotifySettings.Publish(new TenantSetting { Key = cacheKey }, CacheNotifyAction.Remove);
+            CacheNotifySettings.Publish(new TenantSetting { Key = cacheKey }, ASC.Common.Caching.CacheNotifyAction.Remove);
         }
     }
 }

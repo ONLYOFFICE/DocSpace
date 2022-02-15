@@ -76,11 +76,11 @@ public abstract class BaseStartup
 
             if (kafkaConfiguration != null)
             {
-                DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCacheNotify<>));
             }
             else if (redisConfiguration != null)
             {
-                DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
+                DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCacheNotify<>));
 
                 services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
             }

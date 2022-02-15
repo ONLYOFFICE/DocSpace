@@ -199,7 +199,7 @@ namespace ASC.Files.Thirdparty.OneDrive
                     CacheChildItems.Remove(new Regex("onedrivei-" + i.Key));
                     CacheItem.Remove("onedrive-" + i.Key);
                 }
-            }, CacheNotifyAction.Remove);
+            }, Common.Caching.CacheNotifyAction.Remove);
         }
 
         internal Item GetOneDriveItem(OneDriveStorage storage, int id, string itemId)
@@ -231,13 +231,13 @@ namespace ASC.Files.Thirdparty.OneDrive
             var key = id + "-";
             if (string.IsNullOrEmpty(onedriveId))
             {
-                CacheNotify.Publish(new OneDriveCacheItem { ResetAll = true, Key = key }, CacheNotifyAction.Remove);
+                CacheNotify.Publish(new OneDriveCacheItem { ResetAll = true, Key = key }, Common.Caching.CacheNotifyAction.Remove);
             }
             else
             {
                 key += onedriveId;
 
-                CacheNotify.Publish(new OneDriveCacheItem { Key = key }, CacheNotifyAction.Remove);
+                CacheNotify.Publish(new OneDriveCacheItem { Key = key }, Common.Caching.CacheNotifyAction.Remove);
             }
         }
     }

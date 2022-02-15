@@ -36,8 +36,8 @@ namespace ASC.Core.Caching
             CacheNotify = cacheNotify;
             Cache = cache;
 
-            cacheNotify.Subscribe((r) => UpdateCache(r, true), CacheNotifyAction.Remove);
-            cacheNotify.Subscribe((r) => UpdateCache(r, false), CacheNotifyAction.InsertOrUpdate);
+            cacheNotify.Subscribe((r) => UpdateCache(r, true), ASC.Common.Caching.CacheNotifyAction.Remove);
+            cacheNotify.Subscribe((r) => UpdateCache(r, false), ASC.Common.Caching.CacheNotifyAction.InsertOrUpdate);
         }
 
         private void UpdateCache(AzRecord r, bool remove)
@@ -102,14 +102,14 @@ namespace ASC.Core.Caching
         public AzRecord SaveAce(int tenant, AzRecord r)
         {
             r = service.SaveAce(tenant, r);
-            cacheNotify.Publish(r, CacheNotifyAction.InsertOrUpdate);
+            cacheNotify.Publish(r, ASC.Common.Caching.CacheNotifyAction.InsertOrUpdate);
             return r;
         }
 
         public void RemoveAce(int tenant, AzRecord r)
         {
             service.RemoveAce(tenant, r);
-            cacheNotify.Publish(r, CacheNotifyAction.Remove);
+            cacheNotify.Publish(r, ASC.Common.Caching.CacheNotifyAction.Remove);
         }
     }
 }
