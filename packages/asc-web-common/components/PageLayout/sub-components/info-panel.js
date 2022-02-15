@@ -31,7 +31,6 @@ const InfoPanel = ({ children, isVisible, toggleIsVisible }) => {
         border-left: 1px solid #eceef1;
         display: flex;
         flex-direction: column;
-        align-items: center;
         padding: 0 16px;
 
         @media ${tablet} {

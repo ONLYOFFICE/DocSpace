@@ -1,10 +1,10 @@
 import { inject, observer } from "mobx-react";
 import React from "react";
-import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
+import { withRouter } from "react-router";
 
 const InfoPanelHeaderContent = () => {
-    return <>Room</>;
+    return <>Info</>;
 };
 
 export default inject(({}) => {

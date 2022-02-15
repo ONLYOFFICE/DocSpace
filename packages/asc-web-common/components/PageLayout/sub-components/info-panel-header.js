@@ -9,8 +9,6 @@ import styled from "styled-components";
 const SubInfoPanelHeader = ({ children, toggleIsVisible }) => {
     const content = children.props.children;
 
-    console.log(toggleIsVisible);
-
     const StyledInfoPanelHeader = styled.div`
         width: 100%;
         height: 52px;
@@ -18,6 +16,10 @@ const SubInfoPanelHeader = ({ children, toggleIsVisible }) => {
         justify-content: space-between;
         align-items: center;
         margin: 8px -16px;
+
+        .header-text {
+            margin-left: 16px;
+        }
 
         .close-btn {
             @media ${tablet} {

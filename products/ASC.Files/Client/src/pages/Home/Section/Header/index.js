@@ -21,13 +21,14 @@ const StyledContainer = styled.div`
         ${(props) =>
             props.viewAs === "table"
                 ? css`
-                      margin: 0px -22px;
+                      margin: 0px -20px;
                       width: calc(100% + 44px);
                   `
                 : css`
-                      margin: 0px -20px;
-                      width: calc(100% + 40px);
+                      margin: 0px -24px;
+                      width: calc(100% + 48px);
                   `}
+
         @media ${tablet} {
             margin: 0 -16px;
             width: calc(100% + 32px);
@@ -44,18 +45,18 @@ const StyledContainer = styled.div`
                     props.isRootFolder
                         ? "auto auto 1fr"
                         : props.canCreate
-                        ? "auto auto auto auto auto  1fr"
-                        : "auto auto auto auto 1fr"};
+                        ? "auto auto auto 1fr 32px"
+                        : "auto auto 1fr 32px"};
 
-                @media ${tablet} {
+                /* @media ${tablet} {
                     grid-template-columns: ${(props) =>
-                        props.isRootFolder
-                            ? "auto auto 1fr"
-                            : props.canCreate
-                            ? "auto auto auto auto 1fr"
-                            : "auto auto auto 1fr"};
+                    props.isRootFolder
+                        ? "auto auto 1fr"
+                        : props.canCreate
+                        ? "auto auto auto  1fr"
+                        : "auto auto  1fr"};
                     ${(props) => !props.isLoading && "top: 7px;"}
-                }
+                } */
             `}
         align-items: center;
         max-width: calc(100vw - 32px);
