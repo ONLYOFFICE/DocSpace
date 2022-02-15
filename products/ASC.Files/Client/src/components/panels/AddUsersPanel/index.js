@@ -140,28 +140,6 @@ class AddUsersPanelComponent extends React.Component {
         />
         <Aside className="header_aside-panel">
           <StyledContent>
-            <StyledHeaderContent>
-              <IconButton
-                size="16"
-                iconName="/static/images/arrow.path.react.svg"
-                onClick={this.onArrowClick}
-                // color={theme.filesPanels.addUsers.iconColor}
-              />
-              <Heading
-                className="header_aside-panel-header"
-                size="medium"
-                truncate
-              >
-                {isMultiSelect ? t("LinkText") : t("Translations:OwnerChange")}
-              </Heading>
-              {/*<IconButton
-                size="16"
-                iconName="PlusIcon"
-                className="header_aside-panel-plus-icon"
-                onClick={() => console.log("onPlusClick")}
-              />*/}
-            </StyledHeaderContent>
-
             <StyledBody ref={this.scrollRef}>
               <PeopleSelector
                 className="peopleSelector"
@@ -177,6 +155,10 @@ class AddUsersPanelComponent extends React.Component {
                 {...embeddedComponent}
                 groupsCaption={groupsCaption}
                 showCounter
+                onArrowClick={this.onArrowClick}
+                headerLabel={
+                  isMultiSelect ? t("LinkText") : t("Translations:OwnerChange")
+                }
                 //onCancel={onClose}
               />
             </StyledBody>
