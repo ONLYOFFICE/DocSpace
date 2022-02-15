@@ -556,7 +556,7 @@ const Selector = (props) => {
           onClick={onArrowClickAction}
         />
         <Heading size="medium" truncate={true}>
-          {headerLabel}
+          {headerLabel.replace("()", "")}
         </Heading>
       </div>
       <Column className="column-options" size={size}>
@@ -626,7 +626,7 @@ const Selector = (props) => {
       </Column>
       <Footer
         className="footer"
-        selectButtonLabel={selectButtonLabel}
+        selectButtonLabel={headerLabel}
         showCounter={showCounter}
         isDisabled={isDisabled}
         isVisible={isMultiSelect && hasSelected()}

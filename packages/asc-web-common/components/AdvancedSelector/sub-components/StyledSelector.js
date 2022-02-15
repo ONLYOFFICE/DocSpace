@@ -33,7 +33,7 @@ const StyledSelector = styled(Container)`
         `}
 
   .header {
-    grid-aria: header;
+    grid-area: header;
 
     height: 53px;
     min-height: 53px;
@@ -165,8 +165,7 @@ const StyledSelector = styled(Container)`
       .option-separator {
         height: 1px;
         background: #dfe2e3;
-        padding: 0 16px;
-        margin: 8px 0;
+        margin: 8px 16px;
       }
 
       .row-header {
