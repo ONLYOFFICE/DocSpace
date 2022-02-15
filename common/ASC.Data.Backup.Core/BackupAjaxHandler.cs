@@ -225,7 +225,7 @@ public class BackupAjaxHandler
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        if (!SetupInfo.IsVisibleSettings(ManagementType.Backup.ToString()))
+            if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.Backup)))
         {
             throw new BillingException(Resource.ErrorNotAllowedOption, "Backup");
         }
@@ -315,7 +315,7 @@ public class BackupAjaxHandler
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
         var currentUser = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
-        if (!SetupInfo.IsVisibleSettings(ManagementType.Migration.ToString())
+            if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.Migration))
             || !currentUser.IsOwner(_tenantManager.GetCurrentTenant())
             || !SetupInfo.IsSecretEmail(currentUser.Email) && !_tenantExtra.GetTenantQuota().HasMigration)
         {

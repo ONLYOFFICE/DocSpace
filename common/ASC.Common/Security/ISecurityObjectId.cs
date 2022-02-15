@@ -24,11 +24,10 @@
 */
 
 
-namespace ASC.Common.Security
+namespace ASC.Common.Security;
+
+public interface ISecurityObjectId
 {
-    public interface ISecurityObjectId
-    {
-        object SecurityId { get; }
-        Type ObjectType { get; }
-    }
+    object SecurityId { get; }
+    Type ObjectType { get; }
 }

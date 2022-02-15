@@ -36,7 +36,7 @@ public abstract class ModuleSpecificsBase : IModuleSpecifics
     private string _connectionStringName;
     private readonly Helpers _helpers;
 
-    public ModuleSpecificsBase(Helpers helpers)
+        protected ModuleSpecificsBase(Helpers helpers)
     {
         _helpers = helpers;
     }
@@ -91,7 +91,7 @@ public abstract class ModuleSpecificsBase : IModuleSpecifics
     public DbCommand CreateDeleteCommand(DbConnection connection, int tenantId, TableInfo table)
     {
         var command = connection.CreateCommand();
-        command.CommandText = string.Format("delete t.* from {0} as t {1};", table.Name, GetDeleteCommandConditionText(tenantId, table));
+            command.CommandText = $"delete t.* from {table.Name} as t {GetDeleteCommandConditionText(tenantId, table)};";
 
         return command;
     }
@@ -109,14 +109,10 @@ public abstract class ModuleSpecificsBase : IModuleSpecifics
         }
 
         var columns = valuesForInsert.Keys.Intersect(table.Columns).ToArray();
-
-        var insertCommantText = string.Format("{0} into {1}({2}) values({3});",
-                                              table.InsertMethod != InsertMethod.Ignore
+            var insert = table.InsertMethod != InsertMethod.Ignore
                                                   ? table.InsertMethod.ToString().ToLower()
-                                                  : "insert ignore",
-                                              table.Name,
-                                              string.Join(",", columns),
-                                              string.Join(",", columns.Select(c => "@" + c)));
+                                                      : "insert ignore";
+            var insertCommantText = $"{insert} into {table.Name}({string.Join(",", columns)}) values({string.Join(",", columns.Select(c => "@" + c))});";
 
         var command = connection.CreateCommand();
         command.CommandText = insertCommantText;
@@ -134,7 +130,7 @@ public abstract class ModuleSpecificsBase : IModuleSpecifics
         var p = command.CreateParameter();
         if (!string.IsNullOrEmpty(name))
         {
-            p.ParameterName = name.StartsWith("@") ? name : "@" + name;
+                p.ParameterName = name.StartsWith('@') ? name : "@" + name;
         }
 
         p.Value = GetParameterValue(value);

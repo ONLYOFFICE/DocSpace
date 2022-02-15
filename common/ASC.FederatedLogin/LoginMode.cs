@@ -24,11 +24,10 @@
 */
 
 
-namespace ASC.FederatedLogin
+namespace ASC.FederatedLogin;
+
+public enum LoginMode
 {
-    public enum LoginMode
-    {
-        Popup,
-        Redirect
-    }
+    Popup,
+    Redirect
 }

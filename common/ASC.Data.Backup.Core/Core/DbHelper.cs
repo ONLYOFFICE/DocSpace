@@ -23,7 +23,6 @@ public class DbHelper : IDisposable
         _logger = options.CurrentValue;
         _tenantDbContext = tenantDbContext;
         _coreDbContext = coreDbContext;
-
         var file = connectionString.ElementInformation.Source;
 
         if ("web.connections.config".Equals(Path.GetFileName(file), StringComparison.InvariantCultureIgnoreCase))
@@ -39,7 +38,7 @@ public class DbHelper : IDisposable
         _connect.ConnectionString = connectionString.ConnectionString;
         _connect.Open();
 
-        _mysql = connectionString.ProviderName.ToLower().Contains("mysql");
+        _mysql = connectionString.ProviderName.Contains("mysql", StringComparison.OrdinalIgnoreCase);
         if (_mysql)
         {
             CreateCommand("set @@session.sql_mode = concat(@@session.sql_mode, ',NO_AUTO_VALUE_ON_ZERO')").ExecuteNonQuery();
@@ -104,7 +103,7 @@ public class DbHelper : IDisposable
             tables = _connect
                 .GetSchema("Tables")
                 .Select(@"TABLE_TYPE <> 'SYSTEM_TABLE'")
-                .Select(row => ((string)row["TABLE_NAME"]));
+                    .Select(row => (string)row["TABLE_NAME"]);
         }
 
         return tables
@@ -173,13 +172,13 @@ public class DbHelper : IDisposable
                 .Intersect(table.Columns.Cast<DataColumn>().Select(c => c.ColumnName), StringComparer.InvariantCultureIgnoreCase)
                 .ToList();
 
-            tableColumns.ForEach(column => sql.AppendFormat("{0}, ", Quote(column)));
+            tableColumns.ForEach(column => sql.Append($"{Quote(column)}, "));
             sql.Replace(", ", ") values (", sql.Length - 2, 2);
 
             var insert = _connect.CreateCommand();
             tableColumns.ForEach(column =>
             {
-                sql.AppendFormat("@{0}, ", column);
+                sql.Append($"@{column}, ");
                 var p = insert.CreateParameter();
                 p.ParameterName = "@" + column;
                 insert.Parameters.Add(p);
@@ -246,7 +245,7 @@ public class DbHelper : IDisposable
         }
         else
         {
-            return _columns.Select(string.Format("TABLE_NAME = '{0}'", table))
+            return _columns.Select($"TABLE_NAME = '{table}'")
                 .Select(r => r["COLUMN_NAME"].ToString());
         }
     }
@@ -258,11 +257,11 @@ public class DbHelper : IDisposable
             return string.Empty;
         }
 
-        if (_whereExceptions.ContainsKey(tableName.ToLower()))
+        if (_whereExceptions.TryGetValue(tableName.ToLower(), out var exc))
         {
-            return string.Format(_whereExceptions[tableName.ToLower()], tenant);
+            return string.Format(exc, tenant);
         }
-        var tenantColumn = GetColumnsFrom(tableName).FirstOrDefault(c => c.ToLower().StartsWith("tenant"));
+        var tenantColumn = GetColumnsFrom(tableName).FirstOrDefault(c => c.StartsWith("tenant", StringComparison.OrdinalIgnoreCase));
 
         return tenantColumn != null ?
             " where " + Quote(tenantColumn) + " = " + tenant :

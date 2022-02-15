@@ -137,7 +137,7 @@ internal class RestoreDbModuleTask : PortalTaskBase
                         else if (tableInfo.IdType == IdType.Integer)
                         {
                             var command = connection.CreateCommand();
-                            command.CommandText = string.Format("select max({0}) from {1};", tableInfo.IdColumn, tableInfo.Name);
+                                command.CommandText = $"select max({tableInfo.IdColumn}) from {tableInfo.Name};";
                             newIdValue = (int)command.WithTimeout(120).ExecuteScalar() + 1;
                         }
                     }

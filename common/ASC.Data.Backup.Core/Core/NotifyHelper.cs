@@ -92,7 +92,6 @@ public class NotifyHelper
         var (userManager, studioNotifyHelper, studioNotifySource, displayUserSettingsHelper, authManager) = scopeClass;
         var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifySource, scope);
 
-        var owner = userManager.GetUsers(tenant.OwnerId);
         var users = notifyAllUsers
             ? userManager.GetUsers(EmployeeStatus.Active)
             : new[] { userManager.GetUsers(tenantManager.GetCurrentTenant().OwnerId) };
@@ -125,7 +124,7 @@ public class NotifyHelper
             .Where(u => notify ? u.ActivationStatus.HasFlag(EmployeeActivationStatus.Activated) : u.IsOwner(tenant))
             .ToArray();
 
-        if (users.Any())
+            if (users.Length > 0)
         {
             var args = CreateArgs(scope, region, url);
             if (action == Actions.MigrationPortalSuccessV115)
@@ -219,7 +218,7 @@ public class NotifyHelperScope
     }
 }
 
-public class NotifyHelperExtension
+public static class NotifyHelperExtension
 {
     public static void Register(DIHelper services)
     {

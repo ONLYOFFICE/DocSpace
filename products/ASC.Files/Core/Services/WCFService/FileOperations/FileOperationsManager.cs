@@ -46,7 +46,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             var processlist = Process.GetProcesses();
 
             //TODO: replace with distributed cache
-            if (processlist.Any())
+            if (processlist.Length > 0)
             {
                 foreach (var o in operations.Where(o => processlist.All(p => p.Id != o.InstanceId)))
                 {
@@ -239,7 +239,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         }
     }
 
-    public class FileOperationsManagerHelperExtention
+    public static class FileOperationsManagerHelperExtention
     {
         public static void Register(DIHelper services)
         {

@@ -299,7 +299,7 @@ public abstract class BaseBackupProgressItem : DistributedTaskProgress
 
     private int? _tenantId;
 
-    public BaseBackupProgressItem(IOptionsMonitor<ILog> options, IServiceScopeFactory serviceScopeFactory)
+    protected BaseBackupProgressItem(IOptionsMonitor<ILog> options, IServiceScopeFactory serviceScopeFactory)
     {
         Logger = options.CurrentValue;
         ServiceScopeFactory = serviceScopeFactory;
@@ -375,7 +375,6 @@ public class BackupProgressItem : BaseBackupProgressItem
         var scopeClass = scope.ServiceProvider.GetService<BackupWorkerScope>();
         var (tenantManager, backupStorageFactory, notifyHelper, backupRepository, backupWorker, backupPortalTask, _, _, coreBaseSettings) = scopeClass;
 
-        var tenant = tenantManager.GetTenant(TenantId);
         var dateTime = coreBaseSettings.Standalone ? DateTime.Now : DateTime.UtcNow;
         var backupName = string.Format("{0}_{1:yyyy-MM-dd_HH-mm-ss}.{2}", tenantManager.GetTenant(TenantId).TenantAlias, dateTime, ArchiveFormat);
 
@@ -534,14 +533,14 @@ public class RestoreProgressItem : BaseBackupProgressItem
             tenantManager.SaveTenant(tenant);
 
             var columnMapper = new ColumnMapper();
-            columnMapper.SetMapping("tenants_tenants", "alias", tenant.TenantAlias, (Guid.Parse(Id)).ToString("N"));
+                columnMapper.SetMapping("tenants_tenants", "alias", tenant.TenantAlias, Guid.Parse(Id).ToString("N"));
             columnMapper.Commit();
 
             var restoreTask = restorePortalTask;
             restoreTask.Init(_configPaths[_currentRegion], tempFile, TenantId, columnMapper, _upgradesPath);
             restoreTask.ProgressChanged += (sender, args) =>
             {
-                Percentage = Percentage = (10d + 0.65 * args.Progress);
+                    Percentage = Percentage = 10d + 0.65 * args.Progress;
                 PublishChanges();
             };
             restoreTask.RunJob();
@@ -861,7 +860,7 @@ internal class BackupWorkerScope
     }
 }
 
-public class BackupWorkerExtension
+public static class BackupWorkerExtension
 {
     public static void Register(DIHelper services)
     {
@@ -870,7 +869,7 @@ public class BackupWorkerExtension
     }
 }
 
-public class FactoryProgressItemExtension
+public static class FactoryProgressItemExtension
 {
     public static void Register(DIHelper services)
     {

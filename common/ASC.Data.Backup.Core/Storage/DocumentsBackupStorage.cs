@@ -146,7 +146,7 @@ public class DocumentsBackupStorage : IBackupStorage
         var chunkedUploadSession = fileDao.CreateUploadSession(newFile, source.Length);
         chunkedUploadSession.CheckQuota = false;
 
-        var bytesRead = 0;
+            int bytesRead;
 
         while ((bytesRead = source.Read(buffer, 0, (int)_setupInfo.ChunkUploadSize)) > 0)
         {

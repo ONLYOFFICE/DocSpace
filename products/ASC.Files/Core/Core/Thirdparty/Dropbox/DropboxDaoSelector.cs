@@ -57,7 +57,7 @@ namespace ASC.Files.Thirdparty.Dropbox
         }
     }
 
-    public class DropboxDaoSelectorExtension
+    public static class DropboxDaoSelectorExtension
     {
         public static void Register(DIHelper services)
         {

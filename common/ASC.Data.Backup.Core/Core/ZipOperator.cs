@@ -27,16 +27,15 @@ namespace ASC.Data.Backup;
 
 public class ZipWriteOperator : IDataWriteOperator
 {
-    private readonly GZipOutputStream _gZipOutputStream;
+
     private readonly TarOutputStream _tarOutputStream;
-    private readonly Stream _file;
     private readonly TempStream _tempStream;
 
     public ZipWriteOperator(TempStream tempStream, string targetFile)
     {
-        _file = new FileStream(targetFile, FileMode.Create);
-        _gZipOutputStream = new GZipOutputStream(_file);
-        _tarOutputStream = new TarOutputStream(_gZipOutputStream, Encoding.UTF8);
+        var file = new FileStream(targetFile, FileMode.Create);
+        var gZipOutputStream = new GZipOutputStream(file);
+        _tarOutputStream = new TarOutputStream(gZipOutputStream, Encoding.UTF8);
         _tempStream = tempStream;
     }
 

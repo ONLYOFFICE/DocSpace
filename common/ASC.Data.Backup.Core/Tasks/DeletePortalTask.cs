@@ -66,7 +66,7 @@ public class DeletePortalTask : PortalTaskBase
                         var t = (TableInfo)state;
                         module.CreateDeleteCommand(connection.Fix(), TenantId, t).WithTimeout(120).ExecuteNonQuery();
                     }, table, 5, onFailure: error => { throw ThrowHelper.CantDeleteTable(table.Name, error); });
-                SetCurrentStepProgress((int)((++tablesProcessed * 100) / (double)tablesCount));
+                    SetCurrentStepProgress((int)(++tablesProcessed * 100 / (double)tablesCount));
             }
         }
 
@@ -81,7 +81,7 @@ public class DeletePortalTask : PortalTaskBase
         foreach (var module in storageModules)
         {
             var storage = StorageFactory.GetStorage(ConfigPath, TenantId.ToString(), module);
-            var domains = StorageFactoryConfig.GetDomainList(ConfigPath, module).ToList();
+                var domains = StorageFactoryConfig.GetDomainList(ConfigPath, module);
             foreach (var domain in domains)
             {
                 ActionInvoker.Try(state => storage.DeleteFiles((string)state, "\\", "*.*", true), domain, 5,
@@ -89,7 +89,7 @@ public class DeletePortalTask : PortalTaskBase
             }
 
             storage.DeleteFiles("\\", "*.*", true);
-            SetCurrentStepProgress((int)((++modulesProcessed * 100) / (double)storageModules.Count));
+                SetCurrentStepProgress((int)(++modulesProcessed * 100 / (double)storageModules.Count));
         }
 
         Logger.Debug("end delete storage");

@@ -1,49 +1,50 @@
-﻿namespace ASC.Api.Core.Core
+﻿namespace ASC.Api.Core.Core;
+
+public class CustomEndpointDataSource : EndpointDataSource
 {
-    public class CustomEndpointDataSource : EndpointDataSource
+    public EndpointDataSource Source { get; }
+    public override IReadOnlyList<Endpoint> Endpoints { get; }
+
+    public CustomEndpointDataSource(EndpointDataSource source)
     {
-        public EndpointDataSource Source { get; }
+        Source = source;
+        var endpoints = Source.Endpoints.Cast<RouteEndpoint>();
+        Endpoints = endpoints
+            .SelectMany(r =>
+            {
+                var endpoints = new List<RouteEndpoint>();
 
-        public override IReadOnlyList<Endpoint> Endpoints { get; }
-        public CustomEndpointDataSource(EndpointDataSource source)
-        {
-            Source = source;
-            var endpoints = Source.Endpoints.Cast<RouteEndpoint>();
-            Endpoints = endpoints
-                .SelectMany(r =>
+                var attr = r.Metadata.OfType<CustomHttpMethodAttribute>().FirstOrDefault();
+                var enableFormat = attr == null || !attr.DisableFormat;
+
+                if (enableFormat)
                 {
-                    var endpoints = new List<RouteEndpoint>();
+                    endpoints.Add(new RouteEndpoint(r.RequestDelegate, RoutePatternFactory.Parse(r.RoutePattern.RawText 
+                        + ".{format}"), r.Order, r.Metadata, r.DisplayName));
+                }
+                else
+                {
+                    endpoints.Add(new RouteEndpoint(r.RequestDelegate, RoutePatternFactory.Parse(r.RoutePattern.RawText + ".json"), r.Order - 1, r.Metadata, r.DisplayName));
+                    endpoints.Add(new RouteEndpoint(r.RequestDelegate, RoutePatternFactory.Parse(r.RoutePattern.RawText + ".xml"), r.Order - 1, r.Metadata, r.DisplayName));
+                }
+                 
+                return endpoints;
 
-                    var attr = r.Metadata.OfType<CustomHttpMethodAttribute>().FirstOrDefault();
-                    var enableFormat = attr == null || !attr.DisableFormat;
-
-                    if (enableFormat)
-                    {
-                        endpoints.Add(new RouteEndpoint(r.RequestDelegate, RoutePatternFactory.Parse(r.RoutePattern.RawText + ".{format}"), r.Order, r.Metadata, r.DisplayName));
-                    }
-                    else
-                    {
-                        endpoints.Add(new RouteEndpoint(r.RequestDelegate, RoutePatternFactory.Parse(r.RoutePattern.RawText + ".json"), r.Order - 1, r.Metadata, r.DisplayName));
-                        endpoints.Add(new RouteEndpoint(r.RequestDelegate, RoutePatternFactory.Parse(r.RoutePattern.RawText + ".xml"), r.Order - 1, r.Metadata, r.DisplayName));
-                    }
-
-                    return endpoints;
-                })
-                .ToList();
-        }
-
-        public override IChangeToken GetChangeToken()
-        {
-            return Source.GetChangeToken();
-        }
+            }).ToList();
     }
 
-    public static class EndpointExtension
+    public override IChangeToken GetChangeToken()
     {
-        public static IEndpointRouteBuilder MapCustom(this IEndpointRouteBuilder endpoints)
-        {
-            endpoints.DataSources.Add(new CustomEndpointDataSource(endpoints.DataSources.First()));
-            return endpoints;
-        }
+        return Source.GetChangeToken();
+    }
+}
+
+public static class EndpointExtension
+{
+    public static IEndpointRouteBuilder MapCustom(this IEndpointRouteBuilder endpoints)
+    {
+        endpoints.DataSources.Add(new CustomEndpointDataSource(endpoints.DataSources.First()));
+
+        return endpoints;
     }
 }

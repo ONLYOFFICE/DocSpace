@@ -383,6 +383,8 @@ public class RestorePortalTask : PortalTaskBase
             DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"),
             tenantId);
 
-        connection.CreateCommand().WithTimeout(120).ExecuteNonQuery();
+            var command = connection.CreateCommand().WithTimeout(120);
+            command.CommandText = commandText;
+            command.ExecuteNonQuery();
     }
 }

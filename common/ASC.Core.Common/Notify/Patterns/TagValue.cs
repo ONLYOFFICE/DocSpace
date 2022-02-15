@@ -42,7 +42,7 @@ namespace ASC.Notify.Patterns
 
         public TagValue(string tag, object value)
         {
-            if (string.IsNullOrEmpty(tag)) throw new ArgumentNullException("tag");
+            if (string.IsNullOrEmpty(tag)) throw new ArgumentNullException(nameof(tag));
 
             Tag = tag;
             Value = value;

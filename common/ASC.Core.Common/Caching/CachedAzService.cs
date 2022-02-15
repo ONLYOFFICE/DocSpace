@@ -36,8 +36,8 @@ namespace ASC.Core.Caching
             CacheNotify = cacheNotify;
             Cache = cache;
 
-            cacheNotify.Subscribe((r) => UpdateCache(r, true), CacheNotifyAction.Remove);
-            cacheNotify.Subscribe((r) => UpdateCache(r, false), CacheNotifyAction.InsertOrUpdate);
+            cacheNotify.Subscribe((r) => UpdateCache(r, true), ASC.Common.Caching.CacheNotifyAction.Remove);
+            cacheNotify.Subscribe((r) => UpdateCache(r, false), ASC.Common.Caching.CacheNotifyAction.InsertOrUpdate);
         }
 
         private void UpdateCache(AzRecord r, bool remove)
@@ -79,7 +79,7 @@ namespace ASC.Core.Caching
 
         public CachedAzService(DbAzService service, AzServiceCache azServiceCache)
         {
-            this.service = service ?? throw new ArgumentNullException("service");
+            this.service = service ?? throw new ArgumentNullException(nameof(service));
             Cache = azServiceCache.Cache;
             cacheNotify = azServiceCache.CacheNotify;
             CacheExpiration = TimeSpan.FromMinutes(10);
@@ -93,7 +93,8 @@ namespace ASC.Core.Caching
             if (aces == null)
             {
                 var records = service.GetAces(tenant, default);
-                Cache.Insert(key, aces = new AzRecordStore(records), DateTime.UtcNow.Add(CacheExpiration));
+                aces = new AzRecordStore(records);
+                Cache.Insert(key, aces, DateTime.UtcNow.Add(CacheExpiration));
             }
             return aces;
         }
@@ -101,14 +102,14 @@ namespace ASC.Core.Caching
         public AzRecord SaveAce(int tenant, AzRecord r)
         {
             r = service.SaveAce(tenant, r);
-            cacheNotify.Publish(r, CacheNotifyAction.InsertOrUpdate);
+            cacheNotify.Publish(r, ASC.Common.Caching.CacheNotifyAction.InsertOrUpdate);
             return r;
         }
 
         public void RemoveAce(int tenant, AzRecord r)
         {
             service.RemoveAce(tenant, r);
-            cacheNotify.Publish(r, CacheNotifyAction.Remove);
+            cacheNotify.Publish(r, ASC.Common.Caching.CacheNotifyAction.Remove);
         }
     }
 }

@@ -58,9 +58,9 @@ public class DbBackupProvider : IBackupProvider
             xml.Add(node);
 
             var connectionKey = connectionString.ProviderName + connectionString.ConnectionString;
-            if (connectionKeys.ContainsKey(connectionKey))
+                if (connectionKeys.TryGetValue(connectionKey, out var value))
             {
-                node.Add(new XAttribute("ref", connectionKeys[connectionKey]));
+                    node.Add(new XAttribute("ref", value));
             }
             else
             {
@@ -128,12 +128,10 @@ public class DbBackupProvider : IBackupProvider
         {
             var map = new ExeConfigurationFileMap
             {
-                ExeConfigFilename = string.Compare(Path.GetExtension(config), ".config", true) == 0 ? config : CrossPlatform.PathCombine(config, "Web.config")
+                ExeConfigFilename = string.Equals(Path.GetExtension(config), ".config", StringComparison.OrdinalIgnoreCase) ? config : CrossPlatform.PathCombine(config, "Web.config")
             };
-
             return ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
         }
-
         return ConfigurationManager.OpenExeConfiguration(config);
     }
 
@@ -155,7 +153,7 @@ public class DbBackupProvider : IBackupProvider
             }
 
             xml.Add(new XElement(table));
-            DataTable dataTable = null;
+                DataTable dataTable;
 
             while (true)
             {
@@ -183,7 +181,7 @@ public class DbBackupProvider : IBackupProvider
             using (var file = _tempStream.Create())
             {
                 dataTable.WriteXml(file, XmlWriteMode.WriteSchema);
-                writer.WriteEntry(string.Format("{0}\\{1}\\{2}", Name, connectionString.Name, table).ToLower(), file);
+                    writer.WriteEntry($"{Name}\\{connectionString.Name}\\{table}".ToLower(), file);
             }
 
             _processedTables.Add(table);
@@ -195,11 +193,11 @@ public class DbBackupProvider : IBackupProvider
     private void RestoreDatabase(ConnectionStringSettings connectionString, IEnumerable<XElement> elements, IDataReadOperator reader)
     {
         var dbName = connectionString.Name;
-        var dbElement = elements.SingleOrDefault(e => string.Compare(e.Name.LocalName, connectionString.Name, true) == 0);
+            var dbElement = elements.SingleOrDefault(e => string.Equals(e.Name.LocalName, connectionString.Name, StringComparison.OrdinalIgnoreCase));
         if (dbElement != null && dbElement.Attribute("ref") != null)
         {
             dbName = dbElement.Attribute("ref").Value;
-            dbElement = elements.Single(e => string.Compare(e.Name.LocalName, dbElement.Attribute("ref").Value, true) == 0);
+                dbElement = elements.Single(e => string.Equals(e.Name.LocalName, dbElement.Attribute("ref").Value, StringComparison.OrdinalIgnoreCase));
         }
 
         if (dbElement == null)
@@ -221,7 +219,7 @@ public class DbBackupProvider : IBackupProvider
 
             if (dbElement.Element(table) != null)
             {
-                using (var stream = reader.GetEntry(string.Format("{0}\\{1}\\{2}", Name, dbName, table).ToLower()))
+                    using (var stream = reader.GetEntry($"{Name}\\{dbName}\\{table}".ToLower()))
                 {
                     var data = new DataTable();
                     data.ReadXml(stream);
