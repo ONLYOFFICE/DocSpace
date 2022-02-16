@@ -24,7 +24,7 @@ const CampaignsBanner = (props) => {
 
   return (
     <BannerWrapper>
-      <a href={link}>
+      <a href={link} target="_blank" rel="noreferrer">
         <Text fontWeight="700" fontSize="13px">
           {headerLabel}
         </Text>
