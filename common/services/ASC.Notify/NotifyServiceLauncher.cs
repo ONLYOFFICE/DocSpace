@@ -29,21 +29,17 @@ namespace ASC.Notify;
 public class NotifyServiceLauncher : IHostedService
 {
     private readonly ILog _logger;
-    private readonly IServiceProvider _serviceProvider;
     private readonly NotifyCleaner _notifyCleaner;
     private readonly NotifyConfiguration _notifyConfiguration;
     private readonly NotifySender _notifySender;
     private readonly NotifyService _notifyService;
     private readonly NotifyServiceCfg _notifyServiceCfg;
-    private readonly WebItemManager _webItemManager;
 
     public NotifyServiceLauncher(
         IOptions<NotifyServiceCfg> notifyServiceCfg,
         NotifySender notifySender,
         NotifyService notifyService,
         NotifyCleaner notifyCleaner,
-        WebItemManager webItemManager,
-        IServiceProvider serviceProvider,
         NotifyConfiguration notifyConfiguration,
         IOptionsMonitor<ILog> options)
     {
@@ -51,8 +47,6 @@ public class NotifyServiceLauncher : IHostedService
         _notifyService = notifyService;
         _notifySender = notifySender;
         _notifyCleaner = notifyCleaner;
-        _webItemManager = webItemManager;
-        _serviceProvider = serviceProvider;
         _notifyConfiguration = notifyConfiguration;
         _logger = options.Get("ASC.Notify");
     }
