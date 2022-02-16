@@ -1,10 +1,10 @@
 const path = require("path");
-const nodeExternals = require("webpack-node-externals");
+//const nodeExternals = require("webpack-node-externals");
 
 module.exports = {
   entry: "./src/index.js",
   target: "node",
-  externals: [nodeExternals()],
+  // externals: [nodeExternals()],
   mode: "development",
   output: {
     path: path.resolve("dist"),

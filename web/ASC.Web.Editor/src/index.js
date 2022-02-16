@@ -1,7 +1,7 @@
 import express from "express";
 import path from "path";
-import template from "./src/server/template";
-import render from "./src/server/render";
+import template from "./server/template";
+import render from "./server/render";
 
 const app = express();
 

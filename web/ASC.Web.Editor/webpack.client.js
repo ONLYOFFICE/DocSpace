@@ -12,7 +12,7 @@ const deps = pkg.dependencies || {};
 module.exports = {
   mode: "development",
   entry: {
-    client: "./src/client/index.js",
+    client: path.resolve(__dirname, "src/client/index.js"),
   },
   output: {
     path: path.resolve(__dirname, "dist"),
@@ -120,7 +120,7 @@ module.exports = {
         )}`,
       },
       exposes: {
-        "./app": "./src/client.js",
+        "./app": "./src/client/index.js",
       },
       shared: {
         ...deps,

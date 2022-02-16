@@ -16,7 +16,7 @@ import {
   updateFile,
 } from "@appserver/common/api/files";
 
-import DynamicComponent from "../components/dynamic";
+import DynamicComponent from "./components/dynamic";
 
 const LoaderComponent = (
   <Loader

@@ -1,4 +1,5 @@
 import React from "react";
+import { hydrate } from "react-dom";
 import { registerSW } from "@appserver/common/sw/helper";
 import App from "../App.js";
 
@@ -7,6 +8,6 @@ delete window.__STATE__;
 
 const { props } = propsObj;
 
-React.hydrate(<App {...props} />, document.getElementById("root"));
+hydrate(<App {...props} />, document.getElementById("root"));
 
 registerSW();
