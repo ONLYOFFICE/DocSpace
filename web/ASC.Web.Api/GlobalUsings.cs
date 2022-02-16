@@ -20,6 +20,7 @@ global using System.Web;
 
 global using ASC.Api.Collections;
 global using ASC.Api.Core;
+global using ASC.Api.Core.Convention;
 global using ASC.Api.Settings;
 global using ASC.Api.Utils;
 global using ASC.AuditTrail;
@@ -57,6 +58,10 @@ global using ASC.MessagingSystem;
 global using ASC.Security.Cryptography;
 global using ASC.Web.Api.ApiModel;
 global using ASC.Web.Api.Controllers;
+global using ASC.Web.Api.Controllers.Authentication;
+global using ASC.Web.Api.Controllers.Portal;
+global using ASC.Web.Api.Controllers.Security;
+global using ASC.Web.Api.Controllers.Settings;
 global using ASC.Web.Api.Core;
 global using ASC.Web.Api.Models;
 global using ASC.Web.Api.Routing;

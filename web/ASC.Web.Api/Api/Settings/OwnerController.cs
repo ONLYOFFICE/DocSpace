@@ -1,0 +1,152 @@
+﻿using Constants = ASC.Core.Users.Constants;
+
+namespace ASC.Web.Api.Controllers.Settings;
+
+public class OwnerController: BaseSettingsController
+{
+    public OwnerController(IOptionsMonitor<ILog> option,
+    MessageService messageService,
+    StudioNotifyService studioNotifyService,
+    ApiContext apiContext,
+    UserManager userManager,
+    TenantManager tenantManager,
+    TenantExtra tenantExtra,
+    TenantStatisticsProvider tenantStatisticsProvider,
+    AuthContext authContext,
+    CookiesManager cookiesManager,
+    WebItemSecurity webItemSecurity,
+    StudioNotifyHelper studioNotifyHelper,
+    LicenseReader licenseReader,
+    PermissionContext permissionContext,
+    SettingsManager settingsManager,
+    TfaManager tfaManager,
+    WebItemManager webItemManager,
+    WebItemManagerSecurity webItemManagerSecurity,
+    TenantInfoSettingsHelper tenantInfoSettingsHelper,
+    TenantWhiteLabelSettingsHelper tenantWhiteLabelSettingsHelper,
+    StorageHelper storageHelper,
+    TenantLogoManager tenantLogoManager,
+    TenantUtil tenantUtil,
+    CoreBaseSettings coreBaseSettings,
+    CommonLinkUtility commonLinkUtility,
+    ColorThemesSettingsHelper colorThemesSettingsHelper,
+    IConfiguration configuration,
+    SetupInfo setupInfo,
+    BuildVersion buildVersion,
+    DisplayUserSettingsHelper displayUserSettingsHelper,
+    StatisticManager statisticManager,
+    IPRestrictionsService iPRestrictionsService,
+    CoreConfiguration coreConfiguration,
+    MessageTarget messageTarget,
+    StudioSmsNotificationSettingsHelper studioSmsNotificationSettingsHelper,
+    CoreSettings coreSettings,
+    StorageSettingsHelper storageSettingsHelper,
+    IWebHostEnvironment webHostEnvironment,
+    IServiceProvider serviceProvider,
+    EmployeeWraperHelper employeeWraperHelper,
+    ConsumerFactory consumerFactory,
+    SmsProviderManager smsProviderManager,
+    TimeZoneConverter timeZoneConverter,
+    CustomNamingPeople customNamingPeople,
+    IPSecurity.IPSecurity ipSecurity,
+    IMemoryCache memoryCache,
+    ProviderManager providerManager,
+    FirstTimeTenantSettings firstTimeTenantSettings,
+    ServiceClient serviceClient,
+    TelegramHelper telegramHelper,
+    StorageFactory storageFactory,
+    UrlShortener urlShortener,
+    EncryptionServiceClient encryptionServiceClient,
+    EncryptionSettingsHelper encryptionSettingsHelper,
+    BackupAjaxHandler backupAjaxHandler,
+    ICacheNotify<DeleteSchedule> cacheDeleteSchedule,
+    EncryptionWorker encryptionWorker,
+    PasswordHasher passwordHasher,
+    PaymentManager paymentManager,
+    ASC.Core.Users.Constants constants,
+    InstanceCrypto instanceCrypto,
+    Signature signature,
+    DbWorker dbWorker,
+    IHttpClientFactory clientFactory) : base(option, messageService, studioNotifyService, apiContext, userManager, tenantManager, tenantExtra, tenantStatisticsProvider, authContext, cookiesManager, webItemSecurity, studioNotifyHelper, licenseReader, permissionContext, settingsManager, tfaManager, webItemManager, webItemManagerSecurity, tenantInfoSettingsHelper, tenantWhiteLabelSettingsHelper, storageHelper, tenantLogoManager, tenantUtil, coreBaseSettings, commonLinkUtility, colorThemesSettingsHelper, configuration, setupInfo, buildVersion, displayUserSettingsHelper, statisticManager, iPRestrictionsService, coreConfiguration, messageTarget, studioSmsNotificationSettingsHelper, coreSettings, storageSettingsHelper, webHostEnvironment, serviceProvider, employeeWraperHelper, consumerFactory, smsProviderManager, timeZoneConverter, customNamingPeople, ipSecurity, memoryCache, providerManager, firstTimeTenantSettings, serviceClient, telegramHelper, storageFactory, urlShortener, encryptionServiceClient, encryptionSettingsHelper, backupAjaxHandler, cacheDeleteSchedule, encryptionWorker, passwordHasher, paymentManager, constants, instanceCrypto, signature, dbWorker, clientFactory)
+    {
+    }
+
+    [Create("owner")]
+    public object SendOwnerChangeInstructionsFromBody([FromBody] SettingsDto model)
+    {
+        return SendOwnerChangeInstructions(model);
+    }
+
+    [Create("owner")]
+    [Consumes("application/x-www-form-urlencoded")]
+    public object SendOwnerChangeInstructionsFromForm([FromForm] SettingsDto model)
+    {
+        return SendOwnerChangeInstructions(model);
+    }
+
+    private object SendOwnerChangeInstructions(SettingsDto model)
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+        var curTenant = _tenantManager.GetCurrentTenant();
+        var owner = _userManager.GetUsers(curTenant.OwnerId);
+        var newOwner = _userManager.GetUsers(model.OwnerId);
+
+        if (newOwner.IsVisitor(_userManager)) throw new System.Security.SecurityException("Collaborator can not be an owner");
+
+        if (!owner.ID.Equals(_authContext.CurrentAccount.ID) || Guid.Empty.Equals(newOwner.ID))
+        {
+            return new { Status = 0, Message = Resource.ErrorAccessDenied };
+        }
+
+        var confirmLink = _commonLinkUtility.GetConfirmationUrl(owner.Email, ConfirmType.PortalOwnerChange, newOwner.ID, newOwner.ID);
+        _studioNotifyService.SendMsgConfirmChangeOwner(owner, newOwner, confirmLink);
+
+        _messageService.Send(MessageAction.OwnerSentChangeOwnerInstructions, _messageTarget.Create(owner.ID), owner.DisplayUserName(false, _displayUserSettingsHelper));
+
+        var emailLink = $"<a href=\"mailto:{owner.Email}\">{owner.Email}</a>";
+        return new { Status = 1, Message = Resource.ChangePortalOwnerMsg.Replace(":email", emailLink) };
+    }
+
+    [Update("owner")]
+    [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalOwnerChange")]
+    public void OwnerFromBody([FromBody] SettingsDto model)
+    {
+        Owner(model);
+    }
+
+    [Update("owner")]
+    [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalOwnerChange")]
+    [Consumes("application/x-www-form-urlencoded")]
+    public void OwnerFromForm([FromForm] SettingsDto model)
+    {
+        Owner(model);
+    }
+
+    private void Owner(SettingsDto model)
+    {
+        var newOwner = Constants.LostUser;
+        try
+        {
+            newOwner = _userManager.GetUsers(model.OwnerId);
+        }
+        catch
+        {
+        }
+        if (Constants.LostUser.Equals(newOwner))
+        {
+            throw new Exception(Resource.ErrorUserNotFound);
+        }
+
+        if (_userManager.IsUserInGroup(newOwner.ID, Constants.GroupVisitor.ID))
+        {
+            throw new Exception(Resource.ErrorUserNotFound);
+        }
+
+        var curTenant = _tenantManager.GetCurrentTenant();
+        curTenant.OwnerId = newOwner.ID;
+        _tenantManager.SaveTenant(curTenant);
+
+        _messageService.Send(MessageAction.OwnerUpdated, newOwner.DisplayUserName(false, _displayUserSettingsHelper));
+    }
+}
