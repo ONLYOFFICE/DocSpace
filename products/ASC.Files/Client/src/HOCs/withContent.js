@@ -42,6 +42,7 @@ export default function withContent(WrappedContent) {
         fileActionExt,
         setIsUpdatingRowItem,
         isUpdatingRowItem,
+        item,
       } = this.props;
       if (fileActionId === -1 && fileActionExt !== prevProps.fileActionExt) {
         const itemTitle = getDefaultFileName(fileActionExt);
@@ -49,6 +50,14 @@ export default function withContent(WrappedContent) {
       }
       if (fileActionId === null && prevProps.fileActionId !== fileActionId) {
         isUpdatingRowItem && setIsUpdatingRowItem(false);
+      }
+
+      const titleWithoutExt = getTitleWithoutExst(item);
+      const isEdit =
+        item.id === fileActionId && item.fileExst === fileActionExt;
+
+      if (!isEdit && titleWithoutExt !== this.state.itemTitle) {
+        this.setState({ itemTitle: titleWithoutExt });
       }
     }
 
