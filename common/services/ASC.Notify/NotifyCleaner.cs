@@ -31,14 +31,14 @@ public class NotifyCleaner : IDisposable
     private readonly ILog _logger;
     private readonly ManualResetEvent _stop = new ManualResetEvent(false);
     public NotifyServiceCfg NotifyServiceCfg { get; }
-    private readonly IServiceProvider _serviceProvider;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
     public readonly CancellationTokenSource _cancellationTokenSource;
 
-    public NotifyCleaner(IOptions<NotifyServiceCfg> notifyServiceCfg, IServiceProvider serviceProvider, IOptionsMonitor<ILog> options)
+    public NotifyCleaner(IOptions<NotifyServiceCfg> notifyServiceCfg, IServiceScopeFactory serviceScopeFactory, IOptionsMonitor<ILog> options)
     {
         _logger = options.Get("ASC.Notify");
         NotifyServiceCfg = notifyServiceCfg.Value;
-        _serviceProvider = serviceProvider;
+        _serviceScopeFactory = serviceScopeFactory;
         _cancellationTokenSource = new CancellationTokenSource();
     }
 
@@ -62,7 +62,7 @@ public class NotifyCleaner : IDisposable
             {
                 var date = DateTime.UtcNow.AddDays(-NotifyServiceCfg.StoreMessagesDays);
 
-                using var scope = _serviceProvider.CreateScope();
+                using var scope = _serviceScopeFactory.CreateScope();
                 using var dbContext = scope.ServiceProvider.GetService<DbContextManager<NotifyDbContext>>().Get(NotifyServiceCfg.ConnectionStringName);
                 using var tx = dbContext.Database.BeginTransaction();
 

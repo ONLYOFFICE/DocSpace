@@ -32,12 +32,12 @@ public class NotifyService : INotifyService, IDisposable
     private readonly ICacheNotify<NotifyMessage> _cacheNotify;
     private readonly ICacheNotify<NotifyInvoke> _cacheInvoke;
     private readonly DbWorker _db;
-    private readonly IServiceProvider _serviceProvider;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
 
-    public NotifyService(DbWorker db, IServiceProvider serviceProvider, ICacheNotify<NotifyMessage> cacheNotify, ICacheNotify<NotifyInvoke> cacheInvoke, IOptionsMonitor<ILog> options)
+    public NotifyService(DbWorker db, IServiceScopeFactory serviceScopeFactory, ICacheNotify<NotifyMessage> cacheNotify, ICacheNotify<NotifyInvoke> cacheInvoke, IOptionsMonitor<ILog> options)
     {
         _db = db;
-        _serviceProvider = serviceProvider;
+        _serviceScopeFactory = serviceScopeFactory;
         _cacheNotify = cacheNotify;
         _cacheInvoke = cacheInvoke;
         _logger = options.CurrentValue;
@@ -45,13 +45,13 @@ public class NotifyService : INotifyService, IDisposable
 
     public void Start()
     {
-        _cacheNotify.Subscribe((n) => SendNotifyMessage(n), Common.Caching.CacheNotifyAction.InsertOrUpdate);
-        _cacheInvoke.Subscribe((n) => InvokeSendMethod(n), Common.Caching.CacheNotifyAction.InsertOrUpdate);
+        _cacheNotify.Subscribe((n) => SendNotifyMessage(n), CacheNotifyAction.InsertOrUpdate);
+        _cacheInvoke.Subscribe((n) => InvokeSendMethod(n), CacheNotifyAction.InsertOrUpdate);
     }
 
     public void Stop()
     {
-        _cacheNotify.Unsubscribe(Common.Caching.CacheNotifyAction.InsertOrUpdate);
+        _cacheNotify.Unsubscribe(CacheNotifyAction.InsertOrUpdate);
     }
 
     public void SendNotifyMessage(NotifyMessage notifyMessage)
@@ -75,7 +75,7 @@ public class NotifyService : INotifyService, IDisposable
 
         var serviceType = Type.GetType(service, true);
 
-        using var scope = _serviceProvider.CreateScope();
+        using var scope = _serviceScopeFactory.CreateScope();
 
         var instance = scope.ServiceProvider.GetService(serviceType);
         if (instance == null)

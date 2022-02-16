@@ -31,19 +31,19 @@ public class DbWorker
     private readonly string _dbid;
     private readonly object _syncRoot = new object();
 
-    private readonly IServiceProvider _serviceProvider;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
     public NotifyServiceCfg NotifyServiceCfg { get; }
 
-    public DbWorker(IServiceProvider serviceProvider, IOptions<NotifyServiceCfg> notifyServiceCfg)
+    public DbWorker(IServiceScopeFactory serviceScopeFactory, IOptions<NotifyServiceCfg> notifyServiceCfg)
     {
-        _serviceProvider = serviceProvider;
+        _serviceScopeFactory = serviceScopeFactory;
         NotifyServiceCfg = notifyServiceCfg.Value;
         _dbid = NotifyServiceCfg.ConnectionStringName;
     }
 
     public int SaveMessage(NotifyMessage m)
     {
-        using var scope = _serviceProvider.CreateScope();
+        using var scope = _serviceScopeFactory.CreateScope();
         using var dbContext = scope.ServiceProvider.GetService<DbContextManager<NotifyDbContext>>().Get(_dbid);
         using var tx = dbContext.Database.BeginTransaction(IsolationLevel.ReadCommitted);
 
@@ -89,7 +89,7 @@ public class DbWorker
     {
         lock (_syncRoot)
         {
-            using var scope = _serviceProvider.CreateScope();
+            using var scope = _serviceScopeFactory.CreateScope();
             using var dbContext = scope.ServiceProvider.GetService<DbContextManager<NotifyDbContext>>().Get(_dbid);
             using var tx = dbContext.Database.BeginTransaction();
 
@@ -144,10 +144,9 @@ public class DbWorker
         }
     }
 
-
     public void ResetStates()
     {
-        using var scope = _serviceProvider.CreateScope();
+        using var scope = _serviceScopeFactory.CreateScope();
         using var dbContext = scope.ServiceProvider.GetService<DbContextManager<NotifyDbContext>>().Get(_dbid);
 
         var tr = dbContext.Database.BeginTransaction();
@@ -164,7 +163,7 @@ public class DbWorker
 
     public void SetState(int id, MailSendingState result)
     {
-        using var scope = _serviceProvider.CreateScope();
+        using var scope = _serviceScopeFactory.CreateScope();
         using var dbContext = scope.ServiceProvider.GetService<DbContextManager<NotifyDbContext>>().Get(_dbid);
         using var tx = dbContext.Database.BeginTransaction();
 
