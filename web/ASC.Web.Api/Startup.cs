@@ -22,7 +22,8 @@
             DIHelper.TryAdd<MobileController>();
             DIHelper.TryAdd<UserController>();
 
-            DIHelper.TryAdd<Controllers.Settings.SecurityController>();
+           
+            DIHelper.TryAdd<SettingsController>();
             DIHelper.TryAdd<CustomNavigationController>();
             DIHelper.TryAdd<CustomSchemasController>();
             DIHelper.TryAdd<GreetingSettingsController>();
@@ -30,6 +31,7 @@
             DIHelper.TryAdd<LicenseController>();
             DIHelper.TryAdd<MessageSettingsController>();
             DIHelper.TryAdd<OwnerController>();
+            DIHelper.TryAdd<Controllers.Settings.SecurityController>();
             DIHelper.TryAdd<StorageController>();
             DIHelper.TryAdd<TfaappController>();
             DIHelper.TryAdd<TipsController>();
