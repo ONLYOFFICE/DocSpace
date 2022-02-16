@@ -5,10 +5,7 @@ import { initDocEditor } from "./helpers/utils";
 
 export default async (req) => {
   const props = await initDocEditor(req);
+  const content = renderToString(<App />);
 
-  let content = renderToString(<App />);
-
-  // Get a copy of store data to create the same store on client side
-
-  return { app, content };
+  return { props, content };
 };
