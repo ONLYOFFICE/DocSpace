@@ -28,12 +28,11 @@ namespace ASC.MessagingSystem
     [Scope]
     public class MessageService
     {
-        private readonly ILog log;
-        private readonly IMessageSender sender;
-        private readonly HttpRequest request;
-
-        private MessageFactory MessageFactory { get; }
-        private MessagePolicy MessagePolicy { get; }
+        private readonly ILog _logger;
+        private readonly IMessageSender _sender;
+        private readonly HttpRequest _request;
+        private readonly MessageFactory _messageFactory;
+        private readonly MessagePolicy _messagePolicy;
 
         public MessageService(
             IConfiguration configuration,
@@ -47,10 +46,10 @@ namespace ASC.MessagingSystem
                 return;
             }
 
-            this.sender = sender;
-            MessagePolicy = messagePolicy;
-            MessageFactory = messageFactory;
-            log = options.CurrentValue;
+            _sender = sender;
+            _messagePolicy = messagePolicy;
+            _messageFactory = messageFactory;
+            _logger = options.CurrentValue;
         }
 
         public MessageService(
@@ -62,7 +61,7 @@ namespace ASC.MessagingSystem
             IOptionsMonitor<ILog> options)
             : this(configuration, messageFactory, sender, messagePolicy, options)
         {
-            request = httpContextAccessor?.HttpContext?.Request;
+            _request = httpContextAccessor?.HttpContext?.Request;
         }
 
         #region HttpRequest
@@ -185,18 +184,25 @@ namespace ASC.MessagingSystem
 
         private void SendRequestMessage(string loginName, MessageAction action, MessageTarget target, params string[] description)
         {
-            if (sender == null) return;
-
-            if (request == null)
+            if (_sender == null)
             {
-                log.Debug(string.Format("Empty Http Request for \"{0}\" type of event", action));
                 return;
             }
 
-            var message = MessageFactory.Create(request, loginName, action, target, description);
-            if (!MessagePolicy.Check(message)) return;
+            if (_request == null)
+            {
+                _logger.Debug(string.Format("Empty Http Request for \"{0}\" type of event", action));
 
-            sender.Send(message);
+                return;
+            }
+
+            var message = _messageFactory.Create(_request, loginName, action, target, description);
+            if (!_messagePolicy.Check(message))
+            {
+                return;
+            }
+
+            _sender.Send(message);
         }
 
         #region HttpHeaders
@@ -249,12 +255,18 @@ namespace ASC.MessagingSystem
 
         private void SendHeadersMessage(MessageUserData userData, IDictionary<string, StringValues> httpHeaders, MessageAction action, MessageTarget target, params string[] description)
         {
-            if (sender == null) return;
+            if (_sender == null)
+            {
+                return;
+            }
 
-            var message = MessageFactory.Create(userData, httpHeaders, action, target, description);
-            if (!MessagePolicy.Check(message)) return;
+            var message = _messageFactory.Create(userData, httpHeaders, action, target, description);
+            if (!_messagePolicy.Check(message))
+            {
+                return;
+            }
 
-            sender.Send(message);
+            _sender.Send(message);
         }
 
         #region Initiator
@@ -277,12 +289,18 @@ namespace ASC.MessagingSystem
 
         private void SendInitiatorMessage(string initiator, MessageAction action, MessageTarget target, params string[] description)
         {
-            if (sender == null) return;
+            if (_sender == null)
+            {
+                return;
+            }
 
-            var message = MessageFactory.Create(request, initiator, action, target, description);
-            if (!MessagePolicy.Check(message)) return;
+            var message = _messageFactory.Create(_request, initiator, action, target, description);
+            if (!_messagePolicy.Check(message))
+            {
+                return;
+            }
 
-            sender.Send(message);
+            _sender.Send(message);
         }
     }
 }

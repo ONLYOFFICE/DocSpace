@@ -31,27 +31,27 @@ namespace ASC.MessagingSystem.DbSender
     [Singletone(Additional = typeof(MessagesRepositoryExtension))]
     public class MessagesRepository : IDisposable
     {
-        private DateTime lastSave = DateTime.UtcNow;
-        private readonly TimeSpan CacheTime;
-        private readonly IDictionary<string, EventMessage> Cache;
-        private Parser Parser { get; set; }
+        private DateTime _lastSave = DateTime.UtcNow;
+        private readonly TimeSpan _cacheTime;
+        private readonly IDictionary<string, EventMessage> _cache;
+        private Parser _parser;
 
-        private readonly Timer Timer;
-        private bool timerStarted;
+        private readonly Timer _timer;
+        private bool _timerStarted;
 
-        public ILog Log { get; set; }
-        private IServiceProvider ServiceProvider { get; }
+        public ILog Logger { get; set; }
+        private readonly IServiceProvider _serviceProvider;
 
         public MessagesRepository(IServiceProvider serviceProvider, IOptionsMonitor<ILog> options)
         {
-            CacheTime = TimeSpan.FromMinutes(1);
-            Cache = new Dictionary<string, EventMessage>();
-            timerStarted = false;
+            _cacheTime = TimeSpan.FromMinutes(1);
+            _cache = new Dictionary<string, EventMessage>();
+            _timerStarted = false;
 
-            Log = options.CurrentValue;
-            ServiceProvider = serviceProvider;
+            Logger = options.CurrentValue;
+            _serviceProvider = serviceProvider;
 
-            Timer = new Timer(FlushCache);
+            _timer = new Timer(FlushCache);
         }
 
         public void Add(EventMessage message)
@@ -59,23 +59,25 @@ namespace ASC.MessagingSystem.DbSender
             // messages with action code < 2000 are related to login-history
             if ((int)message.Action < 2000)
             {
-                using var scope = ServiceProvider.CreateScope();
+                using var scope = _serviceProvider.CreateScope();
                 using var ef = scope.ServiceProvider.GetService<DbContextManager<MessagesContext>>().Get("messages");
+
                 AddLoginEvent(message, ef);
+
                 return;
             }
 
             var now = DateTime.UtcNow;
             var key = string.Format("{0}|{1}|{2}|{3}", message.TenantId, message.UserId, message.Id, now.Ticks);
 
-            lock (Cache)
+            lock (_cache)
             {
-                Cache[key] = message;
+                _cache[key] = message;
 
-                if (!timerStarted)
+                if (!_timerStarted)
                 {
-                    Timer.Change(0, 100);
-                    timerStarted = true;
+                    _timer.Change(0, 100);
+                    _timerStarted = true;
                 }
             }
 
@@ -85,22 +87,25 @@ namespace ASC.MessagingSystem.DbSender
         {
             List<EventMessage> events = null;
 
-            if (CacheTime < DateTime.UtcNow - lastSave || Cache.Count > 100)
+            if (_cacheTime < DateTime.UtcNow - _lastSave || _cache.Count > 100)
             {
-                lock (Cache)
+                lock (_cache)
                 {
-                    Timer.Change(-1, -1);
-                    timerStarted = false;
+                    _timer.Change(-1, -1);
+                    _timerStarted = false;
 
-                    events = new List<EventMessage>(Cache.Values);
-                    Cache.Clear();
-                    lastSave = DateTime.UtcNow;
+                    events = new List<EventMessage>(_cache.Values);
+                    _cache.Clear();
+                    _lastSave = DateTime.UtcNow;
                 }
             }
 
-            if (events == null) return;
+            if (events == null)
+            {
+                return;
+            }
 
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = _serviceProvider.CreateScope();
             using var ef = scope.ServiceProvider.GetService<DbContextManager<Messages>>().Get("messages");
             using var tx = ef.Database.BeginTransaction(IsolationLevel.ReadUncommitted);
             var dict = new Dictionary<string, ClientInfo>();
@@ -120,8 +125,8 @@ namespace ASC.MessagingSystem.DbSender
                         }
                         else
                         {
-                            Parser = Parser ?? Parser.GetDefault();
-                            clientInfo = Parser.Parse(message.UAHeader);
+                            _parser = _parser ?? Parser.GetDefault();
+                            clientInfo = _parser.Parse(message.UAHeader);
                             dict.Add(message.UAHeader, clientInfo);
                         }
 
@@ -133,7 +138,7 @@ namespace ASC.MessagingSystem.DbSender
                     }
                     catch (Exception e)
                     {
-                        Log.Error("FlushCache " + message.Id, e);
+                        Logger.Error("FlushCache " + message.Id, e);
                     }
                 }
 
@@ -244,9 +249,9 @@ namespace ASC.MessagingSystem.DbSender
 
         public void Dispose()
         {
-            if (Timer != null)
+            if (_timer != null)
             {
-                Timer.Dispose();
+                _timer.Dispose();
             }
         }
     }

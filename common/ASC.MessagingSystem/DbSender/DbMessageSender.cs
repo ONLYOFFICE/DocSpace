@@ -28,33 +28,37 @@ namespace ASC.MessagingSystem.DbSender
     [Singletone]
     public class DbMessageSender : IMessageSender
     {
-        private readonly ILog log;
+        private readonly ILog _logger;
+        private readonly MessagesRepository _messagesRepository;
+        private bool _messagingEnabled;
 
         public DbMessageSender(IConfiguration configuration, MessagesRepository messagesRepository, IOptionsMonitor<ILog> options)
         {
             var setting = configuration["messaging:enabled"];
-            MessagingEnabled = !string.IsNullOrEmpty(setting) && setting == "true";
-            MessagesRepository = messagesRepository;
-            log = options.Get("ASC.Messaging");
+            _messagingEnabled = !string.IsNullOrEmpty(setting) && setting == "true";
+            _messagesRepository = messagesRepository;
+            _logger = options.Get("ASC.Messaging");
         }
-
-        private MessagesRepository MessagesRepository { get; }
-        private bool MessagingEnabled { get; }
-
 
         public void Send(EventMessage message)
         {
             try
             {
-                if (!MessagingEnabled) return;
+                if (!_messagingEnabled)
+                {
+                    return;
+                }
 
-                if (message == null) return;
+                if (message == null)
+                {
+                    return;
+                }
 
-                MessagesRepository.Add(message);
+                _messagesRepository.Add(message);
             }
             catch (Exception ex)
             {
-                log.Error("Failed to send a message", ex);
+                _logger.Error("Failed to send a message", ex);
             }
         }
     }

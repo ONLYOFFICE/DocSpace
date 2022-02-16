@@ -31,12 +31,12 @@ namespace ASC.MessagingSystem
         private IEnumerable<string> _items;
 
         public ILog Log { get; set; }
-        private IOptionsMonitor<ILog> Option { get; }
+        private readonly IOptionsMonitor<ILog> _option;
 
         public MessageTarget(IOptionsMonitor<ILog> option)
         {
             Log = option.Get("ASC.Messaging");
-            Option = option;
+            _option = option;
         }
 
         public MessageTarget Create<T>(T value)
@@ -54,7 +54,7 @@ namespace ASC.MessagingSystem
                     res.Add(value.ToString());
                 }
 
-                return new MessageTarget(Option)
+                return new MessageTarget(_option)
                 {
                     _items = res.Distinct()
                 };
@@ -62,6 +62,7 @@ namespace ASC.MessagingSystem
             catch (Exception e)
             {
                 Log.Error("EventMessageTarget exception", e);
+
                 return null;
             }
 
@@ -71,7 +72,7 @@ namespace ASC.MessagingSystem
         {
             try
             {
-                return new MessageTarget(Option)
+                return new MessageTarget(_option)
                 {
                     _items = value.Distinct()
                 };
@@ -79,19 +80,26 @@ namespace ASC.MessagingSystem
             catch (Exception e)
             {
                 Log.Error("EventMessageTarget exception", e);
+
                 return null;
             }
         }
 
         public MessageTarget Parse(string value)
         {
-            if (string.IsNullOrEmpty(value)) return null;
+            if (string.IsNullOrEmpty(value))
+            {
+                return null;
+            }
 
             var items = value.Split(',');
 
-            if (items.Length == 0) return null;
+            if (items.Length == 0)
+            {
+                return null;
+            }
 
-            return new MessageTarget(Option)
+            return new MessageTarget(_option)
             {
                 _items = items
             };
