@@ -46,7 +46,7 @@ class PeopleSelector extends React.Component {
           {
             key: "all",
             id: "all",
-            label: "Translate",
+            label: `${t("AllUsers")}`,
             total: 0,
           },
         ].concat(groupList),
