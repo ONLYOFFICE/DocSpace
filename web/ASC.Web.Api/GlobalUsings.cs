@@ -56,6 +56,7 @@ global using ASC.FederatedLogin.Profile;
 global using ASC.IPSecurity;
 global using ASC.MessagingSystem;
 global using ASC.Security.Cryptography;
+global using ASC.Web.Api;
 global using ASC.Web.Api.ApiModel;
 global using ASC.Web.Api.Controllers;
 global using ASC.Web.Api.Controllers.Authentication;
@@ -89,6 +90,7 @@ global using ASC.Web.Studio.Utility;
 global using ASC.Webhooks.Core;
 global using ASC.Webhooks.Core.Dao.Models;
 
+global using Autofac;
 global using Autofac.Extensions.DependencyInjection;
 
 global using Google.Authenticator;
@@ -96,6 +98,7 @@ global using Google.Authenticator;
 global using MailKit.Security;
 
 global using Microsoft.AspNetCore.Authorization;
+global using Microsoft.AspNetCore.Builder;
 global using Microsoft.AspNetCore.Hosting;
 global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.Mvc;
@@ -104,6 +107,7 @@ global using Microsoft.Extensions.Caching.Memory;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Hosting;
+global using Microsoft.Extensions.Hosting.WindowsServices;
 global using Microsoft.Extensions.Options;
 
 global using MimeKit;
