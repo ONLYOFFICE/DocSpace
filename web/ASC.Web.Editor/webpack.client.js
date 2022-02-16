@@ -1,71 +1,25 @@
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const CopyPlugin = require("copy-webpack-plugin");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require("webpack").container
   .ModuleFederationPlugin;
 const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
-const TerserPlugin = require("terser-webpack-plugin");
-const combineUrl = require("@appserver/common/utils/combineUrl");
 const AppServerConfig = require("@appserver/common/constants/AppServerConfig");
+const combineUrl = require("@appserver/common/utils/combineUrl");
 const sharedDeps = require("@appserver/common/constants/sharedDependencies");
-
-const { proxyURL } = AppServerConfig;
-
 const path = require("path");
 const pkg = require("./package.json");
+const { proxyURL } = AppServerConfig;
 const deps = pkg.dependencies || {};
-const homepage = pkg.homepage; // combineUrl(AppServerConfig.proxyURL, pkg.homepage);
-const title = pkg.title;
 
-const config = {
-  entry: "./src/index",
-  target: "web",
+module.exports = {
   mode: "development",
-
-  devServer: {
-    devMiddleware: {
-      publicPath: homepage,
-    },
-    static: {
-      directory: path.join(__dirname, "dist"),
-      publicPath: homepage,
-    },
-    port: 5013,
-    historyApiFallback: {
-      // Paths with dots should still use the history fallback.
-      // See https://github.com/facebook/create-react-app/issues/387.
-      disableDotRule: true,
-      index: homepage,
-    },
-    hot: false,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
-      "Access-Control-Allow-Headers":
-        "X-Requested-With, content-type, Authorization",
-    },
+  entry: {
+    client: "./src/client/index.js",
   },
-
-  resolve: {
-    extensions: [".jsx", ".js", ".json"],
-    fallback: {
-      crypto: false,
-    },
-  },
-
   output: {
+    path: path.resolve(__dirname, "dist"),
+    //filename: "static/js/[name].js",
     publicPath: "auto",
-    chunkFilename: "static/js/[id].[contenthash].js",
-    //assetModuleFilename: "static/images/[hash][ext][query]",
-    path: path.resolve(process.cwd(), "dist"),
-    filename: "static/js/[name].[contenthash].bundle.js",
+    filename: "static/scripts/doceditor.[name].js",
   },
-
-  performance: {
-    maxEntrypointSize: 512000,
-    maxAssetSize: 512000,
-  },
-
   module: {
     rules: [
       {
@@ -148,9 +102,13 @@ const config = {
       },
     ],
   },
-
+  resolve: {
+    extensions: [".jsx", ".js", ".json"],
+    fallback: {
+      crypto: false,
+    },
+  },
   plugins: [
-    new CleanWebpackPlugin(),
     new ModuleFederationPlugin({
       name: "editor",
       filename: "remoteEntry.js",
@@ -162,7 +120,7 @@ const config = {
         )}`,
       },
       exposes: {
-        "./app": "./src/Editor.jsx",
+        "./app": "./src/client.js",
       },
       shared: {
         ...deps,
@@ -170,38 +128,5 @@ const config = {
       },
     }),
     new ExternalTemplateRemotesPlugin(),
-    new HtmlWebpackPlugin({
-      template: "./public/index.html",
-      publicPath: homepage,
-      title: title,
-      base: `${homepage}/`,
-    }),
-    new CopyPlugin({
-      patterns: [
-        {
-          from: "public",
-          globOptions: {
-            dot: true,
-            gitignore: true,
-            ignore: ["**/index.html"],
-          },
-        },
-      ],
-    }),
   ],
-};
-
-module.exports = (env, argv) => {
-  if (argv.mode === "production") {
-    config.mode = "production";
-    config.optimization = {
-      splitChunks: { chunks: "all" },
-      minimize: !env.minimize,
-      minimizer: [new TerserPlugin()],
-    };
-  } else {
-    config.devtool = "cheap-module-source-map";
-  }
-
-  return config;
 };
