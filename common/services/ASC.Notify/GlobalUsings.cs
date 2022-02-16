@@ -19,6 +19,7 @@ global using ASC.Core.Common.EF.Context;
 global using ASC.Core.Common.EF.Model;
 global using ASC.Core.Common.Settings;
 global using ASC.Core.Notify.Senders;
+global using ASC.Notify;
 global using ASC.Notify.Config;
 global using ASC.Notify.Messages;
 global using ASC.Web.Core;
@@ -36,6 +37,8 @@ global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Hosting;
 global using Microsoft.Extensions.Options;
+global using Microsoft.AspNetCore.Builder;
+global using Microsoft.Extensions.Hosting.WindowsServices;
 
 global using Newtonsoft.Json;
 
