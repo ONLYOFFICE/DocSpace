@@ -36,7 +36,7 @@ using ASC.Core.Tenants;
 namespace ASC.Core.Data
 {
     [Scope]
-    class DbSubscriptionService : ISubscriptionService
+    public class DbSubscriptionService : ISubscriptionService
     {
         private Expression<Func<Subscription, SubscriptionRecord>> FromSubscriptionToSubscriptionRecord { get; set; }
         private Expression<Func<DbSubscriptionMethod, SubscriptionMethod>> FromDbSubscriptionMethodToSubscriptionMethod { get; set; }
