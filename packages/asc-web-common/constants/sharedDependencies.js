@@ -83,6 +83,7 @@ module.exports = {
   "workbox-window": {
     singleton: true,
     requiredVersion: deps["workbox-window"],
+    eager: true,
   },
   axios: {
     singleton: true,
@@ -92,14 +93,17 @@ module.exports = {
   i18next: {
     singleton: true,
     requiredVersion: deps["i18next"],
+    eager: true,
   },
   "react-i18next": {
     singleton: true,
     requiredVersion: deps["react-i18next"],
+    eager: true,
   },
   "i18next-http-backend": {
     singleton: true,
     requiredVersion: deps["i18next-http-backend"],
+    eager: true,
   },
   "prop-types": {
     singleton: true,
