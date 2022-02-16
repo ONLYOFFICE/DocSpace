@@ -23,81 +23,80 @@
  *
 */
 
-namespace ASC.Notify
+namespace ASC.Notify;
+
+[Singletone]
+public class NotifyCleaner : IDisposable
 {
-    [Singletone]
-    public class NotifyCleaner : IDisposable
+    private readonly ILog _logger;
+    private readonly ManualResetEvent _stop = new ManualResetEvent(false);
+    public NotifyServiceCfg NotifyServiceCfg { get; }
+    private readonly IServiceProvider _serviceProvider;
+    public readonly CancellationTokenSource _cancellationTokenSource;
+
+    public NotifyCleaner(IOptions<NotifyServiceCfg> notifyServiceCfg, IServiceProvider serviceProvider, IOptionsMonitor<ILog> options)
     {
-        private readonly ILog _logger;
-        private readonly ManualResetEvent _stop = new ManualResetEvent(false);
-        public NotifyServiceCfg NotifyServiceCfg { get; }
-        private readonly IServiceProvider _serviceProvider;
-        public readonly CancellationTokenSource _cancellationTokenSource;
+        _logger = options.Get("ASC.Notify");
+        NotifyServiceCfg = notifyServiceCfg.Value;
+        _serviceProvider = serviceProvider;
+        _cancellationTokenSource = new CancellationTokenSource();
+    }
 
-        public NotifyCleaner(IOptions<NotifyServiceCfg> notifyServiceCfg, IServiceProvider serviceProvider, IOptionsMonitor<ILog> options)
-        {
-            _logger = options.Get("ASC.Notify");
-            NotifyServiceCfg = notifyServiceCfg.Value;
-            _serviceProvider = serviceProvider;
-            _cancellationTokenSource = new CancellationTokenSource();
-        }
+    public void Start()
+    {
+        var t = new Task(Clear, _cancellationTokenSource.Token, TaskCreationOptions.LongRunning);
+        t.Start(TaskScheduler.Default);
+    }
 
-        public void Start()
-        {
-            var t = new Task(Clear, _cancellationTokenSource.Token, TaskCreationOptions.LongRunning);
-            t.Start(TaskScheduler.Default);
-        }
+    public void Stop()
+    {
+        _stop.Set();
+        _cancellationTokenSource.Cancel();
+    }
 
-        public void Stop()
+    private void Clear()
+    {
+        while (true)
         {
-            _stop.Set();
-            _cancellationTokenSource.Cancel();
-        }
-
-        private void Clear()
-        {
-            while (true)
+            try
             {
-                try
-                {
-                    var date = DateTime.UtcNow.AddDays(-NotifyServiceCfg.StoreMessagesDays);
+                var date = DateTime.UtcNow.AddDays(-NotifyServiceCfg.StoreMessagesDays);
 
-                    using var scope = _serviceProvider.CreateScope();
-                    using var dbContext = scope.ServiceProvider.GetService<DbContextManager<NotifyDbContext>>().Get(NotifyServiceCfg.ConnectionStringName);
-                    using var tx = dbContext.Database.BeginTransaction();
+                using var scope = _serviceProvider.CreateScope();
+                using var dbContext = scope.ServiceProvider.GetService<DbContextManager<NotifyDbContext>>().Get(NotifyServiceCfg.ConnectionStringName);
+                using var tx = dbContext.Database.BeginTransaction();
 
-                    var info = dbContext.NotifyInfo.Where(r => r.ModifyDate < date && r.State == 4).ToList();
-                    var queue = dbContext.NotifyQueue.Where(r => r.CreationDate < date).ToList();
-                    dbContext.NotifyInfo.RemoveRange(info);
-                    dbContext.NotifyQueue.RemoveRange(queue);
+                var info = dbContext.NotifyInfo.Where(r => r.ModifyDate < date && r.State == 4).ToList();
+                var queue = dbContext.NotifyQueue.Where(r => r.CreationDate < date).ToList();
+                dbContext.NotifyInfo.RemoveRange(info);
+                dbContext.NotifyQueue.RemoveRange(queue);
 
-                    dbContext.SaveChanges();
-                    tx.Commit();
+                dbContext.SaveChanges();
+                tx.Commit();
 
-                    _logger.InfoFormat("Clear notify messages: notify_info({0}), notify_queue ({1})", info.Count, queue.Count);
+                _logger.InfoFormat("Clear notify messages: notify_info({0}), notify_queue ({1})", info.Count, queue.Count);
 
-                }
-                catch (ThreadAbortException)
-                {
-                    // ignore
-                }
-                catch (Exception err)
-                {
-                    _logger.Error(err);
-                }
-                if (_stop.WaitOne(TimeSpan.FromHours(8)))
-                {
-                    break;
-                }
+            }
+            catch (ThreadAbortException)
+            {
+                // ignore
+            }
+            catch (Exception err)
+            {
+                _logger.Error(err);
+            }
+            if (_stop.WaitOne(TimeSpan.FromHours(8)))
+            {
+                break;
             }
         }
+    }
 
-        public void Dispose()
+    public void Dispose()
+    {
+        if (_cancellationTokenSource != null)
         {
-            if (_cancellationTokenSource != null)
-            {
-                _cancellationTokenSource.Dispose();
-            }
+            _cancellationTokenSource.Dispose();
         }
     }
 }

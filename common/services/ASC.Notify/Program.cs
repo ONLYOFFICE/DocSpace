@@ -1,88 +1,87 @@
-﻿namespace ASC.Notify
+﻿namespace ASC.Notify;
+
+public static class Program
 {
-    public static class Program
+    public async static Task Main(string[] args)
     {
-        public async static Task Main(string[] args)
-        {
-            var host = CreateHostBuilder(args).Build();
+        var host = CreateHostBuilder(args).Build();
 
-            await host.RunAsync();
-        }
+        await host.RunAsync();
+    }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .UseSystemd()
-                .UseWindowsService()
-                .UseServiceProviderFactory(new AutofacServiceProviderFactory())
-                .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<BaseWorkerStartup>())
-                .ConfigureAppConfiguration((hostContext, config) =>
+    public static IHostBuilder CreateHostBuilder(string[] args) =>
+        Host.CreateDefaultBuilder(args)
+            .UseSystemd()
+            .UseWindowsService()
+            .UseServiceProviderFactory(new AutofacServiceProviderFactory())
+            .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<BaseWorkerStartup>())
+            .ConfigureAppConfiguration((hostContext, config) =>
+            {
+                var buided = config.Build();
+                var path = buided["pathToConf"];
+                if (!Path.IsPathRooted(path))
                 {
-                    var buided = config.Build();
-                    var path = buided["pathToConf"];
-                    if (!Path.IsPathRooted(path))
-                    {
-                        path = Path.GetFullPath(CrossPlatform.PathCombine(hostContext.HostingEnvironment.ContentRootPath, path));
-                    }
-                    config.SetBasePath(path);
-                    var env = hostContext.Configuration.GetValue("ENVIRONMENT", "Production");
-                    config
-                        .AddJsonFile("appsettings.json")
-                        .AddJsonFile($"appsettings.{env}.json", true)
-                        .AddJsonFile($"appsettings.services.json", true)
-                        .AddJsonFile("storage.json")
-                        .AddJsonFile("notify.json")
-                        .AddJsonFile($"notify.{env}.json", true)
-                        .AddJsonFile("kafka.json")
-                        .AddJsonFile($"kafka.{env}.json", true)
-                        .AddJsonFile("redis.json")
-                        .AddJsonFile($"redis.{env}.json", true)
-                        .AddEnvironmentVariables()
-                        .AddCommandLine(args)
-                        .AddInMemoryCollection(new Dictionary<string, string>
-                            {
+                    path = Path.GetFullPath(CrossPlatform.PathCombine(hostContext.HostingEnvironment.ContentRootPath, path));
+                }
+                config.SetBasePath(path);
+                var env = hostContext.Configuration.GetValue("ENVIRONMENT", "Production");
+                config
+                    .AddJsonFile("appsettings.json")
+                    .AddJsonFile($"appsettings.{env}.json", true)
+                    .AddJsonFile($"appsettings.services.json", true)
+                    .AddJsonFile("storage.json")
+                    .AddJsonFile("notify.json")
+                    .AddJsonFile($"notify.{env}.json", true)
+                    .AddJsonFile("kafka.json")
+                    .AddJsonFile($"kafka.{env}.json", true)
+                    .AddJsonFile("redis.json")
+                    .AddJsonFile($"redis.{env}.json", true)
+                    .AddEnvironmentVariables()
+                    .AddCommandLine(args)
+                    .AddInMemoryCollection(new Dictionary<string, string>
+                        {
                                 {"pathToConf", path }
-                            }
-                        );
-                })
-                .ConfigureServices((hostContext, services) =>
+                        }
+                    );
+            })
+            .ConfigureServices((hostContext, services) =>
+            {
+                services.AddMemoryCache();
+                var diHelper = new DIHelper(services);
+
+                var redisConfiguration = hostContext.Configuration.GetSection("Redis").Get<RedisConfiguration>();
+                var kafkaConfiguration = hostContext.Configuration.GetSection("kafka").Get<KafkaSettings>();
+
+                if (kafkaConfiguration != null)
                 {
-                    services.AddMemoryCache();
-                    var diHelper = new DIHelper(services);
+                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCacheNotify<>));
+                }
+                else if (redisConfiguration != null)
+                {
+                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCacheNotify<>));
 
-                    var redisConfiguration = hostContext.Configuration.GetSection("Redis").Get<RedisConfiguration>();
-                    var kafkaConfiguration = hostContext.Configuration.GetSection("kafka").Get<KafkaSettings>();
+                    services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
+                }
+                else
+                {
+                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(MemoryCacheNotify<>));
+                }
 
-                    if (kafkaConfiguration != null)
-                    {
-                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCacheNotify<>));
-                    }
-                    else if (redisConfiguration != null)
-                    {
-                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCacheNotify<>));
+                diHelper.RegisterProducts(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
 
-                        services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
-                    }
-                    else
-                    {
-                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(MemoryCacheNotify<>));
-                    }
+                services.Configure<NotifyServiceCfg>(hostContext.Configuration.GetSection("notify"));
 
-                    diHelper.RegisterProducts(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
+                diHelper.TryAdd<NotifyServiceLauncher>();
 
-                    services.Configure<NotifyServiceCfg>(hostContext.Configuration.GetSection("notify"));
-
-                    diHelper.TryAdd<NotifyServiceLauncher>();
-
-                    diHelper.TryAdd<JabberSender>();
-                    diHelper.TryAdd<SmtpSender>();
-                    diHelper.TryAdd<AWSSender>(); // fix private
+                diHelper.TryAdd<JabberSender>();
+                diHelper.TryAdd<SmtpSender>();
+                diHelper.TryAdd<AWSSender>(); // fix private
 
                     services.AddHostedService<NotifyServiceLauncher>();
-                })
-                .ConfigureContainer<ContainerBuilder>((context, builder) =>
-                {
-                    builder.Register(context.Configuration);
-                })
-            .ConfigureNLogLogging();
-    }
+            })
+            .ConfigureContainer<ContainerBuilder>((context, builder) =>
+            {
+                builder.Register(context.Configuration);
+            })
+        .ConfigureNLogLogging();
 }

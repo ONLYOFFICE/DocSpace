@@ -23,113 +23,112 @@
  *
 */
 
-namespace ASC.Notify
+namespace ASC.Notify;
+
+[Singletone(Additional = typeof(NotifyServiceExtension))]
+public class NotifyService : INotifyService, IDisposable
 {
-    [Singletone(Additional = typeof(NotifyServiceExtension))]
-    public class NotifyService : INotifyService, IDisposable
+    private readonly ILog _logger;
+    private readonly ICacheNotify<NotifyMessage> _cacheNotify;
+    private readonly ICacheNotify<NotifyInvoke> _cacheInvoke;
+    private readonly DbWorker _db;
+    private readonly IServiceProvider _serviceProvider;
+
+    public NotifyService(DbWorker db, IServiceProvider serviceProvider, ICacheNotify<NotifyMessage> cacheNotify, ICacheNotify<NotifyInvoke> cacheInvoke, IOptionsMonitor<ILog> options)
     {
-        private readonly ILog _logger;
-        private readonly ICacheNotify<NotifyMessage> _cacheNotify;
-        private readonly ICacheNotify<NotifyInvoke> _cacheInvoke;
-        private readonly DbWorker _db;
-        private readonly IServiceProvider _serviceProvider;
+        _db = db;
+        _serviceProvider = serviceProvider;
+        _cacheNotify = cacheNotify;
+        _cacheInvoke = cacheInvoke;
+        _logger = options.CurrentValue;
+    }
 
-        public NotifyService(DbWorker db, IServiceProvider serviceProvider, ICacheNotify<NotifyMessage> cacheNotify, ICacheNotify<NotifyInvoke> cacheInvoke, IOptionsMonitor<ILog> options)
+    public void Start()
+    {
+        _cacheNotify.Subscribe((n) => SendNotifyMessage(n), Common.Caching.CacheNotifyAction.InsertOrUpdate);
+        _cacheInvoke.Subscribe((n) => InvokeSendMethod(n), Common.Caching.CacheNotifyAction.InsertOrUpdate);
+    }
+
+    public void Stop()
+    {
+        _cacheNotify.Unsubscribe(Common.Caching.CacheNotifyAction.InsertOrUpdate);
+    }
+
+    public void SendNotifyMessage(NotifyMessage notifyMessage)
+    {
+        try
         {
-            _db = db;
-            _serviceProvider = serviceProvider;
-            _cacheNotify = cacheNotify;
-            _cacheInvoke = cacheInvoke;
-            _logger = options.CurrentValue;
+            _db.SaveMessage(notifyMessage);
         }
-
-        public void Start()
+        catch (Exception e)
         {
-            _cacheNotify.Subscribe((n) => SendNotifyMessage(n), Common.Caching.CacheNotifyAction.InsertOrUpdate);
-            _cacheInvoke.Subscribe((n) => InvokeSendMethod(n), Common.Caching.CacheNotifyAction.InsertOrUpdate);
-        }
-
-        public void Stop()
-        {
-            _cacheNotify.Unsubscribe(Common.Caching.CacheNotifyAction.InsertOrUpdate);
-        }
-
-        public void SendNotifyMessage(NotifyMessage notifyMessage)
-        {
-            try
-            {
-                _db.SaveMessage(notifyMessage);
-            }
-            catch (Exception e)
-            {
-                _logger.Error(e);
-            }
-        }
-
-        public void InvokeSendMethod(NotifyInvoke notifyInvoke)
-        {
-            var service = notifyInvoke.Service;
-            var method = notifyInvoke.Method;
-            var tenant = notifyInvoke.Tenant;
-            var parameters = notifyInvoke.Parameters;
-
-            var serviceType = Type.GetType(service, true);
-
-            using var scope = _serviceProvider.CreateScope();
-
-            var instance = scope.ServiceProvider.GetService(serviceType);
-            if (instance == null)
-            {
-                throw new Exception("Service instance not found.");
-            }
-
-            var methodInfo = serviceType.GetMethod(method);
-            if (methodInfo == null)
-            {
-                throw new Exception("Method not found.");
-            }
-
-            var scopeClass = scope.ServiceProvider.GetService<NotifyServiceScope>();
-            var (tenantManager, tenantWhiteLabelSettingsHelper, settingsManager) = scopeClass;
-            tenantManager.SetCurrentTenant(tenant);
-            tenantWhiteLabelSettingsHelper.Apply(settingsManager.Load<TenantWhiteLabelSettings>(), tenant);
-            methodInfo.Invoke(instance, parameters.ToArray());
-        }
-
-        public void Dispose()
-        {
-            _cacheNotify.Unsubscribe(CacheNotifyAction.InsertOrUpdate);
-            _cacheInvoke.Unsubscribe(CacheNotifyAction.InsertOrUpdate);
+            _logger.Error(e);
         }
     }
 
-    [Scope]
-    public class NotifyServiceScope
+    public void InvokeSendMethod(NotifyInvoke notifyInvoke)
     {
-        private readonly TenantManager _tenantManager;
-        private readonly TenantWhiteLabelSettingsHelper _tenantWhiteLabelSettingsHelper;
-        private readonly SettingsManager _settingsManager;
+        var service = notifyInvoke.Service;
+        var method = notifyInvoke.Method;
+        var tenant = notifyInvoke.Tenant;
+        var parameters = notifyInvoke.Parameters;
 
-        public NotifyServiceScope(TenantManager tenantManager, TenantWhiteLabelSettingsHelper tenantWhiteLabelSettingsHelper, SettingsManager settingsManager)
+        var serviceType = Type.GetType(service, true);
+
+        using var scope = _serviceProvider.CreateScope();
+
+        var instance = scope.ServiceProvider.GetService(serviceType);
+        if (instance == null)
         {
-            _tenantManager = tenantManager;
-            _tenantWhiteLabelSettingsHelper = tenantWhiteLabelSettingsHelper;
-            _settingsManager = settingsManager;
+            throw new Exception("Service instance not found.");
         }
 
-        public void Deconstruct(out TenantManager tenantManager, out TenantWhiteLabelSettingsHelper tenantWhiteLabelSettingsHelper, out SettingsManager settingsManager)
+        var methodInfo = serviceType.GetMethod(method);
+        if (methodInfo == null)
         {
-            tenantManager = _tenantManager;
-            tenantWhiteLabelSettingsHelper = _tenantWhiteLabelSettingsHelper;
-            settingsManager = _settingsManager;
+            throw new Exception("Method not found.");
         }
+
+        var scopeClass = scope.ServiceProvider.GetService<NotifyServiceScope>();
+        var (tenantManager, tenantWhiteLabelSettingsHelper, settingsManager) = scopeClass;
+        tenantManager.SetCurrentTenant(tenant);
+        tenantWhiteLabelSettingsHelper.Apply(settingsManager.Load<TenantWhiteLabelSettings>(), tenant);
+        methodInfo.Invoke(instance, parameters.ToArray());
     }
 
-    public static class NotifyServiceExtension
+    public void Dispose()
     {
-        public static void Register(DIHelper services)
-        {
-            services.TryAdd<NotifyServiceScope>();
-        }
+        _cacheNotify.Unsubscribe(CacheNotifyAction.InsertOrUpdate);
+        _cacheInvoke.Unsubscribe(CacheNotifyAction.InsertOrUpdate);
+    }
+}
+
+[Scope]
+public class NotifyServiceScope
+{
+    private readonly TenantManager _tenantManager;
+    private readonly TenantWhiteLabelSettingsHelper _tenantWhiteLabelSettingsHelper;
+    private readonly SettingsManager _settingsManager;
+
+    public NotifyServiceScope(TenantManager tenantManager, TenantWhiteLabelSettingsHelper tenantWhiteLabelSettingsHelper, SettingsManager settingsManager)
+    {
+        _tenantManager = tenantManager;
+        _tenantWhiteLabelSettingsHelper = tenantWhiteLabelSettingsHelper;
+        _settingsManager = settingsManager;
+    }
+
+    public void Deconstruct(out TenantManager tenantManager, out TenantWhiteLabelSettingsHelper tenantWhiteLabelSettingsHelper, out SettingsManager settingsManager)
+    {
+        tenantManager = _tenantManager;
+        tenantWhiteLabelSettingsHelper = _tenantWhiteLabelSettingsHelper;
+        settingsManager = _settingsManager;
+    }
+}
+
+public static class NotifyServiceExtension
+{
+    public static void Register(DIHelper services)
+    {
+        services.TryAdd<NotifyServiceScope>();
     }
 }

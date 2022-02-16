@@ -23,80 +23,79 @@
  *
 */
 
-namespace ASC.Notify
+namespace ASC.Notify;
+
+[Singletone]
+public class NotifyServiceLauncher : IHostedService
 {
-    [Singletone]
-    public class NotifyServiceLauncher : IHostedService
+    private readonly ILog _logger;
+    private readonly IServiceProvider _serviceProvider;
+    private readonly NotifyCleaner _notifyCleaner;
+    private readonly NotifyConfiguration _notifyConfiguration;
+    private readonly NotifySender _notifySender;
+    private readonly NotifyService _notifyService;
+    private readonly NotifyServiceCfg _notifyServiceCfg;
+    private readonly WebItemManager _webItemManager;
+
+    public NotifyServiceLauncher(
+        IOptions<NotifyServiceCfg> notifyServiceCfg,
+        NotifySender notifySender,
+        NotifyService notifyService,
+        NotifyCleaner notifyCleaner,
+        WebItemManager webItemManager,
+        IServiceProvider serviceProvider,
+        NotifyConfiguration notifyConfiguration,
+        IOptionsMonitor<ILog> options)
     {
-        private readonly ILog _logger;
-        private readonly IServiceProvider _serviceProvider;
-        private readonly NotifyCleaner _notifyCleaner;
-        private readonly NotifyConfiguration _notifyConfiguration;
-        private readonly NotifySender _notifySender;
-        private readonly NotifyService _notifyService;
-        private readonly NotifyServiceCfg _notifyServiceCfg;
-        private readonly WebItemManager _webItemManager;
+        _notifyServiceCfg = notifyServiceCfg.Value;
+        _notifyService = notifyService;
+        _notifySender = notifySender;
+        _notifyCleaner = notifyCleaner;
+        _webItemManager = webItemManager;
+        _serviceProvider = serviceProvider;
+        _notifyConfiguration = notifyConfiguration;
+        _logger = options.Get("ASC.Notify");
+    }
 
-        public NotifyServiceLauncher(
-            IOptions<NotifyServiceCfg> notifyServiceCfg,
-            NotifySender notifySender,
-            NotifyService notifyService,
-            NotifyCleaner notifyCleaner,
-            WebItemManager webItemManager,
-            IServiceProvider serviceProvider,
-            NotifyConfiguration notifyConfiguration,
-            IOptionsMonitor<ILog> options)
+    public Task StartAsync(CancellationToken cancellationToken)
+    {
+        _notifyService.Start();
+        _notifySender.StartSending();
+
+        if (0 < _notifyServiceCfg.Schedulers.Count)
         {
-            _notifyServiceCfg = notifyServiceCfg.Value;
-            _notifyService = notifyService;
-            _notifySender = notifySender;
-            _notifyCleaner = notifyCleaner;
-            _webItemManager = webItemManager;
-            _serviceProvider = serviceProvider;
-            _notifyConfiguration = notifyConfiguration;
-            _logger = options.Get("ASC.Notify");
+            InitializeNotifySchedulers();
         }
 
-        public Task StartAsync(CancellationToken cancellationToken)
+        _notifyCleaner.Start();
+
+        return Task.CompletedTask;
+    }
+
+    public Task StopAsync(CancellationToken cancellationToken)
+    {
+        _notifyService.Stop();
+
+        if (_notifySender != null)
         {
-            _notifyService.Start();
-            _notifySender.StartSending();
-
-            if (0 < _notifyServiceCfg.Schedulers.Count)
-            {
-                InitializeNotifySchedulers();
-            }
-
-            _notifyCleaner.Start();
-
-            return Task.CompletedTask;
+            _notifySender.StopSending();
         }
 
-        public Task StopAsync(CancellationToken cancellationToken)
+        if (_notifyCleaner != null)
         {
-            _notifyService.Stop();
-
-            if (_notifySender != null)
-            {
-                _notifySender.StopSending();
-            }
-
-            if (_notifyCleaner != null)
-            {
-                _notifyCleaner.Stop();
-            }
-
-            return Task.CompletedTask;
+            _notifyCleaner.Stop();
         }
 
-        private void InitializeNotifySchedulers()
+        return Task.CompletedTask;
+    }
+
+    private void InitializeNotifySchedulers()
+    {
+        _notifyConfiguration.Configure();
+        foreach (var pair in _notifyServiceCfg.Schedulers.Where(r => r.MethodInfo != null))
         {
-            _notifyConfiguration.Configure();
-            foreach (var pair in _notifyServiceCfg.Schedulers.Where(r => r.MethodInfo != null))
-            {
-                _logger.DebugFormat("Start scheduler {0} ({1})", pair.Name, pair.MethodInfo);
-                pair.MethodInfo.Invoke(null, null);
-            }
+            _logger.DebugFormat("Start scheduler {0} ({1})", pair.Name, pair.MethodInfo);
+            pair.MethodInfo.Invoke(null, null);
         }
     }
 }

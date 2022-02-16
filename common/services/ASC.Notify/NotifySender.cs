@@ -23,109 +23,63 @@
  *
 */
 
-namespace ASC.Notify
+namespace ASC.Notify;
+
+[Singletone]
+public class NotifySender : IDisposable
 {
-    [Singletone]
-    public class NotifySender : IDisposable
+    private readonly ILog _logger;
+
+    private readonly DbWorker _db;
+    private CancellationTokenSource _cancellationToken;
+
+    public NotifyServiceCfg NotifyServiceCfg { get; }
+
+    public NotifySender(IOptions<NotifyServiceCfg> notifyServiceCfg, DbWorker dbWorker, IOptionsMonitor<ILog> options)
     {
-        private readonly ILog _logger;
+        _logger = options.CurrentValue;
+        NotifyServiceCfg = notifyServiceCfg.Value;
+        _db = dbWorker;
+    }
 
-        private readonly DbWorker _db;
-        private CancellationTokenSource _cancellationToken;
+    public void StartSending()
+    {
+        _db.ResetStates();
+        _cancellationToken = new CancellationTokenSource();
+        var task = new Task(async () => await ThreadManagerWork(), _cancellationToken.Token, TaskCreationOptions.LongRunning);
+        task.Start();
+    }
 
-        public NotifyServiceCfg NotifyServiceCfg { get; }
+    public void StopSending()
+    {
+        _cancellationToken.Cancel();
+    }
 
-        public NotifySender(IOptions<NotifyServiceCfg> notifyServiceCfg, DbWorker dbWorker, IOptionsMonitor<ILog> options)
-        {
-            _logger = options.CurrentValue;
-            NotifyServiceCfg = notifyServiceCfg.Value;
-            _db = dbWorker;
-        }
+    private async Task ThreadManagerWork()
+    {
+        var tasks = new List<Task>(NotifyServiceCfg.Process.MaxThreads);
 
-        public void StartSending()
-        {
-            _db.ResetStates();
-            _cancellationToken = new CancellationTokenSource();
-            var task = new Task(async () => await ThreadManagerWork(), _cancellationToken.Token, TaskCreationOptions.LongRunning);
-            task.Start();
-        }
-
-        public void StopSending()
-        {
-            _cancellationToken.Cancel();
-        }
-
-        private async Task ThreadManagerWork()
-        {
-            var tasks = new List<Task>(NotifyServiceCfg.Process.MaxThreads);
-
-            while (!_cancellationToken.IsCancellationRequested)
-            {
-                try
-                {
-                    if (tasks.Count < NotifyServiceCfg.Process.MaxThreads)
-                    {
-                        var messages = _db.GetMessages(NotifyServiceCfg.Process.BufferSize);
-                        if (messages.Count > 0)
-                        {
-                            var t = new Task(() => SendMessages(messages), _cancellationToken.Token, TaskCreationOptions.LongRunning);
-                            tasks.Add(t);
-                            t.Start(TaskScheduler.Default);
-                        }
-                        else
-                        {
-                            await Task.Delay(5000);
-                        }
-                    }
-                    else
-                    {
-                        await Task.WhenAny(tasks.ToArray()).ContinueWith(r => tasks.RemoveAll(a => a.IsCompleted));
-                    }
-                }
-                catch (ThreadAbortException)
-                {
-                    return;
-                }
-                catch (Exception e)
-                {
-                    _logger.Error(e);
-                }
-            }
-        }
-
-        private void SendMessages(object messages)
+        while (!_cancellationToken.IsCancellationRequested)
         {
             try
             {
-                foreach (var m in (IDictionary<int, NotifyMessage>)messages)
+                if (tasks.Count < NotifyServiceCfg.Process.MaxThreads)
                 {
-                    if (_cancellationToken.IsCancellationRequested)
+                    var messages = _db.GetMessages(NotifyServiceCfg.Process.BufferSize);
+                    if (messages.Count > 0)
                     {
-                        return;
+                        var t = new Task(() => SendMessages(messages), _cancellationToken.Token, TaskCreationOptions.LongRunning);
+                        tasks.Add(t);
+                        t.Start(TaskScheduler.Default);
                     }
-
-                    var result = MailSendingState.Sended;
-                    try
+                    else
                     {
-                        var sender = NotifyServiceCfg.Senders.FirstOrDefault(r => r.Name == m.Value.Sender);
-                        if (sender != null)
-                        {
-                            sender.NotifySender.Send(m.Value);
-                        }
-                        else
-                        {
-                            result = MailSendingState.FatalError;
-                        }
-
-                        _logger.DebugFormat("Notify #{0} has been sent.", m.Key);
+                        await Task.Delay(5000);
                     }
-                    catch (Exception e)
-                    {
-                        result = MailSendingState.FatalError;
-                        _logger.Error(e);
-                    }
-
-                    _db.SetState(m.Key, result);
+                }
+                else
+                {
+                    await Task.WhenAny(tasks.ToArray()).ContinueWith(r => tasks.RemoveAll(a => a.IsCompleted));
                 }
             }
             catch (ThreadAbortException)
@@ -137,13 +91,58 @@ namespace ASC.Notify
                 _logger.Error(e);
             }
         }
+    }
 
-        public void Dispose()
+    private void SendMessages(object messages)
+    {
+        try
         {
-            if (_cancellationToken != null)
+            foreach (var m in (IDictionary<int, NotifyMessage>)messages)
             {
-                _cancellationToken.Dispose();
+                if (_cancellationToken.IsCancellationRequested)
+                {
+                    return;
+                }
+
+                var result = MailSendingState.Sended;
+                try
+                {
+                    var sender = NotifyServiceCfg.Senders.FirstOrDefault(r => r.Name == m.Value.Sender);
+                    if (sender != null)
+                    {
+                        sender.NotifySender.Send(m.Value);
+                    }
+                    else
+                    {
+                        result = MailSendingState.FatalError;
+                    }
+
+                    _logger.DebugFormat("Notify #{0} has been sent.", m.Key);
+                }
+                catch (Exception e)
+                {
+                    result = MailSendingState.FatalError;
+                    _logger.Error(e);
+                }
+
+                _db.SetState(m.Key, result);
             }
+        }
+        catch (ThreadAbortException)
+        {
+            return;
+        }
+        catch (Exception e)
+        {
+            _logger.Error(e);
+        }
+    }
+
+    public void Dispose()
+    {
+        if (_cancellationToken != null)
+        {
+            _cancellationToken.Dispose();
         }
     }
 }
