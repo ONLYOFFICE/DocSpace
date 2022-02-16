@@ -40,16 +40,16 @@ public class MessagesRepository : IDisposable
     private bool _timerStarted;
 
     public ILog Logger { get; set; }
-    private readonly IServiceProvider _serviceProvider;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
 
-    public MessagesRepository(IServiceProvider serviceProvider, IOptionsMonitor<ILog> options)
+    public MessagesRepository(IServiceScopeFactory serviceScopeFactory, IOptionsMonitor<ILog> options)
     {
         _cacheTime = TimeSpan.FromMinutes(1);
         _cache = new Dictionary<string, EventMessage>();
         _timerStarted = false;
 
         Logger = options.CurrentValue;
-        _serviceProvider = serviceProvider;
+        _serviceScopeFactory = serviceScopeFactory;
 
         _timer = new Timer(FlushCache);
     }
@@ -59,7 +59,7 @@ public class MessagesRepository : IDisposable
         // messages with action code < 2000 are related to login-history
         if ((int)message.Action < 2000)
         {
-            using var scope = _serviceProvider.CreateScope();
+            using var scope = _serviceScopeFactory.CreateScope();
             using var ef = scope.ServiceProvider.GetService<DbContextManager<MessagesContext>>().Get("messages");
 
             AddLoginEvent(message, ef);
@@ -105,7 +105,7 @@ public class MessagesRepository : IDisposable
             return;
         }
 
-        using var scope = _serviceProvider.CreateScope();
+        using var scope = _serviceScopeFactory.CreateScope();
         using var ef = scope.ServiceProvider.GetService<DbContextManager<Messages>>().Get("messages");
         using var tx = ef.Database.BeginTransaction(IsolationLevel.ReadUncommitted);
         var dict = new Dictionary<string, ClientInfo>();
