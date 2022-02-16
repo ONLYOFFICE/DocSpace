@@ -23,79 +23,82 @@
  *
 */
 
-namespace ASC.Data.Backup
+namespace ASC.Data.Backup;
+
+public class ZipWriteOperator : IDataWriteOperator
 {
-    public class ZipWriteOperator : IDataWriteOperator
+
+    private readonly TarOutputStream _tarOutputStream;
+    private readonly TempStream _tempStream;
+
+    public ZipWriteOperator(TempStream tempStream, string targetFile)
     {
-        private readonly TarOutputStream tarOutputStream;
+        var file = new FileStream(targetFile, FileMode.Create);
+        var gZipOutputStream = new GZipOutputStream(file);
+        _tarOutputStream = new TarOutputStream(gZipOutputStream, Encoding.UTF8);
+        _tempStream = tempStream;
+    }
 
-        private TempStream TempStream { get; }
-
-        public ZipWriteOperator(TempStream tempStream, string targetFile)
+    public void WriteEntry(string key, Stream stream)
+    {
+        using (var buffered = _tempStream.GetBuffered(stream))
         {
-            var file = new FileStream(targetFile, FileMode.Create);
-            var gZipOutputStream = new GZipOutputStream(file);
-            tarOutputStream = new TarOutputStream(gZipOutputStream, Encoding.UTF8);
-            TempStream = tempStream;
-        }
-
-        public void WriteEntry(string key, Stream stream)
-        {
-            using (var buffered = TempStream.GetBuffered(stream))
-            {
-                var entry = TarEntry.CreateTarEntry(key);
-                entry.Size = buffered.Length;
-                tarOutputStream.PutNextEntry(entry);
-                buffered.Position = 0;
-                buffered.CopyTo(tarOutputStream);
-                tarOutputStream.CloseEntry();
-            }
-        }
-
-        public void Dispose()
-        {
-            tarOutputStream.Close();
-            tarOutputStream.Dispose();
+            var entry = TarEntry.CreateTarEntry(key);
+            entry.Size = buffered.Length;
+            _tarOutputStream.PutNextEntry(entry);
+            buffered.Position = 0;
+            buffered.CopyTo(_tarOutputStream);
+            _tarOutputStream.CloseEntry();
         }
     }
 
-    public class ZipReadOperator : IDataReadOperator
+    public void Dispose()
     {
-        private readonly string tmpdir;
+        _tarOutputStream.Close();
+        _tarOutputStream.Dispose();
+    }
+}
 
-        public ZipReadOperator(string targetFile)
+public class ZipReadOperator : IDataReadOperator
+{
+    private readonly string _tmpDir;
+
+    public ZipReadOperator(string targetFile)
+    {
+        _tmpDir = Path.Combine(Path.GetDirectoryName(targetFile), Path.GetFileNameWithoutExtension(targetFile).Replace('>', '_').Replace(':', '_').Replace('?', '_'));
+
+        using (var stream = File.OpenRead(targetFile))
+        using (var reader = new GZipInputStream(stream))
+        using (var tarOutputStream = TarArchive.CreateInputTarArchive(reader, Encoding.UTF8))
         {
-            tmpdir = Path.Combine(Path.GetDirectoryName(targetFile), Path.GetFileNameWithoutExtension(targetFile).Replace('>', '_').Replace(':', '_').Replace('?', '_'));
-
-            using (var stream = File.OpenRead(targetFile))
-            using (var reader = new GZipInputStream(stream))
-            using (var tarOutputStream = TarArchive.CreateInputTarArchive(reader, Encoding.UTF8))
-            {
-                tarOutputStream.ExtractContents(tmpdir);
-            }
-
-            File.Delete(targetFile);
+            tarOutputStream.ExtractContents(_tmpDir);
         }
 
-        public Stream GetEntry(string key)
-        {
-            var filePath = Path.Combine(tmpdir, key);
-            return File.Exists(filePath) ? File.Open(filePath, FileMode.Open, FileAccess.ReadWrite, FileShare.Read) : null;
-        }
+        File.Delete(targetFile);
+    }
 
-        public IEnumerable<string> GetEntries(string key)
-        {
-            var path = Path.Combine(tmpdir, key);
-            var files = Directory.EnumerateFiles(path);
-            return files;
-        }
+    public Stream GetEntry(string key)
+    {
+        var filePath = Path.Combine(_tmpDir, key);
 
-        public void Dispose()
+        return File.Exists(filePath)
+            ? File.Open(filePath, FileMode.Open, FileAccess.ReadWrite, FileShare.Read)
+            : null;
+    }
+
+    public IEnumerable<string> GetEntries(string key)
+    {
+        var path = Path.Combine(_tmpDir, key);
+        var files = Directory.EnumerateFiles(path);
+
+        return files;
+    }
+
+    public void Dispose()
+    {
+        if (Directory.Exists(_tmpDir))
         {
-            if (Directory.Exists(tmpdir))
-            {
-                Directory.Delete(tmpdir, true);
-            }
+            Directory.Delete(_tmpDir, true);
         }
     }
 }
