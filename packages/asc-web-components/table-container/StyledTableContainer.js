@@ -141,7 +141,8 @@ const StyledTableHeader = styled.div`
 `;
 
 const StyledTableHeaderCell = styled.div`
-  cursor: ${(props) => (props.showIcon ? "pointer" : "default")};
+  cursor: ${(props) =>
+    props.showIcon && props.sortingVisible ? "pointer" : "default"};
 
   .header-container-text-icon {
     height: 8px;
