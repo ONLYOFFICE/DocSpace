@@ -79,7 +79,7 @@ namespace ASC.Data.Reassigns
             var scopeClass = scope.ServiceProvider.GetService<ReassignProgressItemScope>();
             var (tenantManager, coreBaseSettings, messageService, studioNotifyService, securityContext, userManager, userPhotoManager, displayUserSettingsHelper, messageTarget, options) = scopeClass;
             var logger = options.Get("ASC.Web");
-            var tenant = tenantManager.SetCurrentTenant(_tenantId);
+            tenantManager.SetCurrentTenant(_tenantId);
 
             try
             {
@@ -259,7 +259,7 @@ namespace ASC.Data.Reassigns
         }
     }
 
-    public class ReassignProgressItemExtension
+    public static class ReassignProgressItemExtension
     {
         public static void Register(DIHelper services)
         {

@@ -170,7 +170,7 @@ namespace ASC.Api.Documents
 
             if (!IsVisitor
                && !withoutAdditionalFolder
-               && FileUtility.ExtsWebTemplate.Any()
+               && FileUtility.ExtsWebTemplate.Count > 0
                && FilesSettingsHelper.TemplatesSection)
             {
                 result.Add(GlobalFolderHelper.FolderTemplates);
@@ -2400,7 +2400,7 @@ namespace ASC.Api.Documents
 
         private object WordpressSave(WordpressSaveModel model)
         {
-            if (model.Code == "")
+            if (model.Code.Length == 0)
             {
                 return new
                 {

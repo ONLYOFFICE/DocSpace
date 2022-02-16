@@ -89,8 +89,8 @@ namespace ASC.Core
 
         public string AuthenticateMe(string login, string passwordHash)
         {
-            if (login == null) throw new ArgumentNullException("login");
-            if (passwordHash == null) throw new ArgumentNullException("passwordHash");
+            if (login == null) throw new ArgumentNullException(nameof(login));
+            if (passwordHash == null) throw new ArgumentNullException(nameof(passwordHash));
 
             var tenantid = TenantManager.GetCurrentTenant().TenantId;
             var u = UserManager.GetUsersByPasswordHash(tenantid, login, passwordHash);
@@ -110,6 +110,9 @@ namespace ASC.Core
                     if (HttpContextAccessor?.HttpContext != null)
                     {
                         var request = HttpContextAccessor?.HttpContext.Request;
+
+                        if (request == null) throw new ArgumentNullException("request");
+
                         ipFrom = "from " + (request.Headers["X-Forwarded-For"].ToString() ?? request.GetUserHostAddress());
                         address = "for " + request.GetUrlRewriter();
                     }
@@ -165,6 +168,9 @@ namespace ASC.Core
                     if (HttpContextAccessor?.HttpContext != null)
                     {
                         var request = HttpContextAccessor?.HttpContext.Request;
+
+                        if (request == null) throw new ArgumentNullException("request");
+
                         address = "for " + request.GetUrlRewriter();
                         ipFrom = "from " + (request.Headers["X-Forwarded-For"].ToString() ?? request.GetUserHostAddress());
                     }

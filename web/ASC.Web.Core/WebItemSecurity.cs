@@ -41,7 +41,7 @@ namespace ASC.Web.Core
             CacheNotify.Subscribe((r) =>
             {
                 ClearCache(r.Tenant);
-            }, CacheNotifyAction.Any);
+            }, Common.Caching.CacheNotifyAction.Any);
         }
 
         public void ClearCache(int tenantId)
@@ -56,7 +56,7 @@ namespace ASC.Web.Core
 
         public void Publish(int tenantId)
         {
-            CacheNotify.Publish(new WebItemSecurityNotifier { Tenant = tenantId }, CacheNotifyAction.Any);
+            CacheNotify.Publish(new WebItemSecurityNotifier { Tenant = tenantId }, Common.Caching.CacheNotifyAction.Any);
         }
 
         public Dictionary<string, bool> Get(int tenantId)
@@ -70,7 +70,8 @@ namespace ASC.Web.Core
             var dic = Get(tenantId);
             if (dic == null)
             {
-                Cache.Insert(GetCacheKey(tenantId), dic = new Dictionary<string, bool>(), DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)));
+                dic = new Dictionary<string, bool>();
+                Cache.Insert(GetCacheKey(tenantId), dic, DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)));
             }
 
             return dic;
@@ -126,7 +127,7 @@ namespace ASC.Web.Core
         public bool IsAvailableForUser(Guid itemId, Guid @for)
         {
             var id = itemId.ToString();
-            var result = false;
+            bool result;
 
             var tenant = TenantManager.GetCurrentTenant();
             var dic = WebItemSecurityCache.GetOrInsert(tenant.TenantId);
@@ -134,9 +135,9 @@ namespace ASC.Web.Core
             {
                 lock (dic)
                 {
-                    if (dic.ContainsKey(id + @for))
+                    if (dic.TryGetValue(id + @for, out var value))
                     {
-                        return dic[id + @for];
+                        return value;
                     }
                 }
             }
@@ -239,7 +240,7 @@ namespace ASC.Web.Core
             {
                 WebItemId = id,
 
-                Enabled = !info.Any() || (!module && info.Any(i => i.Item2)) || (module && info.All(i => i.Item2)),
+                Enabled = info.Count == 0 || (!module && info.Any(i => i.Item2)) || (module && info.All(i => i.Item2)),
 
                 Users = info
                                .Select(i => UserManager.GetUsers(i.Item1))
@@ -259,7 +260,7 @@ namespace ASC.Web.Core
                 .GroupBy(a => a.SubjectId)
                 .Select(a => Tuple.Create(a.Key, a.First().Reaction == AceType.Allow))
                 .ToList();
-            if (!result.Any())
+            if (result.Count == 0)
             {
                 result.Add(Tuple.Create(ASC.Core.Users.Constants.GroupEveryone.ID, false));
             }
@@ -384,7 +385,7 @@ namespace ASC.Web.Core
             {
                 if (string.IsNullOrEmpty(id))
                 {
-                    throw new ArgumentNullException("id");
+                    throw new ArgumentNullException(nameof(id));
                 }
 
                 var itemId = Guid.Empty;

@@ -72,7 +72,7 @@ namespace ASC.Files.Thirdparty.SharePoint
             return ProviderInfo.ToFile(ProviderInfo.GetFolderFiles(parentId).FirstOrDefault(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase)));
         }
 
-        public File<string> GetFileStable(string fileId, int fileVersion)
+        public File<string> GetFileStable(string fileId, int fileVersion = -1)
         {
             return ProviderInfo.ToFile(ProviderInfo.GetFileById(fileId));
         }
@@ -123,8 +123,8 @@ namespace ASC.Files.Thirdparty.SharePoint
                 case FilterType.MediaOnly:
                     files = files.Where(x =>
                         {
-                            FileType fileType;
-                            return (fileType = FileUtility.GetFileTypeByFileName(x.Title)) == FileType.Audio || fileType == FileType.Video;
+                            FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                            return fileType == FileType.Audio || fileType == FileType.Video;
                         });
                     break;
                 case FilterType.ByExtension:
@@ -184,8 +184,8 @@ namespace ASC.Files.Thirdparty.SharePoint
                 case FilterType.MediaOnly:
                     files = files.Where(x =>
                     {
-                        FileType fileType;
-                        return (fileType = FileUtility.GetFileTypeByFileName(x.Title)) == FileType.Audio || fileType == FileType.Video;
+                        FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                        return fileType == FileType.Audio || fileType == FileType.Video;
                     });
                     break;
                 case FilterType.ByExtension:
@@ -222,7 +222,7 @@ namespace ASC.Files.Thirdparty.SharePoint
         {
             var fileToDownload = ProviderInfo.GetFileById(file.ID);
             if (fileToDownload == null)
-                throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
+                throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
 
             var fileStream = ProviderInfo.GetFileStream(fileToDownload.ServerRelativeUrl, (int)offset);
 
@@ -241,7 +241,7 @@ namespace ASC.Files.Thirdparty.SharePoint
 
         public File<string> SaveFile(File<string> file, Stream fileStream)
         {
-            if (fileStream == null) throw new ArgumentNullException("fileStream");
+            if (fileStream == null) throw new ArgumentNullException(nameof(fileStream));
 
             if (file.ID != null)
             {
@@ -253,7 +253,7 @@ namespace ASC.Files.Thirdparty.SharePoint
                     var folder = ProviderInfo.GetFolderById(file.FolderID);
                     file.Title = GetAvailableTitle(file.Title, folder, IsExist);
 
-                    var id = ProviderInfo.RenameFile(DaoSelector.ConvertId(resultFile.ID).ToString(), file.Title);
+                    var id = ProviderInfo.RenameFile(DaoSelector.ConvertId(resultFile.ID), file.Title);
                     return GetFile(DaoSelector.ConvertId(id));
                 }
                 return resultFile;

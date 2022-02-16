@@ -23,134 +23,166 @@
  *
 */
 
-namespace ASC.FederatedLogin.LoginProviders
+namespace ASC.FederatedLogin.LoginProviders;
+
+[Scope]
+public class GosUslugiLoginProvider : BaseLoginProvider<GosUslugiLoginProvider>
 {
-    [Scope]
-    public class GosUslugiLoginProvider : BaseLoginProvider<GosUslugiLoginProvider>
+    public string BaseDomain => this["gosUslugiDomain"];
+    public override string CodeUrl => BaseDomain + "/aas/oauth2/ac";
+    public override string AccessTokenUrl => BaseDomain + "/aas/oauth2/te";
+    public override string ClientID => this["gosUslugiClientId"];
+    public override string ClientSecret => this["gosUslugiCert"];
+    public override string RedirectUri => this["gosUslugiRedirectUrl"];
+    public override string Scopes => "fullname birthdate gender email";
+    private string GosUslugiProfileUrl => BaseDomain + "/rs/prns/";
+
+    public GosUslugiLoginProvider() { }
+
+    public GosUslugiLoginProvider(
+        OAuth20TokenHelper oAuth20TokenHelper,
+        TenantManager tenantManager,
+        CoreBaseSettings coreBaseSettings,
+        CoreSettings coreSettings,
+        IConfiguration configuration,
+        ICacheNotify<ConsumerCacheItem> cache,
+        ConsumerFactory consumerFactory,
+        Signature signature,
+        InstanceCrypto instanceCrypto,
+        string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
+        : base(oAuth20TokenHelper, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, signature, instanceCrypto, name, order, props, additional)
     {
-        public string BaseDomain
-        {
-            get { return this["gosUslugiDomain"]; }
-        }
+    }
 
-        public override string CodeUrl
+    public override LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params, IDictionary<string, string> additionalStateArgs)
+    {
+        try
         {
-            get { return BaseDomain + "/aas/oauth2/ac"; }
-        }
+            var token = Auth(context, Scopes, out var redirect);
 
-        public override string AccessTokenUrl
-        {
-            get { return BaseDomain + "/aas/oauth2/te"; }
-        }
-
-        public override string ClientID
-        {
-            get { return this["gosUslugiClientId"]; }
-        }
-
-        public override string ClientSecret
-        {
-            get { return this["gosUslugiCert"]; }
-        }
-
-        public override string RedirectUri
-        {
-            get { return this["gosUslugiRedirectUrl"]; }
-        }
-
-        public override string Scopes
-        {
-            get { return "fullname birthdate gender email"; }
-        }
-
-        private string GosUslugiProfileUrl
-        {
-            get { return BaseDomain + "/rs/prns/"; }
-        }
-
-        public GosUslugiLoginProvider()
-        {
-        }
-
-        public GosUslugiLoginProvider(
-            OAuth20TokenHelper oAuth20TokenHelper,
-            TenantManager tenantManager,
-            CoreBaseSettings coreBaseSettings,
-            CoreSettings coreSettings,
-            IConfiguration configuration,
-            ICacheNotify<ConsumerCacheItem> cache,
-            ConsumerFactory consumerFactory,
-            Signature signature,
-            InstanceCrypto instanceCrypto,
-            string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(oAuth20TokenHelper, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, signature, instanceCrypto, name, order, props, additional)
-        {
-        }
-
-
-        public override LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params, IDictionary<string, string> additionalStateArgs = null)
-        {
-            try
+            if (redirect)
             {
-                var token = Auth(context, Scopes, out var redirect);
-
-                if (redirect)
-                {
-                    return null;
-                }
-
-                if (token == null)
-                {
-                    throw new Exception("Login failed");
-                }
-
-                return GetLoginProfile(token.AccessToken);
-            }
-            catch (ThreadAbortException)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                return LoginProfile.FromError(Signature, InstanceCrypto, ex);
-            }
-        }
-
-        protected override OAuth20Token Auth(HttpContext context, string scopes, out bool redirect, IDictionary<string, string> additionalArgs = null, IDictionary<string, string> additionalStateArgs = null)
-        {
-            var error = context.Request.Query["error"];
-            if (!string.IsNullOrEmpty(error))
-            {
-                if (error == "access_denied")
-                {
-                    error = "Canceled at provider";
-                }
-                throw new Exception(error);
-            }
-
-            var code = context.Request.Query["code"];
-            if (string.IsNullOrEmpty(code))
-            {
-                RequestCode(context, scopes);
-                redirect = true;
                 return null;
             }
 
-            redirect = false;
-            var state = context.Request.Query["state"];
-            return GetAccessToken(state, code);
+            if (token == null)
+            {
+                throw new Exception("Login failed");
+            }
+
+            return GetLoginProfile(token.AccessToken);
+        }
+        catch (ThreadAbortException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            return LoginProfile.FromError(Signature, InstanceCrypto, ex);
+        }
+    }
+
+    public override LoginProfile GetLoginProfile(string accessToken)
+    {
+        var tokenPayloadString = JsonWebToken.Decode(accessToken, string.Empty, false, true);
+        var tokenPayload = JObject.Parse(tokenPayloadString);
+        if (tokenPayload == null)
+        {
+            throw new Exception("Payload is incorrect");
         }
 
-        private void RequestCode(HttpContext context, string scope = null)
+        var oid = tokenPayload.Value<string>("urn:esia:sbj_id");
+
+        var userInfoString = RequestHelper.PerformRequest(GosUslugiProfileUrl + oid, "application/x-www-form-urlencoded", headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
+        var userInfo = JObject.Parse(userInfoString);
+        if (userInfo == null)
         {
-            var timestamp = DateTime.UtcNow.ToString("yyyy.MM.dd HH:mm:ss +0000");
-            var state = Guid.NewGuid().ToString();//HttpContext.Current.Request.GetUrlRewriter().AbsoluteUri;
+            throw new Exception("userinfo is incorrect");
+        }
 
-            var msg = scope + timestamp + ClientID + state;
-            var encodedSignature = SignMsg(msg);
-            var clientSecret = WebEncoders.Base64UrlEncode(encodedSignature);
+        var profile = new LoginProfile(Signature, InstanceCrypto)
+        {
+            Id = oid,
+            FirstName = userInfo.Value<string>("firstName"),
+            LastName = userInfo.Value<string>("lastName"),
 
-            var requestParams = new Dictionary<string, string>
+            Provider = ProviderConstants.GosUslugi,
+        };
+
+        var userContactsString = RequestHelper.PerformRequest(GosUslugiProfileUrl + oid + "/ctts", "application/x-www-form-urlencoded", headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
+        var userContacts = JObject.Parse(userContactsString);
+        if (userContacts == null)
+        {
+            throw new Exception("usercontacts is incorrect");
+        }
+
+        var contactElements = userContacts.Value<JArray>("elements");
+        if (contactElements == null)
+        {
+            throw new Exception("usercontacts elements is incorrect");
+        }
+
+        foreach (var contactElement in contactElements.ToObject<List<string>>())
+        {
+            var userContactString = RequestHelper.PerformRequest(contactElement, "application/x-www-form-urlencoded", headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
+
+            var userContact = JObject.Parse(userContactString);
+            if (userContact == null)
+            {
+                throw new Exception("usercontacts is incorrect");
+            }
+
+            var type = userContact.Value<string>("type");
+            if (type != "EML")
+            {
+                continue;
+            }
+
+            profile.EMail = userContact.Value<string>("value");
+            break;
+        }
+
+        return profile;
+    }
+
+    protected override OAuth20Token Auth(HttpContext context, string scopes, out bool redirect, IDictionary<string, string> additionalArgs = null, IDictionary<string, string> additionalStateArgs = null)
+    {
+        var error = context.Request.Query["error"];
+        if (!string.IsNullOrEmpty(error))
+        {
+            if (error == "access_denied")
+            {
+                error = "Canceled at provider";
+            }
+
+            throw new Exception(error);
+        }
+
+        var code = context.Request.Query["code"];
+        if (string.IsNullOrEmpty(code))
+        {
+            RequestCode(context, scopes);
+            redirect = true;
+
+            return null;
+        }
+
+        redirect = false;
+        var state = context.Request.Query["state"];
+
+        return GetAccessToken(state, code);
+    }
+
+    private void RequestCode(HttpContext context, string scope = null)
+    {
+        var timestamp = DateTime.UtcNow.ToString("yyyy.MM.dd HH:mm:ss +0000");
+        var state = Guid.NewGuid().ToString();//HttpContext.Current.Request.GetUrlRewriter().AbsoluteUri;
+
+        var msg = scope + timestamp + ClientID + state;
+        var encodedSignature = SignMsg(msg);
+        var clientSecret = WebEncoders.Base64UrlEncode(encodedSignature);
+
+        var requestParams = new Dictionary<string, string>
                 {
                     { "client_id", ClientID },
                     { "client_secret", clientSecret },
@@ -162,21 +194,21 @@ namespace ASC.FederatedLogin.LoginProviders
                     { "access_type", "online" },
                     { "display", "popup" }
                 };
-            var requestQuery = string.Join("&", requestParams.Select(pair => pair.Key + "=" + HttpUtility.UrlEncode(pair.Value)));//.Replace("+", "%2b");
+        var requestQuery = string.Join("&", requestParams.Select(pair => pair.Key + "=" + HttpUtility.UrlEncode(pair.Value)));//.Replace("+", "%2b");
 
-            var redURL = CodeUrl + "?" + requestQuery;
-            context.Response.Redirect(redURL, true);
-        }
+        var redURL = CodeUrl + "?" + requestQuery;
+        context.Response.Redirect(redURL, true);
+    }
 
-        private OAuth20Token GetAccessToken(string state, string code)
-        {
-            var timestamp = DateTime.UtcNow.ToString("yyyy.MM.dd HH:mm:ss +0000");
+    private OAuth20Token GetAccessToken(string state, string code)
+    {
+        var timestamp = DateTime.UtcNow.ToString("yyyy.MM.dd HH:mm:ss +0000");
 
-            var msg = Scopes + timestamp + ClientID + state;
-            var encodedSignature = SignMsg(msg);
-            var clientSecret = WebEncoders.Base64UrlEncode(encodedSignature);
+        var msg = Scopes + timestamp + ClientID + state;
+        var encodedSignature = SignMsg(msg);
+        var clientSecret = WebEncoders.Base64UrlEncode(encodedSignature);
 
-            var requestParams = new Dictionary<string, string>
+        var requestParams = new Dictionary<string, string>
                 {
                     { "client_id", ClientID },
                     { "code", code },
@@ -188,113 +220,55 @@ namespace ASC.FederatedLogin.LoginProviders
                     { "timestamp", timestamp },
                     { "token_type", "Bearer" }
                 };
-            var requestQuery = string.Join("&", requestParams.Select(pair => pair.Key + "=" + HttpUtility.UrlEncode(pair.Value)));
+        var requestQuery = string.Join("&", requestParams.Select(pair => pair.Key + "=" + HttpUtility.UrlEncode(pair.Value)));
 
-            var result = RequestHelper.PerformRequest(AccessTokenUrl, "application/x-www-form-urlencoded", "POST", requestQuery);
+        var result = RequestHelper.PerformRequest(AccessTokenUrl, "application/x-www-form-urlencoded", "POST", requestQuery);
 
-            return OAuth20Token.FromJson(result);
-        }
-
-        public override LoginProfile GetLoginProfile(string accessToken)
-        {
-            var tokenPayloadString = JsonWebToken.Decode(accessToken, string.Empty, false, true);
-            var tokenPayload = JObject.Parse(tokenPayloadString);
-            if (tokenPayload == null)
-            {
-                throw new Exception("Payload is incorrect");
-            }
-            var oid = tokenPayload.Value<string>("urn:esia:sbj_id");
-
-            var userInfoString = RequestHelper.PerformRequest(GosUslugiProfileUrl + oid, "application/x-www-form-urlencoded", headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
-            var userInfo = JObject.Parse(userInfoString);
-            if (userInfo == null)
-            {
-                throw new Exception("userinfo is incorrect");
-            }
-
-            var profile = new LoginProfile(Signature, InstanceCrypto)
-            {
-                Id = oid,
-                FirstName = userInfo.Value<string>("firstName"),
-                LastName = userInfo.Value<string>("lastName"),
-
-                Provider = ProviderConstants.GosUslugi,
-            };
-
-            var userContactsString = RequestHelper.PerformRequest(GosUslugiProfileUrl + oid + "/ctts", "application/x-www-form-urlencoded", headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
-            var userContacts = JObject.Parse(userContactsString);
-            if (userContacts == null)
-            {
-                throw new Exception("usercontacts is incorrect");
-            }
-
-            var contactElements = userContacts.Value<JArray>("elements");
-            if (contactElements == null)
-            {
-                throw new Exception("usercontacts elements is incorrect");
-            }
-
-            foreach (var contactElement in contactElements.ToObject<List<string>>())
-            {
-                var userContactString = RequestHelper.PerformRequest(contactElement, "application/x-www-form-urlencoded", headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
-
-                var userContact = JObject.Parse(userContactString);
-                if (userContact == null)
-                {
-                    throw new Exception("usercontacts is incorrect");
-                }
-
-                var type = userContact.Value<string>("type");
-                if (type != "EML") continue;
-
-                profile.EMail = userContact.Value<string>("value");
-                break;
-            }
-
-            return profile;
-        }
-
-        private X509Certificate2 GetSignerCert()
-        {
-            var storeMy = new X509Store(StoreName.Root, StoreLocation.LocalMachine);
-            storeMy.Open(OpenFlags.ReadOnly);
-            var certColl = storeMy.Certificates.Find(X509FindType.FindBySubjectKeyIdentifier, ClientSecret, false);
-            storeMy.Close();
-            if (certColl.Count == 0)
-            {
-                throw new Exception("Certificate not found");
-            }
-            return certColl[0];
-        }
-
-        private byte[] SignMsg(string msg)
-        {
-            var signerCert = GetSignerCert();
-
-            var msgBytes = Encoding.UTF8.GetBytes(msg);
-            var contentInfo = new ContentInfo(msgBytes);
-            var signedCms = new SignedCms(contentInfo, true);
-            var cmsSigner = new CmsSigner(signerCert);
-            signedCms.ComputeSignature(cmsSigner);
-            return signedCms.Encode();
-        }
-
-        //private static bool VerifyMsg(Byte[] msg, byte[] encodedSignature)
-        //{
-        //    ContentInfo contentInfo = new ContentInfo(msg);
-        //    SignedCms signedCms = new SignedCms(contentInfo, true);
-        //    signedCms.Decode(encodedSignature);
-
-        //    try
-        //    {
-        //        signedCms.CheckSignature(true);
-        //    }
-        //    catch (System.Security.Cryptography.CryptographicException e)
-        //    {
-        //        return false;
-        //    }
-
-        //    return true;
-        //}
+        return OAuth20Token.FromJson(result);
     }
+
+    private X509Certificate2 GetSignerCert()
+    {
+        var storeMy = new X509Store(StoreName.Root, StoreLocation.LocalMachine);
+        storeMy.Open(OpenFlags.ReadOnly);
+        var certColl = storeMy.Certificates.Find(X509FindType.FindBySubjectKeyIdentifier, ClientSecret, false);
+        storeMy.Close();
+        if (certColl.Count == 0)
+        {
+            throw new Exception("Certificate not found");
+        }
+
+        return certColl[0];
+    }
+
+    private byte[] SignMsg(string msg)
+    {
+        var signerCert = GetSignerCert();
+
+        var msgBytes = Encoding.UTF8.GetBytes(msg);
+        var contentInfo = new ContentInfo(msgBytes);
+        var signedCms = new SignedCms(contentInfo, true);
+        var cmsSigner = new CmsSigner(signerCert);
+        signedCms.ComputeSignature(cmsSigner);
+
+        return signedCms.Encode();
+    }
+
+    //private static bool VerifyMsg(Byte[] msg, byte[] encodedSignature)
+    //{
+    //    ContentInfo contentInfo = new ContentInfo(msg);
+    //    SignedCms signedCms = new SignedCms(contentInfo, true);
+    //    signedCms.Decode(encodedSignature);
+
+    //    try
+    //    {
+    //        signedCms.CheckSignature(true);
+    //    }
+    //    catch (System.Security.Cryptography.CryptographicException e)
+    //    {
+    //        return false;
+    //    }
+
+    //    return true;
+    //}
 }

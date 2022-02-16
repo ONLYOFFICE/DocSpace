@@ -23,228 +23,247 @@
  *
 */
 
-namespace ASC.Common.Utils
+namespace ASC.Common.Utils;
+
+public class DnsLookup
 {
-    public class DnsLookup
+    private readonly IDnsResolver _sDnsResolver;
+    private readonly DnsClient _dnsClient;
+
+    public DnsLookup()
     {
-        private readonly IDnsResolver _sDnsResolver;
-        private readonly DnsClient _dnsClient;
+        _dnsClient = DnsClient.Default;
+        _sDnsResolver = new DnsStubResolver(_dnsClient);
+    }
 
-        public DnsLookup()
+    /// <summary>
+    /// Get domain MX records
+    /// </summary>
+    /// <param name="domainName">domain name</param>
+    /// <exception cref="ArgumentNullException">if domainName is empty</exception>
+    /// <exception cref="ArgumentException">if domainName is invalid</exception>
+    /// <returns>list of MxRecord</returns>
+    public List<MxRecord> GetDomainMxRecords(string domainName)
+    {
+        if (string.IsNullOrEmpty(domainName))
         {
-            _dnsClient = DnsClient.Default;
-            _sDnsResolver = new DnsStubResolver(_dnsClient);
+            throw new ArgumentNullException(nameof(domainName));
         }
 
-        /// <summary>
-        /// Get domain MX records
-        /// </summary>
-        /// <param name="domainName">domain name</param>
-        /// <exception cref="ArgumentNullException">if domainName is empty</exception>
-        /// <exception cref="ArgumentException">if domainName is invalid</exception>
-        /// <returns>list of MxRecord</returns>
-        public List<MxRecord> GetDomainMxRecords(string domainName)
+        var mxRecords = DnsResolve<MxRecord>(domainName, RecordType.Mx);
+
+        return mxRecords;
+    }
+
+    /// <summary>
+    /// Check existance of MX record in domain DNS
+    /// </summary>
+    /// <param name="domainName">domain name</param>
+    /// <param name="mxRecord">MX record value</param>
+    /// <exception cref="ArgumentNullException">if domainName is empty</exception>
+    /// <exception cref="ArgumentException">if domainName is invalid</exception>
+    /// <returns>true if exists and vice versa</returns>
+    public bool IsDomainMxRecordExists(string domainName, string mxRecord)
+    {
+        if (string.IsNullOrEmpty(domainName))
         {
-            if (string.IsNullOrEmpty(domainName))
-                throw new ArgumentNullException(nameof(domainName));
-
-            var mxRecords = DnsResolve<MxRecord>(domainName, RecordType.Mx);
-
-            return mxRecords;
+            throw new ArgumentNullException(nameof(domainName));
         }
 
-        /// <summary>
-        /// Check existance of MX record in domain DNS
-        /// </summary>
-        /// <param name="domainName">domain name</param>
-        /// <param name="mxRecord">MX record value</param>
-        /// <exception cref="ArgumentNullException">if domainName is empty</exception>
-        /// <exception cref="ArgumentException">if domainName is invalid</exception>
-        /// <returns>true if exists and vice versa</returns>
-        public bool IsDomainMxRecordExists(string domainName, string mxRecord)
+        if (string.IsNullOrEmpty(mxRecord))
         {
-            if (string.IsNullOrEmpty(domainName))
-                throw new ArgumentNullException(nameof(domainName));
-
-            if (string.IsNullOrEmpty(mxRecord))
-                throw new ArgumentNullException(nameof(mxRecord));
-
-            var mxDomain = DomainName.Parse(mxRecord);
-
-            var records = GetDomainMxRecords(domainName);
-
-            return records.Any(
-                    mx => mx.ExchangeDomainName.Equals(mxDomain));
+            throw new ArgumentNullException(nameof(mxRecord));
         }
 
-        /// <summary>
-        /// Check domain existance
-        /// </summary>
-        /// <param name="domainName"></param>
-        /// <exception cref="ArgumentNullException">if domainName is empty</exception>
-        /// <exception cref="ArgumentException">if domainName is invalid</exception>
-        /// <exception cref="SystemException">if DNS request failed</exception>
-        /// <returns>true if any DNS record exists and vice versa</returns>
-        public bool IsDomainExists(string domainName)
+        var mxDomain = DomainName.Parse(mxRecord);
+
+        var records = GetDomainMxRecords(domainName);
+
+        return records.Any(
+                mx => mx.ExchangeDomainName.Equals(mxDomain));
+    }
+
+    /// <summary>
+    /// Check domain existance
+    /// </summary>
+    /// <param name="domainName"></param>
+    /// <exception cref="ArgumentNullException">if domainName is empty</exception>
+    /// <exception cref="ArgumentException">if domainName is invalid</exception>
+    /// <exception cref="SystemException">if DNS request failed</exception>
+    /// <returns>true if any DNS record exists and vice versa</returns>
+    public bool IsDomainExists(string domainName)
+    {
+        if (string.IsNullOrEmpty(domainName))
         {
-            if (string.IsNullOrEmpty(domainName))
-                throw new ArgumentNullException(nameof(domainName));
-
-            var dnsMessage = GetDnsMessage(domainName);
-
-            return dnsMessage.AnswerRecords.Any();
+            throw new ArgumentNullException(nameof(domainName));
         }
 
-        /// <summary>
-        /// Get domain A records
-        /// </summary>
-        /// <param name="domainName">domain name</param>
-        /// <exception cref="ArgumentNullException">if domainName is empty</exception>
-        /// <exception cref="ArgumentException">if domainName is invalid</exception>
-        /// <returns>list of ARecord</returns>
-        public List<ARecord> GetDomainARecords(string domainName)
+        var dnsMessage = GetDnsMessage(domainName);
+
+            return dnsMessage.AnswerRecords.Count != 0;
+    }
+
+    /// <summary>
+    /// Get domain A records
+    /// </summary>
+    /// <param name="domainName">domain name</param>
+    /// <exception cref="ArgumentNullException">if domainName is empty</exception>
+    /// <exception cref="ArgumentException">if domainName is invalid</exception>
+    /// <returns>list of ARecord</returns>
+    public List<ARecord> GetDomainARecords(string domainName)
+    {
+        if (string.IsNullOrEmpty(domainName))
         {
-            if (string.IsNullOrEmpty(domainName))
-                throw new ArgumentNullException(nameof(domainName));
-
-            var aRecords = DnsResolve<ARecord>(domainName, RecordType.A);
-
-            return aRecords;
+            throw new ArgumentNullException(nameof(domainName));
         }
 
-        /// <summary>
-        /// Get domain IP addresses list
-        /// </summary>
-        /// <param name="domainName">domain name</param>
-        /// <exception cref="ArgumentNullException">if domainName is empty</exception>
-        /// <exception cref="ArgumentException">if domainName is invalid</exception>
-        /// <returns>list of IPAddress</returns>
-        public List<IPAddress> GetDomainIPs(string domainName)
+        var aRecords = DnsResolve<ARecord>(domainName, RecordType.A);
+
+        return aRecords;
+    }
+
+    /// <summary>
+    /// Get domain IP addresses list
+    /// </summary>
+    /// <param name="domainName">domain name</param>
+    /// <exception cref="ArgumentNullException">if domainName is empty</exception>
+    /// <exception cref="ArgumentException">if domainName is invalid</exception>
+    /// <returns>list of IPAddress</returns>
+    public List<IPAddress> GetDomainIPs(string domainName)
+    {
+        if (string.IsNullOrEmpty(domainName))
         {
-            if (string.IsNullOrEmpty(domainName))
-                throw new ArgumentNullException(nameof(domainName));
-
-            var addresses = _sDnsResolver.ResolveHost(domainName);
-
-            return addresses;
+            throw new ArgumentNullException(nameof(domainName));
         }
 
-        /// <summary>
-        /// Get domain TXT records
-        /// </summary>
-        /// <param name="domainName">domain name</param>
-        /// <exception cref="ArgumentNullException">if domainName is empty</exception>
-        /// <exception cref="ArgumentException">if domainName is invalid</exception>
-        /// <returns>list of TxtRecord</returns>
-        public List<TxtRecord> GetDomainTxtRecords(string domainName)
+        var addresses = _sDnsResolver.ResolveHost(domainName);
+
+        return addresses;
+    }
+
+    /// <summary>
+    /// Get domain TXT records
+    /// </summary>
+    /// <param name="domainName">domain name</param>
+    /// <exception cref="ArgumentNullException">if domainName is empty</exception>
+    /// <exception cref="ArgumentException">if domainName is invalid</exception>
+    /// <returns>list of TxtRecord</returns>
+    public List<TxtRecord> GetDomainTxtRecords(string domainName)
+    {
+        if (string.IsNullOrEmpty(domainName))
         {
-            if (string.IsNullOrEmpty(domainName))
-                throw new ArgumentNullException(nameof(domainName));
-
-            var txtRecords = DnsResolve<TxtRecord>(domainName, RecordType.Txt);
-
-            return txtRecords;
+            throw new ArgumentNullException(nameof(domainName));
         }
 
-        /// <summary>
-        /// Check existance of TXT record in domain DNS
-        /// </summary>
-        /// <param name="domainName">domain name</param>
-        /// <param name="recordValue">TXT record value</param>
-        /// <exception cref="ArgumentNullException">if domainName is empty</exception>
-        /// <exception cref="ArgumentException">if domainName is invalid</exception>
-        /// <returns>true if exists and vice versa</returns>
-        public bool IsDomainTxtRecordExists(string domainName, string recordValue)
-        {
-            var txtRecords = GetDomainTxtRecords(domainName);
+        var txtRecords = DnsResolve<TxtRecord>(domainName, RecordType.Txt);
 
-            return
-                txtRecords.Any(
-                    txtRecord =>
-                        txtRecord.TextData.Trim('\"').Equals(recordValue, StringComparison.InvariantCultureIgnoreCase));
+        return txtRecords;
+    }
+
+    /// <summary>
+    /// Check existance of TXT record in domain DNS
+    /// </summary>
+    /// <param name="domainName">domain name</param>
+    /// <param name="recordValue">TXT record value</param>
+    /// <exception cref="ArgumentNullException">if domainName is empty</exception>
+    /// <exception cref="ArgumentException">if domainName is invalid</exception>
+    /// <returns>true if exists and vice versa</returns>
+    public bool IsDomainTxtRecordExists(string domainName, string recordValue)
+    {
+        var txtRecords = GetDomainTxtRecords(domainName);
+
+        return
+            txtRecords.Any(
+                txtRecord =>
+                    txtRecord.TextData.Trim('\"').Equals(recordValue, StringComparison.InvariantCultureIgnoreCase));
+    }
+
+    /// <summary>
+    /// Check existance of DKIM record in domain DNS
+    /// </summary>
+    /// <param name="domainName">domain name</param>
+    /// <param name="dkimSelector">DKIM selector (example is "dkim")</param>
+    /// <param name="dkimValue">DKIM record value</param>
+    /// <exception cref="ArgumentNullException">if domainName is empty</exception>
+    /// <exception cref="ArgumentException">if domainName is invalid</exception>
+    /// <returns>true if exists and vice versa</returns>
+    public bool IsDomainDkimRecordExists(string domainName, string dkimSelector, string dkimValue)
+    {
+        var dkimRecordName = dkimSelector + "._domainkey." + domainName;
+
+        var txtRecords = GetDomainTxtRecords(dkimRecordName);
+
+        return txtRecords.Any(txtRecord => txtRecord.TextData.Trim('\"').Equals(dkimValue));
+    }
+
+    /// <summary>
+    /// Check existance Domain in PTR record
+    /// </summary>
+    /// <param name="ipAddress">IP address for PTR check</param>
+    /// <param name="domainName">PTR domain name</param>
+    /// <exception cref="ArgumentNullException">if domainName or ipAddress is empty/null</exception>
+    /// <exception cref="ArgumentException">if domainName is invalid</exception>
+    /// <returns>true if exists and vice versa</returns>
+    public bool IsDomainPtrRecordExists(IPAddress ipAddress, string domainName)
+    {
+        if (string.IsNullOrEmpty(domainName))
+        {
+            throw new ArgumentNullException(nameof(domainName));
+        }
+        if (ipAddress == null)
+        {
+            throw new ArgumentNullException(nameof(ipAddress));
         }
 
-        /// <summary>
-        /// Check existance of DKIM record in domain DNS
-        /// </summary>
-        /// <param name="domainName">domain name</param>
-        /// <param name="dkimSelector">DKIM selector (example is "dkim")</param>
-        /// <param name="dkimValue">DKIM record value</param>
-        /// <exception cref="ArgumentNullException">if domainName is empty</exception>
-        /// <exception cref="ArgumentException">if domainName is invalid</exception>
-        /// <returns>true if exists and vice versa</returns>
-        public bool IsDomainDkimRecordExists(string domainName, string dkimSelector, string dkimValue)
+        var domain = DomainName.Parse(domainName);
+
+        var ptrDomain = _sDnsResolver.ResolvePtr(ipAddress);
+
+        return ptrDomain.Equals(domain);
+    }
+
+    /// <summary>
+    /// Check existance Domain in PTR record
+    /// </summary>
+    /// <param name="ipAddress">IP address for PTR check</param>
+    /// <param name="domainName">PTR domain name</param>
+    /// <exception cref="ArgumentNullException">if domainName or ipAddress is empty/null</exception>
+    /// <exception cref="ArgumentException">if domainName is invalid</exception>
+    /// <exception cref="FormatException">if ipAddress is invalid</exception>
+    /// <returns>true if exists and vice versa</returns>
+    public bool IsDomainPtrRecordExists(string ipAddress, string domainName)
+    {
+        return IsDomainPtrRecordExists(IPAddress.Parse(ipAddress), domainName);
+    }
+
+    private DnsMessage GetDnsMessage(string domainName, RecordType? type = null)
+    {
+        if (string.IsNullOrEmpty(domainName))
         {
-            var dkimRecordName = dkimSelector + "._domainkey." + domainName;
-
-            var txtRecords = GetDomainTxtRecords(dkimRecordName);
-
-            return txtRecords.Any(txtRecord => txtRecord.TextData.Trim('\"').Equals(dkimValue));
+            throw new ArgumentNullException(nameof(domainName));
         }
 
-        /// <summary>
-        /// Check existance Domain in PTR record
-        /// </summary>
-        /// <param name="ipAddress">IP address for PTR check</param>
-        /// <param name="domainName">PTR domain name</param>
-        /// <exception cref="ArgumentNullException">if domainName or ipAddress is empty/null</exception>
-        /// <exception cref="ArgumentException">if domainName is invalid</exception>
-        /// <returns>true if exists and vice versa</returns>
-        public bool IsDomainPtrRecordExists(IPAddress ipAddress, string domainName)
+        var domain = DomainName.Parse(domainName);
+
+        var dnsMessage = type.HasValue ? _dnsClient.Resolve(domain, type.Value) : _dnsClient.Resolve(domain);
+        if ((dnsMessage == null) ||
+            ((dnsMessage.ReturnCode != ReturnCode.NoError) && (dnsMessage.ReturnCode != ReturnCode.NxDomain)))
         {
-            if (string.IsNullOrEmpty(domainName))
-                throw new ArgumentNullException(nameof(domainName));
-
-            if (ipAddress == null)
-                throw new ArgumentNullException(nameof(ipAddress));
-
-            var domain = DomainName.Parse(domainName);
-
-            var ptrDomain = _sDnsResolver.ResolvePtr(ipAddress);
-
-            return ptrDomain.Equals(domain);
+            throw new SystemException(); // DNS request failed
         }
 
-        /// <summary>
-        /// Check existance Domain in PTR record
-        /// </summary>
-        /// <param name="ipAddress">IP address for PTR check</param>
-        /// <param name="domainName">PTR domain name</param>
-        /// <exception cref="ArgumentNullException">if domainName or ipAddress is empty/null</exception>
-        /// <exception cref="ArgumentException">if domainName is invalid</exception>
-        /// <exception cref="FormatException">if ipAddress is invalid</exception>
-        /// <returns>true if exists and vice versa</returns>
-        public bool IsDomainPtrRecordExists(string ipAddress, string domainName)
+        return dnsMessage;
+    }
+
+    private List<T> DnsResolve<T>(string domainName, RecordType type)
+    {
+        if (string.IsNullOrEmpty(domainName))
         {
-            return IsDomainPtrRecordExists(IPAddress.Parse(ipAddress), domainName);
+            throw new ArgumentNullException(nameof(domainName));
         }
 
-        private DnsMessage GetDnsMessage(string domainName, RecordType? type = null)
-        {
-            if (string.IsNullOrEmpty(domainName))
-                throw new ArgumentNullException(nameof(domainName));
+        var dnsMessage = GetDnsMessage(domainName, type);
 
-            var domain = DomainName.Parse(domainName);
-
-            var dnsMessage = type.HasValue ? _dnsClient.Resolve(domain, type.Value) : _dnsClient.Resolve(domain);
-
-            if ((dnsMessage == null) ||
-                ((dnsMessage.ReturnCode != ReturnCode.NoError) && (dnsMessage.ReturnCode != ReturnCode.NxDomain)))
-            {
-                throw new SystemException(); // DNS request failed
-            }
-
-            return dnsMessage;
-        }
-
-        private List<T> DnsResolve<T>(string domainName, RecordType type)
-        {
-            if (string.IsNullOrEmpty(domainName))
-                throw new ArgumentNullException(nameof(domainName));
-
-            var dnsMessage = GetDnsMessage(domainName, type);
-
-            return dnsMessage.AnswerRecords.Where(r => r.RecordType == type).Cast<T>().ToList();
-        }
+        return dnsMessage.AnswerRecords.Where(r => r.RecordType == type).Cast<T>().ToList();
     }
 }

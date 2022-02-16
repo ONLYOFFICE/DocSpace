@@ -206,7 +206,7 @@ namespace ASC.Web.CRM.Classes
         {
             var br = new MemoryStream();
             var data = new byte[1024];
-            var readed = 0;
+            int readed;
 
             while ((readed = inputStream.Read(data, 0, data.Length)) > 0)
             {

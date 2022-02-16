@@ -63,8 +63,8 @@ namespace ASC.Web.Files.Services.DocumentService
             [DebuggerDisplay("{Type} - {UserId}")]
             public class Action
             {
-                public string Type;
-                public string UserId;
+                public string Type { get; set; }
+                public string UserId { get; set; }
             }
 
             public enum ForceSaveInitiator
@@ -103,7 +103,6 @@ namespace ASC.Web.Files.Services.DocumentService
         {
             public int Error
             {
-                set { }
                 get
                 {
                     return string.IsNullOrEmpty(Message)
@@ -150,6 +149,7 @@ namespace ASC.Web.Files.Services.DocumentService
         private MailMergeTaskRunner MailMergeTaskRunner { get; }
         private FileTrackerHelper FileTracker { get; }
         public ILog Logger { get; }
+        public IHttpClientFactory ClientFactory { get; }
 
         public DocumentServiceTrackerHelper(
             SecurityContext securityContext,
@@ -170,7 +170,8 @@ namespace ASC.Web.Files.Services.DocumentService
             DocumentServiceConnector documentServiceConnector,
             NotifyClient notifyClient,
             MailMergeTaskRunner mailMergeTaskRunner,
-            FileTrackerHelper fileTracker)
+            FileTrackerHelper fileTracker,
+            IHttpClientFactory clientFactory)
         {
             SecurityContext = securityContext;
             UserManager = userManager;
@@ -191,6 +192,7 @@ namespace ASC.Web.Files.Services.DocumentService
             MailMergeTaskRunner = mailMergeTaskRunner;
             FileTracker = fileTracker;
             Logger = options.CurrentValue;
+            ClientFactory = clientFactory;
         }
 
         public string GetCallbackUrl<T>(T fileId)
@@ -288,7 +290,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 }
             }
 
-            if (usersDrop.Any())
+            if (usersDrop.Count > 0)
             {
                 if (!DocumentServiceHelper.DropUser(fileData.Key, usersDrop.ToArray(), fileId))
                 {
@@ -456,19 +458,13 @@ namespace ASC.Web.Files.Services.DocumentService
 
                 var message = fileData.MailMerge.Message;
                 Stream attach = null;
-                using var httpClient = new HttpClient();
+                var httpClient = ClientFactory.CreateClient();
                 switch (fileData.MailMerge.Type)
                 {
                     case MailMergeType.AttachDocx:
                     case MailMergeType.AttachPdf:
                         var requestDownload = new HttpRequestMessage();
                         requestDownload.RequestUri = new Uri(DocumentServiceConnector.ReplaceDocumentAdress(fileData.Url));
-
-                        // hack. http://ubuntuforums.org/showthread.php?t=1841740
-                        if (WorkContext.IsMono)
-                        {
-                            ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
-                        }
 
                         using (var responseDownload = httpClient.Send(requestDownload))
                         using (var streamDownload = responseDownload.Content.ReadAsStream())
@@ -503,13 +499,6 @@ namespace ASC.Web.Files.Services.DocumentService
                         var httpRequest = new HttpRequestMessage();
                         httpRequest.RequestUri = new Uri(DocumentServiceConnector.ReplaceDocumentAdress(fileData.Url));
 
-                        // hack. http://ubuntuforums.org/showthread.php?t=1841740
-                        if (WorkContext.IsMono)
-                        {
-                            ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
-                        }
-
-
                         using (var httpResponse = httpClient.Send(httpRequest))
                         using (var stream = httpResponse.Content.ReadAsStream())
                             if (stream != null)
@@ -531,7 +520,7 @@ namespace ASC.Web.Files.Services.DocumentService
                         Attach = attach
                     })
                 {
-                    var response = MailMergeTaskRunner.Run(mailMergeTask);
+                    var response = MailMergeTaskRunner.Run(mailMergeTask, ClientFactory);
                     Logger.InfoFormat("DocService mailMerge {0}/{1} send: {2}",
                                              fileData.MailMerge.RecordIndex + 1, fileData.MailMerge.RecordCount, response);
                 }
@@ -541,7 +530,7 @@ namespace ASC.Web.Files.Services.DocumentService
             {
                 Logger.Error(
                     string.Format("DocService mailMerge{0} error: userId - {1}, url - {2}",
-                                  (fileData.MailMerge == null ? "" : " " + fileData.MailMerge.RecordIndex + "/" + fileData.MailMerge.RecordCount),
+                                  fileData.MailMerge == null ? "" : " " + fileData.MailMerge.RecordIndex + "/" + fileData.MailMerge.RecordCount,
                                   userId, fileData.Url),
                     ex);
                 saveMessage = ex.Message;
@@ -567,22 +556,13 @@ namespace ASC.Web.Files.Services.DocumentService
             try
             {
                 var fileName = Global.ReplaceInvalidCharsAndTruncate(fileId + FileUtility.GetFileExtension(downloadUri));
-                var path = string.Format(@"save_crash\{0}\{1}_{2}",
-                                         DateTime.UtcNow.ToString("yyyy_MM_dd"),
-                                         userId,
-                                         fileName);
+                var path = $@"save_crash\{DateTime.UtcNow.ToString("yyyy_MM_dd")}\{userId}_{fileName}";
 
                 var store = GlobalStore.GetStore();
                 var request = new HttpRequestMessage();
                 request.RequestUri = new Uri(downloadUri);
 
-                // hack. http://ubuntuforums.org/showthread.php?t=1841740
-                if (WorkContext.IsMono)
-                {
-                    ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
-                }
-
-                using (var httpClient = new HttpClient())
+                var httpClient = ClientFactory.CreateClient();
                 using (var response = httpClient.Send(request))
                 using (var stream = response.Content.ReadAsStream())
                 using (var fileStream = new ResponseStream(stream, stream.Length))
@@ -609,13 +589,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 var request = new HttpRequestMessage();
                 request.RequestUri = new Uri(differenceUrl);
 
-                // hack. http://ubuntuforums.org/showthread.php?t=1841740
-                if (WorkContext.IsMono)
-                {
-                    ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
-                }
-
-                using var httpClient = new HttpClient();
+                var httpClient = ClientFactory.CreateClient();
                 using var response = httpClient.Send(request);
                 using var stream = response.Content.ReadAsStream();
 

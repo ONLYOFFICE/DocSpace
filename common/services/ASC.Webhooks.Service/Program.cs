@@ -1,6 +1,6 @@
 namespace ASC.Webhooks.Service
 {
-    public class Program
+    public static class Program
     {
         public async static Task Main(string[] args)
         {
@@ -53,11 +53,11 @@ namespace ASC.Webhooks.Service
 
                     if (kafkaConfiguration != null)
                     {
-                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCacheNotify<>));
                     }
                     else if (redisConfiguration != null)
                     {
-                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
+                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCacheNotify<>));
 
                         services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
                     }

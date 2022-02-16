@@ -41,10 +41,11 @@ namespace ASC.Calendar.iCalParser
     public class iCalendar : BaseCalendar
     {
         private TenantManager TenantManager { get; }
+        private IHttpClientFactory ClientFactory { get; }
 
         public iCalendar GetFromStream(TextReader reader)
         {
-            var emitter = new iCalendarEmitter(AuthContext, TimeZoneConverter, TenantManager);
+            var emitter = new iCalendarEmitter(AuthContext, TimeZoneConverter, TenantManager, ClientFactory);
             var parser = new Parser(reader, emitter);
             parser.Parse();
             return emitter.GetCalendar();
@@ -57,7 +58,7 @@ namespace ASC.Calendar.iCalParser
 
         public iCalendar GetFromUrl(string url, string calendarId)
         {
-            var cache = new iCalendarCache(AuthContext, TimeZoneConverter, TenantManager);
+            var cache = new iCalendarCache(AuthContext, TimeZoneConverter, TenantManager, ClientFactory);
             iCalendar calendar = null;
             if (calendarId != null)
                 calendar = cache.GetCalendarFromCache(calendarId);
@@ -72,7 +73,7 @@ namespace ASC.Calendar.iCalParser
                 var request = new HttpRequestMessage();
                 request.RequestUri = new Uri(url);
 
-                using var httpClient = new HttpClient();
+                var httpClient = ClientFactory.CreateClient();
                 using (var response = httpClient.Send(request))
                 using (var stream = response.Content.ReadAsStream())
                 {
@@ -107,10 +108,12 @@ namespace ASC.Calendar.iCalParser
         public iCalendar(
             AuthContext authContext,
             TimeZoneConverter timeZoneConverter,
-            TenantManager tenantManager)
+            TenantManager tenantManager,
+            IHttpClientFactory clientFactory)
         : base(authContext, timeZoneConverter)
         {
             TenantManager = tenantManager;
+            ClientFactory = clientFactory;
             this.Context.CanChangeAlertType = false;
             this.Context.CanChangeTimeZone = false;
             this.Context.GetGroupMethod = delegate () { return Resources.CalendarApiResource.iCalCalendarsGroup; };

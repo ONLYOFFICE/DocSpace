@@ -24,9 +24,6 @@
 */
 
 
-namespace ASC.Common.Security
-{
-    public interface ISecurityObject : ISecurityObjectId, ISecurityObjectProvider
-    {
-    }
-}
+namespace ASC.Common.Security;
+
+public interface ISecurityObject : ISecurityObjectId, ISecurityObjectProvider { }

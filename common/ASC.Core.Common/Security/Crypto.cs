@@ -25,7 +25,7 @@
 
 namespace ASC.Core
 {
-    public class Crypto
+    public static class Crypto
     {
         private static byte[] GetSK1(bool rewrite)
         {

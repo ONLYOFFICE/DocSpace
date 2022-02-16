@@ -26,7 +26,7 @@
 namespace ASC.Web.Core.Users
 {
     [Transient]
-    public class ResizeWorkerItem : DistributedTask
+    public sealed class ResizeWorkerItem : DistributedTask
     {
         public ResizeWorkerItem()
         {
@@ -59,7 +59,7 @@ namespace ASC.Web.Core.Users
         {
             if (obj is null) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != typeof(ResizeWorkerItem)) return false;
+            if (!(obj is ResizeWorkerItem)) return false;
             return Equals((ResizeWorkerItem)obj);
         }
 
@@ -95,7 +95,7 @@ namespace ASC.Web.Core.Users
                 {
                     var userId = new Guid(data.UserId);
                     Photofiles.GetOrAdd(data.Size, (r) => new ConcurrentDictionary<Guid, string>())[userId] = data.FileName;
-                }, CacheNotifyAction.InsertOrUpdate);
+                }, Common.Caching.CacheNotifyAction.InsertOrUpdate);
 
                 CacheNotify.Subscribe((data) =>
                 {
@@ -111,7 +111,7 @@ namespace ASC.Web.Core.Users
                         SetCacheLoadedForTenant(false, data.TenantId);
                     }
                     catch { }
-                }, CacheNotifyAction.Remove);
+                }, Common.Caching.CacheNotifyAction.Remove);
             }
             catch (Exception)
             {
@@ -133,7 +133,7 @@ namespace ASC.Web.Core.Users
         {
             if (CacheNotify != null)
             {
-                CacheNotify.Publish(new UserPhotoManagerCacheItem { UserId = userID.ToString(), TenantId = tenantId }, CacheNotifyAction.Remove);
+                CacheNotify.Publish(new UserPhotoManagerCacheItem { UserId = userID.ToString(), TenantId = tenantId }, Common.Caching.CacheNotifyAction.Remove);
             }
         }
 
@@ -141,7 +141,7 @@ namespace ASC.Web.Core.Users
         {
             if (CacheNotify != null)
             {
-                CacheNotify.Publish(new UserPhotoManagerCacheItem { UserId = userID.ToString(), Size = UserPhotoManager.ToCache(size), FileName = fileName, TenantId = tenantId }, CacheNotifyAction.InsertOrUpdate);
+                CacheNotify.Publish(new UserPhotoManagerCacheItem { UserId = userID.ToString(), Size = UserPhotoManager.ToCache(size), FileName = fileName, TenantId = tenantId }, Common.Caching.CacheNotifyAction.InsertOrUpdate);
             }
         }
 
@@ -209,10 +209,10 @@ namespace ASC.Web.Core.Users
             Log = options.Get("ASC.Web.Photo");
         }
 
-        public string defaultAbsoluteWebPath;
+        private string _defaultAbsoluteWebPath;
         public string GetDefaultPhotoAbsoluteWebPath()
         {
-            return defaultAbsoluteWebPath ??= WebImageSupplier.GetAbsoluteWebPath(_defaultAvatar);
+            return _defaultAbsoluteWebPath ??= WebImageSupplier.GetAbsoluteWebPath(_defaultAvatar);
         }
 
         public string GetRetinaPhotoURL(Guid userID)
@@ -272,34 +272,34 @@ namespace ASC.Web.Core.Users
         }
 
 
-        public string defaultSmallPhotoURL;
+        private string _defaultSmallPhotoURL;
         public string GetDefaultSmallPhotoURL()
         {
-            return defaultSmallPhotoURL ??= GetDefaultPhotoAbsoluteWebPath(SmallFotoSize);
+            return _defaultSmallPhotoURL ??= GetDefaultPhotoAbsoluteWebPath(SmallFotoSize);
         }
 
-        public string defaultMediumPhotoURL;
+        private string _defaultMediumPhotoURL;
         public string GetDefaultMediumPhotoURL()
         {
-            return defaultMediumPhotoURL ??= GetDefaultPhotoAbsoluteWebPath(MediumFotoSize);
+            return _defaultMediumPhotoURL ??= GetDefaultPhotoAbsoluteWebPath(MediumFotoSize);
         }
 
-        public string defaultBigPhotoURL;
+        private string _defaultBigPhotoURL;
         public string GetDefaultBigPhotoURL()
         {
-            return defaultBigPhotoURL ??= GetDefaultPhotoAbsoluteWebPath(BigFotoSize);
+            return _defaultBigPhotoURL ??= GetDefaultPhotoAbsoluteWebPath(BigFotoSize);
         }
 
-        public string defaultMaxPhotoURL;
+        private string _defaultMaxPhotoURL;
         public string GetDefaultMaxPhotoURL()
         {
-            return defaultMaxPhotoURL ??= GetDefaultPhotoAbsoluteWebPath(MaxFotoSize);
+            return _defaultMaxPhotoURL ??= GetDefaultPhotoAbsoluteWebPath(MaxFotoSize);
         }
 
-        public string defaultRetinaPhotoURL;
+        private string _defaultRetinaPhotoURL;
         public string GetDefaultRetinaPhotoURL()
         {
-            return defaultRetinaPhotoURL ??= GetDefaultPhotoAbsoluteWebPath(RetinaFotoSize);
+            return _defaultRetinaPhotoURL ??= GetDefaultPhotoAbsoluteWebPath(RetinaFotoSize);
         }
 
         public static Size OriginalFotoSize { get; } = new Size(1280, 1280);
@@ -782,7 +782,7 @@ namespace ASC.Web.Core.Users
                 var store = GetDataStore();
                 store.DeleteFiles(_tempDomainName, "", fileNameWithoutExt + "*.*", false);
             }
-            catch { };
+            catch { }
         }
 
 
@@ -808,7 +808,7 @@ namespace ASC.Web.Core.Users
             var moduleID = Guid.Empty;
             var widening = CommonPhotoManager.GetImgFormatName(format);
             var size = img.Size();
-            var fileName = string.Format("{0}{1}_size_{2}-{3}.{4}", (moduleID == Guid.Empty ? "" : moduleID.ToString()), userID, img.Width, img.Height, widening);
+            var fileName = string.Format("{0}{1}_size_{2}-{3}.{4}", moduleID == Guid.Empty ? "" : moduleID.ToString(), userID, img.Width, img.Height, widening);
 
             var store = GetDataStore();
             string photoUrl;
@@ -999,7 +999,7 @@ namespace ASC.Web.Core.Users
     }
     }
 
-    public class ResizeWorkerItemExtension
+    public static class ResizeWorkerItemExtension
     {
         public static void Register(DIHelper services)
         {

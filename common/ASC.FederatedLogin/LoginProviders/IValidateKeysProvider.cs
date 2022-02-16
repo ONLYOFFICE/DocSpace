@@ -23,10 +23,9 @@
  *
 */
 
-namespace ASC.FederatedLogin.LoginProviders
+namespace ASC.FederatedLogin.LoginProviders;
+
+public interface IValidateKeysProvider
 {
-    public interface IValidateKeysProvider
-    {
-        bool ValidateKeys();
-    }
+    bool ValidateKeys();
 }

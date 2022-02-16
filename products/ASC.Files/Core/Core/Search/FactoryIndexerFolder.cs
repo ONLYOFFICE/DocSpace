@@ -135,7 +135,7 @@ namespace ASC.Web.Files.Core.Search
                     }
                 }
 
-                if (tasks.Any())
+                if (tasks.Count > 0)
                 {
                     Task.WaitAll(tasks.ToArray());
                 }
@@ -154,7 +154,7 @@ namespace ASC.Web.Files.Core.Search
         public DbFolder DbFolder { get; set; }
     }
 
-    public class FactoryIndexerFolderExtension
+    public static class FactoryIndexerFolderExtension
     {
         public static void Register(DIHelper services)
         {

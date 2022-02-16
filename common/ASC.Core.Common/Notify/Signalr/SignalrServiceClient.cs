@@ -33,19 +33,22 @@ namespace ASC.Core.Notify.Signalr
         internal MachinePseudoKeys MachinePseudoKeys { get; }
         internal IConfiguration Configuration { get; }
         internal IOptionsMonitor<ILog> Options { get; }
+        internal IHttpClientFactory ClientFactory { get; }
 
         public ConfigureSignalrServiceClient(
             TenantManager tenantManager,
             CoreSettings coreSettings,
             MachinePseudoKeys machinePseudoKeys,
             IConfiguration configuration,
-            IOptionsMonitor<ILog> options)
+            IOptionsMonitor<ILog> options, 
+            IHttpClientFactory clientFactory)
         {
             TenantManager = tenantManager;
             CoreSettings = coreSettings;
             MachinePseudoKeys = machinePseudoKeys;
             Configuration = configuration;
             Options = options;
+            ClientFactory = clientFactory;
         }
 
         public void Configure(string name, SignalrServiceClient options)
@@ -54,6 +57,7 @@ namespace ASC.Core.Notify.Signalr
             options.hub = name.Trim('/');
             options.TenantManager = TenantManager;
             options.CoreSettings = CoreSettings;
+            options.ClientFactory = ClientFactory;
             options.SKey = MachinePseudoKeys.GetMachineConstant();
             options.Url = Configuration["web:hub:internal"];
             options.EnableSignalr = !string.IsNullOrEmpty(options.Url);
@@ -86,10 +90,10 @@ namespace ASC.Core.Notify.Signalr
     [Scope(typeof(ConfigureSignalrServiceClient))]
     public class SignalrServiceClient
     {
-        private static readonly TimeSpan Timeout;
+        private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(1);
         internal ILog Log;
         private static DateTime lastErrorTime;
-        public bool EnableSignalr;
+        public bool EnableSignalr { get; set; }
         internal byte[] SKey;
         internal string Url;
         internal bool JabberReplaceDomain;
@@ -100,11 +104,7 @@ namespace ASC.Core.Notify.Signalr
 
         internal TenantManager TenantManager { get; set; }
         internal CoreSettings CoreSettings { get; set; }
-
-        static SignalrServiceClient()
-        {
-            Timeout = TimeSpan.FromSeconds(1);
-        }
+        internal IHttpClientFactory ClientFactory { get; set; }
 
         public SignalrServiceClient()
         {
@@ -121,7 +121,7 @@ namespace ASC.Core.Notify.Signalr
                 var tenant = tenantId == -1
                     ? TenantManager.GetTenant(domain)
                     : TenantManager.GetTenant(tenantId);
-                var isTenantUser = callerUserName == string.Empty;
+                var isTenantUser = callerUserName.Length == 0;
                 var message = new MessageClass
                 {
                     UserName = isTenantUser ? tenant.GetTenantDomain(CoreSettings) : callerUserName,
@@ -354,7 +354,8 @@ namespace ASC.Core.Notify.Signalr
 
             request.Content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-            using (var httpClient = new HttpClient())
+            var httpClient = ClientFactory.CreateClient();
+
             using (var response = httpClient.Send(request))
             using (var stream = response.Content.ReadAsStream())
             using (var streamReader = new StreamReader(stream))
@@ -376,7 +377,7 @@ namespace ASC.Core.Notify.Signalr
 
         private string GetMethod(string method)
         {
-            return string.Format("{0}/controller/{1}/{2}", Url.TrimEnd('/'), hub, method);
+            return $"{Url.TrimEnd('/')}/controller/{hub}/{method}";
         }
 
         public string CreateAuthToken(string pkey = "socketio")
@@ -384,7 +385,7 @@ namespace ASC.Core.Notify.Signalr
             using var hasher = new HMACSHA1(SKey);
             var now = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
             var hash = Convert.ToBase64String(hasher.ComputeHash(Encoding.UTF8.GetBytes(string.Join("\n", now, pkey))));
-            return string.Format("ASC {0}:{1}:{2}", pkey, now, hash);
+            return $"ASC {pkey}:{now}:{hash}";
         }
     }
 }

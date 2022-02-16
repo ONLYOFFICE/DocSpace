@@ -48,7 +48,7 @@ namespace ASC.VoipService.Dao
         protected string GetTenantColumnName(string table)
         {
             const string tenant = "tenant_id";
-            if (!table.Contains(" ")) return tenant;
+            if (!table.Contains(' ')) return tenant;
             return table.Substring(table.IndexOf(" ", StringComparison.Ordinal)).Trim() + "." + tenant;
         }
 

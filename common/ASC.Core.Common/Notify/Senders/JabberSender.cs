@@ -65,7 +65,7 @@ namespace ASC.Core.Notify.Senders
         }
     }
 
-    public class JabberSenderExtension
+    public static class JabberSenderExtension
     {
         public static void Register(DIHelper services)
         {
