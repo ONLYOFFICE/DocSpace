@@ -441,6 +441,7 @@ class TableHeader extends React.Component {
       columnStorageName,
       hasAccess,
       isLengthenHeader,
+      sortingVisible,
       ...rest
     } = this.props;
 
@@ -494,6 +495,7 @@ class TableHeader extends React.Component {
                     resizable={resizable}
                     defaultSize={column.defaultSize}
                     onMouseDown={this.onMouseDown}
+                    sortingVisible={sortingVisible}
                   />
                 );
               })}
@@ -512,6 +514,7 @@ class TableHeader extends React.Component {
 
 TableHeader.defaultProps = {
   hasAccess: true,
+  sortingVisible: true,
 };
 
 TableHeader.propTypes = {
@@ -533,6 +536,7 @@ TableHeader.propTypes = {
   hasAccess: PropTypes.bool,
   resetColumnsSize: PropTypes.bool,
   isLengthenHeader: PropTypes.bool,
+  sortingVisible: PropTypes.bool,
 };
 
 export default TableHeader;
