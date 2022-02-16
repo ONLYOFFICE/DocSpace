@@ -24,10 +24,9 @@
 */
 
 
-namespace ASC.MessagingSystem
+namespace ASC.MessagingSystem;
+
+public interface IMessageSender
 {
-    public interface IMessageSender
-    {
-        void Send(EventMessage message);
-    }
+    void Send(EventMessage message);
 }

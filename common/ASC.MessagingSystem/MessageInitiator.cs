@@ -24,12 +24,11 @@
 */
 
 
-namespace ASC.MessagingSystem
+namespace ASC.MessagingSystem;
+
+public enum MessageInitiator
 {
-    public enum MessageInitiator
-    {
-        System,
-        DocsService,
-        ThirdPartyProvider,
-    }
+    System,
+    DocsService,
+    ThirdPartyProvider,
 }

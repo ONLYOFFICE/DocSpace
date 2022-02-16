@@ -23,43 +23,42 @@
  *
 */
 
-namespace ASC.MessagingSystem.DbSender
+namespace ASC.MessagingSystem.DbSender;
+
+[Singletone]
+public class DbMessageSender : IMessageSender
 {
-    [Singletone]
-    public class DbMessageSender : IMessageSender
+    private readonly ILog _logger;
+    private readonly MessagesRepository _messagesRepository;
+    private bool _messagingEnabled;
+
+    public DbMessageSender(IConfiguration configuration, MessagesRepository messagesRepository, IOptionsMonitor<ILog> options)
     {
-        private readonly ILog _logger;
-        private readonly MessagesRepository _messagesRepository;
-        private bool _messagingEnabled;
+        var setting = configuration["messaging:enabled"];
+        _messagingEnabled = !string.IsNullOrEmpty(setting) && setting == "true";
+        _messagesRepository = messagesRepository;
+        _logger = options.Get("ASC.Messaging");
+    }
 
-        public DbMessageSender(IConfiguration configuration, MessagesRepository messagesRepository, IOptionsMonitor<ILog> options)
+    public void Send(EventMessage message)
+    {
+        try
         {
-            var setting = configuration["messaging:enabled"];
-            _messagingEnabled = !string.IsNullOrEmpty(setting) && setting == "true";
-            _messagesRepository = messagesRepository;
-            _logger = options.Get("ASC.Messaging");
+            if (!_messagingEnabled)
+            {
+                return;
+            }
+
+            if (message == null)
+            {
+                return;
+            }
+
+            _messagesRepository.Add(message);
         }
-
-        public void Send(EventMessage message)
+        catch (Exception ex)
         {
-            try
-            {
-                if (!_messagingEnabled)
-                {
-                    return;
-                }
-
-                if (message == null)
-                {
-                    return;
-                }
-
-                _messagesRepository.Add(message);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error("Failed to send a message", ex);
-            }
+            _logger.Error("Failed to send a message", ex);
         }
     }
 }

@@ -23,17 +23,16 @@
  *
 */
 
-namespace ASC.MessagingSystem
-{
-    public class MessageUserData
-    {
-        public int TenantId { get; private set; }
-        public Guid UserId { get; private set; }
+namespace ASC.MessagingSystem;
 
-        public MessageUserData(int tenentId, Guid userId)
-        {
-            TenantId = tenentId;
-            UserId = userId;
-        }
+public class MessageUserData
+{
+    public int TenantId { get; private set; }
+    public Guid UserId { get; private set; }
+
+    public MessageUserData(int tenentId, Guid userId)
+    {
+        TenantId = tenentId;
+        UserId = userId;
     }
 }

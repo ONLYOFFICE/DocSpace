@@ -23,91 +23,90 @@
  *
 */
 
-namespace ASC.MessagingSystem
+namespace ASC.MessagingSystem;
+
+[Singletone]
+public class MessageTarget
 {
-    [Singletone]
-    public class MessageTarget
+    private IEnumerable<string> _items;
+
+    public ILog Log { get; set; }
+    private readonly IOptionsMonitor<ILog> _option;
+
+    public MessageTarget(IOptionsMonitor<ILog> option)
     {
-        private IEnumerable<string> _items;
+        Log = option.Get("ASC.Messaging");
+        _option = option;
+    }
 
-        public ILog Log { get; set; }
-        private readonly IOptionsMonitor<ILog> _option;
-
-        public MessageTarget(IOptionsMonitor<ILog> option)
+    public MessageTarget Create<T>(T value)
+    {
+        try
         {
-            Log = option.Get("ASC.Messaging");
-            _option = option;
-        }
+            var res = new List<string>();
 
-        public MessageTarget Create<T>(T value)
-        {
-            try
+            if (value is System.Collections.IEnumerable ids)
             {
-                var res = new List<string>();
-
-                if (value is System.Collections.IEnumerable ids)
-                {
-                    res.AddRange(from object id in ids select id.ToString());
-                }
-                else
-                {
-                    res.Add(value.ToString());
-                }
-
-                return new MessageTarget(_option)
-                {
-                    _items = res.Distinct()
-                };
+                res.AddRange(from object id in ids select id.ToString());
             }
-            catch (Exception e)
+            else
             {
-                Log.Error("EventMessageTarget exception", e);
-
-                return null;
-            }
-
-        }
-
-        public MessageTarget Create(IEnumerable<string> value)
-        {
-            try
-            {
-                return new MessageTarget(_option)
-                {
-                    _items = value.Distinct()
-                };
-            }
-            catch (Exception e)
-            {
-                Log.Error("EventMessageTarget exception", e);
-
-                return null;
-            }
-        }
-
-        public MessageTarget Parse(string value)
-        {
-            if (string.IsNullOrEmpty(value))
-            {
-                return null;
-            }
-
-            var items = value.Split(',');
-
-            if (items.Length == 0)
-            {
-                return null;
+                res.Add(value.ToString());
             }
 
             return new MessageTarget(_option)
             {
-                _items = items
+                _items = res.Distinct()
             };
         }
-
-        public override string ToString()
+        catch (Exception e)
         {
-            return string.Join(",", _items);
+            Log.Error("EventMessageTarget exception", e);
+
+            return null;
         }
+
+    }
+
+    public MessageTarget Create(IEnumerable<string> value)
+    {
+        try
+        {
+            return new MessageTarget(_option)
+            {
+                _items = value.Distinct()
+            };
+        }
+        catch (Exception e)
+        {
+            Log.Error("EventMessageTarget exception", e);
+
+            return null;
+        }
+    }
+
+    public MessageTarget Parse(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            return null;
+        }
+
+        var items = value.Split(',');
+
+        if (items.Length == 0)
+        {
+            return null;
+        }
+
+        return new MessageTarget(_option)
+        {
+            _items = items
+        };
+    }
+
+    public override string ToString()
+    {
+        return string.Join(",", _items);
     }
 }
