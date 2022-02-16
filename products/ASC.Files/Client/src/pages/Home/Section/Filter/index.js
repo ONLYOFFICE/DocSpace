@@ -7,7 +7,7 @@ import { FilterType } from "@appserver/common/constants";
 import Loaders from "@appserver/common/components/Loaders";
 import FilterInput from "@appserver/common/components/FilterInput";
 import { withLayoutSize } from "@appserver/common/utils";
-import { isMobileOnly, isMobile } from "react-device-detect";
+import { isMobile, isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 import withLoader from "../../../../HOCs/withLoader";
 import { FileAction } from "@appserver/common/constants";
@@ -334,7 +334,15 @@ class SectionFilterContent extends React.Component {
   render() {
     //console.log("Filter render");
     const selectedFilterData = this.getSelectedFilterData();
-    const { t, sectionWidth, isFiltered, viewAs, personal } = this.props;
+    const {
+      t,
+      sectionWidth,
+      isFiltered,
+      viewAs,
+      personal,
+      isFavoritesFolder,
+      isRecentFolder,
+    } = this.props;
     const filterColumnCount =
       window.innerWidth < 500 ? {} : { filterColumnCount: personal ? 2 : 3 };
 
@@ -354,7 +362,7 @@ class SectionFilterContent extends React.Component {
         isReady={this.state.isReady}
         {...filterColumnCount}
         contextMenuHeader={t("Common:AddFilter")}
-        isMobile={isMobileOnly}
+        sortItemsVisible={!(isFavoritesFolder || isRecentFolder)}
       />
     );
   }
