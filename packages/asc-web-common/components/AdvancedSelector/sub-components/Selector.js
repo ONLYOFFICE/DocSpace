@@ -96,6 +96,10 @@ const Selector = (props) => {
 
   const [groupHeader, setGroupHeader] = useState(null);
 
+  useEffect(() => {
+    if (groups.length === 1) setGroupHeader(groups[0]);
+  }, [groups]);
+
   // Every row is loaded except for our loading indicator row.
   const isItemLoaded = useCallback(
     (index) => {
@@ -385,7 +389,7 @@ const Selector = (props) => {
   const getGroupSelectedOptions = useCallback(
     (group) => {
       const selectedGroup = selectedOptionList.filter(
-        (o) => o.groups.indexOf(group) > -1
+        (o) => o.groups && o.groups.indexOf(group) > -1
       );
 
       if (group === "all") {
@@ -528,7 +532,7 @@ const Selector = (props) => {
   }, [isMultiSelect, groupHeader, selectedOptionList, getGroupSelectedOptions]);
 
   const onArrowClickAction = useCallback(() => {
-    if (groupHeader) {
+    if (groupHeader && groups.length !== 1) {
       setGroupHeader(null);
 
       onGroupChanged && onGroupChanged([]);
@@ -536,7 +540,7 @@ const Selector = (props) => {
       return;
     }
     onArrowClick && onArrowClick();
-  }, [groupHeader, onArrowClick, onGroupChanged]);
+  }, [groups, groupHeader, onArrowClick, onGroupChanged]);
 
   return (
     <StyledSelector
