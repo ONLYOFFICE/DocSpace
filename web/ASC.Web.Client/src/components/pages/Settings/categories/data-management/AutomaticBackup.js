@@ -195,7 +195,7 @@ class AutomaticBackup extends React.PureComponent {
     clearInterval(this.timerId);
   }
 
-  onSetDefaultOptions = (selectedSchedule) => {
+  onSetDefaultOptions = (selectedSchedule, savingProcess = false) => {
     let checkedStorage = {};
     let defaultOptions, selectedOptions;
 
@@ -267,16 +267,34 @@ class AutomaticBackup extends React.PureComponent {
     this.onSetDefaultPeriodOption(
       checkedStorage,
       defaultOptions,
-      selectedOptions
+      selectedOptions,
+      savingProcess
     );
   };
 
   onSetDefaultPeriodOption = (
     checkedStorage,
     defaultOptions,
-    selectedOptions
+    selectedOptions,
+    savingProcess
   ) => {
     const { defaultPeriodNumber, defaultDay, isEnable } = defaultOptions;
+
+    const defaultPeriodSettings = this.setDefaultPeriodSettings(
+      +defaultPeriodNumber
+    );
+
+    const resetOptions =
+      savingProcess && this._isMounted
+        ? {
+            isLoadingData: false,
+            isChanged: false,
+            isChangedInStorage: false,
+            isError: false,
+            isErrorsFields: false,
+            isSuccessSave: true,
+          }
+        : {};
 
     if (+defaultPeriodNumber === EVERY_WEEK_TYPE) {
       //Every Week option
@@ -303,15 +321,14 @@ class AutomaticBackup extends React.PureComponent {
           selectedWeekday: defaultDay,
           defaultWeekday: defaultDay,
 
-          defaultWeeklySchedule: true,
-          selectedWeeklySchedule: true,
-
           selectedMonthDay: "1",
           defaultMonthDay: "1",
 
           isInitialLoading: false,
+          ...defaultPeriodSettings,
           ...defaultOptions,
           ...selectedOptions,
+          ...resetOptions,
         });
     } else {
       const weekDay = this.weekdaysLabelArray[0].key;
@@ -335,12 +352,11 @@ class AutomaticBackup extends React.PureComponent {
             selectedMonthDay: defaultDay,
             defaultMonthDay: defaultDay,
 
-            defaultMonthlySchedule: true,
-            selectedMonthlySchedule: true,
-
             isInitialLoading: false,
+            ...defaultPeriodSettings,
             ...defaultOptions,
             ...selectedOptions,
+            ...resetOptions,
           });
       } else {
         //Every Day option
@@ -360,12 +376,11 @@ class AutomaticBackup extends React.PureComponent {
             selectedMonthDay: "1",
             defaultMonthDay: "1",
 
-            defaultDailySchedule: true,
-            selectedDailySchedule: true,
-
             isInitialLoading: false,
+            ...defaultPeriodSettings,
             ...defaultOptions,
             ...selectedOptions,
+            ...resetOptions,
           });
       }
     }
@@ -539,6 +554,27 @@ class AutomaticBackup extends React.PureComponent {
     });
   };
 
+  setDefaultPeriodSettings = (key = -1) => {
+    const titleArray = [
+      [EVERY_DAY_TYPE, "Daily"],
+      [EVERY_WEEK_TYPE, "Weekly"],
+      [EVERY_MONTH_TYPE, "Monthly"],
+    ];
+
+    let resultObj = {};
+
+    for (let i = 0; i < titleArray.length; i++) {
+      if (+key === titleArray[i][0]) {
+        resultObj[`default${titleArray[i][1]}Schedule`] = true;
+        resultObj[`selected${titleArray[i][1]}Schedule`] = true;
+      } else {
+        resultObj[`default${titleArray[i][1]}Schedule`] = false;
+        resultObj[`selected${titleArray[i][1]}Schedule`] = false;
+      }
+    }
+    return resultObj;
+  };
+
   resetPeriodSettings = (key = -1) => {
     const titleArray = [
       [EVERY_DAY_TYPE, "Daily"],
@@ -672,12 +708,13 @@ class AutomaticBackup extends React.PureComponent {
       if (i === lastElem && +key === STORAGES_MODULE_TYPE) {
         resultObj[`isChecked${arrayType[lastElem][1]}`] = true;
         resultObj["selectedStorageTypeNumber"] = key.toString();
-      }
-      if (+key === arrayType[i][0]) {
-        resultObj[`isChecked${arrayType[i][1]}`] = true;
-        resultObj["selectedStorageTypeNumber"] = key.toString();
       } else {
-        resultObj[`isChecked${arrayType[i][1]}`] = false;
+        if (+key === arrayType[i][0]) {
+          resultObj[`isChecked${arrayType[i][1]}`] = true;
+          resultObj["selectedStorageTypeNumber"] = key.toString();
+        } else {
+          resultObj[`isChecked${arrayType[i][1]}`] = false;
+        }
       }
     }
 
@@ -900,33 +937,10 @@ class AutomaticBackup extends React.PureComponent {
         getBackupStorage(),
       ]);
       this.storageInfo = storageInfo;
+      this.selectedSchedule = true;
 
-      if (selectedSchedule) {
-        const { storageType } = selectedSchedule;
-        this.selectedSchedule = true;
-        const resetOptions = this.resetPeriodSettings();
-
-        const resetModuleSettings = this.resetModuleSettings(storageType);
-        console.log("createSchedule resetModuleSettings", resetModuleSettings);
-
-        this.setState({
-          ...resetOptions,
-          ...resetModuleSettings,
-        });
-
-        this.onSetDefaultOptions(selectedSchedule);
-      }
+      this.onSetDefaultOptions(selectedSchedule, true);
       toastr.success(t("SuccessfullySaveSettingsMessage"));
-
-      this._isMounted &&
-        this.setState({
-          isLoadingData: false,
-          isChanged: false,
-          isChangedInStorage: false,
-          isError: false,
-          isErrorsFields: false,
-          isSuccessSave: true,
-        });
     } catch (e) {
       toastr.error(e);
 
@@ -942,15 +956,7 @@ class AutomaticBackup extends React.PureComponent {
     this.setState({ isLoadingData: true }, () => {
       deleteBackupSchedule()
         .then(() => {
-          const resetOptions = this.resetPeriodSettings();
-          console.log("createSchedule resetOptions", resetOptions);
-          this.setState({
-            ...resetOptions,
-            isLoadingData: false,
-            isChanged: false,
-            isChangedInStorage: false,
-          });
-          this.onSetDefaultOptions();
+          this.onSetDefaultOptions(null, true);
           this.selectedSchedule = false;
           toastr.success(t("SuccessfullySaveSettingsMessage"));
         })
@@ -1081,7 +1087,7 @@ class AutomaticBackup extends React.PureComponent {
     console.log("render auto ", this.state);
 
     const isCopyingToLocal = downloadingProgress !== 100;
-    console.log("this.storageInfo", this.storageInfo);
+
     return isInitialLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
