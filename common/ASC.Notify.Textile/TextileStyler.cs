@@ -28,7 +28,9 @@ namespace ASC.Notify.Textile
     [Scope]
     public class TextileStyler : IPatternStyler
     {
-        private static readonly Regex _velocityArguments = new Regex(NVelocityPatternFormatter.NoStylePreffix + "(?<arg>.*?)" + NVelocityPatternFormatter.NoStyleSuffix, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
+        private static readonly Regex _velocityArguments 
+            = new Regex(NVelocityPatternFormatter.NoStylePreffix + "(?<arg>.*?)" + NVelocityPatternFormatter.NoStyleSuffix, 
+                RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
 
         private readonly CoreBaseSettings _coreBaseSettings;
         private readonly IConfiguration _configuration;

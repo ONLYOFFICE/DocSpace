@@ -28,7 +28,9 @@ namespace ASC.Notify.Textile
     [Scope]
     public class PushStyler : IPatternStyler
     {
-        private static readonly Regex _velocityArgumentsRegex = new Regex(NVelocityPatternFormatter.NoStylePreffix + "(?'arg'.*?)" + NVelocityPatternFormatter.NoStyleSuffix, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
+        private static readonly Regex _velocityArgumentsRegex 
+            = new Regex(NVelocityPatternFormatter.NoStylePreffix + "(?'arg'.*?)" + NVelocityPatternFormatter.NoStyleSuffix, 
+                RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
 
         public void ApplyFormating(NoticeMessage message)
         {

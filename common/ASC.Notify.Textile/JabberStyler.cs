@@ -28,13 +28,36 @@ namespace ASC.Notify.Textile
     [Scope]
     public class JabberStyler : IPatternStyler
     {
-        private static readonly Regex _velocityArguments = new Regex(NVelocityPatternFormatter.NoStylePreffix + "(?<arg>.*?)" + NVelocityPatternFormatter.NoStyleSuffix, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
-        private static readonly Regex _linkReplacer = new Regex(@"""(?<text>[\w\W]+?)"":""(?<link>[^""]+)""", RegexOptions.Singleline | RegexOptions.Compiled);
-        private static readonly Regex _textileReplacer = new Regex(@"(h1\.|h2\.|\*|h3\.|\^)", RegexOptions.Singleline | RegexOptions.Compiled);
-        private static readonly Regex _brReplacer = new Regex(@"<br\s*\/*>", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.IgnorePatternWhitespace | RegexOptions.Compiled | RegexOptions.Singleline);
-        private static readonly Regex _closedTagsReplacer = new Regex(@"</(p|div)>", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.IgnorePatternWhitespace | RegexOptions.Compiled | RegexOptions.Singleline);
-        private static readonly Regex _tagReplacer = new Regex(@"<(.|\n)*?>", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.IgnorePatternWhitespace | RegexOptions.Compiled | RegexOptions.Singleline);
-        private static readonly Regex _multiLineBreaksReplacer = new Regex(@"(?:\r\n|\r(?!\n)|(?!<\r)\n){3,}", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        private static readonly Regex _velocityArguments 
+            = new Regex(NVelocityPatternFormatter.NoStylePreffix + "(?<arg>.*?)" + NVelocityPatternFormatter.NoStyleSuffix, 
+                RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
+
+        private static readonly Regex _linkReplacer 
+            = new Regex(@"""(?<text>[\w\W]+?)"":""(?<link>[^""]+)""", 
+                RegexOptions.Singleline | RegexOptions.Compiled);
+        
+        private static readonly Regex _textileReplacer 
+            = new Regex(@"(h1\.|h2\.|\*|h3\.|\^)", 
+                RegexOptions.Singleline | RegexOptions.Compiled);
+        
+        private static readonly Regex _brReplacer 
+            = new Regex(@"<br\s*\/*>", 
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.IgnorePatternWhitespace 
+                | RegexOptions.Compiled | RegexOptions.Singleline);
+        
+        private static readonly Regex _closedTagsReplacer 
+            = new Regex(@"</(p|div)>", 
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.IgnorePatternWhitespace 
+                | RegexOptions.Compiled | RegexOptions.Singleline);
+        
+        private static readonly Regex _tagReplacer 
+            = new Regex(@"<(.|\n)*?>", 
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.IgnorePatternWhitespace 
+                | RegexOptions.Compiled | RegexOptions.Singleline);
+        
+        private static readonly Regex _multiLineBreaksReplacer 
+            = new Regex(@"(?:\r\n|\r(?!\n)|(?!<\r)\n){3,}", 
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
         public void ApplyFormating(NoticeMessage message)
         {
