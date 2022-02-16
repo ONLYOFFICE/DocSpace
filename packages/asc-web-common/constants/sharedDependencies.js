@@ -8,10 +8,12 @@ module.exports = {
   react: {
     singleton: true,
     requiredVersion: deps["react"],
+    eager: true,
   },
   "react-dom": {
     singleton: true,
     requiredVersion: deps["react-dom"],
+    eager: true,
   },
   "react-router": {
     singleton: true,
@@ -24,6 +26,7 @@ module.exports = {
   "styled-components": {
     singleton: true,
     requiredVersion: deps["styled-components"],
+    eager: true,
   },
   mobx: {
     singleton: true,
@@ -84,6 +87,7 @@ module.exports = {
   axios: {
     singleton: true,
     requiredVersion: deps["axios"],
+    eager: true,
   },
   i18next: {
     singleton: true,
@@ -100,6 +104,7 @@ module.exports = {
   "prop-types": {
     singleton: true,
     requiredVersion: deps["prop-types"],
+    eager: true,
   },
   "react-custom-scrollbars": {
     singleton: true,
@@ -108,6 +113,7 @@ module.exports = {
   "react-device-detect": {
     singleton: true,
     requiredVersion: compDeps["react-device-detect"],
+    eager: true,
   },
   "react-dropzone": {
     singleton: true,
@@ -160,5 +166,10 @@ module.exports = {
   sjcl: {
     singleton: true,
     requiredVersion: deps["sjcl"],
+    eager: true,
+  },
+  next: {
+    singleton: true,
+    requiredVersion: deps["next"],
   },
 };
