@@ -155,10 +155,6 @@ class AutomaticBackup extends React.PureComponent {
       } else {
         this.onSetDefaultOptions();
       }
-
-      this.setState({
-        storageInfo,
-      });
     } catch (error) {
       toastr.error(error);
     }
