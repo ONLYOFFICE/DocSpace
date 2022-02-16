@@ -24,7 +24,7 @@ export default function withContent(WrappedContent) {
       super(props);
 
       const { item, fileActionId, fileActionExt, fileActionTemplateId } = props;
-      let titleWithoutExt = getTitleWithoutExst(item);
+      let titleWithoutExt = props.titleWithoutExt;
       if (
         fileActionId === -1 &&
         item.id === fileActionId &&
@@ -42,6 +42,8 @@ export default function withContent(WrappedContent) {
         fileActionExt,
         setIsUpdatingRowItem,
         isUpdatingRowItem,
+        isEdit,
+        titleWithoutExt,
       } = this.props;
       if (fileActionId === -1 && fileActionExt !== prevProps.fileActionExt) {
         const itemTitle = getDefaultFileName(fileActionExt);
@@ -49,6 +51,10 @@ export default function withContent(WrappedContent) {
       }
       if (fileActionId === null && prevProps.fileActionId !== fileActionId) {
         isUpdatingRowItem && setIsUpdatingRowItem(false);
+      }
+
+      if (!isEdit && titleWithoutExt !== this.state.itemTitle) {
+        this.setState({ itemTitle: titleWithoutExt });
       }
     }
 
@@ -372,8 +378,6 @@ export default function withContent(WrappedContent) {
       const { itemTitle } = this.state;
       const {
         element,
-        fileActionExt,
-        fileActionId,
         isDesktop,
         isTrashFolder,
         item,
@@ -383,6 +387,8 @@ export default function withContent(WrappedContent) {
         viewer,
         isUpdatingRowItem,
         passwordEntryProcess,
+        isEdit,
+        titleWithoutExt,
       } = this.props;
       const {
         access,
@@ -394,10 +400,6 @@ export default function withContent(WrappedContent) {
         id,
         updated,
       } = item;
-
-      const titleWithoutExt = getTitleWithoutExst(item);
-
-      const isEdit = id === fileActionId && fileExst === fileActionExt;
 
       const updatedDate =
         viewAs === "table"
@@ -472,7 +474,7 @@ export default function withContent(WrappedContent) {
         dialogsStore,
         uploadDataStore,
       },
-      {}
+      { item }
     ) => {
       const { editCompleteAction } = filesActionsStore;
       const {
@@ -511,6 +513,11 @@ export default function withContent(WrappedContent) {
         setFormCreationInfo,
       } = dialogsStore;
 
+      const isEdit =
+        item.id === fileActionId && item.fileExst === fileActionExt;
+
+      const titleWithoutExt = getTitleWithoutExst(item);
+
       return {
         createFile,
         createFolder,
@@ -543,6 +550,8 @@ export default function withContent(WrappedContent) {
         addActiveItems,
         clearActiveOperations,
         fileCopyAs,
+        isEdit,
+        titleWithoutExt,
       };
     }
   )(observer(WithContent));
