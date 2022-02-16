@@ -28,12 +28,12 @@ namespace ASC.Notify.Textile
     [Scope]
     public class TextileStyler : IPatternStyler
     {
-        private static readonly Regex VelocityArguments = new Regex(NVelocityPatternFormatter.NoStylePreffix + "(?<arg>.*?)" + NVelocityPatternFormatter.NoStyleSuffix, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
+        private static readonly Regex _velocityArguments = new Regex(NVelocityPatternFormatter.NoStylePreffix + "(?<arg>.*?)" + NVelocityPatternFormatter.NoStyleSuffix, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
 
-        private CoreBaseSettings CoreBaseSettings { get; }
-        private IConfiguration Configuration { get; }
-        private InstanceCrypto InstanceCrypto { get; }
-        private MailWhiteLabelSettingsHelper MailWhiteLabelSettingsHelper { get; }
+        private readonly CoreBaseSettings _coreBaseSettings;
+        private readonly IConfiguration _configuration;
+        private readonly InstanceCrypto _instanceCrypto;
+        private readonly MailWhiteLabelSettingsHelper _mailWhiteLabelSettingsHelper;
 
         static TextileStyler()
         {
@@ -49,10 +49,10 @@ namespace ASC.Notify.Textile
             InstanceCrypto instanceCrypto,
             MailWhiteLabelSettingsHelper mailWhiteLabelSettingsHelper)
         {
-            CoreBaseSettings = coreBaseSettings;
-            Configuration = configuration;
-            InstanceCrypto = instanceCrypto;
-            MailWhiteLabelSettingsHelper = mailWhiteLabelSettingsHelper;
+            _coreBaseSettings = coreBaseSettings;
+            _configuration = configuration;
+            _instanceCrypto = instanceCrypto;
+            _mailWhiteLabelSettingsHelper = mailWhiteLabelSettingsHelper;
         }
 
         public void ApplyFormating(NoticeMessage message)
@@ -62,10 +62,13 @@ namespace ASC.Notify.Textile
 
             if (!string.IsNullOrEmpty(message.Subject))
             {
-                message.Subject = VelocityArguments.Replace(message.Subject, m => m.Result("${arg}"));
+                message.Subject = _velocityArguments.Replace(message.Subject, m => m.Result("${arg}"));
             }
 
-            if (string.IsNullOrEmpty(message.Body)) return;
+            if (string.IsNullOrEmpty(message.Body))
+            {
+                return;
+            }
 
             formatter.Format(message.Body);
 
@@ -79,11 +82,10 @@ namespace ASC.Notify.Textile
 
             InitFooter(message, mailSettings, out var footerContent, out var footerSocialContent);
 
-            message.Body = template
-                                   .Replace("%CONTENT%", output.GetFormattedText())
+            message.Body = template.Replace("%CONTENT%", output.GetFormattedText())
                                    .Replace("%LOGO%", logoImg)
                                    .Replace("%LOGOTEXT%", logoText)
-                                   .Replace("%SITEURL%", mailSettings == null ? MailWhiteLabelSettingsHelper.DefaultMailSiteUrl : mailSettings.SiteUrl)
+                                   .Replace("%SITEURL%", mailSettings == null ? _mailWhiteLabelSettingsHelper.DefaultMailSiteUrl : mailSettings.SiteUrl)
                                    .Replace("%FOOTER%", footerContent)
                                    .Replace("%FOOTERSOCIAL%", footerSocialContent)
                                    .Replace("%TEXTFOOTER%", unsubscribeText)
@@ -102,7 +104,9 @@ namespace ASC.Notify.Textile
                 {
                     var templateValue = NotifyTemplateResource.ResourceManager.GetString(templateTagValue);
                     if (!string.IsNullOrEmpty(templateValue))
+                    {
                         template = templateValue;
+                    }
                 }
             }
 
@@ -112,6 +116,7 @@ namespace ASC.Notify.Textile
         private static string GetImagePath(NoticeMessage message)
         {
             var imagePathTag = message.GetArgument("ImagePath");
+
             return imagePathTag == null ? string.Empty : (string)imagePathTag.Value;
         }
 
@@ -119,13 +124,13 @@ namespace ASC.Notify.Textile
         {
             string logoImg;
 
-            if (CoreBaseSettings.Personal && !CoreBaseSettings.CustomMode)
+            if (_coreBaseSettings.Personal && !_coreBaseSettings.CustomMode)
             {
                 logoImg = imagePath + "/mail_logo.png";
             }
             else
             {
-                logoImg = Configuration["web:logo:mail"];
+                logoImg = _configuration["web:logo:mail"];
                 if (string.IsNullOrEmpty(logoImg))
                 {
                     var logo = message.GetArgument("LetterLogo");
@@ -145,7 +150,7 @@ namespace ASC.Notify.Textile
 
         private string GetLogoText(NoticeMessage message)
         {
-            var logoText = Configuration["web:logotext:mail"];
+            var logoText = _configuration["web:logotext:mail"];
 
             if (string.IsNullOrEmpty(logoText))
             {
@@ -166,6 +171,7 @@ namespace ASC.Notify.Textile
         private static MailWhiteLabelSettings GetMailSettings(NoticeMessage message)
         {
             var mailWhiteLabelTag = message.GetArgument("MailWhiteLabelSettings");
+
             return mailWhiteLabelTag == null ? null : mailWhiteLabelTag.Value as MailWhiteLabelSettings;
         }
 
@@ -176,11 +182,17 @@ namespace ASC.Notify.Textile
 
             var footer = message.GetArgument("Footer");
 
-            if (footer == null) return;
+            if (footer == null)
+            {
+                return;
+            }
 
             var footerValue = (string)footer.Value;
 
-            if (string.IsNullOrEmpty(footerValue)) return;
+            if (string.IsNullOrEmpty(footerValue))
+            {
+                return;
+            }
 
             switch (footerValue)
             {
@@ -211,9 +223,9 @@ namespace ASC.Notify.Textile
             {
                 footerContent =
                     NotifyTemplateResource.FooterCommonV10
-                                          .Replace("%SUPPORTURL%", MailWhiteLabelSettingsHelper.DefaultMailSupportUrl)
-                                          .Replace("%SALESEMAIL%", MailWhiteLabelSettingsHelper.DefaultMailSalesEmail)
-                                          .Replace("%DEMOURL%", MailWhiteLabelSettingsHelper.DefaultMailDemoUrl);
+                                          .Replace("%SUPPORTURL%", _mailWhiteLabelSettingsHelper.DefaultMailSupportUrl)
+                                          .Replace("%SALESEMAIL%", _mailWhiteLabelSettingsHelper.DefaultMailSalesEmail)
+                                          .Replace("%DEMOURL%", _mailWhiteLabelSettingsHelper.DefaultMailDemoUrl);
                 footerSocialContent = NotifyTemplateResource.SocialNetworksFooterV10;
 
             }
@@ -224,6 +236,7 @@ namespace ASC.Notify.Textile
                     .Replace("%SUPPORTURL%", string.IsNullOrEmpty(settings.SupportUrl) ? "mailto:" + settings.SalesEmail : settings.SupportUrl)
                     .Replace("%SALESEMAIL%", settings.SalesEmail)
                     .Replace("%DEMOURL%", string.IsNullOrEmpty(settings.DemoUrl) ? "mailto:" + settings.SalesEmail : settings.DemoUrl);
+
                 footerSocialContent = settings.FooterSocialEnabled ? NotifyTemplateResource.SocialNetworksFooterV10 : string.Empty;
             }
         }
@@ -233,7 +246,9 @@ namespace ASC.Notify.Textile
             footerSocialContent = string.Empty;
 
             if (settings == null || (settings.FooterEnabled && settings.FooterSocialEnabled))
+            {
                 footerSocialContent = NotifyTemplateResource.SocialNetworksFooterV10;
+            }
         }
 
         private string GetUnsubscribeText(NoticeMessage message, MailWhiteLabelSettings settings)
@@ -241,20 +256,26 @@ namespace ASC.Notify.Textile
             var withoutUnsubscribe = message.GetArgument("WithoutUnsubscribe");
 
             if (withoutUnsubscribe != null && (bool)withoutUnsubscribe.Value)
+            {
                 return string.Empty;
+            }
 
             var rootPathArgument = message.GetArgument("__VirtualRootPath");
             var rootPath = rootPathArgument == null ? string.Empty : (string)rootPathArgument.Value;
 
             if (string.IsNullOrEmpty(rootPath))
+            {
                 return string.Empty;
+            }
 
-            var unsubscribeLink = CoreBaseSettings.CustomMode && CoreBaseSettings.Personal
+            var unsubscribeLink = _coreBaseSettings.CustomMode && _coreBaseSettings.Personal
                                       ? GetSiteUnsubscribeLink(message, settings)
                                       : GetPortalUnsubscribeLink(message, settings);
 
             if (string.IsNullOrEmpty(unsubscribeLink))
+            {
                 return string.Empty;
+            }
 
             return string.Format(NotifyTemplateResource.TextForFooterWithUnsubscribeLink, rootPath, unsubscribeLink);
         }
@@ -268,7 +289,9 @@ namespace ASC.Notify.Textile
                 var unsubscribeLink = (string)unsubscribeLinkArgument.Value;
 
                 if (!string.IsNullOrEmpty(unsubscribeLink))
+                {
                     return unsubscribeLink;
+                }
             }
 
             return GetSiteUnsubscribeLink(message, settings);
@@ -279,21 +302,21 @@ namespace ASC.Notify.Textile
             var mail = message.Recipient.Addresses.FirstOrDefault(r => r.Contains('@'));
 
             if (string.IsNullOrEmpty(mail))
+            {
                 return string.Empty;
+            }
 
-            var format = CoreBaseSettings.CustomMode
+            var format = _coreBaseSettings.CustomMode
                              ? "{0}/unsubscribe/{1}"
                              : "{0}/Unsubscribe.aspx?id={1}";
 
             var site = settings == null
-                           ? MailWhiteLabelSettingsHelper.DefaultMailSiteUrl
+                           ? _mailWhiteLabelSettingsHelper.DefaultMailSiteUrl
                            : settings.SiteUrl;
 
-            return string.Format(format,
-                                 site,
-                                 WebEncoders.Base64UrlEncode(
-                                     InstanceCrypto.Encrypt(
-                                         Encoding.UTF8.GetBytes(mail.ToLowerInvariant()))));
+            return string.Format(format, site, 
+                WebEncoders.Base64UrlEncode(_instanceCrypto.Encrypt(
+                    Encoding.UTF8.GetBytes(mail.ToLowerInvariant()))));
         }
     }
 }
