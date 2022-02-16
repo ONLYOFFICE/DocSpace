@@ -1394,6 +1394,12 @@ namespace ASC.Api.Settings
             return StudioPeriodicNotify.ChangeSubscription(AuthContext.CurrentAccount.ID, StudioNotifyHelper);
         }
 
+        [Read("tips/subscription")]
+        public bool GetTipsSubscription()
+        {
+            return StudioNotifyHelper.IsSubscribedToNotify(AuthContext.CurrentAccount.ID, Actions.PeriodicNotify);
+        }
+
         [Update("wizard/complete", Check = false)]
         [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
         public WizardSettings CompleteWizardFromBody([FromBody] WizardModel wizardModel)
