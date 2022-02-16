@@ -1,6 +1,6 @@
 //import "@appserver/common/utils/wdyr";
 import React from "react";
-import Editor from "./Editor";
+import Editor from "./Editor.js";
 import ErrorBoundary from "@appserver/common/components/ErrorBoundary";
 import "@appserver/common/custom.scss";
 
