@@ -5,11 +5,11 @@
 };
 
 var builder = WebApplication.CreateBuilder(options);
+var startup = new BaseWorkerStartup(builder.Configuration);
 
 builder.Host.UseSystemd();
 builder.Host.UseWindowsService();
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
-builder.Host.ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<BaseWorkerStartup>());
 builder.Host.ConfigureAppConfiguration((hostContext, config) =>
 {
     var buildedConfig = config.Build();
@@ -41,6 +41,7 @@ builder.Host.ConfigureAppConfiguration((hostContext, config) =>
     });
 });
 
+startup.ConfigureServices(builder.Services);
 builder.Host.ConfigureServices((hostContext, services) =>
 {
     services.AddMemoryCache();
@@ -84,5 +85,6 @@ builder.Host.ConfigureContainer<ContainerBuilder>((context, builder) =>
 builder.Host.ConfigureNLogLogging();
 
 var app = builder.Build();
+startup.Configure(app);
 
 await app.RunAsync();
