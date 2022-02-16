@@ -60,7 +60,7 @@ public static class Extensions
                 tryCurrent++;
                 using var stream = store.GetReadStream(domain, path, offset);
                 var buffer = new byte[BufferSize];
-                var readed = 0;
+                    int readed;
                 while ((readed = stream.Read(buffer, 0, BufferSize)) > 0)
                 {
                     readTo.Write(buffer, 0, readed);

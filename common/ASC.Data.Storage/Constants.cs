@@ -26,7 +26,7 @@
 
 namespace ASC.Data.Storage;
 
-class Constants
+static class Constants
 {
     public const string ConfigDir = "CONFIG_DIR";
     public const string StorageRootParam = "$STORAGE_ROOT";

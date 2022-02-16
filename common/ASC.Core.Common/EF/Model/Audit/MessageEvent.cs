@@ -11,6 +11,6 @@
         public Guid UserId { get; set; }
         public string Page { get; set; }
         public int Action { get; set; }
-        public string Description { get; set; }
+        public string DescriptionRaw { get; set; }
     }
 }

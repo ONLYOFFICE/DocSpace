@@ -134,7 +134,7 @@ public class EncryptionOperation : DistributedTaskProgress
 
         foreach (var domain in domains)
         {
-            var logParent = string.Format("Tenant: {0}, Module: {1}, Domain: {2}", tenant.TenantAlias, module, domain);
+                var logParent = $"Tenant: {tenant.TenantAlias}, Module: {module}, Domain: {domain}";
 
             var files = GetFiles(domains, progress, store, domain);
 
@@ -177,7 +177,7 @@ public class EncryptionOperation : DistributedTaskProgress
     {
         IEnumerable<string> files = targetStore.ListFilesRelative(targetDomain, "\\", "*.*", true);
 
-        if (progress.Any())
+            if (progress.Count > 0)
         {
             files = files.Where(path => !progress.Contains(path));
         }
@@ -203,7 +203,7 @@ public class EncryptionOperation : DistributedTaskProgress
     {
         foreach (var file in files)
         {
-            var logItem = string.Format("{0}, File: {1}", logParent, file);
+                var logItem = $"{logParent}, File: {file}";
 
             log.Debug(logItem);
 
@@ -365,7 +365,7 @@ public class EncryptionOperationScope
     }
 }
 
-public class EncryptionOperationExtension
+public static class EncryptionOperationExtension
 {
     public static void Register(DIHelper services)
     {

@@ -95,7 +95,6 @@ public class CrossModuleTransferUtility
                         memstream.Seek(0, SeekOrigin.Begin);
                         holder.UploadChunk(session, memstream, _chunkSize);
                         memstream.Dispose();
-                        memstream = null;
                     }
                 }
                 finally

@@ -104,7 +104,7 @@ namespace ASC.Core.Users
 
         public override string ToString()
         {
-            return string.Format("{0} {1}", FirstName, LastName).Trim();
+            return $"{FirstName} {LastName}".Trim();
         }
 
         public override int GetHashCode()
@@ -130,7 +130,7 @@ namespace ASC.Core.Users
 
         string[] IDirectRecipient.Addresses
         {
-            get { return !string.IsNullOrEmpty(Email) ? new[] { Email } : new string[0]; }
+            get { return !string.IsNullOrEmpty(Email) ? new[] { Email } : Array.Empty<string>(); }
         }
 
         public bool CheckActivation
@@ -160,7 +160,7 @@ namespace ASC.Core.Users
             var sBuilder = new StringBuilder();
             foreach (var contact in ContactsList)
             {
-                sBuilder.AppendFormat("{0}|", contact);
+                sBuilder.Append($"{contact}|");
             }
             return sBuilder.ToString();
         }

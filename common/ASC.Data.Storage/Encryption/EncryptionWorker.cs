@@ -91,7 +91,7 @@ public class FactoryOperation
     }
 }
 
-public class FactoryOperationExtension
+public static class FactoryOperationExtension
 {
     public static void Register(DIHelper dIHelper)
     {

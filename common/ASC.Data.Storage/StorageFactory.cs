@@ -38,8 +38,7 @@ public class StorageFactoryConfig
     public IEnumerable<string> GetModuleList(string configpath, bool exceptDisabledMigration = false)
     {
         return Section.Module
-            .Where(x => x.Visible)
-            .Where(x => !exceptDisabledMigration || !x.DisableMigrate)
+                .Where(x => x.Visible && (!exceptDisabledMigration || !x.DisableMigrate))
             .Select(x => x.Name);
     }
 
@@ -236,7 +235,7 @@ public class StorageFactory
             props = handler.Property.ToDictionary(r => r.Name, r => r.Value);
         }
 
-        ;
+            
         return ((IDataStore)ActivatorUtilities.CreateInstance(_serviceProvider, instanceType))
             .Configure(tenant, handler, moduleElement, props)
             .SetQuotaController(moduleElement.Count ? controller : null
@@ -244,7 +243,7 @@ public class StorageFactory
     }
 }
 
-public class StorageFactoryExtension
+public static class StorageFactoryExtension
 {
     public static void Register(DIHelper services)
     {

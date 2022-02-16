@@ -72,8 +72,9 @@ public class DiscDataStore : BaseStorage
         IHttpContextAccessor httpContextAccessor,
         IOptionsMonitor<ILog> options,
         EncryptionSettingsHelper encryptionSettingsHelper,
-        EncryptionFactory encryptionFactory)
-        : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
+            EncryptionFactory encryptionFactory,
+            IHttpClientFactory clientFactory)
+            : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options, clientFactory)
     {
         _encryptionSettingsHelper = encryptionSettingsHelper;
         _encryptionFactory = encryptionFactory;
@@ -330,7 +331,7 @@ public class DiscDataStore : BaseStorage
         }
         else
         {
-            throw new DirectoryNotFoundException(string.Format("Directory '{0}' not found", targetDir));
+                throw new DirectoryNotFoundException($"Directory '{targetDir}' not found");
         }
     }
 
@@ -359,7 +360,7 @@ public class DiscDataStore : BaseStorage
         }
         else
         {
-            throw new DirectoryNotFoundException(string.Format("Directory '{0}' not found", targetDir));
+                throw new DirectoryNotFoundException($"Directory '{targetDir}' not found");
         }
     }
 
@@ -452,7 +453,7 @@ public class DiscDataStore : BaseStorage
             throw new Exception("targetDir is null");
         }
 
-        if (!string.IsNullOrEmpty(targetDir) && !targetDir.EndsWith(Path.DirectorySeparatorChar.ToString()))
+            if (!targetDir.EndsWith(Path.DirectorySeparatorChar.ToString()))
         {
             targetDir += Path.DirectorySeparatorChar;
         }
@@ -769,9 +770,9 @@ public class DiscDataStore : BaseStorage
 
     private MappedPath GetPath(string domain)
     {
-        if (domain != null && _mappedPaths.ContainsKey(domain))
+        if (domain != null && _mappedPaths.TryGetValue(domain, out var value))
         {
-            return _mappedPaths[domain];
+                    return value;
         }
 
         return _mappedPaths[string.Empty].AppendDomain(domain);

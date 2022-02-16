@@ -23,16 +23,12 @@
  *
 */
 
-namespace ASC.Common.Security.Authorizing
+namespace ASC.Common.Security.Authorizing;
+
+public interface IAction
 {
-    public interface IAction
-    {
-        Guid ID { get; }
-
-        string Name { get; }
-
-        bool AdministratorAlwaysAllow { get; }
-
-        bool Conjunction { get; }
-    }
+    Guid ID { get; }
+    string Name { get; }
+    bool AdministratorAlwaysAllow { get; }
+    bool Conjunction { get; }
 }

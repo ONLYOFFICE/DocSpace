@@ -63,9 +63,7 @@ public class PathUtils
 
     public string ResolveVirtualPath(string module, string domain)
     {
-        var url = string.Format("~/storage/{0}/{1}/",
-                             module,
-                             string.IsNullOrEmpty(domain) ? "root" : domain);
+            var url = $"~/storage/{module}/{(string.IsNullOrEmpty(domain) ? "root" : domain)}/";
 
         return ResolveVirtualPath(url);
     }

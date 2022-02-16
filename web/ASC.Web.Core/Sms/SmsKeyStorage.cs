@@ -37,12 +37,12 @@ namespace ASC.Web.Core.Sms
             CheckCache = cache;
             KeyCache = cache;
             KeyCacheNotify = keyCacheNotify;
-            KeyCacheNotify.Subscribe(r => KeyCache.Remove(r.Key), CacheNotifyAction.Remove);
+            KeyCacheNotify.Subscribe(r => KeyCache.Remove(r.Key), Common.Caching.CacheNotifyAction.Remove);
         }
 
         public void RemoveFromCache(string cacheKey)
         {
-            KeyCacheNotify.Publish(new SmsKeyCacheKey { Key = cacheKey }, CacheNotifyAction.Remove);
+            KeyCacheNotify.Publish(new SmsKeyCacheKey { Key = cacheKey }, Common.Caching.CacheNotifyAction.Remove);
         }
     }
 
@@ -95,7 +95,7 @@ namespace ASC.Web.Core.Sms
         {
             if (string.IsNullOrEmpty(phone))
             {
-                throw new ArgumentNullException("phone");
+                throw new ArgumentNullException(nameof(phone));
             }
 
             lock (KeyLocker)
@@ -108,7 +108,7 @@ namespace ASC.Web.Core.Sms
                     return false;
                 }
 
-                key = new Random().Next((int)Math.Pow(10, KeyLength - 1), (int)Math.Pow(10, KeyLength)).ToString(CultureInfo.InvariantCulture);
+                key = RandomNumberGenerator.GetInt32((int)Math.Pow(10, KeyLength - 1), (int)Math.Pow(10, KeyLength)).ToString(CultureInfo.InvariantCulture);
                 phoneKeys[key] = DateTime.UtcNow;
 
                 KeyCache.Insert(cacheKey, phoneKeys, DateTime.UtcNow.Add(StoreInterval));
@@ -161,7 +161,7 @@ namespace ASC.Web.Core.Sms
                 if (createDate.Add(StoreInterval) < DateTime.UtcNow)
                     return Result.Timeout;
 
-                CheckCache.Insert(cacheCheck, (--counter).ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(StoreInterval));
+                CheckCache.Insert(cacheCheck, (counter - 1).ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(StoreInterval));
                 return Result.Ok;
             }
         }

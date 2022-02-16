@@ -44,6 +44,7 @@ public abstract class BaseStorage : IDataStore
     protected readonly EmailValidationKeyProvider TemailValidationKeyProvider;
     protected readonly IHttpContextAccessor HttpContextAccessor;
     protected readonly IOptionsMonitor<ILog> Options;
+    protected readonly IHttpClientFactory ClientFactory;
 
     public BaseStorage(
         TempStream tempStream,
@@ -51,7 +52,8 @@ public abstract class BaseStorage : IDataStore
         PathUtils pathUtils,
         EmailValidationKeyProvider emailValidationKeyProvider,
         IHttpContextAccessor httpContextAccessor,
-        IOptionsMonitor<ILog> options)
+        IOptionsMonitor<ILog> options,
+        IHttpClientFactory clientFactory)
     {
 
         TempStream = tempStream;
@@ -59,6 +61,7 @@ public abstract class BaseStorage : IDataStore
         TpathUtils = pathUtils;
         TemailValidationKeyProvider = emailValidationKeyProvider;
         Options = options;
+        ClientFactory = clientFactory;
         Logger = options.CurrentValue;
         HttpContextAccessor = httpContextAccessor;
     }
@@ -118,20 +121,12 @@ public abstract class BaseStorage : IDataStore
             }
 
             var auth = TemailValidationKeyProvider.GetEmailKey(currentTenantId, path.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar) + "." + headerAttr + "." + expireString);
-            query = string.Format("{0}{1}={2}&{3}={4}",
-                                  path.Contains("?") ? "&" : "?",
-                                  Constants.QueryExpire,
-                                  expireString,
-                                  Constants.QueryAuth,
-                                  auth);
+            query = $"{(path.IndexOf('?') >= 0 ? "&" : "?")}{Constants.QueryExpire}={expireString}&{Constants.QueryAuth}={auth}";
         }
 
         if (!string.IsNullOrEmpty(headerAttr))
         {
-            query += string.Format("{0}{1}={2}",
-                                   query.Contains("?") ? "&" : "?",
-                                   Constants.QueryHeader,
-                                   HttpUtility.UrlEncode(headerAttr));
+            query += $"{(query.IndexOf('?') >= 0 ? "&" : "?")}{Constants.QueryHeader}={HttpUtility.UrlEncode(headerAttr)}";
         }
 
         var tenant = Tenant.Trim('/');

@@ -103,12 +103,12 @@ namespace ASC.ElasticSearch.Core
             }).ToList();
         }
 
-        private List<IFactoryIndexer> allItems;
-        internal List<IFactoryIndexer> AllItems
+        private IEnumerable<IFactoryIndexer> allItems;
+        internal IEnumerable<IFactoryIndexer> AllItems
         {
             get
             {
-                return allItems ??= ServiceProvider.GetService<IEnumerable<IFactoryIndexer>>().ToList();
+                return allItems ??= ServiceProvider.GetService<IEnumerable<IFactoryIndexer>>();
             }
         }
 
@@ -119,7 +119,7 @@ namespace ASC.ElasticSearch.Core
             var settings = SettingsManager.Load<SearchSettings>();
 
             var settingsItems = settings.Items;
-            var toReIndex = !settingsItems.Any() ? items.Where(r => r.Enabled).ToList() : items.Where(item => settingsItems.Any(r => r.ID == item.ID && r.Enabled != item.Enabled)).ToList();
+            var toReIndex = settingsItems.Count == 0 ? items.Where(r => r.Enabled).ToList() : items.Where(item => settingsItems.Any(r => r.ID == item.ID && r.Enabled != item.Enabled)).ToList();
 
             settings.Items = items;
             settings.Data = JsonConvert.SerializeObject(items);
@@ -128,7 +128,7 @@ namespace ASC.ElasticSearch.Core
             var action = new ReIndexAction() { Tenant = TenantManager.GetCurrentTenant().TenantId };
             action.Names.AddRange(toReIndex.Select(r => r.ID).ToList());
 
-            CacheNotify.Publish(action, CacheNotifyAction.Any);
+            CacheNotify.Publish(action, Common.Caching.CacheNotifyAction.Any);
         }
 
         public bool CanIndexByContent<T>(int tenantId) where T : class, ISearchItem

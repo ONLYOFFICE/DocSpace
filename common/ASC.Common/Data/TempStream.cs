@@ -14,35 +14,37 @@
  *
 */
 
-namespace ASC.Common
+namespace ASC.Common;
+
+[Singletone]
+public class TempStream
 {
-    [Singletone]
-    public class TempStream
+    private readonly TempPath _tempPath;
+
+    public TempStream(TempPath tempPath)
     {
-        private TempPath TempPath { get; }
+        _tempPath = tempPath;
+    }
 
-        public TempStream(TempPath tempPath)
+    public Stream GetBuffered(Stream srcStream)
+    {
+            if (srcStream == null) throw new ArgumentNullException(nameof(srcStream));
+        if (!srcStream.CanSeek || srcStream.CanTimeout)
         {
-            TempPath = tempPath;
+            //Buffer it
+            var memStream = Create();
+            srcStream.CopyTo(memStream);
+            memStream.Position = 0;
+
+            return memStream;
         }
 
-        public Stream GetBuffered(Stream srcStream)
-        {
-            if (srcStream == null) throw new ArgumentNullException("srcStream");
-            if (!srcStream.CanSeek || srcStream.CanTimeout)
-            {
-                //Buffer it
-                var memStream = Create();
-                srcStream.CopyTo(memStream);
-                memStream.Position = 0;
-                return memStream;
-            }
-            return srcStream;
-        }
+        return srcStream;
+    }
 
-        public Stream Create()
-        {
-            return new FileStream(TempPath.GetTempFileName(), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read, 4096, FileOptions.DeleteOnClose);
-        }
+    public Stream Create()
+    {
+        return new FileStream(_tempPath.GetTempFileName(), FileMode.OpenOrCreate,
+            FileAccess.ReadWrite, FileShare.Read, 4096, FileOptions.DeleteOnClose);
     }
 }

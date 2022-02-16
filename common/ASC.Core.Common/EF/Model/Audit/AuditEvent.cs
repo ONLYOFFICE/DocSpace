@@ -40,7 +40,7 @@
                     .HasColumnName("date")
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.Description)
+                entity.Property(e => e.DescriptionRaw)
                     .HasColumnName("description")
                     .HasColumnType("varchar(20000)")
                     .HasCharSet("utf8")
@@ -105,7 +105,7 @@
 
                 entity.Property(e => e.Date).HasColumnName("date");
 
-                entity.Property(e => e.Description)
+                entity.Property(e => e.DescriptionRaw)
                     .HasColumnName("description")
                     .HasMaxLength(20000)
                     .HasDefaultValueSql("NULL");

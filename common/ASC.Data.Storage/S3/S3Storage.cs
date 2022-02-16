@@ -55,8 +55,9 @@ public class S3Storage : BaseStorage
         PathUtils pathUtils,
         EmailValidationKeyProvider emailValidationKeyProvider,
         IHttpContextAccessor httpContextAccessor,
-        IOptionsMonitor<ILog> options)
-        : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
+            IOptionsMonitor<ILog> options,
+            IHttpClientFactory clientFactory)
+            : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options, clientFactory)
     {
     }
 
@@ -408,10 +409,7 @@ public class S3Storage : BaseStorage
 
     public override void DeleteFiles(string domain, List<string> paths)
     {
-        if (!paths.Any())
-        {
-            return;
-        }
+        if (paths.Count == 0) return;
 
         var keysToDel = new List<string>();
 
@@ -440,7 +438,7 @@ public class S3Storage : BaseStorage
             }
         }
 
-        if (!keysToDel.Any())
+        if (keysToDel.Count == 0)
         {
             return;
         }
@@ -484,7 +482,7 @@ public class S3Storage : BaseStorage
 
             client.DeleteObjectAsync(deleteRequest).Wait();
 
-            QuotaUsedDelete(domain, Convert.ToInt64(s3Object.Size));
+            QuotaUsedDelete(domain, s3Object.Size);
         }
     }
 
@@ -506,7 +504,7 @@ public class S3Storage : BaseStorage
 
             client.DeleteObjectAsync(deleteRequest).Wait();
 
-            QuotaUsedDelete(domain, Convert.ToInt64(s3Object.Size));
+            QuotaUsedDelete(domain, s3Object.Size);
         }
     }
 
@@ -677,28 +675,28 @@ public class S3Storage : BaseStorage
         var policyBase64 = GetPolicyBase64(key, string.Empty, contentType, contentDisposition, maxUploadSize,
                                               out var sign);
         var postBuilder = new StringBuilder();
-        postBuilder.Append("{");
-        postBuilder.AppendFormat("\"key\":\"{0}${{filename}}\",", key);
-        postBuilder.AppendFormat("\"acl\":\"public-read\",");
-        postBuilder.AppendFormat("\"key\":\"{0}\",", key);
-        postBuilder.AppendFormat("\"success_action_status\":\"{0}\",", 201);
+        postBuilder.Append('{');
+        postBuilder.Append("\"key\":\"").Append(key).Append("${{filename}}\",");
+        postBuilder.Append("\"acl\":\"public-read\",");
+        postBuilder.Append($"\"key\":\"{key}\",");
+        postBuilder.Append("\"success_action_status\":\"201\",");
 
         if (!string.IsNullOrEmpty(contentType))
         {
-            postBuilder.AppendFormat("\"Content-Type\":\"{0}\",", contentType);
+            postBuilder.Append($"\"Content-Type\":\"{contentType}\",");
         }
 
         if (!string.IsNullOrEmpty(contentDisposition))
         {
-            postBuilder.AppendFormat("\"Content-Disposition\":\"{0}\",", contentDisposition);
+            postBuilder.Append($"\"Content-Disposition\":\"{contentDisposition}\",");
         }
 
-        postBuilder.AppendFormat("\"AWSAccessKeyId\":\"{0}\",", _accessKeyId);
-        postBuilder.AppendFormat("\"Policy\":\"{0}\",", policyBase64);
-        postBuilder.AppendFormat("\"Signature\":\"{0}\"", sign);
-        postBuilder.AppendFormat("\"SignatureVersion\":\"{0}\"", 2);
-        postBuilder.AppendFormat("\"SignatureMethod\":\"{0}\"", "HmacSHA1");
-        postBuilder.Append("}");
+        postBuilder.Append($"\"AWSAccessKeyId\":\"{_accessKeyId}\",");
+        postBuilder.Append($"\"Policy\":\"{policyBase64}\",");
+        postBuilder.Append($"\"Signature\":\"{sign}\"");
+        postBuilder.Append("\"SignatureVersion\":\"2\"");
+        postBuilder.Append("\"SignatureMethod\":\"HmacSHA1\"");
+        postBuilder.Append('}');
 
         return postBuilder.ToString();
     }
@@ -713,35 +711,30 @@ public class S3Storage : BaseStorage
                                               out var sign);
 
         var formBuilder = new StringBuilder();
-        formBuilder.AppendFormat("<form action=\"{0}\" method=\"post\" enctype=\"multipart/form-data\">", destBucket);
-        formBuilder.AppendFormat("<input type=\"hidden\" name=\"key\" value=\"{0}${{filename}}\" />", key);
+        formBuilder.Append($"<form action=\"{destBucket}\" method=\"post\" enctype=\"multipart/form-data\">");
+        formBuilder.Append($"<input type=\"hidden\" name=\"key\" value=\"{key}${{filename}}\" />");
         formBuilder.Append("<input type=\"hidden\" name=\"acl\" value=\"public-read\" />");
         if (!string.IsNullOrEmpty(redirectTo))
         {
-            formBuilder.AppendFormat("<input type=\"hidden\" name=\"success_action_redirect\" value=\"{0}\" />",
-                                     redirectTo);
+            formBuilder.Append($"<input type=\"hidden\" name=\"success_action_redirect\" value=\"{redirectTo}\" />");
         }
 
         formBuilder.AppendFormat("<input type=\"hidden\" name=\"success_action_status\" value=\"{0}\" />", 201);
 
         if (!string.IsNullOrEmpty(contentType))
         {
-            formBuilder.AppendFormat("<input type=\"hidden\" name=\"Content-Type\" value=\"{0}\" />", contentType);
+            formBuilder.Append($"<input type=\"hidden\" name=\"Content-Type\" value=\"{contentType}\" />");
         }
 
         if (!string.IsNullOrEmpty(contentDisposition))
-        {
-            formBuilder.AppendFormat("<input type=\"hidden\" name=\"Content-Disposition\" value=\"{0}\" />",
-                                     contentDisposition);
-        }
-
-        formBuilder.AppendFormat("<input type=\"hidden\" name=\"AWSAccessKeyId\" value=\"{0}\"/>", _accessKeyId);
-        formBuilder.AppendFormat("<input type=\"hidden\" name=\"Policy\" value=\"{0}\" />", policyBase64);
-        formBuilder.AppendFormat("<input type=\"hidden\" name=\"Signature\" value=\"{0}\" />", sign);
-        formBuilder.AppendFormat("<input type=\"hidden\" name=\"SignatureVersion\" value=\"{0}\" />", 2);
-        formBuilder.AppendFormat("<input type=\"hidden\" name=\"SignatureMethod\" value=\"{0}\" />", "HmacSHA1");
-        formBuilder.AppendFormat("<input type=\"file\" name=\"file\" />");
-        formBuilder.AppendFormat("<input type=\"submit\" name=\"submit\" value=\"{0}\" /></form>", submitLabel);
+            formBuilder.Append($"<input type=\"hidden\" name=\"Content-Disposition\" value=\"{contentDisposition}\" />");
+        formBuilder.Append($"<input type=\"hidden\" name=\"AWSAccessKeyId\" value=\"{_accessKeyId}\"/>");
+        formBuilder.Append($"<input type=\"hidden\" name=\"Policy\" value=\"{policyBase64}\" />");
+        formBuilder.Append($"<input type=\"hidden\" name=\"Signature\" value=\"{sign}\" />");
+        formBuilder.Append("<input type=\"hidden\" name=\"SignatureVersion\" value=\"2\" />");
+        formBuilder.Append("<input type=\"hidden\" name=\"SignatureMethod\" value=\"HmacSHA1{0}\" />");
+        formBuilder.Append("<input type=\"file\" name=\"file\" />");
+        formBuilder.Append($"<input type=\"submit\" name=\"submit\" value=\"{submitLabel}\" /></form>");
 
         return formBuilder.ToString();
     }
@@ -867,7 +860,7 @@ public class S3Storage : BaseStorage
     {
         using (var client = GetClient())
         {
-            var request = new ListObjectsRequest { BucketName = _bucket, Prefix = (MakePath(domain, path)) };
+            var request = new ListObjectsRequest { BucketName = _bucket, Prefix = MakePath(domain, path) };
             var response = client.ListObjectsAsync(request).Result;
 
             return response.S3Objects.Count > 0;
@@ -882,7 +875,7 @@ public class S3Storage : BaseStorage
     public override long GetFileSize(string domain, string path)
     {
         using var client = GetClient();
-        var request = new ListObjectsRequest { BucketName = _bucket, Prefix = (MakePath(domain, path)) };
+        var request = new ListObjectsRequest { BucketName = _bucket, Prefix = MakePath(domain, path) };
         var response = client.ListObjectsAsync(request).Result;
         if (response.S3Objects.Count > 0)
         {
@@ -983,7 +976,7 @@ public class S3Storage : BaseStorage
         {
             Modulename = moduleConfig.Name;
             DataList = new DataList(moduleConfig);
-            _domains.AddRange(moduleConfig.Domain.Select(x => string.Format("{0}/", x.Name)));
+            _domains.AddRange(moduleConfig.Domain.Select(x => $"{x.Name}/"));
 
             //Make expires
             DomainsExpires = moduleConfig.Domain.Where(x => x.Expires != TimeSpan.Zero).ToDictionary(x => x.Name, y => y.Expires);
@@ -1008,40 +1001,37 @@ public class S3Storage : BaseStorage
         _secretAccessKeyId = props["secretaccesskey"];
         _bucket = props["bucket"];
 
-        if (props.ContainsKey("recycleDir"))
+        props.TryGetValue("recycleDir", out _recycleDir);
+
+        if (props.TryGetValue("region", out var region) && !string.IsNullOrEmpty(region))
         {
-            _recycleDir = props["recycleDir"];
+            _region = region;
         }
 
-        if (props.ContainsKey("region") && !string.IsNullOrEmpty(props["region"]))
+        if (props.TryGetValue("serviceurl", out var url) && !string.IsNullOrEmpty(url))
         {
-            _region = props["region"];
+            _serviceurl = url;
         }
 
-        if (props.ContainsKey("serviceurl") && !string.IsNullOrEmpty(props["serviceurl"]))
+        if (props.TryGetValue("forcepathstyle", out var style))
         {
-            _serviceurl = props["serviceurl"];
-        }
-
-        if (props.ContainsKey("forcepathstyle"))
-        {
-            if (bool.TryParse(props["forcepathstyle"], out var fps))
+            if (bool.TryParse(style, out var fps))
             {
                 _forcepathstyle = fps;
             }
         }
 
-        if (props.ContainsKey("usehttp"))
+        if (props.TryGetValue("usehttp", out var use))
         {
-            if (bool.TryParse(props["usehttp"], out var uh))
+            if (bool.TryParse(use, out var uh))
             {
                 _useHttp = uh;
             }
         }
 
-        if (props.ContainsKey("sse") && !string.IsNullOrEmpty(props["sse"]))
+        if (props.TryGetValue("sse", out var sse) && !string.IsNullOrEmpty(sse))
         {
-            _sse = (props["sse"].ToLower()) switch
+            _sse = sse.ToLower() switch
             {
                 "none" => ServerSideEncryptionMethod.None,
                 "aes256" => ServerSideEncryptionMethod.AES256,
@@ -1052,45 +1042,37 @@ public class S3Storage : BaseStorage
 
         _bucketRoot = props.ContainsKey("cname") && Uri.IsWellFormedUriString(props["cname"], UriKind.Absolute)
                           ? new Uri(props["cname"], UriKind.Absolute)
-                          : new Uri(string.Format("http://s3.{1}.amazonaws.com/{0}/", _bucket, _region), UriKind.Absolute);
+                              : new Uri($"http://s3.{_region}.amazonaws.com/{_bucket}/", UriKind.Absolute);
         _bucketSSlRoot = props.ContainsKey("cnamessl") &&
                          Uri.IsWellFormedUriString(props["cnamessl"], UriKind.Absolute)
                              ? new Uri(props["cnamessl"], UriKind.Absolute)
-                             : new Uri(string.Format("https://s3.{1}.amazonaws.com/{0}/", _bucket, _region), UriKind.Absolute);
+                                 : new Uri($"https://s3.{_region}.amazonaws.com/{_bucket}/", UriKind.Absolute);
 
-        if (props.ContainsKey("lower"))
+        if (props.TryGetValue("lower", out var lower))
         {
-            bool.TryParse(props["lower"], out _lowerCasing);
+            bool.TryParse(lower, out _lowerCasing);
         }
-        if (props.ContainsKey("cloudfront"))
+        if (props.TryGetValue("cloudfront", out var front))
         {
-            bool.TryParse(props["cloudfront"], out _revalidateCloudFront);
-        }
-        if (props.ContainsKey("distribution"))
-        {
-            _distributionId = props["distribution"];
+            bool.TryParse(front, out _revalidateCloudFront);
         }
 
-        if (props.ContainsKey("subdir"))
-        {
-            _subDir = props["subdir"];
-        }
+        props.TryGetValue("distribution", out _distributionId);
+        props.TryGetValue("subdir", out _subDir);
 
         return this;
     }
 
     protected override Uri SaveWithAutoAttachment(string domain, string path, Stream stream, string attachmentFileName)
     {
-        var contentDisposition = string.Format("attachment; filename={0};",
-                                               HttpUtility.UrlPathEncode(attachmentFileName));
+        var contentDisposition = $"attachment; filename={HttpUtility.UrlPathEncode(attachmentFileName)};";
         if (attachmentFileName.Any(c => c >= 0 && c <= 127))
         {
-            contentDisposition = string.Format("attachment; filename*=utf-8''{0};",
-                                               HttpUtility.UrlPathEncode(attachmentFileName));
+            contentDisposition = $"attachment; filename*=utf-8''{HttpUtility.UrlPathEncode(attachmentFileName)};";
         }
-
         return Save(domain, path, stream, null, contentDisposition);
     }
+
 
     private S3CannedACL GetDomainACL(string domain)
     {
@@ -1099,11 +1081,10 @@ public class S3Storage : BaseStorage
             return S3CannedACL.Private;
         }
 
-        if (_domainsAcl.ContainsKey(domain))
+        if (_domainsAcl.TryGetValue(domain, out var value))
         {
-            return _domainsAcl[domain];
+            return value;
         }
-
         return _moduleAcl;
     }
 
@@ -1127,10 +1108,7 @@ public class S3Storage : BaseStorage
 
     private void InvalidateCloudFront(params string[] paths)
     {
-        if (!_revalidateCloudFront || string.IsNullOrEmpty(_distributionId))
-        {
-            return;
-        }
+        if (!_revalidateCloudFront || string.IsNullOrEmpty(_distributionId)) return;
 
         using var cfClient = GetCloudFrontClient();
         var invalidationRequest = new CreateInvalidationRequest
@@ -1143,7 +1121,7 @@ public class S3Storage : BaseStorage
                 Paths = new Paths
                 {
                     Items = paths.ToList(),
-                    Quantity = paths.Count()
+                    Quantity = paths.Length
                 }
             }
         };
@@ -1155,26 +1133,28 @@ public class S3Storage : BaseStorage
                                    long maxUploadSize, out string sign)
     {
         var policyBuilder = new StringBuilder();
-        policyBuilder.AppendFormat("{{\"expiration\": \"{0}\",\"conditions\":[",
-                                   DateTime.UtcNow.AddMinutes(15).ToString(AWSSDKUtils.ISO8601DateFormat,
-                                                                           CultureInfo.InvariantCulture));
-        policyBuilder.AppendFormat("{{\"bucket\": \"{0}\"}},", _bucket);
-        policyBuilder.AppendFormat("[\"starts-with\", \"$key\", \"{0}\"],", key);
+
+        var minutes = DateTime.UtcNow.AddMinutes(15).ToString(AWSSDKUtils.ISO8601DateFormat,
+                                                                           CultureInfo.InvariantCulture);
+
+        policyBuilder.Append($"{{\"expiration\": \"{minutes}\",\"conditions\":[");
+        policyBuilder.Append($"{{\"bucket\": \"{_bucket}\"}},");
+        policyBuilder.Append($"[\"starts-with\", \"$key\", \"{key}\"],");
         policyBuilder.Append("{\"acl\": \"public-read\"},");
         if (!string.IsNullOrEmpty(redirectTo))
         {
-            policyBuilder.AppendFormat("{{\"success_action_redirect\": \"{0}\"}},", redirectTo);
+            policyBuilder.Append($"{{\"success_action_redirect\": \"{redirectTo}\"}},");
         }
-        policyBuilder.AppendFormat("{{\"success_action_status\": \"{0}\"}},", 201);
+        policyBuilder.Append("{{\"success_action_status\": \"201\"}},");
         if (!string.IsNullOrEmpty(contentType))
         {
-            policyBuilder.AppendFormat("[\"eq\", \"$Content-Type\", \"{0}\"],", contentType);
+            policyBuilder.Append($"[\"eq\", \"$Content-Type\", \"{contentType}\"],");
         }
         if (!string.IsNullOrEmpty(contentDisposition))
         {
-            policyBuilder.AppendFormat("[\"eq\", \"$Content-Disposition\", \"{0}\"],", contentDisposition);
+            policyBuilder.Append($"[\"eq\", \"$Content-Disposition\", \"{contentDisposition}\"],");
         }
-        policyBuilder.AppendFormat("[\"content-length-range\", 0, {0}]", maxUploadSize);
+        policyBuilder.Append($"[\"content-length-range\", 0, {maxUploadSize}]");
         policyBuilder.Append("]}");
 
         var policyBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(policyBuilder.ToString()));
@@ -1193,6 +1173,7 @@ public class S3Storage : BaseStorage
         return policyBase64;
     }
 
+
     private bool CheckKey(string domain, string key)
     {
         return !string.IsNullOrEmpty(domain) ||
@@ -1206,7 +1187,7 @@ public class S3Storage : BaseStorage
         {
             BucketName = _bucket,
             Prefix = path,
-            MaxKeys = (1000)
+            MaxKeys = 1000
         };
 
         var objects = new List<S3Object>();
@@ -1217,7 +1198,6 @@ public class S3Storage : BaseStorage
             objects.AddRange(response.S3Objects.Where(entry => CheckKey(domain, entry.Key)));
             request.Marker = response.NextMarker;
         } while (response.IsTruncated);
-
         return objects;
     }
 
@@ -1225,13 +1205,8 @@ public class S3Storage : BaseStorage
     {
         path = MakePath(domain, path) + '/';
         var obj = GetS3ObjectsByPath(domain, path).ToList();
-        if (string.IsNullOrEmpty(_recycleDir) || !recycle)
-        {
-            return obj;
-        }
-
+        if (string.IsNullOrEmpty(_recycleDir) || !recycle) return obj;
         obj.AddRange(GetS3ObjectsByPath(domain, GetRecyclePath(path)));
-
         return obj;
     }
 
@@ -1249,17 +1224,14 @@ public class S3Storage : BaseStorage
             }
             else
             {
-                result = string.Format("{0}/{1}", _subDir, path); // Ignory all, if _subDir is not null
+                result = $"{_subDir}/{path}"; // Ignory all, if _subDir is not null
             }
         }
         else//Key combined from module+domain+filename
         {
-            result = string.Format("{0}/{1}/{2}/{3}",
-                                                     Tenant,
-                                                     Modulename,
-                                                     domain,
-                                                     path);
+            result = $"{Tenant}/{Modulename}/{domain}/{path}";
         }
+
 
         result = result.Replace("//", "/").TrimStart('/').TrimEnd('/');
         if (_lowerCasing)
@@ -1272,7 +1244,7 @@ public class S3Storage : BaseStorage
 
     private string GetRecyclePath(string path)
     {
-        return string.IsNullOrEmpty(_recycleDir) ? "" : string.Format("{0}/{1}", _recycleDir, path.TrimStart('/'));
+        return string.IsNullOrEmpty(_recycleDir) ? "" : $"{_recycleDir}/{path.TrimStart('/')}";
     }
 
     private void Recycle(IAmazonS3 client, string domain, string key)

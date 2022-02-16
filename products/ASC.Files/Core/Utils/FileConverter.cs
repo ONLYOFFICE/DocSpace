@@ -134,15 +134,16 @@ namespace ASC.Web.Files.Utils
                     {
                         timer.Change(Timeout.Infinite, Timeout.Infinite);
 
-                        conversionQueue.Where(x => !string.IsNullOrEmpty(x.Value.Processed)
+                        var queues = conversionQueue.Where(x => !string.IsNullOrEmpty(x.Value.Processed)
                                                    && (x.Value.Progress == 100 && DateTime.UtcNow - x.Value.StopDateTime > TimeSpan.FromMinutes(1) ||
                                                        DateTime.UtcNow - x.Value.StopDateTime > TimeSpan.FromMinutes(10)))
-                                       .ToList()
-                                       .ForEach(x =>
-                                       {
-                                           conversionQueue.Remove(x);
-                                           cache.Remove(GetKey(x.Key));
-                                       });
+                            .ToList();
+
+                        foreach (var q in queues)
+                        {
+                            conversionQueue.Remove(q);
+                            cache.Remove(GetKey(q.Key));
+                        }
 
                         logger.DebugFormat("Run CheckConvertFilesStatus: count {0}", conversionQueue.Count);
 
@@ -229,16 +230,14 @@ namespace ASC.Web.Files.Utils
                         }
                         catch (Exception exception)
                         {
-                            var password = exception.InnerException != null
-                                           && (exception.InnerException is DocumentService.DocumentServiceException documentServiceException)
+                            var password = exception.InnerException is DocumentService.DocumentServiceException documentServiceException
                                            && documentServiceException.Code == DocumentService.DocumentServiceException.ErrorCode.ConvertPassword;
 
                             logger.Error(string.Format("Error convert {0} with url {1}", file.ID, fileUri), exception);
                             lock (locker)
                             {
-                                if (conversionQueue.Keys.Contains(file))
+                                if (conversionQueue.TryGetValue(file, out var operationResult))
                                 {
-                                    var operationResult = conversionQueue[file];
                                     if (operationResult.Delete)
                                     {
                                         conversionQueue.Remove(file);
@@ -262,10 +261,8 @@ namespace ASC.Web.Files.Utils
                         {
                             lock (locker)
                             {
-                                if (conversionQueue.Keys.Contains(file))
+                                if (conversionQueue.TryGetValue(file, out var operationResult))
                                 {
-                                    var operationResult = conversionQueue[file];
-
                                     if (DateTime.Now - operationResult.StartDateTime > TimeSpan.FromMinutes(10))
                                     {
                                         operationResult.StopDateTime = DateTime.UtcNow;
@@ -303,9 +300,8 @@ namespace ASC.Web.Files.Utils
                         {
                             lock (locker)
                             {
-                                if (conversionQueue.Keys.Contains(file))
+                                if (conversionQueue.TryGetValue(file, out var operationResult))
                                 {
-                                    var operationResult = conversionQueue[file];
                                     if (operationResult.Delete)
                                     {
                                         conversionQueue.Remove(file);
@@ -508,6 +504,7 @@ namespace ASC.Web.Files.Utils
         private EntryStatusManager EntryStatusManager { get; }
         private IServiceProvider ServiceProvider { get; }
         private IHttpContextAccessor HttpContextAccesor { get; }
+        private IHttpClientFactory ClientFactory { get; }
 
         public FileConverter(
             FileUtility fileUtility,
@@ -529,7 +526,8 @@ namespace ASC.Web.Files.Utils
             FileTrackerHelper fileTracker,
             BaseCommonLinkUtility baseCommonLinkUtility,
             EntryStatusManager entryStatusManager,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider,
+            IHttpClientFactory clientFactory)
         {
             FileUtility = fileUtility;
             FilesLinkUtility = filesLinkUtility;
@@ -551,6 +549,7 @@ namespace ASC.Web.Files.Utils
             BaseCommonLinkUtility = baseCommonLinkUtility;
             EntryStatusManager = entryStatusManager;
             ServiceProvider = serviceProvider;
+            ClientFactory = clientFactory;
         }
         public FileConverter(
             FileUtility fileUtility,
@@ -573,18 +572,19 @@ namespace ASC.Web.Files.Utils
             BaseCommonLinkUtility baseCommonLinkUtility,
             EntryStatusManager entryStatusManager,
             IServiceProvider serviceProvider,
-            IHttpContextAccessor httpContextAccesor)
+            IHttpContextAccessor httpContextAccesor,
+            IHttpClientFactory clientFactory)
             : this(fileUtility, filesLinkUtility, daoFactory, setupInfo, pathProvider, fileSecurity,
                   fileMarker, tenantManager, authContext, entryManager, filesSettingsHelper,
                   globalFolderHelper, filesMessageService, fileShareLink, documentServiceHelper, documentServiceConnector, fileTracker,
-                  baseCommonLinkUtility, entryStatusManager, serviceProvider)
+                  baseCommonLinkUtility, entryStatusManager, serviceProvider, clientFactory)
         {
             HttpContextAccesor = httpContextAccesor;
         }
 
         public bool EnableAsUploaded
         {
-            get { return FileUtility.ExtsMustConvert.Any() && !string.IsNullOrEmpty(FilesLinkUtility.DocServiceConverterUrl); }
+            get { return FileUtility.ExtsMustConvert.Count > 0 && !string.IsNullOrEmpty(FilesLinkUtility.DocServiceConverterUrl); }
         }
 
         public bool MustConvert<T>(File<T> file)
@@ -645,14 +645,10 @@ namespace ASC.Web.Files.Utils
             fileUri = DocumentServiceConnector.ReplaceCommunityAdress(fileUri);
             DocumentServiceConnector.GetConvertedUri(fileUri, file.ConvertedExtension, toExtension, docKey, null, null, null, false, out var convertUri);
 
-            if (WorkContext.IsMono && ServicePointManager.ServerCertificateValidationCallback == null)
-            {
-                ServicePointManager.ServerCertificateValidationCallback += (s, c, n, p) => true; //HACK: http://ubuntuforums.org/showthread.php?t=1841740
-            }
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(convertUri);
 
-            using var httpClient = new HttpClient();
+            using var httpClient = ClientFactory.CreateClient();
             using var response = httpClient.Send(request);
             return new ResponseStream(response);
         }
@@ -666,7 +662,7 @@ namespace ASC.Web.Files.Utils
                 var readLink = FileShareLink.Check(doc, true, fileDao, out file);
                 if (file == null)
                 {
-                    throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
+                    throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
                 }
                 if (!readLink)
                 {
@@ -820,12 +816,7 @@ namespace ASC.Web.Files.Utils
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(convertedFileUrl);
 
-            using var httpClient = new HttpClient();
-
-            if (WorkContext.IsMono && ServicePointManager.ServerCertificateValidationCallback == null)
-            {
-                ServicePointManager.ServerCertificateValidationCallback += (s, c, n, p) => true; //HACK: http://ubuntuforums.org/showthread.php?t=1841740
-            }
+            var httpClient = ClientFactory.CreateClient();
 
             try
             {
@@ -836,13 +827,13 @@ namespace ASC.Web.Files.Utils
             }
             catch (HttpRequestException e)
             {
-                var errorString = string.Format("HttpRequestException: {0}", e.StatusCode);
+                var errorString = $"HttpRequestException: {e.StatusCode}";
 
                 if (e.StatusCode != HttpStatusCode.NotFound)
                 {
                     if (e.Message != null)
                     {
-                        errorString += string.Format(" Error message: {0}", e.Message);
+                        errorString += $" Error message: {e.Message}";
                     }
                 }
 
@@ -858,7 +849,7 @@ namespace ASC.Web.Files.Utils
 
             var tagDao = DaoFactory.GetTagDao<T>();
             var tags = tagDao.GetTags(file.ID, FileEntryType.File, TagType.System).ToList();
-            if (tags.Any())
+            if (tags.Count > 0)
             {
                 tags.ForEach(r => r.EntryId = newFile.ID);
                 tagDao.SaveTags(tags);
@@ -905,7 +896,7 @@ namespace ASC.Web.Files.Utils
         public string ServerRootPath { get; set; }
     }
 
-    public class FileConverterQueueExtension
+    public static class FileConverterQueueExtension
     {
         public static void Register(DIHelper services)
         {
@@ -913,7 +904,7 @@ namespace ASC.Web.Files.Utils
         }
     }
 
-    public class FileConverterExtension
+    public static class FileConverterExtension
     {
         public static void Register(DIHelper services)
         {

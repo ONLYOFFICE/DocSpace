@@ -71,7 +71,7 @@ public class BaseStorageSettingsListener
                 {
                     storageSettingsHelper.Clear(cdnSettings);
                 }
-            }, CacheNotifyAction.Remove);
+            }, Common.Caching.CacheNotifyAction.Remove);
         }
     }
 }
@@ -117,7 +117,6 @@ public class StorageSettingsHelper
     private readonly SettingsManager _settingsManager;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ConsumerFactory _consumerFactory;
-    private DataStoreConsumer _dataStoreConsumer;
     private IDataStore _dataStore;
 
     public StorageSettingsHelper(
@@ -157,7 +156,6 @@ public class StorageSettingsHelper
     public bool Save<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings, new()
     {
         ClearDataStoreCache();
-        _dataStoreConsumer = null;
 
         return _settingsManager.Save(baseStorageSettings);
     }
@@ -173,17 +171,17 @@ public class StorageSettingsHelper
     {
         if (string.IsNullOrEmpty(baseStorageSettings.Module) || baseStorageSettings.Props == null)
         {
-            return _dataStoreConsumer = new DataStoreConsumer();
+            return new DataStoreConsumer();
         }
 
         var consumer = _consumerFactory.GetByKey<DataStoreConsumer>(baseStorageSettings.Module);
 
         if (!consumer.IsSet)
         {
-            return _dataStoreConsumer = new DataStoreConsumer();
+            return new DataStoreConsumer();
         }
 
-        _dataStoreConsumer = (DataStoreConsumer)consumer.Clone();
+        var _dataStoreConsumer = (DataStoreConsumer)consumer.Clone();
 
         foreach (var prop in baseStorageSettings.Props)
         {
@@ -244,7 +242,7 @@ public class BaseStorageSettingsListenerScope
     }
 }
 
-public class StorageSettingsExtension
+public static class StorageSettingsExtension
 {
     public static void Register(DIHelper services)
     {

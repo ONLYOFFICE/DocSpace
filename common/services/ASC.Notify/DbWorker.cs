@@ -203,7 +203,7 @@ namespace ASC.Notify
         }
     }
 
-    public class DbWorkerExtension
+    public static class DbWorkerExtension
     {
         public static void Register(DIHelper services)
         {

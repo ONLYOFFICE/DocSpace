@@ -23,99 +23,120 @@
  *
 */
 
-namespace ASC.FederatedLogin.LoginProviders
+namespace ASC.FederatedLogin.LoginProviders;
+
+[Scope]
+public class DocuSignLoginProvider : Consumer, IOAuthProvider
 {
-    [Scope]
-    public class DocuSignLoginProvider : Consumer, IOAuthProvider
+    public static string DocuSignLoginProviderScopes => "signature";
+    public string Scopes => DocuSignLoginProviderScopes;
+    public string CodeUrl => DocuSignHost + "/oauth/auth";
+    public string AccessTokenUrl => DocuSignHost + "/oauth/token";
+    public string RedirectUri => this["docuSignRedirectUrl"];
+    public string ClientID => this["docuSignClientId"];
+    public string ClientSecret => this["docuSignClientSecret"];
+    public string DocuSignHost => "https://" + this["docuSignHost"];
+    public bool IsEnabled
     {
-        public static string DocuSignLoginProviderScopes { get { return "signature"; } }
-        public string Scopes { get { return DocuSignLoginProviderScopes; } }
-        public string CodeUrl { get { return DocuSignHost + "/oauth/auth"; } }
-        public string AccessTokenUrl { get { return DocuSignHost + "/oauth/token"; } }
-        public string RedirectUri { get { return this["docuSignRedirectUrl"]; } }
-        public string ClientID { get { return this["docuSignClientId"]; } }
-        public string ClientSecret { get { return this["docuSignClientSecret"]; } }
-        public string DocuSignHost { get { return "https://" + this["docuSignHost"]; } }
-
-        public bool IsEnabled
+        get
         {
-            get
-            {
-                return !string.IsNullOrEmpty(ClientID) &&
-                       !string.IsNullOrEmpty(ClientSecret) &&
-                       !string.IsNullOrEmpty(RedirectUri);
-            }
+            return !string.IsNullOrEmpty(ClientID) &&
+                   !string.IsNullOrEmpty(ClientSecret) &&
+                   !string.IsNullOrEmpty(RedirectUri);
+        }
+    }
+    private string AuthHeader
+    {
+        get
+        {
+            var codeAuth = $"{ClientID}:{ClientSecret}";
+            var codeAuthBytes = Encoding.UTF8.GetBytes(codeAuth);
+            var codeAuthBase64 = Convert.ToBase64String(codeAuthBytes);
+
+            return "Basic " + codeAuthBase64;
+        }
+    }
+
+    public DocuSignLoginProvider() { }
+
+    public DocuSignLoginProvider(
+        TenantManager tenantManager,
+        CoreBaseSettings coreBaseSettings,
+        CoreSettings coreSettings,
+        IConfiguration configuration,
+        ICacheNotify<ConsumerCacheItem> cache,
+        ConsumerFactory consumerFactory,
+        string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
+        : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, props, additional)
+    {
+    }
+
+    public OAuth20Token GetAccessToken(string authCode)
+    {
+        if (string.IsNullOrEmpty(authCode))
+        {
+            throw new ArgumentNullException(nameof(authCode));
         }
 
-        public DocuSignLoginProvider() { }
-
-        public DocuSignLoginProvider(
-            TenantManager tenantManager,
-            CoreBaseSettings coreBaseSettings,
-            CoreSettings coreSettings,
-            IConfiguration configuration,
-            ICacheNotify<ConsumerCacheItem> cache,
-            ConsumerFactory consumerFactory,
-            string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, props, additional)
+        if (string.IsNullOrEmpty(ClientID))
         {
+            throw new ArgumentException(nameof(ClientID));
         }
 
-
-        private string AuthHeader
+        if (string.IsNullOrEmpty(ClientSecret))
         {
-            get
-            {
-                var codeAuth = string.Format("{0}:{1}", ClientID, ClientSecret);
-                var codeAuthBytes = Encoding.UTF8.GetBytes(codeAuth);
-                var codeAuthBase64 = Convert.ToBase64String(codeAuthBytes);
-                return "Basic " + codeAuthBase64;
-            }
+            throw new ArgumentException(nameof(ClientSecret));
         }
 
-        public OAuth20Token GetAccessToken(string authCode)
+        var data = $"grant_type=authorization_code&code={authCode}";
+        var headers = new Dictionary<string, string> { { "Authorization", AuthHeader } };
+
+        var json = RequestHelper.PerformRequest(AccessTokenUrl, "application/x-www-form-urlencoded", "POST", data, headers);
+        if (json == null)
         {
-            if (string.IsNullOrEmpty(authCode)) throw new ArgumentNullException("authCode");
-            if (string.IsNullOrEmpty(ClientID)) throw new ArgumentException("clientID");
-            if (string.IsNullOrEmpty(ClientSecret)) throw new ArgumentException("clientSecret");
-
-            var data = string.Format("grant_type=authorization_code&code={0}", authCode);
-            var headers = new Dictionary<string, string> { { "Authorization", AuthHeader } };
-
-            var json = RequestHelper.PerformRequest(AccessTokenUrl, "application/x-www-form-urlencoded", "POST", data, headers);
-            if (json == null) throw new Exception("Can not get token");
-
-            if (!json.StartsWith("{"))
-            {
-                json = "{\"" + json.Replace("=", "\":\"").Replace("&", "\",\"") + "\"}";
-            }
-
-            var token = OAuth20Token.FromJson(json);
-            if (token == null) return null;
-
-            token.ClientID = ClientID;
-            token.ClientSecret = ClientSecret;
-            token.RedirectUri = RedirectUri;
-            return token;
+            throw new Exception("Can not get token");
         }
 
-        public OAuth20Token RefreshToken(string refreshToken)
+        if (!json.StartsWith('{'))
         {
-            if (string.IsNullOrEmpty(refreshToken) || string.IsNullOrEmpty(ClientID) || string.IsNullOrEmpty(ClientSecret))
-                throw new ArgumentException("Can not refresh given token");
-
-            var data = string.Format("grant_type=refresh_token&refresh_token={0}", refreshToken);
-            var headers = new Dictionary<string, string> { { "Authorization", AuthHeader } };
-
-            var json = RequestHelper.PerformRequest(AccessTokenUrl, "application/x-www-form-urlencoded", "POST", data, headers);
-            if (json == null) throw new Exception("Can not get token");
-
-            var refreshed = OAuth20Token.FromJson(json);
-            refreshed.ClientID = ClientID;
-            refreshed.ClientSecret = ClientSecret;
-            refreshed.RedirectUri = RedirectUri;
-            refreshed.RefreshToken ??= refreshToken;
-            return refreshed;
+            json = "{\"" + json.Replace("=", "\":\"").Replace("&", "\",\"") + "\"}";
         }
+
+        var token = OAuth20Token.FromJson(json);
+        if (token == null)
+        {
+            return null;
+        }
+
+        token.ClientID = ClientID;
+        token.ClientSecret = ClientSecret;
+        token.RedirectUri = RedirectUri;
+
+        return token;
+    }
+
+    public OAuth20Token RefreshToken(string refreshToken)
+    {
+        if (string.IsNullOrEmpty(refreshToken) || string.IsNullOrEmpty(ClientID) || string.IsNullOrEmpty(ClientSecret))
+        {
+            throw new ArgumentException("Can not refresh given token");
+        }
+
+        var data = $"grant_type=refresh_token&refresh_token={refreshToken}";
+        var headers = new Dictionary<string, string> { { "Authorization", AuthHeader } };
+
+        var json = RequestHelper.PerformRequest(AccessTokenUrl, "application/x-www-form-urlencoded", "POST", data, headers);
+        if (json == null)
+        {
+            throw new Exception("Can not get token");
+        }
+
+        var refreshed = OAuth20Token.FromJson(json);
+        refreshed.ClientID = ClientID;
+        refreshed.ClientSecret = ClientSecret;
+        refreshed.RedirectUri = RedirectUri;
+        refreshed.RefreshToken ??= refreshToken;
+
+        return refreshed;
     }
 }

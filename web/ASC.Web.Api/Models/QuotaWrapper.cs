@@ -23,7 +23,6 @@
  *
 */
 
-
 using Constants = ASC.Core.Users.Constants;
 
 namespace ASC.Web.Studio.Core.Quota

@@ -63,7 +63,7 @@ namespace ASC.Web.Files.Classes
                     {
                         Logger.Fatal("ClearCache action", e);
                     }
-                }, CacheNotifyAction.Any);
+                }, Common.Caching.CacheNotifyAction.Any);
             }
             catch (Exception e)
             {
@@ -105,7 +105,7 @@ namespace ASC.Web.Files.Classes
 
         #region Property
 
-        public string ThumbnailExtension;
+        public string ThumbnailExtension { get; set; }
 
         public const int MaxTitle = 170;
 

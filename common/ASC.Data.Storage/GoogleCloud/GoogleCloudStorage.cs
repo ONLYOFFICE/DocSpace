@@ -45,7 +45,8 @@ public class GoogleCloudStorage : BaseStorage
         PathUtils pathUtils,
         EmailValidationKeyProvider emailValidationKeyProvider,
         IHttpContextAccessor httpContextAccessor,
-        IOptionsMonitor<ILog> options) : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
+            IOptionsMonitor<ILog> options,
+            IHttpClientFactory clientFactory) : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options, clientFactory)
     {
     }
 
@@ -79,24 +80,21 @@ public class GoogleCloudStorage : BaseStorage
 
         _bucketRoot = props.ContainsKey("cname") && Uri.IsWellFormedUriString(props["cname"], UriKind.Absolute)
                           ? new Uri(props["cname"], UriKind.Absolute)
-                          : new Uri(string.Format("https://storage.googleapis.com/{0}/", _bucket), UriKind.Absolute);
+                              : new Uri("https://storage.googleapis.com/" + _bucket + "/", UriKind.Absolute);
 
         _bucketSSlRoot = props.ContainsKey("cnamessl") &&
                          Uri.IsWellFormedUriString(props["cnamessl"], UriKind.Absolute)
                              ? new Uri(props["cnamessl"], UriKind.Absolute)
-                             : new Uri(string.Format("https://storage.googleapis.com/{0}/", _bucket), UriKind.Absolute);
+                                 : new Uri("https://storage.googleapis.com/" + _bucket + "/", UriKind.Absolute);
 
-        if (props.ContainsKey("lower"))
+        if (props.TryGetValue("lower", out var value))
         {
-            bool.TryParse(props["lower"], out _lowerCasing);
+            bool.TryParse(value, out _lowerCasing);
         }
 
         _json = props["json"];
 
-        if (props.ContainsKey("subdir"))
-        {
-            _subDir = props["subdir"];
-        }
+        props.TryGetValue("subdir", out _subDir);
 
         return this;
     }
@@ -285,10 +283,7 @@ public class GoogleCloudStorage : BaseStorage
 
     public override void DeleteFiles(string domain, List<string> paths)
     {
-        if (!paths.Any())
-        {
-            return;
-        }
+        if (paths.Count == 0) return;
 
         var keysToDel = new List<string>();
 
@@ -314,10 +309,7 @@ public class GoogleCloudStorage : BaseStorage
             }
         }
 
-        if (!keysToDel.Any())
-        {
-            return;
-        }
+        if (keysToDel.Count == 0) return;
 
         using var storage = GetStorage();
 
@@ -535,9 +527,6 @@ public class GoogleCloudStorage : BaseStorage
     {
         using var storage = GetStorage();
 
-        var srcKey = MakePath(srcdomain, srcpath);
-        var dstKey = MakePath(newdomain, newpath);
-
         var size = GetFileSize(srcdomain, srcpath);
 
         var options = new CopyObjectOptions
@@ -560,9 +549,6 @@ public class GoogleCloudStorage : BaseStorage
 
         using var storage = GetStorage();
 
-
-        var options = new ListObjectsOptions();
-
         var objects = storage.ListObjects(_bucket, srckey);
 
         foreach (var obj in objects)
@@ -580,7 +566,6 @@ public class GoogleCloudStorage : BaseStorage
     {
         using var storage = GetStorage();
 
-        var objectKey = MakePath(domain, path);
         var buffered = TempStream.GetBuffered(stream);
 
         var uploadObjectOptions = new UploadObjectOptions
@@ -676,7 +661,7 @@ public class GoogleCloudStorage : BaseStorage
             totalBytes = Convert.ToString((chunkNumber - 1) * defaultChunkSize + chunkLength);
         }
 
-        var contentRangeHeader = string.Format("bytes {0}-{1}/{2}", bytesRangeStart, bytesRangeEnd, totalBytes);
+        var contentRangeHeader = $"bytes {bytesRangeStart}-{bytesRangeEnd}/{totalBytes}";
 
         var request = new HttpRequestMessage();
         request.RequestUri = new Uri(uploadUri);
@@ -684,20 +669,17 @@ public class GoogleCloudStorage : BaseStorage
         request.Headers.Add("Content-Range", contentRangeHeader);
         request.Content = new StreamContent(stream);
 
-        long MAX_RETRIES = 100;
+        const int MAX_RETRIES = 100;
         int millisecondsTimeout;
 
         for (var i = 0; i < MAX_RETRIES; i++)
         {
-            var random = new Random();
-
-            millisecondsTimeout = Math.Min(Convert.ToInt32(Math.Pow(2, i)) + random.Next(0, 1000), 32 * 1000);
+            millisecondsTimeout = Math.Min(Convert.ToInt32(Math.Pow(2, i)) + RandomNumberGenerator.GetInt32(1000), 32 * 1000);
 
             try
             {
-                using var httpClient = new HttpClient();
+                var httpClient = ClientFactory.CreateClient();
                 using var response = httpClient.Send(request);
-                var status = response.StatusCode;
 
                 break;
             }
@@ -765,14 +747,11 @@ public class GoogleCloudStorage : BaseStorage
 
     protected override Uri SaveWithAutoAttachment(string domain, string path, System.IO.Stream stream, string attachmentFileName)
     {
-        var contentDisposition = string.Format("attachment; filename={0};",
-                                             HttpUtility.UrlPathEncode(attachmentFileName));
+        var contentDisposition = $"attachment; filename={HttpUtility.UrlPathEncode(attachmentFileName)};";
         if (attachmentFileName.Any(c => c >= 0 && c <= 127))
         {
-            contentDisposition = string.Format("attachment; filename*=utf-8''{0};",
-                                               HttpUtility.UrlPathEncode(attachmentFileName));
+            contentDisposition = $"attachment; filename*=utf-8''{HttpUtility.UrlPathEncode(attachmentFileName)};";
         }
-
         return Save(domain, path, stream, null, contentDisposition);
     }
 
@@ -792,25 +771,14 @@ public class GoogleCloudStorage : BaseStorage
         if (!string.IsNullOrEmpty(_subDir))
         {
             if (_subDir.Length == 1 && (_subDir[0] == '/' || _subDir[0] == '\\'))
-            {
                 result = path;
-            }
             else
-            {
-                result = string.Format("{0}/{1}", _subDir, path); // Ignory all, if _subDir is not null
-            }
+                result = $"{_subDir}/{path}"; // Ignory all, if _subDir is not null
         }
         else//Key combined from module+domain+filename
-        {
-            result = string.Format("{0}/{1}/{2}/{3}",
-                                                     Tenant,
-                                                     Modulename,
-                                                     domain,
-                                                     path);
-        }
+            result = $"{Tenant}/{Modulename}/{domain}/{path}";
 
         result = result.Replace("//", "/").TrimStart('/');
-
         if (_lowerCasing)
         {
             result = result.ToLowerInvariant();
@@ -849,11 +817,11 @@ public class GoogleCloudStorage : BaseStorage
             return PredefinedObjectAcl.Private;
         }
 
-        if (_domainsAcl.ContainsKey(domain))
+        if (_domainsAcl.TryGetValue(domain, out var value))
         {
-            return _domainsAcl[domain];
+            return value;
         }
-
         return _moduleAcl;
     }
+
 }

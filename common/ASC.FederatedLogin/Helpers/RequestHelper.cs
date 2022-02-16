@@ -23,45 +23,52 @@
  *
 */
 
-namespace ASC.FederatedLogin.Helpers
+namespace ASC.FederatedLogin.Helpers;
+
+public static class RequestHelper
 {
-    public class RequestHelper
+    private readonly static HttpClient _httpClient = new HttpClient();
+
+    public static string PerformRequest(string uri, string contentType = "", string method = "GET", string body = "", Dictionary<string, string> headers = null, int timeout = 30000)
     {
-        public static string PerformRequest(string uri, string contentType = "", string method = "GET", string body = "", Dictionary<string, string> headers = null, int timeout = 30000)
+        if (string.IsNullOrEmpty(uri))
         {
-            if (string.IsNullOrEmpty(uri)) throw new ArgumentNullException("uri");
-
-            var request = new HttpRequestMessage();
-            request.RequestUri = new Uri(uri);
-            request.Method = new HttpMethod(method);
-
-            using var httpClient = new HttpClient();
-            httpClient.Timeout = TimeSpan.FromMilliseconds(timeout);
-
-            if (headers != null)
-            {
-                foreach (var key in headers.Keys)
-                {
-                    request.Headers.Add(key, headers[key]);
-                }
-            }
-
-            var bytes = Encoding.UTF8.GetBytes(body ?? "");
-            if (request.Method != HttpMethod.Get && bytes.Length > 0)
-            {
-                request.Content = new ByteArrayContent(bytes, 0, bytes.Length);
-                if (!string.IsNullOrEmpty(contentType))
-                {
-                    request.Content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
-                }
-            }
-
-            using var response = httpClient.Send(request);
-            using var stream = response.Content.ReadAsStream();
-            if (stream == null) return null;
-            using var readStream = new StreamReader(stream);
-            return readStream.ReadToEnd();
-
+            throw new ArgumentNullException(nameof(uri));
         }
+
+        var request = new HttpRequestMessage();
+        request.RequestUri = new Uri(uri);
+        request.Method = new HttpMethod(method);
+
+        _httpClient.Timeout = TimeSpan.FromMilliseconds(timeout);
+
+        if (headers != null)
+        {
+            foreach (var key in headers.Keys)
+            {
+                request.Headers.Add(key, headers[key]);
+            }
+        }
+
+        var bytes = Encoding.UTF8.GetBytes(body ?? "");
+        if (request.Method != HttpMethod.Get && bytes.Length > 0)
+        {
+            request.Content = new ByteArrayContent(bytes, 0, bytes.Length);
+            if (!string.IsNullOrEmpty(contentType))
+            {
+                request.Content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
+            }
+        }
+
+        using var response = _httpClient.Send(request);
+        using var stream = response.Content.ReadAsStream();
+        if (stream == null)
+        {
+            return null;
+        }
+
+        using var readStream = new StreamReader(stream);
+
+        return readStream.ReadToEnd();
     }
 }
