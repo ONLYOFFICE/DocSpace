@@ -28,21 +28,20 @@ namespace ASC.VoipService.Dao
 {
     public class AbstractDao
     {
-        private readonly string dbid = "default";
+        private readonly string _dbid = "default";
+        private Lazy<VoipDbContext> _lazyVoipDbContext;
 
-        private Lazy<VoipDbContext> LazyVoipDbContext { get; }
-        protected VoipDbContext VoipDbContext { get => LazyVoipDbContext.Value; }
-
-        protected AbstractDao(DbContextManager<VoipDbContext> dbOptions, TenantManager tenantManager)
-        {
-            LazyVoipDbContext = new Lazy<VoipDbContext>(() => dbOptions.Get(dbid));
-            TenantID = tenantManager.GetCurrentTenant().TenantId;
-        }
-
+        protected VoipDbContext VoipDbContext { get => _lazyVoipDbContext.Value; }
         protected int TenantID
         {
             get;
             private set;
+        }
+
+        protected AbstractDao(DbContextManager<VoipDbContext> dbOptions, TenantManager tenantManager)
+        {
+            _lazyVoipDbContext = new Lazy<VoipDbContext>(() => dbOptions.Get(_dbid));
+            TenantID = tenantManager.GetCurrentTenant().TenantId;
         }
 
         protected string GetTenantColumnName(string table)

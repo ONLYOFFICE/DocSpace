@@ -27,8 +27,7 @@ namespace ASC.VoipService.Twilio
 {
     public class TwilioPhone : VoipPhone
     {
-        private readonly TwilioRestClient twilio;
-
+        private readonly TwilioRestClient _twilio;
         public TwilioPhone(
             TwilioRestClient twilio,
             AuthContext authContext,
@@ -37,7 +36,7 @@ namespace ASC.VoipService.Twilio
             BaseCommonLinkUtility baseCommonLinkUtility) :
             base(authContext, tenantUtil, securityContext, baseCommonLinkUtility)
         {
-            this.twilio = twilio;
+            _twilio = twilio;
             Settings = new TwilioVoipSettings(authContext, tenantUtil, securityContext, baseCommonLinkUtility);
         }
 
@@ -52,7 +51,7 @@ namespace ASC.VoipService.Twilio
                 SendDigits = number.Length > 1 ? number[1] + "#" : string.Empty,
                 Record = Settings.Caller.Record,
                 Url = new System.Uri(Settings.Connect(contactId: contactId))
-            }, twilio);
+            }, _twilio);
 
             return new VoipCall { Id = call.Sid, From = call.From, To = call.To };
         }
@@ -64,7 +63,7 @@ namespace ASC.VoipService.Twilio
 
         public override VoipCall RedirectCall(string callId, string to)
         {
-            var call = CallResource.Update(callId, url: new System.Uri(Settings.Redirect(to)), method: HttpMethod.Post, client: twilio);
+            var call = CallResource.Update(callId, url: new System.Uri(Settings.Redirect(to)), method: HttpMethod.Post, client: _twilio);
             return new VoipCall { Id = call.Sid, To = to };
         }
 
@@ -79,24 +78,24 @@ namespace ASC.VoipService.Twilio
 
         public Queue CreateQueue(string name, int size, string waitUrl, int waitTime)
         {
-            var queues = QueueResource.Read(new ReadQueueOptions(), twilio);
+            var queues = QueueResource.Read(new ReadQueueOptions(), _twilio);
             var queue = queues.FirstOrDefault(r => r.FriendlyName == name);
             if (queue == null)
             {
-                queue = QueueResource.Create(name, client: twilio);
+                queue = QueueResource.Create(name, client: _twilio);
             }
             return new Queue(queue.Sid, name, size, waitUrl, waitTime);
         }
 
         public string GetQueue(string name)
         {
-            var queues = QueueResource.Read(new ReadQueueOptions(), twilio);
+            var queues = QueueResource.Read(new ReadQueueOptions(), _twilio);
             return queues.First(r => r.FriendlyName == name).Sid;
         }
 
         public IEnumerable<string> QueueCalls(string id)
         {
-            var calls = MemberResource.Read(id, client: twilio);
+            var calls = MemberResource.Read(id, client: _twilio);
             return calls.Select(r => r.CallSid);
         }
 
@@ -106,7 +105,7 @@ namespace ASC.VoipService.Twilio
             if (calls.Contains(callId))
             {
                 MemberResource.Update(queueId, callId, new System.Uri(Settings.Dequeue(reject)), HttpMethod.Post,
-                    client: twilio);
+                    client: _twilio);
             }
         }
 
