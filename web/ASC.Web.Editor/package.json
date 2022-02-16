@@ -46,5 +46,7 @@
   },
   "id": "e67be73d-f9ae-4ce1-8fec-1880cb518cb4",
   "title": "ONLYOFFICE",
-  "dependencies": {}
+  "dependencies": {
+    "express": "^4.17.2"
+  }
 }
