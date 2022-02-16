@@ -28,23 +28,23 @@ namespace ASC.Notify
     [Singletone(Additional = typeof(DbWorkerExtension))]
     public class DbWorker
     {
-        private readonly string dbid;
-        private readonly object syncRoot = new object();
+        private readonly string _dbid;
+        private readonly object _syncRoot = new object();
 
-        private IServiceProvider ServiceProvider { get; }
+        private readonly IServiceProvider _serviceProvider;
         public NotifyServiceCfg NotifyServiceCfg { get; }
 
         public DbWorker(IServiceProvider serviceProvider, IOptions<NotifyServiceCfg> notifyServiceCfg)
         {
-            ServiceProvider = serviceProvider;
+            _serviceProvider = serviceProvider;
             NotifyServiceCfg = notifyServiceCfg.Value;
-            dbid = NotifyServiceCfg.ConnectionStringName;
+            _dbid = NotifyServiceCfg.ConnectionStringName;
         }
 
         public int SaveMessage(NotifyMessage m)
         {
-            using var scope = ServiceProvider.CreateScope();
-            using var dbContext = scope.ServiceProvider.GetService<DbContextManager<NotifyDbContext>>().Get(dbid);
+            using var scope = _serviceProvider.CreateScope();
+            using var dbContext = scope.ServiceProvider.GetService<DbContextManager<NotifyDbContext>>().Get(_dbid);
             using var tx = dbContext.Database.BeginTransaction(IsolationLevel.ReadCommitted);
 
             var notifyQueue = new NotifyQueue
@@ -87,10 +87,10 @@ namespace ASC.Notify
 
         public IDictionary<int, NotifyMessage> GetMessages(int count)
         {
-            lock (syncRoot)
+            lock (_syncRoot)
             {
-                using var scope = ServiceProvider.CreateScope();
-                using var dbContext = scope.ServiceProvider.GetService<DbContextManager<NotifyDbContext>>().Get(dbid);
+                using var scope = _serviceProvider.CreateScope();
+                using var dbContext = scope.ServiceProvider.GetService<DbContextManager<NotifyDbContext>>().Get(_dbid);
                 using var tx = dbContext.Database.BeginTransaction();
 
                 var q = dbContext.NotifyQueue
@@ -147,8 +147,8 @@ namespace ASC.Notify
 
         public void ResetStates()
         {
-            using var scope = ServiceProvider.CreateScope();
-            using var dbContext = scope.ServiceProvider.GetService<DbContextManager<NotifyDbContext>>().Get(dbid);
+            using var scope = _serviceProvider.CreateScope();
+            using var dbContext = scope.ServiceProvider.GetService<DbContextManager<NotifyDbContext>>().Get(_dbid);
 
             var tr = dbContext.Database.BeginTransaction();
             var info = dbContext.NotifyInfo.Where(r => r.State == 1).ToList();
@@ -164,8 +164,8 @@ namespace ASC.Notify
 
         public void SetState(int id, MailSendingState result)
         {
-            using var scope = ServiceProvider.CreateScope();
-            using var dbContext = scope.ServiceProvider.GetService<DbContextManager<NotifyDbContext>>().Get(dbid);
+            using var scope = _serviceProvider.CreateScope();
+            using var dbContext = scope.ServiceProvider.GetService<DbContextManager<NotifyDbContext>>().Get(_dbid);
             using var tx = dbContext.Database.BeginTransaction();
 
             if (result == MailSendingState.Sended)

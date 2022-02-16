@@ -28,32 +28,31 @@ namespace ASC.Notify
     [Singletone]
     public class NotifyCleaner : IDisposable
     {
-        private readonly ILog log;
-        private readonly ManualResetEvent stop = new ManualResetEvent(false);
+        private readonly ILog _logger;
+        private readonly ManualResetEvent _stop = new ManualResetEvent(false);
         public NotifyServiceCfg NotifyServiceCfg { get; }
-        private IServiceProvider ServiceProvider { get; }
-        public CancellationTokenSource CancellationTokenSource { get; }
+        private readonly IServiceProvider _serviceProvider;
+        public readonly CancellationTokenSource _cancellationTokenSource;
 
         public NotifyCleaner(IOptions<NotifyServiceCfg> notifyServiceCfg, IServiceProvider serviceProvider, IOptionsMonitor<ILog> options)
         {
-            log = options.Get("ASC.Notify");
+            _logger = options.Get("ASC.Notify");
             NotifyServiceCfg = notifyServiceCfg.Value;
-            ServiceProvider = serviceProvider;
-            CancellationTokenSource = new CancellationTokenSource();
+            _serviceProvider = serviceProvider;
+            _cancellationTokenSource = new CancellationTokenSource();
         }
 
         public void Start()
         {
-            var t = new Task(Clear, CancellationTokenSource.Token, TaskCreationOptions.LongRunning);
+            var t = new Task(Clear, _cancellationTokenSource.Token, TaskCreationOptions.LongRunning);
             t.Start(TaskScheduler.Default);
         }
 
         public void Stop()
         {
-            stop.Set();
-            CancellationTokenSource.Cancel();
+            _stop.Set();
+            _cancellationTokenSource.Cancel();
         }
-
 
         private void Clear()
         {
@@ -63,7 +62,7 @@ namespace ASC.Notify
                 {
                     var date = DateTime.UtcNow.AddDays(-NotifyServiceCfg.StoreMessagesDays);
 
-                    using var scope = ServiceProvider.CreateScope();
+                    using var scope = _serviceProvider.CreateScope();
                     using var dbContext = scope.ServiceProvider.GetService<DbContextManager<NotifyDbContext>>().Get(NotifyServiceCfg.ConnectionStringName);
                     using var tx = dbContext.Database.BeginTransaction();
 
@@ -75,7 +74,7 @@ namespace ASC.Notify
                     dbContext.SaveChanges();
                     tx.Commit();
 
-                    log.InfoFormat("Clear notify messages: notify_info({0}), notify_queue ({1})", info.Count, queue.Count);
+                    _logger.InfoFormat("Clear notify messages: notify_info({0}), notify_queue ({1})", info.Count, queue.Count);
 
                 }
                 catch (ThreadAbortException)
@@ -84,9 +83,9 @@ namespace ASC.Notify
                 }
                 catch (Exception err)
                 {
-                    log.Error(err);
+                    _logger.Error(err);
                 }
-                if (stop.WaitOne(TimeSpan.FromHours(8)))
+                if (_stop.WaitOne(TimeSpan.FromHours(8)))
                 {
                     break;
                 }
@@ -95,9 +94,9 @@ namespace ASC.Notify
 
         public void Dispose()
         {
-            if (CancellationTokenSource != null)
+            if (_cancellationTokenSource != null)
             {
-                CancellationTokenSource.Dispose();
+                _cancellationTokenSource.Dispose();
             }
         }
     }

@@ -30,14 +30,14 @@ namespace ASC.Notify.Config
     {
         public ConfigureNotifyServiceCfg(IServiceProvider serviceProvider)
         {
-            ServiceProvider = serviceProvider;
+            _serviceProvider = serviceProvider;
         }
 
-        private IServiceProvider ServiceProvider { get; }
+        private readonly IServiceProvider _serviceProvider;
 
         public void Configure(NotifyServiceCfg options)
         {
-            options.Init(ServiceProvider);
+            options.Init(_serviceProvider);
         }
     }
 

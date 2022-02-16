@@ -28,45 +28,43 @@ namespace ASC.Notify
     [Singletone(Additional = typeof(NotifyServiceExtension))]
     public class NotifyService : INotifyService, IDisposable
     {
-        private ILog Log { get; }
-
-        private ICacheNotify<NotifyMessage> CacheNotify { get; }
-        private ICacheNotify<NotifyInvoke> CacheInvoke { get; }
-        private DbWorker Db { get; }
-        private IServiceProvider ServiceProvider { get; }
+        private readonly ILog _logger;
+        private readonly ICacheNotify<NotifyMessage> _cacheNotify;
+        private readonly ICacheNotify<NotifyInvoke> _cacheInvoke;
+        private readonly DbWorker _db;
+        private readonly IServiceProvider _serviceProvider;
 
         public NotifyService(DbWorker db, IServiceProvider serviceProvider, ICacheNotify<NotifyMessage> cacheNotify, ICacheNotify<NotifyInvoke> cacheInvoke, IOptionsMonitor<ILog> options)
         {
-            Db = db;
-            ServiceProvider = serviceProvider;
-            CacheNotify = cacheNotify;
-            CacheInvoke = cacheInvoke;
-            Log = options.CurrentValue;
+            _db = db;
+            _serviceProvider = serviceProvider;
+            _cacheNotify = cacheNotify;
+            _cacheInvoke = cacheInvoke;
+            _logger = options.CurrentValue;
         }
 
         public void Start()
         {
-            CacheNotify.Subscribe((n) => SendNotifyMessage(n), Common.Caching.CacheNotifyAction.InsertOrUpdate);
-            CacheInvoke.Subscribe((n) => InvokeSendMethod(n), Common.Caching.CacheNotifyAction.InsertOrUpdate);
+            _cacheNotify.Subscribe((n) => SendNotifyMessage(n), Common.Caching.CacheNotifyAction.InsertOrUpdate);
+            _cacheInvoke.Subscribe((n) => InvokeSendMethod(n), Common.Caching.CacheNotifyAction.InsertOrUpdate);
         }
 
         public void Stop()
         {
-            CacheNotify.Unsubscribe(Common.Caching.CacheNotifyAction.InsertOrUpdate);
+            _cacheNotify.Unsubscribe(Common.Caching.CacheNotifyAction.InsertOrUpdate);
         }
 
         public void SendNotifyMessage(NotifyMessage notifyMessage)
         {
             try
             {
-                Db.SaveMessage(notifyMessage);
+                _db.SaveMessage(notifyMessage);
             }
             catch (Exception e)
             {
-                Log.Error(e);
+                _logger.Error(e);
             }
         }
-
 
         public void InvokeSendMethod(NotifyInvoke notifyInvoke)
         {
@@ -77,7 +75,7 @@ namespace ASC.Notify
 
             var serviceType = Type.GetType(service, true);
 
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = _serviceProvider.CreateScope();
 
             var instance = scope.ServiceProvider.GetService(serviceType);
             if (instance == null)
@@ -100,30 +98,30 @@ namespace ASC.Notify
 
         public void Dispose()
         {
-            CacheNotify.Unsubscribe(Common.Caching.CacheNotifyAction.InsertOrUpdate);
-            CacheInvoke.Unsubscribe(Common.Caching.CacheNotifyAction.InsertOrUpdate);
+            _cacheNotify.Unsubscribe(CacheNotifyAction.InsertOrUpdate);
+            _cacheInvoke.Unsubscribe(CacheNotifyAction.InsertOrUpdate);
         }
     }
 
     [Scope]
     public class NotifyServiceScope
     {
-        private TenantManager TenantManager { get; }
-        private TenantWhiteLabelSettingsHelper TenantWhiteLabelSettingsHelper { get; }
-        private SettingsManager SettingsManager { get; }
+        private readonly TenantManager _tenantManager;
+        private readonly TenantWhiteLabelSettingsHelper _tenantWhiteLabelSettingsHelper;
+        private readonly SettingsManager _settingsManager;
 
         public NotifyServiceScope(TenantManager tenantManager, TenantWhiteLabelSettingsHelper tenantWhiteLabelSettingsHelper, SettingsManager settingsManager)
         {
-            TenantManager = tenantManager;
-            TenantWhiteLabelSettingsHelper = tenantWhiteLabelSettingsHelper;
-            SettingsManager = settingsManager;
+            _tenantManager = tenantManager;
+            _tenantWhiteLabelSettingsHelper = tenantWhiteLabelSettingsHelper;
+            _settingsManager = settingsManager;
         }
 
         public void Deconstruct(out TenantManager tenantManager, out TenantWhiteLabelSettingsHelper tenantWhiteLabelSettingsHelper, out SettingsManager settingsManager)
         {
-            tenantManager = TenantManager;
-            tenantWhiteLabelSettingsHelper = TenantWhiteLabelSettingsHelper;
-            settingsManager = SettingsManager;
+            tenantManager = _tenantManager;
+            tenantWhiteLabelSettingsHelper = _tenantWhiteLabelSettingsHelper;
+            settingsManager = _settingsManager;
         }
     }
 

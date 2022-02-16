@@ -28,47 +28,47 @@ namespace ASC.Notify
     [Singletone]
     public class NotifySender : IDisposable
     {
-        private readonly ILog log;
+        private readonly ILog _logger;
 
-        private readonly DbWorker db;
-        private CancellationTokenSource cancellationToken;
+        private readonly DbWorker _db;
+        private CancellationTokenSource _cancellationToken;
 
         public NotifyServiceCfg NotifyServiceCfg { get; }
 
         public NotifySender(IOptions<NotifyServiceCfg> notifyServiceCfg, DbWorker dbWorker, IOptionsMonitor<ILog> options)
         {
-            log = options.CurrentValue;
+            _logger = options.CurrentValue;
             NotifyServiceCfg = notifyServiceCfg.Value;
-            db = dbWorker;
+            _db = dbWorker;
         }
 
         public void StartSending()
         {
-            db.ResetStates();
-            cancellationToken = new CancellationTokenSource();
-            var task = new Task(async () => await ThreadManagerWork(), cancellationToken.Token, TaskCreationOptions.LongRunning);
+            _db.ResetStates();
+            _cancellationToken = new CancellationTokenSource();
+            var task = new Task(async () => await ThreadManagerWork(), _cancellationToken.Token, TaskCreationOptions.LongRunning);
             task.Start();
         }
 
         public void StopSending()
         {
-            cancellationToken.Cancel();
+            _cancellationToken.Cancel();
         }
 
         private async Task ThreadManagerWork()
         {
             var tasks = new List<Task>(NotifyServiceCfg.Process.MaxThreads);
 
-            while (!cancellationToken.IsCancellationRequested)
+            while (!_cancellationToken.IsCancellationRequested)
             {
                 try
                 {
                     if (tasks.Count < NotifyServiceCfg.Process.MaxThreads)
                     {
-                        var messages = db.GetMessages(NotifyServiceCfg.Process.BufferSize);
+                        var messages = _db.GetMessages(NotifyServiceCfg.Process.BufferSize);
                         if (messages.Count > 0)
                         {
-                            var t = new Task(() => SendMessages(messages), cancellationToken.Token, TaskCreationOptions.LongRunning);
+                            var t = new Task(() => SendMessages(messages), _cancellationToken.Token, TaskCreationOptions.LongRunning);
                             tasks.Add(t);
                             t.Start(TaskScheduler.Default);
                         }
@@ -88,7 +88,7 @@ namespace ASC.Notify
                 }
                 catch (Exception e)
                 {
-                    log.Error(e);
+                    _logger.Error(e);
                 }
             }
         }
@@ -99,7 +99,10 @@ namespace ASC.Notify
             {
                 foreach (var m in (IDictionary<int, NotifyMessage>)messages)
                 {
-                    if (cancellationToken.IsCancellationRequested) return;
+                    if (_cancellationToken.IsCancellationRequested)
+                    {
+                        return;
+                    }
 
                     var result = MailSendingState.Sended;
                     try
@@ -114,14 +117,15 @@ namespace ASC.Notify
                             result = MailSendingState.FatalError;
                         }
 
-                        log.DebugFormat("Notify #{0} has been sent.", m.Key);
+                        _logger.DebugFormat("Notify #{0} has been sent.", m.Key);
                     }
                     catch (Exception e)
                     {
                         result = MailSendingState.FatalError;
-                        log.Error(e);
+                        _logger.Error(e);
                     }
-                    db.SetState(m.Key, result);
+
+                    _db.SetState(m.Key, result);
                 }
             }
             catch (ThreadAbortException)
@@ -130,15 +134,15 @@ namespace ASC.Notify
             }
             catch (Exception e)
             {
-                log.Error(e);
+                _logger.Error(e);
             }
         }
 
         public void Dispose()
         {
-            if (cancellationToken != null)
+            if (_cancellationToken != null)
             {
-                cancellationToken.Dispose();
+                _cancellationToken.Dispose();
             }
         }
     }

@@ -28,14 +28,14 @@ namespace ASC.Notify
     [Singletone]
     public class NotifyServiceLauncher : IHostedService
     {
-        private NotifyServiceCfg NotifyServiceCfg { get; }
-        private NotifyService NotifyService { get; }
-        private NotifySender NotifySender { get; }
-        private NotifyCleaner NotifyCleaner { get; }
-        private WebItemManager WebItemManager { get; }
-        private IServiceProvider ServiceProvider { get; }
-        private NotifyConfiguration NotifyConfiguration { get; }
-        private ILog Log { get; }
+        private readonly ILog _logger;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly NotifyCleaner _notifyCleaner;
+        private readonly NotifyConfiguration _notifyConfiguration;
+        private readonly NotifySender _notifySender;
+        private readonly NotifyService _notifyService;
+        private readonly NotifyServiceCfg _notifyServiceCfg;
+        private readonly WebItemManager _webItemManager;
 
         public NotifyServiceLauncher(
             IOptions<NotifyServiceCfg> notifyServiceCfg,
@@ -47,43 +47,43 @@ namespace ASC.Notify
             NotifyConfiguration notifyConfiguration,
             IOptionsMonitor<ILog> options)
         {
-            NotifyServiceCfg = notifyServiceCfg.Value;
-            NotifyService = notifyService;
-            NotifySender = notifySender;
-            NotifyCleaner = notifyCleaner;
-            WebItemManager = webItemManager;
-            ServiceProvider = serviceProvider;
-            NotifyConfiguration = notifyConfiguration;
-            Log = options.Get("ASC.Notify");
+            _notifyServiceCfg = notifyServiceCfg.Value;
+            _notifyService = notifyService;
+            _notifySender = notifySender;
+            _notifyCleaner = notifyCleaner;
+            _webItemManager = webItemManager;
+            _serviceProvider = serviceProvider;
+            _notifyConfiguration = notifyConfiguration;
+            _logger = options.Get("ASC.Notify");
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            NotifyService.Start();
-            NotifySender.StartSending();
+            _notifyService.Start();
+            _notifySender.StartSending();
 
-            if (0 < NotifyServiceCfg.Schedulers.Count)
+            if (0 < _notifyServiceCfg.Schedulers.Count)
             {
                 InitializeNotifySchedulers();
             }
 
-            NotifyCleaner.Start();
+            _notifyCleaner.Start();
 
             return Task.CompletedTask;
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            NotifyService.Stop();
+            _notifyService.Stop();
 
-            if (NotifySender != null)
+            if (_notifySender != null)
             {
-                NotifySender.StopSending();
+                _notifySender.StopSending();
             }
 
-            if (NotifyCleaner != null)
+            if (_notifyCleaner != null)
             {
-                NotifyCleaner.Stop();
+                _notifyCleaner.Stop();
             }
 
             return Task.CompletedTask;
@@ -91,10 +91,10 @@ namespace ASC.Notify
 
         private void InitializeNotifySchedulers()
         {
-            NotifyConfiguration.Configure();
-            foreach (var pair in NotifyServiceCfg.Schedulers.Where(r => r.MethodInfo != null))
+            _notifyConfiguration.Configure();
+            foreach (var pair in _notifyServiceCfg.Schedulers.Where(r => r.MethodInfo != null))
             {
-                Log.DebugFormat("Start scheduler {0} ({1})", pair.Name, pair.MethodInfo);
+                _logger.DebugFormat("Start scheduler {0} ({1})", pair.Name, pair.MethodInfo);
                 pair.MethodInfo.Invoke(null, null);
             }
         }
