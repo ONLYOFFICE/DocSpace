@@ -156,10 +156,15 @@ namespace ASC.CRM.Api
         /// <returns></returns>
         /// <exception cref="SecurityException"></exception>
         [Create(@"voip/numbers")]
-        public async Task<VoipPhone> BuyNumberAsync([FromBody] string number)
+        public Task<VoipPhone> BuyNumberAsync([FromBody] string number)
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
 
+            return InternalBuyNumberAsync(number);
+        }
+
+        private async Task<VoipPhone> InternalBuyNumberAsync(string number)
+        {
             var newPhone = _daoFactory.GetVoipDao().GetProvider().BuyNumber(number);
 
             _daoFactory.GetVoipDao().GetProvider().CreateQueue(newPhone);
@@ -177,10 +182,15 @@ namespace ASC.CRM.Api
         /// <returns></returns>
         /// <exception cref="SecurityException"></exception>
         [Create(@"voip/numbers/link")]
-        public async Task<VoipPhone> LinkNumberAsync([FromBody] string id)
+        public Task<VoipPhone> LinkNumberAsync([FromBody] string id)
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
 
+            return InternalLinkNumberAsync(id);
+        }
+
+        private async Task<VoipPhone> InternalLinkNumberAsync([FromBody] string id)
+        {
             var newPhone = _daoFactory.GetVoipDao().GetProvider().GetPhone(id);
 
             _daoFactory.GetVoipDao().GetProvider().CreateQueue(newPhone);
@@ -380,7 +390,7 @@ namespace ASC.CRM.Api
         /// <exception cref="SecurityException"></exception>
 
         [Read(@"voip/numbers/settings")]
-        public async Task<object> GetVoipSettingsAsync()
+        public Task<object> GetVoipSettingsAsync()
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
 
@@ -388,9 +398,14 @@ namespace ASC.CRM.Api
             var number = dao.GetNumbers().FirstOrDefault(r => r.Settings.Queue != null);
             if (number != null)
             {
-                return new { queue = number.Settings.Queue, pause = number.Settings.Pause };
+                return System.Threading.Tasks.Task.FromResult<object>(new { queue = number.Settings.Queue, pause = number.Settings.Pause });
             }
 
+            return InternalGetVoipSettingsAsync();
+        }
+
+        private async Task<object> InternalGetVoipSettingsAsync()
+        {
             var files = _storageFactory.GetStorage("", "crm").ListFilesAsync("voip", "default/" + nameof(AudioType.Queue).ToLower(), "*.*", true);
             var file = await files.FirstOrDefaultAsync();
             return new { queue = new Queue(null, "Default", 5, file != null ? _commonLinkUtility.GetFullAbsolutePath(file.ToString()) : "", 5), pause = false };
@@ -452,10 +467,15 @@ namespace ASC.CRM.Api
         /// <exception cref="SecurityException"></exception>
         /// <exception cref="ItemNotFoundException"></exception>
         [Delete(@"voip/uploads")]
-        public async Task<VoipUpload> DeleteUploadedFileAsync(AudioType audioType, string fileName)
+        public Task<VoipUpload> DeleteUploadedFileAsync(AudioType audioType, string fileName)
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
 
+            return InternalDeleteUploadedFileAsync(audioType, fileName);
+        }
+
+        private async Task<VoipUpload> InternalDeleteUploadedFileAsync(AudioType audioType, string fileName)
+        {
             var store = _global.GetStore();
             var path = Path.Combine(audioType.ToString().ToLower(), fileName);
             var uri = await store.GetUriAsync(path);
@@ -645,14 +665,20 @@ namespace ASC.CRM.Api
         /// <returns></returns>
         /// <exception cref="SecurityException"></exception>
         [Create(@"voip/call")]
-        public async Task<VoipCallDto> MakeCallAsync([FromBody] CreateMakeCallRequestDto inDto)
+        public Task<VoipCallDto> MakeCallAsync([FromBody] CreateMakeCallRequestDto inDto)
         {
-            var to = inDto.To;
-            var contactId = inDto.ContactId;
-
             var number = _daoFactory.GetVoipDao().GetCurrentNumber().NotFoundIfNull();
 
             if (!number.Settings.Caller.AllowOutgoingCalls) throw new SecurityException(CRMErrorsResource.AccessDenied);
+
+            return InternalMakeCallAsync(inDto, number);
+
+        }
+
+        private async Task<VoipCallDto> InternalMakeCallAsync(CreateMakeCallRequestDto inDto, VoipPhone number)
+        {
+            var to = inDto.To;
+            var contactId = inDto.ContactId;
 
             var contactPhone = to.TrimStart('+');
 

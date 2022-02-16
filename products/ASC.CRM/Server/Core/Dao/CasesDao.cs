@@ -223,14 +223,19 @@ namespace ASC.CRM.Core.Dao
             CrmDbContext.SaveChanges();
         }
 
-        public async Task<Cases> DeleteCasesAsync(int casesID)
+        public Task<Cases> DeleteCasesAsync(int casesID)
         {
-            if (casesID <= 0) return null;
+            if (casesID <= 0) return System.Threading.Tasks.Task.FromResult<Cases>(null);
 
             var cases = GetByID(casesID);
 
-            if (cases == null) return null;
+            if (cases == null) return System.Threading.Tasks.Task.FromResult<Cases>(null);
 
+            return InternalDeleteCasesAsync(casesID, cases);
+        }
+
+        private async Task<Cases> InternalDeleteCasesAsync(int casesID, Cases cases)
+        {
             _crmSecurity.DemandDelete(cases);
 
             // Delete relative  keys
@@ -240,28 +245,28 @@ namespace ASC.CRM.Core.Dao
             return cases;
         }
 
-        public async Task<List<Cases>> DeleteBatchCasesAsync(List<Cases> caseses)
+        public Task<List<Cases>> DeleteBatchCasesAsync(List<Cases> caseses)
         {
             caseses = caseses.FindAll(_crmSecurity.CanDelete).ToList();
 
-            if (!caseses.Any()) return caseses;
+            if (caseses.Count == 0) return System.Threading.Tasks.Task.FromResult(caseses);
 
-            // Delete relative  keys
-            _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "invoice.*"));
-
-            await DeleteBatchCasesExecuteAsync(caseses);
-
-            return caseses;
+            return InternalDeleteBatchCasesAsync(caseses);
         }
 
-        public async Task<List<Cases>> DeleteBatchCasesAsync(int[] casesID)
+        public Task<List<Cases>> DeleteBatchCasesAsync(int[] casesID)
         {
-            if (casesID == null || !casesID.Any()) return null;
+            if (casesID == null || casesID.Length == 0) return null;
 
             var cases = GetCases(casesID).FindAll(_crmSecurity.CanDelete).ToList();
 
-            if (!cases.Any()) return cases;
+            if (cases.Count == 0) return System.Threading.Tasks.Task.FromResult(cases);
 
+            return InternalDeleteBatchCasesAsync(cases);
+        }
+
+        private async Task<List<Cases>> InternalDeleteBatchCasesAsync(List<Cases> cases)
+        {
             // Delete relative  keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "invoice.*"));
 

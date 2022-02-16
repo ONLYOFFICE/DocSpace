@@ -115,7 +115,7 @@ namespace ASC.CRM.Api
         ///   Event list
         /// </returns>
         [Read(@"history/filter")]
-        public async Task<IEnumerable<RelationshipEventDto>> GetHistoryAsync(
+        public Task<IEnumerable<RelationshipEventDto>> GetHistoryAsync(
             string entityType,
             int entityId,
             int categoryId,
@@ -150,6 +150,17 @@ namespace ASC.CRM.Api
                     break;
             }
 
+            return InternalGetHistoryAsync(entityTypeObj, entityId, categoryId, createBy, fromDate, toDate);
+        }
+
+        private async Task<IEnumerable<RelationshipEventDto>> InternalGetHistoryAsync(
+            EntityType entityTypeObj,
+            int entityId,
+            int categoryId,
+            Guid createBy,
+            ApiDateTime fromDate,
+            ApiDateTime toDate)
+        {
             RelationshipEventByType eventByType;
 
             IEnumerable<RelationshipEventDto> result;
@@ -219,12 +230,18 @@ namespace ASC.CRM.Api
         ///   Event
         /// </returns>
         [Delete(@"history/{id:int}")]
-        public async Task<RelationshipEventDto> DeleteHistoryAsync(int id)
+        public Task<RelationshipEventDto> DeleteHistoryAsync(int id)
         {
             if (id <= 0) throw new ArgumentException();
 
             var item = _daoFactory.GetRelationshipEventDao().GetByID(id);
             if (item == null) throw new ItemNotFoundException();
+
+            return InternalDeleteHistoryAsync(id, item);
+        }
+
+        private async Task<RelationshipEventDto> InternalDeleteHistoryAsync(int id, RelationshipEvent item)
+        {
             var wrapper = _mapper.Map<RelationshipEventDto>(item);
 
             await _daoFactory.GetRelationshipEventDao().DeleteItemAsync(id);
@@ -249,7 +266,7 @@ namespace ASC.CRM.Api
         ///     File info
         /// </returns>
         [Create(@"{entityType:regex(contact|opportunity|case)}/{entityid:int}/files/text")]
-        public async Task<FileWrapper<int>> CreateTextFileAsync(
+        public Task<FileWrapper<int>> CreateTextFileAsync(
             [FromRoute] string entityType,
             [FromRoute] int entityid,
             [FromBody] RelationshipEventCreateTextFileRequestDto inDto)
@@ -259,6 +276,17 @@ namespace ASC.CRM.Api
 
             if (title == null) throw new ArgumentNullException("title");
             if (content == null) throw new ArgumentNullException("content");
+
+            return InternalCreateTextFileAsync(entityType, entityid, inDto);
+        }
+
+        private async Task<FileWrapper<int>> InternalCreateTextFileAsync(
+            string entityType,
+            int entityid,
+            RelationshipEventCreateTextFileRequestDto inDto)
+        {
+            var title = inDto.Title;
+            var content = inDto.Content;
 
             var folderid = await GetRootFolderIDAsync();
 
@@ -506,14 +534,22 @@ namespace ASC.CRM.Api
         /// <category>Files</category>
         /// <returns>Entity with the file attached</returns>
         [Create(@"{entityType:regex(contact|opportunity|case)}/{entityid:int}/files")]
-        public async Task<RelationshipEventDto> AttachFilesAsync(
+        public Task<RelationshipEventDto> AttachFilesAsync(
             [FromRoute] string entityType,
             [FromRoute] int entityid,
             [FromBody] IEnumerable<int> fileids)
         {
             if (entityid <= 0 || fileids == null) throw new ArgumentException();
 
-            var files = _filesDaoFactory.GetFileDao<int>().GetFilesAsync(fileids.ToArray()).ToListAsync().Result;
+            return InternalAttachFilesAsync(entityType, entityid, fileids);
+        }
+
+        private async Task<RelationshipEventDto> InternalAttachFilesAsync(
+            string entityType,
+            int entityid,
+            IEnumerable<int> fileids)
+        {
+            var files = await _filesDaoFactory.GetFileDao<int>().GetFilesAsync(fileids.ToArray()).ToListAsync();
 
             var folderid = await GetRootFolderIDAsync();
 
@@ -601,10 +637,15 @@ namespace ASC.CRM.Api
         ///    File Info
         /// </returns>
         [Delete(@"files/{fileid:int}")]
-        public async Task<FileWrapper<int>> DeleteCRMFileAsync(int fileid)
+        public Task<FileWrapper<int>> DeleteCRMFileAsync(int fileid)
         {
             if (fileid < 0) throw new ArgumentException();
 
+            return InternalDeleteCRMFileAsync(fileid);
+        }
+
+        private async Task<FileWrapper<int>> InternalDeleteCRMFileAsync(int fileid)
+        {
             var file = await _filesDaoFactory.GetFileDao<int>().GetFileAsync(fileid);
             if (file == null) throw new ItemNotFoundException();
             var result = _fileWrapperHelper.GetAsync(file);
@@ -629,11 +670,9 @@ namespace ASC.CRM.Api
             return await result;
         }
 
-        private async Task<IEnumerable<RelationshipEventDto>> ToListRelationshipEventDtoAsync(List<RelationshipEvent> itemList)
+        private Task<IEnumerable<RelationshipEventDto>> ToListRelationshipEventDtoAsync(List<RelationshipEvent> itemList)
         {
-            if (itemList.Count == 0) return new List<RelationshipEventDto>();
-
-            var result = new List<RelationshipEventDto>();
+            if (itemList.Count == 0) return System.Threading.Tasks.Task.FromResult<IEnumerable<RelationshipEventDto>>(new List<RelationshipEventDto>());
 
             var contactIDs = new List<int>();
             var eventIDs = new List<int>();
@@ -712,6 +751,15 @@ namespace ASC.CRM.Api
                         throw new ArgumentException();
                 }
             }
+
+            return InternalToListRelationshipEventDtoAsync(itemList, entityDtos, categoryIDs, eventIDs, contactIDs);
+        }
+
+        private async Task<IEnumerable<RelationshipEventDto>> InternalToListRelationshipEventDtoAsync(
+            List<RelationshipEvent> itemList, Dictionary<string, EntityDto> entityDtos, List<int> categoryIDs, List<int> eventIDs, List<int> contactIDs)
+        {
+
+            var result = new List<RelationshipEventDto>();
 
             var categories = _daoFactory.GetListItemDao().GetItems(categoryIDs.ToArray()).ToDictionary(x => x.ID, x => _mapper.Map<HistoryCategoryDto>(x));
 

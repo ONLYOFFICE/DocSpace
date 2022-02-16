@@ -259,10 +259,15 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             return files;
         }
 
-        public async Task<Stream> DownloadStreamAsync(DriveFile file, int offset = 0)
+        public Task<Stream> DownloadStreamAsync(DriveFile file, int offset = 0)
         {
             if (file == null) throw new ArgumentNullException(nameof(file));
 
+            return InternalDownloadStreamAsync(file, offset);
+        }
+
+        private async Task<Stream> InternalDownloadStreamAsync(DriveFile file, int offset = 0)
+        {
             var downloadArg = $"{file.Id}?alt=media";
 
             var ext = MimeMapping.GetExtention(file.MimeType);
@@ -490,10 +495,15 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             return file;
         }
 
-        public async Task<ResumableUploadSession> CreateResumableSessionAsync(DriveFile driveFile, long contentLength)
+        public Task<ResumableUploadSession> CreateResumableSessionAsync(DriveFile driveFile, long contentLength)
         {
             if (driveFile == null) throw new ArgumentNullException(nameof(driveFile));
 
+            return InternalCreateResumableSessionAsync(driveFile, contentLength);
+        }
+
+        private async Task<ResumableUploadSession> InternalCreateResumableSessionAsync(DriveFile driveFile, long contentLength)
+        {
             var fileId = string.Empty;
             var method = "POST";
             var body = string.Empty;
@@ -531,7 +541,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             return uploadSession;
         }
 
-        public async Task TransferAsync(ResumableUploadSession googleDriveSession, Stream stream, long chunkLength)
+        public Task TransferAsync(ResumableUploadSession googleDriveSession, Stream stream, long chunkLength)
         {
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream));
@@ -539,6 +549,11 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             if (googleDriveSession.Status != ResumableUploadSessionStatus.Started)
                 throw new InvalidOperationException("Can't upload chunk for given upload session.");
 
+            return InternalTransferAsync(googleDriveSession, stream, chunkLength);
+        }
+
+        private async Task InternalTransferAsync(ResumableUploadSession googleDriveSession, Stream stream, long chunkLength)
+        {
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(googleDriveSession.Location);
             request.Method = HttpMethod.Put;

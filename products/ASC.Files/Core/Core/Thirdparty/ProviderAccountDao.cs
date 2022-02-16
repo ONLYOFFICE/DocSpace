@@ -184,7 +184,7 @@ namespace ASC.Files.Thirdparty
             }
         }
 
-        public virtual async Task<int> SaveProviderInfoAsync(string providerKey, string customerTitle, AuthData authData, FolderType folderType)
+        public virtual Task<int> SaveProviderInfoAsync(string providerKey, string customerTitle, AuthData authData, FolderType folderType)
         {
             ProviderTypes prKey;
             try
@@ -196,6 +196,11 @@ namespace ASC.Files.Thirdparty
                 throw new ArgumentException("Unrecognize ProviderType");
             }
 
+            return InternalSaveProviderInfoAsync(providerKey, customerTitle, authData, folderType, prKey);
+        }
+
+        private async Task<int> InternalSaveProviderInfoAsync(string providerKey, string customerTitle, AuthData authData, FolderType folderType, ProviderTypes prKey)
+        {
             authData = GetEncodedAccesToken(authData, prKey);
 
             if (!await CheckProviderInfoAsync(ToProviderInfo(0, prKey, customerTitle, authData, SecurityContext.CurrentAccount.ID, folderType, TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow()))))

@@ -197,13 +197,18 @@ namespace ASC.Data.Storage
             HttpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<string> GetPathAsync(string relativePath)
+        public Task<string> GetPathAsync(string relativePath)
         {
             if (!string.IsNullOrEmpty(relativePath) && relativePath.IndexOf('~') == 0)
             {
                 throw new ArgumentException($"bad path format {relativePath} remove '~'", nameof(relativePath));
             }
 
+            return InternalGetPathAsync(relativePath);
+        }
+
+        private async Task<string> InternalGetPathAsync(string relativePath)
+        {
             if (CoreBaseSettings.Standalone && ServiceProvider.GetService<StaticUploader>().CanUpload()) //hack for skip resolve DistributedTaskQueueOptionsManager
             {
                 try

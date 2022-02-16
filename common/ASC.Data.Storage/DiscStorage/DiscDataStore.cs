@@ -157,7 +157,7 @@ namespace ASC.Data.Storage.DiscStorage
             return SaveAsync(domain, path, stream);
         }
 
-        public override async Task<Uri> SaveAsync(string domain, string path, Stream stream)
+        public override Task<Uri> SaveAsync(string domain, string path, Stream stream)
         {
             Log.Debug("Save " + path);
             var buffered = TempStream.GetBuffered(stream);
@@ -169,6 +169,12 @@ namespace ASC.Data.Storage.DiscStorage
             if (path == null) throw new ArgumentNullException(nameof(path));
             if (buffered == null) throw new ArgumentNullException(nameof(stream));
 
+            //Try seek to start
+            return InternalSaveAsync(domain, path, buffered);
+        }
+
+        private async Task<Uri> InternalSaveAsync(string domain, string path, Stream buffered)
+        {
             //Try seek to start
             if (buffered.CanSeek)
             {

@@ -332,10 +332,15 @@ namespace ASC.CRM.Api
         /// <exception cref="SecurityException"></exception>
         /// <exception cref="Exception"></exception>
         [Update(@"settings/organisation/logo")]
-        public async Task<Int32> UpdateOrganisationSettingsLogoAsync(bool reset)
+        public Task<Int32> UpdateOrganisationSettingsLogoAsync(bool reset)
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
 
+            return InternalUpdateOrganisationSettingsLogoAsync(reset);
+        }
+
+        private async Task<Int32> InternalUpdateOrganisationSettingsLogoAsync(bool reset)
+        {
             int companyLogoID;
 
             if (!reset)
@@ -511,10 +516,15 @@ namespace ASC.CRM.Api
 
         /// <visible>false</visible>
         [Read(@"import/samplerow")]
-        public async Task<String> GetImportFromCSVSampleRowAsync(string csvFileURI, int indexRow, string jsonSettings)
+        public Task<String> GetImportFromCSVSampleRowAsync(string csvFileURI, int indexRow, string jsonSettings)
         {
             if (String.IsNullOrEmpty(csvFileURI) || indexRow < 0) throw new ArgumentException();
 
+            return InternalGetImportFromCSVSampleRowAsync(csvFileURI, indexRow, jsonSettings);
+        }
+
+        private async Task<String> InternalGetImportFromCSVSampleRowAsync(string csvFileURI, int indexRow, string jsonSettings)
+        {
             if (!await _global.GetStore().IsFileAsync("temp", csvFileURI)) throw new ArgumentException();
 
             var CSVFileStream = await _global.GetStore().GetReadStreamAsync("temp", csvFileURI);

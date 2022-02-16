@@ -79,16 +79,21 @@ namespace ASC.CRM.Api
         /// <returns>Report files</returns>
         /// <exception cref="SecurityException">if user can't create reports</exception>
         [Read(@"report/files")]
-        public async Task<IEnumerable<FileWrapper<int>>> GetFilesAsync()
+        public Task<IEnumerable<FileWrapper<int>>> GetFilesAsync()
         {
             if (!_global.CanCreateReports)
                 throw _crmSecurity.CreateSecurityException();
 
+            return InternalGetFilesAsync();
+            }
+
+        private async Task<IEnumerable<FileWrapper<int>>> InternalGetFilesAsync()
+        {
             var reportDao = _daoFactory.GetReportDao();
 
             var files = reportDao.GetFiles();
 
-            if (!files.Any())
+            if (files.Count == 0)
             {
                 var settings = _settingsManager.Load<CrmReportSampleSettings>();
 
@@ -103,7 +108,7 @@ namespace ASC.CRM.Api
             }
 
             List<FileWrapper<int>> result = new List<FileWrapper<int>>(files.Count);
-            foreach(var file in files)
+            foreach (var file in files)
             {
                 result.Add(await _fileWrapperHelper.GetAsync<int>(file));
             }
@@ -134,13 +139,18 @@ namespace ASC.CRM.Api
         }
 
         [Delete(@"report/fileAsync/{fileid:int}")]
-        public async Task DeleteFileAsync(int fileid)
+        public Task DeleteFileAsync(int fileid)
         {
             if (!_global.CanCreateReports)
                 throw _crmSecurity.CreateSecurityException();
 
             if (fileid < 0) throw new ArgumentException();
 
+            return InternalDeleteFileAsync(fileid);
+        }
+
+        private async Task InternalDeleteFileAsync(int fileid)
+        {
             var file = await _daoFactory.GetReportDao().GetFileAsync(fileid);
 
             if (file == null) throw new ItemNotFoundException("File not found");

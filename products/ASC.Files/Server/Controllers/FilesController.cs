@@ -233,9 +233,14 @@ namespace ASC.Api.Documents
         }
 
         [Read("@privacy")]
-        public async Task<FolderContentWrapper<int>> GetPrivacyFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        public Task<FolderContentWrapper<int>> GetPrivacyFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
             if (!IsAvailablePrivacyRoomSettings()) throw new System.Security.SecurityException();
+            return InternalGetPrivacyFolderAsync(userIdOrGroupId, filterType, withsubfolders);
+        }
+
+        private async Task<FolderContentWrapper<int>> InternalGetPrivacyFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        {
             return await FilesControllerHelperInt.GetFolderAsync(await GlobalFolderHelper.FolderPrivacyAsync, userIdOrGroupId, filterType, withsubfolders);
         }
 
@@ -2367,7 +2372,7 @@ namespace ASC.Api.Documents
             return await FilesControllerHelperInt.CheckFillFormDraftAsync(fileId, model.Version, model.Doc, !model.RequestEmbedded, model.RequestView);
         }
 
-        public async Task<IEnumerable<string>> CheckDocServiceUrlAsync(CheckDocServiceUrlModel model)
+        public Task<IEnumerable<string>> CheckDocServiceUrlAsync(CheckDocServiceUrlModel model)
         {
             FilesLinkUtility.DocServiceUrl = model.DocServiceUrl;
             FilesLinkUtility.DocServiceUrlInternal = model.DocServiceUrlInternal;
@@ -2382,6 +2387,11 @@ namespace ASC.Api.Documents
                 throw new Exception("Mixed Active Content is not allowed. HTTPS address for Document Server is required.");
             }
 
+            return InternalCheckDocServiceUrlAsync();
+        }
+
+        private async Task<IEnumerable<string>> InternalCheckDocServiceUrlAsync()
+        {
             await DocumentServiceConnector.CheckDocServiceUrlAsync();
 
             return new[]
@@ -2395,14 +2405,19 @@ namespace ASC.Api.Documents
         /// <visible>false</visible>
         [AllowAnonymous]
         [Read("docservice")]
-        public async Task<object> GetDocServiceUrlAsync(bool version)
+        public Task<object> GetDocServiceUrlAsync(bool version)
         {
             var url = CommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.DocServiceApiUrl);
             if (!version)
             {
-                return url;
+                return Task.FromResult<object>(url);
             }
 
+            return InternalGetDocServiceUrlAsync(url);
+        }
+
+        private async Task<object> InternalGetDocServiceUrlAsync(string url)
+        {
             var dsVersion = await DocumentServiceConnector.GetVersionAsync();
 
             return new

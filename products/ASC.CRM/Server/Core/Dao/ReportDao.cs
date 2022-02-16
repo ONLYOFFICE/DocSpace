@@ -280,13 +280,18 @@ namespace ASC.CRM.Core.Dao
 
         #region Report Files
 
-        public async Task<List<Files.Core.File<int>>> SaveSampleReportFilesAsync()
+        public Task<List<Files.Core.File<int>>> SaveSampleReportFilesAsync()
         {
-            var result = new List<Files.Core.File<int>>();
-
             var storeTemplate = _global.GetStoreTemplate();
 
-            if (storeTemplate == null) return result;
+            if (storeTemplate == null) return System.Threading.Tasks.Task.FromResult(new List<Files.Core.File<int>>());
+
+            return InternalSaveSampleReportFilesAsync(storeTemplate);
+        }
+
+        private async Task<List<Files.Core.File<int>>> InternalSaveSampleReportFilesAsync(Data.Storage.IDataStore storeTemplate)
+        {
+            var result = new List<Files.Core.File<int>>();
 
             var culture = _userManager.GetUsers(_securityContext.CurrentAccount.ID).GetCulture() ??
                           _tenantManager.GetCurrentTenant().GetCulture();

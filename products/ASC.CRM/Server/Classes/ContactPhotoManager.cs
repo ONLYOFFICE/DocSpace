@@ -214,13 +214,18 @@ namespace ASC.Web.CRM.Classes
 
         #region Private Methods
 
-        private async Task<String> GetPhotoUriAsync(int contactID, bool isCompany, Size photoSize)
+        private Task<String> GetPhotoUriAsync(int contactID, bool isCompany, Size photoSize)
         {
             var photoUri = FromCache(contactID, photoSize);
 
-            if (!String.IsNullOrEmpty(photoUri)) return photoUri;
+            if (!String.IsNullOrEmpty(photoUri)) return Task.FromResult(photoUri);
 
-            photoUri = await FromDataStoreAsync(contactID, photoSize);
+            return InternalGetPhotoUriAsync(contactID, isCompany, photoSize);
+        }
+
+        private async Task<String> InternalGetPhotoUriAsync(int contactID, bool isCompany, Size photoSize)
+        {
+            var photoUri = await FromDataStoreAsync(contactID, photoSize);
 
             if (String.IsNullOrEmpty(photoUri))
                 photoUri = GetDefaultPhoto(isCompany, photoSize);

@@ -86,14 +86,20 @@ namespace ASC.CRM.Core
                 entry.CreateBy == userId || entry.ModifiedBy == userId || _crmSecurity.IsAdministrator(userId);
         }
 
-        public async Task<bool> CanReadAsync<T>(FileEntry<T> entry, Guid userId)
+        public Task<bool> CanReadAsync<T>(FileEntry<T> entry, Guid userId)
         {
-            if (entry.FileEntryType == FileEntryType.Folder) return false;
+            if (entry.FileEntryType == FileEntryType.Folder) return Task.FromResult(false);
 
             var invoice = _daoFactory.GetInvoiceDao().GetByFileId(Convert.ToInt32(entry.ID));
             if (invoice != null)
-                return _crmSecurity.CanAccessTo(invoice, userId);
+                return Task.FromResult(_crmSecurity.CanAccessTo(invoice, userId));
 
+            return InternalCanReadAsync(entry, userId);
+
+        }
+
+        private async Task<bool> InternalCanReadAsync<T>(FileEntry<T> entry, Guid userId)
+        {
             var reportFile = await _daoFactory.GetReportDao().GetFileAsync(Convert.ToInt32(entry.ID), userId);
 
             if (reportFile != null)
@@ -106,7 +112,7 @@ namespace ASC.CRM.Core
                 .Select(x => Convert.ToInt32(x.TagName.Split(new[] { '_' })[1]))
                 .ToListAsync();
 
-            if (!eventIds.Any()) return false;
+            if (eventIds.Count == 0) return false;
 
             var eventItem = _daoFactory.GetRelationshipEventDao().GetByID(eventIds.First());
 

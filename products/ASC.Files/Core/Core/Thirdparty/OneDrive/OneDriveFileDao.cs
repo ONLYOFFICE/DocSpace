@@ -286,11 +286,16 @@ namespace ASC.Files.Thirdparty.OneDrive
             return Task.FromResult(false);
         }
 
-        public async Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
+        public Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
         {
             if (file == null) throw new ArgumentNullException(nameof(file));
             if (fileStream == null) throw new ArgumentNullException(nameof(fileStream));
 
+            return InternalSaveFileAsync(file, fileStream);
+        }
+
+        private async Task<File<string>> InternalSaveFileAsync(File<string> file, Stream fileStream)
+        {
             Item newOneDriveFile = null;
             var storage = await ProviderInfo.StorageAsync;
 
@@ -529,11 +534,16 @@ namespace ASC.Files.Thirdparty.OneDrive
             return file;
         }
 
-        public async Task<ChunkedUploadSession<string>> CreateUploadSessionAsync(File<string> file, long contentLength)
+        public Task<ChunkedUploadSession<string>> CreateUploadSessionAsync(File<string> file, long contentLength)
         {
             if (SetupInfo.ChunkUploadSize > contentLength)
-                return new ChunkedUploadSession<string>(RestoreIds(file), contentLength) { UseChunks = false };
+                return Task.FromResult(new ChunkedUploadSession<string>(RestoreIds(file), contentLength) { UseChunks = false });
 
+            return InternalCreateUploadSessionAsync(file, contentLength);
+        }
+
+        private async Task<ChunkedUploadSession<string>> InternalCreateUploadSessionAsync(File<string> file, long contentLength)
+        {
             var uploadSession = new ChunkedUploadSession<string>(file, contentLength);
 
             Item onedriveFile;

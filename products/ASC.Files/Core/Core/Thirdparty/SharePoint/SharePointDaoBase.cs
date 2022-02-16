@@ -110,10 +110,15 @@ namespace ASC.Files.Thirdparty.SharePoint
             return string.Format(" ({0}){1}", index + 1, staticText);
         }
 
-        protected async Task UpdatePathInDBAsync(string oldValue, string newValue)
+        protected Task UpdatePathInDBAsync(string oldValue, string newValue)
         {
-            if (oldValue.Equals(newValue)) return;
+            if (oldValue.Equals(newValue)) return Task.CompletedTask;
 
+            return InternalUpdatePathInDBAsync(oldValue, newValue);
+        }
+
+        private async Task InternalUpdatePathInDBAsync(string oldValue, string newValue)
+        {
             using var tx = FilesDbContext.Database.BeginTransaction();
             var oldIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
                 .Where(r => r.Id.StartsWith(oldValue))

@@ -273,10 +273,15 @@ namespace ASC.Files.Thirdparty.SharePoint
             return Task.FromResult(false);
         }
 
-        public async Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
+        public Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
         {
             if (fileStream == null) throw new ArgumentNullException(nameof(fileStream));
 
+            return internalSaveFileAsync(file, fileStream);
+        }
+
+        private async Task<File<string>> internalSaveFileAsync(File<string> file, Stream fileStream)
+        {
             if (file.ID != null)
             {
                 var sharePointFile = await ProviderInfo.CreateFileAsync(file.ID, fileStream).ConfigureAwait(false);

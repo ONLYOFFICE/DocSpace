@@ -324,10 +324,15 @@ namespace ASC.CRM.Api
         ///   Opportunity list
         /// </returns>
         [Update(@"opportunity")]
-        public async Task<IEnumerable<OpportunityDto>> DeleteBatchDealsAsync(IEnumerable<int> opportunityids)
+        public Task<IEnumerable<OpportunityDto>> DeleteBatchDealsAsync(IEnumerable<int> opportunityids)
         {
             if (opportunityids == null || !opportunityids.Any()) throw new ArgumentException();
 
+            return InternalDeleteBatchDealsAsync(opportunityids);
+        }
+
+        private async Task<IEnumerable<OpportunityDto>> InternalDeleteBatchDealsAsync(IEnumerable<int> opportunityids)
+        {
             var opportunities = await _daoFactory.GetDealDao().DeleteBatchDealsAsync(opportunityids.ToArray());
             _messageService.Send(MessageAction.OpportunitiesDeleted, _messageTarget.Create(opportunityids), opportunities.Select(o => o.Title));
 
@@ -353,7 +358,7 @@ namespace ASC.CRM.Api
         ///   Opportunity list
         /// </returns>
         [Delete(@"opportunity/filter")]
-        public async Task<IEnumerable<OpportunityDto>> DeleteBatchDealsAsync(
+        public Task<IEnumerable<OpportunityDto>> DeleteBatchDealsAsync(
             Guid responsibleid,
             int opportunityStagesid,
             IEnumerable<string> tags,
@@ -372,8 +377,13 @@ namespace ASC.CRM.Api
                                                          contactAlsoIsParticipant,
                                                          fromDate, toDate, 0, 0, null);
 
-            if (!deals.Any()) return Enumerable.Empty<OpportunityDto>();
+            if (deals.Count == 0) return System.Threading.Tasks.Task.FromResult(Enumerable.Empty<OpportunityDto>());
 
+            return InternalDeleteBatchDealsAsync(deals);
+        }
+
+        private async Task<IEnumerable<OpportunityDto>> InternalDeleteBatchDealsAsync(List<Deal> deals)
+        {
             deals = await _daoFactory.GetDealDao().DeleteBatchDealsAsync(deals);
             _messageService.Send(MessageAction.OpportunitiesDeleted, _messageTarget.Create(deals.Select(x => x.ID)), deals.Select(d => d.Title));
 
@@ -505,10 +515,15 @@ namespace ASC.CRM.Api
         ///   Opportunity
         /// </returns>
         [Delete(@"opportunity/{opportunityid:int}")]
-        public async Task<OpportunityDto> DeleteDealAsync(int opportunityid)
+        public Task<OpportunityDto> DeleteDealAsync(int opportunityid)
         {
             if (opportunityid <= 0) throw new ArgumentException();
 
+            return InternalDeleteDealAsync(opportunityid);
+        }
+
+        private async Task<OpportunityDto> InternalDeleteDealAsync(int opportunityid)
+        {
             var deal = await _daoFactory.GetDealDao().DeleteDealAsync(opportunityid);
             if (deal == null) throw new ItemNotFoundException();
 

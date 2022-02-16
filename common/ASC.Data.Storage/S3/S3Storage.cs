@@ -449,10 +449,15 @@ namespace ASC.Data.Storage.S3
             QuotaUsedDelete(domain, size);
         }
 
-        public override async Task DeleteFilesAsync(string domain, List<string> paths)
+        public override Task DeleteFilesAsync(string domain, List<string> paths)
         {
-            if (paths.Count == 0) return;
+            if (paths.Count == 0) return Task.CompletedTask;
 
+            return InternalDeleteFilesAsync(domain, paths);
+        }
+
+        private async Task InternalDeleteFilesAsync(string domain, List<string> paths)
+        {
             var keysToDel = new List<string>();
 
             long quotaUsed = 0;
@@ -1154,10 +1159,15 @@ namespace ASC.Data.Storage.S3
             return string.IsNullOrEmpty(_recycleDir) ? "" : $"{_recycleDir}/{path.TrimStart('/')}";
         }
 
-        private async Task RecycleAsync(IAmazonS3 client, string domain, string key)
+        private Task RecycleAsync(IAmazonS3 client, string domain, string key)
         {
-            if (string.IsNullOrEmpty(_recycleDir)) return;
+            if (string.IsNullOrEmpty(_recycleDir)) return Task.CompletedTask;
 
+            return InternalRecycleAsync(client, domain, key);
+        }
+
+        private async Task InternalRecycleAsync(IAmazonS3 client, string domain, string key)
+        {
             var copyObjectRequest = new CopyObjectRequest
             {
                 SourceBucket = _bucket,

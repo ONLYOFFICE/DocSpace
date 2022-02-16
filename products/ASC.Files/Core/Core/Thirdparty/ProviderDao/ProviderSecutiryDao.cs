@@ -90,12 +90,19 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return result;
         }
 
-        public async Task<IEnumerable<FileShareRecord>> GetSharesAsync(FileEntry<string> entry)
+        public Task<IEnumerable<FileShareRecord>> GetSharesAsync(FileEntry<string> entry)
         {
             var result = new List<FileShareRecord>();
 
-            if (entry == null) return result;
+            if (entry == null) return Task.FromResult<IEnumerable<FileShareRecord>>(result);
 
+
+            return InternalGetSharesAsync(entry);
+        }
+
+        private async Task<IEnumerable<FileShareRecord>> InternalGetSharesAsync(FileEntry<string> entry)
+        {
+            var result = new List<FileShareRecord>();
 
             var folders = new List<FileEntry<string>>();
             if (entry is Folder<string> entryFolder)
@@ -124,20 +131,30 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return result;
         }
 
-        private async Task GetFoldersForShareAsync(string folderId, ICollection<FileEntry<string>> folders)
+        private Task GetFoldersForShareAsync(string folderId, ICollection<FileEntry<string>> folders)
         {
             var selector = GetSelector(folderId);
             var folderDao = selector.GetFolderDao(folderId);
-            if (folderDao == null) return;
+            if (folderDao == null) return Task.CompletedTask;
 
+            return InternalGetFoldersForShareAsync(folderId, folders, folderDao, selector);
+        }
+
+        private async Task InternalGetFoldersForShareAsync(string folderId, ICollection<FileEntry<string>> folders, IFolderDao<string> folderDao, IDaoSelector selector)
+        {
             var folder = await folderDao.GetFolderAsync(selector.ConvertId(folderId));
             if (folder != null) folders.Add(folder);
         }
 
-        private async Task<List<FileShareRecord>> GetShareForFoldersAsync(IReadOnlyCollection<FileEntry<string>> folders)
+        private Task<List<FileShareRecord>> GetShareForFoldersAsync(IReadOnlyCollection<FileEntry<string>> folders)
         {
-            if (folders.Count > 0) return new List<FileShareRecord>();
+            if (folders.Count > 0) return Task.FromResult(new List<FileShareRecord>());
 
+            return InternalGetShareForFoldersAsync(folders);
+        }
+
+        private async Task<List<FileShareRecord>> InternalGetShareForFoldersAsync(IReadOnlyCollection<FileEntry<string>> folders)
+        {
             var result = new List<FileShareRecord>();
 
             foreach (var folder in folders)

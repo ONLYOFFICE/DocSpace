@@ -45,11 +45,16 @@ namespace ASC.Data.Storage
             return ms;
         }
 
-        public static async Task IronReadToStreamAsync(this IDataStore store, string domain, string path, int tryCount, Stream readTo)
+        public static Task IronReadToStreamAsync(this IDataStore store, string domain, string path, int tryCount, Stream readTo)
         {
             if (tryCount < 1) throw new ArgumentOutOfRangeException(nameof(tryCount), "Must be greater or equal 1.");
             if (!readTo.CanWrite) throw new ArgumentException("stream cannot be written", nameof(readTo));
 
+            return InternalIronReadToStreamAsync(store, domain, path, tryCount, readTo);
+        }
+
+        private static async Task InternalIronReadToStreamAsync(this IDataStore store, string domain, string path, int tryCount, Stream readTo)
+        {
             var tryCurrent = 0;
             var offset = 0;
 

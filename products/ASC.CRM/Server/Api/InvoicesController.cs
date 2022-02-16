@@ -754,7 +754,7 @@ namespace ASC.CRM.Api
         /// <category>Invoices</category>
         /// <returns>File</returns>
         [Read(@"invoice/{invoiceid:int}/pdf")]
-        public async Task<FileWrapper<int>> GetInvoicePdfExistOrCreateAsync(int invoiceid)
+        public Task<FileWrapper<int>> GetInvoicePdfExistOrCreateAsync(int invoiceid)
         {
             if (invoiceid <= 0) throw new ArgumentException();
 
@@ -766,6 +766,11 @@ namespace ASC.CRM.Api
                 throw _crmSecurity.CreateSecurityException();
             }
 
+            return internalGetInvoicePdfExistOrCreateAsync(invoice);
+        }
+
+        private async Task<FileWrapper<int>> internalGetInvoicePdfExistOrCreateAsync(Invoice invoice)
+        {
             return await _fileWrapperHelper.GetAsync(await GetInvoicePdfExistingOrCreateAsync(invoice));
         }
 
@@ -802,7 +807,7 @@ namespace ASC.CRM.Api
         /// <category>Invoices</category>
         /// <returns>ConverterData</returns>
         [Create(@"invoice/converter/data")]
-        public async Task<ConverterData> CreateInvoiceConverterDataAsync(
+        public Task<ConverterData> CreateInvoiceConverterDataAsync(
     [FromBody] CreateInvoiceConverterDataRequestDto inDto)
         {
             var invoiceId = inDto.InvoiceId;
@@ -830,8 +835,16 @@ namespace ASC.CRM.Api
             if (existingFile != null)
             {
                 converterData.FileId = invoice.FileID;
-                return converterData;
+                return System.Threading.Tasks.Task.FromResult(converterData);
             }
+
+            return InternalCreateInvoiceConverterDataAsync(converterData, invoice);
+        }
+
+        private async Task<ConverterData> InternalCreateInvoiceConverterDataAsync(ConverterData converterData, Invoice invoice)
+        {
+            var storageUrl = converterData.StorageUrl;
+            var revisionId = converterData.RevisionId;
 
             if (string.IsNullOrEmpty(storageUrl) || string.IsNullOrEmpty(revisionId))
             {

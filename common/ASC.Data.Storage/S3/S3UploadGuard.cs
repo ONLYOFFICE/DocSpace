@@ -64,15 +64,20 @@ namespace ASC.Data.Storage.S3
             task.Start();
         }
 
-        private async Task DeleteExpiredUploadsActionAsync(TimeSpan trustInterval)
+        private Task DeleteExpiredUploadsActionAsync(TimeSpan trustInterval)
         {
             Configure();
 
             if (configErrors)
             {
-                return;
+                return Task.CompletedTask;
             }
 
+            return InternalDeleteExpiredUploadsActionAsync(trustInterval);
+        }
+
+        private async Task InternalDeleteExpiredUploadsActionAsync(TimeSpan trustInterval)
+        {
             using var s3 = GetClient();
             var nextKeyMarker = string.Empty;
             var nextUploadIdMarker = string.Empty;

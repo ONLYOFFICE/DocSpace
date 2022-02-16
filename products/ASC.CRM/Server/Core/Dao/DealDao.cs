@@ -739,7 +739,7 @@ namespace ASC.CRM.Core.Dao
             return _mapper.Map<List<DbDeal>, List<Deal>>(dbDeals).FindAll(_crmSecurity.CanAccessTo);
         }
 
-        public async Task<Deal> DeleteDealAsync(int id)
+        public Task<Deal> DeleteDealAsync(int id)
         {
             if (id <= 0) return null;
 
@@ -747,6 +747,11 @@ namespace ASC.CRM.Core.Dao
 
             if (deal == null) return null;
 
+            return internalDeleteDealAsync(id, deal);
+        }
+
+        private async Task<Deal> internalDeleteDealAsync(int id, Deal deal)
+        {
             _crmSecurity.DemandDelete(deal);
 
             var dbEntity = CrmDbContext.Deals.Find(id);
@@ -761,25 +766,26 @@ namespace ASC.CRM.Core.Dao
             return deal;
         }
 
-        public async Task<List<Deal>> DeleteBatchDealsAsync(int[] dealID)
+        public Task<List<Deal>> DeleteBatchDealsAsync(int[] dealID)
         {
             var deals = GetDeals(dealID).FindAll(_crmSecurity.CanDelete).ToList();
 
-            if (!deals.Any()) return deals;
+            if (deals.Count == 0) return System.Threading.Tasks.Task.FromResult(deals);
 
-            // Delete relative  keys
-            _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "deals.*"));
-
-            await DeleteBatchDealsExecuteAsync(deals);
-            return deals;
+            return internalDeleteBatchDealsAsync(deals);
         }
 
-        public async Task<List<Deal>> DeleteBatchDealsAsync(List<Deal> deals)
+        public Task<List<Deal>> DeleteBatchDealsAsync(List<Deal> deals)
         {
             deals = deals.FindAll(_crmSecurity.CanDelete).ToList();
 
-            if (!deals.Any()) return deals;
+            if (deals.Count == 0) return System.Threading.Tasks.Task.FromResult(deals);
 
+            return internalDeleteBatchDealsAsync(deals);
+        }
+
+        private async Task<List<Deal>> internalDeleteBatchDealsAsync(List<Deal> deals)
+        {
             // Delete relative  keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "deals.*"));
 
@@ -788,10 +794,15 @@ namespace ASC.CRM.Core.Dao
             return deals;
         }
 
-        private async System.Threading.Tasks.Task DeleteBatchDealsExecuteAsync(List<Deal> deals)
+        private System.Threading.Tasks.Task DeleteBatchDealsExecuteAsync(List<Deal> deals)
         {
-            if (deals == null || !deals.Any()) return;
+            if (deals == null || deals.Count == 0) return System.Threading.Tasks.Task.CompletedTask;
 
+            return InternalDeleteBatchDealsExecuteAsync(deals);
+        }
+
+        private async System.Threading.Tasks.Task InternalDeleteBatchDealsExecuteAsync(List<Deal> deals)
+        {
             var dealID = deals.Select(x => x.ID).ToArray();
 
 

@@ -64,13 +64,18 @@ namespace ASC.Data.Storage
             chunksize = 5 * 1024 * 1024;
         }
 
-        public async Task CopyFileAsync(string srcDomain, string srcPath, string destDomain, string destPath)
+        public Task CopyFileAsync(string srcDomain, string srcPath, string destDomain, string destPath)
         {
             if (srcDomain == null) throw new ArgumentNullException(nameof(srcDomain));
             if (srcPath == null) throw new ArgumentNullException(nameof(srcPath));
             if (destDomain == null) throw new ArgumentNullException(nameof(destDomain));
             if (destPath == null) throw new ArgumentNullException(nameof(destPath));
 
+            return InternalCopyFileAsync(srcDomain, srcPath, destDomain, destPath);
+        }
+
+        private async Task InternalCopyFileAsync(string srcDomain, string srcPath, string destDomain, string destPath)
+        {
             using var stream = await source.GetReadStreamAsync(srcDomain, srcPath);
             if (stream.Length < maxChunkUploadSize)
             {

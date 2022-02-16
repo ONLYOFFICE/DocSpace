@@ -64,11 +64,18 @@ namespace ASC.Web.CRM.Classes
             _messageService.Send(GetMessageAction(entityType));
         }
 
-        public async Task<FileUploadResult> ProcessUploadFakeAsync(string fileTemp, string importSettingsJSON)
+        public Task<FileUploadResult> ProcessUploadFakeAsync(string fileTemp, string importSettingsJSON)
         {
             var fileUploadResult = new FileUploadResult();
 
-            if (String.IsNullOrEmpty(fileTemp) || String.IsNullOrEmpty(importSettingsJSON)) return fileUploadResult;
+            if (String.IsNullOrEmpty(fileTemp) || String.IsNullOrEmpty(importSettingsJSON)) return Task.FromResult(fileUploadResult);
+
+            return InternalProcessUploadFakeAsync(fileTemp, importSettingsJSON);
+        }
+
+        private async Task<FileUploadResult> InternalProcessUploadFakeAsync(string fileTemp, string importSettingsJSON)
+        {
+            var fileUploadResult = new FileUploadResult();
 
             if (!await _global.GetStore().IsFileAsync("temp", fileTemp)) return fileUploadResult;
 

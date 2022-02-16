@@ -211,9 +211,15 @@ namespace ASC.Files.Thirdparty.ProviderDao
         /// <param name="file"></param>
         /// <param name="offset"></param>
         /// <returns>Stream</returns>
-        public async Task<Stream> GetFileStreamAsync(File<string> file, long offset)
+        public Task<Stream> GetFileStreamAsync(File<string> file, long offset)
         {
             if (file == null) throw new ArgumentNullException(nameof(file));
+
+            return InternalGetFileStreamAsync(file, offset);
+        }
+
+        private async Task<Stream> InternalGetFileStreamAsync(File<string> file, long offset)
+        {
             var fileId = file.ID;
             var selector = GetSelector(fileId);
             file.ID = selector.ConvertId(fileId);
@@ -224,9 +230,15 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return stream;
         }
 
-        public async Task<bool> IsSupportedPreSignedUriAsync(File<string> file)
+        public Task<bool> IsSupportedPreSignedUriAsync(File<string> file)
         {
             if (file == null) throw new ArgumentNullException(nameof(file));
+
+            return InternalIsSupportedPreSignedUriAsync(file);
+        }
+
+        private async Task<bool> InternalIsSupportedPreSignedUriAsync(File<string> file)
+        {
             var fileId = file.ID;
             var selector = GetSelector(fileId);
             file.ID = selector.ConvertId(fileId);
@@ -237,9 +249,15 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return isSupported;
         }
 
-        public async Task<Uri> GetPreSignedUriAsync(File<string> file, TimeSpan expires)
+        public Task<Uri> GetPreSignedUriAsync(File<string> file, TimeSpan expires)
         {
             if (file == null) throw new ArgumentNullException(nameof(file));
+
+            return InternalGetPreSignedUriAsync(file, expires);
+        }
+
+        private async Task<Uri> InternalGetPreSignedUriAsync(File<string> file, TimeSpan expires)
+        {
             var fileId = file.ID;
             var selector = GetSelector(fileId);
             file.ID = selector.ConvertId(fileId);
@@ -250,10 +268,15 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return streamUri;
         }
 
-        public async Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
+        public Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
         {
             if (file == null) throw new ArgumentNullException(nameof(file));
 
+            return InternalSaveFileAsync(file, fileStream);
+        }
+
+        private async Task<File<string>> InternalSaveFileAsync(File<string> file, Stream fileStream)
+        {
             var fileId = file.ID;
             var folderId = file.FolderID;
 

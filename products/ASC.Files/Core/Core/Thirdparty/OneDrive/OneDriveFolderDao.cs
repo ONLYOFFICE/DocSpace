@@ -183,14 +183,19 @@ namespace ASC.Files.Thirdparty.OneDrive
             return path;
         }
 
-        public async Task<string> SaveFolderAsync(Folder<string> folder)
+        public Task<string> SaveFolderAsync(Folder<string> folder)
         {
             if (folder == null) throw new ArgumentNullException(nameof(folder));
             if (folder.ID != null)
             {
-                return await RenameFolderAsync(folder, folder.Title).ConfigureAwait(false);
+                return RenameFolderAsync(folder, folder.Title);
             }
 
+            return InternalSaveFolderAsync(folder);
+        }
+
+        private async Task<string> InternalSaveFolderAsync(Folder<string> folder)
+        {
             if (folder.FolderID != null)
             {
                 var onedriveFolderId = MakeOneDriveId(folder.FolderID);

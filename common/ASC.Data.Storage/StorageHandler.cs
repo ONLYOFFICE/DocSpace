@@ -64,7 +64,7 @@ namespace ASC.Data.Storage.DiscStorage
 
         private IServiceProvider ServiceProvider { get; }
 
-        public async Task Invoke(HttpContext context)
+        public Task Invoke(HttpContext context)
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<StorageHandlerScope>();
@@ -73,7 +73,7 @@ namespace ASC.Data.Storage.DiscStorage
             if (_checkAuth && !securityContext.IsAuthenticated)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                return;
+                return Task.CompletedTask;
             }
 
             var storage = storageFactory.GetStorage(tenantManager.GetCurrentTenant().TenantId.ToString(CultureInfo.InvariantCulture), _module);
@@ -92,10 +92,15 @@ namespace ASC.Data.Storage.DiscStorage
                 if (validateResult != EmailValidationKeyProvider.ValidationResult.Ok)
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                    return;
+                    return Task.CompletedTask;
                 }
             }
 
+            return InternalInvoke(context, storage, path, header);
+        }
+
+        private async Task InternalInvoke(HttpContext context, IDataStore storage, string path, string header)
+        {
             if (!await storage.IsFileAsync(_domain, path))
             {
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
@@ -143,11 +148,6 @@ namespace ASC.Data.Storage.DiscStorage
             if (encoding != null)
                 context.Response.Headers["Content-Encoding"] = encoding;
 
-            await InternalInvoke(context, storage, path);
-        }
-
-        private async Task InternalInvoke(HttpContext context, IDataStore storage, string path)
-        {
             using (var stream = await storage.GetReadStreamAsync(_domain, path))
             {
                 await stream.CopyToAsync(context.Response.Body);

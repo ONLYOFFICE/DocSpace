@@ -255,10 +255,15 @@ namespace ASC.Files.Thirdparty
             return set.AsQueryable().Where(r => r.TenantId == TenantID);
         }     
 
-        protected async Task<string> MappingIDAsync(string id, bool saveIfNotExist = false)
+        protected Task<string> MappingIDAsync(string id, bool saveIfNotExist = false)
         {
             if (id == null) return null;
 
+            return InternalMappingIDAsync(id, saveIfNotExist);
+        }
+
+        private async Task<string> InternalMappingIDAsync(string id, bool saveIfNotExist = false)
+        {
             string result;
             if (id.StartsWith(Id))
             {

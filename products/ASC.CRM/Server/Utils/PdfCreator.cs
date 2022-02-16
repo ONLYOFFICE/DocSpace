@@ -222,13 +222,18 @@ namespace ASC.Web.CRM.Classes
             }
         }
 
-        public async Task<File<int>> GetConvertedFileAsync(ConverterData data, DaoFactory daoFactory)
+        public Task<File<int>> GetConvertedFileAsync(ConverterData data, DaoFactory daoFactory)
         {
             if (string.IsNullOrEmpty(data.StorageUrl) || string.IsNullOrEmpty(data.RevisionId))
             {
                 return null;
             }
 
+            return internalGetConvertedFileAsync(data, daoFactory);
+        }
+
+        private async Task<File<int>> internalGetConvertedFileAsync(ConverterData data, DaoFactory daoFactory)
+        {
             var (_, urlToFile) = await _documentServiceConnector.GetConvertedUriAsync(data.StorageUrl, FormatDocx, FormatPdf, data.RevisionId, null, null, null, true);
 
             if (string.IsNullOrEmpty(urlToFile))

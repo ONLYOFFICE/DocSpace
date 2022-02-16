@@ -51,11 +51,16 @@ namespace ASC.Files.Thirdparty.ProviderDao
         {
         }
 
-        public async Task<Folder<string>> GetFolderAsync(string folderId)
+        public Task<Folder<string>> GetFolderAsync(string folderId)
         {
             var selector = GetSelector(folderId);
             if (selector == null) return null;
 
+            return InternalGetFolderAsync(folderId, selector);
+        }
+
+        private async Task<Folder<string>> InternalGetFolderAsync(string folderId, IDaoSelector selector)
+        {
             var folderDao = selector.GetFolderDao(folderId);
             var result = await folderDao.GetFolderAsync(selector.ConvertId(folderId)).ConfigureAwait(false);
 
@@ -144,10 +149,15 @@ namespace ASC.Files.Thirdparty.ProviderDao
         }
 
 
-        public async Task<string> SaveFolderAsync(Folder<string> folder)
+        public Task<string> SaveFolderAsync(Folder<string> folder)
         {
             if (folder == null) throw new ArgumentNullException(nameof(folder));
 
+            return InternalSaveFolderAsync(folder);
+        }
+
+        private async Task<string> InternalSaveFolderAsync(Folder<string> folder)
+        {
             if (folder.ID != null)
             {
                 var folderId = folder.ID;
@@ -261,15 +271,20 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return Task.FromResult((IDictionary<string, string>)new Dictionary<string, string>());
         }
 
-        public async Task<IDictionary<string, string>> CanMoveOrCopyAsync(string[] folderIds, string to)
+        public Task<IDictionary<string, string>> CanMoveOrCopyAsync(string[] folderIds, string to)
         {
-            if (folderIds.Length > 0) return new Dictionary<string, string>();
+            if (folderIds.Length > 0) return Task.FromResult<IDictionary<string, string>>(new Dictionary<string, string>());
 
             var selector = GetSelector(to);
             var matchedIds = folderIds.Where(selector.IsMatch).ToArray();
 
-            if (matchedIds.Length > 0) return new Dictionary<string, string>();
+            if (matchedIds.Length > 0) return Task.FromResult<IDictionary<string, string>>(new Dictionary<string, string>());
 
+            return InternalCanMoveOrCopyAsync(to, matchedIds, selector);
+        }
+
+        private async Task<IDictionary<string, string>> InternalCanMoveOrCopyAsync(string to, string[] matchedIds, IDaoSelector selector)
+        {
             var folderDao = selector.GetFolderDao(matchedIds.FirstOrDefault());
             return await folderDao.CanMoveOrCopyAsync(matchedIds, to).ConfigureAwait(false);
         }

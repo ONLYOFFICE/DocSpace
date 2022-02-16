@@ -146,10 +146,15 @@ namespace ASC.Files.Thirdparty.OneDrive
             return new List<Item>(await GetItemRequest(folderId).Children.Request().GetAsync());
         }
 
-        public async Task<Stream> DownloadStreamAsync(Item file, int offset = 0)
+        public Task<Stream> DownloadStreamAsync(Item file, int offset = 0)
         {
             if (file == null || file.File == null) throw new ArgumentNullException(nameof(file));
 
+            return InternalDownloadStreamAsync(file, offset);
+        }
+
+        private async Task<Stream> InternalDownloadStreamAsync(Item file, int offset = 0)
+        {
             var fileStream = await OnedriveClient
                 .Drive
                 .Items[file.Id]
@@ -248,10 +253,15 @@ namespace ASC.Files.Thirdparty.OneDrive
                        : OnedriveClient.Drive.Items[itemId];
         }
 
-        public async Task<ResumableUploadSession> CreateResumableSessionAsync(Item onedriveFile, long contentLength)
+        public Task<ResumableUploadSession> CreateResumableSessionAsync(Item onedriveFile, long contentLength)
         {
             if (onedriveFile == null) throw new ArgumentNullException(nameof(onedriveFile));
 
+            return InternalCreateResumableSessionAsync(onedriveFile, contentLength);
+        }
+
+        private async Task<ResumableUploadSession> InternalCreateResumableSessionAsync(Item onedriveFile, long contentLength)
+        {
             var folderId = onedriveFile.ParentReference.Id;
             var fileName = onedriveFile.Name;
 
@@ -289,7 +299,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             return uploadSession;
         }
 
-        public async Task TransferAsync(ResumableUploadSession oneDriveSession, Stream stream, long chunkLength)
+        public Task TransferAsync(ResumableUploadSession oneDriveSession, Stream stream, long chunkLength)
         {
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream));
@@ -297,6 +307,11 @@ namespace ASC.Files.Thirdparty.OneDrive
             if (oneDriveSession.Status != ResumableUploadSessionStatus.Started)
                 throw new InvalidOperationException("Can't upload chunk for given upload session.");
 
+            return InternalTransferAsync(oneDriveSession, stream, chunkLength);
+        }
+
+        private async Task InternalTransferAsync(ResumableUploadSession oneDriveSession, Stream stream, long chunkLength)
+        {
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(oneDriveSession.Location);
             request.Method = HttpMethod.Put;

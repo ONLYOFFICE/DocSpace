@@ -178,7 +178,7 @@ namespace ASC.Data.Storage.GoogleCloud
             return (long)ts.TotalSeconds;
         }
 
-        public override async Task<Uri> GetInternalUriAsync(string domain, string path, TimeSpan expire, IEnumerable<string> headers)
+        public override Task<Uri> GetInternalUriAsync(string domain, string path, TimeSpan expire, IEnumerable<string> headers)
         {
             if (expire == TimeSpan.Zero || expire == TimeSpan.MinValue || expire == TimeSpan.MaxValue)
             {
@@ -186,9 +186,14 @@ namespace ASC.Data.Storage.GoogleCloud
             }
             if (expire == TimeSpan.Zero || expire == TimeSpan.MinValue || expire == TimeSpan.MaxValue)
             {
-                return GetUriShared(domain, path);
+                return Task.FromResult(GetUriShared(domain, path));
             }
 
+            return InternalGetInternalUriAsync(domain, path, expire);
+        }
+
+        private async Task<Uri> InternalGetInternalUriAsync(string domain, string path, TimeSpan expire)
+        {
             using var storage = GetStorage();
 
             using var stream = new MemoryStream(Encoding.UTF8.GetBytes(_json ?? ""));
@@ -375,10 +380,15 @@ namespace ASC.Data.Storage.GoogleCloud
             }
         }       
 
-        public override async Task DeleteFilesAsync(string domain, List<string> paths)
+        public override Task DeleteFilesAsync(string domain, List<string> paths)
         {
-            if (paths.Count == 0) return;
+            if (paths.Count == 0) return Task.CompletedTask;
 
+            return InternalDeleteFilesAsync(domain, paths);
+        }
+
+        private async Task InternalDeleteFilesAsync(string domain, List<string> paths)
+        {
             var keysToDel = new List<string>();
 
             long quotaUsed = 0;

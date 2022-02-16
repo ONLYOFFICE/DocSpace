@@ -158,14 +158,19 @@ namespace ASC.Data.Storage.Encryption
             log.DebugFormat("Percentage: {0}", Percentage);
         }
       
-        private async Task<List<string>> ReadProgressAsync(DiscDataStore store)
+        private Task<List<string>> ReadProgressAsync(DiscDataStore store)
         {
-            var encryptedFiles = new List<string>();
-
             if (!UseProgressFile)
             {
-                return encryptedFiles;
+                return Task.FromResult(new List<string>());
             }
+
+            return InternalReadProgressAsync(store);
+        }
+
+        private async Task<List<string>> InternalReadProgressAsync(DiscDataStore store)
+        {
+            var encryptedFiles = new List<string>();
 
             if (await store.IsFileAsync(string.Empty, ProgressFileName))
             {

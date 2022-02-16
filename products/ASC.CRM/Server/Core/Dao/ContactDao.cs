@@ -1508,26 +1508,26 @@ namespace ASC.CRM.Core.Dao
                     .ConvertAll(ToContact);
         }
 
-        public async Task<List<Contact>> DeleteBatchContactAsync(int[] contactID)
+        public Task<List<Contact>> DeleteBatchContactAsync(int[] contactID)
         {
             if (contactID == null || contactID.Length == 0) return null;
 
             var contacts = GetContacts(contactID).Where(_crmSecurity.CanDelete).ToList();
-            if (!contacts.Any()) return contacts;
+            if (contacts.Count == 0) return System.Threading.Tasks.Task.FromResult(contacts);
 
-            // Delete relative  keys
-            _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "contacts.*"));
-
-            await DeleteBatchContactsExecuteAsync(contacts);
-
-            return contacts;
+            return InternalDeleteBatchContactAsync(contacts);
         }
 
-        public async Task<List<Contact>> DeleteBatchContactAsync(List<Contact> contacts)
+        public Task<List<Contact>> DeleteBatchContactAsync(List<Contact> contacts)
         {
             contacts = contacts.FindAll(_crmSecurity.CanDelete).ToList();
-            if (!contacts.Any()) return contacts;
+            if (contacts.Count == 0) return System.Threading.Tasks.Task.FromResult(contacts);
 
+            return InternalDeleteBatchContactAsync(contacts);
+        }
+
+        private async Task<List<Contact>> InternalDeleteBatchContactAsync(List<Contact> contacts)
+        {
             // Delete relative  keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "contacts.*"));
 
@@ -1536,13 +1536,18 @@ namespace ASC.CRM.Core.Dao
             return contacts;
         }
 
-        public async Task<Contact> DeleteContactAsync(int contactID)
+        public Task<Contact> DeleteContactAsync(int contactID)
         {
-            if (contactID <= 0) return null;
+            if (contactID <= 0) return System.Threading.Tasks.Task.FromResult<Contact>(null);
 
             var contact = GetByID(contactID);
-            if (contact == null) return null;
+            if (contact == null) return System.Threading.Tasks.Task.FromResult<Contact>(null);
 
+            return InternalDeleteContactAsync(contactID, contact);
+        }
+
+        private async Task<Contact> InternalDeleteContactAsync(int contactID, Contact contact)
+        {
             _crmSecurity.DemandDelete(contact);
 
             var dbEntity = CrmDbContext.Contacts.Find(contactID);

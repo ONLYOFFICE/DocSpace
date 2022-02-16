@@ -67,10 +67,8 @@ namespace ASC.Web.Studio.Core.Notify
             Log = log.Get("ASC.Notify");
         }
 
-        public async Task SendSaasLettersAsync(string senderName, DateTime scheduleDate)
+        public Task SendSaasLettersAsync(string senderName, DateTime scheduleDate)
         {
-            var nowDate = scheduleDate.Date;
-
             Log.Info("Start SendSaasTariffLetters");
 
             List<Tenant> activeTenants;
@@ -84,9 +82,16 @@ namespace ASC.Web.Studio.Core.Notify
                 if (activeTenants.Count <= 0)
                 {
                     Log.Info("End SendSaasTariffLetters");
-                    return;
+                    return Task.CompletedTask;
                 }
             }
+
+            return InternalSendSaasLettersAsync(senderName, scheduleDate, activeTenants);
+        }
+
+        private async Task InternalSendSaasLettersAsync(string senderName, DateTime scheduleDate, List<Tenant> activeTenants)
+        {
+            var nowDate = scheduleDate.Date;
 
             foreach (var tenant in activeTenants)
             {
