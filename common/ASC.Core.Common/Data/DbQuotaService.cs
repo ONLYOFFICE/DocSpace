@@ -73,9 +73,10 @@ class DbQuotaService : IQuotaService
 
     public TenantQuota GetTenantQuota(int id)
     {
-        var quota = CoreDbContext.Quotas.Find(id);
-
-        return _mapper.Map<DbQuota, TenantQuota>(quota);
+        return CoreDbContext.Quotas
+            .Where(r => r.Tenant == id)
+            .ProjectTo<TenantQuota>(_mapper.ConfigurationProvider)
+            .SingleOrDefault();
     }
 
     public TenantQuota SaveTenantQuota(TenantQuota quota)
@@ -94,7 +95,9 @@ class DbQuotaService : IQuotaService
     public void RemoveTenantQuota(int id)
     {
         using var tr = CoreDbContext.Database.BeginTransaction();
-        var d = CoreDbContext.Quotas.Find(id);
+        var d = CoreDbContext.Quotas
+             .Where(r => r.Tenant == id)
+             .SingleOrDefault();
 
         if (d != null)
         {

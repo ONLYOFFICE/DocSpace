@@ -199,9 +199,10 @@ public class DbTenantService : ITenantService
 
     public Tenant GetTenant(int id)
     {
-        var tenant = TenantDbContext.Tenants.Find(id);
-
-        return _mapper.Map<DbTenant, Tenant>(tenant);
+        return TenantsQuery()
+            .Where(r => r.Id == id)
+            .ProjectTo<Tenant>(_mapper.ConfigurationProvider)
+            .SingleOrDefault();
     }
 
     public Tenant GetTenant(string domain)
@@ -271,7 +272,9 @@ public class DbTenantService : ITenantService
         }
         else
         {
-            var tenant = TenantDbContext.Tenants.Find(t.Id);
+            var tenant = TenantDbContext.Tenants
+                .Where(r => r.Id == t.Id)
+                .FirstOrDefault();
 
             if (tenant != null)
             {
@@ -342,7 +345,7 @@ public class DbTenantService : ITenantService
             .Where(r => r.Alias.StartsWith(alias + postfix))
             .Count();
 
-        var tenant = TenantDbContext.Tenants.Find(id);
+        var tenant = TenantDbContext.Tenants.Where(r => r.Id == id).FirstOrDefault();
 
         if (tenant != null)
         {
