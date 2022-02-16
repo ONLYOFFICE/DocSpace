@@ -44,19 +44,16 @@ public enum ModuleName
 
 public interface IModuleSpecifics
 {
-    string ConnectionStringName { get; }
-    ModuleName ModuleName { get; }
-    IEnumerable<TableInfo> Tables { get; }
     IEnumerable<RelationInfo> TableRelations { get; }
-
-    IEnumerable<TableInfo> GetTablesOrdered();
-
-    DbCommand CreateSelectCommand(DbConnection connection, int tenantId, TableInfo table, int limit, int offset);
-    DbCommand CreateDeleteCommand(DbConnection connection, int tenantId, TableInfo table);
-    DbCommand CreateInsertCommand(bool dump, DbConnection connection, ColumnMapper columnMapper, TableInfo table, DataRowInfo row);
+    IEnumerable<TableInfo> Tables { get; }
+    ModuleName ModuleName { get; }
+    string ConnectionStringName { get; }
 
     bool TryAdjustFilePath(bool dump, ColumnMapper columnMapper, ref string filePath);
-
-    void PrepareData(DataTable data);
+    DbCommand CreateDeleteCommand(DbConnection connection, int tenantId, TableInfo table);
+    DbCommand CreateInsertCommand(bool dump, DbConnection connection, ColumnMapper columnMapper, TableInfo table, DataRowInfo row);
+    DbCommand CreateSelectCommand(DbConnection connection, int tenantId, TableInfo table, int limit, int offset);
+    IEnumerable<TableInfo> GetTablesOrdered();
     Stream PrepareData(string key, Stream data, ColumnMapper columnMapper);
+    void PrepareData(DataTable data);
 }

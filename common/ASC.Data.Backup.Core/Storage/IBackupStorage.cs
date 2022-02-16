@@ -27,13 +27,9 @@ namespace ASC.Data.Backup.Storage;
 
 public interface IBackupStorage
 {
-    string Upload(string storageBasePath, string localPath, Guid userId);
-
-    void Download(string storagePath, string targetLocalPath);
-
-    void Delete(string storagePath);
-
     bool IsExists(string storagePath);
-
     string GetPublicLink(string storagePath);
+    string Upload(string storageBasePath, string localPath, Guid userId);
+    void Delete(string storagePath);
+    void Download(string storagePath, string targetLocalPath);
 }
