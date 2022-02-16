@@ -39,31 +39,22 @@ public class SmtpOperation
     public const string FINISHED = "SMTPFinished";
 
     protected DistributedTask TaskInfo { get; set; }
-
     protected CancellationToken CancellationToken { get; private set; }
-
     protected int Progress { get; private set; }
-
     protected string Source { get; private set; }
-
     protected string Status { get; set; }
-
     protected string Error { get; set; }
-
     protected int CurrentTenant { get; private set; }
-
     protected Guid CurrentUser { get; private set; }
-    private UserManager UserManager { get; }
-    private SecurityContext SecurityContext { get; }
-    private TenantManager TenantManager { get; }
-    private IConfiguration Configuration { get; }
-    protected ILog Logger { get; private set; }
 
-    public SmtpSettingsWrapper SmtpSettings { get; private set; }
+    private readonly UserManager _userManager;
+    private readonly SecurityContext _securityContext;
+    private readonly TenantManager _tenantManager;
+    private readonly ILog _logger;
+    private readonly SmtpSettingsWrapper _smtpSettings;
 
-    private readonly string messageSubject;
-
-    private readonly string messageBody;
+    private readonly string _messageSubject;
+    private readonly string _messageBody;
 
 
     public SmtpOperation(
@@ -73,20 +64,18 @@ public class SmtpOperation
         UserManager userManager,
         SecurityContext securityContext,
         TenantManager tenantManager,
-        IConfiguration configuration,
         IOptionsMonitor<ILog> options)
     {
-        SmtpSettings = smtpSettings;
+        _smtpSettings = smtpSettings;
         CurrentTenant = tenant;
         CurrentUser = user;
-        UserManager = userManager;
-        SecurityContext = securityContext;
-        TenantManager = tenantManager;
-        Configuration = configuration;
+        _userManager = userManager;
+        _securityContext = securityContext;
+        _tenantManager = tenantManager;
 
         //todo
-        messageSubject = WebstudioNotifyPatternResource.subject_smtp_test;
-        messageBody = WebstudioNotifyPatternResource.pattern_smtp_test;
+        _messageSubject = WebstudioNotifyPatternResource.subject_smtp_test;
+        _messageBody = WebstudioNotifyPatternResource.pattern_smtp_test;
 
         Source = "";
         Progress = 0;
@@ -96,7 +85,7 @@ public class SmtpOperation
 
         TaskInfo = new DistributedTask();
 
-        Logger = options.CurrentValue;
+        _logger = options.CurrentValue;
     }
 
     public void RunJob(DistributedTask distributedTask, CancellationToken cancellationToken)
@@ -107,25 +96,25 @@ public class SmtpOperation
 
             SetProgress(5, "Setup tenant");
 
-            TenantManager.SetCurrentTenant(CurrentTenant);
+            _tenantManager.SetCurrentTenant(CurrentTenant);
 
             SetProgress(10, "Setup user");
 
-            SecurityContext.AuthenticateMeWithoutCookie(CurrentUser); //Core.Configuration.Constants.CoreSystem);
+            _securityContext.AuthenticateMeWithoutCookie(CurrentUser); //Core.Configuration.Constants.CoreSystem);
 
             SetProgress(15, "Find user data");
 
-            var currentUser = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
+            var currentUser = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
 
             SetProgress(20, "Create mime message");
 
             var toAddress = new MailboxAddress(currentUser.UserName, currentUser.Email);
 
-            var fromAddress = new MailboxAddress(SmtpSettings.SenderDisplayName, SmtpSettings.SenderAddress);
+            var fromAddress = new MailboxAddress(_smtpSettings.SenderDisplayName, _smtpSettings.SenderAddress);
 
             var mimeMessage = new MimeMessage
             {
-                Subject = messageSubject
+                Subject = _messageSubject
             };
 
             mimeMessage.From.Add(fromAddress);
@@ -134,7 +123,7 @@ public class SmtpOperation
 
             var bodyBuilder = new BodyBuilder
             {
-                TextBody = messageBody
+                TextBody = _messageBody
             };
 
             mimeMessage.Body = bodyBuilder.ToMessageBody();
@@ -144,15 +133,15 @@ public class SmtpOperation
             using var client = GetSmtpClient();
             SetProgress(40, "Connect to host");
 
-            client.Connect(SmtpSettings.Host, SmtpSettings.Port.GetValueOrDefault(25),
-                SmtpSettings.EnableSSL ? SecureSocketOptions.Auto : SecureSocketOptions.None, cancellationToken);
+            client.Connect(_smtpSettings.Host, _smtpSettings.Port.GetValueOrDefault(25),
+                _smtpSettings.EnableSSL ? SecureSocketOptions.Auto : SecureSocketOptions.None, cancellationToken);
 
-            if (SmtpSettings.EnableAuth)
+            if (_smtpSettings.EnableAuth)
             {
                 SetProgress(60, "Authenticate");
 
-                client.Authenticate(SmtpSettings.CredentialsUserName,
-                    SmtpSettings.CredentialsUserPassword, cancellationToken);
+                client.Authenticate(_smtpSettings.CredentialsUserName,
+                    _smtpSettings.CredentialsUserPassword, cancellationToken);
             }
 
             SetProgress(80, "Send test message");
@@ -163,7 +152,7 @@ public class SmtpOperation
         catch (AuthorizingException authError)
         {
             Error = Resource.ErrorAccessDenied; // "No permissions to perform this action";
-            Logger.Error(Error, new SecurityException(Error, authError));
+            _logger.Error(Error, new SecurityException(Error, authError));
         }
         catch (AggregateException ae)
         {
@@ -172,17 +161,17 @@ public class SmtpOperation
         catch (SocketException ex)
         {
             Error = ex.Message; //TODO: Add translates of ordinary cases
-            Logger.Error(ex.ToString());
+            _logger.Error(ex.ToString());
         }
         catch (AuthenticationException ex)
         {
             Error = ex.Message; //TODO: Add translates of ordinary cases
-            Logger.Error(ex.ToString());
+            _logger.Error(ex.ToString());
         }
         catch (Exception ex)
         {
             Error = ex.Message; //TODO: Add translates of ordinary cases
-            Logger.Error(ex.ToString());
+            _logger.Error(ex.ToString());
         }
         finally
         {
@@ -191,11 +180,11 @@ public class SmtpOperation
                 TaskInfo.SetProperty(FINISHED, true);
                 PublishTaskInfo();
 
-                SecurityContext.Logout();
+                _securityContext.Logout();
             }
             catch (Exception ex)
             {
-                Logger.ErrorFormat("LdapOperation finalization problem. {0}", ex);
+                _logger.ErrorFormat("LdapOperation finalization problem. {0}", ex);
             }
         }
     }
@@ -247,7 +236,7 @@ public class SmtpOperation
         if (currentSource != null)
             Source = currentSource;
 
-        Logger.InfoFormat(PROGRESS_STRING, Progress, Status, Source);
+        _logger.InfoFormat(PROGRESS_STRING, Progress, Status, Source);
 
         PublishTaskInfo();
     }

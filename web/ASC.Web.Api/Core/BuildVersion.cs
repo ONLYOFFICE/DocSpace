@@ -40,19 +40,19 @@ public class BuildVersion
     public string XmppServer { get; set; }
 
     [JsonIgnore]
-    private IConfiguration Configuration { get; }
+    private readonly IConfiguration _configuration;
 
     [JsonIgnore]
-    private FilesLinkUtility FilesLinkUtility { get; }
+    private readonly FilesLinkUtility _filesLinkUtility;
 
     [JsonIgnore]
-    private DocumentServiceConnector DocumentServiceConnector { get; }
+    private readonly DocumentServiceConnector _documentServiceConnector;
 
     public BuildVersion(IConfiguration configuration, FilesLinkUtility filesLinkUtility, DocumentServiceConnector documentServiceConnector)
     {
-        Configuration = configuration;
-        FilesLinkUtility = filesLinkUtility;
-        DocumentServiceConnector = documentServiceConnector;
+        _configuration = configuration;
+        _filesLinkUtility = filesLinkUtility;
+        _documentServiceConnector = documentServiceConnector;
     }
 
     public BuildVersion GetCurrentBuildVersion()
@@ -67,15 +67,15 @@ public class BuildVersion
 
     private string GetCommunityVersion()
     {
-        return Configuration["version:number"] ?? "8.5.0";
+        return _configuration["version:number"] ?? "8.5.0";
     }
 
     private string GetDocumentVersion()
     {
-        if (string.IsNullOrEmpty(FilesLinkUtility.DocServiceApiUrl))
+        if (string.IsNullOrEmpty(_filesLinkUtility.DocServiceApiUrl))
             return null;
 
-        return DocumentServiceConnector.GetVersion();
+        return _documentServiceConnector.GetVersion();
     }
 
     private static string GetMailServerVersion()
