@@ -10,11 +10,8 @@
     "clean": "shx rm -rf dist",
     "deploy": "shx --silent mkdir -p ../../build/deploy/products/ASC.Files/editor && shx cp -r dist/* ../../build/deploy/products/ASC.Files/editor",
     "serve": "serve dist -p 5013",
-    "start-csr": "webpack-cli serve --config ./webpack.config-csr.js",
-    "start-prod": "webpack --mode production && serve dist -p 5013",
-    "dev": "next dev -p 5013",
-    "build": "next build",
-    "start-ssr": "yarn build && next start -p 5013"
+    "start-prod": "yarn build && node dist/index.js",
+    "build": "webpack --config webpack.config.js"
   },
   "devDependencies": {
     "@babel/core": "^7.15.5",
