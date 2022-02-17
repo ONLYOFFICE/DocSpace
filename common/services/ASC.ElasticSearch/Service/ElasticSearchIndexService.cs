@@ -145,8 +145,7 @@ public class ElasticSearchIndexService : BackgroundService
                 {
                     using (var scope = _serviceScopeFactory.CreateScope())
                     {
-                        var w = (IFactoryIndexer)scope.ServiceProvider.GetService(wrapper.GetType());
-                        IndexProduct(w, reindex);
+                        IndexProduct(wrapper, reindex);
                     }
                 });
             }
