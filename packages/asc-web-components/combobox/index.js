@@ -91,6 +91,7 @@ class ComboBox extends React.Component {
       showDisabledItems,
       offsetDropDownY,
       isDefaultMode,
+      manualWidth,
     } = this.props;
     const { isOpen, selectedOption } = this.state;
 
@@ -103,7 +104,7 @@ class ComboBox extends React.Component {
         ? { manualWidth: "100%" }
         : scaledOptions && this.ref.current
         ? { manualWidth: this.ref.current.clientWidth + "px" }
-        : { manualWidth: "200px" };
+        : { manualWidth: manualWidth };
 
     const optionsLength = options.length
       ? options.length
@@ -223,6 +224,8 @@ ComboBox.propTypes = {
   isDefaultMode: PropTypes.bool,
   /** Y offset */
   offsetDropDownY: PropTypes.string,
+  //** Dropdown manual width */
+  manualWidth: PropTypes.string,
 };
 
 ComboBox.defaultProps = {
@@ -236,6 +239,7 @@ ComboBox.defaultProps = {
   showDisabledItems: false,
   offsetDropDownY: "102%",
   isDefaultMode: true,
+  manualWidth: "200px",
 };
 
 export default ComboBox;
