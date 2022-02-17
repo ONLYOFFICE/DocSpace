@@ -699,6 +699,9 @@
   <data name="PersonalFreeSpaceException" xml:space="preserve">
     <value>Quota d'espace disque est dépassé</value>
   </data>
+  <data name="PortalAccessSettingsTariffException" xml:space="preserve">
+    <value>Cette fonctionalité n'est activée que pour le tarif gratuit</value>
+  </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Accès au portail</value>
   </data>
@@ -740,6 +743,9 @@
   </data>
   <data name="SsoSettingsInvalidMapping" xml:space="preserve">
     <value>Mappage des champs non valides</value>
+  </data>
+  <data name="SuccessfullyPortalRenameMessage" xml:space="preserve">
+    <value>Le portail a été renommé avec succès</value>
   </data>
   <data name="SuccessfullySaveGreetingSettingsMessage" xml:space="preserve">
     <value>Les paramètres de la page d'accueil ont été enregistrés avec succès</value>

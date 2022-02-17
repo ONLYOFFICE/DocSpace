@@ -697,6 +697,9 @@
   <data name="PersonalFreeSpaceException" xml:space="preserve">
     <value>Превышена квота на размер дискового пространства</value>
   </data>
+  <data name="PortalAccessSettingsTariffException" xml:space="preserve">
+    <value>Эта функция доступна только для бесплатного тарифа</value>
+  </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Доступ к порталу</value>
   </data>
@@ -738,6 +741,9 @@
   </data>
   <data name="SsoSettingsInvalidMapping" xml:space="preserve">
     <value>Недопустимое сопоставление полей</value>
+  </data>
+  <data name="SuccessfullyPortalRenameMessage" xml:space="preserve">
+    <value>Портал успешно переименован</value>
   </data>
   <data name="SuccessfullySaveGreetingSettingsMessage" xml:space="preserve">
     <value>Настройки страницы приветствия успешно сохранены</value>

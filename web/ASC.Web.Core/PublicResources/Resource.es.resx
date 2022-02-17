@@ -664,6 +664,9 @@
   <data name="PersonalFreeSpaceException" xml:space="preserve">
     <value>Cuota de espacio en disco excedida </value>
   </data>
+  <data name="PortalAccessSettingsTariffException" xml:space="preserve">
+    <value>Esta característica se proporciona sólo en portales gratuitos</value>
+  </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Acceso a portal</value>
   </data>
@@ -705,6 +708,9 @@
   </data>
   <data name="SsoSettingsInvalidMapping" xml:space="preserve">
     <value>Cartografía de campos no válida</value>
+  </data>
+  <data name="SuccessfullyPortalRenameMessage" xml:space="preserve">
+    <value>El portal ha sido renombrado con éxito </value>
   </data>
   <data name="SuccessfullySaveGreetingSettingsMessage" xml:space="preserve">
     <value>Los ajustes de bienvenida han sido guardados con éxito</value>

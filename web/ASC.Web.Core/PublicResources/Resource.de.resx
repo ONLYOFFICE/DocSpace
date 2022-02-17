@@ -701,6 +701,9 @@
   <data name="PersonalFreeSpaceException" xml:space="preserve">
     <value>Der verfügbare Speicherplatz ist überschritten</value>
   </data>
+  <data name="PortalAccessSettingsTariffException" xml:space="preserve">
+    <value>Diese Funktion ist nur für den kostenlosen Tarif verfügbar</value>
+  </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Zugang zum Portal</value>
   </data>
@@ -742,6 +745,9 @@
   </data>
   <data name="SsoSettingsInvalidMapping" xml:space="preserve">
     <value>Ungültige Feldzuordnung</value>
+  </data>
+  <data name="SuccessfullyPortalRenameMessage" xml:space="preserve">
+    <value>Portal wurde erfolgreich umbenannt </value>
   </data>
   <data name="SuccessfullySaveGreetingSettingsMessage" xml:space="preserve">
     <value>Die Begrüßungseinstellungen wurden erfolgreich gespeichert</value>

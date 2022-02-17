@@ -697,6 +697,9 @@
   <data name="PersonalFreeSpaceException" xml:space="preserve">
     <value>Disk space quota exceeded</value>
   </data>
+  <data name="PortalAccessSettingsTariffException" xml:space="preserve">
+    <value>This feature enabled on free tariff only</value>
+  </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Portal Access</value>
   </data>
@@ -738,6 +741,9 @@
   </data>
   <data name="SsoSettingsInvalidMapping" xml:space="preserve">
     <value>Invalid fields mapping</value>
+  </data>
+  <data name="SuccessfullyPortalRenameMessage" xml:space="preserve">
+    <value>Portal has been renamed successfully</value>
   </data>
   <data name="SuccessfullySaveGreetingSettingsMessage" xml:space="preserve">
     <value>Welcome Page settings have been successfully saved</value>

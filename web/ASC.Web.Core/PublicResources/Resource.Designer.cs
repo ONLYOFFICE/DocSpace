@@ -1978,6 +1978,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на This feature enabled on free tariff only.
+        /// </summary>
+        public static string PortalAccessSettingsTariffException {
+            get {
+                return ResourceManager.GetString("PortalAccessSettingsTariffException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Portal Access.
         /// </summary>
         public static string PortalSecurity {
@@ -2100,6 +2109,15 @@ namespace ASC.Web.Core.PublicResources {
         public static string SsoSettingsInvalidMapping {
             get {
                 return ResourceManager.GetString("SsoSettingsInvalidMapping", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Portal has been renamed successfully.
+        /// </summary>
+        public static string SuccessfullyPortalRenameMessage {
+            get {
+                return ResourceManager.GetString("SuccessfullyPortalRenameMessage", resourceCulture);
             }
         }
         
