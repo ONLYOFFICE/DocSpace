@@ -68,7 +68,7 @@ public class ElasticSearchService
             tasks.Add(instance.ReIndex());
         }
 
-        if (!tasks.Any())
+        if (tasks.Count == 0)
         {
             return;
         }

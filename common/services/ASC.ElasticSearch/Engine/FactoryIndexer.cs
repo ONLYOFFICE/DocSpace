@@ -46,10 +46,10 @@ public class FactoryIndexerHelper
 
 public interface IFactoryIndexer
 {
-    void IndexAll();
     string IndexName { get; }
-    void ReIndex();
     string SettingsTitle { get; }
+    void IndexAll();
+    void ReIndex();
 }
 
 [Scope]
@@ -194,7 +194,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
     public void Index(List<T> data, bool immediately = true, int retry = 0)
     {
         var t = _serviceProvider.GetService<T>();
-        if (!Support(t) || !data.Any())
+        if (!Support(t) || data.Count == 0)
         {
             return;
         }
@@ -252,7 +252,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
                     Thread.Sleep(60000);
                     if (retry < 5)
                     {
-                        Index(data, immediately, retry++);
+                        Index(data, immediately, retry + 1);
                         return;
                     }
 
@@ -310,7 +310,10 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
         }
         catch (AggregateException e) //ElasticsearchClientException
         {
-            if (e.InnerExceptions.Count == 0) throw;
+            if (e.InnerExceptions.Count == 0)
+            {
+                throw;
+            }
 
             var inner = e.InnerExceptions.OfType<ElasticsearchClientException>().FirstOrDefault();
 
@@ -562,9 +565,9 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
         }
     }
 
-    public async Task<bool> SupportAsync(T t)
+    public Task<bool> SupportAsync(T t)
     {
-        return await _factoryIndexerCommon.CheckStateAsync();
+        return _factoryIndexerCommon.CheckStateAsync();
     }
 
     private Task<bool> Queue(Action actionData)
@@ -713,6 +716,7 @@ public class FactoryIndexer
             }
 
             Log.Error("Ping false", e);
+
             return false;
         }
     }
