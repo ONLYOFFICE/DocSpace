@@ -2,7 +2,9 @@ import PropTypes from "prop-types";
 import React, { useEffect, useRef, useState } from "react";
 
 import Text from "../text";
+import { tablet } from "../utils/device";
 import DomHelpers from "../utils/domHelpers";
+import { countAutoOffset } from "./autoOffset";
 import {
   StyledSubmenu,
   StyledSubmenuBottomLine,
@@ -25,49 +27,47 @@ const Submenu = ({ data, startSelect = 0, ...rest }) => {
     if (item) setCurrentItem(item);
   };
 
-  const ref = useRef();
+  const submenuItemsRef = useRef();
 
-  const test = useRef();
-  let testText = "";
-  const textWidths = data.map((d) => {
-    testText = d.name;
-  });
-
-  useEffect(() => {
-    //console.log(test.current ? test.current.offsetWidth : 0);
-  }, [test.current]);
+  if (submenuItemsRef.current) {
+    const offset = countAutoOffset(data, submenuItemsRef);
+    submenuItemsRef.current.scrollLeft += offset;
+  }
 
   useEffect(() => {
-    if (!ref.current) return;
+    if (!submenuItemsRef.current) return;
     let isDown = false;
     let startX;
     let scrollLeft;
 
-    ref.current.addEventListener("mousedown", (e) => {
+    submenuItemsRef.current.addEventListener("mousedown", (e) => {
+      e.preventDefault();
       isDown = true;
-      startX = e.pageX - ref.current.offsetLeft;
-      scrollLeft = ref.current.scrollLeft;
+      startX = e.pageX - submenuItemsRef.current.offsetLeft;
+      scrollLeft = submenuItemsRef.current.scrollLeft;
     });
 
-    ref.current.addEventListener("mousemove", (e) => {
+    submenuItemsRef.current.addEventListener("mousemove", (e) => {
       if (!isDown) return;
       e.preventDefault();
-      const x = e.pageX - ref.current.offsetLeft;
+      const x = e.pageX - submenuItemsRef.current.offsetLeft;
       const walk = x - startX;
-      ref.current.scrollLeft = scrollLeft - walk;
-      //console.log(ref.current.scrollLeft);
+      submenuItemsRef.current.scrollLeft = scrollLeft - walk;
     });
 
-    ref.current.addEventListener("mouseup", () => (isDown = false));
-    ref.current.addEventListener("mouseleave", () => (isDown = false));
-  }, [ref]);
+    submenuItemsRef.current.addEventListener("mouseup", () => {
+      const offset = countAutoOffset(data, submenuItemsRef);
+      submenuItemsRef.current.scrollLeft += offset;
+      isDown = false;
+    });
+    submenuItemsRef.current.addEventListener("mouseleave", () => {
+      isDown = false;
+    });
+  }, [submenuItemsRef]);
 
   return (
     <StyledSubmenu {...rest}>
-      {/* <div className="text" ref={test}>
-        {testText}
-      </div> */}
-      <StyledSubmenuItems ref={ref} role="list">
+      <StyledSubmenuItems ref={submenuItemsRef} role="list">
         {data.map((d) => {
           const isActive = d === currentItem;
           return (
