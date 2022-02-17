@@ -23,37 +23,27 @@
  *
 */
 
-namespace ASC.Notify
+namespace ASC.Notify;
+
+[Singletone]
+public class ServiceLauncher : BackgroundService
 {
-    [Singletone]
-    public class ServiceLauncher : IHostedService
+    private readonly StudioNotifyServiceSender _studioNotifyServiceSender;
+    private readonly NotifyConfiguration _notifyConfiguration;
+
+    public ServiceLauncher(
+        StudioNotifyServiceSender studioNotifyServiceSender,
+        NotifyConfiguration notifyConfiguration)
     {
-        private WebItemManager WebItemManager { get; }
-        private StudioNotifyServiceSender StudioNotifyServiceSender { get; }
-        private NotifyConfiguration NotifyConfiguration { get; }
+        _studioNotifyServiceSender = studioNotifyServiceSender;
+        _notifyConfiguration = notifyConfiguration;
+    }
 
-        public ServiceLauncher(
-            WebItemManager webItemManager,
-            StudioNotifyServiceSender studioNotifyServiceSender,
-            NotifyConfiguration notifyConfiguration)
-        {
-            WebItemManager = webItemManager;
-            StudioNotifyServiceSender = studioNotifyServiceSender;
-            NotifyConfiguration = notifyConfiguration;
-        }
+    protected override Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        _notifyConfiguration.Configure();
+        _studioNotifyServiceSender.RegisterSendMethod();
 
-        public Task StartAsync(CancellationToken cancellationToken)
-        {
-            NotifyConfiguration.Configure();
-
-            StudioNotifyServiceSender.RegisterSendMethod();
-
-            return Task.CompletedTask;
-        }
-
-        public Task StopAsync(CancellationToken cancellationToken)
-        {
-            return Task.CompletedTask;
-        }
+        return Task.CompletedTask;
     }
 }
