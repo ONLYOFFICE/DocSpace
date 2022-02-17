@@ -56,16 +56,17 @@ export const StyledSubmenuItems = styled.div`
 export const StyledSubmenuItem = styled.div.attrs((props) => ({
   id: props._key,
 }))`
+  scroll-behavior: smooth;
   cursor: pointer;
   display: flex;
   flex-direction: column;
+  padding: 4px 14px;
   line-height: 20px;
 `;
 
 export const StyledSubmenuItemText = styled.div`
   width: 100%;
   display: flex;
-  padding: 4px 14px;
 `;
 
 export const StyledSubmenuItemLabel = styled.div`
