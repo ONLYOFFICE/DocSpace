@@ -644,13 +644,13 @@ public class BaseIndexer<T> where T : class, ISearchItem
                 break;
             case UpdateAction.Replace:
                 parameters.Add(paramKey, newValue);
-                source.AppendFormat("ctx._source{0} = params.{1};", key, paramKey);
+                source.Append($"ctx._source{key} = params.{paramKey};");
                 break;
             case UpdateAction.Remove:
                 for (var i = 0; i < newValue.Count; i++)
                 {
                     parameters.Add(paramKey + i, newValue[i]);
-                    source.AppendFormat("ctx._source{0}.removeIf(item -> item.id == params.{1}.id)", key, paramKey + i);
+                    source.Append($"ctx._source{key}.removeIf(item -> item.id == params.{paramKey + i}.id)");
                 }
                 break;
             default:
