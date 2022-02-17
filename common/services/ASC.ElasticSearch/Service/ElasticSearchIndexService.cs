@@ -31,7 +31,6 @@ public class ElasticSearchIndexService : BackgroundService
     private readonly ICacheNotify<AscCacheItem> _notify;
     private readonly ICacheNotify<IndexAction> _indexNotify;
     private readonly IServiceScopeFactory _serviceScopeFactory;
-    private readonly CancellationTokenSource _cancellationTokenSource;
     private readonly TimeSpan _period;
     private bool _isStarted;
 
@@ -46,7 +45,6 @@ public class ElasticSearchIndexService : BackgroundService
         _notify = notify;
         _indexNotify = indexNotify;
         _serviceScopeFactory = serviceScopeFactory;
-        _cancellationTokenSource = new CancellationTokenSource();
         _period = TimeSpan.FromMinutes(settings.Period.Value);
     }
 
@@ -75,7 +73,7 @@ public class ElasticSearchIndexService : BackgroundService
 
         while (!factoryIndexer.CheckState(false))
         {
-            if (_cancellationTokenSource.IsCancellationRequested)
+            if (stoppingToken.IsCancellationRequested)
             {
                 return;
             }
