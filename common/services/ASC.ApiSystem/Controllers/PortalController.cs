@@ -477,13 +477,13 @@ namespace ASC.ApiSystem.Controllers
                 var tenants = new List<Tenant>();
                 var empty = true;
 
-                if (!string.IsNullOrEmpty((model.Email ?? "").Trim()))
+                if (!string.IsNullOrWhiteSpace((model.Email ?? "")))
                 {
                     empty = false;
                     tenants.AddRange(HostedSolution.FindTenants((model.Email ?? "").Trim()));
                 }
 
-                if (!string.IsNullOrEmpty((model.PortalName ?? "").Trim()))
+                if (!string.IsNullOrWhiteSpace((model.PortalName ?? "")))
                 {
                     empty = false;
                     var tenant = HostedSolution.GetTenant((model.PortalName ?? "").Trim());
@@ -673,7 +673,7 @@ namespace ASC.ApiSystem.Controllers
                     return true;
                 }
 
-                var data = string.Format("{0} {1} {2} {3} {4} {5}", model.PortalName, model.FirstName, model.LastName, model.Email, model.Phone, model.RecaptchaType);
+                var data = $"{model.PortalName} {model.FirstName} {model.LastName} {model.Email} {model.Phone} {model.RecaptchaType}";
 
                 /*** validate recaptcha ***/
                 if (!CommonMethods.ValidateRecaptcha(model.RecaptchaResponse, model.RecaptchaType, clientIP))

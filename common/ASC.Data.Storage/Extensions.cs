@@ -46,8 +46,8 @@ namespace ASC.Data.Storage
 
         public static void IronReadToStream(this IDataStore store, string domain, string path, int tryCount, Stream readTo)
         {
-            if (tryCount < 1) throw new ArgumentOutOfRangeException("tryCount", "Must be greater or equal 1.");
-            if (!readTo.CanWrite) throw new ArgumentException("stream cannot be written", "readTo");
+            if (tryCount < 1) throw new ArgumentOutOfRangeException(nameof(tryCount), "Must be greater or equal 1.");
+            if (!readTo.CanWrite) throw new ArgumentException("stream cannot be written", nameof(readTo));
 
             var tryCurrent = 0;
             var offset = 0;
@@ -59,7 +59,7 @@ namespace ASC.Data.Storage
                     tryCurrent++;
                     using var stream = store.GetReadStream(domain, path, offset);
                     var buffer = new byte[BufferSize];
-                    var readed = 0;
+                    int readed;
                     while ((readed = stream.Read(buffer, 0, BufferSize)) > 0)
                     {
                         readTo.Write(buffer, 0, readed);

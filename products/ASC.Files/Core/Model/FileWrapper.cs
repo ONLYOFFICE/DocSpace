@@ -135,7 +135,7 @@ namespace ASC.Api.Documents
                 //Updated = ApiDateTime.GetSample(),
                 //Created = ApiDateTime.GetSample(),
                 //CreatedBy = EmployeeWraper.GetSample(),
-                Id = new Random().Next(),
+                Id = 10,
                 RootFolderType = FolderType.BUNCH,
                 Shared = false,
                 Title = "Some titile.txt",

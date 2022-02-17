@@ -11,7 +11,6 @@
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.2.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="6.0.0" />
     <PackageReference Include="StackExchange.Redis.Extensions.AspNetCore" Version="7.2.1" />
-    <PackageReference Include="StackExchange.Redis.Extensions.Newtonsoft" Version="7.2.1" />
   </ItemGroup>
 
   <ItemGroup>

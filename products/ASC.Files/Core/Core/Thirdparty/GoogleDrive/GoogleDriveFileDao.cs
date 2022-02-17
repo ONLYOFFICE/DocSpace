@@ -100,7 +100,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                               .FirstOrDefault(file => file.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase)));
         }
 
-        public File<string> GetFileStable(string fileId, int fileVersion)
+        public File<string> GetFileStable(string fileId, int fileVersion = -1)
         {
             return ToFile(GetDriveEntry(fileId));
         }
@@ -152,8 +152,8 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                 case FilterType.MediaOnly:
                     files = files.Where(x =>
                         {
-                            FileType fileType;
-                            return (fileType = FileUtility.GetFileTypeByFileName(x.Title)) == FileType.Audio || fileType == FileType.Video;
+                            FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                            return fileType == FileType.Audio || fileType == FileType.Video;
                         });
                     break;
                 case FilterType.ByExtension:
@@ -213,8 +213,8 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                 case FilterType.MediaOnly:
                     files = files.Where(x =>
                     {
-                        FileType fileType;
-                        return (fileType = FileUtility.GetFileTypeByFileName(x.Title)) == FileType.Audio || fileType == FileType.Video;
+                        FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                        return fileType == FileType.Audio || fileType == FileType.Video;
                     });
                     break;
                 case FilterType.ByExtension:
@@ -252,7 +252,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             var driveId = MakeDriveId(file.ID);
             ProviderInfo.CacheReset(driveId, true);
             var driveFile = GetDriveEntry(file.ID);
-            if (driveFile == null) throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
+            if (driveFile == null) throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
             if (driveFile is ErrorDriveEntry errorDriveEntry) throw new Exception(errorDriveEntry.Error);
 
             var fileStream = ProviderInfo.Storage.DownloadStream(driveFile, (int)offset);
@@ -277,8 +277,8 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
         public File<string> SaveFile(File<string> file, Stream fileStream)
         {
-            if (file == null) throw new ArgumentNullException("file");
-            if (fileStream == null) throw new ArgumentNullException("fileStream");
+            if (file == null) throw new ArgumentNullException(nameof(file));
+            if (fileStream == null) throw new ArgumentNullException(nameof(fileStream));
 
             DriveFile newDriveFile = null;
 

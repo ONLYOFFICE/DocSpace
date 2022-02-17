@@ -107,7 +107,7 @@ namespace ASC.Web.Files.Classes
 
         public string GetFolderUrl<T>(Folder<T> folder, int projectID = 0)
         {
-            if (folder == null) throw new ArgumentNullException("folder", FilesCommonResource.ErrorMassage_FolderNotFound);
+            if (folder == null) throw new ArgumentNullException(nameof(folder), FilesCommonResource.ErrorMassage_FolderNotFound);
 
             var folderDao = DaoFactory.GetFolderDao<T>();
 
@@ -139,7 +139,7 @@ namespace ASC.Web.Files.Classes
 
         public string GetFileStreamUrl<T>(File<T> file, string doc = null, bool lastVersion = false)
         {
-            if (file == null) throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
+            if (file == null) throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
 
             //NOTE: Always build path to handler!
             var uriBuilder = new UriBuilder(CommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.FileHandlerPath));
@@ -163,7 +163,7 @@ namespace ASC.Web.Files.Classes
 
         public string GetFileChangesUrl<T>(File<T> file, string doc = null)
         {
-            if (file == null) throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
+            if (file == null) throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
 
             var uriBuilder = new UriBuilder(CommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.FileHandlerPath));
             var query = uriBuilder.Query;
@@ -181,7 +181,7 @@ namespace ASC.Web.Files.Classes
 
         public string GetTempUrl(Stream stream, string ext)
         {
-            if (stream == null) throw new ArgumentNullException("stream");
+            if (stream == null) throw new ArgumentNullException(nameof(stream));
 
             var store = GlobalStore.GetStore();
             var fileName = string.Format("{0}{1}", Guid.NewGuid(), ext);

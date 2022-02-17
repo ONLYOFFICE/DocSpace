@@ -23,7 +23,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -36,6 +35,7 @@ using NLog;
 using NLog.Extensions.Logging;
 
 using StackExchange.Redis.Extensions.Core.Configuration;
+using StackExchange.Redis.Extensions.Newtonsoft;
 
 namespace ASC.Api.Core
 {
@@ -67,6 +67,7 @@ namespace ASC.Api.Core
             services.AddCustomHealthCheck(Configuration);
             services.AddHttpContextAccessor();
             services.AddMemoryCache();
+            services.AddHttpClient();
 
             if (AddAndUseSession)
                 services.AddSession();
@@ -105,10 +106,17 @@ namespace ASC.Api.Core
             DIHelper.TryAdd<WebhooksGlobalFilterAttribute>();
 
             var redisConfiguration = Configuration.GetSection("Redis").Get<RedisConfiguration>();
+            var kafkaConfiguration = Configuration.GetSection("kafka").Get<KafkaSettings>();
 
-            if (redisConfiguration != null)
+            if (kafkaConfiguration != null)
+            {
+                DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+            }
+            else if (redisConfiguration != null)
             {
                 DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
+
+                services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
             }
             else
             {
@@ -123,7 +131,7 @@ namespace ASC.Api.Core
                 DIHelper.RegisterProducts(Configuration, HostEnvironment.ContentRootPath);
             }
 
-            var builder = services.AddMvcCore(config =>
+            services.AddMvcCore(config =>
             {
                 config.Conventions.Add(new ControllerNameAttributeConvention());
 

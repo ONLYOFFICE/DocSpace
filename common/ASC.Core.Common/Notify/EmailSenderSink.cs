@@ -49,7 +49,7 @@ namespace ASC.Core.Notify
 
         public EmailSenderSink(INotifySender sender, IServiceProvider serviceProvider, IOptionsMonitor<ILog> options)
         {
-            this.sender = sender ?? throw new ArgumentNullException("sender");
+            this.sender = sender ?? throw new ArgumentNullException(nameof(sender));
             ServiceProvider = serviceProvider;
             Log = options.Get("ASC.Notify");
         }

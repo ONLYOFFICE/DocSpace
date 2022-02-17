@@ -70,7 +70,7 @@ namespace ASC.FederatedLogin.Helpers
 
             var stateUriBuilder = new UriBuilder(u.Scheme, u.Host, u.Port, $"thirdparty/{loginProvider.Name.ToLower()}/code");
 
-            if (additionalStateArgs != null && additionalStateArgs.Any())
+            if (additionalStateArgs != null && additionalStateArgs.Count > 0)
             {
                 var stateQuery = "";
                 stateQuery = additionalStateArgs.Keys
@@ -88,8 +88,8 @@ namespace ASC.FederatedLogin.Helpers
                 query = additionalArgs.Keys.Where(additionalArg => additionalArg != null)
                                       .Aggregate(query, (current, additionalArg) =>
                                                         additionalArg != null ? current
-                                                                                + ("&" + HttpUtility.UrlEncode((additionalArg).Trim())
-                                                                                   + "=" + HttpUtility.UrlEncode((additionalArgs[additionalArg] ?? "").Trim())) : null);
+                                                                                + "&" + HttpUtility.UrlEncode(additionalArg.Trim())
+                                                                                   + "=" + HttpUtility.UrlEncode((additionalArgs[additionalArg] ?? "").Trim()) : null);
             }
 
             return uriBuilder.Uri + "?" + query;
@@ -103,14 +103,11 @@ namespace ASC.FederatedLogin.Helpers
             var clientSecret = loginProvider.ClientSecret;
             var redirectUri = loginProvider.RedirectUri;
 
-            if (string.IsNullOrEmpty(authCode)) throw new ArgumentNullException("authCode");
+            if (string.IsNullOrEmpty(authCode)) throw new ArgumentNullException(nameof(authCode));
             if (string.IsNullOrEmpty(clientID)) throw new ArgumentNullException("clientID");
             if (string.IsNullOrEmpty(clientSecret)) throw new ArgumentNullException("clientSecret");
 
-            var data = string.Format("code={0}&client_id={1}&client_secret={2}",
-                                     HttpUtility.UrlEncode(authCode),
-                                     HttpUtility.UrlEncode(clientID),
-                                     HttpUtility.UrlEncode(clientSecret));
+            var data = $"code={HttpUtility.UrlEncode(authCode)}&client_id={HttpUtility.UrlEncode(clientID)}&client_secret={HttpUtility.UrlEncode(clientSecret)}";
 
             if (!string.IsNullOrEmpty(redirectUri))
                 data += "&redirect_uri=" + HttpUtility.UrlEncode(redirectUri);
@@ -120,7 +117,7 @@ namespace ASC.FederatedLogin.Helpers
             var json = RequestHelper.PerformRequest(requestUrl, "application/x-www-form-urlencoded", "POST", data);
             if (json != null)
             {
-                if (!json.StartsWith("{"))
+                if (!json.StartsWith('{'))
                 {
                     json = "{\"" + json.Replace("=", "\":\"").Replace("&", "\",\"") + "\"}";
                 }
@@ -145,12 +142,9 @@ namespace ASC.FederatedLogin.Helpers
 
         public static OAuth20Token RefreshToken(string requestUrl, OAuth20Token token)
         {
-            if (token == null || !CanRefresh(token)) throw new ArgumentException("Can not refresh given token", "token");
+            if (token == null || !CanRefresh(token)) throw new ArgumentException("Can not refresh given token", nameof(token));
 
-            var data = string.Format("client_id={0}&client_secret={1}&refresh_token={2}&grant_type=refresh_token",
-                                     HttpUtility.UrlEncode(token.ClientID),
-                                     HttpUtility.UrlEncode(token.ClientSecret),
-                                     HttpUtility.UrlEncode(token.RefreshToken));
+            var data = $"client_id={HttpUtility.UrlEncode(token.ClientID)}&client_secret={HttpUtility.UrlEncode(token.ClientSecret)}&refresh_token={HttpUtility.UrlEncode(token.RefreshToken)}&grant_type=refresh_token";
 
             var json = RequestHelper.PerformRequest(requestUrl, "application/x-www-form-urlencoded", "POST", data);
             if (json != null)

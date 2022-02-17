@@ -304,7 +304,7 @@ namespace ASC.CRM.Api
 
             var companyAddress = JsonSerializer.Serialize(new
             {
-                type = AddressCategory.Billing.ToString(),
+                type = nameof(AddressCategory.Billing),
                 street,
                 city,
                 state,
