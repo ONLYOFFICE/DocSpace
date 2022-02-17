@@ -900,11 +900,29 @@ namespace ASC.Api.Settings
 
         [Read("security/password", Check = false)]
         [Authorize(AuthenticationSchemes = "confirm", Roles = "Everyone")]
-        public object GetPasswordSettings()
+        public PasswordSettings GetPasswordSettings()
         {
-            var UserPasswordSettings = SettingsManager.Load<PasswordSettings>();
+            return SettingsManager.Load<PasswordSettings>();
+        }
 
-            return UserPasswordSettings;
+        [Update("security/password")]
+        public PasswordSettings UpdatePasswordSettings(PasswordSettingsModel model)
+        {
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+            var userPasswordSettings = SettingsManager.Load<PasswordSettings>();
+
+            userPasswordSettings.MinLength = model.MinLength;
+            userPasswordSettings.UpperCase = model.UpperCase;
+            userPasswordSettings.Digits = model.Digits;
+            userPasswordSettings.SpecSymbols = model.SpecSymbols;
+
+            SettingsManager.Save(userPasswordSettings);
+
+            MessageService.Send(MessageAction.PasswordStrengthSettingsUpdated);
+
+            return userPasswordSettings;
+
         }
 
         [Update("security")]
