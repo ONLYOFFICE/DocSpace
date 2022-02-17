@@ -1,4 +1,9 @@
-export default function template(title, initialState = {}, content = "") {
+export default function template(
+  title,
+  initialState = {},
+  content = "",
+  styleTags
+) {
   const scripts = `   
     <script>
       window.__STATE__ = ${JSON.stringify(initialState)}
@@ -13,6 +18,7 @@ export default function template(title, initialState = {}, content = "") {
           <meta charset="utf-8">
           <title> ${title} </title>
           <link rel="stylesheet" href="style.css">
+          ${styleTags}
         </head>
         <body>
           <div id="root">${content}</div>

@@ -3,7 +3,7 @@ import { isMobile } from "react-device-detect";
 import FilesFilter from "@appserver/common/api/files/filter";
 import combineUrl from "@appserver/common/utils/combineUrl";
 import { AppServerConfig } from "@appserver/common/constants";
-import { homepage } from "../package.json";
+import pkg from "../package.json";
 import throttle from "lodash/throttle";
 import Loader from "@appserver/components/loader";
 
@@ -17,7 +17,7 @@ import {
 } from "@appserver/common/api/files";
 
 import DynamicComponent from "./components/dynamic";
-
+const { homepage } = pkg;
 const LoaderComponent = (
   <Loader
     type="rombs"
