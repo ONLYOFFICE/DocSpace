@@ -1,7 +1,8 @@
 import PropTypes from "prop-types";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import Text from "../text";
+import DomHelpers from "../utils/domHelpers";
 import {
   StyledSubmenu,
   StyledSubmenuBottomLine,
@@ -24,9 +25,49 @@ const Submenu = ({ data, startSelect = 0, ...rest }) => {
     if (item) setCurrentItem(item);
   };
 
+  const ref = useRef();
+
+  const test = useRef();
+  let testText = "";
+  const textWidths = data.map((d) => {
+    testText = d.name;
+  });
+
+  useEffect(() => {
+    //console.log(test.current ? test.current.offsetWidth : 0);
+  }, [test.current]);
+
+  useEffect(() => {
+    if (!ref.current) return;
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+
+    ref.current.addEventListener("mousedown", (e) => {
+      isDown = true;
+      startX = e.pageX - ref.current.offsetLeft;
+      scrollLeft = ref.current.scrollLeft;
+    });
+
+    ref.current.addEventListener("mousemove", (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - ref.current.offsetLeft;
+      const walk = x - startX;
+      ref.current.scrollLeft = scrollLeft - walk;
+      //console.log(ref.current.scrollLeft);
+    });
+
+    ref.current.addEventListener("mouseup", () => (isDown = false));
+    ref.current.addEventListener("mouseleave", () => (isDown = false));
+  }, [ref]);
+
   return (
     <StyledSubmenu {...rest}>
-      <StyledSubmenuItems>
+      {/* <div className="text" ref={test}>
+        {testText}
+      </div> */}
+      <StyledSubmenuItems ref={ref} role="list">
         {data.map((d) => {
           const isActive = d === currentItem;
           return (
