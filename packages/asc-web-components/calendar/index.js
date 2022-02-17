@@ -159,6 +159,14 @@ class Calendar extends Component {
       i++;
     }
 
+    if (openToDateYear < minDateYear) {
+      i = 0;
+      while (i != 12) {
+        if (i != minDateMonth) listMonths[i].disabled = true;
+        i++;
+      }
+    }
+
     if (openToDateYear === minDateYear) {
       i = 0;
       while (i != minDateMonth) {
@@ -511,6 +519,7 @@ class Calendar extends Component {
                 selectedOption={selectedOptionYear}
                 options={optionsYear}
                 isDisabled={false}
+                showDisabledItems
               />
             </ComboBoxDateStyle>
           </ComboBoxStyle>
