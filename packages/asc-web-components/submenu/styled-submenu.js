@@ -5,6 +5,22 @@ import { tablet } from "../utils/device";
 export const StyledSubmenu = styled.div`
   display: flex;
   flex-direction: column;
+
+  .scrollbar {
+    width: 100%;
+    height: auto;
+  }
+
+  .text {
+    width: auto;
+    display: inline-block;
+    position: absolute;
+    /* position: absolute;
+    visibility: hidden;
+    height: auto;
+    width: auto;
+    white-space: nowrap; */
+  }
 `;
 
 export const StyledSubmenuBottomLine = styled.div`
@@ -22,12 +38,18 @@ export const StyledSubmenuContentWrapper = styled.div`
 `;
 
 export const StyledSubmenuItems = styled.div`
+  overflow: scroll;
+
   display: flex;
   flex-direction: row;
   gap: 4px;
   padding: 20px;
   @media ${tablet} {
     padding: 16px;
+  }
+
+  &::-webkit-scrollbar {
+    display: none;
   }
 `;
 
