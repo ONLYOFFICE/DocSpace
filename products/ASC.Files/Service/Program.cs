@@ -83,7 +83,6 @@ namespace ASC.Files.Service
                     if (!disableElastic)
                     {
                         services.AddHostedService<ElasticSearchIndexService>();
-                        diHelper.TryAdd<ElasticSearchIndexService>();
                         diHelper.TryAdd<FactoryIndexer>();
                         diHelper.TryAdd<ElasticSearchService>();
                         //diHelper.TryAdd<FileConverter>();
