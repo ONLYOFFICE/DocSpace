@@ -40,24 +40,48 @@ const IdpSettings = ({ FormStore, t }) => {
 
       <SimpleFormField
         FormStore={FormStore}
-        labelText={t("EndpointURL")}
+        labelText={t("SignOnEndpointUrl")}
         name="ssoUrl"
         placeholder="https://www.test.com/saml/login"
         t={t}
         tabIndex={7}
-        tooltipContent={t("EndpointURLTooltip")}
+        tooltipContent={t("SignOnEndpointUrlTooltip")}
       >
         <Box displayProp="flex" flexDirection="row" marginProp="0 0 4px 0">
           <Text>{t("Binding")}</Text>
 
           <RadioButtonGroup
             className="radio-button-group"
-            name="binding"
+            name="ssoBinding"
             onClick={FormStore.onBindingChange}
             options={bindingOptions}
             selected={FormStore.ssoBinding}
             spacing="21px"
             tabIndex={6}
+          />
+        </Box>
+      </SimpleFormField>
+
+      <SimpleFormField
+        FormStore={FormStore}
+        labelText={t("LogoutEndpointUrl")}
+        name="sloUrl"
+        placeholder="https://www.test.com/saml/logout"
+        t={t}
+        tabIndex={9}
+        tooltipContent={t("LogoutEndpointUrlTooltip")}
+      >
+        <Box displayProp="flex" flexDirection="row" marginProp="0 0 4px 0">
+          <Text>{t("Binding")}</Text>
+
+          <RadioButtonGroup
+            className="radio-button-group"
+            name="sloBinding"
+            onClick={FormStore.onBindingChange}
+            options={bindingOptions}
+            selected={FormStore.sloBinding}
+            spacing="21px"
+            tabIndex={8}
           />
         </Box>
       </SimpleFormField>

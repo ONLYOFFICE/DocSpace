@@ -8,6 +8,9 @@ import FieldContainer from "@appserver/components/field-container";
 import Text from "@appserver/components/text";
 
 import SimpleTextInput from "./SimpleTextInput";
+import { FileInput } from "@appserver/components";
+
+const uploadIcon = <ReactSVG src="images/actions.upload.react.svg" />;
 
 const UploadXML = ({ FormStore, t }) => {
   return (
@@ -28,12 +31,21 @@ const UploadXML = ({ FormStore, t }) => {
 
         <Button
           className="upload-button"
-          icon={<ReactSVG src="images/actions.upload.react.svg" />}
+          icon={uploadIcon}
           size="medium"
+          onClick={FormStore.onUploadXmlMetadata}
           tabIndex={2}
         />
+
         <Text className="or-text">{t("Or")}</Text>
-        <Button label={t("ChooseFile")} size="medium" tabIndex={3} />
+
+        <FileInput
+          accept=".xml"
+          buttonLabel={t("ChooseFile")}
+          className="xml-upload-file"
+          size="middle"
+          tabIndex={3}
+        />
       </Box>
     </FieldContainer>
   );

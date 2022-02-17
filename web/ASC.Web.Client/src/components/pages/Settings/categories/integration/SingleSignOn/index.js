@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import FormStore from "@appserver/studio/src/store/SsoFormStore";
 
 import FieldMapping from "./FieldMapping";
-import IdpCertificates from "./IdpCertificates";
+import Certificates from "./Certificates";
 import IdpSettings from "./IdpSettings";
 import ProviderMetadata from "./ProviderMetadata";
 import StyledSsoPage from "./styled-containers/StyledSsoPageContainer";
@@ -20,7 +20,9 @@ const SingleSignOn = () => {
 
       <IdpSettings FormStore={FormStore} t={t} />
 
-      <IdpCertificates FormStore={FormStore} t={t} />
+      <Certificates FormStore={FormStore} t={t} provider="IdentityProvider" />
+
+      <Certificates FormStore={FormStore} t={t} provider="ServiceProvider" />
 
       <FieldMapping FormStore={FormStore} t={t} />
 

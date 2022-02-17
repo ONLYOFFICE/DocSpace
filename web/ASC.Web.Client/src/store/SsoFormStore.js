@@ -27,32 +27,38 @@ class SsoFormStore {
   // idpSettings
   entityId = "";
   ssoUrl = "";
-  ssoBinding = "Redirect";
+  ssoBinding = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST";
   sloUrl = "";
-  sloBinding = "Redirect";
-  nameIdFormat = "transient";
+  sloBinding = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST";
+  nameIdFormat = "urn:oasis:names:tc:SAML:2.0:nameid-format:transient";
 
   newIdpCertificate = "";
   idpCertificates = [];
 
   // idpCertificateAdvanced
-  idp_verifyAlgorithm = "rsa-sha1";
-  idp_verifyAuthResponsesSign = true;
-  idp_verifyLogoutRequestsSign = true;
-  idp_verifyLogoutResponsesSign = true;
-  idp_decryptAlgorithm = "aes128-cbc";
+  idp_decryptAlgorithm = "http://www.w3.org/2001/04/xmlenc#aes128-cbc";
+  // no checkbox for that
   ipd_decryptAssertions = false;
+  idp_verifyAlgorithm = "http://www.w3.org/2000/09/xmldsig#rsa-sha1";
+  idp_verifyAuthResponsesSign = false;
+  idp_verifyLogoutRequestsSign = false;
+  idp_verifyLogoutResponsesSign = false;
 
+  newSpCertificate = "";
+  newSpPrivateKey = "";
+  newSpCertificateUsedFor = "signing";
   spCertificates = [];
 
   // spCertificateAdvanced
+  // null for some reason and no checkbox
   sp_decryptAlgorithm = null;
-  sp_signingAlgorithm = "rsa-sha1";
-  sp_signAuthRequests = true;
-  sp_signLogoutRequests = true;
-  sp_signLogoutResponses = true;
-  sp_encryptAlgorithm = "aes128-cbc";
+  sp_encryptAlgorithm = "http://www.w3.org/2001/04/xmlenc#aes128-cbc";
   sp_encryptAssertions = false;
+  sp_signAuthRequests = false;
+  sp_signLogoutRequests = false;
+  sp_signLogoutResponses = false;
+  sp_signingAlgorithm = "http://www.w3.org/2000/09/xmldsig#rsa-sha1";
+  // sp_verifyAlgorithm = "http://www.w3.org/2000/09/xmldsig#rsa-sha1";
 
   firstName = "";
   lastName = "";
@@ -70,28 +76,11 @@ class SsoFormStore {
 
   // hide parts of form
   ServiceProviderSettings = true;
-  ShowAdditionalParameters = true;
+  ShowAdditionalParametersIdp = true;
+  ShowAdditionalParametersSp = true;
   SPMetadata = true;
-  isModalVisible = false;
-
-  // touched fields
-  uploadXmlUrlTouched = false;
-  spLoginLabelTouched = false;
-
-  entityIdTouched = false;
-  ssoUrlTouched = false;
-  sloUrlTouched = false;
-
-  firstNameTouched = false;
-  lastNameTouched = false;
-  emailTouched = false;
-  locationTouched = false;
-  titleTouched = false;
-  phoneTouched = false;
-
-  sp_entityIdTouched = false;
-  sp_assertionConsumerUrlTouched = false;
-  sp_singleLogoutUrlTouched = false;
+  isIdpModalVisible = false;
+  isSpModalVisible = false;
 
   // errors
   uploadXmlUrlHasError = false;
@@ -144,7 +133,7 @@ class SsoFormStore {
   };
 
   onBindingChange = (e) => {
-    this.ssoBinding = e.target.value;
+    this[e.target.name] = e.target.value;
   };
 
   onComboBoxChange = (option, field) => {
@@ -159,12 +148,20 @@ class SsoFormStore {
     this[e.target.name] = e.target.checked;
   };
 
-  onOpenModal = () => {
-    this.isModalVisible = true;
+  onOpenIdpModal = () => {
+    this.isIdpModalVisible = true;
   };
 
-  onCloseModal = () => {
-    this.isModalVisible = false;
+  onOpenSpModal = () => {
+    this.isSpModalVisible = true;
+  };
+
+  onCloseModal = (e, modalVisible) => {
+    this[modalVisible] = false;
+  };
+
+  onModalComboBoxChange = (option) => {
+    this.spCertificateUsedFor = option.key;
   };
 
   onAddCertificate = () => {

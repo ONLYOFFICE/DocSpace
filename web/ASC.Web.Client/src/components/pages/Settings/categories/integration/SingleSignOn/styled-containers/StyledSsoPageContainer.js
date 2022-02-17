@@ -80,6 +80,16 @@ const StyledSsoPage = styled.div`
     max-width: 404px;
     width: 100%;
   }
+
+  .xml-upload-file {
+    .text-input {
+      display: none;
+    }
+
+    .icon {
+      position: static;
+    }
+  }
 `;
 
 export default StyledSsoPage;

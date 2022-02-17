@@ -1,41 +1,33 @@
 import React from "react";
-import styled from "styled-components";
 import { observer } from "mobx-react";
 
 import Box from "@appserver/components/box";
 import Button from "@appserver/components/button";
 import ModalDialog from "@appserver/components/modal-dialog";
+import StyledModalDialog from "../styled-containers/StyledModalDialog";
 import Text from "@appserver/components/text";
 import TextArea from "@appserver/components/textarea";
+import { addArgument } from "../../../../utils";
 
-const StyledModalDialog = styled(ModalDialog)`
-  .text-area {
-    margin-top: 12px;
-  }
-
-  .ok-button {
-    margin-right: 10px;
-  }
-
-  .text-area-label {
-    margin-top: 5px;
-  }
-`;
-
-const AddCertificateModal = ({ FormStore, t }) => {
+const AddIdpCertificateModal = ({ FormStore, t }) => {
   const headerContent = t("NewCertificate");
+
+  const onClose = addArgument(FormStore.onCloseModal, "isIdpModalVisible");
 
   return (
     <StyledModalDialog
       contentHeight="100%"
       displayType="modal"
-      onClose={FormStore.onCloseModal}
-      visible={FormStore.isModalVisible}
+      onClose={onClose}
+      visible={FormStore.isIdpModalVisible}
     >
       <ModalDialog.Header>{headerContent}</ModalDialog.Header>
 
       <ModalDialog.Body>
-        <Text className="text-area-label">{t("OpenCertificate")}</Text>
+        <Text isBold className="text-area-label">
+          {t("OpenCertificate")}
+        </Text>
+
         <TextArea
           className="text-area"
           name="newIdpCertificate"
@@ -51,12 +43,12 @@ const AddCertificateModal = ({ FormStore, t }) => {
             label={t("Common:OKButton")}
             onClick={FormStore.onAddCertificate}
             primary
-            size="medium"
+            size="big"
           />
           <Button
             label={t("Common:CancelButton")}
-            onClick={FormStore.onCloseModal}
-            size="medium"
+            onClick={onClose}
+            size="big"
           />
         </Box>
       </ModalDialog.Footer>
@@ -64,4 +56,4 @@ const AddCertificateModal = ({ FormStore, t }) => {
   );
 };
 
-export default observer(AddCertificateModal);
+export default observer(AddIdpCertificateModal);
