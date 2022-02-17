@@ -290,7 +290,7 @@ export default inject(
     } = treeFoldersStore;
 
     const withContent = canShare || (canShare && isPrivacyFolder && isDesktop);
-    const sortingVisible = !(isFavoritesFolder || isRecentFolder);
+    const sortingVisible = !isRecentFolder;
     const { personal } = auth.settingsStore;
 
     return {

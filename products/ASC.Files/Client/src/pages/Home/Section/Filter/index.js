@@ -362,7 +362,7 @@ class SectionFilterContent extends React.Component {
         isReady={this.state.isReady}
         {...filterColumnCount}
         contextMenuHeader={t("Common:AddFilter")}
-        sortItemsVisible={!(isFavoritesFolder || isRecentFolder)}
+        sortItemsVisible={!isRecentFolder}
       />
     );
   }
