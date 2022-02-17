@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.9.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.9.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
     <value>Поле кода подтверждения не может быть пустым</value>
@@ -541,6 +541,9 @@
   <data name="CustomNamingPeopleSchema" xml:space="preserve">
     <value>Пользовательский</value>
   </data>
+  <data name="DnsChangeMsg" xml:space="preserve">
+    <value>Ссылка для подтверждения операции была отправлена на {0} (адрес электронной почты владельца портала).</value>
+  </data>
   <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
     <value>Неправильный ID экземпляра.</value>
   </data>
@@ -621,6 +624,12 @@
   </data>
   <data name="ErrorRequestLimitExceeded" xml:space="preserve">
     <value>Превышен лимит запросов</value>
+  </data>
+  <data name="ErrorTenantTooShort" xml:space="preserve">
+    <value>Домен клиента не может быть пустым</value>
+  </data>
+  <data name="ErrorTenantTooShortFormat" xml:space="preserve">
+    <value>Доменное имя должно содержать от {0} до {1} символов.</value>
   </data>
   <data name="ErrorUserNotFound" xml:space="preserve">
     <value>Пользователь не найден</value>

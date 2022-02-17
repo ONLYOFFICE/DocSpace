@@ -1510,6 +1510,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на A link to confirm the operation has been sent to {0} (the email address of the portal owner)..
+        /// </summary>
+        public static string DnsChangeMsg {
+            get {
+                return ResourceManager.GetString("DnsChangeMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Incorrect Instance id..
         /// </summary>
         public static string EmailAndPasswordIncorrectAmiId {
@@ -1749,6 +1758,24 @@ namespace ASC.Web.Core.PublicResources {
         public static string ErrorRequestLimitExceeded {
             get {
                 return ResourceManager.GetString("ErrorRequestLimitExceeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на The tenant domain can not be empty..
+        /// </summary>
+        public static string ErrorTenantTooShort {
+            get {
+                return ResourceManager.GetString("ErrorTenantTooShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на The domain name must be between {0} and {1} characters long..
+        /// </summary>
+        public static string ErrorTenantTooShortFormat {
+            get {
+                return ResourceManager.GetString("ErrorTenantTooShortFormat", resourceCulture);
             }
         }
         
