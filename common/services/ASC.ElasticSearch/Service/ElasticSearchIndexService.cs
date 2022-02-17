@@ -143,10 +143,7 @@ public class ElasticSearchIndexService : BackgroundService
 
                 Parallel.ForEach(wrappers, wrapper =>
                 {
-                    using (var scope = _serviceScopeFactory.CreateScope())
-                    {
-                        IndexProduct(wrapper, reindex);
-                    }
+                    IndexProduct(wrapper, reindex);
                 });
             }
 
