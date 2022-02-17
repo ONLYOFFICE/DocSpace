@@ -1,10 +1,9 @@
-namespace Textile.Blocks
+namespace Textile.Blocks;
+
+public class SuperScriptPhraseBlockModifier : PhraseBlockModifier
 {
-    public class SuperScriptPhraseBlockModifier : PhraseBlockModifier
+    public override string ModifyLine(string line)
     {
-        public override string ModifyLine(string line)
-        {
-            return PhraseModifierFormat(line, @"\^", "sup");
-        }
+        return PhraseModifierFormat(line, @"\^", "sup");
     }
 }

@@ -11,42 +11,41 @@
 #endregion
 
 
-namespace Textile
+namespace Textile;
+
+public class StringBuilderTextileFormatter : IOutputter
 {
-    public class StringBuilderTextileFormatter : IOutputter
+    private StringBuilder _stringBuilder = null;
+
+    public StringBuilderTextileFormatter()
     {
-        StringBuilder m_stringBuilder = null;
-
-        public StringBuilderTextileFormatter()
-        {
-        }
-
-        public string GetFormattedText()
-        {
-            return m_stringBuilder.ToString();
-        }
-
-        #region IOutputter Members
-
-        public void Begin()
-        {
-            m_stringBuilder = new StringBuilder();
-        }
-
-        public void End()
-        {
-        }
-
-        public void Write(string text)
-        {
-            m_stringBuilder.Append(text);
-        }
-
-        public void WriteLine(string line)
-        {
-            m_stringBuilder.AppendLine(line);
-        }
-
-        #endregion
     }
+
+    public string GetFormattedText()
+    {
+        return _stringBuilder.ToString();
+    }
+
+    #region IOutputter Members
+
+    public void Begin()
+    {
+        _stringBuilder = new StringBuilder();
+    }
+
+    public void End()
+    {
+    }
+
+    public void Write(string text)
+    {
+        _stringBuilder.Append(text);
+    }
+
+    public void WriteLine(string line)
+    {
+        _stringBuilder.AppendLine(line);
+    }
+
+    #endregion
 }
