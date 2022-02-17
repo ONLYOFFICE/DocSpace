@@ -9,7 +9,13 @@ import InputWithChips from "@appserver/components/input-with-chips";
 ```
 
 ```jsx
-<InputWithChips options={options} placeholder="Type your chips..." />
+<InputWithChips
+  options={[]}
+  onChange={(selected) => console.log(selected)}
+  placeholder="Invite people by name or email"
+  existEmailText="This email address has already been entered"
+  invalidEmailText="Invalid email address"
+/>
 ```
 
 #### Options - an array of objects that contains the following fields:
@@ -43,7 +49,10 @@ Options have options:
 
 ### Properties
 
-| Props         |      Type      | Required | Values |         Default          | Description                                               |
-| ------------- | :------------: | :------: | :----: | :----------------------: | --------------------------------------------------------- |
-| `options`     | `obj`, `array` |    ✅    |   -    |            -             | Array of objects with chips                               |
-| `placeholder` |    `string`    |    -     |   -    | Add placeholder to props | The placeholder is displayed only when the input is empty |
+| Props              |      Type      | Required | Values |                   Default                   | Description                                        |
+| ------------------ | :------------: | :------: | :----: | :-----------------------------------------: | -------------------------------------------------- |
+| `options`          | `obj`, `array` |    -     |   -    |                      -                      | Array of objects with chips                        |
+| `placeholder`      |    `string`    |    -     |   -    |       Invite people by name or email        | Placeholder text for the input                     |
+| `onChange`         |     `func`     |    ✅    |   -    |                      -                      | Will be called when the selected items are changed |
+| `existEmailText`   |    `string`    |    -     |   -    | This email address has already been entered | Warning text when entering an existing email       |
+| `invalidEmailText` |    `string`    |    -     |   -    |            Invalid email address            | Warning text when entering an invalid email        |

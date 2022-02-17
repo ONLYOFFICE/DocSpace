@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 
 import Chip from "./sub-components/chip";
@@ -31,29 +31,22 @@ const InputWithChips = ({
 
   const [value, setValue] = useState("");
 
-  const [isShiftDown, setIsShiftDown] = useState(false);
-  const [isCtrlDown, setIsCtrlDown] = useState(false);
-
   const [isExistedOn, setIsExistedOn] = useState(false);
 
   const emailSettings = new EmailSettings();
 
+  const containerRef = useRef(null);
   const inputRef = useRef(null);
   const blockRef = useRef(null);
   const scrollbarRef = useRef(null);
   const chipsCount = useRef(options.length);
+  const selectedChipsCount = useRef(0);
 
   useEffect(() => {
-    document.addEventListener("keydown", onKeyDown);
-    document.addEventListener("keyup", onKeyUp);
-    return () => {
-      document.removeEventListener("keydown", onKeyDown);
-      document.removeEventListener("keyup", onKeyUp);
-    };
-  }, [selectedChips, currentChip, isShiftDown, isCtrlDown]);
-
-  useEffect(() => {
-    onChange(selectedChips);
+    if (selectedChipsCount.current > 0 || selectedChips.length > 0) {
+      onChange(selectedChips);
+    }
+    selectedChipsCount.current = selectedChips.length;
   }, [selectedChips]);
 
   useEffect(() => {
@@ -73,27 +66,38 @@ const InputWithChips = ({
     setValue(e.target.value);
   };
 
-  const onClick = (value) => {
-    if (isShiftDown) {
-      const isExisted = !!selectedChips?.find((it) => it.value === value.value);
-      return isExisted
-        ? setSelectedChips(
-            selectedChips.filter((it) => it.value != value.value)
-          )
-        : setSelectedChips([value, ...selectedChips]);
-    } else {
-      setSelectedChips([value]);
-    }
-  };
+  const onClick = useCallback(
+    (value, isShiftKey) => {
+      if (isShiftKey) {
+        const isExisted = !!selectedChips?.find(
+          (it) => it.value === value.value
+        );
+        return isExisted
+          ? setSelectedChips(
+              selectedChips.filter((it) => it.value != value.value)
+            )
+          : setSelectedChips([value, ...selectedChips]);
+      } else {
+        setSelectedChips([value]);
+      }
+    },
+    [selectedChips]
+  );
 
-  const onDoubleClick = (value) => {
-    setSelectedChips([]);
-    setCurrentChip(value);
-  };
+  const onDoubleClick = useCallback(
+    (value) => {
+      setSelectedChips([]);
+      setCurrentChip(value);
+    },
+    [value]
+  );
 
-  const onDelete = (value) => {
-    setChips(chips.filter((it) => it.value !== value.value));
-  };
+  const onDelete = useCallback(
+    (value) => {
+      setChips(chips.filter((it) => it.value !== value.value));
+    },
+    [chips]
+  );
 
   const onEnterPress = () => {
     if (value.trim().length > 0) {
@@ -130,18 +134,20 @@ const InputWithChips = ({
     return !!selectedChips?.find((item) => item?.value === value?.value);
   };
 
-  const onSaveNewChip = (value, newValue) => {
-    if (newValue && newValue !== value.value) {
-      setChips(
-        chips.map((it) =>
-          it.value === value.value ? { label: newValue, value: newValue } : it
-        )
-      );
-    }
-  };
+  const onSaveNewChip = useCallback(
+    (value, newValue) => {
+      if (newValue && newValue !== value.value) {
+        setChips(
+          chips.map((it) =>
+            it.value === value.value ? { label: newValue, value: newValue } : it
+          )
+        );
+      }
+    },
+    [chips]
+  );
 
   const onInputKeyDown = (e) => {
-    e.stopPropagation();
     const code = e.code;
     const isCursorStart = inputRef.current.selectionStart === 0;
     if (code === "Enter" || code === "NumpadEnter") onEnterPress();
@@ -149,6 +155,8 @@ const InputWithChips = ({
       setSelectedChips([chips[chips.length - 1]]);
       if (inputRef) {
         inputRef.current.blur();
+        containerRef.current.setAttribute("tabindex", "0");
+        containerRef.current.focus();
       }
     }
   };
@@ -165,31 +173,10 @@ const InputWithChips = ({
     setChips([]);
   };
 
-  const onKeyUp = (e) => {
-    const code = e.code;
-    switch (code) {
-      case "ShiftLeft": {
-        setIsShiftDown(false);
-        break;
-      }
-      case "ControlLeft": {
-        setIsCtrlDown(false);
-        break;
-      }
-    }
-  };
-
   const onKeyDown = (e) => {
     const code = e.code;
-
-    if (code === "ShiftLeft") {
-      setIsShiftDown(true);
-      return;
-    }
-    if (code === "ControlLeft") {
-      setIsCtrlDown(true);
-      return;
-    }
+    const isShiftDown = e.shiftKey;
+    const isCtrlDown = e.ctrlKey;
 
     if (code === "Escape") {
       setSelectedChips([]);
@@ -260,7 +247,7 @@ const InputWithChips = ({
 
   return (
     <StyledContent>
-      <StyledChipGroup>
+      <StyledChipGroup onKeyDown={onKeyDown} ref={containerRef} tabindex="-1">
         <StyledChipWithInput length={chips.length}>
           <Scrollbar scrollclass={"scroll"} stype="thumbV" ref={scrollbarRef}>
             <StyledAllChips ref={blockRef}>
@@ -311,16 +298,19 @@ const InputWithChips = ({
 
 InputWithChips.propTypes = {
   /** Array of objects with chips */
-  options: PropTypes.arrayOf(PropTypes.object).isRequired,
-  /** The placeholder is displayed only when the input is empty */
+  options: PropTypes.arrayOf(PropTypes.object),
+  /** Placeholder text for the input */
   placeholder: PropTypes.string,
+  /** Warning text when entering an existing email */
   existEmailText: PropTypes.string,
+  /** Warning text when entering an invalid email */
   invalidEmailText: PropTypes.string,
-  onChange: PropTypes.func,
+  /** Will be called when the selected items are changed */
+  onChange: PropTypes.func.isRequired,
 };
 
 InputWithChips.defaultProps = {
-  placeholder: "Add placeholder to props",
+  placeholder: "Invite people by name or email",
 };
 
 export default InputWithChips;

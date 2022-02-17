@@ -3,10 +3,6 @@ import commonInputStyle from "../text-input/common-input-styles";
 import Base from "../themes/base";
 import TextInput from "../text-input";
 
-const CHIPS_BORDER_RADIUS = "3px",
-  CHIPS_BACKGROUND = "#ECEEF1",
-  CHIPS_COLOR = "#333333";
-
 const StyledChipWithInput = styled.div`
   min-height: 32px;
   max-height: 220px;
@@ -18,11 +14,15 @@ const StyledChipWithInput = styled.div`
 `;
 
 const StyledContent = styled.div`
+  position: relative;
   width: 469px;
   height: 220px;
 `;
 
 const StyledChipGroup = styled.div`
+  :focus-visible {
+    outline: 0px solid #2da7db !important;
+  }
   height: fit-content;
   ${commonInputStyle} :focus-within {
     border-color: ${(props) => props.theme.inputBlock.borderColor};
@@ -33,6 +33,9 @@ const StyledChipGroup = styled.div`
     position: inherit !important;
     display: flex;
     flex-wrap: wrap;
+    :focus-visible {
+      outline: 0px solid #2da7db !important;
+    }
   }
 
   input {
@@ -58,13 +61,13 @@ const StyledChip = styled.div`
   justify-content: center;
 
   box-sizing: border-box;
-  background: ${CHIPS_BACKGROUND};
+  background: #eceef1;
 
   height: 32px;
   margin: 2px 4px;
   padding: ${(props) => (props.isSelected ? "5px 7px" : "6px 8px")};
 
-  border-radius: ${CHIPS_BORDER_RADIUS} 0 0 ${CHIPS_BORDER_RADIUS};
+  border-radius: 3px 0 0 3px;
   border: ${(props) => props.isSelected && "1px dashed #000"};
   background: ${(props) => (props.isValid ? "#ECEEF1" : "#F7CDBE")};
 
@@ -86,11 +89,11 @@ const StyledChipValue = styled.div`
   font-weight: normal;
   font-size: 13px;
 
-  color: ${CHIPS_COLOR};
+  color: #333333;
 `;
 
 const StyledChipInput = styled(TextInput)`
-  flex: 0 1 auto !important;
+  flex: ${(props) => `${props.flexValue}!important`};
 `;
 
 const StyledInputWithLink = styled.div`

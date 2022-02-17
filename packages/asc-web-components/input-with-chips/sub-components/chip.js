@@ -27,9 +27,11 @@ const Chip = (props) => {
   } = props;
 
   const [newValue, setNewValue] = useState(value?.value);
+  const [chipWidth, setChipWidth] = useState(0);
 
   const tooltipRef = useRef(null);
   const warningRef = useRef(null);
+  const chipRef = useRef(null);
 
   useClickOutside(warningRef, () => tooltipRef.current.hideTooltip());
 
@@ -42,10 +44,11 @@ const Chip = (props) => {
       document.getSelection().removeAllRanges();
     }
 
-    onClick(value);
+    onClick(value, e.shiftKey);
   };
 
   const onDoubleClickHandler = () => {
+    setChipWidth(chipRef.current?.clientWidth);
     onDoubleClick(value);
   };
 
@@ -84,6 +87,9 @@ const Chip = (props) => {
         onKeyDown={onInputKeyDown}
         isAutoFocussed
         withBorder={false}
+        flexValue={
+          value?.label !== value?.value ? "0 1 auto" : `0 0 ${chipWidth}px`
+        }
       />
     );
   }
@@ -94,6 +100,7 @@ const Chip = (props) => {
       onDoubleClick={onDoubleClickHandler}
       onClick={onClickHandler}
       isValid={isValid}
+      ref={chipRef}
     >
       {!isValid && (
         <div className="warning_icon_wrap" ref={warningRef}>
