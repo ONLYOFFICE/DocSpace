@@ -3,17 +3,17 @@
 [Singletone]
 public class BuildQueueService : BackgroundService
 {
-    internal readonly ConcurrentQueue<WebhookRequest> _queue;
+    internal readonly ConcurrentQueue<WebhookRequest> Queue;
     private readonly ICacheNotify<WebhookRequest> _webhookNotify;
 
     public BuildQueueService(ICacheNotify<WebhookRequest> webhookNotify)
     {
         _webhookNotify = webhookNotify;
-        _queue = new ConcurrentQueue<WebhookRequest>();
+        Queue = new ConcurrentQueue<WebhookRequest>();
     }
     public void BuildWebhooksQueue(WebhookRequest request)
     {
-        _queue.Enqueue(request);
+        Queue.Enqueue(request);
     }
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
