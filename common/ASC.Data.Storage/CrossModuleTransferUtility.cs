@@ -23,100 +23,117 @@
  *
 */
 
-namespace ASC.Data.Storage
-{
-    public class CrossModuleTransferUtility
-    {
-        private readonly ILog Log;
-        private readonly IDataStore source;
-        private readonly IDataStore destination;
-        private readonly long maxChunkUploadSize;
-        private readonly int chunksize;
-        private IOptionsMonitor<ILog> Option { get; }
-        private TempStream TempStream { get; }
-        private TempPath TempPath { get; }
+namespace ASC.Data.Storage;
 
-        public CrossModuleTransferUtility(
-            IOptionsMonitor<ILog> option, 
-            TempStream tempStream,
-            TempPath tempPath,
-            IDataStore source, 
-            IDataStore destination)
+public class CrossModuleTransferUtility
+{
+    private readonly ILog _logger;
+    private readonly IDataStore _source;
+    private readonly IDataStore _destination;
+    private readonly long _maxChunkUploadSize;
+    private readonly int _chunkSize;
+    private readonly IOptionsMonitor<ILog> _option;
+    private readonly TempStream _tempStream;
+    private readonly TempPath _tempPath;
+
+    public CrossModuleTransferUtility(
+        IOptionsMonitor<ILog> option,
+        TempStream tempStream,
+        TempPath tempPath,
+        IDataStore source,
+        IDataStore destination)
+    {
+        _logger = option.Get("ASC.CrossModuleTransferUtility");
+        _option = option;
+        _tempStream = tempStream;
+        _tempPath = tempPath;
+        _source = source ?? throw new ArgumentNullException(nameof(source));
+        _destination = destination ?? throw new ArgumentNullException(nameof(destination));
+        _maxChunkUploadSize = 10 * 1024 * 1024;
+        _chunkSize = 5 * 1024 * 1024;
+    }
+
+    public void CopyFile(string srcDomain, string srcPath, string destDomain, string destPath)
+    {
+        if (srcDomain == null)
         {
-            Log = option.Get("ASC.CrossModuleTransferUtility");
-            Option = option;
-            TempStream = tempStream;
-            TempPath = tempPath;
-            this.source = source ?? throw new ArgumentNullException(nameof(source));
-            this.destination = destination ?? throw new ArgumentNullException(nameof(destination));
-            maxChunkUploadSize = 10 * 1024 * 1024;
-            chunksize = 5 * 1024 * 1024;
+            throw new ArgumentNullException(nameof(srcDomain));
         }
 
-        public void CopyFile(string srcDomain, string srcPath, string destDomain, string destPath)
+        if (srcPath == null)
         {
-            if (srcDomain == null) throw new ArgumentNullException(nameof(srcDomain));
-            if (srcPath == null) throw new ArgumentNullException(nameof(srcPath));
-            if (destDomain == null) throw new ArgumentNullException(nameof(destDomain));
-            if (destPath == null) throw new ArgumentNullException(nameof(destPath));
+            throw new ArgumentNullException(nameof(srcPath));
+        }
 
-            using var stream = source.GetReadStream(srcDomain, srcPath);
-            if (stream.Length < maxChunkUploadSize)
+        if (destDomain == null)
+        {
+            throw new ArgumentNullException(nameof(destDomain));
+        }
+
+        if (destPath == null)
+        {
+            throw new ArgumentNullException(nameof(destPath));
+        }
+
+        using var stream = _source.GetReadStream(srcDomain, srcPath);
+        if (stream.Length < _maxChunkUploadSize)
+        {
+            _destination.Save(destDomain, destPath, stream);
+        }
+        else
+        {
+            var session = new CommonChunkedUploadSession(stream.Length);
+            var holder = new CommonChunkedUploadSessionHolder(_tempPath, _option, _destination, destDomain);
+            holder.Init(session);
+            try
             {
-                destination.Save(destDomain, destPath, stream);
-            }
-            else
-            {
-                var session = new CommonChunkedUploadSession(stream.Length);
-                var holder = new CommonChunkedUploadSessionHolder(TempPath, Option, destination, destDomain);
-                holder.Init(session);
+                Stream memstream = null;
                 try
                 {
-                    Stream memstream = null;
-                    try
+                    while (GetStream(stream, out memstream))
                     {
-                        while (GetStream(stream, out memstream))
-                        {
-                            memstream.Seek(0, SeekOrigin.Begin);
-                            holder.UploadChunk(session, memstream, chunksize);
-                            memstream.Dispose();
-                        }
+                        memstream.Seek(0, SeekOrigin.Begin);
+                        holder.UploadChunk(session, memstream, _chunkSize);
+                        memstream.Dispose();
                     }
-                    finally
-                    {
-                        if (memstream != null)
-                        {
-                            memstream.Dispose();
-                        }
-                    }
-
-                    holder.Finalize(session);
-                    destination.Move(destDomain, session.TempPath, destDomain, destPath);
                 }
-                catch (Exception ex)
+                finally
                 {
-                    Log.Error("Copy File", ex);
-                    holder.Abort(session);
+                    if (memstream != null)
+                    {
+                        memstream.Dispose();
+                    }
                 }
+
+                holder.Finalize(session);
+                _destination.Move(destDomain, session.TempPath, destDomain, destPath);
             }
-        }
-
-        private bool GetStream(Stream stream, out Stream memstream)
-        {
-            memstream = TempStream.Create();
-            var total = 0;
-            int readed;
-            const int portion = 2048;
-            var buffer = new byte[portion];
-
-            while ((readed = stream.Read(buffer, 0, portion)) > 0)
+            catch (Exception ex)
             {
-                memstream.Write(buffer, 0, readed);
-                total += readed;
-                if (total >= chunksize) break;
+                _logger.Error("Copy File", ex);
+                holder.Abort(session);
             }
-
-            return total > 0;
         }
+    }
+
+    private bool GetStream(Stream stream, out Stream memstream)
+    {
+        memstream = _tempStream.Create();
+        var total = 0;
+        int readed;
+        const int portion = 2048;
+        var buffer = new byte[portion];
+
+        while ((readed = stream.Read(buffer, 0, portion)) > 0)
+        {
+            memstream.Write(buffer, 0, readed);
+            total += readed;
+            if (total >= _chunkSize)
+            {
+                break;
+            }
+        }
+
+        return total > 0;
     }
 }
