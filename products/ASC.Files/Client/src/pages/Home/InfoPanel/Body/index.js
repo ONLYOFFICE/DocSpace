@@ -1,16 +1,20 @@
+import Loaders from "@appserver/common/components/Loaders";
+import RectangleLoader from "@appserver/common/components/Loaders/RectangleLoader";
 import { FileType } from "@appserver/common/constants";
-import IconButton from "@appserver/components/icon-button";
 import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
+import Tooltip from "@appserver/components/tooltip";
 import { inject, observer } from "mobx-react";
 import React, { useEffect, useState } from "react";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
+import { ReactSVG } from "react-svg";
 import styled from "styled-components";
 
 const StyledInfoRoomBody = styled.div`
-    .item {
-        padding: 8px 0;
+    padding: 0px 16px 16px;
+    .no-item {
+        text-align: center;
     }
 `;
 
@@ -22,10 +26,10 @@ const StyledItemTitle = styled.div`
     height: 80px;
 
     .icon {
-        width: 32px;
-        height: 32px;
-        margin: 0px 8px;
-        display: inline-block;
+        svg {
+            height: 32px;
+            width: 32px;
+        }
     }
 
     .text {
@@ -35,30 +39,54 @@ const StyledItemTitle = styled.div`
     }
 `;
 
+const StyledItemThumbnail = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 200px;
+    padding: 4px;
+    border: solid 1px #eceef1;
+    border-radius: 6px;
+    margin-bottom: 24px;
+    img {
+        max-height: 200px;
+        max-width: 100%;
+        width: auto;
+        height: auto;
+    }
+`;
+
 const StyledItemSubtitle = styled.div`
     display: flex;
     flex-direction: row;
     align-items: center;
     width: 100%;
-    padding: 24px 0;
+    margin-bottom: 24px;
 `;
 
 const StyledItemProperties = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 24px;
+    gap: 8px;
+
     .property {
         width: 100%;
         display: grid;
         grid-template-columns: 110px 1fr;
+        grid-column-gap: 24px;
+
         .property-title {
             font-size: 13px;
             color: #333333;
-            margin: 8px 0px;
         }
 
         .property-content {
             font-weight: 600;
             font-size: 13px;
             color: #333333;
-            margin: 8px 0px;
         }
     }
 `;
@@ -90,48 +118,131 @@ const StyleditemAccessUser = styled.div`
     }
 `;
 
-const InfoPanelBodyContent = ({ selection, getFolderInfo }) => {
-    const selectedItems = selection;
-    console.log(selectedItems);
-    const [items, setItems] = useState([
-        {
-            title: "",
-            icon: "",
-            properties: [],
+const InfoPanelBodyContent = ({
+    selectedItem,
+    getFolderInfo,
+    getIcon,
+    getFolderIcon,
+
+    getShareUsers,
+}) => {
+    const [item, setItem] = useState({});
+    // title: "",
+    // iconUrl: "",
+    // thumbnailUrl: "",
+    // properties: [{ title: "", content: {} }],
+    // access: {
+    //     owner: {
+    //         img: "",
+    //         link: "",
+    //     },
+    //     others: [
+    //         {
+    //             img: "",
+    //             link: "",
+    //         },
+    //     ],
+    // },
+
+    const updateItemsInfo = async (selectedItem) => {
+        const displayedItem = {
+            id: selectedItem.id,
+            title: selectedItem.title,
+            iconUrl: getItemIcon(selectedItem),
+            thumbnailUrl: selectedItem.thumbnailUrl,
+            properties: getItemProperties(selectedItem),
             access: {
                 owner: {
-                    img: "",
-                    link: "",
+                    img: selectedItem.createdBy.avatarSmall,
+                    link: selectedItem.createdBy.profileUrl,
                 },
                 others: [],
             },
-        },
-    ]);
+        };
 
-    const updateItemsInfo = async () => {
-        const res = await Promise.all(
-            selectedItems.map(async (s) => {
-                const existingItem = items.find((i) => i.id === s.id);
-                if (existingItem) return existingItem;
-
-                const properties = await getItemProperties(s);
-                const access = getItemAccess(s);
-
-                console.log(access);
-                return {
-                    id: s.id,
-                    title: s.title,
-                    icon: s.icon,
-                    properties: properties,
-                    access: access,
-                };
-            })
-        );
-
-        setItems(res);
+        setItem(displayedItem);
+        loadAsyncData(displayedItem, selectedItem);
     };
 
-    const getItemProperties = async (item) => {
+    const loadAsyncData = async (displayedItem, selectedItem) => {
+        const updateLoadedItemProperties = async (
+            displayedItem,
+            selectedItem
+        ) => {
+            const parentFolderId = selectedItem.isFolder
+                ? selectedItem.parentId
+                : selectedItem.folderId;
+            const folderInfo = await getFolderInfo(parentFolderId);
+
+            return [...displayedItem.properties].map((op) =>
+                op.title === "Location"
+                    ? {
+                          title: "Location",
+                          content: (
+                              <Link
+                                  className="property-content"
+                                  href={`/products/files/filter?folder=${parentFolderId}`}
+                                  isHovered={true}
+                              >
+                                  {folderInfo.title}
+                              </Link>
+                          ),
+                      }
+                    : op
+            );
+        };
+
+        const updateLoadedItemAccess = async (item) => {
+            const accesses = await getShareUsers([item.folderId], [item.id]);
+            console.log(accesses);
+
+            const result = {
+                owner: {},
+                others: [],
+            };
+
+            accesses.forEach((access) => {
+                const user = access.sharedTo;
+                const userData = {
+                    key: user.id,
+                    img: user.avatarSmall,
+                    link: user.profileUrl,
+                    name: user.displayName,
+                    email: user.email,
+                };
+
+                if (access.isOwner) result.owner = userData;
+                else result.others.push(userData);
+            });
+
+            return result;
+        };
+
+        const properties = await updateLoadedItemProperties(
+            displayedItem,
+            selectedItem
+        );
+        const access = await updateLoadedItemAccess(selectedItem);
+
+        setItem({
+            ...displayedItem,
+            properties: properties,
+            access: access,
+        });
+    };
+
+    const getItemIcon = (item) => {
+        const extension = item.fileExst;
+        const iconUrl = extension
+            ? getIcon(24, extension)
+            : getFolderIcon(item.providerKey, 24);
+
+        return iconUrl;
+    };
+
+    const getItemProperties = (item) => {
+        console.log(item);
+
         const styledLink = (text, href) => (
             <Link className="property-content" href={href} isHovered={true}>
                 {text}
@@ -185,12 +296,6 @@ const InfoPanelBodyContent = ({ selection, getFolderInfo }) => {
             }
         };
 
-        console.log(item);
-
-        const parentFolderId = item.isFolder ? item.parentId : item.folderId;
-        const folderInfo = await getFolderInfo(parentFolderId);
-        console.log(folderInfo);
-
         const itemSize = item.isFolder
             ? `${item.foldersCount} Folders | ${item.filesCount} Files`
             : item.contentLength;
@@ -207,10 +312,7 @@ const InfoPanelBodyContent = ({ selection, getFolderInfo }) => {
             },
             {
                 title: "Location",
-                content: styledLink(
-                    folderInfo.title,
-                    `/products/files/filter?folder=${parentFolderId}`
-                ),
+                content: <RectangleLoader width="150" height="19" />,
             },
             {
                 title: "Type",
@@ -258,87 +360,131 @@ const InfoPanelBodyContent = ({ selection, getFolderInfo }) => {
         return result;
     };
 
-    const getItemAccess = (item) => {
-        let result = {
-            owner: {
-                img: item.createdBy.avatarSmall,
-                link: item.createdBy.profileUrl,
-            },
-            others: [],
-        };
-
-        return result;
-
-        if (item.access === 0) return result;
-    };
-
     useEffect(() => {
-        updateItemsInfo();
-    }, [selectedItems]);
+        if (selectedItem !== null) updateItemsInfo(selectedItem);
+    }, [selectedItem]);
 
     return (
         <StyledInfoRoomBody>
-            {items.map((i) => (
-                <div className="item" key={i.id}>
-                    <StyledItemTitle>
-                        <IconButton
-                            className="icon"
-                            iconName={i.icon}
-                            size="32"
-                        />
-                        <Text
-                            className="text"
-                            fontWeight={600}
-                            font-size="16px"
-                        >
-                            {i.title}
-                        </Text>
-                    </StyledItemTitle>
-
-                    {/* < THUMBNAIL /> */}
-
-                    <StyledItemSubtitle>
-                        <Text fontWeight="600" fontSize="14px" color="#000000">
-                            System Properties
-                        </Text>
-                    </StyledItemSubtitle>
-
-                    <StyledItemProperties>
-                        {i.properties.map((p) => (
-                            <div key={p.title} className="property">
-                                <Text className="property-title">
-                                    {p.title}
-                                </Text>
-                                {p.content}
-                            </div>
-                        ))}
-                    </StyledItemProperties>
-
-                    <StyledItemSubtitle>
-                        <Text fontWeight="600" fontSize="14px" color="#000000">
-                            Who has access
-                        </Text>
-                    </StyledItemSubtitle>
-
-                    <StyledItemAccess>
-                        <StyleditemAccessUser>
-                            <a href={i.access.owner.link}>
-                                <img src={i.access.owner.img} />
-                            </a>
-                        </StyleditemAccessUser>
-                        {!i.access.others && <div className="divider"></div>}
-                    </StyledItemAccess>
+            {!selectedItem ? (
+                <div className="no-item">
+                    <h4>Select an item to display it's info</h4>
                 </div>
-            ))}
+            ) : (
+                <>
+                    {item.title && (
+                        <>
+                            <StyledItemTitle>
+                                <ReactSVG className="icon" src={item.iconUrl} />
+                                <Text
+                                    className="text"
+                                    fontWeight={600}
+                                    fontSize="16px"
+                                >
+                                    {item.title}
+                                </Text>
+                            </StyledItemTitle>
+
+                            {"thumbnailUrl" in selectedItem && (
+                                <StyledItemThumbnail>
+                                    <img src={item.thumbnailUrl} alt="" />
+                                </StyledItemThumbnail>
+                            )}
+
+                            <StyledItemSubtitle>
+                                <Text
+                                    fontWeight="600"
+                                    fontSize="14px"
+                                    color="#000000"
+                                >
+                                    System Properties
+                                </Text>
+                            </StyledItemSubtitle>
+
+                            <StyledItemProperties>
+                                {item.properties.map((p) => (
+                                    <div key={p.title} className="property">
+                                        <Text className="property-title">
+                                            {p.title}
+                                        </Text>
+                                        {p.content}
+                                    </div>
+                                ))}
+                            </StyledItemProperties>
+
+                            <StyledItemSubtitle>
+                                <Text
+                                    fontWeight="600"
+                                    fontSize="14px"
+                                    color="#000000"
+                                >
+                                    Who has access
+                                </Text>
+                            </StyledItemSubtitle>
+
+                            <StyledItemAccess>
+                                <StyleditemAccessUser>
+                                    <div
+                                        data-for="access-user-tooltip"
+                                        data-tip={item.access.owner.name}
+                                    >
+                                        <a href={item.access.owner.link}>
+                                            <img src={item.access.owner.img} />
+                                        </a>
+                                    </div>
+                                </StyleditemAccessUser>
+
+                                {item.access.others.length ? (
+                                    <div className="divider"></div>
+                                ) : null}
+
+                                {item.access.others.map((user) => (
+                                    <div key={user.key}>
+                                        <StyleditemAccessUser>
+                                            <div
+                                                data-for="access-user-tooltip"
+                                                data-tip={user.name}
+                                            >
+                                                <a href={user.link}>
+                                                    <img src={user.img} />
+                                                </a>
+                                            </div>
+                                        </StyleditemAccessUser>
+                                    </div>
+                                ))}
+                            </StyledItemAccess>
+
+                            <Tooltip
+                                id="access-user-tooltip"
+                                getContent={(dataTip) =>
+                                    dataTip ? (
+                                        <Text fontSize="13px">{dataTip}</Text>
+                                    ) : null
+                                }
+                            />
+                        </>
+                    )}
+                </>
+            )}
         </StyledInfoRoomBody>
     );
 };
 
-export default inject(({ filesStore }) => {
-    const selection = JSON.parse(JSON.stringify(filesStore.selection));
-    const { getFolderInfo } = filesStore;
+export default inject(({ filesStore, formatsStore }) => {
+    console.log(filesStore);
+    const selectedItem = JSON.parse(JSON.stringify(filesStore.bufferSelection));
+    const { getFolderInfo, getShareUsers } = filesStore;
 
-    return { selection, getFolderInfo };
+    const { getIcon, getFolderIcon } = formatsStore.iconFormatsStore;
+
+    return {
+        selectedItem,
+        getFolderInfo,
+        getShareUsers,
+
+        getIcon,
+        getFolderIcon,
+    };
 })(
     withRouter(
         withTranslation(["Home", "Common", "Translations"])(

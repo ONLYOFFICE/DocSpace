@@ -41,22 +41,14 @@ const StyledContainer = styled.div`
             props.title &&
             css`
                 display: grid;
-                grid-template-columns: ${(props) =>
-                    props.isRootFolder
-                        ? "auto auto 1fr"
-                        : props.canCreate
-                        ? "auto auto auto 1fr 32px"
-                        : "auto auto 1fr 32px"};
-
-                /* @media ${tablet} {
-                    grid-template-columns: ${(props) =>
-                    props.isRootFolder
-                        ? "auto auto 1fr"
-                        : props.canCreate
-                        ? "auto auto auto  1fr"
-                        : "auto auto  1fr"};
-                    ${(props) => !props.isLoading && "top: 7px;"}
-                } */
+                grid-template-columns: ${({ isRootFolder, canCreate }) => {
+                    if (isRootFolder) {
+                        if (canCreate) return "auto auto 1fr";
+                        return "auto 1fr";
+                    }
+                    if (canCreate) return "auto auto auto 1fr 32px";
+                    return "auto auto 1fr 32px";
+                }};
             `}
         align-items: center;
         max-width: calc(100vw - 32px);
@@ -95,13 +87,16 @@ const StyledContainer = styled.div`
         .option-button {
             margin-bottom: -1px;
 
-            @media (min-width: 1024px) {
+            margin-left: auto;
+            margin-right: 16px;
+
+            /* @media (min-width: 1024px) {
                 margin-left: 8px;
-            }
+            } */
 
             @media ${tablet} {
-                margin-left: auto;
-                margin-right: 32px;
+                /* margin-left: auto;
+                margin-right: 32px; */
                 & > div:first-child {
                     padding: 8px 8px 8px 8px;
                     margin-right: -8px;
@@ -200,6 +195,7 @@ const StyledInfoPanelToggleWrapper = styled.div`
     ${(props) =>
         props.isHeaderVisible &&
         css`
+            margin-bottom: 2px;
             margin-right: 24px;
             padding-left: 12px;
         `}
