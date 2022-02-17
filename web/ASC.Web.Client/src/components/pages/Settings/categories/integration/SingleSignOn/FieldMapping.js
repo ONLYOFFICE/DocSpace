@@ -101,7 +101,12 @@ const FieldMapping = ({ FormStore, t }) => {
           size="medium"
           tabIndex={23}
         />
-        <Button label={t("ResetSettings")} size="medium" tabIndex={24} />
+        <Button
+          label={t("ResetSettings")}
+          onClick={FormStore.resetForm}
+          size="medium"
+          tabIndex={24}
+        />
       </Box>
     </Box>
   );

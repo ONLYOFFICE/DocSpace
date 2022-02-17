@@ -1,4 +1,5 @@
 import { makeAutoObservable } from "mobx";
+import { defaultStore } from "../components/pages/Settings/categories/integration/SingleSignOn/sub-components/constants";
 
 const regExps = {
   // source: https://regexr.com/3ok5o
@@ -164,21 +165,47 @@ class SsoFormStore {
     this.spCertificateUsedFor = option.key;
   };
 
-  onAddCertificate = () => {
-    console.log("новый сертификат:", this.newIdpCertificate);
-    this.isModalVisible = false;
-    this.newIdpCertificate = "";
+  onUploadXmlMetadata = async () => {
+    const response = await fetch("./response.json");
+    const metadataObject = await response.json();
+
+    this.setFieldsFromObject(metadataObject);
+  };
+
+  setFieldsFromObject = (object) => {
+    for (let key of Object.keys(object)) {
+      if (typeof object[key] !== "object") {
+        this[key] = object[key];
+      } else {
+        let prefix = "";
+
+        if (key !== "fieldMapping" && key !== "idpSettings") {
+          prefix = key.includes("idp") ? "idp_" : "sp_";
+        }
+
+        if (Array.isArray(object[key])) {
+          this[`${prefix}Certificates`] = [...object[key]];
+        } else {
+          for (let field of Object.keys(object[key])) {
+            this[`${prefix}${field}`] = object[key][field];
+          }
+        }
+      }
+    }
+  };
+
+  resetForm = () => {
+    for (let key of Object.keys(defaultStore)) {
+      this[key] = defaultStore[key];
+    }
   };
 
   onBlur = (e) => {
     const field = e.target.name;
-    const fieldTouched = `${field}Touched`;
     const fieldError = `${field}HasError`;
     const fieldErrorMessage = `${field}ErrorMessage`;
 
     const value = e.target.value;
-
-    this[fieldTouched] = true;
 
     try {
       this.validate(value, this.getFieldType(field));
@@ -207,6 +234,10 @@ class SsoFormStore {
 
     if (regExps[type].test(string)) return true;
     else throw new Error(`${type}ErrorMessage`);
+  };
+
+  findFullField = (obj, value) => {
+    return Object.keys(obj).find((key) => obj[key] === value);
   };
 }
 

@@ -1,27 +1,27 @@
 export const verifyAlgorithms = {
   "rsa-sha1": "http://www.w3.org/2000/09/xmldsig#rsa-sha1",
-  // TODO
-  "rsa-sha256": "http://www.w3.org/2000/09/xmldsig#rsa-sha1",
-  "rsa-sha512": "http://www.w3.org/2000/09/xmldsig#rsa-sha1",
+  "rsa-sha256": "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256",
+  "rsa-sha512": "http://www.w3.org/2001/04/xmldsig-more#rsa-sha512",
 };
 
 export const decryptAlgorithms = {
   "aes128-cbc": "http://www.w3.org/2001/04/xmlenc#aes128-cbc",
-  // TODO
-  "aes256-cbc": "http://www.w3.org/2001/04/xmlenc#aes128-cbc",
-  "tripledes-cbc": "http://www.w3.org/2001/04/xmlenc#aes128-cbc",
+  "aes256-cbc": "http://www.w3.org/2001/04/xmlenc#aes256-cbc",
+  "tripledes-cbc": "http://www.w3.org/2001/04/xmlenc#tripledes-cbc",
 };
+
+export const algorithms = { ...verifyAlgorithms, ...decryptAlgorithms };
 
 export const verifyAlgorithmsOptions = Object.keys(verifyAlgorithms).map(
   (key) => ({
-    key: key,
+    key: verifyAlgorithms[key],
     label: key,
   })
 );
 
 export const decryptAlgorithmsOptions = Object.keys(decryptAlgorithms).map(
   (key) => ({
-    key: key,
+    key: decryptAlgorithms[key],
     label: key,
   })
 );
@@ -41,19 +41,118 @@ export const nameIdFormats = {
 };
 
 export const nameIdOptions = Object.keys(nameIdFormats).map((key) => ({
-  key: key,
+  key: nameIdFormats[key],
   label: nameIdFormats[key],
 }));
 
 export const bindingOptions = [
   {
-    value: "POST",
+    value: "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
     label: "POST",
     disabled: false,
   },
   {
-    value: "Redirect",
+    value: "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect",
     label: "Redirect",
     disabled: false,
   },
 ];
+
+export const defaultStore = {
+  spLoginLabel: "",
+
+  // idpSettings
+  entityId: "",
+  ssoUrl: "",
+  ssoBinding: "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+  sloUrl: "",
+  sloBinding: "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+  nameIdFormat: "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
+
+  newIdpCertificate: "",
+  idpCertificates: [],
+
+  // idpCertificateAdvanced
+  idp_decryptAlgorithm: "http://www.w3.org/2001/04/xmlenc#aes128-cbc",
+  // no checkbox for that
+  ipd_decryptAssertions: false,
+  idp_verifyAlgorithm: "http://www.w3.org/2000/09/xmldsig#rsa-sha1",
+  idp_verifyAuthResponsesSign: false,
+  idp_verifyLogoutRequestsSign: false,
+  idp_verifyLogoutResponsesSign: false,
+
+  newSpCertificate: "",
+  newSpPrivateKey: "",
+  newSpCertificateUsedFor: "signing",
+  spCertificates: [],
+
+  // spCertificateAdvanced
+  // null for some reason
+  sp_decryptAlgorithm: null,
+  sp_encryptAlgorithm: "http://www.w3.org/2001/04/xmlenc#aes128-cbc",
+  sp_encryptAssertions: false,
+  sp_signAuthRequests: false,
+  sp_signLogoutRequests: false,
+  sp_signLogoutResponses: false,
+  sp_signingAlgorithm: "http://www.w3.org/2000/09/xmldsig#rsa-sha1",
+  // sp_verifyAlgorithm : "http://www.w3.org/2000/09/xmldsig#rsa-sha1",
+
+  firstName: "",
+  lastName: "",
+  email: "",
+  location: "",
+  title: "",
+  phone: "",
+
+  hideAuthPage: false,
+
+  // sp metadata
+  sp_entityId: "",
+  sp_assertionConsumerUrl: "",
+  sp_singleLogoutUrl: "",
+
+  // hide parts of form
+  ServiceProviderSettings: true,
+  ShowAdditionalParameters: true,
+  SPMetadata: true,
+  isIdpModalVisible: false,
+  isSpModalVisible: false,
+
+  // errors
+  uploadXmlUrlHasError: false,
+  spLoginLabelHasError: false,
+
+  entityIdHasError: false,
+  ssoUrlHasError: false,
+  sloUrlHasError: false,
+
+  firstNameHasError: false,
+  lastNameHasError: false,
+  emailHasError: false,
+  locationHasError: false,
+  titleHasError: false,
+  phoneHasError: false,
+
+  sp_entityIdHasError: false,
+  sp_assertionConsumerUrlHasError: false,
+  sp_singleLogoutUrlHasError: false,
+
+  // error messages
+  uploadXmlUrlErrorMessage: null,
+  spLoginLabelErrorMessage: null,
+
+  entityIdErrorMessage: null,
+  ssoUrlErrorMessage: null,
+  sloUrlErrorMessage: null,
+
+  firstNameErrorMessage: null,
+  lastNameErrorMessage: null,
+  emailErrorMessage: null,
+  locationErrorMessage: null,
+  titleErrorMessage: null,
+  phoneErrorMessage: null,
+
+  sp_entityIdErrorMessage: null,
+  sp_assertionConsumerUrlErrorMessage: null,
+  sp_singleLogoutUrlErrorMessage: null,
+};
