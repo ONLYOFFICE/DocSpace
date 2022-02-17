@@ -210,11 +210,11 @@ const Editor = () => {
 
       //showLoader();
       const docApiUrl = await getDocServiceUrl();
-      filesSettings = await getSettingsFiles();
 
       try {
         await authStore.init(true);
         user = authStore.userStore.user;
+        if (user) filesSettings = await getSettingsFiles();
         personal = authStore.settingsStore.personal;
         successAuth = !!user;
       } catch (e) {
