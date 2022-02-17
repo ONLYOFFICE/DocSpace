@@ -11,22 +11,16 @@ import DropDownItem from "../drop-down-item";
 import Backdrop from "../backdrop";
 import StyledDropdown from "./styled-drop-down";
 
-// eslint-disable-next-line react/display-name, react/prop-types
+/* eslint-disable react/prop-types, react/display-name */
+
 const Row = memo(({ data, index, style }) => {
   const option = data[index];
-  // eslint-disable-next-line react/prop-types
   const separator = option.props.isSeparator
     ? { width: `calc(100% - 32px)`, height: `1px` }
     : {};
   const newStyle = { ...style, ...separator };
 
-  return (
-    <DropDownItem
-      // eslint-disable-next-line react/prop-types
-      {...option.props}
-      style={newStyle}
-    />
-  );
+  return <DropDownItem {...option.props} style={newStyle} />;
 });
 
 class DropDown extends React.PureComponent {
@@ -37,6 +31,7 @@ class DropDown extends React.PureComponent {
       directionX: props.directionX,
       directionY: props.directionY,
     };
+
     this.dropDownRef = React.createRef();
   }
 
@@ -217,7 +212,6 @@ class DropDown extends React.PureComponent {
     const dropDownMaxHeightProp = maxHeight
       ? { height: calculatedHeight + "px" }
       : {};
-    //console.log("DropDown render", this.props);
 
     if (!showDisabledItems) cleanChildren = this.hideDisabledItems();
 
@@ -262,7 +256,7 @@ class DropDown extends React.PureComponent {
 const EnhancedComponent = onClickOutside(DropDown);
 
 class DropDownContainer extends React.Component {
-  toggleDropDown = (e) => {
+  toggleDropDown = () => {
     this.props.clickOutsideAction({}, !this.props.open);
   };
   render() {
