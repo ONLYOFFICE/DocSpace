@@ -53,7 +53,7 @@ namespace ASC.Api.Core.Auth
             {
                 return SecurityContext.IsAuthenticated
                     ? Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(Context.User, new AuthenticationProperties(), Scheme.Name)))
-                    : Task.FromResult(AuthenticateResult.Fail(new AuthenticationException(HttpStatusCode.Unauthorized.ToString())));
+                    : Task.FromResult(AuthenticateResult.Fail(new AuthenticationException(nameof(HttpStatusCode.Unauthorized))));
             }
 
             EmailValidationKeyProvider.ValidationResult checkKeyResult;
@@ -105,14 +105,14 @@ namespace ASC.Api.Core.Auth
             var result = checkKeyResult switch
             {
                 EmailValidationKeyProvider.ValidationResult.Ok => AuthenticateResult.Success(new AuthenticationTicket(Context.User, new AuthenticationProperties(), Scheme.Name)),
-                _ => AuthenticateResult.Fail(new AuthenticationException(HttpStatusCode.Unauthorized.ToString()))
+                _ => AuthenticateResult.Fail(new AuthenticationException(nameof(HttpStatusCode.Unauthorized)))
             };
 
             return Task.FromResult(result);
         }
     }
 
-    public class ConfirmAuthHandlerExtension
+    public static class ConfirmAuthHandlerExtension
     {
         public static void Register(DIHelper services)
         {

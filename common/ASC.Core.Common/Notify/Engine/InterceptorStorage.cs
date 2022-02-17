@@ -54,8 +54,8 @@ namespace ASC.Notify.Engine
 
         public void Add(ISendInterceptor interceptor)
         {
-            if (interceptor == null) throw new ArgumentNullException("interceptor");
-            if (string.IsNullOrEmpty(interceptor.Name)) throw new ArgumentException("empty name property", "interceptor");
+            if (interceptor == null) throw new ArgumentNullException(nameof(interceptor));
+            if (string.IsNullOrEmpty(interceptor.Name)) throw new ArgumentException("empty name property", nameof(interceptor));
 
             switch (interceptor.Lifetime)
             {
@@ -72,7 +72,7 @@ namespace ASC.Notify.Engine
 
         public ISendInterceptor Get(string name)
         {
-            if (string.IsNullOrEmpty(name)) throw new ArgumentException("empty name", "name");
+            if (string.IsNullOrEmpty(name)) throw new ArgumentException("empty name", nameof(name));
             var result = GetInternal(name, CallInterceptors);
             if (result == null) result = GetInternal(name, globalInterceptors);
             return result;
@@ -80,7 +80,7 @@ namespace ASC.Notify.Engine
 
         public void Remove(string name)
         {
-            if (string.IsNullOrEmpty(name)) throw new ArgumentException("empty name", "name");
+            if (string.IsNullOrEmpty(name)) throw new ArgumentException("empty name", nameof(name));
 
             RemoveInternal(name, CallInterceptors);
             RemoveInternal(name, globalInterceptors);
@@ -119,7 +119,7 @@ namespace ASC.Notify.Engine
 
         private ISendInterceptor GetInternal(string name, Dictionary<string, ISendInterceptor> storage)
         {
-            ISendInterceptor interceptor = null;
+            ISendInterceptor interceptor;
             lock (syncRoot)
             {
                 storage.TryGetValue(name, out interceptor);

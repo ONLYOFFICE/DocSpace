@@ -88,7 +88,7 @@ namespace ASC.Web.Core.Helpers
         private string GetValueText(CultureInfo culture, object value)
         {
             var type = value.GetType();
-            var resourceName = string.Format("{0}_{1}", type.Name, value.ToString());
+            var resourceName = $"{type.Name}_{value}";
             var result = _resourceManager.GetString(resourceName, culture);
             if (result == null)
                 result = resourceName;
@@ -106,7 +106,7 @@ namespace ASC.Web.Core.Helpers
             {
                 0 => false,
                 1 => true,
-                _ => ((value & (value - 1)) == 0),
+                _ => (value & (value - 1)) == 0,
             };
         }
 
@@ -144,7 +144,7 @@ namespace ASC.Web.Core.Helpers
                         }
                         else
                         {
-                            result = string.Format("{0}, {1}", result, valueText);
+                            result = $"{result}, {valueText}";
                         }
                     }
                 }
@@ -216,7 +216,7 @@ namespace ASC.Web.Core.Helpers
         {
             if (value is string @string)
             {
-                var result = (_isFlagEnum) ?
+                var result = _isFlagEnum ?
                     GetFlagValue(culture, @string) : GetValue(culture, @string);
                 if (result == null)
                 {
@@ -242,7 +242,7 @@ namespace ASC.Web.Core.Helpers
         {
             if (value != null && destinationType == typeof(string))
             {
-                object result = (_isFlagEnum) ?
+                object result = _isFlagEnum ?
                     GetFlagValueText(culture, value) : GetValueText(culture, value);
                 return result;
             }

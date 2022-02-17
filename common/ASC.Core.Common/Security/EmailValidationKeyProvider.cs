@@ -85,7 +85,7 @@ namespace ASC.Security.Cryptography
 
         public string GetEmailKey(int tenantId, string email)
         {
-            if (string.IsNullOrEmpty(email)) throw new ArgumentNullException("email");
+            if (string.IsNullOrEmpty(email)) throw new ArgumentNullException(nameof(email));
 
             email = FormatEmail(tenantId, email);
 
@@ -96,7 +96,7 @@ namespace ASC.Security.Cryptography
 
         private string FormatEmail(int tenantId, string email)
         {
-            if (email == null) throw new ArgumentNullException("email");
+            if (email == null) throw new ArgumentNullException(nameof(email));
             try
             {
                 return string.Format("{0}|{1}|{2}", email.ToLowerInvariant(), tenantId, Encoding.UTF8.GetString(MachinePseudoKeys.GetMachineConstant()));
@@ -123,8 +123,8 @@ namespace ASC.Security.Cryptography
 
         private ValidationResult ValidateEmailKeyInternal(string email, string key, TimeSpan validInterval)
         {
-            if (string.IsNullOrEmpty(email)) throw new ArgumentNullException("email");
-            if (key == null) throw new ArgumentNullException("key");
+            if (string.IsNullOrEmpty(email)) throw new ArgumentNullException(nameof(email));
+            if (key == null) throw new ArgumentNullException(nameof(key));
 
             email = FormatEmail(TenantManager.GetCurrentTenant().TenantId, email);
             var parts = key.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
@@ -134,7 +134,7 @@ namespace ASC.Security.Cryptography
 
             var hash = GetMashineHashedData(BitConverter.GetBytes(ms), Encoding.ASCII.GetBytes(email));
             var key2 = DoStringFromBytes(hash);
-            var key2_good = string.Compare(parts[1], key2, StringComparison.InvariantCultureIgnoreCase) == 0;
+            var key2_good = string.Equals(parts[1], key2, StringComparison.OrdinalIgnoreCase);
             if (!key2_good) return ValidationResult.Invalid;
             var ms_current = (long)(DateTime.UtcNow - _from).TotalMilliseconds;
             return validInterval >= TimeSpan.FromMilliseconds(ms_current - ms) ? ValidationResult.Ok : ValidationResult.Expired;
