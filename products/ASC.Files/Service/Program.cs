@@ -1,4 +1,6 @@
-﻿namespace ASC.Files.Service
+﻿using ASC.ElasticSearch.Service;
+
+namespace ASC.Files.Service
 {
     public static class Program
     {
@@ -48,6 +50,7 @@
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddMemoryCache();
+                    services.AddHttpClient();
 
                     var diHelper = new DIHelper(services);
 
@@ -79,8 +82,9 @@
 
                     if (!disableElastic)
                     {
-                        services.AddHostedService<ServiceLauncher>();
-                        diHelper.TryAdd<ServiceLauncher>();
+                        services.AddHostedService<ElasticSearchIndexService>();
+                        diHelper.TryAdd<FactoryIndexer>();
+                        diHelper.TryAdd<ElasticSearchService>();
                         //diHelper.TryAdd<FileConverter>();
                         diHelper.TryAdd<FactoryIndexerFile>();
                         diHelper.TryAdd<FactoryIndexerFolder>();
