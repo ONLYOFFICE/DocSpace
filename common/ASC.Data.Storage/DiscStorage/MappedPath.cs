@@ -23,33 +23,34 @@
  *
 */
 
-namespace ASC.Data.Storage.DiscStorage
+namespace ASC.Data.Storage.DiscStorage;
+
+internal class MappedPath
 {
-    internal class MappedPath
+    public string PhysicalPath { get; set; }
+
+    private readonly PathUtils _pathUtils;
+
+    public MappedPath(PathUtils pathUtils, string tenant, bool appendTenant, string ppath, IDictionary<string, string> storageConfig) : this(pathUtils)
     {
-        public string PhysicalPath { get; set; }
-        private PathUtils PathUtils { get; }
+        tenant = tenant.Trim('/');
 
-        private MappedPath(PathUtils pathUtils)
+        ppath = _pathUtils.ResolvePhysicalPath(ppath, storageConfig);
+        PhysicalPath = ppath.IndexOf('{') == -1 && appendTenant ? CrossPlatform.PathCombine(ppath, tenant) : string.Format(ppath, tenant);
+    }
+
+    private MappedPath(PathUtils pathUtils)
+    {
+        _pathUtils = pathUtils;
+    }
+
+    public MappedPath AppendDomain(string domain)
+    {
+        domain = domain.Replace('.', '_'); //Domain prep. Remove dots
+
+        return new MappedPath(_pathUtils)
         {
-            PathUtils = pathUtils;
-        }
-
-        public MappedPath(PathUtils pathUtils, string tenant, bool appendTenant, string ppath, IDictionary<string, string> storageConfig) : this(pathUtils)
-        {
-            tenant = tenant.Trim('/');
-
-            ppath = PathUtils.ResolvePhysicalPath(ppath, storageConfig);
-            PhysicalPath = ppath.IndexOf('{') == -1 && appendTenant ? CrossPlatform.PathCombine(ppath, tenant) : string.Format(ppath, tenant);
-        }
-
-        public MappedPath AppendDomain(string domain)
-        {
-            domain = domain.Replace('.', '_'); //Domain prep. Remove dots
-            return new MappedPath(PathUtils)
-            {
-                PhysicalPath = CrossPlatform.PathCombine(PhysicalPath, PathUtils.Normalize(domain, true)),
-            };
-        }
+            PhysicalPath = CrossPlatform.PathCombine(PhysicalPath, PathUtils.Normalize(domain, true)),
+        };
     }
 }

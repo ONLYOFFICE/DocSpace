@@ -87,14 +87,14 @@ public class ClearEventsService : IHostedService, IDisposable
         }
     }
 
-    private void GetOldEvents<T>(Expression<Func<EventsContext, DbSet<T>>> func, string settings) where T : MessageEvent
+    private void GetOldEvents<T>(Expression<Func<MessagesContext, DbSet<T>>> func, string settings) where T : MessageEvent
     {
         List<T> ids;
         var compile = func.Compile();
         do
         {
             using var scope = _serviceScopeFactory.CreateScope();
-            using var ef = scope.ServiceProvider.GetService<DbContextManager<EventsContext>>().Get("messages");
+            using var ef = scope.ServiceProvider.GetService<DbContextManager<MessagesContext>>().Get("messages");
             var table = compile.Invoke(ef);
 
             var ae = table
