@@ -93,8 +93,18 @@ namespace ASC.Files.Service
                     services.AddHostedService<FeedAggregatorService>();
                     diHelper.TryAdd<FeedAggregatorService>();
 
+                    services.AddHostedService<FeedCleanerService>();
+                    diHelper.TryAdd<FeedCleanerService>();
+
                     services.AddHostedService<Launcher>();
                     diHelper.TryAdd<Launcher>();
+
+                    diHelper.TryAdd<AuthManager>();
+                    diHelper.TryAdd<BaseCommonLinkUtility>();
+                    diHelper.TryAdd<FeedAggregateDataProvider>();
+                    diHelper.TryAdd<SecurityContext>();
+                    diHelper.TryAdd<TenantManager>();
+                    diHelper.TryAdd<UserManager>();
 
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
