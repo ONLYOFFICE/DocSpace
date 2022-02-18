@@ -14,6 +14,7 @@ import { AppServerConfig } from "@appserver/common/constants";
 import withCultureNames from "@appserver/common/hoc/withCultureNames";
 import LanguageAndTimeZone from "./language-and-time-zone";
 import CustomTitles from "./custom-titles";
+import PortalRenaming from "./portal-renaming";
 import { Base } from "@appserver/components/themes";
 import { Consumer } from "@appserver/components/utils/context";
 
@@ -218,36 +219,7 @@ class Customization extends React.Component {
               <CustomTitles sectionWidth={context.sectionWidth} />
             </div>
             <div className="category-item-wrapper">
-              <div className="category-item-heading">
-                <Link
-                  truncate={true}
-                  className="inherit-title-link header"
-                  onClick={this.onClickLink}
-                  href={combineUrl(
-                    AppServerConfig.proxyURL,
-                    "/settings/common/customization/team-template"
-                  )}
-                >
-                  {t("TeamTemplate")}
-                </Link>
-                <StyledArrowRightIcon size="small" />
-              </div>
-              <Box marginProp="4px 0 6px 0">
-                <Text fontWeight="600">{`${customNames.name}`}</Text>
-              </Box>
-              <Text className="category-item-description">
-                {t("TeamTemplateSettingsDescription")}
-              </Text>
-              <Box marginProp="16px 0 0 0">
-                <Link
-                  color={theme.studio.settings.common.linkColorHelp}
-                  target="_blank"
-                  isHovered={true}
-                  href={helpUrlCommonSettings}
-                >
-                  {t("Common:LearnMore")}
-                </Link>
-              </Box>
+              <PortalRenaming sectionWidth={context.sectionWidth} />
             </div>
           </StyledComponent>
         )}
