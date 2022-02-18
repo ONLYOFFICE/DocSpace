@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-namespace ASC.Webhooks.Core.Dao.Models;
+﻿namespace ASC.Webhooks.Core.Dao.Models;
 
 public partial class WebhooksLog
 {

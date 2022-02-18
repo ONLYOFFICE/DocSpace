@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-namespace ASC.Webhooks.Core.Dao;
+﻿namespace ASC.Webhooks.Core.Dao;
 public class MySqlWebhooksDbContext : WebhooksDbContext { }
 public class PostgreSqlWebhooksDbContext : WebhooksDbContext { }
 public partial class WebhooksDbContext : BaseDbContext
