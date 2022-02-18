@@ -16,6 +16,8 @@ import {
   StyledFilterBlock,
   StyledFilterBlockHeader,
   StyledFilterBlockFooter,
+  StyledControlContainer,
+  StyledCrossIcon,
 } from "./StyledFilterBlock";
 
 //TODO: fix translate
@@ -139,7 +141,7 @@ const FilterBlock = ({
         });
       });
     }
-    console.log();
+
     setFilterData(items);
     setFilterValues(selectedFilterData.filterValues);
   }, [selectedFilterData, getFilterData]);
@@ -222,6 +224,10 @@ const FilterBlock = ({
         withBackground={true}
         onClick={hideFilterBlock}
       />
+
+      <StyledControlContainer onClick={hideFilterBlock}>
+        <StyledCrossIcon />
+      </StyledControlContainer>
     </>
   );
 };

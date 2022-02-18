@@ -13,34 +13,6 @@ const StyledFilterInput = styled.div`
 
   margin: 0;
   padding: 0;
-
-  .sort-combo-box {
-    width: 32px;
-    height: 32px;
-
-    margin-left: 8px;
-
-    .dropdown-container {
-      min-width: 200px;
-      margin-top: 3px;
-    }
-
-    .optionalBlock {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      margin-right: 0;
-    }
-
-    .combo-buttons_arrow-icon {
-      display: none;
-    }
-
-    .backdrop-active {
-      display: none;
-    }
-  }
 `;
 
 const StyledSearchInput = styled(SearchInput)`

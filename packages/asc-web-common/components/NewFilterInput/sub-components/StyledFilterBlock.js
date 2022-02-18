@@ -1,7 +1,18 @@
 import Text from "@appserver/components/text";
 import styled, { css } from "styled-components";
+import { isMobileOnly } from "react-device-detect";
 
 import ToggleButton from "@appserver/components/toggle-button";
+import { mobile } from "@appserver/components/utils/device";
+import { Base } from "@appserver/components/themes";
+import CrossIcon from "@appserver/components/public/static/images/cross.react.svg";
+
+const mobileView = css`
+  top: 64px;
+
+  width: 100vw !important;
+  height: calc(100vh - 64px) !important;
+`;
 
 const StyledFilterBlock = styled.div`
   position: fixed;
@@ -17,6 +28,12 @@ const StyledFilterBlock = styled.div`
   flex-direction: column;
 
   background: #fff;
+
+  @media ${mobile} {
+    ${mobileView}
+  }
+
+  ${isMobileOnly && mobileView}
 
   .people-selector {
     height: 100%;
@@ -201,7 +218,64 @@ const StyledFilterBlockFooter = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+
+  @media ${mobile} {
+    width: 100vw;
+  }
+
+  ${isMobileOnly &&
+  css`
+    width: 100vw;
+  `}
 `;
+
+const StyledControlContainer = styled.div`
+  background: ${(props) => props.theme.catalog.control.background};
+  width: 24px;
+  height: 24px;
+  position: fixed;
+  top: 30px;
+  right: 10px;
+  border-radius: 100px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  display: none;
+
+  @media ${mobile} {
+    display: flex;
+  }
+
+  ${isMobileOnly &&
+  css`
+    display: flex;
+  `}
+`;
+
+StyledControlContainer.defaultProps = { theme: Base };
+
+const StyledCrossIcon = styled(CrossIcon)`
+  width: 12px;
+  height: 12px;
+  path {
+    fill: ${(props) => props.theme.catalog.control.fill};
+  }
+
+  display: none;
+
+  @media ${mobile} {
+    display: flex;
+  }
+
+  ${isMobileOnly &&
+  css`
+    display: flex;
+  `}
+`;
+
+StyledCrossIcon.defaultProps = { theme: Base };
 
 export {
   StyledFilterBlock,
@@ -219,4 +293,6 @@ export {
   StyledFilterBlockItemToggleButton,
   StyledFilterBlockItemSeparator,
   StyledFilterBlockFooter,
+  StyledControlContainer,
+  StyledCrossIcon,
 };

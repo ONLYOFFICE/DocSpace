@@ -25,9 +25,9 @@ const FilterInput = ({
   getFilterData,
   onFilter,
   onSearch,
+  onSort,
   addUserHeader,
   getSortData,
-  getSortRef,
   ...props
 }) => {
   const [viewSettings, setViewSettings] = React.useState([]);
@@ -79,6 +79,10 @@ const FilterInput = ({
         <SortButton
           selectedFilterData={selectedFilterData}
           getSortData={getSortData}
+          onChangeViewAs={onChangeViewAs}
+          viewAs={viewAs === "table" ? "row" : viewAs}
+          viewSettings={viewSettings}
+          onSort={onSort}
         />
       )}
     </StyledFilterInput>

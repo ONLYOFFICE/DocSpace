@@ -1,6 +1,6 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import { tablet } from "@appserver/components/utils/device";
+
 import Base from "@appserver/components/themes/base";
 
 /* eslint-disable no-unused-vars */
