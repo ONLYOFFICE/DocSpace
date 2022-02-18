@@ -23,7 +23,7 @@ class PeopleSelector extends React.Component {
   }
 
   componentDidMount() {
-    const { groupList, useFake } = this.props;
+    const { groupList, useFake, t } = this.props;
 
     if (!groupList) {
       getGroupList(useFake)
@@ -33,7 +33,7 @@ class PeopleSelector extends React.Component {
               {
                 key: "all",
                 id: "all",
-                label: "Allusers",
+                label: `${t("AllUsers")}`,
                 total: 0,
               },
             ].concat(this.convertGroups(groups)),
@@ -46,7 +46,7 @@ class PeopleSelector extends React.Component {
           {
             key: "all",
             id: "all",
-            label: "Translate",
+            label: `${t("AllUsers")}`,
             total: 0,
           },
         ].concat(groupList),
@@ -267,7 +267,7 @@ class PeopleSelector extends React.Component {
         embeddedComponent={embeddedComponent}
         showCounter={showCounter}
         onArrowClick={onArrowClick}
-        headerLabel={headerLabel}
+        headerLabel={headerLabel ? headerLabel : `${t("AddUsers")}`}
       />
     );
   }

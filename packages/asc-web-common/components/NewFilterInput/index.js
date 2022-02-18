@@ -1,9 +1,15 @@
 import React from "react";
 import { isMobile, isMobileOnly } from "react-device-detect";
 
+import {
+  isMobile as isMobileUtils,
+  isTablet as isTabletUtils,
+} from "@appserver/components/utils/device";
+
 import ViewSelector from "@appserver/components/view-selector";
 
 import FilterButton from "./sub-components/FilterButton";
+import SortButton from "./sub-components/SortButton";
 
 import { StyledFilterInput, StyledSearchInput } from "./StyledFilterInput";
 
@@ -20,6 +26,8 @@ const FilterInput = ({
   onFilter,
   onSearch,
   addUserHeader,
+  getSortData,
+  getSortRef,
   ...props
 }) => {
   const [viewSettings, setViewSettings] = React.useState([]);
@@ -56,12 +64,21 @@ const FilterInput = ({
         addUserHeader={addUserHeader}
       />
 
-      {viewSettings && !isMobile && viewSelectorVisible && (
+      {viewSettings &&
+      !isMobile &&
+      viewSelectorVisible &&
+      !isMobileUtils() &&
+      !isTabletUtils() ? (
         <ViewSelector
           style={{ marginLeft: "8px" }}
           onChangeView={onChangeViewAs}
           viewAs={viewAs === "table" ? "row" : viewAs}
           viewSettings={viewSettings}
+        />
+      ) : (
+        <SortButton
+          selectedFilterData={selectedFilterData}
+          getSortData={getSortData}
         />
       )}
     </StyledFilterInput>

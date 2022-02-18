@@ -96,6 +96,10 @@ const Selector = (props) => {
 
   const [groupHeader, setGroupHeader] = useState(null);
 
+  useEffect(() => {
+    if (groups.length === 1) setGroupHeader(groups[0]);
+  }, [groups]);
+
   // Every row is loaded except for our loading indicator row.
   const isItemLoaded = useCallback(
     (index) => {
@@ -385,7 +389,7 @@ const Selector = (props) => {
   const getGroupSelectedOptions = useCallback(
     (group) => {
       const selectedGroup = selectedOptionList.filter(
-        (o) => o.groups.indexOf(group) > -1
+        (o) => o.groups && o.groups.indexOf(group) > -1
       );
 
       if (group === "all") {
@@ -528,7 +532,7 @@ const Selector = (props) => {
   }, [isMultiSelect, groupHeader, selectedOptionList, getGroupSelectedOptions]);
 
   const onArrowClickAction = useCallback(() => {
-    if (groupHeader) {
+    if (groupHeader && groups.length !== 1) {
       setGroupHeader(null);
 
       onGroupChanged && onGroupChanged([]);
@@ -536,7 +540,7 @@ const Selector = (props) => {
       return;
     }
     onArrowClick && onArrowClick();
-  }, [groupHeader, onArrowClick, onGroupChanged]);
+  }, [groups, groupHeader, onArrowClick, onGroupChanged]);
 
   return (
     <StyledSelector
@@ -556,7 +560,7 @@ const Selector = (props) => {
           onClick={onArrowClickAction}
         />
         <Heading size="medium" truncate={true}>
-          {headerLabel}
+          {headerLabel.replace("()", "")}
         </Heading>
       </div>
       <Column className="column-options" size={size}>
@@ -574,7 +578,7 @@ const Selector = (props) => {
           />
         </Header>
         <Body className="body-options">
-          {!groupHeader && !searchValue ? (
+          {!groupHeader && !searchValue && groups ? (
             renderGroupsList()
           ) : (
             <>
@@ -626,7 +630,7 @@ const Selector = (props) => {
       </Column>
       <Footer
         className="footer"
-        selectButtonLabel={selectButtonLabel}
+        selectButtonLabel={headerLabel}
         showCounter={showCounter}
         isDisabled={isDisabled}
         isVisible={isMultiSelect && hasSelected()}

@@ -121,34 +121,11 @@ class AddGroupsPanelComponent extends React.Component {
         />
         <Aside className="header_aside-panel">
           <StyledContent>
-            <StyledHeaderContent>
-              <IconButton
-                size="16"
-                iconName="/static/images/arrow.path.react.svg"
-                onClick={this.onArrowClick}
-                // color={theme.filesPanels.addGroups.iconColor}
-              />
-              <Heading
-                className="header_aside-panel-header"
-                size="medium"
-                truncate
-              >
-                {t("AddGroupsForSharingButton")}
-              </Heading>
-              {/*<IconButton
-                size="16"
-                iconName="static/images/actions.header.touch.react.svg"
-                className="header_aside-panel-plus-icon"
-                onClick={this.onPLusClick}
-              />*/}
-            </StyledHeaderContent>
-
             <StyledBody ref={this.scrollRef}>
               <GroupSelector
                 className="groupSelector"
                 isOpen={visible}
                 isMultiSelect
-                displayType="aside"
                 withoutAside
                 onSelect={this.onSelectGroups}
                 embeddedComponent={
@@ -161,6 +138,8 @@ class AddGroupsPanelComponent extends React.Component {
                     arrowIconColor={theme.filesPanels.addGroups.arrowColor}
                   />
                 }
+                headerLabel={t("AddGroupsForSharingButton")}
+                onArrowClick={this.onArrowClick}
                 showCounter
               />
             </StyledBody>

@@ -245,6 +245,8 @@ class OwnerSettings extends Component {
                 defaultOption={me}
                 defaultOptionLabel={t("Common:MeLabel")}
                 groupsCaption={groupsCaption}
+                onArrowClick={this.onCancelSelector}
+                headerLabel={t("ChooseOwner")}
               />
             </div>
           )}

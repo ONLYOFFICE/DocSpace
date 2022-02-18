@@ -292,20 +292,20 @@ const SectionFilterContent = ({
 
   const getSortData = () => {
     const commonOptions = [
-      { key: "DateAndTime", label: t("ByLastModifiedDate"), default: true },
-      { key: "DateAndTimeCreation", label: t("ByCreationDate"), default: true },
       { key: "AZ", label: t("ByTitle"), default: true },
       { key: "Type", label: t("Common:Type"), default: true },
       { key: "Size", label: t("Common:Size"), default: true },
+      { key: "DateAndTimeCreation", label: t("ByCreationDate"), default: true },
+      { key: "DateAndTime", label: t("ByLastModifiedDate"), default: true },
     ];
 
-    if (!personal)
-      commonOptions.push({
+    if (!personal) {
+      commonOptions.splice(1, 0, {
         key: "Author",
         label: t("ByAuthor"),
         default: true,
       });
-
+    }
     return commonOptions;
   };
 

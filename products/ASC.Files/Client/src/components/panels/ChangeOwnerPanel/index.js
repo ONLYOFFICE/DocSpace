@@ -134,7 +134,7 @@ class ChangeOwnerComponent extends React.Component {
         {showPeopleSelector && (
           <OwnerSelector
             theme={theme}
-            ownerLabel={ownerName}
+            ownerLabel={t("ChangeOwner")}
             isOpen={showPeopleSelector}
             groupsCaption={groupsCaption}
             onOwnerSelect={this.onOwnerSelect}

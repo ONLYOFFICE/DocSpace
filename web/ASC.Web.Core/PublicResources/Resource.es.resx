@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.9.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.9.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
     <value>Campo de código de validación no puede estar vacío</value>
@@ -508,6 +508,9 @@
   <data name="CustomNamingPeopleSchema" xml:space="preserve">
     <value>Personalizado</value>
   </data>
+  <data name="DnsChangeMsg" xml:space="preserve">
+    <value>Un enlace para confirmar la operación ha sido enviada al :correo electrónico (la dirección del correo electrónico del propietario del portal).</value>
+  </data>
   <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
     <value>Id. incorrecta de instancia</value>
   </data>
@@ -589,6 +592,12 @@
   <data name="ErrorRequestLimitExceeded" xml:space="preserve">
     <value>Límite de solicitudes es excedido</value>
   </data>
+  <data name="ErrorTenantTooShort" xml:space="preserve">
+    <value>El dominio de espacio empresarial no puede estar vacío.</value>
+  </data>
+  <data name="ErrorTenantTooShortFormat" xml:space="preserve">
+    <value>El nombre del dominio debe tener entre {0} y {1} caracteres.</value>
+  </data>
   <data name="ErrorUserNotFound" xml:space="preserve">
     <value>Usuario no ha sido encontrado</value>
   </data>
@@ -655,6 +664,9 @@
   <data name="PersonalFreeSpaceException" xml:space="preserve">
     <value>Cuota de espacio en disco excedida </value>
   </data>
+  <data name="PortalAccessSettingsTariffException" xml:space="preserve">
+    <value>Esta característica se proporciona sólo en portales gratuitos</value>
+  </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Acceso a portal</value>
   </data>
@@ -696,6 +708,9 @@
   </data>
   <data name="SsoSettingsInvalidMapping" xml:space="preserve">
     <value>Cartografía de campos no válida</value>
+  </data>
+  <data name="SuccessfullyPortalRenameMessage" xml:space="preserve">
+    <value>El portal ha sido renombrado con éxito </value>
   </data>
   <data name="SuccessfullySaveGreetingSettingsMessage" xml:space="preserve">
     <value>Los ajustes de bienvenida han sido guardados con éxito</value>

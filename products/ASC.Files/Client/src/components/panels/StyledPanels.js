@@ -312,12 +312,10 @@ const StyledBody = styled.div`
 
   .selector-wrapper {
     position: fixed;
-    height: calc(100% - 57px);
+    height: calc(100%);
     width: 100%;
 
     .column-options {
-      padding: 0px 16px;
-      padding-bottom: 16px;
       width: 100%;
 
       .header-options {
