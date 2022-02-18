@@ -28,12 +28,19 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     location,
     tenantStatus,
   } = rest;
-
+  const isPortal = window.location.pathname === "/preparation-portal";
   const { params, path } = computedMatch;
   const { userId } = params;
 
   const renderComponent = (props) => {
-    console.log("tenantStatus", tenantStatus);
+    console.log(
+      "private rout render tenantStatus",
+      tenantStatus,
+      "isLoaded",
+      isLoaded,
+      "isAuthenticated",
+      isAuthenticated
+    );
     if (isLoaded && !isAuthenticated) {
       if (personal) {
         window.location.replace("/");
@@ -65,7 +72,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       );
     }
 
-    if (isLoaded && isAuthenticated && tenantStatus === 4) {
+    if (isLoaded && isAuthenticated && tenantStatus === 4 && !isPortal) {
       return (
         <Redirect
           to={{
@@ -176,7 +183,12 @@ export default inject(({ auth }) => {
   } = auth;
   const { user } = userStore;
   const { modules } = moduleStore;
-  const { setModuleInfo, wizardCompleted, personal, tenantStatus } = settingsStore;
+  const {
+    setModuleInfo,
+    wizardCompleted,
+    personal,
+    tenantStatus,
+  } = settingsStore;
 
   return {
     modules,

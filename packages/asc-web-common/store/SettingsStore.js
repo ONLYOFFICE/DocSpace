@@ -1,6 +1,6 @@
 import { makeAutoObservable } from "mobx";
 import api from "../api";
-import { ARTICLE_PINNED_KEY, LANGUAGE } from "../constants";
+import { ARTICLE_PINNED_KEY, LANGUAGE, TenantStatus } from "../constants";
 import { combineUrl } from "../utils";
 import FirebaseHelper from "../utils/firebase";
 import { AppServerConfig } from "../constants";
@@ -103,6 +103,9 @@ class SettingsStore {
     makeAutoObservable(this);
   }
 
+  setTenantStatus = (tenantStatus) => {
+    this.tenantStatus = tenantStatus;
+  };
   get urlAuthKeys() {
     const splitted = this.culture.split("-");
     const lang = splitted.length > 0 ? splitted[0] : "en";
@@ -200,15 +203,24 @@ class SettingsStore {
   getPortalSettings = async () => {
     const origSettings = await this.getSettings();
 
-    if (origSettings.nameSchemaId) {
+    if (
+      origSettings.nameSchemaId &&
+      this.tenantStatus !== TenantStatus.PortalRestore
+    ) {
       this.getCurrentCustomSchema(origSettings.nameSchemaId);
     }
   };
 
   init = async () => {
     this.setIsLoading(true);
+    const requests = [];
 
-    await Promise.all([this.getPortalSettings(), this.getBuildVersionInfo()]);
+    requests.push(this.getPortalSettings());
+
+    this.tenantStatus !== TenantStatus.PortalRestore &&
+      requests.push(this.getBuildVersionInfo());
+
+    await Promise.all(requests);
 
     this.setIsLoading(false);
     this.setIsLoaded(true);

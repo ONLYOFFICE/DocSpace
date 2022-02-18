@@ -164,3 +164,11 @@ export const TenantTrustedDomainsType = Object.freeze({
 });
 
 export const PasswordLimitSpecialCharacters = "!@#$%^&*";
+
+/**
+ * Enum for tenant status.
+ * @readonly
+ */
+export const TenantStatus = Object.freeze({
+  PortalRestore: 4,
+});
