@@ -1,5 +1,6 @@
 ﻿namespace ASC.Feed.Aggregator.Service;
 
+[Singletone]
 public class FeedCleanerService : FeedBaseService
 {
     protected override string LoggerName { get; set; } = "ASC.Feed.Cleaner";
@@ -11,37 +12,25 @@ public class FeedCleanerService : FeedBaseService
         : base(feedSettings, serviceScopeFactory, optionsMonitor)
     {
     }
-
-    public override Task StartAsync(CancellationToken cancellationToken)
+    
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         Logger.Info("Feed Cleaner Service running.");
 
         var cfg = FeedSettings;
-        IsStopped = false;
 
-        Timer = new Timer(RemoveFeeds, cfg.AggregateInterval, cfg.RemovePeriod, cfg.RemovePeriod);
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            await Task.Delay(cfg.RemovePeriod, stoppingToken);
 
-        return Task.CompletedTask;
-    }
+            RemoveFeeds(cfg.AggregateInterval);
+        }
 
-    public override Task StopAsync(CancellationToken cancellationToken)
-    {
         Logger.Info("Feed Cleaner Service stopping.");
-
-        IsStopped = true;
-
-        Timer?.Change(Timeout.Infinite, 0);
-
-        return Task.CompletedTask;
     }
 
     private void RemoveFeeds(object interval)
     {
-        if (!Monitor.TryEnter(LockObj))
-        {
-            return;
-        }
-
         try
         {
             using var scope = ServiceScopeFactory.CreateScope();
@@ -54,10 +43,6 @@ public class FeedCleanerService : FeedBaseService
         catch (Exception ex)
         {
             Logger.Error(ex);
-        }
-        finally
-        {
-            Monitor.Exit(LockObj);
         }
     }
 }

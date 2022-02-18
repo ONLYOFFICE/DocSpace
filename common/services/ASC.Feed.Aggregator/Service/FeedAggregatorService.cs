@@ -1,9 +1,10 @@
 ﻿namespace ASC.Feed.Aggregator.Service;
 
-[Singletone(Additional = typeof(FeedAggregatorServiceExtension))]
+[Singletone]
 public class FeedAggregatorService : FeedBaseService
 {
     protected override string LoggerName { get; set; } = "ASC.Feed.Aggregator";
+
     private readonly SignalrServiceClient _signalrServiceClient;
 
     public FeedAggregatorService(
@@ -16,43 +17,62 @@ public class FeedAggregatorService : FeedBaseService
         _signalrServiceClient = signalrServiceClient;
     }
 
-    public override Task StartAsync(CancellationToken cancellationToken)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         Logger.Info("Feed Aggregator service running.");
 
         var cfg = FeedSettings;
-        IsStopped = false;
 
-        Timer = new Timer(AggregateFeeds, cfg.AggregateInterval, TimeSpan.Zero, cfg.AggregatePeriod);
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            AggregateFeeds(cfg.AggregateInterval);
 
-        return Task.CompletedTask;
+            await Task.Delay(cfg.AggregatePeriod, stoppingToken);
+        }
+
+        Logger.Info("Feed Aggregator Service stopping.");
     }
 
-    public override Task StopAsync(CancellationToken cancellationToken)
+    private static T Attempt<T>(int count, Func<T> action)
     {
-        Logger.Info("Feed Aggregator service stopping.");
+        var counter = 0;
+        while (true)
+        {
+            try
+            {
+                return action();
+            }
+            catch
+            {
+                if (count < ++counter)
+                {
+                    throw;
+                }
+            }
+        }
+    }
 
-        IsStopped = true;
-
-        Timer?.Change(Timeout.Infinite, 0);
-
-        return Task.CompletedTask;
+    private static bool TryAuthenticate(SecurityContext securityContext, AuthManager authManager, int tenantId, Guid userid)
+    {
+        try
+        {
+            securityContext.AuthenticateMeWithoutCookie(authManager.GetAccountByID(tenantId, userid));
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     private void AggregateFeeds(object interval)
     {
-        if (!Monitor.TryEnter(LockObj))
-        {
-            return;
-        }
-
         try
         {
             var cfg = FeedSettings;
             using var scope = ServiceScopeFactory.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<FeedAggregatorServiceScope>();
             var cache = scope.ServiceProvider.GetService<ICache>();
-            var (baseCommonLinkUtility, tenantManager, feedAggregateDataProvider, userManager, securityContext, authManager) = scopeClass;
+            var baseCommonLinkUtility = scope.ServiceProvider.GetService<BaseCommonLinkUtility>();
             baseCommonLinkUtility.Initialize(cfg.ServerRoot);
 
             var start = DateTime.UtcNow;
@@ -64,12 +84,21 @@ public class FeedAggregatorService : FeedBaseService
             foreach (var module in modules)
             {
                 var result = new List<FeedRow>();
+
+                var feedAggregateDataProvider = scope.ServiceProvider.GetService<FeedAggregateDataProvider>();
+
                 var fromTime = feedAggregateDataProvider.GetLastTimeAggregate(module.GetType().Name);
                 if (fromTime == default) fromTime = DateTime.UtcNow.Subtract((TimeSpan)interval);
                 var toTime = DateTime.UtcNow;
 
                 var tenants = Attempt(10, () => module.GetTenantsWithFeeds(fromTime)).ToList();
                 Logger.DebugFormat("Find {1} tenants for module {0}.", module.GetType().Name, tenants.Count);
+
+                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+                var userManager = scope.ServiceProvider.GetService<UserManager>();
+                var authManager = scope.ServiceProvider.GetService<AuthManager>();
+                var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+
 
                 foreach (var tenant in tenants)
                 {
@@ -104,10 +133,6 @@ public class FeedAggregatorService : FeedBaseService
 
                         foreach (var u in users)
                         {
-                            if (IsStopped)
-                            {
-                                return;
-                            }
                             if (!TryAuthenticate(securityContext, authManager, tenant1, u.ID))
                             {
                                 continue;
@@ -156,90 +181,5 @@ public class FeedAggregatorService : FeedBaseService
         {
             Logger.Error(ex);
         }
-        finally
-        {
-            Monitor.Exit(LockObj);
-        }
-    }
-
-    private static T Attempt<T>(int count, Func<T> action)
-    {
-        var counter = 0;
-        while (true)
-        {
-            try
-            {
-                return action();
-            }
-            catch
-            {
-                if (count < ++counter)
-                {
-                    throw;
-                }
-            }
-        }
-    }
-
-    private static bool TryAuthenticate(SecurityContext securityContext, AuthManager authManager, int tenantId, Guid userid)
-    {
-        try
-        {
-            securityContext.AuthenticateMeWithoutCookie(authManager.GetAccountByID(tenantId, userid));
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
-    }
-}
-
-[Scope]
-public class FeedAggregatorServiceScope
-{
-    private readonly BaseCommonLinkUtility _baseCommonLinkUtility;
-    private readonly TenantManager _tenantManager;
-    private readonly FeedAggregateDataProvider _feedAggregateDataProvider;
-    private readonly UserManager _userManager;
-    private readonly SecurityContext _securityContext;
-    private readonly AuthManager _authManager;
-
-    public FeedAggregatorServiceScope(BaseCommonLinkUtility baseCommonLinkUtility,
-        TenantManager tenantManager,
-        FeedAggregateDataProvider feedAggregateDataProvider,
-        UserManager userManager,
-        SecurityContext securityContext,
-        AuthManager authManager)
-    {
-        _baseCommonLinkUtility = baseCommonLinkUtility;
-        _tenantManager = tenantManager;
-        _feedAggregateDataProvider = feedAggregateDataProvider;
-        _userManager = userManager;
-        _securityContext = securityContext;
-        _authManager = authManager;
-    }
-
-    public void Deconstruct(out BaseCommonLinkUtility baseCommonLinkUtility,
-        out TenantManager tenantManager,
-        out FeedAggregateDataProvider feedAggregateDataProvider,
-        out UserManager userManager,
-        out SecurityContext securityContext,
-        out AuthManager authManager)
-    {
-        baseCommonLinkUtility = _baseCommonLinkUtility;
-        tenantManager = _tenantManager;
-        feedAggregateDataProvider = _feedAggregateDataProvider;
-        userManager = _userManager;
-        securityContext = _securityContext;
-        authManager = _authManager;
-    }
-}
-
-public static class FeedAggregatorServiceExtension
-{
-    public static void Register(DIHelper services)
-    {
-        services.TryAdd<FeedAggregatorServiceScope>();
     }
 }
