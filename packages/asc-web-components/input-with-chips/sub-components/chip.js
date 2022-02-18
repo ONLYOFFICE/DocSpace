@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 
 import IconButton from "../../icon-button";
@@ -33,6 +33,10 @@ const Chip = (props) => {
   const warningRef = useRef(null);
   const chipRef = useRef(null);
 
+  useEffect(() => {
+    setChipWidth(chipRef.current?.clientWidth);
+  }, [chipRef]);
+
   useClickOutside(warningRef, () => tooltipRef.current.hideTooltip());
 
   const onChange = (e) => {
@@ -48,7 +52,6 @@ const Chip = (props) => {
   };
 
   const onDoubleClickHandler = () => {
-    setChipWidth(chipRef.current?.clientWidth);
     onDoubleClick(value);
   };
 
@@ -77,7 +80,6 @@ const Chip = (props) => {
       }
     }
   };
-
   if (value?.value === currentChip?.value) {
     return (
       <StyledChipInput
@@ -87,7 +89,7 @@ const Chip = (props) => {
         onKeyDown={onInputKeyDown}
         isAutoFocussed
         withBorder={false}
-        flexValue={
+        flexvalue={
           value?.label !== value?.value ? "0 1 auto" : `0 0 ${chipWidth}px`
         }
       />

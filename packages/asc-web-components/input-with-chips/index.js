@@ -175,15 +175,28 @@ const InputWithChips = ({
 
   const onKeyDown = (e) => {
     const code = e.code;
+
     const isShiftDown = e.shiftKey;
     const isCtrlDown = e.ctrlKey;
+
+    if (selectedChips.length == 1 && code === "Enter") {
+      e.stopPropagation();
+      const chip = selectedChips[0];
+      setSelectedChips([]);
+      setCurrentChip(chip);
+      return;
+    }
 
     if (code === "Escape") {
       setSelectedChips([]);
       return;
     }
 
-    if (selectedChips.length > 0 && code === "Backspace" && !currentChip) {
+    if (
+      selectedChips.length > 0 &&
+      (code === "Backspace" || code === "Delete") &&
+      !currentChip
+    ) {
       const filteredChips = chips.filter((e) => !~selectedChips.indexOf(e));
       setChips(filteredChips);
       setSelectedChips([]);

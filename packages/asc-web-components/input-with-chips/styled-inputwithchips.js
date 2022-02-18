@@ -93,7 +93,7 @@ const StyledChipValue = styled.div`
 `;
 
 const StyledChipInput = styled(TextInput)`
-  flex: ${(props) => `${props.flexValue}!important`};
+  flex: ${(props) => `${props.flexvalue}!important`};
 `;
 
 const StyledInputWithLink = styled.div`
