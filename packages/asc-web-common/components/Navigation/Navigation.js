@@ -79,8 +79,6 @@ const Navigation = ({
     return () => window.removeEventListener("click", onMissClick);
   }, [isOpen, onMissClick]);
 
-  console.log("navigation render");
-
   const onBackToParentFolderAction = React.useCallback(() => {
     setIsOpen((val) => !val);
     onBackToParentFolder && onBackToParentFolder();
