@@ -6,7 +6,7 @@ global using System.Linq;
 global using ASC.Common;
 global using ASC.Core;
 global using ASC.Core.Common.EF;
-global using ASC.Core.Common.EF.Context;
+global using ASC.Feed.Models;
 global using ASC.Core.Common.EF.Model;
 global using ASC.Core.Tenants;
 global using ASC.Core.Users;
