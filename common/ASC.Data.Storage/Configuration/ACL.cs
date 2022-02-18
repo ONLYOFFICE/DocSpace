@@ -24,12 +24,11 @@
 */
 
 
-namespace ASC.Data.Storage.Configuration
+namespace ASC.Data.Storage.Configuration;
+
+public enum ACL
 {
-    public enum ACL
-    {
-        Auto,
-        Read,
-        Private
-    }
+    Auto,
+    Read,
+    Private
 }

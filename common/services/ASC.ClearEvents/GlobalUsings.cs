@@ -8,7 +8,6 @@ global using System.Threading.Tasks;
 
 global using ASC.Api.Core;
 global using ASC.ClearEvents.Services;
-global using ASC.ClearEvents.Data;
 global using ASC.Common;
 global using ASC.Common.Utils;
 global using ASC.Common.Caching;
