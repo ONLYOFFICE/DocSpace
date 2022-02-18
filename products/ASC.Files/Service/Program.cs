@@ -96,6 +96,13 @@
                     services.AddHostedService<Launcher>();
                     diHelper.TryAdd<Launcher>();
 
+                    diHelper.TryAdd<AuthManager>();
+                    diHelper.TryAdd<BaseCommonLinkUtility>();
+                    diHelper.TryAdd<FeedAggregateDataProvider>();
+                    diHelper.TryAdd<SecurityContext>();
+                    diHelper.TryAdd<TenantManager>();
+                    diHelper.TryAdd<UserManager>();
+
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {
