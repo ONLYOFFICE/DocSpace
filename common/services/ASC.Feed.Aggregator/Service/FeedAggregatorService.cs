@@ -81,24 +81,21 @@ public class FeedAggregatorService : FeedBaseService
             var unreadUsers = new Dictionary<int, Dictionary<Guid, int>>();
             var modules = scope.ServiceProvider.GetService<IEnumerable<IFeedModule>>();
 
+            var feedAggregateDataProvider = scope.ServiceProvider.GetService<FeedAggregateDataProvider>();
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            var userManager = scope.ServiceProvider.GetService<UserManager>();
+            var authManager = scope.ServiceProvider.GetService<AuthManager>();
+            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+
             foreach (var module in modules)
             {
                 var result = new List<FeedRow>();
-
-                var feedAggregateDataProvider = scope.ServiceProvider.GetService<FeedAggregateDataProvider>();
-
                 var fromTime = feedAggregateDataProvider.GetLastTimeAggregate(module.GetType().Name);
                 if (fromTime == default) fromTime = DateTime.UtcNow.Subtract((TimeSpan)interval);
                 var toTime = DateTime.UtcNow;
 
                 var tenants = Attempt(10, () => module.GetTenantsWithFeeds(fromTime)).ToList();
                 Logger.DebugFormat("Find {1} tenants for module {0}.", module.GetType().Name, tenants.Count);
-
-                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-                var userManager = scope.ServiceProvider.GetService<UserManager>();
-                var authManager = scope.ServiceProvider.GetService<AuthManager>();
-                var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
-
 
                 foreach (var tenant in tenants)
                 {
