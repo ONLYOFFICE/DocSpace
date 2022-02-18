@@ -13,6 +13,7 @@ import Item from "./item";
 import { isMobile, isMobileOnly } from "react-device-detect";
 import {
   tablet,
+  mobile,
   isMobile as IsMobileUtils,
   isTablet as isTabletUtils,
 } from "@appserver/components/utils/device";
@@ -22,20 +23,7 @@ const StyledBox = styled.div`
   position: absolute;
   top: 0px;
   left: ${isMobile ? "-16px" : "-20px"};
-  ${isMobile &&
-  css`
-    width: ${(props) =>
-      props.showText
-        ? css`calc(100vw - 240px)`
-        : css`calc(100vw - 52px)`} !important;
-    max-width: 100vw !important;
-  `}
 
-  ${isMobileOnly &&
-  css`
-    width: 100vw !important;
-    max-width: 100vw !important;
-  `}
   height: ${(props) => (props.height ? `${props.height}px` : "fit-content")};
   ${(props) =>
     props.changeWidth &&
@@ -55,7 +43,13 @@ const StyledBox = styled.div`
   @media ${tablet} {
     top: 0px;
     left: -16px;
-    width: 100vw;
+    width: ${(props) =>
+      props.showText ? css`calc(100vw - 240px)` : css`calc(100vw - 52px)`};
+    max-width: 100vw !important;
+  }
+
+  @media ${mobile} {
+    width: 100vw !important;
     max-width: 100vw !important;
   }
 
@@ -63,7 +57,14 @@ const StyledBox = styled.div`
   css`
     top: 0px;
     left: -16px;
-    width: 100vw;
+    width: ${(props) =>
+      props.showText ? css`calc(100vw - 240px)` : css`calc(100vw - 52px)`};
+    max-width: 100vw !important;
+  `}
+
+  ${isMobileOnly &&
+  css`
+    width: 100vw !important;
     max-width: 100vw !important;
   `}
 `;
@@ -71,74 +72,84 @@ const StyledBox = styled.div`
 StyledBox.defaultProps = { theme: Base };
 
 const StyledContainer = styled.div`
-  margin: 14px 0 7px;
+  margin-top: 14px;
+  margin-bottom: 6px;
+
   position: relative;
   top: 0px;
+
   align-items: center;
+
   min-width: 100px;
   max-width: calc(100vw - 32px);
+
   padding: ${isMobile ? "0px 16px" : "0px 20px"};
+
   display: grid;
   grid-template-columns: ${(props) =>
     props.canCreate ? "auto auto auto auto 1fr" : "auto auto auto 1fr"};
 
   @media ${tablet} {
-    top: ${!isMobile && "0px"};
-    padding: 0px 16px;
-
+    padding: 0 16px;
+    margin-top: 17px;
     grid-template-columns: ${(props) =>
-      props.canCreate ? "auto 1fr auto" : "auto 1fr auto"};
+      props.canCreate ? "auto 1fr auto auto" : "auto 1fr auto"};
   }
 
-  ${isMobile &&
-  css`
-    padding: 0px 16px;
+  ${
+    isMobile &&
+    css`
+      margin-top: 17px;
+      grid-template-columns: ${(props) =>
+        props.canCreate ? "auto 1fr auto auto" : "auto 1fr auto"};
+    `
+  }
 
-    grid-template-columns: ${(props) =>
-      props.canCreate ? "auto 1fr auto" : "auto 1fr auto"};
-  `}
+  @media ${mobile} {
+    padding: 0 16px;
+    margin-top: 12px;
+    // padding-bottom: 7px;
+  }
+
+  ${
+    isMobileOnly &&
+    css`
+      margin-top: 12px;
+      padding-bottom: 7px;
+    `
+  }
 
   .arrow-button {
-    margin-right: 15px;
+    margin-right: 12px;
     min-width: 17px;
 
     align-items: center;
-
-    @media ${tablet} {
-      padding: 0 0 0 8px;
-      margin-left: -8px;
-      margin-right: 16px;
-    }
-
-    ${isMobile &&
-    css`
-      padding: 0 0 0 8px;
-      margin-left: -8px;
-      margin-right: 16px;
-    `};
   }
 
   .add-button {
-    margin-left: 16px;
+    margin-right: 10px;
+    min-width: 17px;
 
     @media ${tablet} {
       display: none;
     }
 
-    ${isMobile && `display: none`};
+    ${
+      isMobile &&
+      css`
+        display: none;
+      `
+    }
+  }
+
+  .trash-button {
+    min-width: 17px;
+    margin-left: 6px;
   }
 
   .option-button {
-    @media (min-width: 1024px) {
-      margin-left: 8px;
-    }
-
-    @media ${tablet} {
-      & > div:first-child {
-        padding: 0px 8px 8px 8px;
-        margin-right: -8px;
-      }
-    }
+    min-width: 17px;
+  }
   }
 `;
 

@@ -5,7 +5,8 @@ import ContextMenuButton from "@appserver/components/context-menu-button";
 import IconButton from "@appserver/components/icon-button";
 
 const StyledContainer = styled.div`
-  margin-left: 4px;
+  margin-left: 20px;
+  padding-right: 6px;
   display: flex;
   align-items: center;
 `;
@@ -56,7 +57,7 @@ const ControlButtons = ({
   ) : isRecycleBinFolder && !isEmptyFilesList ? (
     <IconButton
       iconName="images/clear.active.react.svg"
-      size="15"
+      size={17}
       isFill={true}
       onClick={clearTrash}
       className="trash-button"

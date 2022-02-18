@@ -78,6 +78,11 @@ const Navigation = ({
 
     return () => window.removeEventListener("click", onMissClick);
   }, [isOpen, onMissClick]);
+
+  const onBackToParentFolderAction = React.useCallback(() => {
+    setIsOpen((val) => !val);
+    onBackToParentFolder && onBackToParentFolder();
+  }, [onBackToParentFolder]);
   return (
     <Consumer>
       {(context) => (
@@ -91,7 +96,7 @@ const Navigation = ({
               height={context.sectionHeight}
               showText={showText}
               isRootFolder={isRootFolder}
-              onBackToParentFolder={onBackToParentFolder}
+              onBackToParentFolder={onBackToParentFolderAction}
               title={title}
               personal={personal}
               isRootFolder={isRootFolder}

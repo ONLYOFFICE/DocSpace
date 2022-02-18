@@ -5,6 +5,7 @@ import { tablet, desktop, mobile } from "@appserver/components/utils/device";
 const StyledContainer = styled.div`
   .header-container {
     margin-top: 14px;
+    margin-bottom: 6px;
     position: relative;
 
     align-items: center;
@@ -22,6 +23,7 @@ const StyledContainer = styled.div`
             : "auto auto auto 1fr"};
 
         @media ${tablet} {
+          margin-top: 17px;
           grid-template-columns: ${(props) =>
             props.isRootFolder
               ? "1fr auto"
@@ -32,6 +34,7 @@ const StyledContainer = styled.div`
 
         ${isMobile &&
         css`
+          margin-top: 17px;
           grid-template-columns: ${(props) =>
             props.isRootFolder
               ? "1fr auto"
@@ -39,31 +42,29 @@ const StyledContainer = styled.div`
               ? "auto 1fr auto auto"
               : "auto 1fr auto"};
         `}
+
+        @media ${mobile} {
+          margin-top: 12px;
+          padding-bottom: 7px;
+        }
+
+        ${isMobileOnly &&
+        css`
+          margin-top: 12px;
+          padding-bottom: 7px;
+        `}
       `}
 
     .arrow-button {
-      margin-right: 15px;
+      margin-right: 12px;
       min-width: 17px;
 
       align-items: center;
-
-      @media ${tablet} {
-        padding: 0 0 0 8px;
-        margin-left: -8px;
-        margin-right: 16px;
-      }
-
-      ${isMobile &&
-      css`
-        padding: 0 0 0 8px;
-        margin-left: -8px;
-        margin-right: 16px;
-      `}
     }
 
     .add-button {
-      ${(props) =>
-        !props.isRootFolder ? `margin-left: 16px` : `margin-left: 6px`};
+      margin-right: 10px;
+      min-width: 17px;
 
       @media ${tablet} {
         display: none;
@@ -76,28 +77,12 @@ const StyledContainer = styled.div`
     }
 
     .trash-button {
+      min-width: 17px;
       margin-left: 6px;
     }
 
     .option-button {
-      @media (min-width: 1024px) {
-        margin-left: 8px;
-      }
-
-      @media ${tablet} {
-        & > div:first-child {
-          padding: 0px 8px 8px 8px;
-          margin-right: -8px;
-        }
-      }
-
-      ${isMobile &&
-      css`
-        & > div:first-child {
-          padding: 0px 8px 8px 8px;
-          margin-right: -8px;
-        }
-      `}
+      min-width: 17px;
     }
   }
 `;

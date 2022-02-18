@@ -39,7 +39,7 @@ const StyledSectionHeader = styled.div`
 
         .arrow-button {
           svg {
-            width: 14px !important;
+            width: 14px;
           }
           margin-right: 10px !important;
         }
@@ -50,28 +50,6 @@ const StyledSectionHeader = styled.div`
     margin-right: 16px;
   }
 
-  .section-header {
-    height: 50px;
-    ${isMobile &&
-    css`
-      max-width: calc(100vw - 32px);
-      width: 100%;
-    `}
-
-    ${isMobile &&
-    css`
-      position: fixed;
-      top: 48px;
-
-      width: ${(props) =>
-        props.isArticlePinned ? `calc(100% - 272px)` : "100%"};
-
-      background-color: ${(props) =>
-        props.theme.section.header.backgroundColor};
-      z-index: 149;
-      padding-right: 16px;
-    `}
-  }
   ${isMobile &&
   css`
     .section-header,
@@ -122,7 +100,7 @@ class SectionHeader extends React.Component {
   }
 
   render() {
-    //console.log("PageLayout SectionHeader render");
+    console.log("PageLayout SectionHeader render");
     // eslint-disable-next-line react/prop-types
 
     const { isArticlePinned, isHeaderVisible, viewAs, ...rest } = this.props;
