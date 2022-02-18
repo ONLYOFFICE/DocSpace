@@ -76,7 +76,8 @@ class SettingsStore {
   isBackdropVisible = false;
   isArticleVisibleOnUnpin = false;
 
-  showText = true;
+  showText = false;
+  catalogOpen = false;
   userShowText = false;
   showCatalog = true;
 
@@ -352,6 +353,10 @@ class SettingsStore {
     this.showText = showText;
   };
 
+  setCatalogOpen = (catalogOpen) => {
+    this.catalogOpen = catalogOpen;
+  };
+
   setUserShowText = (userShowText) => {
     this.userShowText = userShowText;
   };
@@ -359,6 +364,10 @@ class SettingsStore {
   toggleShowText = () => {
     this.showText = !this.showText;
     this.userShowText = !this.userShowText;
+  };
+
+  toggleCatalogOpen = () => {
+    this.catalogOpen = !this.catalogOpen;
   };
 
   get firebaseHelper() {

@@ -79,6 +79,8 @@ const Navigation = ({
     return () => window.removeEventListener("click", onMissClick);
   }, [isOpen, onMissClick]);
 
+  console.log("navigation render");
+
   const onBackToParentFolderAction = React.useCallback(() => {
     setIsOpen((val) => !val);
     onBackToParentFolder && onBackToParentFolder();
@@ -162,4 +164,4 @@ Navigation.propTypes = {
   onBackToParentFolder: PropTypes.func,
 };
 
-export default Navigation;
+export default React.memo(Navigation);

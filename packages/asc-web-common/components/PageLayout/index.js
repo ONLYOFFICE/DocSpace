@@ -260,9 +260,11 @@ class PageLayout extends React.Component {
       isArticlePinned,
       isDesktop,
       showText,
+      catalogOpen,
       userShowText,
       setShowText,
       toggleShowText,
+      toggleCatalogOpen,
     } = this.props;
     let catalogHeaderContent = null;
     let catalogMainButtonContent = null;
@@ -348,13 +350,18 @@ class PageLayout extends React.Component {
         <>
           {isCatalogAvailable && (
             <>
-              {showText && (isMobileOnly || window.innerWidth <= 375) && (
+              {catalogOpen && (isMobileOnly || window.innerWidth <= 375) && (
                 <>
-                  <SubCatalogBackdrop onClick={toggleShowText} />
+                  <SubCatalogBackdrop onClick={toggleCatalogOpen} />
                   <Backdrop visible={true} zIndex={201} />
                 </>
               )}
-              <Catalog showText={showText} setShowText={setShowText}>
+              <Catalog
+                showText={showText}
+                catalogOpen={catalogOpen}
+                toggleCatalogOpen={toggleCatalogOpen}
+                setShowText={setShowText}
+              >
                 {isCatalogHeaderAvailable && (
                   <SubCatalogHeader
                     showText={showText}
@@ -441,7 +448,7 @@ class PageLayout extends React.Component {
                   }}
                 >
                   <Section
-                    showText={showText}
+                    catalogOpen={catalogOpen}
                     widthProp={width}
                     unpinArticle={this.unpinArticle}
                     pinned={isArticlePinned}
@@ -622,6 +629,8 @@ PageLayout.propTypes = {
   setShowText: PropTypes.func,
   toggleShowText: PropTypes.func,
   showCatalog: PropTypes.bool,
+  toggleCatalogOpen: PropTypes.func,
+  catalogOpen: PropTypes.bool,
 };
 
 PageLayout.defaultProps = {
@@ -657,6 +666,8 @@ export default inject(({ auth }) => {
     setShowText,
     toggleShowText,
     showCatalog,
+    toggleCatalogOpen,
+    catalogOpen,
   } = settingsStore;
 
   return {
@@ -676,5 +687,7 @@ export default inject(({ auth }) => {
     toggleShowText,
     showCatalog,
     userShowText,
+    toggleCatalogOpen,
+    catalogOpen,
   };
 })(observer(PageLayout));

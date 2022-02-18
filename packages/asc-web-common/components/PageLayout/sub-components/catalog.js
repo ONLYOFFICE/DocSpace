@@ -16,14 +16,23 @@ import { Base } from "@appserver/components/themes";
 const StyledCatalog = styled.div`
   position: relative;
 
+  background: ${(props) => props.theme.catalog.background};
+
+  ${isMobile &&
+  css`
+    margin-top: 48px;
+  `}
+
   @media ${mobile} {
-    top: 64px;
+    position: fixed;
+    margin-top: 16px;
     height: calc(100vh - 64px) !important;
   }
 
   ${isMobileOnly &&
   css`
-    top: 64px;
+    position: fixed;
+    margin-top: 64px;
     height: calc(100vh - 64px) !important;
   `}
 
@@ -37,13 +46,13 @@ const StyledCatalog = styled.div`
     min-width: ${(props) => (props.showText ? "256px" : "52px")};
     width: ${(props) => (props.showText ? "256px" : "52px")};
 
-    height: 100% !important;
+    height: calc(100% - 44px) !important;
 
     background: ${(props) => props.theme.catalog.background};
     overflow-y: auto;
     overflow-x: hidden;
     scrollbar-width: none;
-    padding-bottom: 44px;
+    padding-bottom: 0px;
 
     &::-webkit-scrollbar {
       width: 0;
@@ -63,13 +72,13 @@ const StyledCatalog = styled.div`
     }
 
     @media ${mobile} {
-      display: ${(props) => (props.showText ? "flex" : "none")};
+      display: ${(props) => (props.catalogOpen ? "flex" : "none")};
       min-width: 100vw;
       width: 100vw;
       height: calc(100vh - 64px) !important;
       margin: 0;
       padding: 0;
-      padding-bottom: 44px;
+      padding-bottom: 0px;
     }
 
     ${isTablet &&
@@ -83,13 +92,13 @@ const StyledCatalog = styled.div`
 
     ${isMobileOnly &&
     css`
-      display: ${(props) => (props.showText ? "flex" : "none")};
+      display: ${(props) => (props.catalogOpen ? "flex" : "none")};
       min-width: 100vw !important;
       width: 100vw;
       height: calc(100vh - 64px) !important;
       margin: 0;
       padding: 0;
-      padding-bottom: 44px;
+      padding-bottom: 0px;
     `}
   }
 `;
@@ -97,7 +106,7 @@ const StyledCatalog = styled.div`
 StyledCatalog.defaultProps = { theme: Base };
 
 const Catalog = (props) => {
-  const { showText, setShowText, children, ...rest } = props;
+  const { showText, setShowText, catalogOpen, children, ...rest } = props;
   const refTimer = React.useRef(null);
   const enable = {
     top: false,
@@ -129,17 +138,15 @@ const Catalog = (props) => {
     clearTimeout(refTimer.current);
 
     refTimer.current = setTimeout(() => {
-      if (isMobile && props.showText) props.setShowText(false);
-      if (isMobileUtils() && !isMobile && props.showText)
-        props.setShowText(false);
-      if (isTabletUtils() && !isMobile && props.showText)
+      if (isMobileOnly || isMobileUtils()) props.setShowText(true);
+      if ((isTabletUtils() || isMobile) && !isMobileOnly)
         props.setShowText(false);
       if (isDesktopUtils() && !isMobile) props.setShowText(true);
     }, 100);
   };
 
   return (
-    <StyledCatalog showText={showText} {...rest}>
+    <StyledCatalog showText={showText} catalogOpen={catalogOpen} {...rest}>
       <Resizable
         defaultSize={{
           width: 256,

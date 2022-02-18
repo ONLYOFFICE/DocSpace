@@ -26,14 +26,7 @@ const StyledSection = styled.section`
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  @media ${mobile} {
-    display: ${(props) => (!props.showText ? "flex" : "none")};
-  }
 
-  ${isMobileOnly &&
-  css`
-    display: ${(props) => (!props.showText ? "flex" : "none")} !important;
-  `}
   //width: ${(props) => `${props.widthProp}px`};
   .layout-progress-bar {
     position: fixed;

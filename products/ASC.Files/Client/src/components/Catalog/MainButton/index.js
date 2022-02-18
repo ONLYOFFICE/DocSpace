@@ -30,8 +30,7 @@ class CatalogMainButtonContent extends React.Component {
   };
 
   onShowSelectFileDialog = () => {
-    const { setSelectFileDialogVisible, hideArticle } = this.props;
-    hideArticle();
+    const { setSelectFileDialogVisible } = this.props;
     setSelectFileDialogVisible(true);
   };
 
@@ -246,11 +245,11 @@ CatalogMainButtonContent.propTypes = {
 };
 
 export default inject(
-  ({ auth, filesStore, uploadDataStore, treeFoldersStore }) => {
+  ({ auth, filesStore, dialogsStore, uploadDataStore, treeFoldersStore }) => {
     const { firstLoad, fileActionStore, filter, canCreate } = filesStore;
     const { isPrivacyFolder } = treeFoldersStore;
     const { startUpload } = uploadDataStore;
-
+    const { setSelectFileDialogVisible } = dialogsStore;
     return {
       homepage: config.homepage,
       firstLoad,
@@ -260,6 +259,8 @@ export default inject(
 
       setAction: fileActionStore.setAction,
       startUpload,
+
+      setSelectFileDialogVisible,
 
       toggleShowText: auth.settingsStore.toggleShowText,
     };

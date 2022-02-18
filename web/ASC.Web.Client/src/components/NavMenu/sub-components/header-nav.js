@@ -71,7 +71,7 @@ const HeaderNav = ({
   buildVersionInfo,
   debugInfo,
   currentProductId,
-  toggleShowText,
+  toggleCatalogOpen,
   showCatalog,
   changeTheme,
 }) => {
@@ -184,7 +184,7 @@ const HeaderNav = ({
           <HeaderCatalogBurger
             isProduct={currentProductId !== "home"}
             showCatalog={showCatalog}
-            onClick={toggleShowText}
+            onClick={toggleCatalogOpen}
           />
         </>
       ) : (
@@ -219,7 +219,7 @@ HeaderNav.propTypes = {
   isAuthenticated: PropTypes.bool,
   isLoaded: PropTypes.bool,
   currentProductId: PropTypes.string,
-  toggleShowText: PropTypes.func,
+  toggleCatalogOpen: PropTypes.func,
 };
 
 export default withRouter(
@@ -237,7 +237,7 @@ export default withRouter(
       personal: isPersonal,
       version: versionAppServer,
       currentProductId,
-      toggleShowText,
+      toggleCatalogOpen,
       showCatalog,
       buildVersionInfo,
       debugInfo,
@@ -260,7 +260,7 @@ export default withRouter(
       userIsUpdate,
       setUserIsUpdate,
       currentProductId,
-      toggleShowText,
+      toggleCatalogOpen,
       showCatalog,
       buildVersionInfo,
       debugInfo,

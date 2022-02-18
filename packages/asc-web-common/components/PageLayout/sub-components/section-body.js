@@ -13,14 +13,14 @@ import { tablet, mobile, desktop } from "@appserver/components/utils/device";
 const paddingStyles = css`
   padding: 17px 7px 16px 20px;
   @media ${tablet} {
-    padding: 16px 0 16px 24px;
+    padding: 6px 0 16px 24px;
   }
   @media ${mobile} {
     padding: 8px 0 16px 24px;
   }
   ${isMobile &&
   css`
-    padding: 16px 0 16px 24px !important;
+    padding: 6px 0 16px 24px !important;
   `};
   ${isMobileOnly &&
   css`
