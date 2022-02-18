@@ -38,3 +38,27 @@ Scenario("TfaAuth page render test", async ({ I }) => {
     });
   }
 });
+
+Scenario("Profile Remove page render test", async ({ I }) => {
+  I.mockEndpoint(Endpoints.settings, "settings");
+  I.mockEndpoint(Endpoints.confirm, "confirm");
+  I.amOnPage(
+    "/confirm/ProfileRemove?type=ProfileRemove&key=EXAMPLEKEY1&email=test%40example.com&uid=EXAMPLEUID"
+  );
+
+  I.see("Web Office");
+  I.see("Attention! You are about to delete your account.");
+  I.see('By clicking "Delete my account" you agree with our Privacy policy.');
+
+  I.seeElement({
+    react: "Button",
+  });
+
+  I.saveScreenshot(`2.profile-remove.png`);
+  if (!isModel) {
+    I.seeVisualDiff(`2.profile-remove.png`, {
+      tolerance: 1,
+      prepareBaseImage: false,
+    });
+  }
+});
