@@ -97,6 +97,13 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
+		-ess | --elasticsheme )
+			if [ "$2" != "" ]; then
+				ELK_SHEME=$2
+				shift
+			fi
+		;;
+
 		-esh | --elastichost )
 			if [ "$2" != "" ]; then
 				ELK_HOST=$2
@@ -106,7 +113,7 @@ while [ "$1" != "" ]; do
 
 		-esp | --elasticport )
 			if [ "$2" != "" ]; then
-				ELK_HOST=$2
+				ELK_PORT=$2
 				shift
 			fi
 		;;
@@ -203,24 +210,10 @@ input_db_params(){
     local def_DB_NAME=$(echo $user_connectionString | grep -oP 'Database=\K.*' | grep -o '^[^;]*')
     local def_DB_USER=$(echo $user_connectionString | grep -oP 'User ID=\K.*' | grep -o '^[^;]*')
 
-	read -e -p "Database host: " -i "$DB_HOST" DB_HOST
-	read -e -p "Database name: " -i "$DB_NAME" DB_NAME
-	read -e -p "Database user: " -i "$DB_USER" DB_USER
-	read -e -p "Database password: " -s DB_PWD
-    
-    if [ -z $DB_HOST ]; then
-		DB_HOST="${def_DB_HOST}";
-	fi
-
-	if [ -z $DB_NAME ]; then
-		DB_NAME="${def_DB_NAME}";
-	fi
-
-	if [ -z $DB_USER ]; then
-		DB_USER="${def_DB_USER}";
-	fi
-
-    echo
+	if [ -z $def_DB_HOST ] || [ -z $DB_HOST ]; then read -e -p "Database host: " -i "$DB_HOST" DB_HOST; fi
+	if [ -z $def_DB_NAME ] || [ -z $DB_NAME ]; then read -e -p "Database name: " -i "$DB_NAME" DB_NAME; fi
+	if [ -z $def_DB_USER ] || [ -z $DB_USER ]; then read -e -p "Database user: " -i "$DB_USER" DB_USER; fi
+	if [ -z $DB_PWD ]; then read -e -p "Database host: " -i "$DB_PWD" DB_PWD; fi
 }
 
 establish_mysql_conn(){
@@ -575,10 +568,6 @@ elif command -v apt >/dev/null 2>&1; then
 	DIST="Debian"
 	PACKAGE_MANAGER="dpkg -l"
 	MYSQL_PACKAGE="mysql"
-	mkdir -p /var/log/onlyoffice/appserver/ /etc/onlyoffice/appserver/.private/
-	chown -R onlyoffice:onlyoffice /var/www/appserver/ /var/log/onlyoffice/appserver/ /etc/onlyoffice/appserver/
-	chown -R kafka /var/www/appserver/services/kafka/
-	systemctl restart kafka zookeeper
 fi
 
 install_json

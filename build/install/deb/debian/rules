@@ -38,6 +38,13 @@ override_dh_auto_build:
 	sed -i "s@var/www@var/www/${PRODUCT}@g" ${SRC_PATH}/config/nginx/*.conf 
 	sed -i "s@var/www@var/www/${PRODUCT}@g" ${SRC_PATH}/config/nginx/includes/*.conf
 	
+override_dh_fixperms:
+	dh_fixperms
+	chown onlyoffice:onlyoffice \
+	debian/tmp/var/log/onlyoffice/appserver \
+	debian/tmp/var/www/appserver \
+	debian/tmp/etc/onlyoffice/appserver
+
 override_dh_auto_install:
 	dh_installinit
 
