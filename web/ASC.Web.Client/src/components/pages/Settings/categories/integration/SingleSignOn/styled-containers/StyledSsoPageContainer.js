@@ -5,6 +5,11 @@ const StyledSsoPage = styled.div`
   outline: none;
   width: 100%;
 
+  .intro-text {
+    margin-bottom: 18px;
+    max-width: 700px;
+  }
+
   .toggle {
     position: static;
   }
