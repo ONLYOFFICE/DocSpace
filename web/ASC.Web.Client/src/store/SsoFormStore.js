@@ -176,6 +176,8 @@ class SsoFormStore {
     for (let key of Object.keys(object)) {
       if (typeof object[key] !== "object") {
         this[key] = object[key];
+
+        this.setErrors(key, this[key]);
       } else {
         let prefix = "";
 
@@ -188,6 +190,8 @@ class SsoFormStore {
         } else {
           for (let field of Object.keys(object[key])) {
             this[`${prefix}${field}`] = object[key][field];
+
+            this.setErrors(`${prefix}${field}`, this[`${prefix}${field}`]);
           }
         }
       }
@@ -202,10 +206,16 @@ class SsoFormStore {
 
   onBlur = (e) => {
     const field = e.target.name;
+    const value = e.target.value;
+
+    this.setErrors(field, value);
+  };
+
+  setErrors = (field, value) => {
+    if (typeof value === "boolean") return;
+
     const fieldError = `${field}HasError`;
     const fieldErrorMessage = `${field}ErrorMessage`;
-
-    const value = e.target.value;
 
     try {
       this.validate(value, this.getFieldType(field));
@@ -234,10 +244,6 @@ class SsoFormStore {
 
     if (regExps[type].test(string)) return true;
     else throw new Error(`${type}ErrorMessage`);
-  };
-
-  findFullField = (obj, value) => {
-    return Object.keys(obj).find((key) => obj[key] === value);
   };
 }
 
