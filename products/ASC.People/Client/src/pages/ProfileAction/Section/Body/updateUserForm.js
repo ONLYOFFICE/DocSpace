@@ -204,10 +204,10 @@ class UpdateUserForm extends React.Component {
     return newState;
   };
 
-  setIsEdit() {
+  setIsEdit = () => {
     const { isEdit, setIsEditingForm } = this.props;
     if (!isEdit) setIsEditingForm(true);
-  }
+  };
 
   onInputChange = (event) => {
     const { userFormValidation } = this.props;
