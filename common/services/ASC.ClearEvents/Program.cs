@@ -23,45 +23,39 @@
  *
 */
 
-namespace ASC.Thumbnails.Svc
+var options = new WebApplicationOptions
 {
-    public static class Program
-    {
-        public async static Task Main(string[] args)
-        {
-            var host = CreateHostBuilder(args).Build();
+    Args = args,
+    ContentRootPath = WindowsServiceHelpers.IsWindowsService() ? AppContext.BaseDirectory : default
+};
 
-            await host.RunAsync();
-        }
+var builder = WebApplication.CreateBuilder(options);
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .UseSystemd()
-                .UseWindowsService()
-                .UseServiceProviderFactory(new AutofacServiceProviderFactory())
-                .ConfigureAppConfiguration((hostContext, config) =>
-                {
-                    var buided = config.Build();
-                    var path = buided["pathToConf"];
+builder.Host.UseSystemd();
+builder.Host.UseWindowsService();
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+
+builder.Host.ConfigureAppConfiguration((hostContext, config) =>
+{
+    var configRoot = config.Build();
+    var path = configRoot["pathToConf"];
+
                     if (!Path.IsPathRooted(path))
-                    {
                         path = Path.GetFullPath(CrossPlatform.PathCombine(hostContext.HostingEnvironment.ContentRootPath, path));
-                    }
+
                     config.SetBasePath(path);
 
-                    config
-                        .AddJsonFile("appsettings.json")
+
+    config.AddJsonFile("appsettings.json")
                         .AddEnvironmentVariables()
                         .AddCommandLine(args)
-                        .AddInMemoryCollection(new Dictionary<string, string>
-                            {
-                                {"pathToConf", path }
-                            }
-                        );
-                })
-                .ConfigureServices((hostContext, services) =>
-                {
+                      .AddInMemoryCollection(new Dictionary<string, string> { { "pathToConf", path } });
+});
+
+builder.Host.ConfigureServices((hostContext, services) =>
+{
                     services.AddMemoryCache();
+
                     var diHelper = new DIHelper(services);
 
                     var redisConfiguration = hostContext.Configuration.GetSection("Redis").Get<RedisConfiguration>();
@@ -69,24 +63,27 @@ namespace ASC.Thumbnails.Svc
 
                     if (kafkaConfiguration != null)
                     {
-                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCacheNotify<>));
                     }
                     else if (redisConfiguration != null)
                     {
-                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
+                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCacheNotify<>));
                     }
                     else
                     {
                         diHelper.TryAdd(typeof(ICacheNotify<>), typeof(MemoryCacheNotify<>));
                     }
 
-                    services.AddHostedService<ClearEventsServiceLauncher>();
-                    diHelper.TryAdd<ClearEventsServiceLauncher>();
-                })
-                .ConfigureContainer<ContainerBuilder>((context, builder) =>
-                {
-                    builder.Register(context.Configuration, false, false);
-                })
-            .ConfigureNLogLogging();
-    }
-}
+    services.AddHostedService<ClearEventsService>();
+    diHelper.TryAdd<ClearEventsService>();
+    diHelper.TryAdd<DbContextManager<MessagesContext>>();
+});
+
+builder.Host.ConfigureContainer<ContainerBuilder>((context, builder) =>
+    builder.Register(context.Configuration, false, false));
+
+builder.Host.ConfigureNLogLogging();
+
+var app = builder.Build();
+
+await app.RunAsync();

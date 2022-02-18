@@ -25,14 +25,17 @@
 
 using ConfigurationManager = System.Configuration.ConfigurationManager;
 
-namespace ASC.Data.Backup.Utils
+namespace ASC.Data.Backup.Utils;
+
+internal static class ConfigurationProvider
 {
-    internal static class ConfigurationProvider
+    public static Configuration Open(string fileName)
     {
-        public static Configuration Open(string fileName)
+        var fileMap = new ExeConfigurationFileMap
         {
-            var fileMap = new ExeConfigurationFileMap { ExeConfigFilename = PathHelper.ToRootedConfigPath(fileName) };
-            return ConfigurationManager.OpenMappedExeConfiguration(fileMap, ConfigurationUserLevel.None);
-        }
+            ExeConfigFilename = PathHelper.ToRootedConfigPath(fileName)
+        };
+
+        return ConfigurationManager.OpenMappedExeConfiguration(fileMap, ConfigurationUserLevel.None);
     }
 }

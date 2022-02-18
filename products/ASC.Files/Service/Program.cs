@@ -48,6 +48,7 @@
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddMemoryCache();
+                    services.AddHttpClient();
 
                     var diHelper = new DIHelper(services);
 
@@ -56,11 +57,11 @@
 
                     if (kafkaConfiguration != null)
                     {
-                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCacheNotify<>));
                     }
                     else if (redisConfiguration != null)
                     {
-                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
+                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCacheNotify<>));
 
                         services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
                     }
@@ -79,8 +80,9 @@
 
                     if (!disableElastic)
                     {
-                        services.AddHostedService<ServiceLauncher>();
-                        diHelper.TryAdd<ServiceLauncher>();
+                        services.AddHostedService<ElasticSearchIndexService>();
+                        diHelper.TryAdd<FactoryIndexer>();
+                        diHelper.TryAdd<ElasticSearchService>();
                         //diHelper.TryAdd<FileConverter>();
                         diHelper.TryAdd<FactoryIndexerFile>();
                         diHelper.TryAdd<FactoryIndexerFolder>();
@@ -89,8 +91,18 @@
                     services.AddHostedService<FeedAggregatorService>();
                     diHelper.TryAdd<FeedAggregatorService>();
 
+                    services.AddHostedService<FeedCleanerService>();
+                    diHelper.TryAdd<FeedCleanerService>();
+
                     services.AddHostedService<Launcher>();
                     diHelper.TryAdd<Launcher>();
+
+                    diHelper.TryAdd<AuthManager>();
+                    diHelper.TryAdd<BaseCommonLinkUtility>();
+                    diHelper.TryAdd<FeedAggregateDataProvider>();
+                    diHelper.TryAdd<SecurityContext>();
+                    diHelper.TryAdd<TenantManager>();
+                    diHelper.TryAdd<UserManager>();
 
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>

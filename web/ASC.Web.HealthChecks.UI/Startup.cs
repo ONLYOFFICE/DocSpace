@@ -1,42 +1,40 @@
-namespace ASC.Web.HealthChecks.UI
+namespace ASC.Web.HealthChecks.UI;
+public class Startup
 {
-    public class Startup
+    public Startup(IConfiguration configuration)
     {
-        public Startup(IConfiguration configuration)
+        Configuration = configuration;
+    }
+
+    public IConfiguration Configuration { get; }
+
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        app.UseRouting();
+
+        app.UseHealthChecksUI(config =>
         {
-            Configuration = configuration;
-        }
+            config.UIPath = "/hc-ui";
 
-        public IConfiguration Configuration { get; }
+        });
 
-        public void ConfigureServices(IServiceCollection services)
+        app.UseEndpoints(endpoints =>
         {
-            services.AddHealthChecks()                
-                    .AddCheck("self", () => HealthCheckResult.Healthy());
 
-            services.AddHealthChecksUI()
-                    .AddInMemoryStorage();
-        }
-
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            app.UseRouting();
-
-            app.UseHealthChecksUI(config =>
+            endpoints.MapHealthChecks("/liveness", new HealthCheckOptions
             {
-                config.UIPath = "/hc-ui";
-               
+                Predicate = r => r.Name.Contains("self")
             });
+        });
 
-            app.UseEndpoints(endpoints =>
-            {
+    }
 
-                endpoints.MapHealthChecks("/liveness", new HealthCheckOptions
-                {
-                    Predicate = r => r.Name.Contains("self")
-                });
-            });
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.AddHealthChecks()                
+                .AddCheck("self", () => HealthCheckResult.Healthy());
 
-        }
+        services.AddHealthChecksUI()
+                .AddInMemoryStorage();
     }
 }

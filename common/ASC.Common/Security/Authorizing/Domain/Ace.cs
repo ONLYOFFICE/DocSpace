@@ -23,20 +23,17 @@
  *
 */
 
-namespace ASC.Common.Security.Authorizing
+namespace ASC.Common.Security.Authorizing;
+
+[Serializable]
+public class Ace
 {
-    [Serializable]
-    public class Ace
+    public Guid ActionId { get; set; }
+    public AceType Reaction { get; set; }
+
+    public Ace(Guid actionId, AceType reaction)
     {
-        public Guid ActionId { get; set; }
-
-        public AceType Reaction { get; set; }
-
-
-        public Ace(Guid actionId, AceType reaction)
-        {
-            ActionId = actionId;
-            Reaction = reaction;
-        }
+        ActionId = actionId;
+        Reaction = reaction;
     }
 }

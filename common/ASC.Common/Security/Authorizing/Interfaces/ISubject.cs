@@ -23,10 +23,9 @@
  *
 */
 
-namespace ASC.Common.Security.Authorizing
+namespace ASC.Common.Security.Authorizing;
+
+public interface ISubject : IIdentity
 {
-    public interface ISubject : IIdentity
-    {
-        Guid ID { get; }
-    }
+    Guid ID { get; }
 }

@@ -41,7 +41,7 @@ namespace ASC.Web.Core
             CacheNotify.Subscribe((r) =>
             {
                 ClearCache(r.Tenant);
-            }, CacheNotifyAction.Any);
+            }, Common.Caching.CacheNotifyAction.Any);
         }
 
         public void ClearCache(int tenantId)
@@ -56,7 +56,7 @@ namespace ASC.Web.Core
 
         public void Publish(int tenantId)
         {
-            CacheNotify.Publish(new WebItemSecurityNotifier { Tenant = tenantId }, CacheNotifyAction.Any);
+            CacheNotify.Publish(new WebItemSecurityNotifier { Tenant = tenantId }, Common.Caching.CacheNotifyAction.Any);
         }
 
         public Dictionary<string, bool> Get(int tenantId)

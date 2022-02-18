@@ -23,38 +23,63 @@
  *
 */
 
-namespace ASC.ElasticSearch.Service
+namespace ASC.ElasticSearch.Service;
+
+[Singletone]
+public class Settings
 {
-    [Singletone]
-    public class Settings
+    public string Host
     {
-        public Settings(ConfigurationExtension configuration)
-        {
-            configuration.GetSetting("elastic", this);
-        }
+        get => _host ?? "localhost";
+        set => _host = value;
+    }
+    public int? Port
+    {
+        get => _port ?? 9200;
+        set => _port = value;
+    }
+    public string Scheme
+    {
+        get => _scheme ?? "http";
+        set => _scheme = value;
+    }
+    public int? Period
+    {
+        get => _period ?? 1;
+        set => _period = value;
+    }
+    public long? MaxContentLength
+    {
+        get => _maxContentLength ?? 100 * 1024 * 1024L;
+        set => _maxContentLength = value;
+    }
+    public long? MaxFileSize
+    {
+        get => _maxFileSize ?? 10 * 1024 * 1024L;
+        set => _maxFileSize = value;
+    }
+    public int? Threads
+    {
+        get => _threads ?? 1;
+        set => _threads = value;
+    }
+    public bool? HttpCompression
+    {
+        get => _httpCompression ?? true;
+        set => _httpCompression = value;
+    }
 
-        private string host;
-        public string Host { get => host ?? "localhost"; set { host = value; } }
+    private string _host;
+    private int? _port;
+    private string _scheme;
+    private int? _period;
+    private long? _maxContentLength;
+    private long? _maxFileSize;
+    private int? _threads;
+    private bool? _httpCompression;
 
-        private int? port;
-        public int? Port { get => port ?? 9200; set { port = value; } }
-
-        private string scheme;
-        public string Scheme { get => scheme ?? "http"; set { scheme = value; } }
-
-        private int? period;
-        public int? Period { get => period ?? 1; set { period = value; } }
-
-        private long? maxContentLength;
-        public long? MaxContentLength { get => maxContentLength ?? 100 * 1024 * 1024L; set { maxContentLength = value; } }
-
-        private long? maxFileSize;
-        public long? MaxFileSize { get => maxFileSize ?? 10 * 1024 * 1024L; set { maxFileSize = value; } }
-
-        private int? threads;
-        public int? Threads { get => threads ?? 1; set { threads = value; } }
-
-        private bool? httpCompression;
-        public bool? HttpCompression { get => httpCompression ?? true; set { httpCompression = value; } }
+    public Settings(ConfigurationExtension configuration)
+    {
+        configuration.GetSetting("elastic", this);
     }
 }

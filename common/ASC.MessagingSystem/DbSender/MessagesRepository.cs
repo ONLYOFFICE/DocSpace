@@ -29,7 +29,7 @@ using IsolationLevel = System.Data.IsolationLevel;
 namespace ASC.MessagingSystem.DbSender
 {
     [Singletone(Additional = typeof(MessagesRepositoryExtension))]
-    public class MessagesRepository: IDisposable
+    public class MessagesRepository : IDisposable
     {
         private DateTime lastSave = DateTime.UtcNow;
         private readonly TimeSpan CacheTime;
@@ -149,7 +149,7 @@ namespace ASC.MessagingSystem.DbSender
 
         private static void AddLoginEvent(EventMessage message, MessagesContext dbContext)
         {
-            var le = new LoginEvents
+            var le = new LoginEvent
             {
                 Ip = message.IP,
                 Login = message.Initiator,
@@ -164,7 +164,7 @@ namespace ASC.MessagingSystem.DbSender
 
             if (message.Description != null && message.Description.Count > 0)
             {
-                le.Description =
+                le.DescriptionRaw =
                     JsonConvert.SerializeObject(message.Description, new JsonSerializerSettings
                     {
                         DateTimeZoneHandling = DateTimeZoneHandling.Utc
@@ -193,7 +193,7 @@ namespace ASC.MessagingSystem.DbSender
 
             if (message.Description != null && message.Description.Count > 0)
             {
-                ae.Description =
+                ae.DescriptionRaw =
                     JsonConvert.SerializeObject(GetSafeDescription(message.Description), new JsonSerializerSettings
                     {
                         DateTimeZoneHandling = DateTimeZoneHandling.Utc
@@ -253,10 +253,10 @@ namespace ASC.MessagingSystem.DbSender
 
     public class Messages : MessagesContext
     {
-        public DbSet<AuditEvent> AuditEvents { get; set; }
         public DbSet<DbTenant> Tenants { get; set; }
         public DbSet<DbWebstudioSettings> WebstudioSettings { get; set; }
     }
+
     public static class MessagesRepositoryExtension
     {
         public static void Register(DIHelper services)

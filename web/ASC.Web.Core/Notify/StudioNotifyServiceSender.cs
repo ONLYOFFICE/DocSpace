@@ -37,7 +37,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         public StudioNotifyServiceSender(IServiceProvider serviceProvider, IConfiguration configuration, ICacheNotify<NotifyItem> cache)
         {
-            cache.Subscribe(OnMessage, CacheNotifyAction.Any);
+            cache.Subscribe(this.OnMessage, Common.Caching.CacheNotifyAction.Any);
             ServiceProvider = serviceProvider;
             Configuration = configuration;
         }
