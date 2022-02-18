@@ -1,4 +1,6 @@
-﻿var options = new WebApplicationOptions
+﻿using ASC.Common.Mapping;
+
+var options = new WebApplicationOptions
 {
     Args = args,
     ContentRootPath = WindowsServiceHelpers.IsWindowsService() ? AppContext.BaseDirectory : default
@@ -73,6 +75,8 @@ builder.Host.ConfigureServices((hostContext, services) =>
     diHelper.TryAdd<JabberSender>();
     diHelper.TryAdd<SmtpSender>();
     diHelper.TryAdd<AWSSender>(); // fix private
+
+    services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
 
     services.AddHostedService<NotifyServiceLauncher>();
 });
