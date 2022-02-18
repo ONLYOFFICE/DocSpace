@@ -1,3 +1,5 @@
+const Endpoints = require("./mocking/endpoints.js");
+
 const browser = process.env.profile || "chromium";
 const deviceType = process.env.DEVICE_TYPE || "desktop";
 
@@ -9,12 +11,12 @@ const featureName = isModel
 
 Feature(featureName);
 
-Before(async ({ I }) => {
-  I.amOnPage("/confirm/TfaAuth");
-  I.wait(2);
-});
-
 Scenario("TfaAuth page render test", async ({ I }) => {
+  I.mockEndpoint(Endpoints.confirm, "confirm");
+  I.amOnPage(
+    "/confirm/TfaAuth?type=TfaAuth&key=EXAMPLEKEY1&email=test%40example.com"
+  );
+
   I.see("Enter code from authentication app");
 
   I.seeElement({
