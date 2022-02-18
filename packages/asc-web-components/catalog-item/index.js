@@ -65,7 +65,7 @@ const CatalogItem = (props) => {
       ></StyledCatalogItemSibling>
 
       <StyledCatalogItemImg>
-        <ReactSVG src={icon} />
+        <ReactSVG className="icon" src={icon} />
         {!showText && (
           <>
             {showInitial && (

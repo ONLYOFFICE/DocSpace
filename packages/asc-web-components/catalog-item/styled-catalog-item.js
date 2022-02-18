@@ -179,6 +179,12 @@ const StyledCatalogItemImg = styled.div`
 
   height: ${(props) => props.theme.catalogItem.img.svg.height};
 
+  .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   svg {
     width: ${(props) => props.theme.catalogItem.img.svg.width};
     height: ${(props) => props.theme.catalogItem.img.svg.height};
