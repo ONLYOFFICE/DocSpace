@@ -50,16 +50,16 @@ public class DbWorker
         var notifyQueue = new NotifyQueue
         {
             NotifyId = 0,
-            TenantId = m.Tenant,
-            Sender = m.From,
-            Reciever = m.To,
+            TenantId = m.TenantId,
+            Sender = m.Sender,
+            Reciever = m.Reciever,
             Subject = m.Subject,
             ContentType = m.ContentType,
             Content = m.Content,
-            SenderType = m.Sender,
+            SenderType = m.SenderType,
             CreationDate = new DateTime(m.CreationDate),
             ReplyTo = m.ReplyTo,
-            Attachments = m.EmbeddedAttachments.ToString(),
+            Attachments = m.Attachments.ToString(),
             AutoSubmitted = m.AutoSubmitted
         };
 
@@ -108,20 +108,20 @@ public class DbWorker
                     {
                         var res = new NotifyMessage
                         {
-                            Tenant = r.queue.TenantId,
-                            From = r.queue.Sender,
-                            To = r.queue.Reciever,
+                            TenantId = r.queue.TenantId,
+                            Sender = r.queue.Sender,
+                            Reciever = r.queue.Reciever,
                             Subject = r.queue.Subject,
                             ContentType = r.queue.ContentType,
                             Content = r.queue.Content,
-                            Sender = r.queue.SenderType,
+                            SenderType = r.queue.SenderType,
                             CreationDate = r.queue.CreationDate.Ticks,
                             ReplyTo = r.queue.ReplyTo,
                             AutoSubmitted = r.queue.AutoSubmitted
                         };
                         try
                         {
-                            res.EmbeddedAttachments.AddRange(JsonConvert.DeserializeObject<RepeatedField<NotifyMessageAttachment>>(r.queue.Attachments));
+                            res.Attachments.AddRange(JsonConvert.DeserializeObject<RepeatedField<NotifyMessageAttachment>>(r.queue.Attachments));
                         }
                         catch (Exception)
                         {

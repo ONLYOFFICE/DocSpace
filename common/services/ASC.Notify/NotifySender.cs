@@ -107,7 +107,7 @@ public class NotifySender : IDisposable
                 var result = MailSendingState.Sended;
                 try
                 {
-                    var sender = NotifyServiceCfg.Senders.FirstOrDefault(r => r.Name == m.Value.Sender);
+                    var sender = NotifyServiceCfg.Senders.FirstOrDefault(r => r.Name == m.Value.SenderType);
                     if (sender != null)
                     {
                         sender.NotifySender.Send(m.Value);

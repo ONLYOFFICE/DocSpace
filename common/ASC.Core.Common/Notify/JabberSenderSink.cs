@@ -56,16 +56,16 @@ namespace ASC.Core.Notify
                 {
                     var m = new NotifyMessage
                     {
-                        To = username,
+                        Reciever = username,
                         Subject = message.Subject,
                         ContentType = message.ContentType,
                         Content = message.Body,
-                        Sender = senderName,
+                        SenderType = senderName,
                         CreationDate = DateTime.UtcNow.Ticks,
                     };
 
                     var tenant = tenantManager.GetCurrentTenant(false);
-                    m.Tenant = tenant == null ? Tenant.DEFAULT_TENANT : tenant.TenantId;
+                    m.TenantId = tenant == null ? Tenant.DEFAULT_TENANT : tenant.TenantId;
 
                     sender.Send(m);
                 }

@@ -54,7 +54,7 @@ namespace ASC.Core.Notify.Senders
             {
                 using var scope = ServiceProvider.CreateScope();
                 var service = scope.ServiceProvider.GetService<JabberServiceClient>();
-                service.SendMessage(m.Tenant, null, m.To, text, m.Subject);
+                service.SendMessage(m.TenantId, null, m.Reciever, text, m.Subject);
             }
             catch (Exception e)
             {

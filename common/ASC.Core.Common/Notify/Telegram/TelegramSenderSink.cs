@@ -45,11 +45,11 @@ namespace ASC.Core.Notify
                 const SendResult result = SendResult.OK;
                 var m = new NotifyMessage
                 {
-                    To = message.Recipient.ID,
+                    Reciever = message.Recipient.ID,
                     Subject = message.Subject,
                     ContentType = message.ContentType,
                     Content = message.Body,
-                    Sender = senderName,
+                    SenderType = senderName,
                     CreationDate = DateTime.UtcNow.Ticks,
                 };
 
@@ -57,7 +57,7 @@ namespace ASC.Core.Notify
                 var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
 
                 var tenant = tenantManager.GetCurrentTenant(false);
-                m.Tenant = tenant == null ? Tenant.DEFAULT_TENANT : tenant.TenantId;
+                m.TenantId = tenant == null ? Tenant.DEFAULT_TENANT : tenant.TenantId;
 
                 sender.Send(m);
 
