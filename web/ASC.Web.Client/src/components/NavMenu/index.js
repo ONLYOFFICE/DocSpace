@@ -178,6 +178,7 @@ class NavMenu extends React.Component {
                 <>
                   {!isPreparationPortal && <HeaderNav />}
                   <Header
+                    isPreparationPortal={isPreparationPortal}
                     isNavOpened={isNavOpened}
                     onClick={this.showNav}
                     onNavMouseEnter={this.handleNavMouseEnter}

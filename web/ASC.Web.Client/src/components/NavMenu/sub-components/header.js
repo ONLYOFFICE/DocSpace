@@ -43,6 +43,8 @@ const Header = styled.header`
           display: none;
         }
       `}
+      ${(props) =>
+      props.isPreparationPortal && "pointer-events: none; touch-action: none"}
   }
 
   .header-module-title {
@@ -145,6 +147,7 @@ const HeaderComponent = ({
   isAdmin,
   backdropClick,
   isPersonal,
+  isPreparationPortal,
   ...props
 }) => {
   const { t } = useTranslation("Common");
@@ -174,8 +177,6 @@ const HeaderComponent = ({
   };
 
   const numberOfModules = mainModules.filter((item) => !item.separator).length;
-  const isPreparationPortal =
-    history.location.pathname === "/preparation-portal";
 
   return (
     <>
