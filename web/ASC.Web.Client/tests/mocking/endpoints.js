@@ -4,4 +4,10 @@ module.exports = class Endpoints {
     method: "POST",
     baseDir: "user",
   };
+
+  static settings = {
+    url: ["http://localhost:8092/api/2.0/settings.json"],
+    method: "GET",
+    baseDir: "settings",
+  };
 };
