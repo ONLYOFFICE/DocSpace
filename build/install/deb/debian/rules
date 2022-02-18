@@ -40,10 +40,6 @@ override_dh_auto_build:
 	
 override_dh_fixperms:
 	dh_fixperms
-	chown onlyoffice:onlyoffice \
-	debian/tmp/var/log/onlyoffice/appserver \
-	debian/tmp/var/www/appserver \
-	debian/tmp/etc/onlyoffice/appserver
 
 override_dh_auto_install:
 	dh_installinit
