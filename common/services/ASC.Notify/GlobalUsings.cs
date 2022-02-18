@@ -26,6 +26,8 @@ global using ASC.Web.Core;
 global using ASC.Web.Core.WhiteLabel;
 global using ASC.Web.Studio.Core.Notify;
 
+global using AutoMapper;
+
 global using Autofac;
 global using Autofac.Extensions.DependencyInjection;
 

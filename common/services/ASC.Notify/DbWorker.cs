@@ -30,15 +30,17 @@ public class DbWorker
 {
     private readonly string _dbid;
     private readonly object _syncRoot = new object();
+    private readonly IMapper _mapper;
 
     private readonly IServiceScopeFactory _serviceScopeFactory;
     public NotifyServiceCfg NotifyServiceCfg { get; }
 
-    public DbWorker(IServiceScopeFactory serviceScopeFactory, IOptions<NotifyServiceCfg> notifyServiceCfg)
+    public DbWorker(IServiceScopeFactory serviceScopeFactory, IOptions<NotifyServiceCfg> notifyServiceCfg, IMapper mapper)
     {
         _serviceScopeFactory = serviceScopeFactory;
         NotifyServiceCfg = notifyServiceCfg.Value;
         _dbid = NotifyServiceCfg.ConnectionStringName;
+        _mapper = mapper;
     }
 
     public int SaveMessage(NotifyMessage m)
@@ -47,21 +49,7 @@ public class DbWorker
         using var dbContext = scope.ServiceProvider.GetService<DbContextManager<NotifyDbContext>>().Get(_dbid);
         using var tx = dbContext.Database.BeginTransaction(IsolationLevel.ReadCommitted);
 
-        var notifyQueue = new NotifyQueue
-        {
-            NotifyId = 0,
-            TenantId = m.TenantId,
-            Sender = m.Sender,
-            Reciever = m.Reciever,
-            Subject = m.Subject,
-            ContentType = m.ContentType,
-            Content = m.Content,
-            SenderType = m.SenderType,
-            CreationDate = new DateTime(m.CreationDate),
-            ReplyTo = m.ReplyTo,
-            Attachments = m.Attachments.ToString(),
-            AutoSubmitted = m.AutoSubmitted
-        };
+        var notifyQueue = _mapper.Map<NotifyMessage, NotifyQueue>(m);
 
         notifyQueue = dbContext.NotifyQueue.Add(notifyQueue).Entity;
         dbContext.SaveChanges();
@@ -106,19 +94,8 @@ public class DbWorker
                     r => r.queue.NotifyId,
                     r =>
                     {
-                        var res = new NotifyMessage
-                        {
-                            TenantId = r.queue.TenantId,
-                            Sender = r.queue.Sender,
-                            Reciever = r.queue.Reciever,
-                            Subject = r.queue.Subject,
-                            ContentType = r.queue.ContentType,
-                            Content = r.queue.Content,
-                            SenderType = r.queue.SenderType,
-                            CreationDate = r.queue.CreationDate.Ticks,
-                            ReplyTo = r.queue.ReplyTo,
-                            AutoSubmitted = r.queue.AutoSubmitted
-                        };
+                        var res = _mapper.Map<NotifyQueue, NotifyMessage>(r.queue);
+
                         try
                         {
                             res.Attachments.AddRange(JsonConvert.DeserializeObject<RepeatedField<NotifyMessageAttachment>>(r.queue.Attachments));
@@ -127,6 +104,7 @@ public class DbWorker
                         {
 
                         }
+
                         return res;
                     });
 
