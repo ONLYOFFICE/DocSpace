@@ -65,7 +65,7 @@ if [ "$(ls "$PRODUCT_DIR/services/kafka" 2> /dev/null)" == "" ]; then
 	KAFKA_ARCHIVE=$(curl https://downloads.apache.org/kafka/$KAFKA_VERSION/ | grep -Eo "kafka_2.[0-9][0-9]-$KAFKA_VERSION.tgz" | tail -1)
 	curl https://downloads.apache.org/kafka/$KAFKA_VERSION/$KAFKA_ARCHIVE -O
 	tar xzf $KAFKA_ARCHIVE --strip 1 && rm -rf $KAFKA_ARCHIVE
-	chown -R kafka ${PRODUCT_DIR}/services/kafka
+	chown -R kafka ${PRODUCT_DIR}/services/kafka/
 	cd -
 fi
 
