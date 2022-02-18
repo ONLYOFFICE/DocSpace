@@ -111,8 +111,8 @@ namespace ASC.Web.Core.Utility.Skins
                 return string.Empty;
             }
 
-            var dir = webitem.StartURL.Contains(".") ?
-                          webitem.StartURL.Substring(0, webitem.StartURL.LastIndexOf("/")) :
+            var dir = webitem.StartURL.Contains('.') ?
+                          webitem.StartURL.Substring(0, webitem.StartURL.LastIndexOf('/')) :
                           webitem.StartURL.TrimEnd('/');
             return dir + "/App_Themes";
         }

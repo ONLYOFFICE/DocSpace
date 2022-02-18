@@ -72,8 +72,7 @@ namespace ASC.Web.Studio.Core.Notify
 
             Log.Info("Start SendSaasTariffLetters");
 
-            var activeTenants = new List<Tenant>();
-            var monthQuotasIds = new List<int>();
+            List<Tenant> activeTenants;
 
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -119,7 +118,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                     Func<string> greenButtonText = () => string.Empty;
 
-                    static string blueButtonText() => WebstudioNotifyPatternResource.ButtonRequestCallButton;
+                    string blueButtonText() => WebstudioNotifyPatternResource.ButtonRequestCallButton;
                     var greenButtonUrl = string.Empty;
 
                     Func<string> tableItemText1 = () => string.Empty;
@@ -156,17 +155,17 @@ namespace ASC.Web.Studio.Core.Notify
 
                     Func<string> tableItemLearnMoreText1 = () => string.Empty;
 
-                    static string tableItemLearnMoreText2() => string.Empty;
+                    string tableItemLearnMoreText2() => string.Empty;
 
-                    static string tableItemLearnMoreText3() => string.Empty;
+                    string tableItemLearnMoreText3() => string.Empty;
 
-                    static string tableItemLearnMoreText4() => string.Empty;
+                    string tableItemLearnMoreText4() => string.Empty;
 
-                    static string tableItemLearnMoreText5() => string.Empty;
+                    string tableItemLearnMoreText5() => string.Empty;
 
-                    static string tableItemLearnMoreText6() => string.Empty;
+                    string tableItemLearnMoreText6() => string.Empty;
 
-                    static string tableItemLearnMoreText7() => string.Empty;
+                    string tableItemLearnMoreText7() => string.Empty;
 
                     var tableItemLearnMoreUrl1 = string.Empty;
                     var tableItemLearnMoreUrl2 = string.Empty;
@@ -205,7 +204,7 @@ namespace ASC.Web.Studio.Core.Notify
                             toadmins = true;
 
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonAccessYouWebOffice;
-                            greenButtonUrl = String.Format("{0}/", commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/'));
+                            greenButtonUrl = $"{commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')}/";
                         }
 
                         #endregion
@@ -268,7 +267,7 @@ namespace ASC.Web.Studio.Core.Notify
                             tableItemComment7 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_differences;
 
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonAccessYouWebOffice;
-                            greenButtonUrl = string.Format("{0}/products/files/", commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/'));
+                            greenButtonUrl = $"{commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')}/products/files/";
                         }
 
                         #endregion
@@ -437,7 +436,7 @@ namespace ASC.Web.Studio.Core.Notify
                             new[] { senderName },
                             new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
                             new TagValue(Tags.PricingPage, commonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx")),
-                            new TagValue(Tags.ActiveUsers, userManager.GetUsers().Count()),
+                            new TagValue(Tags.ActiveUsers, userManager.GetUsers().Length),
                             new TagValue(Tags.Price, rquota.Price),
                             new TagValue(Tags.PricePeriod, rquota.Year3 ? UserControlsCommonResource.TariffPerYear3 : rquota.Year ? UserControlsCommonResource.TariffPerYear : UserControlsCommonResource.TariffPerMonth),
                             new TagValue(Tags.DueDate, dueDate.ToLongDateString()),
@@ -473,7 +472,7 @@ namespace ASC.Web.Studio.Core.Notify
 
             Log.Info("Start SendTariffEnterpriseLetters");
 
-            var activeTenants = new List<Tenant>();
+            List<Tenant> activeTenants;
 
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -503,7 +502,7 @@ namespace ASC.Web.Studio.Core.Notify
                     var quota = tenantManager.GetTenantQuota(tenant.TenantId);
                     var createdDate = tenant.CreatedDateTime.Date;
 
-                    var actualEndDate = (tariff.DueDate != DateTime.MaxValue ? tariff.DueDate : tariff.LicenseDate);
+                    var actualEndDate = tariff.DueDate != DateTime.MaxValue ? tariff.DueDate : tariff.LicenseDate;
                     var dueDateIsNotMax = actualEndDate != DateTime.MaxValue;
                     var dueDate = actualEndDate.Date;
 
@@ -518,7 +517,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                     Func<string> greenButtonText = () => string.Empty;
 
-                    static string blueButtonText() => WebstudioNotifyPatternResource.ButtonRequestCallButton;
+                    string blueButtonText() => WebstudioNotifyPatternResource.ButtonRequestCallButton;
                     var greenButtonUrl = string.Empty;
 
                     Func<string> tableItemText1 = () => string.Empty;
@@ -555,17 +554,17 @@ namespace ASC.Web.Studio.Core.Notify
 
                     Func<string> tableItemLearnMoreText1 = () => string.Empty;
 
-                    static string tableItemLearnMoreText2() => string.Empty;
+                    string tableItemLearnMoreText2() => string.Empty;
 
-                    static string tableItemLearnMoreText3() => string.Empty;
+                    string tableItemLearnMoreText3() => string.Empty;
 
-                    static string tableItemLearnMoreText4() => string.Empty;
+                    string tableItemLearnMoreText4() => string.Empty;
 
-                    static string tableItemLearnMoreText5() => string.Empty;
+                    string tableItemLearnMoreText5() => string.Empty;
 
-                    static string tableItemLearnMoreText6() => string.Empty;
+                    string tableItemLearnMoreText6() => string.Empty;
 
-                    static string tableItemLearnMoreText7() => string.Empty;
+                    string tableItemLearnMoreText7() => string.Empty;
 
                     var tableItemLearnMoreUrl1 = string.Empty;
                     var tableItemLearnMoreUrl2 = string.Empty;
@@ -616,14 +615,14 @@ namespace ASC.Web.Studio.Core.Notify
 
                         #region 4 days after registration to admins ENTERPRISE TRIAL + only 1 user + defaultRebranding
 
-                        else if (createdDate.AddDays(4) == nowDate && userManager.GetUsers().Count() == 1)
+                        else if (createdDate.AddDays(4) == nowDate && userManager.GetUsers().Length == 1)
                         {
                             action = Actions.EnterpriseAdminInviteTeammatesV10;
                             paymentMessage = false;
                             toadmins = true;
 
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonInviteRightNow;
-                            greenButtonUrl = string.Format("{0}/products/people/", commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/'));
+                            greenButtonUrl = $"{commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')}/products/people/";
                         }
 
                         #endregion
@@ -696,7 +695,7 @@ namespace ASC.Web.Studio.Core.Notify
                             tableItemComment7 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_apps;
 
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonAccessYouWebOffice;
-                            greenButtonUrl = string.Format("{0}/products/files/", commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/'));
+                            greenButtonUrl = $"{commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')}/products/files/";
                         }
 
                         #endregion
@@ -839,7 +838,7 @@ namespace ASC.Web.Studio.Core.Notify
                             new[] { senderName },
                             new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
                             new TagValue(Tags.PricingPage, commonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx")),
-                            new TagValue(Tags.ActiveUsers, userManager.GetUsers().Count()),
+                            new TagValue(Tags.ActiveUsers, userManager.GetUsers().Length),
                             new TagValue(Tags.Price, rquota.Price),
                             new TagValue(Tags.PricePeriod, rquota.Year3 ? UserControlsCommonResource.TariffPerYear3 : rquota.Year ? UserControlsCommonResource.TariffPerYear : UserControlsCommonResource.TariffPerMonth),
                             new TagValue(Tags.DueDate, dueDate.ToLongDateString()),
@@ -872,7 +871,7 @@ namespace ASC.Web.Studio.Core.Notify
 
             Log.Info("Start SendOpensourceTariffLetters");
 
-            var activeTenants = new List<Tenant>();
+            List<Tenant> activeTenants;
 
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -941,7 +940,7 @@ namespace ASC.Web.Studio.Core.Notify
             Log.Info("Start SendLettersPersonal...");
 
 
-            var activeTenants = new List<Tenant>();
+            List<Tenant> activeTenants;
 
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -1167,7 +1166,7 @@ namespace ASC.Web.Studio.Core.Notify
         }
     }
 
-    public class StudioPeriodicNotifyExtension
+    public static class StudioPeriodicNotifyExtension
     {
         public static void Register(DIHelper services)
         {
