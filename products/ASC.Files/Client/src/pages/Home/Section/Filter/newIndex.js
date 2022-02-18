@@ -98,6 +98,20 @@ const SectionFilterContent = ({
     fetchFiles(selectedFolderId, newFilter).finally(() => setIsLoading(false));
   };
 
+  const onSort = (sortId, sortDirection) => {
+    const sortBy = sortId;
+    const sortOrder = sortDirection === "desc" ? "descending" : "ascending";
+
+    const newFilter = filter.clone();
+    newFilter.page = 0;
+    newFilter.sortBy = sortBy;
+    newFilter.sortOrder = sortOrder;
+
+    setIsLoading(true);
+
+    fetchFiles(selectedFolderId, newFilter).finally(() => setIsLoading(false));
+  };
+
   const onChangeViewAs = (view) => {
     if (view === "row") {
       setViewAs("table");
@@ -318,6 +332,7 @@ const SectionFilterContent = ({
       selectedFilterData={getSelectedFilterData()}
       onFilter={onFilter}
       onSearch={onSearch}
+      onSort={onSort}
       onChangeViewAs={onChangeViewAs}
       viewAs={viewAs}
       directionAscLabel={t("Common:DirectionAscLabel")}
