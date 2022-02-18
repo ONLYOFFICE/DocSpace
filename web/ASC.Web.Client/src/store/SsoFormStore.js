@@ -198,6 +198,18 @@ class SsoFormStore {
     }
   };
 
+  generateCertificate = async () => {
+    const response = await fetch("./generatedCertificate.json");
+    const certificateObject = await response.json();
+
+    this.setGeneratedCertificate(certificateObject);
+  };
+
+  setGeneratedCertificate = (certificateObject) => {
+    this.newSpCertificate = certificateObject.crt;
+    this.newSpPrivateKey = certificateObject.key;
+  };
+
   resetForm = () => {
     for (let key of Object.keys(defaultStore)) {
       this[key] = defaultStore[key];
