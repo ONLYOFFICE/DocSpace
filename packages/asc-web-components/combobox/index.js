@@ -39,10 +39,16 @@ class ComboBox extends React.Component {
   };
 
   comboBoxClick = (e) => {
-    const { disableIconClick, isDisabled, toggleAction } = this.props;
+    const {
+      disableIconClick,
+      disableItemClick,
+      isDisabled,
+      toggleAction,
+    } = this.props;
 
     if (
       isDisabled ||
+      disableItemClick ||
       (disableIconClick && e && e.target.closest(".optionalBlock"))
     )
       return;
@@ -218,6 +224,8 @@ ComboBox.propTypes = {
   comboIcon: PropTypes.string,
   manualY: PropTypes.string,
   manualX: PropTypes.string,
+  /** Disable clicking on the item */
+  disableItemClick: PropTypes.bool,
 };
 
 ComboBox.defaultProps = {
@@ -230,6 +238,7 @@ ComboBox.defaultProps = {
   disableIconClick: true,
   showDisabledItems: false,
   manualY: "102%",
+  disableItemClick: false,
 };
 
 export default ComboBox;
