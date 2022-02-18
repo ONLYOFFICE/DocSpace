@@ -159,7 +159,7 @@ class Calendar extends Component {
       i++;
     }
 
-    if (openToDateYear < minDateYear) {
+    if (openToDateYear <= minDateYear) {
       i = 0;
       while (i != 12) {
         if (i != minDateMonth) listMonths[i].disabled = true;
