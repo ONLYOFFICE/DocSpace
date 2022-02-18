@@ -4,14 +4,13 @@
   "private": true,
   "homepage": "/products/files/doceditor",
   "scripts": {
-    "build-old": "webpack --mode production",
     "build:test": "webpack --env minimize=false --mode production",
     "build:test.translation": "webpack --env minimize=false hideText=true --mode production",
     "clean": "shx rm -rf dist",
     "deploy": "shx --silent mkdir -p ../../build/deploy/products/ASC.Files/editor && shx cp -r dist/* ../../build/deploy/products/ASC.Files/editor",
-    "serve": "serve dist -p 5013",
     "start-prod": "yarn build && node dist/index.js",
-    "build": "webpack --config webpack.config.js"
+    "build": "webpack --config webpack.config.js",
+    "build:server": "webpack --config webpack.server.js --mode production"
   },
   "devDependencies": {
     "@babel/core": "^7.15.5",

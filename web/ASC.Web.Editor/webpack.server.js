@@ -1,78 +1,18 @@
 const path = require("path");
-//const nodeExternals = require("webpack-node-externals");
+const { config } = require("process");
 
-module.exports = {
+config = {
+  name: "server",
   entry: "./src/index.js",
   target: "node",
-  // externals: [nodeExternals()],
   mode: "development",
   output: {
-    path: path.resolve("dist"),
-    filename: "index.js",
+    path: path.resolve(process.cwd(), "dist"),
+    filename: "server.js",
   },
 
   module: {
     rules: [
-      {
-        test: /\.(png|jpe?g|gif|ico)$/i,
-        type: "asset/resource",
-        generator: {
-          filename: "static/images/[hash][ext][query]",
-        },
-      },
-      {
-        test: /\.m?js/,
-        type: "javascript/auto",
-        resolve: {
-          fullySpecified: false,
-        },
-      },
-      {
-        test: /\.react.svg$/,
-        use: [
-          {
-            loader: "@svgr/webpack",
-            options: {
-              svgoConfig: {
-                plugins: [{ removeViewBox: false }],
-              },
-            },
-          },
-        ],
-      },
-      { test: /\.json$/, loader: "json-loader" },
-      {
-        test: /\.css$/i,
-        use: ["style-loader", "css-loader"],
-      },
-      {
-        test: /\.s[ac]ss$/i,
-        use: [
-          // Creates `style` nodes from JS strings
-          "style-loader",
-          // Translates CSS into CommonJS
-          {
-            loader: "css-loader",
-            options: {
-              url: {
-                filter: (url, resourcePath) => {
-                  // resourcePath - path to css file
-
-                  // Don't handle `/static` urls
-                  if (url.startsWith("/static") || url.startsWith("data:")) {
-                    return false;
-                  }
-
-                  return true;
-                },
-              },
-            },
-          },
-          // Compiles Sass to CSS
-          "sass-loader",
-        ],
-      },
-
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
@@ -93,4 +33,15 @@ module.exports = {
       },
     ],
   },
+};
+
+module.exports = (env, argv) => {
+  if (argv.mode === "production") {
+    process.env.NODE_ENV = "production";
+    config.mode = "production";
+  } else {
+    process.env.NODE_ENV = "development";
+  }
+
+  return config;
 };
