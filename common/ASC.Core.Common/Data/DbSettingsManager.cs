@@ -37,12 +37,12 @@ namespace ASC.Core.Data
         {
             Cache = cache;
             Notify = notify;
-            Notify.Subscribe((i) => Cache.Remove(i.Key), CacheNotifyAction.Remove);
+            Notify.Subscribe((i) => Cache.Remove(i.Key), ASC.Common.Caching.CacheNotifyAction.Remove);
         }
 
         public void Remove(string key)
         {
-            Notify.Publish(new SettingsCacheItem { Key = key }, CacheNotifyAction.Remove);
+            Notify.Publish(new SettingsCacheItem { Key = key }, ASC.Common.Caching.CacheNotifyAction.Remove);
         }
     }
 

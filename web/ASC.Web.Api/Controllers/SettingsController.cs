@@ -2260,7 +2260,7 @@ namespace ASC.Api.Settings
 
             foreach (var tenant in tenants)
             {
-                CacheDeleteSchedule.Publish(new DeleteSchedule() { TenantId = tenant.TenantId }, CacheNotifyAction.Insert);
+                CacheDeleteSchedule.Publish(new DeleteSchedule() { TenantId = tenant.TenantId }, Common.Caching.CacheNotifyAction.Insert);
             }
 
             var settings = EncryptionSettingsHelper.Load();

@@ -170,7 +170,7 @@ namespace ASC.Core.Common.Configuration
                 this[providerProp.Key] = null;
             }
 
-            Cache.Publish(new ConsumerCacheItem() { Name = this.Name }, CacheNotifyAction.Remove);
+            Cache.Publish(new ConsumerCacheItem() { Name = this.Name }, ASC.Common.Caching.CacheNotifyAction.Remove);
         }
 
         public bool Contains(KeyValuePair<string, string> item)

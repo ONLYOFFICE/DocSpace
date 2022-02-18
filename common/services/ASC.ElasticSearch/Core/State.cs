@@ -1,9 +1,7 @@
-﻿namespace ASC.ElasticSearch.Core
-{
-    public class State
-    {
-        public string Indexing { get; set; }
+﻿namespace ASC.ElasticSearch.Core;
 
-        public DateTime? LastIndexed { get; set; }
-    }
+public class State
+{
+    public string Indexing { get; set; }
+    public DateTime? LastIndexed { get; set; }
 }

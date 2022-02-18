@@ -23,10 +23,6 @@
  *
 */
 
-namespace ASC.Common.Security.Authentication
-{
-    public interface IAccount : ISubject, ICloneable
-    {
+namespace ASC.Common.Security.Authentication;
 
-    }
-}
+public interface IAccount : ISubject, ICloneable { }

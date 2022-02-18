@@ -17,11 +17,11 @@
 namespace ASC.Common.Caching;
 
 [Singletone]
-public class RedisCache<T> : ICacheNotify<T> where T : IMessage<T>, new()
+public class RedisCacheNotify<T> : ICacheNotify<T> where T : IMessage<T>, new()
 {
     private readonly IRedisDatabase _redis;
 
-    public RedisCache(IRedisCacheClient redisCacheClient)
+    public RedisCacheNotify(IRedisCacheClient redisCacheClient)
     {
         _redis = redisCacheClient.GetDbFromConfiguration();
     }
@@ -53,9 +53,9 @@ public class RedisCache<T> : ICacheNotify<T> where T : IMessage<T>, new()
           .GetResult();
     }
 
-    private string GetChannelName(CacheNotifyAction cacheNotifyAction)
+    private string GetChannelName(CacheNotifyAction action)
     {
-        return $"asc:channel:{cacheNotifyAction}:{typeof(T).FullName}".ToLower();
+        return $"asc:channel:{action}:{typeof(T).FullName}".ToLower();
     }
 
     class RedisCachePubSubItem<T0>
@@ -65,6 +65,3 @@ public class RedisCache<T> : ICacheNotify<T> where T : IMessage<T>, new()
         public CacheNotifyAction Action { get; set; }
     }
 }
-
-
-

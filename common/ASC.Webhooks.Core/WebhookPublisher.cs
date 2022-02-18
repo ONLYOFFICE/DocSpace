@@ -42,7 +42,7 @@
                     Id = DbId
                 };
 
-                WebhookNotify.Publish(request, CacheNotifyAction.Update);
+                WebhookNotify.Publish(request, Common.Caching.CacheNotifyAction.Update);
             }
         }
     }

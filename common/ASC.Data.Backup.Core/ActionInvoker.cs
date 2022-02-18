@@ -23,54 +23,57 @@
  *
 */
 
-namespace ASC.Data.Backup
+namespace ASC.Data.Backup;
+
+public static class ActionInvoker
 {
-    public static class ActionInvoker
+    public static void Try(
+        Action action,
+        int maxAttempts,
+        Action<Exception> onFailure = null,
+        Action<Exception> onAttemptFailure = null,
+        int sleepMs = 1000,
+        bool isSleepExponential = true)
     {
-        public static void Try(
-            Action action,
-            int maxAttempts,
-            Action<Exception> onFailure = null,
-            Action<Exception> onAttemptFailure = null,
-            int sleepMs = 1000,
-            bool isSleepExponential = true)
+        Try(state => action(), null, maxAttempts, onFailure, onAttemptFailure, sleepMs, isSleepExponential);
+    }
+
+    public static void Try(
+        Action<object> action,
+        object state,
+        int maxAttempts,
+        Action<Exception> onFailure = null,
+        Action<Exception> onAttemptFailure = null,
+        int sleepMs = 1000,
+        bool isSleepExponential = true)
+    {
+        if (action == null)
         {
-            Try(state => action(), null, maxAttempts, onFailure, onAttemptFailure, sleepMs, isSleepExponential);
+            throw new ArgumentNullException(nameof(action));
         }
 
-        public static void Try(
-            Action<object> action,
-            object state,
-            int maxAttempts,
-            Action<Exception> onFailure = null,
-            Action<Exception> onAttemptFailure = null,
-            int sleepMs = 1000,
-            bool isSleepExponential = true)
+        var countAttempts = 0;
+        while (countAttempts++ < maxAttempts)
         {
-            if (action == null)
-                throw new ArgumentNullException(nameof(action));
-
-            var countAttempts = 0;
-            while (countAttempts++ < maxAttempts)
+            try
             {
-                try
+                action(state);
+                return;
+            }
+            catch (Exception error)
+            {
+                if (countAttempts < maxAttempts)
                 {
-                    action(state);
-                    return;
-                }
-                catch (Exception error)
-                {
-                    if (countAttempts < maxAttempts)
-                    {
-                        onAttemptFailure?.Invoke(error);
+                    onAttemptFailure?.Invoke(error);
 
-                        if (sleepMs > 0)
-                            Thread.Sleep(isSleepExponential ? sleepMs * countAttempts : sleepMs);
-                    }
-                    else
+                    if (sleepMs > 0)
                     {
-                        onFailure?.Invoke(error);
+                        Thread.Sleep(isSleepExponential ? sleepMs * countAttempts : sleepMs);
                     }
+                }
+                else
+                {
+                    onFailure?.Invoke(error);
                 }
             }
         }
