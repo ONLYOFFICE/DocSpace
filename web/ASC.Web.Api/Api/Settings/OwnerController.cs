@@ -4,71 +4,35 @@ namespace ASC.Web.Api.Controllers.Settings;
 
 public class OwnerController: BaseSettingsController
 {
-    public OwnerController(IOptionsMonitor<ILog> option,
-    MessageService messageService,
-    StudioNotifyService studioNotifyService,
-    ApiContext apiContext,
-    UserManager userManager,
-    TenantManager tenantManager,
-    TenantExtra tenantExtra,
-    TenantStatisticsProvider tenantStatisticsProvider,
-    AuthContext authContext,
-    CookiesManager cookiesManager,
-    WebItemSecurity webItemSecurity,
-    StudioNotifyHelper studioNotifyHelper,
-    LicenseReader licenseReader,
-    PermissionContext permissionContext,
-    SettingsManager settingsManager,
-    TfaManager tfaManager,
-    WebItemManager webItemManager,
-    WebItemManagerSecurity webItemManagerSecurity,
-    TenantInfoSettingsHelper tenantInfoSettingsHelper,
-    TenantWhiteLabelSettingsHelper tenantWhiteLabelSettingsHelper,
-    StorageHelper storageHelper,
-    TenantLogoManager tenantLogoManager,
-    TenantUtil tenantUtil,
-    CoreBaseSettings coreBaseSettings,
-    CommonLinkUtility commonLinkUtility,
-    ColorThemesSettingsHelper colorThemesSettingsHelper,
-    IConfiguration configuration,
-    SetupInfo setupInfo,
-    BuildVersion buildVersion,
-    DisplayUserSettingsHelper displayUserSettingsHelper,
-    StatisticManager statisticManager,
-    IPRestrictionsService iPRestrictionsService,
-    CoreConfiguration coreConfiguration,
-    MessageTarget messageTarget,
-    StudioSmsNotificationSettingsHelper studioSmsNotificationSettingsHelper,
-    CoreSettings coreSettings,
-    StorageSettingsHelper storageSettingsHelper,
-    IWebHostEnvironment webHostEnvironment,
-    IServiceProvider serviceProvider,
-    EmployeeWraperHelper employeeWraperHelper,
-    ConsumerFactory consumerFactory,
-    SmsProviderManager smsProviderManager,
-    TimeZoneConverter timeZoneConverter,
-    CustomNamingPeople customNamingPeople,
-    IPSecurity.IPSecurity ipSecurity,
-    IMemoryCache memoryCache,
-    ProviderManager providerManager,
-    FirstTimeTenantSettings firstTimeTenantSettings,
-    ServiceClient serviceClient,
-    TelegramHelper telegramHelper,
-    StorageFactory storageFactory,
-    UrlShortener urlShortener,
-    EncryptionServiceClient encryptionServiceClient,
-    EncryptionSettingsHelper encryptionSettingsHelper,
-    BackupAjaxHandler backupAjaxHandler,
-    ICacheNotify<DeleteSchedule> cacheDeleteSchedule,
-    EncryptionWorker encryptionWorker,
-    PasswordHasher passwordHasher,
-    PaymentManager paymentManager,
-    ASC.Core.Users.Constants constants,
-    InstanceCrypto instanceCrypto,
-    Signature signature,
-    DbWorker dbWorker,
-    IHttpClientFactory clientFactory) : base(option, messageService, studioNotifyService, apiContext, userManager, tenantManager, tenantExtra, tenantStatisticsProvider, authContext, cookiesManager, webItemSecurity, studioNotifyHelper, licenseReader, permissionContext, settingsManager, tfaManager, webItemManager, webItemManagerSecurity, tenantInfoSettingsHelper, tenantWhiteLabelSettingsHelper, storageHelper, tenantLogoManager, tenantUtil, coreBaseSettings, commonLinkUtility, colorThemesSettingsHelper, configuration, setupInfo, buildVersion, displayUserSettingsHelper, statisticManager, iPRestrictionsService, coreConfiguration, messageTarget, studioSmsNotificationSettingsHelper, coreSettings, storageSettingsHelper, webHostEnvironment, serviceProvider, employeeWraperHelper, consumerFactory, smsProviderManager, timeZoneConverter, customNamingPeople, ipSecurity, memoryCache, providerManager, firstTimeTenantSettings, serviceClient, telegramHelper, storageFactory, urlShortener, encryptionServiceClient, encryptionSettingsHelper, backupAjaxHandler, cacheDeleteSchedule, encryptionWorker, passwordHasher, paymentManager, constants, instanceCrypto, signature, dbWorker, clientFactory)
+    private readonly MessageService _messageService;
+    private readonly StudioNotifyService _studioNotifyService;
+    private readonly UserManager _userManager;
+    private readonly TenantManager _tenantManager;
+    private readonly AuthContext _authContext;
+    private readonly PermissionContext _permissionContext;
+    private readonly CommonLinkUtility _commonLinkUtility;
+    private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
+    private readonly MessageTarget _messageTarget;
+
+    public OwnerController(
+        MessageService messageService,
+        StudioNotifyService studioNotifyService,
+        ApiContext apiContext,
+        UserManager userManager,
+        TenantManager tenantManager,
+        AuthContext authContext,
+        PermissionContext permissionContext,
+        WebItemManager webItemManager,
+        DisplayUserSettingsHelper displayUserSettingsHelper,
+        IMemoryCache memoryCache) : base(apiContext, memoryCache, webItemManager)
     {
+        _messageService = messageService;
+        _studioNotifyService = studioNotifyService;
+        _userManager = userManager;
+        _tenantManager = tenantManager;
+        _authContext = authContext;
+        _permissionContext = permissionContext;
+        _displayUserSettingsHelper = displayUserSettingsHelper;
     }
 
     [Create("owner")]

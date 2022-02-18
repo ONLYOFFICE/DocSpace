@@ -15,14 +15,6 @@ public class Startup : BaseStartup
 
         services.AddMemoryCache();
 
-        DIHelper.TryAdd<AuthenticationController>();
-        DIHelper.TryAdd<PhoneController>();
-
-        DIHelper.TryAdd<PortalController>();
-        DIHelper.TryAdd<MobileController>();
-        DIHelper.TryAdd<UserController>();
-
-           
         DIHelper.TryAdd<SettingsController>();
         DIHelper.TryAdd<CustomNavigationController>();
         DIHelper.TryAdd<CustomSchemasController>();
@@ -39,12 +31,11 @@ public class Startup : BaseStartup
         DIHelper.TryAdd<WebhooksController>();
         DIHelper.TryAdd<WhitelabelController>();
 
-        DIHelper.TryAdd<Controllers.Security.SecurityController>();
-        DIHelper.TryAdd<EventsController>();
-        DIHelper.TryAdd<LoginController>();
-
+        DIHelper.TryAdd<AuthenticationController>();
+        DIHelper.TryAdd<Controllers.SecurityController>();
         DIHelper.TryAdd<SmtpSettingsController>();
         DIHelper.TryAdd<ThirdPartyController>();
         DIHelper.TryAdd<ModulesController>();
+        DIHelper.TryAdd<PortalController>();
     }
 }

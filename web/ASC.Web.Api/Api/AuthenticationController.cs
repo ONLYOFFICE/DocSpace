@@ -2,47 +2,46 @@
 using Constants = ASC.Core.Users.Constants;
 using SecurityContext = ASC.Core.SecurityContext;
 
-namespace ASC.Web.Api.Controllers.Authentication;
+namespace ASC.Web.Api.Controllers;
 
 [Scope]
 [DefaultRoute]
 [ApiController]
 [AllowAnonymous]
-[ControllerName("authentication")]
-public class BaseAuthenticationController : ControllerBase
+public class AuthenticationController : ControllerBase
 {
-    internal readonly UserManager _userManager;
-    internal readonly TenantManager _tenantManager;
-    internal readonly SecurityContext _securityContext;
-    internal readonly TenantCookieSettingsHelper _tenantCookieSettingsHelper;
-    internal readonly CookiesManager _cookiesManager;
-    internal readonly PasswordHasher _passwordHasher;
-    internal readonly EmailValidationKeyModelHelper _emailValidationKeyModelHelper;
-    internal readonly ICache _cache;
-    internal readonly SetupInfo _setupInfo;
-    internal readonly MessageService _messageService;
-    internal readonly ProviderManager _providerManager;
-    internal readonly IOptionsSnapshot<AccountLinker> _accountLinker;
-    internal readonly CoreBaseSettings _coreBaseSettings;
-    internal readonly PersonalSettingsHelper _personalSettingsHelper;
-    internal readonly StudioNotifyService _studioNotifyService;
-    internal readonly UserHelpTourHelper _userHelpTourHelper;
-    internal readonly Signature _signature;
-    internal readonly InstanceCrypto _instanceCrypto;
-    internal readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
-    internal readonly MessageTarget _messageTarget;
-    internal readonly StudioSmsNotificationSettingsHelper _studioSmsNotificationSettingsHelper;
-    internal readonly SettingsManager _settingsManager;
-    internal readonly SmsManager _smsManager;
-    internal readonly TfaManager _tfaManager;
-    internal readonly TimeZoneConverter _timeZoneConverter;
-    internal readonly SmsKeyStorage _smsKeyStorage;
-    internal readonly CommonLinkUtility _commonLinkUtility;
-    internal readonly ApiContext _apiContext;
-    internal readonly AuthContext _authContext;
-    internal readonly UserManagerWrapper _userManagerWrapper;
+    private readonly UserManager _userManager;
+    private readonly TenantManager _tenantManager;
+    private readonly SecurityContext _securityContext;
+    private readonly TenantCookieSettingsHelper _tenantCookieSettingsHelper;
+    private readonly CookiesManager _cookiesManager;
+    private readonly PasswordHasher _passwordHasher;
+    private readonly EmailValidationKeyModelHelper _emailValidationKeyModelHelper;
+    private readonly ICache _cache;
+    private readonly SetupInfo _setupInfo;
+    private readonly MessageService _messageService;
+    private readonly ProviderManager _providerManager;
+    private readonly IOptionsSnapshot<AccountLinker> _accountLinker;
+    private readonly CoreBaseSettings _coreBaseSettings;
+    private readonly PersonalSettingsHelper _personalSettingsHelper;
+    private readonly StudioNotifyService _studioNotifyService;
+    private readonly UserHelpTourHelper _userHelpTourHelper;
+    private readonly Signature _signature;
+    private readonly InstanceCrypto _instanceCrypto;
+    private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
+    private readonly MessageTarget _messageTarget;
+    private readonly StudioSmsNotificationSettingsHelper _studioSmsNotificationSettingsHelper;
+    private readonly SettingsManager _settingsManager;
+    private readonly SmsManager _smsManager;
+    private readonly TfaManager _tfaManager;
+    private readonly TimeZoneConverter _timeZoneConverter;
+    private readonly SmsKeyStorage _smsKeyStorage;
+    private readonly CommonLinkUtility _commonLinkUtility;
+    private readonly ApiContext _apiContext;
+    private readonly AuthContext _authContext;
+    private readonly UserManagerWrapper _userManagerWrapper;
 
-    public BaseAuthenticationController(
+    public AuthenticationController(
         UserManager userManager,
         TenantManager tenantManager,
         SecurityContext securityContext,
@@ -106,7 +105,254 @@ public class BaseAuthenticationController : ControllerBase
         _userManagerWrapper = userManagerWrapper;
     }
 
-    internal UserInfo GetUser(AuthDto memberModel, out bool viaEmail)
+
+    [Read]
+    public bool GetIsAuthentificated()
+    {
+        return _securityContext.IsAuthenticated;
+    }
+
+    [Create("{code}", false, order: int.MaxValue)]
+    public AuthenticationTokenData AuthenticateMeFromBodyWithCode([FromBody] AuthDto auth)
+    {
+        return AuthenticateMeWithCode(auth);
+    }
+
+    [Create("{code}", false, order: int.MaxValue)]
+    [Consumes("application/x-www-form-urlencoded")]
+    public AuthenticationTokenData AuthenticateMeFromFormWithCode([FromForm] AuthDto auth)
+    {
+        return AuthenticateMeWithCode(auth);
+    }
+
+    [Create(false)]
+    public AuthenticationTokenData AuthenticateMeFromBody([FromBody] AuthDto auth)
+    {
+        return AuthenticateMe(auth);
+    }
+
+    [Create(false)]
+    [Consumes("application/x-www-form-urlencoded")]
+    public AuthenticationTokenData AuthenticateMeFromForm([FromForm] AuthDto auth)
+    {
+        return AuthenticateMe(auth);
+    }
+
+    [Create("logout")]
+    [Read("logout")]// temp fix
+    public void Logout()
+    {
+        if (_securityContext.IsAuthenticated)
+            _cookiesManager.ResetUserCookie(_securityContext.CurrentAccount.ID);
+
+        _cookiesManager.ClearCookies(CookiesType.AuthKey);
+        _cookiesManager.ClearCookies(CookiesType.SocketIO);
+
+        _securityContext.Logout();
+    }
+
+    [Create("confirm", false)]
+    public ValidationResult CheckConfirmFromBody([FromBody] EmailValidationKeyModel model)
+    {
+        return _emailValidationKeyModelHelper.Validate(model);
+    }
+
+    [Create("confirm", false)]
+    [Consumes("application/x-www-form-urlencoded")]
+    public ValidationResult CheckConfirmFromForm([FromForm] EmailValidationKeyModel model)
+    {
+        return _emailValidationKeyModelHelper.Validate(model);
+    }
+
+    [Authorize(AuthenticationSchemes = "confirm", Roles = "PhoneActivation")]
+    [Create("setphone", false)]
+    public AuthenticationTokenData SaveMobilePhoneFromBody([FromBody] MobileDto model)
+    {
+        return SaveMobilePhone(model);
+    }
+
+    [Authorize(AuthenticationSchemes = "confirm", Roles = "PhoneActivation")]
+    [Create("setphone", false)]
+    [Consumes("application/x-www-form-urlencoded")]
+    public AuthenticationTokenData SaveMobilePhoneFromForm([FromForm] MobileDto model)
+    {
+        return SaveMobilePhone(model);
+    }
+
+    private AuthenticationTokenData SaveMobilePhone(MobileDto model)
+    {
+        _apiContext.AuthByClaim();
+        var user = _userManager.GetUsers(_authContext.CurrentAccount.ID);
+        model.MobilePhone = _smsManager.SaveMobilePhone(user, model.MobilePhone);
+        _messageService.Send(MessageAction.UserUpdatedMobileNumber, _messageTarget.Create(user.ID), user.DisplayUserName(false, _displayUserSettingsHelper), model.MobilePhone);
+
+        return new AuthenticationTokenData
+        {
+            Sms = true,
+            PhoneNoise = SmsSender.BuildPhoneNoise(model.MobilePhone),
+            Expires = new ApiDateTime(_tenantManager, _timeZoneConverter, DateTime.UtcNow.Add(_smsKeyStorage.StoreInterval))
+        };
+    }
+
+    [Create(@"sendsms", false)]
+    public AuthenticationTokenData SendSmsCodeFromBody([FromBody] AuthDto model)
+    {
+        return SendSmsCode(model);
+    }
+
+    [Create(@"sendsms", false)]
+    [Consumes("application/x-www-form-urlencoded")]
+    public AuthenticationTokenData SendSmsCodeFromForm([FromForm] AuthDto model)
+    {
+        return SendSmsCode(model);
+    }
+
+    private AuthenticationTokenData SendSmsCode(AuthDto model)
+    {
+        var user = GetUser(model, out _);
+        _smsManager.PutAuthCode(user, true);
+
+        return new AuthenticationTokenData
+        {
+            Sms = true,
+            PhoneNoise = SmsSender.BuildPhoneNoise(user.MobilePhone),
+            Expires = new ApiDateTime(_tenantManager, _timeZoneConverter, DateTime.UtcNow.Add(_smsKeyStorage.StoreInterval))
+        };
+    }
+
+    private AuthenticationTokenData AuthenticateMe(AuthDto auth)
+    {
+        bool viaEmail;
+        var user = GetUser(auth, out viaEmail);
+
+        if (_studioSmsNotificationSettingsHelper.IsVisibleSettings() && _studioSmsNotificationSettingsHelper.Enable)
+        {
+            if (string.IsNullOrEmpty(user.MobilePhone) || user.MobilePhoneActivationStatus == MobilePhoneActivationStatus.NotActivated)
+                return new AuthenticationTokenData
+                {
+                    Sms = true,
+                    ConfirmUrl = _commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.PhoneActivation)
+                };
+
+            _smsManager.PutAuthCode(user, false);
+
+            return new AuthenticationTokenData
+            {
+                Sms = true,
+                PhoneNoise = SmsSender.BuildPhoneNoise(user.MobilePhone),
+                Expires = new ApiDateTime(_tenantManager, _timeZoneConverter, DateTime.UtcNow.Add(_smsKeyStorage.StoreInterval)),
+                ConfirmUrl = _commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.PhoneAuth)
+            };
+        }
+
+        if (TfaAppAuthSettings.IsVisibleSettings && _settingsManager.Load<TfaAppAuthSettings>().EnableSetting)
+        {
+            if (!TfaAppUserSettings.EnableForUser(_settingsManager, user.ID))
+                return new AuthenticationTokenData
+                {
+                    Tfa = true,
+                    TfaKey = _tfaManager.GenerateSetupCode(user).ManualEntryKey,
+                    ConfirmUrl = _commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.TfaActivation)
+                };
+
+            return new AuthenticationTokenData
+            {
+                Tfa = true,
+                ConfirmUrl = _commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.TfaAuth)
+            };
+        }
+
+        try
+        {
+            var token = _securityContext.AuthenticateMe(user.ID);
+            _cookiesManager.SetCookies(CookiesType.AuthKey, token, auth.Session);
+
+            _messageService.Send(viaEmail ? MessageAction.LoginSuccessViaApi : MessageAction.LoginSuccessViaApiSocialAccount);
+
+            var tenant = _tenantManager.GetCurrentTenant().TenantId;
+            var expires = _tenantCookieSettingsHelper.GetExpiresTime(tenant);
+
+            return new AuthenticationTokenData
+            {
+                Token = token,
+                Expires = new ApiDateTime(_tenantManager, _timeZoneConverter, expires)
+            };
+        }
+        catch
+        {
+            _messageService.Send(user.DisplayUserName(false, _displayUserSettingsHelper), viaEmail ? MessageAction.LoginFailViaApi : MessageAction.LoginFailViaApiSocialAccount);
+            throw new AuthenticationException("User authentication failed");
+        }
+        finally
+        {
+            _securityContext.Logout();
+        }
+    }
+
+    private AuthenticationTokenData AuthenticateMeWithCode(AuthDto auth)
+    {
+        var tenant = _tenantManager.GetCurrentTenant().TenantId;
+        var user = GetUser(auth, out _);
+
+        var sms = false;
+        try
+        {
+            if (_studioSmsNotificationSettingsHelper.IsVisibleSettings() && _studioSmsNotificationSettingsHelper.Enable)
+            {
+                sms = true;
+                _smsManager.ValidateSmsCode(user, auth.Code);
+            }
+            else if (TfaAppAuthSettings.IsVisibleSettings && _settingsManager.Load<TfaAppAuthSettings>().EnableSetting)
+            {
+                if (_tfaManager.ValidateAuthCode(user, auth.Code))
+                {
+                    _messageService.Send(MessageAction.UserConnectedTfaApp, _messageTarget.Create(user.ID));
+                }
+            }
+            else
+            {
+                throw new System.Security.SecurityException("Auth code is not available");
+            }
+
+            var token = _securityContext.AuthenticateMe(user.ID);
+
+            _messageService.Send(sms ? MessageAction.LoginSuccessViaApiSms : MessageAction.LoginSuccessViaApiTfa);
+                
+            var expires = _tenantCookieSettingsHelper.GetExpiresTime(tenant);
+
+            var result = new AuthenticationTokenData
+            {
+                Token = token,
+                Expires = new ApiDateTime(_tenantManager, _timeZoneConverter, expires)
+            };
+
+            if (sms)
+            {
+                result.Sms = true;
+                result.PhoneNoise = SmsSender.BuildPhoneNoise(user.MobilePhone);
+            }
+            else
+            {
+                result.Tfa = true;
+            }
+
+            return result;
+        }
+        catch
+        {
+            _messageService.Send(user.DisplayUserName(false, _displayUserSettingsHelper), sms
+                                                                            ? MessageAction.LoginFailViaApiSms
+                                                                            : MessageAction.LoginFailViaApiTfa,
+                                _messageTarget.Create(user.ID));
+            throw new AuthenticationException("User authentication failed");
+        }
+        finally
+        {
+            _securityContext.Logout();
+        }
+    }
+
+    private UserInfo GetUser(AuthDto memberModel, out bool viaEmail)
     {
         viaEmail = true;
         var action = MessageAction.LoginFailViaApi;

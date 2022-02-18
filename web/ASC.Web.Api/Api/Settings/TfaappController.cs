@@ -4,71 +4,60 @@ namespace ASC.Web.Api.Controllers.Settings;
 
 public class TfaappController : BaseSettingsController
 {
-    public TfaappController(IOptionsMonitor<ILog> option,
+    private readonly MessageService _messageService;
+    private readonly StudioNotifyService _studioNotifyService;
+    private readonly IServiceProvider _serviceProvider;
+    private readonly SmsProviderManager _smsProviderManager;
+    private readonly UserManager _userManager;
+    private readonly AuthContext _authContext;
+    private readonly CookiesManager _cookiesManager;
+    private readonly PermissionContext _permissionContext;
+    private readonly SettingsManager _settingsManager;
+    private readonly TfaManager _tfaManager;
+    private readonly CommonLinkUtility _commonLinkUtility;
+    private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
+    private readonly MessageTarget _messageTarget;
+    private readonly StudioSmsNotificationSettingsHelper _studioSmsNotificationSettingsHelper;
+    private readonly InstanceCrypto _instanceCrypto;
+    private readonly Signature _signature;
+
+    public TfaappController(
         MessageService messageService,
         StudioNotifyService studioNotifyService,
         ApiContext apiContext,
         UserManager userManager,
-        TenantManager tenantManager,
-        TenantExtra tenantExtra,
-        TenantStatisticsProvider tenantStatisticsProvider,
         AuthContext authContext,
         CookiesManager cookiesManager,
-        WebItemSecurity webItemSecurity,
-        StudioNotifyHelper studioNotifyHelper,
-        LicenseReader licenseReader,
         PermissionContext permissionContext,
         SettingsManager settingsManager,
         TfaManager tfaManager,
         WebItemManager webItemManager,
-        WebItemManagerSecurity webItemManagerSecurity,
-        TenantInfoSettingsHelper tenantInfoSettingsHelper,
-        TenantWhiteLabelSettingsHelper tenantWhiteLabelSettingsHelper,
-        StorageHelper storageHelper,
-        TenantLogoManager tenantLogoManager,
-        TenantUtil tenantUtil,
-        CoreBaseSettings coreBaseSettings,
         CommonLinkUtility commonLinkUtility,
-        ColorThemesSettingsHelper colorThemesSettingsHelper,
-        IConfiguration configuration,
-        SetupInfo setupInfo,
-        BuildVersion buildVersion,
         DisplayUserSettingsHelper displayUserSettingsHelper,
-        StatisticManager statisticManager,
-        IPRestrictionsService iPRestrictionsService,
-        CoreConfiguration coreConfiguration,
         MessageTarget messageTarget,
         StudioSmsNotificationSettingsHelper studioSmsNotificationSettingsHelper,
-        CoreSettings coreSettings,
-        StorageSettingsHelper storageSettingsHelper,
-        IWebHostEnvironment webHostEnvironment,
         IServiceProvider serviceProvider,
-        EmployeeWraperHelper employeeWraperHelper,
-        ConsumerFactory consumerFactory,
         SmsProviderManager smsProviderManager,
-        TimeZoneConverter timeZoneConverter,
-        CustomNamingPeople customNamingPeople,
-        IPSecurity.IPSecurity ipSecurity,
         IMemoryCache memoryCache,
-        ProviderManager providerManager,
-        FirstTimeTenantSettings firstTimeTenantSettings,
-        ServiceClient serviceClient,
-        TelegramHelper telegramHelper,
-        StorageFactory storageFactory,
-        UrlShortener urlShortener,
-        EncryptionServiceClient encryptionServiceClient,
-        EncryptionSettingsHelper encryptionSettingsHelper,
-        BackupAjaxHandler backupAjaxHandler,
-        ICacheNotify<DeleteSchedule> cacheDeleteSchedule,
-        EncryptionWorker encryptionWorker,
-        PasswordHasher passwordHasher,
-        PaymentManager paymentManager,
-        Constants constants,
         InstanceCrypto instanceCrypto,
-        Signature signature,
-        DbWorker dbWorker,
-        IHttpClientFactory clientFactory) : base(option, messageService, studioNotifyService, apiContext, userManager, tenantManager, tenantExtra, tenantStatisticsProvider, authContext, cookiesManager, webItemSecurity, studioNotifyHelper, licenseReader, permissionContext, settingsManager, tfaManager, webItemManager, webItemManagerSecurity, tenantInfoSettingsHelper, tenantWhiteLabelSettingsHelper, storageHelper, tenantLogoManager, tenantUtil, coreBaseSettings, commonLinkUtility, colorThemesSettingsHelper, configuration, setupInfo, buildVersion, displayUserSettingsHelper, statisticManager, iPRestrictionsService, coreConfiguration, messageTarget, studioSmsNotificationSettingsHelper, coreSettings, storageSettingsHelper, webHostEnvironment, serviceProvider, employeeWraperHelper, consumerFactory, smsProviderManager, timeZoneConverter, customNamingPeople, ipSecurity, memoryCache, providerManager, firstTimeTenantSettings, serviceClient, telegramHelper, storageFactory, urlShortener, encryptionServiceClient, encryptionSettingsHelper, backupAjaxHandler, cacheDeleteSchedule, encryptionWorker, passwordHasher, paymentManager, constants, instanceCrypto, signature, dbWorker, clientFactory)
+        Signature signature) : base(apiContext, memoryCache, webItemManager)
     {
+        _serviceProvider = serviceProvider;
+        _smsProviderManager = smsProviderManager;
+        _messageService = messageService;
+        _studioNotifyService = studioNotifyService;
+        _userManager = userManager;
+        _authContext = authContext;
+        _cookiesManager = cookiesManager;
+        _permissionContext = permissionContext;
+        _settingsManager = settingsManager;
+        _tfaManager = tfaManager;
+        _commonLinkUtility = commonLinkUtility;
+        _displayUserSettingsHelper = displayUserSettingsHelper;
+        _messageTarget = messageTarget;
+        _studioSmsNotificationSettingsHelper = studioSmsNotificationSettingsHelper;
+        _instanceCrypto = instanceCrypto;
+        _signature = signature;
     }
 
     [Read("tfaapp")]

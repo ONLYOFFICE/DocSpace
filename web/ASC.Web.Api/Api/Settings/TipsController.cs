@@ -4,71 +4,32 @@ namespace ASC.Web.Api.Controllers.Settings;
 
 public class TipsController: BaseSettingsController
 {
-    public TipsController(IOptionsMonitor<ILog> option,
-    MessageService messageService,
-    StudioNotifyService studioNotifyService,
-    ApiContext apiContext,
-    UserManager userManager,
-    TenantManager tenantManager,
-    TenantExtra tenantExtra,
-    TenantStatisticsProvider tenantStatisticsProvider,
-    AuthContext authContext,
-    CookiesManager cookiesManager,
-    WebItemSecurity webItemSecurity,
-    StudioNotifyHelper studioNotifyHelper,
-    LicenseReader licenseReader,
-    PermissionContext permissionContext,
-    SettingsManager settingsManager,
-    TfaManager tfaManager,
-    WebItemManager webItemManager,
-    WebItemManagerSecurity webItemManagerSecurity,
-    TenantInfoSettingsHelper tenantInfoSettingsHelper,
-    TenantWhiteLabelSettingsHelper tenantWhiteLabelSettingsHelper,
-    StorageHelper storageHelper,
-    TenantLogoManager tenantLogoManager,
-    TenantUtil tenantUtil,
-    CoreBaseSettings coreBaseSettings,
-    CommonLinkUtility commonLinkUtility,
-    ColorThemesSettingsHelper colorThemesSettingsHelper,
-    IConfiguration configuration,
-    SetupInfo setupInfo,
-    BuildVersion buildVersion,
-    DisplayUserSettingsHelper displayUserSettingsHelper,
-    StatisticManager statisticManager,
-    IPRestrictionsService iPRestrictionsService,
-    CoreConfiguration coreConfiguration,
-    MessageTarget messageTarget,
-    StudioSmsNotificationSettingsHelper studioSmsNotificationSettingsHelper,
-    CoreSettings coreSettings,
-    StorageSettingsHelper storageSettingsHelper,
-    IWebHostEnvironment webHostEnvironment,
-    IServiceProvider serviceProvider,
-    EmployeeWraperHelper employeeWraperHelper,
-    ConsumerFactory consumerFactory,
-    SmsProviderManager smsProviderManager,
-    TimeZoneConverter timeZoneConverter,
-    CustomNamingPeople customNamingPeople,
-    IPSecurity.IPSecurity ipSecurity,
-    IMemoryCache memoryCache,
-    ProviderManager providerManager,
-    FirstTimeTenantSettings firstTimeTenantSettings,
-    ServiceClient serviceClient,
-    TelegramHelper telegramHelper,
-    StorageFactory storageFactory,
-    UrlShortener urlShortener,
-    EncryptionServiceClient encryptionServiceClient,
-    EncryptionSettingsHelper encryptionSettingsHelper,
-    BackupAjaxHandler backupAjaxHandler,
-    ICacheNotify<DeleteSchedule> cacheDeleteSchedule,
-    EncryptionWorker encryptionWorker,
-    PasswordHasher passwordHasher,
-    PaymentManager paymentManager,
-    Constants constants,
-    InstanceCrypto instanceCrypto,
-    Signature signature,
-    DbWorker dbWorker,
-    IHttpClientFactory clientFactory) : base(option, messageService, studioNotifyService, apiContext, userManager, tenantManager, tenantExtra, tenantStatisticsProvider, authContext, cookiesManager, webItemSecurity, studioNotifyHelper, licenseReader, permissionContext, settingsManager, tfaManager, webItemManager, webItemManagerSecurity, tenantInfoSettingsHelper, tenantWhiteLabelSettingsHelper, storageHelper, tenantLogoManager, tenantUtil, coreBaseSettings, commonLinkUtility, colorThemesSettingsHelper, configuration, setupInfo, buildVersion, displayUserSettingsHelper, statisticManager, iPRestrictionsService, coreConfiguration, messageTarget, studioSmsNotificationSettingsHelper, coreSettings, storageSettingsHelper, webHostEnvironment, serviceProvider, employeeWraperHelper, consumerFactory, smsProviderManager, timeZoneConverter, customNamingPeople, ipSecurity, memoryCache, providerManager, firstTimeTenantSettings, serviceClient, telegramHelper, storageFactory, urlShortener, encryptionServiceClient, encryptionSettingsHelper, backupAjaxHandler, cacheDeleteSchedule, encryptionWorker, passwordHasher, paymentManager, constants, instanceCrypto, signature, dbWorker, clientFactory)
+    private Tenant Tenant { get { return _apiContext.Tenant; } }
+
+    private readonly AuthContext _authContext;
+    private readonly StudioNotifyHelper _studioNotifyHelper;
+    private readonly SettingsManager _settingsManager;
+    private readonly SetupInfo _setupInfo;
+    private readonly ILog _log;
+    private readonly IHttpClientFactory _clientFactory;
+
+    public TipsController(
+        IOptionsMonitor<ILog> option,
+        ApiContext apiContext,
+        AuthContext authContext,
+        StudioNotifyHelper studioNotifyHelper,
+        SettingsManager settingsManager,
+        WebItemManager webItemManager,
+        SetupInfo setupInfo,
+        IMemoryCache memoryCache,
+        IHttpClientFactory clientFactory) : base(apiContext, memoryCache, webItemManager)
     {
+        _log = option.Get("ASC.Api");
+        _authContext = authContext;
+        _studioNotifyHelper = studioNotifyHelper;
+        _settingsManager = settingsManager;
+        _setupInfo = setupInfo;
+        _clientFactory = clientFactory;
     }
 
     [Update("tips")]

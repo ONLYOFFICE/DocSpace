@@ -4,71 +4,44 @@ namespace ASC.Web.Api.Controllers.Settings;
 
 public class MessageSettingsController: BaseSettingsController
 {
-    public MessageSettingsController(IOptionsMonitor<ILog> option,
+    private Tenant Tenant { get { return _apiContext.Tenant; } }
+
+    private readonly MessageService _messageService;
+    private readonly StudioNotifyService _studioNotifyService;
+    private readonly CustomNamingPeople _customNamingPeople;
+    private readonly IPSecurity.IPSecurity _ipSecurity;
+    private readonly UserManager _userManager;
+    private readonly TenantExtra _tenantExtra;
+    private readonly TenantStatisticsProvider _tenantStatisticsProvider;
+    private readonly PermissionContext _permissionContext;
+    private readonly SettingsManager _settingsManager;
+    private readonly CoreBaseSettings _coreBaseSettings;
+
+    public MessageSettingsController(
         MessageService messageService,
-        StudioNotifyService studioNotifyService, 
-        ApiContext apiContext, 
-        UserManager userManager, 
-        TenantManager tenantManager, 
+        StudioNotifyService studioNotifyService,
+        ApiContext apiContext,
+        UserManager userManager,
         TenantExtra tenantExtra,
         TenantStatisticsProvider tenantStatisticsProvider,
-        AuthContext authContext,
-        CookiesManager cookiesManager, 
-        WebItemSecurity webItemSecurity, 
-        StudioNotifyHelper studioNotifyHelper,
-        LicenseReader licenseReader, 
         PermissionContext permissionContext,
-        SettingsManager settingsManager, 
-        TfaManager tfaManager, 
-        WebItemManager webItemManager, 
-        WebItemManagerSecurity webItemManagerSecurity,
-        TenantInfoSettingsHelper tenantInfoSettingsHelper, 
-        TenantWhiteLabelSettingsHelper tenantWhiteLabelSettingsHelper,
-        StorageHelper storageHelper, 
-        TenantLogoManager tenantLogoManager, 
-        TenantUtil tenantUtil, 
+        SettingsManager settingsManager,
+        WebItemManager webItemManager,
         CoreBaseSettings coreBaseSettings,
-        CommonLinkUtility commonLinkUtility,
-        ColorThemesSettingsHelper colorThemesSettingsHelper,
-        IConfiguration configuration,
-        SetupInfo setupInfo, 
-        BuildVersion buildVersion, 
-        DisplayUserSettingsHelper displayUserSettingsHelper,
-        StatisticManager statisticManager,
-        IPRestrictionsService iPRestrictionsService, 
-        CoreConfiguration coreConfiguration, 
-        MessageTarget messageTarget, 
-        StudioSmsNotificationSettingsHelper studioSmsNotificationSettingsHelper, 
-        CoreSettings coreSettings,
-        StorageSettingsHelper storageSettingsHelper,
-        IWebHostEnvironment webHostEnvironment,
-        IServiceProvider serviceProvider, 
-        EmployeeWraperHelper employeeWraperHelper,
-        ConsumerFactory consumerFactory, 
-        SmsProviderManager smsProviderManager,
-        TimeZoneConverter timeZoneConverter,
-        CustomNamingPeople customNamingPeople, 
+        CustomNamingPeople customNamingPeople,
         IPSecurity.IPSecurity ipSecurity,
-        IMemoryCache memoryCache,
-        ProviderManager providerManager,
-        FirstTimeTenantSettings firstTimeTenantSettings, 
-        ServiceClient serviceClient, 
-        TelegramHelper telegramHelper,
-        StorageFactory storageFactory,
-        UrlShortener urlShortener,
-        EncryptionServiceClient encryptionServiceClient,
-        EncryptionSettingsHelper encryptionSettingsHelper,
-        BackupAjaxHandler backupAjaxHandler,
-        ICacheNotify<DeleteSchedule> cacheDeleteSchedule, 
-        EncryptionWorker encryptionWorker,
-        PasswordHasher passwordHasher,
-        PaymentManager paymentManager, 
-        Constants constants, 
-        InstanceCrypto instanceCrypto, 
-        Signature signature, 
-        DbWorker dbWorker,
-        IHttpClientFactory clientFactory) : base(option, messageService, studioNotifyService, apiContext, userManager, tenantManager, tenantExtra, tenantStatisticsProvider, authContext, cookiesManager, webItemSecurity, studioNotifyHelper, licenseReader, permissionContext, settingsManager, tfaManager, webItemManager, webItemManagerSecurity, tenantInfoSettingsHelper, tenantWhiteLabelSettingsHelper, storageHelper, tenantLogoManager, tenantUtil, coreBaseSettings, commonLinkUtility, colorThemesSettingsHelper, configuration, setupInfo, buildVersion, displayUserSettingsHelper, statisticManager, iPRestrictionsService, coreConfiguration, messageTarget, studioSmsNotificationSettingsHelper, coreSettings, storageSettingsHelper, webHostEnvironment, serviceProvider, employeeWraperHelper, consumerFactory, smsProviderManager, timeZoneConverter, customNamingPeople, ipSecurity, memoryCache, providerManager, firstTimeTenantSettings, serviceClient, telegramHelper, storageFactory, urlShortener, encryptionServiceClient, encryptionSettingsHelper, backupAjaxHandler, cacheDeleteSchedule, encryptionWorker, passwordHasher, paymentManager, constants, instanceCrypto, signature, dbWorker, clientFactory)
+        IMemoryCache memoryCache) : base(apiContext, memoryCache, webItemManager)
     {
+        _customNamingPeople = customNamingPeople;
+        _ipSecurity = ipSecurity;
+        _messageService = messageService;
+        _studioNotifyService = studioNotifyService;
+        _userManager = userManager;
+        _tenantExtra = tenantExtra;
+        _tenantStatisticsProvider = tenantStatisticsProvider;
+        _permissionContext = permissionContext;
+        _settingsManager = settingsManager;
+        _coreBaseSettings = coreBaseSettings;
     }
 
     [Create("messagesettings")]
