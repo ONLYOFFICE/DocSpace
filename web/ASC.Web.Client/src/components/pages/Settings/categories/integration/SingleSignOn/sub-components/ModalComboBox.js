@@ -9,12 +9,12 @@ import StyledInputWrapper from "../styled-containers/StyledInputWrapper";
 const ModalComboBox = ({ FormStore, t }) => {
   const certificateOptions = [
     { key: "signing", label: t("Signing") },
-    { key: "encryption", label: t("Encryption") },
-    { key: "signingAndEncryption", label: t("SigningAndEncryption") },
+    { key: "encrypt", label: t("Encryption") },
+    { key: "signing and encrypt", label: t("SigningAndEncryption") },
   ];
 
   const currentOption = certificateOptions.find(
-    (option) => option.key === FormStore.newSpCertificateUsedFor
+    (option) => option.key === FormStore.sp_action
   );
 
   return (

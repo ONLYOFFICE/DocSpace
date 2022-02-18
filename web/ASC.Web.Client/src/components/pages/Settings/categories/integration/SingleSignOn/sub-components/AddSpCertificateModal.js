@@ -14,10 +14,7 @@ import { addArgument } from "../../../../utils";
 
 const AddSpCertificateModal = ({ FormStore, t }) => {
   const onClose = addArgument(FormStore.onCloseModal, "isSpModalVisible");
-  const onOkClick = (e) => {
-    FormStore.onAddCertificate();
-    onClose(e);
-  };
+  const onSubmit = addArgument(FormStore.addCertificateToForm, "sp");
 
   return (
     <StyledModalDialog
@@ -46,9 +43,9 @@ const AddSpCertificateModal = ({ FormStore, t }) => {
 
         <TextArea
           className="text-area"
-          name="newSpCertificate"
+          name="sp_certificate"
           onChange={FormStore.onTextInputChange}
-          value={FormStore.newSpCertificate}
+          value={FormStore.sp_certificate}
         />
 
         <Text isBold className="text-area-label">
@@ -57,9 +54,9 @@ const AddSpCertificateModal = ({ FormStore, t }) => {
 
         <TextArea
           className="text-area"
-          name="newSpPrivateKey"
+          name="sp_privateKey"
           onChange={FormStore.onTextInputChange}
-          value={FormStore.newSpPrivateKey}
+          value={FormStore.sp_privateKey}
         />
 
         <ModalComboBox FormStore={FormStore} t={t} />
@@ -70,7 +67,7 @@ const AddSpCertificateModal = ({ FormStore, t }) => {
           <Button
             className="ok-button"
             label={t("Common:OKButton")}
-            onClick={onOkClick}
+            onClick={onSubmit}
             primary
             size="big"
           />

@@ -10,9 +10,8 @@ import TextArea from "@appserver/components/textarea";
 import { addArgument } from "../../../../utils";
 
 const AddIdpCertificateModal = ({ FormStore, t }) => {
-  const headerContent = t("NewCertificate");
-
   const onClose = addArgument(FormStore.onCloseModal, "isIdpModalVisible");
+  const onSubmit = addArgument(FormStore.addCertificateToForm, "idp");
 
   return (
     <StyledModalDialog
@@ -21,7 +20,7 @@ const AddIdpCertificateModal = ({ FormStore, t }) => {
       onClose={onClose}
       visible={FormStore.isIdpModalVisible}
     >
-      <ModalDialog.Header>{headerContent}</ModalDialog.Header>
+      <ModalDialog.Header>{t("NewCertificate")}</ModalDialog.Header>
 
       <ModalDialog.Body>
         <Text isBold className="text-area-label">
@@ -30,9 +29,9 @@ const AddIdpCertificateModal = ({ FormStore, t }) => {
 
         <TextArea
           className="text-area"
-          name="newIdpCertificate"
+          name="idp_certificate"
           onChange={FormStore.onTextInputChange}
-          value={FormStore.newIdpCertificate}
+          value={FormStore.idp_certificate}
         />
       </ModalDialog.Body>
 
@@ -41,7 +40,7 @@ const AddIdpCertificateModal = ({ FormStore, t }) => {
           <Button
             className="ok-button"
             label={t("Common:OKButton")}
-            onClick={FormStore.onAddCertificate}
+            onClick={onSubmit}
             primary
             size="big"
           />

@@ -33,8 +33,10 @@ class SsoFormStore {
   sloBinding = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST";
   nameIdFormat = "urn:oasis:names:tc:SAML:2.0:nameid-format:transient";
 
-  newIdpCertificate = "";
-  idpCertificates = [];
+  idp_certificate = "";
+  idp_privateKey = null;
+  idp_action = "signing";
+  idp_certificates = [];
 
   // idpCertificateAdvanced
   idp_decryptAlgorithm = "http://www.w3.org/2001/04/xmlenc#aes128-cbc";
@@ -45,10 +47,10 @@ class SsoFormStore {
   idp_verifyLogoutRequestsSign = false;
   idp_verifyLogoutResponsesSign = false;
 
-  newSpCertificate = "";
-  newSpPrivateKey = "";
-  newSpCertificateUsedFor = "signing";
-  spCertificates = [];
+  sp_certificate = "";
+  sp_privateKey = "";
+  sp_action = "signing";
+  sp_certificates = [];
 
   // spCertificateAdvanced
   // null for some reason and no checkbox
@@ -197,6 +199,46 @@ class SsoFormStore {
       }
     }
   };
+  addCertificateToForm = (e, type) => {
+    const action = this[`${type}_action`];
+    const crt = this[`${type}_certificate`];
+    const key = this[`${type}_privateKey`];
+
+    try {
+      const newCertificate = this.validateCertificate(action, crt, key);
+      this[`${type}_certificates`] = [
+        ...this[`${type}_certificates`],
+        newCertificate,
+      ];
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  validateCertificate = async (action, crt, key) => {
+    const body = JSON.stringify({ action, crt, key });
+    const params = {
+      method: "POST",
+      cors: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body,
+    };
+
+    const response = await fetch("http://jsonplaceholder.typicode.com/posts", {
+      method: "POST",
+      cors: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ some: "object" }),
+    });
+
+    const certificate = await response.json();
+
+    return mockCertificate;
+  };
 
   generateCertificate = async () => {
     const response = await fetch("./generatedCertificate.json");
@@ -206,8 +248,8 @@ class SsoFormStore {
   };
 
   setGeneratedCertificate = (certificateObject) => {
-    this.newSpCertificate = certificateObject.crt;
-    this.newSpPrivateKey = certificateObject.key;
+    this.sp_certificate = certificateObject.crt;
+    this.sp_privateKey = certificateObject.key;
   };
 
   resetForm = () => {
