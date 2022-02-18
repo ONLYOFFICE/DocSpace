@@ -23,9 +23,9 @@
  *
 */
 
-namespace ASC.Feed.Data;
+namespace ASC.Feed.Core;
 
-public class FeedRow : IMapFrom<FeedAggregate>
+public class FeedRow
 {
     public DateTime AggregatedDate { get; set; }
     public IList<Guid> Users { get; set; }
@@ -56,10 +56,5 @@ public class FeedRow : IMapFrom<FeedAggregate>
     {
         Users = new List<Guid>();
         Feed = feed;
-    }
-
-    public void Mapping(Profile profile)
-    {
-        profile.CreateMap<FeedAggregate, FeedRow>().ReverseMap();
     }
 }

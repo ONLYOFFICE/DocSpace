@@ -1,4 +1,4 @@
-namespace ASC.Core.Common.Migrations.MySql.FeedDbContextMySql
+namespace ASC.Feed.Migrations.MySql.FeedDbContextMySql
 {
     public partial class FeedDbContextMySql : Migration
     {

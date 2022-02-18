@@ -30,7 +30,6 @@ public struct FeedFilter
     public int Tenant { get; set; }
     public TimeInterval Time { get; private set; }
 
-
     public FeedFilter(TimeInterval time) : this()
     {
         Time = time;

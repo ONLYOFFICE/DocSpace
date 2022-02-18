@@ -1,6 +1,6 @@
 ﻿namespace ASC.Feed.Models;
 
-public class FeedAggregate : BaseEntity
+public class FeedAggregate : BaseEntity, IMapFrom<FeedRow>
 {
     public string Id { get; set; }
     public int Tenant { get; set; }

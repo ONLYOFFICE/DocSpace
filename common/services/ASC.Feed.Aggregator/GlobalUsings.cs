@@ -6,6 +6,7 @@ global using System.Linq;
 global using ASC.Common;
 global using ASC.Common.Utils;
 global using ASC.Core;
+global using ASC.Feed.Core;
 global using ASC.Feed.Data;
 global using ASC.Web.Core;
 

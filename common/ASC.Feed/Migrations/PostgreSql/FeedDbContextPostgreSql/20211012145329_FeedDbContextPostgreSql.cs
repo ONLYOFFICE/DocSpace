@@ -1,4 +1,4 @@
-namespace ASC.Core.Common.Migrations.PostgreSql.FeedDbContextPostgreSql
+namespace ASC.Feed.Migrations.PostgreSql.FeedDbContextPostgreSql
 {
     public partial class FeedDbContextPostgreSql : Migration
     {
