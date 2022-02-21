@@ -63,8 +63,6 @@ public class EFUserService : IUserService
     internal string DbId;
     private readonly IMapper _mapper;
 
-    public EFUserService() { }
-
     public EFUserService(
         DbContextManager<UserDbContext> userDbContextManager,
         PasswordHasher passwordHasher,

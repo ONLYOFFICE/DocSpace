@@ -67,8 +67,6 @@ public class DbTenantService : ITenantService
     internal Lazy<UserDbContext> LazyUserDbContext;
     private readonly IMapper _mapper;
 
-    public DbTenantService() { }
-
     public DbTenantService(
         DbContextManager<TenantDbContext> dbContextManager,
         DbContextManager<UserDbContext> DbContextManager,
