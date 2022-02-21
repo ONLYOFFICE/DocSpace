@@ -1,98 +1,80 @@
 import React, { useCallback } from "react";
 import { FixedSizeList as List } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
-import ListRow from "./ListRow";
-import Link from "@appserver/components/link";
 import CustomScrollbarsVirtualList from "@appserver/components/scrollbar/custom-scrollbars-virtual-list";
 import TrashIcon from "../../../../../../../../../public/images/button.trash.react.svg";
-import ContextMenuButton from "@appserver/components/context-menu-button";
+import { StyledBackupList } from "../StyledBackup";
+import { ReactSVG } from "react-svg";
+import Text from "@appserver/components/text";
+import RadioButton from "@appserver/components/radio-button";
+
 const BackupListBody = ({
-  displayType,
   filesList,
-  onDeleteClick,
-  onRestoreClick,
-  t,
+  onDeleteBackup,
+  onSelectFile,
+  selectedFileIndex,
 }) => {
+  const isFileChecked = useCallback(
+    (index) => {
+      return index === selectedFileIndex;
+    },
+    [selectedFileIndex]
+  );
+
   const Item = ({ index, style }) => {
     const file = filesList[index];
+    const fileId = file.id;
     const fileName = file.fileName;
-    const fileExst = "gz";
-    const modifyFileName = fileName.substring(0, fileName.indexOf("gz"));
-
-    const getContextBackupOptions = useCallback(() => {
-      return [
-        {
-          "data-index": `${index}`,
-          key: "restore-backup",
-          label: t("RestoreBackup"),
-          onClick: onRestoreClick,
-        },
-        {
-          "data-index": `${index}`,
-          key: "delete-backup",
-          label: t("Common:Delete"),
-          onClick: onDeleteClick,
-        },
-      ];
-    }, [t, onDeleteClick, onRestoreClick]);
+    const isChecked = isFileChecked(index);
 
     return (
       <div style={style}>
-        <ListRow
-          displayType={displayType}
-          index={index}
-          fileName={modifyFileName}
-          fileExst={fileExst}
-        >
-          <div className="backup-list_options">
-            {displayType === "modal" ? (
-              <>
-                <Link
-                  data-index={index}
-                  className="backup-list_restore-link"
-                  onClick={onRestoreClick}
-                >
-                  {t("RestoreBackup")}
-                </Link>
-                <TrashIcon
-                  data-index={index}
-                  className="backup-list_trash-icon"
-                  onClick={onDeleteClick}
-                />
-              </>
-            ) : (
-              <ContextMenuButton
-                className="restore_context-options"
-                directionX="right"
-                iconName="/static/images/vertical-dots.react.svg"
-                size={16}
-                color="#A3A9AE"
-                getData={getContextBackupOptions}
-                isDisabled={false}
+        <StyledBackupList isChecked={isChecked}>
+          <div className="backup-list_item">
+            <ReactSVG
+              src={" /static/images/icons/24/file_archive.svg"}
+              className="backup-list_icon"
+            />
+
+            <Text className="backup-list_full-name">{fileName}</Text>
+
+            <RadioButton
+              fontSize="13px"
+              fontWeight="400"
+              value=""
+              label=""
+              isChecked={isChecked}
+              onClick={onSelectFile}
+              name={`${index}_${fileId}`}
+              className="backup-list-dialog_checked"
+            />
+
+            <div className="backup-list_trash">
+              <TrashIcon
+                className="backup-list_trash-icon"
+                onClick={onDeleteBackup}
               />
-            )}
+            </div>
           </div>
-        </ListRow>
+        </StyledBackupList>
       </div>
     );
   };
   return (
-    <div className="backup-list-row-list">
-      <AutoSizer>
-        {({ height, width }) => (
-          <List
-            height={height}
-            width={width + 8}
-            itemSize={displayType === "aside" ? 56 : 36}
-            itemCount={filesList.length}
-            itemData={filesList}
-            outerElementType={CustomScrollbarsVirtualList}
-          >
-            {Item}
-          </List>
-        )}
-      </AutoSizer>
-    </div>
+    <AutoSizer>
+      {({ height, width }) => (
+        <List
+          height={height}
+          width={width + 8}
+          itemSize={48}
+          itemCount={filesList.length}
+          itemData={filesList}
+          outerElementType={CustomScrollbarsVirtualList}
+        >
+          {Item}
+        </List>
+      )}
+    </AutoSizer>
   );
 };
 
