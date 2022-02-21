@@ -27,8 +27,8 @@ namespace ASC.MessagingSystem.Models;
 
 public class MessageUserData
 {
-    public int TenantId { get; private set; }
-    public Guid UserId { get; private set; }
+    public int TenantId { get; init; }
+    public Guid UserId { get; init; }
 
     public MessageUserData(int tenentId, Guid userId)
     {
