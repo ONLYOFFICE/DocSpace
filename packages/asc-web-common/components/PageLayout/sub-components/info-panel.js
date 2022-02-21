@@ -43,7 +43,8 @@ const InfoPanel = ({ children, isVisible, toggleIsVisible }) => {
         @media ${mobile} {
             bottom: 0;
             height: 80%;
-            max-width: calc(100vw - 32px);
+            width: 100vw;
+            max-width: 100vw;
         }
     `;
 

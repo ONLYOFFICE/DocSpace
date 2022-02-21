@@ -1,4 +1,3 @@
-import Loaders from "@appserver/common/components/Loaders";
 import RectangleLoader from "@appserver/common/components/Loaders/RectangleLoader";
 import { FileType } from "@appserver/common/constants";
 import Link from "@appserver/components/link";
@@ -127,22 +126,6 @@ const InfoPanelBodyContent = ({
     getShareUsers,
 }) => {
     const [item, setItem] = useState({});
-    // title: "",
-    // iconUrl: "",
-    // thumbnailUrl: "",
-    // properties: [{ title: "", content: {} }],
-    // access: {
-    //     owner: {
-    //         img: "",
-    //         link: "",
-    //     },
-    //     others: [
-    //         {
-    //             img: "",
-    //             link: "",
-    //         },
-    //     ],
-    // },
 
     const updateItemsInfo = async (selectedItem) => {
         const displayedItem = {
@@ -194,7 +177,6 @@ const InfoPanelBodyContent = ({
 
         const updateLoadedItemAccess = async (item) => {
             const accesses = await getShareUsers([item.folderId], [item.id]);
-            console.log(accesses);
 
             const result = {
                 owner: {},
@@ -241,8 +223,6 @@ const InfoPanelBodyContent = ({
     };
 
     const getItemProperties = (item) => {
-        console.log(item);
-
         const styledLink = (text, href) => (
             <Link className="property-content" href={href} isHovered={true}>
                 {text}
@@ -366,104 +346,88 @@ const InfoPanelBodyContent = ({
 
     return (
         <StyledInfoRoomBody>
-            {!selectedItem ? (
+            {!Object.keys(item).length ? (
                 <div className="no-item">
                     <h4>Select an item to display it's info</h4>
                 </div>
             ) : (
                 <>
-                    {item.title && (
-                        <>
-                            <StyledItemTitle>
-                                <ReactSVG className="icon" src={item.iconUrl} />
-                                <Text
-                                    className="text"
-                                    fontWeight={600}
-                                    fontSize="16px"
-                                >
-                                    {item.title}
+                    <StyledItemTitle>
+                        <ReactSVG className="icon" src={item.iconUrl} />
+                        <Text className="text" fontWeight={600} fontSize="16px">
+                            {item.title}
+                        </Text>
+                    </StyledItemTitle>
+
+                    {item.thumbnailUrl && (
+                        <StyledItemThumbnail>
+                            <img src={item.thumbnailUrl} alt="" />
+                        </StyledItemThumbnail>
+                    )}
+
+                    <StyledItemSubtitle>
+                        <Text fontWeight="600" fontSize="14px" color="#000000">
+                            System Properties
+                        </Text>
+                    </StyledItemSubtitle>
+
+                    <StyledItemProperties>
+                        {item.properties.map((p) => (
+                            <div key={p.title} className="property">
+                                <Text className="property-title">
+                                    {p.title}
                                 </Text>
-                            </StyledItemTitle>
+                                {p.content}
+                            </div>
+                        ))}
+                    </StyledItemProperties>
 
-                            {"thumbnailUrl" in selectedItem && (
-                                <StyledItemThumbnail>
-                                    <img src={item.thumbnailUrl} alt="" />
-                                </StyledItemThumbnail>
-                            )}
+                    <StyledItemSubtitle>
+                        <Text fontWeight="600" fontSize="14px" color="#000000">
+                            Who has access
+                        </Text>
+                    </StyledItemSubtitle>
 
-                            <StyledItemSubtitle>
-                                <Text
-                                    fontWeight="600"
-                                    fontSize="14px"
-                                    color="#000000"
-                                >
-                                    System Properties
-                                </Text>
-                            </StyledItemSubtitle>
+                    <StyledItemAccess>
+                        <StyleditemAccessUser>
+                            <div
+                                data-for="access-user-tooltip"
+                                data-tip={item.access.owner.name}
+                            >
+                                <a href={item.access.owner.link}>
+                                    <img src={item.access.owner.img} />
+                                </a>
+                            </div>
+                        </StyleditemAccessUser>
 
-                            <StyledItemProperties>
-                                {item.properties.map((p) => (
-                                    <div key={p.title} className="property">
-                                        <Text className="property-title">
-                                            {p.title}
-                                        </Text>
-                                        {p.content}
-                                    </div>
-                                ))}
-                            </StyledItemProperties>
+                        {item.access.others.length ? (
+                            <div className="divider"></div>
+                        ) : null}
 
-                            <StyledItemSubtitle>
-                                <Text
-                                    fontWeight="600"
-                                    fontSize="14px"
-                                    color="#000000"
-                                >
-                                    Who has access
-                                </Text>
-                            </StyledItemSubtitle>
-
-                            <StyledItemAccess>
+                        {item.access.others.map((user) => (
+                            <div key={user.key}>
                                 <StyleditemAccessUser>
                                     <div
                                         data-for="access-user-tooltip"
-                                        data-tip={item.access.owner.name}
+                                        data-tip={user.name}
                                     >
-                                        <a href={item.access.owner.link}>
-                                            <img src={item.access.owner.img} />
+                                        <a href={user.link}>
+                                            <img src={user.img} />
                                         </a>
                                     </div>
                                 </StyleditemAccessUser>
+                            </div>
+                        ))}
+                    </StyledItemAccess>
 
-                                {item.access.others.length ? (
-                                    <div className="divider"></div>
-                                ) : null}
-
-                                {item.access.others.map((user) => (
-                                    <div key={user.key}>
-                                        <StyleditemAccessUser>
-                                            <div
-                                                data-for="access-user-tooltip"
-                                                data-tip={user.name}
-                                            >
-                                                <a href={user.link}>
-                                                    <img src={user.img} />
-                                                </a>
-                                            </div>
-                                        </StyleditemAccessUser>
-                                    </div>
-                                ))}
-                            </StyledItemAccess>
-
-                            <Tooltip
-                                id="access-user-tooltip"
-                                getContent={(dataTip) =>
-                                    dataTip ? (
-                                        <Text fontSize="13px">{dataTip}</Text>
-                                    ) : null
-                                }
-                            />
-                        </>
-                    )}
+                    <Tooltip
+                        id="access-user-tooltip"
+                        getContent={(dataTip) =>
+                            dataTip ? (
+                                <Text fontSize="13px">{dataTip}</Text>
+                            ) : null
+                        }
+                    />
                 </>
             )}
         </StyledInfoRoomBody>
@@ -471,7 +435,6 @@ const InfoPanelBodyContent = ({
 };
 
 export default inject(({ filesStore, formatsStore }) => {
-    console.log(filesStore);
     const selectedItem = JSON.parse(JSON.stringify(filesStore.bufferSelection));
     const { getFolderInfo, getShareUsers } = filesStore;
 

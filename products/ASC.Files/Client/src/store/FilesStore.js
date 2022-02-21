@@ -1,11 +1,5 @@
 import api from "@appserver/common/api";
-import {
-    AppServerConfig,
-    FileAction,
-    FileType,
-    FilterType,
-    FolderType,
-} from "@appserver/common/constants";
+import { AppServerConfig, FileAction, FileType, FilterType, FolderType } from "@appserver/common/constants";
 import history from "@appserver/common/history";
 import { combineUrl } from "@appserver/common/utils";
 import { updateTempContent } from "@appserver/common/utils";
@@ -513,6 +507,7 @@ class FilesStore {
                 "preview",
                 "view",
                 "make-form",
+                "show-info",
                 "separator0",
                 "sharing-settings",
                 "external-link",
@@ -826,6 +821,7 @@ class FilesStore {
         } else {
             let folderOptions = [
                 "open",
+                "show-info",
                 "separator0",
                 "sharing-settings",
                 "owner-change",
