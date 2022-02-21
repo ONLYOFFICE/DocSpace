@@ -140,3 +140,54 @@ Scenario("Change owner page render test", async ({ I }) => {
     });
   }
 });
+
+Scenario("Activate user page render test", async ({ I }) => {
+  I.mockEndpoint(Endpoints.settings, "settings");
+  I.mockEndpoint(Endpoints.build, "build");
+  I.mockEndpoint(Endpoints.password, "password");
+  I.mockEndpoint(Endpoints.providers, "providers");
+  I.mockEndpoint(Endpoints.confirm, "confirm");
+
+  I.amOnPage("/confirm/Activation");
+
+  I.see("Web Office");
+
+  I.seeElement({
+    react: "TextInput",
+    props: {
+      className: "confirm-row",
+      id: "name",
+    },
+  });
+
+  I.seeElement({
+    react: "TextInput",
+    props: {
+      className: "confirm-row",
+      id: "surname",
+    },
+  });
+
+  I.seeElement({
+    react: "PasswordInput",
+    props: {
+      className: "confirm-row",
+      id: "password",
+    },
+  });
+
+  I.seeElement({
+    react: "Button",
+    props: {
+      className: "confirm-row",
+    },
+  });
+
+  I.saveScreenshot(`6.activate-user.png`);
+  if (!isModel) {
+    I.seeVisualDiff(`6.activate-user.png`, {
+      tolerance: 1,
+      prepareBaseImage: false,
+    });
+  }
+});
