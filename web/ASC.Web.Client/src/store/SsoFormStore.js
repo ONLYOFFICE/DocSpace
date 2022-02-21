@@ -313,6 +313,67 @@ class SsoFormStore {
     if (regExps[type].test(string)) return true;
     else throw new Error(`${type}ErrorMessage`);
   };
+
+  onSubmit = async () => {
+    const body = JSON.stringify({
+      enableSso: true,
+      spLoginLabel: this.spLoginLabel,
+      idpSettings: {
+        entityId: this.entityId,
+        ssoUrl: this.ssoUrl,
+        ssoBinding: this.ssoBinding,
+        sloUrl: this.sloUrl,
+        sloBinding: this.sloBinding,
+        nameIdFormat: this.nameIdFormat,
+      },
+      idpCertificates: this.idp_certificates,
+      idpCertificateAdvanced: {
+        verifyAlgorithm: this.idp_verifyAlgorithm,
+        verifyAuthResponsesSign: this.idp_verifyAuthResponsesSign,
+        verifyLogoutRequestsSign: this.idp_verifyLogoutRequestsSign,
+        verifyLogoutResponsesSign: this.idp_verifyLogoutResponsesSign,
+        decryptAlgorithm: this.idp_decryptAlgorithm,
+        // ?
+        decryptAssertions: false,
+      },
+      spCertificates: this.sp_certificates,
+      spCertificateAdvanced: {
+        decryptAlgorithm: this.sp_decryptAlgorithm,
+        signingAlgorithm: this.sp_signingAlgorithm,
+        signAuthRequests: this.sp_signAuthRequests,
+        signLogoutRequests: this.sp_signLogoutRequests,
+        signLogoutResponses: this.sp_signLogoutResponses,
+        encryptAlgorithm: this.sp_encryptAlgorithm,
+        encryptAssertions: this.sp_encryptAssertions,
+      },
+      fieldMapping: {
+        firstName: this.firstName,
+        lastName: this.lastName,
+        email: this.email,
+        title: this.title,
+        location: this.location,
+        phone: this.phone,
+      },
+      hideAuthPage: this.hideAuthPage,
+    });
+
+    const params = {
+      method: "POST",
+      cors: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body,
+    };
+
+    try {
+      const response = await fetch("./somewhere");
+      if (!response.ok) throw new Error("Some error");
+      console.log("success");
+    } catch (err) {
+      console.log(err);
+    }
+  };
 }
 
 const FormStore = new SsoFormStore();

@@ -2,7 +2,6 @@ import React from "react";
 import { observer } from "mobx-react";
 
 import Box from "@appserver/components/box";
-import Button from "@appserver/components/button";
 import FieldContainer from "@appserver/components/field-container";
 import HelpButton from "@appserver/components/help-button";
 import Text from "@appserver/components/text";
@@ -92,22 +91,6 @@ const FieldMapping = ({ FormStore, t }) => {
           tabIndex={22}
         />
       </FieldContainer>
-
-      <Box alignItems="center" displayProp="flex" flexDirection="row">
-        <Button
-          className="save-button"
-          label={t("Common:SaveButton")}
-          primary
-          size="medium"
-          tabIndex={23}
-        />
-        <Button
-          label={t("ResetSettings")}
-          onClick={FormStore.resetForm}
-          size="medium"
-          tabIndex={24}
-        />
-      </Box>
     </Box>
   );
 };
