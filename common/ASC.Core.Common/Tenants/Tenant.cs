@@ -60,14 +60,24 @@ public class Tenant : IMapFrom<DbTenant>
         Id = id;
     }
 
-    public int Id { get; internal set; }
+    public string AffiliateId { get; set; }
     public string Alias { get; set; }
-    public string MappedDomain { get; set; }
-    public int Version { get; set; }
-    public DateTime VersionChanged { get; set; }
+    public bool Calls { get; set; }
+    public string Campaign { get; set; }
+    public DateTime CreationDateTime { get; internal set; }
     public string HostedRegion { get; set; }
-    public string Name { get; set; }
+    public int Id { get; internal set; }
+    public TenantIndustry Industry { get; set; }
     public string Language { get; set; }
+    public DateTime LastModified { get; set; }
+    public string MappedDomain { get; set; }
+    public string Name { get; set; }
+    public Guid OwnerId { get; set; }
+    public string PartnerId { get; set; }
+    public string PaymentId { get; set; }
+    public bool Spam { get; set; }
+    public TenantStatus Status { get; internal set; }
+    public DateTime StatusChangeDate { get; internal set; }
     public string TimeZone { get; set; }
     public List<string> TrustedDomains
     {
@@ -83,36 +93,71 @@ public class Tenant : IMapFrom<DbTenant>
         }
         set => _domains = value;
     }
+
     public string TrustedDomainsRaw { get; set; }
     public TenantTrustedDomainsType TrustedDomainsType { get; set; }
-    public Guid OwnerId { get; set; }
-    public DateTime CreationDateTime { get; internal set; }
-    public CultureInfo GetCulture() => !string.IsNullOrEmpty(Language) ? CultureInfo.GetCultureInfo(Language.Trim()) : CultureInfo.CurrentCulture;
-    public DateTime LastModified { get; set; }
-    public TenantStatus Status { get; internal set; }
-    public DateTime StatusChangeDate { get; internal set; }
-    public string PartnerId { get; set; }
-    public string AffiliateId { get; set; }
-    public string Campaign { get; set; }
-    public string PaymentId { get; set; }
-    public TenantIndustry Industry { get; set; }
-    public bool Spam { get; set; }
-    public bool Calls { get; set; }
-
-    public void SetStatus(TenantStatus status)
-    {
-        Status = status;
-        StatusChangeDate = DateTime.UtcNow;
-    }
-
+    public int Version { get; set; }
+    public DateTime VersionChanged { get; set; }
     public override bool Equals(object obj)
     {
         return obj is Tenant t && t.Id == Id;
     }
 
+    public CultureInfo GetCulture() => !string.IsNullOrEmpty(Language) ? CultureInfo.GetCultureInfo(Language.Trim()) : CultureInfo.CurrentCulture;
     public override int GetHashCode()
     {
         return Id;
+    }
+
+    public string GetTenantDomain(CoreSettings coreSettings, bool allowMappedDomain = true)
+    {
+        var baseHost = coreSettings.GetBaseDomain(HostedRegion);
+
+        if (string.IsNullOrEmpty(baseHost) && !string.IsNullOrEmpty(HostedRegion))
+        {
+            baseHost = HostedRegion;
+        }
+
+        string result;
+        if (baseHost == "localhost" || Alias == "localhost")
+        {
+            //single tenant on local host
+            Alias = "localhost";
+            result = HostName;
+        }
+        else
+        {
+            result = $"{Alias}.{baseHost}".TrimEnd('.').ToLowerInvariant();
+        }
+
+        if (!string.IsNullOrEmpty(MappedDomain) && allowMappedDomain)
+        {
+            if (MappedDomain.StartsWith("http://", StringComparison.InvariantCultureIgnoreCase))
+            {
+                MappedDomain = MappedDomain.Substring(7);
+            }
+            if (MappedDomain.StartsWith("https://", StringComparison.InvariantCultureIgnoreCase))
+            {
+                MappedDomain = MappedDomain.Substring(8);
+            }
+            result = MappedDomain.ToLowerInvariant();
+        }
+
+        return result;
+    }
+
+    public void Mapping(Profile profile)
+    {
+        profile.CreateMap<DbTenant, Tenant>();
+
+        profile.CreateMap<TenantUserSecurity, Tenant>()
+            .IncludeMembers(src => src.DbTenant);
+    }
+
+    public void SetStatus(TenantStatus status)
+    {
+        Status = status;
+        StatusChangeDate = DateTime.UtcNow;
     }
 
     public override string ToString()
@@ -141,49 +186,5 @@ public class Tenant : IMapFrom<DbTenant>
         {
             TrustedDomains.AddRange(trustedDomains.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries));
         }
-    }
-
-    public string GetTenantDomain(CoreSettings coreSettings, bool allowMappedDomain = true)
-    {
-        var baseHost = coreSettings.GetBaseDomain(HostedRegion);
-
-        if (string.IsNullOrEmpty(baseHost) && !string.IsNullOrEmpty(HostedRegion))
-        {
-            baseHost = HostedRegion;
-        }
-
-        string result;
-        if (baseHost == "localhost" || Alias == "localhost")
-        {
-            //single tenant on local host
-            Alias = "localhost";
-            result = HostName;
-        }
-        else
-        {
-            result = $"{Alias}.{baseHost}".TrimEnd('.').ToLowerInvariant();
-        }
-        if (!string.IsNullOrEmpty(MappedDomain) && allowMappedDomain)
-        {
-            if (MappedDomain.StartsWith("http://", StringComparison.InvariantCultureIgnoreCase))
-            {
-                MappedDomain = MappedDomain.Substring(7);
-            }
-            if (MappedDomain.StartsWith("https://", StringComparison.InvariantCultureIgnoreCase))
-            {
-                MappedDomain = MappedDomain.Substring(8);
-            }
-            result = MappedDomain.ToLowerInvariant();
-        }
-
-        return result;
-    }
-
-    public void Mapping(Profile profile)
-    {
-        profile.CreateMap<DbTenant, Tenant>();
-
-        profile.CreateMap<TenantUserSecurity, Tenant>()
-            .IncludeMembers(src => src.DbTenant);
     }
 }
