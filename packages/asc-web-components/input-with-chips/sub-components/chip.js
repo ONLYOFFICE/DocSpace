@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 import IconButton from "../../icon-button";
 import Tooltip from "../../tooltip";
-import { useClickOutside } from "./use-click-outside";
+import { useClickOutside } from "../../utils/useClickOutside.js";
 
 import { DeleteIcon, WarningIcon } from "../svg";
 
@@ -19,14 +19,18 @@ const Chip = (props) => {
     currentChip,
     isSelected,
     isValid,
-    invalidEmailText = "Invalid email address",
+    invalidEmailText,
     onDelete,
     onDoubleClick,
     onSaveNewChip,
     onClick,
   } = props;
 
-  const [newValue, setNewValue] = useState(value?.value);
+  const [newValue, setNewValue] = useState(
+    value?.value === value?.label
+      ? value?.value
+      : `"${value?.label}" <${value?.value}>`
+  );
   const [chipWidth, setChipWidth] = useState(0);
 
   const tooltipRef = useRef(null);
@@ -47,7 +51,6 @@ const Chip = (props) => {
     if (e.shiftKey) {
       document.getSelection().removeAllRanges();
     }
-
     onClick(value, e.shiftKey);
   };
 
@@ -61,7 +64,6 @@ const Chip = (props) => {
 
   const onBlur = () => {
     onSaveNewChip(value, newValue);
-    onDoubleClick(null);
   };
 
   const onInputKeyDown = (e) => {

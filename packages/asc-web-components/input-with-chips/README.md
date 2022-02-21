@@ -53,6 +53,7 @@ Options have options:
 | ------------------ | :------------: | :------: | :----: | :-----------------------------------------: | -------------------------------------------------- |
 | `options`          | `obj`, `array` |    -     |   -    |                      -                      | Array of objects with chips                        |
 | `placeholder`      |    `string`    |    -     |   -    |       Invite people by name or email        | Placeholder text for the input                     |
+| `clearButtonLabel` |    `string`    |    -     |   -    |                      -                      | The text of the button for cleaning all chips      |
 | `onChange`         |     `func`     |    ✅    |   -    |                      -                      | Will be called when the selected items are changed |
 | `existEmailText`   |    `string`    |    -     |   -    | This email address has already been entered | Warning text when entering an existing email       |
 | `invalidEmailText` |    `string`    |    -     |   -    |            Invalid email address            | Warning text when entering an invalid email        |

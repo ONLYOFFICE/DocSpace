@@ -98,19 +98,26 @@ const StyledChipInput = styled(TextInput)`
 
 const StyledInputWithLink = styled.div`
   position: relative;
-  width: 100%;
-  display: flex;
-  align-items: center;
+
+  display: grid;
+  gap: 8px;
+  grid-template-columns: auto 15%;
+  align-content: space-between;
+  width: calc(100% - 8px);
 
   .textInput {
-    flex: ${(props) => ("1 0" + props.chips > 0 ? "auto" : "100%")};
+    width: calc(100% - 8px);
     padding: 0px;
     margin: 8px 0px 10px 8px;
   }
 
   .link {
-    width: 70px;
-    margin: 10px 8px;
+    text-align: end;
+    margin: 10px 0px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    margin-right: 8px;
   }
 `;
 

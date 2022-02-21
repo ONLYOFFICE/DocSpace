@@ -5,7 +5,7 @@ import Chip from "./sub-components/chip";
 import TextInput from "../text-input";
 import Scrollbar from "../scrollbar";
 import { EmailSettings, parseAddress } from "../utils/email/";
-import { useClickOutside } from "./sub-components/use-click-outside";
+import { useClickOutside } from "../utils/useClickOutside.js";
 import Link from "../link";
 
 import {
@@ -21,7 +21,8 @@ const InputWithChips = ({
   options,
   placeholder,
   onChange,
-  existEmailText = "This email address has already been entered",
+  clearButtonLabel,
+  existEmailText,
   invalidEmailText,
   ...props
 }) => {
@@ -39,7 +40,7 @@ const InputWithChips = ({
   const inputRef = useRef(null);
   const blockRef = useRef(null);
   const scrollbarRef = useRef(null);
-  const chipsCount = useRef(options.length);
+  const chipsCount = useRef(options?.length);
   const selectedChipsCount = useRef(0);
 
   useEffect(() => {
@@ -66,31 +67,22 @@ const InputWithChips = ({
     setValue(e.target.value);
   };
 
-  const onClick = useCallback(
-    (value, isShiftKey) => {
-      if (isShiftKey) {
-        const isExisted = !!selectedChips?.find(
-          (it) => it.value === value.value
-        );
-        return isExisted
-          ? setSelectedChips(
-              selectedChips.filter((it) => it.value != value.value)
-            )
-          : setSelectedChips([value, ...selectedChips]);
-      } else {
-        setSelectedChips([value]);
-      }
-    },
-    [selectedChips]
-  );
+  const onClick = (value, isShiftKey) => {
+    if (isShiftKey) {
+      const isExisted = !!selectedChips?.find((it) => it.value === value.value);
+      return isExisted
+        ? setSelectedChips(
+            selectedChips.filter((it) => it.value != value.value)
+          )
+        : setSelectedChips([value, ...selectedChips]);
+    } else {
+      setSelectedChips([value]);
+    }
+  };
 
-  const onDoubleClick = useCallback(
-    (value) => {
-      setSelectedChips([]);
-      setCurrentChip(value);
-    },
-    [value]
-  );
+  const onDoubleClick = (value) => {
+    setCurrentChip(value);
+  };
 
   const onDelete = useCallback(
     (value) => {
@@ -99,16 +91,47 @@ const InputWithChips = ({
     [chips]
   );
 
+  const tryParseEmail = useCallback(
+    (emailString) => {
+      const cortege = emailString
+        .trim()
+        .split('" <')
+        .map((it) => it.trim());
+
+      if (cortege[1] != undefined) {
+        cortege[0] = cortege[0] + '"';
+        cortege[1] = "<" + cortege[1];
+      } else {
+        cortege[1] = cortege[0];
+      }
+
+      if (cortege.length != 2) return false;
+      let label = cortege[0];
+      if (label[0] != '"' && label[label.length - 1] != '"') return false;
+      label = label.slice(1, -1);
+
+      let email = cortege[1];
+      if (email[0] != "<" && email[email.length - 1] != ">") return false;
+      email = email.slice(1, -1);
+
+      return { label, value: email };
+    },
+    [onEnterPress]
+  );
+
   const onEnterPress = () => {
     if (value.trim().length > 0) {
-      const separators = [",", " ", ", "];
+      const separators = [",", ", "];
       const chipsFromString = value
         .split(new RegExp(separators.join("|"), "g"))
-        .filter((it) => it.trim().length !== 0);
+        .filter((it) => it.trim().length !== 0)
+        .map((it) => (tryParseEmail(it) ? tryParseEmail(it) : it));
 
       if (chipsFromString.length === 1) {
         let isExisted = !!chips.find(
-          (chip) => chip.value === chipsFromString[0]
+          (chip) =>
+            chip.value === chipsFromString[0] ||
+            chip.value === chipsFromString[0]?.value
         );
         setIsExistedOn(isExisted);
         if (isExisted) return;
@@ -116,36 +139,59 @@ const InputWithChips = ({
 
       const filteredChips = chipsFromString
         .filter((it) => {
-          return !chips.find((chip) => chip.value === it);
+          return !chips.find(
+            (chip) => chip.value === it || chip.value === it?.value
+          );
         })
-        .map((it) => ({ label: it, value: it }));
+        .map((it) => ({ label: it?.label ?? it, value: it?.value ?? it }));
 
       setChips([...chips, ...filteredChips]);
       setValue("");
     }
   };
 
-  const checkEmail = (email) => {
-    const emailObj = parseAddress(email, emailSettings);
-    return emailObj.isValid();
-  };
+  const checkEmail = useCallback(
+    (email) => {
+      const emailObj = parseAddress(email, emailSettings);
+      return emailObj.isValid();
+    },
+    [onEnterPress]
+  );
 
   const checkSelected = (value) => {
     return !!selectedChips?.find((item) => item?.value === value?.value);
   };
 
-  const onSaveNewChip = useCallback(
-    (value, newValue) => {
+  const onSaveNewChip = (value, newValue) => {
+    let parsed = tryParseEmail(newValue);
+    if (!parsed) {
       if (newValue && newValue !== value.value) {
-        setChips(
-          chips.map((it) =>
-            it.value === value.value ? { label: newValue, value: newValue } : it
-          )
-        );
+        const newChips = chips.map((it) => {
+          return it.value === value.value
+            ? { label: newValue, value: newValue }
+            : it;
+        });
+        setChips(newChips);
+        setSelectedChips([{ label: newValue, value: newValue }]);
       }
-    },
-    [chips]
-  );
+    } else {
+      if (
+        parsed.value &&
+        (parsed.value !== value.value || parsed.label !== value.label)
+      ) {
+        const newChips = chips.map((it) => {
+          return it.value === value.value ? parsed : it;
+        });
+        setChips(newChips);
+        setSelectedChips([parsed]);
+      }
+    }
+
+    containerRef.current.setAttribute("tabindex", "-1");
+    containerRef.current.focus();
+
+    setCurrentChip(null);
+  };
 
   const onInputKeyDown = (e) => {
     const code = e.code;
@@ -174,21 +220,36 @@ const InputWithChips = ({
   };
 
   const onKeyDown = (e) => {
+    const whiteList = [
+      "Enter",
+      "Escape",
+      "Backspace",
+      "Delete",
+      "ArrowRigth",
+      "ArrowLeft",
+      "ArrowLeft",
+      "ArrowRight",
+      "KeyC",
+    ];
+
     const code = e.code;
 
     const isShiftDown = e.shiftKey;
     const isCtrlDown = e.ctrlKey;
 
-    if (selectedChips.length == 1 && code === "Enter") {
+    if (!whiteList.includes(code) && !isCtrlDown && !isShiftDown) {
+      return;
+    }
+    if (code === "Enter" && selectedChips.length == 1 && !currentChip) {
       e.stopPropagation();
-      const chip = selectedChips[0];
-      setSelectedChips([]);
-      setCurrentChip(chip);
+      setCurrentChip(selectedChips[0]);
       return;
     }
 
     if (code === "Escape") {
-      setSelectedChips([]);
+      setSelectedChips(currentChip ? [currentChip] : []);
+      containerRef.current.setAttribute("tabindex", "0");
+      containerRef.current.focus();
       return;
     }
 
@@ -204,8 +265,8 @@ const InputWithChips = ({
       return;
     }
 
-    if (selectedChips.length > 0) {
-      let chip = "";
+    if (selectedChips.length > 0 && !currentChip) {
+      let chip = null;
 
       if (isShiftDown && code === "ArrowRigth") {
         chip = selectedChips[selectedChips.length - 1];
@@ -213,7 +274,8 @@ const InputWithChips = ({
         chip = selectedChips[0];
       }
 
-      const index = chips.findIndex((it) => it === chip);
+      const index = chips.findIndex((it) => it.value === chip?.value);
+
       switch (code) {
         case "ArrowLeft": {
           if (isShiftDown) {
@@ -258,49 +320,62 @@ const InputWithChips = ({
     }
   };
 
+  const renderChips = () => {
+    return (
+      <StyledAllChips ref={blockRef}>
+        {chips?.map((it) => {
+          return (
+            <Chip
+              key={it?.value}
+              value={it}
+              currentChip={currentChip}
+              isSelected={checkSelected(it)}
+              isValid={checkEmail(it?.value)}
+              invalidEmailText={invalidEmailText}
+              onDelete={onDelete}
+              onDoubleClick={onDoubleClick}
+              onSaveNewChip={onSaveNewChip}
+              onClick={onClick}
+              setSelectedChips={setSelectedChips}
+            />
+          );
+        })}
+      </StyledAllChips>
+    );
+  };
+
+  const renderInput = () => {
+    return (
+      <TextInput
+        value={value}
+        onChange={onInputChange}
+        forwardedRef={inputRef}
+        onKeyDown={onInputKeyDown}
+        placeholder={placeholder}
+        withBorder={false}
+        className="textInput"
+        chips={chips.length}
+      />
+    );
+  };
+
   return (
-    <StyledContent>
+    <StyledContent {...props}>
       <StyledChipGroup onKeyDown={onKeyDown} ref={containerRef} tabindex="-1">
         <StyledChipWithInput length={chips.length}>
           <Scrollbar scrollclass={"scroll"} stype="thumbV" ref={scrollbarRef}>
-            <StyledAllChips ref={blockRef}>
-              {chips?.map((it) => {
-                return (
-                  <Chip
-                    key={it?.value}
-                    value={it}
-                    currentChip={currentChip}
-                    isSelected={checkSelected(it)}
-                    isValid={checkEmail(it?.value)}
-                    onDelete={onDelete}
-                    onDoubleClick={onDoubleClick}
-                    onSaveNewChip={onSaveNewChip}
-                    onClick={onClick}
-                    invalidEmailText={invalidEmailText}
-                  />
-                );
-              })}
-            </StyledAllChips>
+            {renderChips()}
           </Scrollbar>
           <StyledInputWithLink>
             {isExistedOn && <StyledTooltip>{existEmailText}</StyledTooltip>}
-            <TextInput
-              value={value}
-              onChange={onInputChange}
-              forwardedRef={inputRef}
-              onKeyDown={onInputKeyDown}
-              placeholder={placeholder}
-              withBorder={false}
-              className="textInput"
-              chips={chips.length}
-            />
+            {renderInput()}
             <Link
               type="action"
               isHovered={true}
               className="link"
               onClick={onClearList}
             >
-              Clear list
+              {clearButtonLabel}
             </Link>
           </StyledInputWithLink>
         </StyledChipWithInput>
@@ -314,6 +389,8 @@ InputWithChips.propTypes = {
   options: PropTypes.arrayOf(PropTypes.object),
   /** Placeholder text for the input */
   placeholder: PropTypes.string,
+  /** The text that is displayed in the button for cleaning all chips */
+  clearButtonLabel: PropTypes.string,
   /** Warning text when entering an existing email */
   existEmailText: PropTypes.string,
   /** Warning text when entering an invalid email */
@@ -324,6 +401,8 @@ InputWithChips.propTypes = {
 
 InputWithChips.defaultProps = {
   placeholder: "Invite people by name or email",
+  existEmailText: PropTypes.string,
+  invalidEmailText: PropTypes.string,
 };
 
 export default InputWithChips;
