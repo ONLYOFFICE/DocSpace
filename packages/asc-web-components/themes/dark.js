@@ -2024,6 +2024,31 @@ const Dark = {
     },
   },
 
+  newFilterInput: {
+    button: {
+      border: "1px solid #474747",
+      hoverBorder: "1px solid #a3a9ae",
+
+      openBackground: "#a3a9ae",
+
+      openFill: "#eeeeee",
+    },
+
+    filter: {
+      background: "#333333",
+      border: "1px solid #474747",
+      color: "#a3a9ae",
+
+      separatorColor: "#474747",
+
+      selectedItem: {
+        background: "#eeeeee",
+        border: "#eeeeee",
+        color: "#333333",
+      },
+    },
+  },
+
   profileInfo: {
     color: "#858585",
     iconButtonColor: grayMaxLight,

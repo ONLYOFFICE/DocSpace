@@ -27,7 +27,7 @@ const StyledFilterBlock = styled.div`
   display: flex;
   flex-direction: column;
 
-  background: #fff;
+  background: ${(props) => props.theme.newFilterInput.filter.background};
 
   @media ${mobile} {
     ${mobileView}
@@ -46,6 +46,8 @@ const StyledFilterBlock = styled.div`
   }
 `;
 
+StyledFilterBlock.defaultProps = { theme: Base };
+
 const StyledFilterBlockHeader = styled.div`
   height: 53px;
   min-height: 53px;
@@ -56,7 +58,7 @@ const StyledFilterBlockHeader = styled.div`
   box-sizing: border-box;
 
   border-bottom: ${(props) =>
-    props.isSelector ? "none" : "1px solid #eceef1"};
+    props.isSelector ? "none" : props.theme.newFilterInput.filter.border};
 
   display: flex;
   align-items: center;
@@ -70,6 +72,8 @@ const StyledFilterBlockHeader = styled.div`
     cursor: pointer;
   }
 `;
+
+StyledFilterBlockHeader.defaultProps = { theme: Base };
 
 const StyledFilterBlockItem = styled.div`
   padding: ${(props) =>
@@ -114,14 +118,18 @@ const StyledFilterBlockItemSelectorText = styled(Text)`
   font-weight: 600;
   font-size: 13px;
   line-height: 15px;
-  color: #a3a9ae;
+  color: ${(props) => props.theme.newFilterInput.filter.color};
 
   margin-left: 8px;
 `;
 
+StyledFilterBlockItemSelectorText.defaultProps = { theme: Base };
+
 const selectedItemTag = css`
-  background: #265a8f;
-  border-color: #265a8f;
+  background: ${(props) =>
+    props.theme.newFilterInput.filter.selectedItem.background};
+  border-color: ${(props) =>
+    props.theme.newFilterInput.filter.selectedItem.border};
 `;
 
 const StyledFilterBlockItemTag = styled.div`
@@ -132,7 +140,7 @@ const StyledFilterBlockItemTag = styled.div`
   flex-direction: row;
   align-items: center;
 
-  border: 1px solid #eceef1;
+  border: ${(props) => props.theme.newFilterInput.filter.border};
   border-radius: 16px;
 
   box-sizing: border-box;
@@ -146,8 +154,10 @@ const StyledFilterBlockItemTag = styled.div`
   ${(props) => props.isSelected && selectedItemTag}
 `;
 
+StyledFilterBlockItemTag.defaultProps = { theme: Base };
+
 const selectedItemTagText = css`
-  color: #ffffff;
+  color: ${(props) => props.theme.newFilterInput.filter.selectedItem.color};
 `;
 
 const StyledFilterBlockItemTagText = styled(Text)`
@@ -160,13 +170,23 @@ const StyledFilterBlockItemTagText = styled(Text)`
   ${(props) => props.isSelected && selectedItemTagText}
 `;
 
+StyledFilterBlockItemTagText.defaultProps = { theme: Base };
+
 const StyledFilterBlockItemTagIcon = styled.div`
   margin-left: 8px;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  svg {
+    path {
+      fill: ${(props) => props.theme.newFilterInput.filter.selectedItem.color};
+    }
+  }
 `;
+
+StyledFilterBlockItemTagIcon.defaultProps = { theme: Base };
 
 const StyledFilterBlockItemToggle = styled.div`
   width: 100%;
@@ -192,10 +212,12 @@ const StyledFilterBlockItemSeparator = styled.div`
   height: 1px;
   width: 100%;
 
-  background: #eceef1;
+  background: ${(props) => props.theme.newFilterInput.filter.separatorColor};
 
   margin: 2px 0 0 0;
 `;
+
+StyledFilterBlockItemToggleButton.defaultProps = { theme: Base };
 
 const StyledFilterBlockFooter = styled.div`
   position: fixed;
@@ -208,7 +230,7 @@ const StyledFilterBlockFooter = styled.div`
   height: 72px;
   min-height: 72px;
 
-  border-top: 1px solid #eceef1;
+  border-top: ${(props) => props.theme.newFilterInput.filter.border};
 
   box-sizing: border-box;
 
@@ -228,6 +250,8 @@ const StyledFilterBlockFooter = styled.div`
     width: 100vw;
   `}
 `;
+
+StyledFilterBlockFooter.defaultProps = { theme: Base };
 
 const StyledControlContainer = styled.div`
   background: ${(props) => props.theme.catalog.control.background};

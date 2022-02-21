@@ -2022,6 +2022,31 @@ const Base = {
     },
   },
 
+  newFilterInput: {
+    button: {
+      border: "1px solid #d0d5da",
+      hoverBorder: "1px solid #a3a9ae",
+
+      openBackground: "#a3a9ae",
+
+      openFill: "#ffffff",
+    },
+
+    filter: {
+      background: "#ffffff",
+      border: "1px solid #eceef1",
+      color: "#a3a9ae",
+
+      separatorColor: "#eceef1",
+
+      selectedItem: {
+        background: "#265a8f",
+        border: "#265a8f",
+        color: "#ffffff",
+      },
+    },
+  },
+
   profileInfo: {
     color: "#83888d",
     iconButtonColor: black,

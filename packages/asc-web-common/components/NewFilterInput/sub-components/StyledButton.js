@@ -1,3 +1,4 @@
+import { Base } from "@appserver/components/themes";
 import styled, { css } from "styled-components";
 
 const StyledButton = styled.div`
@@ -7,7 +8,7 @@ const StyledButton = styled.div`
 
   position: relative;
 
-  border: 1px solid #d0d5da;
+  border: ${(props) => props.theme.newFilterInput.button.border};
   border-radius: 3px;
 
   box-sizing: border-box;
@@ -24,7 +25,7 @@ const StyledButton = styled.div`
   cursor: pointer;
 
   &:hover {
-    border: 1px solid #a3a9ae;
+    border: ${(props) => props.theme.newFilterInput.button.hoverBorder};
   }
 
   div {
@@ -34,12 +35,13 @@ const StyledButton = styled.div`
   ${(props) =>
     props.isOpen &&
     css`
-      background: #a3a9ae;
+      background: ${(props) =>
+        props.theme.newFilterInput.button.openBackground};
       pointer-events: none;
 
       svg {
         path {
-          fill: #ffffff;
+          fill: ${(props) => props.theme.newFilterInput.button.openFill};
         }
       }
 
@@ -50,5 +52,7 @@ const StyledButton = styled.div`
       }
     `}
 `;
+
+StyledButton.defaultProps = { theme: Base };
 
 export default StyledButton;
