@@ -88,3 +88,23 @@ Scenario("Change phone page render test", async ({ I }) => {
     });
   }
 });
+
+Scenario("Create user page render test", async ({ I }) => {
+  I.mockEndpoint(Endpoints.settings, "settings");
+  I.mockEndpoint(Endpoints.build, "build");
+  I.mockEndpoint(Endpoints.password, "password");
+  I.mockEndpoint(Endpoints.providers, "providers");
+  I.mockEndpoint(Endpoints.confirm, "confirm");
+
+  I.amOnPage("/confirm/LinkInvite?type=LinkInvite&key=EXAMPLEKEY1&emplType=1");
+
+  I.see("Web Office");
+
+  I.saveScreenshot(`4.create-user.png`);
+  if (!isModel) {
+    I.seeVisualDiff(`4.create-user.png`, {
+      tolerance: 1,
+      prepareBaseImage: false,
+    });
+  }
+});
