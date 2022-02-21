@@ -1,0 +1,13 @@
+<service>
+  <id>OnlyofficeUrlShortener.Svc</id>
+  <name>OnlyofficeUrlShortener.Svc</name>
+  <description>This service runs UrlShortener.</description>
+  <executable>node</executable>
+  <arguments>../../ASC.UrlShortener/index.js</arguments>
+  <log mode="roll-by-time">
+  <pattern>dd-MM</pattern>
+  </log>
+  <logpath>../../../Logs</logpath>
+  <delayedAutoStart>true</delayedAutoStart>
+  <onfailure action="restart" delay="1 min" />
+</service>
