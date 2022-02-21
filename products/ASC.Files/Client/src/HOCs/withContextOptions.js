@@ -7,7 +7,6 @@ import { inject, observer } from "mobx-react";
 import React from "react";
 
 import config from "../../package.json";
-import InfoPanelStore from "../store/InfoPanelStore";
 
 export default function withContextOptions(WrappedComponent) {
     class WithContextOptions extends React.Component {
