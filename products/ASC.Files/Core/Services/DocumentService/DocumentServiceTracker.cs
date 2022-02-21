@@ -252,7 +252,8 @@ namespace ASC.Web.Files.Services.DocumentService
                 case TrackerStatus.NotFound:
                 case TrackerStatus.Closed:
                     FileTracker.Remove(fileId);
-                    SocketManager.FilesChangeEditors(fileId, true);
+                    SocketManager.StopEdit(fileId);
+
                     break;
 
                 case TrackerStatus.Editing:
@@ -285,9 +286,7 @@ namespace ASC.Web.Files.Services.DocumentService
             var app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
             if (app == null)
             {
-                File<T> fileStable;
-                fileStable = DaoFactory.GetFileDao<T>().GetFileStable(fileId);
-
+                File<T> fileStable = DaoFactory.GetFileDao<T>().GetFileStable(fileId);
                 docKey = DocumentServiceHelper.GetDocKey(fileStable);
             }
             else
@@ -336,7 +335,8 @@ namespace ASC.Web.Files.Services.DocumentService
             {
                 FileTracker.Remove(fileId, userId: removeUserId);
             }
-            SocketManager.FilesChangeEditors(fileId);
+
+            SocketManager.StartEdit(fileId);
         }
 
         private TrackResponse ProcessSave<T>(T fileId, TrackerData fileData)
@@ -451,7 +451,10 @@ namespace ASC.Web.Files.Services.DocumentService
             }
 
             if (!forcesave)
+            {
                 FileTracker.Remove(fileId);
+                SocketManager.StopEdit(fileId);
+            }
 
             if (file != null)
             {
@@ -461,8 +464,6 @@ namespace ASC.Web.Files.Services.DocumentService
                 if (!forcesave)
                     SaveHistory(file, (fileData.History ?? "").ToString(), DocumentServiceConnector.ReplaceDocumentAdress(fileData.ChangesUrl));
             }
-
-            SocketManager.FilesChangeEditors(fileId, !forcesave);
 
             var result = new TrackResponse { Message = saveMessage };
             return result;

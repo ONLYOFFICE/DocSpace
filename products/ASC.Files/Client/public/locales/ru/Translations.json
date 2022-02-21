@@ -1,4 +1,4 @@
-﻿{
+{
   "AddAccount": "Подключить",
   "ArchivingData": "Архивирование данных",
   "ButtonShareAccess": "Настройка доступа",
@@ -14,6 +14,7 @@
   "DownloadAs": "Скачать как",
   "EncryptedFileSaving": "Сохранение зашифрованного файла",
   "Files": "Файлы",
+  "FileProtected": "Файл защищен с помощью пароля",
   "Folders": "Папки",
   "FolderSelection": "Выбор папки",
   "FolderTitleBoxNet": "Каталог Box",

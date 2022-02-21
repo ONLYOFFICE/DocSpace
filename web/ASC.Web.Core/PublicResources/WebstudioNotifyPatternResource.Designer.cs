@@ -19,7 +19,7 @@ namespace ASC.Web.Core.PublicResources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class WebstudioNotifyPatternResource {
@@ -59,7 +59,7 @@ namespace ASC.Web.Core.PublicResources {
                 resourceCulture = value;
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Blog was created at.
         /// </summary>
@@ -602,11 +602,11 @@ namespace ASC.Web.Core.PublicResources {
                 return ResourceManager.GetString("pattern_dns_change", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///You have just created the ONLYOFFICE portal, your team&apos;s cloud office that would enhance internal cooperation. Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
+        ///You have just created the ONLYOFFICE portal, your team&apos;s cloud office that would enhance public cooperation. Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
         ///
         ///Please, confirm your email:
         ///
@@ -934,11 +934,11 @@ namespace ASC.Web.Core.PublicResources {
                 return ResourceManager.GetString("pattern_enterprise_user_welcome_v10", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///You have just created your corporate web-office, your team&apos;s cloud office that would enhance internal cooperation.  Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
+        ///You have just created your corporate web-office, your team&apos;s cloud office that would enhance public cooperation.  Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
         ///
         ///Please, confirm your email:
         ///
@@ -1258,11 +1258,11 @@ namespace ASC.Web.Core.PublicResources {
                 return ResourceManager.GetString("pattern_migration_success_v115", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///You have just created the ONLYOFFICE portal, your team&apos;s cloud office that would enhance internal cooperation.  Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
+        ///You have just created the ONLYOFFICE portal, your team&apos;s cloud office that would enhance public cooperation.  Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
         ///
         ///Please, confirm your email following the &quot;link&quot;:&quot;$ActivateUrl&quot;.
         ///
@@ -1511,8 +1511,8 @@ namespace ASC.Web.Core.PublicResources {
         
         /// <summary>
         ///   Looks up a localized string similar to Hi there!
-        ///There was an attempt to register a new ONLYOFFICE Personal account using this email. If it was you, we want to inform you that the account already exists — proceed to ONLYOFFICE Personal and log in.
-        ///If you lost your password, you can recover it on password recovery page.
+        ///There was an attempt to register a new &quot;ONLYOFFICE Personal&quot;:&quot;$PortalUrl&quot; account using this email. If it was you, we want to inform you that the account already exists — proceed to ONLYOFFICE Personal and log in.
+        ///If you lost your password, you can recover it on &quot;password recovery page&quot;:&quot;$LinkToRecovery&quot;.
         ///If you didn’t attempt to register a new account, probably someone else did it by mistake. In this case, please ignore this email.
         ///
         ///Have a nice day!
@@ -1947,11 +1947,11 @@ namespace ASC.Web.Core.PublicResources {
                 return ResourceManager.GetString("pattern_restore_started", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///You have just created the ONLYOFFICE portal, your team&apos;s cloud office that would enhance internal cooperation. Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. 
+        ///You have just created the ONLYOFFICE portal, your team&apos;s cloud office that would enhance public cooperation. Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. 
         ///
         ///Please, confirm your email: 
         ///
