@@ -26,9 +26,55 @@
 
 const nconf = require("nconf");
 const path = require("path");
+const fs = require("fs");
 
 nconf.argv()
     .env()
     .file({ file: path.join(__dirname, 'config.json') });
 
+var port = nconf.get("port");
+
+getAndSaveAppsettings();
+
+getAndSaveSql();
+
+nconf.set("port", port);
 module.exports = nconf;
+
+function getAndSaveAppsettings(){
+    var appsettings = nconf.get("appsettings");
+    try{
+        var env = nconf.get("environment");
+        var fileWithEnv = path.join(__dirname, appsettings, 'appsettings.' + env + '.json');
+    
+        fs.accessSync(fileWithEnv);
+        nconf.file({ file: path.join(__dirname, fileWithEnv)});
+    }catch(err) {
+        nconf.file({ file: path.join(__dirname, appsettings, 'appsettings.json') });
+    }
+}
+
+function getAndSaveSql(){
+    var sql = new Map();
+    var connetionString = nconf.get("ConnectionStrings").default.connectionString;
+    var reg = new RegExp("([\\s\\S]+?)=([\\s\\S]+?);|([\\s\\S]+?)=([\\s\\S]+?)$", "g");
+
+    while ((array = reg.exec(connetionString)) !== null) {
+        if(array[1] != null){
+            let key = array[1].toLowerCase();
+            if(key == "user id" || key == "Username"){
+                sql.user = array[2];
+            }
+            if(key == "server"){
+                sql.host = array[2];
+            }
+            if(key == "database"
+            || key == "host"
+            || key == "port"
+            || key == "password"){
+                sql[key] = array[2];
+            }
+        }
+    }
+    nconf.set("sql", sql);
+}
