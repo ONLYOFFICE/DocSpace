@@ -6,6 +6,8 @@ public class MessagesContext : BaseDbContext
 {
     public DbSet<AuditEvent> AuditEvents { get; set; }
     public DbSet<LoginEvent> LoginEvents { get; set; }
+    public DbSet<DbWebstudioSettings> WebstudioSettings { get; set; }
+    public DbSet<DbTenant> Tenants { get; set; }
     public DbSet<User> Users { get; set; }
 
     protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
@@ -27,6 +29,8 @@ public class MessagesContext : BaseDbContext
             .AddAuditEvent()
             .AddLoginEvents()
             .AddUser()
+            .AddWebstudioSettings()
+            .AddDbTenant()
             .AddDbFunction();
     }
 }

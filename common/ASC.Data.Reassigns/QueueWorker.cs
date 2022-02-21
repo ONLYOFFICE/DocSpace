@@ -35,12 +35,11 @@ namespace ASC.Data.Reassigns
 
     public class QueueWorker<T> where T : DistributedTaskProgress
     {
-        protected readonly DistributedTaskQueue Queue;
-
         protected IHttpContextAccessor HttpContextAccessor { get; }
         protected IServiceProvider ServiceProvider { get; }
 
         private readonly object _synchRoot = new object();
+        protected readonly DistributedTaskQueue Queue;
 
         public QueueWorker(
             IHttpContextAccessor httpContextAccessor,
@@ -60,6 +59,7 @@ namespace ASC.Data.Reassigns
         public T GetProgressItemStatus(int tenantId, Guid userId)
         {
             var id = GetProgressItemId(tenantId, userId);
+
             return Queue.GetTask<T>(id);
         }
 
@@ -113,6 +113,7 @@ namespace ASC.Data.Reassigns
             {
                 var result = ServiceProvider.GetService<ReassignProgressItem>();
                 result.Init(tenantId, fromUserId, toUserId, currentUserId, deleteProfile);
+
                 return result;
             }) as ReassignProgressItem;
         }
@@ -135,6 +136,7 @@ namespace ASC.Data.Reassigns
             {
                 var result = ServiceProvider.GetService<RemoveProgressItem>();
                 result.Init(tenantId, user, currentUserId, notify);
+
                 return result;
             }) as RemoveProgressItem;
         }
