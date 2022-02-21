@@ -7,11 +7,11 @@ import ModalDialog from "@appserver/components/modal-dialog";
 import StyledModalDialog from "../styled-containers/StyledModalDialog";
 import Text from "@appserver/components/text";
 import TextArea from "@appserver/components/textarea";
-import { addArgument } from "../../../../utils";
+import { addArguments } from "../../../../utils";
 
 const AddIdpCertificateModal = ({ FormStore, t }) => {
-  const onClose = addArgument(FormStore.onCloseModal, "isIdpModalVisible");
-  const onSubmit = addArgument(FormStore.addCertificateToForm, "idp");
+  const onClose = addArguments(FormStore.onCloseModal, "isIdpModalVisible");
+  const onSubmit = addArguments(FormStore.addCertificateToForm, "idp");
 
   return (
     <StyledModalDialog

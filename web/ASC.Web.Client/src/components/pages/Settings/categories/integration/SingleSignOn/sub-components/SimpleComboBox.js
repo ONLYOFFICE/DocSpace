@@ -5,14 +5,14 @@ import ComboBox from "@appserver/components/combobox";
 import FieldContainer from "@appserver/components/field-container";
 
 import StyledInputWrapper from "../styled-containers/StyledInputWrapper";
-import { addArgument } from "../../../../utils/addArgument";
+import { addArguments } from "../../../../utils/addArguments";
 
 const SimpleComboBox = ({ FormStore, labelText, name, options, tabIndex }) => {
   const currentOption = options.find(
     (option) => option.key === FormStore[name]
   );
 
-  const onSelect = addArgument(FormStore.onComboBoxChange, name);
+  const onSelect = addArguments(FormStore.onComboBoxChange, name);
 
   return (
     <FieldContainer isVertical labelText={labelText}>

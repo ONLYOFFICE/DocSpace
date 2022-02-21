@@ -5,7 +5,7 @@ import Box from "@appserver/components/box";
 import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
 
-import { addArgument } from "../../../../utils/addArgument";
+import { addArguments } from "../../../../utils/addArguments";
 
 const HideButton = ({ FormStore, label, t, isAdditionalParameters }) => {
   const hide = isAdditionalParameters ? "HideAdditionalParameters" : "Hide";
@@ -15,7 +15,7 @@ const HideButton = ({ FormStore, label, t, isAdditionalParameters }) => {
     ? "hide-additional-button"
     : "hide-button";
 
-  const onClick = addArgument(FormStore.onHideClick, label);
+  const onClick = addArguments(FormStore.onHideClick, label);
 
   return (
     <Box

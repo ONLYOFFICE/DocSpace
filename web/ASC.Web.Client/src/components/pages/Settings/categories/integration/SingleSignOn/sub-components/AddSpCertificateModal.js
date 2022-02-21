@@ -10,11 +10,11 @@ import TextArea from "@appserver/components/textarea";
 
 import ModalComboBox from "./ModalComboBox";
 import StyledModalDialog from "../styled-containers/StyledModalDialog";
-import { addArgument } from "../../../../utils";
+import { addArguments } from "../../../../utils";
 
 const AddSpCertificateModal = ({ FormStore, t }) => {
-  const onClose = addArgument(FormStore.onCloseModal, "isSpModalVisible");
-  const onSubmit = addArgument(FormStore.addCertificateToForm, "sp");
+  const onClose = addArguments(FormStore.onCloseModal, "isSpModalVisible");
+  const onSubmit = addArguments(FormStore.addCertificateToForm, "sp");
 
   return (
     <StyledModalDialog
