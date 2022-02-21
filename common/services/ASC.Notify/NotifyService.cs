@@ -1,60 +1,60 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+﻿namespace ASC.Notify;
 
-namespace ASC.Notify;
-
-[Singletone(Additional = typeof(NotifyServiceExtension))]
-public class NotifyService : INotifyService, IDisposable
+[Singletone]
+public class NotifyService : IHostedService
 {
-    private readonly ILog _logger;
-    private readonly ICacheNotify<NotifyMessage> _cacheNotify;
-    private readonly ICacheNotify<NotifyInvoke> _cacheInvoke;
     private readonly DbWorker _db;
+    private readonly ICacheNotify<NotifyInvoke> _cacheInvoke;
+    private readonly ICacheNotify<NotifyMessage> _cacheNotify;
+    private readonly ILog _logger;
     private readonly IServiceScopeFactory _serviceScopeFactory;
+    private readonly NotifyConfiguration _notifyConfiguration;
+    private readonly NotifyServiceCfg _notifyServiceCfg;
 
-    public NotifyService(DbWorker db, IServiceScopeFactory serviceScopeFactory, ICacheNotify<NotifyMessage> cacheNotify, ICacheNotify<NotifyInvoke> cacheInvoke, IOptionsMonitor<ILog> options)
+    public NotifyService(
+        IOptions<NotifyServiceCfg> notifyServiceCfg,
+        DbWorker db,
+        ICacheNotify<NotifyInvoke> cacheInvoke,
+        ICacheNotify<NotifyMessage> cacheNotify,
+        IOptionsMonitor<ILog> options,
+        IServiceScopeFactory serviceScopeFactory,
+        NotifyConfiguration notifyConfiguration)
     {
-        _db = db;
-        _serviceScopeFactory = serviceScopeFactory;
-        _cacheNotify = cacheNotify;
         _cacheInvoke = cacheInvoke;
-        _logger = options.CurrentValue;
+        _cacheNotify = cacheNotify;
+        _db = db;
+        _logger = options.Get("ASC.NotifyService");
+        _notifyConfiguration = notifyConfiguration;
+        _notifyServiceCfg = notifyServiceCfg.Value;
+        _serviceScopeFactory = serviceScopeFactory;
     }
 
-    public void Start()
+    public Task StartAsync(CancellationToken cancellationToken)
     {
+        _logger.Info("Notify Service running.");
+
         _cacheNotify.Subscribe((n) => SendNotifyMessage(n), CacheNotifyAction.InsertOrUpdate);
         _cacheInvoke.Subscribe((n) => InvokeSendMethod(n), CacheNotifyAction.InsertOrUpdate);
+
+        if (0 < _notifyServiceCfg.Schedulers.Count)
+        {
+            InitializeNotifySchedulers();
+        }
+
+        return Task.CompletedTask;
     }
 
-    public void Stop()
+    public Task StopAsync(CancellationToken cancellationToken)
     {
+        _logger.Info("Notify Service is stopping.");
+
         _cacheNotify.Unsubscribe(CacheNotifyAction.InsertOrUpdate);
+        _cacheInvoke.Unsubscribe(CacheNotifyAction.InsertOrUpdate);
+
+        return Task.CompletedTask;
     }
 
-    public void SendNotifyMessage(NotifyMessage notifyMessage)
+    private void SendNotifyMessage(NotifyMessage notifyMessage)
     {
         try
         {
@@ -66,7 +66,7 @@ public class NotifyService : INotifyService, IDisposable
         }
     }
 
-    public void InvokeSendMethod(NotifyInvoke notifyInvoke)
+    private void InvokeSendMethod(NotifyInvoke notifyInvoke)
     {
         var service = notifyInvoke.Service;
         var method = notifyInvoke.Method;
@@ -89,46 +89,22 @@ public class NotifyService : INotifyService, IDisposable
             throw new Exception("Method not found.");
         }
 
-        var scopeClass = scope.ServiceProvider.GetService<NotifyServiceScope>();
-        var (tenantManager, tenantWhiteLabelSettingsHelper, settingsManager) = scopeClass;
+        var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+        var tenantWhiteLabelSettingsHelper = scope.ServiceProvider.GetService<TenantWhiteLabelSettingsHelper>();
+        var settingsManager = scope.ServiceProvider.GetService<SettingsManager>();
+
         tenantManager.SetCurrentTenant(tenant);
         tenantWhiteLabelSettingsHelper.Apply(settingsManager.Load<TenantWhiteLabelSettings>(), tenant);
         methodInfo.Invoke(instance, parameters.ToArray());
     }
 
-    public void Dispose()
+    private void InitializeNotifySchedulers()
     {
-        _cacheNotify.Unsubscribe(CacheNotifyAction.InsertOrUpdate);
-        _cacheInvoke.Unsubscribe(CacheNotifyAction.InsertOrUpdate);
-    }
-}
-
-[Scope]
-public class NotifyServiceScope
-{
-    private readonly TenantManager _tenantManager;
-    private readonly TenantWhiteLabelSettingsHelper _tenantWhiteLabelSettingsHelper;
-    private readonly SettingsManager _settingsManager;
-
-    public NotifyServiceScope(TenantManager tenantManager, TenantWhiteLabelSettingsHelper tenantWhiteLabelSettingsHelper, SettingsManager settingsManager)
-    {
-        _tenantManager = tenantManager;
-        _tenantWhiteLabelSettingsHelper = tenantWhiteLabelSettingsHelper;
-        _settingsManager = settingsManager;
-    }
-
-    public void Deconstruct(out TenantManager tenantManager, out TenantWhiteLabelSettingsHelper tenantWhiteLabelSettingsHelper, out SettingsManager settingsManager)
-    {
-        tenantManager = _tenantManager;
-        tenantWhiteLabelSettingsHelper = _tenantWhiteLabelSettingsHelper;
-        settingsManager = _settingsManager;
-    }
-}
-
-public static class NotifyServiceExtension
-{
-    public static void Register(DIHelper services)
-    {
-        services.TryAdd<NotifyServiceScope>();
+        _notifyConfiguration.Configure();
+        foreach (var pair in _notifyServiceCfg.Schedulers.Where(r => r.MethodInfo != null))
+        {
+            _logger.DebugFormat("Start scheduler {0} ({1})", pair.Name, pair.MethodInfo);
+            pair.MethodInfo.Invoke(null, null);
+        }
     }
 }
