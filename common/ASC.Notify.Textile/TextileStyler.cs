@@ -291,7 +291,7 @@ namespace ASC.Notify.Textile
                 var unsubscribeLink = (string)unsubscribeLinkArgument.Value;
 
                 if (!string.IsNullOrEmpty(unsubscribeLink))
-                    return unsubscribeLink;
+                    return unsubscribeLink + "?unsubscribe=tips";
             }
 
             return GetSiteUnsubscribeLink(message, settings);

@@ -79,5 +79,7 @@
     "UnblockVersion": "Entsperren/Einchecken",
     "UploadToFolder": "In den Ordner hochladen",
     "ViewList": "Liste",
-    "ViewTiles": "Tiles"
+    "ViewTiles": "Tiles",
+    "VersionHistory": "Versionshistorie",
+    "MoveOrCopy": "Verschieben oder kopieren"
 }

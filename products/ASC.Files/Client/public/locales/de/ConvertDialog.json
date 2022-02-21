@@ -4,5 +4,7 @@
   "ConversionTitle": "Das Dokument wird hochgeladen",
   "ConvertAndOpenTitle": "Dokument umwandeln und öffnen",
   "HideMessage": "Diese Nachricht nicht mehr anzeigen.",
-  "SaveOriginalFormatMessage": "Kopie dieser Datei im Originalformat speichern"
+  "SaveOriginalFormatMessage": "Kopie dieser Datei im Originalformat speichern",
+  "ConvertedFileDestination": "Die Dateikopie wird im Ordner <strong>{{folderTitle}}</strong> erstellt",
+  "InfoCreateFileIn": "Die neue Datei '{{fileTitle}}' wurde in '{{folderTitle}}' erstellt"
 }

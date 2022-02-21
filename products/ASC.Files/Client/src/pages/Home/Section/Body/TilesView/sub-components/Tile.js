@@ -9,6 +9,7 @@ import { tablet } from "@appserver/components/utils/device";
 import { isDesktop, isMobile } from "react-device-detect";
 
 import Link from "@appserver/components/link";
+import Loader from "@appserver/components/loader";
 
 const svgLoader = () => <div style={{ width: "96px" }}></div>;
 
@@ -42,6 +43,12 @@ const checkedStyle = css`
 
 const StyledTile = styled.div`
   cursor: ${(props) => (!props.isRecycleBin ? "pointer" : "default")};
+  ${(props) =>
+    props.inProgress &&
+    css`
+      pointer-events: none;
+      /* cursor: wait; */
+    `}
   min-height: 57px;
   box-sizing: border-box;
   width: 100%;
@@ -161,6 +168,10 @@ const StyledTile = styled.div`
     min-width: ${isMobile ? "36px" : "28px"};
   }
 
+  .tile-folder-loader {
+    padding-top: 4px;
+  }
+
   .styled-content {
     padding-left: 10px;
 
@@ -178,6 +189,7 @@ const StyledTile = styled.div`
     ${(props) =>
       !props.dragging &&
       props.isDesktop &&
+      !props.inProgress &&
       css`
         .checkbox {
           opacity: 1;
@@ -214,8 +226,6 @@ const StyledFileTileTop = styled.div`
     bottom: 0;
     margin: auto;
     z-index: 0;
-
-    min-width: 208px;
   }
 
   .temporary-icon > .injected-svg {
@@ -229,6 +239,11 @@ const StyledFileTileBottom = styled.div`
   padding-right: 0;
   height: 56px;
   box-sizing: border-box;
+
+  .tile-file-loader {
+    padding-top: 4px;
+    padding-left: 3px;
+  }
 `;
 
 const StyledContent = styled.div`
@@ -344,6 +359,7 @@ class Tile extends React.PureComponent {
       isRecycleBin,
       item,
       isActive,
+      inProgress,
       isEdit,
     } = this.props;
     const { isFolder, id, fileExst } = item;
@@ -387,25 +403,37 @@ class Tile extends React.PureComponent {
         isRecycleBin={isRecycleBin}
         checked={checked}
         isActive={isActive}
+        inProgress={inProgress}
         isDesktop={isDesktop}
       >
         {isFolder || (!fileExst && id === -1) ? (
           <>
             {renderElement && !(!fileExst && id === -1) && !isEdit && (
-              <div className="file-icon_container">
-                <StyledElement
-                  className="file-icon"
-                  onClick={this.onFileIconClick}
-                >
-                  {element}
-                </StyledElement>
-                <Checkbox
-                  className="checkbox file-checkbox"
-                  isChecked={checked}
-                  isIndeterminate={indeterminate}
-                  onChange={this.changeCheckbox}
-                />
-              </div>
+              <>
+                {!inProgress ? (
+                  <div className="file-icon_container">
+                    <StyledElement
+                      className="file-icon"
+                      onClick={this.onFileIconClick}
+                    >
+                      {element}
+                    </StyledElement>
+
+                    <Checkbox
+                      className="checkbox file-checkbox"
+                      isChecked={checked}
+                      isIndeterminate={indeterminate}
+                      onChange={this.changeCheckbox}
+                    />
+                  </div>
+                ) : (
+                  <Loader
+                    className="tile-folder-loader"
+                    type="oval"
+                    size="16px"
+                  />
+                )}
+              </>
             )}
             <StyledContent
               className="styled-content"
@@ -437,17 +465,27 @@ class Tile extends React.PureComponent {
             </StyledFileTileTop>
             <StyledFileTileBottom>
               {id !== -1 && !isEdit && (
-                <div className="file-icon_container">
-                  <div className="file-icon" onClick={this.onFileIconClick}>
-                    {element}
-                  </div>
-                  <Checkbox
-                    className="file-checkbox"
-                    isChecked={checked}
-                    isIndeterminate={indeterminate}
-                    onChange={this.changeCheckbox}
-                  />
-                </div>
+                <>
+                  {!inProgress ? (
+                    <div className="file-icon_container">
+                      <div className="file-icon" onClick={this.onFileIconClick}>
+                        {element}
+                      </div>
+                      <Checkbox
+                        className="file-checkbox"
+                        isChecked={checked}
+                        isIndeterminate={indeterminate}
+                        onChange={this.changeCheckbox}
+                      />
+                    </div>
+                  ) : (
+                    <Loader
+                      className="tile-file-loader"
+                      type="oval"
+                      size="16px"
+                    />
+                  )}
+                </>
               )}
               <StyledContent
                 className="styled-content"

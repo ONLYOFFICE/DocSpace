@@ -45,12 +45,16 @@ const StyledTableContainer = styled.div`
     border-image-slice: 1;
     border-image-source: linear-gradient(
       to right,
-      #ffffff 24px,
-      #eceef1 24px,
-      #eceef1 calc(100% - 24px),
-      #ffffff calc(100% - 24px)
+      #ffffff 17px,
+      #eceef1 31px,
+      #eceef1 calc(100% - 31px),
+      #ffffff calc(100% - 17px)
     );
     border-top: 0;
+  }
+  .lengthen-header {
+    border-bottom: 1px solid #eceef1;
+    border-image-source: none;
   }
 
   .content-container {
@@ -137,7 +141,8 @@ const StyledTableHeader = styled.div`
 `;
 
 const StyledTableHeaderCell = styled.div`
-  cursor: ${(props) => (props.showIcon ? "pointer" : "default")};
+  cursor: ${(props) =>
+    props.showIcon && props.sortingVisible ? "pointer" : "default"};
 
   .header-container-text-icon {
     height: 8px;
@@ -151,7 +156,7 @@ const StyledTableHeaderCell = styled.div`
       props.sorted &&
       css`
         transform: scale(1, -1);
-        padding: 14px 0 14px 4px;
+        padding: 14px 0 16px 4px;
       `}
   }
 
@@ -203,6 +208,10 @@ const StyledTableRow = styled.div`
         ? `${props.theme.dragAndDrop.acceptBackground} !important`
         : "none"};
   }
+
+  .table-container_row-loader {
+    display: inline-flex;
+  }
 `;
 
 const StyledTableCell = styled.div`
@@ -224,6 +233,8 @@ const StyledTableCell = styled.div`
   }
   .table-container_row-checkbox {
     display: ${(props) => (props.checked ? "flex" : "none")};
+    padding: 12px;
+    margin-left: -12px;
   }
 
   ${(props) =>
