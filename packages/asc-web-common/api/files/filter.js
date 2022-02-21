@@ -213,6 +213,10 @@ class FilesFilter {
     return str;
   };
 
+  getLastPage() {
+    return Math.ceil(this.total / this.pageCount) - 1;
+  }
+
   clone() {
     return new FilesFilter(
       this.page,

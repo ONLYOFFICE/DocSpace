@@ -24,8 +24,6 @@ const commonStyles = css`
   ${(props) => !props.withScroll && `height: 100%;`}
   border-left: none;
 
-  -webkit-user-select: none;
-
   .section-wrapper {
     ${(props) =>
       !props.withScroll &&
@@ -101,7 +99,8 @@ const StyledSpacer = styled.div`
   min-height: 64px;
 
   @media ${tablet} {
-    display: ${(props) => (props.pinned ? "none" : "block")};
+    display: ${(props) =>
+      props.isHomepage || props.pinned ? "none" : "block"};
   }
 `;
 
@@ -138,6 +137,7 @@ class SectionBody extends React.Component {
       withScroll,
       isLoaded,
       isDesktop,
+      isHomepage,
     } = this.props;
 
     const focusProps = autoFocus
@@ -205,7 +205,7 @@ class SectionBody extends React.Component {
             <div className="section-wrapper">
               <div className="section-wrapper-content" {...focusProps}>
                 {children}
-                <StyledSpacer pinned={pinned} />
+                <StyledSpacer pinned={pinned} isHomepage={isHomepage} />
               </div>
             </div>
           )
@@ -232,6 +232,7 @@ SectionBody.propTypes = {
   ]),
   viewAs: PropTypes.string,
   isLoaded: PropTypes.bool,
+  isHomepage: PropTypes.bool,
 };
 
 SectionBody.defaultProps = {
@@ -239,6 +240,7 @@ SectionBody.defaultProps = {
   pinned: false,
   uploadFiles: false,
   withScroll: true,
+  isHomepage: false,
 };
 
 export default inject(({ auth }) => {
