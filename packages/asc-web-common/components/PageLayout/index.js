@@ -35,12 +35,12 @@ const StyledMainBar = styled.div`
   box-sizing: border-box;
   @media ${desktop} {
     margin-left: -24px;
-    max-width: ${(props) => props.width + 40 + "px"};
+    width: 100% + 24px;
   }
 
   @media ${tablet} {
     margin-left: -16px;
-    max-width: ${(props) => props.width + 36 + "px"};
+    width: 100% + 16px;
   }
   ${isMobile &&
   css`
@@ -212,7 +212,6 @@ class PageLayout extends React.Component {
   onScroll = (e) => {
     this.scroll.scrollBy(e.direction[0] * 10, e.direction[1] * 10);
   };
-
   render() {
     const {
       onDrop,
