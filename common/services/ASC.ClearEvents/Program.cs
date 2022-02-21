@@ -40,43 +40,43 @@ builder.Host.ConfigureAppConfiguration((hostContext, config) =>
     var configRoot = config.Build();
     var path = configRoot["pathToConf"];
 
-    if (!Path.IsPathRooted(path))
-        path = Path.GetFullPath(CrossPlatform.PathCombine(hostContext.HostingEnvironment.ContentRootPath, path));
+                    if (!Path.IsPathRooted(path))
+                        path = Path.GetFullPath(CrossPlatform.PathCombine(hostContext.HostingEnvironment.ContentRootPath, path));
 
-    config.SetBasePath(path);
+                    config.SetBasePath(path);
 
 
     config.AddJsonFile("appsettings.json")
-                      .AddEnvironmentVariables()
-                      .AddCommandLine(args)
+                        .AddEnvironmentVariables()
+                        .AddCommandLine(args)
                       .AddInMemoryCollection(new Dictionary<string, string> { { "pathToConf", path } });
 });
 
 builder.Host.ConfigureServices((hostContext, services) =>
 {
-    services.AddMemoryCache();
+                    services.AddMemoryCache();
 
-    var diHelper = new DIHelper(services);
+                    var diHelper = new DIHelper(services);
 
-    var redisConfiguration = hostContext.Configuration.GetSection("Redis").Get<RedisConfiguration>();
-    var kafkaConfiguration = hostContext.Configuration.GetSection("kafka").Get<KafkaSettings>();
+                    var redisConfiguration = hostContext.Configuration.GetSection("Redis").Get<RedisConfiguration>();
+                    var kafkaConfiguration = hostContext.Configuration.GetSection("kafka").Get<KafkaSettings>();
 
-    if (kafkaConfiguration != null)
-    {
-        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-    }
-    else if (redisConfiguration != null)
-    {
-        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
-    }
-    else
-    {
-        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(MemoryCacheNotify<>));
-    }
+                    if (kafkaConfiguration != null)
+                    {
+                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCacheNotify<>));
+                    }
+                    else if (redisConfiguration != null)
+                    {
+                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCacheNotify<>));
+                    }
+                    else
+                    {
+                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(MemoryCacheNotify<>));
+                    }
 
     services.AddHostedService<ClearEventsService>();
     diHelper.TryAdd<ClearEventsService>();
-    diHelper.TryAdd<DbContextManager<EventsContext>>();
+    diHelper.TryAdd<DbContextManager<MessagesContext>>();
 });
 
 builder.Host.ConfigureContainer<ContainerBuilder>((context, builder) =>

@@ -26,95 +26,74 @@
 
 using System.Security.Cryptography;
 
-namespace ASC.FederatedLogin.LoginProviders
+namespace ASC.FederatedLogin.LoginProviders;
+
+[Scope]
+public class MailRuLoginProvider : BaseLoginProvider<MailRuLoginProvider>
 {
-    [Scope]
-    public class MailRuLoginProvider : BaseLoginProvider<MailRuLoginProvider>
+    public override string CodeUrl => "https://connect.mail.ru/oauth/authorize";
+    public override string AccessTokenUrl => "https://connect.mail.ru/oauth/token";
+    public override string ClientID => this["mailRuClientId"];
+    public override string ClientSecret => this["mailRuClientSecret"];
+    public override string RedirectUri => this["mailRuRedirectUrl"];
+
+    private const string MailRuApiUrl = "http://www.appsmail.ru/platform/api";
+
+    public MailRuLoginProvider() { }
+
+    public MailRuLoginProvider(
+        OAuth20TokenHelper oAuth20TokenHelper,
+        TenantManager tenantManager,
+        CoreBaseSettings coreBaseSettings,
+        CoreSettings coreSettings,
+        IConfiguration configuration,
+        ICacheNotify<ConsumerCacheItem> cache,
+        ConsumerFactory consumerFactory,
+        Signature signature,
+        InstanceCrypto instanceCrypto,
+        string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
+        : base(oAuth20TokenHelper, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, signature, instanceCrypto, name, order, props, additional)
     {
-        public override string CodeUrl
-        {
-            get { return "https://connect.mail.ru/oauth/authorize"; }
-        }
+    }
 
-        public override string AccessTokenUrl
+    public override LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params, IDictionary<string, string> additionalStateArgs)
+    {
+        try
         {
-            get { return "https://connect.mail.ru/oauth/token"; }
-        }
+            var token = Auth(context, Scopes, out var redirect);
 
-        public override string ClientID
-        {
-            get { return this["mailRuClientId"]; }
-        }
-
-        public override string ClientSecret
-        {
-            get { return this["mailRuClientSecret"]; }
-        }
-
-        public override string RedirectUri
-        {
-            get { return this["mailRuRedirectUrl"]; }
-        }
-
-        private const string MailRuApiUrl = "http://www.appsmail.ru/platform/api";
-
-        public MailRuLoginProvider()
-        {
-        }
-
-        public MailRuLoginProvider(
-            OAuth20TokenHelper oAuth20TokenHelper,
-            TenantManager tenantManager,
-            CoreBaseSettings coreBaseSettings,
-            CoreSettings coreSettings,
-            IConfiguration configuration,
-            ICacheNotify<ConsumerCacheItem> cache,
-            ConsumerFactory consumerFactory,
-            Signature signature,
-            InstanceCrypto instanceCrypto,
-            string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(oAuth20TokenHelper, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, signature, instanceCrypto, name, order, props, additional)
-        {
-        }
-
-        public override LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params, IDictionary<string, string> additionalStateArgs)
-        {
-            try
+            if (redirect)
             {
-                var token = Auth(context, Scopes, out var redirect);
-
-                if (redirect)
-                {
-                    return null;
-                }
-
-                if (token == null)
-                {
-                    throw new Exception("Login failed");
-                }
-
-                var uid = GetUid(token);
-
-                return RequestProfile(token.AccessToken, uid);
+                return null;
             }
-            catch (ThreadAbortException)
+
+            if (token == null)
             {
-                throw;
+                throw new Exception("Login failed");
             }
-            catch (Exception ex)
-            {
-                return LoginProfile.FromError(Signature, InstanceCrypto, ex);
-            }
-        }
 
-        public override LoginProfile GetLoginProfile(string accessToken)
-        {
-            throw new NotImplementedException();
-        }
+            var uid = GetUid(token);
 
-        private LoginProfile RequestProfile(string accessToken, string uid)
+            return RequestProfile(token.AccessToken, uid);
+        }
+        catch (ThreadAbortException)
         {
-            var queryDictionary = new Dictionary<string, string>
+            throw;
+        }
+        catch (Exception ex)
+        {
+            return LoginProfile.FromError(Signature, InstanceCrypto, ex);
+        }
+    }
+
+    public override LoginProfile GetLoginProfile(string accessToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    private LoginProfile RequestProfile(string accessToken, string uid)
+    {
+        var queryDictionary = new Dictionary<string, string>
                 {
                     { "app_id", ClientID },
                     { "method", "users.getInfo" },
@@ -123,58 +102,66 @@ namespace ASC.FederatedLogin.LoginProviders
                     { "uids", uid },
                 };
 
-            var sortedKeys = queryDictionary.Keys.ToList();
-            sortedKeys.Sort();
+        var sortedKeys = queryDictionary.Keys.ToList();
+        sortedKeys.Sort();
 
-            using var md5 = MD5.Create();
-            var mailruParams = string.Join("", sortedKeys.Select(key => key + "=" + queryDictionary[key]).ToList());
-            var sig = string.Join("", md5.ComputeHash(Encoding.ASCII.GetBytes(mailruParams + ClientSecret)).Select(b => b.ToString("x2")));
+        using var md5 = MD5.Create();
+        var mailruParams = string.Join("", sortedKeys.Select(key => key + "=" + queryDictionary[key]).ToList());
+        var sig = string.Join("", md5.ComputeHash(Encoding.ASCII.GetBytes(mailruParams + ClientSecret)).Select(b => b.ToString("x2")));
 
-            var mailRuProfile = RequestHelper.PerformRequest(
-                MailRuApiUrl
-                + "?" + string.Join("&", queryDictionary.Select(pair => pair.Key + "=" + HttpUtility.UrlEncode(pair.Value)))
-                + "&sig=" + HttpUtility.UrlEncode(sig));
-            var loginProfile = ProfileFromMailRu(mailRuProfile);
+        var mailRuProfile = RequestHelper.PerformRequest(
+            MailRuApiUrl
+            + "?" + string.Join("&", queryDictionary.Select(pair => pair.Key + "=" + HttpUtility.UrlEncode(pair.Value)))
+            + "&sig=" + HttpUtility.UrlEncode(sig));
+        var loginProfile = ProfileFromMailRu(mailRuProfile);
 
-            return loginProfile;
-        }
+        return loginProfile;
+    }
 
-        private LoginProfile ProfileFromMailRu(string strProfile)
+    private LoginProfile ProfileFromMailRu(string strProfile)
+    {
+        var jProfile = JArray.Parse(strProfile);
+        if (jProfile == null)
         {
-            var jProfile = JArray.Parse(strProfile);
-            if (jProfile == null) throw new Exception("Failed to correctly process the response");
-
-            var mailRuProfiles = jProfile.ToObject<List<MailRuProfile>>();
-            if (mailRuProfiles.Count == 0) throw new Exception("Failed to correctly process the response");
-
-            var profile = new LoginProfile(Signature, InstanceCrypto)
-            {
-                EMail = mailRuProfiles[0].email,
-                Id = mailRuProfiles[0].uid,
-                FirstName = mailRuProfiles[0].first_name,
-                LastName = mailRuProfiles[0].last_name,
-
-                Provider = ProviderConstants.MailRu,
-            };
-
-            return profile;
+            throw new Exception("Failed to correctly process the response");
         }
 
-        private class MailRuProfile
+        var mailRuProfiles = jProfile.ToObject<List<MailRuProfile>>();
+        if (mailRuProfiles.Count == 0)
         {
-            public string uid = null;
-            public string first_name = null;
-            public string last_name = null;
-            public string email = null;
+            throw new Exception("Failed to correctly process the response");
         }
 
-        private static string GetUid(OAuth20Token token)
+        var profile = new LoginProfile(Signature, InstanceCrypto)
         {
-            if (string.IsNullOrEmpty(token.OriginJson)) return null;
-            var parser = JObject.Parse(token.OriginJson);
+            EMail = mailRuProfiles[0].Email,
+            Id = mailRuProfiles[0].Uid,
+            FirstName = mailRuProfiles[0].FirstName,
+            LastName = mailRuProfiles[0].LastName,
 
-            return
-                parser?.Value<string>("x_mailru_vid");
+            Provider = ProviderConstants.MailRu,
+        };
+
+        return profile;
+    }
+
+    private class MailRuProfile
+    {
+        public string Uid { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+    }
+
+    private static string GetUid(OAuth20Token token)
+    {
+        if (string.IsNullOrEmpty(token.OriginJson))
+        {
+            return null;
         }
+
+        var parser = JObject.Parse(token.OriginJson);
+
+        return parser?.Value<string>("x_mailru_vid");
     }
 }

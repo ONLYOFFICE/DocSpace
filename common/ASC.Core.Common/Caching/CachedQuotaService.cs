@@ -62,7 +62,7 @@ namespace ASC.Core.Caching
                 {
                     Cache.Remove(i.Key);
                 }
-            }, CacheNotifyAction.Any);
+            }, ASC.Common.Caching.CacheNotifyAction.Any);
         }
     }
 
@@ -142,7 +142,7 @@ namespace ASC.Core.Caching
         public TenantQuota SaveTenantQuota(TenantQuota quota)
         {
             var q = Service.SaveTenantQuota(quota);
-            CacheNotify.Publish(new QuotaCacheItem { Key = QuotaServiceCache.KEY_QUOTA }, CacheNotifyAction.Any);
+            CacheNotify.Publish(new QuotaCacheItem { Key = QuotaServiceCache.KEY_QUOTA }, ASC.Common.Caching.CacheNotifyAction.Any);
             return q;
         }
 
@@ -155,7 +155,7 @@ namespace ASC.Core.Caching
         public void SetTenantQuotaRow(TenantQuotaRow row, bool exchange)
         {
             Service.SetTenantQuotaRow(row, exchange);
-            CacheNotify.Publish(new QuotaCacheItem { Key = GetKey(row.Tenant) }, CacheNotifyAction.InsertOrUpdate);
+            CacheNotify.Publish(new QuotaCacheItem { Key = GetKey(row.Tenant) }, ASC.Common.Caching.CacheNotifyAction.InsertOrUpdate);
         }
 
         public IEnumerable<TenantQuotaRow> FindTenantQuotaRows(int tenantId)

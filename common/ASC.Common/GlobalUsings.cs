@@ -21,6 +21,8 @@ global using System.Threading.Tasks;
 global using System.Web;
 global using System.Xml.Linq;
 global using System.Xml.XPath;
+global using System.ServiceModel;
+global using System.Runtime.Serialization;
 
 global using ARSoft.Tools.Net;
 global using ARSoft.Tools.Net.Dns;

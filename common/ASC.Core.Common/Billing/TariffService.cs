@@ -40,7 +40,7 @@ namespace ASC.Core.Billing
                 Cache.Remove(TariffService.GetTariffCacheKey(i.TenantId));
                 Cache.Remove(TariffService.GetBillingUrlCacheKey(i.TenantId));
                 Cache.Remove(TariffService.GetBillingPaymentCacheKey(i.TenantId)); // clear all payments
-            }, CacheNotifyAction.Remove);
+            }, ASC.Common.Caching.CacheNotifyAction.Remove);
 
             //TODO: Change code of WCF -> not supported in .NET standard/.Net Core
             /*try
@@ -297,7 +297,7 @@ namespace ASC.Core.Billing
 
         public void ClearCache(int tenantId)
         {
-            Notify.Publish(new TariffCacheItem { TenantId = tenantId }, CacheNotifyAction.Remove);
+            Notify.Publish(new TariffCacheItem { TenantId = tenantId }, ASC.Common.Caching.CacheNotifyAction.Remove);
         }
 
         public IEnumerable<PaymentInfo> GetPayments(int tenantId)

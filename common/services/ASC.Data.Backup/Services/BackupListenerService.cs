@@ -25,14 +25,14 @@ internal sealed class BackupListenerService : IHostedService
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        _cacheDeleteSchedule.Subscribe((n) => DeleteScheldure(n), CacheNotifyAction.Insert);
+        _cacheDeleteSchedule.Subscribe((n) => DeleteScheldure(n), Common.Caching.CacheNotifyAction.Insert);
 
         return Task.CompletedTask;
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
-        _cacheDeleteSchedule.Unsubscribe(CacheNotifyAction.Insert);
+        _cacheDeleteSchedule.Unsubscribe(Common.Caching.CacheNotifyAction.Insert);
 
         return Task.CompletedTask;
     }
