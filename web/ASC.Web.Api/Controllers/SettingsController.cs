@@ -411,6 +411,41 @@ namespace ASC.Api.Settings
             return Resource.SuccessfullySaveSettingsMessage;
         }
 
+        [Read("cookiesettings")]
+        public int GetCookieSettings()
+        {
+            return CookiesManager.GetLifeTime(TenantManager.GetCurrentTenant().TenantId);
+        }
+
+        [Update("cookiesettings")]
+        public object UpdateCookieSettingsFromBody([FromBody] CookieSettingsModel model)
+        {
+            return UpdateCookieSettings(model);
+        }
+
+        [Update("messagesettings")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public object UpdateCookieSettingsFromForm([FromForm] CookieSettingsModel model)
+        {
+            return UpdateCookieSettings(model);
+        }
+
+        private object UpdateCookieSettings(CookieSettingsModel model)
+        {
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+            if (!SetupInfo.IsVisibleSettings("CookieSettings"))
+            {
+                throw new BillingException(Resource.ErrorNotAllowedOption, "CookieSettings");
+            }
+
+            CookiesManager.SetLifeTime(model.LifeTime);
+
+            MessageService.Send(MessageAction.CookieSettingsUpdated);
+
+            return Resource.SuccessfullySaveSettingsMessage;
+        }
+
         [AllowAnonymous]
         [Create("sendadmmail")]
         public object SendAdmMailFromBody([FromBody] AdminMessageSettingsModel model)
