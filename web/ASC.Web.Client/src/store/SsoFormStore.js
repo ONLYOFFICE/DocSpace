@@ -63,6 +63,7 @@ class SsoFormStore {
   sp_signingAlgorithm = "http://www.w3.org/2000/09/xmldsig#rsa-sha1";
   // sp_verifyAlgorithm = "http://www.w3.org/2000/09/xmldsig#rsa-sha1";
 
+  // Field mapping
   firstName = "";
   lastName = "";
   email = "";
@@ -82,8 +83,8 @@ class SsoFormStore {
   ShowAdditionalParametersIdp = true;
   ShowAdditionalParametersSp = true;
   SPMetadata = true;
-  isIdpModalVisible = false;
-  isSpModalVisible = false;
+  idp_isModalVisible = false;
+  sp_isModalVisible = false;
 
   // errors
   uploadXmlUrlHasError = false;
@@ -152,11 +153,11 @@ class SsoFormStore {
   };
 
   onOpenIdpModal = () => {
-    this.isIdpModalVisible = true;
+    this.idp_isModalVisible = true;
   };
 
   onOpenSpModal = () => {
-    this.isSpModalVisible = true;
+    this.sp_isModalVisible = true;
   };
 
   onCloseModal = (e, modalVisible) => {
@@ -165,6 +166,19 @@ class SsoFormStore {
 
   onModalComboBoxChange = (option) => {
     this.spCertificateUsedFor = option.key;
+  };
+
+  onEditClick = (e, certificate, prefix) => {
+    this[`${prefix}_certificate`] = certificate.crt;
+    this[`${prefix}_privateKey`] = certificate.key;
+    this[`${prefix}_action`] = certificate.action;
+    this[`${prefix}_isModalVisible`] = true;
+  };
+
+  onDeleteClick = (e, crtToDelete, prefix) => {
+    this[`${prefix}_certificates`] = this[`${prefix}_certificates`].filter(
+      (certificate) => certificate.crt !== crtToDelete
+    );
   };
 
   onUploadXmlMetadata = async () => {

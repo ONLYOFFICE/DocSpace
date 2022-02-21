@@ -8,6 +8,7 @@ import Text from "@appserver/components/text";
 
 import AddIdpCertificateModal from "./sub-components/AddIdpCertificateModal";
 import AddSpCertificateModal from "./sub-components/AddSpCertificateModal";
+import CertificatesTable from "./sub-components/CertificatesTable";
 import CheckboxSet from "./sub-components/CheckboxSet";
 import HideButton from "./sub-components/HideButton";
 import PropTypes from "prop-types";
@@ -45,6 +46,10 @@ const Certificates = ({ FormStore, t, provider }) => {
           tooltipContent={t(`${prefix}CertificatesTooltip`)}
         />
       </Box>
+
+      {FormStore[`${prefix}_certificates`].length > 0 && (
+        <CertificatesTable FormStore={FormStore} prefix={prefix} t={t} />
+      )}
 
       <Box alignItems="center" displayProp="flex" flexDirection="row">
         {prefix === "idp" && (

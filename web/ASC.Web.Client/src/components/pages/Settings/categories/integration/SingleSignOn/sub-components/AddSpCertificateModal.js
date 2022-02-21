@@ -13,7 +13,7 @@ import StyledModalDialog from "../styled-containers/StyledModalDialog";
 import { addArguments } from "../../../../utils";
 
 const AddSpCertificateModal = ({ FormStore, t }) => {
-  const onClose = addArguments(FormStore.onCloseModal, "isSpModalVisible");
+  const onClose = addArguments(FormStore.onCloseModal, "sp_isModalVisible");
   const onSubmit = addArguments(FormStore.addCertificateToForm, "sp");
 
   return (
@@ -21,7 +21,7 @@ const AddSpCertificateModal = ({ FormStore, t }) => {
       contentHeight="100%"
       displayType="modal"
       onClose={onClose}
-      visible={FormStore.isSpModalVisible}
+      visible={FormStore.sp_isModalVisible}
     >
       <ModalDialog.Header>{t("NewCertificate")}</ModalDialog.Header>
 

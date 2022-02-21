@@ -10,7 +10,7 @@ import TextArea from "@appserver/components/textarea";
 import { addArguments } from "../../../../utils";
 
 const AddIdpCertificateModal = ({ FormStore, t }) => {
-  const onClose = addArguments(FormStore.onCloseModal, "isIdpModalVisible");
+  const onClose = addArguments(FormStore.onCloseModal, "idp_isModalVisible");
   const onSubmit = addArguments(FormStore.addCertificateToForm, "idp");
 
   return (
@@ -18,7 +18,7 @@ const AddIdpCertificateModal = ({ FormStore, t }) => {
       contentHeight="100%"
       displayType="modal"
       onClose={onClose}
-      visible={FormStore.isIdpModalVisible}
+      visible={FormStore.idp_isModalVisible}
     >
       <ModalDialog.Header>{t("NewCertificate")}</ModalDialog.Header>
 
