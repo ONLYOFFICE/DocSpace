@@ -62,3 +62,29 @@ Scenario("Profile Remove page render test", async ({ I }) => {
     });
   }
 });
+
+Scenario("Change phone page render test", async ({ I }) => {
+  I.mockEndpoint(Endpoints.settings, "settings");
+  I.mockEndpoint(Endpoints.confirm, "confirm");
+  I.amOnPage(
+    "/confirm/PhoneActivation?type=PhoneActivation&key=EXAMPLEKEY1&email=test%40example.com&uid=EXAMPLEUID"
+  );
+
+  I.see("Enter mobile phone number");
+
+  I.seeElement({
+    react: "TextInput",
+  });
+
+  I.seeElement({
+    react: "Button",
+  });
+
+  I.saveScreenshot(`3.change-phone.png`);
+  if (!isModel) {
+    I.seeVisualDiff(`3.change-phone.png`, {
+      tolerance: 1,
+      prepareBaseImage: false,
+    });
+  }
+});
