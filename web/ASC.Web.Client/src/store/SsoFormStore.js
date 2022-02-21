@@ -198,16 +198,16 @@ class SsoFormStore {
         let prefix = "";
 
         if (key !== "fieldMapping" && key !== "idpSettings") {
-          prefix = key.includes("idp") ? "idp_" : "sp_";
+          prefix = key.includes("idp") ? "idp" : "sp";
         }
 
         if (Array.isArray(object[key])) {
-          this[`${prefix}Certificates`] = [...object[key]];
+          this[`${prefix}_certificates`] = object[key].slice();
         } else {
           for (let field of Object.keys(object[key])) {
-            this[`${prefix}${field}`] = object[key][field];
+            this[`${prefix}_${field}`] = object[key][field];
 
-            this.setErrors(`${prefix}${field}`, this[`${prefix}${field}`]);
+            this.setErrors(`${prefix}_${field}`, this[`${prefix}_${field}`]);
           }
         }
       }
