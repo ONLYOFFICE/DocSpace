@@ -27,26 +27,16 @@ namespace ASC.Notify.Model;
 
 public interface ISubscriptionProvider
 {
-    string[] GetSubscriptions(INotifyAction action, IRecipient recipient, bool checkSubscribe = true);
-
-    string[] GetSubscriptionMethod(INotifyAction action, IRecipient recipient);
-
-    IRecipient[] GetRecipients(INotifyAction action, string objectID);
-
-    object GetSubscriptionRecord(INotifyAction action, IRecipient recipient, string objectID);
-
     bool IsUnsubscribe(IDirectRecipient recipient, INotifyAction action, string objectID);
-
+    IRecipient[] GetRecipients(INotifyAction action, string objectID);
+    object GetSubscriptionRecord(INotifyAction action, IRecipient recipient, string objectID);
+    string[] GetSubscriptionMethod(INotifyAction action, IRecipient recipient);
+    string[] GetSubscriptions(INotifyAction action, IRecipient recipient, bool checkSubscribe = true);
     void Subscribe(INotifyAction action, string objectID, IRecipient recipient);
-
-    void UnSubscribe(INotifyAction action, string objectID, IRecipient recipient);
-
-    void UnSubscribe(INotifyAction action, string objectID);
-
     void UnSubscribe(INotifyAction action);
-
     void UnSubscribe(INotifyAction action, IRecipient recipient);
-
+    void UnSubscribe(INotifyAction action, string objectID);
+    void UnSubscribe(INotifyAction action, string objectID, IRecipient recipient);
     void UpdateSubscriptionMethod(INotifyAction action, IRecipient recipient, params string[] senderNames);
 }
 

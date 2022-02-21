@@ -34,6 +34,5 @@ public interface INoticeMessage
     string Subject { get; set; }
     string Body { get; set; }
     string ContentType { get; }
-
     void AddArgument(params ITagValue[] tagValue);
 }

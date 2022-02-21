@@ -29,14 +29,9 @@ namespace ASC.Core;
 public interface IQuotaService
 {
     IEnumerable<TenantQuota> GetTenantQuotas();
-
-    TenantQuota GetTenantQuota(int id);
-
-    TenantQuota SaveTenantQuota(TenantQuota quota);
-
-    void RemoveTenantQuota(int id);
-
     IEnumerable<TenantQuotaRow> FindTenantQuotaRows(int tenantId);
-
+    TenantQuota GetTenantQuota(int id);
+    TenantQuota SaveTenantQuota(TenantQuota quota);
+    void RemoveTenantQuota(int id);
     void SetTenantQuotaRow(TenantQuotaRow row, bool exchange);
 }

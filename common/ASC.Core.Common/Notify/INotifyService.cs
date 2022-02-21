@@ -27,7 +27,6 @@ namespace ASC.Notify;
 
 public interface INotifyService
 {
-    void SendNotifyMessage(NotifyMessage notifyMessage);
-
     void InvokeSendMethod(NotifyInvoke notifyInvoke);
+    void SendNotifyMessage(NotifyMessage notifyMessage);
 }
