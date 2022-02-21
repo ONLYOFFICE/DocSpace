@@ -32,16 +32,14 @@ namespace ASC.MessagingSystem.Data;
 public class MessagesRepository : IDisposable
 {
     private DateTime _lastSave = DateTime.UtcNow;
+    private bool _timerStarted;
     private readonly TimeSpan _cacheTime;
     private readonly IDictionary<string, EventMessage> _cache;
-    private readonly IMapper _mapper;
-    private Parser _parser;
-
-    private readonly Timer _timer;
-    private bool _timerStarted;
-
-    public ILog Logger { get; set; }
     private readonly IServiceScopeFactory _serviceScopeFactory;
+    private readonly IMapper _mapper;
+    private readonly ILog _logger;
+    private readonly Timer _timer;
+    private Parser _parser; 
 
     public MessagesRepository(IServiceScopeFactory serviceScopeFactory, IOptionsMonitor<ILog> options, IMapper mapper)
     {
@@ -49,7 +47,7 @@ public class MessagesRepository : IDisposable
         _cache = new Dictionary<string, EventMessage>();
         _timerStarted = false;
 
-        Logger = options.CurrentValue;
+        _logger = options.CurrentValue;
         _serviceScopeFactory = serviceScopeFactory;
 
         _timer = new Timer(FlushCache);
@@ -141,7 +139,7 @@ public class MessagesRepository : IDisposable
                 }
                 catch (Exception e)
                 {
-                    Logger.Error("FlushCache " + message.Id, e);
+                    _logger.Error("FlushCache " + message.Id, e);
                 }
             }
 
