@@ -1,6 +1,4 @@
-﻿using ASC.Common.Mapping;
-
-var options = new WebApplicationOptions
+﻿var options = new WebApplicationOptions
 {
     Args = args,
     ContentRootPath = WindowsServiceHelpers.IsWindowsService() ? AppContext.BaseDirectory : default
@@ -71,14 +69,21 @@ builder.Host.ConfigureServices((hostContext, services) =>
 
     services.Configure<NotifyServiceCfg>(hostContext.Configuration.GetSection("notify"));
 
-    diHelper.TryAdd<NotifyServiceLauncher>();
+    diHelper.TryAdd<NotifyService>();
+    diHelper.TryAdd<NotifySender>();
+    diHelper.TryAdd<NotifyCleaner>();
+    diHelper.TryAdd<TenantManager>();
+    diHelper.TryAdd<TenantWhiteLabelSettingsHelper>();
+    diHelper.TryAdd<SettingsManager>();
     diHelper.TryAdd<JabberSender>();
     diHelper.TryAdd<SmtpSender>();
     diHelper.TryAdd<AWSSender>(); // fix private
 
     services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
 
-    services.AddHostedService<NotifyServiceLauncher>();
+    services.AddHostedService<NotifyService>();
+    services.AddHostedService<NotifySender>();
+    services.AddHostedService<NotifyCleaner>();
 });
 
 builder.Host.ConfigureContainer<ContainerBuilder>((context, builder) =>
