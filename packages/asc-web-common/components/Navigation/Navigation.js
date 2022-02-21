@@ -40,6 +40,7 @@ const Navigation = ({
   const onMissClick = (e) => {
     e.preventDefault;
     const path = e.path || (e.composedPath && e.composedPath());
+
     if (!firstClick) {
       !path.includes(dropBoxRef.current) ? toggleDropBox() : null;
     } else {
@@ -56,7 +57,7 @@ const Navigation = ({
   );
 
   const toggleDropBox = React.useCallback(() => {
-    if (isRootFolder) return;
+    if (isRootFolder) return setIsOpen(false);
     setIsOpen((prev) => !prev);
     setFirstClick(true);
 
@@ -66,7 +67,7 @@ const Navigation = ({
           DomHelpers.getOuterWidth(document.getElementById("section"))
       );
     }, 0);
-  }, [setIsOpen, setFirstClick, setChangeWidth, isRootFolder]);
+  }, [isRootFolder]);
 
   React.useEffect(() => {
     if (isOpen) {
