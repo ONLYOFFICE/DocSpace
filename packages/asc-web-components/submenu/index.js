@@ -2,8 +2,6 @@ import PropTypes from "prop-types";
 import React, { useEffect, useRef, useState } from "react";
 
 import Text from "../text";
-import { tablet } from "../utils/device";
-import DomHelpers from "../utils/domHelpers";
 import { countAutoOffset } from "./autoOffset";
 import {
   StyledSubmenu,
