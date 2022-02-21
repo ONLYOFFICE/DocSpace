@@ -108,3 +108,35 @@ Scenario("Create user page render test", async ({ I }) => {
     });
   }
 });
+
+Scenario("Change owner page render test", async ({ I }) => {
+  I.mockEndpoint(Endpoints.settings, "settings");
+  I.mockEndpoint(Endpoints.confirm, "confirm");
+
+  I.amOnPage("/confirm/PortalOwnerChange");
+
+  I.see("Web Office");
+  I.see("Please confirm that you want to change portal owner");
+
+  I.seeElement({
+    react: "Button",
+    props: {
+      className: "owner-button owner-buttons",
+    },
+  });
+
+  I.seeElement({
+    react: "Button",
+    props: {
+      className: "owner-buttons",
+    },
+  });
+
+  I.saveScreenshot(`5.change-owner.png`);
+  if (!isModel) {
+    I.seeVisualDiff(`5.change-owner.png`, {
+      tolerance: 1,
+      prepareBaseImage: false,
+    });
+  }
+});
