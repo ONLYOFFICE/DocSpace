@@ -69,8 +69,10 @@ export const defaultStore = {
   sloBinding: "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
   nameIdFormat: "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
 
-  newIdpCertificate: "",
-  idpCertificates: [],
+  idp_certificate: "",
+  idp_privateKey: null,
+  idp_action: "signing",
+  idp_certificates: [],
 
   // idpCertificateAdvanced
   idp_decryptAlgorithm: "http://www.w3.org/2001/04/xmlenc#aes128-cbc",
@@ -81,10 +83,10 @@ export const defaultStore = {
   idp_verifyLogoutRequestsSign: false,
   idp_verifyLogoutResponsesSign: false,
 
-  newSpCertificate: "",
-  newSpPrivateKey: "",
-  newSpCertificateUsedFor: "signing",
-  spCertificates: [],
+  sp_certificate: "",
+  sp_privateKey: "",
+  sp_action: "signing",
+  sp_certificates: [],
 
   // spCertificateAdvanced
   // null for some reason

@@ -168,6 +168,19 @@ class SsoFormStore {
     this.spCertificateUsedFor = option.key;
   };
 
+  onBlur = (e) => {
+    const field = e.target.name;
+    const value = e.target.value;
+
+    this.setErrors(field, value);
+  };
+
+  resetForm = () => {
+    for (let key of Object.keys(defaultStore)) {
+      this[key] = defaultStore[key];
+    }
+  };
+
   onEditClick = (e, certificate, prefix) => {
     this[`${prefix}_certificate`] = certificate.crt;
     this[`${prefix}_privateKey`] = certificate.key;
@@ -198,30 +211,30 @@ class SsoFormStore {
         let prefix = "";
 
         if (key !== "fieldMapping" && key !== "idpSettings") {
-          prefix = key.includes("idp") ? "idp" : "sp";
+          prefix = key.includes("idp") ? "idp_" : "sp_";
         }
 
         if (Array.isArray(object[key])) {
-          this[`${prefix}_certificates`] = object[key].slice();
+          this[`${prefix}certificates`] = object[key].slice();
         } else {
           for (let field of Object.keys(object[key])) {
-            this[`${prefix}_${field}`] = object[key][field];
+            this[`${prefix}${field}`] = object[key][field];
 
-            this.setErrors(`${prefix}_${field}`, this[`${prefix}_${field}`]);
+            this.setErrors(`${prefix}${field}`, this[`${prefix}${field}`]);
           }
         }
       }
     }
   };
-  addCertificateToForm = (e, type) => {
-    const action = this[`${type}_action`];
-    const crt = this[`${type}_certificate`];
-    const key = this[`${type}_privateKey`];
+  addCertificateToForm = (e, prefix) => {
+    const action = this[`${prefix}_action`];
+    const crt = this[`${prefix}_certificate`];
+    const key = this[`${prefix}_privateKey`];
 
     try {
       const newCertificate = this.validateCertificate(action, crt, key);
-      this[`${type}_certificates`] = [
-        ...this[`${type}_certificates`],
+      this[`${prefix}_certificates`] = [
+        ...this[`${prefix}_certificates`],
         newCertificate,
       ];
     } catch (err) {
@@ -264,19 +277,6 @@ class SsoFormStore {
   setGeneratedCertificate = (certificateObject) => {
     this.sp_certificate = certificateObject.crt;
     this.sp_privateKey = certificateObject.key;
-  };
-
-  resetForm = () => {
-    for (let key of Object.keys(defaultStore)) {
-      this[key] = defaultStore[key];
-    }
-  };
-
-  onBlur = (e) => {
-    const field = e.target.name;
-    const value = e.target.value;
-
-    this.setErrors(field, value);
   };
 
   setErrors = (field, value) => {
