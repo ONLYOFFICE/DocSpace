@@ -33,7 +33,7 @@ class ChangePasswordDialogComponent extends React.Component {
 
   render() {
     console.log("ChangePasswordDialog render");
-    const { t, tReady, visible, email, onClose } = this.props;
+    const { t, tReady, visible, email, onClose, theme } = this.props;
     const { isRequestRunning } = this.state;
 
     return (
