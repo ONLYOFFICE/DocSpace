@@ -10,6 +10,12 @@ import { inject, observer } from "mobx-react";
 import { CatalogMainButtonContent } from "../../../../components/Catalog";
 import { Consumer } from "@appserver/components/utils/context";
 
+import { isMobile } from "react-device-detect";
+import {
+  isMobile as isMobileUtils,
+  isTablet as isTabletUtils,
+} from "@appserver/components/utils/device";
+
 const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading }) => {
   const { t } = useTranslation(["Home", "Common"]);
 
@@ -62,11 +68,15 @@ const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading }) => {
           </Grid>
         }
       />
-      <Consumer>
-        {(context) => (
-          <CatalogMainButtonContent sectionWidth={context.sectionWidth} />
-        )}
-      </Consumer>
+      {isMobile || isMobileUtils() || isTabletUtils() ? (
+        <Consumer>
+          {(context) => (
+            <CatalogMainButtonContent sectionWidth={context.sectionWidth} />
+          )}
+        </Consumer>
+      ) : (
+        <></>
+      )}
     </>
   );
 };
