@@ -1,102 +1,62 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
-
-namespace ASC.Notify;
+﻿namespace ASC.Notify;
 
 [Singletone]
-public class NotifyCleaner : IDisposable
+public class NotifyCleaner : BackgroundService
 {
     private readonly ILog _logger;
-    private readonly ManualResetEvent _stop = new ManualResetEvent(false);
-    public NotifyServiceCfg NotifyServiceCfg { get; }
+    private readonly NotifyServiceCfg _notifyServiceCfg;
     private readonly IServiceScopeFactory _serviceScopeFactory;
-    public readonly CancellationTokenSource _cancellationTokenSource;
+    private readonly TimeSpan _waitingPeriod = TimeSpan.FromHours(8);
 
     public NotifyCleaner(IOptions<NotifyServiceCfg> notifyServiceCfg, IServiceScopeFactory serviceScopeFactory, IOptionsMonitor<ILog> options)
     {
-        _logger = options.Get("ASC.Notify");
-        NotifyServiceCfg = notifyServiceCfg.Value;
+        _logger = options.Get("ASC.NotifyCleaner");
+        _notifyServiceCfg = notifyServiceCfg.Value;
         _serviceScopeFactory = serviceScopeFactory;
-        _cancellationTokenSource = new CancellationTokenSource();
     }
 
-    public void Start()
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        var t = new Task(Clear, _cancellationTokenSource.Token, TaskCreationOptions.LongRunning);
-        t.Start(TaskScheduler.Default);
-    }
+        _logger.Info("Notify Cleaner Service running.");
 
-    public void Stop()
-    {
-        _stop.Set();
-        _cancellationTokenSource.Cancel();
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            Clear();
+
+            await Task.Delay(_waitingPeriod, stoppingToken);
+        }
+
+        _logger.Info("Notify Cleaner Service is stopping.");
     }
 
     private void Clear()
     {
-        while (true)
+        try
         {
-            try
-            {
-                var date = DateTime.UtcNow.AddDays(-NotifyServiceCfg.StoreMessagesDays);
+            var date = DateTime.UtcNow.AddDays(-_notifyServiceCfg.StoreMessagesDays);
 
-                using var scope = _serviceScopeFactory.CreateScope();
-                using var dbContext = scope.ServiceProvider.GetService<DbContextManager<NotifyDbContext>>().Get(NotifyServiceCfg.ConnectionStringName);
-                using var tx = dbContext.Database.BeginTransaction();
+            using var scope = _serviceScopeFactory.CreateScope();
+            using var dbContext = scope.ServiceProvider.GetService<DbContextManager<NotifyDbContext>>().Get(_notifyServiceCfg.ConnectionStringName);
+            using var tx = dbContext.Database.BeginTransaction();
 
-                var info = dbContext.NotifyInfo.Where(r => r.ModifyDate < date && r.State == 4).ToList();
-                var queue = dbContext.NotifyQueue.Where(r => r.CreationDate < date).ToList();
-                dbContext.NotifyInfo.RemoveRange(info);
-                dbContext.NotifyQueue.RemoveRange(queue);
+            var info = dbContext.NotifyInfo.Where(r => r.ModifyDate < date && r.State == 4).ToList();
+            var queue = dbContext.NotifyQueue.Where(r => r.CreationDate < date).ToList();
+            dbContext.NotifyInfo.RemoveRange(info);
+            dbContext.NotifyQueue.RemoveRange(queue);
 
-                dbContext.SaveChanges();
-                tx.Commit();
+            dbContext.SaveChanges();
+            tx.Commit();
 
-                _logger.InfoFormat("Clear notify messages: notify_info({0}), notify_queue ({1})", info.Count, queue.Count);
+            _logger.InfoFormat("Clear notify messages: notify_info({0}), notify_queue ({1})", info.Count, queue.Count);
 
-            }
-            catch (ThreadAbortException)
-            {
-                // ignore
-            }
-            catch (Exception err)
-            {
-                _logger.Error(err);
-            }
-            if (_stop.WaitOne(TimeSpan.FromHours(8)))
-            {
-                break;
-            }
         }
-    }
-
-    public void Dispose()
-    {
-        if (_cancellationTokenSource != null)
+        catch (ThreadAbortException)
         {
-            _cancellationTokenSource.Dispose();
+            // ignore
+        }
+        catch (Exception err)
+        {
+            _logger.Error(err);
         }
     }
 }

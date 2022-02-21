@@ -1,105 +1,76 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
-
-namespace ASC.Notify;
+﻿namespace ASC.Notify;
 
 [Singletone]
-public class NotifySender : IDisposable
+public class NotifySender : BackgroundService
 {
-    private readonly ILog _logger;
-
     private readonly DbWorker _db;
-    private CancellationTokenSource _cancellationToken;
+    private readonly ILog _logger;
+    private readonly NotifyServiceCfg _notifyServiceCfg;
 
-    public NotifyServiceCfg NotifyServiceCfg { get; }
-
-    public NotifySender(IOptions<NotifyServiceCfg> notifyServiceCfg, DbWorker dbWorker, IOptionsMonitor<ILog> options)
+    public NotifySender(
+        IOptions<NotifyServiceCfg> notifyServiceCfg, 
+        DbWorker dbWorker, 
+        IOptionsMonitor<ILog> options)
     {
-        _logger = options.CurrentValue;
-        NotifyServiceCfg = notifyServiceCfg.Value;
+        _logger = options.Get("ASC.NotifySender");
+        _notifyServiceCfg = notifyServiceCfg.Value;
         _db = dbWorker;
     }
 
-    public void StartSending()
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _db.ResetStates();
-        _cancellationToken = new CancellationTokenSource();
-        var task = new Task(async () => await ThreadManagerWork(), _cancellationToken.Token, TaskCreationOptions.LongRunning);
-        task.Start();
-    }
+        _logger.Info("Notify Sender Service running.");
 
-    public void StopSending()
-    {
-        _cancellationToken.Cancel();
-    }
-
-    private async Task ThreadManagerWork()
-    {
-        var tasks = new List<Task>(NotifyServiceCfg.Process.MaxThreads);
-
-        while (!_cancellationToken.IsCancellationRequested)
+        while (!stoppingToken.IsCancellationRequested)
         {
-            try
+            await ThreadManagerWork(stoppingToken);
+        }
+
+        _logger.Info("Notify Sender Service is stopping.");
+    }
+
+    private async Task ThreadManagerWork(CancellationToken stoppingToken)
+    {
+        var tasks = new List<Task>(_notifyServiceCfg.Process.MaxThreads);
+
+        try
+        {
+            if (tasks.Count < _notifyServiceCfg.Process.MaxThreads)
             {
-                if (tasks.Count < NotifyServiceCfg.Process.MaxThreads)
+                var messages = _db.GetMessages(_notifyServiceCfg.Process.BufferSize);
+                if (messages.Count > 0)
                 {
-                    var messages = _db.GetMessages(NotifyServiceCfg.Process.BufferSize);
-                    if (messages.Count > 0)
-                    {
-                        var t = new Task(() => SendMessages(messages), _cancellationToken.Token, TaskCreationOptions.LongRunning);
-                        tasks.Add(t);
-                        t.Start(TaskScheduler.Default);
-                    }
-                    else
-                    {
-                        await Task.Delay(5000);
-                    }
+                    var t = new Task(() => SendMessages(messages, stoppingToken), stoppingToken, TaskCreationOptions.LongRunning);
+                    tasks.Add(t);
+                    t.Start(TaskScheduler.Default);
                 }
                 else
                 {
-                    await Task.WhenAny(tasks.ToArray()).ContinueWith(r => tasks.RemoveAll(a => a.IsCompleted));
+                    await Task.Delay(5000, stoppingToken);
                 }
             }
-            catch (ThreadAbortException)
+            else
             {
-                return;
+                await Task.WhenAny(tasks.ToArray()).ContinueWith(r => tasks.RemoveAll(a => a.IsCompleted));
             }
-            catch (Exception e)
-            {
-                _logger.Error(e);
-            }
+        }
+        catch (ThreadAbortException)
+        {
+            return;
+        }
+        catch (Exception e)
+        {
+            _logger.Error(e);
         }
     }
 
-    private void SendMessages(object messages)
+    private void SendMessages(object messages, CancellationToken stoppingToken)
     {
         try
         {
             foreach (var m in (IDictionary<int, NotifyMessage>)messages)
             {
-                if (_cancellationToken.IsCancellationRequested)
+                if (stoppingToken.IsCancellationRequested)
                 {
                     return;
                 }
@@ -107,7 +78,7 @@ public class NotifySender : IDisposable
                 var result = MailSendingState.Sended;
                 try
                 {
-                    var sender = NotifyServiceCfg.Senders.FirstOrDefault(r => r.Name == m.Value.SenderType);
+                    var sender = _notifyServiceCfg.Senders.FirstOrDefault(r => r.Name == m.Value.SenderType);
                     if (sender != null)
                     {
                         sender.NotifySender.Send(m.Value);
@@ -135,14 +106,6 @@ public class NotifySender : IDisposable
         catch (Exception e)
         {
             _logger.Error(e);
-        }
-    }
-
-    public void Dispose()
-    {
-        if (_cancellationToken != null)
-        {
-            _cancellationToken.Dispose();
         }
     }
 }
