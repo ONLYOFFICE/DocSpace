@@ -21,7 +21,7 @@ const regExps = {
 class SsoFormStore {
   uploadXmlUrl = "";
 
-  enableSso = true;
+  enableSso = false;
 
   spLoginLabel = "";
 
@@ -79,10 +79,10 @@ class SsoFormStore {
   sp_singleLogoutUrl = "";
 
   // hide parts of form
-  ServiceProviderSettings = true;
-  ShowAdditionalParametersIdp = true;
-  ShowAdditionalParametersSp = true;
-  SPMetadata = true;
+  ServiceProviderSettings = false;
+  idp_showAdditionalParameters = true;
+  sp_showAdditionalParameters = true;
+  SPMetadata = false;
   idp_isModalVisible = false;
   sp_isModalVisible = false;
 

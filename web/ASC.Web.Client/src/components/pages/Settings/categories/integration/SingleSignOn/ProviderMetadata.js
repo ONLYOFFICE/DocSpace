@@ -4,14 +4,11 @@ import { observer } from "mobx-react";
 import Box from "@appserver/components/box";
 import Button from "@appserver/components/button";
 
-import HideButton from "./sub-components/HideButton";
 import SimpleFormField from "./sub-components/SimpleFormField";
 
 const ProviderMetadata = ({ FormStore, t }) => {
   return (
-    <Box>
-      <HideButton FormStore={FormStore} label="SPMetadata" t={t} />
-
+    <>
       <SimpleFormField
         FormStore={FormStore}
         labelText={t("SPEntityId")}
@@ -51,7 +48,7 @@ const ProviderMetadata = ({ FormStore, t }) => {
           tabIndex={28}
         />
       </Box>
-    </Box>
+    </>
   );
 };
 

@@ -95,6 +95,21 @@ const StyledSsoPage = styled.div`
       position: static;
     }
   }
+
+  .separator {
+    margin: 24px 0;
+    height: 1px;
+    border: none;
+    background-color: #eceef1;
+  }
+
+  .service-provider-settings {
+    display: ${(props) => (!props.hideSettings ? "none" : "block")};
+  }
+
+  .sp-metadata {
+    display: ${(props) => (!props.hideMetadata ? "none" : "block")};
+  }
 `;
 
 export default StyledSsoPage;

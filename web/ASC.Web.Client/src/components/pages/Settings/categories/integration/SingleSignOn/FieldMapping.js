@@ -12,8 +12,14 @@ import SimpleFormField from "./sub-components/SimpleFormField";
 const FieldMapping = ({ FormStore, t }) => {
   return (
     <Box>
-      <Box alignItems="center" displayProp="flex" flexDirection="row">
-        <Text as="h2" fontWeight={600}>
+      <Box
+        alignItems="center"
+        displayProp="flex"
+        flexDirection="row"
+        fontSize="14px"
+        marginProp="22px 0 14px 0"
+      >
+        <Text as="h2" fontSize="14px" fontWeight={600}>
           {t("AttributeMatching")}
         </Text>
 

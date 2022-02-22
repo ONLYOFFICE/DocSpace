@@ -4,7 +4,6 @@ import { observer } from "mobx-react";
 import Box from "@appserver/components/box";
 import RadioButtonGroup from "@appserver/components/radio-button-group";
 
-import HideButton from "./sub-components/HideButton";
 import SimpleComboBox from "./sub-components/SimpleComboBox";
 import SimpleFormField from "./sub-components/SimpleFormField";
 import Text from "@appserver/components/text";
@@ -14,8 +13,6 @@ import { bindingOptions, nameIdOptions } from "./sub-components/constants";
 const IdpSettings = ({ FormStore, t }) => {
   return (
     <Box>
-      <HideButton FormStore={FormStore} label="ServiceProviderSettings" t={t} />
-
       <UploadXML FormStore={FormStore} t={t} />
 
       <SimpleFormField

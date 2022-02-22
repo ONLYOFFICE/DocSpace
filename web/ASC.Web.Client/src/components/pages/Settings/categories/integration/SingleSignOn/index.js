@@ -6,8 +6,9 @@ import Box from "@appserver/components/box";
 import Button from "@appserver/components/button";
 import FormStore from "@appserver/studio/src/store/SsoFormStore";
 
-import FieldMapping from "./FieldMapping";
 import Certificates from "./Certificates";
+import FieldMapping from "./FieldMapping";
+import HideButton from "./sub-components/HideButton";
 import IdpSettings from "./IdpSettings";
 import ProviderMetadata from "./ProviderMetadata";
 import StyledSsoPage from "./styled-containers/StyledSsoPageContainer";
@@ -17,35 +18,48 @@ const SingleSignOn = () => {
   const { t } = useTranslation(["SingleSignOn", "Common"]);
 
   return (
-    <StyledSsoPage>
+    <StyledSsoPage
+      hideSettings={FormStore.ServiceProviderSettings}
+      hideMetadata={FormStore.SPMetadata}
+    >
       <ToggleSSO FormStore={FormStore} t={t} />
 
-      <IdpSettings FormStore={FormStore} t={t} />
+      <HideButton FormStore={FormStore} label="ServiceProviderSettings" t={t} />
 
-      <Certificates FormStore={FormStore} t={t} provider="IdentityProvider" />
+      <Box className="service-provider-settings">
+        <IdpSettings FormStore={FormStore} t={t} />
 
-      <Certificates FormStore={FormStore} t={t} provider="ServiceProvider" />
+        <Certificates FormStore={FormStore} t={t} provider="IdentityProvider" />
 
-      <FieldMapping FormStore={FormStore} t={t} />
+        <Certificates FormStore={FormStore} t={t} provider="ServiceProvider" />
 
-      <Box alignItems="center" displayProp="flex" flexDirection="row">
-        <Button
-          className="save-button"
-          label={t("Common:SaveButton")}
-          onClick={FormStore.onSubmit}
-          primary
-          size="medium"
-          tabIndex={23}
-        />
-        <Button
-          label={t("ResetSettings")}
-          onClick={FormStore.resetForm}
-          size="medium"
-          tabIndex={24}
-        />
+        <FieldMapping FormStore={FormStore} t={t} />
+
+        <Box alignItems="center" displayProp="flex" flexDirection="row">
+          <Button
+            className="save-button"
+            label={t("Common:SaveButton")}
+            onClick={FormStore.onSubmit}
+            primary
+            size="medium"
+            tabIndex={23}
+          />
+          <Button
+            label={t("ResetSettings")}
+            onClick={FormStore.resetForm}
+            size="medium"
+            tabIndex={24}
+          />
+        </Box>
       </Box>
 
-      <ProviderMetadata FormStore={FormStore} t={t} />
+      <hr className="separator" />
+
+      <HideButton FormStore={FormStore} label="SPMetadata" t={t} />
+
+      <Box className="sp-metadata">
+        <ProviderMetadata FormStore={FormStore} t={t} />
+      </Box>
     </StyledSsoPage>
   );
 };

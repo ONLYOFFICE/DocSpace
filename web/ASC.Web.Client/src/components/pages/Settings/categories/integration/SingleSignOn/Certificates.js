@@ -27,6 +27,7 @@ const Certificates = ({ FormStore, t, provider }) => {
       break;
     case "ServiceProvider":
       prefix = "sp";
+      break;
   }
 
   return (
@@ -78,43 +79,52 @@ const Certificates = ({ FormStore, t, provider }) => {
 
         <HideButton
           FormStore={FormStore}
-          label="ShowAdditionalParameters"
+          label={`${prefix}_showAdditionalParameters`}
           isAdditionalParameters
           t={t}
         />
       </Box>
 
-      <CheckboxSet FormStore={FormStore} id={prefix} prefix={prefix} t={t} />
-
-      {provider === "IdentityProvider" && (
+      {FormStore[`${prefix}_showAdditionalParameters`] && (
         <>
-          <SimpleComboBox
+          <CheckboxSet
             FormStore={FormStore}
-            labelText={t(`${prefix}SigningAlgorithm`)}
-            name={"idp_verifyAlgorithm"}
-            options={verifyAlgorithmsOptions}
-            tabIndex={14}
-          />
-        </>
-      )}
-
-      {provider === "ServiceProvider" && (
-        <>
-          <SimpleComboBox
-            FormStore={FormStore}
-            labelText={t(`${prefix}SigningAlgorithm`)}
-            name={"sp_signingAlgorithm"}
-            options={verifyAlgorithmsOptions}
-            tabIndex={14}
+            id={prefix}
+            prefix={prefix}
+            t={t}
           />
 
-          <SimpleComboBox
-            FormStore={FormStore}
-            labelText={t("StandardDecryptionAlgorithm")}
-            name={"sp_encryptAlgorithm"}
-            options={decryptAlgorithmsOptions}
-            tabIndex={15}
-          />
+          {provider === "IdentityProvider" && (
+            <>
+              <SimpleComboBox
+                FormStore={FormStore}
+                labelText={t(`${prefix}SigningAlgorithm`)}
+                name={"idp_verifyAlgorithm"}
+                options={verifyAlgorithmsOptions}
+                tabIndex={14}
+              />
+            </>
+          )}
+
+          {provider === "ServiceProvider" && (
+            <>
+              <SimpleComboBox
+                FormStore={FormStore}
+                labelText={t(`${prefix}SigningAlgorithm`)}
+                name={"sp_signingAlgorithm"}
+                options={verifyAlgorithmsOptions}
+                tabIndex={14}
+              />
+
+              <SimpleComboBox
+                FormStore={FormStore}
+                labelText={t("StandardDecryptionAlgorithm")}
+                name={"sp_encryptAlgorithm"}
+                options={decryptAlgorithmsOptions}
+                tabIndex={15}
+              />
+            </>
+          )}
         </>
       )}
     </Box>
