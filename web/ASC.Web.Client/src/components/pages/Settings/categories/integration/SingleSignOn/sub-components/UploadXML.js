@@ -33,7 +33,7 @@ const UploadXML = ({ FormStore, t }) => {
           className="upload-button"
           icon={uploadIcon}
           size="medium"
-          onClick={FormStore.onUploadXmlMetadata}
+          onClick={FormStore.onLoadXmlMetadata}
           tabIndex={2}
         />
 
@@ -42,6 +42,7 @@ const UploadXML = ({ FormStore, t }) => {
         <FileInput
           accept=".xml"
           buttonLabel={t("ChooseFile")}
+          onInput={FormStore.onUploadXmlMetadata}
           className="xml-upload-file"
           size="middle"
           tabIndex={3}

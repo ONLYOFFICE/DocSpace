@@ -175,7 +175,23 @@ class SsoFormStore {
     this.setErrors(field, value);
   };
 
-  resetForm = () => {
+  resetForm = async () => {
+    const params = {
+      method: "DELETE",
+      cors: "same-origin",
+    };
+
+    try {
+      const response = await fetch("/somewhere", params);
+      if (response.ok) {
+        this.resetField();
+      } else throw new Error("error");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  resetField = () => {
     for (let key of Object.keys(defaultStore)) {
       this[key] = defaultStore[key];
     }
@@ -194,11 +210,49 @@ class SsoFormStore {
     );
   };
 
-  onUploadXmlMetadata = async () => {
-    const response = await fetch("./response.json");
-    const metadataObject = await response.json();
+  onLoadXmlMetadata = async () => {
+    const body = JSON.stringify({ url: this.uploadXmlUrl });
+    const params = {
+      method: "POST",
+      cors: "same-origin",
+      headers: {
+        "Content-Type": "application/json;charset=utf-8",
+      },
+      body: body,
+    };
 
-    this.setFieldsFromObject(metadataObject);
+    try {
+      const response = await fetch("/somewhere", params);
+      if (response.ok) {
+        const metadataObject = await response.json();
+        this.setFieldsFromObject(metadataObject);
+      } else throw new Error("error");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  onUploadXmlMetadata = async (file) => {
+    if (!file.type.includes("text/xml")) return console.log("invalid format");
+
+    const data = new FormData();
+    data.append("file", file);
+
+    const params = {
+      method: "POST",
+      cors: "same-origin",
+      body: data,
+    };
+
+    try {
+      const response = await fetch("/somewhere", params);
+      if (response.ok) {
+        const metadataObject = await response.json();
+        this.setFieldsFromObject(metadataObject);
+      } else throw new Error("error");
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   setFieldsFromObject = (object) => {
@@ -253,25 +307,26 @@ class SsoFormStore {
       body,
     };
 
-    const response = await fetch("http://jsonplaceholder.typicode.com/posts", {
-      method: "POST",
-      cors: "same-origin",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ some: "object" }),
-    });
-
-    const certificate = await response.json();
-
-    return mockCertificate;
+    try {
+      const response = await fetch("/somewhere", params);
+      if (response.ok) {
+        return await response.json();
+      } else throw new Error("error");
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   generateCertificate = async () => {
-    const response = await fetch("./generatedCertificate.json");
-    const certificateObject = await response.json();
-
-    this.setGeneratedCertificate(certificateObject);
+    try {
+      const response = await fetch("/somewhere");
+      if (response.ok) {
+        const certificateObject = await response.json();
+        this.setGeneratedCertificate(certificateObject);
+      } else throw new Error("error");
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   setGeneratedCertificate = (certificateObject) => {
@@ -361,7 +416,7 @@ class SsoFormStore {
       method: "POST",
       cors: "same-origin",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
       },
       body,
     };
