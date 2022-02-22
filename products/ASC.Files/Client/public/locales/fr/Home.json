@@ -9,7 +9,7 @@
     "ByTitle": "Titre",
     "CommonEmptyContainerDescription": "La section \"Documents Communs\" contient des fichiers partagés par l'administrateur du portail avec tous les utilisateurs. Seuls les administrateurs du portail peuvent y créer des fichiers. Les utilisateurs peuvent obtenir un accès complet à un certain dossier de la section. Ainsi, ils pourront créer/télécharger des fichiers dans ce même dossier.  ",
     "ContainsSpecCharacter": "Le titre ne peut contenir aucun des caractères suivants : *+ :\"<>?|/",
-    "Convert": "Convertir",
+    "Convert": "Conversion",
     "CopyItem": "<strong>{{title}}</strong> copié",
     "CopyItems": "<strong>{{qty}}</strong> éléments copiés",
     "Document": "Document",
@@ -79,5 +79,7 @@
     "UnblockVersion": "Débloquer/enregistrer",
     "UploadToFolder": "Télécharger le dossier",
     "ViewList": "Liste",
-    "ViewTiles": "Carreaux"
+    "ViewTiles": "Carreaux",
+    "VersionHistory": "Historique des versions",
+    "MoveOrCopy": "Déplacer ou copier"
 }

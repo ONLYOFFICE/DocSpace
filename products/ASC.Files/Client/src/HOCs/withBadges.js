@@ -1,28 +1,29 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-
 import {
   ShareAccessRights,
   AppServerConfig,
+  FileStatus,
 } from "@appserver/common/constants";
 import toastr from "@appserver/components/toast/toastr";
 import { combineUrl } from "@appserver/common/utils";
-import { getFileConversationProgress } from "@appserver/common/api/files";
 
 import Badges from "../components/Badges";
 import config from "../../package.json";
 
 export default function withBadges(WrappedComponent) {
   class WithBadges extends React.Component {
+    state = { isLoading: false };
+
     onClickLock = () => {
-      const { item, lockFileAction, isAdmin, setIsLoading } = this.props;
+      const { item, lockFileAction, isAdmin } = this.props;
       const { locked, id, access } = item;
 
-      if (isAdmin || access === 0) {
-        setIsLoading(true);
+      if ((isAdmin || access === 0) && !this.state.isLoading) {
+        this.setState({ isLoading: true });
         return lockFileAction(id, !locked)
           .catch((err) => toastr.error(err))
-          .finally(() => setIsLoading(false));
+          .finally(() => this.setState({ isLoading: false }));
       }
       return;
     };
@@ -72,59 +73,6 @@ export default function withBadges(WrappedComponent) {
       }
     };
 
-    getConvertProgress = (fileId) => {
-      const {
-        selectedFolderId,
-        filter,
-        setIsLoading,
-        setSecondaryProgressBarData,
-        t,
-        clearSecondaryProgressData,
-        fetchFiles,
-      } = this.props;
-      getFileConversationProgress(fileId).then((res) => {
-        if (res && res[0] && res[0].progress !== 100) {
-          setSecondaryProgressBarData({
-            icon: "file",
-            visible: true,
-            percent: res[0].progress,
-            label: t("Convert"),
-            alert: false,
-          });
-          setTimeout(() => this.getConvertProgress(fileId), 1000);
-        } else {
-          if (res[0].error) {
-            setSecondaryProgressBarData({
-              visible: true,
-              alert: true,
-            });
-            toastr.error(res[0].error);
-            setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-          } else {
-            setSecondaryProgressBarData({
-              icon: "file",
-              visible: true,
-              percent: 100,
-              label: t("Convert"),
-              alert: false,
-            });
-            setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-            const newFilter = filter.clone();
-            fetchFiles(selectedFolderId, newFilter)
-              .catch((err) => {
-                setSecondaryProgressBarData({
-                  visible: true,
-                  alert: true,
-                });
-                //toastr.error(err);
-                setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-              })
-              .finally(() => setIsLoading(false));
-          }
-        }
-      });
-    };
-
     setConvertDialogVisible = () => {
       this.props.setConvertItem(this.props.item);
       this.props.setConvertDialogVisible(true);
@@ -144,7 +92,8 @@ export default function withBadges(WrappedComponent) {
       } = this.props;
       const { fileStatus, access } = item;
 
-      const newItems = item.new || fileStatus === 2;
+      const newItems =
+        item.new || (fileStatus & FileStatus.IsNew) === FileStatus.IsNew;
       const showNew = !!newItems;
 
       const accessToEdit =
@@ -183,23 +132,17 @@ export default function withBadges(WrappedComponent) {
     (
       {
         auth,
-        formatsStore,
         treeFoldersStore,
         filesActionsStore,
         versionHistoryStore,
         selectedFolderStore,
         dialogsStore,
         filesStore,
-        uploadDataStore,
+        settingsStore,
       },
       { item }
     ) => {
-      const { docserviceStore } = formatsStore;
-      const {
-        isRecycleBinFolder,
-        isPrivacyFolder,
-        updateRootBadge,
-      } = treeFoldersStore;
+      const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
       const {
         lockFileAction,
         setFavoriteAction,
@@ -212,15 +155,10 @@ export default function withBadges(WrappedComponent) {
         setConvertDialogVisible,
         setConvertItem,
       } = dialogsStore;
-      const { filter, setIsLoading, fetchFiles } = filesStore;
-      const { secondaryProgressDataStore } = uploadDataStore;
-      const {
-        setSecondaryProgressBarData,
-        clearSecondaryProgressData,
-      } = secondaryProgressDataStore;
+      const { setIsLoading } = filesStore;
 
-      const canWebEdit = docserviceStore.canWebEdit(item.fileExst);
-      const canConvert = docserviceStore.canConvert(item.fileExst);
+      const canWebEdit = settingsStore.canWebEdit(item.fileExst);
+      const canConvert = settingsStore.canConvert(item.fileExst);
 
       return {
         isAdmin: auth.isAdmin,
@@ -237,13 +175,7 @@ export default function withBadges(WrappedComponent) {
         selectedFolderPathParts: selectedFolderStore.pathParts,
         markAsRead,
         setNewFilesPanelVisible,
-        updateRootBadge,
-        setSecondaryProgressBarData,
-        selectedFolderId: selectedFolderStore.id,
-        filter,
         setIsLoading,
-        clearSecondaryProgressData,
-        fetchFiles,
         setConvertDialogVisible,
         setConvertItem,
         isDesktopClient,

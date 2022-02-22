@@ -32,35 +32,33 @@ namespace ASC.ElasticSearch.Service
     [Singletone]
     public class Settings
     {
-        public static Settings GetInstance(ConfigurationExtension configuration)
+        public Settings(ConfigurationExtension configuration)
         {
-            var result = new Settings();
-            var cfg = configuration.GetSetting<Settings>("elastic");
-            result.Scheme = cfg.Scheme ?? "http";
-            result.Host = cfg.Host ?? "localhost";
-            result.Port = cfg.Port ?? 9200;
-            result.Period = cfg.Period ?? 1;
-            result.MaxContentLength = cfg.MaxContentLength ?? 100 * 1024 * 1024L;
-            result.MaxFileSize = cfg.MaxFileSize ?? 10 * 1024 * 1024L;
-            result.Threads = cfg.Threads ?? 1;
-            result.HttpCompression = cfg.HttpCompression ?? true;
-            return result;
+            configuration.GetSetting("elastic", this);
         }
 
-        public string Host { get; set; }
+        private string host;
+        public string Host { get => host ?? "localhost"; set { host = value; } }
 
-        public int? Port { get; set; }
+        private int? port;
+        public int? Port { get => port ?? 9200; set { port = value; } }
 
-        public string Scheme { get; set; }
+        private string scheme;
+        public string Scheme { get => scheme ?? "http"; set { scheme = value; } }
 
-        public int? Period { get; set; }
+        private int? period;
+        public int? Period { get => period ?? 1; set { period = value; } }
 
-        public long? MaxContentLength { get; set; }
+        private long? maxContentLength;
+        public long? MaxContentLength { get => maxContentLength ?? 100 * 1024 * 1024L; set { maxContentLength = value; } }
 
-        public long? MaxFileSize { get; set; }
+        private long? maxFileSize;
+        public long? MaxFileSize { get => maxFileSize ?? 10 * 1024 * 1024L; set { maxFileSize = value; } }
 
-        public int? Threads { get; set; }
+        private int? threads;
+        public int? Threads { get => threads ?? 1; set { threads = value; } }
 
-        public bool? HttpCompression { get; set; }
+        private bool? httpCompression;
+        public bool? HttpCompression { get => httpCompression ?? true; set { httpCompression = value; } }
     }
 }

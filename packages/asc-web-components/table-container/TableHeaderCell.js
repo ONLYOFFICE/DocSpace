@@ -13,16 +13,19 @@ const TableHeaderCell = ({
   sortBy,
   sorted,
   defaultSize,
+  sortingVisible,
 }) => {
   const { title, enable, active, minWidth } = column;
 
   const isActive = column.sortBy === sortBy || active;
 
   const onClick = (e) => {
+    if (!sortingVisible) return;
     column.onClick && column.onClick(column.sortBy, e);
   };
 
   const onIconClick = (e) => {
+    if (!sortingVisible) return;
     column.onIconClick();
     e.stopPropagation();
   };
@@ -38,6 +41,7 @@ const TableHeaderCell = ({
       data-min-width={minWidth}
       data-default-size={defaultSize}
       onClick={onClick}
+      sortingVisible={sortingVisible}
     >
       <div className="table-container_header-item">
         <div className="header-container-text-wrapper">
@@ -49,13 +53,15 @@ const TableHeaderCell = ({
             {enable ? title : ""}
           </Text>
 
-          <IconButton
-            onClick={column.onIconClick ? onIconClick : onClick}
-            iconName="/static/images/folder arrow.react.svg"
-            className="header-container-text-icon"
-            size="small"
-            hoverColor="#657077"
-          />
+          {sortingVisible && (
+            <IconButton
+              onClick={column.onIconClick ? onIconClick : onClick}
+              iconName="/static/images/folder arrow.react.svg"
+              className="header-container-text-icon"
+              size="small"
+              hoverColor="#657077"
+            />
+          )}
         </div>
         {resizable && (
           <div
@@ -77,6 +83,7 @@ TableHeaderCell.propTypes = {
   sorted: PropTypes.bool,
   sortBy: PropTypes.string,
   defaultSize: PropTypes.number,
+  sortingVisible: PropTypes.bool,
 };
 
 export default TableHeaderCell;

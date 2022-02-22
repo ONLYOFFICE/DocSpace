@@ -2,67 +2,45 @@ import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { useTranslation } from "react-i18next";
-import styled from "styled-components";
 import Text from "@appserver/components/text";
 import toastr from "studio/toastr";
 import PageLayout from "@appserver/common/components/PageLayout";
-import history from "@appserver/common/history";
-import ModuleTile from "./ModuleTile";
 import { tryRedirectTo } from "@appserver/common/utils";
 import { setDocumentTitle } from "../../../helpers/utils";
 import { inject, observer } from "mobx-react";
-import config from "../../../../package.json";
+import { HomeIllustration, ModuleTile, HomeContainer } from "./sub-components";
+import Heading from "@appserver/components/heading";
 
-const HomeContainer = styled.div`
-  padding: 62px 15px 0 15px;
-  margin: 0 auto;
-  max-width: 1140px;
-  width: 100%;
-  box-sizing: border-box;
-  /*justify-content: center;*/
-
-  .home-modules {
-    display: flex;
-    flex-wrap: wrap;
-    margin: 0 -15px;
-
-    .home-module {
-      flex-basis: 0;
-      flex-grow: 1;
-      max-width: 100%;
-    }
-  }
-
-  .home-error-text {
-    margin-top: 23px;
-    padding: 0 30px;
-    @media (min-width: 768px) {
-      margin-left: 25%;
-      flex: 0 0 50%;
-      max-width: 50%;
-    }
-    @media (min-width: 576px) {
-      flex: 0 0 100%;
-      max-width: 100%;
-    }
-  }
-`;
-
-const Tiles = ({ modules, isPrimary }) => {
+const Tiles = ({ availableModules, displayName, t }) => {
   let index = 0;
-  const mapped = modules.filter(
-    (m) => m.isPrimary === isPrimary && m.isolateMode !== true
+
+  const getGreeting = (displayName) => {
+    const name = displayName.trim();
+    const time = new Date().getHours();
+
+    if (time >= 5 && time <= 11) return t("GoodMorning", { displayName: name });
+    if (time >= 12 && time <= 16)
+      return t("GoodAfternoon", { displayName: name });
+    return t("GoodEvening", { displayName: name });
+  };
+
+  const greetingMessage = getGreeting(displayName);
+
+  const modules = availableModules.filter(
+    (module) => module.separator !== true && module.id !== "settings"
   );
 
-  //console.log("Tiles", mapped, isPrimary);
+  return modules.length > 0 ? (
+    <div className="home-modules-container">
+      <Heading className="greeting">{greetingMessage}</Heading>
 
-  return mapped.length > 0 ? (
-    <div className="home-modules">
-      {mapped.map((m) => (
-        <div className="home-module" key={++index}>
-          <ModuleTile {...m} onClick={() => history.push(m.link)} />
-        </div>
-      ))}
+      <div className="home-modules">
+        {modules.map((m) => (
+          <div className="home-module" key={`${++index}-${m.appName}`}>
+            <ModuleTile {...m} />
+          </div>
+        ))}
+      </div>
     </div>
   ) : (
     <></>
@@ -70,12 +48,13 @@ const Tiles = ({ modules, isPrimary }) => {
 };
 
 Tiles.propTypes = {
-  modules: PropTypes.array.isRequired,
-  isPrimary: PropTypes.bool.isRequired,
+  availableModules: PropTypes.array.isRequired,
+  displayName: PropTypes.string,
+  t: PropTypes.func,
 };
 
-const Body = ({ modules, match, isLoaded }) => {
-  const { t } = useTranslation();
+const Body = ({ match, isLoaded, availableModules, displayName }) => {
+  const { t } = useTranslation(["Home", "translation"]);
   const { error } = match.params;
   setDocumentTitle();
 
@@ -85,23 +64,35 @@ const Body = ({ modules, match, isLoaded }) => {
     <></>
   ) : (
     <HomeContainer>
-      <Tiles modules={modules} isPrimary={true} />
-      <Tiles modules={modules} isPrimary={false} />
+      <Tiles
+        availableModules={availableModules}
+        displayName={displayName}
+        t={t}
+      />
 
-      {!modules || !modules.length ? (
+      <HomeIllustration />
+
+      {!availableModules || !availableModules.length ? (
         <Text className="home-error-text" fontSize="14px" color="#c30">
-          {t("NoOneModulesAvailable")}
+          {t("translation:NoOneModulesAvailable")}
         </Text>
       ) : null}
     </HomeContainer>
   );
 };
 
+Body.propTypes = {
+  availableModules: PropTypes.array.isRequired,
+  isLoaded: PropTypes.bool,
+  match: PropTypes.object,
+  displayName: PropTypes.string,
+};
+
 const Home = ({ defaultPage, ...rest }) => {
   return tryRedirectTo(defaultPage) ? (
     <></>
   ) : (
-    <PageLayout>
+    <PageLayout isHomepage>
       <PageLayout.SectionBody>
         <Body {...rest} />
       </PageLayout.SectionBody>
@@ -110,18 +101,21 @@ const Home = ({ defaultPage, ...rest }) => {
 };
 
 Home.propTypes = {
-  modules: PropTypes.array.isRequired,
+  availableModules: PropTypes.array.isRequired,
   isLoaded: PropTypes.bool,
   defaultPage: PropTypes.string,
+  displayName: PropTypes.string,
 };
 
 export default inject(({ auth }) => {
-  const { isLoaded, settingsStore, moduleStore } = auth;
+  const { isLoaded, settingsStore, availableModules, userStore } = auth;
   const { defaultPage } = settingsStore;
-  const { modules } = moduleStore;
+  const { displayName } = userStore.user;
+
   return {
     defaultPage,
-    modules,
     isLoaded,
+    availableModules,
+    displayName,
   };
 })(withRouter(observer(Home)));

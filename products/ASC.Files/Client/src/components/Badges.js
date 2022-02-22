@@ -7,6 +7,7 @@ import {
   StyledFileActionsEditFormIcon,
   StyledFileActionsLockedIcon,
 } from "./Icons";
+import { FileStatus } from "@appserver/common/constants";
 
 const Badges = ({
   t,
@@ -34,12 +35,11 @@ const Badges = ({
     versionGroup,
     title,
     fileExst,
+    isEditing,
   } = item;
 
-  const isFavorite = fileStatus === 32;
-  const isEditing = fileStatus === 1;
-  const isNewWithFav = fileStatus === 34;
-  const isEditingWithFav = fileStatus === 33;
+  const isFavorite =
+    (fileStatus & FileStatus.IsFavorite) === FileStatus.IsFavorite;
   const showEditBadge = !locked || item.access === 0;
   const isPrivacy = isPrivacyFolder && isDesktopClient;
   const isForm = fileExst === ".oform";
@@ -59,7 +59,6 @@ const Badges = ({
       )}
       {canWebEdit &&
         !isEditing &&
-        !isEditingWithFav &&
         !isTrashFolder &&
         !isPrivacy &&
         accessToEdit &&
@@ -79,7 +78,7 @@ const Badges = ({
             hoverColor="#3B72A7"
           />
         )}
-      {(isEditing || isEditingWithFav) &&
+      {isEditing &&
         React.createElement(
           isForm
             ? StyledFileActionsEditFormIcon
@@ -99,7 +98,7 @@ const Badges = ({
           onClick={onClickLock}
         />
       )}
-      {(isFavorite || isNewWithFav || isEditingWithFav) && !isTrashFolder && (
+      {isFavorite && !isTrashFolder && (
         <StyledFavoriteIcon
           className="favorite icons-group badge"
           size="small"
@@ -124,7 +123,7 @@ const Badges = ({
           data-id={id}
         />
       )}
-      {(showNew || isNewWithFav) && (
+      {showNew && (
         <Badge
           className="badge-version icons-group"
           backgroundColor="#ED7309"

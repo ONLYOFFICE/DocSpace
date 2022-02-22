@@ -89,6 +89,7 @@ const PureTreeSettings = ({
   t,
   isVisitor,
   isDesktop,
+  hideArticle,
 }) => {
   const { setting } = match.params;
 
@@ -119,6 +120,8 @@ const PureTreeSettings = ({
 
     //if (selectedFolder) setSelectedFolder({});
     setSelectedFolder(null); //getSelectedTreeNode
+
+    hideArticle();
 
     if (path === "settings") {
       setSelectedNode(["common"]);
@@ -232,6 +235,8 @@ export default inject(
       setExpandSettingsTree,
     } = settingsStore;
 
+    const { hideArticle } = auth.settingsStore;
+
     return {
       isAdmin: auth.isAdmin,
       isVisitor: auth.userStore.user.isVisitor,
@@ -245,6 +250,7 @@ export default inject(
       setSelectedNode,
       setExpandSettingsTree,
       isDesktop: auth.settingsStore.isDesktopClient,
+      hideArticle,
     };
   }
 )(observer(TreeSettings));

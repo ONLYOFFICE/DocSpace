@@ -121,7 +121,7 @@ class Body extends Component {
         .then(() => {
           let select = cultureNames.filter((lang) => lang.key === culture);
           if (!select.length)
-            select = cultureNames.filter((lang) => lang.key === "en-US");
+            select = cultureNames.filter((lang) => lang.key === "en");
 
           this.setState({
             selectLanguage: {

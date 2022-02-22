@@ -125,7 +125,12 @@ namespace ASC.Web.Studio.Utility
 
         public string GetMyStaff()
         {
-            return CoreBaseSettings.Personal ? ToAbsolute("~/my.aspx") : ToAbsolute("~/products/people/view/@self");
+            return CoreBaseSettings.Personal ? ToAbsolute("~/my") : ToAbsolute("~/products/people/view/@self");
+        }
+
+        public string GetUnsubscribe()
+        {
+            return CoreBaseSettings.Personal ? ToAbsolute("~/my?unsubscribe=tips") : ToAbsolute("~/products/people/view/@self");
         }
 
         public string GetEmployees()

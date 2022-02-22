@@ -232,6 +232,7 @@ class UsersStore {
         activationStatus,
         status,
         groups,
+        title,
       } = user;
       const statusType = this.getStatusType(user);
       const role = this.getUserRole(user);
@@ -264,6 +265,7 @@ class UsersStore {
         mobilePhone,
         options,
         groups,
+        position: title,
       };
     });
 

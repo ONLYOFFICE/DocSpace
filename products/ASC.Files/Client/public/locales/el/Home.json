@@ -79,5 +79,7 @@
     "UnblockVersion": "Αναίρεση αποκλεισμού / Check-in",
     "UploadToFolder": "Μεταφόρτωση σε φάκελο",
     "ViewList": "Λίστα",
-    "ViewTiles": "Πλακίδια"
+    "ViewTiles": "Πλακίδια",
+    "VersionHistory": "Ιστορικό Εκδόσεων",
+    "MoveOrCopy": "Μετακίνηση ή αντιγραφή"
 }

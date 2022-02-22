@@ -12,6 +12,7 @@
   "DownloadAs": "Download as",
   "EncryptedFileSaving": "Saving encrypted file",
   "Files": "Files",
+  "FileProtected": "The file is password protected",
   "Folders": "Folders",
   "FolderSelection": "Folder selection",
   "FolderTitleBoxNet": "Box directory",

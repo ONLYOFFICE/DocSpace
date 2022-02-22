@@ -1,5 +1,7 @@
 function clearCaches() {
   try {
+    if (!("caches" in window)) return;
+
     caches?.keys()?.then(function (keyList) {
       return Promise.all(
         keyList.map(function (key) {
@@ -18,13 +20,8 @@ function clearCaches() {
   }
 }
 export default function () {
-  if (
-    process.env.NODE_ENV !== "production" &&
-    !("serviceWorker" in navigator)
-  ) {
-    console.log("SKIP registerSW because of DEV mode");
+  if (process.env.NODE_ENV !== "production" || !("serviceWorker" in navigator))
     return;
-  }
 
   clearCaches();
 

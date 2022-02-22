@@ -29,36 +29,34 @@ using System.Text;
 
 using ASC.Common;
 using ASC.Common.Logging;
-using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.ElasticSearch.Service;
 
 using Elasticsearch.Net;
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 using Nest;
 
 namespace ASC.ElasticSearch
 {
-    [Scope]
+    [Singletone]
     public class Client
     {
         private static volatile ElasticClient client;
-        private bool IsInit;
         private static readonly object Locker = new object();
 
-        public ILog Log { get; }
-
-        private CoreConfiguration CoreConfiguration { get; }
+        private ILog Log { get; }
         private Settings Settings { get; }
+        private IServiceProvider ServiceProvider { get; }
 
-        public Client(IOptionsMonitor<ILog> option, CoreConfiguration coreConfiguration, ConfigurationExtension configurationExtension)
+        public Client(IOptionsMonitor<ILog> option, IServiceProvider serviceProvider, Settings settings)
         {
             Log = option.Get("ASC.Indexer");
-            CoreConfiguration = coreConfiguration;
-            Settings = Settings.GetInstance(configurationExtension);
+            Settings = settings;
+            ServiceProvider = serviceProvider;
         }
 
         public ElasticClient Instance
@@ -71,6 +69,8 @@ namespace ASC.ElasticSearch
                 {
                     if (client != null) return client;
 
+                    using var scope = ServiceProvider.CreateScope();
+                    var CoreConfiguration = ServiceProvider.GetService<CoreConfiguration>();
                     var launchSettings = CoreConfiguration.GetSection<Settings>(Tenant.DEFAULT_TENANT) ?? Settings;
 
                     var uri = new Uri(string.Format("{0}://{1}:{2}", launchSettings.Scheme, launchSettings.Host, launchSettings.Port));
@@ -97,35 +97,45 @@ namespace ASC.ElasticSearch
                         });
                     }
 
-                    client = new ElasticClient(settings);
-
-                    if (!IsInit)
+                    try
                     {
-                        try
+                        if (Ping(new ElasticClient(settings)))
                         {
-                            var result = client.Ping(new PingRequest());
+                            client = new ElasticClient(settings);
 
-                            var isValid = result.IsValid;
-
-                            if (result.IsValid)
-                            {
-                                client.Ingest.PutPipeline("attachments", p => p
-                                .Processors(pp => pp
-                                    .Attachment<Attachment>(a => a.Field("document.data").TargetField("document.attachment"))
-                                ));
-                            }
-
-                            IsInit = true;
+                            client.Ingest.PutPipeline("attachments", p => p
+                            .Processors(pp => pp
+                                .Attachment<Attachment>(a => a.Field("document.data").TargetField("document.attachment"))
+                            ));
                         }
-                        catch (Exception e)
-                        {
-                            Log.Error(e);
-                        }
+
                     }
+                    catch (Exception e)
+                    {
+                        Log.Error(e);
+                    }
+
+
 
                     return client;
                 }
             }
+        }
+
+        public bool Ping()
+        {
+            return Ping(Instance);
+        }
+
+        private bool Ping(ElasticClient elasticClient)
+        {
+            if (elasticClient == null) return false;
+
+            var result = elasticClient.Ping(new PingRequest());
+
+            Log.DebugFormat("Ping {0}", result.DebugInformation);
+
+            return result.IsValid;
         }
     }
 }

@@ -79,5 +79,7 @@
     "UnblockVersion": "取消阻止/签入",
     "UploadToFolder": "上传至文件夹",
     "ViewList": "列表",
-    "ViewTiles": "卡片"
+    "ViewTiles": "卡片",
+    "VersionHistory": "版本历史",
+    "MoveOrCopy": "移动或复制"
 }
