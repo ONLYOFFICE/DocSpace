@@ -7,10 +7,6 @@ POPD
 
 if %errorlevel% == 0 (
 	pwsh  %~dp0/command.ps1 "stop"
-	
-	for /R "%~dp0\..\..\common\services\winswConfigs\" %%f in (*.xml) do (
-		call %~dp0\..\..\thirdparty\winsw.exe stop %%f
-	)
 )
 
 echo.

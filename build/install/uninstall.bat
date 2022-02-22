@@ -9,9 +9,8 @@ if %errorlevel% == 0 (
 		call sc stop "Onlyoffice%%~nf"
 		call sc delete "Onlyoffice%%~nf"
 	)
-	for /R "..\common\services\winswConfigs\" %%f in (*.xml) do (
-		call ..\thirdparty\winsw.exe stop %%f
-		call ..\thirdparty\winsw.exe uninstall %%f
+	for /R "run\" %%f in (*.xml) do (
+		call install\win\WinSW3.0.0.exe uninstall %%f
 	)
 )
 

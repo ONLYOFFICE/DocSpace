@@ -1,13 +1,13 @@
 <service>
-  <id>OnlyofficeUrlShortener.Svc</id>
-  <name>OnlyofficeUrlShortener.Svc</name>
+  <id>OnlyofficeUrlShortenerService</id>
+  <name>OnlyofficeUrlShortenerService</name>
   <description>This service runs UrlShortener.</description>
   <executable>node</executable>
-  <arguments>../../ASC.UrlShortener/index.js</arguments>
+  <arguments>../../common/ASC.UrlShortener/index.js</arguments>
   <log mode="roll-by-time">
 	<pattern>dd-MM</pattern>
   </log>
   <logpath>../../../Logs</logpath>
   <delayedAutoStart>true</delayedAutoStart>
-  <onfailure action="restart" delay="1 min" />
+  <onfailure action="restart" delay="5 sec" />
 </service>
