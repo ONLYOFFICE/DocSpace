@@ -352,6 +352,9 @@ const StyledBackupList = styled.div`
       margin-left: -8px !important;
     }
   }
+  .backup-restore_empty-list {
+    margin-top: 96px;
+  }
 `;
 export {
   StyledModules,

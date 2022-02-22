@@ -158,7 +158,12 @@ class BackupListModalDialog extends React.Component {
                     selectedFileIndex={selectedFileIndex}
                   />
                 ) : (
-                  <Text fontSize="12px" color="#A3A9AE" textAlign="center">
+                  <Text
+                    fontSize="12px"
+                    color="#A3A9AE"
+                    textAlign="center"
+                    className="backup-restore_empty-list"
+                  >
                     {t("EmptyBackupList")}
                   </Text>
                 )
@@ -181,21 +186,23 @@ class BackupListModalDialog extends React.Component {
           </StyledBackupList>
         </ModalDialog.Body>
         <ModalDialog.Footer>
-          <StyledBackupList>
-            <Button
-              primary
-              className="restore_dialog-button"
-              size="medium"
-              label={t("Translations:Restore")}
-              onClick={this.onRestorePortal}
-            />
-            <Button
-              className="restore_dialog-button"
-              size="medium"
-              label={t("Common:CloseButton")}
-              onClick={onModalClose}
-            />
-          </StyledBackupList>
+          {filesList.length > 0 && (
+            <StyledBackupList>
+              <Button
+                primary
+                className="restore_dialog-button"
+                size="medium"
+                label={t("Translations:Restore")}
+                onClick={this.onRestorePortal}
+              />
+              <Button
+                className="restore_dialog-button"
+                size="medium"
+                label={t("Common:CloseButton")}
+                onClick={onModalClose}
+              />
+            </StyledBackupList>
+          )}
         </ModalDialog.Footer>
       </ModalDialog>
     );
