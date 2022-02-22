@@ -25,10 +25,8 @@ class BackupListModalDialog extends React.Component {
     this.state = {
       isLoading: true,
       filesList: [],
-      hasNextPage: true,
-      isNextPageLoading: false,
-      selectedFileIndex: "",
-      selectedFileId: "",
+      selectedFileIndex: null,
+      selectedFileId: null,
     };
   }
   componentDidMount() {
@@ -65,18 +63,18 @@ class BackupListModalDialog extends React.Component {
         });
     });
   };
-  onDeleteBackup = (e) => {
-    const { selectedFileId } = this.state;
-
-    if (!selectedFileId) return;
+  onDeleteBackup = (backupId) => {
+    if (!backupId) return;
 
     this.setState({ isLoading: true }, function () {
-      deleteBackup(selectedFileId)
+      deleteBackup(backupId)
         .then(() => getBackupHistory())
         .then((filesList) =>
           this.setState({
             filesList,
             isLoading: false,
+            selectedFileIndex: null,
+            selectedFileId: null,
           })
         )
         .catch((error) => {
@@ -100,6 +98,7 @@ class BackupListModalDialog extends React.Component {
           value: backupId,
         },
       ];
+
       startRestore(backupId, storageType, storageParams, isNotify)
         .then(() =>
           history.push(
@@ -114,6 +113,8 @@ class BackupListModalDialog extends React.Component {
         .finally(() =>
           this.setState({
             isLoading: false,
+            selectedFileIndex: null,
+            selectedFileId: null,
           })
         );
     });
@@ -121,7 +122,7 @@ class BackupListModalDialog extends React.Component {
   render() {
     const { onModalClose, isVisibleDialog, t, isCopyingToLocal } = this.props;
     const { filesList, isLoading, selectedFileIndex } = this.state;
-    console.log("selectedFileIndex", selectedFileIndex);
+
     return (
       <ModalDialog
         visible={isVisibleDialog}

@@ -282,14 +282,14 @@ const StyledBackupList = styled.div`
     margin: 10px 0 16px 0;
   }
 
-  .backup-list_trash-icon:hover {
-    path {
-      fill: #657077;
-    }
-  }
   .backup-list_trash-icon {
     cursor: pointer;
-    margin-top: 1px;
+    margin-top: -3px;
+    grid-area: trash;
+
+    path {
+      fill: #a3a9ae;
+    }
   }
 
   .backup-list_icon {
@@ -307,10 +307,6 @@ const StyledBackupList = styled.div`
   .backup-list_file-exst {
     color: #a3a9ae;
     grid-area: ext;
-  }
-
-  .backup-list_trash {
-    grid-area: trash;
   }
 
   .backup-list_radio-button {

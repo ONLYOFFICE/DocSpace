@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import { FixedSizeList as List } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import CustomScrollbarsVirtualList from "@appserver/components/scrollbar/custom-scrollbars-virtual-list";
-import TrashIcon from "../../../../../../../../../public/images/button.trash.react.svg";
+import TrashIcon from "../../../../../../../../../public/images/delete.react.svg";
 import { StyledBackupList } from "../StyledBackup";
 import { ReactSVG } from "react-svg";
 import Text from "@appserver/components/text";
@@ -21,45 +21,51 @@ const BackupListBody = ({
     [selectedFileIndex]
   );
 
-  const Item = ({ index, style }) => {
-    const file = filesList[index];
-    const fileId = file.id;
-    const fileName = file.fileName;
-    const isChecked = isFileChecked(index);
+  const onTrashClick = (id) => {
+    onDeleteBackup(id);
+  };
 
-    return (
-      <div style={style}>
-        <StyledBackupList isChecked={isChecked}>
-          <div className="backup-list_item">
-            <ReactSVG
-              src={" /static/images/icons/24/file_archive.svg"}
-              className="backup-list_icon"
-            />
+  const Item = useCallback(
+    ({ index, style }) => {
+      const file = filesList[index];
+      const fileId = file.id;
+      const fileName = file.fileName;
+      const isChecked = isFileChecked(index);
 
-            <Text className="backup-list_full-name">{fileName}</Text>
+      return (
+        <div style={style}>
+          <StyledBackupList isChecked={isChecked}>
+            <div className="backup-list_item">
+              <ReactSVG
+                src={" /static/images/icons/24/file_archive.svg"}
+                className="backup-list_icon"
+              />
 
-            <RadioButton
-              fontSize="13px"
-              fontWeight="400"
-              value=""
-              label=""
-              isChecked={isChecked}
-              onClick={onSelectFile}
-              name={`${index}_${fileId}`}
-              className="backup-list-dialog_checked"
-            />
+              <Text className="backup-list_full-name">{fileName}</Text>
 
-            <div className="backup-list_trash">
+              <RadioButton
+                fontSize="13px"
+                fontWeight="400"
+                value=""
+                label=""
+                isChecked={isChecked}
+                onClick={onSelectFile}
+                name={`${index}_${fileId}`}
+                className="backup-list-dialog_checked"
+              />
+
               <TrashIcon
                 className="backup-list_trash-icon"
-                onClick={onDeleteBackup}
+                onClick={() => onTrashClick(fileId)}
               />
             </div>
-          </div>
-        </StyledBackupList>
-      </div>
-    );
-  };
+          </StyledBackupList>
+        </div>
+      );
+    },
+    [filesList, isFileChecked]
+  );
+
   return (
     <AutoSizer>
       {({ height, width }) => (
