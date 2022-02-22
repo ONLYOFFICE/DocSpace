@@ -13,9 +13,7 @@ Feature(featureName);
 
 Scenario("TfaAuth page render test", async ({ I }) => {
   I.mockEndpoint(Endpoints.confirm, "confirm");
-  I.amOnPage(
-    "/confirm/TfaAuth?type=TfaAuth&key=EXAMPLEKEY1&email=test%40example.com"
-  );
+  I.amOnPage("/confirm/TfaAuth");
 
   I.see("Enter code from authentication app");
 
@@ -42,9 +40,7 @@ Scenario("TfaAuth page render test", async ({ I }) => {
 Scenario("Profile Remove page render test", async ({ I }) => {
   I.mockEndpoint(Endpoints.settings, "settings");
   I.mockEndpoint(Endpoints.confirm, "confirm");
-  I.amOnPage(
-    "/confirm/ProfileRemove?type=ProfileRemove&key=EXAMPLEKEY1&email=test%40example.com&uid=EXAMPLEUID"
-  );
+  I.amOnPage("/confirm/ProfileRemove");
 
   I.see("Web Office");
   I.see("Attention! You are about to delete your account.");
@@ -66,9 +62,7 @@ Scenario("Profile Remove page render test", async ({ I }) => {
 Scenario("Change phone page render test", async ({ I }) => {
   I.mockEndpoint(Endpoints.settings, "settings");
   I.mockEndpoint(Endpoints.confirm, "confirm");
-  I.amOnPage(
-    "/confirm/PhoneActivation?type=PhoneActivation&key=EXAMPLEKEY1&email=test%40example.com&uid=EXAMPLEUID"
-  );
+  I.amOnPage("/confirm/PhoneActivation");
 
   I.see("Enter mobile phone number");
 
@@ -96,7 +90,7 @@ Scenario("Create user page render test", async ({ I }) => {
   I.mockEndpoint(Endpoints.providers, "providers");
   I.mockEndpoint(Endpoints.confirm, "confirm");
 
-  I.amOnPage("/confirm/LinkInvite?type=LinkInvite&key=EXAMPLEKEY1&emplType=1");
+  I.amOnPage("/confirm/LinkInvite");
 
   I.see("Web Office");
 
