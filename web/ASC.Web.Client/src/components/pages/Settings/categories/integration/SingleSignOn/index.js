@@ -1,4 +1,5 @@
 import React from "react";
+import { isDesktop } from "react-device-detect";
 import { observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
@@ -8,6 +9,7 @@ import FormStore from "@appserver/studio/src/store/SsoFormStore";
 
 import Certificates from "./Certificates";
 import FieldMapping from "./FieldMapping";
+import ForbiddenPage from "./sub-components/ForbiddenPage";
 import HideButton from "./sub-components/HideButton";
 import IdpSettings from "./IdpSettings";
 import ProviderMetadata from "./ProviderMetadata";
@@ -16,6 +18,8 @@ import ToggleSSO from "./sub-components/ToggleSSO";
 
 const SingleSignOn = () => {
   const { t } = useTranslation(["SingleSignOn", "Common"]);
+
+  if (!isDesktop) return <ForbiddenPage t={t} />;
 
   return (
     <StyledSsoPage
