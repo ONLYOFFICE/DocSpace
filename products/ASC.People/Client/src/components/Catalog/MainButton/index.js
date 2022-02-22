@@ -141,8 +141,6 @@ class CatalogMainButtonContent extends React.Component {
       }, */
     ];
 
-    console.log(sectionWidth);
-
     return isAdmin ? (
       <>
         {isMobile || isMobileUtils() || isTabletUtils() ? (
