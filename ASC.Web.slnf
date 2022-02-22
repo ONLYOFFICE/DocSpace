@@ -24,7 +24,6 @@
       "common\\services\\ASC.Notify\\ASC.Notify.csproj",
       "common\\services\\ASC.Studio.Notify\\ASC.Studio.Notify.csproj",
       "common\\services\\ASC.TelegramService\\ASC.TelegramService.csproj",
-      "common\\services\\ASC.UrlShortener.Svc\\ASC.UrlShortener.Svc.csproj",
       "common\\services\\ASC.Webhooks.Service\\ASC.Webhooks.Service.csproj",
       "products\\ASC.Files\\Core\\ASC.Files.Core.csproj",
       "products\\ASC.Files\\Server\\ASC.Files.csproj",
