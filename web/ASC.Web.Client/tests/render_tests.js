@@ -191,3 +191,36 @@ Scenario("Activate user page render test", async ({ I }) => {
     });
   }
 });
+
+Scenario("Change password page render test", async ({ I }) => {
+  I.mockEndpoint(Endpoints.settings, "settings");
+  I.mockEndpoint(Endpoints.password, "password");
+  I.mockEndpoint(Endpoints.confirm, "confirm");
+
+  I.amOnPage("/confirm/PasswordChange");
+
+  I.see("Web Office");
+  I.see("Now you can create a new password");
+
+  I.seeElement({
+    react: "PasswordInput",
+    props: {
+      className: "password-input",
+    },
+  });
+
+  I.seeElement({
+    react: "Button",
+    props: {
+      className: "password-button",
+    },
+  });
+
+  I.saveScreenshot(`7.change-password.png`);
+  if (!isModel) {
+    I.seeVisualDiff(`7.change-password.png`, {
+      tolerance: 1,
+      prepareBaseImage: false,
+    });
+  }
+});
