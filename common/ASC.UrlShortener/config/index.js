@@ -43,15 +43,15 @@ module.exports = nconf;
 
 function getAndSaveAppsettings(){
     var appsettings = nconf.get("appsettings");
-    try{
-        var env = nconf.get("environment");
-        var valueEnv = nconf.get(env);
-        var fileWithEnv = path.join(__dirname, appsettings, 'appsettings.' + valueEnv + '.json');
-    
-        fs.accessSync(fileWithEnv);
+    var env = nconf.get("environment");
+    var valueEnv = nconf.get(env);
+    var fileWithEnv = path.join(__dirname, appsettings, 'appsettings.' + valueEnv + '.json');
+
+    if(fs.existsSync(fileWithEnv)){
         nconf.file({ file: fileWithEnv});
-    }catch(err) {
-        nconf.file({ file: path.join(__dirname, appsettings, 'appsettings.json') });
+    }
+    else{
+        nconf.file({ file: path.join(__dirname, appsettings, 'appsettings.json')});
     }
 }
 
