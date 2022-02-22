@@ -68,8 +68,8 @@ const StyledTableRow = styled(TableRow)`
   }
 
   .table-container_row-checkbox {
-    padding-left: 4px;
-    width: 26px;
+    padding-left: 12px;
+    width: 16px;
   }
 
   &:hover {
