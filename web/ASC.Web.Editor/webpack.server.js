@@ -1,7 +1,6 @@
 const path = require("path");
-const { config } = require("process");
 
-config = {
+const config = {
   name: "server",
   entry: "./src/index.js",
   target: "node",
@@ -37,10 +36,7 @@ config = {
 
 module.exports = (env, argv) => {
   if (argv.mode === "production") {
-    process.env.NODE_ENV = "production";
     config.mode = "production";
-  } else {
-    process.env.NODE_ENV = "development";
   }
 
   return config;

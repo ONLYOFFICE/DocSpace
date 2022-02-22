@@ -2,13 +2,15 @@ export default function template(
   title,
   initialState = {},
   content = "",
-  styleTags
+  styleTags,
+  scriptTags
 ) {
   const scripts = `   
-    <script>
+    <script id="__STATE__">
       window.__STATE__ = ${JSON.stringify(initialState)}
     </script>
-    <script src="/products/files/doceditor/static/scripts/doceditor.client.js"></script>
+
+    ${scriptTags}
 `;
 
   const page = `

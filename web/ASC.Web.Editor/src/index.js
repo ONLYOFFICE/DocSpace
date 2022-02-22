@@ -6,18 +6,29 @@ import render from "./server/render";
 const app = express();
 
 app.use(
-  "/products/files/doceditor/static/scripts/",
-  express.static(path.resolve(__dirname, "static/scripts"))
+  "/products/files/doceditor/static/",
+  express.static(path.resolve(__dirname, "static"))
 );
-app.use("/media", express.static(path.resolve(__dirname, "media")));
-app.use(express.static("dist"));
-app.disable("x-powered-by");
-const port = process.env.PORT || 5013;
-app.listen(port, () => console.log(`server listen port: ${port}`));
+app.use(express.static(path.resolve(__dirname)));
 
-app.get("/products/files/doceditor/", async (req, res) => {
-  const { props, content, styleTags } = await render(req);
-  const response = template("Server Rendered Page", props, content, styleTags);
+app.disable("x-powered-by");
+
+const port = process.env.PORT || 5013;
+
+app.get("/", async (req, res) => {
+  const { props, content, styleTags, scriptTags } = await render(req);
+  const response = template(
+    "Server Rendered Page",
+    props,
+    content,
+    styleTags,
+    scriptTags
+  );
   res.setHeader("Cache-Control", "assets, max-age=604800");
   res.send(response);
+  console.log("there");
 });
+//app.get("/", (req, res) => console.log("root", req));
+const isDevelopment = process.env.NODE_ENV === "development";
+console.log(isDevelopment);
+app.listen(port, () => console.log(`server listen port: ${port}`));

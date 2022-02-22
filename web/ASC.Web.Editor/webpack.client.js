@@ -1,6 +1,9 @@
 const ModuleFederationPlugin = require("webpack").container
   .ModuleFederationPlugin;
 const ExternalTemplateRemotesPlugin = require("external-remotes-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
+
 const AppServerConfig = require("@appserver/common/constants/AppServerConfig");
 const combineUrl = require("@appserver/common/utils/combineUrl");
 const sharedDeps = require("@appserver/common/constants/sharedDependencies");
@@ -9,16 +12,16 @@ const pkg = require("./package.json");
 const { proxyURL } = AppServerConfig;
 const deps = pkg.dependencies || {};
 
-module.exports = {
+const config = {
+  target: "web",
   mode: "development",
-  entry: {
-    client: path.resolve(__dirname, "src/client/index.js"),
-  },
+  entry: "./src/client/index.js",
+
   output: {
-    path: path.resolve(__dirname, "dist"),
-    //filename: "static/js/[name].js",
-    publicPath: "auto",
-    filename: "static/scripts/doceditor.[name].js",
+    path: path.resolve(process.cwd(), "dist"),
+    filename: "static/js/[name].[contenthash].bundle.js",
+    publicPath: "/products/files/doceditor/",
+    chunkFilename: "static/js/[id].[contenthash].js",
   },
   module: {
     rules: [
@@ -108,7 +111,12 @@ module.exports = {
       crypto: false,
     },
   },
+  performance: {
+    maxEntrypointSize: 512000,
+    maxAssetSize: 512000,
+  },
   plugins: [
+    //new CleanWebpackPlugin(),
     new ModuleFederationPlugin({
       name: "editor",
       filename: "remoteEntry.js",
@@ -128,5 +136,32 @@ module.exports = {
       },
     }),
     new ExternalTemplateRemotesPlugin(),
+    new CopyPlugin({
+      patterns: [
+        {
+          from: "public",
+          globOptions: {
+            dot: true,
+            gitignore: true,
+            ignore: ["**/index.html"],
+          },
+        },
+      ],
+    }),
   ],
+};
+
+module.exports = (env, argv) => {
+  if (argv.mode === "production") {
+    config.mode = "production";
+    config.optimization = {
+      splitChunks: { chunks: "all" },
+      minimize: !env.minimize,
+      minimizer: [new TerserPlugin()],
+    };
+  } else {
+    config.devtool = "cheap-module-source-map";
+  }
+
+  return config;
 };

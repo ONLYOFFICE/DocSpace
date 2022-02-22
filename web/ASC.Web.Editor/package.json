@@ -8,9 +8,10 @@
     "build:test.translation": "webpack --env minimize=false hideText=true --mode production",
     "clean": "shx rm -rf dist",
     "deploy": "shx --silent mkdir -p ../../build/deploy/products/ASC.Files/editor && shx cp -r dist/* ../../build/deploy/products/ASC.Files/editor",
-    "start-prod": "yarn build && node dist/index.js",
-    "build": "webpack --config webpack.config.js",
-    "build:server": "webpack --config webpack.server.js --mode production"
+    "build:server": "webpack --config webpack.server.js",
+    "build:client": "webpack --config webpack.client.js --profile --json > dist/stats.json",
+    "build:prod": "yarn clean && shx --silent mkdir dist && yarn build:client --mode production --progress && yarn build:server --mode production --progress && node dist/server.js",
+    "build:dev": "yarn clean && shx --silent mkdir dist && yarn build:client --progress && yarn build:server --progress && node dist/server.js"
   },
   "devDependencies": {
     "@babel/core": "^7.15.5",
@@ -39,11 +40,15 @@
     "webpack": "5.52.1",
     "webpack-cli": "4.9.0",
     "webpack-dev-server": "4.3.1",
-    "webpack-merge": "^5.8.0"
+    "webpack-hot-server-middleware": "^0.6.1",
+    "webpack-merge": "^5.8.0",
+    "webpack-stats-plugin": "^1.0.3"
   },
   "id": "e67be73d-f9ae-4ce1-8fec-1880cb518cb4",
   "title": "ONLYOFFICE",
   "dependencies": {
+    "@loadable/component": "^5.15.2",
+    "@loadable/server": "^5.15.2",
     "express": "^4.17.2"
   }
 }
