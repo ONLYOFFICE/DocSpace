@@ -77,7 +77,8 @@ namespace ASC.IPSecurity
             var restrictions = cache.Get<List<IPRestriction>>(key);
             if (restrictions == null)
             {
-                cache.Insert(key, restrictions = IPRestrictionsRepository.Get(tenant), timeout);
+                restrictions = IPRestrictionsRepository.Get(tenant);
+                cache.Insert(key, restrictions, timeout);
             }
             return restrictions;
         }

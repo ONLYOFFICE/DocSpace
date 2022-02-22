@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Text.Json;
 
 using ASC.Common;
@@ -174,7 +175,12 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             needToMark.AddRange(MoveOrCopyFolders(scope, Folders, toFolder, _copy));
             needToMark.AddRange(MoveOrCopyFiles(scope, Files, toFolder, _copy));
 
-            needToMark.Distinct().ToList().ForEach(x => fileMarker.MarkAsNew(x));
+            var ntm = needToMark.Distinct();
+
+            foreach(var n in ntm)
+            {
+                fileMarker.MarkAsNew(n);
+            }
         }
 
         private List<FileEntry<TTo>> MoveOrCopyFolders<TTo>(IServiceScope scope, List<T> folderIds, Folder<TTo> toFolder, bool copy)
@@ -190,7 +196,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             var toFolderId = toFolder.ID;
             var isToFolder = Equals(toFolderId, DaoFolderId);
 
-
+            var sb = new StringBuilder();
+            sb.Append(Result);
             foreach (var folderId in folderIds)
             {
                 CancellationToken.ThrowIfCancellationRequested();
@@ -238,7 +245,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                                 if (ProcessedFolder(folderId))
                                 {
-                                    Result += string.Format("folder_{0}{1}", newFolder.ID, SPLIT_CHAR);
+                                    sb.Append($"folder_{newFolder.ID}{SPLIT_CHAR}");
                                 }
                             }
 
@@ -257,9 +264,10 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                     else if (FolderDao.IsEmpty(folder.ID))
                                     {
                                         FolderDao.DeleteFolder(folder.ID);
+
                                         if (ProcessedFolder(folderId))
                                         {
-                                            Result += string.Format("folder_{0}{1}", newFolder.ID, SPLIT_CHAR);
+                                            sb.Append($"folder_{newFolder.ID}{SPLIT_CHAR}");
                                         }
                                     }
                                 }
@@ -280,7 +288,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                                         if (ProcessedFolder(folderId))
                                         {
-                                            Result += string.Format("folder_{0}{1}", newFolderId, SPLIT_CHAR);
+                                            sb.Append($"folder_{newFolderId}{SPLIT_CHAR}");
                                         }
                                     }
                                     else if (!FilesSecurity.CanDelete(folder))
@@ -312,7 +320,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                                         if (ProcessedFolder(folderId))
                                         {
-                                            Result += string.Format("folder_{0}{1}", newFolderId, SPLIT_CHAR);
+                                            sb.Append($"folder_{newFolderId}{SPLIT_CHAR}");
                                         }
                                     }
                                 }
@@ -349,10 +357,11 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                                 if (ProcessedFolder(folderId))
                                 {
-                                    Result += string.Format("folder_{0}{1}", newFolderId, SPLIT_CHAR);
+                                    sb.Append($"folder_{newFolderId}{SPLIT_CHAR}");
                                 }
                             }
                         }
+                        Result = sb.ToString();
                     }
                     catch (Exception ex)
                     {
@@ -377,8 +386,10 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             var (filesMessageService, fileMarker, fileUtility, global, entryManager) = scopeClass;
             var fileDao = scope.ServiceProvider.GetService<IFileDao<TTo>>();
             var fileTracker = scope.ServiceProvider.GetService<FileTrackerHelper>();
+            var socketManager = scope.ServiceProvider.GetService<SocketManager>();
 
             var toFolderId = toFolder.ID;
+            var sb = new StringBuilder();
             foreach (var fileId in fileIds)
             {
                 CancellationToken.ThrowIfCancellationRequested();
@@ -426,9 +437,11 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                         needToMark.Add(newFile);
                                     }
 
+                                    socketManager.CreateFile(newFile);
+
                                     if (ProcessedFile(fileId))
                                     {
-                                        Result += string.Format("file_{0}{1}", newFile.ID, SPLIT_CHAR);
+                                        sb.Append($"file_{newFile.ID}{SPLIT_CHAR}");
                                     }
                                 }
                                 catch
@@ -478,9 +491,13 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                         needToMark.Add(newFile);
                                     }
 
+                                    socketManager.DeleteFile(file);
+
+                                    socketManager.CreateFile(newFile);
+
                                     if (ProcessedFile(fileId))
                                     {
-                                        Result += string.Format("file_{0}{1}", newFileId, SPLIT_CHAR);
+                                        sb.Append($"file_{newFileId}{SPLIT_CHAR}");
                                     }
                                 }
                             }
@@ -532,12 +549,14 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                                     needToMark.Add(newFile);
 
+                                    socketManager.CreateFile(newFile);
+
                                     if (copy)
                                     {
                                         filesMessageService.Send(newFile, toFolder, _headers, MessageAction.FileCopiedWithOverwriting, newFile.Title, parentFolder.Title, toFolder.Title);
                                         if (ProcessedFile(fileId))
                                         {
-                                            Result += string.Format("file_{0}{1}", newFile.ID, SPLIT_CHAR);
+                                            sb.Append($"file_{newFile.ID}{SPLIT_CHAR}");
                                         }
                                     }
                                     else
@@ -546,7 +565,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                         {
                                             if (ProcessedFile(fileId))
                                             {
-                                                Result += string.Format("file_{0}{1}", newFile.ID, SPLIT_CHAR);
+                                                sb.Append($"file_{newFile.ID}{SPLIT_CHAR}");
                                             }
                                         }
                                         else
@@ -570,9 +589,11 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                                     filesMessageService.Send(newFile, toFolder, _headers, MessageAction.FileMovedWithOverwriting, file.Title, parentFolder.Title, toFolder.Title);
                                                 }
 
+                                                socketManager.DeleteFile(file);
+
                                                 if (ProcessedFile(fileId))
                                                 {
-                                                    Result += string.Format("file_{0}{1}", newFile.ID, SPLIT_CHAR);
+                                                    sb.Append($"file_{newFile.ID}{SPLIT_CHAR}");
                                                 }
                                             }
                                         }
@@ -593,7 +614,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 }
                 ProgressStep(fileId: FolderDao.CanCalculateSubitems(fileId) ? default : fileId);
             }
-
+            Result = sb.ToString();
             return needToMark;
         }
 

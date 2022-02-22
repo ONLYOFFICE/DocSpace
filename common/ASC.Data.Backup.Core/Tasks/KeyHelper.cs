@@ -40,27 +40,27 @@ namespace ASC.Data.Backup.Tasks
 
         public static string GetDatabaseSchema()
         {
-            return string.Format("{0}/{1}", Databases, "scheme");
+            return $"{Databases}/scheme";
         }
 
         public static string GetDatabaseData()
         {
-            return string.Format("{0}/{1}", Databases, "data");
+            return $"{Databases}/data";
         }
 
         public static string GetDatabaseSchema(string table)
         {
-            return string.Format("{0}/{1}", GetDatabaseSchema(), table);
+            return $"{GetDatabaseSchema()}/{table}";
         }
 
         public static string GetDatabaseData(string table)
         {
-            return string.Format("{0}/{1}", GetDatabaseData(), table);
+            return $"{GetDatabaseData()}/{table}";
         }
 
         public static string GetTableZipKey(IModuleSpecifics module, string tableName)
         {
-            return string.Format("{0}/{1}/{2}", Databases, module.ConnectionStringName, tableName);
+            return $"{Databases}/{module.ConnectionStringName}/{tableName}";
         }
 
         public static string GetZipKey(this BackupFileInfo file)
@@ -74,7 +74,7 @@ namespace ASC.Data.Backup.Tasks
         }
         public static string GetStorageRestoreInfoZipKey()
         {
-            return string.Format("{0}/restore_info", GetStorage());
+            return $"{GetStorage()}/restore_info";
         }
     }
 }

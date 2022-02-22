@@ -60,6 +60,7 @@ namespace ASC.ApiSystem.Controllers
         private CommonConstants CommonConstants { get; }
         public InstanceCrypto InstanceCrypto { get; }
         private ILog Log { get; }
+        private IHttpClientFactory ClientFactory { get; }
 
         public CalDavController(
             CommonMethods commonMethods,
@@ -184,10 +185,7 @@ namespace ASC.ApiSystem.Controllers
 
                 var validationKey = EmailValidationKeyProvider.GetEmailKey(tenant.TenantId, email + userPassword.Password + ConfirmType.Auth);
 
-                var authData = string.Format("userName={0}&password={1}&key={2}",
-                                             HttpUtility.UrlEncode(email),
-                                             HttpUtility.UrlEncode(userPassword.Password),
-                                             HttpUtility.UrlEncode(validationKey));
+                var authData = $"userName={HttpUtility.UrlEncode(email)}&password={HttpUtility.UrlEncode(userPassword.Password)}&key={HttpUtility.UrlEncode(validationKey)}";
 
                 SendToApi(Request.Scheme, tenant, "authentication/login", null, WebRequestMethods.Http.Post, authData);
 
@@ -230,7 +228,7 @@ namespace ASC.ApiSystem.Controllers
                 return false;
             }
 
-            Log.Info(string.Format("CalDav calendarParam: {0}", calendarParam));
+            Log.Info($"CalDav calendarParam: {calendarParam}");
 
             var userParam = calendarParam.Split('/')[0];
             return GetUserData(userParam, out _, out tenant, out error);
@@ -260,7 +258,7 @@ namespace ASC.ApiSystem.Controllers
 
             if (userData.Length < 3)
             {
-                Log.Error(string.Format("Error Caldav username: {0}", userParam));
+                Log.Error($"Error Caldav username: {userParam}");
 
                 error = new
                 {
@@ -283,7 +281,7 @@ namespace ASC.ApiSystem.Controllers
                 tenantName = tenantName.Replace("." + baseUrl, "");
             }
 
-            Log.Info(string.Format("CalDav: user:{0} tenantName:{1}", userParam, tenantName));
+            Log.Info($"CalDav: user:{userParam} tenantName:{tenantName}");
 
             var tenantModel = new TenantModel { PortalName = tenantName };
 
@@ -329,22 +327,16 @@ namespace ASC.ApiSystem.Controllers
                             ? null
                             : string.Join("&", args.Select(arg => HttpUtility.UrlEncode(arg.Key) + "=" + HttpUtility.UrlEncode(arg.Value)).ToArray());
 
-            var url = string.Format("{0}{1}{2}{3}{4}{5}",
-                                    requestUriScheme,
-                                    Uri.SchemeDelimiter,
-                                    tenant.GetTenantDomain(CoreSettings),
-                                    CommonConstants.WebApiBaseUrl,
-                                    path,
-                                    string.IsNullOrEmpty(query) ? "" : "?" + query);
+            var url = $"{requestUriScheme}{Uri.SchemeDelimiter}{tenant.GetTenantDomain(CoreSettings)}{CommonConstants.WebApiBaseUrl}{path}{(string.IsNullOrEmpty(query) ? "" : "?" + query)}";
 
-            Log.Info(string.Format("CalDav: SendToApi: {0}", url));
+            Log.Info($"CalDav: SendToApi: {url}");
 
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(url);
             request.Method = new HttpMethod(httpMethod);
             request.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
-            using var httpClient = new HttpClient();
+            var httpClient = ClientFactory.CreateClient();
 
             if (data != null)
             {

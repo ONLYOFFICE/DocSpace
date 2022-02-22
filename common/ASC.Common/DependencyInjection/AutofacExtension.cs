@@ -120,7 +120,7 @@ namespace ASC.Common.DependencyInjection
 
             void LoadAssembly(string type)
             {
-                var dll = type.Substring(type.IndexOf(",") + 1).Trim();
+                var dll = type.Substring(type.IndexOf(',') + 1).Trim();
                 var path = GetFullPath(dll);
 
                 if (!string.IsNullOrEmpty(path))

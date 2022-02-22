@@ -76,7 +76,7 @@ namespace ASC.Files.Core
 
         public static ChunkedUploadSession<T> Deserialize(Stream stream, FileHelper fileHelper)
         {
-            var chunkedUploadSession = JsonSerializer.DeserializeAsync<ChunkedUploadSession<T>>(stream).Result;
+            var chunkedUploadSession = JsonSerializer.Deserialize<ChunkedUploadSession<T>>(stream);
             chunkedUploadSession.File.FileHelper = fileHelper;
             chunkedUploadSession.TransformItems();
             return chunkedUploadSession;

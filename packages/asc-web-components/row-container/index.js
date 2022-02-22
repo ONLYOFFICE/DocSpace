@@ -20,10 +20,12 @@ class RowContainer extends React.PureComponent {
       id,
       className,
       style,
+      onScroll,
     } = this.props;
 
     const renderList = ({ height, width }) => (
       <List
+        onScroll={onScroll}
         className="List"
         height={height}
         width={width}
@@ -65,6 +67,8 @@ RowContainer.propTypes = {
   id: PropTypes.string,
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  /** Called when the list scroll positions changes */
+  onScroll: PropTypes.func,
 };
 
 RowContainer.defaultProps = {

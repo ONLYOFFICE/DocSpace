@@ -16,22 +16,23 @@ import { clickBackdrop, combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import FilesFilter from "@appserver/common/api/files/filter";
 import { isDesktop, isTablet } from "react-device-detect";
-
+import { showLoader, hideLoader } from "@appserver/common/utils";
 class ArticleBodyContent extends React.Component {
   onSelect = (data, e) => {
     const {
       setIsLoading,
-      setSelectedNode,
+      //setSelectedNode,
       fetchFiles,
       homepage,
       history,
       hideArticle,
-      setFirstLoad,
     } = this.props;
 
-    setSelectedNode(data);
+    const filesSection = window.location.pathname.indexOf("/filter") > 0;
+    //setSelectedNode(data);
     hideArticle();
-    setIsLoading(true);
+    if (filesSection) setIsLoading(true);
+    else showLoader();
     // const selectedFolderTitle =
     //   (e.node && e.node.props && e.node.props.title) || null;
 
@@ -39,23 +40,29 @@ class ArticleBodyContent extends React.Component {
     //   ? setDocumentTitle(selectedFolderTitle)
     //   : setDocumentTitle();
 
-    if (window.location.pathname.indexOf("/filter") > 0) {
-      fetchFiles(data[0], null, true, false)
-        .catch((err) => toastr.error(err))
-        .finally(() => setIsLoading(false));
-    } else {
-      setFirstLoad(true);
-      const filter = FilesFilter.getDefault();
+    fetchFiles(data[0], null, true, false)
+      .then(() => {
+        if (!filesSection) {
+          const filter = FilesFilter.getDefault();
 
-      filter.folder = data[0];
+          filter.folder = data[0];
 
-      const urlFilter = filter.toUrlParams();
+          const urlFilter = filter.toUrlParams();
 
-      history.push(
-        combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
-      );
-    }
-    //}
+          history.push(
+            combineUrl(
+              AppServerConfig.proxyURL,
+              homepage,
+              `/filter?${urlFilter}`
+            )
+          );
+        }
+      })
+      .catch((err) => toastr.error(err))
+      .finally(() => {
+        if (filesSection) setIsLoading(false);
+        else hideLoader();
+      });
   };
 
   onShowNewFilesPanel = (folderId) => {
@@ -119,7 +126,7 @@ export default inject(
     dialogsStore,
     settingsStore,
   }) => {
-    const { fetchFiles, setIsLoading, setFirstLoad, firstLoad } = filesStore;
+    const { fetchFiles, setIsLoading, firstLoad } = filesStore;
     const { treeFolders, setSelectedNode, setTreeFolders } = treeFoldersStore;
 
     const { setNewFilesPanelVisible } = dialogsStore;
@@ -140,7 +147,6 @@ export default inject(
       personal,
 
       setIsLoading,
-      setFirstLoad,
       fetchFiles,
       setSelectedNode,
       setTreeFolders,

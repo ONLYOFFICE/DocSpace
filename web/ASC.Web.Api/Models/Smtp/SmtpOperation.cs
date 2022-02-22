@@ -221,16 +221,10 @@ namespace ASC.Api.Settings.Smtp
 
         public SmtpClient GetSmtpClient()
         {
-            var sslCertificatePermit = Configuration["mail.certificate-permit"] != null &&
-                    Convert.ToBoolean(Configuration["mail.certificate-permit"]);
-
             var client = new SmtpClient
             {
                 Timeout = (int)TimeSpan.FromSeconds(30).TotalMilliseconds
             };
-
-            if (sslCertificatePermit)
-                client.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
 
             return client;
         }

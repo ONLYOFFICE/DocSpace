@@ -45,7 +45,7 @@ using StackExchange.Redis.Extensions.Core.Configuration;
 
 namespace ASC.Thumbnails.Svc
 {
-public class Program
+    public static class Program
     {
         public async static Task Main(string[] args)
         {
@@ -68,7 +68,7 @@ public class Program
                         path = Path.GetFullPath(CrossPlatform.PathCombine(hostContext.HostingEnvironment.ContentRootPath, path));
                     }
                     config.SetBasePath(path);
-                    var env = hostContext.Configuration.GetValue("ENVIRONMENT", "Production");
+
                     config
                         .AddJsonFile("appsettings.json")
                         .AddEnvironmentVariables()
