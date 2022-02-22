@@ -6,8 +6,8 @@ const deviceType = process.env.DEVICE_TYPE || "desktop";
 const isModel = !!process.env.MODEL;
 
 const featureName = isModel
-  ? `Login actions on '${browser}' with '${deviceType}' dimension (model)`
-  : `Login actions on '${browser}' with '${deviceType}' dimension`;
+  ? `Client actions on '${browser}' with '${deviceType}' dimension (model)`
+  : `Client actions on '${browser}' with '${deviceType}' dimension`;
 
 Feature(featureName);
 
@@ -26,4 +26,17 @@ Scenario("Tfa auth success", async ({ I }) => {
   });
 
   I.see("Documents");
+});
+
+Scenario("Profile remove success", async ({ I }) => {
+  I.mockEndpoint(Endpoints.confirm, "confirm");
+
+  I.amOnPage("/confirm/ProfileRemove");
+
+  I.click({
+    react: "Button",
+  });
+
+  I.wait(2);
+  I.see("Web Office");
 });
