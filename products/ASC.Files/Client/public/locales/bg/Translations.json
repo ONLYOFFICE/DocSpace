@@ -1,4 +1,4 @@
-﻿{
+{
   "AddAccount": "Добави профил",
   "ArchivingData": "Архивиране на данни",
   "ConnectingAccount": "Свързване на профил",
@@ -13,6 +13,7 @@
   "DownloadAs": "Изтегли като",
   "EncryptedFileSaving": "Запазване на криптиран файл",
   "Files": "Файлове",
+  "FileProtected": "Файлът е защитен с парола",
   "Folders": "Папки",
   "FolderSelection": "Избор на папка",
   "FolderTitleBoxNet": "Box директория",

@@ -1,14 +1,10 @@
 import FilesStore from "./FilesStore";
 import fileActionStore from "./FileActionStore";
-import selectedFolderStore from "./SelectedFolderStore";
+import SelectedFolderStore from "./SelectedFolderStore";
 import TreeFoldersStore from "./TreeFoldersStore";
 import thirdPartyStore from "./ThirdPartyStore";
 import SettingsStore from "./SettingsStore";
 import FilesActionsStore from "./FilesActionsStore";
-import FormatsStore from "./FormatsStore";
-import iconFormatsStore from "./IconFormatsStore";
-import mediaViewersFormatsStore from "./MediaViewersFormatsStore";
-import docserviceStore from "./DocserviceStore";
 import MediaViewerDataStore from "./MediaViewerDataStore";
 import UploadDataStore from "./UploadDataStore";
 import SecondaryProgressDataStore from "./SecondaryProgressDataStore";
@@ -19,11 +15,8 @@ import DialogsStore from "./DialogsStore";
 import selectedFilesStore from "./SelectedFilesStore";
 import store from "studio/store";
 
-const formatsStore = new FormatsStore(
-  iconFormatsStore,
-  mediaViewersFormatsStore,
-  docserviceStore
-);
+const selectedFolderStore = new SelectedFolderStore(store.auth.settingsStore);
+
 const treeFoldersStore = new TreeFoldersStore(selectedFolderStore);
 
 const settingsStore = new SettingsStore(thirdPartyStore, treeFoldersStore);
@@ -35,22 +28,24 @@ const filesStore = new FilesStore(
   fileActionStore,
   selectedFolderStore,
   treeFoldersStore,
-  formatsStore,
   settingsStore,
   selectedFilesStore
 );
-const mediaViewerDataStore = new MediaViewerDataStore(filesStore, formatsStore);
+const mediaViewerDataStore = new MediaViewerDataStore(
+  filesStore,
+  settingsStore
+);
 
 const secondaryProgressDataStore = new SecondaryProgressDataStore();
 const primaryProgressDataStore = new PrimaryProgressDataStore();
 
 const dialogsStore = new DialogsStore(
+  store.auth,
   treeFoldersStore,
   filesStore,
   selectedFolderStore
 );
 const uploadDataStore = new UploadDataStore(
-  formatsStore,
   treeFoldersStore,
   selectedFolderStore,
   filesStore,
@@ -59,6 +54,7 @@ const uploadDataStore = new UploadDataStore(
   dialogsStore,
   settingsStore
 );
+
 const filesActionsStore = new FilesActionsStore(
   store.auth,
   uploadDataStore,
@@ -77,7 +73,6 @@ const stores = {
   filesStore,
   settingsStore,
   mediaViewerDataStore,
-  formatsStore,
   versionHistoryStore,
   uploadDataStore,
   dialogsStore,

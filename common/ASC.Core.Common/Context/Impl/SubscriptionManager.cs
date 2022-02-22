@@ -31,6 +31,7 @@ using System.Linq;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Security.Authorizing;
+using ASC.Core.Caching;
 
 namespace ASC.Core
 {
@@ -50,7 +51,7 @@ namespace ASC.Core
                 Constants.User.ID
             };
 
-        public SubscriptionManager(ISubscriptionService service, TenantManager tenantManager, ICache cache)
+        public SubscriptionManager(CachedSubscriptionService service, TenantManager tenantManager, ICache cache)
         {
             this.service = service ?? throw new ArgumentNullException("subscriptionManager");
             TenantManager = tenantManager;
@@ -63,12 +64,29 @@ namespace ASC.Core
             var s = new SubscriptionRecord
             {
                 Tenant = GetTenant(),
-                SourceId = sourceID,
-                ActionId = actionID,
-                RecipientId = recipientID,
-                ObjectId = objectID,
                 Subscribed = true,
             };
+
+            if (sourceID != null)
+            {
+                s.SourceId = sourceID;
+            }
+
+            if (actionID != null)
+            {
+                s.ActionId = actionID;
+            }
+
+            if (recipientID != null)
+            {
+                s.RecipientId = recipientID;
+            }
+
+            if (objectID != null)
+            {
+                s.ObjectId = objectID;
+            }
+
             service.SaveSubscription(s);
         }
 
@@ -77,12 +95,29 @@ namespace ASC.Core
             var s = new SubscriptionRecord
             {
                 Tenant = GetTenant(),
-                SourceId = sourceID,
-                ActionId = actionID,
-                RecipientId = recipientID,
-                ObjectId = objectID,
                 Subscribed = false,
             };
+
+            if (sourceID != null)
+            {
+                s.SourceId = sourceID;
+            }
+
+            if (actionID != null)
+            {
+                s.ActionId = actionID;
+            }
+
+            if (recipientID != null)
+            {
+                s.RecipientId = recipientID;
+            }
+
+            if (objectID != null)
+            {
+                s.ObjectId = objectID;
+            }
+
             service.SaveSubscription(s);
         }
 
@@ -144,12 +179,30 @@ namespace ASC.Core
         {
             var m = new SubscriptionMethod
             {
-                Tenant = GetTenant(),
-                SourceId = sourceID,
-                ActionId = actionID,
-                RecipientId = recipientID,
-                Methods = senderNames,
+                Tenant = GetTenant()
             };
+
+            if (sourceID != null)
+            {
+                m.SourceId = sourceID;
+            }
+
+            if (actionID != null)
+            {
+                m.ActionId = actionID;
+            }
+
+            if (recipientID != null)
+            {
+                m.RecipientId = recipientID;
+            }
+
+            if (senderNames != null)
+            {
+                m.Methods = senderNames;
+            }
+
+
             service.SetSubscriptionMethod(m);
         }
 
