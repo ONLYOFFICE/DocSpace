@@ -56,30 +56,6 @@ const TableRow = (props) => {
       className={`${className} table-container_row`}
       {...rest}
     >
-      <TableCell
-        hasAccess={hasAccess}
-        checked={checked}
-        {...selectionProp}
-        style={style}
-        className={`${selectionProp?.className} table-container_row-checkbox-wrapper`}
-      >
-        {inProgress ? (
-          <Loader
-            className="table-container_row-loader"
-            type="oval"
-            size="16px"
-          />
-        ) : (
-          <>
-            <div className="table-container_element">{element}</div>
-            <Checkbox
-              className="table-container_row-checkbox not-selectable"
-              onChange={onChange}
-              isChecked={checked}
-            />
-          </>
-        )}
-      </TableCell>
       {children}
       <div>
         <TableCell

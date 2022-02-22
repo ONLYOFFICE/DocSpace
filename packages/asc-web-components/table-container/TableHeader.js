@@ -461,19 +461,6 @@ class TableHeader extends React.Component {
             {...rest}
           >
             <StyledTableRow>
-              {hasAccess ? (
-                <Checkbox
-                  className="table-container_header-checkbox"
-                  onChange={this.onChange}
-                  isChecked={false}
-                />
-              ) : (
-                <div></div>
-              )}
-
-              <div className="table-container_header-settings">
-                <TableSettings columns={columns} />
-              </div>
               {columns.map((column, index) => {
                 const nextColumn = this.getNextColumn(columns, index);
                 const resizable = nextColumn ? nextColumn.resizable : false;
