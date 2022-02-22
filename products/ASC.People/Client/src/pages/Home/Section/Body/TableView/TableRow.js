@@ -36,7 +36,6 @@ const StyledPeopleRow = styled(TableRow)`
 
 const PeopleTableRow = (props) => {
   const {
-    t,
     item,
     contextOptionsProps,
     element,

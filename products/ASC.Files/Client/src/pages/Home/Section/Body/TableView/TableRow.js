@@ -310,6 +310,7 @@ const FilesTableRow = (props) => {
             onContentSelect={onContentFileSelect}
             checked={checkedProps}
             element={element}
+            inProgress={inProgress}
             {...selectionProp}
             {...props}
           />
