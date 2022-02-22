@@ -345,12 +345,7 @@ class TableHeader extends React.Component {
   };
 
   resetColumns = (resetToDefault = false) => {
-    const {
-      containerRef,
-      checkboxSize,
-      columnStorageName,
-      columns,
-    } = this.props;
+    const { containerRef, columnStorageName, columns } = this.props;
     const defaultSize = this.props.columns.find((col) => col.defaultSize)
       ?.defaultSize;
 
@@ -373,7 +368,7 @@ class TableHeader extends React.Component {
         (containerWidth * firstColumnPercent) / 100 + "px";
       const otherColumns = (containerWidth * percent) / 100 + "px";
 
-      str = `${checkboxSize} ${firstColumnSize} `;
+      str = `${firstColumnSize} `;
       for (let col of columns) {
         if (!col.default)
           str += col.enable
@@ -385,13 +380,10 @@ class TableHeader extends React.Component {
     } else {
       const percent = 100 / enableColumns.length;
       const newContainerWidth =
-        containerWidth -
-        this.getSubstring(checkboxSize) -
-        containerMargin -
-        (defaultSize || 0);
+        containerWidth - containerMargin - (defaultSize || 0);
       const otherColumns = (newContainerWidth * percent) / 100 + "px";
 
-      str = `${checkboxSize} `;
+      str = "";
       for (let col of this.props.columns) {
         str += col.enable
           ? /*  col.minWidth
@@ -439,53 +431,40 @@ class TableHeader extends React.Component {
 
     return (
       <>
-        {isHeaderVisible ? (
-          <TableGroupMenu
-            checkboxOptions={checkboxOptions}
-            containerRef={containerRef}
-            onChange={onChange}
-            isChecked={isChecked}
-            isLengthenHeader={isLengthenHeader}
-            isIndeterminate={isIndeterminate}
-            headerMenu={headerMenu}
-            columnStorageName={columnStorageName}
-            {...rest}
-          />
-        ) : (
-          <StyledTableHeader
-            id="table-container_caption-header"
-            className={`${
-              isLengthenHeader ? "lengthen-header" : ""
-            }table-container_header`}
-            ref={this.headerRef}
-            {...rest}
-          >
-            <StyledTableRow>
-              {columns.map((column, index) => {
-                const nextColumn = this.getNextColumn(columns, index);
-                const resizable = nextColumn ? nextColumn.resizable : false;
+        <StyledTableHeader
+          id="table-container_caption-header"
+          className={`${
+            isLengthenHeader ? "lengthen-header" : ""
+          }table-container_header`}
+          ref={this.headerRef}
+          {...rest}
+        >
+          <StyledTableRow>
+            {columns.map((column, index) => {
+              const nextColumn = this.getNextColumn(columns, index);
+              const resizable = nextColumn ? nextColumn.resizable : false;
 
-                return (
-                  <TableHeaderCell
-                    key={column.key}
-                    index={index}
-                    column={column}
-                    sorted={sorted}
-                    sortBy={sortBy}
-                    resizable={resizable}
-                    defaultSize={column.defaultSize}
-                    onMouseDown={this.onMouseDown}
-                    sortingVisible={sortingVisible}
-                  />
-                );
-              })}
+              return (
+                <TableHeaderCell
+                  key={column.key}
+                  index={index}
+                  column={column}
+                  sorted={sorted}
+                  sortBy={sortBy}
+                  resizable={resizable}
+                  defaultSize={column.defaultSize}
+                  onMouseDown={this.onMouseDown}
+                  sortingVisible={sortingVisible}
+                />
+              );
+            })}
 
-              <div className="table-container_header-settings">
-                <TableSettings columns={columns} />
-              </div>
-            </StyledTableRow>
-          </StyledTableHeader>
-        )}
+            <div className="table-container_header-settings">
+              <TableSettings columns={columns} />
+            </div>
+          </StyledTableRow>
+        </StyledTableHeader>
+
         <StyledEmptyTableContainer />
       </>
     );
