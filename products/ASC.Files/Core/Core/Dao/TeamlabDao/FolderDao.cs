@@ -566,8 +566,14 @@ namespace ASC.Files.Core.Data
                 await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
                 await tx.CommitAsync().ConfigureAwait(false);
 
-                recalcFolders.ForEach(async e => await RecalculateFoldersCountAsync(e).ConfigureAwait(false));
-                recalcFolders.ForEach(async fid => await GetRecalculateFilesCountUpdateAsync(fid).ConfigureAwait(false));
+                foreach (var e in recalcFolders)
+                {
+                    await RecalculateFoldersCountAsync(e);
+                }
+                foreach (var e in recalcFolders)
+                {
+                    await GetRecalculateFilesCountUpdateAsync(e);
+                }
             }
             return folderId;
         }
@@ -703,12 +709,13 @@ namespace ASC.Files.Core.Data
                         result[file.Id] = file.Title;
                     }
 
-                    var childs = Query(FilesDbContext.Folders)
+                    var childs = await Query(FilesDbContext.Folders)
                         .AsNoTracking()
                         .Where(r => r.ParentId == folderId)
-                        .Select(r => r.Id);
+                        .Select(r => r.Id)
+                        .ToArrayAsync();
 
-                    foreach (var pair in await CanMoveOrCopyAsync(childs.ToArray(), conflict).ConfigureAwait(false))
+                    foreach (var pair in await CanMoveOrCopyAsync(childs, conflict).ConfigureAwait(false))
                     {
                         result.Add(pair.Key, pair.Value);
                     }

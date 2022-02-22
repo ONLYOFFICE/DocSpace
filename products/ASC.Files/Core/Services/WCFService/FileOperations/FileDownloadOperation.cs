@@ -80,54 +80,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         private TempStream TempStream { get; }
 
-        public override void RunJob(DistributedTask distributedTask, CancellationToken cancellationToken)
-        {
-            base.RunJob(distributedTask, cancellationToken);
-
-            using var scope = ThirdPartyOperation.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<FileDownloadOperationScope>();
-            var (globalStore, filesLinkUtility, _, _, _) = scopeClass;
-            using var stream = TempStream.Create();
-
-            (ThirdPartyOperation as FileDownloadOperation<string>).CompressToZipAsync(stream, scope).Wait();
-            (DaoOperation as FileDownloadOperation<int>).CompressToZipAsync(stream, scope).Wait();
-
-            if (stream != null)
-            {
-                string archiveExtension;
-
-                using (var zip = scope.ServiceProvider.GetService<CompressToArchive>())
-                {
-                    archiveExtension = zip.ArchiveExtension;
-                }
-
-                stream.Position = 0;
-                string fileName = FileConstant.DownloadTitle + archiveExtension;
-                var store = globalStore.GetStore();
-                var path = string.Format(@"{0}\{1}", ((IAccount)Thread.CurrentPrincipal.Identity).ID, fileName);
-
-                if (store.IsFileAsync(FileConstant.StorageDomainTmp, path).Result)
-                {
-                    store.DeleteAsync(FileConstant.StorageDomainTmp, path).Wait();
-                }
-
-                store.SaveAsync(
-                    FileConstant.StorageDomainTmp,
-                    path,
-                    stream,
-                    MimeMapping.GetMimeMapping(path),
-                    "attachment; filename=\"" + fileName + "\"").Wait();
-                Result = $"{filesLinkUtility.FileHandlerPath}?{FilesLinkUtility.Action}=bulk&ext={archiveExtension}";
-
-                TaskInfo.SetProperty(PROGRESS, 100);
-                TaskInfo.SetProperty(RESULT, Result);
-                TaskInfo.SetProperty(FINISHED, true);
-
-            }
-
-            TaskInfo.PublishChanges();
-        }
-
         public override async Task RunJobAsync(DistributedTask distributedTask, CancellationToken cancellationToken)
         {
             await base.RunJobAsync(distributedTask, cancellationToken);
@@ -270,7 +222,11 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             {
                 var files = await FileDao.GetFilesAsync(Files).ToListAsync();
                 files = (await FilesSecurity.FilterReadAsync(files)).ToList();
-                files.ForEach(file => entriesPathId.Add(ExecPathFromFileAsync(scope, file, string.Empty).Result));
+
+                foreach (var file in files)
+                {
+                    entriesPathId.Add(await ExecPathFromFileAsync(scope, file, string.Empty));
+                }
             }
             if (0 < Folders.Count)
             {
@@ -305,7 +261,11 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 var files = await FileDao.GetFilesAsync(folder.ID, null, FilterType.None, false, Guid.Empty, string.Empty, true).ToListAsync();
                 var filteredFiles = await FilesSecurity.FilterReadAsync(files);
                 files = filteredFiles.ToList();
-                files.ForEach(file => entriesPathId.Add(ExecPathFromFileAsync(scope, file, folderPath).Result));
+
+                foreach (var file in filteredFiles)
+                {
+                    entriesPathId.Add(await ExecPathFromFileAsync(scope, file, folderPath));
+                }
 
                 await fileMarker.RemoveMarkAsNewAsync(folder);
 

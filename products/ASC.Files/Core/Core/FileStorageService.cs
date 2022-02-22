@@ -582,8 +582,8 @@ namespace ASC.Web.Files.Services.WCFService
             if (!EqualityComparer<T>.Default.Equals(fileWrapper.ParentId, default(T)))
             {
                 folder = await folderDao.GetFolderAsync(fileWrapper.ParentId);
-
-                if (!FileSecurity.CanCreateAsync(folder).Result)
+                var canCreate = await FileSecurity.CanCreateAsync(folder);
+                if (!canCreate)
                 {
                     folder = null;
                 }
@@ -1001,7 +1001,7 @@ namespace ASC.Web.Files.Services.WCFService
                 {
                     var fileStable = file.Forcesave == ForcesaveType.None ? file : await fileDao.GetFileStableAsync(file.ID, file.Version);
                     var docKey = DocumentServiceHelper.GetDocKey(fileStable);
-                    DocumentServiceHelper.DropUserAsync(docKey, usersDrop, file.ID).Wait();
+                    await DocumentServiceHelper.DropUserAsync(docKey, usersDrop, file.ID);
                 }
 
                 FilesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileLocked, file.Title);
@@ -1938,14 +1938,14 @@ namespace ASC.Web.Files.Services.WCFService
             return FileSharing.GetSharedInfoAsync(fileIds, folderIds);
         }
 
-        public async Task<List<AceShortWrapper>> GetSharedInfoShortFileAsync(T fileId)
+        public Task<List<AceShortWrapper>> GetSharedInfoShortFileAsync(T fileId)
         {
-            return await FileSharing.GetSharedInfoShortFileAsync(fileId);
+            return FileSharing.GetSharedInfoShortFileAsync(fileId);
         }
 
-        public async Task<List<AceShortWrapper>> GetSharedInfoShortFolder(T folderId)
+        public Task<List<AceShortWrapper>> GetSharedInfoShortFolder(T folderId)
         {
-            return await FileSharing.GetSharedInfoShortFolderAsync(folderId);
+            return FileSharing.GetSharedInfoShortFolderAsync(folderId);
         }
 
         public async Task<List<T>> SetAceObjectAsync(AceCollection<T> aceCollection, bool notify)
@@ -2104,7 +2104,8 @@ namespace ASC.Web.Files.Services.WCFService
             ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
 
             var fileSecurity = FileSecurity;
-            ErrorIf(!fileSecurity.CanReadAsync(file).Result, FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
+            var canRead = await fileSecurity.CanReadAsync(file);
+            ErrorIf(!canRead, FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
             ErrorIf(mentionMessage == null || mentionMessage.Emails == null, FilesCommonResource.ErrorMassage_BadRequest);
 
             var showSharingSettings = false;

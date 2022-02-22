@@ -25,6 +25,7 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security;
@@ -124,7 +125,7 @@ namespace ASC.Web.Files.Services.DocumentService
             }
 
             return await GetParamsAsync(file, lastVersion, linkRight, true, true, editPossible, tryEdit, tryCoauth);
-        }          
+        }
 
         public async Task<(File<T> File, Configuration<T> Configuration)> GetParamsAsync<T>(File<T> file, bool lastVersion, FileShare linkRight, bool rightToRename, bool rightToEdit, bool editPossible, bool tryEdit, bool tryCoauth)
         {
@@ -357,23 +358,26 @@ namespace ASC.Web.Files.Services.DocumentService
                 || await fileSecurity.CanFillFormsAsync(file, FileConstant.ShareLinkId)
                 || await fileSecurity.CanCommentAsync(file, FileConstant.ShareLinkId);
 
-            var usersDrop = FileTracker.GetEditingBy(file.ID)
-                                       .Where(uid =>
-                                       {
-                                           if (!UserManager.UserExists(uid))
-                                           {
-                                               return !sharedLink;
-                                           }
-                                           return
-                                                !fileSecurity.CanEditAsync(file, uid).Result
-                                                && !fileSecurity.CanCustomFilterEditAsync(file, uid).Result
-                                                && !fileSecurity.CanReviewAsync(file, uid).Result
-                                                && !fileSecurity.CanFillFormsAsync(file, uid).Result
-                                                && !fileSecurity.CanCommentAsync(file, uid).Result;
-                                       })
-                                       .Select(u => u.ToString()).ToArray();
+            var usersDrop = new List<string>();
 
-            if (usersDrop.Length == 0) return;
+            foreach (var uid in FileTracker.GetEditingBy(file.ID))
+            {
+                if (!UserManager.UserExists(uid) && !sharedLink)
+                {
+                    usersDrop.Add(uid.ToString());
+                    continue;
+                }
+                if (!await fileSecurity.CanEditAsync(file, uid)
+                 && !await fileSecurity.CanCustomFilterEditAsync(file, uid)
+                 && !await fileSecurity.CanReviewAsync(file, uid)
+                 && !await fileSecurity.CanFillFormsAsync(file, uid)
+                 && !await fileSecurity.CanCommentAsync(file, uid))
+                {
+                    usersDrop.Add(uid.ToString());
+                }
+            }
+
+            if (usersDrop.Count == 0) return;
 
             var fileStable = file;
             if (file.Forcesave != ForcesaveType.None)
@@ -383,7 +387,7 @@ namespace ASC.Web.Files.Services.DocumentService
             }
 
             var docKey = GetDocKey(fileStable);
-            await DropUserAsync(docKey, usersDrop, file.ID);
+            await DropUserAsync(docKey, usersDrop.ToArray(), file.ID);
         }
 
         public Task<bool> DropUserAsync(string docKeyForTrack, string[] users, object fileId = null)

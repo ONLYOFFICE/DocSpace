@@ -112,8 +112,10 @@ namespace ASC.Files.Thirdparty.Box
 
         public void Dispose()
         {
-            if (StorageOpened) { }
+            if (StorageOpened)
+            {
                 StorageAsync.Result.Close();
+            }
         }
 
         public Task<bool> CheckAccessAsync()

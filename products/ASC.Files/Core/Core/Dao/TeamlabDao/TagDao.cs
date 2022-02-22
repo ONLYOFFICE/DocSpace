@@ -172,11 +172,12 @@ ctx.Tag
 
         public async IAsyncEnumerable<Tag> GetTagsAsync(T entryID, FileEntryType entryType, TagType tagType)
         {
+            var mappedId = (await MappingIDAsync(entryID)).ToString();
             var q = Query(FilesDbContext.Tag)
                 .Join(FilesDbContext.TagLink, r => r.Id, l => l.TagId, (tag, link) => new TagLinkData { Tag = tag, Link = link })
                 .Where(r => r.Link.TenantId == r.Tag.TenantId)
                 .Where(r => r.Link.EntryType == entryType)
-                .Where(r => r.Link.EntryId == MappingIDAsync(entryID).Result.ToString())
+                .Where(r => r.Link.EntryId == mappedId)
                 .Where(r => r.Tag.Flag == tagType);
 
             await foreach (var e in FromQueryAsync(q).ConfigureAwait(false))
@@ -313,7 +314,7 @@ ctx.Tag
 
             FilesDbContext.Tag.RemoveRange(tagsToRemove.ToList());
             FilesDbContext.SaveChanges();
-        }     
+        }
 
         private async Task<Tag> SaveTagAsync(Tag t, Dictionary<string, int> cacheTagId, DateTime createOn)
         {
@@ -405,10 +406,11 @@ ctx.Tag
 
         private async Task InternalUpdateNewTagsInDbAsync(Tag tag, DateTime createOn)
         {
+            var mappedId = (await MappingIDAsync(tag.EntryId)).ToString();
             var forUpdate = Query(FilesDbContext.TagLink)
                 .Where(r => r.TagId == tag.Id)
                 .Where(r => r.EntryType == tag.EntryType)
-                .Where(r => r.EntryId == MappingIDAsync(tag.EntryId).Result.ToString());
+                .Where(r => r.EntryId == mappedId);
 
             foreach (var f in forUpdate)
             {
@@ -446,7 +448,7 @@ ctx.Tag
 
                 tx.Commit();
             }
-        }     
+        }
 
         private Task RemoveTagInDbAsync(Tag tag)
         {

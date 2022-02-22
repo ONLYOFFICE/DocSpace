@@ -338,7 +338,7 @@ namespace ASC.Web.Files
                     return;
                 }
 
-                if (!readLink && !FileSecurity.CanReadAsync(file).Result)
+                if (!readLink && !await FileSecurity.CanReadAsync(file))
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                     return;
@@ -354,7 +354,7 @@ namespace ASC.Web.Files
                     return;
                 }
 
-               await  FileMarker.RemoveMarkAsNewAsync(file);
+                await FileMarker.RemoveMarkAsNewAsync(file);
 
                 context.Response.Clear();
                 context.Response.Headers.Clear();
@@ -684,7 +684,7 @@ namespace ASC.Web.Files
                     return;
                 }
 
-                if (linkRight == FileShare.Restrict && SecurityContext.IsAuthenticated && !FileSecurity.CanReadAsync(file).Result)
+                if (linkRight == FileShare.Restrict && SecurityContext.IsAuthenticated && !await FileSecurity.CanReadAsync(file))
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                     return;
@@ -912,7 +912,7 @@ namespace ASC.Web.Files
                     }
                 }
 
-                await fileDao .InvalidateCacheAsync(id);
+                await fileDao.InvalidateCacheAsync(id);
 
                 if (file == null
                     || version > 0 && file.Version != version)
@@ -928,7 +928,7 @@ namespace ASC.Web.Files
                     return;
                 }
 
-                if (linkRight == FileShare.Restrict && SecurityContext.IsAuthenticated && !FileSecurity.CanReadAsync(file).Result)
+                if (linkRight == FileShare.Restrict && SecurityContext.IsAuthenticated && !await FileSecurity.CanReadAsync(file))
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                     return;
@@ -1101,7 +1101,8 @@ namespace ASC.Web.Files
             folder = await folderDao.GetFolderAsync(folderId);
 
             if (folder == null) throw new HttpException((int)HttpStatusCode.NotFound, FilesCommonResource.ErrorMassage_FolderNotFound);
-            if (!FileSecurity.CanCreateAsync(folder).Result) throw new HttpException((int)HttpStatusCode.Forbidden, FilesCommonResource.ErrorMassage_SecurityException_Create);
+            var canCreate = await FileSecurity.CanCreateAsync(folder);
+            if (!canCreate) throw new HttpException((int)HttpStatusCode.Forbidden, FilesCommonResource.ErrorMassage_SecurityException_Create);
 
             File<T> file;
             var fileUri = context.Request.Query[FilesLinkUtility.FileUri];
@@ -1151,13 +1152,13 @@ namespace ASC.Web.Files
             return;
         }
 
-        private async Task InternalWriteOk<T>(HttpContext context, Folder<T> folder, File<T> file)
+        private Task InternalWriteOk<T>(HttpContext context, Folder<T> folder, File<T> file)
         {
             var message = string.Format(FilesCommonResource.MessageFileCreated, folder.Title);
             if (FileUtility.CanWebRestrictedEditing(file.Title))
                 message = string.Format(FilesCommonResource.MessageFileCreatedForm, folder.Title);
 
-            await context.Response.WriteAsync("ok: " + message);
+            return context.Response.WriteAsync("ok: " + message);
         }
 
         private async Task<File<T>> CreateFileFromTemplateAsync<T>(Folder<T> folder, string fileTitle, string docType)

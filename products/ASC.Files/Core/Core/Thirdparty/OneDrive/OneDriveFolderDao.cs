@@ -245,7 +245,7 @@ namespace ASC.Files.Thirdparty.OneDrive
                                    where ftl == null
                                    select ft;
 
-                FilesDbContext.Tag.RemoveRange(tagsToRemove.ToList());
+                FilesDbContext.Tag.RemoveRange(tagsToRemove);
 
                 var securityToDelete = Query(FilesDbContext.Security)
                     .Where(r => hashIDs.Any(h => h == r.EntryId));

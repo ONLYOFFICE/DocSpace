@@ -283,10 +283,10 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return InternalCanMoveOrCopyAsync(to, matchedIds, selector);
         }
 
-        private async Task<IDictionary<string, string>> InternalCanMoveOrCopyAsync(string to, string[] matchedIds, IDaoSelector selector)
+        private Task<IDictionary<string, string>> InternalCanMoveOrCopyAsync(string to, string[] matchedIds, IDaoSelector selector)
         {
             var folderDao = selector.GetFolderDao(matchedIds.FirstOrDefault());
-            return await folderDao.CanMoveOrCopyAsync(matchedIds, to).ConfigureAwait(false);
+            return folderDao.CanMoveOrCopyAsync(matchedIds, to);
         }
 
         public Task<string> RenameFolderAsync(Folder<string> folder, string newTitle)

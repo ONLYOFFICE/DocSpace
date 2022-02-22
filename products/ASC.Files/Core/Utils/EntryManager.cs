@@ -461,7 +461,7 @@ namespace ASC.Web.Files.Utils
             else if (parent.FolderType == FolderType.SHARE)
             {
                 //share
-                var shared = fileSecurity.GetSharesForMeAsync(filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders).Result;
+                var shared = await fileSecurity.GetSharesForMeAsync(filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
 
                 entries = entries.Concat(shared);
 
@@ -503,7 +503,7 @@ namespace ASC.Web.Files.Utils
                 entries = entries.Concat(await fileSecurity.FilterReadAsync(files));
 
                 //share
-                var shared = fileSecurity.GetPrivacyForMeAsync(filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders).Result;
+                var shared = await fileSecurity.GetPrivacyForMeAsync(filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
 
                 entries = entries.Concat(shared);
 
@@ -606,14 +606,20 @@ namespace ASC.Web.Files.Utils
                 var fileSecurity = FileSecurity;
 
                 var providers = await providerDao.GetProvidersInfoAsync(parent.RootFolderType, searchText).ToListAsync();
-                folderList = providers
-                    .Select(providerInfo => GetFakeThirdpartyFolder(providerInfo, parent.ID.ToString()))
-                    .Where(r => fileSecurity.CanReadAsync(r).Result).ToList();
+
+                foreach (var providerInfo in providers)
+                {
+                    var fake = GetFakeThirdpartyFolder(providerInfo, parent.ID.ToString());
+                    if (await fileSecurity.CanReadAsync(fake))
+                    {
+                        folderList.Add(fake);
+                    }
+                }
 
                 if (folderList.Count > 0)
                 {
                     var securityDao = DaoFactory.GetSecurityDao<string>();
-					var pureShareRecords = await securityDao.GetPureShareRecordsAsync(folderList);
+                    var pureShareRecords = await securityDao.GetPureShareRecordsAsync(folderList);
                     var ids = pureShareRecords
                     //.Where(x => x.Owner == SecurityContext.CurrentAccount.ID)
                     .Select(x => x.EntryId).Distinct();
@@ -906,10 +912,10 @@ namespace ASC.Web.Files.Utils
             return LockerManager.FileLockedForMeAsync(fileId, userId);
         }
 
-        public async Task<Guid> FileLockedByAsync<T>(T fileId, ITagDao<T> tagDao)
+        public Task<Guid> FileLockedByAsync<T>(T fileId, ITagDao<T> tagDao)
         {
-            return await LockerManager.FileLockedByAsync(fileId, tagDao);
-        }     
+            return LockerManager.FileLockedByAsync(fileId, tagDao);
+        }
 
         public async Task<(File<int> file, Folder<int> folderIfNew)> GetFillFormDraftAsync<T>(File<T> sourceFile)
         {
@@ -1172,11 +1178,11 @@ namespace ASC.Web.Files.Utils
             if (file == null) throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
             var fileSecurity = FileSecurity;
             if (!editLink
-                && (!fileSecurity.CanEditAsync(file, userId).Result
-                    && !fileSecurity.CanCustomFilterEditAsync(file, userId).Result
-                    && !fileSecurity.CanReviewAsync(file, userId).Result
-                    && !fileSecurity.CanFillFormsAsync(file, userId).Result
-                    && !fileSecurity.CanCommentAsync(file, userId).Result
+                && (!await fileSecurity.CanEditAsync(file, userId)
+                    && !await fileSecurity.CanCustomFilterEditAsync(file, userId)
+                    && !await fileSecurity.CanReviewAsync(file, userId)
+                    && !await fileSecurity.CanFillFormsAsync(file, userId)
+                    && !await fileSecurity.CanCommentAsync(file, userId)
                     || UserManager.GetUsers(userId).IsVisitor(UserManager)))
             {
                 throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
@@ -1261,7 +1267,7 @@ namespace ASC.Web.Files.Utils
                 var linkDao = DaoFactory.GetLinkDao();
                 await linkDao.DeleteAllLinkAsync(newFile.ID.ToString());
 
-                await FileMarker.MarkAsNewAsync(newFile);;
+                await FileMarker.MarkAsNewAsync(newFile); ;
 
                 await EntryStatusManager.SetFileStatusAsync(newFile);
 
@@ -1429,7 +1435,7 @@ namespace ASC.Web.Files.Utils
                 }
             }
 
-            var files =  fileDao.GetFilesAsync(parentId, null, FilterType.None, false, Guid.Empty, string.Empty, true)
+            var files = fileDao.GetFilesAsync(parentId, null, FilterType.None, false, Guid.Empty, string.Empty, true)
                 .WhereAwait(async file => file.Shared &&
                 (await fileSecurity.GetSharesAsync(file)).Any(record => record.Subject != FileConstant.ShareLinkId && record.Share != FileShare.Restrict));
 

@@ -106,7 +106,7 @@ namespace ASC.Files.Core.Data
                 .AsAsyncEnumerable()
                 .AnyAwaitAsync(async r => r.EntryId == (await MappingIDAsync(entryId)).ToString() &&
                           r.EntryType == type);
-        }    
+        }
 
         public async Task SetShareAsync(FileShareRecord r)
         {
@@ -333,19 +333,22 @@ namespace ASC.Files.Core.Data
 
         private async Task<IEnumerable<FileShareRecord>> SaveFilesAndFoldersForShareAsync(List<string> files, List<int> folders)
         {
-            var q = Query(FilesDbContext.Security)
+            var q = await Query(FilesDbContext.Security)
                 .Join(FilesDbContext.Tree, r => r.EntryId, a => a.ParentId.ToString(), (security, tree) => new SecurityTreeRecord { DbFilesSecurity = security, DbFolderTree = tree })
                 .Where(r => folders.Contains(r.DbFolderTree.FolderId) &&
-                            r.DbFilesSecurity.EntryType == FileEntryType.Folder);
+                            r.DbFilesSecurity.EntryType == FileEntryType.Folder)
+                .ToListAsync();
 
             if (0 < files.Count)
             {
-                var q1 = GetQuery(r => files.Contains(r.EntryId) && r.EntryType == FileEntryType.File)
-                    .Select(r => new SecurityTreeRecord { DbFilesSecurity = r });
-                q = q.Union(q1);
+                var q1 = await GetQuery(r => files.Contains(r.EntryId) && r.EntryType == FileEntryType.File)
+                    .Select(r => new SecurityTreeRecord { DbFilesSecurity = r })
+                    .ToListAsync();
+                q = q.Union(q1).ToList();
             }
 
-            return await q.AsAsyncEnumerable()
+            return await q
+                .ToAsyncEnumerable()
                 .SelectAwait(async e => await ToFileShareRecordAsync(e))
                 .OrderBy(r => r.Level)
                 .ThenByDescending(r => r.Share, new FileShareRecord.ShareComparer())

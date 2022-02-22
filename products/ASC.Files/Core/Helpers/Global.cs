@@ -299,7 +299,7 @@ namespace ASC.Web.Files.Classes
         internal static readonly IDictionary<int, int> ProjectsRootFolderCache =
             new ConcurrentDictionary<int, int>(); /*Use SYNCHRONIZED for cross thread blocks*/
 
-        public async Task<int> GetFolderProjectsAsync(IDaoFactory daoFactory)
+        public async ValueTask<int> GetFolderProjectsAsync(IDaoFactory daoFactory)
         {
             if (CoreBaseSettings.Personal) return default;
 
@@ -316,7 +316,7 @@ namespace ASC.Web.Files.Classes
             return result;
         }
 
-        public async Task<T> GetFolderProjectsAsync<T>(IDaoFactory daoFactory)
+        public async ValueTask<T> GetFolderProjectsAsync<T>(IDaoFactory daoFactory)
         {
             return (T)Convert.ChangeType(await GetFolderProjectsAsync(daoFactory), typeof(T));
         }
@@ -367,12 +367,12 @@ namespace ASC.Web.Files.Classes
         internal static readonly IDictionary<int, int> CommonFolderCache =
                 new ConcurrentDictionary<int, int>(); /*Use SYNCHRONIZED for cross thread blocks*/
 
-        public async Task<T> GetFolderCommonAsync<T>(FileMarker fileMarker, IDaoFactory daoFactory)
+        public async ValueTask<T> GetFolderCommonAsync<T>(FileMarker fileMarker, IDaoFactory daoFactory)
         {
             return (T)Convert.ChangeType(await GetFolderCommonAsync(fileMarker, daoFactory), typeof(T));
         }
 
-        public async Task<int> GetFolderCommonAsync(FileMarker fileMarker, IDaoFactory daoFactory)
+        public async ValueTask<int> GetFolderCommonAsync(FileMarker fileMarker, IDaoFactory daoFactory)
         {
             if (CoreBaseSettings.Personal) return default;
 
@@ -388,7 +388,7 @@ namespace ASC.Web.Files.Classes
         internal static readonly IDictionary<int, int> ShareFolderCache =
             new ConcurrentDictionary<int, int>(); /*Use SYNCHRONIZED for cross thread blocks*/
 
-        public async Task<int> GetFolderShareAsync(IDaoFactory daoFactory)
+        public async ValueTask<int> GetFolderShareAsync(IDaoFactory daoFactory)
         {
             if (CoreBaseSettings.Personal) return default;
             if (IsOutsider) return default;
@@ -404,7 +404,7 @@ namespace ASC.Web.Files.Classes
             return sharedFolderId;
         }
 
-        public async Task<T> GetFolderShareAsync<T>(IDaoFactory daoFactory)
+        public async ValueTask<T> GetFolderShareAsync<T>(IDaoFactory daoFactory)
         {
             return (T)Convert.ChangeType(await GetFolderShareAsync(daoFactory), typeof(T));
         }
@@ -412,7 +412,7 @@ namespace ASC.Web.Files.Classes
         internal static readonly IDictionary<int, int> RecentFolderCache =
     new ConcurrentDictionary<int, int>(); /*Use SYNCHRONIZED for cross thread blocks*/
 
-        public async Task<int> GetFolderRecentAsync(IDaoFactory daoFactory)
+        public async ValueTask<int> GetFolderRecentAsync(IDaoFactory daoFactory)
         {
             if (!AuthContext.IsAuthenticated) return 0;
             if (UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)) return 0;
@@ -432,7 +432,7 @@ namespace ASC.Web.Files.Classes
         internal static readonly IDictionary<int, int> FavoritesFolderCache =
             new ConcurrentDictionary<int, int>(); /*Use SYNCHRONIZED for cross thread blocks*/
 
-        public async Task<int> GetFolderFavoritesAsync(IDaoFactory daoFactory)
+        public async ValueTask<int> GetFolderFavoritesAsync(IDaoFactory daoFactory)
         {
             if (!AuthContext.IsAuthenticated) return 0;
             if (UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)) return 0;
@@ -452,7 +452,7 @@ namespace ASC.Web.Files.Classes
         internal static readonly IDictionary<int, int> TemplatesFolderCache =
             new ConcurrentDictionary<int, int>(); /*Use SYNCHRONIZED for cross thread blocks*/
 
-        public async Task<int> GetFolderTemplatesAsync(IDaoFactory daoFactory)
+        public async ValueTask<int> GetFolderTemplatesAsync(IDaoFactory daoFactory)
         {
             if (!AuthContext.IsAuthenticated) return 0;
             if (UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)) return 0;
@@ -472,12 +472,12 @@ namespace ASC.Web.Files.Classes
         internal static readonly IDictionary<string, int> PrivacyFolderCache =
             new ConcurrentDictionary<string, int>(); /*Use SYNCHRONIZED for cross thread blocks*/
 
-        public async Task<T> GetFolderPrivacyAsync<T>(IDaoFactory daoFactory)
+        public async ValueTask<T> GetFolderPrivacyAsync<T>(IDaoFactory daoFactory)
         {
             return (T)Convert.ChangeType(await GetFolderPrivacyAsync(daoFactory), typeof(T));
         }
 
-        public async Task<int> GetFolderPrivacyAsync(IDaoFactory daoFactory)
+        public async ValueTask<int> GetFolderPrivacyAsync(IDaoFactory daoFactory)
         {
             if (!AuthContext.IsAuthenticated) return 0;
             if (UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)) return 0;
@@ -504,7 +504,7 @@ namespace ASC.Web.Files.Classes
             return (T)Convert.ChangeType(await GetFolderTrashAsync(daoFactory), typeof(T));
         }
 
-        public async Task<object> GetFolderTrashAsync(IDaoFactory daoFactory)
+        public async ValueTask<object> GetFolderTrashAsync(IDaoFactory daoFactory)
         {
             if (IsOutsider) return null;
 
@@ -529,7 +529,7 @@ namespace ASC.Web.Files.Classes
             var folderDao = (FolderDao)daoFactory.GetFolderDao<int>();
             var fileDao = (FileDao)daoFactory.GetFileDao<int>();
 
-            var id = my ? await folderDao.GetFolderIDUserAsync(false): await folderDao.GetFolderIDCommonAsync(false);
+            var id = my ? await folderDao.GetFolderIDUserAsync(false) : await folderDao.GetFolderIDCommonAsync(false);
 
             if (Equals(id, 0)) //TODO: think about 'null'
             {
@@ -639,24 +639,24 @@ namespace ASC.Web.Files.Classes
             GlobalFolder = globalFolder;
         }
 
-        public Task<int> FolderProjectsAsync => GlobalFolder.GetFolderProjectsAsync(DaoFactory);
-        public Task<int> FolderCommonAsync => GlobalFolder.GetFolderCommonAsync(FileMarker, DaoFactory);
+        public ValueTask<int> FolderProjectsAsync => GlobalFolder.GetFolderProjectsAsync(DaoFactory);
+        public ValueTask<int> FolderCommonAsync => GlobalFolder.GetFolderCommonAsync(FileMarker, DaoFactory);
         public int FolderMy => GlobalFolder.GetFolderMy(FileMarker, DaoFactory);
-        public Task<int> FolderPrivacyAsync => GlobalFolder.GetFolderPrivacyAsync(DaoFactory);
-        public Task<int> FolderRecentAsync => GlobalFolder.GetFolderRecentAsync(DaoFactory);
-        public Task<int> FolderFavoritesAsync => GlobalFolder.GetFolderFavoritesAsync(DaoFactory);
-        public Task<int> FolderTemplatesAsync => GlobalFolder.GetFolderTemplatesAsync(DaoFactory);
+        public ValueTask<int> FolderPrivacyAsync => GlobalFolder.GetFolderPrivacyAsync(DaoFactory);
+        public ValueTask<int> FolderRecentAsync => GlobalFolder.GetFolderRecentAsync(DaoFactory);
+        public ValueTask<int> FolderFavoritesAsync => GlobalFolder.GetFolderFavoritesAsync(DaoFactory);
+        public ValueTask<int> FolderTemplatesAsync => GlobalFolder.GetFolderTemplatesAsync(DaoFactory);
         public T GetFolderMy<T>()
         {
             return (T)Convert.ChangeType(FolderMy, typeof(T));
         }
 
-        public async Task<T> GetFolderCommonAsync<T>()
+        public async ValueTask<T> GetFolderCommonAsync<T>()
         {
             return (T)Convert.ChangeType(await FolderCommonAsync, typeof(T));
         }
 
-        public async Task<T> GetFolderProjectsAsync<T>()
+        public async ValueTask<T> GetFolderProjectsAsync<T>()
         {
             return (T)Convert.ChangeType(await FolderProjectsAsync, typeof(T));
         }
@@ -666,7 +666,7 @@ namespace ASC.Web.Files.Classes
             return (T)Convert.ChangeType(FolderTrash, typeof(T));
         }
 
-        public async Task<T> GetFolderPrivacyAsync<T>()
+        public async ValueTask<T> GetFolderPrivacyAsync<T>()
         {
             return (T)Convert.ChangeType(await FolderPrivacyAsync, typeof(T));
         }
@@ -676,11 +676,11 @@ namespace ASC.Web.Files.Classes
             GlobalFolder.SetFolderMy(val);
         }
 
-        public async Task<T> GetFolderShareAsync<T>()
+        public async ValueTask<T> GetFolderShareAsync<T>()
         {
             return (T)Convert.ChangeType(await FolderShareAsync, typeof(T));
         }
-        public Task<int> FolderShareAsync => GlobalFolder.GetFolderShareAsync(DaoFactory);
+        public ValueTask<int> FolderShareAsync => GlobalFolder.GetFolderShareAsync(DaoFactory);
 
         public object FolderTrash
         {

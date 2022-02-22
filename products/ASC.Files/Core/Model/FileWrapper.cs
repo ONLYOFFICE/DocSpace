@@ -184,7 +184,7 @@ namespace ASC.Api.Documents
             FileUtility = fileUtility;
         }
 
-        public async ValueTask<FileWrapper<T>> GetAsync<T>(File<T> file, List<Tuple<FileEntry<T>, bool>> folders = null)
+        public async Task<FileWrapper<T>> GetAsync<T>(File<T> file, List<Tuple<FileEntry<T>, bool>> folders = null)
         {
             var result = await GetFileWrapperAsync(file);
 
@@ -216,7 +216,7 @@ namespace ASC.Api.Documents
 
 
             return result;
-        }      
+        }
 
         private async Task<FileWrapper<T>> GetFileWrapperAsync<T>(File<T> file)
         {

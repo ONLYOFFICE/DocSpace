@@ -66,7 +66,7 @@ namespace ASC.Web.Files.Utils
 
         internal void Add(AsyncTaskData<T> taskData)
         {
-            Tasks.QueueTask((d, c) => ExecMarkFileAsNewAsync(taskData).Wait(), taskData);
+            Tasks.QueueTask(async (d, c) => await ExecMarkFileAsNewAsync(taskData), taskData);
         }
 
         private async Task ExecMarkFileAsNewAsync(AsyncTaskData<T> obj)
@@ -123,7 +123,7 @@ namespace ASC.Web.Files.Utils
             ServiceProvider = serviceProvider;
             FilesSettingsHelper = filesSettingsHelper;
             this.cache = cache;
-        }      
+        }
 
         internal async Task ExecMarkFileAsNewAsync<T>(AsyncTaskData<T> obj)
         {
@@ -133,9 +133,14 @@ namespace ASC.Web.Files.Utils
             T parentFolderId;
 
             if (obj.FileEntry.FileEntryType == FileEntryType.File)
+            {
                 parentFolderId = ((File<T>)obj.FileEntry).FolderID;
+            }
             else
+            {
                 parentFolderId = ((Folder<T>)obj.FileEntry).ID;
+            }
+
             var parentFolders = await folderDao.GetParentFoldersAsync(parentFolderId);
             parentFolders.Reverse();
 
@@ -147,7 +152,8 @@ namespace ASC.Web.Files.Utils
             {
                 if (userIDs.Count == 0) return;
 
-                parentFolders.Add(await folderDao.GetFolderAsync(await GlobalFolder.GetFolderProjectsAsync<T>(DaoFactory)));
+                var projectsFolder = await GlobalFolder.GetFolderProjectsAsync<T>(DaoFactory);
+                parentFolders.Add(await folderDao.GetFolderAsync(projectsFolder));
 
                 var entries = new List<FileEntry> { obj.FileEntry };
                 entries = entries.Concat(parentFolders).ToList();
@@ -159,8 +165,8 @@ namespace ASC.Web.Files.Utils
                                             else
                                                 userEntriesData.Add(userID, entries);
 
-                    RemoveFromCahce(GlobalFolder.GetFolderProjectsAsync(DaoFactory).Result, userID);
-                });
+                                            RemoveFromCahce(projectsFolder, userID);
+                                        });
             }
             else
             {
@@ -176,9 +182,9 @@ namespace ASC.Web.Files.Utils
                     userIDs = userIDs.Where(u => !UserManager.GetUsers(u).IsVisitor(UserManager)).ToList();
                 }
 
-                foreach(var parentFolder in parentFolders)
+                foreach (var parentFolder in parentFolders)
                 {
-					var whoCanRead = await filesSecurity.WhoCanReadAsync(parentFolder);
+                    var whoCanRead = await filesSecurity.WhoCanReadAsync(parentFolder);
                     var ids = whoCanRead
                         .Where(userID => userIDs.Contains(userID) && userID != obj.CurrentAccountId);
                     foreach (var id in ids)
@@ -229,7 +235,8 @@ namespace ASC.Web.Files.Utils
                 }
                 else if (obj.FileEntry.RootFolderType == FolderType.COMMON)
                 {
-                    userIDs.ForEach(userID => RemoveFromCahce(GlobalFolder.GetFolderCommonAsync(this, DaoFactory).Result, userID));
+                    var commonFolderId = await GlobalFolder.GetFolderCommonAsync(this, DaoFactory);
+                    userIDs.ForEach(userID => RemoveFromCahce(commonFolderId, userID));
 
                     if (obj.FileEntry.ProviderEntry)
                     {
@@ -241,8 +248,8 @@ namespace ASC.Web.Files.Utils
                                                 else
                                                     userEntriesData.Add(userID, new List<FileEntry> { commonFolder });
 
-                            RemoveFromCahce((GlobalFolder.GetFolderCommonAsync(this, DaoFactory).Result, userID));
-                        });
+                                                RemoveFromCahce(commonFolderId, userID);
+                                            });
                     }
                 }
                 else if (obj.FileEntry.RootFolderType == FolderType.Privacy)
@@ -289,9 +296,14 @@ namespace ASC.Web.Files.Utils
             }
 
             if (updateTags.Count > 0)
+            {
                 tagDao.UpdateNewTags(updateTags);
+            }
+
             if (newTags.Count > 0)
+            {
                 tagDao.SaveTags(newTags);
+            }
 
             async Task GetNewTagsAsync<T1>(Guid userID, List<FileEntry<T1>> entries)
             {
@@ -309,7 +321,7 @@ namespace ASC.Web.Files.Utils
                     }
                 });
             }
-        }      
+        }
 
         public Task MarkAsNewAsync<T>(FileEntry<T> fileEntry, List<Guid> userIDs = null)
         {
@@ -392,13 +404,14 @@ namespace ASC.Web.Files.Utils
                 {
                     var folderTags = listTags.Where(tag => tag.EntryType == FileEntryType.Folder);
 
-                    var providerFolderTags = folderTags.Select(tag => new KeyValuePair<Tag, Folder<T>>(tag, folderDao.GetFolderAsync((T)tag.EntryId).Result))
-                                                       .Where(pair => pair.Value != null && pair.Value.ProviderEntry);
-
-                    foreach (var providerFolderTag in providerFolderTags)
+                    foreach (var tag in folderTags)
                     {
-                        listTags.Select(e => e != providerFolderTag.Key);
-                        listTags.AddRange(await tagDao.GetNewTagsAsync(userID, providerFolderTag.Value, true).ToListAsync());
+                        var folderEntry = await folderDao.GetFolderAsync((T)tag.EntryId);
+                        if (folderEntry != null && folderEntry.ProviderEntry)
+                        {
+                            listTags.Remove(tag);
+                            listTags.AddRange(await tagDao.GetNewTagsAsync(userID, folderEntry, true).ToListAsync());
+                        }
                     }
                 }
 
@@ -528,7 +541,7 @@ namespace ASC.Web.Files.Utils
             }
 
             return 0;
-        }     
+        }
 
         public Task<List<FileEntry>> MarkedItemsAsync<T>(Folder<T> folder)
         {
@@ -657,7 +670,7 @@ namespace ASC.Web.Files.Utils
             }
 
             return entryTags;
-        }      
+        }
 
         public async Task<IEnumerable<FileEntry>> SetTagsNewAsync<T>(Folder<T> parent, IEnumerable<FileEntry> entries)
         {

@@ -77,9 +77,9 @@ namespace ASC.Web.Files
             CommonLinkUtility = commonLinkUtility;
             GlobalFolderHelper = globalFolderHelper;
             PathProvider = pathProvider;
-        }    
+        }
 
-        public override async Task<List<UsageSpaceStatItem>> GetStatDataAsync()
+        public override ValueTask<List<UsageSpaceStatItem>> GetStatDataAsync()
         {
             var myFiles = FilesDbContext.Files
                 .AsQueryable()
@@ -101,7 +101,7 @@ namespace ASC.Web.Files
                 .GroupBy(r => Constants.LostUser.ID)
                 .Select(r => new { CreateBy = Constants.LostUser.ID, Size = r.Sum(a => a.file.ContentLength) });
 
-            return  await myFiles.Union(commonFiles)
+            return myFiles.Union(commonFiles)
                 .AsAsyncEnumerable()
                 .GroupByAwait(
                 async r => await Task.FromResult(r.CreateBy),

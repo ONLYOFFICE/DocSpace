@@ -40,7 +40,7 @@ namespace ASC.Web.Core
             public long SpaceUsage { get; set; }
         }
 
-        public abstract Task<System.Collections.Generic.List<UsageSpaceStatItem>> GetStatDataAsync();
+        public abstract ValueTask<System.Collections.Generic.List<UsageSpaceStatItem>> GetStatDataAsync();
     }
 
     public interface IUserSpaceUsage

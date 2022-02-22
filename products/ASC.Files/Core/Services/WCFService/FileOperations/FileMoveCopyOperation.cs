@@ -178,10 +178,11 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             needToMark.AddRange(await moveOrCopyFoldersTask);
             needToMark.AddRange(await moveOrCopyFilesTask);
 
-            var ntm = needToMark.Distinct();            foreach(var n in ntm)
+            var ntm = needToMark.Distinct(); foreach (var n in ntm)
             {
                 await fileMarker.MarkAsNewAsync(n);
-            }        }
+            }
+        }
 
         private async Task<List<FileEntry<TTo>>> MoveOrCopyFoldersAsync<TTo>(IServiceScope scope, List<T> folderIds, Folder<TTo> toFolder, bool copy)
         {
@@ -209,7 +210,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 {
                     Error = FilesCommonResource.ErrorMassage_FolderNotFound;
                 }
-                else if (!FilesSecurity.CanReadAsync(folder).Result)
+                else if (!await FilesSecurity.CanReadAsync(folder))
                 {
                     Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFolder;
                 }

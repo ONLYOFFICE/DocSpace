@@ -131,9 +131,13 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 rootIds.Add(await globalFolder.GetFolderPrivacyAsync(daoFactory));
             }
 
-            var newrootfolder =
-                rootIds.Select(r => new KeyValuePair<int, int>(r, fileMarker.GetRootFoldersIdMarkedAsNewAsync(r).Result))
-                .Select(item => string.Format("new_{{\"key\"? \"{0}\", \"value\"? \"{1}\"}}", item.Key, item.Value));
+            var newrootfolder = new List<string>();
+
+            foreach (var r in rootIds)
+            {
+                var item = new KeyValuePair<int, int>(r, await fileMarker.GetRootFoldersIdMarkedAsNewAsync(r));
+                newrootfolder.Add($"new_{{\"key\"? \"{item.Key}\", \"value\"? \"{item.Value}\"}}");
+            }
 
             Result += string.Join(SPLIT_CHAR, newrootfolder.ToArray());
         }

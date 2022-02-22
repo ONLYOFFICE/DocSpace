@@ -53,9 +53,9 @@ namespace ASC.Files.Thirdparty.ProviderDao
         {
         }
 
-        public async Task SetShareAsync(FileShareRecord r)
+        public Task SetShareAsync(FileShareRecord r)
         {
-            await SecurityDao.SetShareAsync(r);
+            return SecurityDao.SetShareAsync(r);
         }
 
         public async Task<IEnumerable<FileShareRecord>> GetSharesAsync(IEnumerable<FileEntry<string>> entries)
@@ -85,7 +85,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
                 }
             }
 
-            result.AddRange(GetShareForFoldersAsync(folders).Result);
+            result.AddRange(await GetShareForFoldersAsync(folders));
 
             return result;
         }
@@ -185,9 +185,9 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return result;
         }
 
-        public async Task RemoveSubjectAsync(Guid subject)
+        public Task RemoveSubjectAsync(Guid subject)
         {
-            await SecurityDao.RemoveSubjectAsync(subject);
+            return SecurityDao.RemoveSubjectAsync(subject);
         }
 
         public ValueTask<List<FileShareRecord>> GetSharesAsync(IEnumerable<Guid> subjects)
@@ -195,24 +195,24 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return SecurityDao.GetSharesAsync(subjects);
         }
 
-        public async Task<IEnumerable<FileShareRecord>> GetPureShareRecordsAsync(IEnumerable<FileEntry<string>> entries)
+        public Task<IEnumerable<FileShareRecord>> GetPureShareRecordsAsync(IEnumerable<FileEntry<string>> entries)
         {
-            return await SecurityDao.GetPureShareRecordsAsync(entries);
+            return SecurityDao.GetPureShareRecordsAsync(entries);
         }
 
-        public async Task<IEnumerable<FileShareRecord>> GetPureShareRecordsAsync(FileEntry<string> entry)
+        public Task<IEnumerable<FileShareRecord>> GetPureShareRecordsAsync(FileEntry<string> entry)
         {
-            return await SecurityDao.GetPureShareRecordsAsync(entry);
+            return SecurityDao.GetPureShareRecordsAsync(entry);
         }
 
-        public async Task DeleteShareRecordsAsync(IEnumerable<FileShareRecord> records)
+        public Task DeleteShareRecordsAsync(IEnumerable<FileShareRecord> records)
         {
-            await SecurityDao.DeleteShareRecordsAsync(records);
+            return SecurityDao.DeleteShareRecordsAsync(records);
         }
 
-        public async ValueTask<bool> IsSharedAsync(object entryId, FileEntryType type)
+        public ValueTask<bool> IsSharedAsync(object entryId, FileEntryType type)
         {
-            return await SecurityDao.IsSharedAsync(entryId, type);
+            return SecurityDao.IsSharedAsync(entryId, type);
         }
     }
 }

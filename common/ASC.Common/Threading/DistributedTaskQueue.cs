@@ -48,7 +48,7 @@ namespace ASC.Common.Threading
         private readonly ICacheNotify<DistributedTaskCache> notifyCache;
 
         public DistributedTaskCacheNotify(
-            ICacheNotify<DistributedTaskCancelation> notify, 
+            ICacheNotify<DistributedTaskCancelation> notify,
             ICacheNotify<DistributedTaskCache> notifyCache,
             ICache cache)
         {
@@ -156,7 +156,7 @@ namespace ASC.Common.Threading
         private TaskScheduler Scheduler { get; set; } = TaskScheduler.Default;
 
         public IServiceProvider ServiceProvider { get; set; }
-        public string Name { get { return key; }  set { key = value + GetType().Name; } }
+        public string Name { get { return key; } set { key = value + GetType().Name; } }
         private ICache Cache { get => DistributedTaskCacheNotify.Cache; }
         private ConcurrentDictionary<string, CancellationTokenSource> Cancelations { get => DistributedTaskCacheNotify.Cancelations; }
 
@@ -205,6 +205,40 @@ namespace ASC.Common.Threading
             distributedTask.PublishChanges();
 
             task.Start(Scheduler);
+        }
+
+        public void QueueTask(Func<DistributedTask, CancellationToken, Task> action, DistributedTask distributedTask = null)
+        {
+            if (distributedTask == null)
+            {
+                distributedTask = new DistributedTask();
+            }
+
+            distributedTask.InstanceId = InstanceId;
+
+            var cancelation = new CancellationTokenSource();
+            var token = cancelation.Token;
+            Cancelations[distributedTask.Id] = cancelation;
+
+            Task.Factory.StartNew(async () =>
+            {
+                distributedTask.Status = DistributedTaskStatus.Running;
+
+                if (distributedTask.Publication == null)
+                {
+                    distributedTask.Publication = GetPublication();
+                }
+                distributedTask.PublishChanges();
+
+                var task = action(distributedTask, token);
+                task
+                .ConfigureAwait(false)
+                .GetAwaiter()
+                .OnCompleted(() => OnCompleted(task, distributedTask.Id));
+                await task;
+            },
+            token, TaskCreationOptions.LongRunning, Scheduler)
+            .Unwrap();
         }
 
         public IEnumerable<DistributedTask> GetTasks()

@@ -1067,9 +1067,9 @@ namespace ASC.Files.Core.Data
             return file;
         }
 
-        public async Task AbortUploadSessionAsync(ChunkedUploadSession<int> uploadSession)
+        public Task AbortUploadSessionAsync(ChunkedUploadSession<int> uploadSession)
         {
-            await ChunkedUploadSessionHolder.AbortUploadSessionAsync(uploadSession);
+            return ChunkedUploadSessionHolder.AbortUploadSessionAsync(uploadSession);
         }
 
         private async Task<File<int>> GetFileForCommitAsync(ChunkedUploadSession<int> uploadSession)

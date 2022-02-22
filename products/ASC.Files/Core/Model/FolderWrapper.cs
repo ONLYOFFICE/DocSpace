@@ -141,7 +141,8 @@ namespace ASC.Api.Documents
                 else
                 {
                     parentFolder = await folderDao.GetFolderAsync(folder.FolderID);
-                    if (!FileSecurity.CanReadAsync(parentFolder).Result)
+                    var canRead = await FileSecurity.CanReadAsync(parentFolder);
+                    if (!canRead)
                     {
                         result.ParentId = await GlobalFolderHelper.GetFolderShareAsync<T>();
                     }

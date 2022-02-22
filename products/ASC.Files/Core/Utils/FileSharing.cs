@@ -87,7 +87,7 @@ namespace ASC.Web.Files.Utils
             GlobalFolderHelper = globalFolderHelper;
             FileSharingHelper = fileSharingHelper;
             FileTracker = fileTracker;
-        }       
+        }
 
         public async Task<bool> SetAceObjectAsync(List<AceWrapper> aceWrappers, FileEntry<T> entry, bool notify, string message)
         {
@@ -188,7 +188,7 @@ namespace ASC.Web.Files.Utils
             await usersWithoutRight.ToAsyncEnumerable().ForEachAwaitAsync(async userId => await FileMarker.RemoveMarkAsNewAsync(entry, userId));
 
             return changed;
-        }      
+        }
 
         public Task RemoveAceAsync(IAsyncEnumerable<FileEntry<T>> entries)
         {
@@ -293,7 +293,7 @@ namespace ASC.Web.Files.Utils
         public Task<bool> CanSetAccessAsync<T>(FileEntry<T> entry)
         {
             return FileSharingHelper.CanSetAccessAsync(entry);
-        }      
+        }
 
         public async Task<List<AceWrapper>> GetSharedInfoAsync<T>(FileEntry<T> entry)
         {
@@ -443,14 +443,14 @@ namespace ASC.Web.Files.Utils
             var result = new List<AceWrapper>();
 
             var fileDao = DaoFactory.GetFileDao<T>();
-            var files = fileDao.GetFilesAsync(fileIds);
+            var files = await fileDao.GetFilesAsync(fileIds).ToListAsync();
 
             var folderDao = DaoFactory.GetFolderDao<T>();
-            var folders = folderDao.GetFoldersAsync(folderIds);
+            var folders = await folderDao.GetFoldersAsync(folderIds).ToListAsync();
 
             var entries = files.Cast<FileEntry<T>>().Concat(folders.Cast<FileEntry<T>>());
 
-            await foreach (var entry in entries)
+            foreach (var entry in entries)
             {
                 IEnumerable<AceWrapper> acesForObject;
                 try
@@ -518,7 +518,7 @@ namespace ASC.Web.Files.Utils
             result.Remove(meAce);
 
             AceWrapper linkAce = null;
-            if (await entries.CountAsync() > 1)
+            if (entries.Count() > 1)
             {
                 result.RemoveAll(ace => ace.SubjectId == FileConstant.ShareLinkId);
             }

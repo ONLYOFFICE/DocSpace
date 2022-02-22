@@ -107,7 +107,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             TaskInfo.SetProperty(HOLD, HoldResult);
         }
 
-        public abstract void RunJob(DistributedTask _, CancellationToken cancellationToken);
         public abstract Task RunJobAsync(DistributedTask _, CancellationToken cancellationToken);
         protected abstract Task DoAsync(IServiceScope serviceScope);
 
@@ -128,15 +127,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         {
             ThirdPartyOperation = thirdPartyOperation;
             DaoOperation = daoOperation;
-        }
-
-        public override void RunJob(DistributedTask _, CancellationToken cancellationToken)
-        {
-            ThirdPartyOperation.GetDistributedTask().Publication = PublishChanges;
-            ThirdPartyOperation.RunJob(_, cancellationToken);
-
-            DaoOperation.GetDistributedTask().Publication = PublishChanges;
-            DaoOperation.RunJob(_, cancellationToken);
         }
 
         public override async Task RunJobAsync(DistributedTask _, CancellationToken cancellationToken)
@@ -290,61 +280,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
             Total = InitTotalProgressSteps();
             Source = string.Join(SPLIT_CHAR, Folders.Select(f => "folder_" + f).Concat(Files.Select(f => "file_" + f)).ToArray());
-        }
-
-        public override void RunJob(DistributedTask _, CancellationToken cancellationToken)
-        {
-            try
-            {
-                //todo check files> 0 or folders > 0
-                CancellationToken = cancellationToken;
-
-                using var scope = ServiceProvider.CreateScope();
-                var scopeClass = scope.ServiceProvider.GetService<FileOperationScope>();
-                var (tenantManager, daoFactory, fileSecurity, options) = scopeClass;
-                tenantManager.SetCurrentTenant(CurrentTenant);
-
-
-                Thread.CurrentPrincipal = principal;
-                Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(culture);
-                Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(culture);
-
-                FolderDao = daoFactory.GetFolderDao<TId>();
-                FileDao = daoFactory.GetFileDao<TId>();
-                TagDao = daoFactory.GetTagDao<TId>();
-                LinkDao = daoFactory.GetLinkDao();
-                ProviderDao = daoFactory.ProviderDao;
-                FilesSecurity = fileSecurity;
-
-                Logger = options.CurrentValue;
-
-                DoAsync(scope).Wait();
-            }
-            catch (AuthorizingException authError)
-            {
-                Error = FilesCommonResource.ErrorMassage_SecurityException;
-                Logger.Error(Error, new SecurityException(Error, authError));
-            }
-            catch (AggregateException ae)
-            {
-                ae.Flatten().Handle(e => e is TaskCanceledException || e is OperationCanceledException);
-            }
-            catch (Exception error)
-            {
-                Error = error is TaskCanceledException || error is OperationCanceledException
-                            ? FilesCommonResource.ErrorMassage_OperationCanceledException
-                            : error.Message;
-                Logger.Error(error, error);
-            }
-            finally
-            {
-                try
-                {
-                    TaskInfo.SetProperty(FINISHED, true);
-                    PublishTaskInfo();
-                }
-                catch { /* ignore */ }
-            }
         }
 
         public override async Task RunJobAsync(DistributedTask _, CancellationToken cancellationToken)

@@ -60,7 +60,6 @@ using ASC.Web.Studio.Core;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 using Newtonsoft.Json.Linq;
@@ -1109,7 +1108,7 @@ namespace ASC.Api.Documents
         /// <returns>Parent folders</returns>
 
         [Read("folder/{folderId}/path")]
-        public  IAsyncEnumerable<FileEntryWrapper> GetFolderPathAsync(string folderId)
+        public IAsyncEnumerable<FileEntryWrapper> GetFolderPathAsync(string folderId)
         {
             return FilesControllerHelperString.GetFolderPathAsync(folderId);
         }
@@ -1211,15 +1210,15 @@ namespace ASC.Api.Documents
         /// <param name="immediately">Don't move to the Recycle Bin</param>
         /// <returns>Operation result</returns>
         [Delete("file/{fileId}", order: int.MaxValue, DisableFormat = true)]
-        public IEnumerable<FileOperationWraper> DeleteFile(string fileId, [FromBody] DeleteModel model)
+        public Task<IEnumerable<FileOperationWraper>> DeleteFile(string fileId, [FromBody] DeleteModel model)
         {
-            return FilesControllerHelperString.DeleteFile(fileId, model.DeleteAfter, model.Immediately);
+            return FilesControllerHelperString.DeleteFileAsync(fileId, model.DeleteAfter, model.Immediately);
         }
 
         [Delete("file/{fileId:int}", order: int.MaxValue - 1, DisableFormat = true)]
-        public IEnumerable<FileOperationWraper> DeleteFile(int fileId, [FromBody] DeleteModel model)
+        public Task<IEnumerable<FileOperationWraper>> DeleteFile(int fileId, [FromBody] DeleteModel model)
         {
-            return FilesControllerHelperInt.DeleteFile(fileId, model.DeleteAfter, model.Immediately);
+            return FilesControllerHelperInt.DeleteFileAsync(fileId, model.DeleteAfter, model.Immediately);
         }
 
         /// <summary>
@@ -1231,15 +1230,15 @@ namespace ASC.Api.Documents
         /// <returns>Operation result</returns>
 
         [Update("file/{fileId}/checkconversion")]
-        public  IAsyncEnumerable<ConversationResult<string>> StartConversionAsync(string fileId, [FromBody(EmptyBodyBehavior = Microsoft.AspNetCore.Mvc.ModelBinding.EmptyBodyBehavior.Allow)] CheckConversionModel model)
+        public IAsyncEnumerable<ConversationResult<string>> StartConversionAsync(string fileId, [FromBody(EmptyBodyBehavior = Microsoft.AspNetCore.Mvc.ModelBinding.EmptyBodyBehavior.Allow)] CheckConversionModel model)
         {
             return FilesControllerHelperString.StartConversionAsync(fileId, model?.Sync ?? false);
         }
 
         [Update("file/{fileId:int}/checkconversion")]
-        public  IAsyncEnumerable<ConversationResult<int>> StartConversionAsync(int fileId, [FromBody(EmptyBodyBehavior = Microsoft.AspNetCore.Mvc.ModelBinding.EmptyBodyBehavior.Allow)] CheckConversionModel model)
+        public IAsyncEnumerable<ConversationResult<int>> StartConversionAsync(int fileId, [FromBody(EmptyBodyBehavior = Microsoft.AspNetCore.Mvc.ModelBinding.EmptyBodyBehavior.Allow)] CheckConversionModel model)
         {
-            return  FilesControllerHelperInt.StartConversionAsync(fileId, model?.Sync ?? false);
+            return FilesControllerHelperInt.StartConversionAsync(fileId, model?.Sync ?? false);
         }
 
         /// <summary>
@@ -1252,7 +1251,7 @@ namespace ASC.Api.Documents
         /// <returns>Operation result</returns>
 
         [Read("file/{fileId}/checkconversion")]
-        public  IAsyncEnumerable<ConversationResult<string>> CheckConversionAsync(string fileId, bool start)
+        public IAsyncEnumerable<ConversationResult<string>> CheckConversionAsync(string fileId, bool start)
         {
             return FilesControllerHelperString.CheckConversionAsync(fileId, start);
         }
@@ -1274,13 +1273,13 @@ namespace ASC.Api.Documents
         /// <param name="immediately">Don't move to the Recycle Bin</param>
         /// <returns>Operation result</returns>
         [Delete("folder/{folderId}", order: int.MaxValue - 1, DisableFormat = true)]
-        public IEnumerable<FileOperationWraper> DeleteFolder(string folderId, bool deleteAfter, bool immediately)
+        public Task<IEnumerable<FileOperationWraper>> DeleteFolder(string folderId, bool deleteAfter, bool immediately)
         {
             return FilesControllerHelperString.DeleteFolder(folderId, deleteAfter, immediately);
         }
 
         [Delete("folder/{folderId:int}")]
-        public IEnumerable<FileOperationWraper> DeleteFolder(int folderId, bool deleteAfter, bool immediately)
+        public Task<IEnumerable<FileOperationWraper>> DeleteFolder(int folderId, bool deleteAfter, bool immediately)
         {
             return FilesControllerHelperInt.DeleteFolder(folderId, deleteAfter, immediately);
         }
@@ -1311,16 +1310,16 @@ namespace ASC.Api.Documents
         /// <param name="deleteAfter">Delete after finished</param>
         /// <returns>Operation result</returns>
         [Update("fileops/move")]
-        public IEnumerable<FileOperationWraper> MoveBatchItemsFromBody([FromBody] BatchModel batchModel)
+        public Task<IEnumerable<FileOperationWraper>> MoveBatchItemsFromBody([FromBody] BatchModel batchModel)
         {
-            return FilesControllerHelperString.MoveBatchItems(batchModel);
+            return FilesControllerHelperString.MoveBatchItemsAsync(batchModel);
         }
 
         [Update("fileops/move")]
         [Consumes("application/x-www-form-urlencoded")]
-        public IEnumerable<FileOperationWraper> MoveBatchItemsFromForm([FromForm][ModelBinder(BinderType = typeof(BatchModelBinder))] BatchModel batchModel)
+        public Task<IEnumerable<FileOperationWraper>> MoveBatchItemsFromForm([FromForm][ModelBinder(BinderType = typeof(BatchModelBinder))] BatchModel batchModel)
         {
-            return FilesControllerHelperString.MoveBatchItems(batchModel);
+            return FilesControllerHelperString.MoveBatchItemsAsync(batchModel);
         }
 
         /// <summary>
@@ -1335,16 +1334,16 @@ namespace ASC.Api.Documents
         /// <param name="deleteAfter">Delete after finished</param>
         /// <returns>Operation result</returns>
         [Update("fileops/copy")]
-        public IEnumerable<FileOperationWraper> CopyBatchItemsFromBody([FromBody] BatchModel batchModel)
+        public Task<IEnumerable<FileOperationWraper>> CopyBatchItemsFromBody([FromBody] BatchModel batchModel)
         {
-            return FilesControllerHelperString.CopyBatchItems(batchModel);
+            return FilesControllerHelperString.CopyBatchItemsAsync(batchModel);
         }
 
         [Update("fileops/copy")]
         [Consumes("application/x-www-form-urlencoded")]
-        public IEnumerable<FileOperationWraper> CopyBatchItemsFromForm([FromForm][ModelBinder(BinderType = typeof(BatchModelBinder))] BatchModel batchModel)
+        public Task<IEnumerable<FileOperationWraper>> CopyBatchItemsFromForm([FromForm][ModelBinder(BinderType = typeof(BatchModelBinder))] BatchModel batchModel)
         {
-            return FilesControllerHelperString.CopyBatchItems(batchModel);
+            return FilesControllerHelperString.CopyBatchItemsAsync(batchModel);
         }
 
         /// <summary>
@@ -1354,16 +1353,16 @@ namespace ASC.Api.Documents
         /// <category>File operations</category>
         /// <returns>Operation result</returns>
         [Update("fileops/markasread")]
-        public IEnumerable<FileOperationWraper> MarkAsReadFromBody([FromBody] BaseBatchModel model)
+        public Task<IEnumerable<FileOperationWraper>> MarkAsReadFromBody([FromBody] BaseBatchModel model)
         {
-            return FilesControllerHelperString.MarkAsRead(model);
+            return FilesControllerHelperString.MarkAsReadAsync(model);
         }
 
         [Update("fileops/markasread")]
         [Consumes("application/x-www-form-urlencoded")]
-        public IEnumerable<FileOperationWraper> MarkAsReadFromForm([FromForm][ModelBinder(BinderType = typeof(BaseBatchModelBinder))] BaseBatchModel model)
+        public Task<IEnumerable<FileOperationWraper>> MarkAsReadFromForm([FromForm][ModelBinder(BinderType = typeof(BaseBatchModelBinder))] BaseBatchModel model)
         {
-            return FilesControllerHelperString.MarkAsRead(model);
+            return FilesControllerHelperString.MarkAsReadAsync(model);
         }
 
         /// <summary>
@@ -1374,9 +1373,14 @@ namespace ASC.Api.Documents
         /// <returns>Operation result</returns>
 
         [Update("fileops/terminate")]
-        public IEnumerable<FileOperationWraper> TerminateTasks()
+        public async IAsyncEnumerable<FileOperationWraper> TerminateTasks()
         {
-            return FileStorageService.TerminateTasks().Select(e => FileOperationWraperHelper.GetAsync(e).Result);
+            var tasks = FileStorageService.TerminateTasks();
+
+            foreach (var e in tasks)
+            {
+                yield return await FileOperationWraperHelper.GetAsync(e);
+            }
         }
 
 
@@ -1387,9 +1391,16 @@ namespace ASC.Api.Documents
         /// <category>File operations</category>
         /// <returns>Operation result</returns>
         [Read("fileops")]
-        public IEnumerable<FileOperationWraper> GetOperationStatuses()
+        public async Task<IEnumerable<FileOperationWraper>> GetOperationStatuses()
         {
-            return FileStorageService.GetTasksStatuses().Select(e => FileOperationWraperHelper.GetAsync(e).Result);
+            var result = new List<FileOperationWraper>();
+
+            foreach (var e in FileStorageService.GetTasksStatuses())
+            {
+                result.Add(await FileOperationWraperHelper.GetAsync(e));
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -1402,16 +1413,16 @@ namespace ASC.Api.Documents
         /// <category>File operations</category>
         /// <returns>Operation result</returns>
         [Update("fileops/bulkdownload")]
-        public IEnumerable<FileOperationWraper> BulkDownload([FromBody] DownloadModel model)
+        public Task<IEnumerable<FileOperationWraper>> BulkDownload([FromBody] DownloadModel model)
         {
-            return FilesControllerHelperString.BulkDownload(model);
+            return FilesControllerHelperString.BulkDownloadAsync(model);
         }
 
         [Update("fileops/bulkdownload")]
         [Consumes("application/x-www-form-urlencoded")]
-        public IEnumerable<FileOperationWraper> BulkDownloadFromForm([FromForm] DownloadModel model)
+        public Task<IEnumerable<FileOperationWraper>> BulkDownloadFromForm([FromForm] DownloadModel model)
         {
-            return FilesControllerHelperString.BulkDownload(model);
+            return FilesControllerHelperString.BulkDownloadAsync(model);
         }
 
         /// <summary>
@@ -1425,18 +1436,26 @@ namespace ASC.Api.Documents
         /// <category>File operations</category>
         /// <returns>Operation result</returns>
         [Update("fileops/delete")]
-        public IEnumerable<FileOperationWraper> DeleteBatchItemsFromBody([FromBody] DeleteBatchModel batch)
+        public async IAsyncEnumerable<FileOperationWraper> DeleteBatchItemsFromBody([FromBody] DeleteBatchModel batch)
         {
-            return FileStorageService.DeleteItems("delete", batch.FileIds.ToList(), batch.FolderIds.ToList(), false, batch.DeleteAfter, batch.Immediately)
-                .Select(e => FileOperationWraperHelper.GetAsync(e).Result);
+            var tasks = FileStorageService.DeleteItems("delete", batch.FileIds.ToList(), batch.FolderIds.ToList(), false, batch.DeleteAfter, batch.Immediately);
+
+            foreach (var e in tasks)
+            {
+                yield return await FileOperationWraperHelper.GetAsync(e);
+            }
         }
 
         [Update("fileops/delete")]
         [Consumes("application/x-www-form-urlencoded")]
-        public IEnumerable<FileOperationWraper> DeleteBatchItemsFromForm([FromForm][ModelBinder(BinderType = typeof(DeleteBatchModelBinder))] DeleteBatchModel batch)
+        public async IAsyncEnumerable<FileOperationWraper> DeleteBatchItemsFromForm([FromForm][ModelBinder(BinderType = typeof(DeleteBatchModelBinder))] DeleteBatchModel batch)
         {
-            return FileStorageService.DeleteItems("delete", batch.FileIds.ToList(), batch.FolderIds.ToList(), false, batch.DeleteAfter, batch.Immediately)
-                .Select(e => FileOperationWraperHelper.GetAsync(e).Result);
+            var tasks = FileStorageService.DeleteItems("delete", batch.FileIds.ToList(), batch.FolderIds.ToList(), false, batch.DeleteAfter, batch.Immediately);
+
+            foreach (var e in tasks)
+            {
+                yield return await FileOperationWraperHelper.GetAsync(e);
+            }
         }
 
         /// <summary>
@@ -1942,7 +1961,13 @@ namespace ASC.Api.Documents
         {
             var parent = await FileStorageServiceInt.GetFolderAsync(await GlobalFolderHelper.FolderCommonAsync);
             var thirdpartyFolders = await EntryManager.GetThirpartyFoldersAsync(parent);
-            return thirdpartyFolders.Select(r => FolderWrapperHelper.GetAsync(r).Result).ToList();
+            var result = new List<FolderWrapper<string>>();
+
+            foreach (var r in thirdpartyFolders)
+            {
+                result.Add(await FolderWrapperHelper.GetAsync(r));
+            }
+            return result;
         }
 
         /// <summary>

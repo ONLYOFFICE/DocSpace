@@ -25,7 +25,6 @@
 
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -153,68 +152,6 @@ namespace ASC.Web.Files.Services.DocumentService
 
         }
 
-        public void GenerateReport(DistributedTask task, CancellationToken cancellationToken)
-        {
-            using var scope = ServiceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<ReportStateScope>();
-            var (options, tenantManager, authContext, securityContext, documentServiceConnector) = scopeClass;
-            var logger = options.CurrentValue;
-            try
-            {
-                tenantManager.SetCurrentTenant(TenantId);
-
-                Status = ReportStatus.Started;
-                PublishTaskInfo(logger);
-
-                //if (HttpContext.Current == null && !WorkContext.IsMono && !string.IsNullOrEmpty(ContextUrl))
-                //{
-                //    HttpContext.Current = new HttpContext(
-                //        new HttpRequest("hack", ContextUrl, string.Empty),
-                //        new HttpResponse(new System.IO.StringWriter()));
-                //}
-
-                tenantManager.SetCurrentTenant(TenantId);
-                securityContext.AuthenticateMeWithoutCookie(UserId);
-
-                (BuilderKey, var urls) = documentServiceConnector.DocbuilderRequestAsync(null, Script, true).Result;
-
-                while (true)
-                {
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        throw new OperationCanceledException();
-                    }
-
-                    Task.Delay(1500, cancellationToken).Wait(cancellationToken);
-                    (var builderKey, urls) = documentServiceConnector.DocbuilderRequestAsync(BuilderKey, null, true).Result;
-                    if (builderKey == null)
-                        throw new NullReferenceException();
-
-                    if (urls != null && !urls.Any()) throw new Exception("Empty response");
-
-                    if (urls != null && urls.ContainsKey(TmpFileName))
-                        break;
-                }
-
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    throw new OperationCanceledException();
-                }
-
-                SaveFileAction(this, urls[TmpFileName]);
-
-                Status = ReportStatus.Done;
-            }
-            catch (Exception e)
-            {
-                logger.Error("DocbuilderReportsUtility error", e);
-                Exception = e.Message;
-                Status = ReportStatus.Failed;
-            }
-
-            PublishTaskInfo(logger);
-        }
-
         public async Task GenerateReportAsync(DistributedTask task, CancellationToken cancellationToken)
         {
             using var scope = ServiceProvider.CreateScope();
@@ -263,7 +200,7 @@ namespace ASC.Web.Files.Services.DocumentService
                     throw new OperationCanceledException();
                 }
 
-                SaveFileAction(this, urls[TmpFileName]);
+                await SaveFileAction(this, urls[TmpFileName]);
 
                 Status = ReportStatus.Done;
             }
@@ -338,7 +275,7 @@ namespace ASC.Web.Files.Services.DocumentService
         {
             lock (Locker)
             {
-                tasks.QueueTask(state.GenerateReport, state.GetDistributedTask());
+                tasks.QueueTask(state.GenerateReportAsync, state.GetDistributedTask());
             }
         }
 

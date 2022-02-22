@@ -171,14 +171,15 @@ namespace ASC.Files.Core.Thirdparty
 
                 if (fromFileShareRecords.Any())
                 {
-                    foreach(var record in fromFileShareRecords){
+                    foreach (var record in fromFileShareRecords)
+                    {
                         record.EntryId = toFolderId;
                         await securityDao.SetShareAsync(record);
                     }
                 }
 
                 var tagDao = ServiceProvider.GetService<ITagDao<TFrom>>();
-                var fromFileNewTags = tagDao.GetNewTagsAsync(Guid.Empty, fromFolder).ToListAsync().Result;
+                var fromFileNewTags = await tagDao.GetNewTagsAsync(Guid.Empty, fromFolder).ToListAsync();
 
                 if (fromFileNewTags.Count > 0)
                 {
