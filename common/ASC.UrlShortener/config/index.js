@@ -45,10 +45,11 @@ function getAndSaveAppsettings(){
     var appsettings = nconf.get("appsettings");
     try{
         var env = nconf.get("environment");
-        var fileWithEnv = path.join(__dirname, appsettings, 'appsettings.' + env + '.json');
+        var valueEnv = nconf.get(env);
+        var fileWithEnv = path.join(__dirname, appsettings, 'appsettings.' + valueEnv + '.json');
     
         fs.accessSync(fileWithEnv);
-        nconf.file({ file: path.join(__dirname, fileWithEnv)});
+        nconf.file({ file: fileWithEnv});
     }catch(err) {
         nconf.file({ file: path.join(__dirname, appsettings, 'appsettings.json') });
     }
