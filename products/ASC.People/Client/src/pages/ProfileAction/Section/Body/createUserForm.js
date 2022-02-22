@@ -495,6 +495,7 @@ class CreateUserForm extends React.Component {
               unknownError={t("Common:Error")}
               saveButtonLabel={t("Common:SaveButton")}
               saveButtonLoading={this.state.isLoading}
+              maxSizeLabel={t("Translations:MaxSizeLabel")}
             />
           </AvatarContainer>
           <MainFieldsContainer
@@ -582,6 +583,7 @@ class CreateUserForm extends React.Component {
               calendarHeaderContent={`${t("CalendarSelectDate")}:`}
               labelText={`${t("Translations:Birthdate")}:`}
               inputName="birthday"
+              inputClassName="date-picker_input-birthday"
               inputValue={
                 profile.birthday ? new Date(profile.birthday) : undefined
               }
@@ -605,6 +607,7 @@ class CreateUserForm extends React.Component {
               calendarHeaderContent={`${t("CalendarSelectDate")}:`}
               labelText={`${regDateCaption}:`}
               inputName="workFrom"
+              inputClassName="date-picker_input-reg-date"
               inputValue={
                 profile.workFrom ? new Date(profile.workFrom) : undefined
               }
@@ -699,6 +702,7 @@ class CreateUserForm extends React.Component {
             isDisabled={isLoading}
             size="big"
             tabIndex={10}
+            className="create-user_save-btn"
           />
           <Button
             label={t("Common:CancelButton")}
@@ -707,6 +711,7 @@ class CreateUserForm extends React.Component {
             size="big"
             style={{ marginLeft: "8px" }}
             tabIndex={11}
+            className="create-user_cancel-btn"
           />
         </div>
       </>

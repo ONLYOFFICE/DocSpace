@@ -70,6 +70,7 @@ namespace ASC.Web.Studio.UserControls.FirstTime
         private StudioNotifyService StudioNotifyService { get; }
         private TimeZoneConverter TimeZoneConverter { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
+        public IHttpClientFactory ClientFactory { get; }
 
         public FirstTimeTenantSettings(
             IOptionsMonitor<ILog> options,
@@ -84,7 +85,8 @@ namespace ASC.Web.Studio.UserControls.FirstTime
             LicenseReader licenseReader,
             StudioNotifyService studioNotifyService,
             TimeZoneConverter timeZoneConverter,
-            CoreBaseSettings coreBaseSettings)
+            CoreBaseSettings coreBaseSettings,
+            IHttpClientFactory clientFactory)
         {
             Log = options.CurrentValue;
             TenantManager = tenantManager;
@@ -99,6 +101,7 @@ namespace ASC.Web.Studio.UserControls.FirstTime
             StudioNotifyService = studioNotifyService;
             TimeZoneConverter = timeZoneConverter;
             CoreBaseSettings = coreBaseSettings;
+            ClientFactory = clientFactory;
         }
 
         public WizardSettings SaveData(WizardModel wizardModel)
@@ -247,7 +250,7 @@ namespace ASC.Web.Studio.UserControls.FirstTime
 
                 try
                 {
-                    using (var httpClient = new HttpClient())
+                    var httpClient = ClientFactory.CreateClient();
                     using (var response = httpClient.Send(request))
                     using (var responseStream = response.Content.ReadAsStream())
                     using (var reader = new StreamReader(responseStream))
@@ -286,7 +289,7 @@ namespace ASC.Web.Studio.UserControls.FirstTime
                 var data = JsonSerializer.Serialize(values);
                 request.Content = new StringContent(data);
 
-                using var httpClient = new HttpClient();
+                var httpClient = ClientFactory.CreateClient();
                 using var response = httpClient.Send(request);
 
                 Log.Debug("Subscribe response: " + response);//toto write

@@ -34,7 +34,6 @@ using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Caching;
-using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
@@ -80,7 +79,6 @@ namespace ASC.Files.Core.Data
             FactoryIndexerFile factoryIndexer,
             UserManager userManager,
             DbContextManager<EF.FilesDbContext> dbContextManager,
-            DbContextManager<TenantDbContext> dbContextManager1,
             TenantManager tenantManager,
             TenantUtil tenantUtil,
             SetupInfo setupInfo,
@@ -100,10 +98,9 @@ namespace ASC.Files.Core.Data
             ChunkedUploadSessionHolder chunkedUploadSessionHolder,
             ProviderFolderDao providerFolderDao,
             CrossDao crossDao,
-            ConfigurationExtension configurationExtension)
+            Settings settings)
             : base(
                   dbContextManager,
-                  dbContextManager1,
                   userManager,
                   tenantManager,
                   tenantUtil,
@@ -126,7 +123,7 @@ namespace ASC.Files.Core.Data
             ChunkedUploadSessionHolder = chunkedUploadSessionHolder;
             ProviderFolderDao = providerFolderDao;
             CrossDao = crossDao;
-            Settings = Settings.GetInstance(configurationExtension);
+            Settings = settings;
         }
 
         public void InvalidateCache(int fileId)
@@ -152,7 +149,7 @@ namespace ASC.Files.Core.Data
         {
             if (string.IsNullOrEmpty(title)) throw new ArgumentNullException(title);
 
-            var query = GetFileQuery(r => r.Title == title && r.CurrentVersion == true && r.FolderId == parentId)
+            var query = GetFileQuery(r => r.Title == title && r.CurrentVersion && r.FolderId == parentId)
                 .AsNoTracking()
                 .OrderBy(r => r.CreateOn);
 
@@ -355,9 +352,9 @@ namespace ASC.Files.Core.Data
         {
             return GetFileStream(file, 0);
         }
-        public async Task<Stream> GetFileStreamAsync(File<int> file)
+        public Task<Stream> GetFileStreamAsync(File<int> file)
         {
-            return await GlobalStore.GetStore().GetReadStreamAsync(string.Empty, GetUniqFilePath(file), 0);
+            return GlobalStore.GetStore().GetReadStreamAsync(string.Empty, GetUniqFilePath(file), 0);
         }
 
         public File<int> SaveFile(File<int> file, Stream fileStream)
@@ -369,7 +366,7 @@ namespace ASC.Files.Core.Data
         {
             if (file == null)
             {
-                throw new ArgumentNullException("file");
+                throw new ArgumentNullException(nameof(file));
             }
 
             var maxChunkedUploadSize = SetupInfo.MaxChunkedUploadSize(TenantExtra, TenantStatisticProvider);
@@ -458,7 +455,7 @@ namespace ASC.Files.Core.Data
 
                 parentFoldersIds = parentFolders.Select(r => r.ParentId).ToList();
 
-                if (parentFoldersIds.Any())
+                if (parentFoldersIds.Count > 0)
                 {
                     var folderToUpdate = FilesDbContext.Folders
                         .Where(r => parentFoldersIds.Contains(r.Id));
@@ -515,7 +512,7 @@ namespace ASC.Files.Core.Data
 
         public File<int> ReplaceFileVersion(File<int> file, Stream fileStream)
         {
-            if (file == null) throw new ArgumentNullException("file");
+            if (file == null) throw new ArgumentNullException(nameof(file));
             if (file.ID == default) throw new ArgumentException("No file id or folder id toFolderId determine provider");
 
             var maxChunkedUploadSize = SetupInfo.MaxChunkedUploadSize(TenantExtra, TenantStatisticProvider);
@@ -582,7 +579,7 @@ namespace ASC.Files.Core.Data
 
                 parentFoldersIds = parentFolders.Select(r => r.ParentId).ToList();
 
-                if (parentFoldersIds.Any())
+                if (parentFoldersIds.Count > 0)
                 {
                     var folderToUpdate = FilesDbContext.Folders
                         .Where(r => parentFoldersIds.Contains(r.Id));
@@ -669,6 +666,9 @@ namespace ASC.Files.Core.Data
                 .Distinct()
                 .ToList();
 
+            var toDeleteLinks = Query(FilesDbContext.TagLink).Where(r => r.EntryId == fileId.ToString() && r.EntryType == FileEntryType.File);
+            FilesDbContext.RemoveRange(toDeleteLinks);
+
             var toDeleteFiles = Query(FilesDbContext.Files).Where(r => r.Id == fileId);
             FilesDbContext.RemoveRange(toDeleteFiles);
 
@@ -677,7 +677,6 @@ namespace ASC.Files.Core.Data
                 FactoryIndexer.DeleteAsync(d);
             }
 
-            var toDeleteLinks = Query(FilesDbContext.TagLink).Where(r => r.EntryId == fileId.ToString() && r.EntryType == FileEntryType.File);
             FilesDbContext.RemoveRange(toDeleteFiles);
 
             var tagsToRemove = Query(FilesDbContext.Tag)
@@ -694,7 +693,10 @@ namespace ASC.Files.Core.Data
 
             tx.Commit();
 
-            fromFolders.ForEach(folderId => RecalculateFilesCount(folderId));
+            foreach (var folderId in fromFolders)
+            {
+                RecalculateFilesCount(folderId);
+            }
 
             if (deleteFolder)
                 DeleteFolder(fileId);
@@ -771,7 +773,10 @@ namespace ASC.Files.Core.Data
                 FilesDbContext.SaveChanges();
                 tx.Commit();
 
-                fromFolders.ForEach(folderId => RecalculateFilesCount(folderId));
+                foreach (var folderId in fromFolders)
+                {
+                    RecalculateFilesCount(folderId);
+                }
                 RecalculateFilesCount(toFolderId);
             }
 
@@ -948,7 +953,7 @@ namespace ASC.Files.Core.Data
         public string GetUniqFileDirectory(int fileId)
         {
             if (fileId == 0) throw new ArgumentNullException("fileIdObject");
-            return string.Format("folder_{0}/file_{1}", (Convert.ToInt32(fileId) / 1000 + 1) * 1000, fileId);
+            return string.Format("folder_{0}/file_{1}", (fileId / 1000 + 1) * 1000, fileId);
         }
 
         public string GetUniqFilePath(File<int> file)
@@ -961,7 +966,7 @@ namespace ASC.Files.Core.Data
         public string GetUniqFilePath(File<int> file, string fileTitle)
         {
             return file != null
-                       ? string.Format("{0}/{1}", GetUniqFileVersionPath(file.ID, file.Version), fileTitle)
+                       ? $"{GetUniqFileVersionPath(file.ID, file.Version)}/{fileTitle}"
                        : null;
         }
 
@@ -1123,7 +1128,7 @@ namespace ASC.Files.Core.Data
             return FromQueryWithShared(q).Select(ToFile).ToList();
         }
 
-        public IEnumerable<File<int>> Search(string searchText, bool bunch)
+        public IEnumerable<File<int>> Search(string searchText, bool bunch = false)
         {
             if (FactoryIndexer.TrySelectIds(s => s.MatchAll(searchText), out var ids))
             {
@@ -1158,18 +1163,18 @@ namespace ASC.Files.Core.Data
             return GlobalStore.GetStore().IsFile(GetUniqFilePath(file));
         }
 
-        public async Task<bool> IsExistOnStorageAsync(File<int> file)
+        public Task<bool> IsExistOnStorageAsync(File<int> file)
         {
-            return await GlobalStore.GetStore().IsFileAsync(string.Empty, GetUniqFilePath(file));
+            return GlobalStore.GetStore().IsFileAsync(string.Empty, GetUniqFilePath(file));
         }
 
         private const string DiffTitle = "diff.zip";
 
         public void SaveEditHistory(File<int> file, string changes, Stream differenceStream)
         {
-            if (file == null) throw new ArgumentNullException("file");
-            if (string.IsNullOrEmpty(changes)) throw new ArgumentNullException("changes");
-            if (differenceStream == null) throw new ArgumentNullException("differenceStream");
+            if (file == null) throw new ArgumentNullException(nameof(file));
+            if (string.IsNullOrEmpty(changes)) throw new ArgumentNullException(nameof(changes));
+            if (differenceStream == null) throw new ArgumentNullException(nameof(differenceStream));
 
             changes = changes.Trim();
 
@@ -1205,14 +1210,12 @@ namespace ASC.Files.Core.Data
                     .Select(r =>
                         {
                             var item = ServiceProvider.GetService<EditHistory>();
-                            var editHistoryAuthor = ServiceProvider.GetService<EditHistoryAuthor>();
 
-                            editHistoryAuthor.Id = r.ModifiedBy;
                             item.ID = r.Id;
                             item.Version = r.Version;
                             item.VersionGroup = r.VersionGroup;
                             item.ModifiedOn = TenantUtil.DateTimeFromUtc(r.ModifiedOn);
-                            item.ModifiedBy = editHistoryAuthor;
+                            item.ModifiedBy = r.ModifiedBy;
                             item.ChangesString = r.Changes;
                             item.Key = documentServiceHelper.GetDocKey(item.ID, item.Version, TenantUtil.DateTimeFromUtc(r.CreateOn));
 
@@ -1263,14 +1266,14 @@ namespace ASC.Files.Core.Data
             var q1 = FilesDbContext.Files
                 .Where(r => r.ModifiedOn > fromTime)
                 .GroupBy(r => r.TenantId)
-                .Where(r => r.Count() > 0)
+                .Where(r => r.Any())
                 .Select(r => r.Key)
                 .ToList();
 
             var q2 = FilesDbContext.Security
                 .Where(r => r.TimeStamp > fromTime)
                 .GroupBy(r => r.TenantId)
-                .Where(r => r.Count() > 0)
+                .Where(r => r.Any())
                 .Select(r => r.Key)
                 .ToList();
 
@@ -1281,7 +1284,7 @@ namespace ASC.Files.Core.Data
 
         public void SaveThumbnail(File<int> file, Stream thumbnail)
         {
-            if (file == null) throw new ArgumentNullException("file");
+            if (file == null) throw new ArgumentNullException(nameof(file));
 
             var toUpdate = FilesDbContext.Files
                 .FirstOrDefault(r => r.Id == file.ID && r.Version == file.Version && r.TenantId == TenantID);
@@ -1392,6 +1395,7 @@ namespace ASC.Files.Core.Data
 
         protected IQueryable<DbFileQuery> FromQueryWithShared(IQueryable<DbFile> dbFiles)
         {
+            var cId = AuthContext.CurrentAccount.ID;
             return from r in dbFiles
                    select new DbFileQuery
                    {
@@ -1409,12 +1413,17 @@ namespace ASC.Files.Core.Data
                        Shared = (from f in FilesDbContext.Security
                                  where f.EntryType == FileEntryType.File && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId
                                  select f
-                                 ).Any()
+                                 ).Any(),
+                       Linked = (from f in FilesDbContext.FilesLink
+                                 where f.TenantId == r.TenantId && f.LinkedId == r.Id.ToString() && f.LinkedFor == cId
+                                 select f)
+                                 .Any()
                    };
         }
 
         protected IQueryable<DbFileQuery> FromQuery(IQueryable<DbFile> dbFiles)
         {
+            var cId = AuthContext.CurrentAccount.ID;
             return dbFiles
                 .Select(r => new DbFileQuery
                 {
@@ -1429,7 +1438,11 @@ namespace ASC.Files.Core.Data
                             where f.TenantId == r.TenantId
                             select f
                               ).FirstOrDefault(),
-                    Shared = true
+                    Shared = true,
+                    Linked = (from f in FilesDbContext.FilesLink
+                              where f.TenantId == r.TenantId && f.LinkedId == r.Id.ToString() && f.LinkedFor == cId
+                              select f)
+                                 .Any()
                 });
         }
 
@@ -1456,6 +1469,7 @@ namespace ASC.Files.Core.Data
             file.Encrypted = r.File.Encrypted;
             file.Forcesave = r.File.Forcesave;
             file.ThumbnailStatus = r.File.Thumb;
+            file.IsFillFormDraft = r.Linked;
             return file;
         }
 
@@ -1508,7 +1522,7 @@ namespace ASC.Files.Core.Data
             return dbFile;
         }
 
-        internal protected async Task<DbFile> InitDocumentAsync(DbFile dbFile)
+        internal protected Task<DbFile> InitDocumentAsync(DbFile dbFile)
         {
             if (!FactoryIndexer.CanIndexByContent(dbFile))
             {
@@ -1516,9 +1530,14 @@ namespace ASC.Files.Core.Data
                 {
                     Data = Convert.ToBase64String(Encoding.UTF8.GetBytes(""))
                 };
-                return dbFile;
+                return Task.FromResult(dbFile);
             }
 
+            return InernalInitDocumentAsync(dbFile);
+        }
+
+        private async Task<DbFile> InernalInitDocumentAsync(DbFile dbFile)
+        {
             var file = ServiceProvider.GetService<File<int>>();
             file.ID = dbFile.Id;
             file.Title = dbFile.Title;
@@ -1548,6 +1567,7 @@ namespace ASC.Files.Core.Data
         public DbFile File { get; set; }
         public DbFolder Root { get; set; }
         public bool Shared { get; set; }
+        public bool Linked { get; set; }
     }
 
     public class DbFileQueryWithSecurity

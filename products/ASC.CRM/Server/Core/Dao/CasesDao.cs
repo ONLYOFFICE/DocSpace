@@ -65,7 +65,6 @@ namespace ASC.CRM.Core.Dao
 
         public CasesDao(
             DbContextManager<CrmDbContext> dbContextManager,
-            DbContextManager<TenantDbContext> dbContextManager1,
             TenantManager tenantManager,
             SecurityContext securityContext,
             CrmSecurity crmSecurity,
@@ -77,8 +76,7 @@ namespace ASC.CRM.Core.Dao
             BundleSearch bundleSearch,
             IMapper mapper
             ) :
-                 base(dbContextManager,
-                     dbContextManager1,
+                 base(dbContextManager,                    
                  tenantManager,
                  securityContext,
                  logger,

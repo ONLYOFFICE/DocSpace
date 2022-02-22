@@ -79,7 +79,6 @@ namespace ASC.CRM.Core.Dao
         #region Constructor
 
         public ReportDao(DbContextManager<CrmDbContext> dbContextManager,
-                       DbContextManager<TenantDbContext> dbContextManager1,
                        TenantManager tenantManager,
                        SecurityContext securityContext,
                        FilesIntegration filesIntegration,
@@ -95,7 +94,6 @@ namespace ASC.CRM.Core.Dao
                        DisplayUserSettingsHelper displayUserSettingsHelper,
                        IMapper mapper) :
             base(dbContextManager,
-                dbContextManager1,
                  tenantManager,
                  securityContext,
                  logger,
@@ -241,7 +239,7 @@ namespace ASC.CRM.Core.Dao
                 case ReportTimePeriod.CurrentWeek:
                 case ReportTimePeriod.PreviousWeek:
                 case ReportTimePeriod.NextWeek:
-                    return string.Format("{0}-{1}", fromDate.ToShortDateString(), toDate.ToShortDateString());
+                    return $"{fromDate.ToShortDateString()}-{toDate.ToShortDateString()}";
                 case ReportTimePeriod.CurrentMonth:
                 case ReportTimePeriod.PreviousMonth:
                 case ReportTimePeriod.NextMonth:
@@ -249,7 +247,7 @@ namespace ASC.CRM.Core.Dao
                 case ReportTimePeriod.CurrentQuarter:
                 case ReportTimePeriod.PreviousQuarter:
                 case ReportTimePeriod.NextQuarter:
-                    return string.Format("{0}-{1}", fromDate.ToString("Y"), toDate.ToString("Y"));
+                    return $"{fromDate.ToString("Y")}-{toDate.ToString("Y")}";
                 case ReportTimePeriod.CurrentYear:
                 case ReportTimePeriod.PreviousYear:
                 case ReportTimePeriod.NextYear:
@@ -1755,10 +1753,7 @@ namespace ASC.CRM.Core.Dao
         {
             var timeSpan = TimeSpan.FromSeconds(duration);
 
-            return string.Format("{0}:{1}:{2}",
-                ((timeSpan.TotalHours < 10 ? "0" : "") + (int)timeSpan.TotalHours),
-                ((timeSpan.Minutes < 10 ? "0" : "") + timeSpan.Minutes),
-                ((timeSpan.Seconds < 10 ? "0" : "") + timeSpan.Seconds));
+            return $"{(timeSpan.TotalHours < 10 ? "0" : "") + (int)timeSpan.TotalHours}:{(timeSpan.Minutes < 10 ? "0" : "") + timeSpan.Minutes}:{(timeSpan.Seconds < 10 ? "0" : "") + timeSpan.Seconds}";
         }
 
         #endregion

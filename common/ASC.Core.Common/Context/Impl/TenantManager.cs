@@ -156,6 +156,10 @@ namespace ASC.Core
         {
             return TenantService.GetTenants(default, active).ToList();
         }
+        public List<Tenant> GetTenants(List<int> ids)
+        {
+            return TenantService.GetTenants(ids).ToList();
+        }
 
         public Tenant GetTenant(int tenantId)
         {
@@ -194,7 +198,7 @@ namespace ASC.Core
 
         public Tenant SetTenantVersion(Tenant tenant, int version)
         {
-            if (tenant == null) throw new ArgumentNullException("tenant");
+            if (tenant == null) throw new ArgumentNullException(nameof(tenant));
             if (tenant.Version != version)
             {
                 tenant.Version = version;

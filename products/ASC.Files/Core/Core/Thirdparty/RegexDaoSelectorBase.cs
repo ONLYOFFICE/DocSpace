@@ -40,9 +40,10 @@ namespace ASC.Files.Thirdparty
     {
         private IServiceProvider ServiceProvider { get; }
         private IDaoFactory DaoFactory { get; }
-        public Regex Selector { get; set; }
         protected internal abstract string Name { get; }
         protected internal abstract string Id { get; }
+        public Regex Selector { get => selector ??= new Regex(@"^" + Id + @"-(?'id'\d+)(-(?'path'.*)){0,1}$", RegexOptions.Singleline | RegexOptions.Compiled); }
+        private Regex selector;
 
         private Dictionary<string, ThirdPartyProviderDao<T>> Providers { get; set; }
 
@@ -52,7 +53,6 @@ namespace ASC.Files.Thirdparty
         {
             ServiceProvider = serviceProvider;
             DaoFactory = daoFactory;
-            Selector = new Regex(@"^" + Id + @"-(?'id'\d+)(-(?'path'.*)){0,1}$", RegexOptions.Singleline | RegexOptions.Compiled);
             Providers = new Dictionary<string, ThirdPartyProviderDao<T>>();
         }
 
@@ -116,7 +116,7 @@ namespace ASC.Files.Thirdparty
         private T1 GetDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>
         {
             var providerKey = $"{id}{typeof(T1)}";
-            if (Providers.ContainsKey(providerKey)) return (T1)Providers[providerKey];
+            if (Providers.TryGetValue(providerKey, out var provider)) return (T1)provider;
 
             var res = ServiceProvider.GetService<T1>();
 
@@ -130,7 +130,7 @@ namespace ASC.Files.Thirdparty
 
         internal BaseProviderInfo<T> GetInfo(string objectId)
         {
-            if (objectId == null) throw new ArgumentNullException("objectId");
+            if (objectId == null) throw new ArgumentNullException(nameof(objectId));
             var id = objectId;
             var match = Selector.Match(id);
             if (match.Success)

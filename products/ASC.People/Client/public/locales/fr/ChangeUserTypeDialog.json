@@ -1,4 +1,4 @@
-{
+﻿{
   "ChangeUserTypeButton": "Modifier le type",
   "ChangeUserTypeHeader": "Changer le type d'utilisateur",
   "ChangeUserTypeMessage": "Les utilisateurs du type '{{ firstType }}' seront transférés vers le type '{{ secondType }}'.",

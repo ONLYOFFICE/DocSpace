@@ -85,7 +85,7 @@ namespace ASC.Security.Cryptography
 
         public string GetEmailKey(int tenantId, string email)
         {
-            if (string.IsNullOrEmpty(email)) throw new ArgumentNullException("email");
+            if (string.IsNullOrEmpty(email)) throw new ArgumentNullException(nameof(email));
 
             email = FormatEmail(tenantId, email);
 
@@ -96,7 +96,7 @@ namespace ASC.Security.Cryptography
 
         private string FormatEmail(int tenantId, string email)
         {
-            if (email == null) throw new ArgumentNullException("email");
+            if (email == null) throw new ArgumentNullException(nameof(email));
             try
             {
                 return string.Format("{0}|{1}|{2}", email.ToLowerInvariant(), tenantId, Encoding.UTF8.GetString(MachinePseudoKeys.GetMachineConstant()));
@@ -123,8 +123,8 @@ namespace ASC.Security.Cryptography
 
         private ValidationResult ValidateEmailKeyInternal(string email, string key, TimeSpan validInterval)
         {
-            if (string.IsNullOrEmpty(email)) throw new ArgumentNullException("email");
-            if (key == null) throw new ArgumentNullException("key");
+            if (string.IsNullOrEmpty(email)) throw new ArgumentNullException(nameof(email));
+            if (key == null) throw new ArgumentNullException(nameof(key));
 
             email = FormatEmail(TenantManager.GetCurrentTenant().TenantId, email);
             var parts = key.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
@@ -134,7 +134,7 @@ namespace ASC.Security.Cryptography
 
             var hash = GetMashineHashedData(BitConverter.GetBytes(ms), Encoding.ASCII.GetBytes(email));
             var key2 = DoStringFromBytes(hash);
-            var key2_good = string.Compare(parts[1], key2, StringComparison.InvariantCultureIgnoreCase) == 0;
+            var key2_good = string.Equals(parts[1], key2, StringComparison.OrdinalIgnoreCase);
             if (!key2_good) return ValidationResult.Invalid;
             var ms_current = (long)(DateTime.UtcNow - _from).TotalMilliseconds;
             return validInterval >= TimeSpan.FromMilliseconds(ms_current - ms) ? ValidationResult.Ok : ValidationResult.Expired;
@@ -163,11 +163,10 @@ namespace ASC.Security.Cryptography
         public string Email { get; set; }
         public Guid? UiD { get; set; }
         public ConfirmType? Type { get; set; }
-        public int? P { get; set; }
 
-        public void Deconstruct(out string key, out EmployeeType? emplType, out string email, out Guid? uiD, out ConfirmType? type, out int? p)
+        public void Deconstruct(out string key, out EmployeeType? emplType, out string email, out Guid? uiD, out ConfirmType? type)
         {
-            (key, emplType, email, uiD, type, p) = (Key, EmplType, Email, UiD, Type, P);
+            (key, emplType, email, uiD, type) = (Key, EmplType, Email, UiD, Type);
         }
     }
 
@@ -208,9 +207,6 @@ namespace ASC.Security.Cryptography
 
             request.TryGetValue("key", out var key);
 
-            request.TryGetValue("p", out var pkey);
-            int.TryParse(pkey, out var p);
-
             request.TryGetValue("emplType", out var emplType);
             Enum.TryParse<EmployeeType>(emplType, out var employeeType);
 
@@ -223,7 +219,6 @@ namespace ASC.Security.Cryptography
                 Email = _email,
                 EmplType = employeeType,
                 Key = key,
-                P = p,
                 Type = cType,
                 UiD = userId
             };
@@ -231,7 +226,7 @@ namespace ASC.Security.Cryptography
 
         public ValidationResult Validate(EmailValidationKeyModel model)
         {
-            var (key, emplType, email, uiD, type, p) = model;
+            var (key, emplType, email, uiD, type) = model;
 
             ValidationResult checkKeyResult;
 
@@ -265,12 +260,9 @@ namespace ASC.Security.Cryptography
 
                 case ConfirmType.ProfileRemove:
                     // validate UiD
-                    if (p == 1)
-                    {
-                        var user = UserManager.GetUsers(uiD.GetValueOrDefault());
-                        if (user == null || user.Status == EmployeeStatus.Terminated || AuthContext.IsAuthenticated && AuthContext.CurrentAccount.ID != uiD)
-                            return ValidationResult.Invalid;
-                    }
+                    var user = UserManager.GetUsers(uiD.GetValueOrDefault());
+                    if (user == null || user.Status == EmployeeStatus.Terminated || AuthContext.IsAuthenticated && AuthContext.CurrentAccount.ID != uiD)
+                        return ValidationResult.Invalid;
 
                     checkKeyResult = Provider.ValidateEmailKey(email + type + uiD, key, Provider.ValidEmailKeyInterval);
                     break;

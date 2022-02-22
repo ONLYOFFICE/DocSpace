@@ -99,7 +99,7 @@ namespace ASC.Files.Thirdparty.OneDrive
                               .FirstOrDefault(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase) && item.File != null));
         }
 
-        public File<string> GetFileStable(string fileId, int fileVersion)
+        public File<string> GetFileStable(string fileId, int fileVersion = -1)
         {
             return ToFile(GetOneDriveItem(fileId));
         }
@@ -151,13 +151,16 @@ namespace ASC.Files.Thirdparty.OneDrive
                 case FilterType.MediaOnly:
                     files = files.Where(x =>
                         {
-                            FileType fileType;
-                            return (fileType = FileUtility.GetFileTypeByFileName(x.Title)) == FileType.Audio || fileType == FileType.Video;
+                            FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                            return fileType == FileType.Audio || fileType == FileType.Video;
                         });
                     break;
                 case FilterType.ByExtension:
                     if (!string.IsNullOrEmpty(searchText))
-                        files = files.Where(x => FileUtility.GetFileExtension(x.Title).Contains(searchText));
+                    {
+                        searchText = searchText.Trim().ToLower();
+                        files = files.Where(x => FileUtility.GetFileExtension(x.Title).Equals(searchText));
+                    }
                     break;
             }
 
@@ -209,13 +212,16 @@ namespace ASC.Files.Thirdparty.OneDrive
                 case FilterType.MediaOnly:
                     files = files.Where(x =>
                         {
-                            FileType fileType;
-                            return (fileType = FileUtility.GetFileTypeByFileName(x.Title)) == FileType.Audio || fileType == FileType.Video;
+                            FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                            return fileType == FileType.Audio || fileType == FileType.Video;
                         });
                     break;
                 case FilterType.ByExtension:
                     if (!string.IsNullOrEmpty(searchText))
-                        files = files.Where(x => FileUtility.GetFileExtension(x.Title).Contains(searchText));
+                    {
+                        searchText = searchText.Trim().ToLower();
+                        files = files.Where(x => FileUtility.GetFileExtension(x.Title).Equals(searchText));
+                    }
                     break;
             }
 
@@ -246,7 +252,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             ProviderInfo.CacheReset(onedriveFileId);
 
             var onedriveFile = GetOneDriveItem(file.ID);
-            if (onedriveFile == null) throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
+            if (onedriveFile == null) throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
             if (onedriveFile is ErrorItem errorItem) throw new Exception(errorItem.Error);
 
             var fileStream = ProviderInfo.Storage.DownloadStream(onedriveFile, (int)offset);
@@ -266,8 +272,8 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         public File<string> SaveFile(File<string> file, Stream fileStream)
         {
-            if (file == null) throw new ArgumentNullException("file");
-            if (fileStream == null) throw new ArgumentNullException("fileStream");
+            if (file == null) throw new ArgumentNullException(nameof(file));
+            if (fileStream == null) throw new ArgumentNullException(nameof(fileStream));
 
             Item newOneDriveFile = null;
 
@@ -320,10 +326,12 @@ namespace ASC.Files.Thirdparty.OneDrive
                 FilesDbContext.TagLink.RemoveRange(link);
                 FilesDbContext.SaveChanges();
 
-                var tagsToRemove = Query(FilesDbContext.Tag)
-                    .Where(r => !Query(FilesDbContext.TagLink).Where(a => a.TagId == r.Id).Any());
+                var tagsToRemove = from ft in FilesDbContext.Tag
+                                   join ftl in FilesDbContext.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new { TenantId = ftl.TenantId, Id = ftl.TagId }
+                                   where ftl == null
+                                   select ft;
 
-                FilesDbContext.Tag.RemoveRange(tagsToRemove);
+                FilesDbContext.Tag.RemoveRange(tagsToRemove.ToList());
 
                 var securityToDelete = Query(FilesDbContext.Security)
                     .Where(r => hashIDs.Any(h => h == r.EntryId));
@@ -480,10 +488,10 @@ namespace ASC.Files.Thirdparty.OneDrive
             if (file == null) return null;
 
             if (file.ID != null)
-                file.ID = MakeId(file.ID.ToString());
+                file.ID = MakeId(file.ID);
 
             if (file.FolderID != null)
-                file.FolderID = MakeId(file.FolderID.ToString());
+                file.FolderID = MakeId(file.FolderID);
 
             return file;
         }

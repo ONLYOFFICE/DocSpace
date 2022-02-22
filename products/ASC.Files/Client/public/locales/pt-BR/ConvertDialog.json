@@ -4,5 +4,7 @@
   "ConversionTitle": "Carregando documento",
   "ConvertAndOpenTitle": "Converter e abrir documento",
   "HideMessage": "Não mostre esta mensagem novamente",
-  "SaveOriginalFormatMessage": "Salvar a cópia do arquivo no formato original"
+  "SaveOriginalFormatMessage": "Salvar a cópia do arquivo no formato original",
+  "ConvertedFileDestination": "A cópia do arquivo será criada na pasta <strong>{{folderTitle}}</strong>",
+  "InfoCreateFileIn": "O novo arquivo '{{fileTitle}}' foi criado em '{{folderTitle}}'"
 }

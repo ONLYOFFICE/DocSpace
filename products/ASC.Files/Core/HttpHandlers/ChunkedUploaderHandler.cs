@@ -84,7 +84,8 @@ namespace ASC.Web.Files.HttpHandlers
         private InstanceCrypto InstanceCrypto { get; }
         private ChunkedUploadSessionHolder ChunkedUploadSessionHolder { get; }
         private ChunkedUploadSessionHelper ChunkedUploadSessionHelper { get; }
-        public ILog Logger { get; }
+        private SocketManager SocketManager { get; }
+        private ILog Logger { get; }
 
         public ChunkedUploaderHandlerService(
             IOptionsMonitor<ILog> optionsMonitor,
@@ -96,7 +97,8 @@ namespace ASC.Web.Files.HttpHandlers
             SetupInfo setupInfo,
             InstanceCrypto instanceCrypto,
             ChunkedUploadSessionHolder chunkedUploadSessionHolder,
-            ChunkedUploadSessionHelper chunkedUploadSessionHelper)
+            ChunkedUploadSessionHelper chunkedUploadSessionHelper,
+            SocketManager socketManager)
         {
             TenantManager = tenantManager;
             FileUploader = fileUploader;
@@ -107,6 +109,7 @@ namespace ASC.Web.Files.HttpHandlers
             InstanceCrypto = instanceCrypto;
             ChunkedUploadSessionHolder = chunkedUploadSessionHolder;
             ChunkedUploadSessionHelper = chunkedUploadSessionHelper;
+            SocketManager = socketManager;
             Logger = optionsMonitor.CurrentValue;
         }
 
@@ -169,6 +172,8 @@ namespace ASC.Web.Files.HttpHandlers
                         {
                             await WriteSuccess(context, ToResponseObject(resumedSession.File), (int)HttpStatusCode.Created);
                             FilesMessageService.Send(resumedSession.File, MessageAction.FileUploaded, resumedSession.File.Title);
+
+                            SocketManager.CreateFile(resumedSession.File);
                         }
                         else
                         {
@@ -212,7 +217,7 @@ namespace ASC.Web.Files.HttpHandlers
                 {
                     TenantManager.SetCurrentTenant(uploadSession.TenantId);
                     SecurityContext.AuthenticateMeWithoutCookie(AuthManager.GetAccountByID(TenantManager.GetCurrentTenant().TenantId, uploadSession.UserId));
-                    var culture = SetupInfo.EnabledCulturesPersonal.Find(c => string.Equals(c.Name, uploadSession.CultureName, StringComparison.InvariantCultureIgnoreCase));
+                    var culture = SetupInfo.GetPersonalCulture(uploadSession.CultureName).Value;
                     if (culture != null)
                         Thread.CurrentThread.CurrentUICulture = culture;
                     return true;
@@ -361,7 +366,7 @@ namespace ASC.Web.Files.HttpHandlers
             var culture = _request.Query["culture"];
             if (string.IsNullOrEmpty(culture)) culture = "en-US";
 
-            return _cultureInfo = setupInfo.EnabledCulturesPersonal.Find(c => string.Equals(c.Name, culture, StringComparison.InvariantCultureIgnoreCase));
+            return _cultureInfo = setupInfo.GetPersonalCulture(culture).Value;
         }
 
         public bool Encrypted
@@ -385,7 +390,7 @@ namespace ASC.Web.Files.HttpHandlers
 
         public ChunkedRequestHelper(HttpRequest request)
         {
-            _request = request ?? throw new ArgumentNullException("request");
+            _request = request ?? throw new ArgumentNullException(nameof(request));
         }
 
         private bool IsAuthDataSet(InstanceCrypto instanceCrypto)

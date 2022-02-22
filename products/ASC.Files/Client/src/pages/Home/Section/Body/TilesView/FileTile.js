@@ -9,12 +9,12 @@ import { withRouter } from "react-router-dom";
 
 import withFileActions from "../../../../../HOCs/withFileActions";
 import withContextOptions from "../../../../../HOCs/withContextOptions";
+import withQuickButtons from "../../../../../HOCs/withQuickButtons";
 import ItemIcon from "../../../../../components/ItemIcon";
-import SharedButton from "../../../../../components/SharedButton";
+import withBadges from "../../../../../HOCs/withBadges";
 
-const FilesTile = (props) => {
+const FileTile = (props) => {
   const {
-    t,
     item,
     sectionWidth,
     dragging,
@@ -27,16 +27,17 @@ const FilesTile = (props) => {
     value,
     displayShareButton,
     isPrivacy,
-    //sharedButton,
     contextOptionsProps,
     checkedProps,
-    //element,
     getIcon,
     onFilesClick,
     onMouseClick,
-    showShare,
     isActive,
     isEdit,
+    inProgress,
+    quickButtonsComponent,
+    badgesComponent,
+    t,
   } = props;
 
   const temporaryExtension =
@@ -50,15 +51,6 @@ const FilesTile = (props) => {
   );
 
   const { thumbnailUrl } = item;
-  const sharedButton =
-    item.canShare && showShare ? (
-      <SharedButton
-        t={t}
-        id={item.id}
-        shared={item.shared}
-        isFolder={item.isFolder}
-      />
-    ) : null;
   const element = (
     <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
   );
@@ -81,7 +73,7 @@ const FilesTile = (props) => {
           thumbnail={thumbnailUrl}
           element={element}
           sectionWidth={sectionWidth}
-          contentElement={sharedButton}
+          contentElement={quickButtonsComponent}
           onSelect={onContentFileSelect}
           tileContextClick={fileContextClick}
           isPrivacy={isPrivacy}
@@ -93,24 +85,35 @@ const FilesTile = (props) => {
           {...contextOptionsProps}
           contextButtonSpacerWidth={displayShareButton}
           isActive={isActive}
+          inProgress={inProgress}
           isEdit={isEdit}
+          title={
+            item.isFolder
+              ? t("Translations:TitleShowFolderActions")
+              : t("Translations:TitleShowActions")
+          }
         >
           <FilesTileContent
             item={item}
             sectionWidth={sectionWidth}
             onFilesClick={onFilesClick}
           />
+          {badgesComponent}
         </Tile>
       </DragAndDrop>
     </div>
   );
 };
 
-export default inject(({ formatsStore }) => {
-  const { getIcon } = formatsStore.iconFormatsStore;
+export default inject(({ settingsStore }) => {
+  const { getIcon } = settingsStore;
   return { getIcon };
 })(
-  withTranslation("Home")(
-    withFileActions(withContextOptions(withRouter(observer(FilesTile))))
+  withTranslation(["Home", "VersionBadge"])(
+    withFileActions(
+      withContextOptions(
+        withRouter(withBadges(withQuickButtons(observer(FileTile))))
+      )
+    )
   )
 );

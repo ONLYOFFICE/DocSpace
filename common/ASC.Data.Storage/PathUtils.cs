@@ -70,9 +70,7 @@ namespace ASC.Data.Storage
 
         public string ResolveVirtualPath(string module, string domain)
         {
-            var url = string.Format("~/storage/{0}/{1}/",
-                                 module,
-                                 string.IsNullOrEmpty(domain) ? "root" : domain);
+            var url = $"~/storage/{module}/{(string.IsNullOrEmpty(domain) ? "root" : domain)}/";
             return ResolveVirtualPath(url);
         }
 
@@ -83,7 +81,7 @@ namespace ASC.Data.Storage
                 virtPath = "";
             }
 
-            if (virtPath.StartsWith("~") && !Uri.IsWellFormedUriString(virtPath, UriKind.Absolute))
+            if (virtPath.StartsWith('~') && !Uri.IsWellFormedUriString(virtPath, UriKind.Absolute))
             {
                 var rootPath = "/";
                 if (!string.IsNullOrEmpty(WebHostEnvironment?.WebRootPath) && WebHostEnvironment?.WebRootPath.Length > 1)

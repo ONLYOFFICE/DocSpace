@@ -31,6 +31,7 @@ using System.Linq;
 using System.Security;
 using System.Threading;
 
+using ASC.Api.Core;
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Users;
@@ -129,6 +130,9 @@ namespace ASC.Web.Files.Utils
             var dao = DaoFactory.GetFileDao<T>();
             file = dao.SaveFile(file, data);
 
+            var linkDao = DaoFactory.GetLinkDao();
+            linkDao.DeleteAllLink(file.ID.ToString());
+
             FileMarker.MarkAsNew(file);
 
             if (FileConverter.EnableAsUploaded && FileConverter.MustConvert(file))
@@ -205,7 +209,7 @@ namespace ASC.Web.Files.Utils
             if (!FileSecurity.CanCreate(folder))
                 throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_Create);
 
-            if (relativePath != null && relativePath.Any())
+            if (relativePath != null && relativePath.Count > 0)
             {
                 var subFolderTitle = Global.ReplaceInvalidCharsAndTruncate(relativePath.FirstOrDefault());
 
@@ -237,7 +241,7 @@ namespace ASC.Web.Files.Utils
 
         #region chunked upload
 
-        public File<T> VerifyChunkedUpload<T>(T folderId, string fileName, long fileSize, bool updateIfExists, string relativePath = null)
+        public File<T> VerifyChunkedUpload<T>(T folderId, string fileName, long fileSize, bool updateIfExists, ApiDateTime lastModified, string relativePath = null)
         {
             var maxUploadSize = GetMaxFileSize(folderId, true);
 
@@ -246,6 +250,11 @@ namespace ASC.Web.Files.Utils
 
             var file = VerifyFileUpload(folderId, fileName, updateIfExists, relativePath);
             file.ContentLength = fileSize;
+            
+            if(lastModified != null)
+            {
+                file.ModifiedOn = lastModified;
+            }
 
             return file;
         }
@@ -302,6 +311,9 @@ namespace ASC.Web.Files.Utils
 
             if (uploadSession.BytesUploaded == uploadSession.BytesTotal)
             {
+                var linkDao = DaoFactory.GetLinkDao();
+                linkDao.DeleteAllLink(uploadSession.File.ID.ToString());
+
                 FileMarker.MarkAsNew(uploadSession.File);
                 ChunkedUploadSessionHolder.RemoveSession(uploadSession);
             }

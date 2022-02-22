@@ -100,7 +100,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             return ToFile(GetFolderFiles(parentId).FirstOrDefault(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase)));
         }
 
-        public File<string> GetFileStable(string fileId, int fileVersion)
+        public File<string> GetFileStable(string fileId, int fileVersion = -1)
         {
             return ToFile(GetFileById(fileId));
         }
@@ -151,13 +151,16 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 case FilterType.MediaOnly:
                     files = files.Where(x =>
                         {
-                            FileType fileType;
-                            return (fileType = FileUtility.GetFileTypeByFileName(x.Title)) == FileType.Audio || fileType == FileType.Video;
+                            FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                            return fileType == FileType.Audio || fileType == FileType.Video;
                         });
                     break;
                 case FilterType.ByExtension:
                     if (!string.IsNullOrEmpty(searchText))
-                        files = files.Where(x => FileUtility.GetFileExtension(x.Title).Contains(searchText));
+                    {
+                        searchText = searchText.Trim().ToLower();
+                        files = files.Where(x => FileUtility.GetFileExtension(x.Title).Equals(searchText));
+                    }
                     break;
             }
 
@@ -213,13 +216,16 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 case FilterType.MediaOnly:
                     files = files.Where(x =>
                         {
-                            FileType fileType;
-                            return (fileType = FileUtility.GetFileTypeByFileName(x.Title)) == FileType.Audio || fileType == FileType.Video;
+                            FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                            return fileType == FileType.Audio || fileType == FileType.Video;
                         });
                     break;
                 case FilterType.ByExtension:
                     if (!string.IsNullOrEmpty(searchText))
-                        files = files.Where(x => FileUtility.GetFileExtension(x.Title).Contains(searchText));
+                    {
+                        searchText = searchText.Trim().ToLower();
+                        files = files.Where(x => FileUtility.GetFileExtension(x.Title).Equals(searchText));
+                    }
                     break;
             }
 
@@ -244,7 +250,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             var fileToDownload = GetFileById(file.ID);
 
             if (fileToDownload == null)
-                throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
+                throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
             if (fileToDownload is ErrorEntry errorEntry)
                 throw new Exception(errorEntry.Error);
 
@@ -287,7 +293,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         public File<string> SaveFile(File<string> file, Stream fileStream)
         {
-            if (fileStream == null) throw new ArgumentNullException("fileStream");
+            if (fileStream == null) throw new ArgumentNullException(nameof(fileStream));
             ICloudFileSystemEntry entry = null;
             if (file.ID != null)
             {
@@ -314,7 +320,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 var webException = (WebException)e.InnerException;
                 if (webException != null)
                 {
-                    var response = ((HttpWebResponse)webException.Response);
+                    var response = (HttpWebResponse)webException.Response;
                     if (response != null)
                     {
                         if (response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.Forbidden)
@@ -360,10 +366,12 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 FilesDbContext.TagLink.RemoveRange(link);
                 FilesDbContext.SaveChanges();
 
-                var tagsToRemove = Query(FilesDbContext.Tag)
-                    .Where(r => !Query(FilesDbContext.TagLink).Where(a => a.TagId == r.Id).Any());
+                var tagsToRemove = from ft in FilesDbContext.Tag
+                                   join ftl in FilesDbContext.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new { TenantId = ftl.TenantId, Id = ftl.TagId }
+                                   where ftl == null
+                                   select ft;
 
-                FilesDbContext.Tag.RemoveRange(tagsToRemove);
+                FilesDbContext.Tag.RemoveRange(tagsToRemove.ToList());
 
                 var securityToDelete = Query(FilesDbContext.Security)
                     .Where(r => hashIDs.Any(h => h == r.EntryId));
@@ -486,7 +494,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             var entry = GetFileById(file.ID);
 
             if (entry == null)
-                throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
+                throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
 
             var oldFileId = MakeId(entry);
             var newFileId = oldFileId;

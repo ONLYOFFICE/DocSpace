@@ -49,7 +49,6 @@ namespace ASC.CRM.Core.Dao
     {
         public TaskTemplateContainerDao(
             DbContextManager<CrmDbContext> dbContextManager,
-             DbContextManager<TenantDbContext> dbContextManager1,
             TenantManager tenantManager,
             SecurityContext securityContext,
             IOptionsMonitor<ILog> logger,
@@ -57,7 +56,6 @@ namespace ASC.CRM.Core.Dao
             IMapper mapper
             )
             : base(dbContextManager,
-                  dbContextManager1,
                   tenantManager,
                   securityContext,
                   logger,
@@ -123,14 +121,12 @@ namespace ASC.CRM.Core.Dao
     public class TaskTemplateDao : AbstractDao
     {
         public TaskTemplateDao(DbContextManager<CrmDbContext> dbContextManager,
-             DbContextManager<TenantDbContext> dbContextManager1,
             TenantManager tenantManager,
             SecurityContext securityContext,
             IOptionsMonitor<ILog> logger,
             ICache cache,
             IMapper mapper)
             : base(dbContextManager,
-                 dbContextManager1,
                  tenantManager,
                  securityContext,
                  logger,

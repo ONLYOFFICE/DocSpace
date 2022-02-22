@@ -79,7 +79,6 @@ namespace ASC.IPSecurity
         public bool Verify()
         {
             var tenant = TenantManager.GetCurrentTenant();
-            var settings = SettingsManager.Load<IPRestrictionsSettings>();
 
             if (!IpSecurityEnabled) return true;
 
@@ -92,16 +91,18 @@ namespace ASC.IPSecurity
             {
                 var restrictions = IPRestrictionsService.Get(tenant.TenantId).ToList();
 
-                if (!restrictions.Any()) return true;
+                if (restrictions.Count == 0) return true;
 
-                if (string.IsNullOrWhiteSpace(requestIps = CurrentIpForTest))
+                requestIps = CurrentIpForTest;
+
+                if (string.IsNullOrWhiteSpace(requestIps))
                 {
                     var request = HttpContextAccessor.HttpContext.Request;
                     requestIps = request.Headers["X-Forwarded-For"].FirstOrDefault() ?? request.GetUserHostAddress();
                 }
 
                 var ips = string.IsNullOrWhiteSpace(requestIps)
-                              ? new string[] { }
+                              ? Array.Empty<string>()
                               : requestIps.Split(new[] { ",", " " }, StringSplitOptions.RemoveEmptyEntries);
 
                 if (ips.Any(requestIp => restrictions.Any(restriction => MatchIPs(GetIpWithoutPort(requestIp), restriction.Ip))))
@@ -122,7 +123,7 @@ namespace ASC.IPSecurity
         private static bool MatchIPs(string requestIp, string restrictionIp)
         {
             var dividerIdx = restrictionIp.IndexOf('-');
-            if (restrictionIp.IndexOf('-') > 0)
+            if (dividerIdx > -1)
             {
                 var lower = IPAddress.Parse(restrictionIp.Substring(0, dividerIdx).Trim());
                 var upper = IPAddress.Parse(restrictionIp.Substring(dividerIdx + 1).Trim());

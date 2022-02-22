@@ -40,10 +40,10 @@ namespace ASC.Files.ThumbnailBuilder
         public Worker(
             IServiceProvider serviceProvider,
             IOptionsMonitor<ILog> options,
-            Common.Utils.ConfigurationExtension configurationExtension)
+            ThumbnailSettings settings)
         {
             this.serviceProvider = serviceProvider;
-            this.thumbnailSettings = ThumbnailSettings.GetInstance(configurationExtension);
+            this.thumbnailSettings = settings;
             logger = options.Get("ASC.Files.ThumbnailBuilder");
         }
 
@@ -81,7 +81,7 @@ namespace ASC.Files.ThumbnailBuilder
 
             var filesWithoutThumbnails = Launcher.Queue.Select(pair => pair.Value).ToList();
 
-            if (!filesWithoutThumbnails.Any())
+            if (filesWithoutThumbnails.Count == 0)
             {
                 logger.TraceFormat("Procedure: Waiting for data. Sleep {0}.", thumbnailSettings.LaunchFrequency);
                 timer.Change(TimeSpan.FromSeconds(thumbnailSettings.LaunchFrequency), TimeSpan.FromMilliseconds(-1));
@@ -106,7 +106,7 @@ namespace ASC.Files.ThumbnailBuilder
         }
     }
 
-    public class WorkerExtension
+    public static class WorkerExtension
     {
         public static void Register(DIHelper services)
         {

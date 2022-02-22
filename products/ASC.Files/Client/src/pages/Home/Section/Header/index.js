@@ -38,7 +38,7 @@ const StyledContainer = styled.div`
   .header-container {
     position: relative;
     ${(props) =>
-      props.title &&
+      props.isTitle &&
       css`
         display: grid;
         grid-template-columns: ${(props) =>
@@ -101,6 +101,20 @@ const StyledContainer = styled.div`
       @media ${tablet} {
         & > div:first-child {
           padding: 8px 8px 8px 8px;
+          margin-right: -8px;
+        }
+      }
+    }
+
+    .trash-button {
+      margin-bottom: -1px;
+
+      @media (min-width: 1024px) {
+        margin-left: 8px;
+  }
+
+      @media ${tablet} {
+        & > div:first-child {
           margin-right: -8px;
         }
       }
@@ -178,12 +192,19 @@ class SectionHeaderContent extends React.Component {
 
   createPresentation = () => this.onCreate("pptx");
 
+  createForm = () => this.onCreate("docxf");
+
+  createFormFromFile = () => {
+    const { setSelectFileDialogVisible } = this.props;
+    setSelectFileDialogVisible(true);
+  };
+
   createFolder = () => this.onCreate();
 
   uploadToFolder = () => console.log("Upload To Folder click");
 
   getContextOptionsPlus = () => {
-    const { t } = this.props;
+    const { t, isPrivacyFolder } = this.props;
 
     return [
       {
@@ -200,6 +221,15 @@ class SectionHeaderContent extends React.Component {
         key: "new-presentation",
         label: t("NewPresentation"),
         onClick: this.createPresentation,
+      },
+      {
+        label: t("Translations:NewForm"),
+        onClick: this.createForm,
+      },
+      {
+        label: t("Translations:NewFormFile"),
+        onClick: this.createFormFromFile,
+        disabled: isPrivacyFolder,
       },
       {
         key: "new-folder",
@@ -396,6 +426,8 @@ class SectionHeaderContent extends React.Component {
       personal,
       getHeaderMenu,
       viewAs,
+      isRecycleBinFolder,
+      isEmptyFilesList,
     } = this.props;
 
     const menuItems = this.getMenuItems();
@@ -409,7 +441,7 @@ class SectionHeaderContent extends React.Component {
             width={context.sectionWidth}
             isRootFolder={isRootFolder}
             canCreate={canCreate}
-            title={title}
+            isTitle={title}
             isDesktop={isDesktop}
             isTabletView={isTabletView}
             isLoading={isLoading}
@@ -444,6 +476,7 @@ class SectionHeaderContent extends React.Component {
                       className="headline-header"
                       type="content"
                       truncate={true}
+                      title={title}
                     >
                       {title}
                     </Headline>
@@ -488,6 +521,19 @@ class SectionHeaderContent extends React.Component {
                         />
                       )
                     )}
+                    {isRecycleBinFolder && !isEmptyFilesList && (
+                      <span title={t("EmptyRecycleBin")}>
+                        <IconButton
+                          iconName="images/clear.active.react.svg"
+                          size="15"
+                          color="#A3A9AE"
+                          hoverColor="#657077"
+                          isFill={true}
+                          onClick={this.onEmptyTrashAction}
+                          className="trash-button"
+                        />
+                      </span>
+                    )}
                   </>
                 )}
               </div>
@@ -507,6 +553,7 @@ export default inject(
     selectedFolderStore,
     filesActionsStore,
     settingsStore,
+    treeFoldersStore,
   }) => {
     const {
       setSelected,
@@ -522,7 +569,7 @@ export default inject(
       setIsLoading,
       cbMenuItems,
       getCheckboxItemLabel,
-      getFolderInfo,
+      isEmptyFilesList,      getFolderInfo,
       setBufferSelection,
       viewAs,
     } = filesStore;
@@ -532,9 +579,12 @@ export default inject(
       setMoveToPanelVisible,
       setCopyPanelVisible,
       setDeleteDialogVisible,
+      setEmptyTrashDialogVisible,
+      setSelectFileDialogVisible,
       setIsFolderActions,
     } = dialogsStore;
 
+    const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
     const { deleteAction, downloadAction, getHeaderMenu } = filesActionsStore;
 
     return {
@@ -570,8 +620,13 @@ export default inject(
       downloadAction,
       getHeaderMenu,
       getCheckboxItemLabel,
-      viewAs,
-    };
+      setSelectFileDialogVisible,
+
+      isRecycleBinFolder,
+      setEmptyTrashDialogVisible,
+      isEmptyFilesList,
+      isPrivacyFolder,
+      viewAs,    };
   }
 )(
   withTranslation(["Home", "Common", "Translations"])(

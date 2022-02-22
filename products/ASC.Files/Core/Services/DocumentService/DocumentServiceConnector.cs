@@ -46,6 +46,8 @@ using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json;
 
+using static ASC.Web.Core.Files.DocumentService;
+
 using CommandMethod = ASC.Web.Core.Files.DocumentService.CommandMethod;
 
 namespace ASC.Web.Files.Services.DocumentService
@@ -56,6 +58,7 @@ namespace ASC.Web.Files.Services.DocumentService
         public ILog Logger { get; }
         private FilesLinkUtility FilesLinkUtility { get; }
         private FileUtility FileUtility { get; }
+        private IHttpClientFactory ClientFactory { get; }
         private GlobalStore GlobalStore { get; }
         private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
         private TenantManager TenantManager { get; }
@@ -72,7 +75,8 @@ namespace ASC.Web.Files.Services.DocumentService
             BaseCommonLinkUtility baseCommonLinkUtility,
             TenantManager tenantManager,
             TenantExtra tenantExtra,
-            CoreSettings coreSettings)
+            CoreSettings coreSettings,
+            IHttpClientFactory clientFactory)
         {
             Logger = optionsMonitor.CurrentValue;
             FilesLinkUtility = filesLinkUtility;
@@ -83,6 +87,7 @@ namespace ASC.Web.Files.Services.DocumentService
             TenantExtra = tenantExtra;
             CoreSettings = coreSettings;
             PathProvider = pathProvider;
+            ClientFactory = clientFactory;
         }
 
         public static string GenerateRevisionId(string expectedKey)
@@ -95,8 +100,8 @@ namespace ASC.Web.Files.Services.DocumentService
                                           string toExtension,
                                           string documentRevisionId,
                                           string password,
-                                          Web.Core.Files.DocumentService.ThumbnailData thumbnail,
-                                          Web.Core.Files.DocumentService.SpreadsheetLayout spreadsheetLayout,
+                                          ThumbnailData thumbnail,
+                                          SpreadsheetLayout spreadsheetLayout,
                                           bool isAsync,
                                           out string convertedDocumentUri)
         {
@@ -115,6 +120,7 @@ namespace ASC.Web.Files.Services.DocumentService
                     spreadsheetLayout,
                     isAsync,
                     FileUtility.SignatureSecret,
+                    ClientFactory,
                     out convertedDocumentUri);
             }
             catch (Exception ex)
@@ -128,12 +134,12 @@ namespace ASC.Web.Files.Services.DocumentService
                                    object fileId = null,
                                    string callbackUrl = null,
                                    string[] users = null,
-                                   Web.Core.Files.DocumentService.MetaData meta = null)
+                                   MetaData meta = null)
         {
             Logger.DebugFormat("DocService command {0} fileId '{1}' docKey '{2}' callbackUrl '{3}' users '{4}' meta '{5}'", method, fileId, docKeyForTrack, callbackUrl, users != null ? string.Join(", ", users) : null, JsonConvert.SerializeObject(meta));
             try
             {
-                var result = Web.Core.Files.DocumentService.CommandRequest(
+                var commandResponse = CommandRequest(
                     FileUtility,
                     FilesLinkUtility.DocServiceCommandUrl,
                     method,
@@ -142,14 +148,14 @@ namespace ASC.Web.Files.Services.DocumentService
                     users,
                     meta,
                     FileUtility.SignatureSecret,
-                    out var version);
+                    ClientFactory);
 
-                if (result == Web.Core.Files.DocumentService.CommandResultTypes.NoError)
+                if (commandResponse.Error == CommandResponse.ErrorTypes.NoError)
                 {
                     return true;
                 }
 
-                Logger.ErrorFormat("DocService command response: '{0}'", result);
+                Logger.ErrorFormat("DocService command response: '{0}' {1}", commandResponse.Error, commandResponse.ErrorString);
             }
             catch (Exception e)
             {
@@ -188,6 +194,7 @@ namespace ASC.Web.Files.Services.DocumentService
                     scriptUrl,
                     isAsync,
                     FileUtility.SignatureSecret,
+                    ClientFactory,
                     out urls);
             }
             catch (Exception ex)
@@ -201,7 +208,7 @@ namespace ASC.Web.Files.Services.DocumentService
             Logger.DebugFormat("DocService request version");
             try
             {
-                var result = Web.Core.Files.DocumentService.CommandRequest(
+                var commandResponse = CommandRequest(
                     FileUtility,
                     FilesLinkUtility.DocServiceCommandUrl,
                     CommandMethod.Version,
@@ -210,14 +217,20 @@ namespace ASC.Web.Files.Services.DocumentService
                     null,
                     null,
                     FileUtility.SignatureSecret,
-                    out var version);
+                    ClientFactory);
 
-                if (result == Web.Core.Files.DocumentService.CommandResultTypes.NoError)
+                var version = commandResponse.Version;
+                if (string.IsNullOrEmpty(version))
+                {
+                    version = "0";
+                }
+
+                if (commandResponse.Error == CommandResponse.ErrorTypes.NoError)
                 {
                     return version;
                 }
 
-                Logger.ErrorFormat("DocService command response: '{0}'", result);
+                Logger.ErrorFormat("DocService command response: '{0}' {1}", commandResponse.Error, commandResponse.ErrorString);
             }
             catch (Exception e)
             {
@@ -232,7 +245,7 @@ namespace ASC.Web.Files.Services.DocumentService
             {
                 try
                 {
-                    if (!Web.Core.Files.DocumentService.HealthcheckRequest(FilesLinkUtility.DocServiceHealthcheckUrl))
+                    if (!HealthcheckRequest(FilesLinkUtility.DocServiceHealthcheckUrl, ClientFactory))
                     {
                         throw new Exception("bad status");
                     }
@@ -256,7 +269,7 @@ namespace ASC.Web.Files.Services.DocumentService
                     var fileUri = ReplaceCommunityAdress(url);
 
                     var key = GenerateRevisionId(Guid.NewGuid().ToString());
-                    Web.Core.Files.DocumentService.GetConvertedUri(FileUtility, FilesLinkUtility.DocServiceConverterUrl, fileUri, fileExtension, toExtension, key, null, null, null, false, FileUtility.SignatureSecret, out convertedFileUri);
+                    Web.Core.Files.DocumentService.GetConvertedUri(FileUtility, FilesLinkUtility.DocServiceConverterUrl, fileUri, fileExtension, toExtension, key, null, null, null, false, FileUtility.SignatureSecret, ClientFactory, out convertedFileUri);
                 }
                 catch (Exception ex)
                 {
@@ -269,7 +282,7 @@ namespace ASC.Web.Files.Services.DocumentService
                     var request1 = new HttpRequestMessage();
                     request1.RequestUri = new Uri(convertedFileUri);
 
-                    using var httpClient = new HttpClient();
+                    using var httpClient = ClientFactory.CreateClient();
                     using var response = httpClient.Send(request1);
 
                     if (response.StatusCode != HttpStatusCode.OK)
@@ -289,7 +302,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 try
                 {
                     var key = GenerateRevisionId(Guid.NewGuid().ToString());
-                    Web.Core.Files.DocumentService.CommandRequest(FileUtility, FilesLinkUtility.DocServiceCommandUrl, CommandMethod.Version, key, null, null, null, FileUtility.SignatureSecret, out var version);
+                    CommandRequest(FileUtility, FilesLinkUtility.DocServiceCommandUrl, CommandMethod.Version, key, null, null, null, FileUtility.SignatureSecret, ClientFactory);
                 }
                 catch (Exception ex)
                 {
@@ -307,7 +320,7 @@ namespace ASC.Web.Files.Services.DocumentService
                     var scriptUrl = BaseCommonLinkUtility.GetFullAbsolutePath(scriptUri.ToString());
                     scriptUrl = ReplaceCommunityAdress(scriptUrl);
 
-                    Web.Core.Files.DocumentService.DocbuilderRequest(FileUtility, FilesLinkUtility.DocServiceDocbuilderUrl, null, scriptUrl, false, FileUtility.SignatureSecret, out var urls);
+                    Web.Core.Files.DocumentService.DocbuilderRequest(FileUtility, FilesLinkUtility.DocServiceDocbuilderUrl, null, scriptUrl, false, FileUtility.SignatureSecret, ClientFactory, out var urls);
                 }
                 catch (Exception ex)
                 {
@@ -328,9 +341,9 @@ namespace ASC.Web.Files.Services.DocumentService
 
             if (string.IsNullOrEmpty(docServicePortalUrl))
             {
-                Tenant tenant;
+                Tenant tenant = TenantManager.GetCurrentTenant();
                 if (!TenantExtra.Saas
-                    || string.IsNullOrEmpty((tenant = TenantManager.GetCurrentTenant()).MappedDomain)
+                    || string.IsNullOrEmpty(tenant.MappedDomain)
                     || !url.StartsWith("https://" + tenant.MappedDomain))
                 {
                     return url;
@@ -382,7 +395,7 @@ namespace ASC.Web.Files.Services.DocumentService
         {
             var error = FilesCommonResource.ErrorMassage_DocServiceException;
             if (!string.IsNullOrEmpty(ex.Message))
-                error += string.Format(" ({0})", ex.Message);
+                error += $" ({ex.Message})";
 
             Logger.Error("DocService error", ex);
             return new Exception(error, ex);

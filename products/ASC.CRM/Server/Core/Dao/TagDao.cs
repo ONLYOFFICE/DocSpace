@@ -50,13 +50,12 @@ namespace ASC.CRM.Core.Dao
     public class TagDao : AbstractDao
     {
         public TagDao(DbContextManager<CrmDbContext> dbContextManager,
-             DbContextManager<TenantDbContext> dbContextManager1,
             TenantManager tenantManager,
             SecurityContext securityContext,
             IOptionsMonitor<ILog> logger,
             ICache ascCache,
             IMapper mapper) :
-                        base(dbContextManager,dbContextManager1,
+                        base(dbContextManager,
                                 tenantManager,
                                 securityContext,
                                 logger,
@@ -429,7 +428,7 @@ namespace ASC.CRM.Core.Dao
             tx.Commit();
         }
 
-        private static string CorrectTag(string tag)
+        private string CorrectTag(string tag)
         {
             return tag == null
                        ? null

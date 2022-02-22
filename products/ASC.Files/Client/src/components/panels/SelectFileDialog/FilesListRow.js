@@ -50,11 +50,10 @@ const FilesListRow = ({
         <div data-index={index} className="files-list_full-name">
           <Text data-index={index} className="entry-title">
             {fileName}
+            <Text data-index={index} className="file-exst" as="span">
+              {fileExst}
+            </Text>
           </Text>
-
-          <div data-index={index} className="file-exst">
-            {fileExst}
-          </div>
         </div>
         <div className="files-list_file-children_wrapper">{children}</div>
       </div>
@@ -67,9 +66,8 @@ FilesListRow.defaultProps = {
   isMultiSelect: false,
 };
 
-export default inject(({ formatsStore }, { fileExst }) => {
-  const { iconFormatsStore } = formatsStore;
-  const iconSrc = iconFormatsStore.getIconSrc(fileExst, 24);
+export default inject(({ settingsStore }, { fileExst }) => {
+  const iconSrc = settingsStore.getIconSrc(fileExst, 24);
   return {
     iconSrc,
   };

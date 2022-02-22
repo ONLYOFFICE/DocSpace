@@ -46,10 +46,30 @@ namespace ASC.Files.Thirdparty.ProviderDao
 {
     internal class ProviderDaoBase : ThirdPartyProviderDao, IDisposable
     {
-        private readonly List<IDaoSelector> Selectors;
+        private List<IDaoSelector> selectors;
+        private List<IDaoSelector> Selectors
+        {
+            get => selectors ??= new List<IDaoSelector>
+            {
+                //Fill in selectors
+                ServiceProvider.GetService<SharpBoxDaoSelector>(),
+                ServiceProvider.GetService<SharePointDaoSelector>(),
+                ServiceProvider.GetService<GoogleDriveDaoSelector>(),
+                ServiceProvider.GetService<BoxDaoSelector>(),
+                ServiceProvider.GetService<DropboxDaoSelector>(),
+                ServiceProvider.GetService<OneDriveDaoSelector>()
+            };
+        }
 
         private int tenantID;
-        private int TenantID { get => tenantID != 0 ? tenantID : (tenantID = TenantManager.GetCurrentTenant().TenantId); }
+        private int TenantID
+        {
+            get
+            {
+                if (tenantID == 0) tenantID = TenantManager.GetCurrentTenant().TenantId;
+                return tenantID;
+            }
+        }
 
         public ProviderDaoBase(
             IServiceProvider serviceProvider,
@@ -63,17 +83,6 @@ namespace ASC.Files.Thirdparty.ProviderDao
             SecurityDao = securityDao;
             TagDao = tagDao;
             CrossDao = crossDao;
-
-            Selectors = new List<IDaoSelector>
-            {
-                //Fill in selectors
-                ServiceProvider.GetService<SharpBoxDaoSelector>(),
-                ServiceProvider.GetService<SharePointDaoSelector>(),
-                ServiceProvider.GetService<GoogleDriveDaoSelector>(),
-                ServiceProvider.GetService<BoxDaoSelector>(),
-                ServiceProvider.GetService<DropboxDaoSelector>(),
-                ServiceProvider.GetService<OneDriveDaoSelector>()
-            };
         }
 
         protected IServiceProvider ServiceProvider { get; }
@@ -96,16 +105,17 @@ namespace ASC.Files.Thirdparty.ProviderDao
 
         protected void SetSharedProperty(IEnumerable<FileEntry<string>> entries)
         {
-            SecurityDao.GetPureShareRecords(entries.ToArray())
+            var ids = SecurityDao.GetPureShareRecords(entries)
                 //.Where(x => x.Owner == SecurityContext.CurrentAccount.ID)
-                .Select(x => x.EntryId).Distinct().ToList()
-                .ForEach(id =>
-                {
-                    var firstEntry = entries.FirstOrDefault(y => y.ID.Equals(id));
+                .Select(x => x.EntryId).Distinct();
 
-                    if (firstEntry != null)
-                        firstEntry.Shared = true;
-                });
+            foreach(var id in ids)
+            {
+                var firstEntry = entries.FirstOrDefault(y => y.ID.Equals(id));
+
+                if (firstEntry != null)
+                    firstEntry.Shared = true;
+            }
         }
 
         protected IEnumerable<IDaoSelector> GetSelectors()
@@ -161,7 +171,10 @@ namespace ASC.Files.Thirdparty.ProviderDao
 
         public void Dispose()
         {
-            Selectors.ForEach(r => r.Dispose());
+            if (selectors != null)
+            {
+                selectors.ForEach(r => r.Dispose());
+            }
         }
     }
 }

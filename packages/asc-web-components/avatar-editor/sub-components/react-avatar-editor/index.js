@@ -344,40 +344,42 @@ class AvatarEditor extends React.Component {
     const image = this.state.image;
 
     // get actual pixel coordinates
-    cropRect.x *= image.resource.width;
-    cropRect.y *= image.resource.height;
-    cropRect.width *= image.resource.width;
-    cropRect.height *= image.resource.height;
+    if (image.resource) {
+      cropRect.x *= image.resource.width;
+      cropRect.y *= image.resource.height;
+      cropRect.width *= image.resource.width;
+      cropRect.height *= image.resource.height;
 
-    // create a canvas with the correct dimensions
-    const canvas = document.createElement("canvas");
+      // create a canvas with the correct dimensions
+      const canvas = document.createElement("canvas");
 
-    if (this.isVertical()) {
-      canvas.width = cropRect.height;
-      canvas.height = cropRect.width;
-    } else {
-      canvas.width = cropRect.width;
-      canvas.height = cropRect.height;
+      if (this.isVertical()) {
+        canvas.width = cropRect.height;
+        canvas.height = cropRect.width;
+      } else {
+        canvas.width = cropRect.width;
+        canvas.height = cropRect.height;
+      }
+
+      // draw the full-size image at the correct position,
+      // the image gets truncated to the size of the canvas.
+      const context = canvas.getContext("2d");
+
+      context.translate(canvas.width / 2, canvas.height / 2);
+      context.rotate((this.props.rotate * Math.PI) / 180);
+      context.translate(-(canvas.width / 2), -(canvas.height / 2));
+
+      if (this.isVertical()) {
+        context.translate(
+          (canvas.width - canvas.height) / 2,
+          (canvas.height - canvas.width) / 2
+        );
+      }
+
+      context.drawImage(image.resource, -cropRect.x, -cropRect.y);
+
+      return canvas;
     }
-
-    // draw the full-size image at the correct position,
-    // the image gets truncated to the size of the canvas.
-    const context = canvas.getContext("2d");
-
-    context.translate(canvas.width / 2, canvas.height / 2);
-    context.rotate((this.props.rotate * Math.PI) / 180);
-    context.translate(-(canvas.width / 2), -(canvas.height / 2));
-
-    if (this.isVertical()) {
-      context.translate(
-        (canvas.width - canvas.height) / 2,
-        (canvas.height - canvas.width) / 2
-      );
-    }
-
-    context.drawImage(image.resource, -cropRect.x, -cropRect.y);
-
-    return canvas;
   }
 
   /**

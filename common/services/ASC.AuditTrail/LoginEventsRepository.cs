@@ -44,24 +44,18 @@ namespace ASC.AuditTrail.Data
     public class LoginEventsRepository
     {
         private UserFormatter UserFormatter { get; }
-        private Lazy<AuditTrailContext> LazyAuditTrailContext { get; }
-        private AuditTrailContext AuditTrailContext { get => LazyAuditTrailContext.Value; }
         private AuditActionMapper AuditActionMapper { get; }
-        private UserDbContext UserDbContext { get => LazyUserDbContext.Value; }
-        private Lazy<UserDbContext> LazyUserDbContext { get; }
         private MessagesContext MessagesContext { get => LazyMessagesContext.Value; }
         private Lazy<MessagesContext> LazyMessagesContext { get; }
 
-        public LoginEventsRepository(UserFormatter userFormatter, DbContextManager<AuditTrailContext> dbContextManager, AuditActionMapper auditActionMapper, DbContextManager<UserDbContext> DbContextManager, DbContextManager<MessagesContext> dbMessagesContext)
+        public LoginEventsRepository(UserFormatter userFormatter, AuditActionMapper auditActionMapper, DbContextManager<MessagesContext> dbMessagesContext)
         {
             UserFormatter = userFormatter;
-            LazyAuditTrailContext = new Lazy<AuditTrailContext>(() => dbContextManager.Value);
-            LazyUserDbContext = new Lazy<UserDbContext>(() => DbContextManager.Value);
             AuditActionMapper = auditActionMapper;
             LazyMessagesContext = new Lazy<MessagesContext>(() => dbMessagesContext.Value);
         }
 
-        private class Query
+        private sealed class Query
         {
             public LoginEvents LoginEvents { get; set; }
             public User User { get; set; }
@@ -71,7 +65,7 @@ namespace ASC.AuditTrail.Data
         {
             var query =
                 (from b in MessagesContext.LoginEvents
-                 from p in UserDbContext.Users.Where(p => b.UserId == p.Id).DefaultIfEmpty()
+                 from p in MessagesContext.Users.Where(p => b.UserId == p.Id).DefaultIfEmpty()
                  where b.TenantId == tenant
                  orderby b.Date descending
                  select new Query { LoginEvents = b, User = p })
@@ -84,7 +78,7 @@ namespace ASC.AuditTrail.Data
         {
             var query =
                 from q in MessagesContext.LoginEvents
-                from p in UserDbContext.Users.Where(p => q.UserId == p.Id).DefaultIfEmpty()
+                from p in MessagesContext.Users.Where(p => q.UserId == p.Id).DefaultIfEmpty()
                 where q.TenantId == tenant
                 where q.Date >= fromDate
                 where q.Date <= to
@@ -101,7 +95,7 @@ namespace ASC.AuditTrail.Data
 
             if (from.HasValue && to.HasValue)
             {
-                query = query.Where(l => l.Date >= from & l.Date <= to);
+                query = query.Where(l => l.Date >= from && l.Date <= to);
             }
 
             return query.Count();

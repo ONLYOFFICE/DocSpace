@@ -1,4 +1,4 @@
-{
+﻿{
   "AccessRights": "Diritti di accesso",
   "AccessRightsAccessToProduct": "Viene concesso l'accesso al modulo {{product}}",
   "AccessRightsAllUsers": "Tutti {{users}}",
@@ -9,6 +9,7 @@
   "AccessSettings": "Impostazioni di accesso",
   "AddAdmins": "Aggiungere gli amministratori",
   "AddName": "Aggiungere il nome",
+  "AdminInModules": "Amministrazione nei moduli",
   "AdministratorsAddedSuccessfully": "Gli amministratori sono stati aggiunti con successo",
   "AdministratorsRemovedSuccessfully": "Gli amministratori sono stati eliminati con successo",
   "Admins": "Amministratori",
@@ -29,6 +30,7 @@
   "DocumentsAdministratorsCan": "Gli amministratori dei documenti possono collegare Dropbox, Box e altri account ai Documenti Comuni ed impostare i diritti di accesso alla sezione",
   "Employees": "utenti",
   "FullAccessTooltip": "Ci sono gli stessi diritti di accesso del proprietario del portale, tranne il diritto di",
+  "Group": "Gruppo",
   "GroupLead": "Leader del gruppo",
   "Groups": "Gruppi",
   "Guests": "Ospiti",

@@ -4,6 +4,8 @@ import { StyledTableRow } from "./StyledTableContainer";
 import TableCell from "./TableCell";
 import ContextMenu from "../context-menu";
 import ContextMenuButton from "../context-menu-button";
+import Checkbox from "../checkbox";
+import Loader from "../loader";
 
 const TableRow = (props) => {
   const {
@@ -11,9 +13,16 @@ const TableRow = (props) => {
     onHideContextMenu,
     children,
     contextOptions,
+    checked,
+    element,
+    onContentSelect,
+    item,
     className,
     style,
     selectionProp,
+    hasAccess,
+    title,
+    inProgress,
     ...rest
   } = props;
 
@@ -35,6 +44,10 @@ const TableRow = (props) => {
   const getOptions = () => {
     fileContextClick && fileContextClick();
     return contextOptions;
+  };
+
+  const onChange = (e) => {
+    onContentSelect && onContentSelect(e.target.checked, item);
   };
 
   return (
@@ -65,6 +78,7 @@ const TableRow = (props) => {
               directionX="right"
               isNew={true}
               onClick={onContextMenu}
+              title={title}
             />
           ) : (
             <div className="expandButton"> </div>
@@ -92,6 +106,7 @@ TableRow.propTypes = {
   className: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   style: PropTypes.object,
   hasAccess: PropTypes.bool,
+  inProgress: PropTypes.bool,
 };
 
 export default TableRow;

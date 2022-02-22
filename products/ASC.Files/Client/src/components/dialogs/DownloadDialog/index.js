@@ -4,6 +4,7 @@ import ModalDialogContainer from "../ModalDialogContainer";
 import ModalDialog from "@appserver/components/modal-dialog";
 import Button from "@appserver/components/button";
 import Text from "@appserver/components/text";
+import LinkWithDropdown from "@appserver/components/link-with-dropdown";
 import Row from "@appserver/components/row";
 import RowContent from "@appserver/components/row-content";
 import RowContainer from "@appserver/components/row-container";
@@ -315,7 +316,7 @@ class DownloadDialogComponent extends React.Component {
   };
 
   render() {
-    const { visible, t, tReady, filesConverts } = this.props;
+    const { visible, t, tReady, extsConvertible } = this.props;
     const {
       documentsTitleFormat,
       spreadsheetsTitleFormat,
@@ -357,7 +358,7 @@ class DownloadDialogComponent extends React.Component {
           {documents.length > 0 && (
             <DownloadContent
               t={t}
-              filesConverts={filesConverts}
+              extsConvertible={extsConvertible}
               checkedTitle={checkedDocTitle}
               indeterminateTitle={indeterminateDocTitle}
               items={documents}
@@ -373,7 +374,7 @@ class DownloadDialogComponent extends React.Component {
           {spreadsheets.length > 0 && (
             <DownloadContent
               t={t}
-              filesConverts={filesConverts}
+              extsConvertible={extsConvertible}
               checkedTitle={checkedSpreadsheetTitle}
               indeterminateTitle={indeterminateSpreadsheetTitle}
               items={spreadsheets}
@@ -389,7 +390,7 @@ class DownloadDialogComponent extends React.Component {
           {presentations.length > 0 && (
             <DownloadContent
               t={t}
-              filesConverts={filesConverts}
+              extsConvertible={extsConvertible}
               checkedTitle={checkedPresentationTitle}
               indeterminateTitle={indeterminatePresentationTitle}
               items={presentations}
@@ -451,9 +452,17 @@ class DownloadDialogComponent extends React.Component {
                           {folder.title}
                         </Text>
                         <></>
-                        <Text fontSize="12px" containerWidth="auto" noSelect>
+                        <LinkWithDropdown
+                          className="link-other-formats"
+                          containerMinWidth="fit-content"
+                          data={[]}
+                          directionX="left"
+                          directionY="bottom"
+                          dropdownType="appearDashedAfterHover"
+                          fontSize="12px"
+                        >
                           {folder.fileExst && t("OriginalFormat")}
-                        </Text>
+                        </LinkWithDropdown>
                       </RowContent>
                     </Row>
                   );
@@ -494,10 +503,9 @@ const DownloadDialog = withTranslation([
 ])(DownloadDialogComponent);
 
 export default inject(
-  ({ filesStore, formatsStore, dialogsStore, filesActionsStore }) => {
+  ({ filesStore, dialogsStore, filesActionsStore, settingsStore }) => {
     const { sortedFiles } = filesStore;
-    const { getIcon, getFolderIcon } = formatsStore.iconFormatsStore;
-    const { filesConverts } = formatsStore.docserviceStore;
+    const { extsConvertible, getIcon, getFolderIcon } = settingsStore;
 
     const {
       downloadDialogVisible: visible,
@@ -509,7 +517,7 @@ export default inject(
     return {
       sortedFiles,
       visible,
-      filesConverts,
+      extsConvertible,
 
       getIcon,
       getFolderIcon,

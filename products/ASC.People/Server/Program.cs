@@ -15,7 +15,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace ASC.People
 {
-    public class Program
+    public static class Program
     {
         public async static Task Main(string[] args)
         {
@@ -69,6 +69,8 @@ namespace ASC.People
                     .AddJsonFile("storage.json")
                     .AddJsonFile("kafka.json")
                     .AddJsonFile($"kafka.{hostingContext.HostingEnvironment.EnvironmentName}.json", true)
+                    .AddJsonFile("redis.json")
+                    .AddJsonFile($"redis.{hostingContext.HostingEnvironment.EnvironmentName}.json", true)
                     .AddEnvironmentVariables()
                     .AddCommandLine(args)
                     .AddInMemoryCollection(new Dictionary<string, string>

@@ -62,7 +62,6 @@ namespace ASC.CRM.Core.Dao
         private readonly FactoryIndexerEvents _factoryIndexer;
 
         public RelationshipEventDao(DbContextManager<CrmDbContext> dbContextManager,
-            DbContextManager<TenantDbContext> dbContextManager1,
             TenantManager tenantManager,
             SecurityContext securityContext,
             FilesIntegration filesIntegration,
@@ -74,7 +73,6 @@ namespace ASC.CRM.Core.Dao
             IMapper mapper
             ) :
                 base(dbContextManager,
-                     dbContextManager1,
                         tenantManager,
                         securityContext,
                         logger,
@@ -259,7 +257,7 @@ namespace ASC.CRM.Core.Dao
                 }
             }
 
-            var itemToUpdate = Query(CrmDbContext.Invoices).FirstOrDefault(x => x.FileId == Convert.ToInt32(file.ID));
+            var itemToUpdate = Query(CrmDbContext.Invoices).FirstOrDefault(x => x.FileId == file.ID);
 
             itemToUpdate.FileId = 0;
 

@@ -217,6 +217,7 @@ const TreeMenu = React.forwardRef((props, ref) => {
                 fontWeight={800}
                 borderRadius="11px"
                 padding="0 5px"
+                lineHeight="1.46"
                 onClick={child.props.onBadgeClick}
               />
             </>

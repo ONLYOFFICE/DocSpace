@@ -74,7 +74,8 @@ namespace ASC.Core.Caching
             var store = Cache.Get<TenantStore>(KEY);
             if (store == null)
             {
-                Cache.Insert(KEY, store = new TenantStore(), DateTime.UtcNow.Add(CacheExpiration));
+                store = new TenantStore();
+                Cache.Insert(KEY, store, DateTime.UtcNow.Add(CacheExpiration));
             }
             return store;
         }
@@ -204,7 +205,7 @@ namespace ASC.Core.Caching
         public CachedTenantService(DbTenantService service, TenantServiceCache tenantServiceCache, ICache cache) : this()
         {
             this.cache = cache;
-            Service = service ?? throw new ArgumentNullException("service");
+            Service = service ?? throw new ArgumentNullException(nameof(service));
             TenantServiceCache = tenantServiceCache;
             CacheNotifyItem = tenantServiceCache.CacheNotifyItem;
             CacheNotifySettings = tenantServiceCache.CacheNotifySettings;
@@ -223,6 +224,10 @@ namespace ASC.Core.Caching
         public IEnumerable<Tenant> GetTenants(DateTime from, bool active = true)
         {
             return Service.GetTenants(from, active);
+        }
+        public IEnumerable<Tenant> GetTenants(List<int> ids)
+        {
+            return Service.GetTenants(ids);
         }
 
         public Tenant GetTenant(int id)
@@ -295,7 +300,8 @@ namespace ASC.Core.Caching
             if (data == null)
             {
                 data = Service.GetTenantSettings(tenant, key);
-                cache.Insert(cacheKey, data ?? new byte[0], DateTime.UtcNow + SettingsExpiration);
+
+                cache.Insert(cacheKey, data ?? Array.Empty<byte>(), DateTime.UtcNow + SettingsExpiration);
             }
             return data == null ? null : data.Length == 0 ? null : data;
         }

@@ -11,7 +11,7 @@ class FilesTableHeader extends React.Component {
   constructor(props) {
     super(props);
 
-    const { t, withContent, personal, userId } = props;
+    const { t, personal, userId } = props;
 
     const defaultColumns = [
       {
@@ -27,7 +27,7 @@ class FilesTableHeader extends React.Component {
       {
         key: "Author",
         title: t("ByAuthor"),
-        enable: true,
+        enable: false,
         resizable: true,
         sortBy: "Author",
         onClick: this.onFilter,
@@ -36,7 +36,7 @@ class FilesTableHeader extends React.Component {
       {
         key: "Created",
         title: t("ByCreationDate"),
-        enable: false,
+        enable: true,
         resizable: true,
         sortBy: "DateAndTimeCreation",
         onClick: this.onFilter,
@@ -63,16 +63,16 @@ class FilesTableHeader extends React.Component {
       {
         key: "Type",
         title: t("Common:Type"),
-        enable: false,
+        enable: true,
         resizable: true,
         sortBy: "Type",
         onClick: this.onFilter,
         onChange: this.onColumnChange,
       },
       {
-        key: "Share",
+        key: "QuickButtons",
         title: "",
-        enable: withContent,
+        enable: true,
         defaultSize: 120,
         resizable: false,
       },
@@ -88,13 +88,46 @@ class FilesTableHeader extends React.Component {
     const tableColumns = columns.map((c) => c.enable && c.key);
     this.setTableColumns(tableColumns);
 
-    this.state = { columns, resetColumnsSize };
+    this.state = {
+      columns,
+      resetColumnsSize,
+    };
+
+    this.isBeginScrolling = false;
   }
 
   setTableColumns = (tableColumns) => {
     localStorage.setItem(`${TABLE_COLUMNS}=${this.props.userId}`, tableColumns);
   };
 
+  componentDidMount() {
+    this.customScrollElm = document.getElementsByClassName("section-scroll")[0];
+
+    this.customScrollElm.addEventListener("scroll", this.onBeginScroll);
+  }
+
+  onBeginScroll = () => {
+    const { firstElemChecked } = this.props;
+
+    const currentScrollPosition = this.customScrollElm.scrollTop;
+
+    if (currentScrollPosition === 0) {
+      this.isBeginScrolling = false;
+
+      !firstElemChecked &&
+        document
+          .getElementById("table-container_caption-header")
+          ?.classList?.remove("lengthen-header");
+      return;
+    }
+
+    !this.isBeginScrolling &&
+      document
+        .getElementById("table-container_caption-header")
+        ?.classList?.add("lengthen-header");
+
+    this.isBeginScrolling = true;
+  };
   componentDidUpdate(prevProps) {
     const { columns } = this.state;
     if (this.props.withContent !== prevProps.withContent) {
@@ -106,6 +139,9 @@ class FilesTableHeader extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    this.customScrollElm.removeEventListener("scroll", this.onBeginScroll);
+  }
   getColumns = (defaultColumns, splitColumns) => {
     const columns = [];
 
@@ -151,12 +187,29 @@ class FilesTableHeader extends React.Component {
   };
 
   render() {
-    const { containerRef, filter, sectionWidth, userId } = this.props;
+    const {
+      t,
+      containerRef,
+      isHeaderVisible,
+      isHeaderChecked,
+      isHeaderIndeterminate,
+      getHeaderMenu,
+      filter,
+      sectionWidth,
+      userId,
+      cbMenuItems,
+      getCheckboxItemLabel,
+      firstElemChecked,
+      sortingVisible,
+    } = this.props;
+
     const { sortBy, sortOrder } = filter;
     const { columns, resetColumnsSize } = this.state;
 
     return (
       <TableHeader
+        isLengthenHeader={firstElemChecked || isHeaderChecked}
+        checkboxSize="32px"
         sorted={sortOrder === "descending"}
         sortBy={sortBy}
         containerRef={containerRef}
@@ -164,35 +217,63 @@ class FilesTableHeader extends React.Component {
         columnStorageName={`${COLUMNS_SIZE}=${userId}`}
         sectionWidth={sectionWidth}
         resetColumnsSize={resetColumnsSize}
+        sortingVisible={sortingVisible}
       />
     );
   }
 }
 
 export default inject(
-  ({ auth, filesStore, selectedFolderStore, treeFoldersStore }) => {
+  ({
+    auth,
+    filesStore,
+    filesActionsStore,
+    selectedFolderStore,
+    treeFoldersStore,
+  }) => {
     const {
+      setSelected,
       isHeaderVisible,
+      isHeaderIndeterminate,
+      isHeaderChecked,
       setIsLoading,
       filter,
       fetchFiles,
       canShare,
+      cbMenuItems,
+      getCheckboxItemLabel,
+      firstElemChecked,
     } = filesStore;
-    const { isPrivacyFolder } = treeFoldersStore;
+    const { getHeaderMenu } = filesActionsStore;
+    const {
+      isPrivacyFolder,
+      isFavoritesFolder,
+      isRecentFolder,
+    } = treeFoldersStore;
 
     const withContent = canShare || (canShare && isPrivacyFolder && isDesktop);
+    const sortingVisible = !isRecentFolder;
     const { personal } = auth.settingsStore;
 
     return {
       isHeaderVisible,
+      isHeaderIndeterminate,
+      isHeaderChecked,
       filter,
       selectedFolderId: selectedFolderStore.id,
       withContent,
       personal,
+      sortingVisible,
 
+      setSelected,
       setIsLoading,
       fetchFiles,
+      getHeaderMenu,
       userId: auth.userStore.user.id,
+      cbMenuItems,
+      getCheckboxItemLabel,
+
+      firstElemChecked,
     };
   }
 )(

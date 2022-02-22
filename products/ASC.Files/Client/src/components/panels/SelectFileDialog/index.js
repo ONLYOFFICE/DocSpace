@@ -11,7 +11,7 @@ import SelectFileDialogModalView from "./ModalView";
 import SelectFileDialogAsideView from "./AsideView";
 
 import utils from "@appserver/components/utils";
-import SelectFolderDialog from "../SelectFolderDialog";
+//import SelectFolderDialog from "../SelectFolderDialog";
 import { getFolder } from "@appserver/common/api/files";
 import { FilterType } from "@appserver/common/constants";
 
@@ -24,7 +24,18 @@ const { auth: authStore } = store;
 class SelectFileDialogBody extends React.Component {
   constructor(props) {
     super(props);
-    const { folderId, storeFolderId, fileInfo, filter } = this.props;
+    const {
+      folderId,
+      storeFolderId,
+      fileInfo,
+      filter,
+      creationButtonPrimary,
+      t,
+    } = props;
+
+    this.buttonName = creationButtonPrimary
+      ? t("Common:Create")
+      : t("Common:SaveButton");
 
     this.state = {
       isVisible: false,
@@ -54,6 +65,7 @@ class SelectFileDialogBody extends React.Component {
       isTablesOnly,
       isMediaOnly,
       searchParam = "",
+      ByExtension,
     } = this.props;
 
     if (isImageOnly) {
@@ -80,6 +92,11 @@ class SelectFileDialogBody extends React.Component {
     if (isMediaOnly) {
       return { filterType: FilterType.MediaOnly, filterValue: searchParam };
     }
+
+    if (ByExtension) {
+      return { filterType: FilterType.ByExtension, filterValue: searchParam };
+    }
+
     return { filterType: FilterType.FilesOnly, filterValue: "" };
   };
 
@@ -103,6 +120,7 @@ class SelectFileDialogBody extends React.Component {
       resetTreeFolders,
       setExpandedPanelKeys,
       setDefaultSelectedFolder,
+      setSelectedFolder,
       setFolderId,
       setFile,
     } = this.props;
@@ -111,7 +129,7 @@ class SelectFileDialogBody extends React.Component {
 
     if (resetTreeFolders) {
       setExpandedPanelKeys(null);
-      setDefaultSelectedFolder();
+      //setSelectedFolder(null);
 
       setFolderId(null);
       setFile(null);
@@ -184,7 +202,11 @@ class SelectFileDialogBody extends React.Component {
   };
 
   loadNextPage = () => {
-    const { setSelectedNode, setSelectedFolder } = this.props;
+    // const {
+    //   setSelectedNode,
+    //   setSelectedFolder,
+    //   setExpandedPanelKeys,
+    // } = this.props;
     const { selectedFolder, page } = this.state;
 
     if (this._isLoadNextPage) return;
@@ -202,17 +224,22 @@ class SelectFileDialogBody extends React.Component {
             ? this.state.filesList.concat(data.files)
             : data.files;
 
-          setSelectedNode([selectedFolder + ""]);
-          const newPathParts = SelectFolderDialog.convertPathParts(
-            data.pathParts
-          );
+          //TODO:  it will need if passed the folder id - need to come up with a different solution.
 
-          setSelectedFolder({
-            folders: data.folders,
-            ...data.current,
-            pathParts: newPathParts,
-            ...{ new: data.new },
-          });
+          // const newPathParts = SelectFolderDialog.convertPathParts(
+          //
+          //   data.pathParts
+          // );
+
+          //setExpandedPanelKeys(newPathParts);
+
+          // setSelectedNode([selectedFolder + ""]);
+          // setSelectedFolder({
+          //   folders: data.folders,
+          //   ...data.current,
+          //   pathParts: newPathParts,
+          //   ...{ new: data.new },
+          // });
           this.setState({
             hasNextPage: newFilesList.length < data.total,
             isNextPageLoading: false,
@@ -232,7 +259,7 @@ class SelectFileDialogBody extends React.Component {
       zIndex,
       foldersType,
       withoutProvider,
-      header,
+      titleFilesList,
       loadingLabel,
       folderId,
       onSetFileName,
@@ -284,8 +311,9 @@ class SelectFileDialogBody extends React.Component {
         displayType={displayType}
         isTranslationsReady={tReady}
         passedId={passedId}
-        header={header}
+        titleFilesList={titleFilesList}
         isAvailableFolderList={isAvailableFolderList}
+        primaryButtonName={this.buttonName}
       />
     ) : (
       <SelectFileDialogModalView
@@ -307,7 +335,8 @@ class SelectFileDialogBody extends React.Component {
         selectedFile={selectedFile}
         folderId={folderId}
         passedId={passedId}
-        header={header}
+        titleFilesList={titleFilesList}
+        primaryButtonName={this.buttonName}
       />
     );
   }
@@ -320,19 +349,22 @@ SelectFileDialogBody.propTypes = {
     "common",
     "third-party",
     "exceptSortedByTags",
-    "exceptTrashFolder",
+    "exceptPrivacyTrashFolders",
   ]),
   folderId: PropTypes.string,
   withoutProvider: PropTypes.bool,
+  creationButtonPrimary: PropTypes.bool,
   headerName: PropTypes.string,
+  titleFilesList: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   zIndex: PropTypes.number,
 };
 
 SelectFileDialogBody.defaultProps = {
   folderId: "",
-  header: "",
+  titleFilesList: "",
   withoutProvider: false,
   zIndex: 310,
+  creationButtonPrimary: false,
 };
 
 const SelectFileDialogWrapper = inject(
@@ -351,19 +383,15 @@ const SelectFileDialogWrapper = inject(
 
     const { setSelectedNode, setExpandedPanelKeys } = treeFoldersStore;
     const { filter } = filesStore;
-    const {
-      setSelectedFolder,
-      toDefault: setDefaultSelectedFolder,
-    } = selectedFolderStore;
+    const { setSelectedFolder, id } = selectedFolderStore;
     return {
-      storeFolderId,
+      storeFolderId: storeFolderId || id,
       fileInfo,
       setFile,
       setFolderId,
       setSelectedFolder,
       setSelectedNode,
       filter,
-      setDefaultSelectedFolder,
       setExpandedPanelKeys,
     };
   }

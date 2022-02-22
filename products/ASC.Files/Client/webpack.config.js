@@ -174,12 +174,6 @@ var config = {
       },
     }),
     new ExternalTemplateRemotesPlugin(),
-    new HtmlWebpackPlugin({
-      template: "./public/index.html",
-      publicPath: homepage,
-      title: title,
-      base: `${homepage}/`,
-    }),
     new CopyPlugin({
       patterns: [
         {
@@ -196,11 +190,49 @@ var config = {
 };
 
 module.exports = (env, argv) => {
+  if (!!env.hideText) {
+    config.plugins = [
+      ...config.plugins,
+      new HtmlWebpackPlugin({
+        template: "./public/index.html",
+        publicPath: homepage,
+        title: title,
+        base: `${homepage}/`,
+        custom: `<style type="text/css">
+          div,
+          p,
+          a,
+          span,
+          button,
+          h1,
+          h2,
+          h3,
+          h4,
+          h5,
+          h6,
+          ::placeholder {
+            color: rgba(0, 0, 0, 0) !important;
+        }
+        </style>`,
+      }),
+    ];
+  } else {
+    config.plugins = [
+      ...config.plugins,
+      new HtmlWebpackPlugin({
+        template: "./public/index.html",
+        publicPath: homepage,
+        title: title,
+        base: `${homepage}/`,
+        custom: "",
+      }),
+    ];
+  }
   if (argv.mode === "production") {
     config.mode = "production";
     config.optimization = {
       splitChunks: { chunks: "all" },
-      minimize: true,
+      minimize: !env.minimize,
       minimizer: [new TerserPlugin()],
     };
   } else {

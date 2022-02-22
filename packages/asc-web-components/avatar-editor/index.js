@@ -113,6 +113,7 @@ class AvatarEditor extends React.Component {
       saveButtonLoading,
       useModalDialog,
       cancelButtonLabel,
+      maxSizeLabel,
     } = this.props;
 
     return useModalDialog ? (
@@ -138,7 +139,7 @@ class AvatarEditor extends React.Component {
             onLoadFileError={this.onLoadFileError}
             onLoadFile={this.onLoadFile}
             deleteImage={this.onDeleteImage}
-            maxSize={maxSize * 1000000} // megabytes to bytes
+            maxSize={maxSize * 1024 * 1024} // megabytes to bytes
             accept={accept}
             image={image}
             selectNewPhotoLabel={selectNewPhotoLabel}
@@ -146,6 +147,8 @@ class AvatarEditor extends React.Component {
             unknownTypeError={unknownTypeError}
             maxSizeFileError={maxSizeFileError}
             unknownError={unknownError}
+            maxSizeLabel={maxSizeLabel}
+            isLoading={saveButtonLoading}
           />
         </ModalDialog.Body>
         <ModalDialog.Footer>
@@ -179,6 +182,8 @@ class AvatarEditor extends React.Component {
           maxSizeFileError={maxSizeFileError}
           unknownError={unknownError}
           useModalDialog={false}
+          maxSizeLabel={maxSizeLabel}
+          isLoading={saveButtonLoading}
         />
         <StyledButtonsWrapper>
           <Button
@@ -251,11 +256,12 @@ AvatarEditor.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   /** Use for the view of the modal dialog or not */
   useModalDialog: PropTypes.bool,
+  maxSizeLabel: PropTypes.string,
 };
 
 AvatarEditor.defaultProps = {
   visible: false,
-  maxSize: 10, //10MB
+  maxSize: 25,
   headerLabel: "Edit Photo",
   saveButtonLabel: "Save",
   cancelButtonLabel: "Cancel",

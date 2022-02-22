@@ -205,7 +205,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 var webException = (WebException)e.InnerException;
                 if (webException != null)
                 {
-                    var response = ((HttpWebResponse)webException.Response);
+                    var response = (HttpWebResponse)webException.Response;
                     if (response != null)
                     {
                         if (response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.Forbidden)
@@ -238,10 +238,12 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 FilesDbContext.TagLink.RemoveRange(link);
                 FilesDbContext.SaveChanges();
 
-                var tagsToRemove = Query(FilesDbContext.Tag)
-                    .Where(r => !Query(FilesDbContext.TagLink).Where(a => a.TagId == r.Id).Any());
+                var tagsToRemove = from ft in FilesDbContext.Tag
+                                   join ftl in FilesDbContext.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new { TenantId = ftl.TenantId, Id = ftl.TagId }
+                                   where ftl == null
+                                   select ft;
 
-                FilesDbContext.Tag.RemoveRange(tagsToRemove);
+                FilesDbContext.Tag.RemoveRange(tagsToRemove.ToList());
 
                 var securityToDelete = Query(FilesDbContext.Security)
                     .Where(r => hashIDs.Any(h => h == r.EntryId));
@@ -448,7 +450,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             return false;
         }
 
-        public long GetMaxUploadSize(string folderId, bool chunkedUpload)
+        public long GetMaxUploadSize(string folderId, bool chunkedUpload = false)
         {
             var storageMaxUploadSize =
                 chunkedUpload

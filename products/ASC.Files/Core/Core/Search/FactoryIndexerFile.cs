@@ -31,7 +31,6 @@ using System.Threading.Tasks;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
-using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Common.EF.Model;
 using ASC.ElasticSearch;
@@ -60,11 +59,11 @@ namespace ASC.Web.Files.Core.Search
             IServiceProvider serviceProvider,
             IDaoFactory daoFactory,
             ICache cache,
-            ConfigurationExtension configurationExtension)
+            Settings settings)
             : base(options, tenantManager, searchSettingsHelper, factoryIndexer, baseIndexer, serviceProvider, cache)
         {
             DaoFactory = daoFactory;
-            Settings = Settings.GetInstance(configurationExtension);
+            Settings = settings;
         }
 
         public override void IndexAll()
@@ -133,7 +132,7 @@ namespace ASC.Web.Files.Core.Search
 
             IQueryable<FileTenant> GetBaseQuery(DateTime lastIndexed) => fileDao.FilesDbContext.Files
                 .Where(r => r.ModifiedOn >= lastIndexed)
-                .Join(fileDao.TenantDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FileTenant { DbFile = f, DbTenant = t })
+                .Join(fileDao.FilesDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FileTenant { DbFile = f, DbTenant = t })
                 .Where(r => r.DbTenant.Status == ASC.Core.Tenants.TenantStatus.Active);
 
             try
@@ -172,7 +171,7 @@ namespace ASC.Web.Files.Core.Search
                     }
                 }
 
-                if (tasks.Any())
+                if (tasks.Count > 0)
                 {
                     Task.WaitAll(tasks.ToArray());
                 }
@@ -197,7 +196,7 @@ namespace ASC.Web.Files.Core.Search
         public DbFile DbFile { get; set; }
     }
 
-    public class FactoryIndexerFileExtension
+    public static class FactoryIndexerFileExtension
     {
         public static void Register(DIHelper services)
         {

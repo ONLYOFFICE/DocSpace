@@ -41,8 +41,9 @@ using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 using ASC.Common.Web;
-using ASC.Core;
+using ASC.Core.Billing;
 
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace ASC.Web.Core.Files
@@ -55,13 +56,13 @@ namespace ASC.Web.Core.Files
         /// <summary>
         /// Timeout to request conversion
         /// </summary>
-        public static int Timeout = 120000;
+        public static readonly int Timeout = 120000;
         //public static int Timeout = Convert.ToInt32(ConfigurationManagerExtension.AppSettings["files.docservice.timeout"] ?? "120000");
 
         /// <summary>
         /// Number of tries request conversion
         /// </summary>
-        public static int MaxTry = 3;
+        public static readonly int MaxTry = 3;
 
         /// <summary>
         /// Translation key to a supported form.
@@ -110,14 +111,15 @@ namespace ASC.Web.Core.Files
             SpreadsheetLayout spreadsheetLayout,
             bool isAsync,
             string signatureSecret,
+            IHttpClientFactory clientFactory,
             out string convertedDocumentUri)
         {
             fromExtension = string.IsNullOrEmpty(fromExtension) ? Path.GetExtension(documentUri) : fromExtension;
-            if (string.IsNullOrEmpty(fromExtension)) throw new ArgumentNullException("fromExtension", "Document's extension for conversion is not known");
-            if (string.IsNullOrEmpty(toExtension)) throw new ArgumentNullException("toExtension", "Extension for conversion is not known");
+            if (string.IsNullOrEmpty(fromExtension)) throw new ArgumentNullException(nameof(fromExtension), "Document's extension for conversion is not known");
+            if (string.IsNullOrEmpty(toExtension)) throw new ArgumentNullException(nameof(toExtension), "Extension for conversion is not known");
 
             var title = Path.GetFileName(documentUri ?? "");
-            title = string.IsNullOrEmpty(title) || title.Contains("?") ? Guid.NewGuid().ToString() : title;
+            title = string.IsNullOrEmpty(title) || title.Contains('?') ? Guid.NewGuid().ToString() : title;
 
             documentRevisionId = string.IsNullOrEmpty(documentRevisionId)
                                      ? documentUri
@@ -129,7 +131,7 @@ namespace ASC.Web.Core.Files
             request.Method = HttpMethod.Post;
             request.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
-            using var httpClient = new HttpClient();
+            var httpClient = clientFactory.CreateClient();
             httpClient.Timeout = TimeSpan.FromMilliseconds(Timeout);
 
             var body = new ConvertionBody
@@ -170,12 +172,6 @@ namespace ASC.Web.Core.Files
             });
 
             request.Content = new StringContent(bodyString, Encoding.UTF8, "application/json");
-
-            // hack. http://ubuntuforums.org/showthread.php?t=1841740
-            if (WorkContext.IsMono)
-            {
-                ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
-            }
 
             string dataResponse;
             HttpResponseMessage response = null;
@@ -229,7 +225,7 @@ namespace ASC.Web.Core.Files
         /// <param name="signatureSecret">Secret key to generate the token</param>
         /// <param name="version">server version</param>
         /// <returns>Response</returns>
-        public static CommandResultTypes CommandRequest(FileUtility fileUtility,
+        public static CommandResponse CommandRequest(FileUtility fileUtility,
             string documentTrackerUrl,
             CommandMethod method,
             string documentRevisionId,
@@ -237,13 +233,13 @@ namespace ASC.Web.Core.Files
             string[] users,
             MetaData meta,
             string signatureSecret,
-            out string version)
+            IHttpClientFactory clientFactory)
         {
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(documentTrackerUrl);
             request.Method = HttpMethod.Post;
 
-            using var httpClient = new HttpClient();
+            var httpClient = clientFactory.CreateClient();
             httpClient.Timeout = TimeSpan.FromMilliseconds(Timeout);
 
             var body = new CommandBody
@@ -279,12 +275,6 @@ namespace ASC.Web.Core.Files
 
             request.Content = new StringContent(bodyString, Encoding.UTF8, "application/json");
 
-            // hack. http://ubuntuforums.org/showthread.php?t=1841740
-            if (WorkContext.IsMono)
-            {
-                ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
-            }
-
             string dataResponse;
             using (var response = httpClient.Send(request))
             using (var stream = response.Content.ReadAsStream())
@@ -295,18 +285,20 @@ namespace ASC.Web.Core.Files
                 dataResponse = reader.ReadToEnd();
             }
 
-            var jResponse = JObject.Parse(dataResponse);
 
             try
             {
-                version = jResponse.Value<string>("version");
+                var commandResponse = JsonConvert.DeserializeObject<CommandResponse>(dataResponse);
+                return commandResponse;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                version = "0";
+                return new CommandResponse
+                {
+                    Error = CommandResponse.ErrorTypes.ParseError,
+                    ErrorString = ex.Message
+                };
             }
-
-            return (CommandResultTypes)jResponse.Value<int>("error");
         }
 
         public static string DocbuilderRequest(
@@ -316,10 +308,11 @@ namespace ASC.Web.Core.Files
             string scriptUrl,
             bool isAsync,
             string signatureSecret,
+            IHttpClientFactory clientFactory,
             out Dictionary<string, string> urls)
         {
             if (string.IsNullOrEmpty(docbuilderUrl))
-                throw new ArgumentNullException("docbuilderUrl");
+                throw new ArgumentNullException(nameof(docbuilderUrl));
 
             if (string.IsNullOrEmpty(requestKey) && string.IsNullOrEmpty(scriptUrl))
                 throw new ArgumentException("requestKey or inputScript is empty");
@@ -328,7 +321,7 @@ namespace ASC.Web.Core.Files
             request.RequestUri = new Uri(docbuilderUrl);
             request.Method = HttpMethod.Post;
 
-            using var httpClient = new HttpClient();
+            var httpClient = clientFactory.CreateClient();
             httpClient.Timeout = TimeSpan.FromMilliseconds(Timeout);
 
             var body = new BuilderBody
@@ -360,12 +353,6 @@ namespace ASC.Web.Core.Files
             });
 
             request.Content = new StringContent(bodyString, Encoding.UTF8, "application/json");
-
-            // hack. http://ubuntuforums.org/showthread.php?t=1841740
-            if (WorkContext.IsMono)
-            {
-                ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
-            }
 
             string dataResponse = null;
 
@@ -403,15 +390,15 @@ namespace ASC.Web.Core.Files
             return responseFromService.Value<string>("key");
         }
 
-        public static bool HealthcheckRequest(string healthcheckUrl)
+        public static bool HealthcheckRequest(string healthcheckUrl, IHttpClientFactory clientFactory)
         {
             if (string.IsNullOrEmpty(healthcheckUrl))
-                throw new ArgumentNullException("healthcheckUrl");
+                throw new ArgumentNullException(nameof(healthcheckUrl));
 
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(healthcheckUrl);
 
-            using var httpClient = new HttpClient();
+            var httpClient = clientFactory.CreateClient();
             httpClient.Timeout = TimeSpan.FromMilliseconds(Timeout);
 
             using var response = httpClient.Send(request);
@@ -433,18 +420,109 @@ namespace ASC.Web.Core.Files
             Version,
             ForceSave, //not used
             Meta,
+            License
         }
 
-        public enum CommandResultTypes
+        [Serializable]
+        [DebuggerDisplay("{Key}")]
+        public class CommandResponse
         {
-            NoError = 0,
-            DocumentIdError = 1,
-            ParseError = 2,
-            UnknownError = 3,
-            NotModify = 4,
-            UnknownCommand = 5,
-            Token = 6,
-            TokenExpire = 7,
+            [JsonPropertyName("error")]
+            public ErrorTypes Error { get; set; }
+
+            [JsonPropertyName("errorString")]
+            public string ErrorString { get; set; }
+
+            [JsonPropertyName("key")]
+            public string Key { get; set; }
+
+            [JsonPropertyName("license")]
+            public License License { get; set; }
+
+            [JsonPropertyName("server")]
+            public ServerInfo Server { get; set; }
+
+            [JsonPropertyName("quota")]
+            public QuotaInfo Quota { get; set; }
+
+            [JsonPropertyName("version")]
+            public string Version { get; set; }
+
+            public enum ErrorTypes
+            {
+                NoError = 0,
+                DocumentIdError = 1,
+                ParseError = 2,
+                UnknownError = 3,
+                NotModify = 4,
+                UnknownCommand = 5,
+                Token = 6,
+                TokenExpire = 7,
+            }
+
+            [Serializable]
+            [DebuggerDisplay("{BuildVersion}")]
+            public class ServerInfo
+            {
+                [JsonPropertyName("buildDate")]
+                public DateTime BuildDate { get; set; }
+
+                [JsonPropertyName("buildNumber")]
+                public int buildNumber { get; set; }
+
+                [JsonPropertyName("buildVersion")]
+                public string BuildVersion { get; set; }
+
+                [JsonPropertyName("packageType")]
+                public PackageTypes PackageType { get; set; }
+
+                [JsonPropertyName("resultType")]
+                public ResultTypes ResultType { get; set; }
+
+                [JsonPropertyName("workersCount")]
+                public int WorkersCount { get; set; }
+
+                public enum PackageTypes
+                {
+                    OpenSource = 0,
+                    IntegrationEdition = 1,
+                    DeveloperEdition = 2
+                }
+
+                public enum ResultTypes
+                {
+                    Error = 1,
+                    Expired = 2,
+                    Success = 3,
+                    UnknownUser = 4,
+                    Connections = 5,
+                    ExpiredTrial = 6,
+                    SuccessLimit = 7,
+                    UsersCount = 8,
+                    ConnectionsOS = 9,
+                    UsersCountOS = 10,
+                    ExpiredLimited = 11
+                }
+            }
+
+            [Serializable]
+            [DataContract(Name = "Quota", Namespace = "")]
+            public class QuotaInfo
+            {
+                [JsonPropertyName("users")]
+                public List<User> Users { get; set; }
+
+                [Serializable]
+                [DebuggerDisplay("{UserId} ({Expire})")]
+                public class User
+                {
+                    [JsonPropertyName("userid")]
+                    public string UserId { get; set; }
+
+                    [JsonPropertyName("expire")]
+                    public DateTime Expire { get; set; }
+                }
+            }
         }
 
         [Serializable]
@@ -529,38 +607,39 @@ namespace ASC.Web.Core.Files
             public bool GridLines { get; set; }
 
             [JsonPropertyName("margins")]
-            public Margins Margins { get; set; }
+            public LayoutMargins Margins { get; set; }
 
             [JsonPropertyName("pageSize")]
-            public PageSize PageSize { get; set; }
-        }
+            public LayoutPageSize PageSize { get; set; }
 
-        [Serializable]
-        [DebuggerDisplay("Margins {Top} {Right} {Bottom} {Left}")]
-        public class Margins
-        {
-            [JsonPropertyName("left")]
-            public string Left { get; set; }
 
-            [JsonPropertyName("right")]
-            public string Right { get; set; }
+            [Serializable]
+            [DebuggerDisplay("Margins {Top} {Right} {Bottom} {Left}")]
+            public class LayoutMargins
+            {
+                [JsonPropertyName("left")]
+                public string Left { get; set; }
 
-            [JsonPropertyName("top")]
-            public string Top { get; set; }
+                [JsonPropertyName("right")]
+                public string Right { get; set; }
 
-            [JsonPropertyName("bottom")]
-            public string Bottom { get; set; }
-        }
+                [JsonPropertyName("top")]
+                public string Top { get; set; }
 
-        [Serializable]
-        [DebuggerDisplay("PageSize {Width} {Height}")]
-        public class PageSize
-        {
-            [JsonPropertyName("height")]
-            public string Height { get; set; }
+                [JsonPropertyName("bottom")]
+                public string Bottom { get; set; }
+            }
 
-            [JsonPropertyName("width")]
-            public string Width { get; set; }
+            [Serializable]
+            [DebuggerDisplay("PageSize {Width} {Height}")]
+            public class LayoutPageSize
+            {
+                [JsonPropertyName("height")]
+                public string Height { get; set; }
+
+                [JsonPropertyName("width")]
+                public string Width { get; set; }
+            }
         }
 
         [Serializable]
@@ -631,7 +710,7 @@ namespace ASC.Web.Core.Files
         [Serializable]
         public class DocumentServiceException : Exception
         {
-            public ErrorCode Code;
+            public ErrorCode Code { get; set; }
 
             public DocumentServiceException(ErrorCode errorCode, string message)
                 : base(message)
@@ -709,7 +788,7 @@ namespace ASC.Web.Core.Files
         /// <returns>The percentage of completion of conversion</returns>
         private static int GetResponseUri(string jsonDocumentResponse, out string responseUri)
         {
-            if (string.IsNullOrEmpty(jsonDocumentResponse)) throw new ArgumentException("Invalid param", "jsonDocumentResponse");
+            if (string.IsNullOrEmpty(jsonDocumentResponse)) throw new ArgumentException("Invalid param", nameof(jsonDocumentResponse));
 
             var responseFromService = JObject.Parse(jsonDocumentResponse);
             if (responseFromService == null) throw new WebException("Invalid answer format");

@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Web;
 
@@ -81,6 +82,7 @@ namespace ASC.Calendar.BusinessObjects
         protected DDayICalParser DDayICalParser { get; }
         public ILog Log { get; }
         public InstanceCrypto InstanceCrypto { get; }
+        public IHttpClientFactory ClientFactory { get; }
 
         public DataProvider(DbContextManager<CalendarDbContext> calendarDbContext,
             AuthManager authentication,
@@ -93,7 +95,8 @@ namespace ASC.Calendar.BusinessObjects
             UserManager userManager,
             DDayICalParser dDayICalParser,
             IOptionsMonitor<ILog> option,
-            InstanceCrypto instanceCrypto)
+            InstanceCrypto instanceCrypto,
+            IHttpClientFactory clientFactory)
         {
             Authentication = authentication;
             CalendarDb = calendarDbContext.Get("calendar");
@@ -107,7 +110,7 @@ namespace ASC.Calendar.BusinessObjects
             DDayICalParser = dDayICalParser;
             Log = option.Get("ASC.CalendarDataProvider");
             InstanceCrypto = instanceCrypto;
-
+            ClientFactory = clientFactory;
         }
 
         public List<UserViewSettings> GetUserViewSettings(Guid userId, List<string> calendarIds)
@@ -124,8 +127,8 @@ namespace ASC.Calendar.BusinessObjects
                 options.Add(new UserViewSettings()
                 {
                     CalendarId =
-                            Convert.ToInt32(r.CalendarId) == 0
-                                ? Convert.ToString(r.ExtCalendarId)
+                            r.CalendarId == 0
+                                ? r.ExtCalendarId
                                 : Convert.ToString(r.CalendarId),
                     UserId = r.UserId,
                     IsHideEvents = Convert.ToBoolean(r.HideEvents),
@@ -205,9 +208,9 @@ namespace ASC.Calendar.BusinessObjects
 
         public List<Calendar> LoadiCalStreamsForUser(Guid userId)
         {
-            var calIds = CalendarDb.CalendarCalendars.Where(p => 
-                    p.Tenant == TenantManager.GetCurrentTenant().TenantId && 
-                    p.OwnerId == userId.ToString() && 
+            var calIds = CalendarDb.CalendarCalendars.Where(p =>
+                    p.Tenant == TenantManager.GetCurrentTenant().TenantId &&
+                    p.OwnerId == userId.ToString() &&
                     p.IcalUrl != null)
                 .Select(s => s.Id).ToArray();
             var calendars = GetCalendarsByIds(calIds.ToArray());
@@ -258,29 +261,29 @@ namespace ASC.Calendar.BusinessObjects
 
         }
 
-         public List<object[]> GetCalendarIdByCaldavGuid(string caldavGuid)
-         {
+        public List<object[]> GetCalendarIdByCaldavGuid(string caldavGuid)
+        {
             var data = CalendarDb.CalendarCalendars
                 .Where(p => p.CaldavGuid == caldavGuid)
-                .Select(s => new object[]{ 
+                .Select(s => new object[]{
                     s.Id,
                     s.OwnerId,
                     s.Tenant
                 }).ToList();
 
-             return data;
-         }
-         public Event GetEventIdByUid(string uid, int calendarId)
-         {
+            return data;
+        }
+        public Event GetEventIdByUid(string uid, int calendarId)
+        {
             var eventId = CalendarDb.CalendarEvents
-                .Where(p => 
+                .Where(p =>
                     uid.Contains(p.Uid) &&
                     p.CalendarId == calendarId
                  )
                 .Select(s => s.Id).FirstOrDefault();
 
-             return eventId == 0 ? null : GetEventById(eventId);
-         }
+            return eventId == 0 ? null : GetEventById(eventId);
+        }
 
         public Event GetEventIdOnlyByUid(string uid)
         {
@@ -335,7 +338,7 @@ namespace ASC.Calendar.BusinessObjects
                         string.Equals(c.Id, r.calId.ToString(), StringComparison.InvariantCultureIgnoreCase));
                 if (calendar == null)
                 {
-                    var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager);
+                    var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager, ClientFactory);
                     calendar = new Calendar(AuthContext, TimeZoneConverter, icalendar, this)
                     {
                         Id = r.calId.ToString(),
@@ -483,7 +486,7 @@ namespace ASC.Calendar.BusinessObjects
             var dataCaldavGuid = CalendarDb.CalendarCalendars.Where(p => p.Id.ToString() == id).Select(s => s.CaldavGuid).FirstOrDefault();
 
             return dataCaldavGuid;
-           
+
         }
         public Calendar UpdateCalendar(int calendarId, string name, string description, List<SharingOptions.PublicItem> publicItems, List<UserViewSettings> viewSettings)
         {
@@ -751,7 +754,7 @@ namespace ASC.Calendar.BusinessObjects
                 var dataCaldavGuid = CalendarDb.CalendarCalendars.Where(p => p.Id == calendarId).Select(s => s.CaldavGuid).ToArray();
 
                 if (dataCaldavGuid[0] != null) 
-                    caldavGuid = Guid.Parse(dataCaldavGuid[0].ToString());             
+                    caldavGuid = Guid.Parse(dataCaldavGuid[0]);             
             }
             catch (Exception ex)
             {
@@ -794,7 +797,7 @@ namespace ASC.Calendar.BusinessObjects
 
         public void RemoveCaldavCalendar(string currentUserName, string email, string calDavGuid, Uri myUri, bool isShared = false)
         {
-            var calDavServerUrl = myUri.Scheme + "://" + myUri.Host + "/caldav";           
+            var calDavServerUrl = myUri.Scheme + "://" + myUri.Host + "/caldav";
             var requestUrl = calDavServerUrl + "/" + HttpUtility.UrlEncode(currentUserName) + "/" + (isShared ? calDavGuid + "-shared" : calDavGuid);
 
             try
@@ -806,9 +809,12 @@ namespace ASC.Calendar.BusinessObjects
                 var authorization = isShared ? GetSystemAuthorization() : GetUserAuthorization(email);
 
                 request.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes(authorization)));
-                request.Headers.Add("Content-Type", "text/xml; charset=utf-8");
+                request.Content.Headers.ContentType = new MediaTypeHeaderValue("text/xml")
+                {
+                    CharSet = Encoding.UTF8.WebName
+                };
 
-                using var httpClient = new HttpClient();
+                var httpClient = ClientFactory.CreateClient();
                 httpClient.Send(request);
             }
             catch (Exception ex)
@@ -819,7 +825,7 @@ namespace ASC.Calendar.BusinessObjects
         public void RemoveExternalCalendarData(string calendarId)
         {
             using var tx = CalendarDb.Database.BeginTransaction();
-            
+
             var ccu = CalendarDb.CalendarCalendarUser.Where(r => r.ExtCalendarId == calendarId).SingleOrDefault();
 
             if (ccu != null)
@@ -944,14 +950,14 @@ namespace ASC.Calendar.BusinessObjects
                                      Uid = s.Uid
                                  })
                                  .ToList();
-                    var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager);
+                    var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager, ClientFactory);
                     todoList = data.ConvertAll(r => new Todo(AuthContext, TimeZoneConverter, icalendar, this)
                     {
-                        Id = r.Id.ToString(),
+                        Id = r.Id,
                         Name = r.Name,
                         Description = r.Description,
                         TenantId = r.TenantId,
-                        CalendarId = r.CalendarId.ToString(),
+                        CalendarId = r.CalendarId,
                         UtcStartDate = r.UtcStartDate ?? DateTime.MinValue,
                         Completed = r.Completed ?? DateTime.MinValue,
                         OwnerId = r.OwnerId,
@@ -976,14 +982,14 @@ namespace ASC.Calendar.BusinessObjects
                                      Uid = s.Uid
                                  })
                                  .ToList();
-                    var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager);
+                    var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager, ClientFactory);
                     todoList = data.ConvertAll(r => new Todo(AuthContext, TimeZoneConverter, icalendar, this)
                     {
-                        Id = r.Id.ToString(),
+                        Id = r.Id,
                         Name = r.Name,
                         Description = r.Description,
                         TenantId = r.TenantId,
-                        CalendarId = r.CalendarId.ToString(),
+                        CalendarId = r.CalendarId,
                         UtcStartDate = r.UtcStartDate ?? DateTime.MinValue,
                         Completed = r.Completed ?? DateTime.MinValue,
                         OwnerId = r.OwnerId,
@@ -1022,19 +1028,19 @@ namespace ASC.Calendar.BusinessObjects
             groups.AddRange(UserManager.GetUserGroups(userId, Constants.SysGroupCategoryId).Select(g => g.ID));
 
             var evIds = from events in CalendarDb.CalendarEvents
-                       join eventItem in CalendarDb.CalendarEventItem on events.Id equals eventItem.EventId
-                       where
-                            events.Tenant == tenantId &&
-                            (
-                                eventItem.ItemId == userId || (groups.Contains(eventItem.ItemId) && eventItem.IsGroup == 1) &&
-                                events.Tenant == tenantId &&
-                                ((events.StartDate >= utcStartDate && events.StartDate <= utcEndDate && events.Rrule == "") || events.Rrule != "") &&
-                                events.OwnerId != userId &&
-                                !(from calEventUser in CalendarDb.CalendarEventUser
-                                    where calEventUser.EventId == events.Id && calEventUser.UserId == userId && calEventUser.IsUnsubscribe == 1 
-                                    select calEventUser.EventId).Any()
-                            )
-                       select events.Id;
+                        join eventItem in CalendarDb.CalendarEventItem on events.Id equals eventItem.EventId
+                        where
+                             events.Tenant == tenantId &&
+                             (
+                                 eventItem.ItemId == userId || (groups.Contains(eventItem.ItemId) && eventItem.IsGroup == 1) &&
+                                 events.Tenant == tenantId &&
+                                 ((events.StartDate >= utcStartDate && events.StartDate <= utcEndDate && events.Rrule == "") || events.Rrule != "") &&
+                                 events.OwnerId != userId &&
+                                 !(from calEventUser in CalendarDb.CalendarEventUser
+                                   where calEventUser.EventId == events.Id && calEventUser.UserId == userId && calEventUser.IsUnsubscribe == 1
+                                   select calEventUser.EventId).Any()
+                             )
+                        select events.Id;
             return GetEventsByIds(evIds.ToArray(), userId, tenantId);
         }
 
@@ -1058,7 +1064,7 @@ namespace ASC.Calendar.BusinessObjects
                         )
                     )
                 )
-                .Select(s => s.Id).ToList();          
+                .Select(s => s.Id).ToList();
 
             return GetEventsByIds(evIds.ToArray(), userId, tenantId);
         }
@@ -1128,7 +1134,7 @@ namespace ASC.Calendar.BusinessObjects
                                 e => String.Equals(e.Id, r.Id, StringComparison.InvariantCultureIgnoreCase));
                         if (ev == null)
                         {
-                            var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager);
+                            var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager, ClientFactory);
                             ev = new Event(AuthContext, TimeZoneConverter, icalendar, this)
                             {
                                 Id = r.Id,
@@ -1194,7 +1200,7 @@ namespace ASC.Calendar.BusinessObjects
                                 e => String.Equals(e.Id, r.Id, StringComparison.InvariantCultureIgnoreCase));
                         if (ev == null)
                         {
-                            var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager);
+                            var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager, ClientFactory);
                             ev = new Event(AuthContext, TimeZoneConverter, icalendar, this)
                             {
                                 Id = r.Id,
@@ -1264,7 +1270,7 @@ namespace ASC.Calendar.BusinessObjects
             {
                 CalendarDb.CalendarEventItem.Remove(cei);
             }
-            else if(!userNoSubscibe)
+            else if (!userNoSubscibe)
             {
                 var newEventUser = new CalendarEventUser
                 {
@@ -1454,7 +1460,7 @@ namespace ASC.Calendar.BusinessObjects
 
             CalendarDb.SaveChanges();
             tx.Commit();
-           
+
             return GetEventById(eventId);
         }
 
@@ -1607,13 +1613,13 @@ namespace ASC.Calendar.BusinessObjects
             CalendarDb.SaveChanges();
             tx.Commit();
         }
-      
+
         public static string GetEventUid(string uid, string id = null)
         {
             if (!string.IsNullOrEmpty(uid))
                 return uid;
 
-            return string.Format("{0}@onlyoffice.com", string.IsNullOrEmpty(id) ? Guid.NewGuid().ToString() : id);
+            return $"{(string.IsNullOrEmpty(id) ? Guid.NewGuid().ToString() : id)}@onlyoffice.com";
 
         }
 
@@ -1703,7 +1709,7 @@ namespace ASC.Calendar.BusinessObjects
                 };
 
             var calendarAlertType = (EventAlertType)calendarData.FirstOrDefault().alertType;
-            var calendarOwner = Convert.ToString(calendarData.FirstOrDefault().ownerId);
+            var calendarOwner = calendarData.FirstOrDefault().ownerId;
             var calendarTimeZone = TimeZoneConverter.GetTimeZone(calendarData.FirstOrDefault().timeZone);
 
             var eventUsers = new List<UserAlertType>();
@@ -1782,7 +1788,7 @@ namespace ASC.Calendar.BusinessObjects
                             u.TimeZone = r.timeZone == null ? calendarTimeZone : TimeZoneConverter.GetTimeZone(Convert.ToString(r.isAccepted));
 
                         if (u.AlertType == EventAlertType.Default && u.UserId.Equals(r.userId))
-                            u.AlertType = (EventAlertType)Convert.ToInt32(r.alertType);
+                            u.AlertType = (EventAlertType)r.alertType;
                     });
                 }
 
@@ -1837,7 +1843,7 @@ namespace ASC.Calendar.BusinessObjects
                     eventUsers.ForEach(u =>
                    {
                        if (u.UserId.Equals(r.userIdCol))
-                           u.AlertType = (EventAlertType)(Convert.ToInt32(r.alertTypeCol));
+                           u.AlertType = (EventAlertType)r.alertTypeCol;
                    });
 
                 }
@@ -1869,7 +1875,7 @@ namespace ASC.Calendar.BusinessObjects
                             u.TimeZone = r.timeZone == null ? calendarTimeZone : TimeZoneConverter.GetTimeZone(r.timeZone);
 
                         if (u.AlertType == EventAlertType.Default && u.UserId.Equals(r.userId))
-                            u.AlertType = (EventAlertType)Convert.ToInt32(r.alertType);
+                            u.AlertType = (EventAlertType)r.alertType;
                     });
                 }
 
