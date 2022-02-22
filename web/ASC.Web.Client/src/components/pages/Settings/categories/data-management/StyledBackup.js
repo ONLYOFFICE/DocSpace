@@ -254,7 +254,7 @@ const StyledBackupList = styled.div`
   height: 100%;
 
   .loader {
-    height: ${(props) => (props.height <= 187 ? `${props.height}px` : "187px")};
+    height: inherit;
   }
 
   .backup-list-row-list {
@@ -322,7 +322,7 @@ const StyledBackupList = styled.div`
     border-radius: 3px;
 
     cursor: default;
-    border-bottom: 1px solid #eceef1;
+
     align-items: center;
     display: grid;
     height: 48px;

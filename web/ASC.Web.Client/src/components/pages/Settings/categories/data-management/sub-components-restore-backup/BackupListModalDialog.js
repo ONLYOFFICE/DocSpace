@@ -4,7 +4,6 @@ import { withTranslation } from "react-i18next";
 import ModalDialog from "@appserver/components/modal-dialog";
 import Text from "@appserver/components/text";
 import Button from "@appserver/components/button";
-import Loader from "@appserver/components/loader";
 import Link from "@appserver/components/link";
 import { StyledBackupList } from "../StyledBackup";
 import {
@@ -18,6 +17,7 @@ import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../../../../../../package.json";
 import toastr from "@appserver/components/toast/toastr";
+import Loaders from "@appserver/common/components/Loaders";
 
 class BackupListModalDialog extends React.Component {
   constructor(props) {
@@ -169,17 +169,7 @@ class BackupListModalDialog extends React.Component {
                 )
               ) : (
                 <div className="loader" key="loader">
-                  <Loader
-                    type="oval"
-                    size="16px"
-                    style={{
-                      display: "inline",
-                      marginRight: "10px",
-                    }}
-                  />
-                  <Text as="span">{`${t("Common:LoadingProcessing")} ${t(
-                    "Common:LoadingDescription"
-                  )}`}</Text>
+                  <Loaders.ListLoader />
                 </div>
               )}
             </div>
