@@ -34,7 +34,7 @@ const FilterBlockItem = ({
     changeFilterValue && changeFilterValue(group, key, isSelected);
   };
 
-  const showSelectorAction = (event, isAuthor, group, selectedItems, ref) => {
+  const showSelectorAction = (event, isAuthor, group, ref) => {
     let target = event.target;
 
     while (!!target.parentNode) {
@@ -46,7 +46,7 @@ const FilterBlockItem = ({
       }
     }
 
-    showSelector && showSelector(isAuthor, group, selectedItems);
+    showSelector && showSelector(isAuthor, group);
   };
 
   const getSelectorItem = (item) => {
@@ -62,7 +62,7 @@ const FilterBlockItem = ({
           }
         />
         <StyledFilterBlockItemSelectorText noSelect={true}>
-          {label}
+          {item.label}
         </StyledFilterBlockItemSelectorText>
       </StyledFilterBlockItemSelector>
     ) : (
@@ -74,7 +74,6 @@ const FilterBlockItem = ({
             event,
             isAuthor,
             item.group,
-            item.selectedItem,
             clearSelectorRef.current
           )
         }
@@ -83,7 +82,7 @@ const FilterBlockItem = ({
           noSelect={true}
           isSelected={item.isSelected}
         >
-          1 user
+          {item.selectedLabel.toLowerCase()}
         </StyledFilterBlockItemTagText>
         {item.isSelected && (
           <StyledFilterBlockItemTagIcon ref={clearSelectorRef}>
@@ -119,7 +118,7 @@ const FilterBlockItem = ({
           noSelect={true}
           isSelected={item.isSelected}
         >
-          {item.label}
+          {item.label.toLowerCase()}
         </StyledFilterBlockItemTagText>
         {item.isSelected && (
           <StyledFilterBlockItemTagIcon>

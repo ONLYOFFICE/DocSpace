@@ -2047,6 +2047,14 @@ const Dark = {
         color: "#333333",
       },
     },
+
+    sort: {
+      background: "#333333",
+      hoverBackground: "#292929",
+      selectedViewIcon: "rgba(255, 255, 255, 0.88)",
+      viewIcon: "#858585",
+      sortFill: "rgba(255, 255, 255, 0.6)",
+    },
   },
 
   profileInfo: {

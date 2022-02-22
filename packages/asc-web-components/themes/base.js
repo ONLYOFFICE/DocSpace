@@ -2045,6 +2045,14 @@ const Base = {
         color: "#ffffff",
       },
     },
+
+    sort: {
+      background: "#ffffff",
+      hoverBackground: "#f8f9f9",
+      selectedViewIcon: "#dfe2e3",
+      viewIcon: "#a3a9ae",
+      sortFill: "#657077",
+    },
   },
 
   profileInfo: {

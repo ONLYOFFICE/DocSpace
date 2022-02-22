@@ -11,7 +11,7 @@ const FilterButton = ({
   contextMenuHeader,
   getFilterData,
   onFilter,
-  addUserHeader,
+  headerLabel,
 }) => {
   const [showFilterBlock, setShowFilterBlock] = React.useState(false);
 
@@ -32,7 +32,7 @@ const FilterButton = ({
           hideFilterBlock={changeShowFilterBlock}
           getFilterData={getFilterData}
           onFilter={onFilter}
-          addUserHeader={addUserHeader}
+          headerLabel={headerLabel}
         />
       )}
     </>

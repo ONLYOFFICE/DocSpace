@@ -9,13 +9,14 @@ import ViewSelector from "@appserver/components/view-selector";
 import Text from "@appserver/components/text";
 
 import { mobile } from "@appserver/components/utils/device";
+import { Base } from "@appserver/components/themes";
 
 import SortDesc from "../../../../../public/images/sort.desc.react.svg";
 
 const selectedViewIcon = css`
   svg {
     path {
-      fill: #dfe2e3;
+      fill: ${(props) => props.theme.newFilterInput.sort.selectedViewIcon};
     }
   }
 `;
@@ -23,7 +24,7 @@ const selectedViewIcon = css`
 const notSelectedViewIcon = css`
   svg {
     path {
-      fill: #a3a9ae;
+      fill: ${(props) => props.theme.newFilterInput.sort.viewIcon};
     }
   }
 `;
@@ -38,6 +39,11 @@ const mobileView = css`
 `;
 
 const StyledSortButton = styled.div`
+  .combo-button {
+    background: ${(props) =>
+      props.theme.newFilterInput.sort.background} !important;
+  }
+
   .sort-combo-box {
     width: 32px;
     height: 32px;
@@ -114,6 +120,10 @@ const StyledSortButton = styled.div`
             css`
               transform: rotate(180deg);
             `}
+
+          path {
+            fill: ${(props) => props.theme.newFilterInput.sort.sortFill};
+          }
         }
 
         :hover {
@@ -124,7 +134,8 @@ const StyledSortButton = styled.div`
       }
 
       .selected-option-item {
-        background: #f8f9f9;
+        background: ${(props) =>
+          props.theme.newFilterInput.sort.hoverBackground};
         cursor: auto;
 
         .selected-option-item__icon {
@@ -151,6 +162,8 @@ const StyledSortButton = styled.div`
   }
 `;
 
+StyledSortButton.defaultProps = { theme: Base };
+
 const SortButton = ({
   selectedFilterData,
   getSortData,
@@ -158,6 +171,7 @@ const SortButton = ({
   viewAs,
   viewSettings,
   onSort,
+  viewSelectorVisible,
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -212,16 +226,20 @@ const SortButton = ({
 
     return (
       <>
-        <DropDownItem noHover className="view-selector-item">
-          <Text fontWeight={600}>View</Text>
-          <ViewSelector
-            className="view-selector"
-            onChangeView={onChangeViewAs}
-            viewAs={viewAs}
-            viewSettings={viewSettings}
-          />
-        </DropDownItem>
-        <DropDownItem isSeparator={true}></DropDownItem>
+        {viewSelectorVisible && (
+          <>
+            <DropDownItem noHover className="view-selector-item">
+              <Text fontWeight={600}>View</Text>
+              <ViewSelector
+                className="view-selector"
+                onChangeView={onChangeViewAs}
+                viewAs={viewAs}
+                viewSettings={viewSettings}
+              />
+            </DropDownItem>
+            <DropDownItem isSeparator={true}></DropDownItem>
+          </>
+        )}
         {data.map((item) => (
           <DropDownItem
             onClick={onOptionClick}

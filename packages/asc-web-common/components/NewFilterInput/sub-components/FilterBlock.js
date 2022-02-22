@@ -1,6 +1,5 @@
 import React from "react";
 
-import Aside from "@appserver/components/aside";
 import Backdrop from "@appserver/components/backdrop";
 import Button from "@appserver/components/button";
 import Heading from "@appserver/components/heading";
@@ -8,9 +7,8 @@ import IconButton from "@appserver/components/icon-button";
 
 import FilterBlockItem from "./FilterBlockItem";
 
-// import Selector from "./Selector";
-
-import PeopleSelector from "people/PeopleSelector"; //TODO: Move out PeopleSelector  of FilterItem
+import PeopleSelector from "people/PeopleSelector";
+import GroupSelector from "people/GroupSelector";
 
 import {
   StyledFilterBlock,
@@ -27,25 +25,23 @@ const FilterBlock = ({
   getFilterData,
   hideFilterBlock,
   onFilter,
-  addUserHeader,
+  headerLabel,
 }) => {
   const [showSelector, setShowSelector] = React.useState({
     show: false,
     isAuthor: false,
     group: "",
-    selectedItems: [],
   });
 
   const [filterData, setFilterData] = React.useState([]);
   const [filterValues, setFilterValues] = React.useState([]);
 
-  const changeShowSelector = (isAuthor, group, selectedItems) => {
+  const changeShowSelector = (isAuthor, group) => {
     setShowSelector((val) => {
       return {
         show: !val.show,
         isAuthor: isAuthor,
         group: group,
-        selectedItems: selectedItems,
       };
     });
   };
@@ -55,22 +51,27 @@ const FilterBlock = ({
 
     items.forEach((item) => {
       if (filter.find((value) => value.group === item.group)) {
-        const key = filter.filter((value) => value.group === item.group)[0].key;
+        const currentFilter = filter.filter(
+          (value) => value.group === item.group
+        )[0];
+
         item.groupItem.forEach((groupItem) => {
           groupItem.isSelected = false;
-          if (groupItem.key === key) {
+          if (groupItem.key === currentFilter.key) {
             groupItem.isSelected = true;
           }
           if (groupItem.isSelector) {
             groupItem.isSelected = true;
-            groupItem.selectedItem = key;
+            groupItem.selectedKey = currentFilter.key;
+            groupItem.selectedLabel = currentFilter.label;
           }
         });
       } else {
         item.groupItem.forEach((groupItem) => {
           groupItem.isSelected = false;
           if (groupItem.isSelector) {
-            groupItem.selectedItem = [];
+            groupItem.selectedKey = null;
+            groupItem.selectedLabel = null;
           }
         });
       }
@@ -84,8 +85,8 @@ const FilterBlock = ({
     setFilterValues([]);
   };
 
-  const changeFilterValue = (group, key, isSelected) => {
-    let value = filterValues.filter((item) => item.key !== key);
+  const changeFilterValue = (group, key, isSelected, label) => {
+    let value = filterValues.concat();
 
     if (isSelected) {
       value = filterValues.filter((item) => item.group !== group);
@@ -99,10 +100,17 @@ const FilterBlock = ({
       value.forEach((item) => {
         if (item.group === group) {
           item.key = key;
+          if (label) {
+            item.label = label;
+          }
         }
       });
     } else {
-      value.push({ group, key });
+      if (label) {
+        value.push({ group, key, label });
+      } else {
+        value.push({ group, key });
+      }
     }
 
     setFilterValues(value);
@@ -129,12 +137,12 @@ const FilterBlock = ({
         items.forEach((item) => {
           if (item.group === value.group) {
             item.groupItem.forEach((groupItem) => {
-              if (
-                groupItem.key === value.key ||
-                (groupItem.selectedItem &&
-                  Object.keys(groupItem.selectedItem).length > 0)
-              ) {
+              if (groupItem.key === value.key || groupItem.isSelector) {
                 groupItem.isSelected = true;
+                if (groupItem.isSelector) {
+                  groupItem.selectedLabel = value.label;
+                  groupItem.selectedKey = value.key;
+                }
               }
             });
           }
@@ -159,10 +167,9 @@ const FilterBlock = ({
     setShowSelector((val) => ({
       ...val,
       show: false,
-      selectedItems: [...items],
     }));
 
-    changeFilterValue(showSelector.group, items[0].key, false);
+    changeFilterValue(showSelector.group, items[0].key, false, items[0].label);
   };
 
   return (
@@ -170,15 +177,27 @@ const FilterBlock = ({
       {showSelector.show ? (
         <>
           <StyledFilterBlock>
-            <PeopleSelector
-              className="people-selector"
-              isOpen={showSelector.show}
-              withoutAside={true}
-              isMultiSelect={false}
-              onSelect={selectOption}
-              onArrowClick={onArrowClick}
-              headerLabel={addUserHeader}
-            />
+            {showSelector.isAuthor ? (
+              <PeopleSelector
+                className="people-selector"
+                isOpen={showSelector.show}
+                withoutAside={true}
+                isMultiSelect={false}
+                onSelect={selectOption}
+                onArrowClick={onArrowClick}
+                headerLabel={headerLabel}
+              />
+            ) : (
+              <GroupSelector
+                className="people-selector"
+                isOpen={showSelector.show}
+                withoutAside={true}
+                isMultiSelect={false}
+                onSelect={selectOption}
+                onArrowClick={onArrowClick}
+                headerLabel={headerLabel}
+              />
+            )}
           </StyledFilterBlock>
         </>
       ) : (
