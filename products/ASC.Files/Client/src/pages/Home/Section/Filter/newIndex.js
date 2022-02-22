@@ -10,6 +10,7 @@ import { withLayoutSize } from "@appserver/common/utils";
 import { isMobileOnly, isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 import withLoader from "../../../../HOCs/withLoader";
+import { getUser } from "@appserver/common/api/people";
 
 const getFilterType = (filterValues) => {
   const filterType = result(
@@ -31,11 +32,6 @@ const getAuthorType = (filterValues) => {
   );
 
   return authorType ? authorType : null;
-};
-
-const getSelectedItem = (filterValues, type) => {
-  const selectedItem = filterValues.find((item) => item.key === type);
-  return selectedItem || null;
 };
 
 const getSearchParams = (filterValues) => {
@@ -66,7 +62,9 @@ const SectionFilterContent = ({
   fetchFiles,
 }) => {
   const filterColumnCount =
-    window.innerWidth < 500 ? {} : { filterColumnCount: personal ? 2 : 3 };
+    window.innerWidth < 500
+      ? { filterColumnCount: 3 }
+      : { filterColumnCount: personal ? 2 : 3 };
 
   const onFilter = (data) => {
     const filterType = getFilterType(data) || null;
@@ -195,7 +193,6 @@ const SectionFilterContent = ({
         label: t("Translations:Spreadsheets"),
       },
       ...archives,
-
       {
         key: FilterType.PresentationsOnly.toString(),
         group: "filter-filterType",
@@ -219,13 +216,8 @@ const SectionFilterContent = ({
         {
           key: "user",
           group: "filter-author",
-          label: usersCaption,
+          label: t("SharingPanel:LinkText"),
           isSelector: true,
-          defaultOptionLabel: t("Common:MeLabel"),
-          defaultSelectLabel: t("Common:Select"),
-          groupsCaption,
-          defaultOption: user,
-          selectedItem,
         }
       );
     }
@@ -253,7 +245,7 @@ const SectionFilterContent = ({
     return filterOptions;
   };
 
-  const getSelectedFilterData = () => {
+  const getSelectedFilterData = async () => {
     const selectedFilterData = {
       filterValues: [],
       sortDirection: filter.sortOrder === "ascending" ? "asc" : "desc",
@@ -270,9 +262,11 @@ const SectionFilterContent = ({
     }
 
     if (filter.authorType) {
+      const user = await getUser(filter.authorType.replace("user_", ""));
       selectedFilterData.filterValues.push({
         key: `${filter.authorType}`,
         group: "filter-author",
+        label: user.displayName,
       });
     }
 
@@ -329,19 +323,17 @@ const SectionFilterContent = ({
       getFilterData={getFilterData}
       getSortData={getSortData}
       getViewSettingsData={getViewSettingsData}
-      selectedFilterData={getSelectedFilterData()}
+      getSelectedFilterData={getSelectedFilterData}
       onFilter={onFilter}
       onSearch={onSearch}
       onSort={onSort}
       onChangeViewAs={onChangeViewAs}
       viewAs={viewAs}
-      directionAscLabel={t("Common:DirectionAscLabel")}
-      directionDescLabel={t("Common:DirectionDescLabel")}
       placeholder={t("Common:Search")}
-      // isReady={isReady}
       {...filterColumnCount}
       contextMenuHeader={t("Common:AddFilter")}
-      addUserHeader={t("SharingPanel:LinkText")}
+      headerLabel={t("SharingPanel:LinkText")}
+      viewSelectorVisible={true}
     />
   );
 };
@@ -360,7 +352,7 @@ export default inject(
     } = filesStore;
 
     const { user } = auth.userStore;
-    const { customNames, culture, personal } = auth.settingsStore;
+    const { customNames, personal } = auth.settingsStore;
     const { isFavoritesFolder, isRecentFolder } = treeFoldersStore;
 
     const { search, filterType, authorType } = filter;
