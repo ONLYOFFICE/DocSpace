@@ -26,6 +26,7 @@ export default function template(
           <div id="root">${content}</div>
             ${scripts}
           </body>
+      </html>
   `;
 
   return page;
