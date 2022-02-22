@@ -28,4 +28,25 @@ module.exports = class Endpoints {
     method: "GET",
     baseDir: "people",
   };
+
+  static code = {
+    url: ["http://localhost:8092/api/2.0/authentication/123456"],
+    method: "POST",
+    baseDir: "auth",
+  };
+
+  static self = {
+    url: [
+      "http://localhost:8092/api/2.0/people/@self.json",
+      "http://localhost:8092/api/2.0/people/%40self.json",
+    ],
+    method: "GET",
+    baseDir: "people",
+  };
+
+  static info = {
+    url: ["http://localhost:8092/api/2.0/modules/info"],
+    method: "GET",
+    baseDir: "modules",
+  };
 };
