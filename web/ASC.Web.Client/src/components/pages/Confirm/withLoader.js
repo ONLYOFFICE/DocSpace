@@ -24,7 +24,7 @@ export default function withLoader(WrappedComponent) {
 
     useEffect(() => {
       if (
-        (type === "ChangePasswordForm" || type === "LinkInvite") &&
+        (type === "PasswordChange" || type === "LinkInvite") &&
         !passwordSettings
       ) {
         axios
