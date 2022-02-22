@@ -5,7 +5,7 @@
   <executable>node</executable>
   <arguments>../../ASC.UrlShortener/index.js</arguments>
   <log mode="roll-by-time">
-  <pattern>dd-MM</pattern>
+	<pattern>dd-MM</pattern>
   </log>
   <logpath>../../../Logs</logpath>
   <delayedAutoStart>true</delayedAutoStart>
