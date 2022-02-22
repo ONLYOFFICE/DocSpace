@@ -35,7 +35,7 @@ public class SecurityController : ControllerBase
     }
 
     [Read("audit/login/last")]
-    public IEnumerable<EventWrapper> GetLastLoginEvents()
+    public IEnumerable<EventResponseDto> GetLastLoginEvents()
     {
         if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.LoginHistory)))
         {
@@ -44,11 +44,11 @@ public class SecurityController : ControllerBase
 
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        return _loginEventsRepository.GetLast(_tenantManager.GetCurrentTenant().TenantId, 20).Select(x => new EventWrapper(x));
+        return _loginEventsRepository.GetLast(_tenantManager.GetCurrentTenant().TenantId, 20).Select(x => new EventResponseDto(x));
     }
 
     [Read("audit/events/last")]
-    public IEnumerable<EventWrapper> GetLastAuditEvents()
+    public IEnumerable<EventResponseDto> GetLastAuditEvents()
     {
         if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.AuditTrail)))
         {
@@ -57,7 +57,7 @@ public class SecurityController : ControllerBase
 
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        return _auditEventsRepository.GetLast(_tenantManager.GetCurrentTenant().TenantId, 20).Select(x => new EventWrapper(x));
+        return _auditEventsRepository.GetLast(_tenantManager.GetCurrentTenant().TenantId, 20).Select(x => new EventResponseDto(x));
     }
 
     [Create("audit/login/report")]

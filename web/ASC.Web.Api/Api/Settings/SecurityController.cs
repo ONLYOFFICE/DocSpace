@@ -44,7 +44,7 @@ public class SecurityController: BaseSettingsController
     }
 
     [Read("security")]
-    public IEnumerable<SecurityWrapper> GetWebItemSecurityInfo([FromQuery] IEnumerable<string> ids)
+    public IEnumerable<SecurityResponseDto> GetWebItemSecurityInfo([FromQuery] IEnumerable<string> ids)
     {
         if (ids == null || !ids.Any())
         {
@@ -54,7 +54,7 @@ public class SecurityController: BaseSettingsController
         var subItemList = _webItemManager.GetItemsAll().Where(item => item.IsSubItem()).Select(i => i.ID.ToString());
 
         return ids.Select(r => _webItemSecurity.GetSecurityInfo(r))
-                    .Select(i => new SecurityWrapper
+                    .Select(i => new SecurityResponseDto
                     {
                         WebItemId = i.WebItemId,
                         Enabled = i.Enabled,
@@ -96,19 +96,19 @@ public class SecurityController: BaseSettingsController
     }
 
     [Update("security")]
-    public IEnumerable<SecurityWrapper> SetWebItemSecurityFromBody([FromBody] WebItemSecurityDto model)
+    public IEnumerable<SecurityResponseDto> SetWebItemSecurityFromBody([FromBody] WebItemSecurityDto model)
     {
         return SetWebItemSecurity(model);
     }
 
     [Update("security")]
     [Consumes("application/x-www-form-urlencoded")]
-    public IEnumerable<SecurityWrapper> SetWebItemSecurityFromForm([FromForm] WebItemSecurityDto model)
+    public IEnumerable<SecurityResponseDto> SetWebItemSecurityFromForm([FromForm] WebItemSecurityDto model)
     {
         return SetWebItemSecurity(model);
     }
 
-    private IEnumerable<SecurityWrapper> SetWebItemSecurity(WebItemSecurityDto model)
+    private IEnumerable<SecurityResponseDto> SetWebItemSecurity(WebItemSecurityDto model)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -142,19 +142,19 @@ public class SecurityController: BaseSettingsController
     }
 
     [Update("security/access")]
-    public IEnumerable<SecurityWrapper> SetAccessToWebItemsFromBody([FromBody] WebItemSecurityDto model)
+    public IEnumerable<SecurityResponseDto> SetAccessToWebItemsFromBody([FromBody] WebItemSecurityDto model)
     {
         return SetAccessToWebItems(model);
     }
 
     [Update("security/access")]
     [Consumes("application/x-www-form-urlencoded")]
-    public IEnumerable<SecurityWrapper> SetAccessToWebItemsFromForm([FromForm] WebItemSecurityDto model)
+    public IEnumerable<SecurityResponseDto> SetAccessToWebItemsFromForm([FromForm] WebItemSecurityDto model)
     {
         return SetAccessToWebItems(model);
     }
 
-    private IEnumerable<SecurityWrapper> SetAccessToWebItems(WebItemSecurityDto model)
+    private IEnumerable<SecurityResponseDto> SetAccessToWebItems(WebItemSecurityDto model)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 

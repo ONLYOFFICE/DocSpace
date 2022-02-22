@@ -99,9 +99,9 @@ public class SettingsController: BaseSettingsController
 
     [Read("", Check = false)]
     [AllowAnonymous]
-    public SettingsWrapper GetSettings(bool? withpassword)
+    public SettingsResponseDto GetSettings(bool? withpassword)
     {
-        var settings = new SettingsWrapper
+        var settings = new SettingsResponseDto
         {
             Culture = Tenant.GetCulture().ToString(),
             GreetingSettings = Tenant.Name,
@@ -120,7 +120,7 @@ public class SettingsController: BaseSettingsController
             settings.OwnerId = Tenant.OwnerId;
             settings.NameSchemaId = _customNamingPeople.Current.Id;
 
-            settings.Firebase = new FirebaseWrapper
+            settings.Firebase = new FirebaseResponseDto
             {
                 ApiKey = _configuration["firebase:apiKey"] ?? "",
                 AuthDomain = _configuration["firebase:authDomain"] ?? "",
@@ -216,9 +216,9 @@ public class SettingsController: BaseSettingsController
     }
 
     [Read("quota")]
-    public QuotaWrapper GetQuotaUsed()
+    public QuotaResponseDto GetQuotaUsed()
     {
-        return new QuotaWrapper(Tenant, _coreBaseSettings, _coreConfiguration, _tenantExtra, _tenantStatisticsProvider, _authContext, _settingsManager, _webItemManager, _constants);
+        return new QuotaResponseDto(Tenant, _coreBaseSettings, _coreConfiguration, _tenantExtra, _tenantStatisticsProvider, _authContext, _settingsManager, _webItemManager, _constants);
     }
 
     [AllowAnonymous]
@@ -456,7 +456,7 @@ public class SettingsController: BaseSettingsController
     }
 
     [Read("statistics/spaceusage/{id}")]
-    public List<UsageSpaceStatItemWrapper> GetSpaceUsageStatistics(Guid id)
+    public List<UsageSpaceStatItemResponseDto> GetSpaceUsageStatistics(Guid id)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -467,10 +467,10 @@ public class SettingsController: BaseSettingsController
                                                     item.Context != null &&
                                                     item.Context.SpaceUsageStatManager != null);
 
-        if (webtem == null) return new List<UsageSpaceStatItemWrapper>();
+        if (webtem == null) return new List<UsageSpaceStatItemResponseDto>();
 
         return webtem.Context.SpaceUsageStatManager.GetStatData()
-                        .ConvertAll(it => new UsageSpaceStatItemWrapper
+                        .ConvertAll(it => new UsageSpaceStatItemResponseDto
                         {
                             Name = it.Name.HtmlEncode(),
                             Icon = it.ImgUrl,
@@ -481,20 +481,20 @@ public class SettingsController: BaseSettingsController
     }
 
     [Read("statistics/visit")]
-    public List<ChartPointWrapper> GetVisitStatistics(ApiDateTime fromDate, ApiDateTime toDate)
+    public List<ChartPointResponseDto> GetVisitStatistics(ApiDateTime fromDate, ApiDateTime toDate)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
         var from = _tenantUtil.DateTimeFromUtc(fromDate);
         var to = _tenantUtil.DateTimeFromUtc(toDate);
 
-        var points = new List<ChartPointWrapper>();
+        var points = new List<ChartPointResponseDto>();
 
         if (from.CompareTo(to) >= 0) return points;
 
         for (var d = new DateTime(from.Ticks); d.Date.CompareTo(to.Date) <= 0; d = d.AddDays(1))
         {
-            points.Add(new ChartPointWrapper
+            points.Add(new ChartPointResponseDto
             {
                 DisplayDate = d.Date.ToShortDateString(),
                 Date = d.Date,

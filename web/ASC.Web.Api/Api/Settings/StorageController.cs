@@ -67,7 +67,7 @@ public class StorageController: BaseSettingsController
     }
 
     [Read("storage")]
-    public List<StorageWrapper> GetAllStorages()
+    public List<StorageResponseDto> GetAllStorages()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -75,7 +75,7 @@ public class StorageController: BaseSettingsController
 
         var current = _settingsManager.Load<StorageSettings>();
         var consumers = _consumerFactory.GetAll<DataStoreConsumer>();
-        return consumers.Select(consumer => new StorageWrapper(consumer, current)).ToList();
+        return consumers.Select(consumer => new StorageResponseDto(consumer, current)).ToList();
     }
 
     [Read("storage/progress", false)]
@@ -364,7 +364,7 @@ public class StorageController: BaseSettingsController
     }
 
     [Read("storage/cdn")]
-    public List<StorageWrapper> GetAllCdnStorages()
+    public List<StorageResponseDto> GetAllCdnStorages()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
         if (!_coreBaseSettings.Standalone) return null;
@@ -373,7 +373,7 @@ public class StorageController: BaseSettingsController
 
         var current = _settingsManager.Load<CdnStorageSettings>();
         var consumers = _consumerFactory.GetAll<DataStoreConsumer>().Where(r => r.Cdn != null);
-        return consumers.Select(consumer => new StorageWrapper(consumer, current)).ToList();
+        return consumers.Select(consumer => new StorageResponseDto(consumer, current)).ToList();
     }
 
     [Update("storage/cdn")]
@@ -431,7 +431,7 @@ public class StorageController: BaseSettingsController
     }
 
     [Read("storage/backup")]
-    public List<StorageWrapper> GetAllBackupStorages()
+    public List<StorageResponseDto> GetAllBackupStorages()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
         if (_coreBaseSettings.Standalone)
@@ -451,7 +451,7 @@ public class StorageController: BaseSettingsController
         }
 
         var consumers = _consumerFactory.GetAll<DataStoreConsumer>();
-        return consumers.Select(consumer => new StorageWrapper(consumer, current)).ToList();
+        return consumers.Select(consumer => new StorageResponseDto(consumer, current)).ToList();
     }
 
     private void StartMigrate(StorageSettings settings)

@@ -51,14 +51,14 @@ public class SmtpOperation
     private readonly SecurityContext _securityContext;
     private readonly TenantManager _tenantManager;
     private readonly ILog _logger;
-    private readonly SmtpSettingsWrapper _smtpSettings;
+    private readonly SmtpSettingsResponseDto _smtpSettings;
 
     private readonly string _messageSubject;
     private readonly string _messageBody;
 
 
     public SmtpOperation(
-        SmtpSettingsWrapper smtpSettings,
+        SmtpSettingsResponseDto smtpSettings,
         int tenant,
         Guid user,
         UserManager userManager,

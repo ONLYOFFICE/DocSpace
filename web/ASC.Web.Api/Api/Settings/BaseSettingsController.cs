@@ -43,6 +43,9 @@ public partial class BaseSettingsController : ControllerBase
     internal readonly IMemoryCache _memoryCache;
     internal readonly WebItemManager _webItemManager;
 
+    private readonly int _maxCount = 10;
+    private readonly int _expirationMinutes = 2;
+
     public BaseSettingsController(ApiContext apiContext, IMemoryCache memoryCache, WebItemManager webItemManager)
     {
         _apiContext = apiContext;
@@ -50,21 +53,16 @@ public partial class BaseSettingsController : ControllerBase
         _webItemManager = webItemManager;
     }
 
-    
-
-
-    private readonly int maxCount = 10;
-    private readonly int expirationMinutes = 2;
     internal void CheckCache(string basekey)
     {
         var key = _apiContext.HttpContextAccessor.HttpContext.Request.GetUserHostAddress() + basekey;
         if (_memoryCache.TryGetValue<int>(key, out var count))
         {
-            if (count > maxCount)
+            if (count > _maxCount)
                 throw new Exception(Resource.ErrorRequestLimitExceeded);
         }
 
-        _memoryCache.Set(key, count + 1, TimeSpan.FromMinutes(expirationMinutes));
+        _memoryCache.Set(key, count + 1, TimeSpan.FromMinutes(_expirationMinutes));
     }
 
     internal string GetProductName(Guid productId)
