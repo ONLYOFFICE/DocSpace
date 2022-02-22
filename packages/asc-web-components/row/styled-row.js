@@ -27,6 +27,10 @@ const StyledRow = styled.div`
   justify-content: flex-start;
   align-items: center;
   align-content: center;
+
+  .row-loader {
+    padding: 15px 12px 12px 0px;
+  }
 `;
 StyledRow.defaultProps = { theme: Base };
 

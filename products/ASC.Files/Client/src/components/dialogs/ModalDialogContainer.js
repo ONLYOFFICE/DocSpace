@@ -111,8 +111,15 @@ const ModalDialogContainer = styled(ModalDialog)`
         white-space: normal;
       }
 
-      .convert_dialog_checkbox {
+      .convert_dialog_checkbox,
+      .convert_dialog_file-destination {
         padding-top: 16px;
+      }
+      .convert_dialog_file-destination {
+        opacity: 0;
+      }
+      .file-destination_visible {
+        opacity: 1;
       }
     }
   }
@@ -138,16 +145,6 @@ const ModalDialogContainer = styled(ModalDialog)`
   .modal-dialog-aside-footer {
     @media ${tablet} {
       width: 90%;
-    }
-  }
-
-  .conflict-resolve-dialog-text {
-    padding-bottom: 8px;
-  }
-
-  .conflict-resolve-radio-button {
-    svg {
-      overflow: visible;
     }
   }
 `;

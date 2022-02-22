@@ -8,6 +8,7 @@ const { auth: authStore } = store;
 class TargetUserStore {
   targetUser = null;
   isEditTargetUser = false;
+  tipsSubscription = null;
 
   constructor(peopleStore) {
     this.peopleStore = peopleStore;
@@ -37,6 +38,10 @@ class TargetUserStore {
       return this.setTargetUser(authStore.userStore.user);
     } else {*/
     const user = await api.people.getUser(userName);
+    if (user?.userName === authStore.userStore.user.userName) {
+      const tipsSubscription = await api.settings.getTipsSubscription();
+      this.tipsSubscription = tipsSubscription;
+    }
     this.setTargetUser(user);
     return user;
     //}
@@ -90,6 +95,11 @@ class TargetUserStore {
 
   setIsEditTargetUser = (isEditTargetUser) => {
     this.isEditTargetUser = isEditTargetUser;
+  };
+
+  changeEmailSubscription = async (enabled) => {
+    this.tipsSubscription = enabled;
+    this.tipsSubscription = await api.settings.toggleTipsSubscription();
   };
 }
 

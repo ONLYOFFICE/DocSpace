@@ -139,7 +139,7 @@ class AvatarEditor extends React.Component {
             onLoadFileError={this.onLoadFileError}
             onLoadFile={this.onLoadFile}
             deleteImage={this.onDeleteImage}
-            maxSize={maxSize * 1000000} // megabytes to bytes
+            maxSize={maxSize * 1024 * 1024} // megabytes to bytes
             accept={accept}
             image={image}
             selectNewPhotoLabel={selectNewPhotoLabel}
@@ -148,6 +148,7 @@ class AvatarEditor extends React.Component {
             maxSizeFileError={maxSizeFileError}
             unknownError={unknownError}
             maxSizeLabel={maxSizeLabel}
+            isLoading={saveButtonLoading}
           />
         </ModalDialog.Body>
         <ModalDialog.Footer>
@@ -182,6 +183,7 @@ class AvatarEditor extends React.Component {
           unknownError={unknownError}
           useModalDialog={false}
           maxSizeLabel={maxSizeLabel}
+          isLoading={saveButtonLoading}
         />
         <StyledButtonsWrapper>
           <Button
@@ -259,7 +261,7 @@ AvatarEditor.propTypes = {
 
 AvatarEditor.defaultProps = {
   visible: false,
-  maxSize: 10, //10MB
+  maxSize: 25,
   headerLabel: "Edit Photo",
   saveButtonLabel: "Save",
   cancelButtonLabel: "Cancel",
