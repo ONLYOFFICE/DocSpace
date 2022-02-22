@@ -210,7 +210,16 @@ const InputWithChips = ({
   const copyToClipbord = () => {
     if (currentChip === null) {
       navigator.clipboard.writeText(
-        selectedChips.map((it) => it.value).join(", ")
+        selectedChips
+          .map((it) => {
+            if (it.label !== it.value) {
+              let copyItem = `"${it.label}" <${it.value}>`;
+              return copyItem;
+            } else {
+              return it.value;
+            }
+          })
+          .join(", ")
       );
     }
   };
