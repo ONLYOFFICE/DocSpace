@@ -30,6 +30,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security;
+using System.Threading.Tasks;
 
 using ASC.Api.Core;
 using ASC.Api.CRM;
@@ -155,14 +156,19 @@ namespace ASC.CRM.Api
         /// <returns></returns>
         /// <exception cref="SecurityException"></exception>
         [Create(@"voip/numbers")]
-        public VoipPhone BuyNumber([FromBody] string number)
+        public Task<VoipPhone> BuyNumberAsync([FromBody] string number)
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
 
+            return InternalBuyNumberAsync(number);
+        }
+
+        private async Task<VoipPhone> InternalBuyNumberAsync(string number)
+        {
             var newPhone = _daoFactory.GetVoipDao().GetProvider().BuyNumber(number);
 
             _daoFactory.GetVoipDao().GetProvider().CreateQueue(newPhone);
-            SetDefaultAudio(newPhone);
+            await SetDefaultAudioAsync(newPhone);
 
             _daoFactory.GetVoipDao().GetProvider().UpdateSettings(newPhone);
             return _daoFactory.GetVoipDao().SaveOrUpdateNumber(newPhone);
@@ -176,30 +182,35 @@ namespace ASC.CRM.Api
         /// <returns></returns>
         /// <exception cref="SecurityException"></exception>
         [Create(@"voip/numbers/link")]
-        public VoipPhone LinkNumber([FromBody] string id)
+        public Task<VoipPhone> LinkNumberAsync([FromBody] string id)
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
 
+            return InternalLinkNumberAsync(id);
+        }
+
+        private async Task<VoipPhone> InternalLinkNumberAsync([FromBody] string id)
+        {
             var newPhone = _daoFactory.GetVoipDao().GetProvider().GetPhone(id);
 
             _daoFactory.GetVoipDao().GetProvider().CreateQueue(newPhone);
-            SetDefaultAudio(newPhone);
+            await SetDefaultAudioAsync(newPhone);
 
             _daoFactory.GetVoipDao().GetProvider().UpdateSettings(newPhone);
 
             return _daoFactory.GetVoipDao().SaveOrUpdateNumber(newPhone);
         }
 
-        public void SetDefaultAudio(VoipPhone newPhone)
+        public async System.Threading.Tasks.Task SetDefaultAudioAsync(VoipPhone newPhone)
         {
             var storage = _storageFactory.GetStorage("", "crm");
             const string path = "default/";
-            var files = storage.ListFilesRelative("voip", path, "*.*", true)
-                               .Select(filePath => new
+            var files = await storage.ListFilesRelativeAsync("voip", path, "*.*", true)
+                               .SelectAwait(async filePath => new 
                                {
-                                   path = _commonLinkUtility.GetFullAbsolutePath(storage.GetUri("voip", Path.Combine(path, filePath)).ToString()),
+                                   path = _commonLinkUtility.GetFullAbsolutePath((await storage.GetUriAsync("voip", Path.Combine(path, filePath))).ToString()),
                                    audioType = (AudioType)Enum.Parse(typeof(AudioType), Directory.GetParent(filePath).Name, true)
-                               }).ToList();
+                               }).ToListAsync();
 
             var audio = files.Find(r => r.audioType == AudioType.Greeting);
             newPhone.Settings.GreetingAudio = audio != null ? audio.path : "";
@@ -379,7 +390,7 @@ namespace ASC.CRM.Api
         /// <exception cref="SecurityException"></exception>
 
         [Read(@"voip/numbers/settings")]
-        public object GetVoipSettings()
+        public Task<object> GetVoipSettingsAsync()
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
 
@@ -387,11 +398,16 @@ namespace ASC.CRM.Api
             var number = dao.GetNumbers().FirstOrDefault(r => r.Settings.Queue != null);
             if (number != null)
             {
-                return new { queue = number.Settings.Queue, pause = number.Settings.Pause };
+                return System.Threading.Tasks.Task.FromResult<object>(new { queue = number.Settings.Queue, pause = number.Settings.Pause });
             }
 
-            var files = _storageFactory.GetStorage("", "crm").ListFiles("voip", "default/" + nameof(AudioType.Queue).ToLower(), "*.*", true);
-            var file = files.FirstOrDefault();
+            return InternalGetVoipSettingsAsync();
+        }
+
+        private async Task<object> InternalGetVoipSettingsAsync()
+        {
+            var files = _storageFactory.GetStorage("", "crm").ListFilesAsync("voip", "default/" + nameof(AudioType.Queue).ToLower(), "*.*", true);
+            var file = await files.FirstOrDefaultAsync();
             return new { queue = new Queue(null, "Default", 5, file != null ? _commonLinkUtility.GetFullAbsolutePath(file.ToString()) : "", 5), pause = false };
         }
 
@@ -403,11 +419,11 @@ namespace ASC.CRM.Api
         /// <returns></returns>
         /// <exception cref="SecurityException"></exception>
         [Read(@"voip/uploads")]
-        public IEnumerable<VoipUpload> GetUploadedFilesUri()
+        public IAsyncEnumerable<VoipUpload> GetUploadedFilesUriAsync()
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
 
-            var result = new List<VoipUpload>();
+            var result = AsyncEnumerable.Empty<VoipUpload>();
 
             foreach (var audioType in Enum.GetNames(typeof(AudioType)))
             {
@@ -415,17 +431,17 @@ namespace ASC.CRM.Api
 
                 var path = audioType.ToLower();
                 var store = _global.GetStore();
-                var filePaths = store.ListFilesRelative("voip", path, "*", true);
-                result.AddRange(
-                    filePaths.Select(filePath =>
-                                     GetVoipUpload(store.GetUri("voip", Path.Combine(path, filePath)), Path.GetFileName(filePath), type)));
+                var filePaths = store.ListFilesRelativeAsync("voip", path, "*", true);
+                result.Concat(
+                    filePaths.SelectAwait(async filePath =>
+                                     GetVoipUpload(await store.GetUriAsync("voip", Path.Combine(path, filePath)), Path.GetFileName(filePath), type)));
 
                 path = "default/" + audioType.ToLower();
                 store = _storageFactory.GetStorage("", "crm");
-                filePaths = store.ListFilesRelative("voip", path, "*.*", true);
-                result.AddRange(
-                    filePaths.Select(filePath =>
-                                     GetVoipUpload(store.GetUri("voip", Path.Combine(path, filePath)), Path.GetFileName(filePath), type, true)));
+                filePaths = store.ListFilesRelativeAsync("voip", path, "*.*", true);
+                result.Concat(
+                    filePaths.SelectAwait(async filePath =>
+                                     GetVoipUpload(await store.GetUriAsync("voip", Path.Combine(path, filePath)), Path.GetFileName(filePath), type, true)));
             }
 
             return result;
@@ -451,26 +467,32 @@ namespace ASC.CRM.Api
         /// <exception cref="SecurityException"></exception>
         /// <exception cref="ItemNotFoundException"></exception>
         [Delete(@"voip/uploads")]
-        public VoipUpload DeleteUploadedFile(AudioType audioType, string fileName)
+        public Task<VoipUpload> DeleteUploadedFileAsync(AudioType audioType, string fileName)
         {
             if (!_crmSecurity.IsAdmin) throw _crmSecurity.CreateSecurityException();
 
+            return InternalDeleteUploadedFileAsync(audioType, fileName);
+        }
+
+        private async Task<VoipUpload> InternalDeleteUploadedFileAsync(AudioType audioType, string fileName)
+        {
             var store = _global.GetStore();
             var path = Path.Combine(audioType.ToString().ToLower(), fileName);
+            var uri = await store.GetUriAsync(path);
             var result = new VoipUpload
             {
                 AudioType = audioType,
                 Name = fileName,
-                Path = _commonLinkUtility.GetFullAbsolutePath(store.GetUri(path).ToString())
+                Path = _commonLinkUtility.GetFullAbsolutePath(uri.ToString())
             };
 
-            if (!store.IsFile("voip", path)) throw new ItemNotFoundException();
-            store.Delete("voip", path);
+            if (!await store.IsFileAsync("voip", path)) throw new ItemNotFoundException();
+            await store.DeleteAsync("voip", path);
 
             var dao = _daoFactory.GetVoipDao();
             var numbers = dao.GetNumbers();
 
-            var defAudio = _storageFactory.GetStorage("", "crm").ListFiles("voip", "default/" + audioType.ToString().ToLower(), "*.*", true).FirstOrDefault();
+            var defAudio = await _storageFactory.GetStorage("", "crm").ListFilesAsync("voip", "default/" + audioType.ToString().ToLower(), "*.*", true).FirstOrDefaultAsync();
             if (defAudio == null) return result;
 
             foreach (var number in numbers)
@@ -643,14 +665,20 @@ namespace ASC.CRM.Api
         /// <returns></returns>
         /// <exception cref="SecurityException"></exception>
         [Create(@"voip/call")]
-        public VoipCallDto MakeCall([FromBody] CreateMakeCallRequestDto inDto)
+        public Task<VoipCallDto> MakeCallAsync([FromBody] CreateMakeCallRequestDto inDto)
         {
-            var to = inDto.To;
-            var contactId = inDto.ContactId;
-
             var number = _daoFactory.GetVoipDao().GetCurrentNumber().NotFoundIfNull();
 
             if (!number.Settings.Caller.AllowOutgoingCalls) throw new SecurityException(CRMErrorsResource.AccessDenied);
+
+            return InternalMakeCallAsync(inDto, number);
+
+        }
+
+        private async Task<VoipCallDto> InternalMakeCallAsync(CreateMakeCallRequestDto inDto, VoipPhone number)
+        {
+            var to = inDto.To;
+            var contactId = inDto.ContactId;
 
             var contactPhone = to.TrimStart('+');
 
@@ -673,7 +701,7 @@ namespace ASC.CRM.Api
                 contact = _mapper.Map<ContactDto>(_voipEngine.CreateContact(contactPhone));
             }
 
-            contact = GetContactWithFotos(contact);
+            contact = await GetContactWithFotosAsync(contact);
 
             var call = number.Call(to, contact.Id.ToString(CultureInfo.InvariantCulture));
 
@@ -853,7 +881,7 @@ namespace ASC.CRM.Api
         /// <category>Voip</category>
         /// <returns></returns>
         [Read(@"voip/call")]
-        public IEnumerable<VoipCallDto> GetCalls(string callType, ApiDateTime from, ApiDateTime to, Guid? agent, int? client, int? contactID)
+        public async Task<IEnumerable<VoipCallDto>> GetCallsAsync(string callType, ApiDateTime from, ApiDateTime to, Guid? agent, int? client, int? contactID)
         {
             var voipDao = _daoFactory.GetVoipDao();
 
@@ -877,7 +905,7 @@ namespace ASC.CRM.Api
             _apiContext.SetDataSorted();
             _apiContext.TotalCount = voipDao.GetCallsCount(filter);
 
-            var defaultSmallPhoto = _contactPhotoManager.GetSmallSizePhoto(-1, false);
+            var defaultSmallPhoto = await _contactPhotoManager.GetSmallSizePhotoAsync(-1, false);
             var calls = voipDao.GetCalls(filter).Select(
                 r =>
                     {
@@ -893,7 +921,7 @@ namespace ASC.CRM.Api
                                               Id = r.ContactId
                                           };
 
-                            contact.SmallFotoUrl = _contactPhotoManager.GetSmallSizePhoto(contact.Id, contact.IsCompany);
+                            contact.SmallFotoUrl = _contactPhotoManager.GetSmallSizePhotoAsync(contact.Id, contact.IsCompany).Result;
 
                         }
                         else
@@ -919,10 +947,10 @@ namespace ASC.CRM.Api
         /// <category>Voip</category>
         /// <returns></returns>
         [Read(@"voip/call/missed")]
-        public IEnumerable<VoipCallDto> GetMissedCalls()
+        public async Task<IEnumerable<VoipCallDto>> GetMissedCallsAsync()
         {
             var voipDao = _daoFactory.GetVoipDao();
-            var defaultSmallPhoto = _contactPhotoManager.GetSmallSizePhoto(-1, false);
+            var defaultSmallPhoto = await _contactPhotoManager.GetSmallSizePhotoAsync(-1, false);
 
             var calls = voipDao.GetMissedCalls(_securityContext.CurrentAccount.ID, 10, DateTime.UtcNow.AddDays(-7)).Select(
                 r =>
@@ -935,7 +963,7 @@ namespace ASC.CRM.Api
                                       ? (ContactDto)new CompanyDto() { DisplayName = r.ContactTitle, Id = r.ContactId }
                                       : new PersonDto() { DisplayName = r.ContactTitle, Id = r.ContactId };
 
-                        contact.SmallFotoUrl = _contactPhotoManager.GetSmallSizePhoto(contact.Id, contact.IsCompany);
+                        contact.SmallFotoUrl = _contactPhotoManager.GetSmallSizePhotoAsync(contact.Id, contact.IsCompany).Result;
 
                     }
                     else
@@ -975,10 +1003,10 @@ namespace ASC.CRM.Api
             return _mapper.Map<VoipCallDto>(call);
         }
 
-        private ContactDto GetContactWithFotos(ContactDto contact)
+        private async Task<ContactDto> GetContactWithFotosAsync(ContactDto contact)
         {
-            contact.SmallFotoUrl = _contactPhotoManager.GetSmallSizePhoto(contact.Id, contact.IsCompany);
-            contact.MediumFotoUrl = _contactPhotoManager.GetMediumSizePhoto(contact.Id, contact.IsCompany);
+            contact.SmallFotoUrl = await _contactPhotoManager.GetSmallSizePhotoAsync(contact.Id, contact.IsCompany);
+            contact.MediumFotoUrl = await _contactPhotoManager.GetMediumSizePhotoAsync(contact.Id, contact.IsCompany);
 
             return contact;
         }

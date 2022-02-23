@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 using ASC.Common.Logging;
 using ASC.Core;
@@ -38,6 +39,7 @@ using ASC.Files.Core.EF;
 using ASC.Web.Core.Files;
 using ASC.Web.Studio.Core;
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 using Folder = Microsoft.SharePoint.Client.Folder;
@@ -77,6 +79,30 @@ namespace ASC.Files.Thirdparty.SharePoint
             return requestTitle;
         }
 
+        protected async Task<string> GetAvailableTitleAsync(string requestTitle, Folder parentFolderID, Func<string, Folder, Task<bool>> isExist)
+        {
+            if (!await isExist(requestTitle, parentFolderID)) return requestTitle;
+
+            var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
+            var match = re.Match(requestTitle);
+
+            if (!match.Success)
+            {
+                var insertIndex = requestTitle.Length;
+                if (requestTitle.LastIndexOf(".", StringComparison.Ordinal) != -1)
+                {
+                    insertIndex = requestTitle.LastIndexOf(".", StringComparison.Ordinal);
+                }
+                requestTitle = requestTitle.Insert(insertIndex, " (1)");
+            }
+
+            while (await isExist(requestTitle, parentFolderID))
+            {
+                requestTitle = re.Replace(requestTitle, MatchEvaluator);
+            }
+            return requestTitle;
+        }
+
         private string MatchEvaluator(Match match)
         {
             var index = Convert.ToInt32(match.Groups[2].Value);
@@ -84,25 +110,30 @@ namespace ASC.Files.Thirdparty.SharePoint
             return string.Format(" ({0}){1}", index + 1, staticText);
         }
 
-        protected void UpdatePathInDB(string oldValue, string newValue)
+        protected Task UpdatePathInDBAsync(string oldValue, string newValue)
         {
-            if (oldValue.Equals(newValue)) return;
+            if (oldValue.Equals(newValue)) return Task.CompletedTask;
 
+            return InternalUpdatePathInDBAsync(oldValue, newValue);
+        }
+
+        private async Task InternalUpdatePathInDBAsync(string oldValue, string newValue)
+        {
             using var tx = FilesDbContext.Database.BeginTransaction();
-            var oldIDs = Query(FilesDbContext.ThirdpartyIdMapping)
+            var oldIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
                 .Where(r => r.Id.StartsWith(oldValue))
                 .Select(r => r.Id)
-                .ToList();
+                .ToListAsync();
 
             foreach (var oldID in oldIDs)
             {
-                var oldHashID = MappingID(oldID);
+                var oldHashID = await MappingIDAsync(oldID);
                 var newID = oldID.Replace(oldValue, newValue);
-                var newHashID = MappingID(newID);
+                var newHashID = await MappingIDAsync(newID);
 
-                var mappingForUpdate = Query(FilesDbContext.ThirdpartyIdMapping)
+                var mappingForUpdate = await Query(FilesDbContext.ThirdpartyIdMapping)
                     .Where(r => r.HashId == oldHashID)
-                    .ToList();
+                    .ToListAsync();
 
                 foreach (var m in mappingForUpdate)
                 {
@@ -110,37 +141,37 @@ namespace ASC.Files.Thirdparty.SharePoint
                     m.HashId = newHashID;
                 }
 
-                FilesDbContext.SaveChanges();
+                await FilesDbContext.SaveChangesAsync();
 
-                var securityForUpdate = Query(FilesDbContext.Security)
+                var securityForUpdate = await Query(FilesDbContext.Security)
                     .Where(r => r.EntryId == oldHashID)
-                    .ToList();
+                    .ToListAsync();
 
                 foreach (var s in securityForUpdate)
                 {
                     s.EntryId = newHashID;
                 }
 
-                FilesDbContext.SaveChanges();
+                await FilesDbContext.SaveChangesAsync();
 
-                var linkForUpdate = Query(FilesDbContext.TagLink)
+                var linkForUpdate = await Query(FilesDbContext.TagLink)
                     .Where(r => r.EntryId == oldHashID)
-                    .ToList();
+                    .ToListAsync();
 
                 foreach (var l in linkForUpdate)
                 {
                     l.EntryId = newHashID;
                 }
 
-                FilesDbContext.SaveChanges();
+                await FilesDbContext.SaveChangesAsync();
             }
 
-            tx.Commit();
+            await tx.CommitAsync();
         }
 
-        protected string MappingID(string id)
+        protected Task<string> MappingIDAsync(string id)
         {
-            return MappingID(id, false);
+            return MappingIDAsync(id, false);
         }
 
         protected override string MakeId(string path = null)
@@ -148,10 +179,13 @@ namespace ASC.Files.Thirdparty.SharePoint
             return path;
         }
 
-        protected override IEnumerable<string> GetChildren(string folderId)
+        protected override async Task<IEnumerable<string>> GetChildrenAsync(string folderId)
         {
-            var subFolders = ProviderInfo.GetFolderFolders(folderId).Select(x => ProviderInfo.MakeId(x.ServerRelativeUrl));
-            var files = ProviderInfo.GetFolderFiles(folderId).Select(x => ProviderInfo.MakeId(x.ServerRelativeUrl));
+            var folders = await ProviderInfo.GetFolderFoldersAsync(folderId);
+            var subFolders = folders.Select(x => ProviderInfo.MakeId(x.ServerRelativeUrl));
+
+            var folderFiles = await ProviderInfo.GetFolderFilesAsync(folderId);
+            var files = folderFiles.Select(x => ProviderInfo.MakeId(x.ServerRelativeUrl));
             return subFolders.Concat(files);
         }
     }

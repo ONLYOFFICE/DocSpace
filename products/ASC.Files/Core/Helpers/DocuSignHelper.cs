@@ -30,6 +30,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Security;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Logging;
@@ -205,14 +206,14 @@ namespace ASC.Web.Files.Helpers
             return true;
         }
 
-        public string SendDocuSign<T>(T fileId, DocuSignData docuSignData, IDictionary<string, StringValues> requestHeaders)
+        public async Task<string> SendDocuSignAsync<T>(T fileId, DocuSignData docuSignData, IDictionary<string, StringValues> requestHeaders)
         {
             if (docuSignData == null) throw new ArgumentNullException(nameof(docuSignData));
             var token = DocuSignToken.GetToken();
             var account = GetDocuSignAccount(token);
 
             var configuration = GetConfiguration(account, token);
-            var document = CreateDocument(fileId, docuSignData.Name, docuSignData.FolderId, out var sourceFile);
+            var (document, sourceFile) = await CreateDocumentAsync(fileId, docuSignData.Name, docuSignData.FolderId);
 
             var url = CreateEnvelope(account.AccountId, document, docuSignData, configuration);
 
@@ -251,24 +252,24 @@ namespace ASC.Web.Files.Helpers
             return configuration;
         }
 
-        private Document CreateDocument<T>(T fileId, string documentName, string folderId, out File<T> file)
+        private async Task<(Document document, File<T> file)> CreateDocumentAsync<T>(T fileId, string documentName, string folderId)
         {
             var fileDao = DaoFactory.GetFileDao<T>();
-            file = fileDao.GetFile(fileId);
+            var file = await fileDao.GetFileAsync(fileId);
             if (file == null) throw new Exception(FilesCommonResource.ErrorMassage_FileNotFound);
-            if (!FileSecurity.CanRead(file)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
+            if (!await FileSecurity.CanReadAsync(file)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
             if (!SupportedFormats.Contains(FileUtility.GetFileExtension(file.Title))) throw new ArgumentException(FilesCommonResource.ErrorMassage_NotSupportedFormat);
             if (file.ContentLength > MaxFileSize) throw new Exception(FileSizeComment.GetFileSizeExceptionString(MaxFileSize));
 
             byte[] fileBytes;
-            using (var stream = fileDao.GetFileStream(file))
+            using (var stream = await fileDao.GetFileStreamAsync(file))
             {
                 var buffer = new byte[16 * 1024];
                 using var ms = new MemoryStream();
                 int read;
-                while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
+                while ((read = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
                 {
-                    ms.Write(buffer, 0, read);
+                    await ms.WriteAsync(buffer, 0, read);
                 }
                 fileBytes = ms.ToArray();
             }
@@ -291,7 +292,7 @@ namespace ASC.Web.Files.Helpers
                 Name = documentName,
             };
 
-            return document;
+            return (document, file);
         }
 
         private string CreateEnvelope(string accountId, Document document, DocuSignData docuSignData, DocuSign.eSign.Client.Configuration configuration)
@@ -375,7 +376,7 @@ namespace ASC.Web.Files.Helpers
             return url.Url;
         }
 
-        public File<T> SaveDocument<T>(string envelopeId, string documentId, string documentName, T folderId)
+        public async Task<File<T>> SaveDocumentAsync<T>(string envelopeId, string documentId, string documentName, T folderId)
         {
             if (string.IsNullOrEmpty(envelopeId)) throw new ArgumentNullException(nameof(envelopeId));
             if (string.IsNullOrEmpty(documentId)) throw new ArgumentNullException(nameof(documentId));
@@ -393,9 +394,9 @@ namespace ASC.Web.Files.Helpers
 
             Folder<T> folder;
             if (folderId == null
-                || (folder = folderDao.GetFolder(folderId)) == null
+                || (folder = await folderDao.GetFolderAsync(folderId)) == null
                 || folder.RootFolderType == FolderType.TRASH
-                || !FileSecurity.CanCreate(folder))
+                || !await FileSecurity.CanCreateAsync(folder))
             {
                 if (GlobalFolderHelper.FolderMy != 0)
                 {
@@ -414,15 +415,15 @@ namespace ASC.Web.Files.Helpers
 
             var envelopesApi = new EnvelopesApi(configuration);
             Log.Info("DocuSign webhook get stream: " + documentId);
-            using (var stream = envelopesApi.GetDocument(account.AccountId, envelopeId, documentId))
+            using (var stream = await envelopesApi.GetDocumentAsync(account.AccountId, envelopeId, documentId))
             {
                 file.ContentLength = stream.Length;
-                file = fileDao.SaveFile(file, stream);
+                file = await fileDao.SaveFileAsync(file, stream);
             }
 
             FilesMessageService.Send(file, MessageInitiator.ThirdPartyProvider, MessageAction.DocumentSignComplete, "DocuSign", file.Title);
 
-            FileMarker.MarkAsNew(file);
+            await FileMarker.MarkAsNewAsync(file);
 
             return file;
         }

@@ -131,6 +131,7 @@ namespace ASC.Web.Files.Core.Search
             }
 
             IQueryable<FileTenant> GetBaseQuery(DateTime lastIndexed) => fileDao.FilesDbContext.Files
+                .AsQueryable()
                 .Where(r => r.ModifiedOn >= lastIndexed)
                 .Join(fileDao.FilesDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FileTenant { DbFile = f, DbTenant = t })
                 .Where(r => r.DbTenant.Status == ASC.Core.Tenants.TenantStatus.Active);
@@ -147,7 +148,7 @@ namespace ASC.Web.Files.Core.Search
                         data.ForEach(r =>
                         {
                             TenantManager.SetCurrentTenant(r.TenantId);
-                            fileDao.InitDocument(r);
+                            fileDao.InitDocumentAsync(r).Wait();
                         });
                         Index(data);
                     }
@@ -157,7 +158,7 @@ namespace ASC.Web.Files.Core.Search
                         data.ForEach(r =>
                         {
                             TenantManager.SetCurrentTenant(r.TenantId);
-                            fileDao.InitDocument(r);
+                            fileDao.InitDocumentAsync(r).Wait();
                         });
 
                         tasks.Add(IndexAsync(data));

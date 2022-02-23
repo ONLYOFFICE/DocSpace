@@ -30,7 +30,6 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Security.Cryptography;
-using System.ServiceModel;
 using System.Text;
 
 using ASC.Common;
@@ -60,7 +59,7 @@ namespace ASC.Core.Notify.Signalr
             CoreSettings coreSettings,
             MachinePseudoKeys machinePseudoKeys,
             IConfiguration configuration,
-            IOptionsMonitor<ILog> options, 
+            IOptionsMonitor<ILog> options,
             IHttpClientFactory clientFactory)
         {
             TenantManager = tenantManager;
@@ -390,7 +389,7 @@ namespace ASC.Core.Notify.Signalr
         {
             Log.ErrorFormat("Service Error: {0}, {1}, {2}", e.Message, e.StackTrace,
                 (e.InnerException != null) ? e.InnerException.Message : string.Empty);
-            if (e is CommunicationException || e is TimeoutException)
+            if (e is HttpRequestException)
             {
                 lastErrorTime = DateTime.Now;
             }

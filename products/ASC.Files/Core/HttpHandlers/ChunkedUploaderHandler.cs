@@ -117,7 +117,7 @@ namespace ASC.Web.Files.HttpHandlers
         {
             try
             {
-                var uploadSession = ChunkedUploadSessionHolder.GetSession<int>(context.Request.Query["uid"]);
+                var uploadSession = await ChunkedUploadSessionHolder.GetSessionAsync<int>(context.Request.Query["uid"]);
                 if (uploadSession != null)
                 {
                     await Invoke<int>(context);
@@ -141,7 +141,7 @@ namespace ASC.Web.Files.HttpHandlers
 
                 var request = new ChunkedRequestHelper<T>(context.Request);
 
-                if (!TryAuthorize(request))
+                if (!await TryAuthorizeAsync(request))
                 {
                     await WriteError(context, "Can't authorize given initiate session request or session with specified upload id already expired");
                     return;
@@ -156,28 +156,28 @@ namespace ASC.Web.Files.HttpHandlers
                 switch (request.Type(InstanceCrypto))
                 {
                     case ChunkedRequestType.Abort:
-                        FileUploader.AbortUpload<T>(request.UploadId);
+                        await FileUploader.AbortUploadAsync<T>(request.UploadId);
                         await WriteSuccess(context, null);
                         return;
 
                     case ChunkedRequestType.Initiate:
-                        var createdSession = FileUploader.InitiateUpload(request.FolderId, request.FileId, request.FileName, request.FileSize, request.Encrypted);
-                        await WriteSuccess(context, ChunkedUploadSessionHelper.ToResponseObject(createdSession, true));
+                        var createdSession = await FileUploader.InitiateUploadAsync(request.FolderId, request.FileId, request.FileName, request.FileSize, request.Encrypted);
+                        await WriteSuccess(context, await ChunkedUploadSessionHelper.ToResponseObjectAsync(createdSession, true));
                         return;
 
                     case ChunkedRequestType.Upload:
-                        var resumedSession = FileUploader.UploadChunk<T>(request.UploadId, request.ChunkStream, request.ChunkSize);
+                        var resumedSession = await FileUploader.UploadChunkAsync<T>(request.UploadId, request.ChunkStream, request.ChunkSize);
 
                         if (resumedSession.BytesUploaded == resumedSession.BytesTotal)
                         {
                             await WriteSuccess(context, ToResponseObject(resumedSession.File), (int)HttpStatusCode.Created);
                             FilesMessageService.Send(resumedSession.File, MessageAction.FileUploaded, resumedSession.File.Title);
 
-                            SocketManager.CreateFile(resumedSession.File);
+                            await SocketManager.CreateFileAsync(resumedSession.File);
                         }
                         else
                         {
-                            await WriteSuccess(context, ChunkedUploadSessionHelper.ToResponseObject(resumedSession));
+                            await WriteSuccess(context, await ChunkedUploadSessionHelper.ToResponseObjectAsync(resumedSession));
                         }
                         return;
 
@@ -198,7 +198,7 @@ namespace ASC.Web.Files.HttpHandlers
             }
         }
 
-        private bool TryAuthorize<T>(ChunkedRequestHelper<T> request)
+        private async Task<bool> TryAuthorizeAsync<T>(ChunkedRequestHelper<T> request)
         {
             if (request.Type(InstanceCrypto) == ChunkedRequestType.Initiate)
             {
@@ -212,7 +212,7 @@ namespace ASC.Web.Files.HttpHandlers
 
             if (!string.IsNullOrEmpty(request.UploadId))
             {
-                var uploadSession = ChunkedUploadSessionHolder.GetSession<T>(request.UploadId);
+                var uploadSession = await ChunkedUploadSessionHolder.GetSessionAsync<T>(request.UploadId);
                 if (uploadSession != null)
                 {
                     TenantManager.SetCurrentTenant(uploadSession.TenantId);
@@ -227,21 +227,21 @@ namespace ASC.Web.Files.HttpHandlers
             return false;
         }
 
-        private static async Task WriteError(HttpContext context, string message)
+        private static Task WriteError(HttpContext context, string message)
         {
-            await WriteResponse(context, false, null, message, (int)HttpStatusCode.OK);
+            return WriteResponse(context, false, null, message, (int)HttpStatusCode.OK);
         }
 
-        private static async Task WriteSuccess(HttpContext context, object data, int statusCode = (int)HttpStatusCode.OK)
+        private static Task WriteSuccess(HttpContext context, object data, int statusCode = (int)HttpStatusCode.OK)
         {
-            await WriteResponse(context, true, data, string.Empty, statusCode);
+            return WriteResponse(context, true, data, string.Empty, statusCode);
         }
 
-        private static async Task WriteResponse(HttpContext context, bool success, object data, string message, int statusCode)
+        private static Task WriteResponse(HttpContext context, bool success, object data, string message, int statusCode)
         {
             context.Response.StatusCode = statusCode;
             context.Response.ContentType = "application/json";
-            await context.Response.WriteAsync(JsonConvert.SerializeObject(new { success, data, message }));
+            return context.Response.WriteAsync(JsonConvert.SerializeObject(new { success, data, message }));
         }
 
         private static object ToResponseObject<T>(File<T> file)
