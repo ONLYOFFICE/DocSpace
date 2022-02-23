@@ -338,7 +338,7 @@ namespace ASC.Files.Core.Data
 
                 if (folder.FolderType == FolderType.DEFAULT || folder.FolderType == FolderType.BUNCH)
                 {
-                    FactoryIndexer.IndexAsync(toUpdate).ConfigureAwait(false);
+                    _ = FactoryIndexer.IndexAsync(toUpdate).ConfigureAwait(false);
                 }
             }
             else
@@ -362,7 +362,7 @@ namespace ASC.Files.Core.Data
                 await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
                 if (folder.FolderType == FolderType.DEFAULT || folder.FolderType == FolderType.BUNCH)
                 {
-                    FactoryIndexer.IndexAsync(newFolder).ConfigureAwait(false);
+                    _ = FactoryIndexer.IndexAsync(newFolder).ConfigureAwait(false);
                 }
                 folder.ID = newFolder.Id;
 
@@ -743,7 +743,7 @@ namespace ASC.Files.Core.Data
 
             await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-            FactoryIndexer.IndexAsync(toUpdate).ConfigureAwait(false);
+            _ = FactoryIndexer.IndexAsync(toUpdate).ConfigureAwait(false);
 
             return folder.ID;
         }

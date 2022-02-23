@@ -518,7 +518,7 @@ namespace ASC.Files.Core.Data
                 }
             }
 
-            FactoryIndexer.IndexAsync(await InitDocumentAsync(toInsert).ConfigureAwait(false));
+            _ = FactoryIndexer.IndexAsync(await InitDocumentAsync(toInsert).ConfigureAwait(false));
 
             return await GetFileAsync(file.ID).ConfigureAwait(false);
         }
@@ -632,7 +632,7 @@ namespace ASC.Files.Core.Data
                 }
             }
 
-            FactoryIndexer.IndexAsync(await InitDocumentAsync(toUpdate).ConfigureAwait(false));
+            _ = FactoryIndexer.IndexAsync(await InitDocumentAsync(toUpdate).ConfigureAwait(false));
 
             return await GetFileAsync(file.ID).ConfigureAwait(false);
         }
