@@ -442,7 +442,7 @@ namespace ASC.Files.Core.Data
                 .Select(r => r.ParentId)
                 .FirstOrDefaultAsync().ConfigureAwait(false);
 
-            var folderToDelete = Query(FilesDbContext.Folders).Where(r => subfolders.Contains(r.Id));
+            var folderToDelete = await Query(FilesDbContext.Folders).Where(r => subfolders.Contains(r.Id)).ToListAsync();
             FilesDbContext.Folders.RemoveRange(folderToDelete);
 
             foreach (var f in folderToDelete)
@@ -450,29 +450,33 @@ namespace ASC.Files.Core.Data
                 await FactoryIndexer.DeleteAsync(f).ConfigureAwait(false);
             }
 
-            var treeToDelete = FilesDbContext.Tree.AsQueryable().Where(r => subfolders.Contains(r.FolderId));
+            var treeToDelete = await FilesDbContext.Tree.AsQueryable().Where(r => subfolders.Contains(r.FolderId)).ToListAsync();
             FilesDbContext.Tree.RemoveRange(treeToDelete);
 
             var subfoldersStrings = subfolders.Select(r => r.ToString()).ToList();
-            var linkToDelete = Query(FilesDbContext.TagLink)
+            var linkToDelete = await Query(FilesDbContext.TagLink)
                 .Where(r => subfoldersStrings.Contains(r.EntryId))
-                .Where(r => r.EntryType == FileEntryType.Folder);
+                .Where(r => r.EntryType == FileEntryType.Folder)
+                .ToListAsync();
             FilesDbContext.TagLink.RemoveRange(linkToDelete);
 
-            var tagsToRemove = Query(FilesDbContext.Tag)
-                .Where(r => !Query(FilesDbContext.TagLink).Any(a => a.TagId == r.Id));
+            var tagsToRemove = await Query(FilesDbContext.Tag)
+                .Where(r => !Query(FilesDbContext.TagLink).Any(a => a.TagId == r.Id))
+                .ToListAsync();
 
             FilesDbContext.Tag.RemoveRange(tagsToRemove);
 
-            var securityToDelete = Query(FilesDbContext.Security)
+            var securityToDelete = await Query(FilesDbContext.Security)
                     .Where(r => subfoldersStrings.Contains(r.EntryId))
-                    .Where(r => r.EntryType == FileEntryType.Folder);
+                    .Where(r => r.EntryType == FileEntryType.Folder)
+                    .ToListAsync();
 
             FilesDbContext.Security.RemoveRange(securityToDelete);
             await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-            var bunchToDelete = Query(FilesDbContext.BunchObjects)
-                .Where(r => r.LeftNode == id.ToString());
+            var bunchToDelete = await Query(FilesDbContext.BunchObjects)
+                .Where(r => r.LeftNode == id.ToString())
+                .ToListAsync();
 
             FilesDbContext.RemoveRange(bunchToDelete);
             await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
@@ -535,9 +539,10 @@ namespace ASC.Files.Core.Data
                     .ToDictionaryAsync(r => r.FolderId, r => r.Level)
                     .ConfigureAwait(false);
 
-                var toDelete = FilesDbContext.Tree
+                var toDelete = await FilesDbContext.Tree
                     .AsQueryable()
-                    .Where(r => subfolders.Keys.Contains(r.FolderId) && !subfolders.Keys.Contains(r.ParentId));
+                    .Where(r => subfolders.Keys.Contains(r.FolderId) && !subfolders.Keys.Contains(r.ParentId))
+                    .ToListAsync();
 
                 FilesDbContext.Tree.RemoveRange(toDelete);
                 await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);

@@ -118,7 +118,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return result;
         }
 
-        public Task<List<File<string>>> GetFileHistoryAsync(string fileId)
+        public IAsyncEnumerable<File<string>> GetFileHistoryAsync(string fileId)
         {
             var selector = GetSelector(fileId);
             var fileDao = selector.GetFileDao(fileId);

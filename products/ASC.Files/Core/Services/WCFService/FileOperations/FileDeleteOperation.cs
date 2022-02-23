@@ -121,7 +121,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
             await DeleteFilesAsync(Files, scope);
             await DeleteFoldersAsync(Folders, scope);
-        }       
+        }
 
         private async Task DeleteFoldersAsync(IEnumerable<T> folderIds, IServiceScope scope)
         {

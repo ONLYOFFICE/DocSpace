@@ -182,11 +182,11 @@ namespace ASC.Files.Core.Data
             return ToFile(await FromQueryWithShared(query).FirstOrDefaultAsync().ConfigureAwait(false));
         }
 
-        public Task<List<File<int>>> GetFileHistoryAsync(int fileId)
+        public IAsyncEnumerable<File<int>> GetFileHistoryAsync(int fileId)
         {
             var query = GetFileQuery(r => r.Id == fileId).OrderByDescending(r => r.Version).AsNoTracking();
 
-            return FromQueryWithShared(query).Select(e => ToFile(e)).ToListAsync();
+            return FromQueryWithShared(query).AsAsyncEnumerable().Select(ToFile);
         }
 
         public IAsyncEnumerable<File<int>> GetFilesAsync(IEnumerable<int> fileIds)
@@ -250,7 +250,7 @@ namespace ASC.Files.Core.Data
                     break;
             }
 
-            return (checkShared ? FromQueryWithShared(query) : FromQuery(query)).Select(e => ToFile(e)).AsAsyncEnumerable();
+            return (checkShared ? FromQueryWithShared(query) : FromQuery(query)).AsAsyncEnumerable().Select(e => ToFile(e));
         }
 
         public Task<List<int>> GetFilesAsync(int parentId)
@@ -699,29 +699,28 @@ namespace ASC.Files.Core.Data
                 .AsAsyncEnumerable();
 
             var toDeleteLinks = Query(FilesDbContext.TagLink).Where(r => r.EntryId == fileId.ToString() && r.EntryType == FileEntryType.File);
-            FilesDbContext.RemoveRange(toDeleteLinks);
+            FilesDbContext.RemoveRange(await toDeleteLinks.ToListAsync());
 
             var toDeleteFiles = Query(FilesDbContext.Files).Where(r => r.Id == fileId);
-            var toDeleteFileTask = toDeleteFiles.FirstOrDefaultAsync(r => r.CurrentVersion).ConfigureAwait(false);
-            FilesDbContext.RemoveRange(toDeleteFiles);
+            var toDeleteFile = await toDeleteFiles.FirstOrDefaultAsync(r => r.CurrentVersion).ConfigureAwait(false);
 
             foreach (var d in toDeleteFiles)
             {
                 await FactoryIndexer.DeleteAsync(d).ConfigureAwait(false);
             }
 
-            FilesDbContext.RemoveRange(toDeleteFiles);
+            FilesDbContext.RemoveRange(await toDeleteFiles.ToListAsync());
 
             var tagsToRemove = Query(FilesDbContext.Tag)
                 .Where(r => !Query(FilesDbContext.TagLink).Any(a => a.TagId == r.Id));
 
-            FilesDbContext.Tag.RemoveRange(tagsToRemove);
+            FilesDbContext.Tag.RemoveRange(await tagsToRemove.ToListAsync());
 
             var securityToDelete = Query(FilesDbContext.Security)
                 .Where(r => r.EntryId == fileId.ToString())
                 .Where(r => r.EntryType == FileEntryType.File);
 
-            FilesDbContext.Security.RemoveRange(securityToDelete);
+            FilesDbContext.Security.RemoveRange(await securityToDelete.ToListAsync());
             await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
             await tx.CommitAsync().ConfigureAwait(false);
@@ -731,7 +730,6 @@ namespace ASC.Files.Core.Data
             if (deleteFolder)
                 await DeleteFolderAsync(fileId);
 
-            var toDeleteFile = await toDeleteFileTask;
             if (toDeleteFile != null)
             {
                 await FactoryIndexer.DeleteAsync(toDeleteFile).ConfigureAwait(false);
@@ -1183,23 +1181,22 @@ namespace ASC.Files.Core.Data
             if (FactoryIndexer.TrySelectIds(s => s.MatchAll(searchText), out var ids))
             {
                 var query = GetFileQuery(r => r.CurrentVersion && ids.Contains(r.Id)).AsNoTracking();
-                return FromQueryWithShared(query).Select(e => ToFile(e))
+                return FromQueryWithShared(query).AsAsyncEnumerable().Select(e => ToFile(e))
                     .Where(
                         f =>
                         bunch
                             ? f.RootFolderType == FolderType.BUNCH
                             : f.RootFolderType == FolderType.USER || f.RootFolderType == FolderType.COMMON)
-                    .AsAsyncEnumerable();
+                    ;
             }
             else
             {
                 var query = BuildSearch(GetFileQuery(r => r.CurrentVersion).AsNoTracking(), searchText, SearhTypeEnum.Any);
-                return FromQueryWithShared(query).Select(e => ToFile(e))
+                return FromQueryWithShared(query).AsAsyncEnumerable().Select(e => ToFile(e))
                     .Where(f =>
                            bunch
                                 ? f.RootFolderType == FolderType.BUNCH
-                                : f.RootFolderType == FolderType.USER || f.RootFolderType == FolderType.COMMON)
-                    .AsAsyncEnumerable();
+                                : f.RootFolderType == FolderType.USER || f.RootFolderType == FolderType.COMMON);
             }
         }
 

@@ -99,9 +99,9 @@ namespace ASC.Files.Thirdparty.SharePoint
             return ProviderInfo.ToFile(await ProviderInfo.GetFileByIdAsync(fileId).ConfigureAwait(false));
         }
 
-        public async Task<List<File<string>>> GetFileHistoryAsync(string fileId)
+        public IAsyncEnumerable<File<string>> GetFileHistoryAsync(string fileId)
         {
-            return new List<File<string>> { await GetFileAsync(fileId).ConfigureAwait(false) };
+            return GetFileAsync(fileId).ToAsyncEnumerable();
         }
 
         public IAsyncEnumerable<File<string>> GetFilesAsync(IEnumerable<string> fileIds)

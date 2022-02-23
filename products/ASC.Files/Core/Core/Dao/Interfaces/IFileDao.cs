@@ -78,7 +78,7 @@ namespace ASC.Files.Core
         /// </summary>
         /// <param name="fileId"></param>
         /// <returns></returns>
-        Task<List<File<T>>> GetFileHistoryAsync(T fileId);
+        IAsyncEnumerable<File<T>> GetFileHistoryAsync(T fileId);
 
         /// <summary>
         ///     Gets the file (s) by ID (s)
@@ -194,7 +194,7 @@ namespace ASC.Files.Core
         /// <param name="toFolderId">The ID of the destination folder</param>
         Task<T> MoveFileAsync(T fileId, T toFolderId);
         Task<TTo> MoveFileAsync<TTo>(T fileId, TTo toFolderId);
-        Task<string> MoveFileAsync(T fileId, string toFolderId); 
+        Task<string> MoveFileAsync(T fileId, string toFolderId);
         Task<int> MoveFileAsync(T fileId, int toFolderId);
 
         /// <summary>

@@ -27,7 +27,7 @@ using FileShare = ASC.Files.Core.Security.FileShare;
 
 namespace ASC.Files.Thirdparty
 {
-    internal abstract class ThirdPartyProviderDao 
+    internal abstract class ThirdPartyProviderDao
     {
         #region FileDao
 
@@ -253,7 +253,7 @@ namespace ASC.Files.Thirdparty
         protected IQueryable<TSet> Query<TSet>(DbSet<TSet> set) where TSet : class, IDbFile
         {
             return set.AsQueryable().Where(r => r.TenantId == TenantID);
-        }     
+        }
 
         protected Task<string> MappingIDAsync(string id, bool saveIfNotExist = false)
         {
@@ -486,7 +486,7 @@ namespace ASC.Files.Thirdparty
 
         public void MarkAsNew(Guid subject, FileEntry<string> fileEntry)
         {
-        }       
+        }
 
         public async IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, Folder<string> parentFolder, bool deepSearch)
         {

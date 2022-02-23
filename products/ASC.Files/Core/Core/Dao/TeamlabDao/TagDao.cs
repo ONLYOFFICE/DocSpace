@@ -470,10 +470,11 @@ ctx.Tag
             if (id != 0)
             {
                 var entryId = (await MappingIDAsync(tag.EntryId).ConfigureAwait(false)).ToString();
-                var toDelete = Query(FilesDbContext.TagLink)
+                var toDelete = await Query(FilesDbContext.TagLink)
                     .Where(r => r.TagId == id &&
                                 r.EntryId == entryId &&
-                                r.EntryType == tag.EntryType);
+                                r.EntryType == tag.EntryType)
+                    .ToListAsync();
 
                 FilesDbContext.TagLink.RemoveRange(toDelete);
                 await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
@@ -481,7 +482,7 @@ ctx.Tag
                 var any = await Query(FilesDbContext.TagLink).AnyAsync(r => r.TagId == id).ConfigureAwait(false);
                 if (!any)
                 {
-                    var tagToDelete = Query(FilesDbContext.Tag).Where(r => r.Id == id);
+                    var tagToDelete = await Query(FilesDbContext.Tag).Where(r => r.Id == id).ToListAsync();
                     FilesDbContext.Tag.RemoveRange(tagToDelete);
                     await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
                 }

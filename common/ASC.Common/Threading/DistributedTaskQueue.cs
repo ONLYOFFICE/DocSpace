@@ -220,25 +220,24 @@ namespace ASC.Common.Threading
             var token = cancelation.Token;
             Cancelations[distributedTask.Id] = cancelation;
 
-            Task.Factory.StartNew(async () =>
+            var task = new Task(async () =>
             {
-                distributedTask.Status = DistributedTaskStatus.Running;
-
-                if (distributedTask.Publication == null)
-                {
-                    distributedTask.Publication = GetPublication();
-                }
-                distributedTask.PublishChanges();
-
-                var task = action(distributedTask, token);
-                task
-                .ConfigureAwait(false)
+                var t = action(distributedTask, token);
+                t.ConfigureAwait(false)
                 .GetAwaiter()
-                .OnCompleted(() => OnCompleted(task, distributedTask.Id));
-                await task;
-            },
-            token, TaskCreationOptions.LongRunning, Scheduler)
-            .Unwrap();
+                .OnCompleted(() => OnCompleted(t, distributedTask.Id));
+                await t;
+            }, token, TaskCreationOptions.LongRunning);
+
+            distributedTask.Status = DistributedTaskStatus.Running;
+
+            if (distributedTask.Publication == null)
+            {
+                distributedTask.Publication = GetPublication();
+            }
+            distributedTask.PublishChanges();
+
+            task.Start(Scheduler);
         }
 
         public IEnumerable<DistributedTask> GetTasks()

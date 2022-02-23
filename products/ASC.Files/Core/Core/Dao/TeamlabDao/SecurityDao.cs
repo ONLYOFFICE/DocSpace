@@ -137,12 +137,13 @@ namespace ASC.Files.Core.Data
                         folders.Add(entryId);
                     }
 
-                    var toDelete = FilesDbContext.Security
+                    var toDelete = await FilesDbContext.Security
                         .AsQueryable()
                         .Where(a => a.TenantId == r.Tenant &&
                                     folders.Contains(a.EntryId) &&
                                     a.EntryType == FileEntryType.Folder &&
-                                    a.Subject == r.Subject);
+                                    a.Subject == r.Subject)
+                        .ToListAsync();
 
                     FilesDbContext.Security.RemoveRange(toDelete);
                     await FilesDbContext.SaveChangesAsync();
@@ -155,12 +156,13 @@ namespace ASC.Files.Core.Data
 
                 if (0 < files.Count)
                 {
-                    var toDelete = FilesDbContext.Security
+                    var toDelete = await FilesDbContext.Security
                         .AsQueryable()
                         .Where(a => a.TenantId == r.Tenant &&
                                     files.Contains(a.EntryId) &&
                                     a.EntryType == FileEntryType.File &&
-                                    a.Subject == r.Subject);
+                                    a.Subject == r.Subject)
+                        .ToListAsync();
 
                     FilesDbContext.Security.RemoveRange(toDelete);
                     await FilesDbContext.SaveChangesAsync();
@@ -359,8 +361,8 @@ namespace ASC.Files.Core.Data
         {
             using var tr = await FilesDbContext.Database.BeginTransactionAsync();
 
-            var toDelete1 = FilesDbContext.Security.AsQueryable().Where(r => r.Subject == subject);
-            var toDelete2 = FilesDbContext.Security.AsQueryable().Where(r => r.Owner == subject);
+            var toDelete1 = await FilesDbContext.Security.AsQueryable().Where(r => r.Subject == subject).ToListAsync();
+            var toDelete2 = await FilesDbContext.Security.AsQueryable().Where(r => r.Owner == subject).ToListAsync();
 
             FilesDbContext.RemoveRange(toDelete1);
             await FilesDbContext.SaveChangesAsync();

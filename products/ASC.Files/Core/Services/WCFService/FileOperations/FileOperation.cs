@@ -302,6 +302,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 FolderDao = daoFactory.GetFolderDao<TId>();
                 FileDao = daoFactory.GetFileDao<TId>();
                 TagDao = daoFactory.GetTagDao<TId>();
+                LinkDao = daoFactory.GetLinkDao();
                 ProviderDao = daoFactory.ProviderDao;
                 FilesSecurity = fileSecurity;
 

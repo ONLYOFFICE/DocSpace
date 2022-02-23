@@ -911,7 +911,7 @@ namespace ASC.Web.Files.Services.WCFService
             var file = await fileDao.GetFileAsync(fileId);
             ErrorIf(!await FileSecurity.CanReadAsync(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
 
-            return new List<File<T>>(await fileDao.GetFileHistoryAsync(fileId));
+            return await fileDao.GetFileHistoryAsync(fileId).ToListAsync();
         }
 
         public async Task<KeyValuePair<File<T>, List<File<T>>>> UpdateToVersionAsync(T fileId, int version)
@@ -1561,10 +1561,10 @@ namespace ASC.Web.Files.Services.WCFService
             var folderDao = GetFolderDao();
             var fileDao = GetFileDao();
             var trashId = await folderDao.GetFolderIDTrashAsync(true);
-            var foldersIdTask = folderDao.GetFoldersAsync(trashId).Select(f => f.ID).ToListAsync();
-            var filesIdTask = fileDao.GetFilesAsync(trashId);
+            var foldersIdTask = await folderDao.GetFoldersAsync(trashId).Select(f => f.ID).ToListAsync();
+            var filesIdTask = await fileDao.GetFilesAsync(trashId);
 
-            return FileOperationsManager.Delete(AuthContext.CurrentAccount.ID, TenantManager.GetCurrentTenant(), await foldersIdTask, await filesIdTask, false, true, false, GetHttpHeaders());
+            return FileOperationsManager.Delete(AuthContext.CurrentAccount.ID, TenantManager.GetCurrentTenant(), foldersIdTask, filesIdTask, false, true, false, GetHttpHeaders());
         }
 
         public async IAsyncEnumerable<FileOperationResult> CheckConversionAsync(List<List<string>> filesInfoJSON, bool sync = false)
@@ -1954,11 +1954,19 @@ namespace ASC.Web.Files.Services.WCFService
             var folderDao = GetFolderDao();
             var result = new List<T>();
 
-            var entries = AsyncEnumerable.Empty<FileEntry<T>>();
-            entries = aceCollection.Files.ToAsyncEnumerable().SelectAwait(async fileId => await fileDao.GetFileAsync(fileId));
-            entries.Concat(aceCollection.Folders.ToAsyncEnumerable().SelectAwait(async e => await folderDao.GetFolderAsync(e)));
+            var entries = new List<FileEntry<T>>();
 
-            await foreach (var entry in entries)
+            foreach (var fileId in aceCollection.Files)
+            {
+                entries.Add(await fileDao.GetFileAsync(fileId));
+            }
+
+            foreach (var folderId in aceCollection.Folders)
+            {
+                entries.Add(await folderDao.GetFolderAsync(folderId));
+            }
+
+            foreach (var entry in entries)
             {
                 try
                 {

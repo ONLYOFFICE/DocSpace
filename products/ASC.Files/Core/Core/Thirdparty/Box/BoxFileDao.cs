@@ -44,6 +44,7 @@ using ASC.Web.Studio.Core;
 
 using Box.V2.Models;
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.Box
@@ -105,9 +106,9 @@ namespace ASC.Files.Thirdparty.Box
             return ToFile(await GetBoxFileAsync(fileId).ConfigureAwait(false));
         }
 
-        public async Task<List<File<string>>> GetFileHistoryAsync(string fileId)
+        public IAsyncEnumerable<File<string>> GetFileHistoryAsync(string fileId)
         {
-            return new List<File<string>> { await GetFileAsync(fileId).ConfigureAwait(false) };
+            return GetFileAsync(fileId).ToAsyncEnumerable();
         }
 
         public IAsyncEnumerable<File<string>> GetFilesAsync(IEnumerable<string> fileIds)
@@ -337,8 +338,9 @@ namespace ASC.Files.Thirdparty.Box
                     .Where(r => r.Id.StartsWith(id))
                     .Select(r => r.HashId);
 
-                var link = Query(FilesDbContext.TagLink)
-                    .Where(r => hashIDs.Any(h => h == r.EntryId));
+                var link = await Query(FilesDbContext.TagLink)
+                    .Where(r => hashIDs.Any(h => h == r.EntryId))
+                    .ToListAsync();
 
                 FilesDbContext.TagLink.RemoveRange(link);
                 await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
@@ -348,18 +350,18 @@ namespace ASC.Files.Thirdparty.Box
                                    where ftl == null
                                    select ft;
 
-                FilesDbContext.Tag.RemoveRange(tagsToRemove.ToList());
+                FilesDbContext.Tag.RemoveRange(await tagsToRemove.ToListAsync());
 
                 var securityToDelete = Query(FilesDbContext.Security)
                     .Where(r => hashIDs.Any(h => h == r.EntryId));
 
-                FilesDbContext.Security.RemoveRange(securityToDelete);
+                FilesDbContext.Security.RemoveRange(await securityToDelete.ToListAsync());
                 await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
                 var mappingToDelete = Query(FilesDbContext.ThirdpartyIdMapping)
                     .Where(r => hashIDs.Any(h => h == r.HashId));
 
-                FilesDbContext.ThirdpartyIdMapping.RemoveRange(mappingToDelete);
+                FilesDbContext.ThirdpartyIdMapping.RemoveRange(await mappingToDelete.ToListAsync());
                 await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
                 await tx.CommitAsync().ConfigureAwait(false);
