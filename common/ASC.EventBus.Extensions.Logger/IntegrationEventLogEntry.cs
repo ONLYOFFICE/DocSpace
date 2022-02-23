@@ -1,5 +1,4 @@
 ﻿namespace ASC.EventBus.Extensions.Logger;
-
 public class IntegrationEventLogEntry
 {
     private IntegrationEventLogEntry() { }

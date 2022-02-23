@@ -4,13 +4,14 @@ public record IntegrationEvent
 {        
     private IntegrationEvent()
     {
-        Id = Guid.NewGuid();
-        CreateOn = DateTime.UtcNow;
+
     }
 
     [JsonConstructor]
-    public IntegrationEvent(Guid createBy, int tenantId) : base()
+    public IntegrationEvent(Guid createBy, int tenantId) 
     {
+        Id = Guid.NewGuid();
+        CreateOn = DateTime.UtcNow;
         CreateBy = createBy;
         TenantId = tenantId;
     }

@@ -396,6 +396,8 @@ namespace ASC.Data.Backup.Services
 
         protected override void DoJob()
         {
+            Thread.Sleep(100000000);
+
             if (ThreadPriority.BelowNormal < Thread.CurrentThread.Priority)
             {
                 Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;

@@ -24,6 +24,8 @@
 */
 using ASC.Api.Core.Extensions;
 using ASC.Common.Caching;
+using ASC.Common.Services;
+using ASC.Common.Services.Interfaces;
 
 namespace ASC.Data.Backup.BackgroundTasks;
 
@@ -45,6 +47,11 @@ public class Startup : BaseStartup
 
         DIHelper.TryAdd<BackupRequesteIntegrationEventHandler>();
                 
+        DIHelper.TryAdd<BackupListenerService>();
+        services.AddHostedService<BackupListenerService>();
+
         services.AddHostedService<BackupWorkerService>();
+        services.AddActivePassiveWorkerProcess<BackupCleanerService>();
+        services.AddActivePassiveWorkerProcess<BackupSchedulerService>();
     }
 }

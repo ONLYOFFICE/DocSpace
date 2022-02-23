@@ -1,5 +1,6 @@
 ﻿using ASC.Core;
 using ASC.Data.Backup.Core.IntegrationEvents.Events;
+using ASC.EventBus.Exceptions;
 
 namespace ASC.Data.Backup.IntegrationEvents.EventHandling;
 
@@ -29,12 +30,17 @@ public class BackupRequesteIntegrationEventHandler : IIntegrationEventHandler<Ba
     
     public async Task Handle(BackupRequestIntegrationEvent @event)
     {
+        _logger.InfoFormat("----- Handling integration event: {IntegrationEventId} at {AppName} - ({@IntegrationEvent})", @event.Id, Program.AppName, @event);
+
         _tenantManager.SetCurrentTenant(@event.TenantId);
 
         _securityContext.AuthenticateMeWithoutCookie(_authManager.GetAccountByID(@event.TenantId, @event.CreateBy));
     
         _backupAjaxHandler.StartBackup(@event.StorageType, @event.StorageParams, @event.BackupMail);
 
+        throw new IntegrationEventRejectExeption("Backup service is very busy");
+
         await Task.CompletedTask;
+
     }
 }

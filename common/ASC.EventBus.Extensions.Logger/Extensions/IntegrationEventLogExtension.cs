@@ -5,12 +5,12 @@ public static class IntegrationEventLogExtension
     public static ModelBuilderWrapper AddIntegrationEventLog(this ModelBuilderWrapper modelBuilder)
     {
         modelBuilder
-            .Add(MySqlAddAuditEvent, Provider.MySql)
-            .Add(PgSqlAddAuditEvent, Provider.PostgreSql);
+            .Add(MySqlAddIntegrationEventLog, Provider.MySql)
+            .Add(PgSqlAddIntegrationEventLog, Provider.PostgreSql);
 
         return modelBuilder;
     }
-    public static void MySqlAddAuditEvent(this ModelBuilder modelBuilder)
+    public static void MySqlAddIntegrationEventLog(this ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<IntegrationEventLogEntry>(entity =>
         {
@@ -72,7 +72,7 @@ public static class IntegrationEventLogExtension
         });
     }
 
-    public static void PgSqlAddAuditEvent(this ModelBuilder modelBuilder)
+    public static void PgSqlAddIntegrationEventLog(this ModelBuilder modelBuilder)
     {
         throw new NotImplementedException();
     }

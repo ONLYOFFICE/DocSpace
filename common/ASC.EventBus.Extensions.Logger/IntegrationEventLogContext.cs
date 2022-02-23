@@ -1,6 +1,4 @@
-﻿
-
-namespace ASC.EventBus.Extensions.Logger;
+﻿namespace ASC.EventBus.Extensions.Logger;
 
 public class MySqlIntegrationEventLogContext : IntegrationEventLogContext { }
 public class PostgreSqlIntegrationEventLogContext : IntegrationEventLogContext { }

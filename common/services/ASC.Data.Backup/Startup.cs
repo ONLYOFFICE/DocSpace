@@ -47,15 +47,8 @@ public class Startup : BaseStartup
 
         DIHelper.TryAdd<BackupController>();
 
-        DIHelper.TryAdd<BackupCleanerService>();
-        DIHelper.TryAdd<BackupSchedulerService>();
-        DIHelper.TryAdd<BackupListenerService>();
-
         NotifyConfigurationExtension.Register(DIHelper);
 
-        services.AddHostedService<BackupCleanerService>();
-        services.AddHostedService<BackupSchedulerService>();
-        services.AddHostedService<BackupListenerService>();        
     }
 }
 

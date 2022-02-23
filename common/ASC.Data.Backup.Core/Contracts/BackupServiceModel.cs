@@ -46,20 +46,10 @@ namespace ASC.Data.Backup.Contracts
     public class StartBackupRequest
     {
         public int TenantId { get; set; }
-
-
         public Guid UserId { get; set; }
-
-
         public bool BackupMail { get; set; }
-
-
         public BackupStorageType StorageType { get; set; }
-
-
         public string StorageBasePath { get; set; }
-
-
         public Dictionary<string, string> StorageParams { get; set; }
     }
 

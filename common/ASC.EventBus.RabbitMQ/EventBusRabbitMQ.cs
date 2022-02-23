@@ -1,8 +1,13 @@
-﻿namespace ASC.EventBus.RabbitMQ;
+﻿using System.Threading.Channels;
+
+using ASC.EventBus.Exceptions;
+
+namespace ASC.EventBus.RabbitMQ;
 
 public class EventBusRabbitMQ : IEventBus, IDisposable
 {
-    const string BROKER_NAME = "asc_event_bus";
+    const string EXCHANGE_NAME = "asc_event_bus";
+    const string DEAD_LETTER_EXCHANGE_NAME = "asc_event_bus_dlx";
     const string AUTOFAC_SCOPE_NAME = "asc_event_bus";
 
     private readonly IRabbitMQPersistentConnection _persistentConnection;
@@ -13,6 +18,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
 
     private IModel _consumerChannel;
     private string _queueName;
+    private string _deadLetterQueueName;
 
     public EventBusRabbitMQ(IRabbitMQPersistentConnection persistentConnection, IOptionsMonitor<ILog> options,
         ILifetimeScope autofac, IEventBusSubscriptionsManager subsManager, string queueName = null, int retryCount = 5)
@@ -21,6 +27,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
         _logger = options.CurrentValue ?? throw new ArgumentNullException(nameof(options.CurrentValue));
         _subsManager = subsManager ?? new InMemoryEventBusSubscriptionsManager();
         _queueName = queueName;
+        _deadLetterQueueName = $"{_queueName}_dlx";
         _consumerChannel = CreateConsumerChannel();
         _autofac = autofac;
         _retryCount = retryCount;
@@ -37,7 +44,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
         using (var channel = _persistentConnection.CreateModel())
         {
             channel.QueueUnbind(queue: _queueName,
-                exchange: BROKER_NAME,
+                exchange: EXCHANGE_NAME,
                 routingKey: eventName);
 
             if (_subsManager.IsEmpty)
@@ -70,8 +77,8 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
         {
             _logger.TraceFormat("Declaring RabbitMQ exchange to publish event: {EventId}", @event.Id);
 
-            channel.ExchangeDeclare(exchange: BROKER_NAME, type: "direct");
-                                
+            channel.ExchangeDeclare(exchange: EXCHANGE_NAME, type: "direct");
+
             var body = JsonSerializer.SerializeToUtf8Bytes(@event, @event.GetType(), new JsonSerializerOptions
             {
                 WriteIndented = true
@@ -85,7 +92,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
                 _logger.TraceFormat("Publishing event to RabbitMQ: {EventId}", @event.Id);
 
                 channel.BasicPublish(
-                    exchange: BROKER_NAME,
+                    exchange: EXCHANGE_NAME,
                     routingKey: eventName,
                     mandatory: true,
                     basicProperties: properties,
@@ -126,9 +133,13 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
             {
                 _persistentConnection.TryConnect();
             }
- 
+
+            _consumerChannel.QueueBind(queue: _deadLetterQueueName,
+                                exchange: DEAD_LETTER_EXCHANGE_NAME,
+                                routingKey: eventName);
+
             _consumerChannel.QueueBind(queue: _queueName,
-                                exchange: BROKER_NAME,
+                                exchange: EXCHANGE_NAME,
                                 routingKey: eventName);
         }
     }
@@ -194,16 +205,25 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
             }
 
             await ProcessEvent(eventName, message);
+
+           _consumerChannel.BasicAck(eventArgs.DeliveryTag, multiple: false);
+        }
+        catch (IntegrationEventRejectExeption ex)
+        {
+            _logger.Warn(String.Format("----- ERROR Processing message \"{0}\"", message), ex);
+
+            if (eventArgs.Redelivered)
+                _consumerChannel.BasicReject(eventArgs.DeliveryTag, requeue: false);
+            else
+                _consumerChannel.BasicNack(eventArgs.DeliveryTag, multiple: false, requeue: true);
+
         }
         catch (Exception ex)
         {
-            _logger.Warn(String.Format("----- ERROR Processing message \"{Message}\"", message), ex);
-        }
+            _logger.Warn(String.Format("----- ERROR Processing message \"{0}\"", message), ex);
 
-        // Even on exception we take the message off the queue.
-        // in a REAL WORLD app this should be handled with a Dead Letter Exchange (DLX). 
-        // For more information see: https://www.rabbitmq.com/dlx.html
-        _consumerChannel.BasicAck(eventArgs.DeliveryTag, multiple: false);
+            _consumerChannel.BasicAck(eventArgs.DeliveryTag, multiple: false);
+        }
     }
 
     private IModel CreateConsumerChannel()
@@ -217,14 +237,28 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
 
         var channel = _persistentConnection.CreateModel();
 
-        channel.ExchangeDeclare(exchange: BROKER_NAME,
+        channel.ExchangeDeclare(exchange: EXCHANGE_NAME,
                                 type: "direct");
+
+        channel.ExchangeDeclare(exchange: DEAD_LETTER_EXCHANGE_NAME,              
+                                type: "direct");
+
+        channel.QueueDeclare(queue: _deadLetterQueueName,
+                        durable: true,
+                        exclusive: false,
+                        autoDelete: false,                          
+                        arguments: null);
+
+
+        var arguments = new Dictionary<string, object>();
+
+        arguments.Add("x-dead-letter-exchange", DEAD_LETTER_EXCHANGE_NAME);
 
         channel.QueueDeclare(queue: _queueName,
                                 durable: true,
                                 exclusive: false,
                                 autoDelete: false,
-                                arguments: null);
+                                arguments: arguments);
 
         channel.CallbackException += (sender, ea) =>
         {
