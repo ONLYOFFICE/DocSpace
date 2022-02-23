@@ -31,6 +31,7 @@ using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Core;
 
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json.Linq;
@@ -71,6 +72,8 @@ namespace ASC.Files.Helpers
         private ApiDateTimeHelper ApiDateTimeHelper { get; }
         private UserManager UserManager { get; }
         private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        public SocketManager SocketManager { get; }
+        public IServiceProvider ServiceProvider { get; }
         private ILog Logger { get; set; }
         private IHttpClientFactory ClientFactory { get; set; }
 
@@ -104,6 +107,8 @@ namespace ASC.Files.Helpers
             ApiDateTimeHelper apiDateTimeHelper,
             UserManager userManager,
             DisplayUserSettingsHelper displayUserSettingsHelper,
+            IServiceProvider serviceProvider,
+            SocketManager socketManager,
             IHttpClientFactory clientFactory)
         {
             ApiContext = context;
@@ -128,6 +133,8 @@ namespace ASC.Files.Helpers
             ApiDateTimeHelper = apiDateTimeHelper;
             UserManager = userManager;
             DisplayUserSettingsHelper = displayUserSettingsHelper;
+            ServiceProvider = serviceProvider;
+            SocketManager = socketManager;
             HttpContextAccessor = httpContextAccessor;
             FileConverter = fileConverter;
             Logger = optionMonitor.Get("ASC.Files");
@@ -195,6 +202,9 @@ namespace ASC.Files.Helpers
             try
             {
                 var resultFile = await FileUploader.ExecAsync(folderId, title, file.Length, file, createNewIfExist ?? !FilesSettingsHelper.UpdateIfExist, !keepConvertStatus);
+
+                await SocketManager.CreateFileAsync(resultFile);
+
                 return await FileWrapperHelper.GetAsync(resultFile);
             }
             catch (FileNotFoundException e)
@@ -265,9 +275,9 @@ namespace ASC.Files.Helpers
             return configuration;
         }
 
-        public async Task<object> CreateUploadSessionAsync(T folderId, string fileName, long fileSize, string relativePath, bool encrypted)
+        public async Task<object> CreateUploadSessionAsync(T folderId, string fileName, long fileSize, string relativePath, ApiDateTime lastModified, bool encrypted)
         {
-            var file = await FileUploader.VerifyChunkedUploadAsync(folderId, fileName, fileSize, FilesSettingsHelper.UpdateIfExist, relativePath);
+            var file = await FileUploader.VerifyChunkedUploadAsync(folderId, fileName, fileSize, FilesSettingsHelper.UpdateIfExist, lastModified, relativePath);
 
             if (FilesLinkUtility.IsLocalFileUploader)
             {
@@ -335,6 +345,7 @@ namespace ASC.Files.Helpers
         public async Task<FolderWrapper<T>> CreateFolderAsync(T folderId, string title)
         {
             var folder = await FileStorageService.CreateNewFolderAsync(folderId, title);
+
             return await FolderWrapperHelper.GetAsync(folder);
         }
 
@@ -388,21 +399,23 @@ namespace ASC.Files.Helpers
             return await FileWrapperHelper.GetAsync(file);
         }
 
-        public async Task<FileWrapper<T>> CopyFileAsAsync(T fileId, T destFolderId, string destTitle)
+        public async Task<FileWrapper<TTemplate>> CopyFileAsAsync<TTemplate>(T fileId, TTemplate destFolderId, string destTitle, string password = null)
         {
+            var service = ServiceProvider.GetService<FileStorageService<TTemplate>>();
+            var controller = ServiceProvider.GetService<FilesControllerHelper<TTemplate>>();
             var file = await FileStorageService.GetFileAsync(fileId, -1);
             var ext = FileUtility.GetFileExtension(file.Title);
             var destExt = FileUtility.GetFileExtension(destTitle);
 
             if (ext == destExt)
             {
-                var newFile = await FileStorageService.CreateNewFileAsync(new FileModel<T, T> { ParentId = destFolderId, Title = destTitle, TemplateId = fileId }, false);
+                var newFile = await service.CreateNewFileAsync(new FileModel<TTemplate, T> { ParentId = destFolderId, Title = destTitle, TemplateId = fileId }, false);
                 return await FileWrapperHelper.GetAsync(newFile);
             }
 
-            using (var fileStream = await FileConverter.ExecAsync(file, destExt))
+            using (var fileStream = await FileConverter.ExecAsync(file, destExt, password))
             {
-                return await InsertFileAsync(destFolderId, fileStream, destTitle, true);
+                return await controller.InsertFileAsync(destFolderId, fileStream, destTitle, true);
             }
         }
 
@@ -448,18 +461,15 @@ namespace ASC.Files.Helpers
 
             return result;
         }
-
-        public IAsyncEnumerable<ConversationResult<T>> StartConversionAsync(T fileId, bool sync = false)
+        public IAsyncEnumerable<ConversationResult<T>> StartConversionAsync(CheckConversionModel<T> model)
         {
-            return CheckConversionAsync(fileId, true, sync);
+            model.StartConvert = true;
+            return CheckConversionAsync(model);
         }
 
-        public async IAsyncEnumerable<ConversationResult<T>> CheckConversionAsync(T fileId, bool start, bool sync = false)
+        public async IAsyncEnumerable<ConversationResult<T>> CheckConversionAsync(CheckConversionModel<T> model)
         {
-            var checkConversaion = FileStorageService.CheckConversionAsync(new List<List<string>>
-            {
-                new List<string> { fileId.ToString(), "0", start.ToString() }
-            }, sync);
+            var checkConversaion = FileStorageService.CheckConversionAsync(new List<CheckConversionModel<T>>() { model }, model.Sync);
 
             await foreach (var r in checkConversaion)
             {
@@ -487,6 +497,7 @@ namespace ASC.Files.Helpers
                     }
                     catch (Exception e)
                     {
+                        o.File = r.Result;
                         Logger.Error(e);
                     }
                 }
@@ -780,6 +791,7 @@ namespace ASC.Files.Helpers
                 var aceCollection = new AceCollection<T>
                 {
                     Files = new List<T> { fileId },
+                    Folders = new List<T>(0),
                     Aces = list
                 };
                 await FileStorageService.SetAceObjectAsync(aceCollection, false);

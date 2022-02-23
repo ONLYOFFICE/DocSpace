@@ -23,7 +23,7 @@
     <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="6.0.0" />
     <PackageReference Include="StackExchange.Redis.Extensions.AspNetCore" Version="7.2.1" />
     <PackageReference Include="StackExchange.Redis.Extensions.Newtonsoft" Version="7.2.1" />
-    <PackageReference Include="WebSocketSharpNetStandart" Version="1.0.3-rc12" />
+    <PackageReference Include="SocketIOClient" Version="3.0.5" />
   </ItemGroup>
 
   <ItemGroup>

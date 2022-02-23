@@ -48,6 +48,7 @@ using ASC.Core.Users;
 using ASC.Data.Storage;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.Files.Core;
+using ASC.Files.Core.Model;
 using ASC.Files.Core.Resources;
 using ASC.Files.Core.Security;
 using ASC.Files.Core.Services.NotifyService;
@@ -700,6 +701,8 @@ namespace ASC.Web.Files.Services.WCFService
 
             await FileMarker.MarkAsNewAsync(file);
 
+            await SocketManager.CreateFileAsync(file);
+
             return file;
         }
 
@@ -720,7 +723,7 @@ namespace ASC.Web.Files.Services.WCFService
                 if (isFinish)
                 {
                     FileTracker.Remove(id, tabId);
-                    SocketManager.FilesChangeEditors(id, true);
+                    await SocketManager.StopEditAsync(id);
                 }
                 else
                 {
@@ -767,6 +770,7 @@ namespace ASC.Web.Files.Services.WCFService
                 if (!forcesave && FileTracker.IsEditingAlone(fileId))
                 {
                     FileTracker.Remove(fileId);
+                    await SocketManager.StopEditAsync(fileId);
                 }
 
                 var file = await EntryManager.SaveEditingAsync(fileId, fileExtension, fileuri, stream, doc, forcesave: forcesave ? ForcesaveType.User : ForcesaveType.None, keepLink: true);
@@ -774,7 +778,6 @@ namespace ASC.Web.Files.Services.WCFService
                 if (file != null)
                     FilesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileUpdated, file.Title);
 
-                SocketManager.FilesChangeEditors(fileId, !forcesave);
                 return file;
             }
             catch (Exception e)
@@ -790,6 +793,7 @@ namespace ASC.Web.Files.Services.WCFService
                 if (!forcesave && FileTracker.IsEditing(fileId))
                 {
                     FileTracker.Remove(fileId);
+                    await SocketManager.StopEditAsync(fileId);
                 }
 
                 var file = await EntryManager.SaveEditingAsync(fileId,
@@ -804,7 +808,6 @@ namespace ASC.Web.Files.Services.WCFService
                 if (file != null)
                     FilesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileUpdated, file.Title);
 
-                SocketManager.FilesChangeEditors(fileId, true);
                 return file;
             }
             catch (Exception e)
@@ -1567,7 +1570,7 @@ namespace ASC.Web.Files.Services.WCFService
             return FileOperationsManager.Delete(AuthContext.CurrentAccount.ID, TenantManager.GetCurrentTenant(), foldersIdTask, filesIdTask, false, true, false, GetHttpHeaders());
         }
 
-        public async IAsyncEnumerable<FileOperationResult> CheckConversionAsync(List<List<string>> filesInfoJSON, bool sync = false)
+        public async IAsyncEnumerable<FileOperationResult> CheckConversionAsync(List<CheckConversionModel<T>> filesInfoJSON, bool sync = false)
         {
             if (filesInfoJSON == null || filesInfoJSON.Count == 0) yield break;
 
@@ -1576,17 +1579,15 @@ namespace ASC.Web.Files.Services.WCFService
             var files = new List<KeyValuePair<File<T>, bool>>();
             foreach (var fileInfo in filesInfoJSON)
             {
-                var fileId = (T)Convert.ChangeType(fileInfo[0], typeof(T));
-
-                var file = int.TryParse(fileInfo[1], out var version) && version > 0
-                                ? await fileDao.GetFileAsync(fileId, version)
-                                : await fileDao.GetFileAsync(fileId);
+                var file = fileInfo.Version > 0
+                                ? await fileDao.GetFileAsync(fileInfo.FileId, fileInfo.Version)
+                                : await fileDao.GetFileAsync(fileInfo.FileId);
 
                 if (file == null)
                 {
                     var newFile = ServiceProvider.GetService<File<T>>();
-                    newFile.ID = fileId;
-                    newFile.Version = version;
+                    newFile.ID = fileInfo.FileId;
+                    newFile.Version = fileInfo.Version;
 
                     files.Add(new KeyValuePair<File<T>, bool>(newFile, true));
                     continue;
@@ -1594,18 +1595,17 @@ namespace ASC.Web.Files.Services.WCFService
 
                 ErrorIf(!await FileSecurity.CanReadAsync(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
 
-                var startConvert = Convert.ToBoolean(fileInfo[2]);
-                if (startConvert && FileConverter.MustConvert(file))
+                if (fileInfo.StartConvert && FileConverter.MustConvert(file))
                 {
                     try
                     {
                         if (sync)
                         {
-                            results.Append(await FileConverter.ExecSynchronouslyAsync(file, fileInfo.Count > 3 ? fileInfo[3] : null));
+                            results.Append(await FileConverter.ExecSynchronouslyAsync(file, fileInfo.Password));
                         }
                         else
                         {
-                            await FileConverter.ExecAsynchronouslyAsync(file, false, fileInfo.Count > 3 ? fileInfo[3] : null);
+                            await FileConverter.ExecAsynchronouslyAsync(file, false, fileInfo.Password);
                         }
                     }
                     catch (Exception e)

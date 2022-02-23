@@ -214,6 +214,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         private async Task DeleteFilesAsync(IEnumerable<T> fileIds, IServiceScope scope)
         {
             var scopeClass = scope.ServiceProvider.GetService<FileDeleteOperationScope>();
+            var socketManager = scope.ServiceProvider.GetService<SocketManager>();
+
             var (fileMarker, filesMessageService) = scopeClass;
             foreach (var fileId in fileIds)
             {
@@ -242,6 +244,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                             file.ThumbnailStatus = Thumbnail.NotRequired;
                             await FileDao.SaveThumbnailAsync(file, null);
                         }
+
+                        socketManager.DeleteFile(file);
                     }
                     else
                     {
@@ -249,6 +253,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                         {
                             await FileDao.DeleteFileAsync(file.ID);
                             filesMessageService.Send(file, _headers, MessageAction.FileDeleted, file.Title);
+
+                            socketManager.DeleteFile(file);
                         }
                         catch (Exception ex)
                         {

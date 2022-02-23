@@ -32,6 +32,7 @@ using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 
+using ASC.Api.Core;
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Users;
@@ -241,7 +242,7 @@ namespace ASC.Web.Files.Utils
 
         #region chunked upload
 
-        public async Task<File<T>> VerifyChunkedUploadAsync<T>(T folderId, string fileName, long fileSize, bool updateIfExists, string relativePath = null)
+        public async Task<File<T>> VerifyChunkedUploadAsync<T>(T folderId, string fileName, long fileSize, bool updateIfExists, ApiDateTime lastModified, string relativePath = null)
         {
             var maxUploadSize = await GetMaxFileSizeAsync(folderId, true);
 
@@ -250,6 +251,11 @@ namespace ASC.Web.Files.Utils
 
             var file = await VerifyFileUploadAsync(folderId, fileName, updateIfExists, relativePath);
             file.ContentLength = fileSize;
+
+            if(lastModified != null)
+            {
+                file.ModifiedOn = lastModified;
+            }
 
             return file;
         }

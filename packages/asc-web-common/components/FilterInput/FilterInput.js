@@ -8,7 +8,7 @@ import ViewSelector from "@appserver/components/view-selector";
 import map from "lodash/map";
 import clone from "lodash/clone";
 import StyledFilterInput from "./StyledFilterInput";
-import { isMobileOnly } from "react-device-detect";
+import { isMobileOnly, isMobile } from "react-device-detect";
 
 const cloneObjectsArray = function (props) {
   return map(props, clone);
@@ -206,13 +206,15 @@ class FilterInput extends React.Component {
       size,
       placeholder,
       sectionWidth,
+      sortItemsVisible,
     } = this.props;
 
     if (
       !equal(selectedFilterData, nextProps.selectedFilterData) ||
       this.props.viewAs !== nextProps.viewAs ||
       this.props.widthProp !== nextProps.widthProp ||
-      sectionWidth !== nextProps.sectionWidth
+      sectionWidth !== nextProps.sectionWidth ||
+      sortItemsVisible !== nextProps.sortItemsVisible
     ) {
       return true;
     }
@@ -240,7 +242,7 @@ class FilterInput extends React.Component {
       itemsState.map((item, index) => {
         if (item.group === "filter-group" && index !== -1) {
           const newGroup = filterValues.find((i) => i.group === "filter-group");
-          updatedValues.splice(index, 1, newGroup);
+          newGroup && updatedValues.splice(index, 1, newGroup);
         }
       });
     }
@@ -825,10 +827,9 @@ class FilterInput extends React.Component {
       filterColumnCount,
       viewAs,
       contextMenuHeader,
-      isMobile,
       sectionWidth,
-      getViewSettingsData,
       viewSelectorVisible,
+      sortItemsVisible,
     } = this.props;
     /* eslint-enable react/prop-types */
 
@@ -850,6 +851,7 @@ class FilterInput extends React.Component {
         : false;
 
     let iconSize = 30;
+
     switch (size) {
       case "base":
         iconSize = 32;
@@ -862,6 +864,7 @@ class FilterInput extends React.Component {
       default:
         break;
     }
+
     return (
       <StyledFilterInput
         smallSectionWidth={smallSectionWidth}
@@ -895,6 +898,8 @@ class FilterInput extends React.Component {
                 openFilterItems={openFilterItems}
                 hiddenFilterItems={hiddenFilterItems}
                 iconSize={iconSize}
+                smallSectionWidth={smallSectionWidth}
+                sectionWidth={sectionWidth}
                 getFilterData={getFilterData}
                 onClickFilterItem={this.onClickFilterItem}
                 onDeleteFilterItem={this.onDeleteFilterItem}
@@ -908,7 +913,7 @@ class FilterInput extends React.Component {
           </SearchInput>
         </div>
         <div ref={this.rectComboBoxRef}>
-          {viewAs !== "table" && (
+          {viewAs !== "table" && (sortItemsVisible || isMobileOnly) && (
             <SortComboBox
               options={getSortData()}
               viewSettings={this.state.viewSettings}
@@ -926,6 +931,7 @@ class FilterInput extends React.Component {
               sortDirection={+sortDirection}
               directionAscLabel={directionAscLabel}
               directionDescLabel={directionDescLabel}
+              sortItemsVisible={sortItemsVisible}
             />
           )}
         </div>
@@ -961,6 +967,7 @@ FilterInput.propTypes = {
   getSortData: PropTypes.func,
   value: PropTypes.string,
   getViewSettingsData: PropTypes.func,
+  sortItemsVisible: PropTypes.bool,
 };
 
 FilterInput.defaultProps = {
@@ -976,6 +983,7 @@ FilterInput.defaultProps = {
   directionAscLabel: "A-Z",
   directionDescLabel: "Z-A",
   viewSelectorVisible: true,
+  sortItemsVisible: true,
 };
 
 export default FilterInput;

@@ -120,6 +120,7 @@ namespace ASC.Web.Files
         private IServiceProvider ServiceProvider { get; }
         public TempStream TempStream { get; }
         private UserManager UserManager { get; }
+        private SocketManager SocketManager { get; }
         private ILog Logger { get; }
         private IHttpClientFactory ClientFactory { get; }
 
@@ -143,12 +144,14 @@ namespace ASC.Web.Files
             PathProvider pathProvider,
             UserManager userManager,
             DocumentServiceTrackerHelper documentServiceTrackerHelper,
+            DocumentServiceHelper documentServiceHelper,
             FilesMessageService filesMessageService,
             FileShareLink fileShareLink,
             FileConverter fileConverter,
             FFmpegService fFmpegService,
             IServiceProvider serviceProvider,
             TempStream tempStream,
+            SocketManager socketManager,
             IHttpClientFactory clientFactory)
         {
             FilesLinkUtility = filesLinkUtility;
@@ -172,6 +175,7 @@ namespace ASC.Web.Files
             FileConverter = fileConverter;
             FFmpegService = fFmpegService;
             ServiceProvider = serviceProvider;
+            SocketManager = socketManager;
             TempStream = tempStream;
             UserManager = userManager;
             Logger = optionsMonitor.CurrentValue;
@@ -1118,6 +1122,8 @@ namespace ASC.Web.Files
                     var docType = context.Request.Query["doctype"];
                     file = await CreateFileFromTemplateAsync(folder, fileTitle, docType);
                 }
+
+                await SocketManager.CreateFileAsync(file);
             }
             catch (Exception ex)
             {

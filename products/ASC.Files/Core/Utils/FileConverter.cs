@@ -665,7 +665,7 @@ namespace ASC.Web.Files.Utils
             return ExecAsync(file, FileUtility.GetInternalExtension(file.Title));
         }      
 
-        public async Task<Stream> ExecAsync<T>(File<T> file, string toExtension)
+        public async Task<Stream> ExecAsync<T>(File<T> file, string toExtension, string password = null)
         {
             if (!EnableConvert(file, toExtension))
             {
@@ -682,7 +682,7 @@ namespace ASC.Web.Files.Utils
             var docKey = DocumentServiceHelper.GetDocKey(file);
             fileUri = DocumentServiceConnector.ReplaceCommunityAdress(fileUri);
 
-            var uriTuple = await DocumentServiceConnector.GetConvertedUriAsync(fileUri, file.ConvertedExtension, toExtension, docKey, null, null, null, false);
+            var uriTuple = await DocumentServiceConnector.GetConvertedUriAsync(fileUri, file.ConvertedExtension, toExtension, docKey, password, null, null, false);
             var convertUri = uriTuple.ConvertedDocumentUri;
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(convertUri);
