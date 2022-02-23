@@ -1,6 +1,7 @@
 ﻿using AuthenticationException = System.Security.Authentication.AuthenticationException;
 using Constants = ASC.Core.Users.Constants;
 using SecurityContext = ASC.Core.SecurityContext;
+using System.Threading.Tasks;
 
 namespace ASC.Web.Api.Controllers
 {
@@ -126,16 +127,16 @@ namespace ASC.Web.Api.Controllers
         }
 
         [Create(false)]
-        public AuthenticationTokenData AuthenticateMeFromBody([FromBody] AuthModel auth)
+        public Task<AuthenticationTokenData> AuthenticateMeFromBodyAsync([FromBody] AuthModel auth)
         {
-            return AuthenticateMe(auth);
+            return AuthenticateMeAsync(auth);
         }
 
         [Create(false)]
         [Consumes("application/x-www-form-urlencoded")]
-        public AuthenticationTokenData AuthenticateMeFromForm([FromForm] AuthModel auth)
+        public Task<AuthenticationTokenData> AuthenticateMeFromFormAsync([FromForm] AuthModel auth)
         {
-            return AuthenticateMe(auth);
+            return AuthenticateMeAsync(auth);
         }
 
         [Create("logout")]
@@ -166,24 +167,24 @@ namespace ASC.Web.Api.Controllers
 
         [Authorize(AuthenticationSchemes = "confirm", Roles = "PhoneActivation")]
         [Create("setphone", false)]
-        public AuthenticationTokenData SaveMobilePhoneFromBody([FromBody] MobileModel model)
+        public Task<AuthenticationTokenData> SaveMobilePhoneFromBodyAsync([FromBody] MobileModel model)
         {
-            return SaveMobilePhone(model);
+            return SaveMobilePhoneAsync(model);
         }
 
         [Authorize(AuthenticationSchemes = "confirm", Roles = "PhoneActivation")]
         [Create("setphone", false)]
         [Consumes("application/x-www-form-urlencoded")]
-        public AuthenticationTokenData SaveMobilePhoneFromForm([FromForm] MobileModel model)
+        public Task<AuthenticationTokenData> SaveMobilePhoneFromFormAsync([FromForm] MobileModel model)
         {
-            return SaveMobilePhone(model);
+            return SaveMobilePhoneAsync(model);
         }
 
-        private AuthenticationTokenData SaveMobilePhone(MobileModel model)
+        private async Task<AuthenticationTokenData> SaveMobilePhoneAsync(MobileModel model)
         {
             ApiContext.AuthByClaim();
             var user = UserManager.GetUsers(AuthContext.CurrentAccount.ID);
-            model.MobilePhone = SmsManager.SaveMobilePhone(user, model.MobilePhone);
+            model.MobilePhone = await SmsManager.SaveMobilePhoneAsync(user, model.MobilePhone);
             MessageService.Send(MessageAction.UserUpdatedMobileNumber, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettingsHelper), model.MobilePhone);
 
             return new AuthenticationTokenData
@@ -195,22 +196,22 @@ namespace ASC.Web.Api.Controllers
         }
 
         [Create(@"sendsms", false)]
-        public AuthenticationTokenData SendSmsCodeFromBody([FromBody] AuthModel model)
+        public Task<AuthenticationTokenData> SendSmsCodeFromBodyAsync([FromBody] AuthModel model)
         {
-            return SendSmsCode(model);
+            return SendSmsCodeAsync(model);
         }
 
         [Create(@"sendsms", false)]
         [Consumes("application/x-www-form-urlencoded")]
-        public AuthenticationTokenData SendSmsCodeFromForm([FromForm] AuthModel model)
+        public Task<AuthenticationTokenData> SendSmsCodeFromFormAsync([FromForm] AuthModel model)
         {
-            return SendSmsCode(model);
+            return SendSmsCodeAsync(model);
         }
 
-        private AuthenticationTokenData SendSmsCode(AuthModel model)
+        private async Task<AuthenticationTokenData> SendSmsCodeAsync(AuthModel model)
         {
             var user = GetUser(model, out _);
-            SmsManager.PutAuthCode(user, true);
+            await SmsManager.PutAuthCodeAsync(user, true);
 
             return new AuthenticationTokenData
             {
@@ -220,7 +221,7 @@ namespace ASC.Web.Api.Controllers
             };
         }
 
-        private AuthenticationTokenData AuthenticateMe(AuthModel auth)
+        private async Task<AuthenticationTokenData> AuthenticateMeAsync(AuthModel auth)
         {
             bool viaEmail;
             var user = GetUser(auth, out viaEmail);
@@ -234,7 +235,7 @@ namespace ASC.Web.Api.Controllers
                         ConfirmUrl = CommonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.PhoneActivation)
                     };
 
-                SmsManager.PutAuthCode(user, false);
+                await SmsManager.PutAuthCodeAsync(user, false);
 
                 return new AuthenticationTokenData
                 {

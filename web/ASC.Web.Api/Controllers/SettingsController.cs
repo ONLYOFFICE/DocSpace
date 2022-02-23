@@ -739,9 +739,9 @@ namespace ASC.Api.Settings
 
         [AllowAnonymous]
         [Read("version/build", false)]
-        public BuildVersion GetBuildVersions()
+        public Task<BuildVersion> GetBuildVersionsAsync()
         {
-            return BuildVersion.GetCurrentBuildVersion();
+            return BuildVersion.GetCurrentBuildVersionAsync();
         }
 
         [Read("version")]
@@ -2092,22 +2092,28 @@ namespace ASC.Api.Settings
         }
 
         [Read("statistics/spaceusage/{id}")]
-        public List<UsageSpaceStatItemWrapper> GetSpaceUsageStatistics(Guid id)
+        public Task<List<UsageSpaceStatItemWrapper>> GetSpaceUsageStatistics(Guid id)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            var webtem = WebItemManagerSecurity.GetItems(WebZoneType.All, ItemAvailableState.All)
+            var webitem = WebItemManagerSecurity.GetItems(WebZoneType.All, ItemAvailableState.All)
                                        .FirstOrDefault(item =>
                                                        item != null &&
                                                        item.ID == id &&
                                                        item.Context != null &&
                                                        item.Context.SpaceUsageStatManager != null);
 
-            if (webtem == null) return new List<UsageSpaceStatItemWrapper>();
+            if (webitem == null) return Task.FromResult(new List<UsageSpaceStatItemWrapper>());
 
-            return webtem.Context.SpaceUsageStatManager.GetStatData()
-                         .ConvertAll(it => new UsageSpaceStatItemWrapper
+            return InternalGetSpaceUsageStatistics(webitem);
+        }
+
+        private async Task<List<UsageSpaceStatItemWrapper>> InternalGetSpaceUsageStatistics(IWebItem webitem)
                          {
+            var statData = await webitem.Context.SpaceUsageStatManager.GetStatDataAsync();
+
+            return statData.ConvertAll(it => new UsageSpaceStatItemWrapper
+            {
                              Name = it.Name.HtmlEncode(),
                              Icon = it.ImgUrl,
                              Disabled = it.Disabled,

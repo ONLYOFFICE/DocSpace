@@ -55,10 +55,10 @@ namespace ASC.Api.Settings
             DocumentServiceConnector = documentServiceConnector;
         }
 
-        public BuildVersion GetCurrentBuildVersion()
+        public async Task<BuildVersion> GetCurrentBuildVersionAsync()
         {
             CommunityServer = GetCommunityVersion();
-            DocumentServer = GetDocumentVersion();
+            DocumentServer = await GetDocumentVersionAsync();
             MailServer = GetMailServerVersion();
             XmppServer = GetXmppServerVersion();
 
@@ -70,12 +70,12 @@ namespace ASC.Api.Settings
             return Configuration["version:number"] ?? "8.5.0";
         }
 
-        private string GetDocumentVersion()
+        private Task<string> GetDocumentVersionAsync()
         {
             if (string.IsNullOrEmpty(FilesLinkUtility.DocServiceApiUrl))
                 return null;
 
-            return DocumentServiceConnector.GetVersion();
+            return DocumentServiceConnector.GetVersionAsync();
         }
 
         private static string GetMailServerVersion()

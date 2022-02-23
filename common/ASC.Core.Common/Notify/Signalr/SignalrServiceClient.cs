@@ -370,7 +370,7 @@ namespace ASC.Core.Notify.Signalr
         {
             Log.ErrorFormat("Service Error: {0}, {1}, {2}", e.Message, e.StackTrace,
                 (e.InnerException != null) ? e.InnerException.Message : string.Empty);
-            if (e is CommunicationException || e is TimeoutException)
+            if (e is HttpRequestException)
             {
                 lastErrorTime = DateTime.Now;
             }

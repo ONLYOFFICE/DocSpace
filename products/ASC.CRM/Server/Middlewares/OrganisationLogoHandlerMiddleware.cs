@@ -105,7 +105,7 @@ namespace ASC.Web.CRM.HttpHandlers
             {
                 var imageData = Global.ToByteArray(context.Request.Form.Files[0].OpenReadStream());
                 var imageFormat = contactPhotoManager.CheckImgFormat(imageData);
-                var photoUri = organisationLogoManager.UploadLogo(imageData, imageFormat);
+                var photoUri = await organisationLogoManager.UploadLogoAsync(imageData, imageFormat);
 
                 fileUploadResult.Success = true;
                 fileUploadResult.Data = photoUri;

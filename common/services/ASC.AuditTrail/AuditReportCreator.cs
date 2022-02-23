@@ -63,8 +63,8 @@ public class AuditReportCreator
             csv.WriteRecords(events);
             writer.Flush();
 
-            var file = _fileUploader.Exec(_globalFolderHelper.FolderMy, reportName, stream.Length, stream, true);
-            var fileUrl = _commonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.GetFileWebEditorUrl(file.ID));
+                    var file = _fileUploader.ExecAsync(_globalFolderHelper.FolderMy, reportName, stream.Length, stream, true).Result;
+                    var fileUrl = _commonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.GetFileWebEditorUrl(file.ID));
 
             fileUrl += string.Format("&options={{\"codePage\":{0}}}", Encoding.UTF8.CodePage);
 
