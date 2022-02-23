@@ -88,7 +88,10 @@ namespace ASC.Files.Tests
             var host = Program.CreateHostBuilder(new string[] {
                 "--pathToConf" , Path.Combine("..", "..", "..", "..","..", "..", "config"),
                 "--ConnectionStrings:default:connectionString", TestConnection,
-                 "--migration:enabled", "true" }).Build();
+                 "--migration:enabled", "true",
+                 "--web:hub:internal", "",
+            })
+                .Build();
 
             scope = host.Services.CreateScope();
 
