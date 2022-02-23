@@ -9,4 +9,4 @@ export const thumbnailStatuses = {
   NOT_REQUIRED: 3,
 };
 
-export const ADS_TIMEOUT = 60000;
+export const ADS_TIMEOUT = 300000; // 5 min

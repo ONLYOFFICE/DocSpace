@@ -640,6 +640,8 @@ namespace ASC.Web.Files.Services.WCFService
 
             FileMarker.MarkAsNew(file);
 
+            SocketManager.CreateFile(file);
+
             return file;
         }
 
@@ -660,7 +662,7 @@ namespace ASC.Web.Files.Services.WCFService
                 if (isFinish)
                 {
                     FileTracker.Remove(id, tabId);
-                    SocketManager.FilesChangeEditors(id, true);
+                    SocketManager.StopEdit(id);
                 }
                 else
                 {
@@ -707,6 +709,7 @@ namespace ASC.Web.Files.Services.WCFService
                 if (!forcesave && FileTracker.IsEditingAlone(fileId))
                 {
                     FileTracker.Remove(fileId);
+                    SocketManager.StopEdit(fileId);
                 }
 
                 var file = EntryManager.SaveEditing(fileId, fileExtension, fileuri, stream, doc, forcesave: forcesave ? ForcesaveType.User : ForcesaveType.None, keepLink: true);
@@ -714,7 +717,6 @@ namespace ASC.Web.Files.Services.WCFService
                 if (file != null)
                     FilesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileUpdated, file.Title);
 
-                SocketManager.FilesChangeEditors(fileId, !forcesave);
                 return file;
             }
             catch (Exception e)
@@ -730,6 +732,7 @@ namespace ASC.Web.Files.Services.WCFService
                 if (!forcesave && FileTracker.IsEditing(fileId))
                 {
                     FileTracker.Remove(fileId);
+                    SocketManager.StopEdit(fileId);
                 }
 
                 var file = EntryManager.SaveEditing(fileId,
@@ -744,7 +747,6 @@ namespace ASC.Web.Files.Services.WCFService
                 if (file != null)
                     FilesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileUpdated, file.Title);
 
-                SocketManager.FilesChangeEditors(fileId, true);
                 return file;
             }
             catch (Exception e)
@@ -1492,7 +1494,7 @@ namespace ASC.Web.Files.Services.WCFService
             return FileOperationsManager.Delete(AuthContext.CurrentAccount.ID, TenantManager.GetCurrentTenant(), foldersId, filesId, false, true, false, GetHttpHeaders());
         }
 
-        public List<FileOperationResult> CheckConversion(List<List<string>> filesInfoJSON, bool sync = false)
+        public List<FileOperationResult> CheckConversion(List<CheckConversionModel<T>> filesInfoJSON, bool sync = false)
         {
             if (filesInfoJSON == null || filesInfoJSON.Count == 0) return new List<FileOperationResult>();
 
@@ -1501,17 +1503,15 @@ namespace ASC.Web.Files.Services.WCFService
             var files = new List<KeyValuePair<File<T>, bool>>();
             foreach (var fileInfo in filesInfoJSON)
             {
-                var fileId = (T)Convert.ChangeType(fileInfo[0], typeof(T));
-
-                var file = int.TryParse(fileInfo[1], out var version) && version > 0
-                                ? fileDao.GetFile(fileId, version)
-                                : fileDao.GetFile(fileId);
+                var file = fileInfo.Version > 0
+                                ? fileDao.GetFile(fileInfo.FileId, fileInfo.Version)
+                                : fileDao.GetFile(fileInfo.FileId);
 
                 if (file == null)
                 {
                     var newFile = ServiceProvider.GetService<File<T>>();
-                    newFile.ID = fileId;
-                    newFile.Version = version;
+                    newFile.ID = fileInfo.FileId;
+                    newFile.Version = fileInfo.Version;
 
                     files.Add(new KeyValuePair<File<T>, bool>(newFile, true));
                     continue;
@@ -1519,18 +1519,17 @@ namespace ASC.Web.Files.Services.WCFService
 
                 ErrorIf(!FileSecurity.CanRead(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
 
-                var startConvert = Convert.ToBoolean(fileInfo[2]);
-                if (startConvert && FileConverter.MustConvert(file))
+                if (fileInfo.StartConvert && FileConverter.MustConvert(file))
                 {
                     try
                     {
                         if (sync)
                         {
-                            results.Add(FileConverter.ExecSync(file, fileInfo.Count > 3 ? fileInfo[3] : null));
+                            results.Add(FileConverter.ExecSync(file, fileInfo.Password));
                         }
                         else
                         {
-                            FileConverter.ExecAsync(file, false, fileInfo.Count > 3 ? fileInfo[3] : null);
+                            FileConverter.ExecAsync(file, false, fileInfo.Password);
                         }
                     }
                     catch (Exception e)

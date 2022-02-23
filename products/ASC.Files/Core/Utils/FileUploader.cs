@@ -216,7 +216,7 @@ namespace ASC.Web.Files.Utils
 
         #region chunked upload
 
-        public File<T> VerifyChunkedUpload<T>(T folderId, string fileName, long fileSize, bool updateIfExists, string relativePath = null)
+        public File<T> VerifyChunkedUpload<T>(T folderId, string fileName, long fileSize, bool updateIfExists, ApiDateTime lastModified, string relativePath = null)
         {
             var maxUploadSize = GetMaxFileSize(folderId, true);
 
@@ -225,6 +225,11 @@ namespace ASC.Web.Files.Utils
 
             var file = VerifyFileUpload(folderId, fileName, updateIfExists, relativePath);
             file.ContentLength = fileSize;
+
+            if(lastModified != null)
+            {
+                file.ModifiedOn = lastModified;
+            }
 
             return file;
         }

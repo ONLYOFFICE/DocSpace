@@ -109,12 +109,16 @@ const ThirdPartyDialog = (props) => {
         "Authorization",
         "height=600, width=1020"
       );
-      openConnectWindow(item.title, authModal).then((modal) =>
-        getOAuthToken(modal).then((token) => {
+      openConnectWindow(item.title, authModal)
+        .then(getOAuthToken)
+        .then((token) => {
           authModal.close();
           showOAuthModal(token, item);
         })
-      );
+        .catch((e) => {
+          if (!e) return;
+          console.error(e);
+        });
     } else {
       item.title = connectedCloudsTitleTranslation(item.title, t);
       setConnectItem(item);

@@ -1,4 +1,5 @@
 ﻿namespace ASC.Api.Core.Middleware;
+using System.Security.Authentication;
 
 public class CustomExceptionFilterAttribute : ExceptionFilterAttribute
 {
@@ -11,6 +12,8 @@ public class CustomExceptionFilterAttribute : ExceptionFilterAttribute
         {
             status = HttpStatusCode.InternalServerError;
         }
+
+            bool withStackTrace = true;
 
         switch (context.Exception)
         {
@@ -26,12 +29,16 @@ public class CustomExceptionFilterAttribute : ExceptionFilterAttribute
                 status = HttpStatusCode.Forbidden;
                 message = "Access denied";
                 break;
+                case AuthenticationException:
+                    status = HttpStatusCode.Unauthorized;
+                    withStackTrace = false;
+                    break;
             case InvalidOperationException:
                 status = HttpStatusCode.Forbidden;
                 break;
         }
 
-        var result = new ObjectResult(new ErrorApiResponse(status, context.Exception, message))
+            var result = new ObjectResult(new ErrorApiResponse(status, context.Exception, message, withStackTrace))
         {
             StatusCode = (int)status
         };

@@ -221,7 +221,7 @@ class LanguageAndTimeZone extends React.Component {
         .then(
           () =>
             !user.cultureName &&
-            localStorage.setItem(LANGUAGE, language.key || "en-US")
+            localStorage.setItem(LANGUAGE, language.key || "en")
         )
         .then(() => toastr.success(t("SuccessfullySaveSettingsMessage")))
         .then(

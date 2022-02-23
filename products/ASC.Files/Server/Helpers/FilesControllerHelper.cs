@@ -33,6 +33,8 @@ namespace ASC.Files.Helpers
         private ApiDateTimeHelper ApiDateTimeHelper { get; }
         private UserManager UserManager { get; }
         private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        public SocketManager SocketManager { get; }
+        public IServiceProvider ServiceProvider { get; }
         private ILog Logger { get; set; }
         private IHttpClientFactory ClientFactory { get; set; }
 
@@ -66,6 +68,8 @@ namespace ASC.Files.Helpers
             ApiDateTimeHelper apiDateTimeHelper,
             UserManager userManager,
             DisplayUserSettingsHelper displayUserSettingsHelper,
+            IServiceProvider serviceProvider,
+            SocketManager socketManager,
             IHttpClientFactory clientFactory)
         {
             ApiContext = context;
@@ -90,6 +94,8 @@ namespace ASC.Files.Helpers
             ApiDateTimeHelper = apiDateTimeHelper;
             UserManager = userManager;
             DisplayUserSettingsHelper = displayUserSettingsHelper;
+            ServiceProvider = serviceProvider;
+            SocketManager = socketManager;
             HttpContextAccessor = httpContextAccessor;
             FileConverter = fileConverter;
             Logger = optionMonitor.Get("ASC.Files");
@@ -149,6 +155,9 @@ namespace ASC.Files.Helpers
             try
             {
                 var resultFile = FileUploader.Exec(folderId, title, file.Length, file, createNewIfExist ?? !FilesSettingsHelper.UpdateIfExist, !keepConvertStatus);
+
+                SocketManager.CreateFile(resultFile);
+
                 return FileWrapperHelper.Get(resultFile);
             }
             catch (FileNotFoundException e)
@@ -217,9 +226,9 @@ namespace ASC.Files.Helpers
             return configuration;
         }
 
-        public object CreateUploadSession(T folderId, string fileName, long fileSize, string relativePath, bool encrypted)
+        public object CreateUploadSession(T folderId, string fileName, long fileSize, string relativePath, ApiDateTime lastModified, bool encrypted)
         {
-            var file = FileUploader.VerifyChunkedUpload(folderId, fileName, fileSize, FilesSettingsHelper.UpdateIfExist, relativePath);
+            var file = FileUploader.VerifyChunkedUpload(folderId, fileName, fileSize, FilesSettingsHelper.UpdateIfExist, lastModified, relativePath);
 
             if (FilesLinkUtility.IsLocalFileUploader)
             {
@@ -287,6 +296,7 @@ namespace ASC.Files.Helpers
         public FolderWrapper<T> CreateFolder(T folderId, string title)
         {
             var folder = FileStorageService.CreateNewFolder(folderId, title);
+
             return FolderWrapperHelper.Get(folder);
         }
 
@@ -333,21 +343,24 @@ namespace ASC.Files.Helpers
             var file = FileStorageService.GetFile(fileId, version).NotFoundIfNull("File not found");
             return FileWrapperHelper.Get(file);
         }
-        public FileWrapper<T> CopyFileAs(T fileId, T destFolderId, string destTitle)
+
+        public FileWrapper<TTemplate> CopyFileAs<TTemplate>(T fileId, TTemplate destFolderId, string destTitle, string password = null)
         {
+            var service = ServiceProvider.GetService<FileStorageService<TTemplate>>();
+            var controller = ServiceProvider.GetService<FilesControllerHelper<TTemplate>>();
             var file = FileStorageService.GetFile(fileId, -1);
             var ext = FileUtility.GetFileExtension(file.Title);
             var destExt = FileUtility.GetFileExtension(destTitle);
 
             if (ext == destExt)
             {
-                var newFile = FileStorageService.CreateNewFile(new FileModel<T, T> { ParentId = destFolderId, Title = destTitle, TemplateId = fileId }, false);
+                var newFile = service.CreateNewFile(new FileModel<TTemplate, T> { ParentId = destFolderId, Title = destTitle, TemplateId = fileId }, false);
                 return FileWrapperHelper.Get(newFile);
             }
 
-            using (var fileStream = FileConverter.Exec(file, destExt))
+            using (var fileStream = FileConverter.Exec(file, destExt, password))
             {
-                return InsertFile(destFolderId, fileStream, destTitle, true);
+                return controller.InsertFile(destFolderId, fileStream, destTitle, true);
             }
         }
 
@@ -388,17 +401,15 @@ namespace ASC.Files.Helpers
                 .Select(FileOperationWraperHelper.Get);
         }
 
-        public IEnumerable<ConversationResult<T>> StartConversion(T fileId, bool sync = false)
+        public IEnumerable<ConversationResult<T>> StartConversion(CheckConversionModel<T> model)
         {
-            return CheckConversion(fileId, true, sync);
+            model.StartConvert = true;
+            return CheckConversion(model);
         }
 
-        public IEnumerable<ConversationResult<T>> CheckConversion(T fileId, bool start, bool sync = false)
+        public IEnumerable<ConversationResult<T>> CheckConversion(CheckConversionModel<T> model)
         {
-            return FileStorageService.CheckConversion(new List<List<string>>
-            {
-                new List<string> { fileId.ToString(), "0", start.ToString() }
-            }, sync)
+            return FileStorageService.CheckConversion(new List<CheckConversionModel<T>>() { model }, model.Sync)
             .Select(r =>
             {
                 var o = new ConversationResult<T>
@@ -424,6 +435,7 @@ namespace ASC.Files.Helpers
                     }
                     catch (Exception e)
                     {
+                        o.File = r.Result;
                         Logger.Error(e);
                     }
                 }
@@ -641,6 +653,7 @@ namespace ASC.Files.Helpers
                 var aceCollection = new AceCollection<T>
                 {
                     Files = new List<T> { fileId },
+                    Folders = new List<T>(0),
                     Aces = list
                 };
                 FileStorageService.SetAceObject(aceCollection, false);

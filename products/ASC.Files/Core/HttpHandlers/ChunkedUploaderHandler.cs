@@ -54,7 +54,8 @@ namespace ASC.Web.Files.HttpHandlers
         private InstanceCrypto InstanceCrypto { get; }
         private ChunkedUploadSessionHolder ChunkedUploadSessionHolder { get; }
         private ChunkedUploadSessionHelper ChunkedUploadSessionHelper { get; }
-        public ILog Logger { get; }
+        private SocketManager SocketManager { get; }
+        private ILog Logger { get; }
 
         public ChunkedUploaderHandlerService(
             IOptionsMonitor<ILog> optionsMonitor,
@@ -66,7 +67,8 @@ namespace ASC.Web.Files.HttpHandlers
             SetupInfo setupInfo,
             InstanceCrypto instanceCrypto,
             ChunkedUploadSessionHolder chunkedUploadSessionHolder,
-            ChunkedUploadSessionHelper chunkedUploadSessionHelper)
+            ChunkedUploadSessionHelper chunkedUploadSessionHelper,
+            SocketManager socketManager)
         {
             TenantManager = tenantManager;
             FileUploader = fileUploader;
@@ -77,6 +79,7 @@ namespace ASC.Web.Files.HttpHandlers
             InstanceCrypto = instanceCrypto;
             ChunkedUploadSessionHolder = chunkedUploadSessionHolder;
             ChunkedUploadSessionHelper = chunkedUploadSessionHelper;
+            SocketManager = socketManager;
             Logger = optionsMonitor.CurrentValue;
         }
 
@@ -139,6 +142,8 @@ namespace ASC.Web.Files.HttpHandlers
                         {
                             await WriteSuccess(context, ToResponseObject(resumedSession.File), (int)HttpStatusCode.Created);
                             FilesMessageService.Send(resumedSession.File, MessageAction.FileUploaded, resumedSession.File.Title);
+
+                            SocketManager.CreateFile(resumedSession.File);
                         }
                         else
                         {

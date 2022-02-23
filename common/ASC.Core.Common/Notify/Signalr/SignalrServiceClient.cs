@@ -290,11 +290,47 @@ namespace ASC.Core.Notify.Signalr
             }
         }
 
-        public void FilesChangeEditors(int tenantId, string fileId, bool finish)
+        public void StartEdit<T>(T fileId, string room)
         {
             try
             {
-                MakeRequest("changeEditors", new { tenantId, fileId, finish });
+                MakeRequest("start-edit", new { room, fileId });
+            }
+            catch (Exception error)
+            {
+                ProcessError(error);
+            }
+        }
+
+        public void StopEdit<T>(T fileId, string room, string data)
+        {
+            try
+            {
+                MakeRequest("stop-edit", new { room, fileId, data });
+            }
+            catch (Exception error)
+            {
+                ProcessError(error);
+            }
+        }
+
+        public void CreateFile<T>(T fileId, string room, string data)
+        {
+            try
+            {
+                MakeRequest("create-file", new { room, fileId, data });
+            }
+            catch (Exception error)
+            {
+                ProcessError(error);
+            }
+        }
+
+        public void DeleteFile<T>(T fileId, string room)
+        {
+            try
+            {
+                MakeRequest("delete-file", new { room, fileId });
             }
             catch (Exception error)
             {

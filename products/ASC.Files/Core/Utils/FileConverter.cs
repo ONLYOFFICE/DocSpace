@@ -627,7 +627,7 @@ namespace ASC.Web.Files.Utils
             return Exec(file, FileUtility.GetInternalExtension(file.Title));
         }
 
-        public Stream Exec<T>(File<T> file, string toExtension)
+        public Stream Exec<T>(File<T> file, string toExtension, string password = null)
         {
             if (!EnableConvert(file, toExtension))
             {
@@ -643,7 +643,7 @@ namespace ASC.Web.Files.Utils
             var fileUri = PathProvider.GetFileStreamUrl(file);
             var docKey = DocumentServiceHelper.GetDocKey(file);
             fileUri = DocumentServiceConnector.ReplaceCommunityAdress(fileUri);
-            DocumentServiceConnector.GetConvertedUri(fileUri, file.ConvertedExtension, toExtension, docKey, null, null, null, false, out var convertUri);
+            DocumentServiceConnector.GetConvertedUri(fileUri, file.ConvertedExtension, toExtension, docKey, password, null, null, false, out var convertUri);
 
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(convertUri);
