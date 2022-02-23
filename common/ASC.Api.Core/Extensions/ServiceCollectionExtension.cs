@@ -1,5 +1,7 @@
 ﻿using ASC.Common.Caching;
 using ASC.Common.Logging;
+using ASC.Common.Services.Interfaces;
+using ASC.Common.Services;
 using ASC.EventBus;
 using ASC.EventBus.Abstractions;
 using ASC.EventBus.RabbitMQ;
@@ -8,9 +10,12 @@ using Autofac;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
 using RabbitMQ.Client;
+using ASC.Common;
+using ASC.Core.Common.Services.Interfaces;
 
 namespace ASC.Api.Core.Extensions
 {
@@ -79,6 +84,20 @@ namespace ASC.Api.Core.Extensions
 
             services.AddSingleton<IEventBusSubscriptionsManager, InMemoryEventBusSubscriptionsManager>();
         }
-    }
 
+        public static void AddActivePassiveWorkerProcess<T>(this IServiceCollection services) where T : class, IHostedService
+        {
+            var diHelper = new DIHelper(services);
+
+            diHelper.TryAdd<IRegisterInstanceRepository<T>, RegisterInstanceRepository<T>>();
+            diHelper.TryAdd<IRegisterInstanceService<T>, RegisterInstanceService<T>>();
+            diHelper.TryAdd<IInstanceWorkerInfo<T>, RegisterInstanceWorkerProcess<T>>();
+           
+            services.AddHostedService<RegisterInstanceWorkerProcess<T>>();
+
+            diHelper.TryAdd<T>();
+            services.AddHostedService<T>();
+
+        }
+    }
 }
