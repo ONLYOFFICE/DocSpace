@@ -60,3 +60,16 @@ Scenario("Profile remove success", async ({ I }) => {
   I.wait(2);
   I.see("Web Office");
 });
+
+Scenario("Tfa auth error", async ({ I }) => {
+  I.mockEndpoint(Endpoints.confirm, "confirm");
+  I.mockEndpoint(Endpoints.code, "codeError");
+
+  I.amOnPage("/confirm/TfaAuth");
+  I.fillField("code", "123456");
+  I.click({
+    react: "Button",
+  });
+
+  I.see("Web Office");
+});
