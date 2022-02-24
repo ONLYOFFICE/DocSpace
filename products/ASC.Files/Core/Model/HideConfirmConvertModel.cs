@@ -1,7 +1,6 @@
-﻿namespace ASC.Files.Core.Model
+﻿namespace ASC.Files.Core.Model;
+
+public class HideConfirmConvertModel
 {
-    public class HideConfirmConvertModel
-    {
-        public bool Save { get; set; }
-    }
+    public bool Save { get; set; }
 }

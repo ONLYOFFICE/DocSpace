@@ -1,7 +1,6 @@
-﻿namespace ASC.Files.Core.Model
+﻿namespace ASC.Files.Core.Model;
+
+public class LockFileModel
 {
-    public class LockFileModel
-    {
-        public bool LockFile { get; set; }
-    }
+    public bool LockFile { get; set; }
 }

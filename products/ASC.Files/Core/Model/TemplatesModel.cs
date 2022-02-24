@@ -1,7 +1,6 @@
-﻿namespace ASC.Files.Core.Model
+﻿namespace ASC.Files.Core.Model;
+
+public class TemplatesModel
 {
-    public class TemplatesModel
-    {
-        public IEnumerable<int> FileIds { get; set; }
-    }
+    public IEnumerable<int> FileIds { get; set; }
 }

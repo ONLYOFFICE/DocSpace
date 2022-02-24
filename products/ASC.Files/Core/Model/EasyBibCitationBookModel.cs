@@ -1,7 +1,6 @@
-﻿namespace ASC.Files.Core.Model
+﻿namespace ASC.Files.Core.Model;
+
+public class EasyBibCitationBookModel
 {
-    public class EasyBibCitationBookModel
-    {
-        public string CitationData { get; set; }
-    }
+    public string CitationData { get; set; }
 }

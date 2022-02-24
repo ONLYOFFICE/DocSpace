@@ -23,27 +23,26 @@
  *
 */
 
-namespace ASC.Files.Core
+namespace ASC.Files.Core;
+
+[DebuggerDisplay("{Login} {Password} {Token} {Url}")]
+public class AuthData
 {
-    [DebuggerDisplay("{Login} {Password} {Token} {Url}")]
-    public class AuthData
+    public string Login { get; set; }
+    public string Password { get; set; }
+    public string Token { get; set; }
+    public string Url { get; set; }
+
+    public AuthData(string url = null, string login = null, string password = null, string token = null)
     {
-        public string Login { get; set; }
-        public string Password { get; set; }
-        public string Token { get; set; }
-        public string Url { get; set; }
+        Url = url ?? string.Empty;
+        Login = login ?? string.Empty;
+        Password = password ?? string.Empty;
+        Token = token ?? string.Empty;
+    }
 
-        public AuthData(string url = null, string login = null, string password = null, string token = null)
-        {
-            Url = url ?? "";
-            Login = login ?? "";
-            Password = password ?? "";
-            Token = token ?? "";
-        }
-
-        public bool IsEmpty()
-        {
-            return string.IsNullOrEmpty((Url ?? "") + (Login ?? "") + (Password ?? "") + (Token ?? ""));
-        }
+    public bool IsEmpty()
+    {
+        return string.IsNullOrEmpty((Url ?? string.Empty) + (Login ?? string.Empty) + (Password ?? string.Empty) + (Token ?? string.Empty));
     }
 }

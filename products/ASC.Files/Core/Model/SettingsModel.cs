@@ -25,10 +25,9 @@
 
 
 
-namespace ASC.Files.Core.Model
+namespace ASC.Files.Core.Model;
+
+public class SettingsModel
 {
-    public class SettingsModel
-    {
-        public bool Set { get; set; }
-    }
+    public bool Set { get; set; }
 }

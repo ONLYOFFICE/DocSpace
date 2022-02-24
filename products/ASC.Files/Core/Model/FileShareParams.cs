@@ -23,44 +23,31 @@
  *
 */
 
-namespace ASC.Api.Documents
+namespace ASC.Api.Documents;
+
+public class FileShareParams
 {
-    /// <summary>
-    /// </summary>
-    public class FileShareParams
+    public Guid ShareTo { get; set; }
+    public FileShare Access { get; set; }
+}
+
+[Scope]
+public class FileShareParamsHelper
+{
+    private readonly UserManager _userManager;
+
+    public FileShareParamsHelper(UserManager userManager)
     {
-        /// <summary>
-        /// </summary>
-        public Guid ShareTo { get; set; }
-
-        /// <summary>
-        /// </summary>
-        public FileShare Access { get; set; }
-
-        /// <summary>
-        /// </summary>
-        /// <returns></returns>
-
+        _userManager = userManager;
     }
 
-    [Scope]
-    public class FileShareParamsHelper
+    public AceWrapper ToAceObject(FileShareParams fileShareParams)
     {
-        private readonly UserManager _userManager;
-
-        public FileShareParamsHelper(UserManager userManager)
+        return new AceWrapper
         {
-            _userManager = userManager;
-        }
-
-        public AceWrapper ToAceObject(FileShareParams fileShareParams)
-        {
-            return new AceWrapper
-            {
-                Share = fileShareParams.Access,
-                SubjectId = fileShareParams.ShareTo,
-                SubjectGroup = !_userManager.UserExists(fileShareParams.ShareTo)
-            };
-        }
+            Share = fileShareParams.Access,
+            SubjectId = fileShareParams.ShareTo,
+            SubjectGroup = !_userManager.UserExists(fileShareParams.ShareTo)
+        };
     }
 }

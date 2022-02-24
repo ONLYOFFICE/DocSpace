@@ -1,7 +1,6 @@
-﻿namespace ASC.Files.Core.Model
+﻿namespace ASC.Files.Core.Model;
+
+public class WordpressSaveModel
 {
-    public class WordpressSaveModel
-    {
-        public string Code { get; set; }
-    }
+    public string Code { get; set; }
 }

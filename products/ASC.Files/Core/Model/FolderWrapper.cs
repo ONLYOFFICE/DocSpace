@@ -23,106 +23,105 @@
  *
 */
 
-namespace ASC.Api.Documents
+namespace ASC.Api.Documents;
+
+public class FolderWrapper<T> : FileEntryWrapper<T>
 {
-    public class FolderWrapper<T> : FileEntryWrapper<T>
+    public T ParentId { get; set; }
+    public int FilesCount { get; set; }
+    public int FoldersCount { get; set; }
+    public bool? IsShareable { get; set; }
+    public int New { get; set; }
+
+    public FolderWrapper() { }
+
+    public static FolderWrapper<int> GetSample()
     {
-        public T ParentId { get; set; }
-        public int FilesCount { get; set; }
-        public int FoldersCount { get; set; }
-        public bool? IsShareable { get; set; }
-        public int New { get; set; }
-
-        public FolderWrapper() { }
-
-        public static FolderWrapper<int> GetSample()
+        return new FolderWrapper<int>
         {
-            return new FolderWrapper<int>
-            {
-                Access = FileShare.ReadWrite,
-                //Updated = ApiDateTime.GetSample(),
-                //Created = ApiDateTime.GetSample(),
-                //CreatedBy = EmployeeWraper.GetSample(),
-                Id = 10,
-                RootFolderType = FolderType.BUNCH,
-                Shared = false,
-                Title = "Some titile",
-                //UpdatedBy = EmployeeWraper.GetSample(),
-                FilesCount = 5,
-                FoldersCount = 7,
-                ParentId = 10,
-                IsShareable = null
-            };
-        }
+            Access = FileShare.ReadWrite,
+            //Updated = ApiDateTime.GetSample(),
+            //Created = ApiDateTime.GetSample(),
+            //CreatedBy = EmployeeWraper.GetSample(),
+            Id = 10,
+            RootFolderType = FolderType.BUNCH,
+            Shared = false,
+            Title = "Some titile",
+            //UpdatedBy = EmployeeWraper.GetSample(),
+            FilesCount = 5,
+            FoldersCount = 7,
+            ParentId = 10,
+            IsShareable = null
+        };
+    }
+}
+
+[Scope]
+public class FolderWrapperHelper : FileEntryWrapperHelper
+{
+    private readonly AuthContext _authContext;
+    private readonly IDaoFactory _daoFactory;
+    private readonly GlobalFolderHelper _globalFolderHelper;
+
+    public FolderWrapperHelper(
+        ApiDateTimeHelper apiDateTimeHelper,
+        EmployeeWraperHelper employeeWrapperHelper,
+        AuthContext authContext,
+        IDaoFactory daoFactory,
+        FileSecurity fileSecurity,
+        GlobalFolderHelper globalFolderHelper,
+        FileSharingHelper fileSharingHelper)
+        : base(apiDateTimeHelper, employeeWrapperHelper, fileSharingHelper, fileSecurity)
+    {
+        _authContext = authContext;
+        _daoFactory = daoFactory;
+        _globalFolderHelper = globalFolderHelper;
     }
 
-    [Scope]
-    public class FolderWrapperHelper : FileEntryWrapperHelper
+    public async Task<FolderWrapper<T>> GetAsync<T>(Folder<T> folder, List<Tuple<FileEntry<T>, bool>> folders = null)
     {
-        private readonly AuthContext _authContext;
-        private readonly IDaoFactory _daoFactory;
-        private readonly GlobalFolderHelper _globalFolderHelper;
+        var result = await GetFolderWrapperAsync(folder);
 
-        public FolderWrapperHelper(
-            ApiDateTimeHelper apiDateTimeHelper,
-            EmployeeWraperHelper employeeWrapperHelper,
-            AuthContext authContext,
-            IDaoFactory daoFactory,
-            FileSecurity fileSecurity,
-            GlobalFolderHelper globalFolderHelper,
-            FileSharingHelper fileSharingHelper)
-            : base(apiDateTimeHelper, employeeWrapperHelper, fileSharingHelper, fileSecurity)
+        result.ParentId = folder.FolderID;
+
+        if (folder.RootFolderType == FolderType.USER
+            && !Equals(folder.RootFolderCreator, _authContext.CurrentAccount.ID))
         {
-            _authContext = authContext;
-            _daoFactory = daoFactory;
-            _globalFolderHelper = globalFolderHelper;
-        }
+            result.RootFolderType = FolderType.SHARE;
 
-        public async Task<FolderWrapper<T>> GetAsync<T>(Folder<T> folder, List<Tuple<FileEntry<T>, bool>> folders = null)
-        {
-            var result = await GetFolderWrapperAsync(folder);
+            var folderDao = _daoFactory.GetFolderDao<T>();
+            FileEntry<T> parentFolder;
 
-            result.ParentId = folder.FolderID;
-
-            if (folder.RootFolderType == FolderType.USER
-                && !Equals(folder.RootFolderCreator, _authContext.CurrentAccount.ID))
+            if (folders != null)
             {
-                result.RootFolderType = FolderType.SHARE;
-
-                var folderDao = _daoFactory.GetFolderDao<T>();
-                FileEntry<T> parentFolder;
-
-                if (folders != null)
+                var folderWithRight = folders.FirstOrDefault(f => f.Item1.ID.Equals(folder.FolderID));
+                if (folderWithRight == null || !folderWithRight.Item2)
                 {
-                    var folderWithRight = folders.FirstOrDefault(f => f.Item1.ID.Equals(folder.FolderID));
-                    if (folderWithRight == null || !folderWithRight.Item2)
-                    {
-                        result.ParentId = await _globalFolderHelper.GetFolderShareAsync<T>();
-                    }
-                }
-                else
-                {
-                    parentFolder = await folderDao.GetFolderAsync(folder.FolderID);
-                    var canRead = await _fileSecurity.CanReadAsync(parentFolder);
-                    if (!canRead)
-                    {
-                        result.ParentId = await _globalFolderHelper.GetFolderShareAsync<T>();
-                    }
+                    result.ParentId = await _globalFolderHelper.GetFolderShareAsync<T>();
                 }
             }
-
-            return result;
+            else
+            {
+                parentFolder = await folderDao.GetFolderAsync(folder.FolderID);
+                var canRead = await _fileSecurity.CanReadAsync(parentFolder);
+                if (!canRead)
+                {
+                    result.ParentId = await _globalFolderHelper.GetFolderShareAsync<T>();
+                }
+            }
         }
 
-        private async Task<FolderWrapper<T>> GetFolderWrapperAsync<T>(Folder<T> folder)
-        {
-            var result = await GetAsync<FolderWrapper<T>, T>(folder);
-            result.FilesCount = folder.TotalFiles;
-            result.FoldersCount = folder.TotalSubFolders;
-            result.IsShareable = folder.Shareable.NullIfDefault();
-            result.New = folder.NewForMe;
+        return result;
+    }
 
-            return result;
-        }
+    private async Task<FolderWrapper<T>> GetFolderWrapperAsync<T>(Folder<T> folder)
+    {
+        var result = await GetAsync<FolderWrapper<T>, T>(folder);
+        result.FilesCount = folder.TotalFiles;
+        result.FoldersCount = folder.TotalSubFolders;
+        result.IsShareable = folder.Shareable.NullIfDefault();
+        result.New = folder.NewForMe;
+
+        return result;
     }
 }

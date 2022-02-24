@@ -1,8 +1,7 @@
-﻿namespace ASC.Files.Core.Model
+﻿namespace ASC.Files.Core.Model;
+
+public class ChangeHistoryModel
 {
-    public class ChangeHistoryModel
-    {
-        public int Version { get; set; }
-        public bool ContinueVersion { get; set; }
-    }
+    public int Version { get; set; }
+    public bool ContinueVersion { get; set; }
 }

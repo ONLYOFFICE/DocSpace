@@ -23,349 +23,348 @@
  *
 */
 
-namespace ASC.Files.Thirdparty.Box
+namespace ASC.Files.Thirdparty.Box;
+
+internal abstract class BoxDaoBase : ThirdPartyProviderDao<BoxProviderInfo>
 {
-    internal abstract class BoxDaoBase : ThirdPartyProviderDao<BoxProviderInfo>
+    protected override string Id => "box";
+
+    protected BoxDaoBase(
+        IServiceProvider serviceProvider,
+        UserManager userManager,
+        TenantManager tenantManager,
+        TenantUtil tenantUtil,
+        DbContextManager<FilesDbContext> dbContextManager,
+        SetupInfo setupInfo,
+        IOptionsMonitor<ILog> monitor,
+        FileUtility fileUtility,
+        TempPath tempPath) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
     {
-        protected override string Id => "box";
+    }
 
-        protected BoxDaoBase(
-            IServiceProvider serviceProvider,
-            UserManager userManager,
-            TenantManager tenantManager,
-            TenantUtil tenantUtil,
-            DbContextManager<FilesDbContext> dbContextManager,
-            SetupInfo setupInfo,
-            IOptionsMonitor<ILog> monitor,
-            FileUtility fileUtility,
-            TempPath tempPath) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
+    protected static string MakeBoxId(object entryId)
+    {
+        var id = Convert.ToString(entryId, CultureInfo.InvariantCulture);
+
+        return string.IsNullOrEmpty(id)
+                   ? "0"
+                   : id.TrimStart('/');
+    }
+
+    protected static string GetParentFolderId(BoxItem boxItem)
+    {
+        return boxItem == null || boxItem.Parent == null
+                   ? null
+                   : boxItem.Parent.Id;
+    }
+
+    protected string MakeId(BoxItem boxItem)
+    {
+        var path = string.Empty;
+        if (boxItem != null)
         {
+            path = boxItem.Id;
         }
 
-        protected static string MakeBoxId(object entryId)
-        {
-            var id = Convert.ToString(entryId, CultureInfo.InvariantCulture);
+        return MakeId(path);
+    }
 
-            return string.IsNullOrEmpty(id)
-                       ? "0"
-                       : id.TrimStart('/');
+    protected override string MakeId(string path = null)
+    {
+        var p = string.IsNullOrEmpty(path) || path == "0" ? "" : ("-|" + path.TrimStart('/'));
+
+        return $"{PathPrefix}{p}";
+    }
+
+    protected string MakeFolderTitle(BoxFolder boxFolder)
+    {
+        if (boxFolder == null || IsRoot(boxFolder))
+        {
+            return ProviderInfo.CustomerTitle;
         }
 
-        protected static string GetParentFolderId(BoxItem boxItem)
+        return Global.ReplaceInvalidCharsAndTruncate(boxFolder.Name);
+    }
+
+    protected string MakeFileTitle(BoxFile boxFile)
+    {
+        if (boxFile == null || string.IsNullOrEmpty(boxFile.Name))
         {
-            return boxItem == null || boxItem.Parent == null
-                       ? null
-                       : boxItem.Parent.Id;
+            return ProviderInfo.ProviderKey;
         }
 
-        protected string MakeId(BoxItem boxItem)
-        {
-            var path = string.Empty;
-            if (boxItem != null)
-            {
-                path = boxItem.Id;
-            }
+        return Global.ReplaceInvalidCharsAndTruncate(boxFile.Name);
+    }
 
-            return MakeId(path);
+    protected Folder<string> ToFolder(BoxFolder boxFolder)
+    {
+        if (boxFolder == null)
+        {
+            return null;
         }
 
-        protected override string MakeId(string path = null)
+        if (boxFolder is ErrorFolder)
         {
-            var p = string.IsNullOrEmpty(path) || path == "0" ? "" : ("-|" + path.TrimStart('/'));
-
-            return $"{PathPrefix}{p}";
+            //Return error entry
+            return ToErrorFolder(boxFolder as ErrorFolder);
         }
 
-        protected string MakeFolderTitle(BoxFolder boxFolder)
-        {
-            if (boxFolder == null || IsRoot(boxFolder))
-            {
-                return ProviderInfo.CustomerTitle;
-            }
+        var isRoot = IsRoot(boxFolder);
 
-            return Global.ReplaceInvalidCharsAndTruncate(boxFolder.Name);
+        var folder = GetFolder();
+
+        folder.ID = MakeId(boxFolder.Id);
+        folder.FolderID = isRoot ? null : MakeId(GetParentFolderId(boxFolder));
+        folder.CreateOn = isRoot ? ProviderInfo.CreateOn : (boxFolder.CreatedAt ?? default);
+        folder.ModifiedOn = isRoot ? ProviderInfo.CreateOn : (boxFolder.ModifiedAt ?? default);
+
+        folder.Title = MakeFolderTitle(boxFolder);
+        folder.TotalFiles = boxFolder.ItemCollection != null ? boxFolder.ItemCollection.Entries.Count(item => item is BoxFile) : 0;
+        folder.TotalSubFolders = boxFolder.ItemCollection != null ? boxFolder.ItemCollection.Entries.Count(item => item is BoxFolder) : 0;
+
+        if (folder.CreateOn != DateTime.MinValue && folder.CreateOn.Kind == DateTimeKind.Utc)
+        {
+            folder.CreateOn = TenantUtil.DateTimeFromUtc(folder.CreateOn);
         }
 
-        protected string MakeFileTitle(BoxFile boxFile)
+        if (folder.ModifiedOn != DateTime.MinValue && folder.ModifiedOn.Kind == DateTimeKind.Utc)
         {
-            if (boxFile == null || string.IsNullOrEmpty(boxFile.Name))
-            {
-                return ProviderInfo.ProviderKey;
-            }
-
-            return Global.ReplaceInvalidCharsAndTruncate(boxFile.Name);
+            folder.ModifiedOn = TenantUtil.DateTimeFromUtc(folder.ModifiedOn);
         }
 
-        protected Folder<string> ToFolder(BoxFolder boxFolder)
+        return folder;
+    }
+
+    protected static bool IsRoot(BoxFolder boxFolder)
+    {
+        return boxFolder.Id == "0";
+    }
+
+    private File<string> ToErrorFile(ErrorFile boxFile)
+    {
+        if (boxFile == null)
         {
-            if (boxFolder == null)
-            {
-                return null;
-            }
+            return null;
+        }
 
-            if (boxFolder is ErrorFolder)
-            {
-                //Return error entry
-                return ToErrorFolder(boxFolder as ErrorFolder);
-            }
+        var file = GetErrorFile(new ErrorEntry(boxFile.Error, boxFile.ErrorId));
 
-            var isRoot = IsRoot(boxFolder);
+        file.Title = MakeFileTitle(boxFile);
 
-            var folder = GetFolder();
+        return file;
+    }
 
-            folder.ID = MakeId(boxFolder.Id);
-            folder.FolderID = isRoot ? null : MakeId(GetParentFolderId(boxFolder));
-            folder.CreateOn = isRoot ? ProviderInfo.CreateOn : (boxFolder.CreatedAt ?? default);
-            folder.ModifiedOn = isRoot ? ProviderInfo.CreateOn : (boxFolder.ModifiedAt ?? default);
+    private Folder<string> ToErrorFolder(ErrorFolder boxFolder)
+    {
+        if (boxFolder == null)
+        {
+            return null;
+        }
 
-            folder.Title = MakeFolderTitle(boxFolder);
-            folder.TotalFiles = boxFolder.ItemCollection != null ? boxFolder.ItemCollection.Entries.Count(item => item is BoxFile) : 0;
-            folder.TotalSubFolders = boxFolder.ItemCollection != null ? boxFolder.ItemCollection.Entries.Count(item => item is BoxFolder) : 0;
+        var folder = GetErrorFolder(new ErrorEntry(boxFolder.Error, boxFolder.ErrorId));
 
-            if (folder.CreateOn != DateTime.MinValue && folder.CreateOn.Kind == DateTimeKind.Utc)
-            {
-                folder.CreateOn = TenantUtil.DateTimeFromUtc(folder.CreateOn);
-            }
+        folder.Title = MakeFolderTitle(boxFolder);
 
-            if (folder.ModifiedOn != DateTime.MinValue && folder.ModifiedOn.Kind == DateTimeKind.Utc)
-            {
-                folder.ModifiedOn = TenantUtil.DateTimeFromUtc(folder.ModifiedOn);
-            }
+        return folder;
+    }
+
+    public File<string> ToFile(BoxFile boxFile)
+    {
+        if (boxFile == null)
+        {
+            return null;
+        }
+
+        if (boxFile is ErrorFile)
+        {
+            //Return error entry
+            return ToErrorFile(boxFile as ErrorFile);
+        }
+
+        var file = GetFile();
+
+        file.ID = MakeId(boxFile.Id);
+        file.ContentLength = boxFile.Size.HasValue ? (long)boxFile.Size : 0;
+        file.CreateOn = boxFile.CreatedAt.HasValue ? TenantUtil.DateTimeFromUtc(boxFile.CreatedAt.Value) : default;
+        file.FolderID = MakeId(GetParentFolderId(boxFile));
+        file.ModifiedOn = boxFile.ModifiedAt.HasValue ? TenantUtil.DateTimeFromUtc(boxFile.ModifiedAt.Value) : default;
+        file.NativeAccessor = boxFile;
+        file.Title = MakeFileTitle(boxFile);
+
+        return file;
+    }
+
+    public async Task<Folder<string>> GetRootFolderAsync(string folderId)
+    {
+        return ToFolder(await GetBoxFolderAsync("0"));
+    }
+
+    protected async Task<BoxFolder> GetBoxFolderAsync(string folderId)
+    {
+        var boxFolderId = MakeBoxId(folderId);
+        try
+        {
+            var folder = await ProviderInfo.GetBoxFolderAsync(boxFolderId);
 
             return folder;
         }
-
-        protected static bool IsRoot(BoxFolder boxFolder)
+        catch (Exception ex)
         {
-            return boxFolder.Id == "0";
+            return new ErrorFolder(ex, boxFolderId);
         }
+    }
 
-        private File<string> ToErrorFile(ErrorFile boxFile)
+    protected ValueTask<BoxFile> GetBoxFileAsync(string fileId)
+    {
+        var boxFileId = MakeBoxId(fileId);
+        try
         {
-            if (boxFile == null)
-            {
-                return null;
-            }
-
-            var file = GetErrorFile(new ErrorEntry(boxFile.Error, boxFile.ErrorId));
-
-            file.Title = MakeFileTitle(boxFile);
+            var file = ProviderInfo.GetBoxFileAsync(boxFileId);
 
             return file;
         }
-
-        private Folder<string> ToErrorFolder(ErrorFolder boxFolder)
+        catch (Exception ex)
         {
-            if (boxFolder == null)
+            return ValueTask.FromResult<BoxFile>(new ErrorFile(ex, boxFileId));
+        }
+    }
+
+    protected override async Task<IEnumerable<string>> GetChildrenAsync(string folderId)
+    {
+        var items = await GetBoxItemsAsync(folderId);
+
+        return items.Select(entry => MakeId(entry.Id));
+    }
+
+    protected List<BoxItem> GetBoxItems(string parentId, bool? folder = null)
+    {
+        var boxFolderId = MakeBoxId(parentId);
+        var items = ProviderInfo.GetBoxItemsAsync(boxFolderId).Result;
+
+        if (folder.HasValue)
+        {
+            if (folder.Value)
             {
-                return null;
+                return items.Where(i => i is BoxFolder).ToList();
             }
 
-            var folder = GetErrorFolder(new ErrorEntry(boxFolder.Error, boxFolder.ErrorId));
-
-            folder.Title = MakeFolderTitle(boxFolder);
-
-            return folder;
+            return items.Where(i => i is BoxFile).ToList();
         }
 
-        public File<string> ToFile(BoxFile boxFile)
+        return items;
+    }
+
+    protected async Task<List<BoxItem>> GetBoxItemsAsync(string parentId, bool? folder = null)
+    {
+        var boxFolderId = MakeBoxId(parentId);
+        var items = await ProviderInfo.GetBoxItemsAsync(boxFolderId);
+
+        if (folder.HasValue)
         {
-            if (boxFile == null)
+            if (folder.Value)
             {
-                return null;
+                return items.Where(i => i is BoxFolder).ToList();
             }
 
-            if (boxFile is ErrorFile)
-            {
-                //Return error entry
-                return ToErrorFile(boxFile as ErrorFile);
-            }
-
-            var file = GetFile();
-
-            file.ID = MakeId(boxFile.Id);
-            file.ContentLength = boxFile.Size.HasValue ? (long)boxFile.Size : 0;
-            file.CreateOn = boxFile.CreatedAt.HasValue ? TenantUtil.DateTimeFromUtc(boxFile.CreatedAt.Value) : default;
-            file.FolderID = MakeId(GetParentFolderId(boxFile));
-            file.ModifiedOn = boxFile.ModifiedAt.HasValue ? TenantUtil.DateTimeFromUtc(boxFile.ModifiedAt.Value) : default;
-            file.NativeAccessor = boxFile;
-            file.Title = MakeFileTitle(boxFile);
-
-            return file;
+            return items.Where(i => i is BoxFile).ToList();
         }
 
-        public async Task<Folder<string>> GetRootFolderAsync(string folderId)
-        {
-            return ToFolder(await GetBoxFolderAsync("0"));
-        }
+        return items;
+    }
 
-        protected async Task<BoxFolder> GetBoxFolderAsync(string folderId)
-        {
-            var boxFolderId = MakeBoxId(folderId);
-            try
-            {
-                var folder = await ProviderInfo.GetBoxFolderAsync(boxFolderId);
+    protected sealed class ErrorFolder : BoxFolder
+    {
+        public string Error { get; set; }
+        public string ErrorId { get; private set; }
 
-                return folder;
-            }
-            catch (Exception ex)
+        public ErrorFolder(Exception e, object id)
+        {
+            ErrorId = id.ToString();
+            if (e != null)
             {
-                return new ErrorFolder(ex, boxFolderId);
+                Error = e.Message;
             }
         }
+    }
 
-        protected ValueTask<BoxFile> GetBoxFileAsync(string fileId)
+    protected sealed class ErrorFile : BoxFile
+    {
+        public string Error { get; set; }
+        public string ErrorId { get; private set; }
+
+        public ErrorFile(Exception e, object id)
         {
-            var boxFileId = MakeBoxId(fileId);
-            try
+            ErrorId = id.ToString();
+            if (e != null)
             {
-                var file = ProviderInfo.GetBoxFileAsync(boxFileId);
-
-                return file;
-            }
-            catch (Exception ex)
-            {
-                return ValueTask.FromResult<BoxFile>(new ErrorFile(ex, boxFileId));
+                Error = e.Message;
             }
         }
+    }
 
-        protected override async Task<IEnumerable<string>> GetChildrenAsync(string folderId)
+    protected string GetAvailableTitle(string requestTitle, string parentFolderId, Func<string, string, bool> isExist)
+    {
+        if (!isExist(requestTitle, parentFolderId))
         {
-            var items = await GetBoxItemsAsync(folderId);
-
-            return items.Select(entry => MakeId(entry.Id));
-        }
-
-        protected List<BoxItem> GetBoxItems(string parentId, bool? folder = null)
-        {
-            var boxFolderId = MakeBoxId(parentId);
-            var items = ProviderInfo.GetBoxItemsAsync(boxFolderId).Result;
-
-            if (folder.HasValue)
-            {
-                if (folder.Value)
-                {
-                    return items.Where(i => i is BoxFolder).ToList();
-                }
-
-                return items.Where(i => i is BoxFile).ToList();
-            }
-
-            return items;
-        }
-
-        protected async Task<List<BoxItem>> GetBoxItemsAsync(string parentId, bool? folder = null)
-        {
-            var boxFolderId = MakeBoxId(parentId);
-            var items = await ProviderInfo.GetBoxItemsAsync(boxFolderId);
-
-            if (folder.HasValue)
-            {
-                if (folder.Value)
-                {
-                    return items.Where(i => i is BoxFolder).ToList();
-                }
-
-                return items.Where(i => i is BoxFile).ToList();
-            }
-
-            return items;
-        }
-
-        protected sealed class ErrorFolder : BoxFolder
-        {
-            public string Error { get; set; }
-            public string ErrorId { get; private set; }
-
-            public ErrorFolder(Exception e, object id)
-            {
-                ErrorId = id.ToString();
-                if (e != null)
-                {
-                    Error = e.Message;
-                }
-            }
-        }
-
-        protected sealed class ErrorFile : BoxFile
-        {
-            public string Error { get; set; }
-            public string ErrorId { get; private set; }
-
-            public ErrorFile(Exception e, object id)
-            {
-                ErrorId = id.ToString();
-                if (e != null)
-                {
-                    Error = e.Message;
-                }
-            }
-        }
-
-        protected string GetAvailableTitle(string requestTitle, string parentFolderId, Func<string, string, bool> isExist)
-        {
-            if (!isExist(requestTitle, parentFolderId))
-            {
-                return requestTitle;
-            }
-
-            var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
-            var match = re.Match(requestTitle);
-
-            if (!match.Success)
-            {
-                var insertIndex = requestTitle.Length;
-                if (requestTitle.LastIndexOf('.') != -1)
-                {
-                    insertIndex = requestTitle.LastIndexOf('.');
-                }
-
-                requestTitle = requestTitle.Insert(insertIndex, " (1)");
-            }
-
-            while (isExist(requestTitle, parentFolderId))
-            {
-                requestTitle = re.Replace(requestTitle, MatchEvaluator);
-            }
-
             return requestTitle;
         }
 
-        protected async Task<string> GetAvailableTitleAsync(string requestTitle, string parentFolderId, Func<string, string, Task<bool>> isExist)
+        var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
+        var match = re.Match(requestTitle);
+
+        if (!match.Success)
         {
-            if (!await isExist(requestTitle, parentFolderId))
+            var insertIndex = requestTitle.Length;
+            if (requestTitle.LastIndexOf('.') != -1)
             {
-                return requestTitle;
+                insertIndex = requestTitle.LastIndexOf('.');
             }
 
-            var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
-            var match = re.Match(requestTitle);
+            requestTitle = requestTitle.Insert(insertIndex, " (1)");
+        }
 
-            if (!match.Success)
-            {
-                var insertIndex = requestTitle.Length;
-                if (requestTitle.LastIndexOf(".", StringComparison.InvariantCulture) != -1)
-                {
-                    insertIndex = requestTitle.LastIndexOf(".", StringComparison.InvariantCulture);
-                }
+        while (isExist(requestTitle, parentFolderId))
+        {
+            requestTitle = re.Replace(requestTitle, MatchEvaluator);
+        }
 
-                requestTitle = requestTitle.Insert(insertIndex, " (1)");
-            }
+        return requestTitle;
+    }
 
-            while (!await isExist(requestTitle, parentFolderId))
-            {
-                requestTitle = re.Replace(requestTitle, MatchEvaluator);
-            }
-
+    protected async Task<string> GetAvailableTitleAsync(string requestTitle, string parentFolderId, Func<string, string, Task<bool>> isExist)
+    {
+        if (!await isExist(requestTitle, parentFolderId))
+        {
             return requestTitle;
         }
 
-        private string MatchEvaluator(Match match)
-        {
-            var index = Convert.ToInt32(match.Groups[2].Value);
-            var staticText = match.Value.Substring(string.Format(" ({0})", index).Length);
+        var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
+        var match = re.Match(requestTitle);
 
-            return string.Format(" ({0}){1}", index + 1, staticText);
+        if (!match.Success)
+        {
+            var insertIndex = requestTitle.Length;
+            if (requestTitle.LastIndexOf(".", StringComparison.InvariantCulture) != -1)
+            {
+                insertIndex = requestTitle.LastIndexOf(".", StringComparison.InvariantCulture);
+            }
+
+            requestTitle = requestTitle.Insert(insertIndex, " (1)");
         }
+
+        while (!await isExist(requestTitle, parentFolderId))
+        {
+            requestTitle = re.Replace(requestTitle, MatchEvaluator);
+        }
+
+        return requestTitle;
+    }
+
+    private string MatchEvaluator(Match match)
+    {
+        var index = Convert.ToInt32(match.Groups[2].Value);
+        var staticText = match.Value.Substring(string.Format(" ({0})", index).Length);
+
+        return string.Format(" ({0}){1}", index + 1, staticText);
     }
 }

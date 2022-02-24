@@ -1,9 +1,8 @@
-﻿namespace ASC.Files.Core.Model
+﻿namespace ASC.Files.Core.Model;
+
+public class CreateFileModel<T>
 {
-    public class CreateFileModel<T>
-    {
-        public string Title { get; set; }
-        public T TemplateId { get; set; }
-        public bool EnableExternalExt { get; set; }
-    }
+    public string Title { get; set; }
+    public T TemplateId { get; set; }
+    public bool EnableExternalExt { get; set; }
 }

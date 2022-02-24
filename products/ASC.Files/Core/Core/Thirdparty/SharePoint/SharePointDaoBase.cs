@@ -26,164 +26,163 @@
 
 using Folder = Microsoft.SharePoint.Client.Folder;
 
-namespace ASC.Files.Thirdparty.SharePoint
+namespace ASC.Files.Thirdparty.SharePoint;
+
+internal class SharePointDaoBase : ThirdPartyProviderDao<SharePointProviderInfo>
 {
-    internal class SharePointDaoBase : ThirdPartyProviderDao<SharePointProviderInfo>
+    protected override string Id => "spoint";
+
+    public SharePointDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility, TempPath tempPath)
+        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
     {
-        protected override string Id => "spoint";
+    }
 
-        public SharePointDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility, TempPath tempPath) 
-            : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
+    protected string GetAvailableTitle(string requestTitle, Folder parentFolderID, Func<string, Folder, bool> isExist)
+    {
+        if (!isExist(requestTitle, parentFolderID))
         {
-        }
-
-        protected string GetAvailableTitle(string requestTitle, Folder parentFolderID, Func<string, Folder, bool> isExist)
-        {
-            if (!isExist(requestTitle, parentFolderID))
-            {
-                return requestTitle;
-            }
-
-            var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
-            var match = re.Match(requestTitle);
-
-            if (!match.Success)
-            {
-                var insertIndex = requestTitle.Length;
-                if (requestTitle.LastIndexOf('.') != -1)
-                {
-                    insertIndex = requestTitle.LastIndexOf('.');
-                }
-
-                requestTitle = requestTitle.Insert(insertIndex, " (1)");
-            }
-
-            while (isExist(requestTitle, parentFolderID))
-            {
-                requestTitle = re.Replace(requestTitle, MatchEvaluator);
-            }
-
             return requestTitle;
         }
 
-        protected async Task<string> GetAvailableTitleAsync(string requestTitle, Folder parentFolderID, Func<string, Folder, Task<bool>> isExist)
+        var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
+        var match = re.Match(requestTitle);
+
+        if (!match.Success)
         {
-            if (!await isExist(requestTitle, parentFolderID))
+            var insertIndex = requestTitle.Length;
+            if (requestTitle.LastIndexOf('.') != -1)
             {
-                return requestTitle;
+                insertIndex = requestTitle.LastIndexOf('.');
             }
 
-            var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
-            var match = re.Match(requestTitle);
+            requestTitle = requestTitle.Insert(insertIndex, " (1)");
+        }
 
-            if (!match.Success)
-            {
-                var insertIndex = requestTitle.Length;
-                if (requestTitle.LastIndexOf(".", StringComparison.Ordinal) != -1)
-                {
-                    insertIndex = requestTitle.LastIndexOf(".", StringComparison.Ordinal);
-                }
+        while (isExist(requestTitle, parentFolderID))
+        {
+            requestTitle = re.Replace(requestTitle, MatchEvaluator);
+        }
 
-                requestTitle = requestTitle.Insert(insertIndex, " (1)");
-            }
+        return requestTitle;
+    }
 
-            while (await isExist(requestTitle, parentFolderID))
-            {
-                requestTitle = re.Replace(requestTitle, MatchEvaluator);
-            }
-
+    protected async Task<string> GetAvailableTitleAsync(string requestTitle, Folder parentFolderID, Func<string, Folder, Task<bool>> isExist)
+    {
+        if (!await isExist(requestTitle, parentFolderID))
+        {
             return requestTitle;
         }
 
-        private string MatchEvaluator(Match match)
-        {
-            var index = Convert.ToInt32(match.Groups[2].Value);
-            var staticText = match.Value.Substring(string.Format(" ({0})", index).Length);
+        var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
+        var match = re.Match(requestTitle);
 
-            return string.Format(" ({0}){1}", index + 1, staticText);
-        }
-
-        protected Task UpdatePathInDBAsync(string oldValue, string newValue)
+        if (!match.Success)
         {
-            if (oldValue.Equals(newValue))
+            var insertIndex = requestTitle.Length;
+            if (requestTitle.LastIndexOf(".", StringComparison.Ordinal) != -1)
             {
-                return Task.CompletedTask;
+                insertIndex = requestTitle.LastIndexOf(".", StringComparison.Ordinal);
             }
 
-            return InternalUpdatePathInDBAsync(oldValue, newValue);
+            requestTitle = requestTitle.Insert(insertIndex, " (1)");
         }
 
-        private async Task InternalUpdatePathInDBAsync(string oldValue, string newValue)
+        while (await isExist(requestTitle, parentFolderID))
         {
-            using var tx = FilesDbContext.Database.BeginTransaction();
-            var oldIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
-                .Where(r => r.Id.StartsWith(oldValue))
-                .Select(r => r.Id)
+            requestTitle = re.Replace(requestTitle, MatchEvaluator);
+        }
+
+        return requestTitle;
+    }
+
+    private string MatchEvaluator(Match match)
+    {
+        var index = Convert.ToInt32(match.Groups[2].Value);
+        var staticText = match.Value.Substring(string.Format(" ({0})", index).Length);
+
+        return string.Format(" ({0}){1}", index + 1, staticText);
+    }
+
+    protected Task UpdatePathInDBAsync(string oldValue, string newValue)
+    {
+        if (oldValue.Equals(newValue))
+        {
+            return Task.CompletedTask;
+        }
+
+        return InternalUpdatePathInDBAsync(oldValue, newValue);
+    }
+
+    private async Task InternalUpdatePathInDBAsync(string oldValue, string newValue)
+    {
+        using var tx = FilesDbContext.Database.BeginTransaction();
+        var oldIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
+            .Where(r => r.Id.StartsWith(oldValue))
+            .Select(r => r.Id)
+            .ToListAsync();
+
+        foreach (var oldID in oldIDs)
+        {
+            var oldHashID = await MappingIDAsync(oldID);
+            var newID = oldID.Replace(oldValue, newValue);
+            var newHashID = await MappingIDAsync(newID);
+
+            var mappingForUpdate = await Query(FilesDbContext.ThirdpartyIdMapping)
+                .Where(r => r.HashId == oldHashID)
                 .ToListAsync();
 
-            foreach (var oldID in oldIDs)
+            foreach (var m in mappingForUpdate)
             {
-                var oldHashID = await MappingIDAsync(oldID);
-                var newID = oldID.Replace(oldValue, newValue);
-                var newHashID = await MappingIDAsync(newID);
-
-                var mappingForUpdate = await Query(FilesDbContext.ThirdpartyIdMapping)
-                    .Where(r => r.HashId == oldHashID)
-                    .ToListAsync();
-
-                foreach (var m in mappingForUpdate)
-                {
-                    m.Id = newID;
-                    m.HashId = newHashID;
-                }
-
-                await FilesDbContext.SaveChangesAsync();
-
-                var securityForUpdate = await Query(FilesDbContext.Security)
-                    .Where(r => r.EntryId == oldHashID)
-                    .ToListAsync();
-
-                foreach (var s in securityForUpdate)
-                {
-                    s.EntryId = newHashID;
-                }
-
-                await FilesDbContext.SaveChangesAsync();
-
-                var linkForUpdate = await Query(FilesDbContext.TagLink)
-                    .Where(r => r.EntryId == oldHashID)
-                    .ToListAsync();
-
-                foreach (var l in linkForUpdate)
-                {
-                    l.EntryId = newHashID;
-                }
-
-                await FilesDbContext.SaveChangesAsync();
+                m.Id = newID;
+                m.HashId = newHashID;
             }
 
-            await tx.CommitAsync();
+            await FilesDbContext.SaveChangesAsync();
+
+            var securityForUpdate = await Query(FilesDbContext.Security)
+                .Where(r => r.EntryId == oldHashID)
+                .ToListAsync();
+
+            foreach (var s in securityForUpdate)
+            {
+                s.EntryId = newHashID;
+            }
+
+            await FilesDbContext.SaveChangesAsync();
+
+            var linkForUpdate = await Query(FilesDbContext.TagLink)
+                .Where(r => r.EntryId == oldHashID)
+                .ToListAsync();
+
+            foreach (var l in linkForUpdate)
+            {
+                l.EntryId = newHashID;
+            }
+
+            await FilesDbContext.SaveChangesAsync();
         }
 
-        protected Task<string> MappingIDAsync(string id)
-        {
-            return MappingIDAsync(id, false);
-        }
+        await tx.CommitAsync();
+    }
 
-        protected override string MakeId(string path = null)
-        {
-            return path;
-        }
+    protected Task<string> MappingIDAsync(string id)
+    {
+        return MappingIDAsync(id, false);
+    }
 
-        protected override async Task<IEnumerable<string>> GetChildrenAsync(string folderId)
-        {
-            var folders = await ProviderInfo.GetFolderFoldersAsync(folderId);
-            var subFolders = folders.Select(x => ProviderInfo.MakeId(x.ServerRelativeUrl));
+    protected override string MakeId(string path = null)
+    {
+        return path;
+    }
 
-            var folderFiles = await ProviderInfo.GetFolderFilesAsync(folderId);
-            var files = folderFiles.Select(x => ProviderInfo.MakeId(x.ServerRelativeUrl));
+    protected override async Task<IEnumerable<string>> GetChildrenAsync(string folderId)
+    {
+        var folders = await ProviderInfo.GetFolderFoldersAsync(folderId);
+        var subFolders = folders.Select(x => ProviderInfo.MakeId(x.ServerRelativeUrl));
 
-            return subFolders.Concat(files);
-        }
+        var folderFiles = await ProviderInfo.GetFolderFilesAsync(folderId);
+        var files = folderFiles.Select(x => ProviderInfo.MakeId(x.ServerRelativeUrl));
+
+        return subFolders.Concat(files);
     }
 }

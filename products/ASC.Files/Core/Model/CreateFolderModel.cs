@@ -1,7 +1,6 @@
-﻿namespace ASC.Files.Core.Model
+﻿namespace ASC.Files.Core.Model;
+
+public class CreateFolderModel
 {
-    public class CreateFolderModel
-    {
-        public string Title { get; set; }
-    }
+    public string Title { get; set; }
 }

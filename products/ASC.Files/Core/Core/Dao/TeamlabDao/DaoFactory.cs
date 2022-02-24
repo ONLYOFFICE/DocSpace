@@ -23,72 +23,71 @@
  *
 */
 
-namespace ASC.Files.Core.Data
+namespace ASC.Files.Core.Data;
+
+[Scope]
+public class DaoFactory : IDaoFactory
 {
-    [Scope]
-    public class DaoFactory : IDaoFactory
+    private readonly IServiceProvider _serviceProvider;
+    public IProviderDao ProviderDao { get; }
+
+    public DaoFactory(IServiceProvider serviceProvider, IProviderDao providerDao)
     {
-        private readonly IServiceProvider _serviceProvider;
-        public IProviderDao ProviderDao { get; }
-
-        public DaoFactory(IServiceProvider serviceProvider, IProviderDao providerDao)
-        {
-            _serviceProvider = serviceProvider;
-            ProviderDao = providerDao;
-        }
-
-        public IFileDao<T> GetFileDao<T>()
-        {
-            return _serviceProvider.GetService<IFileDao<T>>();
-        }
-
-        public IFolderDao<T> GetFolderDao<T>()
-        {
-            return _serviceProvider.GetService<IFolderDao<T>>();
-        }
-
-        public ITagDao<T> GetTagDao<T>()
-        {
-            return _serviceProvider.GetService<ITagDao<T>>();
-        }
-
-        public ISecurityDao<T> GetSecurityDao<T>()
-        {
-            return _serviceProvider.GetService<ISecurityDao<T>>();
-        }
-
-        public ILinkDao GetLinkDao()
-        {
-            return _serviceProvider.GetService<ILinkDao>();
-        }
+        _serviceProvider = serviceProvider;
+        ProviderDao = providerDao;
     }
 
-    public static class DaoFactoryExtension
+    public IFileDao<T> GetFileDao<T>()
     {
-        public static void Register(DIHelper services)
-        {
-            services.TryAdd<File<int>>();
-            services.TryAdd<IFileDao<int>, FileDao>();
+        return _serviceProvider.GetService<IFileDao<T>>();
+    }
 
-            services.TryAdd<File<string>>();
-            services.TryAdd<IFileDao<string>, ProviderFileDao>();
+    public IFolderDao<T> GetFolderDao<T>()
+    {
+        return _serviceProvider.GetService<IFolderDao<T>>();
+    }
 
-            services.TryAdd<Folder<int>>();
-            services.TryAdd<IFolderDao<int>, FolderDao>();
+    public ITagDao<T> GetTagDao<T>()
+    {
+        return _serviceProvider.GetService<ITagDao<T>>();
+    }
 
-            services.TryAdd<Folder<string>>();
-            services.TryAdd<IFolderDao<string>, ProviderFolderDao>();
+    public ISecurityDao<T> GetSecurityDao<T>()
+    {
+        return _serviceProvider.GetService<ISecurityDao<T>>();
+    }
 
-            services.TryAdd<SecurityDao<int>>();
-            services.TryAdd<ISecurityDao<int>, SecurityDao<int>>();
-            services.TryAdd<ISecurityDao<string>, ProviderSecurityDao>();
+    public ILinkDao GetLinkDao()
+    {
+        return _serviceProvider.GetService<ILinkDao>();
+    }
+}
 
-            services.TryAdd<ITagDao<int>, TagDao<int>>();
-            services.TryAdd<ITagDao<string>, ProviderTagDao>();
+public static class DaoFactoryExtension
+{
+    public static void Register(DIHelper services)
+    {
+        services.TryAdd<File<int>>();
+        services.TryAdd<IFileDao<int>, FileDao>();
 
-            services.TryAdd<ILinkDao, LinkDao>();
+        services.TryAdd<File<string>>();
+        services.TryAdd<IFileDao<string>, ProviderFileDao>();
 
-            services.TryAdd<EditHistory>();
-        }
+        services.TryAdd<Folder<int>>();
+        services.TryAdd<IFolderDao<int>, FolderDao>();
+
+        services.TryAdd<Folder<string>>();
+        services.TryAdd<IFolderDao<string>, ProviderFolderDao>();
+
+        services.TryAdd<SecurityDao<int>>();
+        services.TryAdd<ISecurityDao<int>, SecurityDao<int>>();
+        services.TryAdd<ISecurityDao<string>, ProviderSecurityDao>();
+
+        services.TryAdd<ITagDao<int>, TagDao<int>>();
+        services.TryAdd<ITagDao<string>, ProviderTagDao>();
+
+        services.TryAdd<ILinkDao, LinkDao>();
+
+        services.TryAdd<EditHistory>();
     }
 }

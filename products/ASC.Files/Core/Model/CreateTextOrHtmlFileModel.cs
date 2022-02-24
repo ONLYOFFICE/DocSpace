@@ -1,8 +1,7 @@
-﻿namespace ASC.Files.Core.Model
+﻿namespace ASC.Files.Core.Model;
+
+public class CreateTextOrHtmlFileModel
 {
-    public class CreateTextOrHtmlFileModel
-    {
-        public string Title { get; set; }
-        public string Content { get; set; }
-    }
+    public string Title { get; set; }
+    public string Content { get; set; }
 }

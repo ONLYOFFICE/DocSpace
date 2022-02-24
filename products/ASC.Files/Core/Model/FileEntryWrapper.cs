@@ -23,156 +23,103 @@
  *
 */
 
-namespace ASC.Api.Documents
+namespace ASC.Api.Documents;
+
+public abstract class FileEntryWrapper
 {
-    /// <summary>
-    /// </summary>
-    public abstract class FileEntryWrapper
+    public string Title { get; set; }
+    public FileShare Access { get; set; }
+    public bool Shared { get; set; }
+    public ApiDateTime Created { get; set; }
+    public EmployeeWraper CreatedBy { get; set; }
+
+    private ApiDateTime _updated;
+    public ApiDateTime Updated
     {
-        /// <summary>
-        /// </summary>
-        public string Title { get; set; }
-
-        /// <summary>
-        /// </summary>
-        public FileShare Access { get; set; }
-
-        /// <summary>
-        /// </summary>
-        public bool Shared { get; set; }
-
-        /// <summary>
-        /// </summary>
-        public ApiDateTime Created { get; set; }
-
-        /// <summary>
-        /// </summary>
-        public EmployeeWraper CreatedBy { get; set; }
-
-        private ApiDateTime _updated;
-
-        /// <summary>
-        /// </summary>
-        public ApiDateTime Updated
-        {
-            get => _updated < Created ? Created : _updated;
-            set => _updated = value;
-        }
-
-        /// <summary>
-        /// </summary>
-        public FolderType RootFolderType { get; set; }
-
-        /// <summary>
-        /// </summary>
-        public EmployeeWraper UpdatedBy { get; set; }
-
-        /// <summary>
-        /// </summary>
-        public bool? ProviderItem { get; set; }
-
-        /// <summary>
-        /// </summary>
-        public string ProviderKey { get; set; }
-
-        /// <summary>
-        /// </summary>
-        public int? ProviderId { get; set; }
-
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="entry"></param>
-        protected FileEntryWrapper(FileEntry entry, EmployeeWraperHelper employeeWraperHelper, ApiDateTimeHelper apiDateTimeHelper)
-        {
-            Title = entry.Title;
-            Access = entry.Access;
-            Shared = entry.Shared;
-            Created = apiDateTimeHelper.Get(entry.CreateOn);
-            CreatedBy = employeeWraperHelper.Get(entry.CreateBy);
-            Updated = apiDateTimeHelper.Get(entry.ModifiedOn);
-            UpdatedBy = employeeWraperHelper.Get(entry.ModifiedBy);
-            RootFolderType = entry.RootFolderType;
-            ProviderItem = entry.ProviderEntry.NullIfDefault();
-            ProviderKey = entry.ProviderKey;
-            ProviderId = entry.ProviderId.NullIfDefault();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        protected FileEntryWrapper() { }
+        get => _updated < Created ? Created : _updated;
+        set => _updated = value;
     }
 
-    /// <summary>
-    /// </summary>
-    public abstract class FileEntryWrapper<T> : FileEntryWrapper
+    public FolderType RootFolderType { get; set; }
+    public EmployeeWraper UpdatedBy { get; set; }
+    public bool? ProviderItem { get; set; }
+    public string ProviderKey { get; set; }
+    public int? ProviderId { get; set; }
+
+    protected FileEntryWrapper(FileEntry entry, EmployeeWraperHelper employeeWraperHelper, ApiDateTimeHelper apiDateTimeHelper)
     {
-        /// <summary>
-        /// </summary>
-        public T Id { get; set; }
-        public T RootFolderId { get; set; }
-        public bool CanShare { get; set; }
-        public bool CanEdit { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="entry"></param>
-        protected FileEntryWrapper(FileEntry<T> entry, EmployeeWraperHelper employeeWraperHelper, ApiDateTimeHelper apiDateTimeHelper)
-            : base(entry, employeeWraperHelper, apiDateTimeHelper)
-        {
-            Id = entry.ID;
-            RootFolderId = entry.RootFolderId;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        protected FileEntryWrapper() { }
+        Title = entry.Title;
+        Access = entry.Access;
+        Shared = entry.Shared;
+        Created = apiDateTimeHelper.Get(entry.CreateOn);
+        CreatedBy = employeeWraperHelper.Get(entry.CreateBy);
+        Updated = apiDateTimeHelper.Get(entry.ModifiedOn);
+        UpdatedBy = employeeWraperHelper.Get(entry.ModifiedBy);
+        RootFolderType = entry.RootFolderType;
+        ProviderItem = entry.ProviderEntry.NullIfDefault();
+        ProviderKey = entry.ProviderKey;
+        ProviderId = entry.ProviderId.NullIfDefault();
     }
 
-    [Scope]
-    public class FileEntryWrapperHelper
+    protected FileEntryWrapper() { }
+}
+
+public abstract class FileEntryWrapper<T> : FileEntryWrapper
+{
+    public T Id { get; set; }
+    public T RootFolderId { get; set; }
+    public bool CanShare { get; set; }
+    public bool CanEdit { get; set; }
+
+    protected FileEntryWrapper(FileEntry<T> entry, EmployeeWraperHelper employeeWraperHelper, ApiDateTimeHelper apiDateTimeHelper)
+        : base(entry, employeeWraperHelper, apiDateTimeHelper)
     {
-        private readonly ApiDateTimeHelper _apiDateTimeHelper;
-        private readonly EmployeeWraperHelper _employeeWraperHelper;
-        public readonly FileSharingHelper _fileSharingHelper;
-        public readonly FileSecurity _fileSecurity;
+        Id = entry.ID;
+        RootFolderId = entry.RootFolderId;
+    }
 
-        public FileEntryWrapperHelper(
-            ApiDateTimeHelper apiDateTimeHelper,
-            EmployeeWraperHelper employeeWraperHelper,
-            FileSharingHelper fileSharingHelper, FileSecurity fileSecurity
-            )
-        {
-            _apiDateTimeHelper = apiDateTimeHelper;
-            _employeeWraperHelper = employeeWraperHelper;
-            _fileSharingHelper = fileSharingHelper;
-            _fileSecurity = fileSecurity;
-        }
+    protected FileEntryWrapper() { }
+}
 
-        protected internal async Task<T> GetAsync<T, TId>(FileEntry<TId> entry) where T : FileEntryWrapper<TId>, new()
+[Scope]
+public class FileEntryWrapperHelper
+{
+    private readonly ApiDateTimeHelper _apiDateTimeHelper;
+    private readonly EmployeeWraperHelper _employeeWraperHelper;
+    public readonly FileSharingHelper _fileSharingHelper;
+    public readonly FileSecurity _fileSecurity;
+
+    public FileEntryWrapperHelper(
+        ApiDateTimeHelper apiDateTimeHelper,
+        EmployeeWraperHelper employeeWraperHelper,
+        FileSharingHelper fileSharingHelper, FileSecurity fileSecurity
+        )
+    {
+        _apiDateTimeHelper = apiDateTimeHelper;
+        _employeeWraperHelper = employeeWraperHelper;
+        _fileSharingHelper = fileSharingHelper;
+        _fileSecurity = fileSecurity;
+    }
+
+    protected internal async Task<T> GetAsync<T, TId>(FileEntry<TId> entry) where T : FileEntryWrapper<TId>, new()
+    {
+        return new T
         {
-            return new T
-            {
-                Id = entry.ID,
-                Title = entry.Title,
-                Access = entry.Access,
-                Shared = entry.Shared,
-                Created = _apiDateTimeHelper.Get(entry.CreateOn),
-                CreatedBy = _employeeWraperHelper.Get(entry.CreateBy),
-                Updated = _apiDateTimeHelper.Get(entry.ModifiedOn),
-                UpdatedBy = _employeeWraperHelper.Get(entry.ModifiedBy),
-                RootFolderType = entry.RootFolderType,
-                RootFolderId = entry.RootFolderId,
-                ProviderItem = entry.ProviderEntry.NullIfDefault(),
-                ProviderKey = entry.ProviderKey,
-                ProviderId = entry.ProviderId.NullIfDefault(),
-                CanShare = await _fileSharingHelper.CanSetAccessAsync(entry),
-                CanEdit = await _fileSecurity.CanEditAsync(entry)
-            };
-        }
+            Id = entry.ID,
+            Title = entry.Title,
+            Access = entry.Access,
+            Shared = entry.Shared,
+            Created = _apiDateTimeHelper.Get(entry.CreateOn),
+            CreatedBy = _employeeWraperHelper.Get(entry.CreateBy),
+            Updated = _apiDateTimeHelper.Get(entry.ModifiedOn),
+            UpdatedBy = _employeeWraperHelper.Get(entry.ModifiedBy),
+            RootFolderType = entry.RootFolderType,
+            RootFolderId = entry.RootFolderId,
+            ProviderItem = entry.ProviderEntry.NullIfDefault(),
+            ProviderKey = entry.ProviderKey,
+            ProviderId = entry.ProviderId.NullIfDefault(),
+            CanShare = await _fileSharingHelper.CanSetAccessAsync(entry),
+            CanEdit = await _fileSecurity.CanEditAsync(entry)
+        };
     }
 }

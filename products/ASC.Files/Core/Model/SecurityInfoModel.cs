@@ -1,9 +1,8 @@
-﻿namespace ASC.Files.Model
+﻿namespace ASC.Files.Model;
+
+public class SecurityInfoModel : BaseBatchModel
 {
-    public class SecurityInfoModel : BaseBatchModel
-    {
-        public IEnumerable<FileShareParams> Share { get; set; }
-        public bool Notify { get; set; }
-        public string SharingMessage { get; set; }
-    }
+    public IEnumerable<FileShareParams> Share { get; set; }
+    public bool Notify { get; set; }
+    public string SharingMessage { get; set; }
 }

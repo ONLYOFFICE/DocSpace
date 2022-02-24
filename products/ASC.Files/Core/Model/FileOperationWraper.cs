@@ -23,182 +23,148 @@
  *
 */
 
-namespace ASC.Api.Documents
+namespace ASC.Api.Documents;
+
+public class FileOperationWraper
 {
-    /// <summary>
-    /// </summary>
-    public class FileOperationWraper
+    public string Id { get; set; }
+
+    [JsonPropertyName("Operation")]
+    public FileOperationType OperationType { get; set; }
+    public int Progress { get; set; }
+    public string Error { get; set; }
+    public string Processed { get; set; }
+    public bool Finished { get; set; }
+    public string Url { get; set; }
+    public List<FileEntryWrapper> Files { get; set; }
+    public List<FileEntryWrapper> Folders { get; set; }
+
+    public FileOperationWraper() { }
+
+    public static FileOperationWraper GetSample()
     {
-        /// <summary>
-        /// </summary>
-        public string Id { get; set; }
-
-        /// <summary>
-        /// </summary>
-        [JsonPropertyName("Operation")]
-        public FileOperationType OperationType { get; set; }
-
-        /// <summary>
-        /// </summary>
-        public int Progress { get; set; }
-
-        /// <summary>
-        /// </summary>
-        public string Error { get; set; }
-
-        /// <summary>
-        /// </summary>
-        public string Processed { get; set; }
-
-        /// <summary>
-        /// </summary>
-        public bool Finished { get; set; }
-
-        /// <summary>
-        /// </summary>
-        public string Url { get; set; }
-
-        /// <summary>
-        /// </summary>
-        public List<FileEntryWrapper> Files { get; set; }
-
-        /// <summary>
-        /// </summary>
-        public List<FileEntryWrapper> Folders { get; set; }
-
-        /// <summary>
-        /// </summary>
-        public FileOperationWraper()
+        return new FileOperationWraper
         {
-        }
+            Id = Guid.NewGuid().ToString(),
+            OperationType = FileOperationType.Move,
+            Progress = 100,
+            //Source = "folder_1,file_1",
+            //Result = "folder_1,file_1",
+            Error = "",
+            Processed = "1",
+            Files = new List<FileEntryWrapper> { FileWrapper<int>.GetSample() },
+            Folders = new List<FileEntryWrapper> { FolderWrapper<int>.GetSample() }
+        };
+    }
+}
 
-        /// <summary>
-        /// </summary>
-        /// <returns></returns>
-        public static FileOperationWraper GetSample()
-        {
-            return new FileOperationWraper
-            {
-                Id = Guid.NewGuid().ToString(),
-                OperationType = FileOperationType.Move,
-                Progress = 100,
-                //Source = "folder_1,file_1",
-                //Result = "folder_1,file_1",
-                Error = "",
-                Processed = "1",
-                Files = new List<FileEntryWrapper> { FileWrapper<int>.GetSample() },
-                Folders = new List<FileEntryWrapper> { FolderWrapper<int>.GetSample() }
-            };
-        }
+[Scope]
+public class FileOperationWraperHelper
+{
+    private readonly FolderWrapperHelper _folderWrapperHelper;
+    private readonly FileWrapperHelper _filesWrapperHelper;
+    private readonly IDaoFactory _daoFactory;
+    private readonly CommonLinkUtility _commonLinkUtility;
+
+    public FileOperationWraperHelper(
+        FolderWrapperHelper folderWrapperHelper,
+        FileWrapperHelper filesWrapperHelper,
+        IDaoFactory daoFactory,
+        CommonLinkUtility commonLinkUtility)
+    {
+        _folderWrapperHelper = folderWrapperHelper;
+        _filesWrapperHelper = filesWrapperHelper;
+        _daoFactory = daoFactory;
+        _commonLinkUtility = commonLinkUtility;
     }
 
-    [Scope]
-    public class FileOperationWraperHelper
+    public async Task<FileOperationWraper> GetAsync(FileOperationResult o)
     {
-        private readonly FolderWrapperHelper _folderWrapperHelper;
-        private readonly FileWrapperHelper _filesWrapperHelper;
-        private readonly IDaoFactory _daoFactory;
-        private readonly CommonLinkUtility _commonLinkUtility;
-
-        public FileOperationWraperHelper(
-            FolderWrapperHelper folderWrapperHelper,
-            FileWrapperHelper filesWrapperHelper,
-            IDaoFactory daoFactory,
-            CommonLinkUtility commonLinkUtility)
+        var result = new FileOperationWraper
         {
-            _folderWrapperHelper = folderWrapperHelper;
-            _filesWrapperHelper = filesWrapperHelper;
-            _daoFactory = daoFactory;
-            _commonLinkUtility = commonLinkUtility;
+            Id = o.Id,
+            OperationType = o.OperationType,
+            Progress = o.Progress,
+            Error = o.Error,
+            Processed = o.Processed,
+            Finished = o.Finished
+        };
+
+        if (!string.IsNullOrEmpty(o.Result) && result.OperationType != FileOperationType.Delete)
+        {
+            var arr = o.Result.Split(':');
+            var folders = arr
+                .Where(s => s.StartsWith("folder_"))
+                .Select(s => s.Substring(7));
+
+            if (folders.Any())
+            {
+                var fInt = new List<int>();
+                var fString = new List<string>();
+
+                foreach (var folder in folders)
+                {
+                    if (int.TryParse(folder, out var f))
+                    {
+                        fInt.Add(f);
+                    }
+                    else
+                    {
+                        fString.Add(folder);
+                    }
+                }
+
+                result.Folders = await GetFoldersAsync(folders);
+                result.Folders.AddRange(await GetFoldersAsync(fInt));
+            }
+
+            var files = arr
+                .Where(s => s.StartsWith("file_"))
+                .Select(s => s.Substring(5));
+
+            if (files.Any())
+            {
+                var fInt = new List<int>();
+                var fString = new List<string>();
+
+                foreach (var file in files)
+                {
+                    if (int.TryParse(file, out var f))
+                    {
+                        fInt.Add(f);
+                    }
+                    else
+                    {
+                        fString.Add(file);
+                    }
+                }
+
+                result.Files = await GetFilesAsync(fString);
+                result.Files.AddRange(await GetFilesAsync(fInt));
+            }
+
+            if (result.OperationType == FileOperationType.Download)
+            {
+                result.Url = _commonLinkUtility.GetFullAbsolutePath(o.Result);
+            }
         }
 
-        public async Task<FileOperationWraper> GetAsync(FileOperationResult o)
+        return result;
+
+        async Task<List<FileEntryWrapper>> GetFoldersAsync<T>(IEnumerable<T> folders)
         {
-            var result = new FileOperationWraper
-            {
-                Id = o.Id,
-                OperationType = o.OperationType,
-                Progress = o.Progress,
-                Error = o.Error,
-                Processed = o.Processed,
-                Finished = o.Finished
-            };
+            var folderDao = _daoFactory.GetFolderDao<T>();
+            var folderEnum = folderDao.GetFoldersAsync(folders).SelectAwait(async r => await _folderWrapperHelper.GetAsync(r)).Cast<FileEntryWrapper>();
 
-            if (!string.IsNullOrEmpty(o.Result) && result.OperationType != FileOperationType.Delete)
-            {
-                var arr = o.Result.Split(':');
-                var folders = arr
-                    .Where(s => s.StartsWith("folder_"))
-                    .Select(s => s.Substring(7));
+            return await folderEnum.ToListAsync();
+        }
 
-                if (folders.Any())
-                {
-                    var fInt = new List<int>();
-                    var fString = new List<string>();
+        async Task<List<FileEntryWrapper>> GetFilesAsync<T>(IEnumerable<T> files)
+        {
+            var fileDao = _daoFactory.GetFileDao<T>();
+            var filesEnum = fileDao.GetFilesAsync(files).SelectAwait(async r => await _filesWrapperHelper.GetAsync(r)).Cast<FileEntryWrapper>();
 
-                    foreach (var folder in folders)
-                    {
-                        if (int.TryParse(folder, out var f))
-                        {
-                            fInt.Add(f);
-                        }
-                        else
-                        {
-                            fString.Add(folder);
-                        }
-                    }
-
-                    result.Folders = await GetFoldersAsync(folders);
-                    result.Folders.AddRange(await GetFoldersAsync(fInt));
-                }
-                var files = arr
-                    .Where(s => s.StartsWith("file_"))
-                    .Select(s => s.Substring(5));
-
-                if (files.Any())
-                {
-                    var fInt = new List<int>();
-                    var fString = new List<string>();
-
-                    foreach (var file in files)
-                    {
-                        if (int.TryParse(file, out var f))
-                        {
-                            fInt.Add(f);
-                        }
-                        else
-                        {
-                            fString.Add(file);
-                        }
-                    }
-
-                    result.Files = await GetFilesAsync(fString);
-                    result.Files.AddRange(await GetFilesAsync(fInt));
-                }
-
-                if (result.OperationType == FileOperationType.Download)
-                {
-                    result.Url = _commonLinkUtility.GetFullAbsolutePath(o.Result);
-                }
-            }
-
-            return result;
-
-            async Task<List<FileEntryWrapper>> GetFoldersAsync<T>(IEnumerable<T> folders)
-            {
-                var folderDao = _daoFactory.GetFolderDao<T>();
-                var folderEnum = folderDao.GetFoldersAsync(folders).SelectAwait(async r => await _folderWrapperHelper.GetAsync(r)).Cast<FileEntryWrapper>();
-
-                return await folderEnum.ToListAsync();
-            }
-
-            async Task<List<FileEntryWrapper>> GetFilesAsync<T>(IEnumerable<T> files)
-            {
-                var fileDao = _daoFactory.GetFileDao<T>();
-                var filesEnum = fileDao.GetFilesAsync(files).SelectAwait(async r => await _filesWrapperHelper.GetAsync(r)).Cast<FileEntryWrapper>();
-
-                return await filesEnum.ToListAsync();;
-            }
+            return await filesEnum.ToListAsync(); ;
         }
     }
 }

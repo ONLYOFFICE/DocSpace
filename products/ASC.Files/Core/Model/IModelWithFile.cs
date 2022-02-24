@@ -1,7 +1,6 @@
-﻿namespace ASC.Files.Core.Model
+﻿namespace ASC.Files.Core.Model;
+
+public interface IModelWithFile
 {
-    public interface IModelWithFile
-    {
-        IFormFile File { get; set; }
-    }
+    IFormFile File { get; set; }
 }

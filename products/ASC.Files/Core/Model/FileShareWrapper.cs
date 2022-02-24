@@ -23,108 +23,80 @@
  *
 */
 
-namespace ASC.Api.Documents
+namespace ASC.Api.Documents;
+
+public class FileShareWrapper
 {
-    /// <summary>
-    /// </summary>
-    public class FileShareWrapper
+    public FileShareWrapper() { }
+
+    public FileShare Access { get; set; }
+    public object SharedTo { get; set; }
+    public bool IsLocked { get; set; }
+    public bool IsOwner { get; set; }
+
+    public static FileShareWrapper GetSample()
     {
-        /// <summary>
-        /// </summary>
-        /// <param name="aceWrapper"></param>
-        public FileShareWrapper() { }
-
-        /// <summary>
-        /// </summary>
-        public FileShare Access { get; set; }
-
-        /// <summary>
-        /// </summary>
-        public object SharedTo { get; set; }
-
-        /// <summary>
-        /// </summary>
-        public bool IsLocked { get; set; }
-
-        /// <summary>
-        /// </summary>
-        public bool IsOwner { get; set; }
-
-        /// <summary>
-        /// </summary>
-        /// <returns></returns>
-        public static FileShareWrapper GetSample()
+        return new FileShareWrapper
         {
-            return new FileShareWrapper
-            {
-                Access = FileShare.ReadWrite,
-                IsLocked = false,
-                IsOwner = true,
-                //SharedTo = EmployeeWraper.GetSample()
-            };
-        }
+            Access = FileShare.ReadWrite,
+            IsLocked = false,
+            IsOwner = true,
+            //SharedTo = EmployeeWraper.GetSample()
+        };
+    }
+}
+
+public class FileShareLink
+{
+    public Guid Id { get; set; }
+    public string ShareLink { get; set; }
+}
+
+[Scope]
+public class FileShareWrapperHelper
+{
+    private readonly UserManager _userManager;
+    private readonly EmployeeWraperFullHelper _employeeWraperFullHelper;
+
+    public FileShareWrapperHelper(
+        UserManager userManager,
+        EmployeeWraperFullHelper employeeWraperFullHelper)
+    {
+        _userManager = userManager;
+        _employeeWraperFullHelper = employeeWraperFullHelper;
     }
 
-
-    /// <summary>
-    /// </summary>
-    public class FileShareLink
+    public FileShareWrapper Get(AceWrapper aceWrapper)
     {
-        /// <summary> 
-        /// </summary>
-        public Guid Id { get; set; }
-
-        /// <summary> 
-        /// </summary>
-        public string ShareLink { get; set; }
-    }
-
-    [Scope]
-    public class FileShareWrapperHelper
-    {
-        private readonly UserManager _userManager;
-        private readonly EmployeeWraperFullHelper _employeeWraperFullHelper;
-
-        public FileShareWrapperHelper(
-            UserManager userManager,
-            EmployeeWraperFullHelper employeeWraperFullHelper)
+        var result = new FileShareWrapper
         {
-            _userManager = userManager;
-            _employeeWraperFullHelper = employeeWraperFullHelper;
-        }
+            IsOwner = aceWrapper.Owner,
+            IsLocked = aceWrapper.LockedRights
+        };
 
-        public FileShareWrapper Get(AceWrapper aceWrapper)
+        if (aceWrapper.SubjectGroup)
         {
-            var result = new FileShareWrapper
+            if (aceWrapper.SubjectId == FileConstant.ShareLinkId)
             {
-                IsOwner = aceWrapper.Owner,
-                IsLocked = aceWrapper.LockedRights
-            };
-
-            if (aceWrapper.SubjectGroup)
-            {
-                if (aceWrapper.SubjectId == FileConstant.ShareLinkId)
+                result.SharedTo = new FileShareLink
                 {
-                    result.SharedTo = new FileShareLink
-                    {
-                        Id = aceWrapper.SubjectId,
-                        ShareLink = aceWrapper.Link
-                    };
-                }
-                else
-                {
-                    //Shared to group
-                    result.SharedTo = new GroupWrapperSummary(_userManager.GetGroupInfo(aceWrapper.SubjectId), _userManager);
-                }
+                    Id = aceWrapper.SubjectId,
+                    ShareLink = aceWrapper.Link
+                };
             }
             else
             {
-                result.SharedTo = _employeeWraperFullHelper.GetFull(_userManager.GetUsers(aceWrapper.SubjectId));
+                //Shared to group
+                result.SharedTo = new GroupWrapperSummary(_userManager.GetGroupInfo(aceWrapper.SubjectId), _userManager);
             }
-
-            result.Access = aceWrapper.Share;
-
-            return result;
         }
+        else
+        {
+            result.SharedTo = _employeeWraperFullHelper.GetFull(_userManager.GetUsers(aceWrapper.SubjectId));
+        }
+
+        result.Access = aceWrapper.Share;
+
+        return result;
     }
 }

@@ -23,135 +23,134 @@
  *
 */
 
-namespace ASC.Web.Files.Configuration
+namespace ASC.Web.Files.Configuration;
+
+public class SearchHandler
 {
-    public class SearchHandler
+    public Guid ProductID => ProductEntryPoint.ID;
+    public ImageOptions Logo => new ImageOptions { ImageFileName = "common_search_icon.png" };
+    public Guid ModuleID => ProductID;
+    public string SearchName => FilesCommonResource.Search;
+
+    private readonly FileSecurity _fileSecurity;
+    private readonly IDaoFactory _daoFactory;
+    private readonly EntryManager _entryManager;
+    private readonly GlobalFolderHelper _globalFolderHelper;
+    private readonly FilesSettingsHelper _filesSettingsHelper;
+    private readonly FilesLinkUtility _filesLinkUtility;
+    private readonly FileUtility _fileUtility;
+    private readonly PathProvider _pathProvider;
+    private readonly ThirdpartyConfiguration _thirdpartyConfiguration;
+
+    public SearchHandler(
+        FileSecurity fileSecurity,
+        IDaoFactory daoFactory,
+        EntryManager entryManager,
+        GlobalFolderHelper globalFolderHelper,
+        FilesSettingsHelper filesSettingsHelper,
+        FilesLinkUtility filesLinkUtility,
+        FileUtility fileUtility,
+        PathProvider pathProvider,
+        ThirdpartyConfiguration thirdpartyConfiguration)
     {
-        public Guid ProductID => ProductEntryPoint.ID;
-        public ImageOptions Logo => new ImageOptions { ImageFileName = "common_search_icon.png" };
-        public Guid ModuleID => ProductID;
-        public string SearchName => FilesCommonResource.Search;
+        _fileSecurity = fileSecurity;
+        _daoFactory = daoFactory;
+        _entryManager = entryManager;
+        _globalFolderHelper = globalFolderHelper;
+        _filesSettingsHelper = filesSettingsHelper;
+        _filesLinkUtility = filesLinkUtility;
+        _fileUtility = fileUtility;
+        _pathProvider = pathProvider;
+        _thirdpartyConfiguration = thirdpartyConfiguration;
+    }
 
-        private readonly FileSecurity _fileSecurity;
-        private readonly IDaoFactory _daoFactory;
-        private readonly EntryManager _entryManager;
-        private readonly GlobalFolderHelper _globalFolderHelper;
-        private readonly FilesSettingsHelper _filesSettingsHelper;
-        private readonly FilesLinkUtility _filesLinkUtility;
-        private readonly FileUtility _fileUtility;
-        private readonly PathProvider _pathProvider;
-        private readonly ThirdpartyConfiguration _thirdpartyConfiguration;
+    public IAsyncEnumerable<File<int>> SearchFilesAsync(string text)
+    {
+        var security = _fileSecurity;
+        var fileDao = _daoFactory.GetFileDao<int>();
+        var files = fileDao.SearchAsync(text);
 
-        public SearchHandler(
-            FileSecurity fileSecurity,
-            IDaoFactory daoFactory,
-            EntryManager entryManager,
-            GlobalFolderHelper globalFolderHelper,
-            FilesSettingsHelper filesSettingsHelper,
-            FilesLinkUtility filesLinkUtility,
-            FileUtility fileUtility,
-            PathProvider pathProvider,
-            ThirdpartyConfiguration thirdpartyConfiguration)
+        return files.WhereAwait(async e => await security.CanReadAsync(e));
+    }
+
+    public IAsyncEnumerable<Folder<int>> SearchFoldersAsync(string text)
+    {
+        var security = _fileSecurity;
+        var folderDao = _daoFactory.GetFolderDao<int>();
+        var folders = folderDao.SearchFoldersAsync(text);
+        var result = folders.WhereAwait(async e => await security.CanReadAsync(e));
+
+        if (_thirdpartyConfiguration.SupportInclusion(_daoFactory)
+            && _filesSettingsHelper.EnableThirdParty)
         {
-            _fileSecurity = fileSecurity;
-            _daoFactory = daoFactory;
-            _entryManager = entryManager;
-            _globalFolderHelper = globalFolderHelper;
-            _filesSettingsHelper = filesSettingsHelper;
-            _filesLinkUtility = filesLinkUtility;
-            _fileUtility = fileUtility;
-            _pathProvider = pathProvider;
-            _thirdpartyConfiguration = thirdpartyConfiguration;
+            //var id = GlobalFolderHelper.FolderMy;
+            //if (!Equals(id, 0))
+            //{
+            //var folderMy = await folderDao.GetFolderAsync(id);
+            //result = result.Concat(EntryManager.GetThirpartyFolders(folderMy, text));
+            //}
+
+            //id = await GlobalFolderHelper.FolderCommonAsync;
+            //var folderCommon = await folderDao.GetFolderAsync(id);
+            //result = result.Concat(EntryManager.GetThirpartyFolders(folderCommon, text));
         }
 
-        public IAsyncEnumerable<File<int>> SearchFilesAsync(string text)
+        return result;
+    }
+
+    public async Task<SearchResultItem[]> SearchAsync(string text)
+    {
+        var folderDao = _daoFactory.GetFolderDao<int>();
+        var files = SearchFilesAsync(text);
+        List<SearchResultItem> list = new List<SearchResultItem>();
+        await foreach (var file in files)
         {
-            var security = _fileSecurity;
-            var fileDao = _daoFactory.GetFileDao<int>();
-            var files = fileDao.SearchAsync(text);
-
-            return files.WhereAwait(async e => await security.CanReadAsync(e));
-        }
-
-        public IAsyncEnumerable<Folder<int>> SearchFoldersAsync(string text)
-        {
-            var security = _fileSecurity;
-            var folderDao = _daoFactory.GetFolderDao<int>();
-            var folders = folderDao.SearchFoldersAsync(text);
-            var result = folders.WhereAwait(async e => await security.CanReadAsync(e));
-
-            if (_thirdpartyConfiguration.SupportInclusion(_daoFactory)
-                && _filesSettingsHelper.EnableThirdParty)
+            var searchResultItem = new SearchResultItem
             {
-                //var id = GlobalFolderHelper.FolderMy;
-                //if (!Equals(id, 0))
-                //{
-                    //var folderMy = await folderDao.GetFolderAsync(id);
-                    //result = result.Concat(EntryManager.GetThirpartyFolders(folderMy, text));
-                //}
-
-                //id = await GlobalFolderHelper.FolderCommonAsync;
-                //var folderCommon = await folderDao.GetFolderAsync(id);
-                //result = result.Concat(EntryManager.GetThirpartyFolders(folderCommon, text));
-            }
-
-            return result;
-        }
-
-        public async Task<SearchResultItem[]> SearchAsync(string text)
-        {
-            var folderDao = _daoFactory.GetFolderDao<int>();
-            var files = SearchFilesAsync(text);
-            List<SearchResultItem> list = new List<SearchResultItem>();
-            await foreach (var file in files)
-            {
-                var searchResultItem = new SearchResultItem
-                {
-                    Name = file.Title ?? string.Empty,
-                    Description = string.Empty,
-                    URL = _filesLinkUtility.GetFileWebPreviewUrl(_fileUtility, file.Title, file.ID),
-                    Date = file.ModifiedOn,
-                    Additional = new Dictionary<string, object>
+                Name = file.Title ?? string.Empty,
+                Description = string.Empty,
+                URL = _filesLinkUtility.GetFileWebPreviewUrl(_fileUtility, file.Title, file.ID),
+                Date = file.ModifiedOn,
+                Additional = new Dictionary<string, object>
                                 {
                                     { "Author", file.CreateByString.HtmlEncode() },
                                     { "Path", FolderPathBuilder(await _entryManager.GetBreadCrumbsAsync(file.FolderID, folderDao)) },
                                     { "Size", FileSizeComment.FilesSizeToString(file.ContentLength) }
                                 }
-                };
+            };
 
-                list.Add(searchResultItem);
-            }
+            list.Add(searchResultItem);
+        }
 
-            var folders = SearchFoldersAsync(text);
-            await foreach (var folder in folders)
+        var folders = SearchFoldersAsync(text);
+        await foreach (var folder in folders)
+        {
+            var searchResultItem = new SearchResultItem
             {
-                var searchResultItem = new SearchResultItem
-                {
-                    Name = folder.Title ?? string.Empty,
-                    Description = string.Empty,
-                    URL = await _pathProvider.GetFolderUrlAsync(folder),
-                    Date = folder.ModifiedOn,
-                    Additional = new Dictionary<string, object>
+                Name = folder.Title ?? string.Empty,
+                Description = string.Empty,
+                URL = await _pathProvider.GetFolderUrlAsync(folder),
+                Date = folder.ModifiedOn,
+                Additional = new Dictionary<string, object>
                                     {
                                             { "Author", folder.CreateByString.HtmlEncode() },
                                             { "Path", FolderPathBuilder(await _entryManager.GetBreadCrumbsAsync(folder.ID, folderDao)) },
                                             { "IsFolder", true }
                                     }
-                };
-                list.Add(searchResultItem);
-            }
-
-            return list.ToArray();
+            };
+            list.Add(searchResultItem);
         }
 
-        private static string FolderPathBuilder(IEnumerable<FileEntry> folders)
-        {
-            var titles = folders.Select(f => f.Title).ToList();
-            const string separator = " \\ ";
+        return list.ToArray();
+    }
 
-            return 4 < titles.Count
-                       ? string.Join(separator, new[] { titles.First(), "...", titles.ElementAt(titles.Count - 2), titles.Last() })
-                       : string.Join(separator, titles.ToArray());
-        }
+    private static string FolderPathBuilder(IEnumerable<FileEntry> folders)
+    {
+        var titles = folders.Select(f => f.Title).ToList();
+        const string separator = " \\ ";
+
+        return 4 < titles.Count
+                   ? string.Join(separator, new[] { titles.First(), "...", titles.ElementAt(titles.Count - 2), titles.Last() })
+                   : string.Join(separator, titles.ToArray());
     }
 }
