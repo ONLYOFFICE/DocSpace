@@ -249,7 +249,13 @@ class UpdateUserForm extends React.Component {
 
   onBirthdayDateChange = (value) => {
     var stateCopy = Object.assign({}, this.state);
-    stateCopy.profile.birthday = value ? value.toJSON() : null;
+    const birthday = value ? value.toJSON() : stateCopy.profile.workFrom;
+    stateCopy.profile.birthday = birthday;
+
+    if (new Date(birthday) > new Date(stateCopy.profile.workFrom)) {
+      stateCopy.profile.workFrom = birthday;
+    }
+
     this.setState(stateCopy);
     this.setIsEdit();
   };
@@ -705,9 +711,6 @@ class UpdateUserForm extends React.Component {
       ? new Date(profile.birthday)
       : new Date(this.props.profile.workFrom);
 
-    const workFromDateValue =
-      calendarWorkFrom <= calendarMinDate ? calendarMinDate : calendarWorkFrom;
-
     return (
       <>
         <MainContainer>
@@ -881,7 +884,7 @@ class UpdateUserForm extends React.Component {
                 calendarHeaderContent={`${t("CalendarSelectDate")}:`}
                 labelText={`${regDateCaption}:`}
                 inputName="workFrom"
-                inputValue={workFromDateValue}
+                inputValue={calendarWorkFrom}
                 inputIsDisabled={
                   isLoading ||
                   !isAdmin ||
@@ -892,6 +895,7 @@ class UpdateUserForm extends React.Component {
                 calendarMinDate={calendarMinDate}
                 locale={language}
                 maxLabelWidth={maxLabelWidth}
+                //calendarMaxDate={calendarMinDate}
               />
             )}
             <TextField

@@ -146,7 +146,6 @@ class Calendar extends Component {
 
     const openToDateYear = openToDate.getFullYear();
 
-    let disabled = false;
     const listMonths = [];
 
     let i = 0;
@@ -154,12 +153,12 @@ class Calendar extends Component {
       listMonths.push({
         key: `${i}`,
         label: `${months[i]}`,
-        disabled: disabled,
+        disabled: false,
       });
       i++;
     }
 
-    if (openToDateYear <= minDateYear) {
+    if (openToDateYear < minDateYear) {
       i = 0;
       while (i != 12) {
         if (i != minDateMonth) listMonths[i].disabled = true;
@@ -173,7 +172,9 @@ class Calendar extends Component {
         listMonths[i].disabled = true;
         i++;
       }
-    } else if (openToDateYear === maxDateYear) {
+    }
+
+    if (openToDateYear === maxDateYear) {
       i = 11;
       while (i != maxDateMonth) {
         listMonths[i].disabled = true;
