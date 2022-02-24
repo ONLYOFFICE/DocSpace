@@ -41,7 +41,8 @@ public class Startup : BaseStartup
 
         NotifyConfigurationExtension.Register(DIHelper);
 
-        DIHelper.TryAdd<BackupRequesteIntegrationEventHandler>();
+        DIHelper.TryAdd<Schedule>();
+        DIHelper.TryAdd<BackupRequestIntegrationEventHandler>();
                 
         DIHelper.TryAdd<BackupListenerService>();
         services.AddHostedService<BackupListenerService>();

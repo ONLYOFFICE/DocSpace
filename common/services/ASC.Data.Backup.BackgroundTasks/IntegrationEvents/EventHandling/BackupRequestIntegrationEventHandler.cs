@@ -1,31 +1,29 @@
-﻿using ASC.Core;
-using ASC.Data.Backup.Core.IntegrationEvents.Events;
-using ASC.EventBus.Exceptions;
-
-namespace ASC.Data.Backup.IntegrationEvents.EventHandling;
+﻿namespace ASC.Data.Backup.IntegrationEvents.EventHandling;
 
 [Scope]
-public class BackupRequesteIntegrationEventHandler : IIntegrationEventHandler<BackupRequestIntegrationEvent>
+public class BackupRequestIntegrationEventHandler : IIntegrationEventHandler<BackupRequestIntegrationEvent>
 {
     private readonly BackupAjaxHandler _backupAjaxHandler;
     private readonly ILog _logger;
     private readonly TenantManager _tenantManager;
     private readonly SecurityContext _securityContext;
     private readonly AuthManager _authManager;
+    private readonly BackupWorker _backupWorker;
 
-    public BackupRequesteIntegrationEventHandler(
+    public BackupRequestIntegrationEventHandler(
         BackupAjaxHandler backupAjaxHandler,
         IOptionsMonitor<ILog> logger,
         TenantManager tenantManager,
         SecurityContext securityContext,
-        AuthManager authManager
-        )
+        AuthManager authManager,
+        BackupWorker backupWorker)        
     {       
         _tenantManager = tenantManager;
         _authManager = authManager;
         _securityContext = securityContext;
         _backupAjaxHandler = backupAjaxHandler;
-        _logger = logger.CurrentValue;            
+        _logger = logger.CurrentValue;
+        _backupWorker = backupWorker;
     }
     
     public async Task Handle(BackupRequestIntegrationEvent @event)
@@ -36,11 +34,23 @@ public class BackupRequesteIntegrationEventHandler : IIntegrationEventHandler<Ba
 
         _securityContext.AuthenticateMeWithoutCookie(_authManager.GetAccountByID(@event.TenantId, @event.CreateBy));
     
-        _backupAjaxHandler.StartBackup(@event.StorageType, @event.StorageParams, @event.BackupMail);
-
-        throw new IntegrationEventRejectExeption("Backup service is very busy");
+        if (@event.IsScheduled)
+        {
+            _backupWorker.StartScheduledBackup(new EF.Model.BackupSchedule
+            {
+                 BackupMail = @event.BackupMail,
+                 BackupsStored = @event.BackupsStored,
+                 StorageBasePath = @event.StorageBasePath,
+                 StorageParams  = JsonConvert.SerializeObject(@event.StorageParams),
+                 StorageType = @event.StorageType,
+                 TenantId = @event.TenantId
+            });
+        }
+        else
+        {
+            _backupAjaxHandler.StartBackup(@event.StorageType, @event.StorageParams, @event.BackupMail);
+        }
 
         await Task.CompletedTask;
-
     }
 }

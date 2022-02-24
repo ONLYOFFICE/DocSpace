@@ -1,9 +1,4 @@
-﻿using ASC.Data.Backup.BackgroundTasks;
-using ASC.Data.Backup.Core.IntegrationEvents.Events;
-
-using Microsoft.Extensions.Hosting.WindowsServices;
-
-var options = new WebApplicationOptions
+﻿var options = new WebApplicationOptions
 {
     Args = args,
     ContentRootPath = WindowsServiceHelpers.IsWindowsService() ? AppContext.BaseDirectory : default
@@ -87,7 +82,7 @@ startup.Configure(app, app.Environment);
 
 var eventBus = ((IApplicationBuilder)app).ApplicationServices.GetRequiredService<IEventBus>();
 
-eventBus.Subscribe<BackupRequestIntegrationEvent, BackupRequesteIntegrationEventHandler>();
+eventBus.Subscribe<BackupRequestIntegrationEvent, BackupRequestIntegrationEventHandler>();
 
 app.Run();
 

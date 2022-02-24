@@ -23,9 +23,6 @@
  *
 */
 
-using ASC.Core.Common.Hosting;
-using ASC.ElasticSearch.Service;
-
 namespace ASC.Data.Backup.Services;
 
 [Singletone]
@@ -34,7 +31,6 @@ public sealed class BackupSchedulerService : BackgroundService
     private readonly TimeSpan _backupSchedulerPeriod;
     private readonly ILog _logger;
 
-    private readonly BackupWorker _backupWorker;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly IEventBus _eventBus;
@@ -50,7 +46,6 @@ public sealed class BackupSchedulerService : BackgroundService
     {
         _logger = options.CurrentValue;
         _coreBaseSettings = coreBaseSettings;
-        _backupWorker = backupWorker;
         _backupSchedulerPeriod = configuration.GetSetting<BackupSettings>("backup").Scheduler.Period;
         _scopeFactory = scopeFactory;
         _eventBus = eventBus;
@@ -120,7 +115,16 @@ public sealed class BackupSchedulerService : BackgroundService
 
                         _logger.DebugFormat("Start scheduled backup: {0}, {1}, {2}, {3}", schedule.TenantId, schedule.BackupMail, schedule.StorageType, schedule.StorageBasePath);
 
-                        _backupWorker.StartScheduledBackup(schedule);
+                        _eventBus.Publish(new BackupRequestIntegrationEvent(
+                                                 tenantId: schedule.TenantId,
+                                                 storageBasePath: schedule.StorageBasePath,
+                                                 storageParams: JsonConvert.DeserializeObject<Dictionary<string,string>>(schedule.StorageParams),
+                                                 storageType: schedule.StorageType,
+                                                 backupMail: schedule.BackupMail,
+                                                 createBy: ASC.Core.Configuration.Constants.CoreSystem.ID,
+                                                 isScheduled: true,
+                                                 backupsStored: schedule.BackupsStored                                                
+                                          ));
                     }
                     else
                     {

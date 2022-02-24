@@ -43,8 +43,6 @@ public class Startup : BaseStartup
         DIHelper.TryAdd<RestoreProgressItem>();
         DIHelper.TryAdd<TransferProgressItem>();
 
-        DIHelper.TryAdd<Schedule>();
-
         DIHelper.TryAdd<BackupController>();
 
         NotifyConfigurationExtension.Register(DIHelper);

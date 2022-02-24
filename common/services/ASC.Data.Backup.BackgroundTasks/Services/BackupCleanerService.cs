@@ -23,8 +23,6 @@
  *
 */
 
-using ASC.Core.Common.Hosting;
-
 namespace ASC.Data.Backup.Services;
 
 [Singletone]
