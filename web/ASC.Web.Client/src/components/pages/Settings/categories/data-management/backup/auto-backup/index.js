@@ -18,9 +18,9 @@ import { AppServerConfig } from "@appserver/common/constants";
 import { combineUrl } from "@appserver/common/utils";
 import FloatingButton from "@appserver/common/components/FloatingButton";
 import { StyledModules, StyledAutoBackup } from "../StyledBackup";
-import ThirdPartyModule from "./sub-components-automatic-backup/ThirdPartyModule";
-import DocumentsModule from "./sub-components-automatic-backup/DocumentsModule";
-import ThirdPartyStorageModule from "./sub-components-automatic-backup/ThirdPartyStorageModule";
+import ThirdPartyModule from "./sub-components/ThirdPartyModule";
+import DocumentsModule from "./sub-components/DocumentsModule";
+import ThirdPartyStorageModule from "./sub-components/ThirdPartyStorageModule";
 import ToggleButton from "@appserver/components/toggle-button";
 import { getBackupStorage } from "@appserver/common/api/settings";
 

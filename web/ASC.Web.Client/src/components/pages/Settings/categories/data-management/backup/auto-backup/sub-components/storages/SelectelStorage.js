@@ -1,9 +1,9 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
-import RackspaceSettings from "../../../consumer-storage-settings/RackspaceSettings";
-import ScheduleComponent from "../../sub-components-automatic-backup/ScheduleComponent";
+import SelectelSettings from "../../../consumer-storage-settings/SelectelSettings";
+import ScheduleComponent from "../ScheduleComponent";
 import { StyledStoragesModule } from "../../../StyledBackup";
-class RackspaceStorage extends React.Component {
+class SelectelStorage extends React.Component {
   constructor(props) {
     super(props);
     const {
@@ -14,7 +14,7 @@ class RackspaceStorage extends React.Component {
 
     this.defaultFormSettings = {};
 
-    this.namesArray = RackspaceSettings.formNames();
+    this.namesArray = SelectelSettings.formNames();
 
     onSetRequiredFormNames([...this.namesArray]);
 
@@ -39,7 +39,7 @@ class RackspaceStorage extends React.Component {
         ...this.defaultFormSettings,
       },
     };
-    this.isDisabled = !selectedStorage?.isSet;
+    this.isDisabled = !selectedStorage.isSet;
   }
 
   onChange = (event) => {
@@ -63,18 +63,17 @@ class RackspaceStorage extends React.Component {
 
     if (isReset && isReset !== prevProps.isReset) {
       onSetFormSettings(null, null, this.defaultFormSettings);
+      console.log("onSetFormSettings update", this.defaultFormSettings);
       this.setState({
         formSettings: {
           ...this.defaultFormSettings,
         },
       });
     }
-
     if (isSuccessSave && isSuccessSave !== prevProps.isSuccessSave) {
       this.defaultFormSettings = this.state.formSettings;
     }
   }
-
   render() {
     const { formSettings } = this.state;
     const {
@@ -87,7 +86,7 @@ class RackspaceStorage extends React.Component {
 
     return (
       <StyledStoragesModule>
-        <RackspaceSettings
+        <SelectelSettings
           formSettings={formSettings}
           onChange={this.onChange}
           isLoadingData={isLoadingData}
@@ -101,4 +100,4 @@ class RackspaceStorage extends React.Component {
     );
   }
 }
-export default withTranslation(["Settings", "Common"])(RackspaceStorage);
+export default withTranslation(["Settings", "Common"])(SelectelStorage);

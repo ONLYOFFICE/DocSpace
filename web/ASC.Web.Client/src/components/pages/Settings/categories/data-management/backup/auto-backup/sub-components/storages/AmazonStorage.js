@@ -1,7 +1,7 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
 import AmazonSettings from "../../../consumer-storage-settings/AmazonSettings";
-import ScheduleComponent from "../../sub-components-automatic-backup/ScheduleComponent";
+import ScheduleComponent from "../ScheduleComponent";
 import { StyledStoragesModule } from "../../../StyledBackup";
 class AmazonStorage extends React.Component {
   constructor(props) {
