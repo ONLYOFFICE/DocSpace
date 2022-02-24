@@ -12,6 +12,10 @@ const pkg = require("./package.json");
 const { proxyURL } = AppServerConfig;
 const deps = pkg.dependencies || {};
 
+for (dep in sharedDeps) {
+  sharedDeps[dep].eager = true;
+}
+
 const config = {
   target: "web",
   mode: "development",
