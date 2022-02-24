@@ -91,8 +91,13 @@ builder.Host.ConfigureServices((hostContext, services) =>
     services.AddHostedService<FeedCleanerService>();
     diHelper.TryAdd<FeedCleanerService>();
 
-    services.AddHostedService<Launcher>();
-    diHelper.TryAdd<Launcher>();
+    diHelper.TryAdd<FileDataQueue>();
+
+    services.AddHostedService<ThumbnailService>();
+    diHelper.TryAdd<ThumbnailService>();
+
+    services.AddHostedService<ThumbnailBuilder>();
+    diHelper.TryAdd<ThumbnailBuilder>();
 
     diHelper.TryAdd<AuthManager>();
     diHelper.TryAdd<BaseCommonLinkUtility>();
