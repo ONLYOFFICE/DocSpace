@@ -27,16 +27,16 @@ const ThirdPartyServices = lazy(() =>
   import("./categories/integration/thirdPartyServicesSettings")
 );
 const DataManagementSettings = lazy(() =>
-  import("./categories/data-management/Backup")
+  import("./categories/data-management/backup")
 );
 const AutomaticBackup = lazy(() =>
-  import("./categories/data-management/AutomaticBackup.js")
+  import("./categories/data-management/backup/auto-backup")
 );
 const ManualBackup = lazy(() =>
-  import("./categories/data-management/ManualBackup.js")
+  import("./categories/data-management/backup/manual-backup")
 );
 const RestoreBackup = lazy(() =>
-  import("./categories/data-management/RestoreBackup.js")
+  import("./categories/data-management/backup/restore-backup")
 );
 //const WhiteLabel = lazy(() => import("./categories/common/whitelabel"));
 const PROXY_BASE_URL = combineUrl(AppServerConfig.proxyURL, "/settings");
