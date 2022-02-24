@@ -34,6 +34,7 @@ using System.Net.Http.Headers;
 using System.Security;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Web;
 
 using ASC.Common.Caching;
@@ -190,24 +191,24 @@ namespace ASC.Web.Files.ThirdPartyApp
             ClientFactory = clientFactory;
         }
 
-        public bool Request(HttpContext context)
+        public async Task<bool> RequestAsync(HttpContext context)
         {
             switch ((context.Request.Query[FilesLinkUtility.Action].FirstOrDefault() ?? "").ToLower())
             {
                 case "stream":
-                    StreamFile(context);
+                    await StreamFileAsync(context);
                     return true;
                 case "convert":
-                    ConfirmConvertFile(context);
+                    await ConfirmConvertFileAsync(context);
                     return true;
                 case "create":
-                    CreateFile(context);
+                    await CreateFileAsync(context);
                     return true;
             }
 
             if (!string.IsNullOrEmpty(context.Request.Query["code"]))
             {
-                RequestCode(context);
+                await RequestCodeAsync(context);
                 return true;
             }
 
@@ -278,7 +279,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             return uriBuilder.Uri + "?" + query;
         }
 
-        public void SaveFile(string fileId, string fileType, string downloadUrl, Stream stream)
+        public async Task SaveFileAsync(string fileId, string fileType, string downloadUrl, Stream stream)
         {
             Logger.Debug("GoogleDriveApp: save file stream " + fileId +
                                 (stream == null
@@ -303,14 +304,17 @@ namespace ASC.Web.Files.ThirdPartyApp
                 {
                     if (stream != null)
                     {
-                        downloadUrl = PathProvider.GetTempUrl(stream, fileType);
+                        downloadUrl = await PathProvider.GetTempUrlAsync(stream, fileType);
                         downloadUrl = DocumentServiceConnector.ReplaceCommunityAdress(downloadUrl);
                     }
 
                     Logger.Debug("GoogleDriveApp: GetConvertedUri from " + fileType + " to " + currentType + " - " + downloadUrl);
 
                     var key = DocumentServiceConnector.GenerateRevisionId(downloadUrl);
-                    DocumentServiceConnector.GetConvertedUri(downloadUrl, fileType, currentType, key, null, null, null, false, out downloadUrl);
+
+                    var resultTuple = await DocumentServiceConnector.GetConvertedUriAsync(downloadUrl, fileType, currentType, key, null, null, null, false);
+                    downloadUrl = resultTuple.ConvertedDocumentUri;
+
                     stream = null;
                 }
                 catch (Exception e)
@@ -333,7 +337,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             }
             else
             {
-                using var response = httpClient.Send(request);
+                using var response = await httpClient.SendAsync(request);
                 using var downloadStream = new ResponseStream(response);
 
                 request.Content = new StreamContent(downloadStream);
@@ -341,13 +345,13 @@ namespace ASC.Web.Files.ThirdPartyApp
 
             try
             {
-                using var response = httpClient.Send(request);
-                using var responseStream = response.Content.ReadAsStream();
+                using var response = await httpClient.SendAsync(request);
+                using var responseStream = await response.Content.ReadAsStreamAsync();
                 string result = null;
                 if (responseStream != null)
                 {
                     using var readStream = new StreamReader(responseStream);
-                    result = readStream.ReadToEnd();
+                    result = await readStream.ReadToEndAsync();
                 }
 
                 Logger.Debug("GoogleDriveApp: save file stream response - " + result);
@@ -363,8 +367,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             }
         }
 
-
-        private void RequestCode(HttpContext context)
+        private async Task RequestCodeAsync(HttpContext context)
         {
             var state = context.Request.Query["state"];
             Logger.Debug("GoogleDriveApp: state - " + state);
@@ -463,7 +466,7 @@ namespace ASC.Web.Files.ThirdPartyApp
                             return;
                         }
 
-                        fileId = CreateConvertedFile(driveFile, token);
+                        fileId = await CreateConvertedFileAsync(driveFile, token);
                     }
 
                     context.Response.Redirect(FilesLinkUtility.GetFileWebEditorUrl(ThirdPartySelector.BuildAppFileId(AppAttr, fileId)), true);
@@ -473,7 +476,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             throw new Exception("Action not identified");
         }
 
-        private void StreamFile(HttpContext context)
+        private async Task StreamFileAsync(HttpContext context)
         {
             try
             {
@@ -526,9 +529,9 @@ namespace ASC.Web.Files.ThirdPartyApp
                 request.Headers.Add("Authorization", "Bearer " + token);
 
                 var httpClient = ClientFactory.CreateClient();
-                using var response = httpClient.Send(request);
+                using var response = await httpClient.SendAsync(request);
                 using var stream = new ResponseStream(response);
-                stream.CopyTo(context.Response.Body);
+                await stream.CopyToAsync(context.Response.Body);
 
                 var contentLength = jsonFile.Value<string>("size");
                 Logger.Debug("GoogleDriveApp: get file stream contentLength - " + contentLength);
@@ -537,12 +540,12 @@ namespace ASC.Web.Files.ThirdPartyApp
             catch (Exception ex)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                context.Response.WriteAsync(ex.Message).Wait();
+                await context.Response.WriteAsync(ex.Message);
                 Logger.Error("GoogleDriveApp: Error request " + context.Request.Url(), ex);
             }
             try
             {
-                context.Response.Body.Flush();
+                await context.Response.Body.FlushAsync();
                 //TODO
                 //context.Response.SuppressContent = true;
                 //context.ApplicationInstance.CompleteRequest();
@@ -553,7 +556,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             }
         }
 
-        private void ConfirmConvertFile(HttpContext context)
+        private async Task ConfirmConvertFileAsync(HttpContext context)
         {
             var fileId = context.Request.Query[FilesLinkUtility.FileId];
             Logger.Debug("GoogleDriveApp: ConfirmConvertFile - " + fileId);
@@ -567,12 +570,12 @@ namespace ASC.Web.Files.ThirdPartyApp
                 throw new Exception("File not found");
             }
 
-            fileId = CreateConvertedFile(driveFile, token);
+            fileId = await CreateConvertedFileAsync(driveFile, token);
 
             context.Response.Redirect(FilesLinkUtility.GetFileWebEditorUrl(ThirdPartySelector.BuildAppFileId(AppAttr, fileId)), true);
         }
 
-        private void CreateFile(HttpContext context)
+        private async Task CreateFileAsync(HttpContext context)
         {
             var folderId = context.Request.Query[FilesLinkUtility.FolderId];
             var fileName = context.Request.Query[FilesLinkUtility.FileTitle];
@@ -584,7 +587,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             var storeTemplate = GlobalStore.GetStoreTemplate();
 
             var path = FileConstant.NewDocPath + culture + "/";
-            if (!storeTemplate.IsDirectory(path))
+            if (!await storeTemplate.IsDirectoryAsync(path))
             {
                 path = FileConstant.NewDocPath + "default/";
             }
@@ -593,9 +596,9 @@ namespace ASC.Web.Files.ThirdPartyApp
             fileName = FileUtility.ReplaceFileExtension(fileName, ext);
 
             string driveFile;
-            using (var content = storeTemplate.GetReadStream("", path))
+            using (var content = await storeTemplate.GetReadStreamAsync("", path))
             {
-                driveFile = CreateFile(content, fileName, folderId, token);
+                driveFile = await CreateFileAsync(content, fileName, folderId, token);
             }
             if (driveFile == null)
             {
@@ -723,7 +726,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             return null;
         }
 
-        private string CreateFile(string contentUrl, string fileName, string folderId, Token token)
+        private async Task<string> CreateFileAsync(string contentUrl, string fileName, string folderId, Token token)
         {
             if (string.IsNullOrEmpty(contentUrl))
             {
@@ -736,12 +739,12 @@ namespace ASC.Web.Files.ThirdPartyApp
             request.RequestUri = new Uri(contentUrl);
 
             var httpClient = ClientFactory.CreateClient();
-            using var response = httpClient.Send(request);
+            using var response = await httpClient.SendAsync(request);
             using var content = new ResponseStream(response);
-            return CreateFile(content, fileName, folderId, token);
-        }
+            return await CreateFileAsync(content, fileName, folderId, token);
+        }       
 
-        private string CreateFile(Stream content, string fileName, string folderId, Token token)
+        private async Task<string> CreateFileAsync(Stream content, string fileName, string folderId, Token token)
         {
             Logger.Debug("GoogleDriveApp: create file");
 
@@ -758,17 +761,17 @@ namespace ASC.Web.Files.ThirdPartyApp
                 var metadata = "{{\"name\":\"" + fileName + "\"" + folderdata + "}}";
                 var metadataPart = $"\r\n--{boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n{metadata}";
                 var bytes = Encoding.UTF8.GetBytes(metadataPart);
-                tmpStream.Write(bytes, 0, bytes.Length);
+                await tmpStream.WriteAsync(bytes, 0, bytes.Length);
 
                 var mediaPartStart = $"\r\n--{boundary}\r\nContent-Type: {MimeMapping.GetMimeMapping(fileName)}\r\n\r\n";
                 bytes = Encoding.UTF8.GetBytes(mediaPartStart);
-                tmpStream.Write(bytes, 0, bytes.Length);
+                await tmpStream.WriteAsync(bytes, 0, bytes.Length);
 
-                content.CopyTo(tmpStream);
+                await content.CopyToAsync(tmpStream);
 
                 var mediaPartEnd = $"\r\n--{boundary}--\r\n";
                 bytes = Encoding.UTF8.GetBytes(mediaPartEnd);
-                tmpStream.Write(bytes, 0, bytes.Length);
+                await tmpStream.WriteAsync(bytes, 0, bytes.Length);
 
                 request.Method = HttpMethod.Post;
                 request.Headers.Add("Authorization", "Bearer " + token);
@@ -781,13 +784,13 @@ namespace ASC.Web.Files.ThirdPartyApp
 
             try
             {
-                using var response = httpClient.Send(request);
-                using var responseStream = response.Content.ReadAsStream();
+                using var response = await httpClient.SendAsync(request);
+                using var responseStream = await response.Content.ReadAsStreamAsync();
                 string result = null;
                 if (responseStream != null)
                 {
                     using var readStream = new StreamReader(responseStream);
-                    result = readStream.ReadToEnd();
+                    result = await readStream.ReadToEndAsync();
                 }
 
                 Logger.Debug("GoogleDriveApp: create file response - " + result);
@@ -805,7 +808,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             return null;
         }
 
-        private string ConvertFile(string fileId, string fromExt)
+        private async Task<string> ConvertFileAsync(string fileId, string fromExt)
         {
             Logger.Debug("GoogleDriveApp: convert file");
 
@@ -817,7 +820,10 @@ namespace ASC.Web.Files.ThirdPartyApp
                 Logger.Debug("GoogleDriveApp: GetConvertedUri- " + downloadUrl);
 
                 var key = DocumentServiceConnector.GenerateRevisionId(downloadUrl);
-                DocumentServiceConnector.GetConvertedUri(downloadUrl, fromExt, toExt, key, null, null, null, false, out downloadUrl);
+
+                var resultTuple = await DocumentServiceConnector.GetConvertedUriAsync(downloadUrl, fromExt, toExt, key, null, null, null, false);
+                downloadUrl = resultTuple.ConvertedDocumentUri;
+
             }
             catch (Exception e)
             {
@@ -827,7 +833,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             return downloadUrl;
         }
 
-        private string CreateConvertedFile(string driveFile, Token token)
+        private async Task<string> CreateConvertedFileAsync(string driveFile, Token token)
         {
             var jsonFile = JObject.Parse(driveFile);
             var fileName = GetCorrectTitle(jsonFile);
@@ -857,9 +863,9 @@ namespace ASC.Web.Files.ThirdPartyApp
                 Logger.Debug("GoogleDriveApp: download exportLink - " + downloadUrl);
                 try
                 {
-                    using var response = httpClient.Send(request);
+                    using var response = await httpClient.SendAsync(request);
                     using var fileStream = new ResponseStream(response);
-                    driveFile = CreateFile(fileStream, fileName, folderId, token);
+                    driveFile = await CreateFileAsync(fileStream, fileName, folderId, token);
                 }
                 catch (HttpRequestException e)
                 {
@@ -873,7 +879,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             }
             else
             {
-                var convertedUrl = ConvertFile(fileId, ext);
+                var convertedUrl = await ConvertFileAsync(fileId, ext);
 
                 if (string.IsNullOrEmpty(convertedUrl))
                 {
@@ -883,7 +889,7 @@ namespace ASC.Web.Files.ThirdPartyApp
 
                 var toExt = FileUtility.GetInternalExtension(fileName);
                 fileName = FileUtility.ReplaceFileExtension(fileName, toExt);
-                driveFile = CreateFile(convertedUrl, fileName, folderId, token);
+                driveFile = await CreateFileAsync(convertedUrl, fileName, folderId, token);
             }
 
             jsonFile = JObject.Parse(driveFile);

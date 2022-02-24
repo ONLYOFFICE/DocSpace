@@ -54,33 +54,33 @@ namespace ASC.Data.Backup.Storage
         {
             using var stream = File.OpenRead(localPath);
             var storagePath = Path.GetFileName(localPath);
-            Store.Save(Domain, storagePath, stream, ACL.Private);
+            Store.SaveAsync(Domain, storagePath, stream, ACL.Private).Wait();
             return storagePath;
         }
 
         public void Download(string storagePath, string targetLocalPath)
         {
-            using var source = Store.GetReadStream(Domain, storagePath);
+            using var source = Store.GetReadStreamAsync(Domain, storagePath).Result;
             using var destination = File.OpenWrite(targetLocalPath);
             source.CopyTo(destination);
         }
 
         public void Delete(string storagePath)
         {
-            if (Store.IsFile(Domain, storagePath))
+            if (Store.IsFileAsync(Domain, storagePath).Result)
             {
-                Store.Delete(Domain, storagePath);
+                Store.DeleteAsync(Domain, storagePath).Wait();
             }
         }
 
         public bool IsExists(string storagePath)
         {
-            return Store.IsFile(Domain, storagePath);
+            return Store.IsFileAsync(Domain, storagePath).Result;
         }
 
         public string GetPublicLink(string storagePath)
         {
-            return Store.GetInternalUri(Domain, storagePath, TimeSpan.FromDays(1), null).AbsoluteUri;
+            return Store.GetInternalUriAsync(Domain, storagePath, TimeSpan.FromDays(1), null).Result.AbsoluteUri;
         }
     }
 }

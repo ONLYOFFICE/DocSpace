@@ -34,6 +34,7 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Web;
 
 using ASC.Common;
@@ -97,7 +98,7 @@ namespace ASC.Web.Files.Services.DocumentService
             [DebuggerDisplay("{Type} - {UserId}")]
             public class Action
             {
-                public string Type { get; set; }
+                public int Type { get; set; }
                 public string UserId { get; set; }
             }
 
@@ -239,40 +240,40 @@ namespace ASC.Web.Files.Services.DocumentService
             return callbackUrl;
         }
 
-        public bool StartTrack<T>(T fileId, string docKeyForTrack)
+        public Task<bool> StartTrackAsync<T>(T fileId, string docKeyForTrack)
         {
             var callbackUrl = GetCallbackUrl(fileId);
-            return DocumentServiceConnector.Command(CommandMethod.Info, docKeyForTrack, fileId, callbackUrl);
+            return DocumentServiceConnector.CommandAsync(CommandMethod.Info, docKeyForTrack, fileId, callbackUrl);
         }
 
-        public TrackResponse ProcessData<T>(T fileId, TrackerData fileData)
+        public async Task<TrackResponse> ProcessDataAsync<T>(T fileId, TrackerData fileData)
         {
             switch (fileData.Status)
             {
                 case TrackerStatus.NotFound:
                 case TrackerStatus.Closed:
                     FileTracker.Remove(fileId);
-                    SocketManager.StopEdit(fileId);
+                    await SocketManager.StopEditAsync(fileId);
 
                     break;
 
                 case TrackerStatus.Editing:
-                    ProcessEdit(fileId, fileData);
+                    await ProcessEditAsync(fileId, fileData);
                     break;
 
                 case TrackerStatus.MustSave:
                 case TrackerStatus.Corrupted:
                 case TrackerStatus.ForceSave:
                 case TrackerStatus.CorruptedForceSave:
-                    return ProcessSave(fileId, fileData);
+                    return await ProcessSaveAsync(fileId, fileData);
 
                 case TrackerStatus.MailMerge:
-                    return ProcessMailMerge(fileId, fileData);
+                    return await ProcessMailMergeAsync(fileId, fileData);
             }
             return null;
         }
 
-        private void ProcessEdit<T>(T fileId, TrackerData fileData)
+        private async Task ProcessEditAsync<T>(T fileId, TrackerData fileData)
         {
             if (ThirdPartySelector.GetAppByFileId(fileId.ToString()) != null)
             {
@@ -286,7 +287,9 @@ namespace ASC.Web.Files.Services.DocumentService
             var app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
             if (app == null)
             {
-                File<T> fileStable = DaoFactory.GetFileDao<T>().GetFileStable(fileId);
+                File<T> fileStable;
+                fileStable = await DaoFactory.GetFileDao<T>().GetFileStableAsync(fileId);
+
                 docKey = DocumentServiceHelper.GetDocKey(fileStable);
             }
             else
@@ -313,7 +316,7 @@ namespace ASC.Web.Files.Services.DocumentService
                     try
                     {
                         var doc = FileShareLink.CreateKey(fileId);
-                        EntryManager.TrackEditing(fileId, userId, userId, doc);
+                        await EntryManager.TrackEditingAsync(fileId, userId, userId, doc);
                     }
                     catch (Exception e)
                     {
@@ -325,7 +328,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
             if (usersDrop.Count > 0)
             {
-                if (!DocumentServiceHelper.DropUser(fileData.Key, usersDrop.ToArray(), fileId))
+                if (!await DocumentServiceHelper.DropUserAsync(fileData.Key, usersDrop.ToArray(), fileId))
                 {
                     Logger.Error("DocService drop failed for users " + string.Join(",", usersDrop));
                 }
@@ -339,7 +342,7 @@ namespace ASC.Web.Files.Services.DocumentService
             SocketManager.StartEdit(fileId);
         }
 
-        private TrackResponse ProcessSave<T>(T fileId, TrackerData fileData)
+        private async Task<TrackResponse> ProcessSaveAsync<T>(T fileId, TrackerData fileData)
         {
             var comments = new List<string>();
             if (fileData.Status == TrackerStatus.Corrupted
@@ -357,14 +360,14 @@ namespace ASC.Web.Files.Services.DocumentService
             if (app == null)
             {
                 File<T> fileStable;
-                fileStable = DaoFactory.GetFileDao<T>().GetFileStable(fileId);
+                fileStable = await DaoFactory.GetFileDao<T>().GetFileStableAsync(fileId);
 
                 var docKey = DocumentServiceHelper.GetDocKey(fileStable);
                 if (!fileData.Key.Equals(docKey))
                 {
                     Logger.ErrorFormat("DocService saving file {0} ({1}) with key {2}", fileId, docKey, fileData.Key);
 
-                    StoringFileAfterError(fileId, userId.ToString(), DocumentServiceConnector.ReplaceDocumentAdress(fileData.Url));
+                    await StoringFileAfterErrorAsync(fileId, userId.ToString(), DocumentServiceConnector.ReplaceDocumentAdress(fileData.Url));
                     return new TrackResponse { Message = "Expected key " + docKey };
                 }
             }
@@ -397,9 +400,9 @@ namespace ASC.Web.Files.Services.DocumentService
                 {
                     comments.Add(FilesCommonResource.ErrorMassage_SaveUrlLost);
 
-                    file = EntryManager.CompleteVersionFile(fileId, 0, false, false);
+                    file = await EntryManager.CompleteVersionFileAsync(fileId, 0, false, false);
 
-                    DaoFactory.GetFileDao<T>().UpdateComment(file.ID, file.Version, string.Join("; ", comments));
+                    await DaoFactory.GetFileDao<T>().UpdateCommentAsync(file.ID, file.Version, string.Join("; ", comments));
 
                     file = null;
                     Logger.ErrorFormat("DocService save error. Empty url. File id: '{0}'. UserId: {1}. DocKey '{2}'", fileId, userId, fileData.Key);
@@ -438,7 +441,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
                 try
                 {
-                    file = EntryManager.SaveEditing(fileId, null, DocumentServiceConnector.ReplaceDocumentAdress(fileData.Url), null, string.Empty, string.Join("; ", comments), false, fileData.Encrypted, forcesaveType, true);
+                    file = await EntryManager.SaveEditingAsync(fileId, null, DocumentServiceConnector.ReplaceDocumentAdress(fileData.Url), null, string.Empty, string.Join("; ", comments), false, fileData.Encrypted, forcesaveType, true);
                     saveMessage = fileData.Status == TrackerStatus.MustSave || fileData.Status == TrackerStatus.ForceSave ? null : "Status " + fileData.Status;
                 }
                 catch (Exception ex)
@@ -446,14 +449,14 @@ namespace ASC.Web.Files.Services.DocumentService
                     Logger.Error(string.Format("DocService save error. File id: '{0}'. UserId: {1}. DocKey '{2}'. DownloadUri: {3}", fileId, userId, fileData.Key, fileData.Url), ex);
                     saveMessage = ex.Message;
 
-                    StoringFileAfterError(fileId, userId.ToString(), DocumentServiceConnector.ReplaceDocumentAdress(fileData.Url));
+                    await StoringFileAfterErrorAsync(fileId, userId.ToString(), DocumentServiceConnector.ReplaceDocumentAdress(fileData.Url));
                 }
             }
 
             if (!forcesave)
             {
                 FileTracker.Remove(fileId);
-                SocketManager.StopEdit(fileId);
+                await SocketManager.StopEditAsync(fileId);
             }
 
             if (file != null)
@@ -462,14 +465,14 @@ namespace ASC.Web.Files.Services.DocumentService
                     FilesMessageService.Send(file, MessageInitiator.DocsService, MessageAction.UserFileUpdated, user.DisplayUserName(false, DisplayUserSettingsHelper), file.Title);
 
                 if (!forcesave)
-                    SaveHistory(file, (fileData.History ?? "").ToString(), DocumentServiceConnector.ReplaceDocumentAdress(fileData.ChangesUrl));
+                    await SaveHistoryAsync(file, (fileData.History ?? "").ToString(), DocumentServiceConnector.ReplaceDocumentAdress(fileData.ChangesUrl));
             }
 
             var result = new TrackResponse { Message = saveMessage };
             return result;
         }
 
-        private TrackResponse ProcessMailMerge<T>(T fileId, TrackerData fileData)
+        private async Task<TrackResponse> ProcessMailMergeAsync<T>(T fileId, TrackerData fileData)
         {
             if (fileData.Users == null || fileData.Users.Count == 0 || !Guid.TryParse(fileData.Users[0], out var userId))
             {
@@ -501,17 +504,17 @@ namespace ASC.Web.Files.Services.DocumentService
                         var requestDownload = new HttpRequestMessage();
                         requestDownload.RequestUri = new Uri(DocumentServiceConnector.ReplaceDocumentAdress(fileData.Url));
 
-                        using (var responseDownload = httpClient.Send(requestDownload))
-                        using (var streamDownload = responseDownload.Content.ReadAsStream())
+                        using (var responseDownload = await httpClient.SendAsync(requestDownload))
+                        using (var streamDownload = await responseDownload.Content.ReadAsStreamAsync())
                         using (var downloadStream = new ResponseStream(streamDownload, streamDownload.Length))
                         {
                             const int bufferSize = 2048;
                             var buffer = new byte[bufferSize];
                             int readed;
                             attach = new MemoryStream();
-                            while ((readed = downloadStream.Read(buffer, 0, bufferSize)) > 0)
+                            while ((readed = await downloadStream.ReadAsync(buffer, 0, bufferSize)) > 0)
                             {
-                                attach.Write(buffer, 0, readed);
+                                await attach.WriteAsync(buffer, 0, readed);
                             }
                             attach.Position = 0;
                         }
@@ -534,12 +537,12 @@ namespace ASC.Web.Files.Services.DocumentService
                         var httpRequest = new HttpRequestMessage();
                         httpRequest.RequestUri = new Uri(DocumentServiceConnector.ReplaceDocumentAdress(fileData.Url));
 
-                        using (var httpResponse = httpClient.Send(httpRequest))
-                        using (var stream = httpResponse.Content.ReadAsStream())
+                        using (var httpResponse = await httpClient.SendAsync(httpRequest))
+                        using (var stream = await httpResponse.Content.ReadAsStreamAsync())
                             if (stream != null)
                                 using (var reader = new StreamReader(stream, Encoding.GetEncoding(Encoding.UTF8.WebName)))
                                 {
-                                    message = reader.ReadToEnd();
+                                    message = await reader.ReadToEndAsync();
                                 }
                         break;
                 }
@@ -555,7 +558,7 @@ namespace ASC.Web.Files.Services.DocumentService
                         Attach = attach
                     })
                 {
-                    var response = MailMergeTaskRunner.Run(mailMergeTask, ClientFactory);
+                    var response = await MailMergeTaskRunner.RunAsync(mailMergeTask, ClientFactory);
                     Logger.InfoFormat("DocService mailMerge {0}/{1} send: {2}",
                                              fileData.MailMerge.RecordIndex + 1, fileData.MailMerge.RecordCount, response);
                 }
@@ -583,8 +586,7 @@ namespace ASC.Web.Files.Services.DocumentService
             return new TrackResponse { Message = saveMessage };
         }
 
-
-        private void StoringFileAfterError<T>(T fileId, string userId, string downloadUri)
+        private async Task StoringFileAfterErrorAsync<T>(T fileId, string userId, string downloadUri)
         {
             if (string.IsNullOrEmpty(downloadUri)) return;
 
@@ -598,11 +600,11 @@ namespace ASC.Web.Files.Services.DocumentService
                 request.RequestUri = new Uri(downloadUri);
 
                 var httpClient = ClientFactory.CreateClient();
-                using (var response = httpClient.Send(request))
-                using (var stream = response.Content.ReadAsStream())
+                using (var response = await httpClient.SendAsync(request))
+                using (var stream = await response.Content.ReadAsStreamAsync())
                 using (var fileStream = new ResponseStream(stream, stream.Length))
                 {
-                    store.Save(FileConstant.StorageDomainTmp, path, fileStream);
+                    await store.SaveAsync(FileConstant.StorageDomainTmp, path, fileStream);
                 }
                 Logger.DebugFormat("DocService storing to {0}", path);
             }
@@ -612,7 +614,7 @@ namespace ASC.Web.Files.Services.DocumentService
             }
         }
 
-        private void SaveHistory<T>(File<T> file, string changes, string differenceUrl)
+        private async Task SaveHistoryAsync<T>(File<T> file, string changes, string differenceUrl)
         {
             if (file == null) return;
             if (file.ProviderEntry) return;
@@ -625,11 +627,11 @@ namespace ASC.Web.Files.Services.DocumentService
                 request.RequestUri = new Uri(differenceUrl);
 
                 var httpClient = ClientFactory.CreateClient();
-                using var response = httpClient.Send(request);
-                using var stream = response.Content.ReadAsStream();
+                using var response = await httpClient.SendAsync(request);
+                using var stream = await response.Content.ReadAsStreamAsync();
 
                 using var differenceStream = new ResponseStream(stream, stream.Length);
-                fileDao.SaveEditHistory(file, changes, differenceStream);
+                await fileDao.SaveEditHistoryAsync(file, changes, differenceStream);
             }
             catch (Exception ex)
             {

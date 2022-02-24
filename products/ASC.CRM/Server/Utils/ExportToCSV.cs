@@ -345,7 +345,7 @@ namespace ASC.Web.CRM.Classes
                     stream.Position = 0;
                 }
 
-                FileUrl = _commonLinkUtility.GetFullAbsolutePath(_dataStore.SavePrivate(String.Empty, FileName, stream, DateTime.Now.AddDays(1)));
+                FileUrl = _commonLinkUtility.GetFullAbsolutePath(_dataStore.SavePrivateAsync(String.Empty, FileName, stream, DateTime.Now.AddDays(1)).Result);
 
                 _notifyClient.SendAboutExportCompleted(_author.ID, FileName, FileUrl);
             }
@@ -1210,7 +1210,7 @@ namespace ASC.Web.CRM.Classes
 
             using (var memStream = new MemoryStream(Encoding.UTF8.GetBytes(data)))
             {
-                var file = _fileUploader.Exec(_globalFolder.GetFolderMy(_fileMarker, _fileDaoFactory).ToString(), title, memStream.Length, memStream, true);
+                var file = _fileUploader.ExecAsync(_globalFolder.GetFolderMy(_fileMarker, _fileDaoFactory).ToString(), title, memStream.Length, memStream, true).Result;
 
                 if (_fileUtility.CanWebView(title) || _fileUtility.CanWebEdit(title))
                 {
