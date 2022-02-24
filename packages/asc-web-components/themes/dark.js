@@ -2040,6 +2040,7 @@ const Dark = {
       color: "#a3a9ae",
 
       separatorColor: "#474747",
+      indicatorColor: "#F58D31",
 
       selectedItem: {
         background: "#eeeeee",
