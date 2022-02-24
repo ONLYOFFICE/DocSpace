@@ -14,14 +14,12 @@
  *
 */
 
-using Microsoft.EntityFrameworkCore;
-
 namespace ASC.Files.Core.Data
 {
     [Scope]
     internal class LinkDao : AbstractDao, ILinkDao
     {
-        public DbContextManager<EF.FilesDbContext> DbContextManager { get; }
+        public DbContextManager<FilesDbContext> DbContextManager { get; }
 
         public LinkDao(
             UserManager userManager,
@@ -89,6 +87,7 @@ namespace ASC.Files.Core.Data
                 .SingleOrDefaultAsync();
 
             FilesDbContext.FilesLink.Remove(link);
+
             await FilesDbContext.SaveChangesAsync();
         }
 
@@ -97,6 +96,7 @@ namespace ASC.Files.Core.Data
             var link = await FilesDbContext.FilesLink.Where(r => r.TenantId == TenantID && (r.SourceId == fileId || r.LinkedId == fileId)).ToListAsync();
 
             FilesDbContext.FilesLink.RemoveRange(link);
+
             await FilesDbContext.SaveChangesAsync();
         }
     }

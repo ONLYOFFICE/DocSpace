@@ -28,8 +28,8 @@ namespace ASC.Web.Files.Utils
     [Singletone]
     public class FileTrackerHelper
     {
-        private const string TRACKER = "filesTracker";
-        private ICache Cache { get; }
+        private const string Tracker = "filesTracker";
+        private readonly ICache _cache;
 
         public static readonly TimeSpan TrackTimeout = TimeSpan.FromSeconds(12);
         public static readonly TimeSpan CacheTimeout = TimeSpan.FromSeconds(60);
@@ -37,13 +37,14 @@ namespace ASC.Web.Files.Utils
 
         public FileTrackerHelper(ICache cache)
         {
-            Cache = cache;
+            _cache = cache;
         }
 
         public Guid Add<T>(Guid userId, T fileId)
         {
             var tabId = Guid.NewGuid();
             ProlongEditing(fileId, tabId, userId);
+
             return tabId;
         }
 
@@ -82,6 +83,7 @@ namespace ASC.Web.Files.Utils
                 {
                     tracker.EditingBy.Remove(tabId);
                     SetTracker(fileId, tracker);
+
                     return;
                 }
                 if (userId != default)
@@ -93,7 +95,9 @@ namespace ASC.Web.Files.Utils
                     {
                         tracker.EditingBy.Remove(editTab.Key);
                     }
+
                     SetTracker(fileId, tracker);
+
                     return;
                 }
             }
@@ -115,7 +119,9 @@ namespace ASC.Web.Files.Utils
                     {
                         tracker.EditingBy.Remove(forRemove.Key);
                     }
+
                     SetTracker(fileId, tracker);
+
                     return;
                 }
             }
@@ -138,19 +144,24 @@ namespace ASC.Web.Files.Utils
                 if (tracker.EditingBy.Count == 0)
                 {
                     SetTracker(fileId, null);
+
                     return false;
                 }
 
                 SetTracker(fileId, tracker);
+
                 return true;
             }
+
             SetTracker(fileId, null);
+
             return false;
         }
 
         public bool IsEditingAlone<T>(T fileId)
         {
             var tracker = GetTracker(fileId);
+
             return tracker != null && tracker.EditingBy.Count == 1 && tracker.EditingBy.FirstOrDefault().Value.EditingAlone;
         }
 
@@ -166,6 +177,7 @@ namespace ASC.Web.Files.Utils
                         value.CheckRightTime = check ? DateTime.MinValue : DateTime.UtcNow;
                     }
                 }
+
                 SetTracker(fileId, tracker);
             }
             else
@@ -177,6 +189,7 @@ namespace ASC.Web.Files.Utils
         public List<Guid> GetEditingBy<T>(T fileId)
         {
             var tracker = GetTracker(fileId);
+
             return tracker != null && IsEditing(fileId) ? tracker.EditingBy.Values.Select(i => i.UserId).Distinct().ToList() : new List<Guid>();
         }
 
@@ -184,8 +197,9 @@ namespace ASC.Web.Files.Utils
         {
             if (!EqualityComparer<T>.Default.Equals(fileId, default(T)))
             {
-                return Cache.Get<FileTracker>(TRACKER + fileId);
+                return _cache.Get<FileTracker>(Tracker + fileId);
             }
+
             return null;
         }
 
@@ -195,17 +209,15 @@ namespace ASC.Web.Files.Utils
             {
                 if (tracker != null)
                 {
-                    Cache.Insert(TRACKER + fileId, tracker, CacheTimeout);
+                    _cache.Insert(Tracker + fileId, tracker, CacheTimeout);
                 }
                 else
                 {
-                    Cache.Remove(TRACKER + fileId);
+                    _cache.Remove(Tracker + fileId);
                 }
             }
         }
     }
-
-
 
     public class FileTracker
     {
@@ -220,19 +232,13 @@ namespace ASC.Web.Files.Utils
 
         internal class TrackInfo
         {
-            public DateTime CheckRightTime;
+            public DateTime CheckRightTime { get; set; }
+            public DateTime TrackTime { get; set; }
+            public Guid UserId { get; set; }
+            public bool NewScheme { get; set; }
+            public bool EditingAlone { get; set; }
 
-            public DateTime TrackTime;
-
-            public Guid UserId;
-
-            public bool NewScheme;
-
-            public bool EditingAlone;
-
-            public TrackInfo()
-            {
-            }
+            public TrackInfo() { }
 
             public TrackInfo(Guid userId, bool newScheme, bool editingAlone)
             {

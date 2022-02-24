@@ -41,7 +41,10 @@ namespace ASC.Files.Thirdparty.ProviderDao
         public Task<Folder<string>> GetFolderAsync(string folderId)
         {
             var selector = GetSelector(folderId);
-            if (selector == null) return null;
+            if (selector == null)
+            {
+                return null;
+            }
 
             return InternalGetFolderAsync(folderId, selector);
         }
@@ -62,6 +65,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
         public Task<Folder<string>> GetFolderAsync(string title, string parentId)
         {
             var selector = GetSelector(parentId);
+
             return selector.GetFolderDao(parentId).GetFolderAsync(title, selector.ConvertId(parentId));
         }
 
@@ -69,6 +73,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
         {
             var selector = GetSelector(folderId);
             var folderDao = selector.GetFolderDao(folderId);
+
             return folderDao.GetRootFolderAsync(selector.ConvertId(folderId));
         }
 
@@ -76,6 +81,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
         {
             var selector = GetSelector(fileId);
             var folderDao = selector.GetFolderDao(fileId);
+
             return folderDao.GetRootFolderByFileAsync(selector.ConvertId(fileId));
         }
 
@@ -84,6 +90,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
             var selector = GetSelector(parentId);
             var folderDao = selector.GetFolderDao(parentId);
             var folders = folderDao.GetFoldersAsync(selector.ConvertId(parentId));
+
             return folders.Where(r => r != null);
         }
 
@@ -99,7 +106,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
             await foreach (var r in result.ConfigureAwait(false))
             {
                 yield return r;
-        }
+            }
         }
 
         public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
@@ -111,18 +118,21 @@ namespace ASC.Files.Thirdparty.ProviderDao
                 var selectorLocal = selector;
                 var matchedIds = folderIds.Where(selectorLocal.IsMatch).ToList();
 
-                if (matchedIds.Count > 0) continue;
+                if (matchedIds.Count > 0)
+                {
+                    continue;
+                }
 
                 result = result.Concat(matchedIds.GroupBy(selectorLocal.GetIdCode)
-                                                .ToAsyncEnumerable()
-                                                .SelectMany(matchedId =>
-                                                {
-                                                    var folderDao = selectorLocal.GetFolderDao(matchedId.FirstOrDefault());
-                                                    return folderDao
-                                                        .GetFoldersAsync(matchedId.Select(selectorLocal.ConvertId).ToList(),
-filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
-                                                })
-                                                .Where(r => r != null));
+                    .ToAsyncEnumerable()
+                    .SelectMany(matchedId =>
+                    {
+                        var folderDao = selectorLocal.GetFolderDao(matchedId.FirstOrDefault());
+
+                        return folderDao.GetFoldersAsync(matchedId.Select(selectorLocal.ConvertId).ToList(),
+                            filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
+                    })
+                    .Where(r => r != null));
             }
 
             return result.Distinct();
@@ -132,13 +142,17 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
         {
             var selector = GetSelector(folderId);
             var folderDao = selector.GetFolderDao(folderId);
+
             return folderDao.GetParentFoldersAsync(selector.ConvertId(folderId));
         }
 
 
         public Task<string> SaveFolderAsync(Folder<string> folder)
         {
-            if (folder == null) throw new ArgumentNullException(nameof(folder));
+            if (folder == null)
+            {
+                throw new ArgumentNullException(nameof(folder));
+            }
 
             return InternalSaveFolderAsync(folder);
         }
@@ -153,6 +167,7 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
                 var folderDao = selector.GetFolderDao(folderId);
                 var newFolderId = await folderDao.SaveFolderAsync(folder).ConfigureAwait(false);
                 folder.ID = folderId;
+
                 return newFolderId;
             }
             if (folder.FolderID != null)
@@ -163,9 +178,11 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
                 var folderDao = selector.GetFolderDao(folderId);
                 var newFolderId = await folderDao.SaveFolderAsync(folder).ConfigureAwait(false);
                 folder.FolderID = folderId;
+
                 return newFolderId;
 
             }
+
             throw new ArgumentException("No folder id or parent folder id to determine provider");
         }
 
@@ -173,6 +190,7 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
         {
             var selector = GetSelector(folderId);
             var folderDao = selector.GetFolderDao(folderId);
+
             return folderDao.DeleteFolderAsync(selector.ConvertId(folderId));
         }
 
@@ -197,15 +215,18 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
             if (IsCrossDao(folderId, toFolderId))
             {
                 var newFolder = await PerformCrossDaoFolderCopyAsync(folderId, toFolderId, true, cancellationToken).ConfigureAwait(false);
+
                 return newFolder?.ID;
             }
             var folderDao = selector.GetFolderDao(folderId);
+
             return await folderDao.MoveFolderAsync(selector.ConvertId(folderId), selector.ConvertId(toFolderId), null).ConfigureAwait(false);
         }
 
         public async Task<int> MoveFolderAsync(string folderId, int toFolderId, CancellationToken? cancellationToken)
         {
             var newFolder = await PerformCrossDaoFolderCopyAsync(folderId, toFolderId, true, cancellationToken).ConfigureAwait(false);
+
             return newFolder.ID;
         }
 
@@ -233,6 +254,7 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
         {
             var selector = GetSelector(folderId);
             var folderDao = selector.GetFolderDao(folderId);
+
             return IsCrossDao(folderId, toFolderId)
                     ? await PerformCrossDaoFolderCopyAsync(folderId, toFolderId, false, cancellationToken).ConfigureAwait(false)
                     : await folderDao.CopyFolderAsync(selector.ConvertId(folderId), selector.ConvertId(toFolderId), null).ConfigureAwait(false);
@@ -260,12 +282,18 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
 
         public Task<IDictionary<string, string>> CanMoveOrCopyAsync(string[] folderIds, string to)
         {
-            if (folderIds.Length > 0) return Task.FromResult<IDictionary<string, string>>(new Dictionary<string, string>());
+            if (folderIds.Length > 0)
+            {
+                return Task.FromResult<IDictionary<string, string>>(new Dictionary<string, string>());
+            }
 
             var selector = GetSelector(to);
             var matchedIds = folderIds.Where(selector.IsMatch).ToArray();
 
-            if (matchedIds.Length > 0) return Task.FromResult<IDictionary<string, string>>(new Dictionary<string, string>());
+            if (matchedIds.Length > 0)
+            {
+                return Task.FromResult<IDictionary<string, string>>(new Dictionary<string, string>());
+            }
 
             return InternalCanMoveOrCopyAsync(to, matchedIds, selector);
         }
@@ -273,6 +301,7 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
         private Task<IDictionary<string, string>> InternalCanMoveOrCopyAsync(string to, string[] matchedIds, IDaoSelector selector)
         {
             var folderDao = selector.GetFolderDao(matchedIds.FirstOrDefault());
+
             return folderDao.CanMoveOrCopyAsync(matchedIds, to);
         }
 
@@ -283,6 +312,7 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
             folder.ID = selector.ConvertId(folderId);
             folder.FolderID = selector.ConvertId(folder.FolderID);
             var folderDao = selector.GetFolderDao(folderId);
+
             return folderDao.RenameFolderAsync(folder, newTitle);
         }
 
@@ -290,6 +320,7 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
         {
             var selector = GetSelector(folderId);
             var folderDao = selector.GetFolderDao(folderId);
+
             return folderDao.GetItemsCountAsync(selector.ConvertId(folderId));
         }
 
@@ -297,6 +328,7 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
         {
             var selector = GetSelector(folderId);
             var folderDao = selector.GetFolderDao(folderId);
+
             return folderDao.IsEmptyAsync(selector.ConvertId(folderId));
         }
 
@@ -304,6 +336,7 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
         {
             var selector = GetSelector(folder.ID);
             var folderDao = selector.GetFolderDao(folder.ID);
+
             return folderDao.UseTrashForRemove(folder);
         }
 
@@ -332,6 +365,7 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
                 var folderDao1 = toFolderSelector.GetFolderDao(toRootFolderId);
                 useRecursive = useRecursive && folderDao1.UseRecursiveOperation(folderId, toFolderSelector.ConvertId(toRootFolderId));
             }
+
             return useRecursive;
         }
 
@@ -339,6 +373,7 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
         {
             var selector = GetSelector(entryId);
             var folderDao = selector.GetFolderDao(entryId);
+
             return folderDao.CanCalculateSubitems(entryId);
         }
 

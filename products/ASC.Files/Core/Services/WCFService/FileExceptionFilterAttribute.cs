@@ -27,11 +27,11 @@ namespace ASC.Web.Files.Services.WCFService
 {
     class FileExceptionFilterAttribute : IExceptionFilter
     {
-        private readonly ILog log;
+        private readonly ILog _logger;
 
         public FileExceptionFilterAttribute(IOptionsMonitor<ILog> options)
         {
-            log = options.Get("ASC.Files");
+            _logger = options.Get("ASC.Files");
         }
 
         public void OnException(ExceptionContext actionExecutedContext)
@@ -44,6 +44,7 @@ namespace ASC.Web.Files.Services.WCFService
                     StatusCode = (int)HttpStatusCode.BadRequest
                 };
             }
+
             LogException(actionExecutedContext.Exception);
         }
 
@@ -53,34 +54,26 @@ namespace ASC.Web.Files.Services.WCFService
         {
             while (err != null)
             {
-                log.Error(err);
+                _logger.Error(err);
                 err = err.InnerException;
             }
         }
 
-
         class FileError
         {
             public string Detail { get; set; }
-
             public string Message { get; set; }
-
             public FileErrorInner Inner { get; set; }
 
             internal class FileErrorInner
             {
                 public string Message { get; set; }
-
                 public string Type { get; set; }
-
                 public string Source { get; set; }
-
                 public string Stack { get; set; }
             }
 
-            public FileError()
-            {
-            }
+            public FileError() { }
 
             public FileError(Exception error)
             {

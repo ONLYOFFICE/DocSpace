@@ -27,7 +27,7 @@ namespace ASC.Files.Thirdparty.Dropbox
 {
     internal abstract class DropboxDaoBase : ThirdPartyProviderDao<DropboxProviderInfo>
     {
-        protected override string Id { get => "dropbox"; }
+        protected override string Id => "dropbox";
 
         protected DropboxDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility, TempPath tempPath) 
             : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
@@ -37,9 +37,12 @@ namespace ASC.Files.Thirdparty.Dropbox
         protected static string GetParentFolderPath(Metadata dropboxItem)
         {
             if (dropboxItem == null || IsRoot(dropboxItem.AsFolder))
+            {
                 return null;
+            }
 
             var pathLength = dropboxItem.PathDisplay.Length - dropboxItem.Name.Length;
+
             return dropboxItem.PathDisplay.Substring(0, pathLength > 1 ? pathLength - 1 : 0);
         }
 
@@ -67,6 +70,7 @@ namespace ASC.Files.Thirdparty.Dropbox
         protected override string MakeId(string path = null)
         {
             var p = string.IsNullOrEmpty(path) || path == "/" ? "" : ("-" + path.Replace('/', '|'));
+
             return $"{PathPrefix}{p}";
         }
 
@@ -92,7 +96,11 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         protected Folder<string> ToFolder(FolderMetadata dropboxFolder)
         {
-            if (dropboxFolder == null) return null;
+            if (dropboxFolder == null)
+            {
+                return null;
+            }
+
             if (dropboxFolder is ErrorFolder)
             {
                 //Return error entry
@@ -110,10 +118,14 @@ namespace ASC.Files.Thirdparty.Dropbox
             folder.Title = MakeFolderTitle(dropboxFolder);
 
             if (folder.CreateOn != DateTime.MinValue && folder.CreateOn.Kind == DateTimeKind.Utc)
+            {
                 folder.CreateOn = TenantUtil.DateTimeFromUtc(folder.CreateOn);
+            }
 
             if (folder.ModifiedOn != DateTime.MinValue && folder.ModifiedOn.Kind == DateTimeKind.Utc)
+            {
                 folder.ModifiedOn = TenantUtil.DateTimeFromUtc(folder.ModifiedOn);
+            }
 
             return folder;
         }
@@ -125,7 +137,10 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         private File<string> ToErrorFile(ErrorFile dropboxFile)
         {
-            if (dropboxFile == null) return null;
+            if (dropboxFile == null)
+            {
+                return null;
+            }
 
             var file = GetErrorFile(new ErrorEntry(dropboxFile.ErrorId, dropboxFile.Error));
 
@@ -136,7 +151,10 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         private Folder<string> ToErrorFolder(ErrorFolder dropboxFolder)
         {
-            if (dropboxFolder == null) return null;
+            if (dropboxFolder == null)
+            {
+                return null;
+            }
 
             var folder = GetErrorFolder(new ErrorEntry(dropboxFolder.Error, dropboxFolder.ErrorId));
 
@@ -147,7 +165,10 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public File<string> ToFile(FileMetadata dropboxFile)
         {
-            if (dropboxFile == null) return null;
+            if (dropboxFile == null)
+            {
+                return null;
+            }
 
             if (dropboxFile is ErrorFile)
             {
@@ -204,6 +225,7 @@ namespace ASC.Files.Thirdparty.Dropbox
         protected override async Task<IEnumerable<string>> GetChildrenAsync(string folderId)
         {
             var items = await GetDropboxItemsAsync(folderId);
+
             return items.Select(MakeId);
         }
 
@@ -228,9 +250,7 @@ namespace ASC.Files.Thirdparty.Dropbox
         protected sealed class ErrorFolder : FolderMetadata
         {
             public string Error { get; set; }
-
             public string ErrorId { get; private set; }
-
 
             public ErrorFolder(Exception e, object id)
             {
@@ -245,9 +265,7 @@ namespace ASC.Files.Thirdparty.Dropbox
         protected sealed class ErrorFile : FileMetadata
         {
             public string Error { get; set; }
-
             public string ErrorId { get; private set; }
-
 
             public ErrorFile(Exception e, object id)
             {
@@ -261,7 +279,10 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         protected string GetAvailableTitle(string requestTitle, string parentFolderPath, Func<string, string, bool> isExist)
         {
-            if (!isExist(requestTitle, parentFolderPath)) return requestTitle;
+            if (!isExist(requestTitle, parentFolderPath))
+            {
+                return requestTitle;
+            }
 
             var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
             var match = re.Match(requestTitle);
@@ -273,6 +294,7 @@ namespace ASC.Files.Thirdparty.Dropbox
                 {
                     insertIndex = requestTitle.LastIndexOf('.');
                 }
+
                 requestTitle = requestTitle.Insert(insertIndex, " (1)");
             }
 
@@ -280,12 +302,16 @@ namespace ASC.Files.Thirdparty.Dropbox
             {
                 requestTitle = re.Replace(requestTitle, MatchEvaluator);
             }
+
             return requestTitle;
         }
 
         protected async Task<string> GetAvailableTitleAsync(string requestTitle, string parentFolderPath, Func<string, string, Task<bool>> isExist)
         {
-            if (!await isExist(requestTitle, parentFolderPath)) return requestTitle;
+            if (!await isExist(requestTitle, parentFolderPath))
+            {
+                return requestTitle;
+            }
 
             var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
             var match = re.Match(requestTitle);
@@ -297,6 +323,7 @@ namespace ASC.Files.Thirdparty.Dropbox
                 {
                     insertIndex = requestTitle.LastIndexOf(".", StringComparison.InvariantCulture);
                 }
+
                 requestTitle = requestTitle.Insert(insertIndex, " (1)");
             }
 
@@ -304,6 +331,7 @@ namespace ASC.Files.Thirdparty.Dropbox
             {
                 requestTitle = re.Replace(requestTitle, MatchEvaluator);
             }
+
             return requestTitle;
         }
 
@@ -311,6 +339,7 @@ namespace ASC.Files.Thirdparty.Dropbox
         {
             var index = Convert.ToInt32(match.Groups[2].Value);
             var staticText = match.Value.Substring(string.Format(" ({0})", index).Length);
+
             return string.Format(" ({0}){1}", index + 1, staticText);
         }
     }

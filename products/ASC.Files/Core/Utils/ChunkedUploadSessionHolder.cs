@@ -30,11 +30,11 @@ namespace ASC.Web.Files.Utils
     {
         public static readonly TimeSpan SlidingExpiration = TimeSpan.FromHours(12);
 
-        private IOptionsMonitor<ILog> Options { get; }
-        private GlobalStore GlobalStore { get; }
-        private SetupInfo SetupInfo { get; }
-        private TempPath TempPath { get; }
-        private FileHelper FileHelper { get; }
+        private readonly IOptionsMonitor<ILog> _options;
+        private readonly GlobalStore _globalStore;
+        private readonly SetupInfo _setupInfo;
+        private readonly TempPath _tempPath;
+        private readonly FileHelper _fileHelper;
 
         public ChunkedUploadSessionHolder(
             IOptionsMonitor<ILog> options,
@@ -43,11 +43,11 @@ namespace ASC.Web.Files.Utils
             TempPath tempPath,
             FileHelper fileHelper)
         {
-            Options = options;
-            GlobalStore = globalStore;
-            SetupInfo = setupInfo;
-            TempPath = tempPath;
-            FileHelper = fileHelper;
+            _options = options;
+            _globalStore = globalStore;
+            _setupInfo = setupInfo;
+            _tempPath = tempPath;
+            _fileHelper = fileHelper;
 
             // clear old sessions
             //TODO
@@ -74,7 +74,8 @@ namespace ASC.Web.Files.Utils
         public async Task<ChunkedUploadSession<T>> GetSessionAsync<T>(string sessionId)
         {
             using var stream = await CommonSessionHolder(false).GetStreamAsync(sessionId);
-            var chunkedUploadSession =  ChunkedUploadSession<T>.Deserialize(stream, FileHelper);
+            var chunkedUploadSession =  ChunkedUploadSession<T>.Deserialize(stream, _fileHelper);
+
             return chunkedUploadSession;
         }
 
@@ -82,6 +83,7 @@ namespace ASC.Web.Files.Utils
         {
             var result = new ChunkedUploadSession<T>(file, contentLength);
             await CommonSessionHolder().InitAsync(result);
+
             return result;
         }
 
@@ -117,7 +119,7 @@ namespace ASC.Web.Files.Utils
 
         private CommonChunkedUploadSessionHolder CommonSessionHolder(bool currentTenant = true)
         {
-            return new CommonChunkedUploadSessionHolder(TempPath, Options, GlobalStore.GetStore(currentTenant), FileConstant.StorageDomainTmp, SetupInfo.ChunkUploadSize);
+            return new CommonChunkedUploadSessionHolder(_tempPath, _options, _globalStore.GetStore(currentTenant), FileConstant.StorageDomainTmp, _setupInfo.ChunkUploadSize);
         }
     }
 }

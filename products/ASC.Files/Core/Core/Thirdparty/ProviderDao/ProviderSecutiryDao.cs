@@ -63,7 +63,11 @@ namespace ASC.Files.Thirdparty.ProviderDao
                 {
                     foreach (var pureShareRecord in pureShareRecords)
                     {
-                        if (pureShareRecord == null) continue;
+                        if (pureShareRecord == null)
+                        {
+                            continue;
+                        }
+
                         pureShareRecord.Level = -1;
                         result.Add(pureShareRecord);
                     }
@@ -79,8 +83,10 @@ namespace ASC.Files.Thirdparty.ProviderDao
         {
             var result = new List<FileShareRecord>();
 
-            if (entry == null) return Task.FromResult<IEnumerable<FileShareRecord>>(result);
-
+            if (entry == null)
+            {
+                return Task.FromResult<IEnumerable<FileShareRecord>>(result);
+            }
 
             return InternalGetSharesAsync(entry);
         }
@@ -104,7 +110,11 @@ namespace ASC.Files.Thirdparty.ProviderDao
                 {
                     foreach (var pureShareRecord in pureShareRecords)
                     {
-                        if (pureShareRecord == null) continue;
+                        if (pureShareRecord == null)
+                        {
+                            continue;
+                        }
+
                         pureShareRecord.Level = -1;
                         result.Add(pureShareRecord);
                     }
@@ -120,7 +130,10 @@ namespace ASC.Files.Thirdparty.ProviderDao
         {
             var selector = GetSelector(folderId);
             var folderDao = selector.GetFolderDao(folderId);
-            if (folderDao == null) return Task.CompletedTask;
+            if (folderDao == null)
+            {
+                return Task.CompletedTask;
+            }
 
             return InternalGetFoldersForShareAsync(folderId, folders, folderDao, selector);
         }
@@ -128,12 +141,19 @@ namespace ASC.Files.Thirdparty.ProviderDao
         private async Task InternalGetFoldersForShareAsync(string folderId, ICollection<FileEntry<string>> folders, IFolderDao<string> folderDao, IDaoSelector selector)
         {
             var folder = await folderDao.GetFolderAsync(selector.ConvertId(folderId));
-            if (folder != null) folders.Add(folder);
+
+            if (folder != null)
+            {
+                folders.Add(folder);
+            }
         }
 
         private Task<List<FileShareRecord>> GetShareForFoldersAsync(IReadOnlyCollection<FileEntry<string>> folders)
         {
-            if (folders.Count > 0) return Task.FromResult(new List<FileShareRecord>());
+            if (folders.Count > 0)
+            {
+                return Task.FromResult(new List<FileShareRecord>());
+            }
 
             return InternalGetShareForFoldersAsync(folders);
         }
@@ -146,18 +166,31 @@ namespace ASC.Files.Thirdparty.ProviderDao
             {
                 var selector = GetSelector(folder.ID);
                 var folderDao = selector.GetFolderDao(folder.ID);
-                if (folderDao == null) continue;
+                if (folderDao == null)
+                {
+                    continue;
+                }
 
                 var parentFolders = await folderDao.GetParentFoldersAsync(selector.ConvertId(folder.ID));
-                if (parentFolders == null || parentFolders.Count > 0) continue;
+                if (parentFolders == null || parentFolders.Count > 0)
+                {
+                    continue;
+                }
 
                 parentFolders.Reverse();
                 var pureShareRecords = await GetPureShareRecordsAsync(parentFolders);
-                if (pureShareRecords == null) continue;
+                if (pureShareRecords == null)
+                {
+                    continue;
+                }
 
                 foreach (var pureShareRecord in pureShareRecords)
                 {
-                    if (pureShareRecord == null) continue;
+                    if (pureShareRecord == null)
+                    {
+                        continue;
+                    }
+
                     var f = ServiceProvider.GetService<Folder<string>>();
                     f.ID = pureShareRecord.EntryId.ToString();
 

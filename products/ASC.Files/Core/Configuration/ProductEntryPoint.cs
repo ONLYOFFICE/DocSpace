@@ -34,17 +34,14 @@ namespace ASC.Web.Files.Configuration
         internal const string ProductPath = "/products/files/";
 
         //public FilesSpaceUsageStatManager FilesSpaceUsageStatManager { get; }
-        private CoreBaseSettings CoreBaseSettings { get; }
-        private AuthContext AuthContext { get; }
-        private UserManager UserManager { get; }
-        public NotifyConfiguration NotifyConfiguration { get; }
+        private readonly CoreBaseSettings _coreBaseSettings;
+        private readonly AuthContext _authContext;
+        private readonly UserManager _userManager;
+        private readonly NotifyConfiguration _notifyConfiguration;
 
         //public SubscriptionManager SubscriptionManager { get; }
 
-        public ProductEntryPoint()
-        {
-
-        }
+        public ProductEntryPoint() { }
 
         public ProductEntryPoint(
             //            FilesSpaceUsageStatManager filesSpaceUsageStatManager,
@@ -56,10 +53,10 @@ namespace ASC.Web.Files.Configuration
             )
         {
             //            FilesSpaceUsageStatManager = filesSpaceUsageStatManager;
-            CoreBaseSettings = coreBaseSettings;
-            AuthContext = authContext;
-            UserManager = userManager;
-            NotifyConfiguration = notifyConfiguration;
+            _coreBaseSettings = coreBaseSettings;
+            _authContext = authContext;
+            _userManager = userManager;
+            _notifyConfiguration = notifyConfiguration;
             //SubscriptionManager = subscriptionManager;
         }
 
@@ -67,17 +64,16 @@ namespace ASC.Web.Files.Configuration
 
         private ProductContext _productContext;
 
-        public override bool Visible { get { return true; } }
-
-        public override bool IsPrimary { get => true; }
+        public override bool Visible => true;
+        public override bool IsPrimary => true;
 
         public override void Init()
         {
-            List<string> adminOpportunities() => (CoreBaseSettings.CustomMode
+            List<string> adminOpportunities() => (_coreBaseSettings.CustomMode
                                                                ? CustomModeResource.ProductAdminOpportunitiesCustomMode
                                                                : FilesCommonResource.ProductAdminOpportunities).Split('|').ToList();
 
-            List<string> userOpportunities() => (CoreBaseSettings.CustomMode
+            List<string> userOpportunities() => (_coreBaseSettings.CustomMode
                                          ? CustomModeResource.ProductUserOpportunitiesCustomMode
                                          : FilesCommonResource.ProductUserOpportunities).Split('|').ToList();
 
@@ -95,16 +91,20 @@ namespace ASC.Web.Files.Configuration
                     CanNotBeDisabled = true,
                 };
 
-            if (NotifyConfiguration != null)
+            if (_notifyConfiguration != null)
             {
-                NotifyConfiguration.Configure();
+                _notifyConfiguration.Configure();
             }
             //SearchHandlerManager.Registry(new SearchHandler());
         }
 
         public string GetModuleResource(string ResourceClassTypeName, string ResourseKey)
         {
-            if (string.IsNullOrEmpty(ResourseKey)) return string.Empty;
+            if (string.IsNullOrEmpty(ResourseKey))
+            {
+                return string.Empty;
+            }
+
             try
             {
                 return (string)Type.GetType(ResourceClassTypeName).GetProperty(ResourseKey, BindingFlags.Static | BindingFlags.Public).GetValue(null, null);
@@ -115,56 +115,33 @@ namespace ASC.Web.Files.Configuration
             }
         }
 
-
-        public override Guid ProductID
-        {
-            get { return ID; }
-        }
-
-        public override string Name
-        {
-            get { return FilesCommonResource.ProductName; }
-        }
+        public override Guid ProductID => ID;
+        public override string Name => FilesCommonResource.ProductName;
 
         public override string Description
         {
             get
             {
-                var id = AuthContext.CurrentAccount.ID;
+                var id = _authContext.CurrentAccount.ID;
 
-                if (UserManager.IsUserInGroup(id, ASC.Core.Users.Constants.GroupVisitor.ID))
+                if (_userManager.IsUserInGroup(id, ASC.Core.Users.Constants.GroupVisitor.ID))
+                {
                     return FilesCommonResource.ProductDescriptionShort;
+                }
 
-                if (UserManager.IsUserInGroup(id, ASC.Core.Users.Constants.GroupAdmin.ID) || UserManager.IsUserInGroup(id, ID))
+                if (_userManager.IsUserInGroup(id, ASC.Core.Users.Constants.GroupAdmin.ID) || _userManager.IsUserInGroup(id, ID))
+                {
                     return FilesCommonResource.ProductDescriptionEx;
+                }
 
                 return FilesCommonResource.ProductDescription;
             }
         }
 
-        public override string StartURL
-        {
-            get { return ProductPath; }
-        }
-
-        public override string HelpURL
-        {
-            get { return PathProvider.StartURL; }
-        }
-
-        public override string ProductClassName
-        {
-            get { return "files"; }
-        }
-
-        public override ProductContext Context
-        {
-            get { return _productContext; }
-        }
-
-        public override string ApiURL
-        {
-            get => "";
-        }
+        public override string StartURL => ProductPath;
+        public override string HelpURL => PathProvider.StartURL;
+        public override string ProductClassName => "files";
+        public override ProductContext Context => _productContext;
+        public override string ApiURL => "";
     }
 }

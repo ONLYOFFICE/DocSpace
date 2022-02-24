@@ -28,21 +28,20 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
     [Singletone(Additional = typeof(FileOperationsManagerHelperExtention))]
     public class FileOperationsManager
     {
-        private readonly DistributedTaskQueue tasks;
-
-        private TempStream TempStream { get; }
-        private IServiceProvider ServiceProvider { get; }
+        private readonly DistributedTaskQueue _tasks;
+        private readonly TempStream _tempStream;
+        private readonly IServiceProvider _serviceProvider;
 
         public FileOperationsManager(TempStream tempStream, DistributedTaskQueueOptionsManager distributedTaskQueueOptionsManager, IServiceProvider serviceProvider)
         {
-            tasks = distributedTaskQueueOptionsManager.Get<FileOperation>();
-            TempStream = tempStream;
-            ServiceProvider = serviceProvider;
+            _tasks = distributedTaskQueueOptionsManager.Get<FileOperation>();
+            _tempStream = tempStream;
+            _serviceProvider = serviceProvider;
         }
 
         public List<FileOperationResult> GetOperationResults(Guid userId)
         {
-            var operations = tasks.GetTasks();
+            var operations = _tasks.GetTasks();
             var processlist = Process.GetProcesses();
 
             //TODO: replace with distributed cache
@@ -50,30 +49,30 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             {
                 foreach (var o in operations.Where(o => processlist.All(p => p.Id != o.InstanceId)))
                 {
-                    o.SetProperty(FileOperation.PROGRESS, 100);
-                    tasks.RemoveTask(o.Id);
+                    o.SetProperty(FileOperation.Progress, 100);
+                    _tasks.RemoveTask(o.Id);
                 }
             }
 
-            operations = operations.Where(t => t.GetProperty<Guid>(FileOperation.OWNER) == userId);
+            operations = operations.Where(t => t.GetProperty<Guid>(FileOperation.Owner) == userId);
             foreach (var o in operations.Where(o => o.Status > DistributedTaskStatus.Running))
             {
-                o.SetProperty(FileOperation.PROGRESS, 100);
-                tasks.RemoveTask(o.Id);
+                o.SetProperty(FileOperation.Progress, 100);
+                _tasks.RemoveTask(o.Id);
             }
 
             var results = operations
-                .Where(o => o.GetProperty<bool>(FileOperation.HOLD) || o.GetProperty<int>(FileOperation.PROGRESS) != 100)
+                .Where(o => o.GetProperty<bool>(FileOperation.Hold) || o.GetProperty<int>(FileOperation.Progress) != 100)
                 .Select(o => new FileOperationResult
                 {
                     Id = o.Id,
-                    OperationType = o.GetProperty<FileOperationType>(FileOperation.OPERATION_TYPE),
-                    Source = o.GetProperty<string>(FileOperation.SOURCE),
-                    Progress = o.GetProperty<int>(FileOperation.PROGRESS),
-                    Processed = o.GetProperty<int>(FileOperation.PROCESSED).ToString(),
-                    Result = o.GetProperty<string>(FileOperation.RESULT),
-                    Error = o.GetProperty<string>(FileOperation.ERROR),
-                    Finished = o.GetProperty<bool>(FileOperation.FINISHED),
+                    OperationType = o.GetProperty<FileOperationType>(FileOperation.OpType),
+                    Source = o.GetProperty<string>(FileOperation.Src),
+                    Progress = o.GetProperty<int>(FileOperation.Progress),
+                    Processed = o.GetProperty<int>(FileOperation.Process).ToString(),
+                    Result = o.GetProperty<string>(FileOperation.Res),
+                    Error = o.GetProperty<string>(FileOperation.Err),
+                    Finished = o.GetProperty<bool>(FileOperation.Finish),
                 })
                 .ToList();
 
@@ -82,12 +81,12 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         public List<FileOperationResult> CancelOperations(Guid userId)
         {
-            var operations = tasks.GetTasks()
-                .Where(t => t.GetProperty<Guid>(FileOperation.OWNER) == userId);
+            var operations = _tasks.GetTasks()
+                .Where(t => t.GetProperty<Guid>(FileOperation.Owner) == userId);
 
             foreach (var o in operations)
             {
-                tasks.CancelTask(o.Id);
+                _tasks.CancelTask(o.Id);
             }
 
             return GetOperationResults(userId);
@@ -99,17 +98,18 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             var (folderIntIds, folderStringIds) = GetIds(folderIds);
             var (fileIntIds, fileStringIds) = GetIds(fileIds);
 
-            var op1 = new FileMarkAsReadOperation<int>(ServiceProvider, new FileMarkAsReadOperationData<int>(folderIntIds, fileIntIds, tenant));
-            var op2 = new FileMarkAsReadOperation<string>(ServiceProvider, new FileMarkAsReadOperationData<string>(folderStringIds, fileStringIds, tenant));
-            var op = new FileMarkAsReadOperation(ServiceProvider, op2, op1);
+            var op1 = new FileMarkAsReadOperation<int>(_serviceProvider, new FileMarkAsReadOperationData<int>(folderIntIds, fileIntIds, tenant));
+            var op2 = new FileMarkAsReadOperation<string>(_serviceProvider, new FileMarkAsReadOperationData<string>(folderStringIds, fileStringIds, tenant));
+            var op = new FileMarkAsReadOperation(_serviceProvider, op2, op1);
+
             return QueueTask(userId, op);
         }
 
         public List<FileOperationResult> Download(Guid userId, Tenant tenant, Dictionary<JsonElement, string> folders, Dictionary<JsonElement, string> files, IDictionary<string, StringValues> headers)
         {
-            var operations = tasks.GetTasks()
-                .Where(t => t.GetProperty<Guid>(FileOperation.OWNER) == userId)
-                .Where(t => t.GetProperty<FileOperationType>(FileOperation.OPERATION_TYPE) == FileOperationType.Download);
+            var operations = _tasks.GetTasks()
+                .Where(t => t.GetProperty<Guid>(FileOperation.Owner) == userId)
+                .Where(t => t.GetProperty<FileOperationType>(FileOperation.OpType) == FileOperationType.Download);
 
             if (operations.Any(o => o.Status <= DistributedTaskStatus.Running))
             {
@@ -119,9 +119,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             var (folderIntIds, folderStringIds) = GetIds(folders);
             var (fileIntIds, fileStringIds) = GetIds(files);
 
-            var op1 = new FileDownloadOperation<int>(ServiceProvider, new FileDownloadOperationData<int>(folderIntIds, fileIntIds, tenant, headers));
-            var op2 = new FileDownloadOperation<string>(ServiceProvider, new FileDownloadOperationData<string>(folderStringIds, fileStringIds, tenant, headers));
-            var op = new FileDownloadOperation(ServiceProvider, TempStream, op2, op1);
+            var op1 = new FileDownloadOperation<int>(_serviceProvider, new FileDownloadOperationData<int>(folderIntIds, fileIntIds, tenant, headers));
+            var op2 = new FileDownloadOperation<string>(_serviceProvider, new FileDownloadOperationData<string>(folderStringIds, fileStringIds, tenant, headers));
+            var op = new FileDownloadOperation(_serviceProvider, _tempStream, op2, op1);
 
             return QueueTask(userId, op);
         }
@@ -131,16 +131,17 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             var (folderIntIds, folderStringIds) = GetIds(folders);
             var (fileIntIds, fileStringIds) = GetIds(files);
 
-            var op1 = new FileMoveCopyOperation<int>(ServiceProvider, new FileMoveCopyOperationData<int>(folderIntIds, fileIntIds, tenant, destFolderId, copy, resolveType, holdResult, headers));
-            var op2 = new FileMoveCopyOperation<string>(ServiceProvider, new FileMoveCopyOperationData<string>(folderStringIds, fileStringIds, tenant, destFolderId, copy, resolveType, holdResult, headers));
-            var op = new FileMoveCopyOperation(ServiceProvider, op2, op1);
+            var op1 = new FileMoveCopyOperation<int>(_serviceProvider, new FileMoveCopyOperationData<int>(folderIntIds, fileIntIds, tenant, destFolderId, copy, resolveType, holdResult, headers));
+            var op2 = new FileMoveCopyOperation<string>(_serviceProvider, new FileMoveCopyOperationData<string>(folderStringIds, fileStringIds, tenant, destFolderId, copy, resolveType, holdResult, headers));
+            var op = new FileMoveCopyOperation(_serviceProvider, op2, op1);
 
             return QueueTask(userId, op);
         }
 
         public List<FileOperationResult> Delete<T>(Guid userId, Tenant tenant, IEnumerable<T> folders, IEnumerable<T> files, bool ignoreException, bool holdResult, bool immediately, IDictionary<string, StringValues> headers)
         {
-            var op = new FileDeleteOperation<T>(ServiceProvider, new FileDeleteOperationData<T>(folders, files, tenant, holdResult, ignoreException, immediately, headers));
+            var op = new FileDeleteOperation<T>(_serviceProvider, new FileDeleteOperationData<T>(folders, files, tenant, holdResult, ignoreException, immediately, headers));
+
             return QueueTask(userId, op);
         }
 
@@ -149,9 +150,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             var (folderIntIds, folderStringIds) = GetIds(folders);
             var (fileIntIds, fileStringIds) = GetIds(files);
 
-            var op1 = new FileDeleteOperation<int>(ServiceProvider, new FileDeleteOperationData<int>(folderIntIds, fileIntIds, tenant, holdResult, ignoreException, immediately, headers));
-            var op2 = new FileDeleteOperation<string>(ServiceProvider, new FileDeleteOperationData<string>(folderStringIds, fileStringIds, tenant, holdResult, ignoreException, immediately, headers));
-            var op = new FileDeleteOperation(ServiceProvider, op2, op1);
+            var op1 = new FileDeleteOperation<int>(_serviceProvider, new FileDeleteOperationData<int>(folderIntIds, fileIntIds, tenant, holdResult, ignoreException, immediately, headers));
+            var op2 = new FileDeleteOperation<string>(_serviceProvider, new FileDeleteOperationData<string>(folderStringIds, fileStringIds, tenant, holdResult, ignoreException, immediately, headers));
+            var op = new FileDeleteOperation(_serviceProvider, op2, op1);
 
             return QueueTask(userId, op);
         }
@@ -159,13 +160,15 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         private List<FileOperationResult> QueueTask(Guid userId, FileOperation op)
         {
-            tasks.QueueTask(op.RunJobAsync, op.GetDistributedTask());
+            _tasks.QueueTask(op.RunJobAsync, op.GetDistributedTask());
+
             return GetOperationResults(userId);
         }
 
         private List<FileOperationResult> QueueTask<T, TId>(Guid userId, FileOperation<T, TId> op) where T : FileOperationData<TId>
         {
-            tasks.QueueTask(op.RunJobAsync, op.GetDistributedTask());
+            _tasks.QueueTask(op.RunJobAsync, op.GetDistributedTask());
+
             return GetOperationResults(userId);
         }
 

@@ -34,10 +34,7 @@ namespace ASC.Files.Core
         [JsonIgnore]
         public Global Global { get; set; }
 
-        protected FileEntry()
-        {
-
-        }
+        protected FileEntry() { }
 
         protected FileEntry(FileHelper fileHelper, Global global)
         {
@@ -46,7 +43,6 @@ namespace ASC.Files.Core
         }
 
         public virtual string Title { get; set; }
-
         public Guid CreateBy { get; set; }
 
         [JsonIgnore]
@@ -66,43 +62,25 @@ namespace ASC.Files.Core
         }
 
         [JsonIgnore]
-        public string CreateOnString
-        {
-            get { return CreateOn.Equals(default) ? null : CreateOn.ToString("g"); }
-        }
+        public string CreateOnString => CreateOn.Equals(default) ? null : CreateOn.ToString("g");
 
         [JsonIgnore]
-        public string ModifiedOnString
-        {
-            get { return ModifiedOn.Equals(default) ? null : ModifiedOn.ToString("g"); }
-        }
+        public string ModifiedOnString => ModifiedOn.Equals(default) ? null : ModifiedOn.ToString("g");
 
         public string Error { get; set; }
-
         public FileShare Access { get; set; }
-
         public bool Shared { get; set; }
-
         public int ProviderId { get; set; }
-
         public string ProviderKey { get; set; }
 
         [JsonIgnore]
-        public bool ProviderEntry
-        {
-            get { return !string.IsNullOrEmpty(ProviderKey); }
-        }
+        public bool ProviderEntry => !string.IsNullOrEmpty(ProviderKey);
 
         public DateTime CreateOn { get; set; }
-
         public DateTime ModifiedOn { get; set; }
-
         public FolderType RootFolderType { get; set; }
-
         public Guid RootFolderCreator { get; set; }
-
         public abstract bool IsNew { get; set; }
-
         public FileEntryType FileEntryType { get; set; }
 
         private string _modifiedByString;
@@ -119,7 +97,6 @@ namespace ASC.Files.Core
         }
     }
 
-
     public interface IFileEntry<in T>
     {
         string UniqID { get; }
@@ -130,38 +107,31 @@ namespace ASC.Files.Core
     public abstract class FileEntry<T> : FileEntry, ICloneable, IFileEntry<T>
     {
         public T ID { get; set; }
-
         public T FolderID { get; set; }
-
         private T _folderIdDisplay;
 
-        protected FileEntry()
-        {
+        protected FileEntry() { }
 
-        }
-
-        protected FileEntry(FileHelper fileHelper, Global global) : base(fileHelper, global)
-        {
-        }
+        protected FileEntry(FileHelper fileHelper, Global global) : base(fileHelper, global) { }
 
         public T FolderIdDisplay
         {
             get
             {
-                if (_folderIdDisplay != null) return _folderIdDisplay;
+                if (_folderIdDisplay != null)
+                {
+                    return _folderIdDisplay;
+                }
 
                 return FolderID;
             }
-            set { _folderIdDisplay = value; }
+            set => _folderIdDisplay = value;
         }
 
         public T RootFolderId { get; set; }
 
         [JsonIgnore]
-        public virtual string UniqID
-        {
-            get { return $"{GetType().Name.ToLower()}_{ID}"; }
-        }
+        public virtual string UniqID => $"{GetType().Name.ToLower()}_{ID}";
 
         public override bool Equals(object obj)
         {

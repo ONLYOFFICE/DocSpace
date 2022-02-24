@@ -28,42 +28,55 @@ namespace ASC.Web.Files.Helpers
     [Scope]
     public class WordpressToken
     {
-        public ILog Log { get; set; }
-        private TokenHelper TokenHelper { get; }
+        public ILog Logger { get; set; }
+        private readonly TokenHelper _tokenHelper;
         public ConsumerFactory ConsumerFactory { get; }
 
         public const string AppAttr = "wordpress";
 
         public WordpressToken(IOptionsMonitor<ILog> optionsMonitor, TokenHelper tokenHelper, ConsumerFactory consumerFactory)
         {
-            Log = optionsMonitor.CurrentValue;
-            TokenHelper = tokenHelper;
+            Logger = optionsMonitor.CurrentValue;
+            _tokenHelper = tokenHelper;
             ConsumerFactory = consumerFactory;
         }
 
         public OAuth20Token GetToken()
         {
-            return TokenHelper.GetToken(AppAttr);
+            return _tokenHelper.GetToken(AppAttr);
         }
 
         public void SaveToken(OAuth20Token token)
         {
-            if (token == null) throw new ArgumentNullException(nameof(token));
-            TokenHelper.SaveToken(new Token(token, AppAttr));
+            if (token == null)
+            {
+                throw new ArgumentNullException(nameof(token));
+            }
+
+            _tokenHelper.SaveToken(new Token(token, AppAttr));
         }
 
         public OAuth20Token SaveTokenFromCode(string code)
         {
             var token = OAuth20TokenHelper.GetAccessToken<WordpressLoginProvider>(ConsumerFactory, code);
-            if (token == null) throw new ArgumentNullException("token");
-            TokenHelper.SaveToken(new Token(token, AppAttr));
+            if (token == null)
+            {
+                throw new ArgumentNullException("token");
+            }
+
+            _tokenHelper.SaveToken(new Token(token, AppAttr));
+
             return token;
         }
 
         public void DeleteToken(OAuth20Token token)
         {
-            if (token == null) throw new ArgumentNullException(nameof(token));
-            TokenHelper.DeleteToken(AppAttr);
+            if (token == null)
+            {
+                throw new ArgumentNullException(nameof(token));
+            }
+
+            _tokenHelper.DeleteToken(AppAttr);
 
         }
     }
@@ -71,7 +84,8 @@ namespace ASC.Web.Files.Helpers
     [Singletone]
     public class WordpressHelper
     {
-        public ILog Log { get; set; }
+        public ILog Logger { get; set; }
+
         public enum WordpressStatus
         {
             draft = 0,
@@ -80,7 +94,7 @@ namespace ASC.Web.Files.Helpers
 
         public WordpressHelper(IOptionsMonitor<ILog> optionsMonitor)
         {
-            Log = optionsMonitor.CurrentValue;
+            Logger = optionsMonitor.CurrentValue;
         }
 
         public string GetWordpressMeInfo(string token)
@@ -91,8 +105,9 @@ namespace ASC.Web.Files.Helpers
             }
             catch (Exception ex)
             {
-                Log.Error("Get Wordpress info about me ", ex);
-                return "";
+                Logger.Error("Get Wordpress info about me ", ex);
+
+                return string.Empty;
             }
 
         }
@@ -103,11 +118,13 @@ namespace ASC.Web.Files.Helpers
             {
                 var wpStatus = ((WordpressStatus)status).ToString();
                 WordpressLoginProvider.CreateWordpressPost(title, content, wpStatus, blogId, token);
+
                 return true;
             }
             catch (Exception ex)
             {
-                Log.Error("Create Wordpress post ", ex);
+                Logger.Error("Create Wordpress post ", ex);
+
                 return false;
             }
         }

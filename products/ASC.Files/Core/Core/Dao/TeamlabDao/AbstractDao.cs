@@ -27,32 +27,36 @@ namespace ASC.Files.Core.Data
 {
     public class AbstractDao
     {
-        protected readonly ICache cache;
+        protected readonly ICache Cache;
 
-        private Lazy<EF.FilesDbContext> LazyFilesDbContext { get; }
-        public EF.FilesDbContext FilesDbContext { get => LazyFilesDbContext.Value; }
-        private int tenantID;
+        private readonly Lazy<FilesDbContext> LazyFilesDbContext;
+        public FilesDbContext FilesDbContext => LazyFilesDbContext.Value;
+        private int _tenantID;
         protected internal int TenantID { 
             get 
             {
-                if (tenantID == 0) tenantID = TenantManager.GetCurrentTenant().TenantId;
-                return tenantID; 
+                if (_tenantID == 0)
+                {
+                    _tenantID = TenantManager.GetCurrentTenant().TenantId;
+                }
+
+                return _tenantID; 
             }
         }
-        protected UserManager UserManager { get; }
-        protected TenantManager TenantManager { get; }
-        protected TenantUtil TenantUtil { get; }
-        protected SetupInfo SetupInfo { get; }
-        protected TenantExtra TenantExtra { get; }
-        protected TenantStatisticsProvider TenantStatisticProvider { get; }
-        protected CoreBaseSettings CoreBaseSettings { get; }
-        protected CoreConfiguration CoreConfiguration { get; }
-        protected SettingsManager SettingsManager { get; }
-        protected AuthContext AuthContext { get; }
-        protected IServiceProvider ServiceProvider { get; }
+        protected readonly UserManager UserManager;
+        protected readonly TenantManager TenantManager;
+        protected readonly TenantUtil TenantUtil;
+        protected readonly SetupInfo SetupInfo;
+        protected readonly TenantExtra TenantExtra;
+        protected readonly TenantStatisticsProvider TenantStatisticProvider;
+        protected readonly CoreBaseSettings CoreBaseSettings;
+        protected readonly CoreConfiguration CoreConfiguration;
+        protected readonly SettingsManager SettingsManager;
+        protected readonly AuthContext AuthContext;
+        protected readonly IServiceProvider ServiceProvider;
 
         protected AbstractDao(
-            DbContextManager<EF.FilesDbContext> dbContextManager,
+            DbContextManager<FilesDbContext> dbContextManager,
             UserManager userManager,
             TenantManager tenantManager,
             TenantUtil tenantUtil,
@@ -66,8 +70,8 @@ namespace ASC.Files.Core.Data
             IServiceProvider serviceProvider,
             ICache cache)
         {
-            this.cache = cache;
-            LazyFilesDbContext = new Lazy<EF.FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
+            Cache = cache;
+            LazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
             UserManager = userManager;
             TenantManager = tenantManager;
             TenantUtil = tenantUtil;
@@ -85,6 +89,7 @@ namespace ASC.Files.Core.Data
         protected IQueryable<T> Query<T>(DbSet<T> set) where T : class, IDbFile
         {
             var tenantId = TenantID;
+
             return set.AsQueryable().Where(r => r.TenantId == tenantId);
         }
 
@@ -120,11 +125,17 @@ namespace ASC.Files.Core.Data
 
         protected ValueTask<object> MappingIDAsync(object id, bool saveIfNotExist = false)
         {
-            if (id == null) return ValueTask.FromResult<object>(null);
+            if (id == null)
+            {
+                return ValueTask.FromResult<object>(null);
+            }
 
             var isNumeric = int.TryParse(id.ToString(), out var n);
 
-            if (isNumeric) return ValueTask.FromResult<object>(n);
+            if (isNumeric)
+            {
+                return ValueTask.FromResult<object>(n);
+            }
 
             return InternalMappingIDAsync(id, saveIfNotExist);
         }

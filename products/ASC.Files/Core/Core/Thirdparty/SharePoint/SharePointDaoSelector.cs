@@ -28,8 +28,9 @@ namespace ASC.Files.Thirdparty.SharePoint
     [Scope(Additional = typeof(SharePointDaoSelectorExtension))]
     internal class SharePointDaoSelector : RegexDaoSelectorBase<SharePointProviderInfo>, IDaoSelector
     {
-        protected internal override string Name { get => "sharepoint"; }
-        protected internal override string Id { get => "spoint"; }
+        protected internal override string Name => "sharepoint";
+        protected internal override string Id => "spoint";
+
         public SharePointDaoSelector(IServiceProvider serviceProvider, IDaoFactory daoFactory)
             : base(serviceProvider, daoFactory)
         {
@@ -64,8 +65,10 @@ namespace ASC.Files.Thirdparty.SharePoint
                 {
                     return GetInfo(id).ProviderInfo.SpRootFolderId + match.Groups["path"].Value.Replace('|', '/');
                 }
+
                 throw new ArgumentException("Id is not a sharepoint id");
             }
+
             return base.ConvertId(null);
         }
     }

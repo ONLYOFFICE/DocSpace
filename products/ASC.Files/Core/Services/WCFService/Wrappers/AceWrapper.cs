@@ -29,9 +29,7 @@ namespace ASC.Web.Files.Services.WCFService
     {
         public IEnumerable<T> Files { get; set; }
         public IEnumerable<T> Folders { get; set; }
-
         public List<AceWrapper> Aces { get; set; }
-
         public string Message { get; set; }
     }
 
@@ -62,9 +60,7 @@ namespace ASC.Web.Files.Services.WCFService
     public class AceShortWrapper
     {
         public string User { get; set; }
-
         public string Permissions { get; set; }
-
         public bool? IsLink { get; set; }
 
         public AceShortWrapper(AceWrapper aceWrapper)
@@ -102,6 +98,7 @@ namespace ASC.Web.Files.Services.WCFService
                 IsLink = true;
                 User = FilesCommonResource.AceShareLink;
             }
+
             Permissions = permission;
         }
     }

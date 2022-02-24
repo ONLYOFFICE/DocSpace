@@ -27,12 +27,12 @@ namespace ASC.Files.Thirdparty
 {
     internal abstract class RegexDaoSelectorBase<T> : IDaoSelector<T> where T : class, IProviderInfo
     {
-        private IServiceProvider ServiceProvider { get; }
-        private IDaoFactory DaoFactory { get; }
+        private readonly IServiceProvider _serviceProvider;
+        private readonly IDaoFactory _daoFactory;
         protected internal abstract string Name { get; }
         protected internal abstract string Id { get; }
-        public Regex Selector { get => selector ??= new Regex(@"^" + Id + @"-(?'id'\d+)(-(?'path'.*)){0,1}$", RegexOptions.Singleline | RegexOptions.Compiled); }
-        private Regex selector;
+        public Regex Selector => _selector ??= new Regex(@"^" + Id + @"-(?'id'\d+)(-(?'path'.*)){0,1}$", RegexOptions.Singleline | RegexOptions.Compiled);
+        private Regex _selector;
 
         private Dictionary<string, ThirdPartyProviderDao<T>> Providers { get; set; }
 
@@ -40,8 +40,8 @@ namespace ASC.Files.Thirdparty
             IServiceProvider serviceProvider,
             IDaoFactory daoFactory)
         {
-            ServiceProvider = serviceProvider;
-            DaoFactory = daoFactory;
+            _serviceProvider = serviceProvider;
+            _daoFactory = daoFactory;
             Providers = new Dictionary<string, ThirdPartyProviderDao<T>>();
         }
 
@@ -49,13 +49,17 @@ namespace ASC.Files.Thirdparty
         {
             try
             {
-                if (id == null) return null;
+                if (id == null)
+                {
+                    return null;
+                }
 
                 var match = Selector.Match(id);
                 if (match.Success)
                 {
                     return match.Groups["path"].Value.Replace('|', '/');
                 }
+
                 throw new ArgumentException($"Id is not a {Name} id");
             }
             catch (Exception fe)
@@ -74,6 +78,7 @@ namespace ASC.Files.Thirdparty
                     return match.Groups["id"].Value;
                 }
             }
+
             throw new ArgumentException($"Id is not a {Name} id");
         }
 
@@ -105,9 +110,12 @@ namespace ASC.Files.Thirdparty
         private T1 GetDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>
         {
             var providerKey = $"{id}{typeof(T1)}";
-            if (Providers.TryGetValue(providerKey, out var provider)) return (T1)provider;
+            if (Providers.TryGetValue(providerKey, out var provider))
+            {
+                return (T1)provider;
+            }
 
-            var res = ServiceProvider.GetService<T1>();
+            var res = _serviceProvider.GetService<T1>();
 
             res.Init(GetInfo(id), this);
 
@@ -116,10 +124,13 @@ namespace ASC.Files.Thirdparty
             return res;
         }
 
-
         internal BaseProviderInfo<T> GetInfo(string objectId)
         {
-            if (objectId == null) throw new ArgumentNullException(nameof(objectId));
+            if (objectId == null)
+            {
+                throw new ArgumentNullException(nameof(objectId));
+            }
+
             var id = objectId;
             var match = Selector.Match(id);
             if (match.Success)
@@ -133,19 +144,20 @@ namespace ASC.Files.Thirdparty
                     PathPrefix = Id + "-" + match.Groups["id"].Value
                 };
             }
+
             throw new ArgumentException($"Id is not {Name} id");
         }
 
         public async Task RenameProviderAsync(T provider, string newTitle)
         {
-            var dbDao = ServiceProvider.GetService<ProviderAccountDao>();
+            var dbDao = _serviceProvider.GetService<ProviderAccountDao>();
             await dbDao.UpdateProviderInfoAsync(provider.ID, newTitle, null, provider.RootFolderType);
             provider.UpdateTitle(newTitle); //This will update cached version too
         }
 
         protected virtual T GetProviderInfo(int linkId)
         {
-            var dbDao = DaoFactory.ProviderDao;
+            var dbDao = _daoFactory.ProviderDao;
             try
             {
                 return dbDao.GetProviderInfoAsync(linkId).Result as T;

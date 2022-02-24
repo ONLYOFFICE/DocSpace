@@ -32,7 +32,6 @@ namespace ASC.Files.Thirdparty
         IFolderDao<string> GetFolderDao(string id);
         ISecurityDao<string> GetSecurityDao(string id);
         ITagDao<string> GetTagDao(string id);
-
         string ConvertId(string id);
         string GetIdCode(string id);
     }
@@ -44,7 +43,6 @@ namespace ASC.Files.Thirdparty
         IFolderDao<string> GetFolderDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>, IFolderDao<string>;
         ISecurityDao<string> GetSecurityDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>, ISecurityDao<string>;
         ITagDao<string> GetTagDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>, ITagDao<string>;
-
         string ConvertId(string id);
         string GetIdCode(string id);
     }

@@ -25,93 +25,32 @@
 
 
 using FileStatus = ASC.Files.Core.FileStatus;
-using System.Threading.Tasks;
 
 namespace ASC.Api.Documents
 {
-    /// <summary>
-    /// </summary>
     public class FileWrapper<T> : FileEntryWrapper<T>
     {
-        /// <summary>
-        /// </summary>
         public T FolderId { get; set; }
-
-        /// <summary>
-        /// </summary>
         public int Version { get; set; }
-
-        /// <summary>
-        /// </summary>
         public int VersionGroup { get; set; }
-
-        /// <summary>
-        /// </summary>
         public string ContentLength { get; set; }
-
-        /// <summary>
-        /// </summary>
         public long? PureContentLength { get; set; }
-
-        /// <summary>
-        /// </summary>
         public FileStatus FileStatus { get; set; }
-
-        /// <summary>
-        /// </summary>
         public string ViewUrl { get; set; }
-
-        /// <summary>
-        /// </summary>
         public string WebUrl { get; set; }
-
-        /// <summary>
-        ///     
-        /// </summary>
         public FileType FileType { get; set; }
-
-        /// <summary>
-        ///     
-        /// </summary>
         public string FileExst { get; set; }
-
-        /// <summary>
-        /// </summary>
         public string Comment { get; set; }
-
-        /// <summary>
-        /// </summary>
         public bool? Encrypted { get; set; }
-
-        /// <summary>
-        /// </summary>
         public string ThumbnailUrl { get; set; }
-
-
         public Thumbnail ThumbnailStatus { get; set; }
-
-        /// <summary>
-        /// </summary>
         public bool? Locked { get; set; }
-
-        /// <summary>
-        /// </summary>
         public string LockedBy { get; set; }
-
         public bool CanWebRestrictedEditing { get; set; }
-
         public bool CanFillForms { get; set; }
 
-        /// <summary>
-        /// </summary>
-        /// <param name="file"></param>
-        public FileWrapper()
-        {
-        }
+        public FileWrapper() { }
 
-        /// <summary>
-        /// </summary>
-        /// <returns></returns>
         public static FileWrapper<int> GetSample()
         {
             return new FileWrapper<int>
@@ -140,12 +79,12 @@ namespace ASC.Api.Documents
     [Scope]
     public class FileWrapperHelper : FileEntryWrapperHelper
     {
-        private AuthContext AuthContext { get; }
-        private IDaoFactory DaoFactory { get; }
-        private GlobalFolderHelper GlobalFolderHelper { get; }
-        private CommonLinkUtility CommonLinkUtility { get; }
-        private FilesLinkUtility FilesLinkUtility { get; }
-        private FileUtility FileUtility { get; }
+        private readonly AuthContext _authContext;
+        private readonly IDaoFactory _daoFactory;
+        private readonly GlobalFolderHelper _globalFolderHelper;
+        private readonly CommonLinkUtility _commonLinkUtility;
+        private readonly FilesLinkUtility _filesLinkUtility;
+        private readonly FileUtility _fileUtility;
 
         public FileWrapperHelper(
             ApiDateTimeHelper apiDateTimeHelper,
@@ -160,12 +99,12 @@ namespace ASC.Api.Documents
             FileSharingHelper fileSharingHelper)
             : base(apiDateTimeHelper, employeeWrapperHelper, fileSharingHelper, fileSecurity)
         {
-            AuthContext = authContext;
-            DaoFactory = daoFactory;
-            GlobalFolderHelper = globalFolderHelper;
-            CommonLinkUtility = commonLinkUtility;
-            FilesLinkUtility = filesLinkUtility;
-            FileUtility = fileUtility;
+            _authContext = authContext;
+            _daoFactory = daoFactory;
+            _globalFolderHelper = globalFolderHelper;
+            _commonLinkUtility = commonLinkUtility;
+            _filesLinkUtility = filesLinkUtility;
+            _fileUtility = fileUtility;
         }
 
         public async Task<FileWrapper<T>> GetAsync<T>(File<T> file, List<Tuple<FileEntry<T>, bool>> folders = null)
@@ -174,10 +113,10 @@ namespace ASC.Api.Documents
 
             result.FolderId = file.FolderID;
             if (file.RootFolderType == FolderType.USER
-                && !Equals(file.RootFolderCreator, AuthContext.CurrentAccount.ID))
+                && !Equals(file.RootFolderCreator, _authContext.CurrentAccount.ID))
             {
                 result.RootFolderType = FolderType.SHARE;
-                var folderDao = DaoFactory.GetFolderDao<T>();
+                var folderDao = _daoFactory.GetFolderDao<T>();
                 FileEntry<T> parentFolder;
 
                 if (folders != null)
@@ -185,19 +124,18 @@ namespace ASC.Api.Documents
                     var folderWithRight = folders.FirstOrDefault(f => f.Item1.ID.Equals(file.FolderID));
                     if (folderWithRight == null || !folderWithRight.Item2)
                     {
-                        result.FolderId = await GlobalFolderHelper.GetFolderShareAsync<T>();
+                        result.FolderId = await _globalFolderHelper.GetFolderShareAsync<T>();
                     }
                 }
                 else
                 {
                     parentFolder = await folderDao.GetFolderAsync(file.FolderID);
-                    if (!await FileSecurity.CanReadAsync(parentFolder))
+                    if (!await _fileSecurity.CanReadAsync(parentFolder))
                     {
-                        result.FolderId = await GlobalFolderHelper.GetFolderShareAsync<T>();
+                        result.FolderId = await _globalFolderHelper.GetFolderShareAsync<T>();
                     }
                 }
             }
-
 
             return result;
         }
@@ -217,20 +155,20 @@ namespace ASC.Api.Documents
             result.Encrypted = file.Encrypted.NullIfDefault();
             result.Locked = file.Locked.NullIfDefault();
             result.LockedBy = file.LockedBy;
-            result.CanWebRestrictedEditing = FileUtility.CanWebRestrictedEditing(file.Title);
-            result.CanFillForms = await FileSecurity.CanFillFormsAsync(file);
+            result.CanWebRestrictedEditing = _fileUtility.CanWebRestrictedEditing(file.Title);
+            result.CanFillForms = await _fileSecurity.CanFillFormsAsync(file);
 
             try
             {
-                result.ViewUrl = CommonLinkUtility.GetFullAbsolutePath(file.DownloadUrl);
+                result.ViewUrl = _commonLinkUtility.GetFullAbsolutePath(file.DownloadUrl);
 
-                result.WebUrl = CommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.GetFileWebPreviewUrl(FileUtility, file.Title, file.ID, file.Version));
+                result.WebUrl = _commonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.GetFileWebPreviewUrl(_fileUtility, file.Title, file.ID, file.Version));
 
                 result.ThumbnailStatus = file.ThumbnailStatus;
 
                 if (file.ThumbnailStatus == Thumbnail.Created)
                 {
-                    result.ThumbnailUrl = CommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.GetFileThumbnailUrl(file.ID, file.Version));
+                    result.ThumbnailUrl = _commonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.GetFileThumbnailUrl(file.ID, file.Version));
                 }
             }
             catch (Exception)

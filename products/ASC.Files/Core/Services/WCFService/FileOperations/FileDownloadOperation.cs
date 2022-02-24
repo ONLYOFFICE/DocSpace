@@ -44,15 +44,12 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         public FileDownloadOperation(IServiceProvider serviceProvider, TempStream tempStream, FileOperation<FileDownloadOperationData<string>, string> f1, FileOperation<FileDownloadOperationData<int>, int> f2)
             : base(serviceProvider, f1, f2)
         {
-            TempStream = tempStream;
+            _tempStream = tempStream;
         }
 
-        public override FileOperationType OperationType
-        {
-            get { return FileOperationType.Download; }
-        }
+        public override FileOperationType OperationType => FileOperationType.Download;
 
-        private TempStream TempStream { get; }
+        private readonly TempStream _tempStream;
 
         public override async Task RunJobAsync(DistributedTask distributedTask, CancellationToken cancellationToken)
         {
@@ -61,7 +58,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             using var scope = ThirdPartyOperation.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<FileDownloadOperationScope>();
             var (globalStore, filesLinkUtility, _, _, _) = scopeClass;
-            var stream = TempStream.Create();
+            var stream = _tempStream.Create();
 
             await (ThirdPartyOperation as FileDownloadOperation<string>).CompressToZipAsync(stream, scope);
             await (DaoOperation as FileDownloadOperation<int>).CompressToZipAsync(stream, scope);
@@ -91,7 +88,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                     stream,
                     MimeMapping.GetMimeMapping(path),
                     "attachment; filename=\"" + fileName + "\"");
-                Result = string.Format("{0}?{1}=bulk&ext={2}", filesLinkUtility.FileHandlerPath, FilesLinkUtility.Action, archiveExtension);
+
+                Result = $"{filesLinkUtility.FileHandlerPath}?{FilesLinkUtility.Action}=bulk&ext={archiveExtension}";
             }
 
             FillDistributedTask();
@@ -103,8 +101,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             var thirdpartyTask = ThirdPartyOperation.GetDistributedTask();
             var daoTask = DaoOperation.GetDistributedTask();
 
-            var error1 = thirdpartyTask.GetProperty<string>(ERROR);
-            var error2 = daoTask.GetProperty<string>(ERROR);
+            var error1 = thirdpartyTask.GetProperty<string>(Err);
+            var error2 = daoTask.GetProperty<string>(Err);
 
             if (!string.IsNullOrEmpty(error1))
             {
@@ -115,15 +113,15 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 Error = error2;
             }
 
-            successProcessed = thirdpartyTask.GetProperty<int>(PROCESSED) + daoTask.GetProperty<int>(PROCESSED);
+            SuccessProcessed = thirdpartyTask.GetProperty<int>(Process) + daoTask.GetProperty<int>(Process);
 
             var progressSteps = ThirdPartyOperation.Total + DaoOperation.Total + 1;
 
-            var progress = (int)(successProcessed / (double)progressSteps * 100);
+            var progress = (int)(SuccessProcessed / (double)progressSteps * 100);
 
             base.FillDistributedTask();
 
-            TaskInfo.SetProperty(PROGRESS, progress);
+            TaskInfo.SetProperty(Progress, progress);
             TaskInfo.PublishChanges();
         }
     }
@@ -131,23 +129,23 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
     class FileDownloadOperation<T> : FileOperation<FileDownloadOperationData<T>, T>
     {
         private readonly Dictionary<T, string> _files;
-        private readonly IDictionary<string, StringValues> headers;
+        private readonly IDictionary<string, StringValues> _headers;
         private ItemNameValueCollection<T> _entriesPathId;
-        public override FileOperationType OperationType
-        {
-            get { return FileOperationType.Download; }
-        }
+        public override FileOperationType OperationType => FileOperationType.Download;
 
         public FileDownloadOperation(IServiceProvider serviceProvider, FileDownloadOperationData<T> fileDownloadOperationData)
             : base(serviceProvider, fileDownloadOperationData)
         {
             _files = fileDownloadOperationData.FilesDownload;
-            headers = fileDownloadOperationData.Headers;
+            _headers = fileDownloadOperationData.Headers;
         }
 
         protected override async Task DoAsync(IServiceScope scope)
         {
-            if (Files.Count == 0 && Folders.Count == 0) return;
+            if (Files.Count == 0 && Folders.Count == 0)
+            {
+                return;
+            }
 
             _entriesPathId = await GetEntriesPathIdAsync(scope);
             if (_entriesPathId == null || _entriesPathId.Count == 0)
@@ -200,7 +198,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 foreach (var file in files)
                 {
                     entriesPathId.Add(await ExecPathFromFileAsync(scope, file, string.Empty));
-            }
+                }
             }
             if (0 < Folders.Count)
             {
@@ -214,6 +212,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 var filesInFolder = await GetFilesInFoldersAsync(scope, Folders, string.Empty);
                 entriesPathId.Add(filesInFolder);
             }
+
             return entriesPathId;
         }
 
@@ -229,7 +228,11 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 CancellationToken.ThrowIfCancellationRequested();
 
                 var folder = await FolderDao.GetFolderAsync(folderId);
-                if (folder == null || !await FilesSecurity.CanReadAsync(folder)) continue;
+                if (folder == null || !await FilesSecurity.CanReadAsync(folder))
+                {
+                    continue;
+                }
+
                 var folderPath = path + folder.Title + "/";
 
                 var files = await FileDao.GetFilesAsync(folder.ID, null, FilterType.None, false, Guid.Empty, string.Empty, true).ToListAsync();
@@ -254,12 +257,17 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 var filesInFolder = await GetFilesInFoldersAsync(scope, nestedFolders.ConvertAll(f => f.ID), folderPath);
                 entriesPathId.Add(filesInFolder);
             }
+
             return entriesPathId;
         }
 
         internal async Task CompressToZipAsync(Stream stream, IServiceScope scope)
         {
-            if (_entriesPathId == null) return;
+            if (_entriesPathId == null)
+            {
+                return;
+            }
+
             var scopeClass = scope.ServiceProvider.GetService<FileDownloadOperationScope>();
             var (_, _, _, fileConverter, filesMessageService) = scopeClass;
             var FileDao = scope.ServiceProvider.GetService<IFileDao<T>>();
@@ -332,11 +340,11 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                                         if (!string.IsNullOrEmpty(convertToExt))
                                         {
-                                            filesMessageService.Send(file, headers, MessageAction.FileDownloadedAs, file.Title, convertToExt);
+                                            filesMessageService.Send(file, _headers, MessageAction.FileDownloadedAs, file.Title, convertToExt);
                                         }
                                         else
                                         {
-                                            filesMessageService.Send(file, headers, MessageAction.FileDownloaded, file.Title);
+                                            filesMessageService.Send(file, _headers, MessageAction.FileDownloaded, file.Title);
                                         }
                                     }
                                 }
@@ -346,7 +354,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                     {
                                         compressTo.PutStream(readStream);
 
-                                        filesMessageService.Send(file, headers, MessageAction.FileDownloaded, file.Title);
+                                        filesMessageService.Send(file, _headers, MessageAction.FileDownloaded, file.Title);
                                     }
                                 }
                             }
@@ -360,17 +368,15 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                         {
                             compressTo.PutNextEntry();
                         }
+
                         compressTo.CloseEntry();
                         counter++;
-                        }
+                    }
 
                     ProgressStep();
                 }
             }
-
-
         }
-
 
         private void ReplaceLongPath(ItemNameValueCollection<T> entriesPathId)
         {
@@ -378,7 +384,10 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             {
                 CancellationToken.ThrowIfCancellationRequested();
 
-                if (200 >= path.Length || 0 >= path.IndexOf('/')) continue;
+                if (200 >= path.Length || 0 >= path.IndexOf('/'))
+                {
+                    continue;
+                }
 
                 var ids = entriesPathId[path];
                 entriesPathId.Remove(path);
@@ -391,31 +400,23 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
     internal class ItemNameValueCollection<T>
     {
-        private readonly Dictionary<string, List<T>> dic = new Dictionary<string, List<T>>();
+        private readonly Dictionary<string, List<T>> _dic = new Dictionary<string, List<T>>();
 
 
-        public IEnumerable<string> AllKeys
-        {
-            get { return dic.Keys; }
-        }
+        public IEnumerable<string> AllKeys => _dic.Keys;
 
-        public IEnumerable<T> this[string name]
-        {
-            get { return dic[name].ToArray(); }
-        }
+        public IEnumerable<T> this[string name] => _dic[name].ToArray();
 
-        public int Count
-        {
-            get { return dic.Count; }
-        }
+        public int Count => _dic.Count;
 
         public void Add(string name, T value)
         {
-            if (!dic.ContainsKey(name))
+            if (!_dic.ContainsKey(name))
             {
-                dic.Add(name, new List<T>());
+                _dic.Add(name, new List<T>());
             }
-            dic[name].Add(value);
+
+            _dic[name].Add(value);
         }
 
         public void Add(ItemNameValueCollection<T> collection)
@@ -431,27 +432,28 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         public void Add(string name, IEnumerable<T> values)
         {
-            if (!dic.ContainsKey(name))
+            if (!_dic.ContainsKey(name))
             {
-                dic.Add(name, new List<T>());
+                _dic.Add(name, new List<T>());
             }
-            dic[name].AddRange(values);
+
+            _dic[name].AddRange(values);
         }
 
         public void Remove(string name)
         {
-            dic.Remove(name);
+            _dic.Remove(name);
         }
     }
 
     [Scope]
     public class FileDownloadOperationScope
     {
-        private GlobalStore GlobalStore { get; }
-        private FilesLinkUtility FilesLinkUtility { get; }
-        private SetupInfo SetupInfo { get; }
-        private FileConverter FileConverter { get; }
-        private FilesMessageService FilesMessageService { get; }
+        private readonly GlobalStore _globalStore;
+        private readonly FilesLinkUtility _filesLinkUtility;
+        private readonly SetupInfo _setupInfo;
+        private readonly FileConverter _fileConverter;
+        private readonly FilesMessageService _filesMessageService;
 
         public FileDownloadOperationScope(
             GlobalStore globalStore,
@@ -460,21 +462,20 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             FileConverter fileConverter,
             FilesMessageService filesMessageService)
         {
-            GlobalStore = globalStore;
-            FilesLinkUtility = filesLinkUtility;
-            SetupInfo = setupInfo;
-            FileConverter = fileConverter;
-            FilesMessageService = filesMessageService;
+            _globalStore = globalStore;
+            _filesLinkUtility = filesLinkUtility;
+            _setupInfo = setupInfo;
+            _fileConverter = fileConverter;
+            _filesMessageService = filesMessageService;
         }
 
         public void Deconstruct(out GlobalStore globalStore, out FilesLinkUtility filesLinkUtility, out SetupInfo setupInfo, out FileConverter fileConverter, out FilesMessageService filesMessageService)
         {
-            globalStore = GlobalStore;
-            filesLinkUtility = FilesLinkUtility;
-            setupInfo = SetupInfo;
-            fileConverter = FileConverter;
-            filesMessageService = FilesMessageService;
+            globalStore = _globalStore;
+            filesLinkUtility = _filesLinkUtility;
+            setupInfo = _setupInfo;
+            fileConverter = _fileConverter;
+            filesMessageService = _filesMessageService;
         }
     }
-
 }

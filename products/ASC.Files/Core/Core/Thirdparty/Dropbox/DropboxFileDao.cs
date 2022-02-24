@@ -30,9 +30,9 @@ namespace ASC.Files.Thirdparty.Dropbox
     [Scope]
     internal class DropboxFileDao : DropboxDaoBase, IFileDao<string>
     {
-        private CrossDao CrossDao { get; }
-        private DropboxDaoSelector DropboxDaoSelector { get; }
-        private IFileDao<int> FileDao { get; }
+        private readonly CrossDao _crossDao;
+        private readonly DropboxDaoSelector _dropboxDaoSelector;
+        private readonly IFileDao<int> _fileDao;
 
         public DropboxFileDao(
             IServiceProvider serviceProvider,
@@ -49,9 +49,9 @@ namespace ASC.Files.Thirdparty.Dropbox
             TempPath tempPath)
             : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
         {
-            CrossDao = crossDao;
-            DropboxDaoSelector = dropboxDaoSelector;
-            FileDao = fileDao;
+            _crossDao = crossDao;
+            _dropboxDaoSelector = dropboxDaoSelector;
+            _fileDao = fileDao;
         }
 
         public async Task InvalidateCacheAsync(string fileId)
@@ -61,7 +61,10 @@ namespace ASC.Files.Thirdparty.Dropbox
 
             var dropboxFile = await GetDropboxFileAsync(fileId).ConfigureAwait(false);
             var parentPath = GetParentFolderPath(dropboxFile);
-            if (parentPath != null) await ProviderInfo.CacheResetAsync(parentPath).ConfigureAwait(false);
+            if (parentPath != null)
+            {
+                await ProviderInfo.CacheResetAsync(parentPath).ConfigureAwait(false);
+            }
         }
 
         public Task<File<string>> GetFileAsync(string fileId)
@@ -78,6 +81,7 @@ namespace ASC.Files.Thirdparty.Dropbox
         {
             var items = await GetDropboxItemsAsync(parentId, false).ConfigureAwait(false);
             var metadata = items.FirstOrDefault(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase));
+
             return metadata == null
                        ? null
                        : ToFile(metadata.AsFile);
@@ -95,7 +99,10 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public IAsyncEnumerable<File<string>> GetFilesAsync(IEnumerable<string> fileIds)
         {
-            if (fileIds == null || !fileIds.Any()) return AsyncEnumerable.Empty<File<string>>();
+            if (fileIds == null || !fileIds.Any())
+            {
+                return AsyncEnumerable.Empty<File<string>>();
+            }
 
             var result = fileIds.ToAsyncEnumerable().SelectAwait(async e => ToFile(await GetDropboxFileAsync(e).ConfigureAwait(false)));
 
@@ -104,7 +111,10 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public IAsyncEnumerable<File<string>> GetFilesFilteredAsync(IEnumerable<string> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool checkShared = false)
         {
-            if (fileIds == null || !fileIds.Any() || filterType == FilterType.FoldersOnly) return AsyncEnumerable.Empty<File<string>>();
+            if (fileIds == null || !fileIds.Any() || filterType == FilterType.FoldersOnly)
+            {
+                return AsyncEnumerable.Empty<File<string>>();
+            }
 
             var files = GetFilesAsync(fileIds);
 
@@ -137,10 +147,10 @@ namespace ASC.Files.Thirdparty.Dropbox
                     break;
                 case FilterType.MediaOnly:
                     files = files.Where(x =>
-                        {
-                            FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
-                            return fileType == FileType.Audio || fileType == FileType.Video;
-                        });
+                    {
+                        FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                        return fileType == FileType.Audio || fileType == FileType.Video;
+                    });
                     break;
                 case FilterType.ByExtension:
                     if (!string.IsNullOrEmpty(searchText))
@@ -152,7 +162,9 @@ namespace ASC.Files.Thirdparty.Dropbox
             }
 
             if (!string.IsNullOrEmpty(searchText))
+            {
                 files = files.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
+            }
 
             return files;
         }
@@ -160,12 +172,16 @@ namespace ASC.Files.Thirdparty.Dropbox
         public async Task<List<string>> GetFilesAsync(string parentId)
         {
             var items = await GetDropboxItemsAsync(parentId, false).ConfigureAwait(false);
+
             return items.Select(entry => MakeId(entry)).ToList();
         }
 
         public async IAsyncEnumerable<File<string>> GetFilesAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
         {
-            if (filterType == FilterType.FoldersOnly) yield break;
+            if (filterType == FilterType.FoldersOnly)
+            {
+                yield break;
+            }
 
             //Get only files
             var items = await GetDropboxItemsAsync(parentId, false).ConfigureAwait(false);
@@ -200,10 +216,11 @@ namespace ASC.Files.Thirdparty.Dropbox
                     break;
                 case FilterType.MediaOnly:
                     files = files.Where(x =>
-                        {
-                            FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
-                            return fileType == FileType.Audio || fileType == FileType.Video;
-                        });
+                    {
+                        FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+
+                        return fileType == FileType.Audio || fileType == FileType.Video;
+                    });
                     break;
                 case FilterType.ByExtension:
                     if (!string.IsNullOrEmpty(searchText))
@@ -215,9 +232,14 @@ namespace ASC.Files.Thirdparty.Dropbox
             }
 
             if (!string.IsNullOrEmpty(searchText))
+            {
                 files = files.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
+            }
 
-            if (orderBy == null) orderBy = new OrderBy(SortedByType.DateAndTime, false);
+            if (orderBy == null)
+            {
+                orderBy = new OrderBy(SortedByType.DateAndTime, false);
+            }
 
             files = orderBy.SortedBy switch
             {
@@ -231,7 +253,7 @@ namespace ASC.Files.Thirdparty.Dropbox
             foreach (var f in files)
             {
                 yield return f;
-        }
+            }
         }
 
         public override Task<Stream> GetFileStreamAsync(File<string> file)
@@ -245,8 +267,15 @@ namespace ASC.Files.Thirdparty.Dropbox
             await ProviderInfo.CacheResetAsync(dropboxFilePath, true).ConfigureAwait(false);
 
             var dropboxFile = await GetDropboxFileAsync(file.ID).ConfigureAwait(false);
-            if (dropboxFile == null) throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
-            if (dropboxFile is ErrorFile errorFile) throw new Exception(errorFile.Error);
+            if (dropboxFile == null)
+            {
+                throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
+            }
+
+            if (dropboxFile is ErrorFile errorFile)
+            {
+                throw new Exception(errorFile.Error);
+            }
 
             var fileStream = await ProviderInfo.Storage.DownloadStreamAsync(MakeDropboxPath(dropboxFile), (int)offset);
 
@@ -265,8 +294,14 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
         {
-            if (file == null) throw new ArgumentNullException(nameof(file));
-            if (fileStream == null) throw new ArgumentNullException(nameof(fileStream));
+            if (file == null)
+            {
+                throw new ArgumentNullException(nameof(file));
+            }
+            if (fileStream == null)
+            {
+                throw new ArgumentNullException(nameof(fileStream));
+            }
 
             return InternalSaveFileAsync(file, fileStream);
         }
@@ -295,7 +330,10 @@ namespace ASC.Files.Thirdparty.Dropbox
 
             await ProviderInfo.CacheResetAsync(newDropboxFile).ConfigureAwait(false);
             var parentPath = GetParentFolderPath(newDropboxFile);
-            if (parentPath != null) await ProviderInfo.CacheResetAsync(parentPath).ConfigureAwait(false);
+            if (parentPath != null)
+            {
+                await ProviderInfo.CacheResetAsync(parentPath).ConfigureAwait(false);
+            }
 
             return ToFile(newDropboxFile);
         }
@@ -308,7 +346,11 @@ namespace ASC.Files.Thirdparty.Dropbox
         public async Task DeleteFileAsync(string fileId)
         {
             var dropboxFile = await GetDropboxFileAsync(fileId).ConfigureAwait(false);
-            if (dropboxFile == null) return;
+            if (dropboxFile == null)
+            {
+                return;
+            }
+
             var id = MakeId(dropboxFile);
 
             using (var tx = await FilesDbContext.Database.BeginTransactionAsync())
@@ -356,12 +398,16 @@ namespace ASC.Files.Thirdparty.Dropbox
 
             await ProviderInfo.CacheResetAsync(MakeDropboxPath(dropboxFile), true).ConfigureAwait(false);
             var parentFolderPath = GetParentFolderPath(dropboxFile);
-            if (parentFolderPath != null) await ProviderInfo.CacheResetAsync(parentFolderPath).ConfigureAwait(false);
+            if (parentFolderPath != null)
+            {
+                await ProviderInfo.CacheResetAsync(parentFolderPath).ConfigureAwait(false);
+            }
         }
 
         public async Task<bool> IsExistAsync(string title, object folderId)
         {
             var items = await GetDropboxItemsAsync(folderId, false).ConfigureAwait(false);
+
             return items.Any(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase));
         }
 
@@ -383,10 +429,16 @@ namespace ASC.Files.Thirdparty.Dropbox
         public async Task<string> MoveFileAsync(string fileId, string toFolderId)
         {
             var dropboxFile = await GetDropboxFileAsync(fileId).ConfigureAwait(false);
-            if (dropboxFile is ErrorFile errorFile) throw new Exception(errorFile.Error);
+            if (dropboxFile is ErrorFile errorFile)
+            {
+                throw new Exception(errorFile.Error);
+            }
 
             var toDropboxFolder = await GetDropboxFolderAsync(toFolderId).ConfigureAwait(false);
-            if (toDropboxFolder is ErrorFolder errorFolder) throw new Exception(errorFolder.Error);
+            if (toDropboxFolder is ErrorFolder errorFolder)
+            {
+                throw new Exception(errorFolder.Error);
+            }
 
             var fromFolderPath = GetParentFolderPath(dropboxFile);
 
@@ -401,9 +453,9 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public async Task<int> MoveFileAsync(string fileId, int toFolderId)
         {
-            var moved = await CrossDao.PerformCrossDaoFileCopyAsync(
-                fileId, this, DropboxDaoSelector.ConvertId,
-                toFolderId, FileDao, r => r,
+            var moved = await _crossDao.PerformCrossDaoFileCopyAsync(
+                fileId, this, _dropboxDaoSelector.ConvertId,
+                toFolderId, _fileDao, r => r,
                 true)
                 .ConfigureAwait(false);
 
@@ -427,9 +479,9 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public Task<File<int>> CopyFileAsync(string fileId, int toFolderId)
         {
-            var moved = CrossDao.PerformCrossDaoFileCopyAsync(
-                fileId, this, DropboxDaoSelector.ConvertId,
-                toFolderId, FileDao, r => r,
+            var moved = _crossDao.PerformCrossDaoFileCopyAsync(
+                fileId, this, _dropboxDaoSelector.ConvertId,
+                toFolderId, _fileDao, r => r,
                 false);
 
             return moved;
@@ -438,10 +490,16 @@ namespace ASC.Files.Thirdparty.Dropbox
         public async Task<File<string>> CopyFileAsync(string fileId, string toFolderId)
         {
             var dropboxFile = await GetDropboxFileAsync(fileId).ConfigureAwait(false);
-            if (dropboxFile is ErrorFile errorFile) throw new Exception(errorFile.Error);
+            if (dropboxFile is ErrorFile errorFile)
+            {
+                throw new Exception(errorFile.Error);
+            }
 
             var toDropboxFolder = await GetDropboxFolderAsync(toFolderId).ConfigureAwait(false);
-            if (toDropboxFolder is ErrorFolder errorFolder) throw new Exception(errorFolder.Error);
+            if (toDropboxFolder is ErrorFolder errorFolder)
+            {
+                throw new Exception(errorFolder.Error);
+            }
 
             var newDropboxFile = await ProviderInfo.Storage.CopyFileAsync(MakeDropboxPath(dropboxFile), MakeDropboxPath(toDropboxFolder), dropboxFile.Name).ConfigureAwait(false);
 
@@ -461,7 +519,10 @@ namespace ASC.Files.Thirdparty.Dropbox
 
             await ProviderInfo.CacheResetAsync(dropboxFile).ConfigureAwait(false);
             var parentPath = GetParentFolderPath(dropboxFile);
-            if (parentPath != null) await ProviderInfo.CacheResetAsync(parentPath).ConfigureAwait(false);
+            if (parentPath != null)
+            {
+                await ProviderInfo.CacheResetAsync(parentPath).ConfigureAwait(false);
+            }
 
             return MakeId(dropboxFile);
         }
@@ -490,13 +551,20 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         private File<string> RestoreIds(File<string> file)
         {
-            if (file == null) return null;
+            if (file == null)
+            {
+                return null;
+            }
 
             if (file.ID != null)
+            {
                 file.ID = MakeId(file.ID);
+            }
 
             if (file.FolderID != null)
+            {
                 file.FolderID = MakeId(file.FolderID);
+            }
 
             return file;
         }
@@ -504,7 +572,9 @@ namespace ASC.Files.Thirdparty.Dropbox
         public Task<ChunkedUploadSession<string>> CreateUploadSessionAsync(File<string> file, long contentLength)
         {
             if (SetupInfo.ChunkUploadSize > contentLength)
+            {
                 return Task.FromResult(new ChunkedUploadSession<string>(RestoreIds(file), contentLength) { UseChunks = false });
+            }
 
             return InternalCreateUploadSessionAsync(file, contentLength);
         }
@@ -524,6 +594,7 @@ namespace ASC.Files.Thirdparty.Dropbox
             }
 
             uploadSession.File = RestoreIds(uploadSession.File);
+
             return uploadSession;
         }
 
@@ -532,10 +603,13 @@ namespace ASC.Files.Thirdparty.Dropbox
             if (!uploadSession.UseChunks)
             {
                 if (uploadSession.BytesTotal == 0)
+                {
                     uploadSession.BytesTotal = chunkLength;
+                }
 
                 uploadSession.File = await SaveFileAsync(uploadSession.File, stream).ConfigureAwait(false);
                 uploadSession.BytesUploaded = chunkLength;
+
                 return uploadSession.File;
             }
 
@@ -593,6 +667,7 @@ namespace ASC.Files.Thirdparty.Dropbox
 
             using var fs = new FileStream(uploadSession.GetItemOrDefault<string>("TempPath"),
                                            FileMode.Open, FileAccess.Read, System.IO.FileShare.None, 4096, FileOptions.DeleteOnClose);
+
             return await SaveFileAsync(uploadSession.File, fs).ConfigureAwait(false);
         }
 

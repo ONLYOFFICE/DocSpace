@@ -27,7 +27,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
 {
     internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProviderInfo>
     {
-        protected override string Id { get => "sbox"; }
+        protected override string Id => "sbox";
 
         protected SharpBoxDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility, TempPath tempPath)
             : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
@@ -38,39 +38,30 @@ namespace ASC.Files.Thirdparty.Sharpbox
         {
             public ErrorEntry(Exception e, object id)
             {
-                if (e != null) Error = e.Message;
+                if (e != null)
+                {
+                    Error = e.Message;
+                }
 
                 Id = string.IsNullOrEmpty((id ?? "").ToString()) ? "/" : (id ?? "").ToString();
             }
 
             public string Error { get; set; }
-
-            public string Name
-            {
-                get { return "/"; }
-            }
-
+            public string Name => "/";
             public string Id { get; private set; }
+            public long Length => 0;
 
-            public long Length
-            {
-                get { return 0; }
-            }
-
-            public DateTime Modified
-            {
-                get { return DateTime.UtcNow; }
-            }
+            public DateTime Modified => DateTime.UtcNow;
 
             public string ParentID
             {
-                get { return ""; }
+                get => string.Empty;
                 set { }
             }
 
             public ICloudDirectoryEntry Parent
             {
-                get { return null; }
+                get => null;
                 set { }
             }
 
@@ -104,12 +95,14 @@ namespace ASC.Files.Thirdparty.Sharpbox
             public ICloudFileSystemEntry GetChild(string name, bool bThrowException)
             {
                 if (bThrowException) throw new ArgumentNullException(name);
+
                 return null;
             }
 
             public ICloudFileSystemEntry GetChild(string idOrName, bool bThrowException, bool firstByNameIfNotFound)
             {
                 if (bThrowException) throw new ArgumentNullException(idOrName);
+
                 return null;
             }
 
@@ -118,15 +111,9 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 return null;
             }
 
-            public int Count
-            {
-                get { return 0; }
-            }
+            public int Count => 0;
 
-            public nChildState HasChildrens
-            {
-                get { return nChildState.HasNoChilds; }
-            }
+            public nChildState HasChildrens => nChildState.HasNoChilds;
         }
 
         protected Task<string> MappingIDAsync(string id)
@@ -136,7 +123,10 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         protected async Task UpdatePathInDBAsync(string oldValue, string newValue)
         {
-            if (oldValue.Equals(newValue)) return;
+            if (oldValue.Equals(newValue))
+            {
+                return;
+            }
 
             using var tx = FilesDbContext.Database.BeginTransaction();
             var oldIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
@@ -209,7 +199,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 }
                 catch (Exception ex)
                 {
-                    Log.Error("Sharpbox makeId error", ex);
+                    Logger.Error("Sharpbox makeId error", ex);
                 }
             }
             else if (entry != null)
@@ -217,6 +207,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 path = entry.Id;
             }
             var p = string.IsNullOrEmpty(path) || path == "/" ? "" : ("-" + path.Replace('/', '|'));
+
             return $"{PathPrefix}{p}";
         }
 
@@ -241,12 +232,17 @@ namespace ASC.Files.Thirdparty.Sharpbox
                     return path.Substring(0, index);
                 }
             }
+
             return path;
         }
 
         protected Folder<string> ToFolder(ICloudDirectoryEntry fsEntry)
         {
-            if (fsEntry == null) return null;
+            if (fsEntry == null)
+            {
+                return null;
+            }
+
             if (fsEntry is ErrorEntry)
             {
                 //Return error entry
@@ -269,10 +265,14 @@ namespace ASC.Files.Thirdparty.Sharpbox
             folder.TotalSubFolders = 0; /*childFoldersCount NOTE: Removed due to performance isssues*/
 
             if (folder.CreateOn != DateTime.MinValue && folder.CreateOn.Kind == DateTimeKind.Utc)
+            {
                 folder.CreateOn = TenantUtil.DateTimeFromUtc(folder.CreateOn);
+            }
 
             if (folder.ModifiedOn != DateTime.MinValue && folder.ModifiedOn.Kind == DateTimeKind.Utc)
+            {
                 folder.ModifiedOn = TenantUtil.DateTimeFromUtc(folder.ModifiedOn);
+            }
 
             return folder;
         }
@@ -280,13 +280,19 @@ namespace ASC.Files.Thirdparty.Sharpbox
         private static bool IsRoot(ICloudDirectoryEntry entry)
         {
             if (entry != null && entry.Name != null)
+            {
                 return string.IsNullOrEmpty(entry.Name.Trim('/'));
+            }
+
             return false;
         }
 
         private File<string> ToErrorFile(ErrorEntry fsEntry)
         {
-            if (fsEntry == null) return null;
+            if (fsEntry == null)
+            {
+                return null;
+            }
 
             var file = GetErrorFile(new Thirdparty.ErrorEntry(fsEntry.Error, null));
 
@@ -301,7 +307,11 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         private Folder<string> ToErrorFolder(ErrorEntry fsEntry)
         {
-            if (fsEntry == null) return null;
+            if (fsEntry == null)
+            {
+                return null;
+            }
+
             var folder = GetErrorFolder(new Thirdparty.ErrorEntry(fsEntry.Error, null));
 
             folder.ID = MakeId(fsEntry);
@@ -315,11 +325,15 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         protected File<string> ToFile(ICloudFileSystemEntry fsEntry)
         {
-            if (fsEntry == null) return null;
+            if (fsEntry == null)
+            {
+                return null;
+            }
 
             if (fsEntry is ErrorEntry)
             {
                 //Return error entry
+
                 return ToErrorFile(fsEntry as ErrorEntry);
             }
 
@@ -354,6 +368,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             try
             {
                 var path = MakePath(folderId);
+
                 return path == "/"
                            ? RootFolder()
                            : ProviderInfo.Storage.GetFolder(path);
@@ -364,6 +379,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 {
                     return null;
                 }
+
                 return new ErrorEntry(sharpBoxException, folderId);
             }
             catch (Exception ex)
@@ -384,6 +400,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 {
                     return null;
                 }
+
                 return new ErrorEntry(sharpBoxException, fileId);
             }
             catch (Exception ex)
@@ -414,7 +431,10 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         protected string GetAvailableTitle(string requestTitle, ICloudDirectoryEntry parentFolder, Func<string, ICloudDirectoryEntry, bool> isExist)
         {
-            if (!isExist(requestTitle, parentFolder)) return requestTitle;
+            if (!isExist(requestTitle, parentFolder))
+            {
+                return requestTitle;
+            }
 
             var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
             var match = re.Match(requestTitle);
@@ -426,6 +446,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 {
                     insertIndex = requestTitle.LastIndexOf('.');
                 }
+
                 requestTitle = requestTitle.Insert(insertIndex, " (1)");
             }
 
@@ -433,12 +454,16 @@ namespace ASC.Files.Thirdparty.Sharpbox
             {
                 requestTitle = re.Replace(requestTitle, MatchEvaluator);
             }
+
             return requestTitle;
         }
 
         protected async Task<string> GetAvailableTitleAsync(string requestTitle, ICloudDirectoryEntry parentFolder, Func<string, ICloudDirectoryEntry, Task<bool>> isExist)
         {
-            if (!await isExist(requestTitle, parentFolder)) return requestTitle;
+            if (!await isExist(requestTitle, parentFolder))
+            {
+                return requestTitle;
+            }
 
             var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
             var match = re.Match(requestTitle);
@@ -450,6 +475,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 {
                     insertIndex = requestTitle.LastIndexOf(".", StringComparison.InvariantCulture);
                 }
+
                 requestTitle = requestTitle.Insert(insertIndex, " (1)");
             }
 
@@ -457,6 +483,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             {
                 requestTitle = re.Replace(requestTitle, MatchEvaluator);
             }
+
             return requestTitle;
         }
 
@@ -464,6 +491,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
         {
             var subFolders = GetFolderSubfolders(folderId).Select(x => MakeId(x));
             var files = GetFolderFiles(folderId).Select(x => MakeId(x));
+
             return Task.FromResult(subFolders.Concat(files));
         }
 
@@ -471,6 +499,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
         {
             var index = Convert.ToInt32(match.Groups[2].Value);
             var staticText = match.Value.Substring(string.Format(" ({0})", index).Length);
+
             return string.Format(" ({0}){1}", index + 1, staticText);
         }
     }

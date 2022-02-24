@@ -32,15 +32,15 @@ namespace ASC.Web.Files.Services.DocumentService
     public class DocumentServiceConnector
     {
         public ILog Logger { get; }
-        private FilesLinkUtility FilesLinkUtility { get; }
-        private FileUtility FileUtility { get; }
-        private IHttpClientFactory ClientFactory { get; }
-        private GlobalStore GlobalStore { get; }
-        private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
-        private TenantManager TenantManager { get; }
-        private TenantExtra TenantExtra { get; }
-        private CoreSettings CoreSettings { get; }
-        private PathProvider PathProvider { get; }
+        private readonly FilesLinkUtility _filesLinkUtility;
+        private readonly FileUtility _fileUtility;
+        private readonly IHttpClientFactory _clientFactory;
+        private readonly GlobalStore _globalStore;
+        private readonly BaseCommonLinkUtility _baseCommonLinkUtility;
+        private readonly TenantManager _tenantManager;
+        private readonly TenantExtra _tenantExtra;
+        private readonly CoreSettings _coreSettings;
+        private readonly PathProvider _pathProvider;
 
         public DocumentServiceConnector(
             IOptionsMonitor<ILog> optionsMonitor,
@@ -55,15 +55,15 @@ namespace ASC.Web.Files.Services.DocumentService
             IHttpClientFactory clientFactory)
         {
             Logger = optionsMonitor.CurrentValue;
-            FilesLinkUtility = filesLinkUtility;
-            FileUtility = fileUtility;
-            GlobalStore = globalStore;
-            BaseCommonLinkUtility = baseCommonLinkUtility;
-            TenantManager = tenantManager;
-            TenantExtra = tenantExtra;
-            CoreSettings = coreSettings;
-            PathProvider = pathProvider;
-            ClientFactory = clientFactory;
+            _filesLinkUtility = filesLinkUtility;
+            _fileUtility = fileUtility;
+            _globalStore = globalStore;
+            _baseCommonLinkUtility = baseCommonLinkUtility;
+            _tenantManager = tenantManager;
+            _tenantExtra = tenantExtra;
+            _coreSettings = coreSettings;
+            _pathProvider = pathProvider;
+            _clientFactory = clientFactory;
         }
 
         public static string GenerateRevisionId(string expectedKey)
@@ -80,12 +80,12 @@ namespace ASC.Web.Files.Services.DocumentService
                                           SpreadsheetLayout spreadsheetLayout,
                                           bool isAsync)
         {
-            Logger.Debug($"DocService convert from {fromExtension} to {toExtension} - {documentUri}, DocServiceConverterUrl:{FilesLinkUtility.DocServiceConverterUrl}");
+            Logger.Debug($"DocService convert from {fromExtension} to {toExtension} - {documentUri}, DocServiceConverterUrl:{_filesLinkUtility.DocServiceConverterUrl}");
             try
             {
                 return Web.Core.Files.DocumentService.GetConvertedUriAsync(
-                    FileUtility,
-                    FilesLinkUtility.DocServiceConverterUrl,
+                    _fileUtility,
+                    _filesLinkUtility.DocServiceConverterUrl,
                     documentUri,
                     fromExtension,
                     toExtension,
@@ -94,8 +94,8 @@ namespace ASC.Web.Files.Services.DocumentService
                     thumbnail,
                     spreadsheetLayout,
                     isAsync,
-                    FileUtility.SignatureSecret,
-                    ClientFactory);
+                    _fileUtility.SignatureSecret,
+                    _clientFactory);
             }
             catch (Exception ex)
             {
@@ -114,15 +114,15 @@ namespace ASC.Web.Files.Services.DocumentService
             try
             {
                 var commandResponse = await CommandRequestAsync(
-                    FileUtility,
-                    FilesLinkUtility.DocServiceCommandUrl,
+                    _fileUtility,
+                    _filesLinkUtility.DocServiceCommandUrl,
                     method,
                     GenerateRevisionId(docKeyForTrack),
                     callbackUrl,
                     users,
                     meta,
-                    FileUtility.SignatureSecret,
-                    ClientFactory);
+                    _fileUtility.SignatureSecret,
+                    _clientFactory);
 
                 if (commandResponse.Error == CommandResponse.ErrorTypes.NoError)
                 {
@@ -135,6 +135,7 @@ namespace ASC.Web.Files.Services.DocumentService
             {
                 Logger.Error("DocService command error", e);
             }
+
             return false;
         }
 
@@ -152,7 +153,7 @@ namespace ASC.Web.Files.Services.DocumentService
                     await writer.WriteAsync(inputScript);
                     await writer.FlushAsync();
                     stream.Position = 0;
-                    scriptUrl = await PathProvider.GetTempUrlAsync(stream, ".docbuilder");
+                    scriptUrl = await _pathProvider.GetTempUrlAsync(stream, ".docbuilder");
                 }
                 scriptUrl = ReplaceCommunityAdress(scriptUrl);
                 requestKey = null;
@@ -162,13 +163,13 @@ namespace ASC.Web.Files.Services.DocumentService
             try
             {
                 return await Web.Core.Files.DocumentService.DocbuilderRequestAsync(
-                    FileUtility,
-                    FilesLinkUtility.DocServiceDocbuilderUrl,
+                    _fileUtility,
+                    _filesLinkUtility.DocServiceDocbuilderUrl,
                     GenerateRevisionId(requestKey),
                     scriptUrl,
                     isAsync,
-                    FileUtility.SignatureSecret,
-                    ClientFactory);
+                    _fileUtility.SignatureSecret,
+                    _clientFactory);
             }
             catch (Exception ex)
             {
@@ -182,15 +183,15 @@ namespace ASC.Web.Files.Services.DocumentService
             try
             {
                 var commandResponse = await CommandRequestAsync(
-                    FileUtility,
-                    FilesLinkUtility.DocServiceCommandUrl,
+                    _fileUtility,
+                    _filesLinkUtility.DocServiceCommandUrl,
                     CommandMethod.Version,
                     GenerateRevisionId(null),
                     null,
                     null,
                     null,
-                    FileUtility.SignatureSecret,
-                    ClientFactory);
+                    _fileUtility.SignatureSecret,
+                    _clientFactory);
 
                 var version = commandResponse.Version;
                 if (string.IsNullOrEmpty(version))
@@ -209,16 +210,17 @@ namespace ASC.Web.Files.Services.DocumentService
             {
                 Logger.Error("DocService command error", e);
             }
+
             return "4.1.5.1";
         }
 
         public async Task CheckDocServiceUrlAsync()
         {
-            if (!string.IsNullOrEmpty(FilesLinkUtility.DocServiceHealthcheckUrl))
+            if (!string.IsNullOrEmpty(_filesLinkUtility.DocServiceHealthcheckUrl))
             {
                 try
                 {
-                    if (!await HealthcheckRequestAsync(FilesLinkUtility.DocServiceHealthcheckUrl, ClientFactory))
+                    if (!await HealthcheckRequestAsync(_filesLinkUtility.DocServiceHealthcheckUrl, _clientFactory))
                     {
                         throw new Exception("bad status");
                     }
@@ -226,28 +228,30 @@ namespace ASC.Web.Files.Services.DocumentService
                 catch (Exception ex)
                 {
                     Logger.Error("Healthcheck DocService check error", ex);
+
                     throw new Exception("Healthcheck url: " + ex.Message);
                 }
             }
 
-            if (!string.IsNullOrEmpty(FilesLinkUtility.DocServiceConverterUrl))
+            if (!string.IsNullOrEmpty(_filesLinkUtility.DocServiceConverterUrl))
             {
                 string convertedFileUri = null;
                 try
                 {
                     const string fileExtension = ".docx";
-                    var toExtension = FileUtility.GetInternalExtension(fileExtension);
-                    var url = PathProvider.GetEmptyFileUrl(fileExtension);
+                    var toExtension = _fileUtility.GetInternalExtension(fileExtension);
+                    var url = _pathProvider.GetEmptyFileUrl(fileExtension);
 
                     var fileUri = ReplaceCommunityAdress(url);
 
                     var key = GenerateRevisionId(Guid.NewGuid().ToString());
-                    var uriTuple = await Web.Core.Files.DocumentService.GetConvertedUriAsync(FileUtility, FilesLinkUtility.DocServiceConverterUrl, fileUri, fileExtension, toExtension, key, null, null, null, false, FileUtility.SignatureSecret, ClientFactory);
+                    var uriTuple = await Web.Core.Files.DocumentService.GetConvertedUriAsync(_fileUtility, _filesLinkUtility.DocServiceConverterUrl, fileUri, fileExtension, toExtension, key, null, null, null, false, _fileUtility.SignatureSecret, _clientFactory);
                     convertedFileUri = uriTuple.ConvertedDocumentUri;
                 }
                 catch (Exception ex)
                 {
                     Logger.Error("Converter DocService check error", ex);
+
                     throw new Exception("Converter url: " + ex.Message);
                 }
 
@@ -256,7 +260,7 @@ namespace ASC.Web.Files.Services.DocumentService
                     var request1 = new HttpRequestMessage();
                     request1.RequestUri = new Uri(convertedFileUri);
 
-                    using var httpClient = ClientFactory.CreateClient();
+                    using var httpClient = _clientFactory.CreateClient();
                     using var response = await httpClient.SendAsync(request1);
 
                     if (response.StatusCode != HttpStatusCode.OK)
@@ -267,38 +271,41 @@ namespace ASC.Web.Files.Services.DocumentService
                 catch (Exception ex)
                 {
                     Logger.Error("Document DocService check error", ex);
+
                     throw new Exception("Document server: " + ex.Message);
                 }
             }
 
-            if (!string.IsNullOrEmpty(FilesLinkUtility.DocServiceCommandUrl))
+            if (!string.IsNullOrEmpty(_filesLinkUtility.DocServiceCommandUrl))
             {
                 try
                 {
                     var key = GenerateRevisionId(Guid.NewGuid().ToString());
-                    await CommandRequestAsync(FileUtility, FilesLinkUtility.DocServiceCommandUrl, CommandMethod.Version, key, null, null, null, FileUtility.SignatureSecret, ClientFactory);
+                    await CommandRequestAsync(_fileUtility, _filesLinkUtility.DocServiceCommandUrl, CommandMethod.Version, key, null, null, null, _fileUtility.SignatureSecret, _clientFactory);
                 }
                 catch (Exception ex)
                 {
                     Logger.Error("Command DocService check error", ex);
+
                     throw new Exception("Command url: " + ex.Message);
                 }
             }
 
-            if (!string.IsNullOrEmpty(FilesLinkUtility.DocServiceDocbuilderUrl))
+            if (!string.IsNullOrEmpty(_filesLinkUtility.DocServiceDocbuilderUrl))
             {
                 try
                 {
-                    var storeTemplate = GlobalStore.GetStoreTemplate();
+                    var storeTemplate = _globalStore.GetStoreTemplate();
                     var scriptUri = await storeTemplate.GetUriAsync("", "test.docbuilder");
-                    var scriptUrl = BaseCommonLinkUtility.GetFullAbsolutePath(scriptUri.ToString());
+                    var scriptUrl = _baseCommonLinkUtility.GetFullAbsolutePath(scriptUri.ToString());
                     scriptUrl = ReplaceCommunityAdress(scriptUrl);
 
-                    await Web.Core.Files.DocumentService.DocbuilderRequestAsync(FileUtility, FilesLinkUtility.DocServiceDocbuilderUrl, null, scriptUrl, false, FileUtility.SignatureSecret, ClientFactory);
+                    await Web.Core.Files.DocumentService.DocbuilderRequestAsync(_fileUtility, _filesLinkUtility.DocServiceDocbuilderUrl, null, scriptUrl, false, _fileUtility.SignatureSecret, _clientFactory);
                 }
                 catch (Exception ex)
                 {
                     Logger.Error("DocService check error", ex);
+
                     throw new Exception("Docbuilder url: " + ex.Message);
                 }
             }
@@ -306,7 +313,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public string ReplaceCommunityAdress(string url)
         {
-            var docServicePortalUrl = FilesLinkUtility.DocServicePortalUrl;
+            var docServicePortalUrl = _filesLinkUtility.DocServicePortalUrl;
 
             if (string.IsNullOrEmpty(url))
             {
@@ -315,19 +322,19 @@ namespace ASC.Web.Files.Services.DocumentService
 
             if (string.IsNullOrEmpty(docServicePortalUrl))
             {
-                Tenant tenant = TenantManager.GetCurrentTenant();
-                if (!TenantExtra.Saas
+                Tenant tenant = _tenantManager.GetCurrentTenant();
+                if (!_tenantExtra.Saas
                     || string.IsNullOrEmpty(tenant.MappedDomain)
                     || !url.StartsWith("https://" + tenant.MappedDomain))
                 {
                     return url;
                 }
 
-                docServicePortalUrl = "https://" + tenant.GetTenantDomain(CoreSettings, false);
+                docServicePortalUrl = "https://" + tenant.GetTenantDomain(_coreSettings, false);
             }
 
             var uri = new UriBuilder(url);
-            if (new UriBuilder(BaseCommonLinkUtility.ServerRootPath).Host != uri.Host)
+            if (new UriBuilder(_baseCommonLinkUtility.ServerRootPath).Host != uri.Host)
             {
                 return url;
             }
@@ -353,14 +360,14 @@ namespace ASC.Web.Files.Services.DocumentService
             }
 
             var uri = new UriBuilder(url).ToString();
-            var externalUri = new UriBuilder(BaseCommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.DocServiceUrl)).ToString();
-            var internalUri = new UriBuilder(BaseCommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.DocServiceUrlInternal)).ToString();
+            var externalUri = new UriBuilder(_baseCommonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.DocServiceUrl)).ToString();
+            var internalUri = new UriBuilder(_baseCommonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.DocServiceUrlInternal)).ToString();
             if (uri.StartsWith(internalUri, true, CultureInfo.InvariantCulture) || !uri.StartsWith(externalUri, true, CultureInfo.InvariantCulture))
             {
                 return url;
             }
 
-            uri = uri.Replace(externalUri, FilesLinkUtility.DocServiceUrlInternal);
+            uri = uri.Replace(externalUri, _filesLinkUtility.DocServiceUrlInternal);
 
             return uri;
         }
@@ -369,9 +376,12 @@ namespace ASC.Web.Files.Services.DocumentService
         {
             var error = FilesCommonResource.ErrorMassage_DocServiceException;
             if (!string.IsNullOrEmpty(ex.Message))
+            {
                 error += $" ({ex.Message})";
+            }
 
             Logger.Error("DocService error", ex);
+
             return new Exception(error, ex);
         }
     }

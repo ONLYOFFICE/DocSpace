@@ -37,7 +37,6 @@ namespace ASC.Files.Thirdparty.SharePoint
         }
 
         public string Error { get; set; }
-
         public object ID { get; set; }
     }
 
@@ -49,7 +48,6 @@ namespace ASC.Files.Thirdparty.SharePoint
         }
 
         public string Error { get; set; }
-
         public object ID { get; set; }
     }
 }

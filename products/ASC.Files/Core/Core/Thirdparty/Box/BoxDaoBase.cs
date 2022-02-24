@@ -27,7 +27,7 @@ namespace ASC.Files.Thirdparty.Box
 {
     internal abstract class BoxDaoBase : ThirdPartyProviderDao<BoxProviderInfo>
     {
-        protected override string Id { get => "box"; }
+        protected override string Id => "box";
 
         protected BoxDaoBase(
             IServiceProvider serviceProvider,
@@ -42,10 +42,10 @@ namespace ASC.Files.Thirdparty.Box
         {
         }
 
-
         protected static string MakeBoxId(object entryId)
         {
             var id = Convert.ToString(entryId, CultureInfo.InvariantCulture);
+
             return string.IsNullOrEmpty(id)
                        ? "0"
                        : id.TrimStart('/');
@@ -72,6 +72,7 @@ namespace ASC.Files.Thirdparty.Box
         protected override string MakeId(string path = null)
         {
             var p = string.IsNullOrEmpty(path) || path == "0" ? "" : ("-|" + path.TrimStart('/'));
+
             return $"{PathPrefix}{p}";
         }
 
@@ -97,7 +98,11 @@ namespace ASC.Files.Thirdparty.Box
 
         protected Folder<string> ToFolder(BoxFolder boxFolder)
         {
-            if (boxFolder == null) return null;
+            if (boxFolder == null)
+            {
+                return null;
+            }
+
             if (boxFolder is ErrorFolder)
             {
                 //Return error entry
@@ -118,10 +123,14 @@ namespace ASC.Files.Thirdparty.Box
             folder.TotalSubFolders = boxFolder.ItemCollection != null ? boxFolder.ItemCollection.Entries.Count(item => item is BoxFolder) : 0;
 
             if (folder.CreateOn != DateTime.MinValue && folder.CreateOn.Kind == DateTimeKind.Utc)
+            {
                 folder.CreateOn = TenantUtil.DateTimeFromUtc(folder.CreateOn);
+            }
 
             if (folder.ModifiedOn != DateTime.MinValue && folder.ModifiedOn.Kind == DateTimeKind.Utc)
+            {
                 folder.ModifiedOn = TenantUtil.DateTimeFromUtc(folder.ModifiedOn);
+            }
 
             return folder;
         }
@@ -133,7 +142,10 @@ namespace ASC.Files.Thirdparty.Box
 
         private File<string> ToErrorFile(ErrorFile boxFile)
         {
-            if (boxFile == null) return null;
+            if (boxFile == null)
+            {
+                return null;
+            }
 
             var file = GetErrorFile(new ErrorEntry(boxFile.Error, boxFile.ErrorId));
 
@@ -144,7 +156,10 @@ namespace ASC.Files.Thirdparty.Box
 
         private Folder<string> ToErrorFolder(ErrorFolder boxFolder)
         {
-            if (boxFolder == null) return null;
+            if (boxFolder == null)
+            {
+                return null;
+            }
 
             var folder = GetErrorFolder(new ErrorEntry(boxFolder.Error, boxFolder.ErrorId));
 
@@ -155,7 +170,10 @@ namespace ASC.Files.Thirdparty.Box
 
         public File<string> ToFile(BoxFile boxFile)
         {
-            if (boxFile == null) return null;
+            if (boxFile == null)
+            {
+                return null;
+            }
 
             if (boxFile is ErrorFile)
             {
@@ -187,6 +205,7 @@ namespace ASC.Files.Thirdparty.Box
             try
             {
                 var folder = await ProviderInfo.GetBoxFolderAsync(boxFolderId);
+
                 return folder;
             }
             catch (Exception ex)
@@ -201,6 +220,7 @@ namespace ASC.Files.Thirdparty.Box
             try
             {
                 var file = ProviderInfo.GetBoxFileAsync(boxFileId);
+
                 return file;
             }
             catch (Exception ex)
@@ -212,6 +232,7 @@ namespace ASC.Files.Thirdparty.Box
         protected override async Task<IEnumerable<string>> GetChildrenAsync(string folderId)
         {
             var items = await GetBoxItemsAsync(folderId);
+
             return items.Select(entry => MakeId(entry.Id));
         }
 
@@ -254,9 +275,7 @@ namespace ASC.Files.Thirdparty.Box
         protected sealed class ErrorFolder : BoxFolder
         {
             public string Error { get; set; }
-
             public string ErrorId { get; private set; }
-
 
             public ErrorFolder(Exception e, object id)
             {
@@ -271,9 +290,7 @@ namespace ASC.Files.Thirdparty.Box
         protected sealed class ErrorFile : BoxFile
         {
             public string Error { get; set; }
-
             public string ErrorId { get; private set; }
-
 
             public ErrorFile(Exception e, object id)
             {
@@ -287,7 +304,10 @@ namespace ASC.Files.Thirdparty.Box
 
         protected string GetAvailableTitle(string requestTitle, string parentFolderId, Func<string, string, bool> isExist)
         {
-            if (!isExist(requestTitle, parentFolderId)) return requestTitle;
+            if (!isExist(requestTitle, parentFolderId))
+            {
+                return requestTitle;
+            }
 
             var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
             var match = re.Match(requestTitle);
@@ -299,6 +319,7 @@ namespace ASC.Files.Thirdparty.Box
                 {
                     insertIndex = requestTitle.LastIndexOf('.');
                 }
+
                 requestTitle = requestTitle.Insert(insertIndex, " (1)");
             }
 
@@ -306,12 +327,16 @@ namespace ASC.Files.Thirdparty.Box
             {
                 requestTitle = re.Replace(requestTitle, MatchEvaluator);
             }
+
             return requestTitle;
         }
 
         protected async Task<string> GetAvailableTitleAsync(string requestTitle, string parentFolderId, Func<string, string, Task<bool>> isExist)
         {
-            if (!await isExist(requestTitle, parentFolderId)) return requestTitle;
+            if (!await isExist(requestTitle, parentFolderId))
+            {
+                return requestTitle;
+            }
 
             var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
             var match = re.Match(requestTitle);
@@ -323,6 +348,7 @@ namespace ASC.Files.Thirdparty.Box
                 {
                     insertIndex = requestTitle.LastIndexOf(".", StringComparison.InvariantCulture);
                 }
+
                 requestTitle = requestTitle.Insert(insertIndex, " (1)");
             }
 
@@ -330,6 +356,7 @@ namespace ASC.Files.Thirdparty.Box
             {
                 requestTitle = re.Replace(requestTitle, MatchEvaluator);
             }
+
             return requestTitle;
         }
 
@@ -337,6 +364,7 @@ namespace ASC.Files.Thirdparty.Box
         {
             var index = Convert.ToInt32(match.Groups[2].Value);
             var staticText = match.Value.Substring(string.Format(" ({0})", index).Length);
+
             return string.Format(" ({0}){1}", index + 1, staticText);
         }
     }

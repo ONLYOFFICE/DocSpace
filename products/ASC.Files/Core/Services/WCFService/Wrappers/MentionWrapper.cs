@@ -27,40 +27,25 @@ namespace ASC.Web.Files.Services.WCFService
 {
     public class MentionWrapper
     {
-        public string Email
-        {
-            get { return User.Email; }
-        }
-
-        public string Id
-        {
-            get { return User.ID.ToString(); }
-        }
-
-        public bool HasAccess { get; set; }
-
-        public string Name
-        {
-            get { return User.DisplayUserName(false, DisplayUserSettingsHelper); }
-        }
-
-        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-
         public UserInfo User { get; set; }
+        public string Email => User.Email;
+        public string Id => User.ID.ToString();
+        public bool HasAccess { get; set; }
+        public string Name => User.DisplayUserName(false, _displayUserSettingsHelper);
 
+        private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
+        
         public MentionWrapper(UserInfo user, DisplayUserSettingsHelper displayUserSettingsHelper)
         {
             User = user;
-            DisplayUserSettingsHelper = displayUserSettingsHelper;
+            _displayUserSettingsHelper = displayUserSettingsHelper;
         }
     }
 
     public class MentionMessageWrapper
     {
         public ActionLinkConfig ActionLink { get; set; }
-
         public List<string> Emails { get; set; }
-
         public string Message { get; set; }
     }
 }

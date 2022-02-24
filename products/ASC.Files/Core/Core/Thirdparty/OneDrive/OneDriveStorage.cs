@@ -36,39 +36,43 @@ namespace ASC.Files.Thirdparty.OneDrive
         {
             get
             {
-                if (_token == null) throw new Exception("Cannot create OneDrive session with given token");
+                if (_token == null)
+                {
+                    throw new Exception("Cannot create OneDrive session with given token");
+                }
+
                 if (_token.IsExpired)
                 {
-                    _token = OAuth20TokenHelper.RefreshToken<OneDriveLoginProvider>(ConsumerFactory, _token);
+                    _token = OAuth20TokenHelper.RefreshToken<OneDriveLoginProvider>(_consumerFactory, _token);
                     _onedriveClientCache = null;
                 }
+
                 return _token.AccessToken;
             }
         }
 
         private OneDriveClient _onedriveClientCache;
 
-        private OneDriveClient OnedriveClient
-        {
-            get { return _onedriveClientCache ??= new OneDriveClient(new OneDriveAuthProvider(AccessToken)); }
-        }
+        private OneDriveClient OnedriveClient => _onedriveClientCache ??= new OneDriveClient(new OneDriveAuthProvider(AccessToken));
 
         public bool IsOpened { get; private set; }
-        private ConsumerFactory ConsumerFactory { get; }
-        private IHttpClientFactory ClientFactory { get; }
+        private readonly ConsumerFactory _consumerFactory;
+        private readonly IHttpClientFactory _clientFactory;
 
         public long MaxChunkedUploadFileSize = 10L * 1024L * 1024L * 1024L;
 
         public OneDriveStorage(ConsumerFactory consumerFactory, IHttpClientFactory clientFactory)
         {
-            ConsumerFactory = consumerFactory;
-            ClientFactory = clientFactory;
+            _consumerFactory = consumerFactory;
+            _clientFactory = clientFactory;
         }
 
         public void Open(OAuth20Token token)
         {
             if (IsOpened)
+            {
                 return;
+            }
 
             _token = token;
 
@@ -128,7 +132,10 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         public Task<Stream> DownloadStreamAsync(Item file, int offset = 0)
         {
-            if (file == null || file.File == null) throw new ArgumentNullException(nameof(file));
+            if (file == null || file.File == null)
+            {
+                throw new ArgumentNullException(nameof(file));
+            }
 
             return InternalDownloadStreamAsync(file, offset);
         }
@@ -143,7 +150,9 @@ namespace ASC.Files.Thirdparty.OneDrive
                 .GetAsync();
 
             if (fileStream != null && offset > 0)
+            {
                 fileStream.Seek(offset, SeekOrigin.Begin);
+            }
 
             return fileStream;
         }
@@ -209,6 +218,7 @@ namespace ASC.Files.Thirdparty.OneDrive
         public Task<Item> RenameItemAsync(string itemId, string newName)
         {
             var updateItem = new Item { Name = newName };
+
             return OnedriveClient
                 .Drive
                 .Items[itemId]
@@ -235,7 +245,10 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         public Task<ResumableUploadSession> CreateResumableSessionAsync(Item onedriveFile, long contentLength)
         {
-            if (onedriveFile == null) throw new ArgumentNullException(nameof(onedriveFile));
+            if (onedriveFile == null)
+            {
+                throw new ArgumentNullException(nameof(onedriveFile));
+            }
 
             return InternalCreateResumableSessionAsync(onedriveFile, contentLength);
         }
@@ -261,7 +274,7 @@ namespace ASC.Files.Thirdparty.OneDrive
 
             var uploadSession = new ResumableUploadSession(onedriveFile.Id, folderId, contentLength);
 
-            var httpClient = ClientFactory.CreateClient();
+            var httpClient = _clientFactory.CreateClient();
             using (var response = await httpClient.SendAsync(request))
             using (var responseStream = await response.Content.ReadAsStreamAsync())
             {
@@ -282,10 +295,14 @@ namespace ASC.Files.Thirdparty.OneDrive
         public Task TransferAsync(ResumableUploadSession oneDriveSession, Stream stream, long chunkLength)
         {
             if (stream == null)
+            {
                 throw new ArgumentNullException(nameof(stream));
+            }
 
             if (oneDriveSession.Status != ResumableUploadSessionStatus.Started)
+            {
                 throw new InvalidOperationException("Can't upload chunk for given upload session.");
+            }
 
             return InternalTransferAsync(oneDriveSession, stream, chunkLength);
         }
@@ -302,7 +319,7 @@ namespace ASC.Files.Thirdparty.OneDrive
                                                                oneDriveSession.BytesToTransfer));
             request.Content = new StreamContent(stream);
 
-            var httpClient = ClientFactory.CreateClient();
+            var httpClient = _clientFactory.CreateClient();
             using var response = await httpClient.SendAsync(request);
 
             if (response.StatusCode != HttpStatusCode.Created && response.StatusCode != HttpStatusCode.OK)
@@ -314,7 +331,11 @@ namespace ASC.Files.Thirdparty.OneDrive
                 oneDriveSession.Status = ResumableUploadSessionStatus.Completed;
 
                 using var responseStream = await response.Content.ReadAsStreamAsync();
-                if (responseStream == null) return;
+                if (responseStream == null)
+                {
+                    return;
+                }
+
                 using var readStream = new StreamReader(responseStream);
                 var responseString = await readStream.ReadToEndAsync();
                 var responseJson = JObject.Parse(responseString);
@@ -329,7 +350,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             request.RequestUri = new Uri(oneDriveSession.Location);
             request.Method = HttpMethod.Delete;
 
-            var httpClient = ClientFactory.CreateClient();
+            var httpClient = _clientFactory.CreateClient();
             using var response = await httpClient.SendAsync(request);
         }
     }
@@ -348,6 +369,7 @@ namespace ASC.Files.Thirdparty.OneDrive
         public Task AuthenticateRequestAsync(HttpRequestMessage request)
         {
             request.Headers.Authorization = new AuthenticationHeaderValue("bearer", _accessToken);
+
             return Task.WhenAll();
         }
     }
@@ -364,15 +386,10 @@ namespace ASC.Files.Thirdparty.OneDrive
     internal class ResumableUploadSession
     {
         public long BytesToTransfer { get; set; }
-
         public long BytesTransfered { get; set; }
-
         public string FileId { get; set; }
-
         public string FolderId { get; set; }
-
         public ResumableUploadSessionStatus Status { get; set; }
-
         public string Location { get; set; }
 
         public ResumableUploadSession(string fileId, string folderId, long bytesToTransfer)

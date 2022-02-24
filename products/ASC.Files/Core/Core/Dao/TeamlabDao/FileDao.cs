@@ -30,22 +30,22 @@ namespace ASC.Files.Core.Data
     [Scope]
     internal class FileDao : AbstractDao, IFileDao<int>
     {
-        private static readonly object syncRoot = new object();
-        private FactoryIndexerFile FactoryIndexer { get; }
-        private GlobalStore GlobalStore { get; }
-        private GlobalSpace GlobalSpace { get; }
-        private GlobalFolder GlobalFolder { get; }
-        private Global Global { get; }
-        private IDaoFactory DaoFactory { get; }
-        private ChunkedUploadSessionHolder ChunkedUploadSessionHolder { get; }
-        private ProviderFolderDao ProviderFolderDao { get; }
-        private CrossDao CrossDao { get; }
-        private Settings Settings { get; }
+        private static readonly object _syncRoot = new object();
+        private readonly FactoryIndexerFile _factoryIndexer;
+        private readonly GlobalStore _globalStore;
+        private readonly GlobalSpace _globalSpace;
+        private readonly GlobalFolder _globalFolder;
+        private readonly Global _global;
+        private readonly IDaoFactory _daoFactory;
+        private readonly ChunkedUploadSessionHolder _chunkedUploadSessionHolder;
+        private readonly ProviderFolderDao _providerFolderDao;
+        private readonly CrossDao _crossDao;
+        private readonly Settings _settings;
 
         public FileDao(
             FactoryIndexerFile factoryIndexer,
             UserManager userManager,
-            DbContextManager<EF.FilesDbContext> dbContextManager,
+            DbContextManager<FilesDbContext> dbContextManager,
             TenantManager tenantManager,
             TenantUtil tenantUtil,
             SetupInfo setupInfo,
@@ -81,16 +81,16 @@ namespace ASC.Files.Core.Data
                   serviceProvider,
                   cache)
         {
-            FactoryIndexer = factoryIndexer;
-            GlobalStore = globalStore;
-            GlobalSpace = globalSpace;
-            GlobalFolder = globalFolder;
-            Global = global;
-            DaoFactory = daoFactory;
-            ChunkedUploadSessionHolder = chunkedUploadSessionHolder;
-            ProviderFolderDao = providerFolderDao;
-            CrossDao = crossDao;
-            Settings = settings;
+            _factoryIndexer = factoryIndexer;
+            _globalStore = globalStore;
+            _globalSpace = globalSpace;
+            _globalFolder = globalFolder;
+            _global = global;
+            _daoFactory = daoFactory;
+            _chunkedUploadSessionHolder = chunkedUploadSessionHolder;
+            _providerFolderDao = providerFolderDao;
+            _crossDao = crossDao;
+            _settings = settings;
         }
 
         public Task InvalidateCacheAsync(int fileId)
@@ -111,6 +111,7 @@ namespace ASC.Files.Core.Data
         public async Task<File<int>> GetFileAsync(int fileId, int fileVersion)
         {
             var query = GetFileQuery(r => r.Id == fileId && r.Version == fileVersion).AsNoTracking();
+
             return ToFile(await
                 FromQueryWithShared(query)
                 .SingleOrDefaultAsync()
@@ -119,7 +120,10 @@ namespace ASC.Files.Core.Data
 
         public Task<File<int>> GetFileAsync(int parentId, string title)
         {
-            if (string.IsNullOrEmpty(title)) throw new ArgumentNullException(title);
+            if (string.IsNullOrEmpty(title))
+            {
+                throw new ArgumentNullException(title);
+            }
 
             return InternalGetFileAsync(parentId, title);
         }
@@ -158,7 +162,10 @@ namespace ASC.Files.Core.Data
 
         public IAsyncEnumerable<File<int>> GetFilesAsync(IEnumerable<int> fileIds)
         {
-            if (fileIds == null || !fileIds.Any()) return AsyncEnumerable.Empty<File<int>>();
+            if (fileIds == null || !fileIds.Any())
+            {
+                return AsyncEnumerable.Empty<File<int>>();
+            }
 
             var query = GetFileQuery(r => fileIds.Contains(r.Id) && r.CurrentVersion)
                 .AsNoTracking();
@@ -168,7 +175,10 @@ namespace ASC.Files.Core.Data
 
         public IAsyncEnumerable<File<int>> GetFilesFilteredAsync(IEnumerable<int> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool checkShared = false)
         {
-            if (fileIds == null || !fileIds.Any() || filterType == FilterType.FoldersOnly) return AsyncEnumerable.Empty<File<int>>();
+            if (fileIds == null || !fileIds.Any() || filterType == FilterType.FoldersOnly)
+            {
+                return AsyncEnumerable.Empty<File<int>>();
+            }
 
             var query = GetFileQuery(r => fileIds.Contains(r.Id) && r.CurrentVersion).AsNoTracking();
 
@@ -176,7 +186,7 @@ namespace ASC.Files.Core.Data
             {
                 var func = GetFuncForSearch(null, null, filterType, subjectGroup, subjectID, searchText, searchInContent, false);
 
-                if (FactoryIndexer.TrySelectIds(s => func(s).In(r => r.Id, fileIds.ToArray()), out var searchIds))
+                if (_factoryIndexer.TrySelectIds(s => func(s).In(r => r.Id, fileIds.ToArray()), out var searchIds))
                 {
                     query = query.Where(r => searchIds.Contains(r.Id));
                 }
@@ -232,9 +242,15 @@ namespace ASC.Files.Core.Data
 
         public IAsyncEnumerable<File<int>> GetFilesAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
         {
-            if (filterType == FilterType.FoldersOnly) return AsyncEnumerable.Empty<File<int>>();
+            if (filterType == FilterType.FoldersOnly)
+            {
+                return AsyncEnumerable.Empty<File<int>>();
+            }
 
-            if (orderBy == null) orderBy = new OrderBy(SortedByType.DateAndTime, false);
+            if (orderBy == null)
+            {
+                orderBy = new OrderBy(SortedByType.DateAndTime, false);
+            }
 
             var q = GetFileQuery(r => r.FolderId == parentId && r.CurrentVersion).AsNoTracking();
 
@@ -254,7 +270,7 @@ namespace ASC.Files.Core.Data
 
                 Expression<Func<Selector<DbFile>, Selector<DbFile>>> expression = s => func(s);
 
-                if (FactoryIndexer.TrySelectIds(expression, out var searchIds))
+                if (_factoryIndexer.TrySelectIds(expression, out var searchIds))
                 {
                     q = q.Where(r => searchIds.Contains(r.Id));
                 }
@@ -309,12 +325,12 @@ namespace ASC.Files.Core.Data
 
         public Task<Stream> GetFileStreamAsync(File<int> file, long offset)
         {
-            return GlobalStore.GetStore().GetReadStreamAsync(string.Empty, GetUniqFilePath(file), (int)offset);
+            return _globalStore.GetStore().GetReadStreamAsync(string.Empty, GetUniqFilePath(file), (int)offset);
         }
 
         public Task<Uri> GetPreSignedUriAsync(File<int> file, TimeSpan expires)
         {
-            return GlobalStore.GetStore().GetPreSignedUriAsync(string.Empty, GetUniqFilePath(file), expires,
+            return _globalStore.GetStore().GetPreSignedUriAsync(string.Empty, GetUniqFilePath(file), expires,
                                                      new List<string>
                                                          {
                                                              string.Concat("Content-Disposition:", ContentDispositionUtil.GetHeaderValue(file.Title, withoutBase: true))
@@ -323,12 +339,12 @@ namespace ASC.Files.Core.Data
 
         public Task<bool> IsSupportedPreSignedUriAsync(File<int> file)
         {
-            return Task.FromResult(GlobalStore.GetStore().IsSupportedPreSignedUri);
+            return Task.FromResult(_globalStore.GetStore().IsSupportedPreSignedUri);
         }
 
         public Task<Stream> GetFileStreamAsync(File<int> file)
         {
-            return GlobalStore.GetStore().GetReadStreamAsync(string.Empty, GetUniqFilePath(file), 0);
+            return _globalStore.GetStore().GetReadStreamAsync(string.Empty, GetUniqFilePath(file), 0);
         }
 
         public Task<File<int>> SaveFileAsync(File<int> file, Stream fileStream)
@@ -348,6 +364,7 @@ namespace ASC.Files.Core.Data
             {
                 throw FileSizeComment.GetFileSizeException(maxChunkedUploadSize);
             }
+
             return InternalSaveFileAsync(file, fileStream, checkQuota);
         }
 
@@ -356,7 +373,7 @@ namespace ASC.Files.Core.Data
             if (checkQuota && CoreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
             {
                 var personalMaxSpace = CoreConfiguration.PersonalMaxSpace(SettingsManager);
-                if (personalMaxSpace - await GlobalSpace.GetUserUsedSpaceAsync(file.ID == default ? AuthContext.CurrentAccount.ID : file.CreateBy) < file.ContentLength)
+                if (personalMaxSpace - await _globalSpace.GetUserUsedSpaceAsync(file.ID == default ? AuthContext.CurrentAccount.ID : file.CreateBy) < file.ContentLength)
                 {
                     throw FileSizeComment.GetPersonalFreeSpaceException(personalMaxSpace);
                 }
@@ -366,7 +383,7 @@ namespace ASC.Files.Core.Data
             List<int> parentFoldersIds;
             DbFile toInsert = null;
 
-            lock (syncRoot)
+            lock (_syncRoot)
             {
                 using var tx = FilesDbContext.Database.BeginTransaction();
 
@@ -384,8 +401,15 @@ namespace ASC.Files.Core.Data
 
                 file.ModifiedBy = AuthContext.CurrentAccount.ID;
                 file.ModifiedOn = TenantUtil.DateTimeNow();
-                if (file.CreateBy == default) file.CreateBy = AuthContext.CurrentAccount.ID;
-                if (file.CreateOn == default) file.CreateOn = TenantUtil.DateTimeNow();
+                if (file.CreateBy == default)
+                {
+                    file.CreateBy = AuthContext.CurrentAccount.ID;
+                }
+
+                if (file.CreateOn == default)
+                {
+                    file.CreateOn = TenantUtil.DateTimeNow();
+                }
 
                 var toUpdate = FilesDbContext.Files
                     .FirstOrDefault(r => r.Id == file.ID && r.CurrentVersion && r.TenantId == TenantID);
@@ -469,7 +493,7 @@ namespace ASC.Files.Core.Data
                     {
                         if (isNew)
                         {
-                            var stored = await GlobalStore.GetStore().IsDirectoryAsync(GetUniqFileDirectory(file.ID));
+                            var stored = await _globalStore.GetStore().IsDirectoryAsync(GetUniqFileDirectory(file.ID));
                             await DeleteFileAsync(file.ID, stored).ConfigureAwait(false);
                         }
                         else if (!await IsExistOnStorageAsync(file))
@@ -485,15 +509,21 @@ namespace ASC.Files.Core.Data
                 }
             }
 
-            _ = FactoryIndexer.IndexAsync(await InitDocumentAsync(toInsert).ConfigureAwait(false));
+            _ = _factoryIndexer.IndexAsync(await InitDocumentAsync(toInsert).ConfigureAwait(false));
 
             return await GetFileAsync(file.ID).ConfigureAwait(false);
         }
 
         public Task<File<int>> ReplaceFileVersionAsync(File<int> file, Stream fileStream)
         {
-            if (file == null) throw new ArgumentNullException(nameof(file));
-            if (file.ID == default) throw new ArgumentException("No file id or folder id toFolderId determine provider");
+            if (file == null)
+            {
+                throw new ArgumentNullException(nameof(file));
+            }
+            if (file.ID == default)
+            {
+                throw new ArgumentException("No file id or folder id toFolderId determine provider");
+            }
 
             var maxChunkedUploadSize = SetupInfo.MaxChunkedUploadSize(TenantExtra, TenantStatisticProvider);
 
@@ -501,6 +531,7 @@ namespace ASC.Files.Core.Data
             {
                 throw FileSizeComment.GetFileSizeException(maxChunkedUploadSize);
             }
+
             return InternalReplaceFileVersionAsync(file, fileStream);
         }
 
@@ -509,7 +540,7 @@ namespace ASC.Files.Core.Data
             if (CoreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
             {
                 var personalMaxSpace = CoreConfiguration.PersonalMaxSpace(SettingsManager);
-                if (personalMaxSpace - await GlobalSpace.GetUserUsedSpaceAsync(file.ID == default ? AuthContext.CurrentAccount.ID : file.CreateBy) < file.ContentLength)
+                if (personalMaxSpace - await _globalSpace.GetUserUsedSpaceAsync(file.ID == default ? AuthContext.CurrentAccount.ID : file.CreateBy) < file.ContentLength)
                 {
                     throw FileSizeComment.GetPersonalFreeSpaceException(personalMaxSpace);
                 }
@@ -518,7 +549,7 @@ namespace ASC.Files.Core.Data
             DbFile toUpdate = null;
 
             List<int> parentFoldersIds;
-            lock (syncRoot)
+            lock (_syncRoot)
             {
                 using var tx = FilesDbContext.Database.BeginTransaction();
 
@@ -528,8 +559,15 @@ namespace ASC.Files.Core.Data
 
                 file.ModifiedBy = AuthContext.CurrentAccount.ID;
                 file.ModifiedOn = TenantUtil.DateTimeNow();
-                if (file.CreateBy == default) file.CreateBy = AuthContext.CurrentAccount.ID;
-                if (file.CreateOn == default) file.CreateOn = TenantUtil.DateTimeNow();
+                if (file.CreateBy == default)
+                {
+                    file.CreateBy = AuthContext.CurrentAccount.ID;
+                }
+
+                if (file.CreateOn == default)
+                {
+                    file.CreateOn = TenantUtil.DateTimeNow();
+                }
 
                 toUpdate = FilesDbContext.Files
                     .FirstOrDefault(r => r.Id == file.ID && r.Version == file.Version && r.TenantId == TenantID);
@@ -595,11 +633,12 @@ namespace ASC.Files.Core.Data
                     {
                         await DeleteVersionAsync(file).ConfigureAwait(false);
                     }
+
                     throw;
                 }
             }
 
-            _ = FactoryIndexer.IndexAsync(await InitDocumentAsync(toUpdate).ConfigureAwait(false));
+            _ = _factoryIndexer.IndexAsync(await InitDocumentAsync(toUpdate).ConfigureAwait(false));
 
             return await GetFileAsync(file.ID).ConfigureAwait(false);
         }
@@ -608,7 +647,10 @@ namespace ASC.Files.Core.Data
         {
             if (file == null
                 || file.ID == default
-                || file.Version <= 1) return Task.CompletedTask;
+                || file.Version <= 1)
+            {
+                return Task.CompletedTask;
+            }
 
             return InternalDeleteVersionAsync(file);
         }
@@ -623,6 +665,7 @@ namespace ASC.Files.Core.Data
             {
                 FilesDbContext.Files.Remove(toDelete);
             }
+
             await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
             var toUpdate = await Query(FilesDbContext.Files)
@@ -635,12 +678,12 @@ namespace ASC.Files.Core.Data
 
         private async Task DeleteVersionStreamAsync(File<int> file)
         {
-            await GlobalStore.GetStore().DeleteDirectoryAsync(GetUniqFileVersionPath(file.ID, file.Version));
+            await _globalStore.GetStore().DeleteDirectoryAsync(GetUniqFileVersionPath(file.ID, file.Version));
         }
 
         private async Task SaveFileStreamAsync(File<int> file, Stream stream)
         {
-            await GlobalStore.GetStore().SaveAsync(string.Empty, GetUniqFilePath(file), stream, file.Title);
+            await _globalStore.GetStore().SaveAsync(string.Empty, GetUniqFilePath(file), stream, file.Title);
         }
 
         public Task DeleteFileAsync(int fileId)
@@ -650,7 +693,10 @@ namespace ASC.Files.Core.Data
 
         private Task DeleteFileAsync(int fileId, bool deleteFolder)
         {
-            if (fileId == default) return Task.CompletedTask;
+            if (fileId == default)
+            {
+                return Task.CompletedTask;
+            }
 
             return internalDeleteFileAsync(fileId, deleteFolder);
         }
@@ -673,7 +719,7 @@ namespace ASC.Files.Core.Data
 
             foreach (var d in toDeleteFiles)
             {
-                await FactoryIndexer.DeleteAsync(d).ConfigureAwait(false);
+                await _factoryIndexer.DeleteAsync(d).ConfigureAwait(false);
             }
 
             FilesDbContext.RemoveRange(await toDeleteFiles.ToListAsync());
@@ -695,11 +741,13 @@ namespace ASC.Files.Core.Data
             var forEachTask = fromFolders.ForEachAwaitAsync(async folderId => await RecalculateFilesCountAsync(folderId).ConfigureAwait(false)).ConfigureAwait(false);
 
             if (deleteFolder)
+            {
                 await DeleteFolderAsync(fileId);
+            }
 
             if (toDeleteFile != null)
             {
-                await FactoryIndexer.DeleteAsync(toDeleteFile).ConfigureAwait(false);
+                await _factoryIndexer.DeleteAsync(toDeleteFile).ConfigureAwait(false);
             }
 
             await forEachTask;
@@ -707,7 +755,10 @@ namespace ASC.Files.Core.Data
 
         public Task<bool> IsExistAsync(string title, object folderId)
         {
-            if (folderId is int fId) return IsExistAsync(title, fId);
+            if (folderId is int fId)
+            {
+                return IsExistAsync(title, fId);
+            }
 
             throw new NotImplementedException();
         }
@@ -739,7 +790,10 @@ namespace ASC.Files.Core.Data
 
         public Task<int> MoveFileAsync(int fileId, int toFolderId)
         {
-            if (fileId == default) return Task.FromResult<int>(default);
+            if (fileId == default)
+            {
+                return Task.FromResult<int>(default);
+            }
 
             return InternalMoveFileAsync(fileId, toFolderId);
         }
@@ -748,7 +802,7 @@ namespace ASC.Files.Core.Data
         {
             List<DbFile> toUpdate;
 
-            var trashIdTask = GlobalFolder.GetFolderTrashAsync<int>(DaoFactory);
+            var trashIdTask = _globalFolder.GetFolderTrashAsync<int>(_daoFactory);
 
             using (var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false))
             {
@@ -795,7 +849,7 @@ namespace ASC.Files.Core.Data
             if (toUpdateFile != null)
             {
                 toUpdateFile.Folders = await parentFoldersTask;
-                FactoryIndexer.Update(toUpdateFile, UpdateAction.Replace, w => w.Folders);
+                _factoryIndexer.Update(toUpdateFile, UpdateAction.Replace, w => w.Folders);
             }
 
             return fileId;
@@ -803,9 +857,9 @@ namespace ASC.Files.Core.Data
 
         public async Task<string> MoveFileAsync(int fileId, string toFolderId)
         {
-            var toSelector = ProviderFolderDao.GetSelector(toFolderId);
+            var toSelector = _providerFolderDao.GetSelector(toFolderId);
 
-            var moved = await CrossDao.PerformCrossDaoFileCopyAsync(
+            var moved = await _crossDao.PerformCrossDaoFileCopyAsync(
                 fileId, this, r => r,
                 toFolderId, toSelector.GetFileDao(toFolderId), toSelector.ConvertId,
                 true)
@@ -864,9 +918,9 @@ namespace ASC.Files.Core.Data
 
         public async Task<File<string>> CopyFileAsync(int fileId, string toFolderId)
         {
-            var toSelector = ProviderFolderDao.GetSelector(toFolderId);
+            var toSelector = _providerFolderDao.GetSelector(toFolderId);
 
-            var moved = await CrossDao.PerformCrossDaoFileCopyAsync(
+            var moved = await _crossDao.PerformCrossDaoFileCopyAsync(
                 fileId, this, r => r,
                 toFolderId, toSelector.GetFileDao(toFolderId), toSelector.ConvertId,
                 false)
@@ -890,7 +944,7 @@ namespace ASC.Files.Core.Data
 
             await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-            await FactoryIndexer.UpdateAsync(toUpdate, true, r => r.Title, r => r.ModifiedBy, r => r.ModifiedOn).ConfigureAwait(false);
+            await _factoryIndexer.UpdateAsync(toUpdate, true, r => r.Title, r => r.ModifiedBy, r => r.ModifiedOn).ConfigureAwait(false);
 
             return file.ID;
         }
@@ -961,7 +1015,11 @@ namespace ASC.Files.Core.Data
 
         public string GetUniqFileDirectory(int fileId)
         {
-            if (fileId == 0) throw new ArgumentNullException("fileIdObject");
+            if (fileId == 0)
+            {
+                throw new ArgumentNullException("fileIdObject");
+            }
+
             return string.Format("folder_{0}/file_{1}", (fileId / 1000 + 1) * 1000, fileId);
         }
 
@@ -995,14 +1053,14 @@ namespace ASC.Files.Core.Data
 
         public Task<ChunkedUploadSession<int>> CreateUploadSessionAsync(File<int> file, long contentLength)
         {
-            return ChunkedUploadSessionHolder.CreateUploadSessionAsync(file, contentLength);
+            return _chunkedUploadSessionHolder.CreateUploadSessionAsync(file, contentLength);
         }
 
         public async Task<File<int>> UploadChunkAsync(ChunkedUploadSession<int> uploadSession, Stream stream, long chunkLength)
         {
             if (!uploadSession.UseChunks)
             {
-                using var streamToSave = await ChunkedUploadSessionHolder.UploadSingleChunkAsync(uploadSession, stream, chunkLength).ConfigureAwait(false);
+                using var streamToSave = await _chunkedUploadSessionHolder.UploadSingleChunkAsync(uploadSession, stream, chunkLength).ConfigureAwait(false);
                 if (streamToSave != Stream.Null)
                 {
                     uploadSession.File = await SaveFileAsync(await GetFileForCommitAsync(uploadSession).ConfigureAwait(false), streamToSave).ConfigureAwait(false);
@@ -1011,7 +1069,7 @@ namespace ASC.Files.Core.Data
                 return uploadSession.File;
             }
 
-            await ChunkedUploadSessionHolder.UploadChunkAsync(uploadSession, stream, chunkLength);
+            await _chunkedUploadSessionHolder.UploadChunkAsync(uploadSession, stream, chunkLength);
 
             if (uploadSession.BytesUploaded == uploadSession.BytesTotal)
             {
@@ -1023,18 +1081,18 @@ namespace ASC.Files.Core.Data
 
         private async Task<File<int>> FinalizeUploadSessionAsync(ChunkedUploadSession<int> uploadSession)
         {
-            await ChunkedUploadSessionHolder.FinalizeUploadSessionAsync(uploadSession);
+            await _chunkedUploadSessionHolder.FinalizeUploadSessionAsync(uploadSession);
 
             var file = await GetFileForCommitAsync(uploadSession).ConfigureAwait(false);
             await SaveFileAsync(file, null, uploadSession.CheckQuota).ConfigureAwait(false);
-            await ChunkedUploadSessionHolder.MoveAsync(uploadSession, GetUniqFilePath(file));
+            await _chunkedUploadSessionHolder.MoveAsync(uploadSession, GetUniqFilePath(file));
 
             return file;
         }
 
         public Task AbortUploadSessionAsync(ChunkedUploadSession<int> uploadSession)
         {
-            return ChunkedUploadSessionHolder.AbortUploadSessionAsync(uploadSession);
+            return _chunkedUploadSessionHolder.AbortUploadSessionAsync(uploadSession);
         }
 
         private async Task<File<int>> GetFileForCommitAsync(ChunkedUploadSession<int> uploadSession)
@@ -1051,6 +1109,7 @@ namespace ASC.Files.Core.Data
 
                 return file;
             }
+
             var result = ServiceProvider.GetService<File<int>>();
             result.FolderID = uploadSession.File.FolderID;
             result.Title = uploadSession.File.Title;
@@ -1081,7 +1140,10 @@ namespace ASC.Files.Core.Data
 
         public Task<List<File<int>>> GetFilesAsync(IEnumerable<int> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
         {
-            if (parentIds == null || !parentIds.Any() || filterType == FilterType.FoldersOnly) return Task.FromResult(new List<File<int>>());
+            if (parentIds == null || !parentIds.Any() || filterType == FilterType.FoldersOnly)
+            {
+                return Task.FromResult(new List<File<int>>());
+            }
 
             return InternalGetFilesAsync(parentIds, filterType, subjectGroup, subjectID, searchText, searchInContent);
         }
@@ -1098,7 +1160,7 @@ namespace ASC.Files.Core.Data
             {
                 var func = GetFuncForSearch(null, null, filterType, subjectGroup, subjectID, searchText, searchInContent, false);
 
-                if (FactoryIndexer.TrySelectIds(s => func(s), out var searchIds))
+                if (_factoryIndexer.TrySelectIds(s => func(s), out var searchIds))
                 {
                     q = q.Where(r => searchIds.Contains(r.Id));
                 }
@@ -1140,14 +1202,16 @@ namespace ASC.Files.Core.Data
             }
 
             var query = await FromQueryWithShared(q).ToListAsync().ConfigureAwait(false);
+
             return query.ConvertAll(e => ToFile(e));
         }
 
         public IAsyncEnumerable<File<int>> SearchAsync(string searchText, bool bunch = false)
         {
-            if (FactoryIndexer.TrySelectIds(s => s.MatchAll(searchText), out var ids))
+            if (_factoryIndexer.TrySelectIds(s => s.MatchAll(searchText), out var ids))
             {
                 var query = GetFileQuery(r => r.CurrentVersion && ids.Contains(r.Id)).AsNoTracking();
+
                 return FromQueryWithShared(query).AsAsyncEnumerable().Select(e => ToFile(e))
                     .Where(
                         f =>
@@ -1159,6 +1223,7 @@ namespace ASC.Files.Core.Data
             else
             {
                 var query = BuildSearch(GetFileQuery(r => r.CurrentVersion).AsNoTracking(), searchText, SearhTypeEnum.Any);
+
                 return FromQueryWithShared(query).AsAsyncEnumerable().Select(e => ToFile(e))
                     .Where(f =>
                            bunch
@@ -1169,21 +1234,30 @@ namespace ASC.Files.Core.Data
 
         private async Task DeleteFolderAsync(int fileId)
         {
-            await GlobalStore.GetStore().DeleteDirectoryAsync(GetUniqFileDirectory(fileId));
+            await _globalStore.GetStore().DeleteDirectoryAsync(GetUniqFileDirectory(fileId));
         }
 
         public Task<bool> IsExistOnStorageAsync(File<int> file)
         {
-            return GlobalStore.GetStore().IsFileAsync(string.Empty, GetUniqFilePath(file));
+            return _globalStore.GetStore().IsFileAsync(string.Empty, GetUniqFilePath(file));
         }
 
         private const string DiffTitle = "diff.zip";
 
         public Task SaveEditHistoryAsync(File<int> file, string changes, Stream differenceStream)
         {
-            if (file == null) throw new ArgumentNullException(nameof(file));
-            if (string.IsNullOrEmpty(changes)) throw new ArgumentNullException(nameof(changes));
-            if (differenceStream == null) throw new ArgumentNullException(nameof(differenceStream));
+            if (file == null)
+            {
+                throw new ArgumentNullException(nameof(file));
+            }
+            if (string.IsNullOrEmpty(changes))
+            {
+                throw new ArgumentNullException(nameof(changes));
+            }
+            if (differenceStream == null)
+            {
+                throw new ArgumentNullException(nameof(differenceStream));
+            }
 
             return InternalSaveEditHistoryAsync(file, changes, differenceStream);
         }
@@ -1205,7 +1279,7 @@ namespace ASC.Files.Core.Data
 
             await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-            await GlobalStore.GetStore().SaveAsync(string.Empty, GetUniqFilePath(file, DiffTitle), differenceStream, DiffTitle);
+            await _globalStore.GetStore().SaveAsync(string.Empty, GetUniqFilePath(file, DiffTitle), differenceStream, DiffTitle);
         }
 
         public async Task<List<EditHistory>> GetEditHistoryAsync(DocumentServiceHelper documentServiceHelper, int fileId, int fileVersion = 0)
@@ -1242,7 +1316,7 @@ namespace ASC.Files.Core.Data
 
         public Task<Stream> GetDifferenceStreamAsync(File<int> file)
         {
-            return GlobalStore.GetStore().GetReadStreamAsync(string.Empty, GetUniqFilePath(file, DiffTitle), 0);
+            return _globalStore.GetStore().GetReadStreamAsync(string.Empty, GetUniqFilePath(file, DiffTitle), 0);
         }
 
         public Task<bool> ContainChangesAsync(int fileId, int fileVersion)
@@ -1314,7 +1388,10 @@ namespace ASC.Files.Core.Data
 
         public Task SaveThumbnailAsync(File<int> file, Stream thumbnail)
         {
-            if (file == null) throw new ArgumentNullException(nameof(file));
+            if (file == null)
+            {
+                throw new ArgumentNullException(nameof(file));
+            }
 
             return InternalSaveThumbnailAsync(file, thumbnail);
         }
@@ -1332,19 +1409,27 @@ namespace ASC.Files.Core.Data
                 await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
             }
 
-            if (thumbnail == null) return;
+            if (thumbnail == null)
+            {
+                return;
+            }
 
-            var thumnailName = ThumbnailTitle + "." + Global.ThumbnailExtension;
-            await GlobalStore.GetStore().SaveAsync(string.Empty, GetUniqFilePath(file, thumnailName), thumbnail, thumnailName);
+            var thumnailName = ThumbnailTitle + "." + _global.ThumbnailExtension;
+            await _globalStore.GetStore().SaveAsync(string.Empty, GetUniqFilePath(file, thumnailName), thumbnail, thumnailName);
         }
 
         public async Task<Stream> GetThumbnailAsync(File<int> file)
         {
-            var thumnailName = ThumbnailTitle + "." + Global.ThumbnailExtension;
+            var thumnailName = ThumbnailTitle + "." + _global.ThumbnailExtension;
             var path = GetUniqFilePath(file, thumnailName);
-            var storage = GlobalStore.GetStore();
+            var storage = _globalStore.GetStore();
             var isFile = await storage.IsFileAsync(string.Empty, path).ConfigureAwait(false);
-            if (!isFile) throw new FileNotFoundException();
+
+            if (!isFile)
+            {
+                throw new FileNotFoundException();
+            }
+
             return await storage.GetReadStreamAsync(string.Empty, path, 0).ConfigureAwait(false);
         }
 
@@ -1424,6 +1509,7 @@ namespace ASC.Files.Core.Data
         protected IQueryable<DbFileQuery> FromQueryWithShared(IQueryable<DbFile> dbFiles)
         {
             var cId = AuthContext.CurrentAccount.ID;
+
             return from r in dbFiles
                    select new DbFileQuery
                    {
@@ -1452,6 +1538,7 @@ namespace ASC.Files.Core.Data
         protected IQueryable<DbFileQuery> FromQuery(IQueryable<DbFile> dbFiles)
         {
             var cId = AuthContext.CurrentAccount.ID;
+
             return dbFiles
                 .Select(r => new DbFileQuery
                 {
@@ -1477,7 +1564,12 @@ namespace ASC.Files.Core.Data
         public File<int> ToFile(DbFileQuery r)
         {
             var file = ServiceProvider.GetService<File<int>>();
-            if (r == null) return null;
+
+            if (r == null)
+            {
+                return null;
+            }
+
             file.ID = r.File.Id;
             file.Title = r.File.Title;
             file.FolderID = r.File.FolderId;
@@ -1498,6 +1590,7 @@ namespace ASC.Files.Core.Data
             file.Forcesave = r.File.Forcesave;
             file.ThumbnailStatus = r.File.Thumb;
             file.IsFillFormDraft = r.Linked;
+
             return file;
         }
 
@@ -1518,12 +1611,13 @@ namespace ASC.Files.Core.Data
 
         internal protected Task<DbFile> InitDocumentAsync(DbFile dbFile)
         {
-            if (!FactoryIndexer.CanIndexByContent(dbFile))
+            if (!_factoryIndexer.CanIndexByContent(dbFile))
             {
                 dbFile.Document = new Document
                 {
                     Data = Convert.ToBase64String(Encoding.UTF8.GetBytes(""))
                 };
+
                 return Task.FromResult(dbFile);
             }
 
@@ -1538,10 +1632,17 @@ namespace ASC.Files.Core.Data
             file.Version = dbFile.Version;
             file.ContentLength = dbFile.ContentLength;
 
-            if (!await IsExistOnStorageAsync(file).ConfigureAwait(false) || file.ContentLength > Settings.MaxContentLength) return dbFile;
+            if (!await IsExistOnStorageAsync(file).ConfigureAwait(false) || file.ContentLength > _settings.MaxContentLength)
+            {
+                return dbFile;
+            }
 
             using var stream = await GetFileStreamAsync(file).ConfigureAwait(false);
-            if (stream == null) return dbFile;
+
+            if (stream == null)
+            {
+                return dbFile;
+            }
 
             using (var ms = new MemoryStream())
             {

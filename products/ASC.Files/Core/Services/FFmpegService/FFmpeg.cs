@@ -10,8 +10,12 @@ namespace ASC.Web.Files.Services.FFmpegService
         {
             get
             {
-                if (string.IsNullOrEmpty(FFmpegPath)) return new List<string>();
-                return ConvertableMedia;
+                if (string.IsNullOrEmpty(_fFmpegPath))
+                {
+                    return new List<string>();
+                }
+
+                return _convertableMedia;
             }
         }
 
@@ -22,8 +26,15 @@ namespace ASC.Web.Files.Services.FFmpegService
 
         public Task<Stream> Convert(Stream inputStream, string inputFormat)
         {
-            if (inputStream == null) throw new ArgumentException();
-            if (string.IsNullOrEmpty(inputFormat)) throw new ArgumentException();
+            if (inputStream == null)
+            {
+                throw new ArgumentException(nameof(inputStream));
+            }
+
+            if (string.IsNullOrEmpty(inputFormat))
+            {
+                throw new ArgumentException(nameof(inputFormat));
+            }
 
             return ConvertInternal(inputStream, inputFormat);
         }
@@ -47,71 +58,89 @@ namespace ASC.Web.Files.Services.FFmpegService
 
         public FFmpegService(IOptionsMonitor<ILog> optionsMonitor, IConfiguration configuration)
         {
-            logger = optionsMonitor.CurrentValue;
-            FFmpegPath = configuration["files:ffmpeg:value"];
-            FFmpegArgs = configuration["files:ffmpeg:args"] ?? "-i - -preset ultrafast -movflags frag_keyframe+empty_moov -f {0} -";
+            _logger = optionsMonitor.CurrentValue;
+            _fFmpegPath = configuration["files:ffmpeg:value"];
+            _fFmpegArgs = configuration["files:ffmpeg:args"] ?? "-i - -preset ultrafast -movflags frag_keyframe+empty_moov -f {0} -";
 
-            ConvertableMedia = (configuration.GetSection("files:ffmpeg:exts").Get<string[]>() ?? Array.Empty<string>()).ToList();
+            _convertableMedia = (configuration.GetSection("files:ffmpeg:exts").Get<string[]>() ?? Array.Empty<string>()).ToList();
 
-            if (string.IsNullOrEmpty(FFmpegPath))
+            if (string.IsNullOrEmpty(_fFmpegPath))
             {
                 var pathvar = Environment.GetEnvironmentVariable("PATH");
                 var folders = pathvar.Split(WorkContext.IsMono ? ':' : ';').Distinct();
                 foreach (var folder in folders)
                 {
-                    if (!Directory.Exists(folder)) continue;
+                    if (!Directory.Exists(folder))
+                    {
+                        continue;
+                    }
 
-                    foreach (var name in FFmpegExecutables)
+                    foreach (var name in _fFmpegExecutables)
                     {
                         var path = CrossPlatform.PathCombine(folder, WorkContext.IsMono ? name : name + ".exe");
                         if (File.Exists(path))
                         {
-                            FFmpegPath = path;
-                            logger.InfoFormat("FFmpeg found in {0}", path);
+                            _fFmpegPath = path;
+                            _logger.InfoFormat("FFmpeg found in {0}", path);
+
                             break;
                         }
                     }
 
-                    if (!string.IsNullOrEmpty(FFmpegPath)) break;
+                    if (!string.IsNullOrEmpty(_fFmpegPath))
+                    {
+                        break;
+                    }
                 }
             }
         }
 
-        private readonly List<string> ConvertableMedia;
-        private readonly List<string> FFmpegExecutables = new List<string>() { "ffmpeg", "avconv" };
-        private readonly string FFmpegPath;
-        private readonly string FFmpegArgs;
+        private readonly List<string> _convertableMedia;
+        private readonly List<string> _fFmpegExecutables = new List<string>() { "ffmpeg", "avconv" };
+        private readonly string _fFmpegPath;
+        private readonly string _fFmpegArgs;
 
-        private readonly ILog logger;
+        private readonly ILog _logger;
 
         private ProcessStartInfo PrepareFFmpeg(string inputFormat)
         {
-            if (!ConvertableMedia.Contains(inputFormat.TrimStart('.'))) throw new ArgumentException("input format");
+            if (!_convertableMedia.Contains(inputFormat.TrimStart('.')))
+            {
+                throw new ArgumentException("input format");
+            }
 
             var startInfo = new ProcessStartInfo();
 
-            if (string.IsNullOrEmpty(FFmpegPath))
+            if (string.IsNullOrEmpty(_fFmpegPath))
             {
-                logger.Error("FFmpeg/avconv was not found in PATH or 'files.ffmpeg' setting");
+                _logger.Error("FFmpeg/avconv was not found in PATH or 'files.ffmpeg' setting");
                 throw new Exception("no ffmpeg");
             }
 
-            startInfo.FileName = FFmpegPath;
-            startInfo.WorkingDirectory = Path.GetDirectoryName(FFmpegPath);
-            startInfo.Arguments = string.Format(FFmpegArgs, "mp4");
+            startInfo.FileName = _fFmpegPath;
+            startInfo.WorkingDirectory = Path.GetDirectoryName(_fFmpegPath);
+            startInfo.Arguments = string.Format(_fFmpegArgs, "mp4");
             startInfo.UseShellExecute = false;
             startInfo.RedirectStandardOutput = true;
             startInfo.RedirectStandardInput = true;
             startInfo.RedirectStandardError = true;
             startInfo.CreateNoWindow = true;
             startInfo.WindowStyle = ProcessWindowStyle.Normal;
+
             return startInfo;
         }
 
         private static Task<int> StreamCopyToAsync(Stream srcStream, Stream dstStream, bool closeSrc = false, bool closeDst = false)
         {
-            if (srcStream == null) throw new ArgumentNullException(nameof(srcStream));
-            if (dstStream == null) throw new ArgumentNullException(nameof(dstStream));
+            if (srcStream == null)
+            {
+                throw new ArgumentNullException(nameof(srcStream));
+            }
+
+            if (dstStream == null)
+            {
+                throw new ArgumentNullException(nameof(dstStream));
+            }
 
             return StreamCopyToAsyncInternal(srcStream, dstStream, closeSrc, closeDst);
         }
@@ -152,7 +181,7 @@ namespace ASC.Web.Files.Services.FFmpegService
             string line;
             while ((line = await reader.ReadLineAsync()) != null)
             {
-                logger.Info(line);
+                _logger.Info(line);
             }
         }
     }

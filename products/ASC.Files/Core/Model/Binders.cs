@@ -12,10 +12,12 @@ namespace ASC.Files.Model
             {
                 bindingContext.ModelState.SetModelValue(modelName, valueProviderResult);
                 firstValue = valueProviderResult.FirstValue;
+
                 return true;
             }
 
             firstValue = null;
+
             return false;
         }
 
@@ -25,10 +27,12 @@ namespace ASC.Files.Model
                 bool.TryParse(deleteAfterValue, out var deleteAfter))
             {
                 firstValue = deleteAfter;
+
                 return true;
             }
 
             firstValue = false;
+
             return false;
         }
 

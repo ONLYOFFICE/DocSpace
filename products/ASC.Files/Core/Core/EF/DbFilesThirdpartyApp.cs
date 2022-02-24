@@ -7,6 +7,7 @@
         public string Token { get; set; }
         public int TenantId { get; set; }
         public DateTime ModifiedOn { get; set; }
+
         public override object[] GetKeys()
         {
             return new object[] { UserId, App };
@@ -20,6 +21,7 @@
             modelBuilder
                 .Add(MySqlAddDbFilesThirdpartyApp, Provider.MySql)
                 .Add(PgSqlAddDbFilesThirdpartyApp, Provider.PostgreSql);
+
             return modelBuilder;
         }
         public static void MySqlAddDbFilesThirdpartyApp(this ModelBuilder modelBuilder)

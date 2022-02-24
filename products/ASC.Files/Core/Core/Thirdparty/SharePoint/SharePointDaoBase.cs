@@ -30,7 +30,7 @@ namespace ASC.Files.Thirdparty.SharePoint
 {
     internal class SharePointDaoBase : ThirdPartyProviderDao<SharePointProviderInfo>
     {
-        protected override string Id { get => "spoint"; }
+        protected override string Id => "spoint";
 
         public SharePointDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility, TempPath tempPath) 
             : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
@@ -39,7 +39,10 @@ namespace ASC.Files.Thirdparty.SharePoint
 
         protected string GetAvailableTitle(string requestTitle, Folder parentFolderID, Func<string, Folder, bool> isExist)
         {
-            if (!isExist(requestTitle, parentFolderID)) return requestTitle;
+            if (!isExist(requestTitle, parentFolderID))
+            {
+                return requestTitle;
+            }
 
             var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
             var match = re.Match(requestTitle);
@@ -51,6 +54,7 @@ namespace ASC.Files.Thirdparty.SharePoint
                 {
                     insertIndex = requestTitle.LastIndexOf('.');
                 }
+
                 requestTitle = requestTitle.Insert(insertIndex, " (1)");
             }
 
@@ -58,12 +62,16 @@ namespace ASC.Files.Thirdparty.SharePoint
             {
                 requestTitle = re.Replace(requestTitle, MatchEvaluator);
             }
+
             return requestTitle;
         }
 
         protected async Task<string> GetAvailableTitleAsync(string requestTitle, Folder parentFolderID, Func<string, Folder, Task<bool>> isExist)
         {
-            if (!await isExist(requestTitle, parentFolderID)) return requestTitle;
+            if (!await isExist(requestTitle, parentFolderID))
+            {
+                return requestTitle;
+            }
 
             var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
             var match = re.Match(requestTitle);
@@ -75,6 +83,7 @@ namespace ASC.Files.Thirdparty.SharePoint
                 {
                     insertIndex = requestTitle.LastIndexOf(".", StringComparison.Ordinal);
                 }
+
                 requestTitle = requestTitle.Insert(insertIndex, " (1)");
             }
 
@@ -82,6 +91,7 @@ namespace ASC.Files.Thirdparty.SharePoint
             {
                 requestTitle = re.Replace(requestTitle, MatchEvaluator);
             }
+
             return requestTitle;
         }
 
@@ -89,12 +99,16 @@ namespace ASC.Files.Thirdparty.SharePoint
         {
             var index = Convert.ToInt32(match.Groups[2].Value);
             var staticText = match.Value.Substring(string.Format(" ({0})", index).Length);
+
             return string.Format(" ({0}){1}", index + 1, staticText);
         }
 
         protected Task UpdatePathInDBAsync(string oldValue, string newValue)
         {
-            if (oldValue.Equals(newValue)) return Task.CompletedTask;
+            if (oldValue.Equals(newValue))
+            {
+                return Task.CompletedTask;
+            }
 
             return InternalUpdatePathInDBAsync(oldValue, newValue);
         }
@@ -168,6 +182,7 @@ namespace ASC.Files.Thirdparty.SharePoint
 
             var folderFiles = await ProviderInfo.GetFolderFilesAsync(folderId);
             var files = folderFiles.Select(x => ProviderInfo.MakeId(x.ServerRelativeUrl));
+
             return subFolders.Concat(files);
         }
     }

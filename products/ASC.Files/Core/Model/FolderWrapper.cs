@@ -25,38 +25,16 @@
 
 namespace ASC.Api.Documents
 {
-    /// <summary>
-    /// </summary>
     public class FolderWrapper<T> : FileEntryWrapper<T>
     {
-        /// <summary>
-        /// </summary>
         public T ParentId { get; set; }
-
-        /// <summary>
-        /// </summary>
         public int FilesCount { get; set; }
-
-        /// <summary>
-        /// </summary>
         public int FoldersCount { get; set; }
-
-        /// <summary>
-        /// </summary>
         public bool? IsShareable { get; set; }
-
         public int New { get; set; }
 
-        /// <summary>
-        /// </summary>
-        /// <param name="folder"></param>
-        public FolderWrapper()
-        {
-        }
+        public FolderWrapper() { }
 
-        /// <summary>
-        /// </summary>
-        /// <returns></returns>
         public static FolderWrapper<int> GetSample()
         {
             return new FolderWrapper<int>
@@ -81,9 +59,9 @@ namespace ASC.Api.Documents
     [Scope]
     public class FolderWrapperHelper : FileEntryWrapperHelper
     {
-        private AuthContext AuthContext { get; }
-        private IDaoFactory DaoFactory { get; }
-        private GlobalFolderHelper GlobalFolderHelper { get; }
+        private readonly AuthContext _authContext;
+        private readonly IDaoFactory _daoFactory;
+        private readonly GlobalFolderHelper _globalFolderHelper;
 
         public FolderWrapperHelper(
             ApiDateTimeHelper apiDateTimeHelper,
@@ -95,9 +73,9 @@ namespace ASC.Api.Documents
             FileSharingHelper fileSharingHelper)
             : base(apiDateTimeHelper, employeeWrapperHelper, fileSharingHelper, fileSecurity)
         {
-            AuthContext = authContext;
-            DaoFactory = daoFactory;
-            GlobalFolderHelper = globalFolderHelper;
+            _authContext = authContext;
+            _daoFactory = daoFactory;
+            _globalFolderHelper = globalFolderHelper;
         }
 
         public async Task<FolderWrapper<T>> GetAsync<T>(Folder<T> folder, List<Tuple<FileEntry<T>, bool>> folders = null)
@@ -107,11 +85,11 @@ namespace ASC.Api.Documents
             result.ParentId = folder.FolderID;
 
             if (folder.RootFolderType == FolderType.USER
-                && !Equals(folder.RootFolderCreator, AuthContext.CurrentAccount.ID))
+                && !Equals(folder.RootFolderCreator, _authContext.CurrentAccount.ID))
             {
                 result.RootFolderType = FolderType.SHARE;
 
-                var folderDao = DaoFactory.GetFolderDao<T>();
+                var folderDao = _daoFactory.GetFolderDao<T>();
                 FileEntry<T> parentFolder;
 
                 if (folders != null)
@@ -119,16 +97,16 @@ namespace ASC.Api.Documents
                     var folderWithRight = folders.FirstOrDefault(f => f.Item1.ID.Equals(folder.FolderID));
                     if (folderWithRight == null || !folderWithRight.Item2)
                     {
-                        result.ParentId = await GlobalFolderHelper.GetFolderShareAsync<T>();
+                        result.ParentId = await _globalFolderHelper.GetFolderShareAsync<T>();
                     }
                 }
                 else
                 {
                     parentFolder = await folderDao.GetFolderAsync(folder.FolderID);
-                    var canRead = await FileSecurity.CanReadAsync(parentFolder);
+                    var canRead = await _fileSecurity.CanReadAsync(parentFolder);
                     if (!canRead)
                     {
-                        result.ParentId = await GlobalFolderHelper.GetFolderShareAsync<T>();
+                        result.ParentId = await _globalFolderHelper.GetFolderShareAsync<T>();
                     }
                 }
             }
@@ -143,6 +121,7 @@ namespace ASC.Api.Documents
             result.FoldersCount = folder.TotalSubFolders;
             result.IsShareable = folder.Shareable.NullIfDefault();
             result.New = folder.NewForMe;
+
             return result;
         }
     }

@@ -32,7 +32,7 @@ namespace ASC.Files.Thirdparty.SharePoint
     [Transient]
     public class SharePointProviderInfo : IProviderInfo
     {
-        private ClientContext clientContext;
+        private ClientContext _clientContext;
 
         public int ID { get; set; }
         public string ProviderKey { get; set; }
@@ -40,7 +40,7 @@ namespace ASC.Files.Thirdparty.SharePoint
         public FolderType RootFolderType { get; set; }
         public DateTime CreateOn { get; set; }
         public string CustomerTitle { get; set; }
-        public string RootFolderId { get { return "spoint-" + ID; } }
+        public string RootFolderId => "spoint-" + ID;
         public string SpRootFolderId { get; set; } = "/Shared Documents";
 
         public SharePointProviderInfo(
@@ -50,9 +50,9 @@ namespace ASC.Files.Thirdparty.SharePoint
             SharePointProviderInfoHelper sharePointProviderInfoHelper,
             TempStream tempStream)
         {
-            Log = options.CurrentValue;
-            ServiceProvider = serviceProvider;
-            TenantUtil = tenantUtil;
+            Logger = options.CurrentValue;
+            _serviceProvider = serviceProvider;
+            _tenantUtil = tenantUtil;
             SharePointProviderInfoHelper = sharePointProviderInfoHelper;
             TempStream = tempStream;
         }
@@ -61,22 +61,24 @@ namespace ASC.Files.Thirdparty.SharePoint
         {
             try
             {
-                clientContext.Load(clientContext.Web);
-                clientContext.ExecuteQuery();
+                _clientContext.Load(_clientContext.Web);
+                _clientContext.ExecuteQuery();
+
                 return Task.FromResult(true);
             }
             catch (Exception e)
             {
-                Log.Warn("CheckAccess", e);
+                Logger.Warn("CheckAccess", e);
+
                 return Task.FromResult(false);
             }
         }
 
         public Task InvalidateStorageAsync()
         {
-            if (clientContext != null)
+            if (_clientContext != null)
             {
-                clientContext.Dispose();
+                _clientContext.Dispose();
             }
 
             return SharePointProviderInfoHelper.InvalidateAsync();
@@ -102,13 +104,14 @@ namespace ASC.Files.Thirdparty.SharePoint
                 {
                     ss.AppendChar(p);
                 }
+
                 authUrl = string.Concat(authData.Url.TrimEnd('/'), personalPath);
                 //TODO
                 //credentials = new SharePointOnlineCredentials(authData.Login, ss);
 
             }
 
-            clientContext = new ClientContext(authUrl)
+            _clientContext = new ClientContext(authUrl)
             {
                 AuthenticationMode = ClientAuthenticationMode.Default,
                 Credentials = credentials
@@ -129,18 +132,19 @@ namespace ASC.Files.Thirdparty.SharePoint
                     SharePointProviderInfoHelper.AddFile(key, file);
                 }
             }
+
             return file;
         }
 
         private async Task<File> GetFileAsync(object id)
         {
-            var file = clientContext.Web.GetFileByServerRelativeUrl((string)id);
-            clientContext.Load(file);
-            clientContext.Load(file.ListItemAllFields);
+            var file = _clientContext.Web.GetFileByServerRelativeUrl((string)id);
+            _clientContext.Load(file);
+            _clientContext.Load(file.ListItemAllFields);
 
             try
             {
-                clientContext.ExecuteQuery();
+                _clientContext.ExecuteQuery();
             }
             catch (Exception ex)
             {
@@ -150,6 +154,7 @@ namespace ASC.Files.Thirdparty.SharePoint
                 {
                     return null;
                 }
+
                 return new SharePointFileErrorEntry(file.Context, file.Path) { Error = ex.Message, ID = id };
             }
 
@@ -160,9 +165,13 @@ namespace ASC.Files.Thirdparty.SharePoint
         {
             var file = await GetFileByIdAsync(id);
 
-            if (file is SharePointFileErrorEntry) return null;
-            var fileInfo = File.OpenBinaryDirect(clientContext, (string)id);
-            clientContext.ExecuteQuery();
+            if (file is SharePointFileErrorEntry)
+            {
+                return null;
+            }
+
+            var fileInfo = File.OpenBinaryDirect(_clientContext, (string)id);
+            _clientContext.ExecuteQuery();
 
             var tempBuffer = TempStream.Create();
             using (var str = fileInfo.Stream)
@@ -187,10 +196,10 @@ namespace ASC.Files.Thirdparty.SharePoint
                 b = br.ReadBytes((int)stream.Length);
             }
 
-            var file = clientContext.Web.RootFolder.Files.Add(new FileCreationInformation { Content = b, Url = id, Overwrite = true });
-            clientContext.Load(file);
-            clientContext.Load(file.ListItemAllFields);
-            clientContext.ExecuteQuery();
+            var file = _clientContext.Web.RootFolder.Files.Add(new FileCreationInformation { Content = b, Url = id, Overwrite = true });
+            _clientContext.Load(file);
+            _clientContext.Load(file.ListItemAllFields);
+            _clientContext.ExecuteQuery();
 
             SharePointProviderInfoHelper.AddFile("spointf-" + MakeId(id), file);
             await SharePointProviderInfoHelper.PublishFolderAsync(MakeId(GetParentFolderId(id))).ConfigureAwait(false);
@@ -204,10 +213,13 @@ namespace ASC.Files.Thirdparty.SharePoint
 
             var file = await GetFileByIdAsync(id).ConfigureAwait(false);
 
-            if (file is SharePointFileErrorEntry) return;
+            if (file is SharePointFileErrorEntry)
+            {
+                return;
+            }
 
             file.DeleteObject();
-            clientContext.ExecuteQuery();
+            _clientContext.ExecuteQuery();
         }
 
         public async Task<string> RenameFileAsync(string id, string newTitle)
@@ -216,11 +228,14 @@ namespace ASC.Files.Thirdparty.SharePoint
 
             var file = await GetFileByIdAsync(id).ConfigureAwait(false);
 
-            if (file is SharePointFileErrorEntry) return MakeId();
+            if (file is SharePointFileErrorEntry)
+            {
+                return MakeId();
+            }
 
             var newUrl = GetParentFolderId(file.ServerRelativeUrl) + "/" + newTitle;
             file.MoveTo(newUrl, MoveOperations.Overwrite);
-            clientContext.ExecuteQuery();
+            _clientContext.ExecuteQuery();
 
             return MakeId(newUrl);
         }
@@ -232,11 +247,14 @@ namespace ASC.Files.Thirdparty.SharePoint
 
             var file = await GetFileByIdAsync(id).ConfigureAwait(false);
 
-            if (file is SharePointFileErrorEntry) return MakeId();
+            if (file is SharePointFileErrorEntry)
+            {
+                return MakeId();
+            }
 
             var newUrl = toFolderId + "/" + file.Name;
             file.MoveTo(newUrl, MoveOperations.Overwrite);
-            clientContext.ExecuteQuery();
+            _clientContext.ExecuteQuery();
 
             return MakeId(newUrl);
         }
@@ -247,11 +265,14 @@ namespace ASC.Files.Thirdparty.SharePoint
 
             var file = await GetFileByIdAsync(id).ConfigureAwait(false);
 
-            if (file is SharePointFileErrorEntry) return file;
+            if (file is SharePointFileErrorEntry)
+            {
+                return file;
+            }
 
             var newUrl = toFolderId + "/" + file.Name;
             file.CopyTo(newUrl, false);
-            clientContext.ExecuteQuery();
+            _clientContext.ExecuteQuery();
 
             return file;
         }
@@ -259,9 +280,11 @@ namespace ASC.Files.Thirdparty.SharePoint
         public File<string> ToFile(File file)
         {
             if (file == null)
+            {
                 return null;
+            }
 
-            var result = ServiceProvider.GetService<File<string>>();
+            var result = _serviceProvider.GetService<File<string>>();
 
             if (file is SharePointFileErrorEntry errorFile)
             {
@@ -286,10 +309,10 @@ namespace ASC.Files.Thirdparty.SharePoint
             result.Access = Core.Security.FileShare.None;
             //ContentLength = file.Length,
             result.CreateBy = Owner;
-            result.CreateOn = file.TimeCreated.Kind == DateTimeKind.Utc ? TenantUtil.DateTimeFromUtc(file.TimeCreated) : file.TimeCreated;
+            result.CreateOn = file.TimeCreated.Kind == DateTimeKind.Utc ? _tenantUtil.DateTimeFromUtc(file.TimeCreated) : file.TimeCreated;
             result.FolderID = MakeId(GetParentFolderId(file.ServerRelativeUrl));
             result.ModifiedBy = Owner;
-            result.ModifiedOn = file.TimeLastModified.Kind == DateTimeKind.Utc ? TenantUtil.DateTimeFromUtc(file.TimeLastModified) : file.TimeLastModified;
+            result.ModifiedOn = file.TimeLastModified.Kind == DateTimeKind.Utc ? _tenantUtil.DateTimeFromUtc(file.TimeLastModified) : file.TimeLastModified;
             result.NativeAccessor = file;
             result.ProviderId = ID;
             result.ProviderKey = ProviderKey;
@@ -328,13 +351,14 @@ namespace ASC.Files.Thirdparty.SharePoint
                     folder = GetFolderByIdAsync(SpRootFolderId).Result;
                     SharePointProviderInfoHelper.AddFolder(key, folder);
                 }
+
                 return folder;
             }
         }
 
-        public ILog Log { get; }
-        private IServiceProvider ServiceProvider { get; }
-        private TenantUtil TenantUtil { get; }
+        public ILog Logger { get; }
+        private readonly IServiceProvider _serviceProvider;
+        private readonly TenantUtil _tenantUtil;
         public SharePointProviderInfoHelper SharePointProviderInfoHelper { get; }
         public TempStream TempStream { get; }
 
@@ -350,20 +374,25 @@ namespace ASC.Files.Thirdparty.SharePoint
                     SharePointProviderInfoHelper.AddFolder(key, folder);
                 }
             }
+
             return folder;
         }
 
         private async Task<Folder> GetFolderAsync(object id)
         {
-            if (((string)id).Length == 0) id = SpRootFolderId;
-            var folder = clientContext.Web.GetFolderByServerRelativeUrl((string)id);
-            clientContext.Load(folder);
-            clientContext.Load(folder.Files, collection => collection.IncludeWithDefaultProperties(r => r.ListItemAllFields));
-            clientContext.Load(folder.Folders);
+            if (((string)id).Length == 0)
+            {
+                id = SpRootFolderId;
+            }
+
+            var folder = _clientContext.Web.GetFolderByServerRelativeUrl((string)id);
+            _clientContext.Load(folder);
+            _clientContext.Load(folder.Files, collection => collection.IncludeWithDefaultProperties(r => r.ListItemAllFields));
+            _clientContext.Load(folder.Folders);
 
             try
             {
-                clientContext.ExecuteQuery();
+                _clientContext.ExecuteQuery();
             }
             catch (Exception ex)
             {
@@ -373,6 +402,7 @@ namespace ASC.Files.Thirdparty.SharePoint
                 {
                     return null;
                 }
+
                 return new SharePointFolderErrorEntry(folder.Context, folder.Path) { Error = ex.Message, ID = id };
             }
 
@@ -387,7 +417,10 @@ namespace ASC.Files.Thirdparty.SharePoint
         public async Task<IEnumerable<File>> GetFolderFilesAsync(object id)
         {
             var folder = await GetFolderByIdAsync(id).ConfigureAwait(false);
-            if (folder is SharePointFolderErrorEntry) return new List<File>();
+            if (folder is SharePointFolderErrorEntry)
+            {
+                return new List<File>();
+            }
 
             return folder.Files;
         }
@@ -395,7 +428,10 @@ namespace ASC.Files.Thirdparty.SharePoint
         public async Task<IEnumerable<Folder>> GetFolderFoldersAsync(object id)
         {
             var folder = await GetFolderByIdAsync(id).ConfigureAwait(false);
-            if (folder is SharePointFolderErrorEntry) return new List<Folder>();
+            if (folder is SharePointFolderErrorEntry)
+            {
+                return new List<Folder>();
+            }
 
             return folder.Folders.ToList().Where(r => r.ServerRelativeUrl != SpRootFolderId + "/" + "Forms");
         }
@@ -405,9 +441,13 @@ namespace ASC.Files.Thirdparty.SharePoint
             await SharePointProviderInfoHelper.PublishFolderAsync(MakeId(id), MakeId(GetParentFolderId(id)));
 
             var folder = await GetFolderByIdAsync(id).ConfigureAwait(false);
-            if (folder is SharePointFolderErrorEntry) return MakeId(id);
+            if (folder is SharePointFolderErrorEntry)
+            {
+                return MakeId(id);
+            }
 
             var moveFld = await MoveFldAsync(folder, GetParentFolderId(id) + "/" + newTitle).ConfigureAwait(false);
+
             return MakeId(moveFld.ServerRelativeUrl);
         }
 
@@ -416,10 +456,14 @@ namespace ASC.Files.Thirdparty.SharePoint
             await SharePointProviderInfoHelper.PublishFolderAsync(MakeId(id), MakeId(GetParentFolderId(id)), MakeId(toFolderId)).ConfigureAwait(false);
 
             var folder = await GetFolderByIdAsync(id).ConfigureAwait(false);
-            if (folder is SharePointFolderErrorEntry) return MakeId(id);
+            if (folder is SharePointFolderErrorEntry)
+            {
+                return MakeId(id);
+            }
 
             var nameById = await GetFolderByIdAsync(id).ConfigureAwait(false);
             var folderName = await MoveFldAsync(folder, toFolderId + "/" + nameById.Name).ConfigureAwait(false);
+
             return MakeId(folderName.ServerRelativeUrl);
         }
 
@@ -428,9 +472,13 @@ namespace ASC.Files.Thirdparty.SharePoint
             await SharePointProviderInfoHelper.PublishFolderAsync(MakeId(toFolderId));
 
             var folder = await GetFolderByIdAsync(id).ConfigureAwait(false);
-            if (folder is SharePointFolderErrorEntry) return folder;
+            if (folder is SharePointFolderErrorEntry)
+            {
+                return folder;
+            }
 
             var folderById = await GetFolderByIdAsync(id);
+
             return await MoveFldAsync(folder, toFolderId + "/" + folderById.Name, false).ConfigureAwait(false);
         }
 
@@ -451,7 +499,7 @@ namespace ASC.Files.Thirdparty.SharePoint
                 }
 
                 folder.DeleteObject();
-                clientContext.ExecuteQuery();
+                _clientContext.ExecuteQuery();
             }
             else
             {
@@ -471,11 +519,12 @@ namespace ASC.Files.Thirdparty.SharePoint
 
         public async Task<Folder> CreateFolderAsync(string id)
         {
-            var folder = clientContext.Web.RootFolder.Folders.Add(id);
-            clientContext.Load(folder);
-            clientContext.ExecuteQuery();
+            var folder = _clientContext.Web.RootFolder.Folders.Add(id);
+            _clientContext.Load(folder);
+            _clientContext.ExecuteQuery();
 
             await SharePointProviderInfoHelper.CreateFolderAsync(id, MakeId(GetParentFolderId(id)), folder).ConfigureAwait(false);
+
             return folder;
         }
 
@@ -485,17 +534,23 @@ namespace ASC.Files.Thirdparty.SharePoint
 
             var folder = await GetFolderByIdAsync(id).ConfigureAwait(false);
 
-            if (folder is SharePointFolderErrorEntry) return;
+            if (folder is SharePointFolderErrorEntry)
+            {
+                return;
+            }
 
             folder.DeleteObject();
-            clientContext.ExecuteQuery();
+            _clientContext.ExecuteQuery();
         }
 
         public Folder<string> ToFolder(Folder folder)
         {
-            if (folder == null) return null;
+            if (folder == null)
+            {
+                return null;
+            }
 
-            var result = ServiceProvider.GetService<Folder<string>>();
+            var result = _serviceProvider.GetService<Folder<string>>();
 
             if (folder is SharePointFolderErrorEntry errorFolder)
             {
@@ -548,6 +603,7 @@ namespace ASC.Files.Thirdparty.SharePoint
         {
             path = path.Replace(SpRootFolderId, "");
             var p = string.IsNullOrEmpty(path) || path == "/" || path == SpRootFolderId ? "" : ("-" + path.Replace('/', '|'));
+
             return $"{ID}{p}";
         }
 
@@ -578,54 +634,53 @@ namespace ASC.Files.Thirdparty.SharePoint
             return ((string)serverRelativeUrl).Split('/').Last();
         }
 
-
         public void Dispose()
         {
-            clientContext.Dispose();
+            _clientContext.Dispose();
         }
     }
 
     [Singletone]
     public class SharePointProviderInfoHelper
     {
-        private readonly TimeSpan CacheExpiration;
-        private readonly ICache FileCache;
-        private readonly ICache FolderCache;
-        private readonly ICacheNotify<SharePointProviderCacheItem> Notify;
+        private readonly TimeSpan _cacheExpiration;
+        private readonly ICache _fileCache;
+        private readonly ICache _folderCache;
+        private readonly ICacheNotify<SharePointProviderCacheItem> _notify;
 
         public SharePointProviderInfoHelper(ICacheNotify<SharePointProviderCacheItem> notify, ICache cache)
         {
-            CacheExpiration = TimeSpan.FromMinutes(1);
-            FileCache = cache;
-            FolderCache = cache;
-            Notify = notify;
+            _cacheExpiration = TimeSpan.FromMinutes(1);
+            _fileCache = cache;
+            _folderCache = cache;
+            _notify = notify;
 
-            Notify.Subscribe((i) =>
+            _notify.Subscribe((i) =>
             {
                 if (!string.IsNullOrEmpty(i.FileKey))
                 {
-                    FileCache.Remove("spointf-" + i.FileKey);
+                    _fileCache.Remove("spointf-" + i.FileKey);
                 }
                 if (!string.IsNullOrEmpty(i.FolderKey))
                 {
-                    FolderCache.Remove("spointd-" + i.FolderKey);
+                    _folderCache.Remove("spointd-" + i.FolderKey);
                 }
                 if (string.IsNullOrEmpty(i.FileKey) && string.IsNullOrEmpty(i.FolderKey))
                 {
-                    FileCache.Remove(new Regex("^spointf-.*"));
-                    FolderCache.Remove(new Regex("^spointd-.*"));
+                    _fileCache.Remove(new Regex("^spointf-.*"));
+                    _folderCache.Remove(new Regex("^spointd-.*"));
                 }
-            }, Common.Caching.CacheNotifyAction.Remove);
+            }, CacheNotifyAction.Remove);
         }
 
         public Task InvalidateAsync()
         {
-            return Notify.PublishAsync(new SharePointProviderCacheItem { }, Common.Caching.CacheNotifyAction.Remove);
+            return _notify.PublishAsync(new SharePointProviderCacheItem { }, Common.Caching.CacheNotifyAction.Remove);
         }
 
         public Task PublishFolderAsync(string id)
         {
-            return Notify.PublishAsync(new SharePointProviderCacheItem { FolderKey = id }, Common.Caching.CacheNotifyAction.Remove);
+            return _notify.PublishAsync(new SharePointProviderCacheItem { FolderKey = id }, Common.Caching.CacheNotifyAction.Remove);
         }
 
         public async Task PublishFolderAsync(string id1, string id2)
@@ -642,33 +697,33 @@ namespace ASC.Files.Thirdparty.SharePoint
 
         public Task PublishFileAsync(string fileId, string folderId)
         {
-            return Notify.PublishAsync(new SharePointProviderCacheItem { FileKey = fileId, FolderKey = folderId }, Common.Caching.CacheNotifyAction.Remove);
+            return _notify.PublishAsync(new SharePointProviderCacheItem { FileKey = fileId, FolderKey = folderId }, Common.Caching.CacheNotifyAction.Remove);
         }
 
         public async Task CreateFolderAsync(string id, string parentFolderId, Folder folder)
         {
             await PublishFolderAsync(parentFolderId).ConfigureAwait(false);
-            FolderCache.Insert("spointd-" + id, folder, DateTime.UtcNow.Add(CacheExpiration));
+            _folderCache.Insert("spointd-" + id, folder, DateTime.UtcNow.Add(_cacheExpiration));
         }
 
         public Folder GetFolder(string key)
         {
-            return FolderCache.Get<Folder>(key);
+            return _folderCache.Get<Folder>(key);
         }
 
         public void AddFolder(string key, Folder folder)
         {
-            FolderCache.Insert(key, folder, DateTime.UtcNow.Add(CacheExpiration));
+            _folderCache.Insert(key, folder, DateTime.UtcNow.Add(_cacheExpiration));
         }
 
         public File GetFile(string key)
         {
-            return FileCache.Get<File>(key);
+            return _fileCache.Get<File>(key);
         }
 
         public void AddFile(string key, File file)
         {
-            FileCache.Insert(key, file, DateTime.UtcNow.Add(CacheExpiration));
+            _fileCache.Insert(key, file, DateTime.UtcNow.Add(_cacheExpiration));
         }
     }
 }

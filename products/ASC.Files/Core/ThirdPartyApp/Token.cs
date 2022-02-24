@@ -64,6 +64,7 @@ namespace ASC.Web.Files.ThirdPartyApp
                     tokenHelper.Logger.Error("Refresh token for app: " + app, ex);
                 }
             }
+
             return AccessToken;
         }
     }
@@ -72,11 +73,11 @@ namespace ASC.Web.Files.ThirdPartyApp
     public class TokenHelper
     {
         public ILog Logger { get; }
-        private Lazy<FilesDbContext> LazyFilesDbContext { get; }
-        private FilesDbContext FilesDbContext { get => LazyFilesDbContext.Value; }
-        private InstanceCrypto InstanceCrypto { get; }
-        private AuthContext AuthContext { get; }
-        private TenantManager TenantManager { get; }
+        private readonly Lazy<FilesDbContext> _lazyFilesDbContext;
+        private FilesDbContext FilesDbContext => _lazyFilesDbContext.Value;
+        private readonly InstanceCrypto _instanceCrypto;
+        private readonly AuthContext _authContext;
+        private readonly TenantManager _tenantManager;
 
         public TokenHelper(
             DbContextManager<FilesDbContext> dbContextManager,
@@ -86,10 +87,10 @@ namespace ASC.Web.Files.ThirdPartyApp
             TenantManager tenantManager)
         {
             Logger = option.CurrentValue;
-            LazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
-            InstanceCrypto = instanceCrypto;
-            AuthContext = authContext;
-            TenantManager = tenantManager;
+            _lazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
+            _instanceCrypto = instanceCrypto;
+            _authContext = authContext;
+            _tenantManager = tenantManager;
         }
 
         public void SaveToken(Token token)
@@ -98,8 +99,8 @@ namespace ASC.Web.Files.ThirdPartyApp
             {
                 App = token.App,
                 Token = EncryptToken(token),
-                UserId = AuthContext.CurrentAccount.ID,
-                TenantId = TenantManager.GetCurrentTenant().TenantId
+                UserId = _authContext.CurrentAccount.ID,
+                TenantId = _tenantManager.GetCurrentTenant().TenantId
             };
 
             FilesDbContext.AddOrUpdate(r => r.ThirdpartyApp, dbFilesThirdpartyApp);
@@ -108,20 +109,23 @@ namespace ASC.Web.Files.ThirdPartyApp
 
         public Token GetToken(string app)
         {
-            return GetToken(app, AuthContext.CurrentAccount.ID);
+            return GetToken(app, _authContext.CurrentAccount.ID);
         }
 
         public Token GetToken(string app, Guid userId)
         {
             var oAuth20Token = FilesDbContext.ThirdpartyApp
                 .AsQueryable()
-                .Where(r => r.TenantId == TenantManager.GetCurrentTenant().TenantId)
+                .Where(r => r.TenantId == _tenantManager.GetCurrentTenant().TenantId)
                 .Where(r => r.UserId == userId)
                 .Where(r => r.App == app)
                 .Select(r => r.Token)
                 .FirstOrDefault();
 
-            if (oAuth20Token == null) return null;
+            if (oAuth20Token == null)
+            {
+                return null;
+            }
 
             return new Token(DecryptToken(oAuth20Token), app);
         }
@@ -130,8 +134,8 @@ namespace ASC.Web.Files.ThirdPartyApp
         {
             var apps = FilesDbContext.ThirdpartyApp
                 .AsQueryable()
-                .Where(r => r.TenantId == TenantManager.GetCurrentTenant().TenantId)
-                .Where(r => r.UserId == (userId ?? AuthContext.CurrentAccount.ID))
+                .Where(r => r.TenantId == _tenantManager.GetCurrentTenant().TenantId)
+                .Where(r => r.UserId == (userId ?? _authContext.CurrentAccount.ID))
                 .Where(r => r.App == app);
 
             FilesDbContext.RemoveRange(apps);
@@ -141,12 +145,13 @@ namespace ASC.Web.Files.ThirdPartyApp
         private string EncryptToken(OAuth20Token token)
         {
             var t = token.ToJson();
-            return string.IsNullOrEmpty(t) ? string.Empty : InstanceCrypto.Encrypt(t);
+
+            return string.IsNullOrEmpty(t) ? string.Empty : _instanceCrypto.Encrypt(t);
         }
 
         private OAuth20Token DecryptToken(string token)
         {
-            return string.IsNullOrEmpty(token) ? null : OAuth20Token.FromJson(InstanceCrypto.Decrypt(token));
+            return string.IsNullOrEmpty(token) ? null : OAuth20Token.FromJson(_instanceCrypto.Decrypt(token));
         }
     }
 }

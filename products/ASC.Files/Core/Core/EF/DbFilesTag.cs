@@ -15,6 +15,7 @@
             modelBuilder
                 .Add(MySqlAddDbFilesTag, Provider.MySql)
                 .Add(PgSqlAddDbFilesTag, Provider.PostgreSql);
+
             return modelBuilder;
         }
         public static void MySqlAddDbFilesTag(this ModelBuilder modelBuilder)

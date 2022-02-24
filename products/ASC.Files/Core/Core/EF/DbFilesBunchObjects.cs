@@ -19,6 +19,7 @@
             modelBuilder
                 .Add(MySqlAddDbFilesBunchObjects, Provider.MySql)
                 .Add(PgSqlAddDbFilesBunchObjects, Provider.PostgreSql);
+
             return modelBuilder;
         }
         public static void MySqlAddDbFilesBunchObjects(this ModelBuilder modelBuilder)

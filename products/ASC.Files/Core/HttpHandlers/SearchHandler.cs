@@ -27,35 +27,20 @@ namespace ASC.Web.Files.Configuration
 {
     public class SearchHandler
     {
-        public Guid ProductID
-        {
-            get { return ProductEntryPoint.ID; }
-        }
+        public Guid ProductID => ProductEntryPoint.ID;
+        public ImageOptions Logo => new ImageOptions { ImageFileName = "common_search_icon.png" };
+        public Guid ModuleID => ProductID;
+        public string SearchName => FilesCommonResource.Search;
 
-        public ImageOptions Logo
-        {
-            get { return new ImageOptions { ImageFileName = "common_search_icon.png" }; }
-        }
-
-        public Guid ModuleID
-        {
-            get { return ProductID; }
-        }
-
-        public string SearchName
-        {
-            get { return FilesCommonResource.Search; }
-        }
-
-        private FileSecurity FileSecurity { get; }
-        private IDaoFactory DaoFactory { get; }
-        private EntryManager EntryManager { get; }
-        private GlobalFolderHelper GlobalFolderHelper { get; }
-        private FilesSettingsHelper FilesSettingsHelper { get; }
-        private FilesLinkUtility FilesLinkUtility { get; }
-        private FileUtility FileUtility { get; }
-        private PathProvider PathProvider { get; }
-        private ThirdpartyConfiguration ThirdpartyConfiguration { get; }
+        private readonly FileSecurity _fileSecurity;
+        private readonly IDaoFactory _daoFactory;
+        private readonly EntryManager _entryManager;
+        private readonly GlobalFolderHelper _globalFolderHelper;
+        private readonly FilesSettingsHelper _filesSettingsHelper;
+        private readonly FilesLinkUtility _filesLinkUtility;
+        private readonly FileUtility _fileUtility;
+        private readonly PathProvider _pathProvider;
+        private readonly ThirdpartyConfiguration _thirdpartyConfiguration;
 
         public SearchHandler(
             FileSecurity fileSecurity,
@@ -68,34 +53,35 @@ namespace ASC.Web.Files.Configuration
             PathProvider pathProvider,
             ThirdpartyConfiguration thirdpartyConfiguration)
         {
-            FileSecurity = fileSecurity;
-            DaoFactory = daoFactory;
-            EntryManager = entryManager;
-            GlobalFolderHelper = globalFolderHelper;
-            FilesSettingsHelper = filesSettingsHelper;
-            FilesLinkUtility = filesLinkUtility;
-            FileUtility = fileUtility;
-            PathProvider = pathProvider;
-            ThirdpartyConfiguration = thirdpartyConfiguration;
+            _fileSecurity = fileSecurity;
+            _daoFactory = daoFactory;
+            _entryManager = entryManager;
+            _globalFolderHelper = globalFolderHelper;
+            _filesSettingsHelper = filesSettingsHelper;
+            _filesLinkUtility = filesLinkUtility;
+            _fileUtility = fileUtility;
+            _pathProvider = pathProvider;
+            _thirdpartyConfiguration = thirdpartyConfiguration;
         }
 
         public IAsyncEnumerable<File<int>> SearchFilesAsync(string text)
         {
-            var security = FileSecurity;
-            var fileDao = DaoFactory.GetFileDao<int>();
+            var security = _fileSecurity;
+            var fileDao = _daoFactory.GetFileDao<int>();
             var files = fileDao.SearchAsync(text);
+
             return files.WhereAwait(async e => await security.CanReadAsync(e));
         }
 
         public IAsyncEnumerable<Folder<int>> SearchFoldersAsync(string text)
         {
-            var security = FileSecurity;
-            var folderDao = DaoFactory.GetFolderDao<int>();
+            var security = _fileSecurity;
+            var folderDao = _daoFactory.GetFolderDao<int>();
             var folders = folderDao.SearchFoldersAsync(text);
             var result = folders.WhereAwait(async e => await security.CanReadAsync(e));
 
-            if (ThirdpartyConfiguration.SupportInclusion(DaoFactory)
-                && FilesSettingsHelper.EnableThirdParty)
+            if (_thirdpartyConfiguration.SupportInclusion(_daoFactory)
+                && _filesSettingsHelper.EnableThirdParty)
             {
                 //var id = GlobalFolderHelper.FolderMy;
                 //if (!Equals(id, 0))
@@ -114,7 +100,7 @@ namespace ASC.Web.Files.Configuration
 
         public async Task<SearchResultItem[]> SearchAsync(string text)
         {
-            var folderDao = DaoFactory.GetFolderDao<int>();
+            var folderDao = _daoFactory.GetFolderDao<int>();
             var files = SearchFilesAsync(text);
             List<SearchResultItem> list = new List<SearchResultItem>();
             await foreach (var file in files)
@@ -123,15 +109,16 @@ namespace ASC.Web.Files.Configuration
                 {
                     Name = file.Title ?? string.Empty,
                     Description = string.Empty,
-                    URL = FilesLinkUtility.GetFileWebPreviewUrl(FileUtility, file.Title, file.ID),
+                    URL = _filesLinkUtility.GetFileWebPreviewUrl(_fileUtility, file.Title, file.ID),
                     Date = file.ModifiedOn,
                     Additional = new Dictionary<string, object>
                                 {
                                     { "Author", file.CreateByString.HtmlEncode() },
-                                    { "Path", FolderPathBuilder(await EntryManager.GetBreadCrumbsAsync(file.FolderID, folderDao)) },
+                                    { "Path", FolderPathBuilder(await _entryManager.GetBreadCrumbsAsync(file.FolderID, folderDao)) },
                                     { "Size", FileSizeComment.FilesSizeToString(file.ContentLength) }
                                 }
                 };
+
                 list.Add(searchResultItem);
             }
 
@@ -142,12 +129,12 @@ namespace ASC.Web.Files.Configuration
                 {
                     Name = folder.Title ?? string.Empty,
                     Description = string.Empty,
-                    URL = await PathProvider.GetFolderUrlAsync(folder),
+                    URL = await _pathProvider.GetFolderUrlAsync(folder),
                     Date = folder.ModifiedOn,
                     Additional = new Dictionary<string, object>
                                     {
                                             { "Author", folder.CreateByString.HtmlEncode() },
-                                            { "Path", FolderPathBuilder(await EntryManager.GetBreadCrumbsAsync(folder.ID, folderDao)) },
+                                            { "Path", FolderPathBuilder(await _entryManager.GetBreadCrumbsAsync(folder.ID, folderDao)) },
                                             { "IsFolder", true }
                                     }
                 };
@@ -161,6 +148,7 @@ namespace ASC.Web.Files.Configuration
         {
             var titles = folders.Select(f => f.Title).ToList();
             const string separator = " \\ ";
+
             return 4 < titles.Count
                        ? string.Join(separator, new[] { titles.First(), "...", titles.ElementAt(titles.Count - 2), titles.Last() })
                        : string.Join(separator, titles.ToArray());

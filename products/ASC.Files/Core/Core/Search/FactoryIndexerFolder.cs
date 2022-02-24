@@ -28,8 +28,8 @@ namespace ASC.Web.Files.Core.Search
     [Scope(Additional = typeof(FactoryIndexerFolderExtension))]
     public class FactoryIndexerFolder : FactoryIndexer<DbFolder>
     {
-        private IDaoFactory DaoFactory { get; }
-        private Settings Settings { get; }
+        private readonly IDaoFactory _daoFactory;
+        private readonly Settings _settings;
 
         public FactoryIndexerFolder(
             IOptionsMonitor<ILog> options,
@@ -43,13 +43,13 @@ namespace ASC.Web.Files.Core.Search
             Settings settings)
             : base(options, tenantManager, searchSettingsHelper, factoryIndexer, baseIndexer, serviceProvider, cache)
         {
-            DaoFactory = daoFactory;
-            Settings = settings;
+            _daoFactory = daoFactory;
+            _settings = settings;
         }
 
         public override void IndexAll()
         {
-            var folderDao = DaoFactory.GetFolderDao<int>() as FolderDao;
+            var folderDao = _daoFactory.GetFolderDao<int>() as FolderDao;
 
             (int, int, int) getCount(DateTime lastIndexed)
             {
@@ -119,7 +119,7 @@ namespace ASC.Web.Files.Core.Search
 
                 foreach (var data in Indexer.IndexAll(getCount, getIds, getData))
                 {
-                    if (Settings.Threads == 1)
+                    if (_settings.Threads == 1)
                     {
                         Index(data);
                     }
@@ -127,7 +127,7 @@ namespace ASC.Web.Files.Core.Search
                     {
                         tasks.Add(IndexAsync(data));
                         j++;
-                        if (j >= Settings.Threads)
+                        if (j >= _settings.Threads)
                         {
                             Task.WaitAll(tasks.ToArray());
                             tasks = new List<Task>();

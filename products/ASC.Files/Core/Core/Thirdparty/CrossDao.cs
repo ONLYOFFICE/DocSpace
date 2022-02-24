@@ -3,18 +3,18 @@
     [Scope(Additional = typeof(CrossDaoExtension))]
     internal class CrossDao //Additional SharpBox
     {
-        private IServiceProvider ServiceProvider { get; }
-        private SetupInfo SetupInfo { get; }
-        private FileConverter FileConverter { get; }
+        private readonly IServiceProvider _serviceProvider;
+        private readonly SetupInfo _setupInfo;
+        private readonly FileConverter _fileConverter;
 
         public CrossDao(
             IServiceProvider serviceProvider,
             SetupInfo setupInfo,
             FileConverter fileConverter)
         {
-            ServiceProvider = serviceProvider;
-            SetupInfo = setupInfo;
-            FileConverter = fileConverter;
+            _serviceProvider = serviceProvider;
+            _setupInfo = setupInfo;
+            _fileConverter = fileConverter;
         }
 
         public async Task<File<TTo>> PerformCrossDaoFileCopyAsync<TFrom, TTo>(
@@ -25,14 +25,14 @@
             //Get File from first dao
             var fromFile = await fromFileDao.GetFileAsync(fromConverter(fromFileId));
 
-            if (fromFile.ContentLength > SetupInfo.AvailableFileSize)
+            if (fromFile.ContentLength > _setupInfo.AvailableFileSize)
             {
                 throw new Exception(string.Format(deleteSourceFile ? FilesCommonResource.ErrorMassage_FileSizeMove : FilesCommonResource.ErrorMassage_FileSizeCopy,
-                                                  FileSizeComment.FilesSizeToString(SetupInfo.AvailableFileSize)));
+                                                  FileSizeComment.FilesSizeToString(_setupInfo.AvailableFileSize)));
             }
 
-            var securityDao = ServiceProvider.GetService<ISecurityDao<TFrom>>();
-            var tagDao = ServiceProvider.GetService<ITagDao<TFrom>>();
+            var securityDao = _serviceProvider.GetService<ISecurityDao<TFrom>>();
+            var tagDao = _serviceProvider.GetService<ITagDao<TFrom>>();
 
             var fromFileShareRecords = (await securityDao.GetPureShareRecordsAsync(fromFile)).Where(x => x.EntryType == FileEntryType.File);
             var fromFileNewTags = await tagDao.GetNewTagsAsync(Guid.Empty, fromFile).ToListAsync();
@@ -40,7 +40,7 @@
             var fromFileFavoriteTag = await tagDao.GetTagsAsync(fromFile.ID, FileEntryType.File, TagType.Favorite).ToListAsync();
             var fromFileTemplateTag = await tagDao.GetTagsAsync(fromFile.ID, FileEntryType.File, TagType.Template).ToListAsync();
 
-            var toFile = ServiceProvider.GetService<File<TTo>>();
+            var toFile = _serviceProvider.GetService<File<TTo>>();
 
             toFile.Title = fromFile.Title;
             toFile.Encrypted = fromFile.Encrypted;
@@ -50,7 +50,7 @@
 
             var mustConvert = !string.IsNullOrEmpty(fromFile.ConvertedType);
             using (var fromFileStream = mustConvert
-                                            ? await FileConverter.ExecAsync(fromFile)
+                                            ? await _fileConverter.ExecAsync(fromFile)
                                             : await fromFileDao.GetFileStreamAsync(fromFile))
             {
                 toFile.ContentLength = fromFileStream.CanSeek ? fromFileStream.Length : fromFile.ContentLength;
@@ -78,9 +78,20 @@
                 }
 
                 var fromFileTags = fromFileNewTags;
-                if (fromFileLockTag != null) fromFileTags.Add(fromFileLockTag);
-                if (fromFileFavoriteTag != null) fromFileTags.AddRange(fromFileFavoriteTag);
-                if (fromFileTemplateTag != null) fromFileTags.AddRange(fromFileTemplateTag);
+                if (fromFileLockTag != null)
+                {
+                    fromFileTags.Add(fromFileLockTag);
+                }
+
+                if (fromFileFavoriteTag != null)
+                {
+                    fromFileTags.AddRange(fromFileFavoriteTag);
+                }
+
+                if (fromFileTemplateTag != null)
+                {
+                    fromFileTags.AddRange(fromFileTemplateTag);
+                }
 
                 if (fromFileTags.Count > 0)
                 {
@@ -92,6 +103,7 @@
                 //Delete source file if needed
                 await fromFileDao.DeleteFileAsync(fromConverter(fromFileId));
             }
+
             return toFile;
         }
 
@@ -102,7 +114,7 @@
         {
             var fromFolder = await fromFolderDao.GetFolderAsync(fromConverter(fromFolderId));
 
-            var toFolder1 = ServiceProvider.GetService<Folder<TTo>>();
+            var toFolder1 = _serviceProvider.GetService<Folder<TTo>>();
             toFolder1.Title = fromFolder.Title;
             toFolder1.FolderID = toConverter(toRootFolderId);
 
@@ -117,7 +129,11 @@
             //Copy files first
             foreach (var fileId in fileIdsToCopy)
             {
-                if (cancellationToken.HasValue) cancellationToken.Value.ThrowIfCancellationRequested();
+                if (cancellationToken.HasValue)
+                {
+                    cancellationToken.Value.ThrowIfCancellationRequested();
+                }
+
                 try
                 {
                     await PerformCrossDaoFileCopyAsync(fileId, fromFileDao, fromConverter,
@@ -131,7 +147,11 @@
             }
             foreach (var folder in foldersToCopy)
             {
-                if (cancellationToken.HasValue) cancellationToken.Value.ThrowIfCancellationRequested();
+                if (cancellationToken.HasValue)
+                {
+                    cancellationToken.Value.ThrowIfCancellationRequested();
+                }
+
                 try
                 {
                     await PerformCrossDaoFolderCopyAsync(folder.ID, fromFolderDao, fromFileDao, fromConverter,
@@ -146,7 +166,7 @@
 
             if (deleteSourceFolder)
             {
-                var securityDao = ServiceProvider.GetService<ISecurityDao<TFrom>>();
+                var securityDao = _serviceProvider.GetService<ISecurityDao<TFrom>>();
                 var fromFileShareRecords = (await securityDao.GetPureShareRecordsAsync(fromFolder))
                     .Where(x => x.EntryType == FileEntryType.Folder);
 
@@ -159,7 +179,7 @@
                     }
                 }
 
-                var tagDao = ServiceProvider.GetService<ITagDao<TFrom>>();
+                var tagDao = _serviceProvider.GetService<ITagDao<TFrom>>();
                 var fromFileNewTags = await tagDao.GetNewTagsAsync(Guid.Empty, fromFolder).ToListAsync();
 
                 if (fromFileNewTags.Count > 0)
@@ -170,10 +190,15 @@
                 }
 
                 if (copyException == null)
+                {
                     await fromFolderDao.DeleteFolderAsync(fromConverter(fromFolderId));
+                }
             }
 
-            if (copyException != null) throw copyException;
+            if (copyException != null)
+            {
+                throw copyException;
+            }
 
             return await toFolderDao.GetFolderAsync(toConverter(toFolderId));
         }

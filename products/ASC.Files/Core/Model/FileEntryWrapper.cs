@@ -55,11 +55,8 @@ namespace ASC.Api.Documents
         /// </summary>
         public ApiDateTime Updated
         {
-            get
-            {
-                return _updated < Created ? Created : _updated;
-            }
-            set { _updated = value; }
+            get => _updated < Created ? Created : _updated;
+            set => _updated = value;
         }
 
         /// <summary>
@@ -105,10 +102,7 @@ namespace ASC.Api.Documents
         /// <summary>
         /// 
         /// </summary>
-        protected FileEntryWrapper()
-        {
-
-        }
+        protected FileEntryWrapper() { }
     }
 
     /// <summary>
@@ -118,11 +112,8 @@ namespace ASC.Api.Documents
         /// <summary>
         /// </summary>
         public T Id { get; set; }
-
         public T RootFolderId { get; set; }
-
         public bool CanShare { get; set; }
-
         public bool CanEdit { get; set; }
 
         /// <summary>
@@ -139,19 +130,16 @@ namespace ASC.Api.Documents
         /// <summary>
         /// 
         /// </summary>
-        protected FileEntryWrapper()
-        {
-
-        }
+        protected FileEntryWrapper() { }
     }
 
     [Scope]
     public class FileEntryWrapperHelper
     {
-        private ApiDateTimeHelper ApiDateTimeHelper { get; }
-        private EmployeeWraperHelper EmployeeWraperHelper { get; }
-        public FileSharingHelper FileSharingHelper { get; }
-        public FileSecurity FileSecurity { get; }
+        private readonly ApiDateTimeHelper _apiDateTimeHelper;
+        private readonly EmployeeWraperHelper _employeeWraperHelper;
+        public readonly FileSharingHelper _fileSharingHelper;
+        public readonly FileSecurity _fileSecurity;
 
         public FileEntryWrapperHelper(
             ApiDateTimeHelper apiDateTimeHelper,
@@ -159,10 +147,10 @@ namespace ASC.Api.Documents
             FileSharingHelper fileSharingHelper, FileSecurity fileSecurity
             )
         {
-            ApiDateTimeHelper = apiDateTimeHelper;
-            EmployeeWraperHelper = employeeWraperHelper;
-            FileSharingHelper = fileSharingHelper;
-            FileSecurity = fileSecurity;
+            _apiDateTimeHelper = apiDateTimeHelper;
+            _employeeWraperHelper = employeeWraperHelper;
+            _fileSharingHelper = fileSharingHelper;
+            _fileSecurity = fileSecurity;
         }
 
         protected internal async Task<T> GetAsync<T, TId>(FileEntry<TId> entry) where T : FileEntryWrapper<TId>, new()
@@ -173,17 +161,17 @@ namespace ASC.Api.Documents
                 Title = entry.Title,
                 Access = entry.Access,
                 Shared = entry.Shared,
-                Created = ApiDateTimeHelper.Get(entry.CreateOn),
-                CreatedBy = EmployeeWraperHelper.Get(entry.CreateBy),
-                Updated = ApiDateTimeHelper.Get(entry.ModifiedOn),
-                UpdatedBy = EmployeeWraperHelper.Get(entry.ModifiedBy),
+                Created = _apiDateTimeHelper.Get(entry.CreateOn),
+                CreatedBy = _employeeWraperHelper.Get(entry.CreateBy),
+                Updated = _apiDateTimeHelper.Get(entry.ModifiedOn),
+                UpdatedBy = _employeeWraperHelper.Get(entry.ModifiedBy),
                 RootFolderType = entry.RootFolderType,
                 RootFolderId = entry.RootFolderId,
                 ProviderItem = entry.ProviderEntry.NullIfDefault(),
                 ProviderKey = entry.ProviderKey,
                 ProviderId = entry.ProviderId.NullIfDefault(),
-                CanShare = await FileSharingHelper.CanSetAccessAsync(entry),
-                CanEdit = await FileSecurity.CanEditAsync(entry)
+                CanShare = await _fileSharingHelper.CanSetAccessAsync(entry),
+                CanEdit = await _fileSecurity.CanEditAsync(entry)
             };
         }
     }

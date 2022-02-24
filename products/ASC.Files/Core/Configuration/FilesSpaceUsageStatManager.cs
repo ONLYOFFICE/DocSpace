@@ -23,25 +23,24 @@
  *
 */
 
-using Microsoft.EntityFrameworkCore;
-
 namespace ASC.Web.Files
 {
     [Scope]
     public class FilesSpaceUsageStatManager : SpaceUsageStatManager
     {
-        private Lazy<ASC.Files.Core.EF.FilesDbContext> LazyFilesDbContext { get; }
-        private ASC.Files.Core.EF.FilesDbContext FilesDbContext { get => LazyFilesDbContext.Value; }
-        private TenantManager TenantManager { get; }
-        private UserManager UserManager { get; }
-        private UserPhotoManager UserPhotoManager { get; }
-        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-        private CommonLinkUtility CommonLinkUtility { get; }
-        private GlobalFolderHelper GlobalFolderHelper { get; }
-        private PathProvider PathProvider { get; }
+        private FilesDbContext FilesDbContext => LazyFilesDbContext.Value;
+
+        private readonly Lazy<FilesDbContext> LazyFilesDbContext;
+        private readonly TenantManager _tenantManager;
+        private readonly UserManager _userManager;
+        private readonly UserPhotoManager _userPhotoManager;
+        private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
+        private readonly CommonLinkUtility _commonLinkUtility;
+        private readonly GlobalFolderHelper _globalFolderHelper;
+        private readonly PathProvider _pathProvider;
 
         public FilesSpaceUsageStatManager(
-            DbContextManager<ASC.Files.Core.EF.FilesDbContext> dbContextManager,
+            DbContextManager<FilesDbContext> dbContextManager,
             TenantManager tenantManager,
             UserManager userManager,
             UserPhotoManager userPhotoManager,
@@ -50,14 +49,14 @@ namespace ASC.Web.Files
             GlobalFolderHelper globalFolderHelper,
             PathProvider pathProvider)
         {
-            LazyFilesDbContext = new Lazy<ASC.Files.Core.EF.FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
-            TenantManager = tenantManager;
-            UserManager = userManager;
-            UserPhotoManager = userPhotoManager;
-            DisplayUserSettingsHelper = displayUserSettingsHelper;
-            CommonLinkUtility = commonLinkUtility;
-            GlobalFolderHelper = globalFolderHelper;
-            PathProvider = pathProvider;
+            LazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
+            _tenantManager = tenantManager;
+            _userManager = userManager;
+            _userPhotoManager = userPhotoManager;
+            _displayUserSettingsHelper = displayUserSettingsHelper;
+            _commonLinkUtility = commonLinkUtility;
+            _globalFolderHelper = globalFolderHelper;
+            _pathProvider = pathProvider;
         }
 
         public override ValueTask<List<UsageSpaceStatItem>> GetStatDataAsync()
@@ -67,7 +66,7 @@ namespace ASC.Web.Files
                 .Join(FilesDbContext.Tree, a => a.FolderId, b => b.FolderId, (file, tree) => new { file, tree })
                 .Join(FilesDbContext.BunchObjects, a => a.tree.ParentId.ToString(), b => b.LeftNode, (fileTree, bunch) => new { fileTree.file, fileTree.tree, bunch })
                 .Where(r => r.file.TenantId == r.bunch.TenantId)
-                .Where(r => r.file.TenantId == TenantManager.GetCurrentTenant().TenantId)
+                .Where(r => r.file.TenantId == _tenantManager.GetCurrentTenant().TenantId)
                 .Where(r => r.bunch.RightNode.StartsWith("files/my/") || r.bunch.RightNode.StartsWith("files/trash/"))
                 .GroupBy(r => r.file.CreateBy)
                 .Select(r => new { CreateBy = r.Key, Size = r.Sum(a => a.file.ContentLength) });
@@ -77,7 +76,7 @@ namespace ASC.Web.Files
                 .Join(FilesDbContext.Tree, a => a.FolderId, b => b.FolderId, (file, tree) => new { file, tree })
                 .Join(FilesDbContext.BunchObjects, a => a.tree.ParentId.ToString(), b => b.LeftNode, (fileTree, bunch) => new { fileTree.file, fileTree.tree, bunch })
                 .Where(r => r.file.TenantId == r.bunch.TenantId)
-                .Where(r => r.file.TenantId == TenantManager.GetCurrentTenant().TenantId)
+                .Where(r => r.file.TenantId == _tenantManager.GetCurrentTenant().TenantId)
                 .Where(r => r.bunch.RightNode.StartsWith("files/common/"))
                 .GroupBy(r => Constants.LostUser.ID)
                 .Select(r => new { CreateBy = Constants.LostUser.ID, Size = r.Sum(a => a.file.ContentLength) });
@@ -89,19 +88,19 @@ namespace ASC.Web.Files
                 async r => await Task.FromResult(r.Size),
                 async (userId, items) =>
                 {
-                    var user = UserManager.GetUsers(userId);
+                    var user = _userManager.GetUsers(userId);
                     var item = new UsageSpaceStatItem { SpaceUsage = await items.SumAsync() };
                     if (user.Equals(Constants.LostUser))
                     {
                         item.Name = FilesUCResource.CorporateFiles;
-                        item.ImgUrl = PathProvider.GetImagePath("corporatefiles_big.png");
-                        item.Url = await PathProvider.GetFolderUrlByIdAsync(await GlobalFolderHelper.FolderCommonAsync);
+                        item.ImgUrl = _pathProvider.GetImagePath("corporatefiles_big.png");
+                        item.Url = await _pathProvider.GetFolderUrlByIdAsync(await _globalFolderHelper.FolderCommonAsync);
                     }
                     else
                     {
-                        item.Name = user.DisplayUserName(false, DisplayUserSettingsHelper);
-                        item.ImgUrl = user.GetSmallPhotoURL(UserPhotoManager);
-                        item.Url = user.GetUserProfilePageURL(CommonLinkUtility);
+                        item.Name = user.DisplayUserName(false, _displayUserSettingsHelper);
+                        item.ImgUrl = user.GetSmallPhotoURL(_userPhotoManager);
+                        item.Url = user.GetUserProfilePageURL(_commonLinkUtility);
                         item.Disabled = user.Status == EmployeeStatus.Terminated;
                     }
                     return item;
@@ -115,32 +114,33 @@ namespace ASC.Web.Files
     [Scope]
     public class FilesUserSpaceUsage : IUserSpaceUsage
     {
-        private Lazy<ASC.Files.Core.EF.FilesDbContext> LazyFilesDbContext { get; }
-        private ASC.Files.Core.EF.FilesDbContext FilesDbContext { get => LazyFilesDbContext.Value; }
-        private TenantManager TenantManager { get; }
-        private GlobalFolder GlobalFolder { get; }
-        public FileMarker FileMarker { get; }
-        public IDaoFactory DaoFactory { get; }
+        private FilesDbContext FilesDbContext => _lazyFilesDbContext.Value;
+
+        private readonly Lazy<FilesDbContext> _lazyFilesDbContext;
+        private readonly TenantManager TenantManager;
+        private readonly GlobalFolder GlobalFolder;
+        private readonly FileMarker _fileMarker;
+        private readonly IDaoFactory _daoFactory;
 
         public FilesUserSpaceUsage(
-            DbContextManager<ASC.Files.Core.EF.FilesDbContext> dbContextManager,
+            DbContextManager<FilesDbContext> dbContextManager,
             TenantManager tenantManager,
             GlobalFolder globalFolder,
             FileMarker fileMarker,
             IDaoFactory daoFactory)
         {
-            LazyFilesDbContext = new Lazy<ASC.Files.Core.EF.FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
+            _lazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
             TenantManager = tenantManager;
             GlobalFolder = globalFolder;
-            FileMarker = fileMarker;
-            DaoFactory = daoFactory;
+            _fileMarker = fileMarker;
+            _daoFactory = daoFactory;
         }
 
         public async Task<long> GetUserSpaceUsageAsync(Guid userId)
         {
             var tenantId = TenantManager.GetCurrentTenant().TenantId;
-            var my = GlobalFolder.GetFolderMy(FileMarker, DaoFactory);
-            var trash = await GlobalFolder.GetFolderTrashAsync<int>(DaoFactory);
+            var my = GlobalFolder.GetFolderMy(_fileMarker, _daoFactory);
+            var trash = await GlobalFolder.GetFolderTrashAsync<int>(_daoFactory);
 
             return await FilesDbContext.Files
                 .AsQueryable()

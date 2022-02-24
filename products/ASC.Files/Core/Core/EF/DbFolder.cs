@@ -19,10 +19,7 @@
         public int FilesCount { get; set; }
 
         [Ignore]
-        public string IndexName
-        {
-            get => Tables.Folder;
-        }
+        public string IndexName => Tables.Folder;
 
         public Expression<Func<ISearchItem, object[]>> GetSearchContentFields(SearchSettingsHelper searchSettings)
         {
@@ -36,6 +33,7 @@
             modelBuilder
                 .Add(MySqlAddDbFolder, Provider.MySql)
                     .Add(PgSqlAddDbFolder, Provider.PostgreSql);
+
             return modelBuilder;
         }
         public static void MySqlAddDbFolder(this ModelBuilder modelBuilder)

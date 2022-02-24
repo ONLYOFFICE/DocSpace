@@ -28,10 +28,10 @@ namespace ASC.Files.Thirdparty.GoogleDrive
     [Scope]
     internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
     {
-        private CrossDao CrossDao { get; }
-        private GoogleDriveDaoSelector GoogleDriveDaoSelector { get; }
-        private IFileDao<int> FileDao { get; }
-        private IFolderDao<int> FolderDao { get; }
+        private readonly CrossDao _crossDao;
+        private readonly GoogleDriveDaoSelector _googleDriveDaoSelector;
+        private readonly IFileDao<int> _fileDao;
+        private readonly IFolderDao<int> _folderDao;
 
         public GoogleDriveFolderDao(
             IServiceProvider serviceProvider,
@@ -49,10 +49,10 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             TempPath tempPath
             ) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
         {
-            CrossDao = crossDao;
-            GoogleDriveDaoSelector = googleDriveDaoSelector;
-            FileDao = fileDao;
-            FolderDao = folderDao;
+            _crossDao = crossDao;
+            _googleDriveDaoSelector = googleDriveDaoSelector;
+            _fileDao = fileDao;
+            _folderDao = folderDao;
         }
 
         public async Task<Folder<string>> GetFolderAsync(string folderId)
@@ -63,6 +63,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         public async Task<Folder<string>> GetFolderAsync(string title, string parentId)
         {
             var entries = await GetDriveEntriesAsync(parentId, true).ConfigureAwait(false);
+
             return ToFolder(entries.FirstOrDefault(folder => folder.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase)));
         }
 
@@ -78,7 +79,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             foreach (var i in entries)
             {
                 yield return ToFolder(i);
-        }
+            }
         }
 
         public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
@@ -87,7 +88,9 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                 || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
                 || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
                 || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
+            {
                 return AsyncEnumerable.Empty<Folder<string>>();
+            }
 
             var folders = GetFoldersAsync(parentId); //TODO:!!!
 
@@ -99,9 +102,14 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             }
 
             if (!string.IsNullOrEmpty(searchText))
+            {
                 folders = folders.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
+            }
 
-            if (orderBy == null) orderBy = new OrderBy(SortedByType.DateAndTime, false);
+            if (orderBy == null)
+            {
+                orderBy = new OrderBy(SortedByType.DateAndTime, false);
+            }
 
             folders = orderBy.SortedBy switch
             {
@@ -121,7 +129,9 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                 || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
                 || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
                 || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
+            {
                 return AsyncEnumerable.Empty<Folder<string>>();
+            }
 
             var folders = folderIds.ToAsyncEnumerable().SelectAwait(async e => await GetFolderAsync(e).ConfigureAwait(false));
 
@@ -133,7 +143,9 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             }
 
             if (!string.IsNullOrEmpty(searchText))
+            {
                 folders = folders.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
+            }
 
             return folders;
         }
@@ -158,12 +170,17 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             }
 
             path.Reverse();
+
             return path;
         }
 
         public Task<string> SaveFolderAsync(Folder<string> folder)
         {
-            if (folder == null) throw new ArgumentNullException(nameof(folder));
+            if (folder == null)
+            {
+                throw new ArgumentNullException(nameof(folder));
+            }
+
             return InternalSaveFolderAsync(folder);
         }
 
@@ -187,6 +204,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
                 return MakeId(driveFolder);
             }
+
             return null;
         }
 
@@ -241,15 +259,18 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
             await ProviderInfo.CacheResetAsync(driveFolder.Id).ConfigureAwait(false);
             var parentDriveId = GetParentDriveId(driveFolder);
-            if (parentDriveId != null) await ProviderInfo.CacheResetAsync(parentDriveId, true).ConfigureAwait(false);
+            if (parentDriveId != null)
+            {
+                await ProviderInfo.CacheResetAsync(parentDriveId, true).ConfigureAwait(false);
+            }
         }
 
 
         public async Task<int> MoveFolderAsync(string folderId, int toFolderId, CancellationToken? cancellationToken)
         {
-            var moved = await CrossDao.PerformCrossDaoFolderCopyAsync(
-                folderId, this, GoogleDriveDaoSelector.GetFileDao(folderId), GoogleDriveDaoSelector.ConvertId,
-                toFolderId, FolderDao, FileDao, r => r,
+            var moved = await _crossDao.PerformCrossDaoFolderCopyAsync(
+                folderId, this, _googleDriveDaoSelector.GetFileDao(folderId), _googleDriveDaoSelector.ConvertId,
+                toFolderId, _folderDao, _fileDao, r => r,
                 true, cancellationToken)
                 .ConfigureAwait(false);
 
@@ -274,10 +295,16 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         public async Task<string> MoveFolderAsync(string folderId, string toFolderId, CancellationToken? cancellationToken)
         {
             var driveFolder = await GetDriveEntryAsync(folderId).ConfigureAwait(false);
-            if (driveFolder is ErrorDriveEntry errorDriveEntry) throw new Exception(errorDriveEntry.Error);
+            if (driveFolder is ErrorDriveEntry errorDriveEntry)
+            {
+                throw new Exception(errorDriveEntry.Error);
+            }
 
             var toDriveFolder = await GetDriveEntryAsync(toFolderId).ConfigureAwait(false);
-            if (toDriveFolder is ErrorDriveEntry errorDriveEntry1) throw new Exception(errorDriveEntry1.Error);
+            if (toDriveFolder is ErrorDriveEntry errorDriveEntry1)
+            {
+                throw new Exception(errorDriveEntry1.Error);
+            }
 
             var fromFolderDriveId = GetParentDriveId(driveFolder);
 
@@ -312,9 +339,9 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
         public async Task<Folder<int>> CopyFolderAsync(string folderId, int toFolderId, CancellationToken? cancellationToken)
         {
-            var moved = await CrossDao.PerformCrossDaoFolderCopyAsync(
-                folderId, this, GoogleDriveDaoSelector.GetFileDao(folderId), GoogleDriveDaoSelector.ConvertId,
-                toFolderId, FolderDao, FileDao, r => r,
+            var moved = await _crossDao.PerformCrossDaoFolderCopyAsync(
+                folderId, this, _googleDriveDaoSelector.GetFileDao(folderId), _googleDriveDaoSelector.ConvertId,
+                toFolderId, _folderDao, _fileDao, r => r,
                 false, cancellationToken)
                 .ConfigureAwait(false);
 
@@ -324,10 +351,16 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         public async Task<Folder<string>> CopyFolderAsync(string folderId, string toFolderId, CancellationToken? cancellationToken)
         {
             var driveFolder = await GetDriveEntryAsync(folderId).ConfigureAwait(false);
-            if (driveFolder is ErrorDriveEntry errorDriveEntry) throw new Exception(errorDriveEntry.Error);
+            if (driveFolder is ErrorDriveEntry errorDriveEntry)
+            {
+                throw new Exception(errorDriveEntry.Error);
+            }
 
             var toDriveFolder = await GetDriveEntryAsync(toFolderId).ConfigureAwait(false);
-            if (toDriveFolder is ErrorDriveEntry errorDriveEntry1) throw new Exception(errorDriveEntry1.Error);
+            if (toDriveFolder is ErrorDriveEntry errorDriveEntry1)
+            {
+                throw new Exception(errorDriveEntry1.Error);
+            }
 
             var storage = await ProviderInfo.StorageAsync;
             var newDriveFolder = await storage.InsertEntryAsync(null, driveFolder.Name, toDriveFolder.Id, true).ConfigureAwait(false);
@@ -384,7 +417,10 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
             await ProviderInfo.CacheResetAsync(driveFolder).ConfigureAwait(false);
             var parentDriveId = GetParentDriveId(driveFolder);
-            if (parentDriveId != null) await ProviderInfo.CacheResetAsync(parentDriveId, true).ConfigureAwait(false);
+            if (parentDriveId != null)
+            {
+                await ProviderInfo.CacheResetAsync(parentDriveId, true).ConfigureAwait(false);
+            }
 
             return MakeId(driveFolder.Id);
         }
@@ -400,6 +436,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             //note: without cache
             var storage = await ProviderInfo.StorageAsync;
             var entries = await storage.GetEntriesAsync(driveId).ConfigureAwait(false);
+
             return entries.Count == 0;
         }
 

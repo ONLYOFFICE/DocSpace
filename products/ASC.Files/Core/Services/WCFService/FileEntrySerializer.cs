@@ -27,15 +27,15 @@ namespace ASC.Web.Files.Services.WCFService
 {
     public class FileEntrySerializer
     {
-        private static readonly IDictionary<Type, XmlObjectSerializer> serializers = new Dictionary<Type, XmlObjectSerializer>();
-        private static readonly bool oldMonoSerializer = false;
+        private static readonly IDictionary<Type, XmlObjectSerializer> _serializers = new Dictionary<Type, XmlObjectSerializer>();
+        private static readonly bool _oldMonoSerializer = false;
 
 
         static FileEntrySerializer()
         {
-            serializers[typeof(File<>)] = new DataContractSerializer(typeof(File<>));
+            _serializers[typeof(File<>)] = new DataContractSerializer(typeof(File<>));
             //serializers[typeof(List<FileEntry<>>)] = new DataContractSerializer(typeof(List<FileEntry<>>));
-            serializers[typeof(DataWrapper<>)] = new DataContractSerializer(typeof(DataWrapper<>));
+            _serializers[typeof(DataWrapper<>)] = new DataContractSerializer(typeof(DataWrapper<>));
 
             //if (WorkContext.IsMono && !string.IsNullOrEmpty(WorkContext.MonoVersion))
             //{
@@ -50,9 +50,9 @@ namespace ASC.Web.Files.Services.WCFService
             //}
         }
 
-        public System.IO.MemoryStream ToXml(object o)
+        public MemoryStream ToXml(object o)
         {
-            var result = new System.IO.MemoryStream();
+            var result = new MemoryStream();
             if (o == null)
             {
                 return result;
@@ -60,12 +60,13 @@ namespace ASC.Web.Files.Services.WCFService
 
             using (var writer = XmlDictionaryWriter.CreateTextWriter(result, Encoding.UTF8, false))
             {
-                var serializer = serializers[o.GetType()];
+                var serializer = _serializers[o.GetType()];
                 serializer.WriteObject(writer, o);
             }
+
             result.Seek(0, System.IO.SeekOrigin.Begin);
 
-            if (oldMonoSerializer)
+            if (_oldMonoSerializer)
             {
                 var xml = new XmlDocument
                 {
@@ -87,6 +88,7 @@ namespace ASC.Web.Files.Services.WCFService
                                 a.Value = a.Value.Substring(nsattr.LocalName.Length + 1);
                             }
                         }
+
                         entry.Attributes.Remove(nsattr);
                     }
                 }
@@ -99,9 +101,9 @@ namespace ASC.Web.Files.Services.WCFService
                     nil.ParentNode.RemoveChild(nil);
                 }
 
-                result = new System.IO.MemoryStream();
+                result = new MemoryStream();
                 xml.Save(result);
-                result.Seek(0, System.IO.SeekOrigin.Begin);
+                result.Seek(0, SeekOrigin.Begin);
             }
 
             return result;
@@ -124,8 +126,10 @@ namespace ASC.Web.Files.Services.WCFService
                 {
                     typeName = new XmlDictionaryString(XmlDictionary.Empty, type.Name.ToLower(), 0);
                     typeNamespace = new XmlDictionaryString(XmlDictionary.Empty, declaredType.Name, 0);
+
                     return true;
                 }
+
                 return false;
             }
         }

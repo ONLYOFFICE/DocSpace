@@ -31,50 +31,51 @@ namespace ASC.Web.Files.Services.WCFService
     [Scope]
     public class FileStorageService<T> //: IFileStorageService
     {
-        private static readonly FileEntrySerializer serializer = new FileEntrySerializer();
-        private Global Global { get; }
-        private GlobalStore GlobalStore { get; }
-        private GlobalFolderHelper GlobalFolderHelper { get; }
-        private FilesSettingsHelper FilesSettingsHelper { get; }
-        private AuthContext AuthContext { get; }
-        private UserManager UserManager { get; }
-        private FileUtility FileUtility { get; }
-        private FilesLinkUtility FilesLinkUtility { get; }
-        private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
-        private CoreBaseSettings CoreBaseSettings { get; }
-        private CustomNamingPeople CustomNamingPeople { get; }
-        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-        private IHttpContextAccessor HttpContextAccessor { get; }
-        private PathProvider PathProvider { get; }
-        private FileSecurity FileSecurity { get; }
-        private SocketManager SocketManager { get; }
-        private IDaoFactory DaoFactory { get; }
-        private FileMarker FileMarker { get; }
-        private EntryManager EntryManager { get; }
-        private FilesMessageService FilesMessageService { get; }
-        private DocumentServiceTrackerHelper DocumentServiceTrackerHelper { get; }
-        private DocuSignToken DocuSignToken { get; }
-        private DocuSignHelper DocuSignHelper { get; }
-        private FileShareLink FileShareLink { get; }
-        private FileConverter FileConverter { get; }
-        private DocumentServiceHelper DocumentServiceHelper { get; }
-        private ThirdpartyConfiguration ThirdpartyConfiguration { get; }
-        private DocumentServiceConnector DocumentServiceConnector { get; }
-        private FileSharing FileSharing { get; }
-        private NotifyClient NotifyClient { get; }
-        private UrlShortener UrlShortener { get; }
-        private IServiceProvider ServiceProvider { get; }
-        private FileSharingAceHelper<T> FileSharingAceHelper { get; }
-        private ConsumerFactory ConsumerFactory { get; }
-        private EncryptionKeyPairHelper EncryptionKeyPairHelper { get; }
-        private SettingsManager SettingsManager { get; }
-        private FileOperationsManager FileOperationsManager { get; }
-        private TenantManager TenantManager { get; }
-        private FileTrackerHelper FileTracker { get; }
-        private ICacheNotify<ThumbnailRequest> ThumbnailNotify { get; }
-        private EntryStatusManager EntryStatusManager { get; }
         public CompressToArchive CompressToArchive { get; }
-        private ILog Logger { get; set; }
+
+        private static readonly FileEntrySerializer _serializer = new FileEntrySerializer();
+        private readonly Global _global;
+        private readonly GlobalStore _globalStore;
+        private readonly GlobalFolderHelper _globalFolderHelper;
+        private readonly FilesSettingsHelper _filesSettingsHelper;
+        private readonly AuthContext _authContext;
+        private readonly UserManager _userManager;
+        private readonly FileUtility _fileUtility;
+        private readonly FilesLinkUtility _filesLinkUtility;
+        private readonly BaseCommonLinkUtility _baseCommonLinkUtility;
+        private readonly CoreBaseSettings _coreBaseSettings;
+        private readonly CustomNamingPeople _customNamingPeople;
+        private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly PathProvider _pathProvider;
+        private readonly FileSecurity _fileSecurity;
+        private readonly SocketManager _socketManager;
+        private readonly IDaoFactory _daoFactory;
+        private readonly FileMarker _fileMarker;
+        private readonly EntryManager _entryManager;
+        private readonly FilesMessageService _filesMessageService;
+        private readonly DocumentServiceTrackerHelper _documentServiceTrackerHelper;
+        private readonly DocuSignToken _docuSignToken;
+        private readonly DocuSignHelper _docuSignHelper;
+        private readonly FileShareLink _fileShareLink;
+        private readonly FileConverter _fileConverter;
+        private readonly DocumentServiceHelper _documentServiceHelper;
+        private readonly ThirdpartyConfiguration _thirdpartyConfiguration;
+        private readonly DocumentServiceConnector _documentServiceConnector;
+        private readonly FileSharing _fileSharing;
+        private readonly NotifyClient _notifyClient;
+        private readonly UrlShortener _urlShortener;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly FileSharingAceHelper<T> _fileSharingAceHelper;
+        private readonly ConsumerFactory _consumerFactory;
+        private readonly EncryptionKeyPairHelper _encryptionKeyPairHelper;
+        private readonly SettingsManager _settingsManager;
+        private readonly FileOperationsManager _fileOperationsManager;
+        private readonly TenantManager _tenantManager;
+        private readonly FileTrackerHelper _fileTracker;
+        private readonly ICacheNotify<ThumbnailRequest> _thumbnailNotify;
+        private readonly EntryStatusManager _entryStatusManager;
+        private ILog _logger;
 
         public FileStorageService(
             Global global,
@@ -121,48 +122,48 @@ namespace ASC.Web.Files.Services.WCFService
             EntryStatusManager entryStatusManager,
             CompressToArchive compressToArchive)
         {
-            Global = global;
-            GlobalStore = globalStore;
-            GlobalFolderHelper = globalFolderHelper;
-            FilesSettingsHelper = filesSettingsHelper;
-            AuthContext = authContext;
-            UserManager = userManager;
-            FileUtility = fileUtility;
-            FilesLinkUtility = filesLinkUtility;
-            BaseCommonLinkUtility = baseCommonLinkUtility;
-            CoreBaseSettings = coreBaseSettings;
-            CustomNamingPeople = customNamingPeople;
-            DisplayUserSettingsHelper = displayUserSettingsHelper;
-            HttpContextAccessor = httpContextAccessor;
-            PathProvider = pathProvider;
-            FileSecurity = fileSecurity;
-            SocketManager = socketManager;
-            DaoFactory = daoFactory;
-            FileMarker = fileMarker;
-            EntryManager = entryManager;
-            FilesMessageService = filesMessageService;
-            DocumentServiceTrackerHelper = documentServiceTrackerHelper;
-            DocuSignToken = docuSignToken;
-            DocuSignHelper = docuSignHelper;
-            FileShareLink = fileShareLink;
-            FileConverter = fileConverter;
-            DocumentServiceHelper = documentServiceHelper;
-            ThirdpartyConfiguration = thirdpartyConfiguration;
-            DocumentServiceConnector = documentServiceConnector;
-            FileSharing = fileSharing;
-            NotifyClient = notifyClient;
-            UrlShortener = urlShortener;
-            ServiceProvider = serviceProvider;
-            FileSharingAceHelper = fileSharingAceHelper;
-            ConsumerFactory = consumerFactory;
-            EncryptionKeyPairHelper = encryptionKeyPairHelper;
-            SettingsManager = settingsManager;
-            Logger = optionMonitor.Get("ASC.Files");
-            FileOperationsManager = fileOperationsManager;
-            TenantManager = tenantManager;
-            FileTracker = fileTracker;
-            ThumbnailNotify = thumbnailNotify;
-            EntryStatusManager = entryStatusManager;
+            _global = global;
+            _globalStore = globalStore;
+            _globalFolderHelper = globalFolderHelper;
+            _filesSettingsHelper = filesSettingsHelper;
+            _authContext = authContext;
+            _userManager = userManager;
+            _fileUtility = fileUtility;
+            _filesLinkUtility = filesLinkUtility;
+            _baseCommonLinkUtility = baseCommonLinkUtility;
+            _coreBaseSettings = coreBaseSettings;
+            _customNamingPeople = customNamingPeople;
+            _displayUserSettingsHelper = displayUserSettingsHelper;
+            _httpContextAccessor = httpContextAccessor;
+            _pathProvider = pathProvider;
+            _fileSecurity = fileSecurity;
+            _socketManager = socketManager;
+            _daoFactory = daoFactory;
+            _fileMarker = fileMarker;
+            _entryManager = entryManager;
+            _filesMessageService = filesMessageService;
+            _documentServiceTrackerHelper = documentServiceTrackerHelper;
+            _docuSignToken = docuSignToken;
+            _docuSignHelper = docuSignHelper;
+            _fileShareLink = fileShareLink;
+            _fileConverter = fileConverter;
+            _documentServiceHelper = documentServiceHelper;
+            _thirdpartyConfiguration = thirdpartyConfiguration;
+            _documentServiceConnector = documentServiceConnector;
+            _fileSharing = fileSharing;
+            _notifyClient = notifyClient;
+            _urlShortener = urlShortener;
+            _serviceProvider = serviceProvider;
+            _fileSharingAceHelper = fileSharingAceHelper;
+            _consumerFactory = consumerFactory;
+            _encryptionKeyPairHelper = encryptionKeyPairHelper;
+            _settingsManager = settingsManager;
+            _logger = optionMonitor.Get("ASC.Files");
+            _fileOperationsManager = fileOperationsManager;
+            _tenantManager = tenantManager;
+            _fileTracker = fileTracker;
+            _thumbnailNotify = thumbnailNotify;
+            _entryStatusManager = entryStatusManager;
             CompressToArchive = compressToArchive;
         }
 
@@ -172,7 +173,7 @@ namespace ASC.Web.Files.Services.WCFService
             var folder = await folderDao.GetFolderAsync(folderId);
 
             ErrorIf(folder == null, FilesCommonResource.ErrorMassage_FolderNotFound);
-            ErrorIf(!await FileSecurity.CanReadAsync(folder), FilesCommonResource.ErrorMassage_SecurityException_ReadFolder);
+            ErrorIf(!await _fileSecurity.CanReadAsync(folder), FilesCommonResource.ErrorMassage_SecurityException_ReadFolder);
 
             return folder;
         }
@@ -183,7 +184,10 @@ namespace ASC.Web.Files.Services.WCFService
 
             try
             {
-                var entries = await EntryManager.GetEntriesAsync(await folderDao.GetFolderAsync(parentId), 0, 0, FilterType.FoldersOnly, false, Guid.Empty, string.Empty, false, false, new OrderBy(SortedByType.AZ, true));
+                var entries = await _entryManager.GetEntriesAsync(
+                    await folderDao.GetFolderAsync(parentId), 0, 0, FilterType.FoldersOnly, 
+                    false, Guid.Empty, string.Empty, false, false, new OrderBy(SortedByType.AZ, true));
+
                 return new List<FileEntry>(entries.Entries);
             }
             catch (Exception e)
@@ -198,14 +202,22 @@ namespace ASC.Web.Files.Services.WCFService
             var folder = await folderDao.GetFolderAsync(folderId);
 
             ErrorIf(folder == null, FilesCommonResource.ErrorMassage_FolderNotFound);
-            ErrorIf(!await FileSecurity.CanReadAsync(folder), FilesCommonResource.ErrorMassage_SecurityException_ViewFolder);
+            ErrorIf(!await _fileSecurity.CanReadAsync(folder), FilesCommonResource.ErrorMassage_SecurityException_ViewFolder);
 
-            var breadCrumbs = await EntryManager.GetBreadCrumbsAsync(folderId, folderDao);
+            var breadCrumbs = await _entryManager.GetBreadCrumbsAsync(folderId, folderDao);
 
             return new List<object>(breadCrumbs.Select(f =>
             {
-                if (f is Folder<string> f1) return (object)f1.ID;
-                if (f is Folder<int> f2) return f2.ID;
+                if (f is Folder<string> f1)
+                {
+                    return (object)f1.ID;
+                }
+
+                if (f is Folder<int> f2)
+                {
+                    return f2.ID;
+                }
+
                 return 0;
             }));
         }
@@ -220,7 +232,10 @@ namespace ASC.Web.Files.Services.WCFService
             try
             {
                 parent = await folderDao.GetFolderAsync(parentId);
-                if (parent != null && !string.IsNullOrEmpty(parent.Error)) throw new Exception(parent.Error);
+                if (parent != null && !string.IsNullOrEmpty(parent.Error))
+                {
+                    throw new Exception(parent.Error);
+                }
             }
             catch (Exception e)
             {
@@ -228,30 +243,33 @@ namespace ASC.Web.Files.Services.WCFService
                 {
                     throw GenerateException(new Exception(FilesCommonResource.ErrorMassage_SharpBoxException, e));
                 }
+
                 throw GenerateException(e);
             }
 
             ErrorIf(parent == null, FilesCommonResource.ErrorMassage_FolderNotFound);
-            ErrorIf(!await FileSecurity.CanReadAsync(parent), FilesCommonResource.ErrorMassage_SecurityException_ViewFolder);
-            ErrorIf(parent.RootFolderType == FolderType.TRASH && !Equals(parent.ID, GlobalFolderHelper.FolderTrash), FilesCommonResource.ErrorMassage_ViewTrashItem);
+            ErrorIf(!await _fileSecurity.CanReadAsync(parent), FilesCommonResource.ErrorMassage_SecurityException_ViewFolder);
+            ErrorIf(parent.RootFolderType == FolderType.TRASH && !Equals(parent.ID, _globalFolderHelper.FolderTrash), FilesCommonResource.ErrorMassage_ViewTrashItem);
 
             if (orderBy != null)
             {
-                FilesSettingsHelper.DefaultOrder = orderBy;
+                _filesSettingsHelper.DefaultOrder = orderBy;
             }
             else
             {
-                orderBy = FilesSettingsHelper.DefaultOrder;
+                orderBy = _filesSettingsHelper.DefaultOrder;
             }
 
-            if (Equals(parent.ID, await GlobalFolderHelper.FolderShareAsync) && orderBy.SortedBy == SortedByType.DateAndTime)
+            if (Equals(parent.ID, await _globalFolderHelper.FolderShareAsync) && orderBy.SortedBy == SortedByType.DateAndTime)
+            {
                 orderBy.SortedBy = SortedByType.New;
+            }
 
             int total;
             IEnumerable<FileEntry> entries;
             try
             {
-                (entries, total) = await EntryManager.GetEntriesAsync(parent, from, count, filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, orderBy);
+                (entries, total) = await _entryManager.GetEntriesAsync(parent, from, count, filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, orderBy);
             }
             catch (Exception e)
             {
@@ -259,25 +277,33 @@ namespace ASC.Web.Files.Services.WCFService
                 {
                     throw GenerateException(new Exception(FilesCommonResource.ErrorMassage_SharpBoxException, e));
                 }
+
                 throw GenerateException(e);
             }
 
-            var breadCrumbs = await EntryManager.GetBreadCrumbsAsync(parentId, folderDao);
+            var breadCrumbs = await _entryManager.GetBreadCrumbsAsync(parentId, folderDao);
 
             var prevVisible = breadCrumbs.ElementAtOrDefault(breadCrumbs.Count - 2);
             if (prevVisible != null)
             {
-                if (prevVisible is Folder<string> f1) parent.FolderID = (T)Convert.ChangeType(f1.ID, typeof(T));
-                if (prevVisible is Folder<int> f2) parent.FolderID = (T)Convert.ChangeType(f2.ID, typeof(T));
+                if (prevVisible is Folder<string> f1)
+                {
+                    parent.FolderID = (T)Convert.ChangeType(f1.ID, typeof(T));
+                }
+
+                if (prevVisible is Folder<int> f2)
+                {
+                    parent.FolderID = (T)Convert.ChangeType(f2.ID, typeof(T));
+                }
             }
 
-            parent.Shareable = await FileSharing.CanSetAccessAsync(parent)
+            parent.Shareable = await _fileSharing.CanSetAccessAsync(parent)
                 || parent.FolderType == FolderType.SHARE
                 || parent.RootFolderType == FolderType.Privacy;
 
             entries = entries.Where(x => x.FileEntryType == FileEntryType.Folder ||
-            x is File<string> f1 && !FileConverter.IsConverting(f1) ||
-             x is File<int> f2 && !FileConverter.IsConverting(f2));
+            x is File<string> f1 && !_fileConverter.IsConverting(f1) ||
+             x is File<int> f2 && !_fileConverter.IsConverting(f2));
 
             var result = new DataWrapper<T>
             {
@@ -285,12 +311,20 @@ namespace ASC.Web.Files.Services.WCFService
                 Entries = new List<FileEntry>(entries.ToList()),
                 FolderPathParts = new List<object>(breadCrumbs.Select(f =>
                 {
-                    if (f is Folder<string> f1) return (object)f1.ID;
-                    if (f is Folder<int> f2) return f2.ID;
+                    if (f is Folder<string> f1)
+                    {
+                        return (object)f1.ID;
+                    }
+
+                    if (f is Folder<int> f2)
+                    {
+                        return f2.ID;
+                    }
+
                     return 0;
                 })),
                 FolderInfo = parent,
-                New = await FileMarker.GetRootFoldersIdMarkedAsNewAsync(parentId)
+                New = await _fileMarker.GetRootFoldersIdMarkedAsNewAsync(parentId)
             };
 
             return result;
@@ -301,7 +335,7 @@ namespace ASC.Web.Files.Services.WCFService
             var folderItems = await GetFolderItemsAsync(parentId, from, count, filter, subjectGroup, subjectID, search, searchInContent, withSubfolders, orderBy);
             var response = new HttpResponseMessage(HttpStatusCode.OK)
             {
-                Content = new StreamContent(serializer.ToXml(folderItems))
+                Content = new StreamContent(_serializer.ToXml(folderItems))
             };
             response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/xml");
             return response;
@@ -313,49 +347,52 @@ namespace ASC.Web.Files.Services.WCFService
 
             var entries = Enumerable.Empty<FileEntry<TId>>();
 
-            var folderDao = DaoFactory.GetFolderDao<TId>();
-            var fileDao = DaoFactory.GetFileDao<TId>();
+            var folderDao = _daoFactory.GetFolderDao<TId>();
+            var fileDao = _daoFactory.GetFileDao<TId>();
             var folders = await folderDao.GetFoldersAsync(foldersId).ToListAsync();
-            var tmpFolders = await FileSecurity.FilterReadAsync(folders);
+            var tmpFolders = await _fileSecurity.FilterReadAsync(folders);
             folders = tmpFolders.ToList();
             entries = entries.Concat(folders);
 
             var files = await fileDao.GetFilesAsync(filesId).ToListAsync();
-            files = (await FileSecurity.FilterReadAsync(files)).ToList();
+            files = (await _fileSecurity.FilterReadAsync(files)).ToList();
             entries = entries.Concat(files);
 
-            entries = EntryManager.FilterEntries(entries, filter, subjectGroup, subjectId, search, true);
+            entries = _entryManager.FilterEntries(entries, filter, subjectGroup, subjectId, search, true);
 
             foreach (var fileEntry in entries)
             {
                 if (fileEntry is File<TId> file)
                 {
                     if (fileEntry.RootFolderType == FolderType.USER
-                        && !Equals(fileEntry.RootFolderCreator, AuthContext.CurrentAccount.ID)
-                        && !await FileSecurity.CanReadAsync(await folderDao.GetFolderAsync(file.FolderIdDisplay)))
+                        && !Equals(fileEntry.RootFolderCreator, _authContext.CurrentAccount.ID)
+                        && !await _fileSecurity.CanReadAsync(await folderDao.GetFolderAsync(file.FolderIdDisplay)))
                     {
-                        file.FolderIdDisplay = await GlobalFolderHelper.GetFolderShareAsync<TId>();
+                        file.FolderIdDisplay = await _globalFolderHelper.GetFolderShareAsync<TId>();
                     }
                 }
                 else if (fileEntry is Folder<TId> folder)
                 {
                     if (fileEntry.RootFolderType == FolderType.USER
-                        && !Equals(fileEntry.RootFolderCreator, AuthContext.CurrentAccount.ID)
-                        && !await FileSecurity.CanReadAsync(await folderDao.GetFolderAsync(folder.FolderIdDisplay)))
+                        && !Equals(fileEntry.RootFolderCreator, _authContext.CurrentAccount.ID)
+                        && !await _fileSecurity.CanReadAsync(await folderDao.GetFolderAsync(folder.FolderIdDisplay)))
                     {
-                        folder.FolderIdDisplay = await GlobalFolderHelper.GetFolderShareAsync<TId>();
+                        folder.FolderIdDisplay = await _globalFolderHelper.GetFolderShareAsync<TId>();
                     }
                 }
             }
 
-            await EntryStatusManager.SetFileStatusAsync(entries);
+            await _entryStatusManager.SetFileStatusAsync(entries);
 
             return new List<FileEntry>(entries);
         }
 
         public Task<Folder<T>> CreateNewFolderAsync(T parentId, string title)
         {
-            if (string.IsNullOrEmpty(title) || parentId == null) throw new ArgumentException();
+            if (string.IsNullOrEmpty(title) || parentId == null)
+            {
+                throw new ArgumentException();
+            }
 
             return InternalCreateNewFolderAsync(parentId, title);
         }
@@ -366,17 +403,17 @@ namespace ASC.Web.Files.Services.WCFService
 
             var parent = await folderDao.GetFolderAsync(parentId);
             ErrorIf(parent == null, FilesCommonResource.ErrorMassage_FolderNotFound);
-            ErrorIf(!await FileSecurity.CanCreateAsync(parent), FilesCommonResource.ErrorMassage_SecurityException_Create);
+            ErrorIf(!await _fileSecurity.CanCreateAsync(parent), FilesCommonResource.ErrorMassage_SecurityException_Create);
 
             try
             {
-                var newFolder = ServiceProvider.GetService<Folder<T>>();
+                var newFolder = _serviceProvider.GetService<Folder<T>>();
                 newFolder.Title = title;
                 newFolder.FolderID = parent.ID;
 
                 var folderId = await folderDao.SaveFolderAsync(newFolder);
                 var folder = await folderDao.GetFolderAsync(folderId);
-                FilesMessageService.Send(folder, GetHttpHeaders(), MessageAction.FolderCreated, folder.Title);
+                _filesMessageService.Send(folder, GetHttpHeaders(), MessageAction.FolderCreated, folder.Title);
 
                 return folder;
             }
@@ -392,8 +429,12 @@ namespace ASC.Web.Files.Services.WCFService
             var folderDao = GetFolderDao();
             var folder = await folderDao.GetFolderAsync(folderId);
             ErrorIf(folder == null, FilesCommonResource.ErrorMassage_FolderNotFound);
-            ErrorIf(!await FileSecurity.CanEditAsync(folder), FilesCommonResource.ErrorMassage_SecurityException_RenameFolder);
-            if (!await FileSecurity.CanDeleteAsync(folder) && UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_RenameFolder);
+            ErrorIf(!await _fileSecurity.CanEditAsync(folder), FilesCommonResource.ErrorMassage_SecurityException_RenameFolder);
+            if (!await _fileSecurity.CanDeleteAsync(folder) && _userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager))
+            {
+                throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_RenameFolder);
+            }
+
             ErrorIf(folder.RootFolderType == FolderType.TRASH, FilesCommonResource.ErrorMassage_ViewTrashItem);
 
             var folderAccess = folder.Access;
@@ -404,7 +445,7 @@ namespace ASC.Web.Files.Services.WCFService
                 folder = await folderDao.GetFolderAsync(newFolderID);
                 folder.Access = folderAccess;
 
-                FilesMessageService.Send(folder, GetHttpHeaders(), MessageAction.FolderRenamed, folder.Title);
+                _filesMessageService.Send(folder, GetHttpHeaders(), MessageAction.FolderRenamed, folder.Title);
 
                 //if (!folder.ProviderEntry)
                 //{
@@ -412,7 +453,7 @@ namespace ASC.Web.Files.Services.WCFService
                 //}
             }
 
-            var newTags = tagDao.GetNewTagsAsync(AuthContext.CurrentAccount.ID, folder);
+            var newTags = tagDao.GetNewTagsAsync(_authContext.CurrentAccount.ID, folder);
             var tag = await newTags.FirstOrDefaultAsync();
             if (tag != null)
             {
@@ -420,10 +461,10 @@ namespace ASC.Web.Files.Services.WCFService
             }
 
             if (folder.RootFolderType == FolderType.USER
-                && !Equals(folder.RootFolderCreator, AuthContext.CurrentAccount.ID)
-                && !await FileSecurity.CanReadAsync(await folderDao.GetFolderAsync(folder.FolderID)))
+                && !Equals(folder.RootFolderCreator, _authContext.CurrentAccount.ID)
+                && !await _fileSecurity.CanReadAsync(await folderDao.GetFolderAsync(folder.FolderID)))
             {
-                folder.FolderIdDisplay = await GlobalFolderHelper.GetFolderShareAsync<T>();
+                folder.FolderIdDisplay = await _globalFolderHelper.GetFolderShareAsync<T>();
             }
 
             return folder;
@@ -438,17 +479,17 @@ namespace ASC.Web.Files.Services.WCFService
                            ? await fileDao.GetFileAsync(fileId, version)
                            : await fileDao.GetFileAsync(fileId);
             ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
-            ErrorIf(!await FileSecurity.CanReadAsync(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
+            ErrorIf(!await _fileSecurity.CanReadAsync(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
 
-            await EntryStatusManager.SetFileStatusAsync(file);
+            await _entryStatusManager.SetFileStatusAsync(file);
 
             if (file.RootFolderType == FolderType.USER
-                && !Equals(file.RootFolderCreator, AuthContext.CurrentAccount.ID))
+                && !Equals(file.RootFolderCreator, _authContext.CurrentAccount.ID))
             {
                 var folderDao = GetFolderDao();
-                if (!await FileSecurity.CanReadAsync(await folderDao.GetFolderAsync(file.FolderID)))
+                if (!await _fileSecurity.CanReadAsync(await folderDao.GetFolderAsync(file.FolderID)))
                 {
-                    file.FolderIdDisplay = await GlobalFolderHelper.GetFolderShareAsync<T>();
+                    file.FolderIdDisplay = await _globalFolderHelper.GetFolderShareAsync<T>();
                 }
             }
 
@@ -464,7 +505,7 @@ namespace ASC.Web.Files.Services.WCFService
 
             var file = await fileDao.GetFileAsync(fileId);
             ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
-            ErrorIf(!await FileSecurity.CanReadAsync(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
+            ErrorIf(!await _fileSecurity.CanReadAsync(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
 
             var parent = await folderDao.GetFolderAsync(EqualityComparer<T>.Default.Equals(parentId, default(T)) ? file.FolderID : parentId);
             ErrorIf(parent == null, FilesCommonResource.ErrorMassage_FolderNotFound);
@@ -481,25 +522,25 @@ namespace ASC.Web.Files.Services.WCFService
 
             if (orderBy == null)
             {
-                orderBy = FilesSettingsHelper.DefaultOrder;
+                orderBy = _filesSettingsHelper.DefaultOrder;
             }
-            if (Equals(parent.ID, await GlobalFolderHelper.GetFolderShareAsync<T>()) && orderBy.SortedBy == SortedByType.DateAndTime)
+            if (Equals(parent.ID, await _globalFolderHelper.GetFolderShareAsync<T>()) && orderBy.SortedBy == SortedByType.DateAndTime)
             {
                 orderBy.SortedBy = SortedByType.New;
             }
 
             var entries = Enumerable.Empty<FileEntry>();
 
-            if (!await FileSecurity.CanReadAsync(parent))
+            if (!await _fileSecurity.CanReadAsync(parent))
             {
-                file.FolderID = await GlobalFolderHelper.GetFolderShareAsync<T>();
+                file.FolderID = await _globalFolderHelper.GetFolderShareAsync<T>();
                 entries = entries.Concat(new[] { file });
             }
             else
             {
                 try
                 {
-                    (entries, var total) = await EntryManager.GetEntriesAsync(parent, 0, 0, filter, subjectGroup, subjectId, search, searchInContent, withSubfolders, orderBy);
+                    (entries, var total) = await _entryManager.GetEntriesAsync(parent, 0, 0, filter, subjectGroup, subjectId, search, searchInContent, withSubfolders, orderBy);
                 }
                 catch (Exception e)
                 {
@@ -507,13 +548,14 @@ namespace ASC.Web.Files.Services.WCFService
                     {
                         throw GenerateException(new Exception(FilesCommonResource.ErrorMassage_SharpBoxException, e));
                     }
+
                     throw GenerateException(e);
                 }
             }
 
             var previewedType = new[] { FileType.Image, FileType.Audio, FileType.Video };
 
-            var result = await FileSecurity.FilterReadAsync(entries.OfType<File<T>>());
+            var result = await _fileSecurity.FilterReadAsync(entries.OfType<File<T>>());
             result = result.OfType<File<T>>().Where(f => previewedType.Contains(FileUtility.GetFileTypeByFileName(f.Title)));
 
             return new List<File<T>>(result);
@@ -521,7 +563,10 @@ namespace ASC.Web.Files.Services.WCFService
 
         public Task<File<T>> CreateNewFileAsync<TTemplate>(FileModel<T, TTemplate> fileWrapper, bool enableExternalExt = false)
         {
-            if (string.IsNullOrEmpty(fileWrapper.Title) || fileWrapper.ParentId == null) throw new ArgumentException();
+            if (string.IsNullOrEmpty(fileWrapper.Title) || fileWrapper.ParentId == null)
+            {
+                throw new ArgumentException();
+            }
 
             return InternalCreateNewFileAsync(fileWrapper, enableExternalExt);
         }
@@ -535,7 +580,7 @@ namespace ASC.Web.Files.Services.WCFService
             if (!EqualityComparer<T>.Default.Equals(fileWrapper.ParentId, default(T)))
             {
                 folder = await folderDao.GetFolderAsync(fileWrapper.ParentId);
-                var canCreate = await FileSecurity.CanCreateAsync(folder);
+                var canCreate = await _fileSecurity.CanCreateAsync(folder);
                 if (!canCreate)
                 {
                     folder = null;
@@ -543,11 +588,11 @@ namespace ASC.Web.Files.Services.WCFService
             }
             if (folder == null)
             {
-                folder = await folderDao.GetFolderAsync(GlobalFolderHelper.GetFolderMy<T>());
+                folder = await folderDao.GetFolderAsync(_globalFolderHelper.GetFolderMy<T>());
             }
 
 
-            var file = ServiceProvider.GetService<File<T>>();
+            var file = _serviceProvider.GetService<File<T>>();
             file.FolderID = folder.ID;
             file.Comment = FilesCommonResource.CommentCreate;
 
@@ -559,12 +604,12 @@ namespace ASC.Web.Files.Services.WCFService
             var externalExt = false;
             var title = fileWrapper.Title;
             var fileExt = FileUtility.GetFileExtension(title);
-            if (fileExt != FileUtility.MasterFormExtension)
+            if (fileExt != _fileUtility.MasterFormExtension)
             {
-                fileExt = FileUtility.GetInternalExtension(title);
-                if (!FileUtility.InternalExtension.Values.Contains(fileExt))
+                fileExt = _fileUtility.GetInternalExtension(title);
+                if (!_fileUtility.InternalExtension.Values.Contains(fileExt))
                 {
-                    fileExt = FileUtility.InternalExtension[FileType.Document];
+                    fileExt = _fileUtility.InternalExtension[FileType.Document];
                     file.Title = title + fileExt;
                 }
                 else
@@ -579,7 +624,7 @@ namespace ASC.Web.Files.Services.WCFService
 
             if (EqualityComparer<TTemplate>.Default.Equals(fileWrapper.TemplateId, default(TTemplate)))
             {
-                var culture = UserManager.GetUsers(AuthContext.CurrentAccount.ID).GetCulture();
+                var culture = _userManager.GetUsers(_authContext.CurrentAccount.ID).GetCulture();
                 var storeTemplate = GetStoreTemplate();
 
                 var path = FileConstant.NewDocPath + culture + "/";
@@ -604,7 +649,7 @@ namespace ASC.Web.Files.Services.WCFService
                         file = await fileDao.SaveFileAsync(file, null);
                     }
 
-                    var pathThumb = path + fileExt.Trim('.') + "." + Global.ThumbnailExtension;
+                    var pathThumb = path + fileExt.Trim('.') + "." + _global.ThumbnailExtension;
                     if (await storeTemplate.IsFileAsync("", pathThumb))
                     {
                         using (var streamThumb = await storeTemplate.GetReadStreamAsync("", pathThumb, 0))
@@ -621,10 +666,10 @@ namespace ASC.Web.Files.Services.WCFService
             }
             else
             {
-                var fileTemlateDao = DaoFactory.GetFileDao<TTemplate>();
+                var fileTemlateDao = _daoFactory.GetFileDao<TTemplate>();
                 var template = await fileTemlateDao.GetFileAsync(fileWrapper.TemplateId);
                 ErrorIf(template == null, FilesCommonResource.ErrorMassage_FileNotFound);
-                ErrorIf(!await FileSecurity.CanReadAsync(template), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
+                ErrorIf(!await _fileSecurity.CanReadAsync(template), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
 
                 try
                 {
@@ -649,11 +694,11 @@ namespace ASC.Web.Files.Services.WCFService
                 }
             }
 
-            FilesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileCreated, file.Title);
+            _filesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileCreated, file.Title);
 
-            await FileMarker.MarkAsNewAsync(file);
+            await _fileMarker.MarkAsNewAsync(file);
 
-            await SocketManager.CreateFileAsync(file);
+            await _socketManager.CreateFileAsync(file);
 
             return file;
         }
@@ -662,24 +707,35 @@ namespace ASC.Web.Files.Services.WCFService
         {
             try
             {
-                var id = FileShareLink.Parse<T>(doc);
+                var id = _fileShareLink.Parse<T>(doc);
                 if (id == null)
                 {
-                    if (!AuthContext.IsAuthenticated) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
-                    if (!string.IsNullOrEmpty(doc)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
+                    if (!_authContext.IsAuthenticated)
+                    {
+                        throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
+                    }
+
+                    if (!string.IsNullOrEmpty(doc))
+                    {
+                        throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
+                    }
+
                     id = fileId;
                 }
 
-                if (docKeyForTrack != DocumentServiceHelper.GetDocKey(id, -1, DateTime.MinValue)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
+                if (docKeyForTrack != _documentServiceHelper.GetDocKey(id, -1, DateTime.MinValue))
+                {
+                    throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
+                }
 
                 if (isFinish)
                 {
-                    FileTracker.Remove(id, tabId);
-                    await SocketManager.StopEditAsync(id);
+                    _fileTracker.Remove(id, tabId);
+                    await _socketManager.StopEditAsync(id);
                 }
                 else
                 {
-                    await EntryManager.TrackEditingAsync(id, tabId, AuthContext.CurrentAccount.ID, doc);
+                    await _entryManager.TrackEditingAsync(id, tabId, _authContext.CurrentAccount.ID, doc);
                 }
 
                 return new KeyValuePair<bool, string>(true, string.Empty);
@@ -692,23 +748,26 @@ namespace ASC.Web.Files.Services.WCFService
 
         public async Task<Dictionary<string, string>> CheckEditingAsync(List<T> filesId)
         {
-            ErrorIf(!AuthContext.IsAuthenticated, FilesCommonResource.ErrorMassage_SecurityException);
+            ErrorIf(!_authContext.IsAuthenticated, FilesCommonResource.ErrorMassage_SecurityException);
             var result = new Dictionary<string, string>();
 
             var fileDao = GetFileDao();
-            var ids = filesId.Where(FileTracker.IsEditing).Select(id => id).ToList();
+            var ids = filesId.Where(_fileTracker.IsEditing).Select(id => id).ToList();
 
             await foreach (var file in fileDao.GetFilesAsync(ids))
             {
                 if (file == null
-                    || !await FileSecurity.CanEditAsync(file)
-                    && !await FileSecurity.CanCustomFilterEditAsync(file)
-                    && !await FileSecurity.CanReviewAsync(file)
-                    && !await FileSecurity.CanFillFormsAsync(file)
-                    && !await FileSecurity.CanCommentAsync(file)) continue;
+                    || !await _fileSecurity.CanEditAsync(file)
+                    && !await _fileSecurity.CanCustomFilterEditAsync(file)
+                    && !await _fileSecurity.CanReviewAsync(file)
+                    && !await _fileSecurity.CanFillFormsAsync(file)
+                    && !await _fileSecurity.CanCommentAsync(file))
+                {
+                    continue;
+                }
 
-                var usersId = FileTracker.GetEditingBy(file.ID);
-                var value = string.Join(", ", usersId.Select(userId => Global.GetUserName(userId, true)).ToArray());
+                var usersId = _fileTracker.GetEditingBy(file.ID);
+                var value = string.Join(", ", usersId.Select(userId => _global.GetUserName(userId, true)).ToArray());
                 result[file.ID.ToString()] = value;
             }
 
@@ -719,16 +778,18 @@ namespace ASC.Web.Files.Services.WCFService
         {
             try
             {
-                if (!forcesave && FileTracker.IsEditingAlone(fileId))
+                if (!forcesave && _fileTracker.IsEditingAlone(fileId))
                 {
-                    FileTracker.Remove(fileId);
-                    await SocketManager.StopEditAsync(fileId);
+                    _fileTracker.Remove(fileId);
+                    await _socketManager.StopEditAsync(fileId);
                 }
 
-                var file = await EntryManager.SaveEditingAsync(fileId, fileExtension, fileuri, stream, doc, forcesave: forcesave ? ForcesaveType.User : ForcesaveType.None, keepLink: true);
+                var file = await _entryManager.SaveEditingAsync(fileId, fileExtension, fileuri, stream, doc, forcesave: forcesave ? ForcesaveType.User : ForcesaveType.None, keepLink: true);
 
                 if (file != null)
-                    FilesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileUpdated, file.Title);
+                {
+                    _filesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileUpdated, file.Title);
+                }
 
                 return file;
             }
@@ -742,13 +803,13 @@ namespace ASC.Web.Files.Services.WCFService
         {
             try
             {
-                if (!forcesave && FileTracker.IsEditing(fileId))
+                if (!forcesave && _fileTracker.IsEditing(fileId))
                 {
-                    FileTracker.Remove(fileId);
-                    await SocketManager.StopEditAsync(fileId);
+                    _fileTracker.Remove(fileId);
+                    await _socketManager.StopEditAsync(fileId);
                 }
 
-                var file = await EntryManager.SaveEditingAsync(fileId,
+                var file = await _entryManager.SaveEditingAsync(fileId,
                     fileExtension,
                     null,
                     stream,
@@ -758,7 +819,9 @@ namespace ASC.Web.Files.Services.WCFService
                     forcesave: forcesave ? ForcesaveType.User : ForcesaveType.None);
 
                 if (file != null)
-                    FilesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileUpdated, file.Title);
+                {
+                    _filesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileUpdated, file.Title);
+                }
 
                 return file;
             }
@@ -775,16 +838,16 @@ namespace ASC.Web.Files.Services.WCFService
                 IThirdPartyApp app;
                 if (editingAlone)
                 {
-                    ErrorIf(FileTracker.IsEditing(fileId), FilesCommonResource.ErrorMassage_SecurityException_EditFileTwice);
+                    ErrorIf(_fileTracker.IsEditing(fileId), FilesCommonResource.ErrorMassage_SecurityException_EditFileTwice);
 
                     app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
                     if (app == null)
                     {
-                        await EntryManager.TrackEditingAsync(fileId, Guid.Empty, AuthContext.CurrentAccount.ID, doc, true);
+                        await _entryManager.TrackEditingAsync(fileId, Guid.Empty, _authContext.CurrentAccount.ID, doc, true);
                     }
 
                     //without StartTrack, track via old scheme
-                    return DocumentServiceHelper.GetDocKey(fileId, -1, DateTime.MinValue);
+                    return _documentServiceHelper.GetDocKey(fileId, -1, DateTime.MinValue);
                 }
 
                 (File<string> File, Configuration<string> Configuration) fileOptions;
@@ -792,12 +855,12 @@ namespace ASC.Web.Files.Services.WCFService
                 app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
                 if (app == null)
                 {
-                    fileOptions = await DocumentServiceHelper.GetParamsAsync(fileId.ToString(), -1, doc, true, true, false);
+                    fileOptions = await _documentServiceHelper.GetParamsAsync(fileId.ToString(), -1, doc, true, true, false);
                 }
                 else
                 {
                     var file = app.GetFile(fileId.ToString(), out var editable);
-                    fileOptions = await DocumentServiceHelper.GetParamsAsync(file, true, editable ? FileShare.ReadWrite : FileShare.Read, false, editable, editable, editable, false);
+                    fileOptions = await _documentServiceHelper.GetParamsAsync(file, true, editable ? FileShare.ReadWrite : FileShare.Read, false, editable, editable, editable, false);
                 }
 
                 var configuration = fileOptions.Configuration;
@@ -811,7 +874,7 @@ namespace ASC.Web.Files.Services.WCFService
                         !string.IsNullOrEmpty(configuration.ErrorMessage) ? configuration.ErrorMessage : FilesCommonResource.ErrorMassage_SecurityException_EditFile);
                 var key = configuration.Document.Key;
 
-                if (!await DocumentServiceTrackerHelper.StartTrackAsync(fileId.ToString(), key))
+                if (!await _documentServiceTrackerHelper.StartTrackAsync(fileId.ToString(), key))
                 {
                     throw new Exception(FilesCommonResource.ErrorMassage_StartEditing);
                 }
@@ -820,7 +883,8 @@ namespace ASC.Web.Files.Services.WCFService
             }
             catch (Exception e)
             {
-                FileTracker.Remove(fileId);
+                _fileTracker.Remove(fileId);
+
                 throw GenerateException(e);
             }
         }
@@ -829,12 +893,12 @@ namespace ASC.Web.Files.Services.WCFService
         {
             try
             {
-                var fileRename = await EntryManager.FileRenameAsync(fileId, title);
+                var fileRename = await _entryManager.FileRenameAsync(fileId, title);
                 var file = fileRename.File;
 
                 if (fileRename.Renamed)
                 {
-                    FilesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileRenamed, file.Title);
+                    _filesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileRenamed, file.Title);
 
                     //if (!file.ProviderEntry)
                     //{
@@ -843,12 +907,12 @@ namespace ASC.Web.Files.Services.WCFService
                 }
 
                 if (file.RootFolderType == FolderType.USER
-                    && !Equals(file.RootFolderCreator, AuthContext.CurrentAccount.ID))
+                    && !Equals(file.RootFolderCreator, _authContext.CurrentAccount.ID))
                 {
                     var folderDao = GetFolderDao();
-                    if (!await FileSecurity.CanReadAsync(await folderDao.GetFolderAsync(file.FolderID)))
+                    if (!await _fileSecurity.CanReadAsync(await folderDao.GetFolderAsync(file.FolderID)))
                     {
-                        file.FolderIdDisplay = await GlobalFolderHelper.GetFolderShareAsync<T>();
+                        file.FolderIdDisplay = await _globalFolderHelper.GetFolderShareAsync<T>();
                     }
                 }
 
@@ -864,23 +928,23 @@ namespace ASC.Web.Files.Services.WCFService
         {
             var fileDao = GetFileDao();
             var file = await fileDao.GetFileAsync(fileId);
-            ErrorIf(!await FileSecurity.CanReadAsync(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
+            ErrorIf(!await _fileSecurity.CanReadAsync(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
 
             return await fileDao.GetFileHistoryAsync(fileId).ToListAsync();
         }
 
         public async Task<KeyValuePair<File<T>, List<File<T>>>> UpdateToVersionAsync(T fileId, int version)
         {
-            var file = await EntryManager.UpdateToVersionFileAsync(fileId, version);
-            FilesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileRestoreVersion, file.Title, version.ToString(CultureInfo.InvariantCulture));
+            var file = await _entryManager.UpdateToVersionFileAsync(fileId, version);
+            _filesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileRestoreVersion, file.Title, version.ToString(CultureInfo.InvariantCulture));
 
             if (file.RootFolderType == FolderType.USER
-                && !Equals(file.RootFolderCreator, AuthContext.CurrentAccount.ID))
+                && !Equals(file.RootFolderCreator, _authContext.CurrentAccount.ID))
             {
                 var folderDao = GetFolderDao();
-                if (!await FileSecurity.CanReadAsync(await folderDao.GetFolderAsync(file.FolderID)))
+                if (!await _fileSecurity.CanReadAsync(await folderDao.GetFolderAsync(file.FolderID)))
                 {
-                    file.FolderIdDisplay = await GlobalFolderHelper.GetFolderShareAsync<T>();
+                    file.FolderIdDisplay = await _globalFolderHelper.GetFolderShareAsync<T>();
                 }
             }
 
@@ -892,32 +956,32 @@ namespace ASC.Web.Files.Services.WCFService
             var fileDao = GetFileDao();
             var file = await fileDao.GetFileAsync(fileId, version);
             ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
-            ErrorIf(!await FileSecurity.CanEditAsync(file) || UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager), FilesCommonResource.ErrorMassage_SecurityException_EditFile);
-            ErrorIf(await EntryManager.FileLockedForMeAsync(file.ID), FilesCommonResource.ErrorMassage_LockedFile);
+            ErrorIf(!await _fileSecurity.CanEditAsync(file) || _userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager), FilesCommonResource.ErrorMassage_SecurityException_EditFile);
+            ErrorIf(await _entryManager.FileLockedForMeAsync(file.ID), FilesCommonResource.ErrorMassage_LockedFile);
             ErrorIf(file.RootFolderType == FolderType.TRASH, FilesCommonResource.ErrorMassage_ViewTrashItem);
 
             comment = await fileDao.UpdateCommentAsync(fileId, version, comment);
 
-            FilesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileUpdatedRevisionComment, file.Title, version.ToString(CultureInfo.InvariantCulture));
+            _filesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileUpdatedRevisionComment, file.Title, version.ToString(CultureInfo.InvariantCulture));
 
             return comment;
         }
 
         public async Task<KeyValuePair<File<T>, List<File<T>>>> CompleteVersionAsync(T fileId, int version, bool continueVersion)
         {
-            var file = await EntryManager.CompleteVersionFileAsync(fileId, version, continueVersion);
+            var file = await _entryManager.CompleteVersionFileAsync(fileId, version, continueVersion);
 
-            FilesMessageService.Send(file, GetHttpHeaders(),
+            _filesMessageService.Send(file, GetHttpHeaders(),
                                      continueVersion ? MessageAction.FileDeletedVersion : MessageAction.FileCreatedVersion,
                                      file.Title, version == 0 ? (file.Version - 1).ToString(CultureInfo.InvariantCulture) : version.ToString(CultureInfo.InvariantCulture));
 
             if (file.RootFolderType == FolderType.USER
-                && !Equals(file.RootFolderCreator, AuthContext.CurrentAccount.ID))
+                && !Equals(file.RootFolderCreator, _authContext.CurrentAccount.ID))
             {
                 var folderDao = GetFolderDao();
-                if (!await FileSecurity.CanReadAsync(await folderDao.GetFolderAsync(file.FolderID)))
+                if (!await _fileSecurity.CanReadAsync(await folderDao.GetFolderAsync(file.FolderID)))
                 {
-                    file.FolderIdDisplay = await GlobalFolderHelper.GetFolderShareAsync<T>();
+                    file.FolderIdDisplay = await _globalFolderHelper.GetFolderShareAsync<T>();
                 }
             }
 
@@ -931,35 +995,35 @@ namespace ASC.Web.Files.Services.WCFService
             var file = await fileDao.GetFileAsync(fileId);
 
             ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
-            ErrorIf(!await FileSecurity.CanEditAsync(file) || lockfile && UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager), FilesCommonResource.ErrorMassage_SecurityException_EditFile);
+            ErrorIf(!await _fileSecurity.CanEditAsync(file) || lockfile && _userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager), FilesCommonResource.ErrorMassage_SecurityException_EditFile);
             ErrorIf(file.RootFolderType == FolderType.TRASH, FilesCommonResource.ErrorMassage_ViewTrashItem);
 
             var tags = tagDao.GetTagsAsync(file.ID, FileEntryType.File, TagType.Locked);
             var tagLocked = await tags.FirstOrDefaultAsync();
 
             ErrorIf(tagLocked != null
-                    && tagLocked.Owner != AuthContext.CurrentAccount.ID
-                    && !Global.IsAdministrator
-                    && (file.RootFolderType != FolderType.USER || file.RootFolderCreator != AuthContext.CurrentAccount.ID), FilesCommonResource.ErrorMassage_LockedFile);
+                    && tagLocked.Owner != _authContext.CurrentAccount.ID
+                    && !_global.IsAdministrator
+                    && (file.RootFolderType != FolderType.USER || file.RootFolderCreator != _authContext.CurrentAccount.ID), FilesCommonResource.ErrorMassage_LockedFile);
 
             if (lockfile)
             {
                 if (tagLocked == null)
                 {
-                    tagLocked = new Tag("locked", TagType.Locked, AuthContext.CurrentAccount.ID, 0).AddEntry(file);
+                    tagLocked = new Tag("locked", TagType.Locked, _authContext.CurrentAccount.ID, 0).AddEntry(file);
 
                     tagDao.SaveTags(tagLocked);
                 }
 
-                var usersDrop = FileTracker.GetEditingBy(file.ID).Where(uid => uid != AuthContext.CurrentAccount.ID).Select(u => u.ToString()).ToArray();
+                var usersDrop = _fileTracker.GetEditingBy(file.ID).Where(uid => uid != _authContext.CurrentAccount.ID).Select(u => u.ToString()).ToArray();
                 if (usersDrop.Length > 0)
                 {
                     var fileStable = file.Forcesave == ForcesaveType.None ? file : await fileDao.GetFileStableAsync(file.ID, file.Version);
-                    var docKey = DocumentServiceHelper.GetDocKey(fileStable);
-                    await DocumentServiceHelper.DropUserAsync(docKey, usersDrop, file.ID);
+                    var docKey = _documentServiceHelper.GetDocKey(fileStable);
+                    await _documentServiceHelper.DropUserAsync(docKey, usersDrop, file.ID);
                 }
 
-                FilesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileLocked, file.Title);
+                _filesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileLocked, file.Title);
             }
             else
             {
@@ -967,25 +1031,25 @@ namespace ASC.Web.Files.Services.WCFService
                 {
                     tagDao.RemoveTags(tagLocked);
 
-                    FilesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileUnlocked, file.Title);
+                    _filesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileUnlocked, file.Title);
                 }
 
                 if (!file.ProviderEntry)
                 {
-                    file = await EntryManager.CompleteVersionFileAsync(file.ID, 0, false);
+                    file = await _entryManager.CompleteVersionFileAsync(file.ID, 0, false);
                     await UpdateCommentAsync(file.ID, file.Version, FilesCommonResource.UnlockComment);
                 }
             }
 
-            await EntryStatusManager.SetFileStatusAsync(file);
+            await _entryStatusManager.SetFileStatusAsync(file);
 
             if (file.RootFolderType == FolderType.USER
-                && !Equals(file.RootFolderCreator, AuthContext.CurrentAccount.ID))
+                && !Equals(file.RootFolderCreator, _authContext.CurrentAccount.ID))
             {
                 var folderDao = GetFolderDao();
-                if (!await FileSecurity.CanReadAsync(await folderDao.GetFolderAsync(file.FolderID)))
+                if (!await _fileSecurity.CanReadAsync(await folderDao.GetFolderAsync(file.FolderID)))
                 {
-                    file.FolderIdDisplay = await GlobalFolderHelper.GetFolderShareAsync<T>();
+                    file.FolderIdDisplay = await _globalFolderHelper.GetFolderShareAsync<T>();
                 }
             }
 
@@ -995,21 +1059,23 @@ namespace ASC.Web.Files.Services.WCFService
         public async Task<List<EditHistory>> GetEditHistoryAsync(T fileId, string doc = null)
         {
             var fileDao = GetFileDao();
-            var (readLink, file) = await FileShareLink.CheckAsync(doc, true, fileDao);
+            var (readLink, file) = await _fileShareLink.CheckAsync(doc, true, fileDao);
             if (file == null)
+            {
                 file = await fileDao.GetFileAsync(fileId);
+            }
 
             ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
-            ErrorIf(!readLink && !await FileSecurity.CanReadAsync(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
+            ErrorIf(!readLink && !await _fileSecurity.CanReadAsync(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
             ErrorIf(file.ProviderEntry, FilesCommonResource.ErrorMassage_BadRequest);
 
-            return new List<EditHistory>(await fileDao.GetEditHistoryAsync(DocumentServiceHelper, file.ID));
+            return new List<EditHistory>(await fileDao.GetEditHistoryAsync(_documentServiceHelper, file.ID));
         }
 
         public async Task<EditHistoryData> GetEditDiffUrlAsync(T fileId, int version = 0, string doc = null)
         {
             var fileDao = GetFileDao();
-            var (readLink, file) = await FileShareLink.CheckAsync(doc, true, fileDao);
+            var (readLink, file) = await _fileShareLink.CheckAsync(doc, true, fileDao);
 
             if (file != null)
             {
@@ -1025,13 +1091,13 @@ namespace ASC.Web.Files.Services.WCFService
             }
 
             ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
-            ErrorIf(!readLink && !await FileSecurity.CanReadAsync(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
+            ErrorIf(!readLink && !await _fileSecurity.CanReadAsync(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
             ErrorIf(file.ProviderEntry, FilesCommonResource.ErrorMassage_BadRequest);
 
             var result = new EditHistoryData
             {
-                Key = DocumentServiceHelper.GetDocKey(file),
-                Url = DocumentServiceConnector.ReplaceCommunityAdress(PathProvider.GetFileStreamUrl(file, doc)),
+                Key = _documentServiceHelper.GetDocKey(file),
+                Url = _documentServiceConnector.ReplaceCommunityAdress(_pathProvider.GetFileStreamUrl(file, doc)),
                 Version = version,
                 FileType = GetFileExtensionWithoutDot(FileUtility.GetFileExtension(file.Title))
             };
@@ -1047,14 +1113,14 @@ namespace ASC.Web.Files.Services.WCFService
                     var previousFileStable = await fileDao.GetFileStableAsync(file.ID, file.Version - 1);
                     ErrorIf(previousFileStable == null, FilesCommonResource.ErrorMassage_FileNotFound);
 
-                    sourceFileUrl = PathProvider.GetFileStreamUrl(previousFileStable, doc);
+                    sourceFileUrl = _pathProvider.GetFileStreamUrl(previousFileStable, doc);
 
-                    previouseKey = DocumentServiceHelper.GetDocKey(previousFileStable);
+                    previouseKey = _documentServiceHelper.GetDocKey(previousFileStable);
                     previousFileExt = FileUtility.GetFileExtension(previousFileStable.Title);
                 }
                 else
                 {
-                    var culture = UserManager.GetUsers(AuthContext.CurrentAccount.ID).GetCulture();
+                    var culture = _userManager.GetUsers(_authContext.CurrentAccount.ID).GetCulture();
                     var storeTemplate = GetStoreTemplate();
 
                     var path = FileConstant.NewDocPath + culture + "/";
@@ -1069,7 +1135,7 @@ namespace ASC.Web.Files.Services.WCFService
 
                     var uri = await storeTemplate.GetUriAsync("", path);
                     sourceFileUrl = uri.ToString();
-                    sourceFileUrl = BaseCommonLinkUtility.GetFullAbsolutePath(sourceFileUrl);
+                    sourceFileUrl = _baseCommonLinkUtility.GetFullAbsolutePath(sourceFileUrl);
 
                     previouseKey = DocumentServiceConnector.GenerateRevisionId(Guid.NewGuid().ToString());
                     previousFileExt = fileExt;
@@ -1078,13 +1144,14 @@ namespace ASC.Web.Files.Services.WCFService
                 result.Previous = new EditHistoryUrl
                 {
                     Key = previouseKey,
-                    Url = DocumentServiceConnector.ReplaceCommunityAdress(sourceFileUrl),
+                    Url = _documentServiceConnector.ReplaceCommunityAdress(sourceFileUrl),
                     FileType = GetFileExtensionWithoutDot(previousFileExt)
                 };
-                result.ChangesUrl = PathProvider.GetFileChangesUrl(file, doc);
+
+                result.ChangesUrl = _pathProvider.GetFileChangesUrl(file, doc);
             }
 
-            result.Token = DocumentServiceHelper.GetSignature(result);
+            result.Token = _documentServiceHelper.GetSignature(result);
 
             return result;
 
@@ -1100,7 +1167,7 @@ namespace ASC.Web.Files.Services.WCFService
             File<T> file;
             if (string.IsNullOrEmpty(url))
             {
-                file = await EntryManager.UpdateToVersionFileAsync(fileId, version, doc);
+                file = await _entryManager.UpdateToVersionFileAsync(fileId, version, doc);
             }
             else
             {
@@ -1108,13 +1175,14 @@ namespace ASC.Web.Files.Services.WCFService
                 fileDao = GetFileDao();
                 var fromFile = await fileDao.GetFileAsync(fileId, version);
                 modifiedOnString = fromFile.ModifiedOnString;
-                file = await EntryManager.SaveEditingAsync(fileId, null, url, null, doc, string.Format(FilesCommonResource.CommentRevertChanges, modifiedOnString));
+                file = await _entryManager.SaveEditingAsync(fileId, null, url, null, doc, string.Format(FilesCommonResource.CommentRevertChanges, modifiedOnString));
             }
 
-            FilesMessageService.Send(file, HttpContextAccessor?.HttpContext?.Request?.Headers, MessageAction.FileRestoreVersion, file.Title, version.ToString(CultureInfo.InvariantCulture));
+            _filesMessageService.Send(file, _httpContextAccessor?.HttpContext?.Request?.Headers, MessageAction.FileRestoreVersion, file.Title, version.ToString(CultureInfo.InvariantCulture));
 
             fileDao = GetFileDao();
-            return new List<EditHistory>(await fileDao.GetEditHistoryAsync(DocumentServiceHelper, file.ID));
+
+            return new List<EditHistory>(await fileDao.GetEditHistoryAsync(_documentServiceHelper, file.ID));
         }
 
         public async Task<Web.Core.Files.DocumentService.FileLink> GetPresignedUriAsync(T fileId)
@@ -1123,10 +1191,10 @@ namespace ASC.Web.Files.Services.WCFService
             var result = new Web.Core.Files.DocumentService.FileLink
             {
                 FileType = FileUtility.GetFileExtension(file.Title),
-                Url = DocumentServiceConnector.ReplaceCommunityAdress(PathProvider.GetFileStreamUrl(file))
+                Url = _documentServiceConnector.ReplaceCommunityAdress(_pathProvider.GetFileStreamUrl(file))
             };
 
-            result.Token = DocumentServiceHelper.GetSignature(result);
+            result.Token = _documentServiceHelper.GetSignature(result);
 
             return result;
         }
@@ -1139,15 +1207,14 @@ namespace ASC.Web.Files.Services.WCFService
                 var folderDao = GetFolderDao();
                 folder = await folderDao.GetFolderAsync(folderId);
 
-                var result = await FileMarker.MarkedItemsAsync(folder);
+                var result = await _fileMarker.MarkedItemsAsync(folder);
 
-                result = new List<FileEntry>(EntryManager.SortEntries<T>(result, new OrderBy(SortedByType.DateAndTime, false)));
+                result = new List<FileEntry>(_entryManager.SortEntries<T>(result, new OrderBy(SortedByType.DateAndTime, false)));
 
                 if (result.Count == 0)
                 {
                     MarkAsRead(new List<JsonElement>() { JsonDocument.Parse(JsonSerializer.Serialize(folderId)).RootElement }, new List<JsonElement>() { }); //TODO
                 }
-
 
                 return result;
             }
@@ -1159,14 +1226,21 @@ namespace ASC.Web.Files.Services.WCFService
 
         public List<FileOperationResult> MarkAsRead(List<JsonElement> foldersId, List<JsonElement> filesId)
         {
-            if (foldersId.Count == 0 && filesId.Count == 0) return GetTasksStatuses();
-            return FileOperationsManager.MarkAsRead(AuthContext.CurrentAccount.ID, TenantManager.GetCurrentTenant(), foldersId, filesId);
+            if (foldersId.Count == 0 && filesId.Count == 0)
+            {
+                return GetTasksStatuses();
+            }
+
+            return _fileOperationsManager.MarkAsRead(_authContext.CurrentAccount.ID, _tenantManager.GetCurrentTenant(), foldersId, filesId);
         }
 
         public Task<List<ThirdPartyParams>> GetThirdPartyAsync()
         {
             var providerDao = GetProviderDao();
-            if (providerDao == null) return Task.FromResult(new List<ThirdPartyParams>());
+            if (providerDao == null)
+            {
+                return Task.FromResult(new List<ThirdPartyParams>());
+            }
 
             return internalGetThirdPartyAsync(providerDao);
         }
@@ -1183,17 +1257,23 @@ namespace ASC.Web.Files.Services.WCFService
                             Corporate = r.RootFolderType == FolderType.COMMON,
                             ProviderId = r.ID.ToString(),
                             ProviderKey = r.ProviderKey
-                        }
-                );
+                        });
+
             return new List<ThirdPartyParams>(resultList.ToList());
         }
 
         public Task<List<FileEntry>> GetThirdPartyFolderAsync(int folderType = 0)
         {
-            if (!FilesSettingsHelper.EnableThirdParty) return Task.FromResult(new List<FileEntry>());
+            if (!_filesSettingsHelper.EnableThirdParty)
+            {
+                return Task.FromResult(new List<FileEntry>());
+            }
 
             var providerDao = GetProviderDao();
-            if (providerDao == null) return Task.FromResult(new List<FileEntry>());
+            if (providerDao == null)
+            {
+                return Task.FromResult(new List<FileEntry>());
+            }
 
             return InternalGetThirdPartyFolderAsync(folderType, providerDao);
         }
@@ -1203,11 +1283,12 @@ namespace ASC.Web.Files.Services.WCFService
             var providersInfo = await providerDao.GetProvidersInfoAsync((FolderType)folderType).ToListAsync();
 
             var folders = providersInfo.Select(providerInfo =>
-                {
-                    var folder = EntryManager.GetFakeThirdpartyFolder(providerInfo);
-                    folder.NewForMe = folder.RootFolderType == FolderType.COMMON ? 1 : 0;
-                    return folder;
-                });
+            {
+                var folder = _entryManager.GetFakeThirdpartyFolder(providerInfo);
+                folder.NewForMe = folder.RootFolderType == FolderType.COMMON ? 1 : 0;
+
+                return folder;
+            });
 
             return new List<FileEntry>(folders);
         }
@@ -1216,20 +1297,23 @@ namespace ASC.Web.Files.Services.WCFService
         {
             var providerDao = GetProviderDao();
 
-            if (providerDao == null) return Task.FromResult<Folder<T>>(null);
+            if (providerDao == null)
+            {
+                return Task.FromResult<Folder<T>>(null);
+            }
 
             return InternalSaveThirdPartyAsync(thirdPartyParams, providerDao);
         }
 
         private async Task<Folder<T>> InternalSaveThirdPartyAsync(ThirdPartyParams thirdPartyParams, IProviderDao providerDao)
         {
-            var folderDaoInt = DaoFactory.GetFolderDao<int>();
+            var folderDaoInt = _daoFactory.GetFolderDao<int>();
             var folderDao = GetFolderDao();
 
             ErrorIf(thirdPartyParams == null, FilesCommonResource.ErrorMassage_BadRequest);
-            var parentFolder = await folderDaoInt.GetFolderAsync(thirdPartyParams.Corporate && !CoreBaseSettings.Personal ? await GlobalFolderHelper.FolderCommonAsync : GlobalFolderHelper.FolderMy);
-            ErrorIf(!await FileSecurity.CanCreateAsync(parentFolder), FilesCommonResource.ErrorMassage_SecurityException_Create);
-            ErrorIf(!FilesSettingsHelper.EnableThirdParty, FilesCommonResource.ErrorMassage_SecurityException_Create);
+            var parentFolder = await folderDaoInt.GetFolderAsync(thirdPartyParams.Corporate && !_coreBaseSettings.Personal ? await _globalFolderHelper.FolderCommonAsync : _globalFolderHelper.FolderMy);
+            ErrorIf(!await _fileSecurity.CanCreateAsync(parentFolder), FilesCommonResource.ErrorMassage_SecurityException_Create);
+            ErrorIf(!_filesSettingsHelper.EnableThirdParty, FilesCommonResource.ErrorMassage_SecurityException_Create);
 
             var lostFolderType = FolderType.USER;
             var folderType = thirdPartyParams.Corporate ? FolderType.COMMON : FolderType.USER;
@@ -1239,10 +1323,10 @@ namespace ASC.Web.Files.Services.WCFService
             MessageAction messageAction;
             if (string.IsNullOrEmpty(thirdPartyParams.ProviderId))
             {
-                ErrorIf(!ThirdpartyConfiguration.SupportInclusion(DaoFactory)
+                ErrorIf(!_thirdpartyConfiguration.SupportInclusion(_daoFactory)
                         ||
-                        (!FilesSettingsHelper.EnableThirdParty
-                         && !CoreBaseSettings.Personal)
+                        (!_filesSettingsHelper.EnableThirdParty
+                         && !_coreBaseSettings.Personal)
                         , FilesCommonResource.ErrorMassage_SecurityException_Create);
 
                 thirdPartyParams.CustomerTitle = Global.ReplaceInvalidCharsAndTruncate(thirdPartyParams.CustomerTitle);
@@ -1267,13 +1351,13 @@ namespace ASC.Web.Files.Services.WCFService
                 curProviderId = Convert.ToInt32(thirdPartyParams.ProviderId);
 
                 var lostProvider = await providerDao.GetProviderInfoAsync(curProviderId);
-                ErrorIf(lostProvider.Owner != AuthContext.CurrentAccount.ID, FilesCommonResource.ErrorMassage_SecurityException);
+                ErrorIf(lostProvider.Owner != _authContext.CurrentAccount.ID, FilesCommonResource.ErrorMassage_SecurityException);
 
                 lostFolderType = lostProvider.RootFolderType;
                 if (lostProvider.RootFolderType == FolderType.COMMON && !thirdPartyParams.Corporate)
                 {
                     var lostFolder = await folderDao.GetFolderAsync((T)Convert.ChangeType(lostProvider.RootFolderId, typeof(T)));
-                    await FileMarker.RemoveMarkAsNewForAllAsync(lostFolder);
+                    await _fileMarker.RemoveMarkAsNewForAllAsync(lostFolder);
                 }
 
                 curProviderId = await providerDao.UpdateProviderInfoAsync(curProviderId, thirdPartyParams.CustomerTitle, thirdPartyParams.AuthData, folderType);
@@ -1285,13 +1369,13 @@ namespace ASC.Web.Files.Services.WCFService
 
             var folderDao1 = GetFolderDao();
             var folder = await folderDao1.GetFolderAsync((T)Convert.ChangeType(provider.RootFolderId, typeof(T)));
-            ErrorIf(!await FileSecurity.CanReadAsync(folder), FilesCommonResource.ErrorMassage_SecurityException_ViewFolder);
+            ErrorIf(!await _fileSecurity.CanReadAsync(folder), FilesCommonResource.ErrorMassage_SecurityException_ViewFolder);
 
-            FilesMessageService.Send(parentFolder, GetHttpHeaders(), messageAction, folder.ID.ToString(), provider.ProviderKey);
+            _filesMessageService.Send(parentFolder, GetHttpHeaders(), messageAction, folder.ID.ToString(), provider.ProviderKey);
 
             if (thirdPartyParams.Corporate && lostFolderType != FolderType.COMMON)
             {
-                await FileMarker.MarkAsNewAsync(folder);
+                await _fileMarker.MarkAsNewAsync(folder);
             }
 
             return folder;
@@ -1300,7 +1384,10 @@ namespace ASC.Web.Files.Services.WCFService
         public Task<object> DeleteThirdPartyAsync(string providerId)
         {
             var providerDao = GetProviderDao();
-            if (providerDao == null) return Task.FromResult<object>(null);
+            if (providerDao == null)
+            {
+                return Task.FromResult<object>(null);
+            }
 
             return InternalDeleteThirdPartyAsync(providerId, providerDao);
         }
@@ -1310,46 +1397,48 @@ namespace ASC.Web.Files.Services.WCFService
             var curProviderId = Convert.ToInt32(providerId);
             var providerInfo = await providerDao.GetProviderInfoAsync(curProviderId);
 
-            var folder = EntryManager.GetFakeThirdpartyFolder(providerInfo);
-            ErrorIf(!await FileSecurity.CanDeleteAsync(folder), FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder);
+            var folder = _entryManager.GetFakeThirdpartyFolder(providerInfo);
+            ErrorIf(!await _fileSecurity.CanDeleteAsync(folder), FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder);
 
             if (providerInfo.RootFolderType == FolderType.COMMON)
             {
-                await FileMarker.RemoveMarkAsNewForAllAsync(folder);
+                await _fileMarker.RemoveMarkAsNewForAllAsync(folder);
             }
 
             await providerDao.RemoveProviderInfoAsync(folder.ProviderId);
-            FilesMessageService.Send(folder, GetHttpHeaders(), MessageAction.ThirdPartyDeleted, folder.ID, providerInfo.ProviderKey);
+            _filesMessageService.Send(folder, GetHttpHeaders(), MessageAction.ThirdPartyDeleted, folder.ID, providerInfo.ProviderKey);
 
             return folder.ID;
         }
 
         public bool ChangeAccessToThirdparty(bool enable)
         {
-            ErrorIf(!Global.IsAdministrator, FilesCommonResource.ErrorMassage_SecurityException);
+            ErrorIf(!_global.IsAdministrator, FilesCommonResource.ErrorMassage_SecurityException);
 
-            FilesSettingsHelper.EnableThirdParty = enable;
-            FilesMessageService.Send(GetHttpHeaders(), MessageAction.DocumentsThirdPartySettingsUpdated);
+            _filesSettingsHelper.EnableThirdParty = enable;
+            _filesMessageService.Send(GetHttpHeaders(), MessageAction.DocumentsThirdPartySettingsUpdated);
 
-            return FilesSettingsHelper.EnableThirdParty;
+            return _filesSettingsHelper.EnableThirdParty;
         }
 
         public bool SaveDocuSign(string code)
         {
-            ErrorIf(!AuthContext.IsAuthenticated
-                    || UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)
-                    || !FilesSettingsHelper.EnableThirdParty
-                    || !ThirdpartyConfiguration.SupportDocuSignInclusion, FilesCommonResource.ErrorMassage_SecurityException_Create);
+            ErrorIf(!_authContext.IsAuthenticated
+                    || _userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager)
+                    || !_filesSettingsHelper.EnableThirdParty
+                    || !_thirdpartyConfiguration.SupportDocuSignInclusion, FilesCommonResource.ErrorMassage_SecurityException_Create);
 
-            var token = ConsumerFactory.Get<DocuSignLoginProvider>().GetAccessToken(code);
-            DocuSignHelper.ValidateToken(token);
-            DocuSignToken.SaveToken(token);
+            var token = _consumerFactory.Get<DocuSignLoginProvider>().GetAccessToken(code);
+            _docuSignHelper.ValidateToken(token);
+            _docuSignToken.SaveToken(token);
+
             return true;
         }
 
         public object DeleteDocuSign()
         {
-            DocuSignToken.DeleteToken();
+            _docuSignToken.DeleteToken();
+
             return null;
         }
 
@@ -1357,11 +1446,11 @@ namespace ASC.Web.Files.Services.WCFService
         {
             try
             {
-                ErrorIf(UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)
-                        || !FilesSettingsHelper.EnableThirdParty
-                        || !ThirdpartyConfiguration.SupportDocuSignInclusion, FilesCommonResource.ErrorMassage_SecurityException_Create);
+                ErrorIf(_userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager)
+                        || !_filesSettingsHelper.EnableThirdParty
+                        || !_thirdpartyConfiguration.SupportDocuSignInclusion, FilesCommonResource.ErrorMassage_SecurityException_Create);
 
-                return DocuSignHelper.SendDocuSignAsync(fileId, docuSignData, GetHttpHeaders());
+                return _docuSignHelper.SendDocuSignAsync(fileId, docuSignData, GetHttpHeaders());
             }
             catch (Exception e)
             {
@@ -1371,23 +1460,23 @@ namespace ASC.Web.Files.Services.WCFService
 
         public List<FileOperationResult> GetTasksStatuses()
         {
-            ErrorIf(!AuthContext.IsAuthenticated, FilesCommonResource.ErrorMassage_SecurityException);
+            ErrorIf(!_authContext.IsAuthenticated, FilesCommonResource.ErrorMassage_SecurityException);
 
-            return FileOperationsManager.GetOperationResults(AuthContext.CurrentAccount.ID);
+            return _fileOperationsManager.GetOperationResults(_authContext.CurrentAccount.ID);
         }
 
         public List<FileOperationResult> TerminateTasks()
         {
-            ErrorIf(!AuthContext.IsAuthenticated, FilesCommonResource.ErrorMassage_SecurityException);
+            ErrorIf(!_authContext.IsAuthenticated, FilesCommonResource.ErrorMassage_SecurityException);
 
-            return FileOperationsManager.CancelOperations(AuthContext.CurrentAccount.ID);
+            return _fileOperationsManager.CancelOperations(_authContext.CurrentAccount.ID);
         }
 
         public List<FileOperationResult> BulkDownload(Dictionary<JsonElement, string> folders, Dictionary<JsonElement, string> files)
         {
             ErrorIf(folders.Count == 0 && files.Count == 0, FilesCommonResource.ErrorMassage_BadRequest);
 
-            return FileOperationsManager.Download(AuthContext.CurrentAccount.ID, TenantManager.GetCurrentTenant(), folders, files, GetHttpHeaders());
+            return _fileOperationsManager.Download(_authContext.CurrentAccount.ID, _tenantManager.GetCurrentTenant(), folders, files, GetHttpHeaders());
         }
 
         public async Task<(List<object>, List<object>)> MoveOrCopyFilesCheckAsync<T1>(List<JsonElement> filesId, List<JsonElement> foldersId, T1 destFolderId)
@@ -1429,14 +1518,14 @@ namespace ASC.Web.Files.Services.WCFService
         {
             var checkedFiles = new List<TFrom>();
             var checkedFolders = new List<TFrom>();
-            var folderDao = DaoFactory.GetFolderDao<TFrom>();
-            var fileDao = DaoFactory.GetFileDao<TFrom>();
-            var destFolderDao = DaoFactory.GetFolderDao<TTo>();
-            var destFileDao = DaoFactory.GetFileDao<TTo>();
+            var folderDao = _daoFactory.GetFolderDao<TFrom>();
+            var fileDao = _daoFactory.GetFileDao<TFrom>();
+            var destFolderDao = _daoFactory.GetFolderDao<TTo>();
+            var destFileDao = _daoFactory.GetFileDao<TTo>();
 
             var toFolder = await destFolderDao.GetFolderAsync(destFolderId);
             ErrorIf(toFolder == null, FilesCommonResource.ErrorMassage_FolderNotFound);
-            ErrorIf(!await FileSecurity.CanCreateAsync(toFolder), FilesCommonResource.ErrorMassage_SecurityException_Create);
+            ErrorIf(!await _fileSecurity.CanCreateAsync(toFolder), FilesCommonResource.ErrorMassage_SecurityException_Create);
 
             foreach (var id in filesId)
             {
@@ -1454,9 +1543,12 @@ namespace ASC.Web.Files.Services.WCFService
             var toSubfolders = destFolderDao.GetFoldersAsync(toFolder.ID);
 
             await foreach (var folderProject in foldersProject)
-                {
+            {
                 var toSub = await toSubfolders.FirstOrDefaultAsync(to => Equals(to.Title, folderProject.Title));
-                    if (toSub == null) continue;
+                if (toSub == null)
+                {
+                    continue;
+                }
 
                 var filesPr = fileDao.GetFilesAsync(folderProject.ID);
                 var foldersTmp = folderDao.GetFoldersAsync(folderProject.ID);
@@ -1465,7 +1557,7 @@ namespace ASC.Web.Files.Services.WCFService
                 var (cFiles, cFolders) = await MoveOrCopyFilesCheckAsync(await filesPr, await foldersPr, toSub.ID);
                     checkedFiles.AddRange(cFiles);
                     checkedFolders.AddRange(cFolders);
-                }
+            }
 
             try
             {
@@ -1487,28 +1579,28 @@ namespace ASC.Web.Files.Services.WCFService
             List<FileOperationResult> result;
             if (foldersId.Count > 0 || filesId.Count > 0)
             {
-                result = FileOperationsManager.MoveOrCopy(AuthContext.CurrentAccount.ID, TenantManager.GetCurrentTenant(), foldersId, filesId, destFolderId, ic, resolve, !deleteAfter, GetHttpHeaders());
+                result = _fileOperationsManager.MoveOrCopy(_authContext.CurrentAccount.ID, _tenantManager.GetCurrentTenant(), foldersId, filesId, destFolderId, ic, resolve, !deleteAfter, GetHttpHeaders());
             }
             else
             {
-                result = FileOperationsManager.GetOperationResults(AuthContext.CurrentAccount.ID);
+                result = _fileOperationsManager.GetOperationResults(_authContext.CurrentAccount.ID);
             }
+
             return result;
         }
 
-
         public List<FileOperationResult> DeleteFile(string action, T fileId, bool ignoreException = false, bool deleteAfter = false, bool immediately = false)
         {
-            return FileOperationsManager.Delete(AuthContext.CurrentAccount.ID, TenantManager.GetCurrentTenant(), new List<T>(), new List<T>() { fileId }, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
+            return _fileOperationsManager.Delete(_authContext.CurrentAccount.ID, _tenantManager.GetCurrentTenant(), new List<T>(), new List<T>() { fileId }, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
         }
         public List<FileOperationResult> DeleteFolder(string action, T folderId, bool ignoreException = false, bool deleteAfter = false, bool immediately = false)
         {
-            return FileOperationsManager.Delete(AuthContext.CurrentAccount.ID, TenantManager.GetCurrentTenant(), new List<T>() { folderId }, new List<T>(), ignoreException, !deleteAfter, immediately, GetHttpHeaders());
+            return _fileOperationsManager.Delete(_authContext.CurrentAccount.ID, _tenantManager.GetCurrentTenant(), new List<T>() { folderId }, new List<T>(), ignoreException, !deleteAfter, immediately, GetHttpHeaders());
         }
 
         public List<FileOperationResult> DeleteItems(string action, List<JsonElement> files, List<JsonElement> folders, bool ignoreException = false, bool deleteAfter = false, bool immediately = false)
         {
-            return FileOperationsManager.Delete(AuthContext.CurrentAccount.ID, TenantManager.GetCurrentTenant(), folders, files, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
+            return _fileOperationsManager.Delete(_authContext.CurrentAccount.ID, _tenantManager.GetCurrentTenant(), folders, files, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
         }
 
         public async Task<List<FileOperationResult>> EmptyTrashAsync()
@@ -1519,12 +1611,15 @@ namespace ASC.Web.Files.Services.WCFService
             var foldersIdTask = await folderDao.GetFoldersAsync(trashId).Select(f => f.ID).ToListAsync();
             var filesIdTask = await fileDao.GetFilesAsync(trashId);
 
-            return FileOperationsManager.Delete(AuthContext.CurrentAccount.ID, TenantManager.GetCurrentTenant(), foldersIdTask, filesIdTask, false, true, false, GetHttpHeaders());
+            return _fileOperationsManager.Delete(_authContext.CurrentAccount.ID, _tenantManager.GetCurrentTenant(), foldersIdTask, filesIdTask, false, true, false, GetHttpHeaders());
         }
 
         public async IAsyncEnumerable<FileOperationResult> CheckConversionAsync(List<CheckConversionModel<T>> filesInfoJSON, bool sync = false)
         {
-            if (filesInfoJSON == null || filesInfoJSON.Count == 0) yield break;
+            if (filesInfoJSON == null || filesInfoJSON.Count == 0)
+            {
+                yield break;
+            }
 
             var results = AsyncEnumerable.Empty<FileOperationResult>();
             var fileDao = GetFileDao();
@@ -1537,27 +1632,28 @@ namespace ASC.Web.Files.Services.WCFService
 
                 if (file == null)
                 {
-                    var newFile = ServiceProvider.GetService<File<T>>();
+                    var newFile = _serviceProvider.GetService<File<T>>();
                     newFile.ID = fileInfo.FileId;
                     newFile.Version = fileInfo.Version;
 
                     files.Add(new KeyValuePair<File<T>, bool>(newFile, true));
+
                     continue;
                 }
 
-                ErrorIf(!await FileSecurity.CanReadAsync(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
+                ErrorIf(!await _fileSecurity.CanReadAsync(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
 
-                if (fileInfo.StartConvert && FileConverter.MustConvert(file))
+                if (fileInfo.StartConvert && _fileConverter.MustConvert(file))
                 {
                     try
                     {
                         if (sync)
                         {
-                            results.Append(await FileConverter.ExecSynchronouslyAsync(file, fileInfo.Password));
+                            results.Append(await _fileConverter.ExecSynchronouslyAsync(file, fileInfo.Password));
                         }
                         else
                         {
-                            await FileConverter.ExecAsynchronouslyAsync(file, false, fileInfo.Password);
+                            await _fileConverter.ExecAsynchronouslyAsync(file, false, fileInfo.Password);
                         }
                     }
                     catch (Exception e)
@@ -1571,7 +1667,7 @@ namespace ASC.Web.Files.Services.WCFService
 
             if (!sync)
             {
-                results = FileConverter.GetStatusAsync(files);
+                results = _fileConverter.GetStatusAsync(files);
             }
 
             await foreach (var res in results)
@@ -1582,8 +1678,8 @@ namespace ASC.Web.Files.Services.WCFService
 
         public async Task<string> CheckFillFormDraftAsync(T fileId, int version, string doc, bool editPossible, bool view)
         {
-            var (file, _configuration) = await DocumentServiceHelper.GetParamsAsync(fileId, version, doc, editPossible, !view, true);
-            var _valideShareLink = !string.IsNullOrEmpty(FileShareLink.Parse(doc));
+            var (file, _configuration) = await _documentServiceHelper.GetParamsAsync(fileId, version, doc, editPossible, !view, true);
+            var _valideShareLink = !string.IsNullOrEmpty(_fileShareLink.Parse(doc));
 
             if (_valideShareLink)
             {
@@ -1591,23 +1687,23 @@ namespace ASC.Web.Files.Services.WCFService
             }
 
             if (_configuration.EditorConfig.ModeWrite
-                && FileUtility.CanWebRestrictedEditing(file.Title)
-                && await FileSecurity.CanFillFormsAsync(file)
-                && !await FileSecurity.CanEditAsync(file))
+                && _fileUtility.CanWebRestrictedEditing(file.Title)
+                && await _fileSecurity.CanFillFormsAsync(file)
+                && !await _fileSecurity.CanEditAsync(file))
             {
                 if (!file.IsFillFormDraft)
                 {
-                    await FileMarker.RemoveMarkAsNewAsync(file);
+                    await _fileMarker.RemoveMarkAsNewAsync(file);
 
                     Folder<int> folderIfNew;
                     File<int> form;
                     try
                     {
-                        (form, folderIfNew) = await EntryManager.GetFillFormDraftAsync(file);
+                        (form, folderIfNew) = await _entryManager.GetFillFormDraftAsync(file);
                     }
                     catch (Exception ex)
                     {
-                        Logger.Error("DocEditor", ex);
+                        _logger.Error("DocEditor", ex);
                         throw;
                     }
 
@@ -1615,32 +1711,32 @@ namespace ASC.Web.Files.Services.WCFService
                         ? string.Empty
                         : "#message/" + HttpUtility.UrlEncode(string.Format(FilesCommonResource.MessageFillFormDraftCreated, folderIfNew.Title));
 
-                    return FilesLinkUtility.GetFileWebEditorUrl(form.ID) + comment;
+                    return _filesLinkUtility.GetFileWebEditorUrl(form.ID) + comment;
                 }
-                else if (!await EntryManager.CheckFillFormDraftAsync(file))
+                else if (!await _entryManager.CheckFillFormDraftAsync(file))
                 {
                     var comment = "#message/" + HttpUtility.UrlEncode(FilesCommonResource.MessageFillFormDraftDiscard);
 
-                    return FilesLinkUtility.GetFileWebEditorUrl(file.ID) + comment;
+                    return _filesLinkUtility.GetFileWebEditorUrl(file.ID) + comment;
                 }
             }
 
-            return FilesLinkUtility.GetFileWebEditorUrl(file.ID);
+            return _filesLinkUtility.GetFileWebEditorUrl(file.ID);
         }
 
         public async Task ReassignStorageAsync(Guid userFromId, Guid userToId)
         {
             //check current user have access
-            ErrorIf(!Global.IsAdministrator, FilesCommonResource.ErrorMassage_SecurityException);
+            ErrorIf(!_global.IsAdministrator, FilesCommonResource.ErrorMassage_SecurityException);
 
             //check exist userFrom
-            var userFrom = UserManager.GetUsers(userFromId);
+            var userFrom = _userManager.GetUsers(userFromId);
             ErrorIf(Equals(userFrom, Constants.LostUser), FilesCommonResource.ErrorMassage_UserNotFound);
 
             //check exist userTo
-            var userTo = UserManager.GetUsers(userToId);
+            var userTo = _userManager.GetUsers(userToId);
             ErrorIf(Equals(userTo, Constants.LostUser), FilesCommonResource.ErrorMassage_UserNotFound);
-            ErrorIf(userTo.IsVisitor(UserManager), FilesCommonResource.ErrorMassage_SecurityException);
+            ErrorIf(userTo.IsVisitor(_userManager), FilesCommonResource.ErrorMassage_SecurityException);
 
             var providerDao = GetProviderDao();
             if (providerDao != null)
@@ -1651,7 +1747,7 @@ namespace ASC.Web.Files.Services.WCFService
                 //move common thirdparty storage userFrom
                 foreach (var commonProviderInfo in commonProvidersInfo)
                 {
-                    Logger.InfoFormat("Reassign provider {0} from {1} to {2}", commonProviderInfo.ID, userFrom.ID, userTo.ID);
+                    _logger.InfoFormat("Reassign provider {0} from {1} to {2}", commonProviderInfo.ID, userFrom.ID, userTo.ID);
                     await providerDao.UpdateProviderInfoAsync(commonProviderInfo.ID, null, null, FolderType.DEFAULT, userTo.ID);
                 }
             }
@@ -1659,7 +1755,7 @@ namespace ASC.Web.Files.Services.WCFService
             var folderDao = GetFolderDao();
             var fileDao = GetFileDao();
 
-            if (!userFrom.IsVisitor(UserManager))
+            if (!userFrom.IsVisitor(_userManager))
             {
                 var folderIdFromMy = await folderDao.GetFolderIDUserAsync(false, userFrom.ID);
 
@@ -1667,29 +1763,29 @@ namespace ASC.Web.Files.Services.WCFService
                 {
                     //create folder with name userFrom in folder userTo
                     var folderIdToMy = await folderDao.GetFolderIDUserAsync(true, userTo.ID);
-                    var newFolder = ServiceProvider.GetService<Folder<T>>();
-                    newFolder.Title = string.Format(CustomNamingPeople.Substitute<FilesCommonResource>("TitleDeletedUserFolder"), userFrom.DisplayUserName(false, DisplayUserSettingsHelper));
+                    var newFolder = _serviceProvider.GetService<Folder<T>>();
+                    newFolder.Title = string.Format(_customNamingPeople.Substitute<FilesCommonResource>("TitleDeletedUserFolder"), userFrom.DisplayUserName(false, _displayUserSettingsHelper));
                     newFolder.FolderID = folderIdToMy;
 
                     var newFolderTo = await folderDao.SaveFolderAsync(newFolder);
 
                     //move items from userFrom to userTo
-                    await EntryManager.MoveSharedItemsAsync(folderIdFromMy, newFolderTo, folderDao, fileDao);
+                    await _entryManager.MoveSharedItemsAsync(folderIdFromMy, newFolderTo, folderDao, fileDao);
 
                     await EntryManager.ReassignItemsAsync(newFolderTo, userFrom.ID, userTo.ID, folderDao, fileDao);
                 }
             }
 
-            await EntryManager.ReassignItemsAsync(await GlobalFolderHelper.GetFolderCommonAsync<T>(), userFrom.ID, userTo.ID, folderDao, fileDao);
+            await EntryManager.ReassignItemsAsync(await _globalFolderHelper.GetFolderCommonAsync<T>(), userFrom.ID, userTo.ID, folderDao, fileDao);
         }
 
         public async Task DeleteStorageAsync(Guid userId)
         {
             //check current user have access
-            ErrorIf(!Global.IsAdministrator, FilesCommonResource.ErrorMassage_SecurityException);
+            ErrorIf(!_global.IsAdministrator, FilesCommonResource.ErrorMassage_SecurityException);
 
             //delete docuSign
-            DocuSignToken.DeleteToken(userId);
+            _docuSignToken.DeleteToken(userId);
 
             var providerDao = GetProviderDao();
             if (providerDao != null)
@@ -1699,7 +1795,7 @@ namespace ASC.Web.Files.Services.WCFService
                 //delete thirdparty storage
                 foreach (var myProviderInfo in providersInfo)
                 {
-                    Logger.InfoFormat("Delete provider {0} for {1}", myProviderInfo.ID, userId);
+                    _logger.InfoFormat("Delete provider {0} for {1}", myProviderInfo.ID, userId);
                     await providerDao.RemoveProviderInfoAsync(myProviderInfo.ID);
                 }
             }
@@ -1711,9 +1807,9 @@ namespace ASC.Web.Files.Services.WCFService
             //delete all markAsNew
             var rootFoldersId = new List<T>
                 {
-                    await GlobalFolderHelper.GetFolderShareAsync<T>(),
-                    await GlobalFolderHelper.GetFolderCommonAsync<T>(),
-                    await GlobalFolderHelper.GetFolderProjectsAsync<T>(),
+                    await _globalFolderHelper.GetFolderShareAsync<T>(),
+                    await _globalFolderHelper.GetFolderCommonAsync<T>(),
+                    await _globalFolderHelper.GetFolderProjectsAsync<T>(),
                 };
 
             var folderIdFromMy = await folderDao.GetFolderIDUserAsync(false, userId);
@@ -1725,29 +1821,29 @@ namespace ASC.Web.Files.Services.WCFService
             var rootFolders = await folderDao.GetFoldersAsync(rootFoldersId).ToListAsync();
             foreach (var rootFolder in rootFolders)
             {
-                await FileMarker.RemoveMarkAsNewAsync(rootFolder, userId);
+                await _fileMarker.RemoveMarkAsNewAsync(rootFolder, userId);
             }
 
             //delete all from My
             if (!Equals(folderIdFromMy, 0))
             {
-                await EntryManager.DeleteSubitemsAsync(folderIdFromMy, folderDao, fileDao, linkDao);
+                await _entryManager.DeleteSubitemsAsync(folderIdFromMy, folderDao, fileDao, linkDao);
 
                 //delete My userFrom folder
                 await folderDao.DeleteFolderAsync(folderIdFromMy);
-                GlobalFolderHelper.SetFolderMy(userId);
+                _globalFolderHelper.SetFolderMy(userId);
             }
 
             //delete all from Trash
             var folderIdFromTrash = await folderDao.GetFolderIDTrashAsync(false, userId);
             if (!Equals(folderIdFromTrash, 0))
             {
-                await EntryManager.DeleteSubitemsAsync(folderIdFromTrash, folderDao, fileDao, linkDao);
+                await _entryManager.DeleteSubitemsAsync(folderIdFromTrash, folderDao, fileDao, linkDao);
                 await folderDao.DeleteFolderAsync(folderIdFromTrash);
-                GlobalFolderHelper.FolderTrash = userId;
+                _globalFolderHelper.FolderTrash = userId;
             }
 
-            await EntryManager.ReassignItemsAsync(await GlobalFolderHelper.GetFolderCommonAsync<T>(), userId, AuthContext.CurrentAccount.ID, folderDao, fileDao);
+            await EntryManager.ReassignItemsAsync(await _globalFolderHelper.GetFolderCommonAsync<T>(), userId, _authContext.CurrentAccount.ID, folderDao, fileDao);
         }
         #region Favorites Manager
 
@@ -1761,12 +1857,13 @@ namespace ASC.Web.Files.Services.WCFService
             {
                 await DeleteFavoritesAsync(new List<T>(0), new List<T>(1) { fileId });
             }
+
             return favorite;
         }
 
         public Task<List<FileEntry<T>>> AddToFavoritesAsync(IEnumerable<T> foldersId, IEnumerable<T> filesId)
         {
-            if (UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
+            if (_userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
 
             return InternalAddToFavoritesAsync(foldersId, filesId);
         }
@@ -1779,14 +1876,14 @@ namespace ASC.Web.Files.Services.WCFService
             var entries = Enumerable.Empty<FileEntry<T>>();
 
             var files = await fileDao.GetFilesAsync(filesId).Where(file => !file.Encrypted).ToListAsync();
-            files = (await FileSecurity.FilterReadAsync(files)).ToList();
+            files = (await _fileSecurity.FilterReadAsync(files)).ToList();
             entries = entries.Concat(files);
 
             var folders = await folderDao.GetFoldersAsync(foldersId).ToListAsync();
-            folders = (await FileSecurity.FilterReadAsync(folders)).ToList();
+            folders = (await _fileSecurity.FilterReadAsync(folders)).ToList();
             entries = entries.Concat(folders);
 
-            var tags = entries.Select(entry => Tag.Favorite(AuthContext.CurrentAccount.ID, entry));
+            var tags = entries.Select(entry => Tag.Favorite(_authContext.CurrentAccount.ID, entry));
 
             tagDao.SaveTags(tags);
 
@@ -1801,14 +1898,14 @@ namespace ASC.Web.Files.Services.WCFService
             var entries = Enumerable.Empty<FileEntry<T>>();
 
             var files = await fileDao.GetFilesAsync(filesId).ToListAsync();
-            var filtredFiles = await FileSecurity.FilterReadAsync(files);
+            var filtredFiles = await _fileSecurity.FilterReadAsync(files);
             entries = entries.Concat(filtredFiles);
 
             var folders = await folderDao.GetFoldersAsync(foldersId).ToListAsync();
-            var filtredFolders = await FileSecurity.FilterReadAsync(folders);
+            var filtredFolders = await _fileSecurity.FilterReadAsync(folders);
             entries = entries.Concat(filtredFolders);
 
-            var tags = entries.Select(entry => Tag.Favorite(AuthContext.CurrentAccount.ID, entry));
+            var tags = entries.Select(entry => Tag.Favorite(_authContext.CurrentAccount.ID, entry));
 
             tagDao.RemoveTags(tags);
 
@@ -1821,7 +1918,10 @@ namespace ASC.Web.Files.Services.WCFService
 
         public Task<List<FileEntry<T>>> AddToTemplatesAsync(IEnumerable<T> filesId)
         {
-            if (UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
+            if (_userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager))
+            {
+                throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
+            }
 
             return InternalAddToTemplatesAsync(filesId);
         }
@@ -1832,12 +1932,12 @@ namespace ASC.Web.Files.Services.WCFService
             var fileDao = GetFileDao();
             var files = await fileDao.GetFilesAsync(filesId).ToListAsync();
 
-            var filteredFiles = await FileSecurity.FilterReadAsync(files);
+            var filteredFiles = await _fileSecurity.FilterReadAsync(files);
             files = filteredFiles
-                .Where(file => FileUtility.ExtsWebTemplate.Contains(FileUtility.GetFileExtension(file.Title), StringComparer.CurrentCultureIgnoreCase))
+                .Where(file => _fileUtility.ExtsWebTemplate.Contains(FileUtility.GetFileExtension(file.Title), StringComparer.CurrentCultureIgnoreCase))
                 .ToList();
 
-            var tags = files.Select(file => Tag.Template(AuthContext.CurrentAccount.ID, file));
+            var tags = files.Select(file => Tag.Template(_authContext.CurrentAccount.ID, file));
 
             tagDao.SaveTags(tags);
 
@@ -1850,10 +1950,10 @@ namespace ASC.Web.Files.Services.WCFService
             var fileDao = GetFileDao();
             var files = await fileDao.GetFilesAsync(filesId).ToListAsync();
 
-            var filteredFiles = await FileSecurity.FilterReadAsync(files);
+            var filteredFiles = await _fileSecurity.FilterReadAsync(files);
             files = filteredFiles.ToList();
 
-            var tags = files.Select(file => Tag.Template(AuthContext.CurrentAccount.ID, file));
+            var tags = files.Select(file => Tag.Template(_authContext.CurrentAccount.ID, file));
 
             tagDao.RemoveTags(tags);
 
@@ -1869,12 +1969,15 @@ namespace ASC.Web.Files.Services.WCFService
                 var subjectId = string.IsNullOrEmpty(subjectID) ? Guid.Empty : new Guid(subjectID);
                 var folderDao = GetFolderDao();
                 var fileDao = GetFileDao();
-                result = await EntryManager.GetTemplatesAsync(folderDao, fileDao, filter, subjectGroup, subjectId, search, searchInContent);
+                result = await _entryManager.GetTemplatesAsync(folderDao, fileDao, filter, subjectGroup, subjectId, search, searchInContent);
 
                 if (result.Count() <= from)
+                {
                     return null;
+                }
 
                 result = result.Skip(from).Take(count);
+
                 return new List<FileEntry<T>>(result);
             }
             catch (Exception e)
@@ -1887,17 +1990,17 @@ namespace ASC.Web.Files.Services.WCFService
 
         public Task<List<AceWrapper>> GetSharedInfoAsync(IEnumerable<T> fileIds, IEnumerable<T> folderIds)
         {
-            return FileSharing.GetSharedInfoAsync(fileIds, folderIds);
+            return _fileSharing.GetSharedInfoAsync(fileIds, folderIds);
         }
 
         public Task<List<AceShortWrapper>> GetSharedInfoShortFileAsync(T fileId)
         {
-            return FileSharing.GetSharedInfoShortFileAsync(fileId);
+            return _fileSharing.GetSharedInfoShortFileAsync(fileId);
         }
 
         public Task<List<AceShortWrapper>> GetSharedInfoShortFolder(T folderId)
         {
-            return FileSharing.GetSharedInfoShortFolderAsync(folderId);
+            return _fileSharing.GetSharedInfoShortFolderAsync(folderId);
         }
 
         public async Task<List<T>> SetAceObjectAsync(AceCollection<T> aceCollection, bool notify)
@@ -1922,10 +2025,10 @@ namespace ASC.Web.Files.Services.WCFService
             {
                 try
                 {
-                    var changed = await FileSharingAceHelper.SetAceObjectAsync(aceCollection.Aces, entry, notify, aceCollection.Message);
+                    var changed = await _fileSharingAceHelper.SetAceObjectAsync(aceCollection.Aces, entry, notify, aceCollection.Message);
                     if (changed)
                     {
-                        FilesMessageService.Send(entry, GetHttpHeaders(),
+                        _filesMessageService.Send(entry, GetHttpHeaders(),
                                                     entry.FileEntryType == FileEntryType.Folder ? MessageAction.FolderUpdatedAccess : MessageAction.FileUpdatedAccess,
                                                     entry.Title);
                     }
@@ -1941,12 +2044,13 @@ namespace ASC.Web.Files.Services.WCFService
                     result.Add(entry.ID);
                 }
             }
+
             return result;
         }
 
         public Task RemoveAceAsync(List<T> filesId, List<T> foldersId)
         {
-            ErrorIf(!AuthContext.IsAuthenticated, FilesCommonResource.ErrorMassage_SecurityException);
+            ErrorIf(!_authContext.IsAuthenticated, FilesCommonResource.ErrorMassage_SecurityException);
             var entries = AsyncEnumerable.Empty<FileEntry<T>>();
 
             var fileDao = GetFileDao();
@@ -1954,8 +2058,7 @@ namespace ASC.Web.Files.Services.WCFService
             entries.Concat(filesId.ToAsyncEnumerable().SelectAwait(async fileId => await fileDao.GetFileAsync(fileId)));
             entries.Concat(foldersId.ToAsyncEnumerable().SelectAwait(async e => await folderDao.GetFolderAsync(e)));
 
-
-            return FileSharingAceHelper.RemoveAceAsync(entries);
+            return _fileSharingAceHelper.RemoveAceAsync(entries);
         }
 
         public async Task<string> GetShortenLinkAsync(T fileId)
@@ -1963,12 +2066,12 @@ namespace ASC.Web.Files.Services.WCFService
             File<T> file;
             var fileDao = GetFileDao();
             file = await fileDao.GetFileAsync(fileId);
-            ErrorIf(!await FileSharing.CanSetAccessAsync(file), FilesCommonResource.ErrorMassage_SecurityException);
-            var shareLink = FileShareLink.GetLink(file);
+            ErrorIf(!await _fileSharing.CanSetAccessAsync(file), FilesCommonResource.ErrorMassage_SecurityException);
+            var shareLink = _fileShareLink.GetLink(file);
 
             try
             {
-                return await UrlShortener.Instance.GetShortenLinkAsync(shareLink);
+                return await _urlShortener.Instance.GetShortenLinkAsync(shareLink);
             }
             catch (Exception e)
             {
@@ -1982,22 +2085,22 @@ namespace ASC.Web.Files.Services.WCFService
             var fileDao = GetFileDao();
             file = await fileDao.GetFileAsync(fileId);
             var aces = new List<AceWrapper>
+            {
+                new AceWrapper
                 {
-                    new AceWrapper
-                        {
-                            Share = share,
-                            SubjectId = FileConstant.ShareLinkId,
-                            SubjectGroup = true,
-                        }
-                };
+                    Share = share,
+                    SubjectId = FileConstant.ShareLinkId,
+                    SubjectGroup = true,
+                }
+            };
 
             try
             {
 
-                var changed = await FileSharingAceHelper.SetAceObjectAsync(aces, file, false, null);
+                var changed = await _fileSharingAceHelper.SetAceObjectAsync(aces, file, false, null);
                 if (changed)
                 {
-                    FilesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileUpdatedAccess, file.Title);
+                    _filesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileUpdatedAccess, file.Title);
                 }
             }
             catch (Exception e)
@@ -2006,13 +2109,16 @@ namespace ASC.Web.Files.Services.WCFService
             }
 
             var securityDao = GetSecurityDao();
+
             return await securityDao.IsSharedAsync(file.ID, FileEntryType.File);
         }
 
         public Task<List<MentionWrapper>> SharedUsersAsync(T fileId)
         {
-            if (!AuthContext.IsAuthenticated || CoreBaseSettings.Personal)
+            if (!_authContext.IsAuthenticated || _coreBaseSettings.Personal)
+            {
                 return Task.FromResult<List<MentionWrapper>>(null);
+            }
 
             return InternalSharedUsersAsync(fileId);
         }
@@ -2027,9 +2133,9 @@ namespace ASC.Web.Files.Services.WCFService
             ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
 
             var usersIdWithAccess = new List<Guid>();
-            if (await FileSharing.CanSetAccessAsync(file))
+            if (await _fileSharing.CanSetAccessAsync(file))
             {
-                var access = await FileSharing.GetSharedInfoAsync(file);
+                var access = await _fileSharing.GetSharedInfoAsync(file);
                 usersIdWithAccess = access.Where(aceWrapper => !aceWrapper.SubjectGroup && aceWrapper.Share != FileShare.Restrict)
                                           .Select(aceWrapper => aceWrapper.SubjectId)
                                           .ToList();
@@ -2039,10 +2145,10 @@ namespace ASC.Web.Files.Services.WCFService
                 usersIdWithAccess.Add(file.CreateBy);
             }
 
-            var users = UserManager.GetUsersByGroup(Constants.GroupEveryone.ID)
-                                   .Where(user => !user.ID.Equals(AuthContext.CurrentAccount.ID)
+            var users = _userManager.GetUsersByGroup(Constants.GroupEveryone.ID)
+                                   .Where(user => !user.ID.Equals(_authContext.CurrentAccount.ID)
                                                   && !user.ID.Equals(Constants.LostUser.ID))
-                                   .Select(user => new MentionWrapper(user, DisplayUserSettingsHelper) { HasAccess = usersIdWithAccess.Contains(user.ID) })
+                                   .Select(user => new MentionWrapper(user, _displayUserSettingsHelper) { HasAccess = usersIdWithAccess.Contains(user.ID) })
                                    .ToList();
 
             users = users
@@ -2055,7 +2161,7 @@ namespace ASC.Web.Files.Services.WCFService
 
         public async Task<List<AceShortWrapper>> SendEditorNotifyAsync(T fileId, MentionMessageWrapper mentionMessage)
         {
-            ErrorIf(!AuthContext.IsAuthenticated, FilesCommonResource.ErrorMassage_SecurityException);
+            ErrorIf(!_authContext.IsAuthenticated, FilesCommonResource.ErrorMassage_SecurityException);
 
             File<T> file;
             var fileDao = GetFileDao();
@@ -2063,7 +2169,7 @@ namespace ASC.Web.Files.Services.WCFService
 
             ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
 
-            var fileSecurity = FileSecurity;
+            var fileSecurity = _fileSecurity;
             var canRead = await fileSecurity.CanReadAsync(file);
             ErrorIf(!canRead, FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
             ErrorIf(mentionMessage == null || mentionMessage.Emails == null, FilesCommonResource.ErrorMassage_BadRequest);
@@ -2082,10 +2188,10 @@ namespace ASC.Web.Files.Services.WCFService
             {
                 if (!canShare.HasValue)
                 {
-                    canShare = await FileSharing.CanSetAccessAsync(file);
+                    canShare = await _fileSharing.CanSetAccessAsync(file);
                 }
 
-                var recipient = UserManager.GetUserByEmail(email);
+                var recipient = _userManager.GetUserByEmail(email);
                 if (recipient == null || recipient.ID == Constants.LostUser.ID)
                 {
                     showSharingSettings = canShare.Value;
@@ -2102,16 +2208,16 @@ namespace ASC.Web.Files.Services.WCFService
                     try
                     {
                         var aces = new List<AceWrapper>
+                        {
+                            new AceWrapper
                             {
-                                new AceWrapper
-                                    {
-                                        Share = FileShare.Read,
-                                        SubjectId = recipient.ID,
-                                        SubjectGroup = false,
-                                    }
-                            };
+                                Share = FileShare.Read,
+                                SubjectId = recipient.ID,
+                                SubjectGroup = false,
+                            }
+                        };
 
-                        showSharingSettings |= await FileSharingAceHelper.SetAceObjectAsync(aces, file, false, null);
+                        showSharingSettings |= await _fileSharingAceHelper.SetAceObjectAsync(aces, file, false, null);
 
                         recipients.Add(recipient.ID);
                     }
@@ -2128,10 +2234,10 @@ namespace ASC.Web.Files.Services.WCFService
 
             if (showSharingSettings)
             {
-                FilesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileUpdatedAccess, file.Title);
+                _filesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileUpdatedAccess, file.Title);
             }
 
-            var fileLink = FilesLinkUtility.GetFileWebEditorUrl(file.ID);
+            var fileLink = _filesLinkUtility.GetFileWebEditorUrl(file.ID);
             if (mentionMessage.ActionLink != null)
             {
                 fileLink += "&" + FilesLinkUtility.Anchor + "=" + HttpUtility.UrlEncode(ActionLinkConfig.Serialize(mentionMessage.ActionLink));
@@ -2144,16 +2250,17 @@ namespace ASC.Web.Files.Services.WCFService
                 message = message.Substring(0, maxMessageLength) + "...";
             }
 
-            NotifyClient.SendEditorMentions(file, fileLink, recipients, message);
+            _notifyClient.SendEditorMentions(file, fileLink, recipients, message);
 
             return showSharingSettings ? await GetSharedInfoShortFileAsync(fileId) : null;
         }
 
         public async Task<List<EncryptionKeyPair>> GetEncryptionAccessAsync(T fileId)
         {
-            ErrorIf(!PrivacyRoomSettings.GetEnabled(SettingsManager), FilesCommonResource.ErrorMassage_SecurityException);
+            ErrorIf(!PrivacyRoomSettings.GetEnabled(_settingsManager), FilesCommonResource.ErrorMassage_SecurityException);
 
-            var fileKeyPair = await EncryptionKeyPairHelper.GetKeyPairAsync(fileId, this);
+            var fileKeyPair = await _encryptionKeyPairHelper.GetKeyPairAsync(fileId, this);
+
             return new List<EncryptionKeyPair>(fileKeyPair);
         }
 
@@ -2188,8 +2295,8 @@ namespace ASC.Web.Files.Services.WCFService
 
         public async IAsyncEnumerable<FileEntry> ChangeOwnerAsync(IEnumerable<T> foldersId, IEnumerable<T> filesId, Guid userId)
         {
-            var userInfo = UserManager.GetUsers(userId);
-            ErrorIf(Equals(userInfo, Constants.LostUser) || userInfo.IsVisitor(UserManager), FilesCommonResource.ErrorMassage_ChangeOwner);
+            var userInfo = _userManager.GetUsers(userId);
+            ErrorIf(Equals(userInfo, Constants.LostUser) || userInfo.IsVisitor(_userManager), FilesCommonResource.ErrorMassage_ChangeOwner);
 
             var entries = AsyncEnumerable.Empty<FileEntry>();
 
@@ -2197,9 +2304,12 @@ namespace ASC.Web.Files.Services.WCFService
             var folders = folderDao.GetFoldersAsync(foldersId);
             await foreach (var folder in folders)
             {
-                ErrorIf(!await FileSecurity.CanEditAsync(folder), FilesCommonResource.ErrorMassage_SecurityException);
+                ErrorIf(!await _fileSecurity.CanEditAsync(folder), FilesCommonResource.ErrorMassage_SecurityException);
                 ErrorIf(folder.RootFolderType != FolderType.COMMON, FilesCommonResource.ErrorMassage_SecurityException);
-                if (folder.ProviderEntry) continue;
+                if (folder.ProviderEntry)
+                {
+                    continue;
+                }
 
                 var newFolder = folder;
                 if (folder.CreateBy != userInfo.ID)
@@ -2212,7 +2322,7 @@ namespace ASC.Web.Files.Services.WCFService
                     newFolder = await folderDao.GetFolderAsync(newFolderID);
                     newFolder.Access = folderAccess;
 
-                    FilesMessageService.Send(newFolder, GetHttpHeaders(), MessageAction.FileChangeOwner, new[] { newFolder.Title, userInfo.DisplayUserName(false, DisplayUserSettingsHelper) });
+                    _filesMessageService.Send(newFolder, GetHttpHeaders(), MessageAction.FileChangeOwner, new[] { newFolder.Title, userInfo.DisplayUserName(false, _displayUserSettingsHelper) });
                 }
                 entries.Append(newFolder);
             }
@@ -2222,16 +2332,19 @@ namespace ASC.Web.Files.Services.WCFService
 
             await foreach (var file in files)
             {
-                ErrorIf(!await FileSecurity.CanEditAsync(file), FilesCommonResource.ErrorMassage_SecurityException);
-                ErrorIf(await EntryManager.FileLockedForMeAsync(file.ID), FilesCommonResource.ErrorMassage_LockedFile);
-                ErrorIf(FileTracker.IsEditing(file.ID), FilesCommonResource.ErrorMassage_UpdateEditingFile);
+                ErrorIf(!await _fileSecurity.CanEditAsync(file), FilesCommonResource.ErrorMassage_SecurityException);
+                ErrorIf(await _entryManager.FileLockedForMeAsync(file.ID), FilesCommonResource.ErrorMassage_LockedFile);
+                ErrorIf(_fileTracker.IsEditing(file.ID), FilesCommonResource.ErrorMassage_UpdateEditingFile);
                 ErrorIf(file.RootFolderType != FolderType.COMMON, FilesCommonResource.ErrorMassage_SecurityException);
-                if (file.ProviderEntry) continue;
+                if (file.ProviderEntry)
+                {
+                    continue;
+                }
 
                 var newFile = file;
                 if (file.CreateBy != userInfo.ID)
                 {
-                    newFile = ServiceProvider.GetService<File<T>>();
+                    newFile = _serviceProvider.GetService<File<T>>();
                     newFile.ID = file.ID;
                     newFile.Version = file.Version + 1;
                     newFile.VersionGroup = file.VersionGroup + 1;
@@ -2259,11 +2372,11 @@ namespace ASC.Web.Files.Services.WCFService
                         newFile.ThumbnailStatus = Thumbnail.Created;
                     }
 
-                    await FileMarker.MarkAsNewAsync(newFile);
+                    await _fileMarker.MarkAsNewAsync(newFile);
 
-                    await EntryStatusManager.SetFileStatusAsync(newFile);
+                    await _entryStatusManager.SetFileStatusAsync(newFile);
 
-                    FilesMessageService.Send(newFile, GetHttpHeaders(), MessageAction.FileChangeOwner, new[] { newFile.Title, userInfo.DisplayUserName(false, DisplayUserSettingsHelper) });
+                    _filesMessageService.Send(newFile, GetHttpHeaders(), MessageAction.FileChangeOwner, new[] { newFile.Title, userInfo.DisplayUserName(false, _displayUserSettingsHelper) });
                 }
                 entries.Append(newFile);
             }
@@ -2271,26 +2384,26 @@ namespace ASC.Web.Files.Services.WCFService
             await foreach (var entrie in entries)
             {
                 yield return entrie;
-        }
+            }
         }
 
         public bool StoreOriginal(bool set)
         {
-            FilesSettingsHelper.StoreOriginalFiles = set;
-            FilesMessageService.Send(GetHttpHeaders(), MessageAction.DocumentsUploadingFormatsSettingsUpdated);
+            _filesSettingsHelper.StoreOriginalFiles = set;
+            _filesMessageService.Send(GetHttpHeaders(), MessageAction.DocumentsUploadingFormatsSettingsUpdated);
 
-            return FilesSettingsHelper.StoreOriginalFiles;
+            return _filesSettingsHelper.StoreOriginalFiles;
         }
 
         public bool HideConfirmConvert(bool isForSave)
         {
             if (isForSave)
             {
-                FilesSettingsHelper.HideConfirmConvertSave = true;
+                _filesSettingsHelper.HideConfirmConvertSave = true;
             }
             else
             {
-                FilesSettingsHelper.HideConfirmConvertOpen = true;
+                _filesSettingsHelper.HideConfirmConvertOpen = true;
             }
 
             return true;
@@ -2298,69 +2411,78 @@ namespace ASC.Web.Files.Services.WCFService
 
         public bool UpdateIfExist(bool set)
         {
-            FilesSettingsHelper.UpdateIfExist = set;
-            FilesMessageService.Send(GetHttpHeaders(), MessageAction.DocumentsOverwritingSettingsUpdated);
+            _filesSettingsHelper.UpdateIfExist = set;
+            _filesMessageService.Send(GetHttpHeaders(), MessageAction.DocumentsOverwritingSettingsUpdated);
 
-            return FilesSettingsHelper.UpdateIfExist;
+            return _filesSettingsHelper.UpdateIfExist;
         }
 
         public bool Forcesave(bool set)
         {
-            FilesSettingsHelper.Forcesave = set;
-            FilesMessageService.Send(GetHttpHeaders(), MessageAction.DocumentsForcesave);
+            _filesSettingsHelper.Forcesave = set;
+            _filesMessageService.Send(GetHttpHeaders(), MessageAction.DocumentsForcesave);
 
-            return FilesSettingsHelper.Forcesave;
+            return _filesSettingsHelper.Forcesave;
         }
 
         public bool StoreForcesave(bool set)
         {
-            ErrorIf(!Global.IsAdministrator, FilesCommonResource.ErrorMassage_SecurityException);
+            ErrorIf(!_global.IsAdministrator, FilesCommonResource.ErrorMassage_SecurityException);
 
-            FilesSettingsHelper.StoreForcesave = set;
-            FilesMessageService.Send(GetHttpHeaders(), MessageAction.DocumentsStoreForcesave);
+            _filesSettingsHelper.StoreForcesave = set;
+            _filesMessageService.Send(GetHttpHeaders(), MessageAction.DocumentsStoreForcesave);
 
-            return FilesSettingsHelper.StoreForcesave;
+            return _filesSettingsHelper.StoreForcesave;
         }
 
         public bool DisplayRecent(bool set)
         {
-            if (!AuthContext.IsAuthenticated) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
+            if (!_authContext.IsAuthenticated)
+            {
+                throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
+            }
 
-            FilesSettingsHelper.RecentSection = set;
+            _filesSettingsHelper.RecentSection = set;
 
-            return FilesSettingsHelper.RecentSection;
+            return _filesSettingsHelper.RecentSection;
         }
 
         public bool DisplayFavorite(bool set)
         {
-            if (!AuthContext.IsAuthenticated) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
+            if (!_authContext.IsAuthenticated)
+            {
+                throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
+            }
 
-            FilesSettingsHelper.FavoritesSection = set;
+            _filesSettingsHelper.FavoritesSection = set;
 
-            return FilesSettingsHelper.FavoritesSection;
+            return _filesSettingsHelper.FavoritesSection;
         }
 
         public bool DisplayTemplates(bool set)
         {
-            if (!AuthContext.IsAuthenticated) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
+            if (!_authContext.IsAuthenticated)
+            {
+                throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
+            }
 
-            FilesSettingsHelper.TemplatesSection = set;
+            _filesSettingsHelper.TemplatesSection = set;
 
-            return FilesSettingsHelper.TemplatesSection;
+            return _filesSettingsHelper.TemplatesSection;
         }
 
         public ICompress ChangeDownloadTarGz(bool set)
         {
-            FilesSettingsHelper.DownloadTarGz = set;
+            _filesSettingsHelper.DownloadTarGz = set;
 
             return CompressToArchive;
         }
 
         public bool ChangeDeleteConfrim(bool set)
         {
-            FilesSettingsHelper.ConfirmDelete = set;
+            _filesSettingsHelper.ConfirmDelete = set;
 
-            return FilesSettingsHelper.ConfirmDelete;
+            return _filesSettingsHelper.ConfirmDelete;
         }
 
         public IEnumerable<JsonElement> CreateThumbnails(List<JsonElement> fileIds)
@@ -2369,8 +2491,8 @@ namespace ASC.Web.Files.Services.WCFService
             {
                 var req = new ThumbnailRequest()
                 {
-                    Tenant = TenantManager.GetCurrentTenant().TenantId,
-                    BaseUrl = BaseCommonLinkUtility.GetFullAbsolutePath("")
+                    Tenant = _tenantManager.GetCurrentTenant().TenantId,
+                    BaseUrl = _baseCommonLinkUtility.GetFullAbsolutePath("")
                 };
 
                 var (fileIntIds, _) = FileOperationsManager.GetIds(fileIds);
@@ -2380,11 +2502,11 @@ namespace ASC.Web.Files.Services.WCFService
                     req.Files.Add(f);
                 }
 
-                ThumbnailNotify.Publish(req, Common.Caching.CacheNotifyAction.Insert);
+                _thumbnailNotify.Publish(req, Common.Caching.CacheNotifyAction.Insert);
             }
             catch (Exception e)
             {
-                Logger.Error("CreateThumbnails", e);
+                _logger.Error("CreateThumbnails", e);
             }
 
             return fileIds;
@@ -2396,8 +2518,8 @@ namespace ASC.Web.Files.Services.WCFService
             {
                 var req = new ThumbnailRequest()
                 {
-                    Tenant = TenantManager.GetCurrentTenant().TenantId,
-                    BaseUrl = BaseCommonLinkUtility.GetFullAbsolutePath("")
+                    Tenant = _tenantManager.GetCurrentTenant().TenantId,
+                    BaseUrl = _baseCommonLinkUtility.GetFullAbsolutePath("")
                 };
 
                 var (fileIntIds, _) = FileOperationsManager.GetIds(fileIds);
@@ -2407,11 +2529,11 @@ namespace ASC.Web.Files.Services.WCFService
                     req.Files.Add(f);
                 }
 
-                await ThumbnailNotify.PublishAsync(req, CacheNotifyAction.Insert);
+                await _thumbnailNotify.PublishAsync(req, CacheNotifyAction.Insert);
             }
             catch (Exception e)
             {
-                Logger.Error("CreateThumbnails", e);
+                _logger.Error("CreateThumbnails", e);
             }
 
             return fileIds;
@@ -2419,65 +2541,69 @@ namespace ASC.Web.Files.Services.WCFService
 
         public string GetHelpCenter()
         {
-            return ""; //TODO: Studio.UserControls.Common.HelpCenter.HelpCenter.RenderControlToString();
+            return string.Empty; //TODO: Studio.UserControls.Common.HelpCenter.HelpCenter.RenderControlToString();
         }
 
         private IFolderDao<T> GetFolderDao()
         {
-            return DaoFactory.GetFolderDao<T>();
+            return _daoFactory.GetFolderDao<T>();
         }
 
         private IFileDao<T> GetFileDao()
         {
-            return DaoFactory.GetFileDao<T>();
+            return _daoFactory.GetFileDao<T>();
         }
 
         private ITagDao<T> GetTagDao()
         {
-            return DaoFactory.GetTagDao<T>();
+            return _daoFactory.GetTagDao<T>();
         }
 
         private IDataStore GetStoreTemplate()
         {
-            return GlobalStore.GetStoreTemplate();
+            return _globalStore.GetStoreTemplate();
         }
 
         private IProviderDao GetProviderDao()
         {
-            return DaoFactory.ProviderDao;
+            return _daoFactory.ProviderDao;
         }
 
         private ISecurityDao<T> GetSecurityDao()
         {
-            return DaoFactory.GetSecurityDao<T>();
+            return _daoFactory.GetSecurityDao<T>();
         }
 
         private ILinkDao GetLinkDao()
         {
-            return DaoFactory.GetLinkDao();
+            return _daoFactory.GetLinkDao();
         }
 
         private static void ErrorIf(bool condition, string errorMessage)
         {
-            if (condition) throw new InvalidOperationException(errorMessage);
+            if (condition)
+            {
+                throw new InvalidOperationException(errorMessage);
+            }
         }
 
         private Exception GenerateException(Exception error, bool warning = false)
         {
             if (warning)
             {
-                Logger.Info(error);
+                _logger.Info(error);
             }
             else
             {
-                Logger.Error(error);
+                _logger.Error(error);
             }
+
             return new InvalidOperationException(error.Message, error);
         }
 
         private IDictionary<string, StringValues> GetHttpHeaders()
         {
-            return HttpContextAccessor?.HttpContext?.Request?.Headers;
+            return _httpContextAccessor?.HttpContext?.Request?.Headers;
         }
     }
 

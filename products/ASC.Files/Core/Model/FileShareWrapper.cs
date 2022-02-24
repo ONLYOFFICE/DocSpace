@@ -32,10 +32,7 @@ namespace ASC.Api.Documents
         /// <summary>
         /// </summary>
         /// <param name="aceWrapper"></param>
-        public FileShareWrapper()
-        {
-
-        }
+        public FileShareWrapper() { }
 
         /// <summary>
         /// </summary>
@@ -85,15 +82,15 @@ namespace ASC.Api.Documents
     [Scope]
     public class FileShareWrapperHelper
     {
-        private UserManager UserManager { get; }
-        private EmployeeWraperFullHelper EmployeeWraperFullHelper { get; }
+        private readonly UserManager _userManager;
+        private readonly EmployeeWraperFullHelper _employeeWraperFullHelper;
 
         public FileShareWrapperHelper(
             UserManager userManager,
             EmployeeWraperFullHelper employeeWraperFullHelper)
         {
-            UserManager = userManager;
-            EmployeeWraperFullHelper = employeeWraperFullHelper;
+            _userManager = userManager;
+            _employeeWraperFullHelper = employeeWraperFullHelper;
         }
 
         public FileShareWrapper Get(AceWrapper aceWrapper)
@@ -117,13 +114,14 @@ namespace ASC.Api.Documents
                 else
                 {
                     //Shared to group
-                    result.SharedTo = new GroupWrapperSummary(UserManager.GetGroupInfo(aceWrapper.SubjectId), UserManager);
+                    result.SharedTo = new GroupWrapperSummary(_userManager.GetGroupInfo(aceWrapper.SubjectId), _userManager);
                 }
             }
             else
             {
-                result.SharedTo = EmployeeWraperFullHelper.GetFull(UserManager.GetUsers(aceWrapper.SubjectId));
+                result.SharedTo = _employeeWraperFullHelper.GetFull(_userManager.GetUsers(aceWrapper.SubjectId));
             }
+
             result.Access = aceWrapper.Share;
 
             return result;

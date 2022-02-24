@@ -36,13 +36,13 @@ namespace ASC.Web.Files.Classes
 
         public readonly string GetFileServicePath;
 
-        private WebImageSupplier WebImageSupplier { get; }
-        private IDaoFactory DaoFactory { get; }
-        private CommonLinkUtility CommonLinkUtility { get; }
-        private FilesLinkUtility FilesLinkUtility { get; }
-        private EmailValidationKeyProvider EmailValidationKeyProvider { get; }
-        private GlobalStore GlobalStore { get; }
-        private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
+        private readonly WebImageSupplier _webImageSupplier;
+        private readonly IDaoFactory _daoFactory;
+        private readonly CommonLinkUtility _commonLinkUtility;
+        private readonly FilesLinkUtility _filesLinkUtility;
+        private readonly EmailValidationKeyProvider _emailValidationKeyProvider;
+        private readonly GlobalStore _globalStore;
+        private readonly BaseCommonLinkUtility _baseCommonLinkUtility;
 
         public PathProvider(
             WebImageSupplier webImageSupplier,
@@ -53,29 +53,30 @@ namespace ASC.Web.Files.Classes
             GlobalStore globalStore,
             BaseCommonLinkUtility baseCommonLinkUtility)
         {
-            WebImageSupplier = webImageSupplier;
-            DaoFactory = daoFactory;
-            CommonLinkUtility = commonLinkUtility;
-            FilesLinkUtility = filesLinkUtility;
-            EmailValidationKeyProvider = emailValidationKeyProvider;
-            GlobalStore = globalStore;
-            BaseCommonLinkUtility = baseCommonLinkUtility;
-            GetFileServicePath = BaseCommonLinkUtility.ToAbsolute("~/Products/Files/Services/WCFService/service.svc/");
+            _webImageSupplier = webImageSupplier;
+            _daoFactory = daoFactory;
+            _commonLinkUtility = commonLinkUtility;
+            _filesLinkUtility = filesLinkUtility;
+            _emailValidationKeyProvider = emailValidationKeyProvider;
+            _globalStore = globalStore;
+            _baseCommonLinkUtility = baseCommonLinkUtility;
+            GetFileServicePath = _baseCommonLinkUtility.ToAbsolute("~/Products/Files/Services/WCFService/service.svc/");
         }
 
         public string GetImagePath(string imgFileName)
         {
-            return WebImageSupplier.GetAbsoluteWebPath(imgFileName, Configuration.ProductEntryPoint.ID);
+            return _webImageSupplier.GetAbsoluteWebPath(imgFileName, ProductEntryPoint.ID);
         }
 
         public string GetFileStaticRelativePath(string fileName)
         {
             var ext = FileUtility.GetFileExtension(fileName);
+
             return ext switch
             {
                 //Attention: Only for ResourceBundleControl
                 ".js" => VirtualPathUtility.ToAbsolute("~/Products/Files/js/" + fileName),
-                ".ascx" => BaseCommonLinkUtility.ToAbsolute("~/Products/Files/Controls/" + fileName),
+                ".ascx" => _baseCommonLinkUtility.ToAbsolute("~/Products/Files/Controls/" + fileName),
                 //Attention: Only for ResourceBundleControl
                 ".css" => VirtualPathUtility.ToAbsolute("~/Products/Files/App_Themes/default/" + fileName),
                 _ => fileName,
@@ -84,14 +85,17 @@ namespace ASC.Web.Files.Classes
 
         public string GetFileControlPath(string fileName)
         {
-            return BaseCommonLinkUtility.ToAbsolute("~/Products/Files/Controls/" + fileName);
+            return _baseCommonLinkUtility.ToAbsolute("~/Products/Files/Controls/" + fileName);
         }
 
         public async Task<string> GetFolderUrlAsync<T>(Folder<T> folder, int projectID = 0)
         {
-            if (folder == null) throw new ArgumentNullException(nameof(folder), FilesCommonResource.ErrorMassage_FolderNotFound);
+            if (folder == null)
+            {
+                throw new ArgumentNullException(nameof(folder), FilesCommonResource.ErrorMassage_FolderNotFound);
+            }
 
-            var folderDao = DaoFactory.GetFolderDao<T>();
+            var folderDao = _daoFactory.GetFolderDao<T>();
 
             switch (folder.RootFolderType)
             {
@@ -106,25 +110,29 @@ namespace ASC.Web.Files.Classes
 
                         projectID = Convert.ToInt32(projectIDFromDao);
                     }
-                    return CommonLinkUtility.GetFullAbsolutePath(string.Format("{0}?prjid={1}#{2}", ProjectVirtualPath, projectID, folder.ID));
+
+                    return _commonLinkUtility.GetFullAbsolutePath(string.Format("{0}?prjid={1}#{2}", ProjectVirtualPath, projectID, folder.ID));
                 default:
-                    return CommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.FilesBaseAbsolutePath + "#" + HttpUtility.UrlPathEncode(folder.ID.ToString()));
+                    return _commonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.FilesBaseAbsolutePath + "#" + HttpUtility.UrlPathEncode(folder.ID.ToString()));
             }
         }
 
         public async Task<string> GetFolderUrlByIdAsync<T>(T folderId)
         {
-            var folder = await DaoFactory.GetFolderDao<T>().GetFolderAsync(folderId);
+            var folder = await _daoFactory.GetFolderDao<T>().GetFolderAsync(folderId);
 
             return await GetFolderUrlAsync(folder);
         }
 
         public string GetFileStreamUrl<T>(File<T> file, string doc = null, bool lastVersion = false)
         {
-            if (file == null) throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
+            if (file == null)
+            {
+                throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
+            }
 
             //NOTE: Always build path to handler!
-            var uriBuilder = new UriBuilder(CommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.FileHandlerPath));
+            var uriBuilder = new UriBuilder(_commonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.FileHandlerPath));
             var query = uriBuilder.Query;
             query += FilesLinkUtility.Action + "=stream&";
             query += FilesLinkUtility.FileId + "=" + HttpUtility.UrlEncode(file.ID.ToString()) + "&";
@@ -134,7 +142,8 @@ namespace ASC.Web.Files.Classes
                 version = file.Version;
                 query += FilesLinkUtility.Version + "=" + file.Version + "&";
             }
-            query += FilesLinkUtility.AuthKey + "=" + EmailValidationKeyProvider.GetEmailKey(file.ID.ToString() + version);
+
+            query += FilesLinkUtility.AuthKey + "=" + _emailValidationKeyProvider.GetEmailKey(file.ID.ToString() + version);
             if (!string.IsNullOrEmpty(doc))
             {
                 query += "&" + FilesLinkUtility.DocShareKey + "=" + HttpUtility.UrlEncode(doc);
@@ -145,14 +154,17 @@ namespace ASC.Web.Files.Classes
 
         public string GetFileChangesUrl<T>(File<T> file, string doc = null)
         {
-            if (file == null) throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
+            if (file == null)
+            {
+                throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
+            }
 
-            var uriBuilder = new UriBuilder(CommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.FileHandlerPath));
+            var uriBuilder = new UriBuilder(_commonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.FileHandlerPath));
             var query = uriBuilder.Query;
             query += $"{FilesLinkUtility.Action}=diff&";
             query += $"{FilesLinkUtility.FileId}={HttpUtility.UrlEncode(file.ID.ToString())}&";
             query += $"{FilesLinkUtility.Version}={file.Version}&";
-            query += $"{FilesLinkUtility.AuthKey}={EmailValidationKeyProvider.GetEmailKey(file.ID + file.Version.ToString(CultureInfo.InvariantCulture))}";
+            query += $"{FilesLinkUtility.AuthKey}={_emailValidationKeyProvider.GetEmailKey(file.ID + file.Version.ToString(CultureInfo.InvariantCulture))}";
             if (!string.IsNullOrEmpty(doc))
             {
                 query += $"&{FilesLinkUtility.DocShareKey}={HttpUtility.UrlEncode(doc)}";
@@ -163,9 +175,12 @@ namespace ASC.Web.Files.Classes
 
         public async Task<string> GetTempUrlAsync(Stream stream, string ext)
         {
-            if (stream == null) throw new ArgumentNullException(nameof(stream));
+            if (stream == null)
+            {
+                throw new ArgumentNullException(nameof(stream));
+            }
 
-            var store = GlobalStore.GetStore();
+            var store = _globalStore.GetStore();
             var fileName = string.Format("{0}{1}", Guid.NewGuid(), ext);
             var path = CrossPlatform.PathCombine("temp_stream", fileName);
 
@@ -181,18 +196,18 @@ namespace ASC.Web.Files.Classes
                 MimeMapping.GetMimeMapping(ext),
                 "attachment; filename=\"" + fileName + "\"");
 
-            var uriBuilder = new UriBuilder(CommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.FileHandlerPath));
+            var uriBuilder = new UriBuilder(_commonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.FileHandlerPath));
             var query = uriBuilder.Query;
             query += $"{FilesLinkUtility.Action}=tmp&";
             query += $"{FilesLinkUtility.FileTitle}={HttpUtility.UrlEncode(fileName)}&";
-            query += $"{FilesLinkUtility.AuthKey}={EmailValidationKeyProvider.GetEmailKey(fileName)}";
+            query += $"{FilesLinkUtility.AuthKey}={_emailValidationKeyProvider.GetEmailKey(fileName)}";
 
             return $"{uriBuilder.Uri}?{query}";
         }
 
         public string GetEmptyFileUrl(string extension)
         {
-            var uriBuilder = new UriBuilder(CommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.FileHandlerPath));
+            var uriBuilder = new UriBuilder(_commonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.FileHandlerPath));
             var query = uriBuilder.Query;
             query += $"{FilesLinkUtility.Action}=empty&";
             query += $"{FilesLinkUtility.FileTitle}={HttpUtility.UrlEncode(extension)}";

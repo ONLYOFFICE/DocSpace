@@ -20,6 +20,7 @@
             modelBuilder
                 .Add(MySqlAddDbFilesLink, Provider.MySql)
                 .Add(PgSqlAddDbFilesLink, Provider.PostgreSql);
+
             return modelBuilder;
         }
         public static void MySqlAddDbFilesLink(this ModelBuilder modelBuilder)

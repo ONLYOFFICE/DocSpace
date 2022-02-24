@@ -22,21 +22,21 @@ namespace ASC.Web.Files.Core.Compress
     [Scope]
     public class CompressToZip : ICompress
     {
-        private ZipOutputStream zipStream;
-        private ZipEntry zipEntry;
-        private TempStream TempStream { get; }
+        private ZipOutputStream _zipStream;
+        private ZipEntry _zipEntry;
+        private readonly TempStream _tempStream;
 
         public CompressToZip(TempStream tempStream)
         {
-            TempStream = tempStream;
+            _tempStream = tempStream;
         }
 
         /// <summary> </summary>
         /// <param name="stream">Accepts a new stream, it will contain an archive upon completion of work</param>
         public void SetStream(Stream stream)
         {
-            zipStream = new ZipOutputStream(stream) { UseZip64 = UseZip64.Dynamic };
-            zipStream.IsStreamOwner = false;
+            _zipStream = new ZipOutputStream(stream) { UseZip64 = UseZip64.Dynamic };
+            _zipStream.IsStreamOwner = false;
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace ASC.Web.Files.Core.Compress
         /// <param name="title">File name with extension, this name will have the file in the archive</param>
         public void CreateEntry(string title)
         {
-            zipEntry = new ZipEntry(title) { IsUnicodeText = true };
+            _zipEntry = new ZipEntry(title) { IsUnicodeText = true };
         }
 
         /// <summary>
@@ -54,11 +54,11 @@ namespace ASC.Web.Files.Core.Compress
         /// <param name="readStream">File data</param>
         public void PutStream(Stream readStream)
         {
-            using (var buffered = TempStream.GetBuffered(readStream))
+            using (var buffered = _tempStream.GetBuffered(readStream))
             {
-                zipEntry.Size = buffered.Length;
-                zipStream.PutNextEntry(zipEntry);
-                buffered.CopyTo(zipStream);
+                _zipEntry.Size = buffered.Length;
+                _zipStream.PutNextEntry(_zipEntry);
+                buffered.CopyTo(_zipStream);
             }
         }
 
@@ -67,7 +67,7 @@ namespace ASC.Web.Files.Core.Compress
         /// </summary>
         public void PutNextEntry()
         {
-            zipStream.PutNextEntry(zipEntry);
+            _zipStream.PutNextEntry(_zipEntry);
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace ASC.Web.Files.Core.Compress
         /// </summary>
         public void CloseEntry()
         {
-            zipStream.CloseEntry();
+            _zipStream.CloseEntry();
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace ASC.Web.Files.Core.Compress
 
         public void Dispose()
         {
-            zipStream?.Dispose();
+            _zipStream?.Dispose();
         }
     }
 }

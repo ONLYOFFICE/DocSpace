@@ -30,7 +30,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 {
     internal abstract class GoogleDriveDaoBase : ThirdPartyProviderDao<GoogleDriveProviderInfo>
     {
-        protected override string Id { get => "drive"; }
+        protected override string Id => "drive";
 
         protected GoogleDriveDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility, TempPath tempPath)
             : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
@@ -40,6 +40,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         protected static string MakeDriveId(object entryId)
         {
             var id = Convert.ToString(entryId, CultureInfo.InvariantCulture);
+
             return string.IsNullOrEmpty(id)
                        ? "root"
                        : id.TrimStart('/');
@@ -66,6 +67,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         protected override string MakeId(string path = null)
         {
             var p = string.IsNullOrEmpty(path) || path == "root" || path == ProviderInfo.DriveRootId ? "" : ("-|" + path.TrimStart('/'));
+
             return $"{PathPrefix}{p}";
         }
 
@@ -103,7 +105,11 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
         protected Folder<string> ToFolder(DriveFile driveEntry)
         {
-            if (driveEntry == null) return null;
+            if (driveEntry == null)
+            {
+                return null;
+            }
+
             if (driveEntry is ErrorDriveEntry)
             {
                 //Return error entry
@@ -127,10 +133,14 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             folder.Title = MakeFolderTitle(driveEntry);
 
             if (folder.CreateOn != DateTime.MinValue && folder.CreateOn.Kind == DateTimeKind.Utc)
+            {
                 folder.CreateOn = TenantUtil.DateTimeFromUtc(folder.CreateOn);
+            }
 
             if (folder.ModifiedOn != DateTime.MinValue && folder.ModifiedOn.Kind == DateTimeKind.Utc)
+            {
                 folder.ModifiedOn = TenantUtil.DateTimeFromUtc(folder.ModifiedOn);
+            }
 
             return folder;
         }
@@ -147,7 +157,10 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
         private File<string> ToErrorFile(ErrorDriveEntry driveEntry)
         {
-            if (driveEntry == null) return null;
+            if (driveEntry == null)
+            {
+                return null;
+            }
 
             var file = GetErrorFile(new ErrorEntry(driveEntry.Error, driveEntry.ErrorId));
 
@@ -158,7 +171,10 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
         private Folder<string> ToErrorFolder(ErrorDriveEntry driveEntry)
         {
-            if (driveEntry == null) return null;
+            if (driveEntry == null)
+            {
+                return null;
+            }
 
             var folder = GetErrorFolder(new ErrorEntry(driveEntry.Error, driveEntry.ErrorId));
 
@@ -169,7 +185,10 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
         public File<string> ToFile(DriveFile driveFile)
         {
-            if (driveFile == null) return null;
+            if (driveFile == null)
+            {
+                return null;
+            }
 
             if (driveFile is ErrorDriveEntry)
             {
@@ -201,6 +220,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             try
             {
                 var entry = ProviderInfo.GetDriveEntryAsync(driveId).Result;
+
                 return entry;
             }
             catch (Exception ex)
@@ -215,6 +235,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             try
             {
                 var entry = await ProviderInfo.GetDriveEntryAsync(driveId);
+
                 return entry;
         }
             catch (Exception ex)
@@ -226,6 +247,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         protected override async Task<IEnumerable<string>> GetChildrenAsync(string folderId)
         {
             var entries = await GetDriveEntriesAsync(folderId);
+
             return entries.Select(entry => MakeId(entry.Id));
         }
 
@@ -233,6 +255,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         {
             var parentDriveId = MakeDriveId(parentId);
             var entries = ProviderInfo.GetDriveEntriesAsync(parentDriveId, folder).Result;
+
             return entries;
         }
 
@@ -240,6 +263,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         {
             var parentDriveId = MakeDriveId(parentId);
             var entries = await ProviderInfo.GetDriveEntriesAsync(parentDriveId, folder);
+
             return entries;
         }
 
@@ -247,9 +271,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         protected sealed class ErrorDriveEntry : DriveFile
         {
             public string Error { get; set; }
-
             public string ErrorId { get; private set; }
-
 
             public ErrorDriveEntry(Exception e, object id)
             {

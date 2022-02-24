@@ -23,15 +23,13 @@
  *
 */
 
-using Microsoft.EntityFrameworkCore;
-
 namespace ASC.Files.Core.Data
 {
     [Scope]
     internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
     {
         public SecurityDao(UserManager userManager,
-            DbContextManager<EF.FilesDbContext> dbContextManager,
+            DbContextManager<FilesDbContext> dbContextManager,
             TenantManager tenantManager,
             TenantUtil tenantUtil,
             SetupInfo setupInfo,
@@ -93,7 +91,10 @@ namespace ASC.Files.Core.Data
             if (r.Share == FileShare.None)
             {
                 var entryId = (await MappingIDAsync(r.EntryId) ?? "").ToString();
-                if (string.IsNullOrEmpty(entryId)) return;
+                if (string.IsNullOrEmpty(entryId))
+                {
+                    return;
+                }
 
                 using var tx = await FilesDbContext.Database.BeginTransactionAsync();
                 var files = new List<string>();
@@ -171,12 +172,16 @@ namespace ASC.Files.Core.Data
         public ValueTask<List<FileShareRecord>> GetSharesAsync(IEnumerable<Guid> subjects)
         {
             var q = GetQuery(r => subjects.Contains(r.Subject));
+
             return FromQueryAsync(q);
         }
 
         public Task<IEnumerable<FileShareRecord>> GetPureShareRecordsAsync(IEnumerable<FileEntry<T>> entries)
         {
-            if (entries == null) return Task.FromResult<IEnumerable<FileShareRecord>>(new List<FileShareRecord>());
+            if (entries == null)
+            {
+                return Task.FromResult<IEnumerable<FileShareRecord>>(new List<FileShareRecord>());
+            }
 
             return InternalGetPureShareRecordsAsync(entries);
         }
@@ -196,7 +201,10 @@ namespace ASC.Files.Core.Data
 
         public Task<IEnumerable<FileShareRecord>> GetPureShareRecordsAsync(IAsyncEnumerable<FileEntry<T>> entries)
         {
-            if (entries == null) return Task.FromResult<IEnumerable<FileShareRecord>>(new List<FileShareRecord>());
+            if (entries == null)
+            {
+                return Task.FromResult<IEnumerable<FileShareRecord>>(new List<FileShareRecord>());
+            }
 
             return InternalGetPureShareRecordsAsync(entries);
         }
@@ -216,7 +224,10 @@ namespace ASC.Files.Core.Data
 
         public Task<IEnumerable<FileShareRecord>> GetPureShareRecordsAsync(FileEntry<T> entry)
         {
-            if (entry == null) return Task.FromResult<IEnumerable<FileShareRecord>>(new List<FileShareRecord>());
+            if (entry == null)
+            {
+                return Task.FromResult<IEnumerable<FileShareRecord>>(new List<FileShareRecord>());
+            }
 
             return InternalGetPureShareRecordsAsync(entry);
         }
@@ -254,7 +265,10 @@ namespace ASC.Files.Core.Data
         /// <returns></returns>
         public Task<IEnumerable<FileShareRecord>> GetSharesAsync(IEnumerable<FileEntry<T>> entries)
         {
-            if (entries == null) return Task.FromResult<IEnumerable<FileShareRecord>>(new List<FileShareRecord>());
+            if (entries == null)
+            {
+                return Task.FromResult<IEnumerable<FileShareRecord>>(new List<FileShareRecord>());
+            }
 
             return InternalGetSharesAsync(entries);
         }
@@ -279,7 +293,10 @@ namespace ASC.Files.Core.Data
         /// <returns></returns>
         public Task<IEnumerable<FileShareRecord>> GetSharesAsync(FileEntry<T> entry)
         {
-            if (entry == null) return Task.FromResult<IEnumerable<FileShareRecord>>(new List<FileShareRecord>());
+            if (entry == null)
+            {
+                return Task.FromResult<IEnumerable<FileShareRecord>>(new List<FileShareRecord>());
+            }
 
             return InternalGetSharesAsync(entry);
         }
@@ -290,6 +307,7 @@ namespace ASC.Files.Core.Data
             var foldersInt = new List<int>();
 
             await SelectFilesAndFoldersForShareAsync(entry, files, null, foldersInt);
+
             return await SaveFilesAndFoldersForShareAsync(files, foldersInt);
         }
 
@@ -300,17 +318,26 @@ namespace ASC.Files.Core.Data
             {
                 var fileId = await MappingIDAsync(entry.ID);
                 folderId = ((File<T>)entry).FolderID;
-                if (!files.Contains(fileId.ToString())) files.Add(fileId.ToString());
+                if (!files.Contains(fileId.ToString()))
+                {
+                    files.Add(fileId.ToString());
+                }
             }
             else
             {
                 folderId = entry.ID;
             }
 
-            if (foldersInt != null && int.TryParse(folderId.ToString(), out var folderIdInt) && !foldersInt.Contains(folderIdInt)) foldersInt.Add(folderIdInt);
+            if (foldersInt != null && int.TryParse(folderId.ToString(), out var folderIdInt) && !foldersInt.Contains(folderIdInt))
+            {
+                foldersInt.Add(folderIdInt);
+            }
 
             var mappedId = await MappingIDAsync(folderId);
-            if (folders != null) folders.Add(mappedId.ToString());
+            if (folders != null)
+            {
+                folders.Add(mappedId.ToString());
+            }
         }
 
         private async Task<IEnumerable<FileShareRecord>> SaveFilesAndFoldersForShareAsync(List<string> files, List<int> folders)
@@ -358,6 +385,7 @@ namespace ASC.Files.Core.Data
             var q = Query(FilesDbContext.Security);
             if (q != null)
             {
+              
                 q = q.Where(where);
             }
             return q;

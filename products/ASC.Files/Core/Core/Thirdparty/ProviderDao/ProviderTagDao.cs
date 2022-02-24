@@ -62,7 +62,6 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return TagDao.GetNewTagsAsync(subject, fileEntries);
         }
 
-
         public IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, FileEntry<string> fileEntry)
         {
             return TagDao.GetNewTagsAsync(subject, fileEntry);
@@ -82,7 +81,6 @@ namespace ASC.Files.Thirdparty.ProviderDao
         {
             return TagDao.GetTagsAsync(names, tagType);
         }
-
 
         public IEnumerable<Tag> SaveTags(IEnumerable<Tag> tag)
         {

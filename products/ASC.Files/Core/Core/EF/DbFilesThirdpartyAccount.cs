@@ -27,6 +27,7 @@
             modelBuilder
                 .Add(MySqlAddDbFilesThirdpartyAccount, Provider.MySql)
                 .Add(PgSqlAddDbFilesThirdpartyAccount, Provider.PostgreSql);
+
             return modelBuilder;
         }
         public static void MySqlAddDbFilesThirdpartyAccount(this ModelBuilder modelBuilder)

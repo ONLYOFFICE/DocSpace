@@ -32,13 +32,13 @@ namespace ASC.Web.Files.Helpers
     [Scope]
     public class DocuSignToken
     {
-        public ILog Log { get; set; }
+        public ILog Logger { get; set; }
 
         public const string AppAttr = "docusign";
 
-        private TokenHelper TokenHelper { get; }
-        private AuthContext AuthContext { get; }
-        private ConsumerFactory ConsumerFactory { get; }
+        private readonly TokenHelper _tokenHelper;
+        private readonly AuthContext _authContext;
+        private readonly ConsumerFactory _consumerFactory;
 
         public DocuSignToken(
             TokenHelper tokenHelper,
@@ -46,27 +46,30 @@ namespace ASC.Web.Files.Helpers
             AuthContext authContext,
             ConsumerFactory consumerFactory)
         {
-            TokenHelper = tokenHelper;
-            AuthContext = authContext;
-            ConsumerFactory = consumerFactory;
-            Log = options.CurrentValue;
+            _tokenHelper = tokenHelper;
+            _authContext = authContext;
+            _consumerFactory = consumerFactory;
+            Logger = options.CurrentValue;
         }
 
         public OAuth20Token GetToken()
         {
-            return TokenHelper.GetToken(AppAttr);
+            return _tokenHelper.GetToken(AppAttr);
         }
 
         public void DeleteToken(Guid? userId = null)
         {
-            TokenHelper.DeleteToken(AppAttr, userId);
+            _tokenHelper.DeleteToken(AppAttr, userId);
         }
 
         public void SaveToken(OAuth20Token token)
         {
-            if (token == null) throw new ArgumentNullException(nameof(token));
+            if (token == null)
+            {
+                throw new ArgumentNullException(nameof(token));
+            }
 
-            TokenHelper.SaveToken(new Token(token, AppAttr));
+            _tokenHelper.SaveToken(new Token(token, AppAttr));
         }
 
         internal string GetRefreshedToken(OAuth20Token token)
@@ -75,9 +78,9 @@ namespace ASC.Web.Files.Helpers
             {
                 try
                 {
-                    Log.Info("DocuSign refresh token for user " + AuthContext.CurrentAccount.ID);
+                    Logger.Info("DocuSign refresh token for user " + _authContext.CurrentAccount.ID);
 
-                    var refreshed = ConsumerFactory.Get<DocuSignLoginProvider>().RefreshToken(token.RefreshToken);
+                    var refreshed = _consumerFactory.Get<DocuSignLoginProvider>().RefreshToken(token.RefreshToken);
 
                     if (refreshed != null)
                     {
@@ -91,9 +94,10 @@ namespace ASC.Web.Files.Helpers
                 }
                 catch (Exception ex)
                 {
-                    Log.Error("DocuSign refresh token for user " + AuthContext.CurrentAccount.ID, ex);
+                    Logger.Error("DocuSign refresh token for user " + _authContext.CurrentAccount.ID, ex);
                 }
             }
+
             return token.AccessToken;
         }
     }
@@ -101,36 +105,36 @@ namespace ASC.Web.Files.Helpers
     [Scope]
     public class DocuSignHelper
     {
-        public ILog Log { get; set; }
+        public ILog Logger { get; set; }
 
         public const string UserField = "userId";
 
         public static readonly List<string> SupportedFormats = new List<string>
-            {
-                ".as", ".asl", ".doc", ".docm", ".docx", ".dot", ".dotm", ".dotx", ".htm", ".html", ".msg", ".pdf", ".pdx", ".rtf", ".txt", ".wpd", ".wps", ".wpt", ".xps",
-                ".emz", ".svg", ".svgz", ".vdx", ".vss", ".vst",
-                ".bmp", ".cdr", ".dcx", ".gif", ".ico", ".jpg", ".jpeg", ".pct", ".pic", ".png", ".rgb", ".sam", ".tga", ".tif", ".tiff", ".wpg",
-                ".dps", ".dpt", ".pot", ".potx", ".pps", ".ppt", ".pptm", ".pptx",
-                ".csv", ".et", ".ett", ".xls", ".xlsm", ".xlsx", ".xlt"
-            };
+        {
+            ".as", ".asl", ".doc", ".docm", ".docx", ".dot", ".dotm", ".dotx", ".htm", ".html", ".msg", ".pdf", ".pdx", ".rtf", ".txt", ".wpd", ".wps", ".wpt", ".xps",
+            ".emz", ".svg", ".svgz", ".vdx", ".vss", ".vst",
+            ".bmp", ".cdr", ".dcx", ".gif", ".ico", ".jpg", ".jpeg", ".pct", ".pic", ".png", ".rgb", ".sam", ".tga", ".tif", ".tiff", ".wpg",
+            ".dps", ".dpt", ".pot", ".potx", ".pps", ".ppt", ".pptm", ".pptx",
+            ".csv", ".et", ".ett", ".xls", ".xlsm", ".xlsx", ".xlt"
+        };
 
         public static readonly long MaxFileSize = 25L * 1024L * 1024L;
 
         public static readonly int MaxEmailLength = 10000;
 
-        private DocuSignToken DocuSignToken { get; }
-        private FileSecurity FileSecurity { get; }
-        private IDaoFactory DaoFactory { get; }
-        private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
-        private UserManager UserManager { get; }
-        private AuthContext AuthContext { get; }
-        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-        private FileMarker FileMarker { get; }
-        private GlobalFolderHelper GlobalFolderHelper { get; }
-        private FilesMessageService FilesMessageService { get; }
-        private FilesLinkUtility FilesLinkUtility { get; }
-        private IServiceProvider ServiceProvider { get; }
-        private ConsumerFactory ConsumerFactory { get; }
+        private readonly DocuSignToken _docuSignToken;
+        private readonly FileSecurity _fileSecurity;
+        private readonly IDaoFactory _daoFactory;
+        private readonly BaseCommonLinkUtility _baseCommonLinkUtility;
+        private readonly UserManager _userManager;
+        private readonly AuthContext _authContext;
+        private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
+        private readonly FileMarker _fileMarker;
+        private readonly GlobalFolderHelper _globalFolderHelper;
+        private readonly FilesMessageService _filesMessageService;
+        private readonly FilesLinkUtility _filesLinkUtility;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly ConsumerFactory _consumerFactory;
 
         public DocuSignHelper(
             DocuSignToken docuSignToken,
@@ -148,32 +152,37 @@ namespace ASC.Web.Files.Helpers
             IServiceProvider serviceProvider,
             ConsumerFactory consumerFactory)
         {
-            DocuSignToken = docuSignToken;
-            FileSecurity = fileSecurity;
-            DaoFactory = daoFactory;
-            BaseCommonLinkUtility = baseCommonLinkUtility;
-            UserManager = userManager;
-            AuthContext = authContext;
-            DisplayUserSettingsHelper = displayUserSettingsHelper;
-            FileMarker = fileMarker;
-            GlobalFolderHelper = globalFolderHelper;
-            FilesMessageService = filesMessageService;
-            FilesLinkUtility = filesLinkUtility;
-            ServiceProvider = serviceProvider;
-            ConsumerFactory = consumerFactory;
-            Log = options.CurrentValue;
+            _docuSignToken = docuSignToken;
+            _fileSecurity = fileSecurity;
+            _daoFactory = daoFactory;
+            _baseCommonLinkUtility = baseCommonLinkUtility;
+            _userManager = userManager;
+            _authContext = authContext;
+            _displayUserSettingsHelper = displayUserSettingsHelper;
+            _fileMarker = fileMarker;
+            _globalFolderHelper = globalFolderHelper;
+            _filesMessageService = filesMessageService;
+            _filesLinkUtility = filesLinkUtility;
+            _serviceProvider = serviceProvider;
+            _consumerFactory = consumerFactory;
+            Logger = options.CurrentValue;
         }
 
         public bool ValidateToken(OAuth20Token token)
         {
             GetDocuSignAccount(token);
+
             return true;
         }
 
         public async Task<string> SendDocuSignAsync<T>(T fileId, DocuSignData docuSignData, IDictionary<string, StringValues> requestHeaders)
         {
-            if (docuSignData == null) throw new ArgumentNullException(nameof(docuSignData));
-            var token = DocuSignToken.GetToken();
+            if (docuSignData == null)
+            {
+                throw new ArgumentNullException(nameof(docuSignData));
+            }
+
+            var token = _docuSignToken.GetToken();
             var account = GetDocuSignAccount(token);
 
             var configuration = GetConfiguration(account, token);
@@ -181,49 +190,75 @@ namespace ASC.Web.Files.Helpers
 
             var url = CreateEnvelope(account.AccountId, document, docuSignData, configuration);
 
-            FilesMessageService.Send(sourceFile, requestHeaders, MessageAction.DocumentSendToSign, "DocuSign", sourceFile.Title);
+            _filesMessageService.Send(sourceFile, requestHeaders, MessageAction.DocumentSendToSign, "DocuSign", sourceFile.Title);
 
             return url;
         }
 
         private DocuSignAccount GetDocuSignAccount(OAuth20Token token)
         {
-            if (token == null) throw new ArgumentNullException(nameof(token));
+            if (token == null)
+            {
+                throw new ArgumentNullException(nameof(token));
+            }
 
-            var userInfoString = RequestHelper.PerformRequest(ConsumerFactory.Get<DocuSignLoginProvider>().DocuSignHost + "/oauth/userinfo",
-                                                              headers: new Dictionary<string, string> { { "Authorization", "Bearer " + DocuSignToken.GetRefreshedToken(token) } });
+            var userInfoString = RequestHelper.PerformRequest(_consumerFactory.Get<DocuSignLoginProvider>().DocuSignHost + "/oauth/userinfo",
+                                                              headers: new Dictionary<string, string> { { "Authorization", "Bearer " + _docuSignToken.GetRefreshedToken(token) } });
 
-            Log.Debug("DocuSing userInfo: " + userInfoString);
+            Logger.Debug("DocuSing userInfo: " + userInfoString);
 
             var userInfo = (DocuSignUserInfo)JsonConvert.DeserializeObject(userInfoString, typeof(DocuSignUserInfo));
 
-            if (userInfo.Accounts == null || userInfo.Accounts.Count == 0) throw new Exception("Account is null");
+            if (userInfo.Accounts == null || userInfo.Accounts.Count == 0)
+            {
+                throw new Exception("Account is null");
+            }
 
             var account = userInfo.Accounts[0];
+
             return account;
         }
 
         private DocuSign.eSign.Client.Configuration GetConfiguration(DocuSignAccount account, OAuth20Token token)
         {
-            if (account == null) throw new ArgumentNullException(nameof(account));
-            if (token == null) throw new ArgumentNullException(nameof(token));
+            if (account == null)
+            {
+                throw new ArgumentNullException(nameof(account));
+            }
+
+            if (token == null)
+            {
+                throw new ArgumentNullException(nameof(token));
+            }
 
             var apiClient = new ApiClient(account.BaseUri + "/restapi");
 
             var configuration = new DocuSign.eSign.Client.Configuration { ApiClient = apiClient };
-            configuration.AddDefaultHeader("Authorization", "Bearer " + DocuSignToken.GetRefreshedToken(token));
+            configuration.AddDefaultHeader("Authorization", "Bearer " + _docuSignToken.GetRefreshedToken(token));
 
             return configuration;
         }
 
         private async Task<(Document document, File<T> file)> CreateDocumentAsync<T>(T fileId, string documentName, string folderId)
         {
-            var fileDao = DaoFactory.GetFileDao<T>();
+            var fileDao = _daoFactory.GetFileDao<T>();
             var file = await fileDao.GetFileAsync(fileId);
-            if (file == null) throw new Exception(FilesCommonResource.ErrorMassage_FileNotFound);
-            if (!await FileSecurity.CanReadAsync(file)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
-            if (!SupportedFormats.Contains(FileUtility.GetFileExtension(file.Title))) throw new ArgumentException(FilesCommonResource.ErrorMassage_NotSupportedFormat);
-            if (file.ContentLength > MaxFileSize) throw new Exception(FileSizeComment.GetFileSizeExceptionString(MaxFileSize));
+            if (file == null)
+            {
+                throw new Exception(FilesCommonResource.ErrorMassage_FileNotFound);
+            }
+            if (!await _fileSecurity.CanReadAsync(file))
+            {
+                throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
+            }
+            if (!SupportedFormats.Contains(FileUtility.GetFileExtension(file.Title)))
+            {
+                throw new ArgumentException(FilesCommonResource.ErrorMassage_NotSupportedFormat);
+            }
+            if (file.ContentLength > MaxFileSize)
+            {
+                throw new Exception(FileSizeComment.GetFileSizeExceptionString(MaxFileSize));
+            }
 
             byte[] fileBytes;
             using (var stream = await fileDao.GetFileStreamAsync(file))
@@ -235,6 +270,7 @@ namespace ASC.Web.Files.Helpers
                 {
                     await ms.WriteAsync(buffer, 0, read);
                 }
+
                 fileBytes = ms.ToArray();
             }
 
@@ -264,13 +300,13 @@ namespace ASC.Web.Files.Helpers
             var eventNotification = new EventNotification
             {
                 EnvelopeEvents = new List<EnvelopeEvent>
-                        {
+                {
                             //new EnvelopeEvent {EnvelopeEventStatusCode = DocuSignStatus.Sent.ToString()},
                             //new EnvelopeEvent {EnvelopeEventStatusCode = DocuSignStatus.Delivered.ToString()},
                             new EnvelopeEvent {EnvelopeEventStatusCode = nameof(DocuSignStatus.Completed)},
                             new EnvelopeEvent {EnvelopeEventStatusCode = nameof(DocuSignStatus.Declined)},
                             new EnvelopeEvent {EnvelopeEventStatusCode = nameof(DocuSignStatus.Voided)},
-                        },
+                },
                 IncludeDocumentFields = "true",
                 //RecipientEvents = new List<RecipientEvent>
                 //    {
@@ -281,28 +317,27 @@ namespace ASC.Web.Files.Helpers
                 //        new RecipientEvent {RecipientEventStatusCode = "AuthenticationFailed"},
                 //        new RecipientEvent {RecipientEventStatusCode = "AutoResponded"},
                 //    },
-                Url = BaseCommonLinkUtility.GetFullAbsolutePath(DocuSignHandlerService.Path(FilesLinkUtility) + "?" + FilesLinkUtility.Action + "=webhook"),
+                Url = _baseCommonLinkUtility.GetFullAbsolutePath(DocuSignHandlerService.Path(_filesLinkUtility) + "?" + FilesLinkUtility.Action + "=webhook"),
             };
 
-            Log.Debug("DocuSign hook url: " + eventNotification.Url);
+            Logger.Debug("DocuSign hook url: " + eventNotification.Url);
 
             var signers = new List<Signer>();
             docuSignData.Users.ForEach(uid =>
+            {
+                try
                 {
-                    try
+                    var user = _userManager.GetUsers(uid);
+                    signers.Add(new Signer
                     {
-                        var user = UserManager.GetUsers(uid);
-                        signers.Add(new Signer
-                        {
-                            Email = user.Email,
-                            Name = user.DisplayUserName(false, DisplayUserSettingsHelper),
-                            RecipientId = user.ID.ToString(),
-                        });
+                        Email = user.Email,
+                        Name = user.DisplayUserName(false, _displayUserSettingsHelper),
+                        RecipientId = user.ID.ToString(),});
                     }
-                    catch (Exception ex)
-                    {
-                        Log.Error("Signer is undefined", ex);
-                    }
+                catch (Exception ex)
+                {
+                    Logger.Error("Signer is undefined", ex);
+                }
                 });
 
             var envelopeDefinition = new EnvelopeDefinition
@@ -310,9 +345,9 @@ namespace ASC.Web.Files.Helpers
                 CustomFields = new CustomFields
                 {
                     TextCustomFields = new List<TextCustomField>
-                                {
-                                    new TextCustomField {Name = UserField, Value = AuthContext.CurrentAccount.ID.ToString()},
-                                }
+                    {
+                        new TextCustomField {Name = UserField, Value = _authContext.CurrentAccount.ID.ToString()},
+                    }
                 },
                 Documents = new List<Document> { document },
                 EmailBlurb = docuSignData.Message,
@@ -328,29 +363,35 @@ namespace ASC.Web.Files.Helpers
             var envelopesApi = new EnvelopesApi(configuration);
             var envelopeSummary = envelopesApi.CreateEnvelope(accountId, envelopeDefinition);
 
-            Log.Debug("DocuSign createdEnvelope: " + envelopeSummary.EnvelopeId);
+            Logger.Debug("DocuSign createdEnvelope: " + envelopeSummary.EnvelopeId);
 
             var envelopeId = envelopeSummary.EnvelopeId;
             var url = envelopesApi.CreateSenderView(accountId, envelopeId, new ReturnUrlRequest
             {
-                ReturnUrl = BaseCommonLinkUtility.GetFullAbsolutePath(DocuSignHandlerService.Path(FilesLinkUtility) + "?" + FilesLinkUtility.Action + "=redirect")
+                ReturnUrl = _baseCommonLinkUtility.GetFullAbsolutePath(DocuSignHandlerService.Path(_filesLinkUtility) + "?" + FilesLinkUtility.Action + "=redirect")
             });
-            Log.Debug("DocuSign senderView: " + url.Url);
+            Logger.Debug("DocuSign senderView: " + url.Url);
 
             return url.Url;
         }
 
         public async Task<File<T>> SaveDocumentAsync<T>(string envelopeId, string documentId, string documentName, T folderId)
         {
-            if (string.IsNullOrEmpty(envelopeId)) throw new ArgumentNullException(nameof(envelopeId));
-            if (string.IsNullOrEmpty(documentId)) throw new ArgumentNullException(nameof(documentId));
+            if (string.IsNullOrEmpty(envelopeId))
+            {
+                throw new ArgumentNullException(nameof(envelopeId));
+            }
+            if (string.IsNullOrEmpty(documentId))
+            {
+                throw new ArgumentNullException(nameof(documentId));
+            }
 
-            var token = DocuSignToken.GetToken();
+            var token = _docuSignToken.GetToken();
             var account = GetDocuSignAccount(token);
             var configuration = GetConfiguration(account, token);
 
-            var fileDao = DaoFactory.GetFileDao<T>();
-            var folderDao = DaoFactory.GetFolderDao<T>();
+            var fileDao = _daoFactory.GetFileDao<T>();
+            var folderDao = _daoFactory.GetFolderDao<T>();
             if (string.IsNullOrEmpty(documentName))
             {
                 documentName = "new.pdf";
@@ -360,11 +401,11 @@ namespace ASC.Web.Files.Helpers
             if (folderId == null
                 || (folder = await folderDao.GetFolderAsync(folderId)) == null
                 || folder.RootFolderType == FolderType.TRASH
-                || !await FileSecurity.CanCreateAsync(folder))
+                || !await _fileSecurity.CanCreateAsync(folder))
             {
-                if (GlobalFolderHelper.FolderMy != 0)
+                if (_globalFolderHelper.FolderMy != 0)
                 {
-                    folderId = GlobalFolderHelper.GetFolderMy<T>();
+                    folderId = _globalFolderHelper.GetFolderMy<T>();
                 }
                 else
                 {
@@ -372,22 +413,22 @@ namespace ASC.Web.Files.Helpers
                 }
             }
 
-            var file = ServiceProvider.GetService<File<T>>();
+            var file = _serviceProvider.GetService<File<T>>();
             file.FolderID = folderId;
             file.Comment = FilesCommonResource.CommentCreateByDocuSign;
             file.Title = FileUtility.ReplaceFileExtension(documentName, ".pdf");
 
             var envelopesApi = new EnvelopesApi(configuration);
-            Log.Info("DocuSign webhook get stream: " + documentId);
+            Logger.Info("DocuSign webhook get stream: " + documentId);
             using (var stream = await envelopesApi.GetDocumentAsync(account.AccountId, envelopeId, documentId))
             {
                 file.ContentLength = stream.Length;
                 file = await fileDao.SaveFileAsync(file, stream);
             }
 
-            FilesMessageService.Send(file, MessageInitiator.ThirdPartyProvider, MessageAction.DocumentSignComplete, "DocuSign", file.Title);
+            _filesMessageService.Send(file, MessageInitiator.ThirdPartyProvider, MessageAction.DocumentSignComplete, "DocuSign", file.Title);
 
-            await FileMarker.MarkAsNewAsync(file);
+            await _fileMarker.MarkAsNewAsync(file);
 
             return file;
         }
@@ -413,11 +454,8 @@ namespace ASC.Web.Files.Helpers
     public class DocuSignData
     {
         public string FolderId { get; set; }
-
         public string Message { get; set; }
-
         public string Name { get; set; }
-
         public List<Guid> Users { get; set; }
     }
 

@@ -27,10 +27,10 @@ namespace ASC.Files.Thirdparty.ProviderDao
 {
     internal class ProviderDaoBase : ThirdPartyProviderDao, IDisposable
     {
-        private List<IDaoSelector> selectors;
+        private List<IDaoSelector> _selectors;
         private List<IDaoSelector> Selectors
         {
-            get => selectors ??= new List<IDaoSelector>
+            get => _selectors ??= new List<IDaoSelector>
             {
                 //Fill in selectors
                 ServiceProvider.GetService<SharpBoxDaoSelector>(),
@@ -42,13 +42,17 @@ namespace ASC.Files.Thirdparty.ProviderDao
             };
         }
 
-        private int tenantID;
+        private int _tenantID;
         private int TenantID
         {
             get
             {
-                if (tenantID == 0) tenantID = TenantManager.GetCurrentTenant().TenantId;
-                return tenantID;
+                if (_tenantID == 0)
+                {
+                    _tenantID = TenantManager.GetCurrentTenant().TenantId;
+                }
+
+                return _tenantID;
             }
         }
 
@@ -66,16 +70,19 @@ namespace ASC.Files.Thirdparty.ProviderDao
             CrossDao = crossDao;
         }
 
-        protected IServiceProvider ServiceProvider { get; }
-        protected TenantManager TenantManager { get; }
-        protected SecurityDao<string> SecurityDao { get; }
-        protected TagDao<string> TagDao { get; }
-        protected CrossDao CrossDao { get; }
+        protected readonly IServiceProvider ServiceProvider;
+        protected readonly TenantManager TenantManager;
+        protected readonly SecurityDao<string> SecurityDao;
+        protected readonly TagDao<string> TagDao;
+        protected readonly CrossDao CrossDao;
 
         protected bool IsCrossDao(string id1, string id2)
         {
             if (id2 == null || id1 == null)
+            {
                 return false;
+            }
+
             return !Equals(GetSelector(id1).GetIdCode(id1), GetSelector(id2).GetIdCode(id2));
         }
 
@@ -92,12 +99,14 @@ namespace ASC.Files.Thirdparty.ProviderDao
                 .Select(x => x.EntryId).Distinct();
 
             foreach(var id in ids)
-                {
+            {
                 var firstEntry = await entries.FirstOrDefaultAsync(y => y.ID.Equals(id));
 
-                    if (firstEntry != null)
-                        firstEntry.Shared = true;
-        }
+                if (firstEntry != null)
+                {
+                    firstEntry.Shared = true;
+                }
+            }
         }
 
         protected IEnumerable<IDaoSelector> GetSelectors()
@@ -152,9 +161,9 @@ namespace ASC.Files.Thirdparty.ProviderDao
 
         public void Dispose()
         {
-            if (selectors != null)
+            if (_selectors != null)
             {
-                selectors.ForEach(r => r.Dispose());
+                _selectors.ForEach(r => r.Dispose());
             }
         }
     }

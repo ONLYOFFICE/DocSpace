@@ -28,7 +28,7 @@ namespace ASC.Web.Files.Api
     [Scope]
     public class FilesIntegration
     {
-        private static readonly IDictionary<string, IFileSecurityProvider> providers = new Dictionary<string, IFileSecurityProvider>();
+        private static readonly IDictionary<string, IFileSecurityProvider> _providers = new Dictionary<string, IFileSecurityProvider>();
 
         public IDaoFactory DaoFactory { get; }
 
@@ -40,13 +40,16 @@ namespace ASC.Web.Files.Api
         public Task<T> RegisterBunchAsync<T>(string module, string bunch, string data)
         {
             var folderDao = DaoFactory.GetFolderDao<T>();
+
             return folderDao.GetFolderIDAsync(module, bunch, data, true);
         }
 
         public Task<IEnumerable<T>> RegisterBunchFoldersAsync<T>(string module, string bunch, IEnumerable<string> data)
         {
             if (data == null)
+            {
                 throw new ArgumentNullException(nameof(data));
+            }
 
             data = data.ToList();
             if (!data.Any())
@@ -60,33 +63,40 @@ namespace ASC.Web.Files.Api
 
         public bool IsRegisteredFileSecurityProvider(string module, string bunch)
         {
-            lock (providers)
+            lock (_providers)
             {
-                return providers.ContainsKey(module + bunch);
+                return _providers.ContainsKey(module + bunch);
             }
 
         }
 
         public void RegisterFileSecurityProvider(string module, string bunch, IFileSecurityProvider securityProvider)
         {
-            lock (providers)
+            lock (_providers)
             {
-                providers[module + bunch] = securityProvider;
+                _providers[module + bunch] = securityProvider;
             }
         }
 
         internal static IFileSecurity GetFileSecurity(string path)
         {
-            if (string.IsNullOrEmpty(path)) return null;
+            if (string.IsNullOrEmpty(path))
+            {
+                return null;
+            }
 
             var parts = path.Split('/');
-            if (parts.Length < 3) return null;
+            if (parts.Length < 3)
+            {
+                return null;
+            }
 
             IFileSecurityProvider provider;
-            lock (providers)
+            lock (_providers)
             {
-                providers.TryGetValue(parts[0] + parts[1], out provider);
+                _providers.TryGetValue(parts[0] + parts[1], out provider);
             }
+
             return provider?.GetFileSecurity(parts[2]);
         }
 
@@ -96,13 +106,19 @@ namespace ASC.Web.Files.Api
             var gropped = paths.GroupBy(r =>
             {
                 var parts = r.Value.Split('/');
-                if (parts.Length < 3) return "";
+                if (parts.Length < 3)
+                {
+                    return string.Empty;
+                }
 
                 return parts[0] + parts[1];
             }, v =>
             {
                 var parts = v.Value.Split('/');
-                if (parts.Length < 3) return new KeyValuePair<string, string>(v.Key, "");
+                if (parts.Length < 3)
+                {
+                    return new KeyValuePair<string, string>(v.Key, "");
+                }
 
                 return new KeyValuePair<string, string>(v.Key, parts[2]);
             });
@@ -110,11 +126,15 @@ namespace ASC.Web.Files.Api
             foreach (var grouping in gropped)
             {
                 IFileSecurityProvider provider;
-                lock (providers)
+                lock (_providers)
                 {
-                    providers.TryGetValue(grouping.Key, out provider);
+                    _providers.TryGetValue(grouping.Key, out provider);
                 }
-                if (provider == null) continue;
+
+                if (provider == null)
+                {
+                    continue;
+                }
 
                 var data = provider.GetFileSecurity(grouping.ToDictionary(r => r.Key, r => r.Value));
 

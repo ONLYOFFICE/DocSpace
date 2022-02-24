@@ -46,18 +46,20 @@ namespace ASC.Api.Documents
     [Scope]
     public class FileShareParamsHelper
     {
-        private UserManager UserManager { get; }
+        private readonly UserManager _userManager;
+
         public FileShareParamsHelper(UserManager userManager)
         {
-            UserManager = userManager;
+            _userManager = userManager;
         }
+
         public AceWrapper ToAceObject(FileShareParams fileShareParams)
         {
             return new AceWrapper
             {
                 Share = fileShareParams.Access,
                 SubjectId = fileShareParams.ShareTo,
-                SubjectGroup = !UserManager.UserExists(fileShareParams.ShareTo)
+                SubjectGroup = !_userManager.UserExists(fileShareParams.ShareTo)
             };
         }
     }

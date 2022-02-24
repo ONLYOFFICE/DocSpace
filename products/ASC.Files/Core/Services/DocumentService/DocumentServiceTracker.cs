@@ -88,12 +88,10 @@ namespace ASC.Web.Files.Services.DocumentService
             public int RecordCount { get; set; }
             public int RecordErrorCount { get; set; }
             public int RecordIndex { get; set; }
-
             public string From { get; set; }
             public string Subject { get; set; }
             public string To { get; set; }
             public MailMergeType Type { get; set; }
-
             public string Title { get; set; } //attach
             public string Message { get; set; } //attach
         }
@@ -130,26 +128,26 @@ namespace ASC.Web.Files.Services.DocumentService
     [Scope]
     public class DocumentServiceTrackerHelper
     {
-        private SecurityContext SecurityContext { get; }
-        private UserManager UserManager { get; }
-        private TenantManager TenantManager { get; }
-        private FilesLinkUtility FilesLinkUtility { get; }
-        private EmailValidationKeyProvider EmailValidationKeyProvider { get; }
-        private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
-        private SocketManager SocketManager { get; }
-        private GlobalStore GlobalStore { get; }
-        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-        private IDaoFactory DaoFactory { get; }
-        private DocumentServiceHelper DocumentServiceHelper { get; }
-        private EntryManager EntryManager { get; }
-        private FileShareLink FileShareLink { get; }
-        private FilesMessageService FilesMessageService { get; }
-        private DocumentServiceConnector DocumentServiceConnector { get; }
-        private NotifyClient NotifyClient { get; }
-        private MailMergeTaskRunner MailMergeTaskRunner { get; }
-        private FileTrackerHelper FileTracker { get; }
-        public ILog Logger { get; }
-        public IHttpClientFactory ClientFactory { get; }
+        private readonly SecurityContext _securityContext;
+        private readonly UserManager _userManager;
+        private readonly TenantManager _tenantManager;
+        private readonly FilesLinkUtility _filesLinkUtility;
+        private readonly EmailValidationKeyProvider _emailValidationKeyProvider;
+        private readonly BaseCommonLinkUtility _baseCommonLinkUtility;
+        private readonly SocketManager _socketManager;
+        private readonly GlobalStore _globalStore;
+        private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
+        private readonly IDaoFactory _daoFactory;
+        private readonly DocumentServiceHelper _documentServiceHelper;
+        private readonly EntryManager _entryManager;
+        private readonly FileShareLink _fileShareLink;
+        private readonly FilesMessageService _filesMessageService;
+        private readonly DocumentServiceConnector _documentServiceConnector;
+        private readonly NotifyClient _notifyClient;
+        private readonly MailMergeTaskRunner _mailMergeTaskRunner;
+        private readonly FileTrackerHelper _fileTracker;
+        public readonly ILog _logger;
+        public readonly IHttpClientFactory _clientFactory;
 
         public DocumentServiceTrackerHelper(
             SecurityContext securityContext,
@@ -173,42 +171,44 @@ namespace ASC.Web.Files.Services.DocumentService
             FileTrackerHelper fileTracker,
             IHttpClientFactory clientFactory)
         {
-            SecurityContext = securityContext;
-            UserManager = userManager;
-            TenantManager = tenantManager;
-            FilesLinkUtility = filesLinkUtility;
-            EmailValidationKeyProvider = emailValidationKeyProvider;
-            BaseCommonLinkUtility = baseCommonLinkUtility;
-            SocketManager = socketManager;
-            GlobalStore = globalStore;
-            DisplayUserSettingsHelper = displayUserSettingsHelper;
-            DaoFactory = daoFactory;
-            DocumentServiceHelper = documentServiceHelper;
-            EntryManager = entryManager;
-            FileShareLink = fileShareLink;
-            FilesMessageService = filesMessageService;
-            DocumentServiceConnector = documentServiceConnector;
-            NotifyClient = notifyClient;
-            MailMergeTaskRunner = mailMergeTaskRunner;
-            FileTracker = fileTracker;
-            Logger = options.CurrentValue;
-            ClientFactory = clientFactory;
+            _securityContext = securityContext;
+            _userManager = userManager;
+            _tenantManager = tenantManager;
+            _filesLinkUtility = filesLinkUtility;
+            _emailValidationKeyProvider = emailValidationKeyProvider;
+            _baseCommonLinkUtility = baseCommonLinkUtility;
+            _socketManager = socketManager;
+            _globalStore = globalStore;
+            _displayUserSettingsHelper = displayUserSettingsHelper;
+            _daoFactory = daoFactory;
+            _documentServiceHelper = documentServiceHelper;
+            _entryManager = entryManager;
+            _fileShareLink = fileShareLink;
+            _filesMessageService = filesMessageService;
+            _documentServiceConnector = documentServiceConnector;
+            _notifyClient = notifyClient;
+            _mailMergeTaskRunner = mailMergeTaskRunner;
+            _fileTracker = fileTracker;
+            _logger = options.CurrentValue;
+            _clientFactory = clientFactory;
         }
 
         public string GetCallbackUrl<T>(T fileId)
         {
-            var callbackUrl = BaseCommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.FileHandlerPath
+            var callbackUrl = _baseCommonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.FileHandlerPath
                                                                     + "?" + FilesLinkUtility.Action + "=track"
                                                                     + "&" + FilesLinkUtility.FileId + "=" + HttpUtility.UrlEncode(fileId.ToString())
-                                                                    + "&" + FilesLinkUtility.AuthKey + "=" + EmailValidationKeyProvider.GetEmailKey(fileId.ToString()));
-            callbackUrl = DocumentServiceConnector.ReplaceCommunityAdress(callbackUrl);
+                                                                    + "&" + FilesLinkUtility.AuthKey + "=" + _emailValidationKeyProvider.GetEmailKey(fileId.ToString()));
+            callbackUrl = _documentServiceConnector.ReplaceCommunityAdress(callbackUrl);
+
             return callbackUrl;
         }
 
         public Task<bool> StartTrackAsync<T>(T fileId, string docKeyForTrack)
         {
             var callbackUrl = GetCallbackUrl(fileId);
-            return DocumentServiceConnector.CommandAsync(CommandMethod.Info, docKeyForTrack, fileId, callbackUrl);
+
+            return _documentServiceConnector.CommandAsync(CommandMethod.Info, docKeyForTrack, fileId, callbackUrl);
         }
 
         public async Task<TrackResponse> ProcessDataAsync<T>(T fileId, TrackerData fileData)
@@ -217,9 +217,8 @@ namespace ASC.Web.Files.Services.DocumentService
             {
                 case TrackerStatus.NotFound:
                 case TrackerStatus.Closed:
-                    FileTracker.Remove(fileId);
-                    await SocketManager.StopEditAsync(fileId);
-
+                    _fileTracker.Remove(fileId);
+                    await _socketManager.StopEditAsync(fileId);
                     break;
 
                 case TrackerStatus.Editing:
@@ -245,7 +244,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 return;
             }
 
-            var users = FileTracker.GetEditingBy(fileId);
+            var users = _fileTracker.GetEditingBy(fileId);
             var usersDrop = new List<string>();
 
             string docKey;
@@ -253,9 +252,9 @@ namespace ASC.Web.Files.Services.DocumentService
             if (app == null)
             {
                 File<T> fileStable;
-                fileStable = await DaoFactory.GetFileDao<T>().GetFileStableAsync(fileId);
+                fileStable = await _daoFactory.GetFileDao<T>().GetFileStableAsync(fileId);
 
-                docKey = DocumentServiceHelper.GetDocKey(fileStable);
+                docKey = _documentServiceHelper.GetDocKey(fileStable);
             }
             else
             {
@@ -264,7 +263,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
             if (!fileData.Key.Equals(docKey))
             {
-                Logger.InfoFormat("DocService editing file {0} ({1}) with key {2} for {3}", fileId, docKey, fileData.Key, string.Join(", ", fileData.Users));
+                _logger.InfoFormat("DocService editing file {0} ({1}) with key {2} for {3}", fileId, docKey, fileData.Key, string.Join(", ", fileData.Users));
                 usersDrop = fileData.Users;
             }
             else
@@ -273,19 +272,20 @@ namespace ASC.Web.Files.Services.DocumentService
                 {
                     if (!Guid.TryParse(user, out var userId))
                     {
-                        Logger.Info("DocService userId is not Guid: " + user);
+                        _logger.Info("DocService userId is not Guid: " + user);
                         continue;
                     }
+
                     users.Remove(userId);
 
                     try
                     {
-                        var doc = FileShareLink.CreateKey(fileId);
-                        await EntryManager.TrackEditingAsync(fileId, userId, userId, doc);
+                        var doc = _fileShareLink.CreateKey(fileId);
+                        await _entryManager.TrackEditingAsync(fileId, userId, userId, doc);
                     }
                     catch (Exception e)
                     {
-                        Logger.DebugFormat("Drop command: fileId '{0}' docKey '{1}' for user {2} : {3}", fileId, fileData.Key, user, e.Message);
+                        _logger.DebugFormat("Drop command: fileId '{0}' docKey '{1}' for user {2} : {3}", fileId, fileData.Key, user, e.Message);
                         usersDrop.Add(userId.ToString());
                     }
                 }
@@ -293,18 +293,18 @@ namespace ASC.Web.Files.Services.DocumentService
 
             if (usersDrop.Count > 0)
             {
-                if (!await DocumentServiceHelper.DropUserAsync(fileData.Key, usersDrop.ToArray(), fileId))
+                if (!await _documentServiceHelper.DropUserAsync(fileData.Key, usersDrop.ToArray(), fileId))
                 {
-                    Logger.Error("DocService drop failed for users " + string.Join(",", usersDrop));
+                    _logger.Error("DocService drop failed for users " + string.Join(",", usersDrop));
                 }
             }
 
             foreach (var removeUserId in users)
             {
-                FileTracker.Remove(fileId, userId: removeUserId);
+                _fileTracker.Remove(fileId, userId: removeUserId);
             }
 
-            SocketManager.StartEdit(fileId);
+            _socketManager.StartEdit(fileId);
         }
 
         private async Task<TrackResponse> ProcessSaveAsync<T>(T fileId, TrackerData fileData)
@@ -312,7 +312,9 @@ namespace ASC.Web.Files.Services.DocumentService
             var comments = new List<string>();
             if (fileData.Status == TrackerStatus.Corrupted
                 || fileData.Status == TrackerStatus.CorruptedForceSave)
+            {
                 comments.Add(FilesCommonResource.ErrorMassage_SaveCorrupted);
+            }
 
             var forcesave = fileData.Status == TrackerStatus.ForceSave || fileData.Status == TrackerStatus.CorruptedForceSave;
 
@@ -325,14 +327,15 @@ namespace ASC.Web.Files.Services.DocumentService
             if (app == null)
             {
                 File<T> fileStable;
-                fileStable = await DaoFactory.GetFileDao<T>().GetFileStableAsync(fileId);
+                fileStable = await _daoFactory.GetFileDao<T>().GetFileStableAsync(fileId);
 
-                var docKey = DocumentServiceHelper.GetDocKey(fileStable);
+                var docKey = _documentServiceHelper.GetDocKey(fileStable);
                 if (!fileData.Key.Equals(docKey))
                 {
-                    Logger.ErrorFormat("DocService saving file {0} ({1}) with key {2}", fileId, docKey, fileData.Key);
+                    _logger.ErrorFormat("DocService saving file {0} ({1}) with key {2}", fileId, docKey, fileData.Key);
 
-                    await StoringFileAfterErrorAsync(fileId, userId.ToString(), DocumentServiceConnector.ReplaceDocumentAdress(fileData.Url));
+                    await StoringFileAfterErrorAsync(fileId, userId.ToString(), _documentServiceConnector.ReplaceDocumentAdress(fileData.Url));
+
                     return new TrackResponse { Message = "Expected key " + docKey };
                 }
             }
@@ -340,16 +343,16 @@ namespace ASC.Web.Files.Services.DocumentService
             UserInfo user = null;
             try
             {
-                SecurityContext.AuthenticateMeWithoutCookie(userId);
+                _securityContext.AuthenticateMeWithoutCookie(userId);
 
-                user = UserManager.GetUsers(userId);
-                var culture = string.IsNullOrEmpty(user.CultureName) ? TenantManager.GetCurrentTenant().GetCulture() : CultureInfo.GetCultureInfo(user.CultureName);
+                user = _userManager.GetUsers(userId);
+                var culture = string.IsNullOrEmpty(user.CultureName) ? _tenantManager.GetCurrentTenant().GetCulture() : CultureInfo.GetCultureInfo(user.CultureName);
                 Thread.CurrentThread.CurrentCulture = culture;
                 Thread.CurrentThread.CurrentUICulture = culture;
             }
             catch (Exception ex)
             {
-                Logger.Info("DocService save error: anonymous author - " + userId, ex);
+                _logger.Info("DocService save error: anonymous author - " + userId, ex);
                 if (!userId.Equals(ASC.Core.Configuration.Constants.Guest.ID))
                 {
                     comments.Add(FilesCommonResource.ErrorMassage_SaveAnonymous);
@@ -365,16 +368,16 @@ namespace ASC.Web.Files.Services.DocumentService
                 {
                     comments.Add(FilesCommonResource.ErrorMassage_SaveUrlLost);
 
-                    file = await EntryManager.CompleteVersionFileAsync(fileId, 0, false, false);
+                    file = await _entryManager.CompleteVersionFileAsync(fileId, 0, false, false);
 
-                    await DaoFactory.GetFileDao<T>().UpdateCommentAsync(file.ID, file.Version, string.Join("; ", comments));
+                    await _daoFactory.GetFileDao<T>().UpdateCommentAsync(file.ID, file.Version, string.Join("; ", comments));
 
                     file = null;
-                    Logger.ErrorFormat("DocService save error. Empty url. File id: '{0}'. UserId: {1}. DocKey '{2}'", fileId, userId, fileData.Key);
+                    _logger.ErrorFormat("DocService save error. Empty url. File id: '{0}'. UserId: {1}. DocKey '{2}'", fileId, userId, fileData.Key);
                 }
                 catch (Exception ex)
                 {
-                    Logger.Error(string.Format("DocService save error. Version update. File id: '{0}'. UserId: {1}. DocKey '{2}'", fileId, userId, fileData.Key), ex);
+                    _logger.Error(string.Format("DocService save error. Version update. File id: '{0}'. UserId: {1}. DocKey '{2}'", fileId, userId, fileData.Key), ex);
                 }
             }
             else
@@ -406,34 +409,39 @@ namespace ASC.Web.Files.Services.DocumentService
 
                 try
                 {
-                    file = await EntryManager.SaveEditingAsync(fileId, null, DocumentServiceConnector.ReplaceDocumentAdress(fileData.Url), null, string.Empty, string.Join("; ", comments), false, fileData.Encrypted, forcesaveType, true);
+                    file = await _entryManager.SaveEditingAsync(fileId, null, _documentServiceConnector.ReplaceDocumentAdress(fileData.Url), null, string.Empty, string.Join("; ", comments), false, fileData.Encrypted, forcesaveType, true);
                     saveMessage = fileData.Status == TrackerStatus.MustSave || fileData.Status == TrackerStatus.ForceSave ? null : "Status " + fileData.Status;
                 }
                 catch (Exception ex)
                 {
-                    Logger.Error(string.Format("DocService save error. File id: '{0}'. UserId: {1}. DocKey '{2}'. DownloadUri: {3}", fileId, userId, fileData.Key, fileData.Url), ex);
+                    _logger.Error(string.Format("DocService save error. File id: '{0}'. UserId: {1}. DocKey '{2}'. DownloadUri: {3}", fileId, userId, fileData.Key, fileData.Url), ex);
                     saveMessage = ex.Message;
 
-                    await StoringFileAfterErrorAsync(fileId, userId.ToString(), DocumentServiceConnector.ReplaceDocumentAdress(fileData.Url));
+                    await StoringFileAfterErrorAsync(fileId, userId.ToString(), _documentServiceConnector.ReplaceDocumentAdress(fileData.Url));
                 }
             }
 
             if (!forcesave)
             {
-                FileTracker.Remove(fileId);
-                await SocketManager.StopEditAsync(fileId);
+                _fileTracker.Remove(fileId);
+                await _socketManager.StopEditAsync(fileId);
             }
 
             if (file != null)
             {
                 if (user != null)
-                    FilesMessageService.Send(file, MessageInitiator.DocsService, MessageAction.UserFileUpdated, user.DisplayUserName(false, DisplayUserSettingsHelper), file.Title);
+                {
+                    _filesMessageService.Send(file, MessageInitiator.DocsService, MessageAction.UserFileUpdated, user.DisplayUserName(false, _displayUserSettingsHelper), file.Title);
+                }
 
                 if (!forcesave)
-                    await SaveHistoryAsync(file, (fileData.History ?? "").ToString(), DocumentServiceConnector.ReplaceDocumentAdress(fileData.ChangesUrl));
+                {
+                    await SaveHistoryAsync(file, (fileData.History ?? "").ToString(), _documentServiceConnector.ReplaceDocumentAdress(fileData.ChangesUrl));
+                }
             }
 
             var result = new TrackResponse { Message = saveMessage };
+
             return result;
         }
 
@@ -441,33 +449,39 @@ namespace ASC.Web.Files.Services.DocumentService
         {
             if (fileData.Users == null || fileData.Users.Count == 0 || !Guid.TryParse(fileData.Users[0], out var userId))
             {
-                userId = FileTracker.GetEditingBy(fileId).FirstOrDefault();
+                userId = _fileTracker.GetEditingBy(fileId).FirstOrDefault();
             }
 
             string saveMessage;
 
             try
             {
-                SecurityContext.AuthenticateMeWithoutCookie(userId);
+                _securityContext.AuthenticateMeWithoutCookie(userId);
 
-                var user = UserManager.GetUsers(userId);
-                var culture = string.IsNullOrEmpty(user.CultureName) ? TenantManager.GetCurrentTenant().GetCulture() : CultureInfo.GetCultureInfo(user.CultureName);
+                var user = _userManager.GetUsers(userId);
+                var culture = string.IsNullOrEmpty(user.CultureName) ? _tenantManager.GetCurrentTenant().GetCulture() : CultureInfo.GetCultureInfo(user.CultureName);
                 Thread.CurrentThread.CurrentCulture = culture;
                 Thread.CurrentThread.CurrentUICulture = culture;
 
-                if (string.IsNullOrEmpty(fileData.Url)) throw new ArgumentException("emptry url");
+                if (string.IsNullOrEmpty(fileData.Url))
+                {
+                    throw new ArgumentException("emptry url");
+                }
 
-                if (fileData.MailMerge == null) throw new ArgumentException("MailMerge is null");
+                if (fileData.MailMerge == null)
+                {
+                    throw new ArgumentException("MailMerge is null");
+                }
 
                 var message = fileData.MailMerge.Message;
                 Stream attach = null;
-                var httpClient = ClientFactory.CreateClient();
+                var httpClient = _clientFactory.CreateClient();
                 switch (fileData.MailMerge.Type)
                 {
                     case MailMergeType.AttachDocx:
                     case MailMergeType.AttachPdf:
                         var requestDownload = new HttpRequestMessage();
-                        requestDownload.RequestUri = new Uri(DocumentServiceConnector.ReplaceDocumentAdress(fileData.Url));
+                        requestDownload.RequestUri = new Uri(_documentServiceConnector.ReplaceDocumentAdress(fileData.Url));
 
                         using (var responseDownload = await httpClient.SendAsync(requestDownload))
                         using (var streamDownload = await responseDownload.Content.ReadAsStreamAsync())
@@ -481,6 +495,7 @@ namespace ASC.Web.Files.Services.DocumentService
                             {
                                 await attach.WriteAsync(buffer, 0, readed);
                             }
+
                             attach.Position = 0;
                         }
 
@@ -500,15 +515,18 @@ namespace ASC.Web.Files.Services.DocumentService
 
                     case MailMergeType.Html:
                         var httpRequest = new HttpRequestMessage();
-                        httpRequest.RequestUri = new Uri(DocumentServiceConnector.ReplaceDocumentAdress(fileData.Url));
+                        httpRequest.RequestUri = new Uri(_documentServiceConnector.ReplaceDocumentAdress(fileData.Url));
 
                         using (var httpResponse = await httpClient.SendAsync(httpRequest))
                         using (var stream = await httpResponse.Content.ReadAsStreamAsync())
                             if (stream != null)
+                            {
                                 using (var reader = new StreamReader(stream, Encoding.GetEncoding(Encoding.UTF8.WebName)))
                                 {
                                     message = await reader.ReadToEndAsync();
                                 }
+                            }
+
                         break;
                 }
 
@@ -523,15 +541,15 @@ namespace ASC.Web.Files.Services.DocumentService
                         Attach = attach
                     })
                 {
-                    var response = await MailMergeTaskRunner.RunAsync(mailMergeTask, ClientFactory);
-                    Logger.InfoFormat("DocService mailMerge {0}/{1} send: {2}",
+                    var response = await _mailMergeTaskRunner.RunAsync(mailMergeTask, _clientFactory);
+                    _logger.InfoFormat("DocService mailMerge {0}/{1} send: {2}",
                                              fileData.MailMerge.RecordIndex + 1, fileData.MailMerge.RecordCount, response);
                 }
                 saveMessage = null;
             }
             catch (Exception ex)
             {
-                Logger.Error(
+                _logger.Error(
                     string.Format("DocService mailMerge{0} error: userId - {1}, url - {2}",
                                   fileData.MailMerge == null ? "" : " " + fileData.MailMerge.RecordIndex + "/" + fileData.MailMerge.RecordCount,
                                   userId, fileData.Url),
@@ -543,9 +561,12 @@ namespace ASC.Web.Files.Services.DocumentService
                 fileData.MailMerge.RecordIndex == fileData.MailMerge.RecordCount - 1)
             {
                 var errorCount = fileData.MailMerge.RecordErrorCount;
-                if (!string.IsNullOrEmpty(saveMessage)) errorCount++;
+                if (!string.IsNullOrEmpty(saveMessage))
+                {
+                    errorCount++;
+                }
 
-                NotifyClient.SendMailMergeEnd(userId, fileData.MailMerge.RecordCount, errorCount);
+                _notifyClient.SendMailMergeEnd(userId, fileData.MailMerge.RecordCount, errorCount);
             }
 
             return new TrackResponse { Message = saveMessage };
@@ -553,45 +574,59 @@ namespace ASC.Web.Files.Services.DocumentService
 
         private async Task StoringFileAfterErrorAsync<T>(T fileId, string userId, string downloadUri)
         {
-            if (string.IsNullOrEmpty(downloadUri)) return;
+            if (string.IsNullOrEmpty(downloadUri))
+            {
+                return;
+            }
 
             try
             {
                 var fileName = Global.ReplaceInvalidCharsAndTruncate(fileId + FileUtility.GetFileExtension(downloadUri));
                 var path = $@"save_crash\{DateTime.UtcNow.ToString("yyyy_MM_dd")}\{userId}_{fileName}";
 
-                var store = GlobalStore.GetStore();
+                var store = _globalStore.GetStore();
                 var request = new HttpRequestMessage();
                 request.RequestUri = new Uri(downloadUri);
 
-                var httpClient = ClientFactory.CreateClient();
+                var httpClient = _clientFactory.CreateClient();
                 using (var response = await httpClient.SendAsync(request))
                 using (var stream = await response.Content.ReadAsStreamAsync())
                 using (var fileStream = new ResponseStream(stream, stream.Length))
                 {
                     await store.SaveAsync(FileConstant.StorageDomainTmp, path, fileStream);
                 }
-                Logger.DebugFormat("DocService storing to {0}", path);
+                _logger.DebugFormat("DocService storing to {0}", path);
             }
             catch (Exception ex)
             {
-                Logger.Error("DocService Error on save file to temp store", ex);
+                _logger.Error("DocService Error on save file to temp store", ex);
             }
         }
 
         private async Task SaveHistoryAsync<T>(File<T> file, string changes, string differenceUrl)
         {
-            if (file == null) return;
-            if (file.ProviderEntry) return;
-            if (string.IsNullOrEmpty(changes) || string.IsNullOrEmpty(differenceUrl)) return;
+            if (file == null)
+            {
+                return;
+            }
+
+            if (file.ProviderEntry)
+            {
+                return;
+            }
+
+            if (string.IsNullOrEmpty(changes) || string.IsNullOrEmpty(differenceUrl))
+            {
+                return;
+            }
 
             try
             {
-                var fileDao = DaoFactory.GetFileDao<T>();
+                var fileDao = _daoFactory.GetFileDao<T>();
                 var request = new HttpRequestMessage();
                 request.RequestUri = new Uri(differenceUrl);
 
-                var httpClient = ClientFactory.CreateClient();
+                var httpClient = _clientFactory.CreateClient();
                 using var response = await httpClient.SendAsync(request);
                 using var stream = await response.Content.ReadAsStreamAsync();
 
@@ -600,7 +635,7 @@ namespace ASC.Web.Files.Services.DocumentService
             }
             catch (Exception ex)
             {
-                Logger.Error("DocService save history error", ex);
+                _logger.Error("DocService save history error", ex);
             }
         }
     }

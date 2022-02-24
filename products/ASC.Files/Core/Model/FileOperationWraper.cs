@@ -95,10 +95,10 @@ namespace ASC.Api.Documents
     [Scope]
     public class FileOperationWraperHelper
     {
-        private FolderWrapperHelper FolderWrapperHelper { get; }
-        private FileWrapperHelper FilesWrapperHelper { get; }
-        private IDaoFactory DaoFactory { get; }
-        private CommonLinkUtility CommonLinkUtility { get; }
+        private readonly FolderWrapperHelper _folderWrapperHelper;
+        private readonly FileWrapperHelper _filesWrapperHelper;
+        private readonly IDaoFactory _daoFactory;
+        private readonly CommonLinkUtility _commonLinkUtility;
 
         public FileOperationWraperHelper(
             FolderWrapperHelper folderWrapperHelper,
@@ -106,10 +106,10 @@ namespace ASC.Api.Documents
             IDaoFactory daoFactory,
             CommonLinkUtility commonLinkUtility)
         {
-            FolderWrapperHelper = folderWrapperHelper;
-            FilesWrapperHelper = filesWrapperHelper;
-            DaoFactory = daoFactory;
-            CommonLinkUtility = commonLinkUtility;
+            _folderWrapperHelper = folderWrapperHelper;
+            _filesWrapperHelper = filesWrapperHelper;
+            _daoFactory = daoFactory;
+            _commonLinkUtility = commonLinkUtility;
         }
 
         public async Task<FileOperationWraper> GetAsync(FileOperationResult o)
@@ -178,7 +178,7 @@ namespace ASC.Api.Documents
 
                 if (result.OperationType == FileOperationType.Download)
                 {
-                    result.Url = CommonLinkUtility.GetFullAbsolutePath(o.Result);
+                    result.Url = _commonLinkUtility.GetFullAbsolutePath(o.Result);
                 }
             }
 
@@ -186,17 +186,18 @@ namespace ASC.Api.Documents
 
             async Task<List<FileEntryWrapper>> GetFoldersAsync<T>(IEnumerable<T> folders)
             {
-                var folderDao = DaoFactory.GetFolderDao<T>();
-                var folderEnum = folderDao.GetFoldersAsync(folders).SelectAwait(async r => await FolderWrapperHelper.GetAsync(r)).Cast<FileEntryWrapper>();
+                var folderDao = _daoFactory.GetFolderDao<T>();
+                var folderEnum = folderDao.GetFoldersAsync(folders).SelectAwait(async r => await _folderWrapperHelper.GetAsync(r)).Cast<FileEntryWrapper>();
+
                 return await folderEnum.ToListAsync();
             }
 
             async Task<List<FileEntryWrapper>> GetFilesAsync<T>(IEnumerable<T> files)
             {
-                var fileDao = DaoFactory.GetFileDao<T>();
-                var filesEnum = fileDao.GetFilesAsync(files).SelectAwait(async r => await FilesWrapperHelper.GetAsync(r)).Cast<FileEntryWrapper>();
-                return await filesEnum.ToListAsync();
-                    ;
+                var fileDao = _daoFactory.GetFileDao<T>();
+                var filesEnum = fileDao.GetFilesAsync(files).SelectAwait(async r => await _filesWrapperHelper.GetAsync(r)).Cast<FileEntryWrapper>();
+
+                return await filesEnum.ToListAsync();;
             }
         }
     }

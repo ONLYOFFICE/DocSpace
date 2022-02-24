@@ -38,20 +38,28 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         {
             get
             {
-                if (_token == null) throw new Exception("Cannot create GoogleDrive session with given token");
-                if (_token.IsExpired) _token = OAuth20TokenHelper.RefreshToken<GoogleLoginProvider>(ConsumerFactory, _token);
+                if (_token == null)
+                {
+                    throw new Exception("Cannot create GoogleDrive session with given token");
+                }
+
+                if (_token.IsExpired)
+                {
+                    _token = OAuth20TokenHelper.RefreshToken<GoogleLoginProvider>(_consumerFactory, _token);
+                }
+
                 return _token.AccessToken;
             }
         }
+        
+        public ILog Logger { get; }
+        public bool IsOpened { get; private set; }
 
         private DriveService _driveService;
-
-        public bool IsOpened { get; private set; }
-        private ConsumerFactory ConsumerFactory { get; }
-        private FileUtility FileUtility { get; }
-        public ILog Log { get; }
-        private TempStream TempStream { get; }
-        private IHttpClientFactory ClientFactory { get; }
+        private readonly ConsumerFactory _consumerFactory;
+        private readonly FileUtility FileUtility;
+        private readonly TempStream _tempStream;
+        private readonly IHttpClientFactory _clientFactory;
 
         public const long MaxChunkedUploadFileSize = 2L * 1024L * 1024L * 1024L;
 
@@ -62,17 +70,20 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             TempStream tempStream,
             IHttpClientFactory clientFactory)
         {
-            ConsumerFactory = consumerFactory;
+            _consumerFactory = consumerFactory;
             FileUtility = fileUtility;
-            Log = monitor.Get("ASC.Files");
-            TempStream = tempStream;
-            ClientFactory = clientFactory;
+            Logger = monitor.Get("ASC.Files");
+            _tempStream = tempStream;
+            _clientFactory = clientFactory;
         }
 
         public void Open(OAuth20Token token)
         {
             if (IsOpened)
+            {
                 return;
+            }
+
             _token = token ?? throw new UnauthorizedAccessException("Cannot create GoogleDrive session with given token");
 
             var tokenResponse = new TokenResponse
@@ -108,7 +119,6 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
             IsOpened = false;
         }
-
 
         public string GetRootFolderId()
         {
@@ -229,7 +239,10 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
         public Task<Stream> DownloadStreamAsync(DriveFile file, int offset = 0)
         {
-            if (file == null) throw new ArgumentNullException(nameof(file));
+            if (file == null)
+            {
+                throw new ArgumentNullException(nameof(file));
+            }
 
             return InternalDownloadStreamAsync(file, offset);
         }
@@ -252,7 +265,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             request.Method = HttpMethod.Get;
             request.Headers.Add("Authorization", "Bearer " + AccessToken);
 
-            var httpClient = ClientFactory.CreateClient();
+            var httpClient = _clientFactory.CreateClient();
             using var response = await httpClient.SendAsync(request);
 
             if (offset == 0 && file.Size.HasValue && file.Size > 0)
@@ -260,7 +273,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                 return new ResponseStream(await response.Content.ReadAsStreamAsync(), file.Size.Value);
             }
 
-            var tempBuffer = TempStream.Create();
+            var tempBuffer = _tempStream.Create();
             using (var str = await response.Content.ReadAsStreamAsync())
             {
                 if (str != null)
@@ -284,6 +297,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             {
                 var requestFolder = _driveService.Files.Create(body);
                 requestFolder.Fields = GoogleLoginProvider.FilesFields;
+
                 return requestFolder.Execute();
             }
 
@@ -293,9 +307,14 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             var result = request.Upload();
             if (result.Exception != null)
             {
-                if (request.ResponseBody == null) throw result.Exception;
-                Log.Error("Error while trying to insert entity. GoogleDrive insert returned an error.", result.Exception);
+                if (request.ResponseBody == null)
+                {
+                    throw result.Exception;
+                }
+
+                Logger.Error("Error while trying to insert entity. GoogleDrive insert returned an error.", result.Exception);
             }
+
             return request.ResponseBody;
         }
 
@@ -309,6 +328,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             {
                 var requestFolder = _driveService.Files.Create(body);
                 requestFolder.Fields = GoogleLoginProvider.FilesFields;
+
                 return await requestFolder.ExecuteAsync();
             }
 
@@ -318,9 +338,14 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             var result = await request.UploadAsync();
             if (result.Exception != null)
             {
-                if (request.ResponseBody == null) throw result.Exception;
-                Log.Error("Error while trying to insert entity. GoogleDrive insert returned an error.", result.Exception);
+                if (request.ResponseBody == null)
+                {
+                    throw result.Exception;
+                }
+
+                Logger.Error("Error while trying to insert entity. GoogleDrive insert returned an error.", result.Exception);
             }
+
             return request.ResponseBody;
         }
 
@@ -339,6 +364,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             var request = _driveService.Files.Update(FileConstructor(), entry.Id);
             request.AddParents = folderId;
             request.Fields = GoogleLoginProvider.FilesFields;
+
             return request.Execute();
         }
 
@@ -347,6 +373,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             var request = _driveService.Files.Update(FileConstructor(), entry.Id);
             request.AddParents = folderId;
             request.Fields = GoogleLoginProvider.FilesFields;
+
             return request.ExecuteAsync();
         }
 
@@ -355,6 +382,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             var request = _driveService.Files.Update(FileConstructor(), entry.Id);
             request.RemoveParents = folderId;
             request.Fields = GoogleLoginProvider.FilesFields;
+
             return request.Execute();
         }
 
@@ -363,6 +391,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             var request = _driveService.Files.Update(FileConstructor(), entry.Id);
             request.RemoveParents = folderId;
             request.Fields = GoogleLoginProvider.FilesFields;
+
             return request.ExecuteAsync();
         }
 
@@ -373,6 +402,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             {
                 var request = _driveService.Files.Copy(body, originEntryId);
                 request.Fields = GoogleLoginProvider.FilesFields;
+
                 return request.Execute();
             }
             catch (GoogleApiException ex)
@@ -392,6 +422,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             {
                 var request = _driveService.Files.Copy(body, originEntryId);
                 request.Fields = GoogleLoginProvider.FilesFields;
+
                 return await request.ExecuteAsync();
             }
             catch (GoogleApiException ex)
@@ -408,6 +439,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         {
             var request = _driveService.Files.Update(FileConstructor(newTitle), fileId);
             request.Fields = GoogleLoginProvider.FilesFields;
+
             return request.Execute();
         }
 
@@ -415,6 +447,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         {
             var request = _driveService.Files.Update(FileConstructor(newTitle), fileId);
             request.Fields = GoogleLoginProvider.FilesFields;
+
             return request.ExecuteAsync();
         }
 
@@ -428,8 +461,12 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             var result = request.Upload();
             if (result.Exception != null)
             {
-                if (request.ResponseBody == null) throw result.Exception;
-                Log.Error("Error while trying to insert entity. GoogleDrive save returned an error.", result.Exception);
+                if (request.ResponseBody == null)
+                {
+                    throw result.Exception;
+                }
+
+                Logger.Error("Error while trying to insert entity. GoogleDrive save returned an error.", result.Exception);
             }
 
             return request.ResponseBody;
@@ -445,8 +482,12 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             var result = await request.UploadAsync();
             if (result.Exception != null)
             {
-                if (request.ResponseBody == null) throw result.Exception;
-                Log.Error("Error while trying to insert entity. GoogleDrive save returned an error.", result.Exception);
+                if (request.ResponseBody == null)
+                {
+                    throw result.Exception;
+                }
+
+                Logger.Error("Error while trying to insert entity. GoogleDrive save returned an error.", result.Exception);
             }
 
             return request.ResponseBody;
@@ -456,16 +497,30 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         {
             var file = new DriveFile();
 
-            if (!string.IsNullOrEmpty(title)) file.Name = title;
-            if (!string.IsNullOrEmpty(mimeType)) file.MimeType = mimeType;
-            if (!string.IsNullOrEmpty(folderId)) file.Parents = new List<string> { folderId };
+            if (!string.IsNullOrEmpty(title))
+            {
+                file.Name = title;
+            }
+
+            if (!string.IsNullOrEmpty(mimeType))
+            {
+                file.MimeType = mimeType;
+            }
+
+            if (!string.IsNullOrEmpty(folderId))
+            {
+                file.Parents = new List<string> { folderId };
+            }
 
             return file;
         }
 
         public Task<ResumableUploadSession> CreateResumableSessionAsync(DriveFile driveFile, long contentLength)
         {
-            if (driveFile == null) throw new ArgumentNullException(nameof(driveFile));
+            if (driveFile == null)
+            {
+                throw new ArgumentNullException(nameof(driveFile));
+            }
 
             return InternalCreateResumableSessionAsync(driveFile, contentLength);
         }
@@ -498,7 +553,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             request.Headers.Add("Authorization", "Bearer " + AccessToken);
             request.Content = new StringContent(body, Encoding.UTF8, "application/json");
 
-            var httpClient = ClientFactory.CreateClient();
+            var httpClient = _clientFactory.CreateClient();
             using var response = await httpClient.SendAsync(request);
 
             var uploadSession = new ResumableUploadSession(driveFile.Id, folderId, contentLength);
@@ -512,10 +567,14 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         public Task TransferAsync(ResumableUploadSession googleDriveSession, Stream stream, long chunkLength)
         {
             if (stream == null)
+            {
                 throw new ArgumentNullException(nameof(stream));
+            }
 
             if (googleDriveSession.Status != ResumableUploadSessionStatus.Started)
+            {
                 throw new InvalidOperationException("Can't upload chunk for given upload session.");
+            }
 
             return InternalTransferAsync(googleDriveSession, stream, chunkLength);
         }
@@ -531,7 +590,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                                                                googleDriveSession.BytesTransfered + chunkLength - 1,
                                                                googleDriveSession.BytesToTransfer));
             request.Content = new StreamContent(stream);
-            var httpClient = ClientFactory.CreateClient();
+            var httpClient = _clientFactory.CreateClient();
             HttpResponseMessage response;
 
             try
@@ -574,7 +633,11 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                 googleDriveSession.Status = ResumableUploadSessionStatus.Completed;
 
                 using var responseStream = await response.Content.ReadAsStreamAsync();
-                if (responseStream == null) return;
+                if (responseStream == null)
+                {
+                    return;
+                }
+
                 string responseString;
                 using (var readStream = new StreamReader(responseStream))
                 {
@@ -625,15 +688,10 @@ namespace ASC.Files.Thirdparty.GoogleDrive
     internal class ResumableUploadSession
     {
         public long BytesToTransfer { get; set; }
-
         public long BytesTransfered { get; set; }
-
         public string FileId { get; set; }
-
         public string FolderId { get; set; }
-
         public ResumableUploadSessionStatus Status { get; set; }
-
         public string Location { get; set; }
 
         public ResumableUploadSession(string fileId, string folderId, long bytesToTransfer)

@@ -23,6 +23,7 @@
             modelBuilder
                 .Add(MySqlAddDbFilesSecurity, Provider.MySql)
                 .Add(PgSqlAddDbFilesSecurity, Provider.PostgreSql);
+
             return modelBuilder;
         }
         public static void MySqlAddDbFilesSecurity(this ModelBuilder modelBuilder)

@@ -46,16 +46,18 @@ namespace ASC.Web.Files.Utils
         public void Dispose()
         {
             if (Attach != null)
+            {
                 Attach.Dispose();
+            }
         }
     }
 
     [Scope]
     public class MailMergeTaskRunner
     {
-        private SetupInfo SetupInfo { get; }
-        private SecurityContext SecurityContext { get; }
-        private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
+        private readonly SetupInfo _setupInfo;
+        private readonly SecurityContext _securityContext;
+        private readonly BaseCommonLinkUtility _baseCommonLinkUtility;
 
         //private ApiServer _apiServer;
 
@@ -66,15 +68,22 @@ namespace ASC.Web.Files.Utils
 
         public MailMergeTaskRunner(SetupInfo setupInfo, SecurityContext securityContext, BaseCommonLinkUtility baseCommonLinkUtility)
         {
-            SetupInfo = setupInfo;
-            SecurityContext = securityContext;
-            BaseCommonLinkUtility = baseCommonLinkUtility;
+            _setupInfo = setupInfo;
+            _securityContext = securityContext;
+            _baseCommonLinkUtility = baseCommonLinkUtility;
         }
 
         public async Task<string> RunAsync(MailMergeTask mailMergeTask, IHttpClientFactory clientFactory)
         {
-            if (string.IsNullOrEmpty(mailMergeTask.From)) throw new ArgumentException("From is null");
-            if (string.IsNullOrEmpty(mailMergeTask.To)) throw new ArgumentException("To is null");
+            if (string.IsNullOrEmpty(mailMergeTask.From))
+            {
+                throw new ArgumentException("From is null");
+            }
+
+            if (string.IsNullOrEmpty(mailMergeTask.To))
+            {
+                throw new ArgumentException("To is null");
+            }
 
             CreateDraftMail(mailMergeTask);
 
@@ -108,19 +117,25 @@ namespace ASC.Web.Files.Utils
 
         private async Task<string> AttachToMailAsync(MailMergeTask mailMergeTask, IHttpClientFactory clientFactory)
         {
-            if (mailMergeTask.Attach == null) return string.Empty;
+            if (mailMergeTask.Attach == null)
+            {
+                return string.Empty;
+            }
 
-            if (string.IsNullOrEmpty(mailMergeTask.AttachTitle)) mailMergeTask.AttachTitle = "attach.pdf";
+            if (string.IsNullOrEmpty(mailMergeTask.AttachTitle))
+            {
+                mailMergeTask.AttachTitle = "attach.pdf";
+            }
 
             var apiUrlAttach = string.Format("{0}mail/messages/attachment/add?id_message={1}&name={2}",
-                                             SetupInfo.WebApiBaseUrl,
+                                             _setupInfo.WebApiBaseUrl,
                                              mailMergeTask.MessageId,
                                              mailMergeTask.AttachTitle);
 
             var request = new HttpRequestMessage();
-            request.RequestUri = new Uri(BaseCommonLinkUtility.GetFullAbsolutePath(apiUrlAttach));
+            request.RequestUri = new Uri(_baseCommonLinkUtility.GetFullAbsolutePath(apiUrlAttach));
             request.Method = HttpMethod.Post;
-            request.Headers.Add("Authorization", SecurityContext.AuthenticateMe(SecurityContext.CurrentAccount.ID));
+            request.Headers.Add("Authorization", _securityContext.AuthenticateMe(_securityContext.CurrentAccount.ID));
             request.Content.Headers.ContentType = new MediaTypeHeaderValue(mailMergeTask.AttachTitle);
             request.Content = new StreamContent(mailMergeTask.Attach);
 
@@ -129,7 +144,11 @@ namespace ASC.Web.Files.Utils
             using var response = await httpClient.SendAsync(request);
             using (var stream = await response.Content.ReadAsStreamAsync())
             {
-                if (stream == null) throw new HttpRequestException("Could not get an answer");
+                if (stream == null)
+                {
+                    throw new HttpRequestException("Could not get an answer");
+                }
+
                 using var reader = new StreamReader(stream);
                 responseAttachString = await reader.ReadToEndAsync();
             }
@@ -175,6 +194,7 @@ namespace ASC.Web.Files.Utils
             {
                 throw new Exception("Create draft failed: " + responseSend["error"]["message"].Value<string>());
             }
+
             return responseSend["response"].Value<string>();
         }
     }

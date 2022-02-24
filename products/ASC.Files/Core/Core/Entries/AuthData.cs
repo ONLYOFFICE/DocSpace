@@ -29,11 +29,8 @@ namespace ASC.Files.Core
     public class AuthData
     {
         public string Login { get; set; }
-
         public string Password { get; set; }
-
         public string Token { get; set; }
-
         public string Url { get; set; }
 
         public AuthData(string url = null, string login = null, string password = null, string token = null)

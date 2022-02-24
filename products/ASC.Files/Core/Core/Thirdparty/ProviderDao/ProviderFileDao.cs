@@ -43,6 +43,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
         {
             var selector = GetSelector(fileId);
             var fileDao = selector.GetFileDao(fileId);
+
             return fileDao.InvalidateCacheAsync(selector.ConvertId(fileId));
         }
 
@@ -109,6 +110,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
         {
             var selector = GetSelector(fileId);
             var fileDao = selector.GetFileDao(fileId);
+
             return fileDao.GetFileHistoryAsync(selector.ConvertId(fileId));
         }
 
@@ -121,16 +123,19 @@ namespace ASC.Files.Thirdparty.ProviderDao
                 var selectorLocal = selector;
                 var matchedIds = fileIds.Where(selectorLocal.IsMatch);
 
-                if (!matchedIds.Any()) continue;
+                if (!matchedIds.Any())
+                {
+                    continue;
+                }
 
                 result = result.Concat(matchedIds.GroupBy(selectorLocal.GetIdCode)
-                                                .ToAsyncEnumerable()
-                                                .SelectMany(matchedId =>
-                                                {
-                                                    var fileDao = selectorLocal.GetFileDao(matchedId.FirstOrDefault());
-                                                     return fileDao.GetFilesAsync(matchedId.Select(selectorLocal.ConvertId).ToList());
-                                                }
-                    )
+                    .ToAsyncEnumerable()
+                    .SelectMany(matchedId =>
+                    {
+                        var fileDao = selectorLocal.GetFileDao(matchedId.FirstOrDefault());
+
+                        return fileDao.GetFilesAsync(matchedId.Select(selectorLocal.ConvertId).ToList());
+                    })
                     .Where(r => r != null));
             }
 
@@ -146,18 +151,22 @@ namespace ASC.Files.Thirdparty.ProviderDao
                 var selectorLocal = selector;
                 var matchedIds = fileIds.Where(selectorLocal.IsMatch);
 
-                if (!matchedIds.Any()) continue;
+                if (!matchedIds.Any())
+                {
+                    continue;
+                }
 
                 result = result.Concat(matchedIds.GroupBy(selectorLocal.GetIdCode)
-                                       .ToAsyncEnumerable()
-                                        .SelectMany(matchedId =>
-                                        {
-                                            var fileDao = selectorLocal.GetFileDao(matchedId.FirstOrDefault());
-                                           var result = fileDao.GetFilesFilteredAsync(matchedId.Select(selectorLocal.ConvertId).ToArray(),
-                                                    filterType, subjectGroup, subjectID, searchText, searchInContent);
-                                           return result;
-                                        })
-                                        .Where(r => r != null));
+                    .ToAsyncEnumerable()
+                    .SelectMany(matchedId =>
+                    {
+                        var fileDao = selectorLocal.GetFileDao(matchedId.FirstOrDefault());
+                        var result = fileDao.GetFilesFilteredAsync(matchedId.Select(selectorLocal.ConvertId).ToArray(),
+                            filterType, subjectGroup, subjectID, searchText, searchInContent);
+                        
+                        return result;
+                    })
+                    .Where(r => r != null));
             }
 
             return result;
@@ -168,6 +177,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
             var selector = GetSelector(parentId);
             var fileDao = selector.GetFileDao(parentId);
             var files = await fileDao.GetFilesAsync(selector.ConvertId(parentId)).ConfigureAwait(false);
+
             return files.Where(r => r != null).ToList();
         }
 
@@ -184,7 +194,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
             await foreach (var r in result.ConfigureAwait(false))
             {
                 yield return r;
-        }
+            }
         }
 
         public override Task<Stream> GetFileStreamAsync(File<string> file)
@@ -200,7 +210,10 @@ namespace ASC.Files.Thirdparty.ProviderDao
         /// <returns>Stream</returns>
         public Task<Stream> GetFileStreamAsync(File<string> file, long offset)
         {
-            if (file == null) throw new ArgumentNullException(nameof(file));
+            if (file == null)
+            {
+                throw new ArgumentNullException(nameof(file));
+            }
 
             return InternalGetFileStreamAsync(file, offset);
         }
@@ -214,12 +227,16 @@ namespace ASC.Files.Thirdparty.ProviderDao
             var fileDao = selector.GetFileDao(fileId);
             var stream = await fileDao.GetFileStreamAsync(file, offset).ConfigureAwait(false);
             file.ID = fileId; //Restore id
+
             return stream;
         }
 
         public Task<bool> IsSupportedPreSignedUriAsync(File<string> file)
         {
-            if (file == null) throw new ArgumentNullException(nameof(file));
+            if (file == null)
+            {
+                throw new ArgumentNullException(nameof(file));
+            }
 
             return InternalIsSupportedPreSignedUriAsync(file);
         }
@@ -233,12 +250,16 @@ namespace ASC.Files.Thirdparty.ProviderDao
             var fileDao = selector.GetFileDao(fileId);
             var isSupported = await fileDao.IsSupportedPreSignedUriAsync(file).ConfigureAwait(false);
             file.ID = fileId; //Restore id
+
             return isSupported;
         }
 
         public Task<Uri> GetPreSignedUriAsync(File<string> file, TimeSpan expires)
         {
-            if (file == null) throw new ArgumentNullException(nameof(file));
+            if (file == null)
+            {
+                throw new ArgumentNullException(nameof(file));
+            }
 
             return InternalGetPreSignedUriAsync(file, expires);
         }
@@ -252,12 +273,16 @@ namespace ASC.Files.Thirdparty.ProviderDao
             var fileDao = selector.GetFileDao(fileId);
             var streamUri = await fileDao.GetPreSignedUriAsync(file, expires).ConfigureAwait(false);
             file.ID = fileId; //Restore id
+
             return streamUri;
         }
 
         public Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
         {
-            if (file == null) throw new ArgumentNullException(nameof(file));
+            if (file == null)
+            {
+                throw new ArgumentNullException(nameof(file));
+            }
 
             return InternalSaveFileAsync(file, fileStream);
         }
@@ -275,7 +300,10 @@ namespace ASC.Files.Thirdparty.ProviderDao
                 selector = GetSelector(fileId);
                 file.ID = selector.ConvertId(fileId);
                 if (folderId != null)
+                {
                     file.FolderID = selector.ConvertId(folderId);
+                }
+
                 var fileDao = selector.GetFileDao(fileId);
                 fileSaved = await fileDao.SaveFileAsync(file, fileStream).ConfigureAwait(false);
             }
@@ -291,13 +319,20 @@ namespace ASC.Files.Thirdparty.ProviderDao
             {
                 return fileSaved;
             }
+
             throw new ArgumentException("No file id or folder id toFolderId determine provider");
         }
 
         public Task<File<string>> ReplaceFileVersionAsync(File<string> file, Stream fileStream)
         {
-            if (file == null) throw new ArgumentNullException(nameof(file));
-            if (file.ID == null) throw new ArgumentException("No file id or folder id toFolderId determine provider");
+            if (file == null)
+            {
+                throw new ArgumentNullException(nameof(file));
+            }
+            if (file.ID == null)
+            {
+                throw new ArgumentException("No file id or folder id toFolderId determine provider");
+            }
 
             var fileId = file.ID;
             var folderId = file.FolderID;
@@ -306,9 +341,13 @@ namespace ASC.Files.Thirdparty.ProviderDao
             var selector = GetSelector(fileId);
 
             file.ID = selector.ConvertId(fileId);
-            if (folderId != null) file.FolderID = selector.ConvertId(folderId);
+            if (folderId != null)
+            {
+                file.FolderID = selector.ConvertId(folderId);
+            }
 
             var fileDao = selector.GetFileDao(fileId);
+
             return fileDao.ReplaceFileVersionAsync(file, fileStream);
         }
 
@@ -316,6 +355,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
         {
             var selector = GetSelector(fileId);
             var fileDao = selector.GetFileDao(fileId);
+
             return fileDao.DeleteFileAsync(selector.ConvertId(fileId));
         }
 
@@ -324,6 +364,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
             var selector = GetSelector(folderId.ToString());
 
             var fileDao = selector.GetFileDao(folderId.ToString());
+
             return fileDao.IsExistAsync(title, selector.ConvertId(folderId.ToString()));
         }
 
@@ -345,6 +386,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
         public async Task<int> MoveFileAsync(string fileId, int toFolderId)
         {
             var movedFile = await PerformCrossDaoFileCopyAsync(fileId, toFolderId, true).ConfigureAwait(false);
+
             return movedFile.ID;
         }
 
@@ -354,10 +396,12 @@ namespace ASC.Files.Thirdparty.ProviderDao
             if (IsCrossDao(fileId, toFolderId))
             {
                 var movedFile = await PerformCrossDaoFileCopyAsync(fileId, toFolderId, true).ConfigureAwait(false);
+
                 return movedFile.ID;
             }
 
             var fileDao = selector.GetFileDao(fileId);
+
             return await fileDao.MoveFileAsync(selector.ConvertId(fileId), selector.ConvertId(toFolderId)).ConfigureAwait(false);
         }
 
@@ -390,6 +434,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
             }
 
             var fileDao = selector.GetFileDao(fileId);
+
             return fileDao.CopyFileAsync(selector.ConvertId(fileId), selector.ConvertId(toFolderId));
         }
 
@@ -397,6 +442,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
         {
             var selector = GetSelector(file.ID);
             var fileDao = selector.GetFileDao(file.ID);
+
             return fileDao.FileRenameAsync(ConvertId(file), newTitle);
         }
 
@@ -405,6 +451,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
             var selector = GetSelector(fileId);
 
             var fileDao = selector.GetFileDao(fileId);
+
             return fileDao.UpdateCommentAsync(selector.ConvertId(fileId), fileVersion, comment);
         }
 
@@ -413,6 +460,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
             var selector = GetSelector(fileId);
 
             var fileDao = selector.GetFileDao(fileId);
+
             return fileDao.CompleteVersionAsync(selector.ConvertId(fileId), fileVersion);
         }
 
@@ -420,6 +468,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
         {
             var selector = GetSelector(fileId);
             var fileDao = selector.GetFileDao(fileId);
+
             return fileDao.ContinueVersionAsync(selector.ConvertId(fileId), fileVersion);
         }
 
@@ -427,6 +476,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
         {
             var selector = GetSelector(file.ID);
             var fileDao = selector.GetFileDao(file.ID);
+
             return UseTrashForRemove(file);
         }
 
@@ -435,6 +485,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
         public Task<ChunkedUploadSession<string>> CreateUploadSessionAsync(File<string> file, long contentLength)
         {
             var fileDao = GetFileDao(file);
+
             return fileDao.CreateUploadSessionAsync(ConvertId(file), contentLength);
         }
 
@@ -443,6 +494,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
             var fileDao = GetFileDao(uploadSession.File);
             uploadSession.File = ConvertId(uploadSession.File);
             await fileDao.UploadChunkAsync(uploadSession, chunkStream, chunkLength).ConfigureAwait(false);
+
             return uploadSession.File;
         }
 
@@ -450,16 +502,21 @@ namespace ASC.Files.Thirdparty.ProviderDao
         {
             var fileDao = GetFileDao(uploadSession.File);
             uploadSession.File = ConvertId(uploadSession.File);
+
             return fileDao.AbortUploadSessionAsync(uploadSession);
         }
 
         private IFileDao<string> GetFileDao(File<string> file)
         {
             if (file.ID != null)
+            {
                 return GetSelector(file.ID).GetFileDao(file.ID);
+            }
 
             if (file.FolderID != null)
+            {
                 return GetSelector(file.FolderID).GetFileDao(file.FolderID);
+            }
 
             throw new ArgumentException("Can't create instance of dao for given file.", nameof(file));
         }
@@ -473,6 +530,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
         {
             file.ID = ConvertId(file.ID);
             file.FolderID = ConvertId(file.FolderID);
+
             return file;
         }
         #endregion

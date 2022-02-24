@@ -28,11 +28,8 @@ namespace ASC.Web.Files.ThirdPartyApp
     public interface IThirdPartyApp
     {
         Task<bool> RequestAsync(HttpContext context);
-
         string GetRefreshUrl();
-
         File<string> GetFile(string fileId, out bool editable);
-
         string GetFileStreamUrl(File<string> file);
         Task SaveFileAsync(string fileId, string fileType, string downloadUrl, Stream stream);
     }
@@ -54,11 +51,14 @@ namespace ASC.Web.Files.ThirdPartyApp
 
         public static IThirdPartyApp GetAppByFileId(string fileId)
         {
-            if (string.IsNullOrEmpty(fileId)) return null;
+            if (string.IsNullOrEmpty(fileId))
+            {
+                return null;
+            }
+
             var match = AppRegex.Match(fileId);
-            return match.Success
-                       ? GetApp(match.Groups[1].Value)
-                       : null;
+
+            return match.Success ? GetApp(match.Groups[1].Value) : null;
         }
 
         public static IThirdPartyApp GetApp(string app)

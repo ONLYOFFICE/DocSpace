@@ -41,23 +41,14 @@ namespace ASC.Files.Core
     public sealed class Tag
     {
         public string TagName { get; set; }
-
         public TagType TagType { get; set; }
-
         public Guid Owner { get; set; }
-
         public object EntryId { get; set; }
-
         public FileEntryType EntryType { get; set; }
-
         public int Id { get; set; }
-
         public int Count { get; set; }
 
-
-        public Tag()
-        {
-        }
+        public Tag() { }
 
         public Tag(string name, TagType type, Guid owner)
             : this(name, type, owner, 0)
@@ -107,7 +98,6 @@ namespace ASC.Files.Core
         {
             return new Tag("template", TagType.Template, owner, 0).AddEntry(entry);
         }
-
 
         public override bool Equals(object obj)
         {

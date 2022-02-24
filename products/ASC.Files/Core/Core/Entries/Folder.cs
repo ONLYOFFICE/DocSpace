@@ -43,15 +43,10 @@ namespace ASC.Files.Core
     public interface IFolder
     {
         public FolderType FolderType { get; set; }
-
         public int TotalFiles { get; set; }
-
         public int TotalSubFolders { get; set; }
-
         public bool Shareable { get; set; }
-
         public int NewForMe { get; set; }
-
         public string FolderUrl { get; set; }
     }
 
@@ -60,21 +55,15 @@ namespace ASC.Files.Core
     public class Folder<T> : FileEntry<T>, IFolder
     {
         public FolderType FolderType { get; set; }
-
         public int TotalFiles { get; set; }
-
         public int TotalSubFolders { get; set; }
-
         public bool Shareable { get; set; }
-
         public int NewForMe { get; set; }
-
         public string FolderUrl { get; set; }
-
         public override bool IsNew
         {
-            get { return Convert.ToBoolean(NewForMe); }
-            set { NewForMe = Convert.ToInt32(value); }
+            get => Convert.ToBoolean(NewForMe);
+            set => NewForMe = Convert.ToInt32(value);
         }
 
         public Folder()
@@ -89,9 +78,6 @@ namespace ASC.Files.Core
             Global = global;
         }
 
-        public override string UniqID
-        {
-            get { return $"folder_{ID}"; }
-        }
+        public override string UniqID => $"folder_{ID}";
     }
 }

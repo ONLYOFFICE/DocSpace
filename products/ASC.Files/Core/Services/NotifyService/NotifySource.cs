@@ -40,8 +40,8 @@ namespace ASC.Files.Core.Services.NotifyService
         protected override IActionProvider CreateActionProvider()
         {
             return new ConstActionProvider(
-                NotifyConstants.Event_ShareFolder,
-                NotifyConstants.Event_ShareDocument);
+                NotifyConstants.EventShareFolder,
+                NotifyConstants.EventShareDocument);
         }
 
         protected override IPatternProvider CreatePatternsProvider()

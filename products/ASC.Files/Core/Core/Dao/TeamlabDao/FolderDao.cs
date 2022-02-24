@@ -28,26 +28,26 @@ namespace ASC.Files.Core.Data
     [Scope]
     internal class FolderDao : AbstractDao, IFolderDao<int>
     {
-        private const string my = "my";
-        private const string common = "common";
-        private const string share = "share";
-        private const string recent = "recent";
-        private const string favorites = "favorites";
-        private const string templates = "templates";
-        private const string privacy = "privacy";
-        private const string trash = "trash";
-        private const string projects = "projects";
+        private const string My = "my";
+        private const string Common = "common";
+        private const string Share = "share";
+        private const string Recent = "recent";
+        private const string Favorites = "favorites";
+        private const string Templates = "templates";
+        private const string Privacy = "privacy";
+        private const string Trash = "trash";
+        private const string Projects = "projects";
 
-        private FactoryIndexerFolder FactoryIndexer { get; }
-        private GlobalSpace GlobalSpace { get; }
-        private IDaoFactory DaoFactory { get; }
-        private ProviderFolderDao ProviderFolderDao { get; }
-        private CrossDao CrossDao { get; }
+        private readonly FactoryIndexerFolder _factoryIndexer;
+        private readonly GlobalSpace _globalSpace;
+        private readonly IDaoFactory _daoFactory;
+        private readonly ProviderFolderDao _providerFolderDao;
+        private readonly CrossDao _crossDao;
 
         public FolderDao(
             FactoryIndexerFolder factoryIndexer,
             UserManager userManager,
-            DbContextManager<EF.FilesDbContext> dbContextManager,
+            DbContextManager<FilesDbContext> dbContextManager,
             TenantManager tenantManager,
             TenantUtil tenantUtil,
             SetupInfo setupInfo,
@@ -78,22 +78,26 @@ namespace ASC.Files.Core.Data
                   serviceProvider,
                   cache)
         {
-            FactoryIndexer = factoryIndexer;
-            GlobalSpace = globalSpace;
-            DaoFactory = daoFactory;
-            ProviderFolderDao = providerFolderDao;
-            CrossDao = crossDao;
+            _factoryIndexer = factoryIndexer;
+            _globalSpace = globalSpace;
+            _daoFactory = daoFactory;
+            _providerFolderDao = providerFolderDao;
+            _crossDao = crossDao;
         }
 
         public async Task<Folder<int>> GetFolderAsync(int folderId)
         {
             var query = GetFolderQuery(r => r.Id == folderId).AsNoTracking();
+
             return ToFolder(await FromQueryWithShared(query).Take(1).SingleOrDefaultAsync().ConfigureAwait(false));
         }
 
         public Task<Folder<int>> GetFolderAsync(string title, int parentId)
         {
-            if (string.IsNullOrEmpty(title)) throw new ArgumentNullException(title);
+            if (string.IsNullOrEmpty(title))
+            {
+                throw new ArgumentNullException(title);
+            }
 
             return InternalGetFolderAsync(title, parentId);
         }
@@ -150,9 +154,14 @@ namespace ASC.Files.Core.Data
                 || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
                 || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
                 || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
+            {
                 return AsyncEnumerable.Empty<Folder<int>>();
+            }
 
-            if (orderBy == null) orderBy = new OrderBy(SortedByType.DateAndTime, false);
+            if (orderBy == null)
+            {
+                orderBy = new OrderBy(SortedByType.DateAndTime, false);
+            }
 
             var q = GetFolderQuery(r => r.ParentId == parentId).AsNoTracking();
 
@@ -166,7 +175,7 @@ namespace ASC.Files.Core.Data
 
             if (!string.IsNullOrEmpty(searchText))
             {
-                if (FactoryIndexer.TrySelectIds(s => s.MatchAll(searchText), out var searchIds))
+                if (_factoryIndexer.TrySelectIds(s => s.MatchAll(searchText), out var searchIds))
                 {
                     q = q.Where(r => searchIds.Contains(r.Id));
                 }
@@ -206,7 +215,9 @@ namespace ASC.Files.Core.Data
                 || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
                 || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
                 || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
+            {
                 return AsyncEnumerable.Empty<Folder<int>>();
+            }
 
             var q = GetFolderQuery(r => folderIds.Contains(r.Id)).AsNoTracking();
 
@@ -221,7 +232,7 @@ namespace ASC.Files.Core.Data
 
             if (!string.IsNullOrEmpty(searchText))
             {
-                if (FactoryIndexer.TrySelectIds(s =>
+                if (_factoryIndexer.TrySelectIds(s =>
                                                     searchSubfolders
                                                         ? s.MatchAll(searchText)
                                                         : s.MatchAll(searchText).In(r => r.Id, folderIds.ToArray()),
@@ -262,6 +273,7 @@ namespace ASC.Files.Core.Data
                 .Select(r => r.folder);
 
             var query = await FromQueryWithShared(q).ToListAsync().ConfigureAwait(false);
+
             return query.ConvertAll(e => ToFolder(e));
         }
 
@@ -272,7 +284,10 @@ namespace ASC.Files.Core.Data
 
         public Task<int> SaveFolderAsync(Folder<int> folder, IDbContextTransaction transaction)
         {
-            if (folder == null) throw new ArgumentNullException(nameof(folder));
+            if (folder == null)
+            {
+                throw new ArgumentNullException(nameof(folder));
+            }
 
             return InternalSaveFolderAsync(folder, transaction);
         }
@@ -284,8 +299,14 @@ namespace ASC.Files.Core.Data
             folder.ModifiedOn = TenantUtil.DateTimeNow();
             folder.ModifiedBy = AuthContext.CurrentAccount.ID;
 
-            if (folder.CreateOn == default) folder.CreateOn = TenantUtil.DateTimeNow();
-            if (folder.CreateBy == default) folder.CreateBy = AuthContext.CurrentAccount.ID;
+            if (folder.CreateOn == default)
+            {
+                folder.CreateOn = TenantUtil.DateTimeNow();
+            }
+            if (folder.CreateBy == default)
+            {
+                folder.CreateBy = AuthContext.CurrentAccount.ID;
+            }
 
             var isnew = false;
 
@@ -307,7 +328,7 @@ namespace ASC.Files.Core.Data
 
                 if (folder.FolderType == FolderType.DEFAULT || folder.FolderType == FolderType.BUNCH)
                 {
-                    _ = FactoryIndexer.IndexAsync(toUpdate).ConfigureAwait(false);
+                    _ = _factoryIndexer.IndexAsync(toUpdate).ConfigureAwait(false);
                 }
             }
             else
@@ -329,10 +350,12 @@ namespace ASC.Files.Core.Data
                 var entityEntry = await FilesDbContext.Folders.AddAsync(newFolder).ConfigureAwait(false);
                 newFolder = entityEntry.Entity;
                 await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+
                 if (folder.FolderType == FolderType.DEFAULT || folder.FolderType == FolderType.BUNCH)
                 {
-                    _ = FactoryIndexer.IndexAsync(newFolder).ConfigureAwait(false);
+                    _ = _factoryIndexer.IndexAsync(newFolder).ConfigureAwait(false);
                 }
+
                 folder.ID = newFolder.Id;
 
                 //itself link
@@ -387,11 +410,14 @@ namespace ASC.Files.Core.Data
                 .AnyAsync(r => r.Id == folderId);
         }
 
-        public Task DeleteFolderAsync(int id)
+        public Task DeleteFolderAsync(int folderId)
         {
-            if (id == default) throw new ArgumentNullException("folderId");
+            if (folderId == default)
+            {
+                throw new ArgumentNullException(nameof(folderId));
+            }
 
-            return InternalDeleteFolderAsync(id);
+            return InternalDeleteFolderAsync(folderId);
         }
 
         private async Task InternalDeleteFolderAsync(int id)
@@ -404,7 +430,10 @@ namespace ASC.Files.Core.Data
                 .Select(r => r.FolderId)
                 .ToListAsync().ConfigureAwait(false);
 
-            if (!subfolders.Contains(id)) subfolders.Add(id); // chashed folder_tree
+            if (!subfolders.Contains(id))
+            {
+                subfolders.Add(id); // chashed folder_tree
+            }
 
             var parent = await Query(FilesDbContext.Folders)
                 .Where(r => r.Id == id)
@@ -416,7 +445,7 @@ namespace ASC.Files.Core.Data
 
             foreach (var f in folderToDelete)
             {
-                await FactoryIndexer.DeleteAsync(f).ConfigureAwait(false);
+                await _factoryIndexer.DeleteAsync(f).ConfigureAwait(false);
             }
 
             var treeToDelete = await FilesDbContext.Tree.AsQueryable().Where(r => subfolders.Contains(r.FolderId)).ToListAsync();
@@ -479,7 +508,9 @@ namespace ASC.Files.Core.Data
                 var folder = await GetFolderAsync(folderId).ConfigureAwait(false);
 
                 if (folder.FolderType != FolderType.DEFAULT)
+                {
                     throw new ArgumentException("It is forbidden to move the System folder.", nameof(folderId));
+                }
 
                 var recalcFolders = new List<int> { toFolderId };
                 var parent = await FilesDbContext.Folders
@@ -489,7 +520,10 @@ namespace ASC.Files.Core.Data
                     .FirstOrDefaultAsync()
                     .ConfigureAwait(false);
 
-                if (parent != 0 && !recalcFolders.Contains(parent)) recalcFolders.Add(parent);
+                if (parent != 0 && !recalcFolders.Contains(parent))
+                {
+                    recalcFolders.Add(parent);
+                }
 
                 var toUpdate = await Query(FilesDbContext.Folders)
                     .Where(r => r.Id == folderId)
@@ -549,15 +583,16 @@ namespace ASC.Files.Core.Data
                     await GetRecalculateFilesCountUpdateAsync(e);
                 }
             }
+
             return folderId;
         }
 
         public async Task<string> MoveFolderAsync(int folderId, string toFolderId, CancellationToken? cancellationToken)
         {
-            var toSelector = ProviderFolderDao.GetSelector(toFolderId);
+            var toSelector = _providerFolderDao.GetSelector(toFolderId);
 
-            var moved = await CrossDao.PerformCrossDaoFolderCopyAsync(
-                folderId, this, DaoFactory.GetFileDao<int>(), r => r,
+            var moved = await _crossDao.PerformCrossDaoFolderCopyAsync(
+                folderId, this, _daoFactory.GetFileDao<int>(), r => r,
                 toFolderId, toSelector.GetFolderDao(toFolderId), toSelector.GetFileDao(toFolderId), toSelector.ConvertId,
                 true, cancellationToken)
                 .ConfigureAwait(false);
@@ -587,7 +622,9 @@ namespace ASC.Files.Core.Data
             var toFolder = await GetFolderAsync(toFolderId).ConfigureAwait(false);
 
             if (folder.FolderType == FolderType.BUNCH)
+            {
                 folder.FolderType = FolderType.DEFAULT;
+            }
 
             var copy = ServiceProvider.GetService<Folder<int>>();
             copy.FolderID = toFolderId;
@@ -605,10 +642,10 @@ namespace ASC.Files.Core.Data
 
         public async Task<Folder<string>> CopyFolderAsync(int folderId, string toFolderId, CancellationToken? cancellationToken)
         {
-            var toSelector = ProviderFolderDao.GetSelector(toFolderId);
+            var toSelector = _providerFolderDao.GetSelector(toFolderId);
 
-            var moved = await CrossDao.PerformCrossDaoFolderCopyAsync(
-                folderId, this, DaoFactory.GetFileDao<int>(), r => r,
+            var moved = await _crossDao.PerformCrossDaoFolderCopyAsync(
+                folderId, this, _daoFactory.GetFileDao<int>(), r => r,
                 toFolderId, toSelector.GetFolderDao(toFolderId), toSelector.GetFileDao(toFolderId), toSelector.ConvertId,
                 false, cancellationToken)
                 .ConfigureAwait(false);
@@ -712,7 +749,7 @@ namespace ASC.Files.Core.Data
 
             await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-            _ = FactoryIndexer.IndexAsync(toUpdate).ConfigureAwait(false);
+            _ = _factoryIndexer.IndexAsync(toUpdate).ConfigureAwait(false);
 
             return folder.ID;
         }
@@ -781,7 +818,9 @@ namespace ASC.Files.Core.Data
             var tmp = long.MaxValue;
 
             if (CoreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
-                tmp = CoreConfiguration.PersonalMaxSpace(SettingsManager) - await GlobalSpace.GetUserUsedSpaceAsync();
+            {
+                tmp = CoreConfiguration.PersonalMaxSpace(SettingsManager) - await _globalSpace.GetUserUsedSpaceAsync();
+            }
 
             return Math.Min(tmp, chunkedUpload ? SetupInfo.MaxChunkedUploadSize(TenantExtra, TenantStatisticProvider) : SetupInfo.MaxUploadSize(TenantExtra, TenantStatisticProvider));
         }
@@ -822,31 +861,43 @@ namespace ASC.Files.Core.Data
         public IAsyncEnumerable<Folder<int>> SearchFoldersAsync(string text, bool bunch = false)
         {
             var folders = SearchAsync(text);
-            return folders.Where(f => bunch
-                                               ? f.RootFolderType == FolderType.BUNCH
-                                           : (f.RootFolderType == FolderType.USER || f.RootFolderType == FolderType.COMMON));
+
+            return folders.Where(f => bunch ? f.RootFolderType == FolderType.BUNCH 
+                : (f.RootFolderType == FolderType.USER || f.RootFolderType == FolderType.COMMON));
         }
 
         private IAsyncEnumerable<Folder<int>> SearchAsync(string text)
         {
-            if (string.IsNullOrEmpty(text)) return AsyncEnumerable.Empty<Folder<int>>();
+            if (string.IsNullOrEmpty(text))
+            {
+                return AsyncEnumerable.Empty<Folder<int>>();
+            }
 
-            if (FactoryIndexer.TrySelectIds(s => s.MatchAll(text), out var ids))
+            if (_factoryIndexer.TrySelectIds(s => s.MatchAll(text), out var ids))
             {
                 var q1 = GetFolderQuery(r => ids.Contains(r.Id));
                 var fromQuery1 = FromQueryWithShared(q1).AsAsyncEnumerable();
+
                 return fromQuery1.Select(ToFolder);
             }
 
             var q = BuildSearch(GetFolderQuery(), text, SearhTypeEnum.Any);
             var fromQuery = FromQueryWithShared(q).AsAsyncEnumerable();
+
             return fromQuery.Select(ToFolder);
         }
 
         public Task<IEnumerable<int>> GetFolderIDsAsync(string module, string bunch, IEnumerable<string> data, bool createIfNotExists)
         {
-            if (string.IsNullOrEmpty(module)) throw new ArgumentNullException(nameof(module));
-            if (string.IsNullOrEmpty(bunch)) throw new ArgumentNullException(nameof(bunch));
+            if (string.IsNullOrEmpty(module))
+            {
+                throw new ArgumentNullException(nameof(module));
+            }
+
+            if (string.IsNullOrEmpty(bunch))
+            {
+                throw new ArgumentNullException(nameof(bunch));
+            }
 
             return InternalGetFolderIDsAsync(module, bunch, data, createIfNotExists);
         }
@@ -871,41 +922,41 @@ namespace ASC.Files.Core.Data
                     var folder = ServiceProvider.GetService<Folder<int>>();
                     switch (bunch)
                     {
-                        case my:
+                        case My:
                             folder.FolderType = FolderType.USER;
-                            folder.Title = my;
+                            folder.Title = My;
                             break;
-                        case common:
+                        case Common:
                             folder.FolderType = FolderType.COMMON;
-                            folder.Title = common;
+                            folder.Title = Common;
                             break;
-                        case trash:
+                        case Trash:
                             folder.FolderType = FolderType.TRASH;
-                            folder.Title = trash;
+                            folder.Title = Trash;
                             break;
-                        case share:
+                        case Share:
                             folder.FolderType = FolderType.SHARE;
-                            folder.Title = share;
+                            folder.Title = Share;
                             break;
-                        case recent:
+                        case Recent:
                             folder.FolderType = FolderType.Recent;
-                            folder.Title = recent;
+                            folder.Title = Recent;
                             break;
-                        case favorites:
+                        case Favorites:
                             folder.FolderType = FolderType.Favorites;
-                            folder.Title = favorites;
+                            folder.Title = Favorites;
                             break;
-                        case templates:
+                        case Templates:
                             folder.FolderType = FolderType.Templates;
-                            folder.Title = templates;
+                            folder.Title = Templates;
                             break;
-                        case privacy:
+                        case Privacy:
                             folder.FolderType = FolderType.Privacy;
-                            folder.Title = privacy;
+                            folder.Title = Privacy;
                             break;
-                        case projects:
+                        case Projects:
                             folder.FolderType = FolderType.Projects;
-                            folder.Title = projects;
+                            folder.Title = Projects;
                             break;
                         default:
                             folder.FolderType = FolderType.BUNCH;
@@ -928,15 +979,23 @@ namespace ASC.Files.Core.Data
 
                     await tx.CommitAsync().ConfigureAwait(false); //Commit changes
                 }
+
                 folderIds.Add(newFolderId);
             }
+
             return folderIds;
         }
 
         public Task<int> GetFolderIDAsync(string module, string bunch, string data, bool createIfNotExists)
         {
-            if (string.IsNullOrEmpty(module)) throw new ArgumentNullException(nameof(module));
-            if (string.IsNullOrEmpty(bunch)) throw new ArgumentNullException(nameof(bunch));
+            if (string.IsNullOrEmpty(module))
+            {
+                throw new ArgumentNullException(nameof(module));
+            }
+            if (string.IsNullOrEmpty(bunch))
+            {
+                throw new ArgumentNullException(nameof(bunch));
+            }
 
             return InternalGetFolderIDAsync(module, bunch, data, createIfNotExists);
         }
@@ -962,44 +1021,44 @@ namespace ASC.Files.Core.Data
                 folder.FolderID = 0;
                 switch (bunch)
                 {
-                    case my:
+                    case My:
                         folder.FolderType = FolderType.USER;
-                        folder.Title = my;
+                        folder.Title = My;
                         folder.CreateBy = new Guid(data);
                         break;
-                    case common:
+                    case Common:
                         folder.FolderType = FolderType.COMMON;
-                        folder.Title = common;
+                        folder.Title = Common;
                         break;
-                    case trash:
+                    case Trash:
                         folder.FolderType = FolderType.TRASH;
-                        folder.Title = trash;
+                        folder.Title = Trash;
                         folder.CreateBy = new Guid(data);
                         break;
-                    case share:
+                    case Share:
                         folder.FolderType = FolderType.SHARE;
-                        folder.Title = share;
+                        folder.Title = Share;
                         break;
-                    case recent:
+                    case Recent:
                         folder.FolderType = FolderType.Recent;
-                        folder.Title = recent;
+                        folder.Title = Recent;
                         break;
-                    case favorites:
+                    case Favorites:
                         folder.FolderType = FolderType.Favorites;
-                        folder.Title = favorites;
+                        folder.Title = Favorites;
                         break;
-                    case templates:
+                    case Templates:
                         folder.FolderType = FolderType.Templates;
-                        folder.Title = templates;
+                        folder.Title = Templates;
                         break;
-                    case privacy:
+                    case Privacy:
                         folder.FolderType = FolderType.Privacy;
-                        folder.Title = privacy;
+                        folder.Title = Privacy;
                         folder.CreateBy = new Guid(data);
                         break;
-                    case projects:
+                    case Projects:
                         folder.FolderType = FolderType.Projects;
-                        folder.Title = projects;
+                        folder.Title = Projects;
                         break;
                     default:
                         folder.FolderType = FolderType.BUNCH;
@@ -1021,56 +1080,53 @@ namespace ASC.Files.Core.Data
                 await tx.CommitAsync().ConfigureAwait(false); //Commit changes
             }
 
-
-
             return newFolderId;
         }
 
         Task<int> IFolderDao<int>.GetFolderIDProjectsAsync(bool createIfNotExists)
         {
-            return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, projects, null, createIfNotExists);
+            return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Projects, null, createIfNotExists);
         }
 
         public Task<int> GetFolderIDTrashAsync(bool createIfNotExists, Guid? userId = null)
         {
-            return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, trash, (userId ?? AuthContext.CurrentAccount.ID).ToString(), createIfNotExists);
+            return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Trash, (userId ?? AuthContext.CurrentAccount.ID).ToString(), createIfNotExists);
         }
 
         public Task<int> GetFolderIDCommonAsync(bool createIfNotExists)
         {
-            return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, common, null, createIfNotExists);
+            return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Common, null, createIfNotExists);
         }
 
         public Task<int> GetFolderIDUserAsync(bool createIfNotExists, Guid? userId = null)
         {
-            return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, my, (userId ?? AuthContext.CurrentAccount.ID).ToString(), createIfNotExists);
+            return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, My, (userId ?? AuthContext.CurrentAccount.ID).ToString(), createIfNotExists);
         }
 
         public Task<int> GetFolderIDShareAsync(bool createIfNotExists)
         {
-            return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, share, null, createIfNotExists);
+            return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Share, null, createIfNotExists);
         }
 
         public Task<int> GetFolderIDRecentAsync(bool createIfNotExists)
         {
-            return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, recent, null, createIfNotExists);
+            return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Recent, null, createIfNotExists);
         }
 
         public Task<int> GetFolderIDFavoritesAsync(bool createIfNotExists)
         {
-            return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, favorites, null, createIfNotExists);
+            return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Favorites, null, createIfNotExists);
         }
 
         public Task<int> GetFolderIDTemplatesAsync(bool createIfNotExists)
         {
-            return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, templates, null, createIfNotExists);
+            return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Templates, null, createIfNotExists);
         }
 
         public Task<int> GetFolderIDPrivacyAsync(bool createIfNotExists, Guid? userId = null)
         {
-            return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, privacy, (userId ?? AuthContext.CurrentAccount.ID).ToString(), createIfNotExists);
+            return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Privacy, (userId ?? AuthContext.CurrentAccount.ID).ToString(), createIfNotExists);
         }
-
 
         #endregion
 
@@ -1081,6 +1137,7 @@ namespace ASC.Files.Core.Data
             {
                 q = q.Where(where);
             }
+
             return q;
         }
 
@@ -1131,7 +1188,11 @@ namespace ASC.Files.Core.Data
 
         public Folder<int> ToFolder(DbFolderQuery r)
         {
-            if (r == null) return null;
+            if (r == null)
+            {
+                return null;
+            }
+
             var result = ServiceProvider.GetService<Folder<int>>();
             result.ID = r.Folder.Id;
             result.FolderID = r.Folder.ParentId;
@@ -1186,9 +1247,20 @@ namespace ASC.Files.Core.Data
                     break;
             }
 
-            if (result.FolderType != FolderType.DEFAULT && 0.Equals(result.FolderID)) result.RootFolderType = result.FolderType;
-            if (result.FolderType != FolderType.DEFAULT && result.RootFolderCreator == default) result.RootFolderCreator = result.CreateBy;
-            if (result.FolderType != FolderType.DEFAULT && 0.Equals(result.RootFolderId)) result.RootFolderId = result.ID;
+            if (result.FolderType != FolderType.DEFAULT && 0.Equals(result.FolderID))
+            {
+                result.RootFolderType = result.FolderType;
+            }
+
+            if (result.FolderType != FolderType.DEFAULT && result.RootFolderCreator == default)
+            {
+                result.RootFolderCreator = result.CreateBy;
+            }
+
+            if (result.FolderType != FolderType.DEFAULT && 0.Equals(result.RootFolderId))
+            {
+                result.RootFolderId = result.ID;
+            }
 
             return result;
         }

@@ -23,28 +23,25 @@
  *
 */
 
-
-using System.Threading.Tasks;
-
 namespace ASC.Web.Files.Services.DocumentService
 {
     [Scope(Additional = typeof(ConfigurationExtention))]
     public class DocumentServiceHelper
     {
-        private IDaoFactory DaoFactory { get; }
-        private FileShareLink FileShareLink { get; }
-        private UserManager UserManager { get; }
-        private AuthContext AuthContext { get; }
-        private FileSecurity FileSecurity { get; }
-        private SetupInfo SetupInfo { get; }
-        private FileUtility FileUtility { get; }
-        private MachinePseudoKeys MachinePseudoKeys { get; }
-        private Global Global { get; }
-        private DocumentServiceConnector DocumentServiceConnector { get; }
-        private LockerManager LockerManager { get; }
-        private FileTrackerHelper FileTracker { get; }
-        private EntryStatusManager EntryStatusManager { get; }
-        private IServiceProvider ServiceProvider { get; }
+        private readonly IDaoFactory _daoFactory;
+        private readonly FileShareLink _fileShareLink;
+        private readonly UserManager _userManager;
+        private readonly AuthContext _authContext;
+        private readonly FileSecurity _fileSecurity;
+        private readonly SetupInfo _setupInfo;
+        private readonly FileUtility _fileUtility;
+        private readonly MachinePseudoKeys _machinePseudoKeys;
+        private readonly Global _global;
+        private readonly DocumentServiceConnector _documentServiceConnector;
+        private readonly LockerManager _lockerManager;
+        private readonly FileTrackerHelper _fileTracker;
+        private readonly EntryStatusManager _entryStatusManager;
+        private readonly IServiceProvider _serviceProvider;
 
         public DocumentServiceHelper(
             IDaoFactory daoFactory,
@@ -62,20 +59,20 @@ namespace ASC.Web.Files.Services.DocumentService
             EntryStatusManager entryStatusManager,
             IServiceProvider serviceProvider)
         {
-            DaoFactory = daoFactory;
-            FileShareLink = fileShareLink;
-            UserManager = userManager;
-            AuthContext = authContext;
-            FileSecurity = fileSecurity;
-            SetupInfo = setupInfo;
-            FileUtility = fileUtility;
-            MachinePseudoKeys = machinePseudoKeys;
-            Global = global;
-            DocumentServiceConnector = documentServiceConnector;
-            LockerManager = lockerManager;
-            FileTracker = fileTracker;
-            EntryStatusManager = entryStatusManager;
-            ServiceProvider = serviceProvider;
+            _daoFactory = daoFactory;
+            _fileShareLink = fileShareLink;
+            _userManager = userManager;
+            _authContext = authContext;
+            _fileSecurity = fileSecurity;
+            _setupInfo = setupInfo;
+            _fileUtility = fileUtility;
+            _machinePseudoKeys = machinePseudoKeys;
+            _global = global;
+            _documentServiceConnector = documentServiceConnector;
+            _lockerManager = lockerManager;
+            _fileTracker = fileTracker;
+            _entryStatusManager = entryStatusManager;
+            _serviceProvider = serviceProvider;
         }
 
         public async Task<(File<T> File, Configuration<T> Configuration)> GetParamsAsync<T>(T fileId, int version, string doc, bool editPossible, bool tryEdit, bool tryCoauth)
@@ -83,9 +80,9 @@ namespace ASC.Web.Files.Services.DocumentService
             var lastVersion = true;
             FileShare linkRight;
 
-            var fileDao = DaoFactory.GetFileDao<T>();
+            var fileDao = _daoFactory.GetFileDao<T>();
 
-            var fileOptions = await FileShareLink.CheckAsync(doc, fileDao);
+            var fileOptions = await _fileShareLink.CheckAsync(doc, fileDao);
             var file = fileOptions.File;
             linkRight = fileOptions.FileShare;
 
@@ -109,8 +106,15 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public async Task<(File<T> File, Configuration<T> Configuration)> GetParamsAsync<T>(File<T> file, bool lastVersion, FileShare linkRight, bool rightToRename, bool rightToEdit, bool editPossible, bool tryEdit, bool tryCoauth)
         {
-            if (file == null) throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
-            if (!string.IsNullOrEmpty(file.Error)) throw new Exception(file.Error);
+            if (file == null)
+            {
+                throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
+            }
+
+            if (!string.IsNullOrEmpty(file.Error))
+            {
+                throw new Exception(file.Error);
+            }
 
             var rightToReview = rightToEdit;
             var reviewPossible = editPossible;
@@ -123,7 +127,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
             var rightModifyFilter = rightToEdit;
 
-            if (linkRight == FileShare.Restrict && UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager))
+            if (linkRight == FileShare.Restrict && _userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager))
             {
                 rightToEdit = false;
                 rightToReview = false;
@@ -131,7 +135,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 rightToComment = false;
             }
 
-            var fileSecurity = FileSecurity;
+            var fileSecurity = _fileSecurity;
             rightToEdit = rightToEdit
                           && (linkRight == FileShare.ReadWrite || linkRight == FileShare.CustomFilter
                               || await fileSecurity.CanEditAsync(file) || await fileSecurity.CanCustomFilterEditAsync(file));
@@ -172,20 +176,30 @@ namespace ASC.Web.Files.Services.DocumentService
 
             if (linkRight == FileShare.Restrict
                 && !(editPossible || reviewPossible || fillFormsPossible || commentPossible)
-                && !await fileSecurity.CanReadAsync(file)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
+                && !await fileSecurity.CanReadAsync(file))
+            {
+                throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
+            }
 
-            if (file.RootFolderType == FolderType.TRASH) throw new Exception(FilesCommonResource.ErrorMassage_ViewTrashItem);
+            if (file.RootFolderType == FolderType.TRASH)
+            {
+                throw new Exception(FilesCommonResource.ErrorMassage_ViewTrashItem);
+            }
 
-            if (file.ContentLength > SetupInfo.AvailableFileSize) throw new Exception(string.Format(FilesCommonResource.ErrorMassage_FileSizeEdit, FileSizeComment.FilesSizeToString(SetupInfo.AvailableFileSize)));
+            if (file.ContentLength > _setupInfo.AvailableFileSize)
+            {
+                throw new Exception(string.Format(FilesCommonResource.ErrorMassage_FileSizeEdit, FileSizeComment.FilesSizeToString(_setupInfo.AvailableFileSize)));
+            }
 
             string strError = null;
             if ((editPossible || reviewPossible || fillFormsPossible || commentPossible)
-                && await LockerManager.FileLockedForMeAsync(file.ID))
+                && await _lockerManager.FileLockedForMeAsync(file.ID))
             {
                 if (tryEdit)
                 {
                     strError = FilesCommonResource.ErrorMassage_LockedFile;
                 }
+
                 rightToRename = false;
                 rightToEdit = editPossible = false;
                 rightToReview = reviewPossible = false;
@@ -194,7 +208,7 @@ namespace ASC.Web.Files.Services.DocumentService
             }
 
             if (editPossible
-                && !FileUtility.CanWebEdit(file.Title))
+                && !_fileUtility.CanWebEdit(file.Title))
             {
                 rightToEdit = editPossible = false;
             }
@@ -209,44 +223,47 @@ namespace ASC.Web.Files.Services.DocumentService
             }
 
 
-            if (!editPossible && !FileUtility.CanWebView(file.Title)) throw new Exception($"{FilesCommonResource.ErrorMassage_NotSupportedFormat} ({FileUtility.GetFileExtension(file.Title)})");
+            if (!editPossible && !_fileUtility.CanWebView(file.Title))
+            {
+                throw new Exception($"{FilesCommonResource.ErrorMassage_NotSupportedFormat} ({FileUtility.GetFileExtension(file.Title)})");
+            }
 
             if (reviewPossible &&
-                !FileUtility.CanWebReview(file.Title))
+                !_fileUtility.CanWebReview(file.Title))
             {
                 rightToReview = reviewPossible = false;
             }
 
             if (fillFormsPossible &&
-                !FileUtility.CanWebRestrictedEditing(file.Title))
+                !_fileUtility.CanWebRestrictedEditing(file.Title))
             {
                 rightToFillForms = fillFormsPossible = false;
             }
 
             if (commentPossible &&
-                !FileUtility.CanWebComment(file.Title))
+                !_fileUtility.CanWebComment(file.Title))
             {
                 rightToComment = commentPossible = false;
             }
 
             var rightChangeHistory = rightToEdit && !file.Encrypted;
 
-            if (FileTracker.IsEditing(file.ID))
+            if (_fileTracker.IsEditing(file.ID))
             {
                 rightChangeHistory = false;
 
                 bool coauth;
                 if ((editPossible || reviewPossible || fillFormsPossible || commentPossible)
                     && tryCoauth
-                    && (!(coauth = FileUtility.CanCoAuhtoring(file.Title)) || FileTracker.IsEditingAlone(file.ID)))
+                    && (!(coauth = _fileUtility.CanCoAuhtoring(file.Title)) || _fileTracker.IsEditingAlone(file.ID)))
                 {
                     if (tryEdit)
                     {
-                        var editingBy = FileTracker.GetEditingBy(file.ID).FirstOrDefault();
+                        var editingBy = _fileTracker.GetEditingBy(file.ID).FirstOrDefault();
                         strError = string.Format(!coauth
                                                      ? FilesCommonResource.ErrorMassage_EditingCoauth
                                                      : FilesCommonResource.ErrorMassage_EditingMobile,
-                                                 Global.GetUserName(editingBy, true));
+                                                 _global.GetUserName(editingBy, true));
                     }
                     rightToEdit = editPossible = reviewPossible = fillFormsPossible = commentPossible = false;
                 }
@@ -255,7 +272,7 @@ namespace ASC.Web.Files.Services.DocumentService
             var fileStable = file;
             if (lastVersion && file.Forcesave != ForcesaveType.None && tryEdit)
             {
-                var fileDao = DaoFactory.GetFileDao<T>();
+                var fileDao = _daoFactory.GetFileDao<T>();
                 fileStable = await fileDao.GetFileStableAsync(file.ID, file.Version);
             }
 
@@ -264,29 +281,29 @@ namespace ASC.Web.Files.Services.DocumentService
 
             if (file.FolderID != null)
             {
-                await EntryStatusManager.SetFileStatusAsync(file);
+                await _entryStatusManager.SetFileStatusAsync(file);
             }
 
-            var configuration = new Configuration<T>(file, ServiceProvider)
+            var configuration = new Configuration<T>(file, _serviceProvider)
             {
                 Document =
-                        {
-                            Key = docKey,
-                            Permissions =
-                                {
-                                    Edit = rightToEdit && lastVersion,
-                                    Rename = rightToRename && lastVersion && !file.ProviderEntry,
-                                    Review = rightToReview && lastVersion,
-                                    FillForms = rightToFillForms && lastVersion,
-                                    Comment = rightToComment && lastVersion,
-                                    ChangeHistory = rightChangeHistory,
-                                    ModifyFilter = rightModifyFilter
-                                }
-                        },
+                {
+                    Key = docKey,
+                    Permissions =
+                    {
+                        Edit = rightToEdit && lastVersion,
+                        Rename = rightToRename && lastVersion && !file.ProviderEntry,
+                        Review = rightToReview && lastVersion,
+                        FillForms = rightToFillForms && lastVersion,
+                        Comment = rightToComment && lastVersion,
+                        ChangeHistory = rightChangeHistory,
+                        ModifyFilter = rightModifyFilter
+                    }
+                },
                 EditorConfig =
-                        {
-                            ModeWrite = modeWrite,
-                        },
+                {
+                    ModeWrite = modeWrite,
+                },
                 ErrorMessage = strError,
             };
 
@@ -301,9 +318,12 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public string GetSignature(object payload)
         {
-            if (string.IsNullOrEmpty(FileUtility.SignatureSecret)) return null;
+            if (string.IsNullOrEmpty(_fileUtility.SignatureSecret))
+            {
+                return null;
+            }
 
-            return JsonWebToken.Encode(payload, FileUtility.SignatureSecret);
+            return JsonWebToken.Encode(payload, _fileUtility.SignatureSecret);
         }
 
 
@@ -314,15 +334,11 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public string GetDocKey<T>(T fileId, int fileVersion, DateTime modified)
         {
-            var str = string.Format("teamlab_{0}_{1}_{2}_{3}",
-                                    fileId,
-                                    fileVersion,
-                                    modified.GetHashCode(),
-                                    Global.GetDocDbKey());
+            var str = $"teamlab_{fileId}_{fileVersion}_{modified.GetHashCode()}_{_global.GetDocDbKey()}";
 
             var keyDoc = Encoding.UTF8.GetBytes(str)
                                  .ToList()
-                                 .Concat(MachinePseudoKeys.GetMachineConstant())
+                                 .Concat(_machinePseudoKeys.GetMachineConstant())
                                  .ToArray();
 
             return DocumentServiceConnector.GenerateRevisionId(Hasher.Base64Hash(keyDoc, HashAlg.SHA256));
@@ -330,7 +346,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public async Task CheckUsersForDropAsync<T>(File<T> file)
         {
-            var fileSecurity = FileSecurity;
+            var fileSecurity = _fileSecurity;
             var sharedLink =
                 await fileSecurity.CanEditAsync(file, FileConstant.ShareLinkId)
                 || await fileSecurity.CanCustomFilterEditAsync(file, FileConstant.ShareLinkId)
@@ -340,56 +356,64 @@ namespace ASC.Web.Files.Services.DocumentService
 
             var usersDrop = new List<string>();
 
-            foreach (var uid in FileTracker.GetEditingBy(file.ID))
-                                           {
-                if (!UserManager.UserExists(uid) && !sharedLink)
-                                               {
+            foreach (var uid in _fileTracker.GetEditingBy(file.ID))
+            {
+                if (!_userManager.UserExists(uid) && !sharedLink)
+                {
                     usersDrop.Add(uid.ToString());
                     continue;
-                                               }
-                if (!await fileSecurity.CanEditAsync(file, uid)
-                 && !await fileSecurity.CanCustomFilterEditAsync(file, uid)
-                 && !await fileSecurity.CanReviewAsync(file, uid)
-                 && !await fileSecurity.CanFillFormsAsync(file, uid)
-                 && !await fileSecurity.CanCommentAsync(file, uid))
+                }
+
+                if (!await fileSecurity.CanEditAsync(file, uid) 
+                    && !await fileSecurity.CanCustomFilterEditAsync(file, uid) 
+                    && !await fileSecurity.CanReviewAsync(file, uid) 
+                    && !await fileSecurity.CanFillFormsAsync(file, uid) 
+                    && !await fileSecurity.CanCommentAsync(file, uid))
                 {
                     usersDrop.Add(uid.ToString());
                 }
             }
 
-            if (usersDrop.Count == 0) return;
+            if (usersDrop.Count == 0)
+            {
+                return;
+            }
 
             var fileStable = file;
             if (file.Forcesave != ForcesaveType.None)
             {
-                var fileDao = DaoFactory.GetFileDao<T>();
+                var fileDao = _daoFactory.GetFileDao<T>();
                 fileStable = await fileDao.GetFileStableAsync(file.ID, file.Version);
             }
 
             var docKey = GetDocKey(fileStable);
+
             await DropUserAsync(docKey, usersDrop.ToArray(), file.ID);
         }
 
         public Task<bool> DropUserAsync(string docKeyForTrack, string[] users, object fileId = null)
         {
-            return DocumentServiceConnector.CommandAsync(Web.Core.Files.DocumentService.CommandMethod.Drop, docKeyForTrack, fileId, null, users);
+            return _documentServiceConnector.CommandAsync(CommandMethod.Drop, docKeyForTrack, fileId, null, users);
         }
 
         public async Task<bool> RenameFileAsync<T>(File<T> file, IFileDao<T> fileDao)
         {
-            if (!FileUtility.CanWebView(file.Title)
-                && !FileUtility.CanWebCustomFilterEditing(file.Title)
-                && !FileUtility.CanWebEdit(file.Title)
-                && !FileUtility.CanWebReview(file.Title)
-                && !FileUtility.CanWebRestrictedEditing(file.Title)
-                && !FileUtility.CanWebComment(file.Title))
+            if (!_fileUtility.CanWebView(file.Title)
+                && !_fileUtility.CanWebCustomFilterEditing(file.Title)
+                && !_fileUtility.CanWebEdit(file.Title)
+                && !_fileUtility.CanWebReview(file.Title)
+                && !_fileUtility.CanWebRestrictedEditing(file.Title)
+                && !_fileUtility.CanWebComment(file.Title))
+            {
                 return true;
+            }
 
             var fileStable = file.Forcesave == ForcesaveType.None ? file : await fileDao.GetFileStableAsync(file.ID, file.Version);
             var docKeyForTrack = GetDocKey(fileStable);
 
-            var meta = new Web.Core.Files.DocumentService.MetaData { Title = file.Title };
-            return await DocumentServiceConnector.CommandAsync(Web.Core.Files.DocumentService.CommandMethod.Meta, docKeyForTrack, file.ID, meta: meta);
+            var meta = new MetaData { Title = file.Title };
+
+            return await _documentServiceConnector.CommandAsync(CommandMethod.Meta, docKeyForTrack, file.ID, meta: meta);
         }
     }
 }

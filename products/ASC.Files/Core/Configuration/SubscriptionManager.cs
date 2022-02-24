@@ -35,15 +35,12 @@ namespace ASC.Web.Files.Classes
         private readonly Guid _subscrTypeMailMerge = new Guid("{FB5858EC-046C-41E2-84C9-B44BF7884514}");
         private readonly Guid _subscrTypeEditorMentions = new Guid("{9D3CAB90-5718-4E82-959F-27EC83BFBC5F}");
 
-        public GroupByType GroupByType
-        {
-            get { return GroupByType.Simple; }
-        }
+        public GroupByType GroupByType => GroupByType.Simple;
 
         public SubscriptionManager(CoreBaseSettings coreBaseSettings, NotifySource notifySource)
         {
-            CoreBaseSettings = coreBaseSettings;
-            NotifySource = notifySource;
+            _coreBaseSettings = coreBaseSettings;
+            _notifySource = notifySource;
         }
 
         public List<SubscriptionObject> GetSubscriptionObjects(Guid subItem)
@@ -59,7 +56,7 @@ namespace ASC.Web.Files.Classes
                                             {
                                                 ID = _subscrTypeShareDoc,
                                                 Name = FilesCommonResource.SubscriptForAccess,
-                                                NotifyAction = NotifyConstants.Event_ShareDocument,
+                                                NotifyAction = NotifyConstants.EventShareDocument,
                                                 Single = true,
                                                 CanSubscribe = true
                                             },
@@ -67,7 +64,7 @@ namespace ASC.Web.Files.Classes
                                             {
                                                 ID = _subscrTypeShareFolder,
                                                 Name = FilesCommonResource.ShareFolder,
-                                                NotifyAction = NotifyConstants.Event_ShareFolder,
+                                                NotifyAction = NotifyConstants.EventShareFolder,
                                                 Single = true,
                                                 CanSubscribe = true
                                             },
@@ -75,7 +72,7 @@ namespace ASC.Web.Files.Classes
                                             {
                                                 ID = _subscrTypeMailMerge,
                                                 Name = FilesCommonResource.SubscriptForMailMerge,
-                                                NotifyAction = NotifyConstants.Event_MailMergeEnd,
+                                                NotifyAction = NotifyConstants.EventMailMergeEnd,
                                                 Single = true,
                                                 CanSubscribe = true
                                             },
@@ -83,13 +80,16 @@ namespace ASC.Web.Files.Classes
                                             {
                                                 ID = _subscrTypeEditorMentions,
                                                 Name = FilesCommonResource.EditorMentions,
-                                                NotifyAction = NotifyConstants.Event_EditorMentions,
+                                                NotifyAction = NotifyConstants.EventEditorMentions,
                                                 Single = true,
                                                 CanSubscribe = true
                                             },
                                     };
 
-            if (CoreBaseSettings.CustomMode) return subscriptionTypes;
+            if (_coreBaseSettings.CustomMode)
+            {
+                return subscriptionTypes;
+            }
 
             subscriptionTypes.AddRange(new List<SubscriptionType>
                                     {
@@ -97,7 +97,7 @@ namespace ASC.Web.Files.Classes
                                             {
                                                 ID = _subscrTypeDocuSignComplete,
                                                 Name = FilesCommonResource.SubscriptDocuSignComplete,
-                                                NotifyAction = NotifyConstants.Event_DocuSignComplete,
+                                                NotifyAction = NotifyConstants.EventDocuSignComplete,
                                                 Single = true,
                                                 CanSubscribe = true
                                             },
@@ -105,7 +105,7 @@ namespace ASC.Web.Files.Classes
                                             {
                                                 ID = _subscrTypeDocuSignStatus,
                                                 Name = FilesCommonResource.SubscriptDocuSignStatus,
-                                                NotifyAction = NotifyConstants.Event_DocuSignStatus,
+                                                NotifyAction = NotifyConstants.EventDocuSignStatus,
                                                 Single = true,
                                                 CanSubscribe = true
                                             }
@@ -114,13 +114,10 @@ namespace ASC.Web.Files.Classes
             return subscriptionTypes;
         }
 
-        public ISubscriptionProvider SubscriptionProvider
-        {
-            get { return NotifySource.GetSubscriptionProvider(); }
-        }
+        public ISubscriptionProvider SubscriptionProvider => _notifySource.GetSubscriptionProvider();
 
-        private CoreBaseSettings CoreBaseSettings { get; }
-        private NotifySource NotifySource { get; }
+        private readonly CoreBaseSettings _coreBaseSettings;
+        private readonly NotifySource _notifySource;
 
         public List<SubscriptionGroup> GetSubscriptionGroups()
         {

@@ -27,7 +27,7 @@ namespace ASC.Files.Thirdparty.OneDrive
 {
     internal abstract class OneDriveDaoBase : ThirdPartyProviderDao<OneDriveProviderInfo>
     {
-        protected override string Id { get => "onedrive"; }
+        protected override string Id => "onedrive";
 
         protected OneDriveDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility, TempPath tempPath) 
             : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
@@ -37,6 +37,7 @@ namespace ASC.Files.Thirdparty.OneDrive
         protected static string MakeOneDriveId(string entryId)
         {
             var id = entryId;
+
             return string.IsNullOrEmpty(id)
                        ? string.Empty
                        : id.TrimStart('/');
@@ -65,6 +66,7 @@ namespace ASC.Files.Thirdparty.OneDrive
         protected override string MakeId(string id = null)
         {
             var i = string.IsNullOrEmpty(id) ? "" : ("-|" + id.TrimStart('/'));
+
             return $"{PathPrefix}{i}";
         }
 
@@ -89,14 +91,21 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         protected Folder<string> ToFolder(Item onedriveFolder)
         {
-            if (onedriveFolder == null) return null;
+            if (onedriveFolder == null)
+            {
+                return null;
+            }
+
             if (onedriveFolder is ErrorItem)
             {
                 //Return error entry
                 return ToErrorFolder(onedriveFolder as ErrorItem);
             }
 
-            if (onedriveFolder.Folder == null) return null;
+            if (onedriveFolder.Folder == null)
+            {
+                return null;
+            }
 
             var isRoot = IsRoot(onedriveFolder);
 
@@ -119,7 +128,10 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         private File<string> ToErrorFile(ErrorItem onedriveFile)
         {
-            if (onedriveFile == null) return null;
+            if (onedriveFile == null)
+            {
+                return null;
+            }
 
             var file = GetErrorFile(new ErrorEntry(onedriveFile.Error, onedriveFile.ErrorId));
 
@@ -130,7 +142,10 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         private Folder<string> ToErrorFolder(ErrorItem onedriveFolder)
         {
-            if (onedriveFolder == null) return null;
+            if (onedriveFolder == null)
+            {
+                return null;
+            }
 
             var folder = GetErrorFolder(new ErrorEntry(onedriveFolder.Error, onedriveFolder.ErrorId));
 
@@ -141,7 +156,10 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         public File<string> ToFile(Item onedriveFile)
         {
-            if (onedriveFile == null) return null;
+            if (onedriveFile == null)
+            {
+                return null;
+            }
 
             if (onedriveFile is ErrorItem)
             {
@@ -149,7 +167,10 @@ namespace ASC.Files.Thirdparty.OneDrive
                 return ToErrorFile(onedriveFile as ErrorItem);
             }
 
-            if (onedriveFile.File == null) return null;
+            if (onedriveFile.File == null)
+            {
+                return null;
+            }
 
             var file = GetFile();
 
@@ -198,6 +219,7 @@ namespace ASC.Files.Thirdparty.OneDrive
         protected override async Task<IEnumerable<string>> GetChildrenAsync(string folderId)
         {
             var items = await GetOneDriveItemsAsync(folderId);
+
             return items.Select(entry => MakeId(entry.Id));
         }
 
@@ -240,9 +262,7 @@ namespace ASC.Files.Thirdparty.OneDrive
         protected sealed class ErrorItem : Item
         {
             public string Error { get; set; }
-
             public string ErrorId { get; private set; }
-
 
             public ErrorItem(Exception e, object id)
             {
@@ -257,7 +277,10 @@ namespace ASC.Files.Thirdparty.OneDrive
         protected string GetAvailableTitle(string requestTitle, string parentFolderId, Func<string, string, bool> isExist)
         {
             requestTitle = new Regex("\\.$").Replace(requestTitle, "_");
-            if (!isExist(requestTitle, parentFolderId)) return requestTitle;
+            if (!isExist(requestTitle, parentFolderId))
+            {
+                return requestTitle;
+            }
 
             var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
             var match = re.Match(requestTitle);
@@ -269,6 +292,7 @@ namespace ASC.Files.Thirdparty.OneDrive
                 {
                     insertIndex = requestTitle.LastIndexOf('.');
                 }
+
                 requestTitle = requestTitle.Insert(insertIndex, " (1)");
             }
 
@@ -276,13 +300,17 @@ namespace ASC.Files.Thirdparty.OneDrive
             {
                 requestTitle = re.Replace(requestTitle, MatchEvaluator);
             }
+
             return requestTitle;
         }
 
         protected async Task<string> GetAvailableTitleAsync(string requestTitle, string parentFolderId, Func<string, string, Task<bool>> isExist)
         {
             requestTitle = new Regex("\\.$").Replace(requestTitle, "_");
-            if (!await isExist(requestTitle, parentFolderId)) return requestTitle;
+            if (!await isExist(requestTitle, parentFolderId))
+            {
+                return requestTitle;
+            }
 
             var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
             var match = re.Match(requestTitle);
@@ -294,6 +322,7 @@ namespace ASC.Files.Thirdparty.OneDrive
                 {
                     insertIndex = requestTitle.LastIndexOf(".", StringComparison.InvariantCulture);
                 }
+
                 requestTitle = requestTitle.Insert(insertIndex, " (1)");
             }
 
@@ -301,6 +330,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             {
                 requestTitle = re.Replace(requestTitle, MatchEvaluator);
             }
+
             return requestTitle;
         }
 
@@ -308,6 +338,7 @@ namespace ASC.Files.Thirdparty.OneDrive
         {
             var index = Convert.ToInt32(match.Groups[2].Value);
             var staticText = match.Value.Substring(string.Format(" ({0})", index).Length);
+
             return string.Format(" ({0}){1}", index + 1, staticText);
         }
     }

@@ -41,10 +41,7 @@ namespace ASC.Files.Core.EF
         public List<DbFolderTree> Folders { get; set; }
 
         [Ignore]
-        public string IndexName
-        {
-            get => Tables.File;
-        }
+        public string IndexName => Tables.File;
 
         public Document Document { get; set; }
 
@@ -71,6 +68,7 @@ namespace ASC.Files.Core.EF
             modelBuilder
                 .Add(MySqlAddDbFiles, Provider.MySql)
                 .Add(PgSqlAddDbFiles, Provider.PostgreSql);
+
             return modelBuilder;
         }
         public static void MySqlAddDbFiles(this ModelBuilder modelBuilder)

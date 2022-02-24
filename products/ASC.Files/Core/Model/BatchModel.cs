@@ -4,6 +4,7 @@
     {
         public IEnumerable<JsonElement> FolderIds { get; set; }
         public IEnumerable<JsonElement> FileIds { get; set; }
+
         public BaseBatchModel()
         {
             FolderIds = new List<JsonElement>();
@@ -14,6 +15,7 @@
     public class DownloadModel : BaseBatchModel
     {
         public IEnumerable<ItemKeyValuePair<JsonElement, string>> FileConvertIds { get; set; }
+
         public DownloadModel() : base()
         {
             FileConvertIds = new List<ItemKeyValuePair<JsonElement, string>>();

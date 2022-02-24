@@ -19,6 +19,7 @@
             modelBuilder
                 .Add(MySqlAddDbFilesThirdpartyIdMapping, Provider.MySql)
                 .Add(PgSqlAddDbFilesThirdpartyIdMapping, Provider.PostgreSql);
+
             return modelBuilder;
         }
         public static void MySqlAddDbFilesThirdpartyIdMapping(this ModelBuilder modelBuilder)

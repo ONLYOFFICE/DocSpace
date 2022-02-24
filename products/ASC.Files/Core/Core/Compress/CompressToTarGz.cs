@@ -22,23 +22,23 @@ namespace ASC.Web.Files.Core.Compress
     [Scope]
     public class CompressToTarGz : ICompress
     {
-        private GZipOutputStream gzoStream;
-        private TarOutputStream gzip;
-        private TarEntry tarEntry;
-        private TempStream TempStream { get; }
+        private GZipOutputStream _gzoStream;
+        private TarOutputStream _gzip;
+        private TarEntry _tarEntry;
+        private readonly TempStream _tempStream;
 
         public CompressToTarGz(TempStream tempStream)
         {
-            TempStream = tempStream;
+            _tempStream = tempStream;
         }
 
         /// <summary></summary>
         /// <param name="stream">Accepts a new stream, it will contain an archive upon completion of work</param>
         public void SetStream(Stream stream)
         {
-            gzoStream = new GZipOutputStream(stream) { IsStreamOwner = false };
-            gzip = new TarOutputStream(gzoStream, Encoding.UTF8);
-            gzoStream.IsStreamOwner = false;
+            _gzoStream = new GZipOutputStream(stream) { IsStreamOwner = false };
+            _gzip = new TarOutputStream(_gzoStream, Encoding.UTF8);
+            _gzoStream.IsStreamOwner = false;
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace ASC.Web.Files.Core.Compress
         /// <param name="title">File name with extension, this name will have the file in the archive</param>
         public void CreateEntry(string title)
         {
-            tarEntry = TarEntry.CreateTarEntry(title);
+            _tarEntry = TarEntry.CreateTarEntry(title);
         }
 
         /// <summary>
@@ -56,11 +56,11 @@ namespace ASC.Web.Files.Core.Compress
         /// <param name="readStream">File data</param>
         public void PutStream(Stream readStream)
         {
-            using (var buffered = TempStream.GetBuffered(readStream))
+            using (var buffered = _tempStream.GetBuffered(readStream))
             {
-                tarEntry.Size = buffered.Length;
-                gzip.PutNextEntry(tarEntry);
-                buffered.CopyTo(gzip);
+                _tarEntry.Size = buffered.Length;
+                _gzip.PutNextEntry(_tarEntry);
+                buffered.CopyTo(_gzip);
             }
         }
 
@@ -69,7 +69,7 @@ namespace ASC.Web.Files.Core.Compress
         /// </summary>
         public void PutNextEntry()
         {
-            gzip.PutNextEntry(tarEntry);
+            _gzip.PutNextEntry(_tarEntry);
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace ASC.Web.Files.Core.Compress
         /// </summary>
         public void CloseEntry()
         {
-            gzip.CloseEntry();
+            _gzip.CloseEntry();
         }
 
         /// <summary>
@@ -95,8 +95,8 @@ namespace ASC.Web.Files.Core.Compress
         /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
         public void Dispose()
         {
-            gzip?.Dispose();
-            gzoStream?.Dispose();
+            _gzip?.Dispose();
+            _gzoStream?.Dispose();
         }
     }
 }

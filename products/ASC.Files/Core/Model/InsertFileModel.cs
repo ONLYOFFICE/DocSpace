@@ -7,27 +7,27 @@
         public bool? CreateNewIfExist { get; set; }
         public bool KeepConvertStatus { get; set; }
 
-        private Stream stream;
-        private bool disposedValue;
+        private Stream _stream;
+        private bool _disposedValue;
 
         public Stream Stream
         {
-            get => File?.OpenReadStream() ?? stream;
-            set => stream = value;
+            get => File?.OpenReadStream() ?? _stream;
+            set => _stream = value;
         }
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if (!_disposedValue)
             {
-                if (disposing && stream != null)
+                if (disposing && _stream != null)
                 {
-                    stream.Close();
-                    stream.Dispose();
-                    stream = null;
+                    _stream.Close();
+                    _stream.Dispose();
+                    _stream = null;
                 }
 
-                disposedValue = true;
+                _disposedValue = true;
             }
         }
 

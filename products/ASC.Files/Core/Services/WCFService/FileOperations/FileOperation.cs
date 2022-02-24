@@ -27,38 +27,36 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 {
     public abstract class FileOperation : DistributedTask
     {
-        public const string SPLIT_CHAR = ":";
-        public const string OWNER = "Owner";
-        public const string OPERATION_TYPE = "OperationType";
-        public const string SOURCE = "Source";
-        public const string PROGRESS = "Progress";
-        public const string RESULT = "Result";
-        public const string ERROR = "Error";
-        public const string PROCESSED = "Processed";
-        public const string FINISHED = "Finished";
-        public const string HOLD = "Hold";
+        public const string SplitChar = ":";
+        public const string Owner = "Owner";
+        public const string OpType = "OperationType";
+        public const string Src = "Source";
+        public const string Progress = "Progress";
+        public const string Res = "Result";
+        public const string Err = "Error";
+        public const string Process = "Processed";
+        public const string Finish = "Finished";
+        public const string Hold = "Hold";
 
-        protected readonly IPrincipal principal;
-        protected readonly string culture;
+        protected readonly IPrincipal Principal;
+        protected readonly string Culture;
         public int Total { get; set; }
         public string Source { get; set; }
 
-        protected int processed;
-        protected int successProcessed;
+        protected int Processed;
+        protected int SuccessProcessed;
 
         public virtual FileOperationType OperationType { get; }
         public bool HoldResult { get; set; }
-
         public string Result { get; set; }
-
         public string Error { get; set; }
 
-        protected DistributedTask TaskInfo { get; set; }
+        protected DistributedTask TaskInfo;
 
         protected FileOperation(IServiceProvider serviceProvider)
         {
-            principal = serviceProvider.GetService<Microsoft.AspNetCore.Http.IHttpContextAccessor>()?.HttpContext?.User ?? Thread.CurrentPrincipal;
-            culture = Thread.CurrentThread.CurrentCulture.Name;
+            Principal = serviceProvider.GetService<Microsoft.AspNetCore.Http.IHttpContextAccessor>()?.HttpContext?.User ?? Thread.CurrentPrincipal;
+            Culture = Thread.CurrentThread.CurrentCulture.Name;
 
             TaskInfo = new DistributedTask();
         }
@@ -66,26 +64,27 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         public virtual DistributedTask GetDistributedTask()
         {
             FillDistributedTask();
+
             return TaskInfo;
         }
 
 
         protected internal virtual void FillDistributedTask()
         {
-            var progress = Total != 0 ? 100 * processed / Total : 0;
+            var progress = Total != 0 ? 100 * Processed / Total : 0;
 
-            TaskInfo.SetProperty(OPERATION_TYPE, OperationType);
-            TaskInfo.SetProperty(OWNER, ((IAccount)(principal ?? Thread.CurrentPrincipal).Identity).ID);
-            TaskInfo.SetProperty(PROGRESS, progress < 100 ? progress : 100);
-            TaskInfo.SetProperty(RESULT, Result);
-            TaskInfo.SetProperty(ERROR, Error);
-            TaskInfo.SetProperty(PROCESSED, successProcessed);
-            TaskInfo.SetProperty(HOLD, HoldResult);
+            TaskInfo.SetProperty(OpType, OperationType);
+            TaskInfo.SetProperty(Owner, ((IAccount)(Principal ?? Thread.CurrentPrincipal).Identity).ID);
+            TaskInfo.SetProperty(Progress, progress < 100 ? progress : 100);
+            TaskInfo.SetProperty(Res, Result);
+            TaskInfo.SetProperty(Err, Error);
+            TaskInfo.SetProperty(Process, SuccessProcessed);
+            TaskInfo.SetProperty(Hold, HoldResult);
         }
 
         public abstract Task RunJobAsync(DistributedTask _, CancellationToken cancellationToken);
-        protected abstract Task DoAsync(IServiceScope serviceScope);
 
+        protected abstract Task DoAsync(IServiceScope serviceScope);
     }
 
     internal class ComposeFileOperation<T1, T2> : FileOperation
@@ -121,7 +120,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
             HoldResult = ThirdPartyOperation.HoldResult || DaoOperation.HoldResult;
             Total = ThirdPartyOperation.Total + DaoOperation.Total;
-            Source = string.Join(SPLIT_CHAR, ThirdPartyOperation.Source, DaoOperation.Source);
+            Source = string.Join(SplitChar, ThirdPartyOperation.Source, DaoOperation.Source);
             base.FillDistributedTask();
         }
 
@@ -130,8 +129,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             var thirdpartyTask = ThirdPartyOperation.GetDistributedTask();
             var daoTask = DaoOperation.GetDistributedTask();
 
-            var error1 = thirdpartyTask.GetProperty<string>(ERROR);
-            var error2 = daoTask.GetProperty<string>(ERROR);
+            var error1 = thirdpartyTask.GetProperty<string>(Err);
+            var error2 = daoTask.GetProperty<string>(Err);
 
             if (!string.IsNullOrEmpty(error1))
             {
@@ -142,8 +141,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 Error = error2;
             }
 
-            var status1 = thirdpartyTask.GetProperty<string>(RESULT);
-            var status2 = daoTask.GetProperty<string>(RESULT);
+            var status1 = thirdpartyTask.GetProperty<string>(Res);
+            var status2 = daoTask.GetProperty<string>(Res);
 
             if (!string.IsNullOrEmpty(status1))
             {
@@ -154,15 +153,15 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 Result = status2;
             }
 
-            var finished1 = thirdpartyTask.GetProperty<bool?>(FINISHED);
-            var finished2 = daoTask.GetProperty<bool?>(FINISHED);
+            var finished1 = thirdpartyTask.GetProperty<bool?>(Finish);
+            var finished2 = daoTask.GetProperty<bool?>(Finish);
 
             if (finished1 != null && finished2 != null)
             {
-                TaskInfo.SetProperty(FINISHED, finished1);
+                TaskInfo.SetProperty(Finish, finished1);
             }
 
-            successProcessed = thirdpartyTask.GetProperty<int>(PROCESSED) + daoTask.GetProperty<int>(PROCESSED);
+            SuccessProcessed = thirdpartyTask.GetProperty<int>(Process) + daoTask.GetProperty<int>(Process);
 
 
             base.FillDistributedTask();
@@ -171,12 +170,12 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
             if (ThirdPartyOperation.Total != 0)
             {
-                progress += thirdpartyTask.GetProperty<int>(PROGRESS);
+                progress += thirdpartyTask.GetProperty<int>(Progress);
             }
 
             if (DaoOperation.Total != 0)
             {
-                progress += daoTask.GetProperty<int>(PROGRESS);
+                progress += daoTask.GetProperty<int>(Progress);
             }
 
             if (ThirdPartyOperation.Total != 0 && DaoOperation.Total != 0)
@@ -184,7 +183,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 progress /= 2;
             }
 
-            TaskInfo.SetProperty(PROGRESS, progress < 100 ? progress : 100);
+            TaskInfo.SetProperty(Progress, progress < 100 ? progress : 100);
             TaskInfo.PublishChanges();
         }
 
@@ -197,11 +196,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
     abstract class FileOperationData<T>
     {
         public List<T> Folders { get; private set; }
-
         public List<T> Files { get; private set; }
-
         public Tenant Tenant { get; }
-
         public bool HoldResult { get; set; }
 
         protected FileOperationData(IEnumerable<T> folders, IEnumerable<T> files, Tenant tenant, bool holdResult = true)
@@ -216,38 +212,28 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
     abstract class FileOperation<T, TId> : FileOperation where T : FileOperationData<TId>
     {
         protected Tenant CurrentTenant { get; private set; }
-
         protected FileSecurity FilesSecurity { get; private set; }
-
         protected IFolderDao<TId> FolderDao { get; private set; }
-
         protected IFileDao<TId> FileDao { get; private set; }
-
         protected ITagDao<TId> TagDao { get; private set; }
-
         protected ILinkDao LinkDao { get; private set; }
-
         protected IProviderDao ProviderDao { get; private set; }
-
         protected ILog Logger { get; private set; }
-
         protected CancellationToken CancellationToken { get; private set; }
-
         protected List<TId> Folders { get; private set; }
-
         protected List<TId> Files { get; private set; }
 
-        private IServiceProvider ServiceProvider { get; }
+        private readonly IServiceProvider _serviceProvider;
 
         protected FileOperation(IServiceProvider serviceProvider, T fileOperationData) : base(serviceProvider)
         {
-            ServiceProvider = serviceProvider;
+            _serviceProvider = serviceProvider;
             Files = fileOperationData.Files;
             Folders = fileOperationData.Folders;
             HoldResult = fileOperationData.HoldResult;
             CurrentTenant = fileOperationData.Tenant;
 
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = _serviceProvider.CreateScope();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
             tenantManager.SetCurrentTenant(CurrentTenant);
 
@@ -255,7 +241,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             FolderDao = daoFactory.GetFolderDao<TId>();
 
             Total = InitTotalProgressSteps();
-            Source = string.Join(SPLIT_CHAR, Folders.Select(f => "folder_" + f).Concat(Files.Select(f => "file_" + f)).ToArray());
+            Source = string.Join(SplitChar, Folders.Select(f => "folder_" + f).Concat(Files.Select(f => "file_" + f)).ToArray());
         }
 
         public override async Task RunJobAsync(DistributedTask _, CancellationToken cancellationToken)
@@ -265,15 +251,15 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 //todo check files> 0 or folders > 0
                 CancellationToken = cancellationToken;
 
-                using var scope = ServiceProvider.CreateScope();
+                using var scope = _serviceProvider.CreateScope();
                 var scopeClass = scope.ServiceProvider.GetService<FileOperationScope>();
                 var (tenantManager, daoFactory, fileSecurity, options) = scopeClass;
                 tenantManager.SetCurrentTenant(CurrentTenant);
 
 
-                Thread.CurrentPrincipal = principal;
-                Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(culture);
-                Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(culture);
+                Thread.CurrentPrincipal = Principal;
+                Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(Culture);
+                Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(Culture);
 
                 FolderDao = daoFactory.GetFolderDao<TId>();
                 FileDao = daoFactory.GetFileDao<TId>();
@@ -306,7 +292,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             {
                 try
                 {
-                    TaskInfo.SetProperty(FINISHED, true);
+                    TaskInfo.SetProperty(Finish, true);
                     PublishTaskInfo();
                 }
                 catch { /* ignore */ }
@@ -315,9 +301,10 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         public IServiceScope CreateScope()
         {
-            var scope = ServiceProvider.CreateScope();
+            var scope = _serviceProvider.CreateScope();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
             tenantManager.SetCurrentTenant(CurrentTenant);
+
             return scope;
         }
 
@@ -325,13 +312,14 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         {
             base.FillDistributedTask();
 
-            TaskInfo.SetProperty(SOURCE, Source);
+            TaskInfo.SetProperty(Src, Source);
         }
 
         protected virtual int InitTotalProgressSteps()
         {
             var count = Files.Count;
             Folders.ForEach(f => count += 1 + (FolderDao.CanCalculateSubitems(f) ? FolderDao.GetItemsCountAsync(f).Result : 0));
+
             return count;
         }
 
@@ -341,30 +329,34 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 || !Equals(folderId, default(TId)) && Folders.Contains(folderId)
                 || !Equals(fileId, default(TId)) && Files.Contains(fileId))
             {
-                processed++;
+                Processed++;
                 PublishTaskInfo();
             }
         }
 
         protected bool ProcessedFolder(TId folderId)
         {
-            successProcessed++;
+            SuccessProcessed++;
             if (Folders.Contains(folderId))
             {
-                Result += string.Format("folder_{0}{1}", folderId, SPLIT_CHAR);
+                Result += $"folder_{folderId}{SplitChar}";
+
                 return true;
             }
+
             return false;
         }
 
         protected bool ProcessedFile(TId fileId)
         {
-            successProcessed++;
+            SuccessProcessed++;
             if (Files.Contains(fileId))
             {
-                Result += string.Format("file_{0}{1}", fileId, SPLIT_CHAR);
+                Result += $"file_{fileId}{SplitChar}";
+
                 return true;
             }
+
             return false;
         }
 
@@ -378,25 +370,25 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
     [Scope]
     public class FileOperationScope
     {
-        private TenantManager TenantManager { get; }
-        private IDaoFactory DaoFactory { get; }
-        private FileSecurity FileSecurity { get; }
-        private IOptionsMonitor<ILog> Options { get; }
+        private readonly TenantManager _tenantManager;
+        private readonly IDaoFactory _daoFactory;
+        private readonly FileSecurity _fileSecurity;
+        private readonly IOptionsMonitor<ILog> _options;
 
         public FileOperationScope(TenantManager tenantManager, IDaoFactory daoFactory, FileSecurity fileSecurity, IOptionsMonitor<ILog> options)
         {
-            TenantManager = tenantManager;
-            DaoFactory = daoFactory;
-            FileSecurity = fileSecurity;
-            Options = options;
+            _tenantManager = tenantManager;
+            _daoFactory = daoFactory;
+            _fileSecurity = fileSecurity;
+            _options = options;
         }
 
         public void Deconstruct(out TenantManager tenantManager, out IDaoFactory daoFactory, out FileSecurity fileSecurity, out IOptionsMonitor<ILog> optionsMonitor)
         {
-            tenantManager = TenantManager;
-            daoFactory = DaoFactory;
-            fileSecurity = FileSecurity;
-            optionsMonitor = Options;
+            tenantManager = _tenantManager;
+            daoFactory = _daoFactory;
+            fileSecurity = _fileSecurity;
+            optionsMonitor = _options;
         }
     }
 }

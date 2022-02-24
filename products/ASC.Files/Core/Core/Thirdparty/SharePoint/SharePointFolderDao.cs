@@ -28,10 +28,10 @@ namespace ASC.Files.Thirdparty.SharePoint
     [Scope]
     internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
     {
-        private CrossDao CrossDao { get; }
-        private SharePointDaoSelector SharePointDaoSelector { get; }
-        private IFileDao<int> FileDao { get; }
-        private IFolderDao<int> FolderDao { get; }
+        private readonly CrossDao _crossDao;
+        private readonly SharePointDaoSelector _sharePointDaoSelector;
+        private readonly IFileDao<int> _fileDao;
+        private readonly IFolderDao<int> _folderDao;
 
         public SharePointFolderDao(
             IServiceProvider serviceProvider,
@@ -49,10 +49,10 @@ namespace ASC.Files.Thirdparty.SharePoint
             TempPath tempPath)
             : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
         {
-            CrossDao = crossDao;
-            SharePointDaoSelector = sharePointDaoSelector;
-            FileDao = fileDao;
-            FolderDao = folderDao;
+            _crossDao = crossDao;
+            _sharePointDaoSelector = sharePointDaoSelector;
+            _fileDao = fileDao;
+            _folderDao = folderDao;
         }
 
         public async Task<Folder<string>> GetFolderAsync(string folderId)
@@ -63,8 +63,8 @@ namespace ASC.Files.Thirdparty.SharePoint
         public async Task<Folder<string>> GetFolderAsync(string title, string parentId)
         {
             var folderFolders = await ProviderInfo.GetFolderFoldersAsync(parentId).ConfigureAwait(false);
-            return
-                ProviderInfo.ToFolder(folderFolders
+
+            return ProviderInfo.ToFolder(folderFolders
                         .FirstOrDefault(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase)));
         }
 
@@ -85,7 +85,7 @@ namespace ASC.Files.Thirdparty.SharePoint
             foreach (var i in folderFolders)
             {
                 yield return ProviderInfo.ToFolder(i);
-        }
+            }
         }
 
         public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
@@ -94,7 +94,9 @@ namespace ASC.Files.Thirdparty.SharePoint
                 || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
                 || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
                 || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
+            {
                 return AsyncEnumerable.Empty<Folder<string>>();
+            }
 
             var folders = GetFoldersAsync(parentId);
 
@@ -107,9 +109,14 @@ namespace ASC.Files.Thirdparty.SharePoint
             }
 
             if (!string.IsNullOrEmpty(searchText))
+            {
                 folders = folders.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
+            }
 
-            if (orderBy == null) orderBy = new OrderBy(SortedByType.DateAndTime, false);
+            if (orderBy == null)
+            {
+                orderBy = new OrderBy(SortedByType.DateAndTime, false);
+            }
 
             folders = orderBy.SortedBy switch
             {
@@ -129,7 +136,9 @@ namespace ASC.Files.Thirdparty.SharePoint
                 || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
                 || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
                 || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
+            {
                 return AsyncEnumerable.Empty<Folder<string>>();
+            }
 
             var folders = folderIds.ToAsyncEnumerable().SelectAwait(async e => await GetFolderAsync(e).ConfigureAwait(false));
 
@@ -141,7 +150,9 @@ namespace ASC.Files.Thirdparty.SharePoint
             }
 
             if (!string.IsNullOrEmpty(searchText))
+            {
                 folders = folders.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
+            }
 
             return folders;
         }
@@ -159,6 +170,7 @@ namespace ASC.Files.Thirdparty.SharePoint
                          (folder = await ProviderInfo.GetParentFolderAsync(folder.ServerRelativeUrl).ConfigureAwait(false)) != null);
             }
             path.Reverse();
+
             return path;
         }
 
@@ -168,6 +180,7 @@ namespace ASC.Files.Thirdparty.SharePoint
             {
                 //Create with id
                 var savedfolder = await ProviderInfo.CreateFolderAsync(folder.ID).ConfigureAwait(false);
+
                 return ProviderInfo.ToFolder(savedfolder).ID;
             }
 
@@ -178,6 +191,7 @@ namespace ASC.Files.Thirdparty.SharePoint
                 folder.Title = await GetAvailableTitleAsync(folder.Title, parentFolder, IsExistAsync).ConfigureAwait(false);
 
                 var newFolder = await ProviderInfo.CreateFolderAsync(parentFolder.ServerRelativeUrl + "/" + folder.Title).ConfigureAwait(false);
+
                 return ProviderInfo.ToFolder(newFolder).ID;
             }
 
@@ -187,6 +201,7 @@ namespace ASC.Files.Thirdparty.SharePoint
         public async Task<bool> IsExistAsync(string title, Microsoft.SharePoint.Client.Folder folder)
         {
             var folderFolders = await ProviderInfo.GetFolderFoldersAsync(folder.ServerRelativeUrl).ConfigureAwait(false);
+
             return folderFolders.Any(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase));
         }
 
@@ -231,6 +246,7 @@ namespace ASC.Files.Thirdparty.SharePoint
 
                 await tx.CommitAsync().ConfigureAwait(false);
             }
+
             await ProviderInfo.DeleteFolderAsync(folderId).ConfigureAwait(false);
         }
 
@@ -251,9 +267,9 @@ namespace ASC.Files.Thirdparty.SharePoint
 
         public async Task<int> MoveFolderAsync(string folderId, int toFolderId, CancellationToken? cancellationToken)
         {
-            var moved = await CrossDao.PerformCrossDaoFolderCopyAsync(
-                    folderId, this, SharePointDaoSelector.GetFileDao(folderId), SharePointDaoSelector.ConvertId,
-                    toFolderId, FolderDao, FileDao, r => r,
+            var moved = await _crossDao.PerformCrossDaoFolderCopyAsync(
+                    folderId, this, _sharePointDaoSelector.GetFileDao(folderId), _sharePointDaoSelector.ConvertId,
+                    toFolderId, _folderDao, _fileDao, r => r,
                     true, cancellationToken)
                 .ConfigureAwait(false);
 
@@ -264,6 +280,7 @@ namespace ASC.Files.Thirdparty.SharePoint
         {
             var newFolderId = await ProviderInfo.MoveFolderAsync(folderId, toFolderId).ConfigureAwait(false);
             await UpdatePathInDBAsync(ProviderInfo.MakeId(folderId), newFolderId).ConfigureAwait(false);
+
             return newFolderId;
         }
 
@@ -289,9 +306,9 @@ namespace ASC.Files.Thirdparty.SharePoint
 
         public async Task<Folder<int>> CopyFolderAsync(string folderId, int toFolderId, CancellationToken? cancellationToken)
         {
-            var moved = await CrossDao.PerformCrossDaoFolderCopyAsync(
-                folderId, this, SharePointDaoSelector.GetFileDao(folderId), SharePointDaoSelector.ConvertId,
-                toFolderId, FolderDao, FileDao, r => r,
+            var moved = await _crossDao.PerformCrossDaoFolderCopyAsync(
+                folderId, this, _sharePointDaoSelector.GetFileDao(folderId), _sharePointDaoSelector.ConvertId,
+                toFolderId, _folderDao, _fileDao, r => r,
                 false, cancellationToken)
                 .ConfigureAwait(false);
 
@@ -338,6 +355,7 @@ namespace ASC.Files.Thirdparty.SharePoint
                 newFolderId = (string)await ProviderInfo.RenameFolderAsync(folder.ID, newTitle).ConfigureAwait(false);
             }
             await UpdatePathInDBAsync(oldId, newFolderId).ConfigureAwait(false);
+
             return newFolderId;
         }
 
@@ -350,6 +368,7 @@ namespace ASC.Files.Thirdparty.SharePoint
         public async Task<bool> IsEmptyAsync(string folderId)
         {
             var folder = await ProviderInfo.GetFolderByIdAsync(folderId).ConfigureAwait(false);
+
             return folder.ItemCount == 0;
         }
 

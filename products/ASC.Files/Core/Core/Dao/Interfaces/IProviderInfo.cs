@@ -33,7 +33,6 @@ namespace ASC.Files.Core
         FolderType RootFolderType { get; }
         DateTime CreateOn { get; }
         string CustomerTitle { get; }
-
         string RootFolderId { get; }
 
         Task<bool> CheckAccessAsync();
@@ -43,8 +42,6 @@ namespace ASC.Files.Core
 
     public class ProviderInfoArgumentException : ArgumentException
     {
-        public ProviderInfoArgumentException(string message) : base(message)
-        {
-        }
+        public ProviderInfoArgumentException(string message) : base(message) { }
     }
 }

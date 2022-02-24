@@ -181,15 +181,15 @@ namespace ASC.Files.Thirdparty
     internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDisposable where T : class, IProviderInfo
     {
         public int TenantID { get; private set; }
-        protected IServiceProvider ServiceProvider { get; }
-        protected UserManager UserManager { get; }
-        protected TenantUtil TenantUtil { get; }
-        private Lazy<FilesDbContext> LazyFilesDbContext { get; }
-        protected FilesDbContext FilesDbContext { get => LazyFilesDbContext.Value; }
-        protected SetupInfo SetupInfo { get; }
-        protected ILog Log { get; }
-        protected FileUtility FileUtility { get; }
-        protected TempPath TempPath { get; }
+        protected readonly IServiceProvider ServiceProvider;
+        protected readonly UserManager UserManager;
+        protected readonly TenantUtil TenantUtil;
+        private readonly Lazy<FilesDbContext> _lazyFilesDbContext;
+        protected FilesDbContext FilesDbContext => _lazyFilesDbContext.Value;
+        protected readonly SetupInfo SetupInfo;
+        protected readonly ILog Logger;
+        protected readonly FileUtility FileUtility;
+        protected readonly TempPath TempPath;
         protected RegexDaoSelectorBase<T> DaoSelector { get; set; }
         protected T ProviderInfo { get; set; }
         protected string PathPrefix { get; private set; }
@@ -210,9 +210,9 @@ namespace ASC.Files.Thirdparty
             ServiceProvider = serviceProvider;
             UserManager = userManager;
             TenantUtil = tenantUtil;
-            LazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
+            _lazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
             SetupInfo = setupInfo;
-            Log = monitor.CurrentValue;
+            Logger = monitor.CurrentValue;
             FileUtility = fileUtility;
             TempPath = tempPath;
             TenantID = tenantManager.GetCurrentTenant().TenantId;
@@ -232,7 +232,10 @@ namespace ASC.Files.Thirdparty
 
         protected Task<string> MappingIDAsync(string id, bool saveIfNotExist = false)
         {
-            if (id == null) return null;
+            if (id == null)
+            {
+                return null;
+            }
 
             return InternalMappingIDAsync(id, saveIfNotExist);
         }
@@ -265,6 +268,7 @@ namespace ASC.Files.Thirdparty
                 await FilesDbContext.ThirdpartyIdMapping.AddAsync(newMapping).ConfigureAwait(false);
                 await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
             }
+
             return result;
         }
 
@@ -310,6 +314,7 @@ namespace ASC.Files.Thirdparty
         {
             var file = GetFile();
             InitFileEntryError(file, entry);
+
             return file;
         }
 
@@ -345,6 +350,7 @@ namespace ASC.Files.Thirdparty
         public ValueTask<List<FileShareRecord>> GetSharesAsync(IEnumerable<Guid> subjects)
         {
             List<FileShareRecord> result = null;
+
             return new ValueTask<List<FileShareRecord>>(result);
         }
 
@@ -453,7 +459,6 @@ namespace ASC.Files.Thirdparty
         {
         }
 
-
         public IAsyncEnumerable<Tag> GetTagsAsync(string entryID, FileEntryType entryType, TagType tagType)
         {
             return AsyncEnumerable.Empty<Tag>();
@@ -474,7 +479,10 @@ namespace ASC.Files.Thirdparty
                        .ToListAsync()
                        .ConfigureAwait(false);
 
-            if (!entryIDs.Any()) yield break;
+            if (!entryIDs.Any())
+            {
+                yield break;
+            }
 
             var q = from r in FilesDbContext.Tag
                     from l in FilesDbContext.TagLink.AsQueryable().Where(a => a.TenantId == r.TenantId && a.TagId == r.Id).DefaultIfEmpty()
@@ -506,7 +514,10 @@ namespace ASC.Files.Thirdparty
             if (deepSearch)
             {
                 await foreach (var e in tags.ConfigureAwait(false))
+                {
                     yield return e;
+                }
+
                 yield break;
             }
 
@@ -514,7 +525,9 @@ namespace ASC.Files.Thirdparty
                 .Concat(await GetChildrenAsync(folderId).ConfigureAwait(false));
 
             await foreach (var e in tags.Where(tag => folderFileIds.Contains(tag.EntryId.ToString())).ConfigureAwait(false))
+            {
                 yield return e;
+            }
         }
 
         protected abstract Task<IEnumerable<string>> GetChildrenAsync(string folderId);
@@ -534,7 +547,6 @@ namespace ASC.Files.Thirdparty
     internal class ErrorEntry
     {
         public string Error { get; set; }
-
         public string ErrorId { get; set; }
 
         public ErrorEntry(string error, string errorId)

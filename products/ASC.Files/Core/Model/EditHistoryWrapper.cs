@@ -29,7 +29,6 @@
     public class EditHistoryChangesWrapper
     {
         public EditHistoryAuthor User { get; set; }
-
         public ApiDateTime Created { get; set; }
 
         public EditHistoryChangesWrapper(EditHistoryChanges historyChanges, ApiDateTimeHelper apiDateTimeHelper)

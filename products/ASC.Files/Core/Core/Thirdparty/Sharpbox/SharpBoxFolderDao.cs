@@ -28,10 +28,10 @@ namespace ASC.Files.Thirdparty.Sharpbox
     [Scope]
     internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
     {
-        private CrossDao CrossDao { get; }
-        private SharpBoxDaoSelector SharpBoxDaoSelector { get; }
-        private IFileDao<int> FileDao { get; }
-        private IFolderDao<int> FolderDao { get; }
+        private readonly CrossDao _crossDao;
+        private readonly SharpBoxDaoSelector _sharpBoxDaoSelector;
+        private readonly IFileDao<int> _fileDao;
+        private readonly IFolderDao<int> _folderDao;
 
         public SharpBoxFolderDao(
             IServiceProvider serviceProvider,
@@ -49,10 +49,10 @@ namespace ASC.Files.Thirdparty.Sharpbox
             TempPath tempPath)
             : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
         {
-            CrossDao = crossDao;
-            SharpBoxDaoSelector = sharpBoxDaoSelector;
-            FileDao = fileDao;
-            FolderDao = folderDao;
+            _crossDao = crossDao;
+            _sharpBoxDaoSelector = sharpBoxDaoSelector;
+            _fileDao = fileDao;
+            _folderDao = folderDao;
         }
 
         public Task<Folder<string>> GetFolderAsync(string folderId)
@@ -63,6 +63,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
         public Task<Folder<string>> GetFolderAsync(string title, string parentId)
         {
             var parentFolder = ProviderInfo.Storage.GetFolder(MakePath(parentId));
+
             return Task.FromResult(ToFolder(parentFolder.OfType<ICloudDirectoryEntry>().FirstOrDefault(x => x.Name.Equals(title, StringComparison.OrdinalIgnoreCase))));
         }
 
@@ -79,16 +80,20 @@ namespace ASC.Files.Thirdparty.Sharpbox
         public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId)
         {
             var parentFolder = ProviderInfo.Storage.GetFolder(MakePath(parentId));
+
             return parentFolder.OfType<ICloudDirectoryEntry>().Select(ToFolder).ToAsyncEnumerable();
         }
 
         public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
         {
+
             if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
                 || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
                 || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
                 || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
+            {
                 return AsyncEnumerable.Empty<Folder<string>>();
+            }
 
             var folders = GetFoldersAsync(parentId); //TODO:!!!
 
@@ -101,9 +106,14 @@ namespace ASC.Files.Thirdparty.Sharpbox
             }
 
             if (!string.IsNullOrEmpty(searchText))
+            {
                 folders = folders.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
+            }
 
-            if (orderBy == null) orderBy = new OrderBy(SortedByType.DateAndTime, false);
+            if (orderBy == null)
+            {
+                orderBy = new OrderBy(SortedByType.DateAndTime, false);
+            }
 
             folders = orderBy.SortedBy switch
             {
@@ -123,7 +133,9 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
                 || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
                 || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
+            {
                 return AsyncEnumerable.Empty<Folder<string>>();
+            }
 
             var folders = folderIds.ToAsyncEnumerable().SelectAwait(async e => await GetFolderAsync(e).ConfigureAwait(false));
 
@@ -135,10 +147,13 @@ namespace ASC.Files.Thirdparty.Sharpbox
             }
 
             if (!string.IsNullOrEmpty(searchText))
+            {
                 folders = folders.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
+            }
 
             return folders;
         }
+
         public Task<List<Folder<string>>> GetParentFoldersAsync(string folderId)
         {
             var path = new List<Folder<string>>();
@@ -150,7 +165,9 @@ namespace ASC.Files.Thirdparty.Sharpbox
                     path.Add(ToFolder(folder));
                 } while ((folder = folder.Parent) != null);
             }
+
             path.Reverse();
+
             return Task.FromResult(path);
         }
 
@@ -163,6 +180,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 {
                     //Create with id
                     var savedfolder = ProviderInfo.Storage.CreateFolder(MakePath(folder.ID));
+
                     return MakeId(savedfolder);
                 }
                 if (folder.FolderID != null)
@@ -172,6 +190,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
                     folder.Title = await GetAvailableTitleAsync(folder.Title, parentFolder, IsExistAsync).ConfigureAwait(false);
 
                     var newFolder = ProviderInfo.Storage.CreateFolder(folder.Title, parentFolder);
+
                     return MakeId(newFolder);
                 }
             }
@@ -191,6 +210,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
                     throw;
                 }
             }
+
             return null;
         }
 
@@ -238,7 +258,9 @@ namespace ASC.Files.Thirdparty.Sharpbox
             }
 
             if (!(folder is ErrorEntry))
+            {
                 ProviderInfo.Storage.DeleteFileSystemEntry(folder);
+            }
         }
 
         public Task<bool> IsExistAsync(string title, ICloudDirectoryEntry folder)
@@ -255,6 +277,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             {
 
             }
+
             return Task.FromResult(false);
         }
 
@@ -275,9 +298,9 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         public async Task<int> MoveFolderAsync(string folderId, int toFolderId, CancellationToken? cancellationToken)
         {
-            var moved = await CrossDao.PerformCrossDaoFolderCopyAsync(
-                folderId, this, SharpBoxDaoSelector.GetFileDao(folderId), SharpBoxDaoSelector.ConvertId,
-                toFolderId, FolderDao, FileDao, r => r,
+            var moved = await _crossDao.PerformCrossDaoFolderCopyAsync(
+                folderId, this, _sharpBoxDaoSelector.GetFileDao(folderId), _sharpBoxDaoSelector.ConvertId,
+                toFolderId, _folderDao, _fileDao, r => r,
                 true, cancellationToken)
                 .ConfigureAwait(false);
 
@@ -292,7 +315,9 @@ namespace ASC.Files.Thirdparty.Sharpbox
             var oldFolderId = MakeId(entry);
 
             if (!ProviderInfo.Storage.MoveFileSystemEntry(entry, folder))
+            {
                 throw new Exception("Error while moving");
+            }
 
             var newFolderId = MakeId(entry);
 
@@ -318,9 +343,9 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         public async Task<Folder<int>> CopyFolderAsync(string folderId, int toFolderId, CancellationToken? cancellationToken)
         {
-            var moved = await CrossDao.PerformCrossDaoFolderCopyAsync(
-                folderId, this, SharpBoxDaoSelector.GetFileDao(folderId), SharpBoxDaoSelector.ConvertId,
-                toFolderId, FolderDao, FileDao, r => r,
+            var moved = await _crossDao.PerformCrossDaoFolderCopyAsync(
+                folderId, this, _sharpBoxDaoSelector.GetFileDao(folderId), _sharpBoxDaoSelector.ConvertId,
+                toFolderId, _folderDao, _fileDao, r => r,
                 false, cancellationToken)
                 .ConfigureAwait(false);
 
@@ -331,7 +356,9 @@ namespace ASC.Files.Thirdparty.Sharpbox
         {
             var folder = GetFolderById(folderId);
             if (!ProviderInfo.Storage.CopyFileSystemEntry(MakePath(folderId), MakePath(toFolderId)))
+            {
                 throw new Exception("Error while copying");
+            }
 
             return Task.FromResult(ToFolder(GetFolderById(toFolderId).OfType<ICloudDirectoryEntry>().FirstOrDefault(x => x.Name == folder.Name)));
         }
@@ -409,7 +436,6 @@ namespace ASC.Files.Thirdparty.Sharpbox
             return false;
         }
 
-
         public bool UseRecursiveOperation<TTo>(string folderId, TTo toRootFolderId)
         {
             return false;
@@ -438,7 +464,9 @@ namespace ASC.Files.Thirdparty.Sharpbox
                     : ProviderInfo.Storage.CurrentConfiguration.Limits.MaxUploadFileSize;
 
             if (storageMaxUploadSize == -1)
+            {
                 storageMaxUploadSize = long.MaxValue;
+            }
 
             return Task.FromResult(chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, SetupInfo.AvailableFileSize));
         }

@@ -30,10 +30,10 @@ namespace ASC.Files.Thirdparty.Sharpbox
     [Scope]
     internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
     {
-        private TempStream TempStream { get; }
-        private CrossDao CrossDao { get; }
-        private SharpBoxDaoSelector SharpBoxDaoSelector { get; }
-        private IFileDao<int> FileDao { get; }
+        private readonly TempStream _tempStream;
+        private readonly CrossDao _crossDao;
+        private readonly SharpBoxDaoSelector _sharpBoxDaoSelector;
+        private readonly IFileDao<int> _fileDao;
 
         public SharpBoxFileDao(
             IServiceProvider serviceProvider,
@@ -51,10 +51,10 @@ namespace ASC.Files.Thirdparty.Sharpbox
             TempPath tempPath)
             : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
         {
-            TempStream = tempStream;
-            CrossDao = crossDao;
-            SharpBoxDaoSelector = sharpBoxDaoSelector;
-            FileDao = fileDao;
+            _tempStream = tempStream;
+            _crossDao = crossDao;
+            _sharpBoxDaoSelector = sharpBoxDaoSelector;
+            _fileDao = fileDao;
         }
 
         public Task InvalidateCacheAsync(string fileId)
@@ -94,7 +94,10 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         public IAsyncEnumerable<File<string>> GetFilesFilteredAsync(IEnumerable<string> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool checkShared = false)
         {
-            if (fileIds == null || !fileIds.Any() || filterType == FilterType.FoldersOnly) return AsyncEnumerable.Empty<File<string>>();
+            if (fileIds == null || !fileIds.Any() || filterType == FilterType.FoldersOnly)
+            {
+                return AsyncEnumerable.Empty<File<string>>();
+            }
 
             var files = GetFilesAsync(fileIds);
 
@@ -127,10 +130,11 @@ namespace ASC.Files.Thirdparty.Sharpbox
                     break;
                 case FilterType.MediaOnly:
                     files = files.Where(x =>
-                        {
-                            FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
-                            return fileType == FileType.Audio || fileType == FileType.Video;
-                        });
+                    {
+                        FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                        
+                        return fileType == FileType.Audio || fileType == FileType.Video;
+                    });
                     break;
                 case FilterType.ByExtension:
                     if (!string.IsNullOrEmpty(searchText))
@@ -142,7 +146,9 @@ namespace ASC.Files.Thirdparty.Sharpbox
             }
 
             if (!string.IsNullOrEmpty(searchText))
+            {
                 files = files.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
+            }
 
             return files;
         }
@@ -158,7 +164,10 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         public async IAsyncEnumerable<File<string>> GetFilesAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
         {
-            if (filterType == FilterType.FoldersOnly) yield break;
+            if (filterType == FilterType.FoldersOnly)
+            {
+                yield break;
+            }
 
             //Get only files
             var files = GetFolderById(parentId).Where(x => !(x is ICloudDirectoryEntry)).Select(ToFile);
@@ -192,10 +201,11 @@ namespace ASC.Files.Thirdparty.Sharpbox
                     break;
                 case FilterType.MediaOnly:
                     files = files.Where(x =>
-                        {
-                            FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
-                            return fileType == FileType.Audio || fileType == FileType.Video;
-                        });
+                    {
+                        FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+
+                        return fileType == FileType.Audio || fileType == FileType.Video;
+                    });
                     break;
                 case FilterType.ByExtension:
                     if (!string.IsNullOrEmpty(searchText))
@@ -207,9 +217,14 @@ namespace ASC.Files.Thirdparty.Sharpbox
             }
 
             if (!string.IsNullOrEmpty(searchText))
+            {
                 files = files.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
+            }
 
-            if (orderBy == null) orderBy = new OrderBy(SortedByType.DateAndTime, false);
+            if (orderBy == null)
+            {
+                orderBy = new OrderBy(SortedByType.DateAndTime, false);
+            }
 
             files = orderBy.SortedBy switch
             {
@@ -222,10 +237,11 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
             //hack
             await Task.Delay(1).ConfigureAwait(false);
+
             foreach (var f in files)
             {
                 yield return f;
-        }
+            }
         }
 
         public async Task<Stream> GetFileStreamAsync(File<string> file, long offset)
@@ -233,9 +249,14 @@ namespace ASC.Files.Thirdparty.Sharpbox
             var fileToDownload = GetFileById(file.ID);
 
             if (fileToDownload == null)
+            {
                 throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
+            }
+
             if (fileToDownload is ErrorEntry errorEntry)
+            {
                 throw new Exception(errorEntry.Error);
+            }
 
             var fileStream = fileToDownload.GetDataTransferAccessor().GetDownloadStream();
 
@@ -243,13 +264,14 @@ namespace ASC.Files.Thirdparty.Sharpbox
             {
                 if (!fileStream.CanSeek)
                 {
-                    var tempBuffer = TempStream.Create();
+                    var tempBuffer = _tempStream.Create();
 
                     await fileStream.CopyToAsync(tempBuffer).ConfigureAwait(false);
                     await tempBuffer.FlushAsync().ConfigureAwait(false);
                     tempBuffer.Seek(offset, SeekOrigin.Begin);
 
                     await fileStream.DisposeAsync().ConfigureAwait(false);
+
                     return tempBuffer;
                 }
 
@@ -276,7 +298,11 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         public async Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
         {
-            if (fileStream == null) throw new ArgumentNullException(nameof(fileStream));
+            if (fileStream == null)
+            {
+                throw new ArgumentNullException(nameof(fileStream));
+            }
+
             ICloudFileSystemEntry entry = null;
             if (file.ID != null)
             {
@@ -296,7 +322,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
             try
             {
-                entry.GetDataTransferAccessor().Transfer(TempStream.GetBuffered(fileStream), nTransferDirection.nUpload);
+                entry.GetDataTransferAccessor().Transfer(_tempStream.GetBuffered(fileStream), nTransferDirection.nUpload);
             }
             catch (SharpBoxException e)
             {
@@ -332,7 +358,11 @@ namespace ASC.Files.Thirdparty.Sharpbox
         public async Task DeleteFileAsync(string fileId)
         {
             var file = GetFileById(fileId);
-            if (file == null) return;
+            if (file == null)
+            {
+                return;
+            }
+
             var id = MakeId(file);
 
             using (var tx = FilesDbContext.Database.BeginTransaction())
@@ -374,12 +404,15 @@ namespace ASC.Files.Thirdparty.Sharpbox
             }
 
             if (!(file is ErrorEntry))
+            {
                 ProviderInfo.Storage.DeleteFileSystemEntry(file);
+            }
         }
 
         public Task<bool> IsExistAsync(string title, object folderId)
         {
             var folder = ProviderInfo.Storage.GetFolder(MakePath(folderId));
+
             return IsExistAsync(title, folder);
         }
 
@@ -396,6 +429,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             catch (Exception)
             {
             }
+
             return Task.FromResult(false);
         }
 
@@ -416,9 +450,9 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         public async Task<int> MoveFileAsync(string fileId, int toFolderId)
         {
-            var moved = await CrossDao.PerformCrossDaoFileCopyAsync(
-                fileId, this, SharpBoxDaoSelector.ConvertId,
-                toFolderId, FileDao, r => r,
+            var moved = await _crossDao.PerformCrossDaoFileCopyAsync(
+                fileId, this, _sharpBoxDaoSelector.ConvertId,
+                toFolderId, _fileDao, r => r,
                 true)
                 .ConfigureAwait(false);
 
@@ -433,7 +467,9 @@ namespace ASC.Files.Thirdparty.Sharpbox
             var oldFileId = MakeId(entry);
 
             if (!ProviderInfo.Storage.MoveFileSystemEntry(entry, folder))
+            {
                 throw new Exception("Error while moving");
+            }
 
             var newFileId = MakeId(entry);
 
@@ -461,15 +497,18 @@ namespace ASC.Files.Thirdparty.Sharpbox
         {
             var file = GetFileById(fileId);
             if (!ProviderInfo.Storage.CopyFileSystemEntry(MakePath(fileId), MakePath(toFolderId)))
+            {
                 throw new Exception("Error while copying");
+            }
+
             return Task.FromResult(ToFile(GetFolderById(toFolderId).FirstOrDefault(x => x.Name == file.Name)));
         }
 
         public async Task<File<int>> CopyFileAsync(string fileId, int toFolderId)
         {
-            var moved = await CrossDao.PerformCrossDaoFileCopyAsync(
-                fileId, this, SharpBoxDaoSelector.ConvertId,
-                toFolderId, FileDao, r => r,
+            var moved = await _crossDao.PerformCrossDaoFileCopyAsync(
+                fileId, this, _sharpBoxDaoSelector.ConvertId,
+                toFolderId, _fileDao, r => r,
                 false)
                 .ConfigureAwait(false);
 
@@ -481,7 +520,9 @@ namespace ASC.Files.Thirdparty.Sharpbox
             var entry = GetFileById(file.ID);
 
             if (entry == null)
+            {
                 throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
+            }
 
             var oldFileId = MakeId(entry);
             var newFileId = oldFileId;
@@ -527,7 +568,9 @@ namespace ASC.Files.Thirdparty.Sharpbox
         public async Task<ChunkedUploadSession<string>> CreateUploadSessionAsync(File<string> file, long contentLength)
         {
             if (SetupInfo.ChunkUploadSize > contentLength)
+            {
                 return new ChunkedUploadSession<string>(MakeId(file), contentLength) { UseChunks = false };
+            }
 
             var uploadSession = new ChunkedUploadSession<string>(file, contentLength);
 
@@ -557,6 +600,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             }
 
             uploadSession.File = MakeId(uploadSession.File);
+
             return uploadSession;
         }
 
@@ -565,10 +609,13 @@ namespace ASC.Files.Thirdparty.Sharpbox
             if (!uploadSession.UseChunks)
             {
                 if (uploadSession.BytesTotal == 0)
+                {
                     uploadSession.BytesTotal = chunkLength;
+                }
 
                 uploadSession.File = await SaveFileAsync(uploadSession.File, stream).ConfigureAwait(false);
                 uploadSession.BytesUploaded = chunkLength;
+
                 return uploadSession.File;
             }
 
@@ -612,10 +659,12 @@ namespace ASC.Files.Thirdparty.Sharpbox
             {
                 var sharpboxSession =
                     uploadSession.GetItemOrDefault<AppLimit.CloudComputing.SharpBox.StorageProvider.BaseObjects.ResumableUploadSession>("SharpboxSession");
+
                 return ToFile(GetFileById(sharpboxSession.FileId));
             }
 
             using var fs = new FileStream(uploadSession.GetItemOrDefault<string>("TempPath"), FileMode.Open, FileAccess.Read, System.IO.FileShare.None, 4096, FileOptions.DeleteOnClose);
+
             return await SaveFileAsync(uploadSession.File, fs).ConfigureAwait(false);
         }
 
@@ -632,23 +681,30 @@ namespace ASC.Files.Thirdparty.Sharpbox
                         ? ProviderInfo.Storage.CreateFile(GetFolderById(sharpboxSession.ParentId), sharpboxSession.FileName)
                         : GetFileById(sharpboxSession.FileId);
                 sharpboxFile.GetDataTransferAccessor().AbortResumableSession(sharpboxSession);
+
                 return Task.FromResult(0);
             }
             else if (uploadSession.Items.ContainsKey("TempPath"))
             {
                 File.Delete(uploadSession.GetItemOrDefault<string>("TempPath"));
+
                 return Task.FromResult(0);
             }
+
             return Task.FromResult(0);
         }
 
         private File<string> MakeId(File<string> file)
         {
             if (file.ID != null)
+            {
                 file.ID = PathPrefix + "-" + file.ID;
+            }
 
             if (file.FolderID != null)
+            {
                 file.FolderID = PathPrefix + "-" + file.FolderID;
+            }
 
             return file;
         }

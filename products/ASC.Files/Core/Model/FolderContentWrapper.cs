@@ -29,48 +29,17 @@ namespace ASC.Api.Documents
     /// </summary>
     public class FolderContentWrapper<T>
     {
-        /// <summary>
-        /// </summary>
         public List<FileEntryWrapper> Files { get; set; }
-
-        /// <summary>
-        /// </summary>
         public List<FileEntryWrapper> Folders { get; set; }
-
-        /// <summary>
-        /// </summary>
         public FolderWrapper<T> Current { get; set; }
-
-        /// <summary>
-        /// </summary>
         public object PathParts { get; set; }
-
-        /// <summary>
-        /// </summary>
         public int StartIndex { get; set; }
-
-        /// <summary>
-        /// </summary>
         public int Count { get; set; }
-
-        /// <summary>
-        /// </summary>
         public int Total { get; set; }
-
         public int New { get; set; }
 
-        /// <summary>
-        /// </summary>
-        /// <param name="folderItems"></param>
-        /// <param name="startIndex"></param>
-        public FolderContentWrapper()
-        {
+        public FolderContentWrapper() { }
 
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <returns></returns>
         public static FolderContentWrapper<int> GetSample()
         {
             return new FolderContentWrapper<int>
@@ -94,10 +63,10 @@ namespace ASC.Api.Documents
     [Scope]
     public class FolderContentWrapperHelper
     {
-        private FileSecurity FileSecurity { get; }
-        private IDaoFactory DaoFactory { get; }
-        private FileWrapperHelper FileWrapperHelper { get; }
-        private FolderWrapperHelper FolderWrapperHelper { get; }
+        private readonly FileSecurity _fileSecurity;
+        private readonly IDaoFactory _daoFactory;
+        private readonly FileWrapperHelper _fileWrapperHelper;
+        private readonly FolderWrapperHelper _folderWrapperHelper;
 
         public FolderContentWrapperHelper(
             FileSecurity fileSecurity,
@@ -105,10 +74,10 @@ namespace ASC.Api.Documents
             FileWrapperHelper fileWrapperHelper,
             FolderWrapperHelper folderWrapperHelper)
         {
-            FileSecurity = fileSecurity;
-            DaoFactory = daoFactory;
-            FileWrapperHelper = fileWrapperHelper;
-            FolderWrapperHelper = folderWrapperHelper;
+            _fileSecurity = fileSecurity;
+            _daoFactory = daoFactory;
+            _fileWrapperHelper = fileWrapperHelper;
+            _folderWrapperHelper = folderWrapperHelper;
         }
 
         public async Task<FolderContentWrapper<T>> GetAsync<T>(DataWrapper<T> folderItems, int startIndex)
@@ -121,35 +90,34 @@ namespace ASC.Api.Documents
             var fileEntries = folderItems.Entries.Where(r => r.FileEntryType == FileEntryType.File);
             foreach (var r in fileEntries)
             {
-                    FileEntryWrapper wrapper = null;
-                    if (r is File<int> fol1)
-                    {
-                    wrapper = await FileWrapperHelper.GetAsync(fol1, foldersIntWithRights);
-                    }
-                    if (r is File<string> fol2)
-                    {
-                    wrapper = await FileWrapperHelper.GetAsync(fol2, foldersStringWithRights);
-                    }
+                FileEntryWrapper wrapper = null;
+                if (r is File<int> fol1)
+                {
+                    wrapper = await _fileWrapperHelper.GetAsync(fol1, foldersIntWithRights);
+                }
+                if (r is File<string> fol2)
+                {
+                    wrapper = await _fileWrapperHelper.GetAsync(fol2, foldersStringWithRights);
+                }
 
                 files.Add(wrapper);
-                }
+            }
 
             var folderEntries = folderItems.Entries.Where(r => r.FileEntryType == FileEntryType.Folder);
             foreach (var r in folderEntries)
+            {
+                FileEntryWrapper wrapper = null;
+                if (r is Folder<int> fol1)
                 {
-                    FileEntryWrapper wrapper = null;
-                    if (r is Folder<int> fol1)
-                    {
-                    wrapper = await FolderWrapperHelper.GetAsync(fol1, foldersIntWithRights);
-                    }
-                    if (r is Folder<string> fol2)
-                    {
-                    wrapper = await FolderWrapperHelper.GetAsync(fol2, foldersStringWithRights);
-                    }
-
-                folders.Add(wrapper);
+                    wrapper = await _folderWrapperHelper.GetAsync(fol1, foldersIntWithRights);
                 }
-
+                if (r is Folder<string> fol2)
+                {
+                    wrapper = await _folderWrapperHelper.GetAsync(fol2, foldersStringWithRights);
+                }
+                
+                folders.Add(wrapper);
+            }
 
             var result = new FolderContentWrapper<T>
             {
@@ -159,7 +127,7 @@ namespace ASC.Api.Documents
                 StartIndex = startIndex
             };
 
-            result.Current = await FolderWrapperHelper.GetAsync(folderItems.FolderInfo);
+            result.Current = await _folderWrapperHelper.GetAsync(folderItems.FolderInfo);
             result.Count = result.Files.Count + result.Folders.Count;
             result.Total = folderItems.Total;
             result.New = folderItems.New;
@@ -172,13 +140,15 @@ namespace ASC.Api.Documents
                 var ids = folderItems.Entries.OfType<FileEntry<T1>>().Select(r => r.FolderID).Distinct();
                 if (ids.Any())
                 {
-                var folderDao = DaoFactory.GetFolderDao<T1>();
+                    var folderDao = _daoFactory.GetFolderDao<T1>();
                     var folders = await folderDao.GetFoldersAsync(ids).ToListAsync();
-                    return await FileSecurity.CanReadAsync(folders);
-            }
+
+                    return await _fileSecurity.CanReadAsync(folders);
+                }
+
                 return new List<Tuple<FileEntry<T1>, bool>>();
+            }
         }
-    }
     }
 
     public class FileEntryWrapperConverter : System.Text.Json.Serialization.JsonConverter<FileEntryWrapper>
@@ -193,24 +163,28 @@ namespace ASC.Api.Documents
             if (value is FolderWrapper<string> f1)
             {
                 JsonSerializer.Serialize(writer, f1, typeof(FolderWrapper<string>), options);
+
                 return;
             }
 
             if (value is FolderWrapper<int> f2)
             {
                 JsonSerializer.Serialize(writer, f2, typeof(FolderWrapper<int>), options);
+
                 return;
             }
 
             if (value is FileWrapper<string> f3)
             {
                 JsonSerializer.Serialize(writer, f3, typeof(FileWrapper<string>), options);
+
                 return;
             }
 
             if (value is FileWrapper<int> f4)
             {
                 JsonSerializer.Serialize(writer, f4, typeof(FileWrapper<int>), options);
+
                 return;
             }
 

@@ -29,8 +29,8 @@ namespace ASC.Web.Files.Utils
     public class SocketManager
     {
         private readonly SignalrServiceClient _signalrServiceClient;
-        private FileWrapperHelper FilesWrapperHelper { get; }
-        private TenantManager TenantManager { get; }
+        private readonly FileWrapperHelper _filesWrapperHelper;
+        private readonly TenantManager _tenantManager;
         public IDaoFactory DaoFactory { get; }
 
         public SocketManager(
@@ -41,8 +41,8 @@ namespace ASC.Web.Files.Utils
             )
         {
             _signalrServiceClient = optionsSnapshot.Get("files");
-            FilesWrapperHelper = filesWrapperHelper;
-            TenantManager = tenantManager;
+            _filesWrapperHelper = filesWrapperHelper;
+            _tenantManager = tenantManager;
             DaoFactory = daoFactory;
         }
 
@@ -63,9 +63,10 @@ namespace ASC.Web.Files.Utils
                 DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
+
             serializerSettings.Converters.Add(new ApiDateTimeConverter());
             serializerSettings.Converters.Add(new FileEntryWrapperConverter());
-            var data = JsonSerializer.Serialize(await FilesWrapperHelper.GetAsync(file), serializerSettings);
+            var data = JsonSerializer.Serialize(await _filesWrapperHelper.GetAsync(file), serializerSettings);
 
             _signalrServiceClient.StopEdit(fileId, room, data);
         }
@@ -81,7 +82,7 @@ namespace ASC.Web.Files.Utils
             };
             serializerSettings.Converters.Add(new ApiDateTimeConverter());
             serializerSettings.Converters.Add(new FileEntryWrapperConverter());
-            var data = JsonSerializer.Serialize(await FilesWrapperHelper.GetAsync(file), serializerSettings);
+            var data = JsonSerializer.Serialize(await _filesWrapperHelper.GetAsync(file), serializerSettings);
 
             _signalrServiceClient.CreateFile(file.ID, room, data);
     }
@@ -94,14 +95,14 @@ namespace ASC.Web.Files.Utils
 
         private string GetFileRoom<T>(T fileId)
         {
-            var tenantId = TenantManager.GetCurrentTenant().TenantId;
+            var tenantId = _tenantManager.GetCurrentTenant().TenantId;
 
             return $"{tenantId}-FILE-{fileId}";
         }
 
         private string GetFolderRoom<T>(T folderId)
         {
-            var tenantId = TenantManager.GetCurrentTenant().TenantId;
+            var tenantId = _tenantManager.GetCurrentTenant().TenantId;
 
             return $"{tenantId}-DIR-{folderId}";
         }

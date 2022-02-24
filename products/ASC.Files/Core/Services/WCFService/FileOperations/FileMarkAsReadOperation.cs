@@ -31,6 +31,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             : this(folders.OfType<T>(), files.OfType<T>(), tenant, holdResult)
         {
         }
+
         public FileMarkAsReadOperationData(IEnumerable<T> folders, IEnumerable<T> files, Tenant tenant, bool holdResult = true) : base(folders, files, tenant, holdResult)
         {
         }
@@ -44,25 +45,18 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         {
         }
 
-        public override FileOperationType OperationType
-        {
-            get { return FileOperationType.MarkAsRead; }
-        }
+        public override FileOperationType OperationType => FileOperationType.MarkAsRead;
     }
 
     class FileMarkAsReadOperation<T> : FileOperation<FileMarkAsReadOperationData<T>, T>
     {
-        public override FileOperationType OperationType
-        {
-            get { return FileOperationType.MarkAsRead; }
-        }
+        public override FileOperationType OperationType => FileOperationType.MarkAsRead;
 
 
         public FileMarkAsReadOperation(IServiceProvider serviceProvider, FileMarkAsReadOperationData<T> fileOperationData)
             : base(serviceProvider, fileOperationData)
         {
         }
-
 
         protected override int InitTotalProgressSteps()
         {
@@ -97,16 +91,17 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 {
                     ProcessedFolder(((Folder<T>)x).ID);
                 }
+
                 ProgressStep();
             });
 
             var rootIds = new List<int>
-                {
-                    globalFolder.GetFolderMy(fileMarker, daoFactory),
-                    await globalFolder.GetFolderCommonAsync(fileMarker, daoFactory),
-                    await globalFolder.GetFolderShareAsync(daoFactory),
-                    await globalFolder.GetFolderProjectsAsync(daoFactory),
-                };
+            {
+                globalFolder.GetFolderMy(fileMarker, daoFactory),
+                await globalFolder.GetFolderCommonAsync(fileMarker, daoFactory),
+                await globalFolder.GetFolderShareAsync(daoFactory),
+                await globalFolder.GetFolderProjectsAsync(daoFactory),
+            };
 
             if (PrivacyRoomSettings.GetEnabled(settingsManager))
             {
@@ -121,17 +116,17 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 newrootfolder.Add($"new_{{\"key\"? \"{item.Key}\", \"value\"? \"{item.Value}\"}}");
             }
 
-            Result += string.Join(SPLIT_CHAR, newrootfolder.ToArray());
+            Result += string.Join(SplitChar, newrootfolder.ToArray());
         }
     }
 
     [Scope]
     public class FileMarkAsReadOperationScope
     {
-        private FileMarker FileMarker { get; }
-        private GlobalFolder GlobalFolder { get; }
-        private IDaoFactory DaoFactory { get; }
-        private SettingsManager SettingsManager { get; }
+        private readonly FileMarker _fileMarker;
+        private readonly GlobalFolder _globalFolder;
+        private readonly IDaoFactory _daoFactory;
+        private readonly SettingsManager _settingsManager;
 
         public FileMarkAsReadOperationScope(
             FileMarker fileMarker,
@@ -139,10 +134,10 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             IDaoFactory daoFactory,
             SettingsManager settingsManager)
         {
-            FileMarker = fileMarker;
-            GlobalFolder = globalFolder;
-            DaoFactory = daoFactory;
-            SettingsManager = settingsManager;
+            _fileMarker = fileMarker;
+            _globalFolder = globalFolder;
+            _daoFactory = daoFactory;
+            _settingsManager = settingsManager;
         }
 
         public void Deconstruct(
@@ -151,10 +146,10 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             out IDaoFactory daoFactory,
             out SettingsManager settingsManager)
         {
-            fileMarker = FileMarker;
-            globalFolder = GlobalFolder;
-            daoFactory = DaoFactory;
-            settingsManager = SettingsManager;
+            fileMarker = _fileMarker;
+            globalFolder = _globalFolder;
+            daoFactory = _daoFactory;
+            settingsManager = _settingsManager;
         }
     }
 }

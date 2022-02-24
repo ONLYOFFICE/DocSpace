@@ -28,42 +28,39 @@ namespace ASC.Files.Core
     [Scope]
     public class FileHelper
     {
-        private FileTrackerHelper FileTracker { get; set; }
-
-        private FilesLinkUtility FilesLinkUtility { get; set; }
-
-        private FileUtility FileUtility { get; set; }
-
-        private FileConverter FileConverter { get; set; }
+        private readonly FileTrackerHelper _fileTracker;
+        private readonly FilesLinkUtility _filesLinkUtility;
+        private readonly FileUtility _fileUtility;
+        private readonly FileConverter _fileConverter;
 
         public FileHelper(FileTrackerHelper fileTracker, FilesLinkUtility filesLinkUtility, FileUtility fileUtility, FileConverter fileConverter)
         {
-            FileTracker = fileTracker;
-            FilesLinkUtility = filesLinkUtility;
-            FileUtility = fileUtility;
-            FileConverter = fileConverter;
+            _fileTracker = fileTracker;
+            _filesLinkUtility = filesLinkUtility;
+            _fileUtility = fileUtility;
+            _fileConverter = fileConverter;
         }
 
         internal string GetTitle<T>(File<T> file)
         {
             return string.IsNullOrEmpty(file.ConvertedType)
                         ? file.PureTitle
-                        : FileUtility.ReplaceFileExtension(file.PureTitle, FileUtility.GetInternalExtension(file.PureTitle));
+                        : FileUtility.ReplaceFileExtension(file.PureTitle, _fileUtility.GetInternalExtension(file.PureTitle));
         }
 
         internal FileStatus GetFileStatus<T>(File<T> file, ref FileStatus currentStatus)
         {
-            if (FileTracker.IsEditing(file.ID))
+            if (_fileTracker.IsEditing(file.ID))
             {
                 currentStatus |= FileStatus.IsEditing;
             }
 
-            if (FileTracker.IsEditingAlone(file.ID))
+            if (_fileTracker.IsEditingAlone(file.ID))
             {
                 currentStatus |= FileStatus.IsEditingAlone;
             }
 
-            if (FileConverter.IsConverting(file))
+            if (_fileConverter.IsConverting(file))
             {
                 currentStatus |= FileStatus.IsConverting;
             }
@@ -73,7 +70,7 @@ namespace ASC.Files.Core
 
         public string GetDownloadUrl<T>(FileEntry<T> fileEntry)
         {
-            return FilesLinkUtility.GetFileDownloadUrl(fileEntry.ID);
+            return _filesLinkUtility.GetFileDownloadUrl(fileEntry.ID);
         }
     }
 }

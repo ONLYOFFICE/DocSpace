@@ -74,29 +74,26 @@ namespace ASC.Web.Files.Services.DocumentService
         public string FileName { get; set; }
         public int FileId { get; set; }
         public int ReportType { get; set; }
-
         public string Exception { get; set; }
         public ReportStatus Status { get; set; }
         public ReportOrigin Origin { get; set; }
+        public object Obj { get; set; }
 
         internal string BuilderKey { get; set; }
         internal string Script { get; set; }
         internal string TmpFileName { get; set; }
         internal Func<ReportState, string, Task> SaveFileAction { get; set; }
-
         internal int TenantId { get; set; }
         internal Guid UserId { get; set; }
-        internal string ContextUrl { get; set; }
-
-        public object Obj { get; set; }
+        internal string ContextUrl { get; set; } 
 
         protected DistributedTask TaskInfo { get; private set; }
-        private IServiceProvider ServiceProvider { get; }
+        private readonly IServiceProvider _serviceProvider;
 
         public ReportState(IServiceProvider serviceProvider, ReportStateData reportStateData, IHttpContextAccessor httpContextAccessor)
         {
             TaskInfo = new DistributedTask();
-            ServiceProvider = serviceProvider;
+            _serviceProvider = serviceProvider;
             FileName = reportStateData.FileName;
             TmpFileName = reportStateData.TmpFileName;
             Script = reportStateData.Script;
@@ -124,8 +121,8 @@ namespace ASC.Web.Files.Services.DocumentService
                 null,
                 null,
                 tenantId,
-                userId
-                );
+                userId);
+
             return new ReportState(null, data, httpContextAccessor)
             {
                 Id = task.GetProperty<string>("id"),
@@ -138,7 +135,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public async Task GenerateReportAsync(DistributedTask task, CancellationToken cancellationToken)
         {
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = _serviceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<ReportStateScope>();
             var (options, tenantManager, authContext, securityContext, documentServiceConnector) = scopeClass;
             var logger = options.CurrentValue;
@@ -171,12 +168,19 @@ namespace ASC.Web.Files.Services.DocumentService
                     await Task.Delay(1500, cancellationToken);
                     (var builderKey, urls) = await documentServiceConnector.DocbuilderRequestAsync(BuilderKey, null, true);
                     if (builderKey == null)
+                    {
                         throw new NullReferenceException();
+                    }
 
-                    if (urls != null && urls.Count == 0) throw new Exception("Empty response");
+                    if (urls != null && urls.Count == 0)
+                    {
+                        throw new Exception("Empty response");
+                    }
 
                     if (urls != null && urls.ContainsKey(TmpFileName))
+                    {
                         break;
+                    }
                 }
 
                 if (cancellationToken.IsCancellationRequested)
@@ -201,6 +205,7 @@ namespace ASC.Web.Files.Services.DocumentService
         public DistributedTask GetDistributedTask()
         {
             FillDistributedTask();
+
             return TaskInfo;
         }
 
@@ -213,12 +218,16 @@ namespace ASC.Web.Files.Services.DocumentService
                 {
                     FillDistributedTask();
                     TaskInfo.PublishChanges();
+
                     return;
                 }
                 catch (Exception e)
                 {
                     logger.Error(" PublishTaskInfo DocbuilderReportsUtility", e);
-                    if (tries == 0) throw;
+                    if (tries == 0)
+                    {
+                        throw;
+                    }
                 }
             }
         }
@@ -238,57 +247,54 @@ namespace ASC.Web.Files.Services.DocumentService
     [Scope]
     public class DocbuilderReportsUtility
     {
-        private readonly DistributedTaskQueue tasks;
-        private readonly object Locker;
+        private readonly DistributedTaskQueue _tasks;
+        private readonly object _locker;
 
-        public static string TmpFileName
-        {
-            get
-            {
-                return string.Format("tmp{0}.xlsx", DateTime.UtcNow.Ticks);
-            }
-        }
+        public static string TmpFileName => $"tmp{DateTime.UtcNow.Ticks}.xlsx";
 
         public DocbuilderReportsUtility(DistributedTaskQueueOptionsManager distributedTaskQueueOptionsManager)
         {
-            tasks = distributedTaskQueueOptionsManager.Get("DocbuilderReportsUtility");
-            Locker = new object();
+            _tasks = distributedTaskQueueOptionsManager.Get("DocbuilderReportsUtility");
+            _locker = new object();
         }
 
         public void Enqueue(ReportState state)
         {
-            lock (Locker)
+            lock (_locker)
             {
-                tasks.QueueTask(state.GenerateReportAsync, state.GetDistributedTask());
+                _tasks.QueueTask(state.GenerateReportAsync, state.GetDistributedTask());
             }
         }
 
         public void Terminate(ReportOrigin origin, int tenantId, Guid userId)
         {
-            lock (Locker)
+            lock (_locker)
             {
-                var result = tasks.GetTasks().Where(Predicate(origin, tenantId, userId));
+                var result = _tasks.GetTasks().Where(Predicate(origin, tenantId, userId));
 
                 foreach (var t in result)
                 {
-                    tasks.CancelTask(t.Id);
+                    _tasks.CancelTask(t.Id);
                 }
             }
         }
 
         public ReportState Status(ReportOrigin origin, IHttpContextAccessor httpContextAccessor, int tenantId, Guid userId)
         {
-            lock (Locker)
+            lock (_locker)
             {
-                var task = tasks.GetTasks().LastOrDefault(Predicate(origin, tenantId, userId));
-                if (task == null) return null;
+                var task = _tasks.GetTasks().LastOrDefault(Predicate(origin, tenantId, userId));
+                if (task == null)
+                {
+                    return null;
+                }
 
                 var result = ReportState.FromTask(task, httpContextAccessor, tenantId, userId);
                 var status = task.GetProperty<ReportStatus>("status");
 
                 if ((int)status > 1)
                 {
-                    tasks.RemoveTask(task.Id);
+                    _tasks.RemoveTask(task.Id);
                 }
 
                 return result;
@@ -310,9 +316,9 @@ namespace ASC.Web.Files.Services.DocumentService
     public class DocbuilderReportsUtilityHelper
     {
         public DocbuilderReportsUtility DocbuilderReportsUtility { get; }
-        private AuthContext AuthContext { get; }
-        private TenantManager TenantManager { get; }
-        private IHttpContextAccessor HttpContextAccessor { get; }
+        private readonly AuthContext _authContext;
+        private readonly TenantManager _tenantManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public DocbuilderReportsUtilityHelper(
             DocbuilderReportsUtility docbuilderReportsUtility,
@@ -320,10 +326,10 @@ namespace ASC.Web.Files.Services.DocumentService
             TenantManager tenantManager)
         {
             DocbuilderReportsUtility = docbuilderReportsUtility;
-            AuthContext = authContext;
-            TenantManager = tenantManager;
-            TenantId = TenantManager.GetCurrentTenant().TenantId;
-            UserId = AuthContext.CurrentAccount.ID;
+            _authContext = authContext;
+            _tenantManager = tenantManager;
+            TenantId = _tenantManager.GetCurrentTenant().TenantId;
+            UserId = _authContext.CurrentAccount.ID;
         }
 
         public DocbuilderReportsUtilityHelper(
@@ -333,7 +339,7 @@ namespace ASC.Web.Files.Services.DocumentService
             IHttpContextAccessor httpContextAccessor)
             : this(docbuilderReportsUtility, authContext, tenantManager)
         {
-            HttpContextAccessor = httpContextAccessor;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         private int TenantId { get; set; }
@@ -351,17 +357,17 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public ReportState Status(ReportOrigin origin)
         {
-            return DocbuilderReportsUtility.Status(origin, HttpContextAccessor, TenantId, UserId);
+            return DocbuilderReportsUtility.Status(origin, _httpContextAccessor, TenantId, UserId);
         }
     }
 
     public class ReportStateScope
     {
-        private IOptionsMonitor<ILog> Options { get; }
-        private TenantManager TenantManager { get; }
-        private AuthContext AuthContext { get; }
-        private SecurityContext SecurityContext { get; }
-        private DocumentServiceConnector DocumentServiceConnector { get; }
+        private readonly IOptionsMonitor<ILog> _options;
+        private readonly TenantManager _tenantManager;
+        private readonly AuthContext _authContext;
+        private readonly SecurityContext _securityContext;
+        private readonly DocumentServiceConnector _documentServiceConnector;
 
         public ReportStateScope(
             IOptionsMonitor<ILog> options,
@@ -370,11 +376,11 @@ namespace ASC.Web.Files.Services.DocumentService
             SecurityContext securityContext,
             DocumentServiceConnector documentServiceConnector)
         {
-            Options = options;
-            TenantManager = tenantManager;
-            AuthContext = authContext;
-            SecurityContext = securityContext;
-            DocumentServiceConnector = documentServiceConnector;
+            _options = options;
+            _tenantManager = tenantManager;
+            _authContext = authContext;
+            _securityContext = securityContext;
+            _documentServiceConnector = documentServiceConnector;
         }
 
         public void Deconstruct(out IOptionsMonitor<ILog> optionsMonitor,
@@ -383,11 +389,11 @@ namespace ASC.Web.Files.Services.DocumentService
             out SecurityContext securityContext,
             out DocumentServiceConnector documentServiceConnector)
         {
-            optionsMonitor = Options;
-            tenantManager = TenantManager;
-            authContext = AuthContext;
-            securityContext = SecurityContext;
-            documentServiceConnector = DocumentServiceConnector;
+            optionsMonitor = _options;
+            tenantManager = _tenantManager;
+            authContext = _authContext;
+            securityContext = _securityContext;
+            documentServiceConnector = _documentServiceConnector;
         }
     }
 }

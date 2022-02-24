@@ -35,19 +35,21 @@ namespace ASC.Files.Thirdparty.Box
         private readonly List<string> _boxFields = new List<string> { "created_at", "modified_at", "name", "parent", "size" };
 
         public bool IsOpened { get; private set; }
-        private TempStream TempStream { get; }
+        private readonly TempStream _tempStream;
 
         public long MaxChunkedUploadFileSize = 250L * 1024L * 1024L;
 
         public BoxStorage(TempStream tempStream)
         {
-            TempStream = tempStream;
+            _tempStream = tempStream;
         }
 
         public void Open(OAuth20Token token)
         {
             if (IsOpened)
+            {
                 return;
+            }
 
             var config = new BoxConfig(token.ClientID, token.ClientSecret, new Uri(token.RedirectUri));
             var session = new OAuthSession(token.AccessToken, token.RefreshToken, (int)token.ExpiresIn, "bearer");
@@ -60,7 +62,6 @@ namespace ASC.Files.Thirdparty.Box
         {
             IsOpened = false;
         }
-
 
         public async Task<string> GetRootFolderIdAsync()
         {
@@ -104,12 +105,16 @@ namespace ASC.Files.Thirdparty.Box
         public async Task<List<BoxItem>> GetItemsAsync(string folderId, int limit = 500)
         {
             var folderItems = await _boxClient.FoldersManager.GetFolderItemsAsync(folderId, limit, 0, _boxFields);
+
             return folderItems.Entries;
         }
 
         public Task<Stream> DownloadStreamAsync(BoxFile file, int offset = 0)
         {
-            if (file == null) throw new ArgumentNullException(nameof(file));
+            if (file == null)
+            {
+                throw new ArgumentNullException(nameof(file));
+            }
 
             return InternalDownloadStreamAsync(file, offset);
         }
@@ -127,7 +132,7 @@ namespace ASC.Files.Thirdparty.Box
                 return str;
             }
 
-            var tempBuffer = TempStream.Create();
+            var tempBuffer = _tempStream.Create();
             if (str != null)
             {
                 await str.CopyToAsync(tempBuffer);
@@ -150,6 +155,7 @@ namespace ASC.Files.Thirdparty.Box
                     Id = parentId
                 }
             };
+
             return _boxClient.FoldersManager.CreateAsync(boxFolderRequest, _boxFields);
         }
 
@@ -163,6 +169,7 @@ namespace ASC.Files.Thirdparty.Box
                     Id = parentId
                 }
             };
+
             return _boxClient.FilesManager.UploadAsync(boxFileRequest, fileStream, _boxFields, setStreamPositionToZero: false);
         }
 
@@ -189,6 +196,7 @@ namespace ASC.Files.Thirdparty.Box
                     Id = toFolderId
                 }
             };
+
             return _boxClient.FoldersManager.UpdateInformationAsync(boxFolderRequest, _boxFields);
         }
 
@@ -203,6 +211,7 @@ namespace ASC.Files.Thirdparty.Box
                     Id = toFolderId
                 }
             };
+
             return _boxClient.FilesManager.UpdateInformationAsync(boxFileRequest, null, _boxFields);
         }
 
@@ -217,6 +226,7 @@ namespace ASC.Files.Thirdparty.Box
                     Id = toFolderId
                 }
             };
+
             return _boxClient.FoldersManager.CopyAsync(boxFolderRequest, _boxFields);
         }
 
@@ -231,18 +241,21 @@ namespace ASC.Files.Thirdparty.Box
                     Id = toFolderId
                 }
             };
+
             return _boxClient.FilesManager.CopyAsync(boxFileRequest, _boxFields);
         }
 
         public Task<BoxFolder> RenameFolderAsync(string boxFolderId, string newName)
         {
             var boxFolderRequest = new BoxFolderRequest { Id = boxFolderId, Name = newName };
+
             return _boxClient.FoldersManager.UpdateInformationAsync(boxFolderRequest, _boxFields);
         }
 
         public Task<BoxFile> RenameFileAsync(string boxFileId, string newName)
         {
             var boxFileRequest = new BoxFileRequest { Id = boxFileId, Name = newName };
+
             return _boxClient.FilesManager.UpdateInformationAsync(boxFileRequest, null, _boxFields);
         }
 

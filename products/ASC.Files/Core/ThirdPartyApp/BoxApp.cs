@@ -33,44 +33,38 @@ namespace ASC.Web.Files.ThirdPartyApp
         private const string BoxUrlFile = "https://api.box.com/2.0/files/{fileId}";
         private const string BoxUrlUpload = "https://upload.box.com/api/2.0/files/{fileId}/content";
 
-        public string Scopes { get { return ""; } }
-        public string CodeUrl { get { return ""; } }
-        public string AccessTokenUrl { get { return "https://www.box.com/api/oauth2/token"; } }
-        public string RedirectUri { get { return ""; } }
-        public string ClientID { get { return this["boxAppClientId"]; } }
-        public string ClientSecret { get { return this["boxAppSecretKey"]; } }
-
-        public bool IsEnabled
-        {
-            get { return !string.IsNullOrEmpty(ClientID) && !string.IsNullOrEmpty(ClientSecret); }
-        }
-
-        private PathProvider PathProvider { get; }
-        private TenantUtil TenantUtil { get; }
-        private AuthContext AuthContext { get; }
-        private SecurityContext SecurityContext { get; }
-        private UserManager UserManager { get; }
-        private UserManagerWrapper UserManagerWrapper { get; }
-        private CookiesManager CookiesManager { get; }
-        private MessageService MessageService { get; }
-        private Global Global { get; }
-        private EmailValidationKeyProvider EmailValidationKeyProvider { get; }
-        private FilesLinkUtility FilesLinkUtility { get; }
-        private SettingsManager SettingsManager { get; }
-        private PersonalSettingsHelper PersonalSettingsHelper { get; }
-        private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
-        private IOptionsSnapshot<AccountLinker> Snapshot { get; }
-        private SetupInfo SetupInfo { get; }
-        private TokenHelper TokenHelper { get; }
-        private DocumentServiceConnector DocumentServiceConnector { get; }
-        private ThirdPartyAppHandlerService ThirdPartyAppHandlerService { get; }
-        private IServiceProvider ServiceProvider { get; }
         public ILog Logger { get; }
         public IHttpClientFactory ClientFactory { get; }
+        public string Scopes => string.Empty;
+        public string CodeUrl => string.Empty;
+        public string AccessTokenUrl => "https://www.box.com/api/oauth2/token";
+        public string RedirectUri => string.Empty;
+        public string ClientID => this["boxAppClientId"];
+        public string ClientSecret => this["boxAppSecretKey"];
+        public bool IsEnabled => !string.IsNullOrEmpty(ClientID) && !string.IsNullOrEmpty(ClientSecret);
 
-        public BoxApp()
-        {
-        }
+        private readonly PathProvider _pathProvider;
+        private readonly TenantUtil _tenantUtil;
+        private readonly AuthContext _authContext;
+        private readonly SecurityContext _securityContext;
+        private readonly UserManager _userManager;
+        private readonly UserManagerWrapper _userManagerWrapper;
+        private readonly CookiesManager _cookiesManager;
+        private readonly MessageService _messageService;
+        private readonly Global _global;
+        private readonly EmailValidationKeyProvider _emailValidationKeyProvider;
+        private readonly FilesLinkUtility _filesLinkUtility;
+        private readonly SettingsManager _settingsManager;
+        private readonly PersonalSettingsHelper _personalSettingsHelper;
+        private readonly BaseCommonLinkUtility _baseCommonLinkUtility;
+        private readonly IOptionsSnapshot<AccountLinker> _snapshot;
+        private readonly SetupInfo _setupInfo;
+        private readonly TokenHelper _tokenHelper;
+        private readonly DocumentServiceConnector _documentServiceConnector;
+        private readonly ThirdPartyAppHandlerService _thirdPartyAppHandlerService;
+        private readonly IServiceProvider _serviceProvider;
+
+        public BoxApp() { }
 
         public BoxApp(
             PathProvider pathProvider,
@@ -104,26 +98,26 @@ namespace ASC.Web.Files.ThirdPartyApp
             string name, int order, Dictionary<string, string> additional)
             : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, additional)
         {
-            PathProvider = pathProvider;
-            TenantUtil = tenantUtil;
-            AuthContext = authContext;
-            SecurityContext = securityContext;
-            UserManager = userManager;
-            UserManagerWrapper = userManagerWrapper;
-            CookiesManager = cookiesManager;
-            MessageService = messageService;
-            Global = global;
-            EmailValidationKeyProvider = emailValidationKeyProvider;
-            FilesLinkUtility = filesLinkUtility;
-            SettingsManager = settingsManager;
-            PersonalSettingsHelper = personalSettingsHelper;
-            BaseCommonLinkUtility = baseCommonLinkUtility;
-            Snapshot = snapshot;
-            SetupInfo = setupInfo;
-            TokenHelper = tokenHelper;
-            DocumentServiceConnector = documentServiceConnector;
-            ThirdPartyAppHandlerService = thirdPartyAppHandlerService;
-            ServiceProvider = serviceProvider;
+            _pathProvider = pathProvider;
+            _tenantUtil = tenantUtil;
+            _authContext = authContext;
+            _securityContext = securityContext;
+            _userManager = userManager;
+            _userManagerWrapper = userManagerWrapper;
+            _cookiesManager = cookiesManager;
+            _messageService = messageService;
+            _global = global;
+            _emailValidationKeyProvider = emailValidationKeyProvider;
+            _filesLinkUtility = filesLinkUtility;
+            _settingsManager = settingsManager;
+            _personalSettingsHelper = personalSettingsHelper;
+            _baseCommonLinkUtility = baseCommonLinkUtility;
+            _snapshot = snapshot;
+            _setupInfo = setupInfo;
+            _tokenHelper = tokenHelper;
+            _documentServiceConnector = documentServiceConnector;
+            _thirdPartyAppHandlerService = thirdPartyAppHandlerService;
+            _serviceProvider = serviceProvider;
             Logger = option.CurrentValue;
             ClientFactory = clientFactory;
         }
@@ -133,12 +127,14 @@ namespace ASC.Web.Files.ThirdPartyApp
             if ((context.Request.Query[FilesLinkUtility.Action].FirstOrDefault() ?? "").Equals("stream", StringComparison.InvariantCultureIgnoreCase))
             {
                 await StreamFileAsync(context);
+
                 return true;
             }
 
             if (!string.IsNullOrEmpty(context.Request.Query["code"]))
             {
                 RequestCode(context);
+
                 return true;
             }
 
@@ -155,20 +151,23 @@ namespace ASC.Web.Files.ThirdPartyApp
             Logger.Debug("BoxApp: get file " + fileId);
             fileId = ThirdPartySelector.GetFileId(fileId);
 
-            var token = TokenHelper.GetToken(AppAttr);
+            var token = _tokenHelper.GetToken(AppAttr);
 
             var boxFile = GetBoxFile(fileId, token);
             editable = true;
 
-            if (boxFile == null) return null;
+            if (boxFile == null)
+            {
+                return null;
+            }
 
             var jsonFile = JObject.Parse(boxFile);
 
-            var file = ServiceProvider.GetService<File<string>>();
+            var file = _serviceProvider.GetService<File<string>>();
             file.ID = ThirdPartySelector.BuildAppFileId(AppAttr, jsonFile.Value<string>("id"));
             file.Title = Global.ReplaceInvalidCharsAndTruncate(jsonFile.Value<string>("name"));
-            file.CreateOn = TenantUtil.DateTimeFromUtc(jsonFile.Value<DateTime>("created_at"));
-            file.ModifiedOn = TenantUtil.DateTimeFromUtc(jsonFile.Value<DateTime>("modified_at"));
+            file.CreateOn = _tenantUtil.DateTimeFromUtc(jsonFile.Value<DateTime>("created_at"));
+            file.ModifiedOn = _tenantUtil.DateTimeFromUtc(jsonFile.Value<DateTime>("modified_at"));
             file.ContentLength = Convert.ToInt64(jsonFile.Value<string>("size"));
             file.ProviderKey = "Box";
 
@@ -203,22 +202,26 @@ namespace ASC.Web.Files.ThirdPartyApp
 
         public string GetFileStreamUrl(File<string> file)
         {
-            if (file == null) return string.Empty;
+            if (file == null)
+            {
+                return string.Empty;
+            }
 
             var fileId = ThirdPartySelector.GetFileId(file.ID);
 
             Logger.Debug("BoxApp: get file stream url " + fileId);
 
-            var uriBuilder = new UriBuilder(BaseCommonLinkUtility.GetFullAbsolutePath(ThirdPartyAppHandlerService.HandlerPath));
+            var uriBuilder = new UriBuilder(_baseCommonLinkUtility.GetFullAbsolutePath(_thirdPartyAppHandlerService.HandlerPath));
             if (uriBuilder.Uri.IsLoopback)
             {
                 uriBuilder.Host = Dns.GetHostName();
             }
+
             var query = uriBuilder.Query;
             query += FilesLinkUtility.Action + "=stream&";
             query += FilesLinkUtility.FileId + "=" + HttpUtility.UrlEncode(fileId) + "&";
-            query += CommonLinkUtility.ParamName_UserUserID + "=" + HttpUtility.UrlEncode(AuthContext.CurrentAccount.ID.ToString()) + "&";
-            query += FilesLinkUtility.AuthKey + "=" + EmailValidationKeyProvider.GetEmailKey(fileId + AuthContext.CurrentAccount.ID) + "&";
+            query += CommonLinkUtility.ParamName_UserUserID + "=" + HttpUtility.UrlEncode(_authContext.CurrentAccount.ID.ToString()) + "&";
+            query += FilesLinkUtility.AuthKey + "=" + _emailValidationKeyProvider.GetEmailKey(fileId + _authContext.CurrentAccount.ID) + "&";
             query += ThirdPartySelector.AppAttr + "=" + AppAttr;
 
             return uriBuilder.Uri + "?" + query;
@@ -232,12 +235,13 @@ namespace ASC.Web.Files.ThirdPartyApp
                                      : " from stream"));
             fileId = ThirdPartySelector.GetFileId(fileId);
 
-            var token = TokenHelper.GetToken(AppAttr);
+            var token = _tokenHelper.GetToken(AppAttr);
 
             var boxFile = GetBoxFile(fileId, token);
             if (boxFile == null)
             {
                 Logger.Error("BoxApp: file is null");
+
                 throw new Exception("File not found");
             }
 
@@ -250,15 +254,15 @@ namespace ASC.Web.Files.ThirdPartyApp
                 {
                     if (stream != null)
                     {
-                        downloadUrl = await PathProvider.GetTempUrlAsync(stream, fileType);
-                        downloadUrl = DocumentServiceConnector.ReplaceCommunityAdress(downloadUrl);
+                        downloadUrl = await _pathProvider.GetTempUrlAsync(stream, fileType);
+                        downloadUrl = _documentServiceConnector.ReplaceCommunityAdress(downloadUrl);
                     }
 
                     Logger.Debug("BoxApp: GetConvertedUri from " + fileType + " to " + currentType + " - " + downloadUrl);
 
                     var key = DocumentServiceConnector.GenerateRevisionId(downloadUrl);
 
-                    var resultTuple = await DocumentServiceConnector.GetConvertedUriAsync(downloadUrl, fileType, currentType, key, null, null, null, false);
+                    var resultTuple = await _documentServiceConnector.GetConvertedUriAsync(downloadUrl, fileType, currentType, key, null, null, null, false);
                     downloadUrl = resultTuple.ConvertedDocumentUri;
 
                     stream = null;
@@ -329,6 +333,7 @@ namespace ASC.Web.Files.ThirdPartyApp
                 {
                     throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException, e);
                 }
+
                 throw;
             }
         }
@@ -340,43 +345,45 @@ namespace ASC.Web.Files.ThirdPartyApp
             if (token == null)
             {
                 Logger.Error("BoxApp: token is null");
+
                 throw new SecurityException("Access token is null");
             }
 
             var boxUserId = context.Request.Query["userId"];
 
-            if (AuthContext.IsAuthenticated)
+            if (_authContext.IsAuthenticated)
             {
                 if (!CurrentUser(boxUserId))
                 {
                     Logger.Debug("BoxApp: logout for " + boxUserId);
-                    CookiesManager.ClearCookies(CookiesType.AuthKey);
-                    AuthContext.Logout();
+                    _cookiesManager.ClearCookies(CookiesType.AuthKey);
+                    _authContext.Logout();
                 }
             }
 
-            if (!AuthContext.IsAuthenticated)
+            if (!_authContext.IsAuthenticated)
             {
                 var userInfo = GetUserInfo(token, out var isNew);
 
                 if (userInfo == null)
                 {
                     Logger.Error("BoxApp: UserInfo is null");
+
                     throw new Exception("Profile is null");
                 }
 
-                var cookiesKey = SecurityContext.AuthenticateMe(userInfo.ID);
-                CookiesManager.SetCookies(CookiesType.AuthKey, cookiesKey);
-                MessageService.Send(MessageAction.LoginSuccessViaSocialApp);
+                var cookiesKey = _securityContext.AuthenticateMe(userInfo.ID);
+                _cookiesManager.SetCookies(CookiesType.AuthKey, cookiesKey);
+                _messageService.Send(MessageAction.LoginSuccessViaSocialApp);
 
                 if (isNew)
                 {
-                    var userHelpTourSettings = SettingsManager.LoadForCurrentUser<UserHelpTourSettings>();
+                    var userHelpTourSettings = _settingsManager.LoadForCurrentUser<UserHelpTourSettings>();
                     userHelpTourSettings.IsNewUser = true;
-                    SettingsManager.SaveForCurrentUser(userHelpTourSettings);
+                    _settingsManager.SaveForCurrentUser(userHelpTourSettings);
 
-                    PersonalSettingsHelper.IsNewUser = true;
-                    PersonalSettingsHelper.IsNotActivated = true;
+                    _personalSettingsHelper.IsNewUser = true;
+                    _personalSettingsHelper.IsNotActivated = true;
                 }
 
                 if (!string.IsNullOrEmpty(boxUserId) && !CurrentUser(boxUserId))
@@ -385,11 +392,11 @@ namespace ASC.Web.Files.ThirdPartyApp
                 }
             }
 
-            TokenHelper.SaveToken(token);
+            _tokenHelper.SaveToken(token);
 
             var fileId = context.Request.Query["id"];
 
-            context.Response.Redirect(FilesLinkUtility.GetFileWebEditorUrl(ThirdPartySelector.BuildAppFileId(AppAttr, fileId)), true);
+            context.Response.Redirect(_filesLinkUtility.GetFileWebEditorUrl(ThirdPartySelector.BuildAppFileId(AppAttr, fileId)), true);
         }
 
         private async Task StreamFileAsync(HttpContext context)
@@ -402,7 +409,7 @@ namespace ASC.Web.Files.ThirdPartyApp
 
                 Logger.Debug("BoxApp: get file stream " + fileId);
 
-                var validateResult = EmailValidationKeyProvider.ValidateEmailKey(fileId + userId, auth, Global.StreamUrlExpire);
+                var validateResult = _emailValidationKeyProvider.ValidateEmailKey(fileId + userId, auth, _global.StreamUrlExpire);
                 if (validateResult != EmailValidationKeyProvider.ValidationResult.Ok)
                 {
                     var exc = new HttpException((int)HttpStatusCode.Forbidden, FilesCommonResource.ErrorMassage_SecurityException);
@@ -416,12 +423,13 @@ namespace ASC.Web.Files.ThirdPartyApp
 
                 if (Guid.TryParse(userId, out var userIdGuid))
                 {
-                    token = TokenHelper.GetToken(AppAttr, userIdGuid);
+                    token = _tokenHelper.GetToken(AppAttr, userIdGuid);
                 }
 
                 if (token == null)
                 {
                     Logger.Error("BoxApp: token is null");
+
                     throw new SecurityException("Access token is null");
                 }
 
@@ -457,16 +465,17 @@ namespace ASC.Web.Files.ThirdPartyApp
 
         private bool CurrentUser(string boxUserId)
         {
-            var linkedProfiles = Snapshot.Get("webstudio")
+            var linkedProfiles = _snapshot.Get("webstudio")
                 .GetLinkedObjectsByHashId(HashHelper.MD5($"{ProviderConstants.Box}/{boxUserId}"));
-            return linkedProfiles.Any(profileId => Guid.TryParse(profileId, out var tmp) && tmp == AuthContext.CurrentAccount.ID);
+
+            return linkedProfiles.Any(profileId => Guid.TryParse(profileId, out var tmp) && tmp == _authContext.CurrentAccount.ID);
         }
 
         private void AddLinker(string boxUserId)
         {
             Logger.Debug("BoxApp: AddLinker " + boxUserId);
-            var linker = Snapshot.Get("webstudio");
-            linker.AddLink(AuthContext.CurrentAccount.ID.ToString(), boxUserId, ProviderConstants.Box);
+            var linker = _snapshot.Get("webstudio");
+            linker.AddLink(_authContext.CurrentAccount.ID.ToString(), boxUserId, ProviderConstants.Box);
         }
 
         private UserInfo GetUserInfo(Token token, out bool isNew)
@@ -475,6 +484,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             if (token == null)
             {
                 Logger.Error("BoxApp: token is null");
+
                 throw new SecurityException("Access token is null");
             }
 
@@ -494,11 +504,12 @@ namespace ASC.Web.Files.ThirdPartyApp
             if (boxUserInfo == null)
             {
                 Logger.Error("Error in userinfo request");
+
                 return null;
             }
 
             var email = boxUserInfo.Value<string>("login");
-            var userInfo = UserManager.GetUserByEmail(email);
+            var userInfo = _userManager.GetUserByEmail(email);
             if (Equals(userInfo, Constants.LostUser))
             {
                 userInfo = new UserInfo
@@ -510,8 +521,11 @@ namespace ASC.Web.Files.ThirdPartyApp
 
                 var cultureName = boxUserInfo.Value<string>("language");
                 if (string.IsNullOrEmpty(cultureName))
+                {
                     cultureName = Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName;
-                var cultureInfo = SetupInfo.EnabledCultures.Find(c => string.Equals(c.TwoLetterISOLanguageName, cultureName, StringComparison.InvariantCultureIgnoreCase));
+                }
+
+                var cultureInfo = _setupInfo.EnabledCultures.Find(c => string.Equals(c.TwoLetterISOLanguageName, cultureName, StringComparison.InvariantCultureIgnoreCase));
                 if (cultureInfo != null)
                 {
                     userInfo.CultureName = cultureInfo.Name;
@@ -532,12 +546,12 @@ namespace ASC.Web.Files.ThirdPartyApp
 
                 try
                 {
-                    SecurityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
-                    userInfo = UserManagerWrapper.AddUser(userInfo, UserManagerWrapper.GeneratePassword());
+                    _securityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
+                    userInfo = _userManagerWrapper.AddUser(userInfo, UserManagerWrapper.GeneratePassword());
                 }
                 finally
                 {
-                    AuthContext.Logout();
+                    _authContext.Logout();
                 }
 
                 isNew = true;
@@ -553,6 +567,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             if (token == null)
             {
                 Logger.Error("BoxApp: token is null");
+
                 throw new SecurityException("Access token is null");
             }
 
@@ -561,6 +576,7 @@ namespace ASC.Web.Files.ThirdPartyApp
                 var resultResponse = RequestHelper.PerformRequest(BoxUrlFile.Replace("{fileId}", boxFileId),
                                                                   headers: new Dictionary<string, string> { { "Authorization", "Bearer " + token } });
                 Logger.Debug("BoxApp: file response - " + resultResponse);
+
                 return resultResponse;
             }
             catch (Exception ex)
@@ -576,12 +592,14 @@ namespace ASC.Web.Files.ThirdPartyApp
             {
                 Logger.Debug("BoxApp: GetAccessToken by code " + code);
                 var token = OAuth20TokenHelper.GetAccessToken<BoxApp>(ConsumerFactory, code);
+
                 return new Token(token, AppAttr);
             }
             catch (Exception ex)
             {
                 Logger.Error(ex);
             }
+
             return null;
         }
     }

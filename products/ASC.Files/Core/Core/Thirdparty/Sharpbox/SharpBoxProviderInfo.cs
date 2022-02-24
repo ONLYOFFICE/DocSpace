@@ -30,17 +30,16 @@ namespace ASC.Files.Thirdparty.Sharpbox
     {
         public int ID { get; set; }
         public Guid Owner { get; set; }
-        public ILog Log { get; private set; }
+        public ILog Logger { get; private set; }
 
         private nSupportedCloudConfigurations _providerKey;
         public AuthData AuthData { get; set; }
 
         public SharpBoxProviderInfo(SharpBoxStorageDisposableWrapper storageDisposableWrapper, IOptionsMonitor<ILog> monitor)
         {
-            Wrapper = storageDisposableWrapper;
-            Log = monitor.CurrentValue;
+            _wrapper = storageDisposableWrapper;
+            Logger = monitor.CurrentValue;
         }
-
 
         public void Dispose()
         {
@@ -54,31 +53,24 @@ namespace ASC.Files.Thirdparty.Sharpbox
         {
             get
             {
-                if (Wrapper.Storage == null || !Wrapper.Storage.IsOpened)
+                if (_wrapper.Storage == null || !_wrapper.Storage.IsOpened)
                 {
-                    return Wrapper.CreateStorage(AuthData, _providerKey);
+                    return _wrapper.CreateStorage(AuthData, _providerKey);
                 }
-                return Wrapper.Storage;
+
+                return _wrapper.Storage;
             }
         }
 
-        internal bool StorageOpened
-        {
-            get => Wrapper.Storage != null && Wrapper.Storage.IsOpened;
-        }
+        internal bool StorageOpened => _wrapper.Storage != null && _wrapper.Storage.IsOpened;
+
+        public string CustomerTitle { get; set; }
+        public DateTime CreateOn { get; set; }
+        public string RootFolderId => "sbox-" + ID;
 
         public void UpdateTitle(string newtitle)
         {
             CustomerTitle = newtitle;
-        }
-
-        public string CustomerTitle { get; set; }
-
-        public DateTime CreateOn { get; set; }
-
-        public string RootFolderId
-        {
-            get { return "sbox-" + ID; }
         }
 
         public Task<bool> CheckAccessAsync()
@@ -93,28 +85,30 @@ namespace ASC.Files.Thirdparty.Sharpbox
             }
             catch (SharpBoxException ex)
             {
-                Log.Error("Sharpbox CheckAccess error", ex);
+                Logger.Error("Sharpbox CheckAccess error", ex);
+
                 return Task.FromResult(false);
             }
         }
 
         public Task InvalidateStorageAsync()
         {
-            if (Wrapper != null)
+            if (_wrapper != null)
             {
-                Wrapper.Dispose();
+                _wrapper.Dispose();
             }
+
             return Task.CompletedTask;
         }
 
         public string ProviderKey
         {
-            get { return _providerKey.ToString(); }
-            set { _providerKey = (nSupportedCloudConfigurations)Enum.Parse(typeof(nSupportedCloudConfigurations), value, true); }
+            get => _providerKey.ToString();
+            set => _providerKey = (nSupportedCloudConfigurations)Enum.Parse(typeof(nSupportedCloudConfigurations), value, true);
         }
 
         public FolderType RootFolderType { get; set; }
-        private SharpBoxStorageDisposableWrapper Wrapper { get; set; }
+        private SharpBoxStorageDisposableWrapper _wrapper;
     }
 
     [Scope]
@@ -122,10 +116,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
     {
         public CloudStorage Storage { get; private set; }
 
-
-        public SharpBoxStorageDisposableWrapper()
-        {
-        }
+        public SharpBoxStorageDisposableWrapper() { }
 
         internal CloudStorage CreateStorage(AuthData _authData, nSupportedCloudConfigurations _providerKey)
         {
@@ -137,6 +128,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 {
                     uri = Uri.UriSchemeHttp + Uri.SchemeDelimiter + uri;
                 }
+
                 prms = new object[] { new Uri(uri) };
             }
 
@@ -154,6 +146,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             {
                 storage.Open(config, new GenericNetworkCredentials { Password = _authData.Password, UserName = _authData.Login });
             }
+
             return Storage = storage;
         }
 

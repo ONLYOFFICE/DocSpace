@@ -28,35 +28,35 @@ namespace ASC.Files.Core.Services.NotifyService
     [Scope(Additional = typeof(NotifyClientExtension))]
     public class NotifyClient
     {
-        private IServiceProvider ServiceProvider { get; }
+        private readonly IServiceProvider _serviceProvider;
 
         public NotifyClient(IServiceProvider serviceProvider)
         {
-            ServiceProvider = serviceProvider;
+            _serviceProvider = serviceProvider;
         }
 
         public void SendDocuSignComplete<T>(File<T> file, string sourceTitle)
         {
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = _serviceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<NotifyClientScope>();
             var (notifySource, securityContext, filesLinkUtility, fileUtility, baseCommonLinkUtility, _, _, _, _) = scopeClass;
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
             var recipient = notifySource.GetRecipientsProvider().GetRecipient(securityContext.CurrentAccount.ID.ToString());
 
             client.SendNoticeAsync(
-                NotifyConstants.Event_DocuSignComplete,
+                NotifyConstants.EventDocuSignComplete,
                 file.UniqID,
                 recipient,
                 true,
-                new TagValue(NotifyConstants.Tag_DocumentUrl, baseCommonLinkUtility.GetFullAbsolutePath(filesLinkUtility.GetFileWebPreviewUrl(fileUtility, file.Title, file.ID))),
-                new TagValue(NotifyConstants.Tag_DocumentTitle, file.Title),
-                new TagValue(NotifyConstants.Tag_Message, sourceTitle)
+                new TagValue(NotifyConstants.TagDocumentUrl, baseCommonLinkUtility.GetFullAbsolutePath(filesLinkUtility.GetFileWebPreviewUrl(fileUtility, file.Title, file.ID))),
+                new TagValue(NotifyConstants.TagDocumentTitle, file.Title),
+                new TagValue(NotifyConstants.TagMessage, sourceTitle)
                 );
         }
 
         public void SendDocuSignStatus(string subject, string status)
         {
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = _serviceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<NotifyClientScope>();
             var (notifySource, securityContext, _, _, _, _, _, _, _) = scopeClass;
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
@@ -64,45 +64,51 @@ namespace ASC.Files.Core.Services.NotifyService
             var recipient = notifySource.GetRecipientsProvider().GetRecipient(securityContext.CurrentAccount.ID.ToString());
 
             client.SendNoticeAsync(
-                NotifyConstants.Event_DocuSignStatus,
+                NotifyConstants.EventDocuSignStatus,
                 null,
                 recipient,
                 true,
-                new TagValue(NotifyConstants.Tag_DocumentTitle, subject),
-                new TagValue(NotifyConstants.Tag_Message, status)
+                new TagValue(NotifyConstants.TagDocumentTitle, subject),
+                new TagValue(NotifyConstants.TagMessage, status)
                 );
         }
 
         public void SendMailMergeEnd(Guid userId, int countMails, int countError)
         {
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = _serviceProvider.CreateScope();
             var notifySource = scope.ServiceProvider.GetService<NotifySource>();
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
 
             var recipient = notifySource.GetRecipientsProvider().GetRecipient(userId.ToString());
 
             client.SendNoticeAsync(
-                NotifyConstants.Event_MailMergeEnd,
+                NotifyConstants.EventMailMergeEnd,
                 null,
                 recipient,
                 true,
-                new TagValue(NotifyConstants.Tag_MailsCount, countMails),
-                new TagValue(NotifyConstants.Tag_Message, countError > 0 ? string.Format(FilesCommonResource.ErrorMassage_MailMergeCount, countError) : string.Empty)
+                new TagValue(NotifyConstants.TagMailsCount, countMails),
+                new TagValue(NotifyConstants.TagMessage, countError > 0 ? string.Format(FilesCommonResource.ErrorMassage_MailMergeCount, countError) : string.Empty)
                 );
         }
 
         public async Task SendShareNoticeAsync<T>(FileEntry<T> fileEntry, Dictionary<Guid, FileShare> recipients, string message)
         {
-            if (fileEntry == null || recipients.Count == 0) return;
+            if (fileEntry == null || recipients.Count == 0)
+            {
+                return;
+            }
 
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = _serviceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<NotifyClientScope>();
             var (notifySource, _, filesLinkUtility, fileUtility, baseCommonLinkUtility, daoFactory, pathProvider, userManager, tenantManager) = scopeClass;
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
             var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
 
             var folderDao = daoFactory.GetFolderDao<T>();
-            if (fileEntry.FileEntryType == FileEntryType.File && await folderDao.GetFolderAsync(((File<T>)fileEntry).FolderID) == null) return;
+            if (fileEntry.FileEntryType == FileEntryType.File && await folderDao.GetFolderAsync(((File<T>)fileEntry).FolderID) == null)
+            {
+                return;
+            }
 
             var url = fileEntry.FileEntryType == FileEntryType.File
                           ? filesLinkUtility.GetFileWebPreviewUrl(fileUtility, fileEntry.Title, fileEntry.ID)
@@ -112,9 +118,9 @@ namespace ASC.Files.Core.Services.NotifyService
 
             var action = fileEntry.FileEntryType == FileEntryType.File
             ? ((File<T>)fileEntry).Encrypted
-                ? NotifyConstants.Event_ShareEncryptedDocument
-                : NotifyConstants.Event_ShareDocument
-            : NotifyConstants.Event_ShareFolder;
+                ? NotifyConstants.EventShareEncryptedDocument
+                : NotifyConstants.EventShareDocument
+            : NotifyConstants.EventShareFolder;
 
 
             foreach (var recipientPair in recipients)
@@ -132,10 +138,10 @@ namespace ASC.Files.Core.Services.NotifyService
                     fileEntry.UniqID,
                     recipient,
                     true,
-                    new TagValue(NotifyConstants.Tag_DocumentTitle, fileEntry.Title),
-                    new TagValue(NotifyConstants.Tag_DocumentUrl, baseCommonLinkUtility.GetFullAbsolutePath(url)),
-                    new TagValue(NotifyConstants.Tag_AccessRights, aceString),
-                    new TagValue(NotifyConstants.Tag_Message, message.HtmlEncode()),
+                    new TagValue(NotifyConstants.TagDocumentTitle, fileEntry.Title),
+                    new TagValue(NotifyConstants.TagDocumentUrl, baseCommonLinkUtility.GetFullAbsolutePath(url)),
+                    new TagValue(NotifyConstants.TagAccessRights, aceString),
+                    new TagValue(NotifyConstants.TagMessage, message.HtmlEncode()),
                     TagValues.Image(studioNotifyHelper,0, "privacy.png")
                     );
             }
@@ -143,9 +149,12 @@ namespace ASC.Files.Core.Services.NotifyService
 
         public void SendEditorMentions<T>(FileEntry<T> file, string documentUrl, List<Guid> recipientIds, string message)
         {
-            if (file == null || recipientIds.Count == 0) return;
+            if (file == null || recipientIds.Count == 0)
+            {
+                return;
+            }
 
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = _serviceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<NotifyClientScope>();
             var (notifySource, _, _, _, baseCommonLinkUtility, _, _, userManager, _) = scopeClass;
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
@@ -159,13 +168,13 @@ namespace ASC.Files.Core.Services.NotifyService
                 var recipient = recipientsProvider.GetRecipient(u.ID.ToString());
 
                 client.SendNoticeAsync(
-                    NotifyConstants.Event_EditorMentions,
+                    NotifyConstants.EventEditorMentions,
                     file.UniqID,
                     recipient,
                     true,
-                    new TagValue(NotifyConstants.Tag_DocumentTitle, file.Title),
-                    new TagValue(NotifyConstants.Tag_DocumentUrl, baseCommonLinkUtility.GetFullAbsolutePath(documentUrl)),
-                    new TagValue(NotifyConstants.Tag_Message, message.HtmlEncode())
+                    new TagValue(NotifyConstants.TagDocumentTitle, file.Title),
+                    new TagValue(NotifyConstants.TagDocumentUrl, baseCommonLinkUtility.GetFullAbsolutePath(documentUrl)),
+                    new TagValue(NotifyConstants.TagMessage, message.HtmlEncode())
                     );
             }
         }
@@ -188,15 +197,15 @@ namespace ASC.Files.Core.Services.NotifyService
     [Scope]
     public class NotifyClientScope
     {
-        private NotifySource NotifySource { get; }
-        private SecurityContext SecurityContext { get; }
-        private FilesLinkUtility FilesLinkUtility { get; }
-        private FileUtility FileUtility { get; }
-        private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
-        private IDaoFactory DaoFactory { get; }
-        private PathProvider PathProvider { get; }
-        private UserManager UserManager { get; }
-        private TenantManager TenantManager { get; }
+        private readonly NotifySource _notifySource;
+        private readonly SecurityContext _securityContext;
+        private readonly FilesLinkUtility _filesLinkUtility;
+        private readonly FileUtility _fileUtility;
+        private readonly BaseCommonLinkUtility _baseCommonLinkUtility;
+        private readonly IDaoFactory _daoFactory;
+        private readonly PathProvider _pathProvider;
+        private readonly UserManager _userManager;
+        private readonly TenantManager _tenantManager;
 
         public NotifyClientScope(NotifySource notifySource,
             SecurityContext securityContext,
@@ -208,15 +217,15 @@ namespace ASC.Files.Core.Services.NotifyService
             UserManager userManager,
             TenantManager tenantManager)
         {
-            NotifySource = notifySource;
-            SecurityContext = securityContext;
-            FilesLinkUtility = filesLinkUtility;
-            FileUtility = fileUtility;
-            BaseCommonLinkUtility = baseCommonLinkUtility;
-            DaoFactory = daoFactory;
-            PathProvider = pathProvider;
-            UserManager = userManager;
-            TenantManager = tenantManager;
+            _notifySource = notifySource;
+            _securityContext = securityContext;
+            _filesLinkUtility = filesLinkUtility;
+            _fileUtility = fileUtility;
+            _baseCommonLinkUtility = baseCommonLinkUtility;
+            _daoFactory = daoFactory;
+            _pathProvider = pathProvider;
+            _userManager = userManager;
+            _tenantManager = tenantManager;
         }
 
         public void Deconstruct(out NotifySource notifySource,
@@ -229,15 +238,15 @@ namespace ASC.Files.Core.Services.NotifyService
             out UserManager userManager,
             out TenantManager tenantManager)
         {
-            notifySource = NotifySource;
-            securityContext = SecurityContext;
-            filesLinkUtility = FilesLinkUtility;
-            fileUtility = FileUtility;
-            baseCommonLinkUtility = BaseCommonLinkUtility;
-            daoFactory = DaoFactory;
-            pathProvider = PathProvider;
-            userManager = UserManager;
-            tenantManager = TenantManager;
+            notifySource = _notifySource;
+            securityContext = _securityContext;
+            filesLinkUtility = _filesLinkUtility;
+            fileUtility = _fileUtility;
+            baseCommonLinkUtility = _baseCommonLinkUtility;
+            daoFactory = _daoFactory;
+            pathProvider = _pathProvider;
+            userManager = _userManager;
+            tenantManager = _tenantManager;
         }
     }
 

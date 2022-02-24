@@ -55,10 +55,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         {
         }
 
-        public override FileOperationType OperationType
-        {
-            get { return FileOperationType.Delete; }
-        }
+        public override FileOperationType OperationType => FileOperationType.Delete;
     }
 
     class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
@@ -68,10 +65,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         private readonly bool _immediately;
         private readonly IDictionary<string, StringValues> _headers;
 
-        public override FileOperationType OperationType
-        {
-            get { return FileOperationType.Delete; }
-        }
+        public override FileOperationType OperationType => FileOperationType.Delete;
 
 
         public FileDeleteOperation(IServiceProvider serviceProvider, FileDeleteOperationData<T> fileOperationData)
@@ -98,7 +92,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             }
             if (root != null)
             {
-                Result += string.Format("folder_{0}{1}", root.ID, SPLIT_CHAR);
+                Result += string.Format("folder_{0}{1}", root.ID, SplitChar);
             }
 
             await DeleteFilesAsync(Files, scope);
@@ -246,8 +240,10 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                         await LinkDao.DeleteAllLinkAsync(file.ID.ToString());
                     }
+
                     ProcessedFile(fileId);
                 }
+
                 ProgressStep(fileId: FolderDao.CanCalculateSubitems(fileId) ? default : fileId);
             }
         }
@@ -263,19 +259,23 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 if (!await FilesSecurity.CanDeleteAsync(file))
                 {
                     error = FilesCommonResource.ErrorMassage_SecurityException_DeleteFile;
+
                     return (true, error);
                 }
                 if (await entryManager.FileLockedForMeAsync(file.ID))
                 {
                     error = FilesCommonResource.ErrorMassage_LockedFile;
+
                     return (true, error);
                 }
                 if (fileTracker.IsEditing(file.ID))
                 {
                     error = folder ? FilesCommonResource.ErrorMassage_SecurityException_DeleteEditingFolder : FilesCommonResource.ErrorMassage_SecurityException_DeleteEditingFile;
+
                     return (true, error);
                 }
             }
+
             return (false, error);
         }
     }
@@ -283,19 +283,19 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
     [Scope]
     public class FileDeleteOperationScope
     {
-        private FileMarker FileMarker { get; }
-        private FilesMessageService FilesMessageService { get; }
+        private readonly FileMarker _fileMarker;
+        private readonly FilesMessageService _filesMessageService;
 
         public FileDeleteOperationScope(FileMarker fileMarker, FilesMessageService filesMessageService)
         {
-            FileMarker = fileMarker;
-            FilesMessageService = filesMessageService;
+            _fileMarker = fileMarker;
+            _filesMessageService = filesMessageService;
         }
 
         public void Deconstruct(out FileMarker fileMarker, out FilesMessageService filesMessageService)
         {
-            fileMarker = FileMarker;
-            filesMessageService = FilesMessageService;
+            fileMarker = _fileMarker;
+            filesMessageService = _filesMessageService;
         }
     }
 }

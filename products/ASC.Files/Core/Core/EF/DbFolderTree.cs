@@ -20,6 +20,7 @@
             modelBuilder
                 .Add(MySqlAddDbFolderTree, Provider.MySql)
                 .Add(PgSqlAddDbFolderTree, Provider.PostgreSql);
+
             return modelBuilder;
         }
         public static void MySqlAddDbFolderTree(this ModelBuilder modelBuilder)

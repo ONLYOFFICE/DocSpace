@@ -95,44 +95,46 @@ namespace ASC.Web.Files.Classes
             };
         }
 
-        public Guid ID
-        {
-            get { return new Guid("{03B382BD-3C20-4f03-8AB9-5A33F016316E}"); }
-        }
+        public Guid ID => new Guid("{03B382BD-3C20-4f03-8AB9-5A33F016316E}");
     }
 
     [Scope]
     public class FilesSettingsHelper
     {
-        private SettingsManager SettingsManager { get; }
-        private CoreBaseSettings CoreBaseSettings { get; }
-        private SetupInfo SetupInfo { get; }
-        private FileUtility FileUtility { get; }
-        private FilesLinkUtility FilesLinkUtility { get; }
+        private readonly SettingsManager _settingsManager;
+        private readonly CoreBaseSettings _coreBaseSettings;
+        private readonly SetupInfo _setupInfo;
+        private readonly FileUtility _fileUtility;
+        private readonly FilesLinkUtility _filesLinkUtility;
 
-        public FilesSettingsHelper(SettingsManager settingsManager, CoreBaseSettings coreBaseSettings, SetupInfo setupInfo, FileUtility fileUtility, FilesLinkUtility filesLinkUtility)
+        public FilesSettingsHelper(
+            SettingsManager settingsManager,
+            CoreBaseSettings coreBaseSettings,
+            SetupInfo setupInfo,
+            FileUtility fileUtility,
+            FilesLinkUtility filesLinkUtility)
         {
-            SettingsManager = settingsManager;
-            CoreBaseSettings = coreBaseSettings;
-            SetupInfo = setupInfo;
-            FileUtility = fileUtility;
-            FilesLinkUtility = filesLinkUtility;
+            _settingsManager = settingsManager;
+            _coreBaseSettings = coreBaseSettings;
+            _setupInfo = setupInfo;
+            _fileUtility = fileUtility;
+            _filesLinkUtility = filesLinkUtility;
         }
 
-        public List<string> ExtsImagePreviewed => FileUtility.ExtsImagePreviewed;
-        public List<string> ExtsMediaPreviewed => FileUtility.ExtsMediaPreviewed;
-        public List<string> ExtsWebPreviewed => FileUtility.ExtsWebPreviewed;
-        public List<string> ExtsWebEdited => FileUtility.ExtsWebEdited;
-        public List<string> ExtsWebEncrypt => FileUtility.ExtsWebEncrypt;
-        public List<string> ExtsWebReviewed => FileUtility.ExtsWebReviewed;
-        public List<string> ExtsWebCustomFilterEditing => FileUtility.ExtsWebCustomFilterEditing;
-        public List<string> ExtsWebRestrictedEditing => FileUtility.ExtsWebRestrictedEditing;
-        public List<string> ExtsWebCommented => FileUtility.ExtsWebCommented;
-        public List<string> ExtsWebTemplate => FileUtility.ExtsWebTemplate;
-        public List<string> ExtsCoAuthoring => FileUtility.ExtsCoAuthoring;
-        public List<string> ExtsMustConvert => FileUtility.ExtsMustConvert;
-        public Dictionary<string, List<string>> ExtsConvertible => FileUtility.ExtsConvertible;
-        public List<string> ExtsUploadable => FileUtility.ExtsUploadable;
+        public List<string> ExtsImagePreviewed => _fileUtility.ExtsImagePreviewed;
+        public List<string> ExtsMediaPreviewed => _fileUtility.ExtsMediaPreviewed;
+        public List<string> ExtsWebPreviewed => _fileUtility.ExtsWebPreviewed;
+        public List<string> ExtsWebEdited => _fileUtility.ExtsWebEdited;
+        public List<string> ExtsWebEncrypt => _fileUtility.ExtsWebEncrypt;
+        public List<string> ExtsWebReviewed => _fileUtility.ExtsWebReviewed;
+        public List<string> ExtsWebCustomFilterEditing => _fileUtility.ExtsWebCustomFilterEditing;
+        public List<string> ExtsWebRestrictedEditing => _fileUtility.ExtsWebRestrictedEditing;
+        public List<string> ExtsWebCommented => _fileUtility.ExtsWebCommented;
+        public List<string> ExtsWebTemplate => _fileUtility.ExtsWebTemplate;
+        public List<string> ExtsCoAuthoring => _fileUtility.ExtsCoAuthoring;
+        public List<string> ExtsMustConvert => _fileUtility.ExtsMustConvert;
+        public Dictionary<string, List<string>> ExtsConvertible => _fileUtility.ExtsConvertible;
+        public List<string> ExtsUploadable => _fileUtility.ExtsUploadable;
         public List<string> ExtsArchive => FileUtility.ExtsArchive;
         public List<string> ExtsVideo => FileUtility.ExtsVideo;
         public List<string> ExtsAudio => FileUtility.ExtsAudio;
@@ -140,17 +142,17 @@ namespace ASC.Web.Files.Classes
         public List<string> ExtsSpreadsheet => FileUtility.ExtsSpreadsheet;
         public List<string> ExtsPresentation => FileUtility.ExtsPresentation;
         public List<string> ExtsDocument => FileUtility.ExtsDocument;
-        public Dictionary<FileType, string> InternalFormats => FileUtility.InternalExtension;
-        public string MasterFormExtension => FileUtility.MasterFormExtension;
+        public Dictionary<FileType, string> InternalFormats => _fileUtility.InternalExtension;
+        public string MasterFormExtension => _fileUtility.MasterFormExtension;
         public string ParamVersion => FilesLinkUtility.Version;
         public string ParamOutType => FilesLinkUtility.OutType;
-        public string FileDownloadUrlString => FilesLinkUtility.FileDownloadUrlString;
-        public string FileWebViewerUrlString => FilesLinkUtility.FileWebViewerUrlString;
-        public string FileWebViewerExternalUrlString => FilesLinkUtility.FileWebViewerExternalUrlString;
-        public string FileWebEditorUrlString => FilesLinkUtility.FileWebEditorUrlString;
-        public string FileWebEditorExternalUrlString => FilesLinkUtility.FileWebEditorExternalUrlString;
-        public string FileRedirectPreviewUrlString => FilesLinkUtility.FileRedirectPreviewUrlString;
-        public string FileThumbnailUrlString => FilesLinkUtility.FileThumbnailUrlString;
+        public string FileDownloadUrlString => _filesLinkUtility.FileDownloadUrlString;
+        public string FileWebViewerUrlString => _filesLinkUtility.FileWebViewerUrlString;
+        public string FileWebViewerExternalUrlString => _filesLinkUtility.FileWebViewerExternalUrlString;
+        public string FileWebEditorUrlString => _filesLinkUtility.FileWebEditorUrlString;
+        public string FileWebEditorExternalUrlString => _filesLinkUtility.FileWebEditorExternalUrlString;
+        public string FileRedirectPreviewUrlString => _filesLinkUtility.FileRedirectPreviewUrlString;
+        public string FileThumbnailUrlString => _filesLinkUtility.FileThumbnailUrlString;
 
         public bool ConfirmDelete
         {
@@ -160,18 +162,18 @@ namespace ASC.Web.Files.Classes
                 setting.FastDeleteSetting = !value;
                 SaveForCurrentUser(setting);
             }
-            get { return !LoadForCurrentUser().FastDeleteSetting; }
+            get => !LoadForCurrentUser().FastDeleteSetting;
         }
 
         public bool EnableThirdParty
         {
             set
             {
-                var setting = SettingsManager.Load<FilesSettings>();
+                var setting = _settingsManager.Load<FilesSettings>();
                 setting.EnableThirdpartySetting = value;
-                SettingsManager.Save(setting);
+                _settingsManager.Save(setting);
             }
-            get { return SettingsManager.Load<FilesSettings>().EnableThirdpartySetting; }
+            get => _settingsManager.Load<FilesSettings>().EnableThirdpartySetting;
         }
 
         public bool StoreOriginalFiles
@@ -182,7 +184,7 @@ namespace ASC.Web.Files.Classes
                 setting.StoreOriginalFilesSetting = value;
                 SaveForCurrentUser(setting);
             }
-            get { return LoadForCurrentUser().StoreOriginalFilesSetting; }
+            get => LoadForCurrentUser().StoreOriginalFilesSetting;
         }
 
         public bool UpdateIfExist
@@ -193,7 +195,7 @@ namespace ASC.Web.Files.Classes
                 setting.UpdateIfExistSetting = value;
                 SaveForCurrentUser(setting);
             }
-            get { return LoadForCurrentUser().UpdateIfExistSetting; }
+            get => LoadForCurrentUser().UpdateIfExistSetting;
         }
 
         public bool ConvertNotify
@@ -204,7 +206,7 @@ namespace ASC.Web.Files.Classes
                 setting.ConvertNotifySetting = value;
                 SaveForCurrentUser(setting);
             }
-            get { return LoadForCurrentUser().ConvertNotifySetting; }
+            get => LoadForCurrentUser().ConvertNotifySetting;
         }
 
         public bool HideConfirmConvertSave
@@ -215,7 +217,7 @@ namespace ASC.Web.Files.Classes
                 setting.HideConfirmConvertSaveSetting = value;
                 SaveForCurrentUser(setting);
             }
-            get { return LoadForCurrentUser().HideConfirmConvertSaveSetting; }
+            get => LoadForCurrentUser().HideConfirmConvertSaveSetting;
         }
 
         public bool HideConfirmConvertOpen
@@ -226,7 +228,7 @@ namespace ASC.Web.Files.Classes
                 setting.HideConfirmConvertOpenSetting = value;
                 SaveForCurrentUser(setting);
             }
-            get { return LoadForCurrentUser().HideConfirmConvertOpenSetting; }
+            get => LoadForCurrentUser().HideConfirmConvertOpenSetting;
         }
 
         public OrderBy DefaultOrder
@@ -244,6 +246,7 @@ namespace ASC.Web.Files.Classes
             get
             {
                 var setting = LoadForCurrentUser();
+
                 return new OrderBy(setting.DefaultSortedBySetting, setting.DefaultSortedAscSetting);
             }
         }
@@ -256,19 +259,23 @@ namespace ASC.Web.Files.Classes
                 setting.ForcesaveSetting = value;
                 SaveForCurrentUser(setting);
             }
-            get { return LoadForCurrentUser().ForcesaveSetting; }
+            get => LoadForCurrentUser().ForcesaveSetting;
         }
 
         public bool StoreForcesave
         {
             set
             {
-                if (CoreBaseSettings.Personal) throw new NotSupportedException();
-                var setting = SettingsManager.Load<FilesSettings>();
+                if (_coreBaseSettings.Personal)
+                {
+                    throw new NotSupportedException();
+                }
+
+                var setting = _settingsManager.Load<FilesSettings>();
                 setting.StoreForcesaveSetting = value;
-                SettingsManager.Save(setting);
+                _settingsManager.Save(setting);
             }
-            get { return !CoreBaseSettings.Personal && SettingsManager.Load<FilesSettings>().StoreForcesaveSetting; }
+            get => !_coreBaseSettings.Personal && _settingsManager.Load<FilesSettings>().StoreForcesaveSetting;
         }
 
         public bool RecentSection
@@ -279,7 +286,7 @@ namespace ASC.Web.Files.Classes
                 setting.HideRecentSetting = !value;
                 SaveForCurrentUser(setting);
             }
-            get { return !LoadForCurrentUser().HideRecentSetting; }
+            get => !LoadForCurrentUser().HideRecentSetting;
         }
 
         public bool FavoritesSection
@@ -290,7 +297,7 @@ namespace ASC.Web.Files.Classes
                 setting.HideFavoritesSetting = !value;
                 SaveForCurrentUser(setting);
             }
-            get { return !LoadForCurrentUser().HideFavoritesSetting; }
+            get => !LoadForCurrentUser().HideFavoritesSetting;
         }
 
         public bool TemplatesSection
@@ -301,7 +308,7 @@ namespace ASC.Web.Files.Classes
                 setting.HideTemplatesSetting = !value;
                 SaveForCurrentUser(setting);
             }
-            get { return !LoadForCurrentUser().HideTemplatesSetting; }
+            get => !LoadForCurrentUser().HideTemplatesSetting;
         }
 
         public bool DownloadTarGz
@@ -317,17 +324,17 @@ namespace ASC.Web.Files.Classes
 
         public long ChunkUploadSize
         {
-            get => SetupInfo.ChunkUploadSize;
+            get => _setupInfo.ChunkUploadSize;
         }
 
         private FilesSettings LoadForCurrentUser()
         {
-            return SettingsManager.LoadForCurrentUser<FilesSettings>();
+            return _settingsManager.LoadForCurrentUser<FilesSettings>();
         }
 
         private void SaveForCurrentUser(FilesSettings settings)
         {
-            SettingsManager.SaveForCurrentUser(settings);
+            _settingsManager.SaveForCurrentUser(settings);
         }
     }
 }

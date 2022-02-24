@@ -40,41 +40,26 @@ namespace ASC.Web.Files.Core
         {
             _stream = response.Content.ReadAsStream();
             _length = _stream.Length;
-            Response = response;
+            _response = response;
         }
 
-        public override bool CanRead
+        public override bool CanRead => _stream.CanRead;
+        public override bool CanSeek => _stream.CanSeek;
+        public override bool CanWrite => _stream.CanWrite;
+        public override long Length => _length;
+
+        public override long Position
         {
-            get { return _stream.CanRead; }
+            get => _stream.Position;
+            set => _stream.Position = value;
         }
 
-        public override bool CanSeek
-        {
-            get { return _stream.CanSeek; }
-        }
-
-        public override bool CanWrite
-        {
-            get { return _stream.CanWrite; }
-        }
+        private readonly HttpResponseMessage _response;
 
         public override void Flush()
         {
             _stream.Flush();
         }
-
-        public override long Length
-        {
-            get { return _length; }
-        }
-
-        public override long Position
-        {
-            get { return _stream.Position; }
-            set { _stream.Position = value; }
-        }
-
-        private HttpResponseMessage Response { get; }
 
         public override int Read(byte[] buffer, int offset, int count)
         {
@@ -101,8 +86,9 @@ namespace ASC.Web.Files.Core
             if (disposing)
             {
                 _stream.Dispose();
-                Response.Dispose();
+                _response.Dispose();
             }
+
             base.Dispose(disposing);
         }
 

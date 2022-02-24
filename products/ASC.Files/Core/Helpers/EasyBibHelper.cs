@@ -28,12 +28,12 @@ namespace ASC.Web.Files.Helpers
     [Scope]
     public class EasyBibHelper : Consumer
     {
-        public ILog Log { get; set; }
+        public ILog Logger { get; set; }
 
-        static readonly string searchBookUrl = "https://worldcat.citation-api.com/query?search=",
-                        searchJournalUrl = "https://crossref.citation-api.com/query?search=",
-                        searchWebSiteUrl = "https://web.citation-api.com/query?search=",
-                        easyBibStyles = "https://api.citation-api.com/2.1/rest/styles";
+        static readonly string SearchBookUrl = "https://worldcat.citation-api.com/query?search=",
+                        SearchJournalUrl = "https://crossref.citation-api.com/query?search=",
+                        SearchWebSiteUrl = "https://web.citation-api.com/query?search=",
+                        EasyBibStyles = "https://api.citation-api.com/2.1/rest/styles";
 
         public enum EasyBibSource
         {
@@ -42,15 +42,9 @@ namespace ASC.Web.Files.Helpers
             website = 2
         }
 
-        public string AppKey
-        {
-            get { return this["easyBibappkey"]; }
-        }
+        public string AppKey => this["easyBibappkey"];
 
-        public EasyBibHelper()
-        {
-
-        }
+        public EasyBibHelper() { }
 
         public EasyBibHelper(
             IOptionsMonitor<ILog> option,
@@ -66,7 +60,7 @@ namespace ASC.Web.Files.Helpers
             Dictionary<string, string> additional = null)
             : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, factory, name, order, props, additional)
         {
-            Log = option.CurrentValue;
+            Logger = option.CurrentValue;
         }
 
         public static string GetEasyBibCitationsList(int source, string data)
@@ -75,13 +69,13 @@ namespace ASC.Web.Files.Helpers
             switch (source)
             {
                 case 0:
-                    uri = searchBookUrl;
+                    uri = SearchBookUrl;
                     break;
                 case 1:
-                    uri = searchJournalUrl;
+                    uri = SearchJournalUrl;
                     break;
                 case 2:
-                    uri = searchWebSiteUrl;
+                    uri = SearchWebSiteUrl;
                     break;
                 default:
                     break;
@@ -108,13 +102,14 @@ namespace ASC.Web.Files.Helpers
             var headers = new Dictionary<string, string>() { };
             try
             {
-                return RequestHelper.PerformRequest(easyBibStyles, "", method, "", headers);
+                return RequestHelper.PerformRequest(EasyBibStyles, "", method, "", headers);
             }
             catch (Exception)
             {
                 return "error";
             }
         }
+
         public object GetEasyBibCitation(string data)
         {
             try

@@ -28,8 +28,8 @@ namespace ASC.Web.Files.Core.Search
     [Scope(Additional = typeof(FactoryIndexerFileExtension))]
     public class FactoryIndexerFile : FactoryIndexer<DbFile>
     {
-        private IDaoFactory DaoFactory { get; }
-        private Settings Settings { get; }
+        private readonly IDaoFactory _daoFactory;
+        private readonly Settings _settings;
 
         public FactoryIndexerFile(
             IOptionsMonitor<ILog> options,
@@ -43,13 +43,13 @@ namespace ASC.Web.Files.Core.Search
             Settings settings)
             : base(options, tenantManager, searchSettingsHelper, factoryIndexer, baseIndexer, serviceProvider, cache)
         {
-            DaoFactory = daoFactory;
-            Settings = settings;
+            _daoFactory = daoFactory;
+            _settings = settings;
         }
 
         public override void IndexAll()
         {
-            var fileDao = DaoFactory.GetFileDao<int>() as FileDao;
+            var fileDao = _daoFactory.GetFileDao<int>() as FileDao;
 
             (int, int, int) getCount(DateTime lastIndexed)
             {
@@ -124,7 +124,7 @@ namespace ASC.Web.Files.Core.Search
 
                 foreach (var data in Indexer.IndexAll(getCount, getIds, getData))
                 {
-                    if (Settings.Threads == 1)
+                    if (_settings.Threads == 1)
                     {
                         data.ForEach(r =>
                         {
@@ -144,7 +144,7 @@ namespace ASC.Web.Files.Core.Search
 
                         tasks.Add(IndexAsync(data));
                         j++;
-                        if (j >= Settings.Threads)
+                        if (j >= _settings.Threads)
                         {
                             Task.WaitAll(tasks.ToArray());
                             tasks = new List<Task>();
@@ -165,11 +165,7 @@ namespace ASC.Web.Files.Core.Search
             }
         }
 
-
-        public override string SettingsTitle
-        {
-            get { return FilesCommonResource.IndexTitle; }
-        }
+        public override string SettingsTitle => FilesCommonResource.IndexTitle;
     }
 
     public class FileTenant
