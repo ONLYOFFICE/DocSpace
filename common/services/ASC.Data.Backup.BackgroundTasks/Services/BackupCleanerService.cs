@@ -54,7 +54,20 @@ internal sealed class BackupCleanerService : BackgroundService
         {
             _logger.Debug("BackupCleanerService background task is doing background work.");
 
-            await ExecuteBackupCleaner(stoppingToken);
+            using var serviceScope = _scopeFactory.CreateScope();
+
+            var registerInstanceService = serviceScope.ServiceProvider.GetService<IRegisterInstanceManager<BackupCleanerService>>();
+
+            if (!await registerInstanceService.IsActive(RegisterInstanceWorkerService<BackupCleanerService>.InstanceId))
+            {
+                _logger.Debug($"BackupCleanerService background task with instance id {RegisterInstanceWorkerService<BackupCleanerService>.InstanceId} is't active.");
+
+                await Task.Delay(1000, stoppingToken);
+
+                continue;
+            }
+
+            ExecuteBackupCleaner(stoppingToken);
 
             await Task.Delay(_backupCleanerPeriod, stoppingToken);
         }
@@ -62,13 +75,9 @@ internal sealed class BackupCleanerService : BackgroundService
         _logger.Debug("BackupCleanerService background task is stopping.");
     }
 
-    private async Task ExecuteBackupCleaner(CancellationToken stoppingToken)
+    private void ExecuteBackupCleaner(CancellationToken stoppingToken)
     {
         using var serviceScope = _scopeFactory.CreateScope();
-
-        var registerInstanceService = serviceScope.ServiceProvider.GetService<IRegisterInstanceManager<BackupSchedulerService>>();
-
-        if (!await registerInstanceService.IsActive(RegisterInstanceWorkerService<BackupCleanerService>.InstanceId)) return;
 
         var backupRepository = serviceScope.ServiceProvider.GetRequiredService<BackupRepository>();
         var backupStorageFactory = serviceScope.ServiceProvider.GetRequiredService<BackupStorageFactory>();

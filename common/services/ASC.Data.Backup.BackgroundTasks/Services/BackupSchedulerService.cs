@@ -24,6 +24,7 @@
 */
 
 using ASC.Core.Common.Hosting;
+using ASC.ElasticSearch.Service;
 
 namespace ASC.Data.Backup.Services;
 
@@ -63,9 +64,22 @@ public sealed class BackupSchedulerService : BackgroundService
 
         while (!stoppingToken.IsCancellationRequested)
         {
+            using var serviceScope = _scopeFactory.CreateScope();
+
+            var registerInstanceService = serviceScope.ServiceProvider.GetService<IRegisterInstanceManager<BackupSchedulerService>>();
+
+            if (!await registerInstanceService.IsActive(RegisterInstanceWorkerService<BackupSchedulerService>.InstanceId))
+            {
+                _logger.Debug($"BackupSchedulerService background task with instance id {RegisterInstanceWorkerService<BackupSchedulerService>.InstanceId} is't active.");
+
+                await Task.Delay(1000, stoppingToken);
+
+                continue;
+            }
+
             _logger.Debug("BackupSchedulerService background task is doing background work.");
 
-            await ExecuteBackupScheduler(stoppingToken);
+            ExecuteBackupScheduler(stoppingToken);
 
             await Task.Delay(_backupSchedulerPeriod, stoppingToken);
         }
@@ -73,19 +87,15 @@ public sealed class BackupSchedulerService : BackgroundService
         _logger.Debug("BackupSchedulerService background task is stopping.");
     }
 
-    private async Task ExecuteBackupScheduler(CancellationToken stoppingToken)
+    private void ExecuteBackupScheduler(CancellationToken stoppingToken)
     {
         using var serviceScope = _scopeFactory.CreateScope();
-
-        var registerInstanceService = serviceScope.ServiceProvider.GetService<IRegisterInstanceManager<BackupSchedulerService>>();
-
-        if (!await registerInstanceService.IsActive(RegisterInstanceWorkerService<BackupSchedulerService>.InstanceId)) return;
 
         var paymentManager = serviceScope.ServiceProvider.GetRequiredService<PaymentManager>();
         var backupRepository = serviceScope.ServiceProvider.GetRequiredService<BackupRepository>(); ;
         var backupSchedule = serviceScope.ServiceProvider.GetRequiredService<Schedule>();
         var tenantManager = serviceScope.ServiceProvider.GetRequiredService<TenantManager>();
-                
+
         _logger.DebugFormat("started to schedule backups");
 
         var backupsToSchedule = backupRepository.GetBackupSchedules().Where(schedule => backupSchedule.IsToBeProcessed(schedule)).ToList();
