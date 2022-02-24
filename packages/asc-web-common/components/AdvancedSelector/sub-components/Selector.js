@@ -471,6 +471,7 @@ const Selector = (props) => {
   );
 
   const renderGroupsList = useCallback(() => {
+    if (groups.length === 0) return renderOptionLoader();
     return (
       <AutoSizer>
         {({ width, height }) => (
