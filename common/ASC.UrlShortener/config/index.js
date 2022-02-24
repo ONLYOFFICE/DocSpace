@@ -30,15 +30,12 @@ const fs = require("fs");
 
 nconf.argv()
     .env()
-    .file({ file: path.join(__dirname, 'config.json') });
-
-var port = nconf.get("port");
+    .file("config", path.join(__dirname, 'config.json') );
 
 getAndSaveAppsettings();
 
 getAndSaveSql();
 
-nconf.set("port", port);
 module.exports = nconf;
 
 function getAndSaveAppsettings(){
@@ -48,10 +45,10 @@ function getAndSaveAppsettings(){
     var fileWithEnv = path.join(__dirname, appsettings, 'appsettings.' + valueEnv + '.json');
 
     if(fs.existsSync(fileWithEnv)){
-        nconf.file({ file: fileWithEnv});
+        nconf.file("appsettings" ,fileWithEnv);
     }
     else{
-        nconf.file({ file: path.join(__dirname, appsettings, 'appsettings.json')});
+        nconf.file("appsettings" ,path.join(__dirname, appsettings, 'appsettings.json'));
     }
 }
 
