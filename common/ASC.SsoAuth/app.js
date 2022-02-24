@@ -36,7 +36,7 @@ const fs = require("fs"),
 require('winston-daily-rotate-file');
 
 const app = express();
-let logDir = path.join(__dirname, config["logPath"]) || config.app.logDir;
+let logDir = config["logPath"] ? path.join(__dirname, config["logPath"]) : config.app.logDir;
 // ensure log directory exists
 fs.existsSync(logDir) || fs.mkdirSync(logDir);
 

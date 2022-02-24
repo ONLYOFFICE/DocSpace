@@ -45,12 +45,12 @@ function getAndSaveAppsettings(){
     var fileWithEnv = path.join(__dirname, appsettings, 'appsettings.' + valueEnv + '.json');
 
     if(fs.existsSync(fileWithEnv)){
-        nconf.file("appsettings" ,fileWithEnv);
+        nconf.file("appsettings", fileWithEnv);
     }
     else{
-        nconf.file("appsettings" ,path.join(__dirname, appsettings, 'appsettings.json'));
+        nconf.file("appsettings", path.join(__dirname, appsettings, 'appsettings.json'));
     }
-    nconf.file("appsettingsServices" ,path.join(__dirname, appsettings, 'appsettings.services.json'));
+    nconf.file("appsettingsServices", path.join(__dirname, appsettings, 'appsettings.services.json'));
 }
 
 function getAndSaveSql(){

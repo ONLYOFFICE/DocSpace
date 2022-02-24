@@ -30,7 +30,7 @@ require('winston-daily-rotate-file');
 const path = require('path');
 const config = require('../config');
 const fs = require('fs');
-const fileName = path.join(__dirname, "..", config.get("logPath"), "web.shorturl.%DATE%.log") || path.join(__dirname, "..", "Logs", "web.shorturl.%DATE%.log");
+const fileName = config.get("logPath") ?  path.join(__dirname, "..", config.get("logPath"), "web.shorturl.%DATE%.log") : path.join(__dirname, "..", "Logs", "web.shorturl.%DATE%.log");
 const dirName = path.dirname(fileName);
 
 if (!fs.existsSync(dirName)) {
