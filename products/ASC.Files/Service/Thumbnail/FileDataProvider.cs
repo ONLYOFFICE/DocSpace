@@ -19,26 +19,27 @@ namespace ASC.Files.ThumbnailBuilder
     [Scope]
     internal class FileDataProvider
     {
-        private readonly ThumbnailSettings thumbnailSettings;
-        private readonly ICache cache;
-        private Lazy<Core.EF.FilesDbContext> LazyFilesDbContext { get; }
-        private Core.EF.FilesDbContext filesDbContext { get => LazyFilesDbContext.Value; }
-        private readonly string cacheKey;
+        private FilesDbContext filesDbContext => _lazyFilesDbContext.Value;
+
+        private readonly ThumbnailSettings _thumbnailSettings;
+        private readonly ICache _cache;
+        private readonly Lazy<FilesDbContext> _lazyFilesDbContext;
+        private readonly string _cacheKey;
 
         public FileDataProvider(
             ThumbnailSettings settings,
             ICache ascCache,
-            DbContextManager<Core.EF.FilesDbContext> dbContextManager)
+            DbContextManager<FilesDbContext> dbContextManager)
         {
-            thumbnailSettings = settings;
-            cache = ascCache;
-            LazyFilesDbContext = new Lazy<Core.EF.FilesDbContext>(() => dbContextManager.Get(thumbnailSettings.ConnectionStringName));
-            cacheKey = "PremiumTenants";
+            _thumbnailSettings = settings;
+            _cache = ascCache;
+            _lazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(_thumbnailSettings.ConnectionStringName));
+            _cacheKey = "PremiumTenants";
         }
 
         public int[] GetPremiumTenants()
         {
-            var result = cache.Get<int[]>(cacheKey);
+            var result = _cache.Get<int[]>(_cacheKey);
 
             if (result != null)
             {
@@ -97,7 +98,7 @@ namespace ASC.Files.ThumbnailBuilder
 
             result = search.Select(r => r.tenant).ToArray();
 
-            cache.Insert(cacheKey, result, DateTime.UtcNow.AddHours(1));
+            _cache.Insert(_cacheKey, result, DateTime.UtcNow.AddHours(1));
 
             return result;
         }
@@ -108,7 +109,7 @@ namespace ASC.Files.ThumbnailBuilder
                 .AsQueryable()
                 .Where(r => r.CurrentVersion && r.Thumb == Thumbnail.Waiting && !r.Encrypted)
                 .OrderByDescending(r => r.ModifiedOn)
-                .Take(thumbnailSettings.SqlMaxResults);
+                .Take(_thumbnailSettings.SqlMaxResults);
 
             if (where != null)
             {

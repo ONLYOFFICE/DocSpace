@@ -4,22 +4,19 @@ namespace ASC.Files.Service.Core
 {
     public class FilesModule : FeedModule
     {
-        private const string fileItem = "file";
-        private const string sharedFileItem = "sharedFile";
-
-        public override string Name => Constants.FilesModule;
-
-        public override string Product => "documents";
-
         public override Guid ProductID => WebItemManager.DocumentsProductID;
-
+        public override string Name => Constants.FilesModule;
+        public override string Product => "documents";
         protected override string DbId => "files";
 
-        private IFileDao<int> FileDao { get; }
-        private IFolderDao<int> FolderDao { get; }
-        private UserManager UserManager { get; }
-        private FilesLinkUtility FilesLinkUtility { get; }
-        private FileSecurity FileSecurity { get; }
+        private const string FileItem = "file";
+        private const string SharedFileItem = "sharedFile";
+
+        private readonly FileSecurity _fileSecurity;
+        private readonly FilesLinkUtility _filesLinkUtility;
+        private readonly IFileDao<int> _fileDao;
+        private readonly IFolderDao<int> _folderDao;
+        private readonly UserManager _userManager;  
 
         public FilesModule(
             TenantManager tenantManager,
@@ -30,16 +27,19 @@ namespace ASC.Files.Service.Core
             IDaoFactory daoFactory)
             : base(tenantManager, webItemSecurity)
         {
-            FileDao = daoFactory.GetFileDao<int>();
-            FolderDao = daoFactory.GetFolderDao<int>();
-            UserManager = userManager;
-            FilesLinkUtility = filesLinkUtility;
-            FileSecurity = fileSecurity;
+            _fileDao = daoFactory.GetFileDao<int>();
+            _folderDao = daoFactory.GetFolderDao<int>();
+            _userManager = userManager;
+            _filesLinkUtility = filesLinkUtility;
+            _fileSecurity = fileSecurity;
         }
 
         public override bool VisibleFor(Feed.Aggregator.Feed feed, object data, Guid userId)
         {
-            if (!WebItemSecurity.IsAvailableForUser(ProductID, userId)) return false;
+            if (!WebItemSecurity.IsAvailableForUser(ProductID, userId))
+            {
+                return false;
+            }
 
             var tuple = ((File<int>, SmallShareRecord))data;
             var file = tuple.Item1;
@@ -48,14 +48,18 @@ namespace ASC.Files.Service.Core
             bool targetCond;
             if (feed.Target != null)
             {
-                if (shareRecord != null && shareRecord.ShareBy == userId) return false;
+                if (shareRecord != null && shareRecord.ShareBy == userId)
+                {
+                    return false;
+                }
 
                 var owner = (Guid)feed.Target;
-                var groupUsers = UserManager.GetUsersByGroup(owner).Select(x => x.ID).ToList();
+                var groupUsers = _userManager.GetUsersByGroup(owner).Select(x => x.ID).ToList();
                 if (groupUsers.Count == 0)
                 {
                     groupUsers.Add(owner);
                 }
+
                 targetCond = groupUsers.Contains(userId);
             }
             else
@@ -63,16 +67,20 @@ namespace ASC.Files.Service.Core
                 targetCond = true;
             }
 
-            return targetCond && FileSecurity.CanReadAsync(file, userId).Result;
+            return targetCond && _fileSecurity.CanReadAsync(file, userId).Result;
         }
 
         public override void VisibleFor(List<Tuple<FeedRow, object>> feed, Guid userId)
         {
-            if (!WebItemSecurity.IsAvailableForUser(ProductID, userId)) return;
+            if (!WebItemSecurity.IsAvailableForUser(ProductID, userId))
+            {
+                return;
+            }
 
             var feed1 = feed.Select(r =>
             {
                 var tuple = ((File<int>, SmallShareRecord))r.Item2;
+
                 return new Tuple<FeedRow, File<int>, SmallShareRecord>(r.Item1, tuple.Item1, tuple.Item2);
             })
             .ToList();
@@ -88,7 +96,7 @@ namespace ASC.Files.Service.Core
                 }
             }
 
-            var canRead = FileSecurity.CanReadAsync(files, userId).Result.Where(r => r.Item2).ToList();
+            var canRead = _fileSecurity.CanReadAsync(files, userId).Result.Where(r => r.Item2).ToList();
 
             foreach (var f in feed1)
             {
@@ -101,19 +109,19 @@ namespace ASC.Files.Service.Core
 
         public override IEnumerable<Tuple<Feed.Aggregator.Feed, object>> GetFeeds(FeedFilter filter)
         {
-            var files = FileDao.GetFeedsAsync(filter.Tenant, filter.Time.From, filter.Time.To).Result
+            var files = _fileDao.GetFeedsAsync(filter.Tenant, filter.Time.From, filter.Time.To).Result
                 .Where(f => f.Item1.RootFolderType != FolderType.TRASH && f.Item1.RootFolderType != FolderType.BUNCH)
                 .ToList();
 
             var folderIDs = files.Select(r => r.Item1.FolderID).ToList();
-            var folders = FolderDao.GetFoldersAsync(folderIDs, checkShare: false).ToListAsync().Result;
+            var folders = _folderDao.GetFoldersAsync(folderIDs, checkShare: false).ToListAsync().Result;
 
             return files.Select(f => new Tuple<Feed.Aggregator.Feed, object>(ToFeed(f, folders.FirstOrDefault(r => r.ID.Equals(f.Item1.FolderID))), f));
         }
 
         public override IEnumerable<int> GetTenantsWithFeeds(DateTime fromTime)
         {
-            return FileDao.GetTenantsWithFeedsAsync(fromTime).Result;
+            return _fileDao.GetTenantsWithFeedsAsync(fromTime).Result;
         }
 
         private Feed.Aggregator.Feed ToFeed((File<int>, SmallShareRecord) tuple, Folder<int> rootFolder)
@@ -125,51 +133,56 @@ namespace ASC.Files.Service.Core
             {
                 var feed = new Feed.Aggregator.Feed(shareRecord.ShareBy, shareRecord.ShareOn, true)
                 {
-                    Item = sharedFileItem,
+                    Item = SharedFileItem,
                     ItemId = string.Format("{0}_{1}", file.ID, shareRecord.ShareTo),
-                    ItemUrl = FilesLinkUtility.GetFileRedirectPreviewUrl(file.ID, true),
+                    ItemUrl = _filesLinkUtility.GetFileRedirectPreviewUrl(file.ID, true),
                     Product = Product,
                     Module = Name,
                     Title = file.Title,
                     ExtraLocation = rootFolder.FolderType == FolderType.DEFAULT ? rootFolder.Title : string.Empty,
-                    ExtraLocationUrl = rootFolder.FolderType == FolderType.DEFAULT ? FilesLinkUtility.GetFileRedirectPreviewUrl(file.FolderID, false) : string.Empty,
+                    ExtraLocationUrl = rootFolder.FolderType == FolderType.DEFAULT ? _filesLinkUtility.GetFileRedirectPreviewUrl(file.FolderID, false) : string.Empty,
                     AdditionalInfo = file.ContentLengthString,
                     Keywords = file.Title,
                     HasPreview = false,
                     CanComment = false,
                     Target = shareRecord.ShareTo,
-                    GroupId = GetGroupId(sharedFileItem, shareRecord.ShareBy, file.FolderID.ToString())
+                    GroupId = GetGroupId(SharedFileItem, shareRecord.ShareBy, file.FolderID.ToString())
                 };
 
                 return feed;
             }
 
             var updated = file.Version != 1;
+
             return new Feed.Aggregator.Feed(file.ModifiedBy, file.ModifiedOn, true)
             {
-                Item = fileItem,
+                Item = FileItem,
                 ItemId = string.Format("{0}_{1}", file.ID, file.Version > 1 ? 1 : 0),
-                ItemUrl = FilesLinkUtility.GetFileRedirectPreviewUrl(file.ID, true),
+                ItemUrl = _filesLinkUtility.GetFileRedirectPreviewUrl(file.ID, true),
                 Product = Product,
                 Module = Name,
                 Action = updated ? FeedAction.Updated : FeedAction.Created,
                 Title = file.Title,
                 ExtraLocation = rootFolder.FolderType == FolderType.DEFAULT ? rootFolder.Title : string.Empty,
-                ExtraLocationUrl = rootFolder.FolderType == FolderType.DEFAULT ? FilesLinkUtility.GetFileRedirectPreviewUrl(file.FolderID, false) : string.Empty,
+                ExtraLocationUrl = rootFolder.FolderType == FolderType.DEFAULT ? _filesLinkUtility.GetFileRedirectPreviewUrl(file.FolderID, false) : string.Empty,
                 AdditionalInfo = file.ContentLengthString,
                 Keywords = file.Title,
                 HasPreview = false,
                 CanComment = false,
                 Target = null,
-                GroupId = GetGroupId(fileItem, file.ModifiedBy, file.FolderID.ToString(), updated ? 1 : 0)
+                GroupId = GetGroupId(FileItem, file.ModifiedBy, file.FolderID.ToString(), updated ? 1 : 0)
             };
         }
 
         private bool IsTarget(object target, Guid userId)
         {
-            if (target == null) return true;
+            if (target == null)
+            {
+                return true;
+            }
+
             var owner = (Guid)target;
-            var groupUsers = UserManager.GetUsersByGroup(owner).Select(x => x.ID).ToList();
+            var groupUsers = _userManager.GetUsersByGroup(owner).Select(x => x.ID).ToList();
             if (groupUsers.Count == 0)
             {
                 groupUsers.Add(owner);

@@ -19,20 +19,21 @@ namespace ASC.Files.ThumbnailBuilder
     [Singletone(Additional = typeof(WorkerExtension))]
     public class Launcher : IHostedService
     {
-        private Worker worker;
+        internal static readonly ConcurrentDictionary<object, FileData<int>> Queue 
+            = new ConcurrentDictionary<object, FileData<int>>();
 
-        internal static readonly ConcurrentDictionary<object, FileData<int>> Queue = new ConcurrentDictionary<object, FileData<int>>();
-        private Service Service { get; }
+        private Worker _worker;
+        private readonly Service Service;
 
         public Launcher(Service service, Worker worker)
         {
             Service = service;
-            this.worker = worker;
+            _worker = worker;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            worker.Start(cancellationToken);
+            _worker.Start(cancellationToken);
             Service.Start();
 
             return Task.CompletedTask;
@@ -40,10 +41,10 @@ namespace ASC.Files.ThumbnailBuilder
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            if (worker != null)
+            if (_worker != null)
             {
-                worker.Stop();
-                worker = null;
+                _worker.Stop();
+                _worker = null;
             }
 
             if (Service != null)

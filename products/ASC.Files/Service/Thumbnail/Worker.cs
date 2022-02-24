@@ -19,46 +19,45 @@ namespace ASC.Files.ThumbnailBuilder
     [Singletone]
     public class Worker
     {
-        private readonly IServiceProvider serviceProvider;
-        private CancellationToken cancellationToken;
-        private readonly ThumbnailSettings thumbnailSettings;
-        private readonly ILog logger;
+        private readonly IServiceProvider _serviceProvider;
+        private CancellationToken _cancellationToken;
+        private readonly ThumbnailSettings _thumbnailSettings;
+        private readonly ILog _logger;
 
-        private Timer timer;
+        private Timer _timer;
 
         public Worker(
             IServiceProvider serviceProvider,
             IOptionsMonitor<ILog> options,
             ThumbnailSettings settings)
         {
-            this.serviceProvider = serviceProvider;
-            this.thumbnailSettings = settings;
-            logger = options.Get("ASC.Files.ThumbnailBuilder");
+            _serviceProvider = serviceProvider;
+            _thumbnailSettings = settings;
+            _logger = options.Get("ASC.Files.ThumbnailBuilder");
         }
 
         public void Start(CancellationToken cancellationToken)
         {
-            timer = new Timer(Procedure, null, 0, Timeout.Infinite);
-            this.cancellationToken = cancellationToken;
+            _timer = new Timer(Procedure, null, 0, Timeout.Infinite);
+            _cancellationToken = cancellationToken;
         }
 
         public void Stop()
         {
-            if (timer != null)
+            if (_timer != null)
             {
-                timer.Change(Timeout.Infinite, Timeout.Infinite);
-                timer.Dispose();
-                timer = null;
+                _timer.Change(Timeout.Infinite, Timeout.Infinite);
+                _timer.Dispose();
+                _timer = null;
             }
         }
 
-
         private void Procedure(object _)
         {
-            timer.Change(Timeout.Infinite, Timeout.Infinite);
-            logger.Trace("Procedure: Start.");
+            _timer.Change(Timeout.Infinite, Timeout.Infinite);
+            _logger.Trace("Procedure: Start.");
 
-            if (cancellationToken.IsCancellationRequested)
+            if (_cancellationToken.IsCancellationRequested)
             {
                 Stop();
                 return;
@@ -72,12 +71,12 @@ namespace ASC.Files.ThumbnailBuilder
 
             if (filesWithoutThumbnails.Count == 0)
             {
-                logger.TraceFormat("Procedure: Waiting for data. Sleep {0}.", thumbnailSettings.LaunchFrequency);
-                timer.Change(TimeSpan.FromSeconds(thumbnailSettings.LaunchFrequency), TimeSpan.FromMilliseconds(-1));
+                _logger.TraceFormat("Procedure: Waiting for data. Sleep {0}.", _thumbnailSettings.LaunchFrequency);
+                _timer.Change(TimeSpan.FromSeconds(_thumbnailSettings.LaunchFrequency), TimeSpan.FromMilliseconds(-1));
                 return;
             }
 
-            using (var scope = serviceProvider.CreateScope())
+            using (var scope = _serviceProvider.CreateScope())
             {
                 var fileDataProvider = scope.ServiceProvider.GetService<FileDataProvider>();
                 var builder = scope.ServiceProvider.GetService<BuilderQueue<int>>();
@@ -90,8 +89,8 @@ namespace ASC.Files.ThumbnailBuilder
                 builder.BuildThumbnails(filesWithoutThumbnails);
             }
 
-            logger.Trace("Procedure: Finish.");
-            timer.Change(0, Timeout.Infinite);
+            _logger.Trace("Procedure: Finish.");
+            _timer.Change(0, Timeout.Infinite);
         }
     }
 

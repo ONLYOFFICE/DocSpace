@@ -19,15 +19,15 @@ namespace ASC.Files.ThumbnailBuilder
     [Singletone]
     internal class BuilderQueue<T>
     {
-        private readonly ThumbnailSettings config;
-        private readonly ILog logger;
-        private IServiceProvider ServiceProvider { get; }
+        private readonly ThumbnailSettings _config;
+        private readonly ILog _logger;
+        private readonly IServiceProvider _serviceProvider;
 
         public BuilderQueue(IServiceProvider serviceProvider, IOptionsMonitor<ILog> log, ThumbnailSettings settings)
         {
-            logger = log.Get("ASC.Files.ThumbnailBuilder");
-            ServiceProvider = serviceProvider;
-            config = settings;
+            _logger = log.Get("ASC.Files.ThumbnailBuilder");
+            _serviceProvider = serviceProvider;
+            _config = settings;
         }
 
         public void BuildThumbnails(IEnumerable<FileData<T>> filesWithoutThumbnails)
@@ -36,10 +36,10 @@ namespace ASC.Files.ThumbnailBuilder
             {
                 Parallel.ForEach(
                     filesWithoutThumbnails,
-                    new ParallelOptions { MaxDegreeOfParallelism = config.MaxDegreeOfParallelism },
+                    new ParallelOptions { MaxDegreeOfParallelism = _config.MaxDegreeOfParallelism },
                     (fileData) =>
                     {
-                        using var scope = ServiceProvider.CreateScope();
+                        using var scope = _serviceProvider.CreateScope();
                         var commonLinkUtilitySettings = scope.ServiceProvider.GetService<CommonLinkUtilitySettings>();
                         commonLinkUtilitySettings.ServerUri = fileData.BaseUri;
 
@@ -50,7 +50,7 @@ namespace ASC.Files.ThumbnailBuilder
             }
             catch (Exception exception)
             {
-                logger.Error(string.Format("BuildThumbnails: filesWithoutThumbnails.Count: {0}.", filesWithoutThumbnails.Count()), exception);
+                _logger.Error(string.Format("BuildThumbnails: filesWithoutThumbnails.Count: {0}.", filesWithoutThumbnails.Count()), exception);
             }
         }
     }
@@ -58,16 +58,15 @@ namespace ASC.Files.ThumbnailBuilder
     [Scope]
     internal class Builder<T>
     {
-        private readonly ThumbnailSettings config;
-        private readonly ILog logger;
-
-        private TenantManager TenantManager { get; }
-        private IDaoFactory DaoFactory { get; }
-        private DocumentServiceConnector DocumentServiceConnector { get; }
-        private DocumentServiceHelper DocumentServiceHelper { get; }
-        private Global Global { get; }
-        private PathProvider PathProvider { get; }
-        private IHttpClientFactory ClientFactory { get; }
+        private readonly ThumbnailSettings _config;
+        private readonly ILog _logger;
+        private readonly TenantManager _tenantManager;
+        private readonly IDaoFactory _daoFactory;
+        private readonly DocumentServiceConnector _documentServiceConnector;
+        private readonly DocumentServiceHelper _documentServiceHelper;
+        private readonly Global _global;
+        private readonly PathProvider _pathProvider;
+        private readonly IHttpClientFactory _clientFactory;
 
         public Builder(
             ThumbnailSettings settings,
@@ -80,27 +79,28 @@ namespace ASC.Files.ThumbnailBuilder
             IOptionsMonitor<ILog> log,
             IHttpClientFactory clientFactory)
         {
-            this.config = settings;
-            TenantManager = tenantManager;
-            DaoFactory = daoFactory;
-            DocumentServiceConnector = documentServiceConnector;
-            DocumentServiceHelper = documentServiceHelper;
-            Global = global;
-            PathProvider = pathProvider;
-            logger = log.Get("ASC.Files.ThumbnailBuilder");
-            ClientFactory = clientFactory;
+            this._config = settings;
+            _tenantManager = tenantManager;
+            _daoFactory = daoFactory;
+            _documentServiceConnector = documentServiceConnector;
+            _documentServiceHelper = documentServiceHelper;
+            _global = global;
+            _pathProvider = pathProvider;
+            _logger = log.Get("ASC.Files.ThumbnailBuilder");
+            _clientFactory = clientFactory;
         }
 
         internal void BuildThumbnail(FileData<T> fileData)
         {
             try
             {
-                TenantManager.SetCurrentTenant(fileData.TenantId);
+                _tenantManager.SetCurrentTenant(fileData.TenantId);
 
-                var fileDao = DaoFactory.GetFileDao<T>();
+                var fileDao = _daoFactory.GetFileDao<T>();
                 if (fileDao == null)
                 {
-                    logger.ErrorFormat("BuildThumbnail: TenantId: {0}. FileDao could not be null.", fileData.TenantId);
+                    _logger.ErrorFormat("BuildThumbnail: TenantId: {0}. FileDao could not be null.", fileData.TenantId);
+
                     return;
                 }
 
@@ -108,7 +108,7 @@ namespace ASC.Files.ThumbnailBuilder
             }
             catch (Exception exception)
             {
-                logger.Error(string.Format("BuildThumbnail: TenantId: {0}.", fileData.TenantId), exception);
+                _logger.Error(string.Format("BuildThumbnail: TenantId: {0}.", fileData.TenantId), exception);
             }
             finally
             {
@@ -126,22 +126,25 @@ namespace ASC.Files.ThumbnailBuilder
 
                 if (file == null)
                 {
-                    logger.ErrorFormat("GenerateThumbnail: FileId: {0}. File not found.", fileData.FileId);
+                    _logger.ErrorFormat("GenerateThumbnail: FileId: {0}. File not found.", fileData.FileId);
+
                     return;
                 }
 
                 if (file.ThumbnailStatus != Thumbnail.Waiting)
                 {
-                    logger.InfoFormat("GenerateThumbnail: FileId: {0}. Thumbnail already processed.", fileData.FileId);
+                    _logger.InfoFormat("GenerateThumbnail: FileId: {0}. Thumbnail already processed.", fileData.FileId);
+
                     return;
                 }
 
                 var ext = FileUtility.GetFileExtension(file.Title);
 
-                if (!config.FormatsArray.Contains(ext) || file.Encrypted || file.RootFolderType == FolderType.TRASH || file.ContentLength > config.AvailableFileSize)
+                if (!_config.FormatsArray.Contains(ext) || file.Encrypted || file.RootFolderType == FolderType.TRASH || file.ContentLength > _config.AvailableFileSize)
                 {
                     file.ThumbnailStatus = Thumbnail.NotRequired;
                     fileDao.SaveThumbnailAsync(file, null).Wait();
+
                     return;
                 }
 
@@ -156,7 +159,7 @@ namespace ASC.Files.ThumbnailBuilder
             }
             catch (Exception exception)
             {
-                logger.Error(string.Format("GenerateThumbnail: FileId: {0}.", fileData.FileId), exception);
+                _logger.Error(string.Format("GenerateThumbnail: FileId: {0}.", fileData.FileId), exception);
                 if (file != null)
                 {
                     file.ThumbnailStatus = Thumbnail.Error;
@@ -167,7 +170,7 @@ namespace ASC.Files.ThumbnailBuilder
 
         private void MakeThumbnail(IFileDao<T> fileDao, File<T> file)
         {
-            logger.DebugFormat("MakeThumbnail: FileId: {0}.", file.ID);
+            _logger.DebugFormat("MakeThumbnail: FileId: {0}.", file.ID);
 
             string thumbnailUrl = null;
             var attempt = 1;
@@ -176,7 +179,7 @@ namespace ASC.Files.ThumbnailBuilder
             {
                 try
                 {
-                    if (GetThumbnailUrl(file, Global.ThumbnailExtension, out thumbnailUrl))
+                    if (GetThumbnailUrl(file, _global.ThumbnailExtension, out thumbnailUrl))
                     {
                         break;
                     }
@@ -200,17 +203,17 @@ namespace ASC.Files.ThumbnailBuilder
                     }
                 }
 
-                if (attempt >= config.AttemptsLimit)
+                if (attempt >= _config.AttemptsLimit)
                 {
                     throw new Exception(string.Format("MakeThumbnail: FileId: {0}. Attempts limmit exceeded.", file.ID));
                 }
                 else
                 {
-                    logger.DebugFormat("MakeThumbnail: FileId: {0}. Sleep {1} after attempt #{2}. ", file.ID, config.AttemptWaitInterval, attempt);
+                    _logger.DebugFormat("MakeThumbnail: FileId: {0}. Sleep {1} after attempt #{2}. ", file.ID, _config.AttemptWaitInterval, attempt);
                     attempt++;
                 }
 
-                Thread.Sleep(config.AttemptWaitInterval);
+                Thread.Sleep(_config.AttemptWaitInterval);
             }
             while (string.IsNullOrEmpty(thumbnailUrl));
 
@@ -219,11 +222,11 @@ namespace ASC.Files.ThumbnailBuilder
 
         private bool GetThumbnailUrl(File<T> file, string toExtension, out string url)
         {
-            var fileUri = PathProvider.GetFileStreamUrl(file);
-            fileUri = DocumentServiceConnector.ReplaceCommunityAdress(fileUri);
+            var fileUri = _pathProvider.GetFileStreamUrl(file);
+            fileUri = _documentServiceConnector.ReplaceCommunityAdress(fileUri);
 
             var fileExtension = file.ConvertedExtension;
-            var docKey = DocumentServiceHelper.GetDocKey(file);
+            var docKey = _documentServiceHelper.GetDocKey(file);
             var thumbnail = new DocumentService.ThumbnailData
             {
                 Aspect = 2,
@@ -248,50 +251,52 @@ namespace ASC.Files.ThumbnailBuilder
                 },
                 PageSize = new DocumentService.SpreadsheetLayout.LayoutPageSize
                 {
-                    Width = (config.ThumbnaillWidth * 1.5) + "mm", // 192 * 1.5 = "288mm",
-                    Height = (config.ThumbnaillHeight * 1.5) + "mm" // 128 * 1.5 = "192mm"
+                    Width = (_config.ThumbnaillWidth * 1.5) + "mm", // 192 * 1.5 = "288mm",
+                    Height = (_config.ThumbnaillHeight * 1.5) + "mm" // 128 * 1.5 = "192mm"
                 }
             };
 
-            (var operationResultProgress, url) = DocumentServiceConnector.GetConvertedUriAsync(fileUri, fileExtension, toExtension, docKey, null, thumbnail, spreadsheetLayout, false).Result;
+            (var operationResultProgress, url) = _documentServiceConnector.GetConvertedUriAsync(fileUri, fileExtension, toExtension, docKey, null, thumbnail, spreadsheetLayout, false).Result;
 
             operationResultProgress = Math.Min(operationResultProgress, 100);
+
             return operationResultProgress == 100;
         }
 
         private void SaveThumbnail(IFileDao<T> fileDao, File<T> file, string thumbnailUrl)
         {
-            logger.DebugFormat("SaveThumbnail: FileId: {0}. ThumbnailUrl {1}.", file.ID, thumbnailUrl);
+            _logger.DebugFormat("SaveThumbnail: FileId: {0}. ThumbnailUrl {1}.", file.ID, thumbnailUrl);
 
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(thumbnailUrl);
 
-            var httpClient = ClientFactory.CreateClient();
+            var httpClient = _clientFactory.CreateClient();
             using var response = httpClient.Send(request);
             using (var stream = new ResponseStream(response))
             {
                 Crop(fileDao, file, stream);
             }
 
-            logger.DebugFormat("SaveThumbnail: FileId: {0}. Successfully saved.", file.ID);
+            _logger.DebugFormat("SaveThumbnail: FileId: {0}. Successfully saved.", file.ID);
         }
 
         private bool IsImage(File<T> file)
         {
             var extension = FileUtility.GetFileExtension(file.Title);
+
             return FileUtility.ExtsImage.Contains(extension);
         }
 
         private void CropImage(IFileDao<T> fileDao, File<T> file)
         {
-            logger.DebugFormat("CropImage: FileId: {0}.", file.ID);
+            _logger.DebugFormat("CropImage: FileId: {0}.", file.ID);
 
             using (var stream = fileDao.GetFileStreamAsync(file).Result)
             {
                 Crop(fileDao, file, stream);
             }
 
-            logger.DebugFormat("CropImage: FileId: {0}. Successfully saved.", file.ID);
+            _logger.DebugFormat("CropImage: FileId: {0}. Successfully saved.", file.ID);
         }
 
         private void Crop(IFileDao<T> fileDao, File<T> file, Stream stream)
@@ -307,6 +312,7 @@ namespace ASC.Files.ThumbnailBuilder
                     }
                 }
             }
+
             GC.Collect();
         }
 
@@ -315,20 +321,20 @@ namespace ASC.Files.ThumbnailBuilder
             //bad for small or disproportionate images
             //return sourceBitmap.GetThumbnailImage(config.ThumbnaillWidth, config.ThumbnaillHeight, () => false, IntPtr.Zero);
 
-            var targetSize = new Size(Math.Min(sourceBitmap.Width, config.ThumbnaillWidth), Math.Min(sourceBitmap.Height, config.ThumbnaillHeight));
+            var targetSize = new Size(Math.Min(sourceBitmap.Width, _config.ThumbnaillWidth), Math.Min(sourceBitmap.Height, _config.ThumbnaillHeight));
             var point = new Point(0, 0);
             var size = targetSize;
 
-            if (sourceBitmap.Width > config.ThumbnaillWidth && sourceBitmap.Height > config.ThumbnaillHeight)
+            if (sourceBitmap.Width > _config.ThumbnaillWidth && sourceBitmap.Height > _config.ThumbnaillHeight)
             {
                 if (sourceBitmap.Width > sourceBitmap.Height)
                 {
-                    var width = (int)(config.ThumbnaillWidth * (sourceBitmap.Height / (1.0 * config.ThumbnaillHeight)));
+                    var width = (int)(_config.ThumbnaillWidth * (sourceBitmap.Height / (1.0 * _config.ThumbnaillHeight)));
                     size = new Size(width, sourceBitmap.Height);
                 }
                 else
                 {
-                    var height = (int)(config.ThumbnaillHeight * (sourceBitmap.Width / (1.0 * config.ThumbnaillWidth)));
+                    var height = (int)(_config.ThumbnaillHeight * (sourceBitmap.Width / (1.0 * _config.ThumbnaillWidth)));
                     size = new Size(sourceBitmap.Width, height);
                 }
             }
