@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
+using ASC.Common;
 using Microsoft.Extensions.Hosting;
 
-namespace ASC.Common.Services.Interfaces;
+namespace ASC.Core.Common.Hosting.Interfaces;
 
 [Scope]
-public interface IRegisterInstanceService<T> where T : IHostedService
+public interface IRegisterInstanceManager<T> where T : IHostedService
 {
     Task Register(string instanceId);
     Task UnRegister(string instanceId);

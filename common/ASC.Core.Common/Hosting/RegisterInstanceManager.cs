@@ -1,29 +1,29 @@
-﻿using ASC.Common.Services.Interfaces;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Linq;
-using ASC.Core.Common.Services;
-using Microsoft.Extensions.Hosting;
-using ASC.Core;
+using ASC.Common;
+using ASC.Core.Common.Hosting.Interfaces;
 
-namespace ASC.Common.Services;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+
+namespace ASC.Core.Common.Hosting;
 
 [Scope]
-public class RegisterInstanceService<T> : IRegisterInstanceService<T> where T : IHostedService
+public class RegisterInstanceManager<T> : IRegisterInstanceManager<T> where T : IHostedService
 {
-    private readonly IRegisterInstanceRepository<T> _registerInstanceRepository;
+    private readonly IRegisterInstanceDao<T> _registerInstanceRepository;
     private readonly int _timeUntilUnregisterInSeconds;
-    public RegisterInstanceService(IRegisterInstanceRepository<T> registerInstanceRepository,
+    public RegisterInstanceManager(IRegisterInstanceDao<T> registerInstanceRepository,
                                    IConfiguration configuration)
     {
         _registerInstanceRepository = registerInstanceRepository;
 
-        if (!int.TryParse(configuration["core:TimeUntilUnregisterInSeconds"], out _timeUntilUnregisterInSeconds))
+        if (!int.TryParse(configuration["core:hosting:timeUntilUnregisterInSeconds"], out _timeUntilUnregisterInSeconds))
         {
-            _timeUntilUnregisterInSeconds = 20;               
+            _timeUntilUnregisterInSeconds = 15;               
         }
     }
     public async Task Register(string instanceId)
@@ -31,8 +31,8 @@ public class RegisterInstanceService<T> : IRegisterInstanceService<T> where T : 
         var instances = await _registerInstanceRepository.GetAll();
         var registeredInstance = instances.FirstOrDefault(x => x.InstanceRegistrationId == instanceId);
 
-        var instance = registeredInstance ?? new InstanceRegistrationEntry { InstanceRegistrationId = instanceId, 
-                                                                             WorkerName = typeof(T).Name
+        var instance = registeredInstance ?? new InstanceRegistration { InstanceRegistrationId = instanceId, 
+                                                                             WorkerTypeName = typeof(T).Name
                                                                             };
             
         instance.LastUpdated = DateTime.UtcNow;

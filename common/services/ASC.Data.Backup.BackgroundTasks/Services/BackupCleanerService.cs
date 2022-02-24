@@ -23,8 +23,7 @@
  *
 */
 
-using ASC.Common.Services.Interfaces;
-using ASC.Core.Common.Services.Interfaces;
+using ASC.Core.Common.Hosting;
 
 namespace ASC.Data.Backup.Services;
 
@@ -34,91 +33,100 @@ internal sealed class BackupCleanerService : BackgroundService
     private readonly ILog _logger;
     private readonly TimeSpan _backupCleanerPeriod;
     private readonly IServiceScopeFactory _scopeFactory;
-    private readonly IInstanceWorkerInfo<BackupCleanerService> _instanceWorker;
 
     public BackupCleanerService(
         ConfigurationExtension configuration,
         IOptionsMonitor<ILog> options,
-        IInstanceWorkerInfo<BackupCleanerService> instanceWorkerInfo,
         IServiceScopeFactory scopeFactory)
     {
         _scopeFactory = scopeFactory;
         _logger = options.CurrentValue;
-        _instanceWorker = instanceWorkerInfo;
         _backupCleanerPeriod = configuration.GetSetting<BackupSettings>("backup").Cleaner.Period;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.Info("starting backup cleaner service...");
+        _logger.Debug("BackupCleanerService is starting.");
 
-        while(!stoppingToken.IsCancellationRequested)
+        stoppingToken.Register(() => _logger.Debug("#1 BackupCleanerService background task is stopping."));
+
+        while (!stoppingToken.IsCancellationRequested)
         {
-            using var serviceScope = _scopeFactory.CreateScope();
+            _logger.Debug("BackupCleanerService background task is doing background work.");
 
-            var registerInstanceService = serviceScope.ServiceProvider.GetService<IRegisterInstanceService<BackupSchedulerService>>();
-
-            if (!await registerInstanceService.IsActive(_instanceWorker.GetInstanceId())) return;
-
-            var backupRepository = serviceScope.ServiceProvider.GetRequiredService<BackupRepository>();
-            var backupStorageFactory = serviceScope.ServiceProvider.GetRequiredService<BackupStorageFactory>();
-
-            _logger.Debug("started to clean expired backups");
-
-            var backupsToRemove = backupRepository.GetExpiredBackupRecords();
-
-            _logger.DebugFormat("found {0} backups which are expired", backupsToRemove.Count);
-
-            foreach (var scheduledBackups in backupRepository.GetScheduledBackupRecords().GroupBy(r => r.TenantId))
-            {
-                if (stoppingToken.IsCancellationRequested) return;
-
-                var schedule = backupRepository.GetBackupSchedule(scheduledBackups.Key);
-
-                if (schedule != null)
-                {
-                    var scheduledBackupsToRemove = scheduledBackups.OrderByDescending(r => r.CreatedOn).Skip(schedule.BackupsStored).ToList();
-                    if (scheduledBackupsToRemove.Any())
-                    {
-                        _logger.DebugFormat("only last {0} scheduled backup records are to keep for tenant {1} so {2} records must be removed", schedule.BackupsStored, schedule.TenantId, scheduledBackupsToRemove.Count);
-                        backupsToRemove.AddRange(scheduledBackupsToRemove);
-                    }
-                }
-                else
-                {
-                    backupsToRemove.AddRange(scheduledBackups);
-                }
-            }
-
-            foreach (var backupRecord in backupsToRemove)
-            {
-                if (stoppingToken.IsCancellationRequested) return;
-
-                try
-                {
-                    var backupStorage = backupStorageFactory.GetBackupStorage(backupRecord);
-                    if (backupStorage == null) continue;
-
-                    backupStorage.Delete(backupRecord.StoragePath);
-
-                    backupRepository.DeleteBackupRecord(backupRecord.Id);
-                }
-                catch (ProviderInfoArgumentException error)
-                {
-                    _logger.Warn("can't remove backup record " + backupRecord.Id, error);
-
-                    if (DateTime.UtcNow > backupRecord.CreatedOn.AddMonths(6))
-                    {
-                        backupRepository.DeleteBackupRecord(backupRecord.Id);
-                    }
-                }
-                catch (Exception error)
-                {
-                    _logger.Warn("can't remove backup record: " + backupRecord.Id, error);
-                }
-            }
+            await ExecuteBackupCleaner(stoppingToken);
 
             await Task.Delay(_backupCleanerPeriod, stoppingToken);
         }
+
+        _logger.Debug("BackupCleanerService background task is stopping.");
+    }
+
+    private async Task ExecuteBackupCleaner(CancellationToken stoppingToken)
+    {
+        using var serviceScope = _scopeFactory.CreateScope();
+
+        var registerInstanceService = serviceScope.ServiceProvider.GetService<IRegisterInstanceManager<BackupSchedulerService>>();
+
+        if (!await registerInstanceService.IsActive(RegisterInstanceWorkerService<BackupCleanerService>.InstanceId)) return;
+
+        var backupRepository = serviceScope.ServiceProvider.GetRequiredService<BackupRepository>();
+        var backupStorageFactory = serviceScope.ServiceProvider.GetRequiredService<BackupStorageFactory>();
+
+        _logger.Debug("started to clean expired backups");
+
+        var backupsToRemove = backupRepository.GetExpiredBackupRecords();
+
+        _logger.DebugFormat("found {0} backups which are expired", backupsToRemove.Count);
+
+        foreach (var scheduledBackups in backupRepository.GetScheduledBackupRecords().GroupBy(r => r.TenantId))
+        {
+            if (stoppingToken.IsCancellationRequested) return;
+
+            var schedule = backupRepository.GetBackupSchedule(scheduledBackups.Key);
+
+            if (schedule != null)
+            {
+                var scheduledBackupsToRemove = scheduledBackups.OrderByDescending(r => r.CreatedOn).Skip(schedule.BackupsStored).ToList();
+                if (scheduledBackupsToRemove.Any())
+                {
+                    _logger.DebugFormat("only last {0} scheduled backup records are to keep for tenant {1} so {2} records must be removed", schedule.BackupsStored, schedule.TenantId, scheduledBackupsToRemove.Count);
+                    backupsToRemove.AddRange(scheduledBackupsToRemove);
+                }
+            }
+            else
+            {
+                backupsToRemove.AddRange(scheduledBackups);
+            }
+        }
+
+        foreach (var backupRecord in backupsToRemove)
+        {
+            if (stoppingToken.IsCancellationRequested) return;
+
+            try
+            {
+                var backupStorage = backupStorageFactory.GetBackupStorage(backupRecord);
+                if (backupStorage == null) continue;
+
+                backupStorage.Delete(backupRecord.StoragePath);
+
+                backupRepository.DeleteBackupRecord(backupRecord.Id);
+            }
+            catch (ProviderInfoArgumentException error)
+            {
+                _logger.Warn("can't remove backup record " + backupRecord.Id, error);
+
+                if (DateTime.UtcNow > backupRecord.CreatedOn.AddMonths(6))
+                {
+                    backupRepository.DeleteBackupRecord(backupRecord.Id);
+                }
+            }
+            catch (Exception error)
+            {
+                _logger.Warn("can't remove backup record: " + backupRecord.Id, error);
+            }
+        }
+
     }
 }

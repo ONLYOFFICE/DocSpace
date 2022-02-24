@@ -2,52 +2,46 @@
 using System.Threading;
 using System.Threading.Tasks;
 
+using ASC.Common;
 using ASC.Common.Logging;
-using ASC.Common.Services.Interfaces;
-using ASC.Core.Common.Services.Interfaces;
+using ASC.Core.Common.Hosting.Interfaces;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
-namespace ASC.Common.Services;
+namespace ASC.Core.Common.Hosting;
 
 [Singletone]
-public class RegisterInstanceWorkerProcess<T> : BackgroundService, IInstanceWorkerInfo<T> where T : IHostedService
+public class RegisterInstanceWorkerService<T> : BackgroundService where T : IHostedService
 {
     private readonly ILog _logger;
-    private IRegisterInstanceService<T> _registerInstanceService;
+    private IRegisterInstanceManager<T> _registerInstanceService;
     private readonly IHostApplicationLifetime _applicationLifetime;
-    private readonly IServiceProvider _serviceProvider;
-       
-    private static readonly string _instanceId =
+    private readonly IServiceProvider _serviceProvider;       
+    public static readonly string InstanceId =
         $"{typeof(T).Name}{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
 
-    public RegisterInstanceWorkerProcess(IOptionsMonitor<ILog> options, 
+    public RegisterInstanceWorkerService(IOptionsMonitor<ILog> options, 
                                          IServiceProvider serviceProvider, 
                                          IHostApplicationLifetime applicationLifetime)
     {
         _logger = options.CurrentValue;
         _serviceProvider = serviceProvider;
         _applicationLifetime = applicationLifetime;
-    }
-
-    public string GetInstanceId()
-    {
-        return _instanceId;
-    }
+    }  
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         using var scope = _serviceProvider.CreateScope();
 
-        _registerInstanceService = scope.ServiceProvider.GetService<IRegisterInstanceService<T>>();
-
+        _registerInstanceService = scope.ServiceProvider.GetService<IRegisterInstanceManager<T>>();
+     
         while (!stoppingToken.IsCancellationRequested)
         {
             try
             {
-                await _registerInstanceService.Register(_instanceId);
+                await _registerInstanceService.Register(InstanceId);
                 await _registerInstanceService.DeleteOrphanInstances();
 
                 _logger.InfoFormat("Worker running at: {time}", DateTimeOffset.Now);
@@ -65,12 +59,12 @@ public class RegisterInstanceWorkerProcess<T> : BackgroundService, IInstanceWork
     {
         try
         {
-            await _registerInstanceService.UnRegister(_instanceId);
-            _logger.InfoFormat("UnRegister Instance {instanceName} running at: {time}.", _instanceId, DateTimeOffset.Now);
+            await _registerInstanceService.UnRegister(InstanceId);
+            _logger.InfoFormat("UnRegister Instance {instanceName} running at: {time}.", InstanceId, DateTimeOffset.Now);
         }
         catch
         {
-            _logger.ErrorFormat("Unable to UnRegister Instance {instanceName} running at: {time}.", _instanceId, DateTimeOffset.Now);
+            _logger.ErrorFormat("Unable to UnRegister Instance {instanceName} running at: {time}.", InstanceId, DateTimeOffset.Now);
         }
 
         await base.StopAsync(cancellationToken);

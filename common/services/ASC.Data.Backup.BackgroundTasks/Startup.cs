@@ -22,10 +22,6 @@
  * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
  *
 */
-using ASC.Api.Core.Extensions;
-using ASC.Common.Caching;
-using ASC.Common.Services;
-using ASC.Common.Services.Interfaces;
 
 namespace ASC.Data.Backup.BackgroundTasks;
 
@@ -51,7 +47,7 @@ public class Startup : BaseStartup
         services.AddHostedService<BackupListenerService>();
 
         services.AddHostedService<BackupWorkerService>();
-        services.AddActivePassiveWorkerProcess<BackupCleanerService>();
-        services.AddActivePassiveWorkerProcess<BackupSchedulerService>();
+        services.AddActivePassiveHostedService<BackupCleanerService>();
+        services.AddActivePassiveHostedService<BackupSchedulerService>();
     }
 }

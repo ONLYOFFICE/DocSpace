@@ -1,23 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using ASC.Common.Services.Extensions;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
+using ASC.Core.Common.Hosting.Extensions;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace ASC.Core.Common.Services;
+namespace ASC.Core.Common.Hosting;
 
 public class MySqlIntegrationEventLogContext : InstanceRegistrationContext { }
 public class PostgreSqlIntegrationEventLogContext : InstanceRegistrationContext { }
 
 public class InstanceRegistrationContext : BaseDbContext
 {
-    public DbSet<InstanceRegistrationEntry> InstanceRegistrations { get; set; }
+    public DbSet<InstanceRegistration> InstanceRegistrations { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

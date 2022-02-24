@@ -2,12 +2,11 @@
 
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
-using ASC.Core.Common.Services;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace ASC.Common.Services.Extensions;
-public static class InstanceRegistrationExtension
+namespace ASC.Core.Common.Hosting.Extensions;
+internal static class InstanceRegistrationExtension
 {
     public static ModelBuilderWrapper AddInstanceRegistration(this ModelBuilderWrapper modelBuilder)
     {
@@ -19,19 +18,18 @@ public static class InstanceRegistrationExtension
     }
     public static void MySqlAddInstanceRegistration(this ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<InstanceRegistrationEntry>(entity =>
+        modelBuilder.Entity<InstanceRegistration>(entity =>
         {
-            entity.ToTable("worker_instance_registration");
+            entity.ToTable("hosting_instance_registration");
 
             entity.HasKey(e => e.InstanceRegistrationId)
                   .HasName("PRIMARY");
 
-            entity.HasIndex(e => e.WorkerName)
-                  .HasDatabaseName("worker_name");
+            entity.HasIndex(e => e.WorkerTypeName)
+                  .HasDatabaseName("worker_type_name");
 
-
-            entity.Property(e => e.WorkerName)
-                  .HasColumnName("worker_name")
+            entity.Property(e => e.WorkerTypeName)
+                  .HasColumnName("worker_type_name")
                   .HasColumnType("varchar(255)")
                   .HasCharSet("utf8")
                   .UseCollation("utf8_general_ci")
