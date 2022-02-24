@@ -49,4 +49,10 @@ module.exports = class Endpoints {
     method: "GET",
     baseDir: "modules",
   };
+
+  static setup = {
+    url: ["http://localhost:8092/api/2.0/settings/tfaapp/setup"],
+    method: "GET",
+    baseDir: "settings",
+  };
 };
