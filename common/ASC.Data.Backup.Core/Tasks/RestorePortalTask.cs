@@ -292,7 +292,7 @@ namespace ASC.Data.Backup.Tasks
                             using var stream = dataReader.GetEntry(key);
                             try
                             {
-                                storage.Save(file.Domain, adjustedPath, module != null ? module.PrepareData(key, stream, ColumnMapper) : stream);
+                                storage.SaveAsync(file.Domain, adjustedPath, module != null ? module.PrepareData(key, stream, ColumnMapper) : stream).Wait();
                             }
                             catch (Exception error)
                             {
@@ -337,9 +337,9 @@ namespace ASC.Data.Backup.Tasks
                         ActionInvoker.Try(
                             state =>
                             {
-                                if (storage.IsDirectory((string)state))
+                                if (storage.IsDirectoryAsync((string)state).Result)
                                 {
-                                    storage.DeleteFiles((string)state, "\\", "*.*", true);
+                                    storage.DeleteFilesAsync((string)state, "\\", "*.*", true).Wait();
                                 }
                             },
                             domain,

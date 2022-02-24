@@ -31,6 +31,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Security;
 using System.Threading;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Caching;
@@ -83,9 +84,30 @@ namespace ASC.Web.Files.Utils
             return lockedBy != Guid.Empty && lockedBy != userId;
         }
 
+        public async Task<bool> FileLockedForMeAsync<T>(T fileId, Guid userId = default)
+        {
+            var app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
+            if (app != null)
+            {
+                return false;
+            }
+
+            userId = userId == default ? AuthContext.CurrentAccount.ID : userId;
+            var tagDao = DaoFactory.GetTagDao<T>();
+            var lockedBy = await FileLockedByAsync(fileId, tagDao);
+            return lockedBy != Guid.Empty && lockedBy != userId;
+        }
+
         public Guid FileLockedBy<T>(T fileId, ITagDao<T> tagDao)
         {
-            var tagLock = tagDao.GetTags(fileId, FileEntryType.File, TagType.Locked).FirstOrDefault();
+            var tagLock = tagDao.GetTagsAsync(fileId, FileEntryType.File, TagType.Locked).ToListAsync().Result.FirstOrDefault();
+            return tagLock != null ? tagLock.Owner : Guid.Empty;
+        }
+
+        public async Task<Guid> FileLockedByAsync<T>(T fileId, ITagDao<T> tagDao)
+        {
+            var tags = tagDao.GetTagsAsync(fileId, FileEntryType.File, TagType.Locked);
+            var tagLock = await tags.FirstOrDefaultAsync();
             return tagLock != null ? tagLock.Owner : Guid.Empty;
         }
     }
@@ -110,23 +132,25 @@ namespace ASC.Web.Files.Utils
             AuthContext = authContext;
         }
 
-        public List<FileEntry> GetBreadCrumbs<T>(T folderId)
+        public Task<List<FileEntry>> GetBreadCrumbsAsync<T>(T folderId)
         {
             var folderDao = DaoFactory.GetFolderDao<T>();
-            return GetBreadCrumbs(folderId, folderDao);
+            return GetBreadCrumbsAsync(folderId, folderDao);
         }
 
-        public List<FileEntry> GetBreadCrumbs<T>(T folderId, IFolderDao<T> folderDao)
+        public async Task<List<FileEntry>> GetBreadCrumbsAsync<T>(T folderId, IFolderDao<T> folderDao)
         {
             if (folderId == null) return new List<FileEntry>();
-            var breadCrumbs = FileSecurity.FilterRead(folderDao.GetParentFolders(folderId)).Cast<FileEntry>().ToList();
+
+            var tmpBreadCrumbs = await FileSecurity.FilterReadAsync(await folderDao.GetParentFoldersAsync(folderId));
+            var breadCrumbs = tmpBreadCrumbs.Cast<FileEntry>().ToList();
 
             var firstVisible = breadCrumbs.ElementAtOrDefault(0) as Folder<T>;
 
             var rootId = 0;
             if (firstVisible == null)
             {
-                rootId = GlobalFolderHelper.FolderShare;
+                rootId = await GlobalFolderHelper.FolderShareAsync;
             }
             else
             {
@@ -135,7 +159,7 @@ namespace ASC.Web.Files.Utils
                     case FolderType.DEFAULT:
                         if (!firstVisible.ProviderEntry)
                         {
-                            rootId = GlobalFolderHelper.FolderShare;
+                            rootId = await GlobalFolderHelper.FolderShareAsync;
                         }
                         else
                         {
@@ -144,17 +168,17 @@ namespace ASC.Web.Files.Utils
                                 case FolderType.USER:
                                     rootId = AuthContext.CurrentAccount.ID == firstVisible.RootFolderCreator
                                         ? GlobalFolderHelper.FolderMy
-                                        : GlobalFolderHelper.FolderShare;
+                                        : await GlobalFolderHelper.FolderShareAsync;
                                     break;
                                 case FolderType.COMMON:
-                                    rootId = GlobalFolderHelper.FolderCommon;
+                                    rootId = await GlobalFolderHelper.FolderCommonAsync;
                                     break;
                             }
                         }
                         break;
 
                     case FolderType.BUNCH:
-                        rootId = GlobalFolderHelper.FolderProjects;
+                        rootId = await GlobalFolderHelper.FolderProjectsAsync;
                         break;
                 }
             }
@@ -163,7 +187,7 @@ namespace ASC.Web.Files.Utils
 
             if (rootId != 0)
             {
-                breadCrumbs.Insert(0, folderDaoInt.GetFolder(rootId));
+                breadCrumbs.Insert(0, await folderDaoInt.GetFolderAsync(rootId));
             }
 
             return breadCrumbs;
@@ -184,25 +208,25 @@ namespace ASC.Web.Files.Utils
             Global = global;
         }
 
-        public void SetFileStatus<T>(File<T> file)
+        public async Task SetFileStatusAsync<T>(File<T> file)
         {
             if (file == null || file.ID == null) return;
 
-            SetFileStatus(new List<File<T>>(1) { file });
+            await SetFileStatusAsync(new List<File<T>>(1) { file });
         }
 
-        public void SetFileStatus(IEnumerable<FileEntry> files)
+        public async Task SetFileStatusAsync(IEnumerable<FileEntry> files)
         {
-            SetFileStatus(files.OfType<File<int>>().Where(r => r.ID != 0));
-            SetFileStatus(files.OfType<File<string>>().Where(r => !string.IsNullOrEmpty(r.ID)));
+            await SetFileStatusAsync(files.OfType<File<int>>().Where(r => r.ID != 0).ToList());
+            await SetFileStatusAsync(files.OfType<File<string>>().Where(r => !string.IsNullOrEmpty(r.ID)).ToList());
         }
 
-        public void SetFileStatus<T>(IEnumerable<File<T>> files)
+        public async Task SetFileStatusAsync<T>(IEnumerable<File<T>> files)
         {
             var tagDao = DaoFactory.GetTagDao<T>();
 
-            var tags = tagDao.GetTags(AuthContext.CurrentAccount.ID, new[] { TagType.Favorite, TagType.Template, TagType.Locked }, files);
-            var tagsNew = tagDao.GetNewTags(AuthContext.CurrentAccount.ID, files);
+            var tags = await tagDao.GetTagsAsync(AuthContext.CurrentAccount.ID, new[] { TagType.Favorite, TagType.Template, TagType.Locked }, files);
+            var tagsNew = await tagDao.GetNewTagsAsync(AuthContext.CurrentAccount.ID, files).ToListAsync();
 
             foreach (var file in files)
             {
@@ -321,9 +345,9 @@ namespace ASC.Web.Files.Utils
             ClientFactory = clientFactory;
         }
 
-        public IEnumerable<FileEntry> GetEntries<T>(Folder<T> parent, int from, int count, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy, out int total)
+        public async Task<(IEnumerable<FileEntry> Entries, int Total)> GetEntriesAsync<T>(Folder<T> parent, int from, int count, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy)
         {
-            total = 0;
+            int total = 0;
 
             if (parent == null) throw new ArgumentNullException(nameof(parent), FilesCommonResource.ErrorMassage_FolderNotFound);
             if (parent.ProviderEntry && !FilesSettingsHelper.EnableThirdParty) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFolder);
@@ -334,7 +358,7 @@ namespace ASC.Web.Files.Utils
 
             searchInContent = searchInContent && filter != FilterType.ByExtension && !Equals(parent.ID, GlobalFolderHelper.FolderTrash);
 
-            if (parent.FolderType == FolderType.Projects && parent.ID.Equals(GlobalFolderHelper.FolderProjects))
+            if (parent.FolderType == FolderType.Projects && parent.ID.Equals(await GlobalFolderHelper.FolderProjectsAsync))
             {
                 //TODO
                 //var apiServer = new ASC.Api.ApiServer();
@@ -355,7 +379,7 @@ namespace ASC.Web.Files.Utils
 
                 //        var responseData = responseApi["response"];
 
-                //        if (!(responseData is JArray)) return entries.ToList();
+                //        if (!(responseData is JArray)) return (entries, total);
 
                 //        folderIDProjectTitle = new Dictionary<int, KeyValuePair<int, string>>();
                 //        foreach (JObject projectInfo in responseData.Children().OfType<JObject>())
@@ -379,7 +403,7 @@ namespace ASC.Web.Files.Utils
                 //            if (projectInfo.TryGetValue("projectFolder", out var projectFolderIDjToken))
                 //                projectFolderID = projectFolderIDjToken.Value<int>();
                 //            else
-                //                projectFolderID = FilesIntegration.RegisterBunch<int>("projects", "project", projectID.ToString());
+                //                projectFolderID = await FilesIntegration.RegisterBunchAsync<int>("projects", "project", projectID.ToString());
 
                 //            if (!folderIDProjectTitle.ContainsKey(projectFolderID))
                 //                folderIDProjectTitle.Add(projectFolderID, new KeyValuePair<int, string>(projectID, projectTitle));
@@ -392,7 +416,7 @@ namespace ASC.Web.Files.Utils
                 //    var rootKeys = folderIDProjectTitle.Keys.ToArray();
                 //    if (filter == FilterType.None || filter == FilterType.FoldersOnly)
                 //    {
-                //        var folders = DaoFactory.GetFolderDao<int>().GetFolders(rootKeys, filter, subjectGroup, subjectId, searchText, withSubfolders, false);
+                //        var folders = await DaoFactory.GetFolderDao<int>().GetFoldersAsync(rootKeys, filter, subjectGroup, subjectId, searchText, withSubfolders, false).ToListAsync();
 
                 //        var emptyFilter = string.IsNullOrEmpty(searchText) && filter == FilterType.None && subjectId == Guid.Empty;
                 //        if (!emptyFilter)
@@ -405,19 +429,19 @@ namespace ASC.Web.Files.Utils
 
                 //            folders.RemoveAll(folder => rootKeys.Contains(folder.ID));
 
-                //            var projectFolders = DaoFactory.GetFolderDao<int>().GetFolders(projectFolderIds.ToList(), filter, subjectGroup, subjectId, null, false, false);
+                //            var projectFolders = await DaoFactory.GetFolderDao<int>().GetFoldersAsync(projectFolderIds.ToList(), filter, subjectGroup, subjectId, null, false, false).ToListAsync();
                 //            folders.AddRange(projectFolders);
                 //        }
 
                 //        folders.ForEach(x =>
                 //            {
                 //                x.Title = folderIDProjectTitle.ContainsKey(x.ID) ? folderIDProjectTitle[x.ID].Value : x.Title;
-                //                x.FolderUrl = folderIDProjectTitle.ContainsKey(x.ID) ? PathProvider.GetFolderUrl(x, folderIDProjectTitle[x.ID].Key) : string.Empty;
+                //                x.FolderUrl = folderIDProjectTitle.ContainsKey(x.ID) ? PathProvider.GetFolderUrlAsync(x, folderIDProjectTitle[x.ID].Key).Result : string.Empty;
                 //            });
 
                 //        if (withSubfolders)
                 //        {
-                //            entries = entries.Concat(fileSecurity.FilterRead(folders));
+                //            entries = entries.Concat(await fileSecurity.FilterReadAsync(folders));
                 //        }
                 //        else
                 //        {
@@ -427,8 +451,8 @@ namespace ASC.Web.Files.Utils
 
                 //    if (filter != FilterType.FoldersOnly && withSubfolders)
                 //    {
-                //        var files = DaoFactory.GetFileDao<int>().GetFiles(rootKeys, filter, subjectGroup, subjectId, searchText, searchInContent);
-                //        entries = entries.Concat(fileSecurity.FilterRead(files));
+                //        var files = await DaoFactory.GetFileDao<int>().GetFilesAsync(rootKeys, filter, subjectGroup, subjectId, searchText, searchInContent);
+                //        entries = entries.Concat(await fileSecurity.FilterReadAsync(files))
                 //    }
                 //}
 
@@ -437,7 +461,7 @@ namespace ASC.Web.Files.Utils
             else if (parent.FolderType == FolderType.SHARE)
             {
                 //share
-                var shared = fileSecurity.GetSharesForMe(filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
+                var shared = await fileSecurity.GetSharesForMeAsync(filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
 
                 entries = entries.Concat(shared);
 
@@ -445,14 +469,14 @@ namespace ASC.Web.Files.Utils
             }
             else if (parent.FolderType == FolderType.Recent)
             {
-                var files = GetRecent(filter, subjectGroup, subjectId, searchText, searchInContent);
+                var files = await GetRecentAsync(filter, subjectGroup, subjectId, searchText, searchInContent);
                 entries = entries.Concat(files);
 
                 CalculateTotal();
             }
             else if (parent.FolderType == FolderType.Favorites)
             {
-                var (files, folders) = GetFavorites(filter, subjectGroup, subjectId, searchText, searchInContent);
+                var (files, folders) = await GetFavoritesAsync(filter, subjectGroup, subjectId, searchText, searchInContent);
 
                 entries = entries.Concat(folders);
                 entries = entries.Concat(files);
@@ -463,7 +487,7 @@ namespace ASC.Web.Files.Utils
             {
                 var folderDao = DaoFactory.GetFolderDao<T>();
                 var fileDao = DaoFactory.GetFileDao<T>();
-                var files = GetTemplates(folderDao, fileDao, filter, subjectGroup, subjectId, searchText, searchInContent);
+                var files = await GetTemplatesAsync(folderDao, fileDao, filter, subjectGroup, subjectId, searchText, searchInContent);
                 entries = entries.Concat(files);
 
                 CalculateTotal();
@@ -472,14 +496,14 @@ namespace ASC.Web.Files.Utils
             {
                 var folderDao = DaoFactory.GetFolderDao<T>();
                 var fileDao = DaoFactory.GetFileDao<T>();
-                var folders = folderDao.GetFolders(parent.ID, orderBy, filter, subjectGroup, subjectId, searchText, withSubfolders);
-                entries = entries.Concat(fileSecurity.FilterRead(folders));
+                var folders = await folderDao.GetFoldersAsync(parent.ID, orderBy, filter, subjectGroup, subjectId, searchText, withSubfolders).ToListAsync();
+                entries = entries.Concat(await fileSecurity.FilterReadAsync(folders));
 
-                var files = fileDao.GetFiles(parent.ID, orderBy, filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
-                entries = entries.Concat(fileSecurity.FilterRead(files));
+                var files = await fileDao.GetFilesAsync(parent.ID, orderBy, filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders).ToListAsync();
+                entries = entries.Concat(await fileSecurity.FilterReadAsync(files));
 
                 //share
-                var shared = fileSecurity.GetPrivacyForMe(filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
+                var shared = await fileSecurity.GetPrivacyForMeAsync(filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
 
                 entries = entries.Concat(shared);
 
@@ -490,15 +514,15 @@ namespace ASC.Web.Files.Utils
                 if (parent.FolderType == FolderType.TRASH)
                     withSubfolders = false;
 
-                var folders = DaoFactory.GetFolderDao<T>().GetFolders(parent.ID, orderBy, filter, subjectGroup, subjectId, searchText, withSubfolders);
-                entries = entries.Concat(fileSecurity.FilterRead(folders));
+                var folders = await DaoFactory.GetFolderDao<T>().GetFoldersAsync(parent.ID, orderBy, filter, subjectGroup, subjectId, searchText, withSubfolders).ToListAsync();
+                entries = entries.Concat(await fileSecurity.FilterReadAsync(folders));
 
-                var files = DaoFactory.GetFileDao<T>().GetFiles(parent.ID, orderBy, filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
-                entries = entries.Concat(fileSecurity.FilterRead(files));
+                var files = await DaoFactory.GetFileDao<T>().GetFilesAsync(parent.ID, orderBy, filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders).ToListAsync();
+                entries = entries.Concat(await fileSecurity.FilterReadAsync(files));
 
                 if (filter == FilterType.None || filter == FilterType.FoldersOnly)
                 {
-                    var folderList = GetThirpartyFolders(parent, searchText);
+                    var folderList = await GetThirpartyFoldersAsync(parent, searchText);
 
                     var thirdPartyFolder = FilterEntries(folderList, filter, subjectGroup, subjectId, searchText, searchInContent);
                     entries = entries.Concat(thirdPartyFolder);
@@ -517,7 +541,7 @@ namespace ASC.Web.Files.Utils
                 if (0 < count) entries = entries.Take(count);
             }
 
-            entries = FileMarker.SetTagsNew(parent, entries);
+            entries = await FileMarker.SetTagsNewAsync(parent, entries);
 
             //sorting after marking
             if (orderBy.SortedBy == SortedByType.New)
@@ -529,8 +553,8 @@ namespace ASC.Web.Files.Utils
                 if (0 < count) entries = entries.Take(count);
             }
 
-            EntryStatusManager.SetFileStatus(entries.Where(r => r != null && r.FileEntryType == FileEntryType.File).ToList());
-            return entries;
+            await EntryStatusManager.SetFileStatusAsync(entries.Where(r => r != null && r.FileEntryType == FileEntryType.File).ToList());
+            return (entries, total);
 
             void CalculateTotal()
             {
@@ -549,28 +573,29 @@ namespace ASC.Web.Files.Utils
             }
         }
 
-        public IEnumerable<File<T>> GetTemplates<T>(IFolderDao<T> folderDao, IFileDao<T> fileDao, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent)
+        public async Task<IEnumerable<File<T>>> GetTemplatesAsync<T>(IFolderDao<T> folderDao, IFileDao<T> fileDao, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent)
         {
             var tagDao = DaoFactory.GetTagDao<T>();
-            var tags = tagDao.GetTags(AuthContext.CurrentAccount.ID, TagType.Template);
+            var tags = tagDao.GetTagsAsync(AuthContext.CurrentAccount.ID, TagType.Template);
 
-            var fileIds = tags.Where(tag => tag.EntryType == FileEntryType.File).Select(tag => (T)Convert.ChangeType(tag.EntryId, typeof(T))).ToArray();
+            var fileIds = await tags.Where(tag => tag.EntryType == FileEntryType.File).Select(tag => (T)Convert.ChangeType(tag.EntryId, typeof(T))).ToArrayAsync();
 
-            var files = fileDao.GetFilesFiltered(fileIds, filter, subjectGroup, subjectId, searchText, searchInContent);
-            files = files.Where(file => file.RootFolderType != FolderType.TRASH).ToList();
+            var filesAsync = fileDao.GetFilesFilteredAsync(fileIds, filter, subjectGroup, subjectId, searchText, searchInContent);
+            var files = await filesAsync.Where(file => file.RootFolderType != FolderType.TRASH).ToListAsync();
 
-            files = FileSecurity.FilterRead(files).ToList();
+            var tmpFiles = await FileSecurity.FilterReadAsync(files);
+            files = tmpFiles.ToList();
 
-            CheckFolderId(folderDao, files);
+            await CheckFolderIdAsync(folderDao, tmpFiles);
 
             return files;
         }
 
-        public IEnumerable<Folder<string>> GetThirpartyFolders<T>(Folder<T> parent, string searchText = null)
+        public async Task<IEnumerable<Folder<string>>> GetThirpartyFoldersAsync<T>(Folder<T> parent, string searchText = null)
         {
             var folderList = new List<Folder<string>>();
 
-            if ((parent.ID.Equals(GlobalFolderHelper.FolderMy) || parent.ID.Equals(GlobalFolderHelper.FolderCommon))
+            if ((parent.ID.Equals(GlobalFolderHelper.FolderMy) || parent.ID.Equals(await GlobalFolderHelper.FolderCommonAsync))
                 && ThirdpartyConfiguration.SupportInclusion(DaoFactory)
                 && (FilesSettingsHelper.EnableThirdParty
                     || CoreBaseSettings.Personal))
@@ -580,15 +605,22 @@ namespace ASC.Web.Files.Utils
 
                 var fileSecurity = FileSecurity;
 
-                var providers = providerDao.GetProvidersInfo(parent.RootFolderType, searchText);
-                folderList = providers
-                    .Select(providerInfo => GetFakeThirdpartyFolder(providerInfo, parent.ID.ToString()))
-                    .Where(r => fileSecurity.CanRead(r)).ToList();
+                var providers = await providerDao.GetProvidersInfoAsync(parent.RootFolderType, searchText).ToListAsync();
+
+                foreach (var providerInfo in providers)
+                {
+                    var fake = GetFakeThirdpartyFolder(providerInfo, parent.ID.ToString());
+                    if (await fileSecurity.CanReadAsync(fake))
+                    {
+                        folderList.Add(fake);
+                    }
+                }
 
                 if (folderList.Count > 0)
                 {
                     var securityDao = DaoFactory.GetSecurityDao<string>();
-                    var ids = securityDao.GetPureShareRecords(folderList)
+                    var pureShareRecords = await securityDao.GetPureShareRecordsAsync(folderList);
+                    var ids = pureShareRecords
                     //.Where(x => x.Owner == SecurityContext.CurrentAccount.ID)
                     .Select(x => x.EntryId).Distinct();
 
@@ -602,15 +634,16 @@ namespace ASC.Web.Files.Utils
             return folderList;
         }
 
-        public IEnumerable<FileEntry> GetRecent(FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent)
+        public async Task<IEnumerable<FileEntry>> GetRecentAsync(FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent)
         {
             var tagDao = DaoFactory.GetTagDao<int>();
-            var tags = tagDao.GetTags(AuthContext.CurrentAccount.ID, TagType.Recent).ToList();
+            var tags = await tagDao.GetTagsAsync(AuthContext.CurrentAccount.ID, TagType.Recent).ToListAsync();
 
             var fileIds = tags.Where(tag => tag.EntryType == FileEntryType.File).ToList();
 
-            List<FileEntry> files = GetRecentByIds(fileIds.Where(r => r.EntryId is int).Select(r => (int)r.EntryId), filter, subjectGroup, subjectId, searchText, searchInContent).ToList();
-            files.AddRange(GetRecentByIds(fileIds.Where(r => r.EntryId is string).Select(r => (string)r.EntryId), filter, subjectGroup, subjectId, searchText, searchInContent));
+            var filesEnum = await GetRecentByIdsAsync(fileIds.Where(r => r.EntryId is int).Select(r => (int)r.EntryId), filter, subjectGroup, subjectId, searchText, searchInContent);
+            List<FileEntry> files = filesEnum.ToList();
+            files.AddRange(await GetRecentByIdsAsync(fileIds.Where(r => r.EntryId is string).Select(r => (string)r.EntryId), filter, subjectGroup, subjectId, searchText, searchInContent));
 
             var listFileIds = fileIds.Select(tag => tag.EntryId).ToList();
 
@@ -631,31 +664,31 @@ namespace ASC.Web.Files.Utils
 
             return files;
 
-            IEnumerable<FileEntry> GetRecentByIds<T>(IEnumerable<T> fileIds, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent)
+            async Task<IEnumerable<FileEntry>> GetRecentByIdsAsync<T>(IEnumerable<T> fileIds, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent)
             {
                 var folderDao = DaoFactory.GetFolderDao<T>();
                 var fileDao = DaoFactory.GetFileDao<T>();
-                var files = fileDao.GetFilesFiltered(fileIds, filter, subjectGroup, subjectId, searchText, searchInContent, true);
-                files = files.Where(file => file.RootFolderType != FolderType.TRASH).ToList();
+                var files = await fileDao.GetFilesFilteredAsync(fileIds, filter, subjectGroup, subjectId, searchText, searchInContent).Where(file => file.RootFolderType != FolderType.TRASH).ToListAsync();
 
-                files = FileSecurity.FilterRead(files).ToList();
+                var tmpFiles = await FileSecurity.FilterReadAsync(files);
+                files = tmpFiles.ToList();
 
-                CheckFolderId(folderDao, files);
+                await CheckFolderIdAsync(folderDao, tmpFiles);
 
                 return files;
             }
         }
 
-        public (IEnumerable<FileEntry>, IEnumerable<FileEntry>) GetFavorites(FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent)
+        public async Task<(IEnumerable<FileEntry>, IEnumerable<FileEntry>)> GetFavoritesAsync(FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent)
         {
             var tagDao = DaoFactory.GetTagDao<int>();
-            var tags = tagDao.GetTags(AuthContext.CurrentAccount.ID, TagType.Favorite);
+            var tags = tagDao.GetTagsAsync(AuthContext.CurrentAccount.ID, TagType.Favorite);
 
-            var fileIds = tags.Where(tag => tag.EntryType == FileEntryType.File).ToList();
-            var folderIds = tags.Where(tag => tag.EntryType == FileEntryType.Folder).ToList();
+            var fileIds = await tags.Where(tag => tag.EntryType == FileEntryType.File).ToListAsync();
+            var folderIds = await tags.Where(tag => tag.EntryType == FileEntryType.Folder).ToListAsync();
 
-            var (filesInt, foldersInt) = GetFavoritesById(fileIds.Where(r => r.EntryId is int).Select(r => (int)r.EntryId), folderIds.Where(r => r.EntryId is int).Select(r => (int)r.EntryId), filter, subjectGroup, subjectId, searchText, searchInContent);
-            var (filesString, foldersString) = GetFavoritesById(fileIds.Where(r => r.EntryId is string).Select(r => (string)r.EntryId), folderIds.Where(r => r.EntryId is string).Select(r => (string)r.EntryId), filter, subjectGroup, subjectId, searchText, searchInContent);
+            var (filesInt, foldersInt) = await GetFavoritesByIdAsync(fileIds.Where(r => r.EntryId is int).Select(r => (int)r.EntryId), folderIds.Where(r => r.EntryId is int).Select(r => (int)r.EntryId), filter, subjectGroup, subjectId, searchText, searchInContent);
+            var (filesString, foldersString) = await GetFavoritesByIdAsync(fileIds.Where(r => r.EntryId is string).Select(r => (string)r.EntryId), folderIds.Where(r => r.EntryId is string).Select(r => (string)r.EntryId), filter, subjectGroup, subjectId, searchText, searchInContent);
 
             var files = new List<FileEntry>();
             files.AddRange(filesInt);
@@ -667,32 +700,31 @@ namespace ASC.Web.Files.Utils
 
             return (files, folders);
 
-            (IEnumerable<FileEntry>, IEnumerable<FileEntry>) GetFavoritesById<T>(IEnumerable<T> fileIds, IEnumerable<T> folderIds, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent)
+            async Task<(IEnumerable<FileEntry>, IEnumerable<FileEntry>)> GetFavoritesByIdAsync<T>(IEnumerable<T> fileIds, IEnumerable<T> folderIds, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent)
             {
                 var folderDao = DaoFactory.GetFolderDao<T>();
                 var fileDao = DaoFactory.GetFileDao<T>();
-                var folders = new List<Folder<T>>();
-                var files = new List<File<T>>();
+                var asyncFolders = folderDao.GetFoldersAsync(folderIds, filter, subjectGroup, subjectId, searchText, false, false);
+                var files = Enumerable.Empty<FileEntry<T>>();
+                var folders = Enumerable.Empty<FileEntry<T>>();
+                var asyncFiles = fileDao.GetFilesFilteredAsync(fileIds, filter, subjectGroup, subjectId, searchText, searchInContent, true);
                 var fileSecurity = FileSecurity;
-
                 if (filter == FilterType.None || filter == FilterType.FoldersOnly)
                 {
-                    folders = folderDao.GetFolders(folderIds, filter, subjectGroup, subjectId, searchText, false, false);
-                    folders = folders.Where(folder => folder.RootFolderType != FolderType.TRASH).ToList();
+                    var tmpFolders = await asyncFolders.Where(folder => folder.RootFolderType != FolderType.TRASH).ToListAsync();
 
-                    folders = fileSecurity.FilterRead(folders).ToList();
+                    folders = await fileSecurity.FilterReadAsync(tmpFolders);
 
-                    CheckFolderId(folderDao, folders);
+                    await CheckFolderIdAsync(folderDao, folders);
                 }
 
                 if (filter != FilterType.FoldersOnly)
                 {
-                    files = fileDao.GetFilesFiltered(fileIds, filter, subjectGroup, subjectId, searchText, searchInContent, true);
-                    files = files.Where(file => file.RootFolderType != FolderType.TRASH).ToList();
+                    var tmpFiles = await asyncFiles.Where(file => file.RootFolderType != FolderType.TRASH).ToListAsync();
 
-                    files = fileSecurity.FilterRead(files).ToList();
+                    files = await fileSecurity.FilterReadAsync(tmpFiles);
 
-                    CheckFolderId(folderDao, folders);
+                    await CheckFolderIdAsync(folderDao, folders);
                 }
 
                 return (files, folders);
@@ -848,18 +880,17 @@ namespace ASC.Web.Files.Utils
             return folder;
         }
 
-
-        public List<FileEntry> GetBreadCrumbs<T>(T folderId)
+        public Task<List<FileEntry>> GetBreadCrumbsAsync<T>(T folderId)
         {
-            return BreadCrumbsManager.GetBreadCrumbs(folderId);
+            return BreadCrumbsManager.GetBreadCrumbsAsync(folderId);
         }
 
-        public List<FileEntry> GetBreadCrumbs<T>(T folderId, IFolderDao<T> folderDao)
+        public Task<List<FileEntry>> GetBreadCrumbsAsync<T>(T folderId, IFolderDao<T> folderDao)
         {
-            return BreadCrumbsManager.GetBreadCrumbs(folderId, folderDao);
+            return BreadCrumbsManager.GetBreadCrumbsAsync(folderId, folderDao);
         }
 
-        public void CheckFolderId<T>(IFolderDao<T> folderDao, IEnumerable<FileEntry<T>> entries)
+        public async Task CheckFolderIdAsync<T>(IFolderDao<T> folderDao, IEnumerable<FileEntry<T>> entries)
         {
             foreach (var entry in entries)
             {
@@ -867,29 +898,29 @@ namespace ASC.Web.Files.Utils
                     && entry.RootFolderCreator != AuthContext.CurrentAccount.ID)
                 {
                     var folderId = entry.FolderID;
-                    var folder = folderDao.GetFolder(folderId);
-                    if (!FileSecurity.CanRead(folder))
+                    var folder = await folderDao.GetFolderAsync(folderId);
+                    if (!await FileSecurity.CanReadAsync(folder))
                     {
-                        entry.FolderIdDisplay = GlobalFolderHelper.GetFolderShare<T>();
+                        entry.FolderIdDisplay = await GlobalFolderHelper.GetFolderShareAsync<T>();
                     }
                 }
             }
         }
 
-        public bool FileLockedForMe<T>(T fileId, Guid userId = default)
+        public Task<bool> FileLockedForMeAsync<T>(T fileId, Guid userId = default)
         {
-            return LockerManager.FileLockedForMe(fileId, userId);
+            return LockerManager.FileLockedForMeAsync(fileId, userId);
         }
 
-        public Guid FileLockedBy<T>(T fileId, ITagDao<T> tagDao)
+        public Task<Guid> FileLockedByAsync<T>(T fileId, ITagDao<T> tagDao)
         {
-            return LockerManager.FileLockedBy(fileId, tagDao);
+            return LockerManager.FileLockedByAsync(fileId, tagDao);
         }
 
-        public File<int> GetFillFormDraft<T>(File<T> sourceFile, out Folder<int> folderIfNew)
+        public async Task<(File<int> file, Folder<int> folderIfNew)> GetFillFormDraftAsync<T>(File<T> sourceFile)
         {
-            folderIfNew = null;
-            if (sourceFile == null) return null;
+            Folder<int> folderIfNew = null;
+            if (sourceFile == null) return (null, folderIfNew);
 
             File<int> linkedFile = null;
             var fileDao = DaoFactory.GetFileDao<int>();
@@ -898,16 +929,16 @@ namespace ASC.Web.Files.Utils
 
             var fileSecurity = FileSecurity;
 
-            var linkedId = linkDao.GetLinked(sourceFile.ID.ToString());
+            var linkedId = await linkDao.GetLinkedAsync(sourceFile.ID.ToString());
             if (linkedId != null)
             {
-                linkedFile = fileDao.GetFile(int.Parse(linkedId));
+                linkedFile = await fileDao.GetFileAsync(int.Parse(linkedId));
                 if (linkedFile == null
-                    || !fileSecurity.CanFillForms(linkedFile)
-                    || FileLockedForMe(linkedFile.ID)
+                    || !await fileSecurity.CanFillFormsAsync(linkedFile)
+                    || await FileLockedForMeAsync(linkedFile.ID)
                     || linkedFile.RootFolderType == FolderType.TRASH)
                 {
-                    linkDao.DeleteLink(sourceFile.ID.ToString());
+                    await linkDao.DeleteLinkAsync(sourceFile.ID.ToString());
                     linkedFile = null;
                 }
             }
@@ -916,9 +947,9 @@ namespace ASC.Web.Files.Utils
             {
                 var folderId = GlobalFolderHelper.FolderMy;
                 var folderDao = DaoFactory.GetFolderDao<int>();
-                folderIfNew = folderDao.GetFolder(folderId);
+                folderIfNew = await folderDao.GetFolderAsync(folderId);
                 if (folderIfNew == null) throw new Exception(FilesCommonResource.ErrorMassage_FolderNotFound);
-                if (!fileSecurity.CanCreate(folderIfNew)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_Create);
+                if (!await fileSecurity.CanCreateAsync(folderIfNew)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_Create);
 
                 linkedFile = ServiceProvider.GetService<File<int>>();
                 linkedFile.Title = sourceFile.Title;
@@ -928,44 +959,44 @@ namespace ASC.Web.Files.Utils
                 linkedFile.Comment = FilesCommonResource.CommentCreateFillFormDraft;
                 linkedFile.Encrypted = sourceFile.Encrypted;
 
-                using (var stream = sourceFileDao.GetFileStream(sourceFile))
+                using (var stream = await sourceFileDao.GetFileStreamAsync(sourceFile))
                 {
                     linkedFile.ContentLength = stream.CanSeek ? stream.Length : sourceFile.ContentLength;
-                    linkedFile = fileDao.SaveFile(linkedFile, stream);
+                    linkedFile = await fileDao.SaveFileAsync(linkedFile, stream);
                 }
 
-                FileMarker.MarkAsNew(linkedFile);
+                await FileMarker.MarkAsNewAsync(linkedFile);
 
-                linkDao.AddLink(sourceFile.ID.ToString(), linkedFile.ID.ToString());
+                await linkDao.AddLinkAsync(sourceFile.ID.ToString(), linkedFile.ID.ToString());
             }
 
-            return linkedFile;
+            return (linkedFile, folderIfNew);
         }
 
-        public bool CheckFillFormDraft<T>(File<T> linkedFile)
+        public async Task<bool> CheckFillFormDraftAsync<T>(File<T> linkedFile)
         {
             if (linkedFile == null) return false;
 
             var linkDao = DaoFactory.GetLinkDao();
-            var sourceId = linkDao.GetSource(linkedFile.ID.ToString());
+            var sourceId = await linkDao.GetSourceAsync(linkedFile.ID.ToString());
             var fileSecurity = FileSecurity;
 
             if (int.TryParse(sourceId, out var sId))
             {
-                return Check(sId);
+                return await CheckAsync(sId);
             }
 
-            return Check(sourceId);
+            return await CheckAsync(sourceId);
 
-            bool Check<T1>(T1 sourceId)
+            async Task<bool> CheckAsync<T1>(T1 sourceId)
             {
                 var fileDao = DaoFactory.GetFileDao<T1>();
-                var sourceFile = fileDao.GetFile(sourceId);
+                var sourceFile = await fileDao.GetFileAsync(sourceId);
                 if (sourceFile == null
-                    || !fileSecurity.CanFillForms(sourceFile)
+                    || !await fileSecurity.CanFillFormsAsync(sourceFile)
                     || sourceFile.Access != FileShare.FillForms)
                 {
-                    linkDao.DeleteLink(sourceId.ToString());
+                    await linkDao.DeleteLinkAsync(sourceId.ToString());
 
                     return false;
                 }
@@ -974,7 +1005,7 @@ namespace ASC.Web.Files.Utils
             }
         }
 
-        public File<T> SaveEditing<T>(T fileId, string fileExtension, string downloadUri, Stream stream, string doc, string comment = null, bool checkRight = true, bool encrypted = false, ForcesaveType? forcesave = null, bool keepLink = false)
+        public async Task<File<T>> SaveEditingAsync<T>(T fileId, string fileExtension, string downloadUri, Stream stream, string doc, string comment = null, bool checkRight = true, bool encrypted = false, ForcesaveType? forcesave = null, bool keepLink = false)
         {
             var newExtension = string.IsNullOrEmpty(fileExtension)
                               ? FileUtility.GetFileExtension(downloadUri)
@@ -983,21 +1014,23 @@ namespace ASC.Web.Files.Utils
             var app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
             if (app != null)
             {
-                app.SaveFile(fileId.ToString(), newExtension, downloadUri, stream);
+                await app.SaveFileAsync(fileId.ToString(), newExtension, downloadUri, stream);
                 return null;
             }
 
             var fileDao = DaoFactory.GetFileDao<T>();
-            var editLink = FileShareLink.Check(doc, false, fileDao, out var file);
+            var check = await FileShareLink.CheckAsync(doc, false, fileDao);
+            var editLink = check.EditLink;
+            var file = check.File;
             if (file == null)
             {
-                file = fileDao.GetFile(fileId);
+                file = await fileDao.GetFileAsync(fileId);
             }
 
             if (file == null) throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
             var fileSecurity = FileSecurity;
-            if (checkRight && !editLink && (!fileSecurity.CanEdit(file) || UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager))) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
-            if (checkRight && FileLockedForMe(file.ID)) throw new Exception(FilesCommonResource.ErrorMassage_LockedFile);
+            if (checkRight && !editLink && (!await fileSecurity.CanEditAsync(file) || UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager))) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
+            if (checkRight && await FileLockedForMeAsync(file.ID)) throw new Exception(FilesCommonResource.ErrorMassage_LockedFile);
             if (checkRight && (!forcesave.HasValue || forcesave.Value == ForcesaveType.None) && FileTracker.IsEditing(file.ID)) throw new Exception(FilesCommonResource.ErrorMassage_SecurityException_UpdateEditingFile);
             if (file.RootFolderType == FolderType.TRASH) throw new Exception(FilesCommonResource.ErrorMassage_ViewTrashItem);
 
@@ -1027,7 +1060,7 @@ namespace ASC.Web.Files.Utils
                     var storeTemplate = GlobalStore.GetStoreTemplate();
 
                     var path = FileConstant.NewDocPath + Thread.CurrentThread.CurrentCulture + "/";
-                    if (!storeTemplate.IsDirectory(path))
+                    if (!await storeTemplate.IsDirectoryAsync(path))
                     {
                         path = FileConstant.NewDocPath + "en-US/";
                     }
@@ -1039,7 +1072,7 @@ namespace ASC.Web.Files.Utils
                     path += "new" + fileExt;
 
                     //todo: think about the criteria for saving after creation
-                    if (!storeTemplate.IsFile(path) || file.ContentLength != storeTemplate.GetFileSize("", path))
+                    if (!await storeTemplate.IsFileAsync(path) || file.ContentLength != await storeTemplate.GetFileSizeAsync("", path))
                     {
                         file.VersionGroup++;
                     }
@@ -1063,12 +1096,14 @@ namespace ASC.Web.Files.Utils
                 {
                     if (stream != null)
                     {
-                        downloadUri = PathProvider.GetTempUrl(stream, newExtension);
+                        downloadUri = await PathProvider.GetTempUrlAsync(stream, newExtension);
                         downloadUri = DocumentServiceConnector.ReplaceCommunityAdress(downloadUri);
                     }
 
                     var key = DocumentServiceConnector.GenerateRevisionId(downloadUri);
-                    DocumentServiceConnector.GetConvertedUri(downloadUri, newExtension, currentExt, key, null, null, null, false, out downloadUri);
+
+                    var resultTuple = await DocumentServiceConnector.GetConvertedUriAsync(downloadUri, newExtension, currentExt, key, null, null, null, false);
+                    downloadUri = resultTuple.ConvertedDocumentUri;
 
                     stream = null;
                 }
@@ -1085,17 +1120,18 @@ namespace ASC.Web.Files.Utils
             {
                 if (stream != null)
                 {
-                    stream.CopyTo(tmpStream);
+                    await stream.CopyToAsync(tmpStream);
                 }
                 else
                 {
+
                     var request = new HttpRequestMessage();
                     request.RequestUri = new Uri(downloadUri);
 
                     var httpClient = ClientFactory.CreateClient();
-                    using var response = httpClient.Send(request);
+                    using var response = await httpClient.SendAsync(request);
                     using var editedFileStream = new ResponseStream(response);
-                    editedFileStream.CopyTo(tmpStream);
+                    await editedFileStream.CopyToAsync(tmpStream);
                 }
                 tmpStream.Position = 0;
 
@@ -1103,27 +1139,27 @@ namespace ASC.Web.Files.Utils
                 file.Comment = string.IsNullOrEmpty(comment) ? null : comment;
                 if (replaceVersion)
                 {
-                    file = fileDao.ReplaceFileVersion(file, tmpStream);
+                    file = await fileDao.ReplaceFileVersionAsync(file, tmpStream);
                 }
                 else
                 {
-                    file = fileDao.SaveFile(file, tmpStream);
+                    file = await fileDao.SaveFileAsync(file, tmpStream);
                 }
                 if (!keepLink
                    || file.CreateBy != AuthContext.CurrentAccount.ID
                    || !file.IsFillFormDraft)
                 {
                     var linkDao = DaoFactory.GetLinkDao();
-                    linkDao.DeleteAllLink(file.ID.ToString());
+                    await linkDao.DeleteAllLinkAsync(file.ID.ToString());
                 }
             }
 
-            FileMarker.MarkAsNew(file);
-            FileMarker.RemoveMarkAsNew(file);
+            await FileMarker.MarkAsNewAsync(file);
+            await FileMarker.RemoveMarkAsNewAsync(file);
             return file;
         }
 
-        public void TrackEditing<T>(T fileId, Guid tabId, Guid userId, string doc, bool editingAlone = false)
+        public async Task TrackEditingAsync<T>(T fileId, Guid tabId, Guid userId, string doc, bool editingAlone = false)
         {
             bool checkRight;
             if (FileTracker.GetEditingBy(fileId).Contains(userId))
@@ -1132,25 +1168,26 @@ namespace ASC.Web.Files.Utils
                 if (!checkRight) return;
             }
 
-            bool editLink;
             var fileDao = DaoFactory.GetFileDao<T>();
-            editLink = FileShareLink.Check(doc, false, fileDao, out var file);
+            var check = await FileShareLink.CheckAsync(doc, false, fileDao);
+            var editLink = check.EditLink;
+            var file = check.File;
             if (file == null)
-                file = fileDao.GetFile(fileId);
+                file = await fileDao.GetFileAsync(fileId);
 
             if (file == null) throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
             var fileSecurity = FileSecurity;
             if (!editLink
-                && (!fileSecurity.CanEdit(file, userId)
-                    && !fileSecurity.CanCustomFilterEdit(file, userId)
-                    && !fileSecurity.CanReview(file, userId)
-                    && !fileSecurity.CanFillForms(file, userId)
-                    && !fileSecurity.CanComment(file, userId)
+                && (!await fileSecurity.CanEditAsync(file, userId)
+                    && !await fileSecurity.CanCustomFilterEditAsync(file, userId)
+                    && !await fileSecurity.CanReviewAsync(file, userId)
+                    && !await fileSecurity.CanFillFormsAsync(file, userId)
+                    && !await fileSecurity.CanCommentAsync(file, userId)
                     || UserManager.GetUsers(userId).IsVisitor(UserManager)))
             {
                 throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
             }
-            if (FileLockedForMe(file.ID, userId)) throw new Exception(FilesCommonResource.ErrorMassage_LockedFile);
+            if (await FileLockedForMeAsync(file.ID, userId)) throw new Exception(FilesCommonResource.ErrorMassage_LockedFile);
             if (file.RootFolderType == FolderType.TRASH) throw new Exception(FilesCommonResource.ErrorMassage_ViewTrashItem);
 
             checkRight = FileTracker.ProlongEditing(fileId, tabId, userId, editingAlone);
@@ -1160,24 +1197,24 @@ namespace ASC.Web.Files.Utils
             }
         }
 
-        public File<T> UpdateToVersionFile<T>(T fileId, int version, string doc = null, bool checkRight = true)
+        public async Task<File<T>> UpdateToVersionFileAsync<T>(T fileId, int version, string doc = null, bool checkRight = true)
         {
             var fileDao = DaoFactory.GetFileDao<T>();
             if (version < 1) throw new ArgumentNullException(nameof(version));
 
-            var editLink = FileShareLink.Check(doc, false, fileDao, out var fromFile);
+            var (editLink, fromFile) = await FileShareLink.CheckAsync(doc, false, fileDao);
 
             if (fromFile == null)
-                fromFile = fileDao.GetFile(fileId);
+                fromFile = await fileDao.GetFileAsync(fileId);
 
             if (fromFile == null) throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
 
             if (fromFile.Version != version)
-                fromFile = fileDao.GetFile(fromFile.ID, Math.Min(fromFile.Version, version));
+                fromFile = await fileDao.GetFileAsync(fromFile.ID, Math.Min(fromFile.Version, version));
 
             if (fromFile == null) throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
-            if (checkRight && !editLink && (!FileSecurity.CanEdit(fromFile) || UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager))) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
-            if (FileLockedForMe(fromFile.ID)) throw new Exception(FilesCommonResource.ErrorMassage_LockedFile);
+            if (checkRight && !editLink && (!await FileSecurity.CanEditAsync(fromFile) || UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager))) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
+            if (await FileLockedForMeAsync(fromFile.ID)) throw new Exception(FilesCommonResource.ErrorMassage_LockedFile);
             if (checkRight && FileTracker.IsEditing(fromFile.ID)) throw new Exception(FilesCommonResource.ErrorMassage_SecurityException_UpdateEditingFile);
             if (fromFile.RootFolderType == FolderType.TRASH) throw new Exception(FilesCommonResource.ErrorMassage_ViewTrashItem);
             if (fromFile.ProviderEntry) throw new Exception(FilesCommonResource.ErrorMassage_BadRequest);
@@ -1195,7 +1232,7 @@ namespace ASC.Web.Files.Utils
 
             try
             {
-                var currFile = fileDao.GetFile(fileId);
+                var currFile = await fileDao.GetFileAsync(fileId);
                 var newFile = ServiceProvider.GetService<File<T>>();
 
                 newFile.ID = fromFile.ID;
@@ -1212,27 +1249,27 @@ namespace ASC.Web.Files.Utils
                 newFile.Comment = string.Format(FilesCommonResource.CommentRevert, fromFile.ModifiedOnString);
                 newFile.Encrypted = fromFile.Encrypted;
 
-                using (var stream = fileDao.GetFileStream(fromFile))
+                using (var stream = await fileDao.GetFileStreamAsync(fromFile))
                 {
                     newFile.ContentLength = stream.CanSeek ? stream.Length : fromFile.ContentLength;
-                    newFile = fileDao.SaveFile(newFile, stream);
+                    newFile = await fileDao.SaveFileAsync(newFile, stream);
                 }
 
                 if (fromFile.ThumbnailStatus == Thumbnail.Created)
                 {
-                    using (var thumb = fileDao.GetThumbnail(fromFile))
+                    using (var thumb = await fileDao.GetThumbnailAsync(fromFile))
                     {
-                        fileDao.SaveThumbnail(newFile, thumb);
+                        await fileDao.SaveThumbnailAsync(newFile, thumb);
                     }
                     newFile.ThumbnailStatus = Thumbnail.Created;
                 }
 
                 var linkDao = DaoFactory.GetLinkDao();
-                linkDao.DeleteAllLink(newFile.ID.ToString());
+                await linkDao.DeleteAllLinkAsync(newFile.ID.ToString());
 
-                FileMarker.MarkAsNew(newFile);
+                await FileMarker.MarkAsNewAsync(newFile); ;
 
-                EntryStatusManager.SetFileStatus(newFile);
+                await EntryStatusManager.SetFileStatusAsync(newFile);
 
                 newFile.Access = fromFile.Access;
 
@@ -1259,25 +1296,25 @@ namespace ASC.Web.Files.Utils
             }
         }
 
-        public File<T> CompleteVersionFile<T>(T fileId, int version, bool continueVersion, bool checkRight = true)
+        public async Task<File<T>> CompleteVersionFileAsync<T>(T fileId, int version, bool continueVersion, bool checkRight = true)
         {
             var fileDao = DaoFactory.GetFileDao<T>();
             var fileVersion = version > 0
-? fileDao.GetFile(fileId, version)
-: fileDao.GetFile(fileId);
+                ? await fileDao.GetFileAsync(fileId, version)
+                : await fileDao.GetFileAsync(fileId);
             if (fileVersion == null) throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
-            if (checkRight && (!FileSecurity.CanEdit(fileVersion) || UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager))) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
-            if (FileLockedForMe(fileVersion.ID)) throw new Exception(FilesCommonResource.ErrorMassage_LockedFile);
+            if (checkRight && (!await FileSecurity.CanEditAsync(fileVersion) || UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager))) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
+            if (await FileLockedForMeAsync(fileVersion.ID)) throw new Exception(FilesCommonResource.ErrorMassage_LockedFile);
             if (fileVersion.RootFolderType == FolderType.TRASH) throw new Exception(FilesCommonResource.ErrorMassage_ViewTrashItem);
             if (fileVersion.ProviderEntry) throw new Exception(FilesCommonResource.ErrorMassage_BadRequest);
 
-            var lastVersionFile = fileDao.GetFile(fileVersion.ID);
+            var lastVersionFile = await fileDao.GetFileAsync(fileVersion.ID);
 
             if (continueVersion)
             {
                 if (lastVersionFile.VersionGroup > 1)
                 {
-                    fileDao.ContinueVersion(fileVersion.ID, fileVersion.Version);
+                    await fileDao.ContinueVersionAsync(fileVersion.ID, fileVersion.Version);
                     lastVersionFile.VersionGroup--;
                 }
             }
@@ -1287,27 +1324,27 @@ namespace ASC.Web.Files.Utils
                 {
                     if (fileVersion.Version == lastVersionFile.Version)
                     {
-                        lastVersionFile = UpdateToVersionFile(fileVersion.ID, fileVersion.Version, null, checkRight);
+                        lastVersionFile = await UpdateToVersionFileAsync(fileVersion.ID, fileVersion.Version, null, checkRight);
                     }
 
-                    fileDao.CompleteVersion(fileVersion.ID, fileVersion.Version);
+                    await fileDao.CompleteVersionAsync(fileVersion.ID, fileVersion.Version);
                     lastVersionFile.VersionGroup++;
                 }
             }
 
-            EntryStatusManager.SetFileStatus(lastVersionFile);
+            await EntryStatusManager.SetFileStatusAsync(lastVersionFile);
 
             return lastVersionFile;
         }
 
-        public bool FileRename<T>(T fileId, string title, out File<T> file)
+        public async Task<FileOptions<T>> FileRenameAsync<T>(T fileId, string title)
         {
             var fileDao = DaoFactory.GetFileDao<T>();
-            file = fileDao.GetFile(fileId);
+            var file = await fileDao.GetFileAsync(fileId);
             if (file == null) throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
-            if (!FileSecurity.CanEdit(file)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_RenameFile);
-            if (!FileSecurity.CanDelete(file) && UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_RenameFile);
-            if (FileLockedForMe(file.ID)) throw new Exception(FilesCommonResource.ErrorMassage_LockedFile);
+            if (!await FileSecurity.CanEditAsync(file)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_RenameFile);
+            if (!await FileSecurity.CanDeleteAsync(file) && UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_RenameFile);
+            if (await FileLockedForMeAsync(file.ID)) throw new Exception(FilesCommonResource.ErrorMassage_LockedFile);
             if (file.ProviderEntry && FileTracker.IsEditing(file.ID)) throw new Exception(FilesCommonResource.ErrorMassage_UpdateEditingFile);
             if (file.RootFolderType == FolderType.TRASH) throw new Exception(FilesCommonResource.ErrorMassage_ViewTrashItem);
 
@@ -1324,19 +1361,23 @@ namespace ASC.Web.Files.Utils
             var renamed = false;
             if (!string.Equals(file.Title, title))
             {
-                var newFileID = fileDao.FileRename(file, title);
+                var newFileID = await fileDao.FileRenameAsync(file, title);
 
-                file = fileDao.GetFile(newFileID);
+                file = await fileDao.GetFileAsync(newFileID);
                 file.Access = fileAccess;
 
-                DocumentServiceHelper.RenameFile(file, fileDao);
+                await DocumentServiceHelper.RenameFileAsync(file, fileDao);
 
                 renamed = true;
             }
 
-            EntryStatusManager.SetFileStatus(file);
+            await EntryStatusManager.SetFileStatusAsync(file);
 
-            return renamed;
+            return new FileOptions<T>
+            {
+                File = file,
+                Renamed = renamed
+            };
         }
 
         public void MarkAsRecent<T>(File<T> file)
@@ -1352,69 +1393,71 @@ namespace ASC.Web.Files.Utils
 
 
         //Long operation
-        public void DeleteSubitems<T>(T parentId, IFolderDao<T> folderDao, IFileDao<T> fileDao, ILinkDao linkDao)
+        public async Task DeleteSubitemsAsync<T>(T parentId, IFolderDao<T> folderDao, IFileDao<T> fileDao, ILinkDao linkDao)
         {
-            var folders = folderDao.GetFolders(parentId);
-            foreach (var folder in folders)
+            var folders = folderDao.GetFoldersAsync(parentId);
+            await foreach (var folder in folders)
             {
-                DeleteSubitems(folder.ID, folderDao, fileDao, linkDao);
+                await DeleteSubitemsAsync(folder.ID, folderDao, fileDao, linkDao);
 
                 Logger.InfoFormat("Delete folder {0} in {1}", folder.ID, parentId);
-                folderDao.DeleteFolder(folder.ID);
+                await folderDao.DeleteFolderAsync(folder.ID);
             }
 
-            var files = fileDao.GetFiles(parentId, null, FilterType.None, false, Guid.Empty, string.Empty, true);
-            foreach (var file in files)
+            var files = fileDao.GetFilesAsync(parentId, null, FilterType.None, false, Guid.Empty, string.Empty, true);
+            await foreach (var file in files)
             {
                 Logger.InfoFormat("Delete file {0} in {1}", file.ID, parentId);
-                fileDao.DeleteFile(file.ID);
+                await fileDao.DeleteFileAsync(file.ID);
 
-                linkDao.DeleteAllLink(file.ID.ToString());
+                await linkDao.DeleteAllLinkAsync(file.ID.ToString());
             }
         }
 
-        public void MoveSharedItems<T>(T parentId, T toId, IFolderDao<T> folderDao, IFileDao<T> fileDao)
+        public async Task MoveSharedItemsAsync<T>(T parentId, T toId, IFolderDao<T> folderDao, IFileDao<T> fileDao)
         {
             var fileSecurity = FileSecurity;
 
-            var folders = folderDao.GetFolders(parentId);
-            foreach (var folder in folders)
+            var folders = folderDao.GetFoldersAsync(parentId);
+            await foreach (var folder in folders)
             {
+                var shares = await fileSecurity.GetSharesAsync(folder);
                 var shared = folder.Shared
-                             && fileSecurity.GetShares(folder).Any(record => record.Share != FileShare.Restrict);
+                             && shares.Any(record => record.Share != FileShare.Restrict);
                 if (shared)
                 {
                     Logger.InfoFormat("Move shared folder {0} from {1} to {2}", folder.ID, parentId, toId);
-                    folderDao.MoveFolder(folder.ID, toId, null);
+                    await folderDao.MoveFolderAsync(folder.ID, toId, null);
                 }
                 else
                 {
-                    MoveSharedItems(folder.ID, toId, folderDao, fileDao);
+                    await MoveSharedItemsAsync(folder.ID, toId, folderDao, fileDao);
                 }
             }
 
-            var files = fileDao.GetFiles(parentId, null, FilterType.None, false, Guid.Empty, string.Empty, true)
-                .Where(file => file.Shared &&
-                fileSecurity.GetShares(file).Any(record => record.Subject != FileConstant.ShareLinkId && record.Share != FileShare.Restrict));
+            var files = fileDao.GetFilesAsync(parentId, null, FilterType.None, false, Guid.Empty, string.Empty, true)
+                .WhereAwait(async file => file.Shared &&
+                (await fileSecurity.GetSharesAsync(file)).Any(record => record.Subject != FileConstant.ShareLinkId && record.Share != FileShare.Restrict));
 
-            foreach (var file in files)
+            await foreach (var file in files)
             {
                 Logger.InfoFormat("Move shared file {0} from {1} to {2}", file.ID, parentId, toId);
-                fileDao.MoveFile(file.ID, toId);
+                await fileDao.MoveFileAsync(file.ID, toId);
             }
         }
 
-        public static void ReassignItems<T>(T parentId, Guid fromUserId, Guid toUserId, IFolderDao<T> folderDao, IFileDao<T> fileDao)
+        public static async Task ReassignItemsAsync<T>(T parentId, Guid fromUserId, Guid toUserId, IFolderDao<T> folderDao, IFileDao<T> fileDao)
         {
-            var fileIds = fileDao.GetFiles(parentId, new OrderBy(SortedByType.AZ, true), FilterType.ByUser, false, fromUserId, null, true, true)
-                                 .Where(file => file.CreateBy == fromUserId).Select(file => file.ID);
+            var files = await fileDao.GetFilesAsync(parentId, new OrderBy(SortedByType.AZ, true), FilterType.ByUser, false, fromUserId, null, true, true).ToListAsync();
+            var fileIds = files.Where(file => file.CreateBy == fromUserId).Select(file => file.ID);
 
-            fileDao.ReassignFiles(fileIds.ToArray(), toUserId);
+            await fileDao.ReassignFilesAsync(fileIds.ToArray(), toUserId);
 
-            var folderIds = folderDao.GetFolders(parentId, new OrderBy(SortedByType.AZ, true), FilterType.ByUser, false, fromUserId, null, true)
-                                     .Where(folder => folder.CreateBy == fromUserId).Select(folder => folder.ID);
+            var folderIds = await folderDao.GetFoldersAsync(parentId, new OrderBy(SortedByType.AZ, true), FilterType.ByUser, false, fromUserId, null, true)
+                                     .Where(folder => folder.CreateBy == fromUserId).Select(folder => folder.ID)
+                                     .ToListAsync();
 
-            folderDao.ReassignFolders(folderIds.ToArray(), toUserId);
+            await folderDao.ReassignFoldersAsync(folderIds.ToArray(), toUserId);
         }
     }
 }

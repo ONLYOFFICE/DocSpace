@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Core.Tenants;
@@ -128,34 +129,33 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             _headers = data.Headers;
         }
 
-        protected override void Do(IServiceScope scope)
+        protected override async Task DoAsync(IServiceScope scope)
         {
             if (DaoFolderId != 0)
             {
-                Do(scope, DaoFolderId);
+                await DoAsync(scope, DaoFolderId);
             }
 
             if (!string.IsNullOrEmpty(ThirdpartyFolderId))
             {
-                Do(scope, ThirdpartyFolderId);
+                await DoAsync(scope, ThirdpartyFolderId);
             }
         }
 
-        private void Do<TTo>(IServiceScope scope, TTo tto)
+        private async Task DoAsync<TTo>(IServiceScope scope, TTo tto)
         {
-            if (Folders.Count == 0 && Files.Count == 0) return;
-
             var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
             var folderDao = scope.ServiceProvider.GetService<IFolderDao<TTo>>();
 
             Result += string.Format("folder_{0}{1}", DaoFolderId, SPLIT_CHAR);
 
             //TODO: check on each iteration?
-            var toFolder = folderDao.GetFolder(tto);
+            var toFolder = await folderDao.GetFolderAsync(tto);
             if (toFolder == null) return;
-            if (!FilesSecurity.CanCreate(toFolder)) throw new System.Security.SecurityException(FilesCommonResource.ErrorMassage_SecurityException_Create);
+            if (!await FilesSecurity.CanCreateAsync(toFolder)) throw new System.Security.SecurityException(FilesCommonResource.ErrorMassage_SecurityException_Create);
 
-            if (folderDao.GetParentFolders(toFolder.ID).Any(parent => Folders.Any(r => r.ToString() == parent.ID.ToString())))
+            var parentFolders = await folderDao.GetParentFoldersAsync(toFolder.ID);
+            if (parentFolders.Any(parent => Folders.Any(r => r.ToString() == parent.ID.ToString())))
             {
                 Error = FilesCommonResource.ErrorMassage_FolderCopyError;
                 return;
@@ -164,26 +164,27 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             if (_copy)
             {
                 Folder<T> rootFrom = null;
-                if (0 < Folders.Count) rootFrom = FolderDao.GetRootFolder(Folders[0]);
-                if (0 < Files.Count) rootFrom = FolderDao.GetRootFolderByFile(Files[0]);
+                if (0 < Folders.Count) rootFrom = await FolderDao.GetRootFolderAsync(Folders[0]);
+                if (0 < Files.Count) rootFrom = await FolderDao.GetRootFolderByFileAsync(Files[0]);
                 if (rootFrom != null && rootFrom.FolderType == FolderType.TRASH) throw new InvalidOperationException("Can not copy from Trash.");
                 if (toFolder.RootFolderType == FolderType.TRASH) throw new InvalidOperationException("Can not copy to Trash.");
             }
 
             var needToMark = new List<FileEntry<TTo>>();
 
-            needToMark.AddRange(MoveOrCopyFolders(scope, Folders, toFolder, _copy));
-            needToMark.AddRange(MoveOrCopyFiles(scope, Files, toFolder, _copy));
+            var moveOrCopyFoldersTask = MoveOrCopyFoldersAsync(scope, Folders, toFolder, _copy);
+            var moveOrCopyFilesTask = MoveOrCopyFilesAsync(scope, Files, toFolder, _copy);
 
-            var ntm = needToMark.Distinct();
+            needToMark.AddRange(await moveOrCopyFoldersTask);
+            needToMark.AddRange(await moveOrCopyFilesTask);
 
-            foreach(var n in ntm)
+            var ntm = needToMark.Distinct(); foreach (var n in ntm)
             {
-                fileMarker.MarkAsNew(n);
+                await fileMarker.MarkAsNewAsync(n);
             }
         }
 
-        private List<FileEntry<TTo>> MoveOrCopyFolders<TTo>(IServiceScope scope, List<T> folderIds, Folder<TTo> toFolder, bool copy)
+        private async Task<List<FileEntry<TTo>>> MoveOrCopyFoldersAsync<TTo>(IServiceScope scope, List<T> folderIds, Folder<TTo> toFolder, bool copy)
         {
             var needToMark = new List<FileEntry<TTo>>();
 
@@ -202,12 +203,14 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             {
                 CancellationToken.ThrowIfCancellationRequested();
 
-                var folder = FolderDao.GetFolder(folderId);
+                var folder = await FolderDao.GetFolderAsync(folderId);
+                var taskError = WithErrorAsync(scope, await FileDao.GetFilesAsync(folder.ID, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, true).ToListAsync());
+
                 if (folder == null)
                 {
                     Error = FilesCommonResource.ErrorMassage_FolderNotFound;
                 }
-                else if (!FilesSecurity.CanRead(folder))
+                else if (!await FilesSecurity.CanReadAsync(folder))
                 {
                     Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFolder;
                 }
@@ -223,7 +226,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                         //if destination folder contains folder with same name then merge folders
                         var conflictFolder = folder.RootFolderType == FolderType.Privacy
                             ? null
-                            : folderDao.GetFolder(folder.Title, toFolderId);
+                            : await folderDao.GetFolderAsync(folder.Title, toFolderId);
                         Folder<TTo> newFolder;
 
                         if (copy || conflictFolder != null)
@@ -237,7 +240,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                             }
                             else
                             {
-                                newFolder = FolderDao.CopyFolder(folder.ID, toFolderId, CancellationToken);
+                                newFolder = await FolderDao.CopyFolderAsync(folder.ID, toFolderId, CancellationToken);
                                 filesMessageService.Send(newFolder, toFolder, _headers, MessageAction.FolderCopied, newFolder.Title, toFolder.Title);
 
                                 if (isToFolder)
@@ -252,18 +255,18 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                             if (toFolder.ProviderId == folder.ProviderId // crossDao operation is always recursive
                                 && FolderDao.UseRecursiveOperation(folder.ID, toFolderId))
                             {
-                                MoveOrCopyFiles(scope, FileDao.GetFiles(folder.ID), newFolder, copy);
-                                MoveOrCopyFolders(scope, FolderDao.GetFolders(folder.ID).Select(f => f.ID).ToList(), newFolder, copy);
+                                await MoveOrCopyFilesAsync(scope, await FileDao.GetFilesAsync(folder.ID), newFolder, copy);
+                                await MoveOrCopyFoldersAsync(scope, await FolderDao.GetFoldersAsync(folder.ID).Select(f => f.ID).ToListAsync(), newFolder, copy);
 
                                 if (!copy)
                                 {
-                                    if (!FilesSecurity.CanDelete(folder))
+                                    if (!await FilesSecurity.CanDeleteAsync(folder))
                                     {
                                         Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
                                     }
-                                    else if (FolderDao.IsEmpty(folder.ID))
+                                    else if (await FolderDao.IsEmptyAsync(folder.ID))
                                     {
-                                        FolderDao.DeleteFolder(folder.ID);
+                                        await FolderDao.DeleteFolderAsync(folder.ID);
 
                                         if (ProcessedFolder(folderId))
                                         {
@@ -279,7 +282,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                     TTo newFolderId;
                                     if (copy)
                                     {
-                                        newFolder = FolderDao.CopyFolder(folder.ID, toFolderId, CancellationToken);
+                                        newFolder = await FolderDao.CopyFolderAsync(folder.ID, toFolderId, CancellationToken);
                                         newFolderId = newFolder.ID;
                                         filesMessageService.Send(newFolder, toFolder, _headers, MessageAction.FolderCopiedWithOverwriting, newFolder.Title, toFolder.Title);
 
@@ -291,20 +294,20 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                             sb.Append($"folder_{newFolderId}{SPLIT_CHAR}");
                                         }
                                     }
-                                    else if (!FilesSecurity.CanDelete(folder))
+                                    else if (!await FilesSecurity.CanDeleteAsync(folder))
                                     {
                                         Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
                                     }
-                                    else if (WithError(scope, FileDao.GetFiles(folder.ID, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, true), out var tmpError))
+                                    else if ((await taskError).isError)
                                     {
-                                        Error = tmpError;
+                                        Error = (await taskError).message;
                                     }
                                     else
                                     {
-                                        fileMarker.RemoveMarkAsNewForAll(folder);
+                                        await fileMarker.RemoveMarkAsNewForAllAsync(folder);
 
-                                        newFolderId = FolderDao.MoveFolder(folder.ID, toFolderId, CancellationToken);
-                                        newFolder = folderDao.GetFolder(newFolderId);
+                                        newFolderId = await FolderDao.MoveFolderAsync(folder.ID, toFolderId, CancellationToken);
+                                        newFolder = await folderDao.GetFolderAsync(newFolderId);
 
                                         if (folder.RootFolderType != FolderType.USER)
                                         {
@@ -328,20 +331,20 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                         }
                         else
                         {
-                            if (!FilesSecurity.CanDelete(folder))
+                            if (!await FilesSecurity.CanDeleteAsync(folder))
                             {
                                 Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
                             }
-                            else if (WithError(scope, FileDao.GetFiles(folder.ID, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, true), out var tmpError))
+                            else if ((await taskError).isError)
                             {
-                                Error = tmpError;
+                                Error = (await taskError).message;
                             }
                             else
                             {
-                                fileMarker.RemoveMarkAsNewForAll(folder);
+                                await fileMarker.RemoveMarkAsNewForAllAsync(folder);
 
-                                var newFolderId = FolderDao.MoveFolder(folder.ID, toFolderId, CancellationToken);
-                                newFolder = folderDao.GetFolder(newFolderId);
+                                var newFolderId = await FolderDao.MoveFolderAsync(folder.ID, toFolderId, CancellationToken);
+                                newFolder = await folderDao.GetFolderAsync(newFolderId);
 
                                 if (folder.RootFolderType != FolderType.USER)
                                 {
@@ -376,7 +379,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             return needToMark;
         }
 
-        private List<FileEntry<TTo>> MoveOrCopyFiles<TTo>(IServiceScope scope, List<T> fileIds, Folder<TTo> toFolder, bool copy)
+        private async Task<List<FileEntry<TTo>>> MoveOrCopyFilesAsync<TTo>(IServiceScope scope, List<T> fileIds, Folder<TTo> toFolder, bool copy)
         {
             var needToMark = new List<FileEntry<TTo>>();
 
@@ -394,12 +397,14 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             {
                 CancellationToken.ThrowIfCancellationRequested();
 
-                var file = FileDao.GetFile(fileId);
+                var file = await FileDao.GetFileAsync(fileId);
+                var taskError = WithErrorAsync(scope, new[] { file });
+
                 if (file == null)
                 {
                     Error = FilesCommonResource.ErrorMassage_FileNotFound;
                 }
-                else if (!FilesSecurity.CanRead(file))
+                else if (!await FilesSecurity.CanReadAsync(file))
                 {
                     Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFile;
                 }
@@ -415,13 +420,13 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 }
                 else
                 {
-                    var parentFolder = FolderDao.GetFolder(file.FolderID);
+                    var parentFolder = await FolderDao.GetFolderAsync(file.FolderID);
                     try
                     {
                         var conflict = _resolveType == FileConflictResolveType.Duplicate
                             || file.RootFolderType == FolderType.Privacy
                                            ? null
-                                           : fileDao.GetFile(toFolderId, file.Title);
+                                           : await fileDao.GetFileAsync(toFolderId, file.Title);
                         if (conflict == null)
                         {
                             File<TTo> newFile = null;
@@ -429,7 +434,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                             {
                                 try
                                 {
-                                    newFile = FileDao.CopyFile(file.ID, toFolderId); //Stream copy will occur inside dao
+                                    newFile = await FileDao.CopyFileAsync(file.ID, toFolderId); //Stream copy will occur inside dao
                                     filesMessageService.Send(newFile, toFolder, _headers, MessageAction.FileCopied, newFile.Title, parentFolder.Title, toFolder.Title);
 
                                     if (Equals(newFile.FolderID.ToString(), DaoFolderId))
@@ -437,7 +442,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                         needToMark.Add(newFile);
                                     }
 
-                                    socketManager.CreateFile(newFile);
+                                    await socketManager.CreateFileAsync(newFile);
 
                                     if (ProcessedFile(fileId))
                                     {
@@ -448,23 +453,23 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                 {
                                     if (newFile != null)
                                     {
-                                        fileDao.DeleteFile(newFile.ID);
+                                        await fileDao.DeleteFileAsync(newFile.ID);
                                     }
                                     throw;
                                 }
                             }
                             else
                             {
-                                if (WithError(scope, new[] { file }, out var tmpError))
+                                if ((await taskError).isError)
                                 {
-                                    Error = tmpError;
+                                    Error = (await taskError).message;
                                 }
                                 else
                                 {
-                                    fileMarker.RemoveMarkAsNewForAll(file);
+                                    await fileMarker.RemoveMarkAsNewForAllAsync(file);
 
-                                    var newFileId = FileDao.MoveFile(file.ID, toFolderId);
-                                    newFile = fileDao.GetFile(newFileId);
+                                    var newFileId = await FileDao.MoveFileAsync(file.ID, toFolderId);
+                                    newFile = await fileDao.GetFileAsync(newFileId);
 
                                     if (file.RootFolderType != FolderType.USER)
                                     {
@@ -478,12 +483,12 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                     if (file.RootFolderType == FolderType.TRASH && newFile.ThumbnailStatus == Thumbnail.NotRequired)
                                     {
                                         newFile.ThumbnailStatus = Thumbnail.Waiting;
-                                        fileDao.SaveThumbnail(newFile, null);
+                                        await fileDao.SaveThumbnailAsync(newFile, null);
                                     }
 
                                     if (newFile.ProviderEntry)
                                     {
-                                        LinkDao.DeleteAllLink(file.ID.ToString());
+                                        await LinkDao.DeleteAllLinkAsync(file.ID.ToString());
                                     }
 
                                     if (Equals(toFolderId.ToString(), DaoFolderId))
@@ -493,7 +498,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                                     socketManager.DeleteFile(file);
 
-                                    socketManager.CreateFile(newFile);
+                                    await socketManager.CreateFileAsync(newFile);
 
                                     if (ProcessedFile(fileId))
                                     {
@@ -506,11 +511,11 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                         {
                             if (_resolveType == FileConflictResolveType.Overwrite)
                             {
-                                if (!FilesSecurity.CanEdit(conflict))
+                                if (!await FilesSecurity.CanEditAsync(conflict))
                                 {
                                     Error = FilesCommonResource.ErrorMassage_SecurityException;
                                 }
-                                else if (entryManager.FileLockedForMe(conflict.ID))
+                                else if (await entryManager.FileLockedForMeAsync(conflict.ID))
                                 {
                                     Error = FilesCommonResource.ErrorMassage_LockedFile;
                                 }
@@ -529,27 +534,27 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                     newFile.Encrypted = file.Encrypted;
                                     newFile.ThumbnailStatus = Thumbnail.Waiting;
 
-                                    using (var stream = FileDao.GetFileStream(file))
+                                    using (var stream = await FileDao.GetFileStreamAsync(file))
                                     {
                                         newFile.ContentLength = stream.CanSeek ? stream.Length : file.ContentLength;
 
-                                        newFile = fileDao.SaveFile(newFile, stream);
+                                        newFile = await fileDao.SaveFileAsync(newFile, stream);
                                     }
 
                                     if (file.ThumbnailStatus == Thumbnail.Created)
                                     {
-                                        using (var thumbnail = FileDao.GetThumbnail(file))
+                                        using (var thumbnail = await FileDao.GetThumbnailAsync(file))
                                         {
-                                            fileDao.SaveThumbnail(newFile, thumbnail);
+                                            await fileDao.SaveThumbnailAsync(newFile, thumbnail);
                                         }
                                         newFile.ThumbnailStatus = Thumbnail.Created;
                                     }
 
-                                    LinkDao.DeleteAllLink(newFile.ID.ToString());
+                                    await LinkDao.DeleteAllLinkAsync(newFile.ID.ToString());
 
                                     needToMark.Add(newFile);
 
-                                    socketManager.CreateFile(newFile);
+                                    await socketManager.CreateFileAsync(newFile);
 
                                     if (copy)
                                     {
@@ -570,15 +575,15 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                         }
                                         else
                                         {
-                                            if (WithError(scope, new[] { file }, out var tmpError))
+                                            if ((await taskError).isError)
                                             {
-                                                Error = tmpError;
+                                                Error = (await taskError).message;
                                             }
                                             else
                                             {
-                                                FileDao.DeleteFile(file.ID);
+                                                await FileDao.DeleteFileAsync(file.ID);
 
-                                                LinkDao.DeleteAllLink(file.ID.ToString());
+                                                await LinkDao.DeleteAllLinkAsync(file.ID.ToString());
 
                                                 if (file.RootFolderType != FolderType.USER)
                                                 {
@@ -618,30 +623,30 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             return needToMark;
         }
 
-        private bool WithError(IServiceScope scope, IEnumerable<File<T>> files, out string error)
+        private async Task<(bool isError, string message)> WithErrorAsync(IServiceScope scope, IEnumerable<File<T>> files)
         {
             var entryManager = scope.ServiceProvider.GetService<EntryManager>();
             var fileTracker = scope.ServiceProvider.GetService<FileTrackerHelper>();
-            error = null;
+            string error = null;
             foreach (var file in files)
             {
-                if (!FilesSecurity.CanDelete(file))
+                if (!await FilesSecurity.CanDeleteAsync(file))
                 {
                     error = FilesCommonResource.ErrorMassage_SecurityException_MoveFile;
-                    return true;
+                    return (true, error);
                 }
-                if (entryManager.FileLockedForMe(file.ID))
+                if (await entryManager.FileLockedForMeAsync(file.ID))
                 {
                     error = FilesCommonResource.ErrorMassage_LockedFile;
-                    return true;
+                    return (true, error);
                 }
                 if (fileTracker.IsEditing(file.ID))
                 {
                     error = FilesCommonResource.ErrorMassage_SecurityException_UpdateEditingFile;
-                    return true;
+                    return (true, error);
                 }
             }
-            return false;
+            return (false, error);
         }
     }
 

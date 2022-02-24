@@ -120,11 +120,12 @@ namespace ASC.CRM.Core.Dao
             {
                 tagIDs.Add(CrmDbContext
                     .Tags
+                    .AsQueryable()
                     .Where(x => x.EntityType == entityType && String.Compare(x.Title, tag.Trim(), true) == 0)
                     .Select(x => x.Id).Single());
             }
 
-            var sqlQuery = CrmDbContext.EntityTags.Where(x => x.EntityType == entityType && tagIDs.Contains(x.TagId));
+            var sqlQuery = CrmDbContext.EntityTags.AsQueryable().Where(x => x.EntityType == entityType && tagIDs.Contains(x.TagId));
 
             if (exceptIDs != null && exceptIDs.Length > 0)
                 sqlQuery = sqlQuery.Where(x => exceptIDs.Contains(x.EntityId));
@@ -161,12 +162,14 @@ namespace ASC.CRM.Core.Dao
         {
             if (contactID.HasValue && !entityID.HasValue)
                 return CrmDbContext.EntityContact
+                        .AsQueryable()
                        .Where(x => x.EntityType == entityType && x.ContactId == contactID.Value)
                        .Select(x => x.EntityId)
                        .ToArray();
 
             if (!contactID.HasValue && entityID.HasValue)
                 return CrmDbContext.EntityContact
+                       .AsQueryable()
                        .Where(x => x.EntityType == entityType && x.EntityId == entityID.Value)
                        .Select(x => x.ContactId)
                        .ToArray();
@@ -182,6 +185,7 @@ namespace ASC.CRM.Core.Dao
             using var tx = CrmDbContext.Database.BeginTransaction();
 
             var exists = CrmDbContext.EntityContact
+                                    .AsQueryable()
                                     .Where(x => x.EntityType == entityType && x.EntityId == entityID)
                                     .Select(x => x.ContactId)
                                     .ToArray();
@@ -189,6 +193,7 @@ namespace ASC.CRM.Core.Dao
             foreach (var existContact in exists)
             {
                 var items = CrmDbContext.EntityContact
+                                        .AsQueryable()
                                         .Where(x => x.EntityType == entityType && x.EntityId == entityID && x.ContactId == existContact);
 
                 CrmDbContext.EntityContact.RemoveRange(items);
@@ -289,7 +294,7 @@ namespace ASC.CRM.Core.Dao
 
         protected IQueryable<T> Query<T>(DbSet<T> set) where T : class, IDbCrm
         {
-            return set.Where(r => r.TenantId == TenantID);
+            return set.AsQueryable().Where(r => r.TenantId == TenantID);
         }
 
         protected string GetTenantColumnName(string table)
