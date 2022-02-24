@@ -17,20 +17,23 @@
 namespace ASC.Files.ThumbnailBuilder;
 
 [Singletone]
-public class ThumbnailBuilder : BackgroundService
+public class ThumbnailBuilderService : BackgroundService
 {
-    private readonly IServiceProvider _serviceProvider;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly ThumbnailSettings _thumbnailSettings;
     private readonly ILog _logger;
+    private readonly BuilderQueue<int> _builderQueue;
 
-    public ThumbnailBuilder(
-        IServiceProvider serviceProvider,
+    public ThumbnailBuilderService(
+        BuilderQueue<int> builderQueue,
+        IServiceScopeFactory serviceScopeFactory,
         IOptionsMonitor<ILog> options,
         ThumbnailSettings settings)
     {
-        _serviceProvider = serviceProvider;
+        _serviceScopeFactory = serviceScopeFactory;
         _thumbnailSettings = settings;
         _logger = options.Get("ASC.Files.ThumbnailBuilder");
+        _builderQueue = builderQueue;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -68,17 +71,16 @@ public class ThumbnailBuilder : BackgroundService
             return;
         }
 
-        using (var scope = _serviceProvider.CreateScope())
+        using (var scope = _serviceScopeFactory.CreateScope())
         {
             var fileDataProvider = scope.ServiceProvider.GetService<FileDataProvider>();
-            var builder = scope.ServiceProvider.GetService<BuilderQueue<int>>();
             var premiumTenants = fileDataProvider.GetPremiumTenants();
 
             filesWithoutThumbnails = filesWithoutThumbnails
                 .OrderByDescending(fileData => Array.IndexOf(premiumTenants, fileData.TenantId))
                 .ToList();
 
-            builder.BuildThumbnails(filesWithoutThumbnails);
+            _builderQueue.BuildThumbnails(filesWithoutThumbnails);
         }
 
         _logger.Trace("Procedure: Finish.");

@@ -96,8 +96,8 @@ builder.Host.ConfigureServices((hostContext, services) =>
     services.AddHostedService<ThumbnailService>();
     diHelper.TryAdd<ThumbnailService>();
 
-    services.AddHostedService<ThumbnailBuilder>();
-    diHelper.TryAdd<ThumbnailBuilder>();
+    services.AddHostedService<ThumbnailBuilderService>();
+    diHelper.TryAdd<ThumbnailBuilderService>();
 
     diHelper.TryAdd<AuthManager>();
     diHelper.TryAdd<BaseCommonLinkUtility>();

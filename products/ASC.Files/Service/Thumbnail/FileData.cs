@@ -17,7 +17,7 @@
 
 namespace ASC.Files.ThumbnailBuilder;
 
-internal class FileData<T>
+public class FileData<T>
 {
     public readonly int TenantId;
     public readonly T FileId;

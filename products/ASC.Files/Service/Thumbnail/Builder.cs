@@ -17,16 +17,16 @@
 namespace ASC.Files.ThumbnailBuilder;
 
 [Singletone]
-internal class BuilderQueue<T>
+public class BuilderQueue<T>
 {
     private readonly ThumbnailSettings _config;
     private readonly ILog _logger;
-    private readonly IServiceProvider _serviceProvider;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
 
-    public BuilderQueue(IServiceProvider serviceProvider, IOptionsMonitor<ILog> log, ThumbnailSettings settings)
+    public BuilderQueue(IServiceScopeFactory serviceScopeFactory, IOptionsMonitor<ILog> log, ThumbnailSettings settings)
     {
         _logger = log.Get("ASC.Files.ThumbnailBuilder");
-        _serviceProvider = serviceProvider;
+        _serviceScopeFactory = serviceScopeFactory;
         _config = settings;
     }
 
@@ -39,7 +39,7 @@ internal class BuilderQueue<T>
                 new ParallelOptions { MaxDegreeOfParallelism = _config.MaxDegreeOfParallelism },
                 (fileData) =>
                 {
-                    using var scope = _serviceProvider.CreateScope();
+                    using var scope = _serviceScopeFactory.CreateScope();
                     var commonLinkUtilitySettings = scope.ServiceProvider.GetService<CommonLinkUtilitySettings>();
                     commonLinkUtilitySettings.ServerUri = fileData.BaseUri;
 
@@ -56,7 +56,7 @@ internal class BuilderQueue<T>
 }
 
 [Scope]
-internal class Builder<T>
+public class Builder<T>
 {
     private readonly ThumbnailSettings _config;
     private readonly ILog _logger;
