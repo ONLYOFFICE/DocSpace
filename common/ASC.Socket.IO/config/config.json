@@ -1,11 +1,9 @@
 {
   "port": 9899,
-  "core.machinekey": "1123askdasjklasbnd",
-  "portal.internal.url": "",
+  "appsettings": "../../../config",
+  "environment": "Development",
   "redis": {
     "enabled": false,
-    "host": "localhost",
-    "port": 6379,
     "db": 0,
     "pass": "",
     "ttl": 84600

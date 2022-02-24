@@ -1,0 +1,13 @@
+<service>
+  <id>OnlyofficeSocketService</id>
+  <name>OnlyofficeSocketService</name>
+  <description>This service runs Socket.</description>
+  <executable>node</executable>
+  <arguments>../../common/ASC.Socket.IO/server.js</arguments>
+  <log mode="roll-by-time">
+	<pattern>dd-MM</pattern>
+  </log>
+  <logpath>../../../Logs</logpath>
+  <delayedAutoStart>true</delayedAutoStart>
+  <onfailure action="restart" delay="5 sec" />
+</service>

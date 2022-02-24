@@ -20,7 +20,7 @@ winston.stream = {
 const port = config.get("port") || 9899;
 const app = express();
 
-const secret = config.get("core.machinekey") + new Date().getTime();
+const secret = config.get("core").machinekey + new Date().getTime();
 const secretCookieParser = cookieParser(secret);
 const baseCookieParser = cookieParser();
 

@@ -3,7 +3,7 @@
     crypto = require("crypto"),
     moment = require("moment");
 
-  const skey = config.get("core.machinekey");
+  const skey = config.get("core").machinekey;
   const trustInterval = 5 * 60 * 1000;
 
   function check(token) {
