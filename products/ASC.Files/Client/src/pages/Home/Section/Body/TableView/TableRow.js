@@ -63,17 +63,21 @@ const StyledTableRow = styled(TableRow)`
       `}
   }
 
+  .table-container_element-wrapper {
+    min-width: 36px;
+  }
+
   .table-container_element {
     /* margin-left: ${(props) => (props.isFolder ? "-3px" : "-4px")}; */
   }
 
   .table-container_row-checkbox {
-    padding-left: 12px;
+    padding-left: 16px;
     width: 16px;
   }
 
   &:hover {
-    .table-container_row-checkbox-wrapper {
+    .table-container_file-name-cell {
       ${(props) => props.dragging && rowCheckboxDraggingHoverStyle}
     }
     .table-container_row-context-menu-wrapper {
@@ -81,10 +85,10 @@ const StyledTableRow = styled(TableRow)`
     }
   }
 
-  .table-container_row-checkbox-wrapper {
+  .table-container_file-name-cell {
     min-width: 30px;
     margin-left: -24px;
-    padding-left: 24px;
+    padding-left: 28px;
 
     ${(props) =>
       !props.isActive &&
@@ -305,13 +309,16 @@ const FilesTableRow = (props) => {
             : t("Translations:TitleShowActions")
         }
       >
-        <TableCell {...dragStyles} {...selectionProp}>
+        <TableCell
+          {...dragStyles}
+          className={`${selectionProp?.className} table-container_file-name-cell`}
+          value={value}
+        >
           <FileNameCell
             onContentSelect={onContentFileSelect}
             checked={checkedProps}
             element={element}
             inProgress={inProgress}
-            {...selectionProp}
             {...props}
           />
           <StyledBadgesContainer>{badgesComponent}</StyledBadgesContainer>

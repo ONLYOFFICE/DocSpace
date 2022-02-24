@@ -11,7 +11,6 @@ const FileNameCell = ({
   element,
   onContentSelect,
   checked,
-  selectionProp,
   t,
   inProgress,
 }) => {
@@ -31,10 +30,9 @@ const FileNameCell = ({
         />
       ) : (
         <TableCell
+          className="table-container_element-wrapper"
           hasAccess={true}
           checked={checked}
-          {...selectionProp}
-          className={`${selectionProp?.className} table-container_row-checkbox-wrapper`}
         >
           <div className="table-container_element">{element}</div>
           <Checkbox

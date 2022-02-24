@@ -424,7 +424,7 @@ class TableHeader extends React.Component {
           id="table-container_caption-header"
           className={`${
             isLengthenHeader ? "lengthen-header" : ""
-          }table-container_header`}
+          } table-container_header`}
           ref={this.headerRef}
           {...rest}
         >
