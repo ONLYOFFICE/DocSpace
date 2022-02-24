@@ -66,7 +66,9 @@ const StyledTableRow = styled(TableRow)`
   .table-container_element-wrapper,
   .table-container_row-loader {
     min-width: 36px;
+  }
 
+  .table-container_row-loader {
     svg {
       margin-left: 4px;
     }
