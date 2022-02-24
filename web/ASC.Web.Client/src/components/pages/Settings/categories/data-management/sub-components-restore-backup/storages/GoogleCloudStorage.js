@@ -8,11 +8,11 @@ class GoogleCloudStorage extends React.Component {
     super(props);
     const { onSetRequiredFormNames } = this.props;
 
-    onSetRequiredFormNames([...this.namesArray, "path"]);
-
     let formSettings = {};
     this.namesArray = GoogleCloudSettings.formNames();
     this.namesArray.forEach((elem) => (formSettings[elem] = ""));
+
+    onSetRequiredFormNames([...this.namesArray, "path"]);
 
     this.state = {
       formSettings,
