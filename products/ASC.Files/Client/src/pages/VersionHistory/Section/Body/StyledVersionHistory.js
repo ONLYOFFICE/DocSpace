@@ -117,7 +117,7 @@ const StyledVersionRow = styled(Row)`
     padding-top: 12px;
     padding-bottom: 12px;
 
-    ${(props) => props.isTabletView && "height: auto"};
+    ${(props) => props.isTabletView && "height: 42px"};
     ${(props) => !props.isTabletView && "padding-right:16px"};
   }
 
