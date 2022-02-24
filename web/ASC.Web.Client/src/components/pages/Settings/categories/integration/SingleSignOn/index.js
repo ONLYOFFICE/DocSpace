@@ -4,7 +4,6 @@ import { observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
 import Box from "@appserver/components/box";
-import Button from "@appserver/components/button";
 import FormStore from "@appserver/studio/src/store/SsoFormStore";
 
 import Certificates from "./Certificates";
@@ -13,8 +12,8 @@ import ForbiddenPage from "./sub-components/ForbiddenPage";
 import HideButton from "./sub-components/HideButton";
 import IdpSettings from "./IdpSettings";
 import ProviderMetadata from "./ProviderMetadata";
-import ResetConfirmationModal from "./sub-components/ResetConfirmationModal";
 import StyledSsoPage from "./styled-containers/StyledSsoPageContainer";
+import SubmitResetButtons from "./SubmitButton";
 import ToggleSSO from "./sub-components/ToggleSSO";
 
 const SingleSignOn = () => {
@@ -44,30 +43,7 @@ const SingleSignOn = () => {
 
         <FieldMapping FormStore={FormStore} t={t} />
 
-        <Box alignItems="center" displayProp="flex" flexDirection="row">
-          <Button
-            className="save-button"
-            label={t("Common:SaveButton")}
-            onClick={FormStore.onSubmit}
-            primary
-            size="medium"
-            tabIndex={23}
-          />
-          <Button
-            label={t("ResetSettings")}
-            onClick={
-              FormStore.isSsoEnabled
-                ? FormStore.openResetModal
-                : FormStore.resetForm
-            }
-            size="medium"
-            tabIndex={24}
-          />
-        </Box>
-
-        {FormStore.confirmationResetModal && (
-          <ResetConfirmationModal FormStore={FormStore} t={t} />
-        )}
+        <SubmitResetButtons FormStore={FormStore} t={t} />
       </Box>
 
       <hr className="separator" />
