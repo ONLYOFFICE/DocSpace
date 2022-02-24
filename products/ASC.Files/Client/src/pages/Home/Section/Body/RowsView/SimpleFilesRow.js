@@ -73,8 +73,8 @@ const StyledSimpleFilesRow = styled(Row)`
   }
 
   .row_content {
-    max-width: min-content;
-    min-width: inherit;
+    max-width: fit-content;
+    min-width: auto;
   }
 
   .badges {
