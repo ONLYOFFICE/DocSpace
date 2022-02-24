@@ -1,0 +1,13 @@
+<service>
+  <id>OnlyofficeSSoAuthService</id>
+  <name>OnlyofficeSSoAuthService</name>
+  <description>This service runs SSoAuth.</description>
+  <executable>node</executable>
+  <arguments>../../common/ASC.SSoAuth/app.js</arguments>
+  <log mode="roll-by-time">
+	<pattern>dd-MM</pattern>
+  </log>
+  <logpath>../../../Logs</logpath>
+  <delayedAutoStart>true</delayedAutoStart>
+  <onfailure action="restart" delay="5 sec" />
+</service>

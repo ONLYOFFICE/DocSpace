@@ -36,7 +36,7 @@ const fs = require("fs"),
 require('winston-daily-rotate-file');
 
 const app = express();
-let logDir = config["logPath"] ? config["logPath"] : config.app.logDir;
+let logDir = path.join(__dirname, config["logPath"]) || config.app.logDir;
 // ensure log directory exists
 fs.existsSync(logDir) || fs.mkdirSync(logDir);
 
@@ -77,7 +77,7 @@ app.use(favicon(path.join(__dirname, "public", "favicon.ico")))
     {
         resave: true,
         saveUninitialized: true,
-        secret: config["core.machinekey"] ? config["core.machinekey"] : config.app.machinekey
+        secret: config["core"].machinekey ? config["core"].machinekey : config.app.machinekey
         }))
     .use(cors());
 
