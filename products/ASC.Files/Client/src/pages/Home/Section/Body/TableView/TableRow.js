@@ -63,8 +63,13 @@ const StyledTableRow = styled(TableRow)`
       `}
   }
 
-  .table-container_element-wrapper {
+  .table-container_element-wrapper,
+  .table-container_row-loader {
     min-width: 36px;
+
+    svg {
+      margin-left: 4px;
+    }
   }
 
   .table-container_element {
