@@ -79,7 +79,7 @@ internal class Builder<T>
         IOptionsMonitor<ILog> log,
         IHttpClientFactory clientFactory)
     {
-        this._config = settings;
+        _config = settings;
         _tenantManager = tenantManager;
         _daoFactory = daoFactory;
         _documentServiceConnector = documentServiceConnector;
