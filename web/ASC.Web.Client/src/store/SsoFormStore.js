@@ -19,9 +19,15 @@ const regExps = {
 };
 
 class SsoFormStore {
-  uploadXmlUrl = "";
+  isSsoEnabled = false;
+
+  set isSsoEnabled(value) {
+    this.isSsoEnabled = value;
+  }
 
   enableSso = false;
+
+  uploadXmlUrl = "";
 
   spLoginLabel = "";
 
@@ -85,6 +91,8 @@ class SsoFormStore {
   SPMetadata = false;
   idp_isModalVisible = false;
   sp_isModalVisible = false;
+  confirmationDisableModal = false;
+  confirmationResetModal = false;
 
   // errors
   uploadXmlUrlHasError = false;
@@ -128,8 +136,21 @@ class SsoFormStore {
     makeAutoObservable(this);
   }
 
+  onPageLoad = () => {
+    const response = fetch("/somewhere");
+
+    if ("something") {
+      this.isSsoEnabled = true;
+    }
+  };
+
   onSsoToggle = () => {
-    this.enableSso = !this.enableSso;
+    if (!this.enableSso) {
+      this.enableSso = true;
+      this.ServiceProviderSettings = true;
+    } else {
+      this.enableSso = false;
+    }
   };
 
   onTextInputChange = (e) => {
@@ -175,6 +196,32 @@ class SsoFormStore {
     this.setErrors(field, value);
   };
 
+  disableSso = () => {
+    this.isSsoEnabled = false;
+  };
+
+  openConfirmationDisableModal = () => {
+    this.confirmationDisableModal = true;
+  };
+
+  openResetModal = () => {
+    this.confirmationResetModal = true;
+  };
+
+  onConfirmDisable = () => {
+    this.disableSso();
+    this.onSsoToggle();
+    this.confirmationDisableModal = false;
+  };
+
+  onConfirmReset = () => {
+    this.resetForm();
+    this.disableSso();
+    this.ServiceProviderSettings = false;
+    this.SPMetadata = false;
+    this.confirmationResetModal = false;
+  };
+
   resetForm = async () => {
     const params = {
       method: "DELETE",
@@ -184,14 +231,14 @@ class SsoFormStore {
     try {
       const response = await fetch("/somewhere", params);
       if (response.ok) {
-        this.resetField();
+        this.resetFields();
       } else throw new Error("error");
     } catch (err) {
       console.log(err);
     }
   };
 
-  resetField = () => {
+  resetFields = () => {
     for (let key of Object.keys(defaultStore)) {
       this[key] = defaultStore[key];
     }
@@ -422,7 +469,7 @@ class SsoFormStore {
     };
 
     try {
-      const response = await fetch("./somewhere");
+      const response = await fetch("./somewhere", params);
       if (!response.ok) throw new Error("Some error");
       console.log("success");
     } catch (err) {

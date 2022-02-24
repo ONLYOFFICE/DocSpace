@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { isDesktop } from "react-device-detect";
 import { observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
@@ -13,6 +13,7 @@ import ForbiddenPage from "./sub-components/ForbiddenPage";
 import HideButton from "./sub-components/HideButton";
 import IdpSettings from "./IdpSettings";
 import ProviderMetadata from "./ProviderMetadata";
+import ResetConfirmationModal from "./sub-components/ResetConfirmationModal";
 import StyledSsoPage from "./styled-containers/StyledSsoPageContainer";
 import ToggleSSO from "./sub-components/ToggleSSO";
 
@@ -20,6 +21,10 @@ const SingleSignOn = () => {
   const { t } = useTranslation(["SingleSignOn", "Common"]);
 
   if (!isDesktop) return <ForbiddenPage t={t} />;
+
+  useEffect(() => {
+    FormStore.onPageLoad();
+  }, []);
 
   return (
     <StyledSsoPage
@@ -50,11 +55,19 @@ const SingleSignOn = () => {
           />
           <Button
             label={t("ResetSettings")}
-            onClick={FormStore.resetForm}
+            onClick={
+              FormStore.isSsoEnabled
+                ? FormStore.openResetModal
+                : FormStore.resetForm
+            }
             size="medium"
             tabIndex={24}
           />
         </Box>
+
+        {FormStore.confirmationResetModal && (
+          <ResetConfirmationModal FormStore={FormStore} t={t} />
+        )}
       </Box>
 
       <hr className="separator" />

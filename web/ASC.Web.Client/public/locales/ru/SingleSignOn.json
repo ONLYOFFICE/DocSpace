@@ -8,6 +8,7 @@
   "CertificateName": "Имя",
   "CertificateStatus": "Статус",
   "ChooseFile": "Выбрать файл",
+  "ConfirmationText": "Все введенные данные будут потеряны. Вы уверены, что хотите продолжить?",
   "CustomEntryButton": "Пользовательская надпись для кнопки входа:",
   "CustomEntryButtonPlaceholder": "Single Sign-on",
   "CustomEntryTooltip": "Надпись для кнопки, которая используется для входа на портал с помощью сервиса Single Sign-on",

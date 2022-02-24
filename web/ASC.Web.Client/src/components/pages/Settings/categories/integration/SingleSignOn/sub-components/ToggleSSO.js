@@ -6,6 +6,8 @@ import HelpButton from "@appserver/components/help-button";
 import Text from "@appserver/components/text";
 import ToggleButton from "@appserver/components/toggle-button";
 
+import DisableSsoConfirmationModal from "./DisableSsoConfirmationModal";
+
 const borderProp = { radius: "4px" };
 const displayProp = { display: "inline-flex" };
 
@@ -26,7 +28,11 @@ const ToggleSSO = ({ FormStore, t }) => {
         <ToggleButton
           className="toggle"
           isChecked={FormStore.enableSso}
-          onChange={FormStore.onSsoToggle}
+          onChange={
+            FormStore.isSsoEnabled && FormStore.enableSso
+              ? FormStore.openConfirmationDisableModal
+              : FormStore.onSsoToggle
+          }
         />
 
         <Box>
@@ -44,6 +50,10 @@ const ToggleSSO = ({ FormStore, t }) => {
           <Text lineHeight="16px">{t("TurnOnSSOCaption")}</Text>
         </Box>
       </Box>
+
+      {FormStore.confirmationDisableModal && (
+        <DisableSsoConfirmationModal FormStore={FormStore} t={t} />
+      )}
     </>
   );
 };

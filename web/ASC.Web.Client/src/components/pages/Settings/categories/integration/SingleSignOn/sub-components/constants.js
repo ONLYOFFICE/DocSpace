@@ -61,6 +61,8 @@ export const bindingOptions = [
 export const defaultStore = {
   spLoginLabel: "",
 
+  enableSso: false,
+
   // idpSettings
   entityId: "",
   ssoUrl: "",
