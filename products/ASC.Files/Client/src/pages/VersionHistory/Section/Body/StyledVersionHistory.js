@@ -185,10 +185,12 @@ const StyledVersionRow = styled(Row)`
   .version_link {
     display: ${(props) =>
       props.showEditPanel ? "none" : props.canEdit ? "block" : "none"};
-    text-decoration: underline dashed;
+    /* text-decoration: underline dashed; */
     white-space: break-spaces;
     margin-left: -7px;
     margin-top: 4px;
+
+    cursor: ${(props) => (props.isEditing ? "default" : "pointer")};
 
     @media ${tablet} {
       display: none;

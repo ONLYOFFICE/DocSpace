@@ -163,11 +163,10 @@ namespace ASC.Security.Cryptography
         public string Email { get; set; }
         public Guid? UiD { get; set; }
         public ConfirmType? Type { get; set; }
-        public int? P { get; set; }
 
-        public void Deconstruct(out string key, out EmployeeType? emplType, out string email, out Guid? uiD, out ConfirmType? type, out int? p)
+        public void Deconstruct(out string key, out EmployeeType? emplType, out string email, out Guid? uiD, out ConfirmType? type)
         {
-            (key, emplType, email, uiD, type, p) = (Key, EmplType, Email, UiD, Type, P);
+            (key, emplType, email, uiD, type) = (Key, EmplType, Email, UiD, Type);
         }
     }
 
@@ -208,9 +207,6 @@ namespace ASC.Security.Cryptography
 
             request.TryGetValue("key", out var key);
 
-            request.TryGetValue("p", out var pkey);
-            int.TryParse(pkey, out var p);
-
             request.TryGetValue("emplType", out var emplType);
             Enum.TryParse<EmployeeType>(emplType, out var employeeType);
 
@@ -223,7 +219,6 @@ namespace ASC.Security.Cryptography
                 Email = _email,
                 EmplType = employeeType,
                 Key = key,
-                P = p,
                 Type = cType,
                 UiD = userId
             };
@@ -231,7 +226,7 @@ namespace ASC.Security.Cryptography
 
         public ValidationResult Validate(EmailValidationKeyModel model)
         {
-            var (key, emplType, email, uiD, type, p) = model;
+            var (key, emplType, email, uiD, type) = model;
 
             ValidationResult checkKeyResult;
 
@@ -265,12 +260,9 @@ namespace ASC.Security.Cryptography
 
                 case ConfirmType.ProfileRemove:
                     // validate UiD
-                    if (p == 1)
-                    {
-                        var user = UserManager.GetUsers(uiD.GetValueOrDefault());
-                        if (user == null || user.Status == EmployeeStatus.Terminated || AuthContext.IsAuthenticated && AuthContext.CurrentAccount.ID != uiD)
-                            return ValidationResult.Invalid;
-                    }
+                    var user = UserManager.GetUsers(uiD.GetValueOrDefault());
+                    if (user == null || user.Status == EmployeeStatus.Terminated || AuthContext.IsAuthenticated && AuthContext.CurrentAccount.ID != uiD)
+                        return ValidationResult.Invalid;
 
                     checkKeyResult = Provider.ValidateEmailKey(email + type + uiD, key, Provider.ValidEmailKeyInterval);
                     break;

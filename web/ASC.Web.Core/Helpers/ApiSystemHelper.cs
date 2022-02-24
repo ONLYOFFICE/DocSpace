@@ -33,6 +33,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
 
 using ASC.Common;
@@ -79,12 +80,12 @@ namespace ASC.Web.Core.Helpers
 
         #region system
 
-        public void ValidatePortalName(string domain, Guid userId)
+        public async Task ValidatePortalNameAsync(string domain, Guid userId)
         {
             try
             {
                 var data = $"portalName={HttpUtility.UrlEncode(domain)}";
-                SendToApi(ApiSystemUrl, "portal/validateportalname", WebRequestMethods.Http.Post, userId, data);
+                await SendToApiAsync(ApiSystemUrl, "portal/validateportalname", WebRequestMethods.Http.Post, userId, data);
             }
             catch (WebException exception)
             {
@@ -95,7 +96,7 @@ namespace ASC.Web.Core.Helpers
                 {
                     using var stream = response.GetResponseStream();
                     using var reader = new StreamReader(stream, Encoding.UTF8);
-                    var result = reader.ReadToEnd();
+                    var result = await reader.ReadToEndAsync();
 
                     var resObj = JObject.Parse(result);
                     if (resObj["error"] != null)
@@ -123,20 +124,20 @@ namespace ASC.Web.Core.Helpers
 
         #region cache
 
-        public void AddTenantToCache(string domain, Guid userId)
+        public async Task AddTenantToCacheAsync(string domain, Guid userId)
         {
             var data = $"portalName={HttpUtility.UrlEncode(domain)}";
-            SendToApi(ApiCacheUrl, "portal/add", WebRequestMethods.Http.Post, userId, data);
+            await SendToApiAsync(ApiCacheUrl, "portal/add", WebRequestMethods.Http.Post, userId, data);
         }
 
-        public void RemoveTenantFromCache(string domain, Guid userId)
+        public async Task RemoveTenantFromCacheAsync(string domain, Guid userId)
         {
-            SendToApi(ApiCacheUrl, "portal/remove?portalname=" + HttpUtility.UrlEncode(domain), "DELETE", userId);
+            await SendToApiAsync(ApiCacheUrl, "portal/remove?portalname=" + HttpUtility.UrlEncode(domain), "DELETE", userId);
         }
 
-        public IEnumerable<string> FindTenantsInCache(string domain, Guid userId)
+        public async Task<IEnumerable<string>> FindTenantsInCacheAsync(string domain, Guid userId)
         {
-            var result = SendToApi(ApiCacheUrl, "portal/find?portalname=" + HttpUtility.UrlEncode(domain), WebRequestMethods.Http.Get, userId);
+            var result = await SendToApiAsync(ApiCacheUrl, "portal/find?portalname=" + HttpUtility.UrlEncode(domain), WebRequestMethods.Http.Get, userId);
             var resObj = JObject.Parse(result);
 
             var variants = resObj.Value<JArray>("variants");
@@ -145,7 +146,7 @@ namespace ASC.Web.Core.Helpers
 
         #endregion
 
-        private string SendToApi(string absoluteApiUrl, string apiPath, string httpMethod, Guid userId, string data = null)
+        private async Task<string> SendToApiAsync(string absoluteApiUrl, string apiPath, string httpMethod, Guid userId, string data = null)
         {
             if (!Uri.TryCreate(absoluteApiUrl, UriKind.Absolute, out var uri))
             {
@@ -167,10 +168,10 @@ namespace ASC.Web.Core.Helpers
             }
 
             var httpClient = ClientFactory.CreateClient();
-            using var response = httpClient.Send(request);
-            using var stream = response.Content.ReadAsStream();
+            using var response = await httpClient.SendAsync(request);
+            using var stream = await response.Content.ReadAsStreamAsync();
             using var reader = new StreamReader(stream, Encoding.UTF8);
-            return reader.ReadToEnd();
+            return await reader.ReadToEndAsync();
         }
     }
 }

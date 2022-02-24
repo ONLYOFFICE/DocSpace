@@ -1,13 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { withRouter } from "react-router";
 import ModalDialogContainer from "../ModalDialogContainer";
 import ModalDialog from "@appserver/components/modal-dialog";
 import Button from "@appserver/components/button";
 import Text from "@appserver/components/text";
 import Checkbox from "@appserver/components/checkbox";
-import { withTranslation } from "react-i18next";
+import { withTranslation, Trans } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import Loaders from "@appserver/common/components/Loaders";
+import { FolderType } from "@appserver/common/constants";
 
 const ConvertDialogComponent = (props) => {
   const {
@@ -22,9 +23,22 @@ const ConvertDialogComponent = (props) => {
     storeOriginalFiles,
     convertUploadedFiles,
     setConvertDialogVisible,
+    rootFoldersTitles,
+    isRecentFolder,
+    isFavoritesFolder,
+    isShareFolder,
   } = props;
 
+  let rootFolderTitle = "";
   const convertSingleFile = !!convertItem;
+  const sortedFolder = isRecentFolder || isFavoritesFolder || isShareFolder;
+
+  if (convertSingleFile && sortedFolder) {
+    rootFolderTitle = isShareFolder
+      ? rootFoldersTitles[FolderType.USER]
+      : rootFoldersTitles[convertItem.rootFolderType];
+  }
+
   const [hideMessage, setHideMessage] = useState(false);
 
   const onChangeFormat = () =>
@@ -42,7 +56,7 @@ const ConvertDialogComponent = (props) => {
         action: "convert",
       };
       item.fileInfo = convertItem;
-      convertFile(item);
+      convertFile(item, t);
     } else {
       hideMessage && hideConfirmConvert();
       convertUploadedFiles(t);
@@ -77,6 +91,22 @@ const ConvertDialogComponent = (props) => {
               isChecked={storeOriginalFiles}
               onChange={onChangeFormat}
             />
+            {convertSingleFile && sortedFolder && (
+              <div
+                className={`convert_dialog_file-destination ${
+                  storeOriginalFiles ? "file-destination_visible" : ""
+                }`}
+              >
+                <Trans
+                  t={t}
+                  i18nKey="ConvertedFileDestination"
+                  ns="ConvertDialog"
+                >
+                  The file copy will be created in the
+                  {{ folderTitle: rootFolderTitle }} folder
+                </Trans>
+              </div>
+            )}
             {!convertSingleFile && (
               <Checkbox
                 className="convert_dialog_checkbox"
@@ -123,7 +153,13 @@ export default inject(
     settingsStore,
     selectedFolderStore,
   }) => {
-    const { setTreeFolders } = treeFoldersStore;
+    const {
+      setTreeFolders,
+      rootFoldersTitles,
+      isRecentFolder,
+      isFavoritesFolder,
+      isShareFolder,
+    } = treeFoldersStore;
     const { convertUploadedFiles, convertFile } = uploadDataStore;
     const {
       storeOriginalFiles,
@@ -148,6 +184,10 @@ export default inject(
       storeOriginalFiles,
       convertUploadedFiles,
       setConvertDialogVisible,
+      rootFoldersTitles,
+      isRecentFolder,
+      isFavoritesFolder,
+      isShareFolder,
     };
   }
 )(withRouter(observer(ConvertDialog)));

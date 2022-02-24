@@ -4,5 +4,7 @@
   "ConversionTitle": "Đang tải tài liệu lên",
   "ConvertAndOpenTitle": "Chuyển đổi và mở tài liệu",
   "HideMessage": "Không hiển thị lại thông báo này",
-  "SaveOriginalFormatMessage": "Lưu bản sao tệp ở định dạng gốc"
+  "SaveOriginalFormatMessage": "Lưu bản sao tệp ở định dạng gốc",
+  "ConvertedFileDestination": "Bản sao của file sẽ được tạo trong thư mục <strong>{{folderTitle}}</strong>",
+  "InfoCreateFileIn": "File '{{fileTitle}}' được tạo trong '{{folderTitle}}'"
 }

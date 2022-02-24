@@ -107,6 +107,22 @@ namespace ASC.Core.Common.EF
                 return entity;
             }
         }
+
+        public static async Task<T> AddOrUpdateAsync<T, TContext>(this TContext b, Expression<Func<TContext, DbSet<T>>> expressionDbSet, T entity) where T : BaseEntity where TContext : BaseDbContext
+        {
+            var dbSet = expressionDbSet.Compile().Invoke(b);
+            var existingBlog = await dbSet.FindAsync(entity.GetKeys());
+            if (existingBlog == null)
+            {
+                var entityEntry = await dbSet.AddAsync(entity);
+                return entityEntry.Entity;
+            }
+            else
+            {
+                b.Entry(existingBlog).CurrentValues.SetValues(entity);
+                return entity;
+            }
+        }
     }
 
     public abstract class BaseEntity

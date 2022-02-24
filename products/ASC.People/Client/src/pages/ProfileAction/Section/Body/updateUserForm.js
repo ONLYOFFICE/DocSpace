@@ -448,8 +448,7 @@ class UpdateUserForm extends React.Component {
           throw response.message;
         }
         var img = new Image();
-        img.onload = function () {
-          _this.setState({ isLoading: false });
+        img.onload = () => {
           if (fileData) {
             fileData.avatar = {
               tmpFile: response.data,
@@ -535,11 +534,7 @@ class UpdateUserForm extends React.Component {
     }
   };
 
-  onCloseAvatarEditor = () => {
-    this.setState({
-      visibleAvatarEditor: false,
-    });
-  };
+  onCloseAvatarEditor = () => this.setState({ visibleAvatarEditor: false });
 
   onShowGroupSelector = () => {
     var stateCopy = Object.assign({}, this.state);
@@ -739,11 +734,9 @@ class UpdateUserForm extends React.Component {
               maxSizeFileError={t("Translations:maxSizeFileError")}
               unknownError={t("Common:Error")}
               saveButtonLabel={
-                this.state.isLoading
-                  ? t("UpdatingProcess")
-                  : t("Common:SaveButton")
+                isLoading ? t("UpdatingProcess") : t("Common:SaveButton")
               }
-              saveButtonLoading={this.state.isLoading}
+              saveButtonLoading={isLoading}
               maxSizeLabel={t("Translations:MaxSizeLabel")}
             />
           </AvatarContainer>
@@ -842,6 +835,7 @@ class UpdateUserForm extends React.Component {
               calendarHeaderContent={`${t("CalendarSelectDate")}:`}
               labelText={`${t("Translations:Birthdate")}:`}
               inputName="birthday"
+              inputClassName="date-picker_input-birthday"
               inputValue={birthdayDateValue}
               inputIsDisabled={isLoading}
               inputOnChange={this.onBirthdayDateChange}
@@ -884,6 +878,7 @@ class UpdateUserForm extends React.Component {
                 calendarHeaderContent={`${t("CalendarSelectDate")}:`}
                 labelText={`${regDateCaption}:`}
                 inputName="workFrom"
+                inputClassName="date-picker_input-reg-date"
                 inputValue={calendarWorkFrom}
                 inputIsDisabled={
                   isLoading ||

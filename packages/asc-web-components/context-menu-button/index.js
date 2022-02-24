@@ -198,6 +198,7 @@ class ContextMenuButton extends React.Component {
             directionX={directionX}
             directionY={directionY}
             open={isOpen}
+            forwardedRef={this.ref}
             clickOutsideAction={this.clickOutsideAction}
             columnCount={columnCount}
             withBackdrop={!!isMobile}

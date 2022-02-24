@@ -232,10 +232,10 @@ namespace ASC.Web.CRM.Classes
                 var document = _serviceProvider.GetService<File<int>>();
 
                 document.Title = state.FileName;
-                document.FolderID = _daoFactory.GetFileDao().GetRoot();
+                document.FolderID = await _daoFactory.GetFileDao().GetRootAsync();
                 document.ContentLength = stream.Length;
 
-                var file = _daoFactory.GetFileDao().SaveFile(document, stream);
+                var file = await _daoFactory.GetFileDao().SaveFileAsync(document, stream);
 
                 _daoFactory.GetReportDao().SaveFile((int)file.ID, state.ReportType);
 

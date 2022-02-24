@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Core;
@@ -104,18 +105,19 @@ namespace ASC.Web.Files.Core.Entries
             return keyPair;
         }
 
-        public IEnumerable<EncryptionKeyPair> GetKeyPair<T>(T fileId, FileStorageService<T> FileStorageService)
+        public async Task<IEnumerable<EncryptionKeyPair>> GetKeyPairAsync<T>(T fileId, FileStorageService<T> FileStorageService)
         {
             var fileDao = DaoFactory.GetFileDao<T>();
 
-            fileDao.InvalidateCache(fileId);
+            await fileDao.InvalidateCacheAsync(fileId);
 
-            var file = fileDao.GetFile(fileId);
+            var file = await fileDao.GetFileAsync(fileId);
             if (file == null) throw new System.IO.FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
-            if (!FileSecurity.CanEdit(file)) throw new System.Security.SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
+            if (!await FileSecurity.CanEditAsync(file)) throw new System.Security.SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
             if (file.RootFolderType != FolderType.Privacy) throw new NotSupportedException();
 
-            var fileShares = FileStorageService.GetSharedInfo(new List<T> { fileId }, new List<T> { }).ToList();
+            var tmpFiles = await FileStorageService.GetSharedInfoAsync(new List<T> { fileId }, new List<T> { });
+            var fileShares = tmpFiles.ToList();
             fileShares = fileShares.Where(share => !share.SubjectGroup
                                             && !share.SubjectId.Equals(FileConstant.ShareLinkId)
                                             && share.Share == FileShare.ReadWrite).ToList();
