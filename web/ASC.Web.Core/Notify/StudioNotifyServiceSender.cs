@@ -28,6 +28,7 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Caching;
@@ -143,13 +144,13 @@ namespace ASC.Web.Studio.Core.Notify
             {
                 WorkContext.RegisterSendMethod(SendMsgWhatsNew, "0 0 * ? * *"); // every hour
             }
-        }
+        }      
 
         public void SendSaasTariffLetters(DateTime scheduleDate)
         {
             //remove client
             using var scope = ServiceProvider.CreateScope();
-            scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendSaasLetters(EMailSenderName, scheduleDate);
+            scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendSaasLettersAsync(EMailSenderName, scheduleDate).Wait();
         }
 
         public void SendEnterpriseTariffLetters(DateTime scheduleDate)
