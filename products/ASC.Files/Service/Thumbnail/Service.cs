@@ -14,38 +14,37 @@
  *
 */
 
-namespace ASC.Files.ThumbnailBuilder
+namespace ASC.Files.ThumbnailBuilder;
+
+[Singletone]
+public class Service
 {
-    [Singletone]
-    public class Service
+    private readonly ICacheNotify<ThumbnailRequest> _cacheNotify;
+
+    public Service(ICacheNotify<ThumbnailRequest> cacheNotify)
     {
-        private readonly ICacheNotify<ThumbnailRequest> _cacheNotify;
+        _cacheNotify = cacheNotify;
+    }
 
-        public Service(ICacheNotify<ThumbnailRequest> cacheNotify)
+    public void Start()
+    {
+        _cacheNotify.Subscribe(BuildThumbnails, CacheNotifyAction.Insert);
+        //Cache.Subscribe
+    }
+
+    public void Stop()
+    {
+        _cacheNotify.Unsubscribe(CacheNotifyAction.Insert);
+        //Cache.Subscribe
+    }
+
+    public void BuildThumbnails(ThumbnailRequest request)
+    {
+        foreach (var fileId in request.Files)
         {
-            _cacheNotify = cacheNotify;
-        }
+            var fileData = new FileData<int>(request.Tenant, fileId, request.BaseUrl);
 
-        public void Start()
-        {
-            _cacheNotify.Subscribe(BuildThumbnails, CacheNotifyAction.Insert);
-            //Cache.Subscribe
-        }
-
-        public void Stop()
-        {
-            _cacheNotify.Unsubscribe(CacheNotifyAction.Insert);
-            //Cache.Subscribe
-        }
-
-        public void BuildThumbnails(ThumbnailRequest request)
-        {
-            foreach (var fileId in request.Files)
-            {
-                var fileData = new FileData<int>(request.Tenant, fileId, request.BaseUrl);
-
-                Launcher.Queue.TryAdd(fileId, fileData);
-            }
+            Launcher.Queue.TryAdd(fileId, fileData);
         }
     }
 }

@@ -14,93 +14,92 @@
  *
 */
 
-namespace ASC.Files.ThumbnailBuilder
+namespace ASC.Files.ThumbnailBuilder;
+
+[Singletone]
+public class Worker
 {
-    [Singletone]
-    public class Worker
+    private readonly IServiceProvider _serviceProvider;
+    private CancellationToken _cancellationToken;
+    private readonly ThumbnailSettings _thumbnailSettings;
+    private readonly ILog _logger;
+
+    private Timer _timer;
+
+    public Worker(
+        IServiceProvider serviceProvider,
+        IOptionsMonitor<ILog> options,
+        ThumbnailSettings settings)
     {
-        private readonly IServiceProvider _serviceProvider;
-        private CancellationToken _cancellationToken;
-        private readonly ThumbnailSettings _thumbnailSettings;
-        private readonly ILog _logger;
+        _serviceProvider = serviceProvider;
+        _thumbnailSettings = settings;
+        _logger = options.Get("ASC.Files.ThumbnailBuilder");
+    }
 
-        private Timer _timer;
+    public void Start(CancellationToken cancellationToken)
+    {
+        _timer = new Timer(Procedure, null, 0, Timeout.Infinite);
+        _cancellationToken = cancellationToken;
+    }
 
-        public Worker(
-            IServiceProvider serviceProvider,
-            IOptionsMonitor<ILog> options,
-            ThumbnailSettings settings)
-        {
-            _serviceProvider = serviceProvider;
-            _thumbnailSettings = settings;
-            _logger = options.Get("ASC.Files.ThumbnailBuilder");
-        }
-
-        public void Start(CancellationToken cancellationToken)
-        {
-            _timer = new Timer(Procedure, null, 0, Timeout.Infinite);
-            _cancellationToken = cancellationToken;
-        }
-
-        public void Stop()
-        {
-            if (_timer != null)
-            {
-                _timer.Change(Timeout.Infinite, Timeout.Infinite);
-                _timer.Dispose();
-                _timer = null;
-            }
-        }
-
-        private void Procedure(object _)
+    public void Stop()
+    {
+        if (_timer != null)
         {
             _timer.Change(Timeout.Infinite, Timeout.Infinite);
-            _logger.Trace("Procedure: Start.");
-
-            if (_cancellationToken.IsCancellationRequested)
-            {
-                Stop();
-                return;
-            }
-
-            //var configSection = (ConfigSection)ConfigurationManager.GetSection("thumbnailBuilder") ?? new ConfigSection();
-            //CommonLinkUtility.Initialize(configSection.ServerRoot, false);
-
-
-            var filesWithoutThumbnails = Launcher.Queue.Select(pair => pair.Value).ToList();
-
-            if (filesWithoutThumbnails.Count == 0)
-            {
-                _logger.TraceFormat("Procedure: Waiting for data. Sleep {0}.", _thumbnailSettings.LaunchFrequency);
-                _timer.Change(TimeSpan.FromSeconds(_thumbnailSettings.LaunchFrequency), TimeSpan.FromMilliseconds(-1));
-                return;
-            }
-
-            using (var scope = _serviceProvider.CreateScope())
-            {
-                var fileDataProvider = scope.ServiceProvider.GetService<FileDataProvider>();
-                var builder = scope.ServiceProvider.GetService<BuilderQueue<int>>();
-                var premiumTenants = fileDataProvider.GetPremiumTenants();
-
-                filesWithoutThumbnails = filesWithoutThumbnails
-                    .OrderByDescending(fileData => Array.IndexOf(premiumTenants, fileData.TenantId))
-                    .ToList();
-
-                builder.BuildThumbnails(filesWithoutThumbnails);
-            }
-
-            _logger.Trace("Procedure: Finish.");
-            _timer.Change(0, Timeout.Infinite);
+            _timer.Dispose();
+            _timer = null;
         }
     }
 
-    public static class WorkerExtension
+    private void Procedure(object _)
     {
-        public static void Register(DIHelper services)
+        _timer.Change(Timeout.Infinite, Timeout.Infinite);
+        _logger.Trace("Procedure: Start.");
+
+        if (_cancellationToken.IsCancellationRequested)
         {
-            services.TryAdd<FileDataProvider>();
-            services.TryAdd<BuilderQueue<int>>();
-            services.TryAdd<Builder<int>>();
+            Stop();
+            return;
         }
+
+        //var configSection = (ConfigSection)ConfigurationManager.GetSection("thumbnailBuilder") ?? new ConfigSection();
+        //CommonLinkUtility.Initialize(configSection.ServerRoot, false);
+
+
+        var filesWithoutThumbnails = Launcher.Queue.Select(pair => pair.Value).ToList();
+
+        if (filesWithoutThumbnails.Count == 0)
+        {
+            _logger.TraceFormat("Procedure: Waiting for data. Sleep {0}.", _thumbnailSettings.LaunchFrequency);
+            _timer.Change(TimeSpan.FromSeconds(_thumbnailSettings.LaunchFrequency), TimeSpan.FromMilliseconds(-1));
+            return;
+        }
+
+        using (var scope = _serviceProvider.CreateScope())
+        {
+            var fileDataProvider = scope.ServiceProvider.GetService<FileDataProvider>();
+            var builder = scope.ServiceProvider.GetService<BuilderQueue<int>>();
+            var premiumTenants = fileDataProvider.GetPremiumTenants();
+
+            filesWithoutThumbnails = filesWithoutThumbnails
+                .OrderByDescending(fileData => Array.IndexOf(premiumTenants, fileData.TenantId))
+                .ToList();
+
+            builder.BuildThumbnails(filesWithoutThumbnails);
+        }
+
+        _logger.Trace("Procedure: Finish.");
+        _timer.Change(0, Timeout.Infinite);
+    }
+}
+
+public static class WorkerExtension
+{
+    public static void Register(DIHelper services)
+    {
+        services.TryAdd<FileDataProvider>();
+        services.TryAdd<BuilderQueue<int>>();
+        services.TryAdd<Builder<int>>();
     }
 }

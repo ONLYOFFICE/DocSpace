@@ -14,45 +14,44 @@
  *
 */
 
-namespace ASC.Files.ThumbnailBuilder
+namespace ASC.Files.ThumbnailBuilder;
+
+[Singletone(Additional = typeof(WorkerExtension))]
+public class Launcher : IHostedService
 {
-    [Singletone(Additional = typeof(WorkerExtension))]
-    public class Launcher : IHostedService
+    internal static readonly ConcurrentDictionary<object, FileData<int>> Queue
+        = new ConcurrentDictionary<object, FileData<int>>();
+
+    private Worker _worker;
+    private readonly Service Service;
+
+    public Launcher(Service service, Worker worker)
     {
-        internal static readonly ConcurrentDictionary<object, FileData<int>> Queue 
-            = new ConcurrentDictionary<object, FileData<int>>();
+        Service = service;
+        _worker = worker;
+    }
 
-        private Worker _worker;
-        private readonly Service Service;
+    public Task StartAsync(CancellationToken cancellationToken)
+    {
+        _worker.Start(cancellationToken);
+        Service.Start();
 
-        public Launcher(Service service, Worker worker)
+        return Task.CompletedTask;
+    }
+
+    public Task StopAsync(CancellationToken cancellationToken)
+    {
+        if (_worker != null)
         {
-            Service = service;
-            _worker = worker;
+            _worker.Stop();
+            _worker = null;
         }
 
-        public Task StartAsync(CancellationToken cancellationToken)
+        if (Service != null)
         {
-            _worker.Start(cancellationToken);
-            Service.Start();
-
-            return Task.CompletedTask;
+            Service.Stop();
         }
 
-        public Task StopAsync(CancellationToken cancellationToken)
-        {
-            if (_worker != null)
-            {
-                _worker.Stop();
-                _worker = null;
-            }
-
-            if (Service != null)
-            {
-                Service.Stop();
-            }
-
-            return Task.CompletedTask;
-        }
+        return Task.CompletedTask;
     }
 }
