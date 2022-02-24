@@ -331,7 +331,7 @@ namespace ASC.CRM.Core.Dao
                                        int entityId)
         {
 
-            int result = 0;
+            int result;
 
             _logger.DebugFormat("Starting GetTasksCount: {0}", DateTime.Now.ToString());
 
@@ -644,7 +644,7 @@ namespace ASC.CRM.Core.Dao
                     break;
                     case TaskSortedByType.ContactManager:
                     {
-                        var sqlQueryPart = sqlQuery.GroupJoin(_userDbContext.Users.Where(x => x.Tenant == TenantID),
+                        var sqlQueryPart = sqlQuery.GroupJoin(_userDbContext.Users.AsQueryable().Where(x => x.Tenant == TenantID),
                                                       x => x.ResponsibleId,
                                                       y => y.Id,
                                                       (x, y) => new { x, y }

@@ -24,7 +24,7 @@ using StackExchange.Redis.Extensions.Newtonsoft;
 
 namespace ASC.Studio.Notify
 {
-    public class Program
+    public static class Program
     {
         public async static Task Main(string[] args)
         {
@@ -73,6 +73,8 @@ namespace ASC.Studio.Notify
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddMemoryCache();
+                    services.AddHttpClient();
+
                     var diHelper = new DIHelper(services);
 
                     var redisConfiguration = hostContext.Configuration.GetSection("Redis").Get<RedisConfiguration>();

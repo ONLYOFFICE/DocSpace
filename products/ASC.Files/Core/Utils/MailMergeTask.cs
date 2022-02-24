@@ -29,6 +29,7 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading.Tasks;
 using System.Web;
 
 using ASC.Common;
@@ -44,14 +45,14 @@ namespace ASC.Web.Files.Utils
     {
         internal const string MessageBodyFormat = "id={0}&from={1}&subject={2}&to%5B%5D={3}&body={4}&mimeReplyToId=";
 
-        public string From;
-        public string Subject;
-        public string To;
-        public string Message;
-        public string AttachTitle;
-        public Stream Attach;
-        public int MessageId;
-        public string StreamId;
+        public string From { get; set; }
+        public string Subject { get; set; }
+        public string To { get; set; }
+        public string Message { get; set; }
+        public string AttachTitle { get; set; }
+        public Stream Attach { get; set; }
+        public int MessageId { get; set; }
+        public string StreamId { get; set; }
 
         public MailMergeTask()
         {
@@ -86,31 +87,30 @@ namespace ASC.Web.Files.Utils
             BaseCommonLinkUtility = baseCommonLinkUtility;
         }
 
-        public string Run(MailMergeTask mailMergeTask)
+        public async Task<string> RunAsync(MailMergeTask mailMergeTask, IHttpClientFactory clientFactory)
         {
             if (string.IsNullOrEmpty(mailMergeTask.From)) throw new ArgumentException("From is null");
             if (string.IsNullOrEmpty(mailMergeTask.To)) throw new ArgumentException("To is null");
 
             CreateDraftMail(mailMergeTask);
 
-            var bodySendAttach = AttachToMail(mailMergeTask);
+            var bodySendAttach = await AttachToMailAsync(mailMergeTask, clientFactory);
 
             return SendMail(mailMergeTask, bodySendAttach);
         }
 
         private void CreateDraftMail(MailMergeTask mailMergeTask)
         {
-            var apiUrlCreate = string.Format("{0}mail/drafts/save.json", SetupInfo.WebApiBaseUrl);
-            var bodyCreate =
-                string.Format(
-                    MailMergeTask.MessageBodyFormat,
-                    mailMergeTask.MessageId,
-                    HttpUtility.UrlEncode(mailMergeTask.From),
-                    HttpUtility.UrlEncode(mailMergeTask.Subject),
-                    HttpUtility.UrlEncode(mailMergeTask.To),
-                    HttpUtility.UrlEncode(mailMergeTask.Message));
-
-            string responseCreateString = null; //TODO: Encoding.UTF8.GetString(Convert.FromBase64String(Api.GetApiResponse(apiUrlCreate, "PUT", bodyCreate)));
+            //var apiUrlCreate = $"{SetupInfo.WebApiBaseUrl}mail/drafts/save.json";
+            //var bodyCreate =
+            //    string.Format(
+            //        MailMergeTask.MessageBodyFormat,
+            //        mailMergeTask.MessageId,
+            //        HttpUtility.UrlEncode(mailMergeTask.From),
+            //        HttpUtility.UrlEncode(mailMergeTask.Subject),
+            //        HttpUtility.UrlEncode(mailMergeTask.To),
+            //        HttpUtility.UrlEncode(mailMergeTask.Message));
+            const string responseCreateString = null; //TODO: Encoding.UTF8.GetString(Convert.FromBase64String(Api.GetApiResponse(apiUrlCreate, "PUT", bodyCreate)));
             var responseCreate = JObject.Parse(responseCreateString);
 
             if (responseCreate["statusCode"].Value<int>() != (int)HttpStatusCode.OK)
@@ -120,9 +120,9 @@ namespace ASC.Web.Files.Utils
 
             mailMergeTask.MessageId = responseCreate["response"]["id"].Value<int>();
             mailMergeTask.StreamId = responseCreate["response"]["streamId"].Value<string>();
-        }
+        }      
 
-        private string AttachToMail(MailMergeTask mailMergeTask)
+        private async Task<string> AttachToMailAsync(MailMergeTask mailMergeTask, IHttpClientFactory clientFactory)
         {
             if (mailMergeTask.Attach == null) return string.Empty;
 
@@ -140,20 +140,14 @@ namespace ASC.Web.Files.Utils
             request.Content.Headers.ContentType = new MediaTypeHeaderValue(mailMergeTask.AttachTitle);
             request.Content = new StreamContent(mailMergeTask.Attach);
 
-            // hack. http://ubuntuforums.org/showthread.php?t=1841740
-            if (WorkContext.IsMono)
-            {
-                ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
-            }
-
             string responseAttachString;
-            using var httpClient = new HttpClient();
-            using var response = httpClient.Send(request);
-            using (var stream = response.Content.ReadAsStream())
+            var httpClient = clientFactory.CreateClient();
+            using var response = await httpClient.SendAsync(request);
+            using (var stream = await response.Content.ReadAsStreamAsync())
             {
                 if (stream == null) throw new HttpRequestException("Could not get an answer");
                 using var reader = new StreamReader(stream);
-                responseAttachString = reader.ReadToEnd();
+                responseAttachString = await reader.ReadToEndAsync();
             }
 
             var responseAttach = JObject.Parse(responseAttachString);
@@ -178,20 +172,19 @@ namespace ASC.Web.Files.Utils
 
         private string SendMail(MailMergeTask mailMergeTask, string bodySendAttach)
         {
-            var apiUrlSend = string.Format("{0}mail/messages/send.json", SetupInfo.WebApiBaseUrl);
+            //var apiUrlSend = $"{SetupInfo.WebApiBaseUrl}mail/messages/send.json";
 
-            var bodySend =
-                string.Format(
-                    MailMergeTask.MessageBodyFormat,
-                    mailMergeTask.MessageId,
-                    HttpUtility.UrlEncode(mailMergeTask.From),
-                    HttpUtility.UrlEncode(mailMergeTask.Subject),
-                    HttpUtility.UrlEncode(mailMergeTask.To),
-                    HttpUtility.UrlEncode(mailMergeTask.Message));
+            //var bodySend =
+            //    string.Format(
+            //        MailMergeTask.MessageBodyFormat,
+            //        mailMergeTask.MessageId,
+            //        HttpUtility.UrlEncode(mailMergeTask.From),
+            //        HttpUtility.UrlEncode(mailMergeTask.Subject),
+            //        HttpUtility.UrlEncode(mailMergeTask.To),
+            //        HttpUtility.UrlEncode(mailMergeTask.Message));
 
-            bodySend += bodySendAttach;
-
-            string responseSendString = null;//TODO: Encoding.UTF8.GetString(Convert.FromBase64String(Api.GetApiResponse(apiUrlSend, "PUT", bodySend)));
+            //bodySend += bodySendAttach;
+            const string responseSendString = null;//TODO: Encoding.UTF8.GetString(Convert.FromBase64String(Api.GetApiResponse(apiUrlSend, "PUT", bodySend)));
             var responseSend = JObject.Parse(responseSendString);
 
             if (responseSend["statusCode"].Value<int>() != (int)HttpStatusCode.OK)

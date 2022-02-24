@@ -5,7 +5,6 @@ import PropTypes from "prop-types";
 import Button from "@appserver/components/button";
 import ModalDialog from "@appserver/components/modal-dialog";
 import Text from "@appserver/components/text";
-import history from "@appserver/common/history";
 
 import { withTranslation, Trans } from "react-i18next";
 import api from "@appserver/common/api";
@@ -28,15 +27,26 @@ class DeleteProfileEverDialogComponent extends React.Component {
     };
   }
   onDeleteProfileEver = () => {
-    const { onClose, filter, fetchPeople, user, t } = this.props;
+    const { user, t, history, homepage, setFilter } = this.props;
+
+    const filter = Filter.getDefault();
+    const params = filter.toUrlParams();
+
+    const url = combineUrl(
+      AppServerConfig.proxyURL,
+      homepage,
+      `filter?/${params}`
+    );
+
     this.setState({ isRequestRunning: true }, () => {
       deleteUser(user.id)
         .then((res) => {
           toastr.success(t("SuccessfullyDeleteUserInfoMessage"));
-          return fetchPeople(filter);
+          history.push(url, params);
+          setFilter(filter);
+          return;
         })
-        .catch((error) => toastr.error(error))
-        .finally(onClose);
+        .catch((error) => toastr.error(error));
     });
   };
 
@@ -83,6 +93,7 @@ class DeleteProfileEverDialogComponent extends React.Component {
         <ModalDialog.Footer>
           <Button
             key="OKBtn"
+            className="delete-profile_button-delete"
             label={t("Common:OKButton")}
             size="medium"
             primary={true}
@@ -113,15 +124,12 @@ DeleteProfileEverDialog.propTypes = {
   visible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   user: PropTypes.object.isRequired,
-  filter: PropTypes.instanceOf(Filter).isRequired,
-  fetchPeople: PropTypes.func.isRequired,
 };
 
 export default withRouter(
   inject(({ auth, peopleStore }) => ({
     homepage: config.homepage,
     userCaption: auth.settingsStore.customNames.userCaption,
-    fetchPeople: peopleStore.usersStore.getUsersList,
-    filter: peopleStore.filterStore.filter,
+    setFilter: peopleStore.filterStore.setFilterParams,
   }))(observer(DeleteProfileEverDialog))
 );

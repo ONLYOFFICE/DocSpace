@@ -98,7 +98,7 @@ namespace ASC.Data.Reassigns
             var scopeClass = scope.ServiceProvider.GetService<RemoveProgressItemScope>();
             var (tenantManager, coreBaseSettings, messageService, studioNotifyService, securityContext, userManager, messageTarget, webItemManagerSecurity, storageFactory, userFormatter, options) = scopeClass;
             var logger = options.Get("ASC.Web");
-            var tenant = tenantManager.SetCurrentTenant(_tenantId);
+            tenantManager.SetCurrentTenant(_tenantId);
             var userName = userFormatter.GetUserName(User, DisplayUserNameFormat.Default);
 
             try
@@ -189,21 +189,21 @@ namespace ASC.Data.Reassigns
                 {
                     manager = item.Context.SpaceUsageStatManager as IUserSpaceUsage;
                     if (manager == null) continue;
-                    docsSpace = manager.GetUserSpaceUsage(FromUser);
+                    docsSpace = manager.GetUserSpaceUsageAsync(FromUser).Result;
                 }
 
                 if (item.ID == WebItemManager.MailProductID)
                 {
                     manager = item.Context.SpaceUsageStatManager as IUserSpaceUsage;
                     if (manager == null) continue;
-                    mailSpace = manager.GetUserSpaceUsage(FromUser);
+                    mailSpace = manager.GetUserSpaceUsageAsync(FromUser).Result;
                 }
 
                 if (item.ID == WebItemManager.TalkProductID)
                 {
                     manager = item.Context.SpaceUsageStatManager as IUserSpaceUsage;
                     if (manager == null) continue;
-                    talkSpace = manager.GetUserSpaceUsage(FromUser);
+                    talkSpace = manager.GetUserSpaceUsageAsync(FromUser).Result;
                 }
             }
         }
@@ -224,9 +224,9 @@ namespace ASC.Data.Reassigns
 
             var storage = storageFactory.GetStorage(_tenantId.ToString(CultureInfo.InvariantCulture), "talk");
 
-            if (storage != null && storage.IsDirectory(md5Hash))
+            if (storage != null && storage.IsDirectoryAsync(md5Hash).Result)
             {
-                storage.DeleteDirectory(md5Hash);
+                storage.DeleteDirectoryAsync(md5Hash).Wait();
             }
         }
 

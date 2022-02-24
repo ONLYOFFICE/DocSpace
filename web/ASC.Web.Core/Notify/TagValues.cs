@@ -53,14 +53,10 @@ namespace ASC.Web.Studio.Core.Notify
             string action()
             {
                 var btnText = btnTextFunc != null ? btnTextFunc() ?? string.Empty : string.Empty;
-
-                return
-                    string.Format(
-                        @"<table style=""height: 48px; width: 540px; border-collapse: collapse; empty-cells: show; vertical-align: middle; text-align: center; margin: 30px auto; padding: 0;""><tbody><tr cellpadding=""0"" cellspacing=""0"" border=""0"">{2}<td style=""height: 48px; width: 380px; margin:0; padding:0; background-color: #66b76d; -moz-border-radius: 2px; -webkit-border-radius: 2px; border-radius: 2px;""><a style=""{3}"" target=""_blank"" href=""{0}"">{1}</a></td>{2}</tr></tbody></table>",
-                        btnUrl,
-                        btnText,
-                        "<td style=\"height: 48px; width: 80px; margin:0; padding:0;\">&nbsp;</td>",
-                        "color: #fff; font-family: Helvetica, Arial, Tahoma; font-size: 18px; font-weight: 600; vertical-align: middle; display: block; padding: 12px 0; text-align: center; text-decoration: none; background-color: #66b76d;");
+                const string td = "<td style=\"height: 48px; width: 80px; margin:0; padding:0;\">&nbsp;</td>";
+                const string color = "color: #fff; font-family: Helvetica, Arial, Tahoma; font-size: 18px; font-weight: 600; vertical-align: middle; display: block; padding: 12px 0; text-align: center; text-decoration: none; background-color: #66b76d;";
+                
+                return $@"<table style=""height: 48px; width: 540px; border-collapse: collapse; empty-cells: show; vertical-align: middle; text-align: center; margin: 30px auto; padding: 0;""><tbody><tr cellpadding=""0"" cellspacing=""0"" border=""0"">{td}<td style=""height: 48px; width: 380px; margin:0; padding:0; background-color: #66b76d; -moz-border-radius: 2px; -webkit-border-radius: 2px; border-radius: 2px;""><a style=""{color}"" target=""_blank"" href=""{btnUrl}"">{btnText}</a></td>{td}</tr></tbody></table>";
             }
 
             return new ASC.Notify.Patterns.TagActionValue("BlueButton", action);
@@ -71,14 +67,10 @@ namespace ASC.Web.Studio.Core.Notify
             string action()
             {
                 var btnText = btnTextFunc != null ? btnTextFunc() ?? string.Empty : string.Empty;
+                const string td = "<td style=\"height: 48px; width: 80px; margin:0; padding:0;\">&nbsp;</td>";
+                const string color = "color: #fff; font-family: Helvetica, Arial, Tahoma; font-size: 18px; font-weight: 600; vertical-align: middle; display: block; padding: 12px 0; text-align: center; text-decoration: none; background-color: #66b76d;";
 
-                return
-                    string.Format(
-                        @"<table style=""height: 48px; width: 540px; border-collapse: collapse; empty-cells: show; vertical-align: middle; text-align: center; margin: 30px auto; padding: 0;""><tbody><tr cellpadding=""0"" cellspacing=""0"" border=""0"">{2}<td style=""height: 48px; width: 380px; margin:0; padding:0; background-color: #66b76d; -moz-border-radius: 2px; -webkit-border-radius: 2px; border-radius: 2px;""><a style=""{3}"" target=""_blank"" href=""{0}"">{1}</a></td>{2}</tr></tbody></table>",
-                        btnUrl,
-                        btnText,
-                        "<td style=\"height: 48px; width: 80px; margin:0; padding:0;\">&nbsp;</td>",
-                        "color: #fff; font-family: Helvetica, Arial, Tahoma; font-size: 18px; font-weight: 600; vertical-align: middle; display: block; padding: 12px 0; text-align: center; text-decoration: none; background-color: #66b76d;");
+                return $@"<table style=""height: 48px; width: 540px; border-collapse: collapse; empty-cells: show; vertical-align: middle; text-align: center; margin: 30px auto; padding: 0;""><tbody><tr cellpadding=""0"" cellspacing=""0"" border=""0"">{td}<td style=""height: 48px; width: 380px; margin:0; padding:0; background-color: #66b76d; -moz-border-radius: 2px; -webkit-border-radius: 2px; border-radius: 2px;""><a style=""{color}"" target=""_blank"" href=""{btnUrl}"">{btnText}</a></td>{td}</tr></tbody></table>";
             }
 
             return new TagActionValue("GreenButton", action);
@@ -112,10 +104,7 @@ namespace ASC.Web.Studio.Core.Notify
                                          ? bottomlinkTextFunc() ?? string.Empty
                                          : string.Empty;
 
-                var imgHtml = string.Format(
-                    "<img style=\"border: 0; padding: 0 15px 0 5px; width: auto; height: auto;\" alt=\"{1}\" src=\"{0}\"/>",
-                    imgSrc ?? string.Empty,
-                    linkText);
+                var imgHtml = $"<img style=\"border: 0; padding: 0 15px 0 5px; width: auto; height: auto;\" alt=\"{linkText}\" src=\"{imgSrc ?? string.Empty}\"/>";
 
                 var linkHtml = string.Empty;
 
@@ -123,22 +112,14 @@ namespace ASC.Web.Studio.Core.Notify
                 {
                     linkHtml =
                         !string.IsNullOrEmpty(linkUrl)
-                            ? string.Format(
-                                "<a target=\"_blank\" style=\"color:#0078bd; font-family: Arial; font-size: 14px; font-weight: bold;\" href=\"{0}\">{1}</a><br/>",
-                                linkUrl,
-                                linkText)
-                            : string.Format(
-                                "<div style=\"display:block; color:#333333; font-family: Arial; font-size: 14px; font-weight: bold;margin-bottom: 10px;\">{0}</div>",
-                                linkText);
+                            ? $"<a target=\"_blank\" style=\"color:#0078bd; font-family: Arial; font-size: 14px; font-weight: bold;\" href=\"{linkUrl}\">{linkText}</a><br/>"
+                            : $"<div style=\"display:block; color:#333333; font-family: Arial; font-size: 14px; font-weight: bold;margin-bottom: 10px;\">{linkText}</div>";
                 }
 
                 var underCommentLinkHtml =
                     string.IsNullOrEmpty(bottomlinkUrl)
                         ? string.Empty
-                        : string.Format(
-                            "<br/><a target=\"_blank\" style=\"color: #0078bd; font-family: Arial; font-size: 14px;\" href=\"{0}\">{1}</a>",
-                            bottomlinkUrl,
-                            bottomlinkText);
+                        : $"<br/><a target=\"_blank\" style=\"color: #0078bd; font-family: Arial; font-size: 14px;\" href=\"{bottomlinkUrl}\">{bottomlinkText}</a>";
 
                 var html =
                     "<tr><td style=\"vertical-align: top; padding: 5px 10px; width: 70px;\">" +
@@ -159,7 +140,7 @@ namespace ASC.Web.Studio.Core.Notify
         {
             var imgSrc = studioNotifyHelper.GetNotificationImageUrl(imageFileName);
 
-            var imgHtml = string.Format("<img style=\"border: 0; padding: 0; width: auto; height: auto;\" alt=\"\" src=\"{0}\"/>", imgSrc);
+            var imgHtml = $"<img style=\"border: 0; padding: 0; width: auto; height: auto;\" alt=\"\" src=\"{imgSrc}\"/>";
 
             var tagName = "Image" + (id > 0 ? id.ToString() : string.Empty);
 

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { withRouter } from "react-router";
-import ModalDialogContainer from "../ModalDialogContainer";
 import ModalDialog from "@appserver/components/modal-dialog";
 import RadioButtonGroup from "@appserver/components/radio-button-group";
 import Button from "@appserver/components/button";
@@ -9,6 +8,26 @@ import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { ConflictResolveType } from "@appserver/common/constants";
 import toastr from "studio/toastr";
+import styled from "styled-components";
+
+const StyledModalDialog = styled(ModalDialog)`
+  .conflict-resolve-dialog-text {
+    padding-bottom: 8px;
+  }
+
+  .conflict-resolve-radio-button {
+    svg {
+      overflow: visible;
+    }
+  }
+
+  .modal-dialog-aside-footer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 10px;
+    width: 90%;
+  }
+`;
 
 const ConflictResolveDialog = (props) => {
   const {
@@ -19,6 +38,11 @@ const ConflictResolveDialog = (props) => {
     conflictResolveDialogData,
     items,
     itemOperationToFolder,
+    activeFiles,
+    setActiveFiles,
+    setMoveToPanelVisible,
+    setCopyPanelVisible,
+    setThirdPartyMoveDialogVisible,
   } = props;
 
   const {
@@ -35,6 +59,22 @@ const ConflictResolveDialog = (props) => {
 
   const onSelectResolveType = (e) => setResolveType(e.target.value);
   const onClose = () => setConflictResolveDialogVisible(false);
+  const onClosePanels = () => {
+    setConflictResolveDialogVisible(false);
+    setMoveToPanelVisible(false);
+    setCopyPanelVisible(false);
+    setThirdPartyMoveDialogVisible(false);
+  };
+  const onCloseDialog = () => {
+    let newActiveFiles = activeFiles;
+
+    for (let item of fileIds) {
+      newActiveFiles = newActiveFiles.filter((f) => f !== item);
+    }
+
+    setActiveFiles(newActiveFiles);
+    onClose();
+  };
 
   const getResolveType = () => {
     switch (resolveType) {
@@ -54,13 +94,16 @@ const ConflictResolveDialog = (props) => {
     const conflictResolveType = getResolveType();
 
     let newFileIds = fileIds;
+    let newActiveFiles = activeFiles;
     if (conflictResolveType === ConflictResolveType.Skip) {
       for (let item of items) {
-        newFileIds = newFileIds.filter((x) => x.id === item.id);
+        newFileIds = newFileIds.filter((x) => x !== item.id);
+        newActiveFiles = newActiveFiles.filter((f) => f !== item.id);
       }
     }
 
-    if (!folderIds.length && !newFileIds.length) return onClose();
+    setActiveFiles(newActiveFiles);
+    if (!folderIds.length && !newFileIds.length) return onClosePanels();
 
     const data = {
       destFolderId,
@@ -72,11 +115,11 @@ const ConflictResolveDialog = (props) => {
       translations,
     };
 
-    onClose();
+    onClosePanels();
     try {
       await itemOperationToFolder(data);
     } catch (error) {
-      toastr.error(error.message);
+      toastr.error(error.message ? error.message : error);
     }
   };
 
@@ -116,10 +159,11 @@ const ConflictResolveDialog = (props) => {
   const file = items[0].title;
 
   return (
-    <ModalDialogContainer
+    <StyledModalDialog
       isLoading={!tReady}
       visible={visible}
-      onClose={onClose}
+      onClose={onCloseDialog}
+      displayType="aside"
     >
       <ModalDialog.Header>{t("ConflictResolveTitle")}</ModalDialog.Header>
       <ModalDialog.Body>
@@ -152,6 +196,7 @@ const ConflictResolveDialog = (props) => {
           label={t("Common:OKButton")}
           size="medium"
           primary
+          scale
           onClick={onAcceptType}
           //isLoading={isLoading}
         />
@@ -160,23 +205,28 @@ const ConflictResolveDialog = (props) => {
           key="CancelButton"
           label={t("Common:CancelButton")}
           size="medium"
-          onClick={onClose}
+          scale
+          onClick={onCloseDialog}
           //isLoading={isLoading}
         />
       </ModalDialog.Footer>
-    </ModalDialogContainer>
+    </StyledModalDialog>
   );
 };
 
-export default inject(({ dialogsStore, uploadDataStore }) => {
+export default inject(({ dialogsStore, uploadDataStore, filesStore }) => {
   const {
     conflictResolveDialogVisible: visible,
     setConflictResolveDialogVisible,
     conflictResolveDialogData,
     conflictResolveDialogItems: items,
+    setMoveToPanelVisible,
+    setCopyPanelVisible,
+    setThirdPartyMoveDialogVisible,
   } = dialogsStore;
 
   const { itemOperationToFolder } = uploadDataStore;
+  const { activeFiles, setActiveFiles } = filesStore;
 
   return {
     items,
@@ -184,6 +234,11 @@ export default inject(({ dialogsStore, uploadDataStore }) => {
     conflictResolveDialogData,
     setConflictResolveDialogVisible,
     itemOperationToFolder,
+    activeFiles,
+    setActiveFiles,
+    setMoveToPanelVisible,
+    setCopyPanelVisible,
+    setThirdPartyMoveDialogVisible,
   };
 })(
   withRouter(

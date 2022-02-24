@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 
 using ASC.Api.Core;
 using ASC.Api.Documents;
+using ASC.Files.Core.Security;
 using ASC.Web.Files;
 using ASC.Web.Files.HttpHandlers;
 using ASC.Web.Studio.Core.Notify;
@@ -13,14 +14,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-using StackExchange.Redis.Extensions.Core.Configuration;
-using StackExchange.Redis.Extensions.Newtonsoft;
-
 namespace ASC.Files
 {
     public class Startup : BaseStartup
-    { 
-        public override JsonConverter[] Converters { get => new JsonConverter[] { new FileEntryWrapperConverter() }; }
+    {
+        public override JsonConverter[] Converters { get => new JsonConverter[] { new FileEntryWrapperConverter(), new FileShareConverter() }; }
 
         public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment)
             : base(configuration, hostEnvironment)

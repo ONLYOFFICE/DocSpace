@@ -31,6 +31,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Logging;
@@ -65,7 +66,7 @@ namespace ASC.Data.Storage
         {
             if (!Uri.IsWellFormedUriString(absolutePath, UriKind.Absolute))
             {
-                throw new ArgumentException(string.Format("bad path format {0} is not absolute", absolutePath));
+                throw new ArgumentException($"bad path format {absolutePath} is not absolute");
             }
 
             var appender = Appenders.FirstOrDefault(x => absolutePath.Contains(x.Append) || (absolutePath.Contains(x.AppendSecure) && !string.IsNullOrEmpty(x.AppendSecure)));
@@ -82,7 +83,7 @@ namespace ASC.Data.Storage
         {
             if (!string.IsNullOrEmpty(relativePath) && relativePath.IndexOf('~') == 0)
             {
-                throw new ArgumentException(string.Format("bad path format {0} remove '~'", relativePath), "relativePath");
+                throw new ArgumentException($"bad path format {relativePath} remove '~'", nameof(relativePath));
             }
 
             var result = relativePath;
@@ -91,12 +92,12 @@ namespace ASC.Data.Storage
             if (Appenders.Any())
             {
                 var avaliableAppenders = Appenders.Where(x => x.Extensions != null && x.Extensions.Split('|').Contains(ext) || string.IsNullOrEmpty(ext)).ToList();
-                var avaliableAppendersCount = avaliableAppenders.LongCount();
+                var avaliableAppendersCount = avaliableAppenders.Count;
 
                 Appender appender;
                 if (avaliableAppendersCount > 1)
                 {
-                    appender = avaliableAppenders[(int)(relativePath.Length % avaliableAppendersCount)];
+                    appender = avaliableAppenders[relativePath.Length % avaliableAppendersCount];
                 }
                 else if (avaliableAppendersCount == 1)
                 {
@@ -123,7 +124,7 @@ namespace ASC.Data.Storage
                     //}
                     //else
                     //{
-                    result = string.Format("{0}/{1}{2}", appender.Append.TrimEnd('/').TrimStart('~'), relativePath.TrimStart('/'), query);
+                    result = $"{appender.Append.TrimEnd('/').TrimStart('~')}/{relativePath.TrimStart('/')}{query}";
                     //}
                 }
                 else
@@ -131,12 +132,12 @@ namespace ASC.Data.Storage
                     //TODO HostingEnvironment.IsHosted
                     if (SecureHelper.IsSecure(httpContext, options) && !string.IsNullOrEmpty(appender.AppendSecure))
                     {
-                        result = string.Format("{0}/{1}", appender.AppendSecure.TrimEnd('/'), relativePath.TrimStart('/'));
+                        result = $"{appender.AppendSecure.TrimEnd('/')}/{relativePath.TrimStart('/')}";
                     }
                     else
                     {
                         //Append directly
-                        result = string.Format("{0}/{1}", appender.Append.TrimEnd('/'), relativePath.TrimStart('/'));
+                        result = $"{appender.Append.TrimEnd('/')}/{relativePath.TrimStart('/')}";
                     }
                 }
             }
@@ -158,6 +159,7 @@ namespace ASC.Data.Storage
         public IHostEnvironment HostEnvironment { get; }
         private CoreBaseSettings CoreBaseSettings { get; }
         private IOptionsMonitor<ILog> Options { get; }
+        private IHttpClientFactory ClientFactory { get; }
 
         public WebPath(
             WebPathSettings webPathSettings,
@@ -166,7 +168,8 @@ namespace ASC.Data.Storage
             StorageSettingsHelper storageSettingsHelper,
             IHostEnvironment hostEnvironment,
             CoreBaseSettings coreBaseSettings,
-            IOptionsMonitor<ILog> options)
+            IOptionsMonitor<ILog> options,
+            IHttpClientFactory clientFactory)
         {
             WebPathSettings = webPathSettings;
             ServiceProvider = serviceProvider;
@@ -175,6 +178,7 @@ namespace ASC.Data.Storage
             HostEnvironment = hostEnvironment;
             CoreBaseSettings = coreBaseSettings;
             Options = options;
+            ClientFactory = clientFactory;
         }
 
         public WebPath(
@@ -186,24 +190,31 @@ namespace ASC.Data.Storage
             IHttpContextAccessor httpContextAccessor,
             IHostEnvironment hostEnvironment,
             CoreBaseSettings coreBaseSettings,
-            IOptionsMonitor<ILog> options)
-            : this(webPathSettings, serviceProvider, settingsManager, storageSettingsHelper, hostEnvironment, coreBaseSettings, options)
+            IOptionsMonitor<ILog> options,
+            IHttpClientFactory clientFactory)
+            : this(webPathSettings, serviceProvider, settingsManager, storageSettingsHelper, hostEnvironment, coreBaseSettings, options, clientFactory)
         {
             HttpContextAccessor = httpContextAccessor;
         }
 
-        public string GetPath(string relativePath)
+        public Task<string> GetPathAsync(string relativePath)
         {
             if (!string.IsNullOrEmpty(relativePath) && relativePath.IndexOf('~') == 0)
             {
-                throw new ArgumentException(string.Format("bad path format {0} remove '~'", relativePath), "relativePath");
+                throw new ArgumentException($"bad path format {relativePath} remove '~'", nameof(relativePath));
             }
 
+            return InternalGetPathAsync(relativePath);
+        }
+
+        private async Task<string> InternalGetPathAsync(string relativePath)
+        {
             if (CoreBaseSettings.Standalone && ServiceProvider.GetService<StaticUploader>().CanUpload()) //hack for skip resolve DistributedTaskQueueOptionsManager
             {
                 try
                 {
-                    var result = StorageSettingsHelper.DataStore(SettingsManager.Load<CdnStorageSettings>()).GetInternalUri("", relativePath, TimeSpan.Zero, null).AbsoluteUri.ToLower();
+                    var uri = await StorageSettingsHelper.DataStore(SettingsManager.Load<CdnStorageSettings>()).GetInternalUriAsync("", relativePath, TimeSpan.Zero, null);
+                    var result = uri.AbsoluteUri.ToLower();
                     if (!string.IsNullOrEmpty(result)) return result;
                 }
                 catch (Exception)
@@ -215,9 +226,9 @@ namespace ASC.Data.Storage
             return WebPathSettings.GetPath(HttpContextAccessor?.HttpContext, Options, relativePath);
         }
 
-        public bool Exists(string relativePath)
+        public async Task<bool> ExistsAsync(string relativePath)
         {
-            var path = GetPath(relativePath);
+            var path = await GetPathAsync(relativePath);
             if (!Existing.ContainsKey(path))
             {
                 if (Uri.IsWellFormedUriString(path, UriKind.Relative) && HttpContextAccessor?.HttpContext != null)
@@ -241,7 +252,7 @@ namespace ASC.Data.Storage
                 var request = new HttpRequestMessage();
                 request.RequestUri = new Uri(path);
                 request.Method = HttpMethod.Head;
-                using var httpClient = new HttpClient();
+                var httpClient = ClientFactory.CreateClient();
                 using var response = httpClient.Send(request);
 
                 return response.StatusCode == HttpStatusCode.OK;

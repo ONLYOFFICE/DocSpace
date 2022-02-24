@@ -160,6 +160,14 @@ namespace ASC.Common.Caching
                                  body: body);
         }
 
+        public Task PublishAsync(T obj, CacheNotifyAction action)
+        {
+            Publish(obj, action);
+
+            return Task.CompletedTask;
+        }
+
+
         public void Subscribe(Action<T> onchange, CacheNotifyAction action)
         {
             _actions.GetOrAdd(GetKey(action), new List<Action<T>>())

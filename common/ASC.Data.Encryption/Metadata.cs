@@ -242,16 +242,14 @@ namespace ASC.Data.Encryption
 
         private byte[] GenerateRandom(int length)
         {
-            var random = new byte[length];
-
-            random = RandomNumberGenerator.GetBytes(length);
+            var random = RandomNumberGenerator.GetBytes(length);
 
             return random;
         }
 
         private byte[] GenerateKey()
         {
-            var key = new byte[keyLength];
+            byte[] key;
 
             using (var deriveBytes = new Rfc2898DeriveBytes(Password, Salt, Iterations, HashAlgorithmName.SHA256))
             {
@@ -263,7 +261,7 @@ namespace ASC.Data.Encryption
 
         private byte[] GenerateHmacKey()
         {
-            var hmacKey = new byte[hmacKeyLength];
+            byte[] hmacKey;
 
             using (var sha512 = SHA512.Create())
             {
@@ -275,7 +273,7 @@ namespace ASC.Data.Encryption
 
         private byte[] ComputeHmacHash(Stream stream)
         {
-            var hmacHash = new byte[hmacHashLength];
+            byte[] hmacHash;
 
             stream.Seek(metadataLength - ivLength, SeekOrigin.Begin); // Move position to (IV + encrypted data)
 

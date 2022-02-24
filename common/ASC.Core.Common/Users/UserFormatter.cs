@@ -38,20 +38,20 @@ namespace ASC.Core.Users
     [Singletone]
     public class UserFormatter : IComparer<UserInfo>
     {
-        private readonly DisplayUserNameFormat format;
+        private readonly DisplayUserNameFormat _format;
         private static bool forceFormatChecked;
         private static string forceFormat;
 
         public UserFormatter(IConfiguration configuration)
         {
-            format = DisplayUserNameFormat.Default;
+            _format = DisplayUserNameFormat.Default;
             Configuration = configuration;
             UserNameRegex = new Regex(Configuration["core:username:regex"] ?? "");
         }
 
         public string GetUserName(UserInfo userInfo, DisplayUserNameFormat format)
         {
-            if (userInfo == null) throw new ArgumentNullException("userInfo");
+            if (userInfo == null) throw new ArgumentNullException(nameof(userInfo));
             return string.Format(GetUserDisplayFormat(format), userInfo.FirstName, userInfo.LastName);
         }
 
@@ -69,7 +69,7 @@ namespace ASC.Core.Users
 
         int IComparer<UserInfo>.Compare(UserInfo x, UserInfo y)
         {
-            return Compare(x, y, format);
+            return Compare(x, y, _format);
         }
 
         public static int Compare(UserInfo x, UserInfo y)
@@ -135,7 +135,7 @@ namespace ASC.Core.Users
             return format.IndexOf("{0}") < format.IndexOf("{1}") ? DisplayUserNameFormat.FirstLast : DisplayUserNameFormat.LastFirst;
         }
 
-        public Regex UserNameRegex;
+        public Regex UserNameRegex { get; set; }
 
         private IConfiguration Configuration { get; }
 

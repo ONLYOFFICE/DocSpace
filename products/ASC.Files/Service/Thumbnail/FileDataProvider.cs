@@ -23,7 +23,6 @@ using System.Linq.Expressions;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
 using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Files.Core.EF;
@@ -89,7 +88,7 @@ namespace ASC.Files.ThumbnailBuilder
 
             var search =
                 filesDbContext.Tariffs
-                .Join(filesDbContext.Quotas.DefaultIfEmpty(), a => a.Tariff, b => b.Tenant, (tariff, quota) => new { tariff, quota })
+                .Join(filesDbContext.Quotas.AsQueryable().DefaultIfEmpty(), a => a.Tariff, b => b.Tenant, (tariff, quota) => new { tariff, quota })
                 .Where(r =>
                         (
                             r.tariff.Comment == null ||
@@ -100,11 +99,11 @@ namespace ASC.Files.ThumbnailBuilder
                              !r.tariff.Comment.Contains("trial")
                             )
                         ) &&
-                        (
+                        
                             !r.quota.Features.Contains("free") &&
                             !r.quota.Features.Contains("non-profit") &&
                             !r.quota.Features.Contains("trial")
-                        )
+                        
                 )
                 .GroupBy(r => r.tariff.Tenant)
                 .Select(r => new { tenant = r.Key, stamp = r.Max(b => b.tariff.Stamp) })
@@ -120,6 +119,7 @@ namespace ASC.Files.ThumbnailBuilder
         private IEnumerable<FileData<int>> GetFileData(Expression<Func<DbFile, bool>> where)
         {
             var search = filesDbContext.Files
+                .AsQueryable()
                 .Where(r => r.CurrentVersion && r.Thumb == Thumbnail.Waiting && !r.Encrypted)
                 .OrderByDescending(r => r.ModifiedOn)
                 .Take(thumbnailSettings.SqlMaxResults);
@@ -142,7 +142,7 @@ namespace ASC.Files.ThumbnailBuilder
 
             var premiumTenants = GetPremiumTenants();
 
-            if (premiumTenants.Any())
+            if (premiumTenants.Length > 0)
             {
                 result = GetFileData(r => premiumTenants.Contains(r.TenantId));
 

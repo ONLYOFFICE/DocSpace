@@ -31,6 +31,7 @@ using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Web;
 
 using ASC.Common;
@@ -74,9 +75,9 @@ namespace ASC.Web.Core.Sms
             return SmscProvider.Enable() || ClickatellProvider.Enable() || ClickatellUSAProvider.Enable() || TwilioProvider.Enable() || TwilioSaaSProvider.Enable();
         }
 
-        public bool SendMessage(string number, string message)
+        public Task<bool> SendMessageAsync(string number, string message)
         {
-            if (!Enabled()) return false;
+            if (!Enabled()) return Task.FromResult(false);
 
             SmsProvider provider = null;
             if (ClickatellProvider.Enable())
@@ -110,16 +111,17 @@ namespace ASC.Web.Core.Sms
 
             if (provider == null)
             {
-                return false;
+                return Task.FromResult(false);
             }
 
-            return provider.SendMessage(number, message);
+            return provider.SendMessageAsync(number, message);
         }
     }
 
     public abstract class SmsProvider : Consumer
     {
-        protected readonly ILog Log;
+        protected ILog Log { get; }
+        protected IHttpClientFactory ClientFactory { get; }
         protected ICache MemoryCache { get; set; }
 
         protected virtual string SendMessageUrlFormat { get; set; }
@@ -140,12 +142,14 @@ namespace ASC.Web.Core.Sms
             ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
             IOptionsMonitor<ILog> options,
+            IHttpClientFactory clientFactory,
             ICache memCache,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
             : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, props, additional)
         {
             MemoryCache = memCache;
             Log = options.CurrentValue;
+            ClientFactory = clientFactory;
         }
 
         public virtual bool Enable()
@@ -161,7 +165,7 @@ namespace ASC.Web.Core.Sms
                 .Replace("{sender}", Sender);
         }
 
-        public virtual bool SendMessage(string number, string message)
+        public virtual async Task<bool> SendMessageAsync(string number, string message)
         {
             try
             {
@@ -172,15 +176,15 @@ namespace ASC.Web.Core.Sms
                 request.RequestUri = new Uri(url);
                 request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
 
-                using var httpClient = new HttpClient();
+                var httpClient = ClientFactory.CreateClient();
                 httpClient.Timeout = TimeSpan.FromMilliseconds(15000);
 
-                using var response = httpClient.Send(request);
-                using var stream = response.Content.ReadAsStream();
+                using var response = await httpClient.SendAsync(request);
+                using var stream = await response.Content.ReadAsStreamAsync();
                 if (stream != null)
                 {
                     using var reader = new StreamReader(stream);
-                    var result = reader.ReadToEnd();
+                    var result = await reader.ReadToEndAsync();
                     Log.InfoFormat("SMS was sent to {0}, service returned: {1}", number, result);
                     return true;
                 }
@@ -207,22 +211,21 @@ namespace ASC.Web.Core.Sms
             ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
             IOptionsMonitor<ILog> options,
+            IHttpClientFactory clientFactory,
             ICache memCache,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, memCache, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, clientFactory, memCache, name, order, props, additional)
         {
         }
 
         protected override string SendMessageUrlFormat
         {
             get { return "https://smsc.ru/sys/send.php?login={key}&psw={secret}&phones={phone}&mes={text}&fmt=3&sender={sender}&charset=utf-8"; }
-            set { }
         }
 
         protected override string GetBalanceUrlFormat
         {
             get { return "https://smsc.ru/sys/balance.php?login={key}&psw={secret}"; }
-            set { }
         }
 
         protected override string Key
@@ -247,7 +250,7 @@ namespace ASC.Web.Core.Sms
                 && !string.IsNullOrEmpty(Secret);
         }
 
-        public string GetBalance(Tenant tenant, bool eraseCache = false)
+        public async Task<string> GetBalanceAsync(Tenant tenant, bool eraseCache = false)
         {
             var tenantCache = tenant == null ? Tenant.DEFAULT_TENANT : tenant.TenantId;
 
@@ -266,15 +269,15 @@ namespace ASC.Web.Core.Sms
                     request.RequestUri = new Uri(url);
                     request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
 
-                    using var httpClient = new HttpClient();
+                    var httpClient = ClientFactory.CreateClient();
                     httpClient.Timeout = TimeSpan.FromMilliseconds(1000);
 
-                    using var response = httpClient.Send(request);
-                    using var stream = response.Content.ReadAsStream();
+                    using var response = await httpClient.SendAsync(request);
+                    using var stream = await response.Content.ReadAsStreamAsync();
                     if (stream != null)
                     {
                         using var reader = new StreamReader(stream);
-                        var result = reader.ReadToEnd();
+                        var result = await reader.ReadToEndAsync();
                         Log.InfoFormat("SMS balance service returned: {0}", result);
 
                         balance = result;
@@ -307,7 +310,7 @@ namespace ASC.Web.Core.Sms
 
         public bool ValidateKeys()
         {
-            return double.TryParse(GetBalance(TenantManager.GetCurrentTenant(false), true), NumberStyles.Number, CultureInfo.InvariantCulture, out var balance) && balance > 0;
+            return double.TryParse(GetBalanceAsync(TenantManager.GetCurrentTenant(false), true).Result, NumberStyles.Number, CultureInfo.InvariantCulture, out var balance) && balance > 0;
         }
     }
 
@@ -316,19 +319,16 @@ namespace ASC.Web.Core.Sms
         protected override string SendMessageUrlFormat
         {
             get { return "https://platform.clickatell.com/messages/http/send?apiKey={secret}&to={phone}&content={text}&from={sender}"; }
-            set { }
         }
 
         protected override string Secret
         {
             get { return this["clickatellapiKey"]; }
-            set { }
         }
 
         protected override string Sender
         {
             get { return this["clickatellSender"]; }
-            set { }
         }
 
         public override bool Enable()
@@ -348,9 +348,10 @@ namespace ASC.Web.Core.Sms
             ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
             IOptionsMonitor<ILog> options,
+            IHttpClientFactory clientFactory,
             ICache memCache,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, memCache, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, clientFactory, memCache, name, order, props, additional)
         {
         }
     }
@@ -369,9 +370,10 @@ namespace ASC.Web.Core.Sms
             ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
             IOptionsMonitor<ILog> options,
+            IHttpClientFactory clientFactory,
             ICache memCache,
             string name, int order, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, memCache, name, order, null, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, clientFactory, memCache, name, order, null, additional)
         {
         }
     }
@@ -382,19 +384,16 @@ namespace ASC.Web.Core.Sms
         protected override string Key
         {
             get { return this["twilioAccountSid"]; }
-            set { }
         }
 
         protected override string Secret
         {
             get { return this["twilioAuthToken"]; }
-            set { }
         }
 
         protected override string Sender
         {
             get { return this["twiliosender"]; }
-            set { }
         }
 
         public AuthContext AuthContext { get; }
@@ -411,9 +410,9 @@ namespace ASC.Web.Core.Sms
                 && !string.IsNullOrEmpty(Sender);
         }
 
-        public override bool SendMessage(string number, string message)
+        public override Task<bool> SendMessageAsync(string number, string message)
         {
-            if (!number.StartsWith("+")) number = "+" + number;
+            if (!number.StartsWith('+')) number = "+" + number;
             var twilioRestClient = new TwilioRestClient(Key, Secret);
 
             try
@@ -422,7 +421,7 @@ namespace ASC.Web.Core.Sms
                 Log.InfoFormat("SMS was sent to {0}, status: {1}", number, smsMessage.Status);
                 if (!smsMessage.ErrorCode.HasValue)
                 {
-                    return true;
+                    return Task.FromResult(true);
                 }
                 Log.Error("Failed to send sms. code: " + smsMessage.ErrorCode.Value + " message: " + smsMessage.ErrorMessage);
             }
@@ -431,7 +430,7 @@ namespace ASC.Web.Core.Sms
                 Log.Error("Failed to send sms message via tiwilio", ex);
             }
 
-            return false;
+            return Task.FromResult(false);
         }
 
         public TwilioProvider()
@@ -451,9 +450,10 @@ namespace ASC.Web.Core.Sms
             ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
             IOptionsMonitor<ILog> options,
+            IHttpClientFactory clientFactory,
             ICache memCache,
             string name, int order, Dictionary<string, string> props)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, memCache, name, order, props)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, clientFactory, memCache, name, order, props)
         {
             AuthContext = authContext;
             TenantUtil = tenantUtil;
@@ -502,9 +502,10 @@ namespace ASC.Web.Core.Sms
             ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
             IOptionsMonitor<ILog> options,
+            IHttpClientFactory clientFactory,
             ICache memCache,
             string name, int order)
-            : base(authContext, tenantUtil, securityContext, baseCommonLinkUtility, twilioProviderCleaner, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, memCache, name, order, null)
+            : base(authContext, tenantUtil, securityContext, baseCommonLinkUtility, twilioProviderCleaner, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, clientFactory, memCache, name, order, null)
         {
         }
     }

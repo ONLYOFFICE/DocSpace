@@ -22,13 +22,6 @@ import { isSafari } from "react-device-detect";
 const sideColor = globalColors.gray;
 const { acceptBackground, background } = Base.dragAndDrop;
 
-const rowCheckboxCheckedStyle = css`
-  border-image-source: linear-gradient(to right, #f3f4f4 24px, #eceef1 24px);
-`;
-const contextMenuWrapperCheckedStyle = css`
-  border-image-source: linear-gradient(to left, #f3f4f4 24px, #eceef1 24px);
-`;
-
 const rowCheckboxDraggingStyle = css`
   border-image-source: linear-gradient(to right, #f8f7bf 24px, #eceef1 24px);
 `;
@@ -54,13 +47,20 @@ const contextMenuWrapperDraggingHoverStyle = css`
 
 const StyledTableRow = styled(TableRow)`
   .table-container_cell {
-    ${isSafari && `border-image-slice: 0 !important`};
+    /* ${isSafari && `border-image-slice: 0 !important`}; */
     background: ${(props) =>
       (props.checked || props.isActive) && "#F3F4F4 !important"};
     cursor: ${(props) =>
       !props.isThirdPartyFolder &&
       (props.checked || props.isActive) &&
-      "url(images/cursor.palm.svg), auto"};
+      "url(/static/images/cursor.palm.react.svg), auto"};
+
+    ${(props) =>
+      props.inProgress &&
+      css`
+        pointer-events: none;
+        /* cursor: wait; */
+      `}
   }
 
   .table-container_element {
@@ -68,8 +68,8 @@ const StyledTableRow = styled(TableRow)`
   }
 
   .table-container_row-checkbox {
-    padding-left: 4px;
-    width: 26px;
+    padding-left: 12px;
+    width: 16px;
   }
 
   &:hover {
@@ -85,14 +85,24 @@ const StyledTableRow = styled(TableRow)`
     min-width: 30px;
     margin-left: -24px;
     padding-left: 24px;
-    border-bottom: 1px solid;
-    border-image-slice: 1;
-    border-image-source: linear-gradient(to right, #ffffff 24px, #eceef1 24px);
+
+    ${(props) =>
+      !props.isActive &&
+      !props.checked &&
+      css`
+        border-image-slice: 1;
+        border-bottom: 1px solid;
+        border-image-source: linear-gradient(
+          to right,
+          #ffffff 17px,
+          #eceef1 31px
+        );
+      `};
 
     border-top: 0;
     border-right: 0;
+    border-left: 0;
 
-    ${(props) => props.checked && rowCheckboxCheckedStyle};
     ${(props) => props.dragging && rowCheckboxDraggingStyle};
   }
 
@@ -100,14 +110,23 @@ const StyledTableRow = styled(TableRow)`
     margin-right: -20x;
     width: 28px;
     padding-right: 18px;
-    border-bottom: 1px solid;
-    border-image-slice: 1;
-    border-image-source: linear-gradient(to left, #ffffff 24px, #eceef1 24px);
+
+    ${(props) =>
+      !props.isActive &&
+      !props.checked &&
+      css`
+        border-bottom: 1px solid;
+        border-image-slice: 1;
+        border-image-source: linear-gradient(
+          to left,
+          #ffffff 17px,
+          #eceef1 31px
+        );
+      `};
 
     border-top: 0;
     border-left: 0;
 
-    ${(props) => props.checked && contextMenuWrapperCheckedStyle};
     ${(props) => props.dragging && contextMenuWrapperDraggingStyle};
   }
 
@@ -205,6 +224,9 @@ const FilesTableRow = (props) => {
     isActive,
     onHideContextMenu,
     onFilesClick,
+    inProgress,
+    index,
+    setFirsElemChecked,
     quickButtonsComponent,
   } = props;
 
@@ -240,11 +262,21 @@ const FilesTableRow = (props) => {
     setIsDragActive(false);
   };
 
+  React.useEffect(() => {
+    if (index === 0 && (checkedProps || isActive)) {
+      setFirsElemChecked(true);
+    } else {
+      index === 0 && setFirsElemChecked(false);
+    }
+  }, [checkedProps, isActive]);
+
   return (
     <StyledDragAndDrop
       data-title={item.title}
       value={value}
-      className={`files-item ${className}`}
+      className={`files-item ${className} ${
+        checkedProps || isActive ? "table-row-selected" : ""
+      }`}
       onDrop={onDrop}
       onMouseDown={onMouseDown}
       dragging={dragging && isDragging}
@@ -252,6 +284,7 @@ const FilesTableRow = (props) => {
       onDragLeave={onDragLeave}
     >
       <StyledTableRow
+        className="table-row"
         {...dragStyles}
         dragging={dragging && isDragging}
         selectionProp={selectionProp}
@@ -260,6 +293,7 @@ const FilesTableRow = (props) => {
         onClick={onMouseClick}
         {...contextOptionsProps}
         isActive={isActive}
+        inProgress={inProgress}
         isFolder={item.isFolder}
         onHideContextMenu={onHideContextMenu}
         isThirdPartyFolder={item.isThirdPartyFolder}

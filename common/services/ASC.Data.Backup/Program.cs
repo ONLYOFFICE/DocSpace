@@ -1,5 +1,3 @@
-﻿using Microsoft.Extensions.Hosting.WindowsServices;
-
 var options = new WebApplicationOptions
 {
     Args = args,

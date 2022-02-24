@@ -95,7 +95,7 @@ namespace ASC.Data.Storage.Encryption
         }
     }
 
-    public class FactoryOperationExtension
+    public static class FactoryOperationExtension
     {
         public static void Register(DIHelper dIHelper)
         {

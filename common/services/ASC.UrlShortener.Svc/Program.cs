@@ -46,10 +46,10 @@ using StackExchange.Redis.Extensions.Newtonsoft;
 
 namespace ASC.UrlShortener.Svc
 {
-public class Program
-{
-public async static Task Main(string[] args)
-{
+    public static class Program
+    {
+        public async static Task Main(string[] args)
+        {
             var host = CreateHostBuilder(args).Build();
 
             await host.RunAsync();
@@ -81,8 +81,6 @@ public async static Task Main(string[] args)
                                 .AddJsonFile("storage.json")
                                 .AddJsonFile("kafka.json")
                                 .AddJsonFile($"kafka.{env}.json", true)
-                                .AddJsonFile("rabbitmq.json")
-                                .AddJsonFile($"rabbitmq.{env}.json", true)
                                 .AddJsonFile("redis.json")
                                 .AddJsonFile($"redis.{env}.json", true)
                                 .AddEnvironmentVariables()

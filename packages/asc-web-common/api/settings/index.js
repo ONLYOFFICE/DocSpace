@@ -331,3 +331,19 @@ export function getBuildVersion() {
   };
   return request(options);
 }
+
+export function getTipsSubscription() {
+  const options = {
+    method: "get",
+    url: "/settings/tips/subscription.json",
+  };
+  return request(options);
+}
+
+export function toggleTipsSubscription() {
+  const options = {
+    method: "put",
+    url: "/settings/tips/change/subscription",
+  };
+  return request(options);
+}
