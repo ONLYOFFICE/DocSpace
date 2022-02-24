@@ -5,7 +5,7 @@ import ModalDialog from "@appserver/components/modal-dialog";
 import Text from "@appserver/components/text";
 import Button from "@appserver/components/button";
 import Link from "@appserver/components/link";
-import { StyledBackupList } from "../../StyledBackup";
+import { StyledBackupList } from "../../../StyledBackup";
 import {
   deleteBackup,
   deleteBackupHistory,
@@ -15,7 +15,7 @@ import {
 import BackupListBody from "./BackupListBody";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
-import config from "../../../../../../../../../package.json";
+import config from "../../../../../../../../../../package.json";
 import toastr from "@appserver/components/toast/toastr";
 import Loaders from "@appserver/common/components/Loaders";
 
