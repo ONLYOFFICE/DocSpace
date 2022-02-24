@@ -98,7 +98,7 @@ namespace ASC.Web.Files.Services.DocumentService
             [DebuggerDisplay("{Type} - {UserId}")]
             public class Action
             {
-                public string Type { get; set; }
+                public int Type { get; set; }
                 public string UserId { get; set; }
             }
 

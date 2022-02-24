@@ -1128,13 +1128,13 @@ namespace ASC.Api.Documents
         /// <category>Files</category>
         /// <returns>File info</returns>
 
-        [Read("fileAsync/{fileId}", order: int.MaxValue, DisableFormat = true)]
+        [Read("file/{fileId}", order: int.MaxValue, DisableFormat = true)]
         public Task<FileWrapper<string>> GetFileInfoAsync(string fileId, int version = -1)
         {
             return FilesControllerHelperString.GetFileInfoAsync(fileId, version);
         }
 
-        [Read("fileAsync/{fileId:int}")]
+        [Read("file/{fileId:int}")]
         public Task<FileWrapper<int>> GetFileInfoAsync(int fileId, int version = -1)
         {
             return FilesControllerHelperInt.GetFileInfoAsync(fileId, version);
@@ -1190,26 +1190,26 @@ namespace ASC.Api.Documents
         /// <param name="title">New title</param>
         /// <param name="lastVersion">File last version number</param>
         /// <returns>File info</returns>
-        [Update("fileAsync/{fileId}", order: int.MaxValue, DisableFormat = true)]
+        [Update("file/{fileId}", order: int.MaxValue, DisableFormat = true)]
         public Task<FileWrapper<string>> UpdateFileFromBodyAsync(string fileId, [FromBody] UpdateFileModel model)
         {
             return FilesControllerHelperString.UpdateFileAsync(fileId, model.Title, model.LastVersion);
         }
 
-        [Update("fileAsync/{fileId}", order: int.MaxValue, DisableFormat = true)]
+        [Update("file/{fileId}", order: int.MaxValue, DisableFormat = true)]
         [Consumes("application/x-www-form-urlencoded")]
         public Task<FileWrapper<string>> UpdateFileFromFormAsync(string fileId, [FromForm] UpdateFileModel model)
         {
             return FilesControllerHelperString.UpdateFileAsync(fileId, model.Title, model.LastVersion);
         }
 
-        [Update("fileAsync/{fileId:int}", order: int.MaxValue - 1, DisableFormat = true)]
+        [Update("file/{fileId:int}", order: int.MaxValue - 1, DisableFormat = true)]
         public Task<FileWrapper<int>> UpdateFileFromBodyAsync(int fileId, [FromBody] UpdateFileModel model)
         {
             return FilesControllerHelperInt.UpdateFileAsync(fileId, model.Title, model.LastVersion);
         }
 
-        [Update("fileAsync/{fileId:int}", order: int.MaxValue - 1, DisableFormat = true)]
+        [Update("file/{fileId:int}", order: int.MaxValue - 1, DisableFormat = true)]
         [Consumes("application/x-www-form-urlencoded")]
         public Task<FileWrapper<int>> UpdateFileFromFormAsync(int fileId, [FromForm] UpdateFileModel model)
         {
@@ -1251,7 +1251,7 @@ namespace ASC.Api.Documents
             if (model == null)
             {
                 model = new CheckConversionModel<string>();
-        }
+            }
             model.FileId = fileId;
             return FilesControllerHelperString.StartConversionAsync(model);
         }
@@ -1262,7 +1262,7 @@ namespace ASC.Api.Documents
             if (model == null)
             {
                 model = new CheckConversionModel<int>();
-        }
+            }
             model.FileId = fileId;
             return FilesControllerHelperInt.StartConversionAsync(model);
         }
