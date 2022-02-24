@@ -1,5 +1,5 @@
 {
-    "port": 17100,
+    "port": 9999,
     "appsettings": "../../../config",
     "environment": "Development"
 }

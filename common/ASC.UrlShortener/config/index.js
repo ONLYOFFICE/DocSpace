@@ -50,28 +50,20 @@ function getAndSaveAppsettings(){
     else{
         nconf.file("appsettings" ,path.join(__dirname, appsettings, 'appsettings.json'));
     }
+    nconf.file("appsettingsServices" ,path.join(__dirname, appsettings, 'appsettings.services.json'));
 }
 
 function getAndSaveSql(){
     var sql = new Map();
     var connetionString = nconf.get("ConnectionStrings").default.connectionString;
-    var reg = new RegExp("([\\s\\S]+?)=([\\s\\S]+?);|([\\s\\S]+?)=([\\s\\S]+?)$", "g");
 
-    while ((array = reg.exec(connetionString)) !== null) {
-        if(array[1] != null){
-            let key = array[1].toLowerCase();
-            if(key == "user id" || key == "Username"){
-                sql.user = array[2];
-            }
-            if(key == "server"){
-                sql.host = array[2];
-            }
-            if(key == "database"
-            || key == "host"
-            || key == "port"
-            || key == "password"){
-                sql[key] = array[2];
-            }
+    var conf = connetionString.split(';');
+    
+    for(let i = 0; i < conf.length; i++){
+        var splited = conf[i].split('=');
+        if(splited.Length < 2) continue;
+        if(splited[0] != null){
+            sql[splited[0]] = splited[1];
         }
     }
     nconf.set("sql", sql);
