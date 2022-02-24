@@ -55,7 +55,7 @@ namespace ASC.AuditTrail.Data
             LazyMessagesContext = new Lazy<MessagesContext>(() => dbMessagesContext.Value);
         }
 
-        private class Query
+        private sealed class Query
         {
             public LoginEvents LoginEvents { get; set; }
             public User User { get; set; }
@@ -65,7 +65,7 @@ namespace ASC.AuditTrail.Data
         {
             var query =
                 (from b in MessagesContext.LoginEvents
-                 from p in MessagesContext.Users.Where(p => b.UserId == p.Id).DefaultIfEmpty()
+                 from p in MessagesContext.Users.AsQueryable().Where(p => b.UserId == p.Id).DefaultIfEmpty()
                  where b.TenantId == tenant
                  orderby b.Date descending
                  select new Query { LoginEvents = b, User = p })
@@ -78,7 +78,7 @@ namespace ASC.AuditTrail.Data
         {
             var query =
                 from q in MessagesContext.LoginEvents
-                from p in MessagesContext.Users.Where(p => q.UserId == p.Id).DefaultIfEmpty()
+                from p in MessagesContext.Users.AsQueryable().Where(p => q.UserId == p.Id).DefaultIfEmpty()
                 where q.TenantId == tenant
                 where q.Date >= fromDate
                 where q.Date <= to
@@ -91,11 +91,12 @@ namespace ASC.AuditTrail.Data
         public int GetCount(int tenant, DateTime? from = null, DateTime? to = null)
         {
             var query = MessagesContext.LoginEvents
+                .AsQueryable()
                 .Where(l => l.TenantId == tenant);
 
             if (from.HasValue && to.HasValue)
             {
-                query = query.Where(l => l.Date >= from & l.Date <= to);
+                query = query.Where(l => l.Date >= from && l.Date <= to);
             }
 
             return query.Count();

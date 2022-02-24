@@ -111,7 +111,7 @@ namespace ASC.Web.Files.HttpHandlers
                         Redirect(context);
                         break;
                     case "webhook":
-                        Webhook(context);
+                        await WebhookAsync(context);
                         break;
                     default:
                         throw new HttpException((int)HttpStatusCode.BadRequest, FilesCommonResource.ErrorMassage_BadRequest);
@@ -147,7 +147,7 @@ namespace ASC.Web.Files.HttpHandlers
 
         private const string XmlPrefix = "docusign";
 
-        private void Webhook(HttpContext context)
+        private async Task WebhookAsync(HttpContext context)
         {
             Log.Info("DocuSign webhook: " + context.Request.QueryString);
             try
@@ -205,7 +205,7 @@ namespace ASC.Web.Files.HttpHandlers
                                     }
                                 }
 
-                                var file = DocuSignHelper.SaveDocument(envelopeId, documentId, documentName, folderId);
+                                var file = await DocuSignHelper.SaveDocumentAsync(envelopeId, documentId, documentName, folderId);
 
                                 NotifyClient.SendDocuSignComplete(file, sourceTitle ?? documentName);
                             }

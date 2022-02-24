@@ -78,6 +78,7 @@ class ArticleMainButtonContent extends React.Component {
         ),
         label: userCaption,
         onClick: this.goToEmployeeCreate,
+        className: "main-button_create-user",
       },
       {
         icon: combineUrl(
@@ -87,6 +88,7 @@ class ArticleMainButtonContent extends React.Component {
         ),
         label: guestCaption,
         onClick: this.goToGuestCreate,
+        className: "main-button_create-guest",
       },
       {
         icon: combineUrl(
@@ -96,6 +98,7 @@ class ArticleMainButtonContent extends React.Component {
         ),
         label: groupCaption,
         onClick: this.goToGroupCreate,
+        className: "main-button_create-group",
       },
       {
         isSeparator: true,
@@ -107,6 +110,7 @@ class ArticleMainButtonContent extends React.Component {
         ),
         label: t("Translations:InviteLinkTitle"),
         onClick: this.onInvitationDialogClick,
+        className: "main-button_invitation-link",
       },
       /* {
         icon: combineUrl(
@@ -133,7 +137,7 @@ class ArticleMainButtonContent extends React.Component {
           isDropdown={true}
           text={t("Common:Actions")}
           model={menuModel}
-          className="main-button_invitation-link"
+          className="main-button_invitation-link people_main-button"
         />
         {dialogVisible && (
           <InviteDialog

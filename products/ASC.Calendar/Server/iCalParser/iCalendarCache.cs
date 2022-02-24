@@ -28,6 +28,7 @@ using System;
 using System.IO;
 using ASC.Core;
 using ASC.Common.Utils;
+using System.Net.Http;
 
 namespace ASC.Calendar.iCalParser
 {
@@ -58,21 +59,25 @@ namespace ASC.Calendar.iCalParser
         public AuthContext AuthContext { get; }
         public TimeZoneConverter TimeZoneConverter { get; }
         public TenantManager TenantManager { get; }
+        public IHttpClientFactory ClientFactory { get; }
 
         public iCalendarCache(
             AuthContext authContext,
             TimeZoneConverter timeZoneConverter,
-            TenantManager tenantManager
-        ) : this(authContext, timeZoneConverter, tenantManager, iCalendarCacheParams.Default){}
+            TenantManager tenantManager,
+            IHttpClientFactory clientFactory
+        ) : this(authContext, timeZoneConverter, tenantManager, clientFactory, iCalendarCacheParams.Default){}
         public iCalendarCache(
             AuthContext authContext,
             TimeZoneConverter timeZoneConverter,
             TenantManager tenantManager,
+            IHttpClientFactory clientFactory,
             iCalendarCacheParams cacheParams)
         {
             AuthContext = authContext;
             TimeZoneConverter = timeZoneConverter;
             TenantManager = tenantManager;
+            ClientFactory = clientFactory;
             _cacheParams = cacheParams;
         }
 
@@ -120,7 +125,7 @@ namespace ASC.Calendar.iCalParser
 
                 using (var tr = new StreamReader(File.OpenRead(filePath)))
                 {
-                    var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager);
+                    var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager, ClientFactory);
                     return icalendar.GetFromStream(tr);
                 }
             }

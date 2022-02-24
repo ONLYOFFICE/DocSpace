@@ -1,4 +1,4 @@
-﻿using System.Threading;
+﻿using System.Threading.Tasks;
 
 using ASC.Api.Documents;
 using ASC.Files.Core;
@@ -18,42 +18,48 @@ namespace ASC.Files.Tests
         private FileWrapper<int> TestFile { get; set; }
 
         [OneTimeSetUp]
-        public override void SetUp()
+        public override async Task SetUp()
         {
-            base.SetUp();
+            await base.SetUp();
 
-            TestFolder = FilesControllerHelper.CreateFolder(GlobalFolderHelper.FolderMy, "TestFolder");
-            TestFolderNotEmpty = FilesControllerHelper.CreateFolder(GlobalFolderHelper.FolderMy, "TestFolderNotEmpty");
-            FilesControllerHelper.CreateFile(TestFolderNotEmpty.Id, "TestFileToContentInTestFolder", default);
-            FilesControllerHelper.CreateFolder(TestFolderNotEmpty.Id, "TestFolderToContentInTestFolder");
-            TestFile = FilesControllerHelper.CreateFile(GlobalFolderHelper.FolderMy, "TestFile", default);
-
+            TestFolder = await FilesControllerHelper.CreateFolderAsync(GlobalFolderHelper.FolderMy, "TestFolder");
+            TestFolderNotEmpty = await FilesControllerHelper.CreateFolderAsync(GlobalFolderHelper.FolderMy, "TestFolderNotEmpty");
+            await FilesControllerHelper.CreateFileAsync(TestFolderNotEmpty.Id, "TestFileToContentInTestFolder", default);
+            await FilesControllerHelper.CreateFolderAsync(TestFolderNotEmpty.Id, "TestFolderToContentInTestFolder");
+            TestFile = await FilesControllerHelper.CreateFileAsync(GlobalFolderHelper.FolderMy, "TestFile", default);
         }
-        [OneTimeTearDown]
-        public void TearDown()
+
+        [OneTimeSetUp]
+        public void Authenticate()
         {
-            DeleteFolder(TestFolder.Id);
-            DeleteFile(TestFile.Id);
+            SecurityContext.AuthenticateMe(CurrentTenant.OwnerId);
+        }
+
+        [OneTimeTearDown]
+        public async Task TearDown()
+        {
+            await DeleteFolderAsync(TestFolder.Id);
+            await DeleteFileAsync(TestFile.Id);
         }
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFolderItems))]
         [Category("Folder")]
         [Order(5)]
-        public void CreateFolderReturnsFolderWrapper(string folderTitle)
+        public async Task CreateFolderReturnsFolderWrapper(string folderTitle)
         {
-            var folderWrapper = FilesControllerHelper.CreateFolder(GlobalFolderHelper.FolderMy, folderTitle);
+            var folderWrapper = await FilesControllerHelper.CreateFolderAsync(GlobalFolderHelper.FolderMy, folderTitle);
             Assert.IsNotNull(folderWrapper);
             Assert.AreEqual(folderTitle, folderWrapper.Title);
-            DeleteFolder(folderWrapper.Id);
+            await DeleteFolderAsync(folderWrapper.Id);
         }
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetFolderItemsEmpty))]
         [Category("Folder")]
         [Order(6)]
         [Description("Empty Content")]
-        public void GetFolderEmptyReturnsFolderContentWrapper(bool withSubFolders,int filesCountExpected,int foldersCountExpected)
+        public async Task GetFolderEmptyReturnsFolderContentWrapper(bool withSubFolders, int filesCountExpected, int foldersCountExpected)
         {
-            var folderContentWrapper = FilesControllerHelper.GetFolder(
+            var folderContentWrapper = await FilesControllerHelper.GetFolderAsync(
                  TestFolder.Id,
                  UserOptions.Id,
                  FilterType.None,
@@ -70,9 +76,9 @@ namespace ASC.Files.Tests
         [Category("Folder")]
         [Order(7)]
         [Description("Not Empty Content")]
-        public void GetFolderNotEmptyReturnsFolderContentWrapper(bool withSubFolders, int filesCountExpected, int foldersCountExpected)
+        public async Task GetFolderNotEmptyReturnsFolderContentWrapper(bool withSubFolders, int filesCountExpected, int foldersCountExpected)
         {
-            var folderContentWrapper = FilesControllerHelper.GetFolder(
+            var folderContentWrapper = await FilesControllerHelper.GetFolderAsync(
                  TestFolderNotEmpty.Id,
                  UserOptions.Id,
                  FilterType.None,
@@ -83,14 +89,14 @@ namespace ASC.Files.Tests
             Assert.IsNotNull(folderContentWrapper);
             Assert.AreEqual(filesCountExpected, filesCount);
             Assert.AreEqual(foldersCountExpected, foldersCount);
-            DeleteFolder(TestFolderNotEmpty.Id);
+            await DeleteFolderAsync(TestFolderNotEmpty.Id);
         }
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetFolderInfoItems))]
         [Category("Folder")]
         [Order(8)]
-        public void GetFolderInfoReturnsFolderWrapper(string folderTitleExpected)
+        public async Task GetFolderInfoReturnsFolderWrapper(string folderTitleExpected)
         {
-            var folderWrapper = FilesControllerHelper.GetFolderInfo(TestFolder.Id);
+            var folderWrapper = await FilesControllerHelper.GetFolderInfoAsync(TestFolder.Id);
 
             Assert.IsNotNull(folderWrapper);
             Assert.AreEqual(folderTitleExpected, folderWrapper.Title);
@@ -101,9 +107,9 @@ namespace ASC.Files.Tests
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetRenameFolderItems))]
         [Category("Folder")]
         [Order(9)]
-        public void RenameFolderReturnsFolderWrapper(string folderTitle)
+        public async Task RenameFolderReturnsFolderWrapper(string folderTitle)
         {
-            var folderWrapper = FilesControllerHelper.RenameFolder(TestFolder.Id, folderTitle);
+            var folderWrapper = await FilesControllerHelper.RenameFolderAsync(TestFolder.Id, folderTitle);
 
             Assert.IsNotNull(folderWrapper);
             Assert.AreEqual(folderTitle, folderWrapper.Title);
@@ -112,16 +118,16 @@ namespace ASC.Files.Tests
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetDeleteFolderItems))]
         [Category("Folder")]
         [Order(10)]
-        public void DeleteFolderReturnsFolderWrapper(bool deleteAfter, bool immediately)
+        public async Task DeleteFolderReturnsFolderWrapper(bool deleteAfter, bool immediately)
         {
-            FilesControllerHelper.DeleteFolder(TestFolder.Id, deleteAfter, immediately);
+            await FilesControllerHelper.DeleteFolder(TestFolder.Id, deleteAfter, immediately);
             while (true)
             {
                 var statuses = FileStorageService.GetTasksStatuses();
 
                 if (statuses.TrueForAll(r => r.Finished))
                     break;
-                Thread.Sleep(100);
+                await Task.Delay(100);
             }
             Assert.IsTrue(FileStorageService.GetTasksStatuses().TrueForAll(r => string.IsNullOrEmpty(r.Error)));
         }
@@ -129,22 +135,22 @@ namespace ASC.Files.Tests
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFileItems))]
         [Category("File")]
         [Order(1)]
-        public void CreateFileReturnsFileWrapper(string fileTitle)
+        public async Task CreateFileReturnsFileWrapper(string fileTitle)
         {
-            var fileWrapper = FilesControllerHelper.CreateFile(GlobalFolderHelper.FolderMy, fileTitle, default);
+            var fileWrapper = await FilesControllerHelper.CreateFileAsync(GlobalFolderHelper.FolderMy, fileTitle, default);
 
             Assert.IsNotNull(fileWrapper);
             Assert.AreEqual(fileTitle + ".docx", fileWrapper.Title);
-            DeleteFile(fileWrapper.Id);
+            await DeleteFileAsync(fileWrapper.Id);
 
         }
-        
+
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetFileInfoItems))]
         [Category("File")]
         [Order(2)]
-        public void GetFileInfoReturnsFilesWrapper(string fileTitleExpected)
+        public async Task GetFileInfoReturnsFilesWrapper(string fileTitleExpected)
         {
-            var fileWrapper = FilesControllerHelper.GetFileInfo(TestFile.Id);
+            var fileWrapper = await FilesControllerHelper.GetFileInfoAsync(TestFile.Id);
 
             Assert.IsNotNull(fileWrapper);
             Assert.AreEqual(fileTitleExpected + ".docx", fileWrapper.Title);
@@ -153,9 +159,9 @@ namespace ASC.Files.Tests
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetUpdateFileItems))]
         [Category("File")]
         [Order(3)]
-        public void UpdateFileReturnsFileWrapper(string fileTitle, int lastVersion)
+        public async Task UpdateFileReturnsFileWrapper(string fileTitle, int lastVersion)
         {
-            var fileWrapper = FilesControllerHelper.UpdateFile(
+            var fileWrapper = await FilesControllerHelper.UpdateFileAsync(
                 TestFile.Id,
                 fileTitle,
                 lastVersion);
@@ -167,9 +173,9 @@ namespace ASC.Files.Tests
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetDeleteFileItems))]
         [Category("File")]
         [Order(4)]
-        public void DeleteFileReturnsFileWrapper(bool deleteAfter, bool immediately)
+        public async Task DeleteFileReturnsFileWrapper(bool deleteAfter, bool immediately)
         {
-            FilesControllerHelper.DeleteFile(
+            await FilesControllerHelper.DeleteFileAsync(
                 TestFile.Id,
                 deleteAfter,
                 immediately);
@@ -180,18 +186,18 @@ namespace ASC.Files.Tests
 
                 if (statuses.TrueForAll(r => r.Finished))
                     break;
-                Thread.Sleep(100);
+                await Task.Delay(100);
             }
             Assert.IsTrue(FileStorageService.GetTasksStatuses().TrueForAll(r => string.IsNullOrEmpty(r.Error)));
         }
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetMoveBatchItems))]
         [Category("BatchItems")]
-        public void MoveBatchItemsReturnsOperationMove(string json)
+        public async Task MoveBatchItemsReturnsOperationMove(string json)
         {
             var batchModel = GetBatchModel(json);
 
-            var statuses = FilesControllerHelper.MoveBatchItems(batchModel);
+            var statuses = await FilesControllerHelper.MoveBatchItemsAsync(batchModel);
 
             FileOperationWraper status = null;
             foreach (var item in statuses)
@@ -209,12 +215,11 @@ namespace ASC.Files.Tests
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCopyBatchItems))]
         [Category("BatchItems")]
-        public void CopyBatchItemsReturnsOperationCopy(string json)
+        public async Task CopyBatchItemsReturnsOperationCopy(string json)
         {
             var batchModel = GetBatchModel(json);
 
-            var statuses = FilesControllerHelper.CopyBatchItems(batchModel);
-
+            var statuses = await FilesControllerHelper.CopyBatchItemsAsync(batchModel);
             FileOperationWraper status = null;
             foreach (var item in statuses)
             {
@@ -229,6 +234,6 @@ namespace ASC.Files.Tests
             Assert.AreEqual(statusCopy, status.OperationType);
         }
 
-        
+
     }
 }

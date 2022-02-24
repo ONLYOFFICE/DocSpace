@@ -36,7 +36,7 @@ using ASC.Core.Tenants;
 namespace ASC.Core.Data
 {
     [Scope]
-    class DbSubscriptionService : ISubscriptionService
+    public class DbSubscriptionService : ISubscriptionService
     {
         private Expression<Func<Subscription, SubscriptionRecord>> FromSubscriptionToSubscriptionRecord { get; set; }
         private Expression<Func<DbSubscriptionMethod, SubscriptionMethod>> FromDbSubscriptionMethodToSubscriptionMethod { get; set; }
@@ -69,8 +69,8 @@ namespace ASC.Core.Data
 
         public string[] GetRecipients(int tenant, string sourceId, string actionId, string objectId)
         {
-            if (sourceId == null) throw new ArgumentNullException("sourceId");
-            if (actionId == null) throw new ArgumentNullException("actionId");
+            if (sourceId == null) throw new ArgumentNullException(nameof(sourceId));
+            if (actionId == null) throw new ArgumentNullException(nameof(actionId));
 
             var q = GetQuery(tenant, sourceId, actionId)
                 .Where(r => r.Object == (objectId ?? string.Empty))
@@ -83,8 +83,8 @@ namespace ASC.Core.Data
 
         public IEnumerable<SubscriptionRecord> GetSubscriptions(int tenant, string sourceId, string actionId)
         {
-            if (sourceId == null) throw new ArgumentNullException("sourceId");
-            if (actionId == null) throw new ArgumentNullException("actionId");
+            if (sourceId == null) throw new ArgumentNullException(nameof(sourceId));
+            if (actionId == null) throw new ArgumentNullException(nameof(actionId));
 
             var q = GetQuery(tenant, sourceId, actionId);
             return GetSubscriptions(q, tenant);
@@ -108,7 +108,7 @@ namespace ASC.Core.Data
 
         public SubscriptionRecord GetSubscription(int tenant, string sourceId, string actionId, string recipientId, string objectId)
         {
-            if (recipientId == null) throw new ArgumentNullException("recipientId");
+            if (recipientId == null) throw new ArgumentNullException(nameof(recipientId));
 
             var q = GetQuery(tenant, sourceId, actionId)
                 .Where(r => r.Recipient == recipientId)
@@ -119,24 +119,24 @@ namespace ASC.Core.Data
 
         public bool IsUnsubscribe(int tenant, string sourceId, string actionId, string recipientId, string objectId)
         {
-            if (recipientId == null) throw new ArgumentNullException("recipientId");
-            if (sourceId == null) throw new ArgumentNullException("sourceId");
-            if (actionId == null) throw new ArgumentNullException("actionId");
+            if (recipientId == null) throw new ArgumentNullException(nameof(recipientId));
+            if (sourceId == null) throw new ArgumentNullException(nameof(sourceId));
+            if (actionId == null) throw new ArgumentNullException(nameof(actionId));
 
             var q = UserDbContext.Subscriptions
-                .Where(r => r.Source == sourceId && 
-                            r.Action == actionId && 
+                .Where(r => r.Source == sourceId &&
+                            r.Action == actionId &&
                             r.Tenant == tenant &&
                             r.Recipient == recipientId &&
                             r.Unsubscribed);
 
             if (!string.IsNullOrEmpty(objectId))
             {
-                q = q.Where(r=> r.Object == objectId || r.Object == string.Empty);
+                q = q.Where(r => r.Object == objectId || r.Object == string.Empty);
             }
             else
             {
-                q = q = q.Where(r => r.Object == string.Empty);;
+                q = q.Where(r => r.Object == string.Empty);
             }
 
             return q.Any();
@@ -144,26 +144,26 @@ namespace ASC.Core.Data
 
         public string[] GetSubscriptions(int tenant, string sourceId, string actionId, string recipientId, bool checkSubscribe)
         {
-            if (recipientId == null) throw new ArgumentNullException("recipientId");
-            if (sourceId == null) throw new ArgumentNullException("sourceId");
-            if (actionId == null) throw new ArgumentNullException("actionId");
+            if (recipientId == null) throw new ArgumentNullException(nameof(recipientId));
+            if (sourceId == null) throw new ArgumentNullException(nameof(sourceId));
+            if (actionId == null) throw new ArgumentNullException(nameof(actionId));
 
             var q = GetQuery(tenant, sourceId, actionId)
-                .Where(r=> r.Recipient == recipientId)
+                .Where(r => r.Recipient == recipientId)
                 .Distinct();
 
             if (checkSubscribe)
             {
-                q = q.Where(r=> !r.Unsubscribed);
+                q = q.Where(r => !r.Unsubscribed);
             }
 
-            return q.Select(r=> r.Object).ToArray();
+            return q.Select(r => r.Object).ToArray();
         }
 
 
         public void SaveSubscription(SubscriptionRecord s)
         {
-            if (s == null) throw new ArgumentNullException("s");
+            if (s == null) throw new ArgumentNullException(nameof(s));
 
             var subs = new Subscription
             {
@@ -186,8 +186,8 @@ namespace ASC.Core.Data
 
         public void RemoveSubscriptions(int tenant, string sourceId, string actionId, string objectId)
         {
-            if (sourceId == null) throw new ArgumentNullException("sourceId");
-            if (actionId == null) throw new ArgumentNullException("actionId");
+            if (sourceId == null) throw new ArgumentNullException(nameof(sourceId));
+            if (actionId == null) throw new ArgumentNullException(nameof(actionId));
 
             using var tr = UserDbContext.Database.BeginTransaction();
             var q = UserDbContext.Subscriptions
@@ -195,7 +195,7 @@ namespace ASC.Core.Data
                 .Where(r => r.Source == sourceId)
                 .Where(r => r.Action == actionId);
 
-            if (objectId != string.Empty)
+            if (objectId.Length != 0)
             {
                 q = q.Where(r => r.Object == (objectId ?? string.Empty));
             }
@@ -213,8 +213,8 @@ namespace ASC.Core.Data
 
         public IEnumerable<SubscriptionMethod> GetSubscriptionMethods(int tenant, string sourceId, string actionId, string recipientId)
         {
-            if (sourceId == null) throw new ArgumentNullException("sourceId");
-            if (actionId == null) throw new ArgumentNullException("actionId");
+            if (sourceId == null) throw new ArgumentNullException(nameof(sourceId));
+            if (actionId == null) throw new ArgumentNullException(nameof(actionId));
 
             var q = UserDbContext.SubscriptionMethods
                 .Where(r => r.Tenant == -1 || r.Tenant == tenant)
@@ -258,7 +258,7 @@ namespace ASC.Core.Data
 
         public void SetSubscriptionMethod(SubscriptionMethod m)
         {
-            if (m == null) throw new ArgumentNullException("m");
+            if (m == null) throw new ArgumentNullException(nameof(m));
 
             using var tr = UserDbContext.Database.BeginTransaction();
 
@@ -297,8 +297,8 @@ namespace ASC.Core.Data
 
         private IQueryable<Subscription> GetQuery(int tenant, string sourceId, string actionId)
         {
-            if (sourceId == null) throw new ArgumentNullException("sourceId");
-            if (actionId == null) throw new ArgumentNullException("actionId");
+            if (sourceId == null) throw new ArgumentNullException(nameof(sourceId));
+            if (actionId == null) throw new ArgumentNullException(nameof(actionId));
 
             return
                 UserDbContext.Subscriptions
@@ -328,9 +328,9 @@ namespace ASC.Core.Data
                 }
                 else
                 {
-                    if (common.TryGetValue(key, out var rec))
+                    if (!common.TryGetValue(key, out _))
                     {
-                        result.Remove(rec);
+                        result.Add(s);
                     }
                 }
             }

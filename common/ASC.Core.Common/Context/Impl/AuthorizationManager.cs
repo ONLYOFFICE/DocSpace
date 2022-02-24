@@ -100,7 +100,7 @@ namespace ASC.Core
 
         public void RemoveAllAces(ISecurityObjectId id)
         {
-            foreach (var r in GetAces(Guid.Empty, Guid.Empty, id).ToArray())
+            foreach (var r in GetAces(Guid.Empty, Guid.Empty, id))
             {
                 RemoveAce(r);
             }

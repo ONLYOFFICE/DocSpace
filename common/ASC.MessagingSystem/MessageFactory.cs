@@ -73,7 +73,7 @@ namespace ASC.MessagingSystem
                     Action = action,
                     Description = description,
                     Target = target,
-                    UAHeader = request.Headers[userAgentHeader].FirstOrDefault()
+                    UAHeader = request?.Headers[userAgentHeader].FirstOrDefault()
                 };
             }
             catch (Exception ex)

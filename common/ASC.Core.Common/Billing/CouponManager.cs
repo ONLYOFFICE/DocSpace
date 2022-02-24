@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
@@ -48,6 +47,7 @@ namespace ASC.Core.Common.Billing
     public class CouponManager
     {
         private IEnumerable<AvangateProduct> Products { get; set; }
+        private IHttpClientFactory ClientFactory { get; }
         private IEnumerable<string> Groups { get; set; }
         private readonly int Percent;
         private readonly int Schedule;
@@ -55,13 +55,15 @@ namespace ASC.Core.Common.Billing
         private readonly byte[] Secret;
         private readonly Uri BaseAddress;
         private readonly string ApiVersion;
-        private readonly SemaphoreSlim SemaphoreSlim = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim SemaphoreSlim;
         private readonly ILog Log;
+        
 
-        public CouponManager(IOptionsMonitor<ILog> option)
+        public CouponManager(IOptionsMonitor<ILog> option, IHttpClientFactory clientFactory)
         {
             SemaphoreSlim = new SemaphoreSlim(1, 1);
             Log = option.CurrentValue;
+            ClientFactory = clientFactory;
 
             try
             {
@@ -98,7 +100,7 @@ namespace ASC.Core.Common.Billing
             {
                 using var httpClient = PrepaireClient();
                 using var content = new StringContent(await Promotion.GeneratePromotion(Log, this, tenantManager, Percent, Schedule), Encoding.Default, "application/json");
-                using var response = await httpClient.PostAsync(string.Format("{0}/promotions/", ApiVersion), content);
+                using var response = await httpClient.PostAsync($"{ApiVersion}/promotions/", content);
                 if (!response.IsSuccessStatusCode)
                     throw new Exception(response.ReasonPhrase);
 
@@ -114,10 +116,14 @@ namespace ASC.Core.Common.Billing
             }
         }
 
-        internal async Task<IEnumerable<AvangateProduct>> GetProducts()
+        internal Task<IEnumerable<AvangateProduct>> GetProducts()
         {
-            if (Products != null) return Products;
+            if (Products != null) return Task.FromResult(Products);
+            return InternalGetProducts();
+        }
 
+        private async Task<IEnumerable<AvangateProduct>> InternalGetProducts()
+        {
             await SemaphoreSlim.WaitAsync();
 
             if (Products != null)
@@ -129,7 +135,7 @@ namespace ASC.Core.Common.Billing
             try
             {
                 using var httpClient = PrepaireClient();
-                using var response = await httpClient.GetAsync(string.Format("{0}/products/?Limit=1000&Enabled=true", ApiVersion));
+                using var response = await httpClient.GetAsync($"{ApiVersion}/products/?Limit=1000&Enabled=true");
                 if (!response.IsSuccessStatusCode)
                     throw new Exception(response.ReasonPhrase);
 
@@ -153,9 +159,12 @@ namespace ASC.Core.Common.Billing
 
         private HttpClient PrepaireClient()
         {
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
             const string applicationJson = "application/json";
-            using var httpClient = new HttpClient { BaseAddress = BaseAddress, Timeout = TimeSpan.FromMinutes(3) };
+
+            var httpClient = ClientFactory.CreateClient();
+            httpClient.BaseAddress = BaseAddress;
+            httpClient.Timeout = TimeSpan.FromMinutes(3);
+
             httpClient.DefaultRequestHeaders.TryAddWithoutValidation("accept", applicationJson);
             httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", applicationJson);
             httpClient.DefaultRequestHeaders.TryAddWithoutValidation("X-Avangate-Authentication", CreateAuthHeader());
@@ -176,9 +185,9 @@ namespace ASC.Core.Common.Billing
             }
 
             var stringBuilder = new StringBuilder();
-            stringBuilder.AppendFormat("code='{0}' ", VendorCode);
-            stringBuilder.AppendFormat("date='{0}' ", date);
-            stringBuilder.AppendFormat("hash='{0}'", sBuilder);
+            stringBuilder.Append($"code='{VendorCode}' ");
+            stringBuilder.Append($"date='{date}' ");
+            stringBuilder.Append($"hash='{sBuilder}'");
             return stringBuilder.ToString();
         }
     }

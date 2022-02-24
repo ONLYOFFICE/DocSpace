@@ -103,13 +103,13 @@ namespace ASC.Core.Users
             //check for removed users
             if (userInfo.ID == Constants.LostUser.ID)
             {
-                sb.AppendFormat("<span class='userLink text-medium-describe' style='white-space:nowrap;'>{0}</span>", userInfo.DisplayUserName(displayUserSettingsHelper));
+                sb.Append($"<span class='userLink text-medium-describe' style='white-space:nowrap;'>{userInfo.DisplayUserName(displayUserSettingsHelper)}</span>");
             }
             else
             {
                 var popupID = Guid.NewGuid();
-                sb.AppendFormat("<span class=\"userLink\" style='white-space:nowrap;' id='{0}' data-uid='{1}'>", popupID, userInfo.ID);
-                sb.AppendFormat("<a class='linkDescribe' href=\"{0}\">{1}</a>", userInfo.GetUserProfilePageURLGeneral(commonLinkUtility), userInfo.DisplayUserName(displayUserSettingsHelper));
+                sb.Append($"<span class=\"userLink\" style='white-space:nowrap;' id='{popupID}' data-uid='{userInfo.ID}'>");
+                sb.Append($"<a class='linkDescribe' href=\"{userInfo.GetUserProfilePageURLGeneral(commonLinkUtility)}\">{userInfo.DisplayUserName(displayUserSettingsHelper)}</a>");
                 sb.Append("</span>");
 
                 sb.AppendFormat("<script language='javascript'> StudioUserProfileInfo.RegistryElement('{0}','\"{1}\"); </script>", popupID, userInfo.ID);

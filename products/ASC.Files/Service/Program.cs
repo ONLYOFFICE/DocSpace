@@ -25,7 +25,7 @@ using StackExchange.Redis.Extensions.Newtonsoft;
 
 namespace ASC.Files.Service
 {
-    public class Program
+    public static class Program
     {
         public async static Task Main(string[] args)
         {
@@ -73,6 +73,7 @@ namespace ASC.Files.Service
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddMemoryCache();
+                    services.AddHttpClient();
 
                     var diHelper = new DIHelper(services);
 

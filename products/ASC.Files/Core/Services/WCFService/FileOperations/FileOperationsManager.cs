@@ -61,7 +61,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             var processlist = Process.GetProcesses();
 
             //TODO: replace with distributed cache
-            if (processlist.Any())
+            if (processlist.Length > 0)
             {
                 foreach (var o in operations.Where(o => processlist.All(p => p.Id != o.InstanceId)))
                 {
@@ -174,13 +174,13 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         private List<FileOperationResult> QueueTask(Guid userId, FileOperation op)
         {
-            tasks.QueueTask(op.RunJob, op.GetDistributedTask());
+            tasks.QueueTask(op.RunJobAsync, op.GetDistributedTask());
             return GetOperationResults(userId);
         }
 
         private List<FileOperationResult> QueueTask<T, TId>(Guid userId, FileOperation<T, TId> op) where T : FileOperationData<TId>
         {
-            tasks.QueueTask(op.RunJob, op.GetDistributedTask());
+            tasks.QueueTask(op.RunJobAsync, op.GetDistributedTask());
             return GetOperationResults(userId);
         }
 
@@ -254,7 +254,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         }
     }
 
-    public class FileOperationsManagerHelperExtention
+    public static class FileOperationsManagerHelperExtention
     {
         public static void Register(DIHelper services)
         {

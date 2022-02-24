@@ -26,7 +26,6 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 
 namespace ASC.Data.Backup.Tasks.Data
 {
@@ -63,7 +62,6 @@ namespace ASC.Data.Backup.Tasks.Data
             IdColumn = idColumn;
             IdType = idType;
             TenantColumn = tenantColumn;
-            UserIDColumns = new string[0];
             DateColumns = new Dictionary<string, bool>();
             InsertMethod = InsertMethod.Insert;
         }
@@ -75,7 +73,7 @@ namespace ASC.Data.Backup.Tasks.Data
 
         public bool HasDateColumns()
         {
-            return DateColumns.Any();
+            return DateColumns.Count > 0;
         }
 
         public bool HasTenantColumn()

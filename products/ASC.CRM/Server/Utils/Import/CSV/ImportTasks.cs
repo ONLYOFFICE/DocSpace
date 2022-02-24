@@ -61,7 +61,7 @@ namespace ASC.Web.CRM.Classes
 
         private void ImportTaskData(DaoFactory _daoFactory)
         {
-            using (var CSVFileStream = _dataStore.GetReadStream("temp", _csvFileURI))
+            using (var CSVFileStream = _dataStore.GetReadStreamAsync("temp", _csvFileURI).Result)
             using (CsvReader csv = _importFromCSV.CreateCsvReaderInstance(CSVFileStream, _importSettings))
             {
                 int currentIndex = 0;
@@ -108,7 +108,7 @@ namespace ASC.Web.CRM.Classes
 
                     if (!String.IsNullOrEmpty(categoryTitle))
                     {
-                        var findedCategory = taskCategories.Find(item => String.Compare(item.Title, categoryTitle) == 0);
+                        var findedCategory = taskCategories.Find(item => string.Equals(item.Title, categoryTitle));
 
                         if (findedCategory == null)
                         {
@@ -144,17 +144,16 @@ namespace ASC.Web.CRM.Classes
 
                     var taskStatus = GetPropertyValue("status");
 
-                    if (!String.IsNullOrEmpty(taskStatus))
+                    if (!string.IsNullOrEmpty(taskStatus))
                     {
-                        if (String.Compare(taskStatus, CRMTaskResource.TaskStatus_Closed, true) == 0)
+                        if (string.Equals(taskStatus, CRMTaskResource.TaskStatus_Closed, StringComparison.OrdinalIgnoreCase))
                             obj.IsClosed = true;
 
                     }
 
                     var alertValue = GetPropertyValue("alertValue");
-                    int alertIntVal = 0;
 
-                    if (Int32.TryParse(alertValue, out alertIntVal))
+                    if (Int32.TryParse(alertValue, out var alertIntVal))
                         obj.AlertValue = alertIntVal;
                     else
                         obj.AlertValue = 0;

@@ -146,7 +146,7 @@ namespace ASC.Web.Studio.Core.TFA
                 }
             }
 
-            Cache.Insert("tfa/" + user.ID, (--counter).ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)));
+            Cache.Insert("tfa/" + user.ID, (counter - 1).ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)));
 
             if (!SecurityContext.IsAuthenticated)
             {
@@ -170,7 +170,7 @@ namespace ASC.Web.Studio.Core.TFA
 
             const string alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-_";
 
-            var data = new byte[length];
+            byte[] data;
 
             var list = new List<BackupCode>();
 
@@ -181,7 +181,7 @@ namespace ASC.Web.Studio.Core.TFA
                 var result = new StringBuilder(length);
                 foreach (var b in data)
                 {
-                    result.Append(alphabet[b % (alphabet.Length)]);
+                    result.Append(alphabet[b % alphabet.Length]);
                 }
 
                     var code = new BackupCode();

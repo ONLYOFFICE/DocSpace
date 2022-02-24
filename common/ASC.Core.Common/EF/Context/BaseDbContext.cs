@@ -17,7 +17,6 @@ namespace ASC.Core.Common.EF
 
     public class BaseDbContext : DbContext
     {
-        public string baseName;
         public BaseDbContext() { }
         public BaseDbContext(DbContextOptions options) : base(options)
         {
@@ -29,7 +28,7 @@ namespace ASC.Core.Common.EF
         public ConnectionStringSettings ConnectionStringSettings { get; set; }
         protected internal Provider Provider { get; set; }
 
-        public static ServerVersion ServerVersion = ServerVersion.Parse("8.0.25");
+        public static readonly ServerVersion ServerVersion = ServerVersion.Parse("8.0.25");
         protected virtual Dictionary<Provider, Func<BaseDbContext>> ProviderContext
         {
             get { return null; }
@@ -66,7 +65,7 @@ namespace ASC.Core.Common.EF
                     {
                         if (!string.IsNullOrEmpty(MigrateAssembly))
                         {
-                            r = r.MigrationsAssembly(MigrateAssembly);
+                            r.MigrationsAssembly(MigrateAssembly);
                         }
                     });
                     break;
@@ -108,6 +107,22 @@ namespace ASC.Core.Common.EF
                 return entity;
             }
         }
+
+        public static async Task<T> AddOrUpdateAsync<T, TContext>(this TContext b, Expression<Func<TContext, DbSet<T>>> expressionDbSet, T entity) where T : BaseEntity where TContext : BaseDbContext
+        {
+            var dbSet = expressionDbSet.Compile().Invoke(b);
+            var existingBlog = await dbSet.FindAsync(entity.GetKeys());
+            if (existingBlog == null)
+            {
+                var entityEntry = await dbSet.AddAsync(entity);
+                return entityEntry.Entity;
+            }
+            else
+            {
+                b.Entry(existingBlog).CurrentValues.SetValues(entity);
+                return entity;
+            }
+        }
     }
 
     public abstract class BaseEntity
@@ -133,10 +148,16 @@ namespace ASC.Core.Common.EF
                 }
             }
         }
-        public async ValueTask DisposeAsync()
-        {
-            if (Context == null) return;
 
+        public ValueTask DisposeAsync()
+        {
+            if (Context == null) return ValueTask.CompletedTask;
+
+            return InternalDisposeAsync();
+        }
+
+        private async ValueTask InternalDisposeAsync()
+        {
             foreach (var c in Context)
             {
                 if (c != null)

@@ -307,7 +307,7 @@ namespace ASC.Core.Tenants
         internal void SetFeature(string feature, bool set)
         {
             var features = (Features == null
-                                ? new string[] { }
+                                ? Array.Empty<string>()
                                 : Features.Split(' ', ',', ';')).ToList();
             if (set && !features.Contains(feature))
             {
