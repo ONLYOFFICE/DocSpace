@@ -218,3 +218,33 @@ Scenario("Change password page render test", async ({ I }) => {
     });
   }
 });
+
+Scenario("TfaActivation page render test", async ({ I }) => {
+  I.mockEndpoint(Endpoints.confirm, "confirm");
+  I.mockEndpoint(Endpoints.setup, "setup");
+  I.amOnPage("/confirm/TfaActivation");
+
+  I.see("Configure your authenticator application");
+  I.see(
+    "To connect the app, scan the QR code or manually enter your secret key KRWVMTLBNVDGWZCG, and then enter a 6-digit code from your app in the field below."
+  );
+
+  I.seeElement({
+    react: "TextInput",
+    props: {
+      name: "code",
+    },
+  });
+
+  I.seeElement({
+    react: "Button",
+  });
+
+  I.saveScreenshot(`8.tfa-activation.png`);
+  if (!isModel) {
+    I.seeVisualDiff(`8.tfa-activation.png`, {
+      tolerance: 1,
+      prepareBaseImage: false,
+    });
+  }
+});
