@@ -111,53 +111,55 @@ namespace ASC.Api.Documents
             FolderWrapperHelper = folderWrapperHelper;
         }
 
-        public FolderContentWrapper<T> Get<T>(DataWrapper<T> folderItems, int startIndex)
+        public async Task<FolderContentWrapper<T>> GetAsync<T>(DataWrapper<T> folderItems, int startIndex)
         {
-            var foldersIntWithRights = GetFoldersIntWithRights<int>();
-            var foldersStringWithRights = GetFoldersIntWithRights<string>();
+            var foldersIntWithRights = await GetFoldersIntWithRightsAsync<int>();
+            var foldersStringWithRights = await GetFoldersIntWithRightsAsync<string>();
+            var files = new List<FileEntryWrapper>();
+            var folders = new List<FileEntryWrapper>();
 
-            var result = new FolderContentWrapper<T>
+            var fileEntries = folderItems.Entries.Where(r => r.FileEntryType == FileEntryType.File);
+            foreach (var r in fileEntries)
             {
-                Files = folderItems.Entries
-                .Where(r => r.FileEntryType == FileEntryType.File)
-                .Select(r =>
-                {
                     FileEntryWrapper wrapper = null;
                     if (r is File<int> fol1)
                     {
-                        wrapper = FileWrapperHelper.Get(fol1, foldersIntWithRights);
+                    wrapper = await FileWrapperHelper.GetAsync(fol1, foldersIntWithRights);
                     }
                     if (r is File<string> fol2)
                     {
-                        wrapper = FileWrapperHelper.Get(fol2, foldersStringWithRights);
+                    wrapper = await FileWrapperHelper.GetAsync(fol2, foldersStringWithRights);
                     }
 
-                    return wrapper;
+                files.Add(wrapper);
                 }
-                )
-                .ToList(),
-                Folders = folderItems.Entries
-                .Where(r => r.FileEntryType == FileEntryType.Folder)
-                .Select(r =>
+
+            var folderEntries = folderItems.Entries.Where(r => r.FileEntryType == FileEntryType.Folder);
+            foreach (var r in folderEntries)
                 {
                     FileEntryWrapper wrapper = null;
                     if (r is Folder<int> fol1)
                     {
-                        wrapper = FolderWrapperHelper.Get(fol1, foldersIntWithRights);
+                    wrapper = await FolderWrapperHelper.GetAsync(fol1, foldersIntWithRights);
                     }
                     if (r is Folder<string> fol2)
                     {
-                        wrapper = FolderWrapperHelper.Get(fol2, foldersStringWithRights);
+                    wrapper = await FolderWrapperHelper.GetAsync(fol2, foldersStringWithRights);
                     }
 
-                    return wrapper;
+                folders.Add(wrapper);
                 }
-                ).ToList(),
+
+
+            var result = new FolderContentWrapper<T>
+            {
+                Files = files,
+                Folders = folders,
                 PathParts = folderItems.FolderPathParts,
                 StartIndex = startIndex
             };
 
-            result.Current = FolderWrapperHelper.Get(folderItems.FolderInfo);
+            result.Current = await FolderWrapperHelper.GetAsync(folderItems.FolderInfo);
             result.Count = result.Files.Count + result.Folders.Count;
             result.Total = folderItems.Total;
             result.New = folderItems.New;
@@ -165,13 +167,18 @@ namespace ASC.Api.Documents
             return result;
 
 
-            List<Tuple<FileEntry<T1>, bool>> GetFoldersIntWithRights<T1>()
+            async ValueTask<List<Tuple<FileEntry<T1>, bool>>> GetFoldersIntWithRightsAsync<T1>()
             {
+                var ids = folderItems.Entries.OfType<FileEntry<T1>>().Select(r => r.FolderID).Distinct();
+                if (ids.Any())
+                {
                 var folderDao = DaoFactory.GetFolderDao<T1>();
-                var folders = folderDao.GetFolders(folderItems.Entries.OfType<FileEntry<T1>>().Select(r => r.FolderID).Distinct().ToList());
-                return FileSecurity.CanRead(folders);
+                    var folders = await folderDao.GetFoldersAsync(ids).ToListAsync();
+                    return await FileSecurity.CanReadAsync(folders);
             }
+                return new List<Tuple<FileEntry<T1>, bool>>();
         }
+    }
     }
 
     public class FileEntryWrapperConverter : System.Text.Json.Serialization.JsonConverter<FileEntryWrapper>

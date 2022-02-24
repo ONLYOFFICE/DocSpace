@@ -94,7 +94,7 @@ public class StaticUploader
             _cache.Insert(key, uploadOperation, DateTime.MaxValue);
         }
 
-        uploadOperation.DoJob();
+            uploadOperation.DoJobAsync().Wait();
         onComplete?.Invoke(uploadOperation.Result);
 
         return uploadOperation.Result;
@@ -202,7 +202,7 @@ public class UploadOperation
         Result = string.Empty;
     }
 
-    public string DoJob()
+        public async Task<string> DoJobAsync()
     {
         try
         {
@@ -217,15 +217,14 @@ public class UploadOperation
 
             if (File.Exists(_mappedPath))
             {
-                if (!dataStore.IsFile(_path))
+                    if (!await dataStore.IsFileAsync(_path))
                 {
-                    using var stream = File.OpenRead(_mappedPath);
-                    dataStore.Save(_path, stream);
+                        using var stream = File.OpenRead(_mappedPath);
+                        await dataStore.SaveAsync(_path, stream);
                 }
-
-                Result = dataStore.GetInternalUri("", _path, TimeSpan.Zero, null).AbsoluteUri.ToLower();
-                _logger.DebugFormat("UploadFile {0}", Result);
-
+                    var uri = await dataStore.GetInternalUriAsync("", _path, TimeSpan.Zero, null);
+                    Result = uri.AbsoluteUri.ToLower();
+                    _logger.DebugFormat("UploadFile {0}", Result);
                 return Result;
             }
         }

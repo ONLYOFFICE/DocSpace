@@ -2,6 +2,8 @@
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Hosting.Internal;
 
 namespace ASC.Resource.Manager
 {
@@ -24,6 +26,8 @@ namespace ASC.Resource.Manager
             services.AddLogging();
             diHelper.Configure(services);
             services.AddSingleton(Configuration);
+            services.AddSingleton<IHostEnvironment, HostingEnvironment>();
+
             diHelper.TryAdd<ProgramScope>();
             //LogNLogExtension.ConfigureLog(diHelper);
         }

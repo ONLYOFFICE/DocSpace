@@ -71,7 +71,7 @@ public class S3Storage : BaseStorage
         return new Uri(SecureHelper.IsSecure(HttpContextAccessor?.HttpContext, Options) ? _bucketSSlRoot : _bucketRoot, MakePath(domain, path));
     }
 
-    public override Uri GetInternalUri(string domain, string path, TimeSpan expire, IEnumerable<string> headers)
+    public override Task<Uri> GetInternalUriAsync(string domain, string path, TimeSpan expire, IEnumerable<string> headers)
     {
         if (expire == TimeSpan.Zero || expire == TimeSpan.MinValue || expire == TimeSpan.MaxValue)
         {
@@ -79,7 +79,7 @@ public class S3Storage : BaseStorage
         }
         if (expire == TimeSpan.Zero || expire == TimeSpan.MinValue || expire == TimeSpan.MaxValue)
         {
-            return GetUriShared(domain, path);
+            return Task.FromResult(GetUriShared(domain, path));
         }
 
         var pUrlRequest = new GetPreSignedUrlRequest
@@ -131,43 +131,12 @@ public class S3Storage : BaseStorage
         }
 
         using var client = GetClient();
-
-        return MakeUri(client.GetPreSignedURL(pUrlRequest));
+        return Task.FromResult(MakeUri(client.GetPreSignedURL(pUrlRequest)));
     }
 
-    public override Stream GetReadStream(string domain, string path)
+    public override Task<Stream> GetReadStreamAsync(string domain, string path)
     {
-        return GetReadStream(domain, path, 0);
-    }
-
-    public override Stream GetReadStream(string domain, string path, int offset)
-    {
-        var request = new GetObjectRequest
-        {
-            BucketName = _bucket,
-            Key = MakePath(domain, path)
-        };
-
-        if (0 < offset)
-        {
-            request.ByteRange = new ByteRange(offset, int.MaxValue);
-        }
-
-        try
-        {
-            using var client = GetClient();
-
-            return new ResponseStreamWrapper(client.GetObjectAsync(request).Result);
-        }
-        catch (AmazonS3Exception ex)
-        {
-            if (ex.ErrorCode == "NoSuchKey")
-            {
-                throw new FileNotFoundException("File not found", path);
-            }
-
-            throw;
-        }
+        return GetReadStreamAsync(domain, path, 0);
     }
 
     public override async Task<Stream> GetReadStreamAsync(string domain, string path, int offset)
@@ -200,14 +169,14 @@ public class S3Storage : BaseStorage
         }
     }
 
-    public override Uri Save(string domain, string path, Stream stream, string contentType,
-                    string contentDisposition)
+    public override Task<Uri> SaveAsync(string domain, string path, Stream stream, string contentType,
+                string contentDisposition)
     {
-        return Save(domain, path, stream, contentType, contentDisposition, ACL.Auto);
+        return SaveAsync(domain, path, stream, contentType, contentDisposition, ACL.Auto);
     }
 
-    public Uri Save(string domain, string path, Stream stream, string contentType,
-                             string contentDisposition, ACL acl, string contentEncoding = null, int cacheDays = 5)
+    public async Task<Uri> SaveAsync(string domain, string path, Stream stream, string contentType,
+                         string contentDisposition, ACL acl, string contentEncoding = null, int cacheDays = 5)
     {
         var buffered = TempStream.GetBuffered(stream);
         if (QuotaController != null)
@@ -264,33 +233,34 @@ public class S3Storage : BaseStorage
             request.Headers.ContentEncoding = contentEncoding;
         }
 
-        uploader.Upload(request);
+        await uploader.UploadAsync(request);
 
-        InvalidateCloudFront(MakePath(domain, path));
+        await InvalidateCloudFrontAsync(MakePath(domain, path));
 
         QuotaUsedAdd(domain, buffered.Length);
 
-        return GetUri(domain, path);
+        return await GetUriAsync(domain, path);
     }
 
-    public override Uri Save(string domain, string path, Stream stream)
+
+    public override Task<Uri> SaveAsync(string domain, string path, Stream stream)
     {
-        return Save(domain, path, stream, string.Empty, string.Empty);
+        return SaveAsync(domain, path, stream, string.Empty, string.Empty);
     }
 
-    public override Uri Save(string domain, string path, Stream stream, string contentEncoding, int cacheDays)
+    public override Task<Uri> SaveAsync(string domain, string path, Stream stream, string contentEncoding, int cacheDays)
     {
-        return Save(domain, path, stream, string.Empty, string.Empty, ACL.Auto, contentEncoding, cacheDays);
+        return SaveAsync(domain, path, stream, string.Empty, string.Empty, ACL.Auto, contentEncoding, cacheDays);
     }
 
-    public override Uri Save(string domain, string path, Stream stream, ACL acl)
+    public override Task<Uri> SaveAsync(string domain, string path, Stream stream, ACL acl)
     {
-        return Save(domain, path, stream, null, null, acl);
+        return SaveAsync(domain, path, stream, null, null, acl);
     }
 
     #region chunking
 
-    public override string InitiateChunkedUpload(string domain, string path)
+    public override async Task<string> InitiateChunkedUploadAsync(string domain, string path)
     {
         var request = new InitiateMultipartUploadRequest
         {
@@ -300,12 +270,12 @@ public class S3Storage : BaseStorage
         };
 
         using var s3 = GetClient();
-        var response = s3.InitiateMultipartUploadAsync(request).Result;
+        var response = await s3.InitiateMultipartUploadAsync(request);
 
         return response.UploadId;
     }
 
-    public override string UploadChunk(string domain, string path, string uploadId, Stream stream, long defaultChunkSize, int chunkNumber, long chunkLength)
+    public override async Task<string> UploadChunkAsync(string domain, string path, string uploadId, Stream stream, long defaultChunkSize, int chunkNumber, long chunkLength)
     {
         var request = new UploadPartRequest
         {
@@ -327,14 +297,14 @@ public class S3Storage : BaseStorage
         {
             if (error.ErrorCode == "NoSuchUpload")
             {
-                AbortChunkedUpload(domain, path, uploadId);
+                await AbortChunkedUploadAsync(domain, path, uploadId);
             }
 
             throw;
         }
     }
 
-    public override Uri FinalizeChunkedUpload(string domain, string path, string uploadId, Dictionary<int, string> eTags)
+    public override async Task<Uri> FinalizeChunkedUploadAsync(string domain, string path, string uploadId, Dictionary<int, string> eTags)
     {
         var request = new CompleteMultipartUploadRequest
         {
@@ -348,30 +318,30 @@ public class S3Storage : BaseStorage
         {
             using (var s3 = GetClient())
             {
-                s3.CompleteMultipartUploadAsync(request).Wait();
-                InvalidateCloudFront(MakePath(domain, path));
+                await s3.CompleteMultipartUploadAsync(request);
+                await InvalidateCloudFrontAsync(MakePath(domain, path));
             }
 
             if (QuotaController != null)
             {
-                var size = GetFileSize(domain, path);
+                var size = await GetFileSizeAsync(domain, path);
                 QuotaUsedAdd(domain, size);
             }
 
-            return GetUri(domain, path);
+            return await GetUriAsync(domain, path);
         }
         catch (AmazonS3Exception error)
         {
             if (error.ErrorCode == "NoSuchUpload")
             {
-                AbortChunkedUpload(domain, path, uploadId);
+                await AbortChunkedUploadAsync(domain, path, uploadId);
             }
 
             throw;
         }
     }
 
-    public override void AbortChunkedUpload(string domain, string path, string uploadId)
+    public override async Task AbortChunkedUploadAsync(string domain, string path, string uploadId)
     {
         var key = MakePath(domain, path);
 
@@ -383,18 +353,18 @@ public class S3Storage : BaseStorage
         };
 
         using var s3 = GetClient();
-        s3.AbortMultipartUploadAsync(request).Wait();
+        await s3.AbortMultipartUploadAsync(request);
     }
 
     #endregion
 
-    public override void Delete(string domain, string path)
+    public override async Task DeleteAsync(string domain, string path)
     {
         using var client = GetClient();
         var key = MakePath(domain, path);
-        var size = GetFileSize(domain, path);
+        var size = await GetFileSizeAsync(domain, path);
 
-        Recycle(client, domain, key);
+        await RecycleAsync(client, domain, key);
 
         var request = new DeleteObjectRequest
         {
@@ -402,15 +372,20 @@ public class S3Storage : BaseStorage
             Key = key
         };
 
-        client.DeleteObjectAsync(request).Wait();
+        await client.DeleteObjectAsync(request);
 
         QuotaUsedDelete(domain, size);
     }
 
-    public override void DeleteFiles(string domain, List<string> paths)
+    public override Task DeleteFilesAsync(string domain, List<string> paths)
     {
-        if (paths.Count == 0) return;
+        if (paths.Count == 0) return Task.CompletedTask;
 
+        return InternalDeleteFilesAsync(domain, paths);
+    }
+
+    private async Task InternalDeleteFilesAsync(string domain, List<string> paths)
+    {
         var keysToDel = new List<string>();
 
         long quotaUsed = 0;
@@ -425,7 +400,7 @@ public class S3Storage : BaseStorage
 
                 if (QuotaController != null)
                 {
-                    quotaUsed += GetFileSize(domain, path);
+                    quotaUsed += await GetFileSizeAsync(domain, path);
                 }
 
                 keysToDel.Add(key);
@@ -451,7 +426,7 @@ public class S3Storage : BaseStorage
                 Objects = keysToDel.Select(key => new KeyVersion { Key = key }).ToList()
             };
 
-            client.DeleteObjectsAsync(deleteRequest).Wait();
+            await client.DeleteObjectsAsync(deleteRequest);
         }
 
         if (quotaUsed > 0)
@@ -460,19 +435,19 @@ public class S3Storage : BaseStorage
         }
     }
 
-    public override void DeleteFiles(string domain, string path, string pattern, bool recursive)
+    public override async Task DeleteFilesAsync(string domain, string path, string pattern, bool recursive)
     {
         var makedPath = MakePath(domain, path) + '/';
-        var objToDel = GetS3Objects(domain, path)
-            .Where(x =>
-                Wildcard.IsMatch(pattern, Path.GetFileName(x.Key))
-                && (recursive || !x.Key.Remove(0, makedPath.Length).Contains('/'))
-                );
+        var obj = await GetS3ObjectsAsync(domain, path);
+        var objToDel = obj.Where(x =>
+            Wildcard.IsMatch(pattern, Path.GetFileName(x.Key))
+            && (recursive || !x.Key.Remove(0, makedPath.Length).Contains('/'))
+            );
 
         using var client = GetClient();
         foreach (var s3Object in objToDel)
         {
-            Recycle(client, domain, s3Object.Key);
+            await RecycleAsync(client, domain, s3Object.Key);
 
             var deleteRequest = new DeleteObjectRequest
             {
@@ -480,21 +455,21 @@ public class S3Storage : BaseStorage
                 Key = s3Object.Key
             };
 
-            client.DeleteObjectAsync(deleteRequest).Wait();
+            await client.DeleteObjectAsync(deleteRequest);
 
             QuotaUsedDelete(domain, s3Object.Size);
         }
     }
 
-    public override void DeleteFiles(string domain, string path, DateTime fromDate, DateTime toDate)
+    public override async Task DeleteFilesAsync(string domain, string path, DateTime fromDate, DateTime toDate)
     {
-        var objToDel = GetS3Objects(domain, path)
-            .Where(x => x.LastModified >= fromDate && x.LastModified <= toDate);
+        var obj = await GetS3ObjectsAsync(domain, path);
+        var objToDel = obj.Where(x => x.LastModified >= fromDate && x.LastModified <= toDate);
 
         using var client = GetClient();
         foreach (var s3Object in objToDel)
         {
-            Recycle(client, domain, s3Object.Key);
+            await RecycleAsync(client, domain, s3Object.Key);
 
             var deleteRequest = new DeleteObjectRequest
             {
@@ -502,13 +477,13 @@ public class S3Storage : BaseStorage
                 Key = s3Object.Key
             };
 
-            client.DeleteObjectAsync(deleteRequest).Wait();
+            await client.DeleteObjectAsync(deleteRequest);
 
             QuotaUsedDelete(domain, s3Object.Size);
         }
     }
 
-    public override void MoveDirectory(string srcdomain, string srcdir, string newdomain, string newdir)
+    public override async Task MoveDirectoryAsync(string srcdomain, string srcdir, string newdomain, string newdir)
     {
         var srckey = MakePath(srcdomain, srcdir);
         var dstkey = MakePath(newdomain, newdir);
@@ -520,10 +495,10 @@ public class S3Storage : BaseStorage
             Prefix = srckey
         };
 
-        var response = client.ListObjectsAsync(request).Result;
+        var response = await client.ListObjectsAsync(request);
         foreach (var s3Object in response.S3Objects)
         {
-            client.CopyObjectAsync(new CopyObjectRequest
+            await client.CopyObjectAsync(new CopyObjectRequest
             {
                 SourceBucket = _bucket,
                 SourceKey = s3Object.Key,
@@ -531,23 +506,22 @@ public class S3Storage : BaseStorage
                 DestinationKey = s3Object.Key.Replace(srckey, dstkey),
                 CannedACL = GetDomainACL(newdomain),
                 ServerSideEncryptionMethod = _sse
-            })
-                .Wait();
+            });
 
-            client.DeleteObjectAsync(new DeleteObjectRequest
+            await client.DeleteObjectAsync(new DeleteObjectRequest
             {
                 BucketName = _bucket,
                 Key = s3Object.Key
-            }).Wait();
+            });
         }
     }
 
-    public override Uri Move(string srcdomain, string srcpath, string newdomain, string newpath, bool quotaCheckFileSize = true)
+    public override async Task<Uri> MoveAsync(string srcdomain, string srcpath, string newdomain, string newpath, bool quotaCheckFileSize = true)
     {
         using var client = GetClient();
         var srcKey = MakePath(srcdomain, srcpath);
         var dstKey = MakePath(newdomain, newpath);
-        var size = GetFileSize(srcdomain, srcpath);
+        var size = await GetFileSizeAsync(srcdomain, srcpath);
 
         var request = new CopyObjectRequest
         {
@@ -560,30 +534,31 @@ public class S3Storage : BaseStorage
             ServerSideEncryptionMethod = _sse
         };
 
-        client.CopyObjectAsync(request).Wait();
-        Delete(srcdomain, srcpath);
+        await client.CopyObjectAsync(request);
+        await DeleteAsync(srcdomain, srcpath);
 
         QuotaUsedDelete(srcdomain, size);
         QuotaUsedAdd(newdomain, size, quotaCheckFileSize);
 
-        return GetUri(newdomain, newpath);
+        return await GetUriAsync(newdomain, newpath);
     }
-
-    public override Uri SaveTemp(string domain, out string assignedPath, Stream stream)
+    public override Task<Uri> SaveTempAsync(string domain, out string assignedPath, Stream stream)
     {
         assignedPath = Guid.NewGuid().ToString();
-
-        return Save(domain, assignedPath, stream);
+        return SaveAsync(domain, assignedPath, stream);
     }
 
-    public override string[] ListDirectoriesRelative(string domain, string path, bool recursive)
+    public override async IAsyncEnumerable<string> ListDirectoriesRelativeAsync(string domain, string path, bool recursive)
     {
-        return GetS3Objects(domain, path)
-            .Select(x => x.Key.Substring((MakePath(domain, path) + "/").Length))
-            .ToArray();
+        var tmp = await GetS3ObjectsAsync(domain, path);
+        var obj = tmp.Select(x => x.Key.Substring((MakePath(domain, path) + "/").Length));
+        foreach (var e in obj)
+        {
+            yield return e;
+        }
     }
 
-    public override string SavePrivate(string domain, string path, Stream stream, DateTime expires)
+    public override async Task<string> SavePrivateAsync(string domain, string path, Stream stream, DateTime expires)
     {
         using var client = GetClient();
         using var uploader = new TransferUtility(client);
@@ -606,7 +581,7 @@ public class S3Storage : BaseStorage
 
         request.Metadata.Add("private-expire", expires.ToFileTimeUtc().ToString(CultureInfo.InvariantCulture));
 
-        uploader.Upload(request);
+        await uploader.UploadAsync(request);
 
         //Get presigned url                
         var pUrlRequest = new GetPreSignedUrlRequest
@@ -623,10 +598,10 @@ public class S3Storage : BaseStorage
         return url;
     }
 
-    public override void DeleteExpired(string domain, string path, TimeSpan oldThreshold)
+    public override async Task DeleteExpiredAsync(string domain, string path, TimeSpan oldThreshold)
     {
         using var client = GetClient();
-        var s3Obj = GetS3Objects(domain, path);
+        var s3Obj = await GetS3ObjectsAsync(domain, path);
         foreach (var s3Object in s3Obj)
         {
             var request = new GetObjectMetadataRequest
@@ -635,7 +610,7 @@ public class S3Storage : BaseStorage
                 Key = s3Object.Key
             };
 
-            var metadata = client.GetObjectMetadataAsync(request).Result;
+            var metadata = await client.GetObjectMetadataAsync(request);
             var privateExpireKey = metadata.Metadata["private-expire"];
             if (string.IsNullOrEmpty(privateExpireKey))
             {
@@ -658,7 +633,7 @@ public class S3Storage : BaseStorage
                 Key = s3Object.Key
             };
 
-            client.DeleteObjectAsync(deleteObjectRequest).Wait();
+            await client.DeleteObjectAsync(deleteObjectRequest);
         }
     }
 
@@ -739,7 +714,7 @@ public class S3Storage : BaseStorage
         return formBuilder.ToString();
     }
 
-    public override string GetUploadedUrl(string domain, string directoryPath)
+    public override async Task<string> GetUploadedUrlAsync(string domain, string directoryPath)
     {
         if (HttpContextAccessor?.HttpContext != null)
         {
@@ -763,7 +738,7 @@ public class S3Storage : BaseStorage
                 {
                     try
                     {
-                        var size = GetFileSize(domain, domainpath);
+                        var size = await GetFileSizeAsync(domain, domainpath);
                         QuotaUsedAdd(domain, size);
 
                         if (HttpContextAccessor?.HttpContext.Session != null)
@@ -783,46 +758,14 @@ public class S3Storage : BaseStorage
         return string.Empty;
     }
 
-    public override string[] ListFilesRelative(string domain, string path, string pattern, bool recursive)
+    public override async IAsyncEnumerable<string> ListFilesRelativeAsync(string domain, string path, string pattern, bool recursive)
     {
-        return GetS3Objects(domain, path)
-            .Where(x => Wildcard.IsMatch(pattern, Path.GetFileName(x.Key)))
-            .Select(x => x.Key.Substring((MakePath(domain, path) + "/").Length).TrimStart('/'))
-            .ToArray();
-    }
+        var tmp = await GetS3ObjectsAsync(domain, path);
+        var obj = tmp.Where(x => Wildcard.IsMatch(pattern, Path.GetFileName(x.Key)))
+            .Select(x => x.Key.Substring((MakePath(domain, path) + "/").Length).TrimStart('/'));
 
-    public override bool IsFile(string domain, string path)
-    {
-        using var client = GetClient();
-        try
-        {
-            var getObjectMetadataRequest = new GetObjectMetadataRequest
-            {
-                BucketName = _bucket,
-                Key = MakePath(domain, path)
-            };
-
-            client.GetObjectMetadataAsync(getObjectMetadataRequest).Wait();
-
-            return true;
-        }
-        catch (AggregateException agg)
-        {
-            if (agg.InnerException is AmazonS3Exception ex)
-            {
-                if (string.Equals(ex.ErrorCode, "NoSuchBucket"))
-                {
-                    return false;
-                }
-
-                if (string.Equals(ex.ErrorCode, "NotFound"))
-                {
-                    return false;
-                }
-            }
-
-            throw;
-        }
+        foreach (var e in obj)
+            yield return e;
     }
 
     public override async Task<bool> IsFileAsync(string domain, string path)
@@ -856,27 +799,27 @@ public class S3Storage : BaseStorage
         }
     }
 
-    public override bool IsDirectory(string domain, string path)
+    public override async Task<bool> IsDirectoryAsync(string domain, string path)
     {
         using (var client = GetClient())
         {
             var request = new ListObjectsRequest { BucketName = _bucket, Prefix = MakePath(domain, path) };
-            var response = client.ListObjectsAsync(request).Result;
+            var response = await client.ListObjectsAsync(request);
 
             return response.S3Objects.Count > 0;
         }
     }
 
-    public override void DeleteDirectory(string domain, string path)
+    public override async Task DeleteDirectoryAsync(string domain, string path)
     {
-        DeleteFiles(domain, path, "*", true);
+        await DeleteFilesAsync(domain, path, "*", true);
     }
 
-    public override long GetFileSize(string domain, string path)
+    public override async Task<long> GetFileSizeAsync(string domain, string path)
     {
         using var client = GetClient();
         var request = new ListObjectsRequest { BucketName = _bucket, Prefix = MakePath(domain, path) };
-        var response = client.ListObjectsAsync(request).Result;
+        var response = await client.ListObjectsAsync(request);
         if (response.S3Objects.Count > 0)
         {
             return response.S3Objects[0].Size;
@@ -885,23 +828,23 @@ public class S3Storage : BaseStorage
         throw new FileNotFoundException("file not found", path);
     }
 
-    public override long GetDirectorySize(string domain, string path)
+    public override async Task<long> GetDirectorySizeAsync(string domain, string path)
     {
-        if (!IsDirectory(domain, path))
+        if (!await IsDirectoryAsync(domain, path))
         {
             throw new FileNotFoundException("directory not found", path);
         }
 
-        return GetS3Objects(domain, path)
-            .Where(x => Wildcard.IsMatch("*.*", Path.GetFileName(x.Key)))
-            .Sum(x => x.Size);
+        var tmp = await GetS3ObjectsAsync(domain, path);
+        return tmp.Where(x => Wildcard.IsMatch("*.*", Path.GetFileName(x.Key)))
+        .Sum(x => x.Size);
     }
 
-    public override long ResetQuota(string domain)
+    public override async Task<long> ResetQuotaAsync(string domain)
     {
         if (QuotaController != null)
         {
-            var objects = GetS3Objects(domain);
+            var objects = await GetS3ObjectsAsync(domain);
             var size = objects.Sum(s3Object => s3Object.Size);
             QuotaController.QuotaUsedSet(Modulename, domain, DataList.GetData(domain), size);
 
@@ -911,19 +854,19 @@ public class S3Storage : BaseStorage
         return 0;
     }
 
-    public override long GetUsedQuota(string domain)
+    public override async Task<long> GetUsedQuotaAsync(string domain)
     {
-        var objects = GetS3Objects(domain);
+        var objects = await GetS3ObjectsAsync(domain);
 
         return objects.Sum(s3Object => s3Object.Size);
     }
 
-    public override Uri Copy(string srcdomain, string srcpath, string newdomain, string newpath)
+    public override async Task<Uri> CopyAsync(string srcdomain, string srcpath, string newdomain, string newpath)
     {
         using var client = GetClient();
         var srcKey = MakePath(srcdomain, srcpath);
         var dstKey = MakePath(newdomain, newpath);
-        var size = GetFileSize(srcdomain, srcpath);
+        var size = await GetFileSizeAsync(srcdomain, srcpath);
 
         var request = new CopyObjectRequest
         {
@@ -936,14 +879,14 @@ public class S3Storage : BaseStorage
             ServerSideEncryptionMethod = _sse
         };
 
-        client.CopyObjectAsync(request).Wait();
+        await client.CopyObjectAsync(request);
 
         QuotaUsedAdd(newdomain, size);
 
-        return GetUri(newdomain, newpath);
+        return await GetUriAsync(newdomain, newpath);
     }
 
-    public override void CopyDirectory(string srcdomain, string srcdir, string newdomain, string newdir)
+    public override async Task CopyDirectoryAsync(string srcdomain, string srcdir, string newdomain, string newdir)
     {
         var srckey = MakePath(srcdomain, srcdir);
         var dstkey = MakePath(newdomain, newdir);
@@ -951,10 +894,10 @@ public class S3Storage : BaseStorage
         using var client = GetClient();
         var request = new ListObjectsRequest { BucketName = _bucket, Prefix = srckey };
 
-        var response = client.ListObjectsAsync(request).Result;
+        var response = await client.ListObjectsAsync(request);
         foreach (var s3Object in response.S3Objects)
         {
-            client.CopyObjectAsync(new CopyObjectRequest
+            await client.CopyObjectAsync(new CopyObjectRequest
             {
                 SourceBucket = _bucket,
                 SourceKey = s3Object.Key,
@@ -962,7 +905,7 @@ public class S3Storage : BaseStorage
                 DestinationKey = s3Object.Key.Replace(srckey, dstkey),
                 CannedACL = GetDomainACL(newdomain),
                 ServerSideEncryptionMethod = _sse
-            }).Wait();
+            });
 
             QuotaUsedAdd(newdomain, s3Object.Size);
         }
@@ -1063,14 +1006,14 @@ public class S3Storage : BaseStorage
         return this;
     }
 
-    protected override Uri SaveWithAutoAttachment(string domain, string path, Stream stream, string attachmentFileName)
+    protected override Task<Uri> SaveWithAutoAttachmentAsync(string domain, string path, Stream stream, string attachmentFileName)
     {
         var contentDisposition = $"attachment; filename={HttpUtility.UrlPathEncode(attachmentFileName)};";
         if (attachmentFileName.Any(c => c >= 0 && c <= 127))
         {
             contentDisposition = $"attachment; filename*=utf-8''{HttpUtility.UrlPathEncode(attachmentFileName)};";
         }
-        return Save(domain, path, stream, null, contentDisposition);
+        return SaveAsync(domain, path, stream, null, contentDisposition);
     }
 
 
@@ -1102,14 +1045,18 @@ public class S3Storage : BaseStorage
     {
         var uri = new Uri(preSignedURL);
         var signedPart = uri.PathAndQuery.TrimStart('/');
-
         return new UnencodedUri(uri.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase) ? _bucketSSlRoot : _bucketRoot, signedPart);
     }
 
-    private void InvalidateCloudFront(params string[] paths)
+    private Task InvalidateCloudFrontAsync(params string[] paths)
     {
-        if (!_revalidateCloudFront || string.IsNullOrEmpty(_distributionId)) return;
+        if (!_revalidateCloudFront || string.IsNullOrEmpty(_distributionId)) return Task.CompletedTask;
 
+        return InternalInvalidateCloudFrontAsync(paths);
+    }
+
+    private async Task InternalInvalidateCloudFrontAsync(params string[] paths)
+    {
         using var cfClient = GetCloudFrontClient();
         var invalidationRequest = new CreateInvalidationRequest
         {
@@ -1121,12 +1068,12 @@ public class S3Storage : BaseStorage
                 Paths = new Paths
                 {
                     Items = paths.ToList(),
-                    Quantity = paths.Length
+                    Quantity = paths.Count()
                 }
             }
         };
 
-        cfClient.CreateInvalidationAsync(invalidationRequest).Wait();
+        await cfClient.CreateInvalidationAsync(invalidationRequest);
     }
 
     private string GetPolicyBase64(string key, string redirectTo, string contentType, string contentDisposition,
@@ -1180,7 +1127,7 @@ public class S3Storage : BaseStorage
                _domains.All(configuredDomains => !key.StartsWith(MakePath(configuredDomains, "")));
     }
 
-    private IEnumerable<S3Object> GetS3ObjectsByPath(string domain, string path)
+    private async Task<IEnumerable<S3Object>> GetS3ObjectsByPathAsync(string domain, string path)
     {
         using var client = GetClient();
         var request = new ListObjectsRequest
@@ -1194,20 +1141,20 @@ public class S3Storage : BaseStorage
         ListObjectsResponse response;
         do
         {
-            response = client.ListObjectsAsync(request).Result;
+            response = await client.ListObjectsAsync(request);
             objects.AddRange(response.S3Objects.Where(entry => CheckKey(domain, entry.Key)));
             request.Marker = response.NextMarker;
         } while (response.IsTruncated);
         return objects;
     }
 
-    private IEnumerable<S3Object> GetS3Objects(string domain, string path = "", bool recycle = false)
+    private async Task<IEnumerable<S3Object>> GetS3ObjectsAsync(string domain, string path = "", bool recycle = false)
     {
         path = MakePath(domain, path) + '/';
-        var obj = GetS3ObjectsByPath(domain, path).ToList();
-        if (string.IsNullOrEmpty(_recycleDir) || !recycle) return obj;
-        obj.AddRange(GetS3ObjectsByPath(domain, GetRecyclePath(path)));
-        return obj;
+        var s30Objects = await GetS3ObjectsByPathAsync(domain, path);
+        if (string.IsNullOrEmpty(_recycleDir) || !recycle) return s30Objects;
+        s30Objects.Concat(await GetS3ObjectsByPathAsync(domain, GetRecyclePath(path)));
+        return s30Objects;
     }
 
     private string MakePath(string domain, string path)
@@ -1247,10 +1194,15 @@ public class S3Storage : BaseStorage
         return string.IsNullOrEmpty(_recycleDir) ? "" : $"{_recycleDir}/{path.TrimStart('/')}";
     }
 
-    private void Recycle(IAmazonS3 client, string domain, string key)
+    private Task RecycleAsync(IAmazonS3 client, string domain, string key)
     {
-        if (string.IsNullOrEmpty(_recycleDir)) return;
+        if (string.IsNullOrEmpty(_recycleDir)) return Task.CompletedTask;
 
+        return InternalRecycleAsync(client, domain, key);
+    }
+
+    private async Task InternalRecycleAsync(IAmazonS3 client, string domain, string key)
+    {
         var copyObjectRequest = new CopyObjectRequest
         {
             SourceBucket = _bucket,
@@ -1263,7 +1215,7 @@ public class S3Storage : BaseStorage
             StorageClass = S3StorageClass.Glacier
         };
 
-        client.CopyObjectAsync(copyObjectRequest).Wait();
+        await client.CopyObjectAsync(copyObjectRequest);
     }
 
     private IAmazonCloudFront GetCloudFrontClient()

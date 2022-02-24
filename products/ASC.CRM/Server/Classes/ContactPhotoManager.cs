@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Caching;
@@ -147,22 +148,23 @@ namespace ASC.Web.CRM.Classes
             _cache.Insert($"contact_photo_cache_key_id_{contactID}", photoUriBySize, TimeSpan.FromMinutes(15));
         }
 
-        private String FromDataStore(int contactID, Size photoSize)
+
+        private Task<String> FromDataStoreAsync(int contactID, Size photoSize)
         {
-            return FromDataStore(contactID, photoSize, false, null);
+            return FromDataStoreAsync(contactID, photoSize, false, null);
         }
 
-        private String FromDataStore(int contactID, Size photoSize, Boolean isTmpDir, String tmpDirName)
+        private async Task<String> FromDataStoreAsync(int contactID, Size photoSize, Boolean isTmpDir, String tmpDirName)
         {
             var directoryPath = !isTmpDir
                                     ? BuildFileDirectory(contactID)
                                     : (String.IsNullOrEmpty(tmpDirName) ? BuildFileTmpDirectory(contactID) : BuildFileTmpDirectory(tmpDirName));
 
-            var filesURI = _global.GetStore().ListFiles(directoryPath, BuildFileName(contactID, photoSize) + "*", false);
+            var filesURI = await _global.GetStore().ListFilesAsync(directoryPath, BuildFileName(contactID, photoSize) + "*", false).ToArrayAsync();
 
             if (filesURI.Length == 0 && photoSize == _bigSize)
             {
-                filesURI = _global.GetStore().ListFiles(directoryPath, BuildFileName(contactID, _oldBigSize) + "*", false);
+                filesURI = await _global.GetStore().ListFilesAsync(directoryPath, BuildFileName(contactID, _oldBigSize) + "*", false).ToArrayAsync();
             }
 
             if (filesURI.Length == 0)
@@ -173,17 +175,17 @@ namespace ASC.Web.CRM.Classes
             return filesURI[0].ToString();
         }
 
-        private String FromDataStoreRelative(int contactID, Size photoSize, Boolean isTmpDir, String tmpDirName)
+        private async Task<String> FromDataStoreRelativeAsync(int contactID, Size photoSize, Boolean isTmpDir, String tmpDirName)
         {
             var directoryPath = !isTmpDir
                                     ? BuildFileDirectory(contactID)
                                     : (String.IsNullOrEmpty(tmpDirName) ? BuildFileTmpDirectory(contactID) : BuildFileTmpDirectory(tmpDirName));
 
-            var filesPaths = _global.GetStore().ListFilesRelative("", directoryPath, BuildFileName(contactID, photoSize) + "*", false);
+            var filesPaths = await _global.GetStore().ListFilesRelativeAsync("", directoryPath, BuildFileName(contactID, photoSize) + "*", false).ToArrayAsync();
 
             if (filesPaths.Length == 0 && photoSize == _bigSize)
             {
-                filesPaths = _global.GetStore().ListFilesRelative("", directoryPath, BuildFileName(contactID, _oldBigSize) + "*", false);
+                filesPaths = await _global.GetStore().ListFilesRelativeAsync("", directoryPath, BuildFileName(contactID, _oldBigSize) + "*", false).ToArrayAsync();
             }
 
             if (filesPaths.Length == 0)
@@ -194,14 +196,14 @@ namespace ASC.Web.CRM.Classes
             return Path.Combine(directoryPath, filesPaths[0]);
         }
 
-        private PhotoData FromDataStore(Size photoSize, String tmpDirName)
+        private async Task<PhotoData> FromDataStoreAsync(Size photoSize, String tmpDirName)
         {
             var directoryPath = BuildFileTmpDirectory(tmpDirName);
 
-            if (!_global.GetStore().IsDirectory(directoryPath))
+            if (!await _global.GetStore().IsDirectoryAsync(directoryPath))
                 return null;
 
-            var filesURI = _global.GetStore().ListFiles(directoryPath, BuildFileName(0, photoSize) + "*", false);
+            var filesURI = await _global.GetStore().ListFilesAsync(directoryPath, BuildFileName(0, photoSize) + "*", false).ToArrayAsync();
 
             if (filesURI.Length == 0) return null;
 
@@ -212,13 +214,18 @@ namespace ASC.Web.CRM.Classes
 
         #region Private Methods
 
-        private String GetPhotoUri(int contactID, bool isCompany, Size photoSize)
+        private Task<String> GetPhotoUriAsync(int contactID, bool isCompany, Size photoSize)
         {
             var photoUri = FromCache(contactID, photoSize);
 
-            if (!String.IsNullOrEmpty(photoUri)) return photoUri;
+            if (!String.IsNullOrEmpty(photoUri)) return Task.FromResult(photoUri);
 
-            photoUri = FromDataStore(contactID, photoSize);
+            return InternalGetPhotoUriAsync(contactID, isCompany, photoSize);
+        }
+
+        private async Task<String> InternalGetPhotoUriAsync(int contactID, bool isCompany, Size photoSize)
+        {
+            var photoUri = await FromDataStoreAsync(contactID, photoSize);
 
             if (String.IsNullOrEmpty(photoUri))
                 photoUri = GetDefaultPhoto(isCompany, photoSize);
@@ -227,6 +234,7 @@ namespace ASC.Web.CRM.Classes
 
             return photoUri;
         }
+
 
         private String BuildFileDirectory(int contactID)
         {
@@ -272,7 +280,7 @@ namespace ASC.Web.CRM.Classes
                 BuildFileName(contactID, photoSize), imageExtension);
         }
 
-        private void ExecResizeImage(ResizeWorkerItem resizeWorkerItem)
+        private async Task ExecResizeImageAsync(ResizeWorkerItem resizeWorkerItem)
         {
             foreach (var fotoSize in resizeWorkerItem.RequireFotoSize)
             {
@@ -301,7 +309,8 @@ namespace ASC.Web.CRM.Classes
 
                     using (var fileStream = new MemoryStream(data))
                     {
-                        var photoUri = resizeWorkerItem.DataStore.Save(photoPath, fileStream).ToString();
+                        var uri = await resizeWorkerItem.DataStore.SaveAsync(photoPath, fileStream);
+                        var photoUri = uri.ToString();
                         photoUri = String.Format("{0}?cd={1}", photoUri, DateTime.UtcNow.Ticks);
 
                         if (!resizeWorkerItem.UploadOnly)
@@ -362,12 +371,12 @@ namespace ASC.Web.CRM.Classes
                                          : (String.IsNullOrEmpty(tmpDirName) ? BuildFileTmpDirectory(contactID) : BuildFileTmpDirectory(tmpDirName));
                 var store = _global.GetStore();
 
-                if (store.IsDirectory(photoDirectory))
+                if (store.IsDirectoryAsync(photoDirectory).Result)
                 {
-                    store.DeleteFiles(photoDirectory, "*", recursive);
+                    store.DeleteFilesAsync(photoDirectory, "*", recursive).Wait();
                     if (recursive)
                     {
-                        store.DeleteDirectory(photoDirectory);
+                        store.DeleteDirectoryAsync(photoDirectory).Wait();
                     }
                 }
 
@@ -387,29 +396,29 @@ namespace ASC.Web.CRM.Classes
                 var photoDirectory = BuildFileTmpDirectory(tmpDirName);
                 var store = _global.GetStore();
 
-                if (store.IsDirectory(photoDirectory))
+                if (store.IsDirectoryAsync(photoDirectory).Result)
                 {
-                    store.DeleteFiles(photoDirectory, "*", false);
+                    store.DeleteFilesAsync(photoDirectory, "*", false).Wait();
                 }
             }
         }
 
         #endregion
 
-        public void TryUploadPhotoFromTmp(int contactID, bool isNewContact, string tmpDirName)
+        public async Task TryUploadPhotoFromTmpAsync(int contactID, bool isNewContact, string tmpDirName)
         {
             var directoryPath = BuildFileDirectory(contactID);
             var dataStore = _global.GetStore();
 
             try
             {
-                if (dataStore.IsDirectory(directoryPath))
+                if (await dataStore.IsDirectoryAsync(directoryPath))
                 {
                     DeletePhoto(contactID, false, null, false);
                 }
                 foreach (var photoSize in new[] { _bigSize, _mediumSize, _smallSize })
                 {
-                    var photoTmpPath = FromDataStoreRelative(isNewContact ? 0 : contactID, photoSize, true, tmpDirName);
+                    var photoTmpPath = await FromDataStoreRelativeAsync(isNewContact ? 0 : contactID, photoSize, true, tmpDirName);
                     if (string.IsNullOrEmpty(photoTmpPath)) throw new Exception("Temp phono not found");
 
                     var imageExtension = Path.GetExtension(photoTmpPath);
@@ -417,13 +426,14 @@ namespace ASC.Web.CRM.Classes
                     var photoPath = String.Concat(directoryPath, BuildFileName(contactID, photoSize), imageExtension).TrimStart('/');
 
                     byte[] data;
-                    using (var photoTmpStream = dataStore.GetReadStream(photoTmpPath))
+                    using (var photoTmpStream = await dataStore.GetReadStreamAsync(photoTmpPath))
                     {
                         data = Global.ToByteArray(photoTmpStream);
                     }
                     using (var fileStream = new MemoryStream(data))
                     {
-                        var photoUri = dataStore.Save(photoPath, fileStream).ToString();
+                        var uri = await dataStore.SaveAsync(photoPath, fileStream);
+                        var photoUri = uri.ToString();
                         photoUri = String.Format("{0}?cd={1}", photoUri, DateTime.UtcNow.Ticks);
                         ToCache(contactID, photoUri, photoSize);
                     }
@@ -440,38 +450,38 @@ namespace ASC.Web.CRM.Classes
 
         #region Get Photo Methods
 
-        public String GetSmallSizePhoto(int contactID, bool isCompany)
+        public Task<String> GetSmallSizePhotoAsync(int contactID, bool isCompany)
         {
             if (contactID <= 0)
-                return GetDefaultPhoto(isCompany, _smallSize);
+                return Task.FromResult(GetDefaultPhoto(isCompany, _smallSize));
 
-            return GetPhotoUri(contactID, isCompany, _smallSize);
+            return GetPhotoUriAsync(contactID, isCompany, _smallSize);
         }
 
-        public String GetMediumSizePhoto(int contactID, bool isCompany)
+        public Task<String> GetMediumSizePhotoAsync(int contactID, bool isCompany)
         {
             if (contactID <= 0)
-                return GetDefaultPhoto(isCompany, _mediumSize);
+                return Task.FromResult(GetDefaultPhoto(isCompany, _mediumSize));
 
-            return GetPhotoUri(contactID, isCompany, _mediumSize);
+            return GetPhotoUriAsync(contactID, isCompany, _mediumSize);
         }
 
-        public String GetBigSizePhoto(int contactID, bool isCompany)
+        public Task<String> GetBigSizePhotoAsync(int contactID, bool isCompany)
         {
             if (contactID <= 0)
-                return GetDefaultPhoto(isCompany, _bigSize);
+                return Task.FromResult(GetDefaultPhoto(isCompany, _bigSize));
 
-            return GetPhotoUri(contactID, isCompany, _bigSize);
+            return GetPhotoUriAsync(contactID, isCompany, _bigSize);
         }
 
         #endregion
 
-        private PhotoData ResizeToBigSize(byte[] imageData, string tmpDirName)
+        private Task<PhotoData> ResizeToBigSizeAsync(byte[] imageData, string tmpDirName)
         {
-            return ResizeToBigSize(imageData, 0, true, tmpDirName);
+            return ResizeToBigSizeAsync(imageData, 0, true, tmpDirName);
         }
 
-        private PhotoData ResizeToBigSize(byte[] imageData, int contactID, bool uploadOnly, string tmpDirName)
+        private async Task<PhotoData> ResizeToBigSizeAsync(byte[] imageData, int contactID, bool uploadOnly, string tmpDirName)
         {
             var resizeWorkerItem = new ResizeWorkerItem
             {
@@ -483,7 +493,7 @@ namespace ASC.Web.CRM.Classes
                 TmpDirName = tmpDirName
             };
 
-            ExecResizeImage(resizeWorkerItem);
+            await ExecResizeImageAsync(resizeWorkerItem);
 
             if (!uploadOnly)
             {
@@ -491,11 +501,11 @@ namespace ASC.Web.CRM.Classes
             }
             else if (String.IsNullOrEmpty(tmpDirName))
             {
-                return new PhotoData { Url = FromDataStore(contactID, _bigSize, true, null), Path = PhotosDefaultTmpDirName };
+                return new PhotoData { Url = await FromDataStoreAsync(contactID, _bigSize, true, null), Path = PhotosDefaultTmpDirName };
             }
             else
             {
-                return FromDataStore(_bigSize, tmpDirName);
+                return await FromDataStoreAsync(_bigSize, tmpDirName);
             }
         }
 
@@ -525,7 +535,7 @@ namespace ASC.Web.CRM.Classes
             if (!_resizeQueue.GetTasks<ResizeWorkerItem>().Contains(resizeWorkerItem))
             {
                 //Add
-                _resizeQueue.QueueTask((a, b) => ExecResizeImage(resizeWorkerItem), resizeWorkerItem);
+                _resizeQueue.QueueTask((a, b) => ExecResizeImageAsync(resizeWorkerItem).Wait(), resizeWorkerItem);
             }
         }
 
@@ -539,7 +549,7 @@ namespace ASC.Web.CRM.Classes
 
         #region UploadPhoto Methods
 
-        public PhotoData UploadPhoto(String imageUrl, int contactID, bool uploadOnly, bool checkFormat = true)
+        public Task<PhotoData> UploadPhotoAsync(String imageUrl, int contactID, bool uploadOnly, bool checkFormat = true)
         {
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(imageUrl);
@@ -549,17 +559,17 @@ namespace ASC.Web.CRM.Classes
             using (var inputStream = response.Content.ReadAsStream())
             {
                 var imageData = ToByteArray(inputStream, (int)inputStream.Length);
-                return UploadPhoto(imageData, contactID, uploadOnly, checkFormat);
+                return UploadPhotoAsync(imageData, contactID, uploadOnly, checkFormat);
             }
         }
 
-        public PhotoData UploadPhoto(Stream inputStream, int contactID, bool uploadOnly, bool checkFormat = true)
+        public Task<PhotoData> UploadPhotoAsync(Stream inputStream, int contactID, bool uploadOnly, bool checkFormat = true)
         {
             var imageData = Global.ToByteArray(inputStream);
-            return UploadPhoto(imageData, contactID, uploadOnly, checkFormat);
+            return UploadPhotoAsync(imageData, contactID, uploadOnly, checkFormat);
         }
 
-        public PhotoData UploadPhoto(byte[] imageData, int contactID, bool uploadOnly, bool checkFormat = true)
+        public Task<PhotoData> UploadPhotoAsync(byte[] imageData, int contactID, bool uploadOnly, bool checkFormat = true)
         {
             if (contactID == 0)
                 throw new ArgumentException();
@@ -571,11 +581,10 @@ namespace ASC.Web.CRM.Classes
 
             ExecGenerateThumbnail(imageData, contactID, uploadOnly);
 
-            return ResizeToBigSize(imageData, contactID, uploadOnly, null);
+            return ResizeToBigSizeAsync(imageData, contactID, uploadOnly, null);
         }
 
-
-        public PhotoData UploadPhotoToTemp(String imageUrl, String tmpDirName, bool checkFormat = true)
+        public Task<PhotoData> UploadPhotoToTempAsync(String imageUrl, String tmpDirName, bool checkFormat = true)
         {
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(imageUrl);
@@ -589,17 +598,17 @@ namespace ASC.Web.CRM.Classes
                 {
                     tmpDirName = Guid.NewGuid().ToString();
                 }
-                return UploadPhotoToTemp(imageData, tmpDirName, checkFormat);
+                return UploadPhotoToTempAsync(imageData, tmpDirName, checkFormat);
             }
         }
 
-        public PhotoData UploadPhotoToTemp(Stream inputStream, String tmpDirName, bool checkFormat = true)
+        public Task<PhotoData> UploadPhotoToTempAsync(Stream inputStream, String tmpDirName, bool checkFormat = true)
         {
             var imageData = Global.ToByteArray(inputStream);
-            return UploadPhotoToTemp(imageData, tmpDirName, checkFormat);
+            return UploadPhotoToTempAsync(imageData, tmpDirName, checkFormat);
         }
 
-        public PhotoData UploadPhotoToTemp(byte[] imageData, String tmpDirName, bool checkFormat = true)
+        public Task<PhotoData> UploadPhotoToTempAsync(byte[] imageData, String tmpDirName, bool checkFormat = true)
         {
             if (checkFormat)
                 CheckImgFormat(imageData);
@@ -608,7 +617,7 @@ namespace ASC.Web.CRM.Classes
 
             ExecGenerateThumbnail(imageData, tmpDirName);
 
-            return ResizeToBigSize(imageData, tmpDirName);
+            return ResizeToBigSizeAsync(imageData, tmpDirName);
         }
 
         public IImageFormat CheckImgFormat(byte[] imageData)

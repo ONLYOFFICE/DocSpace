@@ -1,8 +1,8 @@
 namespace ASC.Files
 {
     public class Startup : BaseStartup
-    { 
-        public override JsonConverter[] Converters { get => new JsonConverter[] { new FileEntryWrapperConverter() }; }
+    {
+        public override JsonConverter[] Converters { get => new JsonConverter[] { new FileEntryWrapperConverter(), new FileShareConverter() }; }
 
         public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment)
             : base(configuration, hostEnvironment)
