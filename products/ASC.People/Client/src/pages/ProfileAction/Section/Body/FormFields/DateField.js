@@ -46,6 +46,7 @@ class DateField extends React.Component {
           minDate={calendarMinDate ? calendarMinDate : new Date("1900/01/01")}
           maxDate={calendarMaxDate ? calendarMaxDate : new Date()}
           locale={locale}
+          fixedDirection={true}
         />
       </FieldContainer>
     );
