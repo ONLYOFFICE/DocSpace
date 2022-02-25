@@ -513,7 +513,7 @@ class Calendar extends Component {
                 name="month-button"
                 displaySelectedOption
                 fixedDirection={true}
-                directionX="bottom"
+                directionY="bottom"
               />
             </ComboBoxMonthStyle>
             <ComboBoxDateStyle>
@@ -530,7 +530,7 @@ class Calendar extends Component {
                 name="year-button"
                 displaySelectedOption
                 fixedDirection={true}
-                directionX="bottom"
+                directionY="bottom"
               />
             </ComboBoxDateStyle>
           </ComboBoxStyle>
