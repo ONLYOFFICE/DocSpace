@@ -321,19 +321,26 @@ class RestoreBackup extends React.Component {
       selectedFile
     );
 
+    let checkedFile;
     try {
       if (isCheckedLocalFile) {
-        const data = await request({
+        checkedFile = await request({
           baseURL: combineUrl(AppServerConfig.proxyURL, config.homepage),
           method: "post",
           url: `/backupFileUpload.ashx`,
           responseType: "text",
           data: selectedFile,
         });
-        console.error("data", data);
+        console.log("data", checkedFile);
       }
     } catch (e) {
-      console.error("error");
+      toastr.error(e);
+      return;
+    }
+
+    if (isCheckedLocalFile && checkedFile?.Message) {
+      toastr.error(checkedFile.Message);
+      return;
     }
 
     startRestore(backupId, storageType, storageParams, isNotify)
