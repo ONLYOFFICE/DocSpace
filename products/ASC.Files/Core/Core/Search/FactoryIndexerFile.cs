@@ -115,7 +115,7 @@ public class FactoryIndexerFile : FactoryIndexer<DbFile>
             .AsQueryable()
             .Where(r => r.ModifiedOn >= lastIndexed)
             .Join(fileDao.FilesDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FileTenant { DbFile = f, DbTenant = t })
-            .Where(r => r.DbTenant.Status == ASC.Core.Tenants.TenantStatus.Active);
+            .Where(r => r.DbTenant.Status == TenantStatus.Active);
 
         try
         {

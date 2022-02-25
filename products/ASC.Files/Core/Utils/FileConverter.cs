@@ -37,14 +37,14 @@ internal class FileConverterQueue<T> : IDisposable
     private readonly ICache _cache;
     private const int TimerPeriod = 500;
 
-    private readonly IServiceProvider _serviceProvider;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
 
-    public FileConverterQueue(IServiceProvider ServiceProvider, ICache cache)
+    public FileConverterQueue(IServiceScopeFactory serviceScopeFactory, ICache cache)
     {
         _conversionQueue = new Dictionary<File<T>, ConvertFileOperationResult>(new FileComparer<T>());
         _timer = new Timer(CheckConvertFilesStatus, null, 0, Timeout.Infinite);
         _locker = new object();
-        _serviceProvider = ServiceProvider;
+        _serviceScopeFactory = serviceScopeFactory;
         _cache = cache;
     }
 
@@ -114,7 +114,7 @@ internal class FileConverterQueue<T> : IDisposable
     {
         if (Monitor.TryEnter(_singleThread))
         {
-            using var scope = _serviceProvider.CreateScope();
+            using var scope = _serviceScopeFactory.CreateScope();
             TenantManager tenantManager;
             UserManager userManager;
             SecurityContext securityContext;

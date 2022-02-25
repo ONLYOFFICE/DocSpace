@@ -88,12 +88,12 @@ public class ReportState
     internal string ContextUrl { get; set; }
 
     protected DistributedTask TaskInfo { get; private set; }
-    private readonly IServiceProvider _serviceProvider;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
 
-    public ReportState(IServiceProvider serviceProvider, ReportStateData reportStateData, IHttpContextAccessor httpContextAccessor)
+    public ReportState(IServiceScopeFactory serviceScopeFactory, ReportStateData reportStateData, IHttpContextAccessor httpContextAccessor)
     {
         TaskInfo = new DistributedTask();
-        _serviceProvider = serviceProvider;
+        _serviceScopeFactory = serviceScopeFactory;
         FileName = reportStateData.FileName;
         TmpFileName = reportStateData.TmpFileName;
         Script = reportStateData.Script;
@@ -135,7 +135,7 @@ public class ReportState
 
     public async Task GenerateReportAsync(DistributedTask task, CancellationToken cancellationToken)
     {
-        using var scope = _serviceProvider.CreateScope();
+        using var scope = _serviceScopeFactory.CreateScope();
         var scopeClass = scope.ServiceProvider.GetService<ReportStateScope>();
         var (options, tenantManager, authContext, securityContext, documentServiceConnector) = scopeClass;
         var logger = options.CurrentValue;

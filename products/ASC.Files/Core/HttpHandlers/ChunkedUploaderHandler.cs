@@ -27,16 +27,16 @@ namespace ASC.Web.Files.HttpHandlers;
 
 public class ChunkedUploaderHandler
 {
-    private readonly IServiceProvider _serviceProvider;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
 
-    public ChunkedUploaderHandler(RequestDelegate next, IServiceProvider serviceProvider)
+    public ChunkedUploaderHandler(RequestDelegate next, IServiceScopeFactory serviceScopeFactory)
     {
-        _serviceProvider = serviceProvider;
+        _serviceScopeFactory = serviceScopeFactory;
     }
 
     public async Task Invoke(HttpContext context)
     {
-        using var scope = _serviceProvider.CreateScope();
+        using var scope = _serviceScopeFactory.CreateScope();
         var chunkedUploaderHandlerService = scope.ServiceProvider.GetService<ChunkedUploaderHandlerService>();
         await chunkedUploaderHandlerService.Invoke(context).ConfigureAwait(false);
     }

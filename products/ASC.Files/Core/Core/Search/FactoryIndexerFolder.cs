@@ -110,7 +110,7 @@ public class FactoryIndexerFolder : FactoryIndexer<DbFolder>
                 .AsQueryable()
                 .Where(r => r.ModifiedOn >= lastIndexed)
                 .Join(folderDao.FilesDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FolderTenant { DbFolder = f, DbTenant = t })
-                .Where(r => r.DbTenant.Status == ASC.Core.Tenants.TenantStatus.Active);
+                .Where(r => r.DbTenant.Status == TenantStatus.Active);
 
         try
         {
