@@ -9,6 +9,10 @@
     <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
 
+	<PropertyGroup>
+		<Nullable>disable</Nullable>
+	</PropertyGroup>
+
   <ItemGroup>
     <None Remove="proto\webhook_request.proto" />
   </ItemGroup>

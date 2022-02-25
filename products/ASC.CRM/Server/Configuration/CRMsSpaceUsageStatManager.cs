@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Web;
@@ -60,9 +61,9 @@ namespace ASC.Web.CRM.Configuration
         }
 
 
-        public override List<UsageSpaceStatItem> GetStatData()
+        public override async Task<List<UsageSpaceStatItem>> GetStatDataAsync()
         {
-            var spaceUsage = _filesDbContext.Files.Join(_filesDbContext.Tree,
+            var spaceUsage = await _filesDbContext.Files.AsQueryable().Join(_filesDbContext.Tree,
                                      x => x.FolderId,
                                      y => y.FolderId,
                                      (x, y) => new { x, y }
@@ -73,7 +74,7 @@ namespace ASC.Web.CRM.Configuration
                                      (x, y) => new { x, y })
                               .Where(x => x.y.TenantId == _tenantId &&
                                           Microsoft.EntityFrameworkCore.EF.Functions.Like(x.y.RightNode, "crm/crm_common/%"))
-                              .Sum(x => x.x.x.ContentLength);
+                              .SumAsync(x => x.x.x.ContentLength);
 
             return new List<UsageSpaceStatItem>
             {new UsageSpaceStatItem

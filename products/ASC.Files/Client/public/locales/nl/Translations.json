@@ -1,4 +1,4 @@
-﻿{
+{
   "AddAccount": "Account toevoegen",
   "ArchivingData": "Gegevens archiveren",
   "ConnectingAccount": "Account koppelen",
@@ -13,6 +13,7 @@
   "DownloadAs": "Download als",
   "EncryptedFileSaving": "Versleuteld bestand opslaan",
   "Files": "Bestanden",
+  "FileProtected": "Het bestand is beschermd met een wachtwoord",
   "Folders": "Mappen",
   "FolderSelection": "Map selectie",
   "FolderTitleBoxNet": "Box directory",

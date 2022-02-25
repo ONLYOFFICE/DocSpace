@@ -19,14 +19,14 @@ namespace ASC.Files.Core
     [Scope]
     public interface ILinkDao
     {
-        void AddLink(string sourceId, string linkedId);
+        Task AddLinkAsync(string sourceId, string linkedId);
 
-        string GetSource(string linkedId);
+        Task<string> GetSourceAsync(string linkedId);
 
-        string GetLinked(string sourceId);
+        Task<string> GetLinkedAsync(string sourceId);
 
-        void DeleteLink(string sourceId);
+        Task DeleteLinkAsync(string sourceId);
 
-        void DeleteAllLink(string sourceId);
+        Task DeleteAllLinkAsync(string sourceId);
     }
 }

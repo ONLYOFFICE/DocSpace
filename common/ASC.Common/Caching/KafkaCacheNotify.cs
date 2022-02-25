@@ -71,6 +71,47 @@ public class KafkaCacheNotify<T> : IDisposable, ICacheNotify<T> where T : IMessa
         }
     }
 
+    public async Task PublishAsync(T obj, CacheNotifyAction cacheNotifyAction)
+    {
+        try
+        {
+            if (_producer == null)
+            {
+                _producer = new ProducerBuilder<AscCacheItem, T>(new ProducerConfig(_clientConfig))
+                .SetErrorHandler((_, e) => _logger.Error(e))
+                .SetKeySerializer(_keySerializer)
+                .SetValueSerializer(_valueSerializer)
+                .Build();
+            }
+
+            var channelName = GetChannelName(cacheNotifyAction);
+
+            if (_actions.TryGetValue(channelName, out var onchange))
+            {
+                onchange(obj);
+            }
+
+            var message = new Message<AscCacheItem, T>
+            {
+                Value = obj,
+                Key = new AscCacheItem
+                {
+                    Id = _key.ToString()
+                }
+            };
+
+            await _producer.ProduceAsync(channelName, message);
+        }
+        catch (ProduceException<Null, string> e)
+        {
+            _logger.Error(e);
+        }
+        catch (Exception e)
+        {
+            _logger.Error(e);
+        }
+    }
+
     public void Subscribe(Action<T> onchange, CacheNotifyAction notifyAction)
     {
         var channelName = GetChannelName(notifyAction);
