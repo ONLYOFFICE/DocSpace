@@ -36,12 +36,26 @@ const Chip = (props) => {
   const tooltipRef = useRef(null);
   const warningRef = useRef(null);
   const chipRef = useRef(null);
+  const chipInputRef = useRef(null);
 
   useEffect(() => {
     setChipWidth(chipRef.current?.clientWidth);
   }, [chipRef]);
 
+  useEffect(() => {
+    if (isSelected) {
+      chipRef.current?.scrollIntoView({ block: "end" });
+    }
+  }, [isSelected]);
+
   useClickOutside(warningRef, () => tooltipRef.current.hideTooltip());
+  useClickOutside(
+    chipInputRef,
+    () => {
+      onSaveNewChip(value, newValue);
+    },
+    newValue
+  );
 
   const onChange = (e) => {
     setNewValue(e.target.value);
@@ -62,10 +76,6 @@ const Chip = (props) => {
     onDelete(value);
   };
 
-  const onBlur = () => {
-    onSaveNewChip(value, newValue);
-  };
-
   const onInputKeyDown = (e) => {
     const code = e.code;
 
@@ -78,7 +88,7 @@ const Chip = (props) => {
       case "Escape": {
         setNewValue(value.value);
         onDoubleClick(null);
-        break;
+        return false;
       }
     }
   };
@@ -86,7 +96,7 @@ const Chip = (props) => {
     return (
       <StyledChipInput
         value={newValue}
-        onBlur={onBlur}
+        forwardedRef={chipInputRef}
         onChange={onChange}
         onKeyDown={onInputKeyDown}
         isAutoFocussed

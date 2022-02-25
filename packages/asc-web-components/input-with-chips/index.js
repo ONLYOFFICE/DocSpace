@@ -24,6 +24,7 @@ const InputWithChips = ({
   clearButtonLabel,
   existEmailText,
   invalidEmailText,
+  exceededLimit,
   ...props
 }) => {
   const [chips, setChips] = useState(options || []);
@@ -33,6 +34,7 @@ const InputWithChips = ({
   const [value, setValue] = useState("");
 
   const [isExistedOn, setIsExistedOn] = useState(false);
+  const [isExceededLimit, setIsExceededLimit] = useState(false);
 
   const emailSettings = new EmailSettings();
 
@@ -61,10 +63,16 @@ const InputWithChips = ({
   useClickOutside(blockRef, () => {
     setSelectedChips([]);
     setIsExistedOn(false);
+    setIsExceededLimit(false);
   });
 
   const onInputChange = (e) => {
     setValue(e.target.value);
+    hideTooltipOnEmptyInput(e);
+  };
+
+  const hideTooltipOnEmptyInput = (e) => {
+    if (e.target.value == "") setIsExceededLimit(false);
   };
 
   const onClick = (value, isShiftKey) => {
@@ -87,6 +95,7 @@ const InputWithChips = ({
   const onDelete = useCallback(
     (value) => {
       setChips(chips.filter((it) => it.value !== value.value));
+      setIsExceededLimit(false);
     },
     [chips]
   );
@@ -98,21 +107,14 @@ const InputWithChips = ({
         .split('" <')
         .map((it) => it.trim());
 
-      if (cortege[1] != undefined) {
-        cortege[0] = cortege[0] + '"';
-        cortege[1] = "<" + cortege[1];
-      } else {
-        cortege[1] = cortege[0];
-      }
-
       if (cortege.length != 2) return false;
       let label = cortege[0];
-      if (label[0] != '"' && label[label.length - 1] != '"') return false;
-      label = label.slice(1, -1);
+      if (label[0] != '"') return false;
+      label = label.slice(1);
 
       let email = cortege[1];
-      if (email[0] != "<" && email[email.length - 1] != ">") return false;
-      email = email.slice(1, -1);
+      if (email[email.length - 1] != ">") return false;
+      email = email.slice(0, -1);
 
       return { label, value: email };
     },
@@ -120,33 +122,44 @@ const InputWithChips = ({
   );
 
   const onEnterPress = () => {
-    if (value.trim().length > 0) {
-      const separators = [",", ", "];
-      const chipsFromString = value
-        .split(new RegExp(separators.join("|"), "g"))
-        .filter((it) => it.trim().length !== 0)
-        .map((it) => (tryParseEmail(it) ? tryParseEmail(it) : it));
-
-      if (chipsFromString.length === 1) {
-        let isExisted = !!chips.find(
-          (chip) =>
-            chip.value === chipsFromString[0] ||
-            chip.value === chipsFromString[0]?.value
-        );
-        setIsExistedOn(isExisted);
-        if (isExisted) return;
-      }
-
-      const filteredChips = chipsFromString
-        .filter((it) => {
-          return !chips.find(
-            (chip) => chip.value === it || chip.value === it?.value
+    if (chips.length < 2000) {
+      if (value.trim().length > 0) {
+        const separators = [",", " ", ", "];
+        let indexesForFilter = [];
+        const chipsFromString = value
+          .split(new RegExp(separators.join("|"), "g"))
+          .filter((it) => it.trim().length !== 0)
+          .map((it, idx, arr) => {
+            if (it.includes('"') && arr[idx + 1]) {
+              indexesForFilter.push(idx + 1);
+              return `${it} ${arr[idx + 1]}`;
+            }
+            return it;
+          })
+          .map((it) => (tryParseEmail(it) ? tryParseEmail(it) : it.trim()))
+          .filter((it, idx) => !indexesForFilter.includes(idx));
+        if (chipsFromString.length === 1) {
+          let isExisted = !!chips.find(
+            (chip) =>
+              chip.value === chipsFromString[0] ||
+              chip.value === chipsFromString[0]?.value
           );
-        })
-        .map((it) => ({ label: it?.label ?? it, value: it?.value ?? it }));
+          setIsExistedOn(isExisted);
+          if (isExisted) return;
+        }
 
-      setChips([...chips, ...filteredChips]);
-      setValue("");
+        const filteredChips = chipsFromString
+          .filter((it) => {
+            return !chips.find(
+              (chip) => chip.value === it || chip.value === it?.value
+            );
+          })
+          .map((it) => ({ label: it?.label ?? it, value: it?.value ?? it }));
+        setChips([...chips, ...filteredChips]);
+        setValue("");
+      }
+    } else {
+      setIsExceededLimit(true);
     }
   };
 
@@ -271,6 +284,7 @@ const InputWithChips = ({
       setChips(filteredChips);
       setSelectedChips([]);
       inputRef.current.focus();
+      setIsExceededLimit(false);
       return;
     }
 
@@ -363,6 +377,7 @@ const InputWithChips = ({
         placeholder={placeholder}
         withBorder={false}
         className="textInput"
+        maxLength={2000}
         chips={chips.length}
       />
     );
@@ -377,6 +392,7 @@ const InputWithChips = ({
           </Scrollbar>
           <StyledInputWithLink>
             {isExistedOn && <StyledTooltip>{existEmailText}</StyledTooltip>}
+            {isExceededLimit && <StyledTooltip>{exceededLimit}</StyledTooltip>}
             {renderInput()}
             <Link
               type="action"
@@ -404,6 +420,8 @@ InputWithChips.propTypes = {
   existEmailText: PropTypes.string,
   /** Warning text when entering an invalid email */
   invalidEmailText: PropTypes.string,
+  /** Warning text when entering the number of chips exceeding the limit */
+  exceededLimit: PropTypes.string,
   /** Will be called when the selected items are changed */
   onChange: PropTypes.func.isRequired,
 };

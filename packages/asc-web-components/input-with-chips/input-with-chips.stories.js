@@ -46,6 +46,7 @@ Default.args = {
   clearButtonLabel: "Clear list",
   existEmailText: "This email address has already been entered",
   invalidEmailText: "Invalid email address",
+  exceededLimit: "The limit on the number of emails has reached the maximum",
 };
 
 export const Empty = Template.bind({});
@@ -55,4 +56,5 @@ Empty.args = {
   clearButtonLabel: "Clear list",
   existEmailText: "This email address has already been entered",
   invalidEmailText: "Invalid email address",
+  exceededLimit: "The limit on the number of emails has reached the maximum",
 };

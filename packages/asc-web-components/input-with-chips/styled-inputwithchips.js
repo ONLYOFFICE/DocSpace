@@ -33,6 +33,7 @@ const StyledChipGroup = styled.div`
     position: inherit !important;
     display: flex;
     flex-wrap: wrap;
+
     :focus-visible {
       outline: 0px solid #2da7db !important;
     }
@@ -125,8 +126,14 @@ const StyledTooltip = styled.div`
   position: absolute;
   top: -49px;
   left: 0;
-  width: 300px;
+
+  max-width: 435px;
   padding: 16px;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+
   background: #f8f7bf;
   border-radius: 6px;
   opacity: 0.9;
