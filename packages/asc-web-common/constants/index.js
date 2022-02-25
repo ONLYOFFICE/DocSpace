@@ -157,3 +157,19 @@ export const TenantTrustedDomainsType = Object.freeze({
 });
 
 export const PasswordLimitSpecialCharacters = "!@#$%^&*";
+
+/**
+ * Enum for file status.
+ * @readonly
+ */
+export const FileStatus = Object.freeze({
+  None: 0,
+  IsEditing: 1,
+  IsNew: 2,
+  IsConverting: 4,
+  IsOriginal: 8,
+  IsEditingAlone: 16,
+  IsFavorite: 32,
+  IsTemplate: 64,
+  IsFillFormDraft: 128,
+});

@@ -122,7 +122,7 @@ namespace ASC.Files.ThumbnailBuilder
 
             try
             {
-                file = fileDao.GetFile(fileData.FileId);
+                file = fileDao.GetFileAsync(fileData.FileId).Result;
 
                 if (file == null)
                 {
@@ -141,7 +141,7 @@ namespace ASC.Files.ThumbnailBuilder
                 if (!config.FormatsArray.Contains(ext) || file.Encrypted || file.RootFolderType == FolderType.TRASH || file.ContentLength > config.AvailableFileSize)
                 {
                     file.ThumbnailStatus = Thumbnail.NotRequired;
-                    fileDao.SaveThumbnail(file, null);
+                    fileDao.SaveThumbnailAsync(file, null).Wait();
                     return;
                 }
 
@@ -160,7 +160,7 @@ namespace ASC.Files.ThumbnailBuilder
                 if (file != null)
                 {
                     file.ThumbnailStatus = Thumbnail.Error;
-                    fileDao.SaveThumbnail(file, null);
+                    fileDao.SaveThumbnailAsync(file, null).Wait();
                 }
             }
         }
@@ -252,7 +252,8 @@ namespace ASC.Files.ThumbnailBuilder
                     Height = (config.ThumbnaillHeight * 1.5) + "mm" // 128 * 1.5 = "192mm"
                 }
             };
-            var operationResultProgress = DocumentServiceConnector.GetConvertedUri(fileUri, fileExtension, toExtension, docKey, null, thumbnail, spreadsheetLayout, false, out url);
+
+            (var operationResultProgress, url) = DocumentServiceConnector.GetConvertedUriAsync(fileUri, fileExtension, toExtension, docKey, null, thumbnail, spreadsheetLayout, false).Result;
 
             operationResultProgress = Math.Min(operationResultProgress, 100);
             return operationResultProgress == 100;
@@ -285,7 +286,7 @@ namespace ASC.Files.ThumbnailBuilder
         {
             logger.DebugFormat("CropImage: FileId: {0}.", file.ID);
 
-            using (var stream = fileDao.GetFileStream(file))
+            using (var stream = fileDao.GetFileStreamAsync(file).Result)
             {
                 Crop(fileDao, file, stream);
             }
@@ -302,7 +303,7 @@ namespace ASC.Files.ThumbnailBuilder
                     using (var targetStream = new MemoryStream())
                     {
                         targetImg.Save(targetStream, PngFormat.Instance);
-                        fileDao.SaveThumbnail(file, targetStream);
+                        fileDao.SaveThumbnailAsync(file, targetStream).Wait();
                     }
                 }
             }

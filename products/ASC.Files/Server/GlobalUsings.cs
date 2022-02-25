@@ -3,7 +3,6 @@ global using System.Collections.Generic;
 global using System.Globalization;
 global using System.IO;
 global using System.Linq;
-global using System.Net;
 global using System.Net.Http;
 global using System.Runtime.InteropServices;
 global using System.Text;
@@ -29,6 +28,7 @@ global using ASC.FederatedLogin.Helpers;
 global using ASC.FederatedLogin.LoginProviders;
 global using ASC.Files.Core;
 global using ASC.Files.Core.Model;
+global using ASC.Files.Core.Security;
 global using ASC.Files.Helpers;
 global using ASC.Files.Model;
 global using ASC.MessagingSystem;
@@ -64,8 +64,5 @@ global using Microsoft.Extensions.Hosting;
 global using Microsoft.Extensions.Options;
 
 global using Newtonsoft.Json.Linq;
-
-global using StackExchange.Redis.Extensions.Core.Configuration;
-global using StackExchange.Redis.Extensions.Newtonsoft;
 
 global using static ASC.Api.Documents.FilesController;

@@ -48,33 +48,32 @@ public class ConsumerBackupStorage : IBackupStorage
     {
         using var stream = File.OpenRead(localPath);
         var storagePath = Path.GetFileName(localPath);
-        _store.Save(Domain, storagePath, stream, ACL.Private);
-
+            _store.SaveAsync(Domain, storagePath, stream, ACL.Private).Wait();
         return storagePath;
     }
 
     public void Download(string storagePath, string targetLocalPath)
     {
-        using var source = _store.GetReadStream(Domain, storagePath);
+        using var source = _store.GetReadStreamAsync(Domain, storagePath).Result;
         using var destination = File.OpenWrite(targetLocalPath);
         source.CopyTo(destination);
     }
 
     public void Delete(string storagePath)
     {
-        if (_store.IsFile(Domain, storagePath))
+            if (_store.IsFileAsync(Domain, storagePath).Result)
         {
-            _store.Delete(Domain, storagePath);
+                _store.DeleteAsync(Domain, storagePath).Wait();
         }
     }
 
     public bool IsExists(string storagePath)
     {
-        return _store.IsFile(Domain, storagePath);
+            return _store.IsFileAsync(Domain, storagePath).Result;
     }
 
     public string GetPublicLink(string storagePath)
     {
-        return _store.GetInternalUri(Domain, storagePath, TimeSpan.FromDays(1), null).AbsoluteUri;
+            return _store.GetInternalUriAsync(Domain, storagePath, TimeSpan.FromDays(1), null).Result.AbsoluteUri;
     }
 }

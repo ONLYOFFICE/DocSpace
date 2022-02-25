@@ -25,6 +25,7 @@
 
 
 using System.Collections.Generic;
+using System.Linq;
 
 using ASC.Api.Core;
 using ASC.Api.Documents;
@@ -90,7 +91,7 @@ namespace ASC.CRM.Mapping
                 result.Entity = _entityDtoHelper.Get(source.EntityType, source.EntityID);
             }
 
-            result.Files = _daoFactory.GetRelationshipEventDao().GetFiles(source.ID).ConvertAll(file => _fileWrapperHelper.Get<int>(file));
+            result.Files = _daoFactory.GetRelationshipEventDao().GetFilesAsync(source.ID).ToListAsync().Result.ConvertAll(file => _fileWrapperHelper.GetAsync(file).Result);
 
             if (source.ContactID > 0)
             {

@@ -56,7 +56,7 @@ const getItems = (data) => {
     if (item.children) {
       return (
         <TreeNode
-          className="root-folder"
+          className="tree-root-folder"
           title={item.title}
           key={item.key}
           icon={

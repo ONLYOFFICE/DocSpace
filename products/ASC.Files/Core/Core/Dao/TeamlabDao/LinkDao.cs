@@ -14,6 +14,8 @@
  *
 */
 
+using Microsoft.EntityFrameworkCore;
+
 namespace ASC.Files.Core.Data
 {
     [Scope]
@@ -51,9 +53,9 @@ namespace ASC.Files.Core.Data
                   cache)
         { }
 
-        public void AddLink(string sourceId, string linkedId)
+        public async Task AddLinkAsync(string sourceId, string linkedId)
         {
-            FilesDbContext.AddOrUpdate(r => r.FilesLink, new DbFilesLink()
+            await FilesDbContext.AddOrUpdateAsync(r => r.FilesLink, new DbFilesLink()
             {
                 TenantId = TenantID,
                 SourceId = sourceId,
@@ -61,41 +63,41 @@ namespace ASC.Files.Core.Data
                 LinkedFor = AuthContext.CurrentAccount.ID
             });
 
-            FilesDbContext.SaveChanges();
+            await FilesDbContext.SaveChangesAsync();
         }
 
-        public string GetSource(string linkedId)
+        public Task<string> GetSourceAsync(string linkedId)
         {
             return FilesDbContext.FilesLink
                 .Where(r => r.TenantId == TenantID && r.LinkedId == linkedId && r.LinkedFor == AuthContext.CurrentAccount.ID)
                 .Select(r => r.SourceId)
-                .SingleOrDefault();
+                .SingleOrDefaultAsync();
         }
 
-        public string GetLinked(string sourceId)
+        public  Task<string> GetLinkedAsync(string sourceId)
         {
             return FilesDbContext.FilesLink
                 .Where(r => r.TenantId == TenantID && r.SourceId == sourceId && r.LinkedFor == AuthContext.CurrentAccount.ID)
                 .Select(r => r.LinkedId)
-                .SingleOrDefault();
+                .SingleOrDefaultAsync();
         }
 
-        public void DeleteLink(string sourceId)
+        public async Task DeleteLinkAsync(string sourceId)
         {
-            var link = FilesDbContext.FilesLink
+            var link = await FilesDbContext.FilesLink
                 .Where(r => r.TenantId == TenantID && r.SourceId == sourceId && r.LinkedFor == AuthContext.CurrentAccount.ID)
-                .SingleOrDefault();
+                .SingleOrDefaultAsync();
 
             FilesDbContext.FilesLink.Remove(link);
-            FilesDbContext.SaveChanges();
+            await FilesDbContext.SaveChangesAsync();
         }
 
-        public void DeleteAllLink(string fileId)
+        public async Task DeleteAllLinkAsync(string fileId)
         {
-            var link = FilesDbContext.FilesLink.Where(r => r.TenantId == TenantID && (r.SourceId == fileId || r.LinkedId == fileId));
+            var link = await FilesDbContext.FilesLink.Where(r => r.TenantId == TenantID && (r.SourceId == fileId || r.LinkedId == fileId)).ToListAsync();
 
             FilesDbContext.FilesLink.RemoveRange(link);
-            FilesDbContext.SaveChanges();
+            await FilesDbContext.SaveChangesAsync();
         }
     }
 }

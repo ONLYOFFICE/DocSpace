@@ -65,6 +65,8 @@ namespace ASC.Api.Settings
 
         public bool DebugInfo { get; set; }
 
+        public string SocketUrl { get; set; }
+
         public static SettingsWrapper GetSample()
         {
             return new SettingsWrapper
