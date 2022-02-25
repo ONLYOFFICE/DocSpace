@@ -103,6 +103,8 @@ global using MimeKit.Utils;
 global using Newtonsoft.Json;
 global using Newtonsoft.Json.Linq;
 
+global using AutoMapper;
+
 global using SixLabors.ImageSharp;
 global using SixLabors.ImageSharp.Drawing.Processing;
 global using SixLabors.ImageSharp.Formats;

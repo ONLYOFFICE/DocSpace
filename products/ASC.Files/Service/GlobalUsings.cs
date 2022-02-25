@@ -13,6 +13,7 @@ global using ASC.Core.Common.EF;
 global using ASC.Core.Tenants;
 global using ASC.ElasticSearch;
 global using ASC.Feed;
+global using ASC.Feed.Core;
 global using ASC.Feed.Data;
 global using ASC.Files.Core;
 global using ASC.Files.Core.EF;
