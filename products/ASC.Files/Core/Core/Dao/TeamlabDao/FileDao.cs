@@ -752,11 +752,13 @@ namespace ASC.Files.Core.Data
 
             using (var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false))
             {
-                var fromFolders = Query(FilesDbContext.Files)
+                var fromFolders = await Query(FilesDbContext.Files)
                     .Where(r => r.Id == fileId)
                     .Select(a => a.FolderId)
                     .Distinct()
-                    .AsAsyncEnumerable();
+                    .AsAsyncEnumerable()
+                    .ToListAsync()
+                    .ConfigureAwait(false);
 
                 toUpdate = await Query(FilesDbContext.Files)
                     .Where(r => r.Id == fileId)
@@ -778,7 +780,11 @@ namespace ASC.Files.Core.Data
                 await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
                 await tx.CommitAsync().ConfigureAwait(false);
 
-                await fromFolders.ForEachAwaitAsync(async folderId => await RecalculateFilesCountAsync(folderId).ConfigureAwait(false)).ConfigureAwait(false);
+                foreach (var f in fromFolders)
+                {
+                    await RecalculateFilesCountAsync(f).ConfigureAwait(false);
+                }
+
                 await RecalculateFilesCountAsync(toFolderId).ConfigureAwait(false);
             }
 
