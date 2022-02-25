@@ -123,5 +123,8 @@
   "EmptyBackupList": "No backups have been created yet. Create one or more backups for them to appear in this list.",
   "LocalFile": "Local file",
   "Path": "Path",
-  "ScheduleDescription": "Период автоматического сохранения:"
+  "ScheduleDescription": "Период автоматического сохранения:",
+  "ManualBackupHelp": "<strong>Data Backup</strong> option is used to back up the portal data to be able to restore it later to your local server. Select the storage for the data (do not forget to enter your third-party storage details to be able to access it).<br/>If you choose to include mail, only the messages for the last 30 days will be backed up.<br/><strong>Note:</strong> you need to connect your third-party account (DropBox, Box.com, OneDrive or Google Drive) to ONLYOFFICE Common folder before you will be able to save your backup there.",
+  "AutoBackupHelp": "The <strong>Automatic backup</strong> option is used to automate the portal data backup process to be able to restore it later to a local server.<br/>Choose the data storage, automatic backup period and maximal number of saved copies.<br/><strong>Note:</strong> before you can save the backup data to a third-party account (DropBox, Box.com, OneDrive or Google Drive), you will need to connect this account to ONLYOFFICE Common folder.",
+  "RestoreBackupHelp": "<strong>Data Restore</strong> option is used to restore your previously saved portal data (from a local server or SaaS portal). Select the storage where the data is saved, enter necessary details and check the <strong>Send notification to portal users</strong> to alert your portal users about the backup/restore operations."
 }

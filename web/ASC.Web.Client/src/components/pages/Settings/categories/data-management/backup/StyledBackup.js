@@ -273,6 +273,12 @@ const StyledBackup = styled.div`
     margin-bottom: 24px;
     max-width: ${TEXT_LENGTH};
   }
+  .backup_modules-header_wrapper {
+    display: flex;
+    svg {
+      margin: 5px 0 0 4px;
+    }
+  }
 `;
 
 const StyledBackupList = styled.div`
