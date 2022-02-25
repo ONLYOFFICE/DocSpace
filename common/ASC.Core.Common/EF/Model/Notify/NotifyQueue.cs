@@ -1,6 +1,6 @@
 ﻿namespace ASC.Core.Common.EF.Model
 {
-    public class NotifyQueue
+    public class NotifyQueue : IMapFrom<NotifyMessage>
     {
         public int NotifyId { get; set; }
         public int TenantId { get; set; }

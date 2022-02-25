@@ -39,6 +39,7 @@ global using ASC.Collections;
 global using ASC.Common;
 global using ASC.Common.Caching;
 global using ASC.Common.Logging;
+global using ASC.Common.Mapping;
 global using ASC.Common.Module;
 global using ASC.Common.Notify.Engine;
 global using ASC.Common.Notify.Patterns;
@@ -83,6 +84,8 @@ global using ASC.Notify.Recipients;
 global using ASC.Notify.Sinks;
 global using ASC.Security.Cryptography;
 global using ASC.Web.Studio.Utility;
+
+global using AutoMapper;
 
 global using Autofac;
 
