@@ -40,20 +40,21 @@ class DocumentsModule extends React.PureComponent {
     const passedId = !isThirdPartyDefault ? defaultSelectedFolder : "";
     return (
       <>
-        <SelectFolderInput
-          onSelectFolder={onSelectFolder}
-          onClose={this.onClose}
-          onClickInput={this.onClickInput}
-          isPanelVisible={isPanelVisible}
-          isError={isError}
-          foldersType="common"
-          withoutProvider
-          isSavingProcess={isLoadingData}
-          id={passedId}
-          isReset={isReset}
-          isSuccessSave={isSuccessSave}
-        />
-
+        <div className="auto-backup_folder-input">
+          <SelectFolderInput
+            onSelectFolder={onSelectFolder}
+            onClose={this.onClose}
+            onClickInput={this.onClickInput}
+            isPanelVisible={isPanelVisible}
+            isError={isError}
+            foldersType="common"
+            withoutProvider
+            isSavingProcess={isLoadingData}
+            id={passedId}
+            isReset={isReset}
+            isSuccessSave={isSuccessSave}
+          />
+        </div>
         <ScheduleComponent isLoadingData={isLoadingData} {...rest} />
       </>
     );

@@ -359,34 +359,32 @@ class ManualBackup extends React.Component {
             {t("TemporaryStorageDescription")}
           </Text>
           {isCheckedTemporaryStorage && (
-            <div className="category-item-wrapper temporary-storage">
-              <div className="manual-backup_buttons">
+            <div className="manual-backup_buttons">
+              <Button
+                label={t("MakeCopy")}
+                onClick={this.onMakeTemporaryBackup}
+                primary
+                isDisabled={!isMaxProgress}
+                size="medium"
+              />
+              {link.length > 0 && isMaxProgress && (
                 <Button
-                  label={t("MakeCopy")}
-                  onClick={this.onMakeTemporaryBackup}
-                  primary
-                  isDisabled={!isMaxProgress}
+                  label={t("DownloadBackup")}
+                  onClick={this.onClickDownloadBackup}
+                  isDisabled={false}
                   size="medium"
+                  style={{ marginLeft: "8px" }}
                 />
-                {link.length > 0 && isMaxProgress && (
-                  <Button
-                    label={t("DownloadBackup")}
-                    onClick={this.onClickDownloadBackup}
-                    isDisabled={false}
-                    size="medium"
-                    style={{ marginLeft: "8px" }}
-                  />
-                )}
-                {!isMaxProgress && (
-                  <Button
-                    label={t("Copying")}
-                    onClick={() => console.log("click")}
-                    isDisabled={true}
-                    size="medium"
-                    style={{ marginLeft: "8px" }}
-                  />
-                )}
-              </div>
+              )}
+              {!isMaxProgress && (
+                <Button
+                  label={t("Copying")}
+                  onClick={() => console.log("click")}
+                  isDisabled={true}
+                  size="medium"
+                  style={{ marginLeft: "8px" }}
+                />
+              )}
             </div>
           )}
         </StyledModules>
@@ -401,7 +399,7 @@ class ManualBackup extends React.Component {
             {...commonRadioButtonProps}
           />
 
-          <Text className="backup-description">
+          <Text className="backup-description module-documents">
             {t("DocumentsModuleDescription")}
           </Text>
 

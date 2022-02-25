@@ -66,19 +66,20 @@ class DocumentsModule extends React.Component {
     const isModuleDisabled = !isMaxProgress || isStartCopy || !selectedFolder;
     return (
       <>
-        <SelectFolderInput
-          onSelectFolder={this.onSelectFolder}
-          name={"common"}
-          onClose={this.onClose}
-          onClickInput={this.onClickInput}
-          folderPath={folderPath}
-          isPanelVisible={isPanelVisible}
-          isSavingProcess={isModuleDisabled}
-          foldersType="common"
-          withoutProvider
-          fontSizeInput={"13px"}
-        />
-
+        <div className="manual-backup_folder-input">
+          <SelectFolderInput
+            onSelectFolder={this.onSelectFolder}
+            name={"common"}
+            onClose={this.onClose}
+            onClickInput={this.onClickInput}
+            folderPath={folderPath}
+            isPanelVisible={isPanelVisible}
+            isSavingProcess={isModuleDisabled}
+            foldersType="common"
+            withoutProvider
+            fontSizeInput={"13px"}
+          />
+        </div>
         <div className="manual-backup_buttons">
           <Button
             label={t("MakeCopy")}

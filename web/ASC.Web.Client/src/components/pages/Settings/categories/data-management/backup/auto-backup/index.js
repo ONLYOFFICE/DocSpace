@@ -1044,7 +1044,7 @@ class AutomaticBackup extends React.PureComponent {
   };
 
   render() {
-    const { t } = this.props;
+    const { t, isDesktop } = this.props;
     const {
       isInitialLoading,
       isChanged,
@@ -1107,7 +1107,7 @@ class AutomaticBackup extends React.PureComponent {
     return isInitialLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
-      <StyledAutoBackup>
+      <StyledAutoBackup isDesktop={isDesktop}>
         <div className="backup_toggle-wrapper">
           <ToggleButton
             className="backup_toggle-btn"
@@ -1196,7 +1196,7 @@ class AutomaticBackup extends React.PureComponent {
         )}
 
         {(isChangedInStorage || isChanged) && (
-          <>
+          <div className="auto-backup_buttons">
             <Button
               label={t("Common:SaveButton")}
               onClick={this.onSaveModuleSettings}
@@ -1212,7 +1212,7 @@ class AutomaticBackup extends React.PureComponent {
               onClick={this.onCancelModuleSettings}
               size="medium"
             />
-          </>
+          </div>
         )}
         {downloadingProgress > 0 && downloadingProgress !== 100 && (
           <FloatingButton

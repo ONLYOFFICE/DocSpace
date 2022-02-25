@@ -95,21 +95,22 @@ class ThirdPartyModule extends React.Component {
     const isModuleDisabled = !isMaxProgress || isStartCopy || isLoadingData;
     return (
       <>
-        <SelectFolderInput
-          onSelectFolder={this.onSelectFolder}
-          name={"thirdParty"}
-          onClose={this.onClose}
-          onClickInput={this.onClickInput}
-          onSetLoadingData={this.onSetLoadingData}
-          isSavingProcess={isModuleDisabled}
-          isPanelVisible={isPanelVisible}
-          isError={isError}
-          folderPath={folderPath}
-          foldersType="third-party"
-          fontSizeInput={"13px"}
-          foldersList={commonThirdPartyList}
-        />
-
+        <div className="manual-backup_folder-input">
+          <SelectFolderInput
+            onSelectFolder={this.onSelectFolder}
+            name={"thirdParty"}
+            onClose={this.onClose}
+            onClickInput={this.onClickInput}
+            onSetLoadingData={this.onSetLoadingData}
+            isSavingProcess={isModuleDisabled}
+            isPanelVisible={isPanelVisible}
+            isError={isError}
+            folderPath={folderPath}
+            foldersType="third-party"
+            fontSizeInput={"13px"}
+            foldersList={commonThirdPartyList}
+          />
+        </div>
         <div className="manual-backup_buttons">
           <Button
             label={t("MakeCopy")}

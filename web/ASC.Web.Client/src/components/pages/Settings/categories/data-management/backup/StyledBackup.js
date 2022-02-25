@@ -42,10 +42,6 @@ const commonStyles = css`
     line-height: 15px;
     margin-left: 24px;
   }
-  .select-folder_file-input {
-    margin-left: 24px;
-    margin-top: 16px;
-  }
 `;
 
 const StyledManualBackup = styled.div`
@@ -60,6 +56,10 @@ const StyledManualBackup = styled.div`
     .manual-backup_buttons {
       margin-left: 0px;
     }
+  }
+  .manual-backup_folder-input {
+    margin-left: 24px;
+    margin-top: 16px;
   }
 `;
 
@@ -103,11 +103,19 @@ const StyledAutoBackup = styled.div`
     }
   }
 
+  .auto-backup_folder-input {
+    margin-left: 24px;
+    margin-top: 16px;
+  }
+
   .backup_toggle-wrapper {
     margin-bottom: 16px;
     background-color: #f8f9f9;
     padding: 12px;
     max-width: 1144px;
+  }
+  .auto-backup_buttons {
+    ${(props) => props.isDesktop && "margin-bottom: 24px"}
   }
 `;
 
@@ -126,21 +134,15 @@ const StyledRestoreBackup = styled.div`
     line-height: 15px;
   }
 
-  .restore-source {
-    font-weight: 600;
-    margin-top: 30px;
-    margin-bottom: 15px;
-    font-size: 15px;
-  }
   .restore-warning {
     font-weight: 600;
-    margin-top: 18px;
-    margin-bottom: 15px;
+    margin-top: 24px;
+    margin-bottom: 8px;
     font-size: 16px;
     color: #f21c0e;
   }
   .restore-warning_link {
-    margin: 15px 0;
+    margin: 16px 0 24px 0;
   }
   .restore-backup-checkbox {
     margin-bottom: 24px;
