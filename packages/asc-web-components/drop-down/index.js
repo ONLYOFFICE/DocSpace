@@ -108,6 +108,18 @@ class DropDown extends React.PureComponent {
     const parentRects = forwardedRef?.current?.getBoundingClientRect();
     const container = DomHelpers.getViewport();
 
+    const dimensions = parentRects
+      ? {
+          toTopCorner: parentRects.top,
+          parentHeight: parentRects.height,
+          containerHeight: parentRects.top,
+        }
+      : {
+          toTopCorner: rects.top,
+          parentHeight: 42,
+          containerHeight: container.height,
+        };
+
     const left = rects.left < 0 && rects.width < container.width;
     const right =
       rects.width &&
@@ -115,8 +127,8 @@ class DropDown extends React.PureComponent {
       rects.left > rects.width &&
       rects.width < container.width;
     const top =
-      rects.bottom > (parentRects ? parentRects.top : container.height) &&
-      (parentRects ? parentRects.top : rects.top) > rects.height;
+      rects.bottom > dimensions.containerHeight &&
+      dimensions.toTopCorner > rects.height;
     const bottom = rects.top < 0;
 
     const x = left
@@ -126,7 +138,7 @@ class DropDown extends React.PureComponent {
       : this.state.directionX;
     const y = bottom ? "bottom" : top ? "top" : this.state.directionY;
 
-    const mY = top ? `${parentRects.height}px` : manualY;
+    const mY = top ? `${dimensions.parentHeight}px` : manualY;
 
     this.setState({
       directionX: x,
