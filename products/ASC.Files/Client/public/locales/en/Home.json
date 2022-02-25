@@ -1,4 +1,4 @@
-﻿{
+{
   "All": "All",
   "AllFiles": "All files",
   "Archives": "Archives",
@@ -41,7 +41,6 @@
   "New": "New",
   "NewDocument": "New document",
   "NewFolder": "New folder",
-  "NewMasterForm": "New form template",
   "NewPresentation": "New presentation",
   "NewSpreadsheet": "New spreadsheet",
   "NoSubfolders": "No subfolders",
@@ -67,8 +66,11 @@
   "ShowVersionHistory": "Show version history",
   "Spreadsheet": "Spreadsheet",
   "SubheadingEmptyText": "No files to be displayed in this section",
+  "TitleCreated": "Created",
   "TitleDocuments": "Dcs",
+  "TitleModified": "Updated",
   "TitleSubfolders": "Flds",
+  "TitleUploaded": "Uploaded",
   "TooltipElementCopyMessage": "Copy {{element}}",
   "TooltipElementsCopyMessage": "Copy {{element}} elements",
   "TooltipElementsMoveMessage": "Move {{element}} elements",
@@ -76,5 +78,9 @@
   "UnblockVersion": "Unblock/Check-in",
   "UploadToFolder": "Upload to folder",
   "ViewList": "List",
-  "ViewTiles": "Tiles"
+  "ViewTiles": "Tiles",
+  "NewMasterForm": "New form template",
+  "ViewTiles": "Tiles",
+  "VersionHistory": "Version history",
+  "MoveOrCopy": "Move or copy"
 }

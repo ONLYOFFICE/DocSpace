@@ -73,7 +73,7 @@ public class FileBackupProvider : IBackupProvider
                 {
                     try
                     {
-                        using var stream = storage.GetReadStream(file.Domain, file.Path);
+                        using var stream = storage.GetReadStreamAsync(file.Domain, file.Path).Result;
                         writer.WriteEntry(backupPath, stream);
                         break;
                     }
@@ -114,7 +114,7 @@ public class FileBackupProvider : IBackupProvider
                     var storage = _storageFactory.GetStorage(config, tenant.ToString(), backupInfo.Module, null);
                     try
                     {
-                        storage.Save(backupInfo.Domain, backupInfo.Path, entry);
+                        storage.SaveAsync(backupInfo.Domain, backupInfo.Path, entry).Wait();
                     }
                     catch (Exception error)
                     {
@@ -139,12 +139,12 @@ public class FileBackupProvider : IBackupProvider
                 foreach (var domain in domainList)
                 {
                     files.AddRange(store
-                        .ListFilesRelative(domain, "\\", "*.*", true)
+                            .ListFilesRelativeAsync(domain, "\\", "*.*", true).ToArrayAsync().Result
                         .Select(x => new FileBackupInfo(domain, module, x)));
                 }
 
                 files.AddRange(store
-                    .ListFilesRelative(string.Empty, "\\", "*.*", true)
+                        .ListFilesRelativeAsync(string.Empty, "\\", "*.*", true).ToArrayAsync().Result
                         .Where(x => domainList.All(domain => x.IndexOf($"{domain}/") == -1))
                     .Select(x => new FileBackupInfo(string.Empty, module, x)));
             }

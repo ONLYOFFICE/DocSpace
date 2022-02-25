@@ -26,7 +26,7 @@
 namespace ASC.Core.Data
 {
     [Scope]
-    class DbSubscriptionService : ISubscriptionService
+    public class DbSubscriptionService : ISubscriptionService
     {
         private Expression<Func<Subscription, SubscriptionRecord>> FromSubscriptionToSubscriptionRecord { get; set; }
         private Expression<Func<DbSubscriptionMethod, SubscriptionMethod>> FromDbSubscriptionMethodToSubscriptionMethod { get; set; }
@@ -114,15 +114,15 @@ namespace ASC.Core.Data
             if (actionId == null) throw new ArgumentNullException(nameof(actionId));
 
             var q = UserDbContext.Subscriptions
-                .Where(r => r.Source == sourceId && 
-                            r.Action == actionId && 
+                .Where(r => r.Source == sourceId &&
+                            r.Action == actionId &&
                             r.Tenant == tenant &&
                             r.Recipient == recipientId &&
                             r.Unsubscribed);
 
             if (!string.IsNullOrEmpty(objectId))
             {
-                q = q.Where(r=> r.Object == objectId || r.Object == string.Empty);
+                q = q.Where(r => r.Object == objectId || r.Object == string.Empty);
             }
             else
             {
@@ -139,15 +139,15 @@ namespace ASC.Core.Data
             if (actionId == null) throw new ArgumentNullException(nameof(actionId));
 
             var q = GetQuery(tenant, sourceId, actionId)
-                .Where(r=> r.Recipient == recipientId)
+                .Where(r => r.Recipient == recipientId)
                 .Distinct();
 
             if (checkSubscribe)
             {
-                q = q.Where(r=> !r.Unsubscribed);
+                q = q.Where(r => !r.Unsubscribed);
             }
 
-            return q.Select(r=> r.Object).ToArray();
+            return q.Select(r => r.Object).ToArray();
         }
 
 
@@ -318,9 +318,9 @@ namespace ASC.Core.Data
                 }
                 else
                 {
-                    if (common.TryGetValue(key, out var rec))
+                    if (!common.TryGetValue(key, out _))
                     {
-                        result.Remove(rec);
+                        result.Add(s);
                     }
                 }
             }

@@ -179,6 +179,7 @@ global using FileShareLink = ASC.Web.Files.Utils.FileShareLink;
 global using ModelSnapshot = Microsoft.EntityFrameworkCore.Infrastructure.ModelSnapshot;
 global using ContentType = System.Net.Mime.ContentType;
 global using JsonSerializer = System.Text.Json.JsonSerializer;
+global using JsonTokenType = System.Text.Json.JsonTokenType;
 global using JsonConverter = System.Text.Json.Serialization.JsonConverter;
 global using JsonConverterAttribute = System.Text.Json.Serialization.JsonConverterAttribute;
 global using JsonIgnoreAttribute = System.Text.Json.Serialization.JsonIgnoreAttribute;

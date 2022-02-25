@@ -468,5 +468,5 @@ export default withRouter(
       selectedGroup: selectedGroup,
       setSelectGroup: setSelectedGroup,
     };
-  })(observer(withLoader(SectionBodyContent)(<Loaders.Group />)))
+  })(withLoader(observer(SectionBodyContent))(<Loaders.Group />))
 );

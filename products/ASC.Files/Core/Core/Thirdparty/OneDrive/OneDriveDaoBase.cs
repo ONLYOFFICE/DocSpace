@@ -164,9 +164,9 @@ namespace ASC.Files.Thirdparty.OneDrive
             return file;
         }
 
-        public Folder<string> GetRootFolder(string folderId)
+        public async Task<Folder<string>> GetRootFolderAsync(string folderId)
         {
-            return ToFolder(GetOneDriveItem(""));
+            return ToFolder(await GetOneDriveItemAsync(""));
         }
 
         protected Item GetOneDriveItem(string itemId)
@@ -174,7 +174,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             var onedriveId = MakeOneDriveId(itemId);
             try
             {
-                return ProviderInfo.GetOneDriveItem(onedriveId);
+                return ProviderInfo.GetOneDriveItemAsync(onedriveId).Result;
             }
             catch (Exception ex)
             {
@@ -182,15 +182,47 @@ namespace ASC.Files.Thirdparty.OneDrive
             }
         }
 
-        protected override IEnumerable<string> GetChildren(string folderId)
+        protected async Task<Item> GetOneDriveItemAsync(string itemId)
         {
-            return GetOneDriveItems(folderId).Select(entry => MakeId(entry.Id));
+            var onedriveId = MakeOneDriveId(itemId);
+            try
+            {
+                return await ProviderInfo.GetOneDriveItemAsync(onedriveId);
+        }
+            catch (Exception ex)
+            {
+                return new ErrorItem(ex, onedriveId);
+            }
+        }
+
+        protected override async Task<IEnumerable<string>> GetChildrenAsync(string folderId)
+        {
+            var items = await GetOneDriveItemsAsync(folderId);
+            return items.Select(entry => MakeId(entry.Id));
         }
 
         protected List<Item> GetOneDriveItems(string parentId, bool? folder = null)
         {
             var onedriveFolderId = MakeOneDriveId(parentId);
-            var items = ProviderInfo.GetOneDriveItems(onedriveFolderId);
+            var items = ProviderInfo.GetOneDriveItemsAsync(onedriveFolderId).Result;
+
+            if (folder.HasValue)
+            {
+                if (folder.Value)
+                {
+                    return items.Where(i => i.Folder != null).ToList();
+                }
+
+                return items.Where(i => i.File != null).ToList();
+            }
+
+            return items;
+        }
+
+        protected async Task<List<Item>> GetOneDriveItemsAsync(string parentId, bool? folder = null)
+        {
+            var onedriveFolderId = MakeOneDriveId(parentId);
+            var items = await ProviderInfo.GetOneDriveItemsAsync(onedriveFolderId);
 
             if (folder.HasValue)
             {
@@ -241,6 +273,31 @@ namespace ASC.Files.Thirdparty.OneDrive
             }
 
             while (isExist(requestTitle, parentFolderId))
+            {
+                requestTitle = re.Replace(requestTitle, MatchEvaluator);
+            }
+            return requestTitle;
+        }
+
+        protected async Task<string> GetAvailableTitleAsync(string requestTitle, string parentFolderId, Func<string, string, Task<bool>> isExist)
+        {
+            requestTitle = new Regex("\\.$").Replace(requestTitle, "_");
+            if (!await isExist(requestTitle, parentFolderId)) return requestTitle;
+
+            var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
+            var match = re.Match(requestTitle);
+
+            if (!match.Success)
+            {
+                var insertIndex = requestTitle.Length;
+                if (requestTitle.LastIndexOf(".", StringComparison.InvariantCulture) != -1)
+                {
+                    insertIndex = requestTitle.LastIndexOf(".", StringComparison.InvariantCulture);
+                }
+                requestTitle = requestTitle.Insert(insertIndex, " (1)");
+            }
+
+            while (await isExist(requestTitle, parentFolderId))
             {
                 requestTitle = re.Replace(requestTitle, MatchEvaluator);
             }
