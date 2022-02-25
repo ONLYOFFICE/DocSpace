@@ -96,28 +96,33 @@ namespace ASC.Data.Storage.DiscStorage
                 }
             }
 
-            if (!storage.IsFile(_domain, path))
+            return InternalInvoke(context, storage, path, header);
+        }
+
+        private async Task InternalInvoke(HttpContext context, IDataStore storage, string path, string header)
+        {
+            if (!await storage.IsFileAsync(_domain, path))
             {
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-                return Task.CompletedTask;
+                return;
             }
 
             var headers = header.Length > 0 ? header.Split('&').Select(HttpUtility.UrlDecode) : Array.Empty<string>();
 
             if (storage.IsSupportInternalUri)
             {
-                var uri = storage.GetInternalUri(_domain, path, TimeSpan.FromMinutes(15), headers);
+                var uri = await storage.GetInternalUriAsync(_domain, path, TimeSpan.FromMinutes(15), headers);
 
                 //TODO
                 //context.Response.Cache.SetAllowResponseInBrowserHistory(false);
                 //context.Response.Cache.SetCacheability(HttpCacheability.NoCache);
 
                 context.Response.Redirect(uri.ToString());
-                return Task.CompletedTask;
+                return;
             }
 
             string encoding = null;
-            if (storage is DiscDataStore && storage.IsFile(_domain, path + ".gz"))
+            if (storage is DiscDataStore && await storage.IsFileAsync(_domain, path + ".gz"))
             {
                 path += ".gz";
                 encoding = "gzip";
@@ -143,12 +148,7 @@ namespace ASC.Data.Storage.DiscStorage
             if (encoding != null)
                 context.Response.Headers["Content-Encoding"] = encoding;
 
-            return InternalInvoke(context, storage, path);
-        }
-
-        private async Task InternalInvoke(HttpContext context, IDataStore storage, string path)
-        {
-            using (var stream = storage.GetReadStream(_domain, path))
+            using (var stream = await storage.GetReadStreamAsync(_domain, path))
             {
                 await stream.CopyToAsync(context.Response.Body);
             }

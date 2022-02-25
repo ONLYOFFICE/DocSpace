@@ -27,57 +27,55 @@ using FileShare = ASC.Files.Core.Security.FileShare;
 
 namespace ASC.Files.Thirdparty
 {
-    internal abstract class ThirdPartyProviderDao 
+    internal abstract class ThirdPartyProviderDao
     {
         #region FileDao
 
-        public void ReassignFiles(string[] fileIds, Guid newOwnerId)
+        public Task ReassignFilesAsync(string[] fileIds, Guid newOwnerId)
         {
+            return Task.CompletedTask;
         }
 
-        public List<File<string>> GetFiles(IEnumerable<string> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
+        public Task<List<File<string>>> GetFilesAsync(IEnumerable<string> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
         {
-            return new List<File<string>>();
+            return Task.FromResult(new List<File<string>>());
         }
 
-        public IEnumerable<File<string>> Search(string text, bool bunch)
+        public IAsyncEnumerable<File<string>> SearchAsync(string text, bool bunch)
         {
             return null;
         }
 
-        public bool IsExistOnStorage(File<string> file)
+        public Task<bool> IsExistOnStorageAsync(File<string> file)
         {
-            return true;
+            return Task.FromResult(true);
         }
 
-        public void SaveEditHistory(File<string> file, string changes, Stream differenceStream)
+        public Task SaveEditHistoryAsync(File<string> file, string changes, Stream differenceStream)
         {
             //Do nothing
+            return Task.CompletedTask;
         }
 
-        public List<EditHistory> GetEditHistory(DocumentServiceHelper documentServiceHelper, string fileId, int fileVersion)
+        public Task<List<EditHistory>> GetEditHistoryAsync(DocumentServiceHelper documentServiceHelper, string fileId, int fileVersion)
         {
             return null;
         }
 
-        public Stream GetDifferenceStream(File<string> file)
+        public Task<Stream> GetDifferenceStreamAsync(File<string> file)
         {
             return null;
         }
 
-        public bool ContainChanges(string fileId, int fileVersion)
+        public Task<bool> ContainChangesAsync(string fileId, int fileVersion)
         {
-            return false;
+            return Task.FromResult(false);
         }
 
-        public void SaveThumbnail(File<string> file, Stream thumbnail)
+        public Task SaveThumbnailAsync(File<string> file, Stream thumbnail)
         {
             //Do nothing
-        }
-
-        public Stream GetThumbnail(File<string> file)
-        {
-            return null;
+            return Task.CompletedTask;
         }
 
         public Task<Stream> GetThumbnailAsync(File<string> file)
@@ -85,19 +83,9 @@ namespace ASC.Files.Thirdparty
             return Task.FromResult<Stream>(null);
         }
 
-        public virtual Stream GetFileStream(File<string> file)
+        public virtual Task<Stream> GetFileStreamAsync(File<string> file)
         {
             return null;
-        }
-
-        public Task<Stream> GetFileStreamAsync(File<string> file)
-        {
-            return Task.FromResult(GetFileStream(file));
-        }
-
-        public Task<bool> IsExistOnStorageAsync(File<string> file)
-        {
-            return Task.FromResult(IsExistOnStorage(file));
         }
 
         public string GetUniqFilePath(File<string> file, string fileTitle)
@@ -105,12 +93,12 @@ namespace ASC.Files.Thirdparty
             throw new NotImplementedException();
         }
 
-        public IEnumerable<(File<int>, SmallShareRecord)> GetFeeds(int tenant, DateTime from, DateTime to)
+        public Task<IEnumerable<(File<int>, SmallShareRecord)>> GetFeedsAsync(int tenant, DateTime from, DateTime to)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<int> GetTenantsWithFeeds(DateTime fromTime)
+        public Task<IEnumerable<int>> GetTenantsWithFeedsAsync(DateTime fromTime)
         {
             throw new NotImplementedException();
         }
@@ -118,92 +106,96 @@ namespace ASC.Files.Thirdparty
         #endregion
         #region FolderDao
 
-        public void ReassignFolders(string[] folderIds, Guid newOwnerId)
+        public Task ReassignFoldersAsync(string[] folderIds, Guid newOwnerId)
         {
+            return Task.CompletedTask;
         }
 
-        public IEnumerable<Folder<string>> SearchFolders(string text, bool bunch)
-        {
-            return null;
-        }
-
-        public string GetFolderID(string module, string bunch, string data, bool createIfNotExists)
+        public IAsyncEnumerable<Folder<string>> SearchFoldersAsync(string text, bool bunch)
         {
             return null;
         }
 
-        public IEnumerable<string> GetFolderIDs(string module, string bunch, IEnumerable<string> data, bool createIfNotExists)
-        {
-            return new List<string>();
-        }
 
-        public string GetFolderIDCommon(bool createIfNotExists)
+        public Task<string> GetFolderIDAsync(string module, string bunch, string data, bool createIfNotExists)
         {
             return null;
         }
 
-        public string GetFolderIDUser(bool createIfNotExists, Guid? userId)
+        public Task<IEnumerable<string>> GetFolderIDsAsync(string module, string bunch, IEnumerable<string> data, bool createIfNotExists)
+        {
+            return Task.FromResult((IEnumerable<string>)new List<string>());
+        }
+
+        public Task<string> GetFolderIDCommonAsync(bool createIfNotExists)
         {
             return null;
         }
 
-        public string GetFolderIDShare(bool createIfNotExists)
+
+        public Task<string> GetFolderIDUserAsync(bool createIfNotExists, Guid? userId)
         {
             return null;
         }
 
-        public string GetFolderIDRecent(bool createIfNotExists)
+        public Task<string> GetFolderIDShareAsync(bool createIfNotExists)
         {
             return null;
         }
 
-        public string GetFolderIDFavorites(bool createIfNotExists)
+
+        public Task<string> GetFolderIDRecentAsync(bool createIfNotExists)
         {
             return null;
         }
 
-        public string GetFolderIDTemplates(bool createIfNotExists)
+        public Task<string> GetFolderIDFavoritesAsync(bool createIfNotExists)
         {
             return null;
         }
 
-        public string GetFolderIDPrivacy(bool createIfNotExists, Guid? userId)
+        public Task<string> GetFolderIDTemplatesAsync(bool createIfNotExists)
         {
             return null;
         }
 
-        public string GetFolderIDTrash(bool createIfNotExists, Guid? userId)
+        public Task<string> GetFolderIDPrivacyAsync(bool createIfNotExists, Guid? userId)
         {
             return null;
         }
 
+        public Task<string> GetFolderIDTrashAsync(bool createIfNotExists, Guid? userId)
+        {
+            return null;
+        }
 
         public string GetFolderIDPhotos(bool createIfNotExists)
         {
             return null;
         }
 
-        public string GetFolderIDProjects(bool createIfNotExists)
+
+        public Task<string> GetFolderIDProjectsAsync(bool createIfNotExists)
         {
             return null;
         }
 
-        public string GetBunchObjectID(string folderID)
+        public Task<string> GetBunchObjectIDAsync(string folderID)
         {
             return null;
         }
 
-        public Dictionary<string, string> GetBunchObjectIDs(List<string> folderIDs)
+        public Task<Dictionary<string, string>> GetBunchObjectIDsAsync(List<string> folderIDs)
         {
             return null;
         }
 
-        public IEnumerable<(Folder<string>, SmallShareRecord)> GetFeedsForFolders(int tenant, DateTime from, DateTime to)
+        public Task<IEnumerable<(Folder<string>, SmallShareRecord)>> GetFeedsForFoldersAsync(int tenant, DateTime from, DateTime to)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<string> GetTenantsWithFeedsForFolders(DateTime fromTime)
+        public Task<IEnumerable<string>> GetTenantsWithFeedsForFoldersAsync(DateTime fromTime)
         {
             throw new NotImplementedException();
         }
@@ -260,13 +252,18 @@ namespace ASC.Files.Thirdparty
 
         protected IQueryable<TSet> Query<TSet>(DbSet<TSet> set) where TSet : class, IDbFile
         {
-            return set.Where(r => r.TenantId == TenantID);
+            return set.AsQueryable().Where(r => r.TenantId == TenantID);
         }
 
-        protected string MappingID(string id, bool saveIfNotExist = false)
+        protected Task<string> MappingIDAsync(string id, bool saveIfNotExist = false)
         {
             if (id == null) return null;
 
+            return InternalMappingIDAsync(id, saveIfNotExist);
+        }
+
+        private async Task<string> InternalMappingIDAsync(string id, bool saveIfNotExist = false)
+        {
             string result;
             if (id.StartsWith(Id))
             {
@@ -274,10 +271,12 @@ namespace ASC.Files.Thirdparty
             }
             else
             {
-                result = FilesDbContext.ThirdpartyIdMapping
+                result = await FilesDbContext.ThirdpartyIdMapping
+                        .AsQueryable()
                         .Where(r => r.HashId == id)
                         .Select(r => r.Id)
-                        .FirstOrDefault();
+                        .FirstOrDefaultAsync()
+                        .ConfigureAwait(false);
             }
             if (saveIfNotExist)
             {
@@ -288,8 +287,8 @@ namespace ASC.Files.Thirdparty
                     TenantId = TenantID
                 };
 
-                FilesDbContext.ThirdpartyIdMapping.Add(newMapping);
-                FilesDbContext.SaveChanges();
+                await FilesDbContext.ThirdpartyIdMapping.AddAsync(newMapping).ConfigureAwait(false);
+                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
             }
             return result;
         }
@@ -363,45 +362,48 @@ namespace ASC.Files.Thirdparty
 
 
         #region SecurityDao
-
-        public void SetShare(FileShareRecord r)
+        public Task SetShareAsync(FileShareRecord r)
         {
+            return Task.CompletedTask;
         }
 
-        public IEnumerable<FileShareRecord> GetShares(IEnumerable<Guid> subjects)
+        public ValueTask<List<FileShareRecord>> GetSharesAsync(IEnumerable<Guid> subjects)
         {
-            return null;
+            List<FileShareRecord> result = null;
+            return new ValueTask<List<FileShareRecord>>(result);
         }
 
-        public IEnumerable<FileShareRecord> GetShares(IEnumerable<FileEntry<string>> entry)
-        {
-            return null;
-        }
-
-        public IEnumerable<FileShareRecord> GetShares(FileEntry<string> entry)
+        public Task<IEnumerable<FileShareRecord>> GetSharesAsync(IEnumerable<FileEntry<string>> entry)
         {
             return null;
         }
 
-        public void RemoveSubject(Guid subject)
-        {
-        }
-
-        public IEnumerable<FileShareRecord> GetPureShareRecords(IEnumerable<FileEntry<string>> entries)
+        public Task<IEnumerable<FileShareRecord>> GetSharesAsync(FileEntry<string> entry)
         {
             return null;
         }
 
-        public IEnumerable<FileShareRecord> GetPureShareRecords(FileEntry<string> entry)
+        public Task RemoveSubjectAsync(Guid subject)
+        {
+            return Task.CompletedTask;
+        }
+
+        public Task<IEnumerable<FileShareRecord>> GetPureShareRecordsAsync(IEnumerable<FileEntry<string>> entries)
         {
             return null;
         }
 
-        public void DeleteShareRecords(IEnumerable<FileShareRecord> records)
+        public Task<IEnumerable<FileShareRecord>> GetPureShareRecordsAsync(FileEntry<string> entry)
         {
+            return null;
         }
 
-        public bool IsShared(object entryId, FileEntryType type)
+        public Task DeleteShareRecordsAsync(IEnumerable<FileShareRecord> records)
+        {
+            return Task.CompletedTask;
+        }
+
+        public ValueTask<bool> IsSharedAsync(object entryId, FileEntryType type)
         {
             throw new NotImplementedException();
         }
@@ -410,45 +412,44 @@ namespace ASC.Files.Thirdparty
 
         #region TagDao
 
-        public IEnumerable<Tag> GetTags(Guid subject, TagType tagType, IEnumerable<FileEntry<string>> fileEntries)
+        public IAsyncEnumerable<Tag> GetTagsAsync(Guid subject, TagType tagType, IEnumerable<FileEntry<string>> fileEntries)
         {
-            return new List<Tag>();
+            return AsyncEnumerable.Empty<Tag>();
         }
 
-        public IEnumerable<Tag> GetTags(TagType tagType, IEnumerable<FileEntry<string>> fileEntries)
+        public IAsyncEnumerable<Tag> GetTagsAsync(TagType tagType, IEnumerable<FileEntry<string>> fileEntries)
         {
-            return new List<Tag>();
+            return AsyncEnumerable.Empty<Tag>();
         }
 
-        public IEnumerable<Tag> GetTags(Guid owner, TagType tagType)
+        public IAsyncEnumerable<Tag> GetTagsAsync(Guid owner, TagType tagType)
         {
-            return new List<Tag>();
+            return AsyncEnumerable.Empty<Tag>();
         }
 
-        public IEnumerable<Tag> GetTags(string name, TagType tagType)
+        public IAsyncEnumerable<Tag> GetTagsAsync(string name, TagType tagType)
         {
-            return new List<Tag>();
+            return AsyncEnumerable.Empty<Tag>();
         }
 
-        public IEnumerable<Tag> GetTags(string[] names, TagType tagType)
+        public IAsyncEnumerable<Tag> GetTagsAsync(string[] names, TagType tagType)
         {
-            return new List<Tag>();
+            return AsyncEnumerable.Empty<Tag>();
         }
 
-        public IDictionary<object, IEnumerable<Tag>> GetTags(Guid subject, IEnumerable<TagType> tagType, IEnumerable<FileEntry<string>> fileEntries)
+        public Task<IDictionary<object, IEnumerable<Tag>>> GetTagsAsync(Guid subject, IEnumerable<TagType> tagType, IEnumerable<FileEntry<string>> fileEntries)
         {
-            return new Dictionary<object, IEnumerable<Tag>>();
+            return Task.FromResult((IDictionary<object, IEnumerable<Tag>>)new Dictionary<object, IEnumerable<Tag>>());
         }
 
-
-        public IEnumerable<Tag> GetNewTags(Guid subject, IEnumerable<FileEntry<string>> fileEntries)
+        public IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, IEnumerable<FileEntry<string>> fileEntries)
         {
-            return new List<Tag>();
+            return AsyncEnumerable.Empty<Tag>();
         }
 
-        public IEnumerable<Tag> GetNewTags(Guid subject, FileEntry<string> fileEntry)
+        public IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, FileEntry<string> fileEntry)
         {
-            return new List<Tag>();
+            return AsyncEnumerable.Empty<Tag>();
         }
 
         public IEnumerable<Tag> SaveTags(IEnumerable<Tag> tag)
@@ -477,28 +478,31 @@ namespace ASC.Files.Thirdparty
         {
         }
 
-        public IEnumerable<Tag> GetTags(string entryID, FileEntryType entryType, TagType tagType)
+
+        public IAsyncEnumerable<Tag> GetTagsAsync(string entryID, FileEntryType entryType, TagType tagType)
         {
-            return new List<Tag>();
+            return AsyncEnumerable.Empty<Tag>();
         }
 
         public void MarkAsNew(Guid subject, FileEntry<string> fileEntry)
         {
         }
 
-        public IEnumerable<Tag> GetNewTags(Guid subject, Folder<string> parentFolder, bool deepSearch)
+        public async IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, Folder<string> parentFolder, bool deepSearch)
         {
             var folderId = DaoSelector.ConvertId(parentFolder.ID);
 
-            var entryIDs = FilesDbContext.ThirdpartyIdMapping
+            var entryIDs = await FilesDbContext.ThirdpartyIdMapping
+                       .AsQueryable()
                        .Where(r => r.Id.StartsWith(parentFolder.ID))
                        .Select(r => r.HashId)
-                       .ToList();
+                       .ToListAsync()
+                       .ConfigureAwait(false);
 
-            if (entryIDs.Count == 0) return new List<Tag>();
+            if (!entryIDs.Any()) yield break;
 
             var q = from r in FilesDbContext.Tag
-                    from l in FilesDbContext.TagLink.Where(a => a.TenantId == r.TenantId && a.TagId == r.Id).DefaultIfEmpty()
+                    from l in FilesDbContext.TagLink.AsQueryable().Where(a => a.TenantId == r.TenantId && a.TagId == r.Id).DefaultIfEmpty()
                     where r.TenantId == TenantID && l.TenantId == TenantID && r.Flag == TagType.New && entryIDs.Contains(l.EntryId)
                     select new { tag = r, tagLink = l };
 
@@ -507,30 +511,38 @@ namespace ASC.Files.Thirdparty
                 q = q.Where(r => r.tag.Owner == subject);
             }
 
-            var tags = q
+            var qList = q
                 .Distinct()
-                .ToList()
-                .Select(r => new Tag
+                .AsAsyncEnumerable();
+
+            var tags = qList
+                .SelectAwait(async r => new Tag
                 {
                     TagName = r.tag.Name,
                     TagType = r.tag.Flag,
                     Owner = r.tag.Owner,
-                    EntryId = MappingID(r.tagLink.EntryId),
+                    EntryId = await MappingIDAsync(r.tagLink.EntryId).ConfigureAwait(false),
                     EntryType = r.tagLink.EntryType,
                     Count = r.tagLink.TagCount,
                     Id = r.tag.Id
                 });
 
 
-            if (deepSearch) return tags;
+            if (deepSearch)
+            {
+                await foreach (var e in tags.ConfigureAwait(false))
+                    yield return e;
+                yield break;
+            }
 
             var folderFileIds = new[] { parentFolder.ID }
-                .Concat(GetChildren(folderId));
+                .Concat(await GetChildrenAsync(folderId).ConfigureAwait(false));
 
-            return tags.Where(tag => folderFileIds.Contains(tag.EntryId.ToString()));
+            await foreach (var e in tags.Where(tag => folderFileIds.Contains(tag.EntryId.ToString())).ConfigureAwait(false))
+                yield return e;
         }
 
-        protected abstract IEnumerable<string> GetChildren(string folderId);
+        protected abstract Task<IEnumerable<string>> GetChildrenAsync(string folderId);
 
         #endregion
 

@@ -13,7 +13,8 @@ const StyledBackdrop = styled.div`
   z-index: ${(props) => props.zIndex};
   left: 0;
   top: 0;
-  cursor: ${(props) => (props.needBackground ? "pointer" : "default")}; ;
+  cursor: ${(props) =>
+    props.needBackground && !props.isModalDialog ? "pointer" : "default"}; ;
 `;
 
 StyledBackdrop.defaultProps = {

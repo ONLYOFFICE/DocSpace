@@ -28,6 +28,7 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 
 using ASC.Common;
@@ -103,9 +104,9 @@ namespace ASC.Web.Files.Classes
         public string GetFileControlPath(string fileName)
         {
             return BaseCommonLinkUtility.ToAbsolute("~/Products/Files/Controls/" + fileName);
-        }
+        }     
 
-        public string GetFolderUrl<T>(Folder<T> folder, int projectID = 0)
+        public async Task<string> GetFolderUrlAsync<T>(Folder<T> folder, int projectID = 0)
         {
             if (folder == null) throw new ArgumentNullException(nameof(folder), FilesCommonResource.ErrorMassage_FolderNotFound);
 
@@ -116,7 +117,7 @@ namespace ASC.Web.Files.Classes
                 case FolderType.BUNCH:
                     if (projectID == 0)
                     {
-                        var path = folderDao.GetBunchObjectID(folder.RootFolderId);
+                        var path = await folderDao.GetBunchObjectIDAsync(folder.RootFolderId);
 
                         var projectIDFromDao = path.Split('/').Last();
 
@@ -130,11 +131,11 @@ namespace ASC.Web.Files.Classes
             }
         }
 
-        public string GetFolderUrlById<T>(T folderId)
+        public async Task<string> GetFolderUrlByIdAsync<T>(T folderId)
         {
-            var folder = DaoFactory.GetFolderDao<T>().GetFolder(folderId);
+            var folder = await DaoFactory.GetFolderDao<T>().GetFolderAsync(folderId);
 
-            return GetFolderUrl(folder);
+            return await GetFolderUrlAsync(folder);
         }
 
         public string GetFileStreamUrl<T>(File<T> file, string doc = null, bool lastVersion = false)
@@ -179,7 +180,7 @@ namespace ASC.Web.Files.Classes
             return $"{uriBuilder.Uri}?{query}";
         }
 
-        public string GetTempUrl(Stream stream, string ext)
+        public async Task<string> GetTempUrlAsync(Stream stream, string ext)
         {
             if (stream == null) throw new ArgumentNullException(nameof(stream));
 
@@ -187,12 +188,12 @@ namespace ASC.Web.Files.Classes
             var fileName = string.Format("{0}{1}", Guid.NewGuid(), ext);
             var path = CrossPlatform.PathCombine("temp_stream", fileName);
 
-            if (store.IsFile(FileConstant.StorageDomainTmp, path))
+            if (await store.IsFileAsync(FileConstant.StorageDomainTmp, path))
             {
-                store.Delete(FileConstant.StorageDomainTmp, path);
+                await store.DeleteAsync(FileConstant.StorageDomainTmp, path);
             }
 
-            store.Save(
+            await store.SaveAsync(
                 FileConstant.StorageDomainTmp,
                 path,
                 stream,

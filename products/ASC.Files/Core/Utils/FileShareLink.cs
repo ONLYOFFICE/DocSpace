@@ -24,6 +24,7 @@
 */
 
 
+using System.Threading.Tasks;
 using System.Web;
 
 using ASC.Common;
@@ -91,34 +92,34 @@ namespace ASC.Web.Files.Utils
             return Signature.Read<T>(doc ?? string.Empty, Global.GetDocDbKey());
         }
 
-        public bool Check<T>(string doc, bool checkRead, IFileDao<T> fileDao, out File<T> file)
+        public async Task<(bool EditLink, File<T> File)> CheckAsync<T>(string doc, bool checkRead, IFileDao<T> fileDao)
         {
-            var fileShare = Check(doc, fileDao, out file);
-            return (!checkRead
+            var check = await CheckAsync(doc, fileDao);
+            var fileShare = check.FileShare;
+            return ((!checkRead
                     && (fileShare == FileShare.ReadWrite
                         || fileShare == FileShare.CustomFilter
                         || fileShare == FileShare.Review
                         || fileShare == FileShare.FillForms
                         || fileShare == FileShare.Comment))
-                || (checkRead && fileShare != FileShare.Restrict);
+                || (checkRead && fileShare != FileShare.Restrict), check.File);
         }
 
-        public FileShare Check<T>(string doc, IFileDao<T> fileDao, out File<T> file)
+        public async Task<(FileShare FileShare, File<T> File)> CheckAsync<T>(string doc, IFileDao<T> fileDao)
         {
-            file = null;
-            if (string.IsNullOrEmpty(doc)) return FileShare.Restrict;
+            if (string.IsNullOrEmpty(doc)) return (FileShare.Restrict, null);
             var fileId = Parse<T>(doc);
-            file = fileDao.GetFile(fileId);
-            if (file == null) return FileShare.Restrict;
+            var file = await fileDao.GetFileAsync(fileId);
+            if (file == null) return (FileShare.Restrict, file);
 
             var filesSecurity = FileSecurity;
-            if (filesSecurity.CanEdit(file, FileConstant.ShareLinkId)) return FileShare.ReadWrite;
-            if (filesSecurity.CanCustomFilterEdit(file, FileConstant.ShareLinkId)) return FileShare.CustomFilter;
-            if (filesSecurity.CanReview(file, FileConstant.ShareLinkId)) return FileShare.Review;
-            if (filesSecurity.CanFillForms(file, FileConstant.ShareLinkId)) return FileShare.FillForms;
-            if (filesSecurity.CanComment(file, FileConstant.ShareLinkId)) return FileShare.Comment;
-            if (filesSecurity.CanRead(file, FileConstant.ShareLinkId)) return FileShare.Read;
-            return FileShare.Restrict;
+            if (await filesSecurity.CanEditAsync(file, FileConstant.ShareLinkId)) return (FileShare.ReadWrite, file);
+            if (await filesSecurity.CanCustomFilterEditAsync(file, FileConstant.ShareLinkId)) return (FileShare.CustomFilter, file);
+            if (await filesSecurity.CanReviewAsync(file, FileConstant.ShareLinkId)) return (FileShare.Review, file);
+            if (await filesSecurity.CanFillFormsAsync(file, FileConstant.ShareLinkId)) return (FileShare.FillForms, file);
+            if (await filesSecurity.CanCommentAsync(file, FileConstant.ShareLinkId)) return (FileShare.Comment, file);
+            if (await filesSecurity.CanReadAsync(file, FileConstant.ShareLinkId)) return (FileShare.Read, file);
+            return (FileShare.Restrict, file);
         }
     }
 }

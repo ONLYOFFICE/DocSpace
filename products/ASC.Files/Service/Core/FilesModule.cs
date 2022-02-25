@@ -76,7 +76,7 @@ namespace ASC.Files.Service.Core
                 targetCond = true;
             }
 
-            return targetCond && FileSecurity.CanRead(file, userId);
+            return targetCond && FileSecurity.CanReadAsync(file, userId).Result;
         }
 
         public override void VisibleFor(List<Tuple<FeedRow, object>> feed, Guid userId)
@@ -101,7 +101,7 @@ namespace ASC.Files.Service.Core
                 }
             }
 
-            var canRead = FileSecurity.CanRead(files, userId).Where(r => r.Item2).ToList();
+            var canRead = FileSecurity.CanReadAsync(files, userId).Result.Where(r => r.Item2).ToList();
 
             foreach (var f in feed1)
             {
@@ -114,19 +114,19 @@ namespace ASC.Files.Service.Core
 
         public override IEnumerable<Tuple<Feed.Aggregator.Feed, object>> GetFeeds(FeedFilter filter)
         {
-            var files = FileDao.GetFeeds(filter.Tenant, filter.Time.From, filter.Time.To)
+            var files = FileDao.GetFeedsAsync(filter.Tenant, filter.Time.From, filter.Time.To).Result
                 .Where(f => f.Item1.RootFolderType != FolderType.TRASH && f.Item1.RootFolderType != FolderType.BUNCH)
                 .ToList();
 
             var folderIDs = files.Select(r => r.Item1.FolderID).ToList();
-            var folders = FolderDao.GetFolders(folderIDs, checkShare: false);
+            var folders = FolderDao.GetFoldersAsync(folderIDs, checkShare: false).ToListAsync().Result;
 
             return files.Select(f => new Tuple<Feed.Aggregator.Feed, object>(ToFeed(f, folders.FirstOrDefault(r => r.ID.Equals(f.Item1.FolderID))), f));
         }
 
         public override IEnumerable<int> GetTenantsWithFeeds(DateTime fromTime)
         {
-            return FileDao.GetTenantsWithFeeds(fromTime);
+            return FileDao.GetTenantsWithFeedsAsync(fromTime).Result;
         }
 
         private Feed.Aggregator.Feed ToFeed((File<int>, SmallShareRecord) tuple, Folder<int> rootFolder)

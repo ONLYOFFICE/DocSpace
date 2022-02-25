@@ -230,6 +230,7 @@ class PageLayout extends React.Component {
       isBackdropVisible,
       isArticlePinned,
       isDesktop,
+      isHomepage,
     } = this.props;
     let articleHeaderContent = null;
     let articleMainButtonContent = null;
@@ -391,6 +392,7 @@ class PageLayout extends React.Component {
                           autoFocus={isMobile || isTabletView ? false : true}
                           pinned={isArticlePinned}
                           viewAs={viewAs}
+                          isHomepage={isHomepage}
                         >
                           {isSectionFilterAvailable && (
                             <SubSectionFilter className="section-body_filter">
@@ -522,6 +524,7 @@ PageLayout.propTypes = {
   isTabletView: PropTypes.bool,
   isHeaderVisible: PropTypes.bool,
   firstLoad: PropTypes.bool,
+  isHomepage: PropTypes.bool,
 };
 
 PageLayout.defaultProps = {

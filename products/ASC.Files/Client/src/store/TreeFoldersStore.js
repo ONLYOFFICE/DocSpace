@@ -10,6 +10,7 @@ class TreeFoldersStore {
   selectedTreeNode = [];
   expandedKeys = [];
   expandedPanelKeys = null;
+  rootFoldersTitles = {};
 
   constructor(selectedFolderStore) {
     makeAutoObservable(this);
@@ -18,8 +19,15 @@ class TreeFoldersStore {
 
   fetchTreeFolders = async () => {
     const treeFolders = await getFoldersTree();
+    this.setRootFoldersTitles(treeFolders);
     this.setTreeFolders(treeFolders);
     return treeFolders;
+  };
+
+  setRootFoldersTitles = (treeFolders) => {
+    treeFolders.forEach((elem) => {
+      this.rootFoldersTitles[elem.rootFolderType] = elem.title;
+    });
   };
 
   getFoldersTree = () => getFoldersTree();
