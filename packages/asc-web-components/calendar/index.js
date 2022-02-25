@@ -512,6 +512,8 @@ class Calendar extends Component {
                 isDisabled={false}
                 name="month-button"
                 displaySelectedOption
+                fixedDirection={true}
+                directionX="bottom"
               />
             </ComboBoxMonthStyle>
             <ComboBoxDateStyle>
@@ -527,6 +529,8 @@ class Calendar extends Component {
                 showDisabledItems
                 name="year-button"
                 displaySelectedOption
+                fixedDirection={true}
+                directionX="bottom"
               />
             </ComboBoxDateStyle>
           </ComboBoxStyle>
