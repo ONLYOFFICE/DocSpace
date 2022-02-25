@@ -13,6 +13,7 @@ global using ASC.Core.Common.EF;
 global using ASC.Core.Tenants;
 global using ASC.ElasticSearch;
 global using ASC.Feed;
+global using ASC.Feed.Core;
 global using ASC.Feed.Data;
 global using ASC.Files.Core;
 global using ASC.Files.Core.EF;
@@ -27,8 +28,6 @@ global using ASC.Web.Files.Classes;
 global using ASC.Web.Files.Core;
 global using ASC.Web.Files.Core.Search;
 global using ASC.Feed.Aggregator.Service;
-global using ASC.ElasticSearch.Service;
-global using ASC.Feed.Data;
 global using ASC.Web.Files.Services.DocumentService;
 
 global using Autofac;
