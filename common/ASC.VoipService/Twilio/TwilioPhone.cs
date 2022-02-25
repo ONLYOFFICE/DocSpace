@@ -23,6 +23,8 @@
  *
 */
 
+using HttpMethod = Twilio.Http.HttpMethod;
+
 namespace ASC.VoipService.Twilio
 {
     public class TwilioPhone : VoipPhone

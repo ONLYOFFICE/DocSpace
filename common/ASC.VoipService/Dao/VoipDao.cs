@@ -25,7 +25,7 @@
 
 namespace ASC.VoipService.Dao;
 
-[Scope(typeof(CachedVoipDao))]
+[Scope]
 public class VoipDao : AbstractDao
 {
     private readonly AuthContext _authContext;

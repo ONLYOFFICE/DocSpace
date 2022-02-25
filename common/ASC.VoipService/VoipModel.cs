@@ -28,23 +28,14 @@ namespace ASC.VoipService;
 public class Agent
 {
     public Guid Id { get; set; }
-
     public AnswerType Answer { get; set; }
-
     public string ClientID { get { return PhoneNumber + PostFix; } }
-
     public bool Record { get; set; }
-
     public int TimeOut { get; set; }
-
     public AgentStatus Status { get; set; }
-
     public bool AllowOutgoingCalls { get; set; }
-
     public string PostFix { get; set; }
-
     public string PhoneNumber { get; set; }
-
     public string RedirectToNumber { get; set; }
 
     public Agent()
