@@ -95,6 +95,7 @@ class ComboBox extends React.Component {
       isDefaultMode,
       manualWidth,
       displaySelectedOption,
+      fixedDirection,
     } = this.props;
     const { isOpen, selectedOption } = this.state;
 
@@ -159,6 +160,7 @@ class ComboBox extends React.Component {
             {...dropDownManualWidthProp}
             showDisabledItems={showDisabledItems}
             isDefaultMode={isDefaultMode}
+            fixedDirection={fixedDirection}
           >
             {advancedOptions
               ? advancedOptions
@@ -240,6 +242,7 @@ ComboBox.propTypes = {
   //** Dropdown manual width */
   manualWidth: PropTypes.string,
   displaySelectedOption: PropTypes.bool,
+  fixedDirection: PropTypes.bool,
 };
 
 ComboBox.defaultProps = {
@@ -255,6 +258,7 @@ ComboBox.defaultProps = {
   isDefaultMode: true,
   manualWidth: "200px",
   displaySelectedOption: false,
+  fixedDirection: false,
 };
 
 export default ComboBox;
