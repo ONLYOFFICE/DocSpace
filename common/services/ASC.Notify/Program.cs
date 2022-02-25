@@ -70,8 +70,8 @@ builder.Host.ConfigureServices((hostContext, services) =>
     services.Configure<NotifyServiceCfg>(hostContext.Configuration.GetSection("notify"));
 
     diHelper.TryAdd<NotifyService>();
-    diHelper.TryAdd<NotifySender>();
-    diHelper.TryAdd<NotifyCleaner>();
+    diHelper.TryAdd<NotifySenderService>();
+    diHelper.TryAdd<NotifyCleanerService>();
     diHelper.TryAdd<TenantManager>();
     diHelper.TryAdd<TenantWhiteLabelSettingsHelper>();
     diHelper.TryAdd<SettingsManager>();
@@ -82,8 +82,8 @@ builder.Host.ConfigureServices((hostContext, services) =>
     services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
 
     services.AddHostedService<NotifyService>();
-    services.AddHostedService<NotifySender>();
-    services.AddHostedService<NotifyCleaner>();
+    services.AddHostedService<NotifySenderService>();
+    services.AddHostedService<NotifyCleanerService>();
 });
 
 builder.Host.ConfigureContainer<ContainerBuilder>((context, builder) =>
