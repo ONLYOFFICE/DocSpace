@@ -51,12 +51,12 @@ public class CommonChunkedUploadSessionHolder
         _maxChunkUploadSize = maxChunkUploadSize;
     }
 
-    public void DeleteExpired()
+    public async Task DeleteExpiredAsync()
     {
         // clear old sessions
         try
         {
-            DataStore.DeleteExpired(_domain, StoragePath, SlidingExpiration);
+            await DataStore.DeleteExpiredAsync(_domain, StoragePath, SlidingExpiration);
         }
         catch (Exception err)
         {
@@ -64,38 +64,43 @@ public class CommonChunkedUploadSessionHolder
         }
     }
 
-    public void Store(CommonChunkedUploadSession s)
+    public async Task StoreAsync(CommonChunkedUploadSession s)
     {
         using var stream = s.Serialize();
-        DataStore.SavePrivate(_domain, GetPathWithId(s.Id), stream, s.Expired);
+        await DataStore.SavePrivateAsync(_domain, GetPathWithId(s.Id), stream, s.Expired);
     }
 
-    public void Remove(CommonChunkedUploadSession s)
+    public async Task RemoveAsync(CommonChunkedUploadSession s)
     {
-        DataStore.Delete(_domain, GetPathWithId(s.Id));
+        await DataStore.DeleteAsync(_domain, GetPathWithId(s.Id));
     }
 
-    public Stream GetStream(string sessionId)
+    public Task<Stream> GetStreamAsync(string sessionId)
     {
-        return DataStore.GetReadStream(_domain, GetPathWithId(sessionId));
+        return DataStore.GetReadStreamAsync(_domain, GetPathWithId(sessionId));
     }
 
-    public void Init(CommonChunkedUploadSession chunkedUploadSession)
+    public Task InitAsync(CommonChunkedUploadSession chunkedUploadSession)
     {
         if (chunkedUploadSession.BytesTotal < _maxChunkUploadSize)
         {
             chunkedUploadSession.UseChunks = false;
-            return;
+            return Task.CompletedTask;
         }
 
+        return internalInitAsync(chunkedUploadSession);
+    }
+
+    private async Task internalInitAsync(CommonChunkedUploadSession chunkedUploadSession)
+    {
         var tempPath = Guid.NewGuid().ToString();
-        var uploadId = DataStore.InitiateChunkedUpload(_domain, tempPath);
+        var uploadId = await DataStore.InitiateChunkedUploadAsync(_domain, tempPath);
 
         chunkedUploadSession.TempPath = tempPath;
         chunkedUploadSession.UploadId = uploadId;
     }
 
-    public void Finalize(CommonChunkedUploadSession uploadSession)
+    public async Task FinalizeAsync(CommonChunkedUploadSession uploadSession)
     {
         var tempPath = uploadSession.TempPath;
         var uploadId = uploadSession.UploadId;
@@ -103,22 +108,22 @@ public class CommonChunkedUploadSessionHolder
             .Select((x, i) => new KeyValuePair<int, string>(i + 1, x))
             .ToDictionary(x => x.Key, x => x.Value);
 
-        DataStore.FinalizeChunkedUpload(_domain, tempPath, uploadId, eTags);
+        await DataStore.FinalizeChunkedUploadAsync(_domain, tempPath, uploadId, eTags);
     }
 
-    public void Move(CommonChunkedUploadSession chunkedUploadSession, string newPath, bool quotaCheckFileSize = true)
+    public async Task MoveAsync(CommonChunkedUploadSession chunkedUploadSession, string newPath, bool quotaCheckFileSize = true)
     {
-        DataStore.Move(_domain, chunkedUploadSession.TempPath, string.Empty, newPath, quotaCheckFileSize);
+        await DataStore.MoveAsync(_domain, chunkedUploadSession.TempPath, string.Empty, newPath, quotaCheckFileSize);
     }
 
-    public void Abort(CommonChunkedUploadSession uploadSession)
+    public async Task AbortAsync(CommonChunkedUploadSession uploadSession)
     {
         if (uploadSession.UseChunks)
         {
             var tempPath = uploadSession.TempPath;
             var uploadId = uploadSession.UploadId;
 
-            DataStore.AbortChunkedUpload(_domain, tempPath, uploadId);
+            await DataStore.AbortChunkedUploadAsync(_domain, tempPath, uploadId);
         }
         else if (!string.IsNullOrEmpty(uploadSession.ChunksBuffer))
         {
@@ -126,13 +131,13 @@ public class CommonChunkedUploadSessionHolder
         }
     }
 
-    public void UploadChunk(CommonChunkedUploadSession uploadSession, Stream stream, long length)
+    public async Task UploadChunkAsync(CommonChunkedUploadSession uploadSession, Stream stream, long length)
     {
         var tempPath = uploadSession.TempPath;
         var uploadId = uploadSession.UploadId;
         var chunkNumber = uploadSession.GetItemOrDefault<int>("ChunksUploaded") + 1;
 
-        var eTag = DataStore.UploadChunk(_domain, tempPath, uploadId, stream, _maxChunkUploadSize, chunkNumber, length);
+        var eTag = await DataStore.UploadChunkAsync(_domain, tempPath, uploadId, stream, _maxChunkUploadSize, chunkNumber, length);
 
         uploadSession.Items["ChunksUploaded"] = chunkNumber;
         uploadSession.BytesUploaded += length;
@@ -159,6 +164,37 @@ public class CommonChunkedUploadSessionHolder
             using (var bufferStream = new FileStream(uploadSession.ChunksBuffer, FileMode.Append))
             {
                 stream.CopyTo(bufferStream);
+            }
+
+            uploadSession.BytesUploaded += chunkLength;
+
+            if (uploadSession.BytesTotal == uploadSession.BytesUploaded)
+            {
+                return new FileStream(uploadSession.ChunksBuffer, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite,
+                    4096, FileOptions.DeleteOnClose);
+            }
+        }
+
+        return Stream.Null;
+    }
+
+    public async Task<Stream> UploadSingleChunkAsync(CommonChunkedUploadSession uploadSession, Stream stream, long chunkLength)
+    {
+        if (uploadSession.BytesTotal == 0)
+            uploadSession.BytesTotal = chunkLength;
+
+        if (uploadSession.BytesTotal >= chunkLength)
+        {
+            //This is hack fixing strange behaviour of plupload in flash mode.
+
+            if (string.IsNullOrEmpty(uploadSession.ChunksBuffer))
+            {
+                uploadSession.ChunksBuffer = _tempPath.GetTempFileName();
+            }
+
+            using (var bufferStream = new FileStream(uploadSession.ChunksBuffer, FileMode.Append))
+            {
+                await stream.CopyToAsync(bufferStream);
             }
 
             uploadSession.BytesUploaded += chunkLength;

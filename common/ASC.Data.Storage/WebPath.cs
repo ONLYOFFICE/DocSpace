@@ -43,7 +43,7 @@ public class WebPathSettings
     {
         if (!Uri.IsWellFormedUriString(absolutePath, UriKind.Absolute))
         {
-                throw new ArgumentException($"bad path format {absolutePath} is not absolute");
+            throw new ArgumentException($"bad path format {absolutePath} is not absolute");
         }
 
         var appender = _appenders.FirstOrDefault(x => absolutePath.Contains(x.Append) || (absolutePath.Contains(x.AppendSecure) && !string.IsNullOrEmpty(x.AppendSecure)));
@@ -61,7 +61,7 @@ public class WebPathSettings
     {
         if (!string.IsNullOrEmpty(relativePath) && relativePath.IndexOf('~') == 0)
         {
-                throw new ArgumentException($"bad path format {relativePath} remove '~'", nameof(relativePath));
+            throw new ArgumentException($"bad path format {relativePath} remove '~'", nameof(relativePath));
         }
 
         var result = relativePath;
@@ -70,12 +70,12 @@ public class WebPathSettings
         if (_appenders.Any())
         {
             var avaliableAppenders = _appenders.Where(x => x.Extensions != null && x.Extensions.Split('|').Contains(ext) || string.IsNullOrEmpty(ext)).ToList();
-                var avaliableAppendersCount = avaliableAppenders.Count;
+            var avaliableAppendersCount = avaliableAppenders.Count;
 
             Appender appender;
             if (avaliableAppendersCount > 1)
             {
-                    appender = avaliableAppenders[relativePath.Length % avaliableAppendersCount];
+                appender = avaliableAppenders[relativePath.Length % avaliableAppendersCount];
             }
             else if (avaliableAppendersCount == 1)
             {
@@ -102,7 +102,7 @@ public class WebPathSettings
                 //}
                 //else
                 //{
-                    result = $"{appender.Append.TrimEnd('/').TrimStart('~')}/{relativePath.TrimStart('/')}{query}";
+                result = $"{appender.Append.TrimEnd('/').TrimStart('~')}/{relativePath.TrimStart('/')}{query}";
                 //}
             }
             else
@@ -110,12 +110,12 @@ public class WebPathSettings
                 //TODO HostingEnvironment.IsHosted
                 if (SecureHelper.IsSecure(httpContext, options) && !string.IsNullOrEmpty(appender.AppendSecure))
                 {
-                        result = $"{appender.AppendSecure.TrimEnd('/')}/{relativePath.TrimStart('/')}";
+                    result = $"{appender.AppendSecure.TrimEnd('/')}/{relativePath.TrimStart('/')}";
                 }
                 else
                 {
                     //Append directly
-                        result = $"{appender.Append.TrimEnd('/')}/{relativePath.TrimStart('/')}";
+                    result = $"{appender.Append.TrimEnd('/')}/{relativePath.TrimStart('/')}";
                 }
             }
         }
@@ -129,7 +129,7 @@ public class WebPath
 {
     public IServiceProvider ServiceProvider { get; }
     public IHostEnvironment HostEnvironment { get; }
-        private IHttpClientFactory ClientFactory { get; }
+    private IHttpClientFactory ClientFactory { get; }
 
     private static readonly IDictionary<string, bool> _existing = new ConcurrentDictionary<string, bool>();
     private readonly WebPathSettings _webPathSettings;
@@ -156,7 +156,7 @@ public class WebPath
         HostEnvironment = hostEnvironment;
         _coreBaseSettings = coreBaseSettings;
         _options = options;
-            ClientFactory = clientFactory;
+        ClientFactory = clientFactory;
     }
 
     public WebPath(
@@ -175,22 +175,25 @@ public class WebPath
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public string GetPath(string relativePath)
+    public Task<string> GetPathAsync(string relativePath)
     {
         if (!string.IsNullOrEmpty(relativePath) && relativePath.IndexOf('~') == 0)
         {
-                throw new ArgumentException($"bad path format {relativePath} remove '~'", nameof(relativePath));
+            throw new ArgumentException($"bad path format {relativePath} remove '~'", nameof(relativePath));
         }
 
+        return InternalGetPathAsync(relativePath);
+    }
+
+    private async Task<string> InternalGetPathAsync(string relativePath)
+    {
         if (_coreBaseSettings.Standalone && ServiceProvider.GetService<StaticUploader>().CanUpload()) //hack for skip resolve DistributedTaskQueueOptionsManager
         {
             try
             {
-                var result = _storageSettingsHelper.DataStore(_settingsManager.Load<CdnStorageSettings>()).GetInternalUri("", relativePath, TimeSpan.Zero, null).AbsoluteUri.ToLower();
-                if (!string.IsNullOrEmpty(result))
-                {
-                    return result;
-                }
+                var uri = await _storageSettingsHelper.DataStore(_settingsManager.Load<CdnStorageSettings>()).GetInternalUriAsync("", relativePath, TimeSpan.Zero, null);
+                var result = uri.AbsoluteUri.ToLower();
+                if (!string.IsNullOrEmpty(result)) return result;
             }
             catch (Exception)
             {
@@ -201,9 +204,9 @@ public class WebPath
         return _webPathSettings.GetPath(_httpContextAccessor?.HttpContext, _options, relativePath);
     }
 
-    public bool Exists(string relativePath)
+    public async Task<bool> ExistsAsync(string relativePath)
     {
-        var path = GetPath(relativePath);
+        var path = await GetPathAsync(relativePath);
         if (!_existing.ContainsKey(path))
         {
             if (Uri.IsWellFormedUriString(path, UriKind.Relative) && _httpContextAccessor?.HttpContext != null)
@@ -228,7 +231,7 @@ public class WebPath
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(path);
             request.Method = HttpMethod.Head;
-                var httpClient = ClientFactory.CreateClient();
+            var httpClient = ClientFactory.CreateClient();
             using var response = httpClient.Send(request);
 
             return response.StatusCode == HttpStatusCode.OK;

@@ -23,6 +23,8 @@
  *
 */
 
+using static ASC.Security.Cryptography.EmailValidationKeyProvider;
+
 namespace ASC.Security.Cryptography;
 
 [Scope]
@@ -173,11 +175,10 @@ public class EmailValidationKeyModel
     public string Email { get; set; }
     public Guid? UiD { get; set; }
     public ConfirmType? Type { get; set; }
-    public int? P { get; set; }
 
-    public void Deconstruct(out string key, out EmployeeType? emplType, out string email, out Guid? uiD, out ConfirmType? type, out int? p)
+    public void Deconstruct(out string key, out EmployeeType? emplType, out string email, out Guid? uiD, out ConfirmType? type)
     {
-        (key, emplType, email, uiD, type, p) = (Key, EmplType, Email, UiD, Type, P);
+        (key, emplType, email, uiD, type) = (Key, EmplType, Email, UiD, Type);
     }
 }
 
@@ -218,9 +219,6 @@ public class EmailValidationKeyModelHelper
 
         request.TryGetValue("key", out var key);
 
-        request.TryGetValue("p", out var pkey);
-        int.TryParse(pkey, out var p);
-
         request.TryGetValue("emplType", out var emplType);
         Enum.TryParse<EmployeeType>(emplType, out var employeeType);
 
@@ -233,7 +231,6 @@ public class EmailValidationKeyModelHelper
             Email = _email,
             EmplType = employeeType,
             Key = key,
-            P = p,
             Type = cType,
             UiD = userId
         };
@@ -241,7 +238,7 @@ public class EmailValidationKeyModelHelper
 
     public ValidationResult Validate(EmailValidationKeyModel model)
     {
-        var (key, emplType, email, uiD, type, p) = model;
+        var (key, emplType, email, uiD, type) = model;
 
         ValidationResult checkKeyResult;
 
@@ -275,13 +272,10 @@ public class EmailValidationKeyModelHelper
 
             case ConfirmType.ProfileRemove:
                 // validate UiD
-                if (p == 1)
+                var user = _userManager.GetUsers(uiD.GetValueOrDefault());
+                if (user == null || user.Status == EmployeeStatus.Terminated || _authContext.IsAuthenticated && _authContext.CurrentAccount.ID != uiD)
                 {
-                    var user = _userManager.GetUsers(uiD.GetValueOrDefault());
-                    if (user == null || user.Status == EmployeeStatus.Terminated || _authContext.IsAuthenticated && _authContext.CurrentAccount.ID != uiD)
-                    {
-                        return ValidationResult.Invalid;
-                    }
+                    return ValidationResult.Invalid;
                 }
 
                 checkKeyResult = _provider.ValidateEmailKey(email + type + uiD, key, _provider.ValidEmailKeyInterval);

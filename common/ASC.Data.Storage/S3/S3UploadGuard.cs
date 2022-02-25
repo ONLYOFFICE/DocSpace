@@ -45,23 +45,28 @@ public class S3UploadGuard
 
     public void DeleteExpiredUploadsAsync(TimeSpan trustInterval)
     {
-        var task = new Task(() =>
+            var task = new Task(async () =>
         {
-            DeleteExpiredUploads(trustInterval);
+                await DeleteExpiredUploadsActionAsync(trustInterval);
         }, TaskCreationOptions.LongRunning);
 
         task.Start();
     }
 
-    private void DeleteExpiredUploads(TimeSpan trustInterval)
+        private Task DeleteExpiredUploadsActionAsync(TimeSpan trustInterval)
     {
         Configure();
 
         if (_configErrors)
         {
-            return;
+                return Task.CompletedTask;
         }
 
+            return InternalDeleteExpiredUploadsActionAsync(trustInterval);
+        }
+
+        private async Task InternalDeleteExpiredUploadsActionAsync(TimeSpan trustInterval)
+        {
         using var s3 = GetClient();
         var nextKeyMarker = string.Empty;
         var nextUploadIdMarker = string.Empty;
@@ -81,11 +86,11 @@ public class S3UploadGuard
                 request.UploadIdMarker = nextUploadIdMarker;
             }
 
-            var response = s3.ListMultipartUploadsAsync(request).Result;
+                var response = await s3.ListMultipartUploadsAsync(request);
 
             foreach (var u in response.MultipartUploads.Where(x => x.Initiated + trustInterval <= DateTime.UtcNow))
             {
-                AbortMultipartUpload(u, s3);
+                    await AbortMultipartUploadAsync(u, s3);
             }
 
             isTruncated = response.IsTruncated;
@@ -95,7 +100,7 @@ public class S3UploadGuard
         while (isTruncated);
     }
 
-    private void AbortMultipartUpload(MultipartUpload u, AmazonS3Client client)
+        private async Task AbortMultipartUploadAsync(MultipartUpload u, AmazonS3Client client)
     {
         var request = new AbortMultipartUploadRequest
         {
@@ -104,7 +109,7 @@ public class S3UploadGuard
             UploadId = u.UploadId,
         };
 
-        client.AbortMultipartUploadAsync(request).Wait();
+            await client.AbortMultipartUploadAsync(request);
     }
 
     private AmazonS3Client GetClient()

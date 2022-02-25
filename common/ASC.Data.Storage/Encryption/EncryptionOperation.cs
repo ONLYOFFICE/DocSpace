@@ -96,7 +96,7 @@ public class EncryptionOperation : DistributedTaskProgress
 
                 Parallel.ForEach(dictionary, (elem) =>
                 {
-                    EncryptStore(tenant, elem.Key, elem.Value, storageFactoryConfig, log);
+                        EncryptStoreAsync(tenant, elem.Key, elem.Value, storageFactoryConfig, log).Wait();
                 });
             }
 
@@ -105,7 +105,7 @@ public class EncryptionOperation : DistributedTaskProgress
 
             if (!_hasErrors)
             {
-                DeleteProgressFiles(storageFactory);
+                    DeleteProgressFilesAsync(storageFactory).Wait();
                 SaveNewSettings(encryptionSettingsHelper, log);
             }
 
@@ -124,19 +124,19 @@ public class EncryptionOperation : DistributedTaskProgress
         }
     }
 
-    private void EncryptStore(Tenant tenant, string module, DiscDataStore store, StorageFactoryConfig storageFactoryConfig, ILog log)
+        private async Task EncryptStoreAsync(Tenant tenant, string module, DiscDataStore store, StorageFactoryConfig storageFactoryConfig, ILog log)
     {
         var domains = storageFactoryConfig.GetDomainList(ConfigPath, module).ToList();
 
         domains.Add(string.Empty);
 
-        var progress = ReadProgress(store);
+            var progress = await ReadProgressAsync(store);
 
             foreach (var domain in domains)
             {
                 var logParent = $"Tenant: {tenant.Alias}, Module: {module}, Domain: {domain}";
 
-            var files = GetFiles(domains, progress, store, domain);
+                var files = await GetFilesAsync(domains, progress, store, domain);
 
             EncryptFiles(store, domain, files, logParent, log);
         }
@@ -146,25 +146,31 @@ public class EncryptionOperation : DistributedTaskProgress
         log.DebugFormat("Percentage: {0}", Percentage);
     }
 
-    private List<string> ReadProgress(DiscDataStore store)
+        private Task<List<string>> ReadProgressAsync(DiscDataStore store)
     {
-        var encryptedFiles = new List<string>();
-
         if (!_useProgressFile)
         {
-            return encryptedFiles;
+                return Task.FromResult(new List<string>());
         }
 
-        if (store.IsFile(string.Empty, ProgressFileName))
-        {
-            using var stream = store.GetReadStream(string.Empty, ProgressFileName);
-            using var reader = new StreamReader(stream);
-            string line;
-            while ((line = reader.ReadLine()) != null)
-            {
-                encryptedFiles.Add(line);
-            }
+            return InternalReadProgressAsync(store);
         }
+
+        private async Task<List<string>> InternalReadProgressAsync(DiscDataStore store)
+        {
+            var encryptedFiles = new List<string>();
+
+            if (await store.IsFileAsync(string.Empty, ProgressFileName))
+            {
+                using var stream = await store.GetReadStreamAsync(string.Empty, ProgressFileName);
+            using var reader = new StreamReader(stream);
+                string line;
+
+                while ((line = reader.ReadLine()) != null)
+                {
+                    encryptedFiles.Add(line);
+                }
+            }
         else
         {
             store.GetWriteStream(string.Empty, ProgressFileName).Close();
@@ -173,9 +179,9 @@ public class EncryptionOperation : DistributedTaskProgress
         return encryptedFiles;
     }
 
-    private IEnumerable<string> GetFiles(List<string> domains, List<string> progress, DiscDataStore targetStore, string targetDomain)
+        private async Task<IEnumerable<string>> GetFilesAsync(List<string> domains, List<string> progress, DiscDataStore targetStore, string targetDomain)
     {
-        IEnumerable<string> files = targetStore.ListFilesRelative(targetDomain, "\\", "*.*", true);
+            IEnumerable<string> files = await targetStore.ListFilesRelativeAsync(targetDomain, "\\", "*.*", true).ToListAsync();
 
             if (progress.Count > 0)
         {
@@ -240,10 +246,10 @@ public class EncryptionOperation : DistributedTaskProgress
 
         using var stream = store.GetWriteStream(string.Empty, ProgressFileName, FileMode.Append);
         using var writer = new StreamWriter(stream);
-        writer.WriteLine(file);
-    }
+            writer.WriteLine(file);
+        }
 
-    private void DeleteProgressFiles(StorageFactory storageFactory)
+        private async Task DeleteProgressFilesAsync(StorageFactory storageFactory)
     {
         foreach (var tenant in _tenants)
         {
@@ -251,9 +257,9 @@ public class EncryptionOperation : DistributedTaskProgress
             {
                 var store = (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.Id.ToString(), module);
 
-                if (store.IsFile(string.Empty, ProgressFileName))
+                    if (await store.IsFileAsync(string.Empty, ProgressFileName))
                 {
-                    store.Delete(string.Empty, ProgressFileName);
+                        await store.DeleteAsync(string.Empty, ProgressFileName);
                 }
             }
         }

@@ -32,34 +32,49 @@ public class SubscriptionManager
 {
     private readonly ISubscriptionService _service;
     private readonly TenantManager _tenantManager;
-    private ICache Cache { get; set; }
+    private ICache _cache;
     public static readonly object CacheLocker = new object();
     public static readonly List<Guid> Groups = Groups = new List<Guid>
-            {
-                Constants.Admin.ID,
-                Constants.Everyone.ID,
-                Constants.User.ID
-            };
+    {
+        Constants.Admin.ID,
+        Constants.Everyone.ID,
+        Constants.User.ID
+    };
 
-    public SubscriptionManager(ISubscriptionService service, TenantManager tenantManager, ICache cache)
+    public SubscriptionManager(CachedSubscriptionService service, TenantManager tenantManager, ICache cache)
     {
         _service = service ?? throw new ArgumentNullException("subscriptionManager");
         _tenantManager = tenantManager;
-        Cache = cache;
+        _cache = cache;
     }
-
 
     public void Subscribe(string sourceID, string actionID, string objectID, string recipientID)
     {
         var s = new SubscriptionRecord
         {
             Tenant = GetTenant(),
-            SourceId = sourceID,
-            ActionId = actionID,
-            RecipientId = recipientID,
-            ObjectId = objectID,
             Subscribed = true,
         };
+
+        if (sourceID != null)
+        {
+            s.SourceId = sourceID;
+        }
+
+        if (actionID != null)
+        {
+            s.ActionId = actionID;
+        }
+
+        if (recipientID != null)
+        {
+            s.RecipientId = recipientID;
+        }
+
+        if (objectID != null)
+        {
+            s.ObjectId = objectID;
+        }
 
         _service.SaveSubscription(s);
     }
@@ -69,12 +84,29 @@ public class SubscriptionManager
         var s = new SubscriptionRecord
         {
             Tenant = GetTenant(),
-            SourceId = sourceID,
-            ActionId = actionID,
-            RecipientId = recipientID,
-            ObjectId = objectID,
             Subscribed = false,
         };
+
+        if (sourceID != null)
+        {
+            s.SourceId = sourceID;
+        }
+
+        if (actionID != null)
+        {
+            s.ActionId = actionID;
+        }
+
+        if (recipientID != null)
+        {
+            s.RecipientId = recipientID;
+        }
+
+        if (objectID != null)
+        {
+            s.ObjectId = objectID;
+        }
+
         _service.SaveSubscription(s);
     }
 
@@ -136,12 +168,29 @@ public class SubscriptionManager
     {
         var m = new SubscriptionMethod
         {
-            Tenant = GetTenant(),
-            Source = sourceID,
-            Action = actionID,
-            Recipient = recipientID,
-            Methods = senderNames,
+            Tenant = GetTenant()
         };
+
+        if (sourceID != null)
+        {
+            m.Source = sourceID;
+        }
+
+        if (actionID != null)
+        {
+            m.Action = actionID;
+        }
+
+        if (recipientID != null)
+        {
+            m.Recipient = recipientID;
+        }
+
+        if (senderNames != null)
+        {
+            m.Methods = senderNames;
+        }
+
 
         _service.SetSubscriptionMethod(m);
     }
@@ -151,11 +200,11 @@ public class SubscriptionManager
         lock (CacheLocker)
         {
             var key = $"subs|-1{sourceID}{actionID}{recepient}";
-            var result = Cache.Get<IEnumerable<SubscriptionMethod>>(key);
+            var result = _cache.Get<IEnumerable<SubscriptionMethod>>(key);
             if (result == null)
             {
                 result = _service.GetSubscriptionMethods(-1, sourceID, actionID, recepient);
-                Cache.Insert(key, result, DateTime.UtcNow.AddDays(1));
+                _cache.Insert(key, result, DateTime.UtcNow.AddDays(1));
             }
 
             return result;

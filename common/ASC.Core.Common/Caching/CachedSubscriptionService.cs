@@ -26,7 +26,7 @@
 namespace ASC.Core.Caching;
 
 [Singletone]
-class SubscriptionServiceCache
+public class SubscriptionServiceCache
 {
     internal readonly ICache Cache;
     internal readonly ICacheNotify<SubscriptionRecord> NotifyRecord;
@@ -94,7 +94,7 @@ class SubscriptionServiceCache
 }
 
 [Scope]
-class CachedSubscriptionService : ISubscriptionService
+public class CachedSubscriptionService : ISubscriptionService
 {
     private readonly ISubscriptionService _service;
     private readonly ICache _cache;
@@ -235,7 +235,7 @@ internal class SubsciptionsStore
     public SubscriptionRecord GetSubscription(string recipientId, string objectId)
     {
         return _recordsByRec.ContainsKey(recipientId) ?
-            _recordsByRec[recipientId].Where(s => s.ObjectId == objectId).FirstOrDefault() :
+            _recordsByRec[recipientId].Where(s => s.ObjectId == (objectId ?? "")).FirstOrDefault() :
             null;
     }
 
@@ -261,7 +261,7 @@ internal class SubsciptionsStore
 
     public void RemoveSubscriptions(string objectId)
     {
-        _records.RemoveAll(s => s.ObjectId == objectId);
+        _records.RemoveAll(s => s.ObjectId == (objectId ?? ""));
         BuildSubscriptionsIndex(_records);
     }
 

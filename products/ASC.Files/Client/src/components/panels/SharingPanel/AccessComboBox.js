@@ -118,6 +118,7 @@ const AccessComboBox = (props) => {
       directionX={directionX}
       disableIconClick={false}
       isDisabled={isDisabled}
+      isDefaultMode={false}
     >
       <ReactSVG src={accessIconUrl} className="sharing-access-combo-box-icon" />
     </ComboBox>

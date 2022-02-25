@@ -24,93 +24,33 @@
 */
 
 
-namespace ASC.Feed
+namespace ASC.Feed;
+
+public static class Constants
 {
-    public static class Constants
-    {
-        public const string FeedDbId = "core";
-        public const string ProjectsDbId = "projects";
-        public const string FilesDbId = "files";
-        public const string CommunityDbId = "community";
-        public const string CrmDbId = "crm";
+    public const string FeedDbId = "core";
+    public const string ProjectsDbId = "projects";
+    public const string FilesDbId = "files";
+    public const string CommunityDbId = "community";
+    public const string CrmDbId = "crm";
 
-        #region Modules
+    #region Modules
 
-        public static string BookmarksModule
-        {
-            get { return "bookmarks"; }
-        }
+    public const string BookmarksModule = "bookmarks";
+    public const string BlogsModule = "blogs";
+    public const string ForumsModule = "forums";
+    public const string EventsModule = "events";
+    public const string ProjectsModule = "projects";
+    public const string MilestonesModule = "milestones";
+    public const string DiscussionsModule = "discussions";
+    public const string TasksModule = "tasks";
+    public const string CommentsModule = "comments";
+    public const string CrmTasksModule = "crmTasks";
+    public const string ContactsModule = "contacts";
+    public const string DealsModule = "deals";
+    public const string CasesModule = "cases";
+    public const string FilesModule = "files";
+    public const string FoldersModule = "folders";
 
-        public static string BlogsModule
-        {
-            get { return "blogs"; }
-        }
-
-        public static string ForumsModule
-        {
-            get { return "forums"; }
-        }
-
-        public static string EventsModule
-        {
-            get { return "events"; }
-        }
-
-        public static string ProjectsModule
-        {
-            get { return "projects"; }
-        }
-
-        public static string MilestonesModule
-        {
-            get { return "milestones"; }
-        }
-
-        public static string DiscussionsModule
-        {
-            get { return "discussions"; }
-        }
-
-        public static string TasksModule
-        {
-            get { return "tasks"; }
-        }
-
-        public static string CommentsModule
-        {
-            get { return "comments"; }
-        }
-
-        public static string CrmTasksModule
-        {
-            get { return "crmTasks"; }
-        }
-
-        public static string ContactsModule
-        {
-            get { return "contacts"; }
-        }
-
-        public static string DealsModule
-        {
-            get { return "deals"; }
-        }
-
-        public static string CasesModule
-        {
-            get { return "cases"; }
-        }
-
-        public static string FilesModule
-        {
-            get { return "files"; }
-        }
-
-        public static string FoldersModule
-        {
-            get { return "folders"; }
-        }
-
-        #endregion
-    }
+    #endregion
 }

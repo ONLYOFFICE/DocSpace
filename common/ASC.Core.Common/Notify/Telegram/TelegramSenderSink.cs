@@ -45,11 +45,11 @@ class TelegramSenderSink : Sink
             const SendResult result = SendResult.OK;
             var m = new NotifyMessage
             {
-                To = message.Recipient.ID,
+                Reciever = message.Recipient.ID,
                 Subject = message.Subject,
                 ContentType = message.ContentType,
                 Content = message.Body,
-                Sender = _senderName,
+                SenderType = _senderName,
                 CreationDate = DateTime.UtcNow.Ticks,
             };
 
@@ -57,7 +57,7 @@ class TelegramSenderSink : Sink
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
 
             var tenant = tenantManager.GetCurrentTenant(false);
-            m.Tenant = tenant == null ? Tenant.DefaultTenant : tenant.Id;
+            m.TenantId = tenant == null ? Tenant.DefaultTenant : tenant.Id;
 
             _sender.Send(m);
 

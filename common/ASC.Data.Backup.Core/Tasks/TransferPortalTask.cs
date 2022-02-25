@@ -172,7 +172,7 @@ public class TransferPortalTask : PortalTaskBase
                 {
                     try
                     {
-                        utility.CopyFile(file.Domain, file.Path, file.Domain, adjustedPath);
+                            utility.CopyFileAsync(file.Domain, file.Path, file.Domain, adjustedPath).Wait();
                     }
                     catch (Exception error)
                     {

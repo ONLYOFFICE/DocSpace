@@ -44,8 +44,8 @@ namespace ASC.TelegramService
 
         public Task SendMessage(NotifyMessage msg)
         {
-            if (string.IsNullOrEmpty(msg.To)) return Task.CompletedTask;
-            if (!Clients.ContainsKey(msg.Tenant)) return Task.CompletedTask;
+            if (string.IsNullOrEmpty(msg.Reciever)) return Task.CompletedTask;
+            if (!Clients.ContainsKey(msg.TenantId)) return Task.CompletedTask;
 
             return InternalSendMessage(msg);
         }
@@ -55,15 +55,15 @@ namespace ASC.TelegramService
             var scope = ServiceProvider.CreateScope();
             var cachedTelegramDao = scope.ServiceProvider.GetService<IOptionsSnapshot<CachedTelegramDao>>().Value;
 
-            var client = Clients[msg.Tenant].Client;
+            var client = Clients[msg.TenantId].Client;
 
             try
             {
-                var tgUser = cachedTelegramDao.GetUser(Guid.Parse(msg.To), msg.Tenant);
+                var tgUser = cachedTelegramDao.GetUser(Guid.Parse(msg.Reciever), msg.TenantId);
 
                 if (tgUser == null)
                 {
-                    Log.DebugFormat("Couldn't find telegramId for user '{0}'", msg.To);
+                    Log.DebugFormat("Couldn't find telegramId for user '{0}'", msg.Reciever);
                     return;
                 }
 
@@ -72,7 +72,7 @@ namespace ASC.TelegramService
             }
             catch (Exception e)
             {
-                Log.DebugFormat("Couldn't send message for user '{0}' got an '{1}'", msg.To, e.Message);
+                Log.DebugFormat("Couldn't send message for user '{0}' got an '{1}'", msg.Reciever, e.Message);
             }
         }
 

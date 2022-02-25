@@ -53,7 +53,7 @@ public class CrossModuleTransferUtility
         _chunkSize = 5 * 1024 * 1024;
     }
 
-    public void CopyFile(string srcDomain, string srcPath, string destDomain, string destPath)
+    public Task CopyFileAsync(string srcDomain, string srcPath, string destDomain, string destPath)
     {
         if (srcDomain == null)
         {
@@ -75,16 +75,21 @@ public class CrossModuleTransferUtility
             throw new ArgumentNullException(nameof(destPath));
         }
 
-        using var stream = _source.GetReadStream(srcDomain, srcPath);
+        return InternalCopyFileAsync(srcDomain, srcPath, destDomain, destPath);
+    }
+
+    private async Task InternalCopyFileAsync(string srcDomain, string srcPath, string destDomain, string destPath)
+    {
+        using var stream = await _source.GetReadStreamAsync(srcDomain, srcPath);
         if (stream.Length < _maxChunkUploadSize)
         {
-            _destination.Save(destDomain, destPath, stream);
+            await _destination.SaveAsync(destDomain, destPath, stream);
         }
         else
         {
             var session = new CommonChunkedUploadSession(stream.Length);
             var holder = new CommonChunkedUploadSessionHolder(_tempPath, _option, _destination, destDomain);
-            holder.Init(session);
+            await holder.InitAsync(session);
             try
             {
                 Stream memstream = null;
@@ -93,25 +98,25 @@ public class CrossModuleTransferUtility
                     while (GetStream(stream, out memstream))
                     {
                         memstream.Seek(0, SeekOrigin.Begin);
-                        holder.UploadChunk(session, memstream, _chunkSize);
-                        memstream.Dispose();
+                        await holder.UploadChunkAsync(session, memstream, _chunkSize);
+                        await memstream.DisposeAsync();
                     }
                 }
                 finally
                 {
                     if (memstream != null)
                     {
-                        memstream.Dispose();
+                        await memstream.DisposeAsync();
                     }
                 }
 
-                holder.Finalize(session);
-                _destination.Move(destDomain, session.TempPath, destDomain, destPath);
+                await holder.FinalizeAsync(session);
+                await _destination.MoveAsync(destDomain, session.TempPath, destDomain, destPath);
             }
             catch (Exception ex)
             {
                 _logger.Error("Copy File", ex);
-                holder.Abort(session);
+                await holder.AbortAsync(session);
             }
         }
     }

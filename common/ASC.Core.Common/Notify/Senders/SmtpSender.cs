@@ -83,7 +83,7 @@ public class SmtpSender : INotifySender
         using var scope = ServiceProvider.CreateScope();
         var scopeClass = scope.ServiceProvider.GetService<SmtpSenderScope>();
         var (tenantManager, configuration) = scopeClass;
-        tenantManager.SetCurrentTenant(m.Tenant);
+        tenantManager.SetCurrentTenant(m.TenantId);
 
         var smtpClient = GetSmtpClient();
         var result = NoticeSendResult.TryOnceAgain;
@@ -113,7 +113,7 @@ public class SmtpSender : INotifySender
             }
             catch (Exception e)
             {
-                Logger.ErrorFormat("Tenant: {0}, To: {1} - {2}", m.Tenant, m.To, e);
+                Logger.ErrorFormat("Tenant: {0}, To: {1} - {2}", m.TenantId, m.Reciever, e);
 
                 throw;
             }
@@ -182,11 +182,11 @@ public class SmtpSender : INotifySender
             Subject = m.Subject
         };
 
-        var fromAddress = MailboxAddress.Parse(ParserOptions.Default, m.From);
+        var fromAddress = MailboxAddress.Parse(ParserOptions.Default, m.Sender);
 
         mimeMessage.From.Add(fromAddress);
 
-        foreach (var to in m.To.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries))
+        foreach (var to in m.Reciever.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries))
         {
             mimeMessage.To.Add(MailboxAddress.Parse(ParserOptions.Default, to));
         }
@@ -207,14 +207,14 @@ public class SmtpSender : INotifySender
                 ContentTransferEncoding = ContentEncoding.QuotedPrintable
             };
 
-            if (m.EmbeddedAttachments != null && m.EmbeddedAttachments.Count > 0)
+            if (m.Attachments != null && m.Attachments.Count > 0)
             {
                 var multipartRelated = new MultipartRelated
                 {
                     Root = htmlPart
                 };
 
-                foreach (var attachment in m.EmbeddedAttachments)
+                foreach (var attachment in m.Attachments)
                 {
                     var mimeEntity = ConvertAttachmentToMimePart(attachment);
                     if (mimeEntity != null)

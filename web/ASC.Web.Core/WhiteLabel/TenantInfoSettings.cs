@@ -90,7 +90,7 @@ namespace ASC.Web.Core.WhiteLabel
             var store = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().Id.ToString(), "logo");
             try
             {
-                store.DeleteFiles("", "*", false);
+                store.DeleteFilesAsync("", "*", false).Wait();
             }
             catch
             {
@@ -108,7 +108,7 @@ namespace ASC.Web.Core.WhiteLabel
             {
                 try
                 {
-                    store.DeleteFiles("", "*", false);
+                    store.DeleteFilesAsync("", "*", false).Wait();
                 }
                 catch
                 {
@@ -119,7 +119,7 @@ namespace ASC.Web.Core.WhiteLabel
             {
                 tenantInfoSettings.CompanyLogoSize = image.Size();
                 memory.Seek(0, SeekOrigin.Begin);
-                store.Save(companyLogoFileName, memory);
+                store.SaveAsync(companyLogoFileName, memory).Wait();
                 tenantInfoSettings.CompanyLogoFileName = companyLogoFileName;
             }
             tenantInfoSettings.IsDefault = false;
@@ -135,7 +135,7 @@ namespace ASC.Web.Core.WhiteLabel
             }
 
             var store = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().Id.ToString(), "logo");
-            return store.GetUri(tenantInfoSettings.CompanyLogoFileName ?? "").ToString();
+            return store.GetUriAsync(tenantInfoSettings.CompanyLogoFileName ?? "").Result.ToString();
         }
 
         /// <summary>
@@ -151,7 +151,7 @@ namespace ASC.Web.Core.WhiteLabel
 
             var fileName = tenantInfoSettings.CompanyLogoFileName ?? "";
 
-            return storage.IsFile(fileName) ? storage.GetReadStream(fileName) : null;
+            return storage.IsFileAsync(fileName).Result ? storage.GetReadStreamAsync(fileName).Result : null;
         }
     }
 }

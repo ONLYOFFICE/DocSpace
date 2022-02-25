@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json;
-using System.Threading;
+using System.Threading.Tasks;
 
 using ASC.Common.Logging;
 using ASC.Core;
@@ -23,6 +23,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 using NUnit.Framework;
+using NUnit.Framework.Internal;
 
 namespace ASC.Files.Tests
 {
@@ -39,7 +40,7 @@ namespace ASC.Files.Tests
                 "--ConnectionStrings:default:connectionString", BaseFilesTests.TestConnection,
                 "--migration:enabled", "true",
                 "--core:products:folder", Path.Combine("..", "..", "..", "..","..", "..", "products")}).Build();
-            
+
             Migrate(host.Services);
             Migrate(host.Services, Assembly.GetExecutingAssembly().GetName().Name);
 
@@ -81,12 +82,16 @@ namespace ASC.Files.Tests
         protected IServiceScope scope { get; set; }
 
         public const string TestConnection = "Server=localhost;Database=onlyoffice_test;User ID=root;Password=root;Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;AllowPublicKeyRetrieval=True";
-        public virtual void SetUp()
+
+        public virtual Task SetUp()
         {
             var host = Program.CreateHostBuilder(new string[] {
                 "--pathToConf" , Path.Combine("..", "..", "..", "..","..", "..", "config"),
                 "--ConnectionStrings:default:connectionString", TestConnection,
-                 "--migration:enabled", "true" }).Build();
+                 "--migration:enabled", "true",
+                 "--web:hub:internal", "",
+            })
+                .Build();
 
             scope = host.Services.CreateScope();
 
@@ -103,32 +108,32 @@ namespace ASC.Files.Tests
             FileStorageService = scope.ServiceProvider.GetService<FileStorageService<int>>();
             Log = scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
 
-
             SecurityContext.AuthenticateMe(CurrentTenant.OwnerId);
+            return Task.CompletedTask;
         }
-        
-        public void DeleteFolder(int folder)
+
+        public async Task DeleteFolderAsync(int folder)
         {
-            FilesControllerHelper.DeleteFolder(folder, false, true);
+            await FilesControllerHelper.DeleteFolder(folder, false, true);
             while (true)
             {
                 var statuses = FileStorageService.GetTasksStatuses();
 
                 if (statuses.TrueForAll(r => r.Finished))
                     break;
-                Thread.Sleep(100);
+                await Task.Delay(100);
             }
         }
-        public void DeleteFile(int file)
+        public async Task DeleteFileAsync(int file)
         {
-            FilesControllerHelper.DeleteFile(file, false, true);
+            await FilesControllerHelper.DeleteFileAsync(file, false, true);
             while (true)
             {
                 var statuses = FileStorageService.GetTasksStatuses();
 
                 if (statuses.TrueForAll(r => r.Finished))
                     break;
-                Thread.Sleep(100);
+                await Task.Delay(100);
             }
         }
 

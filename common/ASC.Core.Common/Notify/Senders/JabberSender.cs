@@ -51,7 +51,7 @@ public class JabberSender : INotifySender
         {
             using var scope = _serviceProvider.CreateScope();
             var service = scope.ServiceProvider.GetService<JabberServiceClient>();
-            service.SendMessage(m.Tenant, null, m.To, text, m.Subject);
+            service.SendMessage(m.TenantId, null, m.Reciever, text, m.Subject);
         }
         catch (Exception e)
         {

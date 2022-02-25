@@ -292,7 +292,7 @@ public class RestorePortalTask : PortalTaskBase
                         using var stream = dataReader.GetEntry(key);
                         try
                         {
-                            storage.Save(file.Domain, adjustedPath, module != null ? module.PrepareData(key, stream, _columnMapper) : stream);
+                                storage.SaveAsync(file.Domain, adjustedPath, module != null ? module.PrepareData(key, stream, _columnMapper) : stream).Wait();
                         }
                         catch (Exception error)
                         {
@@ -338,9 +338,9 @@ public class RestorePortalTask : PortalTaskBase
                     ActionInvoker.Try(
                         state =>
                         {
-                            if (storage.IsDirectory((string)state))
+                                if (storage.IsDirectoryAsync((string)state).Result)
                             {
-                                storage.DeleteFiles((string)state, "\\", "*.*", true);
+                                    storage.DeleteFilesAsync((string)state, "\\", "*.*", true).Wait();
                             }
                         },
                         domain,

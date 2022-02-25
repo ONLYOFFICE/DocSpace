@@ -55,16 +55,16 @@ class JabberSenderSink : Sink
             {
                 var m = new NotifyMessage
                 {
-                    To = username,
+                    Reciever = username,
                     Subject = message.Subject,
                     ContentType = message.ContentType,
                     Content = message.Body,
-                    Sender = _senderName,
+                    SenderType = _senderName,
                     CreationDate = DateTime.UtcNow.Ticks,
                 };
 
                 var tenant = tenantManager.GetCurrentTenant(false);
-                m.Tenant = tenant == null ? Tenant.DefaultTenant : tenant.Id;
+                m.TenantId = tenant == null ? Tenant.DefaultTenant : tenant.Id;
 
                 _sender.Send(m);
             }

@@ -284,11 +284,47 @@ public class SignalrServiceClient
         }
     }
 
-    public void FilesChangeEditors(int tenantId, string fileId, bool finish)
+    public void StartEdit<T>(T fileId, string room)
     {
         try
         {
-            MakeRequest("changeEditors", new { tenantId, fileId, finish });
+            MakeRequest("start-edit", new { room, fileId });
+        }
+        catch (Exception error)
+        {
+            ProcessError(error);
+        }
+     }
+
+    public void StopEdit<T>(T fileId, string room, string data)
+    {
+        try
+        {
+            MakeRequest("stop-edit", new { room, fileId, data });
+        }
+        catch (Exception error)
+        {
+            ProcessError(error);
+        }
+    }
+
+    public void CreateFile<T>(T fileId, string room, string data)
+    {
+        try
+        {
+            MakeRequest("create-file", new { room, fileId, data });
+        }
+        catch (Exception error)
+        {
+            ProcessError(error);
+        }
+    }
+
+    public void DeleteFile<T>(T fileId, string room)
+    {
+        try
+        {
+            MakeRequest("delete-file", new { room, fileId });
         }
         catch (Exception error)
         {
@@ -324,15 +360,16 @@ public class SignalrServiceClient
         return domain;
     }
 
-    private void ProcessError(Exception e)
-    {
-        Logger.ErrorFormat("Service Error: {0}, {1}, {2}", e.Message, e.StackTrace,
-            (e.InnerException != null) ? e.InnerException.Message : string.Empty);
-        if (e is CommunicationException || e is TimeoutException)
+        private void ProcessError(Exception e)
         {
-            _lastErrorTime = DateTime.Now;
+            Logger.ErrorFormat("Service Error: {0}, {1}, {2}", e.Message, e.StackTrace,
+                (e.InnerException != null) ? e.InnerException.Message : string.Empty);
+
+            if (e is HttpRequestException)
+            {
+                _lastErrorTime = DateTime.Now;
+            }
         }
-    }
 
     private string MakeRequest(string method, object data)
     {

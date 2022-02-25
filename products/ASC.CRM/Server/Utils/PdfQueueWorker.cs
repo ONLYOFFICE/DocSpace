@@ -163,7 +163,7 @@ namespace ASC.Web.CRM.Classes
                 //        new HttpResponse(new System.IO.StringWriter()));
                 //}
 
-                _pdfCreator.CreateAndSaveFile(_invoiceId);
+                _pdfCreator.CreateAndSaveFileAsync(_invoiceId).Wait();
 
                 Percentage = 100;
                 PublishChanges();

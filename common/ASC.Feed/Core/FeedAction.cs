@@ -23,13 +23,12 @@
  *
 */
 
-namespace ASC.Feed
+namespace ASC.Feed;
+
+[Flags]
+public enum FeedAction
 {
-    [Flags]
-    public enum FeedAction
-    {
-        Created = 0,
-        Updated = 1,
-        Commented = 2
-    }
+    Created = 0,
+    Updated = 1,
+    Commented = 2
 }

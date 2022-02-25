@@ -78,7 +78,7 @@ public class EmailSenderSink : Sink
             Subject = message.Subject.Trim(' ', '\t', '\n', '\r'),
             ContentType = message.ContentType,
             Content = message.Body,
-            Sender = _senderName,
+            SenderType = _senderName,
             CreationDate = DateTime.UtcNow.Ticks,
         };
 
@@ -88,7 +88,7 @@ public class EmailSenderSink : Sink
         var (tenantManager, configuration, options) = scopeClass;
 
         var tenant = tenantManager.GetCurrentTenant(false);
-        m.Tenant = tenant == null ? Tenant.DefaultTenant : tenant.Id;
+        m.TenantId = tenant == null ? Tenant.DefaultTenant : tenant.Id;
 
         var from = MailAddressUtils.Create(configuration.SmtpSettings.SenderAddress, configuration.SmtpSettings.SenderDisplayName);
         var fromTag = message.Arguments.FirstOrDefault(x => x.Tag.Equals("MessageFrom"));
@@ -102,14 +102,14 @@ public class EmailSenderSink : Sink
 
             catch { }
         }
-        m.From = from.ToString();
+        m.Sender = from.ToString();
 
         var to = new List<string>();
         foreach (var address in message.Recipient.Addresses)
         {
             to.Add(MailAddressUtils.Create(address, message.Recipient.Name).ToString());
         }
-        m.To = string.Join("|", to.ToArray());
+        m.Reciever = string.Join("|", to.ToArray());
 
         var replyTag = message.Arguments.FirstOrDefault(x => x.Tag == "replyto");
         if (replyTag != null && replyTag.Value is string value)
@@ -133,7 +133,7 @@ public class EmailSenderSink : Sink
         var attachmentTag = message.Arguments.FirstOrDefault(x => x.Tag == "EmbeddedAttachments");
         if (attachmentTag != null && attachmentTag.Value != null)
         {
-            m.EmbeddedAttachments.AddRange(attachmentTag.Value as NotifyMessageAttachment[]);
+            m.Attachments.AddRange(attachmentTag.Value as NotifyMessageAttachment[]);
         }
 
         var autoSubmittedTag = message.Arguments.FirstOrDefault(x => x.Tag == "AutoSubmitted");

@@ -161,25 +161,25 @@ public class MigrateOperation : DistributedTaskProgress
                 {
                     //Status = module + domain;
                     _logger.DebugFormat("Domain: {0}", domain);
-                    files = oldStore.ListFilesRelative(domain, "\\", "*.*", true);
+                        files = oldStore.ListFilesRelativeAsync(domain, "\\", "*.*", true).ToArrayAsync().Result;
 
                     foreach (var file in files)
                     {
                         _logger.DebugFormat("File: {0}", file);
-                        crossModuleTransferUtility.CopyFile(domain, file, domain, file);
+                            crossModuleTransferUtility.CopyFileAsync(domain, file, domain, file).Wait();
                     }
                 }
 
                 _logger.Debug("Domain:");
 
-                files = oldStore.ListFilesRelative(string.Empty, "\\", "*.*", true)
+                    files = oldStore.ListFilesRelativeAsync(string.Empty, "\\", "*.*", true).ToArrayAsync().Result
                     .Where(path => domains.All(domain => !path.Contains(domain + "/")))
                     .ToArray();
 
                 foreach (var file in files)
                 {
                     _logger.DebugFormat("File: {0}", file);
-                    crossModuleTransferUtility.CopyFile("", file, "", file);
+                        crossModuleTransferUtility.CopyFileAsync("", file, "", file).Wait();
                 }
 
                 StepDone();
