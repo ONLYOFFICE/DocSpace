@@ -100,7 +100,7 @@ class DropDown extends React.PureComponent {
   }
 
   checkPosition = () => {
-    if (!this.dropDownRef.current) return;
+    if (!this.dropDownRef.current || this.props.fixedDirection) return;
     const { smallSectionWidth, forwardedRef } = this.props;
     const { manualY } = this.state;
 
@@ -138,7 +138,8 @@ class DropDown extends React.PureComponent {
 
   checkPositionPortal = () => {
     const parent = this.props.forwardedRef;
-    if (!parent.current) return;
+    if (!parent.current || this.props.fixedDirection) return;
+
     const rects = parent.current.getBoundingClientRect();
 
     let dropDownHeight = this.dropDownRef.current.offsetParent
@@ -331,6 +332,7 @@ DropDownContainer.propTypes = {
   isDefaultMode: PropTypes.bool,
   /** Needed to open correctly people and group selector when the section width is small */
   smallSectionWidth: PropTypes.bool,
+  fixedDirection: PropTypes.bool,
 };
 
 DropDownContainer.defaultProps = {
@@ -339,6 +341,7 @@ DropDownContainer.defaultProps = {
   withBackdrop: true,
   showDisabledItems: false,
   isDefaultMode: true,
+  fixedDirection: false,
 };
 
 export default DropDownContainer;
