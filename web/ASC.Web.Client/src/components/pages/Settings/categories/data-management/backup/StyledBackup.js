@@ -248,6 +248,19 @@ const StyledBackup = styled.div`
     margin-bottom: 8px;
   }
   ${commonSettingsStyles}
+
+  .backup_modules-separation {
+    margin-bottom: 28px;
+    border-bottom: 1px solid #eceef1;
+  }
+  .backup_modules-header {
+    font-size: 16px;
+    font-weight: bold;
+    padding-bottom: 8px;
+  }
+  .layout-progress-bar {
+    ${(props) => props.isDesktop && "cursor: default;"}
+  }
 `;
 
 const StyledBackupList = styled.div`

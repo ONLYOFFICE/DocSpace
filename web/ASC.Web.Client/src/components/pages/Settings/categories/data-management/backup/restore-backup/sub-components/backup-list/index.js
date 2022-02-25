@@ -85,10 +85,9 @@ class BackupListModalDialog extends React.Component {
   };
   onRestorePortal = () => {
     const { selectedFileId } = this.state;
-    const { isNotify, isCopyingToLocal, history } = this.props;
+    const { isNotify, history } = this.props;
 
     if (!selectedFileId) return;
-    if (isCopyingToLocal) return;
     this.setState({ isLoading: true }, function () {
       const backupId = selectedFileId;
       const storageType = "0";
@@ -184,6 +183,7 @@ class BackupListModalDialog extends React.Component {
                 size="medium"
                 label={t("Translations:Restore")}
                 onClick={this.onRestorePortal}
+                isDisabled={isCopyingToLocal}
               />
               <Button
                 className="restore_dialog-button"

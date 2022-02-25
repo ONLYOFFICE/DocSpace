@@ -130,7 +130,7 @@ export const settingsTree = [
             key: "4-0-2",
             icon: "",
             link: "restore-backup",
-            tKey: "DataRestore",
+            tKey: "RestoreBackup",
           },
         ],
       },

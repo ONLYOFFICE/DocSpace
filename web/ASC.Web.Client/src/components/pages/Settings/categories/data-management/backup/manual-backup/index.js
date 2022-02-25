@@ -15,12 +15,15 @@ import { StyledModules, StyledManualBackup } from "./../StyledBackup";
 import SelectFolderDialog from "files/SelectFolderDialog";
 import Loader from "@appserver/components/loader";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../../utils";
+import { isDesktop } from "@appserver/components/utils/device";
 
 let selectedStorageType = "";
 
 class ManualBackup extends React.Component {
   constructor(props) {
     super(props);
+
+    const { isDesktop } = this.props;
 
     selectedStorageType = getFromSessionStorage("LocalCopyStorageType");
 
@@ -42,7 +45,7 @@ class ManualBackup extends React.Component {
       link: "",
       selectedFolder: "",
       isPanelVisible: false,
-      isInitialLoading: true,
+      isInitialLoading: isDesktop ? false : true,
       isCheckedTemporaryStorage: checkedTemporary,
       isCheckedDocuments: checkedDocuments,
       isCheckedThirdParty: checkedThirdPartyResource,
@@ -117,8 +120,10 @@ class ManualBackup extends React.Component {
   };
 
   componentDidMount() {
+    const { isDesktop } = this.props;
+
     this._isMounted = true;
-    this.checkDownloadingProgress();
+    !isDesktop && this.checkDownloadingProgress();
   }
 
   componentWillUnmount() {
@@ -131,16 +136,30 @@ class ManualBackup extends React.Component {
   };
 
   onMakeTemporaryBackup = () => {
+    const { isDesktop, setBackupProgress } = this.props;
+
     saveToSessionStorage("LocalCopyStorageType", "TemporaryStorage");
 
-    startBackup("4", null)
-      .then(() =>
-        this.setState({
-          downloadingProgress: 1,
-        })
-      )
-      .then(() => !this.timerId && this.setIntervalProcess())
-      .catch((err) => console.error(err));
+    if (isDesktop) {
+      startBackup("4", null)
+        .then(() => setBackupProgress())
+        .catch((err) => {
+          toastr.error(`${t("CopyingError")}`);
+          console.error(err);
+        });
+    } else {
+      startBackup("4", null)
+        .then(() =>
+          this.setState({
+            downloadingProgress: 1,
+          })
+        )
+        .then(() => !this.timerId && this.setIntervalProcess())
+        .catch((err) => {
+          toastr.error(`${t("CopyingError")}`);
+          console.error(err);
+        });
+    }
   };
 
   getProgress = () => {
@@ -239,7 +258,7 @@ class ManualBackup extends React.Component {
     selectedStorage
   ) => {
     const { isCheckedDocuments, isCheckedThirdParty } = this.state;
-    const { t } = this.props;
+    const { t, isDesktop, setBackupProgress } = this.props;
 
     this.setState({
       downloadingProgress: 1,
@@ -277,10 +296,15 @@ class ManualBackup extends React.Component {
 
     try {
       await startBackup(moduleType, storageParams);
-      !this.timerId && this.setIntervalProcess();
+      if (isDesktop) {
+        setBackupProgress();
+      } else {
+        !this.timerId && this.setIntervalProcess();
+      }
     } catch (err) {
       toastr.error(`${t("CopyingError")}`);
       console.error(err);
+
       this.clearSessionStorage();
       this.setState({
         downloadingProgress: 100,
@@ -288,7 +312,7 @@ class ManualBackup extends React.Component {
     }
   };
   render() {
-    const { t } = this.props;
+    const { t, isDesktop, isCopyingLocal } = this.props;
     const {
       downloadingProgress,
       link,
@@ -299,7 +323,9 @@ class ManualBackup extends React.Component {
       isCheckedThirdPartyStorage,
     } = this.state;
 
-    const isMaxProgress = downloadingProgress === 100;
+    const isMaxProgress =
+      (isDesktop ? isCopyingLocal : downloadingProgress) === 100;
+
     const isDisabledThirdParty =
       this.commonThirdPartyList && this.commonThirdPartyList.length === 0;
 

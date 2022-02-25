@@ -19,13 +19,14 @@ import { getBackupProgress, startRestore } from "@appserver/common/api/portal";
 import { getSettings } from "@appserver/common/api/settings";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
-import config from "../../../../../../../../../../package.json";
+import config from "../../../../../../../../package.json";
 import FloatingButton from "@appserver/common/components/FloatingButton";
 import { request } from "@appserver/common/api/client";
 
 class RestoreBackup extends React.Component {
   constructor(props) {
     super(props);
+    const { isDesktop } = this.props;
 
     this.state = {
       isChecked: false,
@@ -40,7 +41,7 @@ class RestoreBackup extends React.Component {
       selectedFile: "",
       isErrors: {},
       downloadingProgress: 100,
-      isInitialLoading: true,
+      isInitialLoading: isDesktop ? false : true,
     };
 
     this._isMounted = false;
@@ -86,9 +87,10 @@ class RestoreBackup extends React.Component {
   };
 
   componentDidMount() {
+    const { isDesktop } = this.props;
     this._isMounted = true;
 
-    this.checkDownloadingProgress();
+    !isDesktop && this.checkDownloadingProgress();
   }
 
   componentWillUnmount() {
@@ -334,7 +336,6 @@ class RestoreBackup extends React.Component {
     }
 
     startRestore(backupId, storageType, storageParams, isNotify)
-      .then(() => getSettings())
       .then(() => (this.storageId = ""))
       .then(() =>
         history.push(
@@ -380,7 +381,7 @@ class RestoreBackup extends React.Component {
     };
   };
   render() {
-    const { t, history } = this.props;
+    const { t, history, isCopyingLocal, isDesktop } = this.props;
     const {
       isChecked,
       isInitialLoading,
@@ -406,7 +407,8 @@ class RestoreBackup extends React.Component {
     const isDisabledThirdParty =
       this.commonThirdPartyList && this.commonThirdPartyList.length === 0;
 
-    const isMaxProgress = downloadingProgress === 100;
+    const isMaxProgress =
+      (isDesktop ? isCopyingLocal : downloadingProgress) === 100;
 
     console.log("render restore backup ", this.state, this.props);
     return isInitialLoading ? (

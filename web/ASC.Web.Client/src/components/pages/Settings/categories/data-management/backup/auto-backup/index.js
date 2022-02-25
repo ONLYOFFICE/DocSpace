@@ -36,7 +36,7 @@ const EVERY_MONTH_TYPE = 2;
 class AutomaticBackup extends React.PureComponent {
   constructor(props) {
     super(props);
-    const { t, language } = props;
+    const { t, language, isDesktop } = props;
 
     this.lng = language.substring(0, language.indexOf("-"));
     moment.locale(this.lng);
@@ -77,7 +77,7 @@ class AutomaticBackup extends React.PureComponent {
       selectedStorageTypeNumber: "",
 
       isLoadingData: false,
-      isInitialLoading: true,
+      isInitialLoading: isDesktop ? false : true,
       isChanged: false,
       isChangedInStorage: false,
       isReset: false,
@@ -161,9 +161,28 @@ class AutomaticBackup extends React.PureComponent {
   };
 
   componentDidMount() {
+    const {
+      isDesktop,
+      backupSchedule,
+      commonThirdPartyList,
+      thirdPartyStorageInfo,
+    } = this.props;
+
     this._isMounted = true;
     this.getWeekdays();
-    this.setBasicSettings();
+
+    if (!isDesktop) this.setBasicSettings();
+    else {
+      this.commonThirdPartyList = commonThirdPartyList;
+      this.storageInfo = thirdPartyStorageInfo;
+
+      if (backupSchedule) {
+        this.onSetDefaultOptions(backupSchedule);
+        this.selectedSchedule = true;
+      } else {
+        this.onSetDefaultOptions();
+      }
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -284,17 +303,16 @@ class AutomaticBackup extends React.PureComponent {
       +defaultPeriodNumber
     );
 
-    const resetOptions =
-      savingProcess && this._isMounted
-        ? {
-            isLoadingData: false,
-            isChanged: false,
-            isChangedInStorage: false,
-            isError: false,
-            isErrorsFields: false,
-            isSuccessSave: true,
-          }
-        : {};
+    const resetOptions = savingProcess
+      ? {
+          isLoadingData: false,
+          isChanged: false,
+          isChangedInStorage: false,
+          isError: false,
+          isErrorsFields: false,
+          isSuccessSave: true,
+        }
+      : {};
 
     if (+defaultPeriodNumber === EVERY_WEEK_TYPE) {
       //Every Week option
@@ -1086,8 +1104,6 @@ class AutomaticBackup extends React.PureComponent {
     };
     console.log("render auto ", this.state);
 
-    const isCopyingToLocal = downloadingProgress !== 100;
-
     return isInitialLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
@@ -1185,7 +1201,7 @@ class AutomaticBackup extends React.PureComponent {
               label={t("Common:SaveButton")}
               onClick={this.onSaveModuleSettings}
               primary
-              isDisabled={isCopyingToLocal || isLoadingData}
+              isDisabled={isLoadingData}
               size="medium"
               className="save-button"
             />

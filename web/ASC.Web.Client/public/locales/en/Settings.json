@@ -88,7 +88,7 @@
   "TemporaryStorageDescription": "��������� ����� ����� ��������� � ������� Backup, �� ������� ������� � � ������� 24 ����� � ������� ��������.",
   "MakeCopy": "Make copy",
   "DownloadBackup": "Download the backup",
-  "DataRestore": "Data Restore",
+  "RestoreBackup": "Data Restore",
   "DataRestoreSettingsDescription": "Data Restore option is used to restore your previously saved portal data (from a local server or SaaS portal). Select the storage where the data is saved, enter necessary details and check the Send notification to portal users to alert your portal users about the backup/restore operations.",
   "DocumentsModule": "Documents module",
   "DocumentsModuleDescription": "��������� ����� ����� ��������� � ������� Common Documents.",
