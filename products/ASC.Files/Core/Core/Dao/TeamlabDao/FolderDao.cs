@@ -568,7 +568,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                         Level = subfolder.Value + 1 + f.Level
                     };
                     await FilesDbContext.AddOrUpdateAsync(r => r.Tree, newTree).ConfigureAwait(false);
-                }
+                }   
             }
 
             await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
@@ -1285,8 +1285,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         return Query(FilesDbContext.BunchObjects)
             .Where(r => r.LeftNode == folderID.ToString())
             .Select(r => r.RightNode)
-            .FirstOrDefaultAsync()
-;
+            .FirstOrDefaultAsync();
     }
 
     public Task<Dictionary<string, string>> GetBunchObjectIDsAsync(List<int> folderIDs)
@@ -1295,8 +1294,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
         return Query(FilesDbContext.BunchObjects)
             .Where(r => folderSIds.Any(a => a == r.LeftNode))
-            .ToDictionaryAsync(r => r.LeftNode, r => r.RightNode)
-;
+            .ToDictionaryAsync(r => r.LeftNode, r => r.RightNode);
     }
 
     public async Task<IEnumerable<(Folder<int>, SmallShareRecord)>> GetFeedsForFoldersAsync(int tenant, DateTime from, DateTime to)

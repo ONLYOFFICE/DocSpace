@@ -29,8 +29,8 @@ public class AbstractDao
 {
     protected readonly ICache Cache;
 
-    private readonly Lazy<FilesDbContext> LazyFilesDbContext;
-    public FilesDbContext FilesDbContext => LazyFilesDbContext.Value;
+    private readonly Lazy<FilesDbContext> _lazyFilesDbContext;
+    public FilesDbContext FilesDbContext => _lazyFilesDbContext.Value;
     private int _tenantID;
     protected internal int TenantID
     {
@@ -72,7 +72,7 @@ public class AbstractDao
         ICache cache)
     {
         Cache = cache;
-        LazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
+        _lazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
         UserManager = userManager;
         TenantManager = tenantManager;
         TenantUtil = tenantUtil;
