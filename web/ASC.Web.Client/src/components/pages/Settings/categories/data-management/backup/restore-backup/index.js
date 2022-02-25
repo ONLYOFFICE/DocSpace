@@ -510,12 +510,14 @@ class RestoreBackup extends React.Component {
           label={t("UserNotification")}
         />
 
-        <Text className="restore-warning">
+        <Text className="restore-backup_warning">
           {t("Common:Warning")}
           {"!"}
         </Text>
-        <Text>{t("RestoreSettingsWarning")}</Text>
-        <Text className=" restore-warning_link">
+        <Text className="restore-backup_warning-description">
+          {t("RestoreSettingsWarning")}
+        </Text>
+        <Text className="restore-backup_warning-link">
           {t("RestoreSettingsLink")}
         </Text>
 

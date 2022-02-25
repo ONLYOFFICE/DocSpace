@@ -113,6 +113,7 @@ const StyledAutoBackup = styled.div`
     background-color: #f8f9f9;
     padding: 12px;
     max-width: 1144px;
+    box-sizing: border-box;
   }
   .auto-backup_buttons {
     ${(props) => props.isDesktop && "margin-bottom: 24px"}
@@ -134,15 +135,19 @@ const StyledRestoreBackup = styled.div`
     line-height: 15px;
   }
 
-  .restore-warning {
+  .restore-backup_warning {
     font-weight: 600;
     margin-top: 24px;
     margin-bottom: 8px;
     font-size: 16px;
     color: #f21c0e;
   }
-  .restore-warning_link {
+  .restore-backup_warning-link {
     margin: 16px 0 24px 0;
+    max-width: ${TEXT_LENGTH};
+  }
+  .restore-backup_warning-description {
+    max-width: ${TEXT_LENGTH};
   }
   .restore-backup-checkbox {
     margin-bottom: 24px;
@@ -266,6 +271,7 @@ const StyledBackup = styled.div`
 
   .backup_modules-description {
     margin-bottom: 24px;
+    max-width: ${TEXT_LENGTH};
   }
 `;
 
