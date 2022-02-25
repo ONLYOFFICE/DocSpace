@@ -217,6 +217,15 @@ const Editor = () => {
         if (user) filesSettings = await getSettingsFiles();
         personal = authStore.settingsStore.personal;
         successAuth = !!user;
+
+        const { socketHelper } = authStore.settingsStore;
+        socketHelper.emit({
+          command: "subscribe",
+          data: "backup-restore",
+        });
+        socketHelper.on("restore-backup", () => {
+          alert("Backup restore started!");
+        });
       } catch (e) {
         successAuth = false;
       }

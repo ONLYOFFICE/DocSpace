@@ -163,6 +163,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     language,
     FirebaseHelper,
     personal,
+    socketHelper,
   } = rest;
 
   useEffect(() => {
@@ -189,6 +190,16 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
       toastr.error(err);
     }
   }, []);
+
+  useEffect(() => {
+    socketHelper.emit({
+      command: "subscribe",
+      data: "backup-restore",
+    });
+    socketHelper.on("restore-backup", () => {
+      alert("Backup restore started!");
+    });
+  }, [socketHelper]);
 
   const { t } = useTranslation("Common");
 
@@ -473,11 +484,13 @@ const ShellWrapper = inject(({ auth }) => {
     isDesktopClient,
     firebaseHelper,
     setModuleInfo,
+    socketHelper,
   } = settingsStore;
 
   return {
-    loadBaseInfo: () => {
-      init();
+    loadBaseInfo: async () => {
+      await init();
+
       setModuleInfo(config.homepage, "home");
       setProductVersion(config.version);
 
@@ -491,6 +504,7 @@ const ShellWrapper = inject(({ auth }) => {
     isDesktop: isDesktopClient,
     FirebaseHelper: firebaseHelper,
     personal,
+    socketHelper,
   };
 })(observer(Shell));
 
