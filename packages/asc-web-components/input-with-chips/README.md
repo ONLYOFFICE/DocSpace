@@ -15,7 +15,9 @@ import InputWithChips from "@appserver/components/input-with-chips";
   placeholder="Invite people by name or email"
   existEmailText="This email address has already been entered"
   invalidEmailText="Invalid email address"
-  exceededLimit="The limit on the number of emails has reached the maximum"
+  exceededLimitText="The limit on the number of emails has reached the maximum",
+  exceededLimit=1000,
+  maxLength=10000,
 />
 ```
 
@@ -50,12 +52,14 @@ Options have options:
 
 ### Properties
 
-| Props              |      Type      | Required | Values |                          Default                          | Description                                                  |
-| ------------------ | :------------: | :------: | :----: | :-------------------------------------------------------: | ------------------------------------------------------------ |
-| `options`          | `obj`, `array` |    -     |   -    |                             -                             | Array of objects with chips                                  |
-| `placeholder`      |    `string`    |    -     |   -    |              Invite people by name or email               | Placeholder text for the input                               |
-| `clearButtonLabel` |    `string`    |    -     |   -    |                             -                             | The text of the button for cleaning all chips                |
-| `onChange`         |     `func`     |    ✅    |   -    |                             -                             | Will be called when the selected items are changed           |
-| `existEmailText`   |    `string`    |    -     |   -    |        This email address has already been entered        | Warning text when entering an existing email                 |
-| `invalidEmailText` |    `string`    |    -     |   -    |                   Invalid email address                   | Warning text when entering an invalid email                  |
-| `exceededLimit`    |    `string`    |    -     |   -    | The limit on the number of emails has reached the maximum | Warning text when exceeding the limit of the number of chips |
+| Props               |      Type      | Required | Values |                          Default                          | Description                                                  |
+| ------------------- | :------------: | :------: | :----: | :-------------------------------------------------------: | ------------------------------------------------------------ |
+| `options`           | `obj`, `array` |    -     |   -    |                             -                             | Array of objects with chips                                  |
+| `placeholder`       |    `string`    |    -     |   -    |              Invite people by name or email               | Placeholder text for the input                               |
+| `clearButtonLabel`  |    `string`    |    -     |   -    |                        Clear list                         | The text of the button for cleaning all chips                |
+| `onChange`          |     `func`     |    ✅    |   -    |                             -                             | Will be called when the selected items are changed           |
+| `existEmailText`    |    `string`    |    -     |   -    |        This email address has already been entered        | Warning text when entering an existing email                 |
+| `invalidEmailText`  |    `string`    |    -     |   -    |                   Invalid email address                   | Warning text when entering an invalid email                  |
+| `exceededLimit`     |    `number`    |    -     |   -    |                           1000                            | Limit of chips (number)                                      |
+| `exceededLimitText` |    `string`    |    -     |   -    | The limit on the number of emails has reached the maximum | Warning text when exceeding the limit of the number of chips |
+| `maxLength`         |    `number`    |    -     |   -    |                           10000                           | The number of allowed characters in input                    |
