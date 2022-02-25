@@ -112,6 +112,8 @@ builder.Host.ConfigureContainer<ContainerBuilder>((context, builder) =>
     builder.Register(context.Configuration, true, false, "search.json", "feed.json");
 });
 
+builder.Host.ConfigureNLogLogging();
+
 var startup = new BaseWorkerStartup(builder.Configuration);
 
 startup.ConfigureServices(builder.Services);
