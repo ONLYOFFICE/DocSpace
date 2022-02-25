@@ -1,4 +1,5 @@
-﻿const portalInternalUrl = require("../config").get("core")["base-domain"];
+﻿const conf = require("../config");
+const portalInternalUrl = conf.get("core")["base-domain"] === "localhost" ? "http://localhost" : "";
 module.exports = (req) => {
   if (portalInternalUrl) return portalInternalUrl;
 

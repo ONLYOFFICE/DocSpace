@@ -4,7 +4,6 @@ require("winston-daily-rotate-file");
 const path = require("path");
 const config = require("../config");
 const fs = require("fs");
-
 const fileName =
   config.get("logPath") ? path.join(__dirname, "..", config.get("logPath"), "socket-io.%DATE%.log") : path.join(__dirname, "..", "..", "..", "Logs", "socket-io.%DATE%.log");
 const dirName = path.dirname(fileName);
