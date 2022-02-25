@@ -220,6 +220,7 @@ class SharingRow extends React.Component {
                       itemId={id}
                       accessOptions={accessOptions}
                       isDisabled={isLoading}
+                      fixedDirection={true}
                     />
                   )
                 }
