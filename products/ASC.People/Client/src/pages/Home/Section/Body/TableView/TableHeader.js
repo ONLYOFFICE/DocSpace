@@ -124,74 +124,19 @@ class PeopleTableHeader extends React.Component {
     fetchPeople(newFilter).finally(() => setIsLoading(false));
   };
 
-  onChange = (checked) => {
-    this.props.setSelected(checked ? "all" : "none");
-  };
-
-  onSelect = (e) => {
-    const key = e.currentTarget.dataset.key;
-    this.props.setSelected(key);
-  };
-
-  setSelected = (checked) => {
-    const { isAdmin, setSelected } = this.props;
-    if (isAdmin) {
-      setSelected && setSelected(checked ? "all" : "none");
-    }
-  };
-
   render() {
     const { columns } = this.state;
-    const {
-      t,
-      containerRef,
-      isHeaderVisible,
-      isHeaderChecked,
-      isHeaderIndeterminate,
-      getHeaderMenu,
-      filter,
-      sectionWidth,
-      isAdmin,
-      userId,
-    } = this.props;
+    const { containerRef, filter, sectionWidth, userId } = this.props;
     const { sortOrder } = filter;
-
-    const checkboxOptions = (
-      <>
-        <DropDownItem
-          label={t("Common:Active")}
-          data-key="active"
-          onClick={this.onSelect}
-        />
-        <DropDownItem
-          label={t("Translations:DisabledEmployeeStatus")}
-          data-key="disabled"
-          onClick={this.onSelect}
-        />
-        <DropDownItem
-          label={t("LblInvited")}
-          data-key="invited"
-          onClick={this.onSelect}
-        />
-      </>
-    );
 
     return (
       <TableHeader
-        hasAccess={isAdmin}
         checkboxSize="48px"
         sorted={sortOrder === "descending"}
-        setSelected={this.setSelected}
         containerRef={containerRef}
         columns={columns}
         columnStorageName={`${COLUMNS_SIZE}=${userId}`}
         sectionWidth={sectionWidth}
-        isHeaderVisible={isHeaderVisible}
-        checkboxOptions={checkboxOptions}
-        onChange={this.onChange}
-        isChecked={isHeaderChecked}
-        isIndeterminate={isHeaderIndeterminate}
-        headerMenu={getHeaderMenu(t)}
         checkboxMargin="12px"
       />
     );
@@ -199,35 +144,16 @@ class PeopleTableHeader extends React.Component {
 }
 
 export default inject(({ auth, peopleStore }) => {
-  const {
-    selectionStore,
-    headerMenuStore,
-    filterStore,
-    usersStore,
-    loadingStore,
-    getHeaderMenu,
-  } = peopleStore;
+  const { filterStore, usersStore, loadingStore } = peopleStore;
 
-  const { setSelected } = selectionStore;
-  const {
-    isHeaderVisible,
-    isHeaderChecked,
-    isHeaderIndeterminate,
-  } = headerMenuStore;
   const { filter } = filterStore;
   const { getUsersList } = usersStore;
   const { setIsLoading } = loadingStore;
 
   return {
-    isAdmin: auth.isAdmin,
-    setSelected,
-    isHeaderVisible,
     filter,
     fetchPeople: getUsersList,
     setIsLoading,
-    getHeaderMenu,
-    isHeaderChecked,
-    isHeaderIndeterminate,
     userId: auth.userStore.user.id,
   };
 })(
