@@ -22,6 +22,8 @@ class DialogsStore {
   conflictResolveDialogVisible = false;
   convertDialogVisible = false;
   selectFileDialogVisible = false;
+  createFolderDialogVisible = false;
+
   isFolderActions = false;
 
   removeItem = null;
@@ -180,6 +182,10 @@ class DialogsStore {
 
   setSelectFileDialogVisible = (visible) => {
     this.selectFileDialogVisible = visible;
+  };
+
+  setCreateFolderDialogVisible = (visible) => {
+    this.createFolderDialogVisible = visible;
   };
 
   createMasterForm = async (fileInfo) => {

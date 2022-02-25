@@ -20,6 +20,7 @@ import {
   ThirdPartyDialog,
   ConflictResolveDialog,
   ConvertDialog,
+  CreateFolderDialog,
 } from "../dialogs";
 
 const Panels = (props) => {
@@ -43,6 +44,7 @@ const Panels = (props) => {
     createMasterForm,
     selectFileDialogVisible,
     setSelectFileDialogVisible,
+    createFolderDialogVisible,
   } = props;
 
   const { t } = useTranslation(["Translations", "SelectFile"]);
@@ -98,6 +100,9 @@ const Panels = (props) => {
         withSubfolders={false}
       />
     ),
+    createFolderDialogVisible && (
+      <CreateFolderDialog key="create-folder-dialog" />
+    ),
   ];
 };
 
@@ -124,6 +129,7 @@ export default inject(
       createMasterForm,
       selectFileDialogVisible,
       setSelectFileDialogVisible,
+      createFolderDialogVisible,
     } = dialogsStore;
 
     const { uploadPanelVisible } = uploadDataStore;
@@ -149,6 +155,7 @@ export default inject(
       selectFileDialogVisible,
       createMasterForm,
       setSelectFileDialogVisible,
+      createFolderDialogVisible,
     };
   }
 )(observer(Panels));

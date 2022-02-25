@@ -24,6 +24,11 @@ class ArticleMainButtonContent extends React.Component {
     });
   };
 
+  onCreateFolder = () => {
+    console.log("onCreateFolder");
+    this.props.setCreateFolderDialogVisible(true);
+  };
+
   onShowSelectFileDialog = () => {
     const { setSelectFileDialogVisible, hideArticle } = this.props;
     hideArticle();
@@ -158,7 +163,7 @@ class ArticleMainButtonContent extends React.Component {
         className: "main-button_drop-down",
         icon: "images/catalog.folder.react.svg",
         label: t("NewFolder"),
-        onClick: this.onCreate,
+        onClick: this.onCreateFolder,
       },
       {
         isSeparator: true,
@@ -215,7 +220,10 @@ export default inject(
     const { firstLoad, fileActionStore, filter, canCreate } = filesStore;
     const { isPrivacyFolder } = treeFoldersStore;
     const { startUpload } = uploadDataStore;
-    const { setSelectFileDialogVisible } = dialogsStore;
+    const {
+      setSelectFileDialogVisible,
+      setCreateFolderDialogVisible,
+    } = dialogsStore;
     const { hideArticle } = auth.settingsStore;
     return {
       homepage: config.homepage,
@@ -228,6 +236,8 @@ export default inject(
       startUpload,
       setSelectFileDialogVisible,
       hideArticle,
+
+      setCreateFolderDialogVisible,
     };
   }
 )(
