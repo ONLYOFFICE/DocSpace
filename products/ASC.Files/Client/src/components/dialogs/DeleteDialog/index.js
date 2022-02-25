@@ -20,7 +20,12 @@ class DeleteDialogComponent extends React.Component {
 
     let i = 0;
     while (props.selection.length !== i) {
-      if (!(props.isRootFolder && props.selection[i].providerKey)) {
+      if (
+        !(
+          (props.isRootFolder && props.selection[i].providerKey) ||
+          props.selection[i].isEditing
+        )
+      ) {
         if (
           props.selection[i].access === 0 ||
           props.selection[i].access === 1 ||
@@ -114,6 +119,49 @@ class DeleteDialogComponent extends React.Component {
     this.props.setDeleteDialogVisible(false);
   };
 
+  moveToTrashTitle = (checkedSelections) => {
+    const { unsubscribe, t } = this.props;
+    const { filesList, foldersList } = this.state;
+
+    const itemsCount = filesList.length + foldersList.length;
+    const checkedSelectionCount = checkedSelections.length;
+
+    if (unsubscribe) {
+      return t("UnsubscribeTitle");
+    } else {
+      if (
+        (checkedSelectionCount < itemsCount && itemsCount > 1) ||
+        checkedSelectionCount > 1
+      ) {
+        return t("MoveToTrashItemsTitle");
+      } else {
+        return filesList.length === 1
+          ? t("MoveToTrashOneFileTitle")
+          : t("MoveToTrashOneFolderTitle");
+      }
+    }
+  };
+
+  moveToTrashNoteText = (checkedSelections) => {
+    const { filesList, foldersList } = this.state;
+    const { t, personal } = this.props;
+
+    const itemsCount = filesList.length + foldersList.length;
+    const checkedSelectionCount = checkedSelections.length;
+
+    if (
+      (checkedSelectionCount < itemsCount && itemsCount > 1) ||
+      checkedSelectionCount > 1
+    ) {
+      return t("MoveToTrashItemsNote");
+    } else {
+      return filesList.length === 1
+        ? t("MoveToTrashOneFileNote")
+        : personal
+        ? ""
+        : t("MoveToTrashOneFolderNote");
+    }
+  };
   render() {
     const {
       visible,
@@ -123,7 +171,6 @@ class DeleteDialogComponent extends React.Component {
       unsubscribe,
       isPrivacyFolder,
       isRecycleBinFolder,
-      personal,
     } = this.props;
     const { filesList, foldersList, selection } = this.state;
 
@@ -132,23 +179,11 @@ class DeleteDialogComponent extends React.Component {
     const title =
       isPrivacyFolder || isRecycleBinFolder || checkedSelections[0]?.providerKey
         ? t("Common:Confirmation")
-        : unsubscribe
-        ? t("UnsubscribeTitle")
-        : checkedSelections.length === 1
-        ? checkedSelections[0].fileExst
-          ? t("MoveToTrashOneFileTitle")
-          : t("MoveToTrashOneFolderTitle")
-        : t("MoveToTrashItemsTitle");
+        : this.moveToTrashTitle(checkedSelections);
 
     const noteText = unsubscribe
       ? t("UnsubscribeNote")
-      : checkedSelections.length === 1
-      ? checkedSelections[0].fileExst
-        ? t("MoveToTrashOneFileNote")
-        : personal
-        ? ""
-        : t("MoveToTrashOneFolderNote")
-      : t("MoveToTrashItemsNote");
+      : this.moveToTrashNoteText(checkedSelections);
 
     const accessButtonLabel =
       isPrivacyFolder || isRecycleBinFolder || checkedSelections[0]?.providerKey
@@ -227,6 +262,7 @@ class DeleteDialogComponent extends React.Component {
             primary
             onClick={unsubscribe ? this.onUnsubscribe : this.onDelete}
             isLoading={isLoading}
+            isDisabled={!checkedSelections.length}
           />
           <Button
             className="button-dialog"

@@ -292,7 +292,7 @@ public class TextileStyler : IPatternStyler
 
             if (!string.IsNullOrEmpty(unsubscribeLink))
             {
-                return unsubscribeLink;
+                return unsubscribeLink + "?unsubscribe=tips";
             }
         }
 

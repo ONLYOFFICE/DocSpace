@@ -42,16 +42,21 @@ namespace ASC.Web.Core.Files
             ClientFactory = clientFactory;
         }
 
-        private CommandResponse GetDocumentServiceLicense()
+        private Task<CommandResponse> GetDocumentServiceLicenseAsync()
         {
-            if (!CoreBaseSettings.Standalone) return null;
-            if (string.IsNullOrEmpty(FilesLinkUtility.DocServiceCommandUrl)) return null;
+            if (!CoreBaseSettings.Standalone) return Task.FromResult<CommandResponse>(null);
+            if (string.IsNullOrEmpty(FilesLinkUtility.DocServiceCommandUrl)) return Task.FromResult<CommandResponse>(null);
 
+            return InternalGetDocumentServiceLicenseAsync();
+        }
+
+        private async Task<CommandResponse> InternalGetDocumentServiceLicenseAsync()
+        {
             var cacheKey = "DocumentServiceLicense";
             var commandResponse = Cache.Get<CommandResponse>(cacheKey);
             if (commandResponse == null)
             {
-                commandResponse = DocumentService.CommandRequest(
+                commandResponse = await DocumentService.CommandRequestAsync(
                        FileUtility,
                        FilesLinkUtility.DocServiceCommandUrl,
                        DocumentService.CommandMethod.License,
@@ -68,9 +73,9 @@ namespace ASC.Web.Core.Files
             return commandResponse;
         }
 
-        public Dictionary<string, DateTime> GetLicenseQuota()
+        public async Task<Dictionary<string, DateTime>> GetLicenseQuotaAsync()
         {
-            var commandResponse = GetDocumentServiceLicense();
+            var commandResponse = await GetDocumentServiceLicenseAsync();
             if (commandResponse == null
                 || commandResponse.Quota == null
                 || commandResponse.Quota.Users == null)
@@ -81,9 +86,9 @@ namespace ASC.Web.Core.Files
             return result;
         }
 
-        public License GetLicense()
+        public async Task<License> GetLicenseAsync()
         {
-            var commandResponse = GetDocumentServiceLicense();
+            var commandResponse = await GetDocumentServiceLicenseAsync();
             if (commandResponse == null)
                 return null;
 

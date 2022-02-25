@@ -107,13 +107,50 @@ namespace ASC.Web.Files.Classes
         private SettingsManager SettingsManager { get; }
         private CoreBaseSettings CoreBaseSettings { get; }
         private SetupInfo SetupInfo { get; }
+        private FileUtility FileUtility { get; }
+        private FilesLinkUtility FilesLinkUtility { get; }
 
-        public FilesSettingsHelper(SettingsManager settingsManager, CoreBaseSettings coreBaseSettings, SetupInfo setupInfo)
+        public FilesSettingsHelper(SettingsManager settingsManager, CoreBaseSettings coreBaseSettings, SetupInfo setupInfo, FileUtility fileUtility, FilesLinkUtility filesLinkUtility)
         {
             SettingsManager = settingsManager;
             CoreBaseSettings = coreBaseSettings;
             SetupInfo = setupInfo;
+            FileUtility = fileUtility;
+            FilesLinkUtility = filesLinkUtility;
         }
+
+        public List<string> ExtsImagePreviewed => FileUtility.ExtsImagePreviewed;
+        public List<string> ExtsMediaPreviewed => FileUtility.ExtsMediaPreviewed;
+        public List<string> ExtsWebPreviewed => FileUtility.ExtsWebPreviewed;
+        public List<string> ExtsWebEdited => FileUtility.ExtsWebEdited;
+        public List<string> ExtsWebEncrypt => FileUtility.ExtsWebEncrypt;
+        public List<string> ExtsWebReviewed => FileUtility.ExtsWebReviewed;
+        public List<string> ExtsWebCustomFilterEditing => FileUtility.ExtsWebCustomFilterEditing;
+        public List<string> ExtsWebRestrictedEditing => FileUtility.ExtsWebRestrictedEditing;
+        public List<string> ExtsWebCommented => FileUtility.ExtsWebCommented;
+        public List<string> ExtsWebTemplate => FileUtility.ExtsWebTemplate;
+        public List<string> ExtsCoAuthoring => FileUtility.ExtsCoAuthoring;
+        public List<string> ExtsMustConvert => FileUtility.ExtsMustConvert;
+        public Dictionary<string, List<string>> ExtsConvertible => FileUtility.ExtsConvertible;
+        public List<string> ExtsUploadable => FileUtility.ExtsUploadable;
+        public List<string> ExtsArchive => FileUtility.ExtsArchive;
+        public List<string> ExtsVideo => FileUtility.ExtsVideo;
+        public List<string> ExtsAudio => FileUtility.ExtsAudio;
+        public List<string> ExtsImage => FileUtility.ExtsImage;
+        public List<string> ExtsSpreadsheet => FileUtility.ExtsSpreadsheet;
+        public List<string> ExtsPresentation => FileUtility.ExtsPresentation;
+        public List<string> ExtsDocument => FileUtility.ExtsDocument;
+        public Dictionary<FileType, string> InternalFormats => FileUtility.InternalExtension;
+        public string MasterFormExtension => FileUtility.MasterFormExtension;
+        public string ParamVersion => FilesLinkUtility.Version;
+        public string ParamOutType => FilesLinkUtility.OutType;
+        public string FileDownloadUrlString => FilesLinkUtility.FileDownloadUrlString;
+        public string FileWebViewerUrlString => FilesLinkUtility.FileWebViewerUrlString;
+        public string FileWebViewerExternalUrlString => FilesLinkUtility.FileWebViewerExternalUrlString;
+        public string FileWebEditorUrlString => FilesLinkUtility.FileWebEditorUrlString;
+        public string FileWebEditorExternalUrlString => FilesLinkUtility.FileWebEditorExternalUrlString;
+        public string FileRedirectPreviewUrlString => FilesLinkUtility.FileRedirectPreviewUrlString;
+        public string FileThumbnailUrlString => FilesLinkUtility.FileThumbnailUrlString;
 
         public bool ConfirmDelete
         {

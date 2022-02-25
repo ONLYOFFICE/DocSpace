@@ -124,6 +124,7 @@ const StyledContextMenu = styled.div`
 
   .p-submenu-icon {
     margin-left: auto;
+    padding-left: 8px;
   }
 
   .p-contextmenu-enter {

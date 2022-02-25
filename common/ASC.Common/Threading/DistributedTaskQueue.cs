@@ -71,14 +71,29 @@ public class DistributedTaskCacheNotify
         _cancelTaskNotify.Publish(new DistributedTaskCancelation() { Id = id }, CacheNotifyAction.Remove);
     }
 
+    public async Task CancelTaskAsync(string id)
+    {
+        await _cancelTaskNotify.PublishAsync(new DistributedTaskCancelation() { Id = id }, CacheNotifyAction.Remove);
+    }
+
     public void SetTask(DistributedTask task)
     {
         _taskCacheNotify.Publish(task.DistributedTaskCache, CacheNotifyAction.InsertOrUpdate);
     }
 
+    public async Task SetTaskAsync(DistributedTask task)
+    {
+        await _taskCacheNotify.PublishAsync(task.DistributedTaskCache, CacheNotifyAction.InsertOrUpdate);
+    }
+
     public void RemoveTask(string id, string key)
     {
         _taskCacheNotify.Publish(new DistributedTaskCache() { Id = id, Key = key }, CacheNotifyAction.Remove);
+    }
+
+    public async Task RemoveTaskAsync(string id, string key)
+    {
+        await _taskCacheNotify.PublishAsync(new DistributedTaskCache() { Id = id, Key = key }, CacheNotifyAction.Remove);
     }
 }
 
@@ -100,7 +115,7 @@ public class ConfigureDistributedTaskQueue : IConfigureNamedOptions<DistributedT
     public readonly IServiceProvider _serviceProvider;
 
     public ConfigureDistributedTaskQueue(
-        DistributedTaskCacheNotify distributedTaskCacheNotify, 
+        DistributedTaskCacheNotify distributedTaskCacheNotify,
         IServiceProvider serviceProvider)
     {
         _distributedTaskCacheNotify = distributedTaskCacheNotify;
@@ -186,6 +201,39 @@ public class DistributedTaskQueue
         task.Start(Scheduler);
     }
 
+    public void QueueTask(Func<DistributedTask, CancellationToken, Task> action, DistributedTask distributedTask = null)
+    {
+        if (distributedTask == null)
+        {
+            distributedTask = new DistributedTask();
+        }
+
+        distributedTask.InstanceId = InstanceId;
+
+        var cancelation = new CancellationTokenSource();
+        var token = cancelation.Token;
+        Cancelations[distributedTask.Id] = cancelation;
+
+        var task = new Task(async () =>
+        {
+            var t = action(distributedTask, token);
+            t.ConfigureAwait(false)
+            .GetAwaiter()
+            .OnCompleted(() => OnCompleted(t, distributedTask.Id));
+            await t;
+        }, token, TaskCreationOptions.LongRunning);
+
+        distributedTask.Status = DistributedTaskStatus.Running;
+
+        if (distributedTask.Publication == null)
+        {
+            distributedTask.Publication = GetPublication();
+        }
+        distributedTask.PublishChanges();
+
+        task.Start(Scheduler);
+    }
+
     public IEnumerable<DistributedTask> GetTasks()
     {
         var tasks = Cache.HashGetAll<DistributedTaskCache>(_name).Values.Select(r => new DistributedTask(r)).ToList();
@@ -230,7 +278,7 @@ public class DistributedTaskQueue
             using var scope = ServiceProvider.CreateScope();
             var task = scope.ServiceProvider.GetService<T>();
             task.DistributedTaskCache = cache;
-                if (task.Publication == null)
+            if (task.Publication == null)
             {
                 task.Publication = GetPublication();
             }
@@ -248,7 +296,7 @@ public class DistributedTaskQueue
         {
             var task = new DistributedTask();
             task.DistributedTaskCache = cache;
-                if (task.Publication == null)
+            if (task.Publication == null)
             {
                 task.Publication = GetPublication();
             }
@@ -332,8 +380,8 @@ public static class DistributedTaskQueueExtention
         _ = services.Configure<DistributedTaskQueue>(type.Name, r =>
         {
             r.MaxThreadsCount = maxThreadsCount;
-                //r.errorCount = 1;
-            });
+            //r.errorCount = 1;
+        });
 
         return services;
     }
