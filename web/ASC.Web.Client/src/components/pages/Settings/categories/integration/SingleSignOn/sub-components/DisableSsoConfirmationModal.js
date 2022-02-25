@@ -3,13 +3,14 @@ import { observer } from "mobx-react";
 
 import Box from "@appserver/components/box";
 import Button from "@appserver/components/button";
+import FormStore from "@appserver/studio/src/store/SsoFormStore";
 import ModalDialog from "@appserver/components/modal-dialog";
 import Text from "@appserver/components/text";
 
 import StyledModalDialog from "../styled-containers/StyledModalDialog";
 import { addArguments } from "../../../../utils";
 
-const DisableSsoConfirmationModal = ({ FormStore, t }) => {
+const DisableSsoConfirmationModal = ({ t }) => {
   const onClose = addArguments(
     FormStore.onCloseModal,
     "confirmationDisableModal"

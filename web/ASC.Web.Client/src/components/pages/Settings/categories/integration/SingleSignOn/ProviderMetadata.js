@@ -6,11 +6,10 @@ import Button from "@appserver/components/button";
 
 import SimpleFormField from "./sub-components/SimpleFormField";
 
-const ProviderMetadata = ({ FormStore, t }) => {
+const ProviderMetadata = ({ t }) => {
   return (
     <>
       <SimpleFormField
-        FormStore={FormStore}
         labelText={t("SPEntityId")}
         name="sp_entityId"
         placeholder="https://www.test.com"
@@ -20,7 +19,6 @@ const ProviderMetadata = ({ FormStore, t }) => {
       />
 
       <SimpleFormField
-        FormStore={FormStore}
         labelText={t("SPAssertionConsumerURL")}
         name="sp_assertionConsumerUrl"
         placeholder="https://www.test.com"
@@ -30,7 +28,6 @@ const ProviderMetadata = ({ FormStore, t }) => {
       />
 
       <SimpleFormField
-        FormStore={FormStore}
         labelText={t("SPSingleLogoutURL")}
         name="sp_singleLogoutUrl"
         placeholder="https://www.test.com"

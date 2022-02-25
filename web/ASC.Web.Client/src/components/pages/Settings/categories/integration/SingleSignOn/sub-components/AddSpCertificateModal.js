@@ -3,6 +3,7 @@ import { observer } from "mobx-react";
 
 import Box from "@appserver/components/box";
 import Button from "@appserver/components/button";
+import FormStore from "@appserver/studio/src/store/SsoFormStore";
 import Link from "@appserver/components/link";
 import ModalDialog from "@appserver/components/modal-dialog";
 import Text from "@appserver/components/text";
@@ -12,7 +13,7 @@ import ModalComboBox from "./ModalComboBox";
 import StyledModalDialog from "../styled-containers/StyledModalDialog";
 import { addArguments } from "../../../../utils";
 
-const AddSpCertificateModal = ({ FormStore, t }) => {
+const AddSpCertificateModal = ({ t }) => {
   const onClose = addArguments(FormStore.onCloseModal, "sp_isModalVisible");
   const onSubmit = addArguments(FormStore.addCertificateToForm, "sp");
 
@@ -59,7 +60,7 @@ const AddSpCertificateModal = ({ FormStore, t }) => {
           value={FormStore.sp_privateKey}
         />
 
-        <ModalComboBox FormStore={FormStore} t={t} />
+        <ModalComboBox t={t} />
       </ModalDialog.Body>
 
       <ModalDialog.Footer>

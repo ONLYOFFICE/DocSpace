@@ -30,28 +30,28 @@ const SingleSignOn = () => {
       hideSettings={FormStore.ServiceProviderSettings}
       hideMetadata={FormStore.SPMetadata}
     >
-      <ToggleSSO FormStore={FormStore} t={t} />
+      <ToggleSSO t={t} />
 
-      <HideButton FormStore={FormStore} label="ServiceProviderSettings" t={t} />
+      <HideButton label="ServiceProviderSettings" t={t} />
 
       <Box className="service-provider-settings">
-        <IdpSettings FormStore={FormStore} t={t} />
+        <IdpSettings t={t} />
 
-        <Certificates FormStore={FormStore} t={t} provider="IdentityProvider" />
+        <Certificates t={t} provider="IdentityProvider" />
 
-        <Certificates FormStore={FormStore} t={t} provider="ServiceProvider" />
+        <Certificates t={t} provider="ServiceProvider" />
 
-        <FieldMapping FormStore={FormStore} t={t} />
+        <FieldMapping t={t} />
 
-        <SubmitResetButtons FormStore={FormStore} t={t} />
+        <SubmitResetButtons t={t} />
       </Box>
 
       <hr className="separator" />
 
-      <HideButton FormStore={FormStore} label="SPMetadata" t={t} />
+      <HideButton label="SPMetadata" t={t} />
 
       <Box className="sp-metadata">
-        <ProviderMetadata FormStore={FormStore} t={t} />
+        <ProviderMetadata t={t} />
       </Box>
     </StyledSsoPage>
   );

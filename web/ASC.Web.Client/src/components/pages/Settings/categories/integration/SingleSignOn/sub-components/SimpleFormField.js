@@ -2,11 +2,11 @@ import React from "react";
 import { observer } from "mobx-react";
 
 import FieldContainer from "@appserver/components/field-container";
+import FormStore from "@appserver/studio/src/store/SsoFormStore";
 
 import SimpleTextInput from "./SimpleTextInput";
 
 const SimpleFormField = ({
-  FormStore,
   children,
   labelText,
   name,
@@ -27,7 +27,6 @@ const SimpleFormField = ({
     >
       {children}
       <SimpleTextInput
-        FormStore={FormStore}
         hasError={FormStore[`${name}errorMessage`]}
         name={name}
         placeholder={placeholder}

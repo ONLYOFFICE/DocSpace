@@ -1,8 +1,8 @@
 import React from "react";
+import { observer } from "mobx-react";
 
 import Box from "@appserver/components/box";
 import SimpleCheckbox from "./SimpleCheckbox";
-import { observer } from "mobx-react";
 
 const checkboxesNames = {
   idp: [
@@ -18,23 +18,20 @@ const checkboxesNames = {
   ],
 };
 
-const CheckboxSet = ({ FormStore, prefix, t }) => {
+const CheckboxSet = ({ prefix, t }) => {
   return (
     <Box marginProp="12px 0">
       <SimpleCheckbox
-        FormStore={FormStore}
         label={t(`${prefix}AuthRequest`)}
         name={checkboxesNames[prefix][0]}
         tabIndex={10}
       />
       <SimpleCheckbox
-        FormStore={FormStore}
         label={t(`${prefix}SignExitRequest`)}
         name={checkboxesNames[prefix][1]}
         tabIndex={11}
       />
       <SimpleCheckbox
-        FormStore={FormStore}
         label={t(`${prefix}SignResponseRequest`)}
         name={checkboxesNames[prefix][2]}
         tabIndex={12}
@@ -42,7 +39,6 @@ const CheckboxSet = ({ FormStore, prefix, t }) => {
 
       {prefix === "sp" && (
         <SimpleCheckbox
-          FormStore={FormStore}
           label={t(`${prefix}DecryptStatements`)}
           name={checkboxesNames[prefix][3]}
           tabIndex={13}

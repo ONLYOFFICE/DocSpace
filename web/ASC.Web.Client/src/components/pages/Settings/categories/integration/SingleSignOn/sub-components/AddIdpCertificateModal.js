@@ -3,13 +3,15 @@ import { observer } from "mobx-react";
 
 import Box from "@appserver/components/box";
 import Button from "@appserver/components/button";
+import FormStore from "@appserver/studio/src/store/SsoFormStore";
 import ModalDialog from "@appserver/components/modal-dialog";
 import StyledModalDialog from "../styled-containers/StyledModalDialog";
 import Text from "@appserver/components/text";
 import TextArea from "@appserver/components/textarea";
+
 import { addArguments } from "../../../../utils";
 
-const AddIdpCertificateModal = ({ FormStore, t }) => {
+const AddIdpCertificateModal = ({ t }) => {
   const onClose = addArguments(FormStore.onCloseModal, "idp_isModalVisible");
   const onSubmit = addArguments(FormStore.addCertificateToForm, "idp");
 

@@ -5,6 +5,7 @@ import { observer } from "mobx-react";
 import Box from "@appserver/components/box";
 import Button from "@appserver/components/button";
 import FieldContainer from "@appserver/components/field-container";
+import FormStore from "@appserver/studio/src/store/SsoFormStore";
 import Text from "@appserver/components/text";
 
 import SimpleTextInput from "./SimpleTextInput";
@@ -12,7 +13,7 @@ import { FileInput } from "@appserver/components";
 
 const uploadIcon = <ReactSVG src="images/actions.upload.react.svg" />;
 
-const UploadXML = ({ FormStore, t }) => {
+const UploadXML = ({ t }) => {
   return (
     <FieldContainer
       className="xml-input"
@@ -22,7 +23,6 @@ const UploadXML = ({ FormStore, t }) => {
     >
       <Box alignItems="center" displayProp="flex" flexDirection="row">
         <SimpleTextInput
-          FormStore={FormStore}
           maxWidth="300px"
           name="uploadXmlUrl"
           placeholder={t("UploadXMLPlaceholder")}

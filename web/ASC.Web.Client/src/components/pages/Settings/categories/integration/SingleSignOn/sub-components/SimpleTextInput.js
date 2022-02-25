@@ -1,11 +1,12 @@
 import React from "react";
 import { observer } from "mobx-react";
 
-import StyledInputWrapper from "../styled-containers/StyledInputWrapper";
+import FormStore from "@appserver/studio/src/store/SsoFormStore";
 import TextInput from "@appserver/components/text-input";
 
+import StyledInputWrapper from "../styled-containers/StyledInputWrapper";
+
 const SimpleTextInput = ({
-  FormStore,
   hasError,
   maxWidth,
   name,

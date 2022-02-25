@@ -3,10 +3,11 @@ import { observer } from "mobx-react";
 
 import Box from "@appserver/components/box";
 import Button from "@appserver/components/button";
+import FormStore from "@appserver/studio/src/store/SsoFormStore";
 
 import ResetConfirmationModal from "./sub-components/ResetConfirmationModal";
 
-const SubmitResetButtons = ({ FormStore, t }) => {
+const SubmitResetButtons = ({ t }) => {
   return (
     <Box alignItems="center" displayProp="flex" flexDirection="row">
       <Button
@@ -27,9 +28,7 @@ const SubmitResetButtons = ({ FormStore, t }) => {
         size="medium"
         tabIndex={24}
       />
-      {FormStore.confirmationResetModal && (
-        <ResetConfirmationModal FormStore={FormStore} t={t} />
-      )}
+      {FormStore.confirmationResetModal && <ResetConfirmationModal t={t} />}
     </Box>
   );
 };

@@ -2,21 +2,21 @@ import React from "react";
 import { observer } from "mobx-react";
 
 import Box from "@appserver/components/box";
+import FormStore from "@appserver/studio/src/store/SsoFormStore";
 import RadioButtonGroup from "@appserver/components/radio-button-group";
+import Text from "@appserver/components/text";
 
 import SimpleComboBox from "./sub-components/SimpleComboBox";
 import SimpleFormField from "./sub-components/SimpleFormField";
-import Text from "@appserver/components/text";
 import UploadXML from "./sub-components/UploadXML";
 import { bindingOptions, nameIdOptions } from "./sub-components/constants";
 
-const IdpSettings = ({ FormStore, t }) => {
+const IdpSettings = ({ t }) => {
   return (
     <Box>
-      <UploadXML FormStore={FormStore} t={t} />
+      <UploadXML t={t} />
 
       <SimpleFormField
-        FormStore={FormStore}
         labelText={t("CustomEntryButton")}
         name="spLoginLabel"
         placeholder="Single Sign-on"
@@ -26,7 +26,6 @@ const IdpSettings = ({ FormStore, t }) => {
       />
 
       <SimpleFormField
-        FormStore={FormStore}
         labelText={t("ProviderURL")}
         name="entityId"
         placeholder="https://www.test.com"
@@ -36,7 +35,6 @@ const IdpSettings = ({ FormStore, t }) => {
       />
 
       <SimpleFormField
-        FormStore={FormStore}
         labelText={t("SignOnEndpointUrl")}
         name="ssoUrl"
         placeholder="https://www.test.com/saml/login"
@@ -60,7 +58,6 @@ const IdpSettings = ({ FormStore, t }) => {
       </SimpleFormField>
 
       <SimpleFormField
-        FormStore={FormStore}
         labelText={t("LogoutEndpointUrl")}
         name="sloUrl"
         placeholder="https://www.test.com/saml/logout"
@@ -84,7 +81,6 @@ const IdpSettings = ({ FormStore, t }) => {
       </SimpleFormField>
 
       <SimpleComboBox
-        FormStore={FormStore}
         labelText={t("NameIDFormat")}
         name="nameIdFormat"
         options={nameIdOptions}

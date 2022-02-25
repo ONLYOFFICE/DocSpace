@@ -3,6 +3,7 @@ import { observer } from "mobx-react";
 
 import Box from "@appserver/components/box";
 import Button from "@appserver/components/button";
+import FormStore from "@appserver/studio/src/store/SsoFormStore";
 import HelpButton from "@appserver/components/help-button";
 import Text from "@appserver/components/text";
 
@@ -18,7 +19,7 @@ import {
   verifyAlgorithmsOptions,
 } from "./sub-components/constants";
 
-const Certificates = ({ FormStore, t, provider }) => {
+const Certificates = ({ t, provider }) => {
   let prefix = "";
 
   switch (provider) {
@@ -49,7 +50,7 @@ const Certificates = ({ FormStore, t, provider }) => {
       </Box>
 
       {FormStore[`${prefix}_certificates`].length > 0 && (
-        <CertificatesTable FormStore={FormStore} prefix={prefix} t={t} />
+        <CertificatesTable prefix={prefix} t={t} />
       )}
 
       <Box alignItems="center" displayProp="flex" flexDirection="row">
@@ -61,7 +62,7 @@ const Certificates = ({ FormStore, t, provider }) => {
               size="medium"
               tabIndex={9}
             />
-            <AddIdpCertificateModal FormStore={FormStore} t={t} />
+            <AddIdpCertificateModal t={t} />
           </>
         )}
 
@@ -73,12 +74,11 @@ const Certificates = ({ FormStore, t, provider }) => {
               size="medium"
               tabIndex={9}
             />
-            <AddSpCertificateModal FormStore={FormStore} t={t} />
+            <AddSpCertificateModal t={t} />
           </>
         )}
 
         <HideButton
-          FormStore={FormStore}
           label={`${prefix}_showAdditionalParameters`}
           isAdditionalParameters
           t={t}
@@ -87,17 +87,11 @@ const Certificates = ({ FormStore, t, provider }) => {
 
       {FormStore[`${prefix}_showAdditionalParameters`] && (
         <>
-          <CheckboxSet
-            FormStore={FormStore}
-            id={prefix}
-            prefix={prefix}
-            t={t}
-          />
+          <CheckboxSet id={prefix} prefix={prefix} t={t} />
 
           {provider === "IdentityProvider" && (
             <>
               <SimpleComboBox
-                FormStore={FormStore}
                 labelText={t(`${prefix}SigningAlgorithm`)}
                 name={"idp_verifyAlgorithm"}
                 options={verifyAlgorithmsOptions}
@@ -109,7 +103,6 @@ const Certificates = ({ FormStore, t, provider }) => {
           {provider === "ServiceProvider" && (
             <>
               <SimpleComboBox
-                FormStore={FormStore}
                 labelText={t(`${prefix}SigningAlgorithm`)}
                 name={"sp_signingAlgorithm"}
                 options={verifyAlgorithmsOptions}
@@ -117,7 +110,6 @@ const Certificates = ({ FormStore, t, provider }) => {
               />
 
               <SimpleComboBox
-                FormStore={FormStore}
                 labelText={t("StandardDecryptionAlgorithm")}
                 name={"sp_encryptAlgorithm"}
                 options={decryptAlgorithmsOptions}

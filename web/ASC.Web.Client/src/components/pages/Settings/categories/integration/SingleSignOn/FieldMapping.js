@@ -9,7 +9,7 @@ import Text from "@appserver/components/text";
 import SimpleCheckbox from "./sub-components/SimpleCheckbox";
 import SimpleFormField from "./sub-components/SimpleFormField";
 
-const FieldMapping = ({ FormStore, t }) => {
+const FieldMapping = ({ t }) => {
   return (
     <Box>
       <Box
@@ -30,7 +30,6 @@ const FieldMapping = ({ FormStore, t }) => {
       </Box>
 
       <SimpleFormField
-        FormStore={FormStore}
         labelText={t("FirstName")}
         name="firstName"
         placeholder="givenName"
@@ -39,7 +38,6 @@ const FieldMapping = ({ FormStore, t }) => {
       />
 
       <SimpleFormField
-        FormStore={FormStore}
         labelText={t("LastName")}
         name="lastName"
         placeholder="sn"
@@ -48,7 +46,6 @@ const FieldMapping = ({ FormStore, t }) => {
       />
 
       <SimpleFormField
-        FormStore={FormStore}
         labelText={t("Common:Email")}
         name="email"
         placeholder="sn"
@@ -57,7 +54,6 @@ const FieldMapping = ({ FormStore, t }) => {
       />
 
       <SimpleFormField
-        FormStore={FormStore}
         labelText={t("Location")}
         name="location"
         placeholder="sn"
@@ -66,7 +62,6 @@ const FieldMapping = ({ FormStore, t }) => {
       />
 
       <SimpleFormField
-        FormStore={FormStore}
         labelText={t("Title")}
         name="title"
         placeholder="sn"
@@ -75,7 +70,6 @@ const FieldMapping = ({ FormStore, t }) => {
       />
 
       <SimpleFormField
-        FormStore={FormStore}
         labelText={t("Common:Phone")}
         name="phone"
         placeholder="sn"
@@ -91,7 +85,6 @@ const FieldMapping = ({ FormStore, t }) => {
         tooltipContent={t("AdvancedSettingsTooltip")}
       >
         <SimpleCheckbox
-          FormStore={FormStore}
           label={t("HideAuthPage")}
           name="hideAuthPage"
           tabIndex={22}

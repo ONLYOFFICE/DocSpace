@@ -3,11 +3,12 @@ import { observer } from "mobx-react";
 
 import ComboBox from "@appserver/components/combobox";
 import FieldContainer from "@appserver/components/field-container";
+import FormStore from "@appserver/studio/src/store/SsoFormStore";
 
 import StyledInputWrapper from "../styled-containers/StyledInputWrapper";
 import { addArguments } from "../../../../utils/addArguments";
 
-const SimpleComboBox = ({ FormStore, labelText, name, options, tabIndex }) => {
+const SimpleComboBox = ({ labelText, name, options, tabIndex }) => {
   const currentOption = options.find(
     (option) => option.key === FormStore[name]
   );

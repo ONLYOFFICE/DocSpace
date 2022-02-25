@@ -2,12 +2,13 @@ import React from "react";
 import { observer } from "mobx-react";
 
 import Box from "@appserver/components/box";
+import FormStore from "@appserver/studio/src/store/SsoFormStore";
 import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
 
 import { addArguments } from "../../../../utils/addArguments";
 
-const HideButton = ({ FormStore, label, t, isAdditionalParameters }) => {
+const HideButton = ({ label, t, isAdditionalParameters }) => {
   const hide = isAdditionalParameters ? "HideAdditionalParameters" : "Hide";
   const show = isAdditionalParameters ? "ShowAdditionalParameters" : "Show";
   const marginProp = isAdditionalParameters ? null : "24px 0";

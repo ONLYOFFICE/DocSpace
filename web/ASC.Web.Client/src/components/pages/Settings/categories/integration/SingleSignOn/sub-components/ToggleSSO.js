@@ -2,6 +2,7 @@ import React from "react";
 import { observer } from "mobx-react";
 
 import Box from "@appserver/components/box";
+import FormStore from "@appserver/studio/src/store/SsoFormStore";
 import HelpButton from "@appserver/components/help-button";
 import Text from "@appserver/components/text";
 import ToggleButton from "@appserver/components/toggle-button";
@@ -11,7 +12,7 @@ import DisableSsoConfirmationModal from "./DisableSsoConfirmationModal";
 const borderProp = { radius: "4px" };
 const displayProp = { display: "inline-flex" };
 
-const ToggleSSO = ({ FormStore, t }) => {
+const ToggleSSO = ({ t }) => {
   return (
     <>
       <Text className="intro-text" lineHeight="20px" color="#657077">
@@ -52,7 +53,7 @@ const ToggleSSO = ({ FormStore, t }) => {
       </Box>
 
       {FormStore.confirmationDisableModal && (
-        <DisableSsoConfirmationModal FormStore={FormStore} t={t} />
+        <DisableSsoConfirmationModal t={t} />
       )}
     </>
   );
