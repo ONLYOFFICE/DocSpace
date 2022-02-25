@@ -136,6 +136,7 @@ const EditingWrapper = styled.div`
     margin-top: -6px;
     width: 14px;
     height: 14px;
+    padding: 1px;
   }
 
   .is-edit {
