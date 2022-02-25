@@ -146,6 +146,12 @@ class BackupDesktopView extends React.Component {
           if (response.progress === 100) {
             clearInterval(this.timerId);
 
+            this._isMounted &&
+              this.setState({
+                ...(response.link &&
+                  response.link.slice(0, 1) === "/" && { link: response.link }),
+              });
+
             this.timerId && toastr.success(`${t("SuccessCopied")}`);
             this.timerId = null;
           }
@@ -174,6 +180,7 @@ class BackupDesktopView extends React.Component {
       backupSchedule,
       backupStorage,
       commonThirdPartyList,
+      link,
     } = this.state;
 
     return isLoading ? (
@@ -191,6 +198,7 @@ class BackupDesktopView extends React.Component {
             isDesktop
             setBackupProgress={this.setBackupProgress}
             isCopyingLocal={downloadingProgress}
+            temporaryLink={link}
           />
         </div>
 

@@ -228,9 +228,10 @@ class ManualBackup extends React.Component {
   };
 
   onClickDownloadBackup = () => {
+    const { temporaryLink } = this.props;
     const { link } = this.state;
     const url = window.location.origin;
-    const downloadUrl = `${url}` + `${link}`;
+    const downloadUrl = `${url}` + `${link ? link : temporaryLink}`;
     window.open(downloadUrl, "_self");
   };
 
@@ -258,7 +259,7 @@ class ManualBackup extends React.Component {
     selectedStorage
   ) => {
     const { isCheckedDocuments, isCheckedThirdParty } = this.state;
-    const { t, isDesktop, setBackupProgress } = this.props;
+    const { t, isDesktop, setBackupProgress, temporaryLink } = this.props;
 
     this.setState({
       downloadingProgress: 1,
@@ -312,7 +313,7 @@ class ManualBackup extends React.Component {
     }
   };
   render() {
-    const { t, isDesktop, isCopyingLocal } = this.props;
+    const { t, isDesktop, isCopyingLocal, temporaryLink } = this.props;
     const {
       downloadingProgress,
       link,
@@ -367,7 +368,7 @@ class ManualBackup extends React.Component {
                 isDisabled={!isMaxProgress}
                 size="medium"
               />
-              {link.length > 0 && isMaxProgress && (
+              {((link.length > 0 && isMaxProgress) || temporaryLink) && (
                 <Button
                   label={t("DownloadBackup")}
                   onClick={this.onClickDownloadBackup}
