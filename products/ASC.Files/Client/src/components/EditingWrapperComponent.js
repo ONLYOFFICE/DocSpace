@@ -92,12 +92,14 @@ const EditingWrapper = styled.div`
   }
 
   .edit-button {
+    margin-left: 8px;
     height: 32px;
     padding: 8px 7px 7px 7px;
 
     ${(props) =>
       props.viewAs === "tile" &&
       css`
+        margin-left: 0px;
         background: none;
         border: 1px solid transparent;
 
@@ -134,6 +136,7 @@ const EditingWrapper = styled.div`
     margin-top: -6px;
     width: 14px;
     height: 14px;
+    padding: 1px;
   }
 
   .is-edit {

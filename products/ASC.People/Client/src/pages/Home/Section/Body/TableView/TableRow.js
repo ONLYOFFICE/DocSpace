@@ -22,6 +22,7 @@ const StyledPeopleRow = styled(TableRow)`
 
     .table-container_row-checkbox {
       margin-left: -4px;
+      padding: 16px 0px 16px 12px;
     }
   }
 
@@ -36,7 +37,6 @@ const StyledPeopleRow = styled(TableRow)`
 
 const PeopleTableRow = (props) => {
   const {
-    t,
     item,
     contextOptionsProps,
     element,
