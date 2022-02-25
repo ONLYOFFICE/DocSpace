@@ -14,19 +14,11 @@
  *
 */
 
-
 namespace ASC.Files.ThumbnailBuilder;
 
-public class FileData<T>
+[Singletone(Additional = typeof(WorkerExtension))]
+public class FileDataQueue
 {
-    public readonly int TenantId;
-    public readonly T FileId;
-    public readonly string BaseUri;
-
-    public FileData(int tenantId, T fileId, string baseUri)
-    {
-        TenantId = tenantId;
-        FileId = fileId;
-        BaseUri = baseUri;
-    }
+    internal static readonly ConcurrentDictionary<object, FileData<int>> Queue
+        = new ConcurrentDictionary<object, FileData<int>>();
 }
