@@ -182,6 +182,11 @@ class BackupDesktopView extends React.Component {
       <StyledBackup isDesktop={true}>
         <div className="backup_modules-separation">
           <Text className="backup_modules-header">{t("ManualBackup")}</Text>
+
+          <Text className="backup_modules-description">
+            {t("ManualBackupDescription")}
+          </Text>
+
           <ManualBackup
             isDesktop
             setBackupProgress={this.setBackupProgress}
@@ -194,6 +199,11 @@ class BackupDesktopView extends React.Component {
             <Text className="backup_modules-header">
               {t("AutomaticBackup")}
             </Text>
+
+            <Text className="backup_modules-description">
+              {t("AutoBackupDescription")}
+            </Text>
+
             <AutoBackup
               isDesktop
               backupSchedule={backupSchedule}

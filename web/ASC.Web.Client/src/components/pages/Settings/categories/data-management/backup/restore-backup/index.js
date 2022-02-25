@@ -417,7 +417,7 @@ class RestoreBackup extends React.Component {
       <StyledRestoreBackup>
         <div className="restore-description">
           <Text className="restore-description">
-            {t("DataRestoreDescription")}
+            {t("RestoreBackupDescription")}
           </Text>
         </div>
         <RadioButton

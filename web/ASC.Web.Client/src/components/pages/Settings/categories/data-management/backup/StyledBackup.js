@@ -263,6 +263,10 @@ const StyledBackup = styled.div`
   .layout-progress-bar {
     ${(props) => props.isDesktop && "cursor: default;"}
   }
+
+  .backup_modules-description {
+    margin-bottom: 24px;
+  }
 `;
 
 const StyledBackupList = styled.div`
