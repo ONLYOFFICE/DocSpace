@@ -5,34 +5,31 @@ import { useTranslation } from "react-i18next";
 import Box from "@appserver/components/box";
 import Button from "@appserver/components/button";
 
-import SimpleFormField from "./sub-components/SimpleFormField";
+import MetadataUrlField from "./sub-components/MetadataUrlField";
 
 const ProviderMetadata = () => {
   const { t } = useTranslation("SingleSignOn");
 
   return (
     <>
-      <SimpleFormField
+      <MetadataUrlField
         labelText={t("SPEntityId")}
         name="sp_entityId"
         placeholder="https://www.test.com"
-        tabIndex={25}
         tooltipContent={t("SPEntityIdTooltip")}
       />
 
-      <SimpleFormField
+      <MetadataUrlField
         labelText={t("SPAssertionConsumerURL")}
         name="sp_assertionConsumerUrl"
         placeholder="https://www.test.com"
-        tabIndex={26}
         tooltipContent={t("SPAssertionConsumerURLTooltip")}
       />
 
-      <SimpleFormField
+      <MetadataUrlField
         labelText={t("SPSingleLogoutURL")}
         name="sp_singleLogoutUrl"
         placeholder="https://www.test.com"
-        tabIndex={27}
         tooltipContent={t("SPSingleLogoutURLTooltip")}
       />
 
@@ -42,7 +39,7 @@ const ProviderMetadata = () => {
           label={t("DownloadMetadataXML")}
           primary
           size="medium"
-          tabIndex={28}
+          tabIndex={25}
         />
       </Box>
     </>
