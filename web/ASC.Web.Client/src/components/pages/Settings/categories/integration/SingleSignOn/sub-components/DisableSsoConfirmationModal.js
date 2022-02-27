@@ -1,5 +1,6 @@
 import React from "react";
 import { observer } from "mobx-react";
+import { useTranslation } from "react-i18next";
 
 import Box from "@appserver/components/box";
 import Button from "@appserver/components/button";
@@ -10,13 +11,13 @@ import Text from "@appserver/components/text";
 import StyledModalDialog from "../styled-containers/StyledModalDialog";
 import { addArguments } from "../../../../utils";
 
-const DisableSsoConfirmationModal = ({ t }) => {
+const DisableSsoConfirmationModal = () => {
+  const { t } = useTranslation(["SingleSignOn", "Common"]);
+
   const onClose = addArguments(
     FormStore.onCloseModal,
     "confirmationDisableModal"
   );
-
-  console.log(FormStore.confirmationDisableModal);
 
   return (
     <StyledModalDialog

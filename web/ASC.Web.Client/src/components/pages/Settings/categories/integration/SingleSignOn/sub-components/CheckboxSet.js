@@ -1,5 +1,6 @@
 import React from "react";
 import { observer } from "mobx-react";
+import { useTranslation } from "react-i18next";
 
 import Box from "@appserver/components/box";
 import SimpleCheckbox from "./SimpleCheckbox";
@@ -18,7 +19,9 @@ const checkboxesNames = {
   ],
 };
 
-const CheckboxSet = ({ prefix, t }) => {
+const CheckboxSet = ({ prefix }) => {
+  const { t } = useTranslation("SingleSignOn");
+
   return (
     <Box marginProp="12px 0">
       <SimpleCheckbox

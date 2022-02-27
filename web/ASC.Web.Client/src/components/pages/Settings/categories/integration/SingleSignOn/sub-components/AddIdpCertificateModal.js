@@ -1,5 +1,6 @@
 import React from "react";
 import { observer } from "mobx-react";
+import { useTranslation } from "react-i18next";
 
 import Box from "@appserver/components/box";
 import Button from "@appserver/components/button";
@@ -11,7 +12,9 @@ import TextArea from "@appserver/components/textarea";
 
 import { addArguments } from "../../../../utils";
 
-const AddIdpCertificateModal = ({ t }) => {
+const AddIdpCertificateModal = () => {
+  const { t } = useTranslation(["SingleSignOn", "Common"]);
+
   const onClose = addArguments(FormStore.onCloseModal, "idp_isModalVisible");
   const onSubmit = addArguments(FormStore.addCertificateToForm, "idp");
 

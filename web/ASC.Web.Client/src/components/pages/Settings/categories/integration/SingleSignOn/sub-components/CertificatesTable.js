@@ -1,5 +1,6 @@
 import React from "react";
 import { observer } from "mobx-react";
+import { useTranslation } from "react-i18next";
 
 import FormStore from "@appserver/studio/src/store/SsoFormStore";
 import IconButton from "@appserver/components/icon-button";
@@ -9,7 +10,9 @@ import { ContextMenuButton } from "@appserver/components";
 import StyledCertificatesTable from "../styled-containers/StyledCertificatesTable";
 import { addArguments } from "../../../../utils/addArguments";
 
-const CertificatesTable = ({ t, prefix }) => {
+const CertificatesTable = ({ prefix }) => {
+  const { t } = useTranslation(["SingleSignOn", "Common"]);
+
   const renderRow = (certificate, index) => {
     const onEditClick = addArguments(
       FormStore.onEditClick,

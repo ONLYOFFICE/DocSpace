@@ -1,19 +1,21 @@
 import React from "react";
 import { observer } from "mobx-react";
+import { useTranslation } from "react-i18next";
 
 import Box from "@appserver/components/box";
 import Button from "@appserver/components/button";
 
 import SimpleFormField from "./sub-components/SimpleFormField";
 
-const ProviderMetadata = ({ t }) => {
+const ProviderMetadata = () => {
+  const { t } = useTranslation("SingleSignOn");
+
   return (
     <>
       <SimpleFormField
         labelText={t("SPEntityId")}
         name="sp_entityId"
         placeholder="https://www.test.com"
-        t={t}
         tabIndex={25}
         tooltipContent={t("SPEntityIdTooltip")}
       />
@@ -22,7 +24,6 @@ const ProviderMetadata = ({ t }) => {
         labelText={t("SPAssertionConsumerURL")}
         name="sp_assertionConsumerUrl"
         placeholder="https://www.test.com"
-        t={t}
         tabIndex={26}
         tooltipContent={t("SPAssertionConsumerURLTooltip")}
       />
@@ -31,7 +32,6 @@ const ProviderMetadata = ({ t }) => {
         labelText={t("SPSingleLogoutURL")}
         name="sp_singleLogoutUrl"
         placeholder="https://www.test.com"
-        t={t}
         tabIndex={27}
         tooltipContent={t("SPSingleLogoutURLTooltip")}
       />

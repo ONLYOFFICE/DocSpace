@@ -1,5 +1,6 @@
 import React from "react";
 import { observer } from "mobx-react";
+import { useTranslation } from "react-i18next";
 
 import Box from "@appserver/components/box";
 import Button from "@appserver/components/button";
@@ -13,7 +14,9 @@ import ModalComboBox from "./ModalComboBox";
 import StyledModalDialog from "../styled-containers/StyledModalDialog";
 import { addArguments } from "../../../../utils";
 
-const AddSpCertificateModal = ({ t }) => {
+const AddSpCertificateModal = () => {
+  const { t } = useTranslation(["SingleSignOn", "Common"]);
+
   const onClose = addArguments(FormStore.onCloseModal, "sp_isModalVisible");
   const onSubmit = addArguments(FormStore.addCertificateToForm, "sp");
 
@@ -60,7 +63,7 @@ const AddSpCertificateModal = ({ t }) => {
           value={FormStore.sp_privateKey}
         />
 
-        <ModalComboBox t={t} />
+        <ModalComboBox />
       </ModalDialog.Body>
 
       <ModalDialog.Footer>

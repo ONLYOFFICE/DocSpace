@@ -1,5 +1,6 @@
 import React from "react";
 import { observer } from "mobx-react";
+import { useTranslation } from "react-i18next";
 
 import FieldContainer from "@appserver/components/field-container";
 import FormStore from "@appserver/studio/src/store/SsoFormStore";
@@ -11,10 +12,11 @@ const SimpleFormField = ({
   labelText,
   name,
   placeholder,
-  t,
   tabIndex,
   tooltipContent,
 }) => {
+  const { t } = useTranslation("SingleSignOn");
+
   return (
     <FieldContainer
       errorMessage={t(FormStore[`${name}ErrorMessage`])}

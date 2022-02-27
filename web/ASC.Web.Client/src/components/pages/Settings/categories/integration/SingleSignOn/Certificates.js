@@ -1,5 +1,6 @@
 import React from "react";
 import { observer } from "mobx-react";
+import { useTranslation } from "react-i18next";
 
 import Box from "@appserver/components/box";
 import Button from "@appserver/components/button";
@@ -19,7 +20,9 @@ import {
   verifyAlgorithmsOptions,
 } from "./sub-components/constants";
 
-const Certificates = ({ t, provider }) => {
+const Certificates = ({ provider }) => {
+  const { t } = useTranslation("SingleSignOn");
+
   let prefix = "";
 
   switch (provider) {
@@ -50,7 +53,7 @@ const Certificates = ({ t, provider }) => {
       </Box>
 
       {FormStore[`${prefix}_certificates`].length > 0 && (
-        <CertificatesTable prefix={prefix} t={t} />
+        <CertificatesTable prefix={prefix} />
       )}
 
       <Box alignItems="center" displayProp="flex" flexDirection="row">
@@ -62,7 +65,7 @@ const Certificates = ({ t, provider }) => {
               size="medium"
               tabIndex={9}
             />
-            <AddIdpCertificateModal t={t} />
+            <AddIdpCertificateModal />
           </>
         )}
 
@@ -74,20 +77,19 @@ const Certificates = ({ t, provider }) => {
               size="medium"
               tabIndex={9}
             />
-            <AddSpCertificateModal t={t} />
+            <AddSpCertificateModal />
           </>
         )}
 
         <HideButton
           label={`${prefix}_showAdditionalParameters`}
           isAdditionalParameters
-          t={t}
         />
       </Box>
 
       {FormStore[`${prefix}_showAdditionalParameters`] && (
         <>
-          <CheckboxSet id={prefix} prefix={prefix} t={t} />
+          <CheckboxSet id={prefix} prefix={prefix} />
 
           {provider === "IdentityProvider" && (
             <>

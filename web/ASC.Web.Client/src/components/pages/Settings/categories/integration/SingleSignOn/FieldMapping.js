@@ -1,5 +1,6 @@
 import React from "react";
 import { observer } from "mobx-react";
+import { useTranslation } from "react-i18next";
 
 import Box from "@appserver/components/box";
 import FieldContainer from "@appserver/components/field-container";
@@ -9,7 +10,9 @@ import Text from "@appserver/components/text";
 import SimpleCheckbox from "./sub-components/SimpleCheckbox";
 import SimpleFormField from "./sub-components/SimpleFormField";
 
-const FieldMapping = ({ t }) => {
+const FieldMapping = () => {
+  const { t } = useTranslation(["SingleSignOn", "Common"]);
+
   return (
     <Box>
       <Box
@@ -33,7 +36,6 @@ const FieldMapping = ({ t }) => {
         labelText={t("FirstName")}
         name="firstName"
         placeholder="givenName"
-        t={t}
         tabIndex={16}
       />
 
@@ -41,7 +43,6 @@ const FieldMapping = ({ t }) => {
         labelText={t("LastName")}
         name="lastName"
         placeholder="sn"
-        t={t}
         tabIndex={17}
       />
 
@@ -49,7 +50,6 @@ const FieldMapping = ({ t }) => {
         labelText={t("Common:Email")}
         name="email"
         placeholder="sn"
-        t={t}
         tabIndex={18}
       />
 
@@ -57,7 +57,6 @@ const FieldMapping = ({ t }) => {
         labelText={t("Location")}
         name="location"
         placeholder="sn"
-        t={t}
         tabIndex={19}
       />
 
@@ -65,7 +64,6 @@ const FieldMapping = ({ t }) => {
         labelText={t("Title")}
         name="title"
         placeholder="sn"
-        t={t}
         tabIndex={20}
       />
 
@@ -73,7 +71,6 @@ const FieldMapping = ({ t }) => {
         labelText={t("Common:Phone")}
         name="phone"
         placeholder="sn"
-        t={t}
         tabIndex={21}
       />
 

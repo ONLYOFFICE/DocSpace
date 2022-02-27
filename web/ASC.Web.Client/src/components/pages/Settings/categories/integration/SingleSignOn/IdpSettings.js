@@ -1,5 +1,6 @@
 import React from "react";
 import { observer } from "mobx-react";
+import { useTranslation } from "react-i18next";
 
 import Box from "@appserver/components/box";
 import FormStore from "@appserver/studio/src/store/SsoFormStore";
@@ -11,16 +12,17 @@ import SimpleFormField from "./sub-components/SimpleFormField";
 import UploadXML from "./sub-components/UploadXML";
 import { bindingOptions, nameIdOptions } from "./sub-components/constants";
 
-const IdpSettings = ({ t }) => {
+const IdpSettings = () => {
+  const { t } = useTranslation("SingleSignOn");
+
   return (
     <Box>
-      <UploadXML t={t} />
+      <UploadXML />
 
       <SimpleFormField
         labelText={t("CustomEntryButton")}
         name="spLoginLabel"
         placeholder="Single Sign-on"
-        t={t}
         tabIndex={4}
         tooltipContent={t("CustomEntryTooltip")}
       />
@@ -29,7 +31,6 @@ const IdpSettings = ({ t }) => {
         labelText={t("ProviderURL")}
         name="entityId"
         placeholder="https://www.test.com"
-        t={t}
         tabIndex={5}
         tooltipContent={t("ProviderURLTooltip")}
       />
@@ -38,7 +39,6 @@ const IdpSettings = ({ t }) => {
         labelText={t("SignOnEndpointUrl")}
         name="ssoUrl"
         placeholder="https://www.test.com/saml/login"
-        t={t}
         tabIndex={7}
         tooltipContent={t("SignOnEndpointUrlTooltip")}
       >
@@ -61,7 +61,6 @@ const IdpSettings = ({ t }) => {
         labelText={t("LogoutEndpointUrl")}
         name="sloUrl"
         placeholder="https://www.test.com/saml/logout"
-        t={t}
         tabIndex={9}
         tooltipContent={t("LogoutEndpointUrlTooltip")}
       >

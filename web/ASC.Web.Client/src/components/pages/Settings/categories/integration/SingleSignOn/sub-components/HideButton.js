@@ -1,5 +1,6 @@
 import React from "react";
 import { observer } from "mobx-react";
+import { useTranslation } from "react-i18next";
 
 import Box from "@appserver/components/box";
 import FormStore from "@appserver/studio/src/store/SsoFormStore";
@@ -8,7 +9,9 @@ import Text from "@appserver/components/text";
 
 import { addArguments } from "../../../../utils/addArguments";
 
-const HideButton = ({ label, t, isAdditionalParameters }) => {
+const HideButton = ({ label, isAdditionalParameters }) => {
+  const { t } = useTranslation("SingleSignOn");
+
   const hide = isAdditionalParameters ? "HideAdditionalParameters" : "Hide";
   const show = isAdditionalParameters ? "ShowAdditionalParameters" : "Show";
   const marginProp = isAdditionalParameters ? null : "24px 0";

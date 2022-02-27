@@ -1,5 +1,6 @@
 import React from "react";
 import { observer } from "mobx-react";
+import { useTranslation } from "react-i18next";
 
 import ComboBox from "@appserver/components/combobox";
 import FieldContainer from "@appserver/components/field-container";
@@ -7,7 +8,9 @@ import FormStore from "@appserver/studio/src/store/SsoFormStore";
 
 import StyledInputWrapper from "../styled-containers/StyledInputWrapper";
 
-const ModalComboBox = ({ t }) => {
+const ModalComboBox = () => {
+  const { t } = useTranslation("SingleSignOn");
+
   const certificateOptions = [
     { key: "signing", label: t("Signing") },
     { key: "encrypt", label: t("Encryption") },

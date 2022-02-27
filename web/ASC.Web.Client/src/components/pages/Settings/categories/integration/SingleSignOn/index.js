@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { isDesktop } from "react-device-detect";
 import { observer } from "mobx-react";
-import { useTranslation } from "react-i18next";
 
 import Box from "@appserver/components/box";
 import FormStore from "@appserver/studio/src/store/SsoFormStore";
@@ -17,9 +16,7 @@ import SubmitResetButtons from "./SubmitButton";
 import ToggleSSO from "./sub-components/ToggleSSO";
 
 const SingleSignOn = () => {
-  const { t } = useTranslation(["SingleSignOn", "Common"]);
-
-  if (!isDesktop) return <ForbiddenPage t={t} />;
+  if (!isDesktop) return <ForbiddenPage />;
 
   useEffect(() => {
     FormStore.onPageLoad();
@@ -30,28 +27,28 @@ const SingleSignOn = () => {
       hideSettings={FormStore.ServiceProviderSettings}
       hideMetadata={FormStore.SPMetadata}
     >
-      <ToggleSSO t={t} />
+      <ToggleSSO />
 
-      <HideButton label="ServiceProviderSettings" t={t} />
+      <HideButton label="ServiceProviderSettings" />
 
       <Box className="service-provider-settings">
-        <IdpSettings t={t} />
+        <IdpSettings />
 
-        <Certificates t={t} provider="IdentityProvider" />
+        <Certificates provider="IdentityProvider" />
 
-        <Certificates t={t} provider="ServiceProvider" />
+        <Certificates provider="ServiceProvider" />
 
-        <FieldMapping t={t} />
+        <FieldMapping />
 
-        <SubmitResetButtons t={t} />
+        <SubmitResetButtons />
       </Box>
 
       <hr className="separator" />
 
-      <HideButton label="SPMetadata" t={t} />
+      <HideButton label="SPMetadata" />
 
       <Box className="sp-metadata">
-        <ProviderMetadata t={t} />
+        <ProviderMetadata />
       </Box>
     </StyledSsoPage>
   );

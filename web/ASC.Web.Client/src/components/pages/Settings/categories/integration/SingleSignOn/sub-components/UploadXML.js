@@ -1,6 +1,7 @@
 import React from "react";
 import { ReactSVG } from "react-svg";
 import { observer } from "mobx-react";
+import { useTranslation } from "react-i18next";
 
 import Box from "@appserver/components/box";
 import Button from "@appserver/components/button";
@@ -13,7 +14,9 @@ import { FileInput } from "@appserver/components";
 
 const uploadIcon = <ReactSVG src="images/actions.upload.react.svg" />;
 
-const UploadXML = ({ t }) => {
+const UploadXML = () => {
+  const { t } = useTranslation("SingleSignOn");
+
   return (
     <FieldContainer
       className="xml-input"
