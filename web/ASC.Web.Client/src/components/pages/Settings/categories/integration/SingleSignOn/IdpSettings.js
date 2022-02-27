@@ -47,6 +47,7 @@ const IdpSettings = () => {
 
           <RadioButtonGroup
             className="radio-button-group"
+            isDisabled={!FormStore.enableSso}
             name="ssoBinding"
             onClick={FormStore.onBindingChange}
             options={bindingOptions}
@@ -69,6 +70,7 @@ const IdpSettings = () => {
 
           <RadioButtonGroup
             className="radio-button-group"
+            isDisabled={!FormStore.enableSso}
             name="sloBinding"
             onClick={FormStore.onBindingChange}
             options={bindingOptions}

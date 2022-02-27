@@ -60,8 +60,9 @@ const Certificates = ({ provider }) => {
         {prefix === "idp" && (
           <>
             <Button
-              onClick={FormStore.onOpenIdpModal}
+              isDisabled={!FormStore.enableSso}
               label={t("AddCertificate")}
+              onClick={FormStore.onOpenIdpModal}
               size="medium"
               tabIndex={9}
             />
@@ -72,8 +73,9 @@ const Certificates = ({ provider }) => {
         {prefix === "sp" && (
           <>
             <Button
-              onClick={FormStore.onOpenSpModal}
+              isDisabled={!FormStore.enableSso}
               label={t("AddCertificate")}
+              onClick={FormStore.onOpenSpModal}
               size="medium"
               tabIndex={9}
             />

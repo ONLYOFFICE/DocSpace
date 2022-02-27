@@ -18,6 +18,7 @@ const SimpleTextInput = ({
       <TextInput
         className="field-input"
         hasError={hasError}
+        isDisabled={!FormStore.enableSso}
         name={name}
         onBlur={FormStore.onBlur}
         onChange={FormStore.onTextInputChange}

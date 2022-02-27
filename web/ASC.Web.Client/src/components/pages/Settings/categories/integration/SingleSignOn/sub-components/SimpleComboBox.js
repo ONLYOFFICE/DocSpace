@@ -19,6 +19,7 @@ const SimpleComboBox = ({ labelText, name, options, tabIndex }) => {
     <FieldContainer isVertical labelText={labelText}>
       <StyledInputWrapper>
         <ComboBox
+          isDisabled={!FormStore.enableSso}
           onSelect={onSelect}
           options={options}
           scaled

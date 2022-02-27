@@ -8,6 +8,7 @@ const SimpleCheckbox = ({ label, name, tabIndex }) => {
   return (
     <Checkbox
       className="checkbox-input"
+      isDisabled={!FormStore.enableSso}
       isChecked={FormStore[name]}
       label={label}
       name={name}
