@@ -1614,7 +1614,7 @@ public class FileStorageService<T> //: IFileStorageService
         return _fileOperationsManager.Delete(_authContext.CurrentAccount.ID, _tenantManager.GetCurrentTenant(), foldersIdTask, filesIdTask, false, true, false, GetHttpHeaders());
     }
 
-    public async IAsyncEnumerable<FileOperationResult> CheckConversionAsync(List<CheckConversionModel<T>> filesInfoJSON, bool sync = false)
+    public async IAsyncEnumerable<FileOperationResult> CheckConversionAsync(List<CheckConversionRequestDto<T>> filesInfoJSON, bool sync = false)
     {
         if (filesInfoJSON == null || filesInfoJSON.Count == 0)
         {

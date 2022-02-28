@@ -76,7 +76,7 @@ public class BaseBatchModelBinder : IModelBinder
             throw new ArgumentNullException(nameof(bindingContext));
         }
 
-        var result = new BaseBatchModel();
+        var result = new BaseBatchRequestDto();
 
         result.FileIds = bindingContext.ParseQuery(nameof(result.FileIds));
         result.FolderIds = bindingContext.ParseQuery(nameof(result.FolderIds));
@@ -97,9 +97,9 @@ public class DeleteBatchModelBinder : BaseBatchModelBinder
             throw new ArgumentNullException(nameof(bindingContext));
         }
 
-        var result = new DeleteBatchModel();
+        var result = new DeleteBatchRequestDto();
 
-        var baseResult = bindingContext.Result.Model as BaseBatchModel;
+        var baseResult = bindingContext.Result.Model as BaseBatchRequestDto;
 
         if (baseResult == null)
         {
@@ -137,9 +137,9 @@ public class BatchModelBinder : BaseBatchModelBinder
             throw new ArgumentNullException(nameof(bindingContext));
         }
 
-        var result = new BatchModel();
+        var result = new BatchRequestDto();
 
-        var baseResult = bindingContext.Result.Model as BaseBatchModel;
+        var baseResult = bindingContext.Result.Model as BaseBatchRequestDto;
 
         if (baseResult == null)
         {
@@ -192,7 +192,7 @@ public class InsertFileModelBinder : IModelBinder
             bindingContext.ValueProvider = defaultBindingContext.OriginalValueProvider;
         }
 
-        var result = new InsertFileModel();
+        var result = new InsertRequestDto();
 
         if (bindingContext.GetBoolValue(nameof(result.CreateNewIfExist), out var createNewIfExist))
         {
@@ -238,7 +238,7 @@ public class UploadModelBinder : IModelBinder
             bindingContext.ValueProvider = defaultBindingContext.OriginalValueProvider;
         }
 
-        var result = new UploadModel();
+        var result = new UploadModelRequestDto();
 
         if (bindingContext.GetBoolValue(nameof(result.CreateNewIfExist), out var createNewIfExist))
         {

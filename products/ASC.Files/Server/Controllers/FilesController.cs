@@ -123,7 +123,7 @@ namespace ASC.Api.Documents
         }
 
         [Read("@root")]
-        public async Task<IEnumerable<FolderContentWrapper<int>>> GetRootFoldersAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders, bool withoutTrash, bool withoutAdditionalFolder)
+        public async Task<IEnumerable<FolderContentDto<int>>> GetRootFoldersAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders, bool withoutTrash, bool withoutAdditionalFolder)
         {
             var IsVisitor = UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsVisitor(UserManager);
             var IsOutsider = UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsOutsider(UserManager);
@@ -181,7 +181,7 @@ namespace ASC.Api.Documents
                 folders.Add((int)GlobalFolderHelper.FolderTrash);
             }
 
-            var result = new List<FolderContentWrapper<int>>();
+            var result = new List<FolderContentDto<int>>();
             foreach (var folder in folders)
             {
                 result.Add(await FilesControllerHelperInt.GetFolderAsync(folder, userIdOrGroupId, filterType, withsubfolders));
@@ -191,13 +191,13 @@ namespace ASC.Api.Documents
         }
 
         [Read("@privacy")]
-        public Task<FolderContentWrapper<int>> GetPrivacyFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        public Task<FolderContentDto<int>> GetPrivacyFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
             if (!IsAvailablePrivacyRoomSettings()) throw new System.Security.SecurityException();
             return InternalGetPrivacyFolderAsync(userIdOrGroupId, filterType, withsubfolders);
         }
 
-        private async Task<FolderContentWrapper<int>> InternalGetPrivacyFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        private async Task<FolderContentDto<int>> InternalGetPrivacyFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
             return await FilesControllerHelperInt.GetFolderAsync(await GlobalFolderHelper.FolderPrivacyAsync, userIdOrGroupId, filterType, withsubfolders);
         }
@@ -217,7 +217,7 @@ namespace ASC.Api.Documents
         /// <category>Folders</category>
         /// <returns>My folder contents</returns>
         [Read("@my")]
-        public Task<FolderContentWrapper<int>> GetMyFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        public Task<FolderContentDto<int>> GetMyFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
             return FilesControllerHelperInt.GetFolderAsync(GlobalFolderHelper.FolderMy, userIdOrGroupId, filterType, withsubfolders);
         }
@@ -231,7 +231,7 @@ namespace ASC.Api.Documents
         /// <category>Folders</category>
         /// <returns>Projects folder contents</returns>
         [Read("@projects")]
-        public async Task<FolderContentWrapper<string>> GetProjectsFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        public async Task<FolderContentDto<string>> GetProjectsFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
             return await FilesControllerHelperString.GetFolderAsync(await GlobalFolderHelper.GetFolderProjectsAsync<string>(), userIdOrGroupId, filterType, withsubfolders);
         }
@@ -246,7 +246,7 @@ namespace ASC.Api.Documents
         /// <category>Folders</category>
         /// <returns>Common folder contents</returns>
         [Read("@common")]
-        public async Task<FolderContentWrapper<int>> GetCommonFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        public async Task<FolderContentDto<int>> GetCommonFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
             return await FilesControllerHelperInt.GetFolderAsync(await GlobalFolderHelper.FolderCommonAsync, userIdOrGroupId, filterType, withsubfolders);
         }
@@ -260,7 +260,7 @@ namespace ASC.Api.Documents
         /// <category>Folders</category>
         /// <returns>Shared folder contents</returns>
         [Read("@share")]
-        public async Task<FolderContentWrapper<int>> GetShareFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        public async Task<FolderContentDto<int>> GetShareFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
             return await FilesControllerHelperInt.GetFolderAsync(await GlobalFolderHelper.FolderShareAsync, userIdOrGroupId, filterType, withsubfolders);
         }
@@ -272,19 +272,19 @@ namespace ASC.Api.Documents
         /// <category>Folders</category>
         /// <returns>Recent contents</returns>
         [Read("@recent")]
-        public async Task<FolderContentWrapper<int>> GetRecentFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        public async Task<FolderContentDto<int>> GetRecentFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
             return await FilesControllerHelperInt.GetFolderAsync(await GlobalFolderHelper.FolderRecentAsync, userIdOrGroupId, filterType, withsubfolders);
         }
 
         [Create("file/{fileId}/recent", order: int.MaxValue)]
-        public Task<FileWrapper<string>> AddToRecentAsync(string fileId)
+        public Task<FileDto<string>> AddToRecentAsync(string fileId)
         {
             return FilesControllerHelperString.AddToRecentAsync(fileId);
         }
 
         [Create("file/{fileId:int}/recent", order: int.MaxValue - 1)]
-        public Task<FileWrapper<int>> AddToRecentAsync(int fileId)
+        public Task<FileDto<int>> AddToRecentAsync(int fileId)
         {
             return FilesControllerHelperInt.AddToRecentAsync(fileId);
         }
@@ -296,7 +296,7 @@ namespace ASC.Api.Documents
         /// <category>Folders</category>
         /// <returns>Favorites contents</returns>
         [Read("@favorites")]
-        public async Task<FolderContentWrapper<int>> GetFavoritesFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        public async Task<FolderContentDto<int>> GetFavoritesFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
             return await FilesControllerHelperInt.GetFolderAsync(await GlobalFolderHelper.FolderFavoritesAsync, userIdOrGroupId, filterType, withsubfolders);
         }
@@ -308,7 +308,7 @@ namespace ASC.Api.Documents
         /// <category>Folders</category>
         /// <returns>Templates contents</returns>
         [Read("@templates")]
-        public async Task<FolderContentWrapper<int>> GetTemplatesFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        public async Task<FolderContentDto<int>> GetTemplatesFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
             return await FilesControllerHelperInt.GetFolderAsync(await GlobalFolderHelper.FolderTemplatesAsync, userIdOrGroupId, filterType, withsubfolders);
         }
@@ -322,7 +322,7 @@ namespace ASC.Api.Documents
         /// <category>Folders</category>
         /// <returns>Trash folder contents</returns>
         [Read("@trash")]
-        public Task<FolderContentWrapper<int>> GetTrashFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        public Task<FolderContentDto<int>> GetTrashFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
             return FilesControllerHelperInt.GetFolderAsync(Convert.ToInt32(GlobalFolderHelper.FolderTrash), userIdOrGroupId, filterType, withsubfolders);
         }
@@ -339,38 +339,38 @@ namespace ASC.Api.Documents
         /// <param name="filterType" optional="true" remark="Allowed values: None (0), FilesOnly (1), FoldersOnly (2), DocumentsOnly (3), PresentationsOnly (4), SpreadsheetsOnly (5) or ImagesOnly (7)">Filter type</param>
         /// <returns>Folder contents</returns>
         [Read("{folderId}", order: int.MaxValue, DisableFormat = true)]
-        public async Task<FolderContentWrapper<string>> GetFolderAsync(string folderId, Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        public async Task<FolderContentDto<string>> GetFolderAsync(string folderId, Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
             var folder = await FilesControllerHelperString.GetFolderAsync(folderId, userIdOrGroupId, filterType, withsubfolders);
             return folder.NotFoundIfNull();
         }
 
         [Read("{folderId:int}", order: int.MaxValue - 1, DisableFormat = true)]
-        public Task<FolderContentWrapper<int>> GetFolderAsync(int folderId, Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        public Task<FolderContentDto<int>> GetFolderAsync(int folderId, Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
             return FilesControllerHelperInt.GetFolderAsync(folderId, userIdOrGroupId, filterType, withsubfolders);
         }
 
         [Read("{folderId}/subfolders")]
-        public IAsyncEnumerable<FileEntryWrapper> GetFoldersAsync(string folderId)
+        public IAsyncEnumerable<FileEntryDto> GetFoldersAsync(string folderId)
         {
             return FilesControllerHelperString.GetFoldersAsync(folderId);
         }
 
         [Read("{folderId:int}/subfolders")]
-        public IAsyncEnumerable<FileEntryWrapper> GetFoldersAsync(int folderId)
+        public IAsyncEnumerable<FileEntryDto> GetFoldersAsync(int folderId)
         {
             return FilesControllerHelperInt.GetFoldersAsync(folderId);
         }
 
         [Read("{folderId}/news")]
-        public Task<List<FileEntryWrapper>> GetNewItemsAsync(string folderId)
+        public Task<List<FileEntryDto>> GetNewItemsAsync(string folderId)
         {
             return FilesControllerHelperString.GetNewItemsAsync(folderId);
         }
 
         [Read("{folderId:int}/news")]
-        public Task<List<FileEntryWrapper>> GetNewItemsAsync(int folderId)
+        public Task<List<FileEntryDto>> GetNewItemsAsync(int folderId)
         {
             return FilesControllerHelperInt.GetNewItemsAsync(folderId);
         }
@@ -394,7 +394,7 @@ namespace ASC.Api.Documents
         /// <param name="files" visible="false">List of files when posted as multipart/form-data</param>
         /// <returns>Uploaded file</returns>
         [Create("@my/upload")]
-        public Task<object> UploadFileToMyAsync([ModelBinder(BinderType = typeof(UploadModelBinder))] UploadModel uploadModel)
+        public Task<object> UploadFileToMyAsync([ModelBinder(BinderType = typeof(UploadModelBinder))] UploadModelRequestDto uploadModel)
         {
             uploadModel.CreateNewIfExist = false;
             return FilesControllerHelperInt.UploadFileAsync(GlobalFolderHelper.FolderMy, uploadModel);
@@ -419,7 +419,7 @@ namespace ASC.Api.Documents
         /// <param name="files" visible="false">List of files when posted as multipart/form-data</param>
         /// <returns>Uploaded file</returns>
         [Create("@common/upload")]
-        public async Task<object> UploadFileToCommonAsync([ModelBinder(BinderType = typeof(UploadModelBinder))] UploadModel uploadModel)
+        public async Task<object> UploadFileToCommonAsync([ModelBinder(BinderType = typeof(UploadModelBinder))] UploadModelRequestDto uploadModel)
         {
             uploadModel.CreateNewIfExist = false;
             return await FilesControllerHelperInt.UploadFileAsync(await GlobalFolderHelper.FolderCommonAsync, uploadModel);
@@ -448,13 +448,13 @@ namespace ASC.Api.Documents
         /// <param name="keepConvertStatus" visible="false">Keep status conversation after finishing</param>
         /// <returns>Uploaded file</returns>
         [Create("{folderId}/upload", order: int.MaxValue)]
-        public Task<object> UploadFileAsync(string folderId, [ModelBinder(BinderType = typeof(UploadModelBinder))] UploadModel uploadModel)
+        public Task<object> UploadFileAsync(string folderId, [ModelBinder(BinderType = typeof(UploadModelBinder))] UploadModelRequestDto uploadModel)
         {
             return FilesControllerHelperString.UploadFileAsync(folderId, uploadModel);
         }
 
         [Create("{folderId:int}/upload", order: int.MaxValue - 1)]
-        public Task<object> UploadFileAsync(int folderId, [ModelBinder(BinderType = typeof(UploadModelBinder))] UploadModel uploadModel)
+        public Task<object> UploadFileAsync(int folderId, [ModelBinder(BinderType = typeof(UploadModelBinder))] UploadModelRequestDto uploadModel)
         {
             return FilesControllerHelperInt.UploadFileAsync(folderId, uploadModel);
         }
@@ -469,7 +469,7 @@ namespace ASC.Api.Documents
         /// <category>Uploads</category>
         /// <returns></returns>
         [Create("@my/insert")]
-        public Task<FileWrapper<int>> InsertFileToMyFromBodyAsync([FromForm][ModelBinder(BinderType = typeof(InsertFileModelBinder))] InsertFileModel model)
+        public Task<FileDto<int>> InsertFileToMyFromBodyAsync([FromForm][ModelBinder(BinderType = typeof(InsertFileModelBinder))] InsertRequestDto model)
         {
             return InsertFileAsync(GlobalFolderHelper.FolderMy, model);
         }
@@ -484,7 +484,7 @@ namespace ASC.Api.Documents
         /// <category>Uploads</category>
         /// <returns></returns>
         [Create("@common/insert")]
-        public async Task<FileWrapper<int>> InsertFileToCommonFromBodyAsync([FromForm][ModelBinder(BinderType = typeof(InsertFileModelBinder))] InsertFileModel model)
+        public async Task<FileDto<int>> InsertFileToCommonFromBodyAsync([FromForm][ModelBinder(BinderType = typeof(InsertFileModelBinder))] InsertRequestDto model)
         {
             return await InsertFileAsync(await GlobalFolderHelper.FolderCommonAsync, model);
         }
@@ -500,18 +500,18 @@ namespace ASC.Api.Documents
         /// <category>Uploads</category>
         /// <returns></returns>
         [Create("{folderId}/insert", order: int.MaxValue)]
-        public Task<FileWrapper<string>> InsertFileAsync(string folderId, [FromForm][ModelBinder(BinderType = typeof(InsertFileModelBinder))] InsertFileModel model)
+        public Task<FileDto<string>> InsertFileAsync(string folderId, [FromForm][ModelBinder(BinderType = typeof(InsertFileModelBinder))] InsertRequestDto model)
         {
             return FilesControllerHelperString.InsertFileAsync(folderId, model.Stream, model.Title, model.CreateNewIfExist, model.KeepConvertStatus);
         }
 
         [Create("{folderId:int}/insert", order: int.MaxValue - 1)]
-        public Task<FileWrapper<int>> InsertFileFromFormAsync(int folderId, [FromForm][ModelBinder(BinderType = typeof(InsertFileModelBinder))] InsertFileModel model)
+        public Task<FileDto<int>> InsertFileFromFormAsync(int folderId, [FromForm][ModelBinder(BinderType = typeof(InsertFileModelBinder))] InsertRequestDto model)
         {
             return InsertFileAsync(folderId, model);
         }
 
-        private Task<FileWrapper<int>> InsertFileAsync(int folderId, InsertFileModel model)
+        private Task<FileDto<int>> InsertFileAsync(int folderId, InsertRequestDto model)
         {
             return FilesControllerHelperInt.InsertFileAsync(folderId, model.Stream, model.Title, model.CreateNewIfExist, model.KeepConvertStatus);
         }
@@ -526,13 +526,13 @@ namespace ASC.Api.Documents
         /// <visible>false</visible>
 
         [Update("{fileId}/update")]
-        public Task<FileWrapper<string>> UpdateFileStreamFromFormAsync(string fileId, [FromForm] FileStreamModel model)
+        public Task<FileDto<string>> UpdateFileStreamFromFormAsync(string fileId, [FromForm] FileStreamRequestDto model)
         {
             return FilesControllerHelperString.UpdateFileStreamAsync(FilesControllerHelperInt.GetFileFromRequest(model).OpenReadStream(), fileId, model.FileExtension, model.Encrypted, model.Forcesave);
         }
 
         [Update("{fileId:int}/update")]
-        public Task<FileWrapper<int>> UpdateFileStreamFromFormAsync(int fileId, [FromForm] FileStreamModel model)
+        public Task<FileDto<int>> UpdateFileStreamFromFormAsync(int fileId, [FromForm] FileStreamRequestDto model)
         {
             return FilesControllerHelperInt.UpdateFileStreamAsync(FilesControllerHelperInt.GetFileFromRequest(model).OpenReadStream(), fileId, model.FileExtension, model.Encrypted, model.Forcesave);
         }
@@ -550,14 +550,14 @@ namespace ASC.Api.Documents
         /// <category>Files</category>
         /// <returns></returns>
         [Update("file/{fileId}/saveediting")]
-        public Task<FileWrapper<string>> SaveEditingFromFormAsync(string fileId, [FromForm] SaveEditingModel model)
+        public Task<FileDto<string>> SaveEditingFromFormAsync(string fileId, [FromForm] SaveEditingRequestDto model)
         {
             using var stream = FilesControllerHelperInt.GetFileFromRequest(model).OpenReadStream();
             return FilesControllerHelperString.SaveEditingAsync(fileId, model.FileExtension, model.DownloadUri, stream, model.Doc, model.Forcesave);
         }
 
         [Update("file/{fileId:int}/saveediting")]
-        public Task<FileWrapper<int>> SaveEditingFromFormAsync(int fileId, [FromForm] SaveEditingModel model)
+        public Task<FileDto<int>> SaveEditingFromFormAsync(int fileId, [FromForm] SaveEditingRequestDto model)
         {
             using var stream = FilesControllerHelperInt.GetFileFromRequest(model).OpenReadStream();
             return FilesControllerHelperInt.SaveEditingAsync(fileId, model.FileExtension, model.DownloadUri, stream, model.Doc, model.Forcesave);
@@ -573,21 +573,21 @@ namespace ASC.Api.Documents
         /// <returns></returns>
         [Create("file/{fileId}/startedit")]
         [Consumes("application/json")]
-        public async Task<object> StartEditFromBodyAsync(string fileId, [FromBody] StartEditModel model)
+        public async Task<object> StartEditFromBodyAsync(string fileId, [FromBody] StartEditRequestDto model)
         {
             return await FilesControllerHelperString.StartEditAsync(fileId, model.EditingAlone, model.Doc);
         }
 
         [Create("file/{fileId}/startedit")]
         [Consumes("application/x-www-form-urlencoded")]
-        public async Task<object> StartEditFromFormAsync(string fileId, [FromForm] StartEditModel model)
+        public async Task<object> StartEditFromFormAsync(string fileId, [FromForm] StartEditRequestDto model)
         {
             return await FilesControllerHelperString.StartEditAsync(fileId, model.EditingAlone, model.Doc);
         }
 
         [Create("file/{fileId:int}/startedit")]
         [Consumes("application/json")]
-        public async Task<object> StartEditFromBodyAsync(int fileId, [FromBody] StartEditModel model)
+        public async Task<object> StartEditFromBodyAsync(int fileId, [FromBody] StartEditRequestDto model)
         {
             return await FilesControllerHelperInt.StartEditAsync(fileId, model.EditingAlone, model.Doc);
         }
@@ -600,7 +600,7 @@ namespace ASC.Api.Documents
 
         [Create("file/{fileId:int}/startedit")]
         [Consumes("application/x-www-form-urlencoded")]
-        public async Task<object> StartEditFromFormAsync(int fileId, [FromForm] StartEditModel model)
+        public async Task<object> StartEditFromFormAsync(int fileId, [FromForm] StartEditRequestDto model)
         {
             return await FilesControllerHelperInt.StartEditAsync(fileId, model.EditingAlone, model.Doc);
         }
@@ -683,27 +683,27 @@ namespace ASC.Api.Documents
         /// ]]>
         /// </returns>
         [Create("{folderId}/upload/create_session")]
-        public Task<object> CreateUploadSessionFromBodyAsync(string folderId, [FromBody] SessionModel sessionModel)
+        public Task<object> CreateUploadSessionFromBodyAsync(string folderId, [FromBody] SessionRequestDto sessionModel)
         {
             return FilesControllerHelperString.CreateUploadSessionAsync(folderId, sessionModel.FileName, sessionModel.FileSize, sessionModel.RelativePath, sessionModel.LastModified, sessionModel.Encrypted);
         }
 
         [Create("{folderId}/upload/create_session")]
         [Consumes("application/x-www-form-urlencoded")]
-        public Task<object> CreateUploadSessionFromFormAsync(string folderId, [FromForm] SessionModel sessionModel)
+        public Task<object> CreateUploadSessionFromFormAsync(string folderId, [FromForm] SessionRequestDto sessionModel)
         {
             return FilesControllerHelperString.CreateUploadSessionAsync(folderId, sessionModel.FileName, sessionModel.FileSize, sessionModel.RelativePath, sessionModel.LastModified, sessionModel.Encrypted);
         }
 
         [Create("{folderId:int}/upload/create_session")]
-        public Task<object> CreateUploadSessionFromBodyAsync(int folderId, [FromBody] SessionModel sessionModel)
+        public Task<object> CreateUploadSessionFromBodyAsync(int folderId, [FromBody] SessionRequestDto sessionModel)
         {
             return FilesControllerHelperInt.CreateUploadSessionAsync(folderId, sessionModel.FileName, sessionModel.FileSize, sessionModel.RelativePath, sessionModel.LastModified, sessionModel.Encrypted);
         }
 
         [Create("{folderId:int}/upload/create_session")]
         [Consumes("application/x-www-form-urlencoded")]
-        public Task<object> CreateUploadSessionFromFormAsync(int folderId, [FromForm] SessionModel sessionModel)
+        public Task<object> CreateUploadSessionFromFormAsync(int folderId, [FromForm] SessionRequestDto sessionModel)
         {
             return FilesControllerHelperInt.CreateUploadSessionAsync(folderId, sessionModel.FileName, sessionModel.FileSize, sessionModel.RelativePath, sessionModel.LastModified, sessionModel.Encrypted);
         }
@@ -717,14 +717,14 @@ namespace ASC.Api.Documents
         /// <param name="content">File contents</param>
         /// <returns>Folder contents</returns>
         [Create("@my/text")]
-        public Task<FileWrapper<int>> CreateTextFileInMyFromBodyAsync([FromBody] CreateTextOrHtmlFileModel model)
+        public Task<FileDto<int>> CreateTextFileInMyFromBodyAsync([FromBody] CreateTextOrHtmlFileRequestDto model)
         {
             return CreateTextFileAsync(GlobalFolderHelper.FolderMy, model);
         }
 
         [Create("@my/text")]
         [Consumes("application/x-www-form-urlencoded")]
-        public Task<FileWrapper<int>> CreateTextFileInMyFromFormAsync([FromForm] CreateTextOrHtmlFileModel model)
+        public Task<FileDto<int>> CreateTextFileInMyFromFormAsync([FromForm] CreateTextOrHtmlFileRequestDto model)
         {
             return CreateTextFileAsync(GlobalFolderHelper.FolderMy, model);
         }
@@ -738,14 +738,14 @@ namespace ASC.Api.Documents
         /// <param name="content">File contents</param>
         /// <returns>Folder contents</returns>
         [Create("@common/text")]
-        public async Task<FileWrapper<int>> CreateTextFileInCommonFromBodyAsync([FromBody] CreateTextOrHtmlFileModel model)
+        public async Task<FileDto<int>> CreateTextFileInCommonFromBodyAsync([FromBody] CreateTextOrHtmlFileRequestDto model)
         {
             return await CreateTextFileAsync(await GlobalFolderHelper.FolderCommonAsync, model);
         }
 
         [Create("@common/text")]
         [Consumes("application/x-www-form-urlencoded")]
-        public async Task<FileWrapper<int>> CreateTextFileInCommonFromFormAsync([FromForm] CreateTextOrHtmlFileModel model)
+        public async Task<FileDto<int>> CreateTextFileInCommonFromFormAsync([FromForm] CreateTextOrHtmlFileRequestDto model)
         {
             return await CreateTextFileAsync(await GlobalFolderHelper.FolderCommonAsync, model);
         }
@@ -760,37 +760,37 @@ namespace ASC.Api.Documents
         /// <param name="content">File contents</param>
         /// <returns>Folder contents</returns>
         [Create("{folderId}/text")]
-        public Task<FileWrapper<string>> CreateTextFileFromBodyAsync(string folderId, [FromBody] CreateTextOrHtmlFileModel model)
+        public Task<FileDto<string>> CreateTextFileFromBodyAsync(string folderId, [FromBody] CreateTextOrHtmlFileRequestDto model)
         {
             return CreateTextFileAsync(folderId, model);
         }
 
         [Create("{folderId}/text")]
         [Consumes("application/x-www-form-urlencoded")]
-        public Task<FileWrapper<string>> CreateTextFileFromFormAsync(string folderId, [FromForm] CreateTextOrHtmlFileModel model)
+        public Task<FileDto<string>> CreateTextFileFromFormAsync(string folderId, [FromForm] CreateTextOrHtmlFileRequestDto model)
         {
             return CreateTextFileAsync(folderId, model);
         }
 
-        private Task<FileWrapper<string>> CreateTextFileAsync(string folderId, CreateTextOrHtmlFileModel model)
+        private Task<FileDto<string>> CreateTextFileAsync(string folderId, CreateTextOrHtmlFileRequestDto model)
         {
             return FilesControllerHelperString.CreateTextFileAsync(folderId, model.Title, model.Content);
         }
 
         [Create("{folderId:int}/text")]
-        public Task<FileWrapper<int>> CreateTextFileFromBodyAsync(int folderId, [FromBody] CreateTextOrHtmlFileModel model)
+        public Task<FileDto<int>> CreateTextFileFromBodyAsync(int folderId, [FromBody] CreateTextOrHtmlFileRequestDto model)
         {
             return CreateTextFileAsync(folderId, model);
         }
 
         [Create("{folderId:int}/text")]
         [Consumes("application/x-www-form-urlencoded")]
-        public Task<FileWrapper<int>> CreateTextFileFromFormAsync(int folderId, [FromForm] CreateTextOrHtmlFileModel model)
+        public Task<FileDto<int>> CreateTextFileFromFormAsync(int folderId, [FromForm] CreateTextOrHtmlFileRequestDto model)
         {
             return CreateTextFileAsync(folderId, model);
         }
 
-        private Task<FileWrapper<int>> CreateTextFileAsync(int folderId, CreateTextOrHtmlFileModel model)
+        private Task<FileDto<int>> CreateTextFileAsync(int folderId, CreateTextOrHtmlFileRequestDto model)
         {
             return FilesControllerHelperInt.CreateTextFileAsync(folderId, model.Title, model.Content);
         }
@@ -805,37 +805,37 @@ namespace ASC.Api.Documents
         /// <param name="content">File contents</param>
         /// <returns>Folder contents</returns>
         [Create("{folderId}/html")]
-        public Task<FileWrapper<string>> CreateHtmlFileFromBodyAsync(string folderId, [FromBody] CreateTextOrHtmlFileModel model)
+        public Task<FileDto<string>> CreateHtmlFileFromBodyAsync(string folderId, [FromBody] CreateTextOrHtmlFileRequestDto model)
         {
             return CreateHtmlFileAsync(folderId, model);
         }
 
         [Create("{folderId}/html")]
         [Consumes("application/x-www-form-urlencoded")]
-        public Task<FileWrapper<string>> CreateHtmlFileFromFormAsync(string folderId, [FromForm] CreateTextOrHtmlFileModel model)
+        public Task<FileDto<string>> CreateHtmlFileFromFormAsync(string folderId, [FromForm] CreateTextOrHtmlFileRequestDto model)
         {
             return CreateHtmlFileAsync(folderId, model);
         }
 
-        private Task<FileWrapper<string>> CreateHtmlFileAsync(string folderId, CreateTextOrHtmlFileModel model)
+        private Task<FileDto<string>> CreateHtmlFileAsync(string folderId, CreateTextOrHtmlFileRequestDto model)
         {
             return FilesControllerHelperString.CreateHtmlFileAsync(folderId, model.Title, model.Content);
         }
 
         [Create("{folderId:int}/html")]
-        public Task<FileWrapper<int>> CreateHtmlFileFromBodyAsync(int folderId, [FromBody] CreateTextOrHtmlFileModel model)
+        public Task<FileDto<int>> CreateHtmlFileFromBodyAsync(int folderId, [FromBody] CreateTextOrHtmlFileRequestDto model)
         {
             return CreateHtmlFileAsync(folderId, model);
         }
 
         [Create("{folderId:int}/html")]
         [Consumes("application/x-www-form-urlencoded")]
-        public Task<FileWrapper<int>> CreateHtmlFileFromFormAsync(int folderId, [FromForm] CreateTextOrHtmlFileModel model)
+        public Task<FileDto<int>> CreateHtmlFileFromFormAsync(int folderId, [FromForm] CreateTextOrHtmlFileRequestDto model)
         {
             return CreateHtmlFileAsync(folderId, model);
         }
 
-        private Task<FileWrapper<int>> CreateHtmlFileAsync(int folderId, CreateTextOrHtmlFileModel model)
+        private Task<FileDto<int>> CreateHtmlFileAsync(int folderId, CreateTextOrHtmlFileRequestDto model)
         {
             return FilesControllerHelperInt.CreateHtmlFileAsync(folderId, model.Title, model.Content);
         }
@@ -849,14 +849,14 @@ namespace ASC.Api.Documents
         /// <param name="content">File contents</param>
         /// <returns>Folder contents</returns>
         [Create("@my/html")]
-        public Task<FileWrapper<int>> CreateHtmlFileInMyFromBodyAsync([FromBody] CreateTextOrHtmlFileModel model)
+        public Task<FileDto<int>> CreateHtmlFileInMyFromBodyAsync([FromBody] CreateTextOrHtmlFileRequestDto model)
         {
             return CreateHtmlFileAsync(GlobalFolderHelper.FolderMy, model);
         }
 
         [Create("@my/html")]
         [Consumes("application/x-www-form-urlencoded")]
-        public Task<FileWrapper<int>> CreateHtmlFileInMyFromFormAsync([FromForm] CreateTextOrHtmlFileModel model)
+        public Task<FileDto<int>> CreateHtmlFileInMyFromFormAsync([FromForm] CreateTextOrHtmlFileRequestDto model)
         {
             return CreateHtmlFileAsync(GlobalFolderHelper.FolderMy, model);
         }
@@ -870,14 +870,14 @@ namespace ASC.Api.Documents
         /// <param name="content">File contents</param>
         /// <returns>Folder contents</returns>        
         [Create("@common/html")]
-        public async Task<FileWrapper<int>> CreateHtmlFileInCommonFromBodyAsync([FromBody] CreateTextOrHtmlFileModel model)
+        public async Task<FileDto<int>> CreateHtmlFileInCommonFromBodyAsync([FromBody] CreateTextOrHtmlFileRequestDto model)
         {
             return await CreateHtmlFileAsync(await GlobalFolderHelper.FolderCommonAsync, model);
         }
 
         [Create("@common/html")]
         [Consumes("application/x-www-form-urlencoded")]
-        public async Task<FileWrapper<int>> CreateHtmlFileInCommonFromFormAsync([FromForm] CreateTextOrHtmlFileModel model)
+        public async Task<FileDto<int>> CreateHtmlFileInCommonFromFormAsync([FromForm] CreateTextOrHtmlFileRequestDto model)
         {
             return await CreateHtmlFileAsync(await GlobalFolderHelper.FolderCommonAsync, model);
         }
@@ -893,27 +893,27 @@ namespace ASC.Api.Documents
         /// <param name="title">Title of new folder</param>
         /// <returns>New folder contents</returns>
         [Create("folder/{folderId}", order: int.MaxValue, DisableFormat = true)]
-        public Task<FolderWrapper<string>> CreateFolderFromBodyAsync(string folderId, [FromBody] CreateFolderModel folderModel)
+        public Task<FolderDto<string>> CreateFolderFromBodyAsync(string folderId, [FromBody] CreateFolderRequestDto folderModel)
         {
             return FilesControllerHelperString.CreateFolderAsync(folderId, folderModel.Title);
         }
 
         [Create("folder/{folderId}", order: int.MaxValue, DisableFormat = true)]
         [Consumes("application/x-www-form-urlencoded")]
-        public Task<FolderWrapper<string>> CreateFolderFromFormAsync(string folderId, [FromForm] CreateFolderModel folderModel)
+        public Task<FolderDto<string>> CreateFolderFromFormAsync(string folderId, [FromForm] CreateFolderRequestDto folderModel)
         {
             return FilesControllerHelperString.CreateFolderAsync(folderId, folderModel.Title);
         }
 
         [Create("folder/{folderId:int}", order: int.MaxValue - 1, DisableFormat = true)]
-        public Task<FolderWrapper<int>> CreateFolderFromBodyAsync(int folderId, [FromBody] CreateFolderModel folderModel)
+        public Task<FolderDto<int>> CreateFolderFromBodyAsync(int folderId, [FromBody] CreateFolderRequestDto folderModel)
         {
             return FilesControllerHelperInt.CreateFolderAsync(folderId, folderModel.Title);
         }
 
         [Create("folder/{folderId:int}", order: int.MaxValue - 1, DisableFormat = true)]
         [Consumes("application/x-www-form-urlencoded")]
-        public Task<FolderWrapper<int>> CreateFolderFromFormAsync(int folderId, [FromForm] CreateFolderModel folderModel)
+        public Task<FolderDto<int>> CreateFolderFromFormAsync(int folderId, [FromForm] CreateFolderRequestDto folderModel)
         {
             return FilesControllerHelperInt.CreateFolderAsync(folderId, folderModel.Title);
         }
@@ -928,14 +928,14 @@ namespace ASC.Api.Documents
         /// <returns>New file info</returns>
 
         [Create("@my/file")]
-        public Task<FileWrapper<int>> CreateFileFromBodyAsync([FromBody] CreateFileModel<JsonElement> model)
+        public Task<FileDto<int>> CreateFileFromBodyAsync([FromBody] CreateFileRequestDto<JsonElement> model)
         {
             return FilesControllerHelperInt.CreateFileAsync(GlobalFolderHelper.FolderMy, model.Title, model.TemplateId, model.EnableExternalExt);
         }
 
         [Create("@my/file")]
         [Consumes("application/x-www-form-urlencoded")]
-        public Task<FileWrapper<int>> CreateFileFromFormAsync([FromForm] CreateFileModel<JsonElement> model)
+        public Task<FileDto<int>> CreateFileFromFormAsync([FromForm] CreateFileRequestDto<JsonElement> model)
         {
             return FilesControllerHelperInt.CreateFileAsync(GlobalFolderHelper.FolderMy, model.Title, model.TemplateId, model.EnableExternalExt);
         }
@@ -950,27 +950,27 @@ namespace ASC.Api.Documents
         /// <remarks>In case the extension for the file title differs from DOCX/XLSX/PPTX and belongs to one of the known text, spreadsheet or presentation formats, it will be changed to DOCX/XLSX/PPTX accordingly. If the file extension is not set or is unknown, the DOCX extension will be added to the file title.</remarks>
         /// <returns>New file info</returns>
         [Create("{folderId}/file")]
-        public Task<FileWrapper<string>> CreateFileFromBodyAsync(string folderId, [FromBody] CreateFileModel<JsonElement> model)
+        public Task<FileDto<string>> CreateFileFromBodyAsync(string folderId, [FromBody] CreateFileRequestDto<JsonElement> model)
         {
             return FilesControllerHelperString.CreateFileAsync(folderId, model.Title, model.TemplateId, model.EnableExternalExt);
         }
 
         [Create("{folderId}/file")]
         [Consumes("application/x-www-form-urlencoded")]
-        public Task<FileWrapper<string>> CreateFileFromFormAsync(string folderId, [FromForm] CreateFileModel<JsonElement> model)
+        public Task<FileDto<string>> CreateFileFromFormAsync(string folderId, [FromForm] CreateFileRequestDto<JsonElement> model)
         {
             return FilesControllerHelperString.CreateFileAsync(folderId, model.Title, model.TemplateId, model.EnableExternalExt);
         }
 
         [Create("{folderId:int}/file")]
-        public Task<FileWrapper<int>> CreateFileFromBodyAsync(int folderId, [FromBody] CreateFileModel<JsonElement> model)
+        public Task<FileDto<int>> CreateFileFromBodyAsync(int folderId, [FromBody] CreateFileRequestDto<JsonElement> model)
         {
             return FilesControllerHelperInt.CreateFileAsync(folderId, model.Title, model.TemplateId, model.EnableExternalExt);
         }
 
         [Create("{folderId:int}/file")]
         [Consumes("application/x-www-form-urlencoded")]
-        public Task<FileWrapper<int>> CreateFileFromFormAsync(int folderId, [FromForm] CreateFileModel<JsonElement> model)
+        public Task<FileDto<int>> CreateFileFromFormAsync(int folderId, [FromForm] CreateFileRequestDto<JsonElement> model)
         {
             return FilesControllerHelperInt.CreateFileAsync(folderId, model.Title, model.TemplateId, model.EnableExternalExt);
         }
@@ -987,45 +987,45 @@ namespace ASC.Api.Documents
         /// <returns>Folder contents</returns>
 
         [Update("folder/{folderId}", order: int.MaxValue, DisableFormat = true)]
-        public Task<FolderWrapper<string>> RenameFolderFromBodyAsync(string folderId, [FromBody] CreateFolderModel folderModel)
+        public Task<FolderDto<string>> RenameFolderFromBodyAsync(string folderId, [FromBody] CreateFolderRequestDto folderModel)
         {
             return FilesControllerHelperString.RenameFolderAsync(folderId, folderModel.Title);
         }
 
         [Update("folder/{folderId}", order: int.MaxValue, DisableFormat = true)]
         [Consumes("application/x-www-form-urlencoded")]
-        public Task<FolderWrapper<string>> RenameFolderFromFormAsync(string folderId, [FromForm] CreateFolderModel folderModel)
+        public Task<FolderDto<string>> RenameFolderFromFormAsync(string folderId, [FromForm] CreateFolderRequestDto folderModel)
         {
             return FilesControllerHelperString.RenameFolderAsync(folderId, folderModel.Title);
         }
 
         [Update("folder/{folderId:int}", order: int.MaxValue - 1, DisableFormat = true)]
-        public Task<FolderWrapper<int>> RenameFolderFromBodyAsync(int folderId, [FromBody] CreateFolderModel folderModel)
+        public Task<FolderDto<int>> RenameFolderFromBodyAsync(int folderId, [FromBody] CreateFolderRequestDto folderModel)
         {
             return FilesControllerHelperInt.RenameFolderAsync(folderId, folderModel.Title);
         }
 
         [Update("folder/{folderId:int}", order: int.MaxValue - 1, DisableFormat = true)]
         [Consumes("application/x-www-form-urlencoded")]
-        public Task<FolderWrapper<int>> RenameFolderFromFormAsync(int folderId, [FromForm] CreateFolderModel folderModel)
+        public Task<FolderDto<int>> RenameFolderFromFormAsync(int folderId, [FromForm] CreateFolderRequestDto folderModel)
         {
             return FilesControllerHelperInt.RenameFolderAsync(folderId, folderModel.Title);
         }
 
         [Create("owner")]
-        public IAsyncEnumerable<FileEntryWrapper> ChangeOwnerFromBodyAsync([FromBody] ChangeOwnerModel model)
+        public IAsyncEnumerable<FileEntryDto> ChangeOwnerFromBodyAsync([FromBody] ChangeOwnerRequestDto model)
         {
             return ChangeOwnerAsync(model);
         }
 
         [Create("owner")]
         [Consumes("application/x-www-form-urlencoded")]
-        public IAsyncEnumerable<FileEntryWrapper> ChangeOwnerFromFormAsync([FromForm] ChangeOwnerModel model)
+        public IAsyncEnumerable<FileEntryDto> ChangeOwnerFromFormAsync([FromForm] ChangeOwnerRequestDto model)
         {
             return ChangeOwnerAsync(model);
         }
 
-        public async IAsyncEnumerable<FileEntryWrapper> ChangeOwnerAsync(ChangeOwnerModel model)
+        public async IAsyncEnumerable<FileEntryDto> ChangeOwnerAsync(ChangeOwnerRequestDto model)
         {
             var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(model.FolderIds);
             var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(model.FileIds);
@@ -1048,13 +1048,13 @@ namespace ASC.Api.Documents
         /// <returns>Folder info</returns>
 
         [Read("folder/{folderId}", order: int.MaxValue, DisableFormat = true)]
-        public Task<FolderWrapper<string>> GetFolderInfoAsync(string folderId)
+        public Task<FolderDto<string>> GetFolderInfoAsync(string folderId)
         {
             return FilesControllerHelperString.GetFolderInfoAsync(folderId);
         }
 
         [Read("folder/{folderId:int}", order: int.MaxValue - 1, DisableFormat = true)]
-        public Task<FolderWrapper<int>> GetFolderInfoAsync(int folderId)
+        public Task<FolderDto<int>> GetFolderInfoAsync(int folderId)
         {
             return FilesControllerHelperInt.GetFolderInfoAsync(folderId);
         }
@@ -1067,14 +1067,14 @@ namespace ASC.Api.Documents
         /// <returns>Parent folders</returns>
 
         [Read("folder/{folderId}/path")]
-        public IAsyncEnumerable<FileEntryWrapper> GetFolderPathAsync(string folderId)
+        public IAsyncEnumerable<FileEntryDto> GetFolderPathAsync(string folderId)
         {
             return FilesControllerHelperString.GetFolderPathAsync(folderId);
         }
 
 
         [Read("folder/{folderId:int}/path")]
-        public IAsyncEnumerable<FileEntryWrapper> GetFolderPathAsync(int folderId)
+        public IAsyncEnumerable<FileEntryDto> GetFolderPathAsync(int folderId)
         {
             return FilesControllerHelperInt.GetFolderPathAsync(folderId);
         }
@@ -1087,44 +1087,44 @@ namespace ASC.Api.Documents
         /// <returns>File info</returns>
 
         [Read("fileAsync/{fileId}", order: int.MaxValue, DisableFormat = true)]
-        public Task<FileWrapper<string>> GetFileInfoAsync(string fileId, int version = -1)
+        public Task<FileDto<string>> GetFileInfoAsync(string fileId, int version = -1)
         {
             return FilesControllerHelperString.GetFileInfoAsync(fileId, version);
         }
 
         [Read("fileAsync/{fileId:int}")]
-        public Task<FileWrapper<int>> GetFileInfoAsync(int fileId, int version = -1)
+        public Task<FileDto<int>> GetFileInfoAsync(int fileId, int version = -1)
         {
             return FilesControllerHelperInt.GetFileInfoAsync(fileId, version);
         }
 
         [Create("file/{fileId:int}/copyas", order: int.MaxValue - 1)]
-        public object CopyFileAsFromBody(int fileId, [FromBody] CopyAsModel<JsonElement> model)
+        public object CopyFileAsFromBody(int fileId, [FromBody] CopyAsRequestDto<JsonElement> model)
         {
             return CopyFile(fileId, model);
         }
 
         [Create("file/{fileId:int}/copyas", order: int.MaxValue - 1)]
         [Consumes("application/x-www-form-urlencoded")]
-        public object CopyFileAsFromForm(int fileId, [FromForm] CopyAsModel<JsonElement> model)
+        public object CopyFileAsFromForm(int fileId, [FromForm] CopyAsRequestDto<JsonElement> model)
         {
             return CopyFile(fileId, model);
         }
 
         [Create("file/{fileId}/copyas", order: int.MaxValue)]
-        public object CopyFileAsFromBody(string fileId, [FromBody] CopyAsModel<JsonElement> model)
+        public object CopyFileAsFromBody(string fileId, [FromBody] CopyAsRequestDto<JsonElement> model)
         {
             return CopyFile(fileId, model);
         }
 
         [Create("file/{fileId}/copyas", order: int.MaxValue)]
         [Consumes("application/x-www-form-urlencoded")]
-        public object CopyFileAsFromForm(string fileId, [FromForm] CopyAsModel<JsonElement> model)
+        public object CopyFileAsFromForm(string fileId, [FromForm] CopyAsRequestDto<JsonElement> model)
         {
             return CopyFile(fileId, model);
         }
 
-        private object CopyFile<T>(T fileId, CopyAsModel<JsonElement> model)
+        private object CopyFile<T>(T fileId, CopyAsRequestDto<JsonElement> model)
         {
             var helper = ServiceProvider.GetService<FilesControllerHelper<T>>();
             if (model.DestFolderId.ValueKind == JsonValueKind.Number)
@@ -1149,27 +1149,27 @@ namespace ASC.Api.Documents
         /// <param name="lastVersion">File last version number</param>
         /// <returns>File info</returns>
         [Update("fileAsync/{fileId}", order: int.MaxValue, DisableFormat = true)]
-        public Task<FileWrapper<string>> UpdateFileFromBodyAsync(string fileId, [FromBody] UpdateFileModel model)
+        public Task<FileDto<string>> UpdateFileFromBodyAsync(string fileId, [FromBody] UpdateFileRequestDto model)
         {
             return FilesControllerHelperString.UpdateFileAsync(fileId, model.Title, model.LastVersion);
         }
 
         [Update("fileAsync/{fileId}", order: int.MaxValue, DisableFormat = true)]
         [Consumes("application/x-www-form-urlencoded")]
-        public Task<FileWrapper<string>> UpdateFileFromFormAsync(string fileId, [FromForm] UpdateFileModel model)
+        public Task<FileDto<string>> UpdateFileFromFormAsync(string fileId, [FromForm] UpdateFileRequestDto model)
         {
             return FilesControllerHelperString.UpdateFileAsync(fileId, model.Title, model.LastVersion);
         }
 
         [Update("fileAsync/{fileId:int}", order: int.MaxValue - 1, DisableFormat = true)]
-        public Task<FileWrapper<int>> UpdateFileFromBodyAsync(int fileId, [FromBody] UpdateFileModel model)
+        public Task<FileDto<int>> UpdateFileFromBodyAsync(int fileId, [FromBody] UpdateFileRequestDto model)
         {
             return FilesControllerHelperInt.UpdateFileAsync(fileId, model.Title, model.LastVersion);
         }
 
         [Update("fileAsync/{fileId:int}", order: int.MaxValue - 1, DisableFormat = true)]
         [Consumes("application/x-www-form-urlencoded")]
-        public Task<FileWrapper<int>> UpdateFileFromFormAsync(int fileId, [FromForm] UpdateFileModel model)
+        public Task<FileDto<int>> UpdateFileFromFormAsync(int fileId, [FromForm] UpdateFileRequestDto model)
         {
             return FilesControllerHelperInt.UpdateFileAsync(fileId, model.Title, model.LastVersion);
         }
@@ -1184,13 +1184,13 @@ namespace ASC.Api.Documents
         /// <param name="immediately">Don't move to the Recycle Bin</param>
         /// <returns>Operation result</returns>
         [Delete("file/{fileId}", order: int.MaxValue, DisableFormat = true)]
-        public Task<IEnumerable<FileOperationWraper>> DeleteFile(string fileId, [FromBody] DeleteModel model)
+        public Task<IEnumerable<FileOperationDto>> DeleteFile(string fileId, [FromBody] DeleteRequestDto model)
         {
             return FilesControllerHelperString.DeleteFileAsync(fileId, model.DeleteAfter, model.Immediately);
         }
 
         [Delete("file/{fileId:int}", order: int.MaxValue - 1, DisableFormat = true)]
-        public Task<IEnumerable<FileOperationWraper>> DeleteFile(int fileId, [FromBody] DeleteModel model)
+        public Task<IEnumerable<FileOperationDto>> DeleteFile(int fileId, [FromBody] DeleteRequestDto model)
         {
             return FilesControllerHelperInt.DeleteFileAsync(fileId, model.DeleteAfter, model.Immediately);
         }
@@ -1204,22 +1204,22 @@ namespace ASC.Api.Documents
         /// <returns>Operation result</returns>
 
         [Update("file/{fileId}/checkconversion")]
-        public IAsyncEnumerable<ConversationResult<string>> StartConversion(string fileId, [FromBody(EmptyBodyBehavior = Microsoft.AspNetCore.Mvc.ModelBinding.EmptyBodyBehavior.Allow)] CheckConversionModel<string> model)
+        public IAsyncEnumerable<ConversationResult<string>> StartConversion(string fileId, [FromBody(EmptyBodyBehavior = Microsoft.AspNetCore.Mvc.ModelBinding.EmptyBodyBehavior.Allow)] CheckConversionRequestDto<string> model)
         {
             if (model == null)
             {
-                model = new CheckConversionModel<string>();
+                model = new CheckConversionRequestDto<string>();
         }
             model.FileId = fileId;
             return FilesControllerHelperString.StartConversionAsync(model);
         }
 
         [Update("file/{fileId:int}/checkconversion")]
-        public IAsyncEnumerable<ConversationResult<int>> StartConversion(int fileId, [FromBody(EmptyBodyBehavior = Microsoft.AspNetCore.Mvc.ModelBinding.EmptyBodyBehavior.Allow)] CheckConversionModel<int> model)
+        public IAsyncEnumerable<ConversationResult<int>> StartConversion(int fileId, [FromBody(EmptyBodyBehavior = Microsoft.AspNetCore.Mvc.ModelBinding.EmptyBodyBehavior.Allow)] CheckConversionRequestDto<int> model)
         {
             if (model == null)
             {
-                model = new CheckConversionModel<int>();
+                model = new CheckConversionRequestDto<int>();
         }
             model.FileId = fileId;
             return FilesControllerHelperInt.StartConversionAsync(model);
@@ -1237,7 +1237,7 @@ namespace ASC.Api.Documents
         [Read("file/{fileId}/checkconversion")]
         public IAsyncEnumerable<ConversationResult<string>> CheckConversionAsync(string fileId, bool start)
         {
-            return FilesControllerHelperString.CheckConversionAsync(new CheckConversionModel<string>()
+            return FilesControllerHelperString.CheckConversionAsync(new CheckConversionRequestDto<string>()
             {
                 FileId = fileId,
                 StartConvert = start
@@ -1248,7 +1248,7 @@ namespace ASC.Api.Documents
         [Read("file/{fileId:int}/checkconversion")]
         public IAsyncEnumerable<ConversationResult<int>> CheckConversionAsync(int fileId, bool start)
         {
-            return FilesControllerHelperInt.CheckConversionAsync(new CheckConversionModel<int>()
+            return FilesControllerHelperInt.CheckConversionAsync(new CheckConversionRequestDto<int>()
             {
                 FileId = fileId,
                 StartConvert = start
@@ -1265,13 +1265,13 @@ namespace ASC.Api.Documents
         /// <param name="immediately">Don't move to the Recycle Bin</param>
         /// <returns>Operation result</returns>
         [Delete("folder/{folderId}", order: int.MaxValue - 1, DisableFormat = true)]
-        public Task<IEnumerable<FileOperationWraper>> DeleteFolder(string folderId, bool deleteAfter, bool immediately)
+        public Task<IEnumerable<FileOperationDto>> DeleteFolder(string folderId, bool deleteAfter, bool immediately)
         {
             return FilesControllerHelperString.DeleteFolder(folderId, deleteAfter, immediately);
         }
 
         [Delete("folder/{folderId:int}")]
-        public Task<IEnumerable<FileOperationWraper>> DeleteFolder(int folderId, bool deleteAfter, bool immediately)
+        public Task<IEnumerable<FileOperationDto>> DeleteFolder(int folderId, bool deleteAfter, bool immediately)
         {
             return FilesControllerHelperInt.DeleteFolder(folderId, deleteAfter, immediately);
         }
@@ -1285,7 +1285,7 @@ namespace ASC.Api.Documents
         /// <param name="fileIds">File ID list</param>
         /// <returns>Conflicts file ids</returns>
         [Read("fileops/move")]
-        public IAsyncEnumerable<FileEntryWrapper> MoveOrCopyBatchCheckAsync([ModelBinder(BinderType = typeof(BatchModelBinder))] BatchModel batchModel)
+        public IAsyncEnumerable<FileEntryDto> MoveOrCopyBatchCheckAsync([ModelBinder(BinderType = typeof(BatchModelBinder))] BatchRequestDto batchModel)
         {
             return FilesControllerHelperString.MoveOrCopyBatchCheckAsync(batchModel);
         }
@@ -1302,14 +1302,14 @@ namespace ASC.Api.Documents
         /// <param name="deleteAfter">Delete after finished</param>
         /// <returns>Operation result</returns>
         [Update("fileops/move")]
-        public Task<IEnumerable<FileOperationWraper>> MoveBatchItemsFromBody([FromBody] BatchModel batchModel)
+        public Task<IEnumerable<FileOperationDto>> MoveBatchItemsFromBody([FromBody] BatchRequestDto batchModel)
         {
             return FilesControllerHelperString.MoveBatchItemsAsync(batchModel);
         }
 
         [Update("fileops/move")]
         [Consumes("application/x-www-form-urlencoded")]
-        public Task<IEnumerable<FileOperationWraper>> MoveBatchItemsFromForm([FromForm][ModelBinder(BinderType = typeof(BatchModelBinder))] BatchModel batchModel)
+        public Task<IEnumerable<FileOperationDto>> MoveBatchItemsFromForm([FromForm][ModelBinder(BinderType = typeof(BatchModelBinder))] BatchRequestDto batchModel)
         {
             return FilesControllerHelperString.MoveBatchItemsAsync(batchModel);
         }
@@ -1326,14 +1326,14 @@ namespace ASC.Api.Documents
         /// <param name="deleteAfter">Delete after finished</param>
         /// <returns>Operation result</returns>
         [Update("fileops/copy")]
-        public Task<IEnumerable<FileOperationWraper>> CopyBatchItemsFromBody([FromBody] BatchModel batchModel)
+        public Task<IEnumerable<FileOperationDto>> CopyBatchItemsFromBody([FromBody] BatchRequestDto batchModel)
         {
             return FilesControllerHelperString.CopyBatchItemsAsync(batchModel);
         }
 
         [Update("fileops/copy")]
         [Consumes("application/x-www-form-urlencoded")]
-        public Task<IEnumerable<FileOperationWraper>> CopyBatchItemsFromForm([FromForm][ModelBinder(BinderType = typeof(BatchModelBinder))] BatchModel batchModel)
+        public Task<IEnumerable<FileOperationDto>> CopyBatchItemsFromForm([FromForm][ModelBinder(BinderType = typeof(BatchModelBinder))] BatchRequestDto batchModel)
         {
             return FilesControllerHelperString.CopyBatchItemsAsync(batchModel);
         }
@@ -1345,14 +1345,14 @@ namespace ASC.Api.Documents
         /// <category>File operations</category>
         /// <returns>Operation result</returns>
         [Update("fileops/markasread")]
-        public Task<IEnumerable<FileOperationWraper>> MarkAsReadFromBody([FromBody] BaseBatchModel model)
+        public Task<IEnumerable<FileOperationDto>> MarkAsReadFromBody([FromBody] BaseBatchRequestDto model)
         {
             return FilesControllerHelperString.MarkAsReadAsync(model);
         }
 
         [Update("fileops/markasread")]
         [Consumes("application/x-www-form-urlencoded")]
-        public Task<IEnumerable<FileOperationWraper>> MarkAsReadFromForm([FromForm][ModelBinder(BinderType = typeof(BaseBatchModelBinder))] BaseBatchModel model)
+        public Task<IEnumerable<FileOperationDto>> MarkAsReadFromForm([FromForm][ModelBinder(BinderType = typeof(BaseBatchModelBinder))] BaseBatchRequestDto model)
         {
             return FilesControllerHelperString.MarkAsReadAsync(model);
         }
@@ -1365,7 +1365,7 @@ namespace ASC.Api.Documents
         /// <returns>Operation result</returns>
 
         [Update("fileops/terminate")]
-        public async IAsyncEnumerable<FileOperationWraper> TerminateTasks()
+        public async IAsyncEnumerable<FileOperationDto> TerminateTasks()
         {
             var tasks = FileStorageService.TerminateTasks();
 
@@ -1383,9 +1383,9 @@ namespace ASC.Api.Documents
         /// <category>File operations</category>
         /// <returns>Operation result</returns>
         [Read("fileops")]
-        public async Task<IEnumerable<FileOperationWraper>> GetOperationStatuses()
+        public async Task<IEnumerable<FileOperationDto>> GetOperationStatuses()
         {
-            var result = new List<FileOperationWraper>();
+            var result = new List<FileOperationDto>();
 
             foreach (var e in FileStorageService.GetTasksStatuses())
             {
@@ -1405,14 +1405,14 @@ namespace ASC.Api.Documents
         /// <category>File operations</category>
         /// <returns>Operation result</returns>
         [Update("fileops/bulkdownload")]
-        public Task<IEnumerable<FileOperationWraper>> BulkDownload([FromBody] DownloadModel model)
+        public Task<IEnumerable<FileOperationDto>> BulkDownload([FromBody] DownloadRequestDto model)
         {
             return FilesControllerHelperString.BulkDownloadAsync(model);
         }
 
         [Update("fileops/bulkdownload")]
         [Consumes("application/x-www-form-urlencoded")]
-        public Task<IEnumerable<FileOperationWraper>> BulkDownloadFromForm([FromForm] DownloadModel model)
+        public Task<IEnumerable<FileOperationDto>> BulkDownloadFromForm([FromForm] DownloadRequestDto model)
         {
             return FilesControllerHelperString.BulkDownloadAsync(model);
         }
@@ -1428,7 +1428,7 @@ namespace ASC.Api.Documents
         /// <category>File operations</category>
         /// <returns>Operation result</returns>
         [Update("fileops/delete")]
-        public async IAsyncEnumerable<FileOperationWraper> DeleteBatchItemsFromBody([FromBody] DeleteBatchModel batch)
+        public async IAsyncEnumerable<FileOperationDto> DeleteBatchItemsFromBody([FromBody] DeleteBatchRequestDto batch)
         {
             var tasks = FileStorageService.DeleteItems("delete", batch.FileIds.ToList(), batch.FolderIds.ToList(), false, batch.DeleteAfter, batch.Immediately);
 
@@ -1440,7 +1440,7 @@ namespace ASC.Api.Documents
 
         [Update("fileops/delete")]
         [Consumes("application/x-www-form-urlencoded")]
-        public async IAsyncEnumerable<FileOperationWraper> DeleteBatchItemsFromForm([FromForm][ModelBinder(BinderType = typeof(DeleteBatchModelBinder))] DeleteBatchModel batch)
+        public async IAsyncEnumerable<FileOperationDto> DeleteBatchItemsFromForm([FromForm][ModelBinder(BinderType = typeof(DeleteBatchModelBinder))] DeleteBatchRequestDto batch)
         {
             var tasks = FileStorageService.DeleteItems("delete", batch.FileIds.ToList(), batch.FolderIds.ToList(), false, batch.DeleteAfter, batch.Immediately);
 
@@ -1457,7 +1457,7 @@ namespace ASC.Api.Documents
         /// <category>File operations</category>
         /// <returns>Operation result</returns>
         [Update("fileops/emptytrash")]
-        public Task<IEnumerable<FileOperationWraper>> EmptyTrashAsync()
+        public Task<IEnumerable<FileOperationDto>> EmptyTrashAsync()
         {
             return FilesControllerHelperInt.EmptyTrashAsync();
         }
@@ -1470,13 +1470,13 @@ namespace ASC.Api.Documents
         /// <param name="fileId">File ID</param>
         /// <returns>File information</returns>
         [Read("file/{fileId}/history")]
-        public Task<IEnumerable<FileWrapper<string>>> GetFileVersionInfoAsync(string fileId)
+        public Task<IEnumerable<FileDto<string>>> GetFileVersionInfoAsync(string fileId)
         {
             return FilesControllerHelperString.GetFileVersionInfoAsync(fileId);
         }
 
         [Read("file/{fileId:int}/history")]
-        public Task<IEnumerable<FileWrapper<int>>> GetFileVersionInfoAsync(int fileId)
+        public Task<IEnumerable<FileDto<int>>> GetFileVersionInfoAsync(int fileId)
         {
             return FilesControllerHelperInt.GetFileVersionInfoAsync(fileId);
         }
@@ -1503,67 +1503,67 @@ namespace ASC.Api.Documents
         /// <returns></returns>
 
         [Update("file/{fileId}/history")]
-        public Task<IEnumerable<FileWrapper<string>>> ChangeHistoryFromBodyAsync(string fileId, [FromBody] ChangeHistoryModel model)
+        public Task<IEnumerable<FileDto<string>>> ChangeHistoryFromBodyAsync(string fileId, [FromBody] ChangeHistoryRequestDto model)
         {
             return FilesControllerHelperString.ChangeHistoryAsync(fileId, model.Version, model.ContinueVersion);
         }
 
         [Update("file/{fileId}/history")]
         [Consumes("application/x-www-form-urlencoded")]
-        public Task<IEnumerable<FileWrapper<string>>> ChangeHistoryFromFormAsync(string fileId, [FromForm] ChangeHistoryModel model)
+        public Task<IEnumerable<FileDto<string>>> ChangeHistoryFromFormAsync(string fileId, [FromForm] ChangeHistoryRequestDto model)
         {
             return FilesControllerHelperString.ChangeHistoryAsync(fileId, model.Version, model.ContinueVersion);
         }
 
         [Update("file/{fileId:int}/history")]
-        public Task<IEnumerable<FileWrapper<int>>> ChangeHistoryFromBodyAsync(int fileId, [FromBody] ChangeHistoryModel model)
+        public Task<IEnumerable<FileDto<int>>> ChangeHistoryFromBodyAsync(int fileId, [FromBody] ChangeHistoryRequestDto model)
         {
             return FilesControllerHelperInt.ChangeHistoryAsync(fileId, model.Version, model.ContinueVersion);
         }
 
         [Update("file/{fileId:int}/history")]
         [Consumes("application/x-www-form-urlencoded")]
-        public Task<IEnumerable<FileWrapper<int>>> ChangeHistoryFromFormAsync(int fileId, [FromForm] ChangeHistoryModel model)
+        public Task<IEnumerable<FileDto<int>>> ChangeHistoryFromFormAsync(int fileId, [FromForm] ChangeHistoryRequestDto model)
         {
             return FilesControllerHelperInt.ChangeHistoryAsync(fileId, model.Version, model.ContinueVersion);
         }
 
         [Update("file/{fileId}/lock")]
-        public Task<FileWrapper<string>> LockFileFromBodyAsync(string fileId, [FromBody] LockFileModel model)
+        public Task<FileDto<string>> LockFileFromBodyAsync(string fileId, [FromBody] LockFileRequestDto model)
         {
             return FilesControllerHelperString.LockFileAsync(fileId, model.LockFile);
         }
 
         [Update("file/{fileId}/lock")]
         [Consumes("application/x-www-form-urlencoded")]
-        public Task<FileWrapper<string>> LockFileFromFormAsync(string fileId, [FromForm] LockFileModel model)
+        public Task<FileDto<string>> LockFileFromFormAsync(string fileId, [FromForm] LockFileRequestDto model)
         {
             return FilesControllerHelperString.LockFileAsync(fileId, model.LockFile);
         }
 
         [Update("file/{fileId:int}/lock")]
-        public Task<FileWrapper<int>> LockFileFromBodyAsync(int fileId, [FromBody] LockFileModel model)
+        public Task<FileDto<int>> LockFileFromBodyAsync(int fileId, [FromBody] LockFileRequestDto model)
         {
             return FilesControllerHelperInt.LockFileAsync(fileId, model.LockFile);
         }
 
         [Update("file/{fileId:int}/lock")]
         [Consumes("application/x-www-form-urlencoded")]
-        public Task<FileWrapper<int>> LockFileFromFormAsync(int fileId, [FromForm] LockFileModel model)
+        public Task<FileDto<int>> LockFileFromFormAsync(int fileId, [FromForm] LockFileRequestDto model)
         {
             return FilesControllerHelperInt.LockFileAsync(fileId, model.LockFile);
         }
 
         [AllowAnonymous]
         [Read("file/{fileId}/edit/history")]
-        public Task<List<EditHistoryWrapper>> GetEditHistoryAsync(string fileId, string doc = null)
+        public Task<List<EditHistoryDto>> GetEditHistoryAsync(string fileId, string doc = null)
         {
             return FilesControllerHelperString.GetEditHistoryAsync(fileId, doc);
         }
 
         [AllowAnonymous]
         [Read("file/{fileId:int}/edit/history")]
-        public Task<List<EditHistoryWrapper>> GetEditHistoryAsync(int fileId, string doc = null)
+        public Task<List<EditHistoryDto>> GetEditHistoryAsync(int fileId, string doc = null)
         {
             return FilesControllerHelperInt.GetEditHistoryAsync(fileId, doc);
         }
@@ -1584,40 +1584,40 @@ namespace ASC.Api.Documents
 
         [AllowAnonymous]
         [Read("file/{fileId}/restoreversion")]
-        public Task<List<EditHistoryWrapper>> RestoreVersionAsync(string fileId, int version = 0, string url = null, string doc = null)
+        public Task<List<EditHistoryDto>> RestoreVersionAsync(string fileId, int version = 0, string url = null, string doc = null)
         {
             return FilesControllerHelperString.RestoreVersionAsync(fileId, version, url, doc);
         }
 
         [AllowAnonymous]
         [Read("file/{fileId:int}/restoreversion")]
-        public Task<List<EditHistoryWrapper>> RestoreVersionAsync(int fileId, int version = 0, string url = null, string doc = null)
+        public Task<List<EditHistoryDto>> RestoreVersionAsync(int fileId, int version = 0, string url = null, string doc = null)
         {
             return FilesControllerHelperInt.RestoreVersionAsync(fileId, version, url, doc);
         }
 
         [Update("file/{fileId}/comment")]
-        public async Task<object> UpdateCommentFromBodyAsync(string fileId, [FromBody] UpdateCommentModel model)
+        public async Task<object> UpdateCommentFromBodyAsync(string fileId, [FromBody] UpdateCommentRequestDto model)
         {
             return await FilesControllerHelperString.UpdateCommentAsync(fileId, model.Version, model.Comment);
         }
 
         [Update("file/{fileId}/comment")]
         [Consumes("application/x-www-form-urlencoded")]
-        public async Task<object> UpdateCommentFromFormAsync(string fileId, [FromForm] UpdateCommentModel model)
+        public async Task<object> UpdateCommentFromFormAsync(string fileId, [FromForm] UpdateCommentRequestDto model)
         {
             return await FilesControllerHelperString.UpdateCommentAsync(fileId, model.Version, model.Comment);
         }
 
         [Update("file/{fileId:int}/comment")]
-        public async Task<object> UpdateCommentFromBodyAsync(int fileId, [FromBody] UpdateCommentModel model)
+        public async Task<object> UpdateCommentFromBodyAsync(int fileId, [FromBody] UpdateCommentRequestDto model)
         {
             return await FilesControllerHelperInt.UpdateCommentAsync(fileId, model.Version, model.Comment);
         }
 
         [Update("file/{fileId:int}/comment")]
         [Consumes("application/x-www-form-urlencoded")]
-        public async Task<object> UpdateCommentFromFormAsync(int fileId, [FromForm] UpdateCommentModel model)
+        public async Task<object> UpdateCommentFromFormAsync(int fileId, [FromForm] UpdateCommentRequestDto model)
         {
             return await FilesControllerHelperInt.UpdateCommentAsync(fileId, model.Version, model.Comment);
         }
@@ -1631,13 +1631,13 @@ namespace ASC.Api.Documents
         /// <returns>Shared file information</returns>
 
         [Read("file/{fileId}/share")]
-        public Task<IEnumerable<FileShareWrapper>> GetFileSecurityInfoAsync(string fileId)
+        public Task<IEnumerable<FileShareDto>> GetFileSecurityInfoAsync(string fileId)
         {
             return FilesControllerHelperString.GetFileSecurityInfoAsync(fileId);
         }
 
         [Read("file/{fileId:int}/share")]
-        public Task<IEnumerable<FileShareWrapper>> GetFileSecurityInfoAsync(int fileId)
+        public Task<IEnumerable<FileShareDto>> GetFileSecurityInfoAsync(int fileId)
         {
             return FilesControllerHelperInt.GetFileSecurityInfoAsync(fileId);
         }
@@ -1651,24 +1651,24 @@ namespace ASC.Api.Documents
         /// <returns>Shared folder information</returns>
 
         [Read("folder/{folderId}/share")]
-        public Task<IEnumerable<FileShareWrapper>> GetFolderSecurityInfoAsync(string folderId)
+        public Task<IEnumerable<FileShareDto>> GetFolderSecurityInfoAsync(string folderId)
         {
             return FilesControllerHelperString.GetFolderSecurityInfoAsync(folderId);
         }
 
         [Read("folder/{folderId:int}/share")]
-        public Task<IEnumerable<FileShareWrapper>> GetFolderSecurityInfoAsync(int folderId)
+        public Task<IEnumerable<FileShareDto>> GetFolderSecurityInfoAsync(int folderId)
         {
             return FilesControllerHelperInt.GetFolderSecurityInfoAsync(folderId);
         }
 
         [Create("share")]
-        public async Task<IEnumerable<FileShareWrapper>> GetSecurityInfoFromBodyAsync([FromBody] BaseBatchModel model)
+        public async Task<IEnumerable<FileShareDto>> GetSecurityInfoFromBodyAsync([FromBody] BaseBatchRequestDto model)
         {
             var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(model.FolderIds);
             var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(model.FileIds);
 
-            var result = new List<FileShareWrapper>();
+            var result = new List<FileShareDto>();
             result.AddRange(await FilesControllerHelperInt.GetSecurityInfoAsync(fileIntIds, folderIntIds));
             result.AddRange(await FilesControllerHelperString.GetSecurityInfoAsync(fileStringIds, folderStringIds));
             return result;
@@ -1676,12 +1676,12 @@ namespace ASC.Api.Documents
 
         [Create("share")]
         [Consumes("application/x-www-form-urlencoded")]
-        public async Task<IEnumerable<FileShareWrapper>> GetSecurityInfoFromFormAsync([FromForm][ModelBinder(BinderType = typeof(BaseBatchModelBinder))] BaseBatchModel model)
+        public async Task<IEnumerable<FileShareDto>> GetSecurityInfoFromFormAsync([FromForm][ModelBinder(BinderType = typeof(BaseBatchModelBinder))] BaseBatchRequestDto model)
         {
             var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(model.FolderIds);
             var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(model.FileIds);
 
-            var result = new List<FileShareWrapper>();
+            var result = new List<FileShareDto>();
             result.AddRange(await FilesControllerHelperInt.GetSecurityInfoAsync(fileIntIds, folderIntIds));
             result.AddRange(await FilesControllerHelperString.GetSecurityInfoAsync(fileStringIds, folderStringIds));
             return result;
@@ -1702,50 +1702,50 @@ namespace ASC.Api.Documents
         /// <returns>Shared file information</returns>
 
         [Update("file/{fileId}/share")]
-        public Task<IEnumerable<FileShareWrapper>> SetFileSecurityInfoFromBodyAsync(string fileId, [FromBody] SecurityInfoModel model)
+        public Task<IEnumerable<FileShareDto>> SetFileSecurityInfoFromBodyAsync(string fileId, [FromBody] SecurityInfoRequestDto model)
         {
             return FilesControllerHelperString.SetFileSecurityInfoAsync(fileId, model.Share, model.Notify, model.SharingMessage);
         }
 
         [Update("file/{fileId}/share")]
         [Consumes("application/x-www-form-urlencoded")]
-        public Task<IEnumerable<FileShareWrapper>> SetFileSecurityInfoFromFormAsync(string fileId, [FromForm] SecurityInfoModel model)
+        public Task<IEnumerable<FileShareDto>> SetFileSecurityInfoFromFormAsync(string fileId, [FromForm] SecurityInfoRequestDto model)
         {
             return FilesControllerHelperString.SetFileSecurityInfoAsync(fileId, model.Share, model.Notify, model.SharingMessage);
         }
 
         [Update("file/{fileId:int}/share")]
-        public Task<IEnumerable<FileShareWrapper>> SetFileSecurityInfoFromBodyAsync(int fileId, [FromBody] SecurityInfoModel model)
+        public Task<IEnumerable<FileShareDto>> SetFileSecurityInfoFromBodyAsync(int fileId, [FromBody] SecurityInfoRequestDto model)
         {
             return FilesControllerHelperInt.SetFileSecurityInfoAsync(fileId, model.Share, model.Notify, model.SharingMessage);
         }
 
         [Update("file/{fileId:int}/share")]
         [Consumes("application/x-www-form-urlencoded")]
-        public Task<IEnumerable<FileShareWrapper>> SetFileSecurityInfoFromFormAsync(int fileId, [FromForm] SecurityInfoModel model)
+        public Task<IEnumerable<FileShareDto>> SetFileSecurityInfoFromFormAsync(int fileId, [FromForm] SecurityInfoRequestDto model)
         {
             return FilesControllerHelperInt.SetFileSecurityInfoAsync(fileId, model.Share, model.Notify, model.SharingMessage);
         }
 
         [Update("share")]
-        public Task<IEnumerable<FileShareWrapper>> SetSecurityInfoFromBodyAsync([FromBody] SecurityInfoModel model)
+        public Task<IEnumerable<FileShareDto>> SetSecurityInfoFromBodyAsync([FromBody] SecurityInfoRequestDto model)
         {
             return SetSecurityInfoAsync(model);
         }
 
         [Update("share")]
         [Consumes("application/x-www-form-urlencoded")]
-        public Task<IEnumerable<FileShareWrapper>> SetSecurityInfoFromFormAsync([FromForm] SecurityInfoModel model)
+        public Task<IEnumerable<FileShareDto>> SetSecurityInfoFromFormAsync([FromForm] SecurityInfoRequestDto model)
         {
             return SetSecurityInfoAsync(model);
         }
 
-        public async Task<IEnumerable<FileShareWrapper>> SetSecurityInfoAsync(SecurityInfoModel model)
+        public async Task<IEnumerable<FileShareDto>> SetSecurityInfoAsync(SecurityInfoRequestDto model)
         {
             var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(model.FolderIds);
             var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(model.FileIds);
 
-            var result = new List<FileShareWrapper>();
+            var result = new List<FileShareDto>();
             result.AddRange(await FilesControllerHelperInt.SetSecurityInfoAsync(fileIntIds, folderIntIds, model.Share, model.Notify, model.SharingMessage));
             result.AddRange(await FilesControllerHelperString.SetSecurityInfoAsync(fileStringIds, folderStringIds, model.Share, model.Notify, model.SharingMessage));
             return result;
@@ -1766,27 +1766,27 @@ namespace ASC.Api.Documents
         /// <returns>Shared folder information</returns>
 
         [Update("folder/{folderId}/share")]
-        public Task<IEnumerable<FileShareWrapper>> SetFolderSecurityInfoFromBodyAsync(string folderId, [FromBody] SecurityInfoModel model)
+        public Task<IEnumerable<FileShareDto>> SetFolderSecurityInfoFromBodyAsync(string folderId, [FromBody] SecurityInfoRequestDto model)
         {
             return FilesControllerHelperString.SetFolderSecurityInfoAsync(folderId, model.Share, model.Notify, model.SharingMessage);
         }
 
         [Update("folder/{folderId}/share")]
         [Consumes("application/x-www-form-urlencoded")]
-        public Task<IEnumerable<FileShareWrapper>> SetFolderSecurityInfoFromFormAsync(string folderId, [FromForm] SecurityInfoModel model)
+        public Task<IEnumerable<FileShareDto>> SetFolderSecurityInfoFromFormAsync(string folderId, [FromForm] SecurityInfoRequestDto model)
         {
             return FilesControllerHelperString.SetFolderSecurityInfoAsync(folderId, model.Share, model.Notify, model.SharingMessage);
         }
 
         [Update("folder/{folderId:int}/share")]
-        public Task<IEnumerable<FileShareWrapper>> SetFolderSecurityInfoFromBodyAsync(int folderId, [FromBody] SecurityInfoModel model)
+        public Task<IEnumerable<FileShareDto>> SetFolderSecurityInfoFromBodyAsync(int folderId, [FromBody] SecurityInfoRequestDto model)
         {
             return FilesControllerHelperInt.SetFolderSecurityInfoAsync(folderId, model.Share, model.Notify, model.SharingMessage);
         }
 
         [Update("folder/{folderId:int}/share")]
         [Consumes("application/x-www-form-urlencoded")]
-        public Task<IEnumerable<FileShareWrapper>> SetFolderSecurityInfoFromFormAsync(int folderId, [FromForm] SecurityInfoModel model)
+        public Task<IEnumerable<FileShareDto>> SetFolderSecurityInfoFromFormAsync(int folderId, [FromForm] SecurityInfoRequestDto model)
         {
             return FilesControllerHelperInt.SetFolderSecurityInfoAsync(folderId, model.Share, model.Notify, model.SharingMessage);
         }
@@ -1801,7 +1801,7 @@ namespace ASC.Api.Documents
         /// <returns>Shared file information</returns>
 
         [Delete("share")]
-        public async Task<bool> RemoveSecurityInfoAsync(BaseBatchModel model)
+        public async Task<bool> RemoveSecurityInfoAsync(BaseBatchRequestDto model)
         {
             var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(model.FolderIds);
             var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(model.FileIds);
@@ -1823,39 +1823,39 @@ namespace ASC.Api.Documents
         /// <returns>Shared file link</returns>
 
         [Update("{fileId}/sharedlinkAsync")]
-        public async Task<object> GenerateSharedLinkFromBodyAsync(string fileId, [FromBody] GenerateSharedLinkModel model)
+        public async Task<object> GenerateSharedLinkFromBodyAsync(string fileId, [FromBody] GenerateSharedLinkRequestDto model)
         {
             return await FilesControllerHelperString.GenerateSharedLinkAsync(fileId, model.Share);
         }
 
         [Update("{fileId}/sharedlinkAsync")]
         [Consumes("application/x-www-form-urlencoded")]
-        public async Task<object> GenerateSharedLinkFromFormAsync(string fileId, [FromForm] GenerateSharedLinkModel model)
+        public async Task<object> GenerateSharedLinkFromFormAsync(string fileId, [FromForm] GenerateSharedLinkRequestDto model)
         {
             return await FilesControllerHelperString.GenerateSharedLinkAsync(fileId, model.Share);
         }
 
         [Update("{fileId:int}/sharedlinkAsync")]
-        public async Task<object> GenerateSharedLinkFromBodyAsync(int fileId, [FromBody] GenerateSharedLinkModel model)
+        public async Task<object> GenerateSharedLinkFromBodyAsync(int fileId, [FromBody] GenerateSharedLinkRequestDto model)
         {
             return await FilesControllerHelperInt.GenerateSharedLinkAsync(fileId, model.Share);
         }
 
         [Update("{fileId:int}/sharedlinkAsync")]
         [Consumes("application/x-www-form-urlencoded")]
-        public async Task<object> GenerateSharedLinkFromFormAsync(int fileId, [FromForm] GenerateSharedLinkModel model)
+        public async Task<object> GenerateSharedLinkFromFormAsync(int fileId, [FromForm] GenerateSharedLinkRequestDto model)
         {
             return await FilesControllerHelperInt.GenerateSharedLinkAsync(fileId, model.Share);
         }
 
         [Update("{fileId:int}/setacelink")]
-        public Task<bool> SetAceLinkAsync(int fileId, [FromBody] GenerateSharedLinkModel model)
+        public Task<bool> SetAceLinkAsync(int fileId, [FromBody] GenerateSharedLinkRequestDto model)
         {
             return FilesControllerHelperInt.SetAceLinkAsync(fileId, model.Share);
         }
 
         [Update("{fileId}/setacelink")]
-        public Task<bool> SetAceLinkAsync(string fileId, [FromBody] GenerateSharedLinkModel model)
+        public Task<bool> SetAceLinkAsync(string fileId, [FromBody] GenerateSharedLinkRequestDto model)
         {
             return FilesControllerHelperString.SetAceLinkAsync(fileId, model.Share);
         }
@@ -1900,19 +1900,19 @@ namespace ASC.Api.Documents
         /// <exception cref="ArgumentException"></exception>
 
         [Create("thirdparty")]
-        public Task<FolderWrapper<string>> SaveThirdPartyFromBodyAsync([FromBody] ThirdPartyModel model)
+        public Task<FolderDto<string>> SaveThirdPartyFromBodyAsync([FromBody] ThirdPartyRequestDto model)
         {
             return SaveThirdPartyAsync(model);
         }
 
         [Create("thirdparty")]
         [Consumes("application/x-www-form-urlencoded")]
-        public Task<FolderWrapper<string>> SaveThirdPartyFromFormAsync([FromForm] ThirdPartyModel model)
+        public Task<FolderDto<string>> SaveThirdPartyFromFormAsync([FromForm] ThirdPartyRequestDto model)
         {
             return SaveThirdPartyAsync(model);
         }
 
-        private async Task<FolderWrapper<string>> SaveThirdPartyAsync(ThirdPartyModel model)
+        private async Task<FolderDto<string>> SaveThirdPartyAsync(ThirdPartyRequestDto model)
         {
             var thirdPartyParams = new ThirdPartyParams
             {
@@ -1949,11 +1949,11 @@ namespace ASC.Api.Documents
         /// <returns>Connected providers folder</returns>
 
         [Read("thirdparty/common")]
-        public async Task<IEnumerable<FolderWrapper<string>>> GetCommonThirdPartyFoldersAsync()
+        public async Task<IEnumerable<FolderDto<string>>> GetCommonThirdPartyFoldersAsync()
         {
             var parent = await FileStorageServiceInt.GetFolderAsync(await GlobalFolderHelper.FolderCommonAsync);
             var thirdpartyFolders = await EntryManager.GetThirpartyFoldersAsync(parent);
-            var result = new List<FolderWrapper<string>>();
+            var result = new List<FolderDto<string>>();
 
             foreach (var r in thirdpartyFolders)
             {
@@ -2005,19 +2005,19 @@ namespace ASC.Api.Documents
         /// <returns></returns>
 
         [Create("favorites")]
-        public Task<bool> AddFavoritesFromBodyAsync([FromBody] BaseBatchModel model)
+        public Task<bool> AddFavoritesFromBodyAsync([FromBody] BaseBatchRequestDto model)
         {
             return AddFavoritesAsync(model);
         }
 
         [Create("favorites")]
         [Consumes("application/x-www-form-urlencoded")]
-        public async Task<bool> AddFavoritesFromFormAsync([FromForm][ModelBinder(BinderType = typeof(BaseBatchModelBinder))] BaseBatchModel model)
+        public async Task<bool> AddFavoritesFromFormAsync([FromForm][ModelBinder(BinderType = typeof(BaseBatchModelBinder))] BaseBatchRequestDto model)
         {
             return await AddFavoritesAsync(model);
         }
 
-        private async Task<bool> AddFavoritesAsync(BaseBatchModel model)
+        private async Task<bool> AddFavoritesAsync(BaseBatchRequestDto model)
         {
             var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(model.FolderIds);
             var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(model.FileIds);
@@ -2050,18 +2050,18 @@ namespace ASC.Api.Documents
 
         [Delete("favorites")]
         [Consumes("application/json")]
-        public Task<bool> DeleteFavoritesFromBodyAsync([FromBody] BaseBatchModel model)
+        public Task<bool> DeleteFavoritesFromBodyAsync([FromBody] BaseBatchRequestDto model)
         {
             return DeleteFavoritesAsync(model);
         }
 
         [Delete("favorites")]
-        public async Task<bool> DeleteFavoritesFromQueryAsync([FromQuery][ModelBinder(BinderType = typeof(BaseBatchModelBinder))] BaseBatchModel model)
+        public async Task<bool> DeleteFavoritesFromQueryAsync([FromQuery][ModelBinder(BinderType = typeof(BaseBatchModelBinder))] BaseBatchRequestDto model)
         {
             return await DeleteFavoritesAsync(model);
         }
 
-        private async Task<bool> DeleteFavoritesAsync(BaseBatchModel model)
+        private async Task<bool> DeleteFavoritesAsync(BaseBatchRequestDto model)
         {
             var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(model.FolderIds);
             var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(model.FileIds);
@@ -2080,7 +2080,7 @@ namespace ASC.Api.Documents
         /// <returns></returns>
 
         [Create("templates")]
-        public async Task<bool> AddTemplatesFromBodyAsync([FromBody] TemplatesModel model)
+        public async Task<bool> AddTemplatesFromBodyAsync([FromBody] TemplatesModelRequestDto model)
         {
             await FileStorageServiceInt.AddToTemplatesAsync(model.FileIds);
             return true;
@@ -2088,7 +2088,7 @@ namespace ASC.Api.Documents
 
         [Create("templates")]
         [Consumes("application/x-www-form-urlencoded")]
-        public async Task<bool> AddTemplatesFromFormAsync([FromForm] TemplatesModel model)
+        public async Task<bool> AddTemplatesFromFormAsync([FromForm] TemplatesModelRequestDto model)
         {
             await FileStorageServiceInt.AddToTemplatesAsync(model.FileIds);
             return true;
@@ -2115,14 +2115,14 @@ namespace ASC.Api.Documents
         /// <param name="set"></param>
         /// <returns></returns>
         [Update(@"storeoriginal")]
-        public bool StoreOriginalFromBody([FromBody] SettingsModel model)
+        public bool StoreOriginalFromBody([FromBody] SettingsRequestDto model)
         {
             return FileStorageService.StoreOriginal(model.Set);
         }
 
         [Update(@"storeoriginal")]
         [Consumes("application/x-www-form-urlencoded")]
-        public bool StoreOriginalFromForm([FromForm] SettingsModel model)
+        public bool StoreOriginalFromForm([FromForm] SettingsRequestDto model)
         {
             return FileStorageService.StoreOriginal(model.Set);
         }
@@ -2144,14 +2144,14 @@ namespace ASC.Api.Documents
         /// <visible>false</visible>
         /// <returns></returns>
         [Update(@"hideconfirmconvert")]
-        public bool HideConfirmConvertFromBody([FromBody] HideConfirmConvertModel model)
+        public bool HideConfirmConvertFromBody([FromBody] HideConfirmConvertRequestDto model)
         {
             return FileStorageService.HideConfirmConvert(model.Save);
         }
 
         [Update(@"hideconfirmconvert")]
         [Consumes("application/x-www-form-urlencoded")]
-        public bool HideConfirmConvertFromForm([FromForm] HideConfirmConvertModel model)
+        public bool HideConfirmConvertFromForm([FromForm] HideConfirmConvertRequestDto model)
         {
             return FileStorageService.HideConfirmConvert(model.Save);
         }
@@ -2162,14 +2162,14 @@ namespace ASC.Api.Documents
         /// <param name="set"></param>
         /// <returns></returns>
         [Update(@"updateifexist")]
-        public bool UpdateIfExistFromBody([FromBody] SettingsModel model)
+        public bool UpdateIfExistFromBody([FromBody] SettingsRequestDto model)
         {
             return FileStorageService.UpdateIfExist(model.Set);
         }
 
         [Update(@"updateifexist")]
         [Consumes("application/x-www-form-urlencoded")]
-        public bool UpdateIfExistFromForm([FromForm] SettingsModel model)
+        public bool UpdateIfExistFromForm([FromForm] SettingsRequestDto model)
         {
             return FileStorageService.UpdateIfExist(model.Set);
         }
@@ -2180,14 +2180,14 @@ namespace ASC.Api.Documents
         /// <param name="set"></param>
         /// <returns></returns>
         [Update(@"changedeleteconfrim")]
-        public bool ChangeDeleteConfrimFromBody([FromBody] SettingsModel model)
+        public bool ChangeDeleteConfrimFromBody([FromBody] SettingsRequestDto model)
         {
             return FileStorageService.ChangeDeleteConfrim(model.Set);
         }
 
         [Update(@"changedeleteconfrim")]
         [Consumes("application/x-www-form-urlencoded")]
-        public bool ChangeDeleteConfrimFromForm([FromForm] SettingsModel model)
+        public bool ChangeDeleteConfrimFromForm([FromForm] SettingsRequestDto model)
         {
             return FileStorageService.ChangeDeleteConfrim(model.Set);
         }
@@ -2198,14 +2198,14 @@ namespace ASC.Api.Documents
         /// <param name="set"></param>
         /// <returns></returns>
         [Update(@"storeforcesave")]
-        public bool StoreForcesaveFromBody([FromBody] SettingsModel model)
+        public bool StoreForcesaveFromBody([FromBody] SettingsRequestDto model)
         {
             return FileStorageService.StoreForcesave(model.Set);
         }
 
         [Update(@"storeforcesave")]
         [Consumes("application/x-www-form-urlencoded")]
-        public bool StoreForcesaveFromForm([FromForm] SettingsModel model)
+        public bool StoreForcesaveFromForm([FromForm] SettingsRequestDto model)
         {
             return FileStorageService.StoreForcesave(model.Set);
         }
@@ -2216,14 +2216,14 @@ namespace ASC.Api.Documents
         /// <param name="set"></param>
         /// <returns></returns>
         [Update(@"forcesave")]
-        public bool ForcesaveFromBody([FromBody] SettingsModel model)
+        public bool ForcesaveFromBody([FromBody] SettingsRequestDto model)
         {
             return FileStorageService.Forcesave(model.Set);
         }
 
         [Update(@"forcesave")]
         [Consumes("application/x-www-form-urlencoded")]
-        public bool ForcesaveFromForm([FromForm] SettingsModel model)
+        public bool ForcesaveFromForm([FromForm] SettingsRequestDto model)
         {
             return FileStorageService.Forcesave(model.Set);
         }
@@ -2234,14 +2234,14 @@ namespace ASC.Api.Documents
         /// <param name="set"></param>
         /// <returns></returns>
         [Update(@"thirdparty")]
-        public bool ChangeAccessToThirdpartyFromBody([FromBody] SettingsModel model)
+        public bool ChangeAccessToThirdpartyFromBody([FromBody] SettingsRequestDto model)
         {
             return FileStorageService.ChangeAccessToThirdparty(model.Set);
         }
 
         [Update(@"thirdparty")]
         [Consumes("application/x-www-form-urlencoded")]
-        public bool ChangeAccessToThirdpartyFromForm([FromForm] SettingsModel model)
+        public bool ChangeAccessToThirdpartyFromForm([FromForm] SettingsRequestDto model)
         {
             return FileStorageService.ChangeAccessToThirdparty(model.Set);
         }
@@ -2253,14 +2253,14 @@ namespace ASC.Api.Documents
         /// <category>Settings</category>
         /// <returns></returns>
         [Update(@"displayRecent")]
-        public bool DisplayRecentFromBody([FromBody] DisplayModel model)
+        public bool DisplayRecentFromBody([FromBody] DisplayRequestDto model)
         {
             return FileStorageService.DisplayRecent(model.Set);
         }
 
         [Update(@"displayRecent")]
         [Consumes("application/x-www-form-urlencoded")]
-        public bool DisplayRecentFromForm([FromForm] DisplayModel model)
+        public bool DisplayRecentFromForm([FromForm] DisplayRequestDto model)
         {
             return FileStorageService.DisplayRecent(model.Set);
         }
@@ -2272,14 +2272,14 @@ namespace ASC.Api.Documents
         /// <category>Settings</category>
         /// <returns></returns>
         [Update(@"settings/favorites")]
-        public bool DisplayFavoriteFromBody([FromBody] DisplayModel model)
+        public bool DisplayFavoriteFromBody([FromBody] DisplayRequestDto model)
         {
             return FileStorageService.DisplayFavorite(model.Set);
         }
 
         [Update(@"settings/favorites")]
         [Consumes("application/x-www-form-urlencoded")]
-        public bool DisplayFavoriteFromForm([FromForm] DisplayModel model)
+        public bool DisplayFavoriteFromForm([FromForm] DisplayRequestDto model)
         {
             return FileStorageService.DisplayFavorite(model.Set);
         }
@@ -2291,14 +2291,14 @@ namespace ASC.Api.Documents
         /// <category>Settings</category>
         /// <returns></returns>
         [Update(@"settings/templates")]
-        public bool DisplayTemplatesFromBody([FromBody] DisplayModel model)
+        public bool DisplayTemplatesFromBody([FromBody] DisplayRequestDto model)
         {
             return FileStorageService.DisplayTemplates(model.Set);
         }
 
         [Update(@"settings/templates")]
         [Consumes("application/x-www-form-urlencoded")]
-        public bool DisplayTemplatesFromForm([FromForm] DisplayModel model)
+        public bool DisplayTemplatesFromForm([FromForm] DisplayRequestDto model)
         {
             return FileStorageService.DisplayTemplates(model.Set);
         }
@@ -2310,13 +2310,13 @@ namespace ASC.Api.Documents
         /// <category>Settings</category>
         /// <returns></returns>
         [Update(@"settings/downloadtargz")]
-        public ICompress ChangeDownloadZipFromBody([FromBody] DisplayModel model)
+        public ICompress ChangeDownloadZipFromBody([FromBody] DisplayRequestDto model)
         {
             return FileStorageService.ChangeDownloadTarGz(model.Set);
         }
 
         [Update(@"settings/downloadtargz")]
-        public ICompress ChangeDownloadZipFromForm([FromForm] DisplayModel model)
+        public ICompress ChangeDownloadZipFromForm([FromForm] DisplayRequestDto model)
         {
             return FileStorageService.ChangeDownloadTarGz(model.Set);
         }
@@ -2329,14 +2329,14 @@ namespace ASC.Api.Documents
         /// <param name="docServiceUrlPortal">Community Server Address</param>
         /// <returns></returns>
         [Update("docservice")]
-        public Task<IEnumerable<string>> CheckDocServiceUrlFromBodyAsync([FromBody] CheckDocServiceUrlModel model)
+        public Task<IEnumerable<string>> CheckDocServiceUrlFromBodyAsync([FromBody] CheckDocServiceUrlRequestDto model)
         {
             return CheckDocServiceUrlAsync(model);
         }
 
         [Update("docservice")]
         [Consumes("application/x-www-form-urlencoded")]
-        public Task<IEnumerable<string>> CheckDocServiceUrlFromFormAsync([FromForm] CheckDocServiceUrlModel model)
+        public Task<IEnumerable<string>> CheckDocServiceUrlFromFormAsync([FromForm] CheckDocServiceUrlRequestDto model)
         {
             return CheckDocServiceUrlAsync(model);
         }
@@ -2351,45 +2351,45 @@ namespace ASC.Api.Documents
         /// <returns></returns>
 
         [Create("thumbnails")]
-        public Task<IEnumerable<JsonElement>> CreateThumbnailsFromBodyAsync([FromBody] BaseBatchModel model)
+        public Task<IEnumerable<JsonElement>> CreateThumbnailsFromBodyAsync([FromBody] BaseBatchRequestDto model)
         {
             return FileStorageService.CreateThumbnailsAsync(model.FileIds.ToList());
         }
 
         [Create("thumbnails")]
         [Consumes("application/x-www-form-urlencoded")]
-        public async Task<IEnumerable<JsonElement>> CreateThumbnailsFromFormAsync([FromForm][ModelBinder(BinderType = typeof(BaseBatchModelBinder))] BaseBatchModel model)
+        public async Task<IEnumerable<JsonElement>> CreateThumbnailsFromFormAsync([FromForm][ModelBinder(BinderType = typeof(BaseBatchModelBinder))] BaseBatchRequestDto model)
         {
             return await FileStorageService.CreateThumbnailsAsync(model.FileIds.ToList());
         }
 
         [Create("masterform/{fileId}/checkfillformdraft")]
-        public async Task<object> CheckFillFormDraftFromBodyAsync(string fileId, [FromBody] CheckFillFormDraftModel model)
+        public async Task<object> CheckFillFormDraftFromBodyAsync(string fileId, [FromBody] CheckFillFormDraftRequestDto model)
         {
             return await FilesControllerHelperString.CheckFillFormDraftAsync(fileId, model.Version, model.Doc, !model.RequestEmbedded, model.RequestView);
         }
 
         [Create("masterform/{fileId}/checkfillformdraft")]
         [Consumes("application/x-www-form-urlencoded")]
-        public async Task<object> CheckFillFormDraftFromFormAsync(string fileId, [FromForm] CheckFillFormDraftModel model)
+        public async Task<object> CheckFillFormDraftFromFormAsync(string fileId, [FromForm] CheckFillFormDraftRequestDto model)
         {
             return await FilesControllerHelperString.CheckFillFormDraftAsync(fileId, model.Version, model.Doc, !model.RequestEmbedded, model.RequestView);
         }
 
         [Create("masterform/{fileId:int}/checkfillformdraft")]
-        public async Task<object> CheckFillFormDraftFromBodyAsync(int fileId, [FromBody] CheckFillFormDraftModel model)
+        public async Task<object> CheckFillFormDraftFromBodyAsync(int fileId, [FromBody] CheckFillFormDraftRequestDto model)
         {
             return await FilesControllerHelperInt.CheckFillFormDraftAsync(fileId, model.Version, model.Doc, !model.RequestEmbedded, model.RequestView);
         }
 
         [Create("masterform/{fileId:int}/checkfillformdraft")]
         [Consumes("application/x-www-form-urlencoded")]
-        public async Task<object> CheckFillFormDraftFromFormAsync(int fileId, [FromForm] CheckFillFormDraftModel model)
+        public async Task<object> CheckFillFormDraftFromFormAsync(int fileId, [FromForm] CheckFillFormDraftRequestDto model)
         {
             return await FilesControllerHelperInt.CheckFillFormDraftAsync(fileId, model.Version, model.Doc, !model.RequestEmbedded, model.RequestView);
         }
 
-        public Task<IEnumerable<string>> CheckDocServiceUrlAsync(CheckDocServiceUrlModel model)
+        public Task<IEnumerable<string>> CheckDocServiceUrlAsync(CheckDocServiceUrlRequestDto model)
         {
             FilesLinkUtility.DocServiceUrl = model.DocServiceUrl;
             FilesLinkUtility.DocServiceUrlInternal = model.DocServiceUrlInternal;
@@ -2495,19 +2495,19 @@ namespace ASC.Api.Documents
 
         /// <visible>false</visible>
         [Create("wordpress-save")]
-        public object WordpressSaveFromBody([FromBody] WordpressSaveModel model)
+        public object WordpressSaveFromBody([FromBody] WordpressSaveRequestDto model)
         {
             return WordpressSave(model);
         }
 
         [Create("wordpress-save")]
         [Consumes("application/x-www-form-urlencoded")]
-        public object WordpressSaveFromForm([FromForm] WordpressSaveModel model)
+        public object WordpressSaveFromForm([FromForm] WordpressSaveRequestDto model)
         {
             return WordpressSave(model);
         }
 
-        private object WordpressSave(WordpressSaveModel model)
+        private object WordpressSave(WordpressSaveRequestDto model)
         {
             if (model.Code.Length == 0)
             {
@@ -2546,19 +2546,19 @@ namespace ASC.Api.Documents
 
         /// <visible>false</visible>
         [Create("wordpress")]
-        public bool CreateWordpressPostFromBody([FromBody] CreateWordpressPostModel model)
+        public bool CreateWordpressPostFromBody([FromBody] CreateWordpressPostRequestDto model)
         {
             return CreateWordpressPost(model);
         }
 
         [Create("wordpress")]
         [Consumes("application/x-www-form-urlencoded")]
-        public bool CreateWordpressPostFromForm([FromForm] CreateWordpressPostModel model)
+        public bool CreateWordpressPostFromForm([FromForm] CreateWordpressPostRequestDto model)
         {
             return CreateWordpressPost(model);
         }
 
-        private bool CreateWordpressPost(CreateWordpressPostModel model)
+        private bool CreateWordpressPost(CreateWordpressPostRequestDto model)
         {
             try
             {
@@ -2632,19 +2632,19 @@ namespace ASC.Api.Documents
 
         /// <visible>false</visible>
         [Create("easybib-citation")]
-        public object EasyBibCitationBookFromBody([FromBody] EasyBibCitationBookModel model)
+        public object EasyBibCitationBookFromBody([FromBody] EasyBibCitationBookRequestDto model)
         {
             return EasyBibCitationBook(model);
         }
 
         [Create("easybib-citation")]
         [Consumes("application/x-www-form-urlencoded")]
-        public object EasyBibCitationBookFromForm([FromForm] EasyBibCitationBookModel model)
+        public object EasyBibCitationBookFromForm([FromForm] EasyBibCitationBookRequestDto model)
         {
             return EasyBibCitationBook(model);
         }
 
-        private object EasyBibCitationBook(EasyBibCitationBookModel model)
+        private object EasyBibCitationBook(EasyBibCitationBookRequestDto model)
         {
             try
             {
