@@ -125,19 +125,23 @@ class SectionHeader extends React.Component {
       isHeaderVisible,
       viewAs,
       maintenanceExist,
+      snackbarExist,
       ...rest
     } = this.props;
 
     let top = "48px";
-    let marginTop = "48px";
+    let marginTop = "52px";
+    let barExist = null;
+
+    const mainBar = document.getElementById("main-bar");
 
     if (maintenanceExist) {
-      const mainBar = document.getElementById("main-bar");
       const bar = document.getElementById("bar-banner");
-      const rects = mainBar.getBoundingClientRect();
+      barExist = bar;
+      const rects = mainBar ? mainBar.getBoundingClientRect() : null;
 
-      top = bar ? "108px" : rects.height + 40 + "px";
-      marginTop = bar ? "48px" : rects.height - 60 + 36 + "px";
+      top = bar ? "108px" : rects ? rects.height + 40 + "px" : "48px";
+      marginTop = bar ? "52px" : rects ? rects.height - 40 + 36 + "px" : "52px";
     }
 
     return (
@@ -147,7 +151,7 @@ class SectionHeader extends React.Component {
             isArticlePinned={isArticlePinned}
             isSectionHeaderVisible={value.isVisible}
             viewAs={viewAs}
-            maintenanceExist={maintenanceExist}
+            maintenanceExist={maintenanceExist && mainBar}
             top={top}
             marginTop={marginTop}
           >
