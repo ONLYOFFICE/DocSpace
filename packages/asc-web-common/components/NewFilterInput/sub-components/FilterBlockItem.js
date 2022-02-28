@@ -112,6 +112,7 @@ const FilterBlockItem = ({
       <StyledFilterBlockItemTag
         key={item.key}
         isSelected={item.isSelected}
+        name={`${item.label.toLowerCase()}-${item.key}`}
         onClick={() => changeFilterValueAction(item.key, item.isSelected)}
       >
         <StyledFilterBlockItemTagText
