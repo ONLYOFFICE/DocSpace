@@ -188,20 +188,22 @@ const HeaderComponent = ({
             {mainModules.map((item) => {
               return (
                 <React.Fragment key={item.id}>
-                  {item.iconUrl && !item.separator && (
-                    <HeaderNavigationIcon
-                      key={item.id}
-                      id={item.id}
-                      data-id={item.id}
-                      data-link={item.link}
-                      active={item.id == currentProductId}
-                      iconUrl={item.iconUrl}
-                      badgeNumber={item.notifications}
-                      onItemClick={onItemClick}
-                      onBadgeClick={onBadgeClick}
-                      url={item.link}
-                    />
-                  )}
+                  {item.iconUrl &&
+                    !item.separator &&
+                    item.id !== "settings" && (
+                      <HeaderNavigationIcon
+                        key={item.id}
+                        id={item.id}
+                        data-id={item.id}
+                        data-link={item.link}
+                        active={item.id == currentProductId}
+                        iconUrl={item.iconUrl}
+                        badgeNumber={item.notifications}
+                        onItemClick={onItemClick}
+                        onBadgeClick={onBadgeClick}
+                        url={item.link}
+                      />
+                    )}
                 </React.Fragment>
               );
             })}
