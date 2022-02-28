@@ -130,7 +130,7 @@ class BackupDesktopView extends React.Component {
         if (response) {
           if (response.error.length > 0 && response.progress !== 100) {
             clearInterval(this.timerId);
-            this.timerId && toastr.error(`${t("CopyingError")}`);
+            this.timerId && toastr.error(`${t("BackupCreatedError")}`);
             console.log("error", response.error);
             this.timerId = null;
             this.setState({
@@ -153,14 +153,14 @@ class BackupDesktopView extends React.Component {
                   response.link.slice(0, 1) === "/" && { link: response.link }),
               });
 
-            this.timerId && toastr.success(`${t("SuccessCopied")}`);
+            this.timerId && toastr.success(`${t("BackupCreatedSuccess")}`);
             this.timerId = null;
           }
         }
       })
       .catch((err) => {
         clearInterval(this.timerId);
-        this.timerId && toastr.error(`${t("CopyingError")}`);
+        this.timerId && toastr.error(`${t("BackupCreatedError")}`);
         console.log("err", err);
         this.timerId = null;
         if (this._isMounted) {

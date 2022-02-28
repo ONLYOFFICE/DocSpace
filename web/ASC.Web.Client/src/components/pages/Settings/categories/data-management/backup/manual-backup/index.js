@@ -144,7 +144,7 @@ class ManualBackup extends React.Component {
       startBackup("4", null)
         .then(() => setBackupProgress())
         .catch((err) => {
-          toastr.error(`${t("CopyingError")}`);
+          toastr.error(`${t("BackupCreatedError")}`);
           console.error(err);
         });
     } else {
@@ -156,7 +156,7 @@ class ManualBackup extends React.Component {
         )
         .then(() => !this.timerId && this.setIntervalProcess())
         .catch((err) => {
-          toastr.error(`${t("CopyingError")}`);
+          toastr.error(`${t("BackupCreatedError")}`);
           console.error(err);
         });
     }
@@ -176,7 +176,7 @@ class ManualBackup extends React.Component {
             this.clearSessionStorage();
             clearInterval(this.timerId);
 
-            this.timerId && toastr.error(`${t("CopyingError")}`);
+            this.timerId && toastr.error(`${t("BackupCreatedError")}`);
             this.timerId = null;
 
             this.setState({
@@ -196,7 +196,7 @@ class ManualBackup extends React.Component {
                 ...(link && link.slice(0, 1) === "/" && { link: link }),
               });
 
-            this.timerId && toastr.success(`${t("SuccessCopied")}`);
+            this.timerId && toastr.success(`${t("BackupCreatedSuccess")}`);
             this.timerId = null;
 
             return;
@@ -217,7 +217,7 @@ class ManualBackup extends React.Component {
         this.clearSessionStorage();
         clearInterval(this.timerId);
 
-        this.timerId && toastr.error(`${t("CopyingError")}`);
+        this.timerId && toastr.error(`${t("BackupCreatedError")}`);
         this.timerId = null;
 
         this._isMounted &&
@@ -303,7 +303,7 @@ class ManualBackup extends React.Component {
         !this.timerId && this.setIntervalProcess();
       }
     } catch (err) {
-      toastr.error(`${t("CopyingError")}`);
+      toastr.error(`${t("BackupCreatedError")}`);
       console.error(err);
 
       this.clearSessionStorage();
@@ -370,7 +370,7 @@ class ManualBackup extends React.Component {
               />
               {((link.length > 0 && isMaxProgress) || temporaryLink) && (
                 <Button
-                  label={t("DownloadBackup")}
+                  label={t("DownloadCopy")}
                   onClick={this.onClickDownloadBackup}
                   isDisabled={false}
                   size="medium"

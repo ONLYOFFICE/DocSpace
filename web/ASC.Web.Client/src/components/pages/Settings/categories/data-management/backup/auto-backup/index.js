@@ -88,15 +88,15 @@ class AutomaticBackup extends React.PureComponent {
     this.periodsObject = [
       {
         key: 0,
-        label: t("DailyPeriodSchedule"),
+        label: t("EveryDay"),
       },
       {
         key: 1,
-        label: t("WeeklyPeriodSchedule"),
+        label: t("EveryWeek"),
       },
       {
         key: 2,
-        label: t("MonthlyPeriodSchedule"),
+        label: t("EveryMonth"),
       },
     ];
 
@@ -428,12 +428,12 @@ class AutomaticBackup extends React.PureComponent {
 
           if (progress === 100) {
             clearInterval(this.timerId);
-            this.timerId && toastr.success(`${t("SuccessCopied")}`);
+            this.timerId && toastr.success(`${t("BackupCreatedSuccess")}`);
             this.timerId = null;
           }
         } else {
           clearInterval(this.timerId);
-          this.timerId && toastr.success(`${t("SuccessCopied")}`);
+          this.timerId && toastr.success(`${t("BackupCreatedSuccess")}`);
           this.timerId = null;
 
           this._isMounted &&

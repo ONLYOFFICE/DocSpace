@@ -136,14 +136,14 @@ class BackupListModalDialog extends React.Component {
             {filesList.length > 0 && (
               <div className="backup-restore_dialog-header">
                 <Text fontSize="12px" style={{ marginBottom: "10px" }}>
-                  {t("BackupListDeleteWarning")}
+                  {t("BackupListWarningText")}
                 </Text>
                 <Link
                   onClick={this.onCleanBackupList}
                   fontWeight={600}
                   style={{ textDecoration: "underline dotted" }}
                 >
-                  {t("ClearList")}
+                  {t("ClearBackupList")}
                 </Link>
               </div>
             )}

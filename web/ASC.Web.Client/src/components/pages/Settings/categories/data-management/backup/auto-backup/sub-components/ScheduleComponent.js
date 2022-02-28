@@ -36,7 +36,7 @@ const ScheduleComponent = ({
       monthlySchedule={selectedMonthlySchedule}
       className="backup_schedule-component"
     >
-      <Text className="schedule_description"> {t("ScheduleDescription")}</Text>
+      <Text className="schedule_description"> {t("AutoSavePeriod")}</Text>
       <div className="main_options">
         <ComboBox
           options={periodsObject}

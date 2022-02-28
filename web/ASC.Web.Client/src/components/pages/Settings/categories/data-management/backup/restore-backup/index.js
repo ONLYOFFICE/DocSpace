@@ -122,7 +122,7 @@ class RestoreBackup extends React.Component {
           if (res.progress === 100) {
             clearInterval(this.timerId);
 
-            this.timerId && toastr.success(`${t("SuccessCopied")}`);
+            this.timerId && toastr.success(`${t("BackupCreatedSuccess")}`);
             this.timerId = null;
 
             this._isMounted &&
@@ -522,10 +522,10 @@ class RestoreBackup extends React.Component {
           {"!"}
         </Text>
         <Text className="restore-backup_warning-description">
-          {t("RestoreSettingsWarning")}
+          {t("RestoreBackupWarningText")}
         </Text>
         <Text className="restore-backup_warning-link">
-          {t("RestoreSettingsLink")}
+          {t("RestoreBackupResetInfoWarningText")}
         </Text>
 
         <Checkbox

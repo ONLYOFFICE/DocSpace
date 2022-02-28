@@ -113,7 +113,7 @@ class BackupMobileView extends React.Component {
         if (response) {
           if (response.error.length > 0 && response.progress !== 100) {
             clearInterval(this.timerId);
-            this.timerId && toastr.error(`${t("CopyingError")}`);
+            this.timerId && toastr.error(`${t("BackupCreatedError")}`);
             console.log("error", response.error);
             this.timerId = null;
             this.setState({
@@ -130,14 +130,14 @@ class BackupMobileView extends React.Component {
           if (response.progress === 100) {
             clearInterval(this.timerId);
 
-            this.timerId && toastr.success(`${t("SuccessCopied")}`);
+            this.timerId && toastr.success(`${t("BackupCreatedSuccess")}`);
             this.timerId = null;
           }
         }
       })
       .catch((err) => {
         clearInterval(this.timerId);
-        this.timerId && toastr.error(`${t("CopyingError")}`);
+        this.timerId && toastr.error(`${t("BackupCreatedError")}`);
         console.log("err", err);
         this.timerId = null;
         if (this._isMounted) {
@@ -233,7 +233,7 @@ class BackupMobileView extends React.Component {
               <StyledArrowRightIcon size="small" color="#333333" />
             </div>
             <Text className="category-item-description">
-              {t("DataRestoreSettingsDescription")}
+              {t("RestoreBackupSettingsDescription")}
             </Text>
             <Box marginProp="16px 0 0 0">
               <Link
