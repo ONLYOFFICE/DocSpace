@@ -373,7 +373,6 @@ class NewContextMenu extends React.Component {
     } else {
       const items = this.props.model.map((item, index) => {
         if (!item) return;
-
         return (
           <MenuItem
             key={item.key}
@@ -383,6 +382,7 @@ class NewContextMenu extends React.Component {
             isSeparator={item.isSeparator}
             options={item.options}
             onClick={item.onClick}
+            {...item}
             hideMenu={this.hideMenu.bind(this)}
           />
         );
