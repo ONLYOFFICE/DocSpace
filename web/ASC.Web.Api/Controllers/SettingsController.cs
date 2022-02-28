@@ -789,7 +789,7 @@ namespace ASC.Api.Settings
                           WebItemId = i.WebItemId,
                           Enabled = i.Enabled,
                           Users = i.Users.Select(EmployeeWraperHelper.Get),
-                          Groups = i.Groups.Select(g => new GroupWrapperSummary(g, UserManager)),
+                          Groups = i.Groups.Select(g => new GroupSummaryDto(g, UserManager)),
                           IsSubItem = subItemList.Contains(i.WebItemId),
                       }).ToList();
         }

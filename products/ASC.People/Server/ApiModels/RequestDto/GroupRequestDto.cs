@@ -1,9 +1,8 @@
-﻿namespace ASC.People.Models
+﻿namespace ASC.People.ApiModels.RequestDto;
+
+public class GroupRequestDto
 {
-    public class GroupRequestDto
-    {
-        public Guid GroupManager { get; set; }
-        public string GroupName { get; set; }
-        public IEnumerable<Guid> Members { get; set; }
-    }
+    public Guid GroupManager { get; set; }
+    public string GroupName { get; set; }
+    public IEnumerable<Guid> Members { get; set; }
 }

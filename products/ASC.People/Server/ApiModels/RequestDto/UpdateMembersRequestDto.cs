@@ -1,7 +1,6 @@
-﻿namespace ASC.People.Models
+﻿namespace ASC.People.ApiModels.RequestDto;
+
+public class UpdateMembersRequestDto
 {
-    public class UpdateMembersRequestDto
-    {
-        public IEnumerable<Guid> UserIds { get; set; }
-    }
+    public IEnumerable<Guid> UserIds { get; set; }
 }

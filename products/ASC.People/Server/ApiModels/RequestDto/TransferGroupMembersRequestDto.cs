@@ -1,8 +1,7 @@
-﻿namespace ASC.People.Models
+﻿namespace ASC.People.ApiModels.RequestDto;
+
+public class TransferGroupMembersRequestDto
 {
-    public class TransferGroupMembersRequestDto
-    {
-        public Guid GroupId { get; set; }
-        public Guid NewGroupId { get; set; }
-    }
+    public Guid GroupId { get; set; }
+    public Guid NewGroupId { get; set; }
 }

@@ -1,16 +1,15 @@
-﻿namespace ASC.People.Models
-{
-    public class LinkAccountRequestDto
-    {
-        public string SerializedProfile { get; set; }
-    }
+﻿namespace ASC.People.ApiModels.RequestDto;
 
-    public class SignupAccountRequestDto: LinkAccountRequestDto
-    {
-        public EmployeeType? EmplType { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
-        public string PasswordHash { get; set; }
-    }
+public class LinkAccountRequestDto
+{
+    public string SerializedProfile { get; set; }
+}
+
+public class SignupAccountRequestDto : LinkAccountRequestDto
+{
+    public EmployeeType? EmplType { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string Email { get; set; }
+    public string PasswordHash { get; set; }
 }

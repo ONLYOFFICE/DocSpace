@@ -1,7 +1,6 @@
-﻿namespace ASC.People.Models
+﻿namespace ASC.People.ApiModels.RequestDto;
+
+public class SetManagerRequestDto
 {
-    public class SetManagerRequestDto
-    {
-        public Guid UserId { get; set; }
-    }
+    public Guid UserId { get; set; }
 }

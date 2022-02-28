@@ -23,67 +23,60 @@
  *
 */
 
-namespace ASC.Web.Api.Models
+namespace ASC.People.ApiModels.ResponseDto;
+
+public class GroupDto
 {
-    public class GroupDto
+    public string Description { get; set; }
+    public string Name { get; set; }
+    public Guid? Parent { get; set; }
+    public Guid Category { get; set; }
+    public Guid Id { get; set; }
+    public EmployeeWraper Manager { get; set; }
+    public List<EmployeeWraper> Members { get; set; }
+
+    public static GroupDto GetSample()
     {
-        public string Description { get; set; }
-
-        public string Name { get; set; }
-
-        public Guid? Parent { get; set; }
-
-        public Guid Category { get; set; }
-
-        public Guid Id { get; set; }
-
-        public EmployeeWraper Manager { get; set; }
-
-        public List<EmployeeWraper> Members { get; set; }
-
-        public static GroupDto GetSample()
+        return new GroupDto
         {
-            return new GroupDto
-            {
-                Id = Guid.NewGuid(),
-                Manager = EmployeeWraper.GetSample(),
-                Category = Guid.NewGuid(),
-                Name = "Sample group",
-                Parent = Guid.NewGuid(),
-                Members = new List<EmployeeWraper> { EmployeeWraper.GetSample() }
-            };
-        }
+            Id = Guid.NewGuid(),
+            Manager = EmployeeWraper.GetSample(),
+            Category = Guid.NewGuid(),
+            Name = "Sample group",
+            Parent = Guid.NewGuid(),
+            Members = new List<EmployeeWraper> { EmployeeWraper.GetSample() }
+        };
+    }
+}
+
+[Scope]
+public class GroupWraperFullHelper
+{
+    private UserManager UserManager { get; }
+    private EmployeeWraperHelper EmployeeWraperHelper { get; }
+
+    public GroupWraperFullHelper(UserManager userManager, EmployeeWraperHelper employeeWraperHelper)
+    {
+        UserManager = userManager;
+        EmployeeWraperHelper = employeeWraperHelper;
     }
 
-    [Scope]
-    public class GroupWraperFullHelper
+    public GroupDto Get(GroupInfo group, bool includeMembers)
     {
-        private UserManager UserManager { get; }
-        private EmployeeWraperHelper EmployeeWraperHelper { get; }
-
-        public GroupWraperFullHelper(UserManager userManager, EmployeeWraperHelper employeeWraperHelper)
+        var result = new GroupDto
         {
-            UserManager = userManager;
-            EmployeeWraperHelper = employeeWraperHelper;
+            Id = group.ID,
+            Category = group.CategoryID,
+            Parent = group.Parent != null ? group.Parent.ID : Guid.Empty,
+            Name = group.Name,
+            Manager = EmployeeWraperHelper.Get(UserManager.GetUsers(UserManager.GetDepartmentManager(group.ID)))
+        };
+
+        if (includeMembers)
+        {
+            result.Members = new List<EmployeeWraper>(UserManager.GetUsersByGroup(group.ID).Select(EmployeeWraperHelper.Get));
         }
 
-        public GroupDto Get(GroupInfo group, bool includeMembers)
-        {
-            var result = new GroupDto
-            {
-                Id = group.ID,
-                Category = group.CategoryID,
-                Parent = group.Parent != null ? group.Parent.ID : Guid.Empty,
-                Name = group.Name,
-                Manager = EmployeeWraperHelper.Get(UserManager.GetUsers(UserManager.GetDepartmentManager(group.ID)))
-            };
-
-            if (includeMembers)
-            {
-                result.Members = new List<EmployeeWraper>(UserManager.GetUsersByGroup(group.ID).Select(EmployeeWraperHelper.Get));
-            }
-
-            return result;
-        }
+        return result;
     }
 }

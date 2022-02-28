@@ -117,7 +117,7 @@ namespace ASC.Api.Documents
                 else
                 {
                     //Shared to group
-                    result.SharedTo = new GroupWrapperSummary(UserManager.GetGroupInfo(aceWrapper.SubjectId), UserManager);
+                    result.SharedTo = new GroupSummaryDto(UserManager.GetGroupInfo(aceWrapper.SubjectId), UserManager);
                 }
             }
             else

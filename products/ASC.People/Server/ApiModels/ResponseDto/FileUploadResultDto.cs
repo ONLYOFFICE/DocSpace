@@ -1,4 +1,4 @@
-﻿namespace ASC.People.ApiModels;
+﻿namespace ASC.People.ApiModels.ResponseDto;
 
 public class FileUploadResultDto
 {

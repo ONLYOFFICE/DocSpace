@@ -1,8 +1,7 @@
-﻿namespace ASC.People.Models
+﻿namespace ASC.People.ApiModels.RequestDto;
+
+public class UploadPhotoRequestDto
 {
-    public class UploadPhotoRequestDto
-    {
-        public List<IFormFile> Files { get; set; }
-        public bool Autosave { get; set; }
-    }
+    public List<IFormFile> Files { get; set; }
+    public bool Autosave { get; set; }
 }

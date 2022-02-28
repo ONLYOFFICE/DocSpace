@@ -39,7 +39,7 @@ public class EmployeeWraperFull : EmployeeWraper
     public ApiDateTime Terminated { get; set; }
     public string Department { get; set; }
     public ApiDateTime WorkFrom { get; set; }
-    public List<GroupWrapperSummary> Groups { get; set; }
+    public List<GroupSummaryDto> Groups { get; set; }
     public string Location { get; set; }
     public string Notes { get; set; }
     public string AvatarMax { get; set; }
@@ -71,7 +71,7 @@ public class EmployeeWraperFull : EmployeeWraper
             UserName = "Mike.Zanyatski",
             LastName = "Zanyatski",
             Title = "Manager",
-            Groups = new List<GroupWrapperSummary> { GroupWrapperSummary.GetSample() },
+            Groups = new List<GroupSummaryDto> { GroupSummaryDto.GetSample() },
             AvatarMedium = "url to medium avatar",
             Birthday = ApiDateTime.GetSample(),
             Department = "Marketing",
@@ -189,7 +189,7 @@ public class EmployeeWraperFullHelper : EmployeeWraperHelper
         if (_context.Check("groups") || _context.Check("department"))
         {
             var groups = UserManager.GetUserGroups(userInfo.ID)
-                .Select(x => new GroupWrapperSummary(x, UserManager))
+                .Select(x => new GroupSummaryDto(x, UserManager))
                 .ToList();
 
             if (groups.Count > 0)

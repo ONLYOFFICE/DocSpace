@@ -31,7 +31,7 @@ namespace ASC.Api.Settings
 
         public IEnumerable<EmployeeWraper> Users { get; set; }
 
-        public IEnumerable<GroupWrapperSummary> Groups { get; set; }
+        public IEnumerable<GroupSummaryDto> Groups { get; set; }
 
         public bool Enabled { get; set; }
 
@@ -44,9 +44,9 @@ namespace ASC.Api.Settings
                 WebItemId = Guid.Empty.ToString(),
                 Enabled = true,
                 IsSubItem = false,
-                Groups = new List<GroupWrapperSummary>
+                Groups = new List<GroupSummaryDto>
                         {
-                            GroupWrapperSummary.GetSample()
+                            GroupSummaryDto.GetSample()
                         },
                 Users = new List<EmployeeWraper>
                         {

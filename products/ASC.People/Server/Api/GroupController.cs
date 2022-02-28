@@ -30,14 +30,14 @@
         }
 
         [Read]
-        public IEnumerable<GroupWrapperSummary> GetAll()
+        public IEnumerable<GroupSummaryDto> GetAll()
         {
             var result = UserManager.GetDepartments().Select(r => r);
             if (!string.IsNullOrEmpty(ApiContext.FilterValue))
             {
                 result = result.Where(r => r.Name.Contains(ApiContext.FilterValue, StringComparison.InvariantCultureIgnoreCase));
             }
-            return result.Select(x => new GroupWrapperSummary(x, UserManager));
+            return result.Select(x => new GroupSummaryDto(x, UserManager));
         }
 
         [Read("full")]
@@ -58,9 +58,9 @@
         }
 
         [Read("user/{userid}")]
-        public IEnumerable<GroupWrapperSummary> GetByUserId(Guid userid)
+        public IEnumerable<GroupSummaryDto> GetByUserId(Guid userid)
         {
-            return UserManager.GetUserGroups(userid).Select(x => new GroupWrapperSummary(x, UserManager));
+            return UserManager.GetUserGroups(userid).Select(x => new GroupSummaryDto(x, UserManager));
         }
 
         [Create]
