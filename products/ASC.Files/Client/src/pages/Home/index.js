@@ -284,6 +284,7 @@ class PureHome extends React.Component {
       personal,
       checkedMaintenance,
       setMaintenanceExist,
+      snackbarExist,
     } = this.props;
     return (
       <>
@@ -332,7 +333,7 @@ class PureHome extends React.Component {
           </PageLayout.SectionHeader>
 
           <PageLayout.SectionBar>
-            {checkedMaintenance && (
+            {checkedMaintenance && !snackbarExist && (
               <Bar
                 firstLoad={firstLoad}
                 personal={personal}
@@ -450,6 +451,7 @@ export default inject(
       isVisitor: auth.userStore.user.isVisitor,
       checkedMaintenance: auth.settingsStore.checkedMaintenance,
       setMaintenanceExist: auth.settingsStore.setMaintenanceExist,
+      snackbarExist: auth.settingsStore.snackbarExist,
       expandedKeys,
 
       primaryProgressDataVisible,
