@@ -1085,7 +1085,7 @@ class AutomaticBackup extends React.PureComponent {
       maxNumberCopiesArray: this.maxNumberCopiesArray,
       periodsObject: this.periodsObject,
       weekdaysLabelArray: this.weekdaysLabelArray,
-
+      isDesktop: isDesktop,
       onSelectPeriod: this.onSelectPeriod,
       onSelectWeekDay: this.onSelectWeekDay,
       onSelectMonthNumber: this.onSelectMonthNumber,

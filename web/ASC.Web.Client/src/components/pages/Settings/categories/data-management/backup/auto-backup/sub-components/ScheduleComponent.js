@@ -27,12 +27,15 @@ const ScheduleComponent = ({
   monthNumbersArray,
   hoursArray,
   maxNumberCopiesArray,
+
+  isDesktop,
 }) => {
   const { t } = useTranslation("Settings");
 
   return (
     <StyledScheduleComponent
-      weeklySchedule={selectedMonthlySchedule}
+      isDesktop={isDesktop}
+      weeklySchedule={selectedWeeklySchedule}
       monthlySchedule={selectedMonthlySchedule}
       className="backup_schedule-component"
     >
@@ -52,54 +55,52 @@ const ScheduleComponent = ({
           dropDownMaxHeight={500}
           className="schedule-backup_combobox days_option"
         />
-        <div className="additional_options">
-          {selectedWeeklySchedule && (
-            <ComboBox
-              options={weekdaysLabelArray}
-              selectedOption={{
-                key: 0,
-                label: selectedWeekdayLabel,
-              }}
-              onSelect={onSelectWeekDay}
-              isDisabled={isLoadingData || isDisableOptions}
-              noBorder={false}
-              scaled={false}
-              scaledOptions={true}
-              dropDownMaxHeight={400}
-              className="schedule-backup_combobox weekly_option"
-            />
-          )}
-          {selectedMonthlySchedule && (
-            <ComboBox
-              options={monthNumbersArray}
-              selectedOption={{
-                key: 0,
-                label: selectedMonthDay,
-              }}
-              onSelect={onSelectMonthNumber}
-              isDisabled={isLoadingData || isDisableOptions}
-              noBorder={false}
-              scaled={false}
-              scaledOptions={true}
-              dropDownMaxHeight={400}
-              className="schedule-backup_combobox month_options"
-            />
-          )}
+        {selectedWeeklySchedule && (
           <ComboBox
-            options={hoursArray}
+            options={weekdaysLabelArray}
             selectedOption={{
               key: 0,
-              label: selectedHour,
+              label: selectedWeekdayLabel,
             }}
-            onSelect={onSelectTime}
+            onSelect={onSelectWeekDay}
             isDisabled={isLoadingData || isDisableOptions}
             noBorder={false}
             scaled={false}
             scaledOptions={true}
             dropDownMaxHeight={400}
-            className="schedule-backup_combobox time_options"
+            className="schedule-backup_combobox weekly_option"
           />
-        </div>
+        )}
+        {selectedMonthlySchedule && (
+          <ComboBox
+            options={monthNumbersArray}
+            selectedOption={{
+              key: 0,
+              label: selectedMonthDay,
+            }}
+            onSelect={onSelectMonthNumber}
+            isDisabled={isLoadingData || isDisableOptions}
+            noBorder={false}
+            scaled={false}
+            scaledOptions={true}
+            dropDownMaxHeight={400}
+            className="schedule-backup_combobox month_options"
+          />
+        )}
+        <ComboBox
+          options={hoursArray}
+          selectedOption={{
+            key: 0,
+            label: selectedHour,
+          }}
+          onSelect={onSelectTime}
+          isDisabled={isLoadingData || isDisableOptions}
+          noBorder={false}
+          scaled={false}
+          scaledOptions={true}
+          dropDownMaxHeight={400}
+          className="schedule-backup_combobox time_options"
+        />
       </div>
       <div className="maxCopiesOption">
         <ComboBox

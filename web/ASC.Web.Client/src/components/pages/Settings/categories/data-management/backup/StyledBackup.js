@@ -193,6 +193,27 @@ const StyledModules = styled.div`
 
 const StyledScheduleComponent = styled.div`
   margin-left: 24px;
+
+  .days_option {
+    grid-area: days;
+    width: 100%;
+
+    ${(props) =>
+      (props.weeklySchedule || props.monthlySchedule) &&
+      css`
+        max-width: 138px;
+      `};
+
+    .drop-down_variable-size {
+      ${(props) =>
+        (props.weeklySchedule || props.monthlySchedule) &&
+        css`
+          max-width: 138px !important;
+        `};
+
+      width: 100% !important;
+    }
+  }
   .additional_options {
     max-width: ${INPUT_LENGTH};
     display: grid;
@@ -203,10 +224,13 @@ const StyledScheduleComponent = styled.div`
 
   .weekly_option,
   .month_options {
-    max-width: 171px;
+    grid-area: weekly-monthly;
     width: 100%;
+
+    max-width: ${(props) => (props.isDesktop ? "124px" : INPUT_LENGTH)};
     .drop-down_variable-size {
-      max-width: 171px !important;
+      max-width: ${(props) =>
+        props.isDesktop ? "124px" : INPUT_LENGTH} !important;
       width: 100% !important;
     }
   }
@@ -218,9 +242,48 @@ const StyledScheduleComponent = styled.div`
   .main_options {
     max-width: 363px;
   }
-  .days_option,
+
+  ${(props) =>
+    props.isDesktop
+      ? css`
+          .main_options {
+            max-width: ${INPUT_LENGTH};
+            display: grid;
+
+            ${(props) =>
+              props.weeklySchedule || props.monthlySchedule
+                ? css`
+                    grid-template-areas: "days weekly-monthly time";
+                    grid-template-columns: 1fr 1fr 1fr;
+                  `
+                : css`
+                    grid-template-areas: "days  time";
+                    grid-template-columns: 1fr 1fr;
+                  `};
+            grid-gap: 8px;
+          }
+        `
+      : css`
+          .days_option {
+            grid-area: time;
+
+            max-width: ${INPUT_LENGTH};
+
+            width: 100%;
+            .drop-down_variable-size {
+              max-width: ${INPUT_LENGTH} !important;
+              width: 100% !important;
+            }
+          }
+        `}
+
   .time_options {
-    max-width: ${INPUT_LENGTH};
+    grid-area: time;
+    ${(props) =>
+      !props.isDesktop &&
+      css`
+        max-width: ${INPUT_LENGTH};
+      `};
     width: 100%;
     .drop-down_variable-size {
       max-width: ${INPUT_LENGTH} !important;
