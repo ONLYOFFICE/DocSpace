@@ -19,16 +19,15 @@ const InfoPanelBodyContent = ({
     setSharingPanelVisible,
     isRecycleBinFolder,
 }) => {
-    console.log(bufferSelectedItem);
     return (
         <StyledInfoRoomBody>
             {selectedItems.length === 0 ? (
                 <div className="no-item">
                     <h4>{t("NoItemsSelected")}</h4>
                 </div>
-            ) : selectedItems.length === 1 || bufferSelectedItem ? (
+            ) : selectedItems.length === 1 ? (
                 <SingleItem
-                    selectedItem={bufferSelectedItem || selectedItems[0]}
+                    selectedItem={selectedItems[0]}
                     isRecycleBinFolder={isRecycleBinFolder}
                     onSelectItem={onSelectItem}
                     setSharingPanelVisible={setSharingPanelVisible}

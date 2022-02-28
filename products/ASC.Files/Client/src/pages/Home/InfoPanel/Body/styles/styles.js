@@ -77,7 +77,7 @@ const StyledProperties = styled.div`
     .property {
         width: 100%;
         display: grid;
-        grid-template-columns: 135px 1fr;
+        grid-template-columns: 110px 1fr;
         grid-column-gap: 24px;
 
         .property-title {

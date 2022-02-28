@@ -301,7 +301,10 @@ const SingleItem = (props) => {
                 </StyledThumbnail>
             ) : (
                 <div className="no-thumbnail-img-wrapper">
-                    <ReactSVG className="icon" src={item.thumbnailUrl} />
+                    <ReactSVG
+                        className="no-thumbnail-img"
+                        src={item.thumbnailUrl}
+                    />
                 </div>
             )}
 
