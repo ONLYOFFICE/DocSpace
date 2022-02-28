@@ -57,15 +57,15 @@ public partial class TextileFormatter
                 // Modify the line with our block modifiers.
                 if (CurrentState == null || CurrentState.ShouldFormatBlocks(tmp))
                 {
-                    foreach (var blockModifier in s_blockModifiers)
+                    foreach (var blockModifier in _blockModifiers)
                     {
                         //TODO: if not disabled...
                         tmp = blockModifier.ModifyLine(tmp);
                     }
 
-                    for (var i = s_blockModifiers.Count - 1; i >= 0; i--)
+                    for (var i = _blockModifiers.Count - 1; i >= 0; i--)
                     {
-                        var blockModifier = s_blockModifiers[i];
+                        var blockModifier = _blockModifiers[i];
                         tmp = blockModifier.Conclude(tmp);
                     }
                 }

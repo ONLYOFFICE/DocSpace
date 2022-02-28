@@ -4,7 +4,6 @@ public class StyleReader
 {
     private readonly Regex _styleParser = new Regex(@"(?<selector>[^\{]+)(?<style>[^\}]+)");
     private readonly Regex _minimizer = new Regex(@";\s+");
-
     private readonly System.Collections.Specialized.StringDictionary _tagStyler = new System.Collections.Specialized.StringDictionary();
 
     public StyleReader(string styles)

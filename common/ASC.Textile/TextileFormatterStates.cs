@@ -15,8 +15,8 @@ public partial class TextileFormatter
 {
     #region State Registration
 
-    private static readonly List<Type> s_registeredStates = new List<Type>();
-    private static readonly List<FormatterStateAttribute> s_registeredStatesAttributes = new List<FormatterStateAttribute>();
+    private static readonly List<Type> _registeredStates = new List<Type>();
+    private static readonly List<FormatterStateAttribute> _registeredStatesAttributes = new List<FormatterStateAttribute>();
 
     public static void RegisterFormatterState(Type formatterStateType)
     {
@@ -30,8 +30,8 @@ public partial class TextileFormatter
         if (att == null)
             throw new ArgumentException("The formatter state must have the FormatterStateAttribute.");
 
-        s_registeredStates.Add(formatterStateType);
-        s_registeredStatesAttributes.Add(att);
+        _registeredStates.Add(formatterStateType);
+        _registeredStatesAttributes.Add(att);
     }
 
     #endregion
@@ -113,12 +113,12 @@ public partial class TextileFormatter
     /// their own syntax and remove it?
     private string HandleFormattingState(string input)
     {
-        for (var i = 0; i < s_registeredStates.Count; i++)
+        for (var i = 0; i < _registeredStates.Count; i++)
         {
-            var type = s_registeredStates[i];
+            var type = _registeredStates[i];
             if (IsFormatterStateEnabled(type))
             {
-                var att = s_registeredStatesAttributes[i];
+                var att = _registeredStatesAttributes[i];
                 var m = Regex.Match(input, att.Pattern);
                 if (m.Success)
                 {

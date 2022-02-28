@@ -17,13 +17,13 @@ public partial class TextileFormatter
 {
     #region Block Modifiers Registration
 
-    private static readonly List<BlockModifier> s_blockModifiers = new List<BlockModifier>();
-    private static readonly List<Type> s_blockModifiersTypes = new List<Type>();
+    private static readonly List<BlockModifier> _blockModifiers = new List<BlockModifier>();
+    private static readonly List<Type> _blockModifiersTypes = new List<Type>();
 
     public static void RegisterBlockModifier(BlockModifier blockModifer)
     {
-        s_blockModifiers.Add(blockModifer);
-        s_blockModifiersTypes.Add(blockModifer.GetType());
+        _blockModifiers.Add(blockModifer);
+        _blockModifiersTypes.Add(blockModifer.GetType());
     }
 
     #endregion
