@@ -21,6 +21,7 @@ const EmptyContainer = ({
   parentId,
   isEncryptionSupport,
   theme,
+  setCreateFolderDialogVisible,
 }) => {
   linkStyles.color = theme.filesEmptyContainer.linkColor;
 
@@ -33,17 +34,36 @@ const EmptyContainer = ({
     });
   };
 
+  const onCreateFolder = () => {
+    console.log("onCreateFolder");
+    setCreateFolderDialogVisible(true);
+  };
+
   return isFiltered ? (
     <EmptyFilterContainer linkStyles={linkStyles} />
   ) : parentId === 0 ? (
-    <RootFolderContainer onCreate={onCreate} linkStyles={linkStyles} />
+    <RootFolderContainer
+      onCreate={onCreate}
+      onCreateFolder={onCreateFolder}
+      linkStyles={linkStyles}
+    />
   ) : (
-    <EmptyFolderContainer onCreate={onCreate} linkStyles={linkStyles} />
+    <EmptyFolderContainer
+      onCreate={onCreate}
+      onCreateFolder={onCreateFolder}
+      linkStyles={linkStyles}
+    />
   );
 };
 
 export default inject(
-  ({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
+  ({
+    auth,
+    filesStore,
+    treeFoldersStore,
+    selectedFolderStore,
+    dialogsStore,
+  }) => {
     const {
       authorType,
       search,
@@ -54,6 +74,7 @@ export default inject(
     const isFiltered =
       (authorType || search || !withSubfolders || filterType) &&
       !(isPrivacyFolder && isMobile);
+    const { setCreateFolderDialogVisible } = dialogsStore;
 
     return {
       isEncryptionSupport: auth.settingsStore.isEncryptionSupport,
@@ -62,6 +83,7 @@ export default inject(
       setAction: filesStore.fileActionStore.setAction,
       isPrivacyFolder,
       parentId: selectedFolderStore.parentId,
+      setCreateFolderDialogVisible,
     };
   }
 )(observer(EmptyContainer));

@@ -187,6 +187,11 @@ class SectionHeaderContent extends React.Component {
     });
   };
 
+  onCreateFolder = () => {
+    console.log("onCreateFolder");
+    this.props.setCreateFolderDialogVisible(true);
+  };
+
   createDocument = () => this.onCreate("docx");
 
   createSpreadsheet = () => this.onCreate("xlsx");
@@ -200,7 +205,7 @@ class SectionHeaderContent extends React.Component {
     setSelectFileDialogVisible(true);
   };
 
-  createFolder = () => this.onCreate();
+  createFolder = () => this.onCreateFolder();
 
   uploadToFolder = () => console.log("Upload To Folder click");
 
@@ -539,6 +544,7 @@ export default inject(
       setEmptyTrashDialogVisible,
       setSelectFileDialogVisible,
       setIsFolderActions,
+      setCreateFolderDialogVisible,
     } = dialogsStore;
 
     const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
@@ -589,6 +595,7 @@ export default inject(
       isEmptyFilesList,
       isPrivacyFolder,
       viewAs,
+      setCreateFolderDialogVisible,
     };
   }
 )(

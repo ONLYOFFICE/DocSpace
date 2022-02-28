@@ -13,6 +13,7 @@ const EmptyFolderContainer = ({
   setIsLoading,
   parentId,
   linkStyles,
+  onCreateFolder,
 }) => {
   const onBackToParentFolder = () => {
     const newFilter = filter.clone();
@@ -50,10 +51,10 @@ const EmptyFolderContainer = ({
         <img
           className="empty-folder_container_plus-image"
           src="images/plus.svg"
-          onClick={onCreate}
+          onClick={onCreateFolder}
           alt="plus_icon"
         />
-        <Link {...linkStyles} onClick={onCreate}>
+        <Link {...linkStyles} onClick={onCreateFolder}>
           {t("Folder")}
         </Link>
       </div>
