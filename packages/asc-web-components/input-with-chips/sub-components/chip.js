@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 
 import IconButton from "../../icon-button";
@@ -76,22 +76,25 @@ const Chip = (props) => {
     onDelete(value);
   };
 
-  const onInputKeyDown = (e) => {
-    const code = e.code;
+  const onInputKeyDown = useCallback(
+    (e) => {
+      const code = e.code;
 
-    switch (code) {
-      case "Enter":
-      case "NumpadEnter": {
-        onSaveNewChip(value, newValue);
-        break;
+      switch (code) {
+        case "Enter":
+        case "NumpadEnter": {
+          onSaveNewChip(value, newValue);
+          break;
+        }
+        case "Escape": {
+          setNewValue(value.value);
+          onDoubleClick(null);
+          return false;
+        }
       }
-      case "Escape": {
-        setNewValue(value.value);
-        onDoubleClick(null);
-        return false;
-      }
-    }
-  };
+    },
+    [newValue]
+  );
   if (value?.value === currentChip?.value) {
     return (
       <StyledChipInput

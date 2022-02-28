@@ -59,7 +59,7 @@ ChipsRender.propTypes = {
 
   invalidEmailText: PropTypes.string,
 
-  blockRef: PropTypes.ref,
+  blockRef: PropTypes.shape({ current: PropTypes.any }),
 
   checkSelected: PropTypes.func,
   onDelete: PropTypes.func,

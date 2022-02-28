@@ -150,8 +150,8 @@ InputGroup.propTypes = {
   maxLength: PropTypes.number,
   exceededLimit: PropTypes.number,
 
-  inputRef: PropTypes.ref,
-  containerRef: PropTypes.ref,
+  inputRef: PropTypes.shape({ current: PropTypes.any }),
+  containerRef: PropTypes.shape({ current: PropTypes.any }),
 
   setChips: PropTypes.func,
   setSelectedChips: PropTypes.func,
