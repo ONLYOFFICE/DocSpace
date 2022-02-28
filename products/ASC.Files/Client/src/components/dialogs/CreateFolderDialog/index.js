@@ -25,6 +25,7 @@ const CreateFolderDialogComponent = (props) => {
   const [folderName, setFolderName] = useState(
     renameItem ? renameItem.title : ""
   );
+  const [inputError, setInputError] = useState(false);
 
   const onClose = () => {
     setCreateFolderDialogVisible(false);
@@ -32,6 +33,10 @@ const CreateFolderDialogComponent = (props) => {
   };
 
   const onCreate = () => {
+    if (folderName.length === 0) {
+      setInputError(true);
+      return;
+    }
     let folderId = filter.folder;
     if (folderId === "@my") folderId = 2;
 
@@ -47,7 +52,10 @@ const CreateFolderDialogComponent = (props) => {
     onClose();
   };
 
-  const onChange = (e) => setFolderName(e.target.value);
+  const onChange = (e) => {
+    setInputError(false);
+    setFolderName(e.target.value);
+  };
 
   const onKeyDown = (e) => {
     if (e.code === "Enter") onCreate();
@@ -75,6 +83,7 @@ const CreateFolderDialogComponent = (props) => {
           onKeyDown={onKeyDown}
           placeholder={t("Home:NewFolder")}
           tabIndex={1}
+          hasError={inputError}
         />
       </ModalDialog.Body>
       <ModalDialog.Footer>
