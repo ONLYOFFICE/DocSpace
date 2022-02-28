@@ -39,6 +39,11 @@ const Modal = styled(ModalDialogContainer)`
   .modal-dialog-aside {
     width: 480px;
     transform: translateX(${(props) => (props.visible ? "0" : "480px")});
+
+    @media (max-width: 550px) {
+      width: 320px;
+      transform: translateX(${(props) => (props.visible ? "0" : "320px")});
+    }
   }
 `;
 
