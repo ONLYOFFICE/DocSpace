@@ -2,7 +2,7 @@
 <DOCUMENT Type="Advanced Installer" CreateVersion="18.4" version="18.7" Modules="enterprise" RootPath="." Language="ru" Id="{54B168F8-13C3-42BC-B783-24F5F6D98365}">
   <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
     <ROW Property="AI_BITMAP_DISPLAY_MODE" Value="0"/>
-    <ROW Property="AI_CURRENT_YEAR" Value="2021" ValueLocId="-"/>
+    <ROW Property="AI_CURRENT_YEAR" Value="2022" ValueLocId="-"/>
     <ROW Property="AI_FINDEXE_TITLE" Value="Выберите установочный пакет для [|ProductName]" ValueLocId="AI.Property.FindExeTitle"/>
     <ROW Property="AI_PREDEF_LCONDS_PROPS" Value="AI_DETECTED_INTERNET_CONNECTION"/>
     <ROW Property="ALLUSERS" Value="1"/>
@@ -692,6 +692,8 @@
     <ROW ScriptName="onlyoffice.upgradev111" Token="DELIMITER ;" Flags="0"/>
     <ROW ScriptName="onlyoffice.upgradev115" Token="DELIMITER DLM00" Flags="0"/>
     <ROW ScriptName="onlyoffice.upgradev115" Token="DELIMITER ;" Flags="0"/>
+    <ROW ScriptName="onlyoffice.upgradev116" Token="DELIMITER DLM00" Flags="0"/>
+    <ROW ScriptName="onlyoffice.upgradev116" Token="DELIMITER ;" Flags="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.SqlScriptComponent">
     <ROW ScriptName="createdb" ConnectionName="MySql.Connection" Condition="1" Separator=";" ScriptText="..\docker\config\createdb.sql" Flags="274" Order="0"/>
@@ -701,6 +703,7 @@
     <ROW ScriptName="onlyoffice.upgradev110" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\docker\config\onlyoffice.upgradev110.sql" Flags="274" Order="4"/>
     <ROW ScriptName="onlyoffice.upgradev111" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\docker\config\onlyoffice.upgradev111.sql" Flags="274" Order="5"/>
     <ROW ScriptName="onlyoffice.upgradev115" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\docker\config\onlyoffice.upgradev115.sql" Flags="274" Order="6"/>
+    <ROW ScriptName="onlyoffice.upgradev116" ConnectionName="MySql.Connection" Condition="1" Separator="DLM00" ScriptText="..\docker\config\onlyoffice.upgradev116.sql" Flags="18" Order="7"/>
     <ATTRIBUTE name="ImpersonateUser" value="true"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.SynchronizedFolderComponent">
