@@ -6,13 +6,13 @@ import "@appserver/common/custom.scss";
 import { AppServerConfig } from "@appserver/common/constants";
 import { combineUrl } from "@appserver/common/utils";
 
-const App = () => {
+const App = (initProps) => {
   const onError = () =>
     window.open(combineUrl(AppServerConfig.proxyURL, "/login"), "_self");
   return (
-    <ErrorBoundary onError={onError}>
-      <Editor />
-    </ErrorBoundary>
+    // <ErrorBoundary onError={onError}>
+    <Editor {...initProps} />
+    // </ErrorBoundary>
   );
 };
 

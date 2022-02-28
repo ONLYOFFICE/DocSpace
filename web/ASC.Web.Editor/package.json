@@ -6,11 +6,11 @@
   "scripts": {
     "build:test": "webpack --env minimize=false --mode production",
     "build:test.translation": "webpack --env minimize=false hideText=true --mode production",
-    "clean": "shx rm -rf dist",
+    "clean": "shx rm -rf clientBuild && shx rm -rf serverBuild",
     "build:server": "webpack --config webpack.server.js",
-    "build:client": "webpack --config webpack.client.js --profile --json > dist/stats.json",
-    "build:prod": "yarn clean && shx --silent mkdir dist && yarn build:client --mode production --progress && yarn build:server --mode production --progress && node dist/server.js",
-    "build:dev": "yarn clean && shx --silent mkdir dist && yarn build:client --progress && yarn build:server --progress && node dist/server.js"
+    "build:client": "webpack --config webpack.client.js --profile --json > clientBuild/stats.json",
+    "build:prod": "yarn clean && shx --silent mkdir clientBuild  && shx --silent mkdir serverBuild && yarn build:client --mode production --progress && yarn build:server --mode production --progress && node serverBuild/server.js",
+    "build:dev": "yarn clean && shx --silent mkdir dist && yarn build:client --progress && yarn build:server --progress && node serverBuild/server.js"
   },
   "devDependencies": {
     "@babel/core": "^7.15.5",

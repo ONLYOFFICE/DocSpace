@@ -22,7 +22,7 @@ const config = {
   entry: "./src/client/index.js",
 
   output: {
-    path: path.resolve(process.cwd(), "dist"),
+    path: path.resolve(process.cwd(), "clientBuild"),
     filename: "static/js/[name].[contenthash].bundle.js",
     publicPath: "/products/files/doceditor/",
     chunkFilename: "static/js/[id].[contenthash].js",

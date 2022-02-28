@@ -6,7 +6,7 @@ import { ServerStyleSheet } from "styled-components";
 import { ChunkExtractor } from "@loadable/server";
 import path from "path";
 const sheet = new ServerStyleSheet();
-const statsFile = path.resolve("./dist/stats.json");
+const statsFile = path.resolve("clientBuild/stats.json");
 export default async (req) => {
   const props = await initDocEditor(req);
 

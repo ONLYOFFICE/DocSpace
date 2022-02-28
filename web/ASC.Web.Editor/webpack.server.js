@@ -6,7 +6,7 @@ const config = {
   target: "node",
   mode: "development",
   output: {
-    path: path.resolve(process.cwd(), "dist"),
+    path: path.resolve(process.cwd(), "serverBuild"),
     filename: "server.js",
   },
 
@@ -38,6 +38,5 @@ module.exports = (env, argv) => {
   if (argv.mode === "production") {
     config.mode = "production";
   }
-
   return config;
 };

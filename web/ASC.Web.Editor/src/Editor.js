@@ -131,6 +131,7 @@ export default function Editor({
   actionLink,
   error,
   needLoader,
+  ...rest
 }) {
   const [titleSelectorFolder, setTitleSelectorFolder] = useState("");
   const [urlSelectorFolder, setUrlSelectorFolder] = useState("");
@@ -145,8 +146,6 @@ export default function Editor({
   const [faviconHref, setFaviconHref] = useState("/favicon.ico"); // try without state
 
   useEffect(() => {
-    console.log("useEffect error catch");
-
     if (error) {
       error?.unAuthorized &&
         error?.redirectPath &&
@@ -155,9 +154,8 @@ export default function Editor({
   }, []);
 
   useEffect(() => {
-    console.log("useEffect config", config, docApiUrl);
+    console.log("useEffect config", config);
     if (config) {
-      console.log("useEffect meta change", config);
       loadScript(docApiUrl, "scripDocServiceAddress", () => onLoad());
       setFavicon(config?.documentType);
       setDocumentTitle(config?.document?.title);
