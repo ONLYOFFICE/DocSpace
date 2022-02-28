@@ -24,8 +24,8 @@ const CreateFolderDialogComponent = (props) => {
   const onClose = () => setCreateFolderDialogVisible(false);
 
   const onCreate = () => {
-    console.log(filter);
-    const folderId = filter.folder;
+    let folderId = filter.folder;
+    if (folderId === "@my") folderId = 2;
     createFolder(folderId, folderName).then(() => fetchFiles(folderId, filter));
     onClose();
   };
