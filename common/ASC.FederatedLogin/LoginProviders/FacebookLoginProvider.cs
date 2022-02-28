@@ -100,7 +100,7 @@ namespace ASC.FederatedLogin.LoginProviders
                 TimeZone = jProfile.Value<string>("timezone"),
                 Locale = jProfile.Value<string>("locale"),
                 Provider = ProviderConstants.Facebook,
-                Avatar = string.Format("http://graph.facebook.com/{0}/picture?type=large", jProfile.Value<string>("id"))
+                Avatar = "http://graph.facebook.com/" + jProfile.Value<string>("id") + "/picture?type=large"
             };
 
             return profile;

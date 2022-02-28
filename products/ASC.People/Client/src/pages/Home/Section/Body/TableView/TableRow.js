@@ -8,6 +8,7 @@ import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
 import styled from "styled-components";
 import Badges from "../../../../../components/Badges";
+import Checkbox from "@appserver/components/checkbox";
 
 const StyledPeopleRow = styled(TableRow)`
   .table-container_cell {
@@ -17,9 +18,11 @@ const StyledPeopleRow = styled(TableRow)`
 
   .table-container_row-checkbox-wrapper {
     padding-left: 4px;
+    min-width: 46px;
 
     .table-container_row-checkbox {
       margin-left: -4px;
+      padding: 16px 0px 16px 12px;
     }
   }
 
@@ -34,7 +37,6 @@ const StyledPeopleRow = styled(TableRow)`
 
 const PeopleTableRow = (props) => {
   const {
-    t,
     item,
     contextOptionsProps,
     element,
@@ -50,17 +52,26 @@ const PeopleTableRow = (props) => {
   const nameColor = statusType === "pending" ? "#A3A9AE" : "#333333";
   const sideInfoColor = statusType === "pending" ? "#D0D5DA" : "#A3A9AE";
 
+  const onChange = (e) => {
+    onContentRowSelect && onContentRowSelect(e.target.checked, item);
+  };
+
   return (
-    <StyledPeopleRow
-      key={item.id}
-      item={item}
-      element={element}
-      onContentSelect={onContentRowSelect}
-      hasAccess={isAdmin}
-      {...contextOptionsProps}
-      {...checkedProps}
-    >
+    <StyledPeopleRow key={item.id} {...contextOptionsProps}>
       <TableCell>
+        <TableCell
+          hasAccess={isAdmin}
+          className="table-container_row-checkbox-wrapper"
+          checked={checkedProps.checked}
+        >
+          <div className="table-container_element">{element}</div>
+          <Checkbox
+            className="table-container_row-checkbox"
+            onChange={onChange}
+            isChecked={checkedProps.checked}
+          />
+        </TableCell>
+
         <Link
           type="page"
           title={displayName}

@@ -23,8 +23,10 @@ const OperationsPanelComponent = (props) => {
     visible,
     provider,
     selection,
+    isFolderActions,
     isRecycleBin,
     setDestFolderId,
+    setIsFolderActions,
     currentFolderId,
     operationsFolders,
     setCopyPanelVisible,
@@ -34,6 +36,7 @@ const OperationsPanelComponent = (props) => {
     itemOperationToFolder,
     checkFileConflicts,
     setThirdPartyMoveDialogVisible,
+    parentFolderId,
   } = props;
 
   const zIndex = 310;
@@ -47,7 +50,12 @@ const OperationsPanelComponent = (props) => {
   const [providerKey, setProviderKey] = useState(null);
 
   const onClose = () => {
-    isCopy ? setCopyPanelVisible(false) : setMoveToPanelVisible(false);
+    if (isCopy) {
+      setCopyPanelVisible(false);
+      setIsFolderActions(false);
+    } else {
+      setMoveToPanelVisible(false);
+    }
     setExpandedPanelKeys(null);
   };
 
@@ -81,8 +89,9 @@ const OperationsPanelComponent = (props) => {
         ? selection.filter((x) => !x.providerKey)
         : selection;
 
-    const fileIds = [];
-    const folderIds = [];
+    let fileIds = [];
+    let folderIds = [];
+
 
     for (let item of items) {
       if (item.fileExst || item.contentLength) {
@@ -92,6 +101,13 @@ const OperationsPanelComponent = (props) => {
       } else {
         folderIds.push(item.id);
       }
+    }
+
+    if (isFolderActions) {
+      fileIds = [];
+      folderIds = [];
+
+      folderIds.push(currentFolderId);
     }
 
     if (!folderIds.length && !fileIds.length) return;
@@ -203,10 +219,12 @@ export default inject(
     const {
       moveToPanelVisible,
       copyPanelVisible,
+      isFolderActions,
       setCopyPanelVisible,
       setMoveToPanelVisible,
       setDestFolderId,
       setThirdPartyMoveDialogVisible,
+      setIsFolderActions,
     } = dialogsStore;
 
     const selections = selection.length ? selection : [bufferSelection];
@@ -221,16 +239,19 @@ export default inject(
         ? expandedPanelKeys
         : selectedFolderStore.pathParts,
       currentFolderId: selectedFolderStore.id,
+      parentFolderId: selectedFolderStore.parentId,
       isRecycleBin: isRecycleBinFolder,
       filter,
       operationsFolders,
       visible: copyPanelVisible || moveToPanelVisible,
       provider,
       selection: selectionsWithoutEditing,
+      isFolderActions,
 
       setCopyPanelVisible,
       setMoveToPanelVisible,
       setDestFolderId,
+      setIsFolderActions,
       setThirdPartyMoveDialogVisible,
       setConflictDialogData,
       setExpandedPanelKeys,

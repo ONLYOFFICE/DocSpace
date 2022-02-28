@@ -24,6 +24,7 @@ class DialogsStore {
   convertDialogVisible = false;
   selectFileDialogVisible = false;
   convertPasswordDialogVisible = false;
+  isFolderActions = false;
 
   removeItem = null;
   connectItem = null;
@@ -48,6 +49,10 @@ class DialogsStore {
 
   setSharingPanelVisible = (sharingPanelVisible) => {
     this.sharingPanelVisible = sharingPanelVisible;
+  };
+
+  setIsFolderActions = (isFolderActions) => {
+    this.isFolderActions = isFolderActions;
   };
 
   setChangeOwnerPanelVisible = (ownerPanelVisible) => {

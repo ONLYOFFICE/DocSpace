@@ -94,7 +94,7 @@ namespace ASC.FederatedLogin.LoginProviders
         {
         }
 
-        public override LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params, IDictionary<string, string> additionalStateArgs = null)
+        public override LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params, IDictionary<string, string> additionalStateArgs)
         {
             try
             {

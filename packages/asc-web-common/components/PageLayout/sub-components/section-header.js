@@ -8,16 +8,12 @@ import { isMobile } from "react-device-detect";
 import { tablet, desktop } from "@appserver/components/utils/device";
 import NoUserSelect from "@appserver/components/utils/commonStyles";
 const StyledSectionHeader = styled.div`
-  height: 41px;
+  height: 42px;
   margin-right: 24px;
-  margin-top: -1px;
   ${NoUserSelect}
   ${isMobile &&
   css`
     height: ${(props) => (props.maintenanceExist ? "120px" : "40px")};
-    /* height: 49px;
-    min-height: 48px;
-    max-height: 49px; */
     width: ${(props) => !props.isLoaded && "100%"};
 
     margin-top: 62px;
@@ -38,9 +34,9 @@ const StyledSectionHeader = styled.div`
       css`
         .arrow-button {
           svg {
-            width: 14px !important;
+            width: 14px;
           }
-          margin-right: 10px !important;
+          margin-right: 10px;
         }
       `}
   }
@@ -50,6 +46,7 @@ const StyledSectionHeader = styled.div`
   }
 
   .section-header {
+    height: 50px;
     ${isMobile &&
     css`
       max-width: calc(100vw - 32px);
@@ -82,10 +79,9 @@ const StyledSectionHeader = styled.div`
         -o-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
       }
       .group-button-menu-container {
-        padding-bottom: 0 !important;
+        padding-bottom: 0;
         > div:first-child {
-          top: ${(props) =>
-            !props.isSectionHeaderVisible ? "56px" : "0px"} !important;
+          top: ${(props) => (!props.isSectionHeaderVisible ? "56px" : "0px")};
 
           @media ${desktop} {
             ${isMobile &&

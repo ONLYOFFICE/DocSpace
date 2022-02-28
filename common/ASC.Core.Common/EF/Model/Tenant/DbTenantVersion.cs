@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
+﻿
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Model
@@ -18,7 +17,7 @@ namespace ASC.Core.Common.EF.Model
         {
             modelBuilder
                 .Add(MySqlAddDbTenantVersion, Provider.MySql)
-                .Add(PgSqlAddDbTenantVersion, Provider.Postgre);
+                .Add(PgSqlAddDbTenantVersion, Provider.PostgreSql);
             return modelBuilder;
         }
         public static void MySqlAddDbTenantVersion(this ModelBuilder modelBuilder)

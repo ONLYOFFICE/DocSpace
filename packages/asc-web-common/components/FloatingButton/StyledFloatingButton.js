@@ -72,7 +72,7 @@ const StyledFloatingButton = styled.div`
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: #fff;
+  background: ${(props) => (props.color ? props.color : "#fff")};
   box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
   text-align: center;
   margin: 3px;

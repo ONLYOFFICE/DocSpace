@@ -84,7 +84,7 @@ namespace ASC.Data.Backup.Tasks
         public void Init(string toConfigPath, string fromFilePath, int tenantId = -1, ColumnMapper columnMapper = null, string upgradesPath = null)
         {
             if (fromFilePath == null)
-                throw new ArgumentNullException("fromFilePath");
+                throw new ArgumentNullException(nameof(fromFilePath));
 
             if (!File.Exists(fromFilePath))
                 throw new FileNotFoundException("file not found at given path");
@@ -292,7 +292,7 @@ namespace ASC.Data.Backup.Tasks
                             using var stream = dataReader.GetEntry(key);
                             try
                             {
-                                storage.Save(file.Domain, adjustedPath, module != null ? module.PrepareData(key, stream, ColumnMapper) : stream);
+                                storage.SaveAsync(file.Domain, adjustedPath, module != null ? module.PrepareData(key, stream, ColumnMapper) : stream).Wait();
                             }
                             catch (Exception error)
                             {
@@ -337,9 +337,9 @@ namespace ASC.Data.Backup.Tasks
                         ActionInvoker.Try(
                             state =>
                             {
-                                if (storage.IsDirectory((string)state))
+                                if (storage.IsDirectoryAsync((string)state).Result)
                                 {
-                                    storage.DeleteFiles((string)state, "\\", "*.*", true);
+                                    storage.DeleteFilesAsync((string)state, "\\", "*.*", true).Wait();
                                 }
                             },
                             domain,
@@ -380,7 +380,9 @@ namespace ASC.Data.Backup.Tasks
                 DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"),
                 tenantId);
 
-            connection.CreateCommand().WithTimeout(120).ExecuteNonQuery();
+            var command = connection.CreateCommand().WithTimeout(120);
+            command.CommandText = commandText;
+            command.ExecuteNonQuery();
         }
     }
 }

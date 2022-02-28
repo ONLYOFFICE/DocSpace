@@ -49,7 +49,7 @@ class MediaViewer extends React.Component {
     super(props);
 
     const item = props.playlist.find(
-      (file) => file.fileId === props.currentFileId
+      (file) => String(file.fileId) === String(props.currentFileId)
     );
 
     const playlistPos = item ? item.id : 0;

@@ -32,7 +32,7 @@ const TileLoader = ({
           backgroundOpacity={backgroundOpacity}
           foregroundOpacity={foregroundOpacity}
           speed={speed}
-          animate={false}
+          animate={true}
         />
         <RectangleLoader
           className="second-content"
@@ -43,7 +43,18 @@ const TileLoader = ({
           backgroundOpacity={backgroundOpacity}
           foregroundOpacity={foregroundOpacity}
           speed={speed}
-          animate={false}
+          animate={true}
+        />
+        <RectangleLoader
+          className="option-button"
+          title={title}
+          borderRadius={borderRadius}
+          backgroundColor={backgroundColor}
+          foregroundColor={foregroundColor}
+          backgroundOpacity={backgroundOpacity}
+          foregroundOpacity={foregroundOpacity}
+          speed={speed}
+          animate={true}
         />
       </StyledBottom>
     </StyledTile>
@@ -53,7 +64,6 @@ const TileLoader = ({
         <RectangleLoader
           className="main-content"
           height="100%"
-          //width="100%"
           title={title}
           borderRadius={borderRadius}
           backgroundColor={backgroundColor}
@@ -61,7 +71,7 @@ const TileLoader = ({
           backgroundOpacity={backgroundOpacity}
           foregroundOpacity={foregroundOpacity}
           speed={speed}
-          animate={false}
+          animate={true}
         />
       </StyledMainContent>
 
@@ -75,20 +85,34 @@ const TileLoader = ({
           backgroundOpacity={backgroundOpacity}
           foregroundOpacity={foregroundOpacity}
           speed={speed}
-          animate={false}
+          animate={true}
         />
-        <RectangleLoader
-          className="second-content"
-          title={title}
-          width="100%"
-          borderRadius={borderRadius}
-          backgroundColor={backgroundColor}
-          foregroundColor={foregroundColor}
-          backgroundOpacity={backgroundOpacity}
-          foregroundOpacity={foregroundOpacity}
-          speed={speed}
-          animate={false}
-        />
+        <div className="files-second-content">
+          <RectangleLoader
+            className="second-content"
+            title={title}
+            width="100%"
+            borderRadius={borderRadius}
+            backgroundColor={backgroundColor}
+            foregroundColor={foregroundColor}
+            backgroundOpacity={backgroundOpacity}
+            foregroundOpacity={foregroundOpacity}
+            speed={speed}
+            animate={true}
+          />
+          <RectangleLoader
+            className="second-content"
+            title={title}
+            width="100%"
+            borderRadius={borderRadius}
+            backgroundColor={backgroundColor}
+            foregroundColor={foregroundColor}
+            backgroundOpacity={backgroundOpacity}
+            foregroundOpacity={foregroundOpacity}
+            speed={speed}
+            animate={true}
+          />
+        </div>
       </StyledBottom>
     </StyledTile>
   );

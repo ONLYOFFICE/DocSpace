@@ -15,18 +15,20 @@ namespace ASC.Core.Common.EF
         public const string baseName = "default";
         private EFLoggerFactory LoggerFactory { get; }
         private ConfigurationExtension Configuration { get; }
+        private string MigrateAssembly { get; }
 
         public ConfigureDbContext(EFLoggerFactory loggerFactory, ConfigurationExtension configuration)
         {
             LoggerFactory = loggerFactory;
             Configuration = configuration;
+            MigrateAssembly = Configuration["testAssembly"];
         }
 
         public void Configure(string name, T context)
         {
             context.LoggerFactory = LoggerFactory;
             context.ConnectionStringSettings = Configuration.GetConnectionStrings(name) ?? Configuration.GetConnectionStrings(baseName);
-            context.MigrateAssembly = Configuration["testAssembly"];
+            context.MigrateAssembly = MigrateAssembly;
         }
 
         public void Configure(T context)
@@ -37,7 +39,7 @@ namespace ASC.Core.Common.EF
 
     public class ConfigureMultiRegionalDbContext<T> : IConfigureNamedOptions<MultiRegionalDbContext<T>> where T : BaseDbContext, new()
     {
-        public string baseName = "default";
+        private readonly string _baseName = "default";
         private ConfigurationExtension Configuration { get; }
         private DbContextManager<T> DbContext { get; }
 
@@ -55,7 +57,7 @@ namespace ASC.Core.Common.EF
 
             foreach (var c in Configuration.GetConnectionStrings().Where(r =>
             r.Name.Equals(name, cmp) || r.Name.StartsWith(name + ".", cmp) ||
-            r.Name.Equals(baseName, cmp) || r.Name.StartsWith(baseName + ".", cmp)
+            r.Name.Equals(_baseName, cmp) || r.Name.StartsWith(_baseName + ".", cmp)
             ))
             {
                 context.Context.Add(DbContext.Get(c.Name));
@@ -64,7 +66,7 @@ namespace ASC.Core.Common.EF
 
         public void Configure(MultiRegionalDbContext<T> context)
         {
-            Configure(baseName, context);
+            Configure(_baseName, context);
         }
     }
 }

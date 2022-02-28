@@ -13,16 +13,19 @@ const TableHeaderCell = ({
   sortBy,
   sorted,
   defaultSize,
+  sortingVisible,
 }) => {
   const { title, enable, active, minWidth } = column;
 
-  const isActive = column.sortBy === sortBy || active;
+  const isActive = (sortBy && column.sortBy === sortBy) || active;
 
   const onClick = (e) => {
+    if (!sortingVisible) return;
     column.onClick && column.onClick(column.sortBy, e);
   };
 
   const onIconClick = (e) => {
+    if (!sortingVisible) return;
     column.onIconClick();
     e.stopPropagation();
   };
@@ -33,33 +36,37 @@ const TableHeaderCell = ({
       isActive={isActive}
       showIcon={column.onClick}
       className="table-container_header-cell"
-      id={`column_${index + 1}`}
+      id={`column_${index}`}
       data-enable={enable}
       data-min-width={minWidth}
       data-default-size={defaultSize}
       onClick={onClick}
+      sortingVisible={sortingVisible}
     >
       <div className="table-container_header-item">
         <div className="header-container-text-wrapper">
           <Text
             fontWeight={600}
-            color={globalColors.gray}
+            color={isActive ? globalColors.grayMain : globalColors.gray}
             className="header-container-text"
           >
             {enable ? title : ""}
           </Text>
 
-          <IconButton
-            onClick={column.onIconClick ? onIconClick : onClick}
-            iconName="/static/images/folder arrow.react.svg"
-            className="header-container-text-icon"
-            size="small"
-            hoverColor="#657077"
-          />
+          {sortingVisible && (
+            <IconButton
+              onClick={column.onIconClick ? onIconClick : onClick}
+              iconName="/static/images/sort.desc.react.svg"
+              className="header-container-text-icon"
+              size="small"
+              hoverColor="#657077"
+              color={isActive ? globalColors.grayMain : globalColors.gray}
+            />
+          )}
         </div>
         {resizable && (
           <div
-            data-column={`${index + 1}`}
+            data-column={`${index}`}
             className="resize-handle not-selectable"
             onMouseDown={onMouseDown}
           />
@@ -77,6 +84,7 @@ TableHeaderCell.propTypes = {
   sorted: PropTypes.bool,
   sortBy: PropTypes.string,
   defaultSize: PropTypes.number,
+  sortingVisible: PropTypes.bool,
 };
 
 export default TableHeaderCell;

@@ -29,6 +29,7 @@ import {
   getEditHistory,
   getEditDiff,
   restoreDocumentsVersion,
+  getSettingsFiles,
 } from "@appserver/common/api/files";
 import FilesFilter from "@appserver/common/api/files/filter";
 
@@ -38,7 +39,7 @@ import { homepage } from "../package.json";
 
 import { AppServerConfig } from "@appserver/common/constants";
 import SharingDialog from "files/SharingDialog";
-import { getDefaultFileName, SaveAs, canConvert } from "files/utils";
+import { getDefaultFileName, SaveAs } from "files/utils";
 import SelectFileDialog from "files/SelectFileDialog";
 import SelectFolderDialog from "files/SelectFolderDialog";
 import { StyledSelectFolder } from "./StyledEditor";
@@ -97,6 +98,8 @@ const Editor = () => {
   const [typeInsertImageAction, setTypeInsertImageAction] = useState();
   const throttledChangeTitle = throttle(() => changeTitle(), 500);
 
+  let filesSettings;
+
   useEffect(() => {
     if (isRetina() && getCookie("is_retina") == null) {
       setCookie("is_retina", true, { path: "/" });
@@ -104,6 +107,12 @@ const Editor = () => {
 
     init();
   }, []);
+
+  const canConvert = (extension) => {
+    const array = filesSettings?.extsMustConvert || [];
+    const result = array.findIndex((item) => item === extension);
+    return result === -1 ? false : true;
+  };
 
   const loadUsersRightsList = () => {
     SharingDialog.getSharingSettings(fileId).then((sharingSettings) => {
@@ -205,6 +214,7 @@ const Editor = () => {
       try {
         await authStore.init(true);
         user = authStore.userStore.user;
+        if (user) filesSettings = await getSettingsFiles();
         personal = authStore.settingsStore.personal;
         successAuth = !!user;
       } catch (e) {

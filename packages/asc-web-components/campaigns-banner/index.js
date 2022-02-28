@@ -31,13 +31,8 @@ const CampaignsBanner = (props) => {
         <Text className="banner-sub-header" fontWeight="500" fontSize="12px">
           {subHeaderLabel}
         </Text>
-
-        <div className="banner-img-wrapper">
-          <img src={img} onMouseDown={onMouseDown} onLoad={handleImageLoaded} />
-          {!imageLoad && (
-            <Loaders.Rectangle height="160px" borderRadius="5px" />
-          )}
-        </div>
+        <img src={img} onMouseDown={onMouseDown} onLoad={handleImageLoaded} />
+        {!imageLoad && <Loaders.Rectangle height="140px" borderRadius="5px" />}
       </a>
 
       <Button

@@ -2,17 +2,16 @@ import React from "react";
 import TableHeader from "@appserver/components/table-container/TableHeader";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
-import { FilterType } from "@appserver/common/constants";
-import DropDownItem from "@appserver/components/drop-down-item";
 
-const TABLE_COLUMNS = "filesTableColumns";
-const COLUMNS_SIZE = "filesColumnsSize";
+const TABLE_VERSION = "2";
+const TABLE_COLUMNS = `filesTableColumns_ver-${TABLE_VERSION}`;
+const COLUMNS_SIZE = `filesColumnsSize_ver-${TABLE_VERSION}`;
 
 class FilesTableHeader extends React.Component {
   constructor(props) {
     super(props);
 
-    const { t, withContent, personal, userId } = props;
+    const { t, personal, userId } = props;
 
     const defaultColumns = [
       {
@@ -37,7 +36,7 @@ class FilesTableHeader extends React.Component {
       {
         key: "Created",
         title: t("ByCreationDate"),
-        enable: false,
+        enable: true,
         resizable: true,
         sortBy: "DateAndTimeCreation",
         onClick: this.onFilter,
@@ -64,16 +63,16 @@ class FilesTableHeader extends React.Component {
       {
         key: "Type",
         title: t("Common:Type"),
-        enable: false,
+        enable: true,
         resizable: true,
         sortBy: "Type",
         onClick: this.onFilter,
         onChange: this.onColumnChange,
       },
       {
-        key: "Share",
+        key: "QuickButtons",
         title: "",
-        enable: withContent,
+        enable: true,
         defaultSize: 120,
         resizable: false,
       },
@@ -187,54 +186,19 @@ class FilesTableHeader extends React.Component {
     fetchFiles(selectedFolderId, newFilter).finally(() => setIsLoading(false));
   };
 
-  onChange = (checked) => {
-    this.props.setSelected(checked ? "all" : "none");
-  };
-
-  onSelect = (e) => {
-    const key = e.currentTarget.dataset.key;
-    this.props.setSelected(key);
-  };
-
-  setSelected = (checked) => {
-    this.props.setSelected && this.props.setSelected(checked ? "all" : "none");
-  };
-
   render() {
     const {
-      t,
       containerRef,
-      isHeaderVisible,
       isHeaderChecked,
-      isHeaderIndeterminate,
-      getHeaderMenu,
       filter,
       sectionWidth,
       userId,
-      cbMenuItems,
-      getCheckboxItemLabel,
       firstElemChecked,
+      sortingVisible,
     } = this.props;
 
     const { sortBy, sortOrder } = filter;
-
     const { columns, resetColumnsSize } = this.state;
-
-    const checkboxOptions = (
-      <>
-        {cbMenuItems.map((key) => {
-          const label = getCheckboxItemLabel(t, key);
-          return (
-            <DropDownItem
-              key={key}
-              label={label}
-              data-key={key}
-              onClick={this.onSelect}
-            />
-          );
-        })}
-      </>
-    );
 
     return (
       <TableHeader
@@ -242,66 +206,44 @@ class FilesTableHeader extends React.Component {
         checkboxSize="32px"
         sorted={sortOrder === "descending"}
         sortBy={sortBy}
-        setSelected={this.setSelected}
         containerRef={containerRef}
         columns={columns}
         columnStorageName={`${COLUMNS_SIZE}=${userId}`}
         sectionWidth={sectionWidth}
-        isHeaderVisible={isHeaderVisible}
-        checkboxOptions={checkboxOptions}
-        onChange={this.onChange}
-        isChecked={isHeaderChecked}
-        isIndeterminate={isHeaderIndeterminate}
-        headerMenu={getHeaderMenu(t)}
         resetColumnsSize={resetColumnsSize}
+        sortingVisible={sortingVisible}
       />
     );
   }
 }
 
 export default inject(
-  ({
-    auth,
-    filesStore,
-    filesActionsStore,
-    selectedFolderStore,
-    treeFoldersStore,
-  }) => {
+  ({ auth, filesStore, selectedFolderStore, treeFoldersStore }) => {
     const {
-      setSelected,
-      isHeaderVisible,
-      isHeaderIndeterminate,
       isHeaderChecked,
       setIsLoading,
       filter,
       fetchFiles,
       canShare,
-      cbMenuItems,
-      getCheckboxItemLabel,
       firstElemChecked,
     } = filesStore;
-    const { getHeaderMenu } = filesActionsStore;
-    const { isPrivacyFolder } = treeFoldersStore;
+    const { isPrivacyFolder, isRecentFolder } = treeFoldersStore;
 
     const withContent = canShare || (canShare && isPrivacyFolder && isDesktop);
+    const sortingVisible = !isRecentFolder;
     const { personal } = auth.settingsStore;
 
     return {
-      isHeaderVisible,
-      isHeaderIndeterminate,
       isHeaderChecked,
       filter,
       selectedFolderId: selectedFolderStore.id,
       withContent,
       personal,
+      sortingVisible,
 
-      setSelected,
       setIsLoading,
       fetchFiles,
-      getHeaderMenu,
       userId: auth.userStore.user.id,
-      cbMenuItems,
-      getCheckboxItemLabel,
 
       firstElemChecked,
     };

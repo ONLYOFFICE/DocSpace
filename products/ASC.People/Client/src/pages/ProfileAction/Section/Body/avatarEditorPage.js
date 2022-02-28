@@ -148,7 +148,8 @@ class AvatarEditorPage extends React.PureComponent {
 
   onSaveAvatar = (isUpdate, result, avatar) => {
     this.setState({ isLoading: true });
-    const { profile, toggleAvatarEditor, setAvatarMax } = this.props;
+    const { profile, toggleAvatarEditor, setAvatarMax, personal } = this.props;
+
     if (isUpdate) {
       createThumbnailsAvatar(profile.id, {
         x: Math.round(result.x * avatar.defaultWidth - result.width / 2),
@@ -178,9 +179,9 @@ class AvatarEditorPage extends React.PureComponent {
         .then(() => {
           this.setState(this.mapPropsToState(this.props));
         })
-        .then(() => this.props.fetchProfile(profile.id))
+        .then(() => !personal && this.props.fetchProfile(profile.id))
         .then((res) => {
-          this.props.isMe && this.props.setUser(res);
+          //this.props.isMe && this.props.setUser(res);
           return toggleAvatarEditor(false);
         });
     } else {
@@ -196,9 +197,9 @@ class AvatarEditorPage extends React.PureComponent {
         .then(() => {
           this.setState(this.mapPropsToState(this.props));
         })
-        .then(() => this.props.fetchProfile(profile.id))
+        .then(() => !personal && this.props.fetchProfile(profile.id))
         .then((res) => {
-          this.props.isMe && this.props.setUser(res);
+          //this.props.isMe && this.props.setUser(res);
           return toggleAvatarEditor(false);
         });
     }
@@ -319,15 +320,16 @@ class AvatarEditorPage extends React.PureComponent {
 export default withRouter(
   inject(({ auth, peopleStore }) => ({
     setDocumentTitle: auth.setDocumentTitle,
-    setUser: auth.userStore.setUser,
+    //setUser: auth.userStore.setUser,
     toggleAvatarEditor: peopleStore.avatarEditorStore.toggleAvatarEditor,
     fetchProfile: peopleStore.targetUserStore.getTargetUser,
     profile: peopleStore.targetUserStore.targetUser,
-    isMe: peopleStore.targetUserStore.isMe,
+    //isMe: peopleStore.targetUserStore.isMe,
     avatarMax: peopleStore.avatarEditorStore.avatarMax,
     setAvatarMax: peopleStore.avatarEditorStore.setAvatarMax,
     updateProfile: peopleStore.targetUserStore.updateProfile,
     getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
+    personal: auth.settingsStore.personal,
   }))(
     observer(
       withTranslation(["ProfileAction", "Common", "Translations"])(

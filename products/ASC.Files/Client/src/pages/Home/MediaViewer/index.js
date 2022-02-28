@@ -46,7 +46,7 @@ const FilesMediaViewer = (props) => {
 
   const onButtonBackHandler = () => {
     const hash = window.location.hash;
-    const id = +hash.slice(9);
+    const id = hash.slice(9);
     if (!id) {
       setMediaViewerData({ visible: false, id: null });
       return;
@@ -164,7 +164,7 @@ export default inject(
     filesStore,
     mediaViewerDataStore,
     filesActionsStore,
-    formatsStore,
+    settingsStore,
     dialogsStore,
     treeFoldersStore,
   }) => {
@@ -184,7 +184,7 @@ export default inject(
       setToPreviewFile,
     } = mediaViewerDataStore;
     const { deleteItemAction } = filesActionsStore;
-    const { media, images } = formatsStore.mediaViewersFormatsStore;
+    const { extsVideo, extsImage } = settingsStore;
     const { expandedKeys, setExpandedKeys } = treeFoldersStore;
 
     return {
@@ -195,8 +195,8 @@ export default inject(
       currentMediaFileId,
       deleteItemAction,
       setMediaViewerData,
-      mediaViewerImageFormats: images,
-      mediaViewerMediaFormats: media,
+      mediaViewerImageFormats: extsImage,
+      mediaViewerMediaFormats: extsVideo,
       setRemoveMediaItem: dialogsStore.setRemoveMediaItem,
       deleteDialogVisible: dialogsStore.deleteDialogVisible,
       fetchFiles,

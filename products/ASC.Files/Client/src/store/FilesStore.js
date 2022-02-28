@@ -28,7 +28,6 @@ class FilesStore {
   fileActionStore;
   selectedFolderStore;
   treeFoldersStore;
-  formatsStore;
   filesSettingsStore;
 
   isLoaded = false;
@@ -67,7 +66,6 @@ class FilesStore {
     fileActionStore,
     selectedFolderStore,
     treeFoldersStore,
-    formatsStore,
     filesSettingsStore
   ) {
     const pathname = window.location.pathname.toLowerCase();
@@ -80,7 +78,6 @@ class FilesStore {
     this.fileActionStore = fileActionStore;
     this.selectedFolderStore = selectedFolderStore;
     this.treeFoldersStore = treeFoldersStore;
-    this.formatsStore = formatsStore;
     this.filesSettingsStore = filesSettingsStore;
 
     const { socketHelper } = authStore.settingsStore;
@@ -623,18 +620,17 @@ class FilesStore {
       (this.userStore.user && this.userStore.user.isVisitor) || false;
     const isFile = !!item.fileExst || item.contentLength;
     const isFavorite =
-      item.fileStatus === 32 ||
-      item.fileStatus === 33 ||
-      item.fileStatus === 34;
+      (item.fileStatus & FileStatus.IsFavorite) === FileStatus.IsFavorite;
     const isFullAccess = item.access < 2;
     const withoutShare = false; //TODO: need this prop
     const isThirdPartyItem = !!item.providerKey;
     const hasNew =
-      item.new > 0 || item.fileStatus === 2 || item.fileStatus === 34;
+      item.new > 0 || (item.fileStatus & FileStatus.IsNew) === FileStatus.IsNew;
     const canConvert = false; //TODO: fix of added convert check;
     const isEncrypted = item.encrypted;
     const isDocuSign = false; //TODO: need this prop;
-    const isEditing = item.fileStatus === 1;
+    const isEditing =
+      (item.fileStatus & FileStatus.IsEditing) === FileStatus.IsEditing;
     const isFileOwner = item.createdBy.id === this.userStore.user.id;
 
     const {
@@ -652,7 +648,7 @@ class FilesStore {
       canWebEdit,
       canViewedDocs,
       canFormFillingDocs,
-    } = this.formatsStore.docserviceStore;
+    } = this.filesSettingsStore;
 
     const isThirdPartyFolder =
       item.providerKey && item.id === item.rootFolderId;
@@ -1165,12 +1161,12 @@ class FilesStore {
 
   updateFileBadge = (id) => {
     const file = this.files.find((x) => x.id === id);
-    if (file) file.fileStatus = 0;
+    if (file) file.fileStatus = file.fileStatus & ~FileStatus.IsEditing;
   };
 
   updateFilesBadge = () => {
     for (let file of this.files) {
-      file.fileStatus = 0;
+      file.fileStatus = file.fileStatus & ~FileStatus.IsEditing;
     }
   };
 
@@ -1255,7 +1251,7 @@ class FilesStore {
   }
 
   get iconOfDraggedFile() {
-    const { getIcon } = this.formatsStore.iconFormatsStore;
+    const { getIcon } = this.filesSettingsStore;
 
     if (this.selection.length === 1) {
       return getIcon(
@@ -1319,7 +1315,7 @@ class FilesStore {
   }
 
   onCreateAddTempItem = (items) => {
-    const { getFileIcon, getFolderIcon } = this.formatsStore.iconFormatsStore;
+    const { getFileIcon, getFolderIcon } = this.filesSettingsStore;
     const { extension, title } = this.fileActionStore;
 
     if (items.length && items[0].id === -1) return; //TODO: if change media collection from state remove this;
@@ -1347,8 +1343,7 @@ class FilesStore {
   }
 
   get filesList() {
-    const { mediaViewersFormatsStore, iconFormatsStore } = this.formatsStore;
-    const { getIcon } = iconFormatsStore;
+    const { getIcon } = this.filesSettingsStore;
     //return [...this.folders, ...this.files];
 
     const items = [...this.folders, ...this.files];
@@ -1387,11 +1382,9 @@ class FilesStore {
         canEdit,
       } = item;
 
-      const { canConvert } = this.formatsStore.docserviceStore;
+      const { canConvert, isMediaOrImage } = this.filesSettingsStore;
 
-      const canOpenPlayer = mediaViewersFormatsStore.isMediaOrImage(
-        item.fileExst
-      );
+      const canOpenPlayer = isMediaOrImage(item.fileExst);
 
       const previewUrl = canOpenPlayer
         ? combineUrl(
@@ -1403,7 +1396,7 @@ class FilesStore {
       const contextOptions = this.getFilesContextOptions(item, canOpenPlayer);
       const isThirdPartyFolder = providerKey && id === rootFolderId;
 
-      const iconSize = this.viewAs === "tile" && isMobile ? 32 : 24;
+      const iconSize = this.viewAs === "table" ? 24 : 32;
       const icon = getIcon(iconSize, fileExst, providerKey, contentLength);
 
       let isFolder = false;
@@ -1422,7 +1415,8 @@ class FilesStore {
         : null;
 
       const needConvert = canConvert(fileExst);
-      const isEditing = item.fileStatus === 1;
+      const isEditing =
+        (item.fileStatus & FileStatus.IsEditing) === FileStatus.IsEditing;
 
       const docUrl = combineUrl(
         AppServerConfig.proxyURL,
@@ -1494,14 +1488,14 @@ class FilesStore {
   }
 
   get cbMenuItems() {
-    const { mediaViewersFormatsStore, iconFormatsStore } = this.formatsStore;
     const {
+      isImage,
+      isVideo,
       isDocument,
       isPresentation,
       isSpreadsheet,
       isArchive,
-    } = iconFormatsStore;
-    const { isImage, isVideo } = mediaViewersFormatsStore;
+    } = this.filesSettingsStore;
 
     let cbMenu = ["all"];
     const filesItems = [...this.files, ...this.folders];
@@ -1557,11 +1551,11 @@ class FilesStore {
 
   get sortedFiles() {
     const {
+      extsConvertible,
       isSpreadsheet,
       isPresentation,
       isDocument,
-    } = this.formatsStore.iconFormatsStore;
-    const { filesConverts } = this.formatsStore.docserviceStore;
+    } = this.filesSettingsStore;
 
     let sortedFiles = {
       documents: [],
@@ -1580,7 +1574,7 @@ class FilesStore {
       item.checked = true;
       item.format = null;
 
-      const canConvert = filesConverts.find((f) => f[item.fileExst]);
+      const canConvert = extsConvertible[item.fileExst];
 
       if (item.fileExst && canConvert) {
         if (isSpreadsheet(item.fileExst)) {
@@ -1638,7 +1632,7 @@ class FilesStore {
   }
 
   get canConvertSelected() {
-    const { filesConverts } = this.formatsStore.docserviceStore;
+    const { extsConvertible } = this.filesSettingsStore;
 
     const selection = this.selection.length
       ? this.selection
@@ -1648,13 +1642,13 @@ class FilesStore {
 
     return selection.some((selected) => {
       if (selected.isFolder === true || !selected.fileExst) return false;
-      const index = filesConverts.findIndex((f) => f[selected.fileExst]);
-      return index !== -1;
+      const array = extsConvertible[selected.fileExst];
+      return array;
     });
   }
 
   get isViewedSelected() {
-    const { canViewedDocs } = this.formatsStore.docserviceStore;
+    const { canViewedDocs } = this.filesSettingsStore;
 
     return this.selection.some((selected) => {
       if (selected.isFolder === true || !selected.fileExst) return false;
@@ -1663,7 +1657,7 @@ class FilesStore {
   }
 
   get isMediaSelected() {
-    const { isMediaOrImage } = this.formatsStore.mediaViewersFormatsStore;
+    const { isMediaOrImage } = this.filesSettingsStore;
 
     return this.selection.some((selected) => {
       if (selected.isFolder === true || !selected.fileExst) return false;
@@ -1708,7 +1702,7 @@ class FilesStore {
       canFormFillingDocs,
       canWebFilterEditing,
       canConvert,
-    } = this.formatsStore.docserviceStore;
+    } = this.filesSettingsStore;
 
     if (selection[0].encrypted) {
       return ["FullAccess", "DenyAccess"];
@@ -1870,6 +1864,7 @@ class FilesStore {
   getFolderInfo = async (id) => {
     const folderInfo = await api.files.getFolderInfo(id);
     this.setFolder(folderInfo);
+    return folderInfo;
   };
 
   openDocEditor = (id, providerKey = null, tab = null, url = null) => {

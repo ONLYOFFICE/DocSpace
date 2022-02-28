@@ -19,7 +19,6 @@ import {
 } from "@appserver/common/api/files";
 import toastr from "studio/toastr";
 class UploadDataStore {
-  formatsStore;
   treeFoldersStore;
   selectedFolderStore;
   filesStore;
@@ -46,7 +45,6 @@ class UploadDataStore {
   isUploadingAndConversion = false;
 
   constructor(
-    formatsStore,
     treeFoldersStore,
     selectedFolderStore,
     filesStore,
@@ -56,7 +54,6 @@ class UploadDataStore {
     settingsStore
   ) {
     makeAutoObservable(this);
-    this.formatsStore = formatsStore;
     this.treeFoldersStore = treeFoldersStore;
     this.selectedFolderStore = selectedFolderStore;
     this.filesStore = filesStore;
@@ -440,7 +437,7 @@ class UploadDataStore {
   };
 
   startUpload = (uploadFiles, folderId, t) => {
-    const { canConvert } = this.formatsStore.docserviceStore;
+    const { canConvert } = this.settingsStore;
 
     const toFolderId = folderId ? folderId : this.selectedFolderStore.id;
 
@@ -1096,7 +1093,15 @@ class UploadDataStore {
       label,
     } = this.secondaryProgressDataStore;
 
-    getFolder(destFolderId).then((data) => {
+    let receivedFolder = destFolderId;
+    let updatedFolder = this.selectedFolderStore.id;
+
+    if (this.dialogsStore.isFolderActions) {
+      receivedFolder = this.selectedFolderStore.parentId;
+      updatedFolder = destFolderId;
+    }
+
+    getFolder(receivedFolder).then((data) => {
       let newTreeFolders = treeFolders;
       let path = data.pathParts.slice(0);
       let folders = data.folders;
@@ -1111,13 +1116,14 @@ class UploadDataStore {
         }
 
         fetchFiles(
-          this.selectedFolderStore.id,
+          updatedFolder,
           newFilter ? newFilter : filter,
           true,
           true
         ).finally(() => {
           this.clearActiveOperations(fileIds, folderIds);
           setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+          this.dialogsStore.setIsFolderActions(false);
         });
       } else {
         this.clearActiveOperations(fileIds, folderIds);

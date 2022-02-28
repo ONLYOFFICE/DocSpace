@@ -7,6 +7,7 @@ import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 
 import CheckIcon from "../../public/images/check.react.svg";
 import CrossIcon from "../../../../../public/images/cross.react.svg";
+import { tablet } from "@appserver/components/utils/device";
 
 const StyledCheckIcon = styled(CheckIcon)`
   ${commonIconsStyles}
@@ -48,16 +49,18 @@ const EditingWrapper = styled.div`
       padding-bottom: 4px;
       margin-top: 4px;
 
-      margin-left: -4px;
+      /* margin-left: -4px; */
     `}
 
   ${(props) =>
     props.viewAs === "tile" &&
-    `margin-right: 12px !important; margin-left: -4px;`}
-
-  @media (max-width: 1024px) {
+    `margin-right: 10px !important; margin-left: 8px;`}
+  
+  
+  @media ${tablet} {
     height: 56px;
   }
+
   .edit-text {
     height: 32px;
     font-size: ${(props) =>
@@ -72,7 +75,13 @@ const EditingWrapper = styled.div`
     font-family: "Open Sans", sans-serif, Arial;
     text-align: left;
     color: #333333;
-    margin-left: 6px;
+    ${(props) =>
+      props.viewAs === "tile" &&
+      css`
+        margin-right: 2px;
+        border: none;
+        background: none;
+      `};
     ${(props) =>
       props.isUpdatingRowItem &&
       css`
@@ -80,11 +89,30 @@ const EditingWrapper = styled.div`
         display: flex;
         align-items: center;
       `}
+
+    ${(props) => props.viewAs === "table" && `padding-left: 12px`}
   }
+
   .edit-button {
     margin-left: 8px;
     height: 32px;
     padding: 8px 7px 7px 7px;
+
+    ${(props) =>
+      props.viewAs === "tile" &&
+      css`
+        margin-left: 0px;
+        background: none;
+        border: 1px solid transparent;
+
+        :hover {
+          border-color: #d0d5da;
+        }
+
+        &:last-child {
+          margin-left: 2px;
+        }
+      `};
 
     ${(props) =>
       props.viewAs === "table" &&
@@ -98,10 +126,6 @@ const EditingWrapper = styled.div`
           border: 1px solid #d0d5da;
         }
       `}
-
-    &:last-child {
-      margin-left: 4px;
-    }
   }
 
   .edit-ok-icon {
@@ -114,10 +138,12 @@ const EditingWrapper = styled.div`
     margin-top: -6px;
     width: 14px;
     height: 14px;
+    padding: 1px;
   }
 
   .is-edit {
-    margin-top: 4px;
+    /* margin-top: 4px; */
+    ${(props) => props.viewAs === "table" && `padding-left: 4px;`}
   }
 `;
 
@@ -149,11 +175,9 @@ const EditingWrapperComponent = (props) => {
       if (!isLoading) setIsLoading(true);
       return onClickUpdateItem(e);
     }
-    //if (code === 27) return cancelUpdateItem(e);
   };
   const onEscapeKeyPress = (e) => {
     if (e.keyCode === 27) return cancelUpdateItem(e);
-    return;
   };
 
   const setIsHoveredOkHandler = () => {

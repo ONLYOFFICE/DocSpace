@@ -163,6 +163,7 @@ class ContextMenuButton extends React.Component {
       isFill, // eslint-disable-line react/prop-types
       asideHeader, // eslint-disable-line react/prop-types
       isNew,
+      title,
     } = this.props;
 
     const { isOpen, displayType, offsetX, offsetY } = this.state;
@@ -190,6 +191,7 @@ class ContextMenuButton extends React.Component {
           onMouseLeave={onMouseLeave}
           onMouseOver={onMouseOver}
           onMouseOut={onMouseOut}
+          title={title}
         />
         {displayType === "dropdown" ? (
           <DropDown

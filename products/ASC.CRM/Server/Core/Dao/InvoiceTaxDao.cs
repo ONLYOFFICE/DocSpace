@@ -33,6 +33,7 @@ using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
 
@@ -68,7 +69,7 @@ namespace ASC.CRM.Core.Dao
 
         public Boolean IsExist(int id)
         {
-            return CrmDbContext.InvoiceTax.Where(x => x.Id == id).Any();
+            return CrmDbContext.InvoiceTax.AsQueryable().Where(x => x.Id == id).Any();
         }
 
         public Boolean IsExist(String invoiceName)

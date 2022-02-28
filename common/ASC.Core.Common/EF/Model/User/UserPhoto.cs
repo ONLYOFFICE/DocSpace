@@ -1,8 +1,7 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 using ASC.Core.Common.EF.Model;
+
 using Microsoft.EntityFrameworkCore;
 namespace ASC.Core.Common.EF
 {
@@ -22,7 +21,7 @@ namespace ASC.Core.Common.EF
         {
             modelBuilder
                 .Add(MySqlAddUserPhoto, Provider.MySql)
-                .Add(PgSqlAddUserPhoto, Provider.Postgre);
+                .Add(PgSqlAddUserPhoto, Provider.PostgreSql);
             return modelBuilder;
         }
         public static void MySqlAddUserPhoto(this ModelBuilder modelBuilder)

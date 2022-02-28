@@ -20,6 +20,7 @@ using AutoMapper;
 
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace ASC.CRM.Api
 {
     public class TasksController : BaseApiController
@@ -102,9 +103,9 @@ namespace ASC.CRM.Api
 
             if (!string.IsNullOrEmpty(entityType) &&
                 !(
-                     string.Compare(entityType, "contact", StringComparison.OrdinalIgnoreCase) == 0 ||
-                     string.Compare(entityType, "opportunity", StringComparison.OrdinalIgnoreCase) == 0 ||
-                     string.Compare(entityType, "case", StringComparison.OrdinalIgnoreCase) == 0)
+                     string.Equals(entityType, "contact", StringComparison.OrdinalIgnoreCase)||
+                     string.Equals(entityType, "opportunity", StringComparison.OrdinalIgnoreCase)||
+                     string.Equals(entityType, "case", StringComparison.OrdinalIgnoreCase))
                 )
                 throw new ArgumentException();
 
@@ -302,8 +303,8 @@ namespace ASC.CRM.Api
 
             if (!string.IsNullOrEmpty(entityType) &&
                 !(
-                     string.Compare(entityType, "opportunity", StringComparison.OrdinalIgnoreCase) == 0 ||
-                     string.Compare(entityType, "case", StringComparison.OrdinalIgnoreCase) == 0
+                     string.Equals(entityType, "opportunity", StringComparison.OrdinalIgnoreCase)||
+                     string.Equals(entityType, "case", StringComparison.OrdinalIgnoreCase)
                  )
                 || categoryId <= 0)
                 throw new ArgumentException();
@@ -397,8 +398,8 @@ namespace ASC.CRM.Api
 
             if (
                 !string.IsNullOrEmpty(entityType) &&
-                !(string.Compare(entityType, "opportunity", StringComparison.OrdinalIgnoreCase) == 0 ||
-                  string.Compare(entityType, "case", StringComparison.OrdinalIgnoreCase) == 0)
+                !(string.Equals(entityType, "opportunity", StringComparison.OrdinalIgnoreCase) ||
+                  string.Equals(entityType, "case", StringComparison.OrdinalIgnoreCase))
                 )
                 throw new ArgumentException();
 
@@ -507,8 +508,8 @@ namespace ASC.CRM.Api
             var isNotify = inDto.isNotify;
 
             if (!string.IsNullOrEmpty(entityType) &&
-                !(string.Compare(entityType, "opportunity", StringComparison.OrdinalIgnoreCase) == 0 ||
-                  string.Compare(entityType, "case", StringComparison.OrdinalIgnoreCase) == 0
+                !(string.Equals(entityType, "opportunity", StringComparison.OrdinalIgnoreCase) ||
+                  string.Equals(entityType, "case", StringComparison.OrdinalIgnoreCase)
                  ) || categoryid <= 0)
                 throw new ArgumentException();
 

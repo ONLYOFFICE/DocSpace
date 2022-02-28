@@ -40,7 +40,7 @@ class PureHome extends React.Component {
       setExpandedKeys,
       setToPreviewFile,
       playlist,
-      mediaViewersFormatsStore,
+      isMediaOrImage,
       getFileInfo,
       setIsPrevSettingsModule,
       isPrevSettingsModule,
@@ -63,9 +63,7 @@ class PureHome extends React.Component {
 
       getFileInfo(fileId)
         .then((data) => {
-          const canOpenPlayer = mediaViewersFormatsStore.isMediaOrImage(
-            data.fileExst
-          );
+          const canOpenPlayer = isMediaOrImage(data.fileExst);
           const file = { ...data, canOpenPlayer };
           setToPreviewFile(file, true);
         })
@@ -315,7 +313,6 @@ class PureHome extends React.Component {
           isHeaderVisible={isHeaderVisible}
           onOpenUploadPanel={this.showUploadPanel}
           firstLoad={firstLoad}
-          dragging={dragging}
         >
           <PageLayout.ArticleHeader>
             <ArticleHeaderContent />
@@ -368,7 +365,7 @@ export default inject(
     uploadDataStore,
     treeFoldersStore,
     mediaViewerDataStore,
-    formatsStore,
+    settingsStore,
   }) => {
     const {
       secondaryProgressDataStore,
@@ -390,8 +387,6 @@ export default inject(
       setIsPrevSettingsModule,
       isPrevSettingsModule,
     } = filesStore;
-
-    const { mediaViewersFormatsStore } = formatsStore;
 
     const { id } = fileActionStore;
     const {
@@ -482,7 +477,7 @@ export default inject(
       personal: auth.settingsStore.personal,
       setToPreviewFile,
       playlist,
-      mediaViewersFormatsStore,
+      isMediaOrImage: settingsStore.isMediaOrImage,
       getFileInfo,
 
       setIsPrevSettingsModule,

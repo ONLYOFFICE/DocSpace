@@ -136,6 +136,7 @@ RUN chown nginx:nginx /etc/nginx/* -R && \
     sed -i 's/localhost:5000/$service_api/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/localhost:5003/$service_studio/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/localhost:5023/$service_calendar/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/localhost:9899/$service_socket/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/localhost:5022/$service_mail/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/localhost:9999/$service_urlshortener/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/172.*/$document_server;/' /etc/nginx/conf.d/onlyoffice.conf

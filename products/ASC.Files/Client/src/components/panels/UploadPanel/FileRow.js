@@ -107,28 +107,6 @@ const StyledFileRow = styled(Row)`
     padding-right: 12px;
   }
 
-  .__react_component_tooltip.type-light {
-    background-color: #f8f7bf !important;
-    box-shadow: none;
-    -moz-box-shadow: none;
-    -webkit-box-shadow: none;
-  }
-  .__react_component_tooltip.place-left::after {
-    border-left: 6px solid #f8f7bf !important;
-  }
-
-  .__react_component_tooltip.place-right::after {
-    border-right: 6px solid #f8f7bf !important;
-  }
-
-  .__react_component_tooltip.place-top::after {
-    border-top: 6px solid #f8f7bf !important;
-  }
-
-  .__react_component_tooltip.place-bottom::after {
-    border-bottom: 6px solid #f8f7bf !important;
-  }
-
   .upload-panel_file-row-link {
     ${(props) =>
       !props.isMediaActive &&
@@ -353,7 +331,10 @@ class FileRow extends Component {
   }
 }
 export default inject(
-  ({ auth, formatsStore, uploadDataStore, mediaViewerDataStore }, { item }) => {
+  (
+    { auth, uploadDataStore, mediaViewerDataStore, settingsStore },
+    { item }
+  ) => {
     let ext;
     let name;
     let splitted;
@@ -368,11 +349,11 @@ export default inject(
     }
     const { personal } = auth.settingsStore;
     const {
-      iconFormatsStore,
-      mediaViewersFormatsStore,
-      docserviceStore,
-    } = formatsStore;
-    const { canViewedDocs } = docserviceStore;
+      canViewedDocs,
+      isMediaOrImage,
+      getIconSrc,
+      isArchive,
+    } = settingsStore;
     const {
       uploaded,
       primaryProgressDataStore,
@@ -385,11 +366,11 @@ export default inject(
     } = uploadDataStore;
     const { playlist, setMediaViewerData } = mediaViewerDataStore;
     const { loadingFile: file } = primaryProgressDataStore;
-    const isMedia = mediaViewersFormatsStore.isMediaOrImage(ext);
+    const isMedia = isMediaOrImage(ext);
     const isMediaActive =
       playlist.findIndex((el) => el.fileId === item.fileId) !== -1;
 
-    const fileIcon = iconFormatsStore.getIconSrc(ext, 24);
+    const fileIcon = getIconSrc(ext, 24);
 
     const loadingFile = !file || !file.uniqueId ? null : file;
 
@@ -397,8 +378,6 @@ export default inject(
       file && loadingFile.uniqueId === item.uniqueId
         ? loadingFile.percent
         : null;
-
-    const { isArchive } = iconFormatsStore;
 
     const downloadInCurrentTab = isArchive(ext) || !canViewedDocs(ext);
 

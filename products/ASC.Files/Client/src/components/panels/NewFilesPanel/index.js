@@ -242,10 +242,10 @@ export default inject(
     filesStore,
     mediaViewerDataStore,
     treeFoldersStore,
-    formatsStore,
     filesActionsStore,
     selectedFolderStore,
     dialogsStore,
+    settingsStore,
   }) => {
     const {
       fetchFiles,
@@ -259,7 +259,7 @@ export default inject(
     } = filesStore;
     const { updateRootBadge } = treeFoldersStore;
     const { setMediaViewerData } = mediaViewerDataStore;
-    const { getIcon, getFolderIcon } = formatsStore.iconFormatsStore;
+    const { getIcon, getFolderIcon } = settingsStore;
     const { markAsRead } = filesActionsStore;
     const { pathParts } = selectedFolderStore;
 

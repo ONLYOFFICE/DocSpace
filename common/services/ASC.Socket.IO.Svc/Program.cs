@@ -42,6 +42,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using StackExchange.Redis.Extensions.Core.Configuration;
+using StackExchange.Redis.Extensions.Newtonsoft;
 
 namespace ASC.Socket.IO.Svc
 {
@@ -74,8 +76,10 @@ namespace ASC.Socket.IO.Svc
                         .AddJsonFile("appsettings.json")
                         .AddJsonFile("storage.json")
                         .AddJsonFile("kafka.json")
-                        .AddJsonFile("socket.json")
                         .AddJsonFile($"kafka.{env}.json", true)
+                        .AddJsonFile("redis.json")
+                        .AddJsonFile($"redis.{env}.json", true)
+                        .AddJsonFile("socket.json")
                         .AddJsonFile($"appsettings.{env}.json", true)
                         .AddJsonFile($"socket.{env}.json", true)
                         .AddEnvironmentVariables()
@@ -89,12 +93,33 @@ namespace ASC.Socket.IO.Svc
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddMemoryCache();
+                    services.AddHttpClient();
+
                     var diHelper = new DIHelper(services);
-                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+
+                    var redisConfiguration = hostContext.Configuration.GetSection("Redis").Get<RedisConfiguration>();
+                    var kafkaConfiguration = hostContext.Configuration.GetSection("kafka").Get<KafkaSettings>();
+
+                    if (kafkaConfiguration != null)
+                    {
+                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                    }
+                    else if (redisConfiguration != null)
+                    {
+                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
+
+                        services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
+                    }
+                    else
+                    {
+                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(MemoryCacheNotify<>));
+                    }
+
                     diHelper.RegisterProducts(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
 
                     services.AddHostedService<SocketServiceLauncher>();
                     diHelper.TryAdd<SocketServiceLauncher>();
+
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {

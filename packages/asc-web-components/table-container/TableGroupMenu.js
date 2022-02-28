@@ -1,21 +1,19 @@
-import React, { useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import Checkbox from "../checkbox";
-import { StyledTableGroupMenu } from "./StyledTableContainer";
-import Button from "../button";
+import { StyledTableGroupMenu, StyledScrollbar } from "./StyledTableContainer";
 import ComboBox from "../combobox";
+import GroupMenuItem from "./GroupMenuItem";
+import { useTranslation } from "react-i18next";
 
 const TableGroupMenu = (props) => {
   const {
     isChecked,
     isIndeterminate,
     headerMenu,
-    containerRef,
     onChange,
     checkboxOptions,
-    columnStorageName,
     checkboxMargin,
-    isLengthenHeader,
     ...rest
   } = props;
 
@@ -23,24 +21,12 @@ const TableGroupMenu = (props) => {
     onChange && onChange(e.target && e.target.checked);
   };
 
-  const width = containerRef.current
-    ? containerRef.current.clientWidth + "px"
-    : "100%";
-
-  useEffect(() => {
-    const storageSize = localStorage.getItem(columnStorageName);
-    if (containerRef.current)
-      containerRef.current.style.gridTemplateColumns = storageSize;
-  }, [containerRef]);
+  const { t } = useTranslation("Common");
 
   return (
     <>
       <StyledTableGroupMenu
-        id="table-container_caption-header"
-        width={width}
-        className={`${
-          isLengthenHeader ? "lengthen-header" : ""
-        } table-container_group-menu`}
+        className="table-container_group-menu"
         checkboxMargin={checkboxMargin}
         {...rest}
       >
@@ -49,27 +35,25 @@ const TableGroupMenu = (props) => {
           onChange={onCheckboxChange}
           isChecked={isChecked}
           isIndeterminate={isIndeterminate}
+          title={t("Common:MainHeaderSelectAll")}
         />
         <ComboBox
+          comboIcon="/static/images/triangle.navigation.down.react.svg"
+          noBorder
           advancedOptions={checkboxOptions}
           className="table-container_group-menu-combobox not-selectable"
           options={[]}
           selectedOption={{}}
-          offsetDropDownY="44px"
+          manualY="42px"
+          manualX="-32px"
+          title={t("Common:TitleSelectFile")}
         />
         <div className="table-container_group-menu-separator" />
-        {headerMenu.map((item, index) => {
-          const { label, disabled, onClick } = item;
-          return (
-            <Button
-              key={index}
-              className="table-container_group-menu_button not-selectable"
-              isDisabled={disabled}
-              onClick={onClick}
-              label={label}
-            />
-          );
-        })}
+        <StyledScrollbar>
+          {headerMenu.map((item, index) => (
+            <GroupMenuItem key={index} item={item} />
+          ))}
+        </StyledScrollbar>
       </StyledTableGroupMenu>
     </>
   );
@@ -78,13 +62,10 @@ const TableGroupMenu = (props) => {
 TableGroupMenu.propTypes = {
   isChecked: PropTypes.bool,
   isIndeterminate: PropTypes.bool,
-  isLengthenHeader: PropTypes.bool,
-  headerMenu: PropTypes.arrayOf(PropTypes.object),
+  headerMenu: PropTypes.arrayOf(PropTypes.object).isRequired,
   checkboxOptions: PropTypes.any.isRequired,
   onClick: PropTypes.func,
   onChange: PropTypes.func,
-  containerRef: PropTypes.shape({ current: PropTypes.any }),
-  columnStorageName: PropTypes.string,
   checkboxMargin: PropTypes.string,
 };
 

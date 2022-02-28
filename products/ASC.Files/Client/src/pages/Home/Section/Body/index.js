@@ -66,7 +66,8 @@ const SectionBodyContent = (props) => {
     if (
       (e.target.closest(".scroll-body") &&
         !e.target.closest(".files-item") &&
-        !e.target.closest(".not-selectable")) ||
+        !e.target.closest(".not-selectable") &&
+        !e.target.closest(".table-container_group-menu")) ||
       e.target.closest(".files-main-button") ||
       e.target.closest(".add-button") ||
       e.target.closest(".search-input-block")
@@ -188,6 +189,7 @@ const SectionBodyContent = (props) => {
   };
 
   //console.log("Files Home SectionBodyContent render", props);
+
   return (
     <Consumer>
       {(context) =>
@@ -250,7 +252,7 @@ export default inject(
   }
 )(
   withRouter(
-    withTranslation(["Home", "Translations"])(
+    withTranslation(["Home", "Common", "Translations"])(
       withLoader(observer(SectionBodyContent))()
     )
   )

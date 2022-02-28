@@ -31,6 +31,7 @@ using System.Linq;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Security.Authorizing;
+using ASC.Core.Caching;
 
 namespace ASC.Core
 {
@@ -42,21 +43,15 @@ namespace ASC.Core
         private TenantManager TenantManager { get; }
 
         private ICache Cache { get; set; }
-        public static readonly object CacheLocker;
-        public static readonly List<Guid> Groups;
-
-        static SubscriptionManager()
-        {
-            CacheLocker = new object();
-            Groups = new List<Guid>
+        public static readonly object CacheLocker = new object();
+        public static readonly List<Guid> Groups = Groups = new List<Guid>
             {
                 Constants.Admin.ID,
                 Constants.Everyone.ID,
                 Constants.User.ID
             };
-        }
 
-        public SubscriptionManager(ISubscriptionService service, TenantManager tenantManager, ICache cache)
+        public SubscriptionManager(CachedSubscriptionService service, TenantManager tenantManager, ICache cache)
         {
             this.service = service ?? throw new ArgumentNullException("subscriptionManager");
             TenantManager = tenantManager;
@@ -69,12 +64,29 @@ namespace ASC.Core
             var s = new SubscriptionRecord
             {
                 Tenant = GetTenant(),
-                SourceId = sourceID,
-                ActionId = actionID,
-                RecipientId = recipientID,
-                ObjectId = objectID,
                 Subscribed = true,
             };
+
+            if (sourceID != null)
+            {
+                s.SourceId = sourceID;
+            }
+
+            if (actionID != null)
+            {
+                s.ActionId = actionID;
+            }
+
+            if (recipientID != null)
+            {
+                s.RecipientId = recipientID;
+            }
+
+            if (objectID != null)
+            {
+                s.ObjectId = objectID;
+            }
+
             service.SaveSubscription(s);
         }
 
@@ -83,12 +95,29 @@ namespace ASC.Core
             var s = new SubscriptionRecord
             {
                 Tenant = GetTenant(),
-                SourceId = sourceID,
-                ActionId = actionID,
-                RecipientId = recipientID,
-                ObjectId = objectID,
                 Subscribed = false,
             };
+
+            if (sourceID != null)
+            {
+                s.SourceId = sourceID;
+            }
+
+            if (actionID != null)
+            {
+                s.ActionId = actionID;
+            }
+
+            if (recipientID != null)
+            {
+                s.RecipientId = recipientID;
+            }
+
+            if (objectID != null)
+            {
+                s.ObjectId = objectID;
+            }
+
             service.SaveSubscription(s);
         }
 
@@ -123,7 +152,7 @@ namespace ASC.Core
                 m = methods.FirstOrDefault();
             }
 
-            return m != null ? m.Methods : new string[0];
+            return m != null ? m.Methods : Array.Empty<string>();
         }
 
         public string[] GetRecipients(string sourceID, string actionID, string objectID)
@@ -150,12 +179,30 @@ namespace ASC.Core
         {
             var m = new SubscriptionMethod
             {
-                Tenant = GetTenant(),
-                SourceId = sourceID,
-                ActionId = actionID,
-                RecipientId = recipientID,
-                Methods = senderNames,
+                Tenant = GetTenant()
             };
+
+            if (sourceID != null)
+            {
+                m.SourceId = sourceID;
+            }
+
+            if (actionID != null)
+            {
+                m.ActionId = actionID;
+            }
+
+            if (recipientID != null)
+            {
+                m.RecipientId = recipientID;
+            }
+
+            if (senderNames != null)
+            {
+                m.Methods = senderNames;
+            }
+
+
             service.SetSubscriptionMethod(m);
         }
 

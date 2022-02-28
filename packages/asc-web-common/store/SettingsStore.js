@@ -266,8 +266,9 @@ class SettingsStore {
             clearInterval(interval);
             reject();
           }
-        } catch {
-          return;
+        } catch (e) {
+          clearInterval(interval);
+          reject(e);
         }
       }, 500);
     });

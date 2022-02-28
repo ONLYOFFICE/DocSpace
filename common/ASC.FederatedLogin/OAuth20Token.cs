@@ -26,30 +26,37 @@
 
 using System;
 using System.Diagnostics;
-using System.Globalization;
-using System.Text;
-
-using Newtonsoft.Json.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace ASC.FederatedLogin
 {
     [DebuggerDisplay("{AccessToken} (expired: {IsExpired})")]
     public class OAuth20Token
     {
+        [JsonPropertyName("access_token")]
         public string AccessToken { get; set; }
 
+        [JsonPropertyName("refresh_token")]
         public string RefreshToken { get; set; }
 
+        [JsonPropertyName("expires_in")]
+        [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
         public long ExpiresIn { get; set; }
 
+        [JsonPropertyName("client_id")]
         public string ClientID { get; set; }
 
+        [JsonPropertyName("client_secret")]
         public string ClientSecret { get; set; }
 
+        [JsonPropertyName("redirect_uri")]
         public string RedirectUri { get; set; }
 
+        [JsonPropertyName("timestamp")]
         public DateTime Timestamp { get; set; }
 
+        [JsonIgnore]
         public string OriginJson { get; set; }
 
         public OAuth20Token()
@@ -92,55 +99,19 @@ namespace ASC.FederatedLogin
         public static OAuth20Token FromJson(string json)
         {
             if (string.IsNullOrEmpty(json)) return null;
-            var parser = JObject.Parse(json);
-            if (parser == null) return null;
-
-            var accessToken = parser.Value<string>("access_token");
-
-            if (string.IsNullOrEmpty(accessToken))
-                return null;
-
-            var token = new OAuth20Token
-            {
-                AccessToken = accessToken,
-                RefreshToken = parser.Value<string>("refresh_token"),
-                ClientID = parser.Value<string>("client_id"),
-                ClientSecret = parser.Value<string>("client_secret"),
-                RedirectUri = parser.Value<string>("redirect_uri"),
-                OriginJson = json,
-            };
-
-            if (long.TryParse(parser.Value<string>("expires_in"), out var expiresIn))
-                token.ExpiresIn = expiresIn;
-
             try
             {
-                token.Timestamp =
-                    !string.IsNullOrEmpty(parser.Value<string>("timestamp"))
-                        ? parser.Value<DateTime>("timestamp")
-                        : DateTime.UtcNow;
+                return JsonSerializer.Deserialize<OAuth20Token>(json);
             }
             catch (Exception)
             {
-                token.Timestamp = DateTime.MinValue;
+                return null;
             }
-
-            return token;
         }
 
         public string ToJson()
         {
-            var sb = new StringBuilder();
-            sb.Append("{");
-            sb.AppendFormat(" \"access_token\": \"{0}\"", AccessToken);
-            sb.AppendFormat(", \"refresh_token\": \"{0}\"", RefreshToken);
-            sb.AppendFormat(", \"expires_in\": \"{0}\"", ExpiresIn);
-            sb.AppendFormat(", \"client_id\": \"{0}\"", ClientID);
-            sb.AppendFormat(", \"client_secret\": \"{0}\"", ClientSecret);
-            sb.AppendFormat(", \"redirect_uri\": \"{0}\"", RedirectUri);
-            sb.AppendFormat(", \"timestamp\": \"{0}\"", Timestamp.ToString("o", new CultureInfo("en-US")));
-            sb.Append("}");
-            return sb.ToString();
+            return JsonSerializer.Serialize(this);
         }
 
         public override string ToString()

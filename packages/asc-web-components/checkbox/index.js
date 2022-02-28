@@ -82,6 +82,7 @@ class Checkbox extends React.Component {
         isDisabled={isDisabled}
         isIndeterminate={isIndeterminate}
         className={className}
+        title={title}
       >
         <HiddenInput
           type="checkbox"

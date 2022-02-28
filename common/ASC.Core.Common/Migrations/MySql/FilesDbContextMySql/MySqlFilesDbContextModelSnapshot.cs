@@ -14,7 +14,7 @@ namespace ASC.Core.Common.Migrations.MySql.FilesDbContextMySql
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
-                .HasAnnotation("ProductVersion", "5.0.3");
+                .HasAnnotation("ProductVersion", "5.0.10");
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.FilesConverts", b =>
                 {
@@ -22,13 +22,13 @@ namespace ASC.Core.Common.Migrations.MySql.FilesDbContextMySql
                         .HasColumnType("varchar(50)")
                         .HasColumnName("input")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("Output")
                         .HasColumnType("varchar(50)")
                         .HasColumnName("output")
                         .UseCollation("utf8_general_ci")
-                        .HasCharSet("utf8");
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.HasKey("Input", "Output")
                         .HasName("PRIMARY");

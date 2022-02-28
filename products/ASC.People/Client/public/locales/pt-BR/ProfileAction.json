@@ -1,4 +1,4 @@
-{
+﻿{
   "ActivationLink": "Link de ativação",
   "AddContact": "Adicionar contato",
   "AddPhoto": "Adicionar foto",
@@ -12,8 +12,8 @@
   "EditPhoto": "Editar Foto",
   "EditUserDialogTitle": "Editar Perfil",
   "EmailPopupHelper": "O e-mail principal é utilizado para notificações e restabelecimento do acesso. <1> Você pode criar um novo e-mail neste domínio para o usuário e definir uma senha única para o primeiro login.</1>",
-  "ErrorInvalidUserLastName": "Sobrenome inválido",
   "ErrorInvalidUserFirstName": "Primeiro nome inválido",
+  "ErrorInvalidUserLastName": "Sobrenome inválido",
   "FirstName": "Primeiro nome",
   "Message": "Bate-papo com outros usuários",
   "ProductsAndInstruments_Products": "Módulos",

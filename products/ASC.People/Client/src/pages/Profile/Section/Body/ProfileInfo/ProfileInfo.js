@@ -68,7 +68,7 @@ const InfoItemValue = styled.div`
       margin-top: 6px;
     }
     @media (max-width: 1024px) {
-      padding: 6px 24px 8px 8px;
+      padding: 6px 8px 8px 8px;
       margin-left: -8px;
     }
   }
@@ -256,7 +256,7 @@ class ProfileInfo extends React.PureComponent {
             {{ supportEmail }}
           </Link>
           to take part in the translation and get up to 1 year free of charge."
-        </Trans>
+        </Trans>{" "}
         <Link
           isHovered={true}
           href="https://helpcenter.onlyoffice.com/ru/guides/become-translator.aspx"
@@ -381,6 +381,7 @@ class ProfileInfo extends React.PureComponent {
                     className="language-combo"
                     showDisabledItems={true}
                     dropDownMaxHeight={364}
+                    manualWidth="240px"
                   />
                   <HelpButton
                     place="bottom"

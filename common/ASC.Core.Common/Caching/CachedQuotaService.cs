@@ -127,7 +127,7 @@ namespace ASC.Core.Caching
 
         public CachedQuotaService(DbQuotaService service, QuotaServiceCache quotaServiceCache) : this()
         {
-            Service = service ?? throw new ArgumentNullException("service");
+            Service = service ?? throw new ArgumentNullException(nameof(service));
             QuotaServiceCache = quotaServiceCache;
             Cache = quotaServiceCache.Cache;
             CacheNotify = quotaServiceCache.CacheNotify;

@@ -40,12 +40,12 @@ namespace ASC.Core.Data
     {
         public Expression<Func<Acl, AzRecord>> FromAclToAzRecord { get; set; }
 
-        private CoreDbContext CoreDbContext { get => LazyCoreDbContext.Value; }
-        private Lazy<CoreDbContext> LazyCoreDbContext { get; set; }
+        private UserDbContext UserDbContext { get => LazyUserDbContext.Value; }
+        private Lazy<UserDbContext> LazyUserDbContext { get; set; }
 
-        public DbAzService(DbContextManager<CoreDbContext> dbContextManager)
+        public DbAzService(DbContextManager<UserDbContext> dbContextManager)
         {
-            LazyCoreDbContext = new Lazy<CoreDbContext>(() => dbContextManager.Value);
+            LazyUserDbContext = new Lazy<UserDbContext>(() => dbContextManager.Value);
             FromAclToAzRecord = r => new AzRecord
             {
                 ActionId = r.Action,
@@ -60,13 +60,13 @@ namespace ASC.Core.Data
         {
             // row with tenant = -1 - common for all tenants, but equal row with tenant != -1 escape common row for the portal
             var commonAces =
-                CoreDbContext.Acl
+                UserDbContext.Acl
                 .Where(r => r.Tenant == Tenant.DEFAULT_TENANT)
                 .Select(FromAclToAzRecord)
                 .ToDictionary(a => string.Concat(a.Tenant.ToString(), a.SubjectId.ToString(), a.ActionId.ToString(), a.ObjectId));
 
             var tenantAces =
-                CoreDbContext.Acl
+                UserDbContext.Acl
                 .Where(r => r.Tenant == tenant)
                 .Select(FromAclToAzRecord)
                 .ToList();
@@ -75,9 +75,8 @@ namespace ASC.Core.Data
             foreach (var a in tenantAces)
             {
                 var key = string.Concat(a.Tenant.ToString(), a.SubjectId.ToString(), a.ActionId.ToString(), a.ObjectId);
-                if (commonAces.ContainsKey(key))
+                if (commonAces.TryGetValue(key, out var common))
                 {
-                    var common = commonAces[key];
                     commonAces.Remove(key);
                     if (common.Reaction == a.Reaction)
                     {
@@ -92,7 +91,7 @@ namespace ASC.Core.Data
         public AzRecord SaveAce(int tenant, AzRecord r)
         {
             r.Tenant = tenant;
-            using var tx = CoreDbContext.Database.BeginTransaction();
+            using var tx = UserDbContext.Database.BeginTransaction();
             if (!ExistEscapeRecord(r))
             {
                 InsertRecord(r);
@@ -110,7 +109,7 @@ namespace ASC.Core.Data
         public void RemoveAce(int tenant, AzRecord r)
         {
             r.Tenant = tenant;
-            using var tx = CoreDbContext.Database.BeginTransaction();
+            using var tx = UserDbContext.Database.BeginTransaction();
             if (ExistEscapeRecord(r))
             {
                 // escape
@@ -126,20 +125,18 @@ namespace ASC.Core.Data
 
         private bool ExistEscapeRecord(AzRecord r)
         {
-            var count = CoreDbContext.Acl
+            return UserDbContext.Acl
                 .Where(a => a.Tenant == Tenant.DEFAULT_TENANT)
                 .Where(a => a.Subject == r.SubjectId)
                 .Where(a => a.Action == r.ActionId)
                 .Where(a => a.Object == (r.ObjectId ?? string.Empty))
                 .Where(a => a.AceType == r.Reaction)
-                .Count();
-
-            return count != 0;
+                .Any();
         }
 
         private void DeleteRecord(AzRecord r)
         {
-            var record = CoreDbContext.Acl
+            var record = UserDbContext.Acl
                 .Where(a => a.Tenant == r.Tenant)
                 .Where(a => a.Subject == r.SubjectId)
                 .Where(a => a.Action == r.ActionId)
@@ -149,8 +146,8 @@ namespace ASC.Core.Data
 
             if (record != null)
             {
-                CoreDbContext.Acl.Remove(record);
-                CoreDbContext.SaveChanges();
+                UserDbContext.Acl.Remove(record);
+                UserDbContext.SaveChanges();
             }
         }
 
@@ -165,8 +162,8 @@ namespace ASC.Core.Data
                 Tenant = r.Tenant
             };
 
-            CoreDbContext.AddOrUpdate(r => r.Acl, record);
-            CoreDbContext.SaveChanges();
+            UserDbContext.AddOrUpdate(r => r.Acl, record);
+            UserDbContext.SaveChanges();
         }
     }
 }

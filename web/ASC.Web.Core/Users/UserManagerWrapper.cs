@@ -27,6 +27,7 @@
 using System;
 using System.Globalization;
 using System.Net.Mail;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -97,14 +98,14 @@ namespace ASC.Web.Core.Users
         private string MakeUniqueName(UserInfo userInfo)
         {
             if (string.IsNullOrEmpty(userInfo.Email))
-                throw new ArgumentException(Resource.ErrorEmailEmpty, "userInfo");
+                throw new ArgumentException(Resource.ErrorEmailEmpty, nameof(userInfo));
 
             var uniqueName = new MailAddress(userInfo.Email).User;
             var startUniqueName = uniqueName;
             var i = 0;
             while (!TestUniqueUserName(uniqueName))
             {
-                uniqueName = string.Format("{0}{1}", startUniqueName, (++i).ToString(CultureInfo.InvariantCulture));
+                uniqueName = $"{startUniqueName}{(++i).ToString(CultureInfo.InvariantCulture)}";
             }
             return uniqueName;
         }
@@ -117,7 +118,7 @@ namespace ASC.Web.Core.Users
 
         public UserInfo AddUser(UserInfo userInfo, string passwordHash, bool afterInvite = false, bool notify = true, bool isVisitor = false, bool fromInviteLink = false, bool makeUniqueName = true)
         {
-            if (userInfo == null) throw new ArgumentNullException("userInfo");
+            if (userInfo == null) throw new ArgumentNullException(nameof(userInfo));
 
             if (!UserFormatter.IsValidUserName(userInfo.FirstName, userInfo.LastName))
                 throw new Exception(Resource.ErrorIncorrectUserName);
@@ -234,12 +235,12 @@ namespace ASC.Web.Core.Users
                 if (passwordSettings.SpecSymbols)
                     pwdBuilder.Append(@"(?=.*[\W])");
 
-                pwdBuilder.Append(@".");
+                pwdBuilder.Append('.');
             }
 
-            pwdBuilder.Append(@"{");
+            pwdBuilder.Append('{');
             pwdBuilder.Append(passwordSettings.MinLength);
-            pwdBuilder.Append(@",");
+            pwdBuilder.Append(',');
             pwdBuilder.Append(PasswordSettings.MaxLength);
             pwdBuilder.Append(@"}$");
 
@@ -256,7 +257,7 @@ namespace ASC.Web.Core.Users
         public string SendUserPassword(string email)
         {
             email = (email ?? "").Trim();
-            if (!email.TestEmailRegex()) throw new ArgumentNullException("email", Resource.ErrorNotCorrectEmail);
+            if (!email.TestEmailRegex()) throw new ArgumentNullException(nameof(email), Resource.ErrorNotCorrectEmail);
 
             if (!IPSecurity.Verify())
             {
@@ -294,32 +295,30 @@ namespace ASC.Web.Core.Users
             return Guid.NewGuid().ToString();
         }
 
-        private static readonly Random Rnd = new Random();
-
         internal static string GeneratePassword(int minLength, int maxLength, string noise)
         {
-            var length = Rnd.Next(minLength, maxLength + 1);
+            var length = RandomNumberGenerator.GetInt32(minLength, maxLength + 1);
 
-            var pwd = string.Empty;
+            var sb = new StringBuilder();
             while (length-- > 0)
             {
-                pwd += noise.Substring(Rnd.Next(noise.Length - 1), 1);
+                sb.Append(noise[RandomNumberGenerator.GetInt32(noise.Length - 1)]);
             }
-            return pwd;
+            return sb.ToString();
         }
 
         internal static string GenerateErrorMessage(PasswordSettings passwordSettings)
         {
             var error = new StringBuilder();
 
-            error.AppendFormat("{0} ", Resource.ErrorPasswordMessage);
+            error.Append($"{Resource.ErrorPasswordMessage} ");
             error.AppendFormat(Resource.ErrorPasswordLength, passwordSettings.MinLength, PasswordSettings.MaxLength);
             if (passwordSettings.UpperCase)
-                error.AppendFormat(", {0}", Resource.ErrorPasswordNoUpperCase);
+                error.AppendFormat($", {Resource.ErrorPasswordNoUpperCase}");
             if (passwordSettings.Digits)
-                error.AppendFormat(", {0}", Resource.ErrorPasswordNoDigits);
+                error.Append($", {Resource.ErrorPasswordNoDigits}");
             if (passwordSettings.SpecSymbols)
-                error.AppendFormat(", {0}", Resource.ErrorPasswordNoSpecialSymbols);
+                error.Append($", {Resource.ErrorPasswordNoSpecialSymbols}");
 
             return error.ToString();
         }
@@ -328,14 +327,14 @@ namespace ASC.Web.Core.Users
         {
             var info = new StringBuilder();
             var passwordSettings = SettingsManager.Load<PasswordSettings>();
-            info.AppendFormat("{0} ", Resource.ErrorPasswordMessageStart);
+            info.Append($"{Resource.ErrorPasswordMessageStart} ");
             info.AppendFormat(Resource.ErrorPasswordLength, passwordSettings.MinLength, PasswordSettings.MaxLength);
             if (passwordSettings.UpperCase)
-                info.AppendFormat(", {0}", Resource.ErrorPasswordNoUpperCase);
+                info.Append($", {Resource.ErrorPasswordNoUpperCase}");
             if (passwordSettings.Digits)
-                info.AppendFormat(", {0}", Resource.ErrorPasswordNoDigits);
+                info.Append($", {Resource.ErrorPasswordNoDigits}");
             if (passwordSettings.SpecSymbols)
-                info.AppendFormat(", {0}", Resource.ErrorPasswordNoSpecialSymbols);
+                info.Append($", {Resource.ErrorPasswordNoSpecialSymbols}");
 
             return info.ToString();
         }

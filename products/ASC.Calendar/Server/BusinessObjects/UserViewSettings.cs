@@ -25,9 +25,7 @@
 
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
 using ASC.Web.Core.Calendars;
 
 namespace ASC.Calendar.BusinessObjects

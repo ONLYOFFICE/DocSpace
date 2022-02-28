@@ -11,7 +11,7 @@ import DragAndDrop from "@appserver/components/drag-and-drop";
 import { tablet, desktop } from "@appserver/components/utils/device";
 
 const paddingStyles = css`
-  padding: 17px 7px 16px 24px;
+  padding: 17px 7px 16px 20px;
   @media ${tablet} {
     padding: 16px 0 16px 24px;
   }
@@ -21,6 +21,7 @@ const commonStyles = css`
 
   ${(props) => (props.isDesktop ? "height: auto" : "height: 100%")};
 
+  ${(props) => !props.withScroll && `height: 100%;`}
   border-left: none;
 
   .section-wrapper {
@@ -41,12 +42,6 @@ const commonStyles = css`
         padding-right: 0;
         padding-left: 20px;
       `}
-
-    .section-wrapper {
-      display: flex;
-      flex-direction: column;
-      min-height: 100%;
-    }
 
     .section-wrapper {
       display: flex;

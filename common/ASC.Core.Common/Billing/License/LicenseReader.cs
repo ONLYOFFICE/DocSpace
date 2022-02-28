@@ -26,7 +26,6 @@
 
 using System;
 using System.IO;
-using System.Linq;
 
 using ASC.Common;
 using ASC.Common.Logging;
@@ -153,7 +152,7 @@ namespace ASC.Core.Billing
 
         private static void SaveLicense(Stream licenseStream, string path)
         {
-            if (licenseStream == null) throw new ArgumentNullException("licenseStream");
+            if (licenseStream == null) throw new ArgumentNullException(nameof(licenseStream));
 
             if (licenseStream.CanSeek)
             {
@@ -189,7 +188,7 @@ namespace ASC.Core.Billing
             {
                 license.PortalCount = TenantManager.GetTenantQuota(Tenant.DEFAULT_TENANT).CountPortals;
             }
-            var activePortals = TenantManager.GetTenants().Count();
+            var activePortals = TenantManager.GetTenants().Count;
             if (activePortals > 1 && license.PortalCount < activePortals)
             {
                 throw new LicensePortalException("License portal count", license.OriginalLicense);

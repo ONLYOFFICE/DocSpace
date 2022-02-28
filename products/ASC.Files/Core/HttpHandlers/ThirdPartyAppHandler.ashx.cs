@@ -60,7 +60,7 @@ namespace ASC.Web.Files.HttpHandlers
         {
             using var scope = ServiceProvider.CreateScope();
             var thirdPartyAppHandlerService = scope.ServiceProvider.GetService<ThirdPartyAppHandlerService>();
-            thirdPartyAppHandlerService.Invoke(context);
+            await thirdPartyAppHandlerService.InvokeAsync(context);
             await Next.Invoke(context);
         }
     }
@@ -86,7 +86,7 @@ namespace ASC.Web.Files.HttpHandlers
             HandlerPath = baseCommonLinkUtility.ToAbsolute("~/thirdpartyapp");
         }
 
-        public void Invoke(HttpContext context)
+        public async Task InvokeAsync(HttpContext context)
         {
             Log.Debug("ThirdPartyApp: handler request - " + context.Request.Url());
 
@@ -97,7 +97,7 @@ namespace ASC.Web.Files.HttpHandlers
                 var app = ThirdPartySelector.GetApp(context.Request.Query[ThirdPartySelector.AppAttr]);
                 Log.Debug("ThirdPartyApp: app - " + app);
 
-                if (app.Request(context))
+                if (await app.RequestAsync(context))
                 {
                     return;
                 }
@@ -115,7 +115,7 @@ namespace ASC.Web.Files.HttpHandlers
 
             if (string.IsNullOrEmpty(message))
             {
-                if ((context.Request.Query["error"].FirstOrDefault() ?? "").ToLower() == "access_denied")
+                if ((context.Request.Query["error"].FirstOrDefault() ?? "").Equals("access_denied", StringComparison.InvariantCultureIgnoreCase))
                 {
                     message = context.Request.Query["error_description"].FirstOrDefault() ?? FilesCommonResource.AppAccessDenied;
                 }

@@ -1,12 +1,12 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
 import { Trans } from "react-i18next";
-import { isMobile } from "react-device-detect";
 
 import toastr from "studio/toastr";
 import {
   AppServerConfig,
   FileAction,
+  FileStatus,
   ShareAccessRights,
 } from "@appserver/common/constants";
 import { combineUrl } from "@appserver/common/utils";
@@ -23,7 +23,7 @@ export default function withContent(WrappedContent) {
       super(props);
 
       const { item, fileActionId, fileActionExt, fileActionTemplateId } = props;
-      let titleWithoutExt = getTitleWithoutExst(item);
+      let titleWithoutExt = props.titleWithoutExt;
       if (
         fileActionId === -1 &&
         item.id === fileActionId &&
@@ -41,6 +41,8 @@ export default function withContent(WrappedContent) {
         fileActionExt,
         setIsUpdatingRowItem,
         isUpdatingRowItem,
+        isEdit,
+        titleWithoutExt,
       } = this.props;
       if (fileActionId === -1 && fileActionExt !== prevProps.fileActionExt) {
         const itemTitle = getDefaultFileName(fileActionExt);
@@ -48,6 +50,10 @@ export default function withContent(WrappedContent) {
       }
       if (fileActionId === null && prevProps.fileActionId !== fileActionId) {
         isUpdatingRowItem && setIsUpdatingRowItem(false);
+      }
+
+      if (!isEdit && titleWithoutExt !== this.state.itemTitle) {
+        this.setState({ itemTitle: titleWithoutExt });
       }
     }
 
@@ -340,30 +346,24 @@ export default function withContent(WrappedContent) {
       return this.setState({ itemTitle: title });
     };
 
-    getStatusByDate = () => {
-      const { culture, t, item, sectionWidth, viewAs } = this.props;
-      const { created, updated, version, fileExst } = item;
+    getStatusByDate = (create) => {
+      const { culture, item } = this.props;
+      const { created, updated } = item;
 
-      const title =
-        version > 1
-          ? t("TitleModified")
-          : fileExst
-          ? t("TitleUploaded")
-          : t("TitleCreated");
-
-      const date = fileExst ? updated : created;
-      const dateLabel = new Date(date).toLocaleString(culture);
-      const mobile =
-        (sectionWidth && sectionWidth <= 375) || isMobile || viewAs === "table";
-
-      return mobile ? dateLabel : `${title}: ${dateLabel}`;
-    };
-
-    getTableStatusByDate = (create) => {
-      const { created, updated } = this.props.item;
+      const options = {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "numeric",
+      };
 
       const date = create ? created : updated;
-      const dateLabel = new Date(date).toLocaleString(this.props.culture);
+
+      const dateLabel = new Date(date)
+        .toLocaleString(culture, options)
+        .replace(",", "");
+
       return dateLabel;
     };
 
@@ -371,8 +371,6 @@ export default function withContent(WrappedContent) {
       const { itemTitle } = this.state;
       const {
         element,
-        fileActionExt,
-        fileActionId,
         isDesktop,
         isTrashFolder,
         item,
@@ -382,27 +380,13 @@ export default function withContent(WrappedContent) {
         viewer,
         isUpdatingRowItem,
         passwordEntryProcess,
+        isEdit,
+        titleWithoutExt,
       } = this.props;
-      const {
-        access,
-        createdBy,
-        fileExst,
-        fileStatus,
-        href,
-        icon,
-        id,
-        updated,
-      } = item;
+      const { access, createdBy, fileExst, fileStatus, href, icon, id } = item;
 
-      const titleWithoutExt = getTitleWithoutExst(item);
-
-      const isEdit = id === fileActionId && fileExst === fileActionExt;
-
-      const updatedDate =
-        viewAs === "table"
-          ? this.getTableStatusByDate(false)
-          : updated && this.getStatusByDate();
-      const createdDate = this.getTableStatusByDate(true);
+      const updatedDate = this.getStatusByDate(false);
+      const createdDate = this.getStatusByDate(true);
 
       const fileOwner =
         createdBy &&
@@ -421,7 +405,8 @@ export default function withContent(WrappedContent) {
         linkStyles.href = href;
       }
 
-      const newItems = item.new || fileStatus === 2;
+      const newItems =
+        item.new || (fileStatus & FileStatus.IsNew) === FileStatus.IsNew;
       const showNew = !!newItems;
       const elementIcon = element ? (
         element
@@ -470,7 +455,7 @@ export default function withContent(WrappedContent) {
         dialogsStore,
         uploadDataStore,
       },
-      {}
+      { item }
     ) => {
       const { editCompleteAction } = filesActionsStore;
       const {
@@ -509,6 +494,11 @@ export default function withContent(WrappedContent) {
         setFormCreationInfo,
       } = dialogsStore;
 
+      const isEdit =
+        item.id === fileActionId && item.fileExst === fileActionExt;
+
+      const titleWithoutExt = getTitleWithoutExst(item);
+
       return {
         createFile,
         createFolder,
@@ -541,6 +531,8 @@ export default function withContent(WrappedContent) {
         addActiveItems,
         clearActiveOperations,
         fileCopyAs,
+        isEdit,
+        titleWithoutExt,
       };
     }
   )(observer(WithContent));
