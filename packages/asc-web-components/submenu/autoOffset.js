@@ -30,7 +30,7 @@ export const countAutoOffset = (data, submenuItemsRef) => {
   }
   if (
     itemOnMarker.type === "item" &&
-    itemOnMarker.end - marker < 10 &&
+    itemOnMarker.end - marker < 7.5 &&
     itemOnMarker !== itemsAndGaps[itemsAndGaps.length - 2]
   ) {
     return itemOnMarker.end - marker + offset * 2 - wrapperPadding;

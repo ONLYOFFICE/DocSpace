@@ -67,10 +67,10 @@ const Submenu = ({ data, startSelect = 0, ...rest }) => {
     submenuItemsRef.current.addEventListener("mouseleave", mouseLeave);
 
     return () => {
-      submenuItemsRef.current.removeEventListener("mousedown", mouseDown);
-      submenuItemsRef.current.removeEventListener("mousemove", mouseMove);
-      submenuItemsRef.current.removeEventListener("mouseup", mouseUp);
-      submenuItemsRef.current.removeEventListener("mouseleave", mouseLeave);
+      submenuItemsRef.current?.removeEventListener("mousedown", mouseDown);
+      submenuItemsRef.current?.removeEventListener("mousemove", mouseMove);
+      submenuItemsRef.current?.removeEventListener("mouseup", mouseUp);
+      submenuItemsRef.current?.removeEventListener("mouseleave", mouseLeave);
     };
   }, [submenuItemsRef]);
 
