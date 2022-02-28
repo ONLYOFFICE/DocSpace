@@ -80,7 +80,7 @@ const InfoPanel = ({ children, isVisible, setIsVisible }) => {
     }, []);
 
     return (
-        <StyledInfoPanelWrapper title="InfoPanelWrapper">
+        <StyledInfoPanelWrapper className="info-panel" title="InfoPanelWrapper">
             <StyledInfoPanel>
                 <StyledCloseButtonWrapper>
                     <IconButton

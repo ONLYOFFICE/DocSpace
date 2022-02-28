@@ -41,9 +41,14 @@ const StyledContainer = styled.div`
             props.title &&
             css`
                 display: grid;
-                grid-template-columns: ${({ isRootFolder, canCreate }) => {
+                grid-template-columns: ${({
+                    isRootFolder,
+                    canCreate,
+                    isRecycleBinFolder,
+                }) => {
                     if (isRootFolder) {
-                        if (canCreate) return "auto auto 1fr";
+                        if (canCreate || isRecycleBinFolder)
+                            return "auto auto 1fr";
                         return "auto 1fr";
                     }
                     if (canCreate) return "auto auto auto 1fr 32px";
@@ -491,6 +496,7 @@ class SectionHeaderContent extends React.Component {
                         width={context.sectionWidth}
                         isRootFolder={isRootFolder}
                         canCreate={canCreate}
+                        isRecycleBinFolder={isRecycleBinFolder}
                         title={title}
                         isDesktop={isDesktop}
                         isTabletView={isTabletView}
