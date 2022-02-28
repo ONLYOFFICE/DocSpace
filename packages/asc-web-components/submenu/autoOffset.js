@@ -19,6 +19,7 @@ export const countAutoOffset = (data, submenuItemsRef) => {
     (obj) => obj.start < marker && marker < obj.end
   );
 
+  if (itemOnMarker === undefined) return 0;
   if (
     itemOnMarker.type === "gap" &&
     itemOnMarker !== itemsAndGaps[itemsAndGaps.length - 1]
