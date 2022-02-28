@@ -1,8 +1,8 @@
 import { tablet } from "../utils/device";
 import DomHelpers from "../utils/domHelpers";
 
-const pGap = 14;
-const fGap = 4;
+const paddingGap = 14;
+const flexGap = 4;
 const offset = 32;
 const wrapperPadding = DomHelpers.getViewport() <= tablet ? 16 : 20;
 
@@ -51,15 +51,15 @@ const countItemsAndGaps = (textWidths) => {
       result.push(
         {
           type: "gap",
-          length: pGap,
+          length: paddingGap,
           start: 0,
-          end: pGap + wrapperPadding,
+          end: paddingGap + wrapperPadding,
         },
         {
           type: "item",
           length: tw,
-          start: pGap,
-          end: pGap + tw,
+          start: paddingGap,
+          end: paddingGap + tw,
         }
       );
     else {
@@ -67,15 +67,15 @@ const countItemsAndGaps = (textWidths) => {
       result.push(
         {
           type: "gap",
-          length: pGap * 2 + fGap,
+          length: paddingGap * 2 + flexGap,
           start: lastItem.end,
-          end: lastItem.end + pGap * 2 + fGap,
+          end: lastItem.end + paddingGap * 2 + flexGap,
         },
         {
           type: "item",
           length: tw,
-          start: lastItem.end + pGap * 2 + fGap,
-          end: lastItem.end + pGap * 2 + fGap + tw,
+          start: lastItem.end + paddingGap * 2 + flexGap,
+          end: lastItem.end + paddingGap * 2 + flexGap + tw,
         }
       );
     }
@@ -83,9 +83,9 @@ const countItemsAndGaps = (textWidths) => {
 
   result.push({
     type: "gap",
-    length: pGap,
+    length: paddingGap,
     start: result[result.length - 1].end,
-    end: result[result.length - 1].end + pGap + wrapperPadding,
+    end: result[result.length - 1].end + paddingGap + wrapperPadding,
   });
 
   return result;
