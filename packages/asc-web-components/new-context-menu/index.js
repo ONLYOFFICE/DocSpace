@@ -28,6 +28,8 @@ const Row = React.memo(({ data, index, style }) => {
       // eslint-disable-next-line react/prop-types
       key={data.data[index].key}
       // eslint-disable-next-line react/prop-types
+      name={data.data[index].key}
+      // eslint-disable-next-line react/prop-types
       icon={data.data[index].icon}
       // eslint-disable-next-line react/prop-types
       label={data.data[index].label}
@@ -375,6 +377,7 @@ class NewContextMenu extends React.Component {
         return (
           <MenuItem
             key={item.key}
+            name={item.key}
             icon={item.icon}
             label={item.label}
             isSeparator={item.isSeparator}
