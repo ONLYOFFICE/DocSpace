@@ -54,7 +54,7 @@ export const StyledSubmenuItems = styled.div`
 `;
 
 export const StyledSubmenuItem = styled.div.attrs((props) => ({
-  id: props._key,
+  id: props.id,
 }))`
   scroll-behavior: smooth;
   cursor: pointer;

@@ -82,11 +82,7 @@ const Submenu = ({ data, startSelect = 0, ...rest }) => {
         {data.map((d) => {
           const isActive = d === currentItem;
           return (
-            <StyledSubmenuItem
-              key={d.id}
-              _key={d.id}
-              onClick={selectSubmenuItem}
-            >
+            <StyledSubmenuItem key={d.id} id={d.id} onClick={selectSubmenuItem}>
               <StyledSubmenuItemText>
                 <Text
                   color={isActive ? "#316DAA" : "#657077"}
