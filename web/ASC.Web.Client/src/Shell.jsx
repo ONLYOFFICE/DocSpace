@@ -150,6 +150,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     personal,
     setCheckedMaintenance,
     setMaintenanceExist,
+    setSnackbarExist,
   } = rest;
 
   useEffect(() => {
@@ -277,12 +278,14 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
       })} ${t("BarMaintenanceDisclaimer")}`,
       clickAction: () => {
         setMaintenanceExist(false);
+        setSnackbarExist(false);
         Snackbar.close();
         localStorage.setItem(LS_CAMPAIGN_DATE, to.format(DATE_FORMAT));
       },
       opacity: 1,
       onLoad: () => {
         setCheckedMaintenance(true);
+        setSnackbarExist(true);
         setMaintenanceExist(true);
       },
     };
@@ -480,6 +483,7 @@ const ShellWrapper = inject(({ auth }) => {
     setModuleInfo,
     setCheckedMaintenance,
     setMaintenanceExist,
+    setSnackbarExist,
   } = settingsStore;
 
   return {
@@ -500,6 +504,7 @@ const ShellWrapper = inject(({ auth }) => {
     personal,
     setCheckedMaintenance,
     setMaintenanceExist,
+    setSnackbarExist,
   };
 })(observer(Shell));
 
