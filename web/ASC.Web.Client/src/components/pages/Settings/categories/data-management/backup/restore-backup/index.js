@@ -22,6 +22,7 @@ import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../../../../../../../package.json";
 import FloatingButton from "@appserver/common/components/FloatingButton";
 import { request } from "@appserver/common/api/client";
+import { inject, observer } from "mobx-react";
 
 class RestoreBackup extends React.Component {
   constructor(props) {
@@ -266,7 +267,7 @@ class RestoreBackup extends React.Component {
       isCheckedThirdParty,
       formSettings,
     } = this.state;
-    const { history } = this.props;
+    const { history, socketHelper } = this.props;
 
     if (!this.canRestore()) return;
 
@@ -343,7 +344,12 @@ class RestoreBackup extends React.Component {
     }
 
     startRestore(backupId, storageType, storageParams, isNotify)
-      .then(() => (this.storageId = ""))
+      .then(() => {
+        this.storageId = "";
+        socketHelper.emit({
+          command: "restore-backup",
+        });
+      })
       .then(() =>
         history.push(
           combineUrl(
@@ -545,6 +551,20 @@ class RestoreBackup extends React.Component {
           tabIndex={10}
         />
 
+        <Button
+          label={"Fake restore"} //TODO: Remove fake button
+          onClick={() => {
+            const { socketHelper } = this.props;
+            socketHelper.emit({
+              command: "restore-backup",
+              data: new Date().toLocaleString(),
+            });
+          }}
+          primary
+          size="medium"
+          tabIndex={10}
+        />
+
         {downloadingProgress > 0 && downloadingProgress !== 100 && (
           <FloatingButton
             className="layout-progress-bar"
@@ -559,4 +579,11 @@ class RestoreBackup extends React.Component {
   }
 }
 
-export default withTranslation(["Settings", "Common"])(RestoreBackup);
+export default inject(({ auth }) => {
+  const { settingsStore } = auth;
+  const { socketHelper } = settingsStore;
+
+  return {
+    socketHelper,
+  };
+})(withTranslation(["Settings", "Common"])(observer(RestoreBackup)));
