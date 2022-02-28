@@ -41,12 +41,12 @@ public class AzRecord : IMapFrom<Acl>
     {
     }
 
-    public AzRecord(Guid subjectId, Guid actionId, AceType reaction, string objectId)
+    public AzRecord(Guid subjectId, Guid actionId, AceType reaction, string fullId)
     {
         Subject = subjectId;
         Action = actionId;
         AceType = reaction;
-        Object = objectId;
+        Object = fullId;
     }
 
     public static implicit operator AzRecord(AzRecordCache cache)

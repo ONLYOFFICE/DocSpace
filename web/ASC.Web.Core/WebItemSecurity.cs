@@ -210,7 +210,7 @@ namespace ASC.Web.Core
 
             // remove old aces
             AuthorizationManager.RemoveAllAces(securityObj);
-            var allowToAll = new AzRecord(ASC.Core.Users.Constants.GroupEveryone.ID, Read.ID, AceType.Allow, securityObj.ToString());
+            var allowToAll = new AzRecord(ASC.Core.Users.Constants.GroupEveryone.ID, Read.ID, AceType.Allow, securityObj.FullId);
             AuthorizationManager.RemoveAce(allowToAll);
 
             // set new aces
@@ -225,7 +225,7 @@ namespace ASC.Web.Core
             }
             foreach (var s in subjects)
             {
-                var a = new AzRecord(s, Read.ID, enabled ? AceType.Allow : AceType.Deny, securityObj.ToString());
+                var a = new AzRecord(s, Read.ID, enabled ? AceType.Allow : AceType.Deny, securityObj.FullId);
                 AuthorizationManager.AddAce(a);
             }
 
@@ -370,6 +370,8 @@ namespace ASC.Web.Core
                 get { return WebItemId.ToString("N"); }
             }
 
+            public string FullId => AzObjectIdHelper.GetFullObjectId(this);
+
             public bool InheritSupported
             {
                 get { return true; }
@@ -379,7 +381,6 @@ namespace ASC.Web.Core
             {
                 get { return false; }
             }
-
 
             public static WebItemSecurityObject Create(string id, WebItemManager webItemManager)
             {

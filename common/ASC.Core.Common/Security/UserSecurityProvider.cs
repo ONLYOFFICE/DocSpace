@@ -29,6 +29,7 @@ public class UserSecurityProvider : ISecurityObject
 {
     public Type ObjectType { get; private set; }
     public object SecurityId { get; private set; }
+    public string FullId => AzObjectIdHelper.GetFullObjectId(this);
 
     public UserSecurityProvider(Guid userId)
     {
