@@ -46,7 +46,7 @@ const countTextWidth = (text) => {
 const countItemsAndGaps = (textWidths) => {
   const result = [];
 
-  textWidths.forEach((tw) => {
+  textWidths.forEach((textWidth) => {
     if (!result.length)
       result.push(
         {
@@ -57,9 +57,9 @@ const countItemsAndGaps = (textWidths) => {
         },
         {
           type: "item",
-          length: tw,
+          length: textWidth,
           start: paddingGap,
-          end: paddingGap + tw,
+          end: paddingGap + textWidth,
         }
       );
     else {
@@ -73,9 +73,9 @@ const countItemsAndGaps = (textWidths) => {
         },
         {
           type: "item",
-          length: tw,
+          length: textWidth,
           start: lastItem.end + paddingGap * 2 + flexGap,
-          end: lastItem.end + paddingGap * 2 + flexGap + tw,
+          end: lastItem.end + paddingGap * 2 + flexGap + textWidth,
         }
       );
     }
