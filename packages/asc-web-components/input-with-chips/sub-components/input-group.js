@@ -65,19 +65,35 @@ const InputGroup = memo(
       if (value.trim().length > 0) {
         const separators = [",", " ", ", "];
         let indexesForFilter = [];
+        let isSimple = true;
+        let tempLabel = "";
 
         const chipsFromString = value
           .split(new RegExp(separators.join("|"), "g"))
           .filter((it) => it.trim().length !== 0)
           .map((it, idx, arr) => {
-            if (it.includes('"') && arr[idx + 1]) {
+            if (isSimple && it.includes('"')) {
+              isSimple = false;
+              tempLabel += `${it} `;
+              return;
+            }
+            if (!isSimple && !it.includes('"')) {
+              tempLabel += `${it} `;
+              return;
+            }
+            if (!isSimple && it.includes('"')) {
+              tempLabel += `${it}`;
+              let tempLabelTrim = tempLabel;
+              isSimple = true;
+              tempLabel = "";
               indexesForFilter.push(idx + 1);
-              return `${it} ${arr[idx + 1]}`;
+              return `${tempLabelTrim} ${arr[idx + 1]}`;
             }
             return it;
           })
-          .map((it) => (tryParseEmail(it) ? tryParseEmail(it) : it.trim()))
-          .filter((it, idx) => !indexesForFilter.includes(idx));
+          .filter((it, idx) => !indexesForFilter.includes(idx))
+          .filter((it) => it !== undefined)
+          .map((it) => (tryParseEmail(it) ? tryParseEmail(it) : it.trim()));
 
         if (chipsFromString.length === 1) {
           let isExisted = !!chips.find(
