@@ -1,8 +1,8 @@
 import PropTypes from "prop-types";
 import React, { useEffect, useRef, useState } from "react";
-
 import Text from "../text";
 import { countAutoOffset } from "./autoOffset";
+
 import {
   StyledSubmenu,
   StyledSubmenuBottomLine,
