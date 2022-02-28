@@ -27,14 +27,11 @@ const ScheduleComponent = ({
   monthNumbersArray,
   hoursArray,
   maxNumberCopiesArray,
-
-  isDesktop,
 }) => {
   const { t } = useTranslation("Settings");
 
   return (
     <StyledScheduleComponent
-      isDesktop={isDesktop}
       weeklySchedule={selectedWeeklySchedule}
       monthlySchedule={selectedMonthlySchedule}
       className="backup_schedule-component"

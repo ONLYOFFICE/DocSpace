@@ -23,6 +23,7 @@ import DocumentsModule from "./sub-components/DocumentsModule";
 import ThirdPartyStorageModule from "./sub-components/ThirdPartyStorageModule";
 import ToggleButton from "@appserver/components/toggle-button";
 import { getBackupStorage } from "@appserver/common/api/settings";
+import { isMobileOnly } from "react-device-detect";
 
 const { proxyURL } = AppServerConfig;
 
@@ -36,7 +37,7 @@ const EVERY_MONTH_TYPE = 2;
 class AutomaticBackup extends React.PureComponent {
   constructor(props) {
     super(props);
-    const { t, language, isDesktop } = props;
+    const { t, language } = props;
 
     this.lng = language.substring(0, language.indexOf("-"));
     moment.locale(this.lng);
@@ -77,7 +78,7 @@ class AutomaticBackup extends React.PureComponent {
       selectedStorageTypeNumber: "",
 
       isLoadingData: false,
-      isInitialLoading: isDesktop ? false : true,
+      isInitialLoading: !isMobileOnly ? false : true,
       isChanged: false,
       isChangedInStorage: false,
       isReset: false,
@@ -162,7 +163,6 @@ class AutomaticBackup extends React.PureComponent {
 
   componentDidMount() {
     const {
-      isDesktop,
       backupSchedule,
       commonThirdPartyList,
       thirdPartyStorageInfo,
@@ -171,7 +171,7 @@ class AutomaticBackup extends React.PureComponent {
     this._isMounted = true;
     this.getWeekdays();
 
-    if (!isDesktop) this.setBasicSettings();
+    if (isMobileOnly) this.setBasicSettings();
     else {
       this.commonThirdPartyList = commonThirdPartyList;
       this.storageInfo = thirdPartyStorageInfo;
@@ -1044,7 +1044,7 @@ class AutomaticBackup extends React.PureComponent {
   };
 
   render() {
-    const { t, isDesktop } = this.props;
+    const { t } = this.props;
     const {
       isInitialLoading,
       isChanged,
@@ -1085,7 +1085,6 @@ class AutomaticBackup extends React.PureComponent {
       maxNumberCopiesArray: this.maxNumberCopiesArray,
       periodsObject: this.periodsObject,
       weekdaysLabelArray: this.weekdaysLabelArray,
-      isDesktop: isDesktop,
       onSelectPeriod: this.onSelectPeriod,
       onSelectWeekDay: this.onSelectWeekDay,
       onSelectMonthNumber: this.onSelectMonthNumber,
@@ -1107,7 +1106,7 @@ class AutomaticBackup extends React.PureComponent {
     return isInitialLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
-      <StyledAutoBackup isDesktop={isDesktop}>
+      <StyledAutoBackup>
         <div className="backup_toggle-wrapper">
           <ToggleButton
             className="backup_toggle-btn"

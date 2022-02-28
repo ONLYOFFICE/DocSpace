@@ -10,7 +10,6 @@ const EVERY_WEEK_TYPE = "1";
 const EVERY_MONTH_TYPE = "2";
 
 class BackupStore {
-  isMobileOnly = false;
   backupSchedule = {};
   backupStorage = {};
   commonThirdPartyList = {};
@@ -42,10 +41,6 @@ class BackupStore {
   constructor() {
     makeAutoObservable(this);
   }
-
-  setIsMobileOnly = (isMobile) => {
-    this.isMobileOnly = isMobile;
-  };
 
   setDefaultOptions = (t, periodObj, weekdayArr) => {
     if (this.backupSchedule) {

@@ -254,7 +254,6 @@ class BackupDesktopView extends React.Component {
             </Text>
 
             <AutoBackup
-              isDesktop
               backupSchedule={backupSchedule}
               commonThirdPartyList={commonThirdPartyList}
             />

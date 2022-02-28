@@ -1,6 +1,7 @@
 import styled, { css } from "styled-components";
 import commonSettingsStyles from "../../../utils/commonSettingsStyles";
 import globalColors from "@appserver/components/utils/globalColors";
+import { isMobileOnly } from "react-device-detect";
 
 const linkColor = globalColors.black;
 
@@ -116,7 +117,7 @@ const StyledAutoBackup = styled.div`
     box-sizing: border-box;
   }
   .auto-backup_buttons {
-    ${(props) => props.isDesktop && "margin-bottom: 24px"}
+    ${(props) => !props.isMobileOnly && "margin-bottom: 24px"}
   }
 `;
 
@@ -227,10 +228,10 @@ const StyledScheduleComponent = styled.div`
     grid-area: weekly-monthly;
     width: 100%;
 
-    max-width: ${(props) => (props.isDesktop ? "124px" : INPUT_LENGTH)};
+    max-width: ${(props) => (!props.isMobileOnly ? "124px" : INPUT_LENGTH)};
     .drop-down_variable-size {
       max-width: ${(props) =>
-        props.isDesktop ? "124px" : INPUT_LENGTH} !important;
+        !props.isMobileOnly ? "124px" : INPUT_LENGTH} !important;
       width: 100% !important;
     }
   }
@@ -244,7 +245,7 @@ const StyledScheduleComponent = styled.div`
   }
 
   ${(props) =>
-    props.isDesktop
+    !props.isMobileOnly
       ? css`
           .main_options {
             max-width: ${INPUT_LENGTH};
@@ -280,7 +281,7 @@ const StyledScheduleComponent = styled.div`
   .time_options {
     grid-area: time;
     ${(props) =>
-      !props.isDesktop &&
+      props.isMobileOnly &&
       css`
         max-width: ${INPUT_LENGTH};
       `};
@@ -329,7 +330,7 @@ const StyledBackup = styled.div`
     padding-bottom: 8px;
   }
   .layout-progress-bar {
-    ${(props) => props.isDesktop && "cursor: default;"}
+    ${(props) => !props.isMobileOnly && "cursor: default;"}
   }
 
   .backup_modules-description {
