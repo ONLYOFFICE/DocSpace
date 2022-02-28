@@ -347,3 +347,70 @@ export function toggleTipsSubscription() {
   };
   return request(options);
 }
+
+export function getCurrentSsoSettings() {
+  const options = {
+    method: "get",
+    url: "/settings/ssov2",
+  };
+
+  return request(options);
+}
+
+export function submitSsoForm(data) {
+  const options = {
+    method: "post",
+    url: "/settings/ssov2",
+    data,
+  };
+
+  return request(options);
+}
+
+export function resetSsoForm() {
+  const options = {
+    method: "delete",
+    url: "/settings/ssov2",
+  };
+
+  return request(options);
+}
+
+export function loadXmlMetadata(data) {
+  const options = {
+    method: "post",
+    url: "/sso/loadmetadata",
+    data,
+  };
+
+  return request(options);
+}
+
+export function uploadXmlMetadata(data) {
+  const options = {
+    method: "post",
+    url: "/sso/uploadmetadata",
+    data,
+  };
+
+  return request(options);
+}
+
+export function validateCerts(data) {
+  const options = {
+    method: "post",
+    url: "/sso/validatecerts",
+    data,
+  };
+
+  return request(options);
+}
+
+export function generateCerts() {
+  const options = {
+    method: "get",
+    url: "/sso/generatecert",
+  };
+
+  return request(options);
+}

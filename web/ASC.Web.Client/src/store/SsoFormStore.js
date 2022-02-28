@@ -1,5 +1,14 @@
 import { makeAutoObservable } from "mobx";
-import { defaultStore } from "../components/pages/Settings/categories/integration/SingleSignOn/sub-components/constants";
+
+import {
+  generateCerts,
+  getCurrentSsoSettings,
+  loadXmlMetadata,
+  resetSsoForm,
+  submitSsoForm,
+  uploadXmlMetadata,
+  validateCerts,
+} from "@appserver/common/api/settings";
 
 const regExps = {
   // source: https://regexr.com/3ok5o
@@ -136,11 +145,13 @@ class SsoFormStore {
     makeAutoObservable(this);
   }
 
-  onPageLoad = () => {
-    const response = fetch("/somewhere");
-
-    if ("something") {
-      this.isSsoEnabled = true;
+  onPageLoad = async () => {
+    try {
+      const response = await getCurrentSsoSettings();
+      this.isSsoEnabled = response.enableSso;
+      this.setFieldsFromObject(response);
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -222,58 +233,12 @@ class SsoFormStore {
     this.confirmationResetModal = false;
   };
 
-  resetForm = async () => {
-    const params = {
-      method: "DELETE",
-      cors: "same-origin",
-    };
-
-    try {
-      const response = await fetch("/somewhere", params);
-      if (response.ok) {
-        this.resetFields();
-      } else throw new Error("error");
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  resetFields = () => {
-    for (let key of Object.keys(defaultStore)) {
-      this[key] = defaultStore[key];
-    }
-  };
-
-  onEditClick = (e, certificate, prefix) => {
-    this[`${prefix}_certificate`] = certificate.crt;
-    this[`${prefix}_privateKey`] = certificate.key;
-    this[`${prefix}_action`] = certificate.action;
-    this[`${prefix}_isModalVisible`] = true;
-  };
-
-  onDeleteClick = (e, crtToDelete, prefix) => {
-    this[`${prefix}_certificates`] = this[`${prefix}_certificates`].filter(
-      (certificate) => certificate.crt !== crtToDelete
-    );
-  };
-
   onLoadXmlMetadata = async () => {
-    const body = JSON.stringify({ url: this.uploadXmlUrl });
-    const params = {
-      method: "POST",
-      cors: "same-origin",
-      headers: {
-        "Content-Type": "application/json;charset=utf-8",
-      },
-      body: body,
-    };
+    const data = { url: this.uploadXmlUrl };
 
     try {
-      const response = await fetch("/somewhere", params);
-      if (response.ok) {
-        const metadataObject = await response.json();
-        this.setFieldsFromObject(metadataObject);
-      } else throw new Error("error");
+      const response = await loadXmlMetadata(data);
+      this.setFieldsFromObject(response);
     } catch (err) {
       console.log(err);
     }
@@ -285,18 +250,89 @@ class SsoFormStore {
     const data = new FormData();
     data.append("file", file);
 
-    const params = {
-      method: "POST",
-      cors: "same-origin",
-      body: data,
+    try {
+      const response = await uploadXmlMetadata(data);
+      this.setFieldsFromObject(response);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  validateCertificate = async (action, crt, key) => {
+    const data = { action, crt, key };
+
+    try {
+      return await validateCerts(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  generateCertificate = async () => {
+    try {
+      const response = await generateCerts();
+      this.setGeneratedCertificate(response);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  onSubmit = async () => {
+    const data = {
+      enableSso: true,
+      spLoginLabel: this.spLoginLabel,
+      idpSettings: {
+        entityId: this.entityId,
+        ssoUrl: this.ssoUrl,
+        ssoBinding: this.ssoBinding,
+        sloUrl: this.sloUrl,
+        sloBinding: this.sloBinding,
+        nameIdFormat: this.nameIdFormat,
+      },
+      idpCertificates: this.idp_certificates,
+      idpCertificateAdvanced: {
+        verifyAlgorithm: this.idp_verifyAlgorithm,
+        verifyAuthResponsesSign: this.idp_verifyAuthResponsesSign,
+        verifyLogoutRequestsSign: this.idp_verifyLogoutRequestsSign,
+        verifyLogoutResponsesSign: this.idp_verifyLogoutResponsesSign,
+        decryptAlgorithm: this.idp_decryptAlgorithm,
+        // ?
+        decryptAssertions: false,
+      },
+      spCertificates: this.sp_certificates,
+      spCertificateAdvanced: {
+        decryptAlgorithm: this.sp_decryptAlgorithm,
+        signingAlgorithm: this.sp_signingAlgorithm,
+        signAuthRequests: this.sp_signAuthRequests,
+        signLogoutRequests: this.sp_signLogoutRequests,
+        signLogoutResponses: this.sp_signLogoutResponses,
+        encryptAlgorithm: this.sp_encryptAlgorithm,
+        encryptAssertions: this.sp_encryptAssertions,
+      },
+      fieldMapping: {
+        firstName: this.firstName,
+        lastName: this.lastName,
+        email: this.email,
+        title: this.title,
+        location: this.location,
+        phone: this.phone,
+      },
+      hideAuthPage: this.hideAuthPage,
     };
 
     try {
-      const response = await fetch("/somewhere", params);
-      if (response.ok) {
-        const metadataObject = await response.json();
-        this.setFieldsFromObject(metadataObject);
-      } else throw new Error("error");
+      const response = await submitSsoForm(data);
+      console.log("success");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  resetForm = async () => {
+    try {
+      const response = await resetSsoForm();
+
+      this.setFieldsFromObject(response);
     } catch (err) {
       console.log(err);
     }
@@ -327,6 +363,20 @@ class SsoFormStore {
       }
     }
   };
+
+  onEditClick = (e, certificate, prefix) => {
+    this[`${prefix}_certificate`] = certificate.crt;
+    this[`${prefix}_privateKey`] = certificate.key;
+    this[`${prefix}_action`] = certificate.action;
+    this[`${prefix}_isModalVisible`] = true;
+  };
+
+  onDeleteClick = (e, crtToDelete, prefix) => {
+    this[`${prefix}_certificates`] = this[`${prefix}_certificates`].filter(
+      (certificate) => certificate.crt !== crtToDelete
+    );
+  };
+
   addCertificateToForm = (e, prefix) => {
     const action = this[`${prefix}_action`];
     const crt = this[`${prefix}_certificate`];
@@ -338,39 +388,6 @@ class SsoFormStore {
         ...this[`${prefix}_certificates`],
         newCertificate,
       ];
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  validateCertificate = async (action, crt, key) => {
-    const body = JSON.stringify({ action, crt, key });
-    const params = {
-      method: "POST",
-      cors: "same-origin",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body,
-    };
-
-    try {
-      const response = await fetch("/somewhere", params);
-      if (response.ok) {
-        return await response.json();
-      } else throw new Error("error");
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  generateCertificate = async () => {
-    try {
-      const response = await fetch("/somewhere");
-      if (response.ok) {
-        const certificateObject = await response.json();
-        this.setGeneratedCertificate(certificateObject);
-      } else throw new Error("error");
     } catch (err) {
       console.log(err);
     }
@@ -414,67 +431,6 @@ class SsoFormStore {
 
     if (regExps[type].test(string)) return true;
     else throw new Error(`${type}ErrorMessage`);
-  };
-
-  onSubmit = async () => {
-    const body = JSON.stringify({
-      enableSso: true,
-      spLoginLabel: this.spLoginLabel,
-      idpSettings: {
-        entityId: this.entityId,
-        ssoUrl: this.ssoUrl,
-        ssoBinding: this.ssoBinding,
-        sloUrl: this.sloUrl,
-        sloBinding: this.sloBinding,
-        nameIdFormat: this.nameIdFormat,
-      },
-      idpCertificates: this.idp_certificates,
-      idpCertificateAdvanced: {
-        verifyAlgorithm: this.idp_verifyAlgorithm,
-        verifyAuthResponsesSign: this.idp_verifyAuthResponsesSign,
-        verifyLogoutRequestsSign: this.idp_verifyLogoutRequestsSign,
-        verifyLogoutResponsesSign: this.idp_verifyLogoutResponsesSign,
-        decryptAlgorithm: this.idp_decryptAlgorithm,
-        // ?
-        decryptAssertions: false,
-      },
-      spCertificates: this.sp_certificates,
-      spCertificateAdvanced: {
-        decryptAlgorithm: this.sp_decryptAlgorithm,
-        signingAlgorithm: this.sp_signingAlgorithm,
-        signAuthRequests: this.sp_signAuthRequests,
-        signLogoutRequests: this.sp_signLogoutRequests,
-        signLogoutResponses: this.sp_signLogoutResponses,
-        encryptAlgorithm: this.sp_encryptAlgorithm,
-        encryptAssertions: this.sp_encryptAssertions,
-      },
-      fieldMapping: {
-        firstName: this.firstName,
-        lastName: this.lastName,
-        email: this.email,
-        title: this.title,
-        location: this.location,
-        phone: this.phone,
-      },
-      hideAuthPage: this.hideAuthPage,
-    });
-
-    const params = {
-      method: "POST",
-      cors: "same-origin",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
-      },
-      body,
-    };
-
-    try {
-      const response = await fetch("./somewhere", params);
-      if (!response.ok) throw new Error("Some error");
-      console.log("success");
-    } catch (err) {
-      console.log(err);
-    }
   };
 }
 
