@@ -53,7 +53,13 @@ Tiles.propTypes = {
   t: PropTypes.func,
 };
 
-const Body = ({ match, isLoaded, availableModules, displayName }) => {
+const Body = ({
+  match,
+  isLoaded,
+  availableModules,
+  displayName,
+  snackbarExist,
+}) => {
   const { t } = useTranslation(["Home", "translation"]);
   const { error } = match.params;
   setDocumentTitle();
@@ -63,7 +69,7 @@ const Body = ({ match, isLoaded, availableModules, displayName }) => {
   return !isLoaded ? (
     <></>
   ) : (
-    <HomeContainer>
+    <HomeContainer snackbarExist={snackbarExist}>
       <Tiles
         availableModules={availableModules}
         displayName={displayName}
@@ -109,7 +115,7 @@ Home.propTypes = {
 
 export default inject(({ auth }) => {
   const { isLoaded, settingsStore, availableModules, userStore } = auth;
-  const { defaultPage } = settingsStore;
+  const { defaultPage, snackbarExist } = settingsStore;
   const { displayName } = userStore.user;
 
   return {
@@ -117,5 +123,6 @@ export default inject(({ auth }) => {
     isLoaded,
     availableModules,
     displayName,
+    snackbarExist,
   };
 })(withRouter(observer(Home)));
