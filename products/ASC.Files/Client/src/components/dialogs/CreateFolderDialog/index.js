@@ -17,20 +17,46 @@ const CreateFolderDialogComponent = (props) => {
     createFolder,
     filter,
     fetchFiles,
+    renameFolder,
+    renameItem,
+    setRenameItem,
   } = props;
 
-  const [folderName, setFolderName] = useState("");
+  const [folderName, setFolderName] = useState(
+    renameItem ? renameItem.title : ""
+  );
 
-  const onClose = () => setCreateFolderDialogVisible(false);
+  const onClose = () => {
+    setCreateFolderDialogVisible(false);
+    setRenameItem(null);
+  };
 
   const onCreate = () => {
     let folderId = filter.folder;
     if (folderId === "@my") folderId = 2;
-    createFolder(folderId, folderName).then(() => fetchFiles(folderId, filter));
+
+    if (renameItem) {
+      renameFolder(renameItem.id, folderName).then(() =>
+        fetchFiles(folderId, filter)
+      );
+    } else {
+      createFolder(folderId, folderName).then(() =>
+        fetchFiles(folderId, filter)
+      );
+    }
     onClose();
   };
 
   const onChange = (e) => setFolderName(e.target.value);
+
+  const onKeyDown = (e) => {
+    if (e.code === "Enter") onCreate();
+  };
+
+  const headerTranslate = renameItem ? t("Home:Rename") : t("Home:NewFolder");
+  const okButtonTranslate = renameItem
+    ? t("Common:SaveButton")
+    : t("Common:Create");
 
   return (
     <ModalDialogContainer
@@ -38,7 +64,7 @@ const CreateFolderDialogComponent = (props) => {
       visible={visible}
       onClose={onClose}
     >
-      <ModalDialog.Header>{t("Home:NewFolder")}</ModalDialog.Header>
+      <ModalDialog.Header>{headerTranslate}</ModalDialog.Header>
       <ModalDialog.Body>
         <TextInput
           scale={true}
@@ -46,6 +72,7 @@ const CreateFolderDialogComponent = (props) => {
           name="folder-name"
           value={folderName}
           onChange={onChange}
+          onKeyDown={onKeyDown}
           placeholder={t("Home:NewFolder")}
           tabIndex={1}
         />
@@ -53,7 +80,7 @@ const CreateFolderDialogComponent = (props) => {
       <ModalDialog.Footer>
         <Button
           key="OkButton"
-          label={t("Common:Create")}
+          label={okButtonTranslate}
           size="medium"
           primary
           onClick={onCreate}
@@ -77,11 +104,19 @@ const CreateFolderDialog = withTranslation(["Common", "Translations", "Home"])(
 );
 
 export default inject(({ filesStore, dialogsStore }) => {
-  const { fetchFiles, filter, isLoading, createFolder } = filesStore;
+  const {
+    fetchFiles,
+    filter,
+    isLoading,
+    createFolder,
+    renameFolder,
+  } = filesStore;
 
   const {
     createFolderDialogVisible: visible,
     setCreateFolderDialogVisible,
+    renameItem,
+    setRenameItem,
   } = dialogsStore;
 
   return {
@@ -91,5 +126,8 @@ export default inject(({ filesStore, dialogsStore }) => {
     setCreateFolderDialogVisible,
     fetchFiles,
     createFolder,
+    renameFolder,
+    renameItem,
+    setRenameItem,
   };
 })(withRouter(observer(CreateFolderDialog)));

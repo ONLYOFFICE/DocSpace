@@ -212,13 +212,24 @@ export default function withContextOptions(WrappedComponent) {
     };
 
     onClickRename = () => {
-      const { item, setAction } = this.props;
-      const { id, fileExst } = item;
-      setAction({
-        type: FileAction.Rename,
-        extension: fileExst,
-        id,
-      });
+      const {
+        item,
+        setAction,
+        setCreateFolderDialogVisible,
+        setRenameItem,
+      } = this.props;
+      const { id, fileExst, isFolder } = item;
+
+      if (isFolder) {
+        setCreateFolderDialogVisible(true);
+        setRenameItem(item);
+      } else {
+        setAction({
+          type: FileAction.Rename,
+          extension: fileExst,
+          id,
+        });
+      }
     };
 
     onChangeThirdPartyInfo = () => {
@@ -586,6 +597,8 @@ export default function withContextOptions(WrappedComponent) {
         setRemoveItem,
         setSharingPanelVisible,
         setUnsubscribe,
+        setCreateFolderDialogVisible,
+        setRenameItem,
       } = dialogsStore;
       const { isTabletView, isDesktopClient } = auth.settingsStore;
       const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
@@ -633,6 +646,8 @@ export default function withContextOptions(WrappedComponent) {
         isDesktop: isDesktopClient,
         copyAsAction,
         formfillingDocs,
+        setCreateFolderDialogVisible,
+        setRenameItem,
       };
     }
   )(observer(WithContextOptions));

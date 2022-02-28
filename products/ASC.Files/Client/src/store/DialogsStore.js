@@ -36,6 +36,7 @@ class DialogsStore {
   removeMediaItem = null;
   unsubscribe = null;
   convertItem = null;
+  renameItem = null;
 
   constructor(treeFoldersStore, filesStore, selectedFolderStore) {
     makeAutoObservable(this);
@@ -186,6 +187,10 @@ class DialogsStore {
 
   setCreateFolderDialogVisible = (visible) => {
     this.createFolderDialogVisible = visible;
+  };
+
+  setRenameItem = (id) => {
+    this.renameItem = id;
   };
 
   createMasterForm = async (fileInfo) => {
