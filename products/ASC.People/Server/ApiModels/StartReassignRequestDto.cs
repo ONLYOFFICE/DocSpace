@@ -1,6 +1,6 @@
 ﻿namespace ASC.People.Models
 {
-    public class StartReassignModel
+    public class StartReassignRequestDto
     {
         public Guid FromUserId { get; set; }
         public Guid ToUserId { get; set; }

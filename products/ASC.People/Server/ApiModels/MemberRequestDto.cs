@@ -1,6 +1,6 @@
 ﻿namespace ASC.People.Models
 {
-    public class MemberModel
+    public class MemberRequestDto
     {
         public bool IsVisitor { get; set; }
         public string Email { get; set; }
@@ -21,7 +21,7 @@
         public bool FromInviteLink { get; set; }
     }
 
-    public class UpdateMemberModel : MemberModel
+    public class UpdateMemberRequestDto : MemberRequestDto
     {
         public string UserId { get; set; }
         public bool? Disable { get; set; }

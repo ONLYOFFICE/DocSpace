@@ -1,11 +1,11 @@
 ﻿namespace ASC.People.Models
 {
-    public class LinkAccountModel
+    public class LinkAccountRequestDto
     {
         public string SerializedProfile { get; set; }
     }
 
-    public class SignupAccountModel: LinkAccountModel
+    public class SignupAccountRequestDto: LinkAccountRequestDto
     {
         public EmployeeType? EmplType { get; set; }
         public string FirstName { get; set; }

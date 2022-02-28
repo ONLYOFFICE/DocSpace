@@ -1,6 +1,6 @@
 ﻿namespace ASC.People.Models
 {
-    public class TransferGroupMembersModel
+    public class TransferGroupMembersRequestDto
     {
         public Guid GroupId { get; set; }
         public Guid NewGroupId { get; set; }

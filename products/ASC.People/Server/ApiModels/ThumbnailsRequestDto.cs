@@ -1,6 +1,6 @@
 ﻿namespace ASC.People.Models
 {
-    public class ThumbnailsModel
+    public class ThumbnailsRequestDto
     {
         public string TmpFile { get; set; }
         public int X { get; set; }

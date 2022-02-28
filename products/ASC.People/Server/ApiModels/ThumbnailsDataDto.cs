@@ -25,9 +25,9 @@
 
 namespace ASC.Web.Api.Models
 {
-    public class ThumbnailsDataWrapper
+    public class ThumbnailsDataDto
     {
-        public ThumbnailsDataWrapper(Guid userId, UserPhotoManager userPhotoManager)
+        public ThumbnailsDataDto(Guid userId, UserPhotoManager userPhotoManager)
         {
             Original = userPhotoManager.GetPhotoAbsoluteWebPath(userId);
             Retina = userPhotoManager.GetRetinaPhotoURL(userId);
@@ -37,7 +37,7 @@ namespace ASC.Web.Api.Models
             Small = userPhotoManager.GetSmallPhotoURL(userId);
         }
 
-        private ThumbnailsDataWrapper()
+        private ThumbnailsDataDto()
         {
         }
 
@@ -54,9 +54,9 @@ namespace ASC.Web.Api.Models
         public string Small { get; set; }
 
 
-        public static ThumbnailsDataWrapper GetSample()
+        public static ThumbnailsDataDto GetSample()
         {
-            return new ThumbnailsDataWrapper
+            return new ThumbnailsDataDto
             {
                 Original = "default_user_photo_size_1280-1280.png",
                 Retina = "default_user_photo_size_360-360.png",

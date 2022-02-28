@@ -41,7 +41,7 @@
         }
 
         [Read("full")]
-        public IEnumerable<GroupWrapperFull> GetAllWithMembers()
+        public IEnumerable<GroupDto> GetAllWithMembers()
         {
             var result = UserManager.GetDepartments().Select(r => r);
             if (!string.IsNullOrEmpty(ApiContext.FilterValue))
@@ -52,7 +52,7 @@
         }
 
         [Read("{groupid}")]
-        public GroupWrapperFull GetById(Guid groupid)
+        public GroupDto GetById(Guid groupid)
         {
             return GroupWraperFullHelper.Get(GetGroupInfo(groupid), true);
         }
@@ -64,19 +64,19 @@
         }
 
         [Create]
-        public GroupWrapperFull AddGroupFromBody([FromBody]GroupModel groupModel)
+        public GroupDto AddGroupFromBody([FromBody]GroupRequestDto groupModel)
         {
             return AddGroup(groupModel);
         }
 
         [Create]
         [Consumes("application/x-www-form-urlencoded")]
-        public GroupWrapperFull AddGroupFromForm([FromForm] GroupModel groupModel)
+        public GroupDto AddGroupFromForm([FromForm] GroupRequestDto groupModel)
         {
             return AddGroup(groupModel);
         }
 
-        private GroupWrapperFull AddGroup(GroupModel groupModel)
+        private GroupDto AddGroup(GroupRequestDto groupModel)
         {
             PermissionContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
 
@@ -97,19 +97,19 @@
         }
 
         [Update("{groupid}")]
-        public GroupWrapperFull UpdateGroupFromBody(Guid groupid, [FromBody]GroupModel groupModel)
+        public GroupDto UpdateGroupFromBody(Guid groupid, [FromBody]GroupRequestDto groupModel)
         {
             return UpdateGroup(groupid, groupModel);
         }
 
         [Update("{groupid}")]
         [Consumes("application/x-www-form-urlencoded")]
-        public GroupWrapperFull UpdateGroupFromForm(Guid groupid, [FromForm] GroupModel groupModel)
+        public GroupDto UpdateGroupFromForm(Guid groupid, [FromForm] GroupRequestDto groupModel)
         {
             return UpdateGroup(groupid, groupModel);
         }
 
-        private GroupWrapperFull UpdateGroup(Guid groupid, GroupModel groupModel)
+        private GroupDto UpdateGroup(Guid groupid, GroupRequestDto groupModel)
         {
             PermissionContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
             var group = UserManager.GetGroups().SingleOrDefault(x => x.ID == groupid).NotFoundIfNull("group not found");
@@ -121,7 +121,7 @@
             group.Name = groupModel.GroupName ?? group.Name;
             UserManager.SaveGroupInfo(group);
 
-            RemoveMembersFrom(groupid, new GroupModel {Members = UserManager.GetUsersByGroup(groupid, EmployeeStatus.All).Select(u => u.ID).Where(id => !groupModel.Members.Contains(id)) });
+            RemoveMembersFrom(groupid, new GroupRequestDto {Members = UserManager.GetUsersByGroup(groupid, EmployeeStatus.All).Select(u => u.ID).Where(id => !groupModel.Members.Contains(id)) });
 
             TransferUserToDepartment(groupModel.GroupManager, @group, true);
             if (groupModel.Members != null)
@@ -138,7 +138,7 @@
         }
 
         [Delete("{groupid}")]
-        public GroupWrapperFull DeleteGroup(Guid groupid)
+        public GroupDto DeleteGroup(Guid groupid)
         {
             PermissionContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
             var @group = GetGroupInfo(groupid);
@@ -160,7 +160,7 @@
         }
 
         [Update("{groupid}/members/{newgroupid}")]
-        public GroupWrapperFull TransferMembersTo(Guid groupid, Guid newgroupid)
+        public GroupDto TransferMembersTo(Guid groupid, Guid newgroupid)
         {
             PermissionContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
             var oldgroup = GetGroupInfo(groupid);
@@ -176,39 +176,39 @@
         }
 
         [Create("{groupid}/members")]
-        public GroupWrapperFull SetMembersToFromBody(Guid groupid, [FromBody]GroupModel groupModel)
+        public GroupDto SetMembersToFromBody(Guid groupid, [FromBody]GroupRequestDto groupModel)
         {
             return SetMembersTo(groupid, groupModel);
         }
 
         [Create("{groupid}/members")]
         [Consumes("application/x-www-form-urlencoded")]
-        public GroupWrapperFull SetMembersToFromForm(Guid groupid, [FromForm] GroupModel groupModel)
+        public GroupDto SetMembersToFromForm(Guid groupid, [FromForm] GroupRequestDto groupModel)
         {
             return SetMembersTo(groupid, groupModel);
         }
 
-        private GroupWrapperFull SetMembersTo(Guid groupid, GroupModel groupModel)
+        private GroupDto SetMembersTo(Guid groupid, GroupRequestDto groupModel)
         {
-            RemoveMembersFrom(groupid, new GroupModel {Members = UserManager.GetUsersByGroup(groupid).Select(x => x.ID) });
+            RemoveMembersFrom(groupid, new GroupRequestDto {Members = UserManager.GetUsersByGroup(groupid).Select(x => x.ID) });
             AddMembersTo(groupid, groupModel);
             return GetById(groupid);
         }
 
         [Update("{groupid}/members")]
-        public GroupWrapperFull AddMembersToFromBody(Guid groupid, [FromBody]GroupModel groupModel)
+        public GroupDto AddMembersToFromBody(Guid groupid, [FromBody]GroupRequestDto groupModel)
         {
             return AddMembersTo(groupid, groupModel);
         }
 
         [Update("{groupid}/members")]
         [Consumes("application/x-www-form-urlencoded")]
-        public GroupWrapperFull AddMembersToFromForm(Guid groupid, [FromForm] GroupModel groupModel)
+        public GroupDto AddMembersToFromForm(Guid groupid, [FromForm] GroupRequestDto groupModel)
         {
             return AddMembersTo(groupid, groupModel);
         }
 
-        private GroupWrapperFull AddMembersTo(Guid groupid, GroupModel groupModel)
+        private GroupDto AddMembersTo(Guid groupid, GroupRequestDto groupModel)
         {
             PermissionContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
             var group = GetGroupInfo(groupid);
@@ -221,19 +221,19 @@
         }
 
         [Update("{groupid}/manager")]
-        public GroupWrapperFull SetManagerFromBody(Guid groupid, [FromBody]SetManagerModel setManagerModel)
+        public GroupDto SetManagerFromBody(Guid groupid, [FromBody]SetManagerRequestDto setManagerModel)
         {
             return SetManager(groupid, setManagerModel);
         }
 
         [Update("{groupid}/manager")]
         [Consumes("application/x-www-form-urlencoded")]
-        public GroupWrapperFull SetManagerFromForm(Guid groupid, [FromForm] SetManagerModel setManagerModel)
+        public GroupDto SetManagerFromForm(Guid groupid, [FromForm] SetManagerRequestDto setManagerModel)
         {
             return SetManager(groupid, setManagerModel);
         }
 
-        private GroupWrapperFull SetManager(Guid groupid, SetManagerModel setManagerModel)
+        private GroupDto SetManager(Guid groupid, SetManagerRequestDto setManagerModel)
         {
             var group = GetGroupInfo(groupid);
             if (UserManager.UserExists(setManagerModel.UserId))
@@ -248,19 +248,19 @@
         }
 
         [Delete("{groupid}/members")]
-        public GroupWrapperFull RemoveMembersFromFromBody(Guid groupid, [FromBody]GroupModel groupModel)
+        public GroupDto RemoveMembersFromFromBody(Guid groupid, [FromBody]GroupRequestDto groupModel)
         {
             return RemoveMembersFrom(groupid, groupModel);
         }
 
         [Delete("{groupid}/members")]
         [Consumes("application/x-www-form-urlencoded")]
-        public GroupWrapperFull RemoveMembersFromFromForm(Guid groupid, [FromForm] GroupModel groupModel)
+        public GroupDto RemoveMembersFromFromForm(Guid groupid, [FromForm] GroupRequestDto groupModel)
         {
             return RemoveMembersFrom(groupid, groupModel);
         }
 
-        private GroupWrapperFull RemoveMembersFrom(Guid groupid, GroupModel groupModel)
+        private GroupDto RemoveMembersFrom(Guid groupid, GroupRequestDto groupModel)
         {
             PermissionContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
             var group = GetGroupInfo(groupid);
