@@ -34,6 +34,7 @@ const FileTile = (props) => {
     onMouseClick,
     isActive,
     isEdit,
+    inProgress,
     quickButtonsComponent,
     showHotkeyBorder,
     badgesComponent,
@@ -85,6 +86,7 @@ const FileTile = (props) => {
           {...contextOptionsProps}
           contextButtonSpacerWidth={displayShareButton}
           isActive={isActive}
+          inProgress={inProgress}
           isEdit={isEdit}
           title={
             item.isFolder
@@ -105,8 +107,8 @@ const FileTile = (props) => {
   );
 };
 
-export default inject(({ formatsStore }) => {
-  const { getIcon } = formatsStore.iconFormatsStore;
+export default inject(({ settingsStore }) => {
+  const { getIcon } = settingsStore;
   return { getIcon };
 })(
   withTranslation(["Home", "VersionBadge"])(

@@ -39,23 +39,31 @@ class PureHome extends React.Component {
       expandedKeys,
       setExpandedKeys,
       setToPreviewFile,
-      mediaViewersFormatsStore,
+      playlist,
+      isMediaOrImage,
       getFileInfo,
+      setIsPrevSettingsModule,
+      isPrevSettingsModule,
     } = this.props;
+
+    if (!window.location.href.includes("#preview")) {
+      localStorage.removeItem("isFirstUrl");
+    }
 
     const reg = new RegExp(`${homepage}((/?)$|/filter)`, "gmi"); //TODO: Always find?
     const match = window.location.pathname.match(reg);
     let filterObj = null;
 
-    if (window.location.href.indexOf("/files/#preview") > 1) {
+    if (
+      window.location.href.indexOf("/files/#preview") > 1 &&
+      playlist.length < 1
+    ) {
       const pathname = window.location.href;
       const fileId = pathname.slice(pathname.indexOf("#preview") + 9);
 
       getFileInfo(fileId)
         .then((data) => {
-          const canOpenPlayer = mediaViewersFormatsStore.isMediaOrImage(
-            data.fileExst
-          );
+          const canOpenPlayer = isMediaOrImage(data.fileExst);
           const file = { ...data, canOpenPlayer };
           setToPreviewFile(file, true);
         })
@@ -68,6 +76,10 @@ class PureHome extends React.Component {
     }
 
     if (match && match.length > 0) {
+      if (window.location.href.includes("#preview")) {
+        return;
+      }
+
       filterObj = FilesFilter.getFilter(window.location);
 
       if (!filterObj) {
@@ -76,6 +88,11 @@ class PureHome extends React.Component {
 
         return;
       }
+    }
+
+    if (isPrevSettingsModule) {
+      setIsPrevSettingsModule(false);
+      return;
     }
 
     if (!filterObj) return;
@@ -118,7 +135,7 @@ class PureHome extends React.Component {
       .all(requests)
       .catch((err) => {
         Promise.resolve(FilesFilter.getDefault());
-        console.warn("Filter restored by default", err);
+        //console.warn("Filter restored by default", err);
       })
       .then((data) => {
         const filter = data[0];
@@ -338,7 +355,7 @@ export default inject(
     uploadDataStore,
     treeFoldersStore,
     mediaViewerDataStore,
-    formatsStore,
+    settingsStore,
   }) => {
     const {
       secondaryProgressDataStore,
@@ -357,9 +374,9 @@ export default inject(
       isLoading,
       viewAs,
       getFileInfo,
+      setIsPrevSettingsModule,
+      isPrevSettingsModule,
     } = filesStore;
-
-    const { mediaViewersFormatsStore } = formatsStore;
 
     const { id } = fileActionStore;
     const {
@@ -397,7 +414,7 @@ export default inject(
       ? filesStore.selectionTitle
       : null;
 
-    const { setToPreviewFile } = mediaViewerDataStore;
+    const { setToPreviewFile, playlist } = mediaViewerDataStore;
     if (!firstLoad) {
       if (isLoading) {
         showLoader();
@@ -445,8 +462,12 @@ export default inject(
       isHeaderVisible: auth.settingsStore.isHeaderVisible,
       setHeaderVisible: auth.settingsStore.setHeaderVisible,
       setToPreviewFile,
-      mediaViewersFormatsStore,
+      playlist,
+      isMediaOrImage: settingsStore.isMediaOrImage,
       getFileInfo,
+
+      setIsPrevSettingsModule,
+      isPrevSettingsModule,
     };
   }
 )(withRouter(observer(Home)));

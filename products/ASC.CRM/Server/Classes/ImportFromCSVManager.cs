@@ -30,6 +30,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.CRM.Core.Enums;
@@ -63,18 +64,25 @@ namespace ASC.Web.CRM.Classes
             _messageService.Send(GetMessageAction(entityType));
         }
 
-        public FileUploadResult ProcessUploadFake(string fileTemp, string importSettingsJSON)
+        public Task<FileUploadResult> ProcessUploadFakeAsync(string fileTemp, string importSettingsJSON)
         {
             var fileUploadResult = new FileUploadResult();
 
-            if (String.IsNullOrEmpty(fileTemp) || String.IsNullOrEmpty(importSettingsJSON)) return fileUploadResult;
+            if (String.IsNullOrEmpty(fileTemp) || String.IsNullOrEmpty(importSettingsJSON)) return Task.FromResult(fileUploadResult);
 
-            if (!_global.GetStore().IsFile("temp", fileTemp)) return fileUploadResult;
+            return InternalProcessUploadFakeAsync(fileTemp, importSettingsJSON);
+        }
+
+        private async Task<FileUploadResult> InternalProcessUploadFakeAsync(string fileTemp, string importSettingsJSON)
+        {
+            var fileUploadResult = new FileUploadResult();
+
+            if (!await _global.GetStore().IsFileAsync("temp", fileTemp)) return fileUploadResult;
 
             JsonDocument jObject;
 
             //Read contents
-            using (Stream storeStream = _global.GetStore().GetReadStream("temp", fileTemp))
+            using (Stream storeStream = await _global.GetStore().GetReadStreamAsync("temp", fileTemp))
             {
                 using (var CSVFileStream = new MemoryStream())
                 {

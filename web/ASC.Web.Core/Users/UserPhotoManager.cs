@@ -469,7 +469,7 @@ namespace ASC.Web.Core.Users
             if (!string.IsNullOrEmpty(fileName))
             {
                 var store = GetDataStore();
-                return store.GetUri(fileName).ToString();
+                return store.GetUriAsync(fileName).Result.ToString();
             }
 
             return null;
@@ -483,7 +483,7 @@ namespace ASC.Web.Core.Users
                 {
                     try
                     {
-                        var listFileNames = GetDataStore().ListFilesRelative("", "", "*.*", false);
+                        var listFileNames = GetDataStore().ListFilesRelativeAsync("", "", "*.*", false).ToArrayAsync().Result;
                         foreach (var fileName in listFileNames)
                         {
                             //Try parse fileName
@@ -529,7 +529,7 @@ namespace ASC.Web.Core.Users
             try
             {
                 var storage = GetDataStore();
-                storage.DeleteFiles("", idUser + "*.*", false);
+                storage.DeleteFilesAsync("", idUser + "*.*", false).Wait();
             } 
             catch(DirectoryNotFoundException e)
             {
@@ -571,7 +571,7 @@ namespace ASC.Web.Core.Users
             {
                 using (var stream = new MemoryStream(data))
                 {
-                    photoUrl = store.Save(fileName, stream).ToString();
+                    photoUrl = store.SaveAsync(fileName, stream).Result.ToString();
                 }
                 //Queue resizing
                 SizePhoto(userID, data, -1, SmallFotoSize, true);
@@ -727,7 +727,7 @@ namespace ASC.Web.Core.Users
                 var fileName = string.Format("{0}_size_{1}-{2}.{3}", item.UserId, item.Size.Width, item.Size.Height, widening);
 
                 using var stream2 = new MemoryStream(data);
-                item.DataStore.Save(fileName, stream2).ToString();
+                item.DataStore.SaveAsync(fileName, stream2).Result.ToString();
 
                 UserPhotoManagerCache.AddToCache(item.UserId, item.Size, fileName, tenant.TenantId);
             }
@@ -739,7 +739,7 @@ namespace ASC.Web.Core.Users
 
         public string GetTempPhotoAbsoluteWebPath(string fileName)
         {
-            return GetDataStore().GetUri(_tempDomainName, fileName).ToString();
+            return GetDataStore().GetUriAsync(_tempDomainName, fileName).Result.ToString();
         }
 
         public string SaveTempPhoto(byte[] data, long maxFileSize, int maxWidth, int maxHeight)
@@ -750,12 +750,12 @@ namespace ASC.Web.Core.Users
 
             var store = GetDataStore();
             using var stream = new MemoryStream(data);
-            return store.Save(_tempDomainName, fileName, stream).ToString();
+            return store.SaveAsync(_tempDomainName, fileName, stream).Result.ToString();
         }
 
         public byte[] GetTempPhotoData(string fileName)
         {
-            using var s = GetDataStore().GetReadStream(_tempDomainName, fileName);
+            using var s = GetDataStore().GetReadStreamAsync(_tempDomainName, fileName).Result;
             var data = new MemoryStream();
             var buffer = new byte[1024 * 10];
             while (true)
@@ -770,9 +770,9 @@ namespace ASC.Web.Core.Users
         public string GetSizedTempPhotoAbsoluteWebPath(string fileName, int newWidth, int newHeight)
         {
             var store = GetDataStore();
-            if (store.IsFile(_tempDomainName, fileName))
+            if (store.IsFileAsync(_tempDomainName, fileName).Result)
             {
-                using var s = store.GetReadStream(_tempDomainName, fileName);
+                using var s = store.GetReadStreamAsync(_tempDomainName, fileName).Result;
                 using var img = Image.Load(s, out var format);
                 var imgFormat = format;
                 byte[] data;
@@ -792,7 +792,7 @@ namespace ASC.Web.Core.Users
 
                 var trueFileName = fileNameWithoutExt + "_size_" + newWidth.ToString() + "-" + newHeight.ToString() + "." + widening;
                 using var stream = new MemoryStream(data);
-                return store.Save(_tempDomainName, trueFileName, stream).ToString();
+                return store.SaveAsync(_tempDomainName, trueFileName, stream).Result.ToString();
             }
             return GetDefaultPhotoAbsoluteWebPath(new Size(newWidth, newHeight));
         }
@@ -804,7 +804,7 @@ namespace ASC.Web.Core.Users
             try
             {
                 var store = GetDataStore();
-                store.DeleteFiles(_tempDomainName, "", fileNameWithoutExt + "*.*", false);
+                store.DeleteFilesAsync(_tempDomainName, "", fileNameWithoutExt + "*.*", false).Wait();
             }
             catch { }
         }
@@ -839,7 +839,7 @@ namespace ASC.Web.Core.Users
             using (var s = new MemoryStream(CommonPhotoManager.SaveToBytes(img)))
             {
                 img.Dispose();
-                photoUrl = store.Save(fileName, s).ToString();
+                photoUrl = store.SaveAsync(fileName, s).Result.ToString();
             }
 
             UserPhotoManagerCache.AddToCache(userID, size, fileName, tenant.TenantId);
@@ -852,11 +852,11 @@ namespace ASC.Web.Core.Users
             {
                 var pattern = string.Format("{0}_size_{1}-{2}.*", userId, size.Width, size.Height);
 
-                var fileName = GetDataStore().ListFilesRelative("", "", pattern, false).FirstOrDefault();
+                var fileName = GetDataStore().ListFilesRelativeAsync("", "", pattern, false).ToArrayAsync().Result.FirstOrDefault();
 
                 if (string.IsNullOrEmpty(fileName)) return null;
 
-                using var s = GetDataStore().GetReadStream("", fileName);
+                using var s = GetDataStore().GetReadStreamAsync("", fileName).Result;
                 var data = new MemoryStream();
                 var buffer = new byte[1024 * 10];
                 while (true)

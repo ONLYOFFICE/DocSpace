@@ -22,6 +22,7 @@
       "common\\services\\ASC.ElasticSearch\\ASC.ElasticSearch.csproj",
       "common\\services\\ASC.Feed.Aggregator\\ASC.Feed.Aggregator.csproj",
       "common\\services\\ASC.Notify\\ASC.Notify.csproj",
+      "common\\services\\ASC.Socket.IO.Svc\\ASC.Socket.IO.Svc.csproj",
       "common\\services\\ASC.Studio.Notify\\ASC.Studio.Notify.csproj",
       "common\\services\\ASC.TelegramService\\ASC.TelegramService.csproj",
       "common\\services\\ASC.UrlShortener.Svc\\ASC.UrlShortener.Svc.csproj",

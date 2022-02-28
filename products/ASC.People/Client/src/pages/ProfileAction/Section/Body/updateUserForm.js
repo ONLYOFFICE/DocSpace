@@ -75,33 +75,6 @@ class UpdateUserForm extends React.Component {
 
     this.state = this.mapPropsToState(props);
 
-    this.validate = this.validate.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.onInputChange = this.onInputChange.bind(this);
-    this.onUserTypeChange = this.onUserTypeChange.bind(this);
-    this.onBirthdayDateChange = this.onBirthdayDateChange.bind(this);
-    this.onWorkFromDateChange = this.onWorkFromDateChange.bind(this);
-    this.onCancel = this.onCancel.bind(this);
-    this.onCancelHandler = this.onCancelHandler.bind(this);
-
-    this.onContactsItemAdd = this.onContactsItemAdd.bind(this);
-    this.onContactsItemTypeChange = this.onContactsItemTypeChange.bind(this);
-    this.onContactsItemTextChange = this.onContactsItemTextChange.bind(this);
-    this.onContactsItemRemove = this.onContactsItemRemove.bind(this);
-
-    this.openAvatarEditor = this.openAvatarEditor.bind(this);
-    this.openAvatarEditorPage = this.openAvatarEditorPage.bind(this);
-    this.onCloseAvatarEditor = this.onCloseAvatarEditor.bind(this);
-    this.onLoadFileAvatar = this.onLoadFileAvatar.bind(this);
-
-    this.onShowGroupSelector = this.onShowGroupSelector.bind(this);
-    this.onCloseGroupSelector = this.onCloseGroupSelector.bind(this);
-    this.onSearchGroups = this.onSearchGroups.bind(this);
-    this.onSelectGroups = this.onSelectGroups.bind(this);
-    this.onRemoveGroup = this.onRemoveGroup.bind(this);
-
-    this.handleWindowBeforeUnload = this.handleWindowBeforeUnload.bind(this);
-
     this.mainFieldsContainerRef = React.createRef();
   }
 
@@ -231,12 +204,12 @@ class UpdateUserForm extends React.Component {
     return newState;
   };
 
-  setIsEdit() {
+  setIsEdit = () => {
     const { isEdit, setIsEditingForm } = this.props;
     if (!isEdit) setIsEditingForm(true);
-  }
+  };
 
-  onInputChange(event) {
+  onInputChange = (event) => {
     const { userFormValidation } = this.props;
     var stateCopy = Object.assign({}, this.state);
     const value = event.target.value;
@@ -252,7 +225,7 @@ class UpdateUserForm extends React.Component {
 
     this.setState(stateCopy);
     this.setIsEdit();
-  }
+  };
 
   toggleDialogsVisible = (e) => {
     const stateCopy = Object.assign({}, {}, this.state.dialogsVisible);
@@ -267,33 +240,39 @@ class UpdateUserForm extends React.Component {
     this.setState({ dialogsVisible: stateCopy });
   };
 
-  onUserTypeChange(event) {
+  onUserTypeChange = (event) => {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.profile.isVisitor = event.target.value === "true";
     this.setState(stateCopy);
     this.setIsEdit();
-  }
+  };
 
-  onBirthdayDateChange(value) {
+  onBirthdayDateChange = (value) => {
     var stateCopy = Object.assign({}, this.state);
-    stateCopy.profile.birthday = value ? value.toJSON() : null;
+    const birthday = value ? value.toJSON() : stateCopy.profile.workFrom;
+    stateCopy.profile.birthday = birthday;
+
+    if (new Date(birthday) > new Date(stateCopy.profile.workFrom)) {
+      stateCopy.profile.workFrom = birthday;
+    }
+
     this.setState(stateCopy);
     this.setIsEdit();
-  }
+  };
 
-  onWorkFromDateChange(value) {
+  onWorkFromDateChange = (value) => {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.profile.workFrom = value ? value.toJSON() : null;
     this.setState(stateCopy);
     this.setIsEdit();
-  }
+  };
 
   scrollToErrorForm = () => {
     const element = this.mainFieldsContainerRef.current;
     const parent = element.closest(".scroll-body");
     (parent || window).scrollTo(0, element.offsetTop);
   };
-  validate() {
+  validate = () => {
     const { profile, errors } = this.state;
 
     if (errors.firstName || errors.lastName) {
@@ -313,9 +292,9 @@ class UpdateUserForm extends React.Component {
 
     this.setState({ errors: errorsObj });
     return !hasError;
-  }
+  };
 
-  handleSubmit() {
+  handleSubmit = () => {
     if (!this.validate()) return false;
 
     const {
@@ -341,8 +320,8 @@ class UpdateUserForm extends React.Component {
         toastr.error(error);
         this.setState({ isLoading: false });
       });
-  }
-  onCancelHandler() {
+  };
+  onCancelHandler = () => {
     const { isEdit, setIsVisibleDataLossDialog } = this.props;
 
     if (isEdit) {
@@ -350,9 +329,9 @@ class UpdateUserForm extends React.Component {
     } else {
       this.onCancel();
     }
-  }
+  };
 
-  onCancel() {
+  onCancel = () => {
     const {
       filter,
       setFilter,
@@ -378,9 +357,9 @@ class UpdateUserForm extends React.Component {
       history.push(combineUrl(AppServerConfig.proxyURL, config.homepage));
       setFilter(filter);
     }
-  }
+  };
 
-  onContactsItemAdd(item) {
+  onContactsItemAdd = (item) => {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.profile.contacts.push({
       id: new Date().getTime().toString(),
@@ -389,9 +368,9 @@ class UpdateUserForm extends React.Component {
     });
     this.setState(stateCopy);
     this.setIsEdit();
-  }
+  };
 
-  onContactsItemTypeChange(item) {
+  onContactsItemTypeChange = (item) => {
     const id = item.key.split("_")[0];
     var stateCopy = Object.assign({}, this.state);
     stateCopy.profile.contacts.forEach((element) => {
@@ -399,9 +378,9 @@ class UpdateUserForm extends React.Component {
     });
     this.setState(stateCopy);
     this.setIsEdit();
-  }
+  };
 
-  onContactsItemTextChange(event) {
+  onContactsItemTextChange = (event) => {
     const id = event.target.name.split("_")[0];
     var stateCopy = Object.assign({}, this.state);
     stateCopy.profile.contacts.forEach((element) => {
@@ -409,9 +388,9 @@ class UpdateUserForm extends React.Component {
     });
     this.setState(stateCopy);
     this.setIsEdit();
-  }
+  };
 
-  onContactsItemRemove(event) {
+  onContactsItemRemove = (event) => {
     const id = event.target.closest(".remove_icon").dataset.for.split("_")[0];
     var stateCopy = Object.assign({}, this.state);
     const filteredArray = stateCopy.profile.contacts.filter((element) => {
@@ -420,9 +399,9 @@ class UpdateUserForm extends React.Component {
     stateCopy.profile.contacts = filteredArray;
     this.setState(stateCopy);
     this.setIsEdit();
-  }
+  };
 
-  openAvatarEditor() {
+  openAvatarEditor = () => {
     let avatarDefault = this.state.avatar.image;
     let avatarDefaultSizes = /_orig_(\d*)-(\d*)./g.exec(
       this.state.avatar.image
@@ -444,13 +423,13 @@ class UpdateUserForm extends React.Component {
     this.setState({
       visibleAvatarEditor: true,
     });
-  }
+  };
 
-  openAvatarEditorPage() {
+  openAvatarEditorPage = () => {
     const { toggleAvatarEditor } = this.props;
 
     toggleAvatarEditor(true);
-  }
+  };
 
   onLoadFileAvatar = (file, fileData) => {
     let data = new FormData();
@@ -469,8 +448,7 @@ class UpdateUserForm extends React.Component {
           throw response.message;
         }
         var img = new Image();
-        img.onload = function () {
-          _this.setState({ isLoading: false });
+        img.onload = () => {
           if (fileData) {
             fileData.avatar = {
               tmpFile: response.data,
@@ -556,43 +534,39 @@ class UpdateUserForm extends React.Component {
     }
   };
 
-  onCloseAvatarEditor() {
-    this.setState({
-      visibleAvatarEditor: false,
-    });
-  }
+  onCloseAvatarEditor = () => this.setState({ visibleAvatarEditor: false });
 
-  onShowGroupSelector() {
+  onShowGroupSelector = () => {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.selector.visible = true;
     this.setState(stateCopy);
-  }
+  };
 
-  onCloseGroupSelector() {
+  onCloseGroupSelector = () => {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.selector.visible = false;
     this.setState(stateCopy);
-  }
+  };
 
-  onSearchGroups(template) {
+  onSearchGroups = (template) => {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.selector.options = filterGroupSelectorOptions(
       stateCopy.selector.allOptions,
       template
     );
     this.setState(stateCopy);
-  }
+  };
 
-  onSelectGroups(selected) {
+  onSelectGroups = (selected) => {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.profile.groups = mapGroupSelectorOptionsToGroups(selected);
     stateCopy.selector.selected = selected;
     stateCopy.selector.visible = false;
     this.setState(stateCopy);
     this.setIsEdit();
-  }
+  };
 
-  onRemoveGroup(id) {
+  onRemoveGroup = (id) => {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.profile.groups = stateCopy.profile.groups.filter(
       (group) => group.id !== id
@@ -602,7 +576,7 @@ class UpdateUserForm extends React.Component {
     );
     this.setState(stateCopy);
     this.setIsEdit();
-  }
+  };
 
   onSaveClick = () => this.setState({ isLoading: true });
 
@@ -720,6 +694,18 @@ class UpdateUserForm extends React.Component {
     const radioIsDisabled =
       isSelf || (profile.listAdminModules && !!profile.listAdminModules.length);
 
+    const calendarWorkFrom = profile.workFrom
+      ? new Date(profile.workFrom)
+      : undefined;
+
+    const calendarMinDate = profile.birthday
+      ? new Date(profile.birthday)
+      : calendarWorkFrom;
+
+    const birthdayDateValue = profile.birthday
+      ? new Date(profile.birthday)
+      : new Date(this.props.profile.workFrom);
+
     return (
       <>
         <MainContainer>
@@ -748,11 +734,9 @@ class UpdateUserForm extends React.Component {
               maxSizeFileError={t("Translations:maxSizeFileError")}
               unknownError={t("Common:Error")}
               saveButtonLabel={
-                this.state.isLoading
-                  ? t("UpdatingProcess")
-                  : t("Common:SaveButton")
+                isLoading ? t("UpdatingProcess") : t("Common:SaveButton")
               }
-              saveButtonLoading={this.state.isLoading}
+              saveButtonLoading={isLoading}
               maxSizeLabel={t("Translations:MaxSizeLabel")}
             />
           </AvatarContainer>
@@ -851,9 +835,8 @@ class UpdateUserForm extends React.Component {
               calendarHeaderContent={`${t("CalendarSelectDate")}:`}
               labelText={`${t("Translations:Birthdate")}:`}
               inputName="birthday"
-              inputValue={
-                profile.birthday ? new Date(profile.birthday) : undefined
-              }
+              inputClassName="date-picker_input-birthday"
+              inputValue={birthdayDateValue}
               inputIsDisabled={isLoading}
               inputOnChange={this.onBirthdayDateChange}
               inputTabIndex={6}
@@ -895,17 +878,19 @@ class UpdateUserForm extends React.Component {
                 calendarHeaderContent={`${t("CalendarSelectDate")}:`}
                 labelText={`${regDateCaption}:`}
                 inputName="workFrom"
-                inputValue={
-                  profile.workFrom ? new Date(profile.workFrom) : undefined
+                inputClassName="date-picker_input-reg-date"
+                inputValue={calendarWorkFrom}
+                inputIsDisabled={
+                  isLoading ||
+                  !isAdmin ||
+                  calendarMinDate >= new Date().setHours(0, 0, 0, 0)
                 }
-                inputIsDisabled={isLoading || !isAdmin}
                 inputOnChange={this.onWorkFromDateChange}
                 inputTabIndex={7}
-                calendarMinDate={
-                  profile.birthday ? new Date(profile.birthday) : new Date()
-                }
+                calendarMinDate={calendarMinDate}
                 locale={language}
                 maxLabelWidth={maxLabelWidth}
+                //calendarMaxDate={calendarMinDate}
               />
             )}
             <TextField

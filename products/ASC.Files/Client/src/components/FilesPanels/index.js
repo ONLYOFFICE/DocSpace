@@ -22,6 +22,7 @@ import {
   ConflictResolveDialog,
   ConvertDialog,
 } from "../dialogs";
+import ConvertPasswordDialog from "../dialogs/ConvertPasswordDialog";
 
 const Panels = (props) => {
   const {
@@ -45,6 +46,7 @@ const Panels = (props) => {
     selectFileDialogVisible,
     setSelectFileDialogVisible,
     hotkeyPanelVisible,
+    convertPasswordDialogVisible,
   } = props;
 
   const { t } = useTranslation(["Translations", "SelectFile"]);
@@ -101,6 +103,9 @@ const Panels = (props) => {
       />
     ),
     hotkeyPanelVisible && <HotkeyPanel key="hotkey-panel" />,
+    convertPasswordDialogVisible && (
+      <ConvertPasswordDialog key="convert-password-dialog" />
+    ),
   ];
 };
 
@@ -121,7 +126,7 @@ export default inject(
       newFilesPanelVisible,
       conflictResolveDialogVisible,
       convertDialogVisible,
-
+      convertPasswordDialogVisible,
       connectItem, //TODO:
 
       createMasterForm,
@@ -150,6 +155,7 @@ export default inject(
       newFilesPanelVisible,
       conflictResolveDialogVisible,
       convertDialogVisible,
+      convertPasswordDialogVisible,
       selectFileDialogVisible,
       createMasterForm,
       setSelectFileDialogVisible,

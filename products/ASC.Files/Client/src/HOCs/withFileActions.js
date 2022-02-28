@@ -49,36 +49,29 @@ export default function withFileActions(WrappedFileItem) {
         setStartDrag,
         isPrivacy,
         isTrashFolder,
-        onSelectItem,
         item,
         setBufferSelection,
         isActive,
+        inProgress,
       } = this.props;
 
-      const { id, isFolder, isThirdPartyFolder } = item;
+      const { isThirdPartyFolder } = item;
 
-      const notSelectable = e.target.classList.contains("not-selectable");
+      const notSelectable = e.target.closest(".not-selectable");
       const isFileName = e.target.classList.contains("item-file-name");
 
       if (
         isPrivacy ||
         isTrashFolder ||
-        (!draggable && !isFileName && !isActive)
-      )
-        return e;
-
-      if (
+        (!draggable && !isFileName && !isActive) ||
         window.innerWidth < 1025 ||
         notSelectable ||
         isMobile ||
-        isThirdPartyFolder
+        isThirdPartyFolder ||
+        inProgress
       ) {
         return e;
       }
-
-      // if (!draggable) {
-      //   id !== -1 && onSelectItem({ id, isFolder });
-      // }
 
       const mouseButton = e.which
         ? e.which !== 1
@@ -91,12 +84,12 @@ export default function withFileActions(WrappedFileItem) {
       }
       e.preventDefault();
       setTooltipPosition(e.pageX, e.pageY);
-      !isFileName && setStartDrag(true);
+      setStartDrag(true);
       !isActive && setBufferSelection(null);
     };
 
     onMouseClick = (e) => {
-      const { viewAs, isItemsSelected } = this.props;
+      const { viewAs } = this.props;
 
       if (
         e.target.closest(".checkbox") ||
@@ -105,8 +98,8 @@ export default function withFileActions(WrappedFileItem) {
         e.target.tagName === "A" ||
         e.target.closest(".expandButton") ||
         e.target.closest(".badges") ||
-        e.button !== 0 /* ||
-        isItemsSelected */
+        e.button !== 0 ||
+        e.target.closest(".not-selectable")
       )
         return;
 
@@ -121,7 +114,10 @@ export default function withFileActions(WrappedFileItem) {
     };
     onFilesClick = (e) => {
       const { item, openFileAction } = this.props;
-      if ((e && e.target.tagName === "INPUT") || e.target.closest(".badges"))
+      if (
+        (e && e.target.tagName === "INPUT") ||
+        !!e.target.closest(".lock-file")
+      )
         return;
 
       e.preventDefault();
@@ -158,7 +154,7 @@ export default function withFileActions(WrappedFileItem) {
       if (draggable) className += " draggable";
 
       let value = !item.isFolder ? `file_${id}` : `folder_${id}`;
-      value += draggable ? "_draggable" : "";
+      value += draggable ? "_draggable" : `_${item.providerKey}`;
 
       const isShareable = allowShareIn && item.canShare;
 
@@ -215,10 +211,9 @@ export default function withFileActions(WrappedFileItem) {
         //selectedFolderStore,
         filesStore,
         uploadDataStore,
-        formatsStore,
-        mediaViewerDataStore,
+        settingsStore,
       },
-      { item, t, history }
+      { item, t }
     ) => {
       const {
         selectRowAction,
@@ -245,10 +240,11 @@ export default function withFileActions(WrappedFileItem) {
         bufferSelection,
         setBufferSelection,
         hotkeyCaret,
+        activeFiles,
+        activeFolders,
       } = filesStore;
       const { startUpload } = uploadDataStore;
       const { type, extension, id } = fileActionStore;
-      const { docserviceStore } = formatsStore;
 
       const selectedItem = selection.find(
         (x) => x.id === item.id && x.fileExst === item.fileExst
@@ -258,9 +254,15 @@ export default function withFileActions(WrappedFileItem) {
         !isRecycleBinFolder && selectedItem && selectedItem.id !== id;
 
       const isFolder = selectedItem ? false : !item.isFolder ? false : true;
-
-      const canWebEdit = docserviceStore.canWebEdit(item.fileExst);
-      const canViewedDocs = docserviceStore.canViewedDocs(item.fileExst);
+      const canWebEdit = settingsStore.canWebEdit(item.fileExst);
+      const canViewedDocs = settingsStore.canViewedDocs(item.fileExst);
+      const inProgress =
+        activeFiles.findIndex((x) => x === item.id) !== -1 ||
+        activeFolders.findIndex(
+          (x) =>
+            x === item.id &&
+            (item.isFolder || (!item.fileExst && item.id === -1))
+        ) !== -1;
 
       const isActive =
         bufferSelection &&
@@ -283,7 +285,6 @@ export default function withFileActions(WrappedFileItem) {
         draggable,
         setTooltipPosition,
         setStartDrag,
-        history,
         isFolder,
         allowShareIn: filesStore.canShare,
         actionType: type,
@@ -299,9 +300,9 @@ export default function withFileActions(WrappedFileItem) {
         viewAs,
         isDesktop: auth.settingsStore.isDesktopClient,
         personal: auth.settingsStore.personal,
-        isItemsSelected: selection.length > 0,
         setNewBadgeCount,
         isActive,
+        inProgress,
         setBufferSelection,
         bufferSelection,
         showHotkeyBorder,

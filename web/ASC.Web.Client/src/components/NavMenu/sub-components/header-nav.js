@@ -68,6 +68,7 @@ const HeaderNav = ({
   setUserIsUpdate,
   buildVersionInfo,
   debugInfo,
+  settingsModule,
 }) => {
   const { t } = useTranslation(["NavMenu", "Common", "About"]);
   const [visibleAboutDialog, setVisibleAboutDialog] = useState(false);
@@ -106,7 +107,21 @@ const HeaderNav = ({
 
   const onLogoutClick = useCallback(() => logout && logout(), [logout]);
 
+  const settingsUrl =
+    settingsModule && combineUrl(PROXY_HOMEPAGE_URL, settingsModule.link);
+  const onSettingsClick =
+    settingsModule && useCallback(() => history.push(settingsUrl), []);
+
   const getCurrentUserActions = useCallback(() => {
+    const settings = settingsModule
+      ? {
+          key: "SettingsBtn",
+          label: t("Common:Settings"),
+          onClick: onSettingsClick,
+          url: settingsUrl,
+        }
+      : null;
+
     const actions = [
       {
         key: "ProfileBtn",
@@ -114,6 +129,7 @@ const HeaderNav = ({
         onClick: onProfileClick,
         url: peopleAvailable ? PROFILE_SELF_URL : PROFILE_MY_URL,
       },
+      settings,
       {
         key: "SwitchToBtn",
         ...(!isPersonal && {
@@ -225,6 +241,7 @@ export default withRouter(
     } = settingsStore;
     const { user, userIsUpdate, setUserIsUpdate } = userStore;
     const modules = auth.availableModules;
+    const settingsModule = modules.find((module) => module.id === "settings");
 
     return {
       isPersonal,
@@ -240,6 +257,7 @@ export default withRouter(
       setUserIsUpdate,
       buildVersionInfo,
       debugInfo,
+      settingsModule,
     };
   })(observer(HeaderNav))
 );

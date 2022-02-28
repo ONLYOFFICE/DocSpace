@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled, { css } from "styled-components";
 import Button from "@appserver/components/button";
 import TextInput from "@appserver/components/text-input";
+import Text from "@appserver/components/text";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 
 import CheckIcon from "../../public/images/check.react.svg";
@@ -81,15 +82,26 @@ const EditingWrapper = styled.div`
         border: none;
         background: none;
       `};
+    ${(props) =>
+      props.isUpdatingRowItem &&
+      css`
+        margin-left: 0;
+        display: flex;
+        align-items: center;
+      `}
+
+    ${(props) => props.viewAs === "table" && `padding-left: 12px`}
   }
 
   .edit-button {
+    margin-left: 8px;
     height: 32px;
     padding: 8px 7px 7px 7px;
 
     ${(props) =>
       props.viewAs === "tile" &&
       css`
+        margin-left: 0px;
         background: none;
         border: 1px solid transparent;
 
@@ -126,10 +138,12 @@ const EditingWrapper = styled.div`
     margin-top: -6px;
     width: 14px;
     height: 14px;
+    padding: 1px;
   }
 
   .is-edit {
     /* margin-top: 4px; */
+    ${(props) => props.viewAs === "table" && `padding-left: 4px;`}
   }
 `;
 
@@ -143,6 +157,8 @@ const EditingWrapperComponent = (props) => {
     //isLoading,
     viewAs,
     elementIcon,
+    isUpdatingRowItem,
+    passwordEntryProcess,
   } = props;
 
   const isTable = viewAs === "table";
@@ -176,51 +192,63 @@ const EditingWrapperComponent = (props) => {
   const onBlur = (e) => {
     if (e.relatedTarget && e.relatedTarget.classList.contains("edit-button"))
       return false;
-    onClickUpdateItem(e, false);
+
+    !passwordEntryProcess && onClickUpdateItem(e, false);
   };
 
   return (
-    <EditingWrapper viewAs={viewAs}>
+    <EditingWrapper
+      viewAs={viewAs}
+      isUpdatingRowItem={isUpdatingRowItem && !isTable}
+    >
       {isTable && elementIcon}
-      <TextInput
-        className="edit-text"
-        name="title"
-        scale={true}
-        value={itemTitle}
-        tabIndex={1}
-        isAutoFocussed={true}
-        onChange={renameTitle}
-        onKeyPress={onKeyUpUpdateItem}
-        onKeyDown={onEscapeKeyPress}
-        onFocus={onFocus}
-        onBlur={onBlur}
-        isDisabled={isLoading}
-        data-itemid={itemId}
-        withBorder={!isTable}
-      />
-      <Button
-        className="edit-button not-selectable"
-        size="medium"
-        isDisabled={isLoading}
-        onClick={onClickUpdateItem}
-        icon={okIcon}
-        data-itemid={itemId}
-        onMouseEnter={setIsHoveredOkHandler}
-        onMouseLeave={setIsHoveredOkHandler}
-        isHovered={OkIconIsHovered}
-      />
-      <Button
-        className="edit-button not-selectable"
-        size="medium"
-        isDisabled={isLoading}
-        onClick={cancelUpdateItem}
-        icon={cancelIcon}
-        data-itemid={itemId}
-        data-action="cancel"
-        onMouseEnter={setIsHoveredCancelHandler}
-        onMouseLeave={setIsHoveredCancelHandler}
-        isHovered={CancelIconIsHovered}
-      />
+      {isUpdatingRowItem && !isTable ? (
+        <Text className="edit-text">{itemTitle}</Text>
+      ) : (
+        <TextInput
+          className="edit-text"
+          name="title"
+          scale={true}
+          value={itemTitle}
+          tabIndex={1}
+          isAutoFocussed={true}
+          onChange={renameTitle}
+          onKeyPress={onKeyUpUpdateItem}
+          onKeyDown={onEscapeKeyPress}
+          onFocus={onFocus}
+          onBlur={onBlur}
+          isDisabled={isLoading}
+          data-itemid={itemId}
+          withBorder={!isTable}
+        />
+      )}
+      {!isUpdatingRowItem && (
+        <>
+          <Button
+            className="edit-button not-selectable"
+            size="medium"
+            isDisabled={isLoading}
+            onClick={onClickUpdateItem}
+            icon={okIcon}
+            data-itemid={itemId}
+            onMouseEnter={setIsHoveredOkHandler}
+            onMouseLeave={setIsHoveredOkHandler}
+            isHovered={OkIconIsHovered}
+          />
+          <Button
+            className="edit-button not-selectable"
+            size="medium"
+            isDisabled={isLoading}
+            onClick={cancelUpdateItem}
+            icon={cancelIcon}
+            data-itemid={itemId}
+            data-action="cancel"
+            onMouseEnter={setIsHoveredCancelHandler}
+            onMouseLeave={setIsHoveredCancelHandler}
+            isHovered={CancelIconIsHovered}
+          />
+        </>
+      )}
     </EditingWrapper>
   );
 };
