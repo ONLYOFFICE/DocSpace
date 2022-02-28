@@ -28,29 +28,17 @@ namespace ASC.VoipService.Dao;
 public class VoipCallFilter
 {
     public string Type { get; set; }
-
     public DateTime? FromDate { get; set; }
-
     public DateTime? ToDate { get; set; }
-
     public Guid? Agent { get; set; }
-
     public int? Client { get; set; }
-
     public int? ContactID { get; set; }
-
     public string Id { get; set; }
-
     public string ParentId { get; set; }
-
     public string SortBy { get; set; }
-
     public bool SortOrder { get; set; }
-
     public string SearchText { get; set; }
-
     public long Offset { get; set; }
-
     public long Max { get; set; }
 
     public int? TypeStatus

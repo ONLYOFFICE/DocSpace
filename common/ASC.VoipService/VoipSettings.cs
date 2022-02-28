@@ -28,29 +28,17 @@ namespace ASC.VoipService;
 public class VoipSettings
 {
     public string VoiceUrl { get; set; }
-
     public string Name { get; set; }
-
     public List<Agent> Operators { get; set; }
-
     public Queue Queue { get; set; }
-
     public Agent Caller { get { return Operators.FirstOrDefault(r => r.Id == AuthContext.CurrentAccount.ID); } }
-
     public WorkingHours WorkingHours { get; set; }
-
     public string VoiceMail { get; set; }
-
     public string GreetingAudio { get; set; }
-
     public string HoldAudio { get; set; }
-
     public bool AllowOutgoingCalls { get; set; }
-
     public bool Pause { get; set; }
-
     public bool Record { get; set; }
-
     internal string JsonSettings
     {
         get
