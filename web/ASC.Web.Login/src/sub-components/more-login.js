@@ -35,6 +35,13 @@ const ProviderRow = styled.div`
   }
 `;
 
+const Modal = styled(ModalDialogContainer)`
+  .modal-dialog-aside {
+    width: 480px;
+    transform: translateX(${(props) => (props.visible ? "0" : "480px")});
+  }
+`;
+
 const MoreLoginModal = (props) => {
   const {
     t,
@@ -47,7 +54,7 @@ const MoreLoginModal = (props) => {
   } = props;
 
   return (
-    <ModalDialogContainer
+    <Modal
       displayType="aside"
       visible={visible}
       onClose={onClose}
@@ -92,7 +99,7 @@ const MoreLoginModal = (props) => {
           );
         })}
       </ModalDialog.Body>
-    </ModalDialogContainer>
+    </Modal>
   );
 };
 

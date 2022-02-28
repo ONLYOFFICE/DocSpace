@@ -4,8 +4,6 @@ import ModalDialog from "@appserver/components/modal-dialog";
 const ModalDialogContainer = styled(ModalDialog)`
   .modal-dialog-aside {
     padding: 0;
-    transform: translateX(${(props) => (props.visible ? "0" : "480px")});
-    width: 480px;
 
     @media (max-width: 550px) {
       width: 320px;
