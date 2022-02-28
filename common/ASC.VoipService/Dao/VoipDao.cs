@@ -25,7 +25,7 @@
 
 namespace ASC.VoipService.Dao;
 
-[Scope]
+[Scope(Additional = typeof(EventTypeConverterExtension))]
 public class VoipDao : AbstractDao
 {
     private readonly AuthContext _authContext;
@@ -33,6 +33,7 @@ public class VoipDao : AbstractDao
     private readonly SecurityContext _securityContext;
     private readonly BaseCommonLinkUtility _baseCommonLinkUtility;
     private readonly ConsumerFactory _consumerFactory;
+    private readonly IMapper _mapper;
 
     public VoipDao(
         TenantManager tenantManager,
@@ -41,7 +42,8 @@ public class VoipDao : AbstractDao
         TenantUtil tenantUtil,
         SecurityContext securityContext,
         BaseCommonLinkUtility baseCommonLinkUtility,
-        ConsumerFactory consumerFactory)
+        ConsumerFactory consumerFactory,
+        IMapper mapper)
         : base(dbOptions, tenantManager)
     {
         _authContext = authContext;
@@ -49,6 +51,7 @@ public class VoipDao : AbstractDao
         _securityContext = securityContext;
         _baseCommonLinkUtility = baseCommonLinkUtility;
         _consumerFactory = consumerFactory;
+        _mapper = mapper;
     }
 
     public virtual VoipPhone SaveOrUpdateNumber(VoipPhone phone)
@@ -195,7 +198,7 @@ public class VoipDao : AbstractDao
         query = query.Skip((int)filter.Offset);
         query = query.Take((int)filter.Max * 3);
 
-        var calls = query.ToList().ConvertAll(ToCall);
+        var calls = _mapper.Map<List<CallContact>, IEnumerable<VoipCall>>(query.ToList());
 
         calls = calls.GroupJoin(calls, call => call.Id, h => h.ParentID, (call, h) =>
         {
@@ -230,7 +233,7 @@ public class VoipDao : AbstractDao
             query = query.Take((int)count);
         }
 
-        var a = query.Select(ca => new
+        query = query.Select(ca => new
         {
             dbVoipCall = ca,
             tmpDate = VoipDbContext.VoipCalls
@@ -238,9 +241,10 @@ public class VoipDao : AbstractDao
             .Where(tmp => tmp.NumberFrom == ca.DbVoipCall.NumberFrom || tmp.NumberTo == ca.DbVoipCall.NumberFrom)
             .Where(tmp => tmp.Status <= (int)VoipCallStatus.Missed)
             .Max(tmp => tmp.DialDate)
-        }).Where(r => r.dbVoipCall.DbVoipCall.DialDate >= r.tmpDate || r.tmpDate == default);
+        }).Where(r => r.dbVoipCall.DbVoipCall.DialDate >= r.tmpDate || r.tmpDate == default)
+        .Select(q=> q.dbVoipCall);
 
-        return a.ToList().ConvertAll(r => ToCall(r.dbVoipCall));
+        return _mapper.Map<List<CallContact>, IEnumerable<VoipCall>>(query.ToList());
     }
 
     private IQueryable<CallContact> GetCallsQuery(VoipCallFilter filter)
@@ -282,23 +286,12 @@ public class VoipDao : AbstractDao
         {
             q = q.Where(r => r.AnsweredBy == filter.Agent.Value);
         }
-
-        return q
-            .GroupBy(r => r.Id, r => r)
-            .Join(
-                VoipDbContext.CrmContact.DefaultIfEmpty(),
-                r => r.FirstOrDefault().ContactId,
-                c => c.Id,
-                (call, contact) => new CallContact { DbVoipCall = call.FirstOrDefault(), CrmContact = contact })
-            ;
+        
+        return from voipCalls in q
+               join crmContact in VoipDbContext.CrmContact on voipCalls.ContactId equals crmContact.Id into grouping
+               from g in grouping.DefaultIfEmpty()
+               select new CallContact { DbVoipCall = voipCalls, CrmContact = g };
     }
-
-    class CallContact
-    {
-        public DbVoipCall DbVoipCall { get; set; }
-        public CrmContact CrmContact { get; set; }
-    }
-
 
     private VoipPhone ToPhone(VoipNumber r)
     {
@@ -324,16 +317,20 @@ public class VoipDao : AbstractDao
                 Uri = dbVoipCall.DbVoipCall.RecordUrl,
                 Duration = dbVoipCall.DbVoipCall.RecordDuration,
                 Price = dbVoipCall.DbVoipCall.RecordPrice
-            },
-            ContactId = dbVoipCall.CrmContact.Id,
-            ContactIsCompany = dbVoipCall.CrmContact.IsCompany,
+            }
         };
 
-        if (call.ContactId != 0)
+        if (dbVoipCall.CrmContact != null)
         {
+            call.ContactId = dbVoipCall.CrmContact.Id;
+            call.ContactIsCompany = dbVoipCall.CrmContact.IsCompany;
             call.ContactTitle = call.ContactIsCompany
                                     ? dbVoipCall.CrmContact.CompanyName
                                     : dbVoipCall.CrmContact.FirstName == null || dbVoipCall.CrmContact.LastName == null ? null : $"{dbVoipCall.CrmContact.FirstName} {dbVoipCall.CrmContact.LastName}";
+        }
+        else
+        {
+            call.ContactId = 0;
         }
 
         return call;
@@ -357,4 +354,10 @@ public class VoipDao : AbstractDao
                     !string.IsNullOrEmpty(Consumer["twilioAuthToken"]);
         }
     }
+}
+
+public class CallContact
+{
+    public DbVoipCall DbVoipCall { get; set; }
+    public CrmContact CrmContact { get; set; }
 }

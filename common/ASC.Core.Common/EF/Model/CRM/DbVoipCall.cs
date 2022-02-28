@@ -17,8 +17,6 @@
         public int ContactId { get; set; }
         public decimal Price { get; set; }
         public int TenantId { get; set; }
-
-        public CrmContact CrmContact { get; set; }
     }
     public static class DbVoipCallExtension
     {
