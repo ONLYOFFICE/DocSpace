@@ -240,6 +240,8 @@ class PageLayout extends React.Component {
       isDesktop,
       isHomepage,
       maintenanceExist,
+      setMaintenanceExist,
+      snackbarExist,
     } = this.props;
     let articleHeaderContent = null;
     let articleMainButtonContent = null;
@@ -383,7 +385,9 @@ class PageLayout extends React.Component {
                                 : !value.isVisible,
                           })}
                         >
-                          <SubSectionBar>
+                          <SubSectionBar
+                            setMaintenanceExist={setMaintenanceExist}
+                          >
                             {sectionBarContent
                               ? sectionBarContent.props.children
                               : null}
@@ -395,6 +399,7 @@ class PageLayout extends React.Component {
                     {isSectionHeaderAvailable && (
                       <SubSectionHeader
                         maintenanceExist={maintenanceExist}
+                        snackbarExist={snackbarExist}
                         isHeaderVisible={isHeaderVisible}
                         isArticlePinned={isArticlePinned}
                         viewAs={viewAs}
@@ -589,6 +594,8 @@ export default inject(({ auth }) => {
     setIsBackdropVisible,
     isDesktopClient,
     maintenanceExist,
+    snackbarExist,
+    setMaintenanceExist,
   } = settingsStore;
 
   return {
@@ -603,6 +610,8 @@ export default inject(({ auth }) => {
     isBackdropVisible,
     setIsBackdropVisible,
     maintenanceExist,
+    snackbarExist,
+    setMaintenanceExist,
     isDesktop: isDesktopClient,
   };
 })(observer(PageLayout));
