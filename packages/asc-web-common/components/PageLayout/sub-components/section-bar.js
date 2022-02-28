@@ -6,6 +6,10 @@ class SectionBar extends React.Component {
     return !equal(this.props, nextProps);
   }
 
+  componentWillUnmount() {
+    this.props.setMaintenanceExist && this.props.setMaintenanceExist(false);
+  }
+
   render() {
     const { children } = this.props;
     return <>{children}</>;
