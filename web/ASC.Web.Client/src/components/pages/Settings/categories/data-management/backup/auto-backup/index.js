@@ -938,7 +938,7 @@ class AutomaticBackup extends React.PureComponent {
     time,
     day
   ) => {
-    const { t } = this.props;
+    const { t, setThirdPartyStorage } = this.props;
 
     try {
       await createBackupSchedule(
@@ -954,7 +954,7 @@ class AutomaticBackup extends React.PureComponent {
         getBackupSchedule(),
         getBackupStorage(),
       ]);
-      this.storageInfo = storageInfo;
+      setThirdPartyStorage(storageInfo);
       this.selectedSchedule = true;
 
       this.onSetDefaultOptions(selectedSchedule, true);
@@ -1227,10 +1227,12 @@ class AutomaticBackup extends React.PureComponent {
     );
   }
 }
-export default inject(({ auth }) => {
+export default inject(({ auth, backup }) => {
   const { language } = auth;
+  const { setThirdPartyStorage } = backup;
 
   return {
     language,
+    setThirdPartyStorage,
   };
 })(withTranslation(["Settings", "Common"])(observer(AutomaticBackup)));

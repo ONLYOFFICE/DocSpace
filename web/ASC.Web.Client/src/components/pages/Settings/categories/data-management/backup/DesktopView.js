@@ -41,7 +41,6 @@ class BackupDesktopView extends React.Component {
       enableRestore: false,
       enableAutoBackup: false,
       backupSchedule: {},
-      backupStorage: {},
       commonThirdPartyList: {},
       isLoading: true,
     };
@@ -60,6 +59,8 @@ class BackupDesktopView extends React.Component {
     clearInterval(this.timerId);
   }
   setBasicSettings = async () => {
+    const { setThirdPartyStorage } = this.props;
+
     const requests = [
       enableRestore(),
       enableAutoBackup(),
@@ -89,12 +90,13 @@ class BackupDesktopView extends React.Component {
         }
       }
 
+      setThirdPartyStorage(backupStorage);
+
       this.setState({
         isLoading: false,
         enableRestore: canRestore,
         enableAutoBackup: canAutoBackup,
         backupSchedule,
-        backupStorage,
         commonThirdPartyList,
       });
     } catch (error) {
@@ -179,7 +181,6 @@ class BackupDesktopView extends React.Component {
       enableRestore,
       enableAutoBackup,
       backupSchedule,
-      backupStorage,
       commonThirdPartyList,
       link,
     } = this.state;
@@ -255,7 +256,6 @@ class BackupDesktopView extends React.Component {
             <AutoBackup
               isDesktop
               backupSchedule={backupSchedule}
-              thirdPartyStorageInfo={backupStorage}
               commonThirdPartyList={commonThirdPartyList}
             />
           </div>
@@ -290,11 +290,14 @@ class BackupDesktopView extends React.Component {
   }
 }
 
-export default inject(({ auth }) => {
+export default inject(({ auth, backup }) => {
   const { language } = auth;
   const { helpUrlCreatingBackup } = auth.settingsStore;
+  const { setThirdPartyStorage } = backup;
+
   return {
     helpUrlCreatingBackup,
     language,
+    setThirdPartyStorage,
   };
 })(observer(withTranslation(["Settings", "Common"])(BackupDesktopView)));

@@ -8,13 +8,14 @@ import SelectelStorage from "./storages/SelectelStorage";
 import AmazonStorage from "./storages/AmazonStorage";
 import { ThirdPartyStorages } from "@appserver/common/constants";
 import { StyledAutoBackup } from "../../StyledBackup";
+import { inject, observer } from "mobx-react";
 
 let googleStorageId = ThirdPartyStorages.GoogleId;
 
 class ThirdPartyStorageModule extends React.PureComponent {
   constructor(props) {
     super(props);
-    const { storageInfo } = this.props;
+    const { thirdPartyStorage } = this.props;
 
     this.state = {
       availableOptions: [],
@@ -24,7 +25,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
       selectedId: "",
     };
 
-    storageInfo && this.getOptions(storageInfo);
+    thirdPartyStorage && this.getOptions(thirdPartyStorage);
     this._isMount = false;
   }
   componentDidMount() {
@@ -35,7 +36,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
     this._isMount = false;
   }
   componentDidUpdate(prevProps) {
-    const { isSuccessSave, isReset, storageInfo } = this.props;
+    const { isSuccessSave, isReset, thirdPartyStorage } = this.props;
     const {
       defaultSelectedStorage,
       selectedStorage,
@@ -43,7 +44,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
     } = this.state;
 
     if (isSuccessSave && isSuccessSave !== prevProps.isSuccessSave) {
-      storageInfo && this.getOptions(storageInfo);
+      thirdPartyStorage && this.getOptions(thirdPartyStorage);
     }
 
     if (isReset && isReset !== prevProps.isReset) {
@@ -231,4 +232,9 @@ class ThirdPartyStorageModule extends React.PureComponent {
   }
 }
 
-export default withTranslation("Settings")(ThirdPartyStorageModule);
+export default inject(({ backup }) => {
+  const { thirdPartyStorage } = backup;
+  return {
+    thirdPartyStorage,
+  };
+})(withTranslation("Settings")(observer(ThirdPartyStorageModule)));
