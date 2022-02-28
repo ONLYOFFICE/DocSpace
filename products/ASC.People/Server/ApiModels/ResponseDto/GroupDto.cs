@@ -32,19 +32,19 @@ public class GroupDto
     public Guid? Parent { get; set; }
     public Guid Category { get; set; }
     public Guid Id { get; set; }
-    public EmployeeWraper Manager { get; set; }
-    public List<EmployeeWraper> Members { get; set; }
+    public EmployeeDto Manager { get; set; }
+    public List<EmployeeDto> Members { get; set; }
 
     public static GroupDto GetSample()
     {
         return new GroupDto
         {
             Id = Guid.NewGuid(),
-            Manager = EmployeeWraper.GetSample(),
+            Manager = EmployeeDto.GetSample(),
             Category = Guid.NewGuid(),
             Name = "Sample group",
             Parent = Guid.NewGuid(),
-            Members = new List<EmployeeWraper> { EmployeeWraper.GetSample() }
+            Members = new List<EmployeeDto> { EmployeeDto.GetSample() }
         };
     }
 }
@@ -74,7 +74,7 @@ public class GroupWraperFullHelper
 
         if (includeMembers)
         {
-            result.Members = new List<EmployeeWraper>(UserManager.GetUsersByGroup(group.ID).Select(EmployeeWraperHelper.Get));
+            result.Members = new List<EmployeeDto>(UserManager.GetUsersByGroup(group.ID).Select(EmployeeWraperHelper.Get));
         }
 
         return result;

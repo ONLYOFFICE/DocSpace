@@ -29,7 +29,7 @@ namespace ASC.Api.Settings
     {
         public string WebItemId { get; set; }
 
-        public IEnumerable<EmployeeWraper> Users { get; set; }
+        public IEnumerable<EmployeeDto> Users { get; set; }
 
         public IEnumerable<GroupSummaryDto> Groups { get; set; }
 
@@ -48,9 +48,9 @@ namespace ASC.Api.Settings
                         {
                             GroupSummaryDto.GetSample()
                         },
-                Users = new List<EmployeeWraper>
+                Users = new List<EmployeeDto>
                         {
-                            EmployeeWraper.GetSample()
+                            EmployeeDto.GetSample()
                         }
             };
         }

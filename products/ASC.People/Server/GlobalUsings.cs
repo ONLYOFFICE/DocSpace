@@ -12,6 +12,7 @@ global using System.Threading.Tasks;
 global using System.Web;
 
 global using ASC.Api.Core;
+global using ASC.Api.Core.Convention;
 global using ASC.Api.Utils;
 global using ASC.Common;
 global using ASC.Common.Logging;
@@ -44,6 +45,8 @@ global using ASC.Web.Studio.Core.Notify;
 global using ASC.Web.Studio.UserControls.Statistics;
 global using ASC.Web.Studio.Utility;
 
+global using AutoMapper;
+
 global using Autofac.Extensions.DependencyInjection;
 
 global using Microsoft.AspNetCore.Authorization;
@@ -58,6 +61,3 @@ global using Microsoft.Extensions.Options;
 
 global using SixLabors.ImageSharp;
 global using SixLabors.ImageSharp.Formats;
-
-global using StackExchange.Redis.Extensions.Core.Configuration;
-global using StackExchange.Redis.Extensions.Newtonsoft;

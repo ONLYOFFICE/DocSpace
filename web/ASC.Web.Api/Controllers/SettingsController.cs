@@ -931,7 +931,7 @@ namespace ASC.Api.Settings
         }
 
         [Read("security/administrator/{productid}")]
-        public IEnumerable<EmployeeWraper> GetProductAdministrators(Guid productid)
+        public IEnumerable<EmployeeDto> GetProductAdministrators(Guid productid)
         {
             return WebItemSecurity.GetProductAdministrators(productid)
                                   .Select(EmployeeWraperHelper.Get)

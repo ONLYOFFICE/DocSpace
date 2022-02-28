@@ -47,7 +47,7 @@ namespace ASC.Api.Documents
 
         /// <summary>
         /// </summary>
-        public EmployeeWraper CreatedBy { get; set; }
+        public EmployeeDto CreatedBy { get; set; }
 
         private ApiDateTime _updated;
 
@@ -68,7 +68,7 @@ namespace ASC.Api.Documents
 
         /// <summary>
         /// </summary>
-        public EmployeeWraper UpdatedBy { get; set; }
+        public EmployeeDto UpdatedBy { get; set; }
 
         /// <summary>
         /// </summary>
