@@ -1547,9 +1547,9 @@ namespace ASC.Employee.Core.Controllers
 
         [AllowAnonymous]
         [Read("thirdparty/providers")]
-        public ICollection<AccountInfo> GetAuthProviders(bool inviteView, bool settingsView, string clientCallback, string fromOnly)
+        public ICollection<AccountInfoDto> GetAuthProviders(bool inviteView, bool settingsView, string clientCallback, string fromOnly)
         {
-            ICollection<AccountInfo> infos = new List<AccountInfo>();
+            ICollection<AccountInfoDto> infos = new List<AccountInfoDto>();
             IEnumerable<LoginProfile> linkedAccounts = new List<LoginProfile>();
 
             if (AuthContext.IsAuthenticated)
@@ -1572,7 +1572,7 @@ namespace ASC.Employee.Core.Controllers
                             ? $"&mode=popup&callback={clientCallback}"
                             : "&mode=Redirect&desktop=true";
 
-                    infos.Add(new AccountInfo
+                    infos.Add(new AccountInfoDto
                     {
                         Linked = linkedAccounts.Any(x => x.Provider == provider),
                         Provider = provider,

@@ -1,6 +1,6 @@
 ﻿namespace ASC.People.Models
 {
-    public class AccountInfo
+    public class AccountInfoDto
     {
         public string Provider { get; set; }
         public string Url { get; set; }
