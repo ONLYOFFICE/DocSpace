@@ -59,9 +59,7 @@ const Submenu = ({ data, startSelect = 0, ...rest }) => {
       isDown = false;
     };
 
-    const mouseLeave = () => {
-      isDown = false;
-    };
+    const mouseLeave = () => (isDown = false);
 
     submenuItemsRef.current.addEventListener("mousedown", mouseDown);
     submenuItemsRef.current.addEventListener("mousemove", mouseMove);

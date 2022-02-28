@@ -25,12 +25,16 @@ export const countAutoOffset = (data, submenuItemsRef) => {
     itemOnMarker !== itemsAndGaps[itemsAndGaps.length - 1]
   )
     return itemOnMarker.end - marker + offset - wrapperPadding;
+  if (itemOnMarker.type === "item" && marker - itemOnMarker.start < 32) {
+    return -(marker - itemOnMarker.start - offset) - wrapperPadding;
+  }
   if (
     itemOnMarker.type === "item" &&
-    itemOnMarker.end - marker < 15 &&
+    itemOnMarker.end - marker < 10 &&
     itemOnMarker !== itemsAndGaps[itemsAndGaps.length - 2]
-  )
-    return marker - itemOnMarker.end + offset * 2;
+  ) {
+    return itemOnMarker.end - marker + offset * 2 - wrapperPadding;
+  }
   return 0;
 };
 
