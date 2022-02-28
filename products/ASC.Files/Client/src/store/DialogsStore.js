@@ -3,6 +3,7 @@ import { FileAction } from "@appserver/common/constants";
 import { makeAutoObservable } from "mobx";
 
 class DialogsStore {
+  authStore;
   treeFoldersStore;
   filesStore;
   selectedFolderStore;
@@ -22,6 +23,7 @@ class DialogsStore {
   conflictResolveDialogVisible = false;
   convertDialogVisible = false;
   selectFileDialogVisible = false;
+  convertPasswordDialogVisible = false;
   isFolderActions = false;
 
   removeItem = null;
@@ -34,13 +36,15 @@ class DialogsStore {
   removeMediaItem = null;
   unsubscribe = null;
   convertItem = null;
+  formCreationInfo = null;
 
-  constructor(treeFoldersStore, filesStore, selectedFolderStore) {
+  constructor(authStore, treeFoldersStore, filesStore, selectedFolderStore) {
     makeAutoObservable(this);
 
     this.treeFoldersStore = treeFoldersStore;
     this.filesStore = filesStore;
     this.selectedFolderStore = selectedFolderStore;
+    this.authStore = authStore;
   }
 
   setSharingPanelVisible = (sharingPanelVisible) => {
@@ -56,10 +60,12 @@ class DialogsStore {
   };
 
   setMoveToPanelVisible = (moveToPanelVisible) => {
+    !moveToPanelVisible && this.deselectActiveFiles();
     this.moveToPanelVisible = moveToPanelVisible;
   };
 
   setCopyPanelVisible = (copyPanelVisible) => {
+    !copyPanelVisible && this.deselectActiveFiles();
     this.copyPanelVisible = copyPanelVisible;
   };
 
@@ -82,10 +88,12 @@ class DialogsStore {
   };
 
   setDeleteDialogVisible = (deleteDialogVisible) => {
+    !deleteDialogVisible && this.deselectActiveFiles();
     this.deleteDialogVisible = deleteDialogVisible;
   };
 
   setDownloadDialogVisible = (downloadDialogVisible) => {
+    !downloadDialogVisible && this.deselectActiveFiles();
     this.downloadDialogVisible = downloadDialogVisible;
   };
 
@@ -139,6 +147,7 @@ class DialogsStore {
       this.setNewFilesIds(null);
     }
 
+    this.authStore.settingsStore.hideArticle();
     this.newFilesPanelVisible = newFilesPanelVisible;
   };
 
@@ -174,6 +183,14 @@ class DialogsStore {
     this.convertDialogVisible = visible;
   };
 
+  setConvertPasswordDialogVisible = (visible) => {
+    this.convertPasswordDialogVisible = visible;
+  };
+
+  setFormCreationInfo = (item) => {
+    this.formCreationInfo = item;
+  };
+
   setConvertItem = (item) => {
     this.convertItem = item;
   };
@@ -195,6 +212,10 @@ class DialogsStore {
       title: `${newTitle}.docxf`,
       templateId: fileInfo.id,
     });
+  };
+
+  deselectActiveFiles = () => {
+    this.filesStore.setSelected("none");
   };
 }
 

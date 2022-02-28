@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 using ASC.Files.Core;
 using ASC.Files.Core.Resources;
@@ -95,44 +96,45 @@ namespace ASC.Web.Files.Configuration
             ThirdpartyConfiguration = thirdpartyConfiguration;
         }
 
-        public IEnumerable<File<int>> SearchFiles(string text)
+        public IAsyncEnumerable<File<int>> SearchFilesAsync(string text)
         {
             var security = FileSecurity;
             var fileDao = DaoFactory.GetFileDao<int>();
-            return fileDao.Search(text).Where(security.CanRead);
+            var files = fileDao.SearchAsync(text);
+            return files.WhereAwait(async e => await security.CanReadAsync(e));
         }
 
-        public IEnumerable<Folder<int>> SearchFolders(string text)
+        public IAsyncEnumerable<Folder<int>> SearchFoldersAsync(string text)
         {
             var security = FileSecurity;
-            IEnumerable<Folder<int>> result;
             var folderDao = DaoFactory.GetFolderDao<int>();
-            result = folderDao.SearchFolders(text).Where(security.CanRead);
+            var folders = folderDao.SearchFoldersAsync(text);
+            var result = folders.WhereAwait(async e => await security.CanReadAsync(e));
 
             if (ThirdpartyConfiguration.SupportInclusion(DaoFactory)
                 && FilesSettingsHelper.EnableThirdParty)
             {
-                var id = GlobalFolderHelper.FolderMy;
-                if (!Equals(id, 0))
-                {
-                    //var folderMy = folderDao.GetFolder(id);
+                //var id = GlobalFolderHelper.FolderMy;
+                //if (!Equals(id, 0))
+                //{
+                    //var folderMy = await folderDao.GetFolderAsync(id);
                     //result = result.Concat(EntryManager.GetThirpartyFolders(folderMy, text));
-                }
+                //}
 
-                //id = GlobalFolderHelper.FolderCommon;
-                //var folderCommon = folderDao.GetFolder(id);
+                //id = await GlobalFolderHelper.FolderCommonAsync;
+                //var folderCommon = await folderDao.GetFolderAsync(id);
                 //result = result.Concat(EntryManager.GetThirpartyFolders(folderCommon, text));
             }
 
             return result;
         }
 
-        public SearchResultItem[] Search(string text)
+        public async Task<SearchResultItem[]> SearchAsync(string text)
         {
             var folderDao = DaoFactory.GetFolderDao<int>();
-            var files = SearchFiles(text);
+            var files = SearchFilesAsync(text);
             List<SearchResultItem> list = new List<SearchResultItem>();
-            foreach (var file in files)
+            await foreach (var file in files)
             {
                 var searchResultItem = new SearchResultItem
                 {
@@ -143,26 +145,26 @@ namespace ASC.Web.Files.Configuration
                     Additional = new Dictionary<string, object>
                                 {
                                     { "Author", file.CreateByString.HtmlEncode() },
-                                    { "Path", FolderPathBuilder(EntryManager.GetBreadCrumbs(file.FolderID, folderDao)) },
+                                    { "Path", FolderPathBuilder(await EntryManager.GetBreadCrumbsAsync(file.FolderID, folderDao)) },
                                     { "Size", FileSizeComment.FilesSizeToString(file.ContentLength) }
                                 }
                 };
                 list.Add(searchResultItem);
             }
 
-            var folders = SearchFolders(text);
-            foreach (var folder in folders)
+            var folders = SearchFoldersAsync(text);
+            await foreach (var folder in folders)
             {
                 var searchResultItem = new SearchResultItem
                 {
                     Name = folder.Title ?? string.Empty,
                     Description = string.Empty,
-                    URL = PathProvider.GetFolderUrl(folder),
+                    URL = await PathProvider.GetFolderUrlAsync(folder),
                     Date = folder.ModifiedOn,
                     Additional = new Dictionary<string, object>
                                     {
                                             { "Author", folder.CreateByString.HtmlEncode() },
-                                            { "Path", FolderPathBuilder(EntryManager.GetBreadCrumbs(folder.ID, folderDao)) },
+                                            { "Path", FolderPathBuilder(await EntryManager.GetBreadCrumbsAsync(folder.ID, folderDao)) },
                                             { "IsFolder", true }
                                     }
                 };

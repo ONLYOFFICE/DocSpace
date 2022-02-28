@@ -14,7 +14,6 @@ const TableRow = (props) => {
     className,
     style,
     selectionProp,
-    isFolder,
     title,
     ...rest
   } = props;
@@ -78,23 +77,15 @@ const TableRow = (props) => {
   );
 };
 
-TableRow.defaultProps = {
-  hasAccess: true,
-};
-
 TableRow.propTypes = {
   fileContextClick: PropTypes.func,
   children: PropTypes.any,
   contextOptions: PropTypes.array,
-  checked: PropTypes.bool,
-  element: PropTypes.any,
-  onContentSelect: PropTypes.func,
   onHideContextMenu: PropTypes.func,
-  item: PropTypes.object,
   selectionProp: PropTypes.object,
   className: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   style: PropTypes.object,
-  hasAccess: PropTypes.bool,
+  title: PropTypes.string,
 };
 
 export default TableRow;

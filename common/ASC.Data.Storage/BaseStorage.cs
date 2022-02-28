@@ -90,17 +90,17 @@ namespace ASC.Data.Storage
             return _domainsExpires.ContainsKey(domain) ? _domainsExpires[domain] : _domainsExpires[string.Empty];
         }
 
-        public Uri GetUri(string path)
+        public Task<Uri> GetUriAsync(string path)
         {
-            return GetUri(string.Empty, path);
+            return GetUriAsync(string.Empty, path);
         }
 
-        public Uri GetUri(string domain, string path)
+        public Task<Uri> GetUriAsync(string domain, string path)
         {
-            return GetPreSignedUri(domain, path, TimeSpan.MaxValue, null);
-        }
+            return GetPreSignedUriAsync(domain, path, TimeSpan.MaxValue, null);
+        }        
 
-        public Uri GetPreSignedUri(string domain, string path, TimeSpan expire, IEnumerable<string> headers)
+        public Task<Uri> GetPreSignedUriAsync(string domain, string path, TimeSpan expire, IEnumerable<string> headers)
         {
             if (path == null)
             {
@@ -109,7 +109,7 @@ namespace ASC.Data.Storage
 
             if (string.IsNullOrEmpty(_tenant) && IsSupportInternalUri)
             {
-                return GetInternalUri(domain, path, expire, headers);
+                return GetInternalUriAsync(domain, path, expire, headers);
             }
 
             var headerAttr = string.Empty;
@@ -158,7 +158,7 @@ namespace ASC.Data.Storage
                           new MonoUri(virtualPath, virtualPath.LocalPath.TrimEnd('/') + EnsureLeadingSlash(path.Replace('\\', '/')) + query) :
                           new MonoUri(virtualPath.ToString().TrimEnd('/') + EnsureLeadingSlash(path.Replace('\\', '/')) + query, UriKind.Relative);
 
-            return uri;
+            return Task.FromResult<Uri>(uri);
         }
 
         public virtual bool IsSupportInternalUri
@@ -166,32 +166,32 @@ namespace ASC.Data.Storage
             get { return true; }
         }
 
-        public virtual Uri GetInternalUri(string domain, string path, TimeSpan expire, IEnumerable<string> headers)
+        public virtual Task<Uri> GetInternalUriAsync(string domain, string path, TimeSpan expire, IEnumerable<string> headers)
         {
             return null;
         }
 
-        public abstract Stream GetReadStream(string domain, string path);
-        public abstract Stream GetReadStream(string domain, string path, int offset);
+        public abstract Task<Stream> GetReadStreamAsync(string domain, string path);
         public abstract Task<Stream> GetReadStreamAsync(string domain, string path, int offset);
 
-        public abstract Uri Save(string domain, string path, Stream stream);
-        public abstract Uri Save(string domain, string path, Stream stream, ACL acl);
+        public abstract Task<Uri> SaveAsync(string domain, string path, Stream stream);
+        public abstract Task<Uri> SaveAsync(string domain, string path, Stream stream, ACL acl);
 
-        public Uri Save(string domain, string path, Stream stream, string attachmentFileName)
+        public Task<Uri> SaveAsync(string domain, string path, Stream stream, string attachmentFileName)
         {
             if (!string.IsNullOrEmpty(attachmentFileName))
             {
-                return SaveWithAutoAttachment(domain, path, stream, attachmentFileName);
+                return SaveWithAutoAttachmentAsync(domain, path, stream, attachmentFileName);
             }
-            return Save(domain, path, stream);
+            return SaveAsync(domain, path, stream);
         }
 
-        protected abstract Uri SaveWithAutoAttachment(string domain, string path, Stream stream, string attachmentFileName);
+        protected abstract Task<Uri> SaveWithAutoAttachmentAsync(string domain, string path, Stream stream, string attachmentFileName);
 
-        public abstract Uri Save(string domain, string path, Stream stream, string contentType,
-                                 string contentDisposition);
-        public abstract Uri Save(string domain, string path, Stream stream, string contentEncoding, int cacheDays);
+
+        public abstract Task<Uri> SaveAsync(string domain, string path, Stream stream, string contentType,
+                                string contentDisposition);
+        public abstract Task<Uri> SaveAsync(string domain, string path, Stream stream, string contentEncoding, int cacheDays);
 
         public virtual bool IsSupportedPreSignedUri
         {
@@ -203,22 +203,22 @@ namespace ASC.Data.Storage
 
         #region chunking
 
-        public virtual string InitiateChunkedUpload(string domain, string path)
+        public virtual Task<string> InitiateChunkedUploadAsync(string domain, string path)
         {
             throw new NotImplementedException();
         }
 
-        public virtual string UploadChunk(string domain, string path, string uploadId, Stream stream, long defaultChunkSize, int chunkNumber, long chunkLength)
+        public virtual Task<string> UploadChunkAsync(string domain, string path, string uploadId, Stream stream, long defaultChunkSize, int chunkNumber, long chunkLength)
         {
             throw new NotImplementedException();
         }
 
-        public virtual Uri FinalizeChunkedUpload(string domain, string path, string uploadId, Dictionary<int, string> eTags)
+        public virtual Task<Uri> FinalizeChunkedUploadAsync(string domain, string path, string uploadId, Dictionary<int, string> eTags)
         {
             throw new NotImplementedException();
         }
 
-        public virtual void AbortChunkedUpload(string domain, string path, string uploadId)
+        public virtual Task AbortChunkedUploadAsync(string domain, string path, string uploadId)
         {
             throw new NotImplementedException();
         }
@@ -227,114 +227,113 @@ namespace ASC.Data.Storage
 
         #endregion
 
-        public abstract void Delete(string domain, string path);
-        public abstract void DeleteFiles(string domain, string folderPath, string pattern, bool recursive);
-        public abstract void DeleteFiles(string domain, List<string> paths);
-        public abstract void DeleteFiles(string domain, string folderPath, DateTime fromDate, DateTime toDate);
-        public abstract void MoveDirectory(string srcdomain, string srcdir, string newdomain, string newdir);
-        public abstract Uri Move(string srcdomain, string srcpath, string newdomain, string newpath, bool quotaCheckFileSize = true);
-        public abstract Uri SaveTemp(string domain, out string assignedPath, Stream stream);
-        public abstract string[] ListDirectoriesRelative(string domain, string path, bool recursive);
-        public abstract string[] ListFilesRelative(string domain, string path, string pattern, bool recursive);
-        public abstract bool IsFile(string domain, string path);
+        public abstract Task DeleteAsync(string domain, string path);
+        public abstract Task DeleteFilesAsync(string domain, string folderPath, string pattern, bool recursive);
+        public abstract Task DeleteFilesAsync(string domain, List<string> paths);
+        public abstract Task DeleteFilesAsync(string domain, string folderPath, DateTime fromDate, DateTime toDate);
+        public abstract Task MoveDirectoryAsync(string srcdomain, string srcdir, string newdomain, string newdir);
+        public abstract Task<Uri> MoveAsync(string srcdomain, string srcpath, string newdomain, string newpath, bool quotaCheckFileSize = true);
+        public abstract Task<Uri> SaveTempAsync(string domain, out string assignedPath, Stream stream);
+        public abstract IAsyncEnumerable<string> ListDirectoriesRelativeAsync(string domain, string path, bool recursive);
+        public abstract IAsyncEnumerable<string> ListFilesRelativeAsync(string domain, string path, string pattern, bool recursive);
         public abstract Task<bool> IsFileAsync(string domain, string path);
-        public abstract bool IsDirectory(string domain, string path);
-        public abstract void DeleteDirectory(string domain, string path);
-        public abstract long GetFileSize(string domain, string path);
-        public abstract long GetDirectorySize(string domain, string path);
-        public abstract long ResetQuota(string domain);
-        public abstract long GetUsedQuota(string domain);
-        public abstract Uri Copy(string srcdomain, string path, string newdomain, string newpath);
-        public abstract void CopyDirectory(string srcdomain, string dir, string newdomain, string newdir);
+        public abstract Task<bool> IsDirectoryAsync(string domain, string path);
+        public abstract Task DeleteDirectoryAsync(string domain, string path);
+        public abstract Task<long> GetFileSizeAsync(string domain, string path);
+        public abstract Task<long> GetDirectorySizeAsync(string domain, string path);
+        public abstract Task<long> ResetQuotaAsync(string domain);
+        public abstract Task<long> GetUsedQuotaAsync(string domain);
+        public abstract Task<Uri> CopyAsync(string srcdomain, string path, string newdomain, string newpath);
+        public abstract Task CopyDirectoryAsync(string srcdomain, string dir, string newdomain, string newdir);
 
-
-        public Stream GetReadStream(string path)
+        public Task<Stream> GetReadStreamAsync(string path)
         {
-            return GetReadStream(string.Empty, path);
+            return GetReadStreamAsync(string.Empty, path);
         }
 
-        public Uri Save(string path, Stream stream, string attachmentFileName)
+        public Task<Uri> SaveAsync(string path, Stream stream, string attachmentFileName)
         {
-            return Save(string.Empty, path, stream, attachmentFileName);
+            return SaveAsync(string.Empty, path, stream, attachmentFileName);
         }
 
-        public Uri Save(string path, Stream stream)
+        public Task<Uri> SaveAsync(string path, Stream stream)
         {
-            return Save(string.Empty, path, stream);
+            return SaveAsync(string.Empty, path, stream);
         }
 
-        public void Delete(string path)
+        public async Task DeleteAsync(string path)
         {
-            Delete(string.Empty, path);
+            await DeleteAsync(string.Empty, path);
         }
 
-        public void DeleteFiles(string folderPath, string pattern, bool recursive)
+        public async Task DeleteFilesAsync(string folderPath, string pattern, bool recursive)
         {
-            DeleteFiles(string.Empty, folderPath, pattern, recursive);
+            await DeleteFilesAsync(string.Empty, folderPath, pattern, recursive);
         }
 
-        public Uri Move(string srcpath, string newdomain, string newpath)
+        public Task<Uri> MoveAsync(string srcpath, string newdomain, string newpath)
         {
-            return Move(string.Empty, srcpath, newdomain, newpath);
+            return MoveAsync(string.Empty, srcpath, newdomain, newpath);
         }
 
-        public Uri SaveTemp(out string assignedPath, Stream stream)
+        public Task<Uri> SaveTempAsync(out string assignedPath, Stream stream)
         {
-            return SaveTemp(string.Empty, out assignedPath, stream);
+            return SaveTempAsync(string.Empty, out assignedPath, stream);
         }
 
-        public string[] ListDirectoriesRelative(string path, bool recursive)
+        public IAsyncEnumerable<string> ListDirectoriesRelativeAsync(string path, bool recursive)
         {
-            return ListDirectoriesRelative(string.Empty, path, recursive);
+            return ListDirectoriesRelativeAsync(string.Empty, path, recursive);
         }
 
-        public Uri[] ListFiles(string path, string pattern, bool recursive)
+        public IAsyncEnumerable<Uri> ListFilesAsync(string path, string pattern, bool recursive)
         {
-            return ListFiles(string.Empty, path, pattern, recursive);
+            return ListFilesAsync(string.Empty, path, pattern, recursive);
         }
 
-        public Uri[] ListFiles(string domain, string path, string pattern, bool recursive)
+        public async IAsyncEnumerable<Uri> ListFilesAsync(string domain, string path, string pattern, bool recursive)
         {
-            var filePaths = ListFilesRelative(domain, path, pattern, recursive);
-            return Array.ConvertAll(
-                filePaths,
-                x => GetUri(domain, CrossPlatform.PathCombine(PathUtils.Normalize(path), x)));
+            var filePaths = ListFilesRelativeAsync(domain, path, pattern, recursive);
+
+            await foreach(var paths in filePaths)
+            {
+                yield return await GetUriAsync(domain, CrossPlatform.PathCombine(PathUtils.Normalize(path), paths));
+            }
         }
 
-        public bool IsFile(string path)
+        public Task<bool> IsFileAsync(string path)
         {
-            return IsFile(string.Empty, path);
+            return IsFileAsync(string.Empty, path);
         }
 
-        public bool IsDirectory(string path)
+        public Task<bool> IsDirectoryAsync(string path)
         {
-            return IsDirectory(string.Empty, path);
+            return IsDirectoryAsync(string.Empty, path);
         }
 
-        public void DeleteDirectory(string path)
+        public async Task DeleteDirectoryAsync(string path)
         {
-            DeleteDirectory(string.Empty, path);
+            await DeleteDirectoryAsync(string.Empty, path);
         }
 
-        public long GetFileSize(string path)
+        public Task<long> GetFileSizeAsync(string path)
         {
-            return GetFileSize(string.Empty, path);
+            return GetFileSizeAsync(string.Empty, path);
         }
 
-        public long GetDirectorySize(string path)
+        public Task<long> GetDirectorySizeAsync(string path)
         {
-            return GetDirectorySize(string.Empty, path);
+            return GetDirectorySizeAsync(string.Empty, path);
         }
 
-
-        public Uri Copy(string path, string newdomain, string newpath)
+        public Task<Uri> CopyAsync(string path, string newdomain, string newpath)
         {
-            return Copy(string.Empty, path, newdomain, newpath);
+            return CopyAsync(string.Empty, path, newdomain, newpath);
         }
 
-        public void CopyDirectory(string dir, string newdomain, string newdir)
+        public async Task CopyDirectoryAsync(string dir, string newdomain, string newdir)
         {
-            CopyDirectory(string.Empty, dir, newdomain, newdir);
+            await CopyDirectoryAsync(string.Empty, dir, newdomain, newdir);
         }
 
         public virtual IDataStore Configure(string tenant, Handler handlerConfig, Module moduleConfig, IDictionary<string, string> props)
@@ -348,13 +347,13 @@ namespace ASC.Data.Storage
             return this;
         }
 
-        public abstract string SavePrivate(string domain, string path, Stream stream, DateTime expires);
-        public abstract void DeleteExpired(string domain, string path, TimeSpan oldThreshold);
+        public abstract Task<string> SavePrivateAsync(string domain, string path, Stream stream, DateTime expires);
+        public abstract Task DeleteExpiredAsync(string domain, string path, TimeSpan oldThreshold);
 
         public abstract string GetUploadForm(string domain, string directoryPath, string redirectTo, long maxUploadSize,
                                              string contentType, string contentDisposition, string submitLabel);
 
-        public abstract string GetUploadedUrl(string domain, string directoryPath);
+        public abstract Task<string> GetUploadedUrlAsync(string domain, string directoryPath);
         public abstract string GetUploadUrl();
 
         public abstract string GetPostParams(string domain, string directoryPath, long maxUploadSize, string contentType,

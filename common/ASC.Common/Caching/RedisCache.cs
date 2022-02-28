@@ -41,6 +41,11 @@ public class RedisCache<T> : ICacheNotify<T> where T : IMessage<T>, new()
             .GetResult();
     }
 
+    public async Task PublishAsync(T obj, CacheNotifyAction action)
+    {
+        await Task.Run(() => _redis.PublishAsync(GetChannelName(action), new RedisCachePubSubItem<T>() { Object = obj, Action = action }));
+    }
+
     public void Subscribe(Action<T> onchange, CacheNotifyAction action)
     {
         Task.Run(() => _redis.SubscribeAsync<RedisCachePubSubItem<T>>(GetChannelName(action), (i) =>

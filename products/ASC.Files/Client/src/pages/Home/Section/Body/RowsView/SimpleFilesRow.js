@@ -11,20 +11,11 @@ import withFileActions from "../../../../../HOCs/withFileActions";
 import withContextOptions from "../../../../../HOCs/withContextOptions";
 import withQuickButtons from "../../../../../HOCs/withQuickButtons";
 import ItemIcon from "../../../../../components/ItemIcon";
+import marginStyles from "./CommonStyles";
 
 const checkedStyle = css`
   background: #f3f4f4;
-  margin-left: -24px;
-  margin-right: -24px;
-  padding-left: 24px;
-  padding-right: 24px;
-
-  @media (max-width: 1024px) {
-    margin-left: -16px;
-    margin-right: -16px;
-    padding-left: 16px;
-    padding-right: 16px;
-  }
+  ${marginStyles}
 `;
 
 const draggingStyle = css`
@@ -32,17 +23,7 @@ const draggingStyle = css`
   &:hover {
     background: #efefb2;
   }
-  margin-left: -24px;
-  margin-right: -24px;
-  padding-left: 24px;
-  padding-right: 24px;
-
-  @media (max-width: 1024px) {
-    margin-left: -16px;
-    margin-right: -16px;
-    padding-left: 16px;
-    padding-right: 16px;
-  }
+  ${marginStyles}
 `;
 
 const StyledWrapper = styled.div`
@@ -60,7 +41,14 @@ const StyledSimpleFilesRow = styled(Row)`
   cursor: ${(props) =>
     !props.isThirdPartyFolder &&
     (props.checked || props.isActive) &&
-    "url(images/cursor.palm.svg), auto"};
+    "url(/static/images/cursor.palm.react.svg), auto"};
+  ${(props) =>
+    props.inProgress &&
+    css`
+      pointer-events: none;
+      /* cursor: wait; */
+    `}
+
   margin-top: -2px;
 
   ${(props) =>
@@ -85,8 +73,8 @@ const StyledSimpleFilesRow = styled(Row)`
   }
 
   .row_content {
-    max-width: min-content;
-    min-width: inherit;
+    ${(props) => props.sectionWidth > 500 && `max-width: fit-content;`}
+    min-width: auto;
   }
 
   .badges {
@@ -100,9 +88,13 @@ const StyledSimpleFilesRow = styled(Row)`
     margin-right: 8px;
   }
 
-  .badge:last-child {
-    margin-right: 0px;
-  }
+  ${(props) =>
+    props.sectionWidth > 500 &&
+    `
+      .badge:last-child {
+        margin-right: 0px;
+      }
+  `}
 
   .lock-file {
     cursor: ${(props) => (props.withAccess ? "pointer" : "default")};
@@ -176,17 +168,23 @@ const SimpleFilesRow = (props) => {
     onMouseClick,
     isEdit,
     isActive,
+    inProgress,
     isAdmin,
   } = props;
 
   const withAccess = isAdmin || item.access === 0;
+  const isSmallContainer = sectionWidth <= 500;
 
   const element = (
     <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
   );
 
   return (
-    <StyledWrapper>
+    <StyledWrapper
+      className={`row-wrapper ${
+        checkedProps || isActive ? "row-selected" : ""
+      }`}
+    >
       <DragAndDrop
         data-title={item.title}
         value={value}
@@ -201,7 +199,7 @@ const SimpleFilesRow = (props) => {
           isEdit={isEdit}
           element={element}
           sectionWidth={sectionWidth}
-          contentElement={quickButtonsComponent}
+          contentElement={isSmallContainer ? null : quickButtonsComponent}
           onSelect={onContentFileSelect}
           rowContextClick={fileContextClick}
           isPrivacy={isPrivacy}
@@ -212,13 +210,16 @@ const SimpleFilesRow = (props) => {
           contextButtonSpacerWidth={displayShareButton}
           dragging={dragging && isDragging}
           isActive={isActive}
+          inProgress={inProgress}
           isThirdPartyFolder={item.isThirdPartyFolder}
+          className="files-row"
           withAccess={withAccess}
         >
           <FilesRowContent
             item={item}
             sectionWidth={sectionWidth}
             onFilesClick={onFilesClick}
+            quickButtons={isSmallContainer ? quickButtonsComponent : null}
           />
         </StyledSimpleFilesRow>
       </DragAndDrop>
