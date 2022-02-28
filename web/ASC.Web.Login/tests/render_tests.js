@@ -179,6 +179,8 @@ Scenario("More login modal render test", async ({ I }) => {
     },
   });
 
+  I.wait(2);
+
   I.see("Authorization");
   I.see("Sign in with SSO");
   I.see("Sign in with Google");
