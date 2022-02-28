@@ -35,6 +35,7 @@ public class TelegramListenerService : BackgroundService
     private readonly TelegramHandler _telegramHandler;
     private readonly TenantManager _tenantManager;
     private readonly TelegramLoginProvider _telegramLoginProvider;
+    private CancellationToken _stoppingToken;
 
     public TelegramListenerService(ICacheNotify<NotifyMessage> cacheMessage,
         ICacheNotify<RegisterUserProto> cacheRegisterUser,
@@ -56,6 +57,7 @@ public class TelegramListenerService : BackgroundService
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        _stoppingToken = stoppingToken;
         CreateClients();
         _cacheMessage.Subscribe(async n => await SendMessage(n), CacheNotifyAction.Insert);
         _cacheRegisterUser.Subscribe(n => RegisterUser(n), CacheNotifyAction.Insert);
@@ -90,7 +92,7 @@ public class TelegramListenerService : BackgroundService
 
     private void CreateOrUpdateClient(CreateClientProto createClientProto)
     {
-        _telegramHandler.CreateOrUpdateClientForTenant(createClientProto.TenantId, createClientProto.Token, createClientProto.TokenLifespan, createClientProto.Proxy, false);
+        _telegramHandler.CreateOrUpdateClientForTenant(createClientProto.TenantId, createClientProto.Token, createClientProto.TokenLifespan, createClientProto.Proxy, false, _stoppingToken);
     }
 
     private void CreateClients()
@@ -101,7 +103,7 @@ public class TelegramListenerService : BackgroundService
             _tenantManager.SetCurrentTenant(tenant);
             if (_telegramLoginProvider.IsEnabled())
             {
-                _telegramHandler.CreateOrUpdateClientForTenant(tenant.TenantId, _telegramLoginProvider.TelegramBotToken, _telegramLoginProvider.TelegramAuthTokenLifespan, _telegramLoginProvider.TelegramProxy, true, true);
+                _telegramHandler.CreateOrUpdateClientForTenant(tenant.TenantId, _telegramLoginProvider.TelegramBotToken, _telegramLoginProvider.TelegramAuthTokenLifespan, _telegramLoginProvider.TelegramProxy, true, _stoppingToken, true);
             }
         }
     }

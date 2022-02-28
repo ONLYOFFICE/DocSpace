@@ -86,7 +86,7 @@ public class TelegramHandler
         _clients.Remove(tenantId);
     }
 
-    public void CreateOrUpdateClientForTenant(int tenantId, string token, int tokenLifespan, string proxy, bool startTelegramService, bool force = false)
+    public void CreateOrUpdateClientForTenant(int tenantId, string token, int tokenLifespan, string proxy, bool startTelegramService, CancellationToken stoppingToken,  bool force = false)
     {
         var scope = _scopeFactory.CreateScope();
         var telegramHelper = scope.ServiceProvider.GetService<TelegramHelper>();
@@ -105,7 +105,7 @@ public class TelegramHandler
 
                 client.Client.StopReceiving();
 
-                BindClient(newClient, tenantId);
+                BindClient(newClient, tenantId, stoppingToken);
 
                 client.Client = newClient;
                 client.Token = token;
@@ -119,7 +119,7 @@ public class TelegramHandler
                 if (!telegramHelper.TestingClient(newClient)) return;
             }
 
-            BindClient(newClient, tenantId);
+            BindClient(newClient, tenantId, stoppingToken);
 
             _clients.Add(tenantId, new TenantTgClient()
             {
@@ -153,10 +153,10 @@ public class TelegramHandler
     }
 
 
-    private void BindClient(TelegramBotClient client, int tenantId)
+    private void BindClient(TelegramBotClient client, int tenantId, CancellationToken stoppingToken)
     {
         client.OnMessage += async (sender, e) => { await OnMessage(sender, e, client, tenantId); };
-        client.StartReceiving();
+        client.StartReceiving(cancellationToken: stoppingToken);
     }
 
     private string UserKey(string userId, int tenantId)
