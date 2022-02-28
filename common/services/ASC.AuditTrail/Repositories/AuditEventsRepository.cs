@@ -28,16 +28,16 @@ namespace ASC.AuditTrail.Repositories;
 [Scope]
 public class AuditEventsRepository
 {
-    private AuditTrailContext AuditTrailContext => _lazyAuditTrailContext.Value;
+    private MessagesContext AuditTrailContext => _lazyAuditTrailContext.Value;
 
-    private readonly Lazy<AuditTrailContext> _lazyAuditTrailContext;
+    private readonly Lazy<MessagesContext> _lazyAuditTrailContext;
     private readonly IMapper _mapper;
 
     public AuditEventsRepository(
-        DbContextManager<AuditTrailContext> dbContextManager,
+        DbContextManager<MessagesContext> dbContextManager,
         IMapper mapper)
     {
-        _lazyAuditTrailContext = new Lazy<AuditTrailContext>(() => dbContextManager.Value);
+        _lazyAuditTrailContext = new Lazy<MessagesContext>(() => dbContextManager.Value);
         _mapper = mapper;
     }
 

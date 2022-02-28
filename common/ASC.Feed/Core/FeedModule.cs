@@ -23,14 +23,13 @@
  *
 */
 
-namespace ASC.Feed
+namespace ASC.Feed;
+
+[Flags]
+public enum FeedModule
 {
-    [Flags]
-    public enum FeedModule
-    {
-        None = 0,
-        WhatsNew = 1,
-        Timeline = 2,
-        Any = WhatsNew | Timeline
-    }
+    None = 0,
+    WhatsNew = 1,
+    Timeline = 2,
+    Any = WhatsNew | Timeline
 }
