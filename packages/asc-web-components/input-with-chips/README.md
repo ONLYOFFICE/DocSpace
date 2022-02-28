@@ -13,11 +13,13 @@ import InputWithChips from "@appserver/components/input-with-chips";
   options={[]}
   onChange={(selected) => console.log(selected)}
   placeholder="Invite people by name or email"
+  clearButtonLabel="Clear list"
   existEmailText="This email address has already been entered"
   invalidEmailText="Invalid email address"
-  exceededLimitText="The limit on the number of emails has reached the maximum",
-  exceededLimit=1000,
-  maxLength=10000,
+  exceededLimitText="The limit on the number of emails has reached the maximum"
+  exceededLimitInputText="The limit on the number of characters has reached the maximum value"
+  chipOverLimitText="The limit on the number of characters has reached the maximum value"
+  exceededLimit=500,
 />
 ```
 
@@ -52,14 +54,15 @@ Options have options:
 
 ### Properties
 
-| Props               |      Type      | Required | Values |                          Default                          | Description                                                  |
-| ------------------- | :------------: | :------: | :----: | :-------------------------------------------------------: | ------------------------------------------------------------ |
-| `options`           | `obj`, `array` |    -     |   -    |                             -                             | Array of objects with chips                                  |
-| `placeholder`       |    `string`    |    -     |   -    |              Invite people by name or email               | Placeholder text for the input                               |
-| `clearButtonLabel`  |    `string`    |    -     |   -    |                        Clear list                         | The text of the button for cleaning all chips                |
-| `onChange`          |     `func`     |    ✅    |   -    |                             -                             | Will be called when the selected items are changed           |
-| `existEmailText`    |    `string`    |    -     |   -    |        This email address has already been entered        | Warning text when entering an existing email                 |
-| `invalidEmailText`  |    `string`    |    -     |   -    |                   Invalid email address                   | Warning text when entering an invalid email                  |
-| `exceededLimit`     |    `number`    |    -     |   -    |                           1000                            | Limit of chips (number)                                      |
-| `exceededLimitText` |    `string`    |    -     |   -    | The limit on the number of emails has reached the maximum | Warning text when exceeding the limit of the number of chips |
-| `maxLength`         |    `number`    |    -     |   -    |                           10000                           | The number of allowed characters in input                    |
+| Props                    |      Type      | Required | Values |                                     Default                                     | Description                                                                      |
+| ------------------------ | :------------: | :------: | :----: | :-----------------------------------------------------------------------------: | -------------------------------------------------------------------------------- |
+| `options`                | `obj`, `array` |    -     |   -    |                                        -                                        | Array of objects with chips                                                      |
+| `onChange`               |     `func`     |    ✅    |   -    |                                        -                                        | Will be called when the selected items are changed                               |
+| `placeholder`            |    `string`    |    -     |   -    |                         Invite people by name or email                          | Placeholder text for the input                                                   |
+| `clearButtonLabel`       |    `string`    |    -     |   -    |                                   Clear list                                    | The text of the button for cleaning all chips                                    |
+| `existEmailText`         |    `string`    |    -     |   -    |                   This email address has already been entered                   | Warning text when entering an existing email                                     |
+| `invalidEmailText`       |    `string`    |    -     |   -    |                              Invalid email address                              | Warning text when entering an invalid email                                      |
+| `exceededLimit`          |    `number`    |    -     |   -    |                                       500                                       | Limit of chips (number)                                                          |
+| `exceededLimitText`      |    `string`    |    -     |   -    |            The limit on the number of emails has reached the maximum            | Warning text when exceeding the limit of the number of chips                     |
+| `exceededLimitInputText` |    `string`    |    -     |   -    |       The limit on the number of characters has reached the maximum value       | Warning text when entering the number of characters in input exceeding the limit |
+| `chipOverLimitText`      |    `string`    |    -     |   -    | The limit on the number of characters in an email has reached its maximum value | Warning text when entering the number of email characters exceeding the limit    |

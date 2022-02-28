@@ -3,38 +3,41 @@ import PropTypes from "prop-types";
 
 import Link from "../../link";
 import TextInput from "../../text-input";
-import { tryParseEmail } from "./helpers";
+import { getChipsFromString } from "./helpers";
 
 import { StyledInputWithLink, StyledTooltip } from "../styled-inputwithchips";
 
 const InputGroup = memo(
   ({
-    chips,
-    setChips,
-    clearButtonLabel,
-    inputRef,
-    setSelectedChips,
-    containerRef,
-
     placeholder,
-    exceededLimit,
     exceededLimitText,
     existEmailText,
+    exceededLimitInputText,
+    chipOverLimitText,
+    clearButtonLabel,
+
+    inputRef,
+    containerRef,
+
     maxLength,
-    ...props
+
+    isExistedOn,
+    isExceededLimitChips,
+    isExceededLimitInput,
+    isChipOverLimit,
+
+    goFromInputToChips,
+    onClearClick,
+    onHideAllTooltips,
+    showTooltipOfLimit,
+    onAddChip,
   }) => {
     const [value, setValue] = useState("");
-    /** is existing tooltip active */
-    const [isExistedOn, setIsExistedOn] = useState(false);
-    /** is exceeded tooltip active */
-    const [isExceededLimit, setIsExceededLimit] = useState(
-      chips.length >= exceededLimit
-    );
 
     const onInputChange = (e) => {
-      if (e.target.value == "") setIsExceededLimit(false);
       setValue(e.target.value);
-      setIsExistedOn(false);
+      onHideAllTooltips();
+      if (e.target.value.length >= maxLength) showTooltipOfLimit();
     };
 
     const onInputKeyDown = (e) => {
@@ -49,8 +52,9 @@ const InputGroup = memo(
         case "ArrowLeft": {
           const isCursorStart = inputRef.current.selectionStart === 0;
           if (!isCursorStart) return;
-          setSelectedChips([chips[chips?.length - 1]]);
+          goFromInputToChips();
           if (inputRef) {
+            onHideAllTooltips();
             inputRef.current.blur();
             containerRef.current.setAttribute("tabindex", "0");
             containerRef.current.focus();
@@ -60,77 +64,24 @@ const InputGroup = memo(
     };
 
     const onEnterPress = () => {
-      setIsExceededLimit(chips.length >= exceededLimit);
-      if (isExceededLimit || chips.length >= exceededLimit) return;
-      if (value.trim().length > 0) {
-        const separators = [",", " ", ", "];
-        let indexesForFilter = [];
-        let isSimple = true;
-        let tempLabel = "";
-
-        const chipsFromString = value
-          .split(new RegExp(separators.join("|"), "g"))
-          .filter((it) => it.trim().length !== 0)
-          .map((it, idx, arr) => {
-            if (isSimple && it.includes('"')) {
-              isSimple = false;
-              tempLabel += `${it} `;
-              return;
-            }
-            if (!isSimple && !it.includes('"')) {
-              tempLabel += `${it} `;
-              return;
-            }
-            if (!isSimple && it.includes('"')) {
-              tempLabel += `${it}`;
-              let tempLabelTrim = tempLabel;
-              isSimple = true;
-              tempLabel = "";
-              indexesForFilter.push(idx + 1);
-              return `${tempLabelTrim} ${arr[idx + 1]}`;
-            }
-            return it;
-          })
-          .filter((it, idx) => !indexesForFilter.includes(idx))
-          .filter((it) => it !== undefined)
-          .map((it) => (tryParseEmail(it) ? tryParseEmail(it) : it.trim()));
-
-        if (chipsFromString.length === 1) {
-          let isExisted = !!chips.find(
-            (chip) =>
-              chip.value === chipsFromString[0] ||
-              chip.value === chipsFromString[0]?.value
-          );
-          setIsExistedOn(isExisted);
-          if (isExisted) return;
-        }
-
-        const filteredChips = chipsFromString
-          .filter((it) => {
-            return !chips.find(
-              (chip) => chip.value === it || chip.value === it?.value
-            );
-          })
-          .map((it) => ({
-            label: it?.label ?? it,
-            value: it?.value ?? it,
-          }));
-        setChips([...chips, ...filteredChips]);
-        setValue("");
-      }
-    };
-
-    const onClearClick = () => {
-      setChips([]);
+      if (isExceededLimitChips) return;
+      if (isExistedOn) return;
+      if (value.trim().length == 0) return;
+      const chipsFromString = getChipsFromString(value);
+      onAddChip(chipsFromString);
+      setValue("");
     };
 
     return (
       <StyledInputWithLink>
         {isExistedOn && <StyledTooltip>{existEmailText}</StyledTooltip>}
-
-        {isExceededLimit && chips.length >= exceededLimit && (
+        {isExceededLimitChips && (
           <StyledTooltip>{exceededLimitText}</StyledTooltip>
         )}
+        {isExceededLimitInput && (
+          <StyledTooltip>{exceededLimitInputText}</StyledTooltip>
+        )}
+        {isChipOverLimit && <StyledTooltip>{chipOverLimitText}</StyledTooltip>}
 
         <TextInput
           value={value}
@@ -156,21 +107,27 @@ const InputGroup = memo(
 );
 
 InputGroup.propTypes = {
-  chips: PropTypes.arrayOf(PropTypes.object),
-
-  clearButtonLabel: PropTypes.string,
-  placeholder: PropTypes.string,
-  exceededLimitText: PropTypes.string,
-  existEmailText: PropTypes.string,
-
-  maxLength: PropTypes.number,
-  exceededLimit: PropTypes.number,
-
   inputRef: PropTypes.shape({ current: PropTypes.any }),
   containerRef: PropTypes.shape({ current: PropTypes.any }),
 
-  setChips: PropTypes.func,
-  setSelectedChips: PropTypes.func,
+  placeholder: PropTypes.string,
+  exceededLimitText: PropTypes.string,
+  existEmailText: PropTypes.string,
+  exceededLimitInputText: PropTypes.string,
+  chipOverLimitText: PropTypes.string,
+  clearButtonLabel: PropTypes.string,
+
+  maxLength: PropTypes.number,
+
+  goFromInputToChips: PropTypes.func,
+  onClearClick: PropTypes.func,
+  isExistedOn: PropTypes.bool,
+  isExceededLimitChips: PropTypes.bool,
+  isExceededLimitInput: PropTypes.bool,
+  isChipOverLimit: PropTypes.bool,
+  onHideAllTooltips: PropTypes.func,
+  showTooltipOfLimit: PropTypes.func,
+  onAddChip: PropTypes.func,
 };
 
 InputGroup.displayName = "InputGroup";

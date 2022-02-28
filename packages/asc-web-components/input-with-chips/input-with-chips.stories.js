@@ -48,8 +48,11 @@ Default.args = {
   invalidEmailText: "Invalid email address",
   exceededLimitText:
     "The limit on the number of emails has reached the maximum",
-  exceededLimit: 1000,
-  maxLength: 10000,
+  exceededLimitInputText:
+    "The limit on the number of characters has reached the maximum value",
+  chipOverLimitText:
+    "The limit on the number of characters has reached the maximum value",
+  exceededLimit: 500,
 };
 
 export const Empty = Template.bind({});
@@ -61,6 +64,9 @@ Empty.args = {
   invalidEmailText: "Invalid email address",
   exceededLimitText:
     "The limit on the number of emails has reached the maximum",
-  exceededLimit: 100,
-  maxLength: 100,
+  exceededLimitInputText:
+    "The limit on the number of characters has reached the maximum value",
+  chipOverLimitText:
+    "The limit on the number of characters has reached the maximum value",
+  exceededLimit: 500,
 };

@@ -8,9 +8,11 @@ import {
   StyledChipGroup,
   StyledChipWithInput,
 } from "./styled-inputwithchips";
-import { tryParseEmail } from "./sub-components/helpers";
+import { MAX_EMAIL_LENGTH, tryParseEmail } from "./sub-components/helpers";
 import InputGroup from "./sub-components/input-group";
 import ChipsRender from "./sub-components/chips-render";
+
+const calcMaxLengthInput = (exceededLimit) => exceededLimit * MAX_EMAIL_LENGTH;
 
 const InputWithChips = ({
   options,
@@ -21,12 +23,18 @@ const InputWithChips = ({
   invalidEmailText,
   exceededLimit,
   exceededLimitText,
-  maxLength,
+  exceededLimitInputText,
+  chipOverLimitText,
   ...props
 }) => {
   const [chips, setChips] = useState(options || []);
   const [currentChip, setCurrentChip] = useState(null);
   const [selectedChips, setSelectedChips] = useState([]);
+
+  const [isExistedOn, setIsExistedOn] = useState(false);
+  const [isExceededLimitChips, setIsExceededLimitChips] = useState(false);
+  const [isExceededLimitInput, setIsExceededLimitInput] = useState(false);
+  const [isChipOverLimit, setIsChipoverLimit] = useState(false);
 
   const containerRef = useRef(null);
   const inputRef = useRef(null);
@@ -59,6 +67,10 @@ const InputWithChips = ({
     },
     selectedChips
   );
+
+  useClickOutside(inputRef, () => {
+    onHideAllTooltips();
+  });
 
   const onClick = (value, isShiftKey) => {
     if (isShiftKey) {
@@ -237,6 +249,55 @@ const InputWithChips = ({
     }
   };
 
+  const goFromInputToChips = () => {
+    setSelectedChips([chips[chips?.length - 1]]);
+  };
+
+  const onClearClick = () => {
+    setChips([]);
+  };
+
+  const onHideAllTooltips = () => {
+    setIsExceededLimitChips(false);
+    setIsExistedOn(false);
+    setIsExceededLimitInput(false);
+    setIsChipoverLimit(false);
+  };
+
+  const showTooltipOfLimit = () => {
+    setIsExceededLimitInput(true);
+  };
+
+  const onAddChip = (chipsToAdd) => {
+    setIsExceededLimitChips(chips.length >= exceededLimit);
+    if (chips.length >= exceededLimit) return;
+    if (chipsToAdd.length === 1) {
+      let isExisted = !!chips.find(
+        (chip) =>
+          chip.value === chipsToAdd[0] || chip.value === chipsToAdd[0]?.value
+      );
+      setIsExistedOn(isExisted);
+      if (isExisted) return;
+    }
+
+    const filteredChips = chipsToAdd
+      .filter((it) => {
+        if (it.length > MAX_EMAIL_LENGTH && !isChipOverLimit) {
+          setIsChipoverLimit(true);
+        }
+        return (
+          !chips.find(
+            (chip) => chip.value === it || chip.value === it?.value
+          ) && it.length <= MAX_EMAIL_LENGTH
+        );
+      })
+      .map((it) => ({
+        label: it?.label ?? it,
+        value: it?.value ?? it,
+      }));
+    setChips([...chips, ...filteredChips]);
+  };
+
   return (
     <StyledContent {...props}>
       <StyledChipGroup onKeyDown={onKeyDown} ref={containerRef} tabindex="-1">
@@ -256,17 +317,24 @@ const InputWithChips = ({
           </Scrollbar>
 
           <InputGroup
-            chips={chips}
-            setChips={setChips}
-            inputRef={inputRef}
-            clearButtonLabel={clearButtonLabel}
-            setSelectedChips={setSelectedChips}
-            containerRef={containerRef}
             placeholder={placeholder}
-            exceededLimit={exceededLimit}
             exceededLimitText={exceededLimitText}
             existEmailText={existEmailText}
-            maxLength={maxLength}
+            exceededLimitInputText={exceededLimitInputText}
+            chipOverLimitText={chipOverLimitText}
+            clearButtonLabel={clearButtonLabel}
+            inputRef={inputRef}
+            containerRef={containerRef}
+            maxLength={calcMaxLengthInput(exceededLimit)}
+            goFromInputToChips={goFromInputToChips}
+            onClearClick={onClearClick}
+            isExistedOn={isExistedOn}
+            isExceededLimitChips={isExceededLimitChips}
+            isExceededLimitInput={isExceededLimitInput}
+            isChipOverLimit={isChipOverLimit}
+            onHideAllTooltips={onHideAllTooltips}
+            showTooltipOfLimit={showTooltipOfLimit}
+            onAddChip={onAddChip}
           />
         </StyledChipWithInput>
       </StyledChipGroup>
@@ -289,8 +357,10 @@ InputWithChips.propTypes = {
   exceededLimit: PropTypes.number,
   /** Warning text when entering the number of chips exceeding the limit */
   exceededLimitText: PropTypes.string,
-  /** The number of allowed characters in input */
-  maxLength: PropTypes.number,
+  /** Warning text when entering the number of characters in input exceeding the limit */
+  exceededLimitInputText: PropTypes.string,
+  /** Warning text when entering the number of email characters exceeding the limit */
+  chipOverLimitText: PropTypes.string,
   /** Will be called when the selected items are changed */
   onChange: PropTypes.func.isRequired,
 };
@@ -302,8 +372,9 @@ InputWithChips.defaultProps = {
   invalidEmailText: "Invalid email address",
   exceededLimitText:
     "The limit on the number of emails has reached the maximum",
+  exceededLimitInputText:
+    "The limit on the number of characters has reached the maximum value",
   exceededLimit: 50,
-  maxLength: 200,
 };
 
 export default InputWithChips;
