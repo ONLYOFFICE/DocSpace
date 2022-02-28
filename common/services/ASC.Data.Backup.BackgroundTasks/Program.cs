@@ -1,4 +1,6 @@
-﻿var options = new WebApplicationOptions
+﻿using ASC.EventBus.Events;
+
+var options = new WebApplicationOptions
 {
     Args = args,
     ContentRootPath = WindowsServiceHelpers.IsWindowsService() ? AppContext.BaseDirectory : default
@@ -83,6 +85,7 @@ startup.Configure(app, app.Environment);
 var eventBus = ((IApplicationBuilder)app).ApplicationServices.GetRequiredService<IEventBus>();
 
 eventBus.Subscribe<BackupRequestIntegrationEvent, BackupRequestIntegrationEventHandler>();
+eventBus.Subscribe<IntegrationEvent, BackupDeleteScheldureRequestIntegrationEventHandler>();
 
 app.Run();
 

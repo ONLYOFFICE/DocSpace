@@ -1,6 +1,4 @@
-﻿using System.Threading.Channels;
-
-using ASC.EventBus.Exceptions;
+﻿using ASC.EventBus.Exceptions;
 
 namespace ASC.EventBus.RabbitMQ;
 

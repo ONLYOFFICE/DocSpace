@@ -110,14 +110,14 @@ namespace ASC.Api.Core
             var kafkaConfiguration = Configuration.GetSection("kafka").Get<KafkaSettings>();
             var rabbitMQConfiguration = Configuration.GetSection("RabbitMQ").Get<RabbitMQSettings>();
 
+            services.AddEventBus(Configuration);
+
             if (kafkaConfiguration != null)
             {
                 DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
             }
             else if (rabbitMQConfiguration != null)
             {
-                services.AddEventBus();
-
                 DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(RabbitMQCache<>));
             }
             else if (redisConfiguration != null)

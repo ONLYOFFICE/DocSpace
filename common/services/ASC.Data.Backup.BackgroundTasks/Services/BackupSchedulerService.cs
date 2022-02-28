@@ -40,15 +40,13 @@ public sealed class BackupSchedulerService : BackgroundService
         IServiceScopeFactory scopeFactory,
         ConfigurationExtension configuration,
         CoreBaseSettings coreBaseSettings,
-        BackupWorker backupWorker,
         IEventBus eventBus)
-
     {
         _logger = options.CurrentValue;
         _coreBaseSettings = coreBaseSettings;
         _backupSchedulerPeriod = configuration.GetSetting<BackupSettings>("backup").Scheduler.Period;
         _scopeFactory = scopeFactory;
-        _eventBus = eventBus;
+        _eventBus = eventBus ?? throw new ArgumentNullException(nameof(eventBus));
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)

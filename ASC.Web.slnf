@@ -9,6 +9,7 @@
       "common\\ASC.Data.Reassigns\\ASC.Data.Reassigns.csproj",
       "common\\ASC.Data.Storage\\ASC.Data.Storage.csproj",
       "common\\ASC.EventBus.Extensions.Logger\\ASC.EventBus.Extensions.Logger.csproj",
+      "common\\ASC.EventBus.MemoryCache\\ASC.EventBus.MemoryCache.csproj",
       "common\\ASC.EventBus.RabbitMQ\\ASC.EventBus.RabbitMQ.csproj",
       "common\\ASC.EventBus\\ASC.EventBus.csproj",
       "common\\ASC.FederatedLogin\\ASC.FederatedLogin.csproj",

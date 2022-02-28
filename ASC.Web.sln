@@ -107,7 +107,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.EventBus", "common\ASC.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.EventBus.RabbitMQ", "common\ASC.EventBus.RabbitMQ\ASC.EventBus.RabbitMQ.csproj", "{3FACF656-6DED-407E-AC23-A7EF08D704E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASC.EventBus.Extensions.Logger", "common\ASC.EventBus.Extensions.Logger\ASC.EventBus.Extensions.Logger.csproj", "{ED8CEB38-7C95-43A8-B208-9C9828654AC1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.EventBus.Extensions.Logger", "common\ASC.EventBus.Extensions.Logger\ASC.EventBus.Extensions.Logger.csproj", "{ED8CEB38-7C95-43A8-B208-9C9828654AC1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.EventBus.MemoryCache", "common\ASC.EventBus.MemoryCache\ASC.EventBus.MemoryCache.csproj", "{CC352535-5418-437E-9081-5FF47FD140F7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -311,6 +313,10 @@ Global
 		{ED8CEB38-7C95-43A8-B208-9C9828654AC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED8CEB38-7C95-43A8-B208-9C9828654AC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED8CEB38-7C95-43A8-B208-9C9828654AC1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC352535-5418-437E-9081-5FF47FD140F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC352535-5418-437E-9081-5FF47FD140F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC352535-5418-437E-9081-5FF47FD140F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC352535-5418-437E-9081-5FF47FD140F7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

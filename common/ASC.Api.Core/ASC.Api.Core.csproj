@@ -26,6 +26,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\web\ASC.Web.Core\ASC.Web.Core.csproj" />
     <ProjectReference Include="..\ASC.EventBus.Extensions.Logger\ASC.EventBus.Extensions.Logger.csproj" />
+    <ProjectReference Include="..\ASC.EventBus.MemoryCache\ASC.EventBus.MemoryCache.csproj" />
     <ProjectReference Include="..\ASC.EventBus.RabbitMQ\ASC.EventBus.RabbitMQ.csproj" />
     <ProjectReference Include="..\ASC.EventBus\ASC.EventBus.csproj" />
     <ProjectReference Include="..\ASC.Webhooks.Core\ASC.Webhooks.Core.csproj" />
