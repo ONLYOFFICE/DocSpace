@@ -68,7 +68,7 @@ const InfoItemValue = styled.div`
       margin-top: 6px;
     }
     @media (max-width: 1024px) {
-      padding: 6px 24px 8px 8px;
+      padding: 6px 8px 8px 8px;
       margin-left: -8px;
     }
   }

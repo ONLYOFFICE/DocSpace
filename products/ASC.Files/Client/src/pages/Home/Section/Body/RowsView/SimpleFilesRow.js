@@ -73,8 +73,8 @@ const StyledSimpleFilesRow = styled(Row)`
   }
 
   .row_content {
-    max-width: min-content;
-    min-width: inherit;
+    ${(props) => props.sectionWidth > 500 && `max-width: fit-content;`}
+    min-width: auto;
   }
 
   .badges {
@@ -88,9 +88,13 @@ const StyledSimpleFilesRow = styled(Row)`
     margin-right: 8px;
   }
 
-  .badge:last-child {
-    margin-right: 0px;
-  }
+  ${(props) =>
+    props.sectionWidth > 500 &&
+    `
+      .badge:last-child {
+        margin-right: 0px;
+      }
+  `}
 
   .lock-file {
     cursor: ${(props) => (props.withAccess ? "pointer" : "default")};
@@ -169,6 +173,7 @@ const SimpleFilesRow = (props) => {
   } = props;
 
   const withAccess = isAdmin || item.access === 0;
+  const isSmallContainer = sectionWidth <= 500;
 
   const element = (
     <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
@@ -194,7 +199,7 @@ const SimpleFilesRow = (props) => {
           isEdit={isEdit}
           element={element}
           sectionWidth={sectionWidth}
-          contentElement={quickButtonsComponent}
+          contentElement={isSmallContainer ? null : quickButtonsComponent}
           onSelect={onContentFileSelect}
           rowContextClick={fileContextClick}
           isPrivacy={isPrivacy}
@@ -214,6 +219,7 @@ const SimpleFilesRow = (props) => {
             item={item}
             sectionWidth={sectionWidth}
             onFilesClick={onFilesClick}
+            quickButtons={isSmallContainer ? quickButtonsComponent : null}
           />
         </StyledSimpleFilesRow>
       </DragAndDrop>
