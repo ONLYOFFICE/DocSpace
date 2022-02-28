@@ -25,7 +25,7 @@
 
 namespace ASC.TelegramService;
 
-[Singletone(Additional = typeof(TelegramListenerExtension))]
+[Singletone]
 public class TelegramListenerService : BackgroundService
 {
     private readonly ICacheNotify<NotifyMessage> _cacheMessage;
@@ -33,28 +33,30 @@ public class TelegramListenerService : BackgroundService
     private readonly ICacheNotify<CreateClientProto> _cacheCreateClient;
     private readonly ICacheNotify<DisableClientProto> _cacheDisableClient;
     private readonly TelegramHandler _telegramHandler;
-    private readonly IServiceScopeFactory _scopeFactory;
+    private readonly TenantManager _tenantManager;
+    private readonly TelegramLoginProvider _telegramLoginProvider;
 
     public TelegramListenerService(ICacheNotify<NotifyMessage> cacheMessage,
         ICacheNotify<RegisterUserProto> cacheRegisterUser,
         ICacheNotify<CreateClientProto> cacheCreateClient,
         TelegramHandler telegramHandler,
         ICacheNotify<DisableClientProto> cacheDisableClient,
-        IServiceScopeFactory scopeFactory)
+        TenantManager tenantManager,
+        ConsumerFactory consumerFactory)
     {
         _cacheMessage = cacheMessage;
         _cacheRegisterUser = cacheRegisterUser;
         _cacheCreateClient = cacheCreateClient;
         _cacheDisableClient = cacheDisableClient;
+        _telegramLoginProvider = consumerFactory.Get<TelegramLoginProvider>();
+        _tenantManager = tenantManager;
         _telegramHandler = telegramHandler;
-        _scopeFactory = scopeFactory;
     }
 
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        Task.Run(CreateClients);
-
+        CreateClients();
         _cacheMessage.Subscribe(async n => await SendMessage(n), CacheNotifyAction.Insert);
         _cacheRegisterUser.Subscribe(n => RegisterUser(n), CacheNotifyAction.Insert);
         _cacheCreateClient.Subscribe(n => CreateOrUpdateClient(n), CacheNotifyAction.Insert);
@@ -93,47 +95,14 @@ public class TelegramListenerService : BackgroundService
 
     private void CreateClients()
     {
-        var scopeClass = _scopeFactory.CreateScope().ServiceProvider.GetService<ScopeTelegramListener>();
-        var (tenantManager, handler, telegramLoginProvider) = scopeClass;
-        var tenants = tenantManager.GetTenants();
+        var tenants = _tenantManager.GetTenants();
         foreach (var tenant in tenants)
         {
-            tenantManager.SetCurrentTenant(tenant);
-            if (telegramLoginProvider.IsEnabled())
+            _tenantManager.SetCurrentTenant(tenant);
+            if (_telegramLoginProvider.IsEnabled())
             {
-                handler.CreateOrUpdateClientForTenant(tenant.TenantId, telegramLoginProvider.TelegramBotToken, telegramLoginProvider.TelegramAuthTokenLifespan, telegramLoginProvider.TelegramProxy, true, true);
+                _telegramHandler.CreateOrUpdateClientForTenant(tenant.TenantId, _telegramLoginProvider.TelegramBotToken, _telegramLoginProvider.TelegramAuthTokenLifespan, _telegramLoginProvider.TelegramProxy, true, true);
             }
         }
-    }
-}
-
-
-[Scope]
-public class ScopeTelegramListener
-{
-    private readonly TelegramHandler _handler;
-    private readonly TenantManager _tenantManager;
-    private readonly TelegramLoginProvider _telegramLoginProvider;
-
-    public ScopeTelegramListener(TenantManager tenantManager, TelegramHandler telegramHandler, ConsumerFactory consumerFactory)
-    {
-        _telegramLoginProvider = consumerFactory.Get<TelegramLoginProvider>();
-        _tenantManager = tenantManager;
-        _handler = telegramHandler;
-    }
-
-    public void Deconstruct(out TenantManager tenantManager, out TelegramHandler handler, out TelegramLoginProvider telegramLoginProvider)
-    {
-        tenantManager = _tenantManager;
-        handler = _handler;
-        telegramLoginProvider = _telegramLoginProvider;
-    }
-}
-
-public static class TelegramListenerExtension
-{
-    public static void Register(DIHelper services)
-    {
-        services.TryAdd<ScopeTelegramListener>();
     }
 }
