@@ -14,6 +14,7 @@ class SettingsStore {
 
   checkedMaintenance = false;
   maintenanceExist = false;
+  snackbarExist = false;
   currentProductId = "";
   culture = "en";
   cultures = [];
@@ -143,6 +144,10 @@ class SettingsStore {
 
   setMaintenanceExist = (maintenanceExist) => {
     this.maintenanceExist = maintenanceExist;
+  };
+
+  setSnackbarExist = (snackbar) => {
+    this.snackbarExist = snackbar;
   };
 
   setDefaultPage = (defaultPage) => {
