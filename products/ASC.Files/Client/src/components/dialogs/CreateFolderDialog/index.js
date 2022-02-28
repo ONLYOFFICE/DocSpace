@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { withRouter } from "react-router";
 import ModalDialogContainer from "../ModalDialogContainer";
 import TextInput from "@appserver/components/text-input";
@@ -8,13 +8,29 @@ import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 
 const CreateFolderDialogComponent = (props) => {
-  const { visible, t, tReady, isLoading, setCreateFolderDialogVisible } = props;
+  const {
+    visible,
+    t,
+    tReady,
+    isLoading,
+    setCreateFolderDialogVisible,
+    createFolder,
+    filter,
+    fetchFiles,
+  } = props;
+
+  const [folderName, setFolderName] = useState("");
 
   const onClose = () => setCreateFolderDialogVisible(false);
 
   const onCreate = () => {
+    console.log(filter);
+    const folderId = filter.folder;
+    createFolder(folderId, folderName).then(() => fetchFiles(folderId, filter));
     onClose();
   };
+
+  const onChange = (e) => setFolderName(e.target.value);
 
   return (
     <ModalDialogContainer
@@ -28,9 +44,8 @@ const CreateFolderDialogComponent = (props) => {
           scale={true}
           id="folder-name"
           name="folder-name"
-          onBlur={function noRefCheck() {}}
-          onChange={function noRefCheck() {}}
-          onFocus={function noRefCheck() {}}
+          value={folderName}
+          onChange={onChange}
           placeholder={t("Home:NewFolder")}
           tabIndex={1}
         />
@@ -62,7 +77,7 @@ const CreateFolderDialog = withTranslation(["Common", "Translations", "Home"])(
 );
 
 export default inject(({ filesStore, dialogsStore }) => {
-  const { fetchFiles, filter, isLoading } = filesStore;
+  const { fetchFiles, filter, isLoading, createFolder } = filesStore;
 
   const {
     createFolderDialogVisible: visible,
@@ -75,5 +90,6 @@ export default inject(({ filesStore, dialogsStore }) => {
     visible,
     setCreateFolderDialogVisible,
     fetchFiles,
+    createFolder,
   };
 })(withRouter(observer(CreateFolderDialog)));
