@@ -33,7 +33,7 @@ const StyledTableContainer = styled.div`
 
   .table-container_group-menu,
   .table-container_header {
-    padding: 0 24px;
+    padding: 0 20px;
 
     border-bottom: 1px solid;
     border-image-slice: 1;
@@ -149,15 +149,13 @@ const StyledTableHeaderCell = styled.div`
   .header-container-text-icon {
     padding: 13px 0 0 4px;
 
-    padding: 16px 0 16px 4px;
-
     display: ${(props) =>
       props.isActive && props.showIcon ? "block" : "none"};
     ${(props) =>
       props.sorted &&
       css`
         transform: scale(1, -1);
-        padding: 14px 0 16px 4px;
+        padding: 14px 0 14px 4px;
       `}
   }
 
