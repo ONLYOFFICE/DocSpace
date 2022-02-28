@@ -89,15 +89,19 @@ const EditingWrapper = styled.div`
         display: flex;
         align-items: center;
       `}
+
+    ${(props) => props.viewAs === "table" && `padding-left: 12px`}
   }
 
   .edit-button {
+    margin-left: 8px;
     height: 32px;
     padding: 8px 7px 7px 7px;
 
     ${(props) =>
       props.viewAs === "tile" &&
       css`
+        margin-left: 0px;
         background: none;
         border: 1px solid transparent;
 
@@ -134,10 +138,12 @@ const EditingWrapper = styled.div`
     margin-top: -6px;
     width: 14px;
     height: 14px;
+    padding: 1px;
   }
 
   .is-edit {
     /* margin-top: 4px; */
+    ${(props) => props.viewAs === "table" && `padding-left: 4px;`}
   }
 `;
 

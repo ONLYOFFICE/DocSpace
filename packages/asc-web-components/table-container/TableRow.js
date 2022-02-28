@@ -4,8 +4,6 @@ import { StyledTableRow } from "./StyledTableContainer";
 import TableCell from "./TableCell";
 import ContextMenu from "../context-menu";
 import ContextMenuButton from "../context-menu-button";
-import Checkbox from "../checkbox";
-import Loader from "../loader";
 
 const TableRow = (props) => {
   const {
@@ -13,16 +11,10 @@ const TableRow = (props) => {
     onHideContextMenu,
     children,
     contextOptions,
-    checked,
-    element,
-    onContentSelect,
-    item,
     className,
     style,
     selectionProp,
-    hasAccess,
     title,
-    inProgress,
     ...rest
   } = props;
 
@@ -44,10 +36,6 @@ const TableRow = (props) => {
   const getOptions = () => {
     fileContextClick && fileContextClick();
     return contextOptions;
-  };
-
-  const onChange = (e) => {
-    onContentSelect && onContentSelect(e.target.checked, item);
   };
 
   return (
@@ -89,24 +77,15 @@ const TableRow = (props) => {
   );
 };
 
-TableRow.defaultProps = {
-  hasAccess: true,
-};
-
 TableRow.propTypes = {
   fileContextClick: PropTypes.func,
   children: PropTypes.any,
   contextOptions: PropTypes.array,
-  checked: PropTypes.bool,
-  element: PropTypes.any,
-  onContentSelect: PropTypes.func,
   onHideContextMenu: PropTypes.func,
-  item: PropTypes.object,
   selectionProp: PropTypes.object,
   className: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   style: PropTypes.object,
-  hasAccess: PropTypes.bool,
-  inProgress: PropTypes.bool,
+  title: PropTypes.string,
 };
 
 export default TableRow;

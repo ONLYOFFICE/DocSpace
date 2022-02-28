@@ -208,7 +208,7 @@ namespace ASC.Data.Backup.Tasks
         private IEnumerable<BackupFileInfo> GetFiles(int tenantId)
         {
             var files = GetFilesToProcess(tenantId).ToList();
-            var exclude = BackupRecordContext.Backups.Where(b => b.TenantId == tenantId && b.StorageType == 0 && b.StoragePath != null).ToList();
+            var exclude = BackupRecordContext.Backups.AsQueryable().Where(b => b.TenantId == tenantId && b.StorageType == 0 && b.StoragePath != null).ToList();
             files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains($"/file_{e.StoragePath}/"))).ToList();
             return files;
 
@@ -510,7 +510,7 @@ namespace ASC.Data.Backup.Tasks
                 filePath = @"\\?\" + filePath;
             }
 
-            using (var fileStream = storage.GetReadStream(file.Domain, file.Path))
+            using (var fileStream = await storage.GetReadStreamAsync(file.Domain, file.Path))
             using (var tmpFile = File.OpenWrite(filePath))
             {
                 await fileStream.CopyToAsync(tmpFile);
@@ -541,7 +541,7 @@ namespace ASC.Data.Backup.Tasks
         private List<IGrouping<string, BackupFileInfo>> GetFilesGroup()
         {
             var files = GetFilesToProcess(TenantId).ToList();
-            var exclude = BackupRecordContext.Backups.Where(b => b.TenantId == TenantId && b.StorageType == 0 && b.StoragePath != null).ToList();
+            var exclude = BackupRecordContext.Backups.AsQueryable().Where(b => b.TenantId == TenantId && b.StorageType == 0 && b.StoragePath != null).ToList();
 
             files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains($"/file_{e.StoragePath}/"))).ToList();
 
@@ -627,7 +627,7 @@ namespace ASC.Data.Backup.Tasks
                     ActionInvoker.Try(state =>
                     {
                         var f = (BackupFileInfo)state;
-                        using var fileStream = storage.GetReadStream(f.Domain, f.Path);
+                        using var fileStream = storage.GetReadStreamAsync(f.Domain, f.Path).Result;
                         writer.WriteEntry(file1.GetZipKey(), fileStream);
                     }, file, 5, error => Logger.WarnFormat("can't backup file ({0}:{1}): {2}", file1.Module, file1.Path, error));
 

@@ -94,6 +94,8 @@ class ComboBox extends React.Component {
       manualX,
       isDefaultMode,
       manualWidth,
+      displaySelectedOption,
+      fixedDirection,
     } = this.props;
     const { isOpen, selectedOption } = this.state;
 
@@ -158,20 +160,26 @@ class ComboBox extends React.Component {
             {...dropDownManualWidthProp}
             showDisabledItems={showDisabledItems}
             isDefaultMode={isDefaultMode}
+            fixedDirection={fixedDirection}
           >
             {advancedOptions
               ? advancedOptions
-              : options.map((option) => (
-                  <DropDownItem
-                    {...option}
-                    textOverflow={textOverflow}
-                    key={option.key}
-                    disabled={
-                      option.disabled || option.label === selectedOption.label
-                    }
-                    onClick={this.optionClick.bind(this, option)}
-                  />
-                ))}
+              : options.map((option) => {
+                  const disabled =
+                    option.disabled ||
+                    (!displaySelectedOption &&
+                      option.label === selectedOption.label);
+
+                  return (
+                    <DropDownItem
+                      {...option}
+                      textOverflow={textOverflow}
+                      key={option.key}
+                      disabled={disabled}
+                      onClick={this.optionClick.bind(this, option)}
+                    />
+                  );
+                })}
           </DropDown>
         )}
       </StyledComboBox>
@@ -233,6 +241,8 @@ ComboBox.propTypes = {
   manualX: PropTypes.string,
   //** Dropdown manual width */
   manualWidth: PropTypes.string,
+  displaySelectedOption: PropTypes.bool,
+  fixedDirection: PropTypes.bool,
 };
 
 ComboBox.defaultProps = {
@@ -247,6 +257,8 @@ ComboBox.defaultProps = {
   manualY: "102%",
   isDefaultMode: true,
   manualWidth: "200px",
+  displaySelectedOption: false,
+  fixedDirection: false,
 };
 
 export default ComboBox;

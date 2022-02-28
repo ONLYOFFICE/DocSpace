@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Caching;
@@ -135,7 +136,7 @@ namespace ASC.CRM.Core.Dao
 
             if (!_crmSecurity.IsAdmin)
             {
-                var idsFromAcl = _userDbContext.Acl.Where(x => x.Tenant == TenantID &&
+                var idsFromAcl = _userDbContext.Acl.AsQueryable().Where(x => x.Tenant == TenantID &&
                                                      x.Action == _crmSecurity._actionRead.ID &&
                                                      x.Subject == _securityContext.CurrentAccount.ID &&
                                                      (Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Object, typeof(Company).FullName + "%") ||
@@ -691,14 +692,14 @@ namespace ASC.CRM.Core.Dao
                 case ContactListViewType.WithOpportunity:
                     if (ids.Count > 0)
                     {
-                        ids = CrmDbContext.EntityContact.Where(x => ids.Contains(x.ContactId) && x.EntityType == EntityType.Opportunity)
+                        ids = CrmDbContext.EntityContact.AsQueryable().Where(x => ids.Contains(x.ContactId) && x.EntityType == EntityType.Opportunity)
                                                         .Select(x => x.ContactId)
                                                         .Distinct()
                                                         .ToList();
                     }
                     else
                     {
-                        ids = CrmDbContext.EntityContact.Where(x => x.EntityType == EntityType.Opportunity)
+                        ids = CrmDbContext.EntityContact.AsQueryable().Where(x => x.EntityType == EntityType.Opportunity)
                                                         .Select(x => x.ContactId)
                                                         .Distinct()
                                                         .ToList();
@@ -996,6 +997,7 @@ namespace ASC.CRM.Core.Dao
 
             CrmDbContext.EntityContact
                     .RemoveRange(CrmDbContext.EntityContact
+                    .AsQueryable()
                     .Where(x => x.EntityType == EntityType.Person && x.ContactId == companyID));
 
             var itemsToUpdate = Query(CrmDbContext.Contacts)
@@ -1081,6 +1083,7 @@ namespace ASC.CRM.Core.Dao
         public Dictionary<int, int> GetMembersCount(int[] companyID)
         {
             return CrmDbContext.EntityContact
+                .AsQueryable()
                 .Where(x => companyID.Contains(x.ContactId) && x.EntityType == EntityType.Person)
                 .GroupBy(x => x.ContactId)
                 .Select(x => new { GroupId = x.Key, Count = x.Count() })
@@ -1091,6 +1094,7 @@ namespace ASC.CRM.Core.Dao
         public int GetMembersCount(int companyID)
         {
             return CrmDbContext.EntityContact
+                        .AsQueryable()
                         .Where(x => x.ContactId == companyID && x.EntityType == EntityType.Person)
                         .Count();
         }
@@ -1098,6 +1102,7 @@ namespace ASC.CRM.Core.Dao
         public List<int> GetMembersIDs(int companyID)
         {
             return CrmDbContext.EntityContact
+                    .AsQueryable()
                     .Where(x => x.ContactId == companyID && x.EntityType == EntityType.Person)
                     .Select(x => x.EntityId)
                     .ToList();
@@ -1106,6 +1111,7 @@ namespace ASC.CRM.Core.Dao
         public Dictionary<int, ShareType?> GetMembersIDsAndShareType(int companyID)
         {
             return CrmDbContext.EntityContact
+                                .AsQueryable()
                                 .Where(x => x.ContactId == companyID && x.EntityType == EntityType.Person)
                                 .GroupJoin(CrmDbContext.Contacts,
                                             x => x.EntityId,
@@ -1502,48 +1508,53 @@ namespace ASC.CRM.Core.Dao
                     .ConvertAll(ToContact);
         }
 
-        public List<Contact> DeleteBatchContact(int[] contactID)
+        public Task<List<Contact>> DeleteBatchContactAsync(int[] contactID)
         {
             if (contactID == null || contactID.Length == 0) return null;
 
             var contacts = GetContacts(contactID).Where(_crmSecurity.CanDelete).ToList();
-            if (!contacts.Any()) return contacts;
+            if (contacts.Count == 0) return System.Threading.Tasks.Task.FromResult(contacts);
 
-            // Delete relative  keys
-            _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "contacts.*"));
-
-            DeleteBatchContactsExecute(contacts);
-
-            return contacts;
+            return InternalDeleteBatchContactAsync(contacts);
         }
 
-        public List<Contact> DeleteBatchContact(List<Contact> contacts)
+        public Task<List<Contact>> DeleteBatchContactAsync(List<Contact> contacts)
         {
             contacts = contacts.FindAll(_crmSecurity.CanDelete).ToList();
-            if (!contacts.Any()) return contacts;
+            if (contacts.Count == 0) return System.Threading.Tasks.Task.FromResult(contacts);
 
+            return InternalDeleteBatchContactAsync(contacts);
+        }
+
+        private async Task<List<Contact>> InternalDeleteBatchContactAsync(List<Contact> contacts)
+        {
             // Delete relative  keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "contacts.*"));
 
-            DeleteBatchContactsExecute(contacts);
+            await DeleteBatchContactsExecuteAsync(contacts);
 
             return contacts;
         }
 
-        public Contact DeleteContact(int contactID)
+        public Task<Contact> DeleteContactAsync(int contactID)
         {
-            if (contactID <= 0) return null;
+            if (contactID <= 0) return System.Threading.Tasks.Task.FromResult<Contact>(null);
 
             var contact = GetByID(contactID);
-            if (contact == null) return null;
+            if (contact == null) return System.Threading.Tasks.Task.FromResult<Contact>(null);
 
+            return InternalDeleteContactAsync(contactID, contact);
+        }
+
+        private async Task<Contact> InternalDeleteContactAsync(int contactID, Contact contact)
+        {
             _crmSecurity.DemandDelete(contact);
 
             var dbEntity = CrmDbContext.Contacts.Find(contactID);
 
             _factoryIndexerContact.Delete(dbEntity);
 
-            DeleteBatchContactsExecute(new List<Contact>() { contact });
+            await DeleteBatchContactsExecuteAsync(new List<Contact>() { contact });
 
             // Delete relative  keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "contacts.*"));
@@ -1551,7 +1562,7 @@ namespace ASC.CRM.Core.Dao
             return contact;
         }
 
-        private void DeleteBatchContactsExecute(List<Contact> contacts)
+        private async System.Threading.Tasks.Task DeleteBatchContactsExecuteAsync(List<Contact> contacts)
         {
             var personsID = new List<int>();
             var companyID = new List<int>();
@@ -1568,9 +1579,9 @@ namespace ASC.CRM.Core.Dao
             }
 
             var contactID = newContactID.ToArray();
-            int[] filesIDs = new int[0];
+            var filesIDs = AsyncEnumerable.Empty<int>();
 
-            var tx = CrmDbContext.Database.BeginTransaction();
+            var tx = await CrmDbContext.Database.BeginTransactionAsync();
 
             var tagdao = _filesIntegration.DaoFactory.GetTagDao<int>();
 
@@ -1579,10 +1590,9 @@ namespace ASC.CRM.Core.Dao
 
             if (0 < tagNames.Length)
             {
-                filesIDs = tagdao.GetTags(tagNames, TagType.System)
+                filesIDs = tagdao.GetTagsAsync(tagNames, TagType.System)
                                  .Where(t => t.EntryType == FileEntryType.File)
-                                 .Select(t => Convert.ToInt32(t.EntryId))
-                                 .ToArray();
+                                 .Select(t => Convert.ToInt32(t.EntryId));
             }
 
             CrmDbContext.RemoveRange(Query(CrmDbContext.FieldValue)
@@ -1594,15 +1604,16 @@ namespace ASC.CRM.Core.Dao
                                         .Where(x => contactID.Contains(x.ContactId)));
 
             CrmDbContext.RemoveRange(CrmDbContext.EntityTags
+                                                .AsQueryable()
                                                 .Where(x => contactID.Contains(x.EntityId) && x.EntityType == EntityType.Contact));
 
-            CrmDbContext.RemoveRange(CrmDbContext.RelationshipEvent.Where(x => contactID.Contains(x.ContactId)));
+            CrmDbContext.RemoveRange(CrmDbContext.RelationshipEvent.AsQueryable().Where(x => contactID.Contains(x.ContactId)));
 
-            var dealToUpdate = CrmDbContext.Deals.Where(x => contactID.Contains(x.ContactId)).ToList();
+            var dealToUpdate = CrmDbContext.Deals.AsQueryable().Where(x => contactID.Contains(x.ContactId)).ToList();
 
             dealToUpdate.ForEach(x => x.ContactId = 0);
 
-            CrmDbContext.SaveChanges();
+            await CrmDbContext.SaveChangesAsync();
 
             if (companyID.Count > 0)
             {
@@ -1610,7 +1621,7 @@ namespace ASC.CRM.Core.Dao
 
                 itemToUpdate.ForEach(x => x.CompanyId = 0);
 
-                CrmDbContext.SaveChanges();
+                await CrmDbContext.SaveChangesAsync();
             }
 
             if (personsID.Count > 0)
@@ -1628,17 +1639,17 @@ namespace ASC.CRM.Core.Dao
                 TenantId = TenantID
             }));
 
-            CrmDbContext.SaveChanges();
+            await CrmDbContext.SaveChangesAsync();
 
-            tx.Commit();
+            await tx.CommitAsync();
 
             contacts.ForEach(contact => _authorizationManager.RemoveAllAces(contact));
 
             var filedao = _filesIntegration.DaoFactory.GetFileDao<int>();
 
-            foreach (var filesID in filesIDs)
+            await foreach (var filesID in filesIDs)
             {
-                filedao.DeleteFile(filesID);
+                await filedao.DeleteFileAsync(filesID);
             }
 
             //todo: remove indexes
@@ -1699,6 +1710,7 @@ namespace ASC.CRM.Core.Dao
                 // crm_entity_contact
                 CrmDbContext.EntityContact.RemoveRange(
                                                 CrmDbContext.EntityContact
+                                                    .AsQueryable()
                                                     .Join(CrmDbContext.EntityContact,
                                                           x => new { x.EntityId, x.EntityType },
                                                           y => new { y.EntityId, y.EntityType },
@@ -1706,7 +1718,7 @@ namespace ASC.CRM.Core.Dao
                                                     .Where(x => x.x.ContactId == fromContactID && x.y.ContactId == toContactID)
                                                     .Select(x => x.x));
 
-                var entityContactToUpdate = CrmDbContext.EntityContact.Where(x => x.ContactId == fromContactID).ToList();
+                var entityContactToUpdate = CrmDbContext.EntityContact.AsQueryable().Where(x => x.ContactId == fromContactID).ToList();
 
                 entityContactToUpdate.ForEach(x => x.ContactId = toContactID);
                 CrmDbContext.SaveChanges();
@@ -1762,7 +1774,7 @@ namespace ASC.CRM.Core.Dao
                 CrmDbContext.SaveChanges();
 
                 // crm_entity_tag
-                var dublicateTagsID = CrmDbContext.EntityTags.Join(CrmDbContext.EntityTags,
+                var dublicateTagsID = CrmDbContext.EntityTags.AsQueryable().Join(CrmDbContext.EntityTags,
                                                                    x => new { x.TagId, x.EntityType },
                                                                    y => new { y.TagId, y.EntityType },
                                                                    (x, y) => new { x, y }
@@ -1770,12 +1782,12 @@ namespace ASC.CRM.Core.Dao
                                                     .Where(x => x.x.EntityId == fromContactID && x.y.EntityId == toContactID)
                                                     .Select(x => x.x.TagId).ToList();
 
-                CrmDbContext.EntityTags.Where(x => x.EntityId == fromContactID &&
+                CrmDbContext.EntityTags.AsQueryable().Where(x => x.EntityId == fromContactID &&
                                                    x.EntityType == EntityType.Contact &&
                                                    dublicateTagsID.Contains(x.TagId));
 
 
-                var entityTagToUpdate = CrmDbContext.EntityTags.Where(x => x.EntityId == fromContactID && x.EntityType == EntityType.Contact).ToList();
+                var entityTagToUpdate = CrmDbContext.EntityTags.AsQueryable().Where(x => x.EntityId == fromContactID && x.EntityType == EntityType.Contact).ToList();
 
                 entityTagToUpdate.ForEach(x => x.EntityId = toContactID);
 
@@ -1790,7 +1802,7 @@ namespace ASC.CRM.Core.Dao
                                                         .Where(x => x.x.EntityId == fromContactID && x.y.EntityId == toContactID)
                                                         .Select(x => x.x.FieldId);
 
-                CrmDbContext.RemoveRange(CrmDbContext.FieldValue.Where(x => x.EntityId == fromContactID &&
+                CrmDbContext.RemoveRange(CrmDbContext.FieldValue.AsQueryable().Where(x => x.EntityId == fromContactID &&
                                                                             (new[] { EntityType.Contact, EntityType.Person, EntityType.Company }).Contains(x.EntityType) &&
                                                                               dublicateCustomFieldValueID.Contains(x.FieldId)));
 
