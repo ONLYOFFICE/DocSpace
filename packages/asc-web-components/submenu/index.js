@@ -38,29 +38,42 @@ const Submenu = ({ data, startSelect = 0, ...rest }) => {
     let startX;
     let scrollLeft;
 
-    submenuItemsRef.current.addEventListener("mousedown", (e) => {
+    const mouseDown = (e) => {
       e.preventDefault();
       isDown = true;
       startX = e.pageX - submenuItemsRef.current.offsetLeft;
       scrollLeft = submenuItemsRef.current.scrollLeft;
-    });
+    };
 
-    submenuItemsRef.current.addEventListener("mousemove", (e) => {
+    const mouseMove = (e) => {
       if (!isDown) return;
       e.preventDefault();
       const x = e.pageX - submenuItemsRef.current.offsetLeft;
       const walk = x - startX;
       submenuItemsRef.current.scrollLeft = scrollLeft - walk;
-    });
+    };
 
-    submenuItemsRef.current.addEventListener("mouseup", () => {
+    const mouseUp = () => {
       const offset = countAutoOffset(data, submenuItemsRef);
       submenuItemsRef.current.scrollLeft += offset;
       isDown = false;
-    });
-    submenuItemsRef.current.addEventListener("mouseleave", () => {
+    };
+
+    const mouseLeave = () => {
       isDown = false;
-    });
+    };
+
+    submenuItemsRef.current.addEventListener("mousedown", mouseDown);
+    submenuItemsRef.current.addEventListener("mousemove", mouseMove);
+    submenuItemsRef.current.addEventListener("mouseup", mouseUp);
+    submenuItemsRef.current.addEventListener("mouseleave", mouseLeave);
+
+    return () => {
+      submenuItemsRef.current.removeEventListener("mousedown", mouseDown);
+      submenuItemsRef.current.removeEventListener("mousemove", mouseMove);
+      submenuItemsRef.current.removeEventListener("mouseup", mouseUp);
+      submenuItemsRef.current.removeEventListener("mouseleave", mouseLeave);
+    };
   }, [submenuItemsRef]);
 
   return (
