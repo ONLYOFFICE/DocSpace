@@ -50,15 +50,15 @@ public class GroupDto
 }
 
 [Scope]
-public class GroupWraperFullHelper
+public class GroupFullDtoHelper
 {
-    private UserManager UserManager { get; }
-    private EmployeeWraperHelper EmployeeWraperHelper { get; }
+    private readonly UserManager _userManager;
+    private readonly EmployeeDtoHelper _employeeWraperHelper;
 
-    public GroupWraperFullHelper(UserManager userManager, EmployeeWraperHelper employeeWraperHelper)
+    public GroupFullDtoHelper(UserManager userManager, EmployeeDtoHelper employeeWraperHelper)
     {
-        UserManager = userManager;
-        EmployeeWraperHelper = employeeWraperHelper;
+        _userManager = userManager;
+        _employeeWraperHelper = employeeWraperHelper;
     }
 
     public GroupDto Get(GroupInfo group, bool includeMembers)
@@ -69,12 +69,12 @@ public class GroupWraperFullHelper
             Category = group.CategoryID,
             Parent = group.Parent != null ? group.Parent.ID : Guid.Empty,
             Name = group.Name,
-            Manager = EmployeeWraperHelper.Get(UserManager.GetUsers(UserManager.GetDepartmentManager(group.ID)))
+            Manager = _employeeWraperHelper.Get(_userManager.GetUsers(_userManager.GetDepartmentManager(group.ID)))
         };
 
         if (includeMembers)
         {
-            result.Members = new List<EmployeeDto>(UserManager.GetUsersByGroup(group.ID).Select(EmployeeWraperHelper.Get));
+            result.Members = new List<EmployeeDto>(_userManager.GetUsersByGroup(group.ID).Select(_employeeWraperHelper.Get));
         }
 
         return result;

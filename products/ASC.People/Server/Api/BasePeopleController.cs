@@ -1,25 +1,28 @@
-﻿using AutoMapper;
+﻿using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.People.Api;
 
 public class BasePeopleController : BaseApiController
 {
     protected readonly UserPhotoManager UserPhotoManager;
-    protected readonly IHttpClientFactory HttpClientFactory;
     protected readonly DisplayUserSettingsHelper DisplayUserSettingsHelper;
     protected readonly SetupInfo SetupInfo;
-    protected readonly IMapper Mapper;
+
+    private readonly IHttpClientFactory _httpClientFactory;
 
     protected BasePeopleController(
         UserManager userManager,
         AuthContext authContext,
         ApiContext apiContext,
         PermissionContext permissionContext,
-        Core.SecurityContext securityContext,
+        SecurityContext securityContext,
         MessageService messageService,
         MessageTarget messageTarget,
         StudioNotifyService studioNotifyService,
-        IMapper mapper)
+        UserPhotoManager userPhotoManager,
+        IHttpClientFactory httpClientFactory,
+        DisplayUserSettingsHelper displayUserSettingsHelper,
+        SetupInfo setupInfo)
         : base(
             userManager,
             authContext,
@@ -30,7 +33,10 @@ public class BasePeopleController : BaseApiController
             messageTarget,
             studioNotifyService)
     {
-        Mapper = mapper;
+        UserPhotoManager = userPhotoManager;
+        _httpClientFactory = httpClientFactory;
+        DisplayUserSettingsHelper = displayUserSettingsHelper;
+        SetupInfo = setupInfo;
     }
 
     protected UserInfo GetUserInfo(string userNameOrId)
@@ -83,7 +89,7 @@ public class BasePeopleController : BaseApiController
         var request = new HttpRequestMessage();
         request.RequestUri = new Uri(files);
 
-        var httpClient = HttpClientFactory.CreateClient();
+        var httpClient = _httpClientFactory.CreateClient();
         using var response = httpClient.Send(request);
         using var inputStream = response.Content.ReadAsStream();
         using var br = new BinaryReader(inputStream);

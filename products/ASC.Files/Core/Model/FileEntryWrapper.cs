@@ -87,7 +87,7 @@ namespace ASC.Api.Documents
         /// 
         /// </summary>
         /// <param name="entry"></param>
-        protected FileEntryWrapper(FileEntry entry, EmployeeWraperHelper employeeWraperHelper, ApiDateTimeHelper apiDateTimeHelper)
+        protected FileEntryWrapper(FileEntry entry, EmployeeDtoHelper employeeWraperHelper, ApiDateTimeHelper apiDateTimeHelper)
         {
             Title = entry.Title;
             Access = entry.Access;
@@ -129,7 +129,7 @@ namespace ASC.Api.Documents
         /// 
         /// </summary>
         /// <param name="entry"></param>
-        protected FileEntryWrapper(FileEntry<T> entry, EmployeeWraperHelper employeeWraperHelper, ApiDateTimeHelper apiDateTimeHelper)
+        protected FileEntryWrapper(FileEntry<T> entry, EmployeeDtoHelper employeeWraperHelper, ApiDateTimeHelper apiDateTimeHelper)
             : base(entry, employeeWraperHelper, apiDateTimeHelper)
         {
             Id = entry.ID;
@@ -149,13 +149,13 @@ namespace ASC.Api.Documents
     public class FileEntryWrapperHelper
     {
         private ApiDateTimeHelper ApiDateTimeHelper { get; }
-        private EmployeeWraperHelper EmployeeWraperHelper { get; }
+        private EmployeeDtoHelper EmployeeWraperHelper { get; }
         public FileSharingHelper FileSharingHelper { get; }
         public FileSecurity FileSecurity { get; }
 
         public FileEntryWrapperHelper(
             ApiDateTimeHelper apiDateTimeHelper,
-            EmployeeWraperHelper employeeWraperHelper,
+            EmployeeDtoHelper employeeWraperHelper,
             FileSharingHelper fileSharingHelper, FileSecurity fileSecurity
             )
         {

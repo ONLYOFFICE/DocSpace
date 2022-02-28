@@ -18,7 +18,10 @@ public class PhotoController : BasePeopleController
         StudioNotifyService studioNotifyService,
         FileSizeComment fileSizeComment,
         SettingsManager settingsManager,
-        IMapper mapper)
+        UserPhotoManager userPhotoManager,
+        IHttpClientFactory httpClientFactory,
+        DisplayUserSettingsHelper displayUserSettingsHelper,
+        SetupInfo setupInfo)
         : base(
             userManager,
             authContext,
@@ -28,7 +31,10 @@ public class PhotoController : BasePeopleController
             messageService,
             messageTarget,
             studioNotifyService,
-            mapper)
+            userPhotoManager,
+            httpClientFactory,
+            displayUserSettingsHelper,
+            setupInfo)
     {
         _fileSizeComment = fileSizeComment;
         _settingsManager = settingsManager;
@@ -78,7 +84,6 @@ public class PhotoController : BasePeopleController
 
         return new ThumbnailsDataDto(user.ID, UserPhotoManager);
     }
-
 
     [Update("{userid}/photo")]
     public ThumbnailsDataDto UpdateMemberPhotoFromBody(string userid, [FromBody] UpdateMemberRequestDto model)

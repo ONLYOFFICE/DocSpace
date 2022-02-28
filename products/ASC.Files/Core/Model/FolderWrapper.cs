@@ -87,7 +87,7 @@ namespace ASC.Api.Documents
 
         public FolderWrapperHelper(
             ApiDateTimeHelper apiDateTimeHelper,
-            EmployeeWraperHelper employeeWrapperHelper,
+            EmployeeDtoHelper employeeWrapperHelper,
             AuthContext authContext,
             IDaoFactory daoFactory,
             FileSecurity fileSecurity,

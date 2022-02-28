@@ -43,7 +43,7 @@ namespace ASC.Api.Settings
         private StudioNotifyService StudioNotifyService { get; }
         private IWebHostEnvironment WebHostEnvironment { get; }
         private IServiceProvider ServiceProvider { get; }
-        private EmployeeWraperHelper EmployeeWraperHelper { get; }
+        private EmployeeDtoHelper EmployeeWraperHelper { get; }
         private ConsumerFactory ConsumerFactory { get; }
         private SmsProviderManager SmsProviderManager { get; }
         private TimeZoneConverter TimeZoneConverter { get; }
@@ -143,7 +143,7 @@ namespace ASC.Api.Settings
             StorageSettingsHelper storageSettingsHelper,
             IWebHostEnvironment webHostEnvironment,
             IServiceProvider serviceProvider,
-            EmployeeWraperHelper employeeWraperHelper,
+            EmployeeDtoHelper employeeWraperHelper,
             ConsumerFactory consumerFactory,
             SmsProviderManager smsProviderManager,
             TimeZoneConverter timeZoneConverter,

@@ -46,16 +46,16 @@ public class EmployeeDto
 }
 
 [Scope]
-public class EmployeeWraperHelper
+public class EmployeeDtoHelper
 {
-    protected UserPhotoManager UserPhotoManager { get; }
-    protected UserManager UserManager { get; }
+    protected readonly UserPhotoManager UserPhotoManager;
+    protected readonly UserManager UserManager;
 
     private readonly ApiContext _httpContext;
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
     private readonly CommonLinkUtility _commonLinkUtility;
 
-    public EmployeeWraperHelper(
+    public EmployeeDtoHelper(
         ApiContext httpContext,
         DisplayUserSettingsHelper displayUserSettingsHelper,
         UserPhotoManager userPhotoManager,
@@ -67,7 +67,6 @@ public class EmployeeWraperHelper
         _httpContext = httpContext;
         _displayUserSettingsHelper = displayUserSettingsHelper;
         _commonLinkUtility = commonLinkUtility;
-
     }
 
     public EmployeeDto Get(UserInfo userInfo)

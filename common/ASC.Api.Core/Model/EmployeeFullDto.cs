@@ -89,13 +89,13 @@ public class EmployeeFullDto : EmployeeDto
 }
 
 [Scope]
-public class EmployeeWraperFullHelper : EmployeeWraperHelper
+public class EmployeeFullDtoHelper : EmployeeDtoHelper
 {
     private readonly ApiContext _context;
     private readonly WebItemSecurity _webItemSecurity;
     private readonly ApiDateTimeHelper _apiDateTimeHelper;
 
-    public EmployeeWraperFullHelper(
+    public EmployeeFullDtoHelper(
         ApiContext context,
         UserManager userManager,
         UserPhotoManager userPhotoManager,
@@ -126,7 +126,7 @@ public class EmployeeWraperFullHelper : EmployeeWraperHelper
         if (apiContext.Check("Id"))
         {
             bindExprs.Add(Expression.Bind(typeof(UserInfo).GetProperty("ID"), 
-                Expression.Property(parameter, typeof(User).GetProperty("Id"))));
+            Expression.Property(parameter, typeof(User).GetProperty("Id"))));
         }
 
         var body = Expression.MemberInit(newExpr, bindExprs);
@@ -223,7 +223,7 @@ public class EmployeeWraperFullHelper : EmployeeWraperHelper
         if (_context.Check("listAdminModules"))
         {
             var listAdminModules = userInfo.GetListAdminModules(_webItemSecurity);
-                if (listAdminModules.Count > 0)
+            if (listAdminModules.Count > 0)
             {
                 result.ListAdminModules = listAdminModules;
             }
@@ -249,7 +249,7 @@ public class EmployeeWraperFullHelper : EmployeeWraperHelper
             }
         }
 
-            if (contacts.Count > 0)
+        if (contacts.Count > 0)
         {
             employeeWraperFull.Contacts = contacts;
         }

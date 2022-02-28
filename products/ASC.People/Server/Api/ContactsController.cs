@@ -4,6 +4,8 @@ namespace ASC.People.Api;
 
 public class ContactsController : BasePeopleController
 {
+    private readonly EmployeeFullDtoHelper _employeeFullDtoHelper;
+
     public ContactsController(
         UserManager userManager,
         AuthContext authContext,
@@ -13,7 +15,11 @@ public class ContactsController : BasePeopleController
         MessageService messageService,
         MessageTarget messageTarget,
         StudioNotifyService studioNotifyService,
-        IMapper mapper)
+        UserPhotoManager userPhotoManager,
+        IHttpClientFactory httpClientFactory,
+        DisplayUserSettingsHelper displayUserSettingsHelper,
+        SetupInfo setupInfo,
+        EmployeeFullDtoHelper employeeFullDtoHelper)
         : base(
             userManager,
             authContext,
@@ -23,8 +29,12 @@ public class ContactsController : BasePeopleController
             messageService,
             messageTarget,
             studioNotifyService,
-            mapper)
+            userPhotoManager, 
+            httpClientFactory, 
+            displayUserSettingsHelper,
+            setupInfo)
     {
+        _employeeFullDtoHelper = employeeFullDtoHelper;
     }
 
     [Delete("{userid}/contacts")]
@@ -102,7 +112,7 @@ public class ContactsController : BasePeopleController
         DeleteContacts(memberModel.Contacts, user);
         UserManager.SaveUserInfo(user);
 
-        return Mapper.Map<UserInfo, EmployeeFullDto>(user);
+        return _employeeFullDtoHelper.GetFull(user);
     }
 
     private EmployeeFullDto SetMemberContacts(string userid, UpdateMemberRequestDto memberModel)
@@ -118,7 +128,7 @@ public class ContactsController : BasePeopleController
         UpdateContacts(memberModel.Contacts, user);
         UserManager.SaveUserInfo(user);
 
-        return Mapper.Map<UserInfo, EmployeeFullDto>(user);
+        return _employeeFullDtoHelper.GetFull(user);
     }
 
     private EmployeeFullDto UpdateMemberContacts(string userid, UpdateMemberRequestDto memberModel)
@@ -133,6 +143,6 @@ public class ContactsController : BasePeopleController
         UpdateContacts(memberModel.Contacts, user);
         UserManager.SaveUserInfo(user);
 
-        return Mapper.Map<UserInfo, EmployeeFullDto>(user);
+        return _employeeFullDtoHelper.GetFull(user);
     }
 }

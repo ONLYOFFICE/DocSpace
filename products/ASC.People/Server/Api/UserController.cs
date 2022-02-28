@@ -19,10 +19,11 @@ public class UserController : BasePeopleController
     private readonly TenantUtil _tenantUtil;
     private readonly UserFormatter _userFormatter;
     private readonly UserManagerWrapper _userManagerWrapper;
-    private readonly UserPhotoManager _userPhotoManager;
     private readonly WebItemManager _webItemManager;
     private readonly WebItemSecurity _webItemSecurity;
     private readonly WebItemSecurityCache _webItemSecurityCache;
+    private readonly EmployeeFullDtoHelper _employeeFullDtoHelper;
+    private readonly EmployeeDtoHelper _employeeDtoHelper;
 
     public UserController(
         UserManager userManager,
@@ -47,12 +48,15 @@ public class UserController : BasePeopleController
         TenantUtil tenantUtil,
         UserFormatter userFormatter,
         UserManagerWrapper userManagerWrapper,
-        UserPhotoManager userPhotoManager,
         WebItemManager webItemManager,
         WebItemSecurity webItemSecurity,
         WebItemSecurityCache webItemSecurityCache,
-        IMapper mapper
-        )
+        UserPhotoManager userPhotoManager,
+        IHttpClientFactory httpClientFactory,
+        DisplayUserSettingsHelper displayUserSettingsHelper,
+        SetupInfo setupInfo,
+        EmployeeFullDtoHelper employeeFullDtoHelper,
+        EmployeeDtoHelper employeeDtoHelper)
         : base(
             userManager,
             authContext,
@@ -62,7 +66,10 @@ public class UserController : BasePeopleController
             messageService,
             messageTarget,
             studioNotifyService,
-            mapper)
+            userPhotoManager,
+            httpClientFactory,
+            displayUserSettingsHelper,
+            setupInfo)
     {
         _constants = constants;
         _cookiesManager = cookiesManager;
@@ -78,10 +85,11 @@ public class UserController : BasePeopleController
         _tenantUtil = tenantUtil;
         _userFormatter = userFormatter;
         _userManagerWrapper = userManagerWrapper;
-        _userPhotoManager = userPhotoManager;
         _webItemManager = webItemManager;
         _webItemSecurity = webItemSecurity;
         _webItemSecurityCache = webItemSecurityCache;
+        _employeeDtoHelper = employeeDtoHelper;
+        _employeeFullDtoHelper = employeeFullDtoHelper;
     }
 
     [Create("active")]
@@ -147,13 +155,13 @@ public class UserController : BasePeopleController
         CheckReassignProccess(new[] { user.ID });
 
         var userName = user.DisplayUserName(false, DisplayUserSettingsHelper);
-        _userPhotoManager.RemovePhoto(user.ID);
+        UserPhotoManager.RemovePhoto(user.ID);
         UserManager.DeleteUser(user.ID);
         _queueWorkerRemove.Start(Tenant.TenantId, user, SecurityContext.CurrentAccount.ID, false);
 
         MessageService.Send(MessageAction.UserDeleted, MessageTarget.Create(user.ID), userName);
 
-        return Mapper.Map<UserInfo, EmployeeFullDto>(user);
+        return _employeeFullDtoHelper.GetFull(user);
     }
 
     [Delete("@self")]
@@ -191,7 +199,7 @@ public class UserController : BasePeopleController
 
         if (_coreBaseSettings.Personal)
         {
-            _userPhotoManager.RemovePhoto(user.ID);
+            UserPhotoManager.RemovePhoto(user.ID);
             UserManager.DeleteUser(user.ID);
             MessageService.Send(MessageAction.UserDeleted, MessageTarget.Create(user.ID), userName);
         }
@@ -201,7 +209,7 @@ public class UserController : BasePeopleController
             //StudioNotifyService.SendMsgProfileDeletion(Tenant.TenantId, user);
         }
 
-        return Mapper.Map<UserInfo, EmployeeFullDto>(user);
+        return _employeeFullDtoHelper.GetFull(user);
     }
 
     [Read("status/{status}/search")]
@@ -226,7 +234,7 @@ public class UserController : BasePeopleController
             list = list.Where(x => x.FirstName != null && x.FirstName.IndexOf(query, StringComparison.OrdinalIgnoreCase) > -1 || (x.LastName != null && x.LastName.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1) ||
                                    (x.UserName != null && x.UserName.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1) || (x.Email != null && x.Email.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1) || (x.ContactsList != null && x.ContactsList.Any(y => y.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1)));
 
-            return Mapper.Map<IEnumerable<UserInfo>, IEnumerable<EmployeeFullDto>>(list);
+            return list.Select(u => _employeeFullDtoHelper.GetFull(u));
         }
         catch (Exception error)
         {
@@ -256,7 +264,7 @@ public class UserController : BasePeopleController
             throw new ItemNotFoundException("User not found");
         }
 
-        return Mapper.Map<UserInfo, EmployeeFullDto>(user);
+        return _employeeFullDtoHelper.GetFull(user);
     }
 
     [Read("{username}", order: int.MaxValue)]
@@ -285,7 +293,7 @@ public class UserController : BasePeopleController
             throw new ItemNotFoundException("User not found");
         }
 
-        return Mapper.Map<UserInfo, EmployeeFullDto>(user);
+        return _employeeFullDtoHelper.GetFull(user);
     }
 
     [Read("status/{status}")]
@@ -311,7 +319,7 @@ public class UserController : BasePeopleController
     {
         var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator).AsEnumerable();
 
-        return Mapper.Map<IEnumerable<UserInfo>, IEnumerable<EmployeeFullDto>>(users);
+        return users.Select(u => _employeeFullDtoHelper.GetFull(u));
     }
 
     [Read("info")]
@@ -346,7 +354,7 @@ public class UserController : BasePeopleController
 
             var users = UserManager.Search(query, EmployeeStatus.Active, groupId);
 
-            return Mapper.Map<IEnumerable<UserInfo>, IEnumerable<EmployeeFullDto>>(users);
+            return users.Select(u => _employeeFullDtoHelper.GetFull(u));
         }
         catch (Exception error)
         {
@@ -361,7 +369,7 @@ public class UserController : BasePeopleController
     {
         var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator);
 
-        return Mapper.Map<IEnumerable<UserInfo>, IEnumerable<EmployeeDto>>(users);
+        return users.Select(u => _employeeDtoHelper.Get(u));
     }
 
     [AllowAnonymous]
@@ -402,9 +410,9 @@ public class UserController : BasePeopleController
     [Read("@self")]
     public EmployeeDto Self()
     {
-        var user = UserManager.GetUser(SecurityContext.CurrentAccount.ID, EmployeeWraperFullHelper.GetExpression(ApiContext));
+        var user = UserManager.GetUser(SecurityContext.CurrentAccount.ID, EmployeeFullDtoHelper.GetExpression(ApiContext));
 
-        return Mapper.Map<UserInfo, EmployeeFullDto>(user);
+        return _employeeFullDtoHelper.GetFull(user);
     }
 
     [Create("email", false)]
@@ -551,12 +559,12 @@ public class UserController : BasePeopleController
 
         UpdateDepartments(memberModel.Department, user);
 
-        if (memberModel.Files != _userPhotoManager.GetDefaultPhotoAbsoluteWebPath())
+        if (memberModel.Files != UserPhotoManager.GetDefaultPhotoAbsoluteWebPath())
         {
             UpdatePhotoUrl(memberModel.Files, user);
         }
 
-        return Mapper.Map<UserInfo, EmployeeFullDto>(user);
+        return _employeeFullDtoHelper.GetFull(user);
     }
 
     private EmployeeFullDto AddMemberAsActivated(MemberRequestDto memberModel)
@@ -606,12 +614,12 @@ public class UserController : BasePeopleController
 
         UpdateDepartments(memberModel.Department, user);
 
-        if (memberModel.Files != _userPhotoManager.GetDefaultPhotoAbsoluteWebPath())
+        if (memberModel.Files != UserPhotoManager.GetDefaultPhotoAbsoluteWebPath())
         {
             UpdatePhotoUrl(memberModel.Files, user);
         }
 
-        return Mapper.Map<UserInfo, EmployeeFullDto>(user);
+        return _employeeFullDtoHelper.GetFull(user);
     }
 
     private EmployeeFullDto ChangeUserPassword(Guid userid, MemberRequestDto memberModel)
@@ -662,7 +670,7 @@ public class UserController : BasePeopleController
             MessageService.Send(MessageAction.CookieSettingsUpdated);
         }
 
-        return Mapper.Map<UserInfo, EmployeeFullDto>(GetUserInfo(userid.ToString()));
+        return _employeeFullDtoHelper.GetFull(GetUserInfo(userid.ToString()));
     }
 
     private void CheckReassignProccess(IEnumerable<Guid> userIds)
@@ -829,14 +837,14 @@ public class UserController : BasePeopleController
                 continue;
             }
 
-            _userPhotoManager.RemovePhoto(user.ID);
+            UserPhotoManager.RemovePhoto(user.ID);
             UserManager.DeleteUser(user.ID);
             _queueWorkerRemove.Start(Tenant.TenantId, user, SecurityContext.CurrentAccount.ID, false);
         }
 
         MessageService.Send(MessageAction.UsersDeleted, MessageTarget.Create(users.Select(x => x.ID)), userNames);
 
-        return Mapper.Map<IEnumerable<UserInfo>, IEnumerable<EmployeeFullDto>>(users);
+        return users.Select(u => _employeeFullDtoHelper.GetFull(u));
     }
 
     private IEnumerable<EmployeeFullDto> ResendUserInvites(UpdateMembersRequestDto model)
@@ -893,7 +901,7 @@ public class UserController : BasePeopleController
 
         MessageService.Send(MessageAction.UsersSentActivationInstructions, MessageTarget.Create(users.Select(x => x.ID)), users.Select(x => x.DisplayUserName(false, DisplayUserSettingsHelper)));
 
-        return Mapper.Map<IEnumerable<UserInfo>, IEnumerable<EmployeeFullDto>>(users);
+        return users.Select(u => _employeeFullDtoHelper.GetFull(u));
     }
 
     private object SendEmailChangeInstructions(UpdateMemberRequestDto model)
@@ -1024,7 +1032,7 @@ public class UserController : BasePeopleController
 
             u.ActivationStatus = activationstatus;
             UserManager.SaveUserInfo(u);
-            retuls.Add(Mapper.Map<UserInfo, EmployeeFullDto>(u));
+            retuls.Add(_employeeFullDtoHelper.GetFull(u));
         }
 
         return retuls;
@@ -1091,7 +1099,7 @@ public class UserController : BasePeopleController
         UpdateContacts(memberModel.Contacts, user);
         UpdateDepartments(memberModel.Department, user);
 
-        if (memberModel.Files != _userPhotoManager.GetPhotoAbsoluteWebPath(user.ID))
+        if (memberModel.Files != UserPhotoManager.GetPhotoAbsoluteWebPath(user.ID))
         {
             UpdatePhotoUrl(memberModel.Files, user);
         }
@@ -1137,7 +1145,7 @@ public class UserController : BasePeopleController
             MessageService.Send(MessageAction.CookieSettingsUpdated);
         }
 
-        return Mapper.Map<UserInfo, EmployeeFullDto>(user);
+        return _employeeFullDtoHelper.GetFull(user);
     }
     private EmployeeFullDto UpdateMemberCulture(string userid, UpdateMemberRequestDto memberModel)
     {
@@ -1173,7 +1181,7 @@ public class UserController : BasePeopleController
             }
         }
 
-        return Mapper.Map<UserInfo, EmployeeFullDto>(user);
+        return _employeeFullDtoHelper.GetFull(user);
     }
     private IEnumerable<EmployeeFullDto> UpdateUserStatus(EmployeeStatus status, UpdateMembersRequestDto model)
     {
@@ -1214,7 +1222,7 @@ public class UserController : BasePeopleController
 
         MessageService.Send(MessageAction.UsersUpdatedStatus, MessageTarget.Create(users.Select(x => x.ID)), users.Select(x => x.DisplayUserName(false, DisplayUserSettingsHelper)));
 
-        return Mapper.Map<IEnumerable<UserInfo>, IEnumerable<EmployeeFullDto>>(users);
+        return users.Select(u => _employeeFullDtoHelper.GetFull(u));
     }
 
     private IEnumerable<EmployeeFullDto> UpdateUserType(EmployeeType type, UpdateMembersRequestDto model)
@@ -1256,7 +1264,7 @@ public class UserController : BasePeopleController
 
         MessageService.Send(MessageAction.UsersUpdatedType, MessageTarget.Create(users.Select(x => x.ID)), users.Select(x => x.DisplayUserName(false, DisplayUserSettingsHelper)));
 
-        return Mapper.Map<IEnumerable<UserInfo>, IEnumerable<EmployeeFullDto>>(users);
+        return users.Select(u => _employeeFullDtoHelper.GetFull(u));
     }
     ///// <summary>
     ///// Adds a new portal user from import with the first and last name, email address

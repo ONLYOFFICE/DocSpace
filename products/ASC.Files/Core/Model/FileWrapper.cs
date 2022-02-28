@@ -149,7 +149,7 @@ namespace ASC.Api.Documents
 
         public FileWrapperHelper(
             ApiDateTimeHelper apiDateTimeHelper,
-            EmployeeWraperHelper employeeWrapperHelper,
+            EmployeeDtoHelper employeeWrapperHelper,
             AuthContext authContext,
             IDaoFactory daoFactory,
             FileSecurity fileSecurity,

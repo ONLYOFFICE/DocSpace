@@ -30,6 +30,7 @@ global using ASC.FederatedLogin.Profile;
 global using ASC.MessagingSystem.Core;
 global using ASC.MessagingSystem.Models;
 global using ASC.People;
+global using ASC.People.Api;
 global using ASC.People.ApiModels.RequestDto;
 global using ASC.People.ApiModels.ResponseDto;
 global using ASC.People.Resources;
@@ -47,9 +48,11 @@ global using ASC.Web.Studio.Utility;
 
 global using AutoMapper;
 
+global using Autofac;
 global using Autofac.Extensions.DependencyInjection;
 
 global using Microsoft.AspNetCore.Authorization;
+global using Microsoft.AspNetCore.Builder;
 global using Microsoft.AspNetCore.Hosting;
 global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.Http.Extensions;
@@ -58,6 +61,7 @@ global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Hosting;
 global using Microsoft.Extensions.Options;
+global using Microsoft.Extensions.Hosting.WindowsServices;
 
 global using SixLabors.ImageSharp;
 global using SixLabors.ImageSharp.Formats;

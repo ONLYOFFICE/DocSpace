@@ -86,11 +86,11 @@ namespace ASC.Api.Documents
     public class FileShareWrapperHelper
     {
         private UserManager UserManager { get; }
-        private EmployeeWraperFullHelper EmployeeWraperFullHelper { get; }
+        private EmployeeFullDtoHelper EmployeeWraperFullHelper { get; }
 
         public FileShareWrapperHelper(
             UserManager userManager,
-            EmployeeWraperFullHelper employeeWraperFullHelper)
+            EmployeeFullDtoHelper employeeWraperFullHelper)
         {
             UserManager = userManager;
             EmployeeWraperFullHelper = employeeWraperFullHelper;

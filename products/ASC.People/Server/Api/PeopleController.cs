@@ -2,9 +2,9 @@
 
 namespace ASC.Employee.Core.Controllers
 {
-    [Scope(Additional = typeof(BaseLoginProviderExtension))]
-    [DefaultRoute]
-    [ApiController]
+    //[Scope(Additional = typeof(BaseLoginProviderExtension))]
+    //[DefaultRoute]
+    //[ApiController]
     public class PeopleController : ControllerBase
     {
         public Tenant Tenant { get { return ApiContext.Tenant; } }
@@ -36,8 +36,8 @@ namespace ASC.Employee.Core.Controllers
         private MessageTarget MessageTarget { get; }
         private SettingsManager SettingsManager { get; }
         private IOptionsSnapshot<AccountLinker> AccountLinker { get; }
-        private EmployeeWraperFullHelper EmployeeWraperFullHelper { get; }
-        private EmployeeWraperHelper EmployeeWraperHelper { get; }
+        private EmployeeFullDtoHelper EmployeeWraperFullHelper { get; }
+        private EmployeeDtoHelper EmployeeWraperHelper { get; }
         private UserFormatter UserFormatter { get; }
         private PasswordHasher PasswordHasher { get; }
         private UserHelpTourHelper UserHelpTourHelper { get; }
@@ -80,8 +80,8 @@ namespace ASC.Employee.Core.Controllers
             SettingsManager settingsManager,
             IOptionsMonitor<ILog> option,
             IOptionsSnapshot<AccountLinker> accountLinker,
-            EmployeeWraperFullHelper employeeWraperFullHelper,
-            EmployeeWraperHelper employeeWraperHelper,
+            EmployeeFullDtoHelper employeeWraperFullHelper,
+            EmployeeDtoHelper employeeWraperHelper,
             UserFormatter userFormatter,
             PasswordHasher passwordHasher,
             UserHelpTourHelper userHelpTourHelper,
@@ -137,13 +137,13 @@ namespace ASC.Employee.Core.Controllers
             ClientFactory = clientFactory;
         }
 
-        [Read("info")]
-        public Module GetModule()
-        {
-            var product = new PeopleProduct();
-            product.Init();
-            return new Module(product);
-        }
+        //[Read("info")]
+        //public Module GetModule()
+        //{
+        //    var product = new PeopleProduct();
+        //    product.Init();
+        //    return new Module(product);
+        //}
 
         [Read]
         public IQueryable<EmployeeDto> GetAll()
@@ -167,7 +167,7 @@ namespace ASC.Employee.Core.Controllers
         [Read("@self")]
         public EmployeeDto Self()
         {
-            return EmployeeWraperFullHelper.GetFull(UserManager.GetUser(SecurityContext.CurrentAccount.ID, EmployeeWraperFullHelper.GetExpression(ApiContext)));
+            return EmployeeWraperFullHelper.GetFull(UserManager.GetUser(SecurityContext.CurrentAccount.ID, EmployeeFullDtoHelper.GetExpression(ApiContext)));
         }
 
         [Read("email")]
