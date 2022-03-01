@@ -24,13 +24,12 @@
 */
 
 
-namespace ASC.Core.Billing
+namespace ASC.Core.Billing;
+
+public enum TariffState
 {
-    public enum TariffState
-    {
-        Trial,
-        Paid,
-        Delay,
-        NotPaid,
-    }
+    Trial,
+    Paid,
+    Delay,
+    NotPaid,
 }

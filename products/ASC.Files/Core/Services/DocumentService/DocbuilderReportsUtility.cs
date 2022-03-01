@@ -136,7 +136,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
         }
 
-        public void GenerateReport(DistributedTask task, CancellationToken cancellationToken)
+        public async Task GenerateReportAsync(DistributedTask task, CancellationToken cancellationToken)
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<ReportStateScope>();
@@ -159,7 +159,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 tenantManager.SetCurrentTenant(TenantId);
                 securityContext.AuthenticateMeWithoutCookie(UserId);
 
-                BuilderKey = documentServiceConnector.DocbuilderRequest(null, Script, true, out var urls);
+                (BuilderKey, var urls) = await documentServiceConnector.DocbuilderRequestAsync(null, Script, true);
 
                 while (true)
                 {
@@ -168,8 +168,8 @@ namespace ASC.Web.Files.Services.DocumentService
                         throw new OperationCanceledException();
                     }
 
-                    Task.Delay(1500, cancellationToken).Wait(cancellationToken);
-                    var builderKey = documentServiceConnector.DocbuilderRequest(BuilderKey, null, true, out urls);
+                    await Task.Delay(1500, cancellationToken);
+                    (var builderKey, urls) = await documentServiceConnector.DocbuilderRequestAsync(BuilderKey, null, true);
                     if (builderKey == null)
                         throw new NullReferenceException();
 
@@ -184,7 +184,7 @@ namespace ASC.Web.Files.Services.DocumentService
                     throw new OperationCanceledException();
                 }
 
-                SaveFileAction(this, urls[TmpFileName]);
+                await SaveFileAction(this, urls[TmpFileName]);
 
                 Status = ReportStatus.Done;
             }
@@ -259,7 +259,7 @@ namespace ASC.Web.Files.Services.DocumentService
         {
             lock (Locker)
             {
-                tasks.QueueTask(state.GenerateReport, state.GetDistributedTask());
+                tasks.QueueTask(state.GenerateReportAsync, state.GetDistributedTask());
             }
         }
 
@@ -322,7 +322,7 @@ namespace ASC.Web.Files.Services.DocumentService
             DocbuilderReportsUtility = docbuilderReportsUtility;
             AuthContext = authContext;
             TenantManager = tenantManager;
-            TenantId = TenantManager.GetCurrentTenant().TenantId;
+            TenantId = TenantManager.GetCurrentTenant().Id;
             UserId = AuthContext.CurrentAccount.ID;
         }
 

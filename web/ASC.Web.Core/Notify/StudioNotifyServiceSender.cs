@@ -132,7 +132,7 @@ namespace ASC.Web.Studio.Core.Notify
         {
             //remove client
             using var scope = ServiceProvider.CreateScope();
-            scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendSaasLetters(EMailSenderName, scheduleDate);
+            scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendSaasLettersAsync(EMailSenderName, scheduleDate).Wait();
         }
 
         public void SendEnterpriseTariffLetters(DateTime scheduleDate)

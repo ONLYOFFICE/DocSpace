@@ -45,7 +45,7 @@ namespace ASC.Web.CRM.Classes
     {
         private void ImportCaseData(DaoFactory _daoFactory)
         {
-            using (var CSVFileStream = _dataStore.GetReadStream("temp", _csvFileURI))
+            using (var CSVFileStream = _dataStore.GetReadStreamAsync("temp", _csvFileURI).Result)
             using (CsvReader csv = _importFromCSV.CreateCsvReaderInstance(CSVFileStream, _importSettings))
             {
                 int currentIndex = 0;

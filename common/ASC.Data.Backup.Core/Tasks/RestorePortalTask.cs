@@ -292,7 +292,7 @@ public class RestorePortalTask : PortalTaskBase
                         using var stream = dataReader.GetEntry(key);
                         try
                         {
-                            storage.Save(file.Domain, adjustedPath, module != null ? module.PrepareData(key, stream, _columnMapper) : stream);
+                                storage.SaveAsync(file.Domain, adjustedPath, module != null ? module.PrepareData(key, stream, _columnMapper) : stream).Wait();
                         }
                         catch (Exception error)
                         {
@@ -324,12 +324,12 @@ public class RestorePortalTask : PortalTaskBase
     {
         Logger.Debug("begin delete storage");
 
-        foreach (var tenant in tenants)
-        {
-            foreach (var module in storageModules)
+            foreach (var tenant in tenants)
             {
-                var storage = StorageFactory.GetStorage(ConfigPath, tenant.TenantId.ToString(), module);
-                var domains = StorageFactoryConfig.GetDomainList(ConfigPath, module).ToList();
+                foreach (var module in storageModules)
+                {
+                    var storage = StorageFactory.GetStorage(ConfigPath, tenant.Id.ToString(), module);
+                    var domains = StorageFactoryConfig.GetDomainList(ConfigPath, module).ToList();
 
                 domains.Add(string.Empty); //instead storage.DeleteFiles("\\", "*.*", true);
 
@@ -338,9 +338,9 @@ public class RestorePortalTask : PortalTaskBase
                     ActionInvoker.Try(
                         state =>
                         {
-                            if (storage.IsDirectory((string)state))
+                                if (storage.IsDirectoryAsync((string)state).Result)
                             {
-                                storage.DeleteFiles((string)state, "\\", "*.*", true);
+                                    storage.DeleteFilesAsync((string)state, "\\", "*.*", true).Wait();
                             }
                         },
                         domain,

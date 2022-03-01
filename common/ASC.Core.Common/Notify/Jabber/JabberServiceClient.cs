@@ -23,229 +23,263 @@
  *
 */
 
-namespace ASC.Core.Notify.Jabber
+namespace ASC.Core.Notify.Jabber;
+
+[Scope]
+public class JabberServiceClient
 {
-    [Scope]
-    public class JabberServiceClient
+    private static readonly TimeSpan _timeout = TimeSpan.FromMinutes(2);
+    private static DateTime _lastErrorTime = default;
+    private readonly UserManager _userManager;
+    private readonly AuthContext _authContext;
+    private readonly TenantManager _tenantManager;
+
+    public JabberServiceClient(UserManager userManager, AuthContext authContext, TenantManager tenantManager)
     {
-        private static readonly TimeSpan Timeout = TimeSpan.FromMinutes(2);
+        _userManager = userManager;
+        _authContext = authContext;
+        _tenantManager = tenantManager;
+    }
 
-        private static DateTime lastErrorTime = default;
+    private static bool IsServiceProbablyNotAvailable()
+    {
+        return _lastErrorTime != default && _lastErrorTime + _timeout > DateTime.Now;
+    }
 
-        private UserManager UserManager { get; }
-        private AuthContext AuthContext { get; }
-        private TenantManager TenantManager { get; }
+    public bool SendMessage(int tenantId, string from, string to, string text, string subject)
+    {
+        if (IsServiceProbablyNotAvailable()) return false;
 
-        public JabberServiceClient(UserManager userManager, AuthContext authContext, TenantManager tenantManager)
+        using (var service = GetService())
         {
-            UserManager = userManager;
-            AuthContext = authContext;
-            TenantManager = tenantManager;
-        }
-
-        private static bool IsServiceProbablyNotAvailable()
-        {
-            return lastErrorTime != default && lastErrorTime + Timeout > DateTime.Now;
-        }
-
-        public bool SendMessage(int tenantId, string from, string to, string text, string subject)
-        {
-            if (IsServiceProbablyNotAvailable()) return false;
-
-            using (var service = GetService())
+            try
             {
-                try
-                {
-                    service.SendMessage(tenantId, from, to, text, subject);
-                    return true;
-                }
-                catch (Exception error)
-                {
-                    ProcessError(error);
-                }
+                service.SendMessage(tenantId, from, to, text, subject);
+                return true;
             }
-
-            return false;
+            catch (Exception error)
+            {
+                ProcessError(error);
+            }
         }
 
-        public string GetVersion()
+        return false;
+    }
+
+    public string GetVersion()
+    {
+        using (var service = GetService())
         {
-            using (var service = GetService())
+            try
             {
-                try
-                {
-                    return service.GetVersion();
-                }
-                catch (Exception error)
-                {
-                    ProcessError(error);
-                }
+                return service.GetVersion();
             }
-            return null;
+            catch (Exception error)
+            {
+                ProcessError(error);
+            }
         }
 
-        public int GetNewMessagesCount()
+        return null;
+    }
+
+    public int GetNewMessagesCount()
+    {
+        const int result = 0;
+        if (IsServiceProbablyNotAvailable())
         {
-            const int result = 0;
-            if (IsServiceProbablyNotAvailable()) return result;
-
-            using (var service = GetService())
-            {
-                try
-                {
-                    return service.GetNewMessagesCount(GetCurrentTenantId(), GetCurrentUserName());
-                }
-                catch (Exception error)
-                {
-                    ProcessError(error);
-                }
-            }
-
             return result;
         }
 
-        public byte AddXmppConnection(string connectionId, byte state)
+        using (var service = GetService())
         {
-            byte result = 4;
-            if (IsServiceProbablyNotAvailable()) throw new Exception();
+            try
+            {
+                return service.GetNewMessagesCount(GetCurrentTenantId(), GetCurrentUserName());
+            }
+            catch (Exception error)
+            {
+                ProcessError(error);
+            }
+        }
+
+        return result;
+    }
+
+    public byte AddXmppConnection(string connectionId, byte state)
+    {
+        byte result = 4;
+        if (IsServiceProbablyNotAvailable())
+        {
+            throw new Exception();
+        }
+
+        using var service = GetService();
+        try
+        {
+            result = service.AddXmppConnection(connectionId, GetCurrentUserName(), state, GetCurrentTenantId());
+        }
+        catch (Exception error)
+        {
+            ProcessError(error);
+        }
+
+        return result;
+    }
+
+    public byte RemoveXmppConnection(string connectionId)
+    {
+        const byte result = 4;
+        if (IsServiceProbablyNotAvailable())
+        {
+            return result;
+        }
+
+        using (var service = GetService())
+        {
+            try
+            {
+                return service.RemoveXmppConnection(connectionId, GetCurrentUserName(), GetCurrentTenantId());
+            }
+            catch (Exception error)
+            {
+                ProcessError(error);
+            }
+        }
+
+        return result;
+    }
+
+    public byte GetState(string userName)
+    {
+        const byte defaultState = 0;
+
+        try
+        {
+            if (IsServiceProbablyNotAvailable())
+            {
+                return defaultState;
+            }
 
             using var service = GetService();
-            try
-            {
-                result = service.AddXmppConnection(connectionId, GetCurrentUserName(), state, GetCurrentTenantId());
-            }
-            catch (Exception error)
-            {
-                ProcessError(error);
-            }
-            return result;
+
+            return service.GetState(GetCurrentTenantId(), userName);
+        }
+        catch (Exception error)
+        {
+            ProcessError(error);
         }
 
-        public byte RemoveXmppConnection(string connectionId)
-        {
-            const byte result = 4;
-            if (IsServiceProbablyNotAvailable()) return result;
+        return defaultState;
+    }
 
-            using (var service = GetService())
+    public byte SendState(byte state)
+    {
+        try
+        {
+            if (IsServiceProbablyNotAvailable())
             {
-                try
-                {
-                    return service.RemoveXmppConnection(connectionId, GetCurrentUserName(), GetCurrentTenantId());
-                }
-                catch (Exception error)
-                {
-                    ProcessError(error);
-                }
+                throw new Exception();
             }
 
-            return result;
+            using var service = GetService();
+
+            return service.SendState(GetCurrentTenantId(), GetCurrentUserName(), state);
+        }
+        catch (Exception error)
+        {
+            ProcessError(error);
         }
 
-        public byte GetState(string userName)
+        return 4;
+    }
+
+    public Dictionary<string, byte> GetAllStates()
+    {
+        Dictionary<string, byte> states = null;
+        try
         {
-            const byte defaultState = 0;
-
-            try
+            if (IsServiceProbablyNotAvailable())
             {
-                if (IsServiceProbablyNotAvailable()) return defaultState;
-                using var service = GetService();
-                return service.GetState(GetCurrentTenantId(), userName);
-            }
-            catch (Exception error)
-            {
-                ProcessError(error);
+                throw new Exception();
             }
 
-            return defaultState;
+            using var service = GetService();
+            states = service.GetAllStates(GetCurrentTenantId(), GetCurrentUserName());
+        }
+        catch (Exception error)
+        {
+            ProcessError(error);
         }
 
-        public byte SendState(byte state)
+        return states;
+    }
+
+    public MessageClass[] GetRecentMessages(string to, int id)
+    {
+        MessageClass[] messages = null;
+        try
         {
-            try
+            if (IsServiceProbablyNotAvailable())
             {
-                if (IsServiceProbablyNotAvailable()) throw new Exception();
-                using var service = GetService();
-                return service.SendState(GetCurrentTenantId(), GetCurrentUserName(), state);
+                throw new Exception();
             }
-            catch (Exception error)
-            {
-                ProcessError(error);
-            }
-            return 4;
+
+            using var service = GetService();
+            messages = service.GetRecentMessages(GetCurrentTenantId(), GetCurrentUserName(), to, id);
+        }
+        catch (Exception error)
+        {
+            ProcessError(error);
         }
 
-        public Dictionary<string, byte> GetAllStates()
-        {
-            Dictionary<string, byte> states = null;
-            try
-            {
-                if (IsServiceProbablyNotAvailable()) throw new Exception();
-                using var service = GetService();
-                states = service.GetAllStates(GetCurrentTenantId(), GetCurrentUserName());
-            }
-            catch (Exception error)
-            {
-                ProcessError(error);
-            }
-            return states;
-        }
+        return messages;
+    }
 
-        public MessageClass[] GetRecentMessages(string to, int id)
+    public void Ping(byte state)
+    {
+        try
         {
-            MessageClass[] messages = null;
-            try
+            if (IsServiceProbablyNotAvailable())
             {
-                if (IsServiceProbablyNotAvailable()) throw new Exception();
-                using var service = GetService();
-                messages = service.GetRecentMessages(GetCurrentTenantId(), GetCurrentUserName(), to, id);
+                throw new Exception();
             }
-            catch (Exception error)
-            {
-                ProcessError(error);
-            }
-            return messages;
-        }
 
-        public void Ping(byte state)
-        {
-            try
-            {
-                if (IsServiceProbablyNotAvailable()) throw new Exception();
-                using var service = GetService();
-                service.Ping(AuthContext.CurrentAccount.ID.ToString(), GetCurrentTenantId(), GetCurrentUserName(), state);
-            }
-            catch (Exception error)
-            {
-                ProcessError(error);
-            }
+            using var service = GetService();
+            service.Ping(_authContext.CurrentAccount.ID.ToString(), GetCurrentTenantId(), GetCurrentUserName(), state);
         }
-
-        private int GetCurrentTenantId()
+        catch (Exception error)
         {
-            return TenantManager.GetCurrentTenant().TenantId;
+            ProcessError(error);
         }
+    }
 
-        private string GetCurrentUserName()
-        {
-            return UserManager.GetUsers(AuthContext.CurrentAccount.ID).UserName;
-        }
+    private int GetCurrentTenantId()
+    {
+        return _tenantManager.GetCurrentTenant().Id;
+    }
 
-        private static void ProcessError(Exception error)
+    private string GetCurrentUserName()
+    {
+        return _userManager.GetUsers(_authContext.CurrentAccount.ID).UserName;
+    }
+
+    private static void ProcessError(Exception error)
+    {
+        if (error is FaultException)
         {
-            if (error is FaultException)
-            {
-                throw error;
-            }
-            if (error is CommunicationException || error is TimeoutException)
-            {
-                lastErrorTime = DateTime.Now;
-            }
             throw error;
         }
-
-        private JabberServiceClientWcf GetService()
+        if (error is CommunicationException || error is TimeoutException)
         {
-            return new JabberServiceClientWcf();
+            _lastErrorTime = DateTime.Now;
         }
+
+        throw error;
+    }
+
+    private JabberServiceClientWcf GetService()
+    {
+        return new JabberServiceClientWcf();
     }
 }

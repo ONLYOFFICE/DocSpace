@@ -96,7 +96,7 @@ namespace ASC.Web.Studio.Core.Quota
             TenantStatisticsProvider = tenantStatisticsProvider;
             WebItemManager = webItemManager;
             var quota = TenantExtra.GetTenantQuota();
-            var quotaRows = TenantStatisticsProvider.GetQuotaRows(tenant.TenantId).ToList();
+            var quotaRows = TenantStatisticsProvider.GetQuotaRows(tenant.Id).ToList();
 
             StorageSize = (ulong)Math.Max(0, quota.MaxTotalSize);
             UsedSize = (ulong)Math.Max(0, quotaRows.Sum(r => r.Counter));
@@ -116,7 +116,7 @@ namespace ASC.Web.Studio.Core.Quota
                 var webItem = WebItemManager[WebItemManager.DocumentsProductID];
                 if (webItem.Context.SpaceUsageStatManager is IUserSpaceUsage spaceUsageManager)
                 {
-                    UserUsedSize = spaceUsageManager.GetUserSpaceUsage(authContext.CurrentAccount.ID);
+                    UserUsedSize = spaceUsageManager.GetUserSpaceUsageAsync(authContext.CurrentAccount.ID).Result;
                 }
             }
 

@@ -24,14 +24,9 @@
 */
 
 
-namespace ASC.Notify.Cron
+namespace ASC.Notify.Cron;
+
+public interface ISortedSet : ISet
 {
-    public interface ISortedSet : ISet
-    {
-        #region Methods
-
-        ISortedSet TailSet(object limit);
-
-        #endregion
-    }
+    ISortedSet TailSet(object limit);
 }

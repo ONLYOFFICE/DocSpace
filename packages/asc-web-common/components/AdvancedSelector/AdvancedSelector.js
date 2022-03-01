@@ -17,7 +17,6 @@ class AdvancedSelector extends React.Component {
     super(props);
 
     this.ref = React.createRef();
-
     this.state = {
       displayType: this.getTypeByWidth(),
     };
@@ -87,15 +86,27 @@ class AdvancedSelector extends React.Component {
 
   render() {
     const { displayType } = this.state;
-    const { isOpen, id, className, style, withoutAside } = this.props;
+    const {
+      isOpen,
+      id,
+      className,
+      style,
+      withoutAside,
+      isDefaultDisplayDropDown,
+      smallSectionWidth,
+    } = this.props;
 
     //console.log(`AdvancedSelector render() isOpen=${isOpen} displayType=${displayType}`);
 
     return (
-      <div ref={this.ref} id={id} className={className} style={style}>
+      <div id={id} className={className} style={style}>
         {displayType === "dropdown" ? (
           <DropDown
+            forwardedRef={this.ref}
             open={isOpen}
+            className="selector_dropdown-container"
+            smallSectionWidth={smallSectionWidth}
+            isDefaultMode={isDefaultDisplayDropDown}
             className="dropdown-container"
             clickOutsideAction={this.onClose}
           >
@@ -157,6 +168,7 @@ AdvancedSelector.propTypes = {
   onCancel: PropTypes.func,
   onAddNewClick: PropTypes.func,
   loadNextPage: PropTypes.func,
+  isDefaultDisplayDropDown: PropTypes.bool,
 };
 
 AdvancedSelector.defaultProps = {
@@ -168,6 +180,7 @@ AdvancedSelector.defaultProps = {
   allowAnyClickClose: true,
   displayType: "auto",
   options: [],
+  isDefaultDisplayDropDown: true,
 };
 
 export default AdvancedSelector;

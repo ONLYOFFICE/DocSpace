@@ -23,151 +23,152 @@
  *
 */
 
-namespace ASC.Core.Notify
+namespace ASC.Core.Notify;
+
+public class EmailSenderSink : Sink
 {
-    public class EmailSenderSink : Sink
+    private static readonly string _senderName = Configuration.Constants.NotifyEMailSenderSysName;
+    private readonly INotifySender _sender;
+
+
+    public EmailSenderSink(INotifySender sender, IServiceProvider serviceProvider, IOptionsMonitor<ILog> options)
     {
-        private static readonly string senderName = ASC.Core.Configuration.Constants.NotifyEMailSenderSysName;
-        private readonly INotifySender sender;
+        _sender = sender ?? throw new ArgumentNullException(nameof(sender));
+        _serviceProvider = serviceProvider;
+        _logger = options.Get("ASC.Notify");
+    }
 
+    private readonly IServiceProvider _serviceProvider;
+    private readonly ILog _logger;
 
-        public EmailSenderSink(INotifySender sender, IServiceProvider serviceProvider, IOptionsMonitor<ILog> options)
+    public override SendResponse ProcessMessage(INoticeMessage message)
+    {
+        if (message.Recipient.Addresses == null || message.Recipient.Addresses.Length == 0)
         {
-            this.sender = sender ?? throw new ArgumentNullException(nameof(sender));
-            ServiceProvider = serviceProvider;
-            Log = options.Get("ASC.Notify");
+            return new SendResponse(message, _senderName, SendResult.IncorrectRecipient);
         }
 
-        private IServiceProvider ServiceProvider { get; }
-        private ILog Log { get; }
-
-        public override SendResponse ProcessMessage(INoticeMessage message)
+        var responce = new SendResponse(message, _senderName, default(SendResult));
+        try
         {
-            if (message.Recipient.Addresses == null || message.Recipient.Addresses.Length == 0)
-            {
-                return new SendResponse(message, senderName, SendResult.IncorrectRecipient);
-            }
+            var m = CreateNotifyMessage(message);
+            var result = _sender.Send(m);
 
-            var responce = new SendResponse(message, senderName, default(SendResult));
-            try
+            responce.Result = result switch
             {
-                var m = CreateNotifyMessage(message);
-                var result = sender.Send(m);
-
-                responce.Result = result switch
-                {
-                    NoticeSendResult.TryOnceAgain => SendResult.Inprogress,
-                    NoticeSendResult.MessageIncorrect => SendResult.IncorrectRecipient,
-                    NoticeSendResult.SendingImpossible => SendResult.Impossible,
-                    _ => SendResult.OK,
-                };
-                return responce;
-            }
-            catch (Exception e)
-            {
-                return new SendResponse(message, senderName, e);
-            }
-        }
-
-
-        private NotifyMessage CreateNotifyMessage(INoticeMessage message)
-        {
-            var m = new NotifyMessage
-            {
-                Subject = message.Subject.Trim(' ', '\t', '\n', '\r'),
-                ContentType = message.ContentType,
-                Content = message.Body,
-                Sender = senderName,
-                CreationDate = DateTime.UtcNow.Ticks,
+                NoticeSendResult.TryOnceAgain => SendResult.Inprogress,
+                NoticeSendResult.MessageIncorrect => SendResult.IncorrectRecipient,
+                NoticeSendResult.SendingImpossible => SendResult.Impossible,
+                _ => SendResult.OK,
             };
 
-            using var scope = ServiceProvider.CreateScope();
-
-            var scopeClass = scope.ServiceProvider.GetService<EmailSenderSinkScope>();
-            var (tenantManager, configuration, options) = scopeClass;
-
-            var tenant = tenantManager.GetCurrentTenant(false);
-            m.Tenant = tenant == null ? Tenant.DEFAULT_TENANT : tenant.TenantId;
-
-            var from = MailAddressUtils.Create(configuration.SmtpSettings.SenderAddress, configuration.SmtpSettings.SenderDisplayName);
-            var fromTag = message.Arguments.FirstOrDefault(x => x.Tag.Equals("MessageFrom"));
-            if ((configuration.SmtpSettings.IsDefaultSettings || string.IsNullOrEmpty(configuration.SmtpSettings.SenderDisplayName)) &&
-                fromTag != null && fromTag.Value != null)
-            {
-                try
-                {
-                    from = MailAddressUtils.Create(from.Address, fromTag.Value.ToString());
-                }
-                catch { }
-            }
-            m.From = from.ToString();
-
-            var to = new List<string>();
-            foreach (var address in message.Recipient.Addresses)
-            {
-                to.Add(MailAddressUtils.Create(address, message.Recipient.Name).ToString());
-            }
-            m.To = string.Join("|", to.ToArray());
-
-            var replyTag = message.Arguments.FirstOrDefault(x => x.Tag == "replyto");
-            if (replyTag != null && replyTag.Value is string value)
-            {
-                try
-                {
-                    m.ReplyTo = MailAddressUtils.Create(value).ToString();
-                }
-                catch (Exception e)
-                {
-                    ServiceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.Notify").Error("Error creating reply to tag for: " + replyTag.Value, e);
-                }
-            }
-
-            var priority = message.Arguments.FirstOrDefault(a => a.Tag == "Priority");
-            if (priority != null)
-            {
-                m.Priority = Convert.ToInt32(priority.Value);
-            }
-
-            var attachmentTag = message.Arguments.FirstOrDefault(x => x.Tag == "EmbeddedAttachments");
-            if (attachmentTag != null && attachmentTag.Value != null)
-            {
-                m.EmbeddedAttachments.AddRange(attachmentTag.Value as NotifyMessageAttachment[]);
-            }
-
-            var autoSubmittedTag = message.Arguments.FirstOrDefault(x => x.Tag == "AutoSubmitted");
-            if (autoSubmittedTag != null && autoSubmittedTag.Value is string)
-            {
-                try
-                {
-                    m.AutoSubmitted = autoSubmittedTag.Value.ToString();
-                }
-                catch (Exception e)
-                {
-                    Log.Error("Error creating AutoSubmitted tag for: " + autoSubmittedTag.Value, e);
-                }
-            }
-
-            return m;
+            return responce;
+        }
+        catch (Exception e)
+        {
+            return new SendResponse(message, _senderName, e);
         }
     }
 
-    [Scope]
-    public class EmailSenderSinkScope
+
+    private NotifyMessage CreateNotifyMessage(INoticeMessage message)
     {
-        private TenantManager TenantManager { get; }
-        private CoreConfiguration CoreConfiguration { get; }
-        private IOptionsMonitor<ILog> Options { get; }
-
-        public EmailSenderSinkScope(TenantManager tenantManager, CoreConfiguration coreConfiguration, IOptionsMonitor<ILog> options)
+        var m = new NotifyMessage
         {
-            TenantManager = tenantManager;
-            CoreConfiguration = coreConfiguration;
-            Options = options;
+            Subject = message.Subject.Trim(' ', '\t', '\n', '\r'),
+            ContentType = message.ContentType,
+            Content = message.Body,
+            SenderType = _senderName,
+            CreationDate = DateTime.UtcNow.Ticks,
+        };
+
+        using var scope = _serviceProvider.CreateScope();
+
+        var scopeClass = scope.ServiceProvider.GetService<EmailSenderSinkScope>();
+        var (tenantManager, configuration, options) = scopeClass;
+
+        var tenant = tenantManager.GetCurrentTenant(false);
+        m.TenantId = tenant == null ? Tenant.DefaultTenant : tenant.Id;
+
+        var from = MailAddressUtils.Create(configuration.SmtpSettings.SenderAddress, configuration.SmtpSettings.SenderDisplayName);
+        var fromTag = message.Arguments.FirstOrDefault(x => x.Tag.Equals("MessageFrom"));
+        if ((configuration.SmtpSettings.IsDefaultSettings || string.IsNullOrEmpty(configuration.SmtpSettings.SenderDisplayName)) &&
+            fromTag != null && fromTag.Value != null)
+        {
+            try
+            {
+                from = MailAddressUtils.Create(from.Address, fromTag.Value.ToString());
+            }
+
+            catch { }
+        }
+        m.Sender = from.ToString();
+
+        var to = new List<string>();
+        foreach (var address in message.Recipient.Addresses)
+        {
+            to.Add(MailAddressUtils.Create(address, message.Recipient.Name).ToString());
+        }
+        m.Reciever = string.Join("|", to.ToArray());
+
+        var replyTag = message.Arguments.FirstOrDefault(x => x.Tag == "replyto");
+        if (replyTag != null && replyTag.Value is string value)
+        {
+            try
+            {
+                m.ReplyTo = MailAddressUtils.Create(value).ToString();
+            }
+            catch (Exception e)
+            {
+                _serviceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.Notify").Error("Error creating reply to tag for: " + replyTag.Value, e);
+            }
         }
 
-        public void Deconstruct(out TenantManager tenantManager, out CoreConfiguration coreConfiguration, out IOptionsMonitor<ILog> optionsMonitor)
+        var priority = message.Arguments.FirstOrDefault(a => a.Tag == "Priority");
+        if (priority != null)
         {
-            (tenantManager, coreConfiguration, optionsMonitor) = (TenantManager, CoreConfiguration, Options);
+            m.Priority = Convert.ToInt32(priority.Value);
         }
+
+        var attachmentTag = message.Arguments.FirstOrDefault(x => x.Tag == "EmbeddedAttachments");
+        if (attachmentTag != null && attachmentTag.Value != null)
+        {
+            m.Attachments.AddRange(attachmentTag.Value as NotifyMessageAttachment[]);
+        }
+
+        var autoSubmittedTag = message.Arguments.FirstOrDefault(x => x.Tag == "AutoSubmitted");
+        if (autoSubmittedTag != null && autoSubmittedTag.Value is string)
+        {
+            try
+            {
+                m.AutoSubmitted = autoSubmittedTag.Value.ToString();
+            }
+            catch (Exception e)
+            {
+                _logger.Error("Error creating AutoSubmitted tag for: " + autoSubmittedTag.Value, e);
+            }
+        }
+
+        return m;
+    }
+}
+
+[Scope]
+public class EmailSenderSinkScope
+{
+    private readonly TenantManager _tenantManager;
+    private readonly CoreConfiguration _coreConfiguration;
+    private readonly IOptionsMonitor<ILog> _options;
+
+    public EmailSenderSinkScope(TenantManager tenantManager, CoreConfiguration coreConfiguration, IOptionsMonitor<ILog> options)
+    {
+        _tenantManager = tenantManager;
+        _coreConfiguration = coreConfiguration;
+        _options = options;
+    }
+
+    public void Deconstruct(out TenantManager tenantManager, out CoreConfiguration coreConfiguration, out IOptionsMonitor<ILog> optionsMonitor)
+    {
+        (tenantManager, coreConfiguration, optionsMonitor) = (_tenantManager, _coreConfiguration, _options);
     }
 }

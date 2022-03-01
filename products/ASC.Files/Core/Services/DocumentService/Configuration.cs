@@ -200,7 +200,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 {
                     const string crumbsSeporator = " \\ ";
 
-                    var breadCrumbsList = BreadCrumbsManager.GetBreadCrumbs(File.FolderID);
+                    var breadCrumbsList = BreadCrumbsManager.GetBreadCrumbsAsync(File.FolderID).Result;
                     _breadCrumbs = string.Join(crumbsSeporator, breadCrumbsList.Select(folder => folder.Title).ToArray());
                 }
 
@@ -224,11 +224,11 @@ namespace ASC.Web.Files.Services.DocumentService
             {
                 if (Type == EditorType.Embedded
                     || Type == EditorType.External
-                    || !FileSharing.CanSetAccess(File)) return null;
+                    || !FileSharing.CanSetAccessAsync(File).Result) return null;
 
                 try
                 {
-                    return FileSharing.GetSharedInfoShortFile(File.ID);
+                    return FileSharing.GetSharedInfoShortFileAsync(File.ID).Result;
                 }
                 catch
                 {
@@ -296,11 +296,11 @@ namespace ASC.Web.Files.Services.DocumentService
             Embedded = embeddedConfig;
             _userInfo = userManager.GetUsers(authContext.CurrentAccount.ID);
 
-            if (!_userInfo.ID.Equals(ASC.Core.Configuration.Constants.Guest.ID))
+            if (!_userInfo.Id.Equals(ASC.Core.Configuration.Constants.Guest.ID))
             {
                 User = new UserConfig
                 {
-                    Id = _userInfo.ID.ToString(),
+                    Id = _userInfo.Id.ToString(),
                     Name = _userInfo.DisplayUserName(false, displayUserSettingsHelper),
                 };
             }
@@ -368,7 +368,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
                 var folderDao = DaoFactory.GetFolderDao<int>();
                 var fileDao = DaoFactory.GetFileDao<int>();
-                var files = EntryManager.GetTemplates(folderDao, fileDao, filter, false, Guid.Empty, string.Empty, false);
+                var files = EntryManager.GetTemplatesAsync(folderDao, fileDao, filter, false, Guid.Empty, string.Empty, false).Result;
                 var listTemplates = from file in files
                                     select
                                         new TemplatesConfig
@@ -451,14 +451,14 @@ namespace ASC.Web.Files.Services.DocumentService
                 }
 
                 var folderDao = DaoFactory.GetFolderDao<int>();
-                var files = EntryManager.GetRecent(filter, false, Guid.Empty, string.Empty, false).Cast<File<int>>();
+                var files = EntryManager.GetRecentAsync(filter, false, Guid.Empty, string.Empty, false).Result.Cast<File<int>>();
 
                 var listRecent = from file in files
                                  where !Equals(_configuration.Document.Info.GetFile().ID, file.ID)
                                  select
                                      new RecentConfig
                                      {
-                                         Folder = folderDao.GetFolder(file.FolderID).Title,
+                                         Folder = folderDao.GetFolderAsync(file.FolderID).Result.Title,
                                          Title = file.Title,
                                          Url = BaseCommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.GetFileWebEditorUrl(file.ID))
                                      };
@@ -705,17 +705,17 @@ namespace ASC.Web.Files.Services.DocumentService
                 var folderDao = DaoFactory.GetFolderDao<T>();
                 try
                 {
-                    var parent = folderDao.GetFolder(_configuration.Document.Info.GetFile().FolderID);
+                    var parent = folderDao.GetFolderAsync(_configuration.Document.Info.GetFile().FolderID).Result;
                     var fileSecurity = FileSecurity;
                     if (_configuration.Document.Info.GetFile().RootFolderType == FolderType.USER
                         && !Equals(_configuration.Document.Info.GetFile().RootFolderId, GlobalFolderHelper.FolderMy)
-                        && !fileSecurity.CanRead(parent))
+                        && !fileSecurity.CanReadAsync(parent).Result)
                     {
-                        if (fileSecurity.CanRead(_configuration.Document.Info.GetFile()))
+                        if (fileSecurity.CanReadAsync(_configuration.Document.Info.GetFile()).Result)
                         {
                             return new GobackConfig
                             {
-                                Url = PathProvider.GetFolderUrlById(GlobalFolderHelper.FolderShare),
+                                Url = PathProvider.GetFolderUrlByIdAsync(GlobalFolderHelper.FolderShareAsync.Result).Result,
                             };
                         }
                         return null;
@@ -723,14 +723,14 @@ namespace ASC.Web.Files.Services.DocumentService
 
                     if (_configuration.Document.Info.GetFile().Encrypted
                         && _configuration.Document.Info.GetFile().RootFolderType == FolderType.Privacy
-                        && !fileSecurity.CanRead(parent))
+                        && !fileSecurity.CanReadAsync(parent).Result)
                     {
-                        parent = folderDao.GetFolder(GlobalFolderHelper.GetFolderPrivacy<T>());
+                        parent = folderDao.GetFolderAsync(GlobalFolderHelper.GetFolderPrivacyAsync<T>().Result).Result;
                     }
 
                     return new GobackConfig
                     {
-                        Url = PathProvider.GetFolderUrl(parent),
+                        Url = PathProvider.GetFolderUrlAsync(parent).Result,
                     };
                 }
                 catch (Exception)
@@ -749,7 +749,7 @@ namespace ASC.Web.Files.Services.DocumentService
             {
                 return AuthContext.IsAuthenticated
                        && !_configuration.Document.Info.GetFile().Encrypted
-                       && FileSharing.CanSetAccess(_configuration.Document.Info.GetFile());
+                       && FileSharing.CanSetAccessAsync(_configuration.Document.Info.GetFile()).Result;
             }
         }
 

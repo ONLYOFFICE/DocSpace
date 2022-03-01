@@ -8,16 +8,15 @@ global using System.Threading.Tasks;
 
 global using ASC.Api.Core;
 global using ASC.ClearEvents.Services;
-global using ASC.ClearEvents.Data;
 global using ASC.Common;
 global using ASC.Common.Utils;
 global using ASC.Common.Caching;
 global using ASC.Common.DependencyInjection;
 global using ASC.Common.Logging;
 global using ASC.Core.Common.EF;
-global using ASC.Core.Common.EF.Context;
-global using ASC.Core.Common.EF.Model;
 global using ASC.Core.Tenants;
+global using ASC.MessagingSystem.Data;
+global using ASC.MessagingSystem.Models;
 
 global using Autofac;
 global using Autofac.Extensions.DependencyInjection;

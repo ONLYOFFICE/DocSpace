@@ -91,7 +91,7 @@ namespace ASC.Files.Core.Services.NotifyService
                 );
         }
 
-        public void SendShareNotice<T>(FileEntry<T> fileEntry, Dictionary<Guid, FileShare> recipients, string message)
+        public async Task SendShareNoticeAsync<T>(FileEntry<T> fileEntry, Dictionary<Guid, FileShare> recipients, string message)
         {
             if (fileEntry == null || recipients.Count == 0) return;
 
@@ -102,11 +102,11 @@ namespace ASC.Files.Core.Services.NotifyService
             var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
 
             var folderDao = daoFactory.GetFolderDao<T>();
-            if (fileEntry.FileEntryType == FileEntryType.File && folderDao.GetFolder(((File<T>)fileEntry).FolderID) == null) return;
+            if (fileEntry.FileEntryType == FileEntryType.File && await folderDao.GetFolderAsync(((File<T>)fileEntry).FolderID) == null) return;
 
             var url = fileEntry.FileEntryType == FileEntryType.File
                           ? filesLinkUtility.GetFileWebPreviewUrl(fileUtility, fileEntry.Title, fileEntry.ID)
-                          : pathProvider.GetFolderUrl((Folder<T>)fileEntry);
+                          : await pathProvider.GetFolderUrlAsync((Folder<T>)fileEntry);
 
             var recipientsProvider = notifySource.GetRecipientsProvider();
 
@@ -125,7 +125,7 @@ namespace ASC.Files.Core.Services.NotifyService
                                   : CultureInfo.GetCultureInfo(u.CultureName);
 
                 var aceString = GetAccessString(recipientPair.Value, culture);
-                var recipient = recipientsProvider.GetRecipient(u.ID.ToString());
+                var recipient = recipientsProvider.GetRecipient(u.Id.ToString());
 
                 client.SendNoticeAsync(
                     action,
@@ -156,7 +156,7 @@ namespace ASC.Files.Core.Services.NotifyService
             {
                 var u = userManager.GetUsers(recipientId);
 
-                var recipient = recipientsProvider.GetRecipient(u.ID.ToString());
+                var recipient = recipientsProvider.GetRecipient(u.Id.ToString());
 
                 client.SendNoticeAsync(
                     NotifyConstants.Event_EditorMentions,

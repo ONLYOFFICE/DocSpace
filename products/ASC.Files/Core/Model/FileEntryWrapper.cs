@@ -165,7 +165,7 @@ namespace ASC.Api.Documents
             FileSecurity = fileSecurity;
         }
 
-        protected internal T Get<T, TId>(FileEntry<TId> entry) where T : FileEntryWrapper<TId>, new()
+        protected internal async Task<T> GetAsync<T, TId>(FileEntry<TId> entry) where T : FileEntryWrapper<TId>, new()
         {
             return new T
             {
@@ -182,8 +182,8 @@ namespace ASC.Api.Documents
                 ProviderItem = entry.ProviderEntry.NullIfDefault(),
                 ProviderKey = entry.ProviderKey,
                 ProviderId = entry.ProviderId.NullIfDefault(),
-                CanShare = FileSharingHelper.CanSetAccess(entry),
-                CanEdit = FileSecurity.CanEdit(entry)
+                CanShare = await FileSharingHelper.CanSetAccessAsync(entry),
+                CanEdit = await FileSecurity.CanEditAsync(entry)
             };
         }
     }

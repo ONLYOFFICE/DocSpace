@@ -130,18 +130,18 @@ public class BackupPortalTask : PortalTaskBase
               tables = dbManager.ExecuteList("show tables;").Select(r => Convert.ToString(r[0])).ToList();
           }*/
 
-        var stepscount = tables.Count * 4; // (schema + data) * (dump + zip)
-        if (ProcessStorage)
-        {
-            var tenants = _tenantManager.GetTenants(false).Select(r => r.TenantId);
-            foreach (var t in tenants)
+            var stepscount = tables.Count * 4; // (schema + data) * (dump + zip)
+            if (ProcessStorage)
             {
-                files.AddRange(GetFiles(t));
-            }
+                var tenants = _tenantManager.GetTenants(false).Select(r => r.Id);
+                foreach (var t in tenants)
+                {
+                    files.AddRange(GetFiles(t));
+                }
 
-            stepscount += files.Count * 2 + 1;
-            Logger.Debug("files:" + files.Count);
-        }
+                stepscount += files.Count * 2 + 1;
+                Logger.Debug("files:" + files.Count);
+            }
 
         SetStepsCount(stepscount);
 
@@ -201,7 +201,7 @@ public class BackupPortalTask : PortalTaskBase
     private IEnumerable<BackupFileInfo> GetFiles(int tenantId)
     {
         var files = GetFilesToProcess(tenantId).ToList();
-        var exclude = BackupRecordContext.Backups.Where(b => b.TenantId == tenantId && b.StorageType == 0 && b.StoragePath != null).ToList();
+            var exclude = BackupRecordContext.Backups.AsQueryable().Where(b => b.TenantId == tenantId && b.StorageType == 0 && b.StoragePath != null).ToList();
             files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains($"/file_{e.StoragePath}/"))).ToList();
         return files;
 
@@ -520,7 +520,7 @@ public class BackupPortalTask : PortalTaskBase
             filePath = @"\\?\" + filePath;
         }
 
-        using (var fileStream = storage.GetReadStream(file.Domain, file.Path))
+            using (var fileStream = await storage.GetReadStreamAsync(file.Domain, file.Path))
         using (var tmpFile = File.OpenWrite(filePath))
         {
             await fileStream.CopyToAsync(tmpFile);
@@ -554,7 +554,7 @@ public class BackupPortalTask : PortalTaskBase
     private List<IGrouping<string, BackupFileInfo>> GetFilesGroup()
     {
         var files = GetFilesToProcess(TenantId).ToList();
-        var exclude = BackupRecordContext.Backups.Where(b => b.TenantId == TenantId && b.StorageType == 0 && b.StoragePath != null).ToList();
+            var exclude = BackupRecordContext.Backups.AsQueryable().Where(b => b.TenantId == TenantId && b.StorageType == 0 && b.StoragePath != null).ToList();
 
             files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains($"/file_{e.StoragePath}/"))).ToList();
 
@@ -641,7 +641,7 @@ public class BackupPortalTask : PortalTaskBase
                 ActionInvoker.Try(state =>
                 {
                     var f = (BackupFileInfo)state;
-                    using var fileStream = storage.GetReadStream(f.Domain, f.Path);
+                        using var fileStream = storage.GetReadStreamAsync(f.Domain, f.Path).Result;
                     writer.WriteEntry(file1.GetZipKey(), fileStream);
                 }, file, 5, error => Logger.WarnFormat("can't backup file ({0}:{1}): {2}", file1.Module, file1.Path, error));
 

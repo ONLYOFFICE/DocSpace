@@ -44,8 +44,16 @@ const SelectFileDialogAsideView = ({
   };
   const isHeaderChildren = !!titleFilesList;
 
+  const onMouseEvent = (event) => {
+    event.stopPropagation();
+  };
+
   return (
-    <StyledAsidePanel visible={isPanelVisible}>
+    <StyledAsidePanel
+      visible={isPanelVisible}
+      onMouseUp={onMouseEvent}
+      onMouseDown={onMouseEvent}
+    >
       <ModalDialog
         visible={isPanelVisible}
         zIndex={zIndex}
@@ -90,19 +98,19 @@ const SelectFileDialogAsideView = ({
                   </Text>
                 )}
                 <div className="select-file-dialog_aside_body-files_list">
-                  {selectedFolder && !isLoadingData ? (
-                    <FilesListBody
-                      filesList={filesList}
-                      onSelectFile={onSelectFile}
-                      hasNextPage={hasNextPage}
-                      isNextPageLoading={isNextPageLoading}
-                      loadNextPage={loadNextPage}
-                      selectedFolder={selectedFolder}
-                      displayType={DISPLAY_TYPE}
-                      loadingText={loadingText}
-                      selectedFile={selectedFile}
-                    />
-                  ) : isAvailableFolderList ? (
+                {selectedFolder && !isLoadingData ? (
+                  <FilesListBody
+                    filesList={filesList}
+                    onSelectFile={onSelectFile}
+                    hasNextPage={hasNextPage}
+                    isNextPageLoading={isNextPageLoading}
+                    loadNextPage={loadNextPage}
+                    selectedFolder={selectedFolder}
+                    displayType={DISPLAY_TYPE}
+                    loadingText={loadingText}
+                    selectedFile={selectedFile}
+                  />
+                ) : isAvailableFolderList ? (
                     <div key="loader" className="panel-loader-wrapper">
                       <Loaders.Rows
                         style={{
@@ -111,17 +119,17 @@ const SelectFileDialogAsideView = ({
                         }}
                         count={12}
                       />
-                    </div>
-                  ) : (
-                    <div className="select-file-dialog_empty-container">
-                      <EmptyContainer
-                        headerText={t("Home:EmptyFolderHeader")}
-                        imageSrc="/static/images/empty_screen.png"
-                      />
-                    </div>
-                  )}
-                </div>
+                  </div>
+                ) : (
+                  <div className="select-file-dialog_empty-container">
+                    <EmptyContainer
+                      headerText={t("Home:EmptyFolderHeader")}
+                      imageSrc="/static/images/empty_screen.png"
+                    />
+                  </div>
+                )}
               </div>
+            </div>
             </div>
           </StyledSelectFilePanel>
         </ModalDialog.Body>

@@ -9,6 +9,7 @@ global using System.Web;
 global using ASC.Common;
 global using ASC.Common.Caching;
 global using ASC.Common.Logging;
+global using ASC.Common.Mapping;
 global using ASC.Core;
 global using ASC.Core.Common.EF;
 global using ASC.Core.Common.EF.Context;
@@ -19,3 +20,6 @@ global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.Http.Extensions;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.Options;
+
+global using AutoMapper;
+global using AutoMapper.QueryableExtensions;

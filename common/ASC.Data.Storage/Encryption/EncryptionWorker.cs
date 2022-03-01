@@ -23,74 +23,79 @@
  *
 */
 
-namespace ASC.Data.Storage.Encryption
+namespace ASC.Data.Storage.Encryption;
+
+[Singletone]
+public class EncryptionWorker
 {
-    [Singletone]
-    public class EncryptionWorker
+    private readonly object _locker;
+    private readonly FactoryOperation _factoryOperation;
+    private readonly DistributedTaskQueue _queue;
+
+    public EncryptionWorker(FactoryOperation factoryOperation, DistributedTaskQueueOptionsManager options)
     {
-        private object Locker { get; }
-        private FactoryOperation FactoryOperation { get; }
-        private DistributedTaskQueue Queue { get; }
+        _locker = new object();
+        _factoryOperation = factoryOperation;
+        _queue = options.Get<EncryptionOperation>();
+    }
 
-        public EncryptionWorker(FactoryOperation factoryOperation, DistributedTaskQueueOptionsManager options)
+    public void Start(EncryptionSettingsProto encryptionSettings)
+    {
+        EncryptionOperation encryptionOperation;
+        lock (_locker)
         {
-            Locker = new object();
-            FactoryOperation = factoryOperation;
-            Queue = options.Get<EncryptionOperation>();
-        }
-
-        public void Start(EncryptionSettingsProto encryptionSettings)
-        {
-            EncryptionOperation encryptionOperation;
-            lock (Locker)
+            if (_queue.GetTask<EncryptionOperation>(GetCacheId()) != null)
             {
-                if (Queue.GetTask<EncryptionOperation>(GetCacheId()) != null) return;
-                encryptionOperation = FactoryOperation.CreateOperation(encryptionSettings, GetCacheId());
-                Queue.QueueTask(encryptionOperation);
+                return;
             }
-        }
 
-        public void Stop()
-        {
-            Queue.CancelTask(GetCacheId());
+            encryptionOperation = _factoryOperation.CreateOperation(encryptionSettings, GetCacheId());
+            _queue.QueueTask(encryptionOperation);
         }
-
-        public string GetCacheId()
-        {
-            return typeof(EncryptionOperation).FullName;
-        }
-
-        public double? GetEncryptionProgress()
-        {
-            var progress = Queue.GetTasks<EncryptionOperation>().FirstOrDefault();
-            return progress.Percentage;
-    }
     }
 
-    [Singletone(Additional = typeof(FactoryOperationExtension))]
-    public class FactoryOperation
+    public void Stop()
     {
-        private IServiceProvider ServiceProvider { get; set; }
-
-        public FactoryOperation(IServiceProvider serviceProvider)
-        {
-            ServiceProvider = serviceProvider;
-        }
-
-        public EncryptionOperation CreateOperation(EncryptionSettingsProto encryptionSettings, string id)
-        {
-            var item = ServiceProvider.GetService<EncryptionOperation>();
-            item.Init(encryptionSettings, id);
-            return item;
-        }
+        _queue.CancelTask(GetCacheId());
     }
 
-    public static class FactoryOperationExtension
+    public string GetCacheId()
     {
-        public static void Register(DIHelper dIHelper)
-        {
-            dIHelper.TryAdd<EncryptionOperation>();
-            dIHelper.AddDistributedTaskQueueService<EncryptionOperation>(1);
-        }
+        return typeof(EncryptionOperation).FullName;
+    }
+
+    public double? GetEncryptionProgress()
+    {
+        var progress = _queue.GetTasks<EncryptionOperation>().FirstOrDefault();
+
+        return progress.Percentage;
+    }
+}
+
+[Singletone(Additional = typeof(FactoryOperationExtension))]
+public class FactoryOperation
+{
+    private readonly IServiceProvider _serviceProvider;
+
+    public FactoryOperation(IServiceProvider serviceProvider)
+    {
+        _serviceProvider = serviceProvider;
+    }
+
+    public EncryptionOperation CreateOperation(EncryptionSettingsProto encryptionSettings, string id)
+    {
+        var item = _serviceProvider.GetService<EncryptionOperation>();
+        item.Init(encryptionSettings, id);
+
+        return item;
+    }
+}
+
+public static class FactoryOperationExtension
+{
+    public static void Register(DIHelper dIHelper)
+    {
+        dIHelper.TryAdd<EncryptionOperation>();
+        dIHelper.AddDistributedTaskQueueService<EncryptionOperation>(1);
     }
 }

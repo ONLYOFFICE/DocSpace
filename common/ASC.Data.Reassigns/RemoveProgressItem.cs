@@ -55,7 +55,7 @@ namespace ASC.Data.Reassigns
         {
             _tenantId = tenantId;
             User = user;
-            FromUser = user.ID;
+            FromUser = user.Id;
             _currentUserId = currentUserId;
             _notify = notify;
 
@@ -167,7 +167,7 @@ namespace ASC.Data.Reassigns
                         continue;
                     }
 
-                    docsSpace = manager.GetUserSpaceUsage(FromUser);
+                    docsSpace = manager.GetUserSpaceUsageAsync(FromUser).Result;
                 }
 
                 if (item.ID == WebItemManager.MailProductID)
@@ -178,7 +178,7 @@ namespace ASC.Data.Reassigns
                         continue;
                     }
 
-                    mailSpace = manager.GetUserSpaceUsage(FromUser);
+                    mailSpace = manager.GetUserSpaceUsageAsync(FromUser).Result;
                 }
 
                 if (item.ID == WebItemManager.TalkProductID)
@@ -189,7 +189,7 @@ namespace ASC.Data.Reassigns
                         continue;
                     }
 
-                    talkSpace = manager.GetUserSpaceUsage(FromUser);
+                    talkSpace = manager.GetUserSpaceUsageAsync(FromUser).Result;
                 }
             }
         }
@@ -210,9 +210,9 @@ namespace ASC.Data.Reassigns
 
             var storage = storageFactory.GetStorage(_tenantId.ToString(CultureInfo.InvariantCulture), "talk");
 
-            if (storage != null && storage.IsDirectory(md5Hash))
+            if (storage != null && storage.IsDirectoryAsync(md5Hash).Result)
             {
-                storage.DeleteDirectory(md5Hash);
+                storage.DeleteDirectoryAsync(md5Hash).Wait();
             }
         }
 

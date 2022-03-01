@@ -23,110 +23,98 @@
  *
 */
 
-namespace ASC.Core.Notify
+namespace ASC.Core.Notify;
+
+public abstract class NotifySource : INotifySource
 {
-    public abstract class NotifySource : INotifySource
+    private readonly IDictionary<CultureInfo, IActionProvider> _actions = new Dictionary<CultureInfo, IActionProvider>();
+    private readonly IDictionary<CultureInfo, IPatternProvider> _patterns = new Dictionary<CultureInfo, IPatternProvider>();
+
+    protected ISubscriptionProvider SubscriprionProvider;
+    protected IRecipientProvider RecipientsProvider;
+    protected IActionProvider ActionProvider => GetActionProvider();
+    protected IPatternProvider PatternProvider => GetPatternProvider();
+    public string Id { get; private set; }
+
+    private readonly UserManager _userManager;
+    private readonly SubscriptionManager _subscriptionManager;
+
+    protected NotifySource(string id, UserManager userManager, IRecipientProvider recipientsProvider, SubscriptionManager subscriptionManager)
     {
-        private readonly IDictionary<CultureInfo, IActionProvider> actions = new Dictionary<CultureInfo, IActionProvider>();
-
-        private readonly IDictionary<CultureInfo, IPatternProvider> patterns = new Dictionary<CultureInfo, IPatternProvider>();
-
-
-        protected ISubscriptionProvider SubscriprionProvider;
-
-        protected IRecipientProvider RecipientsProvider;
-
-
-        protected IActionProvider ActionProvider
+        if (string.IsNullOrEmpty(id))
         {
-            get { return GetActionProvider(); }
+            throw new ArgumentNullException(nameof(id));
         }
 
-        protected IPatternProvider PatternProvider
+        Id = id;
+        _userManager = userManager;
+        RecipientsProvider = recipientsProvider;
+        _subscriptionManager = subscriptionManager;
+    }
+
+    protected NotifySource(Guid id, UserManager userManager, IRecipientProvider recipientsProvider, SubscriptionManager subscriptionManager)
+        : this(id.ToString(), userManager, recipientsProvider, subscriptionManager)
+    {
+    }
+
+    public IActionProvider GetActionProvider()
+    {
+        lock (_actions)
         {
-            get { return GetPatternProvider(); }
-        }
-
-
-        public string ID
-        {
-            get;
-            private set;
-        }
-        private UserManager UserManager { get; }
-        private SubscriptionManager SubscriptionManager { get; }
-
-        protected NotifySource(string id, UserManager userManager, IRecipientProvider recipientsProvider, SubscriptionManager subscriptionManager)
-        {
-            if (string.IsNullOrEmpty(id)) throw new ArgumentNullException(nameof(id));
-
-            ID = id;
-            UserManager = userManager;
-            RecipientsProvider = recipientsProvider;
-            SubscriptionManager = subscriptionManager;
-        }
-
-        protected NotifySource(Guid id, UserManager userManager, IRecipientProvider recipientsProvider, SubscriptionManager subscriptionManager)
-            : this(id.ToString(), userManager, recipientsProvider, subscriptionManager)
-        {
-        }
-
-        public IActionProvider GetActionProvider()
-        {
-            lock (actions)
+            var culture = Thread.CurrentThread.CurrentCulture;
+            if (!_actions.ContainsKey(culture))
             {
-                var culture = Thread.CurrentThread.CurrentCulture;
-                if (!actions.ContainsKey(culture))
-                {
-                    actions[culture] = CreateActionProvider();
-                }
-                return actions[culture];
+                _actions[culture] = CreateActionProvider();
             }
-        }
 
-        public IPatternProvider GetPatternProvider()
+            return _actions[culture];
+        }
+    }
+
+    public IPatternProvider GetPatternProvider()
+    {
+        lock (_patterns)
         {
-            lock (patterns)
+            var culture = Thread.CurrentThread.CurrentCulture;
+            if (Thread.CurrentThread.CurrentUICulture != culture)
             {
-                var culture = Thread.CurrentThread.CurrentCulture;
-                if (Thread.CurrentThread.CurrentUICulture != culture)
-                {
-                    Thread.CurrentThread.CurrentUICulture = culture;
-                }
-                if (!patterns.ContainsKey(culture))
-                {
-                    patterns[culture] = CreatePatternsProvider();
-                }
-                return patterns[culture];
+                Thread.CurrentThread.CurrentUICulture = culture;
             }
+            if (!_patterns.ContainsKey(culture))
+            {
+                _patterns[culture] = CreatePatternsProvider();
+            }
+
+            return _patterns[culture];
         }
+    }
 
-        public IRecipientProvider GetRecipientsProvider()
-        {
-            return CreateRecipientsProvider();
-        }
+    public IRecipientProvider GetRecipientsProvider()
+    {
+        return CreateRecipientsProvider();
+    }
 
-        public ISubscriptionProvider GetSubscriptionProvider()
-        {
-            return CreateSubscriptionProvider();
-        }
+    public ISubscriptionProvider GetSubscriptionProvider()
+    {
+        return CreateSubscriptionProvider();
+    }
+
+    protected abstract IPatternProvider CreatePatternsProvider();
+
+    protected abstract IActionProvider CreateActionProvider();
 
 
-        protected abstract IPatternProvider CreatePatternsProvider();
+    protected virtual ISubscriptionProvider CreateSubscriptionProvider()
+    {
+        var subscriptionProvider = new DirectSubscriptionProvider(Id, _subscriptionManager, RecipientsProvider);
 
-        protected abstract IActionProvider CreateActionProvider();
+        return new TopSubscriptionProvider(RecipientsProvider, subscriptionProvider, WorkContext.DefaultClientSenders)
+            ?? throw new NotifyException("Provider ISubscriprionProvider not instanced.");
+    }
 
-
-        protected virtual ISubscriptionProvider CreateSubscriptionProvider()
-        {
-            var subscriptionProvider = new DirectSubscriptionProvider(ID, SubscriptionManager, RecipientsProvider);
-            return new TopSubscriptionProvider(RecipientsProvider, subscriptionProvider, WorkContext.DefaultClientSenders) ??
-                throw new NotifyException("Provider ISubscriprionProvider not instanced.");
-        }
-
-        protected virtual IRecipientProvider CreateRecipientsProvider()
-        {
-            return new RecipientProviderImpl(UserManager) ?? throw new NotifyException("Provider IRecipientsProvider not instanced.");
-        }
+    protected virtual IRecipientProvider CreateRecipientsProvider()
+    {
+        return new RecipientProviderImpl(_userManager)
+            ?? throw new NotifyException("Provider IRecipientsProvider not instanced.");
     }
 }

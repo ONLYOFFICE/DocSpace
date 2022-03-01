@@ -23,6 +23,8 @@
  *
 */
 
+using Microsoft.EntityFrameworkCore;
+
 namespace ASC.Web.Files
 {
     [Scope]
@@ -58,40 +60,42 @@ namespace ASC.Web.Files
             PathProvider = pathProvider;
         }
 
-        public override List<UsageSpaceStatItem> GetStatData()
+        public override ValueTask<List<UsageSpaceStatItem>> GetStatDataAsync()
         {
             var myFiles = FilesDbContext.Files
+                .AsQueryable()
                 .Join(FilesDbContext.Tree, a => a.FolderId, b => b.FolderId, (file, tree) => new { file, tree })
                 .Join(FilesDbContext.BunchObjects, a => a.tree.ParentId.ToString(), b => b.LeftNode, (fileTree, bunch) => new { fileTree.file, fileTree.tree, bunch })
                 .Where(r => r.file.TenantId == r.bunch.TenantId)
-                .Where(r => r.file.TenantId == TenantManager.GetCurrentTenant().TenantId)
+                .Where(r => r.file.TenantId == TenantManager.GetCurrentTenant().Id)
                 .Where(r => r.bunch.RightNode.StartsWith("files/my/") || r.bunch.RightNode.StartsWith("files/trash/"))
                 .GroupBy(r => r.file.CreateBy)
                 .Select(r => new { CreateBy = r.Key, Size = r.Sum(a => a.file.ContentLength) });
 
             var commonFiles = FilesDbContext.Files
+                .AsQueryable()
                 .Join(FilesDbContext.Tree, a => a.FolderId, b => b.FolderId, (file, tree) => new { file, tree })
                 .Join(FilesDbContext.BunchObjects, a => a.tree.ParentId.ToString(), b => b.LeftNode, (fileTree, bunch) => new { fileTree.file, fileTree.tree, bunch })
                 .Where(r => r.file.TenantId == r.bunch.TenantId)
-                .Where(r => r.file.TenantId == TenantManager.GetCurrentTenant().TenantId)
+                .Where(r => r.file.TenantId == TenantManager.GetCurrentTenant().Id)
                 .Where(r => r.bunch.RightNode.StartsWith("files/common/"))
-                .GroupBy(r => Constants.LostUser.ID)
-                .Select(r => new { CreateBy = Constants.LostUser.ID, Size = r.Sum(a => a.file.ContentLength) });
+                .GroupBy(r => Constants.LostUser.Id)
+                .Select(r => new { CreateBy = Constants.LostUser.Id, Size = r.Sum(a => a.file.ContentLength) });
 
             return myFiles.Union(commonFiles)
-                .ToList()
-                .GroupBy(
-                r => r.CreateBy,
-                r => r.Size,
-                (userId, items) =>
+                .AsAsyncEnumerable()
+                .GroupByAwait(
+                async r => await Task.FromResult(r.CreateBy),
+                async r => await Task.FromResult(r.Size),
+                async (userId, items) =>
                 {
                     var user = UserManager.GetUsers(userId);
-                    var item = new UsageSpaceStatItem { SpaceUsage = items.Sum() };
+                    var item = new UsageSpaceStatItem { SpaceUsage = await items.SumAsync() };
                     if (user.Equals(Constants.LostUser))
                     {
                         item.Name = FilesUCResource.CorporateFiles;
                         item.ImgUrl = PathProvider.GetImagePath("corporatefiles_big.png");
-                        item.Url = PathProvider.GetFolderUrlById(GlobalFolderHelper.FolderCommon);
+                        item.Url = await PathProvider.GetFolderUrlByIdAsync(await GlobalFolderHelper.FolderCommonAsync);
                     }
                     else
                     {
@@ -103,7 +107,7 @@ namespace ASC.Web.Files
                     return item;
                 })
                 .OrderByDescending(i => i.SpaceUsage)
-                .ToList();
+                .ToListAsync();
 
         }
     }
@@ -132,15 +136,16 @@ namespace ASC.Web.Files
             DaoFactory = daoFactory;
         }
 
-        public long GetUserSpaceUsage(Guid userId)
+        public async Task<long> GetUserSpaceUsageAsync(Guid userId)
         {
-            var tenantId = TenantManager.GetCurrentTenant().TenantId;
+            var tenantId = TenantManager.GetCurrentTenant().Id;
             var my = GlobalFolder.GetFolderMy(FileMarker, DaoFactory);
-            var trash = GlobalFolder.GetFolderTrash<int>(DaoFactory);
+            var trash = await GlobalFolder.GetFolderTrashAsync<int>(DaoFactory);
 
-            return FilesDbContext.Files
+            return await FilesDbContext.Files
+                .AsQueryable()
                 .Where(r => r.TenantId == tenantId && (r.FolderId == my || r.FolderId == trash))
-                .Sum(r => r.ContentLength);
+                .SumAsync(r => r.ContentLength);
         }
     }
 }

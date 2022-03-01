@@ -99,7 +99,7 @@ namespace ASC.Web.Files.ThirdPartyApp
                 App = token.App,
                 Token = EncryptToken(token),
                 UserId = AuthContext.CurrentAccount.ID,
-                TenantId = TenantManager.GetCurrentTenant().TenantId
+                TenantId = TenantManager.GetCurrentTenant().Id
             };
 
             FilesDbContext.AddOrUpdate(r => r.ThirdpartyApp, dbFilesThirdpartyApp);
@@ -114,7 +114,8 @@ namespace ASC.Web.Files.ThirdPartyApp
         public Token GetToken(string app, Guid userId)
         {
             var oAuth20Token = FilesDbContext.ThirdpartyApp
-                .Where(r => r.TenantId == TenantManager.GetCurrentTenant().TenantId)
+                .AsQueryable()
+                .Where(r => r.TenantId == TenantManager.GetCurrentTenant().Id)
                 .Where(r => r.UserId == userId)
                 .Where(r => r.App == app)
                 .Select(r => r.Token)
@@ -128,7 +129,8 @@ namespace ASC.Web.Files.ThirdPartyApp
         public void DeleteToken(string app, Guid? userId = null)
         {
             var apps = FilesDbContext.ThirdpartyApp
-                .Where(r => r.TenantId == TenantManager.GetCurrentTenant().TenantId)
+                .AsQueryable()
+                .Where(r => r.TenantId == TenantManager.GetCurrentTenant().Id)
                 .Where(r => r.UserId == (userId ?? AuthContext.CurrentAccount.ID))
                 .Where(r => r.App == app);
 

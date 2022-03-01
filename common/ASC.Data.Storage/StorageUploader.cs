@@ -23,235 +23,235 @@
  *
 */
 
-namespace ASC.Data.Storage
+namespace ASC.Data.Storage;
+
+[Singletone]
+public class StorageUploader
 {
-    [Singletone]
-    public class StorageUploader
+    protected readonly DistributedTaskQueue Queue;
+
+    private static readonly object _locker;
+    private readonly IServiceProvider _serviceProvider;
+    private readonly TempStream _tempStream;
+    private readonly ICacheNotify<MigrationProgress> _cacheMigrationNotify;
+
+    static StorageUploader()
     {
-        protected readonly DistributedTaskQueue Queue;
+        _locker = new object();
+    }
 
-        private static readonly object Locker;
+    public StorageUploader(IServiceProvider serviceProvider, TempStream tempStream, ICacheNotify<MigrationProgress> cacheMigrationNotify, DistributedTaskQueueOptionsManager options)
+    {
+        _serviceProvider = serviceProvider;
+        _tempStream = tempStream;
+        _cacheMigrationNotify = cacheMigrationNotify;
+        Queue = options.Get(nameof(StorageUploader));
+    }
 
-        private IServiceProvider ServiceProvider { get; }
-        private TempStream TempStream { get; }
-        private ICacheNotify<MigrationProgress> CacheMigrationNotify { get; }
-
-        static StorageUploader()
+    public void Start(int tenantId, StorageSettings newStorageSettings, StorageFactoryConfig storageFactoryConfig)
+    {
+        lock (_locker)
         {
-            Locker = new object();
-        }
-
-        public StorageUploader(IServiceProvider serviceProvider, TempStream tempStream, ICacheNotify<MigrationProgress> cacheMigrationNotify, DistributedTaskQueueOptionsManager options)
-        {
-            ServiceProvider = serviceProvider;
-            TempStream = tempStream;
-            CacheMigrationNotify = cacheMigrationNotify;
-            Queue = options.Get(nameof(StorageUploader));
-        }
-
-        public void Start(int tenantId, StorageSettings newStorageSettings, StorageFactoryConfig storageFactoryConfig)
-        {
-            lock (Locker)
+            var id = GetCacheKey(tenantId);
+            var migrateOperation = Queue.GetTask<MigrateOperation>(id);
+            if (migrateOperation != null)
             {
-                var id = GetCacheKey(tenantId);
-                var migrateOperation = Queue.GetTask<MigrateOperation>(id);
-                if (migrateOperation != null) return;
-
-                migrateOperation = new MigrateOperation(ServiceProvider, CacheMigrationNotify, id, tenantId, newStorageSettings, storageFactoryConfig, TempStream);
-                Queue.QueueTask(migrateOperation);
+                return;
             }
-        }
 
-        public MigrateOperation GetProgress(int tenantId)
-                {
-                    lock (Locker)
-                    {
-                return Queue.GetTask<MigrateOperation>(GetCacheKey(tenantId));
-                    }
-        }
-
-        public void Stop()
-        {
-            foreach (var task in Queue.GetTasks<MigrateOperation>().Where(r => r.Status == DistributedTaskStatus.Running))
-            {
-                Queue.CancelTask(task.Id);
-            }
-        }
-
-        private static string GetCacheKey(int tenantId)
-        {
-            return typeof(MigrateOperation).FullName + tenantId;
+            migrateOperation = new MigrateOperation(_serviceProvider, _cacheMigrationNotify, id, tenantId, newStorageSettings, storageFactoryConfig, _tempStream);
+            Queue.QueueTask(migrateOperation);
         }
     }
 
-    [Transient]
-    public class MigrateOperation : DistributedTaskProgress
+    public MigrateOperation GetProgress(int tenantId)
     {
-        private readonly ILog Log;
-        private static readonly string ConfigPath;
-        private readonly IEnumerable<string> Modules;
-        private readonly StorageSettings settings;
-        private readonly int tenantId;
-
-        static MigrateOperation()
+        lock (_locker)
         {
-            ConfigPath = "";
+            return Queue.GetTask<MigrateOperation>(GetCacheKey(tenantId));
         }
+    }
 
-        public MigrateOperation(
-            IServiceProvider serviceProvider,
-            ICacheNotify<MigrationProgress> cacheMigrationNotify,
-            string id,
-            int tenantId,
-            StorageSettings settings,
-            StorageFactoryConfig storageFactoryConfig,
-            TempStream tempStream)
+    public void Stop()
+    {
+        foreach (var task in Queue.GetTasks<MigrateOperation>().Where(r => r.Status == DistributedTaskStatus.Running))
         {
-            Id = id;
-            Status = DistributedTaskStatus.Created;
-
-            ServiceProvider = serviceProvider;
-            CacheMigrationNotify = cacheMigrationNotify;
-            this.tenantId = tenantId;
-            this.settings = settings;
-            StorageFactoryConfig = storageFactoryConfig;
-            TempStream = tempStream;
-            Modules = storageFactoryConfig.GetModuleList(ConfigPath, true);
-            StepCount = Modules.Count();
-            Log = serviceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
+            Queue.CancelTask(task.Id);
         }
+    }
 
-        private IServiceProvider ServiceProvider { get; }
-        private StorageFactoryConfig StorageFactoryConfig { get; }
-        private TempStream TempStream { get; }
-        private ICacheNotify<MigrationProgress> CacheMigrationNotify { get; }
+    private static string GetCacheKey(int tenantId)
+    {
+        return typeof(MigrateOperation).FullName + tenantId;
+    }
+}
 
-        protected override void DoJob()
+[Transient]
+public class MigrateOperation : DistributedTaskProgress
+{
+    private static readonly string _configPath;
+    private readonly ILog _logger;
+    private readonly IEnumerable<string> _modules;
+    private readonly StorageSettings _settings;
+    private readonly int _tenantId;
+    private readonly IServiceProvider _serviceProvider;
+    private readonly StorageFactoryConfig _storageFactoryConfig;
+    private readonly TempStream _tempStream;
+    private readonly ICacheNotify<MigrationProgress> _cacheMigrationNotify;
+
+    static MigrateOperation()
+    {
+        _configPath = string.Empty;
+    }
+
+    public MigrateOperation(
+        IServiceProvider serviceProvider,
+        ICacheNotify<MigrationProgress> cacheMigrationNotify,
+        string id,
+        int tenantId,
+        StorageSettings settings,
+        StorageFactoryConfig storageFactoryConfig,
+        TempStream tempStream)
+    {
+        Id = id;
+        Status = DistributedTaskStatus.Created;
+
+        _serviceProvider = serviceProvider;
+        _cacheMigrationNotify = cacheMigrationNotify;
+        _tenantId = tenantId;
+        _settings = settings;
+        _storageFactoryConfig = storageFactoryConfig;
+        _tempStream = tempStream;
+        _modules = storageFactoryConfig.GetModuleList(_configPath, true);
+        StepCount = _modules.Count();
+        _logger = serviceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
+    }
+
+    public object Clone()
+    {
+        return MemberwiseClone();
+    }
+
+    protected override void DoJob()
+    {
+        try
         {
-            try
+            _logger.DebugFormat("Tenant: {0}", _tenantId);
+            Status = DistributedTaskStatus.Running;
+
+            using var scope = _serviceProvider.CreateScope();
+            var tempPath = scope.ServiceProvider.GetService<TempPath>();
+            var scopeClass = scope.ServiceProvider.GetService<MigrateOperationScope>();
+            var (tenantManager, securityContext, storageFactory, options, storageSettingsHelper, settingsManager) = scopeClass;
+            var tenant = tenantManager.GetTenant(_tenantId);
+            tenantManager.SetCurrentTenant(tenant);
+
+            securityContext.AuthenticateMeWithoutCookie(tenant.OwnerId);
+
+            foreach (var module in _modules)
             {
-                Log.DebugFormat("Tenant: {0}", tenantId);
-                Status = DistributedTaskStatus.Running;
+                var oldStore = storageFactory.GetStorage(_configPath, _tenantId.ToString(), module);
+                var store = storageFactory.GetStorageFromConsumer(_configPath, _tenantId.ToString(), module, storageSettingsHelper.DataStoreConsumer(_settings));
+                var domains = _storageFactoryConfig.GetDomainList(_configPath, module).ToList();
 
-                using var scope = ServiceProvider.CreateScope();
-                var tempPath = scope.ServiceProvider.GetService<TempPath>();
-                var scopeClass = scope.ServiceProvider.GetService<MigrateOperationScope>();
-                var (tenantManager, securityContext, storageFactory, options, storageSettingsHelper, settingsManager) = scopeClass;
-                var tenant = tenantManager.GetTenant(tenantId);
-                tenantManager.SetCurrentTenant(tenant);
+                var crossModuleTransferUtility = new CrossModuleTransferUtility(options, _tempStream, tempPath, oldStore, store);
 
-                securityContext.AuthenticateMeWithoutCookie(tenant.OwnerId);
-
-                foreach (var module in Modules)
+                string[] files;
+                foreach (var domain in domains)
                 {
-                    var oldStore = storageFactory.GetStorage(ConfigPath, tenantId.ToString(), module);
-                    var store = storageFactory.GetStorageFromConsumer(ConfigPath, tenantId.ToString(), module, storageSettingsHelper.DataStoreConsumer(settings));
-                    var domains = StorageFactoryConfig.GetDomainList(ConfigPath, module).ToList();
-
-                    var crossModuleTransferUtility = new CrossModuleTransferUtility(options, TempStream, tempPath, oldStore, store);
-
-                    string[] files;
-                    foreach (var domain in domains)
-                    {
-                        //Status = module + domain;
-                        Log.DebugFormat("Domain: {0}", domain);
-                        files = oldStore.ListFilesRelative(domain, "\\", "*.*", true);
-
-                        foreach (var file in files)
-                        {
-                            Log.DebugFormat("File: {0}", file);
-                            crossModuleTransferUtility.CopyFile(domain, file, domain, file);
-                        }
-                    }
-
-                    Log.Debug("Domain:");
-
-                    files = oldStore.ListFilesRelative(string.Empty, "\\", "*.*", true)
-                        .Where(path => domains.All(domain => !path.Contains(domain + "/")))
-                        .ToArray();
+                    //Status = module + domain;
+                    _logger.DebugFormat("Domain: {0}", domain);
+                        files = oldStore.ListFilesRelativeAsync(domain, "\\", "*.*", true).ToArrayAsync().Result;
 
                     foreach (var file in files)
                     {
-                        Log.DebugFormat("File: {0}", file);
-                        crossModuleTransferUtility.CopyFile("", file, "", file);
+                        _logger.DebugFormat("File: {0}", file);
+                            crossModuleTransferUtility.CopyFileAsync(domain, file, domain, file).Wait();
                     }
-
-                    StepDone();
-
-                    MigrationPublish();
                 }
 
-                settingsManager.Save(settings);
-                tenant.SetStatus(TenantStatus.Active);
-                tenantManager.SaveTenant(tenant);
+                _logger.Debug("Domain:");
 
-                Status = DistributedTaskStatus.Completed;
+                    files = oldStore.ListFilesRelativeAsync(string.Empty, "\\", "*.*", true).ToArrayAsync().Result
+                    .Where(path => domains.All(domain => !path.Contains(domain + "/")))
+                    .ToArray();
+
+                foreach (var file in files)
+                {
+                    _logger.DebugFormat("File: {0}", file);
+                        crossModuleTransferUtility.CopyFileAsync("", file, "", file).Wait();
+                }
+
+                StepDone();
+
+                MigrationPublish();
             }
-            catch (Exception e)
-            {
-                Status = DistributedTaskStatus.Failted;
-                Exception = e;
-                Log.Error(e);
-            }
 
-            MigrationPublish();
+            settingsManager.Save(_settings);
+            tenant.SetStatus(TenantStatus.Active);
+            tenantManager.SaveTenant(tenant);
+
+            Status = DistributedTaskStatus.Completed;
         }
-
-        public object Clone()
+        catch (Exception e)
         {
-            return MemberwiseClone();
+            Status = DistributedTaskStatus.Failted;
+            Exception = e;
+            _logger.Error(e);
         }
 
-        private void MigrationPublish()
-        {
-            CacheMigrationNotify.Publish(new MigrationProgress
-            {
-                TenantId = tenantId,
-                Progress = Percentage,
-                Error = Exception.ToString(),
-                IsCompleted = IsCompleted
-            },
-            Common.Caching.CacheNotifyAction.Insert);
-        }
+        MigrationPublish();
     }
 
-    public class MigrateOperationScope
+    private void MigrationPublish()
     {
-        private TenantManager TenantManager { get; }
-        private SecurityContext SecurityContext { get; }
-        private StorageFactory StorageFactory { get; }
-        private IOptionsMonitor<ILog> Options { get; }
-        private StorageSettingsHelper StorageSettingsHelper { get; }
-        private SettingsManager SettingsManager { get; }
-
-        public MigrateOperationScope(TenantManager tenantManager,
-            SecurityContext securityContext,
-            StorageFactory storageFactory,
-            IOptionsMonitor<ILog> options,
-            StorageSettingsHelper storageSettingsHelper,
-            SettingsManager settingsManager)
+        _cacheMigrationNotify.Publish(new MigrationProgress
         {
-            TenantManager = tenantManager;
-            SecurityContext = securityContext;
-            StorageFactory = storageFactory;
-            Options = options;
-            StorageSettingsHelper = storageSettingsHelper;
-            SettingsManager = settingsManager;
-        }
+            TenantId = _tenantId,
+            Progress = Percentage,
+            Error = Exception.ToString(),
+            IsCompleted = IsCompleted
+        },
+            Common.Caching.CacheNotifyAction.Insert);
+    }
+}
 
-        public void Deconstruct(out TenantManager tenantManager,
-            out SecurityContext securityContext,
-            out StorageFactory storageFactory,
-            out IOptionsMonitor<ILog> options,
-            out StorageSettingsHelper storageSettingsHelper,
-            out SettingsManager settingsManager)
-        {
-            tenantManager = TenantManager;
-            securityContext = SecurityContext;
-            storageFactory = StorageFactory;
-            options = Options;
-            storageSettingsHelper = StorageSettingsHelper;
-            settingsManager = SettingsManager;
-        }
+public class MigrateOperationScope
+{
+    private readonly TenantManager _tenantManager;
+    private readonly SecurityContext _securityContext;
+    private readonly StorageFactory _storageFactory;
+    private readonly IOptionsMonitor<ILog> _options;
+    private readonly StorageSettingsHelper _storageSettingsHelper;
+    private readonly SettingsManager _settingsManager;
+
+    public MigrateOperationScope(TenantManager tenantManager,
+        SecurityContext securityContext,
+        StorageFactory storageFactory,
+        IOptionsMonitor<ILog> options,
+        StorageSettingsHelper storageSettingsHelper,
+        SettingsManager settingsManager)
+    {
+        _tenantManager = tenantManager;
+        _securityContext = securityContext;
+        _storageFactory = storageFactory;
+        _options = options;
+        _storageSettingsHelper = storageSettingsHelper;
+        _settingsManager = settingsManager;
+    }
+
+    public void Deconstruct(out TenantManager tenantManager,
+        out SecurityContext securityContext,
+        out StorageFactory storageFactory,
+        out IOptionsMonitor<ILog> options,
+        out StorageSettingsHelper storageSettingsHelper,
+        out SettingsManager settingsManager)
+    {
+        tenantManager = _tenantManager;
+        securityContext = _securityContext;
+        storageFactory = _storageFactory;
+        options = _options;
+        storageSettingsHelper = _storageSettingsHelper;
+        settingsManager = _settingsManager;
     }
 }

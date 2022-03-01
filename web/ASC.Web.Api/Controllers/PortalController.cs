@@ -99,11 +99,11 @@ namespace ASC.Web.Api.Controllers
         }
 
         [Update("getshortenlink")]
-        public object GetShortenLink(ShortenLinkModel model)
+        public async Task<object> GetShortenLinkAsync(ShortenLinkModel model)
         {
             try
             {
-                return UrlShortener.Instance.GetShortenLink(model.Link);
+                return await UrlShortener.Instance.GetShortenLinkAsync(model.Link);
             }
             catch (Exception ex)
             {
@@ -113,7 +113,7 @@ namespace ASC.Web.Api.Controllers
         }
 
         [Read("tenantextra")]
-        public object GetTenantExtra()
+        public async Task<object> GetTenantExtraAsync()
         {
             return new
             {
@@ -128,8 +128,8 @@ namespace ASC.Web.Api.Controllers
                     (!CoreBaseSettings.Standalone || !string.IsNullOrEmpty(LicenseReader.LicensePath))
                     && string.IsNullOrEmpty(SetupInfo.AmiMetaUrl)
                     && !CoreBaseSettings.CustomMode,
-                DocServerUserQuota = DocumentServiceLicense.GetLicenseQuota(),
-                DocServerLicense = DocumentServiceLicense.GetLicense()
+                DocServerUserQuota = await DocumentServiceLicense.GetLicenseQuotaAsync(),
+                DocServerLicense = await DocumentServiceLicense.GetLicenseAsync()
             };
         }
 
@@ -138,7 +138,7 @@ namespace ASC.Web.Api.Controllers
         public double GetUsedSpace()
         {
             return Math.Round(
-                TenantManager.FindTenantQuotaRows(Tenant.TenantId)
+                TenantManager.FindTenantQuotaRows(Tenant.Id)
                            .Where(q => !string.IsNullOrEmpty(q.Tag) && new Guid(q.Tag) != Guid.Empty)
                            .Sum(q => q.Counter) / 1024f / 1024f / 1024f, 2);
         }
@@ -153,13 +153,13 @@ namespace ASC.Web.Api.Controllers
         [Read("tariff")]
         public Tariff GetTariff()
         {
-            return PaymentManager.GetTariff(Tenant.TenantId);
+            return PaymentManager.GetTariff(Tenant.Id);
         }
 
         [Read("quota")]
         public TenantQuota GetQuota()
         {
-            return TenantManager.GetTenantQuota(Tenant.TenantId);
+            return TenantManager.GetTenantQuota(Tenant.Id);
         }
 
         [Read("quota/right")]
