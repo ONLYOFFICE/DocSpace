@@ -10,6 +10,7 @@
     <AssemblyTitle>ASC.People</AssemblyTitle>
     <Company>Ascensio System SIA</Company>
     <Product>ASC.People</Product>
+	<ImplicitUsings>enable</ImplicitUsings>
     <Copyright>(c) Ascensio System SIA. All rights reserved</Copyright>
   </PropertyGroup>
 
