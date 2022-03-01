@@ -197,7 +197,7 @@ const SingleItem = (props) => {
         };
 
         setItem(displayedItem);
-        loadAsyncData(displayedItem, selectedItem);
+        await loadAsyncData(displayedItem, selectedItem);
     };
 
     const loadAsyncData = async (displayedItem, selectedItem) => {
