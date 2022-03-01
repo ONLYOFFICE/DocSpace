@@ -226,6 +226,7 @@ class PeopleSelector extends React.Component {
       embeddedComponent,
       selectedOptions,
       showCounter,
+      smallSectionWidth,
       theme,
       onArrowClick,
       headerLabel,
@@ -244,6 +245,7 @@ class PeopleSelector extends React.Component {
         groups={groups}
         hasNextPage={hasNextPage}
         isNextPageLoading={isNextPageLoading}
+        smallSectionWidth={smallSectionWidth}
         loadNextPage={this.loadNextPage}
         size={size}
         selectedOptions={selectedOptions}
@@ -253,6 +255,7 @@ class PeopleSelector extends React.Component {
         searchPlaceHolderLabel={
           searchPlaceHolderLabel || t("SearchUsersPlaceholder")
         }
+        isDefaultDisplayDropDown={false}
         selectButtonLabel={t("Translations:AddMembers")}
         emptySearchOptionsLabel={t("EmptySearchUsersResult")}
         emptyOptionsLabel={t("EmptyUsers")}

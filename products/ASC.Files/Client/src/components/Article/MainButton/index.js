@@ -83,7 +83,7 @@ class ArticleMainButtonContent extends React.Component {
     const folderUpload = !isMobile
       ? [
           {
-            className: "main-button_drop-down",
+            className: "main-button_drop-down main-button_upload-folders",
             icon: "images/actions.upload.react.svg",
             label: t("UploadFolder"),
             disabled: isPrivacy,
@@ -95,18 +95,20 @@ class ArticleMainButtonContent extends React.Component {
     const formActions = !isMobile
       ? [
           {
-            className: "main-button_drop-down",
+            className: "main-button_drop-down main-button_new-form",
             icon: "images/form.react.svg",
             label: t("Translations:NewForm"),
             items: [
               {
-                className: "main-button_drop-down_sub",
+                className:
+                  "main-button_drop-down_sub main-button_new-form-from-blank",
                 label: t("Translations:SubNewForm"),
                 onClick: this.onCreate,
                 action: "docxf",
               },
               {
-                className: "main-button_drop-down_sub",
+                className:
+                  "main-button_drop-down_sub main-button_new-form-from-file",
                 label: t("Translations:SubNewFormFile"),
                 onClick: this.onShowSelectFileDialog,
                 disabled: isPrivacy,
@@ -116,14 +118,15 @@ class ArticleMainButtonContent extends React.Component {
         ]
       : [
           {
-            className: "main-button_drop-down_sub",
+            className: "main-button_drop-down_sub main-button_new-form",
             icon: "images/form.react.svg",
             label: t("Translations:NewForm"),
             onClick: this.onCreate,
             action: "docxf",
           },
           {
-            className: "main-button_drop-down_sub",
+            className:
+              "main-button_drop-down_sub main-button_new-form-from-file",
             icon: "images/form.file.react.svg",
             label: t("Translations:NewFormFile"),
             onClick: this.onShowSelectFileDialog,
@@ -133,21 +136,21 @@ class ArticleMainButtonContent extends React.Component {
 
     const menuModel = [
       {
-        className: "main-button_drop-down",
+        className: "main-button_drop-down main-button_new-document",
         icon: "images/actions.documents.react.svg",
         label: t("NewDocument"),
         onClick: this.onCreate,
         action: "docx",
       },
       {
-        className: "main-button_drop-down",
+        className: "main-button_drop-down main-button_new-spreadsheet",
         icon: "images/spreadsheet.react.svg",
         label: t("NewSpreadsheet"),
         onClick: this.onCreate,
         action: "xlsx",
       },
       {
-        className: "main-button_drop-down",
+        className: "main-button_drop-down main-button_new-presentation",
         icon: "images/actions.presentation.react.svg",
         label: t("NewPresentation"),
         onClick: this.onCreate,
@@ -155,7 +158,7 @@ class ArticleMainButtonContent extends React.Component {
       },
       ...formActions,
       {
-        className: "main-button_drop-down",
+        className: "main-button_drop-down main-button_new-folder",
         icon: "images/catalog.folder.react.svg",
         label: t("NewFolder"),
         onClick: this.onCreate,
@@ -164,7 +167,7 @@ class ArticleMainButtonContent extends React.Component {
         isSeparator: true,
       },
       {
-        className: "main-button_drop-down",
+        className: "main-button_drop-down main-button_upload-files",
         icon: "images/actions.upload.react.svg",
         label: t("UploadFiles"),
         onClick: this.onUploadFileClick,
@@ -179,6 +182,7 @@ class ArticleMainButtonContent extends React.Component {
           isDropdown={true}
           text={t("Common:Actions")}
           model={menuModel}
+          className="files-main-button"
         />
         <input
           id="customFileInput"

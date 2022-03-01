@@ -1,4 +1,4 @@
-﻿{
+{
   "AddAccount": "Aggiungere account",
   "ArchivingData": "Archiviazione dei dati",
   "ButtonShareAccess": "Impostazioni di condivisione",
@@ -14,6 +14,7 @@
   "DownloadAs": "Scaricare come",
   "EncryptedFileSaving": "Salvataggio di file criptato",
   "Files": "File",
+  "FileProtected": "Il file è protetto con password",
   "Folders": "Cartelle",
   "FolderSelection": "Selezione cartella",
   "FolderTitleBoxNet": "Cartella di Box",

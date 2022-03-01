@@ -77,7 +77,7 @@ class AuthStore {
     return (
       (this.userStore.user && this.userStore.user.cultureName) ||
       this.settingsStore.culture ||
-      "en-US"
+      "en"
     );
   }
 

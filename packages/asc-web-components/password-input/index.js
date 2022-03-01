@@ -450,7 +450,10 @@ class PasswordInput extends React.Component {
                 {this.renderInputGroup()}
               </PasswordProgress>
               {!hideNewPasswordButton ? (
-                <NewPasswordButton isDisabled={isDisabled}>
+                <NewPasswordButton
+                  className="password-input_refresh"
+                  isDisabled={isDisabled}
+                >
                   <RefreshIcon
                     size="medium"
                     onClick={this.onGeneratePassword}

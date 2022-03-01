@@ -25,6 +25,7 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
@@ -40,18 +41,18 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
-using WebSocketSharp;
+using SocketIOClient;
 
 namespace ASC.Socket.IO.Svc
 {
     [Singletone]
     public class SocketServiceLauncher : IHostedService
     {
-        private const int PingInterval = 10000;
-
+        private int PingInterval { get; set; }
+        private int ReconnectAttempts { get; set; }
         private Process Proc { get; set; }
         private ProcessStartInfo StartInfo { get; set; }
-        private WebSocket WebSocket { get; set; }
+        private SocketIO SocketClient { get; set; }
         private CancellationTokenSource CancellationTokenSource { get; set; }
         private ILog Logger { get; set; }
         private string LogDir { get; set; }
@@ -70,7 +71,6 @@ namespace ASC.Socket.IO.Svc
             IHostEnvironment hostEnvironment)
         {
             Logger = options.CurrentValue;
-            CancellationTokenSource = new CancellationTokenSource();
             Configuration = configuration;
             ConfigurationExtension = configurationExtension;
             CoreBaseSettings = coreBaseSettings;
@@ -84,15 +84,25 @@ namespace ASC.Socket.IO.Svc
             {
                 var settings = ConfigurationExtension.GetSetting<SocketSettings>("socket");
 
+                var path = settings.Path;
+                if (!Path.IsPathRooted(settings.Path))
+                {
+                    path = Path.GetFullPath(CrossPlatform.PathCombine(HostEnvironment.ContentRootPath, settings.Path));
+                }
+
+                PingInterval = settings.PingInterval.GetValueOrDefault(10000);
+                ReconnectAttempts = settings.ReconnectAttempts.GetValueOrDefault(5);
+
                 StartInfo = new ProcessStartInfo
                 {
                     CreateNoWindow = false,
                     UseShellExecute = false,
                     FileName = "node",
                     WindowStyle = ProcessWindowStyle.Hidden,
-                    Arguments = $"\"{Path.GetFullPath(CrossPlatform.PathCombine(HostEnvironment.ContentRootPath, settings.Path, "app.js"))}\"",
+                    Arguments = $"\"{Path.Combine(path, "server.js")}\"",
                     WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory
                 };
+
                 StartInfo.EnvironmentVariables.Add("core.machinekey", Configuration["core:machinekey"]);
                 StartInfo.EnvironmentVariables.Add("port", settings.Port);
 
@@ -108,13 +118,14 @@ namespace ASC.Socket.IO.Svc
                 }
 
                 LogDir = Logger.LogDirectory;
-                StartInfo.EnvironmentVariables.Add("logPath", CrossPlatform.PathCombine(LogDir, "web.socketio.log"));
+                StartInfo.EnvironmentVariables.Add("logPath", CrossPlatform.PathCombine(LogDir, "socket-io.%DATE%.log"));
                 StartNode();
             }
             catch (Exception e)
             {
                 Logger.Error(e);
             }
+
             return Task.CompletedTask;
         }
 
@@ -129,6 +140,8 @@ namespace ASC.Socket.IO.Svc
         {
             StopNode();
             Proc = Process.Start(StartInfo);
+
+            CancellationTokenSource = new CancellationTokenSource();
 
             var task = new Task(StartPing, CancellationTokenSource.Token, TaskCreationOptions.LongRunning);
             task.Start(TaskScheduler.Default);
@@ -156,93 +169,118 @@ namespace ASC.Socket.IO.Svc
             }
         }
 
-        private void StartPing()
+        private async void StartPing()
         {
-            Thread.Sleep(PingInterval);
-
-            var error = false;
-            WebSocket = new WebSocket($"ws://127.0.0.1:{StartInfo.EnvironmentVariables["port"]}/socket.io/?EIO=3&transport=websocket");
-            WebSocket.SetCookie(new WebSocketSharp.Net.Cookie("authorization", SignalrServiceClient.CreateAuthToken()));
-            WebSocket.EmitOnPing = true;
-
-            WebSocket.Log.Level = WebSocketSharp.LogLevel.Trace;
-
-            WebSocket.Log.Output = (logData, filePath) =>
+            try
             {
-                if (logData.Message.Contains("SocketException"))
+                var settings = ConfigurationExtension.GetSetting<SocketSettings>("socket");
+
+                var uri = new Uri($"ws://localhost:{settings.Port}"); //TODO: replace localhost to variable 
+
+                var token = SignalrServiceClient.CreateAuthToken();
+
+                SocketClient = new SocketIO(uri, new SocketIOOptions
                 {
-                    error = true;
-                }
-
-                Logger.Debug(logData.Message);
-            };
-
-            WebSocket.OnOpen += (sender, e) =>
-            {
-                Logger.Info("Open");
-                error = false;
-
-                Thread.Sleep(PingInterval);
-
-                Task.Run(() =>
-                {
-                    while (WebSocket.Ping())
+                    ExtraHeaders = new Dictionary<string, string>
                     {
-                        Logger.Debug("Ping " + WebSocket.ReadyState);
-                        Thread.Sleep(PingInterval);
-                    }
-                    Logger.Debug("Reconnect" + WebSocket.ReadyState);
+                        { "Authorization", token }
+                    },
+                    ConnectionTimeout = TimeSpan.FromSeconds(30),
+                    Reconnection = true,
+                    ReconnectionAttempts = ReconnectAttempts,
+                    EIO = 4,
+                    Path = "/socket.io",
+                    Transport = SocketIOClient.Transport.TransportProtocol.WebSocket,
+                    RandomizationFactor = 0.5
 
-                }, CancellationTokenSource.Token);
-            };
+                });
 
-            WebSocket.OnClose += (sender, e) =>
+                SocketClient.OnConnected += IOClient_OnConnected;
+                SocketClient.OnDisconnected += IOClient_OnDisconnected;
+                SocketClient.OnReconnectAttempt += IOClient_OnReconnectAttempt;
+                SocketClient.OnError += IOClient_OnError;
+                SocketClient.On("pong", response =>
+                {
+                    Logger.Debug($"pong (server) at {response}");
+                });
+
+                Logger.Debug("Try to connect...");
+
+                await SocketClient.ConnectAsync();
+            }
+            catch (Exception ex)
             {
-                Logger.Info("Close");
                 if (CancellationTokenSource.IsCancellationRequested) return;
 
-                if (error)
-                {
-                    Process.GetCurrentProcess().Kill();
-                }
-                else
-                {
-                    WebSocket.Connect();
-                }
+                Logger.Error(ex.Message);
 
-            };
+                StopNode();
+                Process.GetCurrentProcess().Kill();
+            }
+        }
 
-            WebSocket.OnMessage += (sender, e) =>
+        private async void IOClient_OnConnected(object sender, EventArgs e)
+        {
+            var socket = sender as SocketIO;
+
+            Logger.Info($"Socket_OnConnected Socket.Id: {socket.Id}");
+
+            while (SocketClient.Connected)
             {
-                if (e.Data.Contains("error"))
-                {
-                    Logger.Error("Auth error");
-                    CancellationTokenSource.Cancel();
-                }
-            };
+                if (CancellationTokenSource.IsCancellationRequested) return;
 
-            WebSocket.OnError += (sender, e) =>
+                await Task.Delay(PingInterval);
+
+                if (!SocketClient.Connected)
+                    break;
+
+                await SocketClient.EmitAsync("ping", DateTime.UtcNow.ToString());
+            }
+        }
+
+        private void IOClient_OnDisconnected(object sender, string e)
+        {
+            Logger.Debug($"Socket_OnDisconnected {e}");
+        }
+
+        private void IOClient_OnReconnectAttempt(object sender, int attempt)
+        {
+            Logger.Debug($"Try to reconnect... attempt {attempt}");
+
+            if (attempt >= ReconnectAttempts)
             {
-                Logger.Error("Error", e.Exception);
-            };
+                StopPing();
+                Process.GetCurrentProcess().Kill();
+            }
+        }
 
-            WebSocket.Connect();
+        private void IOClient_OnError(object sender, string e)
+        {
+            Logger.Error($"IOClient_OnError {e}");
         }
 
         private void StopPing()
         {
             try
             {
-                CancellationTokenSource.Cancel();
-                if (WebSocket.IsAlive)
+                if (SocketClient != null)
                 {
-                    WebSocket.Close();
-                    WebSocket = null;
+                    SocketClient.OnConnected -= IOClient_OnConnected;
+                    SocketClient.OnDisconnected -= IOClient_OnDisconnected;
+                    SocketClient.OnReconnectAttempt -= IOClient_OnReconnectAttempt;
+                    SocketClient.OnError -= IOClient_OnError;
+
+                    SocketClient.Dispose();
+                    SocketClient = null;
                 }
+
+                CancellationTokenSource.Cancel();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Logger.Error("Ping failed stop");
+                Logger.Error($"Ping failed stop {ex.Message}");
+                StopNode();
+                Process.GetCurrentProcess().Kill();
             }
         }
     }

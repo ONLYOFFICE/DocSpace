@@ -31,6 +31,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Caching;
@@ -52,6 +53,7 @@ using ASC.Web.Files.Api;
 
 using AutoMapper;
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -262,6 +264,7 @@ namespace ASC.CRM.Core.Dao
         public List<string> GetMissingRates(string defaultCurrency)
         {
             var existingRatesQuery = CrmDbContext.CurrencyRate
+                                    .AsQueryable()
                                     .Where(x => x.ToCurrency == defaultCurrency)
                                     .Select(x => x.FromCurrency).Distinct().ToList();
 
@@ -277,38 +280,43 @@ namespace ASC.CRM.Core.Dao
 
         #region Report Files
 
-        public List<Files.Core.File<int>> SaveSampleReportFiles()
+        public Task<List<Files.Core.File<int>>> SaveSampleReportFilesAsync()
         {
-            var result = new List<Files.Core.File<int>>();
-
             var storeTemplate = _global.GetStoreTemplate();
 
-            if (storeTemplate == null) return result;
+            if (storeTemplate == null) return System.Threading.Tasks.Task.FromResult(new List<Files.Core.File<int>>());
+
+            return InternalSaveSampleReportFilesAsync(storeTemplate);
+        }
+
+        private async Task<List<Files.Core.File<int>>> InternalSaveSampleReportFilesAsync(Data.Storage.IDataStore storeTemplate)
+        {
+            var result = new List<Files.Core.File<int>>();
 
             var culture = _userManager.GetUsers(_securityContext.CurrentAccount.ID).GetCulture() ??
                           _tenantManager.GetCurrentTenant().GetCulture();
 
             var path = culture + "/";
 
-            if (!storeTemplate.IsDirectory(path))
+            if (!await storeTemplate.IsDirectoryAsync(path))
             {
                 path = "default/";
-                if (!storeTemplate.IsDirectory(path)) return result;
+                if (!await storeTemplate.IsDirectoryAsync(path)) return result;
             }
 
-            foreach (var filePath in storeTemplate.ListFilesRelative("", path, "*", false).Select(x => path + x))
+            await foreach (var filePath in storeTemplate.ListFilesRelativeAsync("", path, "*", false).Select(x => path + x))
             {
-                using (var stream = storeTemplate.GetReadStream("", filePath))
+                using (var stream = await storeTemplate.GetReadStreamAsync("", filePath))
                 {
 
                     var document = _serviceProvider.GetService<Files.Core.File<int>>();
 
                     document.Title = Path.GetFileName(filePath);
-                    document.FolderID = _daoFactory.GetFileDao().GetRoot();
+                    document.FolderID = await _daoFactory.GetFileDao().GetRootAsync();
                     document.ContentLength = stream.Length;
 
 
-                    var file = _daoFactory.GetFileDao().SaveFile(document, stream);
+                    var file = await _daoFactory.GetFileDao().SaveFileAsync(document, stream);
 
                     SaveFile(file.ID, -1);
 
@@ -330,7 +338,7 @@ namespace ASC.CRM.Core.Dao
 
             var fileIds = Query(CrmDbContext.ReportFile).Where(x => x.CreateBy == userId).Select(x => x.FileId).ToArray();
 
-            return fileIds.Length > 0 ? filedao.GetFiles(fileIds) : new List<Files.Core.File<int>>();
+            return fileIds.Length > 0 ? filedao.GetFilesAsync(fileIds).ToListAsync().Result : new List<Files.Core.File<int>>();
 
         }
 
@@ -345,6 +353,11 @@ namespace ASC.CRM.Core.Dao
             return GetFile(fileid, _securityContext.CurrentAccount.ID);
         }
 
+        public async Task<Files.Core.File<int>> GetFileAsync(int fileid)
+        {
+            return await GetFileAsync(fileid, _securityContext.CurrentAccount.ID);
+        }
+
         public Files.Core.File<int> GetFile(int fileid, Guid userId)
         {
             var exist = Query(CrmDbContext.ReportFile)
@@ -352,7 +365,18 @@ namespace ASC.CRM.Core.Dao
 
             var filedao = _filesIntegration.DaoFactory.GetFileDao<int>();
 
-            return exist ? filedao.GetFile(fileid) : null;
+            return exist ? filedao.GetFileAsync(fileid).Result : null;
+
+        }
+
+        public async Task<Files.Core.File<int>> GetFileAsync(int fileid, Guid userId)
+        {
+            var exist = await Query(CrmDbContext.ReportFile)
+                        .AnyAsync(x => x.CreateBy == userId && x.FileId == fileid);
+
+            var filedao = _filesIntegration.DaoFactory.GetFileDao<int>();
+
+            return exist ? await filedao.GetFileAsync(fileid) : null;
 
         }
 
@@ -365,7 +389,7 @@ namespace ASC.CRM.Core.Dao
 
             var filedao = _filesIntegration.DaoFactory.GetFileDao<int>();
 
-            filedao.DeleteFile(fileid);
+            filedao.DeleteFileAsync(fileid).Wait();
         }
 
         public void DeleteFiles(Guid userId)
@@ -381,7 +405,7 @@ namespace ASC.CRM.Core.Dao
 
             foreach (var fileId in fileIds)
             {
-                filedao.DeleteFile(fileId);
+                filedao.DeleteFileAsync(fileId).Wait();
             }
 
         }

@@ -644,7 +644,7 @@ namespace ASC.CRM.Core.Dao
                     break;
                     case TaskSortedByType.ContactManager:
                     {
-                        var sqlQueryPart = sqlQuery.GroupJoin(_userDbContext.Users.Where(x => x.Tenant == TenantID),
+                        var sqlQueryPart = sqlQuery.GroupJoin(_userDbContext.Users.AsQueryable().Where(x => x.Tenant == TenantID),
                                                       x => x.ResponsibleId,
                                                       y => y.Id,
                                                       (x, y) => new { x, y }

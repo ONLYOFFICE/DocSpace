@@ -126,7 +126,7 @@ const StyledVersionRow = styled(Row)`
     padding-top: 12px;
     padding-bottom: 12px;
 
-    ${(props) => props.isTabletView && "height: auto"};
+    ${(props) => props.isTabletView && "height: 42px"};
     ${(props) => !props.isTabletView && "padding-right:16px"};
   }
 
@@ -155,7 +155,7 @@ const StyledVersionRow = styled(Row)`
     width: 10px;
     height: 10px;
     margin-left: 9px;
-    margin-right: 16px;
+    margin-right: 32px;
     @media ${tablet} {
       margin-top: -1px;
     }
@@ -194,10 +194,12 @@ const StyledVersionRow = styled(Row)`
   .version_link {
     display: ${(props) =>
       props.showEditPanel ? "none" : props.canEdit ? "block" : "none"};
-    text-decoration: underline dashed;
+    /* text-decoration: underline dashed; */
     white-space: break-spaces;
     margin-left: -7px;
     margin-top: 4px;
+
+    cursor: ${(props) => (props.isEditing ? "default" : "pointer")};
 
     @media ${tablet} {
       display: none;

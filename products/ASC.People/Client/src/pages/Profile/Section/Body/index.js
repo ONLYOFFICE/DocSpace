@@ -5,6 +5,8 @@ import Text from "@appserver/components/text";
 import SocialButton from "@appserver/components/social-button";
 import FacebookButton from "@appserver/components/facebook-button";
 import ToggleContent from "@appserver/components/toggle-content";
+import ToggleButton from "@appserver/components/toggle-button";
+import Box from "@appserver/components/box";
 import Link from "@appserver/components/link";
 import ProfileInfo from "./ProfileInfo/ProfileInfo";
 import toastr from "studio/toastr";
@@ -41,6 +43,14 @@ const ProfileWrapper = styled.div`
   align-items: flex-start;
   flex-direction: row;
   flex-wrap: wrap;
+
+  .toggle-btn {
+    position: relative;
+
+    .toggle-button-text {
+      margin-top: -1px;
+    }
+  }
 `;
 
 const AvatarWrapper = styled.div`
@@ -328,6 +338,12 @@ class SectionBodyContent extends React.PureComponent {
     return !!existProviders;
   };
 
+  onChangeEmailSubscription = (e) => {
+    const checked = e.currentTarget.checked;
+
+    this.props.changeEmailSubscription(checked);
+  };
+
   render() {
     const { resetAppDialogVisible, backupCodesDialogVisible, tfa } = this.state;
     const {
@@ -341,6 +357,7 @@ class SectionBodyContent extends React.PureComponent {
       providers,
       backupCodes,
       personal,
+      tipsSubscription,
       theme,
     } = this.props;
     const contacts = profile.contacts && getUserContacts(profile.contacts);
@@ -381,6 +398,7 @@ class SectionBodyContent extends React.PureComponent {
                 label={t("EditUser")}
                 title={t("EditUser")}
                 onClick={this.onEditProfileClick}
+                className="edit-profile-button"
               />
             </EditButtonWrapper>
           )}
@@ -400,6 +418,22 @@ class SectionBodyContent extends React.PureComponent {
               <ProviderButtonsWrapper>
                 {this.providerButtons()}
               </ProviderButtonsWrapper>
+            </ToggleContent>
+          </ToggleWrapper>
+        )}
+        {personal && isSelf && (
+          <ToggleWrapper isSelf={true}>
+            <ToggleContent
+              label={t("Subscriptions")}
+              isOpen={true}
+              enableToggle={false}
+            >
+              <ToggleButton
+                className="toggle-btn"
+                label={t("SubscriptionEmailTipsToggleLbl")}
+                onChange={this.onChangeEmailSubscription}
+                isChecked={tipsSubscription}
+              />
             </ToggleContent>
           </ToggleWrapper>
         )}
@@ -452,7 +486,9 @@ class SectionBodyContent extends React.PureComponent {
         {profile.notes && (
           <ToggleWrapper>
             <ToggleContent label={t("Translations:Comments")} isOpen={true}>
-              <Text as="span">{profile.notes}</Text>
+              <Text className="profile-comments" as="span">
+                {profile.notes}
+              </Text>
             </ToggleContent>
           </ToggleWrapper>
         )}
@@ -505,6 +541,8 @@ export default withRouter(
       targetUser: profile,
       isMe: isSelf,
       setIsEditTargetUser,
+      changeEmailSubscription,
+      tipsSubscription,
     } = targetUserStore;
     const { avatarMax, setAvatarMax } = avatarEditorStore;
     const { providers, setProviders } = usersStore;
@@ -537,6 +575,8 @@ export default withRouter(
       setBackupCodes,
       setIsEditTargetUser,
       personal: auth.settingsStore.personal,
+      changeEmailSubscription,
+      tipsSubscription,
       theme,
     };
   })(

@@ -74,11 +74,19 @@ class UploadPanelComponent extends React.Component {
       uploadDataFiles,
       cancelUpload,
       cancelConversion,
+      isUploading,
+      isUploadingAndConversion,
       theme,
     } = this.props;
 
     const visible = uploadPanelVisible;
     const zIndex = 310;
+
+    const title = isUploading
+      ? t("Uploads")
+      : isUploadingAndConversion
+      ? t("UploadAndConvert")
+      : t("Home:Convert");
 
     return (
       <StyledAsidePanel visible={visible}>
@@ -96,7 +104,7 @@ class UploadPanelComponent extends React.Component {
           <StyledContent>
             <StyledHeaderContent className="upload-panel_header-content">
               <Heading className="upload_panel-header" size="medium" truncate>
-                {t("Uploads")}
+                {title}
               </Heading>
               <div className="upload_panel-icons-container">
                 <div className="upload_panel-remove-icon">
@@ -127,11 +135,7 @@ class UploadPanelComponent extends React.Component {
                   </div>*/}
               </div>
             </StyledHeaderContent>
-            <StyledBody
-              stype="mediumBlack"
-              className="upload-panel_body"
-              style={{ height: `calc(100vh - 64px)` }}
-            >
+            <StyledBody stype="mediumBlack" className="upload-panel_body">
               <FileList />
             </StyledBody>
           </StyledContent>
@@ -142,7 +146,7 @@ class UploadPanelComponent extends React.Component {
   }
 }
 
-const UploadPanel = withTranslation("UploadPanel")(
+const UploadPanel = withTranslation(["UploadPanel", "Home"])(
   withLoader(UploadPanelComponent)(<Loaders.DialogAsideLoader isPanel />)
 );
 
@@ -160,6 +164,8 @@ export default inject(({ /* dialogsStore, */ auth, uploadDataStore }) => {
     setUploadPanelVisible,
     files,
     primaryProgressDataStore,
+    isUploading,
+    isUploadingAndConversion,
   } = uploadDataStore;
 
   const { clearPrimaryProgressData } = primaryProgressDataStore;
@@ -177,6 +183,8 @@ export default inject(({ /* dialogsStore, */ auth, uploadDataStore }) => {
     clearUploadedFiles,
     uploadDataFiles: files,
     clearPrimaryProgressData,
+    isUploading,
+    isUploadingAndConversion,
 
     theme: auth.settingsStore.theme,
   };

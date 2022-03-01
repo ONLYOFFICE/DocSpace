@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 using ASC.Api.Core;
 using ASC.Api.CRM;
@@ -753,7 +754,7 @@ namespace ASC.CRM.Api
         /// <category>Invoices</category>
         /// <returns>File</returns>
         [Read(@"invoice/{invoiceid:int}/pdf")]
-        public FileWrapper<int> GetInvoicePdfExistOrCreate(int invoiceid)
+        public Task<FileWrapper<int>> GetInvoicePdfExistOrCreateAsync(int invoiceid)
         {
             if (invoiceid <= 0) throw new ArgumentException();
 
@@ -765,10 +766,15 @@ namespace ASC.CRM.Api
                 throw _crmSecurity.CreateSecurityException();
             }
 
-            return _fileWrapperHelper.Get<int>(GetInvoicePdfExistingOrCreate(invoice));
+            return internalGetInvoicePdfExistOrCreateAsync(invoice);
         }
 
-        private ASC.Files.Core.File<int> GetInvoicePdfExistingOrCreate(ASC.CRM.Core.Entities.Invoice invoice)
+        private async Task<FileWrapper<int>> internalGetInvoicePdfExistOrCreateAsync(Invoice invoice)
+        {
+            return await _fileWrapperHelper.GetAsync(await GetInvoicePdfExistingOrCreateAsync(invoice));
+        }
+
+        private async Task<ASC.Files.Core.File<int>> GetInvoicePdfExistingOrCreateAsync(ASC.CRM.Core.Entities.Invoice invoice)
         {
             var existingFile = invoice.GetInvoiceFile(_daoFactory);
 
@@ -778,7 +784,7 @@ namespace ASC.CRM.Api
             }
             else
             {
-                var newFile = _pdfCreator.CreateFile(invoice, _daoFactory);
+                var newFile = await _pdfCreator.CreateFileAsync(invoice, _daoFactory);
 
                 invoice.FileID = Int32.Parse(newFile.ID.ToString());
 
@@ -801,7 +807,7 @@ namespace ASC.CRM.Api
         /// <category>Invoices</category>
         /// <returns>ConverterData</returns>
         [Create(@"invoice/converter/data")]
-        public ConverterData CreateInvoiceConverterData(
+        public Task<ConverterData> CreateInvoiceConverterDataAsync(
     [FromBody] CreateInvoiceConverterDataRequestDto inDto)
         {
             var invoiceId = inDto.InvoiceId;
@@ -829,16 +835,24 @@ namespace ASC.CRM.Api
             if (existingFile != null)
             {
                 converterData.FileId = invoice.FileID;
-                return converterData;
+                return System.Threading.Tasks.Task.FromResult(converterData);
             }
+
+            return InternalCreateInvoiceConverterDataAsync(converterData, invoice);
+        }
+
+        private async Task<ConverterData> InternalCreateInvoiceConverterDataAsync(ConverterData converterData, Invoice invoice)
+        {
+            var storageUrl = converterData.StorageUrl;
+            var revisionId = converterData.RevisionId;
 
             if (string.IsNullOrEmpty(storageUrl) || string.IsNullOrEmpty(revisionId))
             {
-                return _pdfCreator.StartCreationFileAsync(invoice);
+                return await _pdfCreator.StartCreationFileAsync(invoice);
             }
             else
             {
-                var convertedFile = _pdfCreator.GetConvertedFile(converterData, _daoFactory);
+                var convertedFile = await _pdfCreator.GetConvertedFileAsync(converterData, _daoFactory);
                 if (convertedFile != null)
                 {
                     invoice.FileID = Int32.Parse(convertedFile.ID.ToString());

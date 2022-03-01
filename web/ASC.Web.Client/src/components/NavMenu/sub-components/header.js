@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
@@ -14,11 +14,23 @@ import { useTranslation } from "react-i18next";
 import HeaderNavigationIcon from "./header-navigation-icon";
 import Box from "@appserver/components/box";
 import Text from "@appserver/components/text";
-import { desktop, tablet, mobile } from "@appserver/components/utils/device";
+import {
+  desktop,
+  isDesktop,
+  tablet,
+  mobile,
+} from "@appserver/components/utils/device";
 import i18n from "../i18n";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import NoUserSelect from "@appserver/components/utils/commonStyles";
+import {
+  getLink,
+  checkIfModuleOld,
+  onItemClick,
+} from "@appserver/studio/src/helpers/utils";
+import StyledExternalLinkIcon from "@appserver/studio/src/components/StyledExternalLinkIcon";
+import NavDesktopItem from "./nav-desktop-item";
 import { Base } from "@appserver/components/themes";
 
 const { proxyURL } = AppServerConfig;
@@ -34,6 +46,7 @@ const Header = styled.header`
 
   .header-logo-wrapper {
     height: 24px;
+    height: 26px;
 
     display: flex;
     align-items: center;
@@ -46,24 +59,24 @@ const Header = styled.header`
   .header-logo-icon {
     height: 24px;
     position: relative;
-    margin-left: 20px;
+    padding-right: 20px;
+    padding-left: ${(props) =>
+      !props.needNavMenu || props.isPersonal || props.isDesktopView
+        ? "20px"
+        : "4px"};
     cursor: pointer;
 
     @media ${tablet} {
       margin-left: 16px;
     }
-
-    /* @media (max-width: 620px) {
-      ${(props) =>
-      !props.isPersonal &&
-      css`
-        display: ${(props) => (props.module ? "none" : "block")};
-        padding: 3px 20px 0 6px;
-      `}
-    } */
   }
   .mobile-short-logo {
     width: 146px;
+  }
+
+  .header-items-wrapper {
+    display: flex;
+    margin-left: 82px;
   }
 `;
 
@@ -89,7 +102,6 @@ const StyledLink = styled.div`
 StyledLink.defaultProps = { theme: Base };
 
 const versionBadgeProps = {
-  color: "#7A95B0",
   fontWeight: "600",
   fontSize: "13px",
 };
@@ -149,15 +161,54 @@ const HeaderComponent = ({
     if (item) item.onBadgeClick(e);
   }, []);
 
-  const onItemClick = React.useCallback((e) => {
-    if (!e) return;
-    const link = e.currentTarget.dataset.link;
-    history.push(link);
+  const handleItemClick = React.useCallback((e) => {
+    onItemClick(e);
     backdropClick();
-    e.preventDefault();
   }, []);
 
   const numberOfModules = mainModules.filter((item) => !item.separator).length;
+  const needNavMenu = currentProductId !== "home";
+  const mainModulesWithoutSettings = mainModules.filter(
+    (module) => module.id !== "settings"
+  );
+
+  const navItems = mainModulesWithoutSettings.map(
+    ({ id, separator, iconUrl, notifications, link, title, dashed }) => {
+      const itemLink = getLink(link);
+      const shouldRenderIcon = checkIfModuleOld(link);
+      return (
+        <NavItem
+          separator={!!separator}
+          key={id}
+          data-id={id}
+          data-link={itemLink}
+          opened={isNavOpened}
+          active={id == currentProductId}
+          iconUrl={iconUrl}
+          badgeNumber={notifications}
+          onClick={handleItemClick}
+          onBadgeClick={onBadgeClick}
+          url={itemLink}
+          dashed={dashed}
+        >
+          {title}
+          {shouldRenderIcon && <StyledExternalLinkIcon color={linkColor} />}
+        </NavItem>
+      );
+    }
+  );
+
+  const [isDesktopView, setIsDesktopView] = useState(isDesktop());
+
+  const onResize = () => {
+    const isDesktopView = isDesktop();
+    if (isDesktopView === isDesktopView) setIsDesktopView(isDesktopView);
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  });
 
   return (
     <>
@@ -167,6 +218,8 @@ const HeaderComponent = ({
         isPersonal={isPersonal}
         isAuthenticated={isAuthenticated}
         className="navMenuHeader hidingHeader"
+        needNavMenu={needNavMenu}
+        isDesktopView={isDesktopView}
       >
         <LinkWithoutRedirect className="header-logo-wrapper" to={defaultPage}>
           {!isPersonal ? (
@@ -207,9 +260,21 @@ const HeaderComponent = ({
             })}
           </StyledNavigationIconsWrapper>
         )}
+
+        {isNavAvailable && isDesktopView && !isPersonal && (
+          <div className="header-items-wrapper not-selectable">
+            {mainModulesWithoutSettings.map((module) => (
+              <NavDesktopItem
+                isActive={module.id == currentProductId}
+                key={module.id}
+                module={module}
+              />
+            ))}
+          </div>
+        )}
       </Header>
 
-      {isNavAvailable && (
+      {isNavAvailable && !isDesktopView && (
         <Nav
           opened={isNavOpened}
           onMouseEnter={onNavMouseEnter}
@@ -222,27 +287,7 @@ const HeaderComponent = ({
             key={"nav-products-separator"}
             data-id={"nav-products-separator"}
           />
-          {mainModules.map((
-            { id, separator, iconUrl, notifications, link, title, dashed } //iconName,
-          ) => (
-            <NavItem
-              separator={!!separator}
-              key={id}
-              data-id={id}
-              data-link={link}
-              opened={isNavOpened}
-              active={id == currentProductId}
-              //iconName={iconName}
-              iconUrl={iconUrl}
-              badgeNumber={notifications}
-              onClick={onItemClick}
-              onBadgeClick={onBadgeClick}
-              url={link}
-              dashed={dashed}
-            >
-              {id === "settings" ? i18n.t("Common:Settings") : title}
-            </NavItem>
-          ))}
+          {navItems}
           <Box className="version-box">
             <Link
               as="a"
@@ -289,6 +334,7 @@ HeaderComponent.propTypes = {
   version: PropTypes.string,
   isAuthenticated: PropTypes.bool,
   isAdmin: PropTypes.bool,
+  needNavMenu: PropTypes.bool,
 };
 
 export default inject(({ auth }) => {

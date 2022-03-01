@@ -5,6 +5,7 @@ import DropDown from "@appserver/components/drop-down";
 
 import styled, { css } from "styled-components";
 import DropDownItem from "@appserver/components/drop-down-item";
+import { isDesktop, isTablet } from "react-device-detect";
 import { Base } from "@appserver/components/themes";
 
 const commonStyle = css`
@@ -94,14 +95,20 @@ class ProfileMenu extends React.Component {
       email,
       clickOutsideAction,
       open,
+      forwardedRef,
     } = this.props;
+    const right = isTablet ? "4px" : "8px";
+    const top = "62px";
 
     return (
       <DropDown
         className={className}
         directionX="right"
+        right={right}
+        top={top}
         open={open}
         clickOutsideAction={clickOutsideAction}
+        forwardedRef={forwardedRef}
       >
         <StyledProfileMenu>
           <MenuContainer>
