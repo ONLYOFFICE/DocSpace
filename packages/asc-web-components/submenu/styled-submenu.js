@@ -15,11 +15,6 @@ export const StyledSubmenu = styled.div`
     width: auto;
     display: inline-block;
     position: absolute;
-    /* position: absolute;
-    visibility: hidden;
-    height: auto;
-    width: auto;
-    white-space: nowrap; */
   }
 `;
 
@@ -43,9 +38,9 @@ export const StyledSubmenuItems = styled.div`
   display: flex;
   flex-direction: row;
   gap: 4px;
-  padding: 20px;
+  padding: 0 20px;
   @media ${tablet} {
-    padding: 16px;
+    padding: 0 16px;
   }
 
   &::-webkit-scrollbar {
@@ -59,8 +54,9 @@ export const StyledSubmenuItem = styled.div.attrs((props) => ({
   scroll-behavior: smooth;
   cursor: pointer;
   display: flex;
+  gap: 4px;
   flex-direction: column;
-  padding: 4px 14px;
+  padding: 4px 14px 0;
   line-height: 20px;
 `;
 
@@ -70,8 +66,9 @@ export const StyledSubmenuItemText = styled.div`
 `;
 
 export const StyledSubmenuItemLabel = styled.div`
-  positin: absolute;
-  width: 100%;
+  z-index: 1;
+  width: calc(100% + 28px);
+  margin-left: -14px;
   height: 4px;
   bottom: 0px;
   border-radius: 4px 4px 0 0;

@@ -1,8 +1,8 @@
 import PropTypes from "prop-types";
 import React, { useEffect, useRef, useState } from "react";
-import Text from "../text";
-import { countAutoOffset } from "./autoOffset";
 
+import Text from "../text";
+import { countAutoFocus, countAutoOffset } from "./autoOffset";
 import {
   StyledSubmenu,
   StyledSubmenuBottomLine,
@@ -20,17 +20,14 @@ const Submenu = ({ data, startSelect = 0, ...rest }) => {
     data[startSelect] || startSelect || null
   );
 
+  const submenuItemsRef = useRef();
+
   const selectSubmenuItem = (e) => {
     const item = data.find((el) => el.id === e.currentTarget.id);
     if (item) setCurrentItem(item);
-  };
-
-  const submenuItemsRef = useRef();
-
-  if (submenuItemsRef.current) {
-    const offset = countAutoOffset(data, submenuItemsRef);
+    const offset = countAutoFocus(item.name, data, submenuItemsRef);
     submenuItemsRef.current.scrollLeft += offset;
-  }
+  };
 
   useEffect(() => {
     if (!submenuItemsRef.current) return;
