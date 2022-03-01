@@ -112,7 +112,7 @@ const CatalogHeader = (props) => {
 
   return (
     <StyledCatalogHeader showText={showText} {...rest}>
-      <StyledIconBox>
+      <StyledIconBox name="catalog-burger">
         <StyledMenuIcon onClick={onClick} />
       </StyledIconBox>
 
