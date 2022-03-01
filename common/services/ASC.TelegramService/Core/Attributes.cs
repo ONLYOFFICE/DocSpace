@@ -23,27 +23,26 @@
  *
 */
 
-namespace ASC.TelegramService.Core
+namespace ASC.TelegramService.Core;
+
+[AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
+public class CommandAttribute : Attribute
 {
-    [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
-    public class CommandAttribute : Attribute
+    public CommandAttribute(string name)
     {
-        public CommandAttribute(string name)
-        {
-            Name = name.ToLowerInvariant();
-        }
-
-        public string Name { get; private set; }
+        Name = name.ToLowerInvariant();
     }
 
-    [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
-    public class ParamParserAttribute : Attribute
-    {
-        public ParamParserAttribute(Type type)
-        {
-            Type = type;
-        }
+    public string Name { get; private set; }
+}
 
-        public Type Type { get; private set; }
+[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
+public class ParamParserAttribute : Attribute
+{
+    public ParamParserAttribute(Type type)
+    {
+        Type = type;
     }
+
+    public Type Type { get; private set; }
 }
