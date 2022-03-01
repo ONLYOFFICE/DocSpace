@@ -1,25 +1,19 @@
 ﻿using SecurityContext = ASC.Core.SecurityContext;
 
-namespace ASC.People.Api;
+namespace ASC.People.ApiHelpers;
 
-[Scope(Additional = typeof(BaseLoginProviderExtension))]
-[DefaultRoute]
-[ApiController]
-[ControllerName("people")]
-public class BaseApiController : ControllerBase
+public abstract class ApiControllerEngineBase
 {
-    protected Tenant Tenant => ApiContext.Tenant;
-
-    protected readonly UserManager UserManager;
-    protected readonly AuthContext AuthContext;
     protected readonly ApiContext ApiContext;
-    protected readonly PermissionContext PermissionContext;
-    protected readonly SecurityContext SecurityContext;
+    protected readonly AuthContext AuthContext;
     protected readonly MessageService MessageService;
     protected readonly MessageTarget MessageTarget;
+    protected readonly PermissionContext PermissionContext;
+    protected readonly SecurityContext SecurityContext;
     protected readonly StudioNotifyService StudioNotifyService;
+    protected readonly UserManager UserManager;
 
-    protected BaseApiController(
+    protected ApiControllerEngineBase(
         UserManager userManager,
         AuthContext authContext,
         ApiContext apiContext,
@@ -38,4 +32,6 @@ public class BaseApiController : ControllerBase
         MessageTarget = messageTarget;
         StudioNotifyService = studioNotifyService;
     }
+
+    protected Tenant Tenant => ApiContext.Tenant;
 }

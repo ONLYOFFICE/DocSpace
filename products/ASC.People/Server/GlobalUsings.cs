@@ -30,6 +30,7 @@ global using ASC.FederatedLogin.Profile;
 global using ASC.MessagingSystem.Core;
 global using ASC.MessagingSystem.Models;
 global using ASC.People;
+global using ASC.People.ApiHelpers;
 global using ASC.People.Api;
 global using ASC.People.ApiModels.RequestDto;
 global using ASC.People.ApiModels.ResponseDto;
@@ -45,8 +46,6 @@ global using ASC.Web.Studio.Core;
 global using ASC.Web.Studio.Core.Notify;
 global using ASC.Web.Studio.UserControls.Statistics;
 global using ASC.Web.Studio.Utility;
-
-global using AutoMapper;
 
 global using Autofac;
 global using Autofac.Extensions.DependencyInjection;

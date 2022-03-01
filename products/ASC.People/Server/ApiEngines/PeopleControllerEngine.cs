@@ -1,16 +1,15 @@
 ﻿using SecurityContext = ASC.Core.SecurityContext;
 
-namespace ASC.People.Api;
+namespace ASC.People.ApiHelpers;
 
-public class BasePeopleController : BaseApiController
+public abstract class PeopleControllerEngine : ApiControllerEngineBase
 {
-    protected readonly UserPhotoManager UserPhotoManager;
     protected readonly DisplayUserSettingsHelper DisplayUserSettingsHelper;
     protected readonly SetupInfo SetupInfo;
-
+    protected readonly UserPhotoManager UserPhotoManager;
     private readonly IHttpClientFactory _httpClientFactory;
 
-    protected BasePeopleController(
+    protected PeopleControllerEngine(
         UserManager userManager,
         AuthContext authContext,
         ApiContext apiContext,
