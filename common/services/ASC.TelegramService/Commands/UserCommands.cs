@@ -23,47 +23,46 @@
  *
 */
 
-namespace ASC.TelegramService.Commands
+namespace ASC.TelegramService.Commands;
+
+[Scope]
+public class UserCommands : CommandContext
 {
-    [Scope]
-    public class UserCommands : CommandContext
+    private readonly CachedTelegramDao _cachedTelegramDao;
+
+    public UserCommands(IOptionsSnapshot<CachedTelegramDao> cachedTelegramDao)
     {
-        private CachedTelegramDao CachedTelegramDao { get; }
+        _cachedTelegramDao = cachedTelegramDao.Value;
+    }
 
-        public UserCommands(IOptionsSnapshot<CachedTelegramDao> cachedTelegramDao)
+    [Command("start")]
+    public Task StartCommand(string token)
+    {
+        if (string.IsNullOrEmpty(token)) return Task.CompletedTask;
+
+        return InternalStartCommand(token);
+    }
+
+    private async Task InternalStartCommand(string token)
+    {
+        var user = MemoryCache.Default.Get(token);
+        if (user != null)
         {
-            CachedTelegramDao = cachedTelegramDao.Value;
-        }
+            MemoryCache.Default.Remove(token);
+            MemoryCache.Default.Remove((string)user);
+            var split = ((string)user).Split(':');
 
-        [Command("start")]
-        public Task StartCommand(string token)
-        {
-            if (string.IsNullOrEmpty(token)) return Task.CompletedTask;
+            var guid = Guid.Parse(split[0]);
+            var tenant = int.Parse(split[1]);
 
-            return InternalStartCommand(token);
-        }
-
-        private async Task InternalStartCommand(string token)
-        {
-            var user = MemoryCache.Default.Get(token);
-            if (user != null)
+            if (tenant == TenantId)
             {
-                MemoryCache.Default.Remove(token);
-                MemoryCache.Default.Remove((string)user);
-                var split = ((string)user).Split(':');
-
-                var guid = Guid.Parse(split[0]);
-                var tenant = int.Parse(split[1]);
-
-                if (tenant == TenantId)
-                {
-                    CachedTelegramDao.RegisterUser(guid, tenant, Context.User.Id);
-                    await ReplyAsync("Ok!");
-                    return;
-                }
+                _cachedTelegramDao.RegisterUser(guid, tenant, Context.User.Id);
+                await ReplyAsync("Ok!");
+                return;
             }
-
-            await ReplyAsync("Error");
         }
+
+        await ReplyAsync("Error");
     }
 }

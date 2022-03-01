@@ -1,46 +1,42 @@
-﻿namespace ASC.Core.Common.EF.Context
+﻿namespace ASC.Core.Common.EF.Context;
+
+public class MySqlDbContext : DbContext { }
+public class PostgreSqlDbContext : DbContext { }
+public class DbContext : BaseDbContext
 {
-    public class MySqlDbContext : DbContext { }
-    public class PostgreSqlDbContext : DbContext { }
-    public class DbContext : BaseDbContext
+    public DbSet<MobileAppInstall> MobileAppInstall { get; set; }
+    public DbSet<DbipLocation> DbipLocation { get; set; }
+    public DbSet<Regions> Regions { get; set; }
+
+    public DbContext() { }
+
+    public DbContext(DbContextOptions options) : base(options) { }
+
+    protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
     {
-        public DbSet<MobileAppInstall> MobileAppInstall { get; set; }
-        public DbSet<DbipLocation> DbipLocation { get; set; }
-        public DbSet<Regions> Regions { get; set; }
-
-        public DbContext()
+        get
         {
-        }
-
-        public DbContext(DbContextOptions options) : base(options)
-        {
-        }
-        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
-        {
-            get
+            return new Dictionary<Provider, Func<BaseDbContext>>()
             {
-                return new Dictionary<Provider, Func<BaseDbContext>>()
-                {
-                    { Provider.MySql, () => new MySqlDbContext() } ,
-                    { Provider.PostgreSql, () => new PostgreSqlDbContext() } ,
-                };
-            }
-        }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            ModelBuilderWrapper
-                   .From(modelBuilder, Provider)
-                   .AddMobileAppInstall()
-                   .AddDbipLocation()
-                   .AddRegions();
+                { Provider.MySql, () => new MySqlDbContext() } ,
+                { Provider.PostgreSql, () => new PostgreSqlDbContext() } ,
+            };
         }
     }
-
-    public static class DbContextExtension
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        public static DIHelper AddDbContextService(this DIHelper services)
-        {
-            return services.AddDbContextManagerService<DbContext>();
-        }
+        ModelBuilderWrapper
+               .From(modelBuilder, Provider)
+               .AddMobileAppInstall()
+               .AddDbipLocation()
+               .AddRegions();
+    }
+}
+
+public static class DbContextExtension
+{
+    public static DIHelper AddDbContextService(this DIHelper services)
+    {
+        return services.AddDbContextManagerService<DbContext>();
     }
 }

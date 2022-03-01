@@ -78,7 +78,7 @@ public class BackupFileUploadHandler
 
     internal string GetFilePath()
     {
-        var folder = Path.Combine(_tempPath.GetTempPath(), BackupTempFolder, _tenantManager.GetCurrentTenant().TenantId.ToString());
+        var folder = Path.Combine(_tempPath.GetTempPath(), BackupTempFolder, _tenantManager.GetCurrentTenant().Id.ToString());
 
         if (!Directory.Exists(folder))
         {

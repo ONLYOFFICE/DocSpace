@@ -77,7 +77,7 @@ public class IPSecurity
         string requestIps = null;
         try
         {
-            var restrictions = _ipRestrictionsService.Get(tenant.TenantId).ToList();
+            var restrictions = _ipRestrictionsService.Get(tenant.Id).ToList();
 
             if (restrictions.Count == 0)
             {

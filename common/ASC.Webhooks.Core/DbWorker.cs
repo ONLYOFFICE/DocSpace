@@ -13,7 +13,7 @@ public class DbWorker
     }
     public void AddWebhookConfig(WebhooksConfig webhooksConfig)
     {
-        webhooksConfig.TenantId = _tenantManager.GetCurrentTenant().TenantId;
+        webhooksConfig.TenantId = _tenantManager.GetCurrentTenant().Id;
 
         var addObj = WebhooksDbContext.WebhooksConfigs.Where(it =>
         it.SecretKey == webhooksConfig.SecretKey &&
@@ -34,7 +34,7 @@ public class DbWorker
 
     public List<WebhooksLog> GetTenantWebhooks()
     {
-        var tenant = _tenantManager.GetCurrentTenant().TenantId;
+        var tenant = _tenantManager.GetCurrentTenant().Id;
         return WebhooksDbContext.WebhooksLogs.Where(it => it.TenantId == tenant)
                 .Select(t => new WebhooksLog
                 {
@@ -64,7 +64,7 @@ public class DbWorker
 
     public void RemoveWebhookConfig(WebhooksConfig webhooksConfig)
     {
-        webhooksConfig.TenantId = _tenantManager.GetCurrentTenant().TenantId;
+        webhooksConfig.TenantId = _tenantManager.GetCurrentTenant().Id;
 
         var removeObj = WebhooksDbContext.WebhooksConfigs.Where(it =>
         it.SecretKey == webhooksConfig.SecretKey &&
@@ -77,7 +77,7 @@ public class DbWorker
 
     public void UpdateWebhookConfig(WebhooksConfig webhooksConfig)
     {
-        webhooksConfig.TenantId = _tenantManager.GetCurrentTenant().TenantId;
+        webhooksConfig.TenantId = _tenantManager.GetCurrentTenant().Id;
 
         var updateObj = WebhooksDbContext.WebhooksConfigs.Where(it =>
         it.SecretKey == webhooksConfig.SecretKey &&

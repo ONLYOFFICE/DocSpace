@@ -24,12 +24,10 @@
 */
 
 
-namespace ASC.Notify.Recipients
-{
-    public interface IRecipient
-    {
-        string ID { get; }
+namespace ASC.Notify.Recipients;
 
-        string Name { get; }
-    }
+public interface IRecipient
+{
+    string ID { get; }
+    string Name { get; }
 }

@@ -78,7 +78,7 @@ public class StaticUploader
             return null;
         }
 
-        var tenantId = _tenantManager.GetCurrentTenant().TenantId;
+        var tenantId = _tenantManager.GetCurrentTenant().Id;
         UploadOperation uploadOperation;
         var key = GetCacheKey(tenantId.ToString(), relativePath);
 
@@ -102,7 +102,7 @@ public class StaticUploader
 
     public Task<string> UploadFileAsync(string relativePath, string mappedPath, Action<string> onComplete = null)
     {
-        var tenantId = _tenantManager.GetCurrentTenant().TenantId;
+        var tenantId = _tenantManager.GetCurrentTenant().Id;
         var task = new Task<string>(() =>
         {
             using var scope = _serviceProvider.CreateScope();
@@ -133,7 +133,7 @@ public class StaticUploader
         }
 
         var tenant = _tenantManager.GetCurrentTenant();
-        var key = typeof(UploadOperationProgress).FullName + tenant.TenantId;
+        var key = typeof(UploadOperationProgress).FullName + tenant.Id;
         UploadOperationProgress uploadOperation;
 
         lock (_locker)
@@ -144,7 +144,7 @@ public class StaticUploader
                 return;
             }
 
-            uploadOperation = new UploadOperationProgress(_serviceProvider, key, tenant.TenantId, relativePath, mappedPath);
+            uploadOperation = new UploadOperationProgress(_serviceProvider, key, tenant.Id, relativePath, mappedPath);
             Queue.QueueTask(uploadOperation);
         }
     }

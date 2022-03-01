@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
@@ -38,7 +37,7 @@ namespace ASC.Webhooks.Tests
         private string EventName = "testEvent";
         private string secretKey = "testSecretKey";
         private string content = JsonSerializer.Serialize("testContent");
-        private string headers = JsonSerializer.Serialize(new { Host = new StringValues("localhost")});
+        private string headers = JsonSerializer.Serialize(new { Host = new StringValues("localhost") });
         private string URI = $"http://localhost:{port}/api/2.0/Test/";
         private DateTime creationTime = DateTime.Now;
         private CacheNotifyAction testCacheNotifyAction = CacheNotifyAction.Update;
@@ -54,11 +53,11 @@ namespace ASC.Webhooks.Tests
             var id = 1;
             var testWebhookRequest = new WebhookRequest { Id = id };
             var testTenant = new Tenant(1, "testWebhooksPublisher");
-            var testWebhookConfig = new WebhooksConfig() 
-            { 
-                SecretKey = secretKey, 
-                TenantId = testTenant.TenantId, 
-                Uri = URI 
+            var testWebhookConfig = new WebhooksConfig()
+            {
+                SecretKey = secretKey,
+                TenantId = testTenant.Id,
+                Uri = URI
             };
             var testWebhooksEntry = new WebhookEntry()
             {
@@ -83,9 +82,9 @@ namespace ASC.Webhooks.Tests
                 var publisher = new WebhookPublisher(dbWorker, tenantManager, mockedLog.Object, mockedKafkaCaches.Object);
                 publisher.Publish(EventName, content);
 
-                mockedKafkaCaches.Verify(a => a.Publish(testWebhookRequest, testCacheNotifyAction), Times.Once);            
+                mockedKafkaCaches.Verify(a => a.Publish(testWebhookRequest, testCacheNotifyAction), Times.Once);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Assert.Fail(ex.ToString());
             }
@@ -129,7 +128,7 @@ namespace ASC.Webhooks.Tests
             var SuccessedWebhookRequest = new WebhookRequest { Id = successWebhookPayloadId };
             var FailedWebhookRequest = new WebhookRequest { Id = failedWebhookPayloadId };
 
-            var sender = new WebhookSender(mockedLogOptions.Object, serviceProvider, settings);
+            var sender = new WebhookSender(mockedLogOptions.Object, serviceProvider.GetRequiredService<IServiceScopeFactory>(), settings, httpClientFactory);
             await sender.Send(SuccessedWebhookRequest, token);
             await sender.Send(FailedWebhookRequest, token);
 
@@ -152,7 +151,7 @@ namespace ASC.Webhooks.Tests
                 var mockedWebhookPubslisher = new Mock<IWebhookPublisher>();
                 mockedWebhookPubslisher.Setup(a => a.Publish(getEventName, content)).Verifiable();
                 mockedWebhookPubslisher.Setup(a => a.Publish(postEventName, content)).Verifiable();
-              
+
 
                 using var host = await new HostBuilder()
                     .ConfigureWebHost(webBuilder =>
@@ -197,7 +196,7 @@ namespace ASC.Webhooks.Tests
                 var postResponse = await host.GetTestClient().PostAsync(controllerAddress, stringContent);
                 mockedWebhookPubslisher.Verify(a => a.Publish(postEventName, content), Times.Once);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Assert.Fail(ex.ToString());
             }

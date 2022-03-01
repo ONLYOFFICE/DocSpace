@@ -324,12 +324,12 @@ public class RestorePortalTask : PortalTaskBase
     {
         Logger.Debug("begin delete storage");
 
-        foreach (var tenant in tenants)
-        {
-            foreach (var module in storageModules)
+            foreach (var tenant in tenants)
             {
-                var storage = StorageFactory.GetStorage(ConfigPath, tenant.TenantId.ToString(), module);
-                var domains = StorageFactoryConfig.GetDomainList(ConfigPath, module).ToList();
+                foreach (var module in storageModules)
+                {
+                    var storage = StorageFactory.GetStorage(ConfigPath, tenant.Id.ToString(), module);
+                    var domains = StorageFactoryConfig.GetDomainList(ConfigPath, module).ToList();
 
                 domains.Add(string.Empty); //instead storage.DeleteFiles("\\", "*.*", true);
 

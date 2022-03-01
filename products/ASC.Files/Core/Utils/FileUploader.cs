@@ -247,7 +247,7 @@ namespace ASC.Web.Files.Utils
 
             uploadSession.Expired = uploadSession.Created + ChunkedUploadSessionHolder.SlidingExpiration;
             uploadSession.Location = FilesLinkUtility.GetUploadChunkLocationUrl(uploadSession.Id);
-            uploadSession.TenantId = TenantManager.GetCurrentTenant().TenantId;
+            uploadSession.TenantId = TenantManager.GetCurrentTenant().Id;
             uploadSession.UserId = AuthContext.CurrentAccount.ID;
             uploadSession.FolderId = folderId;
             uploadSession.CultureName = Thread.CurrentThread.CurrentUICulture.Name;

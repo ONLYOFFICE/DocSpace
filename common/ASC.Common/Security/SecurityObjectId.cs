@@ -30,6 +30,7 @@ public class SecurityObjectId : ISecurityObjectId
 {
     public object SecurityId { get; private set; }
     public Type ObjectType { get; private set; }
+    public string FullId => AzObjectIdHelper.GetFullObjectId(this);
 
     public SecurityObjectId(object id, Type objType)
     {

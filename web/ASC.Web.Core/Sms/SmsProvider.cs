@@ -224,7 +224,7 @@ namespace ASC.Web.Core.Sms
 
         public async Task<string> GetBalanceAsync(Tenant tenant, bool eraseCache = false)
         {
-            var tenantCache = tenant == null ? Tenant.DEFAULT_TENANT : tenant.TenantId;
+            var tenantCache = tenant == null ? Tenant.DefaultTenant : tenant.Id;
 
             var key = "sms/smsc/" + tenantCache;
             if (eraseCache) MemoryCache.Remove(key);

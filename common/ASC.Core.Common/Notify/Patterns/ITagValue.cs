@@ -24,12 +24,10 @@
 */
 
 
-namespace ASC.Notify.Patterns
-{
-    public interface ITagValue
-    {
-        string Tag { get; }
+namespace ASC.Notify.Patterns;
 
-        object Value { get; }
-    }
+public interface ITagValue
+{
+    string Tag { get; }
+    object Value { get; }
 }

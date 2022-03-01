@@ -166,7 +166,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
 
     public bool CanIndexByContent(T t)
     {
-        return Support(t) && _searchSettingsHelper.CanIndexByContent<T>(TenantManager.GetCurrentTenant().TenantId);
+        return Support(t) && _searchSettingsHelper.CanIndexByContent<T>(TenantManager.GetCurrentTenant().Id);
     }
 
     public bool Index(T data, bool immediately = true)
@@ -392,7 +392,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
 
         try
         {
-            var tenant = TenantManager.GetCurrentTenant().TenantId;
+            var tenant = TenantManager.GetCurrentTenant().Id;
             Indexer.Update(data, expression, tenant, immediately, fields);
         }
         catch (Exception e)
@@ -411,7 +411,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
 
         try
         {
-            var tenant = TenantManager.GetCurrentTenant().TenantId;
+            var tenant = TenantManager.GetCurrentTenant().Id;
             Indexer.Update(data, expression, tenant, action, fields, immediately);
         }
         catch (Exception e)
@@ -446,7 +446,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
             return;
         }
 
-        var tenant = TenantManager.GetCurrentTenant().TenantId;
+        var tenant = TenantManager.GetCurrentTenant().Id;
 
         try
         {
@@ -493,7 +493,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
             return false;
         }
 
-        var tenant = TenantManager.GetCurrentTenant().TenantId;
+        var tenant = TenantManager.GetCurrentTenant().Id;
 
         return await Queue(() => Indexer.Delete(expression, tenant, immediately));
     }

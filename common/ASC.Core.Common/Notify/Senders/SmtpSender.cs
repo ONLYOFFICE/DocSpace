@@ -23,299 +23,309 @@
  *
 */
 
-namespace ASC.Core.Notify.Senders
+namespace ASC.Core.Notify.Senders;
+
+[Singletone(Additional = typeof(SmtpSenderExtension))]
+public class SmtpSender : INotifySender
 {
-    [Singletone(Additional = typeof(SmtpSenderExtension))]
-    public class SmtpSender : INotifySender
+    protected ILog Logger { get; set; }
+    protected readonly IConfiguration Configuration;
+    protected IServiceProvider ServiceProvider;
+
+    private string _host;
+    private int _port;
+    private bool _ssl;
+    private ICredentials _credentials;
+    protected bool UseCoreSettings;
+    const int NetworkTimeout = 30000;
+
+    public SmtpSender(
+        IServiceProvider serviceProvider,
+        IOptionsMonitor<ILog> options)
     {
+        Logger = options.Get("ASC.Notify");
+        Configuration = serviceProvider.GetService<IConfiguration>();
+        ServiceProvider = serviceProvider;
+    }
 
-        protected ILog Log { get; set; }
-        protected IConfiguration Configuration { get; }
-        protected IServiceProvider ServiceProvider { get; }
-
-        private string Host { get; set; }
-        private int Port { get; set; }
-        private bool Ssl { get; set; }
-        private ICredentials Credentials { get; set; }
-        protected bool UseCoreSettings { get; set; }
-        const int NETWORK_TIMEOUT = 30000;
-
-        public SmtpSender(
-            IServiceProvider serviceProvider,
-            IOptionsMonitor<ILog> options)
+    public virtual void Init(IDictionary<string, string> properties)
+    {
+        if (properties.ContainsKey("useCoreSettings") && bool.Parse(properties["useCoreSettings"]))
         {
-            Log = options.Get("ASC.Notify");
-            Configuration = serviceProvider.GetService<IConfiguration>();
-            ServiceProvider = serviceProvider;
+            UseCoreSettings = true;
         }
-
-        public virtual void Init(IDictionary<string, string> properties)
+        else
         {
-            if (properties.ContainsKey("useCoreSettings") && bool.Parse(properties["useCoreSettings"]))
+            _host = properties["host"];
+            _port = properties.ContainsKey("port") ? int.Parse(properties["port"]) : 25;
+            _ssl = properties.ContainsKey("enableSsl") && bool.Parse(properties["enableSsl"]);
+            if (properties.TryGetValue("userName", out var property))
             {
-                UseCoreSettings = true;
-            }
-            else
-            {
-                Host = properties["host"];
-                Port = properties.ContainsKey("port") ? int.Parse(properties["port"]) : 25;
-                Ssl = properties.ContainsKey("enableSsl") && bool.Parse(properties["enableSsl"]);
-                if (properties.TryGetValue("userName", out var property))
-                {
-                    Credentials = new NetworkCredential(property, properties["password"]);
-                }
+                _credentials = new NetworkCredential(property, properties["password"]);
             }
         }
+    }
 
-        private void InitUseCoreSettings(CoreConfiguration configuration)
+    private void InitUseCoreSettings(CoreConfiguration configuration)
+    {
+        var s = configuration.SmtpSettings;
+
+        _host = s.Host;
+        _port = s.Port;
+        _ssl = s.EnableSSL;
+        _credentials = !string.IsNullOrEmpty(s.CredentialsUserName)
+            ? new NetworkCredential(s.CredentialsUserName, s.CredentialsUserPassword)
+            : null;
+    }
+
+    public virtual NoticeSendResult Send(NotifyMessage m)
+    {
+        using var scope = ServiceProvider.CreateScope();
+        var scopeClass = scope.ServiceProvider.GetService<SmtpSenderScope>();
+        var (tenantManager, configuration) = scopeClass;
+        tenantManager.SetCurrentTenant(m.TenantId);
+
+        var smtpClient = GetSmtpClient();
+        var result = NoticeSendResult.TryOnceAgain;
+        try
         {
-            var s = configuration.SmtpSettings;
-
-            Host = s.Host;
-            Port = s.Port;
-            Ssl = s.EnableSSL;
-            Credentials = !string.IsNullOrEmpty(s.CredentialsUserName)
-                ? new NetworkCredential(s.CredentialsUserName, s.CredentialsUserPassword)
-                : null;
-        }
-
-        public virtual NoticeSendResult Send(NotifyMessage m)
-        {
-            using var scope = ServiceProvider.CreateScope();
-            var scopeClass = scope.ServiceProvider.GetService<SmtpSenderScope>();
-            var (tenantManager, configuration) = scopeClass;
-            tenantManager.SetCurrentTenant(m.Tenant);
-
-            var smtpClient = GetSmtpClient();
-            var result = NoticeSendResult.TryOnceAgain;
             try
             {
-                try
+                if (UseCoreSettings)
                 {
-                    if (UseCoreSettings)
-                        InitUseCoreSettings(configuration);
+                    InitUseCoreSettings(configuration);
+                }
 
-                    var mail = BuildMailMessage(m);
+                var mail = BuildMailMessage(m);
 
-                    Log.DebugFormat("SmtpSender - host={0}; port={1}; enableSsl={2} enableAuth={3}", Host, Port, Ssl, Credentials != null);
+                Logger.DebugFormat("SmtpSender - host={0}; port={1}; enableSsl={2} enableAuth={3}", _host, _port, _ssl, _credentials != null);
 
-                    smtpClient.Connect(Host, Port,
-                        Ssl ? SecureSocketOptions.Auto : SecureSocketOptions.None);
+                smtpClient.Connect(_host, _port,
+                    _ssl ? SecureSocketOptions.Auto : SecureSocketOptions.None);
 
-                    if (Credentials != null)
+                if (_credentials != null)
+                {
+                    smtpClient.Authenticate(_credentials);
+                }
+
+                smtpClient.Send(mail);
+                result = NoticeSendResult.OK;
+            }
+            catch (Exception e)
+            {
+                Logger.ErrorFormat("Tenant: {0}, To: {1} - {2}", m.TenantId, m.Reciever, e);
+
+                throw;
+            }
+        }
+        catch (ObjectDisposedException)
+        {
+            result = NoticeSendResult.SendingImpossible;
+        }
+        catch (InvalidOperationException)
+        {
+            result = string.IsNullOrEmpty(_host) || _port == 0
+                ? NoticeSendResult.SendingImpossible
+                : NoticeSendResult.TryOnceAgain;
+        }
+        catch (IOException)
+        {
+            result = NoticeSendResult.TryOnceAgain;
+        }
+        catch (MailKit.Net.Smtp.SmtpProtocolException)
+        {
+            result = NoticeSendResult.SendingImpossible;
+        }
+        catch (MailKit.Net.Smtp.SmtpCommandException e)
+        {
+            switch (e.StatusCode)
+            {
+                case MailKit.Net.Smtp.SmtpStatusCode.MailboxBusy:
+                case MailKit.Net.Smtp.SmtpStatusCode.MailboxUnavailable:
+                case MailKit.Net.Smtp.SmtpStatusCode.ExceededStorageAllocation:
+                    result = NoticeSendResult.TryOnceAgain;
+                    break;
+                case MailKit.Net.Smtp.SmtpStatusCode.MailboxNameNotAllowed:
+                case MailKit.Net.Smtp.SmtpStatusCode.UserNotLocalWillForward:
+                case MailKit.Net.Smtp.SmtpStatusCode.UserNotLocalTryAlternatePath:
+                    result = NoticeSendResult.MessageIncorrect;
+                    break;
+                default:
+                    if (e.StatusCode != MailKit.Net.Smtp.SmtpStatusCode.Ok)
                     {
-                        smtpClient.Authenticate(Credentials);
-                    }
-
-                    smtpClient.Send(mail);
-                    result = NoticeSendResult.OK;
-                }
-                catch (Exception e)
-                {
-                    Log.ErrorFormat("Tenant: {0}, To: {1} - {2}", m.Tenant, m.To, e);
-                    throw;
-                }
-            }
-            catch (ObjectDisposedException)
-            {
-                result = NoticeSendResult.SendingImpossible;
-            }
-            catch (InvalidOperationException)
-            {
-                result = string.IsNullOrEmpty(Host) || Port == 0
-                    ? NoticeSendResult.SendingImpossible
-                    : NoticeSendResult.TryOnceAgain;
-            }
-            catch (IOException)
-            {
-                result = NoticeSendResult.TryOnceAgain;
-            }
-            catch (MailKit.Net.Smtp.SmtpProtocolException)
-            {
-                result = NoticeSendResult.SendingImpossible;
-            }
-            catch (MailKit.Net.Smtp.SmtpCommandException e)
-            {
-                switch (e.StatusCode)
-                {
-                    case MailKit.Net.Smtp.SmtpStatusCode.MailboxBusy:
-                    case MailKit.Net.Smtp.SmtpStatusCode.MailboxUnavailable:
-                    case MailKit.Net.Smtp.SmtpStatusCode.ExceededStorageAllocation:
                         result = NoticeSendResult.TryOnceAgain;
-                        break;
-                    case MailKit.Net.Smtp.SmtpStatusCode.MailboxNameNotAllowed:
-                    case MailKit.Net.Smtp.SmtpStatusCode.UserNotLocalWillForward:
-                    case MailKit.Net.Smtp.SmtpStatusCode.UserNotLocalTryAlternatePath:
-                        result = NoticeSendResult.MessageIncorrect;
-                        break;
-                    default:
-                        if (e.StatusCode != MailKit.Net.Smtp.SmtpStatusCode.Ok)
-                        {
-                            result = NoticeSendResult.TryOnceAgain;
-                        }
-                        break;
-                }
+                    }
+                    break;
             }
-            catch (Exception)
+        }
+        catch (Exception)
+        {
+            result = NoticeSendResult.SendingImpossible;
+        }
+        finally
+        {
+            if (smtpClient.IsConnected)
             {
-                result = NoticeSendResult.SendingImpossible;
+                smtpClient.Disconnect(true);
             }
-            finally
-            {
-                if (smtpClient.IsConnected)
-                    smtpClient.Disconnect(true);
 
-                smtpClient.Dispose();
-            }
-            return result;
+            smtpClient.Dispose();
         }
 
-        private MimeMessage BuildMailMessage(NotifyMessage m)
+        return result;
+    }
+
+    private MimeMessage BuildMailMessage(NotifyMessage m)
+    {
+        var mimeMessage = new MimeMessage
         {
-            var mimeMessage = new MimeMessage
+            Subject = m.Subject
+        };
+
+        var fromAddress = MailboxAddress.Parse(ParserOptions.Default, m.Sender);
+
+        mimeMessage.From.Add(fromAddress);
+
+        foreach (var to in m.Reciever.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries))
+        {
+            mimeMessage.To.Add(MailboxAddress.Parse(ParserOptions.Default, to));
+        }
+
+        if (m.ContentType == Pattern.HtmlContentType)
+        {
+            var textPart = new TextPart("plain")
             {
-                Subject = m.Subject
+                Text = HtmlUtil.GetText(m.Content),
+                ContentTransferEncoding = ContentEncoding.QuotedPrintable
             };
 
-            var fromAddress = MailboxAddress.Parse(ParserOptions.Default, m.From);
+            var multipartAlternative = new MultipartAlternative { textPart };
 
-            mimeMessage.From.Add(fromAddress);
-
-            foreach (var to in m.To.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries))
+            var htmlPart = new TextPart("html")
             {
-                mimeMessage.To.Add(MailboxAddress.Parse(ParserOptions.Default, to));
-            }
+                Text = GetHtmlView(m.Content),
+                ContentTransferEncoding = ContentEncoding.QuotedPrintable
+            };
 
-            if (m.ContentType == Pattern.HTMLContentType)
+            if (m.Attachments != null && m.Attachments.Count > 0)
             {
-                var textPart = new TextPart("plain")
+                var multipartRelated = new MultipartRelated
                 {
-                    Text = HtmlUtil.GetText(m.Content),
-                    ContentTransferEncoding = ContentEncoding.QuotedPrintable
+                    Root = htmlPart
                 };
 
-                var multipartAlternative = new MultipartAlternative { textPart };
-
-                var htmlPart = new TextPart("html")
+                foreach (var attachment in m.Attachments)
                 {
-                    Text = GetHtmlView(m.Content),
-                    ContentTransferEncoding = ContentEncoding.QuotedPrintable
-                };
-
-                if (m.EmbeddedAttachments != null && m.EmbeddedAttachments.Count > 0)
-                {
-                    var multipartRelated = new MultipartRelated
+                    var mimeEntity = ConvertAttachmentToMimePart(attachment);
+                    if (mimeEntity != null)
                     {
-                        Root = htmlPart
-                    };
-
-                    foreach (var attachment in m.EmbeddedAttachments)
-                    {
-                        var mimeEntity = ConvertAttachmentToMimePart(attachment);
-                        if (mimeEntity != null)
-                            multipartRelated.Add(mimeEntity);
+                        multipartRelated.Add(mimeEntity);
                     }
-
-                    multipartAlternative.Add(multipartRelated);
-                }
-                else
-                {
-                    multipartAlternative.Add(htmlPart);
                 }
 
-                mimeMessage.Body = multipartAlternative;
+                multipartAlternative.Add(multipartRelated);
             }
             else
             {
-                mimeMessage.Body = new TextPart("plain")
-                {
-                    Text = m.Content,
-                    ContentTransferEncoding = ContentEncoding.QuotedPrintable
-                };
+                multipartAlternative.Add(htmlPart);
             }
 
-            if (!string.IsNullOrEmpty(m.ReplyTo))
-            {
-                mimeMessage.ReplyTo.Add(MailboxAddress.Parse(ParserOptions.Default, m.ReplyTo));
-            }
-
-            mimeMessage.Headers.Add("Auto-Submitted", string.IsNullOrEmpty(m.AutoSubmitted) ? "auto-generated" : m.AutoSubmitted);
-
-            return mimeMessage;
+            mimeMessage.Body = multipartAlternative;
         }
-
-        protected string GetHtmlView(string body)
+        else
         {
-            return $@"<!DOCTYPE html PUBLIC ""-//W3C//DTD HTML 4.01 Transitional//EN"">
-<html>
-<head>
-<meta content=""text/html;charset=UTF-8"" http-equiv=""Content-Type"">
-</head>
-<body>{body}</body>
-</html>";
-        }
-
-        private MailKit.Net.Smtp.SmtpClient GetSmtpClient()
-        {
-            var smtpClient = new MailKit.Net.Smtp.SmtpClient
+            mimeMessage.Body = new TextPart("plain")
             {
-                Timeout = NETWORK_TIMEOUT
+                Text = m.Content,
+                ContentTransferEncoding = ContentEncoding.QuotedPrintable
             };
-
-            return smtpClient;
         }
 
-        private static MimePart ConvertAttachmentToMimePart(NotifyMessageAttachment attachment)
+        if (!string.IsNullOrEmpty(m.ReplyTo))
         {
-            try
-            {
-                if (attachment == null || string.IsNullOrEmpty(attachment.FileName) || string.IsNullOrEmpty(attachment.ContentId) || attachment.Content == null)
-                    return null;
+            mimeMessage.ReplyTo.Add(MailboxAddress.Parse(ParserOptions.Default, m.ReplyTo));
+        }
 
-                var extension = Path.GetExtension(attachment.FileName);
+        mimeMessage.Headers.Add("Auto-Submitted", string.IsNullOrEmpty(m.AutoSubmitted) ? "auto-generated" : m.AutoSubmitted);
 
-                if (string.IsNullOrEmpty(extension))
-                    return null;
+        return mimeMessage;
+    }
 
-                return new MimePart("image", extension.TrimStart('.'))
-                {
-                    ContentId = attachment.ContentId,
-                    Content = new MimeContent(new MemoryStream(attachment.Content.ToByteArray())),
-                    ContentDisposition = new ContentDisposition(ContentDisposition.Attachment),
-                    ContentTransferEncoding = ContentEncoding.Base64,
-                    FileName = attachment.FileName
-                };
-            }
-            catch (Exception)
+    protected string GetHtmlView(string body)
+    {
+        return $@"<!DOCTYPE html PUBLIC ""-//W3C//DTD HTML 4.01 Transitional//EN"">
+                      <html>
+                        <head>
+                            <meta content=""text/html;charset=UTF-8"" http-equiv=""Content-Type"">
+                        </head>
+                        <body>{body}</body>
+                      </html>";
+    }
+
+    private MailKit.Net.Smtp.SmtpClient GetSmtpClient()
+    {
+        var smtpClient = new MailKit.Net.Smtp.SmtpClient
+        {
+            Timeout = NetworkTimeout
+        };
+
+        return smtpClient;
+    }
+
+    private static MimePart ConvertAttachmentToMimePart(NotifyMessageAttachment attachment)
+    {
+        try
+        {
+            if (attachment == null || string.IsNullOrEmpty(attachment.FileName) || string.IsNullOrEmpty(attachment.ContentId) || attachment.Content == null)
             {
                 return null;
             }
+
+            var extension = Path.GetExtension(attachment.FileName);
+
+            if (string.IsNullOrEmpty(extension))
+            {
+                return null;
+            }
+
+            return new MimePart("image", extension.TrimStart('.'))
+            {
+                ContentId = attachment.ContentId,
+                Content = new MimeContent(new MemoryStream(attachment.Content.ToByteArray())),
+                ContentDisposition = new ContentDisposition(ContentDisposition.Attachment),
+                ContentTransferEncoding = ContentEncoding.Base64,
+                FileName = attachment.FileName
+            };
+        }
+        catch (Exception)
+        {
+            return null;
         }
     }
+}
 
-    [Scope]
-    public class SmtpSenderScope
+[Scope]
+public class SmtpSenderScope
+{
+    private readonly TenantManager _tenantManager;
+    private readonly CoreConfiguration _coreConfiguration;
+
+    public SmtpSenderScope(TenantManager tenantManager, CoreConfiguration coreConfiguration)
     {
-        private TenantManager TenantManager { get; }
-        private CoreConfiguration CoreConfiguration { get; }
-
-        public SmtpSenderScope(TenantManager tenantManager, CoreConfiguration coreConfiguration)
-        {
-            TenantManager = tenantManager;
-            CoreConfiguration = coreConfiguration;
-        }
-
-        public void Deconstruct(out TenantManager tenantManager, out CoreConfiguration coreConfiguration)
-        {
-            (tenantManager, coreConfiguration) = (TenantManager, CoreConfiguration);
-        }
+        _tenantManager = tenantManager;
+        _coreConfiguration = coreConfiguration;
     }
 
-    public static class SmtpSenderExtension
+    public void Deconstruct(out TenantManager tenantManager, out CoreConfiguration coreConfiguration)
     {
-        public static void Register(DIHelper services)
-        {
-            services.TryAdd<SmtpSenderScope>();
-        }
+        (tenantManager, coreConfiguration) = (_tenantManager, _coreConfiguration);
+    }
+}
+
+public static class SmtpSenderExtension
+{
+    public static void Register(DIHelper services)
+    {
+        services.TryAdd<SmtpSenderScope>();
     }
 }

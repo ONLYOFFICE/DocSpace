@@ -23,60 +23,66 @@
  *
 */
 
-namespace ASC.Core.Caching
+namespace ASC.Core.Caching;
+
+class AzRecordStore : IEnumerable<AzRecord>
 {
-    class AzRecordStore : IEnumerable<AzRecord>
+    private readonly Dictionary<string, List<AzRecord>> byObjectId = new Dictionary<string, List<AzRecord>>();
+
+
+    public AzRecordStore(IEnumerable<AzRecord> aces)
     {
-        private readonly Dictionary<string, List<AzRecord>> byObjectId = new Dictionary<string, List<AzRecord>>();
-
-
-        public AzRecordStore(IEnumerable<AzRecord> aces)
+        foreach (var a in aces)
         {
-            foreach (var a in aces)
-            {
-                Add(a);
-            }
+            Add(a);
+        }
+    }
+
+
+    public IEnumerable<AzRecord> Get(string objectId)
+    {
+        byObjectId.TryGetValue(objectId ?? string.Empty, out var aces);
+
+        return aces ?? new List<AzRecord>();
+    }
+
+    public void Add(AzRecord r)
+    {
+        if (r == null)
+        {
+            return;
         }
 
-
-        public IEnumerable<AzRecord> Get(string objectId)
+        var id = r.Object ?? string.Empty;
+        if (!byObjectId.ContainsKey(id))
         {
-            byObjectId.TryGetValue(objectId ?? string.Empty, out var aces);
-            return aces ?? new List<AzRecord>();
+            byObjectId[id] = new List<AzRecord>();
+        }
+        byObjectId[id].RemoveAll(a => a.Subject == r.Subject && a.Action == r.Action); // remove escape, see DbAzService
+        byObjectId[id].Add(r);
+    }
+
+    public void Remove(AzRecord r)
+    {
+        if (r == null)
+        {
+            return;
         }
 
-        public void Add(AzRecord r)
+        var id = r.Object ?? string.Empty;
+        if (byObjectId.TryGetValue(id, out var list))
         {
-            if (r == null) return;
-
-            var id = r.ObjectId ?? string.Empty;
-            if (!byObjectId.ContainsKey(id))
-            {
-                byObjectId[id] = new List<AzRecord>();
-            }
-            byObjectId[id].RemoveAll(a => a.SubjectId == r.SubjectId && a.ActionId == r.ActionId); // remove escape, see DbAzService
-            byObjectId[id].Add(r);
+            list.RemoveAll(a => a.Subject == r.Subject && a.Action == r.Action && a.AceType == r.AceType);
         }
+    }
 
-        public void Remove(AzRecord r)
-        {
-            if (r == null) return;
+    public IEnumerator<AzRecord> GetEnumerator()
+    {
+        return byObjectId.Values.SelectMany(v => v).GetEnumerator();
+    }
 
-            var id = r.ObjectId ?? string.Empty;
-            if (byObjectId.TryGetValue(id, out var list))
-            {
-                list.RemoveAll(a => a.SubjectId == r.SubjectId && a.ActionId == r.ActionId && a.Reaction == r.Reaction);
-            }
-        }
-
-        public IEnumerator<AzRecord> GetEnumerator()
-        {
-            return byObjectId.Values.SelectMany(v => v).GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
     }
 }

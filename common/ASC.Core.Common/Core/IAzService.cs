@@ -23,15 +23,12 @@
  *
 */
 
-namespace ASC.Core
+namespace ASC.Core;
+
+[Scope(typeof(DbAzService), typeof(CachedAzService))]
+public interface IAzService
 {
-    [Scope(typeof(DbAzService), typeof(CachedAzService))]
-    public interface IAzService
-    {
-        IEnumerable<AzRecord> GetAces(int tenant, DateTime from);
-
-        AzRecord SaveAce(int tenant, AzRecord r);
-
-        void RemoveAce(int tenant, AzRecord r);
-    }
+    AzRecord SaveAce(int tenant, AzRecord r);
+    IEnumerable<AzRecord> GetAces(int tenant, DateTime from);
+    void RemoveAce(int tenant, AzRecord r);
 }

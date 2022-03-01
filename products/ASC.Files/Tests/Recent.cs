@@ -24,7 +24,7 @@ namespace ASC.Files.Tests
             TestFolder = await FilesControllerHelper.CreateFolderAsync(GlobalFolderHelper.FolderMy, "TestFolder");
             TestFile = await FilesControllerHelper.CreateFileAsync(GlobalFolderHelper.FolderMy, "TestFile", default);
             NewUser = UserManager.GetUsers(Guid.Parse("005bb3ff-7de3-47d2-9b3d-61b9ec8a76a5"));
-            TestFileShare = new List<FileShareParams> { new FileShareParams { Access = Core.Security.FileShare.Read, ShareTo = NewUser.ID } };
+            TestFileShare = new List<FileShareParams> { new FileShareParams { Access = Core.Security.FileShare.Read, ShareTo = NewUser.Id } };
         }
 
         [OneTimeSetUp]
@@ -96,7 +96,7 @@ namespace ASC.Files.Tests
         public async Task ShareFileToAnotherUserAddToRecent(string fileTitleExpected, bool notify, string message)
         {
             await FilesControllerHelper.SetFileSecurityInfoAsync(TestFile.Id, TestFileShare, notify, message);
-            SecurityContext.AuthenticateMe(NewUser.ID);
+            SecurityContext.AuthenticateMe(NewUser.Id);
             var RecentFile = await FilesControllerHelper.AddToRecentAsync(TestFile.Id);
             Assert.IsNotNull(RecentFile);
             Assert.AreEqual(fileTitleExpected + ".docx", RecentFile.Title);

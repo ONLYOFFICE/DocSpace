@@ -1,13 +1,8 @@
-﻿namespace ASC.Core.Common.Security
-{
-    public class BruteForceCredentialException : InvalidCredentialException
-    {
-        public BruteForceCredentialException()
-        {
-        }
+﻿namespace ASC.Core.Common.Security;
 
-        public BruteForceCredentialException(string message) : base(message)
-        {
-        }
-    }
+public class BruteForceCredentialException : InvalidCredentialException
+{
+    public BruteForceCredentialException() { }
+
+    public BruteForceCredentialException(string message) : base(message) { }
 }

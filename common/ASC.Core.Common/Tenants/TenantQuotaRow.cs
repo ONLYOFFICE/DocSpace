@@ -23,17 +23,13 @@
  *
 */
 
-namespace ASC.Core.Tenants
+namespace ASC.Core.Tenants;
+
+[Serializable]
+public class TenantQuotaRow : IMapFrom<DbQuotaRow>
 {
-    [Serializable]
-    public class TenantQuotaRow
-    {
-        public int Tenant { get; set; }
-
-        public string Path { get; set; }
-
-        public long Counter { get; set; }
-
-        public string Tag { get; set; }
-    }
+    public int Tenant { get; set; }
+    public string Path { get; set; }
+    public long Counter { get; set; }
+    public string Tag { get; set; }
 }

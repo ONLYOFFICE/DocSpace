@@ -80,7 +80,7 @@ public class ConfirmAuthHandler : AuthenticationHandler<AuthenticationSchemeOpti
                     }
                     else
                     {
-                        userId = _userManager.GetUserByEmail(emailValidationKeyModel.Email).ID;
+                        userId = _userManager.GetUserByEmail(emailValidationKeyModel.Email).Id;
                     }
                 }
             }

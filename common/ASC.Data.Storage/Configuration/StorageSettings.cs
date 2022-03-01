@@ -71,7 +71,7 @@ public class BaseStorageSettingsListener
                 {
                     storageSettingsHelper.Clear(cdnSettings);
                 }
-            }, Common.Caching.CacheNotifyAction.Remove);
+            }, CacheNotifyAction.Remove);
         }
     }
 }
@@ -138,6 +138,7 @@ public class StorageSettingsHelper
         _settingsManager = settingsManager;
         _consumerFactory = consumerFactory;
     }
+
     public StorageSettingsHelper(
         BaseStorageSettingsListener baseStorageSettingsListener,
         StorageFactoryConfig storageFactoryConfig,
@@ -205,17 +206,17 @@ public class StorageSettingsHelper
 
         return _dataStore = ((IDataStore)
             Activator.CreateInstance(DataStoreConsumer(baseStorageSettings).HandlerType, _tenantManager, _pathUtils, _httpContextAccessor, _options))
-            .Configure(_tenantManager.GetCurrentTenant().TenantId.ToString(), null, null, DataStoreConsumer(baseStorageSettings));
+            .Configure(_tenantManager.GetCurrentTenant().Id.ToString(), null, null, DataStoreConsumer(baseStorageSettings));
     }
 
     internal void ClearDataStoreCache()
     {
-        var tenantId = _tenantManager.GetCurrentTenant().TenantId.ToString();
+        var tenantId = _tenantManager.GetCurrentTenant().Id.ToString();
         var path = TenantPath.CreatePath(tenantId);
 
         foreach (var module in _storageFactoryConfig.GetModuleList("", true))
         {
-            _cache.Publish(new DataStoreCacheItem() { TenantId = path, Module = module }, CacheNotifyAction.Remove);
+            _cache.Publish(new DataStoreCacheItem() { TenantId = path, Module = module }, Common.Caching.CacheNotifyAction.Remove);
         }
     }
 }
