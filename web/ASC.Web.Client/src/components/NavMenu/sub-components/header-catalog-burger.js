@@ -37,6 +37,7 @@ const HeaderCatalogBurger = (props) => {
       isProduct={isProduct}
       showCatalog={showCatalog}
       onClick={onClick}
+      name="catalog-burger"
       {...rest}
     >
       <StyledMenuIcon />
