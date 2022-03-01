@@ -141,6 +141,10 @@ class SelectFileDialogModalView extends React.Component {
 
     onSelectFolder && onSelectFolder(folder[0]);
   };
+
+  onMouseEvent = (event) => {
+    event.stopPropagation();
+  };
   render() {
     const {
       t,
@@ -170,7 +174,12 @@ class SelectFileDialogModalView extends React.Component {
     const isHeaderChildren = !!titleFilesList;
 
     return (
-      <StyledAsidePanel theme={theme} visible={isPanelVisible}>
+      <StyledAsidePanel
+        theme={theme}
+        visible={isPanelVisible}
+        onMouseUp={this.onMouseEvent}
+        onMouseDown={this.onMouseEvent}
+      >
         <ModalDialog
           theme={theme}
           visible={isPanelVisible}

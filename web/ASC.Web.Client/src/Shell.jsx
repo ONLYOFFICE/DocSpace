@@ -340,11 +340,13 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     fetchMaintenance();
     fetchBanners();
     fbInterval = setInterval(fetchMaintenance, 60000);
+    const bannerInterval = setInterval(fetchBanners, 60000 * 720); // get every 12 hours
 
     return () => {
       if (fbInterval) {
         clearInterval(fbInterval);
       }
+      clearInterval(bannerInterval);
       clearSnackBarTimer();
     };
   }, [isLoaded]);

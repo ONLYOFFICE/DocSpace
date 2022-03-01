@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 using ASC.Api.Core;
 using ASC.Api.Utils;
@@ -115,9 +116,9 @@ namespace ASC.Api.Documents
             GlobalFolderHelper = globalFolderHelper;
         }
 
-        public FolderWrapper<T> Get<T>(Folder<T> folder, List<Tuple<FileEntry<T>, bool>> folders = null)
+        public async Task<FolderWrapper<T>> GetAsync<T>(Folder<T> folder, List<Tuple<FileEntry<T>, bool>> folders = null)
         {
-            var result = GetFolderWrapper(folder);
+            var result = await GetFolderWrapperAsync(folder);
 
             result.ParentId = folder.FolderID;
 
@@ -134,15 +135,16 @@ namespace ASC.Api.Documents
                     var folderWithRight = folders.FirstOrDefault(f => f.Item1.ID.Equals(folder.FolderID));
                     if (folderWithRight == null || !folderWithRight.Item2)
                     {
-                        result.ParentId = GlobalFolderHelper.GetFolderShare<T>();
+                        result.ParentId = await GlobalFolderHelper.GetFolderShareAsync<T>();
                     }
                 }
                 else
                 {
-                    parentFolder = folderDao.GetFolder(folder.FolderID);
-                    if (!FileSecurity.CanRead(parentFolder))
+                    parentFolder = await folderDao.GetFolderAsync(folder.FolderID);
+                    var canRead = await FileSecurity.CanReadAsync(parentFolder);
+                    if (!canRead)
                     {
-                        result.ParentId = GlobalFolderHelper.GetFolderShare<T>();
+                        result.ParentId = await GlobalFolderHelper.GetFolderShareAsync<T>();
                     }
                 }
             }
@@ -150,9 +152,9 @@ namespace ASC.Api.Documents
             return result;
         }
 
-        private FolderWrapper<T> GetFolderWrapper<T>(Folder<T> folder)
+        private async Task<FolderWrapper<T>> GetFolderWrapperAsync<T>(Folder<T> folder)
         {
-            var result = Get<FolderWrapper<T>, T>(folder);
+            var result = await GetAsync<FolderWrapper<T>, T>(folder);
             result.FilesCount = folder.TotalFiles;
             result.FoldersCount = folder.TotalSubFolders;
             result.IsShareable = folder.Shareable.NullIfDefault();

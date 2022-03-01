@@ -230,10 +230,10 @@ var customToolbar = [
 ];
 
 class ImageViewer extends React.Component {
-  componentDidUpdate() {
-    document.getElementsByClassName("iconContainer reset").length > 0 &&
-      document.getElementsByClassName("iconContainer reset")[0].click();
-  }
+  // componentDidUpdate() {
+  //   document.getElementsByClassName("iconContainer reset").length > 0 &&
+  //     document.getElementsByClassName("iconContainer reset")[0].click();
+  // }
 
   shouldComponentUpdate(nextProps) {
     return !equal(this.props, nextProps);

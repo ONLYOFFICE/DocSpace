@@ -12,6 +12,7 @@ import {
   StyledContent,
   StyledRow,
 } from "./styled-row";
+import Loader from "../loader";
 
 class Row extends React.Component {
   constructor(props) {
@@ -80,19 +81,23 @@ class Row extends React.Component {
       };
     }
 
-    const { onRowClick, ...rest } = this.props;
+    const { onRowClick, inProgress, ...rest } = this.props;
 
     return (
       <StyledRow ref={this.row} {...rest} onContextMenu={onContextMenu}>
-        {renderCheckbox && (
-          <StyledCheckbox className="not-selectable">
-            <Checkbox
-              className="checkbox"
-              isChecked={checked}
-              isIndeterminate={indeterminate}
-              onChange={changeCheckbox}
-            />
-          </StyledCheckbox>
+        {inProgress ? (
+          <Loader className="row-loader" type="oval" size="16px" />
+        ) : (
+          renderCheckbox && (
+            <StyledCheckbox className="not-selectable">
+              <Checkbox
+                className="checkbox"
+                isChecked={checked}
+                isIndeterminate={indeterminate}
+                onChange={changeCheckbox}
+              />
+            </StyledCheckbox>
+          )
         )}
         {renderElement && (
           <StyledElement onClick={onRowClick} className="styled-element">
@@ -161,6 +166,7 @@ Row.propTypes = {
   /** Accepts css style  */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   sectionWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  inProgress: PropTypes.bool,
 };
 
 Row.defaultProps = {

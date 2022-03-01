@@ -8,7 +8,6 @@ import Heading from "@appserver/components/heading";
 import Aside from "@appserver/components/aside";
 import Row from "@appserver/components/row";
 import Box from "@appserver/components/box";
-import RowContainer from "@appserver/components/row-container";
 import Button from "@appserver/components/button";
 import { withTranslation } from "react-i18next";
 import toastr from "studio/toastr";
@@ -19,6 +18,7 @@ import {
   StyledHeaderContent,
   StyledBody,
   StyledFooter,
+  StyledSharingBody,
 } from "../StyledPanels";
 import { inject, observer } from "mobx-react";
 import { combineUrl } from "@appserver/common/utils";
@@ -26,6 +26,8 @@ import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../../../package.json";
 import Loaders from "@appserver/common/components/Loaders";
 import withLoader from "../../../HOCs/withLoader";
+
+const SharingBodyStyle = { height: `calc(100vh - 156px)` };
 
 class NewFilesPanel extends React.Component {
   state = { readingFiles: [] };
@@ -65,9 +67,10 @@ class NewFilesPanel extends React.Component {
       .finally(() => this.onClose());
   };
 
-  onNewFileClick = (item) => {
+  onNewFileClick = (e) => {
+    const { id, extension: fileExst } = e.target.dataset;
+
     const { /* updateFolderBadge, */ markAsRead } = this.props;
-    const { /* folderId, */ fileExst, id } = item;
     const readingFiles = this.state.readingFiles;
 
     const fileIds = fileExst ? [id] : [];
@@ -178,14 +181,24 @@ class NewFilesPanel extends React.Component {
             </StyledHeaderContent>
             {!isLoading ? (
               <StyledBody className="files-operations-body">
-                <RowContainer useReactWindow>
+                <StyledSharingBody stype="mediumBlack" style={SharingBodyStyle}>
                   {newFiles.map((file) => {
                     const element = this.getItemIcon(file);
                     return (
                       <Row key={file.id} element={element}>
-                        <Box
-                          onClick={this.onNewFileClick.bind(this, file)}
-                          marginProp="auto 0"
+                        <Link
+                          onClick={this.onNewFileClick}
+                          containerWidth="100%"
+                          type="page"
+                          fontWeight={600}
+                          color="#333"
+                          isTextOverflow
+                          truncate
+                          title={file.title}
+                          fontSize="14px"
+                          className="files-new-link"
+                          data-id={file.id}
+                          data-extension={file.fileExst}
                         >
                           <Link
                             containerWidth="100%"
@@ -200,11 +213,11 @@ class NewFilesPanel extends React.Component {
                           >
                             {file.title}
                           </Link>
-                        </Box>
+                        </Link>
                       </Row>
                     );
                   })}
-                </RowContainer>
+                </StyledSharingBody>
               </StyledBody>
             ) : (
               <div key="loader" className="panel-loader-wrapper">
@@ -242,10 +255,10 @@ export default inject(
     filesStore,
     mediaViewerDataStore,
     treeFoldersStore,
-    formatsStore,
     filesActionsStore,
     selectedFolderStore,
     dialogsStore,
+    settingsStore,
   }) => {
     const {
       fetchFiles,
@@ -259,7 +272,7 @@ export default inject(
     } = filesStore;
     const { updateRootBadge } = treeFoldersStore;
     const { setMediaViewerData } = mediaViewerDataStore;
-    const { getIcon, getFolderIcon } = formatsStore.iconFormatsStore;
+    const { getIcon, getFolderIcon } = settingsStore;
     const { markAsRead } = filesActionsStore;
     const { pathParts } = selectedFolderStore;
 

@@ -38,6 +38,7 @@ const TableSettings = ({ columns }) => {
         directionX="right"
         open={isOpen}
         clickOutsideAction={clickOutsideAction}
+        forwardedRef={ref}
         withBackdrop={false}
       >
         {columns.map((column) => {

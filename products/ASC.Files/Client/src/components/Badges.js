@@ -4,6 +4,7 @@ import Badge from "@appserver/components/badge";
 import IconButton from "@appserver/components/icon-button";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import { isTablet } from "react-device-detect";
+import { FileStatus } from "@appserver/common/constants";
 import { Base } from "@appserver/components/themes";
 
 export const StyledIcon = styled(IconButton)`
@@ -67,11 +68,8 @@ const Badges = ({
   setConvertDialogVisible,
   viewAs,
 }) => {
-  const { id, locked, fileStatus, version, versionGroup, fileExst } = item;
+  const { id, locked, version, versionGroup, fileExst, isEditing } = item;
 
-  const isEditing = fileStatus === 1;
-  const isNewWithFav = fileStatus === 34;
-  const isEditingWithFav = fileStatus === 33;
   const showEditBadge = !locked || item.access === 0;
   const isPrivacy = isPrivacyFolder && isDesktopClient;
   const isForm = fileExst === ".oform";
@@ -115,7 +113,6 @@ const Badges = ({
     <div className="badges additional-badges">
       {canWebEdit &&
         !isEditing &&
-        !isEditingWithFav &&
         !isTrashFolder &&
         !isPrivacy &&
         accessToEdit &&
@@ -131,7 +128,7 @@ const Badges = ({
             title={t("Common:FillFormButton")}
           />
         )}
-      {(isEditing || isEditingWithFav) && (
+      {isEditing && (
         <StyledIcon
           iconName={iconEdit}
           className="badge icons-group is-editing tablet-badge tablet-edit"
@@ -161,7 +158,7 @@ const Badges = ({
           />
         </BadgeWrapper>
       )}
-      {(showNew || isNewWithFav) && (
+      {showNew && (
         <BadgeWrapper onClick={onBadgeClick} isTile={isTile}>
           <Badge
             {...commonBadgeProps}

@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 using ASC.Api.CRM;
 using ASC.Api.Documents;
@@ -78,22 +79,27 @@ namespace ASC.CRM.Api
         /// <returns>Report files</returns>
         /// <exception cref="SecurityException">if user can't create reports</exception>
         [Read(@"report/files")]
-        public IEnumerable<FileWrapper<int>> GetFiles()
+        public Task<IEnumerable<FileWrapper<int>>> GetFilesAsync()
         {
             if (!_global.CanCreateReports)
                 throw _crmSecurity.CreateSecurityException();
 
+            return InternalGetFilesAsync();
+            }
+
+        private async Task<IEnumerable<FileWrapper<int>>> InternalGetFilesAsync()
+        {
             var reportDao = _daoFactory.GetReportDao();
 
             var files = reportDao.GetFiles();
 
-            if (!files.Any())
+            if (files.Count == 0)
             {
                 var settings = _settingsManager.Load<CrmReportSampleSettings>();
 
                 if (settings.NeedToGenerate)
                 {
-                    files = reportDao.SaveSampleReportFiles();
+                    files = await reportDao.SaveSampleReportFilesAsync();
 
                     settings.NeedToGenerate = false;
 
@@ -101,7 +107,13 @@ namespace ASC.CRM.Api
                 }
             }
 
-            return files.ConvertAll(file => _fileWrapperHelper.Get<int>(file)).OrderByDescending(file => file.Id);
+            List<FileWrapper<int>> result = new List<FileWrapper<int>>(files.Count);
+            foreach (var file in files)
+            {
+                result.Add(await _fileWrapperHelper.GetAsync<int>(file));
+            }
+
+            return result.OrderByDescending(file => file.Id);
         }
 
         /// <summary>Delete the report file with the ID specified in the request</summary>
@@ -120,6 +132,26 @@ namespace ASC.CRM.Api
             if (fileid < 0) throw new ArgumentException();
 
             var file = _daoFactory.GetReportDao().GetFile(fileid);
+
+            if (file == null) throw new ItemNotFoundException("File not found");
+
+            _daoFactory.GetReportDao().DeleteFile(fileid);
+        }
+
+        [Delete(@"report/fileAsync/{fileid:int}")]
+        public Task DeleteFileAsync(int fileid)
+        {
+            if (!_global.CanCreateReports)
+                throw _crmSecurity.CreateSecurityException();
+
+            if (fileid < 0) throw new ArgumentException();
+
+            return InternalDeleteFileAsync(fileid);
+        }
+
+        private async Task InternalDeleteFileAsync(int fileid)
+        {
+            var file = await _daoFactory.GetReportDao().GetFileAsync(fileid);
 
             if (file == null) throw new ItemNotFoundException("File not found");
 

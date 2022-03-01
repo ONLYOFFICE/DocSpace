@@ -84,6 +84,7 @@ class SortComboBox extends React.Component {
       selectedOption,
       viewAs,
       viewSettings,
+      sortItemsVisible,
     } = this.props;
     const { sortDirection, opened } = this.state;
 
@@ -97,36 +98,46 @@ class SortComboBox extends React.Component {
       { value: "1", label: directionDescLabel },
     ];
 
+    const viewIcon = viewSettings?.find((item) => item.value === viewAs);
+
+    const selectorIcon = sortItemsVisible
+      ? "/static/images/z-a.sorting.react.svg"
+      : viewIcon.icon;
+
     const advancedOptions = (
       <>
-        <DropDownItem noHover>
-          <RadioButtonGroup
-            fontWeight={600}
-            isDisabled={isDisabled}
-            name={"direction"}
-            onClick={this.onChangeSortDirection}
-            options={sortDirectionArray}
-            orientation="vertical"
-            selected={sortDirection.toString()}
-            spacing="0px"
-          />
-        </DropDownItem>
-        <DropDownItem isSeparator />
-        <DropDownItem noHover>
-          <RadioButtonGroup
-            fontWeight={600}
-            isDisabled={isDisabled}
-            name={"sort"}
-            onClick={this.onChangeSortId}
-            options={sortArray}
-            orientation="vertical"
-            selected={selectedOption.key}
-            spacing="0px"
-          />
-        </DropDownItem>
+        {sortItemsVisible && (
+          <>
+            <DropDownItem noHover>
+              <RadioButtonGroup
+                fontWeight={600}
+                isDisabled={isDisabled}
+                name={"direction"}
+                onClick={this.onChangeSortDirection}
+                options={sortDirectionArray}
+                orientation="vertical"
+                selected={sortDirection.toString()}
+                spacing="0px"
+              />
+            </DropDownItem>
+            <DropDownItem isSeparator />
+            <DropDownItem noHover>
+              <RadioButtonGroup
+                fontWeight={600}
+                isDisabled={isDisabled}
+                name={"sort"}
+                onClick={this.onChangeSortId}
+                options={sortArray}
+                orientation="vertical"
+                selected={selectedOption.key}
+                spacing="0px"
+              />
+            </DropDownItem>
+          </>
+        )}
         {viewSettings && viewSettings.length && viewAs && isMobileOnly && (
           <>
-            <DropDownItem isSeparator />
+            {sortItemsVisible && <DropDownItem isSeparator />}
             <DropDownItem noHover>
               <RadioButtonGroup
                 fontWeight={600}
@@ -155,11 +166,12 @@ class SortComboBox extends React.Component {
         ref={this.combobox}
         scaled={true}
         selectedOption={selectedOption}
+        scaledOptions={true}
         size="content"
       >
         <StyledIconButton sortDirection={!!sortDirection}>
           <IconButton
-            iconName="/static/images/z-a.sorting.react.svg"
+            iconName={selectorIcon}
             isDisabled={isDisabled}
             isFill={true}
             onClick={this.onToggleAction}

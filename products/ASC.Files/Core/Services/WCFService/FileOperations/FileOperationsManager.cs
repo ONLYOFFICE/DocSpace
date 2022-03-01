@@ -174,13 +174,13 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         private List<FileOperationResult> QueueTask(Guid userId, FileOperation op)
         {
-            tasks.QueueTask(op.RunJob, op.GetDistributedTask());
+            tasks.QueueTask(op.RunJobAsync, op.GetDistributedTask());
             return GetOperationResults(userId);
         }
 
         private List<FileOperationResult> QueueTask<T, TId>(Guid userId, FileOperation<T, TId> op) where T : FileOperationData<TId>
         {
-            tasks.QueueTask(op.RunJob, op.GetDistributedTask());
+            tasks.QueueTask(op.RunJobAsync, op.GetDistributedTask());
             return GetOperationResults(userId);
         }
 
