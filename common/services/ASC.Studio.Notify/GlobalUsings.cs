@@ -1,6 +1,7 @@
 ﻿global using System;
 global using System.Collections.Generic;
 global using System.IO;
+global using System.Reflection;
 global using System.Runtime.InteropServices;
 global using System.Threading;
 global using System.Threading.Tasks;
@@ -8,6 +9,7 @@ global using System.Threading.Tasks;
 global using ASC.Api.Core;
 global using ASC.Common;
 global using ASC.Common.Caching;
+global using ASC.Common.Mapping;
 global using ASC.Common.Utils;
 global using ASC.Core.Notify;
 global using ASC.Notify;

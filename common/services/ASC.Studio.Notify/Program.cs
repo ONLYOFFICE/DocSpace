@@ -62,7 +62,7 @@ builder.Host.ConfigureAppConfiguration((hostContext, config) =>
 builder.Host.ConfigureServices((hostContext, services) =>
 {
     services.AddMemoryCache();
-                    services.AddHttpClient();
+    services.AddHttpClient();
 
     var diHelper = new DIHelper(services);
 
@@ -89,8 +89,7 @@ builder.Host.ConfigureServices((hostContext, services) =>
     diHelper.TryAdd<ServiceLauncher>();
     NotifyConfigurationExtension.Register(diHelper);
     diHelper.TryAdd<EmailSenderSink>();
-    services.AddHttpClient();
-
+    services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
 });
 
 builder.Host.ConfigureNLogLogging();
