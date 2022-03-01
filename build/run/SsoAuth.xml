@@ -1,9 +1,9 @@
 <service>
-  <id>OnlyofficeSocketService</id>
-  <name>OnlyofficeSocketService</name>
-  <description>This service runs Socket.</description>
+  <id>OnlyofficeSsoAuth</id>
+  <name>OnlyofficeSsoAuth</name>
+  <description>This service runs SSoAuth.</description>
   <executable>node</executable>
-  <arguments>../../common/ASC.Socket.IO/server.js</arguments>
+  <arguments>../../common/ASC.SSoAuth/app.js</arguments>
   <log mode="roll-by-time">
 	<pattern>dd-MM</pattern>
   </log>
