@@ -13,6 +13,7 @@ const ChipsRender = memo(
     blockRef,
     checkSelected,
     invalidEmailText,
+    chipOverLimitText,
     onDelete,
     onDoubleClick,
     onSaveNewChip,
@@ -41,6 +42,7 @@ const ChipsRender = memo(
               isSelected={checkIsSelected(it)}
               isValid={checkEmail(it?.value)}
               invalidEmailText={invalidEmailText}
+              chipOverLimitText={chipOverLimitText}
               onDelete={onDelete}
               onDoubleClick={onDoubleClick}
               onSaveNewChip={onSaveNewChip}
@@ -58,6 +60,7 @@ ChipsRender.propTypes = {
   currentChip: PropTypes.object,
 
   invalidEmailText: PropTypes.string,
+  chipOverLimitText: PropTypes.string,
 
   blockRef: PropTypes.shape({ current: PropTypes.any }),
 

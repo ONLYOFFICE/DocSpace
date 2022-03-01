@@ -271,25 +271,24 @@ const InputWithChips = ({
   const onAddChip = (chipsToAdd) => {
     setIsExceededLimitChips(chips.length >= exceededLimit);
     if (chips.length >= exceededLimit) return;
-    if (chipsToAdd.length === 1) {
-      let isExisted = !!chips.find(
-        (chip) =>
-          chip.value === chipsToAdd[0] || chip.value === chipsToAdd[0]?.value
-      );
-      setIsExistedOn(isExisted);
-      if (isExisted) return;
-    }
 
     const filteredChips = chipsToAdd
       .filter((it) => {
         if (it.length > MAX_EMAIL_LENGTH && !isChipOverLimit) {
           setIsChipoverLimit(true);
         }
-        return (
-          !chips.find(
-            (chip) => chip.value === it || chip.value === it?.value
-          ) && it.length <= MAX_EMAIL_LENGTH
+        const isExisted = !!chips.find(
+          (chip) => chip.value === it || chip.value === it?.value
         );
+        if (chipsToAdd.length === 1) {
+          setIsExistedOn(isExisted);
+          if (isExisted) return false;
+        }
+        const isNormalLength =
+          it?.value !== undefined
+            ? (it.value + it.label).length <= MAX_EMAIL_LENGTH
+            : it.length <= MAX_EMAIL_LENGTH;
+        return isNormalLength && !isExisted;
       })
       .map((it) => ({
         label: it?.label ?? it,
@@ -310,6 +309,7 @@ const InputWithChips = ({
               blockRef={blockRef}
               onClick={onClick}
               invalidEmailText={invalidEmailText}
+              chipOverLimitText={chipOverLimitText}
               onDelete={onDelete}
               onDoubleClick={onDoubleClick}
               onSaveNewChip={onSaveNewChip}

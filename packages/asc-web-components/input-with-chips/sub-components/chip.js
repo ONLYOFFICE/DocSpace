@@ -11,7 +11,9 @@ import {
   StyledChip,
   StyledChipInput,
   StyledChipValue,
+  StyledContainer,
 } from "../styled-inputwithchips.js";
+import { MAX_EMAIL_LENGTH } from "./helpers";
 
 const Chip = (props) => {
   const {
@@ -20,6 +22,7 @@ const Chip = (props) => {
     isSelected,
     isValid,
     invalidEmailText,
+    chipOverLimitText,
     onDelete,
     onDoubleClick,
     onSaveNewChip,
@@ -32,6 +35,7 @@ const Chip = (props) => {
       : `"${value?.label}" <${value?.value}>`
   );
   const [chipWidth, setChipWidth] = useState(0);
+  const [isChipOverLimit, setIsChipOverLimit] = useState(false);
 
   const tooltipRef = useRef(null);
   const warningRef = useRef(null);
@@ -58,7 +62,10 @@ const Chip = (props) => {
   );
 
   const onChange = (e) => {
-    setNewValue(e.target.value);
+    if (e.target.value.length <= MAX_EMAIL_LENGTH) {
+      setIsChipOverLimit(false);
+      setNewValue(e.target.value);
+    } else setIsChipOverLimit(true);
   };
 
   const onClickHandler = (e) => {
@@ -97,17 +104,24 @@ const Chip = (props) => {
   );
   if (value?.value === currentChip?.value) {
     return (
-      <StyledChipInput
-        value={newValue}
-        forwardedRef={chipInputRef}
-        onChange={onChange}
-        onKeyDown={onInputKeyDown}
-        isAutoFocussed
-        withBorder={false}
-        flexvalue={
-          value?.label !== value?.value ? "0 1 auto" : `0 0 ${chipWidth}px`
-        }
-      />
+      <StyledContainer>
+        {isChipOverLimit && (
+          <Tooltip getContent={() => {}} id="input" effect="float" />
+        )}
+        <StyledChipInput
+          data-for="input"
+          data-tip={chipOverLimitText}
+          value={newValue}
+          forwardedRef={chipInputRef}
+          onChange={onChange}
+          onKeyDown={onInputKeyDown}
+          isAutoFocussed
+          withBorder={false}
+          flexvalue={
+            value?.label !== value?.value ? "0 1 auto" : `0 0 ${chipWidth}px`
+          }
+        />
+      </StyledContainer>
     );
   }
 
@@ -148,6 +162,7 @@ Chip.propTypes = {
   isSelected: PropTypes.bool,
   isValid: PropTypes.bool,
   invalidEmailText: PropTypes.string,
+  chipOverLimitText: PropTypes.string,
   onClick: PropTypes.func,
   onDoubleClick: PropTypes.func,
   onDelete: PropTypes.func,

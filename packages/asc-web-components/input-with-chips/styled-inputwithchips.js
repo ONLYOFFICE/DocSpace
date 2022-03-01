@@ -93,6 +93,10 @@ const StyledChipValue = styled.div`
   color: #333333;
 `;
 
+const StyledContainer = styled.div`
+  position: relative;
+`;
+
 const StyledChipInput = styled(TextInput)`
   flex: ${(props) => `${props.flexvalue}!important`};
 `;
@@ -146,6 +150,7 @@ export {
   StyledAllChips,
   StyledChip,
   StyledChipValue,
+  StyledContainer,
   StyledChipInput,
   StyledInputWithLink,
   StyledTooltip,
