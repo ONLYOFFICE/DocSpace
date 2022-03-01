@@ -83,6 +83,7 @@ const StyledChip = styled.div`
 const StyledChipValue = styled.div`
   margin-right: 4px;
   min-width: 0px;
+  max-width: 395px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

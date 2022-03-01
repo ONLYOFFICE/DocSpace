@@ -34,7 +34,6 @@ const InputWithChips = ({
   const [isExistedOn, setIsExistedOn] = useState(false);
   const [isExceededLimitChips, setIsExceededLimitChips] = useState(false);
   const [isExceededLimitInput, setIsExceededLimitInput] = useState(false);
-  const [isChipOverLimit, setIsChipoverLimit] = useState(false);
 
   const containerRef = useRef(null);
   const inputRef = useRef(null);
@@ -261,7 +260,6 @@ const InputWithChips = ({
     setIsExceededLimitChips(false);
     setIsExistedOn(false);
     setIsExceededLimitInput(false);
-    setIsChipoverLimit(false);
   };
 
   const showTooltipOfLimit = () => {
@@ -274,9 +272,6 @@ const InputWithChips = ({
 
     const filteredChips = chipsToAdd
       .filter((it) => {
-        if (it.length > MAX_EMAIL_LENGTH && !isChipOverLimit) {
-          setIsChipoverLimit(true);
-        }
         const isExisted = !!chips.find(
           (chip) => chip.value === it || chip.value === it?.value
         );
@@ -284,15 +279,11 @@ const InputWithChips = ({
           setIsExistedOn(isExisted);
           if (isExisted) return false;
         }
-        const isNormalLength =
-          it?.value !== undefined
-            ? (it.value + it.label).length <= MAX_EMAIL_LENGTH
-            : it.length <= MAX_EMAIL_LENGTH;
-        return isNormalLength && !isExisted;
+        return !isExisted;
       })
       .map((it) => ({
-        label: it?.label ?? it,
-        value: it?.value ?? it,
+        label: it?.label?.slice(0, 64) ?? it.slice(0, 320),
+        value: it?.value?.slice(0, 256) ?? it.slice(0, 320),
       }));
     setChips([...chips, ...filteredChips]);
   };
@@ -321,7 +312,6 @@ const InputWithChips = ({
             exceededLimitText={exceededLimitText}
             existEmailText={existEmailText}
             exceededLimitInputText={exceededLimitInputText}
-            chipOverLimitText={chipOverLimitText}
             clearButtonLabel={clearButtonLabel}
             inputRef={inputRef}
             containerRef={containerRef}
@@ -331,7 +321,6 @@ const InputWithChips = ({
             isExistedOn={isExistedOn}
             isExceededLimitChips={isExceededLimitChips}
             isExceededLimitInput={isExceededLimitInput}
-            isChipOverLimit={isChipOverLimit}
             onHideAllTooltips={onHideAllTooltips}
             showTooltipOfLimit={showTooltipOfLimit}
             onAddChip={onAddChip}

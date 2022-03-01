@@ -13,7 +13,6 @@ const InputGroup = memo(
     exceededLimitText,
     existEmailText,
     exceededLimitInputText,
-    chipOverLimitText,
     clearButtonLabel,
 
     inputRef,
@@ -24,7 +23,6 @@ const InputGroup = memo(
     isExistedOn,
     isExceededLimitChips,
     isExceededLimitInput,
-    isChipOverLimit,
 
     goFromInputToChips,
     onClearClick,
@@ -81,7 +79,6 @@ const InputGroup = memo(
         {isExceededLimitInput && (
           <StyledTooltip>{exceededLimitInputText}</StyledTooltip>
         )}
-        {isChipOverLimit && <StyledTooltip>{chipOverLimitText}</StyledTooltip>}
 
         <TextInput
           value={value}
@@ -114,7 +111,6 @@ InputGroup.propTypes = {
   exceededLimitText: PropTypes.string,
   existEmailText: PropTypes.string,
   exceededLimitInputText: PropTypes.string,
-  chipOverLimitText: PropTypes.string,
   clearButtonLabel: PropTypes.string,
 
   maxLength: PropTypes.number,
@@ -124,7 +120,6 @@ InputGroup.propTypes = {
   isExistedOn: PropTypes.bool,
   isExceededLimitChips: PropTypes.bool,
   isExceededLimitInput: PropTypes.bool,
-  isChipOverLimit: PropTypes.bool,
   onHideAllTooltips: PropTypes.func,
   showTooltipOfLimit: PropTypes.func,
   onAddChip: PropTypes.func,
