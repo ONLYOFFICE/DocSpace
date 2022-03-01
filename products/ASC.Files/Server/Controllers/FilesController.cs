@@ -42,7 +42,7 @@ namespace ASC.Api.Documents
         private FilesSettingsHelper FilesSettingsHelper { get; }
         private FilesLinkUtility FilesLinkUtility { get; }
         private SecurityContext SecurityContext { get; }
-        private FolderWrapperHelper FolderWrapperHelper { get; }
+        private FolderDtoHelper FolderWrapperHelper { get; }
         private FileOperationWraperHelper FileOperationWraperHelper { get; }
         private EntryManager EntryManager { get; }
         private UserManager UserManager { get; }
@@ -72,7 +72,7 @@ namespace ASC.Api.Documents
             FilesSettingsHelper filesSettingsHelper,
             FilesLinkUtility filesLinkUtility,
             SecurityContext securityContext,
-            FolderWrapperHelper folderWrapperHelper,
+            FolderDtoHelper folderWrapperHelper,
             FileOperationWraperHelper fileOperationWraperHelper,
             EntryManager entryManager,
             UserManager userManager,

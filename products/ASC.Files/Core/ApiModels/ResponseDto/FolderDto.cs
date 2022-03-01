@@ -57,13 +57,13 @@ public class FolderDto<T> : FileEntryWrapper<T>
 }
 
 [Scope]
-public class FolderWrapperHelper : FileEntryWrapperHelper
+public class FolderDtoHelper : FileEntryWrapperHelper
 {
     private readonly AuthContext _authContext;
     private readonly IDaoFactory _daoFactory;
     private readonly GlobalFolderHelper _globalFolderHelper;
 
-    public FolderWrapperHelper(
+    public FolderDtoHelper(
         ApiDateTimeHelper apiDateTimeHelper,
         EmployeeWraperHelper employeeWrapperHelper,
         AuthContext authContext,

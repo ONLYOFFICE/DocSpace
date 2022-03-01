@@ -59,18 +59,18 @@ public class FolderContentDto<T>
 }
 
 [Scope]
-public class FolderContentWrapperHelper
+public class FolderContentDtoHelper
 {
     private readonly FileSecurity _fileSecurity;
     private readonly IDaoFactory _daoFactory;
     private readonly FileWrapperHelper _fileWrapperHelper;
-    private readonly FolderWrapperHelper _folderWrapperHelper;
+    private readonly FolderDtoHelper _folderWrapperHelper;
 
-    public FolderContentWrapperHelper(
+    public FolderContentDtoHelper(
         FileSecurity fileSecurity,
         IDaoFactory daoFactory,
         FileWrapperHelper fileWrapperHelper,
-        FolderWrapperHelper folderWrapperHelper)
+        FolderDtoHelper folderWrapperHelper)
     {
         _fileSecurity = fileSecurity;
         _daoFactory = daoFactory;

@@ -18,12 +18,12 @@ namespace ASC.Files.Helpers
         private DocumentServiceHelper DocumentServiceHelper { get; }
         private TenantManager TenantManager { get; }
         private SecurityContext SecurityContext { get; }
-        private FolderWrapperHelper FolderWrapperHelper { get; }
+        private FolderDtoHelper FolderWrapperHelper { get; }
         private FileOperationWraperHelper FileOperationWraperHelper { get; }
-        private FileShareWrapperHelper FileShareWrapperHelper { get; }
+        private FileShareDtoHelper FileShareWrapperHelper { get; }
         private FileShareParamsHelper FileShareParamsHelper { get; }
         private EntryManager EntryManager { get; }
-        private FolderContentWrapperHelper FolderContentWrapperHelper { get; }
+        private FolderContentDtoHelper FolderContentWrapperHelper { get; }
         private ChunkedUploadSessionHelper ChunkedUploadSessionHelper { get; }
         private DocumentServiceTrackerHelper DocumentServiceTracker { get; }
         private SettingsManager SettingsManager { get; }
@@ -52,12 +52,12 @@ namespace ASC.Files.Helpers
             DocumentServiceHelper documentServiceHelper,
             TenantManager tenantManager,
             SecurityContext securityContext,
-            FolderWrapperHelper folderWrapperHelper,
+            FolderDtoHelper folderWrapperHelper,
             FileOperationWraperHelper fileOperationWraperHelper,
-            FileShareWrapperHelper fileShareWrapperHelper,
+            FileShareDtoHelper fileShareWrapperHelper,
             FileShareParamsHelper fileShareParamsHelper,
             EntryManager entryManager,
-            FolderContentWrapperHelper folderContentWrapperHelper,
+            FolderContentDtoHelper folderContentWrapperHelper,
             ChunkedUploadSessionHelper chunkedUploadSessionHelper,
             DocumentServiceTrackerHelper documentServiceTracker,
             IOptionsMonitor<ILog> optionMonitor,

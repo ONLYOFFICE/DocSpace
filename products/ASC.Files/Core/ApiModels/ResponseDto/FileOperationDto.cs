@@ -61,13 +61,13 @@ public class FileOperationDto
 [Scope]
 public class FileOperationWraperHelper
 {
-    private readonly FolderWrapperHelper _folderWrapperHelper;
+    private readonly FolderDtoHelper _folderWrapperHelper;
     private readonly FileWrapperHelper _filesWrapperHelper;
     private readonly IDaoFactory _daoFactory;
     private readonly CommonLinkUtility _commonLinkUtility;
 
     public FileOperationWraperHelper(
-        FolderWrapperHelper folderWrapperHelper,
+        FolderDtoHelper folderWrapperHelper,
         FileWrapperHelper filesWrapperHelper,
         IDaoFactory daoFactory,
         CommonLinkUtility commonLinkUtility)

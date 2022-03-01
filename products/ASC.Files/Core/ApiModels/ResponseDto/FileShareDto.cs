@@ -53,12 +53,12 @@ public class FileShareLink
 }
 
 [Scope]
-public class FileShareWrapperHelper
+public class FileShareDtoHelper
 {
     private readonly UserManager _userManager;
     private readonly EmployeeWraperFullHelper _employeeWraperFullHelper;
 
-    public FileShareWrapperHelper(
+    public FileShareDtoHelper(
         UserManager userManager,
         EmployeeWraperFullHelper employeeWraperFullHelper)
     {
