@@ -126,6 +126,7 @@ const StyledContextMenu = styled.div`
 
   .p-submenu-icon {
     margin-left: auto;
+    padding-left: 8px;
     path {
       fill: ${(props) => props.theme.dropDownItem.icon.color};
     }

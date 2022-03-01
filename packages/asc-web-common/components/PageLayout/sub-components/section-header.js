@@ -41,7 +41,7 @@ const StyledSectionHeader = styled.div`
           svg {
             width: 14px;
           }
-          margin-right: 10px !important;
+          margin-right: 10px;
         }
       `}
   }
@@ -63,10 +63,9 @@ const StyledSectionHeader = styled.div`
         -o-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
       }
       .group-button-menu-container {
-        padding-bottom: 0 !important;
+        padding-bottom: 0;
         > div:first-child {
-          top: ${(props) =>
-            !props.isSectionHeaderVisible ? "56px" : "0px"} !important;
+          top: ${(props) => (!props.isSectionHeaderVisible ? "56px" : "0px")};
 
           @media ${desktop} {
             ${isMobile &&

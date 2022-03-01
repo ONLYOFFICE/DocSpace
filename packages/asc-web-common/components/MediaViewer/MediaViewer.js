@@ -49,7 +49,7 @@ class MediaViewer extends React.Component {
     super(props);
 
     const item = props.playlist.find(
-      (file) => file.fileId === props.currentFileId
+      (file) => String(file.fileId) === String(props.currentFileId)
     );
 
     const playlistPos = item ? item.id : 0;
@@ -308,6 +308,9 @@ class MediaViewer extends React.Component {
     this.setState({
       playlistPos: currentPlaylistPos,
     });
+
+    const id = playlist[currentPlaylistPos].fileId;
+    this.props.onChangeUrl(id);
   };
 
   nextMedia = () => {
@@ -319,6 +322,9 @@ class MediaViewer extends React.Component {
     this.setState({
       playlistPos: currentPlaylistPos,
     });
+
+    const id = playlist[currentPlaylistPos].fileId;
+    this.props.onChangeUrl(id);
   };
 
   getOffset = () => {
@@ -419,8 +425,8 @@ class MediaViewer extends React.Component {
     }
   };
 
-  onClose = () => {
-    this.props.onClose();
+  onClose = (e) => {
+    this.props.onClose(e);
     this.setState({ visible: false });
   };
 
@@ -450,7 +456,7 @@ class MediaViewer extends React.Component {
       canDelete,
       canDownload,
       errorLabel,
-      previewFile,
+      isPreviewFile,
     } = this.props;
 
     const currentFileId =
@@ -546,7 +552,7 @@ class MediaViewer extends React.Component {
         <div className="mediaViewerToolbox" ref={this.viewerToolbox}>
           {!isImage && (
             <span>
-              {canDelete(currentFileId) && !previewFile && (
+              {canDelete(currentFileId) && !isPreviewFile && (
                 <ControlBtn onClick={this.onDelete}>
                   <div className="deleteBtnContainer">
                     <StyledMediaDeleteIcon size="scale" />
@@ -584,7 +590,8 @@ MediaViewer.propTypes = {
   onEmptyPlaylistError: PropTypes.func,
   deleteDialogVisible: PropTypes.bool,
   errorLabel: PropTypes.string,
-  previewFile: PropTypes.bool,
+  isPreviewFile: PropTypes.bool,
+  onChangeUrl: PropTypes.func,
 };
 
 MediaViewer.defaultProps = {
@@ -597,7 +604,7 @@ MediaViewer.defaultProps = {
   canDownload: () => {
     return true;
   },
-  previewFile: false,
+  isPreviewFile: false,
 };
 
 export default MediaViewer;

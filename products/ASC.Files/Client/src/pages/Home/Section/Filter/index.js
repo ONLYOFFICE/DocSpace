@@ -1,16 +1,16 @@
-import React from 'react';
-import find from 'lodash/find';
-import result from 'lodash/result';
-import { withTranslation } from 'react-i18next';
-import { withRouter } from 'react-router';
-import { FilterType } from '@appserver/common/constants';
-import Loaders from '@appserver/common/components/Loaders';
-import FilterInput from '@appserver/common/components/FilterInput';
-import { withLayoutSize } from '@appserver/common/utils';
-import { isMobileOnly, isMobile } from 'react-device-detect';
-import { inject, observer } from 'mobx-react';
-import withLoader from '../../../../HOCs/withLoader';
-
+import React from "react";
+import find from "lodash/find";
+import result from "lodash/result";
+import { withTranslation } from "react-i18next";
+import { withRouter } from "react-router";
+import { FilterType } from "@appserver/common/constants";
+import Loaders from "@appserver/common/components/Loaders";
+import FilterInput from "@appserver/common/components/FilterInput";
+import { withLayoutSize } from "@appserver/common/utils";
+import { isMobile, isMobileOnly } from "react-device-detect";
+import { inject, observer } from "mobx-react";
+import withLoader from "../../../../HOCs/withLoader";
+import { FileAction } from "@appserver/common/constants";
 const getFilterType = (filterValues) => {
   const filterType = result(
     find(filterValues, (value) => {
@@ -92,12 +92,11 @@ class SectionFilterContent extends React.Component {
   };
 
   onChangeViewAs = (view) => {
-    const { setViewAs } = this.props;
-    //const tabletView = isTabletView();
+    const { setViewAs, sectionWidth } = this.props;
 
     if (view === 'row') {
-      //tabletView ? setViewAs("table") : setViewAs("row");
-      setViewAs('table');
+      if (sectionWidth < 1025 || isMobile) setViewAs("row");
+      else setViewAs("table");
     } else {
       setViewAs(view);
     }
@@ -112,6 +111,7 @@ class SectionFilterContent extends React.Component {
       personal,
       isRecentFolder,
       isFavoritesFolder,
+      isRecycleBinFolder,
     } = this.props;
     const { selectedItem } = filter;
     const { usersCaption, groupsCaption } = customNames;
@@ -228,7 +228,7 @@ class SectionFilterContent extends React.Component {
         },
       );
 
-    if (!isRecentFolder && !isFavoritesFolder)
+    if (!isRecentFolder && !isFavoritesFolder && !isRecycleBinFolder)
       filterOptions.push(
         {
           key: 'filter-folders',
@@ -333,7 +333,15 @@ class SectionFilterContent extends React.Component {
   render() {
     //console.log("Filter render");
     const selectedFilterData = this.getSelectedFilterData();
-    const { t, sectionWidth, isFiltered, viewAs, personal } = this.props;
+    const {
+      t,
+      sectionWidth,
+      isFiltered,
+      viewAs,
+      personal,
+      isFavoritesFolder,
+      isRecentFolder,
+    } = this.props;
     const filterColumnCount =
       window.innerWidth < 500 ? {} : { filterColumnCount: personal ? 2 : 3 };
 
@@ -353,7 +361,7 @@ class SectionFilterContent extends React.Component {
         isReady={this.state.isReady}
         {...filterColumnCount}
         contextMenuHeader={t('Common:AddFilter')}
-        isMobile={isMobileOnly}
+        sortItemsVisible={!isRecentFolder}
       />
     );
   }
@@ -371,14 +379,25 @@ export default inject(({ auth, filesStore, treeFoldersStore, selectedFolderStore
     createThumbnails,
   } = filesStore;
 
-  const { user } = auth.userStore;
-  const { customNames, culture, personal } = auth.settingsStore;
-  const { isFavoritesFolder, isRecentFolder } = treeFoldersStore;
+    const { type: fileActionType } = filesStore.fileActionStore;
 
-  const { search, filterType, authorType } = filter;
-  const isFiltered =
-    (!!files.length || !!folders.length || search || filterType || authorType) &&
-    !(treeFoldersStore.isPrivacyFolder && isMobile);
+    const { user } = auth.userStore;
+    const { customNames, culture, personal } = auth.settingsStore;
+    const {
+      isFavoritesFolder,
+      isRecentFolder,
+      isRecycleBinFolder,
+    } = treeFoldersStore;
+
+    const { search, filterType, authorType } = filter;
+    const isFiltered =
+      (!!files.length ||
+        !!folders.length ||
+        search ||
+        filterType ||
+        authorType ||
+        fileActionType === FileAction.Create) &&
+      !(treeFoldersStore.isPrivacyFolder && isMobile);
 
   return {
     customNames,
@@ -390,6 +409,7 @@ export default inject(({ auth, filesStore, treeFoldersStore, selectedFolderStore
     isFiltered,
     isFavoritesFolder,
     isRecentFolder,
+      isRecycleBinFolder,
 
     setIsLoading,
     fetchFiles,

@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Security.Authentication;
@@ -86,24 +87,25 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             return Files.Count + Folders.Count;
         }
 
-        protected override void Do(IServiceScope scope)
+        protected override async Task DoAsync(IServiceScope scope)
         {
             var scopeClass = scope.ServiceProvider.GetService<FileMarkAsReadOperationScope>();
             var (fileMarker, globalFolder, daoFactory, settingsManager) = scopeClass;
-            var entries = new List<FileEntry<T>>();
+            var entries = AsyncEnumerable.Empty<FileEntry<T>>();
             if (Folders.Count > 0)
             {
-                entries.AddRange(FolderDao.GetFolders(Folders));
+                entries.Concat(FolderDao.GetFoldersAsync(Folders));
             }
             if (Files.Count > 0)
             {
-                entries.AddRange(FileDao.GetFiles(Files));
+                entries.Concat(FileDao.GetFilesAsync(Files));
             }
-            entries.ForEach(x =>
+
+            await entries.ForEachAwaitAsync(async x =>
             {
                 CancellationToken.ThrowIfCancellationRequested();
 
-                fileMarker.RemoveMarkAsNew(x, ((IAccount)Thread.CurrentPrincipal.Identity).ID);
+                await fileMarker.RemoveMarkAsNewAsync(x, ((IAccount)Thread.CurrentPrincipal.Identity).ID);
 
                 if (x.FileEntryType == FileEntryType.File)
                 {
@@ -119,19 +121,23 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             var rootIds = new List<int>
                 {
                     globalFolder.GetFolderMy(fileMarker, daoFactory),
-                    globalFolder.GetFolderCommon(fileMarker, daoFactory),
-                    globalFolder.GetFolderShare(daoFactory),
-                    globalFolder.GetFolderProjects(daoFactory),
+                    await globalFolder.GetFolderCommonAsync(fileMarker, daoFactory),
+                    await globalFolder.GetFolderShareAsync(daoFactory),
+                    await globalFolder.GetFolderProjectsAsync(daoFactory),
                 };
 
             if (PrivacyRoomSettings.GetEnabled(settingsManager))
             {
-                rootIds.Add(globalFolder.GetFolderPrivacy(daoFactory));
+                rootIds.Add(await globalFolder.GetFolderPrivacyAsync(daoFactory));
             }
 
-            var newrootfolder =
-                rootIds.Select(r => new KeyValuePair<int, int>(r, fileMarker.GetRootFoldersIdMarkedAsNew(r)))
-                .Select(item => string.Format("new_{{\"key\"? \"{0}\", \"value\"? \"{1}\"}}", item.Key, item.Value));
+            var newrootfolder = new List<string>();
+
+            foreach (var r in rootIds)
+            {
+                var item = new KeyValuePair<int, int>(r, await fileMarker.GetRootFoldersIdMarkedAsNewAsync(r));
+                newrootfolder.Add($"new_{{\"key\"? \"{item.Key}\", \"value\"? \"{item.Value}\"}}");
+            }
 
             Result += string.Join(SPLIT_CHAR, newrootfolder.ToArray());
         }

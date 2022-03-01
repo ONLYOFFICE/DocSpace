@@ -75,9 +75,8 @@ FilesListRow.defaultProps = {
   isMultiSelect: false,
 };
 
-export default inject(({ formatsStore }, { fileExst }) => {
-  const { iconFormatsStore } = formatsStore;
-  const iconSrc = iconFormatsStore.getIconSrc(fileExst, 24);
+export default inject(({ settingsStore }, { fileExst }) => {
+  const iconSrc = settingsStore.getIconSrc(fileExst, 24);
   return {
     iconSrc,
   };

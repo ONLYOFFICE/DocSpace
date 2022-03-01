@@ -146,7 +146,6 @@ class Calendar extends Component {
 
     const openToDateYear = openToDate.getFullYear();
 
-    let disabled = false;
     const listMonths = [];
 
     let i = 0;
@@ -154,9 +153,17 @@ class Calendar extends Component {
       listMonths.push({
         key: `${i}`,
         label: `${months[i]}`,
-        disabled: disabled,
+        disabled: false,
       });
       i++;
+    }
+
+    if (openToDateYear < minDateYear) {
+      i = 0;
+      while (i != 12) {
+        if (i != minDateMonth) listMonths[i].disabled = true;
+        i++;
+      }
     }
 
     if (openToDateYear === minDateYear) {
@@ -165,7 +172,9 @@ class Calendar extends Component {
         listMonths[i].disabled = true;
         i++;
       }
-    } else if (openToDateYear === maxDateYear) {
+    }
+
+    if (openToDateYear === maxDateYear) {
       i = 11;
       while (i != maxDateMonth) {
         listMonths[i].disabled = true;
@@ -493,6 +502,7 @@ class Calendar extends Component {
           <ComboBoxStyle>
             <ComboBoxMonthStyle size={size}>
               <ComboBox
+                isDefaultMode={false}
                 scaled={true}
                 scaledOptions={true}
                 dropDownMaxHeight={dropDownSizeMonth}
@@ -500,10 +510,15 @@ class Calendar extends Component {
                 selectedOption={selectedOptionMonth}
                 options={optionsMonth}
                 isDisabled={false}
+                name="month-button"
+                displaySelectedOption
+                fixedDirection={true}
+                directionY="bottom"
               />
             </ComboBoxMonthStyle>
             <ComboBoxDateStyle>
               <ComboBox
+                isDefaultMode={false}
                 scaled={true}
                 scaledOptions={true}
                 dropDownMaxHeight={dropDownSizeYear}
@@ -511,6 +526,11 @@ class Calendar extends Component {
                 selectedOption={selectedOptionYear}
                 options={optionsYear}
                 isDisabled={false}
+                showDisabledItems
+                name="year-button"
+                displaySelectedOption
+                fixedDirection={true}
+                directionY="bottom"
               />
             </ComboBoxDateStyle>
           </ComboBoxStyle>

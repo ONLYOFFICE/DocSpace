@@ -21,10 +21,18 @@ class AdvancedSelector extends React.Component {
   };
 
   render() {
-    const { isOpen, id, className, style, withoutAside } = this.props;
+    const {
+      isOpen,
+      id,
+      className,
+      style,
+      withoutAside,
+      isDefaultDisplayDropDown,
+      smallSectionWidth,
+    } = this.props;
 
     return (
-      <div ref={this.ref} id={id} className={className} style={style}>
+      <div id={id} className={className} style={style}>
         {withoutAside ? (
           <Selector {...this.props} />
         ) : (
@@ -80,6 +88,7 @@ AdvancedSelector.propTypes = {
   onCancel: PropTypes.func,
   onAddNewClick: PropTypes.func,
   loadNextPage: PropTypes.func,
+  isDefaultDisplayDropDown: PropTypes.bool,
 };
 
 AdvancedSelector.defaultProps = {
@@ -90,6 +99,7 @@ AdvancedSelector.defaultProps = {
   allowGroupSelection: false,
   allowAnyClickClose: true,
   options: [],
+  isDefaultDisplayDropDown: true,
 };
 
 export default AdvancedSelector;

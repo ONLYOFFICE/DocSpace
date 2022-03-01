@@ -452,7 +452,7 @@ class SectionHeaderContent extends React.Component {
             width={context.sectionWidth}
             isRootFolder={isRootFolder}
             canCreate={canCreate}
-            title={title}
+            isTitle={title}
             isDesktop={isDesktop}
             isTabletView={isTabletView}
             isLoading={isLoading}

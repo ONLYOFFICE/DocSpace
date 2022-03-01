@@ -70,6 +70,7 @@ const HeaderNav = ({
   setUserIsUpdate,
   buildVersionInfo,
   debugInfo,
+  settingsModule,
   currentProductId,
   toggleCatalogOpen,
   showCatalog,
@@ -93,10 +94,6 @@ const HeaderNav = ({
     }
   }, []);
 
-  const onSettingsClick = useCallback(() => {
-    history.push(SETTINGS_URL);
-  });
-
   const onCloseDialog = () => setVisibleDialog(false);
   const onDebugClick = useCallback(() => {
     setVisibleDebugDialog(true);
@@ -117,7 +114,21 @@ const HeaderNav = ({
 
   const onLogoutClick = useCallback(() => logout && logout(), [logout]);
 
+  const settingsUrl =
+    settingsModule && combineUrl(PROXY_HOMEPAGE_URL, settingsModule.link);
+  const onSettingsClick =
+    settingsModule && useCallback(() => history.push(settingsUrl), []);
+
   const getCurrentUserActions = useCallback(() => {
+    const settings = settingsModule
+      ? {
+          key: "SettingsBtn",
+          label: t("Common:Settings"),
+          onClick: onSettingsClick,
+          url: settingsUrl,
+        }
+      : null;
+
     const actions = [
       {
         key: "ProfileBtn",
@@ -125,6 +136,7 @@ const HeaderNav = ({
         onClick: onProfileClick,
         url: peopleAvailable ? PROFILE_SELF_URL : PROFILE_MY_URL,
       },
+      settings,
       {
         key: "SettingsBtn",
         ...(!isPersonal && {
@@ -245,6 +257,7 @@ export default withRouter(
     } = settingsStore;
     const { user, userIsUpdate, setUserIsUpdate } = userStore;
     const modules = auth.availableModules;
+    const settingsModule = modules.find((module) => module.id === "settings");
 
     return {
       isPersonal,
@@ -264,6 +277,7 @@ export default withRouter(
       showCatalog,
       buildVersionInfo,
       debugInfo,
+      settingsModule,
       changeTheme,
     };
   })(observer(HeaderNav))

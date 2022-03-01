@@ -801,10 +801,18 @@ namespace ASC.Web.Studio.Core.Notify
             var userInfo = UserManager.GetUserByEmail(email);
             if (!UserManager.UserExists(userInfo)) return;
 
+            var portalUrl = CommonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/');
+
+            var hash = Authentication.GetUserPasswordStamp(userInfo.ID).ToString("s");
+
+            var linkToRecovery = CommonLinkUtility.GetConfirmationUrl(userInfo.Email, ConfirmType.PasswordChange, hash, userInfo.ID);
+
             client.SendNoticeToAsync(
                 CoreBaseSettings.CustomMode ? Actions.PersonalCustomModeAlreadyExist : Actions.PersonalAlreadyExist,
                 StudioNotifyHelper.RecipientFromEmail(email, false),
                 new[] { EMailSenderName },
+                new TagValue(Tags.PortalUrl, portalUrl),
+                new TagValue(Tags.LinkToRecovery, linkToRecovery),
                 new TagValue(CommonTags.Footer, CoreBaseSettings.CustomMode ? "personalCustomMode" : "personal"),
                 new TagValue(CommonTags.Culture, Thread.CurrentThread.CurrentUICulture.Name));
         }

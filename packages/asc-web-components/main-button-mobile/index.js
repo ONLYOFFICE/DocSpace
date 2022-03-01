@@ -109,7 +109,8 @@ const MainButtonMobile = (props) => {
   }, [opened]);
 
   useEffect(() => {
-    let height = divRef.current.getBoundingClientRect().height;
+    let height =
+      divRef?.current?.getBoundingClientRect()?.height || window.innerHeight;
     height >= window.innerHeight ? setHeight("90vh") : setHeight(height + "px");
   }, [isOpen, isOpenButton, window.innerHeight, isUploading]);
 

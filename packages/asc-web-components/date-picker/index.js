@@ -317,6 +317,8 @@ class DatePicker extends Component {
       id,
       style,
       className,
+      inputClassName,
+      fixedDirection,
     } = this.props;
     const { value, isOpen, mask, hasError, displayType } = this.state;
 
@@ -328,6 +330,7 @@ class DatePicker extends Component {
         style={style}
       >
         <InputBlock
+          className={inputClassName}
           scale={true}
           isDisabled={isDisabled}
           isReadOnly={isReadOnly}
@@ -347,9 +350,12 @@ class DatePicker extends Component {
           displayType === "dropdown" ? (
             <DropDownStyle>
               <DropDown
+                forwardedRef={this.ref}
                 className="drop-down"
                 open={isOpen}
                 clickOutsideAction={this.onClose}
+                isDefaultMode={false}
+                fixedDirection={fixedDirection}
               >
                 {this.renderBody()}
               </DropDown>
@@ -414,10 +420,13 @@ DatePicker.propTypes = {
   calendarHeaderContent: PropTypes.string,
   /** Accepts class */
   className: PropTypes.string,
+  /** Accepts input class */
+  inputClassName: PropTypes.string,
   /** Accepts id */
   id: PropTypes.string,
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  fixedDirection: PropTypes.bool,
 };
 
 DatePicker.defaultProps = {

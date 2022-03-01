@@ -1,6 +1,7 @@
 import styled, { css } from "styled-components";
 import Scrollbar from "@appserver/components/scrollbar";
 import { desktop, tablet } from "@appserver/components/utils/device";
+import { isMobile } from "react-device-detect";
 import { Base } from "@appserver/components/themes";
 
 const PanelStyles = css`
@@ -62,9 +63,21 @@ const StyledAsidePanel = styled.div`
     right: 0;
     background-color: ${(props) =>
       props.theme.filesPanels.aside.backgroundColor};
+    height: ${isMobile ? "55px" : "48px"};
+  }
+  .upload-panel_header-content::after {
+    position: absolute;
+    width: 100%;
+    max-width: 468px;
+    height: 1px;
+    background: #eceef1;
+    content: "";
+    top: 48px;
+    width: calc(100% - 32px);
   }
   .upload-panel_body {
-    padding-top: 64px;
+    padding-top: ${isMobile ? "55px" : "48px"};
+    height: ${isMobile ? "calc(100vh - 55px)" : "calc(100vh - 48px)"};
   }
   .modal-dialog-aside {
     padding: 0;
@@ -264,9 +277,6 @@ const StyledHeaderContent = styled.div`
     margin-left: auto;
     .upload_panel-vertical-dots-icon {
     }
-    .upload_panel-remove-icon {
-      margin-right: -1px;
-    }
   }
 
   .files-operations-header,
@@ -286,7 +296,7 @@ const StyledHeaderContent = styled.div`
 
 const StyledBody = styled.div`
   &.files-operations-body {
-    padding: 0 16px;
+    padding: 0 0 0 16px;
     box-sizing: border-box;
     width: 100%;
     height: calc(100vh - 125px);

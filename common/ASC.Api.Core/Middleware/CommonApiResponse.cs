@@ -15,26 +15,16 @@ namespace ASC.Api.Core.Middleware
         {
             StatusCode = statusCode;
         }
-
-        public static SuccessApiResponse Create(HttpStatusCode statusCode, object response)
-        {
-            return new SuccessApiResponse(statusCode, response);
-        }
-
-        public static ErrorApiResponse CreateError(HttpStatusCode statusCode, Exception error)
-        {
-            return new ErrorApiResponse(statusCode, error);
-        }
     }
 
     public class ErrorApiResponse : CommonApiResponse
     {
         public CommonApiError Error { get; set; }
 
-        protected internal ErrorApiResponse(HttpStatusCode statusCode, Exception error, string message = null) : base(statusCode)
+        protected internal ErrorApiResponse(HttpStatusCode statusCode, Exception error, string message, bool withStackTrace) : base(statusCode)
         {
             Status = 1;
-            Error = CommonApiError.FromException(error, message);
+            Error = CommonApiError.FromException(error, message, withStackTrace);
         }
     }
 
@@ -88,15 +78,21 @@ namespace ASC.Api.Core.Middleware
 
         public int Hresult { get; set; }
 
-        public static CommonApiError FromException(Exception exception, string message = null)
+        public static CommonApiError FromException(Exception exception, string message, bool withStackTrace)
         {
-            return new CommonApiError()
+            var result = new CommonApiError()
             {
-                Message = message ?? exception.Message,
-                Type = exception.GetType().ToString(),
-                Stack = exception.StackTrace,
-                Hresult = exception.HResult
+                Message = message ?? exception.Message
             };
+
+            if (withStackTrace)
+            {
+                result.Type = exception.GetType().ToString();
+                result.Stack = exception.StackTrace;
+                result.Hresult = exception.HResult;
+            }
+
+            return result;
         }
     }
 }

@@ -70,9 +70,11 @@ export default function withContent(WrappedContent) {
       } else {
         return (
           <LinkWithDropdown
+            className="link-with-dropdown-group"
             isTextOverflow
             containerMinWidth="120px"
             containerWidth="15%"
+            directionY="both"
             title={temp[0].label}
             fontSize="12px"
             fontWeight={400}

@@ -34,6 +34,7 @@ using System.Net.Http.Headers;
 using System.Security;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Web;
 
 using ASC.Common.Caching;
@@ -176,11 +177,11 @@ namespace ASC.Web.Files.ThirdPartyApp
             ClientFactory = clientFactory;
         }
 
-        public bool Request(HttpContext context)
+        public async Task<bool> RequestAsync(HttpContext context)
         {
             if ((context.Request.Query[FilesLinkUtility.Action].FirstOrDefault() ?? "").Equals("stream", StringComparison.InvariantCultureIgnoreCase))
             {
-                StreamFile(context);
+                await StreamFileAsync(context);
                 return true;
             }
 
@@ -272,7 +273,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             return uriBuilder.Uri + "?" + query;
         }
 
-        public void SaveFile(string fileId, string fileType, string downloadUrl, Stream stream)
+        public async Task SaveFileAsync(string fileId, string fileType, string downloadUrl, Stream stream)
         {
             Logger.Debug("BoxApp: save file stream " + fileId +
                                 (stream == null
@@ -298,14 +299,17 @@ namespace ASC.Web.Files.ThirdPartyApp
                 {
                     if (stream != null)
                     {
-                        downloadUrl = PathProvider.GetTempUrl(stream, fileType);
+                        downloadUrl = await PathProvider.GetTempUrlAsync(stream, fileType);
                         downloadUrl = DocumentServiceConnector.ReplaceCommunityAdress(downloadUrl);
                     }
 
                     Logger.Debug("BoxApp: GetConvertedUri from " + fileType + " to " + currentType + " - " + downloadUrl);
 
                     var key = DocumentServiceConnector.GenerateRevisionId(downloadUrl);
-                    DocumentServiceConnector.GetConvertedUri(downloadUrl, fileType, currentType, key, null, null, null, false, out downloadUrl);
+
+                    var resultTuple = await DocumentServiceConnector.GetConvertedUriAsync(downloadUrl, fileType, currentType, key, null, null, null, false);
+                    downloadUrl = resultTuple.ConvertedDocumentUri;
+
                     stream = null;
                 }
                 catch (Exception e)
@@ -326,24 +330,24 @@ namespace ASC.Web.Files.ThirdPartyApp
                 var metadata = $"Content-Disposition: form-data; name=\"filename\"; filename=\"{title}\"\r\nContent-Type: application/octet-stream\r\n\r\n";
                 var metadataPart = $"--{boundary}\r\n{metadata}";
                 var bytes = Encoding.UTF8.GetBytes(metadataPart);
-                tmpStream.Write(bytes, 0, bytes.Length);
+                await tmpStream.WriteAsync(bytes, 0, bytes.Length);
 
                 if (stream != null)
                 {
-                    stream.CopyTo(tmpStream);
+                    await stream.CopyToAsync(tmpStream);
                 }
                 else
                 {
                     var downloadRequest = new HttpRequestMessage();
                     downloadRequest.RequestUri = new Uri(downloadUrl);
-                    using var response = httpClient.Send(request);
+                    using var response = await httpClient.SendAsync(request);
                     using var downloadStream = new ResponseStream(response);
-                    downloadStream.CopyTo(tmpStream);
+                    await downloadStream.CopyToAsync(tmpStream);
                 }
 
                 var mediaPartEnd = $"\r\n--{boundary}--\r\n";
                 bytes = Encoding.UTF8.GetBytes(mediaPartEnd);
-                tmpStream.Write(bytes, 0, bytes.Length);
+                await tmpStream.WriteAsync(bytes, 0, bytes.Length);
 
                 request.Method = HttpMethod.Post;
                 request.Headers.Add("Authorization", "Bearer " + token);
@@ -356,13 +360,13 @@ namespace ASC.Web.Files.ThirdPartyApp
 
             try
             {
-                using var response = httpClient.Send(request);
-                using var responseStream = response.Content.ReadAsStream();
+                using var response = await httpClient.SendAsync(request);
+                using var responseStream = await response.Content.ReadAsStreamAsync();
                 string result = null;
                 if (responseStream != null)
                 {
                     using var readStream = new StreamReader(responseStream);
-                    result = readStream.ReadToEnd();
+                    result = await readStream.ReadToEndAsync();
                 }
 
                 Logger.Debug("BoxApp: save file response - " + result);
@@ -435,9 +439,9 @@ namespace ASC.Web.Files.ThirdPartyApp
             var fileId = context.Request.Query["id"];
 
             context.Response.Redirect(FilesLinkUtility.GetFileWebEditorUrl(ThirdPartySelector.BuildAppFileId(AppAttr, fileId)), true);
-        }
+        }      
 
-        private void StreamFile(HttpContext context)
+        private async Task StreamFileAsync(HttpContext context)
         {
             try
             {
@@ -476,20 +480,20 @@ namespace ASC.Web.Files.ThirdPartyApp
                 request.Headers.Add("Authorization", "Bearer " + token);
 
                 var httpClient = ClientFactory.CreateClient();
-                using var response = httpClient.Send(request);
+                using var response = await httpClient.SendAsync(request);
                 using var stream = new ResponseStream(response);
-                stream.CopyTo(context.Response.Body);
+                await stream.CopyToAsync(context.Response.Body);
             }
             catch (Exception ex)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                context.Response.WriteAsync(ex.Message).Wait();
+                await context.Response.WriteAsync(ex.Message);
                 Logger.Error("BoxApp: Error request " + context.Request.Url(), ex);
             }
 
             try
             {
-                context.Response.Body.Flush();
+                await context.Response.Body.FlushAsync();
                 //TODO
                 //context.Response.Body.SuppressContent = true;
                 //context.ApplicationInstance.CompleteRequest();
