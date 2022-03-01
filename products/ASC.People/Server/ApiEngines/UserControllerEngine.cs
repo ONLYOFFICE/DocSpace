@@ -93,7 +93,7 @@ public class UserControllerEngine : PeopleControllerEngine
         _employeeFullDtoHelper = employeeFullDtoHelper;
     }
 
-    public EmployeeFullDto AddMember(MemberRequestDto memberModel)
+    public EmployeeDto AddMember(MemberRequestDto memberModel)
     {
         ApiContext.AuthByClaim();
 
@@ -138,7 +138,7 @@ public class UserControllerEngine : PeopleControllerEngine
         user = _userManagerWrapper.AddUser(user, memberModel.PasswordHash, memberModel.FromInviteLink, true, memberModel.IsVisitor, memberModel.FromInviteLink);
 
         var messageAction = memberModel.IsVisitor ? MessageAction.GuestCreated : MessageAction.UserCreated;
-        MessageService.Send(messageAction, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettingsHelper));
+        MessageService.Send(messageAction, MessageTarget.Create(user.Id), user.DisplayUserName(false, DisplayUserSettingsHelper));
 
         UpdateDepartments(memberModel.Department, user);
 
@@ -150,7 +150,7 @@ public class UserControllerEngine : PeopleControllerEngine
         return _employeeFullDtoHelper.GetFull(user);
     }
 
-    public EmployeeFullDto AddMemberAsActivated(MemberRequestDto memberModel)
+    public EmployeeDto AddMemberAsActivated(MemberRequestDto memberModel)
     {
         PermissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
 
@@ -205,7 +205,7 @@ public class UserControllerEngine : PeopleControllerEngine
         return _employeeFullDtoHelper.GetFull(user);
     }
 
-    public EmployeeFullDto ChangeUserPassword(Guid userid, MemberRequestDto memberModel)
+    public EmployeeDto ChangeUserPassword(Guid userid, MemberRequestDto memberModel)
     {
         ApiContext.AuthByClaim();
         PermissionContext.DemandPermissions(new UserSecurityProvider(userid), Constants.Action_EditUser);
@@ -217,7 +217,7 @@ public class UserControllerEngine : PeopleControllerEngine
             return null;
         }
 
-        if (UserManager.IsSystemUser(user.ID))
+        if (UserManager.IsSystemUser(user.Id))
         {
             throw new SecurityException();
         }
@@ -256,13 +256,13 @@ public class UserControllerEngine : PeopleControllerEngine
         return _employeeFullDtoHelper.GetFull(GetUserInfo(userid.ToString()));
     }
 
-    public EmployeeFullDto DeleteMember(string userid)
+    public EmployeeDto DeleteMember(string userid)
     {
         PermissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
 
         var user = GetUserInfo(userid);
 
-        if (UserManager.IsSystemUser(user.ID) || user.IsLDAP())
+        if (UserManager.IsSystemUser(user.Id) || user.IsLDAP())
         {
             throw new SecurityException();
         }
@@ -272,19 +272,19 @@ public class UserControllerEngine : PeopleControllerEngine
             throw new Exception("The user is not suspended");
         }
 
-        CheckReassignProccess(new[] { user.ID });
+        CheckReassignProccess(new[] { user.Id });
 
         var userName = user.DisplayUserName(false, DisplayUserSettingsHelper);
-        UserPhotoManager.RemovePhoto(user.ID);
-        UserManager.DeleteUser(user.ID);
-        _queueWorkerRemove.Start(Tenant.TenantId, user, SecurityContext.CurrentAccount.ID, false);
+        UserPhotoManager.RemovePhoto(user.Id);
+        UserManager.DeleteUser(user.Id);
+        _queueWorkerRemove.Start(Tenant.Id, user, SecurityContext.CurrentAccount.ID, false);
 
-        MessageService.Send(MessageAction.UserDeleted, MessageTarget.Create(user.ID), userName);
+        MessageService.Send(MessageAction.UserDeleted, MessageTarget.Create(user.Id), userName);
 
         return _employeeFullDtoHelper.GetFull(user);
     }
 
-    public EmployeeFullDto DeleteProfile()
+    public EmployeeDto DeleteProfile()
     {
         ApiContext.AuthByClaim();
 
@@ -310,16 +310,16 @@ public class UserControllerEngine : PeopleControllerEngine
 
         UserManager.SaveUserInfo(user);
         var userName = user.DisplayUserName(false, DisplayUserSettingsHelper);
-        MessageService.Send(MessageAction.UsersUpdatedStatus, MessageTarget.Create(user.ID), userName);
+        MessageService.Send(MessageAction.UsersUpdatedStatus, MessageTarget.Create(user.Id), userName);
 
-        _cookiesManager.ResetUserCookie(user.ID);
+        _cookiesManager.ResetUserCookie(user.Id);
         MessageService.Send(MessageAction.CookieSettingsUpdated);
 
         if (_coreBaseSettings.Personal)
         {
-            UserPhotoManager.RemovePhoto(user.ID);
-            UserManager.DeleteUser(user.ID);
-            MessageService.Send(MessageAction.UserDeleted, MessageTarget.Create(user.ID), userName);
+            UserPhotoManager.RemovePhoto(user.Id);
+            UserManager.DeleteUser(user.Id);
+            MessageService.Send(MessageAction.UserDeleted, MessageTarget.Create(user.Id), userName);
         }
         else
         {
@@ -330,7 +330,7 @@ public class UserControllerEngine : PeopleControllerEngine
         return _employeeFullDtoHelper.GetFull(user);
     }
 
-    public IEnumerable<EmployeeFullDto> GetAdvanced(EmployeeStatus status, string query)
+    public IEnumerable<EmployeeDto> GetAdvanced(EmployeeStatus status, string query)
     {
         if (_coreBaseSettings.Personal)
         {
@@ -344,7 +344,7 @@ public class UserControllerEngine : PeopleControllerEngine
             {
                 var groupId = new Guid(ApiContext.FilterValue);
                 //Filter by group
-                list = list.Where(x => UserManager.IsUserInGroup(x.ID, groupId));
+                list = list.Where(x => UserManager.IsUserInGroup(x.Id, groupId));
                 ApiContext.SetDataFiltered();
             }
 
@@ -361,7 +361,7 @@ public class UserControllerEngine : PeopleControllerEngine
         return null;
     }
 
-    public EmployeeFullDto GetByEmail(string email)
+    public EmployeeDto GetByEmail(string email)
     {
         if (_coreBaseSettings.Personal && !UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsOwner(Tenant))
         {
@@ -369,7 +369,7 @@ public class UserControllerEngine : PeopleControllerEngine
         }
 
         var user = UserManager.GetUserByEmail(email);
-        if (user.ID == Constants.LostUser.ID)
+        if (user.Id == Constants.LostUser.Id)
         {
             throw new ItemNotFoundException("User not found");
         }
@@ -377,7 +377,7 @@ public class UserControllerEngine : PeopleControllerEngine
         return _employeeFullDtoHelper.GetFull(user);
     }
 
-    public EmployeeFullDto GetById(string username)
+    public EmployeeDto GetById(string username)
     {
         if (_coreBaseSettings.Personal)
         {
@@ -385,7 +385,7 @@ public class UserControllerEngine : PeopleControllerEngine
         }
 
         var user = UserManager.GetUserByUserName(username);
-        if (user.ID == Constants.LostUser.ID)
+        if (user.Id == Constants.LostUser.Id)
         {
             if (Guid.TryParse(username, out var userId))
             {
@@ -397,7 +397,7 @@ public class UserControllerEngine : PeopleControllerEngine
             }
         }
 
-        if (user.ID == Constants.LostUser.ID)
+        if (user.Id == Constants.LostUser.Id)
         {
             throw new ItemNotFoundException("User not found");
         }
@@ -422,7 +422,7 @@ public class UserControllerEngine : PeopleControllerEngine
         return GetFullByFilter(status, groupId, null, null, null);
     }
 
-    public IEnumerable<EmployeeFullDto> GetFullByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
+    public IEnumerable<EmployeeDto> GetFullByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
     {
         var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator).AsEnumerable();
 
@@ -437,7 +437,7 @@ public class UserControllerEngine : PeopleControllerEngine
         return new Module(product);
     }
 
-    public IEnumerable<EmployeeFullDto> GetSearch(string query)
+    public IEnumerable<EmployeeDto> GetSearch(string query)
     {
         if (_coreBaseSettings.Personal)
         {
@@ -481,14 +481,14 @@ public class UserControllerEngine : PeopleControllerEngine
         return InternalRegisterUserOnPersonalAsync(model, request);
     }
 
-    public IEnumerable<EmployeeFullDto> RemoveUsers(UpdateMembersRequestDto model)
+    public IEnumerable<EmployeeDto> RemoveUsers(UpdateMembersRequestDto model)
     {
         PermissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
 
         CheckReassignProccess(model.UserIds);
 
         var users = model.UserIds.Select(userId => UserManager.GetUsers(userId))
-            .Where(u => !UserManager.IsSystemUser(u.ID) && !u.IsLDAP())
+            .Where(u => !UserManager.IsSystemUser(u.Id) && !u.IsLDAP())
             .ToList();
 
         var userNames = users.Select(x => x.DisplayUserName(false, DisplayUserSettingsHelper)).ToList();
@@ -500,17 +500,17 @@ public class UserControllerEngine : PeopleControllerEngine
                 continue;
             }
 
-            UserPhotoManager.RemovePhoto(user.ID);
-            UserManager.DeleteUser(user.ID);
-            _queueWorkerRemove.Start(Tenant.TenantId, user, SecurityContext.CurrentAccount.ID, false);
+            UserPhotoManager.RemovePhoto(user.Id);
+            UserManager.DeleteUser(user.Id);
+            _queueWorkerRemove.Start(Tenant.Id, user, SecurityContext.CurrentAccount.ID, false);
         }
 
-        MessageService.Send(MessageAction.UsersDeleted, MessageTarget.Create(users.Select(x => x.ID)), userNames);
+        MessageService.Send(MessageAction.UsersDeleted, MessageTarget.Create(users.Select(x => x.Id)), userNames);
 
         return users.Select(u => _employeeFullDtoHelper.GetFull(u));
     }
 
-    public IEnumerable<EmployeeFullDto> ResendUserInvites(UpdateMembersRequestDto model)
+    public IEnumerable<EmployeeDto> ResendUserInvites(UpdateMembersRequestDto model)
     {
         var users = model.UserIds
             .Where(userId => !UserManager.IsSystemUser(userId))
@@ -531,7 +531,7 @@ public class UserControllerEngine : PeopleControllerEngine
                 throw new Exception(Resource.ErrorAccessDenied);
             }
 
-            if (viewer.IsAdmin(UserManager) || viewer.ID == user.ID)
+            if (viewer.IsAdmin(UserManager) || viewer.Id == user.Id)
             {
                 if (user.ActivationStatus == EmployeeActivationStatus.Activated)
                 {
@@ -562,7 +562,7 @@ public class UserControllerEngine : PeopleControllerEngine
             }
         }
 
-        MessageService.Send(MessageAction.UsersSentActivationInstructions, MessageTarget.Create(users.Select(x => x.ID)), users.Select(x => x.DisplayUserName(false, DisplayUserSettingsHelper)));
+        MessageService.Send(MessageAction.UsersSentActivationInstructions, MessageTarget.Create(users.Select(x => x.Id)), users.Select(x => x.DisplayUserName(false, DisplayUserSettingsHelper)));
 
         return users.Select(u => _employeeFullDtoHelper.GetFull(u));
     }
@@ -603,14 +603,14 @@ public class UserControllerEngine : PeopleControllerEngine
             throw new Exception(Resource.ErrorUserNotFound);
         }
 
-        if (viewer == null || (user.IsOwner(Tenant) && viewer.ID != user.ID))
+        if (viewer == null || (user.IsOwner(Tenant) && viewer.Id != user.Id))
         {
             throw new Exception(Resource.ErrorAccessDenied);
         }
 
         var existentUser = UserManager.GetUserByEmail(email);
 
-        if (existentUser.ID != Constants.LostUser.ID)
+        if (existentUser.Id != Constants.LostUser.Id)
         {
             throw new Exception(_customNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
         }
@@ -648,16 +648,16 @@ public class UserControllerEngine : PeopleControllerEngine
         return string.Format(Resource.MessageYourPasswordSendedToEmail, memberModel.Email);
     }
 
-    public IEnumerable<EmployeeFullDto> UpdateEmployeeActivationStatus(EmployeeActivationStatus activationstatus, UpdateMembersRequestDto model)
+    public IEnumerable<EmployeeDto> UpdateEmployeeActivationStatus(EmployeeActivationStatus activationstatus, UpdateMembersRequestDto model)
     {
         ApiContext.AuthByClaim();
 
-        var retuls = new List<EmployeeFullDto>();
+        var retuls = new List<EmployeeDto>();
         foreach (var id in model.UserIds.Where(userId => !UserManager.IsSystemUser(userId)))
         {
             PermissionContext.DemandPermissions(new UserSecurityProvider(id), Constants.Action_EditUser);
             var u = UserManager.GetUsers(id);
-            if (u.ID == Constants.LostUser.ID || u.IsLDAP())
+            if (u.Id == Constants.LostUser.Id || u.IsLDAP())
             {
                 continue;
             }
@@ -670,17 +670,17 @@ public class UserControllerEngine : PeopleControllerEngine
         return retuls;
     }
 
-    public EmployeeFullDto UpdateMember(string userid, UpdateMemberRequestDto memberModel)
+    public EmployeeDto UpdateMember(string userid, UpdateMemberRequestDto memberModel)
     {
         var user = GetUserInfo(userid);
 
-        if (UserManager.IsSystemUser(user.ID))
+        if (UserManager.IsSystemUser(user.Id))
         {
             throw new SecurityException();
         }
 
-        PermissionContext.DemandPermissions(new UserSecurityProvider(user.ID), Constants.Action_EditUser);
-        var self = SecurityContext.CurrentAccount.ID.Equals(user.ID);
+        PermissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
+        var self = SecurityContext.CurrentAccount.ID.Equals(user.Id);
         var resetDate = new DateTime(1900, 01, 01);
 
         //Update it
@@ -731,7 +731,7 @@ public class UserControllerEngine : PeopleControllerEngine
         UpdateContacts(memberModel.Contacts, user);
         UpdateDepartments(memberModel.Department, user);
 
-        if (memberModel.Files != UserPhotoManager.GetPhotoAbsoluteWebPath(user.ID))
+        if (memberModel.Files != UserPhotoManager.GetPhotoAbsoluteWebPath(user.Id))
         {
             UpdatePhotoUrl(memberModel.Files, user);
         }
@@ -750,8 +750,8 @@ public class UserControllerEngine : PeopleControllerEngine
 
         if (memberModel.IsVisitor && !user.IsVisitor(UserManager) && canBeGuestFlag)
         {
-            UserManager.AddUserIntoGroup(user.ID, Constants.GroupVisitor.ID);
-            _webItemSecurityCache.ClearCache(Tenant.TenantId);
+            UserManager.AddUserIntoGroup(user.Id, Constants.GroupVisitor.ID);
+            _webItemSecurityCache.ClearCache(Tenant.Id);
         }
 
         if (!self && !memberModel.IsVisitor && user.IsVisitor(UserManager))
@@ -759,8 +759,8 @@ public class UserControllerEngine : PeopleControllerEngine
             var usersQuota = _tenantExtra.GetTenantQuota().ActiveUsers;
             if (_tenantStatisticsProvider.GetUsersCount() < usersQuota)
             {
-                UserManager.RemoveUserFromGroup(user.ID, Constants.GroupVisitor.ID);
-                _webItemSecurityCache.ClearCache(Tenant.TenantId);
+                UserManager.RemoveUserFromGroup(user.Id, Constants.GroupVisitor.ID);
+                _webItemSecurityCache.ClearCache(Tenant.Id);
             }
             else
             {
@@ -769,27 +769,27 @@ public class UserControllerEngine : PeopleControllerEngine
         }
 
         UserManager.SaveUserInfo(user);
-        MessageService.Send(MessageAction.UserUpdated, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettingsHelper));
+        MessageService.Send(MessageAction.UserUpdated, MessageTarget.Create(user.Id), user.DisplayUserName(false, DisplayUserSettingsHelper));
 
         if (memberModel.Disable.HasValue && memberModel.Disable.Value)
         {
-            _cookiesManager.ResetUserCookie(user.ID);
+            _cookiesManager.ResetUserCookie(user.Id);
             MessageService.Send(MessageAction.CookieSettingsUpdated);
         }
 
         return _employeeFullDtoHelper.GetFull(user);
     }
 
-    public EmployeeFullDto UpdateMemberCulture(string userid, UpdateMemberRequestDto memberModel)
+    public EmployeeDto UpdateMemberCulture(string userid, UpdateMemberRequestDto memberModel)
     {
         var user = GetUserInfo(userid);
 
-        if (UserManager.IsSystemUser(user.ID))
+        if (UserManager.IsSystemUser(user.Id))
         {
             throw new SecurityException();
         }
 
-        PermissionContext.DemandPermissions(new UserSecurityProvider(user.ID), Constants.Action_EditUser);
+        PermissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
 
         var curLng = user.CultureName;
 
@@ -809,7 +809,7 @@ public class UserControllerEngine : PeopleControllerEngine
                     throw;
                 }
 
-                MessageService.Send(MessageAction.UserUpdatedLanguage, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettingsHelper));
+                MessageService.Send(MessageAction.UserUpdatedLanguage, MessageTarget.Create(user.Id), user.DisplayUserName(false, DisplayUserSettingsHelper));
 
             }
         }
@@ -817,12 +817,12 @@ public class UserControllerEngine : PeopleControllerEngine
         return _employeeFullDtoHelper.GetFull(user);
     }
 
-    public IEnumerable<EmployeeFullDto> UpdateUserStatus(EmployeeStatus status, UpdateMembersRequestDto model)
+    public IEnumerable<EmployeeDto> UpdateUserStatus(EmployeeStatus status, UpdateMembersRequestDto model)
     {
         PermissionContext.DemandPermissions(Constants.Action_EditUser);
 
         var users = model.UserIds.Select(userId => UserManager.GetUsers(userId))
-            .Where(u => !UserManager.IsSystemUser(u.ID) && !u.IsLDAP())
+            .Where(u => !UserManager.IsSystemUser(u.Id) && !u.IsLDAP())
             .ToList();
 
         foreach (var user in users)
@@ -848,18 +848,18 @@ public class UserControllerEngine : PeopleControllerEngine
                     user.Status = EmployeeStatus.Terminated;
                     UserManager.SaveUserInfo(user);
 
-                    _cookiesManager.ResetUserCookie(user.ID);
+                    _cookiesManager.ResetUserCookie(user.Id);
                     MessageService.Send(MessageAction.CookieSettingsUpdated);
                     break;
             }
         }
 
-        MessageService.Send(MessageAction.UsersUpdatedStatus, MessageTarget.Create(users.Select(x => x.ID)), users.Select(x => x.DisplayUserName(false, DisplayUserSettingsHelper)));
+        MessageService.Send(MessageAction.UsersUpdatedStatus, MessageTarget.Create(users.Select(x => x.Id)), users.Select(x => x.DisplayUserName(false, DisplayUserSettingsHelper)));
 
         return users.Select(u => _employeeFullDtoHelper.GetFull(u));
     }
 
-    public IEnumerable<EmployeeFullDto> UpdateUserType(EmployeeType type, UpdateMembersRequestDto model)
+    public IEnumerable<EmployeeDto> UpdateUserType(EmployeeType type, UpdateMembersRequestDto model)
     {
         var users = model.UserIds
             .Where(userId => !UserManager.IsSystemUser(userId))
@@ -881,22 +881,22 @@ public class UserControllerEngine : PeopleControllerEngine
                     {
                         if (_tenantStatisticsProvider.GetUsersCount() < _tenantExtra.GetTenantQuota().ActiveUsers)
                         {
-                            UserManager.RemoveUserFromGroup(user.ID, Constants.GroupVisitor.ID);
-                            _webItemSecurityCache.ClearCache(Tenant.TenantId);
+                            UserManager.RemoveUserFromGroup(user.Id, Constants.GroupVisitor.ID);
+                            _webItemSecurityCache.ClearCache(Tenant.Id);
                         }
                     }
                     break;
                 case EmployeeType.Visitor:
                     if (_coreBaseSettings.Standalone || _tenantStatisticsProvider.GetVisitorsCount() < _tenantExtra.GetTenantQuota().ActiveUsers * _constants.CoefficientOfVisitors)
                     {
-                        UserManager.AddUserIntoGroup(user.ID, Constants.GroupVisitor.ID);
-                        _webItemSecurityCache.ClearCache(Tenant.TenantId);
+                        UserManager.AddUserIntoGroup(user.Id, Constants.GroupVisitor.ID);
+                        _webItemSecurityCache.ClearCache(Tenant.Id);
                     }
                     break;
             }
         }
 
-        MessageService.Send(MessageAction.UsersUpdatedType, MessageTarget.Create(users.Select(x => x.ID)), users.Select(x => x.DisplayUserName(false, DisplayUserSettingsHelper)));
+        MessageService.Send(MessageAction.UsersUpdatedType, MessageTarget.Create(users.Select(x => x.Id)), users.Select(x => x.DisplayUserName(false, DisplayUserSettingsHelper)));
 
         return users.Select(u => _employeeFullDtoHelper.GetFull(u));
     }
@@ -905,7 +905,7 @@ public class UserControllerEngine : PeopleControllerEngine
     {
         foreach (var userId in userIds)
         {
-            var reassignStatus = _queueWorkerReassign.GetProgressItemStatus(Tenant.TenantId, userId);
+            var reassignStatus = _queueWorkerReassign.GetProgressItemStatus(Tenant.Id, userId);
             if (reassignStatus == null || reassignStatus.IsCompleted)
             {
                 continue;
@@ -998,7 +998,7 @@ public class UserControllerEngine : PeopleControllerEngine
 
             var newUserInfo = UserManager.GetUserByEmail(model.Email);
 
-            if (UserManager.UserExists(newUserInfo.ID))
+            if (UserManager.UserExists(newUserInfo.Id))
             {
                 if (!SetupInfo.IsSecretEmail(model.Email) || SecurityContext.IsAuthenticated)
                 {
@@ -1008,8 +1008,8 @@ public class UserControllerEngine : PeopleControllerEngine
 
                 try
                 {
-                    SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
-                    UserManager.DeleteUser(newUserInfo.ID);
+                    SecurityContext.AuthenticateMe(Core.Configuration.Constants.CoreSystem);
+                    UserManager.DeleteUser(newUserInfo.Id);
                 }
                 finally
                 {
@@ -1059,13 +1059,13 @@ public class UserControllerEngine : PeopleControllerEngine
             return;
         }
 
-        var groups = UserManager.GetUserGroups(user.ID);
+        var groups = UserManager.GetUserGroups(user.Id);
         var managerGroups = new List<Guid>();
         foreach (var groupInfo in groups)
         {
-            UserManager.RemoveUserFromGroup(user.ID, groupInfo.ID);
+            UserManager.RemoveUserFromGroup(user.Id, groupInfo.ID);
             var managerId = UserManager.GetDepartmentManager(groupInfo.ID);
-            if (managerId == user.ID)
+            if (managerId == user.Id)
             {
                 managerGroups.Add(groupInfo.ID);
                 UserManager.SetDepartmentManager(groupInfo.ID, Guid.Empty);
@@ -1076,10 +1076,10 @@ public class UserControllerEngine : PeopleControllerEngine
             var userDepartment = UserManager.GetGroupInfo(guid);
             if (userDepartment != Constants.LostGroupInfo)
             {
-                UserManager.AddUserIntoGroup(user.ID, guid);
+                UserManager.AddUserIntoGroup(user.Id, guid);
                 if (managerGroups.Contains(guid))
                 {
-                    UserManager.SetDepartmentManager(guid, user.ID);
+                    UserManager.SetDepartmentManager(guid, user.Id);
                 }
             }
         }

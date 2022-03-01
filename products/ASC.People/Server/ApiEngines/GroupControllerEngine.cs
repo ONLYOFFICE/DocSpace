@@ -90,7 +90,7 @@ public class GroupControllerEngine
         group.Name = groupModel.GroupName ?? group.Name;
         _userManager.SaveGroupInfo(group);
 
-        RemoveMembersFrom(groupid, new GroupRequestDto { Members = _userManager.GetUsersByGroup(groupid, EmployeeStatus.All).Select(u => u.ID).Where(id => !groupModel.Members.Contains(id)) });
+        RemoveMembersFrom(groupid, new GroupRequestDto { Members = _userManager.GetUsersByGroup(groupid, EmployeeStatus.All).Select(u => u.Id).Where(id => !groupModel.Members.Contains(id)) });
 
         TransferUserToDepartment(groupModel.GroupManager, @group, true);
         if (groupModel.Members != null)
@@ -140,7 +140,7 @@ public class GroupControllerEngine
         var users = _userManager.GetUsersByGroup(oldgroup.ID);
         foreach (var userInfo in users)
         {
-            TransferUserToDepartment(userInfo.ID, newgroup, false);
+            TransferUserToDepartment(userInfo.Id, newgroup, false);
         }
 
         return GetById(newgroupid);
@@ -148,7 +148,7 @@ public class GroupControllerEngine
 
     public GroupDto SetMembersTo(Guid groupid, GroupRequestDto groupModel)
     {
-        RemoveMembersFrom(groupid, new GroupRequestDto { Members = _userManager.GetUsersByGroup(groupid).Select(x => x.ID) });
+        RemoveMembersFrom(groupid, new GroupRequestDto { Members = _userManager.GetUsersByGroup(groupid).Select(x => x.Id) });
         AddMembersTo(groupid, groupModel);
 
         return GetById(groupid);
@@ -203,7 +203,7 @@ public class GroupControllerEngine
         }
 
         var user = _userManager.GetUsers(userId);
-        _userManager.RemoveUserFromGroup(user.ID, @group.ID);
+        _userManager.RemoveUserFromGroup(user.Id, @group.ID);
         _userManager.SaveUserInfo(user);
     }
 

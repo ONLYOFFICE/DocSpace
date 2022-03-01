@@ -23,58 +23,50 @@
  *
 */
 
-namespace ASC.Core.Billing
+namespace ASC.Core.Billing;
+
+[DebuggerDisplay("{QuotaId} ({State} before {DueDate})")]
+[Serializable]
+public class Tariff
 {
-    [DebuggerDisplay("{QuotaId} ({State} before {DueDate})")]
-    [Serializable]
-    public class Tariff
+    public int QuotaId { get; set; }
+    public TariffState State { get; set; }
+    public DateTime DueDate { get; set; }
+    public DateTime DelayDueDate { get; set; }
+    public DateTime LicenseDate { get; set; }
+    public bool Autorenewal { get; set; }
+    public bool Prolongable { get; set; }
+    public int Quantity { get; set; }
+
+    public static Tariff CreateDefault()
     {
-        public int QuotaId { get; set; }
-
-        public TariffState State { get; set; }
-
-        public DateTime DueDate { get; set; }
-
-        public DateTime DelayDueDate { get; set; }
-
-        public DateTime LicenseDate { get; set; }
-
-        public bool Autorenewal { get; set; }
-
-        public bool Prolongable { get; set; }
-
-        public int Quantity { get; set; }
-
-        public static Tariff CreateDefault()
+        return new Tariff
         {
-            return new Tariff
-            {
-                QuotaId = Tenant.DEFAULT_TENANT,
-                State = TariffState.Paid,
-                DueDate = DateTime.MaxValue,
-                DelayDueDate = DateTime.MaxValue,
-                LicenseDate = DateTime.MaxValue,
-                Quantity = 1
-            };
-        }
+            QuotaId = Tenant.DefaultTenant,
+            State = TariffState.Paid,
+            DueDate = DateTime.MaxValue,
+            DelayDueDate = DateTime.MaxValue,
+            LicenseDate = DateTime.MaxValue,
+            Quantity = 1
+        };
+    }
 
 
-        public override int GetHashCode()
-        {
-            return QuotaId.GetHashCode();
-        }
+    public override int GetHashCode()
+    {
+        return QuotaId.GetHashCode();
+    }
 
-        public override bool Equals(object obj)
-        {
-            return obj is Tariff t && t.QuotaId == QuotaId;
-        }
+    public override bool Equals(object obj)
+    {
+        return obj is Tariff t && t.QuotaId == QuotaId;
+    }
 
-        public bool EqualsByParams(Tariff t)
-        {
-            return t != null
-                && t.QuotaId == QuotaId
-                && t.DueDate == DueDate
-                && t.Quantity == Quantity;
-        }
+    public bool EqualsByParams(Tariff t)
+    {
+        return t != null
+            && t.QuotaId == QuotaId
+            && t.DueDate == DueDate
+            && t.Quantity == Quantity;
     }
 }

@@ -94,14 +94,14 @@ namespace ASC.Web.Files.Utils
 
         private string GetFileRoom<T>(T fileId)
         {
-            var tenantId = TenantManager.GetCurrentTenant().TenantId;
+            var tenantId = TenantManager.GetCurrentTenant().Id;
 
             return $"{tenantId}-FILE-{fileId}";
         }
 
         private string GetFolderRoom<T>(T folderId)
         {
-            var tenantId = TenantManager.GetCurrentTenant().TenantId;
+            var tenantId = TenantManager.GetCurrentTenant().Id;
 
             return $"{tenantId}-DIR-{folderId}";
         }

@@ -293,7 +293,7 @@ namespace ASC.ApiSystem.Controllers
                         QuotaId = trialQuotaId,
                         DueDate = dueDate
                     };
-                    HostedSolution.SetTariff(t.TenantId, tariff);
+                    HostedSolution.SetTariff(t.Id, tariff);
                 }
             }
 
@@ -488,13 +488,13 @@ namespace ASC.ApiSystem.Controllers
 
                 if (empty)
                 {
-                    tenants.AddRange(HostedSolution.GetTenants(DateTime.MinValue).OrderBy(t => t.TenantId).ToList());
+                    tenants.AddRange(HostedSolution.GetTenants(DateTime.MinValue).OrderBy(t => t.Id).ToList());
                 }
 
                 var tenantsWrapper = tenants
                     .Distinct()
                     .Where(t => t.Status == TenantStatus.Active)
-                    .OrderBy(t => t.TenantId)
+                    .OrderBy(t => t.Id)
                     .Select(CommonMethods.ToTenantWrapper);
 
                 return Ok(new
@@ -634,7 +634,7 @@ namespace ASC.ApiSystem.Controllers
                 {
                     var activePortals = tenants.Count(r => r.Status != TenantStatus.Suspended && r.Status != TenantStatus.RemovePending);
 
-                    var quota = HostedSolution.GetTenantQuota(firstTenant.TenantId);
+                    var quota = HostedSolution.GetTenantQuota(firstTenant.Id);
                     if (quota.CountPortals > 0 && quota.CountPortals <= activePortals)
                     {
                         error = new { error = "portalsCountTooMuch", message = "Too much portals registered already", };

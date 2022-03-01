@@ -132,7 +132,7 @@ namespace ASC.Data.Reassigns
 
         public RemoveProgressItem Start(int tenantId, UserInfo user, Guid currentUserId, bool notify)
         {
-            return Start(tenantId, user.ID, () =>
+            return Start(tenantId, user.Id, () =>
             {
                 var result = ServiceProvider.GetService<RemoveProgressItem>();
                 result.Init(tenantId, user, currentUserId, notify);

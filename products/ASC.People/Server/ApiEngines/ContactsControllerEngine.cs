@@ -39,7 +39,7 @@ public class ContactsControllerEngine : PeopleControllerEngine
 
     public void DeleteContacts(IEnumerable<Contact> contacts, UserInfo user)
     {
-        PermissionContext.DemandPermissions(new UserSecurityProvider(user.ID), Constants.Action_EditUser);
+        PermissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
         if (contacts == null)
         {
             return;
@@ -65,7 +65,7 @@ public class ContactsControllerEngine : PeopleControllerEngine
     {
         var user = GetUserInfo(userid);
 
-        if (UserManager.IsSystemUser(user.ID))
+        if (UserManager.IsSystemUser(user.Id))
         {
             throw new SecurityException();
         }
@@ -80,7 +80,7 @@ public class ContactsControllerEngine : PeopleControllerEngine
     {
         var user = GetUserInfo(userid);
 
-        if (UserManager.IsSystemUser(user.ID))
+        if (UserManager.IsSystemUser(user.Id))
         {
             throw new SecurityException();
         }
@@ -96,7 +96,7 @@ public class ContactsControllerEngine : PeopleControllerEngine
     {
         var user = GetUserInfo(userid);
 
-        if (UserManager.IsSystemUser(user.ID))
+        if (UserManager.IsSystemUser(user.Id))
         {
             throw new SecurityException();
         }

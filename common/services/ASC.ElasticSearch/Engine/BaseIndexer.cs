@@ -464,7 +464,7 @@ public class BaseIndexer<T> where T : class, ISearchItem
     {
         var func = expression.Compile();
         var selector = new Selector<T>(_serviceProvider);
-        var descriptor = func(selector).Where(r => r.TenantId, _tenantManager.GetCurrentTenant().TenantId);
+        var descriptor = func(selector).Where(r => r.TenantId, _tenantManager.GetCurrentTenant().Id);
 
         return _client.Instance.Search(descriptor.GetDescriptor(this, onlyId)).Documents;
     }
@@ -473,7 +473,7 @@ public class BaseIndexer<T> where T : class, ISearchItem
     {
         var func = expression.Compile();
         var selector = new Selector<T>(_serviceProvider);
-        var descriptor = func(selector).Where(r => r.TenantId, _tenantManager.GetCurrentTenant().TenantId);
+        var descriptor = func(selector).Where(r => r.TenantId, _tenantManager.GetCurrentTenant().Id);
         var result = _client.Instance.Search(descriptor.GetDescriptor(this, onlyId));
         total = result.Total;
 

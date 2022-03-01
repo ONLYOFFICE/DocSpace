@@ -51,7 +51,7 @@ public abstract class PeopleControllerEngine : ApiControllerEngineBase
             user = UserManager.GetUserByUserName(userNameOrId);
         }
 
-        if (user == null || user.ID == Constants.LostUser.ID)
+        if (user == null || user.Id == Constants.LostUser.Id)
         {
             throw new ItemNotFoundException("user not found");
         }
@@ -61,7 +61,7 @@ public abstract class PeopleControllerEngine : ApiControllerEngineBase
 
     protected void UpdateContacts(IEnumerable<Contact> contacts, UserInfo user)
     {
-        PermissionContext.DemandPermissions(new UserSecurityProvider(user.ID), Constants.Action_EditUser);
+        PermissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
 
         if (contacts == null)
         {
@@ -79,7 +79,7 @@ public abstract class PeopleControllerEngine : ApiControllerEngineBase
             return;
         }
 
-        PermissionContext.DemandPermissions(new UserSecurityProvider(user.ID), Constants.Action_EditUser);
+        PermissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
 
         if (!files.StartsWith("http://") && !files.StartsWith("https://"))
         {
@@ -93,6 +93,6 @@ public abstract class PeopleControllerEngine : ApiControllerEngineBase
         using var inputStream = response.Content.ReadAsStream();
         using var br = new BinaryReader(inputStream);
         var imageByteArray = br.ReadBytes((int)inputStream.Length);
-        UserPhotoManager.SaveOrUpdatePhoto(user.ID, imageByteArray);
+        UserPhotoManager.SaveOrUpdatePhoto(user.Id, imageByteArray);
     }
 }

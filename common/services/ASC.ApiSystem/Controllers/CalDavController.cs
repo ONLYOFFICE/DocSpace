@@ -79,7 +79,7 @@ namespace ASC.ApiSystem.Controllers
 
             try
             {
-                var validationKey = EmailValidationKeyProvider.GetEmailKey(tenant.TenantId, change + ConfirmType.Auth);
+                var validationKey = EmailValidationKeyProvider.GetEmailKey(tenant.Id, change + ConfirmType.Auth);
 
                 SendToApi(Request.Scheme, tenant, "calendar/change_to_storage", new Dictionary<string, string> { { "change", change }, { "key", validationKey } });
             }
@@ -108,7 +108,7 @@ namespace ASC.ApiSystem.Controllers
 
             try
             {
-                var validationKey = EmailValidationKeyProvider.GetEmailKey(tenant.TenantId, eventInfo + ConfirmType.Auth);
+                var validationKey = EmailValidationKeyProvider.GetEmailKey(tenant.Id, eventInfo + ConfirmType.Auth);
 
                 SendToApi(Request.Scheme, tenant, "calendar/caldav_delete_event", new Dictionary<string, string> { { "eventInfo", eventInfo }, { "key", validationKey } });
             }
@@ -149,7 +149,7 @@ namespace ASC.ApiSystem.Controllers
 
             try
             {
-                Log.Info(string.Format("Caldav auth user: {0}, tenant: {1}", email, tenant.TenantId));
+                Log.Info(string.Format("Caldav auth user: {0}, tenant: {1}", email, tenant.Id));
 
                 if (InstanceCrypto.Encrypt(email) == userPassword.Password)
                 {
@@ -159,7 +159,7 @@ namespace ASC.ApiSystem.Controllers
                     });
                 }
 
-                var validationKey = EmailValidationKeyProvider.GetEmailKey(tenant.TenantId, email + userPassword.Password + ConfirmType.Auth);
+                var validationKey = EmailValidationKeyProvider.GetEmailKey(tenant.Id, email + userPassword.Password + ConfirmType.Auth);
 
                 var authData = $"userName={HttpUtility.UrlEncode(email)}&password={HttpUtility.UrlEncode(userPassword.Password)}&key={HttpUtility.UrlEncode(validationKey)}";
 

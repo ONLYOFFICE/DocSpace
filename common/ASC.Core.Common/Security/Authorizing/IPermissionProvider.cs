@@ -23,11 +23,10 @@
  *
 */
 
-namespace ASC.Common.Security
+namespace ASC.Common.Security;
+
+[Scope(typeof(PermissionProvider))]
+public interface IPermissionProvider
 {
-    [Scope(typeof(PermissionProvider))]
-    public interface IPermissionProvider
-    {
-        IEnumerable<Ace> GetAcl(ISubject subject, IAction action, ISecurityObjectId objectId, ISecurityObjectProvider secObjProvider);
-    }
+    IEnumerable<Ace> GetAcl(ISubject subject, IAction action, ISecurityObjectId objectId, ISecurityObjectProvider secObjProvider);
 }

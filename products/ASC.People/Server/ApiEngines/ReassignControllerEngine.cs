@@ -33,14 +33,14 @@ public class ReassignControllerEngine : ApiControllerEngineBase
     {
         PermissionContext.DemandPermissions(Constants.Action_EditUser);
 
-        return _queueWorkerReassign.GetProgressItemStatus(Tenant.TenantId, userId);
+        return _queueWorkerReassign.GetProgressItemStatus(Tenant.Id, userId);
     }
 
     public void TerminateReassign(TerminateRequestDto model)
     {
         PermissionContext.DemandPermissions(Constants.Action_EditUser);
 
-        _queueWorkerReassign.Terminate(Tenant.TenantId, model.UserId);
+        _queueWorkerReassign.Terminate(Tenant.Id, model.UserId);
     }
 
     public ReassignProgressItem StartReassign(StartReassignRequestDto model)
@@ -49,7 +49,7 @@ public class ReassignControllerEngine : ApiControllerEngineBase
 
         var fromUser = UserManager.GetUsers(model.FromUserId);
 
-        if (fromUser == null || fromUser.ID == Constants.LostUser.ID)
+        if (fromUser == null || fromUser.Id == Constants.LostUser.Id)
         {
             throw new ArgumentException("User with id = " + model.FromUserId + " not found");
         }
@@ -61,7 +61,7 @@ public class ReassignControllerEngine : ApiControllerEngineBase
 
         var toUser = UserManager.GetUsers(model.ToUserId);
 
-        if (toUser == null || toUser.ID == Constants.LostUser.ID)
+        if (toUser == null || toUser.Id == Constants.LostUser.Id)
         {
             throw new ArgumentException("User with id = " + model.ToUserId + " not found");
         }
@@ -71,6 +71,6 @@ public class ReassignControllerEngine : ApiControllerEngineBase
             throw new ArgumentException("Can not reassign data to user with id = " + model.ToUserId);
         }
 
-        return _queueWorkerReassign.Start(Tenant.TenantId, model.FromUserId, model.ToUserId, SecurityContext.CurrentAccount.ID, model.DeleteProfile);
+        return _queueWorkerReassign.Start(Tenant.Id, model.FromUserId, model.ToUserId, SecurityContext.CurrentAccount.ID, model.DeleteProfile);
     }
 }

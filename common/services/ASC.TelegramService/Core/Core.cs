@@ -23,156 +23,154 @@
  *
 */
 
-namespace ASC.TelegramService.Core
+namespace ASC.TelegramService.Core;
+
+public class TelegramCommand
 {
-    public class TelegramCommand
+    public string CommandName { get; private set; }
+    public string[] Args { get; private set; }
+    public Message Message { get; private set; }
+    public User User { get { return Message.From; } }
+    public Chat Chat { get { return Message.Chat; } }
+
+    public TelegramCommand(Message msg, string cmdName, string[] args = null)
     {
-        public string CommandName { get; private set; }
-        public string[] Args { get; private set; }
-
-        public Message Message { get; private set; }
-        public User User { get { return Message.From; } }
-        public Chat Chat { get { return Message.Chat; } }
-
-        public TelegramCommand(Message msg, string cmdName, string[] args = null)
-        {
-            Message = msg;
-            CommandName = cmdName;
-            Args = args;
-        }
+        Message = msg;
+        CommandName = cmdName;
+        Args = args;
     }
+}
 
-    [Singletone]
-    public class CommandModule
+[Singletone]
+public class CommandModule
+{
+    private readonly Regex _cmdReg = new Regex(@"^\/([^\s]+)\s?(.*)");
+    private readonly Regex _argsReg = new Regex(@"[^""\s]\S*|"".+?""");
+
+    private readonly Dictionary<string, MethodInfo> _commands = new Dictionary<string, MethodInfo>();
+    private readonly Dictionary<string, Type> _contexts = new Dictionary<string, Type>();
+    private readonly Dictionary<Type, ParamParser> _parsers = new Dictionary<Type, ParamParser>();
+
+    private readonly IServiceScopeFactory _scopeFactory;
+    private readonly ILog _log;
+
+    public CommandModule(IOptionsMonitor<ILog> options, IServiceScopeFactory scopeFactory)
     {
-        private ILog Log { get; }
+        _scopeFactory = scopeFactory;
+        _log = options.CurrentValue;
 
-        private readonly Regex cmdReg = new Regex(@"^\/([^\s]+)\s?(.*)");
-        private readonly Regex argsReg = new Regex(@"[^""\s]\S*|"".+?""");
+        var assembly = Assembly.GetExecutingAssembly();
 
-        private readonly Dictionary<string, MethodInfo> commands = new Dictionary<string, MethodInfo>();
-        private readonly Dictionary<string, Type> contexts = new Dictionary<string, Type>();
-        private readonly Dictionary<Type, ParamParser> parsers = new Dictionary<Type, ParamParser>();
-
-        private IServiceProvider ServiceProvider { get; }
-        public CommandModule(IOptionsMonitor<ILog> options, IServiceProvider serviceProvider)
+        foreach (var t in assembly.GetExportedTypes())
         {
-            ServiceProvider = serviceProvider;
-            Log = options.CurrentValue;
+            if (t.IsAbstract) continue;
 
-            var assembly = Assembly.GetExecutingAssembly();
-
-            foreach (var t in assembly.GetExportedTypes())
+            if (t.IsSubclassOf(typeof(CommandContext)))
             {
-                if (t.IsAbstract) continue;
-
-                if (t.IsSubclassOf(typeof(CommandContext)))
+                foreach (var method in t.GetRuntimeMethods())
                 {
-                    foreach (var method in t.GetRuntimeMethods())
+                    if (method.IsPublic && Attribute.IsDefined(method, typeof(CommandAttribute)))
                     {
-                        if (method.IsPublic && Attribute.IsDefined(method, typeof(CommandAttribute)))
-                        {
-                            var attr = method.GetCustomAttribute<CommandAttribute>();
-                            commands.Add(attr.Name, method);
-                            contexts.Add(attr.Name, t);
-                        }
+                        var attr = method.GetCustomAttribute<CommandAttribute>();
+                        _commands.Add(attr.Name, method);
+                        _contexts.Add(attr.Name, t);
                     }
                 }
-
-                if (t.IsSubclassOf(typeof(ParamParser)) && Attribute.IsDefined(t, typeof(ParamParserAttribute)))
-                {
-                    parsers.Add(t.GetCustomAttribute<ParamParserAttribute>().Type, (ParamParser)Activator.CreateInstance(t));
-                }
             }
-        }
 
-        private TelegramCommand ParseCommand(Message msg)
-        {
-            var reg = cmdReg.Match(msg.Text);
-            var args = argsReg.Matches(reg.Groups[2].Value);
-
-            return new TelegramCommand(msg, reg.Groups[1].Value.ToLowerInvariant(), args.Count > 0 ? args.Select(a => a.Value).ToArray() : null);
-        }
-
-        private object[] ParseParams(MethodInfo cmd, string[] args)
-        {
-            var parsedParams = new List<object>();
-
-            var cmdArgs = cmd.GetParameters();
-
-            if (cmdArgs.Length > 0 && args == null || cmdArgs.Length != args.Length) throw new Exception("Wrong parameters count");
-            for (var i = 0; i < cmdArgs.Length; i++)
+            if (t.IsSubclassOf(typeof(ParamParser)) && Attribute.IsDefined(t, typeof(ParamParserAttribute)))
             {
-                var type = cmdArgs[i].ParameterType;
-                var arg = args[i];
-                if (type == typeof(string))
-                {
-                    parsedParams.Add(arg);
-                    continue;
-                }
-
-                if (!parsers.ContainsKey(type)) throw new Exception(string.Format("No parser found for type '{0}'", type));
-
-                parsedParams.Add(parsers[type].FromString(arg));
+                _parsers.Add(t.GetCustomAttribute<ParamParserAttribute>().Type, (ParamParser)Activator.CreateInstance(t));
             }
-
-            return parsedParams.ToArray();
         }
+    }
 
-        public async Task HandleCommand(Message msg, TelegramBotClient client, int tenantId)
+    private TelegramCommand ParseCommand(Message msg)
+    {
+        var reg = _cmdReg.Match(msg.Text);
+        var args = _argsReg.Matches(reg.Groups[2].Value);
+
+        return new TelegramCommand(msg, reg.Groups[1].Value.ToLowerInvariant(), args.Count > 0 ? args.Select(a => a.Value).ToArray() : null);
+    }
+
+    private object[] ParseParams(MethodInfo cmd, string[] args)
+    {
+        var parsedParams = new List<object>();
+
+        var cmdArgs = cmd.GetParameters();
+
+        if (cmdArgs.Length > 0 && args == null || cmdArgs.Length != args.Length) throw new Exception("Wrong parameters count");
+        for (var i = 0; i < cmdArgs.Length; i++)
         {
-            try
+            var type = cmdArgs[i].ParameterType;
+            var arg = args[i];
+            if (type == typeof(string))
             {
-                var cmd = ParseCommand(msg);
-
-                if (!commands.ContainsKey(cmd.CommandName)) throw new Exception($"No handler found for command '{cmd.CommandName}'");
-
-                var command = commands[cmd.CommandName];
-                var context = (CommandContext)ServiceProvider.CreateScope().ServiceProvider.GetService(contexts[cmd.CommandName]);
-                var param = ParseParams(command, cmd.Args);
-
-                context.Context = cmd;
-                context.Client = client;
-                context.TenantId = tenantId;
-                await Task.FromResult(command.Invoke(context, param));
+                parsedParams.Add(arg);
+                continue;
             }
-            catch (Exception ex)
-            {
-                Log.DebugFormat("Couldn't handle ({0}) message ({1})", msg.Text, ex.Message);
-            }
+
+            if (!_parsers.ContainsKey(type)) throw new Exception(string.Format("No parser found for type '{0}'", type));
+
+            parsedParams.Add(_parsers[type].FromString(arg));
         }
+
+        return parsedParams.ToArray();
     }
 
-    public abstract class CommandContext
+    public async Task HandleCommand(Message msg, TelegramBotClient client, int tenantId)
     {
-        public ITelegramBotClient Client { get; set; }
-        public TelegramCommand Context { get; set; }
-        public int TenantId { get; set; }
-
-        protected async Task ReplyAsync(string message)
+        try
         {
-            await Client.SendTextMessageAsync(Context.Chat, message);
+            var cmd = ParseCommand(msg);
+
+            if (!_commands.ContainsKey(cmd.CommandName)) throw new Exception($"No handler found for command '{cmd.CommandName}'");
+
+            var command = _commands[cmd.CommandName];
+            var context = (CommandContext)_scopeFactory.CreateScope().ServiceProvider.GetService(_contexts[cmd.CommandName]);
+            var param = ParseParams(command, cmd.Args);
+
+            context.Context = cmd;
+            context.Client = client;
+            context.TenantId = tenantId;
+            await Task.FromResult(command.Invoke(context, param));
         }
-    }
-
-    public abstract class ParamParser
-    {
-        protected Type type;
-
-        protected ParamParser(Type type)
+        catch (Exception ex)
         {
-            this.type = type;
+            _log.DebugFormat("Couldn't handle ({0}) message ({1})", msg.Text, ex.Message);
         }
-
-        public abstract object FromString(string arg);
-        public abstract string ToString(object arg);
     }
+}
 
-    public abstract class ParamParser<T> : ParamParser
+public abstract class CommandContext
+{
+    public ITelegramBotClient Client { get; set; }
+    public TelegramCommand Context { get; set; }
+    public int TenantId { get; set; }
+
+    protected async Task ReplyAsync(string message)
     {
-        protected ParamParser() : base(typeof(T)) { }
-
-        public override abstract object FromString(string arg);
-        public override abstract string ToString(object arg);
+        await Client.SendTextMessageAsync(Context.Chat, message);
     }
+}
+
+public abstract class ParamParser
+{
+    protected Type type;
+
+    protected ParamParser(Type type)
+    {
+        this.type = type;
+    }
+
+    public abstract object FromString(string arg);
+    public abstract string ToString(object arg);
+}
+
+public abstract class ParamParser<T> : ParamParser
+{
+    protected ParamParser() : base(typeof(T)) { }
+
+    public override abstract object FromString(string arg);
+    public override abstract string ToString(object arg);
 }

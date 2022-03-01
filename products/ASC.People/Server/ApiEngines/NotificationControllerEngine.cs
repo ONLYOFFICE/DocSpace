@@ -37,7 +37,7 @@ public class NotificationControllerEngine : ApiControllerEngineBase
                 : new Guid(userId));
         var canChange =
         user.IsMe(AuthContext)
-                    || PermissionContext.CheckPermissions(new UserSecurityProvider(user.ID), Constants.Action_EditUser);
+                    || PermissionContext.CheckPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
 
         if (!canChange)
         {

@@ -53,7 +53,7 @@ public class FoldersModule : FeedModule
             }
 
             var owner = (Guid)feed.Target;
-            var groupUsers = _userManager.GetUsersByGroup(owner).Select(x => x.ID).ToList();
+            var groupUsers = _userManager.GetUsersByGroup(owner).Select(x => x.Id).ToList();
             if (groupUsers.Count == 0)
             {
                 groupUsers.Add(owner);

@@ -32,7 +32,7 @@ public class RemoveUserDataControllerEngine : ApiControllerEngineBase
     {
         PermissionContext.DemandPermissions(Constants.Action_EditUser);
 
-        return _queueWorkerRemove.GetProgressItemStatus(Tenant.TenantId, userId);
+        return _queueWorkerRemove.GetProgressItemStatus(Tenant.Id, userId);
     }
 
     public object SendInstructionsToDelete()
@@ -54,7 +54,7 @@ public class RemoveUserDataControllerEngine : ApiControllerEngineBase
     {
         PermissionContext.DemandPermissions(Constants.Action_EditUser);
 
-        _queueWorkerRemove.Terminate(Tenant.TenantId, model.UserId);
+        _queueWorkerRemove.Terminate(Tenant.Id, model.UserId);
     }
 
     public RemoveProgressItem StartRemove(TerminateRequestDto model)
@@ -63,7 +63,7 @@ public class RemoveUserDataControllerEngine : ApiControllerEngineBase
 
         var user = UserManager.GetUsers(model.UserId);
 
-        if (user == null || user.ID == Constants.LostUser.ID)
+        if (user == null || user.Id == Constants.LostUser.Id)
         {
             throw new ArgumentException("User with id = " + model.UserId + " not found");
         }
@@ -73,6 +73,6 @@ public class RemoveUserDataControllerEngine : ApiControllerEngineBase
             throw new ArgumentException("Can not delete user with id = " + model.UserId);
         }
 
-        return _queueWorkerRemove.Start(Tenant.TenantId, user, SecurityContext.CurrentAccount.ID, true);
+        return _queueWorkerRemove.Start(Tenant.Id, user, SecurityContext.CurrentAccount.ID, true);
     }
 }

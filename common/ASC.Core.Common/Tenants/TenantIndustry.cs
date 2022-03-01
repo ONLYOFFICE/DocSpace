@@ -24,26 +24,25 @@
 */
 
 
-namespace ASC.Core.Tenants
+namespace ASC.Core.Tenants;
+
+public enum TenantIndustry
 {
-    public enum TenantIndustry
-    {
-        Other,
-        Accounting,
-        AdvertisingMarketingPR,
-        Banking,
-        Consulting,
-        Design,
-        Education,
-        Environment,
-        FinancialServices,
-        HealthCare,
-        IT,
-        Legal,
-        Manufacturing,
-        PublicSector,
-        Publishing,
-        RetailSales,
-        Telecommunications
-    }
+    Other,
+    Accounting,
+    AdvertisingMarketingPR,
+    Banking,
+    Consulting,
+    Design,
+    Education,
+    Environment,
+    FinancialServices,
+    HealthCare,
+    IT,
+    Legal,
+    Manufacturing,
+    PublicSector,
+    Publishing,
+    RetailSales,
+    Telecommunications
 }

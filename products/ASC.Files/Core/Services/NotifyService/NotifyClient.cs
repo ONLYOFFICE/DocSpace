@@ -125,7 +125,7 @@ namespace ASC.Files.Core.Services.NotifyService
                                   : CultureInfo.GetCultureInfo(u.CultureName);
 
                 var aceString = GetAccessString(recipientPair.Value, culture);
-                var recipient = recipientsProvider.GetRecipient(u.ID.ToString());
+                var recipient = recipientsProvider.GetRecipient(u.Id.ToString());
 
                 client.SendNoticeAsync(
                     action,
@@ -156,7 +156,7 @@ namespace ASC.Files.Core.Services.NotifyService
             {
                 var u = userManager.GetUsers(recipientId);
 
-                var recipient = recipientsProvider.GetRecipient(u.ID.ToString());
+                var recipient = recipientsProvider.GetRecipient(u.Id.ToString());
 
                 client.SendNoticeAsync(
                     NotifyConstants.Event_EditorMentions,

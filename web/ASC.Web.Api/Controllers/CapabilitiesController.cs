@@ -57,7 +57,7 @@
             {
                 if (SetupInfo.IsVisibleSettings(nameof(ManagementType.LdapSettings))
                     && (!CoreBaseSettings.Standalone
-                        || TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().TenantId).Ldap))
+                        || TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().Id).Ldap))
                 {
                     //var settings = SettingsManager.Load<LdapSettings>();
 
@@ -87,7 +87,7 @@
             try
             {
                 if (SetupInfo.IsVisibleSettings(nameof(ManagementType.SingleSignOnSettings))
-                    && TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().TenantId).Sso)
+                    && TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().Id).Sso)
                 {
                     //var settings = SettingsManager.Load<SsoSettingsV2>();
 

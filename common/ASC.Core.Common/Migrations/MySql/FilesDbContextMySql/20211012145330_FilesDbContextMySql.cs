@@ -1,32 +1,32 @@
-﻿namespace ASC.Core.Common.Migrations.MySql.FilesDbContextMySql
+﻿namespace ASC.Core.Common.Migrations.MySql.FilesDbContextMySql;
+
+public partial class FilesDbContextMySql : Migration
 {
-    public partial class FilesDbContextMySql : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.AlterDatabase()
-                .Annotation("MySql:CharSet", "utf8mb4");
+        migrationBuilder.AlterDatabase()
+            .Annotation("MySql:CharSet", "utf8mb4");
 
-            migrationBuilder.CreateTable(
-                name: "files_converts",
-                columns: table => new
-                {
-                    input = table.Column<string>(type: "varchar(50)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    output = table.Column<string>(type: "varchar(50)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PRIMARY", x => new { x.input, x.output });
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
+        migrationBuilder.CreateTable(
+            name: "files_converts",
+            columns: table => new
+            {
+                input = table.Column<string>(type: "varchar(50)", nullable: false, collation: "utf8_general_ci")
+                    .Annotation("MySql:CharSet", "utf8"),
+                output = table.Column<string>(type: "varchar(50)", nullable: false, collation: "utf8_general_ci")
+                    .Annotation("MySql:CharSet", "utf8")
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey("PRIMARY", x => new { x.input, x.output });
+            })
+            .Annotation("MySql:CharSet", "utf8mb4");
 
-            migrationBuilder.InsertData(
-                table: "files_converts",
-                columns: new[] { "input", "output" },
-                values: new object[,]
-                {
+        migrationBuilder.InsertData(
+            table: "files_converts",
+            columns: new[] { "input", "output" },
+            values: new object[,]
+            {
                     { ".csv", ".ods" },
                     { ".pps", ".odp" },
                     { ".pps", ".pdf" },
@@ -187,13 +187,12 @@
                     { ".fodt", ".pdf" },
                     { ".fodt", ".txt" },
                     { ".xps", ".pdf" }
-                });
-        }
+            });
+    }
 
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropTable(
-                name: "files_converts");
-        }
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.DropTable(
+            name: "files_converts");
     }
 }

@@ -12,21 +12,21 @@ public class UserController : ApiControllerBase
     }
 
     [Create("active")]
-    public EmployeeFullDto AddMemberAsActivatedFromBody([FromBody] MemberRequestDto memberModel)
+    public EmployeeDto AddMemberAsActivatedFromBody([FromBody] MemberRequestDto memberModel)
     {
         return _userControllerEngine.AddMemberAsActivated(memberModel);
     }
 
     [Create("active")]
     [Consumes("application/x-www-form-urlencoded")]
-    public EmployeeFullDto AddMemberAsActivatedFromForm([FromForm] MemberRequestDto memberModel)
+    public EmployeeDto AddMemberAsActivatedFromForm([FromForm] MemberRequestDto memberModel)
     {
         return _userControllerEngine.AddMemberAsActivated(memberModel);
     }
 
     [Create]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Everyone")]
-    public EmployeeFullDto AddMemberFromBody([FromBody] MemberRequestDto memberModel)
+    public EmployeeDto AddMemberFromBody([FromBody] MemberRequestDto memberModel)
     {
         return _userControllerEngine.AddMember(memberModel);
     }
@@ -34,14 +34,14 @@ public class UserController : ApiControllerBase
     [Create]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Everyone")]
     [Consumes("application/x-www-form-urlencoded")]
-    public EmployeeFullDto AddMemberFromForm([FromForm] MemberRequestDto memberModel)
+    public EmployeeDto AddMemberFromForm([FromForm] MemberRequestDto memberModel)
     {
         return _userControllerEngine.AddMember(memberModel);
     }
 
     [Update("{userid}/password")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,Activation,EmailActivation,Everyone")]
-    public EmployeeFullDto ChangeUserPasswordFromBody(Guid userid, [FromBody] MemberRequestDto memberModel)
+    public EmployeeDto ChangeUserPasswordFromBody(Guid userid, [FromBody] MemberRequestDto memberModel)
     {
         return _userControllerEngine.ChangeUserPassword(userid, memberModel);
     }
@@ -49,26 +49,26 @@ public class UserController : ApiControllerBase
     [Update("{userid}/password")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,Activation,EmailActivation,Everyone")]
     [Consumes("application/x-www-form-urlencoded")]
-    public EmployeeFullDto ChangeUserPasswordFromForm(Guid userid, [FromForm] MemberRequestDto memberModel)
+    public EmployeeDto ChangeUserPasswordFromForm(Guid userid, [FromForm] MemberRequestDto memberModel)
     {
         return _userControllerEngine.ChangeUserPassword(userid, memberModel);
     }
 
     [Delete("{userid}")]
-    public EmployeeFullDto DeleteMember(string userid)
+    public EmployeeDto DeleteMember(string userid)
     {
         return _userControllerEngine.DeleteMember(userid);
     }
 
     [Delete("@self")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "ProfileRemove")]
-    public EmployeeFullDto DeleteProfile()
+    public EmployeeDto DeleteProfile()
     {
         return _userControllerEngine.DeleteProfile();
     }
 
     [Read("status/{status}/search")]
-    public IEnumerable<EmployeeFullDto> GetAdvanced(EmployeeStatus status, [FromQuery] string query)
+    public IEnumerable<EmployeeDto> GetAdvanced(EmployeeStatus status, [FromQuery] string query)
     {
         return _userControllerEngine.GetAdvanced(status, query);
     }
@@ -80,13 +80,13 @@ public class UserController : ApiControllerBase
     }
 
     [Read("email")]
-    public EmployeeFullDto GetByEmail([FromQuery] string email)
+    public EmployeeDto GetByEmail([FromQuery] string email)
     {
         return _userControllerEngine.GetByEmail(email);
     }
 
     [Read("{username}", order: int.MaxValue)]
-    public EmployeeFullDto GetById(string username)
+    public EmployeeDto GetById(string username)
     {
         return _userControllerEngine.GetById(username);
     }
@@ -98,7 +98,7 @@ public class UserController : ApiControllerBase
     }
 
     [Read("filter")]
-    public IEnumerable<EmployeeFullDto> GetFullByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
+    public IEnumerable<EmployeeDto> GetFullByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
     {
         return _userControllerEngine.GetFullByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator);
     }
@@ -110,13 +110,13 @@ public class UserController : ApiControllerBase
     }
 
     [Read("search")]
-    public IEnumerable<EmployeeFullDto> GetPeopleSearch([FromQuery] string query)
+    public IEnumerable<EmployeeDto> GetPeopleSearch([FromQuery] string query)
     {
         return GetSearch(query);
     }
 
     [Read("@search/{query}")]
-    public IEnumerable<EmployeeFullDto> GetSearch(string query)
+    public IEnumerable<EmployeeDto> GetSearch(string query)
     {
         return _userControllerEngine.GetSearch(query);
     }
@@ -135,27 +135,27 @@ public class UserController : ApiControllerBase
     }
 
     [Update("delete", Order = -1)]
-    public IEnumerable<EmployeeFullDto> RemoveUsersFromBody([FromBody] UpdateMembersRequestDto model)
+    public IEnumerable<EmployeeDto> RemoveUsersFromBody([FromBody] UpdateMembersRequestDto model)
     {
         return _userControllerEngine.RemoveUsers(model);
     }
 
     [Update("delete", Order = -1)]
     [Consumes("application/x-www-form-urlencoded")]
-    public IEnumerable<EmployeeFullDto> RemoveUsersFromForm([FromForm] UpdateMembersRequestDto model)
+    public IEnumerable<EmployeeDto> RemoveUsersFromForm([FromForm] UpdateMembersRequestDto model)
     {
         return _userControllerEngine.RemoveUsers(model);
     }
 
     [Update("invite")]
-    public IEnumerable<EmployeeFullDto> ResendUserInvitesFromBody([FromBody] UpdateMembersRequestDto model)
+    public IEnumerable<EmployeeDto> ResendUserInvitesFromBody([FromBody] UpdateMembersRequestDto model)
     {
         return _userControllerEngine.ResendUserInvites(model);
     }
 
     [Update("invite")]
     [Consumes("application/x-www-form-urlencoded")]
-    public IEnumerable<EmployeeFullDto> ResendUserInvitesFromForm([FromForm] UpdateMembersRequestDto model)
+    public IEnumerable<EmployeeDto> ResendUserInvitesFromForm([FromForm] UpdateMembersRequestDto model)
     {
         return _userControllerEngine.ResendUserInvites(model);
     }
@@ -196,7 +196,7 @@ public class UserController : ApiControllerBase
 
     [Update("activationstatus/{activationstatus}")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Activation,Everyone")]
-    public IEnumerable<EmployeeFullDto> UpdateEmployeeActivationStatusFromBody(EmployeeActivationStatus activationstatus, [FromBody] UpdateMembersRequestDto model)
+    public IEnumerable<EmployeeDto> UpdateEmployeeActivationStatusFromBody(EmployeeActivationStatus activationstatus, [FromBody] UpdateMembersRequestDto model)
     {
         return _userControllerEngine.UpdateEmployeeActivationStatus(activationstatus, model);
     }
@@ -204,59 +204,59 @@ public class UserController : ApiControllerBase
     [Update("activationstatus/{activationstatus}")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Activation,Everyone")]
     [Consumes("application/x-www-form-urlencoded")]
-    public IEnumerable<EmployeeFullDto> UpdateEmployeeActivationStatusFromForm(EmployeeActivationStatus activationstatus, [FromForm] UpdateMembersRequestDto model)
+    public IEnumerable<EmployeeDto> UpdateEmployeeActivationStatusFromForm(EmployeeActivationStatus activationstatus, [FromForm] UpdateMembersRequestDto model)
     {
         return _userControllerEngine.UpdateEmployeeActivationStatus(activationstatus, model);
     }
 
     [Update("{userid}/culture")]
-    public EmployeeFullDto UpdateMemberCultureFromBody(string userid, [FromBody] UpdateMemberRequestDto memberModel)
+    public EmployeeDto UpdateMemberCultureFromBody(string userid, [FromBody] UpdateMemberRequestDto memberModel)
     {
         return _userControllerEngine.UpdateMemberCulture(userid, memberModel);
     }
 
     [Update("{userid}/culture")]
     [Consumes("application/x-www-form-urlencoded")]
-    public EmployeeFullDto UpdateMemberCultureFromForm(string userid, [FromForm] UpdateMemberRequestDto memberModel)
+    public EmployeeDto UpdateMemberCultureFromForm(string userid, [FromForm] UpdateMemberRequestDto memberModel)
     {
         return _userControllerEngine.UpdateMemberCulture(userid, memberModel);
     }
 
     [Update("{userid}")]
-    public EmployeeFullDto UpdateMemberFromBody(string userid, [FromBody] UpdateMemberRequestDto memberModel)
+    public EmployeeDto UpdateMemberFromBody(string userid, [FromBody] UpdateMemberRequestDto memberModel)
     {
         return _userControllerEngine.UpdateMember(userid, memberModel);
     }
 
     [Update("{userid}")]
     [Consumes("application/x-www-form-urlencoded")]
-    public EmployeeFullDto UpdateMemberFromForm(string userid, [FromForm] UpdateMemberRequestDto memberModel)
+    public EmployeeDto UpdateMemberFromForm(string userid, [FromForm] UpdateMemberRequestDto memberModel)
     {
         return _userControllerEngine.UpdateMember(userid, memberModel);
     }
 
     [Update("status/{status}")]
-    public IEnumerable<EmployeeFullDto> UpdateUserStatusFromBody(EmployeeStatus status, [FromBody] UpdateMembersRequestDto model)
+    public IEnumerable<EmployeeDto> UpdateUserStatusFromBody(EmployeeStatus status, [FromBody] UpdateMembersRequestDto model)
     {
         return _userControllerEngine.UpdateUserStatus(status, model);
     }
 
     [Update("status/{status}")]
     [Consumes("application/x-www-form-urlencoded")]
-    public IEnumerable<EmployeeFullDto> UpdateUserStatusFromForm(EmployeeStatus status, [FromForm] UpdateMembersRequestDto model)
+    public IEnumerable<EmployeeDto> UpdateUserStatusFromForm(EmployeeStatus status, [FromForm] UpdateMembersRequestDto model)
     {
         return _userControllerEngine.UpdateUserStatus(status, model);
     }
 
     [Update("type/{type}")]
-    public IEnumerable<EmployeeFullDto> UpdateUserTypeFromBody(EmployeeType type, [FromBody] UpdateMembersRequestDto model)
+    public IEnumerable<EmployeeDto> UpdateUserTypeFromBody(EmployeeType type, [FromBody] UpdateMembersRequestDto model)
     {
         return _userControllerEngine.UpdateUserType(type, model);
     }
 
     [Update("type/{type}")]
     [Consumes("application/x-www-form-urlencoded")]
-    public IEnumerable<EmployeeFullDto> UpdateUserTypeFromForm(EmployeeType type, [FromForm] UpdateMembersRequestDto model)
+    public IEnumerable<EmployeeDto> UpdateUserTypeFromForm(EmployeeType type, [FromForm] UpdateMembersRequestDto model)
     {
         return _userControllerEngine.UpdateUserType(type, model);
     } 

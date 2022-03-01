@@ -190,7 +190,7 @@ namespace ASC.Files.Core.Data
             {
                 if (subjectGroup)
                 {
-                    var users = UserManager.GetUsersByGroup(subjectID).Select(u => u.ID).ToArray();
+                    var users = UserManager.GetUsersByGroup(subjectID).Select(u => u.Id).ToArray();
                     query = query.Where(r => users.Contains(r.CreateBy));
                 }
                 else
@@ -277,7 +277,7 @@ namespace ASC.Files.Core.Data
             {
                 if (subjectGroup)
                 {
-                    var users = UserManager.GetUsersByGroup(subjectID).Select(u => u.ID).ToArray();
+                    var users = UserManager.GetUsersByGroup(subjectID).Select(u => u.Id).ToArray();
                     q = q.Where(r => users.Contains(r.CreateBy));
                 }
                 else
@@ -1118,7 +1118,7 @@ namespace ASC.Files.Core.Data
             {
                 if (subjectGroup)
                 {
-                    var users = UserManager.GetUsersByGroup(subjectID).Select(u => u.ID).ToArray();
+                    var users = UserManager.GetUsersByGroup(subjectID).Select(u => u.Id).ToArray();
                     q = q.Where(r => users.Contains(r.CreateBy));
                 }
                 else
@@ -1402,7 +1402,7 @@ namespace ASC.Files.Core.Data
                {
                    if (subjectGroup)
                    {
-                       var users = UserManager.GetUsersByGroup(subjectID).Select(u => u.ID).ToArray();
+                       var users = UserManager.GetUsersByGroup(subjectID).Select(u => u.Id).ToArray();
                        result.In(r => r.CreateBy, users);
                    }
                    else
