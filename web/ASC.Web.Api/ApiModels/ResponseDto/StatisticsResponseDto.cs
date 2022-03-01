@@ -25,46 +25,50 @@
 
 namespace ASC.Api.Settings
 {
-    public class StorageWrapper
+    public class UsageSpaceStatItemWrapper
     {
-        public string Id { get; set; }
+        public string Name { get; set; }
 
-        public string Title { get; set; }
+        public string Icon { get; set; }
 
-        public List<AuthKey> Properties { get; set; }
+        public bool Disabled { get; set; }
 
-        public bool Current { get; set; }
+        public string Size { get; set; }
 
-        public bool IsSet { get; set; }
+        public string Url { get; set; }
 
-        public StorageWrapper(DataStoreConsumer consumer, StorageSettings current)
+        public static UsageSpaceStatItemWrapper GetSample()
         {
-            StorageWrapperInit(consumer, current);
+            return new UsageSpaceStatItemWrapper
+            {
+                Name = "Item name",
+                Icon = "Item icon path",
+                Disabled = false,
+                Size = "0 Byte",
+                Url = "Item url"
+            };
         }
+    }
 
-        public StorageWrapper(DataStoreConsumer consumer, CdnStorageSettings current)
+    public class ChartPointWrapper
+    {
+        public string DisplayDate { get; set; }
+
+        public DateTime Date { get; set; }
+
+        public int Hosts { get; set; }
+
+        public int Hits { get; set; }
+
+        public static ChartPointWrapper GetSample()
         {
-            StorageWrapperInit(consumer, current);
-        }
-
-        private void StorageWrapperInit<T>(DataStoreConsumer consumer, BaseStorageSettings<T> current) where T : class, ISettings, new()
-        {
-            Id = consumer.Name;
-            Title = ConsumerExtension.GetResourceString(consumer.Name) ?? consumer.Name;
-            Current = consumer.Name == current.Module;
-            IsSet = consumer.IsSet;
-
-            var props = Current
-                ? current.Props
-                : current.Switch(consumer).AdditionalKeys.ToDictionary(r => r, a => consumer[a]);
-
-            Properties = props.Select(
-                r => new AuthKey
-                {
-                    Name = r.Key,
-                    Value = r.Value,
-                    Title = ConsumerExtension.GetResourceString(consumer.Name + r.Key) ?? r.Key
-                }).ToList();
+            return new ChartPointWrapper
+            {
+                DisplayDate = DateTime.Now.ToShortDateString(),
+                Date = DateTime.Now,
+                Hosts = 0,
+                Hits = 0
+            };
         }
     }
 }

@@ -25,49 +25,59 @@
 
 namespace ASC.Api.Settings
 {
-    public class UsageSpaceStatItemWrapper
+    public class SettingsWrapper
     {
-        public string Name { get; set; }
+        public string Timezone { get; set; }
 
-        public string Icon { get; set; }
+        public List<string> TrustedDomains { get; set; }
 
-        public bool Disabled { get; set; }
+        public TenantTrustedDomainsType TrustedDomainsType { get; set; }
 
-        public string Size { get; set; }
+        public string Culture { get; set; }
 
-        public string Url { get; set; }
+        public TimeSpan UtcOffset { get; set; }
 
-        public static UsageSpaceStatItemWrapper GetSample()
+        public double UtcHoursOffset { get; set; }
+
+        public string GreetingSettings { get; set; }
+
+        public Guid OwnerId { get; set; }
+
+        public string NameSchemaId { get; set; }
+
+        public bool? EnabledJoin { get; set; }
+
+        public bool? EnableAdmMess { get; set; }
+
+        public bool? ThirdpartyEnable { get; set; }
+
+        public bool Personal { get; set; }
+
+        public string WizardToken { get; set; }
+
+        public PasswordHasher PasswordHash { get; set; }
+
+        public FirebaseWrapper Firebase { get; set; }
+
+        public string Version { get; set; }
+
+        public string RecaptchaPublicKey { get; set; }
+
+        public bool DebugInfo { get; set; }
+
+        public string SocketUrl { get; set; }
+
+        public static SettingsWrapper GetSample()
         {
-            return new UsageSpaceStatItemWrapper
+            return new SettingsWrapper
             {
-                Name = "Item name",
-                Icon = "Item icon path",
-                Disabled = false,
-                Size = "0 Byte",
-                Url = "Item url"
-            };
-        }
-    }
-
-    public class ChartPointWrapper
-    {
-        public string DisplayDate { get; set; }
-
-        public DateTime Date { get; set; }
-
-        public int Hosts { get; set; }
-
-        public int Hits { get; set; }
-
-        public static ChartPointWrapper GetSample()
-        {
-            return new ChartPointWrapper
-            {
-                DisplayDate = DateTime.Now.ToShortDateString(),
-                Date = DateTime.Now,
-                Hosts = 0,
-                Hits = 0
+                Culture = "en-US",
+                Timezone = TimeZoneInfo.Utc.ToString(),
+                TrustedDomains = new List<string> { "mydomain.com" },
+                UtcHoursOffset = -8.5,
+                UtcOffset = TimeSpan.FromHours(-8.5),
+                GreetingSettings = "Web Office Applications",
+                OwnerId = new Guid()
             };
         }
     }

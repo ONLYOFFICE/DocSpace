@@ -23,39 +23,48 @@
  *
 */
 
-namespace ASC.Api.Settings.Smtp
+namespace ASC.Api.Settings
 {
-    public class SmtpSettingsWrapper
+    public class StorageWrapper
     {
-        public string Host { get; set; }
+        public string Id { get; set; }
 
-        public int? Port { get; set; }
+        public string Title { get; set; }
 
-        public string SenderAddress { get; set; }
+        public List<AuthKey> Properties { get; set; }
 
-        public string SenderDisplayName { get; set; }
+        public bool Current { get; set; }
 
-        public string CredentialsUserName { get; set; }
+        public bool IsSet { get; set; }
 
-        public string CredentialsUserPassword { get; set; }
-
-        public bool EnableSSL { get; set; }
-
-        public bool EnableAuth { get; set; }
-
-        public static SmtpSettingsWrapper GetSample()
+        public StorageWrapper(DataStoreConsumer consumer, StorageSettings current)
         {
-            return new SmtpSettingsWrapper
-            {
-                Host = "mail.example.com",
-                Port = 25,
-                CredentialsUserName = "notify@example.com",
-                CredentialsUserPassword = "{password}",
-                EnableAuth = true,
-                EnableSSL = false,
-                SenderAddress = "notify@example.com",
-                SenderDisplayName = "Postman"
-            };
+            StorageWrapperInit(consumer, current);
+        }
+
+        public StorageWrapper(DataStoreConsumer consumer, CdnStorageSettings current)
+        {
+            StorageWrapperInit(consumer, current);
+        }
+
+        private void StorageWrapperInit<T>(DataStoreConsumer consumer, BaseStorageSettings<T> current) where T : class, ISettings, new()
+        {
+            Id = consumer.Name;
+            Title = ConsumerExtension.GetResourceString(consumer.Name) ?? consumer.Name;
+            Current = consumer.Name == current.Module;
+            IsSet = consumer.IsSet;
+
+            var props = Current
+                ? current.Props
+                : current.Switch(consumer).AdditionalKeys.ToDictionary(r => r, a => consumer[a]);
+
+            Properties = props.Select(
+                r => new AuthKey
+                {
+                    Name = r.Key,
+                    Value = r.Value,
+                    Title = ConsumerExtension.GetResourceString(consumer.Name + r.Key) ?? r.Key
+                }).ToList();
         }
     }
 }
