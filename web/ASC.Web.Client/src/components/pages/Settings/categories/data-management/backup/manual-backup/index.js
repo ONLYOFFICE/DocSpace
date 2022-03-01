@@ -261,9 +261,10 @@ class ManualBackup extends React.Component {
     const { isCheckedDocuments, isCheckedThirdParty } = this.state;
     const { t, isDesktop, setBackupProgress, temporaryLink } = this.props;
 
-    this.setState({
-      downloadingProgress: 1,
-    });
+    !isDesktop &&
+      this.setState({
+        downloadingProgress: 1,
+      });
 
     const storageValue =
       isCheckedDocuments || isCheckedThirdParty ? selectedFolder : selectedId;
