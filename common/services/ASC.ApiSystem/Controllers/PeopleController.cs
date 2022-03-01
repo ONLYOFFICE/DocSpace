@@ -73,7 +73,7 @@ namespace ASC.ApiSystem.Controllers
 
             var result = users.Select(user => new
             {
-                id = user.ID,
+                id = user.Id,
                 name = UserFormatter.GetUserName(user),
                 email = user.Email,
 
