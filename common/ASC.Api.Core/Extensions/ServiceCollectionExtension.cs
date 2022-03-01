@@ -27,7 +27,7 @@ namespace ASC.Api.Core.Extensions
 
             var rabbitMQConfiguration = configuration.GetSection("RabbitMQ").Get<RabbitMQSettings>();
 
-            if (rabbitMQConfiguration == null)
+            if (rabbitMQConfiguration != null)
             {
                 services.AddSingleton<IRabbitMQPersistentConnection>(sp =>
                 {
