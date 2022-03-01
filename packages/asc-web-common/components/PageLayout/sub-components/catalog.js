@@ -27,6 +27,7 @@ const StyledCatalog = styled.div`
     position: fixed;
     margin-top: 16px;
     height: calc(100vh - 64px) !important;
+    z-index: 400;
   }
 
   ${isMobileOnly &&
@@ -138,8 +139,13 @@ const Catalog = (props) => {
     clearTimeout(refTimer.current);
 
     refTimer.current = setTimeout(() => {
-      if (isMobileOnly || isMobileUtils()) props.setShowText(true);
-      if ((isTabletUtils() || isMobile) && !isMobileOnly)
+      console.log(window.innerWidth === 375);
+      if (isMobileOnly || isMobileUtils() || window.innerWidth === 375)
+        props.setShowText(true);
+      if (
+        ((isTabletUtils() && window.innerWidth !== 375) || isMobile) &&
+        !isMobileOnly
+      )
         props.setShowText(false);
       if (isDesktopUtils() && !isMobile) props.setShowText(true);
     }, 100);
