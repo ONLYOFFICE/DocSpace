@@ -23,23 +23,12 @@
  *
 */
 
+namespace ASC.Notify;
 
-using ASC.Notify.Channels;
-using ASC.Notify.Model;
-using ASC.Notify.Sinks;
-
-using Microsoft.Extensions.DependencyInjection;
-
-namespace ASC.Notify
+public interface INotifyRegistry
 {
-    public interface INotifyRegistry
-    {
-        void RegisterSender(string senderName, ISink senderSink);
-
-        void UnregisterSender(string senderName);
-
-        ISenderChannel GetSender(string senderName);
-
-        INotifyClient RegisterClient(INotifySource source, IServiceScope serviceScope);
-    }
+    INotifyClient RegisterClient(INotifySource source, IServiceScope serviceScope);
+    ISenderChannel GetSender(string senderName);
+    void RegisterSender(string senderName, ISink senderSink);
+    void UnregisterSender(string senderName);
 }

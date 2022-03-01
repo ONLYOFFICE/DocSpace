@@ -23,21 +23,13 @@
  *
 */
 
+namespace ASC.AuditTrail.Mappers;
 
-
-
-using System.Collections.Generic;
-
-using ASC.MessagingSystem;
-
-namespace ASC.AuditTrail.Mappers
+internal static class CrmActionMapper
 {
-    internal static class CrmActionMapper
-    {
-        public static Dictionary<MessageAction, MessageMaps> GetMaps()
+    public static Dictionary<MessageAction, MessageMaps> GetMaps() =>
+        new Dictionary<MessageAction, MessageMaps>
         {
-            return new Dictionary<MessageAction, MessageMaps>
-                {
                     #region companies
 
                     {
@@ -1621,8 +1613,6 @@ namespace ASC.AuditTrail.Mappers
                             }
                     },
 
-                    #endregion
-                };
-        }
-    }
+            #endregion
+        };
 }

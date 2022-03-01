@@ -23,21 +23,13 @@
  *
 */
 
+namespace ASC.AuditTrail.Mappers;
 
-
-
-using System.Collections.Generic;
-
-using ASC.MessagingSystem;
-
-namespace ASC.AuditTrail.Mappers
+internal static class OthersActionsMapper
 {
-    internal static class OthersActionsMapper
-    {
-        public static Dictionary<MessageAction, MessageMaps> GetMaps()
+    public static Dictionary<MessageAction, MessageMaps> GetMaps() =>
+        new Dictionary<MessageAction, MessageMaps>
         {
-            return new Dictionary<MessageAction, MessageMaps>
-                {
                     {
                         MessageAction.ContactAdminMailSent, new MessageMaps
                             {
@@ -46,7 +38,5 @@ namespace ASC.AuditTrail.Mappers
                                 ProductResourceName = "OthersProduct"
                             }
                     }
-                };
-        }
-    }
+        };
 }

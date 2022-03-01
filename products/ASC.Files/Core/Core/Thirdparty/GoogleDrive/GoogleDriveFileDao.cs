@@ -24,28 +24,8 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common.EF;
-using ASC.Core.Tenants;
-using ASC.Files.Core;
-using ASC.Files.Core.EF;
-using ASC.Files.Core.Resources;
-using ASC.Files.Core.Thirdparty;
-using ASC.Web.Core.Files;
-using ASC.Web.Studio.Core;
-
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-
 using DriveFile = Google.Apis.Drive.v3.Data.File;
+using File = System.IO.File;
 
 namespace ASC.Files.Thirdparty.GoogleDrive
 {
@@ -251,7 +231,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             foreach (var f in files)
             {
                 yield return f;
-            }
+        }
         }
 
         public override Task<Stream> GetFileStreamAsync(File<string> file)

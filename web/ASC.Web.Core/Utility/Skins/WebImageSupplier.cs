@@ -23,15 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Common;
-using ASC.Data.Storage;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-
 namespace ASC.Web.Core.Utility.Skins
 {
     [Scope]

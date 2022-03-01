@@ -23,72 +23,57 @@
  *
 */
 
+namespace ASC.AuditTrail;
 
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Text;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Web.Core.Files;
-using ASC.Web.Files.Classes;
-using ASC.Web.Files.Utils;
-using ASC.Web.Studio.Utility;
-
-using CsvHelper;
-
-using Microsoft.Extensions.Options;
-
-namespace ASC.AuditTrail
+[Scope]
+public class AuditReportCreator
 {
-    [Scope]
-    public class AuditReportCreator
+    private readonly GlobalFolderHelper _globalFolderHelper;
+    private readonly FileUploader _fileUploader;
+    private readonly FilesLinkUtility _filesLinkUtility;
+    private readonly CommonLinkUtility _commonLinkUtility;
+    private readonly ILog _logger;
+
+    public AuditReportCreator(
+        GlobalFolderHelper globalFolderHelper,
+        IOptionsMonitor<ILog> options,
+        FileUploader fileUploader,
+        FilesLinkUtility filesLinkUtility,
+        CommonLinkUtility commonLinkUtility)
     {
-        private ILog Log { get; }
-        private GlobalFolderHelper GlobalFolderHelper { get; }
-        private FileUploader FileUploader { get; }
-        private FilesLinkUtility FilesLinkUtility { get; }
-        private CommonLinkUtility CommonLinkUtility { get; }
+        _globalFolderHelper = globalFolderHelper;
+        _logger = options.CurrentValue;
+        _fileUploader = fileUploader;
+        _filesLinkUtility = filesLinkUtility;
+        _commonLinkUtility = commonLinkUtility;
+    }
 
-        public AuditReportCreator(GlobalFolderHelper globalFolderHelper, IOptionsMonitor<ILog> options, FileUploader fileUploader, FilesLinkUtility filesLinkUtility, CommonLinkUtility commonLinkUtility)
+    public string CreateCsvReport<TEvent>(IEnumerable<TEvent> events, string reportName) where TEvent : BaseEvent
+    {
+        try
         {
-            GlobalFolderHelper = globalFolderHelper;
-            Log = options.CurrentValue;
-            FileUploader = fileUploader;
-            FilesLinkUtility = filesLinkUtility;
-            CommonLinkUtility = commonLinkUtility;
+            using var stream = new MemoryStream();
+            using var writer = new StreamWriter(stream, Encoding.UTF8);
+            using var csv = new CsvWriter(writer, CultureInfo.CurrentCulture);
+
+            csv.Configuration.RegisterClassMap(new BaseEventMap<TEvent>());
+
+            csv.WriteHeader<TEvent>();
+            csv.NextRecord();
+            csv.WriteRecords(events);
+            writer.Flush();
+
+                    var file = _fileUploader.ExecAsync(_globalFolderHelper.FolderMy, reportName, stream.Length, stream, true).Result;
+                    var fileUrl = _commonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.GetFileWebEditorUrl(file.ID));
+
+            fileUrl += string.Format("&options={{\"codePage\":{0}}}", Encoding.UTF8.CodePage);
+
+            return fileUrl;
         }
-
-        public string CreateCsvReport<TEvent>(IEnumerable<TEvent> events, string reportName) where TEvent : BaseEvent
+        catch (Exception ex)
         {
-            try
-            {
-                using (var stream = new MemoryStream())
-                using (var writer = new StreamWriter(stream, Encoding.UTF8))
-                using (var csv = new CsvWriter(writer, CultureInfo.CurrentCulture))
-                {
-                    csv.Configuration.RegisterClassMap(new BaseEventMap<TEvent>());
-
-                    csv.WriteHeader<TEvent>();
-                    csv.NextRecord();
-                    csv.WriteRecords(events);
-                    writer.Flush();
-
-                    var file = FileUploader.ExecAsync(GlobalFolderHelper.FolderMy, reportName, stream.Length, stream, true).Result;
-                    var fileUrl = CommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.GetFileWebEditorUrl(file.ID));
-
-                    fileUrl += string.Format("&options={{\"codePage\":{0}}}", Encoding.UTF8.CodePage);
-                    return fileUrl;
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Error("Error while generating login report: " + ex);
-                throw;
-            }
+            _logger.Error("Error while generating login report: " + ex);
+            throw;
         }
     }
 }

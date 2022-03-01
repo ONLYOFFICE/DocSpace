@@ -23,20 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Users;
-using ASC.Web.Core;
-using ASC.Web.Files.Api;
-using ASC.Web.Files.Classes;
-using ASC.Web.Files.Configuration;
-
 namespace ASC.Files.Core.Security
 {
     [Scope]
@@ -219,7 +205,7 @@ namespace ASC.Files.Core.Security
                         EntryType = entry.FileEntryType,
                         Share = DefaultCommonShare,
                         Subject = Constants.GroupEveryone.ID,
-                        Tenant = TenantManager.GetCurrentTenant().TenantId,
+                        Tenant = TenantManager.GetCurrentTenant().Id,
                         Owner = AuthContext.CurrentAccount.ID
                     };
 
@@ -228,7 +214,7 @@ namespace ASC.Files.Core.Security
                         if ((defaultShareRecord.Share == FileShare.Read && action == FilesSecurityActions.Read) ||
                             (defaultShareRecord.Share == FileShare.ReadWrite))
                             return UserManager.GetUsersByGroup(defaultShareRecord.Subject)
-                                              .Where(x => x.Status == EmployeeStatus.Active).Select(y => y.ID).Distinct();
+                                              .Where(x => x.Status == EmployeeStatus.Active).Select(y => y.Id).Distinct();
 
                         return Enumerable.Empty<Guid>();
                     }
@@ -243,7 +229,7 @@ namespace ASC.Files.Core.Security
                         EntryType = entry.FileEntryType,
                         Share = DefaultMyShare,
                         Subject = entry.RootFolderCreator,
-                        Tenant = TenantManager.GetCurrentTenant().TenantId,
+                        Tenant = TenantManager.GetCurrentTenant().Id,
                         Owner = entry.RootFolderCreator
                     };
 
@@ -263,7 +249,7 @@ namespace ASC.Files.Core.Security
                         EntryType = entry.FileEntryType,
                         Share = DefaultPrivacyShare,
                         Subject = entry.RootFolderCreator,
-                        Tenant = TenantManager.GetCurrentTenant().TenantId,
+                        Tenant = TenantManager.GetCurrentTenant().Id,
                         Owner = entry.RootFolderCreator
                     };
 
@@ -306,17 +292,17 @@ namespace ASC.Files.Core.Security
                 shares = shares.Concat(new[] { defaultShareRecord });
 
             var manyShares = shares.SelectMany(x =>
-            {
-                var groupInfo = UserManager.GetGroupInfo(x.Subject);
+                                         {
+                                             var groupInfo = UserManager.GetGroupInfo(x.Subject);
 
-                if (groupInfo.ID != Constants.LostGroupInfo.ID)
-                    return
-                        UserManager.GetUsersByGroup(groupInfo.ID)
-                                   .Where(p => p.Status == EmployeeStatus.Active)
-                                   .Select(y => y.ID);
+                                             if (groupInfo.ID != Constants.LostGroupInfo.ID)
+                                                 return
+                                                     UserManager.GetUsersByGroup(groupInfo.ID)
+                                                                .Where(p => p.Status == EmployeeStatus.Active)
+                                                                .Select(y => y.Id);
 
-                return new[] { x.Subject };
-            })
+                                             return new[] { x.Subject };
+                                         })
             .Distinct();
 
             var result = new List<Guid>();
@@ -326,7 +312,7 @@ namespace ASC.Files.Core.Security
                 if (await CanAsync(entry, x, action))
                 {
                     result.Add(x);
-                }
+        }
             }
 
             return result;
@@ -401,7 +387,7 @@ namespace ASC.Files.Core.Security
                 List<Guid> subjects = null;
                 foreach (var e in entries.Where(filter))
                 {
-                    if (!AuthManager.GetAccountByID(TenantManager.GetCurrentTenant().TenantId, userId).IsAuthenticated && userId != FileConstant.ShareLinkId)
+                    if (!AuthManager.GetAccountByID(TenantManager.GetCurrentTenant().Id, userId).IsAuthenticated && userId != FileConstant.ShareLinkId)
                     {
                         continue;
                     }
@@ -719,7 +705,7 @@ namespace ASC.Files.Core.Security
             var securityDao = daoFactory.GetSecurityDao<T>();
             var r = new FileShareRecord
             {
-                Tenant = TenantManager.GetCurrentTenant().TenantId,
+                Tenant = TenantManager.GetCurrentTenant().Id,
                 EntryId = entryId,
                 EntryType = entryType,
                 Subject = @for,
@@ -789,13 +775,13 @@ namespace ASC.Files.Core.Security
                 var share = await GlobalFolder.GetFolderShareAsync<T>(daoFactory);
 
                 files.ForEach(x =>
-                {
-                    if (fileIds.TryGetValue(x.ID, out var access))
                     {
+                        if (fileIds.TryGetValue(x.ID, out var access))
+                        {
                         x.Access = fileIds[x.ID];
                         x.FolderIdDisplay = share;
-                    }
-                });
+                        }
+                    });
 
                 entries.AddRange(files);
             }
@@ -811,13 +797,13 @@ namespace ASC.Files.Core.Security
                 }
                 var share = await GlobalFolder.GetFolderShareAsync<T>(daoFactory);
                 folders.ForEach(x =>
-                {
-                    if (folderIds.TryGetValue(x.ID, out var access))
                     {
+                        if (folderIds.TryGetValue(x.ID, out var access))
+                        {
                         x.Access = folderIds[x.ID];
                         x.FolderIdDisplay = share;
-                    }
-                });
+                        }
+                    });
 
                 entries.AddRange(folders.Cast<FileEntry<T>>());
             }

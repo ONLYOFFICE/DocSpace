@@ -23,17 +23,6 @@
  *
 */
 
-
-using System;
-using System.IO;
-
-using ASC.Common;
-using ASC.Common.Utils;
-using ASC.Core.Common.Settings;
-
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Hosting;
-
 namespace ASC.Web.Core.Utility
 {
     [Serializable]

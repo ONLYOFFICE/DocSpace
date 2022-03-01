@@ -23,37 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Core;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
-using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
-using ASC.ElasticSearch;
-using ASC.Files.Core.EF;
-using ASC.Files.Core.Resources;
-using ASC.Files.Core.Security;
-using ASC.Files.Core.Thirdparty;
-using ASC.Files.Thirdparty.ProviderDao;
-using ASC.Web.Files.Classes;
-using ASC.Web.Files.Core.Search;
-using ASC.Web.Studio.Core;
-using ASC.Web.Studio.UserControls.Statistics;
-using ASC.Web.Studio.Utility;
-
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ASC.Files.Core.Data
 {
     [Scope]
@@ -219,7 +188,7 @@ namespace ASC.Files.Core.Data
             {
                 if (subjectGroup)
                 {
-                    var users = UserManager.GetUsersByGroup(subjectID).Select(u => u.ID).ToArray();
+                    var users = UserManager.GetUsersByGroup(subjectID).Select(u => u.Id).ToArray();
                     q = q.Where(r => users.Contains(r.CreateBy));
                 }
                 else
@@ -271,7 +240,7 @@ namespace ASC.Files.Core.Data
             {
                 if (subjectGroup)
                 {
-                    var users = UserManager.GetUsersByGroup(subjectID.Value).Select(u => u.ID).ToArray();
+                    var users = UserManager.GetUsersByGroup(subjectID.Value).Select(u => u.Id).ToArray();
                     q = q.Where(r => users.Contains(r.CreateBy));
                 }
                 else
@@ -574,7 +543,7 @@ namespace ASC.Files.Core.Data
                 foreach (var e in recalcFolders)
                 {
                     await RecalculateFoldersCountAsync(e);
-                }
+            }
                 foreach (var e in recalcFolders)
                 {
                     await GetRecalculateFilesCountUpdateAsync(e);
@@ -854,7 +823,7 @@ namespace ASC.Files.Core.Data
         {
             var folders = SearchAsync(text);
             return folders.Where(f => bunch
-                                           ? f.RootFolderType == FolderType.BUNCH
+                                               ? f.RootFolderType == FolderType.BUNCH
                                            : (f.RootFolderType == FolderType.USER || f.RootFolderType == FolderType.COMMON));
         }
 
@@ -1118,24 +1087,24 @@ namespace ASC.Files.Core.Data
         protected IQueryable<DbFolderQuery> FromQueryWithShared(IQueryable<DbFolder> dbFiles)
         {
             var e = from r in dbFiles
-                    select new DbFolderQuery
-                    {
-                        Folder = r,
+                   select new DbFolderQuery
+                   {
+                       Folder = r,
                         Root = (from f in FilesDbContext.Folders.AsQueryable()
-                                where f.Id ==
+                               where f.Id ==
                                 (from t in FilesDbContext.Tree.AsQueryable()
-                                 where t.FolderId == r.ParentId
-                                 orderby t.Level descending
-                                 select t.ParentId
-                                 ).FirstOrDefault()
-                                where f.TenantId == r.TenantId
-                                select f
-                               ).FirstOrDefault(),
+                                where t.FolderId == r.ParentId
+                                orderby t.Level descending
+                                select t.ParentId
+                                ).FirstOrDefault()
+                               where f.TenantId == r.TenantId
+                               select f
+                              ).FirstOrDefault(),
                         Shared = (from f in FilesDbContext.Security.AsQueryable()
-                                  where f.EntryType == FileEntryType.Folder && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId
-                                  select f
-                                  ).Any()
-                    };
+                                 where f.EntryType == FileEntryType.Folder && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId
+                                 select f
+                                 ).Any()
+                   };
 
             return e;
         }

@@ -23,58 +23,50 @@
  *
 */
 
+namespace ASC.Security.Cryptography;
 
-using System;
-using System.IO;
-using System.Linq;
-using System.Text;
-
-using ASC.Common;
-using ASC.Common.Security;
-
-using Microsoft.Extensions.Configuration;
-
-namespace ASC.Security.Cryptography
+[Singletone]
+public class MachinePseudoKeys
 {
-    [Singletone]
-    public class MachinePseudoKeys
+    private readonly byte[] _confKey = null;
+
+    public MachinePseudoKeys(IConfiguration configuration)
     {
-        private readonly byte[] confkey = null;
+        var key = configuration["core:machinekey"];
 
-        public MachinePseudoKeys(IConfiguration configuration)
+        if (string.IsNullOrEmpty(key))
         {
-            var key = configuration["core:machinekey"];
-            if (string.IsNullOrEmpty(key))
-            {
-                key = configuration["asc:common.machinekey"];
-            }
-            if (!string.IsNullOrEmpty(key))
-            {
-                confkey = Encoding.UTF8.GetBytes(key);
-            }
+            key = configuration["asc:common.machinekey"];
         }
 
-
-        public byte[] GetMachineConstant()
+        if (!string.IsNullOrEmpty(key))
         {
-            if (confkey != null)
-            {
-                return confkey;
-            }
+            _confKey = Encoding.UTF8.GetBytes(key);
+        }
+    }
 
-            var path = typeof(MachinePseudoKeys).Assembly.Location;
-            var fi = new FileInfo(path);
-            return BitConverter.GetBytes(fi.CreationTime.ToOADate());
+
+    public byte[] GetMachineConstant()
+    {
+        if (_confKey != null)
+        {
+            return _confKey;
         }
 
-        public byte[] GetMachineConstant(int bytesCount)
-        {
-            var cnst = Enumerable.Repeat<byte>(0, sizeof(int)).Concat(GetMachineConstant()).ToArray();
-            var icnst = BitConverter.ToInt32(cnst, cnst.Length - sizeof(int));
-            var rnd = new AscRandom(icnst);
-            var buff = new byte[bytesCount];
-            rnd.NextBytes(buff);
-            return buff;
-        }
+        var path = typeof(MachinePseudoKeys).Assembly.Location;
+        var fi = new FileInfo(path);
+
+        return BitConverter.GetBytes(fi.CreationTime.ToOADate());
+    }
+
+    public byte[] GetMachineConstant(int bytesCount)
+    {
+        var cnst = Enumerable.Repeat<byte>(0, sizeof(int)).Concat(GetMachineConstant()).ToArray();
+        var icnst = BitConverter.ToInt32(cnst, cnst.Length - sizeof(int));
+        var rnd = new AscRandom(icnst);
+        var buff = new byte[bytesCount];
+        rnd.NextBytes(buff);
+
+        return buff;
     }
 }

@@ -23,19 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Security.Cryptography;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Core;
-using ASC.Core.Tenants;
-
-using Microsoft.Extensions.Configuration;
-
 namespace ASC.Web.Core.Sms
 {
     [Singletone]
@@ -50,12 +37,12 @@ namespace ASC.Web.Core.Sms
             CheckCache = cache;
             KeyCache = cache;
             KeyCacheNotify = keyCacheNotify;
-            KeyCacheNotify.Subscribe(r => KeyCache.Remove(r.Key), CacheNotifyAction.Remove);
+            KeyCacheNotify.Subscribe(r => KeyCache.Remove(r.Key), Common.Caching.CacheNotifyAction.Remove);
         }
 
         public void RemoveFromCache(string cacheKey)
         {
-            KeyCacheNotify.Publish(new SmsKeyCacheKey { Key = cacheKey }, CacheNotifyAction.Remove);
+            KeyCacheNotify.Publish(new SmsKeyCacheKey { Key = cacheKey }, Common.Caching.CacheNotifyAction.Remove);
         }
     }
 
@@ -99,7 +86,7 @@ namespace ASC.Web.Core.Sms
         private string BuildCacheKey(string phone)
         {
             var tenant = TenantManager.GetCurrentTenant(false);
-            var tenantCache = tenant == null ? Tenant.DEFAULT_TENANT : tenant.TenantId;
+            var tenantCache = tenant == null ? Tenant.DefaultTenant : tenant.Id;
             return "smskey" + phone + tenantCache;
         }
 

@@ -33,7 +33,7 @@ public class BackupRequestIntegrationEventHandler : IIntegrationEventHandler<Bac
         _tenantManager.SetCurrentTenant(@event.TenantId);
 
         _securityContext.AuthenticateMeWithoutCookie(_authManager.GetAccountByID(@event.TenantId, @event.CreateBy));
-    
+
         if (@event.IsScheduled)
         {
             _backupWorker.StartScheduledBackup(new EF.Model.BackupSchedule

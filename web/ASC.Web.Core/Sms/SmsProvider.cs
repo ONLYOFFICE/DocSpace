@@ -23,34 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Web;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common;
-using ASC.Core.Common.Configuration;
-using ASC.Core.Tenants;
-using ASC.FederatedLogin.LoginProviders;
-using ASC.VoipService.Dao;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-
-using Twilio.Clients;
-using Twilio.Rest.Api.V2010.Account;
-using Twilio.Types;
-
 namespace ASC.Web.Core.Sms
 {
     [Scope(Additional = typeof(TwilioProviderExtention))]
@@ -252,7 +224,7 @@ namespace ASC.Web.Core.Sms
 
         public async Task<string> GetBalanceAsync(Tenant tenant, bool eraseCache = false)
         {
-            var tenantCache = tenant == null ? Tenant.DEFAULT_TENANT : tenant.TenantId;
+            var tenantCache = tenant == null ? Tenant.DefaultTenant : tenant.Id;
 
             var key = "sms/smsc/" + tenantCache;
             if (eraseCache) MemoryCache.Remove(key);

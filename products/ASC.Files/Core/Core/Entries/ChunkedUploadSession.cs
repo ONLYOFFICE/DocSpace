@@ -23,23 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core.ChunkedUploader;
-using ASC.Web.Files.Utils;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.Files.Core
 {
     [DebuggerDisplay("{Id} into {FolderId}")]

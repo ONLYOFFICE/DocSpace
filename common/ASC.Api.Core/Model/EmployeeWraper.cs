@@ -23,106 +23,94 @@
  *
 */
 
+namespace ASC.Web.Api.Models;
 
-using System;
-
-
-using ASC.Api.Core;
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Users;
-using ASC.Web.Core.Users;
-using ASC.Web.Studio.Utility;
-
-namespace ASC.Web.Api.Models
+public class EmployeeWraper
 {
-    public class EmployeeWraper
+    public Guid Id { get; set; }
+    public string DisplayName { get; set; }
+    public string Title { get; set; }
+    public string AvatarSmall { get; set; }
+    public string ProfileUrl { get; set; }
+
+    public static EmployeeWraper GetSample()
     {
-        public Guid Id { get; set; }
-
-        public string DisplayName { get; set; }
-
-        public string Title { get; set; }
-
-        public string AvatarSmall { get; set; }
-
-        public string ProfileUrl { get; set; }
-
-        public static EmployeeWraper GetSample()
+        return new EmployeeWraper
         {
-            return new EmployeeWraper
-            {
-                Id = Guid.Empty,
-                DisplayName = "Mike Zanyatski",
-                Title = "Manager",
-                AvatarSmall = "url to small avatar",
-            };
+            Id = Guid.Empty,
+            DisplayName = "Mike Zanyatski",
+            Title = "Manager",
+            AvatarSmall = "url to small avatar",
+        };
+    }
+}
+
+[Scope]
+public class EmployeeWraperHelper
+{
+    protected UserPhotoManager UserPhotoManager { get; }
+    protected UserManager UserManager { get; }
+
+    private readonly ApiContext _httpContext;
+    private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
+    private readonly CommonLinkUtility _commonLinkUtility;
+
+    public EmployeeWraperHelper(
+        ApiContext httpContext,
+        DisplayUserSettingsHelper displayUserSettingsHelper,
+        UserPhotoManager userPhotoManager,
+        CommonLinkUtility commonLinkUtility,
+        UserManager userManager)
+    {
+        UserPhotoManager = userPhotoManager;
+        UserManager = userManager;
+        _httpContext = httpContext;
+        _displayUserSettingsHelper = displayUserSettingsHelper;
+        _commonLinkUtility = commonLinkUtility;
+
+    }
+
+    public EmployeeWraper Get(UserInfo userInfo)
+    {
+        return Init(new EmployeeWraper(), userInfo);
+    }
+
+    public EmployeeWraper Get(Guid userId)
+    {
+        try
+        {
+            return Get(UserManager.GetUsers(userId));
+        }
+        catch (Exception)
+        {
+            return Get(Constants.LostUser);
         }
     }
 
-    [Scope]
-    public class EmployeeWraperHelper
+    protected EmployeeWraper Init(EmployeeWraper result, UserInfo userInfo)
     {
-        private ApiContext HttpContext { get; }
-        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-        protected UserPhotoManager UserPhotoManager { get; }
-        private CommonLinkUtility CommonLinkUtility { get; }
-        protected UserManager UserManager { get; }
+        result.Id = userInfo.Id;
+        result.DisplayName = _displayUserSettingsHelper.GetFullUserName(userInfo);
 
-        public EmployeeWraperHelper(
-            ApiContext httpContext,
-            DisplayUserSettingsHelper displayUserSettingsHelper,
-            UserPhotoManager userPhotoManager,
-            CommonLinkUtility commonLinkUtility,
-            UserManager userManager)
+        if (!string.IsNullOrEmpty(userInfo.Title))
         {
-            HttpContext = httpContext;
-            DisplayUserSettingsHelper = displayUserSettingsHelper;
-            UserPhotoManager = userPhotoManager;
-            CommonLinkUtility = commonLinkUtility;
-            UserManager = userManager;
+            result.Title = userInfo.Title;
         }
 
-        public EmployeeWraper Get(UserInfo userInfo)
+        var userInfoLM = userInfo.LastModified.GetHashCode();
+
+        if (_httpContext.Check("avatarSmall"))
         {
-            return Init(new EmployeeWraper(), userInfo);
+            result.AvatarSmall = UserPhotoManager.GetSmallPhotoURL(userInfo.Id, out var isdef) 
+                + (isdef ? "" : $"?_={userInfoLM}");
+        }     
+
+        if (result.Id != Guid.Empty)
+        {
+            var profileUrl = _commonLinkUtility.GetUserProfile(userInfo, false);
+            result.ProfileUrl = _commonLinkUtility.GetFullAbsolutePath(profileUrl);
         }
 
-        public EmployeeWraper Get(Guid userId)
-        {
-            try
-            {
-                return Get(UserManager.GetUsers(userId));
-            }
-            catch (Exception)
-            {
-                return Get(Constants.LostUser);
-            }
-        }
-
-        protected EmployeeWraper Init(EmployeeWraper result, UserInfo userInfo)
-        {
-            result.Id = userInfo.ID;
-            result.DisplayName = DisplayUserSettingsHelper.GetFullUserName(userInfo);
-            if (!string.IsNullOrEmpty(userInfo.Title))
-            {
-                result.Title = userInfo.Title;
-            }
-
-            var userInfoLM = userInfo.LastModified.GetHashCode();
-
-            if (HttpContext.Check("avatarSmall"))
-            {
-                result.AvatarSmall = UserPhotoManager.GetSmallPhotoURL(userInfo.ID, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
-            }
-
-            if (result.Id != Guid.Empty)
-            {
-                var profileUrl = CommonLinkUtility.GetUserProfile(userInfo, false);
-                result.ProfileUrl = CommonLinkUtility.GetFullAbsolutePath(profileUrl);
-            }
-
-            return result;
-        }
+        return result;
     }
 }

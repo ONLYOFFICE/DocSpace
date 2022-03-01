@@ -23,9 +23,6 @@
  *
 */
 
-
-using System;
-
 namespace ASC.VoipService
 {
     public class Agent

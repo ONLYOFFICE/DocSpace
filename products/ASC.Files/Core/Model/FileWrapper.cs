@@ -24,25 +24,9 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
+using FileStatus = ASC.Files.Core.FileStatus;
 using System.Threading.Tasks;
 
-using ASC.Api.Core;
-using ASC.Api.Utils;
-using ASC.Common;
-using ASC.Core;
-using ASC.Files.Core;
-using ASC.Files.Core.Security;
-using ASC.Web.Api.Models;
-using ASC.Web.Core.Files;
-using ASC.Web.Files.Classes;
-using ASC.Web.Files.Utils;
-using ASC.Web.Studio.Utility;
-
-using FileShare = ASC.Files.Core.Security.FileShare;
 namespace ASC.Api.Documents
 {
     /// <summary>

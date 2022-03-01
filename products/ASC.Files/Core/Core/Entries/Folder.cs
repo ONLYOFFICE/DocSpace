@@ -23,13 +23,6 @@
  *
 */
 
-
-using System;
-using System.Diagnostics;
-
-using ASC.Common;
-using ASC.Web.Files.Classes;
-
 namespace ASC.Files.Core
 {
     public enum FolderType

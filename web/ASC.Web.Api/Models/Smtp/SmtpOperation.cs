@@ -24,27 +24,9 @@
 */
 
 
-using System;
-using System.Net.Sockets;
-using System.Security;
-using System.Threading;
-using System.Threading.Tasks;
-
-using ASC.Common.Logging;
-using ASC.Common.Security.Authorizing;
-using ASC.Common.Threading;
-using ASC.Core;
-using ASC.Web.Core.PublicResources;
-
-using MailKit.Net.Smtp;
-using MailKit.Security;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-
-using MimeKit;
-
+using AuthenticationException = System.Security.Authentication.AuthenticationException;
 using SecurityContext = ASC.Core.SecurityContext;
+using SmtpClient = MailKit.Net.Smtp.SmtpClient;
 
 namespace ASC.Api.Settings.Smtp
 {

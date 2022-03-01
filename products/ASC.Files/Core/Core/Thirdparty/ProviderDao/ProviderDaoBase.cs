@@ -23,26 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-
-using ASC.Core;
-using ASC.Files.Core;
-using ASC.Files.Core.Data;
-using ASC.Files.Core.Thirdparty;
-using ASC.Files.Thirdparty.Box;
-using ASC.Files.Thirdparty.Dropbox;
-using ASC.Files.Thirdparty.GoogleDrive;
-using ASC.Files.Thirdparty.OneDrive;
-using ASC.Files.Thirdparty.SharePoint;
-using ASC.Files.Thirdparty.Sharpbox;
-
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ASC.Files.Thirdparty.ProviderDao
 {
     internal class ProviderDaoBase : ThirdPartyProviderDao, IDisposable
@@ -67,7 +47,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
         {
             get
             {
-                if (tenantID == 0) tenantID = TenantManager.GetCurrentTenant().TenantId;
+                if (tenantID == 0) tenantID = TenantManager.GetCurrentTenant().Id;
                 return tenantID;
             }
         }
@@ -112,12 +92,12 @@ namespace ASC.Files.Thirdparty.ProviderDao
                 .Select(x => x.EntryId).Distinct();
 
             foreach(var id in ids)
-            {
+                {
                 var firstEntry = await entries.FirstOrDefaultAsync(y => y.ID.Equals(id));
 
-                if (firstEntry != null)
-                    firstEntry.Shared = true;
-            }
+                    if (firstEntry != null)
+                        firstEntry.Shared = true;
+        }
         }
 
         protected IEnumerable<IDaoSelector> GetSelectors()

@@ -14,87 +14,77 @@
  *
 */
 
+namespace ASC.Web.Studio.Core.Backup;
 
-using System;
-using System.IO;
-
-using ASC.Common;
-using ASC.Core;
-
-using Microsoft.AspNetCore.Http;
-
-namespace ASC.Web.Studio.Core.Backup
+[Scope]
+public class BackupFileUploadHandler
 {
-    [Scope]
-    public class BackupFileUploadHandler
+    private const long MaxBackupFileSize = 1024L * 1024L * 1024L;
+    private const string BackupTempFolder = "backup";
+    private const string BackupFileName = "backup.tmp";
+
+    private readonly PermissionContext _permissionContext;
+    private readonly TempPath _tempPath;
+    private readonly TenantManager _tenantManager;
+
+    public BackupFileUploadHandler(
+        PermissionContext permissionContext,
+        TempPath tempPath,
+        TenantManager tenantManager)
     {
-        private const long MaxBackupFileSize = 1024L * 1024L * 1024L;
-        private const string BackupTempFolder = "backup";
-        private const string BackupFileName = "backup.tmp";
+        _permissionContext = permissionContext;
+        _tempPath = tempPath;
+        _tenantManager = tenantManager;
+    }
 
-        private PermissionContext PermissionContext { get; }
-        private TempPath TempPath { get; }
-        private TenantManager TenantManager { get; }
-
-        public BackupFileUploadHandler(
-            PermissionContext permissionContext,
-            TempPath tempPath,
-            TenantManager tenantManager)
+    public string ProcessUpload(IFormFile file)
+    {
+        if (file == null)
         {
-            PermissionContext = permissionContext;
-            TempPath = tempPath;
-            TenantManager = tenantManager;
+            return "No files.";
         }
 
-        public string ProcessUpload(IFormFile file)
+        if (!_permissionContext.CheckPermissions(SecutiryConstants.EditPortalSettings))
         {
-            if (file == null)
-            {
-                return "No files.";
-            }
-
-            if (!PermissionContext.CheckPermissions(SecutiryConstants.EditPortalSettings))
-            {
-                return "Access denied.";
-            }
-
-            if (file.Length <= 0 || file.Length > MaxBackupFileSize)
-            {
-                return $"File size must be greater than 0 and less than {MaxBackupFileSize} bytes";
-            }
-
-            try
-            {
-                var filePath = GetFilePath();
-
-                if (File.Exists(filePath))
-                {
-                    File.Delete(filePath);
-                }
-
-                using (var fileStream = File.Create(filePath))
-                {
-                    file.CopyTo(fileStream);
-                }
-
-                return string.Empty;
-            }
-            catch (Exception error)
-            {
-                return error.Message;
-            }
+            return "Access denied.";
         }
 
-        internal string GetFilePath()
+        if (file.Length <= 0 || file.Length > MaxBackupFileSize)
         {
-            var folder = Path.Combine(TempPath.GetTempPath(), BackupTempFolder, TenantManager.GetCurrentTenant().TenantId.ToString());
+            return $"File size must be greater than 0 and less than {MaxBackupFileSize} bytes";
+        }
 
-            if (!Directory.Exists(folder))
+        try
+        {
+            var filePath = GetFilePath();
+
+            if (File.Exists(filePath))
             {
-                Directory.CreateDirectory(folder);
+                File.Delete(filePath);
             }
 
-            return Path.Combine(folder, BackupFileName);
+            using (var fileStream = File.Create(filePath))
+            {
+                file.CopyTo(fileStream);
+            }
+
+            return string.Empty;
         }
+        catch (Exception error)
+        {
+            return error.Message;
+        }
+    }
+
+    internal string GetFilePath()
+    {
+        var folder = Path.Combine(_tempPath.GetTempPath(), BackupTempFolder, _tenantManager.GetCurrentTenant().Id.ToString());
+
+        if (!Directory.Exists(folder))
+        {
+            Directory.CreateDirectory(folder);
+        }
+
+        return Path.Combine(folder, BackupFileName);
     }
 }

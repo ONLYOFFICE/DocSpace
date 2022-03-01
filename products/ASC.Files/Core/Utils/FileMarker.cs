@@ -23,27 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.Logging;
-using ASC.Common.Threading;
-using ASC.Core;
-using ASC.Core.Users;
-using ASC.Files.Core;
-using ASC.Files.Core.Resources;
-using ASC.Files.Core.Security;
-using ASC.Web.Files.Classes;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
 namespace ASC.Web.Files.Utils
 {
 
@@ -110,7 +89,7 @@ namespace ASC.Web.Files.Utils
             CoreBaseSettings coreBaseSettings,
             AuthContext authContext,
             IServiceProvider serviceProvider,
-            FilesSettingsHelper filesSettingsHelper,
+            FilesSettingsHelper filesSettingsHelper, 
             ICache cache)
         {
             TenantManager = tenantManager;
@@ -182,7 +161,7 @@ namespace ASC.Web.Files.Utils
                     userIDs = userIDs.Where(u => !UserManager.GetUsers(u).IsVisitor(UserManager)).ToList();
                 }
 
-                foreach (var parentFolder in parentFolders)
+                foreach(var parentFolder in parentFolders)
                 {
                     var whoCanRead = await filesSecurity.WhoCanReadAsync(parentFolder);
                     var ids = whoCanRead
@@ -314,12 +293,12 @@ namespace ASC.Web.Files.Utils
                 updateTags.AddRange(update);
 
                 entries.ForEach(entry =>
-                {
-                    if (entry != null && exist.All(tag => tag != null && !tag.EntryId.Equals(entry.ID)))
-                    {
-                        newTags.Add(Tag.New(userID, entry));
-                    }
-                });
+                                    {
+                                        if (entry != null && exist.All(tag => tag != null && !tag.EntryId.Equals(entry.ID)))
+                                        {
+                                            newTags.Add(Tag.New(userID, entry));
+                                        }
+                                    });
             }
         }
 
@@ -411,8 +390,8 @@ namespace ASC.Web.Files.Utils
                         {
                             listTags.Remove(tag);
                             listTags.AddRange(await tagDao.GetNewTagsAsync(userID, folderEntry, true).ToListAsync());
-                        }
                     }
+                }
                 }
 
                 removeTags.AddRange(listTags);
@@ -562,7 +541,7 @@ namespace ASC.Web.Files.Utils
 
             if (!(await tags.CountAsync() == 0)) return new List<FileEntry>();
 
-            if (Equals(folder.ID, GlobalFolder.GetFolderMy(this, DaoFactory)) ||
+            if (Equals(folder.ID, GlobalFolder.GetFolderMy(this, DaoFactory)) || 
                 Equals(folder.ID, await GlobalFolder.GetFolderCommonAsync(this, DaoFactory)) ||
                 Equals(folder.ID, await GlobalFolder.GetFolderShareAsync(DaoFactory)))
             {
@@ -600,7 +579,7 @@ namespace ASC.Web.Files.Utils
             }
 
             foreach (var entryTag in entryTagsProvider)
-            {
+                {
                 if (int.TryParse(entryTag.Key.FolderID, out var fId))
                 {
                     var parentEntryInt = entryTagsInternal.Keys
@@ -609,10 +588,10 @@ namespace ASC.Web.Files.Utils
                     if (parentEntryInt != null)
                     {
                         entryTagsInternal[parentEntryInt].Count -= entryTag.Value.Count;
-                    }
+                }
 
                     continue;
-                }
+            }
 
                 var parentEntry = entryTagsProvider.Keys
                     .FirstOrDefault(entryCountTag => Equals(entryCountTag.ID, entryTag.Key.FolderID));
@@ -620,7 +599,7 @@ namespace ASC.Web.Files.Utils
                 if (parentEntry != null)
                 {
                     entryTagsProvider[parentEntry].Count -= entryTag.Value.Count;
-                }
+            }
             }
 
             var result = new List<FileEntry>();
@@ -632,20 +611,20 @@ namespace ASC.Web.Files.Utils
 
             async Task GetResultAsync<TEntry>(Dictionary<FileEntry<TEntry>, Tag> entryTags)
             {
-                foreach (var entryTag in entryTags)
+            foreach (var entryTag in entryTags)
+            {
+                if (!string.IsNullOrEmpty(entryTag.Key.Error))
                 {
-                    if (!string.IsNullOrEmpty(entryTag.Key.Error))
-                    {
                         await RemoveMarkAsNewAsync(entryTag.Key);
-                        continue;
-                    }
+                    continue;
+                }
 
-                    if (entryTag.Value.Count > 0)
-                    {
-                        result.Add(entryTag.Key);
-                    }
+                if (entryTag.Value.Count > 0)
+                {
+                    result.Add(entryTag.Key);
                 }
             }
+        }
         }
 
         private async Task<Dictionary<FileEntry<T>, Tag>> GetEntryTagsAsync<T>(IAsyncEnumerable<Tag> tags)
@@ -820,7 +799,7 @@ namespace ASC.Web.Files.Utils
     {
         public AsyncTaskData(TenantManager tenantManager, AuthContext authContext) : base()
         {
-            TenantID = tenantManager.GetCurrentTenant().TenantId;
+            TenantID = tenantManager.GetCurrentTenant().Id;
             CurrentAccountId = authContext.CurrentAccount.ID;
         }
 

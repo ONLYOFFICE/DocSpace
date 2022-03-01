@@ -23,16 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Files.Core;
-using ASC.Files.Core.Security;
-
 namespace ASC.Web.Files.Api
 {
     [Scope]

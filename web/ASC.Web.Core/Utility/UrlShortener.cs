@@ -1,20 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Net.Http;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
-
-using ASC.Common;
-using ASC.Core.Common.Configuration;
-using ASC.FederatedLogin.LoginProviders;
-using ASC.Security.Cryptography;
-using ASC.Web.Studio.Utility;
-
-using Microsoft.Extensions.Configuration;
-
-namespace ASC.Web.Core.Utility
+﻿namespace ASC.Web.Core.Utility
 {
     public interface IUrlShortener
     {

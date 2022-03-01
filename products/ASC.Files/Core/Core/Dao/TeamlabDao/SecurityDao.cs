@@ -23,26 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Core;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
-using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
-using ASC.Files.Core.EF;
-using ASC.Files.Core.Security;
-using ASC.Web.Studio.Core;
-using ASC.Web.Studio.UserControls.Statistics;
-using ASC.Web.Studio.Utility;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Files.Core.Data
@@ -139,7 +119,7 @@ namespace ASC.Files.Core.Data
 
                     var toDelete = await FilesDbContext.Security
                         .AsQueryable()
-                        .Where(a => a.TenantId == r.Tenant &&
+                        .Where(a => a.TenantId == r.Tenant && 
                                     folders.Contains(a.EntryId) &&
                                     a.EntryType == FileEntryType.Folder &&
                                     a.Subject == r.Subject)
@@ -158,7 +138,7 @@ namespace ASC.Files.Core.Data
                 {
                     var toDelete = await FilesDbContext.Security
                         .AsQueryable()
-                        .Where(a => a.TenantId == r.Tenant &&
+                        .Where(a => a.TenantId == r.Tenant && 
                                     files.Contains(a.EntryId) &&
                                     a.EntryType == FileEntryType.File &&
                                     a.Subject == r.Subject)

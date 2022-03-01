@@ -23,133 +23,122 @@
  *
 */
 
+namespace ASC.Data.Storage.S3;
 
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-
-using Amazon;
-using Amazon.S3;
-using Amazon.S3.Model;
-
-using ASC.Core;
-
-namespace ASC.Data.Storage.S3
+public class S3UploadGuard
 {
-    public class S3UploadGuard
+    public Configuration.Storage Storage { get; }
+
+    private readonly CoreSettings _coreSettings;
+    private string _accessKey;
+    private string _secretAccessKey;
+    private string _bucket;
+    private string _region;
+    private bool _configErrors;
+    private bool _configured;
+
+    public S3UploadGuard(CoreSettings coreSettings, Configuration.Storage storage)
     {
-        private string accessKey;
-        private string secretAccessKey;
-        private string bucket;
-        private string region;
-        private bool configErrors;
-        private bool configured;
+        _coreSettings = coreSettings;
+        Storage = storage;
+    }
 
-        private CoreSettings CoreSettings { get; }
-        public Configuration.Storage Storage { get; }
-
-        public S3UploadGuard(CoreSettings coreSettings, Configuration.Storage storage)
-        {
-            CoreSettings = coreSettings;
-            Storage = storage;
-        }
-
-        public void DeleteExpiredUploadsAsync(TimeSpan trustInterval)
-        {
+    public void DeleteExpiredUploadsAsync(TimeSpan trustInterval)
+    {
             var task = new Task(async () =>
-            {
+        {
                 await DeleteExpiredUploadsActionAsync(trustInterval);
-            }, TaskCreationOptions.LongRunning);
+        }, TaskCreationOptions.LongRunning);
 
-            task.Start();
-        }
+        task.Start();
+    }
 
         private Task DeleteExpiredUploadsActionAsync(TimeSpan trustInterval)
-        {
-            Configure();
+    {
+        Configure();
 
-            if (configErrors)
-            {
+        if (_configErrors)
+        {
                 return Task.CompletedTask;
-            }
+        }
 
             return InternalDeleteExpiredUploadsActionAsync(trustInterval);
         }
 
         private async Task InternalDeleteExpiredUploadsActionAsync(TimeSpan trustInterval)
         {
-            using var s3 = GetClient();
-            var nextKeyMarker = string.Empty;
-            var nextUploadIdMarker = string.Empty;
-            bool isTruncated;
+        using var s3 = GetClient();
+        var nextKeyMarker = string.Empty;
+        var nextUploadIdMarker = string.Empty;
+        bool isTruncated;
 
-            do
+        do
+        {
+            var request = new ListMultipartUploadsRequest { BucketName = _bucket };
+
+            if (!string.IsNullOrEmpty(nextKeyMarker))
             {
-                var request = new ListMultipartUploadsRequest { BucketName = bucket };
+                request.KeyMarker = nextKeyMarker;
+            }
 
-                if (!string.IsNullOrEmpty(nextKeyMarker))
-                {
-                    request.KeyMarker = nextKeyMarker;
-                }
-
-                if (!string.IsNullOrEmpty(nextUploadIdMarker))
-                {
-                    request.UploadIdMarker = nextUploadIdMarker;
-                }
+            if (!string.IsNullOrEmpty(nextUploadIdMarker))
+            {
+                request.UploadIdMarker = nextUploadIdMarker;
+            }
 
                 var response = await s3.ListMultipartUploadsAsync(request);
 
-                foreach (var u in response.MultipartUploads.Where(x => x.Initiated + trustInterval <= DateTime.UtcNow))
-                {
+            foreach (var u in response.MultipartUploads.Where(x => x.Initiated + trustInterval <= DateTime.UtcNow))
+            {
                     await AbortMultipartUploadAsync(u, s3);
-                }
-
-                isTruncated = response.IsTruncated;
-                nextKeyMarker = response.NextKeyMarker;
-                nextUploadIdMarker = response.NextUploadIdMarker;
             }
-            while (isTruncated);
+
+            isTruncated = response.IsTruncated;
+            nextKeyMarker = response.NextKeyMarker;
+            nextUploadIdMarker = response.NextUploadIdMarker;
         }
+        while (isTruncated);
+    }
 
         private async Task AbortMultipartUploadAsync(MultipartUpload u, AmazonS3Client client)
+    {
+        var request = new AbortMultipartUploadRequest
         {
-            var request = new AbortMultipartUploadRequest
-            {
-                BucketName = bucket,
-                Key = u.Key,
-                UploadId = u.UploadId,
-            };
+            BucketName = _bucket,
+            Key = u.Key,
+            UploadId = u.UploadId,
+        };
 
             await client.AbortMultipartUploadAsync(request);
-        }
+    }
 
-        private AmazonS3Client GetClient()
-        {
-            var s3Config = new AmazonS3Config { UseHttp = true, MaxErrorRetry = 3, RegionEndpoint = RegionEndpoint.GetBySystemName(region) };
-            return new AmazonS3Client(accessKey, secretAccessKey, s3Config);
-        }
+    private AmazonS3Client GetClient()
+    {
+        var s3Config = new AmazonS3Config { UseHttp = true, MaxErrorRetry = 3, RegionEndpoint = RegionEndpoint.GetBySystemName(_region) };
 
-        private void Configure()
+        return new AmazonS3Client(_accessKey, _secretAccessKey, s3Config);
+    }
+
+    private void Configure()
+    {
+        if (!_configured)
         {
-            if (!configured)
+            var handler = Storage.GetHandler("s3");
+            if (handler != null)
             {
-                var handler = Storage.GetHandler("s3");
-                if (handler != null)
-                {
-                    var props = handler.GetProperties();
-                    bucket = props["bucket"];
-                    accessKey = props["acesskey"];
-                    secretAccessKey = props["secretaccesskey"];
-                    region = props["region"];
-                }
-                configErrors = string.IsNullOrEmpty(CoreSettings.BaseDomain) //localhost
-                                || string.IsNullOrEmpty(accessKey)
-                                || string.IsNullOrEmpty(secretAccessKey)
-                                || string.IsNullOrEmpty(bucket)
-                                || string.IsNullOrEmpty(region);
-
-                configured = true;
+                var props = handler.GetProperties();
+                _bucket = props["bucket"];
+                _accessKey = props["acesskey"];
+                _secretAccessKey = props["secretaccesskey"];
+                _region = props["region"];
             }
+            _configErrors = string.IsNullOrEmpty(_coreSettings.BaseDomain) //localhost
+                            || string.IsNullOrEmpty(_accessKey)
+                            || string.IsNullOrEmpty(_secretAccessKey)
+                            || string.IsNullOrEmpty(_bucket)
+                            || string.IsNullOrEmpty(_region);
+
+            _configured = true;
         }
     }
 }

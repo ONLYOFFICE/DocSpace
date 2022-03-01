@@ -14,10 +14,6 @@
  *
 */
 
-using System.Threading.Tasks;
-
-using ASC.Common;
-
 namespace ASC.Files.Core
 {
     [Scope]

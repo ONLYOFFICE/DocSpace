@@ -23,13 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Common;
-using ASC.Files.Core;
-using ASC.Files.Core.Security;
-
 namespace ASC.Files.Thirdparty.Sharpbox
 {
     [Scope(Additional = typeof(SharpBoxDaoSelectorExtension))]

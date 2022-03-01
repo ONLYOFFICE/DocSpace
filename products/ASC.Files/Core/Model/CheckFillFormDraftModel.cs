@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ASC.Files.Core.Model
+﻿namespace ASC.Files.Core.Model
 {
     public class CheckFillFormDraftModel
     {

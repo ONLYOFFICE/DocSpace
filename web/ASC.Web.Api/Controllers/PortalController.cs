@@ -1,34 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Security;
-using System.Threading.Tasks;
-
-using ASC.Api.Core;
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Billing;
-using ASC.Core.Common.Notify.Push;
-using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
-using ASC.Core.Users;
-using ASC.Web.Api.Models;
-using ASC.Web.Api.Routing;
-using ASC.Web.Core;
-using ASC.Web.Core.Files;
-using ASC.Web.Core.Mobile;
-using ASC.Web.Core.Utility;
-using ASC.Web.Studio.Core;
-using ASC.Web.Studio.UserControls.Management;
-using ASC.Web.Studio.Utility;
-
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-
-using SecurityContext = ASC.Core.SecurityContext;
+﻿using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Web.Api.Controllers
 {
@@ -168,7 +138,7 @@ namespace ASC.Web.Api.Controllers
         public double GetUsedSpace()
         {
             return Math.Round(
-                TenantManager.FindTenantQuotaRows(Tenant.TenantId)
+                TenantManager.FindTenantQuotaRows(Tenant.Id)
                            .Where(q => !string.IsNullOrEmpty(q.Tag) && new Guid(q.Tag) != Guid.Empty)
                            .Sum(q => q.Counter) / 1024f / 1024f / 1024f, 2);
         }
@@ -183,13 +153,13 @@ namespace ASC.Web.Api.Controllers
         [Read("tariff")]
         public Tariff GetTariff()
         {
-            return PaymentManager.GetTariff(Tenant.TenantId);
+            return PaymentManager.GetTariff(Tenant.Id);
         }
 
         [Read("quota")]
         public TenantQuota GetQuota()
         {
-            return TenantManager.GetTenantQuota(Tenant.TenantId);
+            return TenantManager.GetTenantQuota(Tenant.Id);
         }
 
         [Read("quota/right")]

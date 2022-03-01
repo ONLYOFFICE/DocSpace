@@ -23,24 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Common;
-using ASC.Files.Core.Resources;
-using ASC.Files.Core.Security;
-using ASC.Notify.Patterns;
-using ASC.Web.Core.Files;
-using ASC.Web.Files.Classes;
-using ASC.Web.Studio.Core.Notify;
-
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ASC.Files.Core.Services.NotifyService
 {
     [Scope(Additional = typeof(NotifyClientExtension))]
@@ -143,7 +125,7 @@ namespace ASC.Files.Core.Services.NotifyService
                                   : CultureInfo.GetCultureInfo(u.CultureName);
 
                 var aceString = GetAccessString(recipientPair.Value, culture);
-                var recipient = recipientsProvider.GetRecipient(u.ID.ToString());
+                var recipient = recipientsProvider.GetRecipient(u.Id.ToString());
 
                 client.SendNoticeAsync(
                     action,
@@ -154,7 +136,7 @@ namespace ASC.Files.Core.Services.NotifyService
                     new TagValue(NotifyConstants.Tag_DocumentUrl, baseCommonLinkUtility.GetFullAbsolutePath(url)),
                     new TagValue(NotifyConstants.Tag_AccessRights, aceString),
                     new TagValue(NotifyConstants.Tag_Message, message.HtmlEncode()),
-                    TagValues.Image(studioNotifyHelper, 0, "privacy.png")
+                    TagValues.Image(studioNotifyHelper,0, "privacy.png")
                     );
             }
         }
@@ -174,7 +156,7 @@ namespace ASC.Files.Core.Services.NotifyService
             {
                 var u = userManager.GetUsers(recipientId);
 
-                var recipient = recipientsProvider.GetRecipient(u.ID.ToString());
+                var recipient = recipientsProvider.GetRecipient(u.Id.ToString());
 
                 client.SendNoticeAsync(
                     NotifyConstants.Event_EditorMentions,

@@ -23,21 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Web.Core.WebZones;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
 namespace ASC.Web.Core
 {
     [Flags]

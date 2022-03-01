@@ -23,17 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
-
-using ASC.Core.Users;
-
 namespace ASC.Web.Core.Users.Import
 {
     public class TextFileUserImporter : IUserImporter
@@ -101,7 +90,7 @@ namespace ASC.Web.Core.Users.Import
         {
             var exportedUser = new UserInfo
             {
-                ID = Guid.NewGuid()
+                Id = Guid.NewGuid()
             };
 
             var dataFields = GetDataFields(line);

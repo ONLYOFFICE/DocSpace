@@ -23,115 +23,101 @@
  *
 */
 
+namespace ASC.Data.Backup.Tasks;
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using ASC.Common.Logging;
-using ASC.Data.Backup.Tasks.Modules;
-using ASC.Data.Storage;
-
-using Microsoft.Extensions.Options;
-
-namespace ASC.Data.Backup.Tasks
+public class ProgressChangedEventArgs : EventArgs
 {
-    public class ProgressChangedEventArgs : EventArgs
+    public int Progress { get; private set; }
+
+    public ProgressChangedEventArgs(int progress)
     {
-        public int Progress { get; private set; }
+        Progress = progress;
+    }
+}
 
+public abstract class PortalTaskBase
+{
+    protected const int TasksLimit = 10;
 
-        public ProgressChangedEventArgs(int progress)
+    protected StorageFactory StorageFactory { get; set; }
+    protected StorageFactoryConfig StorageFactoryConfig { get; set; }
+    protected ILog Logger { get; set; }
+    public int Progress { get; private set; }
+    public int TenantId { get; private set; }
+    public string ConfigPath { get; private set; }
+    public bool ProcessStorage { get; set; }
+    protected ModuleProvider ModuleProvider { get; set; }
+    protected DbFactory DbFactory { get; set; }
+
+    protected readonly List<ModuleName> IgnoredModules = new List<ModuleName>();
+    protected readonly List<string> IgnoredTables = new List<string>(); //todo: add using to backup and transfer tasks
+
+    protected PortalTaskBase(DbFactory dbFactory, IOptionsMonitor<ILog> options, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider)
+    {
+        Logger = options.CurrentValue;
+        ProcessStorage = true;
+        StorageFactory = storageFactory;
+        StorageFactoryConfig = storageFactoryConfig;
+        ModuleProvider = moduleProvider;
+        DbFactory = dbFactory;
+    }
+
+    public void Init(int tenantId, string configPath)
+    {
+        TenantId = tenantId;
+        ConfigPath = configPath;
+    }
+
+    public void IgnoreModule(ModuleName moduleName)
+    {
+        if (!IgnoredModules.Contains(moduleName))
         {
-            Progress = progress;
-
+            IgnoredModules.Add(moduleName);
         }
     }
 
-    public abstract class PortalTaskBase
+    public void IgnoreTable(string tableName)
     {
-        protected const int TasksLimit = 10;
-        protected readonly List<ModuleName> IgnoredModules = new List<ModuleName>();
-        protected readonly List<string> IgnoredTables = new List<string>(); //todo: add using to backup and transfer tasks
-        protected StorageFactory StorageFactory { get; set; }
-        protected StorageFactoryConfig StorageFactoryConfig
-        { get; set; }
-        protected ILog Logger { get; set; }
-
-        public int Progress { get; private set; }
-
-        public int TenantId { get; private set; }
-        public string ConfigPath { get; private set; }
-
-        public bool ProcessStorage { get; set; }
-        protected ModuleProvider ModuleProvider { get; set; }
-        protected DbFactory DbFactory { get; set; }
-
-        protected PortalTaskBase(DbFactory dbFactory, IOptionsMonitor<ILog> options, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider)
+        if (!IgnoredTables.Contains(tableName))
         {
-            Logger = options.CurrentValue;
-            ProcessStorage = true;
-            StorageFactory = storageFactory;
-            StorageFactoryConfig = storageFactoryConfig;
-            ModuleProvider = moduleProvider;
-            DbFactory = dbFactory;
+            IgnoredTables.Add(tableName);
         }
-        public void Init(int tenantId, string configPath)
-        {
-            TenantId = tenantId;
-            ConfigPath = configPath;
-        }
+    }
 
-        public void IgnoreModule(ModuleName moduleName)
-        {
-            if (!IgnoredModules.Contains(moduleName))
-                IgnoredModules.Add(moduleName);
-        }
+    public abstract void RunJob();
 
-        public void IgnoreTable(string tableName)
-        {
-            if (!IgnoredTables.Contains(tableName))
-                IgnoredTables.Add(tableName);
-        }
+    internal virtual IEnumerable<IModuleSpecifics> GetModulesToProcess()
+    {
+        return ModuleProvider.AllModules.Where(module => !IgnoredModules.Contains(module.ModuleName));
+    }
 
-        public abstract void RunJob();
-
-        internal virtual IEnumerable<IModuleSpecifics> GetModulesToProcess()
+    protected IEnumerable<BackupFileInfo> GetFilesToProcess(int tenantId)
+    {
+        var files = new List<BackupFileInfo>();
+        foreach (var module in StorageFactoryConfig.GetModuleList(ConfigPath).Where(IsStorageModuleAllowed))
         {
-            return ModuleProvider.AllModules.Where(module => !IgnoredModules.Contains(module.ModuleName));
-        }
+            var store = StorageFactory.GetStorage(ConfigPath, tenantId.ToString(), module);
+            var domains = StorageFactoryConfig.GetDomainList(ConfigPath, module).ToArray();
 
-        protected IEnumerable<BackupFileInfo> GetFilesToProcess(int tenantId)
-        {
-            var files = new List<BackupFileInfo>();
-            foreach (var module in StorageFactoryConfig.GetModuleList(ConfigPath).Where(IsStorageModuleAllowed))
+            foreach (var domain in domains)
             {
-                var store = StorageFactory.GetStorage(ConfigPath, tenantId.ToString(), module);
-                var domains = StorageFactoryConfig.GetDomainList(ConfigPath, module).ToArray();
-
-                foreach (var domain in domains)
-                {
-                    files.AddRange(
-                        store.ListFilesRelativeAsync(domain, "\\", "*.*", true).ToArrayAsync().Result
-                        .Select(path => new BackupFileInfo(domain, module, path, tenantId)));
-                }
-
                 files.AddRange(
-                    store.ListFilesRelativeAsync(string.Empty, "\\", "*.*", true).ToArrayAsync().Result
-                         .Where(path => domains.All(domain => !path.Contains(domain + "/")))
-                         .Select(path => new BackupFileInfo(string.Empty, module, path, tenantId)));
+                        store.ListFilesRelativeAsync(domain, "\\", "*.*", true).ToArrayAsync().Result
+                    .Select(path => new BackupFileInfo(domain, module, path, tenantId)));
             }
 
-            return files.Distinct();
+            files.AddRange(
+                    store.ListFilesRelativeAsync(string.Empty, "\\", "*.*", true).ToArrayAsync().Result
+                     .Where(path => domains.All(domain => !path.Contains(domain + "/")))
+                     .Select(path => new BackupFileInfo(string.Empty, module, path, tenantId)));
         }
 
-        protected bool IsStorageModuleAllowed(string storageModuleName)
-        {
-            var allowedStorageModules = new List<string>
+        return files.Distinct();
+    }
+
+    protected bool IsStorageModuleAllowed(string storageModuleName)
+    {
+        var allowedStorageModules = new List<string>
                 {
                     "forum",
                     "photo",
@@ -149,139 +135,142 @@ namespace ASC.Data.Backup.Tasks
                     "userPhotos"
                 };
 
-            if (!allowedStorageModules.Contains(storageModuleName))
-                return false;
-
-            var moduleSpecifics = ModuleProvider.GetByStorageModule(storageModuleName);
-            return moduleSpecifics == null || !IgnoredModules.Contains(moduleSpecifics.ModuleName);
+        if (!allowedStorageModules.Contains(storageModuleName))
+        {
+            return false;
         }
 
-        #region Progress
+        var moduleSpecifics = ModuleProvider.GetByStorageModule(storageModuleName);
 
-        public event EventHandler<ProgressChangedEventArgs> ProgressChanged;
+        return moduleSpecifics == null || !IgnoredModules.Contains(moduleSpecifics.ModuleName);
+    }
 
-        private int stepsCount = 1;
-        private volatile int stepsCompleted;
+    #region Progress
 
-        protected void SetStepsCount(int value)
+    public event EventHandler<ProgressChangedEventArgs> ProgressChanged;
+
+    private int stepsCount = 1;
+    private volatile int stepsCompleted;
+
+    protected void SetStepsCount(int value)
+    {
+        if (value <= 0)
         {
-            if (value <= 0)
-            {
                 throw new ArgumentOutOfRangeException(nameof(value));
-            }
-            stepsCount = value;
-            Logger.Debug("Steps: " + stepsCount);
         }
+        stepsCount = value;
+        Logger.Debug("Steps: " + stepsCount);
+    }
 
-        protected void SetStepCompleted(int increment = 1)
+    protected void SetStepCompleted(int increment = 1)
+    {
+        if (stepsCount == 1)
         {
-            if (stepsCount == 1)
-            {
-                return;
-            }
-            if (stepsCompleted == stepsCount)
-            {
-                throw new InvalidOperationException("All steps completed.");
-            }
-            stepsCompleted += increment;
-            SetProgress(100 * stepsCompleted / stepsCount);
+            return;
         }
-
-        protected void SetCurrentStepProgress(int value)
+        if (stepsCompleted == stepsCount)
         {
-            if (value < 0 || value > 100)
-            {
+            throw new InvalidOperationException("All steps completed.");
+        }
+        stepsCompleted += increment;
+        SetProgress(100 * stepsCompleted / stepsCount);
+    }
+
+    protected void SetCurrentStepProgress(int value)
+    {
+        if (value < 0 || value > 100)
+        {
                 throw new ArgumentOutOfRangeException(nameof(value));
-            }
-            if (value == 100)
-            {
-                SetStepCompleted();
-            }
-            else
-            {
-                SetProgress((100 * stepsCompleted + value) / stepsCount);
-            }
         }
-
-        protected void SetProgress(int value)
+        if (value == 100)
         {
-            if (value < 0 || value > 100)
-            {
+            SetStepCompleted();
+        }
+        else
+        {
+            SetProgress((100 * stepsCompleted + value) / stepsCount);
+        }
+    }
+
+    protected void SetProgress(int value)
+    {
+        if (value < 0 || value > 100)
+        {
                 throw new ArgumentOutOfRangeException(nameof(value));
-            }
-            if (Progress != value)
-            {
-                Progress = value;
-                OnProgressChanged(new ProgressChangedEventArgs(value));
-            }
         }
-
-        protected virtual void OnProgressChanged(ProgressChangedEventArgs eventArgs)
+        if (Progress != value)
         {
-            ProgressChanged?.Invoke(this, eventArgs);
+            Progress = value;
+            OnProgressChanged(new ProgressChangedEventArgs(value));
         }
+    }
 
-        #endregion
+    protected virtual void OnProgressChanged(ProgressChangedEventArgs eventArgs)
+    {
+        ProgressChanged?.Invoke(this, eventArgs);
+    }
 
-        protected Dictionary<string, string> ParseConnectionString(string connectionString)
+    #endregion
+
+    protected Dictionary<string, string> ParseConnectionString(string connectionString)
+    {
+        var result = new Dictionary<string, string>();
+
+        var parsed = connectionString.Split(';');
+
+        foreach (var p in parsed)
         {
-            var result = new Dictionary<string, string>();
-
-            var parsed = connectionString.Split(';');
-
-            foreach (var p in parsed)
-            {
                 if (string.IsNullOrWhiteSpace(p)) continue;
-                var keyValue = p.Split('=');
-                result.Add(keyValue[0].ToLowerInvariant(), keyValue[1]);
-            }
-
-            return result;
+            var keyValue = p.Split('=');
+            result.Add(keyValue[0].ToLowerInvariant(), keyValue[1]);
         }
 
-        protected void RunMysqlFile(string file, bool db = false)
-        {
-            var connectionString = ParseConnectionString(DbFactory.ConnectionStringSettings.ConnectionString);
-            var args = new StringBuilder()
+        return result;
+    }
+
+    protected void RunMysqlFile(string file, bool db = false)
+    {
+        var connectionString = ParseConnectionString(DbFactory.ConnectionStringSettings.ConnectionString);
+        var args = new StringBuilder()
                 .Append($"-h {connectionString["server"]} ")
                 .Append($"-u {connectionString["user id"]} ")
                 .Append($"-p{connectionString["password"]} ");
 
-            if (db)
-            {
+        if (db)
+        {
                 args.Append($"-D {connectionString["database"]} ");
-            }
-
-            args.Append($"-e \" source {file}\"");
-            Logger.DebugFormat("run mysql file {0} {1}", file, args.ToString());
-
-            var startInfo = new ProcessStartInfo
-            {
-                CreateNoWindow = false,
-                UseShellExecute = false,
-                FileName = "mysql",
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                WindowStyle = ProcessWindowStyle.Hidden,
-                Arguments = args.ToString()
-            };
-
-            using (var proc = Process.Start(startInfo))
-            {
-                if (proc != null)
-                {
-                    proc.WaitForExit();
-
-                    var error = proc.StandardError.ReadToEnd();
-                    Logger.Error(!string.IsNullOrEmpty(error) ? error : proc.StandardOutput.ReadToEnd());
-                }
-            }
-
-            Logger.DebugFormat("complete mysql file {0}", file);
         }
 
-        protected Task RunMysqlFile(Stream stream, string delimiter = ";")
+            args.Append($"-e \" source {file}\"");
+        Logger.DebugFormat("run mysql file {0} {1}", file, args.ToString());
+
+        var startInfo = new ProcessStartInfo
         {
+            CreateNoWindow = false,
+            UseShellExecute = false,
+            FileName = "mysql",
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            WindowStyle = ProcessWindowStyle.Hidden,
+            Arguments = args.ToString()
+        };
+
+        using (var proc = Process.Start(startInfo))
+        {
+            if (proc != null)
+            {
+                proc.WaitForExit();
+
+                var error = proc.StandardError.ReadToEnd();
+                Logger.Error(!string.IsNullOrEmpty(error) ? error : proc.StandardOutput.ReadToEnd());
+            }
+        }
+
+        Logger.DebugFormat("complete mysql file {0}", file);
+    }
+
+        protected Task RunMysqlFile(Stream stream, string delimiter = ";")
+    {
             if (stream == null) return Task.CompletedTask;
 
             return InternalRunMysqlFile(stream, delimiter);
@@ -289,35 +278,34 @@ namespace ASC.Data.Backup.Tasks
 
         private async Task InternalRunMysqlFile(Stream stream, string delimiter)
         {
-            using var reader = new StreamReader(stream, Encoding.UTF8);
-            string commandText;
+        using var reader = new StreamReader(stream, Encoding.UTF8);
+        string commandText;
 
-            while ((commandText = await reader.ReadLineAsync()) != null)
-            {
+        while ((commandText = await reader.ReadLineAsync()) != null)
+        {
                 var sb = new StringBuilder(commandText);
-                while (!commandText.EndsWith(delimiter))
+            while (!commandText.EndsWith(delimiter))
+            {
+                var newline = await reader.ReadLineAsync();
+                if (newline == null)
                 {
-                    var newline = await reader.ReadLineAsync();
-                    if (newline == null)
-                    {
-                        break;
-                    }
+                    break;
+                }
                     sb.Append(newline);
-                }
+            }
                 commandText = sb.ToString();
-                try
-                {
+            try
+            {
 
-                    using var connection = DbFactory.OpenConnection();
-                    var command = connection.CreateCommand();
-                    command.CommandText = commandText;
-                    await command.ExecuteNonQueryAsync();
-                    //  await dbManager.ExecuteNonQueryAsync(commandText, null);
-                }
-                catch (Exception e)
-                {
-                    Logger.Error("Restore", e);
-                }
+                using var connection = DbFactory.OpenConnection();
+                var command = connection.CreateCommand();
+                command.CommandText = commandText;
+                await command.ExecuteNonQueryAsync();
+                //  await dbManager.ExecuteNonQueryAsync(commandText, null);
+            }
+            catch (Exception e)
+            {
+                Logger.Error("Restore", e);
             }
         }
     }

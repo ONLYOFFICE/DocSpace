@@ -23,26 +23,16 @@
  *
 */
 
+namespace ASC.Data.Backup.Tasks.Modules;
 
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-
-using Microsoft.Extensions.Options;
-
-namespace ASC.Data.Backup.Tasks.Modules
+[Scope]
+public class ModuleProvider
 {
-    [Scope]
-    public class ModuleProvider
-    {
-        public List<IModuleSpecifics> AllModules { get; }
+    public List<IModuleSpecifics> AllModules { get; }
 
-        public ModuleProvider(IOptionsMonitor<ILog> options, Helpers helpers, CoreSettings coreSettings)
-        {
-            AllModules = new List<IModuleSpecifics>
+    public ModuleProvider(IOptionsMonitor<ILog> options, Helpers helpers, CoreSettings coreSettings)
+    {
+        AllModules = new List<IModuleSpecifics>
             {
                 new TenantsModuleSpecifics(coreSettings,helpers),
                 new AuditModuleSpecifics(helpers),
@@ -58,19 +48,18 @@ namespace ASC.Data.Backup.Tasks.Modules
                 new WebStudioModuleSpecifics(helpers),
                 new CoreModuleSpecifics(helpers)
             }
-            .ToList();
-        }
-        public IModuleSpecifics GetByStorageModule(string storageModuleName, string storageDomainName = null)
+        .ToList();
+    }
+    public IModuleSpecifics GetByStorageModule(string storageModuleName, string storageDomainName = null)
+    {
+        return storageModuleName switch
         {
-            return storageModuleName switch
-            {
-                "files" => AllModules.FirstOrDefault(m => m.ModuleName == ModuleName.Files),
-                "projects" => AllModules.FirstOrDefault(m => m.ModuleName == ModuleName.Projects),
-                "crm" => AllModules.FirstOrDefault(m => m.ModuleName == (storageDomainName == "mail_messages" ? ModuleName.Crm2 : ModuleName.Crm)),
-                "forum" => AllModules.FirstOrDefault(m => m.ModuleName == ModuleName.Community),
-                "mailaggregator" => AllModules.FirstOrDefault(m => m.ModuleName == ModuleName.Mail),
-                _ => null,
-            };
-        }
+            "files" => AllModules.FirstOrDefault(m => m.ModuleName == ModuleName.Files),
+            "projects" => AllModules.FirstOrDefault(m => m.ModuleName == ModuleName.Projects),
+            "crm" => AllModules.FirstOrDefault(m => m.ModuleName == (storageDomainName == "mail_messages" ? ModuleName.Crm2 : ModuleName.Crm)),
+            "forum" => AllModules.FirstOrDefault(m => m.ModuleName == ModuleName.Community),
+            "mailaggregator" => AllModules.FirstOrDefault(m => m.ModuleName == ModuleName.Mail),
+            _ => null,
+        };
     }
 }

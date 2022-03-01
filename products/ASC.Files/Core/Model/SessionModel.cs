@@ -1,6 +1,4 @@
-﻿using ASC.Api.Core;
-
-namespace ASC.Files.Model
+﻿namespace ASC.Files.Model
 {
     public class SessionModel
     {

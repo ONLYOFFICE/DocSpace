@@ -24,22 +24,7 @@
 */
 
 
-using System;
-using System.Globalization;
-using System.Net.Mail;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.RegularExpressions;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
-using ASC.Core.Users;
-using ASC.MessagingSystem;
-using ASC.Web.Core.PublicResources;
-using ASC.Web.Core.Utility;
-using ASC.Web.Studio.Core.Notify;
+using Constants = ASC.Core.Users.Constants;
 
 namespace ASC.Web.Core.Users
 {
@@ -113,7 +98,7 @@ namespace ASC.Web.Core.Users
         public bool CheckUniqueEmail(Guid userId, string email)
         {
             var foundUser = UserManager.GetUserByEmail(email);
-            return Equals(foundUser, Constants.LostUser) || foundUser.ID == userId;
+            return Equals(foundUser, Constants.LostUser) || foundUser.Id == userId;
         }
 
         public UserInfo AddUser(UserInfo userInfo, string passwordHash, bool afterInvite = false, bool notify = true, bool isVisitor = false, bool fromInviteLink = false, bool makeUniqueName = true)
@@ -123,7 +108,7 @@ namespace ASC.Web.Core.Users
             if (!UserFormatter.IsValidUserName(userInfo.FirstName, userInfo.LastName))
                 throw new Exception(Resource.ErrorIncorrectUserName);
 
-            if (!CheckUniqueEmail(userInfo.ID, userInfo.Email))
+            if (!CheckUniqueEmail(userInfo.Id, userInfo.Email))
                 throw new Exception(CustomNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
             if (makeUniqueName)
             {
@@ -140,7 +125,7 @@ namespace ASC.Web.Core.Users
             }
 
             var newUserInfo = UserManager.SaveUserInfo(userInfo);
-            SecurityContext.SetUserPasswordHash(newUserInfo.ID, passwordHash);
+            SecurityContext.SetUserPasswordHash(newUserInfo.Id, passwordHash);
 
             if (CoreBaseSettings.Personal)
             {
@@ -184,7 +169,7 @@ namespace ASC.Web.Core.Users
 
             if (isVisitor)
             {
-                UserManager.AddUserIntoGroup(newUserInfo.ID, Constants.GroupVisitor.ID);
+                UserManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupVisitor.ID);
             }
 
             return newUserInfo;

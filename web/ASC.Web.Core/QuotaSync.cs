@@ -23,15 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Common.Threading;
-using ASC.Core;
-using ASC.Data.Storage;
-
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ASC.Web.Studio.Core.Quota
 {
     public class QuotaSync

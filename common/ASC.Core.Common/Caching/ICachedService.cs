@@ -24,10 +24,9 @@
 */
 
 
-namespace ASC.Core.Caching
+namespace ASC.Core.Caching;
+
+public interface ICachedService
 {
-    public interface ICachedService
-    {
-        void InvalidateCache();
-    }
+    void InvalidateCache();
 }

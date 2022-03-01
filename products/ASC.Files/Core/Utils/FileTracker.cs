@@ -23,16 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Common.Caching;
-
-using static ASC.Web.Files.Utils.FileTracker;
-
 namespace ASC.Web.Files.Utils
 {
     [Singletone]

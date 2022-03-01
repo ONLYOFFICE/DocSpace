@@ -23,18 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.FederatedLogin;
-
-using Dropbox.Api;
-using Dropbox.Api.Files;
-
 namespace ASC.Files.Thirdparty.Dropbox
 {
     internal class DropboxStorage : IDisposable

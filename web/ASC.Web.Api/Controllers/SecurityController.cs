@@ -1,24 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Api.Security;
-using ASC.AuditTrail;
-using ASC.AuditTrail.Data;
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Billing;
-using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
-using ASC.MessagingSystem;
-using ASC.Web.Api.Routing;
-using ASC.Web.Core.PublicResources;
-using ASC.Web.Studio.Core;
-using ASC.Web.Studio.Utility;
-
-using Microsoft.AspNetCore.Mvc;
-
-namespace ASC.Web.Api.Controllers
+﻿namespace ASC.Web.Api.Controllers
 {
     [Scope]
     [DefaultRoute]
@@ -67,7 +47,7 @@ namespace ASC.Web.Api.Controllers
 
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            return LoginEventsRepository.GetLast(TenantManager.GetCurrentTenant().TenantId, 20).Select(x => new EventWrapper(x));
+            return LoginEventsRepository.GetLast(TenantManager.GetCurrentTenant().Id, 20).Select(x => new EventWrapper(x));
         }
 
         [Read("audit/events/last")]
@@ -80,7 +60,7 @@ namespace ASC.Web.Api.Controllers
 
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            return AuditEventsRepository.GetLast(TenantManager.GetCurrentTenant().TenantId, 20).Select(x => new EventWrapper(x));
+            return AuditEventsRepository.GetLast(TenantManager.GetCurrentTenant().Id, 20).Select(x => new EventWrapper(x));
         }
 
         [Create("audit/login/report")]
@@ -88,12 +68,12 @@ namespace ASC.Web.Api.Controllers
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            var tenantId = TenantManager.GetCurrentTenant().TenantId;
+            var tenantId = TenantManager.GetCurrentTenant().Id;
 
             if (!TenantExtra.GetTenantQuota().Audit || !SetupInfo.IsVisibleSettings(nameof(ManagementType.LoginHistory)))
                 throw new BillingException(Resource.ErrorNotAllowedOption, "Audit");
 
-            var settings = SettingsManager.LoadForTenant<TenantAuditSettings>(TenantManager.GetCurrentTenant().TenantId);
+            var settings = SettingsManager.LoadForTenant<TenantAuditSettings>(TenantManager.GetCurrentTenant().Id);
 
             var to = DateTime.UtcNow;
             var from = to.Subtract(TimeSpan.FromDays(settings.LoginHistoryLifeTime));
@@ -111,12 +91,12 @@ namespace ASC.Web.Api.Controllers
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            var tenantId = TenantManager.GetCurrentTenant().TenantId;
+            var tenantId = TenantManager.GetCurrentTenant().Id;
 
             if (!TenantExtra.GetTenantQuota().Audit || !SetupInfo.IsVisibleSettings(nameof(ManagementType.AuditTrail)))
                 throw new BillingException(Resource.ErrorNotAllowedOption, "Audit");
 
-            var settings = SettingsManager.LoadForTenant<TenantAuditSettings>(TenantManager.GetCurrentTenant().TenantId);
+            var settings = SettingsManager.LoadForTenant<TenantAuditSettings>(TenantManager.GetCurrentTenant().Id);
 
             var to = DateTime.UtcNow;
             var from = to.Subtract(TimeSpan.FromDays(settings.AuditTrailLifeTime));
@@ -140,7 +120,7 @@ namespace ASC.Web.Api.Controllers
 
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            return SettingsManager.LoadForTenant<TenantAuditSettings>(TenantManager.GetCurrentTenant().TenantId);
+            return SettingsManager.LoadForTenant<TenantAuditSettings>(TenantManager.GetCurrentTenant().Id);
         }
 
         [Create("audit/settings/lifetime")]
@@ -169,7 +149,7 @@ namespace ASC.Web.Api.Controllers
             if (wrapper.settings.AuditTrailLifeTime <= 0 || wrapper.settings.AuditTrailLifeTime > TenantAuditSettings.MaxLifeTime)
                 throw new ArgumentException("AuditTrailLifeTime");
 
-            SettingsManager.SaveForTenant(wrapper.settings, TenantManager.GetCurrentTenant().TenantId);
+            SettingsManager.SaveForTenant(wrapper.settings, TenantManager.GetCurrentTenant().Id);
             MessageService.Send(MessageAction.AuditSettingsUpdated);
 
             return wrapper.settings;

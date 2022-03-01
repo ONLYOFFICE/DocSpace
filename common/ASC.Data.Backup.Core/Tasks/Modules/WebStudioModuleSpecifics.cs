@@ -23,73 +23,56 @@
  *
 */
 
+namespace ASC.Data.Backup.Tasks.Modules;
 
-using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Text.RegularExpressions;
-
-using ASC.Data.Backup.Tasks.Data;
-
-namespace ASC.Data.Backup.Tasks.Modules
+public class WebStudioModuleSpecifics : ModuleSpecificsBase
 {
-    public class WebStudioModuleSpecifics : ModuleSpecificsBase
+    public override ModuleName ModuleName => ModuleName.WebStudio;
+    public override IEnumerable<TableInfo> Tables => _tables;
+    public override IEnumerable<RelationInfo> TableRelations => _relations;
+
+    private static readonly Guid _crmSettingsId = new Guid("fdf39b9a-ec96-4eb7-aeab-63f2c608eada");
+
+    private readonly TableInfo[] _tables = new[]
     {
-        public WebStudioModuleSpecifics(Helpers helpers)
-        : base(helpers)
-        { }
-        private static readonly Guid CrmSettingsId = new Guid("fdf39b9a-ec96-4eb7-aeab-63f2c608eada");
+            new TableInfo("webstudio_fckuploads", "TenantID") {InsertMethod = InsertMethod.None},
+            new TableInfo("webstudio_settings", "TenantID") {UserIDColumns = new[] {"UserID"}},
+            new TableInfo("webstudio_uservisit", "tenantid") {InsertMethod = InsertMethod.None}
+        };
 
-        private readonly TableInfo[] _tables = new[]
-            {
-                new TableInfo("webstudio_fckuploads", "TenantID") {InsertMethod = InsertMethod.None},
-                new TableInfo("webstudio_settings", "TenantID") {UserIDColumns = new[] {"UserID"}},
-                new TableInfo("webstudio_uservisit", "tenantid") {InsertMethod = InsertMethod.None}
-            };
+    private readonly RelationInfo[] _relations = new[]
+    {
+            new RelationInfo("crm_organisation_logo", "id", "webstudio_settings", "Data", typeof(CrmInvoiceModuleSpecifics),
+                x => _crmSettingsId == new Guid(Convert.ToString(x["ID"])))
+        };
 
-        private readonly RelationInfo[] _relations = new[]
-            {
-                new RelationInfo("crm_organisation_logo", "id", "webstudio_settings", "Data", typeof(CrmInvoiceModuleSpecifics),
-                                 x => CrmSettingsId == new Guid(Convert.ToString(x["ID"])))
-            };
+    public WebStudioModuleSpecifics(Helpers helpers) : base(helpers) { }
 
-        public override ModuleName ModuleName
+    protected override bool TryPrepareValue(DbConnection connection, ColumnMapper columnMapper, RelationInfo relation, ref object value)
+    {
+        if (relation.ParentTable == "crm_organisation_logo")
         {
-            get { return ModuleName.WebStudio; }
-        }
+            var success = true;
+            value = Regex.Replace(
+                Convert.ToString(value),
+                @"(?<=""CompanyLogoID"":)\d+",
+                match =>
+                {
+                    if (Convert.ToInt32(match.Value) == 0)
+                    {
+                        success = true;
 
-        public override IEnumerable<TableInfo> Tables
-        {
-            get { return _tables; }
-        }
+                        return match.Value;
+                    }
 
-        public override IEnumerable<RelationInfo> TableRelations
-        {
-            get { return _relations; }
-        }
+                    var mappedMessageId = Convert.ToString(columnMapper.GetMapping(relation.ParentTable, relation.ParentColumn, match.Value));
+                    success = !string.IsNullOrEmpty(mappedMessageId);
 
-        protected override bool TryPrepareValue(DbConnection connection, ColumnMapper columnMapper, RelationInfo relation, ref object value)
-        {
-            if (relation.ParentTable == "crm_organisation_logo")
-            {
-                var success = true;
-                value = Regex.Replace(
-                    Convert.ToString(value),
-                    @"(?<=""CompanyLogoID"":)\d+",
-                    match =>
-                        {
-                            if (Convert.ToInt32(match.Value) == 0)
-                            {
-                                success = true;
-                                return match.Value;
-                            }
-                            var mappedMessageId = Convert.ToString(columnMapper.GetMapping(relation.ParentTable, relation.ParentColumn, match.Value));
-                            success = !string.IsNullOrEmpty(mappedMessageId);
-                            return mappedMessageId;
-                        });
-                return success;
-            }
-            return base.TryPrepareValue(connection, columnMapper, relation, ref value);
+                    return mappedMessageId;
+                });
+
+            return success;
         }
+        return base.TryPrepareValue(connection, columnMapper, relation, ref value);
     }
 }

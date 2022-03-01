@@ -23,24 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Core.Common.Configuration;
-using ASC.FederatedLogin;
-using ASC.FederatedLogin.Helpers;
-using ASC.FederatedLogin.LoginProviders;
-using ASC.Files.Core;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OneDrive.Sdk;
-
 namespace ASC.Files.Thirdparty.OneDrive
 {
     [Transient]
@@ -230,7 +212,7 @@ namespace ASC.Files.Thirdparty.OneDrive
                     CacheChildItems.Remove(new Regex("onedrivei-" + i.Key));
                     CacheItem.Remove("onedrive-" + i.Key);
                 }
-            }, CacheNotifyAction.Remove);
+            }, Common.Caching.CacheNotifyAction.Remove);
         }
 
         internal async Task<Item> GetOneDriveItemAsync(OneDriveStorage storage, int id, string itemId)
@@ -262,13 +244,13 @@ namespace ASC.Files.Thirdparty.OneDrive
             var key = id + "-";
             if (string.IsNullOrEmpty(onedriveId))
             {
-                await CacheNotify.PublishAsync(new OneDriveCacheItem { ResetAll = true, Key = key }, CacheNotifyAction.Remove).ConfigureAwait(false);
+                await CacheNotify.PublishAsync(new OneDriveCacheItem { ResetAll = true, Key = key }, Common.Caching.CacheNotifyAction.Remove).ConfigureAwait(false);
             }
             else
             {
                 key += onedriveId;
 
-                await CacheNotify.PublishAsync(new OneDriveCacheItem { Key = key }, CacheNotifyAction.Remove).ConfigureAwait(false);
+                await CacheNotify.PublishAsync(new OneDriveCacheItem { Key = key }, Common.Caching.CacheNotifyAction.Remove).ConfigureAwait(false);
             }
         }
     }

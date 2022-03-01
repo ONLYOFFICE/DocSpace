@@ -24,14 +24,13 @@
 */
 
 
-namespace ASC.Common.Threading
+namespace ASC.Common.Threading;
+
+public enum DistributedTaskStatus
 {
-    public enum DistributedTaskStatus
-    {
-        Created,
-        Running,
-        Completed,
-        Canceled,
-        Failted
-    }
+    Created,
+    Running,
+    Completed,
+    Canceled,
+    Failted
 }

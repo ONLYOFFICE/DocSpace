@@ -23,24 +23,7 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common.Settings;
-using ASC.Core.Users;
-using ASC.Notify.Model;
-using ASC.Notify.Recipients;
-using ASC.Web.Core.Utility.Skins;
-using ASC.Web.Core.WhiteLabel;
-using ASC.Web.Studio.Utility;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
+using Constants = ASC.Core.Users.Constants;
 
 namespace ASC.Web.Studio.Core.Notify
 {
@@ -126,10 +109,10 @@ namespace ASC.Web.Studio.Core.Notify
             {
                 if (toguests)
                     return UserManager.GetUsers()
-                                      .Where(u => !UserManager.IsUserInGroup(u.ID, Constants.GroupAdmin.ID));
+                                      .Where(u => !UserManager.IsUserInGroup(u.Id, Constants.GroupAdmin.ID));
 
                 return UserManager.GetUsers(EmployeeStatus.Default, EmployeeType.User)
-                                  .Where(u => !UserManager.IsUserInGroup(u.ID, Constants.GroupAdmin.ID));
+                                  .Where(u => !UserManager.IsUserInGroup(u.Id, Constants.GroupAdmin.ID));
             }
 
             if (toguests)
@@ -163,7 +146,7 @@ namespace ASC.Web.Studio.Core.Notify
                 && TenantExtra.Saas && !CoreBaseSettings.Personal)
             {
                 var tenant = TenantManager.GetCurrentTenant();
-                var tariff = TenantManager.GetTenantQuota(tenant.TenantId);
+                var tariff = TenantManager.GetTenantQuota(tenant.Id);
                 if (tariff.Free || tariff.Trial)
                 {
                     var spamEmailSettings = SettingsManager.Load<SpamEmailSettings>();
@@ -175,7 +158,7 @@ namespace ASC.Web.Studio.Core.Notify
                     {
                         res = res.Take(mayTake).ToList();
 
-                        Log.Warn(string.Format("Free tenant {0} for today is trying to send {1} more letters without checking activation. Sent {2}", tenant.TenantId, tryCount, mayTake));
+                        Log.Warn(string.Format("Free tenant {0} for today is trying to send {1} more letters without checking activation. Sent {2}", tenant.Id, tryCount, mayTake));
                     }
                     spamEmailSettings.MailsSended = sended + tryCount;
                     SettingsManager.Save(spamEmailSettings);

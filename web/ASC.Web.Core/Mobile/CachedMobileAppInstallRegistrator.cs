@@ -23,13 +23,6 @@
  *
 */
 
-
-using System;
-
-using ASC.Common.Caching;
-using ASC.Core;
-using ASC.Core.Common.Notify.Push;
-
 namespace ASC.Web.Core.Mobile
 {
     public class CachedMobileAppInstallRegistrator : IMobileAppInstallRegistrator
@@ -82,7 +75,7 @@ namespace ASC.Web.Core.Mobile
         {
             var cacheKey = appType.HasValue ? userEmail + "/" + appType.ToString() : userEmail;
 
-            return string.Format("{0}:mobile:{1}", TenantManager.GetCurrentTenant().TenantId, cacheKey);
+            return string.Format("{0}:mobile:{1}", TenantManager.GetCurrentTenant().Id, cacheKey);
         }
     }
 }

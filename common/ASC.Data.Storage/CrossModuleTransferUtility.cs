@@ -23,116 +23,122 @@
  *
 */
 
+namespace ASC.Data.Storage;
 
-using System;
-using System.IO;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core.ChunkedUploader;
-
-using Microsoft.Extensions.Options;
-
-namespace ASC.Data.Storage
+public class CrossModuleTransferUtility
 {
-    public class CrossModuleTransferUtility
+    private readonly ILog _logger;
+    private readonly IDataStore _source;
+    private readonly IDataStore _destination;
+    private readonly long _maxChunkUploadSize;
+    private readonly int _chunkSize;
+    private readonly IOptionsMonitor<ILog> _option;
+    private readonly TempStream _tempStream;
+    private readonly TempPath _tempPath;
+
+    public CrossModuleTransferUtility(
+        IOptionsMonitor<ILog> option,
+        TempStream tempStream,
+        TempPath tempPath,
+        IDataStore source,
+        IDataStore destination)
     {
-        private readonly ILog Log;
-        private readonly IDataStore source;
-        private readonly IDataStore destination;
-        private readonly long maxChunkUploadSize;
-        private readonly int chunksize;
-        private IOptionsMonitor<ILog> Option { get; }
-        private TempStream TempStream { get; }
-        private TempPath TempPath { get; }
+        _logger = option.Get("ASC.CrossModuleTransferUtility");
+        _option = option;
+        _tempStream = tempStream;
+        _tempPath = tempPath;
+        _source = source ?? throw new ArgumentNullException(nameof(source));
+        _destination = destination ?? throw new ArgumentNullException(nameof(destination));
+        _maxChunkUploadSize = 10 * 1024 * 1024;
+        _chunkSize = 5 * 1024 * 1024;
+    }
 
-        public CrossModuleTransferUtility(
-            IOptionsMonitor<ILog> option, 
-            TempStream tempStream,
-            TempPath tempPath,
-            IDataStore source, 
-            IDataStore destination)
+    public Task CopyFileAsync(string srcDomain, string srcPath, string destDomain, string destPath)
+    {
+        if (srcDomain == null)
         {
-            Log = option.Get("ASC.CrossModuleTransferUtility");
-            Option = option;
-            TempStream = tempStream;
-            TempPath = tempPath;
-            this.source = source ?? throw new ArgumentNullException(nameof(source));
-            this.destination = destination ?? throw new ArgumentNullException(nameof(destination));
-            maxChunkUploadSize = 10 * 1024 * 1024;
-            chunksize = 5 * 1024 * 1024;
+            throw new ArgumentNullException(nameof(srcDomain));
         }
 
-        public Task CopyFileAsync(string srcDomain, string srcPath, string destDomain, string destPath)
+        if (srcPath == null)
         {
-            if (srcDomain == null) throw new ArgumentNullException(nameof(srcDomain));
-            if (srcPath == null) throw new ArgumentNullException(nameof(srcPath));
-            if (destDomain == null) throw new ArgumentNullException(nameof(destDomain));
-            if (destPath == null) throw new ArgumentNullException(nameof(destPath));
-
-            return InternalCopyFileAsync(srcDomain, srcPath, destDomain, destPath);
+            throw new ArgumentNullException(nameof(srcPath));
         }
 
-        private async Task InternalCopyFileAsync(string srcDomain, string srcPath, string destDomain, string destPath)
+        if (destDomain == null)
         {
-            using var stream = await source.GetReadStreamAsync(srcDomain, srcPath);
-            if (stream.Length < maxChunkUploadSize)
+            throw new ArgumentNullException(nameof(destDomain));
+        }
+
+        if (destPath == null)
+        {
+            throw new ArgumentNullException(nameof(destPath));
+        }
+
+        return InternalCopyFileAsync(srcDomain, srcPath, destDomain, destPath);
+    }
+
+    private async Task InternalCopyFileAsync(string srcDomain, string srcPath, string destDomain, string destPath)
+    {
+        using var stream = await _source.GetReadStreamAsync(srcDomain, srcPath);
+        if (stream.Length < _maxChunkUploadSize)
+        {
+            await _destination.SaveAsync(destDomain, destPath, stream);
+        }
+        else
+        {
+            var session = new CommonChunkedUploadSession(stream.Length);
+            var holder = new CommonChunkedUploadSessionHolder(_tempPath, _option, _destination, destDomain);
+            await holder.InitAsync(session);
+            try
             {
-                await destination.SaveAsync(destDomain, destPath, stream);
-            }
-            else
-            {
-                var session = new CommonChunkedUploadSession(stream.Length);
-                var holder = new CommonChunkedUploadSessionHolder(TempPath, Option, destination, destDomain);
-                await holder.InitAsync(session);
+                Stream memstream = null;
                 try
                 {
-                    Stream memstream = null;
-                    try
+                    while (GetStream(stream, out memstream))
                     {
-                        while (GetStream(stream, out memstream))
-                        {
-                            memstream.Seek(0, SeekOrigin.Begin);
-                            await holder.UploadChunkAsync(session, memstream, chunksize);
-                            await memstream.DisposeAsync();
-                        }
+                        memstream.Seek(0, SeekOrigin.Begin);
+                        await holder.UploadChunkAsync(session, memstream, _chunkSize);
+                        await memstream.DisposeAsync();
                     }
-                    finally
-                    {
-                        if (memstream != null)
-                        {
-                            await memstream.DisposeAsync();
-                        }
-                    }
-
-                    await holder.FinalizeAsync(session);
-                    await destination.MoveAsync(destDomain, session.TempPath, destDomain, destPath);
                 }
-                catch (Exception ex)
+                finally
                 {
-                    Log.Error("Copy File", ex);
-                    await holder.AbortAsync(session);
+                    if (memstream != null)
+                    {
+                        await memstream.DisposeAsync();
+                    }
                 }
+
+                await holder.FinalizeAsync(session);
+                await _destination.MoveAsync(destDomain, session.TempPath, destDomain, destPath);
             }
-        }
-
-        private bool GetStream(Stream stream, out Stream memstream)
-        {
-            memstream = TempStream.Create();
-            var total = 0;
-            int readed;
-            const int portion = 2048;
-            var buffer = new byte[portion];
-
-            while ((readed = stream.Read(buffer, 0, portion)) > 0)
+            catch (Exception ex)
             {
-                memstream.Write(buffer, 0, readed);
-                total += readed;
-                if (total >= chunksize) break;
+                _logger.Error("Copy File", ex);
+                await holder.AbortAsync(session);
             }
-
-            return total > 0;
         }
+    }
+
+    private bool GetStream(Stream stream, out Stream memstream)
+    {
+        memstream = _tempStream.Create();
+        var total = 0;
+        int readed;
+        const int portion = 2048;
+        var buffer = new byte[portion];
+
+        while ((readed = stream.Read(buffer, 0, portion)) > 0)
+        {
+            memstream.Write(buffer, 0, readed);
+            total += readed;
+            if (total >= _chunkSize)
+            {
+                break;
+            }
+        }
+
+        return total > 0;
     }
 }

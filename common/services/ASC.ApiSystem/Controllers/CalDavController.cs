@@ -23,30 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Web;
-
-using ASC.ApiSystem.Classes;
-using ASC.ApiSystem.Models;
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Tenants;
-using ASC.Security.Cryptography;
-using ASC.Web.Studio.Utility;
-
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-
 namespace ASC.ApiSystem.Controllers
 {
     [Scope]

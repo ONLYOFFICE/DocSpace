@@ -23,19 +23,6 @@
  *
 */
 
-
-using System;
-using System.Globalization;
-using System.IO;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Data.Storage;
-using ASC.Web.Core.Users;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.Web.Studio.UserControls.CustomNavigation
 {
     //internal class LogoUploader : IFileUploadHandler
@@ -162,7 +149,7 @@ namespace ASC.Web.Studio.UserControls.CustomNavigation
 
             try
             {
-                var store = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().TenantId.ToString(CultureInfo.InvariantCulture), StorageName);
+                var store = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().Id.ToString(CultureInfo.InvariantCulture), StorageName);
 
                 var fileName = Path.GetFileName(logoPath);
 
@@ -179,7 +166,7 @@ namespace ASC.Web.Studio.UserControls.CustomNavigation
 
         private string SaveLogo(string fileName, byte[] data)
         {
-            var store = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().TenantId.ToString(CultureInfo.InvariantCulture), StorageName);
+            var store = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().Id.ToString(CultureInfo.InvariantCulture), StorageName);
 
             using var stream = new MemoryStream(data);
             stream.Seek(0, SeekOrigin.Begin);

@@ -23,26 +23,6 @@
  *
 */
 
-
-using System;
-using System.Globalization;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Web;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common;
-using ASC.Core.Common.Settings;
-using ASC.Core.Users;
-using ASC.Security.Cryptography;
-using ASC.Web.Core;
-using ASC.Web.Core.WhiteLabel;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
-
 namespace ASC.Web.Studio.Utility
 {
     public enum ManagementType
@@ -197,7 +177,7 @@ namespace ASC.Web.Studio.Utility
 
         public string GetUserProfile(UserInfo user, bool absolute = true)
         {
-            var queryParams = user.ID != Guid.Empty ? GetUserParamsPair(user) : HttpUtility.UrlEncode(user.UserName.ToLowerInvariant());
+            var queryParams = user.Id != Guid.Empty ? GetUserParamsPair(user) : HttpUtility.UrlEncode(user.UserName.ToLowerInvariant());
 
             var url = absolute ? ToAbsolute("~/products/people/") : "/products/people/";
             url += "view/";
@@ -529,7 +509,7 @@ namespace ASC.Web.Studio.Utility
 
         public string GetConfirmationUrlRelative(string email, ConfirmType confirmType, object postfix = null, Guid userId = default)
         {
-            return GetConfirmationUrlRelative(TenantManager.GetCurrentTenant().TenantId, email, confirmType, postfix, userId);
+            return GetConfirmationUrlRelative(TenantManager.GetCurrentTenant().Id, email, confirmType, postfix, userId);
         }
 
         public string GetConfirmationUrlRelative(int tenantId, string email, ConfirmType confirmType, object postfix = null, Guid userId = default)

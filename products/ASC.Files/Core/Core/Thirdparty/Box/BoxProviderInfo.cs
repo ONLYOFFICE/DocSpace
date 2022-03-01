@@ -23,25 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Core.Common.Configuration;
-using ASC.FederatedLogin;
-using ASC.FederatedLogin.Helpers;
-using ASC.FederatedLogin.LoginProviders;
-using ASC.Files.Core;
-
-using Box.V2.Models;
-
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ASC.Files.Thirdparty.Box
 {
     [Transient]
@@ -115,7 +96,7 @@ namespace ASC.Files.Thirdparty.Box
             if (StorageOpened)
             {
                 StorageAsync.Result.Close();
-            }
+        }
         }
 
         public Task<bool> CheckAccessAsync()
@@ -273,7 +254,7 @@ namespace ASC.Files.Thirdparty.Box
                         CacheFolder.Remove("boxd-" + i.Key);
                     }
                 }
-            }, CacheNotifyAction.Remove);
+            }, Common.Caching.CacheNotifyAction.Remove);
         }
 
         internal async Task<BoxFolder> GetBoxFolderAsync(BoxStorage storage, int id, string boxFolderId)
@@ -316,7 +297,7 @@ namespace ASC.Files.Thirdparty.Box
         {
             if (boxItem != null)
             {
-                await CacheNotify.PublishAsync(new BoxCacheItem { IsFile = boxItem is BoxFile, Key = id + "-" + boxItem.Id }, CacheNotifyAction.Remove).ConfigureAwait(false);
+                await CacheNotify.PublishAsync(new BoxCacheItem { IsFile = boxItem is BoxFile, Key = id + "-" + boxItem.Id }, Common.Caching.CacheNotifyAction.Remove).ConfigureAwait(false);
             }
         }
 
@@ -325,7 +306,7 @@ namespace ASC.Files.Thirdparty.Box
             var key = id + "-";
             if (boxId == null)
             {
-                await CacheNotify.PublishAsync(new BoxCacheItem { ResetAll = true, Key = key }, CacheNotifyAction.Remove).ConfigureAwait(false);
+                await CacheNotify.PublishAsync(new BoxCacheItem { ResetAll = true, Key = key }, Common.Caching.CacheNotifyAction.Remove).ConfigureAwait(false);
             }
             else
             {
@@ -335,7 +316,7 @@ namespace ASC.Files.Thirdparty.Box
                 }
                 key += boxId;
 
-                await CacheNotify.PublishAsync(new BoxCacheItem { IsFile = isFile ?? false, IsFileExists = isFile.HasValue, Key = key }, CacheNotifyAction.Remove).ConfigureAwait(false);
+                await CacheNotify.PublishAsync(new BoxCacheItem { IsFile = isFile ?? false, IsFileExists = isFile.HasValue, Key = key }, Common.Caching.CacheNotifyAction.Remove).ConfigureAwait(false);
             }
         }
     }

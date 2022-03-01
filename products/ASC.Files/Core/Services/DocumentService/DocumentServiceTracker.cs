@@ -24,41 +24,6 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Web;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common;
-using ASC.Core.Users;
-using ASC.Files.Core;
-using ASC.Files.Core.Resources;
-using ASC.Files.Core.Services.NotifyService;
-using ASC.MessagingSystem;
-using ASC.Security.Cryptography;
-using ASC.Web.Core.Files;
-using ASC.Web.Core.Users;
-using ASC.Web.Files.Classes;
-using ASC.Web.Files.Core;
-using ASC.Web.Files.Helpers;
-using ASC.Web.Files.ThirdPartyApp;
-using ASC.Web.Files.Utils;
-
-using Microsoft.Extensions.Options;
-
-using static ASC.Web.Files.Services.DocumentService.DocumentServiceTracker;
-
 using CommandMethod = ASC.Web.Core.Files.DocumentService.CommandMethod;
 
 namespace ASC.Web.Files.Services.DocumentService

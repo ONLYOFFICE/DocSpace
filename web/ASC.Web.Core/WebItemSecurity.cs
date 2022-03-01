@@ -24,20 +24,6 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.Security;
-using ASC.Common.Security.Authorizing;
-using ASC.Core;
-using ASC.Core.Common.Settings;
-using ASC.Core.Users;
-using ASC.Web.Core.Utility.Settings;
-
 using SecurityAction = ASC.Common.Security.Authorizing.Action;
 
 namespace ASC.Web.Core
@@ -55,7 +41,7 @@ namespace ASC.Web.Core
             CacheNotify.Subscribe((r) =>
             {
                 ClearCache(r.Tenant);
-            }, CacheNotifyAction.Any);
+            }, Common.Caching.CacheNotifyAction.Any);
         }
 
         public void ClearCache(int tenantId)
@@ -70,7 +56,7 @@ namespace ASC.Web.Core
 
         public void Publish(int tenantId)
         {
-            CacheNotify.Publish(new WebItemSecurityNotifier { Tenant = tenantId }, CacheNotifyAction.Any);
+            CacheNotify.Publish(new WebItemSecurityNotifier { Tenant = tenantId }, Common.Caching.CacheNotifyAction.Any);
         }
 
         public Dictionary<string, bool> Get(int tenantId)
@@ -144,7 +130,7 @@ namespace ASC.Web.Core
             bool result;
 
             var tenant = TenantManager.GetCurrentTenant();
-            var dic = WebItemSecurityCache.GetOrInsert(tenant.TenantId);
+            var dic = WebItemSecurityCache.GetOrInsert(tenant.Id);
             if (dic != null)
             {
                 lock (dic)
@@ -188,13 +174,13 @@ namespace ASC.Web.Core
                     }
                     else if (webitem is IModule)
                     {
-                        result = PermissionContext.PermissionResolver.Check(Authentication.GetAccountByID(tenant.TenantId, @for), securityObj, null, Read) &&
+                        result = PermissionContext.PermissionResolver.Check(Authentication.GetAccountByID(tenant.Id, @for), securityObj, null, Read) &&
                             IsAvailableForUser(WebItemManager.GetParentItemID(webitem.ID), @for);
                     }
                     else
                     {
-                        var hasUsers = AuthorizationManager.GetAces(Guid.Empty, Read.ID, securityObj).Any(a => a.SubjectId != ASC.Core.Users.Constants.GroupEveryone.ID);
-                        result = PermissionContext.PermissionResolver.Check(Authentication.GetAccountByID(tenant.TenantId, @for), securityObj, null, Read) ||
+                        var hasUsers = AuthorizationManager.GetAces(Guid.Empty, Read.ID, securityObj).Any(a => a.Subject != ASC.Core.Users.Constants.GroupEveryone.ID);
+                        result = PermissionContext.PermissionResolver.Check(Authentication.GetAccountByID(tenant.Id, @for), securityObj, null, Read) ||
                                  (hasUsers && IsProductAdministrator(securityObj.WebItemId, @for));
                     }
                 }
@@ -204,7 +190,7 @@ namespace ASC.Web.Core
                 }
             }
 
-            dic = WebItemSecurityCache.Get(tenant.TenantId);
+            dic = WebItemSecurityCache.Get(tenant.Id);
             if (dic != null)
             {
                 lock (dic)
@@ -224,7 +210,7 @@ namespace ASC.Web.Core
 
             // remove old aces
             AuthorizationManager.RemoveAllAces(securityObj);
-            var allowToAll = new AzRecord(ASC.Core.Users.Constants.GroupEveryone.ID, Read.ID, AceType.Allow, securityObj);
+            var allowToAll = new AzRecord(ASC.Core.Users.Constants.GroupEveryone.ID, Read.ID, AceType.Allow, securityObj.FullId);
             AuthorizationManager.RemoveAce(allowToAll);
 
             // set new aces
@@ -239,11 +225,11 @@ namespace ASC.Web.Core
             }
             foreach (var s in subjects)
             {
-                var a = new AzRecord(s, Read.ID, enabled ? AceType.Allow : AceType.Deny, securityObj);
+                var a = new AzRecord(s, Read.ID, enabled ? AceType.Allow : AceType.Deny, securityObj.FullId);
                 AuthorizationManager.AddAce(a);
             }
 
-            WebItemSecurityCache.Publish(TenantManager.GetCurrentTenant().TenantId);
+            WebItemSecurityCache.Publish(TenantManager.GetCurrentTenant().Id);
         }
 
         public WebItemSecurityInfo GetSecurityInfo(string id)
@@ -258,7 +244,7 @@ namespace ASC.Web.Core
 
                 Users = info
                                .Select(i => UserManager.GetUsers(i.Item1))
-                               .Where(u => u.ID != ASC.Core.Users.Constants.LostUser.ID),
+                               .Where(u => u.Id != ASC.Core.Users.Constants.LostUser.Id),
 
                 Groups = info
                                .Select(i => UserManager.GetGroupInfo(i.Item1))
@@ -271,8 +257,8 @@ namespace ASC.Web.Core
             var securityObj = WebItemSecurityObject.Create(id, WebItemManager);
             var result = AuthorizationManager
                 .GetAcesWithInherits(Guid.Empty, Read.ID, securityObj, null)
-                .GroupBy(a => a.SubjectId)
-                .Select(a => Tuple.Create(a.Key, a.First().Reaction == AceType.Allow))
+                .GroupBy(a => a.Subject)
+                .Select(a => Tuple.Create(a.Key, a.First().AceType == AceType.Allow))
                 .ToList();
             if (result.Count == 0)
             {
@@ -328,7 +314,7 @@ namespace ASC.Web.Core
                 UserManager.RemoveUserFromGroup(userid, productid);
             }
 
-            WebItemSecurityCache.Publish(TenantManager.GetCurrentTenant().TenantId);
+            WebItemSecurityCache.Publish(TenantManager.GetCurrentTenant().Id);
         }
 
         public bool IsProductAdministrator(Guid productid, Guid userid)
@@ -384,6 +370,8 @@ namespace ASC.Web.Core
                 get { return WebItemId.ToString("N"); }
             }
 
+            public string FullId => AzObjectIdHelper.GetFullObjectId(this);
+
             public bool InheritSupported
             {
                 get { return true; }
@@ -393,7 +381,6 @@ namespace ASC.Web.Core
             {
                 get { return false; }
             }
-
 
             public static WebItemSecurityObject Create(string id, WebItemManager webItemManager)
             {

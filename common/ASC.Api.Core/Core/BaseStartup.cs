@@ -1,47 +1,9 @@
-﻿using System;
-using System.Reflection;
-using System.Text.Json.Serialization;
+using JsonConverter = System.Text.Json.Serialization.JsonConverter;
 
-using ASC.Api.Core.Auth;
-using ASC.Api.Core.Convention;
-using ASC.Api.Core.Core;
-using ASC.Api.Core.Extensions;
-using ASC.Api.Core.Middleware;
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.DependencyInjection;
-using ASC.Common.Logging;
-using ASC.Common.Mapping;
-using ASC.Common.Utils;
-using ASC.Webhooks.Core;
+namespace ASC.Api.Core;
 
-using Autofac;
-
-using HealthChecks.UI.Client;
-
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.AspNetCore.Mvc.Formatters;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-
-using NLog;
-using NLog.Extensions.Logging;
-
-using StackExchange.Redis.Extensions.Core.Configuration;
-using StackExchange.Redis.Extensions.Newtonsoft;
-
-namespace ASC.Api.Core
+public abstract class BaseStartup
 {
-    public abstract class BaseStartup
-    {
         public IConfiguration Configuration { get; }
         public IHostEnvironment HostEnvironment { get; }
         public virtual JsonConverter[] Converters { get; }
@@ -57,6 +19,7 @@ namespace ASC.Api.Core
             Configuration = configuration;
             HostEnvironment = hostEnvironment;
             DIHelper = new DIHelper();
+
             if (bool.TryParse(Configuration["core:products"], out var loadProducts))
             {
                 LoadProducts = loadProducts;
@@ -71,7 +34,9 @@ namespace ASC.Api.Core
             services.AddHttpClient();
 
             if (AddAndUseSession)
+        {
                 services.AddSession();
+        }
 
             DIHelper.Configure(services);
 
@@ -114,7 +79,7 @@ namespace ASC.Api.Core
 
             if (kafkaConfiguration != null)
             {
-                DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCacheNotify<>));
             }
             else if (rabbitMQConfiguration != null)
             {
@@ -122,7 +87,7 @@ namespace ASC.Api.Core
             }
             else if (redisConfiguration != null)
             {
-                DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
+                DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCacheNotify<>));
 
                 services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
             }
@@ -130,7 +95,6 @@ namespace ASC.Api.Core
             {
                 DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(MemoryCacheNotify<>));
             }
-
 
             DIHelper.TryAdd(typeof(IWebhookPublisher), typeof(WebhookPublisher));
 
@@ -181,7 +145,9 @@ namespace ASC.Api.Core
             app.UseRouting();
 
             if (AddAndUseSession)
+        {
                 app.UseSession();
+        }
 
             app.UseAuthentication();
 
@@ -212,17 +178,17 @@ namespace ASC.Api.Core
         {
             builder.Register(Configuration, LoadProducts, LoadConsumers);
         }
-    }
+}
 
-    public static class LogNLogConfigureExtenstion
-    {
+public static class LogNLogConfigureExtenstion
+{
         public static IHostBuilder ConfigureNLogLogging(this IHostBuilder hostBuilder)
         {
             return hostBuilder.ConfigureLogging((hostBuildexContext, r) =>
             {
-                _ = new ConfigureLogNLog(hostBuildexContext.Configuration, new ConfigurationExtension(hostBuildexContext.Configuration), hostBuildexContext.HostingEnvironment);
+            _ = new ConfigureLogNLog(hostBuildexContext.Configuration, 
+                new ConfigurationExtension(hostBuildexContext.Configuration), hostBuildexContext.HostingEnvironment);
                 r.AddNLog(LogManager.Configuration);
             });
         }
-    }
 }

@@ -23,19 +23,6 @@
  *
 */
 
-
-using System.Text.Json;
-using System.Threading.Tasks;
-
-using ASC.Api.Core;
-using ASC.Api.Documents;
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Notify.Signalr;
-using ASC.Files.Core;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.Web.Files.Utils
 {
     [Scope]
@@ -97,7 +84,7 @@ namespace ASC.Web.Files.Utils
             var data = JsonSerializer.Serialize(await FilesWrapperHelper.GetAsync(file), serializerSettings);
 
             _signalrServiceClient.CreateFile(file.ID, room, data);
-        }
+    }
 
         public void DeleteFile<T>(File<T> file)
         {
@@ -107,14 +94,14 @@ namespace ASC.Web.Files.Utils
 
         private string GetFileRoom<T>(T fileId)
         {
-            var tenantId = TenantManager.GetCurrentTenant().TenantId;
+            var tenantId = TenantManager.GetCurrentTenant().Id;
 
             return $"{tenantId}-FILE-{fileId}";
         }
 
         private string GetFolderRoom<T>(T folderId)
         {
-            var tenantId = TenantManager.GetCurrentTenant().TenantId;
+            var tenantId = TenantManager.GetCurrentTenant().Id;
 
             return $"{tenantId}-DIR-{folderId}";
         }

@@ -23,16 +23,6 @@
  *
 */
 
-
-using System;
-using System.Text.RegularExpressions;
-
-using ASC.Common;
-using ASC.Common.Caching;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-
 namespace ASC.Web.Core.Mobile
 {
     [Scope]

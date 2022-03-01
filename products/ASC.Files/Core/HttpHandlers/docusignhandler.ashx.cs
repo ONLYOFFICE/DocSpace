@@ -23,30 +23,6 @@
  *
 */
 
-
-using System;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using System.Web;
-using System.Xml;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Web;
-using ASC.Core;
-using ASC.Files.Core.Resources;
-using ASC.Files.Core.Services.NotifyService;
-using ASC.Web.Core.Files;
-using ASC.Web.Files.Classes;
-using ASC.Web.Files.Helpers;
-using ASC.Web.Studio.Utility;
-
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
 namespace ASC.Web.Files.HttpHandlers
 {
     public class DocuSignHandler

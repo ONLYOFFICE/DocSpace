@@ -23,13 +23,6 @@
  *
 */
 
-
-using System.Collections.Generic;
-
-using ASC.Core.Users;
-using ASC.Web.Core.Users;
-using ASC.Web.Files.Services.DocumentService;
-
 namespace ASC.Web.Files.Services.WCFService
 {
     public class MentionWrapper
@@ -41,7 +34,7 @@ namespace ASC.Web.Files.Services.WCFService
 
         public string Id
         {
-            get { return User.ID.ToString(); }
+            get { return User.Id.ToString(); }
         }
 
         public bool HasAccess { get; set; }

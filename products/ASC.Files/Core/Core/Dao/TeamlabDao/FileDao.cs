@@ -23,40 +23,7 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Core;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
-using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
-using ASC.ElasticSearch;
-using ASC.ElasticSearch.Service;
-using ASC.Files.Core.EF;
-using ASC.Files.Core.Resources;
-using ASC.Files.Core.Security;
-using ASC.Files.Core.Thirdparty;
-using ASC.Files.Thirdparty.ProviderDao;
-using ASC.Web.Core.Files;
-using ASC.Web.Files.Classes;
-using ASC.Web.Files.Core.Search;
-using ASC.Web.Files.Services.DocumentService;
-using ASC.Web.Files.Utils;
-using ASC.Web.Studio.Core;
-using ASC.Web.Studio.UserControls.Statistics;
-using ASC.Web.Studio.Utility;
-
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+using Document = ASC.ElasticSearch.Document;
 
 namespace ASC.Files.Core.Data
 {
@@ -223,7 +190,7 @@ namespace ASC.Files.Core.Data
             {
                 if (subjectGroup)
                 {
-                    var users = UserManager.GetUsersByGroup(subjectID).Select(u => u.ID).ToArray();
+                    var users = UserManager.GetUsersByGroup(subjectID).Select(u => u.Id).ToArray();
                     query = query.Where(r => users.Contains(r.CreateBy));
                 }
                 else
@@ -310,7 +277,7 @@ namespace ASC.Files.Core.Data
             {
                 if (subjectGroup)
                 {
-                    var users = UserManager.GetUsersByGroup(subjectID).Select(u => u.ID).ToArray();
+                    var users = UserManager.GetUsersByGroup(subjectID).Select(u => u.Id).ToArray();
                     q = q.Where(r => users.Contains(r.CreateBy));
                 }
                 else
@@ -1151,7 +1118,7 @@ namespace ASC.Files.Core.Data
             {
                 if (subjectGroup)
                 {
-                    var users = UserManager.GetUsersByGroup(subjectID).Select(u => u.ID).ToArray();
+                    var users = UserManager.GetUsersByGroup(subjectID).Select(u => u.Id).ToArray();
                     q = q.Where(r => users.Contains(r.CreateBy));
                 }
                 else
@@ -1435,7 +1402,7 @@ namespace ASC.Files.Core.Data
                {
                    if (subjectGroup)
                    {
-                       var users = UserManager.GetUsersByGroup(subjectID).Select(u => u.ID).ToArray();
+                       var users = UserManager.GetUsersByGroup(subjectID).Select(u => u.Id).ToArray();
                        result.In(r => r.CreateBy, users);
                    }
                    else

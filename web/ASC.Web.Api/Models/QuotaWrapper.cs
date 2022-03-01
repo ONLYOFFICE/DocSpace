@@ -23,19 +23,7 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json.Serialization;
-
-using ASC.Core;
-using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
-using ASC.Core.Users;
-using ASC.Web.Core;
-using ASC.Web.Studio.UserControls.Statistics;
-using ASC.Web.Studio.Utility;
+using Constants = ASC.Core.Users.Constants;
 
 namespace ASC.Web.Studio.Core.Quota
 {
@@ -108,7 +96,7 @@ namespace ASC.Web.Studio.Core.Quota
             TenantStatisticsProvider = tenantStatisticsProvider;
             WebItemManager = webItemManager;
             var quota = TenantExtra.GetTenantQuota();
-            var quotaRows = TenantStatisticsProvider.GetQuotaRows(tenant.TenantId).ToList();
+            var quotaRows = TenantStatisticsProvider.GetQuotaRows(tenant.Id).ToList();
 
             StorageSize = (ulong)Math.Max(0, quota.MaxTotalSize);
             UsedSize = (ulong)Math.Max(0, quotaRows.Sum(r => r.Counter));

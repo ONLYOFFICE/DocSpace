@@ -23,14 +23,11 @@
  *
 */
 
-using ASC.Core.Encryption;
+namespace ASC.Data.Storage.Encryption;
 
-namespace ASC.Data.Storage.Encryption
+public interface IEncryptionService
 {
-    public interface IEncryptionService
-    {
-        void Start(EncryptionSettingsProto encryptionSettingsProto);
+    void Start(EncryptionSettingsProto encryptionSettingsProto);
 
-        void Stop();
-    }
+    void Stop();
 }

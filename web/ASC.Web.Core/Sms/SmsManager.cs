@@ -24,16 +24,8 @@
 */
 
 
-using System;
+using Constants = ASC.Core.Users.Constants;
 using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Common.Security;
-using ASC.Core.Tenants;
-using ASC.Core.Users;
-using ASC.Web.Core.PublicResources;
-using ASC.Web.Core.Sms;
 
 namespace ASC.Web.Studio.Core.SMS
 {
@@ -118,10 +110,10 @@ namespace ASC.Web.Studio.Core.SMS
         }
 
         private async Task InternalPutAuthCodeAsync(string mobilePhone, string key)
-        {
+            {
             if (await SmsSender.SendSMSAsync(mobilePhone, string.Format(Resource.SmsAuthenticationMessageToUser, key)))
             {
-                TenantManager.SetTenantQuotaRow(new TenantQuotaRow { Tenant = TenantManager.GetCurrentTenant().TenantId, Path = "/sms", Counter = 1 }, true);
+                TenantManager.SetTenantQuotaRow(new TenantQuotaRow { Tenant = TenantManager.GetCurrentTenant().Id, Path = "/sms", Counter = 1 }, true);
             }
         }
 
@@ -151,7 +143,7 @@ namespace ASC.Web.Studio.Core.SMS
 
             if (!SecurityContext.IsAuthenticated)
             {
-                SecurityContext.AuthenticateMe(user.ID);
+                SecurityContext.AuthenticateMe(user.Id);
                 //CookiesManager.SetCookies(CookiesType.AuthKey, cookiesKey);
             }
 

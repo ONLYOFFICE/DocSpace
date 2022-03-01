@@ -23,21 +23,7 @@
  *
 */
 
-
-using System;
-using System.Linq;
-using System.Security;
-using System.Web;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Tenants;
-using ASC.Core.Users;
-
-using Microsoft.AspNetCore.Http;
-
-
-using SecurityContext = ASC.Core.SecurityContext;
+using Constants = ASC.Core.Users.Constants;
 
 namespace ASC.Web.Core
 {
@@ -179,7 +165,7 @@ namespace ASC.Web.Core
 
             if (!session)
             {
-                var tenant = TenantManager.GetCurrentTenant().TenantId;
+                var tenant = TenantManager.GetCurrentTenant().Id;
                 expires = TenantCookieSettingsHelper.GetExpiresTime(tenant);
             }
 
@@ -194,7 +180,7 @@ namespace ASC.Web.Core
                 throw new SecurityException();
             }
 
-            var settings = TenantCookieSettingsHelper.GetForTenant(tenant.TenantId);
+            var settings = TenantCookieSettingsHelper.GetForTenant(tenant.Id);
 
             if (lifeTime > 0)
             {
@@ -206,7 +192,7 @@ namespace ASC.Web.Core
                 settings.LifeTime = 0;
             }
 
-            TenantCookieSettingsHelper.SetForTenant(tenant.TenantId, settings);
+            TenantCookieSettingsHelper.SetForTenant(tenant.Id, settings);
 
             var cookie = SecurityContext.AuthenticateMe(SecurityContext.CurrentAccount.ID);
 
@@ -241,9 +227,9 @@ namespace ASC.Web.Core
                 throw new SecurityException();
             }
 
-            var settings = TenantCookieSettingsHelper.GetForTenant(tenant.TenantId);
+            var settings = TenantCookieSettingsHelper.GetForTenant(tenant.Id);
             settings.Index += 1;
-            TenantCookieSettingsHelper.SetForTenant(tenant.TenantId, settings);
+            TenantCookieSettingsHelper.SetForTenant(tenant.Id, settings);
 
             var cookie = SecurityContext.AuthenticateMe(SecurityContext.CurrentAccount.ID);
             SetCookies(CookiesType.AuthKey, cookie);

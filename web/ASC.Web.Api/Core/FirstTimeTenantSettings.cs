@@ -23,34 +23,7 @@
  *
 */
 
-
-using System;
-using System.Collections.Specialized;
-using System.Globalization;
-using System.IO;
-using System.Net.Http;
-using System.Text.Json;
-using System.Threading;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Utils;
-using ASC.Core;
-using ASC.Core.Billing;
-using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
-using ASC.Core.Users;
-using ASC.MessagingSystem;
-using ASC.Web.Api.Models;
-using ASC.Web.Core.PublicResources;
-using ASC.Web.Core.Users;
-using ASC.Web.Core.Utility.Settings;
-using ASC.Web.Studio.Core;
-using ASC.Web.Studio.Core.Notify;
-using ASC.Web.Studio.UserControls.Management;
-using ASC.Web.Studio.Utility;
-
-using Microsoft.Extensions.Options;
+using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Web.Studio.UserControls.FirstTime
 {
@@ -125,10 +98,10 @@ namespace ASC.Web.Studio.UserControls.FirstTime
                 if (tenant.OwnerId == Guid.Empty)
                 {
                     Thread.Sleep(TimeSpan.FromSeconds(6)); // wait cache interval
-                    tenant = TenantManager.GetTenant(tenant.TenantId);
+                    tenant = TenantManager.GetTenant(tenant.Id);
                     if (tenant.OwnerId == Guid.Empty)
                     {
-                        Log.Error(tenant.TenantId + ": owner id is empty.");
+                        Log.Error(tenant.Id + ": owner id is empty.");
                     }
                 }
 
@@ -142,7 +115,7 @@ namespace ASC.Web.Studio.UserControls.FirstTime
                 if (string.IsNullOrEmpty(passwordHash))
                     throw new Exception(Resource.ErrorPasswordEmpty);
 
-                SecurityContext.SetUserPasswordHash(currentUser.ID, passwordHash);
+                SecurityContext.SetUserPasswordHash(currentUser.Id, passwordHash);
 
                 email = email.Trim();
                 if (currentUser.Email != email)

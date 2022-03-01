@@ -23,9 +23,6 @@
  *
 */
 
-
-using Microsoft.AspNetCore.Http;
-
 namespace ASC.Web.Core.Utility
 {
     public class FileUploadResult

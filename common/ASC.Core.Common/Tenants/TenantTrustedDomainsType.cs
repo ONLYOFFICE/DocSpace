@@ -24,12 +24,11 @@
 */
 
 
-namespace ASC.Core.Tenants
+namespace ASC.Core.Tenants;
+
+public enum TenantTrustedDomainsType
 {
-    public enum TenantTrustedDomainsType
-    {
-        None,
-        Custom,
-        All,
-    }
+    None,
+    Custom,
+    All,
 }

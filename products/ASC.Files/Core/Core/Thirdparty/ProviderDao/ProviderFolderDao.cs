@@ -23,19 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Files.Core;
-using ASC.Files.Core.Data;
-using ASC.Files.Core.Thirdparty;
-
 namespace ASC.Files.Thirdparty.ProviderDao
 {
     [Scope]
@@ -112,7 +99,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
             await foreach (var r in result.ConfigureAwait(false))
             {
                 yield return r;
-            }
+        }
         }
 
         public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
@@ -133,7 +120,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
                                                     var folderDao = selectorLocal.GetFolderDao(matchedId.FirstOrDefault());
                                                     return folderDao
                                                         .GetFoldersAsync(matchedId.Select(selectorLocal.ConvertId).ToList(),
-                                                        filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
+filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
                                                 })
                                                 .Where(r => r != null));
             }

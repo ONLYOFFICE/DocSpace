@@ -24,26 +24,6 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Security;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.Logging;
-using ASC.Core.Tenants;
-using ASC.Files.Core;
-using ASC.Web.Files.Classes;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using Microsoft.SharePoint.Client;
-
 using File = Microsoft.SharePoint.Client.File;
 using Folder = Microsoft.SharePoint.Client.Folder;
 
@@ -635,17 +615,17 @@ namespace ASC.Files.Thirdparty.SharePoint
                     FileCache.Remove(new Regex("^spointf-.*"));
                     FolderCache.Remove(new Regex("^spointd-.*"));
                 }
-            }, CacheNotifyAction.Remove);
+            }, Common.Caching.CacheNotifyAction.Remove);
         }
 
         public Task InvalidateAsync()
         {
-            return Notify.PublishAsync(new SharePointProviderCacheItem { }, CacheNotifyAction.Remove);
+            return Notify.PublishAsync(new SharePointProviderCacheItem { }, Common.Caching.CacheNotifyAction.Remove);
         }
 
         public Task PublishFolderAsync(string id)
         {
-            return Notify.PublishAsync(new SharePointProviderCacheItem { FolderKey = id }, CacheNotifyAction.Remove);
+            return Notify.PublishAsync(new SharePointProviderCacheItem { FolderKey = id }, Common.Caching.CacheNotifyAction.Remove);
         }
 
         public async Task PublishFolderAsync(string id1, string id2)
@@ -662,7 +642,7 @@ namespace ASC.Files.Thirdparty.SharePoint
 
         public Task PublishFileAsync(string fileId, string folderId)
         {
-            return Notify.PublishAsync(new SharePointProviderCacheItem { FileKey = fileId, FolderKey = folderId }, CacheNotifyAction.Remove);
+            return Notify.PublishAsync(new SharePointProviderCacheItem { FileKey = fileId, FolderKey = folderId }, Common.Caching.CacheNotifyAction.Remove);
         }
 
         public async Task CreateFolderAsync(string id, string parentFolderId, Folder folder)

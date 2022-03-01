@@ -23,15 +23,6 @@
  *
 */
 
-
-using System.IO;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
-using ASC.Files.Core;
-
-using Microsoft.AspNetCore.Http;
-
 namespace ASC.Web.Files.ThirdPartyApp
 {
     public interface IThirdPartyApp

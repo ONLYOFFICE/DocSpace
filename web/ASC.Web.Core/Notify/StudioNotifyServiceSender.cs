@@ -23,25 +23,7 @@
  *
 */
 
-
-using System;
-using System.Globalization;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Core;
-using ASC.Core.Common;
-using ASC.Core.Configuration;
-using ASC.Notify.Model;
-using ASC.Notify.Patterns;
-using ASC.Notify.Recipients;
-using ASC.Web.Studio.Utility;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+using Constants = ASC.Core.Configuration.Constants;
 
 namespace ASC.Web.Studio.Core.Notify
 {
@@ -55,7 +37,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         public StudioNotifyServiceSender(IServiceProvider serviceProvider, IConfiguration configuration, ICacheNotify<NotifyItem> cache)
         {
-            cache.Subscribe(OnMessage, CacheNotifyAction.Any);
+            cache.Subscribe(this.OnMessage, Common.Caching.CacheNotifyAction.Any);
             ServiceProvider = serviceProvider;
             Configuration = configuration;
         }
@@ -144,7 +126,7 @@ namespace ASC.Web.Studio.Core.Notify
             {
                 WorkContext.RegisterSendMethod(SendMsgWhatsNew, "0 0 * ? * *"); // every hour
             }
-        }      
+        }
 
         public void SendSaasTariffLetters(DateTime scheduleDate)
         {

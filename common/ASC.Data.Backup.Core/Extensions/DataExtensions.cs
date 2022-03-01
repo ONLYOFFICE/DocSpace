@@ -23,31 +23,28 @@
  *
 */
 
+namespace ASC.Data.Backup.Extensions;
 
-using System.Data;
-using System.Data.Common;
-
-namespace ASC.Data.Backup.Extensions
+public static class DataExtensions
 {
-    public static class DataExtensions
+    public static DbCommand WithTimeout(this DbCommand command, int timeout)
     {
-        public static DbCommand WithTimeout(this DbCommand command, int timeout)
+        if (command != null)
         {
-            if (command != null)
-            {
-                command.CommandTimeout = timeout;
-            }
-            return command;
+            command.CommandTimeout = timeout;
         }
 
-        public static DbConnection Fix(this DbConnection connection)
+        return command;
+    }
+
+    public static DbConnection Fix(this DbConnection connection)
+    {
+        if (connection != null && connection.State != ConnectionState.Open)
         {
-            if (connection != null && connection.State != ConnectionState.Open)
-            {
-                connection.Close();
-                connection.Open();
-            }
-            return connection;
+            connection.Close();
+            connection.Open();
         }
+
+        return connection;
     }
 }

@@ -24,23 +24,13 @@
 */
 
 
-#region usings
+namespace ASC.Common.Security;
 
-using System.Collections.Generic;
-
-using ASC.Common.Security.Authorizing;
-
-#endregion
-
-namespace ASC.Common.Security
+public interface ISecurityObjectProvider
 {
-    public interface ISecurityObjectProvider
-    {
-        bool InheritSupported { get; }
+    bool InheritSupported { get; }
+    bool ObjectRolesSupported { get; }
 
-        bool ObjectRolesSupported { get; }
-        ISecurityObjectId InheritFrom(ISecurityObjectId objectId);
-
-        IEnumerable<IRole> GetObjectRoles(ISubject account, ISecurityObjectId objectId, SecurityCallContext callContext);
-    }
+    ISecurityObjectId InheritFrom(ISecurityObjectId objectId);
+    IEnumerable<IRole> GetObjectRoles(ISubject account, ISecurityObjectId objectId, SecurityCallContext callContext);
 }

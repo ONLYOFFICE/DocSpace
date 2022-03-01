@@ -23,22 +23,6 @@
  *
 */
 
-
-using System;
-using System.IO;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
-using System.Web;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Common;
-using ASC.Web.Studio.Core;
-
-using Newtonsoft.Json.Linq;
-
 namespace ASC.Web.Files.Utils
 {
     public class MailMergeTask : IDisposable
@@ -120,7 +104,7 @@ namespace ASC.Web.Files.Utils
 
             mailMergeTask.MessageId = responseCreate["response"]["id"].Value<int>();
             mailMergeTask.StreamId = responseCreate["response"]["streamId"].Value<string>();
-        }      
+        }
 
         private async Task<string> AttachToMailAsync(MailMergeTask mailMergeTask, IHttpClientFactory clientFactory)
         {

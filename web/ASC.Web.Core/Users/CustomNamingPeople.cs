@@ -23,17 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Xml;
-
-using ASC.Common;
-using ASC.Core.Common.Settings;
-using ASC.Web.Core.PublicResources;
-
 namespace ASC.Web.Core.Users
 {
     [Serializable]

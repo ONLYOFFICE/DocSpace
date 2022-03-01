@@ -23,54 +23,43 @@
  *
 */
 
+namespace ASC.FederatedLogin.LoginProviders;
 
-using System.Collections.Generic;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Core;
-using ASC.Core.Common.Configuration;
-
-using Microsoft.Extensions.Configuration;
-
-namespace ASC.FederatedLogin.LoginProviders
+[Scope]
+public class OneDriveLoginProvider : Consumer, IOAuthProvider
 {
-    [Scope]
-    public class OneDriveLoginProvider : Consumer, IOAuthProvider
+    private const string OneDriveOauthUrl = "https://login.live.com/";
+    public const string OneDriveApiUrl = "https://api.onedrive.com";
+
+    public static string OneDriveLoginProviderScopes => "wl.signin wl.skydrive_update wl.offline_access";
+    public string Scopes => OneDriveLoginProviderScopes;
+    public string CodeUrl => OneDriveOauthUrl + "oauth20_authorize.srf";
+    public string AccessTokenUrl => OneDriveOauthUrl + "oauth20_token.srf";
+    public string RedirectUri => this["skydriveRedirectUrl"];
+    public string ClientID => this["skydriveappkey"];
+    public string ClientSecret => this["skydriveappsecret"];
+
+    public bool IsEnabled
     {
-        private const string OneDriveOauthUrl = "https://login.live.com/";
-        public const string OneDriveApiUrl = "https://api.onedrive.com";
-
-        public static string OneDriveLoginProviderScopes { get { return "wl.signin wl.skydrive_update wl.offline_access"; } }
-        public string Scopes { get { return OneDriveLoginProviderScopes; } }
-        public string CodeUrl { get { return OneDriveOauthUrl + "oauth20_authorize.srf"; } }
-        public string AccessTokenUrl { get { return OneDriveOauthUrl + "oauth20_token.srf"; } }
-        public string RedirectUri { get { return this["skydriveRedirectUrl"]; } }
-        public string ClientID { get { return this["skydriveappkey"]; } }
-        public string ClientSecret { get { return this["skydriveappsecret"]; } }
-
-        public bool IsEnabled
+        get
         {
-            get
-            {
-                return !string.IsNullOrEmpty(ClientID) &&
-                       !string.IsNullOrEmpty(ClientSecret) &&
-                       !string.IsNullOrEmpty(RedirectUri);
-            }
+            return !string.IsNullOrEmpty(ClientID) &&
+                   !string.IsNullOrEmpty(ClientSecret) &&
+                   !string.IsNullOrEmpty(RedirectUri);
         }
+    }
 
-        public OneDriveLoginProvider() { }
+    public OneDriveLoginProvider() { }
 
-        public OneDriveLoginProvider(
-            TenantManager tenantManager,
-            CoreBaseSettings coreBaseSettings,
-            CoreSettings coreSettings,
-            IConfiguration configuration,
-            ICacheNotify<ConsumerCacheItem> cache,
-            ConsumerFactory consumerFactory,
-            string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, props, additional)
-        {
-        }
+    public OneDriveLoginProvider(
+        TenantManager tenantManager,
+        CoreBaseSettings coreBaseSettings,
+        CoreSettings coreSettings,
+        IConfiguration configuration,
+        ICacheNotify<ConsumerCacheItem> cache,
+        ConsumerFactory consumerFactory,
+        string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
+        : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, props, additional)
+    {
     }
 }

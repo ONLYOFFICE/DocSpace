@@ -1,16 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Net.Http;
-using System.Security.Authentication;
-using System.Text;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Web.Studio.Core;
-
-using Newtonsoft.Json.Linq;
-
-namespace ASC.Web.Core
+﻿namespace ASC.Web.Core
 {
     public class RecaptchaException : InvalidCredentialException
     {

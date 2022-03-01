@@ -23,28 +23,24 @@
  *
 */
 
+namespace ASC.ElasticSearch;
 
-using System;
-
-namespace ASC.ElasticSearch
+public enum Analyzer
 {
-    public enum Analyzer
-    {
-        standard,
-        whitespace,
-        uax_url_email
-    }
+    standard,
+    whitespace,
+    uax_url_email
+}
 
-    [Flags]
-    public enum CharFilter
-    {
-        io,
-        html
-    }
+[Flags]
+public enum CharFilter
+{
+    io,
+    html
+}
 
-    [Flags]
-    public enum Filter
-    {
-        lowercase
-    }
+[Flags]
+public enum Filter
+{
+    lowercase
 }

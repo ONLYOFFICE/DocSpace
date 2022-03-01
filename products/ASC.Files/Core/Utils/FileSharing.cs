@@ -23,29 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Users;
-using ASC.Files.Core;
-using ASC.Files.Core.Resources;
-using ASC.Files.Core.Security;
-using ASC.Files.Core.Services.NotifyService;
-using ASC.Web.Core.Files;
-using ASC.Web.Core.Users;
-using ASC.Web.Files.Classes;
-using ASC.Web.Files.Services.DocumentService;
-using ASC.Web.Files.Services.WCFService;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.Web.Files.Utils
 {
     [Scope]
@@ -130,7 +107,7 @@ namespace ASC.Web.Files.Utils
                 var listUsersId = new List<Guid>();
 
                 if (w.SubjectGroup)
-                    listUsersId = UserManager.GetUsersByGroup(w.SubjectId).Select(ui => ui.ID).ToList();
+                    listUsersId = UserManager.GetUsersByGroup(w.SubjectId).Select(ui => ui.Id).ToList();
                 else
                     listUsersId.Add(w.SubjectId);
                 listUsersId.Remove(AuthContext.CurrentAccount.ID);
@@ -329,7 +306,7 @@ namespace ASC.Web.Files.Utils
                 var title = u.DisplayUserName(false, DisplayUserSettingsHelper);
                 var share = r.Share;
 
-                if (u.ID == Constants.LostUser.ID)
+                if (u.Id == Constants.LostUser.Id)
                 {
                     var g = UserManager.GetGroupInfo(r.Subject);
                     isgroup = true;

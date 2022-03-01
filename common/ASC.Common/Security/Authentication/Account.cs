@@ -23,59 +23,40 @@
  *
 */
 
+namespace ASC.Common.Security.Authentication;
 
-using System;
-
-namespace ASC.Common.Security.Authentication
+[Serializable]
+public class Account : IAccount
 {
-    [Serializable]
-    public class Account : IAccount
+    public Guid ID { get; private set; }
+    public string Name { get; private set; }
+    public virtual bool IsAuthenticated { get; private set; }
+    public string AuthenticationType => "ASC";
+
+    public Account(Guid id, string name, bool authenticated)
     {
-        public Account(Guid id, string name, bool authenticated)
-        {
-            ID = id;
-            Name = name;
-            IsAuthenticated = authenticated;
-        }
+        ID = id;
+        Name = name;
+        IsAuthenticated = authenticated;
+    }
 
-        #region IAccount Members
+    public object Clone()
+    {
+        return MemberwiseClone();
+    }
 
-        public Guid ID { get; private set; }
+    public override bool Equals(object obj)
+    {
+        return obj is IAccount a && ID.Equals(a.ID);
+    }
 
-        public string Name { get; private set; }
+    public override int GetHashCode()
+    {
+        return ID.GetHashCode();
+    }
 
-
-        public object Clone()
-        {
-            return MemberwiseClone();
-        }
-
-        public string AuthenticationType
-        {
-            get { return "ASC"; }
-        }
-
-        public virtual bool IsAuthenticated
-        {
-            get;
-            private set;
-        }
-
-        #endregion
-
-        public override bool Equals(object obj)
-        {
-            return obj is IAccount a && ID.Equals(a.ID);
-        }
-
-        public override int GetHashCode()
-        {
-            return ID.GetHashCode();
-        }
-
-        public override string ToString()
-        {
-            return Name;
-        }
+    public override string ToString()
+    {
+        return Name;
     }
 }

@@ -23,47 +23,43 @@
  *
 */
 
+namespace ASC.Data.Backup.Utils;
 
-using System.IO;
-using System.Reflection;
-
-using ASC.Common.Utils;
-
-namespace ASC.Data.Backup.Utils
+internal static class PathHelper
 {
-    internal static class PathHelper
+    public static string ToRootedPath(string path)
     {
-        public static string ToRootedPath(string path)
+        return ToRootedPath(path, Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
+    }
+
+    public static string ToRootedPath(string path, string basePath)
+    {
+        if (!Path.IsPathRooted(path))
         {
-            return ToRootedPath(path, Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
+            path = CrossPlatform.PathCombine(basePath, path);
         }
 
-        public static string ToRootedPath(string path, string basePath)
+        return Path.GetFullPath(path);
+    }
+
+    public static string ToRootedConfigPath(string path)
+    {
+        if (!Path.HasExtension(path))
         {
-            if (!Path.IsPathRooted(path))
-            {
-                path = CrossPlatform.PathCombine(basePath, path);
-            }
-            return Path.GetFullPath(path);
+            path = CrossPlatform.PathCombine(path, "Web.config");
         }
 
-        public static string ToRootedConfigPath(string path)
-        {
-            if (!Path.HasExtension(path))
-            {
-                path = CrossPlatform.PathCombine(path, "Web.config");
-            }
-            return ToRootedPath(path);
-        }
+        return ToRootedPath(path);
+    }
 
-        public static string GetTempFileName(string tempDir)
+    public static string GetTempFileName(string tempDir)
+    {
+        string tempPath;
+        do
         {
-            string tempPath;
-            do
-            {
-                tempPath = CrossPlatform.PathCombine(tempDir, Path.GetRandomFileName());
-            } while (File.Exists(tempPath));
-            return tempPath;
-        }
+            tempPath = CrossPlatform.PathCombine(tempDir, Path.GetRandomFileName());
+        } while (File.Exists(tempPath));
+
+        return tempPath;
     }
 }

@@ -23,30 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Security;
-using System.Security.Principal;
-using System.Threading;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Security.Authentication;
-using ASC.Common.Security.Authorizing;
-using ASC.Common.Threading;
-using ASC.Core;
-using ASC.Core.Tenants;
-using ASC.Files.Core;
-using ASC.Files.Core.Resources;
-using ASC.Files.Core.Security;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
 namespace ASC.Web.Files.Services.WCFService.FileOperations
 {
     public abstract class FileOperation : DistributedTask

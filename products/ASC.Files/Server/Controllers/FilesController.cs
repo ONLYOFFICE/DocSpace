@@ -23,48 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
-using ASC.Api.Core;
-using ASC.Api.Utils;
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Common.Configuration;
-using ASC.Core.Users;
-using ASC.FederatedLogin.Helpers;
-using ASC.FederatedLogin.LoginProviders;
-using ASC.Files.Core;
-using ASC.Files.Core.Model;
-using ASC.Files.Helpers;
-using ASC.Files.Model;
-using ASC.MessagingSystem;
-using ASC.Web.Api.Routing;
-using ASC.Web.Core.Files;
-using ASC.Web.Files.Classes;
-using ASC.Web.Files.Configuration;
-using ASC.Web.Files.Core.Compress;
-using ASC.Web.Files.Helpers;
-using ASC.Web.Files.Services.DocumentService;
-using ASC.Web.Files.Services.WCFService;
-using ASC.Web.Files.Services.WCFService.FileOperations;
-using ASC.Web.Files.Utils;
-using ASC.Web.Studio.Core;
-using ASC.Web.Studio.Utility;
-
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
-
-using Newtonsoft.Json.Linq;
-
 namespace ASC.Api.Documents
 {
     /// <summary>
@@ -227,7 +185,7 @@ namespace ASC.Api.Documents
             foreach (var folder in folders)
             {
                 result.Add(await FilesControllerHelperInt.GetFolderAsync(folder, userIdOrGroupId, filterType, withsubfolders));
-            }
+        }
 
             return result;
         }
@@ -1079,7 +1037,7 @@ namespace ASC.Api.Documents
             await foreach (var e in result)
             {
                 yield return await FilesControllerHelperInt.GetFileEntryWrapperAsync(e);
-            }
+        }
         }
 
         /// <summary>
@@ -1414,7 +1372,7 @@ namespace ASC.Api.Documents
             foreach (var e in tasks)
             {
                 yield return await FileOperationWraperHelper.GetAsync(e);
-            }
+        }
         }
 
 
@@ -1432,7 +1390,7 @@ namespace ASC.Api.Documents
             foreach (var e in FileStorageService.GetTasksStatuses())
             {
                 result.Add(await FileOperationWraperHelper.GetAsync(e));
-            }
+        }
 
             return result;
         }
@@ -1477,7 +1435,7 @@ namespace ASC.Api.Documents
             foreach (var e in tasks)
             {
                 yield return await FileOperationWraperHelper.GetAsync(e);
-            }
+        }
         }
 
         [Update("fileops/delete")]
@@ -1489,7 +1447,7 @@ namespace ASC.Api.Documents
             foreach (var e in tasks)
             {
                 yield return await FileOperationWraperHelper.GetAsync(e);
-            }
+        }
         }
 
         /// <summary>
@@ -2000,7 +1958,7 @@ namespace ASC.Api.Documents
             foreach (var r in thirdpartyFolders)
             {
                 result.Add(await FolderWrapperHelper.GetAsync(r));
-            }
+        }
             return result;
         }
 

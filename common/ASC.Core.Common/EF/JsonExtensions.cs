@@ -1,13 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore.Query;
+﻿namespace ASC.Core.Common.EF;
 
-namespace ASC.Core.Common.EF
+public static class JsonExtensions
 {
-    public static class JsonExtensions
+    public static string JsonValue(string column, [NotParameterized] string path)
     {
-        public static string JsonValue(string column, [NotParameterized] string path)
-        {
-            //not using
-            return column + path;
-        }
+        //not using
+        return column + path;
     }
 }

@@ -23,19 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Files.Core;
-using ASC.Files.Core.Data;
-using ASC.Files.Core.Thirdparty;
-
 namespace ASC.Files.Thirdparty.ProviderDao
 {
     [Scope]
@@ -139,10 +126,10 @@ namespace ASC.Files.Thirdparty.ProviderDao
                 result = result.Concat(matchedIds.GroupBy(selectorLocal.GetIdCode)
                                                 .ToAsyncEnumerable()
                                                 .SelectMany(matchedId =>
-                                                 {
-                                                     var fileDao = selectorLocal.GetFileDao(matchedId.FirstOrDefault());
+                                                {
+                                                    var fileDao = selectorLocal.GetFileDao(matchedId.FirstOrDefault());
                                                      return fileDao.GetFilesAsync(matchedId.Select(selectorLocal.ConvertId).ToList());
-                                                 }
+                                                }
                     )
                     .Where(r => r != null));
             }
@@ -163,14 +150,14 @@ namespace ASC.Files.Thirdparty.ProviderDao
 
                 result = result.Concat(matchedIds.GroupBy(selectorLocal.GetIdCode)
                                        .ToAsyncEnumerable()
-                                       .SelectMany(matchedId =>
-                                       {
-                                           var fileDao = selectorLocal.GetFileDao(matchedId.FirstOrDefault());
+                                        .SelectMany(matchedId =>
+                                        {
+                                            var fileDao = selectorLocal.GetFileDao(matchedId.FirstOrDefault());
                                            var result = fileDao.GetFilesFilteredAsync(matchedId.Select(selectorLocal.ConvertId).ToArray(),
-                                                   filterType, subjectGroup, subjectID, searchText, searchInContent);
+                                                    filterType, subjectGroup, subjectID, searchText, searchInContent);
                                            return result;
-                                       })
-                                       .Where(r => r != null));
+                                        })
+                                        .Where(r => r != null));
             }
 
             return result;
@@ -197,7 +184,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
             await foreach (var r in result.ConfigureAwait(false))
             {
                 yield return r;
-            }
+        }
         }
 
         public override Task<Stream> GetFileStreamAsync(File<string> file)

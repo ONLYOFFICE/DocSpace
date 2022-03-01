@@ -23,32 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Security;
-using System.Threading;
-using System.Threading.Tasks;
-
-using ASC.Api.Core;
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Users;
-using ASC.Files.Core;
-using ASC.Files.Core.Resources;
-using ASC.Files.Core.Security;
-using ASC.MessagingSystem;
-using ASC.Web.Core.Files;
-using ASC.Web.Files.Classes;
-using ASC.Web.Files.Helpers;
-using ASC.Web.Studio.Core;
-using ASC.Web.Studio.UserControls.Statistics;
-using ASC.Web.Studio.Utility;
-
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ASC.Web.Files.Utils
 {
     [Scope]
@@ -197,7 +171,7 @@ namespace ASC.Web.Files.Utils
                    && !FileTracker.IsEditing(file.ID)
                    && file.RootFolderType != FolderType.TRASH
                    && !file.Encrypted;
-        }      
+        }
 
         private async Task<T> GetFolderIdAsync<T>(T folderId, IList<string> relativePath)
         {
@@ -273,7 +247,7 @@ namespace ASC.Web.Files.Utils
 
             uploadSession.Expired = uploadSession.Created + ChunkedUploadSessionHolder.SlidingExpiration;
             uploadSession.Location = FilesLinkUtility.GetUploadChunkLocationUrl(uploadSession.Id);
-            uploadSession.TenantId = TenantManager.GetCurrentTenant().TenantId;
+            uploadSession.TenantId = TenantManager.GetCurrentTenant().Id;
             uploadSession.UserId = AuthContext.CurrentAccount.ID;
             uploadSession.FolderId = folderId;
             uploadSession.CultureName = Thread.CurrentThread.CurrentUICulture.Name;

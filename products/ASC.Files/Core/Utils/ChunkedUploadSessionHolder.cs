@@ -23,20 +23,6 @@
  *
 */
 
-
-using System;
-using System.IO;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core.ChunkedUploader;
-using ASC.Files.Core;
-using ASC.Web.Files.Classes;
-using ASC.Web.Studio.Core;
-
-using Microsoft.Extensions.Options;
-
 namespace ASC.Web.Files.Utils
 {
     [Scope]
@@ -88,7 +74,7 @@ namespace ASC.Web.Files.Utils
         public async Task<ChunkedUploadSession<T>> GetSessionAsync<T>(string sessionId)
         {
             using var stream = await CommonSessionHolder(false).GetStreamAsync(sessionId);
-            var chunkedUploadSession = ChunkedUploadSession<T>.Deserialize(stream, FileHelper);
+            var chunkedUploadSession =  ChunkedUploadSession<T>.Deserialize(stream, FileHelper);
             return chunkedUploadSession;
         }
 

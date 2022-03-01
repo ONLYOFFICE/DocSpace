@@ -1,43 +1,31 @@
-﻿using System;
+﻿namespace ASC.Common.Caching;
 
-using Confluent.Kafka;
-
-using Google.Protobuf;
-
-namespace ASC.Common.Caching
+public class ProtobufSerializer<T> : ISerializer<T> where T : IMessage<T>, new()
 {
-    public class ProtobufSerializer<T> : ISerializer<T> where T : IMessage<T>, new()
+    public byte[] Serialize(T data, SerializationContext context)
     {
-        public byte[] Serialize(T data, SerializationContext context)
-        {
-            return data.ToByteArray();
-        }
+        return data.ToByteArray();
+    }
+}
+
+public class ProtobufDeserializer<T> : IDeserializer<T> where T : IMessage<T>, new()
+{
+    private readonly MessageParser<T> _parser;
+
+    public ProtobufDeserializer()
+    {
+        _parser = new MessageParser<T>(() => new T());
     }
 
-    public class ProtobufDeserializer<T> : IDeserializer<T> where T : IMessage<T>, new()
+    public T Deserialize(ReadOnlySpan<byte> data, bool isNull, SerializationContext context)
     {
-        private readonly MessageParser<T> parser;
-
-        public ProtobufDeserializer()
-        {
-            parser = new MessageParser<T>(() => new T());
-        }
-
-        public T Deserialize(ReadOnlySpan<byte> data, bool isNull, SerializationContext context)
-        {
-            return parser.ParseFrom(data.ToArray());
-        }
+        return _parser.ParseFrom(data.ToArray());
     }
+}
 
-    public static class GuidExtension
-    {
-        public static ByteString ToByteString(this Guid id)
-        {
-            return ByteString.CopyFrom(id.ToByteArray());
-        }
-        public static Guid FromByteString(this ByteString id)
-        {
-            return new Guid(id.ToByteArray());
-        }
-    }
+public static class GuidExtension
+{
+    public static ByteString ToByteString(this Guid id) => ByteString.CopyFrom(id.ToByteArray());
+
+    public static Guid FromByteString(this ByteString id) => new Guid(id.ToByteArray());
 }

@@ -23,19 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Files.Core;
-using ASC.Files.Core.Security;
-using ASC.Web.Files.Services.WCFService;
-
 namespace ASC.Api.Documents
 {
     /// <summary>
@@ -134,34 +121,34 @@ namespace ASC.Api.Documents
             var fileEntries = folderItems.Entries.Where(r => r.FileEntryType == FileEntryType.File);
             foreach (var r in fileEntries)
             {
-                FileEntryWrapper wrapper = null;
-                if (r is File<int> fol1)
-                {
+                    FileEntryWrapper wrapper = null;
+                    if (r is File<int> fol1)
+                    {
                     wrapper = await FileWrapperHelper.GetAsync(fol1, foldersIntWithRights);
-                }
-                if (r is File<string> fol2)
-                {
+                    }
+                    if (r is File<string> fol2)
+                    {
                     wrapper = await FileWrapperHelper.GetAsync(fol2, foldersStringWithRights);
-                }
+                    }
 
                 files.Add(wrapper);
-            }
+                }
 
             var folderEntries = folderItems.Entries.Where(r => r.FileEntryType == FileEntryType.Folder);
             foreach (var r in folderEntries)
-            {
-                FileEntryWrapper wrapper = null;
-                if (r is Folder<int> fol1)
                 {
+                    FileEntryWrapper wrapper = null;
+                    if (r is Folder<int> fol1)
+                    {
                     wrapper = await FolderWrapperHelper.GetAsync(fol1, foldersIntWithRights);
-                }
-                if (r is Folder<string> fol2)
-                {
+                    }
+                    if (r is Folder<string> fol2)
+                    {
                     wrapper = await FolderWrapperHelper.GetAsync(fol2, foldersStringWithRights);
-                }
+                    }
 
                 folders.Add(wrapper);
-            }
+                }
 
 
             var result = new FolderContentWrapper<T>
@@ -185,16 +172,16 @@ namespace ASC.Api.Documents
                 var ids = folderItems.Entries.OfType<FileEntry<T1>>().Select(r => r.FolderID).Distinct();
                 if (ids.Any())
                 {
-                    var folderDao = DaoFactory.GetFolderDao<T1>();
+                var folderDao = DaoFactory.GetFolderDao<T1>();
                     var folders = await folderDao.GetFoldersAsync(ids).ToListAsync();
                     return await FileSecurity.CanReadAsync(folders);
-                }
-                return new List<Tuple<FileEntry<T1>, bool>>();
             }
+                return new List<Tuple<FileEntry<T1>, bool>>();
         }
     }
+    }
 
-    public class FileEntryWrapperConverter : JsonConverter<FileEntryWrapper>
+    public class FileEntryWrapperConverter : System.Text.Json.Serialization.JsonConverter<FileEntryWrapper>
     {
         public override FileEntryWrapper Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {

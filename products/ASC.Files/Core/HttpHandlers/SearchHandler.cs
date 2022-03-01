@@ -23,23 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-using ASC.Files.Core;
-using ASC.Files.Core.Resources;
-using ASC.Files.Core.Security;
-using ASC.Web.Core.Files;
-using ASC.Web.Core.ModuleManagement.Common;
-using ASC.Web.Core.Utility.Skins;
-using ASC.Web.Files.Classes;
-using ASC.Web.Files.Helpers;
-using ASC.Web.Files.Utils;
-using ASC.Web.Studio.Core;
-
 namespace ASC.Web.Files.Configuration
 {
     public class SearchHandler

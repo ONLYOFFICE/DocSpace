@@ -24,44 +24,8 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Security;
-using System.Text.Json.Serialization;
+using Document = DocuSign.eSign.Model.Document;
 using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common;
-using ASC.Core.Common.Configuration;
-using ASC.Core.Users;
-using ASC.FederatedLogin;
-using ASC.FederatedLogin.Helpers;
-using ASC.FederatedLogin.LoginProviders;
-using ASC.Files.Core;
-using ASC.Files.Core.Resources;
-using ASC.Files.Core.Security;
-using ASC.MessagingSystem;
-using ASC.Web.Core.Files;
-using ASC.Web.Core.Users;
-using ASC.Web.Files.Classes;
-using ASC.Web.Files.HttpHandlers;
-using ASC.Web.Files.ThirdPartyApp;
-using ASC.Web.Files.Utils;
-using ASC.Web.Studio.Core;
-
-using DocuSign.eSign.Api;
-using DocuSign.eSign.Client;
-using DocuSign.eSign.Model;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Primitives;
-
-using Newtonsoft.Json;
 
 namespace ASC.Web.Files.Helpers
 {
@@ -332,7 +296,7 @@ namespace ASC.Web.Files.Helpers
                         {
                             Email = user.Email,
                             Name = user.DisplayUserName(false, DisplayUserSettingsHelper),
-                            RecipientId = user.ID.ToString(),
+                            RecipientId = user.Id.ToString(),
                         });
                     }
                     catch (Exception ex)

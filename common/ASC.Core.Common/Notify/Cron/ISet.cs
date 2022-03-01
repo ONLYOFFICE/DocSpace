@@ -24,29 +24,12 @@
 */
 
 
-#region usings
 
-using System.Collections;
+namespace ASC.Notify.Cron;
 
-#endregion
-
-namespace ASC.Notify.Cron
+public interface ISet : IList
 {
-
-    #region
-
-    #endregion
-
-    public interface ISet : IList
-    {
-        #region Methods
-
-        new bool Add(object obj);
-
-        bool AddAll(ICollection c);
-
-        object First();
-
-        #endregion
-    }
+    bool AddAll(ICollection c);
+    new bool Add(object obj);
+    object First();
 }

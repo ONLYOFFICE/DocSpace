@@ -23,32 +23,7 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Security;
-using System.Threading.Tasks;
-
-using AppLimit.CloudComputing.SharpBox;
-using AppLimit.CloudComputing.SharpBox.Exceptions;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common.EF;
-using ASC.Core.Tenants;
-using ASC.Files.Core;
-using ASC.Files.Core.EF;
-using ASC.Files.Core.Resources;
-using ASC.Files.Core.Thirdparty;
-using ASC.Web.Core.Files;
-using ASC.Web.Studio.Core;
-
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+using File = System.IO.File;
 
 namespace ASC.Files.Thirdparty.Sharpbox
 {
@@ -177,7 +152,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             var folder = GetFolderById(parentId).AsEnumerable();
 
             return Task.FromResult(folder
-                    .Where(x => !(x is ICloudDirectoryEntry))
+                .Where(x => !(x is ICloudDirectoryEntry))
                     .Select(x => MakeId(x)).ToList());
         }
 
@@ -250,7 +225,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             foreach (var f in files)
             {
                 yield return f;
-            }
+        }
         }
 
         public async Task<Stream> GetFileStreamAsync(File<string> file, long offset)

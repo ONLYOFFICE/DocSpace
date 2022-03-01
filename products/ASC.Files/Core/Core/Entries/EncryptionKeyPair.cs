@@ -23,22 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Users;
-using ASC.Files.Core;
-using ASC.Files.Core.Resources;
-using ASC.Files.Core.Security;
-using ASC.Web.Files.Services.WCFService;
-using ASC.Web.Studio.Core;
-
 namespace ASC.Web.Files.Core.Entries
 {
     public class EncryptionKeyPair
@@ -83,11 +67,11 @@ namespace ASC.Web.Files.Core.Entries
             {
                 PrivateKeyEnc = privateKeyEnc,
                 PublicKey = publicKey,
-                UserId = user.ID,
+                UserId = user.Id,
             };
 
             var keyPairString = JsonSerializer.Serialize(keyPair);
-            EncryptionLoginProvider.SetKeys(user.ID, keyPairString);
+            EncryptionLoginProvider.SetKeys(user.Id, keyPairString);
         }
 
         public EncryptionKeyPair GetKeyPair()

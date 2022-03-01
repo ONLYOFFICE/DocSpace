@@ -23,19 +23,6 @@
  *
 */
 
-
-using System;
-using System.IO;
-using System.Linq;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Core;
-using ASC.Core.Common.Settings;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-
 namespace ASC.Web.Core.WhiteLabel
 {
     [Scope]
@@ -43,7 +30,7 @@ namespace ASC.Web.Core.WhiteLabel
     {
         private string CacheKey
         {
-            get { return "letterlogodata" + TenantManager.GetCurrentTenant().TenantId; }
+            get { return "letterlogodata" + TenantManager.GetCurrentTenant().Id; }
         }
 
         public bool WhiteLabelEnabled
@@ -176,7 +163,7 @@ namespace ASC.Web.Core.WhiteLabel
         {
             get
             {
-                return TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().TenantId).WhiteLabel;
+                return TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().Id).WhiteLabel;
             }
         }
 
@@ -216,7 +203,7 @@ namespace ASC.Web.Core.WhiteLabel
 
         public void RemoveMailLogoDataFromCache()
         {
-            CacheNotify.Publish(new TenantLogoCacheItem() { Key = CacheKey }, CacheNotifyAction.Remove);
+            CacheNotify.Publish(new TenantLogoCacheItem() { Key = CacheKey }, Common.Caching.CacheNotifyAction.Remove);
         }
     }
 }

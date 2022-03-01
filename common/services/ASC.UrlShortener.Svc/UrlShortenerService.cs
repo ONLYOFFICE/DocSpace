@@ -23,22 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Module;
-using ASC.Common.Utils;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
-
-
 namespace ASC.UrlShortener.Svc
 {
     [Singletone]

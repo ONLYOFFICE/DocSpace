@@ -24,20 +24,6 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.FederatedLogin;
-
-using Box.V2;
-using Box.V2.Auth;
-using Box.V2.Config;
-using Box.V2.Models;
-
 using BoxSDK = Box.V2;
 
 namespace ASC.Files.Thirdparty.Box

@@ -23,10 +23,6 @@
  *
 */
 
-using System;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-
 namespace ASC.Files.Core.Security
 {
     public enum FileShare
@@ -42,11 +38,11 @@ namespace ASC.Files.Core.Security
         CustomFilter
     }
 
-    public class FileShareConverter : JsonConverter<FileShare>
+    public class FileShareConverter : System.Text.Json.Serialization.JsonConverter<FileShare>
     {
         public override FileShare Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            if (reader.TokenType == JsonTokenType.Number && reader.TryGetInt32(out var result))
+            if (reader.TokenType == System.Text.Json.JsonTokenType.Number && reader.TryGetInt32(out var result))
             {
                 return (FileShare)result;
             }

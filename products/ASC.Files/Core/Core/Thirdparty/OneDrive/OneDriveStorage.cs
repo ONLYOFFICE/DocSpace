@@ -23,27 +23,7 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Core.Common.Configuration;
-using ASC.FederatedLogin;
-using ASC.FederatedLogin.Helpers;
-using ASC.FederatedLogin.LoginProviders;
-
-using Microsoft.Graph;
-using Microsoft.OneDrive.Sdk;
-
-using Newtonsoft.Json.Linq;
+using Folder = Microsoft.OneDrive.Sdk.Folder;
 
 namespace ASC.Files.Thirdparty.OneDrive
 {

@@ -23,19 +23,6 @@
  *
 */
 
-
-using System.Threading.Tasks;
-
-using ASC.Api.Core;
-using ASC.Api.Utils;
-using ASC.Common;
-using ASC.Files.Core;
-using ASC.Files.Core.Security;
-using ASC.Web.Api.Models;
-using ASC.Web.Files.Utils;
-
-using FileShare = ASC.Files.Core.Security.FileShare;
-
 namespace ASC.Api.Documents
 {
     /// <summary>

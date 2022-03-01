@@ -23,20 +23,6 @@
  *
 */
 
-
-using System;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Tenants;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-
 namespace ASC.Web.Core.Sms
 {
     [Scope]
@@ -77,7 +63,7 @@ namespace ASC.Web.Core.Sms
             if ("log".Equals(Configuration["core:notify:postman"], StringComparison.InvariantCultureIgnoreCase))
             {
                 var tenant = TenantManager.GetCurrentTenant(false);
-                var tenantId = tenant == null ? Tenant.DEFAULT_TENANT : tenant.TenantId;
+                var tenantId = tenant == null ? Tenant.DefaultTenant : tenant.Id;
 
                 Log.InfoFormat("Tenant {0} send sms to phoneNumber {1} Message: {2}", tenantId, number, message);
                 return Task.FromResult(false);

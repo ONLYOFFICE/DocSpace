@@ -24,38 +24,6 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Security;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core.Common.Configuration;
-using ASC.FederatedLogin;
-using ASC.FederatedLogin.Helpers;
-using ASC.FederatedLogin.LoginProviders;
-using ASC.Web.Core.Files;
-using ASC.Web.Files.Core;
-
-using Google;
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Auth.OAuth2.Flows;
-using Google.Apis.Auth.OAuth2.Responses;
-using Google.Apis.Drive.v3;
-using Google.Apis.Services;
-
-using Microsoft.Extensions.Options;
-
-using Newtonsoft.Json.Linq;
-
 using DriveFile = Google.Apis.Drive.v3.Data.File;
 using MimeMapping = ASC.Common.Web.MimeMapping;
 
@@ -575,14 +543,14 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                 /*if (exception. != null && exception.Response.Headers.AllKeys.Contains("Range")) if (exception.Status == WebExceptionStatus.ProtocolError || exception.Status == WebExceptionStatus.UnknownError) //Status is UnknownError (unix)
                 {
                     response = exception.Response;
-                    }
-                    else if (exception.Message.Equals("Invalid status code: 308", StringComparison.InvariantCulture)) //response is null (unix)
-                    {
-                        response = null;
-                    }
-                    else
-                    {
-                        throw;
+                }
+                else if (exception.Message.Equals("Invalid status code: 308", StringComparison.InvariantCulture)) //response is null (unix)
+                {
+                    response = null;
+                }
+                else
+                {
+                    throw;
                 }*/
                 throw exception;
             }

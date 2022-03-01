@@ -23,22 +23,14 @@
  *
 */
 
-using ASC.Common;
-using ASC.Core.Notify;
+namespace ASC.Notify.Recipients;
 
-namespace ASC.Notify.Recipients
+[Scope(typeof(RecipientProviderImpl))]
+public interface IRecipientProvider
 {
-    [Scope(typeof(RecipientProviderImpl))]
-    public interface IRecipientProvider
-    {
-        IRecipient GetRecipient(string id);
-
-        IRecipient[] GetGroupEntries(IRecipientsGroup group);
-
-        IRecipientsGroup[] GetGroups(IRecipient recipient);
-
-        string[] GetRecipientAddresses(IDirectRecipient recipient, string senderName);
-
-        IDirectRecipient FilterRecipientAddresses(IDirectRecipient recipient);
-    }
+    IDirectRecipient FilterRecipientAddresses(IDirectRecipient recipient);
+    IRecipient GetRecipient(string id);
+    IRecipient[] GetGroupEntries(IRecipientsGroup group);
+    IRecipientsGroup[] GetGroups(IRecipient recipient);
+    string[] GetRecipientAddresses(IDirectRecipient recipient, string senderName);
 }

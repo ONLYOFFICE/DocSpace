@@ -23,10 +23,6 @@
  *
 */
 
-using ASC.Common;
-using ASC.Web.Core.Files;
-using ASC.Web.Files.Utils;
-
 namespace ASC.Files.Core
 {
     [Scope]

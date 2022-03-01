@@ -23,19 +23,15 @@
  *
 */
 
+namespace ASC.Common.Threading.Progress;
 
-using System;
-
-namespace ASC.Common.Threading.Progress
+public interface IProgressItem : ICloneable
 {
-    public interface IProgressItem : ICloneable
-    {
-        string Id { get; }
-        DistributedTaskStatus Status { get; set; }
-        object Error { get; set; }
-        double Percentage { get; set; }
-        bool IsCompleted { get; set; }
+    string Id { get; }
+    DistributedTaskStatus Status { get; set; }
+    object Error { get; set; }
+    double Percentage { get; set; }
+    bool IsCompleted { get; set; }
 
-        void RunJob();
-    }
+    void RunJob();
 }

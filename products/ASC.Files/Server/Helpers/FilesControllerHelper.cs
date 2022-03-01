@@ -1,43 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Text.Json;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Web;
-
-using ASC.Api.Core;
-using ASC.Api.Documents;
-using ASC.Api.Utils;
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Web;
-using ASC.Core;
-using ASC.Core.Common.Settings;
-using ASC.FederatedLogin.Helpers;
-using ASC.Files.Core;
-using ASC.Files.Core.Model;
-using ASC.Files.Model;
-using ASC.Web.Core.Files;
-using ASC.Web.Core.Users;
-using ASC.Web.Files.Classes;
-using ASC.Web.Files.Core.Entries;
-using ASC.Web.Files.Services.DocumentService;
-using ASC.Web.Files.Services.WCFService;
-using ASC.Web.Files.Utils;
-using ASC.Web.Studio.Core;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
-using Newtonsoft.Json.Linq;
-
-using static ASC.Api.Documents.FilesController;
-
+﻿
 using FileShare = ASC.Files.Core.Security.FileShare;
 using MimeMapping = ASC.Common.Web.MimeMapping;
 using SortedByType = ASC.Files.Core.SortedByType;
@@ -175,7 +136,7 @@ namespace ASC.Files.Helpers
                 foreach (var postedFile in uploadModel.Files)
                 {
                     result.Add(await InsertFileAsync(folderId, postedFile.OpenReadStream(), postedFile.FileName, uploadModel.CreateNewIfExist, uploadModel.KeepConvertStatus));
-                }
+            }
 
                 return result;
             }
@@ -291,7 +252,7 @@ namespace ASC.Files.Helpers
                 };
             }
 
-            var createSessionUrl = FilesLinkUtility.GetInitiateUploadSessionUrl(TenantManager.GetCurrentTenant().TenantId, file.FolderID, file.ID, file.Title, file.ContentLength, encrypted, SecurityContext);
+            var createSessionUrl = FilesLinkUtility.GetInitiateUploadSessionUrl(TenantManager.GetCurrentTenant().Id, file.FolderID, file.ID, file.Title, file.ContentLength, encrypted, SecurityContext);
 
             var httpClient = ClientFactory.CreateClient();
 
@@ -389,7 +350,7 @@ namespace ASC.Files.Helpers
             foreach (var e in breadCrumbs)
             {
                 yield return await GetFileEntryWrapperAsync(e);
-            }
+        }
         }
 
         public async Task<FileWrapper<T>> GetFileInfoAsync(T fileId, int version = -1)
@@ -434,7 +395,7 @@ namespace ASC.Files.Helpers
             foreach (var e in newItems)
             {
                 result.Add(await GetFileEntryWrapperAsync(e));
-            }
+        }
 
             return result;
         }
@@ -457,7 +418,7 @@ namespace ASC.Files.Helpers
             foreach (var e in FileStorageService.DeleteFile("delete", fileId, false, deleteAfter, immediately))
             {
                 result.Add(await FileOperationWraperHelper.GetAsync(e));
-            }
+        }
 
             return result;
         }
@@ -502,7 +463,7 @@ namespace ASC.Files.Helpers
                     }
                 }
                 yield return o;
-            }
+        }
         }
 
         public Task<string> CheckFillFormDraftAsync(T fileId, int version, string doc, bool editPossible, bool view)
@@ -517,7 +478,7 @@ namespace ASC.Files.Helpers
             foreach (var e in FileStorageService.DeleteFolder("delete", folderId, false, deleteAfter, immediately))
             {
                 result.Add(await FileOperationWraperHelper.GetAsync(e));
-            }
+        }
 
             return result;
         }
@@ -543,7 +504,7 @@ namespace ASC.Files.Helpers
             foreach (var e in entries)
             {
                 yield return await GetFileEntryWrapperAsync(e);
-            }
+        }
         }
 
         public async Task<IEnumerable<FileOperationWraper>> MoveBatchItemsAsync(BatchModel batchModel)
@@ -553,7 +514,7 @@ namespace ASC.Files.Helpers
             foreach (var e in FileStorageService.MoveOrCopyItems(batchModel.FolderIds.ToList(), batchModel.FileIds.ToList(), batchModel.DestFolderId, batchModel.ConflictResolveType, false, batchModel.DeleteAfter))
             {
                 result.Add(await FileOperationWraperHelper.GetAsync(e));
-            }
+        }
 
             return result;
         }
@@ -565,7 +526,7 @@ namespace ASC.Files.Helpers
             foreach (var e in FileStorageService.MoveOrCopyItems(batchModel.FolderIds.ToList(), batchModel.FileIds.ToList(), batchModel.DestFolderId, batchModel.ConflictResolveType, true, batchModel.DeleteAfter))
             {
                 result.Add(await FileOperationWraperHelper.GetAsync(e));
-            }
+        }
 
             return result;
         }
@@ -577,7 +538,7 @@ namespace ASC.Files.Helpers
             foreach (var e in FileStorageService.MarkAsRead(model.FolderIds.ToList(), model.FileIds.ToList()))
             {
                 result.Add(await FileOperationWraperHelper.GetAsync(e));
-            }
+        }
 
             return result;
         }
@@ -589,7 +550,7 @@ namespace ASC.Files.Helpers
             foreach (var e in FileStorageService.TerminateTasks())
             {
                 result.Add(await FileOperationWraperHelper.GetAsync(e));
-            }
+        }
 
             return result;
         }
@@ -601,7 +562,7 @@ namespace ASC.Files.Helpers
             foreach (var e in FileStorageService.GetTasksStatuses())
             {
                 result.Add(await FileOperationWraperHelper.GetAsync(e));
-            }
+        }
 
             return result;
         }
@@ -631,7 +592,7 @@ namespace ASC.Files.Helpers
             foreach (var e in FileStorageService.BulkDownload(folders, files))
             {
                 result.Add(await FileOperationWraperHelper.GetAsync(e));
-            }
+        }
 
             return result;
         }
@@ -644,7 +605,7 @@ namespace ASC.Files.Helpers
             foreach (var e in emptyTrash)
             {
                 result.Add(await FileOperationWraperHelper.GetAsync(e));
-            }
+        }
 
             return result;
         }
@@ -657,7 +618,7 @@ namespace ASC.Files.Helpers
             foreach (var e in files)
             {
                 result.Add(await FileWrapperHelper.GetAsync(e));
-            }
+        }
 
             return result;
         }
@@ -672,7 +633,7 @@ namespace ASC.Files.Helpers
             foreach (var e in history)
             {
                 result.Add(await FileWrapperHelper.GetAsync(e));
-            }
+        }
 
             return result;
         }
@@ -726,7 +687,7 @@ namespace ASC.Files.Helpers
             foreach (var folder in folders)
             {
                 yield return await GetFileEntryWrapperAsync(folder);
-            }
+        }
         }
 
         public async Task<IEnumerable<FileShareWrapper>> GetSecurityInfoAsync(IEnumerable<T> fileIds, IEnumerable<T> folderIds)

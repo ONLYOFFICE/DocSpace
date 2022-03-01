@@ -23,13 +23,6 @@
  *
 */
 
-
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Web.Core;
-using ASC.Web.Studio.Utility;
-
 namespace ASC.Core.Users
 {
     public static class StudioUserInfoExtension
@@ -43,7 +36,7 @@ namespace ASC.Core.Users
         {
             var products = webItemSecurity.WebItemManager.GetItemsAll().Where(i => i is IProduct || i.ID == WebItemManager.MailProductID);
 
-            return (from product in products where webItemSecurity.IsProductAdministrator(product.ID, ui.ID) select product.ProductClassName).ToList();
+            return (from product in products where webItemSecurity.IsProductAdministrator(product.ID, ui.Id) select product.ProductClassName).ToList();
         }
     }
 }

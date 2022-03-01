@@ -23,18 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Files.Core;
-using ASC.Files.Core.Data;
-using ASC.Files.Core.Thirdparty;
-
 namespace ASC.Files.Thirdparty.ProviderDao
 {
     [Scope]

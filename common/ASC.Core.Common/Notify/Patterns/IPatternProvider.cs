@@ -23,20 +23,11 @@
  *
 */
 
+namespace ASC.Notify.Patterns;
 
-using System;
-
-using ASC.Notify.Engine;
-using ASC.Notify.Model;
-
-namespace ASC.Notify.Patterns
+public interface IPatternProvider
 {
-    public interface IPatternProvider
-    {
-        Func<INotifyAction, string, NotifyRequest, IPattern> GetPatternMethod { get; set; }
-
-        IPattern GetPattern(INotifyAction action, string senderName);
-
-        IPatternFormatter GetFormatter(IPattern pattern);
-    }
+    Func<INotifyAction, string, NotifyRequest, IPattern> GetPatternMethod { get; set; }
+    IPattern GetPattern(INotifyAction action, string senderName);
+    IPatternFormatter GetFormatter(IPattern pattern);
 }

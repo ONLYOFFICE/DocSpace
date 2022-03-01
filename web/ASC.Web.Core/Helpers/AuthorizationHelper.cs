@@ -23,16 +23,6 @@
  *
 */
 
-
-using System;
-using System.Text;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Security.Cryptography;
-
-using Microsoft.AspNetCore.Http;
-
 namespace ASC.Web.Core.Helpers
 {
     [Scope]
@@ -74,7 +64,7 @@ namespace ASC.Web.Core.Helpers
                     var username = arr[0];
                     var password = arr[1];
                     var u = UserManager.GetUserByEmail(username);
-                    if (u != null && u.ID != ASC.Core.Users.Constants.LostUser.ID)
+                    if (u != null && u.Id != ASC.Core.Users.Constants.LostUser.Id)
                     {
                         var passwordHash = PasswordHasher.GetClientPassword(password);
                         authCookie = SecurityContext.AuthenticateMe(u.Email, passwordHash);

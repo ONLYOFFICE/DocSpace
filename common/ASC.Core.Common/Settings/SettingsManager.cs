@@ -23,32 +23,20 @@
  *
 */
 
+namespace ASC.Core.Common.Settings;
 
-using System;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
-using ASC.Core.Data;
-
-using Microsoft.Extensions.Options;
-
-namespace ASC.Core.Common.Settings
+[Scope]
+public class SettingsManager : DbSettingsManager
 {
-    [Scope]
-    public class SettingsManager : DbSettingsManager
+    public SettingsManager(
+        IServiceProvider serviceProvider,
+        DbSettingsManagerCache dbSettingsManagerCache,
+        IOptionsMonitor<ILog> option,
+        AuthContext authContext,
+        TenantManager tenantManager,
+        DbContextManager<WebstudioDbContext> dbContextManager)
+        : base(serviceProvider, dbSettingsManagerCache, option, authContext, tenantManager, dbContextManager)
     {
-        public SettingsManager(
-            IServiceProvider serviceProvider,
-            DbSettingsManagerCache dbSettingsManagerCache,
-            IOptionsMonitor<ILog> option,
-            AuthContext authContext,
-            TenantManager tenantManager,
-            DbContextManager<WebstudioDbContext> dbContextManager)
-            : base(serviceProvider, dbSettingsManagerCache, option, authContext, tenantManager, dbContextManager)
-        {
 
-        }
     }
 }

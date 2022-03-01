@@ -23,15 +23,10 @@
  *
 */
 
+namespace ASC.Notify.Patterns;
 
-using ASC.Notify.Messages;
-
-namespace ASC.Notify.Patterns
+public interface IPatternFormatter
 {
-    public interface IPatternFormatter
-    {
-        string[] GetTags(IPattern pattern);
-
-        void FormatMessage(INoticeMessage message, ITagValue[] tagsValues);
-    }
+    string[] GetTags(IPattern pattern);
+    void FormatMessage(INoticeMessage message, ITagValue[] tagsValues);
 }

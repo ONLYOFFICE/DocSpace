@@ -23,21 +23,15 @@
  *
 */
 
+namespace ASC.Data.Backup;
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-
-namespace ASC.Data.Backup
+public interface IDataWriteOperator : IDisposable
 {
-    public interface IDataWriteOperator : IDisposable
-    {
-        void WriteEntry(string key, Stream stream);
-    }
+    void WriteEntry(string key, Stream stream);
+}
 
-    public interface IDataReadOperator : IDisposable
-    {
-        Stream GetEntry(string key);
-        IEnumerable<string> GetEntries(string key);
-    }
+public interface IDataReadOperator : IDisposable
+{
+    Stream GetEntry(string key);
+    IEnumerable<string> GetEntries(string key);
 }

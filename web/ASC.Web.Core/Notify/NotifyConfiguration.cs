@@ -23,39 +23,7 @@
  *
 */
 
-
-using System;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Notify.Engine;
-using ASC.Common.Utils;
-using ASC.Core;
-using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
-using ASC.Core.Users;
-using ASC.Notify;
-using ASC.Notify.Engine;
-using ASC.Notify.Messages;
-using ASC.Notify.Patterns;
-using ASC.Notify.Textile;
-using ASC.Web.Core;
-using ASC.Web.Core.Users;
-using ASC.Web.Core.WhiteLabel;
-using ASC.Web.Studio.Utility;
-
-using Google.Protobuf;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
-using MimeKit.Utils;
+using Constants = ASC.Core.Users.Constants;
 
 namespace ASC.Web.Studio.Core.Notify
 {
@@ -98,7 +66,7 @@ namespace ASC.Web.Studio.Core.Notify
                 InterceptorLifetime.Global,
                 (r, p, scope) =>
                 {
-                    if (r != null && r.CurrentMessage != null && r.CurrentMessage.ContentType == Pattern.HTMLContentType)
+                    if (r != null && r.CurrentMessage != null && r.CurrentMessage.ContentType == Pattern.HtmlContentType)
                     {
                         var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
 
@@ -195,7 +163,7 @@ namespace ASC.Web.Studio.Core.Notify
                                  }
                                  if (productId != Guid.Empty && productId != new Guid("f4d98afdd336433287783c6945c81ea0") /* ignore people product */)
                                  {
-                                     return !webItemSecurity.IsAvailableForUser(productId, u.ID);
+                                     return !webItemSecurity.IsAvailableForUser(productId, u.Id);
                                  }
                              }
                          }
@@ -294,7 +262,7 @@ namespace ASC.Web.Studio.Core.Notify
             request.Arguments.Add(new TagValue(CommonTags.ModuleID, module != null ? module.ID : Guid.Empty));
             request.Arguments.Add(new TagValue(CommonTags.ProductUrl, commonLinkUtility.GetFullAbsolutePath(product != null ? product.StartURL : "~")));
             request.Arguments.Add(new TagValue(CommonTags.DateTime, tenantUtil.DateTimeNow()));
-            request.Arguments.Add(new TagValue(CommonTags.RecipientID, Context.SYS_RECIPIENT_ID));
+            request.Arguments.Add(new TagValue(CommonTags.RecipientID, Context.SysRecipient));
             request.Arguments.Add(new TagValue(CommonTags.ProfileUrl, commonLinkUtility.GetFullAbsolutePath(commonLinkUtility.GetMyStaff())));
             request.Arguments.Add(new TagValue(CommonTags.RecipientSubscriptionConfigURL, commonLinkUtility.GetUnsubscribe()));
             request.Arguments.Add(new TagValue(CommonTags.HelpLink, commonLinkUtility.GetHelpLink(settingsManager, additionalWhiteLabelSettingsHelper, false)));

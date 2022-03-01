@@ -23,50 +23,38 @@
  *
 */
 
+namespace ASC.FederatedLogin.LoginProviders;
 
-using System.Collections.Generic;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Core;
-using ASC.Core.Common.Configuration;
-
-using Microsoft.Extensions.Configuration;
-
-namespace ASC.FederatedLogin.LoginProviders
+[Scope]
+public class BoxLoginProvider : Consumer, IOAuthProvider
 {
-    [Scope]
-    public class BoxLoginProvider : Consumer, IOAuthProvider
+    public string Scopes => string.Empty;
+    public string CodeUrl => "https://app.box.com/api/oauth2/authorize";
+    public string AccessTokenUrl => "https://app.box.com/api/oauth2/token";
+    public string RedirectUri => this["boxRedirectUrl"];
+    public string ClientID => this["boxClientId"];
+    public string ClientSecret => this["boxClientSecret"];
+    public bool IsEnabled
     {
-        public string Scopes { get { return ""; } }
-        public string CodeUrl { get { return "https://app.box.com/api/oauth2/authorize"; } }
-        public string AccessTokenUrl { get { return "https://app.box.com/api/oauth2/token"; } }
-        public string RedirectUri { get { return this["boxRedirectUrl"]; } }
-        public string ClientID { get { return this["boxClientId"]; } }
-        public string ClientSecret { get { return this["boxClientSecret"]; } }
-
-        public bool IsEnabled
+        get
         {
-            get
-            {
-                return !string.IsNullOrEmpty(ClientID) &&
-                       !string.IsNullOrEmpty(ClientSecret) &&
-                       !string.IsNullOrEmpty(RedirectUri);
-            }
+            return !string.IsNullOrEmpty(ClientID) &&
+                   !string.IsNullOrEmpty(ClientSecret) &&
+                   !string.IsNullOrEmpty(RedirectUri);
         }
+    }
 
-        public BoxLoginProvider() { }
+    public BoxLoginProvider() { }
 
-        public BoxLoginProvider(
-            TenantManager tenantManager,
-            CoreBaseSettings coreBaseSettings,
-            CoreSettings coreSettings,
-            IConfiguration configuration,
-            ICacheNotify<ConsumerCacheItem> cache,
-            ConsumerFactory consumerFactory,
-            string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, props, additional)
-        {
-        }
+    public BoxLoginProvider(
+        TenantManager tenantManager,
+        CoreBaseSettings coreBaseSettings,
+        CoreSettings coreSettings,
+        IConfiguration configuration,
+        ICacheNotify<ConsumerCacheItem> cache,
+        ConsumerFactory consumerFactory,
+        string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
+        : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, props, additional)
+    {
     }
 }

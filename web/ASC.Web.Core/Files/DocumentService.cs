@@ -23,30 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Runtime.Serialization;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
-using ASC.Common.Web;
-using ASC.Core.Billing;
-
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-
 namespace ASC.Web.Core.Files
 {
     /// <summary>
@@ -102,17 +78,17 @@ namespace ASC.Web.Core.Files
         /// </exception>
         
         public static Task<(int ResultPercent, string ConvertedDocumentUri)> GetConvertedUriAsync(
-           FileUtility fileUtility,
-           string documentConverterUrl,
-           string documentUri,
-           string fromExtension,
-           string toExtension,
-           string documentRevisionId,
-           string password,
-           ThumbnailData thumbnail,
-           SpreadsheetLayout spreadsheetLayout,
-           bool isAsync,
-           string signatureSecret,
+            FileUtility fileUtility,
+            string documentConverterUrl,
+            string documentUri,
+            string fromExtension,
+            string toExtension,
+            string documentRevisionId,
+            string password,
+            ThumbnailData thumbnail,
+            SpreadsheetLayout spreadsheetLayout,
+            bool isAsync,
+            string signatureSecret,
            IHttpClientFactory clientFactory)
         {
             fromExtension = string.IsNullOrEmpty(fromExtension) ? Path.GetExtension(documentUri) : fromExtension;
@@ -245,14 +221,14 @@ namespace ASC.Web.Core.Files
         /// <returns>Response</returns>
 
         public static async Task<CommandResponse> CommandRequestAsync(FileUtility fileUtility,
-           string documentTrackerUrl,
-           CommandMethod method,
-           string documentRevisionId,
-           string callbackUrl,
-           string[] users,
-           MetaData meta,
-           string signatureSecret,
-           IHttpClientFactory clientFactory)
+            string documentTrackerUrl,
+            CommandMethod method,
+            string documentRevisionId,
+            string callbackUrl,
+            string[] users,
+            MetaData meta,
+            string signatureSecret,
+            IHttpClientFactory clientFactory)
         {
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(documentTrackerUrl);
@@ -321,12 +297,12 @@ namespace ASC.Web.Core.Files
         }
 
         public static Task<(string DocBuilderKey, Dictionary<string, string>  Urls)> DocbuilderRequestAsync(
-           FileUtility fileUtility,
-           string docbuilderUrl,
-           string requestKey,
-           string scriptUrl,
-           bool isAsync,
-           string signatureSecret,
+            FileUtility fileUtility,
+            string docbuilderUrl,
+            string requestKey,
+            string scriptUrl,
+            bool isAsync,
+            string signatureSecret,
            IHttpClientFactory clientFactory)
         {
             if (string.IsNullOrEmpty(docbuilderUrl))

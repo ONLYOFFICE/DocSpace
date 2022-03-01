@@ -24,25 +24,6 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.Logging;
-using ASC.Core.Common.Configuration;
-using ASC.FederatedLogin;
-using ASC.FederatedLogin.Helpers;
-using ASC.FederatedLogin.LoginProviders;
-using ASC.Files.Core;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
 using DriveFile = Google.Apis.Drive.v3.Data.File;
 
 namespace ASC.Files.Thirdparty.GoogleDrive
@@ -277,7 +258,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                         CacheChildFolders.Remove("drived-" + i.Key);
                     }
                 }
-            }, CacheNotifyAction.Remove);
+            }, Common.Caching.CacheNotifyAction.Remove);
         }
 
         internal async Task<DriveFile> GetDriveEntryAsync(GoogleDriveStorage storage, int id, string driveId)
@@ -350,7 +331,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         {
             if (driveEntry != null)
             {
-                await CacheNotify.PublishAsync(new GoogleDriveCacheItem { ResetEntry = true, Key = id + "-" + driveEntry.Id }, CacheNotifyAction.Remove).ConfigureAwait(false);
+                await CacheNotify.PublishAsync(new GoogleDriveCacheItem { ResetEntry = true, Key = id + "-" + driveEntry.Id }, Common.Caching.CacheNotifyAction.Remove).ConfigureAwait(false);
             }
         }
 
@@ -359,7 +340,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             var key = id + "-";
             if (driveId == null)
             {
-                await CacheNotify.PublishAsync(new GoogleDriveCacheItem { ResetAll = true, Key = key }, CacheNotifyAction.Remove).ConfigureAwait(false);
+                await CacheNotify.PublishAsync(new GoogleDriveCacheItem { ResetAll = true, Key = key }, Common.Caching.CacheNotifyAction.Remove).ConfigureAwait(false);
             }
             else
             {
@@ -369,13 +350,13 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                 }
                 key += driveId;
 
-                await CacheNotify.PublishAsync(new GoogleDriveCacheItem { ResetEntry = true, ResetChilds = true, Key = key, ChildFolder = childFolder ?? false, ChildFolderExist = childFolder.HasValue }, CacheNotifyAction.Remove).ConfigureAwait(false);
+                await CacheNotify.PublishAsync(new GoogleDriveCacheItem { ResetEntry = true, ResetChilds = true, Key = key, ChildFolder = childFolder ?? false, ChildFolderExist = childFolder.HasValue }, Common.Caching.CacheNotifyAction.Remove).ConfigureAwait(false);
             }
         }
 
         internal Task CacheResetChildsAsync(int id, string parentDriveId, bool? childFolder = null)
         {
-            return CacheNotify.PublishAsync(new GoogleDriveCacheItem { ResetChilds = true, Key = id + "-" + parentDriveId, ChildFolder = childFolder ?? false, ChildFolderExist = childFolder.HasValue }, CacheNotifyAction.Remove);
+            return CacheNotify.PublishAsync(new GoogleDriveCacheItem { ResetChilds = true, Key = id + "-" + parentDriveId, ChildFolder = childFolder ?? false, ChildFolderExist = childFolder.HasValue }, Common.Caching.CacheNotifyAction.Remove);
         }
     }
 

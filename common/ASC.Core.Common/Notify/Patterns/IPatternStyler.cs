@@ -23,13 +23,9 @@
  *
 */
 
+namespace ASC.Common.Notify.Patterns;
 
-using ASC.Notify.Messages;
-
-namespace ASC.Common.Notify.Patterns
+public interface IPatternStyler
 {
-    public interface IPatternStyler
-    {
-        void ApplyFormating(NoticeMessage message);
-    }
+    void ApplyFormating(NoticeMessage message);
 }

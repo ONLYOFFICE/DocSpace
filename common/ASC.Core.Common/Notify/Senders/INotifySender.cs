@@ -23,17 +23,10 @@
  *
 */
 
+namespace ASC.Core.Notify.Senders;
 
-using System.Collections.Generic;
-
-using ASC.Notify.Messages;
-
-namespace ASC.Core.Notify.Senders
+public interface INotifySender
 {
-    public interface INotifySender
-    {
-        void Init(IDictionary<string, string> properties);
-
-        NoticeSendResult Send(NotifyMessage m);
-    }
+    void Init(IDictionary<string, string> properties);
+    NoticeSendResult Send(NotifyMessage m);
 }

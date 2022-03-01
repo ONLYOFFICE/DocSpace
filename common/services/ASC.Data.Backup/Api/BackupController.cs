@@ -24,7 +24,7 @@ public class BackupController
         IEventBus eventBus)
     {
         _currentUserId = securityContext.CurrentAccount.ID; 
-        _tenantId = tenantManager.GetCurrentTenant().TenantId;
+        _tenantId = tenantManager.GetCurrentTenant().Id;
         _backupHandler = backupAjaxHandler;
         _coreBaseSettings = coreBaseSettings;
         _tenantExtra = tenantExtra;

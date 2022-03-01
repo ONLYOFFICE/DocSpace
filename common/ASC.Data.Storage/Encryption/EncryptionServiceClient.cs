@@ -23,36 +23,30 @@
  *
 */
 
+using CacheNotifyAction = ASC.Common.Caching.CacheNotifyAction;
 
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Core.Encryption;
+namespace ASC.Data.Storage.Encryption;
 
-namespace ASC.Data.Storage.Encryption
+[Scope]
+public class EncryptionServiceClient : IEncryptionService
 {
-    [Scope]
-    public class EncryptionServiceClient : IEncryptionService
+    private readonly ICacheNotify<EncryptionSettingsProto> _notifySetting;
+    private readonly ICacheNotify<EncryptionStop> _notifyStop;
+
+    public EncryptionServiceClient(
+        ICacheNotify<EncryptionSettingsProto> notifySetting, ICacheNotify<EncryptionStop> notifyStop)
     {
+        _notifySetting = notifySetting;
+        _notifyStop = notifyStop;
+    }
 
-        private ICacheNotify<EncryptionSettingsProto> NotifySetting { get; }
-        private ICacheNotify<EncryptionStop> NotifyStop { get; }
+    public void Start(EncryptionSettingsProto encryptionSettingsProto)
+    {
+        _notifySetting.Publish(encryptionSettingsProto, CacheNotifyAction.Insert);
+    }
 
-        public EncryptionServiceClient(
-            ICacheNotify<EncryptionSettingsProto> notifySetting, ICacheNotify<EncryptionStop> notifyStop)
-        {
-            NotifySetting = notifySetting;
-            NotifyStop = notifyStop;
-        }
-
-        public void Start(EncryptionSettingsProto encryptionSettingsProto)
-        {
-            NotifySetting.Publish(encryptionSettingsProto, CacheNotifyAction.Insert);
-        }
-
-        public void Stop()
-        {
-            NotifyStop.Publish(new EncryptionStop(), CacheNotifyAction.Insert);
-        }
-
+    public void Stop()
+    {
+        _notifyStop.Publish(new EncryptionStop(), CacheNotifyAction.Insert);
     }
 }

@@ -23,22 +23,7 @@
  *
 */
 
-
-using System;
-using System.Linq;
-using System.Net;
-using System.Security;
-
-using ASC.Common.Caching;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
-using ASC.Core.Common.EF.Model.Mail;
-using ASC.Core.Users;
-
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+using Constants = ASC.Core.Users.Constants;
 
 namespace ASC.Web.Core.Mail
 {
@@ -50,12 +35,12 @@ namespace ASC.Web.Core.Mail
         {
             Cache = cache;
             CacheNotify = cacheNotify;
-            CacheNotify.Subscribe(r => Cache.Remove(r.Key), CacheNotifyAction.Remove);
+            CacheNotify.Subscribe(r => Cache.Remove(r.Key), Common.Caching.CacheNotifyAction.Remove);
         }
 
         public void Remove()
         {
-            CacheNotify.Publish(new MailServiceHelperCache() { Key = MailServiceHelper.CacheKey }, CacheNotifyAction.Remove);
+            CacheNotify.Publish(new MailServiceHelperCache() { Key = MailServiceHelper.CacheKey }, Common.Caching.CacheNotifyAction.Remove);
         }
     }
 

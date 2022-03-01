@@ -23,15 +23,10 @@
  *
 */
 
+namespace ASC.ElasticSearch;
 
-using Nest;
-
-namespace ASC.ElasticSearch
+public class Document
 {
-    public class Document
-    {
-        public string Data { get; set; }
-
-        public Attachment Attachment { get; set; }
-    }
+    public string Data { get; set; }
+    public Attachment Attachment { get; set; }
 }

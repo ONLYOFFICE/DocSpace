@@ -24,15 +24,6 @@
 */
 
 
-using System;
-using System.Diagnostics;
-using System.Text.Json.Serialization;
-
-using ASC.Common;
-using ASC.Web.Core.Files;
-using ASC.Web.Files.Classes;
-using ASC.Web.Studio.Core;
-
 namespace ASC.Files.Core
 {
     [Flags]

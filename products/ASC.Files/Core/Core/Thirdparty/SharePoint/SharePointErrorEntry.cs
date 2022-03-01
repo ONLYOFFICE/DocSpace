@@ -24,9 +24,8 @@
 */
 
 
-using Microsoft.SharePoint.Client;
-
 using File = Microsoft.SharePoint.Client.File;
+using Folder = Microsoft.SharePoint.Client.Folder;
 
 namespace ASC.Files.Thirdparty.SharePoint
 {

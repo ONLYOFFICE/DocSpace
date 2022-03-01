@@ -23,14 +23,6 @@
  *
 */
 
-
-using System;
-using System.Text.Json.Serialization;
-
-using ASC.Core;
-using ASC.Core.Common.Settings;
-using ASC.Web.Studio.Utility;
-
 namespace ASC.Web.Studio.Core
 {
     public class PrivacyRoomSettings : ISettings
@@ -68,7 +60,7 @@ namespace ASC.Web.Studio.Core
         public static bool IsAvailable(TenantManager tenantManager)
         {
             return SetupInfo.IsVisibleSettings(nameof(ManagementType.PrivacyRoom))
-                && tenantManager.GetTenantQuota(tenantManager.GetCurrentTenant().TenantId).PrivacyRoom;
+                && tenantManager.GetTenantQuota(tenantManager.GetCurrentTenant().Id).PrivacyRoom;
         }
     }
 }

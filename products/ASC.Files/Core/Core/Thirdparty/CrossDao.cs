@@ -1,23 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Files.Core.Resources;
-using ASC.Files.Core.Security;
-using ASC.Files.Thirdparty.Box;
-using ASC.Files.Thirdparty.Dropbox;
-using ASC.Files.Thirdparty.GoogleDrive;
-using ASC.Files.Thirdparty.OneDrive;
-using ASC.Files.Thirdparty.SharePoint;
-using ASC.Files.Thirdparty.Sharpbox;
-using ASC.Web.Files.Utils;
-using ASC.Web.Studio.Core;
-
-using Microsoft.Extensions.DependencyInjection;
-
-namespace ASC.Files.Core.Thirdparty
+﻿namespace ASC.Files.Core.Thirdparty
 {
     [Scope(Additional = typeof(CrossDaoExtension))]
     internal class CrossDao //Additional SharpBox
@@ -37,9 +18,9 @@ namespace ASC.Files.Core.Thirdparty
         }
 
         public async Task<File<TTo>> PerformCrossDaoFileCopyAsync<TFrom, TTo>(
-           TFrom fromFileId, IFileDao<TFrom> fromFileDao, Func<TFrom, TFrom> fromConverter,
-           TTo toFolderId, IFileDao<TTo> toFileDao, Func<TTo, TTo> toConverter,
-           bool deleteSourceFile)
+            TFrom fromFileId, IFileDao<TFrom> fromFileDao, Func<TFrom, TFrom> fromConverter,
+            TTo toFolderId, IFileDao<TTo> toFileDao, Func<TTo, TTo> toConverter,
+            bool deleteSourceFile)
         {
             //Get File from first dao
             var fromFile = await fromFileDao.GetFileAsync(fromConverter(fromFileId));

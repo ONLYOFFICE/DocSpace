@@ -1,26 +1,4 @@
-﻿
-
-
-using System;
-using System.Linq;
-using System.Web;
-
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common.Settings;
-using ASC.FederatedLogin.LoginProviders;
-using ASC.Web.Api.Models;
-using ASC.Web.Api.Routing;
-using ASC.Web.Studio.Core;
-using ASC.Web.Studio.Utility;
-
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-
-namespace ASC.Web.Api.Controllers
+﻿namespace ASC.Web.Api.Controllers
 {
     [DefaultRoute]
     [ApiController]
@@ -79,7 +57,7 @@ namespace ASC.Web.Api.Controllers
             {
                 if (SetupInfo.IsVisibleSettings(nameof(ManagementType.LdapSettings))
                     && (!CoreBaseSettings.Standalone
-                        || TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().TenantId).Ldap))
+                        || TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().Id).Ldap))
                 {
                     //var settings = SettingsManager.Load<LdapSettings>();
 
@@ -109,7 +87,7 @@ namespace ASC.Web.Api.Controllers
             try
             {
                 if (SetupInfo.IsVisibleSettings(nameof(ManagementType.SingleSignOnSettings))
-                    && TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().TenantId).Sso)
+                    && TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().Id).Sso)
                 {
                     //var settings = SettingsManager.Load<SsoSettingsV2>();
 

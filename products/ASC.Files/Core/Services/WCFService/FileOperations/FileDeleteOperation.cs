@@ -23,24 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Core.Tenants;
-using ASC.Files.Core;
-using ASC.Files.Core.Resources;
-using ASC.MessagingSystem;
-using ASC.Web.Files.Helpers;
-using ASC.Web.Files.Utils;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Primitives;
-
 namespace ASC.Web.Files.Services.WCFService.FileOperations
 {
     internal class FileDeleteOperationData<T> : FileOperationData<T>

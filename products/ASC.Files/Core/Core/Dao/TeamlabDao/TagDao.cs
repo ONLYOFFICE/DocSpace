@@ -23,28 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Core;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
-using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
-using ASC.Files.Core.EF;
-using ASC.Web.Studio.Core;
-using ASC.Web.Studio.UserControls.Statistics;
-using ASC.Web.Studio.Utility;
-
-using Microsoft.EntityFrameworkCore;
-
 namespace ASC.Files.Core.Data
 {
     [Scope]
@@ -116,21 +94,21 @@ namespace ASC.Files.Core.Data
             await foreach (var e in FromQueryAsync(q).ConfigureAwait(false))
             {
                 yield return e;
-            }
+        }
         }
 
         static Func<EF.FilesDbContext, int, Guid, IEnumerable<TagType>, HashSet<string>, HashSet<string>, IAsyncEnumerable<TagLinkData>> getTagsQuery =
 Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery((EF.FilesDbContext ctx, int tenantId, Guid subject, IEnumerable<TagType> tagType, HashSet<string> filesId, HashSet<string> foldersId) =>
-ctx.Tag
-.AsNoTracking()
-.Where(r => r.TenantId == tenantId)
-.Where(r => tagType.Contains(r.Flag))
-.Join(ctx.TagLink, r => r.Id, l => l.TagId, (tag, link) => new TagLinkData { Tag = tag, Link = link })
-.Where(r => r.Link.TenantId == r.Tag.TenantId)
-.Where(r => r.Link.EntryType == FileEntryType.File && filesId.Contains(r.Link.EntryId)
-|| r.Link.EntryType == FileEntryType.Folder && foldersId.Contains(r.Link.EntryId))
-.Where(r => subject == Guid.Empty || r.Link.CreateBy == subject)
-);
+    ctx.Tag
+    .AsNoTracking()
+    .Where(r => r.TenantId == tenantId)
+    .Where(r => tagType.Contains(r.Flag))
+    .Join(ctx.TagLink, r => r.Id, l => l.TagId, (tag, link) => new TagLinkData { Tag = tag, Link = link })
+    .Where(r => r.Link.TenantId == r.Tag.TenantId)
+    .Where(r => r.Link.EntryType == FileEntryType.File && filesId.Contains(r.Link.EntryId)
+    || r.Link.EntryType == FileEntryType.Folder && foldersId.Contains(r.Link.EntryId))
+    .Where(r => subject == Guid.Empty || r.Link.CreateBy == subject)
+    );
 
         public async Task<IDictionary<object, IEnumerable<Tag>>> GetTagsAsync(Guid subject, IEnumerable<TagType> tagType, IEnumerable<FileEntry<T>> fileEntries)
         {
@@ -183,7 +161,7 @@ ctx.Tag
             await foreach (var e in FromQueryAsync(q).ConfigureAwait(false))
             {
                 yield return e;
-            }
+        }
         }
 
         public IAsyncEnumerable<Tag> GetTagsAsync(string[] names, TagType tagType)
@@ -205,7 +183,7 @@ ctx.Tag
             await foreach (var e in FromQueryAsync(q).ConfigureAwait(false))
             {
                 yield return e;
-            }
+        }
         }
 
         public IAsyncEnumerable<Tag> GetTagsAsync(string name, TagType tagType)
@@ -233,7 +211,7 @@ ctx.Tag
             await foreach (var e in FromQueryAsync(q).ConfigureAwait(false))
             {
                 yield return e;
-            }
+        }
         }
 
         public IEnumerable<Tag> SaveTags(IEnumerable<Tag> tags)
@@ -816,7 +794,7 @@ ctx.Tag
             await foreach (var e in result)
             {
                 yield return e;
-            }
+        }
         }
 
         protected async IAsyncEnumerable<Tag> FromQueryAsync(IQueryable<TagLinkData> dbFilesTags)
@@ -844,7 +822,7 @@ ctx.Tag
             foreach (var file in files)
             {
                 yield return await ToTagAsync(file).ConfigureAwait(false);
-            }
+        }
         }
 
         protected async IAsyncEnumerable<Tag> FromQueryAsync(IAsyncEnumerable<TagLinkData> dbFilesTags)
@@ -872,7 +850,7 @@ ctx.Tag
             foreach (var file in files)
             {
                 yield return await ToTagAsync(file).ConfigureAwait(false);
-            }
+        }
         }
 
         private async ValueTask<Tag> ToTagAsync(TagLinkData r)

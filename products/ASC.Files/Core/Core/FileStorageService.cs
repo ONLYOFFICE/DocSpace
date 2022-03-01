@@ -24,54 +24,6 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Security;
-using System.Text.Json;
-using System.Threading.Tasks;
-using System.Web;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common;
-using ASC.Core.Common.Configuration;
-using ASC.Core.Common.Settings;
-using ASC.Core.Users;
-using ASC.Data.Storage;
-using ASC.FederatedLogin.LoginProviders;
-using ASC.Files.Core;
-using ASC.Files.Core.Model;
-using ASC.Files.Core.Resources;
-using ASC.Files.Core.Security;
-using ASC.Files.Core.Services.NotifyService;
-using ASC.MessagingSystem;
-using ASC.Web.Core.Files;
-using ASC.Web.Core.PublicResources;
-using ASC.Web.Core.Users;
-using ASC.Web.Files.Classes;
-using ASC.Web.Files.Core.Compress;
-using ASC.Web.Files.Core.Entries;
-using ASC.Web.Files.Helpers;
-using ASC.Web.Files.Services.DocumentService;
-using ASC.Web.Files.Services.WCFService.FileOperations;
-using ASC.Web.Files.ThirdPartyApp;
-using ASC.Web.Files.Utils;
-using ASC.Web.Studio.Core;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Primitives;
-
-using FileShare = ASC.Files.Core.Security.FileShare;
 using UrlShortener = ASC.Web.Core.Utility.UrlShortener;
 
 namespace ASC.Web.Files.Services.WCFService
@@ -850,12 +802,12 @@ namespace ASC.Web.Files.Services.WCFService
 
                 var configuration = fileOptions.Configuration;
 
-                ErrorIf(!configuration.EditorConfig.ModeWrite
+                    ErrorIf(!configuration.EditorConfig.ModeWrite
                         || !(configuration.Document.Permissions.Edit
-                             || configuration.Document.Permissions.ModifyFilter
-                             || configuration.Document.Permissions.Review
-                             || configuration.Document.Permissions.FillForms
-                             || configuration.Document.Permissions.Comment),
+                        || configuration.Document.Permissions.ModifyFilter
+                        || configuration.Document.Permissions.Review
+                        || configuration.Document.Permissions.FillForms
+                        || configuration.Document.Permissions.Comment),
                         !string.IsNullOrEmpty(configuration.ErrorMessage) ? configuration.ErrorMessage : FilesCommonResource.ErrorMassage_SecurityException_EditFile);
                 var key = configuration.Document.Key;
 
@@ -1251,11 +1203,11 @@ namespace ASC.Web.Files.Services.WCFService
             var providersInfo = await providerDao.GetProvidersInfoAsync((FolderType)folderType).ToListAsync();
 
             var folders = providersInfo.Select(providerInfo =>
-            {
-                var folder = EntryManager.GetFakeThirdpartyFolder(providerInfo);
-                folder.NewForMe = folder.RootFolderType == FolderType.COMMON ? 1 : 0;
-                return folder;
-            });
+                {
+                    var folder = EntryManager.GetFakeThirdpartyFolder(providerInfo);
+                    folder.NewForMe = folder.RootFolderType == FolderType.COMMON ? 1 : 0;
+                    return folder;
+                });
 
             return new List<FileEntry>(folders);
         }
@@ -1502,18 +1454,18 @@ namespace ASC.Web.Files.Services.WCFService
             var toSubfolders = destFolderDao.GetFoldersAsync(toFolder.ID);
 
             await foreach (var folderProject in foldersProject)
-            {
+                {
                 var toSub = await toSubfolders.FirstOrDefaultAsync(to => Equals(to.Title, folderProject.Title));
-                if (toSub == null) continue;
+                    if (toSub == null) continue;
 
                 var filesPr = fileDao.GetFilesAsync(folderProject.ID);
                 var foldersTmp = folderDao.GetFoldersAsync(folderProject.ID);
                 var foldersPr = foldersTmp.Select(d => d.ID).ToListAsync();
 
                 var (cFiles, cFolders) = await MoveOrCopyFilesCheckAsync(await filesPr, await foldersPr, toSub.ID);
-                checkedFiles.AddRange(cFiles);
-                checkedFolders.AddRange(cFolders);
-            }
+                    checkedFiles.AddRange(cFiles);
+                    checkedFolders.AddRange(cFolders);
+                }
 
             try
             {
@@ -1693,14 +1645,14 @@ namespace ASC.Web.Files.Services.WCFService
             var providerDao = GetProviderDao();
             if (providerDao != null)
             {
-                var providersInfo = await providerDao.GetProvidersInfoAsync(userFrom.ID).ToListAsync();
+                var providersInfo = await providerDao.GetProvidersInfoAsync(userFrom.Id).ToListAsync();
                 var commonProvidersInfo = providersInfo.Where(provider => provider.RootFolderType == FolderType.COMMON);
 
                 //move common thirdparty storage userFrom
                 foreach (var commonProviderInfo in commonProvidersInfo)
                 {
-                    Logger.InfoFormat("Reassign provider {0} from {1} to {2}", commonProviderInfo.ID, userFrom.ID, userTo.ID);
-                    await providerDao.UpdateProviderInfoAsync(commonProviderInfo.ID, null, null, FolderType.DEFAULT, userTo.ID);
+                    Logger.InfoFormat("Reassign provider {0} from {1} to {2}", commonProviderInfo.ID, userFrom.Id, userTo.Id);
+                    await providerDao.UpdateProviderInfoAsync(commonProviderInfo.ID, null, null, FolderType.DEFAULT, userTo.Id);
                 }
             }
 
@@ -1709,12 +1661,12 @@ namespace ASC.Web.Files.Services.WCFService
 
             if (!userFrom.IsVisitor(UserManager))
             {
-                var folderIdFromMy = await folderDao.GetFolderIDUserAsync(false, userFrom.ID);
+                var folderIdFromMy = await folderDao.GetFolderIDUserAsync(false, userFrom.Id);
 
                 if (!Equals(folderIdFromMy, 0))
                 {
                     //create folder with name userFrom in folder userTo
-                    var folderIdToMy = await folderDao.GetFolderIDUserAsync(true, userTo.ID);
+                    var folderIdToMy = await folderDao.GetFolderIDUserAsync(true, userTo.Id);
                     var newFolder = ServiceProvider.GetService<Folder<T>>();
                     newFolder.Title = string.Format(CustomNamingPeople.Substitute<FilesCommonResource>("TitleDeletedUserFolder"), userFrom.DisplayUserName(false, DisplayUserSettingsHelper));
                     newFolder.FolderID = folderIdToMy;
@@ -1724,11 +1676,11 @@ namespace ASC.Web.Files.Services.WCFService
                     //move items from userFrom to userTo
                     await EntryManager.MoveSharedItemsAsync(folderIdFromMy, newFolderTo, folderDao, fileDao);
 
-                    await EntryManager.ReassignItemsAsync(newFolderTo, userFrom.ID, userTo.ID, folderDao, fileDao);
+                    await EntryManager.ReassignItemsAsync(newFolderTo, userFrom.Id, userTo.Id, folderDao, fileDao);
                 }
             }
 
-            await EntryManager.ReassignItemsAsync(await GlobalFolderHelper.GetFolderCommonAsync<T>(), userFrom.ID, userTo.ID, folderDao, fileDao);
+            await EntryManager.ReassignItemsAsync(await GlobalFolderHelper.GetFolderCommonAsync<T>(), userFrom.Id, userTo.Id, folderDao, fileDao);
         }
 
         public async Task DeleteStorageAsync(Guid userId)
@@ -2088,9 +2040,9 @@ namespace ASC.Web.Files.Services.WCFService
             }
 
             var users = UserManager.GetUsersByGroup(Constants.GroupEveryone.ID)
-                                   .Where(user => !user.ID.Equals(AuthContext.CurrentAccount.ID)
-                                                  && !user.ID.Equals(Constants.LostUser.ID))
-                                   .Select(user => new MentionWrapper(user, DisplayUserSettingsHelper) { HasAccess = usersIdWithAccess.Contains(user.ID) })
+                                   .Where(user => !user.Id.Equals(AuthContext.CurrentAccount.ID)
+                                                  && !user.Id.Equals(Constants.LostUser.Id))
+                                   .Select(user => new MentionWrapper(user, DisplayUserSettingsHelper) { HasAccess = usersIdWithAccess.Contains(user.Id) })
                                    .ToList();
 
             users = users
@@ -2134,13 +2086,13 @@ namespace ASC.Web.Files.Services.WCFService
                 }
 
                 var recipient = UserManager.GetUserByEmail(email);
-                if (recipient == null || recipient.ID == Constants.LostUser.ID)
+                if (recipient == null || recipient.Id == Constants.LostUser.Id)
                 {
                     showSharingSettings = canShare.Value;
                     continue;
                 }
 
-                if (!await fileSecurity.CanReadAsync(file, recipient.ID))
+                if (!await fileSecurity.CanReadAsync(file, recipient.Id))
                 {
                     if (!canShare.Value)
                     {
@@ -2154,14 +2106,14 @@ namespace ASC.Web.Files.Services.WCFService
                                 new AceWrapper
                                     {
                                         Share = FileShare.Read,
-                                        SubjectId = recipient.ID,
+                                        SubjectId = recipient.Id,
                                         SubjectGroup = false,
                                     }
                             };
 
                         showSharingSettings |= await FileSharingAceHelper.SetAceObjectAsync(aces, file, false, null);
 
-                        recipients.Add(recipient.ID);
+                        recipients.Add(recipient.Id);
                     }
                     catch (Exception e)
                     {
@@ -2170,7 +2122,7 @@ namespace ASC.Web.Files.Services.WCFService
                 }
                 else
                 {
-                    recipients.Add(recipient.ID);
+                    recipients.Add(recipient.Id);
                 }
             }
 
@@ -2250,11 +2202,11 @@ namespace ASC.Web.Files.Services.WCFService
                 if (folder.ProviderEntry) continue;
 
                 var newFolder = folder;
-                if (folder.CreateBy != userInfo.ID)
+                if (folder.CreateBy != userInfo.Id)
                 {
                     var folderAccess = folder.Access;
 
-                    newFolder.CreateBy = userInfo.ID;
+                    newFolder.CreateBy = userInfo.Id;
                     var newFolderID = await folderDao.SaveFolderAsync(newFolder);
 
                     newFolder = await folderDao.GetFolderAsync(newFolderID);
@@ -2277,7 +2229,7 @@ namespace ASC.Web.Files.Services.WCFService
                 if (file.ProviderEntry) continue;
 
                 var newFile = file;
-                if (file.CreateBy != userInfo.ID)
+                if (file.CreateBy != userInfo.Id)
                 {
                     newFile = ServiceProvider.GetService<File<T>>();
                     newFile.ID = file.ID;
@@ -2286,7 +2238,7 @@ namespace ASC.Web.Files.Services.WCFService
                     newFile.Title = file.Title;
                     newFile.FileStatus = file.FileStatus;
                     newFile.FolderID = file.FolderID;
-                    newFile.CreateBy = userInfo.ID;
+                    newFile.CreateBy = userInfo.Id;
                     newFile.CreateOn = file.CreateOn;
                     newFile.ConvertedType = file.ConvertedType;
                     newFile.Comment = FilesCommonResource.CommentChangeOwner;
@@ -2319,7 +2271,7 @@ namespace ASC.Web.Files.Services.WCFService
             await foreach (var entrie in entries)
             {
                 yield return entrie;
-            }
+        }
         }
 
         public bool StoreOriginal(bool set)
@@ -2417,7 +2369,7 @@ namespace ASC.Web.Files.Services.WCFService
             {
                 var req = new ThumbnailRequest()
                 {
-                    Tenant = TenantManager.GetCurrentTenant().TenantId,
+                    Tenant = TenantManager.GetCurrentTenant().Id,
                     BaseUrl = BaseCommonLinkUtility.GetFullAbsolutePath("")
                 };
 
@@ -2428,7 +2380,7 @@ namespace ASC.Web.Files.Services.WCFService
                     req.Files.Add(f);
                 }
 
-                ThumbnailNotify.Publish(req, CacheNotifyAction.Insert);
+                ThumbnailNotify.Publish(req, Common.Caching.CacheNotifyAction.Insert);
             }
             catch (Exception e)
             {
@@ -2444,7 +2396,7 @@ namespace ASC.Web.Files.Services.WCFService
             {
                 var req = new ThumbnailRequest()
                 {
-                    Tenant = TenantManager.GetCurrentTenant().TenantId,
+                    Tenant = TenantManager.GetCurrentTenant().Id,
                     BaseUrl = BaseCommonLinkUtility.GetFullAbsolutePath("")
                 };
 

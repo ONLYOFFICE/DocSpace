@@ -23,15 +23,10 @@
  *
 */
 
+namespace ASC.Notify;
 
-using ASC.Notify.Messages;
-
-namespace ASC.Notify
+public interface INotifyService
 {
-    public interface INotifyService
-    {
-        void SendNotifyMessage(NotifyMessage notifyMessage);
-
-        void InvokeSendMethod(NotifyInvoke notifyInvoke);
-    }
+    void InvokeSendMethod(NotifyInvoke notifyInvoke);
+    void SendNotifyMessage(NotifyMessage notifyMessage);
 }

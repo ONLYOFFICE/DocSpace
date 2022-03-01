@@ -23,31 +23,25 @@
  *
 */
 
+namespace ASC.Notify.Model;
 
-using System.Collections.Generic;
-using System.Linq;
-
-namespace ASC.Notify.Model
+public sealed class ConstActionProvider : IActionProvider
 {
-    public sealed class ConstActionProvider : IActionProvider
+    private readonly Dictionary<string, INotifyAction> _actions;
+
+    public ConstActionProvider(params INotifyAction[] actions)
     {
-        private readonly Dictionary<string, INotifyAction> actions;
+        _actions = actions.ToDictionary(a => a.ID);
+    }
 
+    public INotifyAction[] GetActions()
+    {
+        return _actions.Values.ToArray();
+    }
 
-        public ConstActionProvider(params INotifyAction[] actions)
-        {
-            this.actions = actions.ToDictionary(a => a.ID);
-        }
-
-        public INotifyAction[] GetActions()
-        {
-            return actions.Values.ToArray();
-        }
-
-        public INotifyAction GetAction(string id)
-        {
-            actions.TryGetValue(id, out var action);
-            return action;
-        }
+    public INotifyAction GetAction(string id)
+    {
+        _actions.TryGetValue(id, out var action);
+        return action;
     }
 }

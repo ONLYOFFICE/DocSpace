@@ -23,156 +23,132 @@
  *
 */
 
+namespace ASC.FederatedLogin.LoginProviders;
 
-using System;
-using System.Collections.Generic;
-using System.Threading;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.Utils;
-using ASC.Core;
-using ASC.Core.Common.Configuration;
-using ASC.FederatedLogin.Helpers;
-using ASC.FederatedLogin.Profile;
-using ASC.Security.Cryptography;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-
-namespace ASC.FederatedLogin.LoginProviders
+public enum LoginProviderEnum
 {
-    public enum LoginProviderEnum
+    Facebook,
+    Google,
+    Dropbox,
+    Docusign,
+    Box,
+    OneDrive,
+    GosUslugi,
+    LinkedIn,
+    MailRu,
+    VK,
+    Wordpress,
+    Yahoo,
+    Yandex
+}
+
+public abstract class BaseLoginProvider<T> : Consumer, ILoginProvider where T : Consumer, ILoginProvider, new()
+{
+    public T Instance => ConsumerFactory.Get<T>();
+    public virtual bool IsEnabled
     {
-        Facebook,
-        Google,
-        Dropbox,
-        Docusign,
-        Box,
-        OneDrive,
-        GosUslugi,
-        LinkedIn,
-        MailRu,
-        VK,
-        Wordpress,
-        Yahoo,
-        Yandex
+        get
+        {
+            return !string.IsNullOrEmpty(ClientID) &&
+                   !string.IsNullOrEmpty(ClientSecret) &&
+                   !string.IsNullOrEmpty(RedirectUri);
+        }
     }
 
-    public abstract class BaseLoginProvider<T> : Consumer, ILoginProvider where T : Consumer, ILoginProvider, new()
+    public abstract string CodeUrl { get; }
+    public abstract string AccessTokenUrl { get; }
+    public abstract string RedirectUri { get; }
+    public abstract string ClientID { get; }
+    public abstract string ClientSecret { get; }
+    public virtual string Scopes => string.Empty;
+
+    internal readonly Signature Signature;
+    internal readonly InstanceCrypto InstanceCrypto;
+
+    private readonly OAuth20TokenHelper _oAuth20TokenHelper;
+
+    protected BaseLoginProvider() { }
+
+    protected BaseLoginProvider(
+        OAuth20TokenHelper oAuth20TokenHelper,
+        TenantManager tenantManager,
+        CoreBaseSettings coreBaseSettings,
+        CoreSettings coreSettings,
+        IConfiguration configuration,
+        ICacheNotify<ConsumerCacheItem> cache,
+        ConsumerFactory consumerFactory,
+        Signature signature,
+        InstanceCrypto instanceCrypto,
+        string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
+        : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, props, additional)
     {
-        public T Instance
+        _oAuth20TokenHelper = oAuth20TokenHelper;
+        Signature = signature;
+        InstanceCrypto = instanceCrypto;
+    }
+
+    public virtual LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params, IDictionary<string, string> additionalStateArgs)
+    {
+        try
         {
-            get
+            var token = Auth(context, Scopes, out var redirect, @params, additionalStateArgs);
+
+            if (redirect)
             {
-                return ConsumerFactory.Get<T>();
-            }
-        }
-
-        public abstract string CodeUrl { get; }
-        public abstract string AccessTokenUrl { get; }
-        public abstract string RedirectUri { get; }
-        public abstract string ClientID { get; }
-        public abstract string ClientSecret { get; }
-        public virtual string Scopes { get { return ""; } }
-
-        public virtual bool IsEnabled
-        {
-            get
-            {
-                return !string.IsNullOrEmpty(ClientID) &&
-                       !string.IsNullOrEmpty(ClientSecret) &&
-                       !string.IsNullOrEmpty(RedirectUri);
-            }
-        }
-
-        private OAuth20TokenHelper OAuth20TokenHelper { get; }
-        internal Signature Signature { get; }
-        internal InstanceCrypto InstanceCrypto { get; }
-
-        protected BaseLoginProvider()
-        {
-
-        }
-
-        protected BaseLoginProvider(
-            OAuth20TokenHelper oAuth20TokenHelper,
-            TenantManager tenantManager,
-            CoreBaseSettings coreBaseSettings,
-            CoreSettings coreSettings,
-            IConfiguration configuration,
-            ICacheNotify<ConsumerCacheItem> cache,
-            ConsumerFactory consumerFactory,
-            Signature signature,
-            InstanceCrypto instanceCrypto,
-            string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, props, additional)
-        {
-            OAuth20TokenHelper = oAuth20TokenHelper;
-            Signature = signature;
-            InstanceCrypto = instanceCrypto;
-        }
-
-        public virtual LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params, IDictionary<string, string> additionalStateArgs)
-        {
-            try
-            {
-                var token = Auth(context, Scopes, out var redirect, @params, additionalStateArgs);
-
-                if (redirect)
-                {
-                    return null;
-                }
-
-                return GetLoginProfile(token?.AccessToken);
-            }
-            catch (ThreadAbortException)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                return LoginProfile.FromError(Signature, InstanceCrypto, ex);
-            }
-        }
-
-        protected virtual OAuth20Token Auth(HttpContext context, string scopes, out bool redirect, IDictionary<string, string> additionalArgs = null, IDictionary<string, string> additionalStateArgs = null)
-        {
-            var error = context.Request.Query["error"];
-            if (!string.IsNullOrEmpty(error))
-            {
-                if (error == "access_denied")
-                {
-                    error = "Canceled at provider";
-                }
-                throw new Exception(error);
-            }
-
-            var code = context.Request.Query["code"];
-            if (string.IsNullOrEmpty(code))
-            {
-                context.Response.Redirect(OAuth20TokenHelper.RequestCode<T>(scopes, additionalArgs, additionalStateArgs));
-                redirect = true;
                 return null;
             }
 
-            redirect = false;
-            return OAuth20TokenHelper.GetAccessToken<T>(ConsumerFactory, code);
+            return GetLoginProfile(token?.AccessToken);
         }
-
-        public abstract LoginProfile GetLoginProfile(string accessToken);
+        catch (ThreadAbortException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            return LoginProfile.FromError(Signature, InstanceCrypto, ex);
+        }
     }
 
-    public static class BaseLoginProviderExtension
+    public abstract LoginProfile GetLoginProfile(string accessToken);
+
+    protected virtual OAuth20Token Auth(HttpContext context, string scopes, out bool redirect, IDictionary<string, string> additionalArgs = null, IDictionary<string, string> additionalStateArgs = null)
     {
-        public static void Register(DIHelper services)
+        var error = context.Request.Query["error"];
+        if (!string.IsNullOrEmpty(error))
         {
-            services.TryAdd<BoxLoginProvider>();
-            services.TryAdd<DropboxLoginProvider>();
-            services.TryAdd<OneDriveLoginProvider>();
-            services.TryAdd<DocuSignLoginProvider>();
-            services.TryAdd<GoogleLoginProvider>();
-            services.TryAdd<WordpressLoginProvider>();
+            if (error == "access_denied")
+            {
+                error = "Canceled at provider";
+            }
+
+            throw new Exception(error);
         }
+
+        var code = context.Request.Query["code"];
+        if (string.IsNullOrEmpty(code))
+        {
+            context.Response.Redirect(_oAuth20TokenHelper.RequestCode<T>(scopes, additionalArgs, additionalStateArgs));
+            redirect = true;
+
+            return null;
+        }
+
+        redirect = false;
+
+        return OAuth20TokenHelper.GetAccessToken<T>(ConsumerFactory, code);
+    }
+}
+
+public static class BaseLoginProviderExtension
+{
+    public static void Register(DIHelper services)
+    {
+        services.TryAdd<BoxLoginProvider>();
+        services.TryAdd<DropboxLoginProvider>();
+        services.TryAdd<OneDriveLoginProvider>();
+        services.TryAdd<DocuSignLoginProvider>();
+        services.TryAdd<GoogleLoginProvider>();
+        services.TryAdd<WordpressLoginProvider>();
     }
 }

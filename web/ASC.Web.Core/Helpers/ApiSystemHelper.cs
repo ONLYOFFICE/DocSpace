@@ -23,29 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
-
-using ASC.Common;
-using ASC.Core.Tenants;
-using ASC.Security.Cryptography;
-using ASC.Web.Studio.Utility;
-
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Configuration;
-
-using Newtonsoft.Json.Linq;
-
 namespace ASC.Web.Core.Helpers
 {
     [Scope]

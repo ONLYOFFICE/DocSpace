@@ -23,20 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.FederatedLogin;
-using ASC.Files.Core;
-
-using Dropbox.Api.Files;
-
 namespace ASC.Files.Thirdparty.Dropbox
 {
     [Transient]
@@ -221,7 +207,7 @@ namespace ASC.Files.Thirdparty.Dropbox
                         CacheFolder.Remove("dropboxd-" + i.Key);
                     }
                 }
-            }, CacheNotifyAction.Remove);
+            }, Common.Caching.CacheNotifyAction.Remove);
         }
 
         internal async Task<FolderMetadata> GetDropboxFolderAsync(DropboxStorage storage, int id, string dropboxFolderPath)
@@ -264,7 +250,7 @@ namespace ASC.Files.Thirdparty.Dropbox
         {
             if (dropboxItem != null)
             {
-                await CacheNotify.PublishAsync(new DropboxCacheItem { IsFile = dropboxItem.AsFolder != null, Key = id + "-" + dropboxItem.PathDisplay }, CacheNotifyAction.Remove).ConfigureAwait(false);
+                await CacheNotify.PublishAsync(new DropboxCacheItem { IsFile = dropboxItem.AsFolder != null, Key = id + "-" + dropboxItem.PathDisplay }, Common.Caching.CacheNotifyAction.Remove).ConfigureAwait(false);
             }
         }
 
@@ -273,13 +259,13 @@ namespace ASC.Files.Thirdparty.Dropbox
             var key = id + "-";
             if (dropboxPath == null)
             {
-                await CacheNotify.PublishAsync(new DropboxCacheItem { ResetAll = true, Key = key }, CacheNotifyAction.Remove).ConfigureAwait(false);
+                await CacheNotify.PublishAsync(new DropboxCacheItem { ResetAll = true, Key = key }, Common.Caching.CacheNotifyAction.Remove).ConfigureAwait(false);
             }
             else
             {
                 key += dropboxPath;
 
-                await CacheNotify.PublishAsync(new DropboxCacheItem { IsFile = isFile ?? false, IsFileExists = isFile.HasValue, Key = key }, CacheNotifyAction.Remove).ConfigureAwait(false);
+                await CacheNotify.PublishAsync(new DropboxCacheItem { IsFile = isFile ?? false, IsFileExists = isFile.HasValue, Key = key }, Common.Caching.CacheNotifyAction.Remove).ConfigureAwait(false);
             }
         }
     }

@@ -24,31 +24,6 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Web;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common;
-using ASC.Core.Tenants;
-using ASC.Files.Core.Resources;
-using ASC.Web.Core.Files;
-using ASC.Web.Files.Classes;
-using ASC.Web.Studio.Utility;
-
-using Microsoft.Extensions.Options;
-
-using Newtonsoft.Json;
-
-using static ASC.Web.Core.Files.DocumentService;
-
 using CommandMethod = ASC.Web.Core.Files.DocumentService.CommandMethod;
 
 namespace ASC.Web.Files.Services.DocumentService
@@ -129,11 +104,11 @@ namespace ASC.Web.Files.Services.DocumentService
         }
 
         public async Task<bool> CommandAsync(CommandMethod method,
-                                  string docKeyForTrack,
-                                  object fileId = null,
-                                  string callbackUrl = null,
-                                  string[] users = null,
-                                  MetaData meta = null)
+                                   string docKeyForTrack,
+                                   object fileId = null,
+                                   string callbackUrl = null,
+                                   string[] users = null,
+                                   MetaData meta = null)
         {
             Logger.DebugFormat("DocService command {0} fileId '{1}' docKey '{2}' callbackUrl '{3}' users '{4}' meta '{5}'", method, fileId, docKeyForTrack, callbackUrl, users != null ? string.Join(", ", users) : null, JsonConvert.SerializeObject(meta));
             try

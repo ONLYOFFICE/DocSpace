@@ -23,28 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
-using ASC.Common.Caching;
-using ASC.Core;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
-using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
-using ASC.Files.Core.EF;
-using ASC.Security.Cryptography;
-using ASC.Web.Studio.Core;
-using ASC.Web.Studio.UserControls.Statistics;
-using ASC.Web.Studio.Utility;
-
-using Microsoft.EntityFrameworkCore;
-
 namespace ASC.Files.Core.Data
 {
     public class AbstractDao
@@ -57,7 +35,7 @@ namespace ASC.Files.Core.Data
         protected internal int TenantID { 
             get 
             {
-                if (tenantID == 0) tenantID = TenantManager.GetCurrentTenant().TenantId;
+                if (tenantID == 0) tenantID = TenantManager.GetCurrentTenant().Id;
                 return tenantID; 
             }
         }
@@ -138,7 +116,7 @@ namespace ASC.Files.Core.Data
             }
 
             await FilesDbContext.SaveChangesAsync();
-        }   
+        }
 
         protected ValueTask<object> MappingIDAsync(object id, bool saveIfNotExist = false)
         {

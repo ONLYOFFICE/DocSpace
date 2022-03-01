@@ -23,14 +23,10 @@
  *
 */
 
+namespace ASC.Core.Common.Settings;
 
-using System;
-
-namespace ASC.Core.Common.Settings
+public interface ISettings
 {
-    public interface ISettings
-    {
-        Guid ID { get; }
-        ISettings GetDefault(IServiceProvider serviceProvider);
-    }
+    Guid ID { get; }
+    ISettings GetDefault(IServiceProvider serviceProvider);
 }

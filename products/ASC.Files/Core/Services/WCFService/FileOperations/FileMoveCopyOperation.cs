@@ -23,27 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Core.Tenants;
-using ASC.Files.Core;
-using ASC.Files.Core.Resources;
-using ASC.MessagingSystem;
-using ASC.Web.Core.Files;
-using ASC.Web.Files.Classes;
-using ASC.Web.Files.Helpers;
-using ASC.Web.Files.Utils;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Primitives;
-
 namespace ASC.Web.Files.Services.WCFService.FileOperations
 {
     [Transient]
@@ -181,7 +160,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             var ntm = needToMark.Distinct(); foreach (var n in ntm)
             {
                 await fileMarker.MarkAsNewAsync(n);
-            }
+        }
         }
 
         private async Task<List<FileEntry<TTo>>> MoveOrCopyFoldersAsync<TTo>(IServiceScope scope, List<T> folderIds, Folder<TTo> toFolder, bool copy)

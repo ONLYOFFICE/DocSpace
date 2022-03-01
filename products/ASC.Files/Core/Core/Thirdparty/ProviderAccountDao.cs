@@ -23,43 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-using AppLimit.CloudComputing.SharpBox;
-using AppLimit.CloudComputing.SharpBox.StorageProvider.DropBox;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common.Configuration;
-using ASC.Core.Common.EF;
-using ASC.Core.Tenants;
-using ASC.FederatedLogin;
-using ASC.FederatedLogin.Helpers;
-using ASC.FederatedLogin.LoginProviders;
-using ASC.Files.Core;
-using ASC.Files.Core.EF;
-using ASC.Files.Core.Resources;
-using ASC.Files.Thirdparty.Box;
-using ASC.Files.Thirdparty.Dropbox;
-using ASC.Files.Thirdparty.GoogleDrive;
-using ASC.Files.Thirdparty.OneDrive;
-using ASC.Files.Thirdparty.SharePoint;
-using ASC.Files.Thirdparty.Sharpbox;
-using ASC.Security.Cryptography;
-using ASC.Web.Files.Classes;
-using ASC.Web.Files.Helpers;
-
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
-using static ASC.Files.Core.Data.AbstractDao;
-
 namespace ASC.Files.Thirdparty
 {
     public enum ProviderTypes
@@ -86,7 +49,7 @@ namespace ASC.Files.Thirdparty
         { 
             get 
             {
-                if (tenantID == 0) tenantID = TenantManager.GetCurrentTenant().TenantId;
+                if (tenantID == 0) tenantID = TenantManager.GetCurrentTenant().Id;
                 return tenantID; 
             } 
         }

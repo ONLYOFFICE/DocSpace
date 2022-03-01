@@ -23,22 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common.Configuration;
-using ASC.FederatedLogin.Helpers;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-
-using Newtonsoft.Json.Linq;
-
 namespace ASC.Web.Files.Helpers
 {
     [Scope]

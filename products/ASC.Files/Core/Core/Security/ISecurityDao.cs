@@ -23,13 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-using ASC.Common;
-
 namespace ASC.Files.Core.Security
 {
     [Scope]

@@ -22,16 +22,14 @@
  * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
  *
 */
-using Telegram.Bot;
 
-namespace ASC.TelegramService.Core
+namespace ASC.TelegramService.Core;
+
+public class TenantTgClient
 {
-    public class TenantTgClient
-    {
-        public string Token { get; set; }
-        public TelegramBotClient Client { get; set; }
-        public string Proxy { get; set; }
-        public int TokenLifeSpan { get; set; }
-        public int TenantId { get; set; }
-    }
+    public string Token { get; set; }
+    public TelegramBotClient Client { get; set; }
+    public string Proxy { get; set; }
+    public int TokenLifeSpan { get; set; }
+    public int TenantId { get; set; }
 }

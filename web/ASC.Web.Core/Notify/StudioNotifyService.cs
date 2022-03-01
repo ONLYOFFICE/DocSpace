@@ -23,33 +23,7 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Threading;
-using System.Web;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
-using ASC.Core.Users;
-using ASC.Notify.Model;
-using ASC.Notify.Patterns;
-using ASC.Notify.Recipients;
-using ASC.Web.Core;
-using ASC.Web.Core.Notify;
-using ASC.Web.Core.PublicResources;
-using ASC.Web.Core.Users;
-using ASC.Web.Core.WhiteLabel;
-using ASC.Web.Studio.Utility;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
+using Constants = ASC.Core.Users.Constants;
 
 namespace ASC.Web.Studio.Core.Notify
 {
@@ -178,8 +152,8 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void UserPasswordChange(UserInfo userInfo)
         {
-            var hash = Authentication.GetUserPasswordStamp(userInfo.ID).ToString("s");
-            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(userInfo.Email, ConfirmType.PasswordChange, hash, userInfo.ID);
+            var hash = Authentication.GetUserPasswordStamp(userInfo.Id).ToString("s");
+            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(userInfo.Email, ConfirmType.PasswordChange, hash, userInfo.Id);
 
             string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangePassword;
 
@@ -218,7 +192,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void SendEmailActivationInstructions(UserInfo user, string email)
         {
-            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(email, ConfirmType.EmailActivation, null, user.ID);
+            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(email, ConfirmType.EmailActivation, null, user.Id);
 
             string greenButtonText() => WebstudioNotifyPatternResource.ButtonActivateEmail;
 
@@ -523,7 +497,7 @@ namespace ASC.Web.Studio.Core.Notify
         {
             var tenant = TenantManager.GetCurrentTenant();
             var admins = UserManager.GetUsers()
-                        .Where(u => WebItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, u.ID));
+                        .Where(u => WebItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, u.Id));
 
             ThreadPool.QueueUserWorkItem(_ =>
             {
@@ -803,9 +777,9 @@ namespace ASC.Web.Studio.Core.Notify
 
             var portalUrl = CommonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/');
 
-            var hash = Authentication.GetUserPasswordStamp(userInfo.ID).ToString("s");
+            var hash = Authentication.GetUserPasswordStamp(userInfo.Id).ToString("s");
 
-            var linkToRecovery = CommonLinkUtility.GetConfirmationUrl(userInfo.Email, ConfirmType.PasswordChange, hash, userInfo.ID);
+            var linkToRecovery = CommonLinkUtility.GetConfirmationUrl(userInfo.Email, ConfirmType.PasswordChange, hash, userInfo.Id);
 
             client.SendNoticeToAsync(
                 CoreBaseSettings.CustomMode ? Actions.PersonalCustomModeAlreadyExist : Actions.PersonalAlreadyExist,
@@ -853,7 +827,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                         studioNotifyServiceHelper.SendNoticeToAsync(
                             Actions.PortalRename,
-                            new[] { StudioNotifyHelper.ToRecipient(u.ID) },
+                            new[] { StudioNotifyHelper.ToRecipient(u.Id) },
                             new[] { EMailSenderName },
                             new TagValue(Tags.PortalUrl, oldVirtualRootPath),
                             new TagValue(Tags.UserDisplayName, u.DisplayUserName(DisplayUserSettingsHelper)));
@@ -888,7 +862,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         private string GenerateActivationConfirmUrl(UserInfo user)
         {
-            var confirmUrl = CommonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.Activation, user.ID, user.ID);
+            var confirmUrl = CommonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.Activation, user.Id, user.Id);
 
             return confirmUrl + $"&firstname={HttpUtility.UrlEncode(user.FirstName)}&lastname={HttpUtility.UrlEncode(user.LastName)}";
         }
@@ -971,7 +945,7 @@ namespace ASC.Web.Studio.Core.Notify
                 client.SendNoticeToAsync(
                     action,
                     null,
-                    new[] { StudioNotifyHelper.ToRecipient(u.ID) },
+                    new[] { StudioNotifyHelper.ToRecipient(u.Id) },
                     new[] { EMailSenderName },
                     new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
                     new TagValue(Tags.PortalUrl, serverRootPath),

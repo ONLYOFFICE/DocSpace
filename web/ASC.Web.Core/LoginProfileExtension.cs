@@ -1,12 +1,4 @@
-﻿using System;
-using System.Threading;
-
-using ASC.Core;
-using ASC.Core.Users;
-using ASC.FederatedLogin.Profile;
-using ASC.Web.Core.PublicResources;
-
-namespace ASC.Web.Core
+﻿namespace ASC.Web.Core
 {
     public static class LoginProfileExtension
     {

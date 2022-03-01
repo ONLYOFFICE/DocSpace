@@ -23,119 +23,110 @@
  *
 */
 
+namespace ASC.Data.Storage.Migration;
 
-using System;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Data.Storage.Configuration;
-using ASC.Protos.Migration;
-
-namespace ASC.Data.Storage.Migration
+[Singletone]
+public class ServiceClientListener
 {
-    [Singletone]
-    public class ServiceClientListener
+    private readonly ICacheNotify<MigrationProgress> _progressMigrationNotify;
+    private readonly IServiceProvider _serviceProvider;
+    private readonly ICache _cache;
+
+    public ServiceClientListener(
+        ICacheNotify<MigrationProgress> progressMigrationNotify,
+        IServiceProvider serviceProvider,
+        ICache cache)
     {
-        private ICacheNotify<MigrationProgress> ProgressMigrationNotify { get; }
-        private IServiceProvider ServiceProvider { get; }
-        private ICache Cache { get; }
+        _progressMigrationNotify = progressMigrationNotify;
+        _serviceProvider = serviceProvider;
+        _cache = cache;
 
-        public ServiceClientListener(
-            ICacheNotify<MigrationProgress> progressMigrationNotify,
-            IServiceProvider serviceProvider, 
-            ICache cache)
-        {
-            ProgressMigrationNotify = progressMigrationNotify;
-            ServiceProvider = serviceProvider;
-            Cache = cache;
-
-            ProgressListening();
-        }
-
-        public MigrationProgress GetProgress(int tenantId)
-        {
-            return Cache.Get<MigrationProgress>(GetCacheKey(tenantId));
-        }
-
-        private void ProgressListening()
-        {
-            ProgressMigrationNotify.Subscribe(n =>
-            {
-                var migrationProgress = new MigrationProgress
-                {
-                    TenantId = n.TenantId,
-                    Progress = n.Progress,
-                    IsCompleted = n.IsCompleted,
-                    Error = n.Error
-                };
-
-                Cache.Insert(GetCacheKey(n.TenantId), migrationProgress, DateTime.MaxValue);
-            },
-           CacheNotifyAction.Insert);
-        }
-
-        private string GetCacheKey(int tenantId)
-        {
-            return typeof(MigrationProgress).FullName + tenantId;
-        }
+        ProgressListening();
     }
 
-    [Scope]
-    public class ServiceClient : IService
+    public MigrationProgress GetProgress(int tenantId)
     {
-        public ServiceClientListener ServiceClientListener { get; }
-        public ICacheNotify<MigrationCache> CacheMigrationNotify { get; }
-        public ICacheNotify<MigrationUploadCdn> UploadCdnMigrationNotify { get; }
-        public IServiceProvider ServiceProvider { get; }
+        return _cache.Get<MigrationProgress>(GetCacheKey(tenantId));
+    }
 
-        public ServiceClient(
-            ServiceClientListener serviceClientListener,
-            ICacheNotify<MigrationCache> cacheMigrationNotify,
-            ICacheNotify<MigrationUploadCdn> uploadCdnMigrationNotify,
-            IServiceProvider serviceProvider)
+    private void ProgressListening()
+    {
+        _progressMigrationNotify.Subscribe(n =>
         {
-            ServiceClientListener = serviceClientListener;
-            CacheMigrationNotify = cacheMigrationNotify;
-            UploadCdnMigrationNotify = uploadCdnMigrationNotify;
-            ServiceProvider = serviceProvider;
-        }
-
-        public void Migrate(int tenant, StorageSettings storageSettings)
-        {
-            var storSettings = new StorSettings { Id = storageSettings.ID.ToString(), Module = storageSettings.Module };
-
-            CacheMigrationNotify.Publish(new MigrationCache
+            var migrationProgress = new MigrationProgress
             {
-                TenantId = tenant,
-                StorSettings = storSettings
-            },
-                CacheNotifyAction.Insert);
-        }
+                TenantId = n.TenantId,
+                Progress = n.Progress,
+                IsCompleted = n.IsCompleted,
+                Error = n.Error
+            };
 
-        public void UploadCdn(int tenantId, string relativePath, string mappedPath, CdnStorageSettings settings = null)
+            _cache.Insert(GetCacheKey(n.TenantId), migrationProgress, DateTime.MaxValue);
+        },
+           Common.Caching.CacheNotifyAction.Insert);
+    }
+
+    private string GetCacheKey(int tenantId)
+    {
+        return typeof(MigrationProgress).FullName + tenantId;
+    }
+}
+
+[Scope]
+public class ServiceClient : IService
+{
+    public ServiceClientListener ServiceClientListener { get; }
+    public ICacheNotify<MigrationCache> CacheMigrationNotify { get; }
+    public ICacheNotify<MigrationUploadCdn> UploadCdnMigrationNotify { get; }
+    public IServiceProvider ServiceProvider { get; }
+
+    public ServiceClient(
+        ServiceClientListener serviceClientListener,
+        ICacheNotify<MigrationCache> cacheMigrationNotify,
+        ICacheNotify<MigrationUploadCdn> uploadCdnMigrationNotify,
+        IServiceProvider serviceProvider)
+    {
+        ServiceClientListener = serviceClientListener;
+        CacheMigrationNotify = cacheMigrationNotify;
+        UploadCdnMigrationNotify = uploadCdnMigrationNotify;
+        ServiceProvider = serviceProvider;
+    }
+
+    public void Migrate(int tenant, StorageSettings storageSettings)
+    {
+        var storSettings = new StorSettings { Id = storageSettings.ID.ToString(), Module = storageSettings.Module };
+
+        CacheMigrationNotify.Publish(new MigrationCache
         {
-            var cdnStorSettings = new CdnStorSettings { Id = settings.ID.ToString(), Module = settings.Module };
+            TenantId = tenant,
+            StorSettings = storSettings
+        },
+                Common.Caching.CacheNotifyAction.Insert);
+    }
 
-            UploadCdnMigrationNotify.Publish(new MigrationUploadCdn
-            {
-                Tenant = tenantId,
-                RelativePath = relativePath,
-                MappedPath = mappedPath,
-                CdnStorSettings = cdnStorSettings
-            },
-                CacheNotifyAction.Insert);
-        }
+    public void UploadCdn(int tenantId, string relativePath, string mappedPath, CdnStorageSettings settings = null)
+    {
+        var cdnStorSettings = new CdnStorSettings { Id = settings.ID.ToString(), Module = settings.Module };
 
-        public double GetProgress(int tenant)
+        UploadCdnMigrationNotify.Publish(new MigrationUploadCdn
         {
-            var migrationProgress = ServiceClientListener.GetProgress(tenant);
+            Tenant = tenantId,
+            RelativePath = relativePath,
+            MappedPath = mappedPath,
+            CdnStorSettings = cdnStorSettings
+        },
+                Common.Caching.CacheNotifyAction.Insert);
+    }
 
-            return migrationProgress.Progress;
-        }
+    public double GetProgress(int tenant)
+    {
+        var migrationProgress = ServiceClientListener.GetProgress(tenant);
 
-        public void StopMigrate()
-        {
-            CacheMigrationNotify.Publish(new MigrationCache(), CacheNotifyAction.InsertOrUpdate);
-        }
+        return migrationProgress.Progress;
+    }
+
+    public void StopMigrate()
+    {
+            CacheMigrationNotify.Publish(new MigrationCache(), Common.Caching.CacheNotifyAction.InsertOrUpdate);
     }
 }

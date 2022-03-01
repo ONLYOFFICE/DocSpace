@@ -23,14 +23,6 @@
  *
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-using ASC.Common.Utils;
-using ASC.Core;
-
 namespace ASC.Web.Core.Calendars
 {
     public abstract class BaseCalendar : ICalendar, ICloneable

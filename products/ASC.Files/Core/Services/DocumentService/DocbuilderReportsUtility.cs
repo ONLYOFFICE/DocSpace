@@ -23,22 +23,6 @@
  *
 */
 
-
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Web;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Threading;
-using ASC.Core;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
 namespace ASC.Web.Files.Services.DocumentService
 {
     public enum ReportOrigin
@@ -338,7 +322,7 @@ namespace ASC.Web.Files.Services.DocumentService
             DocbuilderReportsUtility = docbuilderReportsUtility;
             AuthContext = authContext;
             TenantManager = tenantManager;
-            TenantId = TenantManager.GetCurrentTenant().TenantId;
+            TenantId = TenantManager.GetCurrentTenant().Id;
             UserId = AuthContext.CurrentAccount.ID;
         }
 
