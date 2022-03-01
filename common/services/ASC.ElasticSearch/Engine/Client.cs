@@ -46,7 +46,7 @@ public class Client
 
                 using var scope = _serviceProvider.CreateScope();
                 var CoreConfiguration = _serviceProvider.GetService<CoreConfiguration>();
-                var launchSettings = CoreConfiguration.GetSection<Settings>(Tenant.DEFAULT_TENANT) ?? _settings;
+                var launchSettings = CoreConfiguration.GetSection<Settings>(Tenant.DefaultTenant) ?? _settings;
 
                 var uri = new Uri(string.Format("{0}://{1}:{2}", launchSettings.Scheme, launchSettings.Host, launchSettings.Port));
                 var settings = new ConnectionSettings(new SingleNodeConnectionPool(uri))

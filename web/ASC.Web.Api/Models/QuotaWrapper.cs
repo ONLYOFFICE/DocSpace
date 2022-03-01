@@ -96,7 +96,7 @@ namespace ASC.Web.Studio.Core.Quota
             TenantStatisticsProvider = tenantStatisticsProvider;
             WebItemManager = webItemManager;
             var quota = TenantExtra.GetTenantQuota();
-            var quotaRows = TenantStatisticsProvider.GetQuotaRows(tenant.TenantId).ToList();
+            var quotaRows = TenantStatisticsProvider.GetQuotaRows(tenant.Id).ToList();
 
             StorageSize = (ulong)Math.Max(0, quota.MaxTotalSize);
             UsedSize = (ulong)Math.Max(0, quotaRows.Sum(r => r.Counter));

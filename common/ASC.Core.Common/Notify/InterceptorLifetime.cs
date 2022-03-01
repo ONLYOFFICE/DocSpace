@@ -24,11 +24,10 @@
 */
 
 
-namespace ASC.Notify
+namespace ASC.Notify;
+
+public enum InterceptorLifetime
 {
-    public enum InterceptorLifetime
-    {
-        Call = 1,
-        Global = 2
-    }
+    Call = 1,
+    Global = 2
 }

@@ -24,13 +24,12 @@
 */
 
 
-namespace ASC.Core.Notify.Senders
+namespace ASC.Core.Notify.Senders;
+
+public enum NoticeSendResult
 {
-    public enum NoticeSendResult
-    {
-        OK,
-        TryOnceAgain,
-        MessageIncorrect,
-        SendingImpossible,
-    }
+    OK,
+    TryOnceAgain,
+    MessageIncorrect,
+    SendingImpossible,
 }

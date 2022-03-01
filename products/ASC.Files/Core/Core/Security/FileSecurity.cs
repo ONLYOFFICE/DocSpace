@@ -205,7 +205,7 @@ namespace ASC.Files.Core.Security
                         EntryType = entry.FileEntryType,
                         Share = DefaultCommonShare,
                         Subject = Constants.GroupEveryone.ID,
-                        Tenant = TenantManager.GetCurrentTenant().TenantId,
+                        Tenant = TenantManager.GetCurrentTenant().Id,
                         Owner = AuthContext.CurrentAccount.ID
                     };
 
@@ -214,7 +214,7 @@ namespace ASC.Files.Core.Security
                         if ((defaultShareRecord.Share == FileShare.Read && action == FilesSecurityActions.Read) ||
                             (defaultShareRecord.Share == FileShare.ReadWrite))
                             return UserManager.GetUsersByGroup(defaultShareRecord.Subject)
-                                              .Where(x => x.Status == EmployeeStatus.Active).Select(y => y.ID).Distinct();
+                                              .Where(x => x.Status == EmployeeStatus.Active).Select(y => y.Id).Distinct();
 
                         return Enumerable.Empty<Guid>();
                     }
@@ -229,7 +229,7 @@ namespace ASC.Files.Core.Security
                         EntryType = entry.FileEntryType,
                         Share = DefaultMyShare,
                         Subject = entry.RootFolderCreator,
-                        Tenant = TenantManager.GetCurrentTenant().TenantId,
+                        Tenant = TenantManager.GetCurrentTenant().Id,
                         Owner = entry.RootFolderCreator
                     };
 
@@ -249,7 +249,7 @@ namespace ASC.Files.Core.Security
                         EntryType = entry.FileEntryType,
                         Share = DefaultPrivacyShare,
                         Subject = entry.RootFolderCreator,
-                        Tenant = TenantManager.GetCurrentTenant().TenantId,
+                        Tenant = TenantManager.GetCurrentTenant().Id,
                         Owner = entry.RootFolderCreator
                     };
 
@@ -299,7 +299,7 @@ namespace ASC.Files.Core.Security
                                                  return
                                                      UserManager.GetUsersByGroup(groupInfo.ID)
                                                                 .Where(p => p.Status == EmployeeStatus.Active)
-                                                                .Select(y => y.ID);
+                                                                .Select(y => y.Id);
 
                                              return new[] { x.Subject };
                                          })
@@ -387,7 +387,7 @@ namespace ASC.Files.Core.Security
                 List<Guid> subjects = null;
                 foreach (var e in entries.Where(filter))
                 {
-                    if (!AuthManager.GetAccountByID(TenantManager.GetCurrentTenant().TenantId, userId).IsAuthenticated && userId != FileConstant.ShareLinkId)
+                    if (!AuthManager.GetAccountByID(TenantManager.GetCurrentTenant().Id, userId).IsAuthenticated && userId != FileConstant.ShareLinkId)
                     {
                         continue;
                     }
@@ -705,7 +705,7 @@ namespace ASC.Files.Core.Security
             var securityDao = daoFactory.GetSecurityDao<T>();
             var r = new FileShareRecord
             {
-                Tenant = TenantManager.GetCurrentTenant().TenantId,
+                Tenant = TenantManager.GetCurrentTenant().Id,
                 EntryId = entryId,
                 EntryType = entryType,
                 Subject = @for,

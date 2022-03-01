@@ -23,58 +23,62 @@
  *
 */
 
-namespace ASC.Notify.Channels
+namespace ASC.Notify.Channels;
+
+public class SenderChannel : ISenderChannel
 {
-    public class SenderChannel : ISenderChannel
+    private readonly ISink _firstSink;
+    private readonly ISink _senderSink;
+
+    public string SenderName { get; private set; }
+
+
+    public SenderChannel(Context context, string senderName, ISink decorateSink, ISink senderSink)
     {
-        private readonly ISink firstSink;
-        private readonly ISink senderSink;
+        SenderName = senderName ?? throw new ArgumentNullException(nameof(senderName));
+        _firstSink = decorateSink;
+        _senderSink = senderSink ?? throw new ApplicationException($"channel with tag {senderName} not created sender sink");
 
 
-        public string SenderName
+        context = context ?? throw new ArgumentNullException(nameof(context));
+        var dispatcherSink = new DispatchSink(SenderName, context.DispatchEngine);
+        _firstSink = AddSink(_firstSink, dispatcherSink);
+    }
+
+    public void SendAsync(INoticeMessage message)
+    {
+        if (message == null)
         {
-            get;
-            private set;
+            throw new ArgumentNullException(nameof(message));
         }
 
+        _firstSink.ProcessMessageAsync(message);
+    }
 
-        public SenderChannel(Context context, string senderName, ISink decorateSink, ISink senderSink)
+    public SendResponse DirectSend(INoticeMessage message)
+    {
+        return _senderSink.ProcessMessage(message);
+    }
+
+    private ISink AddSink(ISink firstSink, ISink addedSink)
+    {
+        if (firstSink == null)
         {
-            this.SenderName = senderName ?? throw new ArgumentNullException(nameof(senderName));
-            this.firstSink = decorateSink;
-            this.senderSink = senderSink ?? throw new ApplicationException($"channel with tag {senderName} not created sender sink");
-
-
-            context = context ?? throw new ArgumentNullException(nameof(context));
-            var dispatcherSink = new DispatchSink(SenderName, context.DispatchEngine);
-            this.firstSink = AddSink(firstSink, dispatcherSink);
+            return addedSink;
         }
 
-        public void SendAsync(INoticeMessage message)
+        if (addedSink == null)
         {
-            if (message == null) throw new ArgumentNullException(nameof(message));
-
-            firstSink.ProcessMessageAsync(message);
-        }
-
-        public SendResponse DirectSend(INoticeMessage message)
-        {
-            return senderSink.ProcessMessage(message);
-        }
-
-
-        private ISink AddSink(ISink firstSink, ISink addedSink)
-        {
-            if (firstSink == null) return addedSink;
-            if (addedSink == null) return firstSink;
-
-            var current = firstSink;
-            while (current.NextSink != null)
-            {
-                current = current.NextSink;
-            }
-            current.NextSink = addedSink;
             return firstSink;
         }
+
+        var current = firstSink;
+        while (current.NextSink != null)
+        {
+            current = current.NextSink;
+        }
+        current.NextSink = addedSink;
+
+        return firstSink;
     }
 }

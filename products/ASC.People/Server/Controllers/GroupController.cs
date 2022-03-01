@@ -121,7 +121,7 @@
             group.Name = groupModel.GroupName ?? group.Name;
             UserManager.SaveGroupInfo(group);
 
-            RemoveMembersFrom(groupid, new GroupModel {Members = UserManager.GetUsersByGroup(groupid, EmployeeStatus.All).Select(u => u.ID).Where(id => !groupModel.Members.Contains(id)) });
+            RemoveMembersFrom(groupid, new GroupModel {Members = UserManager.GetUsersByGroup(groupid, EmployeeStatus.All).Select(u => u.Id).Where(id => !groupModel.Members.Contains(id)) });
 
             TransferUserToDepartment(groupModel.GroupManager, @group, true);
             if (groupModel.Members != null)
@@ -170,7 +170,7 @@
             var users = UserManager.GetUsersByGroup(oldgroup.ID);
             foreach (var userInfo in users)
             {
-                TransferUserToDepartment(userInfo.ID, newgroup, false);
+                TransferUserToDepartment(userInfo.Id, newgroup, false);
             }
             return GetById(newgroupid);
         }
@@ -190,7 +190,7 @@
 
         private GroupWrapperFull SetMembersTo(Guid groupid, GroupModel groupModel)
         {
-            RemoveMembersFrom(groupid, new GroupModel {Members = UserManager.GetUsersByGroup(groupid).Select(x => x.ID) });
+            RemoveMembersFrom(groupid, new GroupModel {Members = UserManager.GetUsersByGroup(groupid).Select(x => x.Id) });
             AddMembersTo(groupid, groupModel);
             return GetById(groupid);
         }
@@ -277,7 +277,7 @@
             if (!UserManager.UserExists(userId)) return;
 
             var user = UserManager.GetUsers(userId);
-            UserManager.RemoveUserFromGroup(user.ID, @group.ID);
+            UserManager.RemoveUserFromGroup(user.Id, @group.ID);
             UserManager.SaveUserInfo(user);
         }
 

@@ -98,7 +98,7 @@ namespace ASC.Web.Core.Users
         public bool CheckUniqueEmail(Guid userId, string email)
         {
             var foundUser = UserManager.GetUserByEmail(email);
-            return Equals(foundUser, Constants.LostUser) || foundUser.ID == userId;
+            return Equals(foundUser, Constants.LostUser) || foundUser.Id == userId;
         }
 
         public UserInfo AddUser(UserInfo userInfo, string passwordHash, bool afterInvite = false, bool notify = true, bool isVisitor = false, bool fromInviteLink = false, bool makeUniqueName = true)
@@ -108,7 +108,7 @@ namespace ASC.Web.Core.Users
             if (!UserFormatter.IsValidUserName(userInfo.FirstName, userInfo.LastName))
                 throw new Exception(Resource.ErrorIncorrectUserName);
 
-            if (!CheckUniqueEmail(userInfo.ID, userInfo.Email))
+            if (!CheckUniqueEmail(userInfo.Id, userInfo.Email))
                 throw new Exception(CustomNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
             if (makeUniqueName)
             {
@@ -125,7 +125,7 @@ namespace ASC.Web.Core.Users
             }
 
             var newUserInfo = UserManager.SaveUserInfo(userInfo);
-            SecurityContext.SetUserPasswordHash(newUserInfo.ID, passwordHash);
+            SecurityContext.SetUserPasswordHash(newUserInfo.Id, passwordHash);
 
             if (CoreBaseSettings.Personal)
             {
@@ -169,7 +169,7 @@ namespace ASC.Web.Core.Users
 
             if (isVisitor)
             {
-                UserManager.AddUserIntoGroup(newUserInfo.ID, Constants.GroupVisitor.ID);
+                UserManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupVisitor.ID);
             }
 
             return newUserInfo;

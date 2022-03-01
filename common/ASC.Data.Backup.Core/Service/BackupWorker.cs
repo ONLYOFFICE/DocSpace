@@ -375,8 +375,8 @@ public class BackupProgressItem : BaseBackupProgressItem
         var scopeClass = scope.ServiceProvider.GetService<BackupWorkerScope>();
         var (tenantManager, backupStorageFactory, notifyHelper, backupRepository, backupWorker, backupPortalTask, _, _, coreBaseSettings) = scopeClass;
 
-        var dateTime = coreBaseSettings.Standalone ? DateTime.Now : DateTime.UtcNow;
-        var backupName = string.Format("{0}_{1:yyyy-MM-dd_HH-mm-ss}.{2}", tenantManager.GetTenant(TenantId).TenantAlias, dateTime, ArchiveFormat);
+            var dateTime = coreBaseSettings.Standalone ? DateTime.Now : DateTime.UtcNow;
+            var backupName = string.Format("{0}_{1:yyyy-MM-dd_HH-mm-ss}.{2}", tenantManager.GetTenant(TenantId).Alias, dateTime, ArchiveFormat);
 
         var tempFile = CrossPlatform.PathCombine(TempFolder, backupName);
         var storagePath = tempFile;
@@ -532,9 +532,9 @@ public class RestoreProgressItem : BaseBackupProgressItem
             tenant.SetStatus(TenantStatus.Restoring);
             tenantManager.SaveTenant(tenant);
 
-            var columnMapper = new ColumnMapper();
-                columnMapper.SetMapping("tenants_tenants", "alias", tenant.TenantAlias, Guid.Parse(Id).ToString("N"));
-            columnMapper.Commit();
+                var columnMapper = new ColumnMapper();
+                columnMapper.SetMapping("tenants_tenants", "alias", tenant.Alias, Guid.Parse(Id).ToString("N"));
+                columnMapper.Commit();
 
             var restoreTask = restorePortalTask;
             restoreTask.Init(_configPaths[_currentRegion], tempFile, TenantId, columnMapper, _upgradesPath);
@@ -551,34 +551,31 @@ public class RestoreProgressItem : BaseBackupProgressItem
             {
                 AscCacheNotify.OnClearCache();
 
-                if (Notify)
-                {
-                    var tenants = tenantManager.GetTenants();
-
-                    foreach (var t in tenants)
+                    if (Notify)
                     {
-                        notifyHelper.SendAboutRestoreCompleted(t, Notify);
+                        var tenants = tenantManager.GetTenants();
+                        foreach (var t in tenants)
+                        {
+                            notifyHelper.SendAboutRestoreCompleted(t, Notify);
+                        }
                     }
                 }
-            }
-            else
-            {
-                tenantManager.RemoveTenant(tenant.TenantId);
-
-                restoredTenant = tenantManager.GetTenant(columnMapper.GetTenantMapping());
-                restoredTenant.SetStatus(TenantStatus.Active);
-                restoredTenant.TenantAlias = tenant.TenantAlias;
-                restoredTenant.PaymentId = string.Empty;
-
-                if (string.IsNullOrEmpty(restoredTenant.MappedDomain) && !string.IsNullOrEmpty(tenant.MappedDomain))
+                else
                 {
-                    restoredTenant.MappedDomain = tenant.MappedDomain;
-                }
+                    tenantManager.RemoveTenant(tenant.Id);
 
-                tenantManager.SaveTenant(restoredTenant);
-                tenantManager.SetCurrentTenant(restoredTenant);
-                // sleep until tenants cache expires
-                Thread.Sleep(TimeSpan.FromMinutes(2));
+                    restoredTenant = tenantManager.GetTenant(columnMapper.GetTenantMapping());
+                    restoredTenant.SetStatus(TenantStatus.Active);
+                    restoredTenant.Alias = tenant.Alias;
+                    restoredTenant.PaymentId = string.Empty;
+                    if (string.IsNullOrEmpty(restoredTenant.MappedDomain) && !string.IsNullOrEmpty(tenant.MappedDomain))
+                    {
+                        restoredTenant.MappedDomain = tenant.MappedDomain;
+                    }
+                    tenantManager.SaveTenant(restoredTenant);
+                    tenantManager.SetCurrentTenant(restoredTenant);
+                    // sleep until tenants cache expires
+                    Thread.Sleep(TimeSpan.FromMinutes(2));
 
                 notifyHelper.SendAboutRestoreCompleted(restoredTenant, Notify);
             }
@@ -667,14 +664,14 @@ public class TransferProgressItem : BaseBackupProgressItem
 
     }
 
-    protected override void DoJob()
-    {
-        using var scope = ServiceScopeFactory.CreateScope();
-        var scopeClass = scope.ServiceProvider.GetService<BackupWorkerScope>();
-        var (tenantManager, _, notifyHelper, _, backupWorker, _, _, transferPortalTask, _) = scopeClass;
-        var tempFile = PathHelper.GetTempFileName(TempFolder);
-        var tenant = tenantManager.GetTenant(TenantId);
-        var alias = tenant.TenantAlias;
+        protected override void DoJob()
+        {
+            using var scope = ServiceScopeFactory.CreateScope();
+            var scopeClass = scope.ServiceProvider.GetService<BackupWorkerScope>();
+            var (tenantManager, _, notifyHelper, _, backupWorker, _, _, transferPortalTask, _) = scopeClass;
+            var tempFile = PathHelper.GetTempFileName(TempFolder);
+            var tenant = tenantManager.GetTenant(TenantId);
+            var alias = tenant.Alias;
 
         try
         {

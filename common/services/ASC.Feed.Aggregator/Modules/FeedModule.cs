@@ -31,7 +31,7 @@ public abstract class FeedModule : IFeedModule
     public abstract string Product { get; }
     public abstract Guid ProductID { get; }
     protected abstract string DbId { get; }
-    protected int Tenant => TenantManager.GetCurrentTenant().TenantId;
+    protected int Tenant => TenantManager.GetCurrentTenant().Id;
 
     protected readonly TenantManager TenantManager;
     protected readonly WebItemSecurity WebItemSecurity;

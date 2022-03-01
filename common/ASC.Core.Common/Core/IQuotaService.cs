@@ -23,21 +23,15 @@
  *
 */
 
-namespace ASC.Core
+namespace ASC.Core;
+
+[Scope(typeof(ConfigureDbQuotaService), typeof(ConfigureCachedQuotaService))]
+public interface IQuotaService
 {
-    [Scope(typeof(ConfigureDbQuotaService), typeof(ConfigureCachedQuotaService))]
-    public interface IQuotaService
-    {
-        IEnumerable<TenantQuota> GetTenantQuotas();
-
-        TenantQuota GetTenantQuota(int id);
-
-        TenantQuota SaveTenantQuota(TenantQuota quota);
-
-        void RemoveTenantQuota(int id);
-
-        IEnumerable<TenantQuotaRow> FindTenantQuotaRows(int tenantId);
-
-        void SetTenantQuotaRow(TenantQuotaRow row, bool exchange);
-    }
+    IEnumerable<TenantQuota> GetTenantQuotas();
+    IEnumerable<TenantQuotaRow> FindTenantQuotaRows(int tenantId);
+    TenantQuota GetTenantQuota(int id);
+    TenantQuota SaveTenantQuota(TenantQuota quota);
+    void RemoveTenantQuota(int id);
+    void SetTenantQuotaRow(TenantQuotaRow row, bool exchange);
 }

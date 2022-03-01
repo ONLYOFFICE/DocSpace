@@ -23,54 +23,55 @@
  *
 */
 
-namespace ASC.Core
+namespace ASC.Core;
+
+[Scope]
+public class AuthManager
 {
-    [Scope]
-    public class AuthManager
+    private readonly IUserService _userService;
+    private readonly UserManager _userManager;
+    private readonly UserFormatter _userFormatter;
+    private readonly TenantManager _tenantManager;
+
+    public AuthManager(IUserService service, UserManager userManager, UserFormatter userFormatter, TenantManager tenantManager)
     {
-        private readonly IUserService userService;
+        _userService = service;
+        _userManager = userManager;
+        _userFormatter = userFormatter;
+        _tenantManager = tenantManager;
+    }
 
-        private UserManager UserManager { get; }
-        private UserFormatter UserFormatter { get; }
-        private TenantManager TenantManager { get; }
 
-        public AuthManager(IUserService service, UserManager userManager, UserFormatter userFormatter, TenantManager tenantManager)
+    public IUserAccount[] GetUserAccounts(Tenant tenant)
+    {
+        return _userManager.GetUsers(EmployeeStatus.Active).Select(u => ToAccount(tenant.Id, u)).ToArray();
+    }
+
+    public void SetUserPasswordHash(Guid userID, string passwordHash)
+    {
+        _userService.SetUserPasswordHash(_tenantManager.GetCurrentTenant().Id, userID, passwordHash);
+    }
+
+    public DateTime GetUserPasswordStamp(Guid userID)
+    {
+        return _userService.GetUserPasswordStamp(_tenantManager.GetCurrentTenant().Id, userID);
+    }
+
+    public IAccount GetAccountByID(int tenantId, Guid id)
+    {
+        var s = ASC.Core.Configuration.Constants.SystemAccounts.FirstOrDefault(a => a.ID == id);
+        if (s != null)
         {
-            userService = service;
-            UserManager = userManager;
-            UserFormatter = userFormatter;
-            TenantManager = tenantManager;
+            return s;
         }
 
+        var u = _userManager.GetUsers(id);
 
-        public IUserAccount[] GetUserAccounts(Tenant tenant)
-        {
-            return UserManager.GetUsers(EmployeeStatus.Active).Select(u => ToAccount(tenant.TenantId, u)).ToArray();
-        }
+        return !Users.Constants.LostUser.Equals(u) && u.Status == EmployeeStatus.Active ? (IAccount)ToAccount(tenantId, u) : ASC.Core.Configuration.Constants.Guest;
+    }
 
-        public void SetUserPasswordHash(Guid userID, string passwordHash)
-        {
-            userService.SetUserPasswordHash(TenantManager.GetCurrentTenant().TenantId, userID, passwordHash);
-        }
-
-        public DateTime GetUserPasswordStamp(Guid userID)
-        {
-            return userService.GetUserPasswordStamp(TenantManager.GetCurrentTenant().TenantId, userID);
-        }
-
-        public IAccount GetAccountByID(int tenantId, Guid id)
-        {
-            var s = ASC.Core.Configuration.Constants.SystemAccounts.FirstOrDefault(a => a.ID == id);
-            if (s != null) return s;
-
-            var u = UserManager.GetUsers(id);
-            return !Users.Constants.LostUser.Equals(u) && u.Status == EmployeeStatus.Active ? (IAccount)ToAccount(tenantId, u) : ASC.Core.Configuration.Constants.Guest;
-        }
-
-
-        private IUserAccount ToAccount(int tenantId, UserInfo u)
-        {
-            return new UserAccount(u, tenantId, UserFormatter);
-        }
+    private IUserAccount ToAccount(int tenantId, UserInfo u)
+    {
+        return new UserAccount(u, tenantId, _userFormatter);
     }
 }

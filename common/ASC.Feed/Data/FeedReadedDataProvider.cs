@@ -112,7 +112,7 @@ public class FeedReadedDataProvider
 
     private int GetTenant()
     {
-        return _tenantManager.GetCurrentTenant().TenantId;
+        return _tenantManager.GetCurrentTenant().Id;
     }
 
     private Guid GetUser()

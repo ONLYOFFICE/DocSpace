@@ -23,44 +23,43 @@
  *
 */
 
-namespace ASC.Core
+namespace ASC.Core;
+
+[Serializable]
+public class SubscriptionMethod : IMapFrom<DbSubscriptionMethod>
 {
-    [Serializable]
-    public class SubscriptionMethod
+    public int Tenant { get; set; }
+    public string Source { get; set; }
+    public string Action { get; set; }
+    public string Recipient { get; set; }
+    public string[] Methods { get; set; }
+
+    public static implicit operator SubscriptionMethod(SubscriptionMethodCache cache)
     {
-        public int Tenant { get; set; }
-
-        public string SourceId { get; set; }
-
-        public string ActionId { get; set; }
-
-        public string RecipientId { get; set; }
-
-        public string[] Methods { get; set; }
-
-        public string MethodsFromDb { set { Methods = value.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries); } }
-
-
-        public static implicit operator SubscriptionMethod(SubscriptionMethodCache cache)
+        return new SubscriptionMethod()
         {
-            return new SubscriptionMethod()
-            {
-                Tenant = cache.Tenant,
-                SourceId = cache.SourceId,
-                ActionId = cache.ActionId,
-                RecipientId = cache.RecipientId
-            };
-        }
+            Tenant = cache.Tenant,
+            Source = cache.SourceId,
+            Action = cache.ActionId,
+            Recipient = cache.RecipientId
+        };
+    }
 
-        public static implicit operator SubscriptionMethodCache(SubscriptionMethod cache)
+    public static implicit operator SubscriptionMethodCache(SubscriptionMethod cache)
+    {
+        return new SubscriptionMethodCache
         {
-            return new SubscriptionMethodCache
-            {
-                Tenant = cache.Tenant,
-                SourceId = cache.SourceId,
-                ActionId = cache.ActionId,
-                RecipientId = cache.RecipientId
-            };
-        }
+            Tenant = cache.Tenant,
+            SourceId = cache.Source,
+            ActionId = cache.Action,
+            RecipientId = cache.Recipient
+        };
+    }
+
+    public void Mapping(Profile profile)
+    {
+        profile.CreateMap<DbSubscriptionMethod, SubscriptionMethod>()
+            .ForMember(dest => dest.Methods, opt => opt
+                .MapFrom(src => src.Sender.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries)));
     }
 }

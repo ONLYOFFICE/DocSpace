@@ -123,15 +123,15 @@ public class BackupAjaxHandler
 
         ValidateCronSettings(cronParams);
 
-        var scheduleRequest = new CreateScheduleRequest
-        {
-            TenantId = _tenantManager.GetCurrentTenant().TenantId,
-            BackupMail = backupMail,
-            Cron = cronParams.ToString(),
-            NumberOfBackupsStored = backupsStored,
-            StorageType = storageType,
-            StorageParams = storageParams
-        };
+            var scheduleRequest = new CreateScheduleRequest
+            {
+                TenantId = _tenantManager.GetCurrentTenant().Id,
+                BackupMail = backupMail,
+                Cron = cronParams.ToString(),
+                NumberOfBackupsStored = backupsStored,
+                StorageType = storageType,
+                StorageParams = storageParams
+            };
 
         switch (storageType)
         {
@@ -194,7 +194,7 @@ public class BackupAjaxHandler
 
             var Schedule = new CreateScheduleRequest
             {
-                TenantId = _tenantManager.GetCurrentTenant().TenantId,
+                TenantId = _tenantManager.GetCurrentTenant().Id,
                 BackupMail = schedule.BackupMail != null && (bool)schedule.BackupMail,
                 Cron = schedule.CronParams.ToString(),
                 NumberOfBackupsStored = schedule.BackupsStored == null ? 0 : (int)schedule.BackupsStored,
@@ -269,7 +269,7 @@ public class BackupAjaxHandler
         BackupProgress result;
 
         var tenant = _tenantManager.GetCurrentTenant();
-        result = _backupService.GetRestoreProgress(tenant.TenantId);
+        result = _backupService.GetRestoreProgress(tenant.Id);
 
         return result;
     }
@@ -279,7 +279,7 @@ public class BackupAjaxHandler
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
         if (!SetupInfo.IsVisibleSettings("Restore") ||
-            (!_coreBaseSettings.Standalone && !_tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().TenantId).Restore))
+            (!_coreBaseSettings.Standalone && !_tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Restore))
         {
             throw new BillingException(Resource.ErrorNotAllowedOption, "Restore");
         }
@@ -337,7 +337,7 @@ public class BackupAjaxHandler
 
     private int GetCurrentTenantId()
     {
-        return _tenantManager.GetCurrentTenant().TenantId;
+        return _tenantManager.GetCurrentTenant().Id;
     }
 
     public class Schedule

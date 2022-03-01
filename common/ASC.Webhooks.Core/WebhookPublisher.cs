@@ -20,7 +20,7 @@ public class WebhookPublisher : IWebhookPublisher
 
     public void Publish(string eventName, string requestPayload)
     {
-        var tenantId = _tenantManager.GetCurrentTenant().TenantId;
+        var tenantId = _tenantManager.GetCurrentTenant().Id;
         var webhookConfigs = _dbWorker.GetWebhookConfigs(tenantId);
 
         foreach (var config in webhookConfigs)

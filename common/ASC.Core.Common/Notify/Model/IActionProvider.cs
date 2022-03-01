@@ -24,12 +24,10 @@
 */
 
 
-namespace ASC.Notify.Model
-{
-    public interface IActionProvider
-    {
-        INotifyAction GetAction(string id);
+namespace ASC.Notify.Model;
 
-        INotifyAction[] GetActions();
-    }
+public interface IActionProvider
+{
+    INotifyAction GetAction(string id);
+    INotifyAction[] GetActions();
 }

@@ -23,32 +23,20 @@
  *
 */
 
-namespace ASC.Core
+namespace ASC.Core;
+
+[Scope(typeof(DbSubscriptionService))]
+public interface ISubscriptionService
 {
-    [Scope(typeof(DbSubscriptionService))]
-    public interface ISubscriptionService
-    {
-        string[] GetRecipients(int tenant, string sourceID, string actionID, string objectID);
-
-        IEnumerable<SubscriptionRecord> GetSubscriptions(int tenant, string sourceId, string actionId);
-
-        IEnumerable<SubscriptionRecord> GetSubscriptions(int tenant, string sourceId, string actionId, string recipientId, string objectId);
-
-        string[] GetSubscriptions(int tenant, string sourceId, string actionId, string recipientId, bool checkSubscribe);
-
-        SubscriptionRecord GetSubscription(int tenant, string sourceId, string actionId, string recipientId, string objectId);
-
-        bool IsUnsubscribe(int tenant, string sourceId, string actionId, string recipientId, string objectId);
-
-        void SaveSubscription(SubscriptionRecord s);
-
-        void RemoveSubscriptions(int tenant, string sourceId, string actionId);
-
-        void RemoveSubscriptions(int tenant, string sourceId, string actionId, string objectId);
-
-
-        IEnumerable<SubscriptionMethod> GetSubscriptionMethods(int tenant, string sourceId, string actionId, string recipientId);
-
-        void SetSubscriptionMethod(SubscriptionMethod m);
-    }
+    bool IsUnsubscribe(int tenant, string sourceId, string actionId, string recipientId, string objectId);
+    IEnumerable<SubscriptionMethod> GetSubscriptionMethods(int tenant, string sourceId, string actionId, string recipientId);
+    IEnumerable<SubscriptionRecord> GetSubscriptions(int tenant, string sourceId, string actionId);
+    IEnumerable<SubscriptionRecord> GetSubscriptions(int tenant, string sourceId, string actionId, string recipientId, string objectId);
+    string[] GetRecipients(int tenant, string sourceID, string actionID, string objectID);
+    string[] GetSubscriptions(int tenant, string sourceId, string actionId, string recipientId, bool checkSubscribe);
+    SubscriptionRecord GetSubscription(int tenant, string sourceId, string actionId, string recipientId, string objectId);
+    void RemoveSubscriptions(int tenant, string sourceId, string actionId);
+    void RemoveSubscriptions(int tenant, string sourceId, string actionId, string objectId);
+    void SaveSubscription(SubscriptionRecord s);
+    void SetSubscriptionMethod(SubscriptionMethod m);
 }

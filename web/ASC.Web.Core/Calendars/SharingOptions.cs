@@ -53,7 +53,7 @@ namespace ASC.Web.Core.Calendars
                 return true;
 
             var u = userManager.GetUsers(itemId);
-            if (u != null && u.ID != ASC.Core.Users.Constants.LostUser.ID)
+            if (u != null && u.Id != ASC.Core.Users.Constants.LostUser.Id)
             {
                 var userGroups = new List<GroupInfo>(userManager.GetUserGroups(itemId));
                 userGroups.AddRange(userManager.GetUserGroups(itemId, Constants.SysGroupCategoryId));

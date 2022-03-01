@@ -35,7 +35,7 @@ namespace ASC.Files.Core.Data
         protected internal int TenantID { 
             get 
             {
-                if (tenantID == 0) tenantID = TenantManager.GetCurrentTenant().TenantId;
+                if (tenantID == 0) tenantID = TenantManager.GetCurrentTenant().Id;
                 return tenantID; 
             }
         }

@@ -90,7 +90,7 @@ namespace ASC.Web.Core.Users.Import
         {
             var exportedUser = new UserInfo
             {
-                ID = Guid.NewGuid()
+                Id = Guid.NewGuid()
             };
 
             var dataFields = GetDataFields(line);

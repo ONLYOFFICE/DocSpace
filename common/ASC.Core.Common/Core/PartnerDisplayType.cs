@@ -24,12 +24,11 @@
 */
 
 
-namespace ASC.Core
+namespace ASC.Core;
+
+public enum PartnerDisplayType
 {
-    public enum PartnerDisplayType
-    {
-        LogoOnly,
-        DisplayNameOnly,
-        All,
-    }
+    LogoOnly,
+    DisplayNameOnly,
+    All,
 }

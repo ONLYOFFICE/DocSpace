@@ -39,7 +39,7 @@ public class Helpers
             Guid.Empty,
             ConfigurationConstants.CoreSystem.ID,
             ConfigurationConstants.Guest.ID,
-            UserConstants.LostUser.ID
+            UserConstants.LostUser.Id
         };
 
     private readonly Guid[] _systemGroups = new[]

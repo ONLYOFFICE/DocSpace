@@ -103,7 +103,7 @@ public class TelegramListenerService : BackgroundService
             _tenantManager.SetCurrentTenant(tenant);
             if (_telegramLoginProvider.IsEnabled())
             {
-                _telegramHandler.CreateOrUpdateClientForTenant(tenant.TenantId, _telegramLoginProvider.TelegramBotToken, _telegramLoginProvider.TelegramAuthTokenLifespan, _telegramLoginProvider.TelegramProxy, true, _stoppingToken, true);
+                _telegramHandler.CreateOrUpdateClientForTenant(tenant.Id, _telegramLoginProvider.TelegramBotToken, _telegramLoginProvider.TelegramAuthTokenLifespan, _telegramLoginProvider.TelegramProxy, true, _stoppingToken, true);
             }
         }
     }

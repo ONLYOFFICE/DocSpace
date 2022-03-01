@@ -23,36 +23,38 @@
  *
 */
 
-namespace ASC.Notify.Engine
+namespace ASC.Notify.Engine;
+
+class SingleRecipientInterceptor : ISendInterceptor
 {
-    class SingleRecipientInterceptor : ISendInterceptor
+    private const string Prefix = "__singlerecipientinterceptor";
+    private readonly List<IRecipient> _sendedTo = new List<IRecipient>(10);
+
+    public string Name { get; private set; }
+    public InterceptorPlace PreventPlace => InterceptorPlace.GroupSend | InterceptorPlace.DirectSend;
+    public InterceptorLifetime Lifetime => InterceptorLifetime.Call;
+
+
+    internal SingleRecipientInterceptor(string name)
     {
-        private const string prefix = "__singlerecipientinterceptor";
-        private readonly List<IRecipient> sendedTo = new List<IRecipient>(10);
-
-
-        public string Name { get; private set; }
-
-        public InterceptorPlace PreventPlace { get { return InterceptorPlace.GroupSend | InterceptorPlace.DirectSend; } }
-
-        public InterceptorLifetime Lifetime { get { return InterceptorLifetime.Call; } }
-
-
-        internal SingleRecipientInterceptor(string name)
+        if (string.IsNullOrEmpty(name))
         {
-            if (string.IsNullOrEmpty(name)) throw new ArgumentException("name");
-            Name = name;
+            throw new ArgumentException(nameof(name));
         }
 
-        public bool PreventSend(NotifyRequest request, InterceptorPlace place, IServiceScope serviceScope)
+        Name = name;
+    }
+
+    public bool PreventSend(NotifyRequest request, InterceptorPlace place, IServiceScope serviceScope)
+    {
+        var sendTo = request.Recipient;
+        if (!_sendedTo.Exists(rec => Equals(rec, sendTo)))
         {
-            var sendTo = request.Recipient;
-            if (!sendedTo.Exists(rec => Equals(rec, sendTo)))
-            {
-                sendedTo.Add(sendTo);
-                return false;
-            }
-            return true;
+            _sendedTo.Add(sendTo);
+
+            return false;
         }
+
+        return true;
     }
 }
