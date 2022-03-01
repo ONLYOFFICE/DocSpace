@@ -1,13 +1,12 @@
-﻿namespace ASC.Web.Api.Models
-{
-    public class TfaModel
-    {
-        public string Type { get; set; }
-        public Guid? Id { get; set; }
-    }
+﻿namespace ASC.Web.Api.ApiModel.RequestsDto;
 
-    public class TfaValidateModel
-    {
-        public string Code { get; set; }
-    }
+public class TfaDto
+{
+    public string Type { get; set; }
+    public Guid? Id { get; set; }
+}
+
+public class TfaValidateDto
+{
+    public string Code { get; set; }
 }

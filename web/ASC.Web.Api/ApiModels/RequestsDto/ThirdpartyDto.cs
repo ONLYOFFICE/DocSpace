@@ -1,8 +1,7 @@
-﻿namespace ASC.Web.Api.Models
+﻿namespace ASC.Web.Api.ApiModel.RequestsDto;
+
+public class ThirdpartyDto
 {
-    public class ThirdpartyModel
-    {
-        public string Code { get; set; }
-        public string Redirect { get; set; }
-    }
+    public string Code { get; set; }
+    public string Redirect { get; set; }
 }

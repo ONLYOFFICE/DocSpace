@@ -23,11 +23,10 @@
  *
 */
 
-namespace ASC.Web.Api.Models
+namespace ASC.Web.Api.ApiModel.RequestsDto;
+
+public class IpRestrictionsDto
 {
-    public class IpRestrictionsModel
-    {
-        public IEnumerable<string> Ips { get; set; }
-        public bool Enable { get; set; }
-    }
+    public IEnumerable<string> Ips { get; set; }
+    public bool Enable { get; set; }
 }

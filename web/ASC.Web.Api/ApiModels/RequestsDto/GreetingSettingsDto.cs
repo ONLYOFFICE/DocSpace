@@ -1,7 +1,6 @@
-﻿namespace ASC.Web.Api.Models
+﻿namespace ASC.Web.Api.ApiModel.RequestsDto;
+
+public class GreetingSettingsDto
 {
-    public class GreetingSettingsModel
-    {
-        public string Title { get; set; }
-    }
+    public string Title { get; set; }
 }

@@ -28,235 +28,222 @@ using AuthenticationException = System.Security.Authentication.AuthenticationExc
 using SecurityContext = ASC.Core.SecurityContext;
 using SmtpClient = MailKit.Net.Smtp.SmtpClient;
 
-namespace ASC.Api.Settings.Smtp
+namespace ASC.Api.Settings.Smtp;
+public class SmtpOperation
 {
-    public class SmtpOperation
+    public const string OWNER = "SMTPOwner";
+    public const string SOURCE = "SMTPSource";
+    public const string PROGRESS = "SMTPProgress";
+    public const string RESULT = "SMTPResult";
+    public const string ERROR = "SMTPError";
+    public const string FINISHED = "SMTPFinished";
+
+    protected DistributedTask TaskInfo { get; set; }
+    protected CancellationToken CancellationToken { get; private set; }
+    protected int Progress { get; private set; }
+    protected string Source { get; private set; }
+    protected string Status { get; set; }
+    protected string Error { get; set; }
+    protected int CurrentTenant { get; private set; }
+    protected Guid CurrentUser { get; private set; }
+
+    private readonly UserManager _userManager;
+    private readonly SecurityContext _securityContext;
+    private readonly TenantManager _tenantManager;
+    private readonly ILog _logger;
+    private readonly SmtpSettingsResponseDto _smtpSettings;
+
+    private readonly string _messageSubject;
+    private readonly string _messageBody;
+
+
+    public SmtpOperation(
+        SmtpSettingsResponseDto smtpSettings,
+        int tenant,
+        Guid user,
+        UserManager userManager,
+        SecurityContext securityContext,
+        TenantManager tenantManager,
+        IOptionsMonitor<ILog> options)
     {
-        public const string OWNER = "SMTPOwner";
-        public const string SOURCE = "SMTPSource";
-        public const string PROGRESS = "SMTPProgress";
-        public const string RESULT = "SMTPResult";
-        public const string ERROR = "SMTPError";
-        public const string FINISHED = "SMTPFinished";
+        _smtpSettings = smtpSettings;
+        CurrentTenant = tenant;
+        CurrentUser = user;
+        _userManager = userManager;
+        _securityContext = securityContext;
+        _tenantManager = tenantManager;
 
-        protected DistributedTask TaskInfo { get; set; }
+        //todo
+        _messageSubject = WebstudioNotifyPatternResource.subject_smtp_test;
+        _messageBody = WebstudioNotifyPatternResource.pattern_smtp_test;
 
-        protected CancellationToken CancellationToken { get; private set; }
+        Source = "";
+        Progress = 0;
+        Status = "";
+        Error = "";
+        Source = "";
 
-        protected int Progress { get; private set; }
+        TaskInfo = new DistributedTask();
 
-        protected string Source { get; private set; }
+        _logger = options.CurrentValue;
+    }
 
-        protected string Status { get; set; }
-
-        protected string Error { get; set; }
-
-        protected int CurrentTenant { get; private set; }
-
-        protected Guid CurrentUser { get; private set; }
-        private UserManager UserManager { get; }
-        private SecurityContext SecurityContext { get; }
-        private TenantManager TenantManager { get; }
-        private IConfiguration Configuration { get; }
-        protected ILog Logger { get; private set; }
-
-        public SmtpSettingsWrapper SmtpSettings { get; private set; }
-
-        private readonly string messageSubject;
-
-        private readonly string messageBody;
-
-
-        public SmtpOperation(
-            SmtpSettingsWrapper smtpSettings,
-            int tenant,
-            Guid user,
-            UserManager userManager,
-            SecurityContext securityContext,
-            TenantManager tenantManager,
-            IConfiguration configuration,
-            IOptionsMonitor<ILog> options)
+    public void RunJob(DistributedTask distributedTask, CancellationToken cancellationToken)
+    {
+        try
         {
-            SmtpSettings = smtpSettings;
-            CurrentTenant = tenant;
-            CurrentUser = user;
-            UserManager = userManager;
-            SecurityContext = securityContext;
-            TenantManager = tenantManager;
-            Configuration = configuration;
+            CancellationToken = cancellationToken;
 
-            //todo
-            messageSubject = WebstudioNotifyPatternResource.subject_smtp_test;
-            messageBody = WebstudioNotifyPatternResource.pattern_smtp_test;
+            SetProgress(5, "Setup tenant");
 
-            Source = "";
-            Progress = 0;
-            Status = "";
-            Error = "";
-            Source = "";
+            _tenantManager.SetCurrentTenant(CurrentTenant);
 
-            TaskInfo = new DistributedTask();
+            SetProgress(10, "Setup user");
 
-            Logger = options.CurrentValue;
+            _securityContext.AuthenticateMeWithoutCookie(CurrentUser); //Core.Configuration.Constants.CoreSystem);
+
+            SetProgress(15, "Find user data");
+
+            var currentUser = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
+
+            SetProgress(20, "Create mime message");
+
+            var toAddress = new MailboxAddress(currentUser.UserName, currentUser.Email);
+
+            var fromAddress = new MailboxAddress(_smtpSettings.SenderDisplayName, _smtpSettings.SenderAddress);
+
+            var mimeMessage = new MimeMessage
+            {
+                Subject = _messageSubject
+            };
+
+            mimeMessage.From.Add(fromAddress);
+
+            mimeMessage.To.Add(toAddress);
+
+            var bodyBuilder = new BodyBuilder
+            {
+                TextBody = _messageBody
+            };
+
+            mimeMessage.Body = bodyBuilder.ToMessageBody();
+
+            mimeMessage.Headers.Add("Auto-Submitted", "auto-generated");
+
+            using var client = GetSmtpClient();
+            SetProgress(40, "Connect to host");
+
+            client.Connect(_smtpSettings.Host, _smtpSettings.Port.GetValueOrDefault(25),
+                _smtpSettings.EnableSSL ? SecureSocketOptions.Auto : SecureSocketOptions.None, cancellationToken);
+
+            if (_smtpSettings.EnableAuth)
+            {
+                SetProgress(60, "Authenticate");
+
+                client.Authenticate(_smtpSettings.CredentialsUserName,
+                    _smtpSettings.CredentialsUserPassword, cancellationToken);
+            }
+
+            SetProgress(80, "Send test message");
+
+            client.Send(FormatOptions.Default, mimeMessage, cancellationToken);
+
         }
-
-        public void RunJob(DistributedTask distributedTask, CancellationToken cancellationToken)
+        catch (AuthorizingException authError)
+        {
+            Error = Resource.ErrorAccessDenied; // "No permissions to perform this action";
+            _logger.Error(Error, new SecurityException(Error, authError));
+        }
+        catch (AggregateException ae)
+        {
+            ae.Flatten().Handle(e => e is TaskCanceledException || e is OperationCanceledException);
+        }
+        catch (SocketException ex)
+        {
+            Error = ex.Message; //TODO: Add translates of ordinary cases
+            _logger.Error(ex.ToString());
+        }
+        catch (AuthenticationException ex)
+        {
+            Error = ex.Message; //TODO: Add translates of ordinary cases
+            _logger.Error(ex.ToString());
+        }
+        catch (Exception ex)
+        {
+            Error = ex.Message; //TODO: Add translates of ordinary cases
+            _logger.Error(ex.ToString());
+        }
+        finally
         {
             try
             {
-                CancellationToken = cancellationToken;
+                TaskInfo.SetProperty(FINISHED, true);
+                PublishTaskInfo();
 
-                SetProgress(5, "Setup tenant");
-
-                TenantManager.SetCurrentTenant(CurrentTenant);
-
-                SetProgress(10, "Setup user");
-
-                SecurityContext.AuthenticateMeWithoutCookie(CurrentUser); //Core.Configuration.Constants.CoreSystem);
-
-                SetProgress(15, "Find user data");
-
-                var currentUser = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
-
-                SetProgress(20, "Create mime message");
-
-                var toAddress = new MailboxAddress(currentUser.UserName, currentUser.Email);
-
-                var fromAddress = new MailboxAddress(SmtpSettings.SenderDisplayName, SmtpSettings.SenderAddress);
-
-                var mimeMessage = new MimeMessage
-                {
-                    Subject = messageSubject
-                };
-
-                mimeMessage.From.Add(fromAddress);
-
-                mimeMessage.To.Add(toAddress);
-
-                var bodyBuilder = new BodyBuilder
-                {
-                    TextBody = messageBody
-                };
-
-                mimeMessage.Body = bodyBuilder.ToMessageBody();
-
-                mimeMessage.Headers.Add("Auto-Submitted", "auto-generated");
-
-                using var client = GetSmtpClient();
-                SetProgress(40, "Connect to host");
-
-                client.Connect(SmtpSettings.Host, SmtpSettings.Port.GetValueOrDefault(25),
-                    SmtpSettings.EnableSSL ? SecureSocketOptions.Auto : SecureSocketOptions.None, cancellationToken);
-
-                if (SmtpSettings.EnableAuth)
-                {
-                    SetProgress(60, "Authenticate");
-
-                    client.Authenticate(SmtpSettings.CredentialsUserName,
-                        SmtpSettings.CredentialsUserPassword, cancellationToken);
-                }
-
-                SetProgress(80, "Send test message");
-
-                client.Send(FormatOptions.Default, mimeMessage, cancellationToken);
-
-            }
-            catch (AuthorizingException authError)
-            {
-                Error = Resource.ErrorAccessDenied; // "No permissions to perform this action";
-                Logger.Error(Error, new SecurityException(Error, authError));
-            }
-            catch (AggregateException ae)
-            {
-                ae.Flatten().Handle(e => e is TaskCanceledException || e is OperationCanceledException);
-            }
-            catch (SocketException ex)
-            {
-                Error = ex.Message; //TODO: Add translates of ordinary cases
-                Logger.Error(ex.ToString());
-            }
-            catch (AuthenticationException ex)
-            {
-                Error = ex.Message; //TODO: Add translates of ordinary cases
-                Logger.Error(ex.ToString());
+                _securityContext.Logout();
             }
             catch (Exception ex)
             {
-                Error = ex.Message; //TODO: Add translates of ordinary cases
-                Logger.Error(ex.ToString());
-            }
-            finally
-            {
-                try
-                {
-                    TaskInfo.SetProperty(FINISHED, true);
-                    PublishTaskInfo();
-
-                    SecurityContext.Logout();
-                }
-                catch (Exception ex)
-                {
-                    Logger.ErrorFormat("LdapOperation finalization problem. {0}", ex);
-                }
+                _logger.ErrorFormat("LdapOperation finalization problem. {0}", ex);
             }
         }
+    }
 
-        public SmtpClient GetSmtpClient()
+    public SmtpClient GetSmtpClient()
+    {
+        var client = new SmtpClient
         {
-            var client = new SmtpClient
-            {
-                Timeout = (int)TimeSpan.FromSeconds(30).TotalMilliseconds
-            };
+            Timeout = (int)TimeSpan.FromSeconds(30).TotalMilliseconds
+        };
 
-            return client;
-        }
+        return client;
+    }
 
-        public virtual DistributedTask GetDistributedTask()
-        {
-            FillDistributedTask();
-            return TaskInfo;
-        }
+    public virtual DistributedTask GetDistributedTask()
+    {
+        FillDistributedTask();
+        return TaskInfo;
+    }
 
-        protected virtual void FillDistributedTask()
-        {
-            TaskInfo.SetProperty(SOURCE, Source);
-            TaskInfo.SetProperty(OWNER, CurrentTenant);
-            TaskInfo.SetProperty(PROGRESS, Progress < 100 ? Progress : 100);
-            TaskInfo.SetProperty(RESULT, Status);
-            TaskInfo.SetProperty(ERROR, Error);
-            //TaskInfo.SetProperty(PROCESSED, successProcessed);
-        }
+    protected virtual void FillDistributedTask()
+    {
+        TaskInfo.SetProperty(SOURCE, Source);
+        TaskInfo.SetProperty(OWNER, CurrentTenant);
+        TaskInfo.SetProperty(PROGRESS, Progress < 100 ? Progress : 100);
+        TaskInfo.SetProperty(RESULT, Status);
+        TaskInfo.SetProperty(ERROR, Error);
+        //TaskInfo.SetProperty(PROCESSED, successProcessed);
+    }
 
-        protected int GetProgress()
-        {
-            return Progress;
-        }
+    protected int GetProgress()
+    {
+        return Progress;
+    }
 
-        const string PROGRESS_STRING = "Progress: {0}% {1} {2}";
+    const string PROGRESS_STRING = "Progress: {0}% {1} {2}";
 
-        public void SetProgress(int? currentPercent = null, string currentStatus = null, string currentSource = null)
-        {
-            if (!currentPercent.HasValue && currentStatus == null && currentSource == null)
-                return;
+    public void SetProgress(int? currentPercent = null, string currentStatus = null, string currentSource = null)
+    {
+        if (!currentPercent.HasValue && currentStatus == null && currentSource == null)
+            return;
 
-            if (currentPercent.HasValue)
-                Progress = currentPercent.Value;
+        if (currentPercent.HasValue)
+            Progress = currentPercent.Value;
 
-            if (currentStatus != null)
-                Status = currentStatus;
+        if (currentStatus != null)
+            Status = currentStatus;
 
-            if (currentSource != null)
-                Source = currentSource;
+        if (currentSource != null)
+            Source = currentSource;
 
-            Logger.InfoFormat(PROGRESS_STRING, Progress, Status, Source);
+        _logger.InfoFormat(PROGRESS_STRING, Progress, Status, Source);
 
-            PublishTaskInfo();
-        }
+        PublishTaskInfo();
+    }
 
-        protected void PublishTaskInfo()
-        {
-            FillDistributedTask();
-            TaskInfo.PublishChanges();
-        }
+    protected void PublishTaskInfo()
+    {
+        FillDistributedTask();
+        TaskInfo.PublishChanges();
     }
 }

@@ -1,10 +1,9 @@
-﻿namespace ASC.Web.Api.Models
+﻿namespace ASC.Web.Api.ApiModel.RequestsDto;
+
+public class TfaSettingsDto
 {
-    public class TfaSettings
-    {
-        public string Id { get; set; }
-        public string Title { get; set; }
-        public bool Enabled { get; set; }
-        public bool Avaliable { get; set; }
-    }
+    public string Id { get; set; }
+    public string Title { get; set; }
+    public bool Enabled { get; set; }
+    public bool Avaliable { get; set; }
 }

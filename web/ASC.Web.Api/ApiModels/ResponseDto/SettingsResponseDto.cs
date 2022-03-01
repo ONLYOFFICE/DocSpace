@@ -23,62 +23,59 @@
  *
 */
 
-namespace ASC.Api.Settings
+namespace ASC.Web.Api.ApiModel.ResponseDto;
+
+public class SettingsResponseDto
 {
-    public class SettingsWrapper
+    public string Timezone { get; set; }
+
+    public List<string> TrustedDomains { get; set; }
+
+    public TenantTrustedDomainsType TrustedDomainsType { get; set; }
+
+    public string Culture { get; set; }
+
+    public TimeSpan UtcOffset { get; set; }
+
+    public double UtcHoursOffset { get; set; }
+
+    public string GreetingSettings { get; set; }
+
+    public Guid OwnerId { get; set; }
+
+    public string NameSchemaId { get; set; }
+
+    public bool? EnabledJoin { get; set; }
+
+    public bool? EnableAdmMess { get; set; }
+
+    public bool? ThirdpartyEnable { get; set; }
+
+    public bool Personal { get; set; }
+
+    public string WizardToken { get; set; }
+
+    public PasswordHasher PasswordHash { get; set; }
+
+    public FirebaseResponseDto Firebase { get; set; }
+
+    public string Version { get; set; }
+
+    public string RecaptchaPublicKey { get; set; }
+
+    public bool DebugInfo { get; set; }
+
+    public static SettingsResponseDto GetSample()
     {
-        public string Timezone { get; set; }
-
-        public List<string> TrustedDomains { get; set; }
-
-        public TenantTrustedDomainsType TrustedDomainsType { get; set; }
-
-        public string Culture { get; set; }
-
-        public TimeSpan UtcOffset { get; set; }
-
-        public double UtcHoursOffset { get; set; }
-
-        public string GreetingSettings { get; set; }
-
-        public Guid OwnerId { get; set; }
-
-        public string NameSchemaId { get; set; }
-
-        public bool? EnabledJoin { get; set; }
-
-        public bool? EnableAdmMess { get; set; }
-
-        public bool? ThirdpartyEnable { get; set; }
-
-        public bool Personal { get; set; }
-
-        public string WizardToken { get; set; }
-
-        public PasswordHasher PasswordHash { get; set; }
-
-        public FirebaseWrapper Firebase { get; set; }
-
-        public string Version { get; set; }
-
-        public string RecaptchaPublicKey { get; set; }
-
-        public bool DebugInfo { get; set; }
-
-        public string SocketUrl { get; set; }
-
-        public static SettingsWrapper GetSample()
+        return new SettingsResponseDto
         {
-            return new SettingsWrapper
-            {
-                Culture = "en-US",
-                Timezone = TimeZoneInfo.Utc.ToString(),
-                TrustedDomains = new List<string> { "mydomain.com" },
-                UtcHoursOffset = -8.5,
-                UtcOffset = TimeSpan.FromHours(-8.5),
-                GreetingSettings = "Web Office Applications",
-                OwnerId = new Guid()
-            };
-        }
+            Culture = "en-US",
+            Timezone = TimeZoneInfo.Utc.ToString(),
+            TrustedDomains = new List<string> { "mydomain.com" },
+            UtcHoursOffset = -8.5,
+            UtcOffset = TimeSpan.FromHours(-8.5),
+            GreetingSettings = "Web Office Applications",
+            OwnerId = new Guid()
+        };
     }
 }

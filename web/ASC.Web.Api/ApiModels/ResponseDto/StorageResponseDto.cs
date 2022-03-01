@@ -23,48 +23,47 @@
  *
 */
 
-namespace ASC.Api.Settings
+namespace ASC.Web.Api.ApiModel.ResponseDto;
+
+public class StorageResponseDto
 {
-    public class StorageWrapper
+    public string Id { get; set; }
+
+    public string Title { get; set; }
+
+    public List<AuthKey> Properties { get; set; }
+
+    public bool Current { get; set; }
+
+    public bool IsSet { get; set; }
+
+    public StorageResponseDto(DataStoreConsumer consumer, StorageSettings current)
     {
-        public string Id { get; set; }
+        StorageWrapperInit(consumer, current);
+    }
 
-        public string Title { get; set; }
+    public StorageResponseDto(DataStoreConsumer consumer, CdnStorageSettings current)
+    {
+        StorageWrapperInit(consumer, current);
+    }
 
-        public List<AuthKey> Properties { get; set; }
+    private void StorageWrapperInit<T>(DataStoreConsumer consumer, BaseStorageSettings<T> current) where T : class, ISettings, new()
+    {
+        Id = consumer.Name;
+        Title = ConsumerExtension.GetResourceString(consumer.Name) ?? consumer.Name;
+        Current = consumer.Name == current.Module;
+        IsSet = consumer.IsSet;
 
-        public bool Current { get; set; }
+        var props = Current
+            ? current.Props
+            : current.Switch(consumer).AdditionalKeys.ToDictionary(r => r, a => consumer[a]);
 
-        public bool IsSet { get; set; }
-
-        public StorageWrapper(DataStoreConsumer consumer, StorageSettings current)
-        {
-            StorageWrapperInit(consumer, current);
-        }
-
-        public StorageWrapper(DataStoreConsumer consumer, CdnStorageSettings current)
-        {
-            StorageWrapperInit(consumer, current);
-        }
-
-        private void StorageWrapperInit<T>(DataStoreConsumer consumer, BaseStorageSettings<T> current) where T : class, ISettings, new()
-        {
-            Id = consumer.Name;
-            Title = ConsumerExtension.GetResourceString(consumer.Name) ?? consumer.Name;
-            Current = consumer.Name == current.Module;
-            IsSet = consumer.IsSet;
-
-            var props = Current
-                ? current.Props
-                : current.Switch(consumer).AdditionalKeys.ToDictionary(r => r, a => consumer[a]);
-
-            Properties = props.Select(
-                r => new AuthKey
-                {
-                    Name = r.Key,
-                    Value = r.Value,
-                    Title = ConsumerExtension.GetResourceString(consumer.Name + r.Key) ?? r.Key
-                }).ToList();
-        }
+        Properties = props.Select(
+            r => new AuthKey
+            {
+                Name = r.Key,
+                Value = r.Value,
+                Title = ConsumerExtension.GetResourceString(consumer.Name + r.Key) ?? r.Key
+            }).ToList();
     }
 }

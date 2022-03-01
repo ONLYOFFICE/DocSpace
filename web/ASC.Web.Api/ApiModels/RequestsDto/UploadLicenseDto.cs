@@ -1,7 +1,6 @@
-﻿namespace ASC.Web.Api.Models
+﻿namespace ASC.Web.Api.ApiModel.RequestsDto;
+
+public class UploadLicenseDto
 {
-    public class UploadLicenseModel
-    {
-        public IEnumerable<IFormFile> Files { get; set; }
-    }
+    public IEnumerable<IFormFile> Files { get; set; }
 }

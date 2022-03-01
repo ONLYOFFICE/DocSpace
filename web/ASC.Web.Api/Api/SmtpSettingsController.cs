@@ -23,201 +23,193 @@
  *
 */
 
-namespace ASC.Api.Settings
+namespace ASC.Api.Settings;
+
+[Scope]
+[DefaultRoute]
+[ApiController]
+public class SmtpSettingsController : ControllerBase
 {
-    [Scope]
-    [DefaultRoute]
-    [ApiController]
-    public class SmtpSettingsController : ControllerBase
+    private readonly PermissionContext _permissionContext;
+    private readonly CoreConfiguration _coreConfiguration;
+    private readonly CoreBaseSettings _coreBaseSettings;
+
+
+    public SmtpSettingsController(
+        PermissionContext permissionContext,
+        CoreConfiguration coreConfiguration,
+        CoreBaseSettings coreBaseSettings)
     {
-        //private static DistributedTaskQueue SMTPTasks { get; } = new DistributedTaskQueue("smtpOperations");
-
-        public Tenant Tenant { get { return ApiContext.Tenant; } }
-
-        private ApiContext ApiContext { get; }
-        private PermissionContext PermissionContext { get; }
-        private CoreConfiguration CoreConfiguration { get; }
-        private CoreBaseSettings CoreBaseSettings { get; }
+        _permissionContext = permissionContext;
+        _coreConfiguration = coreConfiguration;
+        _coreBaseSettings = coreBaseSettings;
+    }
 
 
-        public SmtpSettingsController(
-            ApiContext apiContext,
-            PermissionContext permissionContext,
-            CoreConfiguration coreConfiguration,
-            CoreBaseSettings coreBaseSettings)
+    [Read("smtp")]
+    public SmtpSettingsResponseDto GetSmtpSettings()
+    {
+        CheckSmtpPermissions();
+
+        var settings = ToSmtpSettings(_coreConfiguration.SmtpSettings, true);
+
+        return settings;
+    }
+
+    [Create("smtp")]
+    public SmtpSettingsResponseDto SaveSmtpSettingsFromBody([FromBody]SmtpSettingsResponseDto smtpSettings)
+    {
+        return SaveSmtpSettings(smtpSettings);
+    }
+
+    [Create("smtp")]
+    [Consumes("application/x-www-form-urlencoded")]
+    public SmtpSettingsResponseDto SaveSmtpSettingsFromForm([FromForm] SmtpSettingsResponseDto smtpSettings)
+    {
+        return SaveSmtpSettings(smtpSettings);
+    }
+
+    private SmtpSettingsResponseDto SaveSmtpSettings(SmtpSettingsResponseDto smtpSettings)
+    {
+        CheckSmtpPermissions();
+
+        //TODO: Add validation check
+
+        if (smtpSettings == null)
+            throw new ArgumentNullException(nameof(smtpSettings));
+
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+        var settingConfig = ToSmtpSettingsConfig(smtpSettings);
+
+        _coreConfiguration.SmtpSettings = settingConfig;
+
+        var settings = ToSmtpSettings(settingConfig, true);
+
+        return settings;
+    }
+
+    [Delete("smtp")]
+    public SmtpSettingsResponseDto ResetSmtpSettings()
+    {
+        CheckSmtpPermissions();
+
+        if (!_coreConfiguration.SmtpSettings.IsDefaultSettings)
         {
-            ApiContext = apiContext;
-            PermissionContext = permissionContext;
-            CoreConfiguration = coreConfiguration;
-            CoreBaseSettings = coreBaseSettings;
+            _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+            _coreConfiguration.SmtpSettings = null;
         }
 
+        var current = _coreBaseSettings.Standalone ? _coreConfiguration.SmtpSettings : SmtpSettings.Empty;
 
-        [Read("smtp")]
-        public SmtpSettingsWrapper GetSmtpSettings()
+        return ToSmtpSettings(current, true);
+    }
+
+    //[Read("smtp/test")]
+    //public SmtpOperationStatus TestSmtpSettings()
+    //{
+    //    CheckSmtpPermissions();
+
+    //    var settings = ToSmtpSettings(CoreConfiguration.SmtpSettings);
+
+    //    //add resolve
+    //    var smtpTestOp = new SmtpOperation(settings, Tenant.Id, SecurityContext.CurrentAccount.ID, UserManager, SecurityContext, TenantManager, Configuration);
+
+    //    SMTPTasks.QueueTask(smtpTestOp.RunJob, smtpTestOp.GetDistributedTask());
+
+    //    return ToSmtpOperationStatus();
+    //}
+
+    //[Read("smtp/test/status")]
+    //public SmtpOperationStatus GetSmtpOperationStatus()
+    //{
+    //    CheckSmtpPermissions();
+
+    //    return ToSmtpOperationStatus();
+    //}
+
+    //private SmtpOperationStatus ToSmtpOperationStatus()
+    //{
+    //    var operations = SMTPTasks.GetTasks().ToList();
+
+    //    foreach (var o in operations)
+    //    {
+    //        if (!string.IsNullOrEmpty(o.InstanseId) &&
+    //            Process.GetProcesses().Any(p => p.Id == int.Parse(o.InstanseId)))
+    //            continue;
+
+    //        o.SetProperty(SmtpOperation.PROGRESS, 100);
+    //        SMTPTasks.RemoveTask(o.Id);
+    //    }
+
+    //    var operation =
+    //        operations
+    //            .FirstOrDefault(t => t.GetProperty<int>(SmtpOperation.OWNER) == Tenant.Id);
+
+    //    if (operation == null)
+    //    {
+    //        return null;
+    //    }
+
+    //    if (DistributedTaskStatus.Running < operation.Status)
+    //    {
+    //        operation.SetProperty(SmtpOperation.PROGRESS, 100);
+    //        SMTPTasks.RemoveTask(operation.Id);
+    //    }
+
+    //    var result = new SmtpOperationStatus
+    //    {
+    //        Id = operation.Id,
+    //        Completed = operation.GetProperty<bool>(SmtpOperation.FINISHED),
+    //        Percents = operation.GetProperty<int>(SmtpOperation.PROGRESS),
+    //        Status = operation.GetProperty<string>(SmtpOperation.RESULT),
+    //        Error = operation.GetProperty<string>(SmtpOperation.ERROR),
+    //        Source = operation.GetProperty<string>(SmtpOperation.SOURCE)
+    //    };
+
+    //    return result;
+    //}
+
+    public static SmtpSettings ToSmtpSettingsConfig(SmtpSettingsResponseDto settingsWrapper)
+    {
+        var settingsConfig = new SmtpSettings(
+            settingsWrapper.Host,
+            settingsWrapper.Port ?? SmtpSettings.DefaultSmtpPort,
+            settingsWrapper.SenderAddress,
+            settingsWrapper.SenderDisplayName)
         {
-            CheckSmtpPermissions();
+            EnableSSL = settingsWrapper.EnableSSL,
+            EnableAuth = settingsWrapper.EnableAuth
+        };
 
-            var settings = ToSmtpSettings(CoreConfiguration.SmtpSettings, true);
-
-            return settings;
+        if (settingsWrapper.EnableAuth)
+        {
+            settingsConfig.SetCredentials(settingsWrapper.CredentialsUserName, settingsWrapper.CredentialsUserPassword);
         }
 
-        [Create("smtp")]
-        public SmtpSettingsWrapper SaveSmtpSettingsFromBody([FromBody]SmtpSettingsWrapper smtpSettings)
+        return settingsConfig;
+    }
+
+    private static SmtpSettingsResponseDto ToSmtpSettings(SmtpSettings settingsConfig, bool hidePassword = false)
+    {
+        return new SmtpSettingsResponseDto
         {
-            return SaveSmtpSettings(smtpSettings);
-        }
+            Host = settingsConfig.Host,
+            Port = settingsConfig.Port,
+            SenderAddress = settingsConfig.SenderAddress,
+            SenderDisplayName = settingsConfig.SenderDisplayName,
+            CredentialsUserName = settingsConfig.CredentialsUserName,
+            CredentialsUserPassword = hidePassword ? "" : settingsConfig.CredentialsUserPassword,
+            EnableSSL = settingsConfig.EnableSSL,
+            EnableAuth = settingsConfig.EnableAuth
+        };
+    }
 
-        [Create("smtp")]
-        [Consumes("application/x-www-form-urlencoded")]
-        public SmtpSettingsWrapper SaveSmtpSettingsFromForm([FromForm] SmtpSettingsWrapper smtpSettings)
+    private static void CheckSmtpPermissions()
+    {
+        if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.SmtpSettings)))
         {
-            return SaveSmtpSettings(smtpSettings);
-        }
-
-        private SmtpSettingsWrapper SaveSmtpSettings(SmtpSettingsWrapper smtpSettings)
-        {
-            CheckSmtpPermissions();
-
-            //TODO: Add validation check
-
-            if (smtpSettings == null)
-                throw new ArgumentNullException(nameof(smtpSettings));
-
-            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-
-            var settingConfig = ToSmtpSettingsConfig(smtpSettings);
-
-            CoreConfiguration.SmtpSettings = settingConfig;
-
-            var settings = ToSmtpSettings(settingConfig, true);
-
-            return settings;
-        }
-
-        [Delete("smtp")]
-        public SmtpSettingsWrapper ResetSmtpSettings()
-        {
-            CheckSmtpPermissions();
-
-            if (!CoreConfiguration.SmtpSettings.IsDefaultSettings)
-            {
-                PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-                CoreConfiguration.SmtpSettings = null;
-            }
-
-            var current = CoreBaseSettings.Standalone ? CoreConfiguration.SmtpSettings : SmtpSettings.Empty;
-
-            return ToSmtpSettings(current, true);
-        }
-
-        //[Read("smtp/test")]
-        //public SmtpOperationStatus TestSmtpSettings()
-        //{
-        //    CheckSmtpPermissions();
-
-        //    var settings = ToSmtpSettings(CoreConfiguration.SmtpSettings);
-
-        //    //add resolve
-        //    var smtpTestOp = new SmtpOperation(settings, Tenant.TenantId, SecurityContext.CurrentAccount.ID, UserManager, SecurityContext, TenantManager, Configuration);
-
-        //    SMTPTasks.QueueTask(smtpTestOp.RunJob, smtpTestOp.GetDistributedTask());
-
-        //    return ToSmtpOperationStatus();
-        //}
-
-        //[Read("smtp/test/status")]
-        //public SmtpOperationStatus GetSmtpOperationStatus()
-        //{
-        //    CheckSmtpPermissions();
-
-        //    return ToSmtpOperationStatus();
-        //}
-
-        //private SmtpOperationStatus ToSmtpOperationStatus()
-        //{
-        //    var operations = SMTPTasks.GetTasks().ToList();
-
-        //    foreach (var o in operations)
-        //    {
-        //        if (!string.IsNullOrEmpty(o.InstanseId) &&
-        //            Process.GetProcesses().Any(p => p.Id == int.Parse(o.InstanseId)))
-        //            continue;
-
-        //        o.SetProperty(SmtpOperation.PROGRESS, 100);
-        //        SMTPTasks.RemoveTask(o.Id);
-        //    }
-
-        //    var operation =
-        //        operations
-        //            .FirstOrDefault(t => t.GetProperty<int>(SmtpOperation.OWNER) == Tenant.TenantId);
-
-        //    if (operation == null)
-        //    {
-        //        return null;
-        //    }
-
-        //    if (DistributedTaskStatus.Running < operation.Status)
-        //    {
-        //        operation.SetProperty(SmtpOperation.PROGRESS, 100);
-        //        SMTPTasks.RemoveTask(operation.Id);
-        //    }
-
-        //    var result = new SmtpOperationStatus
-        //    {
-        //        Id = operation.Id,
-        //        Completed = operation.GetProperty<bool>(SmtpOperation.FINISHED),
-        //        Percents = operation.GetProperty<int>(SmtpOperation.PROGRESS),
-        //        Status = operation.GetProperty<string>(SmtpOperation.RESULT),
-        //        Error = operation.GetProperty<string>(SmtpOperation.ERROR),
-        //        Source = operation.GetProperty<string>(SmtpOperation.SOURCE)
-        //    };
-
-        //    return result;
-        //}
-
-        public static SmtpSettings ToSmtpSettingsConfig(SmtpSettingsWrapper settingsWrapper)
-        {
-            var settingsConfig = new SmtpSettings(
-                settingsWrapper.Host,
-                settingsWrapper.Port ?? SmtpSettings.DefaultSmtpPort,
-                settingsWrapper.SenderAddress,
-                settingsWrapper.SenderDisplayName)
-            {
-                EnableSSL = settingsWrapper.EnableSSL,
-                EnableAuth = settingsWrapper.EnableAuth
-            };
-
-            if (settingsWrapper.EnableAuth)
-            {
-                settingsConfig.SetCredentials(settingsWrapper.CredentialsUserName, settingsWrapper.CredentialsUserPassword);
-            }
-
-            return settingsConfig;
-        }
-
-        private static SmtpSettingsWrapper ToSmtpSettings(SmtpSettings settingsConfig, bool hidePassword = false)
-        {
-            return new SmtpSettingsWrapper
-            {
-                Host = settingsConfig.Host,
-                Port = settingsConfig.Port,
-                SenderAddress = settingsConfig.SenderAddress,
-                SenderDisplayName = settingsConfig.SenderDisplayName,
-                CredentialsUserName = settingsConfig.CredentialsUserName,
-                CredentialsUserPassword = hidePassword ? "" : settingsConfig.CredentialsUserPassword,
-                EnableSSL = settingsConfig.EnableSSL,
-                EnableAuth = settingsConfig.EnableAuth
-            };
-        }
-
-        private static void CheckSmtpPermissions()
-        {
-            if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.SmtpSettings)))
-            {
-                throw new BillingException(Resource.ErrorNotAllowedOption, "Smtp");
-            }
+            throw new BillingException(Resource.ErrorNotAllowedOption, "Smtp");
         }
     }
 }

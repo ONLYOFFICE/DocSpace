@@ -23,36 +23,35 @@
  *
 */
 
-namespace ASC.Api.Settings
+namespace ASC.Web.Api.ApiModel.ResponseDto;
+
+public class SecurityResponseDto
 {
-    public class SecurityWrapper
+    public string WebItemId { get; set; }
+
+    public IEnumerable<EmployeeWraper> Users { get; set; }
+
+    public IEnumerable<GroupWrapperSummary> Groups { get; set; }
+
+    public bool Enabled { get; set; }
+
+    public bool IsSubItem { get; set; }
+
+    public static SecurityResponseDto GetSample()
     {
-        public string WebItemId { get; set; }
-
-        public IEnumerable<EmployeeWraper> Users { get; set; }
-
-        public IEnumerable<GroupWrapperSummary> Groups { get; set; }
-
-        public bool Enabled { get; set; }
-
-        public bool IsSubItem { get; set; }
-
-        public static SecurityWrapper GetSample()
+        return new SecurityResponseDto
         {
-            return new SecurityWrapper
-            {
-                WebItemId = Guid.Empty.ToString(),
-                Enabled = true,
-                IsSubItem = false,
-                Groups = new List<GroupWrapperSummary>
-                        {
-                            GroupWrapperSummary.GetSample()
-                        },
-                Users = new List<EmployeeWraper>
-                        {
-                            EmployeeWraper.GetSample()
-                        }
-            };
-        }
+            WebItemId = Guid.Empty.ToString(),
+            Enabled = true,
+            IsSubItem = false,
+            Groups = new List<GroupWrapperSummary>
+                    {
+                        GroupWrapperSummary.GetSample()
+                    },
+            Users = new List<EmployeeWraper>
+                    {
+                        EmployeeWraper.GetSample()
+                    }
+        };
     }
 }

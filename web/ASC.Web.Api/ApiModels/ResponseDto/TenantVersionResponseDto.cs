@@ -23,17 +23,16 @@
  *
 */
 
-namespace ASC.Api.Settings
-{
-    public class TenantVersionWrapper
-    {
-        public int Current { get; set; }
-        public IEnumerable<TenantVersion> Versions { get; set; }
+namespace ASC.Web.Api.ApiModel.ResponseDto;
 
-        public TenantVersionWrapper(int version, IEnumerable<TenantVersion> tenantVersions)
-        {
-            Current = version;
-            Versions = tenantVersions;
-        }
+public class TenantVersionResponseDto
+{
+    public int Current { get; set; }
+    public IEnumerable<TenantVersion> Versions { get; set; }
+
+    public TenantVersionResponseDto(int version, IEnumerable<TenantVersion> tenantVersions)
+    {
+        Current = version;
+        Versions = tenantVersions;
     }
 }

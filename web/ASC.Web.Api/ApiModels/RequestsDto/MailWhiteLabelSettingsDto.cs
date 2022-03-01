@@ -1,7 +1,6 @@
-﻿namespace ASC.Web.Api.Models
+﻿namespace ASC.Web.Api.ApiModel.RequestsDto;
+
+public class MailWhiteLabelSettingsDto
 {
-    public class MailWhiteLabelSettingsModel
-    {
-        public bool FooterEnabled { get; set; }
-    }
+    public bool FooterEnabled { get; set; }
 }

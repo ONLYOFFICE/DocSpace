@@ -1,10 +1,9 @@
-﻿namespace ASC.Web.Api.Models
+﻿namespace ASC.Web.Api.ApiModel.RequestsDto;
+
+public class WebItemSecurityDto
 {
-    public class WebItemSecurityModel
-    {
-        public string Id { get; set; }
-        public bool Enabled { get; set; }
-        public IEnumerable<Guid> Subjects { get; set; }
-        public IEnumerable<ItemKeyValuePair<string, bool>> Items { get; set; }
-    }
+    public string Id { get; set; }
+    public bool Enabled { get; set; }
+    public IEnumerable<Guid> Subjects { get; set; }
+    public IEnumerable<ItemKeyValuePair<string, bool>> Items { get; set; }
 }

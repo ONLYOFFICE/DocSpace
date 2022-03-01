@@ -23,33 +23,32 @@
  *
 */
 
-namespace ASC.Api.Settings.Smtp
+namespace ASC.Api.Settings.Smtp;
+
+public class SmtpOperationStatusDto
 {
-    public class SmtpOperationStatus
+    public bool Completed { get; set; }
+
+    public string Id { get; set; }
+
+    public string Status { get; set; }
+
+    public string Error { get; set; }
+
+    public int Percents { get; set; }
+
+    public string Source { get; set; }
+
+    public static SmtpOperationStatusDto GetSample()
     {
-        public bool Completed { get; set; }
-
-        public string Id { get; set; }
-
-        public string Status { get; set; }
-
-        public string Error { get; set; }
-
-        public int Percents { get; set; }
-
-        public string Source { get; set; }
-
-        public static SmtpOperationStatus GetSample()
+        return new SmtpOperationStatusDto
         {
-            return new SmtpOperationStatus
-            {
-                Id = "{some-random-guid}",
-                Error = "",
-                Percents = 0,
-                Completed = true,
-                Status = "",
-                Source = ""
-            };
-        }
+            Id = "{some-random-guid}",
+            Error = "",
+            Percents = 0,
+            Completed = true,
+            Status = "",
+            Source = ""
+        };
     }
 }

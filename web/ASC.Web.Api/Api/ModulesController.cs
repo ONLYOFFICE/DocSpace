@@ -1,45 +1,44 @@
 ﻿using Module = ASC.Api.Core.Module;
 
-namespace ASC.Web.Api.Controllers
+namespace ASC.Web.Api.Controllers;
+
+[Scope]
+[DefaultRoute]
+[ApiController]
+public class ModulesController : ControllerBase
 {
-    [Scope]
-    [DefaultRoute]
-    [ApiController]
-    public class ModulesController : ControllerBase
+    private readonly WebItemManagerSecurity _webItemManagerSecurity;
+
+    public ModulesController(
+        WebItemManagerSecurity webItemManagerSecurity)
     {
-        private WebItemManagerSecurity WebItemManagerSecurity { get; }
+        _webItemManagerSecurity = webItemManagerSecurity;
+    }
 
-        public ModulesController(
-            WebItemManagerSecurity webItemManagerSecurity)
+    [Read]
+    public IEnumerable<string> GetAll()
+    {
+        var result = new List<string>();
+
+        foreach (var a in _webItemManagerSecurity.GetItems(WebZoneType.StartProductList))
         {
-            WebItemManagerSecurity = webItemManagerSecurity;
+            result.Add(a.ApiURL);
         }
 
-        [Read]
-        public IEnumerable<string> GetAll()
-        {
-            var result = new List<string>();
+        return result;
+    }
 
-            foreach (var a in WebItemManagerSecurity.GetItems(WebZoneType.StartProductList))
+    [Read("info")]
+    public IEnumerable<Module> GetAllWithInfo()
+    {
+        foreach (var a in _webItemManagerSecurity.GetItems(WebZoneType.StartProductList))
+        {
+            if(a is Product product)
             {
-                result.Add(a.ApiURL);
+                product.Init();
+                yield return new Module(product);
             }
-
-            return result;
-        }
-
-        [Read("info")]
-        public IEnumerable<Module> GetAllWithInfo()
-        {
-            foreach (var a in WebItemManagerSecurity.GetItems(WebZoneType.StartProductList))
-            {
-                if(a is Product product)
-                {
-                    product.Init();
-                    yield return new Module(product);
-                }
                 
-            }
         }
     }
 }

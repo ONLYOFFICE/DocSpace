@@ -1,13 +1,12 @@
-﻿namespace ASC.Web.Api.Models
+﻿namespace ASC.Web.Api.ApiModel.RequestsDto;
+
+public class EncryptionSettingsDto
 {
-    public class EncryptionSettingsModel
-    {
-        public string Password { get; set; }
+    public string Password { get; set; }
 
-        public EncryprtionStatus Status { get; set; }
+    public EncryprtionStatus Status { get; set; }
 
-        public bool NotifyUsers { get; set; }
+    public bool NotifyUsers { get; set; }
 
-        public string ServerRootPath { get; set; }
-    }
+    public string ServerRootPath { get; set; }
 }

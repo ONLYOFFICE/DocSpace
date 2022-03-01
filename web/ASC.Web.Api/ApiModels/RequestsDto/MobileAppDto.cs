@@ -1,7 +1,6 @@
-﻿namespace ASC.Web.Api.Models
+﻿namespace ASC.Web.Api.ApiModel.RequestsDto;
+
+public class MobileAppDto
 {
-    public class MobileAppModel
-    {
-        public MobileAppType Type { get; set; }
-    }
+    public MobileAppType Type { get; set; }
 }

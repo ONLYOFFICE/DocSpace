@@ -1,7 +1,6 @@
-﻿namespace ASC.Web.Api.Models
+﻿namespace ASC.Web.Api.ApiModel.RequestsDto;
+
+public class ShortenLinkDto
 {
-    public class ShortenLinkModel
-    {
-        public string Link { get; set; }
-    }
+    public string Link { get; set; }
 }

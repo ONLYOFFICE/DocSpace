@@ -1,19 +1,18 @@
-﻿namespace ASC.Web.Api.Models
+﻿namespace ASC.Web.Api.ApiModel.RequestsDto;
+
+public class SettingsDto
 {
-    public class SettingsModel
-    {
-        public Guid DefaultProductID { get; set; }
+    public Guid DefaultProductID { get; set; }
 
-        public string Lng { get; set; }
+    public string Lng { get; set; }
 
-        public string TimeZoneID { get; set; }
+    public string TimeZoneID { get; set; }
 
-        public string Theme { get; set; }
+    public string Theme { get; set; }
 
-        public bool Show { get; set; } //tips
+    public bool Show { get; set; } //tips
 
-        public int VersionId { get; set; }
+    public int VersionId { get; set; }
 
-        public Guid OwnerId { get; set; }
-    }
+    public Guid OwnerId { get; set; }
 }

@@ -1,7 +1,6 @@
-﻿namespace ASC.Web.Api.Models
+﻿namespace ASC.Web.Api.ApiModel.RequestsDto;
+
+public class StorageEncryptionDto
 {
-    public class StorageEncryptionModel
-    {
-        public bool NotifyUsers { get; set; }
-    }
+    public bool NotifyUsers { get; set; }
 }

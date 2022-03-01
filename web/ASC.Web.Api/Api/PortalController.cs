@@ -1,254 +1,252 @@
 ﻿using SecurityContext = ASC.Core.SecurityContext;
 
-namespace ASC.Web.Api.Controllers
+namespace ASC.Web.Api.Controllers;
+
+[Scope]
+[DefaultRoute]
+[ApiController]
+public class PortalController : ControllerBase
 {
-    [Scope]
-    [DefaultRoute]
-    [ApiController]
-    public class PortalController : ControllerBase
+    private Tenant Tenant { get { return _apiContext.Tenant; } }
+
+    private readonly ApiContext _apiContext;
+    private readonly UserManager _userManager;
+    private readonly TenantManager _tenantManager;
+    private readonly PaymentManager _paymentManager;
+    private readonly CommonLinkUtility _commonLinkUtility;
+    private readonly UrlShortener _urlShortener;
+    private readonly AuthContext _authContext;
+    private readonly WebItemSecurity _webItemSecurity;
+    private readonly SecurityContext _securityContext;
+    private readonly SettingsManager _settingsManager;
+    private readonly IMobileAppInstallRegistrator _mobileAppInstallRegistrator;
+    private readonly IConfiguration _configuration;
+    private readonly CoreBaseSettings _coreBaseSettings;
+    private readonly LicenseReader _licenseReader;
+    private readonly SetupInfo _setupInfo;
+    private readonly DocumentServiceLicense _documentServiceLicense;
+    private readonly TenantExtra _tenantExtra;
+    private readonly ILog _log;
+    private readonly IHttpClientFactory _clientFactory;
+
+
+    public PortalController(
+        IOptionsMonitor<ILog> options,
+        ApiContext apiContext,
+        UserManager userManager,
+        TenantManager tenantManager,
+        PaymentManager paymentManager,
+        CommonLinkUtility commonLinkUtility,
+        UrlShortener urlShortener,
+        AuthContext authContext,
+        WebItemSecurity webItemSecurity,
+        SecurityContext securityContext,
+        SettingsManager settingsManager,
+        IMobileAppInstallRegistrator mobileAppInstallRegistrator,
+        TenantExtra tenantExtra,
+        IConfiguration configuration,
+        CoreBaseSettings coreBaseSettings,
+        LicenseReader licenseReader,
+        SetupInfo setupInfo,
+        DocumentServiceLicense documentServiceLicense,
+        IHttpClientFactory clientFactory
+        )
     {
+        _log = options.CurrentValue;
+        _apiContext = apiContext;
+        _userManager = userManager;
+        _tenantManager = tenantManager;
+        _paymentManager = paymentManager;
+        _commonLinkUtility = commonLinkUtility;
+        _urlShortener = urlShortener;
+        _authContext = authContext;
+        _webItemSecurity = webItemSecurity;
+        _securityContext = securityContext;
+        _settingsManager = settingsManager;
+        _mobileAppInstallRegistrator = mobileAppInstallRegistrator;
+        _configuration = configuration;
+        _coreBaseSettings = coreBaseSettings;
+        _licenseReader = licenseReader;
+        _setupInfo = setupInfo;
+        _documentServiceLicense = documentServiceLicense;
+        _tenantExtra = tenantExtra;
+        _clientFactory = clientFactory;
+    }
 
-        private Tenant Tenant { get { return ApiContext.Tenant; } }
+    [Read("")]
+    public Tenant Get()
+    {
+        return Tenant;
+    }
 
-        private ApiContext ApiContext { get; }
-        private UserManager UserManager { get; }
-        private TenantManager TenantManager { get; }
-        private PaymentManager PaymentManager { get; }
-        private CommonLinkUtility CommonLinkUtility { get; }
-        private UrlShortener UrlShortener { get; }
-        private AuthContext AuthContext { get; }
-        private WebItemSecurity WebItemSecurity { get; }
-        private SecurityContext SecurityContext { get; }
-        private SettingsManager SettingsManager { get; }
-        private IMobileAppInstallRegistrator MobileAppInstallRegistrator { get; }
-        private IConfiguration Configuration { get; set; }
-        private CoreBaseSettings CoreBaseSettings { get; }
-        private LicenseReader LicenseReader { get; }
-        private SetupInfo SetupInfo { get; }
-        private DocumentServiceLicense DocumentServiceLicense { get; }
-        private TenantExtra TenantExtra { get; set; }
-        public ILog Log { get; }
-        public IHttpClientFactory ClientFactory { get; }
+    [Read("users/{userID}")]
+    public UserInfo GetUser(Guid userID)
+    {
+        return _userManager.GetUsers(userID);
+    }
 
-
-        public PortalController(
-            IOptionsMonitor<ILog> options,
-            ApiContext apiContext,
-            UserManager userManager,
-            TenantManager tenantManager,
-            PaymentManager paymentManager,
-            CommonLinkUtility commonLinkUtility,
-            UrlShortener urlShortener,
-            AuthContext authContext,
-            WebItemSecurity webItemSecurity,
-            SecurityContext securityContext,
-            SettingsManager settingsManager,
-            IMobileAppInstallRegistrator mobileAppInstallRegistrator,
-            TenantExtra tenantExtra,
-            IConfiguration configuration,
-            CoreBaseSettings coreBaseSettings,
-            LicenseReader licenseReader,
-            SetupInfo setupInfo,
-            DocumentServiceLicense documentServiceLicense,
-            IHttpClientFactory clientFactory
-            )
+    [Read("users/invite/{employeeType}")]
+    public object GeInviteLink(EmployeeType employeeType)
+    {
+        if (!_webItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, _authContext.CurrentAccount.ID))
         {
-            Log = options.CurrentValue;
-            ApiContext = apiContext;
-            UserManager = userManager;
-            TenantManager = tenantManager;
-            PaymentManager = paymentManager;
-            CommonLinkUtility = commonLinkUtility;
-            UrlShortener = urlShortener;
-            AuthContext = authContext;
-            WebItemSecurity = webItemSecurity;
-            SecurityContext = securityContext;
-            SettingsManager = settingsManager;
-            MobileAppInstallRegistrator = mobileAppInstallRegistrator;
-            Configuration = configuration;
-            CoreBaseSettings = coreBaseSettings;
-            LicenseReader = licenseReader;
-            SetupInfo = setupInfo;
-            DocumentServiceLicense = documentServiceLicense;
-            TenantExtra = tenantExtra;
-            ClientFactory = clientFactory;
+            throw new SecurityException("Method not available");
         }
 
-        [Read("")]
-        public Tenant Get()
+        return _commonLinkUtility.GetConfirmationUrl(string.Empty, ConfirmType.LinkInvite, (int)employeeType)
+                + $"&emplType={employeeType:d}";
+    }
+
+    [Update("getshortenlink")]
+    public async Task<object> GetShortenLinkAsync(ShortenLinkDto model)
+    {
+        try
         {
-            return Tenant;
+            return await _urlShortener.Instance.GetShortenLinkAsync(model.Link);
+        }
+        catch (Exception ex)
+        {
+            _log.Error("getshortenlink", ex);
+            return model.Link;
+        }
+    }
+
+    [Read("tenantextra")]
+    public async Task<object> GetTenantExtraAsync()
+    {
+        return new
+        {
+            customMode = _coreBaseSettings.CustomMode,
+            opensource = _tenantExtra.Opensource,
+            enterprise = _tenantExtra.Enterprise,
+            tariff = _tenantExtra.GetCurrentTariff(),
+            quota = _tenantExtra.GetTenantQuota(),
+            notPaid = _tenantExtra.IsNotPaid(),
+            licenseAccept = _settingsManager.LoadForCurrentUser<TariffSettings>().LicenseAcceptSetting,
+            enableTariffPage = //TenantExtra.EnableTarrifSettings - think about hide-settings for opensource
+                (!_coreBaseSettings.Standalone || !string.IsNullOrEmpty(_licenseReader.LicensePath))
+                && string.IsNullOrEmpty(_setupInfo.AmiMetaUrl)
+                && !_coreBaseSettings.CustomMode,
+            DocServerUserQuota = await _documentServiceLicense.GetLicenseQuotaAsync(),
+            DocServerLicense = await _documentServiceLicense.GetLicenseAsync()
+        };
+    }
+
+
+    [Read("usedspace")]
+    public double GetUsedSpace()
+    {
+        return Math.Round(
+            _tenantManager.FindTenantQuotaRows(Tenant.Id)
+                        .Where(q => !string.IsNullOrEmpty(q.Tag) && new Guid(q.Tag) != Guid.Empty)
+                        .Sum(q => q.Counter) / 1024f / 1024f / 1024f, 2);
+    }
+
+
+    [Read("userscount")]
+    public long GetUsersCount()
+    {
+        return _coreBaseSettings.Personal ? 1 : _userManager.GetUserNames(EmployeeStatus.Active).Length;
+    }
+
+    [Read("tariff")]
+    public Tariff GetTariff()
+    {
+        return _paymentManager.GetTariff(Tenant.Id);
+    }
+
+    [Read("quota")]
+    public TenantQuota GetQuota()
+    {
+        return _tenantManager.GetTenantQuota(Tenant.Id);
+    }
+
+    [Read("quota/right")]
+    public TenantQuota GetRightQuota()
+    {
+        var usedSpace = GetUsedSpace();
+        var needUsersCount = GetUsersCount();
+
+        return _tenantManager.GetTenantQuotas().OrderBy(r => r.Price)
+                            .FirstOrDefault(quota =>
+                                            quota.ActiveUsers > needUsersCount
+                                            && quota.MaxTotalSize > usedSpace
+                                            && !quota.Year);
+    }
+
+
+    [Read("path")]
+    public object GetFullAbsolutePath(string virtualPath)
+    {
+        return _commonLinkUtility.GetFullAbsolutePath(virtualPath);
+    }
+
+    [Read("thumb")]
+    public FileResult GetThumb(string url)
+    {
+        if (!_securityContext.IsAuthenticated || _configuration["bookmarking:thumbnail-url"] == null)
+        {
+            return null;
         }
 
-        [Read("users/{userID}")]
-        public UserInfo GetUser(Guid userID)
+        url = url.Replace("&amp;", "&");
+        url = WebUtility.UrlEncode(url);
+
+        var request = new HttpRequestMessage();
+        request.RequestUri = new Uri(string.Format(_configuration["bookmarking:thumbnail-url"], url));
+
+        var httpClient = _clientFactory.CreateClient();
+        using var response = httpClient.Send(request);
+        using var stream = response.Content.ReadAsStream();
+        var bytes = new byte[stream.Length];
+        stream.Read(bytes, 0, (int)stream.Length);
+
+        string type;
+        if (response.Headers.TryGetValues("Content-Type", out var values))
         {
-            return UserManager.GetUsers(userID);
+            type = values.First();
         }
-
-        [Read("users/invite/{employeeType}")]
-        public object GeInviteLink(EmployeeType employeeType)
+        else
         {
-            if (!WebItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, AuthContext.CurrentAccount.ID))
-            {
-                throw new SecurityException("Method not available");
-            }
-
-            return CommonLinkUtility.GetConfirmationUrl(string.Empty, ConfirmType.LinkInvite, (int)employeeType)
-                   + $"&emplType={employeeType:d}";
+            type = "image/png";
         }
+        return File(bytes, type);
+    }
 
-        [Update("getshortenlink")]
-        public async Task<object> GetShortenLinkAsync(ShortenLinkModel model)
+    [Create("present/mark")]
+    public void MarkPresentAsReaded()
+    {
+        try
         {
-            try
-            {
-                return await UrlShortener.Instance.GetShortenLinkAsync(model.Link);
-            }
-            catch (Exception ex)
-            {
-                Log.Error("getshortenlink", ex);
-                return model.Link;
-            }
+            var settings = _settingsManager.LoadForCurrentUser<OpensourceGiftSettings>();
+            settings.Readed = true;
+            _settingsManager.SaveForCurrentUser(settings);
         }
-
-        [Read("tenantextra")]
-        public async Task<object> GetTenantExtraAsync()
+        catch (Exception ex)
         {
-            return new
-            {
-                customMode = CoreBaseSettings.CustomMode,
-                opensource = TenantExtra.Opensource,
-                enterprise = TenantExtra.Enterprise,
-                tariff = TenantExtra.GetCurrentTariff(),
-                quota = TenantExtra.GetTenantQuota(),
-                notPaid = TenantExtra.IsNotPaid(),
-                licenseAccept = SettingsManager.LoadForCurrentUser<TariffSettings>().LicenseAcceptSetting,
-                enableTariffPage = //TenantExtra.EnableTarrifSettings - think about hide-settings for opensource
-                    (!CoreBaseSettings.Standalone || !string.IsNullOrEmpty(LicenseReader.LicensePath))
-                    && string.IsNullOrEmpty(SetupInfo.AmiMetaUrl)
-                    && !CoreBaseSettings.CustomMode,
-                DocServerUserQuota = await DocumentServiceLicense.GetLicenseQuotaAsync(),
-                DocServerLicense = await DocumentServiceLicense.GetLicenseAsync()
-            };
+            _log.Error("MarkPresentAsReaded", ex);
         }
+    }
 
+    [Create("mobile/registration")]
+    public void RegisterMobileAppInstallFromBody([FromBody] MobileAppDto model)
+    {
+        var currentUser = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
+        _mobileAppInstallRegistrator.RegisterInstall(currentUser.Email, model.Type);
+    }
 
-        [Read("usedspace")]
-        public double GetUsedSpace()
-        {
-            return Math.Round(
-                TenantManager.FindTenantQuotaRows(Tenant.TenantId)
-                           .Where(q => !string.IsNullOrEmpty(q.Tag) && new Guid(q.Tag) != Guid.Empty)
-                           .Sum(q => q.Counter) / 1024f / 1024f / 1024f, 2);
-        }
+    [Create("mobile/registration")]
+    [Consumes("application/x-www-form-urlencoded")]
+    public void RegisterMobileAppInstallFromForm([FromForm] MobileAppDto model)
+    {
+        var currentUser = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
+        _mobileAppInstallRegistrator.RegisterInstall(currentUser.Email, model.Type);
+    }
 
-
-        [Read("userscount")]
-        public long GetUsersCount()
-        {
-            return CoreBaseSettings.Personal ? 1 : UserManager.GetUserNames(EmployeeStatus.Active).Length;
-        }
-
-        [Read("tariff")]
-        public Tariff GetTariff()
-        {
-            return PaymentManager.GetTariff(Tenant.TenantId);
-        }
-
-        [Read("quota")]
-        public TenantQuota GetQuota()
-        {
-            return TenantManager.GetTenantQuota(Tenant.TenantId);
-        }
-
-        [Read("quota/right")]
-        public TenantQuota GetRightQuota()
-        {
-            var usedSpace = GetUsedSpace();
-            var needUsersCount = GetUsersCount();
-
-            return TenantManager.GetTenantQuotas().OrderBy(r => r.Price)
-                              .FirstOrDefault(quota =>
-                                              quota.ActiveUsers > needUsersCount
-                                              && quota.MaxTotalSize > usedSpace
-                                              && !quota.Year);
-        }
-
-
-        [Read("path")]
-        public object GetFullAbsolutePath(string virtualPath)
-        {
-            return CommonLinkUtility.GetFullAbsolutePath(virtualPath);
-        }
-
-        [Read("thumb")]
-        public FileResult GetThumb(string url)
-        {
-            if (!SecurityContext.IsAuthenticated || Configuration["bookmarking:thumbnail-url"] == null)
-            {
-                return null;
-            }
-
-            url = url.Replace("&amp;", "&");
-            url = WebUtility.UrlEncode(url);
-
-            var request = new HttpRequestMessage();
-            request.RequestUri = new Uri(string.Format(Configuration["bookmarking:thumbnail-url"], url));
-
-            var httpClient = ClientFactory.CreateClient();
-            using var response = httpClient.Send(request);
-            using var stream = response.Content.ReadAsStream();
-            var bytes = new byte[stream.Length];
-            stream.Read(bytes, 0, (int)stream.Length);
-
-            string type;
-            if (response.Headers.TryGetValues("Content-Type", out var values))
-            {
-                type = values.First();
-            }
-            else
-            {
-                type = "image/png";
-            }
-            return File(bytes, type);
-        }
-
-        [Create("present/mark")]
-        public void MarkPresentAsReaded()
-        {
-            try
-            {
-                var settings = SettingsManager.LoadForCurrentUser<OpensourceGiftSettings>();
-                settings.Readed = true;
-                SettingsManager.SaveForCurrentUser(settings);
-            }
-            catch (Exception ex)
-            {
-                Log.Error("MarkPresentAsReaded", ex);
-            }
-        }
-
-        [Create("mobile/registration")]
-        public void RegisterMobileAppInstallFromBody([FromBody] MobileAppModel model)
-        {
-            var currentUser = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
-            MobileAppInstallRegistrator.RegisterInstall(currentUser.Email, model.Type);
-        }
-
-        [Create("mobile/registration")]
-        [Consumes("application/x-www-form-urlencoded")]
-        public void RegisterMobileAppInstallFromForm([FromForm] MobileAppModel model)
-        {
-            var currentUser = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
-            MobileAppInstallRegistrator.RegisterInstall(currentUser.Email, model.Type);
-        }
-
-        [Create("mobile/registration")]
-        public void RegisterMobileAppInstall(MobileAppType type)
-        {
-            var currentUser = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
-            MobileAppInstallRegistrator.RegisterInstall(currentUser.Email, type);
-        }
+    [Create("mobile/registration")]
+    public void RegisterMobileAppInstall(MobileAppType type)
+    {
+        var currentUser = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
+        _mobileAppInstallRegistrator.RegisterInstall(currentUser.Email, type);
     }
 }
