@@ -297,7 +297,19 @@ namespace ASC.Web.Api.Controllers
         }
 
         [Update("portalrename")]
-        public async Task<object> UpdatePortalName(PortalRenameModel model)
+        public object UpdatePortalNameFromObject([FromBody] PortalRenameModel model)
+        {
+            return UpdatePortalNameAsync(model);
+        }
+
+        [Update("portalrename")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public object UpdatePortalNameFromForm([FromForm] PortalRenameModel model)
+        {
+            return UpdatePortalNameAsync(model);
+        }
+
+        public async Task<object> UpdatePortalNameAsync(PortalRenameModel model)
         {
             var enabled = SetupInfo.IsVisibleSettings("PortalRename");
 
