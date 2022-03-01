@@ -29,13 +29,9 @@ namespace ASC.Web.Api.ApiModel.ResponseDto;
 public class QuotaResponseDto
 {
     public ulong StorageSize { get; set; }
-
     public ulong MaxFileSize { get; set; }
-
     public ulong UsedSize { get; set; }
-
     public int MaxUsersCount { get; set; }
-
     public int UsersCount { get; set; }
 
     public ulong AvailableSize
@@ -51,9 +47,7 @@ public class QuotaResponseDto
     }
 
     public IList<QuotaUsage> StorageUsage { get; set; }
-
     public long UserStorageSize { get; set; }
-
     public long UserUsedSize { get; set; }
 
     public long UserAvailableSize
@@ -63,7 +57,6 @@ public class QuotaResponseDto
     }
 
     public long MaxVisitors { get; set; }
-
     public long VisitorsCount { get; set; }
 
     public QuotaResponseDto()
@@ -128,7 +121,6 @@ public class QuotaResponseDto
     public class QuotaUsage
     {
         public string Path { get; set; }
-
         public long Size { get; set; }
     }
 }

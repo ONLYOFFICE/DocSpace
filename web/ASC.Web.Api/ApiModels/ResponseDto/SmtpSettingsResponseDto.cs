@@ -28,19 +28,12 @@ namespace ASC.Web.Api.ApiModel.ResponseDto;
 public class SmtpSettingsResponseDto
 {
     public string Host { get; set; }
-
     public int? Port { get; set; }
-
     public string SenderAddress { get; set; }
-
     public string SenderDisplayName { get; set; }
-
     public string CredentialsUserName { get; set; }
-
     public string CredentialsUserPassword { get; set; }
-
     public bool EnableSSL { get; set; }
-
     public bool EnableAuth { get; set; }
 
     public static SmtpSettingsResponseDto GetSample()

@@ -28,13 +28,9 @@ namespace ASC.Web.Api.ApiModel.ResponseDto;
 public class SecurityResponseDto
 {
     public string WebItemId { get; set; }
-
     public IEnumerable<EmployeeWraper> Users { get; set; }
-
     public IEnumerable<GroupWrapperSummary> Groups { get; set; }
-
     public bool Enabled { get; set; }
-
     public bool IsSubItem { get; set; }
 
     public static SecurityResponseDto GetSample()

@@ -28,15 +28,10 @@ namespace ASC.Api.Settings.Smtp;
 public class SmtpOperationStatusDto
 {
     public bool Completed { get; set; }
-
     public string Id { get; set; }
-
     public string Status { get; set; }
-
     public string Error { get; set; }
-
     public int Percents { get; set; }
-
     public string Source { get; set; }
 
     public static SmtpOperationStatusDto GetSample()

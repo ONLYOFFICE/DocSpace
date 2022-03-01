@@ -55,19 +55,19 @@ public class WhitelabelController: BaseSettingsController
 
     ///<visible>false</visible>
     [Create("whitelabel/save")]
-    public bool SaveWhiteLabelSettingsFromBody([FromBody] WhiteLabelDto model, [FromQuery] WhiteLabelQuery query)
+    public bool SaveWhiteLabelSettingsFromBody([FromBody] WhiteLabelDto model, [FromQuery] WhiteLabelQueryDto query)
     {
         return SaveWhiteLabelSettings(model, query);
     }
 
     [Create("whitelabel/save")]
     [Consumes("application/x-www-form-urlencoded")]
-    public bool SaveWhiteLabelSettingsFromForm([FromForm] WhiteLabelDto model, [FromQuery] WhiteLabelQuery query)
+    public bool SaveWhiteLabelSettingsFromForm([FromForm] WhiteLabelDto model, [FromQuery] WhiteLabelQueryDto query)
     {
         return SaveWhiteLabelSettings(model, query);
     }
 
-    private bool SaveWhiteLabelSettings(WhiteLabelDto model, WhiteLabelQuery query)
+    private bool SaveWhiteLabelSettings(WhiteLabelDto model, WhiteLabelQueryDto query)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -124,7 +124,7 @@ public class WhitelabelController: BaseSettingsController
 
     ///<visible>false</visible>
     [Create("whitelabel/savefromfiles")]
-    public bool SaveWhiteLabelSettingsFromFiles([FromQuery] WhiteLabelQuery query)
+    public bool SaveWhiteLabelSettingsFromFiles([FromQuery] WhiteLabelQueryDto query)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -206,7 +206,7 @@ public class WhitelabelController: BaseSettingsController
 
     ///<visible>false</visible>
     [Read("whitelabel/logos")]
-    public Dictionary<string, string> GetWhiteLabelLogos([FromQuery] WhiteLabelQuery query)
+    public Dictionary<string, string> GetWhiteLabelLogos([FromQuery] WhiteLabelQueryDto query)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -247,7 +247,7 @@ public class WhitelabelController: BaseSettingsController
 
     ///<visible>false</visible>
     [Read("whitelabel/logotext")]
-    public object GetWhiteLabelLogoText([FromQuery] WhiteLabelQuery query)
+    public object GetWhiteLabelLogoText([FromQuery] WhiteLabelQueryDto query)
     {
         if (!_tenantLogoManager.WhiteLabelEnabled)
         {
@@ -262,7 +262,7 @@ public class WhitelabelController: BaseSettingsController
 
     ///<visible>false</visible>
     [Update("whitelabel/restore")]
-    public bool RestoreWhiteLabelOptions(WhiteLabelQuery query)
+    public bool RestoreWhiteLabelOptions(WhiteLabelQueryDto query)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 

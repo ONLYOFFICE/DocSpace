@@ -3,9 +3,7 @@
 public class CapabilitiesResponseDto
 {
     public bool LdapEnabled { get; set; }
-
     public List<string> Providers { get; set; }
-
     public string SsoLabel { get; set; }
 
     /// <summary>

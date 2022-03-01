@@ -6,7 +6,7 @@ public class WhiteLabelDto
     public IEnumerable<ItemKeyValuePair<string, string>> Logo { get; set; }
 }
 
-public class WhiteLabelQuery
+public class WhiteLabelQueryDto
 {
     public bool IsDefault { get; set; }
     public bool IsRetina { get; set; }

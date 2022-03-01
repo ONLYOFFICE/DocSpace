@@ -36,10 +36,7 @@ public class EventResponseDto
     }
 
     public int Id { get; private set; }
-
     public ApiDateTime Date { get; private set; }
-
     public string User { get; private set; }
-
     public string Action { get; private set; }
 }

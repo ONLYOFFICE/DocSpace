@@ -28,13 +28,9 @@ namespace ASC.Web.Api.ApiModel.ResponseDto;
 public class StorageResponseDto
 {
     public string Id { get; set; }
-
     public string Title { get; set; }
-
     public List<AuthKey> Properties { get; set; }
-
     public bool Current { get; set; }
-
     public bool IsSet { get; set; }
 
     public StorageResponseDto(DataStoreConsumer consumer, StorageSettings current)
