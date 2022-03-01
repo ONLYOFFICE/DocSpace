@@ -53,7 +53,7 @@ global using ASC.Data.Backup.Utils;
 global using ASC.Data.Storage;
 global using ASC.Data.Storage.Configuration;
 global using ASC.Files.Core;
-global using ASC.MessagingSystem;
+global using ASC.MessagingSystem.Core;
 global using ASC.Notify.Cron;
 global using ASC.Notify.Model;
 global using ASC.Notify.Patterns;

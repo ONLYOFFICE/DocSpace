@@ -60,11 +60,11 @@ namespace ASC.Core.Notify.Senders
             {
                 try
                 {
-                    Log.DebugFormat("Tenant: {0}, To: {1}", m.Tenant, m.To);
+                    Log.DebugFormat("Tenant: {0}, To: {1}", m.TenantId, m.Reciever);
                     using var scope = ServiceProvider.CreateScope();
                     var scopeClass = scope.ServiceProvider.GetService<AWSSenderScope>();
                     var (tenantManager, configuration) = scopeClass;
-                    tenantManager.SetCurrentTenant(m.Tenant);
+                    tenantManager.SetCurrentTenant(m.TenantId);
 
                     if (!configuration.SmtpSettings.IsDefaultSettings)
                     {
@@ -81,7 +81,7 @@ namespace ASC.Core.Notify.Senders
                 }
                 catch (Exception e)
                 {
-                    Log.ErrorFormat("Tenant: {0}, To: {1} - {2}", m.Tenant, m.To, e);
+                    Log.ErrorFormat("Tenant: {0}, To: {1} - {2}", m.TenantId, m.Reciever, e);
                     throw;
                 }
             }
@@ -130,7 +130,7 @@ namespace ASC.Core.Notify.Senders
 
             var dest = new Destination
             {
-                ToAddresses = m.To.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries).Select(a => MailAddressUtils.Create(a).Address).ToList(),
+                ToAddresses = m.Reciever.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries).Select(a => MailAddressUtils.Create(a).Address).ToList(),
             };
 
             var subject = new Content(MimeHeaderUtils.EncodeMime(m.Subject)) { Charset = Encoding.UTF8.WebName, };
@@ -148,7 +148,7 @@ namespace ASC.Core.Notify.Senders
                 body = new Body(new Content(m.Content) { Charset = Encoding.UTF8.WebName });
             }
 
-            var from = MailAddressUtils.Create(m.From).ToEncodedString();
+            var from = MailAddressUtils.Create(m.Sender).ToEncodedString();
             var request = new SendEmailRequest { Source = from, Destination = dest, Message = new Message(subject, body) };
             if (!string.IsNullOrEmpty(m.ReplyTo))
             {

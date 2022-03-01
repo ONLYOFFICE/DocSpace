@@ -76,7 +76,7 @@ builder.Host.ConfigureServices((hostContext, services) =>
 
     services.AddHostedService<ClearEventsService>();
     diHelper.TryAdd<ClearEventsService>();
-    diHelper.TryAdd<DbContextManager<EventsContext>>();
+    diHelper.TryAdd<DbContextManager<MessagesContext>>();
 });
 
 builder.Host.ConfigureContainer<ContainerBuilder>((context, builder) =>

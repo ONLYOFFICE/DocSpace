@@ -23,51 +23,65 @@
  *
 */
 
-namespace ASC.Data.Storage
-{
-    public static class Extensions
-    {
-        private const int BufferSize = 2048;//NOTE: set to 2048 to fit in minimum tcp window
+namespace ASC.Data.Storage;
 
-        public static Stream IronReadStream(this IDataStore store, TempStream tempStream, string domain, string path, int tryCount)
+public static class Extensions
+{
+    private const int BufferSize = 2048;//NOTE: set to 2048 to fit in minimum tcp window
+
+        public static async Task<Stream> IronReadStreamAsync(this IDataStore store, TempStream tempStream, string domain, string path, int tryCount)
+    {
+        var ms = tempStream.Create();
+            await IronReadToStreamAsync(store, domain, path, tryCount, ms);
+        ms.Seek(0, SeekOrigin.Begin);
+
+        return ms;
+    }
+
+        public static Task IronReadToStreamAsync(this IDataStore store, string domain, string path, int tryCount, Stream readTo)
+    {
+        if (tryCount < 1)
         {
-            var ms = tempStream.Create();
-            IronReadToStream(store, domain, path, tryCount, ms);
-            ms.Seek(0, SeekOrigin.Begin);
-            return ms;
+            throw new ArgumentOutOfRangeException(nameof(tryCount), "Must be greater or equal 1.");
         }
 
-        public static void IronReadToStream(this IDataStore store, string domain, string path, int tryCount, Stream readTo)
+        if (!readTo.CanWrite)
         {
-            if (tryCount < 1) throw new ArgumentOutOfRangeException(nameof(tryCount), "Must be greater or equal 1.");
-            if (!readTo.CanWrite) throw new ArgumentException("stream cannot be written", nameof(readTo));
+            throw new ArgumentException("stream cannot be written", nameof(readTo));
+        }
 
-            var tryCurrent = 0;
-            var offset = 0;
 
-            while (tryCurrent < tryCount)
+            return InternalIronReadToStreamAsync(store, domain, path, tryCount, readTo);
+        }
+
+        private static async Task InternalIronReadToStreamAsync(this IDataStore store, string domain, string path, int tryCount, Stream readTo)
+        {
+        var tryCurrent = 0;
+        var offset = 0;
+
+        while (tryCurrent < tryCount)
+        {
+            try
             {
-                try
-                {
-                    tryCurrent++;
-                    using var stream = store.GetReadStream(domain, path, offset);
-                    var buffer = new byte[BufferSize];
+                tryCurrent++;
+                    using var stream = await store.GetReadStreamAsync(domain, path, offset);
+                var buffer = new byte[BufferSize];
                     int readed;
-                    while ((readed = stream.Read(buffer, 0, BufferSize)) > 0)
-                    {
-                        readTo.Write(buffer, 0, readed);
-                        offset += readed;
-                    }
-                    break;
-                }
-                catch (Exception ex)
+                    while ((readed = await stream.ReadAsync(buffer, 0, BufferSize)) > 0)
                 {
-                    if (tryCurrent >= tryCount)
-                    {
-                        throw new IOException("Can not read stream. Tries count: " + tryCurrent + ".", ex);
-                    }
-                    Thread.Sleep(tryCount * 50);
+                        await readTo.WriteAsync(buffer, 0, readed);
+                    offset += readed;
                 }
+                break;
+            }
+            catch (Exception ex)
+            {
+                if (tryCurrent >= tryCount)
+                {
+                    throw new IOException("Can not read stream. Tries count: " + tryCurrent + ".", ex);
+                }
+
+                Thread.Sleep(tryCount * 50);
             }
         }
     }

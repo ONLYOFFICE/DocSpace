@@ -44,8 +44,8 @@ public class TelegramHandler
 
     public Task SendMessage(NotifyMessage msg)
     {
-        if (string.IsNullOrEmpty(msg.To)) return Task.CompletedTask;
-        if (!_clients.ContainsKey(msg.Tenant)) return Task.CompletedTask;
+        if (string.IsNullOrEmpty(msg.Reciever)) return Task.CompletedTask;
+        if (!_clients.ContainsKey(msg.TenantId)) return Task.CompletedTask;
 
         return InternalSendMessage(msg);
     }
@@ -55,15 +55,15 @@ public class TelegramHandler
         var scope = _scopeFactory.CreateScope();
         var cachedTelegramDao = scope.ServiceProvider.GetService<IOptionsSnapshot<CachedTelegramDao>>().Value;
 
-        var client = _clients[msg.Tenant].Client;
+        var client = _clients[msg.TenantId].Client;
 
         try
         {
-            var tgUser = cachedTelegramDao.GetUser(Guid.Parse(msg.To), msg.Tenant);
+            var tgUser = cachedTelegramDao.GetUser(Guid.Parse(msg.Reciever), msg.TenantId);
 
             if (tgUser == null)
             {
-                _log.DebugFormat("Couldn't find telegramId for user '{0}'", msg.To);
+                _log.DebugFormat("Couldn't find telegramId for user '{0}'", msg.Reciever);
                 return;
             }
 
@@ -72,7 +72,7 @@ public class TelegramHandler
         }
         catch (Exception e)
         {
-            _log.DebugFormat("Couldn't send message for user '{0}' got an '{1}'", msg.To, e.Message);
+            _log.DebugFormat("Couldn't send message for user '{0}' got an '{1}'", msg.Reciever, e.Message);
         }
     }
 
