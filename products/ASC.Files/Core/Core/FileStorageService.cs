@@ -1741,14 +1741,14 @@ public class FileStorageService<T> //: IFileStorageService
         var providerDao = GetProviderDao();
         if (providerDao != null)
         {
-            var providersInfo = await providerDao.GetProvidersInfoAsync(userFrom.ID).ToListAsync();
+            var providersInfo = await providerDao.GetProvidersInfoAsync(userFrom.Id).ToListAsync();
             var commonProvidersInfo = providersInfo.Where(provider => provider.RootFolderType == FolderType.COMMON);
 
             //move common thirdparty storage userFrom
             foreach (var commonProviderInfo in commonProvidersInfo)
             {
-                _logger.InfoFormat("Reassign provider {0} from {1} to {2}", commonProviderInfo.ID, userFrom.ID, userTo.ID);
-                await providerDao.UpdateProviderInfoAsync(commonProviderInfo.ID, null, null, FolderType.DEFAULT, userTo.ID);
+                _logger.InfoFormat("Reassign provider {0} from {1} to {2}", commonProviderInfo.ID, userFrom.Id, userTo.Id);
+                await providerDao.UpdateProviderInfoAsync(commonProviderInfo.ID, null, null, FolderType.DEFAULT, userTo.Id);
             }
         }
 
@@ -1757,12 +1757,12 @@ public class FileStorageService<T> //: IFileStorageService
 
         if (!userFrom.IsVisitor(_userManager))
         {
-            var folderIdFromMy = await folderDao.GetFolderIDUserAsync(false, userFrom.ID);
+            var folderIdFromMy = await folderDao.GetFolderIDUserAsync(false, userFrom.Id);
 
             if (!Equals(folderIdFromMy, 0))
             {
                 //create folder with name userFrom in folder userTo
-                var folderIdToMy = await folderDao.GetFolderIDUserAsync(true, userTo.ID);
+                var folderIdToMy = await folderDao.GetFolderIDUserAsync(true, userTo.Id);
                 var newFolder = _serviceProvider.GetService<Folder<T>>();
                 newFolder.Title = string.Format(_customNamingPeople.Substitute<FilesCommonResource>("TitleDeletedUserFolder"), userFrom.DisplayUserName(false, _displayUserSettingsHelper));
                 newFolder.FolderID = folderIdToMy;
@@ -1772,11 +1772,11 @@ public class FileStorageService<T> //: IFileStorageService
                 //move items from userFrom to userTo
                 await _entryManager.MoveSharedItemsAsync(folderIdFromMy, newFolderTo, folderDao, fileDao);
 
-                await EntryManager.ReassignItemsAsync(newFolderTo, userFrom.ID, userTo.ID, folderDao, fileDao);
+                await EntryManager.ReassignItemsAsync(newFolderTo, userFrom.Id, userTo.Id, folderDao, fileDao);
             }
         }
 
-        await EntryManager.ReassignItemsAsync(await _globalFolderHelper.GetFolderCommonAsync<T>(), userFrom.ID, userTo.ID, folderDao, fileDao);
+        await EntryManager.ReassignItemsAsync(await _globalFolderHelper.GetFolderCommonAsync<T>(), userFrom.Id, userTo.Id, folderDao, fileDao);
     }
 
     public async Task DeleteStorageAsync(Guid userId)
@@ -2146,9 +2146,9 @@ public class FileStorageService<T> //: IFileStorageService
         }
 
         var users = _userManager.GetUsersByGroup(Constants.GroupEveryone.ID)
-                               .Where(user => !user.ID.Equals(_authContext.CurrentAccount.ID)
-                                              && !user.ID.Equals(Constants.LostUser.ID))
-                               .Select(user => new MentionWrapper(user, _displayUserSettingsHelper) { HasAccess = usersIdWithAccess.Contains(user.ID) })
+                               .Where(user => !user.Id.Equals(_authContext.CurrentAccount.ID)
+                                              && !user.Id.Equals(Constants.LostUser.Id))
+                               .Select(user => new MentionWrapper(user, _displayUserSettingsHelper) { HasAccess = usersIdWithAccess.Contains(user.Id) })
                                .ToList();
 
         users = users
@@ -2192,13 +2192,13 @@ public class FileStorageService<T> //: IFileStorageService
             }
 
             var recipient = _userManager.GetUserByEmail(email);
-            if (recipient == null || recipient.ID == Constants.LostUser.ID)
+            if (recipient == null || recipient.Id == Constants.LostUser.Id)
             {
                 showSharingSettings = canShare.Value;
                 continue;
             }
 
-            if (!await fileSecurity.CanReadAsync(file, recipient.ID))
+            if (!await fileSecurity.CanReadAsync(file, recipient.Id))
             {
                 if (!canShare.Value)
                 {
@@ -2212,14 +2212,14 @@ public class FileStorageService<T> //: IFileStorageService
                             new AceWrapper
                             {
                                 Share = FileShare.Read,
-                                SubjectId = recipient.ID,
+                                SubjectId = recipient.Id,
                                 SubjectGroup = false,
                             }
                         };
 
                     showSharingSettings |= await _fileSharingAceHelper.SetAceObjectAsync(aces, file, false, null);
 
-                    recipients.Add(recipient.ID);
+                    recipients.Add(recipient.Id);
                 }
                 catch (Exception e)
                 {
@@ -2228,7 +2228,7 @@ public class FileStorageService<T> //: IFileStorageService
             }
             else
             {
-                recipients.Add(recipient.ID);
+                recipients.Add(recipient.Id);
             }
         }
 
@@ -2312,11 +2312,11 @@ public class FileStorageService<T> //: IFileStorageService
             }
 
             var newFolder = folder;
-            if (folder.CreateBy != userInfo.ID)
+            if (folder.CreateBy != userInfo.Id)
             {
                 var folderAccess = folder.Access;
 
-                newFolder.CreateBy = userInfo.ID;
+                newFolder.CreateBy = userInfo.Id;
                 var newFolderID = await folderDao.SaveFolderAsync(newFolder);
 
                 newFolder = await folderDao.GetFolderAsync(newFolderID);
@@ -2342,7 +2342,7 @@ public class FileStorageService<T> //: IFileStorageService
             }
 
             var newFile = file;
-            if (file.CreateBy != userInfo.ID)
+            if (file.CreateBy != userInfo.Id)
             {
                 newFile = _serviceProvider.GetService<File<T>>();
                 newFile.ID = file.ID;
@@ -2351,7 +2351,7 @@ public class FileStorageService<T> //: IFileStorageService
                 newFile.Title = file.Title;
                 newFile.FileStatus = file.FileStatus;
                 newFile.FolderID = file.FolderID;
-                newFile.CreateBy = userInfo.ID;
+                newFile.CreateBy = userInfo.Id;
                 newFile.CreateOn = file.CreateOn;
                 newFile.ConvertedType = file.ConvertedType;
                 newFile.Comment = FilesCommonResource.CommentChangeOwner;
@@ -2491,7 +2491,7 @@ public class FileStorageService<T> //: IFileStorageService
         {
             var req = new ThumbnailRequest()
             {
-                Tenant = _tenantManager.GetCurrentTenant().TenantId,
+                Tenant = _tenantManager.GetCurrentTenant().Id,
                 BaseUrl = _baseCommonLinkUtility.GetFullAbsolutePath("")
             };
 
@@ -2518,7 +2518,7 @@ public class FileStorageService<T> //: IFileStorageService
         {
             var req = new ThumbnailRequest()
             {
-                Tenant = _tenantManager.GetCurrentTenant().TenantId,
+                Tenant = _tenantManager.GetCurrentTenant().Id,
                 BaseUrl = _baseCommonLinkUtility.GetFullAbsolutePath("")
             };
 

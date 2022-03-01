@@ -131,7 +131,7 @@ public class NotifyClient
                               : CultureInfo.GetCultureInfo(u.CultureName);
 
             var aceString = GetAccessString(recipientPair.Value, culture);
-            var recipient = recipientsProvider.GetRecipient(u.ID.ToString());
+            var recipient = recipientsProvider.GetRecipient(u.Id.ToString());
 
             client.SendNoticeAsync(
                 action,
@@ -165,7 +165,7 @@ public class NotifyClient
         {
             var u = userManager.GetUsers(recipientId);
 
-            var recipient = recipientsProvider.GetRecipient(u.ID.ToString());
+            var recipient = recipientsProvider.GetRecipient(u.Id.ToString());
 
             client.SendNoticeAsync(
                 NotifyConstants.EventEditorMentions,

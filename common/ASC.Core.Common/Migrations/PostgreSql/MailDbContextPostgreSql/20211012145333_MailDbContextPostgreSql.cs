@@ -1,166 +1,166 @@
-namespace ASC.Core.Common.Migrations.PostgreSql.MailDbContextPostgreSql
+namespace ASC.Core.Common.Migrations.PostgreSql.MailDbContextPostgreSql;
+
+public partial class MailDbContextPostgreSql : Migration
 {
-    public partial class MailDbContextPostgreSql : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.AlterDatabase()
-                .Annotation("MySql:CharSet", "utf8mb4");
+        migrationBuilder.AlterDatabase()
+            .Annotation("MySql:CharSet", "utf8mb4");
 
-            migrationBuilder.CreateTable(
-                name: "ApiKeys",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    AccessToken = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ApiKeys", x => x.Id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
+        migrationBuilder.CreateTable(
+            name: "ApiKeys",
+            columns: table => new
+            {
+                Id = table.Column<int>(type: "int", nullable: false)
+                    .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                AccessToken = table.Column<string>(type: "longtext", nullable: true)
+                    .Annotation("MySql:CharSet", "utf8mb4")
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey("PK_ApiKeys", x => x.Id);
+            })
+            .Annotation("MySql:CharSet", "utf8mb4");
 
-            migrationBuilder.CreateTable(
-                name: "GreyListingWhiteList",
-                columns: table => new
-                {
-                    Comment = table.Column<string>(type: "varchar(255)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Source = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_GreyListingWhiteList", x => x.Comment);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
+        migrationBuilder.CreateTable(
+            name: "GreyListingWhiteList",
+            columns: table => new
+            {
+                Comment = table.Column<string>(type: "varchar(255)", nullable: false)
+                    .Annotation("MySql:CharSet", "utf8mb4"),
+                Source = table.Column<string>(type: "longtext", nullable: true)
+                    .Annotation("MySql:CharSet", "utf8mb4")
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey("PK_GreyListingWhiteList", x => x.Comment);
+            })
+            .Annotation("MySql:CharSet", "utf8mb4");
 
-            migrationBuilder.CreateTable(
-                name: "mail_mailbox",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    tenant = table.Column<int>(type: "int", nullable: false),
-                    id_user = table.Column<string>(type: "varchar(38)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    address = table.Column<string>(type: "varchar(255)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    name = table.Column<string>(type: "varchar(255)", nullable: true, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    enabled = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValueSql: "'1'"),
-                    is_removed = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    is_processed = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    is_server_mailbox = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    IsTeamlabMailbox = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    imap = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    user_online = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    is_default = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    msg_count_last = table.Column<int>(type: "int", nullable: false),
-                    size_last = table.Column<int>(type: "int", nullable: false),
-                    login_delay = table.Column<int>(type: "int", nullable: false, defaultValueSql: "'30'"),
-                    quota_error = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    imap_intervals = table.Column<string>(type: "mediumtext", nullable: true, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    begin_date = table.Column<DateTime>(type: "timestamp", nullable: false, defaultValueSql: "'1975-01-01 00:00:00'"),
-                    email_in_folder = table.Column<string>(type: "text", nullable: true, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    pop3_password = table.Column<string>(type: "varchar(255)", nullable: true, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    smtp_password = table.Column<string>(type: "varchar(255)", nullable: true, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    token_type = table.Column<int>(type: "int", nullable: false),
-                    token = table.Column<string>(type: "text", nullable: true, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    id_smtp_server = table.Column<int>(type: "int", nullable: false),
-                    id_in_server = table.Column<int>(type: "int", nullable: false),
-                    date_checked = table.Column<DateTime>(type: "datetime", nullable: false),
-                    date_user_checked = table.Column<DateTime>(type: "datetime", nullable: false),
-                    date_login_delay_expires = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "'1975-01-01 00:00:00'"),
-                    date_auth_error = table.Column<DateTime>(type: "datetime", nullable: true),
-                    date_created = table.Column<DateTime>(type: "datetime", nullable: false),
-                    date_modified = table.Column<DateTime>(type: "timestamp", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_mail_mailbox", x => x.id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
+        migrationBuilder.CreateTable(
+            name: "mail_mailbox",
+            columns: table => new
+            {
+                id = table.Column<int>(type: "int", nullable: false)
+                    .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                tenant = table.Column<int>(type: "int", nullable: false),
+                id_user = table.Column<string>(type: "varchar(38)", nullable: false, collation: "utf8_general_ci")
+                    .Annotation("MySql:CharSet", "utf8"),
+                address = table.Column<string>(type: "varchar(255)", nullable: false, collation: "utf8_general_ci")
+                    .Annotation("MySql:CharSet", "utf8"),
+                name = table.Column<string>(type: "varchar(255)", nullable: true, collation: "utf8_general_ci")
+                    .Annotation("MySql:CharSet", "utf8"),
+                enabled = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValueSql: "'1'"),
+                is_removed = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                is_processed = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                is_server_mailbox = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                IsTeamlabMailbox = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                imap = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                user_online = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                is_default = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                msg_count_last = table.Column<int>(type: "int", nullable: false),
+                size_last = table.Column<int>(type: "int", nullable: false),
+                login_delay = table.Column<int>(type: "int", nullable: false, defaultValueSql: "'30'"),
+                quota_error = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                imap_intervals = table.Column<string>(type: "mediumtext", nullable: true, collation: "utf8_general_ci")
+                    .Annotation("MySql:CharSet", "utf8"),
+                begin_date = table.Column<DateTime>(type: "timestamp", nullable: false, defaultValueSql: "'1975-01-01 00:00:00'"),
+                email_in_folder = table.Column<string>(type: "text", nullable: true, collation: "utf8_general_ci")
+                    .Annotation("MySql:CharSet", "utf8"),
+                pop3_password = table.Column<string>(type: "varchar(255)", nullable: true, collation: "utf8_general_ci")
+                    .Annotation("MySql:CharSet", "utf8"),
+                smtp_password = table.Column<string>(type: "varchar(255)", nullable: true, collation: "utf8_general_ci")
+                    .Annotation("MySql:CharSet", "utf8"),
+                token_type = table.Column<int>(type: "int", nullable: false),
+                token = table.Column<string>(type: "text", nullable: true, collation: "utf8_general_ci")
+                    .Annotation("MySql:CharSet", "utf8"),
+                id_smtp_server = table.Column<int>(type: "int", nullable: false),
+                id_in_server = table.Column<int>(type: "int", nullable: false),
+                date_checked = table.Column<DateTime>(type: "datetime", nullable: false),
+                date_user_checked = table.Column<DateTime>(type: "datetime", nullable: false),
+                date_login_delay_expires = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "'1975-01-01 00:00:00'"),
+                date_auth_error = table.Column<DateTime>(type: "datetime", nullable: true),
+                date_created = table.Column<DateTime>(type: "datetime", nullable: false),
+                date_modified = table.Column<DateTime>(type: "timestamp", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP")
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey("PK_mail_mailbox", x => x.id);
+            })
+            .Annotation("MySql:CharSet", "utf8mb4");
 
-            migrationBuilder.CreateTable(
-                name: "mail_mailbox_provider",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    name = table.Column<string>(type: "varchar(255)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    display_name = table.Column<string>(type: "varchar(255)", nullable: true, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    display_short_name = table.Column<string>(type: "varchar(255)", nullable: true, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    documentation = table.Column<string>(type: "varchar(255)", nullable: true, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_mail_mailbox_provider", x => x.id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
+        migrationBuilder.CreateTable(
+            name: "mail_mailbox_provider",
+            columns: table => new
+            {
+                id = table.Column<int>(type: "int", nullable: false)
+                    .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                name = table.Column<string>(type: "varchar(255)", nullable: false, collation: "utf8_general_ci")
+                    .Annotation("MySql:CharSet", "utf8"),
+                display_name = table.Column<string>(type: "varchar(255)", nullable: true, collation: "utf8_general_ci")
+                    .Annotation("MySql:CharSet", "utf8"),
+                display_short_name = table.Column<string>(type: "varchar(255)", nullable: true, collation: "utf8_general_ci")
+                    .Annotation("MySql:CharSet", "utf8"),
+                documentation = table.Column<string>(type: "varchar(255)", nullable: true, collation: "utf8_general_ci")
+                    .Annotation("MySql:CharSet", "utf8")
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey("PK_mail_mailbox_provider", x => x.id);
+            })
+            .Annotation("MySql:CharSet", "utf8mb4");
 
-            migrationBuilder.CreateTable(
-                name: "mail_server_server",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    mx_record = table.Column<string>(type: "varchar(128)", nullable: false, defaultValueSql: "''", collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    connection_string = table.Column<string>(type: "text", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    server_type = table.Column<int>(type: "int", nullable: false),
-                    smtp_settings_id = table.Column<int>(type: "int", nullable: false),
-                    imap_settings_id = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_mail_server_server", x => x.id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
+        migrationBuilder.CreateTable(
+            name: "mail_server_server",
+            columns: table => new
+            {
+                id = table.Column<int>(type: "int", nullable: false)
+                    .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                mx_record = table.Column<string>(type: "varchar(128)", nullable: false, defaultValueSql: "''", collation: "utf8_general_ci")
+                    .Annotation("MySql:CharSet", "utf8"),
+                connection_string = table.Column<string>(type: "text", nullable: false, collation: "utf8_general_ci")
+                    .Annotation("MySql:CharSet", "utf8"),
+                server_type = table.Column<int>(type: "int", nullable: false),
+                smtp_settings_id = table.Column<int>(type: "int", nullable: false),
+                imap_settings_id = table.Column<int>(type: "int", nullable: false)
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey("PK_mail_server_server", x => x.id);
+            })
+            .Annotation("MySql:CharSet", "utf8mb4");
 
-            migrationBuilder.CreateTable(
-                name: "MailboxServer",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    IdProvider = table.Column<int>(type: "int", nullable: false),
-                    Type = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Hostname = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Port = table.Column<int>(type: "int", nullable: false),
-                    SocketType = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    UserName = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Authentication = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    IsUserData = table.Column<bool>(type: "tinyint(1)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MailboxServer", x => x.Id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
+        migrationBuilder.CreateTable(
+            name: "MailboxServer",
+            columns: table => new
+            {
+                Id = table.Column<int>(type: "int", nullable: false)
+                    .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                IdProvider = table.Column<int>(type: "int", nullable: false),
+                Type = table.Column<string>(type: "longtext", nullable: true)
+                    .Annotation("MySql:CharSet", "utf8mb4"),
+                Hostname = table.Column<string>(type: "longtext", nullable: true)
+                    .Annotation("MySql:CharSet", "utf8mb4"),
+                Port = table.Column<int>(type: "int", nullable: false),
+                SocketType = table.Column<string>(type: "longtext", nullable: true)
+                    .Annotation("MySql:CharSet", "utf8mb4"),
+                UserName = table.Column<string>(type: "longtext", nullable: true)
+                    .Annotation("MySql:CharSet", "utf8mb4"),
+                Authentication = table.Column<string>(type: "longtext", nullable: true)
+                    .Annotation("MySql:CharSet", "utf8mb4"),
+                IsUserData = table.Column<bool>(type: "tinyint(1)", nullable: false)
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey("PK_MailboxServer", x => x.Id);
+            })
+            .Annotation("MySql:CharSet", "utf8mb4");
 
-            migrationBuilder.InsertData(
-                table: "mail_mailbox_provider",
-                columns: new[] { "id", "display_name", "display_short_name", "documentation", "name" },
-                values: new object[,]
-                {
+        migrationBuilder.InsertData(
+            table: "mail_mailbox_provider",
+            columns: new[] { "id", "display_name", "display_short_name", "documentation", "name" },
+            values: new object[,]
+            {
                     { 1, "1&1", "1&1", "http://hilfe-center.1und1.de/access/search/go.php?t=e698123", "1und1.de" },
                     { 141, "??????????", "INET-SHIBATA", null, "pop.shibata.ne.jp" },
                     { 142, "Posteo", "Posteo", null, "posteo.de" },
@@ -381,58 +381,57 @@ namespace ASC.Core.Common.Migrations.PostgreSql.MailDbContextPostgreSql
                     { 80, "Inbox.lt", "Inbox.lt", null, "inbox.lt" },
                     { 69, "Google Mail", "GMail", null, "googlemail.com" },
                     { 221, "Microsoft Office 365", "Office365", "https://products.office.com", "office365.com" }
-                });
+            });
 
-            migrationBuilder.CreateIndex(
-                name: "address_index",
-                table: "mail_mailbox",
-                column: "address");
+        migrationBuilder.CreateIndex(
+            name: "address_index",
+            table: "mail_mailbox",
+            column: "address");
 
-            migrationBuilder.CreateIndex(
-                name: "date_login_delay_expires",
-                table: "mail_mailbox",
-                columns: new[] { "date_checked", "date_login_delay_expires" });
+        migrationBuilder.CreateIndex(
+            name: "date_login_delay_expires",
+            table: "mail_mailbox",
+            columns: new[] { "date_checked", "date_login_delay_expires" });
 
-            migrationBuilder.CreateIndex(
-                name: "main_mailbox_id_in_server_mail_mailbox_server_id",
-                table: "mail_mailbox",
-                column: "id_in_server");
+        migrationBuilder.CreateIndex(
+            name: "main_mailbox_id_in_server_mail_mailbox_server_id",
+            table: "mail_mailbox",
+            column: "id_in_server");
 
-            migrationBuilder.CreateIndex(
-                name: "main_mailbox_id_smtp_server_mail_mailbox_server_id",
-                table: "mail_mailbox",
-                column: "id_smtp_server");
+        migrationBuilder.CreateIndex(
+            name: "main_mailbox_id_smtp_server_mail_mailbox_server_id",
+            table: "mail_mailbox",
+            column: "id_smtp_server");
 
-            migrationBuilder.CreateIndex(
-                name: "user_id_index",
-                table: "mail_mailbox",
-                columns: new[] { "tenant", "id_user" });
+        migrationBuilder.CreateIndex(
+            name: "user_id_index",
+            table: "mail_mailbox",
+            columns: new[] { "tenant", "id_user" });
 
-            migrationBuilder.CreateIndex(
-                name: "mail_server_server_type_server_type_fk_id",
-                table: "mail_server_server",
-                column: "server_type");
-        }
+        migrationBuilder.CreateIndex(
+            name: "mail_server_server_type_server_type_fk_id",
+            table: "mail_server_server",
+            column: "server_type");
+    }
 
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropTable(
-                name: "ApiKeys");
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.DropTable(
+            name: "ApiKeys");
 
-            migrationBuilder.DropTable(
-                name: "GreyListingWhiteList");
+        migrationBuilder.DropTable(
+            name: "GreyListingWhiteList");
 
-            migrationBuilder.DropTable(
-                name: "mail_mailbox");
+        migrationBuilder.DropTable(
+            name: "mail_mailbox");
 
-            migrationBuilder.DropTable(
-                name: "mail_mailbox_provider");
+        migrationBuilder.DropTable(
+            name: "mail_mailbox_provider");
 
-            migrationBuilder.DropTable(
-                name: "mail_server_server");
+        migrationBuilder.DropTable(
+            name: "mail_server_server");
 
-            migrationBuilder.DropTable(
-                name: "MailboxServer");
-        }
+        migrationBuilder.DropTable(
+            name: "MailboxServer");
     }
 }

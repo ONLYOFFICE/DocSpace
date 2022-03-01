@@ -51,7 +51,7 @@ internal class ProviderAccountDao : IProviderDao
         {
             if (_tenantID == 0)
             {
-                _tenantID = _tenantManager.GetCurrentTenant().TenantId;
+                _tenantID = _tenantManager.GetCurrentTenant().Id;
             }
 
             return _tenantID;

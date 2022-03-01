@@ -24,14 +24,13 @@
 */
 
 
-namespace ASC.Notify
+namespace ASC.Notify;
+
+public enum MailSendingState
 {
-    public enum MailSendingState
-    {
-        NotSended,
-        Sending,
-        Sended,
-        Error,
-        FatalError,
-    };
-}
+    NotSended,
+    Sending,
+    Sended,
+    Error,
+    FatalError,
+};

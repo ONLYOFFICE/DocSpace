@@ -100,7 +100,7 @@ public class TokenHelper
             App = token.App,
             Token = EncryptToken(token),
             UserId = _authContext.CurrentAccount.ID,
-            TenantId = _tenantManager.GetCurrentTenant().TenantId
+            TenantId = _tenantManager.GetCurrentTenant().Id
         };
 
         FilesDbContext.AddOrUpdate(r => r.ThirdpartyApp, dbFilesThirdpartyApp);
@@ -116,7 +116,7 @@ public class TokenHelper
     {
         var oAuth20Token = FilesDbContext.ThirdpartyApp
             .AsQueryable()
-            .Where(r => r.TenantId == _tenantManager.GetCurrentTenant().TenantId)
+            .Where(r => r.TenantId == _tenantManager.GetCurrentTenant().Id)
             .Where(r => r.UserId == userId)
             .Where(r => r.App == app)
             .Select(r => r.Token)
@@ -134,7 +134,7 @@ public class TokenHelper
     {
         var apps = FilesDbContext.ThirdpartyApp
             .AsQueryable()
-            .Where(r => r.TenantId == _tenantManager.GetCurrentTenant().TenantId)
+            .Where(r => r.TenantId == _tenantManager.GetCurrentTenant().Id)
             .Where(r => r.UserId == (userId ?? _authContext.CurrentAccount.ID))
             .Where(r => r.App == app);
 

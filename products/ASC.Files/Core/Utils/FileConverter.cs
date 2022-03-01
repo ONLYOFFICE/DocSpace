@@ -710,7 +710,7 @@ public class FileConverter
             Result = string.Empty,
             Processed = "",
             Id = string.Empty,
-            TenantId = _tenantManager.GetCurrentTenant().TenantId,
+            TenantId = _tenantManager.GetCurrentTenant().Id,
             Account = _authContext.CurrentAccount,
             Delete = false,
             StartDateTime = DateTime.Now,
@@ -754,7 +754,7 @@ public class FileConverter
         }
 
         await _fileMarker.RemoveMarkAsNewAsync(file);
-        GetFileConverter<T>().Add(file, password, _tenantManager.GetCurrentTenant().TenantId, _authContext.CurrentAccount, deleteAfter, _httpContextAccesor?.HttpContext != null ? _httpContextAccesor.HttpContext.Request.GetUrlRewriter().ToString() : null, _baseCommonLinkUtility.ServerRootPath);
+        GetFileConverter<T>().Add(file, password, _tenantManager.GetCurrentTenant().Id, _authContext.CurrentAccount, deleteAfter, _httpContextAccesor?.HttpContext != null ? _httpContextAccesor.HttpContext.Request.GetUrlRewriter().ToString() : null, _baseCommonLinkUtility.ServerRootPath);
     }
 
     public bool IsConverting<T>(File<T> file)

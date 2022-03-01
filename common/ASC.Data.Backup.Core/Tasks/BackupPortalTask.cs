@@ -130,18 +130,18 @@ public class BackupPortalTask : PortalTaskBase
               tables = dbManager.ExecuteList("show tables;").Select(r => Convert.ToString(r[0])).ToList();
           }*/
 
-        var stepscount = tables.Count * 4; // (schema + data) * (dump + zip)
-        if (ProcessStorage)
-        {
-            var tenants = _tenantManager.GetTenants(false).Select(r => r.TenantId);
-            foreach (var t in tenants)
+            var stepscount = tables.Count * 4; // (schema + data) * (dump + zip)
+            if (ProcessStorage)
             {
-                files.AddRange(GetFiles(t));
-            }
+                var tenants = _tenantManager.GetTenants(false).Select(r => r.Id);
+                foreach (var t in tenants)
+                {
+                    files.AddRange(GetFiles(t));
+                }
 
-            stepscount += files.Count * 2 + 1;
-            Logger.Debug("files:" + files.Count);
-        }
+                stepscount += files.Count * 2 + 1;
+                Logger.Debug("files:" + files.Count);
+            }
 
         SetStepsCount(stepscount);
 

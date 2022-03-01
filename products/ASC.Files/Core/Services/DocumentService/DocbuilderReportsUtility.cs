@@ -328,7 +328,7 @@ public class DocbuilderReportsUtilityHelper
         DocbuilderReportsUtility = docbuilderReportsUtility;
         _authContext = authContext;
         _tenantManager = tenantManager;
-        TenantId = _tenantManager.GetCurrentTenant().TenantId;
+        TenantId = _tenantManager.GetCurrentTenant().Id;
         UserId = _authContext.CurrentAccount.ID;
     }
 

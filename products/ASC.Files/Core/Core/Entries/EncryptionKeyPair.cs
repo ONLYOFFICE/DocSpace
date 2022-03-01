@@ -76,11 +76,11 @@ public class EncryptionKeyPairHelper
         {
             PrivateKeyEnc = privateKeyEnc,
             PublicKey = publicKey,
-            UserId = user.ID,
+            UserId = user.Id,
         };
 
         var keyPairString = JsonSerializer.Serialize(keyPair);
-        _encryptionLoginProvider.SetKeys(user.ID, keyPairString);
+        _encryptionLoginProvider.SetKeys(user.Id, keyPairString);
     }
 
     public EncryptionKeyPair GetKeyPair()

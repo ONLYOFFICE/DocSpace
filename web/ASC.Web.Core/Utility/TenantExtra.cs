@@ -120,12 +120,12 @@ namespace ASC.Web.Studio.Utility
 
         public Tariff GetCurrentTariff()
         {
-            return PaymentManager.GetTariff(TenantManager.GetCurrentTenant().TenantId);
+            return PaymentManager.GetTariff(TenantManager.GetCurrentTenant().Id);
         }
 
         public TenantQuota GetTenantQuota()
         {
-            return GetTenantQuota(TenantManager.GetCurrentTenant().TenantId);
+            return GetTenantQuota(TenantManager.GetCurrentTenant().Id);
         }
 
         public TenantQuota GetTenantQuota(int tenant)
@@ -143,7 +143,7 @@ namespace ASC.Web.Studio.Utility
             TenantQuota prev = null;
             foreach (var quota in GetTenantQuotas().OrderBy(r => r.ActiveUsers).Where(r => r.Year == curQuota.Year && r.Year3 == curQuota.Year3))
             {
-                if (quota.Id == curQuota.Id)
+                if (quota.Tenant == curQuota.Tenant)
                     return prev;
 
                 prev = quota;
@@ -162,7 +162,7 @@ namespace ASC.Web.Studio.Utility
         public int GetRightQuotaId()
         {
             var q = GetRightQuota();
-            return q != null ? q.Id : 0;
+            return q != null ? q.Tenant : 0;
         }
 
         public TenantQuota GetRightQuota()

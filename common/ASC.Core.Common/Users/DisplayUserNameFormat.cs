@@ -24,12 +24,11 @@
 */
 
 
-namespace ASC.Core.Users
+namespace ASC.Core.Users;
+
+public enum DisplayUserNameFormat
 {
-    public enum DisplayUserNameFormat
-    {
-        Default,
-        FirstLast,
-        LastFirst,
-    }
+    Default,
+    FirstLast,
+    LastFirst,
 }

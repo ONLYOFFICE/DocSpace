@@ -29,7 +29,7 @@ public class MentionWrapper
 {
     public UserInfo User { get; set; }
     public string Email => User.Email;
-    public string Id => User.ID.ToString();
+    public string Id => User.Id.ToString();
     public bool HasAccess { get; set; }
     public string Name => User.DisplayUserName(false, _displayUserSettingsHelper);
 

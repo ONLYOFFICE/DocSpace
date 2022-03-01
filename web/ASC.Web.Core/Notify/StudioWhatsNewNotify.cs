@@ -31,10 +31,14 @@ namespace ASC.Web.Studio.Core.Notify
         private IServiceProvider ServiceProvider { get; }
         public IConfiguration Confuguration { get; }
 
-        public StudioWhatsNewNotify(IServiceProvider serviceProvider, IConfiguration confuguration)
+        private readonly IMapper _mapper;
+
+        public StudioWhatsNewNotify(IServiceProvider serviceProvider, IConfiguration confuguration,
+            IMapper mapper)
         {
             ServiceProvider = serviceProvider;
             Confuguration = confuguration;
+            _mapper = mapper;
         }
 
         public void SendMsgWhatsNew(DateTime scheduleDate)
@@ -79,7 +83,7 @@ namespace ASC.Web.Studio.Core.Notify
                             continue;
                         }
 
-                        securityContext.AuthenticateMeWithoutCookie(authManager.GetAccountByID(tenant.TenantId, user.ID));
+                        securityContext.AuthenticateMeWithoutCookie(authManager.GetAccountByID(tenant.Id, user.Id));
 
                         var culture = string.IsNullOrEmpty(user.CultureName) ? tenant.GetCulture() : user.GetCulture();
 
@@ -93,7 +97,7 @@ namespace ASC.Web.Studio.Core.Notify
                             Max = 100,
                         });
 
-                        var feedMinWrappers = feeds.ConvertAll(f => f.ToFeedMin(userManager));
+                        var feedMinWrappers = _mapper.Map<List<FeedResultItem>, List<FeedMin>>(feeds);
 
                         var feedMinGroupedWrappers = feedMinWrappers
                             .Where(f =>

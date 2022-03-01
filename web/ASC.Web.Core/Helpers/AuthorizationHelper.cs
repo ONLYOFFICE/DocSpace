@@ -64,7 +64,7 @@ namespace ASC.Web.Core.Helpers
                     var username = arr[0];
                     var password = arr[1];
                     var u = UserManager.GetUserByEmail(username);
-                    if (u != null && u.ID != ASC.Core.Users.Constants.LostUser.ID)
+                    if (u != null && u.Id != ASC.Core.Users.Constants.LostUser.Id)
                     {
                         var passwordHash = PasswordHasher.GetClientPassword(password);
                         authCookie = SecurityContext.AuthenticateMe(u.Email, passwordHash);

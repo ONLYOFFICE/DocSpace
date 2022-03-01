@@ -762,7 +762,7 @@ public class EntryManager
         {
             entries = entries.Where(f =>
                                     subjectGroup
-                                        ? _userManager.GetUsersByGroup(subjectId).Any(s => s.ID == f.CreateBy)
+                                        ? _userManager.GetUsersByGroup(subjectId).Any(s => s.Id == f.CreateBy)
                                         : f.CreateBy == subjectId
                 )
                              .ToList();

@@ -365,7 +365,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
                 throw new Exception("Profile is null");
             }
 
-            var cookiesKey = _securityContext.AuthenticateMe(userInfo.ID);
+            var cookiesKey = _securityContext.AuthenticateMe(userInfo.Id);
             _cookiesManager.SetCookies(CookiesType.AuthKey, cookiesKey);
             _messageService.Send(MessageAction.LoginSuccessViaSocialApp);
 
@@ -672,7 +672,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
 
             isNew = true;
 
-            Logger.Debug("GoogleDriveApp: new user " + userInfo.ID);
+            Logger.Debug("GoogleDriveApp: new user " + userInfo.Id);
         }
 
         return userInfo;

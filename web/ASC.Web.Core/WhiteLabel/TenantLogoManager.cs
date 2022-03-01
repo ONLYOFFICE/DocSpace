@@ -30,7 +30,7 @@ namespace ASC.Web.Core.WhiteLabel
     {
         private string CacheKey
         {
-            get { return "letterlogodata" + TenantManager.GetCurrentTenant().TenantId; }
+            get { return "letterlogodata" + TenantManager.GetCurrentTenant().Id; }
         }
 
         public bool WhiteLabelEnabled
@@ -163,7 +163,7 @@ namespace ASC.Web.Core.WhiteLabel
         {
             get
             {
-                return TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().TenantId).WhiteLabel;
+                return TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().Id).WhiteLabel;
             }
         }
 

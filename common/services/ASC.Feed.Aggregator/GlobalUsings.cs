@@ -14,6 +14,7 @@ global using ASC.Core.Common;
 global using ASC.Core.Notify.Signalr;
 global using ASC.Feed.Aggregator.Modules;
 global using ASC.Feed.Configuration;
+global using ASC.Feed.Core;
 global using ASC.Feed.Data;
 global using ASC.Web.Core;
 

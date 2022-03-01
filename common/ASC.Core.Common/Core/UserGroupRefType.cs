@@ -24,11 +24,10 @@
 */
 
 
-namespace ASC.Core
+namespace ASC.Core;
+
+public enum UserGroupRefType
 {
-    public enum UserGroupRefType
-    {
-        Contains,
-        Manager,
-    }
+    Contains,
+    Manager,
 }

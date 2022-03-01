@@ -893,7 +893,7 @@ public class AsyncTaskData<T> : DistributedTask
 {
     public AsyncTaskData(TenantManager tenantManager, AuthContext authContext) : base()
     {
-        TenantID = tenantManager.GetCurrentTenant().TenantId;
+        TenantID = tenantManager.GetCurrentTenant().Id;
         CurrentAccountId = authContext.CurrentAccount.ID;
     }
 

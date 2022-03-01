@@ -23,10 +23,9 @@
  *
 */
 
-namespace ASC.Feed
+namespace ASC.Feed;
+
+public interface IFeedProvider<T>
 {
-    public interface IFeedProvider<T>
-    {
-        IEnumerable<T> GetFeed(FeedFilter filter);
-    }
+    IEnumerable<T> GetFeed(FeedFilter filter);
 }

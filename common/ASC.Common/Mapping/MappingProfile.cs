@@ -23,11 +23,17 @@
  *
 */
 
+using ASC.Common.Mapping.PrimitiveTypeConverters;
+
 namespace ASC.Common.Mapping;
 
 public class MappingProfile : Profile
 {
-    public MappingProfile() => Array.ForEach(AppDomain.CurrentDomain.GetAssemblies(), a => ApplyMappingsFromAssembly(a));
+    public MappingProfile()
+    {
+        Array.ForEach(AppDomain.CurrentDomain.GetAssemblies(), a => ApplyMappingsFromAssembly(a));
+        ApplyPrimitiveMappers();
+    }
 
     private void ApplyMappingsFromAssembly(Assembly assembly)
     {
@@ -49,5 +55,11 @@ public class MappingProfile : Profile
 
             methodInfo?.Invoke(instance, new object[] { this });
         }
+    }
+
+    private void ApplyPrimitiveMappers()
+    {
+        CreateMap<long, DateTime>().ReverseMap()
+            .ConvertUsing<TimeConverter>();
     }
 }

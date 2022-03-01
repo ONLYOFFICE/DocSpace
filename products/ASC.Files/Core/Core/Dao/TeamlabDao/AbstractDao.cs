@@ -38,7 +38,7 @@ public class AbstractDao
         {
             if (_tenantID == 0)
             {
-                _tenantID = TenantManager.GetCurrentTenant().TenantId;
+                _tenantID = TenantManager.GetCurrentTenant().Id;
             }
 
             return _tenantID;

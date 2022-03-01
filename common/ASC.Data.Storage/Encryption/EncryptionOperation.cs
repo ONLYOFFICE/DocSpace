@@ -91,7 +91,7 @@ public class EncryptionOperation : DistributedTaskProgress
 
                 foreach (var module in _modules)
                 {
-                    dictionary.Add(module, (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.TenantId.ToString(), module));
+                    dictionary.Add(module, (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.Id.ToString(), module));
                 }
 
                 Parallel.ForEach(dictionary, (elem) =>
@@ -132,9 +132,9 @@ public class EncryptionOperation : DistributedTaskProgress
 
             var progress = await ReadProgressAsync(store);
 
-        foreach (var domain in domains)
-        {
-                var logParent = $"Tenant: {tenant.TenantAlias}, Module: {module}, Domain: {domain}";
+            foreach (var domain in domains)
+            {
+                var logParent = $"Tenant: {tenant.Alias}, Module: {module}, Domain: {domain}";
 
                 var files = await GetFilesAsync(domains, progress, store, domain);
 
@@ -255,7 +255,7 @@ public class EncryptionOperation : DistributedTaskProgress
         {
             foreach (var module in _modules)
             {
-                var store = (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.TenantId.ToString(), module);
+                var store = (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.Id.ToString(), module);
 
                     if (await store.IsFileAsync(string.Empty, ProgressFileName))
                 {
@@ -292,7 +292,7 @@ public class EncryptionOperation : DistributedTaskProgress
 
                 tenant.SetStatus(TenantStatus.Active);
                 tenantManager.SaveTenant(tenant);
-                log.DebugFormat("Tenant {0} SetStatus Active", tenant.TenantAlias);
+                log.DebugFormat("Tenant {0} SetStatus Active", tenant.Alias);
 
                 if (!_hasErrors)
                 {
@@ -300,27 +300,27 @@ public class EncryptionOperation : DistributedTaskProgress
                     {
                         if (_isEncryption)
                         {
-                            notifyHelper.SendStorageEncryptionSuccess(tenant.TenantId);
+                            notifyHelper.SendStorageEncryptionSuccess(tenant.Id);
                         }
                         else
                         {
-                            notifyHelper.SendStorageDecryptionSuccess(tenant.TenantId);
+                            notifyHelper.SendStorageDecryptionSuccess(tenant.Id);
                         }
-                        log.DebugFormat("Tenant {0} SendStorageEncryptionSuccess", tenant.TenantAlias);
+                        log.DebugFormat("Tenant {0} SendStorageEncryptionSuccess", tenant.Alias);
                     }
                 }
                 else
                 {
                     if (_isEncryption)
                     {
-                        notifyHelper.SendStorageEncryptionError(tenant.TenantId);
+                        notifyHelper.SendStorageEncryptionError(tenant.Id);
                     }
                     else
                     {
-                        notifyHelper.SendStorageDecryptionError(tenant.TenantId);
+                        notifyHelper.SendStorageDecryptionError(tenant.Id);
                     }
 
-                    log.DebugFormat("Tenant {0} SendStorageEncryptionError", tenant.TenantAlias);
+                    log.DebugFormat("Tenant {0} SendStorageEncryptionError", tenant.Alias);
                 }
             }
         }

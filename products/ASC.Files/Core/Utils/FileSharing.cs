@@ -127,7 +127,7 @@ public class FileSharingAceHelper<T>
 
             if (w.SubjectGroup)
             {
-                listUsersId = _userManager.GetUsersByGroup(w.SubjectId).Select(ui => ui.ID).ToList();
+                listUsersId = _userManager.GetUsersByGroup(w.SubjectId).Select(ui => ui.Id).ToList();
             }
             else
             {
@@ -338,7 +338,7 @@ public class FileSharing
             var title = u.DisplayUserName(false, _displayUserSettingsHelper);
             var share = r.Share;
 
-            if (u.ID == Constants.LostUser.ID)
+            if (u.Id == Constants.LostUser.Id)
             {
                 var g = _userManager.GetGroupInfo(r.Subject);
                 isgroup = true;

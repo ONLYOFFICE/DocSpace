@@ -75,11 +75,11 @@ namespace ASC.Data.Storage.Migration
 
                     if (kafkaConfiguration != null)
                     {
-                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCacheNotify<>));
                     }
                     else if (redisConfiguration != null)
                     {
-                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
+                        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCacheNotify<>));
 
                         services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
                     }

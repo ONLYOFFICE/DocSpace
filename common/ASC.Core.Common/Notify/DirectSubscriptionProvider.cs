@@ -23,107 +23,160 @@
  *
 */
 
-namespace ASC.Core.Notify
+namespace ASC.Core.Notify;
+
+class DirectSubscriptionProvider : ISubscriptionProvider
 {
-    class DirectSubscriptionProvider : ISubscriptionProvider
+    private readonly IRecipientProvider _recipientProvider;
+    private readonly SubscriptionManager _subscriptionManager;
+    private readonly string _sourceId;
+
+
+    public DirectSubscriptionProvider(string sourceID, SubscriptionManager subscriptionManager, IRecipientProvider recipientProvider)
     {
-        private readonly IRecipientProvider recipientProvider;
-        private readonly SubscriptionManager subscriptionManager;
-        private readonly string sourceID;
+        if (string.IsNullOrEmpty(sourceID)) throw new ArgumentNullException(nameof(sourceID));
+        _sourceId = sourceID;
+        _subscriptionManager = subscriptionManager ?? throw new ArgumentNullException(nameof(subscriptionManager));
+        _recipientProvider = recipientProvider ?? throw new ArgumentNullException(nameof(recipientProvider));
+    }
 
 
-        public DirectSubscriptionProvider(string sourceID, SubscriptionManager subscriptionManager, IRecipientProvider recipientProvider)
+    public object GetSubscriptionRecord(INotifyAction action, IRecipient recipient, string objectID)
+    {
+        if (action == null)
         {
-            if (string.IsNullOrEmpty(sourceID)) throw new ArgumentNullException(nameof(sourceID));
-            this.sourceID = sourceID;
-            this.subscriptionManager = subscriptionManager ?? throw new ArgumentNullException(nameof(subscriptionManager));
-            this.recipientProvider = recipientProvider ?? throw new ArgumentNullException(nameof(recipientProvider));
+            throw new ArgumentNullException(nameof(action));
         }
 
-
-        public object GetSubscriptionRecord(INotifyAction action, IRecipient recipient, string objectID)
+        if (recipient == null)
         {
-            if (action == null) throw new ArgumentNullException(nameof(action));
-            if (recipient == null) throw new ArgumentNullException(nameof(recipient));
-
-            return subscriptionManager.GetSubscriptionRecord(sourceID, action.ID, recipient.ID, objectID);
+            throw new ArgumentNullException(nameof(recipient));
         }
 
-        public string[] GetSubscriptions(INotifyAction action, IRecipient recipient, bool checkSubscribe = true)
-        {
-            if (action == null) throw new ArgumentNullException(nameof(action));
-            if (recipient == null) throw new ArgumentNullException(nameof(recipient));
+        return _subscriptionManager.GetSubscriptionRecord(_sourceId, action.ID, recipient.ID, objectID);
+    }
 
-            return subscriptionManager.GetSubscriptions(sourceID, action.ID, recipient.ID, checkSubscribe);
+    public string[] GetSubscriptions(INotifyAction action, IRecipient recipient, bool checkSubscribe = true)
+    {
+        if (action == null)
+        {
+            throw new ArgumentNullException(nameof(action));
         }
 
-        public IRecipient[] GetRecipients(INotifyAction action, string objectID)
+        if (recipient == null)
         {
-            if (action == null) throw new ArgumentNullException(nameof(action));
-
-            return subscriptionManager.GetRecipients(sourceID, action.ID, objectID)
-                .Select(r => recipientProvider.GetRecipient(r))
-                .Where(r => r != null)
-                .ToArray();
+            throw new ArgumentNullException(nameof(recipient));
         }
 
-        public string[] GetSubscriptionMethod(INotifyAction action, IRecipient recipient)
-        {
-            if (action == null) throw new ArgumentNullException(nameof(action));
-            if (recipient == null) throw new ArgumentNullException(nameof(recipient));
+        return _subscriptionManager.GetSubscriptions(_sourceId, action.ID, recipient.ID, checkSubscribe);
+    }
 
-            return subscriptionManager.GetSubscriptionMethod(sourceID, action.ID, recipient.ID);
+    public IRecipient[] GetRecipients(INotifyAction action, string objectID)
+    {
+        if (action == null)
+        {
+            throw new ArgumentNullException(nameof(action));
         }
 
-        public void UpdateSubscriptionMethod(INotifyAction action, IRecipient recipient, params string[] senderNames)
+        return _subscriptionManager.GetRecipients(_sourceId, action.ID, objectID)
+            .Select(r => _recipientProvider.GetRecipient(r))
+            .Where(r => r != null)
+            .ToArray();
+    }
+
+    public string[] GetSubscriptionMethod(INotifyAction action, IRecipient recipient)
+    {
+        if (action == null)
         {
-            if (action == null) throw new ArgumentNullException(nameof(action));
-            if (recipient == null) throw new ArgumentNullException(nameof(recipient));
-            subscriptionManager.UpdateSubscriptionMethod(sourceID, action.ID, recipient.ID, senderNames);
+            throw new ArgumentNullException(nameof(action));
+        }
+        if (recipient == null)
+        {
+            throw new ArgumentNullException(nameof(recipient));
         }
 
-        public bool IsUnsubscribe(IDirectRecipient recipient, INotifyAction action, string objectID)
-        {
-            if (recipient == null) throw new ArgumentNullException(nameof(recipient));
-            if (action == null) throw new ArgumentNullException(nameof(action));
+        return _subscriptionManager.GetSubscriptionMethod(_sourceId, action.ID, recipient.ID);
+    }
 
-            return subscriptionManager.IsUnsubscribe(sourceID, recipient.ID, action.ID, objectID);
+    public void UpdateSubscriptionMethod(INotifyAction action, IRecipient recipient, params string[] senderNames)
+    {
+        if (action == null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+        if (recipient == null)
+        {
+            throw new ArgumentNullException(nameof(recipient));
         }
 
-        public void Subscribe(INotifyAction action, string objectID, IRecipient recipient)
-        {
-            if (action == null) throw new ArgumentNullException(nameof(action));
-            if (recipient == null) throw new ArgumentNullException(nameof(recipient));
+        _subscriptionManager.UpdateSubscriptionMethod(_sourceId, action.ID, recipient.ID, senderNames);
+    }
 
-            subscriptionManager.Subscribe(sourceID, action.ID, objectID, recipient.ID);
+    public bool IsUnsubscribe(IDirectRecipient recipient, INotifyAction action, string objectID)
+    {
+        if (recipient == null)
+        {
+            throw new ArgumentNullException(nameof(recipient));
+        }
+        if (action == null)
+        {
+            throw new ArgumentNullException(nameof(action));
         }
 
-        public void UnSubscribe(INotifyAction action, string objectID, IRecipient recipient)
-        {
-            if (action == null) throw new ArgumentNullException(nameof(action));
-            if (recipient == null) throw new ArgumentNullException(nameof(recipient));
+        return _subscriptionManager.IsUnsubscribe(_sourceId, recipient.ID, action.ID, objectID);
+    }
 
-            subscriptionManager.Unsubscribe(sourceID, action.ID, objectID, recipient.ID);
+    public void Subscribe(INotifyAction action, string objectID, IRecipient recipient)
+    {
+        if (action == null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+        if (recipient == null)
+        {
+            throw new ArgumentNullException(nameof(recipient));
         }
 
-        public void UnSubscribe(INotifyAction action)
-        {
-            if (action == null) throw new ArgumentNullException(nameof(action));
+        _subscriptionManager.Subscribe(_sourceId, action.ID, objectID, recipient.ID);
+    }
 
-            subscriptionManager.UnsubscribeAll(sourceID, action.ID);
+    public void UnSubscribe(INotifyAction action, string objectID, IRecipient recipient)
+    {
+        if (action == null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+        if (recipient == null)
+        {
+            throw new ArgumentNullException(nameof(recipient));
         }
 
-        public void UnSubscribe(INotifyAction action, string objectID)
-        {
-            if (action == null) throw new ArgumentNullException(nameof(action));
+        _subscriptionManager.Unsubscribe(_sourceId, action.ID, objectID, recipient.ID);
+    }
 
-            subscriptionManager.UnsubscribeAll(sourceID, action.ID, objectID);
+    public void UnSubscribe(INotifyAction action)
+    {
+        if (action == null)
+        {
+            throw new ArgumentNullException(nameof(action));
         }
 
-        [Obsolete("Use UnSubscribe(INotifyAction, string, IRecipient)", true)]
-        public void UnSubscribe(INotifyAction action, IRecipient recipient)
+        _subscriptionManager.UnsubscribeAll(_sourceId, action.ID);
+    }
+
+    public void UnSubscribe(INotifyAction action, string objectID)
+    {
+        if (action == null)
         {
-            throw new NotSupportedException("use UnSubscribe(INotifyAction, string, IRecipient )");
+            throw new ArgumentNullException(nameof(action));
         }
+
+        _subscriptionManager.UnsubscribeAll(_sourceId, action.ID, objectID);
+    }
+
+    [Obsolete("Use UnSubscribe(INotifyAction, string, IRecipient)", true)]
+    public void UnSubscribe(INotifyAction action, IRecipient recipient)
+    {
+        throw new NotSupportedException("use UnSubscribe(INotifyAction, string, IRecipient )");
     }
 }

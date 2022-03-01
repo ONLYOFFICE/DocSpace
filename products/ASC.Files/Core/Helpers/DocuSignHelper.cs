@@ -331,7 +331,7 @@ public class DocuSignHelper
                 {
                     Email = user.Email,
                     Name = user.DisplayUserName(false, _displayUserSettingsHelper),
-                    RecipientId = user.ID.ToString(),
+                    RecipientId = user.Id.ToString(),
                 });
             }
             catch (Exception ex)

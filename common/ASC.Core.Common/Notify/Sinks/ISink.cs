@@ -23,18 +23,11 @@
  *
 */
 
-namespace ASC.Notify.Sinks
+namespace ASC.Notify.Sinks;
+
+public interface ISink
 {
-    public interface ISink
-    {
-        ISink NextSink
-        {
-            get;
-            set;
-        }
-
-        SendResponse ProcessMessage(INoticeMessage message);
-
-        void ProcessMessageAsync(INoticeMessage message);
-    }
+    ISink NextSink { get; set; }
+    SendResponse ProcessMessage(INoticeMessage message);
+    void ProcessMessageAsync(INoticeMessage message);
 }

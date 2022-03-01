@@ -213,7 +213,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         Logger = monitor.CurrentValue;
         FileUtility = fileUtility;
         TempPath = tempPath;
-        TenantID = tenantManager.GetCurrentTenant().TenantId;
+        TenantID = tenantManager.GetCurrentTenant().Id;
     }
 
     public void Init(BaseProviderInfo<T> providerInfo, RegexDaoSelectorBase<T> selectorBase)

@@ -200,7 +200,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         {
             if (subjectGroup)
             {
-                var users = UserManager.GetUsersByGroup(subjectID).Select(u => u.ID).ToArray();
+                var users = UserManager.GetUsersByGroup(subjectID).Select(u => u.Id).ToArray();
                 query = query.Where(r => users.Contains(r.CreateBy));
             }
             else
@@ -293,7 +293,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         {
             if (subjectGroup)
             {
-                var users = UserManager.GetUsersByGroup(subjectID).Select(u => u.ID).ToArray();
+                var users = UserManager.GetUsersByGroup(subjectID).Select(u => u.Id).ToArray();
                 q = q.Where(r => users.Contains(r.CreateBy));
             }
             else
@@ -806,11 +806,13 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
         using (var tx = await FilesDbContext.Database.BeginTransactionAsync().ConfigureAwait(false))
         {
-            var fromFolders = Query(FilesDbContext.Files)
+            var fromFolders = await Query(FilesDbContext.Files)
                 .Where(r => r.Id == fileId)
                 .Select(a => a.FolderId)
                 .Distinct()
-                .AsAsyncEnumerable();
+                .AsAsyncEnumerable()
+                .ToListAsync()
+                .ConfigureAwait(false);
 
             toUpdate = await Query(FilesDbContext.Files)
                 .Where(r => r.Id == fileId)
@@ -832,7 +834,11 @@ internal class FileDao : AbstractDao, IFileDao<int>
             await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
             await tx.CommitAsync().ConfigureAwait(false);
 
-            await fromFolders.ForEachAwaitAsync(async folderId => await RecalculateFilesCountAsync(folderId).ConfigureAwait(false)).ConfigureAwait(false);
+            foreach (var f in fromFolders)
+            {
+                await RecalculateFilesCountAsync(f).ConfigureAwait(false);
+            }
+
             await RecalculateFilesCountAsync(toFolderId).ConfigureAwait(false);
         }
 
@@ -1174,7 +1180,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         {
             if (subjectGroup)
             {
-                var users = UserManager.GetUsersByGroup(subjectID).Select(u => u.ID).ToArray();
+                var users = UserManager.GetUsersByGroup(subjectID).Select(u => u.Id).ToArray();
                 q = q.Where(r => users.Contains(r.CreateBy));
             }
             else
@@ -1481,7 +1487,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
            {
                if (subjectGroup)
                {
-                   var users = UserManager.GetUsersByGroup(subjectID).Select(u => u.ID).ToArray();
+                   var users = UserManager.GetUsersByGroup(subjectID).Select(u => u.Id).ToArray();
                    result.In(r => r.CreateBy, users);
                }
                else

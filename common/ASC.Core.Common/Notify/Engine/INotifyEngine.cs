@@ -23,14 +23,11 @@
  *
 */
 
-namespace ASC.Notify.Engine
+namespace ASC.Notify.Engine;
+
+interface INotifyEngine
 {
-    interface INotifyEngine
-    {
-        void QueueRequest(NotifyRequest request, IServiceScope serviceScope);
-
-        event Action<NotifyEngine, NotifyRequest, IServiceScope> AfterTransferRequest;
-
-        event Action<NotifyEngine, NotifyRequest, IServiceScope> BeforeTransferRequest;
-    }
+    event Action<NotifyEngine, NotifyRequest, IServiceScope> AfterTransferRequest;
+    event Action<NotifyEngine, NotifyRequest, IServiceScope> BeforeTransferRequest;
+    void QueueRequest(NotifyRequest request, IServiceScope serviceScope);
 }

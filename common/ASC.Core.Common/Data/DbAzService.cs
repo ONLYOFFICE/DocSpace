@@ -23,137 +23,122 @@
  *
 */
 
-namespace ASC.Core.Data
+using AutoMapper.QueryableExtensions;
+
+namespace ASC.Core.Data;
+
+[Scope]
+class DbAzService : IAzService
 {
-    [Scope]
-    class DbAzService : IAzService
+    private UserDbContext UserDbContext => _lazyUserDbContext.Value;
+    private Lazy<UserDbContext> _lazyUserDbContext;
+    private readonly IMapper _mapper;
+
+    public DbAzService(DbContextManager<UserDbContext> dbContextManager, IMapper mapper)
     {
-        public Expression<Func<Acl, AzRecord>> FromAclToAzRecord { get; set; }
+        _lazyUserDbContext = new Lazy<UserDbContext>(() => dbContextManager.Value);
+        _mapper = mapper;
+    }
 
-        private UserDbContext UserDbContext { get => LazyUserDbContext.Value; }
-        private Lazy<UserDbContext> LazyUserDbContext { get; set; }
+    public IEnumerable<AzRecord> GetAces(int tenant, DateTime from)
+    {
+        // row with tenant = -1 - common for all tenants, but equal row with tenant != -1 escape common row for the portal
+        var commonAces =
+            UserDbContext.Acl
+            .Where(r => r.Tenant == Tenant.DefaultTenant)
+            .ProjectTo<AzRecord>(_mapper.ConfigurationProvider)
+            .ToDictionary(a => string.Concat(a.Tenant.ToString(), a.Subject.ToString(), a.Action.ToString(), a.Object));
 
-        public DbAzService(DbContextManager<UserDbContext> dbContextManager)
+        var tenantAces =
+            UserDbContext.Acl
+            .Where(r => r.Tenant == tenant)
+            .ProjectTo<AzRecord>(_mapper.ConfigurationProvider)
+            .ToList();
+
+        // remove excaped rows
+        foreach (var a in tenantAces)
         {
-            LazyUserDbContext = new Lazy<UserDbContext>(() => dbContextManager.Value);
-            FromAclToAzRecord = r => new AzRecord
+            var key = string.Concat(a.Tenant.ToString(), a.Subject.ToString(), a.Action.ToString(), a.Object);
+            if (commonAces.TryGetValue(key, out var common))
             {
-                ActionId = r.Action,
-                ObjectId = r.Object,
-                Reaction = r.AceType,
-                SubjectId = r.Subject,
-                Tenant = r.Tenant
-            };
-        }
-
-        public IEnumerable<AzRecord> GetAces(int tenant, DateTime from)
-        {
-            // row with tenant = -1 - common for all tenants, but equal row with tenant != -1 escape common row for the portal
-            var commonAces =
-                UserDbContext.Acl
-                .Where(r => r.Tenant == Tenant.DEFAULT_TENANT)
-                .Select(FromAclToAzRecord)
-                .ToDictionary(a => string.Concat(a.Tenant.ToString(), a.SubjectId.ToString(), a.ActionId.ToString(), a.ObjectId));
-
-            var tenantAces =
-                UserDbContext.Acl
-                .Where(r => r.Tenant == tenant)
-                .Select(FromAclToAzRecord)
-                .ToList();
-
-            // remove excaped rows
-            foreach (var a in tenantAces)
-            {
-                var key = string.Concat(a.Tenant.ToString(), a.SubjectId.ToString(), a.ActionId.ToString(), a.ObjectId);
-                if (commonAces.TryGetValue(key, out var common))
+                commonAces.Remove(key);
+                if (common.AceType == a.AceType)
                 {
-                    commonAces.Remove(key);
-                    if (common.Reaction == a.Reaction)
-                    {
-                        tenantAces.Remove(a);
-                    }
+                    tenantAces.Remove(a);
                 }
             }
-
-            return commonAces.Values.Concat(tenantAces);
         }
 
-        public AzRecord SaveAce(int tenant, AzRecord r)
-        {
-            r.Tenant = tenant;
-            using var tx = UserDbContext.Database.BeginTransaction();
-            if (!ExistEscapeRecord(r))
-            {
-                InsertRecord(r);
-            }
-            else
-            {
-                // unescape
-                DeleteRecord(r);
-            }
-            tx.Commit();
+        return commonAces.Values.Concat(tenantAces);
+    }
 
-            return r;
+    public AzRecord SaveAce(int tenant, AzRecord r)
+    {
+        r.Tenant = tenant;
+        using var tx = UserDbContext.Database.BeginTransaction();
+        if (!ExistEscapeRecord(r))
+        {
+            InsertRecord(r);
+        }
+        else
+        {
+            // unescape
+            DeleteRecord(r);
+        }
+        tx.Commit();
+
+        return r;
+    }
+
+    public void RemoveAce(int tenant, AzRecord r)
+    {
+        r.Tenant = tenant;
+        using var tx = UserDbContext.Database.BeginTransaction();
+        if (ExistEscapeRecord(r))
+        {
+            // escape
+            InsertRecord(r);
+        }
+        else
+        {
+            DeleteRecord(r);
         }
 
-        public void RemoveAce(int tenant, AzRecord r)
+        tx.Commit();
+    }
+
+
+    private bool ExistEscapeRecord(AzRecord r)
+    {
+        return UserDbContext.Acl
+            .Where(a => a.Tenant == Tenant.DefaultTenant)
+            .Where(a => a.Subject == r.Subject)
+            .Where(a => a.Action == r.Action)
+            .Where(a => a.Object == (r.Object ?? string.Empty))
+            .Where(a => a.AceType == r.AceType)
+            .Any();
+    }
+
+    private void DeleteRecord(AzRecord r)
+    {
+        var record = UserDbContext.Acl
+            .Where(a => a.Tenant == r.Tenant)
+            .Where(a => a.Subject == r.Subject)
+            .Where(a => a.Action == r.Action)
+            .Where(a => a.Object == (r.Object ?? string.Empty))
+            .Where(a => a.AceType == r.AceType)
+            .FirstOrDefault();
+
+        if (record != null)
         {
-            r.Tenant = tenant;
-            using var tx = UserDbContext.Database.BeginTransaction();
-            if (ExistEscapeRecord(r))
-            {
-                // escape
-                InsertRecord(r);
-            }
-            else
-            {
-                DeleteRecord(r);
-            }
-            tx.Commit();
-        }
-
-
-        private bool ExistEscapeRecord(AzRecord r)
-        {
-            return UserDbContext.Acl
-                .Where(a => a.Tenant == Tenant.DEFAULT_TENANT)
-                .Where(a => a.Subject == r.SubjectId)
-                .Where(a => a.Action == r.ActionId)
-                .Where(a => a.Object == (r.ObjectId ?? string.Empty))
-                .Where(a => a.AceType == r.Reaction)
-                .Any();
-        }
-
-        private void DeleteRecord(AzRecord r)
-        {
-            var record = UserDbContext.Acl
-                .Where(a => a.Tenant == r.Tenant)
-                .Where(a => a.Subject == r.SubjectId)
-                .Where(a => a.Action == r.ActionId)
-                .Where(a => a.Object == (r.ObjectId ?? string.Empty))
-                .Where(a => a.AceType == r.Reaction)
-                .FirstOrDefault();
-
-            if (record != null)
-            {
-                UserDbContext.Acl.Remove(record);
-                UserDbContext.SaveChanges();
-            }
-        }
-
-        private void InsertRecord(AzRecord r)
-        {
-            var record = new Acl
-            {
-                AceType = r.Reaction,
-                Action = r.ActionId,
-                Object = r.ObjectId ?? string.Empty,
-                Subject = r.SubjectId,
-                Tenant = r.Tenant
-            };
-
-            UserDbContext.AddOrUpdate(r => r.Acl, record);
+            UserDbContext.Acl.Remove(record);
             UserDbContext.SaveChanges();
         }
+    }
+
+    private void InsertRecord(AzRecord r)
+    {
+        UserDbContext.AddOrUpdate(r => r.Acl, _mapper.Map<AzRecord, Acl>(r));
+        UserDbContext.SaveChanges();
     }
 }

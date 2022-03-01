@@ -31,7 +31,7 @@ global using ASC.Files.Core.Model;
 global using ASC.Files.Core.Security;
 global using ASC.Files.Helpers;
 global using ASC.Files.Model;
-global using ASC.MessagingSystem;
+global using ASC.MessagingSystem.Core;
 global using ASC.Web.Api.Routing;
 global using ASC.Web.Core.Files;
 global using ASC.Web.Core.PublicResources;

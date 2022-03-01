@@ -23,153 +23,152 @@
  *
 */
 
-namespace ASC.TelegramService
+namespace ASC.TelegramService;
+
+[Singletone(Additional = typeof(TelegramHandlerExtension))]
+public class TelegramHandler
 {
-    [Singletone(Additional = typeof(TelegramHandlerExtension))]
-    public class TelegramHandler
+    private readonly Dictionary<int, TenantTgClient> _clients;
+    private readonly CommandModule _command;
+    private readonly ILog _log;
+    private readonly IServiceScopeFactory _scopeFactory;
+
+    public TelegramHandler(CommandModule command, IOptionsMonitor<ILog> option, IServiceScopeFactory scopeFactory)
     {
-        private Dictionary<int, TenantTgClient> Clients { get; set; }
-        private CommandModule Command { get; set; }
-        private ILog Log { get; set; }
-        private IServiceProvider ServiceProvider { get; set; }
+        _command = command;
+        _log = option.CurrentValue;
+        _scopeFactory = scopeFactory;
+        _clients = new Dictionary<int, TenantTgClient>();
+        ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;
+    }
 
-        public TelegramHandler(CommandModule command, IOptionsMonitor<ILog> option, IServiceProvider serviceProvider)
+    public Task SendMessage(NotifyMessage msg)
+    {
+        if (string.IsNullOrEmpty(msg.Reciever)) return Task.CompletedTask;
+        if (!_clients.ContainsKey(msg.TenantId)) return Task.CompletedTask;
+
+        return InternalSendMessage(msg);
+    }
+
+    private async Task InternalSendMessage(NotifyMessage msg)
+    {
+        var scope = _scopeFactory.CreateScope();
+        var cachedTelegramDao = scope.ServiceProvider.GetService<IOptionsSnapshot<CachedTelegramDao>>().Value;
+
+        var client = _clients[msg.TenantId].Client;
+
+        try
         {
-            Command = command;
-            Log = option.CurrentValue;
-            ServiceProvider = serviceProvider;
-            Clients = new Dictionary<int, TenantTgClient>();
-            ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;
-        }
+            var tgUser = cachedTelegramDao.GetUser(Guid.Parse(msg.Reciever), msg.TenantId);
 
-        public Task SendMessage(NotifyMessage msg)
-        {
-            if (string.IsNullOrEmpty(msg.To)) return Task.CompletedTask;
-            if (!Clients.ContainsKey(msg.Tenant)) return Task.CompletedTask;
-
-            return InternalSendMessage(msg);
-        }
-
-        private async Task InternalSendMessage(NotifyMessage msg)
-        {
-            var scope = ServiceProvider.CreateScope();
-            var cachedTelegramDao = scope.ServiceProvider.GetService<IOptionsSnapshot<CachedTelegramDao>>().Value;
-
-            var client = Clients[msg.Tenant].Client;
-
-            try
+            if (tgUser == null)
             {
-                var tgUser = cachedTelegramDao.GetUser(Guid.Parse(msg.To), msg.Tenant);
-
-                if (tgUser == null)
-                {
-                    Log.DebugFormat("Couldn't find telegramId for user '{0}'", msg.To);
-                    return;
-                }
-
-                var chat = await client.GetChatAsync(tgUser.TelegramUserId);
-                await client.SendTextMessageAsync(chat, msg.Content, Telegram.Bot.Types.Enums.ParseMode.Markdown);
+                _log.DebugFormat("Couldn't find telegramId for user '{0}'", msg.Reciever);
+                return;
             }
-            catch (Exception e)
-            {
-                Log.DebugFormat("Couldn't send message for user '{0}' got an '{1}'", msg.To, e.Message);
-            }
+
+            var chat = await client.GetChatAsync(tgUser.TelegramUserId);
+            await client.SendTextMessageAsync(chat, msg.Content, Telegram.Bot.Types.Enums.ParseMode.Markdown);
         }
-
-        public void DisableClient(int tenantId)
+        catch (Exception e)
         {
-            if (!Clients.ContainsKey(tenantId)) return;
-
-            var client = Clients[tenantId];
-            client.Client.StopReceiving();
-
-            Clients.Remove(tenantId);
+            _log.DebugFormat("Couldn't send message for user '{0}' got an '{1}'", msg.Reciever, e.Message);
         }
+    }
 
-        public void CreateOrUpdateClientForTenant(int tenantId, string token, int tokenLifespan, string proxy, bool startTelegramService, bool force = false)
+    public void DisableClient(int tenantId)
+    {
+        if (!_clients.ContainsKey(tenantId)) return;
+
+        var client = _clients[tenantId];
+        client.Client.StopReceiving();
+
+        _clients.Remove(tenantId);
+    }
+
+    public void CreateOrUpdateClientForTenant(int tenantId, string token, int tokenLifespan, string proxy, bool startTelegramService, CancellationToken stoppingToken,  bool force = false)
+    {
+        var scope = _scopeFactory.CreateScope();
+        var telegramHelper = scope.ServiceProvider.GetService<TelegramHelper>();
+        var newClient = telegramHelper.InitClient(token, proxy);
+
+        if (_clients.TryGetValue(tenantId, out var client))
         {
-            var scope = ServiceProvider.CreateScope();
-            var telegramHelper = scope.ServiceProvider.GetService<TelegramHelper>();
-            var newClient = telegramHelper.InitClient(token, proxy);
+            client.TokenLifeSpan = tokenLifespan;
 
-            if (Clients.TryGetValue(tenantId, out var client))
+            if (token != client.Token || proxy != client.Proxy)
             {
-                client.TokenLifeSpan = tokenLifespan;
-
-                if (token != client.Token || proxy != client.Proxy)
-                {
-                    if (startTelegramService)
-                    {
-                        if (!telegramHelper.TestingClient(newClient)) return;
-                    }
-
-                    client.Client.StopReceiving();
-
-                    BindClient(newClient, tenantId);
-
-                    client.Client = newClient;
-                    client.Token = token;
-                    client.Proxy = proxy;
-                }
-            }
-            else
-            {
-                if (!force && startTelegramService)
+                if (startTelegramService)
                 {
                     if (!telegramHelper.TestingClient(newClient)) return;
                 }
 
-                BindClient(newClient, tenantId);
+                client.Client.StopReceiving();
 
-                Clients.Add(tenantId, new TenantTgClient()
-                {
-                    Token = token,
-                    Client = newClient,
-                    Proxy = proxy,
-                    TenantId = tenantId,
-                    TokenLifeSpan = tokenLifespan
-                });
+                BindClient(newClient, tenantId, stoppingToken);
+
+                client.Client = newClient;
+                client.Token = token;
+                client.Proxy = proxy;
             }
         }
-
-        public void RegisterUser(string userId, int tenantId, string token)
+        else
         {
-            if (!Clients.ContainsKey(tenantId)) return;
+            if (!force && startTelegramService)
+            {
+                if (!telegramHelper.TestingClient(newClient)) return;
+            }
 
-            var userKey = UserKey(userId, tenantId);
-            var dateExpires = DateTimeOffset.Now.AddMinutes(Clients[tenantId].TokenLifeSpan);
-            MemoryCache.Default.Set(token, userKey, dateExpires);
-        }
+            BindClient(newClient, tenantId, stoppingToken);
 
-        private Task OnMessage(object sender, MessageEventArgs e, TelegramBotClient client, int tenantId)
-        {
-            if (string.IsNullOrEmpty(e.Message.Text) || e.Message.Text[0] != '/') return Task.CompletedTask;
-            return InternalOnMessage(sender, e, client, tenantId);
-        }
-
-        private async Task InternalOnMessage(object sender, MessageEventArgs e, TelegramBotClient client, int tenantId)
-        {
-            await Command.HandleCommand(e.Message, client, tenantId);
-        }
-
-
-        private void BindClient(TelegramBotClient client, int tenantId)
-        {
-            client.OnMessage += async (sender, e) => { await OnMessage(sender, e, client, tenantId); };
-            client.StartReceiving();
-        }
-
-        private string UserKey(string userId, int tenantId)
-        {
-            return string.Format("{0}:{1}", userId, tenantId);
+            _clients.Add(tenantId, new TenantTgClient()
+            {
+                Token = token,
+                Client = newClient,
+                Proxy = proxy,
+                TenantId = tenantId,
+                TokenLifeSpan = tokenLifespan
+            });
         }
     }
 
-    public static class TelegramHandlerExtension
+    public void RegisterUser(string userId, int tenantId, string token)
     {
-        public static void Register(DIHelper services)
-        {
-            services.TryAdd<TelegramHelper>();
-        }
+        if (!_clients.ContainsKey(tenantId)) return;
+
+        var userKey = UserKey(userId, tenantId);
+        var dateExpires = DateTimeOffset.Now.AddMinutes(_clients[tenantId].TokenLifeSpan);
+        MemoryCache.Default.Set(token, userKey, dateExpires);
+    }
+
+    private Task OnMessage(object sender, MessageEventArgs e, TelegramBotClient client, int tenantId)
+    {
+        if (string.IsNullOrEmpty(e.Message.Text) || e.Message.Text[0] != '/') return Task.CompletedTask;
+        return InternalOnMessage(sender, e, client, tenantId);
+    }
+
+    private async Task InternalOnMessage(object sender, MessageEventArgs e, TelegramBotClient client, int tenantId)
+    {
+        await _command.HandleCommand(e.Message, client, tenantId);
+    }
+
+
+    private void BindClient(TelegramBotClient client, int tenantId, CancellationToken stoppingToken)
+    {
+        client.OnMessage += async (sender, e) => { await OnMessage(sender, e, client, tenantId); };
+        client.StartReceiving(cancellationToken: stoppingToken);
+    }
+
+    private string UserKey(string userId, int tenantId)
+    {
+        return string.Format("{0}:{1}", userId, tenantId);
+    }
+}
+
+public static class TelegramHandlerExtension
+{
+    public static void Register(DIHelper services)
+    {
+        services.TryAdd<TelegramHelper>();
     }
 }

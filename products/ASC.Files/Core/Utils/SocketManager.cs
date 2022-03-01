@@ -95,14 +95,14 @@ public class SocketManager
 
     private string GetFileRoom<T>(T fileId)
     {
-        var tenantId = _tenantManager.GetCurrentTenant().TenantId;
+        var tenantId = _tenantManager.GetCurrentTenant().Id;
 
         return $"{tenantId}-FILE-{fileId}";
     }
 
     private string GetFolderRoom<T>(T folderId)
     {
-        var tenantId = _tenantManager.GetCurrentTenant().TenantId;
+        var tenantId = _tenantManager.GetCurrentTenant().Id;
 
         return $"{tenantId}-DIR-{folderId}";
     }
