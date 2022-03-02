@@ -39,7 +39,7 @@ public class ContactsControllerEngine : PeopleControllerEngine
 
     public void DeleteContacts(IEnumerable<Contact> contacts, UserInfo user)
     {
-        PermissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
+        _permissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
         if (contacts == null)
         {
             return;
@@ -65,13 +65,13 @@ public class ContactsControllerEngine : PeopleControllerEngine
     {
         var user = GetUserInfo(userid);
 
-        if (UserManager.IsSystemUser(user.Id))
+        if (_userManager.IsSystemUser(user.Id))
         {
             throw new SecurityException();
         }
 
         DeleteContacts(memberModel.Contacts, user);
-        UserManager.SaveUserInfo(user);
+        _userManager.SaveUserInfo(user);
 
         return _employeeFullDtoHelper.GetFull(user);
     }
@@ -80,14 +80,14 @@ public class ContactsControllerEngine : PeopleControllerEngine
     {
         var user = GetUserInfo(userid);
 
-        if (UserManager.IsSystemUser(user.Id))
+        if (_userManager.IsSystemUser(user.Id))
         {
             throw new SecurityException();
         }
 
         user.ContactsList.Clear();
         UpdateContacts(memberModel.Contacts, user);
-        UserManager.SaveUserInfo(user);
+        _userManager.SaveUserInfo(user);
 
         return _employeeFullDtoHelper.GetFull(user);
     }
@@ -96,13 +96,13 @@ public class ContactsControllerEngine : PeopleControllerEngine
     {
         var user = GetUserInfo(userid);
 
-        if (UserManager.IsSystemUser(user.Id))
+        if (_userManager.IsSystemUser(user.Id))
         {
             throw new SecurityException();
         }
 
         UpdateContacts(memberModel.Contacts, user);
-        UserManager.SaveUserInfo(user);
+        _userManager.SaveUserInfo(user);
 
         return _employeeFullDtoHelper.GetFull(user);
     }

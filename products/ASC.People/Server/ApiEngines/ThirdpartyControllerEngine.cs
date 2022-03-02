@@ -74,9 +74,9 @@ public class ThirdpartyControllerEngine : ApiControllerEngineBase
         ICollection<AccountInfoDto> infos = new List<AccountInfoDto>();
         IEnumerable<LoginProfile> linkedAccounts = new List<LoginProfile>();
 
-        if (AuthContext.IsAuthenticated)
+        if (_authContext.IsAuthenticated)
         {
-            linkedAccounts = _accountLinker.Get("webstudio").GetLinkedProfiles(AuthContext.CurrentAccount.ID.ToString());
+            linkedAccounts = _accountLinker.Get("webstudio").GetLinkedProfiles(_authContext.CurrentAccount.ID.ToString());
         }
 
         fromOnly = string.IsNullOrWhiteSpace(fromOnly) ? string.Empty : fromOnly.ToLower();
@@ -119,8 +119,8 @@ public class ThirdpartyControllerEngine : ApiControllerEngineBase
 
         if (string.IsNullOrEmpty(profile.AuthorizationError))
         {
-            GetLinker().AddLink(SecurityContext.CurrentAccount.ID.ToString(), profile);
-            MessageService.Send(MessageAction.UserLinkedSocialAccount, GetMeaningfulProviderName(profile.Provider));
+            GetLinker().AddLink(_securityContext.CurrentAccount.ID.ToString(), profile);
+            _messageService.Send(MessageAction.UserLinkedSocialAccount, GetMeaningfulProviderName(profile.Provider));
         }
         else
         {
@@ -163,10 +163,10 @@ public class ThirdpartyControllerEngine : ApiControllerEngineBase
         var userID = Guid.Empty;
         try
         {
-            SecurityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
+            _securityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
             var newUser = CreateNewUser(GetFirstName(model, thirdPartyProfile), GetLastName(model, thirdPartyProfile), GetEmailAddress(model, thirdPartyProfile), passwordHash, employeeType, false);
             var messageAction = employeeType == EmployeeType.User ? MessageAction.UserCreatedViaInvite : MessageAction.GuestCreatedViaInvite;
-            MessageService.Send(MessageInitiator.System, messageAction, MessageTarget.Create(newUser.Id), newUser.DisplayUserName(false, _displayUserSettingsHelper));
+            _messageService.Send(MessageInitiator.System, messageAction, _messageTarget.Create(newUser.Id), newUser.DisplayUserName(false, _displayUserSettingsHelper));
             userID = newUser.Id;
             if (!string.IsNullOrEmpty(thirdPartyProfile.Avatar))
             {
@@ -177,18 +177,18 @@ public class ThirdpartyControllerEngine : ApiControllerEngineBase
         }
         finally
         {
-            SecurityContext.Logout();
+            _securityContext.Logout();
         }
 
-        var user = UserManager.GetUsers(userID);
-        var cookiesKey = SecurityContext.AuthenticateMe(user.Email, passwordHash);
+        var user = _userManager.GetUsers(userID);
+        var cookiesKey = _securityContext.AuthenticateMe(user.Email, passwordHash);
         _cookiesManager.SetCookies(CookiesType.AuthKey, cookiesKey);
-        MessageService.Send(MessageAction.LoginSuccess);
-        StudioNotifyService.UserHasJoin();
+        _messageService.Send(MessageAction.LoginSuccess);
+        _studioNotifyService.UserHasJoin();
 
         if (mustChangePassword)
         {
-            StudioNotifyService.UserPasswordChange(user);
+            _studioNotifyService.UserPasswordChange(user);
         }
 
         _userHelpTourHelper.IsNewUser = true;
@@ -200,8 +200,8 @@ public class ThirdpartyControllerEngine : ApiControllerEngineBase
 
     public void UnlinkAccount(string provider)
     {
-        GetLinker().RemoveProvider(SecurityContext.CurrentAccount.ID.ToString(), provider);
-        MessageService.Send(MessageAction.UserUnlinkedSocialAccount, GetMeaningfulProviderName(provider));
+        GetLinker().RemoveProvider(_securityContext.CurrentAccount.ID.ToString(), provider);
+        _messageService.Send(MessageAction.UserUnlinkedSocialAccount, GetMeaningfulProviderName(provider));
     }
 
     private static string GetMeaningfulProviderName(string providerName)

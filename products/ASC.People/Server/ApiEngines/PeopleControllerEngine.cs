@@ -4,9 +4,9 @@ namespace ASC.People.ApiHelpers;
 
 public abstract class PeopleControllerEngine : ApiControllerEngineBase
 {
-    protected readonly DisplayUserSettingsHelper DisplayUserSettingsHelper;
-    protected readonly SetupInfo SetupInfo;
-    protected readonly UserPhotoManager UserPhotoManager;
+    protected readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
+    protected readonly SetupInfo _setupInfo;
+    protected readonly UserPhotoManager _userPhotoManager;
     private readonly IHttpClientFactory _httpClientFactory;
 
     protected PeopleControllerEngine(
@@ -32,10 +32,10 @@ public abstract class PeopleControllerEngine : ApiControllerEngineBase
             messageTarget,
             studioNotifyService)
     {
-        UserPhotoManager = userPhotoManager;
+        _userPhotoManager = userPhotoManager;
         _httpClientFactory = httpClientFactory;
-        DisplayUserSettingsHelper = displayUserSettingsHelper;
-        SetupInfo = setupInfo;
+        _displayUserSettingsHelper = displayUserSettingsHelper;
+        _setupInfo = setupInfo;
     }
 
     protected UserInfo GetUserInfo(string userNameOrId)
@@ -44,11 +44,11 @@ public abstract class PeopleControllerEngine : ApiControllerEngineBase
         try
         {
             var userId = new Guid(userNameOrId);
-            user = UserManager.GetUsers(userId);
+            user = _userManager.GetUsers(userId);
         }
         catch (FormatException)
         {
-            user = UserManager.GetUserByUserName(userNameOrId);
+            user = _userManager.GetUserByUserName(userNameOrId);
         }
 
         if (user == null || user.Id == Constants.LostUser.Id)
@@ -61,7 +61,7 @@ public abstract class PeopleControllerEngine : ApiControllerEngineBase
 
     protected void UpdateContacts(IEnumerable<Contact> contacts, UserInfo user)
     {
-        PermissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
+        _permissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
 
         if (contacts == null)
         {
@@ -79,11 +79,11 @@ public abstract class PeopleControllerEngine : ApiControllerEngineBase
             return;
         }
 
-        PermissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
+        _permissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
 
         if (!files.StartsWith("http://") && !files.StartsWith("https://"))
         {
-            files = new Uri(ApiContext.HttpContextAccessor.HttpContext.Request.GetDisplayUrl()).GetLeftPart(UriPartial.Authority) + "/" + files.TrimStart('/');
+            files = new Uri(_apiContext.HttpContextAccessor.HttpContext.Request.GetDisplayUrl()).GetLeftPart(UriPartial.Authority) + "/" + files.TrimStart('/');
         }
         var request = new HttpRequestMessage();
         request.RequestUri = new Uri(files);
@@ -93,6 +93,6 @@ public abstract class PeopleControllerEngine : ApiControllerEngineBase
         using var inputStream = response.Content.ReadAsStream();
         using var br = new BinaryReader(inputStream);
         var imageByteArray = br.ReadBytes((int)inputStream.Length);
-        UserPhotoManager.SaveOrUpdatePhoto(user.Id, imageByteArray);
+        _userPhotoManager.SaveOrUpdatePhoto(user.Id, imageByteArray);
     }
 }

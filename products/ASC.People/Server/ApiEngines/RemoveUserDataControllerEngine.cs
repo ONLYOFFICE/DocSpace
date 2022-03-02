@@ -30,49 +30,49 @@ public class RemoveUserDataControllerEngine : ApiControllerEngineBase
 
     public RemoveProgressItem GetRemoveProgress(Guid userId)
     {
-        PermissionContext.DemandPermissions(Constants.Action_EditUser);
+        _permissionContext.DemandPermissions(Constants.Action_EditUser);
 
         return _queueWorkerRemove.GetProgressItemStatus(Tenant.Id, userId);
     }
 
     public object SendInstructionsToDelete()
     {
-        var user = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
+        var user = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
 
         if (user.IsLDAP())
         {
             throw new SecurityException();
         }
 
-        StudioNotifyService.SendMsgProfileDeletion(user);
-        MessageService.Send(MessageAction.UserSentDeleteInstructions);
+        _studioNotifyService.SendMsgProfileDeletion(user);
+        _messageService.Send(MessageAction.UserSentDeleteInstructions);
 
         return string.Format(Resource.SuccessfullySentNotificationDeleteUserInfoMessage, "<b>" + user.Email + "</b>");
     }
 
     public void TerminateRemove(TerminateRequestDto model)
     {
-        PermissionContext.DemandPermissions(Constants.Action_EditUser);
+        _permissionContext.DemandPermissions(Constants.Action_EditUser);
 
         _queueWorkerRemove.Terminate(Tenant.Id, model.UserId);
     }
 
     public RemoveProgressItem StartRemove(TerminateRequestDto model)
     {
-        PermissionContext.DemandPermissions(Constants.Action_EditUser);
+        _permissionContext.DemandPermissions(Constants.Action_EditUser);
 
-        var user = UserManager.GetUsers(model.UserId);
+        var user = _userManager.GetUsers(model.UserId);
 
         if (user == null || user.Id == Constants.LostUser.Id)
         {
             throw new ArgumentException("User with id = " + model.UserId + " not found");
         }
 
-        if (user.IsOwner(Tenant) || user.IsMe(AuthContext) || user.Status != EmployeeStatus.Terminated)
+        if (user.IsOwner(Tenant) || user.IsMe(_authContext) || user.Status != EmployeeStatus.Terminated)
         {
             throw new ArgumentException("Can not delete user with id = " + model.UserId);
         }
 
-        return _queueWorkerRemove.Start(Tenant.Id, user, SecurityContext.CurrentAccount.ID, true);
+        return _queueWorkerRemove.Start(Tenant.Id, user, _securityContext.CurrentAccount.ID, true);
     }
 }

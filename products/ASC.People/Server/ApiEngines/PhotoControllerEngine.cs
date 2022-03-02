@@ -44,83 +44,83 @@ public class PhotoControllerEngine : PeopleControllerEngine
     {
         var user = GetUserInfo(userid);
 
-        if (UserManager.IsSystemUser(user.Id))
+        if (_userManager.IsSystemUser(user.Id))
         {
             throw new SecurityException();
         }
 
-        PermissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
+        _permissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
 
         if (!string.IsNullOrEmpty(thumbnailsModel.TmpFile))
         {
             var fileName = Path.GetFileName(thumbnailsModel.TmpFile);
-            var data = UserPhotoManager.GetTempPhotoData(fileName);
+            var data = _userPhotoManager.GetTempPhotoData(fileName);
 
             var settings = new UserPhotoThumbnailSettings(thumbnailsModel.X, thumbnailsModel.Y, thumbnailsModel.Width, thumbnailsModel.Height);
             _settingsManager.SaveForUser(settings, user.Id);
-            UserPhotoManager.RemovePhoto(user.Id);
-            UserPhotoManager.SaveOrUpdatePhoto(user.Id, data);
-            UserPhotoManager.RemoveTempPhoto(fileName);
+            _userPhotoManager.RemovePhoto(user.Id);
+            _userPhotoManager.SaveOrUpdatePhoto(user.Id, data);
+            _userPhotoManager.RemoveTempPhoto(fileName);
         }
         else
         {
-            UserPhotoThumbnailManager.SaveThumbnails(UserPhotoManager, _settingsManager, thumbnailsModel.X, thumbnailsModel.Y, thumbnailsModel.Width, thumbnailsModel.Height, user.Id);
+            UserPhotoThumbnailManager.SaveThumbnails(_userPhotoManager, _settingsManager, thumbnailsModel.X, thumbnailsModel.Y, thumbnailsModel.Width, thumbnailsModel.Height, user.Id);
         }
 
-        UserManager.SaveUserInfo(user);
-        MessageService.Send(MessageAction.UserUpdatedAvatarThumbnails, MessageTarget.Create(user.Id), user.DisplayUserName(false, DisplayUserSettingsHelper));
+        _userManager.SaveUserInfo(user);
+        _messageService.Send(MessageAction.UserUpdatedAvatarThumbnails, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
-        return new ThumbnailsDataDto(user.Id, UserPhotoManager);
+        return new ThumbnailsDataDto(user.Id, _userPhotoManager);
     }
 
     public ThumbnailsDataDto DeleteMemberPhoto(string userid)
     {
         var user = GetUserInfo(userid);
 
-        if (UserManager.IsSystemUser(user.Id))
+        if (_userManager.IsSystemUser(user.Id))
         {
             throw new SecurityException();
         }
 
-        PermissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
+        _permissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
 
-        UserPhotoManager.RemovePhoto(user.Id);
-        UserManager.SaveUserInfo(user);
-        MessageService.Send(MessageAction.UserDeletedAvatar, MessageTarget.Create(user.Id), user.DisplayUserName(false, DisplayUserSettingsHelper));
+        _userPhotoManager.RemovePhoto(user.Id);
+        _userManager.SaveUserInfo(user);
+        _messageService.Send(MessageAction.UserDeletedAvatar, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
-        return new ThumbnailsDataDto(user.Id, UserPhotoManager);
+        return new ThumbnailsDataDto(user.Id, _userPhotoManager);
     }
 
     public ThumbnailsDataDto GetMemberPhoto(string userid)
     {
         var user = GetUserInfo(userid);
 
-        if (UserManager.IsSystemUser(user.Id))
+        if (_userManager.IsSystemUser(user.Id))
         {
             throw new SecurityException();
         }
 
-        return new ThumbnailsDataDto(user.Id, UserPhotoManager);
+        return new ThumbnailsDataDto(user.Id, _userPhotoManager);
     }
 
     public ThumbnailsDataDto UpdateMemberPhoto(string userid, UpdateMemberRequestDto model)
     {
         var user = GetUserInfo(userid);
 
-        if (UserManager.IsSystemUser(user.Id))
+        if (_userManager.IsSystemUser(user.Id))
         {
             throw new SecurityException();
         }
 
-        if (model.Files != UserPhotoManager.GetPhotoAbsoluteWebPath(user.Id))
+        if (model.Files != _userPhotoManager.GetPhotoAbsoluteWebPath(user.Id))
         {
             UpdatePhotoUrl(model.Files, user);
         }
 
-        UserManager.SaveUserInfo(user);
-        MessageService.Send(MessageAction.UserAddedAvatar, MessageTarget.Create(user.Id), user.DisplayUserName(false, DisplayUserSettingsHelper));
+        _userManager.SaveUserInfo(user);
+        _messageService.Send(MessageAction.UserAddedAvatar, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
-        return new ThumbnailsDataDto(user.Id, UserPhotoManager);
+        return new ThumbnailsDataDto(user.Id, _userPhotoManager);
     }
 
     public FileUploadResultDto UploadMemberPhoto(string userid, IFormCollection model)
@@ -139,14 +139,14 @@ public class PhotoControllerEngine : PeopleControllerEngine
                 }
                 catch
                 {
-                    userId = SecurityContext.CurrentAccount.ID;
+                    userId = _securityContext.CurrentAccount.ID;
                 }
 
-                PermissionContext.DemandPermissions(new UserSecurityProvider(userId), Constants.Action_EditUser);
+                _permissionContext.DemandPermissions(new UserSecurityProvider(userId), Constants.Action_EditUser);
 
                 var userPhoto = model.Files[0];
 
-                if (userPhoto.Length > SetupInfo.MaxImageUploadSize)
+                if (userPhoto.Length > _setupInfo.MaxImageUploadSize)
                 {
                     result.Success = false;
                     result.Message = _fileSizeComment.FileImageSizeExceptionString;
@@ -165,27 +165,27 @@ public class PhotoControllerEngine : PeopleControllerEngine
 
                 if (autosave)
                 {
-                    if (data.Length > SetupInfo.MaxImageUploadSize)
+                    if (data.Length > _setupInfo.MaxImageUploadSize)
                     {
                         throw new ImageSizeLimitException();
                     }
 
-                    var mainPhoto = UserPhotoManager.SaveOrUpdatePhoto(userId, data);
+                    var mainPhoto = _userPhotoManager.SaveOrUpdatePhoto(userId, data);
 
                     result.Data =
                         new
                         {
                             main = mainPhoto,
-                            retina = UserPhotoManager.GetRetinaPhotoURL(userId),
-                            max = UserPhotoManager.GetMaxPhotoURL(userId),
-                            big = UserPhotoManager.GetBigPhotoURL(userId),
-                            medium = UserPhotoManager.GetMediumPhotoURL(userId),
-                            small = UserPhotoManager.GetSmallPhotoURL(userId),
+                            retina = _userPhotoManager.GetRetinaPhotoURL(userId),
+                            max = _userPhotoManager.GetMaxPhotoURL(userId),
+                            big = _userPhotoManager.GetBigPhotoURL(userId),
+                            medium = _userPhotoManager.GetMediumPhotoURL(userId),
+                            small = _userPhotoManager.GetSmallPhotoURL(userId),
                         };
                 }
                 else
                 {
-                    result.Data = UserPhotoManager.SaveTempPhoto(data, SetupInfo.MaxImageUploadSize, UserPhotoManager.OriginalFotoSize.Width, UserPhotoManager.OriginalFotoSize.Height);
+                    result.Data = _userPhotoManager.SaveTempPhoto(data, _setupInfo.MaxImageUploadSize, UserPhotoManager.OriginalFotoSize.Width, UserPhotoManager.OriginalFotoSize.Height);
                 }
 
                 result.Success = true;

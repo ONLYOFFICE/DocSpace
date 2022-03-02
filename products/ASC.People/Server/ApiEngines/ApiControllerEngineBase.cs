@@ -4,14 +4,14 @@ namespace ASC.People.ApiHelpers;
 
 public abstract class ApiControllerEngineBase
 {
-    protected readonly ApiContext ApiContext;
-    protected readonly AuthContext AuthContext;
-    protected readonly MessageService MessageService;
-    protected readonly MessageTarget MessageTarget;
-    protected readonly PermissionContext PermissionContext;
-    protected readonly SecurityContext SecurityContext;
-    protected readonly StudioNotifyService StudioNotifyService;
-    protected readonly UserManager UserManager;
+    protected readonly ApiContext _apiContext;
+    protected readonly AuthContext _authContext;
+    protected readonly MessageService _messageService;
+    protected readonly MessageTarget _messageTarget;
+    protected readonly PermissionContext _permissionContext;
+    protected readonly SecurityContext _securityContext;
+    protected readonly StudioNotifyService _studioNotifyService;
+    protected readonly UserManager _userManager;
 
     protected ApiControllerEngineBase(
         UserManager userManager,
@@ -23,15 +23,15 @@ public abstract class ApiControllerEngineBase
         MessageTarget messageTarget,
         StudioNotifyService studioNotifyService)
     {
-        UserManager = userManager;
-        AuthContext = authContext;
-        ApiContext = apiContext;
-        PermissionContext = permissionContext;
-        SecurityContext = securityContext;
-        MessageService = messageService;
-        MessageTarget = messageTarget;
-        StudioNotifyService = studioNotifyService;
+        _userManager = userManager;
+        _authContext = authContext;
+        _apiContext = apiContext;
+        _permissionContext = permissionContext;
+        _securityContext = securityContext;
+        _messageService = messageService;
+        _messageTarget = messageTarget;
+        _studioNotifyService = studioNotifyService;
     }
 
-    protected Tenant Tenant => ApiContext.Tenant;
+    protected Tenant Tenant => _apiContext.Tenant;
 }

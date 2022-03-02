@@ -31,13 +31,13 @@ public class NotificationControllerEngine : ApiControllerEngineBase
 
     public object SendNotificationToChange(string userId)
     {
-        var user = UserManager.GetUsers(
+        var user = _userManager.GetUsers(
             string.IsNullOrEmpty(userId)
-                ? SecurityContext.CurrentAccount.ID
+                ? _securityContext.CurrentAccount.ID
                 : new Guid(userId));
         var canChange =
-        user.IsMe(AuthContext)
-                    || PermissionContext.CheckPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
+        user.IsMe(_authContext)
+                    || _permissionContext.CheckPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
 
         if (!canChange)
         {
@@ -45,13 +45,13 @@ public class NotificationControllerEngine : ApiControllerEngineBase
         }
 
         user.MobilePhoneActivationStatus = MobilePhoneActivationStatus.NotActivated;
-        UserManager.SaveUserInfo(user);
-        if (user.IsMe(AuthContext))
+        _userManager.SaveUserInfo(user);
+        if (user.IsMe(_authContext))
         {
             return _commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.PhoneActivation);
         }
 
-        StudioNotifyService.SendMsgMobilePhoneChange(user);
+        _studioNotifyService.SendMsgMobilePhoneChange(user);
 
         return string.Empty;
     }

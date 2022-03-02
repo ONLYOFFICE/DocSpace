@@ -31,46 +31,46 @@ public class ReassignControllerEngine : ApiControllerEngineBase
 
     public ReassignProgressItem GetReassignProgress(Guid userId)
     {
-        PermissionContext.DemandPermissions(Constants.Action_EditUser);
+        _permissionContext.DemandPermissions(Constants.Action_EditUser);
 
         return _queueWorkerReassign.GetProgressItemStatus(Tenant.Id, userId);
     }
 
     public void TerminateReassign(TerminateRequestDto model)
     {
-        PermissionContext.DemandPermissions(Constants.Action_EditUser);
+        _permissionContext.DemandPermissions(Constants.Action_EditUser);
 
         _queueWorkerReassign.Terminate(Tenant.Id, model.UserId);
     }
 
     public ReassignProgressItem StartReassign(StartReassignRequestDto model)
     {
-        PermissionContext.DemandPermissions(Constants.Action_EditUser);
+        _permissionContext.DemandPermissions(Constants.Action_EditUser);
 
-        var fromUser = UserManager.GetUsers(model.FromUserId);
+        var fromUser = _userManager.GetUsers(model.FromUserId);
 
         if (fromUser == null || fromUser.Id == Constants.LostUser.Id)
         {
             throw new ArgumentException("User with id = " + model.FromUserId + " not found");
         }
 
-        if (fromUser.IsOwner(Tenant) || fromUser.IsMe(AuthContext) || fromUser.Status != EmployeeStatus.Terminated)
+        if (fromUser.IsOwner(Tenant) || fromUser.IsMe(_authContext) || fromUser.Status != EmployeeStatus.Terminated)
         {
             throw new ArgumentException("Can not delete user with id = " + model.FromUserId);
         }
 
-        var toUser = UserManager.GetUsers(model.ToUserId);
+        var toUser = _userManager.GetUsers(model.ToUserId);
 
         if (toUser == null || toUser.Id == Constants.LostUser.Id)
         {
             throw new ArgumentException("User with id = " + model.ToUserId + " not found");
         }
 
-        if (toUser.IsVisitor(UserManager) || toUser.Status == EmployeeStatus.Terminated)
+        if (toUser.IsVisitor(_userManager) || toUser.Status == EmployeeStatus.Terminated)
         {
             throw new ArgumentException("Can not reassign data to user with id = " + model.ToUserId);
         }
 
-        return _queueWorkerReassign.Start(Tenant.Id, model.FromUserId, model.ToUserId, SecurityContext.CurrentAccount.ID, model.DeleteProfile);
+        return _queueWorkerReassign.Start(Tenant.Id, model.FromUserId, model.ToUserId, _securityContext.CurrentAccount.ID, model.DeleteProfile);
     }
 }
