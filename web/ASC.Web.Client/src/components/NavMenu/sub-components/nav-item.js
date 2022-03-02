@@ -39,6 +39,7 @@ const NavItemWrapper = styled(Link)`
     `}
 
   .injected-svg {
+    margin-top: 3px;
     path {
       fill: ${(props) =>
         props.active
@@ -145,7 +146,6 @@ const NavItem = React.memo((props) => {
         <ReactSVG
           src={iconUrl}
           beforeInjection={(svg) => {
-            svg.setAttribute("style", `width: 24px; height: 24px;`);
           }}
         />
       ) : (

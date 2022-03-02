@@ -106,7 +106,7 @@ namespace ASC.Data.Storage
                 Cache.Insert(key, uploadOperation, DateTime.MaxValue);
             }
 
-            uploadOperation.DoJob();
+            uploadOperation.DoJobAsync().Wait();
             onComplete?.Invoke(uploadOperation.Result);
 
             return uploadOperation.Result;
@@ -200,7 +200,7 @@ namespace ASC.Data.Storage
             Result = string.Empty;
         }
 
-        public string DoJob()
+        public async Task<string> DoJobAsync()
         {
             try
             {
@@ -215,13 +215,13 @@ namespace ASC.Data.Storage
 
                 if (File.Exists(mappedPath))
                 {
-                    if (!dataStore.IsFile(path))
+                    if (!await dataStore.IsFileAsync(path))
                     {
                         using var stream = File.OpenRead(mappedPath);
-                        dataStore.Save(path, stream);
+                        await dataStore.SaveAsync(path, stream);
                     }
-
-                    Result = dataStore.GetInternalUri("", path, TimeSpan.Zero, null).AbsoluteUri.ToLower();
+                    var uri = await dataStore.GetInternalUriAsync("", path, TimeSpan.Zero, null);
+                    Result = uri.AbsoluteUri.ToLower();
                     Log.DebugFormat("UploadFile {0}", Result);
                     return Result;
                 }

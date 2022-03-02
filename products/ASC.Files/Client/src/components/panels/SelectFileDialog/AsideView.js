@@ -45,8 +45,16 @@ const SelectFileDialogAsideView = ({
   };
   const isHeaderChildren = !!titleFilesList;
 
+  const onMouseEvent = (event) => {
+    event.stopPropagation();
+  };
+
   return (
-    <StyledAsidePanel visible={isPanelVisible}>
+    <StyledAsidePanel
+      visible={isPanelVisible}
+      onMouseUp={onMouseEvent}
+      onMouseDown={onMouseEvent}
+    >
       <ModalDialog
         visible={isPanelVisible}
         zIndex={zIndex}
@@ -126,8 +134,8 @@ const SelectFileDialogAsideView = ({
                       />
                     </div>
                   )}
-                </div>
               </div>
+            </div>
             </div>
           </StyledSelectFilePanel>
         </ModalDialog.Body>

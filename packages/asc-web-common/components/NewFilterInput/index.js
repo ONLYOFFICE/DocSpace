@@ -15,29 +15,36 @@ import { StyledFilterInput, StyledSearchInput } from "./StyledFilterInput";
 
 const FilterInput = ({
   sectionWidth,
-  placeholder,
-  contextMenuHeader,
-  selectedFilterData,
-  viewAs,
-  onChangeViewAs,
-  viewSelectorVisible,
-  getViewSettingsData,
   getFilterData,
+  getSortData,
+  getViewSettingsData,
+  getSelectedFilterData,
   onFilter,
   onSearch,
   onSort,
-  addUserHeader,
-  getSortData,
+  onChangeViewAs,
+  viewAs,
+  placeholder,
+  contextMenuHeader,
+  headerLabel,
+  viewSelectorVisible,
   ...props
 }) => {
   const [viewSettings, setViewSettings] = React.useState([]);
+  const [selectedFilterData, setSelectedFilterData] = React.useState([]);
+
   const [inputValue, setInputValue] = React.useState("");
 
+  const getSelectedFilterDataAction = React.useCallback(async () => {
+    const data = await getSelectedFilterData();
+
+    setSelectedFilterData(data);
+    setInputValue(!!data.inputValue ? data.inputValue : "");
+  }, [getSelectedFilterData]);
+
   React.useEffect(() => {
-    setInputValue(
-      !!selectedFilterData.inputValue ? selectedFilterData.inputValue : ""
-    );
-  }, [selectedFilterData]);
+    getSelectedFilterDataAction();
+  }, [getSelectedFilterData]);
 
   React.useEffect(() => {
     getViewSettingsData && setViewSettings(getViewSettingsData());
@@ -48,7 +55,7 @@ const FilterInput = ({
   };
 
   return (
-    <StyledFilterInput sectionWidth={sectionWidth}>
+    <StyledFilterInput {...props} sectionWidth={sectionWidth}>
       <StyledSearchInput
         placeholder={placeholder}
         value={inputValue}
@@ -61,7 +68,7 @@ const FilterInput = ({
         contextMenuHeader={contextMenuHeader}
         getFilterData={getFilterData}
         onFilter={onFilter}
-        addUserHeader={addUserHeader}
+        headerLabel={headerLabel}
       />
 
       {viewSettings &&
@@ -76,21 +83,26 @@ const FilterInput = ({
           viewSettings={viewSettings}
         />
       ) : (
-        <SortButton
-          selectedFilterData={selectedFilterData}
-          getSortData={getSortData}
-          onChangeViewAs={onChangeViewAs}
-          viewAs={viewAs === "table" ? "row" : viewAs}
-          viewSettings={viewSettings}
-          onSort={onSort}
-        />
+        <>
+          {(isMobile || isTabletUtils()) && (
+            <SortButton
+              selectedFilterData={selectedFilterData}
+              getSortData={getSortData}
+              onChangeViewAs={onChangeViewAs}
+              viewAs={viewAs === "table" ? "row" : viewAs}
+              viewSettings={viewSettings}
+              onSort={onSort}
+              viewSelectorVisible={viewSelectorVisible}
+            />
+          )}
+        </>
       )}
     </StyledFilterInput>
   );
 };
 
 FilterInput.defaultProps = {
-  viewSelectorVisible: true,
+  viewSelectorVisible: false,
 };
 
 export default React.memo(FilterInput);

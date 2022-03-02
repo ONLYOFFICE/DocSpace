@@ -550,8 +550,8 @@ export function getNewFiles(folderId) {
   });
 }
 
-export function convertFile(fileId, sync = false) {
-  const data = { sync };
+export function convertFile(fileId, password = null, sync = false) {
+  const data = { password, sync };
 
   return request({
     method: "put",
@@ -800,7 +800,13 @@ export function checkFillFormDraft(fileId) {
   });
 }
 
-export function fileCopyAs(fileId, destTitle, destFolderId, enableExternalExt) {
+export function fileCopyAs(
+  fileId,
+  destTitle,
+  destFolderId,
+  enableExternalExt,
+  password
+) {
   return request({
     method: "post",
     url: `files/file/${fileId}/copyas`,
@@ -808,6 +814,7 @@ export function fileCopyAs(fileId, destTitle, destFolderId, enableExternalExt) {
       destTitle,
       destFolderId,
       enableExternalExt,
+      password,
     },
   });
 }

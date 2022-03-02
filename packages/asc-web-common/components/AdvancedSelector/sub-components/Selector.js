@@ -247,6 +247,7 @@ const Selector = (props) => {
           style={style}
           className="row-option"
           value={`${index}`}
+          name={`selector-row-option-${index}`}
           onClick={() => onOptionChange(index, isChecked)}
           {...tooltipProps}
         >
@@ -280,6 +281,7 @@ const Selector = (props) => {
           style={style}
           className="row-option"
           data-index={index}
+          name={`selector-row-option-${index}`}
           onClick={() => onLinkClick(index)}
           {...tooltipProps}
         >
@@ -431,6 +433,7 @@ const Selector = (props) => {
         <div
           style={style}
           className="row-option"
+          name={`selector-row-option-${index}`}
           onClick={() => onGroupClick(index)}
         >
           <div className="option-info">
@@ -471,6 +474,7 @@ const Selector = (props) => {
   );
 
   const renderGroupsList = useCallback(() => {
+    if (groups.length === 0) return renderOptionLoader();
     return (
       <AutoSizer>
         {({ width, height }) => (

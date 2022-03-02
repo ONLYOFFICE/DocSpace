@@ -1,5 +1,5 @@
-const fs = require('fs');
-const { setHeadlessWhen, setWindowSize } = require('@codeceptjs/configure');
+const fs = require("fs");
+const { setHeadlessWhen, setWindowSize } = require("@codeceptjs/configure");
 
 // turn on headless mode when running with HEADLESS=true environment variable
 // export HEADLESS=true && npx codeceptjs run
@@ -12,7 +12,7 @@ const sizes = {
   desktop: { width: 1920, height: 1080 },
 };
 
-const deviceType = process.env.DEVICE_TYPE || 'desktop';
+const deviceType = process.env.DEVICE_TYPE || "desktop";
 
 const isTranslation = !!process.env.TRANSLATION;
 
@@ -20,7 +20,7 @@ const device = sizes[deviceType];
 
 setWindowSize(device.width, device.height);
 
-const browser = process.env.profile || 'chromium';
+const browser = process.env.profile || "chromium";
 
 const isModel = !!process.env.MODEL;
 
@@ -37,16 +37,22 @@ const baseFolder = isTranslation
   : `./tests/screenshots/${browser}/${deviceType}`;
 
 const tests = isTranslation
-  ? './tests/translation_tests.js'
-  : ['./tests/action_tests.js', './tests/render_tests.js'];
+  ? "./tests/translation_tests.js"
+  : [
+      "./tests/context-menu_tests.js",
+      "./tests/filter_tests.js",
+      "./tests/catalog_tests.js",
+    ];
 
 const reportDir = isTranslation
   ? `../../../TestsResults/files`
   : `./tests/reports/${browser}/${deviceType}`;
 
-const reportFileName = isTranslation ? 'file-translation' : 'report';
+const reportFileName = isTranslation ? "file-translation" : "report";
 
-const diffFolder = isTranslation ? '../../../TestsResults/files/diff' : './tests/output/diff/';
+const diffFolder = isTranslation
+  ? "../../../TestsResults/files/diff"
+  : "./tests/output/diff/";
 
 if (isTranslation) {
   fs.rmdir(diffFolder, { recursive: true }, (err) => {
@@ -63,41 +69,41 @@ exports.config = {
   output: screenshotOutput,
   helpers: {
     Playwright: {
-      url: 'http://localhost:8092',
+      url: "http://localhost:8092",
       // show browser window
       show: false,
       browser: browser,
       // restart browser between tests
       restart: true,
-      waitForNavigation: 'networkidle0',
+      waitForNavigation: "networkidle0",
       // don't save screenshot on failure
       disableScreenshots: false,
     },
     ResembleHelper: {
-      require: 'codeceptjs-resemblehelper',
-      screenshotFolder: './tests/output/',
+      require: "codeceptjs-resemblehelper",
+      screenshotFolder: "./tests/output/",
       baseFolder: baseFolder,
       diffFolder: diffFolder,
     },
     PlaywrightHelper: {
-      require: './tests/helpers/playwright.helper.js',
+      require: "./tests/helpers/playwright.helper.js",
     },
   },
   include: {
-    I: './steps_file.js',
+    I: "./steps_file.js",
   },
   bootstrap: null,
   mocha: {
     reporterOptions: {
       mochawesome: {
-        stdout: '-',
+        stdout: "-",
         options: {
           reportDir: reportDir,
           reportFilename: reportFileName,
         },
       },
-      'mocha-junit-reporter': {
-        stdout: '-',
+      "mocha-junit-reporter": {
+        stdout: "-",
         options: {
           mochaFile: `${reportDir}/${reportFileName}.xml`,
           attachments: false,
@@ -105,7 +111,7 @@ exports.config = {
       },
     },
   },
-  name: 'ASC.Web.Files',
+  name: "ASC.Web.Files",
   plugins: {
     pauseOnFail: {},
     retryFailedStep: {

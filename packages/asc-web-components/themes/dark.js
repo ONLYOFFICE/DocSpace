@@ -269,7 +269,6 @@ const Dark = {
     },
 
     dropDown: {
-      width: "100%",
       top: "100%",
     },
 
@@ -1300,7 +1299,7 @@ const Dark = {
   dropDown: {
     fontWeight: "600",
     fontSize: "13px",
-    zIndex: "200",
+    zIndex: "400",
     background: black,
     borderRadius: "6px",
     boxShadow:
@@ -2040,12 +2039,21 @@ const Dark = {
       color: "#a3a9ae",
 
       separatorColor: "#474747",
+      indicatorColor: "#F58D31",
 
       selectedItem: {
         background: "#eeeeee",
         border: "#eeeeee",
         color: "#333333",
       },
+    },
+
+    sort: {
+      background: "#333333",
+      hoverBackground: "#292929",
+      selectedViewIcon: "rgba(255, 255, 255, 0.88)",
+      viewIcon: "#858585",
+      sortFill: "rgba(255, 255, 255, 0.6)",
     },
   },
 

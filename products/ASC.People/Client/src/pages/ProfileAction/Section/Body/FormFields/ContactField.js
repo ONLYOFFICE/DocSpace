@@ -46,7 +46,9 @@ class ContactField extends React.Component {
           selectedOption={comboBoxSelectedOption}
           isDisabled={isDisabled}
           scaled={true}
+          directionY="both"
           className="field-select"
+          scaledOptions={true}
         />
         <TextInput
           name={inputName}

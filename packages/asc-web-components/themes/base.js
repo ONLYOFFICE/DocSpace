@@ -267,7 +267,6 @@ const Base = {
     },
 
     dropDown: {
-      width: "100%",
       top: "100%",
     },
 
@@ -1303,7 +1302,7 @@ const Base = {
   dropDown: {
     fontWeight: "600",
     fontSize: "13px",
-    zIndex: "200",
+    zIndex: "400",
     background: white,
     borderRadius: "6px",
     boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.13)",
@@ -2038,12 +2037,21 @@ const Base = {
       color: "#a3a9ae",
 
       separatorColor: "#eceef1",
+      indicatorColor: "#ED7309",
 
       selectedItem: {
         background: "#265a8f",
         border: "#265a8f",
         color: "#ffffff",
       },
+    },
+
+    sort: {
+      background: "#ffffff",
+      hoverBackground: "#f8f9f9",
+      selectedViewIcon: "#dfe2e3",
+      viewIcon: "#a3a9ae",
+      sortFill: "#657077",
     },
   },
 

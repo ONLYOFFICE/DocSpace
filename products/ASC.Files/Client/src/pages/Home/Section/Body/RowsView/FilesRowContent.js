@@ -90,6 +90,7 @@ const FilesRowContent = ({
   updatedDate,
   linkStyles,
   badgesComponent,
+  quickButtons,
   theme,
 }) => {
   const {
@@ -121,7 +122,10 @@ const FilesRowContent = ({
         >
           {titleWithoutExt}
         </Link>
-        <div className="badges">{badgesComponent}</div>
+        <div className="badges">
+          {badgesComponent}
+          {quickButtons}
+        </div>
         {!!fileExst && (
           <Text
             containerMinWidth="200px"

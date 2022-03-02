@@ -16,7 +16,7 @@ import {
 class SectionBodyContent extends React.Component {
   render() {
     const { tReady, viewAs } = this.props;
-    console.log("render");
+
     return (
       <Consumer>
         {(context) =>

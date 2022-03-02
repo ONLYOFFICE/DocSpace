@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 using ASC.Api.Core;
 using ASC.Api.CRM;
@@ -323,11 +324,16 @@ namespace ASC.CRM.Api
         ///   Opportunity list
         /// </returns>
         [Update(@"opportunity")]
-        public IEnumerable<OpportunityDto> DeleteBatchDeals(IEnumerable<int> opportunityids)
+        public Task<IEnumerable<OpportunityDto>> DeleteBatchDealsAsync(IEnumerable<int> opportunityids)
         {
             if (opportunityids == null || !opportunityids.Any()) throw new ArgumentException();
 
-            var opportunities = _daoFactory.GetDealDao().DeleteBatchDeals(opportunityids.ToArray());
+            return InternalDeleteBatchDealsAsync(opportunityids);
+        }
+
+        private async Task<IEnumerable<OpportunityDto>> InternalDeleteBatchDealsAsync(IEnumerable<int> opportunityids)
+        {
+            var opportunities = await _daoFactory.GetDealDao().DeleteBatchDealsAsync(opportunityids.ToArray());
             _messageService.Send(MessageAction.OpportunitiesDeleted, _messageTarget.Create(opportunityids), opportunities.Select(o => o.Title));
 
             return ToListOpportunityDto(opportunities);
@@ -352,7 +358,7 @@ namespace ASC.CRM.Api
         ///   Opportunity list
         /// </returns>
         [Delete(@"opportunity/filter")]
-        public IEnumerable<OpportunityDto> DeleteBatchDeals(
+        public Task<IEnumerable<OpportunityDto>> DeleteBatchDealsAsync(
             Guid responsibleid,
             int opportunityStagesid,
             IEnumerable<string> tags,
@@ -371,9 +377,14 @@ namespace ASC.CRM.Api
                                                          contactAlsoIsParticipant,
                                                          fromDate, toDate, 0, 0, null);
 
-            if (!deals.Any()) return Enumerable.Empty<OpportunityDto>();
+            if (deals.Count == 0) return System.Threading.Tasks.Task.FromResult(Enumerable.Empty<OpportunityDto>());
 
-            deals = _daoFactory.GetDealDao().DeleteBatchDeals(deals);
+            return InternalDeleteBatchDealsAsync(deals);
+        }
+
+        private async Task<IEnumerable<OpportunityDto>> InternalDeleteBatchDealsAsync(List<Deal> deals)
+        {
+            deals = await _daoFactory.GetDealDao().DeleteBatchDealsAsync(deals);
             _messageService.Send(MessageAction.OpportunitiesDeleted, _messageTarget.Create(deals.Select(x => x.ID)), deals.Select(d => d.Title));
 
             return ToListOpportunityDto(deals);
@@ -504,11 +515,16 @@ namespace ASC.CRM.Api
         ///   Opportunity
         /// </returns>
         [Delete(@"opportunity/{opportunityid:int}")]
-        public OpportunityDto DeleteDeal(int opportunityid)
+        public Task<OpportunityDto> DeleteDealAsync(int opportunityid)
         {
             if (opportunityid <= 0) throw new ArgumentException();
 
-            var deal = _daoFactory.GetDealDao().DeleteDeal(opportunityid);
+            return InternalDeleteDealAsync(opportunityid);
+        }
+
+        private async Task<OpportunityDto> InternalDeleteDealAsync(int opportunityid)
+        {
+            var deal = await _daoFactory.GetDealDao().DeleteDealAsync(opportunityid);
             if (deal == null) throw new ItemNotFoundException();
 
             _messageService.Send(MessageAction.OpportunityDeleted, _messageTarget.Create(deal.ID), deal.Title);
