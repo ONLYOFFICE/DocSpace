@@ -8,11 +8,16 @@ import {
   StyledChipGroup,
   StyledChipWithInput,
 } from "./styled-inputwithchips";
-import { MAX_EMAIL_LENGTH, tryParseEmail } from "./sub-components/helpers";
+import {
+  MAX_EMAIL_LENGTH_WITH_DOTS,
+  sliceEmail,
+  tryParseEmail,
+} from "./sub-components/helpers";
 import InputGroup from "./sub-components/input-group";
 import ChipsRender from "./sub-components/chips-render";
 
-const calcMaxLengthInput = (exceededLimit) => exceededLimit * MAX_EMAIL_LENGTH;
+const calcMaxLengthInput = (exceededLimit) =>
+  exceededLimit * MAX_EMAIL_LENGTH_WITH_DOTS;
 
 const InputWithChips = ({
   options,
@@ -104,12 +109,10 @@ const InputWithChips = ({
     if (!parsed) {
       if (newValue && newValue !== value.value) {
         const newChips = chips.map((it) => {
-          return it.value === value.value
-            ? { label: newValue, value: newValue }
-            : it;
+          return it.value === value.value ? sliceEmail(newValue) : it;
         });
         setChips(newChips);
-        setSelectedChips([{ label: newValue, value: newValue }]);
+        setSelectedChips([sliceEmail(newValue)]);
       }
     } else {
       if (
@@ -117,7 +120,7 @@ const InputWithChips = ({
         (parsed.value !== value.value || parsed.label !== value.label)
       ) {
         const newChips = chips.map((it) => {
-          return it.value === value.value ? parsed : it;
+          return it.value === value.value ? sliceEmail(parsed) : it;
         });
         setChips(newChips);
         setSelectedChips([parsed]);
@@ -270,21 +273,16 @@ const InputWithChips = ({
     setIsExceededLimitChips(chips.length >= exceededLimit);
     if (chips.length >= exceededLimit) return;
 
-    const filteredChips = chipsToAdd
-      .filter((it) => {
-        const isExisted = !!chips.find(
-          (chip) => chip.value === it || chip.value === it?.value
-        );
-        if (chipsToAdd.length === 1) {
-          setIsExistedOn(isExisted);
-          if (isExisted) return false;
-        }
-        return !isExisted;
-      })
-      .map((it) => ({
-        label: it?.label?.slice(0, 64) ?? it.slice(0, 320),
-        value: it?.value?.slice(0, 256) ?? it.slice(0, 320),
-      }));
+    const filteredChips = chipsToAdd.map(sliceEmail).filter((it) => {
+      const isExisted = !!chips.find(
+        (chip) => chip.value === it || chip.value === it?.value
+      );
+      if (chipsToAdd.length === 1) {
+        setIsExistedOn(isExisted);
+        if (isExisted) return false;
+      }
+      return !isExisted;
+    });
     setChips([...chips, ...filteredChips]);
   };
 

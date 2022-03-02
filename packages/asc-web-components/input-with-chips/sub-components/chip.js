@@ -6,6 +6,11 @@ import Tooltip from "../../tooltip";
 import { useClickOutside } from "../../utils/useClickOutside.js";
 
 import { DeleteIcon, WarningIcon } from "../svg";
+import {
+  MAX_EMAIL_LENGTH,
+  MAX_EMAIL_LENGTH_WITH_DOTS,
+  sliceEmail,
+} from "./helpers";
 
 import {
   StyledChip,
@@ -13,7 +18,6 @@ import {
   StyledChipValue,
   StyledContainer,
 } from "../styled-inputwithchips.js";
-import { MAX_EMAIL_LENGTH } from "./helpers";
 
 const Chip = (props) => {
   const {
@@ -52,6 +56,14 @@ const Chip = (props) => {
     }
   }, [isSelected]);
 
+  useEffect(() => {
+    if (newValue.length > MAX_EMAIL_LENGTH) {
+      setIsChipOverLimit(true);
+    } else {
+      setIsChipOverLimit(false);
+    }
+  }, [newValue]);
+
   useClickOutside(warningRef, () => tooltipRef.current.hideTooltip());
   useClickOutside(
     chipInputRef,
@@ -62,10 +74,12 @@ const Chip = (props) => {
   );
 
   const onChange = (e) => {
-    if (e.target.value.length <= MAX_EMAIL_LENGTH) {
-      setIsChipOverLimit(false);
+    if (
+      e.target.value.length <= MAX_EMAIL_LENGTH_WITH_DOTS ||
+      e.target.value.length < newValue.length
+    ) {
       setNewValue(e.target.value);
-    } else setIsChipOverLimit(true);
+    }
   };
 
   const onClickHandler = (e) => {
@@ -91,6 +105,7 @@ const Chip = (props) => {
         case "Enter":
         case "NumpadEnter": {
           onSaveNewChip(value, newValue);
+          setNewValue(sliceEmail(newValue).value);
           break;
         }
         case "Escape": {
@@ -117,6 +132,7 @@ const Chip = (props) => {
           onKeyDown={onInputKeyDown}
           isAutoFocussed
           withBorder={false}
+          maxLength={MAX_EMAIL_LENGTH_WITH_DOTS}
           flexvalue={
             value?.label !== value?.value ? "0 1 auto" : `0 0 ${chipWidth}px`
           }

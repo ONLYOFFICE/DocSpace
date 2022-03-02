@@ -1,6 +1,9 @@
 //  Maximum allowed email length
 // https://www.lifewire.com/is-email-address-length-limited-1171110
-export const MAX_EMAIL_LENGTH = 323;
+export const MAX_EMAIL_LENGTH = 320;
+export const MAX_EMAIL_LENGTH_WITH_DOTS = 323;
+const MAX_LABEL_LENGTH = 64;
+const MAX_VALUE_LENGTH = 256;
 
 export const tryParseEmail = (emailString) => {
   const cortege = emailString
@@ -70,4 +73,29 @@ export const getChipsFromString = (value) => {
   return Array.from(new Set(stringChips)).map((it) =>
     tryParseEmail(it) ? tryParseEmail(it) : it.trim()
   );
+};
+
+export const sliceEmail = (it) => {
+  if (typeof it === "string") {
+    return {
+      label:
+        it.length > MAX_EMAIL_LENGTH
+          ? it.slice(0, MAX_EMAIL_LENGTH) + "..."
+          : it,
+      value:
+        it.length > MAX_EMAIL_LENGTH
+          ? it.slice(0, MAX_EMAIL_LENGTH) + "..."
+          : it,
+    };
+  }
+  return {
+    label:
+      it?.label?.length > MAX_LABEL_LENGTH
+        ? it?.label?.slice(0, MAX_LABEL_LENGTH) + "..."
+        : it?.label,
+    value:
+      it?.value?.length > MAX_VALUE_LENGTH
+        ? it?.value?.slice(0, MAX_VALUE_LENGTH) + "..."
+        : it?.value,
+  };
 };
