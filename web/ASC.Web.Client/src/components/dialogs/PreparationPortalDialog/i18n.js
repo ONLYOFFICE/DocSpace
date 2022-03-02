@@ -9,7 +9,7 @@ const newInstance = i18n.createInstance();
 newInstance.use(Backend).init({
   lng: localStorage.getItem(LANGUAGE) || "en",
   fallbackLng: "en",
-  load: "all",
+  load: "currentOnly",
   //debug: true,
 
   interpolation: {
@@ -21,7 +21,7 @@ newInstance.use(Backend).init({
   },
 
   backend: {
-    loadPath: loadLanguagePath(config.homepage, "PreparationPortal"),
+    loadPath: loadLanguagePath(config.homepage),
   },
 
   react: {

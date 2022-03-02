@@ -1,7 +1,7 @@
 import React from "react";
 import ErrorContainer from "@appserver/common/components/ErrorContainer";
 import { I18nextProvider, withTranslation } from "react-i18next";
-import i18n from "./i18n";
+
 import {
   StyledPreparationPortal,
   StyledBodyPreparationPortal,
@@ -12,6 +12,7 @@ import {
   getRestoreProgress,
 } from "../../../../../../packages/asc-web-common/api/portal";
 import { observer, inject } from "mobx-react";
+import PropTypes from "prop-types";
 
 const baseSize = 1073741824; //number of bytes in one GB
 const unSizeMultiplicationFactor = 3;
@@ -196,18 +197,20 @@ class PreparationPortal extends React.Component {
       });
   };
   render() {
-    const { t } = this.props;
-    const { percent, errorMessage, isLoadingData } = this.state;
-    console.log("percent", errorMessage);
+    const { t, withoutHeader, style } = this.props;
+    const { percent, errorMessage } = this.state;
+
     return (
       <StyledPreparationPortal>
         <ErrorContainer
-          headerText={t("PreparationPortalTitle")}
+          headerText={withoutHeader ? "" : t("PreparationPortalTitle")}
           bodyText={t("PreparationPortalDescription")}
+          style={style}
         >
           <StyledBodyPreparationPortal
             percent={percent}
             errorMessage={errorMessage}
+            className="preparation-portal_body-wrapper"
           >
             {errorMessage ? (
               <Text
@@ -247,8 +250,17 @@ const PreparationPortalWrapper = inject(({ auth, backup }) => {
     multiplicationFactor,
   };
 })(withTranslation("PreparationPortal")(observer(PreparationPortal)));
-export default () => (
-  <I18nextProvider i18n={i18n}>
-    <PreparationPortalWrapper />
-  </I18nextProvider>
+
+PreparationPortal.propTypes = {
+  withoutHeader: PropTypes.bool,
+};
+
+PreparationPortal.defaultProps = {
+  withoutHeader: false,
+};
+
+export default (props) => (
+  //<I18nextProvider i18n={i18n}>
+  <PreparationPortalWrapper {...props} />
+  //</I18nextProvider>
 );

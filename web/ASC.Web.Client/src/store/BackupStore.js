@@ -38,6 +38,8 @@ class BackupStore {
 
   thirdPartyStorage = [];
 
+  preparationPortalDialogVisible = false;
+
   constructor() {
     makeAutoObservable(this);
   }
@@ -106,6 +108,10 @@ class BackupStore {
 
   setThirdPartyStorage = (list) => {
     this.thirdPartyStorage = list;
+  };
+
+  setPreparationPortalDialogVisible = (visible) => {
+    this.preparationPortalDialogVisible = visible;
   };
 }
 

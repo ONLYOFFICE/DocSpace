@@ -164,6 +164,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     FirebaseHelper,
     personal,
     socketHelper,
+    setPreparationPortalDialogVisible,
   } = rest;
 
   useEffect(() => {
@@ -197,7 +198,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
       data: "backup-restore",
     });
     socketHelper.on("restore-backup", () => {
-      alert("Backup restore started!");
+      setPreparationPortalDialogVisible(true);
     });
   }, [socketHelper]);
 
@@ -477,7 +478,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   );
 };
 
-const ShellWrapper = inject(({ auth }) => {
+const ShellWrapper = inject(({ auth, backup }) => {
   const { init, isLoaded, settingsStore, setProductVersion, language } = auth;
   const {
     personal,
@@ -486,7 +487,7 @@ const ShellWrapper = inject(({ auth }) => {
     setModuleInfo,
     socketHelper,
   } = settingsStore;
-
+  const { setPreparationPortalDialogVisible } = backup;
   return {
     loadBaseInfo: async () => {
       await init();
@@ -505,6 +506,7 @@ const ShellWrapper = inject(({ auth }) => {
     FirebaseHelper: firebaseHelper,
     personal,
     socketHelper,
+    setPreparationPortalDialogVisible,
   };
 })(observer(Shell));
 

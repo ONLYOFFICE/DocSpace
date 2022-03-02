@@ -190,6 +190,8 @@ const config = {
         './Layout/context': './src/components/Layout/context.js',
         './Main': './src/components/Main',
         './toastr': './src/helpers/toastr',
+        "./PreparationPortalDialog":
+          "./src/components/dialogs/PreparationPortalDialog/PreparationPortalDialogWrapper.js",
       },
       shared: {
         ...deps,
