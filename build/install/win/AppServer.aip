@@ -486,7 +486,7 @@
     <ROW Action="AI_ProcessFailActions" Sequence="5848"/>
     <ROW Action="AI_DATA_SETTER_3" Sequence="5847"/>
     <ROW Action="AI_TxtUpdaterInstall" Sequence="5103"/>
-    <ROW Action="SetPropertyAppDirConf" Condition="( NOT Installed )" Sequence="1611"/>
+    <ROW Action="SetPropertyAppDirConf" Condition="( NOT Installed )" Sequence="1614"/>
     <ROW Action="AI_JsonInstall" Condition="(REMOVE &lt;&gt; &quot;ALL&quot;)" Sequence="5102"/>
     <ROW Action="AI_DATA_SETTER_7" Condition="(REMOVE &lt;&gt; &quot;ALL&quot;)" Sequence="5101"/>
     <ROW Action="AI_JsonUninstall" Condition="(REMOVE)" Sequence="3102"/>
@@ -495,17 +495,17 @@
     <ROW Action="AI_DATA_SETTER_10" Condition="( NOT Installed AND NOT OLDPRODUCTS ) AND ( AI_PROCESS_STATE &lt;&gt; &quot;Not Found&quot; )" Sequence="1604"/>
     <ROW Action="StartMySQLService" Condition="( NOT Installed AND NOT OLDPRODUCTS ) AND ( AI_PROCESS_STATE &lt;&gt; &quot;Not Found&quot; )" Sequence="1607"/>
     <ROW Action="AI_DATA_SETTER_11" Condition="( NOT Installed AND NOT OLDPRODUCTS ) AND ( AI_PROCESS_STATE &lt;&gt; &quot;Not Found&quot; )" Sequence="1606"/>
-    <ROW Action="ChangeSlashesScript" Condition="( NOT Installed )" Sequence="1613"/>
-    <ROW Action="AI_DATA_SETTER_6" Condition="( NOT Installed )" Sequence="1612"/>
+    <ROW Action="ChangeSlashesScript" Condition="( NOT Installed )" Sequence="1616"/>
+    <ROW Action="AI_DATA_SETTER_6" Condition="( NOT Installed )" Sequence="1615"/>
     <ROW Action="MySQLConfigure" Condition="( NOT Installed )" Sequence="1601"/>
     <ROW Action="DetectMySQLService" Condition="( ( NOT Installed AND NOT OLDPRODUCTS ) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) )" Sequence="1603"/>
     <ROW Action="AI_DATA_SETTER_9" Condition="( ( NOT Installed AND NOT OLDPRODUCTS ) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) )" Sequence="1602"/>
-    <ROW Action="ElasticSearchSetup" Condition="( NOT Installed )" Sequence="1610"/>
+    <ROW Action="ElasticSearchSetup" Condition="( NOT Installed )" Sequence="1611"/>
     <ROW Action="StopElasticSearchService" Condition="( NOT Installed )" Sequence="1609"/>
     <ROW Action="AI_DATA_SETTER_12" Condition="( NOT Installed )" Sequence="1608"/>
-    <ROW Action="StartElasticSearchService" Condition="( NOT Installed )" Sequence="1616"/>
-    <ROW Action="AI_DATA_SETTER_13" Condition="( NOT Installed )" Sequence="1615"/>
-    <ROW Action="ElasticSearchInstallPlugin" Condition="( NOT Installed )" Sequence="1614"/>
+    <ROW Action="ElasticSearchInstallPlugin" Condition="( NOT Installed )" Sequence="1610"/>
+    <ROW Action="StartElasticSearchService" Condition="( NOT Installed )" Sequence="1613"/>
+    <ROW Action="AI_DATA_SETTER_13" Condition="( NOT Installed )" Sequence="1612"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstallUISequenceComponent">
     <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="749"/>
