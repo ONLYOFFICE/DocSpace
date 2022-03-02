@@ -328,7 +328,12 @@ class WhiteLabel extends React.Component {
                 )}
               </div>
               {isPortalPaid && (
-                <Link type="action" isHovered onClick={this.onChangeLogo}>
+                <Link
+                  type="action"
+                  color={theme.studio.settings.common.linkColorHelp}
+                  isHovered
+                  onClick={this.onChangeLogo}
+                >
                   {t("ChangeLogoButton")}
                 </Link>
               )}
@@ -363,7 +368,12 @@ class WhiteLabel extends React.Component {
                 )}
               </div>
               {isPortalPaid && (
-                <Link type="action" isHovered onClick={this.onChangeLogo}>
+                <Link
+                  type="action"
+                  color={theme.studio.settings.common.linkColorHelp}
+                  isHovered
+                  onClick={this.onChangeLogo}
+                >
                   {t("ChangeLogoButton")}
                 </Link>
               )}
@@ -397,7 +407,12 @@ class WhiteLabel extends React.Component {
                 )}
               </div>
               {isPortalPaid && (
-                <Link type="action" isHovered onClick={this.onChangeLogo}>
+                <Link
+                  type="action"
+                  color={theme.studio.settings.common.linkColorHelp}
+                  isHovered
+                  onClick={this.onChangeLogo}
+                >
                   {t("ChangeLogoButton")}
                 </Link>
               )}
@@ -471,7 +486,12 @@ class WhiteLabel extends React.Component {
               </div>
 
               {isPortalPaid && (
-                <Link type="action" isHovered onClick={this.onChangeLogo}>
+                <Link
+                  type="action"
+                  color={theme.studio.settings.common.linkColorHelp}
+                  isHovered
+                  onClick={this.onChangeLogo}
+                >
                   {t("ChangeLogoButton")}
                 </Link>
               )}
