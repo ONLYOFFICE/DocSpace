@@ -138,13 +138,6 @@ const HeaderNav = ({
       },
       settings,
       {
-        key: "SettingsBtn",
-        ...(!isPersonal && {
-          label: t("Common:Settings"),
-          onClick: onSettingsClick,
-        }),
-      },
-      {
         key: "SwitchToBtn",
         ...(!isPersonal && {
           label: t("TurnOnDesktopVersion"),

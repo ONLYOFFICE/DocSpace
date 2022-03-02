@@ -25,6 +25,67 @@ export function getPortalPasswordSettings(confirmKey = null) {
   return request(options);
 }
 
+export function setPortalPasswordSettings(
+  minLength,
+  upperCase,
+  digits,
+  specSymbols
+) {
+  return request({
+    method: "put",
+    url: "/settings/security/password.json",
+    data: { minLength, upperCase, digits, specSymbols },
+  });
+}
+
+export function setMailDomainSettings(type, domains, inviteUsersAsVisitors) {
+  return request({
+    method: "post",
+    url: "/settings/maildomainsettings.json",
+    data: { type, domains, inviteUsersAsVisitors },
+  });
+}
+
+export function setIpRestrictions(data) {
+  return request({
+    method: "put",
+    url: "/settings/iprestrictions.json",
+    data,
+  });
+}
+
+export function setIpRestrictionsEnable(data) {
+  return request({
+    method: "put",
+    url: "/settings/iprestrictions/settings.json",
+    data,
+  });
+}
+
+export function setMessageSettings(turnOn) {
+  return request({
+    method: "post",
+    url: "/settings/messagesettings.json",
+    data: { turnOn },
+  });
+}
+
+export function setCookieSettings(lifeTime) {
+  return request({
+    method: "put",
+    url: "/settings/cookiesettings.json",
+    data: { lifeTime },
+  });
+}
+
+export function setLifetimeAuditSettings(loginHistoryLifeTime) {
+  return request({
+    method: "post",
+    url: "/audit/settings/lifetime.json",
+    data: { loginHistoryLifeTime },
+  });
+}
+
 export function getPortalTimezones(confirmKey = null) {
   const options = {
     method: "get",
@@ -76,6 +137,24 @@ export function getLogoUrls() {
   return request({
     method: "get",
     url: `/settings/whitelabel/logos.json`,
+  });
+}
+
+export function setWhiteLabelSettings(data) {
+  const options = {
+    method: "post",
+    url: "/settings/whitelabel/save.json",
+    data,
+  };
+
+  return request(options);
+}
+
+export function restoreWhiteLabelSettings(isDefault) {
+  return request({
+    method: "put",
+    url: "/settings/whitelabel/restore.json",
+    data: { isDefault },
   });
 }
 

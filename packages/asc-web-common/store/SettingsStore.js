@@ -324,6 +324,20 @@ class SettingsStore {
     this.setPasswordSettings(settings);
   };
 
+  setPortalPasswordSettings = async (
+    minLength,
+    upperCase,
+    digits,
+    specSymbols
+  ) => {
+    const settings = await api.settings.setPortalPasswordSettings(
+      minLength,
+      upperCase,
+      digits,
+      specSymbols
+    );
+  };
+
   setTimezones = (timezones) => {
     this.timezones = timezones;
   };

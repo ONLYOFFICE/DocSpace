@@ -30,7 +30,6 @@ import {
   onItemClick,
 } from "@appserver/studio/src/helpers/utils";
 import StyledExternalLinkIcon from "@appserver/studio/src/components/StyledExternalLinkIcon";
-import NavDesktopItem from "./nav-desktop-item";
 import { Base } from "@appserver/components/themes";
 
 const { proxyURL } = AppServerConfig;
@@ -236,41 +235,31 @@ const HeaderComponent = ({
           )}
         </LinkWithoutRedirect>
 
-        {!isPersonal && (
+        {isNavAvailable && isDesktopView && !isPersonal && (
           <StyledNavigationIconsWrapper>
             {mainModules.map((item) => {
               return (
                 <React.Fragment key={item.id}>
-                  {item.iconUrl && !item.separator && (
-                    <HeaderNavigationIcon
-                      key={item.id}
-                      id={item.id}
-                      data-id={item.id}
-                      data-link={item.link}
-                      active={item.id == currentProductId}
-                      iconUrl={item.iconUrl}
-                      badgeNumber={item.notifications}
-                      onItemClick={onItemClick}
-                      onBadgeClick={onBadgeClick}
-                      url={item.link}
-                    />
-                  )}
+                  {item.iconUrl &&
+                    !item.separator &&
+                    item.id !== "settings" && (
+                      <HeaderNavigationIcon
+                        key={item.id}
+                        id={item.id}
+                        data-id={item.id}
+                        data-link={item.link}
+                        active={item.id == currentProductId}
+                        iconUrl={item.iconUrl}
+                        badgeNumber={item.notifications}
+                        onItemClick={onItemClick}
+                        onBadgeClick={onBadgeClick}
+                        url={item.link}
+                      />
+                    )}
                 </React.Fragment>
               );
             })}
           </StyledNavigationIconsWrapper>
-        )}
-
-        {isNavAvailable && isDesktopView && !isPersonal && (
-          <div className="header-items-wrapper not-selectable">
-            {mainModulesWithoutSettings.map((module) => (
-              <NavDesktopItem
-                isActive={module.id == currentProductId}
-                key={module.id}
-                module={module}
-              />
-            ))}
-          </div>
         )}
       </Header>
 

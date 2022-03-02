@@ -15,6 +15,7 @@ import withCultureNames from "@appserver/common/hoc/withCultureNames";
 import LanguageAndTimeZone from "./language-and-time-zone";
 import CustomTitles from "./custom-titles";
 import PortalRenaming from "./portal-renaming";
+import WhiteLabel from "./whitelabel";
 import { Base } from "@appserver/components/themes";
 import { Consumer } from "@appserver/components/utils/context";
 
@@ -221,6 +222,7 @@ class Customization extends React.Component {
             <div className="category-item-wrapper">
               <PortalRenaming sectionWidth={context.sectionWidth} />
             </div>
+            <WhiteLabel />
           </StyledComponent>
         )}
       </Consumer>

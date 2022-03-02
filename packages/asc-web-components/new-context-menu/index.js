@@ -28,6 +28,8 @@ const Row = React.memo(({ data, index, style }) => {
       // eslint-disable-next-line react/prop-types
       key={data.data[index].key}
       // eslint-disable-next-line react/prop-types
+      name={data.data[index].key}
+      // eslint-disable-next-line react/prop-types
       icon={data.data[index].icon}
       // eslint-disable-next-line react/prop-types
       label={data.data[index].label}
@@ -338,7 +340,9 @@ class NewContextMenu extends React.Component {
   renderContextMenuItems() {
     if (!this.props.model) return null;
     if (this.state.changeView) {
-      const rowHeights = this.props.model.map((item, index) => {
+      const model = this.props.model.filter((item) => !!item);
+
+      const rowHeights = model.map((item, index) => {
         if (!item) return 0;
         if (item.isSeparator) return 13;
         return 36;
@@ -357,10 +361,10 @@ class NewContextMenu extends React.Component {
         <VariableSizeList
           height={listHeight}
           width={"auto"}
-          itemCount={this.props.model.length}
+          itemCount={model.length}
           itemSize={getItemSize}
           itemData={{
-            data: this.props.model,
+            data: model,
             hideMenu: this.hideMenu.bind(this),
           }}
           outerElementType={CustomScrollbarsVirtualList}
@@ -371,15 +375,16 @@ class NewContextMenu extends React.Component {
     } else {
       const items = this.props.model.map((item, index) => {
         if (!item) return;
-
         return (
           <MenuItem
             key={item.key}
+            name={item.key}
             icon={item.icon}
             label={item.label}
             isSeparator={item.isSeparator}
             options={item.options}
             onClick={item.onClick}
+            {...item}
             hideMenu={this.hideMenu.bind(this)}
           />
         );

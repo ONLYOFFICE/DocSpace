@@ -2037,6 +2037,7 @@ const Base = {
       color: "#a3a9ae",
 
       separatorColor: "#eceef1",
+      indicatorColor: "#ED7309",
 
       selectedItem: {
         background: "#265a8f",
