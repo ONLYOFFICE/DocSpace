@@ -283,6 +283,7 @@ const SortButton = ({
         advancedOptions={getAdvancedOptions()}
         disableIconClick={false}
         disableItemClick={true}
+        isDefaultMode={false}
       >
         <IconButton
           onClick={toggleCombobox}
