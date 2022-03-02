@@ -1,6 +1,6 @@
 ﻿namespace ASC.Web.Api.Controllers.Settings;
 
-public class CustomNavigationController: BaseSettingsController
+public class CustomNavigationController : BaseSettingsController
 {
     private readonly MessageService _messageService;
     private readonly PermissionContext _permissionContext;
@@ -8,13 +8,15 @@ public class CustomNavigationController: BaseSettingsController
     private readonly StorageHelper _storageHelper;
 
     public CustomNavigationController(
+        MessageService messageService,
         ApiContext apiContext,
         PermissionContext permissionContext,
         SettingsManager settingsManager,
         WebItemManager webItemManager,
         StorageHelper storageHelper,
-        IMemoryCache memoryCache) : base (apiContext, memoryCache, webItemManager)
+        IMemoryCache memoryCache) : base(apiContext, memoryCache, webItemManager)
     {
+        _messageService = messageService;
         _permissionContext = permissionContext;
         _settingsManager = settingsManager;
         _storageHelper = storageHelper;

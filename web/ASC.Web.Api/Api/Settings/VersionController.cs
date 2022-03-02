@@ -9,12 +9,14 @@ public class VersionController : BaseSettingsController
     private readonly BuildVersion _buildVersion;
 
     public VersionController(
+        PermissionContext permissionContext,
         ApiContext apiContext,
         TenantManager tenantManager,
         WebItemManager webItemManager,
         BuildVersion buildVersion,
         IMemoryCache memoryCache) : base(apiContext, memoryCache, webItemManager)
     {
+        _permissionContext = permissionContext;
         _tenantManager = tenantManager;
         _buildVersion = buildVersion;
     }

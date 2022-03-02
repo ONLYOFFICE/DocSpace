@@ -2,7 +2,7 @@
 
 namespace ASC.Web.Api.Controllers.Settings;
 
-public class OwnerController: BaseSettingsController
+public class OwnerController : BaseSettingsController
 {
     private readonly MessageService _messageService;
     private readonly StudioNotifyService _studioNotifyService;
@@ -16,6 +16,7 @@ public class OwnerController: BaseSettingsController
 
     public OwnerController(
         MessageService messageService,
+        CommonLinkUtility commonLinkUtility,
         StudioNotifyService studioNotifyService,
         ApiContext apiContext,
         UserManager userManager,
@@ -24,15 +25,18 @@ public class OwnerController: BaseSettingsController
         PermissionContext permissionContext,
         WebItemManager webItemManager,
         DisplayUserSettingsHelper displayUserSettingsHelper,
+        MessageTarget messageTarget,
         IMemoryCache memoryCache) : base(apiContext, memoryCache, webItemManager)
     {
         _messageService = messageService;
+        _commonLinkUtility = commonLinkUtility;
         _studioNotifyService = studioNotifyService;
         _userManager = userManager;
         _tenantManager = tenantManager;
         _authContext = authContext;
         _permissionContext = permissionContext;
         _displayUserSettingsHelper = displayUserSettingsHelper;
+        _messageTarget = messageTarget;
     }
 
     [Create("owner")]

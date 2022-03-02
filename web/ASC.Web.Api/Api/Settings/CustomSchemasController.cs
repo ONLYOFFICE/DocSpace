@@ -8,6 +8,7 @@ public class CustomSchemasController : BaseSettingsController
     private readonly PermissionContext _permissionContext;
 
     public CustomSchemasController(
+        MessageService messageService,
         ApiContext apiContext,
         TenantManager tenantManager,
         PermissionContext permissionContext,
@@ -15,6 +16,7 @@ public class CustomSchemasController : BaseSettingsController
         CustomNamingPeople customNamingPeople,
         IMemoryCache memoryCache) : base(apiContext, memoryCache, webItemManager)
     {
+        _messageService = messageService;
         _customNamingPeople = customNamingPeople;
         _tenantManager = tenantManager;
         _permissionContext = permissionContext;

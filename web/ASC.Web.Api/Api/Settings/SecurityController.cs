@@ -1,6 +1,6 @@
 ﻿namespace ASC.Web.Api.Controllers.Settings;
 
-public class SecurityController: BaseSettingsController
+public class SecurityController : BaseSettingsController
 {
     private readonly MessageService _messageService;
     private readonly IServiceProvider _serviceProvider;
@@ -27,6 +27,7 @@ public class SecurityController: BaseSettingsController
         DisplayUserSettingsHelper displayUserSettingsHelper,
         IServiceProvider serviceProvider,
         EmployeeWraperHelper employeeWraperHelper,
+        MessageTarget messageTarget,
         IMemoryCache memoryCache) : base(apiContext, memoryCache, webItemManager)
     {
         _serviceProvider = serviceProvider;
@@ -39,6 +40,7 @@ public class SecurityController: BaseSettingsController
         _settingsManager = settingsManager;
         _webItemManagerSecurity = webItemManagerSecurity;
         _displayUserSettingsHelper = displayUserSettingsHelper;
+        _messageTarget = messageTarget;
     }
 
     [Read("security")]

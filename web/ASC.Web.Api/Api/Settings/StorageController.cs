@@ -1,6 +1,6 @@
 ﻿namespace ASC.Web.Api.Controllers.Settings;
 
-public class StorageController: BaseSettingsController
+public class StorageController : BaseSettingsController
 {
     private Tenant Tenant { get { return _apiContext.Tenant; } }
 
@@ -25,6 +25,7 @@ public class StorageController: BaseSettingsController
 
     public StorageController(
         IOptionsMonitor<ILog> option,
+        ServiceClient serviceClient,
         MessageService messageService,
         StudioNotifyService studioNotifyService,
         ApiContext apiContext,
@@ -46,6 +47,7 @@ public class StorageController: BaseSettingsController
         EncryptionWorker encryptionWorker) : base(apiContext, memoryCache, webItemManager)
     {
         _log = option.Get("ASC.Api");
+        _serviceClient = serviceClient;
         _webHostEnvironment = webHostEnvironment;
         _consumerFactory = consumerFactory;
         _messageService = messageService;

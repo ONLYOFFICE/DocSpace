@@ -1,6 +1,6 @@
 ﻿namespace ASC.Web.Api.Controllers.Settings;
 
-public class GreetingSettingsController: BaseSettingsController
+public class GreetingSettingsController : BaseSettingsController
 {
     private Tenant Tenant { get { return _apiContext.Tenant; } }
 
@@ -10,12 +10,16 @@ public class GreetingSettingsController: BaseSettingsController
     private readonly TenantInfoSettingsHelper _tenantInfoSettingsHelper;
 
     public GreetingSettingsController(
+        TenantInfoSettingsHelper tenantInfoSettingsHelper,
+        MessageService messageService,
         ApiContext apiContext,
         TenantManager tenantManager,
         PermissionContext permissionContext,
         WebItemManager webItemManager,
         IMemoryCache memoryCache) : base(apiContext, memoryCache, webItemManager)
     {
+        _tenantInfoSettingsHelper = tenantInfoSettingsHelper;
+        _messageService = messageService;
         _tenantManager = tenantManager;
         _permissionContext = permissionContext;
     }
