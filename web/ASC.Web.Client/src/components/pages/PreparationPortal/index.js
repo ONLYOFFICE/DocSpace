@@ -1,16 +1,13 @@
 import React from "react";
 import ErrorContainer from "@appserver/common/components/ErrorContainer";
-import { I18nextProvider, withTranslation } from "react-i18next";
+import { withTranslation } from "react-i18next";
 
 import {
   StyledPreparationPortal,
   StyledBodyPreparationPortal,
 } from "./styledPreparationPortal";
 import Text from "@appserver/components/text";
-import {
-  getBackupProgress,
-  getRestoreProgress,
-} from "../../../../../../packages/asc-web-common/api/portal";
+import { getRestoreProgress } from "../../../../../../packages/asc-web-common/api/portal";
 import { observer, inject } from "mobx-react";
 import PropTypes from "prop-types";
 
@@ -34,9 +31,6 @@ class PreparationPortal extends React.Component {
   }
   componentDidMount() {
     this.props.getSettings();
-
-    // this.start = new Date().getTime();
-    // console.log("this.start", this.start);
 
     getRestoreProgress()
       .then((response) => {
@@ -75,10 +69,8 @@ class PreparationPortal extends React.Component {
 
     const common = baseFirstMultiplicationFactor * multiplicationFactor;
 
-    console.log("common", common, "percent", percent);
     if (!this.progressTimerId)
       this.progressTimerId = setInterval(() => {
-        console.log("progressInitiationFirstBound");
         progress += 1;
         if (progress !== firstBound && percent < progress)
           percent < progress &&
@@ -99,10 +91,8 @@ class PreparationPortal extends React.Component {
 
     const common = baseSecondMultiplicationFactor * multiplicationFactor;
 
-    console.log("common", common, "percent", percent);
     if (!this.progressTimerId)
       this.progressTimerId = setInterval(() => {
-        console.log("progressInitiationSecondBound");
         progress += 1;
         if (progress !== secondBound)
           percent < progress &&
@@ -118,12 +108,11 @@ class PreparationPortal extends React.Component {
 
   progressInitiationThirdBound = () => {
     const { multiplicationFactor } = this.props;
-    const { percent, secondBound } = this.state;
+    const { percent } = this.state;
     let progress = percent;
     const common = baseThirdMultiplicationFactor * multiplicationFactor;
     if (!this.progressTimerId)
       this.progressTimerId = setInterval(() => {
-        //console.log("progressInitiationThirdBound", percent);
         progress += 1;
 
         if (progress < 98)
@@ -158,7 +147,6 @@ class PreparationPortal extends React.Component {
                   if (percentProgress < secondBound) {
                     this.progressInitiationSecondBound();
                   } else {
-                    console.log("percentProgress", percentProgress);
                     this.progressInitiationThirdBound();
                   }
                 }
@@ -234,9 +222,6 @@ class PreparationPortal extends React.Component {
     );
   }
 }
-// const PreparationPortalWrapper = withTranslation("PreparationPortal")(
-//   PreparationPortal
-// );
 
 const PreparationPortalWrapper = inject(({ auth, backup }) => {
   const { backupSize } = backup;
@@ -259,8 +244,4 @@ PreparationPortal.defaultProps = {
   withoutHeader: false,
 };
 
-export default (props) => (
-  //<I18nextProvider i18n={i18n}>
-  <PreparationPortalWrapper {...props} />
-  //</I18nextProvider>
-);
+export default (props) => <PreparationPortalWrapper {...props} />;
