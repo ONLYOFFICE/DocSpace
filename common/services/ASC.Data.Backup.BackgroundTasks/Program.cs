@@ -85,6 +85,7 @@ startup.Configure(app, app.Environment);
 var eventBus = ((IApplicationBuilder)app).ApplicationServices.GetRequiredService<IEventBus>();
 
 eventBus.Subscribe<BackupRequestIntegrationEvent, BackupRequestIntegrationEventHandler>();
+eventBus.Subscribe<BackupRestoreRequestIntegrationEvent, BackupRestoreRequestIntegrationEventHandler>();
 eventBus.Subscribe<IntegrationEvent, BackupDeleteScheldureRequestIntegrationEventHandler>();
 
 app.Run();

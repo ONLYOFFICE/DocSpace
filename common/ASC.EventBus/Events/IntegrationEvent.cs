@@ -28,4 +28,6 @@ public record IntegrationEvent
     [JsonInclude]
     public int TenantId { get; private init; }
 
+    [JsonInclude]
+    public bool Redelivered { get; set; }
 }

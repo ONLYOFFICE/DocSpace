@@ -137,6 +137,8 @@ public class ConfigureDistributedTaskQueue : IConfigureNamedOptions<DistributedT
 
 public class DistributedTaskQueue
 {
+    private int _maxThreadsCount = -1;
+
     public IServiceProvider ServiceProvider { get; set; }
     public DistributedTaskCacheNotify DistributedTaskCacheNotify { get; set; }
     public string Name
@@ -146,10 +148,23 @@ public class DistributedTaskQueue
     }
     public int MaxThreadsCount
     {
-        set => Scheduler = value <= 0
+        get
+        {
+            return _maxThreadsCount;
+        }
+
+        set
+        {
+            Scheduler = value <= 0
                 ? TaskScheduler.Default
                 : new ConcurrentExclusiveSchedulerPair(TaskScheduler.Default, value).ConcurrentScheduler;
+
+            if (value > 0)
+                _maxThreadsCount = value;
+        }
     }
+
+
 
     private ICache Cache => DistributedTaskCacheNotify.Cache;
     private TaskScheduler Scheduler { get; set; } = TaskScheduler.Default;

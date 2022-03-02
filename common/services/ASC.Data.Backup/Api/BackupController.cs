@@ -239,7 +239,17 @@ public class BackupController
             _tenantExtra.DemandControlPanelPermission();
         }
         var storageParams = backupRestore.StorageParams == null ? new Dictionary<string, string>() : backupRestore.StorageParams.ToDictionary(r => r.Key.ToString(), r => r.Value.ToString());
-        _backupHandler.StartRestore(backupRestore.BackupId, (BackupStorageType)Int32.Parse(backupRestore.StorageType.ToString()), storageParams, backupRestore.Notify);
+
+        _eventBus.Publish(new BackupRestoreRequestIntegrationEvent(
+                             tenantId: _tenantId,
+                             createBy: _currentUserId,
+                             storageParams: storageParams,
+                             storageType: (BackupStorageType)Int32.Parse(backupRestore.StorageType.ToString()),
+                             notify: backupRestore.Notify,
+                             backupId: backupRestore.BackupId
+                        ));
+           
+        
         return _backupHandler.GetBackupProgress();
     }
 

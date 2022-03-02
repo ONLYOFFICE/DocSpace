@@ -1,4 +1,7 @@
-﻿using ASC.Common.Logging;
+﻿using System.Collections.Concurrent;
+
+using ASC.Common.Logging;
+using ASC.EventBus.Exceptions;
 using ASC.EventBus.Extensions;
 
 using Microsoft.Extensions.Options;
@@ -12,21 +15,47 @@ public class EventBusMemoryCache : IEventBus, IDisposable
     private readonly ILog _logger;
     const string AUTOFAC_SCOPE_NAME = "asc_event_bus";
 
-    public EventBusMemoryCache(IOptionsMonitor<ILog> options , ILifetimeScope autofac, IEventBusSubscriptionsManager subsManager)
+    private static ConcurrentQueue<Guid> _rejectedEvents;
+
+
+    public EventBusMemoryCache(IOptionsMonitor<ILog> options, ILifetimeScope autofac, IEventBusSubscriptionsManager subsManager)
     {
         _logger = options.CurrentValue ?? throw new ArgumentNullException(nameof(options.CurrentValue));
-        _autofac =  autofac ??  throw new ArgumentNullException(nameof(autofac));
-        _subsManager = subsManager ?? throw new ArgumentNullException(nameof(subsManager)); 
+        _autofac = autofac ?? throw new ArgumentNullException(nameof(autofac));
+        _subsManager = subsManager ?? throw new ArgumentNullException(nameof(subsManager));
+
+        _rejectedEvents = new ConcurrentQueue<Guid>();
     }
 
     public void Publish(IntegrationEvent @event)
     {
         var eventName = @event.GetType().Name;
-        var jsonMessage = JsonSerializer.Serialize(@event, @event.GetType());
+        var message = JsonSerializer.Serialize(@event, @event.GetType());
 
-        ProcessEvent(eventName, jsonMessage)
+        try
+        {
+            ProcessEvent(eventName, message)
             .GetAwaiter()
             .GetResult();
+        }
+        catch (IntegrationEventRejectExeption ex)
+        {
+            _logger.Warn(String.Format("----- ERROR Processing message \"{0}\"", message), ex);
+
+            if (_rejectedEvents.TryPeek(out Guid result) && result.Equals(ex.EventId))
+            {
+                _rejectedEvents.TryDequeue(out Guid _);
+            }
+            else
+            {
+                _rejectedEvents.Enqueue(ex.EventId);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.Warn(String.Format("----- ERROR Processing message \"{0}\"", message), ex);
+        }
+
     }
 
     public void Subscribe<T, TH>()
@@ -65,9 +94,27 @@ public class EventBusMemoryCache : IEventBus, IDisposable
         _subsManager.RemoveDynamicSubscription<TH>(eventName);
     }
 
+    private IntegrationEvent PreProcessEvent(string eventName, string message)
+    {
+        var eventType = _subsManager.GetEventTypeByName(eventName);
+
+        var integrationEvent = (IntegrationEvent)JsonSerializer.Deserialize(message, eventType, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+
+        if (_rejectedEvents.Count == 0) return integrationEvent;
+
+        if (_rejectedEvents.TryPeek(out Guid result) && result.Equals(integrationEvent.Id))
+        {
+            integrationEvent.Redelivered = true;
+        }
+
+        return integrationEvent;
+    }
+
     private async Task ProcessEvent(string eventName, string message)
     {
-        _logger.TraceFormat("Processing RabbitMQ event: {EventName}", eventName);
+        _logger.TraceFormat("Processing MemotyCache event: {EventName}", eventName);
+
+        var @event = PreProcessEvent(eventName, message);
 
         if (_subsManager.HasSubscriptionsForEvent(eventName))
         {
@@ -80,7 +127,7 @@ public class EventBusMemoryCache : IEventBus, IDisposable
                     {
                         var handler = scope.ResolveOptional(subscription.HandlerType) as IDynamicIntegrationEventHandler;
                         if (handler == null) continue;
-                        using dynamic eventData = JsonDocument.Parse(message);
+                        using dynamic eventData = @event;
                         await Task.Yield();
                         await handler.Handle(eventData);
                     }
@@ -89,18 +136,17 @@ public class EventBusMemoryCache : IEventBus, IDisposable
                         var handler = scope.ResolveOptional(subscription.HandlerType);
                         if (handler == null) continue;
                         var eventType = _subsManager.GetEventTypeByName(eventName);
-                        var integrationEvent = JsonSerializer.Deserialize(message, eventType, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
                         var concreteType = typeof(IIntegrationEventHandler<>).MakeGenericType(eventType);
 
                         await Task.Yield();
-                        await (Task)concreteType.GetMethod("Handle").Invoke(handler, new object[] { integrationEvent });
+                        await (Task)concreteType.GetMethod("Handle").Invoke(handler, new object[] { @event });
                     }
                 }
             }
         }
         else
         {
-            _logger.WarnFormat("No subscription for RabbitMQ event: {EventName}", eventName);
+            _logger.WarnFormat("No subscription for MemotyCache event: {EventName}", eventName);
         }
     }
 

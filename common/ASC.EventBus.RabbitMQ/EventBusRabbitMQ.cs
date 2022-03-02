@@ -1,4 +1,6 @@
-﻿using ASC.EventBus.Exceptions;
+﻿using System.Collections.Concurrent;
+
+using ASC.EventBus.Exceptions;
 
 namespace ASC.EventBus.RabbitMQ;
 
@@ -18,6 +20,8 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
     private string _queueName;
     private string _deadLetterQueueName;
 
+    private static ConcurrentQueue<Guid> _rejectedEvents;
+
     public EventBusRabbitMQ(IRabbitMQPersistentConnection persistentConnection, IOptionsMonitor<ILog> options,
         ILifetimeScope autofac, IEventBusSubscriptionsManager subsManager, string queueName = null, int retryCount = 5)
     {
@@ -30,6 +34,9 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
         _autofac = autofac;
         _retryCount = retryCount;
         _subsManager.OnEventRemoved += SubsManager_OnEventRemoved;
+
+        _rejectedEvents = new ConcurrentQueue<Guid>();
+
     }
 
     private void SubsManager_OnEventRemoved(object sender, string eventName)
@@ -194,7 +201,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
     {
         var eventName = eventArgs.RoutingKey;
         var message = Encoding.UTF8.GetString(eventArgs.Body.Span);
-
+      
         try
         {
             if (message.ToLowerInvariant().Contains("throw-fake-exception"))
@@ -211,10 +218,21 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
             _logger.Warn(String.Format("----- ERROR Processing message \"{0}\"", message), ex);
 
             if (eventArgs.Redelivered)
-                _consumerChannel.BasicReject(eventArgs.DeliveryTag, requeue: false);
+            {
+                if (_rejectedEvents.TryPeek(out Guid result) && result.Equals(ex.EventId))
+                {
+                    _rejectedEvents.TryDequeue(out Guid _);
+                    _consumerChannel.BasicReject(eventArgs.DeliveryTag, requeue: false);
+                }
+                else
+                {
+                    _rejectedEvents.Enqueue(ex.EventId);
+                }
+            }
             else
+            {
                 _consumerChannel.BasicNack(eventArgs.DeliveryTag, multiple: false, requeue: true);
-
+            }
         }
         catch (Exception ex)
         {
@@ -264,28 +282,68 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
 
             _consumerChannel.Dispose();
             _consumerChannel = CreateConsumerChannel();
+
             StartBasicConsume();
         };
 
         return channel;
     }
 
+
+    public void PreProcessEvent(string eventName, ref string message)
+    {
+        if (_rejectedEvents.Count == 0) return;
+
+        var eventType = _subsManager.GetEventTypeByName(eventName);
+
+        var integrationEvent = (IntegrationEvent)JsonSerializer.Deserialize(message, eventType, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+
+        if (_rejectedEvents.TryPeek(out Guid result) && result.Equals(integrationEvent.Id))
+        {
+            integrationEvent.Redelivered = true;
+        }
+
+        message = Encoding.UTF8.GetString(JsonSerializer.SerializeToUtf8Bytes(integrationEvent, eventType, new JsonSerializerOptions
+        {
+            WriteIndented = true
+        }));
+    }
+
+    private IntegrationEvent PreProcessEvent(string eventName, string message)
+    {
+        var eventType = _subsManager.GetEventTypeByName(eventName);
+
+        var integrationEvent = (IntegrationEvent)JsonSerializer.Deserialize(message, eventType, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+
+        if (_rejectedEvents.Count == 0) return integrationEvent;
+
+        if (_rejectedEvents.TryPeek(out Guid result) && result.Equals(integrationEvent.Id))
+        {
+            integrationEvent.Redelivered = true;
+        }
+
+        return integrationEvent;
+    }
+
     private async Task ProcessEvent(string eventName, string message)
     {
         _logger.TraceFormat("Processing RabbitMQ event: {EventName}", eventName);
+
+        var @event = PreProcessEvent(eventName, message);
 
         if (_subsManager.HasSubscriptionsForEvent(eventName))
         {
             using (var scope = _autofac.BeginLifetimeScope(AUTOFAC_SCOPE_NAME))
             {
                 var subscriptions = _subsManager.GetHandlersForEvent(eventName);
+
                 foreach (var subscription in subscriptions)
                 {
                     if (subscription.IsDynamic)
                     {
                         var handler = scope.ResolveOptional(subscription.HandlerType) as IDynamicIntegrationEventHandler;
                         if (handler == null) continue;
-                        using dynamic eventData = JsonDocument.Parse(message);                            
+                        using dynamic eventData = @event;
                         await Task.Yield();
                         await handler.Handle(eventData);
                     }
@@ -294,11 +352,10 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
                         var handler = scope.ResolveOptional(subscription.HandlerType);
                         if (handler == null) continue;
                         var eventType = _subsManager.GetEventTypeByName(eventName);
-                        var integrationEvent = JsonSerializer.Deserialize(message, eventType, new JsonSerializerOptions() { PropertyNameCaseInsensitive= true});                            
                         var concreteType = typeof(IIntegrationEventHandler<>).MakeGenericType(eventType);
 
                         await Task.Yield();
-                        await (Task)concreteType.GetMethod("Handle").Invoke(handler, new object[] { integrationEvent });
+                        await (Task)concreteType.GetMethod("Handle").Invoke(handler, new object[] { @event });
                     }
                 }
             }

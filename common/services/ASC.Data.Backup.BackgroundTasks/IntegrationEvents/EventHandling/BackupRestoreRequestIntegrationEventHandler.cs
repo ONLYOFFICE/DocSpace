@@ -3,7 +3,7 @@
 namespace ASC.Data.Backup.IntegrationEvents.EventHandling;
 
 [Scope]
-public class BackupRequestIntegrationEventHandler : IIntegrationEventHandler<BackupRequestIntegrationEvent>
+public class BackupRestoreRequestIntegrationEventHandler : IIntegrationEventHandler<BackupRestoreRequestIntegrationEvent>
 {
     private readonly BackupAjaxHandler _backupAjaxHandler;
     private readonly ILog _logger;
@@ -12,7 +12,7 @@ public class BackupRequestIntegrationEventHandler : IIntegrationEventHandler<Bac
     private readonly AuthManager _authManager;
     private readonly BackupWorker _backupWorker;
 
-    public BackupRequestIntegrationEventHandler(
+    public BackupRestoreRequestIntegrationEventHandler(
         BackupAjaxHandler backupAjaxHandler,
         IOptionsMonitor<ILog> logger,
         TenantManager tenantManager,
@@ -28,13 +28,13 @@ public class BackupRequestIntegrationEventHandler : IIntegrationEventHandler<Bac
         _backupWorker = backupWorker;
     }
     
-    public async Task Handle(BackupRequestIntegrationEvent @event)
+    public async Task Handle(BackupRestoreRequestIntegrationEvent @event)
     {
         _logger.InfoFormat("----- Handling integration event: {IntegrationEventId} at {AppName} - ({@IntegrationEvent})", @event.Id, Program.AppName, @event);
 
         if (!@event.Redelivered)
         {
-            if (_backupWorker.HaveBackupRequestWaitingTasks())
+            if (_backupWorker.HaveBackupRestoreRequestWaitingTasks())
             {
                 throw new IntegrationEventRejectExeption(@event.Id);
             }
@@ -43,22 +43,10 @@ public class BackupRequestIntegrationEventHandler : IIntegrationEventHandler<Bac
         _tenantManager.SetCurrentTenant(@event.TenantId);
         _securityContext.AuthenticateMeWithoutCookie(_authManager.GetAccountByID(@event.TenantId, @event.CreateBy));
 
-        if (@event.IsScheduled)
-        {
-            _backupWorker.StartScheduledBackup(new EF.Model.BackupSchedule
-            {
-                 BackupMail = @event.BackupMail,
-                 BackupsStored = @event.BackupsStored,
-                 StorageBasePath = @event.StorageBasePath,
-                 StorageParams  = JsonConvert.SerializeObject(@event.StorageParams),
-                 StorageType = @event.StorageType,
-                 TenantId = @event.TenantId
-            });
-        }
-        else
-        {
-            _backupAjaxHandler.StartBackup(@event.StorageType, @event.StorageParams, @event.BackupMail);
-        }
+        _backupAjaxHandler.StartRestore(@event.BackupId,
+                                        @event.StorageType,
+                                        @event.StorageParams,
+                                        @event.Notify);
 
         await Task.CompletedTask;
     }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using ASC.Data.Backup.Contracts;
-using ASC.EventBus.Events;
-
-namespace ASC.Data.Backup.Core.IntegrationEvents.Events;
+﻿namespace ASC.Data.Backup.Core.IntegrationEvents.Events;
 
 public record BackupRequestIntegrationEvent : IntegrationEvent
 {
