@@ -54,3 +54,11 @@ export function getInvitationLinks() {
     }
   );
 }
+
+export function setPortalRename(alias) {
+  return request({
+    method: "put",
+    url: "/portal/portalrename.json",
+    data: { alias },
+  });
+}

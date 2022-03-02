@@ -219,8 +219,28 @@ class WhiteLabel extends React.Component {
   };
 
   onRestoreLogo = () => {
+    const { restoreWhiteLabelSettings } = this.props;
     console.log("restore button action");
+    restoreWhiteLabelSettings(true);
     this.setState({ isCanvasProcessing: false });
+  };
+
+  onSave = () => {
+    const { setWhiteLabelSettings } = this.props;
+    const { logoText, logoUrls } = this.state;
+
+    let fd = new FormData();
+    fd.append("logoText", logoText);
+
+    // TODO: Переделать с for
+    for (let i = 0; i < logoUrls.length; i++) {
+      fd.append(`logo[${i}][key]`, i);
+      fd.append(`logo[${i}][value]`, logoUrls[i]);
+    }
+
+    const data = new URLSearchParams(fd);
+
+    setWhiteLabelSettings(data);
   };
 
   render() {
@@ -308,7 +328,12 @@ class WhiteLabel extends React.Component {
                 )}
               </div>
               {isPortalPaid && (
-                <Link type="action" isHovered onClick={this.onChangeLogo}>
+                <Link
+                  type="action"
+                  color={theme.studio.settings.common.linkColorHelp}
+                  isHovered
+                  onClick={this.onChangeLogo}
+                >
                   {t("ChangeLogoButton")}
                 </Link>
               )}
@@ -343,7 +368,12 @@ class WhiteLabel extends React.Component {
                 )}
               </div>
               {isPortalPaid && (
-                <Link type="action" isHovered onClick={this.onChangeLogo}>
+                <Link
+                  type="action"
+                  color={theme.studio.settings.common.linkColorHelp}
+                  isHovered
+                  onClick={this.onChangeLogo}
+                >
                   {t("ChangeLogoButton")}
                 </Link>
               )}
@@ -377,7 +407,12 @@ class WhiteLabel extends React.Component {
                 )}
               </div>
               {isPortalPaid && (
-                <Link type="action" isHovered onClick={this.onChangeLogo}>
+                <Link
+                  type="action"
+                  color={theme.studio.settings.common.linkColorHelp}
+                  isHovered
+                  onClick={this.onChangeLogo}
+                >
                   {t("ChangeLogoButton")}
                 </Link>
               )}
@@ -451,7 +486,12 @@ class WhiteLabel extends React.Component {
               </div>
 
               {isPortalPaid && (
-                <Link type="action" isHovered onClick={this.onChangeLogo}>
+                <Link
+                  type="action"
+                  color={theme.studio.settings.common.linkColorHelp}
+                  isHovered
+                  onClick={this.onChangeLogo}
+                >
                   {t("ChangeLogoButton")}
                 </Link>
               )}
@@ -465,7 +505,8 @@ class WhiteLabel extends React.Component {
               label={t("Common:SaveButton")}
               isLoading={false}
               isDisabled={false}
-              onClick={() => console.log("Save button action")}
+              //onClick={() => console.log("Save button action")}
+              onClick={this.onSave}
             />
 
             <Button
@@ -490,6 +531,8 @@ export default inject(({ setup, auth }) => {
     getWhiteLabelLogoText,
     getWhiteLabelLogoSizes,
     getWhiteLabelLogoUrls,
+    setWhiteLabelSettings,
+    restoreWhiteLabelSettings,
   } = setup;
 
   const { logoText, logoSizes: rawSizes, logoUrls } = common.whiteLabel;
@@ -502,5 +545,7 @@ export default inject(({ setup, auth }) => {
     getWhiteLabelLogoText,
     getWhiteLabelLogoSizes,
     getWhiteLabelLogoUrls,
+    setWhiteLabelSettings,
+    restoreWhiteLabelSettings,
   };
 })(withTranslation(["Settings", "Common"])(observer(WhiteLabel)));
