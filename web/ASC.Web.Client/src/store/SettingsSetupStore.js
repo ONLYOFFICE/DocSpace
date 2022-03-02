@@ -197,10 +197,53 @@ class SettingsSetupStore {
     this.setLogoUrls(Object.values(res));
   };
 
+  setWhiteLabelSettings = async (data) => {
+    const response = await api.settings.setWhiteLabelSettings(data);
+    return Promise.resolve(response);
+  };
+
+  restoreWhiteLabelSettings = async (isDefault) => {
+    const res = await api.settings.restoreWhiteLabelSettings(isDefault);
+  };
+
   setLanguageAndTime = async (lng, timeZoneID) => {
     const res = await api.settings.setLanguageAndTime(lng, timeZoneID);
     //console.log("setLanguageAndTime", res);
     //if (res) this.setPortalLanguageAndTime({ lng, timeZoneID });
+  };
+
+  setPortalRename = async (alias) => {
+    const res = await api.portal.setPortalRename(alias);
+  };
+
+  setMailDomainSettings = async (type, domains, inviteUsersAsVisitors) => {
+    const res = await api.settings.setMailDomainSettings(
+      type,
+      domains,
+      inviteUsersAsVisitors
+    );
+  };
+
+  setIpRestrictions = async (data) => {
+    const res = await api.settings.setIpRestrictions(data);
+  };
+
+  setIpRestrictionsEnable = async (data) => {
+    const res = await api.settings.setIpRestrictionsEnable(data);
+  };
+
+  setMessageSettings = async (turnOn) => {
+    const res = await api.settings.setMessageSettings(turnOn);
+  };
+
+  setCookieSettings = async (lifeTime) => {
+    const res = await api.settings.setCookieSettings(lifeTime);
+  };
+
+  setLifetimeAuditSettings = async (loginHistoryLifeTime) => {
+    const res = await api.settings.setLifetimeAuditSettings(
+      loginHistoryLifeTime
+    );
   };
 
   setGreetingTitle = async (greetingTitle) => {
