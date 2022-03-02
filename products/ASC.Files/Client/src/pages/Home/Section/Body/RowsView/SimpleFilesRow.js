@@ -73,7 +73,7 @@ const StyledSimpleFilesRow = styled(Row)`
   }
 
   .row_content {
-    max-width: fit-content;
+    ${(props) => props.sectionWidth > 500 && `max-width: fit-content;`}
     min-width: auto;
   }
 

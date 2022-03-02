@@ -89,6 +89,8 @@ const EditingWrapper = styled.div`
         display: flex;
         align-items: center;
       `}
+
+    ${(props) => props.viewAs === "table" && `padding-left: 12px`}
   }
 
   .edit-button {
@@ -141,6 +143,7 @@ const EditingWrapper = styled.div`
 
   .is-edit {
     /* margin-top: 4px; */
+    ${(props) => props.viewAs === "table" && `padding-left: 4px;`}
   }
 `;
 
