@@ -12,7 +12,6 @@ const TableGroupMenu = (props) => {
     isChecked,
     isIndeterminate,
     headerMenu,
-    infoPanelToggle,
     onChange,
     checkboxOptions,
     checkboxMargin,
@@ -55,7 +54,6 @@ const TableGroupMenu = (props) => {
           {headerMenu.map((item, index) => (
             <GroupMenuItem key={index} item={item} />
           ))}
-          {infoPanelToggle}
         </StyledScrollbar>
       </StyledTableGroupMenu>
     </>

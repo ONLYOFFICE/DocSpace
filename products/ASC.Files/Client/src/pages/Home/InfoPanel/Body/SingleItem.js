@@ -1,12 +1,3 @@
-import {
-    StyledAccess,
-    StyledAccessUser,
-    StyledOpenSharingPanel,
-    StyledProperties,
-    StyledSubtitle,
-    StyledThumbnail,
-    StyledTitle,
-} from "./styles/styles.js";
 import RectangleLoader from "@appserver/common/components/Loaders/RectangleLoader";
 import { FileType } from "@appserver/common/constants";
 import Link from "@appserver/components/link";
@@ -16,6 +7,16 @@ import { inject, observer } from "mobx-react";
 import React, { useEffect, useState } from "react";
 import { withTranslation } from "react-i18next";
 import { ReactSVG } from "react-svg";
+
+import {
+    StyledAccess,
+    StyledAccessUser,
+    StyledOpenSharingPanel,
+    StyledProperties,
+    StyledSubtitle,
+    StyledThumbnail,
+    StyledTitle,
+} from "./styles/styles.js";
 
 const SingleItem = (props) => {
     const {
@@ -30,6 +31,7 @@ const SingleItem = (props) => {
         getShareUsers,
     } = props;
 
+    let updateSubscription = true;
     const [item, setItem] = useState({
         id: "",
         isFolder: false,
@@ -45,7 +47,6 @@ const SingleItem = (props) => {
             others: [],
         },
     });
-
     const [isShowAllAccessUsers, setIsShowAllAccessUsers] = useState(false);
 
     const updateItemsInfo = async (selectedItem) => {
@@ -264,11 +265,12 @@ const SingleItem = (props) => {
 
         const access = await updateLoadedItemAccess(selectedItem);
 
-        setItem({
-            ...displayedItem,
-            properties: properties,
-            access: access,
-        });
+        if (updateSubscription)
+            setItem({
+                ...displayedItem,
+                properties: properties,
+                access: access,
+            });
     };
 
     const showAllAccessUsers = () => {
@@ -283,7 +285,9 @@ const SingleItem = (props) => {
     };
 
     useEffect(() => {
-        if (selectedItem.id !== item.id) updateItemsInfo(selectedItem);
+        if (selectedItem.id !== item.id && updateSubscription)
+            updateItemsInfo(selectedItem);
+        return () => (updateSubscription = false);
     }, [selectedItem]);
 
     return (

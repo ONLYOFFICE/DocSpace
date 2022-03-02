@@ -1,5 +1,6 @@
 import IconButton from "@appserver/components/icon-button";
 import { isTablet, mobile, tablet } from "@appserver/components/utils/device";
+import { set } from "mobx";
 import { inject } from "mobx-react";
 import PropTypes from "prop-types";
 import React, { useEffect } from "react";
@@ -65,7 +66,10 @@ const StyledCloseButtonWrapper = styled.div`
     }
 `;
 
-const InfoPanel = ({ children, isVisible, setIsVisible }) => {
+const InfoPanel = ({ children, selectedItems, isVisible, setIsVisible }) => {
+    //if (selectedItems.length > 0) setIsVisible(true);
+    //else setIsVisible(false);
+
     if (!isVisible) return null;
 
     const closeInfoPanel = () => setIsVisible(false);
@@ -108,7 +112,8 @@ InfoPanel.propTypes = {
     isVisible: PropTypes.bool,
 };
 
-export default inject(({ infoPanelStore }) => {
+export default inject(({ infoPanelStore, filesStore }) => {
+    let selectedItems = [];
     let isVisible = false;
     let setIsVisible = () => {};
 
@@ -117,7 +122,12 @@ export default inject(({ infoPanelStore }) => {
         setIsVisible = infoPanelStore.setIsVisible;
     }
 
+    if (filesStore) {
+        selectedItems = JSON.parse(JSON.stringify(filesStore.selection));
+    }
+
     return {
+        selectedItems,
         isVisible,
         setIsVisible,
     };

@@ -317,7 +317,7 @@ export default function withContextOptions(WrappedComponent) {
                     case "show-info":
                         return {
                             key: option,
-                            label: t("Show info"),
+                            label: t("InfoPanel:Info"),
                             icon: "images/info.react.svg",
                             onClick: this.onSetInfoPanelVisible,
                             disabled: false,

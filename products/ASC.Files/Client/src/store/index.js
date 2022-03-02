@@ -7,10 +7,10 @@ import FilesActionsStore from "./FilesActionsStore";
 import FilesStore from "./FilesStore";
 import FormatsStore from "./FormatsStore";
 import iconFormatsStore from "./IconFormatsStore";
+import InfoPanelStore from "./InfoPanelStore";
 import MediaViewerDataStore from "./MediaViewerDataStore";
 import mediaViewersFormatsStore from "./MediaViewersFormatsStore";
 import PrimaryProgressDataStore from "./PrimaryProgressDataStore";
-import InfoPanelStore from "./InfoPanelStore";
 import SecondaryProgressDataStore from "./SecondaryProgressDataStore";
 import selectedFilesStore from "./SelectedFilesStore";
 import selectedFolderStore from "./SelectedFolderStore";
@@ -37,8 +37,7 @@ const filesStore = new FilesStore(
     selectedFolderStore,
     treeFoldersStore,
     formatsStore,
-    settingsStore,
-    selectedFilesStore
+    settingsStore
 );
 const mediaViewerDataStore = new MediaViewerDataStore(filesStore, formatsStore);
 
@@ -60,6 +59,9 @@ const uploadDataStore = new UploadDataStore(
     dialogsStore,
     settingsStore
 );
+
+const infoPanelStore = new InfoPanelStore();
+
 const filesActionsStore = new FilesActionsStore(
     store.auth,
     uploadDataStore,
@@ -68,12 +70,11 @@ const filesActionsStore = new FilesActionsStore(
     selectedFolderStore,
     settingsStore,
     dialogsStore,
-    mediaViewerDataStore
+    mediaViewerDataStore,
+    infoPanelStore
 );
 
 const versionHistoryStore = new VersionHistoryStore(filesStore);
-
-const infoPanelStore = new InfoPanelStore();
 
 //const selectedFilesStore = new SelectedFilesStore(selectedFilesStore);
 const stores = {
