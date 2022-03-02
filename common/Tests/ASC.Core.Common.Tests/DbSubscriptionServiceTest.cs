@@ -39,27 +39,27 @@ namespace ASC.Core.Common.Tests
         [OneTimeSetUp]
         public void ClearData()
         {
-            Service.SetSubscriptionMethod(new SubscriptionMethod { Tenant = this.Tenant, SourceId = "sourceId", ActionId = "actionId", RecipientId = "recipientId", });
+            Service.SetSubscriptionMethod(new SubscriptionMethod { Tenant = this.Tenant, Source = "sourceId", Action = "actionId", Recipient = "recipientId", });
             Service.RemoveSubscriptions(Tenant, "sourceId", "actionId");
-            Service.RemoveSubscriptions(Tenants.Tenant.DEFAULT_TENANT, "Good", "Bad", "Ugly");
+            Service.RemoveSubscriptions(Tenants.Tenant.DefaultTenant, "Good", "Bad", "Ugly");
             Service.RemoveSubscriptions(this.Tenant, "Good", "Bad", "Ugly");
             Service.RemoveSubscriptions(this.Tenant, "Good", "Bad", "NotUgly");
-            Service.SetSubscriptionMethod(new SubscriptionMethod { Tenant = this.Tenant, SourceId = "Good", ActionId = "Bad", RecipientId = "Rec1", Methods = null });
-            Service.SetSubscriptionMethod(new SubscriptionMethod { Tenant = Tenants.Tenant.DEFAULT_TENANT, SourceId = "Good", ActionId = "Bad", RecipientId = "Rec1", Methods = null });
+            Service.SetSubscriptionMethod(new SubscriptionMethod { Tenant = this.Tenant, Source = "Good", Action = "Bad", Recipient = "Rec1", Methods = null });
+            Service.SetSubscriptionMethod(new SubscriptionMethod { Tenant = Tenants.Tenant.DefaultTenant, Source = "Good", Action = "Bad", Recipient = "Rec1", Methods = null });
         }
 
         [Test]
         public void SubscriptionMethod()
         {
-            Service.SetSubscriptionMethod(new SubscriptionMethod { Tenant = this.Tenant, SourceId = "sourceId", ActionId = "actionId", RecipientId = "recipientId", Methods = new[] { "email.sender" } });
+            Service.SetSubscriptionMethod(new SubscriptionMethod { Tenant = this.Tenant, Source = "sourceId", Action = "actionId", Recipient = "recipientId", Methods = new[] { "email.sender" } });
             var m = Service.GetSubscriptionMethods(Tenant, "sourceId", "actionId", "recipientId").First();
             Assert.AreEqual(m.Tenant, Tenant);
-            Assert.AreEqual(m.SourceId, "sourceId");
-            Assert.AreEqual(m.ActionId, "actionId");
-            Assert.AreEqual(m.RecipientId, "recipientId");
+            Assert.AreEqual(m.Source, "sourceId");
+            Assert.AreEqual(m.Action, "actionId");
+            Assert.AreEqual(m.Recipient, "recipientId");
             CollectionAssert.AreEquivalent(new[] { "email.sender" }, m.Methods);
 
-            Service.SetSubscriptionMethod(new SubscriptionMethod { Tenant = this.Tenant, SourceId = "sourceId", ActionId = "actionId", RecipientId = "recipientId", Methods = null });
+            Service.SetSubscriptionMethod(new SubscriptionMethod { Tenant = this.Tenant, Source = "sourceId", Action = "actionId", Recipient = "recipientId", Methods = null });
             Assert.IsNull(Service.GetSubscriptionMethods(Tenant, "sourceId", "actionId", "recipientId").FirstOrDefault());
 
             Service.SaveSubscription(new SubscriptionRecord { Tenant = this.Tenant, SourceId = "sourceId", ActionId = "actionId", ObjectId = "object1Id", RecipientId = "recipientId", Subscribed = false });
@@ -80,11 +80,11 @@ namespace ASC.Core.Common.Tests
             subs = Service.GetSubscriptions(Tenant, "sourceId", "actionId", "recipientId", null);
             Assert.AreEqual(0, subs.Count());
 
-            Service.SaveSubscription(new SubscriptionRecord { Tenant = Tenants.Tenant.DEFAULT_TENANT, SourceId = "Good", ActionId = "Bad", RecipientId = "Rec1", ObjectId = "Ugly", Subscribed = true });
+            Service.SaveSubscription(new SubscriptionRecord { Tenant = Tenants.Tenant.DefaultTenant, SourceId = "Good", ActionId = "Bad", RecipientId = "Rec1", ObjectId = "Ugly", Subscribed = true });
             subs = Service.GetSubscriptions(this.Tenant, "Good", "Bad", null, "Ugly");
             Assert.AreEqual(subs.Count(), 1);
 
-            Service.SaveSubscription(new SubscriptionRecord { Tenant = Tenants.Tenant.DEFAULT_TENANT, SourceId = "Good", ActionId = "Bad", RecipientId = "Rec2", ObjectId = "Ugly", Subscribed = true });
+            Service.SaveSubscription(new SubscriptionRecord { Tenant = Tenants.Tenant.DefaultTenant, SourceId = "Good", ActionId = "Bad", RecipientId = "Rec2", ObjectId = "Ugly", Subscribed = true });
             subs = Service.GetSubscriptions(this.Tenant, "Good", "Bad", null, "Ugly");
             Assert.AreEqual(subs.Count(), 2);
 
@@ -96,8 +96,8 @@ namespace ASC.Core.Common.Tests
             subs = Service.GetSubscriptions(this.Tenant, "Good", "Bad", null, "Ugly");
             Assert.AreEqual(subs.Count(), 2);
 
-            Service.SetSubscriptionMethod(new SubscriptionMethod { Tenant = Tenants.Tenant.DEFAULT_TENANT, SourceId = "Good", ActionId = "Bad", RecipientId = "Rec1", Methods = new[] { "s1" } });
-            Service.SetSubscriptionMethod(new SubscriptionMethod { Tenant = this.Tenant, SourceId = "Good", ActionId = "Bad", RecipientId = "Rec1", Methods = new[] { "s2" } });
+            Service.SetSubscriptionMethod(new SubscriptionMethod { Tenant = Tenants.Tenant.DefaultTenant, Source = "Good", Action = "Bad", Recipient = "Rec1", Methods = new[] { "s1" } });
+            Service.SetSubscriptionMethod(new SubscriptionMethod { Tenant = this.Tenant, Source = "Good", Action = "Bad", Recipient = "Rec1", Methods = new[] { "s2" } });
             var methods = Service.GetSubscriptionMethods(this.Tenant, "Good", "Bad", "Rec1");
             Assert.AreEqual(methods.Count(), 1);
             CollectionAssert.AreEquivalent(new[] { "s2" }, methods.ToArray()[0].Methods);
