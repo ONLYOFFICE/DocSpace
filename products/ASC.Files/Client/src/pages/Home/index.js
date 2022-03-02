@@ -20,9 +20,9 @@ import {
 } from "../../components/Article";
 import DragTooltip from "../../components/DragTooltip";
 import { createTreeFolders } from "../../helpers/files-helpers";
-import MediaViewer from "./MediaViewer";
 import { InfoPanelBodyContent } from "./InfoPanel";
 import { InfoPanelHeaderContent } from "./InfoPanel";
+import MediaViewer from "./MediaViewer";
 import {
     SectionBodyContent,
     SectionFilterContent,
