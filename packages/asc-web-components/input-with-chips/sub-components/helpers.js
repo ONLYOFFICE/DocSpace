@@ -75,27 +75,21 @@ export const getChipsFromString = (value) => {
   );
 };
 
+export const truncate = (str) =>
+  str?.length > MAX_EMAIL_LENGTH
+    ? str?.slice(0, MAX_EMAIL_LENGTH) + "..."
+    : str;
+
 export const sliceEmail = (it) => {
   if (typeof it === "string") {
+    const res = truncate(it);
     return {
-      label:
-        it.length > MAX_EMAIL_LENGTH
-          ? it.slice(0, MAX_EMAIL_LENGTH) + "..."
-          : it,
-      value:
-        it.length > MAX_EMAIL_LENGTH
-          ? it.slice(0, MAX_EMAIL_LENGTH) + "..."
-          : it,
+      label: res,
+      value: res,
     };
   }
   return {
-    label:
-      it?.label?.length > MAX_LABEL_LENGTH
-        ? it?.label?.slice(0, MAX_LABEL_LENGTH) + "..."
-        : it?.label,
-    value:
-      it?.value?.length > MAX_VALUE_LENGTH
-        ? it?.value?.slice(0, MAX_VALUE_LENGTH) + "..."
-        : it?.value,
+    label: truncate(it?.label),
+    value: truncate(it?.value),
   };
 };
