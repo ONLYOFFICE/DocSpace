@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import api from "@appserver/common/api";
 import {
   FolderType,
@@ -519,8 +519,11 @@ class FilesStore {
             data.current.rootFolderType === FolderType.Privacy;
 
           this.setFilesFilter(filterData, isPrefSettings); //TODO: FILTER
-          this.setFolders(isPrivacyFolder && isMobile ? [] : data.folders);
-          this.setFiles(isPrivacyFolder && isMobile ? [] : data.files);
+
+          runInAction(() => {
+            this.setFolders(isPrivacyFolder && isMobile ? [] : data.folders);
+            this.setFiles(isPrivacyFolder && isMobile ? [] : data.files);
+          });
 
           if (clearFilter) {
             this.fileActionStore.setAction({ type: null });
@@ -1325,6 +1328,14 @@ class FilesStore {
       default:
         return false;
     }
+  }
+
+  get filterType() {
+    return this.filter.filterType;
+  }
+
+  get filterSearch() {
+    return this.filter.search;
   }
 
   onCreateAddTempItem = (items) => {
