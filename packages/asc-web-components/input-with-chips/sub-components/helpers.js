@@ -73,21 +73,19 @@ export const getChipsFromString = (value) => {
   );
 };
 
-export const truncate = (str) =>
-  str?.length > MAX_EMAIL_LENGTH
-    ? str?.slice(0, MAX_EMAIL_LENGTH) + "..."
-    : str;
+export const truncate = (str, length) =>
+  str?.length > length ? str?.slice(0, length) + "..." : str;
 
 export const sliceEmail = (it) => {
   if (typeof it === "string") {
-    const res = truncate(it);
+    const res = truncate(it, MAX_EMAIL_LENGTH);
     return {
       label: res,
       value: res,
     };
   }
   return {
-    label: truncate(it?.label),
-    value: truncate(it?.value),
+    label: truncate(it?.label, MAX_LABEL_LENGTH),
+    value: truncate(it?.value, MAX_VALUE_LENGTH),
   };
 };
