@@ -91,3 +91,24 @@ Scenario("Activate email", async ({ I }) => {
   I.amOnPage("/confirm/EmailActivation");
   I.see("Web Office");
 });
+
+Scenario("Change password", async ({ I }) => {
+  I.mockEndpoint(Endpoints.settings, "settings");
+  I.mockEndpoint(Endpoints.password, "password");
+  I.mockEndpoint(Endpoints.confirm, "confirm");
+  I.mockEndpoint(Endpoints.build, "build");
+  I.mockEndpoint(Endpoints.info, "info");
+  I.mockEndpoint(Endpoints.self, "self");
+
+  I.amOnPage("/confirm/PasswordChange");
+
+  I.fillField("password", "qwerty12");
+  I.click({
+    react: "Button",
+    props: {
+      className: "password-button",
+    },
+  });
+
+  I.see("Documents");
+});
