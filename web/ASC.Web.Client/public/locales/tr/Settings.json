@@ -78,5 +78,9 @@
   "UseAsLogoButton": "Logo olarak kullan",
   "Users": "Kullanıcılar",
   "WelcomePageTitle": "Hoş Geldiniz sayfası başlığı",
-  "YouHaveUnsavedChanges": "Kaydedilmemiş değişiklikleriniz var"
+  "YouHaveUnsavedChanges": "Kaydedilmemiş değişiklikleriniz var",
+
+  "ManualBackupHelp": "<strong>Veri Yedekleme</strong> seçeneği daha sonra geri yüklemek için portal verilerinin yedeklenmesini sağlar. Böylece sonradan yerel sunucunuza yada SaaS portalınıza geri yükleyebilirsiniz. Veri için depo seçin (erişebilmek için Amazon bilgilerinizi girmeyi unutmayın). <br/> <strong>Not:</strong> Yedeklemenizi buraya kaydedebilmek için önceden üçüncü kişi hesabınızı (Dropbox, Box.com, OneDrive or Google Drive) ONLYOFFICE dökümanlarınıza bağlamanız gerekmektedir.",
+  "AutoBackupHelp": "<strong>Otomatik yedekleme</strong> seçeneği yerel bir sunucudan geri yükleme yapılmak istediğinde kullanılabilmesi için portal veri yedekleme sürecinin otomasyonu için kullanılır. Veri depolama, otomatik yedekleme periyodu ve en yüksek kaydedilen kopya sayısını seçebilirsiniz.<br/><strong>Not:</strong> yedekleme verilerini üçüncü bir hesaba (DropBox, Box.com, OneDrive veya Google Drive) kaydetmeden önce bu hesabı ONLYOFFICE Ortak Belgeler klasörüne bağlamanız gerekir.",
+  "RestoreBackupHelp": "<strong>Data Yenileme</strong> seçeneği önceden kaydettiğiniz portal verilerinizi yenilemek için kullanılır( yerel sunucudan yada SaaS portalından). Verinin kaydedildiği depoyu seçin, gerekli bilgileri girin ve <strong>'ı işaretleyin. Portal kullanıcılarınızı</strong> yedekleme/yenileme operasyonlarından haberdar etmek için bildirim gönderin."
 }

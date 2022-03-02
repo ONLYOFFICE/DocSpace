@@ -78,5 +78,9 @@
   "UseAsLogoButton": "Gebruik als logo",
   "Users": "Gebruikers",
   "WelcomePageTitle": "Welkomstpagina titel",
-  "YouHaveUnsavedChanges": "U hebt niet opgeslagen wijzigingen"
+  "YouHaveUnsavedChanges": "U hebt niet opgeslagen wijzigingen",
+
+  "ManualBackupHelp": "<strong>Gegevens backup</strong> optie wordt gebruikt om een backup te maken en later te kunnen herstellen naar uw lokale portaal. Selecteer de gegevens opslag type (vergeet niet uw Amazon gegevens in te geven om er bij te kunnen.).<br/><strong>Opmerking:</strong> u dient eerst uw overige accounts (Dropbox, Box.com, OneDrive of Google Drive) toe te voegen aan de ONLYOFFICE algemene documenten folder voordat u uw backup op een van deze kunt bewaren.",
+  "AutoBackupHelp": "De optie <strong>Automatische back-up</strong> wordt gebruikt om het back-upproces voor portaalgegevens te automatiseren om deze later op een lokale server te kunnen herstellen. Kies de dataopslag, automatische back-upperiode en het maximale aantal opgeslagen kopieën.<br/><strong>Opmerking:</strong> voordat u de back-upgegevens kunt opslaan op een account van een derde partij (DropBox, Box.com, OneDrive of Google Drive), moet u dit account verbinden met de ONLYOFFICE map Gedeelde Documenten.",
+  "RestoreBackup": "De optie <strong>Gegevens herstellen<strong> wordt gebruikt om de eerder opgeslagen portalgegevens te herstellen (vanaf een lokale server of een SaaS-portal). Selecteer de locatie waar de gegevens zijn opgeslagen, voer de nodige details in en schakel het selectievakje <strong>Melding verzenden naar portalgebruikers<strong> in om de portalgebruikers te waarschuwen over de back-ups en herstelbewerkingen."
 }

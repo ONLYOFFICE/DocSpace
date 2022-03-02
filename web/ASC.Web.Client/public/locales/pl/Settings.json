@@ -78,5 +78,9 @@
   "UseAsLogoButton": "Użyj jako logo",
   "Users": "Użytkownicy",
   "WelcomePageTitle": "Tytuł strony startowej",
-  "YouHaveUnsavedChanges": "Masz niezapisane zmiany"
+  "YouHaveUnsavedChanges": "Masz niezapisane zmiany",
+
+  "ManualBackupHelp": "Opcja <strong> Kopia zapasowa danych </strong> jest używana do tworzenia kopii zapasowych danych portalu, aby móc je później przywrócić na lokalny serwer. Wybierz pamięć danych (nie zapomnij wpisać szczegółów Amazona, aby móc uzyskać dostęp do niego)  <br/><strong> Uwaga: </strong> musisz się połączyć z kontem osób trzecich (DropBox, Box.com, OneDrive lub Google Drive) w folderze Wspólnych Dokumentów ONLYOFFICE, aby można było zapisać kopię zapasową w tym miejscu.",
+  "AutoBackupHelp": "Opcja <strong> Automatyczna kopia zapasowa </strong> służy do automatyzacji procesu tworzenia kopii zapasowych danych portalu, aby móc ją później przywrócić na lokalnym serwerze. Wybierz pamięć danych, okres automatycznego tworzenia kopii zapasowych i maksymalną liczbę zapisanych kopii. <br/> <strong> Uwaga: </strong> przed zapisaniem danych kopii zapasowej na konto osób trzecich (DropBox, Box.com, OneDrive lub Dysk Google) , musisz połączyć to konto z folderem Dokumenty wspólne ONLYOFFICE.",
+  "RestoreBackupHelp": "Opcja <strong> Odzyskiwanie danych </strong> służy do przywracania wcześniej zapisanych danych portalu (z serwera lokalnego lub portalu SaaS). Wybierz magazyn, w którym dane są zapisywane, wprowadź potrzebne informacje i sprawdź <strong> Wyślij powiadomienia do użytkowników portalu </strong>, aby powiadomić użytkowników portalu o operacjach tworzenia kopii zapasowych i przywracania."
 }
