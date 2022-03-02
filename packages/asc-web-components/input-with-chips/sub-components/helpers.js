@@ -27,40 +27,38 @@ export const tryParseEmail = (emailString) => {
 export const getChipsFromString = (value) => {
   const separators = [",", " ", ", "];
   let indexesForFilter = [];
-  let isSimple = true;
+  let isOneWordLabel = true;
   let tempLabel = "";
 
   const stringChips = value
     .split(new RegExp(separators.join("|"), "g"))
     .filter((it) => it.trim().length !== 0)
     .map((it, idx, arr) => {
-      if (
-        it.startsWith('"') &&
-        it.endsWith('"') &&
-        arr[idx + 1]?.startsWith("<")
-      ) {
-        indexesForFilter.push(idx + 1);
-        return arr[idx + 1] ? `${it} ${arr[idx + 1]}` : it;
-      } else if (
-        it.startsWith('"') &&
-        it.endsWith('"') &&
-        !arr[idx + 1]?.startsWith("<")
-      ) {
-        return it;
+      const isStartWithQuote = it.startsWith('"');
+      const isEndwithQuote = it.endsWith('"');
+      const isNextStartWithAngle = arr[idx + 1]?.startsWith("<");
+
+      if (isStartWithQuote && isEndwithQuote) {
+        if (isNextStartWithAngle) {
+          indexesForFilter.push(idx + 1);
+          return arr[idx + 1] ? `${it} ${arr[idx + 1]}` : it;
+        } else {
+          return it;
+        }
       }
-      if (isSimple && it.startsWith('"') && !arr[idx + 1]?.startsWith("<")) {
-        isSimple = false;
+      if (isOneWordLabel && isStartWithQuote && !isNextStartWithAngle) {
+        isOneWordLabel = false;
         tempLabel += `${it} `;
         return;
       }
-      if (!isSimple && !it.includes('"')) {
+      if (!isOneWordLabel && !it.includes('"')) {
         tempLabel += `${it} `;
         return;
       }
-      if (!isSimple && it.includes('"') && arr[idx + 1]?.startsWith("<")) {
+      if (!isOneWordLabel && isEndwithQuote && isNextStartWithAngle) {
         tempLabel += `${it}`;
         let tempLabelTrim = tempLabel;
-        isSimple = true;
+        isOneWordLabel = true;
         tempLabel = "";
         indexesForFilter.push(idx + 1);
         return arr[idx + 1]

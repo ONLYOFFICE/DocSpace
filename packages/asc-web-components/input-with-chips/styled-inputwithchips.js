@@ -92,6 +92,10 @@ const StyledChipValue = styled.div`
   font-size: 13px;
 
   color: #333333;
+
+  :hover {
+    cursor: pointer;
+  }
 `;
 
 const StyledContainer = styled.div`

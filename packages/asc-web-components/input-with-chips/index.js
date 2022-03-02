@@ -45,14 +45,10 @@ const InputWithChips = ({
   const blockRef = useRef(null);
   const scrollbarRef = useRef(null);
   const chipsCount = useRef(options?.length);
-  const selectedChipsCount = useRef(0);
 
   useEffect(() => {
-    if (selectedChipsCount.current > 0 || selectedChips.length > 0) {
-      onChange(selectedChips);
-    }
-    selectedChipsCount.current = selectedChips.length;
-  }, [selectedChips]);
+    onChange(chips);
+  }, [chips]);
 
   useEffect(() => {
     const isChipAdd = chips.length > chipsCount.current;
