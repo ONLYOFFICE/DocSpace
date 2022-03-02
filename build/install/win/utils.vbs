@@ -67,10 +67,11 @@ Function MySQLConfigure
 
 		WriteIni filesys.BuildPath(dataDir, "my.ini"), "mysqld", "sql-mode", "NO_ENGINE_SUBSTITUTION"
 		WriteIni filesys.BuildPath(dataDir, "my.ini"), "mysqld", "max_connections", "1000"
-		WriteIni filesys.BuildPath(dataDir, "my.ini"), "mysqld", "max_allowed_packet", "100M"
-        WriteIni filesys.BuildPath(dataDir, "my.ini"), "mysqld", "group_concat_max_len", "16M"
+		WriteIni filesys.BuildPath(dataDir, "my.ini"), "mysqld", "max_allowed_packet", "1048576000"
+        WriteIni filesys.BuildPath(dataDir, "my.ini"), "mysqld", "group_concat_max_len", "2048"
         WriteIni filesys.BuildPath(dataDir, "my.ini"), "mysqld", "character_set_server", "utf8"
         WriteIni filesys.BuildPath(dataDir, "my.ini"), "mysqld", "collation_server", "utf8_general_ci"
+        WriteIni filesys.BuildPath(dataDir, "my.ini"), "mysqld", "default-authentication-plugin", "mysql_native_password"
 		
 	    Call WriteToLog("MySQLConfigure: WriteIni Path" & filesys.BuildPath(dataDir, "my.ini"))
 
