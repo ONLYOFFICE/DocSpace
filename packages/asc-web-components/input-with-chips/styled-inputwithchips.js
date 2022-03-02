@@ -72,6 +72,8 @@ const StyledChip = styled.div`
   border: ${(props) => props.isSelected && "1px dashed #000"};
   background: ${(props) => (props.isValid ? "#ECEEF1" : "#F7CDBE")};
 
+  user-select: none;
+
   .warning_icon_wrap {
     cursor: pointer;
     .warning_icon {
