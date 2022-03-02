@@ -15,6 +15,7 @@ const TableRow = (props) => {
     style,
     selectionProp,
     title,
+    contextMenuData,
     ...rest
   } = props;
 
@@ -30,8 +31,10 @@ const TableRow = (props) => {
   };
 
   const renderContext =
-    Object.prototype.hasOwnProperty.call(props, "contextOptions") &&
-    contextOptions.length > 0;
+    Object.prototype.hasOwnProperty.call(
+      contextMenuData.item,
+      "contextOptions"
+    ) && contextOptions.length > 0;
 
   const getOptions = () => {
     fileContextClick && fileContextClick();
@@ -55,7 +58,7 @@ const TableRow = (props) => {
           <ContextMenu
             onHide={onHideContextMenu}
             ref={cm}
-            model={contextOptions}
+            contextMenuData={contextMenuData}
           ></ContextMenu>
           {renderContext ? (
             <ContextMenuButton
@@ -86,6 +89,7 @@ TableRow.propTypes = {
   className: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   style: PropTypes.object,
   title: PropTypes.string,
+  contextMenuData: PropTypes.object,
 };
 
 export default TableRow;

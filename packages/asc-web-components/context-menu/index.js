@@ -15,6 +15,7 @@ class ContextMenu extends Component {
       visible: false,
       reshow: false,
       resetMenu: false,
+      model: null,
     };
 
     this.menuRef = React.createRef();
@@ -33,6 +34,10 @@ class ContextMenu extends Component {
   };
 
   show = (e) => {
+    const { item, t, getModel } = this.props.contextMenuData;
+    const model = getModel(item, t);
+    this.setState({ model });
+
     e.stopPropagation();
     e.preventDefault();
 
@@ -282,7 +287,7 @@ class ContextMenu extends Component {
             onMouseEnter={this.onMenuMouseEnter}
           >
             <SubMenu
-              model={this.props.model}
+              model={this.state.model}
               root
               resetMenu={this.state.resetMenu}
               onLeafClick={this.onLeafClick}
@@ -303,8 +308,6 @@ class ContextMenu extends Component {
 ContextMenu.propTypes = {
   /** Unique identifier of the element */
   id: PropTypes.string,
-  /** An array of menuitems */
-  model: PropTypes.array,
   /** Inline style of the component */
   style: PropTypes.object,
   /** Style class of the component */
@@ -325,11 +328,11 @@ ContextMenu.propTypes = {
   containerRef: PropTypes.any,
   /** Scale with by container component*/
   scaled: PropTypes.bool,
+  contextMenuData: PropTypes.object,
 };
 
 ContextMenu.defaultProps = {
   id: null,
-  model: null,
   style: null,
   className: null,
   global: false,

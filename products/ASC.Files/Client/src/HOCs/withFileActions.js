@@ -306,6 +306,7 @@ export default function withFileActions(WrappedFileItem) {
         uploadDataStore,
         mediaViewerDataStore,
         settingsStore,
+        contextOptionsStore,
       },
       { item, t, history }
     ) => {
@@ -422,6 +423,7 @@ export default function withFileActions(WrappedFileItem) {
         inProgress,
         setBufferSelection,
         bufferSelection,
+        getModel: contextOptionsStore.getModel,
       };
     }
   )(observer(WithFileActions));
