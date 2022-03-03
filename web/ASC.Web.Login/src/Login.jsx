@@ -159,11 +159,10 @@ const Form = (props) => {
     error && setErrorText(error);
     confirmedEmail && setIdentifier(confirmedEmail);
 
-    await setProviders();
-    await getSso();
-    setIsLoaded(true);
-
-    focusInput();
+    Promise.all([setProviders(), getSso()]).then(() => {
+      setIsLoaded(true);
+      focusInput();
+    });
 
     window.authCallback = authCallback;
 
