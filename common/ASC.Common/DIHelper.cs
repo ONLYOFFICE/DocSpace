@@ -141,7 +141,7 @@ public class DIHelper
 
     public void AddControllers()
     {
-        foreach (var a in Assembly.GetCallingAssembly().GetTypes().Where(r => r.IsAssignableTo<ControllerBase>()))
+        foreach (var a in Assembly.GetEntryAssembly().GetTypes().Where(r => r.IsAssignableTo<ControllerBase>()))
         {
             _ = TryAdd(a);
         }
