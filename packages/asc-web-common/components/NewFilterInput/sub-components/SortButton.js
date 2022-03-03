@@ -188,6 +188,7 @@ const SortButton = ({
   }, [selectedFilterData]);
 
   const toggleCombobox = React.useCallback(() => {
+    console.log("1");
     setIsOpen((val) => !val);
   }, []);
 
@@ -278,6 +279,7 @@ const SortButton = ({
         options={[]}
         selectedOption={{}}
         directionX={"right"}
+        directionY={"top"}
         scaled={true}
         size={"content"}
         advancedOptions={getAdvancedOptions()}
