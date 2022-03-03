@@ -256,21 +256,19 @@ const SortButton = ({
         {!isFavoritesFolder && !isRecentFolder && (
           <>
             {data.map((item, index) => (
-              <>
-                <DropDownItem
-                  onClick={onOptionClick}
-                  className={item.className}
-                  key={item.key}
-                  data-value={item.key}
-                >
-                  <Text fontWeight={600}>{item.label}</Text>
-                  <SortDesc
-                    className={`option-item__icon  ${
-                      item.isSelected ? "selected-option-item__icon" : ""
-                    }`}
-                  />
-                </DropDownItem>
-              </>
+              <DropDownItem
+                onClick={onOptionClick}
+                className={item.className}
+                key={item.key}
+                data-value={item.key}
+              >
+                <Text fontWeight={600}>{item.label}</Text>
+                <SortDesc
+                  className={`option-item__icon  ${
+                    item.isSelected ? "selected-option-item__icon" : ""
+                  }`}
+                />
+              </DropDownItem>
             ))}
           </>
         )}
