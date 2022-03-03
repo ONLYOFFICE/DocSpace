@@ -9,6 +9,7 @@ import Button from "@appserver/components/button";
 import toastr from "@appserver/components/toast/toastr";
 import Link from "@appserver/components/link";
 import TextInput from "@appserver/components/text-input";
+import FileInput from "@appserver/components/file-input";
 
 import { inject, observer } from "mobx-react";
 import { Base } from "@appserver/components/themes";
@@ -225,21 +226,58 @@ class WhiteLabel extends React.Component {
     this.setState({ isCanvasProcessing: false });
   };
 
+  onSaveImageBase64 = (url) => {
+    let img = document.createElement("img");
+    img.src = url;
+
+    let key = encodeURIComponent(url),
+      canvas = document.createElement("canvas");
+    canvas.width = img.width;
+    canvas.height = img.height;
+    let ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0);
+
+    return canvas.toDataURL("image/png");
+  };
+
   onSave = () => {
     const { setWhiteLabelSettings } = this.props;
-    const { logoText, logoUrls } = this.state;
+    const { logoText } = this.state;
 
+    // TODO: Для всех картинок написать логику
     let fd = new FormData();
     fd.append("logoText", logoText);
 
-    // TODO: Переделать с for
-    for (let i = 0; i < logoUrls.length; i++) {
-      fd.append(`logo[${i}][key]`, i);
-      fd.append(`logo[${i}][value]`, logoUrls[i]);
-    }
+    let elem = document.getElementById("canvas_logo_1");
+    let dataURL = elem.toDataURL();
+
+    fd.append(`logo[${0}][key]`, 1);
+    fd.append(`logo[${0}][value]`, dataURL);
+
+    // for (let i = 1; i < logoUrls.length; i++) {
+    //   fd.append(`logo[${i}][key]`, i);
+    //   console.log(this.onSaveImageBase64(logoUrls[i]));
+    //   fd.append(`logo[${i}][value]`, this.onSaveImageBase64(logoUrls[i - 1]));
+    // }
 
     const data = new URLSearchParams(fd);
 
+    setWhiteLabelSettings(data);
+  };
+
+  onChangeHandler = (input) => {
+    const { setWhiteLabelSettings } = this.props;
+
+    let file = input;
+
+    console.log("file", file.target.value);
+
+    let fd = new FormData();
+    fd.append("logoText", "asas");
+    fd.append(`logo[${1}][key]`, 2);
+    fd.append(`logo[${1}][value]`, file.target.value);
+
+    const data = new URLSearchParams(fd);
     setWhiteLabelSettings(data);
   };
 
@@ -368,14 +406,10 @@ class WhiteLabel extends React.Component {
                 )}
               </div>
               {isPortalPaid && (
-                <Link
-                  type="action"
-                  color={theme.studio.settings.common.linkColorHelp}
-                  isHovered
-                  onClick={this.onChangeLogo}
-                >
-                  {t("ChangeLogoButton")}
-                </Link>
+                <FileInput
+                  placeholder={t("ChangeLogoButton")}
+                  onChange={this.onChangeHandler}
+                />
               )}
             </FieldContainer>
             <FieldContainer
