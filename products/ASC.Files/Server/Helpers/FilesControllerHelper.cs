@@ -1,4 +1,8 @@
 ﻿
+using ASC.Core;
+using ASC.Web.Core.Files;
+using ASC.Web.Files.Classes;
+
 using FileShare = ASC.Files.Core.Security.FileShare;
 using MimeMapping = ASC.Common.Web.MimeMapping;
 using SortedByType = ASC.Files.Core.SortedByType;
@@ -10,6 +14,9 @@ namespace ASC.Files.Helpers
     {
         private readonly ApiContext ApiContext;
         private readonly FileStorageService<T> FileStorageService;
+        private readonly GlobalFolderHelper _globalFolderHelper;
+        private readonly CoreBaseSettings _coreBaseSettings;
+        private readonly FileUtility _fileUtility;   
 
         private FileWrapperHelper FileWrapperHelper { get; }
         private FilesSettingsHelper FilesSettingsHelper { get; }
@@ -100,6 +107,66 @@ namespace ASC.Files.Helpers
             FileConverter = fileConverter;
             Logger = optionMonitor.Get("ASC.Files");
             ClientFactory = clientFactory;
+        }
+
+        public async Task<SortedSet<int>> GetRootFoldersIdsAsync(bool withoutTrash, bool withoutAdditionalFolder)
+        {
+            var IsVisitor = UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsVisitor(UserManager);
+            var IsOutsider = UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsOutsider(UserManager);
+            var folders = new SortedSet<int>();
+
+            if (IsOutsider)
+            {
+                withoutTrash = true;
+                withoutAdditionalFolder = true;
+            }
+
+            if (!IsVisitor)
+            {
+                folders.Add(_globalFolderHelper.FolderMy);
+            }
+
+            if (!_coreBaseSettings.Personal && ! UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsOutsider(UserManager))
+            {
+                folders.Add(await _globalFolderHelper.FolderShareAsync);
+            }
+
+            if (!IsVisitor && !withoutAdditionalFolder)
+            {
+                if (FilesSettingsHelper.FavoritesSection)
+                {
+                    folders.Add(await _globalFolderHelper.FolderFavoritesAsync);
+                }
+                if (FilesSettingsHelper.RecentSection)
+                {
+                    folders.Add(await _globalFolderHelper.FolderRecentAsync);
+                }
+
+                if (!_coreBaseSettings.Personal && PrivacyRoomSettings.IsAvailable(TenantManager))
+                {
+                    folders.Add(await _globalFolderHelper.FolderPrivacyAsync);
+                }
+            }
+
+            if (!_coreBaseSettings.Personal)
+            {
+                folders.Add(await _globalFolderHelper.FolderCommonAsync);
+            }
+
+            if (!IsVisitor
+               && !withoutAdditionalFolder
+               && _fileUtility.ExtsWebTemplate.Count > 0
+               && FilesSettingsHelper.TemplatesSection)
+            {
+                folders.Add(await _globalFolderHelper.FolderTemplatesAsync);
+            }
+
+            if (!withoutTrash)
+            {
+                folders.Add((int)_globalFolderHelper.FolderTrash);
+            }
+
+            return folders;
         }
 
         public async Task<FolderContentWrapper<T>> GetFolderAsync(T folderId, Guid userIdOrGroupId, FilterType filterType, bool withSubFolders)
