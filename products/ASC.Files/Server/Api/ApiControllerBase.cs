@@ -4,7 +4,7 @@
 [DefaultRoute]
 [ApiController]
 [ControllerName("files")]
-public class ApiControllerBase : ControllerBase
+public abstract class ApiControllerBase : ControllerBase
 {
     protected readonly FilesControllerHelper<int> _filesControllerHelperInt;
     protected readonly FilesControllerHelper<string> _filesControllerHelperString;

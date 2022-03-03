@@ -65,5 +65,3 @@ global using Microsoft.Extensions.Hosting;
 global using Microsoft.Extensions.Options;
 
 global using Newtonsoft.Json.Linq;
-
-global using static ASC.Api.Documents.FilesController;
