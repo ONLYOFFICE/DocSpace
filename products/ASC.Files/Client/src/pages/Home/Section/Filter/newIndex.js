@@ -334,6 +334,8 @@ const SectionFilterContent = ({
       contextMenuHeader={t("Common:AddFilter")}
       headerLabel={t("SharingPanel:LinkText")}
       viewSelectorVisible={true}
+      isFavoritesFolder={isFavoritesFolder}
+      isRecentFolder={isRecentFolder}
     />
   );
 };
