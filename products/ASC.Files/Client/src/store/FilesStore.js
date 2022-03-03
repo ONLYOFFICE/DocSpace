@@ -642,7 +642,7 @@ class FilesStore {
     const isThirdPartyItem = !!item.providerKey;
     const hasNew =
       item.new > 0 || (item.fileStatus & FileStatus.IsNew) === FileStatus.IsNew;
-    const canConvert = false; //TODO: fix of added convert check;
+    const canConvert = this.filesSettingsStore.extsConvertible[item.fileExst];
     const isEncrypted = item.encrypted;
     const isDocuSign = false; //TODO: need this prop;
     const isEditing =
@@ -738,7 +738,7 @@ class FilesStore {
         }
       }
 
-      if (!this.canConvertSelected) {
+      if (!canConvert) {
         fileOptions = this.removeOptions(fileOptions, ["download-as"]);
       }
 
