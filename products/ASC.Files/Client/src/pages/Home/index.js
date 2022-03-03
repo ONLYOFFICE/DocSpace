@@ -29,7 +29,6 @@ import DragTooltip from "../../components/DragTooltip";
 import { observer, inject } from "mobx-react";
 import config from "../../../package.json";
 
-import config from "../../../package.json";
 import {
   ArticleBodyContent,
   ArticleHeaderContent,
