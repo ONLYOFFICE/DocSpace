@@ -1,11 +1,10 @@
-import PropTypes from "prop-types";
 import React from "react";
-import { useTranslation } from "react-i18next";
-
+import PropTypes from "prop-types";
 import Checkbox from "../checkbox";
+import { StyledTableGroupMenu, StyledScrollbar } from "./StyledTableContainer";
 import ComboBox from "../combobox";
 import GroupMenuItem from "./GroupMenuItem";
-import { StyledScrollbar, StyledTableGroupMenu } from "./StyledTableContainer";
+import { useTranslation } from "react-i18next";
 
 const TableGroupMenu = (props) => {
   const {
@@ -17,13 +16,10 @@ const TableGroupMenu = (props) => {
     checkboxMargin,
     ...rest
   } = props;
-
   const onCheckboxChange = (e) => {
     onChange && onChange(e.target && e.target.checked);
   };
-
   const { t } = useTranslation("Common");
-
   return (
     <>
       <StyledTableGroupMenu
@@ -59,16 +55,13 @@ const TableGroupMenu = (props) => {
     </>
   );
 };
-
 TableGroupMenu.propTypes = {
   isChecked: PropTypes.bool,
   isIndeterminate: PropTypes.bool,
   headerMenu: PropTypes.arrayOf(PropTypes.object).isRequired,
-  infoPanelToggle: PropTypes.node,
   checkboxOptions: PropTypes.any.isRequired,
   onClick: PropTypes.func,
   onChange: PropTypes.func,
   checkboxMargin: PropTypes.string,
 };
-
 export default TableGroupMenu;

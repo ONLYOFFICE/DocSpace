@@ -6,7 +6,6 @@ import Filter from "./FilterLoader";
 import Group from "./GroupLoader";
 import Header from "./HeaderLoader";
 import HistoryRows from "./HistoryRowsLoader";
-import InfoPanelLoader from "./InfoPanelLoader";
 import MainButton from "./MainButtonLoader";
 import ProfileView from "./ProfileViewLoader";
 import Rectangle from "./RectangleLoader";
@@ -21,25 +20,24 @@ import TreeFolders from "./TreeFolderLoader";
 import TreeSettingsLoader from "./TreeSettingsLoader";
 
 export default {
-    Rectangle,
-    Circle,
-    Header,
-    SectionHeader,
-    ArticleHeader,
-    TreeFolders,
-    TreeSettingsLoader,
-    Row,
-    Rows,
-    Text,
-    Filter,
-    ProfileView,
-    SettingsFiles,
-    Group,
-    HistoryRows,
-    Tile,
-    Tiles,
-    DialogLoader,
-    DialogAsideLoader,
-    MainButton,
-    InfoPanelLoader,
+  Rectangle,
+  Circle,
+  Header,
+  SectionHeader,
+  ArticleHeader,
+  TreeFolders,
+  TreeSettingsLoader,
+  Row,
+  Rows,
+  Text,
+  Filter,
+  ProfileView,
+  SettingsFiles,
+  Group,
+  HistoryRows,
+  Tile,
+  Tiles,
+  DialogLoader,
+  DialogAsideLoader,
+  MainButton,
 };
