@@ -165,6 +165,7 @@ Row.propTypes = {
 
 Row.defaultProps = {
   contextButtonSpacerWidth: "26px",
+  data: {},
 };
 
 export default Row;

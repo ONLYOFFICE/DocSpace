@@ -522,6 +522,7 @@ Tile.propTypes = {
 
 Tile.defaultProps = {
   contextButtonSpacerWidth: "32px",
+  item: {},
 };
 
 export default Tile;
