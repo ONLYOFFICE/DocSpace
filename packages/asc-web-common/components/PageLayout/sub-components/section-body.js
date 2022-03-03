@@ -11,20 +11,20 @@ import DragAndDrop from "@appserver/components/drag-and-drop";
 import { tablet, mobile, desktop } from "@appserver/components/utils/device";
 
 const paddingStyles = css`
-  padding: 17px 7px 16px 20px;
+  padding: 19px 7px 16px 20px;
   @media ${tablet} {
-    padding: 6px 0 16px 24px;
+    padding: 3px 0 16px 24px;
   }
   @media ${mobile} {
-    padding: 8px 0 16px 24px;
+    padding: 6px 0 16px 24px;
   }
   ${isMobile &&
   css`
-    padding: 6px 0 16px 24px !important;
+    padding: 3px 0 16px 24px !important;
   `};
   ${isMobileOnly &&
   css`
-    padding: 8px 0 16px 24px !important;
+    padding: 6px 0 16px 24px !important;
   `};
 `;
 const commonStyles = css`
@@ -77,7 +77,11 @@ const StyledSectionBody = styled.div`
   ${(props) =>
     props.withScroll &&
     `
-    margin-left: -24px;
+    margin-left: -20px;
+
+    @media ${tablet}{
+      margin-left: -24px;
+    }
   `} 
 
   .additional-scroll-height {
@@ -101,7 +105,11 @@ const StyledDropZoneBody = styled(DragAndDrop)`
   ${(props) =>
     props.withScroll &&
     `
-    margin-left: -24px;
+    margin-left: -20px;
+
+    @media ${tablet}{
+      margin-left: -24px;
+    }
   `}
 `;
 

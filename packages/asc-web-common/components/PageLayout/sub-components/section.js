@@ -17,12 +17,12 @@ const tabletProps = css`
 
   .section-body_filter {
     display: block;
-    margin: 0 0 25px;
+    margin: ${(props) => (props.viewAs === "tile" ? "0 0 18px" : "0 0 30px")};
   }
 `;
 
 const StyledSection = styled.section`
-  padding: 0 0 0 24px;
+  padding: 0 0 0 20px;
   flex-grow: 1;
   display: flex;
   flex-direction: column;

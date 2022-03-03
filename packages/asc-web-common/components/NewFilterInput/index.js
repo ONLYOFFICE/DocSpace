@@ -84,7 +84,7 @@ const FilterInput = ({
         />
       ) : (
         <>
-          {(isMobile || isTabletUtils()) && (
+          {(isMobile || isTabletUtils() || isMobileUtils()) && (
             <SortButton
               selectedFilterData={selectedFilterData}
               getSortData={getSortData}

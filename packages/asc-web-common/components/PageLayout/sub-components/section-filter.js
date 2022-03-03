@@ -1,24 +1,14 @@
 import React from "react";
 import styled, { css } from "styled-components";
 import equal from "fast-deep-equal/react";
+import { isMobile } from "react-device-detect";
 import { tablet, desktop } from "@appserver/components/utils/device";
 
 const StyledSectionFilter = styled.div`
-  margin: 11px 24px 0 0;
-
-  @media ${desktop} {
-    ${(props) =>
-      (props.viewAs === "table" || props.viewAs === "tile") &&
-      css`
-        margin-left: -4px;
-        /* margin-right: 20px; */
-        margin-right: 22px;
-        margin-bottom: ${props.viewAs === "tile" ? "-2px" : "0px"};
-      `};
-  }
+  margin-right: ${isMobile ? "16px" : "20px"};
 
   @media ${tablet} {
-    margin-left: -4px;
+    margin-right: 16px;
   }
 `;
 

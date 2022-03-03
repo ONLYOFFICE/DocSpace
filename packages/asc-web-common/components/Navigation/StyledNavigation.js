@@ -3,88 +3,45 @@ import { isMobile, isMobileOnly } from "react-device-detect";
 import { tablet, desktop, mobile } from "@appserver/components/utils/device";
 
 const StyledContainer = styled.div`
-  .header-container {
-    margin-top: 14px;
-    margin-bottom: 6px;
-    position: relative;
+  padding: ${(props) => (props.isDropBox ? "14px 0 3px" : "14px 0 0px")};
 
-    align-items: center;
-    max-width: ${(props) => props.width}px;
+  width: fit-content;
 
-    ${(props) =>
-      props.title &&
-      css`
-        display: grid;
-        grid-template-columns: ${(props) =>
-          props.isRootFolder
-            ? "auto auto 1fr"
-            : props.canCreate
-            ? "auto auto auto auto 1fr"
-            : "auto auto auto 1fr"};
+  display: grid;
 
-        @media ${tablet} {
-          margin-top: 17px;
-          grid-template-columns: ${(props) =>
-            props.isRootFolder
-              ? "1fr auto"
-              : props.canCreate
-              ? "auto 1fr auto auto"
-              : "auto 1fr auto"};
-        }
+  grid-template-columns: ${(props) =>
+    props.isRootFolder ? "1fr auto" : "29px 1fr auto"};
 
-        ${isMobile &&
-        css`
-          margin-top: 17px;
-          grid-template-columns: ${(props) =>
-            props.isRootFolder
-              ? "1fr auto"
-              : props.canCreate
-              ? "auto 1fr auto auto"
-              : "auto 1fr auto"};
-        `}
+  align-items: center;
 
-        @media ${mobile} {
-          margin-top: 12px;
-          padding-bottom: 7px;
-        }
-
-        ${isMobileOnly &&
-        css`
-          margin-top: 12px;
-          padding-bottom: 7px;
-        `}
-      `}
-
-    .arrow-button {
-      margin-right: 12px;
-      min-width: 17px;
-
-      align-items: center;
-    }
-
-    .add-button {
-      margin-right: 10px;
-      min-width: 17px;
-
-      @media ${tablet} {
-        display: none;
-      }
-
-      ${isMobile &&
-      css`
-        display: none;
-      `}
-    }
-
-    .trash-button {
-      min-width: 17px;
-      margin-left: 6px;
-    }
-
-    .option-button {
-      min-width: 17px;
-    }
+  .arrow-button {
+    width: 17px;
+    min-width: 17px;
   }
+
+  @media ${tablet} {
+    width: 100%;
+    padding: ${(props) => (props.isDropBox ? "16px 0 5px" : "16px 0 0px")};
+  }
+
+  ${isMobile &&
+  css`
+    width: 100% !important;
+    padding: ${(props) =>
+      props.isDropBox ? "16px 0 5px" : " 16px 0 0px"} !important;
+  `}
+
+  @media ${mobile} {
+    width: 100%;
+    padding: ${(props) => (props.isDropBox ? "12px 0 5px" : "12px 0 0")};
+  }
+
+  ${isMobileOnly &&
+  css`
+    width: 100% !important;
+    padding: ${(props) =>
+      props.isDropBox ? "12px 0 5px" : "12px 0 0"} !important;
+  `}
 `;
 
 export default StyledContainer;
