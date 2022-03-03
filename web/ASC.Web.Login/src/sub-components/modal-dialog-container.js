@@ -17,10 +17,11 @@ const ModalDialogContainer = styled(ModalDialog)`
     }
   }
   .modal-dialog-button {
+    display: inline-block;
     margin-right: 10px;
 
     @media (max-width: 1024px) {
-      width: 100%;
+      margin-right: 8px;
     }
   }
   .field-body {
