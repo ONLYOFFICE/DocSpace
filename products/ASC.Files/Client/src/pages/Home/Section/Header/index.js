@@ -17,706 +17,682 @@ import toastr from "studio/toastr";
 import styled, { css } from "styled-components";
 
 const StyledContainer = styled.div`
-    .table-container_group-menu {
-        ${(props) =>
-            props.viewAs === "table"
-                ? css`
-                      margin: 0px -20px;
-                      width: calc(100% + 44px);
-                  `
-                : css`
-                      margin: 0px -24px;
-                      width: calc(100% + 48px);
-                  `}
+  .table-container_group-menu {
+    ${(props) =>
+      props.viewAs === "table"
+        ? css`
+            margin: 0px -20px;
+            width: calc(100% + 44px);
+          `
+        : css`
+            margin: 0px -24px;
+            width: calc(100% + 48px);
+          `}
 
-        @media ${tablet} {
-            margin: 0 -16px;
-            width: calc(100% + 32px);
-        }
+    @media ${tablet} {
+      margin: 0 -16px;
+      width: calc(100% + 32px);
+    }
+  }
+
+  .header-container {
+    position: relative;
+    ${(props) =>
+      props.title &&
+      css`
+        display: grid;
+        grid-template-columns: ${({
+          isRootFolder,
+          canCreate,
+          isRecycleBinFolder,
+        }) => {
+          if (isRootFolder) {
+            if (canCreate || isRecycleBinFolder) return "auto auto 1fr";
+            return "auto 1fr";
+          }
+          if (canCreate) return "auto auto auto 1fr 32px";
+          return "auto auto 1fr 32px";
+        }};
+      `}
+    align-items: center;
+    max-width: calc(100vw - 32px);
+
+    @media ${tablet} {
+      .headline-header {
+        margin-left: -1px;
+      }
+    }
+    .arrow-button {
+      margin-right: 15px;
+      min-width: 17px;
+
+      @media ${tablet} {
+        padding: 8px 0 8px 8px;
+        margin-left: -8px;
+        margin-right: 16px;
+      }
     }
 
-    .header-container {
-        position: relative;
-        ${(props) =>
-            props.title &&
-            css`
-                display: grid;
-                grid-template-columns: ${({
-                    isRootFolder,
-                    canCreate,
-                    isRecycleBinFolder,
-                }) => {
-                    if (isRootFolder) {
-                        if (canCreate || isRecycleBinFolder)
-                            return "auto auto 1fr";
-                        return "auto 1fr";
-                    }
-                    if (canCreate) return "auto auto auto 1fr 32px";
-                    return "auto auto 1fr 32px";
-                }};
-            `}
-        align-items: center;
-        max-width: calc(100vw - 32px);
+    .add-button {
+      margin-bottom: -1px;
+      margin-left: 16px;
 
-        @media ${tablet} {
-            .headline-header {
-                margin-left: -1px;
-            }
+      @media ${tablet} {
+        margin-left: auto;
+        margin-right: 32px;
+
+        & > div:first-child {
+          padding: 8px 8px 8px 8px;
+          margin-right: -8px;
         }
-        .arrow-button {
-            margin-right: 15px;
-            min-width: 17px;
+      }
+    }
 
-            @media ${tablet} {
-                padding: 8px 0 8px 8px;
-                margin-left: -8px;
-                margin-right: 16px;
-            }
-        }
+    .option-button {
+      margin-bottom: -1px;
 
-        .add-button {
-            margin-bottom: -1px;
-            margin-left: 16px;
+      margin-left: auto;
+      margin-right: 16px;
 
-            @media ${tablet} {
-                margin-left: auto;
-                margin-right: 32px;
-
-                & > div:first-child {
-                    padding: 8px 8px 8px 8px;
-                    margin-right: -8px;
-                }
-            }
-        }
-
-        .option-button {
-            margin-bottom: -1px;
-
-            margin-left: auto;
-            margin-right: 16px;
-
-            /* @media (min-width: 1024px) {
+      /* @media (min-width: 1024px) {
                 margin-left: 8px;
             } */
 
-            @media ${tablet} {
-                /* margin-left: auto;
+      @media ${tablet} {
+        /* margin-left: auto;
                 margin-right: 32px; */
-                & > div:first-child {
-                    padding: 8px 8px 8px 8px;
-                    margin-right: -8px;
-                }
-            }
+        & > div:first-child {
+          padding: 8px 8px 8px 8px;
+          margin-right: -8px;
         }
-
-        .trash-button {
-            margin-bottom: -1px;
-
-            @media (min-width: 1024px) {
-                margin-left: 8px;
-            }
-
-            @media ${tablet} {
-                margin-left: auto;
-                margin-right: 32px;
-                & > div:first-child {
-                    padding: 3px;
-                    margin-right: -8px;
-                }
-            }
-        }
+      }
     }
 
-    .group-button-menu-container {
-        margin: 0 -16px;
-        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    .trash-button {
+      margin-bottom: -1px;
 
-        ${isMobile &&
-        css`
-            position: sticky;
-        `}
+      @media (min-width: 1024px) {
+        margin-left: 8px;
+      }
 
-        ${(props) =>
-            !props.isTabletView
-                ? props.width &&
-                  isMobile &&
-                  css`
-                      width: ${props.width + 40 + "px"};
-                  `
-                : props.width &&
-                  isMobile &&
-                  css`
-                      width: ${props.width + 32 + "px"};
-                  `}
+      @media ${tablet} {
+        margin-left: auto;
+        margin-right: 32px;
+        & > div:first-child {
+          padding: 3px;
+          margin-right: -8px;
+        }
+      }
+    }
+  }
+
+  .group-button-menu-container {
+    margin: 0 -16px;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+    ${isMobile &&
+    css`
+      position: sticky;
+    `}
+
+    ${(props) =>
+      !props.isTabletView
+        ? props.width &&
+          isMobile &&
+          css`
+            width: ${props.width + 40 + "px"};
+          `
+        : props.width &&
+          isMobile &&
+          css`
+            width: ${props.width + 32 + "px"};
+          `}
 
     @media ${tablet} {
-            padding-bottom: 0;
-            ${!isMobile &&
-            css`
-                height: 56px;
-            `}
-            & > div:first-child {
-                ${(props) =>
-                    !isMobile &&
-                    props.width &&
-                    css`
-                        width: ${props.width + 16 + "px"};
-                    `}
+      padding-bottom: 0;
+      ${!isMobile &&
+      css`
+        height: 56px;
+      `}
+      & > div:first-child {
+        ${(props) =>
+          !isMobile &&
+          props.width &&
+          css`
+            width: ${props.width + 16 + "px"};
+          `}
 
-                position: absolute;
-                ${(props) =>
-                    !props.isDesktop &&
-                    css`
-                        top: 48px;
-                    `}
-                z-index: 180;
-            }
-        }
-
-        @media ${desktop} {
-            margin: 0 -24px;
-        }
+        position: absolute;
+        ${(props) =>
+          !props.isDesktop &&
+          css`
+            top: 48px;
+          `}
+        z-index: 180;
+      }
     }
+
+    @media ${desktop} {
+      margin: 0 -24px;
+    }
+  }
 `;
 
 const StyledInfoPanelToggleWrapper = styled.div`
+  display: flex;
+  margin-left: auto;
+  align-items: center;
+  align-self: center;
+  justify-content: center;
+
+  .info-panel-toggle-bg {
+    height: 32px;
+    width: 32px;
     display: flex;
-    margin-left: auto;
     align-items: center;
-    align-self: center;
     justify-content: center;
+    border-radius: 50%;
+    background-color: ${(props) =>
+      props.isInfoPanelVisible ? "#F8F9F9" : "#FFFFFF"};
+  }
 
-    .info-panel-toggle-bg {
-        height: 32px;
-        width: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        background-color: ${(props) =>
-            props.isInfoPanelVisible ? "#F8F9F9" : "#FFFFFF"};
-    }
-
-    ${(props) =>
-        props.isHeaderVisible &&
-        css`
-            margin-bottom: 2px;
-            margin-right: 24px;
-            padding-left: 12px;
-        `}
+  ${(props) =>
+    props.isHeaderVisible &&
+    css`
+      margin-bottom: 2px;
+      margin-right: 24px;
+      padding-left: 12px;
+    `}
 `;
 
 class SectionHeaderContent extends React.Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
+  }
+
+  onCreate = (format) => {
+    this.props.setAction({
+      type: FileAction.Create,
+      extension: format,
+      id: -1,
+    });
+  };
+
+  createDocument = () => this.onCreate("docx");
+
+  createSpreadsheet = () => this.onCreate("xlsx");
+
+  createPresentation = () => this.onCreate("pptx");
+
+  createForm = () => this.onCreate("docxf");
+
+  createFormFromFile = () => {
+    const { setSelectFileDialogVisible } = this.props;
+    setSelectFileDialogVisible(true);
+  };
+
+  createFolder = () => this.onCreate();
+
+  uploadToFolder = () => console.log("Upload To Folder click");
+
+  getContextOptionsPlus = () => {
+    const { t, isPrivacyFolder } = this.props;
+
+    return [
+      {
+        key: "new-document",
+        label: t("NewDocument"),
+        onClick: this.createDocument,
+      },
+      {
+        key: "new-spreadsheet",
+        label: t("NewSpreadsheet"),
+        onClick: this.createSpreadsheet,
+      },
+      {
+        key: "new-presentation",
+        label: t("NewPresentation"),
+        onClick: this.createPresentation,
+      },
+      {
+        label: t("Translations:NewForm"),
+        onClick: this.createForm,
+      },
+      {
+        label: t("Translations:NewFormFile"),
+        onClick: this.createFormFromFile,
+        disabled: isPrivacyFolder,
+      },
+      {
+        key: "new-folder",
+        label: t("NewFolder"),
+        onClick: this.createFolder,
+      },
+      { key: "separator", isSeparator: true },
+      {
+        key: "make-invitation-link",
+        label: t("UploadToFolder"),
+        onClick: this.uploadToFolder,
+        disabled: true,
+      },
+    ];
+  };
+
+  createLinkForPortalUsers = () => {
+    const { currentFolderId } = this.props;
+    const { t } = this.props;
+
+    copy(
+      `${window.location.origin}/products/files/filter?folder=${currentFolderId}`
+    );
+
+    toastr.success(t("Translations:LinkCopySuccess"));
+  };
+
+  onMoveAction = () => {
+    this.props.setIsFolderActions(true);
+    this.props.setBufferSelection(this.props.currentFolderId);
+    return this.props.setMoveToPanelVisible(true);
+  };
+  onCopyAction = () => {
+    this.props.setIsFolderActions(true);
+    this.props.setBufferSelection(this.props.currentFolderId);
+    return this.props.setCopyPanelVisible(true);
+  };
+  downloadAction = () => {
+    this.props.setBufferSelection(this.props.currentFolderId);
+    this.props.setIsFolderActions(true);
+    this.props
+      .downloadAction(this.props.t("Translations:ArchivingData"), [
+        this.props.currentFolderId,
+      ])
+      .catch((err) => toastr.error(err));
+  };
+
+  renameAction = () => console.log("renameAction click");
+  onOpenSharingPanel = () => {
+    this.props.setBufferSelection(this.props.currentFolderId);
+    this.props.setIsFolderActions(true);
+    return this.props.setSharingPanelVisible(true);
+  };
+
+  onDeleteAction = () => {
+    const {
+      t,
+      deleteAction,
+      confirmDelete,
+      setDeleteDialogVisible,
+      isThirdPartySelection,
+      currentFolderId,
+      getFolderInfo,
+      setBufferSelection,
+    } = this.props;
+
+    this.props.setIsFolderActions(true);
+
+    if (confirmDelete || isThirdPartySelection) {
+      getFolderInfo(currentFolderId).then((data) => {
+        setBufferSelection(data);
+        setDeleteDialogVisible(true);
+      });
+    } else {
+      const translations = {
+        deleteOperation: t("Translations:DeleteOperation"),
+        deleteFromTrash: t("Translations:DeleteFromTrash"),
+        deleteSelectedElem: t("Translations:DeleteSelectedElem"),
+      };
+
+      deleteAction(translations, [currentFolderId], true).catch((err) =>
+        toastr.error(err)
+      );
     }
+  };
 
-    onCreate = (format) => {
-        this.props.setAction({
-            type: FileAction.Create,
-            extension: format,
-            id: -1,
-        });
-    };
+  onEmptyTrashAction = () => this.props.setEmptyTrashDialogVisible(true);
+  onToggleInfoPanel = () => this.props.toggleInfoPanel();
 
-    createDocument = () => this.onCreate("docx");
+  getContextOptionsFolder = () => {
+    const { t, personal } = this.props;
 
-    createSpreadsheet = () => this.onCreate("xlsx");
+    return [
+      {
+        key: "sharing-settings",
+        label: t("SharingSettings"),
+        onClick: this.onOpenSharingPanel,
+        disabled: personal ? true : false,
+      },
+      {
+        key: "link-portal-users",
+        label: t("LinkForPortalUsers"),
+        onClick: this.createLinkForPortalUsers,
+        disabled: personal ? true : false,
+      },
+      { key: "separator-2", isSeparator: true },
+      {
+        key: "move-to",
+        label: t("MoveTo"),
+        onClick: this.onMoveAction,
+        disabled: false,
+      },
+      {
+        key: "copy",
+        label: t("Translations:Copy"),
+        onClick: this.onCopyAction,
+        disabled: false,
+      },
+      {
+        key: "download",
+        label: t("Common:Download"),
+        onClick: this.downloadAction,
+        disabled: false,
+      },
+      {
+        key: "rename",
+        label: t("Rename"),
+        onClick: this.renameAction,
+        disabled: true,
+      },
+      {
+        key: "delete",
+        label: t("Common:Delete"),
+        onClick: this.onDeleteAction,
+        disabled: false,
+      },
+    ];
+  };
 
-    createPresentation = () => this.onCreate("pptx");
+  onBackToParentFolder = () => {
+    const { setIsLoading, parentId, filter, fetchFiles } = this.props;
+    setIsLoading(true);
+    fetchFiles(parentId, null, true, false).finally(() => setIsLoading(false));
+  };
 
-    createForm = () => this.onCreate("docxf");
+  onSelect = (e) => {
+    const key = e.currentTarget.dataset.key;
+    this.props.setSelected(key);
+  };
 
-    createFormFromFile = () => {
-        const { setSelectFileDialogVisible } = this.props;
-        setSelectFileDialogVisible(true);
-    };
+  onClose = () => {
+    this.props.setSelected("close");
+  };
 
-    createFolder = () => this.onCreate();
+  getMenuItems = () => {
+    const { t, cbMenuItems, getCheckboxItemLabel } = this.props;
 
-    uploadToFolder = () => console.log("Upload To Folder click");
+    const checkboxOptions = (
+      <>
+        {cbMenuItems.map((key) => {
+          const label = getCheckboxItemLabel(t, key);
+          return (
+            <DropDownItem
+              key={key}
+              label={label}
+              data-key={key}
+              onClick={this.onSelect}
+            />
+          );
+        })}
+      </>
+    );
 
-    getContextOptionsPlus = () => {
-        const { t, isPrivacyFolder } = this.props;
+    return checkboxOptions;
+  };
 
-        return [
-            {
-                key: "new-document",
-                label: t("NewDocument"),
-                onClick: this.createDocument,
-            },
-            {
-                key: "new-spreadsheet",
-                label: t("NewSpreadsheet"),
-                onClick: this.createSpreadsheet,
-            },
-            {
-                key: "new-presentation",
-                label: t("NewPresentation"),
-                onClick: this.createPresentation,
-            },
-            {
-                label: t("Translations:NewForm"),
-                onClick: this.createForm,
-            },
-            {
-                label: t("Translations:NewFormFile"),
-                onClick: this.createFormFromFile,
-                disabled: isPrivacyFolder,
-            },
-            {
-                key: "new-folder",
-                label: t("NewFolder"),
-                onClick: this.createFolder,
-            },
-            { key: "separator", isSeparator: true },
-            {
-                key: "make-invitation-link",
-                label: t("UploadToFolder"),
-                onClick: this.uploadToFolder,
-                disabled: true,
-            },
-        ];
-    };
+  onChange = (checked) => {
+    this.props.setSelected(checked ? "all" : "none");
+  };
 
-    createLinkForPortalUsers = () => {
-        const { currentFolderId } = this.props;
-        const { t } = this.props;
+  render() {
+    //console.log("Body header render");
 
-        copy(
-            `${window.location.origin}/products/files/filter?folder=${currentFolderId}`
-        );
+    const {
+      t,
+      tReady,
+      isHeaderVisible,
+      isHeaderChecked,
+      isHeaderIndeterminate,
+      isInfoPanelVisible,
+      isRootFolder,
+      title,
+      canCreate,
+      isDesktop,
+      isTabletView,
+      personal,
+      getHeaderMenu,
+      viewAs,
+      isRecycleBinFolder,
+      isEmptyFilesList,
+    } = this.props;
 
-        toastr.success(t("Translations:LinkCopySuccess"));
-    };
+    const menuItems = this.getMenuItems();
+    const isLoading = !title || !tReady;
+    const headerMenu = getHeaderMenu(t);
 
-    onMoveAction = () => {
-        this.props.setIsFolderActions(true);
-        this.props.setBufferSelection(this.props.currentFolderId);
-        return this.props.setMoveToPanelVisible(true);
-    };
-    onCopyAction = () => {
-        this.props.setIsFolderActions(true);
-        this.props.setBufferSelection(this.props.currentFolderId);
-        return this.props.setCopyPanelVisible(true);
-    };
-    downloadAction = () => {
-        this.props.setBufferSelection(this.props.currentFolderId);
-        this.props.setIsFolderActions(true);
-        this.props
-            .downloadAction(this.props.t("Translations:ArchivingData"), [
-                this.props.currentFolderId,
-            ])
-            .catch((err) => toastr.error(err));
-    };
+    const infoPanelToggle = (
+      <StyledInfoPanelToggleWrapper
+        isInfoPanelVisible={isInfoPanelVisible}
+        isHeaderVisible={isHeaderVisible}
+      >
+        <div className="info-panel-toggle-bg">
+          <IconButton
+            className="info-panel-toggle"
+            iconName="images/panel.svg"
+            size="16"
+            color={isInfoPanelVisible ? "#3B72A7" : "#A3A9AE"}
+            isFill={true}
+            onClick={this.onToggleInfoPanel}
+          />
+        </div>
+      </StyledInfoPanelToggleWrapper>
+    );
 
-    renameAction = () => console.log("renameAction click");
-    onOpenSharingPanel = () => {
-        this.props.setBufferSelection(this.props.currentFolderId);
-        this.props.setIsFolderActions(true);
-        return this.props.setSharingPanelVisible(true);
-    };
-
-    onDeleteAction = () => {
-        const {
-            t,
-            deleteAction,
-            confirmDelete,
-            setDeleteDialogVisible,
-            isThirdPartySelection,
-            currentFolderId,
-            getFolderInfo,
-            setBufferSelection,
-        } = this.props;
-
-        this.props.setIsFolderActions(true);
-
-        if (confirmDelete || isThirdPartySelection) {
-            getFolderInfo(currentFolderId).then((data) => {
-                setBufferSelection(data);
-                setDeleteDialogVisible(true);
-            });
-        } else {
-            const translations = {
-                deleteOperation: t("Translations:DeleteOperation"),
-                deleteFromTrash: t("Translations:DeleteFromTrash"),
-                deleteSelectedElem: t("Translations:DeleteSelectedElem"),
-            };
-
-            deleteAction(translations, [currentFolderId], true).catch((err) =>
-                toastr.error(err)
-            );
-        }
-    };
-
-    onEmptyTrashAction = () => this.props.setEmptyTrashDialogVisible(true);
-    onToggleInfoPanel = () => this.props.toggleInfoPanel();
-
-    getContextOptionsFolder = () => {
-        const { t, personal } = this.props;
-
-        return [
-            {
-                key: "sharing-settings",
-                label: t("SharingSettings"),
-                onClick: this.onOpenSharingPanel,
-                disabled: personal ? true : false,
-            },
-            {
-                key: "link-portal-users",
-                label: t("LinkForPortalUsers"),
-                onClick: this.createLinkForPortalUsers,
-                disabled: personal ? true : false,
-            },
-            { key: "separator-2", isSeparator: true },
-            {
-                key: "move-to",
-                label: t("MoveTo"),
-                onClick: this.onMoveAction,
-                disabled: false,
-            },
-            {
-                key: "copy",
-                label: t("Translations:Copy"),
-                onClick: this.onCopyAction,
-                disabled: false,
-            },
-            {
-                key: "download",
-                label: t("Common:Download"),
-                onClick: this.downloadAction,
-                disabled: false,
-            },
-            {
-                key: "rename",
-                label: t("Rename"),
-                onClick: this.renameAction,
-                disabled: true,
-            },
-            {
-                key: "delete",
-                label: t("Common:Delete"),
-                onClick: this.onDeleteAction,
-                disabled: false,
-            },
-        ];
-    };
-
-    onBackToParentFolder = () => {
-        const { setIsLoading, parentId, filter, fetchFiles } = this.props;
-        setIsLoading(true);
-        fetchFiles(parentId, null, true, false).finally(() =>
-            setIsLoading(false)
-        );
-    };
-
-    onSelect = (e) => {
-        const key = e.currentTarget.dataset.key;
-        this.props.setSelected(key);
-    };
-
-    onClose = () => {
-        this.props.setSelected("close");
-    };
-
-    getMenuItems = () => {
-        const { t, cbMenuItems, getCheckboxItemLabel } = this.props;
-
-        const checkboxOptions = (
-            <>
-                {cbMenuItems.map((key) => {
-                    const label = getCheckboxItemLabel(t, key);
-                    return (
-                        <DropDownItem
-                            key={key}
-                            label={label}
-                            data-key={key}
-                            onClick={this.onSelect}
-                        />
-                    );
-                })}
-            </>
-        );
-
-        return checkboxOptions;
-    };
-
-    onChange = (checked) => {
-        this.props.setSelected(checked ? "all" : "none");
-    };
-
-    render() {
-        //console.log("Body header render");
-
-        const {
-            t,
-            tReady,
-            isHeaderVisible,
-            isHeaderChecked,
-            isHeaderIndeterminate,
-            isInfoPanelVisible,
-            isRootFolder,
-            title,
-            canCreate,
-            isDesktop,
-            isTabletView,
-            personal,
-            getHeaderMenu,
-            viewAs,
-            isRecycleBinFolder,
-            isEmptyFilesList,
-        } = this.props;
-
-        const menuItems = this.getMenuItems();
-        const isLoading = !title || !tReady;
-        const headerMenu = getHeaderMenu(t);
-
-        const infoPanelToggle = (
-            <StyledInfoPanelToggleWrapper
-                isInfoPanelVisible={isInfoPanelVisible}
-                isHeaderVisible={isHeaderVisible}
-            >
-                <div className="info-panel-toggle-bg">
-                    <IconButton
-                        className="info-panel-toggle"
-                        iconName="images/panel.svg"
-                        size="16"
-                        color={isInfoPanelVisible ? "#3B72A7" : "#A3A9AE"}
+    return (
+      <Consumer>
+        {(context) => (
+          <StyledContainer
+            width={context.sectionWidth}
+            isRootFolder={isRootFolder}
+            canCreate={canCreate}
+            isRecycleBinFolder={isRecycleBinFolder}
+            title={title}
+            isDesktop={isDesktop}
+            isTabletView={isTabletView}
+            isLoading={isLoading}
+            viewAs={viewAs}
+          >
+            {isHeaderVisible ? (
+              <TableGroupMenu
+                checkboxOptions={menuItems}
+                onChange={this.onChange}
+                isChecked={isHeaderChecked}
+                isIndeterminate={isHeaderIndeterminate}
+                headerMenu={headerMenu}
+                infoPanelToggle={infoPanelToggle}
+              />
+            ) : (
+              <div className="header-container">
+                {isLoading ? (
+                  <Loaders.SectionHeader />
+                ) : (
+                  <>
+                    {!isRootFolder && (
+                      <IconButton
+                        iconName="/static/images/arrow.path.react.svg"
+                        size="17"
+                        color="#A3A9AE"
+                        hoverColor="#657077"
                         isFill={true}
-                        onClick={this.onToggleInfoPanel}
-                    />
-                </div>
-            </StyledInfoPanelToggleWrapper>
-        );
-
-        return (
-            <Consumer>
-                {(context) => (
-                    <StyledContainer
-                        width={context.sectionWidth}
-                        isRootFolder={isRootFolder}
-                        canCreate={canCreate}
-                        isRecycleBinFolder={isRecycleBinFolder}
-                        title={title}
-                        isDesktop={isDesktop}
-                        isTabletView={isTabletView}
-                        isLoading={isLoading}
-                        viewAs={viewAs}
+                        onClick={this.onBackToParentFolder}
+                        className="arrow-button"
+                      />
+                    )}
+                    <Headline
+                      className="headline-header"
+                      type="content"
+                      truncate={true}
                     >
-                        {isHeaderVisible ? (
-                            <TableGroupMenu
-                                checkboxOptions={menuItems}
-                                onChange={this.onChange}
-                                isChecked={isHeaderChecked}
-                                isIndeterminate={isHeaderIndeterminate}
-                                headerMenu={headerMenu}
-                                infoPanelToggle={infoPanelToggle}
-                            />
-                        ) : (
-                            <div className="header-container">
-                                {isLoading ? (
-                                    <Loaders.SectionHeader />
-                                ) : (
-                                    <>
-                                        {!isRootFolder && (
-                                            <IconButton
-                                                iconName="/static/images/arrow.path.react.svg"
-                                                size="17"
-                                                color="#A3A9AE"
-                                                hoverColor="#657077"
-                                                isFill={true}
-                                                onClick={
-                                                    this.onBackToParentFolder
-                                                }
-                                                className="arrow-button"
-                                            />
-                                        )}
-                                        <Headline
-                                            className="headline-header"
-                                            type="content"
-                                            truncate={true}
-                                        >
-                                            {title}
-                                        </Headline>
-                                        {!isRootFolder && canCreate ? (
-                                            <>
-                                                <ContextMenuButton
-                                                    className="add-button"
-                                                    directionX="right"
-                                                    iconName="images/header.plus.svg"
-                                                    size={17}
-                                                    color="#A3A9AE"
-                                                    hoverColor="#657077"
-                                                    isFill
-                                                    getData={
-                                                        this
-                                                            .getContextOptionsPlus
-                                                    }
-                                                    isDisabled={false}
-                                                />
+                      {title}
+                    </Headline>
+                    {!isRootFolder && canCreate ? (
+                      <>
+                        <ContextMenuButton
+                          className="add-button"
+                          directionX="right"
+                          iconName="images/header.plus.svg"
+                          size={17}
+                          color="#A3A9AE"
+                          hoverColor="#657077"
+                          isFill
+                          getData={this.getContextOptionsPlus}
+                          isDisabled={false}
+                        />
 
-                                                <ContextMenuButton
-                                                    className="option-button"
-                                                    directionX="right"
-                                                    iconName="images/vertical-dots.react.svg"
-                                                    size={17}
-                                                    color="#A3A9AE"
-                                                    hoverColor="#657077"
-                                                    isFill
-                                                    getData={
-                                                        this
-                                                            .getContextOptionsFolder
-                                                    }
-                                                    isDisabled={false}
-                                                />
-                                            </>
-                                        ) : (
-                                            canCreate && (
-                                                <ContextMenuButton
-                                                    className="add-button"
-                                                    directionX="right"
-                                                    iconName="images/header.plus.svg"
-                                                    size={17}
-                                                    color="#A3A9AE"
-                                                    hoverColor="#657077"
-                                                    isFill
-                                                    getData={
-                                                        this
-                                                            .getContextOptionsPlus
-                                                    }
-                                                    isDisabled={false}
-                                                />
-                                            )
-                                        )}
-                                        {isRecycleBinFolder &&
-                                            !isEmptyFilesList && (
-                                                <span
-                                                    title={t("EmptyRecycleBin")}
-                                                >
-                                                    <IconButton
-                                                        iconName="images/clear.active.react.svg"
-                                                        size="15"
-                                                        color="#A3A9AE"
-                                                        hoverColor="#657077"
-                                                        isFill={true}
-                                                        onClick={
-                                                            this
-                                                                .onEmptyTrashAction
-                                                        }
-                                                        className="trash-button"
-                                                    />
-                                                </span>
-                                            )}
-                                        {infoPanelToggle}
-                                    </>
-                                )}
-                            </div>
-                        )}
-                    </StyledContainer>
+                        <ContextMenuButton
+                          className="option-button"
+                          directionX="right"
+                          iconName="images/vertical-dots.react.svg"
+                          size={17}
+                          color="#A3A9AE"
+                          hoverColor="#657077"
+                          isFill
+                          getData={this.getContextOptionsFolder}
+                          isDisabled={false}
+                        />
+                      </>
+                    ) : (
+                      canCreate && (
+                        <ContextMenuButton
+                          className="add-button"
+                          directionX="right"
+                          iconName="images/header.plus.svg"
+                          size={17}
+                          color="#A3A9AE"
+                          hoverColor="#657077"
+                          isFill
+                          getData={this.getContextOptionsPlus}
+                          isDisabled={false}
+                        />
+                      )
+                    )}
+                    {isRecycleBinFolder && !isEmptyFilesList && (
+                      <span title={t("EmptyRecycleBin")}>
+                        <IconButton
+                          iconName="images/clear.active.react.svg"
+                          size="15"
+                          color="#A3A9AE"
+                          hoverColor="#657077"
+                          isFill={true}
+                          onClick={this.onEmptyTrashAction}
+                          className="trash-button"
+                        />
+                      </span>
+                    )}
+                    {infoPanelToggle}
+                  </>
                 )}
-            </Consumer>
-        );
-    }
+              </div>
+            )}
+          </StyledContainer>
+        )}
+      </Consumer>
+    );
+  }
 }
 
 export default inject(
-    ({
-        auth,
-        filesStore,
-        dialogsStore,
-        selectedFolderStore,
-        filesActionsStore,
-        settingsStore,
-        treeFoldersStore,
-        infoPanelStore,
-    }) => {
-        const {
-            setSelected,
-            setSelection,
-            fileActionStore,
-            fetchFiles,
-            filter,
-            canCreate,
-            isHeaderVisible,
-            isHeaderIndeterminate,
-            isHeaderChecked,
-            isThirdPartySelection,
-            setIsLoading,
-            cbMenuItems,
-            getCheckboxItemLabel,
-            isEmptyFilesList,
-            getFolderInfo,
-            setBufferSelection,
-            viewAs,
-        } = filesStore;
-        const { setAction } = fileActionStore;
-        const {
-            setSharingPanelVisible,
-            setMoveToPanelVisible,
-            setCopyPanelVisible,
-            setDeleteDialogVisible,
-            setEmptyTrashDialogVisible,
-            setSelectFileDialogVisible,
-            setIsFolderActions,
-        } = dialogsStore;
+  ({
+    auth,
+    filesStore,
+    dialogsStore,
+    selectedFolderStore,
+    filesActionsStore,
+    settingsStore,
+    treeFoldersStore,
+    infoPanelStore,
+  }) => {
+    const {
+      setSelected,
+      setSelection,
+      fileActionStore,
+      fetchFiles,
+      filter,
+      canCreate,
+      isHeaderVisible,
+      isHeaderIndeterminate,
+      isHeaderChecked,
+      isThirdPartySelection,
+      setIsLoading,
+      cbMenuItems,
+      getCheckboxItemLabel,
+      isEmptyFilesList,
+      getFolderInfo,
+      setBufferSelection,
+      viewAs,
+    } = filesStore;
+    const { setAction } = fileActionStore;
+    const {
+      setSharingPanelVisible,
+      setMoveToPanelVisible,
+      setCopyPanelVisible,
+      setDeleteDialogVisible,
+      setEmptyTrashDialogVisible,
+      setSelectFileDialogVisible,
+      setIsFolderActions,
+    } = dialogsStore;
 
-        const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
-        const {
-            deleteAction,
-            downloadAction,
-            getHeaderMenu,
-        } = filesActionsStore;
+    const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
+    const { deleteAction, downloadAction, getHeaderMenu } = filesActionsStore;
 
-        //const { toggleInfoPanel, isInfoPanelVisible } = infoPanelStore;
-        const toggleInfoPanel = infoPanelStore.toggleIsVisible;
-        const isInfoPanelVisible = infoPanelStore.isVisible;
+    //const { toggleInfoPanel, isInfoPanelVisible } = infoPanelStore;
+    const toggleInfoPanel = infoPanelStore.toggleIsVisible;
+    const isInfoPanelVisible = infoPanelStore.isVisible;
 
-        return {
-            isDesktop: auth.settingsStore.isDesktopClient,
-            isRootFolder: selectedFolderStore.parentId === 0,
-            title: selectedFolderStore.title,
-            parentId: selectedFolderStore.parentId,
-            currentFolderId: selectedFolderStore.id,
-            filter,
-            canCreate,
-            toggleInfoPanel,
-            isInfoPanelVisible,
-            isHeaderVisible,
-            isHeaderIndeterminate,
-            isHeaderChecked,
-            isThirdPartySelection,
-            isTabletView: auth.settingsStore.isTabletView,
-            confirmDelete: settingsStore.confirmDelete,
-            personal: auth.settingsStore.personal,
-            cbMenuItems,
-            getFolderInfo,
+    return {
+      isDesktop: auth.settingsStore.isDesktopClient,
+      isRootFolder: selectedFolderStore.parentId === 0,
+      title: selectedFolderStore.title,
+      parentId: selectedFolderStore.parentId,
+      currentFolderId: selectedFolderStore.id,
+      filter,
+      canCreate,
+      toggleInfoPanel,
+      isInfoPanelVisible,
+      isHeaderVisible,
+      isHeaderIndeterminate,
+      isHeaderChecked,
+      isThirdPartySelection,
+      isTabletView: auth.settingsStore.isTabletView,
+      confirmDelete: settingsStore.confirmDelete,
+      personal: auth.settingsStore.personal,
+      cbMenuItems,
+      getFolderInfo,
 
-            setSelected,
-            setSelection,
-            setAction,
-            setIsLoading,
-            fetchFiles,
-            setSharingPanelVisible,
-            setMoveToPanelVisible,
-            setCopyPanelVisible,
-            setBufferSelection,
-            setIsFolderActions,
-            deleteAction,
-            setDeleteDialogVisible,
-            downloadAction,
-            getHeaderMenu,
-            getCheckboxItemLabel,
-            setSelectFileDialogVisible,
+      setSelected,
+      setSelection,
+      setAction,
+      setIsLoading,
+      fetchFiles,
+      setSharingPanelVisible,
+      setMoveToPanelVisible,
+      setCopyPanelVisible,
+      setBufferSelection,
+      setIsFolderActions,
+      deleteAction,
+      setDeleteDialogVisible,
+      downloadAction,
+      getHeaderMenu,
+      getCheckboxItemLabel,
+      setSelectFileDialogVisible,
 
-            isRecycleBinFolder,
-            setEmptyTrashDialogVisible,
-            isEmptyFilesList,
-            isPrivacyFolder,
-            viewAs,
-        };
-    }
+      isRecycleBinFolder,
+      setEmptyTrashDialogVisible,
+      isEmptyFilesList,
+      isPrivacyFolder,
+      viewAs,
+    };
+  }
 )(
-    withTranslation(["Home", "Common", "Translations"])(
-        withRouter(observer(SectionHeaderContent))
-    )
+  withTranslation(["Home", "Common", "Translations"])(
+    withRouter(observer(SectionHeaderContent))
+  )
 );
