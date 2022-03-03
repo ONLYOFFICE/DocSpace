@@ -1,4 +1,6 @@
-﻿namespace ASC.Files.Api;
+﻿using Module = ASC.Api.Core.Module;
+
+namespace ASC.Files.Api;
 
 public class SettingsController : ApiControllerBase
 {

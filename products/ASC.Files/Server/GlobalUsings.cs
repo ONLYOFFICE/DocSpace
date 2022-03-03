@@ -52,6 +52,7 @@ global using ASC.Web.Studio.Core;
 global using ASC.Web.Studio.Core.Notify;
 global using ASC.Web.Studio.Utility;
 
+global using Autofac;
 global using Autofac.Extensions.DependencyInjection;
 
 global using Microsoft.AspNetCore.Authorization;
@@ -63,5 +64,6 @@ global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Hosting;
 global using Microsoft.Extensions.Options;
+global using Microsoft.Extensions.Hosting.WindowsServices;
 
 global using Newtonsoft.Json.Linq;

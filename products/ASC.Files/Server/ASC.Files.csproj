@@ -5,6 +5,7 @@
 	  <DefaultItemExcludes>$(DefaultItemExcludes);</DefaultItemExcludes>
 	  <RazorCompileOnBuild>false</RazorCompileOnBuild>
 	  <GenerateMvcApplicationPartsAssemblyAttributes>false</GenerateMvcApplicationPartsAssemblyAttributes>
+	  <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyTitle>ASC.Files</AssemblyTitle>
     <Company>Ascensio System SIA</Company>
     <Product>ASC.Files</Product>
