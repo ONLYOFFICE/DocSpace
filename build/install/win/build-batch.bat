@@ -40,12 +40,14 @@ REM echo ######## Edit nginx conf files ########
 %sed% -i "s!/var/www!..!g" build/install/win/Files/nginx/conf/includes/onlyoffice-*.conf
 
 REM echo ######## Edit json files ########
-%sed% -i "s!\(\"machinekey\":\).*!\1 \"1123askdasjklasbnd\",!g" build/install/win/Files/config/appsettings*.json
-%sed% -i "s!\(\"folder\":\).*!\1 \"{APPDIRCONF}products\",!g" build/install/win/Files/config/appsettings*.json
-%sed% -i "s!\(\"path\":\).*!\1 \"{APPDIRCONF}services\/ASC.Socket.IO\/service\",!g" build/install/win/Files/config/socket*.json
-%sed% -i "s!\(\"path\":\).*!\1 \"{APPDIRCONF}services\/ASC.Thumbnails\/service\"!g" build/install/win/Files/config/thumb*.json
-%sed% -i "s!\(\"path\":\).*!\1 \"{APPDIRCONF}services\/ASC.UrlShortener\/service\/index.js\"!g" build/install/win/Files/config/urlshortener*.json
-%sed% -i "s!\(\"path\":\).*!\1 \"{APPDIRCONF}services\/ASC.SsoAuth\/service\"!g" build/install/win/Files/config/ssoauth*.json
+%sed% -i "s!\(\"machinekey\":\).\".*\"!\1 \"1123askdasjklasbnd\"!g" build/install/win/Files/config/appsettings*.json
+%sed% -i "s!\(\"folder\":\).\".*\"!\1 \"{APPDIRCONF}products\"!g" build/install/win/Files/config/appsettings*.json
+%sed% -i "s!\(\"path\":\).\".*\"!\1 \"{APPDIRCONF}services\/ASC.Socket.IO\/service\"!g" build/install/win/Files/config/socket*.json
+%sed% -i "s!\(\"path\":\).\".*\"!\1 \"{APPDIRCONF}services\/ASC.Thumbnails\/service\"!g" build/install/win/Files/config/thumb*.json
+%sed% -i "s!\(\"path\":\).\".*\"!\1 \"{APPDIRCONF}services\/ASC.UrlShortener\/service\/index.js\"!g" build/install/win/Files/config/urlshortener*.json
+%sed% -i "s!\(\"path\":\).\".*\"!\1 \"{APPDIRCONF}services\/ASC.SsoAuth\/service\"!g" build/install/win/Files/config/ssoauth*.json
+%sed% -i "s!\(\"path\":\).\".*\"!\1 \"{APPDIRCONF}services\/ASC.UrlShortener\/service\/index.js\"!g" build/install/win/Files/config/appsettings.services.json
+%sed% -i "s!\(\"log\":\).\".*\"!\1 \"{APPDIRCONF}Logs\/urlshortener.log\"!g" build/install/win/Files/config/appsettings.services.json
 
 REM echo ######## Delete sed temp files ########
 del /f /q build\install\win\Files\config\sed*
