@@ -9,7 +9,7 @@ const Dialog = styled.div`
   cursor: default;
   align-items: center;
 
-  width: ${(props) => props.theme.modalDialog.width};
+  width: ${(props) => props.width || props.theme.modalDialog.width};
   max-width: ${(props) => props.theme.modalDialog.maxwidth};
   margin: ${(props) => props.theme.modalDialog.margin};
   min-height: ${(props) => props.theme.modalDialog.minHeight};

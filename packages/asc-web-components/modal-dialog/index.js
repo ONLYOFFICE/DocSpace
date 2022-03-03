@@ -112,6 +112,7 @@ class ModalDialog extends React.Component {
       contentPaddingBottom,
       removeScroll,
       modalLoaderBodyHeight,
+      width,
     } = this.props;
 
     let header = null;
@@ -146,6 +147,7 @@ class ModalDialog extends React.Component {
           isModalDialog
         >
           <Dialog
+            width={width}
             className={`${className} not-selectable`}
             id={id}
             style={style}
@@ -258,6 +260,7 @@ ModalDialog.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   contentPaddingBottom: PropTypes.string,
   modalLoaderBodyHeight: PropTypes.string,
+  width: PropTypes.string,
 };
 
 ModalDialog.defaultProps = {
