@@ -371,11 +371,15 @@ export default function withFileActions(WrappedFileItem) {
             (item.isFolder || (!item.fileExst && item.id === -1))
         ) !== -1;
 
-      const isActive =
+      let isActive = false;
+
+      if (
         bufferSelection &&
         bufferSelection.id === item.id &&
         bufferSelection.fileExst === item.fileExst &&
-        !selection.length; // need for select row item
+        !selection.length
+      )
+        isActive = true;
 
       return {
         t,
@@ -421,7 +425,6 @@ export default function withFileActions(WrappedFileItem) {
         isActive,
         inProgress,
         setBufferSelection,
-        bufferSelection,
       };
     }
   )(observer(WithFileActions));

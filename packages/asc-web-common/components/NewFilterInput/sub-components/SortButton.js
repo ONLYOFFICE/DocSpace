@@ -43,6 +43,10 @@ const StyledSortButton = styled.div`
   .combo-button {
     background: ${(props) =>
       props.theme.newFilterInput.sort.background} !important;
+
+    .icon-button_svg {
+      cursor: pointer;
+    }
   }
 
   .sort-combo-box {
@@ -249,26 +253,27 @@ const SortButton = ({
             )}
           </>
         )}
-
-        {/* <>
-          {data.map((item, index) => (
-            <>
-              <DropDownItem
-                onClick={onOptionClick}
-                className={item.className}
-                key={item.key}
-                data-value={item.key}
-              >
-                <Text fontWeight={600}>{item.label}</Text>
-                <SortDesc
-                  className={`option-item__icon  ${
-                    item.isSelected ? "selected-option-item__icon" : ""
-                  }`}
-                />
-              </DropDownItem>
-            </>
-          ))}
-        </> */}
+        {!isFavoritesFolder && !isRecentFolder && (
+          <>
+            {data.map((item, index) => (
+              <>
+                <DropDownItem
+                  onClick={onOptionClick}
+                  className={item.className}
+                  key={item.key}
+                  data-value={item.key}
+                >
+                  <Text fontWeight={600}>{item.label}</Text>
+                  <SortDesc
+                    className={`option-item__icon  ${
+                      item.isSelected ? "selected-option-item__icon" : ""
+                    }`}
+                  />
+                </DropDownItem>
+              </>
+            ))}
+          </>
+        )}
       </>
     );
   }, [
@@ -286,6 +291,7 @@ const SortButton = ({
     <StyledSortButton
       viewAs={viewAs}
       isDesc={currentSelectedFilterData.sortDirection === "desc"}
+      onClick={toggleCombobox}
     >
       <ComboBox
         opened={isOpen}
@@ -303,11 +309,7 @@ const SortButton = ({
         isDefaultMode={false}
         manualY={"102%"}
       >
-        <IconButton
-          onClick={toggleCombobox}
-          iconName="/static/images/sort.react.svg"
-          size={16}
-        />
+        <IconButton iconName="/static/images/sort.react.svg" size={16} />
       </ComboBox>
     </StyledSortButton>
   );
