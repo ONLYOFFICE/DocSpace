@@ -38,11 +38,19 @@ export function setPortalPasswordSettings(
   });
 }
 
-export function setMailDomainSettings(type, domains, inviteUsersAsVisitors) {
+export function setMailDomainSettings(data) {
   return request({
     method: "post",
     url: "/settings/maildomainsettings.json",
-    data: { type, domains, inviteUsersAsVisitors },
+    data,
+  });
+}
+
+export function setDNSSettings(dnsName, enable) {
+  return request({
+    method: "post",
+    url: "/settings/maildomainsettings.json",
+    data: { dnsName, enable },
   });
 }
 
@@ -78,11 +86,18 @@ export function setCookieSettings(lifeTime) {
   });
 }
 
-export function setLifetimeAuditSettings(loginHistoryLifeTime) {
+export function setLifetimeAuditSettings(data) {
   return request({
     method: "post",
-    url: "/audit/settings/lifetime.json",
-    data: { loginHistoryLifeTime },
+    url: "/security/audit/settings/lifetime.json",
+    data,
+  });
+}
+
+export function getAuditTrailReport() {
+  return request({
+    method: "post",
+    url: "/security/audit/login/report.json",
   });
 }
 
