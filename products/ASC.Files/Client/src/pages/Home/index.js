@@ -29,23 +29,6 @@ import DragTooltip from "../../components/DragTooltip";
 import { observer, inject } from "mobx-react";
 import config from "../../../package.json";
 
-import {
-  ArticleBodyContent,
-  ArticleHeaderContent,
-  ArticleMainButtonContent,
-} from "../../components/Article";
-import DragTooltip from "../../components/DragTooltip";
-import { createTreeFolders } from "../../helpers/files-helpers";
-import { InfoPanelBodyContent } from "./InfoPanel";
-import { InfoPanelHeaderContent } from "./InfoPanel";
-import MediaViewer from "./MediaViewer";
-import {
-  SectionBodyContent,
-  SectionFilterContent,
-  SectionHeaderContent,
-  SectionPagingContent,
-} from "./Section";
-
 class PureHome extends React.Component {
   componentDidMount() {
     const {
