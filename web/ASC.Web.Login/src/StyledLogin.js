@@ -1,8 +1,14 @@
 import styled, { css } from "styled-components";
 
 export const ButtonsWrapper = styled.div`
-  display: table;
-  margin: auto;
+  display: flex;
+  flex-direction: column;
+  margin: 0 213px 0 213px;
+  width: 320px;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `;
 
 export const LoginContainer = styled.div`
@@ -19,15 +25,7 @@ export const LoginContainer = styled.div`
 
   .buttonWrapper {
     margin-bottom: 8px;
-    width: 320px;
-
-    @media (max-width: 768px) {
-      width: 480px;
-    }
-
-    @media (max-width: 414px) {
-      width: 311px;
-    }
+    width: 100%;
   }
 
   @media (max-width: 768px) {
