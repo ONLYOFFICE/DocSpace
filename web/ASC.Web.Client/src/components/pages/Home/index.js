@@ -1,18 +1,17 @@
+import React, { useEffect } from "react";
+import PropTypes from "prop-types";
+import { withRouter } from "react-router";
+import { useTranslation } from "react-i18next";
+import styled from "styled-components";
+import Text from "@appserver/components/text";
+import toastr from "studio/toastr";
 import PageLayout from "@appserver/common/components/PageLayout";
 import history from "@appserver/common/history";
-import { tryRedirectTo } from "@appserver/common/utils";
-import Text from "@appserver/components/text";
-import { inject, observer } from "mobx-react";
-import PropTypes from "prop-types";
-import React, { useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import { withRouter } from "react-router";
-import toastr from "studio/toastr";
-import styled from "styled-components";
-
-import config from "../../../../package.json";
-import { setDocumentTitle } from "../../../helpers/utils";
 import ModuleTile from "./ModuleTile";
+import { tryRedirectTo } from "@appserver/common/utils";
+import { setDocumentTitle } from "../../../helpers/utils";
+import { inject, observer } from "mobx-react";
+import config from "../../../../package.json";
 
 const HomeContainer = styled.div`
   padding: 62px 15px 0 15px;

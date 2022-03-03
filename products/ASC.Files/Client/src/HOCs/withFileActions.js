@@ -317,6 +317,7 @@ export default function withFileActions(WrappedFileItem) {
         formatsStore,
         mediaViewerDataStore,
         infoPanelStore,
+        settingsStore,
       },
       { item, t, history }
     ) => {
