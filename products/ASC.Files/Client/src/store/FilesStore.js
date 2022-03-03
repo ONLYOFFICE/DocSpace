@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import api from "@appserver/common/api";
 import {
   FolderType,
@@ -519,8 +519,11 @@ class FilesStore {
             data.current.rootFolderType === FolderType.Privacy;
 
           this.setFilesFilter(filterData, isPrefSettings); //TODO: FILTER
-          this.setFolders(isPrivacyFolder && isMobile ? [] : data.folders);
-          this.setFiles(isPrivacyFolder && isMobile ? [] : data.files);
+
+          runInAction(() => {
+            this.setFolders(isPrivacyFolder && isMobile ? [] : data.folders);
+            this.setFiles(isPrivacyFolder && isMobile ? [] : data.files);
+          });
 
           if (clearFilter) {
             this.fileActionStore.setAction({ type: null });
@@ -639,7 +642,7 @@ class FilesStore {
     const isThirdPartyItem = !!item.providerKey;
     const hasNew =
       item.new > 0 || (item.fileStatus & FileStatus.IsNew) === FileStatus.IsNew;
-    const canConvert = false; //TODO: fix of added convert check;
+    const canConvert = this.filesSettingsStore.extsConvertible[item.fileExst];
     const isEncrypted = item.encrypted;
     const isDocuSign = false; //TODO: need this prop;
     const isEditing =
@@ -735,7 +738,7 @@ class FilesStore {
         }
       }
 
-      if (!this.canConvertSelected) {
+      if (!canConvert) {
         fileOptions = this.removeOptions(fileOptions, ["download-as"]);
       }
 
@@ -1325,6 +1328,14 @@ class FilesStore {
       default:
         return false;
     }
+  }
+
+  get filterType() {
+    return this.filter.filterType;
+  }
+
+  get filterSearch() {
+    return this.filter.search;
   }
 
   onCreateAddTempItem = (items) => {

@@ -113,8 +113,13 @@ class DialogsStore {
     this.destFolderId = destFolderId;
   };
 
-  setNewFilesPanelVisible = async (visible, newIds, item) => {
-    const id = newIds && newIds[newIds.length - 1];
+  setNewFilesPanelVisible = async (visible, newId, item) => {
+    const { pathParts } = this.selectedFolderStore;
+
+    const id = visible && !newId ? item.id : newId;
+    const newIds = newId ? [newId] : pathParts;
+    item && pathParts.push(item.id);
+
     let newFilesPanelVisible = visible;
 
     if (visible) {
