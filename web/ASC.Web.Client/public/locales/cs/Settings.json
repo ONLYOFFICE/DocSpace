@@ -80,6 +80,10 @@
   "WelcomePageTitle": "Název uvítací stránky",
   "YouHaveUnsavedChanges": "Máte neuložené změny",
 
+  "AutoBackup": "Automatická záloha",
+  "AutoBackupDescription": "Použijte tuto možnost pro automatické zálohování portálových dat.",
+  "RestoreBackupDescription": "Použijte tuto možnost pro obnovu Vašeho portálu z předchozího souboru obnovy.",
+  "ManualBackupDescription": "Použijte tuto možnost, pokud chcete získat všechna data obsažená na portálu v souboru.",
   "ManualBackupHelp": "<strong>Možnost zálohy dat</strong> je použita pro zálohování portálových dat, aby je bylo možné později obnovit na Váš místní server. Vyberte úložiště pro data (nezapomeňte vyplnit Vaše Amazon detaily, aby jste k nim měli přístup).<br/><strong>Poznámka:</strong>musíte připojit účet třetí strany (DropBox, Box.com, OneDrive nebo Google Drive) k složce ONLYOFFICE Běžné Dokumenty před tím, než tam budete moci uložit vaše zálohovaná data.",
   "AutoBackupHelp": "Možnost <strong> Automatického zálohování </strong> se používá pro automatizaci procesu zálohování portálových dat, aby je bylo možné později obnovit z místního serveru. Vyberte si místo uložení, periodu automatického zálohování a maximální počet uložených kopií.<br/><strong>Poznámka:</strong>před tím, než uložíte svojí zálohu na účet třetí strany (DropBox, Box.com, OneDrive nebo Google Drive), musíte připojit tento účet  ke složce ONLYOFFICE Běžné Dokumenty.",
   "RestoreBackupHelp": "<strong>Možnost Obnova dat</strong> je použita k obnově dříve uloženým datům na portálu (z místního serveru nebo SaaS portálu). Vyberte úložný prostor, kde jsou Vaše data uložena, zadejte důležité detaily a zaškrtněte <strong>Poslat oznámení všem uživatelům portálu</strong>, abyste upozornili uživatele portálu ohledně zálohovacích/obnovovacích operací."

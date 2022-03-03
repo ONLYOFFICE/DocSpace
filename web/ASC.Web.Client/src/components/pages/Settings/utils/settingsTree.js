@@ -118,7 +118,7 @@ export const settingsTree = [
             key: "4-0-0",
             icon: "",
             link: "automatic-backup",
-            tKey: "AutomaticBackup",
+            tKey: "AutoBackup",
           },
           {
             key: "4-0-1",

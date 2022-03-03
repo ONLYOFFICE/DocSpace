@@ -245,7 +245,7 @@ class BackupDesktopView extends React.Component {
           <div className="backup_modules-separation">
             <div className="backup_modules-header_wrapper">
               <Text className="backup_modules-header">
-                {t("AutomaticBackup")}
+                {t("AutoBackup")}
               </Text>
               {renderTooltip(t("AutoBackupHelp"))}
             </div>

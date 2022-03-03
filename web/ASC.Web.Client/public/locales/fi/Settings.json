@@ -80,6 +80,10 @@
   "WelcomePageTitle": "Tervetuloa-sivun otsikko",
   "YouHaveUnsavedChanges": "Sinulla on tallentamattomia muutoksia",
 
+  "AutoBackup": "Automaattinen varmuuskopiointi",
+  "AutoBackupDescription": "Käytä tätä vaihtoehtoa portaalin tietojen automaattiseen varmuuskopiointiin",
+  "RestoreBackupDescription": "Käytä tätä, jos haluat palauttaa sivuston sisällön aiemmin tehdyltä varmuuskopiolta.",
+  "ManualBackupDescription": "Käytä tätä, jos haluat tallettaa sivuston kaiken sisällön tiedostoon.",
   "ManualBackupHelp": "<strong>Varmuuskopiointi</strong> mahdollistaa kaiken portaalin tiedon varmuuskopioinnin sen palauttamiseksi myöhemmin paikalliseen palvelimeen. Valitse tallennuspaikka tiedolle.<br/><strong>Huom:</strong> sinun tulee yhdistää ulkopuolinen tallennuspalvelusi (Dropbox, Box.com, OneDrive tai Google Drive) ONLYOFFICE Asiakirjat moduuliin ennen kuin voit varmuuskopioida sinne.",
   "AutoBackupHelp": "<strong>Automaattisen varmuuskopioinnin</strong> vaihtoehtoa käytetään tallentamaan portaalin tietoja automaattisesti, jotta ne voidaan palauttaa myöhemmin paikalliseen palvelimeen. Valitse talletustapa, automaattisen varmuuskopioinnin jakso ja maksimimäärä tallennettuja kopioita.<br/><strong>Huom:</strong> ennenkuin voit tallentaa varmuuskopion kolmannen osapuolen tilille (DropBox, Box.com, OneDrive tai Google Drive), tulee sinun yhdistää tämä tili ONLYOFFICEN  Yleisten asiakirjojen kansioon.",
   "RestoreBackupHelp": "<strong>Tietojen palautus</strong> on käytössäsi, kun haluat palauttaa sivuston tiedot aiemmin tehdyltä varmuuskopiolta. Valitse varmuuskopion sijainti, syötä tarvittavat yksityiskohdat ja valitse <strong>Lähetä ilmoitus sivuston käyttäjille</strong> ilmoittaaksesi heille tietojen palauttamisesta."

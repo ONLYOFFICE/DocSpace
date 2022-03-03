@@ -80,6 +80,10 @@
   "WelcomePageTitle": "Iepazīšanās lapas nosaukums",
   "YouHaveUnsavedChanges": "Jums ir nesaglabātas izmaiņas",
 
+  "AutoBackup": "Automātiskā rezerves kopēšana",
+  "AutoBackupDescription": "Izmantojiet šo iespēju automātiskai portāla datu rezerves kopēšanai",
+  "RestoreBackupDescription": "Izmantojiet šo iespēju, lai atjaunotu portālu no iepriekš noglabāta rezerves faila.",
+  "ManualBackupDescription": "Izmantojiet šo iespēju, ka vēlaties visus portāla datus iegūt faila veidā.",
   "ManualBackupHelp": "<strong>Datu rezerves kopēšanas</strong> iespēja tiek izmantota, lai kopētu portāla datus un tos vēlāk noglabātu jūsu vietējā serverī. Izvēlieties datu glabātuvi (neaizmirstiet ievadīt Amazon datus, lai varētu tiem piekļūt).<br/><strong>Piezīme:</strong> jums ir jāpieslēdzas savu trešās puses kontu (DropBox, Box.com, OneDrive or Google Drive) ONLYOFFICE koplietošanas dokumentu mapei pirms jūs varēsit tajā noglabāt savu rezerves kopiju.",
   "AutoBackupHelp": "<strong>Automātiskās datu rezerves kopēšanas</strong> iespēja tiek izmantota, lai automatizētu portāla datu rezerves kopēšanas procesu un varētu tos vēlāk noglabāt SaaS portāla lokālajā serverī.<br/><strong>Piezīme:</strong> Pirms jūs varēsit noglabāt rezerves datus trešās puses kontā (Dropbox, Box.com, OneDrive vai Google Drive), jums būs jāpieslēdzas šim kontam ONLYOFFICE Koplietošanas dokumentu mapē.",
   "RestoreBackupHelp": "<strong>Datu atjaunošanas</strong> iespēja tiek izmantota, lai atjaunotu iepriekš noglabātus portāla datus (no vietējā servera vai SaaS portāla). Izvēlieties glabātuvi, kurā dati tiek noglabāti, ievadiet nepieciešamo informāciju un atzīmējiet lauku {0}Nosūtīt ziņojumu portāla lietotājiem{1}, lai brīdinātu sava portāla lietotājus par rezerves kopēšanas/atjaunošanas darbībām."

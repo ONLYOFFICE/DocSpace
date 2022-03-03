@@ -179,7 +179,7 @@ class BackupMobileView extends React.Component {
                   "/settings/datamanagement/backup/automatic-backup"
                 )}
               >
-                {t("AutomaticBackup")}
+                {t("AutoBackup")}
               </Link>
               <StyledArrowRightIcon size="small" color="#333333" />
             </div>
