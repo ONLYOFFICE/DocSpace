@@ -9,14 +9,16 @@ import ArrowButton from "./arrow-btn";
 import Text from "./text";
 import ControlButtons from "./control-btn";
 import Item from "./item";
+import StyledContainer from "../StyledNavigation";
 
 import { isMobile, isMobileOnly } from "react-device-detect";
 import {
   tablet,
   mobile,
-  isMobile as IsMobileUtils,
+  isMobile as isMobileUtils,
   isTablet as isTabletUtils,
 } from "@appserver/components/utils/device";
+
 import { Base } from "@appserver/components/themes";
 
 const StyledBox = styled.div`
@@ -24,13 +26,13 @@ const StyledBox = styled.div`
   top: 0px;
   left: ${isMobile ? "-16px" : "-20px"};
 
+  padding: ${isMobile ? "0 16px" : "0 20px"};
+
+  width: ${(props) => props.dropBoxWidth}px;
+
   height: ${(props) => (props.height ? `${props.height}px` : "fit-content")};
-  ${(props) =>
-    props.changeWidth &&
-    !isMobile &&
-    css`
-      width: ${(props) => `calc(${props.width}px + 24px)`};
-    `}
+  max-height: calc(100vh - 48px);
+
   z-index: 399;
   display: flex;
   flex-direction: column;
@@ -41,117 +43,12 @@ const StyledBox = styled.div`
   border-radius: 0px 0px 6px 6px;
 
   @media ${tablet} {
-    top: 0px;
     left: -16px;
-    width: ${(props) =>
-      props.showText ? css`calc(100vw - 240px)` : css`calc(100vw - 52px)`};
-    max-width: 100vw !important;
+    padding: 0 16px;
   }
-
-  @media ${mobile} {
-    width: 100vw !important;
-    max-width: 100vw !important;
-  }
-
-  ${isMobile &&
-  css`
-    top: 0px;
-    left: -16px;
-    width: ${(props) =>
-      props.showText ? css`calc(100vw - 240px)` : css`calc(100vw - 52px)`};
-    max-width: 100vw !important;
-  `}
-
-  ${isMobileOnly &&
-  css`
-    width: 100vw !important;
-    max-width: 100vw !important;
-  `}
 `;
 
 StyledBox.defaultProps = { theme: Base };
-
-const StyledContainer = styled.div`
-  margin-top: 14px;
-  margin-bottom: 6px;
-
-  position: relative;
-  top: 0px;
-
-  align-items: center;
-
-  min-width: 100px;
-  max-width: calc(100vw - 32px);
-
-  padding: ${isMobile ? "0px 16px" : "0px 20px"};
-
-  display: grid;
-  grid-template-columns: ${(props) =>
-    props.canCreate ? "auto auto auto auto 1fr" : "auto auto auto 1fr"};
-
-  @media ${tablet} {
-    padding: 0 16px;
-    margin-top: 17px;
-    grid-template-columns: ${(props) =>
-      props.canCreate ? "auto 1fr auto auto" : "auto 1fr auto"};
-  }
-
-  ${
-    isMobile &&
-    css`
-      margin-top: 17px;
-      grid-template-columns: ${(props) =>
-        props.canCreate ? "auto 1fr auto auto" : "auto 1fr auto"};
-    `
-  }
-
-  @media ${mobile} {
-    padding: 0 16px;
-    margin-top: 12px;
-    // padding-bottom: 7px;
-  }
-
-  ${
-    isMobileOnly &&
-    css`
-      margin-top: 12px;
-      padding-bottom: 7px;
-    `
-  }
-
-  .arrow-button {
-    margin-right: 12px;
-    min-width: 17px;
-
-    align-items: center;
-  }
-
-  .add-button {
-    margin-right: 10px;
-    min-width: 17px;
-
-    @media ${tablet} {
-      display: none;
-    }
-
-    ${
-      isMobile &&
-      css`
-        display: none;
-      `
-    }
-  }
-
-  .trash-button {
-    min-width: 17px;
-    margin-left: 6px;
-  }
-
-  .option-button {
-    min-width: 17px;
-  }
-  }
-`;
 
 const Row = React.memo(({ data, index, style }) => {
   const isRoot = index === data[0].length - 1;
@@ -170,10 +67,9 @@ const Row = React.memo(({ data, index, style }) => {
 const DropBox = React.forwardRef(
   (
     {
-      width,
-      height,
+      sectionHeight,
       showText,
-      changeWidth,
+      dropBoxWidth,
       isRootFolder,
       onBackToParentFolder,
       title,
@@ -192,7 +88,7 @@ const DropBox = React.forwardRef(
 
     const getItemSize = (index) => {
       if (index === countItems - 1) return 51;
-      return isMobile || IsMobileUtils() || isTabletUtils() ? 36 : 30;
+      return isMobile || isMobileUtils() || isTabletUtils() ? 36 : 30;
     };
 
     React.useEffect(() => {
@@ -202,22 +98,31 @@ const DropBox = React.forwardRef(
 
       const currentHeight = itemsHeight.reduce((a, b) => a + b);
 
+      let navHeight = 41;
+
+      if (isMobile || isTabletUtils()) {
+        navHeight = 49;
+      }
+
+      if (isMobileOnly || isMobileUtils()) {
+        navHeight = 45;
+      }
+
       setDropBoxHeight(
-        currentHeight > window.innerHeight - 99
-          ? window.innerHeight - 99
+        currentHeight + navHeight > sectionHeight
+          ? sectionHeight - navHeight
           : currentHeight
       );
-    });
+    }, [sectionHeight]);
 
     return (
       <StyledBox
         ref={ref}
-        width={width}
-        height={height < dropBoxHeight ? height : null}
+        height={sectionHeight < dropBoxHeight ? sectionHeight : null}
         showText={showText}
-        changeWidth={changeWidth}
+        dropBoxWidth={dropBoxWidth}
       >
-        <StyledContainer canCreate={canCreate}>
+        <StyledContainer canCreate={canCreate} isDropBox={true}>
           <ArrowButton
             isRootFolder={isRootFolder}
             onBackToParentFolder={onBackToParentFolder}

@@ -25,16 +25,10 @@ const StyledItem = styled.div`
   align-items: ${(props) => (props.isRoot ? "baseline" : "end")};
   grid-template-columns: 17px auto;
   cursor: pointer;
-  padding: ${isMobile ? "0px 16px" : "0px 24px"};
-
-  @media ${tablet} {
-    padding: 0px 16px;
-    max-width: 100vw !important;
-  }
 `;
 
 const StyledIconWrapper = styled.div`
-  width: 19px;
+  width: 17px;
   display: flex;
   align-items: ${(props) => (props.isRoot ? "center" : "flex-end")};
   justify-content: center;

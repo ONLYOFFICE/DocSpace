@@ -34,8 +34,10 @@ const Navigation = ({
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const [firstClick, setFirstClick] = React.useState(true);
-  const [changeWidth, setChangeWidth] = React.useState(false);
+  const [dropBoxWidth, setDropBoxWidth] = React.useState(0);
+
   const dropBoxRef = React.useRef(null);
+  const containerRef = React.useRef(null);
 
   const onMissClick = (e) => {
     e.preventDefault;
@@ -56,18 +58,12 @@ const Navigation = ({
     [onClickFolder, toggleDropBox]
   );
 
-  const toggleDropBox = React.useCallback(() => {
+  const toggleDropBox = () => {
     if (isRootFolder) return setIsOpen(false);
+    setDropBoxWidth(DomHelpers.getOuterWidth(containerRef.current));
     setIsOpen((prev) => !prev);
     setFirstClick(true);
-
-    setTimeout(() => {
-      setChangeWidth(
-        DomHelpers.getOuterWidth(dropBoxRef.current) + 24 ===
-          DomHelpers.getOuterWidth(document.getElementById("section"))
-      );
-    }, 0);
-  }, [isRootFolder]);
+  };
 
   React.useEffect(() => {
     if (isOpen) {
@@ -84,6 +80,7 @@ const Navigation = ({
     setIsOpen((val) => !val);
     onBackToParentFolder && onBackToParentFolder();
   }, [onBackToParentFolder]);
+
   return (
     <Consumer>
       {(context) => (
@@ -92,9 +89,8 @@ const Navigation = ({
             <DropBox
               {...rest}
               ref={dropBoxRef}
-              changeWidth={changeWidth}
-              width={context.sectionWidth}
-              height={context.sectionHeight}
+              dropBoxWidth={dropBoxWidth}
+              sectionHeight={context.sectionHeight}
               showText={showText}
               isRootFolder={isRootFolder}
               onBackToParentFolder={onBackToParentFolderAction}
@@ -110,37 +106,35 @@ const Navigation = ({
             />
           )}
           <StyledContainer
+            ref={containerRef}
             width={context.sectionWidth}
             isRootFolder={isRootFolder}
             canCreate={canCreate}
             title={title}
             isDesktop={isDesktop}
             isTabletView={isTabletView}
+            isRecycleBinFolder={isRecycleBinFolder}
           >
-            <div className="header-container">
-              <>
-                <ArrowButton
-                  isRootFolder={isRootFolder}
-                  onBackToParentFolder={onBackToParentFolder}
-                />
-                <Text
-                  title={title}
-                  isOpen={false}
-                  isRootFolder={isRootFolder}
-                  onClick={toggleDropBox}
-                />
-                <ControlButtons
-                  personal={personal}
-                  isRootFolder={isRootFolder}
-                  canCreate={canCreate}
-                  getContextOptionsFolder={getContextOptionsFolder}
-                  getContextOptionsPlus={getContextOptionsPlus}
-                  isRecycleBinFolder={isRecycleBinFolder}
-                  isEmptyFilesList={isEmptyFilesList}
-                  clearTrash={clearTrash}
-                />
-              </>
-            </div>
+            <ArrowButton
+              isRootFolder={isRootFolder}
+              onBackToParentFolder={onBackToParentFolder}
+            />
+            <Text
+              title={title}
+              isOpen={false}
+              isRootFolder={isRootFolder}
+              onClick={toggleDropBox}
+            />
+            <ControlButtons
+              personal={personal}
+              isRootFolder={isRootFolder}
+              canCreate={canCreate}
+              getContextOptionsFolder={getContextOptionsFolder}
+              getContextOptionsPlus={getContextOptionsPlus}
+              isRecycleBinFolder={isRecycleBinFolder}
+              isEmptyFilesList={isEmptyFilesList}
+              clearTrash={clearTrash}
+            />
           </StyledContainer>
         </>
       )}
