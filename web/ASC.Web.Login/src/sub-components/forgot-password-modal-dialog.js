@@ -51,7 +51,7 @@ const ForgotPasswordModalDialog = (props) => {
     }
   };
 
-  const dialogWidth = isMobile ? "90%" : null;
+  const dialogWidth = isMobile ? "90%" : "400px";
 
   return (
     <ModalDialogContainer
@@ -112,6 +112,19 @@ const ForgotPasswordModalDialog = (props) => {
           scale={false}
           primary={true}
           onClick={onSendPasswordInstructions}
+          isLoading={isLoading}
+          isDisabled={isLoading}
+          tabIndex={2}
+        />
+
+        <Button
+          className="modal-dialog-button"
+          key="CancelBtn"
+          label={t("Common:CancelButton")}
+          size="big"
+          scale={false}
+          primary={false}
+          onClick={onDialogClose}
           isLoading={isLoading}
           isDisabled={isLoading}
           tabIndex={2}

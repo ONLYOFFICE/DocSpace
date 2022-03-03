@@ -44,7 +44,7 @@ const RegisterModalDialog = ({
     );
   };
 
-  const dialogWidth = isMobile ? "90%" : null;
+  const dialogWidth = isMobile ? "90%" : "520px";
 
   return (
     <ModalDialogContainer
@@ -101,6 +101,19 @@ const RegisterModalDialog = ({
           isLoading={loading}
           isDisabled={loading}
           tabIndex={3}
+        />
+
+        <Button
+          className="modal-dialog-button"
+          key="CancelBtn"
+          label={t("Common:CancelButton")}
+          size="big"
+          scale={false}
+          primary={false}
+          onClick={onRegisterModalClose}
+          isLoading={loading}
+          isDisabled={loading}
+          tabIndex={2}
         />
       </ModalDialog.Footer>
     </ModalDialogContainer>

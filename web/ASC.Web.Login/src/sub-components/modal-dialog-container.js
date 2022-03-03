@@ -17,6 +17,8 @@ const ModalDialogContainer = styled(ModalDialog)`
     }
   }
   .modal-dialog-button {
+    margin-right: 10px;
+
     @media (max-width: 1024px) {
       width: 100%;
     }
