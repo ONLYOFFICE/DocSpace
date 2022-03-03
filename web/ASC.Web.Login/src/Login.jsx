@@ -38,6 +38,7 @@ import {
   LoginContainer,
   LoginFormWrapper,
 } from "./StyledLogin";
+import AppLoader from "@appserver/common/components/AppLoader";
 
 const settings = {
   minLength: 6,
@@ -64,6 +65,8 @@ const Form = (props) => {
   const [ssoUrl, setSsoUrl] = useState("");
 
   const [errorText, setErrorText] = useState("");
+
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const { t } = useTranslation("Login");
 
@@ -110,7 +113,6 @@ const Form = (props) => {
   };
 
   useEffect(() => {
-    getSso();
     const profile = localStorage.getItem("profile");
     if (!profile) return;
 
@@ -157,11 +159,14 @@ const Form = (props) => {
     error && setErrorText(error);
     confirmedEmail && setIdentifier(confirmedEmail);
 
+    await setProviders();
+    await getSso();
+    setIsLoaded(true);
+
     focusInput();
 
     window.authCallback = authCallback;
 
-    await setProviders();
     //window.addEventListener("keyup", throttledKeyPress, false);
 
     /*return () => {
@@ -343,6 +348,7 @@ const Form = (props) => {
 
   //console.log("Login render");
 
+  if (!isLoaded) return <AppLoader />;
   return (
     <LoginContainer>
       <Text
