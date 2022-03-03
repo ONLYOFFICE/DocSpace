@@ -107,7 +107,6 @@ const Form = (props) => {
 
   const getSso = async () => {
     const data = await getCapabilities();
-    console.log(data);
     setSsoLabel(data.ssoLabel);
     setSsoUrl(data.ssoUrl);
   };
