@@ -83,14 +83,14 @@ public abstract class DIAttribute : Attribute
     public Type Service { get; }
     public Type Additional { get; set; }
 
-        protected DIAttribute() { }
+    protected DIAttribute() { }
 
-        protected DIAttribute(Type service)
+    protected DIAttribute(Type service)
     {
         Service = service;
     }
 
-        protected DIAttribute(Type service, Type implementation)
+    protected DIAttribute(Type service, Type implementation)
     {
         Implementation = implementation;
         Service = service;
@@ -136,6 +136,14 @@ public class DIHelper
         foreach (var t in types.Select(Type.GetType).Where(r => r != null))
         {
             TryAdd(t);
+        }
+    }
+
+    public void AddControllers()
+    {
+        foreach (var a in Assembly.GetCallingAssembly().GetTypes().Where(r => r.IsAssignableTo<ControllerBase>()))
+        {
+            _ = TryAdd(a);
         }
     }
 
@@ -232,7 +240,7 @@ public class DIHelper
                         }
                         else
                         {
-                                Type c;
+                            Type c;
                             var a1 = a.GetGenericTypeDefinition();
                             var b = a.GetGenericArguments().FirstOrDefault();
 
@@ -295,7 +303,7 @@ public class DIHelper
                         }
                         else
                         {
-                                Type c;
+                            Type c;
                             var a1 = a.GetGenericTypeDefinition();
                             var b = a.GetGenericArguments().FirstOrDefault();
 
