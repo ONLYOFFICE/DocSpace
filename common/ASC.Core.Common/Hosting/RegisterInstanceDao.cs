@@ -22,18 +22,13 @@ public class RegisterInstanceDao<T> : IRegisterInstanceDao<T> where T : IHostedS
         _instanceRegistrationContext = dbContextManager.Value;
     }
 
-    public async Task Add(InstanceRegistration obj)
+    public async Task AddOrUpdate(InstanceRegistration obj)
     {
         var inst = _instanceRegistrationContext.InstanceRegistrations.Find(obj.InstanceRegistrationId);
 
         if (inst == null)
         {
            await  _instanceRegistrationContext.AddAsync(obj);
-
-        }
-        else
-        {
-            _instanceRegistrationContext.Update(obj);
         }
 
         await _instanceRegistrationContext.SaveChangesAsync();
@@ -54,7 +49,17 @@ public class RegisterInstanceDao<T> : IRegisterInstanceDao<T> where T : IHostedS
                 
         _instanceRegistrationContext.InstanceRegistrations.Remove(item);
 
-        await _instanceRegistrationContext.SaveChangesAsync();
+        try
+        {
+            await _instanceRegistrationContext.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException ex)
+        {
+            var entry = ex.Entries.Single();
+
+            if (entry.State == EntityState.Deleted)
+                entry.State = EntityState.Detached;           
+        }   
     }
 
 }

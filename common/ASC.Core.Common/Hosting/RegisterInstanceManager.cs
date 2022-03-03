@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using ASC.Core.Common.Hosting.Interfaces;
 
-using ASC.Common;
-using ASC.Core.Common.Hosting.Interfaces;
-
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
 namespace ASC.Core.Common.Hosting;
@@ -23,7 +16,7 @@ public class RegisterInstanceManager<T> : IRegisterInstanceManager<T> where T : 
 
         if (!int.TryParse(configuration["core:hosting:timeUntilUnregisterInSeconds"], out _timeUntilUnregisterInSeconds))
         {
-            _timeUntilUnregisterInSeconds = 15;               
+            _timeUntilUnregisterInSeconds = 15;
         }
     }
     public async Task Register(string instanceId)
@@ -31,18 +24,23 @@ public class RegisterInstanceManager<T> : IRegisterInstanceManager<T> where T : 
         var instances = await _registerInstanceRepository.GetAll();
         var registeredInstance = instances.FirstOrDefault(x => x.InstanceRegistrationId == instanceId);
 
-        var instance = registeredInstance ?? new InstanceRegistration { InstanceRegistrationId = instanceId, 
-                                                                             WorkerTypeName = typeof(T).Name
-                                                                            };
-            
-        instance.LastUpdated = DateTime.UtcNow;
-        
-        if (!instances.Any() || !instances.Any(x => x.IsActive))
+        var instance = registeredInstance ?? new InstanceRegistration
         {
-            instance.IsActive = true;
+            InstanceRegistrationId = instanceId,
+            WorkerTypeName = typeof(T).Name
+        };
+
+        instance.LastUpdated = DateTime.UtcNow;
+
+        if (instances.Any() && !instances.Any(x => x.IsActive))
+        {
+            if (GetFirstAliveInstance(instances).InstanceRegistrationId == instance.InstanceRegistrationId)
+            {
+                instance.IsActive = true;
+            }
         }
 
-        await _registerInstanceRepository.Add(instance);
+        await _registerInstanceRepository.AddOrUpdate(instance);
     }
 
     public async Task UnRegister(string instanceId)
@@ -61,7 +59,7 @@ public class RegisterInstanceManager<T> : IRegisterInstanceManager<T> where T : 
     public async Task<List<string>> DeleteOrphanInstances()
     {
         var instances = await _registerInstanceRepository.GetAll();
-        var oldRegistrations = instances.Where(x => x.LastUpdated.Value.AddSeconds(_timeUntilUnregisterInSeconds) < DateTime.UtcNow).ToList();
+        var oldRegistrations = instances.Where(IsOrphanInstance).ToList();
 
         foreach (var instanceRegistration in oldRegistrations)
         {
@@ -69,5 +67,17 @@ public class RegisterInstanceManager<T> : IRegisterInstanceManager<T> where T : 
         }
 
         return oldRegistrations.Select(x => x.InstanceRegistrationId).ToList();
+    }
+
+    private InstanceRegistration GetFirstAliveInstance(IEnumerable<InstanceRegistration> instances)
+    {
+        Func<InstanceRegistration, long> _getTicksCreationService = x => Convert.ToInt64(x.InstanceRegistrationId.Split('_')[1]);
+
+        return instances.Where(x => !IsOrphanInstance(x)).MinBy(_getTicksCreationService);
+    }
+
+    private bool IsOrphanInstance(InstanceRegistration obj)
+    {
+        return obj.LastUpdated.Value.AddSeconds(_timeUntilUnregisterInSeconds) < DateTime.UtcNow;
     }
 }

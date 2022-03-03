@@ -16,11 +16,10 @@ namespace ASC.Core.Common.Hosting;
 public class RegisterInstanceWorkerService<T> : BackgroundService where T : IHostedService
 {
     private readonly ILog _logger;
-    private IRegisterInstanceManager<T> _registerInstanceService;
     private readonly IHostApplicationLifetime _applicationLifetime;
     private readonly IServiceProvider _serviceProvider;       
     public static readonly string InstanceId =
-        $"{typeof(T).Name}{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
+        $"{typeof(T).Name}_{DateTime.UtcNow.Ticks}";
 
     public RegisterInstanceWorkerService(IOptionsMonitor<ILog> options, 
                                          IServiceProvider serviceProvider, 
@@ -32,17 +31,17 @@ public class RegisterInstanceWorkerService<T> : BackgroundService where T : IHos
     }  
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-    {
-        using var scope = _serviceProvider.CreateScope();
-
-        _registerInstanceService = scope.ServiceProvider.GetService<IRegisterInstanceManager<T>>();
-     
+    {     
         while (!stoppingToken.IsCancellationRequested)
         {
             try
             {
-                await _registerInstanceService.Register(InstanceId);
-                await _registerInstanceService.DeleteOrphanInstances();
+                using var scope = _serviceProvider.CreateScope();
+
+                var registerInstanceService = scope.ServiceProvider.GetService<IRegisterInstanceManager<T>>();
+
+                await registerInstanceService.Register(InstanceId);
+                await registerInstanceService.DeleteOrphanInstances();
 
                 _logger.InfoFormat("Worker running at: {time}", DateTimeOffset.Now);
 
@@ -50,7 +49,7 @@ public class RegisterInstanceWorkerService<T> : BackgroundService where T : IHos
             }
             catch (Exception ex)
             {
-                _logger.ErrorFormat("Critical error forced worker to shutdown", ex);
+                _logger.Error("Critical error forced worker to shutdown", ex);
                 _applicationLifetime.StopApplication();
             }
         }
@@ -59,7 +58,12 @@ public class RegisterInstanceWorkerService<T> : BackgroundService where T : IHos
     {
         try
         {
-            await _registerInstanceService.UnRegister(InstanceId);
+            using var scope = _serviceProvider.CreateScope();
+
+            var registerInstanceService = scope.ServiceProvider.GetService<IRegisterInstanceManager<T>>();
+
+            await registerInstanceService.UnRegister(InstanceId);
+
             _logger.InfoFormat("UnRegister Instance {instanceName} running at: {time}.", InstanceId, DateTimeOffset.Now);
         }
         catch

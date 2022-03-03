@@ -274,6 +274,8 @@ public class BackupWorker
 
     public bool HaveBackupTransferRequestWaitingTasks()
     {
+        if (_progressQueue.MaxThreadsCount == -1) return false;
+
         var countActiveTask = _progressQueue.GetTasks<TransferProgressItem>().Where(x => !x.IsCompleted).Count();
 
         if (_progressQueue.MaxThreadsCount >= countActiveTask)
@@ -288,6 +290,8 @@ public class BackupWorker
 
     public bool HaveBackupRequestWaitingTasks()
     {
+        if (_progressQueue.MaxThreadsCount == -1) return false;
+
         var countActiveTask = _progressQueue.GetTasks<BackupProgressItem>().Where(x => !x.IsCompleted).Count();
 
         if (_progressQueue.MaxThreadsCount >= countActiveTask)
