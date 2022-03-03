@@ -5,7 +5,7 @@ import { isMobile } from "react-device-detect";
 import history from "@appserver/common/history";
 import config from "../../package.json";
 import toastr from "studio/toastr";
-import { FileAction } from "@appserver/common/constants";
+import { FileAction, AppServerConfig } from "@appserver/common/constants";
 import combineUrl from "@appserver/common/utils/combineUrl";
 
 class ContextOptionsStore {
@@ -160,7 +160,7 @@ class ContextOptionsStore {
   };
 
   onClickLinkEdit = (item) => {
-    const { setConvertItem, setConvertDialogVisible } = dialogsStore;
+    const { setConvertItem, setConvertDialogVisible } = this.dialogsStore;
     const canConvert = this.settingsStore.canConvert(item.fileExst);
 
     if (canConvert) {
