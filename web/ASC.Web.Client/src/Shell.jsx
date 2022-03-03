@@ -434,6 +434,14 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     );
   }
 
+  const roomsRoutes = [];
+
+  if (roomsMode) {
+    roomsRoutes.push(
+      <Route path={ENTER_CODE_URL} component={EnterCodeRoute} />
+    );
+  }
+
   return (
     <Layout>
       <Router history={history}>
@@ -446,7 +454,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
               <PublicRoute exact path={WIZARD_URL} component={WizardRoute} />
               <PrivateRoute path={ABOUT_URL} component={AboutRoute} />
               {loginRoutes}
-              <Route path={ENTER_CODE_URL} component={EnterCodeRoute} />
+              {roomsRoutes}
               <Route path={CONFIRM_URL} component={ConfirmRoute} />
               <Route path={INVALID_URL} component={InvalidRoute} />
               <PrivateRoute
