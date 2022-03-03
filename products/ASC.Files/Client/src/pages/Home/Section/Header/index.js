@@ -43,11 +43,11 @@ const StyledContainer = styled.div`
       props.viewAs === "table"
         ? css`
             margin: 0px -20px;
-            width: calc(100% + 44px);
+            width: calc(100% + 40px);
           `
         : css`
             margin: 0px -20px;
-            width: calc(100% + 48px);
+            width: calc(100% + 40px);
           `}
 
     @media ${tablet} {
