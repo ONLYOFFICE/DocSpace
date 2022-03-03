@@ -2,11 +2,11 @@ import React from "react";
 import ModalDialog from "@appserver/components/modal-dialog";
 import Text from "@appserver/components/text";
 import Button from "@appserver/components/button";
-import ModalDialogContainer from "./modal-dialog-container";
 import { providersData } from "@appserver/common/constants";
 import styled from "styled-components";
 import { ReactSVG } from "react-svg";
 import { getProviderTranslation } from "@appserver/common/utils";
+import { isMobile } from "react-device-detect";
 
 const ProviderRow = styled.div`
   width: 100%;
@@ -35,15 +35,12 @@ const ProviderRow = styled.div`
   }
 `;
 
-const Modal = styled(ModalDialogContainer)`
+const Modal = styled(ModalDialog)`
   .modal-dialog-aside {
-    width: 480px;
-    transform: translateX(${(props) => (props.visible ? "0" : "480px")});
-
-    @media (max-width: 550px) {
-      width: 320px;
-      transform: translateX(${(props) => (props.visible ? "0" : "320px")});
-    }
+    transform: translateX(
+      ${(props) => (props.visible ? "0" : props.isMobile ? "325px" : "480px")}
+    );
+    width: ${(props) => (props.isMobile ? "325px" : "480px")};
   }
 `;
 
@@ -64,6 +61,7 @@ const MoreLoginModal = (props) => {
       visible={visible}
       onClose={onClose}
       removeScroll={true}
+      isMobile={isMobile}
     >
       <ModalDialog.Header>{t("Authorization")}</ModalDialog.Header>
       <ModalDialog.Body>
