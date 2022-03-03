@@ -3,7 +3,7 @@ import { isMobile, isMobileOnly } from "react-device-detect";
 import { tablet, desktop, mobile } from "@appserver/components/utils/device";
 
 const StyledContainer = styled.div`
-  padding: ${(props) => (props.isDropBox ? "14px 0 3px" : "14px 0 15px")};
+  padding: ${(props) => (props.isDropBox ? "14px 0 3px" : "14px 0 0px")};
 
   width: fit-content;
 
@@ -21,26 +21,26 @@ const StyledContainer = styled.div`
 
   @media ${tablet} {
     width: 100%;
-    padding: ${(props) => (props.isDropBox ? "16px 0 5px" : "16px 0 17px")};
+    padding: ${(props) => (props.isDropBox ? "16px 0 5px" : "16px 0 0px")};
   }
 
   ${isMobile &&
   css`
     width: 100% !important;
     padding: ${(props) =>
-      props.isDropBox ? "16px 0 5px" : "16px 0 17px"} !important;
+      props.isDropBox ? "16px 0 5px" : " 16px 0 0px"} !important;
   `}
 
   @media ${mobile} {
     width: 100%;
-    padding: ${(props) => (props.isDropBox ? "12px 0 5px" : "12px 0 13px")};
+    padding: ${(props) => (props.isDropBox ? "12px 0 5px" : "12px 0 0")};
   }
 
   ${isMobileOnly &&
   css`
     width: 100% !important;
     padding: ${(props) =>
-      props.isDropBox ? "12px 0 5px" : "12px 0 13px"} !important;
+      props.isDropBox ? "12px 0 5px" : "12px 0 0"} !important;
   `}
 `;
 

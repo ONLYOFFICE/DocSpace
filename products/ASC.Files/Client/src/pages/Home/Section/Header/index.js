@@ -7,17 +7,37 @@ import Loaders from "@appserver/common/components/Loaders";
 import Headline from "@appserver/common/components/Headline";
 import { FilterType, FileAction } from "@appserver/common/constants";
 import { withTranslation } from "react-i18next";
-import { isMobile } from "react-device-detect";
+import { isMobile, isMobileOnly } from "react-device-detect";
 import ContextMenuButton from "@appserver/components/context-menu-button";
 import DropDownItem from "@appserver/components/drop-down-item";
 import IconButton from "@appserver/components/icon-button";
-import { tablet, desktop } from "@appserver/components/utils/device";
+import { tablet, desktop, mobile } from "@appserver/components/utils/device";
 import { Consumer } from "@appserver/components/utils/context";
 import { inject, observer } from "mobx-react";
 import TableGroupMenu from "@appserver/components/table-container/TableGroupMenu";
 import Navigation from "@appserver/common/components/Navigation";
 
 const StyledContainer = styled.div`
+  padding: 0 0 15px;
+
+  @media ${tablet} {
+    padding: 0 0 17px;
+  }
+
+  ${isMobile &&
+  css`
+    padding: 0 0 17px;
+  `}
+
+  @media ${mobile} {
+    padding: 0 0 13px;
+  }
+
+  ${isMobileOnly &&
+  css`
+    padding: 0 0 13px;
+  `}
+
   .table-container_group-menu {
     ${(props) =>
       props.viewAs === "table"
