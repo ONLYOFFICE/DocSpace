@@ -44,13 +44,12 @@ const StyledMainBar = styled.div`
 
   ${!isMobile
     ? css`
-        padding-right: 24px;
+        padding-right: 20px;
         @media ${tablet} {
           padding-right: 16px;
         }
       `
     : css`
-        margin-top: 10px;
         padding-right: 0px;
 
         @media ${desktop} {
@@ -454,6 +453,7 @@ class PageLayout extends React.Component {
                     unpinArticle={this.unpinArticle}
                     pinned={isArticlePinned}
                     visible={isArticleVisible}
+                    viewAs={viewAs}
                   >
                     {isSectionHeaderAvailable && (
                       <SubSectionHeader
