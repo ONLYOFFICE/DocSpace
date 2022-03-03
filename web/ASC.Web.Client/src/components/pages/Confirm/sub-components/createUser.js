@@ -27,6 +27,7 @@ import {
 import { providersData } from "@appserver/common/constants";
 import withLoader from "../withLoader";
 import MoreLoginModal from "login/moreLogin";
+import AppLoader from "@appserver/common/components/AppLoader";
 
 export const ButtonsWrapper = styled.div`
   display: table;
@@ -183,16 +184,14 @@ const Confirm = (props) => {
 
   const [user, setUser] = useState("");
 
+  const [isLoaded, setIsLoaded] = useState(false);
+
   const getSso = async () => {
     const data = await getCapabilities();
     console.log(data);
     setSsoLabel(data.ssoLabel);
     setSsoUrl(data.ssoUrl);
   };
-
-  useEffect(() => {
-    getSso();
-  }, []);
 
   useEffect(async () => {
     const { linkData } = props;
@@ -203,7 +202,8 @@ const Confirm = (props) => {
     setUser(user);
 
     window.authCallback = authCallback;
-    await setProviders();
+
+    Promise.all([setProviders(), getSso()]).then(() => setIsLoaded(true));
   }, []);
 
   const onSubmit = () => {
@@ -459,6 +459,7 @@ const Confirm = (props) => {
     else return false;
   };
 
+  if (!isLoaded) return <AppLoader />;
   return (
     <ConfirmContainer>
       <GreetingContainer>
