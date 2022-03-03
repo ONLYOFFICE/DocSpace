@@ -29,13 +29,15 @@ const StyledSectionHeader = styled.div`
   `}
 
   @media ${mobile} {
+    max-width: calc(100vw - 32px);
     height: 53px;
-    margin-top: 48px;
+    margin-top: 0px;
     margin-right: 0px;
   }
 
   ${isMobileOnly &&
   css`
+    max-width: calc(100vw - 32px);
     height: 53px !important;
     margin-top: 48px !important;
     margin-right: 0px !important;

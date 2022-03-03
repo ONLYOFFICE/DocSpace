@@ -17,7 +17,7 @@ const tabletProps = css`
 
   .section-body_filter {
     display: block;
-    margin: 0 0 25px;
+    margin: ${(props) => (props.viewAs === "tile" ? "0 0 18px" : "0 0 30px")};
   }
 `;
 
