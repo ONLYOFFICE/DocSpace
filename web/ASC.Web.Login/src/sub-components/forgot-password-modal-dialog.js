@@ -44,7 +44,7 @@ const ForgotPasswordModalDialog = (props) => {
   };
 
   const onKeyDown = (e) => {
-    console.log("onKeyDown", e.key);
+    //console.log("onKeyDown", e.key);
     if (e.key === "Enter") {
       onSendPasswordInstructions();
       e.preventDefault();
