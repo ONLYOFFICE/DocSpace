@@ -1,30 +1,29 @@
-import Backdrop from "@appserver/components/backdrop";
-import { Provider } from "@appserver/components/utils/context";
-import { desktop, size, tablet } from "@appserver/components/utils/device";
-import { inject, observer } from "mobx-react";
-import PropTypes from "prop-types";
 import React from "react";
-import { isFirefox, isMobile, isMobileOnly } from "react-device-detect";
-import ReactResizeDetector from "react-resize-detector";
-import Selecto from "react-selecto";
-import styled, { css } from "styled-components";
-
-import FloatingButton from "../FloatingButton";
+import PropTypes from "prop-types";
+import Backdrop from "@appserver/components/backdrop";
+import { desktop, size, tablet } from "@appserver/components/utils/device";
+import { Provider } from "@appserver/components/utils/context";
+import { isMobile, isFirefox, isMobileOnly } from "react-device-detect";
 import Article from "./sub-components/article";
-import SubArticleBody from "./sub-components/article-body";
 import SubArticleHeader from "./sub-components/article-header";
 import SubArticleMainButton from "./sub-components/article-main-button";
+import SubArticleBody from "./sub-components/article-body";
 import ArticlePinPanel from "./sub-components/article-pin-panel";
+import Section from "./sub-components/section";
+import SubSectionHeader from "./sub-components/section-header";
+import SubSectionFilter from "./sub-components/section-filter";
+import SubSectionBody from "./sub-components/section-body";
+import SubSectionBodyContent from "./sub-components/section-body-content";
+import SubSectionPaging from "./sub-components/section-paging";
+import SectionToggler from "./sub-components/section-toggler";
 import InfoPanel from "./sub-components/info-panel";
 import SubInfoPanelBody from "./sub-components/info-panel-body";
 import SubInfoPanelHeader from "./sub-components/info-panel-header";
-import Section from "./sub-components/section";
-import SubSectionBody from "./sub-components/section-body";
-import SubSectionBodyContent from "./sub-components/section-body-content";
-import SubSectionFilter from "./sub-components/section-filter";
-import SubSectionHeader from "./sub-components/section-header";
-import SubSectionPaging from "./sub-components/section-paging";
-import SectionToggler from "./sub-components/section-toggler";
+import ReactResizeDetector from "react-resize-detector";
+import FloatingButton from "../FloatingButton";
+import { inject, observer } from "mobx-react";
+import Selecto from "react-selecto";
+import styled, { css } from "styled-components";
 
 const StyledSelectoWrapper = styled.div`
   .selecto-selection {

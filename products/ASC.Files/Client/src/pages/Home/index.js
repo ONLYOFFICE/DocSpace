@@ -1,16 +1,33 @@
+import React from "react";
+//import PropTypes from "prop-types";
+import { withRouter } from "react-router";
+import { isMobile } from "react-device-detect";
+import axios from "axios";
+import toastr from "@appserver/components/toast/toastr";
+import PageLayout from "@appserver/common/components/PageLayout";
+import { showLoader, hideLoader } from "@appserver/common/utils";
 import FilesFilter from "@appserver/common/api/files/filter";
 import { getGroup } from "@appserver/common/api/groups";
 import { getUserById } from "@appserver/common/api/people";
-import PageLayout from "@appserver/common/components/PageLayout";
-import { hideLoader, showLoader } from "@appserver/common/utils";
-import toastr from "@appserver/components/toast/toastr";
-import axios from "axios";
-import { inject, observer } from "mobx-react";
-import React from "react";
-import { isMobile } from "react-device-detect";
-import { Trans, withTranslation } from "react-i18next";
-//import PropTypes from "prop-types";
-import { withRouter } from "react-router";
+import { withTranslation, Trans } from "react-i18next";
+import {
+  ArticleBodyContent,
+  ArticleHeaderContent,
+  ArticleMainButtonContent,
+} from "../../components/Article";
+import {
+  SectionBodyContent,
+  SectionFilterContent,
+  SectionHeaderContent,
+  SectionPagingContent,
+} from "./Section";
+import { InfoPanelBodyContent, InfoPanelHeaderContent } from "./InfoPanel";
+
+import { createTreeFolders } from "../../helpers/files-helpers";
+import MediaViewer from "./MediaViewer";
+import DragTooltip from "../../components/DragTooltip";
+import { observer, inject } from "mobx-react";
+import config from "../../../package.json";
 
 import config from "../../../package.json";
 import {

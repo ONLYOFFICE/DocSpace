@@ -1,20 +1,20 @@
-import Headline from "@appserver/common/components/Headline";
+import React from "react";
+import copy from "copy-to-clipboard";
+import styled, { css } from "styled-components";
+import { withRouter } from "react-router";
+import toastr from "studio/toastr";
 import Loaders from "@appserver/common/components/Loaders";
-import { FileAction, FilterType } from "@appserver/common/constants";
+import Headline from "@appserver/common/components/Headline";
+import { FilterType, FileAction } from "@appserver/common/constants";
+import { withTranslation } from "react-i18next";
+import { isMobile } from "react-device-detect";
 import ContextMenuButton from "@appserver/components/context-menu-button";
 import DropDownItem from "@appserver/components/drop-down-item";
 import IconButton from "@appserver/components/icon-button";
-import TableGroupMenu from "@appserver/components/table-container/TableGroupMenu";
+import { tablet, desktop } from "@appserver/components/utils/device";
 import { Consumer } from "@appserver/components/utils/context";
-import { desktop, tablet } from "@appserver/components/utils/device";
-import copy from "copy-to-clipboard";
 import { inject, observer } from "mobx-react";
-import React from "react";
-import { isMobile } from "react-device-detect";
-import { withTranslation } from "react-i18next";
-import { withRouter } from "react-router";
-import toastr from "studio/toastr";
-import styled, { css } from "styled-components";
+import TableGroupMenu from "@appserver/components/table-container/TableGroupMenu";
 
 const StyledContainer = styled.div`
   .table-container_group-menu {
@@ -94,13 +94,7 @@ const StyledContainer = styled.div`
       margin-left: auto;
       margin-right: 16px;
 
-      /* @media (min-width: 1024px) {
-                margin-left: 8px;
-            } */
-
       @media ${tablet} {
-        /* margin-left: auto;
-                margin-right: 32px; */
         & > div:first-child {
           padding: 8px 8px 8px 8px;
           margin-right: -8px;

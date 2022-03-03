@@ -6,7 +6,6 @@ import { FileAction, AppServerConfig } from "@appserver/common/constants";
 import toastr from "@appserver/components/toast/toastr";
 import config from "../../package.json";
 import saveAs from "file-saver";
-
 export default function withContextOptions(WrappedComponent) {
   class WithContextOptions extends React.Component {
     onOpenFolder = () => {
@@ -15,21 +14,16 @@ export default function withContextOptions(WrappedComponent) {
       const locationId = !fileExst ? id : folderId;
       openLocationAction(locationId, !fileExst);
     };
-
     onClickLinkFillForm = () => {
       return this.gotoDocEditor(false);
     };
-
     onClickMakeForm = () => {
       const { copyAsAction, item, formfillingDocs } = this.props;
       const { title, id, folderId, fileExst } = item;
-
       const newTitle =
         title.substring(0, title.length - fileExst.length) + formfillingDocs[0];
-
       copyAsAction(id, newTitle, folderId).catch((err) => toastr.error(err));
     };
-
     onOpenLocation = () => {
       const { item, openLocationAction } = this.props;
       const { parentId, folderId, fileExst } = item;
@@ -53,7 +47,6 @@ export default function withContextOptions(WrappedComponent) {
       const { setCopyPanelVisible } = this.props;
       setCopyPanelVisible(true);
     };
-
     showVersionHistory = () => {
       const {
         item,
@@ -66,7 +59,6 @@ export default function withContextOptions(WrappedComponent) {
       } = this.props;
       const { id } = item;
       if (isTrashFolder) return;
-
       if (!isTabletView) {
         fetchFileVersions(id + "");
         setIsVerHistoryPanel(true);
@@ -76,19 +68,16 @@ export default function withContextOptions(WrappedComponent) {
         );
       }
     };
-
     finalizeVersion = () => {
       const { item, finalizeVersionAction } = this.props;
       const { id } = item;
       finalizeVersionAction(id).catch((err) => toastr.error(err));
     };
-
     onClickFavorite = (e) => {
       const { item, setFavoriteAction, t } = this.props;
       const { id } = item;
       const data = (e.currentTarget && e.currentTarget.dataset) || e;
       const { action } = data;
-
       setFavoriteAction(action, id)
         .then(() =>
           action === "mark"
@@ -97,17 +86,14 @@ export default function withContextOptions(WrappedComponent) {
         )
         .catch((err) => toastr.error(err));
     };
-
     lockFile = () => {
       const { item, lockFileAction } = this.props;
       const { id, locked } = item;
       lockFileAction(id, !locked).catch((err) => toastr.error(err));
     };
-
     onClickLinkForPortal = () => {
       const { item, homepage, t } = this.props;
       const { fileExst, canOpenPlayer, webUrl, id } = item;
-
       const isFile = !!fileExst;
       copy(
         isFile
@@ -116,10 +102,8 @@ export default function withContextOptions(WrappedComponent) {
             : webUrl
           : `${window.location.origin + homepage}/filter?folder=${id}`
       );
-
       toastr.success(t("Translations:LinkCopySuccess"));
     };
-
     onClickLinkEdit = () => {
       const {
         item,
@@ -127,7 +111,6 @@ export default function withContextOptions(WrappedComponent) {
         setConvertItem,
         setConvertDialogVisible,
       } = this.props;
-
       if (canConvert) {
         setConvertItem(item);
         setConvertDialogVisible(true);
@@ -135,15 +118,12 @@ export default function withContextOptions(WrappedComponent) {
         this.gotoDocEditor(false);
       }
     };
-
     onPreviewClick = () => {
       this.gotoDocEditor(true);
     };
-
     gotoDocEditor = (preview = false) => {
       const { item, openDocEditor, isDesktop } = this.props;
       const { id, providerKey, fileExst } = item;
-
       const urlFormation = preview
         ? combineUrl(
             AppServerConfig.proxyURL,
@@ -151,7 +131,6 @@ export default function withContextOptions(WrappedComponent) {
             `/doceditor?fileId=${encodeURIComponent(id)}&action=view`
           )
         : null;
-
       let tab =
         !isDesktop && fileExst
           ? window.open(
@@ -163,58 +142,47 @@ export default function withContextOptions(WrappedComponent) {
               "_blank"
             )
           : null;
-
       openDocEditor(id, providerKey, tab, urlFormation);
     };
-
     isPwa = () => {
       return ["fullscreen", "standalone", "minimal-ui"].some(
         (displayMode) =>
           window.matchMedia("(display-mode: " + displayMode + ")").matches
       );
     };
-
     onClickDownload = () => {
       const { item, downloadAction, t } = this.props;
       const { fileExst, contentLength, viewUrl } = item;
       const isFile = !!fileExst && contentLength;
-
       if (this.isPwa()) {
         const xhr = new XMLHttpRequest();
         xhr.open("GET", viewUrl);
         xhr.responseType = "blob";
-
         xhr.onload = () => {
           saveAs(xhr.response, item.title);
         };
-
         xhr.onerror = () => {
           console.error("download failed", viewUrl);
         };
-
         xhr.send();
         return;
       }
-
       isFile
         ? window.open(viewUrl, "_self")
         : downloadAction(t("Translations:ArchivingData")).catch((err) =>
             toastr.error(err)
           );
     };
-
     onClickDownloadAs = () => {
       const { setDownloadDialogVisible } = this.props;
       setDownloadDialogVisible(true);
     };
-
     onDuplicate = () => {
       const { duplicateAction, t, item } = this.props;
       duplicateAction(item, t("Translations:CopyOperation")).catch((err) =>
         toastr.error(err)
       );
     };
-
     onClickRename = () => {
       const { item, setAction } = this.props;
       const { id, fileExst } = item;
@@ -224,19 +192,16 @@ export default function withContextOptions(WrappedComponent) {
         id,
       });
     };
-
     onChangeThirdPartyInfo = () => {
       const { item, setThirdpartyInfo } = this.props;
       const { providerKey } = item;
       setThirdpartyInfo(providerKey);
     };
-
     onMediaFileClick = (fileId) => {
       const { item, setMediaViewerData } = this.props;
       const itemId = typeof fileId !== "object" ? fileId : item.id;
       setMediaViewerData({ visible: true, id: itemId });
     };
-
     onClickDelete = () => {
       const {
         item,
@@ -246,54 +211,43 @@ export default function withContextOptions(WrappedComponent) {
         deleteItemAction,
       } = this.props;
       const { id, title, providerKey, rootFolderId, isFolder } = item;
-
       const isRootThirdPartyFolder = providerKey && id === rootFolderId;
-
       if (isRootThirdPartyFolder) {
         const splitItem = id.split("-");
         setRemoveItem({ id: splitItem[splitItem.length - 1], title });
         setDeleteThirdPartyDialogVisible(true);
         return;
       }
-
       const translations = {
         deleteOperation: t("Translations:DeleteOperation"),
         successRemoveFile: t("FileRemoved"),
         successRemoveFolder: t("FolderRemoved"),
       };
-
       deleteItemAction(id, translations, !isFolder, providerKey);
     };
-
     onClickShare = () => {
       const { setSharingPanelVisible } = this.props;
       setTimeout(() => {
         setSharingPanelVisible(true);
       }, 10); //TODO: remove delay after fix context menu callback
     };
-
     onClickMarkRead = () => {
       const { markAsRead, item } = this.props;
       item.fileExst
         ? markAsRead([], [item.id], item)
         : markAsRead([item.id], [], item);
     };
-
     onClickUnsubscribe = () => {
       const { setDeleteDialogVisible, setUnsubscribe } = this.props;
-
       setUnsubscribe(true);
       setDeleteDialogVisible(true);
     };
-
     getFilesContextOptions = () => {
       const { item, t } = this.props;
       const { contextOptions } = item;
       const isRootThirdPartyFolder =
         item.providerKey && item.id === item.rootFolderId;
-
       const isShareable = item.canShare;
-
       return contextOptions.map((option) => {
         switch (option) {
           case "open":
@@ -533,25 +487,20 @@ export default function withContextOptions(WrappedComponent) {
           default:
             break;
         }
-
         return undefined;
       });
     };
-
     render() {
       const { actionType, actionId, actionExtension, item } = this.props;
       const { id, fileExst, contextOptions } = item;
-
       const isEdit =
         !!actionType && actionId === id && fileExst === actionExtension;
-
       const contextOptionsProps =
         !isEdit && contextOptions && contextOptions.length > 0
           ? {
               contextOptions: this.getFilesContextOptions(),
             }
           : {};
-
       return (
         <WrappedComponent
           contextOptionsProps={contextOptionsProps}
@@ -560,7 +509,6 @@ export default function withContextOptions(WrappedComponent) {
       );
     }
   }
-
   return inject(
     (
       {
@@ -608,7 +556,6 @@ export default function withContextOptions(WrappedComponent) {
       const { setMediaViewerData } = mediaViewerDataStore;
       const { copyAsAction } = uploadDataStore;
       const { formfillingDocs } = formatsStore.docserviceStore;
-
       const { isRecycleBinFolder, isShare } = treeFoldersStore;
       const isShareFolder = isShare(item.rootFolderType);
 
