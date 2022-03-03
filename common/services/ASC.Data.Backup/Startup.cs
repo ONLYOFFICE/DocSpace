@@ -46,8 +46,6 @@ public class Startup : BaseStartup
 
         DIHelper.TryAdd<Schedule>();
 
-        DIHelper.TryAdd<BackupController>();
-
         DIHelper.TryAdd<BackupCleanerService>();
         DIHelper.TryAdd<BackupSchedulerService>();
         DIHelper.TryAdd<BackupListenerService>();
