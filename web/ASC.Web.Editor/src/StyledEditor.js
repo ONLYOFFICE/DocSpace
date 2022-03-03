@@ -18,4 +18,13 @@ const StyledSelectFile = styled.div`
     word-break: break-word;
   }
 `;
-export { StyledSelectFolder, StyledSelectFile };
+
+const EditorWrapper = styled.div`
+  height: 100vh;
+
+  .dynamic-sharing-dialog {
+    ${(props) => !props.isVisibleSharingDialog && "display: none"}
+  }
+`;
+
+export { StyledSelectFolder, StyledSelectFile, EditorWrapper };

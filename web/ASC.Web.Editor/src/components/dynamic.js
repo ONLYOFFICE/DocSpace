@@ -88,7 +88,7 @@ const DynamicComponent = ({ system, ...rest }) => {
 
   if (!ready) {
     console.log(`Loading dynamic script: ${system.url}`);
-    return <div>Loading</div>;
+    return <div className={rest.className}>Loading</div>;
   }
 
   if (failed) {
@@ -99,7 +99,7 @@ const DynamicComponent = ({ system, ...rest }) => {
   const Component = React.lazy(loadComponent(system.scope, system.module));
 
   return (
-    <React.Suspense fallback={<div>Loading</div>}>
+    <React.Suspense fallback={<div />}>
       <Component {...rest} />
     </React.Suspense>
   );

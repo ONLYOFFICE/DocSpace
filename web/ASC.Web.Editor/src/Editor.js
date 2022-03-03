@@ -16,8 +16,11 @@ import {
   updateFile,
 } from "@appserver/common/api/files";
 
+import { EditorWrapper } from "./StyledEditor";
 import DynamicComponent from "./components/dynamic";
+
 const { homepage } = pkg;
+
 const LoaderComponent = (
   <Loader
     type="rombs"
@@ -144,6 +147,7 @@ export default function Editor({
   const [isLoaded, setIsLoaded] = useState(false);
   const [documentTitle, setNewDocumentTitle] = useState("Loading...");
   const [faviconHref, setFaviconHref] = useState("/favicon.ico"); // try without state
+  //const [sharingDialog, setSharingDialog] = useState();
 
   useEffect(() => {
     if (error) {
@@ -159,6 +163,8 @@ export default function Editor({
       loadScript(docApiUrl, "scripDocServiceAddress", () => onLoad());
       setFavicon(config?.documentType);
       setDocumentTitle(config?.document?.title);
+
+      //setSharingDialog(renderSharing());
     }
   }, []);
 
@@ -626,26 +632,11 @@ export default function Editor({
     setIsVisible(false);
   };
 
-  //console.log(SharingDialog);
-
-  return (
-    <>
-      {/* <Head>
-        <title>{documentTitle}</title>
-        <link id="favicon" rel="shortcut icon" href={faviconHref} />
-      </Head> */}
-      <div style={{ height: "100vh" }}>
-        {needLoader ? (
-          LoaderComponent
-        ) : (
-          <>
-            <div id="editor"></div>
-            {!isLoaded && LoaderComponent}
-          </>
-        )}
-      </div>
-      {isVisible && (
+  const renderSharing = () => {
+    if (typeof window !== "undefined")
+      return (
         <DynamicComponent
+          className="dynamic-sharing-dialog"
           system={{
             scope: "files",
             url: "/products/files/remoteEntry.js",
@@ -656,7 +647,25 @@ export default function Editor({
           onCancel={onCancel}
           onSuccess={loadUsersRightsList}
         />
+      );
+  };
+
+  const SharingDialog = renderSharing();
+  /* <Head>
+        <title>{documentTitle}</title>
+        <link id="favicon" rel="shortcut icon" href={faviconHref} />
+      </Head> */
+  return (
+    <EditorWrapper isVisibleSharingDialog={isVisible}>
+      {needLoader ? (
+        LoaderComponent
+      ) : (
+        <>
+          <div id="editor"></div>
+          {!isLoaded && LoaderComponent}
+        </>
       )}
-    </>
+      {SharingDialog}
+    </EditorWrapper>
   );
 }
