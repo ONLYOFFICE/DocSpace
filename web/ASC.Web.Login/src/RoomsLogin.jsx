@@ -247,6 +247,7 @@ const Form = (props) => {
               data-url={item.url}
               data-providername={item.provider}
               onClick={onSocialButtonClick}
+              isDisabled={isLoading}
             />
           </div>
         );
@@ -263,6 +264,7 @@ const Form = (props) => {
           className="socialButton"
           label={ssoLabel || getProviderTranslation("sso", t)}
           onClick={() => (window.location.href = ssoUrl)}
+          isDisabled={isLoading}
         />
       </div>
     );
