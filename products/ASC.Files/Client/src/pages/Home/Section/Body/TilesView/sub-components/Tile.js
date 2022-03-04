@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import { ReactSVG } from "react-svg";
 import styled, { css } from "styled-components";
-import NewContextMenu from "@appserver/components/new-context-menu";
+import ContextMenu from "@appserver/components/new-context-menu";
 import { tablet } from "@appserver/components/utils/device";
 import { isDesktop } from "react-device-detect";
 
@@ -433,7 +433,7 @@ class Tile extends React.PureComponent {
               ) : (
                 <div className="expandButton" />
               )}
-              <NewContextMenu
+              <ContextMenu
                 model={contextOptions}
                 ref={this.cm}
                 header={contextMenuHeader}
@@ -498,10 +498,11 @@ class Tile extends React.PureComponent {
                 ) : (
                   <div className="expandButton" />
                 )}
-                <NewContextMenu
+                <ContextMenu
                   model={contextOptions}
                   ref={this.cm}
                   header={contextMenuHeader}
+                  withBackdrop={true}
                 />
               </StyledOptionButton>
             </StyledFileTileBottom>

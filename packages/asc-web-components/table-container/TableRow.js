@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import PropTypes from "prop-types";
 import { StyledTableRow } from "./StyledTableContainer";
 import TableCell from "./TableCell";
-import NewContextMenu from "../new-context-menu";
+import ContextMenu from "../context-menu";
 import ContextMenuButton from "../context-menu-button";
 
 const TableRow = (props) => {
@@ -52,11 +52,12 @@ const TableRow = (props) => {
           forwardedRef={row}
           className={`${selectionProp?.className} table-container_row-context-menu-wrapper`}
         >
-          <NewContextMenu
+          <ContextMenu
             onHide={onHideContextMenu}
             ref={cm}
             model={contextOptions}
-          ></NewContextMenu>
+            withBackdrop={true}
+          ></ContextMenu>
           {renderContext ? (
             <ContextMenuButton
               className="expandButton"
