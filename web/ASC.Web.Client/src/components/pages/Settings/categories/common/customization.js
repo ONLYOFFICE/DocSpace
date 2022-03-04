@@ -15,7 +15,7 @@ import withCultureNames from "@appserver/common/hoc/withCultureNames";
 import LanguageAndTimeZone from "./language-and-time-zone";
 import CustomTitles from "./custom-titles";
 import PortalRenaming from "./portal-renaming";
-import WhiteLabel from "./whitelabel";
+//import WhiteLabel from "./whitelabel";
 import { Base } from "@appserver/components/themes";
 import { Consumer } from "@appserver/components/utils/context";
 
@@ -57,6 +57,10 @@ const StyledComponent = styled.div`
 
   .combo-button-label {
     max-width: 100%;
+  }
+
+  .category-description {
+    color: #657077;
   }
 
   .category-item-wrapper {
@@ -213,6 +217,9 @@ class Customization extends React.Component {
       <Consumer>
         {(context) => (
           <StyledComponent>
+            <div className="category-description">{`${t(
+              "Settings:CustomizationDescription"
+            )}`}</div>
             <div className="category-item-wrapper">
               <LanguageAndTimeZone sectionWidth={context.sectionWidth} />
             </div>
@@ -222,7 +229,6 @@ class Customization extends React.Component {
             <div className="category-item-wrapper">
               <PortalRenaming sectionWidth={context.sectionWidth} />
             </div>
-            <WhiteLabel />
           </StyledComponent>
         )}
       </Consumer>
