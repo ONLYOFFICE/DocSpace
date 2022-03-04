@@ -48,10 +48,12 @@ public class MappingProfile : Profile
 
         foreach (var type in types)
         {
+            var resolvedType = type.IsGenericType ? type.MakeGenericType(new[] { typeof(int) }) : type;
+
             var instance = Activator.CreateInstance(type);
 
-            var methodInfo = type.GetMethod("Mapping")
-                ?? type.GetInterface("IMapFrom`1").GetMethod("Mapping");
+            var methodInfo = resolvedType.GetMethod("Mapping")
+                ?? resolvedType.GetInterface("IMapFrom`1").GetMethod("Mapping");
 
             methodInfo?.Invoke(instance, new object[] { this });
         }
