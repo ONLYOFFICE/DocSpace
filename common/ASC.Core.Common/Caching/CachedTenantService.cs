@@ -23,283 +23,303 @@
  *
 */
 
-namespace ASC.Core.Caching
+namespace ASC.Core.Caching;
+
+[Singletone]
+class TenantServiceCache
 {
-    [Singletone]
-    class TenantServiceCache
+    private const string Key = "tenants";
+    private TimeSpan _cacheExpiration;
+    internal readonly ICache Cache;
+    internal readonly ICacheNotify<TenantCacheItem> CacheNotifyItem;
+    internal readonly ICacheNotify<TenantSetting> CacheNotifySettings;
+
+    public TenantServiceCache(
+        CoreBaseSettings coreBaseSettings,
+        ICacheNotify<TenantCacheItem> cacheNotifyItem,
+        ICacheNotify<TenantSetting> cacheNotifySettings,
+        ICache cache)
     {
-        private const string KEY = "tenants";
-        private TimeSpan CacheExpiration { get; set; }
-        internal ICache Cache { get; }
-        internal ICacheNotify<TenantCacheItem> CacheNotifyItem { get; }
-        internal ICacheNotify<TenantSetting> CacheNotifySettings { get; }
+        CacheNotifyItem = cacheNotifyItem;
+        CacheNotifySettings = cacheNotifySettings;
+        Cache = cache;
+        _cacheExpiration = TimeSpan.FromMinutes(2);
 
-        public TenantServiceCache(
-            CoreBaseSettings coreBaseSettings,
-            ICacheNotify<TenantCacheItem> cacheNotifyItem,
-            ICacheNotify<TenantSetting> cacheNotifySettings,
-            ICache cache)
+        cacheNotifyItem.Subscribe((t) =>
         {
-            CacheNotifyItem = cacheNotifyItem;
-            CacheNotifySettings = cacheNotifySettings;
-            Cache = cache;
-            CacheExpiration = TimeSpan.FromMinutes(2);
+            var tenants = GetTenantStore();
+            tenants.Remove(t.TenantId);
+            tenants.Clear(coreBaseSettings);
+        }, CacheNotifyAction.InsertOrUpdate);
 
-            cacheNotifyItem.Subscribe((t) =>
-            {
-                var tenants = GetTenantStore();
-                tenants.Remove(t.TenantId);
-                tenants.Clear(coreBaseSettings);
-            }, ASC.Common.Caching.CacheNotifyAction.InsertOrUpdate);
+        cacheNotifySettings.Subscribe((s) =>
+        {
+            Cache.Remove(s.Key);
+        }, CacheNotifyAction.Remove);
+    }
 
-            cacheNotifySettings.Subscribe((s) =>
-            {
-                Cache.Remove(s.Key);
-            }, ASC.Common.Caching.CacheNotifyAction.Remove);
+    internal TenantStore GetTenantStore()
+    {
+        var store = Cache.Get<TenantStore>(Key);
+        if (store == null)
+        {
+            store = new TenantStore();
+            Cache.Insert(Key, store, DateTime.UtcNow.Add(_cacheExpiration));
         }
 
-        internal TenantStore GetTenantStore()
+        return store;
+    }
+
+
+    internal class TenantStore
+    {
+        private readonly Dictionary<int, Tenant> _byId = new Dictionary<int, Tenant>();
+        private readonly Dictionary<string, Tenant> _byDomain = new Dictionary<string, Tenant>();
+        private readonly object _locker = new object();
+
+
+        public Tenant Get(int id)
         {
-            var store = Cache.Get<TenantStore>(KEY);
-            if (store == null)
+            Tenant t;
+            lock (_locker)
             {
-                store = new TenantStore();
-                Cache.Insert(KEY, store, DateTime.UtcNow.Add(CacheExpiration));
+                _byId.TryGetValue(id, out t);
             }
-            return store;
+
+            return t;
         }
 
-
-        internal class TenantStore
+        public Tenant Get(string domain)
         {
-            private readonly Dictionary<int, Tenant> byId = new Dictionary<int, Tenant>();
-            private readonly Dictionary<string, Tenant> byDomain = new Dictionary<string, Tenant>();
-            private readonly object locker = new object();
-
-
-            public Tenant Get(int id)
+            if (string.IsNullOrEmpty(domain))
             {
-                Tenant t;
-                lock (locker)
-                {
-                    byId.TryGetValue(id, out t);
-                }
-                return t;
+                return null;
             }
 
-            public Tenant Get(string domain)
+            Tenant t;
+            lock (_locker)
             {
-                if (string.IsNullOrEmpty(domain)) return null;
-
-                Tenant t;
-                lock (locker)
-                {
-                    byDomain.TryGetValue(domain, out t);
-                }
-                return t;
+                _byDomain.TryGetValue(domain, out t);
             }
 
-            public void Insert(Tenant t, string ip = null)
-            {
-                if (t == null)
-                {
-                    return;
-                }
+            return t;
+        }
 
-                Remove(t.TenantId);
-                lock (locker)
-                {
-                    byId[t.TenantId] = t;
-                    byDomain[t.TenantAlias] = t;
-                    if (!string.IsNullOrEmpty(t.MappedDomain)) byDomain[t.MappedDomain] = t;
-                    if (!string.IsNullOrEmpty(ip)) byDomain[ip] = t;
-                }
+        public void Insert(Tenant t, string ip = null)
+        {
+            if (t == null)
+            {
+                return;
             }
 
-            public void Remove(int id)
+            Remove(t.Id);
+            lock (_locker)
             {
-                var t = Get(id);
-                if (t != null)
+                _byId[t.Id] = t;
+                _byDomain[t.Alias] = t;
+                if (!string.IsNullOrEmpty(t.MappedDomain))
                 {
-                    lock (locker)
+                    _byDomain[t.MappedDomain] = t;
+                }
+
+                if (!string.IsNullOrEmpty(ip))
+                {
+                    _byDomain[ip] = t;
+                }
+            }
+        }
+
+        public void Remove(int id)
+        {
+            var t = Get(id);
+            if (t != null)
+            {
+                lock (_locker)
+                {
+                    _byId.Remove(id);
+                    _byDomain.Remove(t.Alias);
+                    if (!string.IsNullOrEmpty(t.MappedDomain))
                     {
-                        byId.Remove(id);
-                        byDomain.Remove(t.TenantAlias);
-                        if (!string.IsNullOrEmpty(t.MappedDomain))
-                        {
-                            byDomain.Remove(t.MappedDomain);
-                        }
+                        _byDomain.Remove(t.MappedDomain);
                     }
                 }
             }
+        }
 
-            internal void Clear(CoreBaseSettings coreBaseSettings)
+        internal void Clear(CoreBaseSettings coreBaseSettings)
+        {
+            if (!coreBaseSettings.Standalone)
             {
-                if (!coreBaseSettings.Standalone) return;
-                lock (locker)
-                {
-                    byId.Clear();
-                    byDomain.Clear();
-                }
+                return;
+            }
+
+            lock (_locker)
+            {
+                _byId.Clear();
+                _byDomain.Clear();
             }
         }
     }
+}
 
-    [Scope]
-    class ConfigureCachedTenantService : IConfigureNamedOptions<CachedTenantService>
+[Scope]
+class ConfigureCachedTenantService : IConfigureNamedOptions<CachedTenantService>
+{
+    private readonly IOptionsSnapshot<DbTenantService> _service;
+    private readonly TenantServiceCache _tenantServiceCache;
+
+    public ConfigureCachedTenantService(
+        IOptionsSnapshot<DbTenantService> service,
+        TenantServiceCache tenantServiceCache)
     {
-        private IOptionsSnapshot<DbTenantService> Service { get; }
-        private TenantServiceCache TenantServiceCache { get; }
-
-        public ConfigureCachedTenantService(
-            IOptionsSnapshot<DbTenantService> service,
-            TenantServiceCache tenantServiceCache)
-        {
-            Service = service;
-            TenantServiceCache = tenantServiceCache;
-        }
-
-        public void Configure(string name, CachedTenantService options)
-        {
-            Configure(options);
-            options.Service = Service.Get(name);
-        }
-
-        public void Configure(CachedTenantService options)
-        {
-            options.Service = Service.Value;
-            options.TenantServiceCache = TenantServiceCache;
-            options.CacheNotifyItem = TenantServiceCache.CacheNotifyItem;
-            options.CacheNotifySettings = TenantServiceCache.CacheNotifySettings;
-        }
+        _service = service;
+        _tenantServiceCache = tenantServiceCache;
     }
 
-    [Scope]
-    class CachedTenantService : ITenantService
+    public void Configure(string name, CachedTenantService options)
     {
-        internal ITenantService Service { get; set; }
+        Configure(options);
+        options.Service = _service.Get(name);
+    }
 
-        private readonly ICache cache;
-        internal ICacheNotify<TenantSetting> CacheNotifySettings { get; set; }
-        internal ICacheNotify<TenantCacheItem> CacheNotifyItem { get; set; }
+    public void Configure(CachedTenantService options)
+    {
+        options.Service = _service.Value;
+        options.TenantServiceCache = _tenantServiceCache;
+        options.CacheNotifyItem = _tenantServiceCache.CacheNotifyItem;
+        options.CacheNotifySettings = _tenantServiceCache.CacheNotifySettings;
+    }
+}
 
-        private TimeSpan SettingsExpiration { get; set; }
-        internal TenantServiceCache TenantServiceCache { get; set; }
+[Scope]
+class CachedTenantService : ITenantService
+{
+    internal ITenantService Service;
+    private readonly ICache _cache;
+    internal ICacheNotify<TenantSetting> CacheNotifySettings;
+    internal ICacheNotify<TenantCacheItem> CacheNotifyItem;
+    private TimeSpan _settingsExpiration;
+    internal TenantServiceCache TenantServiceCache;
 
-        public CachedTenantService()
+    public CachedTenantService()
+    {
+        _settingsExpiration = TimeSpan.FromMinutes(2);
+    }
+
+    public CachedTenantService(DbTenantService service, TenantServiceCache tenantServiceCache, ICache cache) : this()
+    {
+        this._cache = cache;
+        Service = service ?? throw new ArgumentNullException(nameof(service));
+        TenantServiceCache = tenantServiceCache;
+        CacheNotifyItem = tenantServiceCache.CacheNotifyItem;
+        CacheNotifySettings = tenantServiceCache.CacheNotifySettings;
+    }
+
+    public void ValidateDomain(string domain)
+    {
+        Service.ValidateDomain(domain);
+    }
+
+    public IEnumerable<Tenant> GetTenants(string login, string passwordHash)
+    {
+        return Service.GetTenants(login, passwordHash);
+    }
+
+    public IEnumerable<Tenant> GetTenants(DateTime from, bool active = true)
+    {
+        return Service.GetTenants(from, active);
+    }
+    public IEnumerable<Tenant> GetTenants(List<int> ids)
+    {
+        return Service.GetTenants(ids);
+    }
+
+    public Tenant GetTenant(int id)
+    {
+        var tenants = TenantServiceCache.GetTenantStore();
+        var t = tenants.Get(id);
+        if (t == null)
         {
-            SettingsExpiration = TimeSpan.FromMinutes(2);
-        }
-
-        public CachedTenantService(DbTenantService service, TenantServiceCache tenantServiceCache, ICache cache) : this()
-        {
-            this.cache = cache;
-            Service = service ?? throw new ArgumentNullException(nameof(service));
-            TenantServiceCache = tenantServiceCache;
-            CacheNotifyItem = tenantServiceCache.CacheNotifyItem;
-            CacheNotifySettings = tenantServiceCache.CacheNotifySettings;
-        }
-
-        public void ValidateDomain(string domain)
-        {
-            Service.ValidateDomain(domain);
-        }
-
-        public IEnumerable<Tenant> GetTenants(string login, string passwordHash)
-        {
-            return Service.GetTenants(login, passwordHash);
-        }
-
-        public IEnumerable<Tenant> GetTenants(DateTime from, bool active = true)
-        {
-            return Service.GetTenants(from, active);
-        }
-        public IEnumerable<Tenant> GetTenants(List<int> ids)
-        {
-            return Service.GetTenants(ids);
-        }
-
-        public Tenant GetTenant(int id)
-        {
-            var tenants = TenantServiceCache.GetTenantStore();
-            var t = tenants.Get(id);
-            if (t == null)
+            t = Service.GetTenant(id);
+            if (t != null)
             {
-                t = Service.GetTenant(id);
-                if (t != null)
-                {
-                    tenants.Insert(t);
-                }
+                tenants.Insert(t);
             }
-            return t;
         }
 
-        public Tenant GetTenant(string domain)
+        return t;
+    }
+
+    public Tenant GetTenant(string domain)
+    {
+        var tenants = TenantServiceCache.GetTenantStore();
+        var t = tenants.Get(domain);
+        if (t == null)
         {
-            var tenants = TenantServiceCache.GetTenantStore();
-            var t = tenants.Get(domain);
-            if (t == null)
+            t = Service.GetTenant(domain);
+            if (t != null)
             {
-                t = Service.GetTenant(domain);
-                if (t != null)
-                {
-                    tenants.Insert(t);
-                }
+                tenants.Insert(t);
             }
-            return t;
         }
 
-        public Tenant GetTenantForStandaloneWithoutAlias(string ip)
+        return t;
+    }
+
+    public Tenant GetTenantForStandaloneWithoutAlias(string ip)
+    {
+        var tenants = TenantServiceCache.GetTenantStore();
+        var t = tenants.Get(ip);
+        if (t == null)
         {
-            var tenants = TenantServiceCache.GetTenantStore();
-            var t = tenants.Get(ip);
-            if (t == null)
+            t = Service.GetTenantForStandaloneWithoutAlias(ip);
+            if (t != null)
             {
-                t = Service.GetTenantForStandaloneWithoutAlias(ip);
-                if (t != null)
-                {
-                    tenants.Insert(t, ip);
-                }
+                tenants.Insert(t, ip);
             }
-            return t;
         }
 
-        public Tenant SaveTenant(CoreSettings coreSettings, Tenant tenant)
+        return t;
+    }
+
+    public Tenant SaveTenant(CoreSettings coreSettings, Tenant tenant)
+    {
+        tenant = Service.SaveTenant(coreSettings, tenant);
+        CacheNotifyItem.Publish(new TenantCacheItem() { TenantId = tenant.Id }, CacheNotifyAction.InsertOrUpdate);
+
+        return tenant;
+    }
+
+    public void RemoveTenant(int id, bool auto = false)
+    {
+        Service.RemoveTenant(id, auto);
+        CacheNotifyItem.Publish(new TenantCacheItem() { TenantId = id }, CacheNotifyAction.InsertOrUpdate);
+    }
+
+    public IEnumerable<TenantVersion> GetTenantVersions()
+    {
+        return Service.GetTenantVersions();
+    }
+
+    public byte[] GetTenantSettings(int tenant, string key)
+    {
+        var cacheKey = string.Format("settings/{0}/{1}", tenant, key);
+        var data = _cache.Get<byte[]>(cacheKey);
+        if (data == null)
         {
-            tenant = Service.SaveTenant(coreSettings, tenant);
-            CacheNotifyItem.Publish(new TenantCacheItem() { TenantId = tenant.TenantId }, ASC.Common.Caching.CacheNotifyAction.InsertOrUpdate);
-            return tenant;
+            data = Service.GetTenantSettings(tenant, key);
+
+            _cache.Insert(cacheKey, data ?? Array.Empty<byte>(), DateTime.UtcNow + _settingsExpiration);
         }
 
-        public void RemoveTenant(int id, bool auto = false)
-        {
-            Service.RemoveTenant(id, auto);
-            CacheNotifyItem.Publish(new TenantCacheItem() { TenantId = id }, ASC.Common.Caching.CacheNotifyAction.InsertOrUpdate);
-        }
+        return data == null ? null : data.Length == 0 ? null : data;
+    }
 
-        public IEnumerable<TenantVersion> GetTenantVersions()
-        {
-            return Service.GetTenantVersions();
-        }
+    public void SetTenantSettings(int tenant, string key, byte[] data)
+    {
+        Service.SetTenantSettings(tenant, key, data);
+        var cacheKey = string.Format("settings/{0}/{1}", tenant, key);
 
-        public byte[] GetTenantSettings(int tenant, string key)
-        {
-            var cacheKey = string.Format("settings/{0}/{1}", tenant, key);
-            var data = cache.Get<byte[]>(cacheKey);
-            if (data == null)
-            {
-                data = Service.GetTenantSettings(tenant, key);
-
-                cache.Insert(cacheKey, data ?? Array.Empty<byte>(), DateTime.UtcNow + SettingsExpiration);
-            }
-            return data == null ? null : data.Length == 0 ? null : data;
-        }
-
-        public void SetTenantSettings(int tenant, string key, byte[] data)
-        {
-            Service.SetTenantSettings(tenant, key, data);
-            var cacheKey = string.Format("settings/{0}/{1}", tenant, key);
-            CacheNotifySettings.Publish(new TenantSetting { Key = cacheKey }, ASC.Common.Caching.CacheNotifyAction.Remove);
-        }
+        CacheNotifySettings.Publish(new TenantSetting { Key = cacheKey }, ASC.Common.Caching.CacheNotifyAction.Remove);
     }
 }

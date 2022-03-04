@@ -25,561 +25,660 @@
 
 using File = System.IO.File;
 
-namespace ASC.Files.Thirdparty.Dropbox
+namespace ASC.Files.Thirdparty.Dropbox;
+
+[Scope]
+internal class DropboxFileDao : DropboxDaoBase, IFileDao<string>
 {
-    [Scope]
-    internal class DropboxFileDao : DropboxDaoBase, IFileDao<string>
+    private readonly CrossDao _crossDao;
+    private readonly DropboxDaoSelector _dropboxDaoSelector;
+    private readonly IFileDao<int> _fileDao;
+
+    public DropboxFileDao(
+        IServiceProvider serviceProvider,
+        UserManager userManager,
+        TenantManager tenantManager,
+        TenantUtil tenantUtil,
+        DbContextManager<FilesDbContext> dbContextManager,
+        SetupInfo setupInfo,
+        IOptionsMonitor<ILog> monitor,
+        FileUtility fileUtility,
+        CrossDao crossDao,
+        DropboxDaoSelector dropboxDaoSelector,
+        IFileDao<int> fileDao,
+        TempPath tempPath)
+        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
     {
-        private CrossDao CrossDao { get; }
-        private DropboxDaoSelector DropboxDaoSelector { get; }
-        private IFileDao<int> FileDao { get; }
+        _crossDao = crossDao;
+        _dropboxDaoSelector = dropboxDaoSelector;
+        _fileDao = fileDao;
+    }
 
-        public DropboxFileDao(
-            IServiceProvider serviceProvider,
-            UserManager userManager,
-            TenantManager tenantManager,
-            TenantUtil tenantUtil,
-            DbContextManager<FilesDbContext> dbContextManager,
-            SetupInfo setupInfo,
-            IOptionsMonitor<ILog> monitor,
-            FileUtility fileUtility,
-            CrossDao crossDao,
-            DropboxDaoSelector dropboxDaoSelector,
-            IFileDao<int> fileDao,
-            TempPath tempPath)
-            : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
+    public async Task InvalidateCacheAsync(string fileId)
+    {
+        var dropboxFilePath = MakeDropboxPath(fileId);
+        await ProviderInfo.CacheResetAsync(dropboxFilePath, true).ConfigureAwait(false);
+
+        var dropboxFile = await GetDropboxFileAsync(fileId).ConfigureAwait(false);
+        var parentPath = GetParentFolderPath(dropboxFile);
+        if (parentPath != null)
         {
-            CrossDao = crossDao;
-            DropboxDaoSelector = dropboxDaoSelector;
-            FileDao = fileDao;
+            await ProviderInfo.CacheResetAsync(parentPath).ConfigureAwait(false);
+        }
+    }
+
+    public Task<File<string>> GetFileAsync(string fileId)
+    {
+        return GetFileAsync(fileId, 1);
+    }
+
+    public async Task<File<string>> GetFileAsync(string fileId, int fileVersion)
+    {
+        return ToFile(await GetDropboxFileAsync(fileId).ConfigureAwait(false));
+    }
+
+    public async Task<File<string>> GetFileAsync(string parentId, string title)
+    {
+        var items = await GetDropboxItemsAsync(parentId, false).ConfigureAwait(false);
+        var metadata = items.FirstOrDefault(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase));
+
+        return metadata == null
+                   ? null
+                   : ToFile(metadata.AsFile);
+    }
+
+    public async Task<File<string>> GetFileStableAsync(string fileId, int fileVersion = -1)
+    {
+        return ToFile(await GetDropboxFileAsync(fileId).ConfigureAwait(false));
+    }
+
+    public IAsyncEnumerable<File<string>> GetFileHistoryAsync(string fileId)
+    {
+        return GetFileAsync(fileId).ToAsyncEnumerable();
+    }
+
+    public IAsyncEnumerable<File<string>> GetFilesAsync(IEnumerable<string> fileIds)
+    {
+        if (fileIds == null || !fileIds.Any())
+        {
+            return AsyncEnumerable.Empty<File<string>>();
         }
 
-        public void InvalidateCache(string fileId)
-        {
-            var dropboxFilePath = MakeDropboxPath(fileId);
-            ProviderInfo.CacheReset(dropboxFilePath, true);
+        var result = fileIds.ToAsyncEnumerable().SelectAwait(async e => ToFile(await GetDropboxFileAsync(e).ConfigureAwait(false)));
 
-            var dropboxFile = GetDropboxFile(fileId);
-            var parentPath = GetParentFolderPath(dropboxFile);
-            if (parentPath != null) ProviderInfo.CacheReset(parentPath);
+        return result;
+    }
+
+    public IAsyncEnumerable<File<string>> GetFilesFilteredAsync(IEnumerable<string> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool checkShared = false)
+    {
+        if (fileIds == null || !fileIds.Any() || filterType == FilterType.FoldersOnly)
+        {
+            return AsyncEnumerable.Empty<File<string>>();
         }
 
-        public File<string> GetFile(string fileId)
+        var files = GetFilesAsync(fileIds);
+
+        //Filter
+        if (subjectID != Guid.Empty)
         {
-            return GetFile(fileId, 1);
+            files = files.Where(x => subjectGroup
+                                         ? UserManager.IsUserInGroup(x.CreateBy, subjectID)
+                                         : x.CreateBy == subjectID);
         }
 
-        public File<string> GetFile(string fileId, int fileVersion)
+        switch (filterType)
         {
-            return ToFile(GetDropboxFile(fileId));
-        }
-
-        public File<string> GetFile(string parentId, string title)
-        {
-            var metadata = GetDropboxItems(parentId, false)
-                .FirstOrDefault(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase));
-            return metadata == null
-                       ? null
-                       : ToFile(metadata.AsFile);
-        }
-
-        public File<string> GetFileStable(string fileId, int fileVersion = -1)
-        {
-            return ToFile(GetDropboxFile(fileId));
-        }
-
-        public List<File<string>> GetFileHistory(string fileId)
-        {
-            return new List<File<string>> { GetFile(fileId) };
-        }
-
-        public List<File<string>> GetFiles(IEnumerable<string> fileIds)
-        {
-            if (fileIds == null || !fileIds.Any()) return new List<File<string>>();
-            return fileIds.Select(GetDropboxFile).Select(ToFile).ToList();
-        }
-
-        public List<File<string>> GetFilesFiltered(IEnumerable<string> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool checkShared = false)
-        {
-            if (fileIds == null || !fileIds.Any() || filterType == FilterType.FoldersOnly) return new List<File<string>>();
-
-            var files = GetFiles(fileIds).AsEnumerable();
-
-            //Filter
-            if (subjectID != Guid.Empty)
-            {
-                files = files.Where(x => subjectGroup
-                                             ? UserManager.IsUserInGroup(x.CreateBy, subjectID)
-                                             : x.CreateBy == subjectID);
-            }
-
-            switch (filterType)
-            {
-                case FilterType.FoldersOnly:
-                    return new List<File<string>>();
-                case FilterType.DocumentsOnly:
-                    files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Document);
-                    break;
-                case FilterType.PresentationsOnly:
-                    files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Presentation);
-                    break;
-                case FilterType.SpreadsheetsOnly:
-                    files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Spreadsheet);
-                    break;
-                case FilterType.ImagesOnly:
-                    files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Image);
-                    break;
-                case FilterType.ArchiveOnly:
-                    files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Archive);
-                    break;
-                case FilterType.MediaOnly:
-                    files = files.Where(x =>
-                        {
-                            FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
-                            return fileType == FileType.Audio || fileType == FileType.Video;
-                        });
-                    break;
-                case FilterType.ByExtension:
-                    if (!string.IsNullOrEmpty(searchText))
-                    {
-                        searchText = searchText.Trim().ToLower();
-                        files = files.Where(x => FileUtility.GetFileExtension(x.Title).Equals(searchText));
-                    }
-                    break;
-            }
-
-            if (!string.IsNullOrEmpty(searchText))
-                files = files.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
-
-            return files.ToList();
-        }
-
-        public List<string> GetFiles(string parentId)
-        {
-            return GetDropboxItems(parentId, false).Select(entry => MakeId(entry)).ToList();
-        }
-
-        public List<File<string>> GetFiles(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
-        {
-            if (filterType == FilterType.FoldersOnly) return new List<File<string>>();
-
-            //Get only files
-            var files = GetDropboxItems(parentId, false).Select(item => ToFile(item.AsFile));
-
-            //Filter
-            if (subjectID != Guid.Empty)
-            {
-                files = files.Where(x => subjectGroup
-                                             ? UserManager.IsUserInGroup(x.CreateBy, subjectID)
-                                             : x.CreateBy == subjectID);
-            }
-
-            switch (filterType)
-            {
-                case FilterType.FoldersOnly:
-                    return new List<File<string>>();
-                case FilterType.DocumentsOnly:
-                    files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Document);
-                    break;
-                case FilterType.PresentationsOnly:
-                    files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Presentation);
-                    break;
-                case FilterType.SpreadsheetsOnly:
-                    files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Spreadsheet);
-                    break;
-                case FilterType.ImagesOnly:
-                    files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Image);
-                    break;
-                case FilterType.ArchiveOnly:
-                    files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Archive);
-                    break;
-                case FilterType.MediaOnly:
-                    files = files.Where(x =>
-                        {
-                            FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
-                            return fileType == FileType.Audio || fileType == FileType.Video;
-                        });
-                    break;
-                case FilterType.ByExtension:
-                    if (!string.IsNullOrEmpty(searchText))
-                    {
-                        searchText = searchText.Trim().ToLower();
-                        files = files.Where(x => FileUtility.GetFileExtension(x.Title).Equals(searchText));
-                    }
-                    break;
-            }
-
-            if (!string.IsNullOrEmpty(searchText))
-                files = files.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
-
-            if (orderBy == null) orderBy = new OrderBy(SortedByType.DateAndTime, false);
-
-            files = orderBy.SortedBy switch
-            {
-                SortedByType.Author => orderBy.IsAsc ? files.OrderBy(x => x.CreateBy) : files.OrderByDescending(x => x.CreateBy),
-                SortedByType.AZ => orderBy.IsAsc ? files.OrderBy(x => x.Title) : files.OrderByDescending(x => x.Title),
-                SortedByType.DateAndTime => orderBy.IsAsc ? files.OrderBy(x => x.ModifiedOn) : files.OrderByDescending(x => x.ModifiedOn),
-                SortedByType.DateAndTimeCreation => orderBy.IsAsc ? files.OrderBy(x => x.CreateOn) : files.OrderByDescending(x => x.CreateOn),
-                _ => orderBy.IsAsc ? files.OrderBy(x => x.Title) : files.OrderByDescending(x => x.Title),
-            };
-            return files.ToList();
-        }
-
-        public override Stream GetFileStream(File<string> file)
-        {
-            return GetFileStream(file, 0);
-        }
-
-        public Stream GetFileStream(File<string> file, long offset)
-        {
-            var dropboxFilePath = MakeDropboxPath(file.ID);
-            ProviderInfo.CacheReset(dropboxFilePath, true);
-
-            var dropboxFile = GetDropboxFile(file.ID);
-            if (dropboxFile == null) throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
-            if (dropboxFile is ErrorFile errorFile) throw new Exception(errorFile.Error);
-
-            var fileStream = ProviderInfo.Storage.DownloadStream(MakeDropboxPath(dropboxFile), (int)offset);
-
-            return fileStream;
-        }
-
-        public Uri GetPreSignedUri(File<string> file, TimeSpan expires)
-        {
-            throw new NotSupportedException();
-        }
-
-        public bool IsSupportedPreSignedUri(File<string> file)
-        {
-            return false;
-        }
-
-        public File<string> SaveFile(File<string> file, Stream fileStream)
-        {
-            if (file == null) throw new ArgumentNullException(nameof(file));
-            if (fileStream == null) throw new ArgumentNullException(nameof(fileStream));
-
-            FileMetadata newDropboxFile = null;
-
-            if (file.ID != null)
-            {
-                var filePath = MakeDropboxPath(file.ID);
-                newDropboxFile = ProviderInfo.Storage.SaveStream(filePath, fileStream);
-                if (!newDropboxFile.Name.Equals(file.Title))
+            case FilterType.FoldersOnly:
+                return AsyncEnumerable.Empty<File<string>>();
+            case FilterType.DocumentsOnly:
+                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Document);
+                break;
+            case FilterType.PresentationsOnly:
+                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Presentation);
+                break;
+            case FilterType.SpreadsheetsOnly:
+                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Spreadsheet);
+                break;
+            case FilterType.ImagesOnly:
+                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Image);
+                break;
+            case FilterType.ArchiveOnly:
+                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Archive);
+                break;
+            case FilterType.MediaOnly:
+                files = files.Where(x =>
                 {
-                    var parentFolderPath = GetParentFolderPath(newDropboxFile);
-                    file.Title = GetAvailableTitle(file.Title, parentFolderPath, IsExist);
-                    newDropboxFile = ProviderInfo.Storage.MoveFile(filePath, parentFolderPath, file.Title);
+                    FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                    return fileType == FileType.Audio || fileType == FileType.Video;
+                });
+                break;
+            case FilterType.ByExtension:
+                if (!string.IsNullOrEmpty(searchText))
+                {
+                    searchText = searchText.Trim().ToLower();
+                    files = files.Where(x => FileUtility.GetFileExtension(x.Title).Equals(searchText));
                 }
-            }
-            else if (file.FolderID != null)
+                break;
+        }
+
+        if (!string.IsNullOrEmpty(searchText))
+        {
+            files = files.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
+        }
+
+        return files;
+    }
+
+    public async Task<List<string>> GetFilesAsync(string parentId)
+    {
+        var items = await GetDropboxItemsAsync(parentId, false).ConfigureAwait(false);
+
+        return items.Select(entry => MakeId(entry)).ToList();
+    }
+
+    public async IAsyncEnumerable<File<string>> GetFilesAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
+    {
+        if (filterType == FilterType.FoldersOnly)
+        {
+            yield break;
+        }
+
+        //Get only files
+        var items = await GetDropboxItemsAsync(parentId, false).ConfigureAwait(false);
+        var files = items.Select(item => ToFile(item.AsFile));
+
+        //Filter
+        if (subjectID != Guid.Empty)
+        {
+            files = files.Where(x => subjectGroup
+                                         ? UserManager.IsUserInGroup(x.CreateBy, subjectID)
+                                         : x.CreateBy == subjectID);
+        }
+
+        switch (filterType)
+        {
+            case FilterType.FoldersOnly:
+                yield break;
+            case FilterType.DocumentsOnly:
+                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Document);
+                break;
+            case FilterType.PresentationsOnly:
+                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Presentation);
+                break;
+            case FilterType.SpreadsheetsOnly:
+                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Spreadsheet);
+                break;
+            case FilterType.ImagesOnly:
+                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Image);
+                break;
+            case FilterType.ArchiveOnly:
+                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Archive);
+                break;
+            case FilterType.MediaOnly:
+                files = files.Where(x =>
+                {
+                    FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+
+                    return fileType == FileType.Audio || fileType == FileType.Video;
+                });
+                break;
+            case FilterType.ByExtension:
+                if (!string.IsNullOrEmpty(searchText))
+                {
+                    searchText = searchText.Trim().ToLower();
+                    files = files.Where(x => FileUtility.GetFileExtension(x.Title).Equals(searchText));
+                }
+                break;
+        }
+
+        if (!string.IsNullOrEmpty(searchText))
+        {
+            files = files.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
+        }
+
+        if (orderBy == null)
+        {
+            orderBy = new OrderBy(SortedByType.DateAndTime, false);
+        }
+
+        files = orderBy.SortedBy switch
+        {
+            SortedByType.Author => orderBy.IsAsc ? files.OrderBy(x => x.CreateBy) : files.OrderByDescending(x => x.CreateBy),
+            SortedByType.AZ => orderBy.IsAsc ? files.OrderBy(x => x.Title) : files.OrderByDescending(x => x.Title),
+            SortedByType.DateAndTime => orderBy.IsAsc ? files.OrderBy(x => x.ModifiedOn) : files.OrderByDescending(x => x.ModifiedOn),
+            SortedByType.DateAndTimeCreation => orderBy.IsAsc ? files.OrderBy(x => x.CreateOn) : files.OrderByDescending(x => x.CreateOn),
+            _ => orderBy.IsAsc ? files.OrderBy(x => x.Title) : files.OrderByDescending(x => x.Title),
+        };
+
+        foreach (var f in files)
+        {
+            yield return f;
+        }
+    }
+
+    public override Task<Stream> GetFileStreamAsync(File<string> file)
+    {
+        return GetFileStreamAsync(file, 0);
+    }
+
+    public async Task<Stream> GetFileStreamAsync(File<string> file, long offset)
+    {
+        var dropboxFilePath = MakeDropboxPath(file.ID);
+        await ProviderInfo.CacheResetAsync(dropboxFilePath, true).ConfigureAwait(false);
+
+        var dropboxFile = await GetDropboxFileAsync(file.ID).ConfigureAwait(false);
+        if (dropboxFile == null)
+        {
+            throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
+        }
+
+        if (dropboxFile is ErrorFile errorFile)
+        {
+            throw new Exception(errorFile.Error);
+        }
+
+        var fileStream = await ProviderInfo.Storage.DownloadStreamAsync(MakeDropboxPath(dropboxFile), (int)offset);
+
+        return fileStream;
+    }
+
+    public Task<Uri> GetPreSignedUriAsync(File<string> file, TimeSpan expires)
+    {
+        throw new NotSupportedException();
+    }
+
+    public Task<bool> IsSupportedPreSignedUriAsync(File<string> file)
+    {
+        return Task.FromResult(false);
+    }
+
+    public Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
+    {
+        if (file == null)
+        {
+            throw new ArgumentNullException(nameof(file));
+        }
+        if (fileStream == null)
+        {
+            throw new ArgumentNullException(nameof(fileStream));
+        }
+
+        return InternalSaveFileAsync(file, fileStream);
+    }
+
+    private async Task<File<string>> InternalSaveFileAsync(File<string> file, Stream fileStream)
+    {
+        FileMetadata newDropboxFile = null;
+
+        if (file.ID != null)
+        {
+            var filePath = MakeDropboxPath(file.ID);
+            newDropboxFile = await ProviderInfo.Storage.SaveStreamAsync(filePath, fileStream).ConfigureAwait(false);
+            if (!newDropboxFile.Name.Equals(file.Title))
             {
-                var folderPath = MakeDropboxPath(file.FolderID);
-                file.Title = GetAvailableTitle(file.Title, folderPath, IsExist);
-                newDropboxFile = ProviderInfo.Storage.CreateFile(fileStream, file.Title, folderPath);
+                var parentFolderPath = GetParentFolderPath(newDropboxFile);
+                file.Title = await GetAvailableTitleAsync(file.Title, parentFolderPath, IsExistAsync).ConfigureAwait(false);
+                newDropboxFile = await ProviderInfo.Storage.MoveFileAsync(filePath, parentFolderPath, file.Title).ConfigureAwait(false);
             }
-
-            ProviderInfo.CacheReset(newDropboxFile);
-            var parentPath = GetParentFolderPath(newDropboxFile);
-            if (parentPath != null) ProviderInfo.CacheReset(parentPath);
-
-            return ToFile(newDropboxFile);
+        }
+        else if (file.FolderID != null)
+        {
+            var folderPath = MakeDropboxPath(file.FolderID);
+            file.Title = await GetAvailableTitleAsync(file.Title, folderPath, IsExistAsync).ConfigureAwait(false);
+            newDropboxFile = await ProviderInfo.Storage.CreateFileAsync(fileStream, file.Title, folderPath).ConfigureAwait(false);
         }
 
-        public File<string> ReplaceFileVersion(File<string> file, Stream fileStream)
+        await ProviderInfo.CacheResetAsync(newDropboxFile).ConfigureAwait(false);
+        var parentPath = GetParentFolderPath(newDropboxFile);
+        if (parentPath != null)
         {
-            return SaveFile(file, fileStream);
+            await ProviderInfo.CacheResetAsync(parentPath).ConfigureAwait(false);
         }
 
-        public void DeleteFile(string fileId)
-        {
-            var dropboxFile = GetDropboxFile(fileId);
-            if (dropboxFile == null) return;
-            var id = MakeId(dropboxFile);
+        return ToFile(newDropboxFile);
+    }
 
-            using (var tx = FilesDbContext.Database.BeginTransaction())
+    public Task<File<string>> ReplaceFileVersionAsync(File<string> file, Stream fileStream)
+    {
+        return SaveFileAsync(file, fileStream);
+    }
+
+    public async Task DeleteFileAsync(string fileId)
+    {
+        var dropboxFile = await GetDropboxFileAsync(fileId).ConfigureAwait(false);
+        if (dropboxFile == null)
+        {
+            return;
+        }
+
+        var id = MakeId(dropboxFile);
+
+        using (var tx = await FilesDbContext.Database.BeginTransactionAsync())
+        {
+            var hashIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
+                .Where(r => r.Id.StartsWith(id))
+                .Select(r => r.HashId)
+                .ToListAsync()
+                .ConfigureAwait(false);
+
+            var link = await Query(FilesDbContext.TagLink)
+                .Where(r => hashIDs.Any(h => h == r.EntryId))
+                .ToListAsync()
+                .ConfigureAwait(false);
+
+            FilesDbContext.TagLink.RemoveRange(link);
+            await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+
+            var tagsToRemove = from ft in FilesDbContext.Tag
+                               join ftl in FilesDbContext.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new { TenantId = ftl.TenantId, Id = ftl.TagId }
+                               where ftl == null
+                               select ft;
+
+            FilesDbContext.Tag.RemoveRange(await tagsToRemove.ToListAsync());
+
+            var securityToDelete = Query(FilesDbContext.Security)
+                .Where(r => hashIDs.Any(h => h == r.EntryId));
+
+            FilesDbContext.Security.RemoveRange(await securityToDelete.ToListAsync());
+            await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+
+            var mappingToDelete = Query(FilesDbContext.ThirdpartyIdMapping)
+                .Where(r => hashIDs.Any(h => h == r.HashId));
+
+            FilesDbContext.ThirdpartyIdMapping.RemoveRange(await mappingToDelete.ToListAsync());
+            await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+
+            await tx.CommitAsync().ConfigureAwait(false);
+        }
+
+        if (!(dropboxFile is ErrorFile))
+        {
+            await ProviderInfo.Storage.DeleteItemAsync(dropboxFile);
+        }
+
+        await ProviderInfo.CacheResetAsync(MakeDropboxPath(dropboxFile), true).ConfigureAwait(false);
+        var parentFolderPath = GetParentFolderPath(dropboxFile);
+        if (parentFolderPath != null)
+        {
+            await ProviderInfo.CacheResetAsync(parentFolderPath).ConfigureAwait(false);
+        }
+    }
+
+    public async Task<bool> IsExistAsync(string title, object folderId)
+    {
+        var items = await GetDropboxItemsAsync(folderId, false).ConfigureAwait(false);
+
+        return items.Any(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase));
+    }
+
+    public async Task<TTo> MoveFileAsync<TTo>(string fileId, TTo toFolderId)
+    {
+        if (toFolderId is int tId)
+        {
+            return (TTo)Convert.ChangeType(await MoveFileAsync(fileId, tId).ConfigureAwait(false), typeof(TTo));
+        }
+
+        if (toFolderId is string tsId)
+        {
+            return (TTo)Convert.ChangeType(await MoveFileAsync(fileId, tsId).ConfigureAwait(false), typeof(TTo));
+        }
+
+        throw new NotImplementedException();
+    }
+
+    public async Task<string> MoveFileAsync(string fileId, string toFolderId)
+    {
+        var dropboxFile = await GetDropboxFileAsync(fileId).ConfigureAwait(false);
+        if (dropboxFile is ErrorFile errorFile)
+        {
+            throw new Exception(errorFile.Error);
+        }
+
+        var toDropboxFolder = await GetDropboxFolderAsync(toFolderId).ConfigureAwait(false);
+        if (toDropboxFolder is ErrorFolder errorFolder)
+        {
+            throw new Exception(errorFolder.Error);
+        }
+
+        var fromFolderPath = GetParentFolderPath(dropboxFile);
+
+        dropboxFile = await ProviderInfo.Storage.MoveFileAsync(MakeDropboxPath(dropboxFile), MakeDropboxPath(toDropboxFolder), dropboxFile.Name).ConfigureAwait(false);
+
+        await ProviderInfo.CacheResetAsync(MakeDropboxPath(dropboxFile), true).ConfigureAwait(false);
+        await ProviderInfo.CacheResetAsync(fromFolderPath).ConfigureAwait(false);
+        await ProviderInfo.CacheResetAsync(MakeDropboxPath(toDropboxFolder)).ConfigureAwait(false);
+
+        return MakeId(dropboxFile);
+    }
+
+    public async Task<int> MoveFileAsync(string fileId, int toFolderId)
+    {
+        var moved = await _crossDao.PerformCrossDaoFileCopyAsync(
+            fileId, this, _dropboxDaoSelector.ConvertId,
+            toFolderId, _fileDao, r => r,
+            true)
+            .ConfigureAwait(false);
+
+        return moved.ID;
+    }
+
+    public async Task<File<TTo>> CopyFileAsync<TTo>(string fileId, TTo toFolderId)
+    {
+        if (toFolderId is int tId)
+        {
+            return await CopyFileAsync(fileId, tId).ConfigureAwait(false) as File<TTo>;
+        }
+
+        if (toFolderId is string tsId)
+        {
+            return await CopyFileAsync(fileId, tsId).ConfigureAwait(false) as File<TTo>;
+        }
+
+        throw new NotImplementedException();
+    }
+
+    public Task<File<int>> CopyFileAsync(string fileId, int toFolderId)
+    {
+        var moved = _crossDao.PerformCrossDaoFileCopyAsync(
+            fileId, this, _dropboxDaoSelector.ConvertId,
+            toFolderId, _fileDao, r => r,
+            false);
+
+        return moved;
+    }
+
+    public async Task<File<string>> CopyFileAsync(string fileId, string toFolderId)
+    {
+        var dropboxFile = await GetDropboxFileAsync(fileId).ConfigureAwait(false);
+        if (dropboxFile is ErrorFile errorFile)
+        {
+            throw new Exception(errorFile.Error);
+        }
+
+        var toDropboxFolder = await GetDropboxFolderAsync(toFolderId).ConfigureAwait(false);
+        if (toDropboxFolder is ErrorFolder errorFolder)
+        {
+            throw new Exception(errorFolder.Error);
+        }
+
+        var newDropboxFile = await ProviderInfo.Storage.CopyFileAsync(MakeDropboxPath(dropboxFile), MakeDropboxPath(toDropboxFolder), dropboxFile.Name).ConfigureAwait(false);
+
+        await ProviderInfo.CacheResetAsync(newDropboxFile).ConfigureAwait(false);
+        await ProviderInfo.CacheResetAsync(MakeDropboxPath(toDropboxFolder)).ConfigureAwait(false);
+
+        return ToFile(newDropboxFile);
+    }
+
+    public async Task<string> FileRenameAsync(File<string> file, string newTitle)
+    {
+        var dropboxFile = await GetDropboxFileAsync(file.ID).ConfigureAwait(false);
+        var parentFolderPath = GetParentFolderPath(dropboxFile);
+        newTitle = await GetAvailableTitleAsync(newTitle, parentFolderPath, IsExistAsync).ConfigureAwait(false);
+
+        dropboxFile = await ProviderInfo.Storage.MoveFileAsync(MakeDropboxPath(dropboxFile), parentFolderPath, newTitle).ConfigureAwait(false);
+
+        await ProviderInfo.CacheResetAsync(dropboxFile).ConfigureAwait(false);
+        var parentPath = GetParentFolderPath(dropboxFile);
+        if (parentPath != null)
+        {
+            await ProviderInfo.CacheResetAsync(parentPath).ConfigureAwait(false);
+        }
+
+        return MakeId(dropboxFile);
+    }
+
+    public Task<string> UpdateCommentAsync(string fileId, int fileVersion, string comment)
+    {
+        return Task.FromResult(string.Empty);
+    }
+
+    public Task CompleteVersionAsync(string fileId, int fileVersion)
+    {
+        return Task.CompletedTask;
+    }
+
+    public Task ContinueVersionAsync(string fileId, int fileVersion)
+    {
+        return Task.CompletedTask;
+    }
+
+    public bool UseTrashForRemove(File<string> file)
+    {
+        return false;
+    }
+
+    #region chunking
+
+    private File<string> RestoreIds(File<string> file)
+    {
+        if (file == null)
+        {
+            return null;
+        }
+
+        if (file.ID != null)
+        {
+            file.ID = MakeId(file.ID);
+        }
+
+        if (file.FolderID != null)
+        {
+            file.FolderID = MakeId(file.FolderID);
+        }
+
+        return file;
+    }
+
+    public Task<ChunkedUploadSession<string>> CreateUploadSessionAsync(File<string> file, long contentLength)
+    {
+        if (SetupInfo.ChunkUploadSize > contentLength)
+        {
+            return Task.FromResult(new ChunkedUploadSession<string>(RestoreIds(file), contentLength) { UseChunks = false });
+        }
+
+        return InternalCreateUploadSessionAsync(file, contentLength);
+    }
+
+    private async Task<ChunkedUploadSession<string>> InternalCreateUploadSessionAsync(File<string> file, long contentLength)
+    {
+        var uploadSession = new ChunkedUploadSession<string>(file, contentLength);
+
+        var dropboxSession = await ProviderInfo.Storage.CreateResumableSessionAsync().ConfigureAwait(false);
+        if (dropboxSession != null)
+        {
+            uploadSession.Items["DropboxSession"] = dropboxSession;
+        }
+        else
+        {
+            uploadSession.Items["TempPath"] = TempPath.GetTempFileName();
+        }
+
+        uploadSession.File = RestoreIds(uploadSession.File);
+
+        return uploadSession;
+    }
+
+    public async Task<File<string>> UploadChunkAsync(ChunkedUploadSession<string> uploadSession, Stream stream, long chunkLength)
+    {
+        if (!uploadSession.UseChunks)
+        {
+            if (uploadSession.BytesTotal == 0)
             {
-                var hashIDs = Query(FilesDbContext.ThirdpartyIdMapping)
-                    .Where(r => r.Id.StartsWith(id))
-                    .Select(r => r.HashId)
-                    .ToList();
-
-                var link = Query(FilesDbContext.TagLink)
-                    .Where(r => hashIDs.Any(h => h == r.EntryId))
-                    .ToList();
-
-                FilesDbContext.TagLink.RemoveRange(link);
-                FilesDbContext.SaveChanges();
-
-                var tagsToRemove = from ft in FilesDbContext.Tag
-                                   join ftl in FilesDbContext.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new { TenantId = ftl.TenantId, Id = ftl.TagId }
-                                   where ftl == null
-                                   select ft;
-
-                FilesDbContext.Tag.RemoveRange(tagsToRemove.ToList());
-
-                var securityToDelete = Query(FilesDbContext.Security)
-                    .Where(r => hashIDs.Any(h => h == r.EntryId));
-
-                FilesDbContext.Security.RemoveRange(securityToDelete);
-                FilesDbContext.SaveChanges();
-
-                var mappingToDelete = Query(FilesDbContext.ThirdpartyIdMapping)
-                    .Where(r => hashIDs.Any(h => h == r.HashId));
-
-                FilesDbContext.ThirdpartyIdMapping.RemoveRange(mappingToDelete);
-                FilesDbContext.SaveChanges();
-
-                tx.Commit();
+                uploadSession.BytesTotal = chunkLength;
             }
 
-            if (!(dropboxFile is ErrorFile))
-            {
-                ProviderInfo.Storage.DeleteItem(dropboxFile);
-            }
-
-            ProviderInfo.CacheReset(MakeDropboxPath(dropboxFile), true);
-            var parentFolderPath = GetParentFolderPath(dropboxFile);
-            if (parentFolderPath != null) ProviderInfo.CacheReset(parentFolderPath);
-        }
-
-        public bool IsExist(string title, object folderId)
-        {
-            return GetDropboxItems(folderId, false)
-                .Any(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase));
-        }
-
-        public TTo MoveFile<TTo>(string fileId, TTo toFolderId)
-        {
-            if (toFolderId is int tId)
-            {
-                return (TTo)Convert.ChangeType(MoveFile(fileId, tId), typeof(TTo));
-            }
-
-            if (toFolderId is string tsId)
-            {
-                return (TTo)Convert.ChangeType(MoveFile(fileId, tsId), typeof(TTo));
-            }
-
-            throw new NotImplementedException();
-        }
-
-        public string MoveFile(string fileId, string toFolderId)
-        {
-            var dropboxFile = GetDropboxFile(fileId);
-            if (dropboxFile is ErrorFile errorFile) throw new Exception(errorFile.Error);
-
-            var toDropboxFolder = GetDropboxFolder(toFolderId);
-            if (toDropboxFolder is ErrorFolder errorFolder) throw new Exception(errorFolder.Error);
-
-            var fromFolderPath = GetParentFolderPath(dropboxFile);
-
-            dropboxFile = ProviderInfo.Storage.MoveFile(MakeDropboxPath(dropboxFile), MakeDropboxPath(toDropboxFolder), dropboxFile.Name);
-
-            ProviderInfo.CacheReset(MakeDropboxPath(dropboxFile), true);
-            ProviderInfo.CacheReset(fromFolderPath);
-            ProviderInfo.CacheReset(MakeDropboxPath(toDropboxFolder));
-
-            return MakeId(dropboxFile);
-        }
-
-        public int MoveFile(string fileId, int toFolderId)
-        {
-            var moved = CrossDao.PerformCrossDaoFileCopy(
-                fileId, this, DropboxDaoSelector.ConvertId,
-                toFolderId, FileDao, r => r,
-                true);
-
-            return moved.ID;
-        }
-
-        public File<TTo> CopyFile<TTo>(string fileId, TTo toFolderId)
-        {
-            if (toFolderId is int tId)
-            {
-                return CopyFile(fileId, tId) as File<TTo>;
-            }
-
-            if (toFolderId is string tsId)
-            {
-                return CopyFile(fileId, tsId) as File<TTo>;
-            }
-
-            throw new NotImplementedException();
-        }
-
-        public File<int> CopyFile(string fileId, int toFolderId)
-        {
-            var moved = CrossDao.PerformCrossDaoFileCopy(
-                fileId, this, DropboxDaoSelector.ConvertId,
-                toFolderId, FileDao, r => r,
-                false);
-
-            return moved;
-        }
-
-        public File<string> CopyFile(string fileId, string toFolderId)
-        {
-            var dropboxFile = GetDropboxFile(fileId);
-            if (dropboxFile is ErrorFile errorFile) throw new Exception(errorFile.Error);
-
-            var toDropboxFolder = GetDropboxFolder(toFolderId);
-            if (toDropboxFolder is ErrorFolder errorFolder) throw new Exception(errorFolder.Error);
-
-            var newDropboxFile = ProviderInfo.Storage.CopyFile(MakeDropboxPath(dropboxFile), MakeDropboxPath(toDropboxFolder), dropboxFile.Name);
-
-            ProviderInfo.CacheReset(newDropboxFile);
-            ProviderInfo.CacheReset(MakeDropboxPath(toDropboxFolder));
-
-            return ToFile(newDropboxFile);
-        }
-
-        public string FileRename(File<string> file, string newTitle)
-        {
-            var dropboxFile = GetDropboxFile(file.ID);
-            var parentFolderPath = GetParentFolderPath(dropboxFile);
-            newTitle = GetAvailableTitle(newTitle, parentFolderPath, IsExist);
-
-            dropboxFile = ProviderInfo.Storage.MoveFile(MakeDropboxPath(dropboxFile), parentFolderPath, newTitle);
-
-            ProviderInfo.CacheReset(dropboxFile);
-            var parentPath = GetParentFolderPath(dropboxFile);
-            if (parentPath != null) ProviderInfo.CacheReset(parentPath);
-
-            return MakeId(dropboxFile);
-        }
-
-        public string UpdateComment(string fileId, int fileVersion, string comment)
-        {
-            return string.Empty;
-        }
-
-        public void CompleteVersion(string fileId, int fileVersion)
-        {
-        }
-
-        public void ContinueVersion(string fileId, int fileVersion)
-        {
-        }
-
-        public bool UseTrashForRemove(File<string> file)
-        {
-            return false;
-        }
-
-        #region chunking
-
-        private File<string> RestoreIds(File<string> file)
-        {
-            if (file == null) return null;
-
-            if (file.ID != null)
-                file.ID = MakeId(file.ID);
-
-            if (file.FolderID != null)
-                file.FolderID = MakeId(file.FolderID);
-
-            return file;
-        }
-
-        public ChunkedUploadSession<string> CreateUploadSession(File<string> file, long contentLength)
-        {
-            if (SetupInfo.ChunkUploadSize > contentLength)
-                return new ChunkedUploadSession<string>(RestoreIds(file), contentLength) { UseChunks = false };
-
-            var uploadSession = new ChunkedUploadSession<string>(file, contentLength);
-
-            var dropboxSession = ProviderInfo.Storage.CreateResumableSession();
-            if (dropboxSession != null)
-            {
-                uploadSession.Items["DropboxSession"] = dropboxSession;
-            }
-            else
-            {
-                uploadSession.Items["TempPath"] = TempPath.GetTempFileName();
-            }
-
-            uploadSession.File = RestoreIds(uploadSession.File);
-            return uploadSession;
-        }
-
-        public File<string> UploadChunk(ChunkedUploadSession<string> uploadSession, Stream stream, long chunkLength)
-        {
-            if (!uploadSession.UseChunks)
-            {
-                if (uploadSession.BytesTotal == 0)
-                    uploadSession.BytesTotal = chunkLength;
-
-                uploadSession.File = SaveFile(uploadSession.File, stream);
-                uploadSession.BytesUploaded = chunkLength;
-                return uploadSession.File;
-            }
-
-            if (uploadSession.Items.ContainsKey("DropboxSession"))
-            {
-                var dropboxSession = uploadSession.GetItemOrDefault<string>("DropboxSession");
-                ProviderInfo.Storage.Transfer(dropboxSession, uploadSession.BytesUploaded, stream);
-            }
-            else
-            {
-                var tempPath = uploadSession.GetItemOrDefault<string>("TempPath");
-                using var fs = new FileStream(tempPath, FileMode.Append);
-                stream.CopyTo(fs);
-            }
-
-            uploadSession.BytesUploaded += chunkLength;
-
-            if (uploadSession.BytesUploaded == uploadSession.BytesTotal)
-            {
-                uploadSession.File = FinalizeUploadSession(uploadSession);
-            }
-            else
-            {
-                uploadSession.File = RestoreIds(uploadSession.File);
-            }
+            uploadSession.File = await SaveFileAsync(uploadSession.File, stream).ConfigureAwait(false);
+            uploadSession.BytesUploaded = chunkLength;
 
             return uploadSession.File;
         }
 
-        public File<string> FinalizeUploadSession(ChunkedUploadSession<string> uploadSession)
+        if (uploadSession.Items.ContainsKey("DropboxSession"))
         {
-            if (uploadSession.Items.ContainsKey("DropboxSession"))
-            {
-                var dropboxSession = uploadSession.GetItemOrDefault<string>("DropboxSession");
-
-                Metadata dropboxFile;
-                var file = uploadSession.File;
-                if (file.ID != null)
-                {
-                    var dropboxFilePath = MakeDropboxPath(file.ID);
-                    dropboxFile = ProviderInfo.Storage.FinishResumableSession(dropboxSession, dropboxFilePath, uploadSession.BytesUploaded);
-                }
-                else
-                {
-                    var folderPath = MakeDropboxPath(file.FolderID);
-                    var title = GetAvailableTitle(file.Title, folderPath, IsExist);
-                    dropboxFile = ProviderInfo.Storage.FinishResumableSession(dropboxSession, folderPath, title, uploadSession.BytesUploaded);
-                }
-
-                ProviderInfo.CacheReset(MakeDropboxPath(dropboxFile));
-                ProviderInfo.CacheReset(GetParentFolderPath(dropboxFile), false);
-
-                return ToFile(dropboxFile.AsFile);
-            }
-
-            using var fs = new FileStream(uploadSession.GetItemOrDefault<string>("TempPath"),
-                                           FileMode.Open, FileAccess.Read, System.IO.FileShare.None, 4096, FileOptions.DeleteOnClose);
-            return SaveFile(uploadSession.File, fs);
+            var dropboxSession = uploadSession.GetItemOrDefault<string>("DropboxSession");
+            await ProviderInfo.Storage.TransferAsync(dropboxSession, uploadSession.BytesUploaded, stream).ConfigureAwait(false);
+        }
+        else
+        {
+            var tempPath = uploadSession.GetItemOrDefault<string>("TempPath");
+            using var fs = new FileStream(tempPath, FileMode.Append);
+            await stream.CopyToAsync(fs).ConfigureAwait(false);
         }
 
-        public void AbortUploadSession(ChunkedUploadSession<string> uploadSession)
+        uploadSession.BytesUploaded += chunkLength;
+
+        if (uploadSession.BytesUploaded == uploadSession.BytesTotal)
         {
-            if (uploadSession.Items.ContainsKey("TempPath"))
-            {
-                File.Delete(uploadSession.GetItemOrDefault<string>("TempPath"));
-            }
+            uploadSession.File = await FinalizeUploadSessionAsync(uploadSession).ConfigureAwait(false);
+        }
+        else
+        {
+            uploadSession.File = RestoreIds(uploadSession.File);
         }
 
-        #endregion
+        return uploadSession.File;
     }
+
+    public async Task<File<string>> FinalizeUploadSessionAsync(ChunkedUploadSession<string> uploadSession)
+    {
+        if (uploadSession.Items.ContainsKey("DropboxSession"))
+        {
+            var dropboxSession = uploadSession.GetItemOrDefault<string>("DropboxSession");
+
+            Metadata dropboxFile;
+            var file = uploadSession.File;
+            if (file.ID != null)
+            {
+                var dropboxFilePath = MakeDropboxPath(file.ID);
+                dropboxFile = await ProviderInfo.Storage.FinishResumableSessionAsync(dropboxSession, dropboxFilePath, uploadSession.BytesUploaded).ConfigureAwait(false);
+            }
+            else
+            {
+                var folderPath = MakeDropboxPath(file.FolderID);
+                var title = await GetAvailableTitleAsync(file.Title, folderPath, IsExistAsync).ConfigureAwait(false);
+                dropboxFile = await ProviderInfo.Storage.FinishResumableSessionAsync(dropboxSession, folderPath, title, uploadSession.BytesUploaded).ConfigureAwait(false);
+            }
+
+            await ProviderInfo.CacheResetAsync(MakeDropboxPath(dropboxFile)).ConfigureAwait(false);
+            await ProviderInfo.CacheResetAsync(GetParentFolderPath(dropboxFile), false).ConfigureAwait(false);
+
+            return ToFile(dropboxFile.AsFile);
+        }
+
+        using var fs = new FileStream(uploadSession.GetItemOrDefault<string>("TempPath"),
+                                       FileMode.Open, FileAccess.Read, System.IO.FileShare.None, 4096, FileOptions.DeleteOnClose);
+
+        return await SaveFileAsync(uploadSession.File, fs).ConfigureAwait(false);
+    }
+
+    public Task AbortUploadSessionAsync(ChunkedUploadSession<string> uploadSession)
+    {
+        if (uploadSession.Items.ContainsKey("TempPath"))
+        {
+            File.Delete(uploadSession.GetItemOrDefault<string>("TempPath"));
+        }
+
+        return Task.CompletedTask;
+    }
+    #endregion
 }

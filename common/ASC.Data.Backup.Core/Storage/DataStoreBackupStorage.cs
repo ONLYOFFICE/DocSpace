@@ -23,61 +23,63 @@
  *
 */
 
-namespace ASC.Data.Backup.Storage
+namespace ASC.Data.Backup.Storage;
+
+[Scope]
+public class DataStoreBackupStorage : IBackupStorage
 {
-    [Scope]
-    public class DataStoreBackupStorage : IBackupStorage
+    private string _webConfigPath;
+    private int _tenant;
+    private readonly StorageFactory _storageFactory;
+
+    public DataStoreBackupStorage(StorageFactory storageFactory)
     {
-        private string WebConfigPath { get; set; }
-        private int Tenant { get; set; }
-        private StorageFactory StorageFactory { get; set; }
-        public DataStoreBackupStorage(StorageFactory storageFactory)
-        {
+        _storageFactory = storageFactory;
+    }
 
-            StorageFactory = storageFactory;
-        }
-        public void Init(int tenant, string webConfigPath)
-        {
-            WebConfigPath = webConfigPath;
-            Tenant = tenant;
-        }
-        public string Upload(string storageBasePath, string localPath, Guid userId)
-        {
-            using var stream = File.OpenRead(localPath);
-            var storagePath = Path.GetFileName(localPath);
-            GetDataStore().Save("", storagePath, stream);
-            return storagePath;
-        }
+    public void Init(int tenant, string webConfigPath)
+    {
+        _webConfigPath = webConfigPath;
+        _tenant = tenant;
+    }
 
-        public void Download(string storagePath, string targetLocalPath)
-        {
-            using var source = GetDataStore().GetReadStream("", storagePath);
-            using var destination = File.OpenWrite(targetLocalPath);
-            source.CopyTo(destination);
-        }
+    public string Upload(string storageBasePath, string localPath, Guid userId)
+    {
+        using var stream = File.OpenRead(localPath);
+        var storagePath = Path.GetFileName(localPath);
+            GetDataStore().SaveAsync("", storagePath, stream).Wait();
 
-        public void Delete(string storagePath)
-        {
-            var dataStore = GetDataStore();
-            if (dataStore.IsFile("", storagePath))
-            {
-                dataStore.Delete("", storagePath);
-            }
-        }
+        return storagePath;
+    }
 
-        public bool IsExists(string storagePath)
-        {
-            return GetDataStore().IsFile("", storagePath);
-        }
+    public void Download(string storagePath, string targetLocalPath)
+    {
+            using var source = GetDataStore().GetReadStreamAsync("", storagePath).Result;
+        using var destination = File.OpenWrite(targetLocalPath);
+        source.CopyTo(destination);
+    }
 
-        public string GetPublicLink(string storagePath)
+    public void Delete(string storagePath)
+    {
+        var dataStore = GetDataStore();
+            if (dataStore.IsFileAsync("", storagePath).Result)
         {
-            return GetDataStore().GetPreSignedUri("", storagePath, TimeSpan.FromDays(1), null).ToString();
+                dataStore.DeleteAsync("", storagePath).Wait();
         }
+    }
 
-        protected virtual IDataStore GetDataStore()
-        {
-            return StorageFactory.GetStorage(WebConfigPath, Tenant.ToString(), "backup", null);
-        }
+    public bool IsExists(string storagePath)
+    {
+            return GetDataStore().IsFileAsync("", storagePath).Result;
+    }
+
+    public string GetPublicLink(string storagePath)
+    {
+            return GetDataStore().GetPreSignedUriAsync("", storagePath, TimeSpan.FromDays(1), null).Result.ToString();
+    }
+
+    protected virtual IDataStore GetDataStore()
+    {
+        return _storageFactory.GetStorage(_webConfigPath, _tenant.ToString(), "backup", null);
     }
 }

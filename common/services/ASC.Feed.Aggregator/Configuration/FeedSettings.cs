@@ -1,23 +1,36 @@
-﻿namespace ASC.Feed.Configuration
+﻿namespace ASC.Feed.Configuration;
+
+[Singletone]
+public class FeedSettings
 {
-    [Singletone]
-    public class FeedSettings
+    public string ServerRoot
     {
-        private string serverRoot;
-        public string ServerRoot { get => serverRoot ?? "http://*/"; set { serverRoot = value; } }
+        get => _serverRoot ?? "http://*/";
+        set => _serverRoot = value;
+    }
+    public TimeSpan AggregatePeriod
+    {
+        get => _aggregatePeriod == TimeSpan.Zero ? TimeSpan.FromMinutes(5) : _aggregatePeriod;
+        set => _aggregatePeriod = value;
+    }
+    public TimeSpan AggregateInterval
+    {
+        get => _aggregateInterval == TimeSpan.Zero ? TimeSpan.FromDays(14) : _aggregateInterval;
+        set => _aggregateInterval = value;
+    }
+    public TimeSpan RemovePeriod
+    {
+        get => _removePeriod == TimeSpan.Zero ? TimeSpan.FromDays(1) : _removePeriod;
+        set => _removePeriod = value;
+    }
 
-        private TimeSpan aggregatePeriod;
-        public TimeSpan AggregatePeriod { get => aggregatePeriod == TimeSpan.Zero ? TimeSpan.FromMinutes(5) : aggregatePeriod; set { aggregatePeriod = value; } }
+    private string _serverRoot;
+    private TimeSpan _aggregatePeriod;
+    private TimeSpan _aggregateInterval;
+    private TimeSpan _removePeriod;
 
-        private TimeSpan aggregateInterval;
-        public TimeSpan AggregateInterval { get => aggregateInterval == TimeSpan.Zero ? TimeSpan.FromDays(14) : aggregateInterval; set { aggregateInterval = value; } }
-
-        private TimeSpan removePeriod;
-        public TimeSpan RemovePeriod { get => removePeriod == TimeSpan.Zero ? TimeSpan.FromDays(1) : removePeriod; set { removePeriod = value; } }
-
-        public FeedSettings(ConfigurationExtension configuration)
-        {
-            configuration.GetSetting("feed", this);
-        }
+    public FeedSettings(ConfigurationExtension configuration)
+    {
+        configuration.GetSetting("feed", this);
     }
 }

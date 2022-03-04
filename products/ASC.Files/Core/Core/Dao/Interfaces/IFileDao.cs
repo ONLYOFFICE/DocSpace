@@ -23,294 +23,272 @@
  *
 */
 
-namespace ASC.Files.Core
+namespace ASC.Files.Core;
+
+[Scope]
+public interface IFileDao<T>
 {
-    [Scope]
-    public interface IFileDao<T>
-    {
-        /// <summary>
-        ///     Clear the application cache for the specific file
-        /// </summary>
-        void InvalidateCache(T fileId);
+    /// <summary>
+    ///     Clear the application cache for the specific file
+    /// </summary>
+    Task InvalidateCacheAsync(T fileId);
+    /// <summary>
+    ///     Receive file
+    /// </summary>
+    /// <param name="fileId">file id</param>
+    /// <returns></returns>
+    Task<File<T>> GetFileAsync(T fileId);
 
-        /// <summary>
-        ///     Receive file
-        /// </summary>
-        /// <param name="fileId">file id</param>
-        /// <returns></returns>
-        File<T> GetFile(T fileId);
+    /// <summary>
+    ///     Receive file
+    /// </summary>
+    /// <param name="fileId">file id</param>
+    /// <param name="fileVersion">file version</param>
+    /// <returns></returns>
+    Task<File<T>> GetFileAsync(T fileId, int fileVersion);
 
-        /// <summary>
-        ///     Receive file
-        /// </summary>
-        /// <param name="fileId">file id</param>
-        /// <param name="fileVersion">file version</param>
-        /// <returns></returns>
-        File<T> GetFile(T fileId, int fileVersion);
+    /// <summary>
+    ///     Receive file
+    /// </summary>
+    /// <param name="parentId">folder id</param>
+    /// <param name="title">file name</param>
+    /// <returns>
+    ///   file
+    /// </returns>
+    Task<File<T>> GetFileAsync(T parentId, string title);
+    /// <summary>
+    ///     Receive last file without forcesave
+    /// </summary>
+    /// <param name="fileId">file id</param>
+    /// <param name="fileVersion"></param>
+    /// <returns></returns>
+    Task<File<T>> GetFileStableAsync(T fileId, int fileVersion = -1);
+    /// <summary>
+    ///  Returns all versions of the file
+    /// </summary>
+    /// <param name="fileId"></param>
+    /// <returns></returns>
+    IAsyncEnumerable<File<T>> GetFileHistoryAsync(T fileId);
 
-        /// <summary>
-        ///     Receive file
-        /// </summary>
-        /// <param name="parentId">folder id</param>
-        /// <param name="title">file name</param>
-        /// <returns>
-        ///   file
-        /// </returns>
-        File<T> GetFile(T parentId, string title);
+    /// <summary>
+    ///     Gets the file (s) by ID (s)
+    /// </summary>
+    /// <param name="fileIds">id file</param>
+    /// <returns></returns>
+    IAsyncEnumerable<File<T>> GetFilesAsync(IEnumerable<T> fileIds);
 
-        /// <summary>
-        ///     Receive last file without forcesave
-        /// </summary>
-        /// <param name="fileId">file id</param>
-        /// <param name="fileVersion"></param>
-        /// <returns></returns>
-        File<T> GetFileStable(T fileId, int fileVersion = -1);
+    /// <summary>
+    ///     Gets the file (s) by ID (s) for share
+    /// </summary>
+    /// <param name="fileIds">id file</param>
+    /// <param name="filterType"></param>
+    /// <param name="subjectGroup"></param>
+    /// <param name="subjectID"></param>
+    /// <param name="searchText"></param>
+    /// <param name="searchInContent"></param>
+    /// <returns></returns>
+    IAsyncEnumerable<File<T>> GetFilesFilteredAsync(IEnumerable<T> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool checkShared = false);
 
-        /// <summary>
-        ///  Returns all versions of the file
-        /// </summary>
-        /// <param name="fileId"></param>
-        /// <returns></returns>
-        List<File<T>> GetFileHistory(T fileId);
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="parentId"></param>
+    /// <returns></returns>
+    Task<List<T>> GetFilesAsync(T parentId);
 
-        /// <summary>
-        ///     Gets the file (s) by ID (s)
-        /// </summary>
-        /// <param name="fileIds">id file</param>
-        /// <returns></returns>
-        List<File<T>> GetFiles(IEnumerable<T> fileIds);
+    /// <summary>
+    ///     Get files in folder
+    /// </summary>
+    /// <param name="parentId">folder id</param>
+    /// <param name="orderBy"></param>
+    /// <param name="filterType">filterType type</param>
+    /// <param name="subjectGroup"></param>
+    /// <param name="subjectID"></param>
+    /// <param name="searchText"> </param>
+    /// <param name="searchInContent"></param>
+    /// <param name="withSubfolders"> </param>
+    /// <returns>list of files</returns>
+    /// <remarks>
+    ///    Return only the latest versions of files of a folder
+    /// </remarks>
+    IAsyncEnumerable<File<T>> GetFilesAsync(T parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false);
 
-        /// <summary>
-        ///     Gets the file (s) by ID (s) for share
-        /// </summary>
-        /// <param name="fileIds">id file</param>
-        /// <param name="filterType"></param>
-        /// <param name="subjectGroup"></param>
-        /// <param name="subjectID"></param>
-        /// <param name="searchText"></param>
-        /// <param name="searchInContent"></param>
-        /// <returns></returns>
-        List<File<T>> GetFilesFiltered(IEnumerable<T> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool checkShared = false);
+    /// <summary>
+    /// Get stream of file
+    /// </summary>
+    /// <param name="file"></param>
+    /// <returns>Stream</returns>
+    Task<Stream> GetFileStreamAsync(File<T> file);
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="parentId"></param>
-        /// <returns></returns>
-        List<T> GetFiles(T parentId);
+    /// <summary>
+    /// Get stream of file
+    /// </summary>
+    /// <param name="file"></param>
+    /// <param name="offset"></param>
+    /// <returns>Stream</returns>
+    Task<Stream> GetFileStreamAsync(File<T> file, long offset);
 
-        /// <summary>
-        ///     Get files in folder
-        /// </summary>
-        /// <param name="parentId">folder id</param>
-        /// <param name="orderBy"></param>
-        /// <param name="filterType">filterType type</param>
-        /// <param name="subjectGroup"></param>
-        /// <param name="subjectID"></param>
-        /// <param name="searchText"> </param>
-        /// <param name="searchInContent"></param>
-        /// <param name="withSubfolders"> </param>
-        /// <returns>list of files</returns>
-        /// <remarks>
-        ///    Return only the latest versions of files of a folder
-        /// </remarks>
-        List<File<T>> GetFiles(T parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false);
+    /// <summary>
+    /// Get presigned uri
+    /// </summary>
+    /// <param name="file"></param>
+    /// <param name="expires"></param>
+    /// <returns>Stream uri</returns>
+    Task<Uri> GetPreSignedUriAsync(File<T> file, TimeSpan expires);
 
-        /// <summary>
-        /// Get stream of file
-        /// </summary>
-        /// <param name="file"></param>
-        /// <returns>Stream</returns>
-        Stream GetFileStream(File<T> file);
+    /// <summary>
+    ///  Check is supported PreSignedUri
+    /// </summary>
+    /// <param name="file"></param>
+    /// <returns>Stream uri</returns>
+    Task<bool> IsSupportedPreSignedUriAsync(File<T> file);
 
-        Task<Stream> GetFileStreamAsync(File<T> file);
+    /// <summary>
+    ///  Saves / updates the version of the file
+    ///  and save stream of file
+    /// </summary>
+    /// <param name="file"></param>
+    /// <param name="fileStream"> </param>
+    /// <returns></returns>
+    /// <remarks>
+    /// Updates the file if:
+    /// - The file comes with the given id
+    /// - The file with that name in the folder / container exists
+    ///
+    /// Save in all other cases
+    /// </remarks>
+    Task<File<T>> SaveFileAsync(File<T> file, Stream fileStream);
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="file"></param>
+    /// <param name="fileStream"></param>
+    /// <returns></returns>
+    Task<File<T>> ReplaceFileVersionAsync(File<T> file, Stream fileStream);
+    /// <summary>
+    ///   Deletes a file including all previous versions
+    /// </summary>
+    /// <param name="fileId">file id</param>
+    Task DeleteFileAsync(T fileId);
+    /// <summary>
+    ///     Checks whether or not file
+    /// </summary>
+    /// <param name="title">file name</param>
+    /// <param name="folderId">folder id</param>
+    /// <returns>Returns true if the file exists, otherwise false</returns>
+    Task<bool> IsExistAsync(string title, object folderId);
+    /// <summary>
+    ///   Moves a file or set of files in a folder
+    /// </summary>
+    /// <param name="fileId">file id</param>
+    /// <param name="toFolderId">The ID of the destination folder</param>
+    Task<T> MoveFileAsync(T fileId, T toFolderId);
+    Task<TTo> MoveFileAsync<TTo>(T fileId, TTo toFolderId);
+    Task<string> MoveFileAsync(T fileId, string toFolderId);
+    Task<int> MoveFileAsync(T fileId, int toFolderId);
 
-        /// <summary>
-        /// Get stream of file
-        /// </summary>
-        /// <param name="file"></param>
-        /// <param name="offset"></param>
-        /// <returns>Stream</returns>
-        Stream GetFileStream(File<T> file, long offset);
+    /// <summary>
+    ///  Copy the files in a folder
+    /// </summary>
+    /// <param name="fileId">file id</param>
+    /// <param name="toFolderId">The ID of the destination folder</param>
+    Task<File<T>> CopyFileAsync(T fileId, T toFolderId);
+    Task<File<TTo>> CopyFileAsync<TTo>(T fileId, TTo toFolderId);
+    Task<File<string>> CopyFileAsync(T fileId, string toFolderId);
+    Task<File<int>> CopyFileAsync(T fileId, int toFolderId);
 
-        /// <summary>
-        /// Get presigned uri
-        /// </summary>
-        /// <param name="file"></param>
-        /// <param name="expires"></param>
-        /// <returns>Stream uri</returns>
-        Uri GetPreSignedUri(File<T> file, TimeSpan expires);
+    /// <summary>
+    ///   Rename file
+    /// </summary>
+    /// <param name="file"></param>
+    /// <param name="newTitle">new name</param>
+    Task<T> FileRenameAsync(File<T> file, string newTitle);
 
-        /// <summary>
-        ///  Check is supported PreSignedUri
-        /// </summary>
-        /// <param name="file"></param>
-        /// <returns>Stream uri</returns>
-        bool IsSupportedPreSignedUri(File<T> file);
+    /// <summary>
+    ///   Update comment file
+    /// </summary>
+    /// <param name="fileId">file id</param>
+    /// <param name="fileVersion">file version</param>
+    /// <param name="comment">new comment</param>
+    Task<string> UpdateCommentAsync(T fileId, int fileVersion, string comment);
+    /// <summary>
+    ///   Complete file version
+    /// </summary>
+    /// <param name="fileId">file id</param>
+    /// <param name="fileVersion">file version</param>
+    Task CompleteVersionAsync(T fileId, int fileVersion);
+    /// <summary>
+    ///   Continue file version
+    /// </summary>
+    /// <param name="fileId">file id</param>
+    /// <param name="fileVersion">file version</param>
+    Task ContinueVersionAsync(T fileId, int fileVersion);
+    /// <summary>
+    /// Check the need to use the trash before removing
+    /// </summary>
+    /// <param name="file"></param>
+    /// <returns></returns>
+    bool UseTrashForRemove(File<T> file);
+    string GetUniqFilePath(File<T> file, string fileTitle);
 
-        /// <summary>
-        ///  Saves / updates the version of the file
-        ///  and save stream of file
-        /// </summary>
-        /// <param name="file"></param>
-        /// <param name="fileStream"> </param>
-        /// <returns></returns>
-        /// <remarks>
-        /// Updates the file if:
-        /// - The file comes with the given id
-        /// - The file with that name in the folder / container exists
-        ///
-        /// Save in all other cases
-        /// </remarks>
-        File<T> SaveFile(File<T> file, Stream fileStream);
+    #region chunking
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="file"></param>
-        /// <param name="fileStream"></param>
-        /// <returns></returns>
-        File<T> ReplaceFileVersion(File<T> file, Stream fileStream);
+    Task<ChunkedUploadSession<T>> CreateUploadSessionAsync(File<T> file, long contentLength);
+    Task<File<T>> UploadChunkAsync(ChunkedUploadSession<T> uploadSession, Stream chunkStream, long chunkLength);
+    Task AbortUploadSessionAsync(ChunkedUploadSession<T> uploadSession);
+    #endregion
 
-        /// <summary>
-        ///   Deletes a file including all previous versions
-        /// </summary>
-        /// <param name="fileId">file id</param>
-        void DeleteFile(T fileId);
+    #region Only in TMFileDao
 
-        /// <summary>
-        ///     Checks whether or not file
-        /// </summary>
-        /// <param name="title">file name</param>
-        /// <param name="folderId">folder id</param>
-        /// <returns>Returns true if the file exists, otherwise false</returns>
-        bool IsExist(string title, object folderId);
+    /// <summary>
+    /// Set created by
+    /// </summary>
+    /// <param name="fileIds"></param>
+    /// <param name="newOwnerId"></param>
+    Task ReassignFilesAsync(T[] fileIds, Guid newOwnerId);
 
-        /// <summary>
-        ///   Moves a file or set of files in a folder
-        /// </summary>
-        /// <param name="fileId">file id</param>
-        /// <param name="toFolderId">The ID of the destination folder</param>
-        T MoveFile(T fileId, T toFolderId);
-        TTo MoveFile<TTo>(T fileId, TTo toFolderId);
-        string MoveFile(T fileId, string toFolderId);
-        int MoveFile(T fileId, int toFolderId);
+    /// <summary>
+    /// Search files in SharedWithMe & Projects
+    /// </summary>
+    /// <param name="parentIds"></param>
+    /// <param name="filterType"></param>
+    /// <param name="subjectGroup"></param>
+    /// <param name="subjectID"></param>
+    /// <param name="searchText"></param>
+    /// <param name="searchInContent"></param>
+    /// <returns></returns>
+    Task<List<File<T>>> GetFilesAsync(IEnumerable<T> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent);
+    /// <summary>
+    /// Search the list of files containing text
+    /// Only in TMFileDao
+    /// </summary>
+    /// <param name="text">search text</param>
+    /// <param name="bunch"></param>
+    /// <returns>list of files</returns>
+    IAsyncEnumerable<File<T>> SearchAsync(string text, bool bunch = false);
+    /// <summary>
+    ///   Checks whether file exists on storage
+    /// </summary>
+    /// <param name="file">file</param>
+    /// <returns></returns>
 
-        /// <summary>
-        ///  Copy the files in a folder
-        /// </summary>
-        /// <param name="fileId">file id</param>
-        /// <param name="toFolderId">The ID of the destination folder</param>
-        File<T> CopyFile(T fileId, T toFolderId);
-        File<TTo> CopyFile<TTo>(T fileId, TTo toFolderId);
-        File<string> CopyFile(T fileId, string toFolderId);
-        File<int> CopyFile(T fileId, int toFolderId);
+    Task<bool> IsExistOnStorageAsync(File<T> file);
 
-        /// <summary>
-        ///   Rename file
-        /// </summary>
-        /// <param name="file"></param>
-        /// <param name="newTitle">new name</param>
-        T FileRename(File<T> file, string newTitle);
+    Task SaveEditHistoryAsync(File<T> file, string changes, Stream differenceStream);
 
-        /// <summary>
-        ///   Update comment file
-        /// </summary>
-        /// <param name="fileId">file id</param>
-        /// <param name="fileVersion">file version</param>
-        /// <param name="comment">new comment</param>
-        string UpdateComment(T fileId, int fileVersion, string comment);
+    Task<List<EditHistory>> GetEditHistoryAsync(DocumentServiceHelper documentServiceHelper, T fileId, int fileVersion = 0);
 
-        /// <summary>
-        ///   Complete file version
-        /// </summary>
-        /// <param name="fileId">file id</param>
-        /// <param name="fileVersion">file version</param>
-        void CompleteVersion(T fileId, int fileVersion);
+    Task<Stream> GetDifferenceStreamAsync(File<T> file);
 
-        /// <summary>
-        ///   Continue file version
-        /// </summary>
-        /// <param name="fileId">file id</param>
-        /// <param name="fileVersion">file version</param>
-        void ContinueVersion(T fileId, int fileVersion);
+    Task<bool> ContainChangesAsync(T fileId, int fileVersion);
 
-        /// <summary>
-        /// Check the need to use the trash before removing
-        /// </summary>
-        /// <param name="file"></param>
-        /// <returns></returns>
-        bool UseTrashForRemove(File<T> file);
+    Task SaveThumbnailAsync(File<T> file, Stream thumbnail);
 
-        string GetUniqFilePath(File<T> file, string fileTitle);
+    Task<Stream> GetThumbnailAsync(File<T> file);
 
-        #region chunking
+    Task<IEnumerable<(File<int>, SmallShareRecord)>> GetFeedsAsync(int tenant, DateTime from, DateTime to);
 
-        ChunkedUploadSession<T> CreateUploadSession(File<T> file, long contentLength);
+    Task<IEnumerable<int>> GetTenantsWithFeedsAsync(DateTime fromTime);
 
-        File<T> UploadChunk(ChunkedUploadSession<T> uploadSession, Stream chunkStream, long chunkLength);
-
-        void AbortUploadSession(ChunkedUploadSession<T> uploadSession);
-
-        #endregion
-
-        #region Only in TMFileDao
-
-        /// <summary>
-        /// Set created by
-        /// </summary>
-        /// <param name="fileIds"></param>
-        /// <param name="newOwnerId"></param>
-        void ReassignFiles(T[] fileIds, Guid newOwnerId);
-
-        /// <summary>
-        /// Search files in SharedWithMe & Projects
-        /// </summary>
-        /// <param name="parentIds"></param>
-        /// <param name="filterType"></param>
-        /// <param name="subjectGroup"></param>
-        /// <param name="subjectID"></param>
-        /// <param name="searchText"></param>
-        /// <param name="searchInContent"></param>
-        /// <returns></returns>
-        List<File<T>> GetFiles(IEnumerable<T> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent);
-
-        /// <summary>
-        /// Search the list of files containing text
-        /// Only in TMFileDao
-        /// </summary>
-        /// <param name="text">search text</param>
-        /// <param name="bunch"></param>
-        /// <returns>list of files</returns>
-        IEnumerable<File<T>> Search(string text, bool bunch = false);
-
-        /// <summary>
-        ///   Checks whether file exists on storage
-        /// </summary>
-        /// <param name="file">file</param>
-        /// <returns></returns>
-        bool IsExistOnStorage(File<T> file);
-
-        Task<bool> IsExistOnStorageAsync(File<T> file);
-
-        void SaveEditHistory(File<T> file, string changes, Stream differenceStream);
-
-        List<EditHistory> GetEditHistory(DocumentServiceHelper documentServiceHelper, T fileId, int fileVersion = 0);
-
-        Stream GetDifferenceStream(File<T> file);
-
-        bool ContainChanges(T fileId, int fileVersion);
-
-        void SaveThumbnail(File<T> file, Stream thumbnail);
-
-        Stream GetThumbnail(File<T> file);
-
-        Task<Stream> GetThumbnailAsync(File<T> file);
-
-        IEnumerable<(File<int>, SmallShareRecord)> GetFeeds(int tenant, DateTime from, DateTime to);
-
-        IEnumerable<int> GetTenantsWithFeeds(DateTime fromTime);
-
-        #endregion
-    }
+    #endregion
 }

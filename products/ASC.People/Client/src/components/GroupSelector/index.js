@@ -94,6 +94,7 @@ class GroupSelector extends React.Component {
       withoutAside,
       embeddedComponent,
       showCounter,
+      smallSectionWidth,
     } = this.props;
 
     return (
@@ -103,6 +104,7 @@ class GroupSelector extends React.Component {
         style={style}
         options={options}
         hasNextPage={hasNextPage}
+        smallSectionWidth={smallSectionWidth}
         isNextPageLoading={isNextPageLoading}
         loadNextPage={this.loadNextPage}
         size={"compact"}
@@ -110,6 +112,7 @@ class GroupSelector extends React.Component {
         selectedOptions={selectedOptions}
         isOpen={isOpen}
         isMultiSelect={isMultiSelect}
+        isDefaultDisplayDropDown={false}
         isDisabled={isDisabled}
         searchPlaceHolderLabel={
           searchPlaceHolderLabel || t("SearchPlaceholder")

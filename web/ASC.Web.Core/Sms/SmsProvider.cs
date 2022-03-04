@@ -47,9 +47,9 @@ namespace ASC.Web.Core.Sms
             return SmscProvider.Enable() || ClickatellProvider.Enable() || ClickatellUSAProvider.Enable() || TwilioProvider.Enable() || TwilioSaaSProvider.Enable();
         }
 
-        public bool SendMessage(string number, string message)
+        public Task<bool> SendMessageAsync(string number, string message)
         {
-            if (!Enabled()) return false;
+            if (!Enabled()) return Task.FromResult(false);
 
             SmsProvider provider = null;
             if (ClickatellProvider.Enable())
@@ -83,10 +83,10 @@ namespace ASC.Web.Core.Sms
 
             if (provider == null)
             {
-                return false;
+                return Task.FromResult(false);
             }
 
-            return provider.SendMessage(number, message);
+            return provider.SendMessageAsync(number, message);
         }
     }
 
@@ -137,7 +137,7 @@ namespace ASC.Web.Core.Sms
                 .Replace("{sender}", Sender);
         }
 
-        public virtual bool SendMessage(string number, string message)
+        public virtual async Task<bool> SendMessageAsync(string number, string message)
         {
             try
             {
@@ -151,12 +151,12 @@ namespace ASC.Web.Core.Sms
                 var httpClient = ClientFactory.CreateClient();
                 httpClient.Timeout = TimeSpan.FromMilliseconds(15000);
 
-                using var response = httpClient.Send(request);
-                using var stream = response.Content.ReadAsStream();
+                using var response = await httpClient.SendAsync(request);
+                using var stream = await response.Content.ReadAsStreamAsync();
                 if (stream != null)
                 {
                     using var reader = new StreamReader(stream);
-                    var result = reader.ReadToEnd();
+                    var result = await reader.ReadToEndAsync();
                     Log.InfoFormat("SMS was sent to {0}, service returned: {1}", number, result);
                     return true;
                 }
@@ -222,9 +222,9 @@ namespace ASC.Web.Core.Sms
                 && !string.IsNullOrEmpty(Secret);
         }
 
-        public string GetBalance(Tenant tenant, bool eraseCache = false)
+        public async Task<string> GetBalanceAsync(Tenant tenant, bool eraseCache = false)
         {
-            var tenantCache = tenant == null ? Tenant.DEFAULT_TENANT : tenant.TenantId;
+            var tenantCache = tenant == null ? Tenant.DefaultTenant : tenant.Id;
 
             var key = "sms/smsc/" + tenantCache;
             if (eraseCache) MemoryCache.Remove(key);
@@ -244,12 +244,12 @@ namespace ASC.Web.Core.Sms
                     var httpClient = ClientFactory.CreateClient();
                     httpClient.Timeout = TimeSpan.FromMilliseconds(1000);
 
-                    using var response = httpClient.Send(request);
-                    using var stream = response.Content.ReadAsStream();
+                    using var response = await httpClient.SendAsync(request);
+                    using var stream = await response.Content.ReadAsStreamAsync();
                     if (stream != null)
                     {
                         using var reader = new StreamReader(stream);
-                        var result = reader.ReadToEnd();
+                        var result = await reader.ReadToEndAsync();
                         Log.InfoFormat("SMS balance service returned: {0}", result);
 
                         balance = result;
@@ -282,7 +282,7 @@ namespace ASC.Web.Core.Sms
 
         public bool ValidateKeys()
         {
-            return double.TryParse(GetBalance(TenantManager.GetCurrentTenant(false), true), NumberStyles.Number, CultureInfo.InvariantCulture, out var balance) && balance > 0;
+            return double.TryParse(GetBalanceAsync(TenantManager.GetCurrentTenant(false), true).Result, NumberStyles.Number, CultureInfo.InvariantCulture, out var balance) && balance > 0;
         }
     }
 
@@ -382,7 +382,7 @@ namespace ASC.Web.Core.Sms
                 && !string.IsNullOrEmpty(Sender);
         }
 
-        public override bool SendMessage(string number, string message)
+        public override Task<bool> SendMessageAsync(string number, string message)
         {
             if (!number.StartsWith('+')) number = "+" + number;
             var twilioRestClient = new TwilioRestClient(Key, Secret);
@@ -393,7 +393,7 @@ namespace ASC.Web.Core.Sms
                 Log.InfoFormat("SMS was sent to {0}, status: {1}", number, smsMessage.Status);
                 if (!smsMessage.ErrorCode.HasValue)
                 {
-                    return true;
+                    return Task.FromResult(true);
                 }
                 Log.Error("Failed to send sms. code: " + smsMessage.ErrorCode.Value + " message: " + smsMessage.ErrorMessage);
             }
@@ -402,7 +402,7 @@ namespace ASC.Web.Core.Sms
                 Log.Error("Failed to send sms message via tiwilio", ex);
             }
 
-            return false;
+            return Task.FromResult(false);
         }
 
         public TwilioProvider()

@@ -178,7 +178,7 @@ namespace ASC.ApiSystem.Controllers
                 return false;
             }
 
-            tenantId = tenant.TenantId;
+            tenantId = tenant.Id;
             return true;
         }
 

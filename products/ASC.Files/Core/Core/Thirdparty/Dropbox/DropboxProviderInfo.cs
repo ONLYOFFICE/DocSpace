@@ -23,250 +23,251 @@
  *
 */
 
-namespace ASC.Files.Thirdparty.Dropbox
+namespace ASC.Files.Thirdparty.Dropbox;
+
+[Transient]
+[DebuggerDisplay("{CustomerTitle}")]
+internal class DropboxProviderInfo : IProviderInfo
 {
-    [Transient]
-    [DebuggerDisplay("{CustomerTitle}")]
-    internal class DropboxProviderInfo : IProviderInfo
+    public OAuth20Token Token { get; set; }
+
+    internal DropboxStorage Storage
     {
-        public OAuth20Token Token { get; set; }
-
-        internal DropboxStorage Storage
+        get
         {
-            get
+            if (_wrapper.Storage == null || !_wrapper.Storage.IsOpened)
             {
-                if (Wrapper.Storage == null || !Wrapper.Storage.IsOpened)
-                {
-                    return Wrapper.CreateStorage(Token);
-                }
-                return Wrapper.Storage;
-            }
-        }
-
-        internal bool StorageOpened
-        {
-            get => Wrapper.Storage != null && Wrapper.Storage.IsOpened;
-        }
-
-        private DropboxStorageDisposableWrapper Wrapper { get; }
-        private DropboxProviderInfoHelper DropboxProviderInfoHelper { get; }
-        public int ID { get; set; }
-
-        public Guid Owner { get; set; }
-
-        public string CustomerTitle { get; set; }
-
-        public DateTime CreateOn { get; set; }
-
-        public string RootFolderId
-        {
-            get { return "dropbox-" + ID; }
-        }
-
-        public string ProviderKey { get; set; }
-
-        public FolderType RootFolderType { get; set; }
-
-
-        public DropboxProviderInfo(
-            DropboxStorageDisposableWrapper wrapper,
-            DropboxProviderInfoHelper dropboxProviderInfoHelper
-            )
-        {
-            Wrapper = wrapper;
-            DropboxProviderInfoHelper = dropboxProviderInfoHelper;
-        }
-
-        public void Dispose()
-        {
-            if (StorageOpened)
-                Storage.Close();
-        }
-
-        public bool CheckAccess()
-        {
-            try
-            {
-                Storage.GetUsedSpace();
-            }
-            catch (AggregateException)
-            {
-                return false;
-            }
-            return true;
-        }
-
-        public void InvalidateStorage()
-        {
-            if (Wrapper != null)
-            {
-                Wrapper.Dispose();
+                return _wrapper.CreateStorage(Token);
             }
 
-            CacheReset();
-        }
-
-        public void UpdateTitle(string newtitle)
-        {
-            CustomerTitle = newtitle;
-        }
-
-        internal FolderMetadata GetDropboxFolder(string dropboxFolderPath)
-        {
-            return DropboxProviderInfoHelper.GetDropboxFolder(Storage, ID, dropboxFolderPath);
-        }
-
-        internal FileMetadata GetDropboxFile(string dropboxFilePath)
-        {
-            return DropboxProviderInfoHelper.GetDropboxFile(Storage, ID, dropboxFilePath);
-        }
-
-        internal List<Metadata> GetDropboxItems(string dropboxFolderPath)
-        {
-            return DropboxProviderInfoHelper.GetDropboxItems(Storage, ID, dropboxFolderPath);
-        }
-
-        internal void CacheReset(Metadata dropboxItem)
-        {
-            DropboxProviderInfoHelper.CacheReset(ID, dropboxItem);
-        }
-
-        internal void CacheReset(string dropboxPath = null, bool? isFile = null)
-        {
-            DropboxProviderInfoHelper.CacheReset(ID, dropboxPath, isFile);
+            return _wrapper.Storage;
         }
     }
 
-    [Scope]
-    internal class DropboxStorageDisposableWrapper : IDisposable
+    internal bool StorageOpened => _wrapper.Storage != null && _wrapper.Storage.IsOpened;
+    public int ID { get; set; }
+    public Guid Owner { get; set; }
+    public string CustomerTitle { get; set; }
+    public DateTime CreateOn { get; set; }
+    public string RootFolderId => "dropbox-" + ID;
+    public string ProviderKey { get; set; }
+    public FolderType RootFolderType { get; set; }
+
+    private readonly DropboxStorageDisposableWrapper _wrapper;
+    private readonly DropboxProviderInfoHelper _dropboxProviderInfoHelper;
+
+    public DropboxProviderInfo(
+        DropboxStorageDisposableWrapper wrapper,
+        DropboxProviderInfoHelper dropboxProviderInfoHelper
+        )
     {
-        public DropboxStorage Storage { get; private set; }
-        private TempStream TempStream { get; }
+        _wrapper = wrapper;
+        _dropboxProviderInfoHelper = dropboxProviderInfoHelper;
+    }
 
-        public DropboxStorageDisposableWrapper(TempStream tempStream)
+    public void Dispose()
+    {
+        if (StorageOpened)
         {
-            TempStream = tempStream;
-        }
-
-        public DropboxStorage CreateStorage(OAuth20Token token)
-        {
-            if (Storage != null && Storage.IsOpened) return Storage;
-
-            var dropboxStorage = new DropboxStorage(TempStream);
-            dropboxStorage.Open(token);
-            return Storage = dropboxStorage;
-        }
-
-        public void Dispose()
-        {
-            Storage?.Close();
-            Storage = null;
+            Storage.Close();
         }
     }
 
-    [Singletone]
-    public class DropboxProviderInfoHelper
+    public async Task<bool> CheckAccessAsync()
     {
-        private readonly TimeSpan CacheExpiration;
-        private readonly ICache CacheFile;
-        private readonly ICache CacheFolder;
-        private readonly ICache CacheChildItems;
-        private readonly ICacheNotify<DropboxCacheItem> CacheNotify;
-
-        public DropboxProviderInfoHelper(ICacheNotify<DropboxCacheItem> cacheNotify, ICache cache)
+        try
         {
-            CacheExpiration = TimeSpan.FromMinutes(1);
-            CacheFile = cache;
-            CacheFolder = cache;
-            CacheChildItems = cache;
-            CacheNotify = cacheNotify;
-
-            CacheNotify.Subscribe((i) =>
-            {
-                if (i.ResetAll)
-                {
-                    CacheFile.Remove(new Regex("^dropboxf-" + i.Key + ".*"));
-                    CacheFolder.Remove(new Regex("^dropboxd-" + i.Key + ".*"));
-                    CacheChildItems.Remove(new Regex("^dropbox-" + i.Key + ".*"));
-                }
-
-                if (!i.IsFileExists)
-                {
-                    CacheChildItems.Remove("dropbox-" + i.Key);
-
-                    CacheFolder.Remove("dropboxd-" + i.Key);
-                }
-                else
-                {
-                    if (i.IsFileExists)
-                    {
-                        CacheFile.Remove("dropboxf-" + i.Key);
-                    }
-                    else
-                    {
-                        CacheFolder.Remove("dropboxd-" + i.Key);
-                    }
-                }
-            }, Common.Caching.CacheNotifyAction.Remove);
+            await Storage.GetUsedSpaceAsync().ConfigureAwait(false);
+        }
+        catch (AggregateException)
+        {
+            return false;
         }
 
-        internal FolderMetadata GetDropboxFolder(DropboxStorage storage, int id, string dropboxFolderPath)
+        return true;
+    }
+
+    public Task InvalidateStorageAsync()
+    {
+        if (_wrapper != null)
         {
-            var folder = CacheFolder.Get<FolderMetadata>("dropboxd-" + id + "-" + dropboxFolderPath);
-            if (folder == null)
+            _wrapper.Dispose();
+        }
+
+        return CacheResetAsync();
+    }
+
+    public void UpdateTitle(string newtitle)
+    {
+        CustomerTitle = newtitle;
+    }
+
+    internal Task<FolderMetadata> GetDropboxFolderAsync(string dropboxFolderPath)
+    {
+        return _dropboxProviderInfoHelper.GetDropboxFolderAsync(Storage, ID, dropboxFolderPath);
+    }
+
+    internal ValueTask<FileMetadata> GetDropboxFileAsync(string dropboxFilePath)
+    {
+        return _dropboxProviderInfoHelper.GetDropboxFileAsync(Storage, ID, dropboxFilePath);
+    }
+
+    internal Task<List<Metadata>> GetDropboxItemsAsync(string dropboxFolderPath)
+    {
+        return _dropboxProviderInfoHelper.GetDropboxItemsAsync(Storage, ID, dropboxFolderPath);
+    }
+
+    internal Task CacheResetAsync(Metadata dropboxItem)
+    {
+        return _dropboxProviderInfoHelper.CacheResetAsync(ID, dropboxItem);
+    }
+
+    internal Task CacheResetAsync(string dropboxPath = null, bool? isFile = null)
+    {
+        return _dropboxProviderInfoHelper.CacheResetAsync(ID, dropboxPath, isFile);
+    }
+}
+
+[Scope]
+internal class DropboxStorageDisposableWrapper : IDisposable
+{
+    public DropboxStorage Storage { get; private set; }
+    private readonly TempStream _tempStream;
+
+    public DropboxStorageDisposableWrapper(TempStream tempStream)
+    {
+        _tempStream = tempStream;
+    }
+
+    public DropboxStorage CreateStorage(OAuth20Token token)
+    {
+        if (Storage != null && Storage.IsOpened)
+        {
+            return Storage;
+        }
+
+        var dropboxStorage = new DropboxStorage(_tempStream);
+        dropboxStorage.Open(token);
+
+        return Storage = dropboxStorage;
+    }
+
+    public void Dispose()
+    {
+        Storage?.Close();
+        Storage = null;
+    }
+}
+
+[Singletone]
+public class DropboxProviderInfoHelper
+{
+    private readonly TimeSpan _cacheExpiration;
+    private readonly ICache _cacheFile;
+    private readonly ICache _cacheFolder;
+    private readonly ICache _cacheChildItems;
+    private readonly ICacheNotify<DropboxCacheItem> _cacheNotify;
+
+    public DropboxProviderInfoHelper(ICacheNotify<DropboxCacheItem> cacheNotify, ICache cache)
+    {
+        _cacheExpiration = TimeSpan.FromMinutes(1);
+        _cacheFile = cache;
+        _cacheFolder = cache;
+        _cacheChildItems = cache;
+        _cacheNotify = cacheNotify;
+
+        _cacheNotify.Subscribe((i) =>
+        {
+            if (i.ResetAll)
             {
-                folder = storage.GetFolder(dropboxFolderPath);
-                if (folder != null)
-                    CacheFolder.Insert("dropboxd-" + id + "-" + dropboxFolderPath, folder, DateTime.UtcNow.Add(CacheExpiration));
+                _cacheFile.Remove(new Regex("^dropboxf-" + i.Key + ".*"));
+                _cacheFolder.Remove(new Regex("^dropboxd-" + i.Key + ".*"));
+                _cacheChildItems.Remove(new Regex("^dropbox-" + i.Key + ".*"));
             }
-            return folder;
-        }
 
-        internal FileMetadata GetDropboxFile(DropboxStorage storage, int id, string dropboxFilePath)
-        {
-            var file = CacheFile.Get<FileMetadata>("dropboxf-" + id + "-" + dropboxFilePath);
-            if (file == null)
+            if (!i.IsFileExists)
             {
-                file = storage.GetFile(dropboxFilePath);
-                if (file != null)
-                    CacheFile.Insert("dropboxf-" + id + "-" + dropboxFilePath, file, DateTime.UtcNow.Add(CacheExpiration));
-            }
-            return file;
-        }
+                _cacheChildItems.Remove("dropbox-" + i.Key);
 
-        internal List<Metadata> GetDropboxItems(DropboxStorage storage, int id, string dropboxFolderPath)
-        {
-            var items = CacheChildItems.Get<List<Metadata>>("dropbox-" + id + "-" + dropboxFolderPath);
-
-            if (items == null)
-            {
-                items = storage.GetItems(dropboxFolderPath);
-                CacheChildItems.Insert("dropbox-" + id + "-" + dropboxFolderPath, items, DateTime.UtcNow.Add(CacheExpiration));
-            }
-            return items;
-        }
-
-        internal void CacheReset(int id, Metadata dropboxItem)
-        {
-            if (dropboxItem != null)
-            {
-                CacheNotify.Publish(new DropboxCacheItem { IsFile = dropboxItem.AsFolder != null, Key = id + "-" + dropboxItem.PathDisplay }, Common.Caching.CacheNotifyAction.Remove);
-            }
-        }
-
-        internal void CacheReset(int id, string dropboxPath = null, bool? isFile = null)
-        {
-            var key = id + "-";
-            if (dropboxPath == null)
-            {
-                CacheNotify.Publish(new DropboxCacheItem { ResetAll = true, Key = key }, Common.Caching.CacheNotifyAction.Remove);
+                _cacheFolder.Remove("dropboxd-" + i.Key);
             }
             else
             {
-                key += dropboxPath;
-
-                CacheNotify.Publish(new DropboxCacheItem { IsFile = isFile ?? false, IsFileExists = isFile.HasValue, Key = key }, Common.Caching.CacheNotifyAction.Remove);
+                if (i.IsFileExists)
+                {
+                    _cacheFile.Remove("dropboxf-" + i.Key);
+                }
+                else
+                {
+                    _cacheFolder.Remove("dropboxd-" + i.Key);
+                }
             }
+        }, CacheNotifyAction.Remove);
+    }
+
+    internal async Task<FolderMetadata> GetDropboxFolderAsync(DropboxStorage storage, int id, string dropboxFolderPath)
+    {
+        var folder = _cacheFolder.Get<FolderMetadata>("dropboxd-" + id + "-" + dropboxFolderPath);
+        if (folder == null)
+        {
+            folder = await storage.GetFolderAsync(dropboxFolderPath).ConfigureAwait(false);
+            if (folder != null)
+            {
+                _cacheFolder.Insert("dropboxd-" + id + "-" + dropboxFolderPath, folder, DateTime.UtcNow.Add(_cacheExpiration));
+            }
+        }
+
+        return folder;
+    }
+
+    internal async ValueTask<FileMetadata> GetDropboxFileAsync(DropboxStorage storage, int id, string dropboxFilePath)
+    {
+        var file = _cacheFile.Get<FileMetadata>("dropboxf-" + id + "-" + dropboxFilePath);
+        if (file == null)
+        {
+            file = await storage.GetFileAsync(dropboxFilePath).ConfigureAwait(false);
+            if (file != null)
+            {
+                _cacheFile.Insert("dropboxf-" + id + "-" + dropboxFilePath, file, DateTime.UtcNow.Add(_cacheExpiration));
+            }
+        }
+
+        return file;
+    }
+
+    internal async Task<List<Metadata>> GetDropboxItemsAsync(DropboxStorage storage, int id, string dropboxFolderPath)
+    {
+        var items = _cacheChildItems.Get<List<Metadata>>("dropbox-" + id + "-" + dropboxFolderPath);
+
+        if (items == null)
+        {
+            items = await storage.GetItemsAsync(dropboxFolderPath).ConfigureAwait(false);
+            _cacheChildItems.Insert("dropbox-" + id + "-" + dropboxFolderPath, items, DateTime.UtcNow.Add(_cacheExpiration));
+        }
+
+        return items;
+    }
+
+    internal async Task CacheResetAsync(int id, Metadata dropboxItem)
+    {
+        if (dropboxItem != null)
+        {
+            await _cacheNotify.PublishAsync(new DropboxCacheItem { IsFile = dropboxItem.AsFolder != null, Key = id + "-" + dropboxItem.PathDisplay }, CacheNotifyAction.Remove).ConfigureAwait(false);
+        }
+    }
+
+    internal async Task CacheResetAsync(int id, string dropboxPath = null, bool? isFile = null)
+    {
+        var key = id + "-";
+        if (dropboxPath == null)
+        {
+            await _cacheNotify.PublishAsync(new DropboxCacheItem { ResetAll = true, Key = key }, CacheNotifyAction.Remove).ConfigureAwait(false);
+        }
+        else
+        {
+            key += dropboxPath;
+
+            await _cacheNotify.PublishAsync(new DropboxCacheItem { IsFile = isFile ?? false, IsFileExists = isFile.HasValue, Key = key }, CacheNotifyAction.Remove).ConfigureAwait(false);
         }
     }
 }

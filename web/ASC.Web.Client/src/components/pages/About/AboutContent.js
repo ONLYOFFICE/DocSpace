@@ -5,7 +5,7 @@ import NoUserSelect from "@appserver/components/utils/commonStyles";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { ReactSVG } from "react-svg";
-import { isDesktop } from "react-device-detect";
+import { isDesktop, isMobile } from "react-device-detect";
 
 const StyledAboutBody = styled.div`
   width: 100%;
@@ -24,6 +24,14 @@ const StyledAboutBody = styled.div`
   }
   .no-select {
     ${NoUserSelect}
+  }
+
+  .tel-title,
+  .address-title {
+    display: inline;
+  }
+  .select-el {
+    ${isMobile && `user-select: text`};
   }
 `;
 
@@ -68,7 +76,7 @@ const AboutContent = ({ personal, buildVersionInfo }) => {
         >
           &nbsp;ONLYOFFICE App Server&nbsp;
         </Link>
-        <Text className="row-el" fontSize="13px" fontWeight="600" noSelect>
+        <Text className="row-el select-el" fontSize="13px" fontWeight="600">
           v.{buildVersionInfo.appServer}
         </Text>
       </div>
@@ -87,7 +95,7 @@ const AboutContent = ({ personal, buildVersionInfo }) => {
         >
           &nbsp;ONLYOFFICE Docs&nbsp;
         </Link>
-        <Text className="row-el" fontSize="13px" fontWeight="600" noSelect>
+        <Text className="row-el select-el" fontSize="13px" fontWeight="600">
           v.{buildVersionInfo.documentServer}
         </Text>
       </div>
@@ -106,14 +114,20 @@ const AboutContent = ({ personal, buildVersionInfo }) => {
       </Text>
 
       <div className="row">
-        <Text fontSize="13px" noSelect>
-          {t("AboutCompanyAddressTitle")}: {address}
+        <Text className="address-title" fontSize="13px" noSelect>
+          {t("AboutCompanyAddressTitle")}:{" "}
+        </Text>
+        <Text className="address-title select-el" fontSize="13px">
+          {address}
         </Text>
       </div>
 
       <div className="row">
-        <Text fontSize="13px" noSelect>
-          {t("AboutCompanyTelTitle")}: {phone}
+        <Text className="tel-title" fontSize="13px" noSelect>
+          {t("AboutCompanyTelTitle")}:{" "}
+        </Text>
+        <Text className="tel-title select-el" fontSize="13px">
+          {phone}
         </Text>
       </div>
 

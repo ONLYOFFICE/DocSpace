@@ -23,50 +23,49 @@
  *
 */
 
-namespace ASC.Core.Notify
+namespace ASC.Core.Notify;
+
+class TelegramSenderSink : Sink
 {
-    class TelegramSenderSink : Sink
+    private readonly string _senderName = Configuration.Constants.NotifyTelegramSenderSysName;
+    private readonly INotifySender _sender;
+    private readonly IServiceProvider _serviceProvider;
+
+    public TelegramSenderSink(INotifySender sender, IServiceProvider serviceProvider)
     {
-        private readonly string senderName = Configuration.Constants.NotifyTelegramSenderSysName;
-        private readonly INotifySender sender;
-        private readonly IServiceProvider serviceProvider;
+        _sender = sender ?? throw new ArgumentNullException(nameof(sender));
+        _serviceProvider = serviceProvider;
+    }
 
-        public TelegramSenderSink(INotifySender sender, IServiceProvider serviceProvider)
+
+    public override SendResponse ProcessMessage(INoticeMessage message)
+    {
+        try
         {
-            this.sender = sender ?? throw new ArgumentNullException(nameof(sender));
-            this.serviceProvider = serviceProvider;
+            const SendResult result = SendResult.OK;
+            var m = new NotifyMessage
+            {
+                Reciever = message.Recipient.ID,
+                Subject = message.Subject,
+                ContentType = message.ContentType,
+                Content = message.Body,
+                SenderType = _senderName,
+                CreationDate = DateTime.UtcNow.Ticks,
+            };
+
+            using var scope = _serviceProvider.CreateScope();
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+
+            var tenant = tenantManager.GetCurrentTenant(false);
+            m.TenantId = tenant == null ? Tenant.DefaultTenant : tenant.Id;
+
+            _sender.Send(m);
+
+            return new SendResponse(message, _senderName, result);
         }
-
-
-        public override SendResponse ProcessMessage(INoticeMessage message)
+        catch (Exception ex)
         {
-            try
-            {
-                const SendResult result = SendResult.OK;
-                var m = new NotifyMessage
-                {
-                    To = message.Recipient.ID,
-                    Subject = message.Subject,
-                    ContentType = message.ContentType,
-                    Content = message.Body,
-                    Sender = senderName,
-                    CreationDate = DateTime.UtcNow.Ticks,
-                };
-
-                using var scope = serviceProvider.CreateScope();
-                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-
-                var tenant = tenantManager.GetCurrentTenant(false);
-                m.Tenant = tenant == null ? Tenant.DEFAULT_TENANT : tenant.TenantId;
-
-                sender.Send(m);
-
-                return new SendResponse(message, senderName, result);
-            }
-            catch (Exception ex)
-            {
-                return new SendResponse(message, senderName, ex);
-            }
+            return new SendResponse(message, _senderName, ex);
         }
     }
 }

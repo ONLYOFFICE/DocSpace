@@ -22,6 +22,7 @@ global using System.Text.Encodings.Web;
 global using System.Text.Json.Serialization;
 global using System.Text.RegularExpressions;
 global using System.Threading;
+global using System.Threading.Tasks;
 global using System.Web;
 global using System.Xml;
 
@@ -55,7 +56,7 @@ global using ASC.FederatedLogin.LoginProviders;
 global using ASC.FederatedLogin.Profile;
 global using ASC.Feed;
 global using ASC.Feed.Data;
-global using ASC.MessagingSystem;
+global using ASC.MessagingSystem.Core;
 global using ASC.Notify;
 global using ASC.Notify.Engine;
 global using ASC.Notify.Messages;
@@ -101,6 +102,8 @@ global using MimeKit.Utils;
 
 global using Newtonsoft.Json;
 global using Newtonsoft.Json.Linq;
+
+global using AutoMapper;
 
 global using SixLabors.ImageSharp;
 global using SixLabors.ImageSharp.Drawing.Processing;

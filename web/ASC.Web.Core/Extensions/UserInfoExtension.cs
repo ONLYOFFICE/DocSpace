@@ -48,42 +48,42 @@ namespace ASC.Core.Users
 
         public static bool HasAvatar(this UserInfo userInfo, UserPhotoManager UserPhotoManager)
         {
-            return UserPhotoManager.UserHasAvatar(userInfo.ID);
+            return UserPhotoManager.UserHasAvatar(userInfo.Id);
         }
 
         public static Size GetPhotoSize(this UserInfo userInfo, UserPhotoManager UserPhotoManager)
         {
-            return UserPhotoManager.GetPhotoSize(userInfo.ID);
+            return UserPhotoManager.GetPhotoSize(userInfo.Id);
         }
 
         public static string GetPhotoURL(this UserInfo userInfo, UserPhotoManager UserPhotoManager)
         {
-            return UserPhotoManager.GetPhotoAbsoluteWebPath(userInfo.ID);
+            return UserPhotoManager.GetPhotoAbsoluteWebPath(userInfo.Id);
         }
 
         public static string GetRetinaPhotoURL(this UserInfo userInfo, UserPhotoManager UserPhotoManager)
         {
-            return UserPhotoManager.GetRetinaPhotoURL(userInfo.ID);
+            return UserPhotoManager.GetRetinaPhotoURL(userInfo.Id);
         }
 
         public static string GetMaxPhotoURL(this UserInfo userInfo, UserPhotoManager UserPhotoManager)
         {
-            return UserPhotoManager.GetMaxPhotoURL(userInfo.ID);
+            return UserPhotoManager.GetMaxPhotoURL(userInfo.Id);
         }
 
         public static string GetBigPhotoURL(this UserInfo userInfo, UserPhotoManager UserPhotoManager)
         {
-            return UserPhotoManager.GetBigPhotoURL(userInfo.ID);
+            return UserPhotoManager.GetBigPhotoURL(userInfo.Id);
         }
 
         public static string GetMediumPhotoURL(this UserInfo userInfo, UserPhotoManager UserPhotoManager)
         {
-            return UserPhotoManager.GetMediumPhotoURL(userInfo.ID);
+            return UserPhotoManager.GetMediumPhotoURL(userInfo.Id);
         }
 
         public static string GetSmallPhotoURL(this UserInfo userInfo, UserPhotoManager UserPhotoManager)
         {
-            return UserPhotoManager.GetSmallPhotoURL(userInfo.ID);
+            return UserPhotoManager.GetSmallPhotoURL(userInfo.Id);
         }
 
         public static string RenderProfileLinkBase(this UserInfo userInfo, CommonLinkUtility commonLinkUtility, DisplayUserSettingsHelper displayUserSettingsHelper)
@@ -91,18 +91,18 @@ namespace ASC.Core.Users
             var sb = new StringBuilder();
 
             //check for removed users
-            if (userInfo.ID == Constants.LostUser.ID)
+            if (userInfo.Id == Constants.LostUser.Id)
             {
                 sb.Append($"<span class='userLink text-medium-describe' style='white-space:nowrap;'>{userInfo.DisplayUserName(displayUserSettingsHelper)}</span>");
             }
             else
             {
                 var popupID = Guid.NewGuid();
-                sb.Append($"<span class=\"userLink\" style='white-space:nowrap;' id='{popupID}' data-uid='{userInfo.ID}'>");
+                sb.Append($"<span class=\"userLink\" style='white-space:nowrap;' id='{popupID}' data-uid='{userInfo.Id}'>");
                 sb.Append($"<a class='linkDescribe' href=\"{userInfo.GetUserProfilePageURLGeneral(commonLinkUtility)}\">{userInfo.DisplayUserName(displayUserSettingsHelper)}</a>");
                 sb.Append("</span>");
 
-                sb.AppendFormat("<script language='javascript'> StudioUserProfileInfo.RegistryElement('{0}','\"{1}\"); </script>", popupID, userInfo.ID);
+                sb.AppendFormat("<script language='javascript'> StudioUserProfileInfo.RegistryElement('{0}','\"{1}\"); </script>", popupID, userInfo.Id);
             }
             return sb.ToString();
         }

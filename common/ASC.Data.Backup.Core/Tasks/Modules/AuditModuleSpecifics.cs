@@ -23,37 +23,27 @@
  *
 */
 
-namespace ASC.Data.Backup.Tasks.Modules
+namespace ASC.Data.Backup.Tasks.Modules;
+
+public class AuditModuleSpecifics : ModuleSpecificsBase
 {
-    public class AuditModuleSpecifics : ModuleSpecificsBase
+    public override string ConnectionStringName => "core";
+    public override ModuleName ModuleName => ModuleName.Audit;
+    public override IEnumerable<TableInfo> Tables => _tables;
+    public override IEnumerable<RelationInfo> TableRelations => Enumerable.Empty<RelationInfo>();
+
+    private readonly TableInfo[] _tables = new[]
     {
-        public AuditModuleSpecifics(Helpers helpers)
-        : base(helpers)
-        { }
-        private readonly TableInfo[] _tables = new[]
+            new TableInfo("audit_events", "tenant_id", "id")
             {
-                new TableInfo("audit_events", "tenant_id", "id") {UserIDColumns = new[] {"user_id"}},
-                new TableInfo("login_events", "tenant_id", "id") {UserIDColumns = new[] {"user_id"}}
-            };
+                UserIDColumns = new[] {"user_id"}
+            },
+            new TableInfo("login_events", "tenant_id", "id")
+            {
+                UserIDColumns = new[] {"user_id"}
+            }
+        };
 
-        public override string ConnectionStringName
-        {
-            get { return "core"; }
-        }
-
-        public override ModuleName ModuleName
-        {
-            get { return ModuleName.Audit; }
-        }
-
-        public override IEnumerable<TableInfo> Tables
-        {
-            get { return _tables; }
-        }
-
-        public override IEnumerable<RelationInfo> TableRelations
-        {
-            get { return Enumerable.Empty<RelationInfo>(); }
-        }
-    }
+    public AuditModuleSpecifics(Helpers helpers)
+    : base(helpers) { }
 }

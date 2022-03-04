@@ -7,13 +7,5 @@
         public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment) : base(configuration, hostEnvironment)
         {
         }
-
-        public override void ConfigureServices(IServiceCollection services)
-        {
-            base.ConfigureServices(services);
-
-            DIHelper.TryAdd<PeopleController>();
-            DIHelper.TryAdd<GroupController>();
-        }
     }
 }

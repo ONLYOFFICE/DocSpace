@@ -25,619 +25,688 @@
 
 using File = System.IO.File;
 
-namespace ASC.Files.Thirdparty.Sharpbox
+namespace ASC.Files.Thirdparty.Sharpbox;
+
+[Scope]
+internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
 {
-    [Scope]
-    internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
+    private readonly TempStream _tempStream;
+    private readonly CrossDao _crossDao;
+    private readonly SharpBoxDaoSelector _sharpBoxDaoSelector;
+    private readonly IFileDao<int> _fileDao;
+
+    public SharpBoxFileDao(
+        IServiceProvider serviceProvider,
+        TempStream tempStream,
+        UserManager userManager,
+        TenantManager tenantManager,
+        TenantUtil tenantUtil,
+        DbContextManager<FilesDbContext> dbContextManager,
+        SetupInfo setupInfo,
+        IOptionsMonitor<ILog> monitor,
+        FileUtility fileUtility,
+        CrossDao crossDao,
+        SharpBoxDaoSelector sharpBoxDaoSelector,
+        IFileDao<int> fileDao,
+        TempPath tempPath)
+        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
     {
-        private TempStream TempStream { get; }
-        private CrossDao CrossDao { get; }
-        private SharpBoxDaoSelector SharpBoxDaoSelector { get; }
-        private IFileDao<int> FileDao { get; }
+        _tempStream = tempStream;
+        _crossDao = crossDao;
+        _sharpBoxDaoSelector = sharpBoxDaoSelector;
+        _fileDao = fileDao;
+    }
 
-        public SharpBoxFileDao(
-            IServiceProvider serviceProvider,
-            TempStream tempStream,
-            UserManager userManager,
-            TenantManager tenantManager,
-            TenantUtil tenantUtil,
-            DbContextManager<FilesDbContext> dbContextManager,
-            SetupInfo setupInfo,
-            IOptionsMonitor<ILog> monitor,
-            FileUtility fileUtility,
-            CrossDao crossDao,
-            SharpBoxDaoSelector sharpBoxDaoSelector,
-            IFileDao<int> fileDao,
-            TempPath tempPath)
-            : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
+    public Task InvalidateCacheAsync(string fileId)
+    {
+        return ProviderInfo.InvalidateStorageAsync();
+    }
+
+    public Task<File<string>> GetFileAsync(string fileId)
+    {
+        return GetFileAsync(fileId, 1);
+    }
+
+    public Task<File<string>> GetFileAsync(string fileId, int fileVersion)
+    {
+        return Task.FromResult(ToFile(GetFileById(fileId)));
+    }
+
+    public Task<File<string>> GetFileAsync(string parentId, string title)
+    {
+        return Task.FromResult(ToFile(GetFolderFiles(parentId).FirstOrDefault(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase))));
+    }
+
+    public Task<File<string>> GetFileStableAsync(string fileId, int fileVersion = -1)
+    {
+        return Task.FromResult(ToFile(GetFileById(fileId)));
+    }
+
+    public IAsyncEnumerable<File<string>> GetFileHistoryAsync(string fileId)
+    {
+        return GetFileAsync(fileId).ToAsyncEnumerable();
+    }
+
+    public IAsyncEnumerable<File<string>> GetFilesAsync(IEnumerable<string> fileIds)
+    {
+        return fileIds.Select(fileId => ToFile(GetFileById(fileId))).ToAsyncEnumerable();
+    }
+
+    public IAsyncEnumerable<File<string>> GetFilesFilteredAsync(IEnumerable<string> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool checkShared = false)
+    {
+        if (fileIds == null || !fileIds.Any() || filterType == FilterType.FoldersOnly)
         {
-            TempStream = tempStream;
-            CrossDao = crossDao;
-            SharpBoxDaoSelector = sharpBoxDaoSelector;
-            FileDao = fileDao;
+            return AsyncEnumerable.Empty<File<string>>();
         }
 
-        public void InvalidateCache(string fileId)
+        var files = GetFilesAsync(fileIds);
+
+        //Filter
+        if (subjectID != Guid.Empty)
         {
-            ProviderInfo.InvalidateStorage();
+            files = files.Where(x => subjectGroup
+                                         ? UserManager.IsUserInGroup(x.CreateBy, subjectID)
+                                         : x.CreateBy == subjectID);
         }
 
-        public File<string> GetFile(string fileId)
+        switch (filterType)
         {
-            return GetFile(fileId, 1);
-        }
-
-        public File<string> GetFile(string fileId, int fileVersion)
-        {
-            return ToFile(GetFileById(fileId));
-        }
-
-        public File<string> GetFile(string parentId, string title)
-        {
-            return ToFile(GetFolderFiles(parentId).FirstOrDefault(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase)));
-        }
-
-        public File<string> GetFileStable(string fileId, int fileVersion = -1)
-        {
-            return ToFile(GetFileById(fileId));
-        }
-
-        public List<File<string>> GetFileHistory(string fileId)
-        {
-            return new List<File<string>> { GetFile(fileId) };
-        }
-
-        public List<File<string>> GetFiles(IEnumerable<string> fileIds)
-        {
-            return fileIds.Select(fileId => ToFile(GetFileById(fileId))).ToList();
-        }
-
-        public List<File<string>> GetFilesFiltered(IEnumerable<string> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool checkShared = false)
-        {
-            if (fileIds == null || !fileIds.Any() || filterType == FilterType.FoldersOnly) return new List<File<string>>();
-
-            var files = GetFiles(fileIds).AsEnumerable();
-
-            //Filter
-            if (subjectID != Guid.Empty)
-            {
-                files = files.Where(x => subjectGroup
-                                             ? UserManager.IsUserInGroup(x.CreateBy, subjectID)
-                                             : x.CreateBy == subjectID);
-            }
-
-            switch (filterType)
-            {
-                case FilterType.FoldersOnly:
-                    return new List<File<string>>();
-                case FilterType.DocumentsOnly:
-                    files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Document);
-                    break;
-                case FilterType.PresentationsOnly:
-                    files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Presentation);
-                    break;
-                case FilterType.SpreadsheetsOnly:
-                    files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Spreadsheet);
-                    break;
-                case FilterType.ImagesOnly:
-                    files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Image);
-                    break;
-                case FilterType.ArchiveOnly:
-                    files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Archive);
-                    break;
-                case FilterType.MediaOnly:
-                    files = files.Where(x =>
-                        {
-                            FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
-                            return fileType == FileType.Audio || fileType == FileType.Video;
-                        });
-                    break;
-                case FilterType.ByExtension:
-                    if (!string.IsNullOrEmpty(searchText))
-                    {
-                        searchText = searchText.Trim().ToLower();
-                        files = files.Where(x => FileUtility.GetFileExtension(x.Title).Equals(searchText));
-                    }
-                    break;
-            }
-
-            if (!string.IsNullOrEmpty(searchText))
-                files = files.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
-
-            return files.ToList();
-        }
-
-        public List<string> GetFiles(string parentId)
-        {
-            var folder = GetFolderById(parentId).AsEnumerable();
-
-            return folder
-                .Where(x => !(x is ICloudDirectoryEntry))
-                .Select(x => MakeId(x)).ToList();
-        }
-
-        public List<File<string>> GetFiles(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
-        {
-            if (filterType == FilterType.FoldersOnly) return new List<File<string>>();
-
-            //Get only files
-            var files = GetFolderById(parentId).Where(x => !(x is ICloudDirectoryEntry)).Select(ToFile);
-
-            //Filter
-            if (subjectID != Guid.Empty)
-            {
-                files = files.Where(x => subjectGroup
-                                             ? UserManager.IsUserInGroup(x.CreateBy, subjectID)
-                                             : x.CreateBy == subjectID);
-            }
-
-            switch (filterType)
-            {
-                case FilterType.FoldersOnly:
-                    return new List<File<string>>();
-                case FilterType.DocumentsOnly:
-                    files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Document);
-                    break;
-                case FilterType.PresentationsOnly:
-                    files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Presentation);
-                    break;
-                case FilterType.SpreadsheetsOnly:
-                    files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Spreadsheet);
-                    break;
-                case FilterType.ImagesOnly:
-                    files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Image);
-                    break;
-                case FilterType.ArchiveOnly:
-                    files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Archive);
-                    break;
-                case FilterType.MediaOnly:
-                    files = files.Where(x =>
-                        {
-                            FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
-                            return fileType == FileType.Audio || fileType == FileType.Video;
-                        });
-                    break;
-                case FilterType.ByExtension:
-                    if (!string.IsNullOrEmpty(searchText))
-                    {
-                        searchText = searchText.Trim().ToLower();
-                        files = files.Where(x => FileUtility.GetFileExtension(x.Title).Equals(searchText));
-                    }
-                    break;
-            }
-
-            if (!string.IsNullOrEmpty(searchText))
-                files = files.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
-
-            if (orderBy == null) orderBy = new OrderBy(SortedByType.DateAndTime, false);
-
-            files = orderBy.SortedBy switch
-            {
-                SortedByType.Author => orderBy.IsAsc ? files.OrderBy(x => x.CreateBy) : files.OrderByDescending(x => x.CreateBy),
-                SortedByType.AZ => orderBy.IsAsc ? files.OrderBy(x => x.Title) : files.OrderByDescending(x => x.Title),
-                SortedByType.DateAndTime => orderBy.IsAsc ? files.OrderBy(x => x.ModifiedOn) : files.OrderByDescending(x => x.ModifiedOn),
-                SortedByType.DateAndTimeCreation => orderBy.IsAsc ? files.OrderBy(x => x.CreateOn) : files.OrderByDescending(x => x.CreateOn),
-                _ => orderBy.IsAsc ? files.OrderBy(x => x.Title) : files.OrderByDescending(x => x.Title),
-            };
-            return files.ToList();
-        }
-
-        public Stream GetFileStream(File<string> file, long offset)
-        {
-            var fileToDownload = GetFileById(file.ID);
-
-            if (fileToDownload == null)
-                throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
-            if (fileToDownload is ErrorEntry errorEntry)
-                throw new Exception(errorEntry.Error);
-
-            var fileStream = fileToDownload.GetDataTransferAccessor().GetDownloadStream();
-
-            if (fileStream != null && offset > 0)
-            {
-                if (!fileStream.CanSeek)
+            case FilterType.FoldersOnly:
+                return AsyncEnumerable.Empty<File<string>>();
+            case FilterType.DocumentsOnly:
+                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Document);
+                break;
+            case FilterType.PresentationsOnly:
+                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Presentation);
+                break;
+            case FilterType.SpreadsheetsOnly:
+                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Spreadsheet);
+                break;
+            case FilterType.ImagesOnly:
+                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Image);
+                break;
+            case FilterType.ArchiveOnly:
+                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Archive);
+                break;
+            case FilterType.MediaOnly:
+                files = files.Where(x =>
                 {
-                    var tempBuffer = TempStream.Create();
+                    FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
 
-                    fileStream.CopyTo(tempBuffer);
-                    tempBuffer.Flush();
-                    tempBuffer.Seek(offset, SeekOrigin.Begin);
-
-                    fileStream.Dispose();
-                    return tempBuffer;
-                }
-
-                fileStream.Seek(offset, SeekOrigin.Begin);
-            }
-
-            return fileStream;
-        }
-
-        public Uri GetPreSignedUri(File<string> file, TimeSpan expires)
-        {
-            throw new NotSupportedException();
-        }
-
-        public bool IsSupportedPreSignedUri(File<string> file)
-        {
-            return false;
-        }
-
-        public override Stream GetFileStream(File<string> file)
-        {
-            return GetFileStream(file, 0);
-        }
-
-        public File<string> SaveFile(File<string> file, Stream fileStream)
-        {
-            if (fileStream == null) throw new ArgumentNullException(nameof(fileStream));
-            ICloudFileSystemEntry entry = null;
-            if (file.ID != null)
-            {
-                entry = ProviderInfo.Storage.GetFile(MakePath(file.ID), null);
-            }
-            else if (file.FolderID != null)
-            {
-                var folder = GetFolderById(file.FolderID);
-                file.Title = GetAvailableTitle(file.Title, folder, IsExist);
-                entry = ProviderInfo.Storage.CreateFile(folder, file.Title);
-            }
-
-            if (entry == null)
-            {
-                return null;
-            }
-
-            try
-            {
-                entry.GetDataTransferAccessor().Transfer(TempStream.GetBuffered(fileStream), nTransferDirection.nUpload);
-            }
-            catch (SharpBoxException e)
-            {
-                var webException = (WebException)e.InnerException;
-                if (webException != null)
+                    return fileType == FileType.Audio || fileType == FileType.Video;
+                });
+                break;
+            case FilterType.ByExtension:
+                if (!string.IsNullOrEmpty(searchText))
                 {
-                    var response = (HttpWebResponse)webException.Response;
-                    if (response != null)
-                    {
-                        if (response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.Forbidden)
-                        {
-                            throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_Create);
-                        }
-                    }
-                    throw;
+                    searchText = searchText.Trim().ToLower();
+                    files = files.Where(x => FileUtility.GetFileExtension(x.Title).Equals(searchText));
                 }
-            }
-
-            if (file.ID != null && !entry.Name.Equals(file.Title))
-            {
-                file.Title = GetAvailableTitle(file.Title, entry.Parent, IsExist);
-                ProviderInfo.Storage.RenameFileSystemEntry(entry, file.Title);
-            }
-
-            return ToFile(entry);
+                break;
         }
 
-        public File<string> ReplaceFileVersion(File<string> file, Stream fileStream)
+        if (!string.IsNullOrEmpty(searchText))
         {
-            return SaveFile(file, fileStream);
+            files = files.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
         }
 
-        public void DeleteFile(string fileId)
+        return files;
+    }
+
+    public Task<List<string>> GetFilesAsync(string parentId)
+    {
+        var folder = GetFolderById(parentId).AsEnumerable();
+
+        return Task.FromResult(folder
+            .Where(x => !(x is ICloudDirectoryEntry))
+                .Select(x => MakeId(x)).ToList());
+    }
+
+    public async IAsyncEnumerable<File<string>> GetFilesAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
+    {
+        if (filterType == FilterType.FoldersOnly)
         {
-            var file = GetFileById(fileId);
-            if (file == null) return;
-            var id = MakeId(file);
+            yield break;
+        }
 
-            using (var tx = FilesDbContext.Database.BeginTransaction())
+        //Get only files
+        var files = GetFolderById(parentId).Where(x => !(x is ICloudDirectoryEntry)).Select(ToFile);
+
+        //Filter
+        if (subjectID != Guid.Empty)
+        {
+            files = files.Where(x => subjectGroup
+                                         ? UserManager.IsUserInGroup(x.CreateBy, subjectID)
+                                         : x.CreateBy == subjectID);
+        }
+
+        switch (filterType)
+        {
+            case FilterType.FoldersOnly:
+                yield break;
+            case FilterType.DocumentsOnly:
+                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Document);
+                break;
+            case FilterType.PresentationsOnly:
+                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Presentation);
+                break;
+            case FilterType.SpreadsheetsOnly:
+                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Spreadsheet);
+                break;
+            case FilterType.ImagesOnly:
+                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Image);
+                break;
+            case FilterType.ArchiveOnly:
+                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Archive);
+                break;
+            case FilterType.MediaOnly:
+                files = files.Where(x =>
+                {
+                    FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+
+                    return fileType == FileType.Audio || fileType == FileType.Video;
+                });
+                break;
+            case FilterType.ByExtension:
+                if (!string.IsNullOrEmpty(searchText))
+                {
+                    searchText = searchText.Trim().ToLower();
+                    files = files.Where(x => FileUtility.GetFileExtension(x.Title).Equals(searchText));
+                }
+                break;
+        }
+
+        if (!string.IsNullOrEmpty(searchText))
+        {
+            files = files.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
+        }
+
+        if (orderBy == null)
+        {
+            orderBy = new OrderBy(SortedByType.DateAndTime, false);
+        }
+
+        files = orderBy.SortedBy switch
+        {
+            SortedByType.Author => orderBy.IsAsc ? files.OrderBy(x => x.CreateBy) : files.OrderByDescending(x => x.CreateBy),
+            SortedByType.AZ => orderBy.IsAsc ? files.OrderBy(x => x.Title) : files.OrderByDescending(x => x.Title),
+            SortedByType.DateAndTime => orderBy.IsAsc ? files.OrderBy(x => x.ModifiedOn) : files.OrderByDescending(x => x.ModifiedOn),
+            SortedByType.DateAndTimeCreation => orderBy.IsAsc ? files.OrderBy(x => x.CreateOn) : files.OrderByDescending(x => x.CreateOn),
+            _ => orderBy.IsAsc ? files.OrderBy(x => x.Title) : files.OrderByDescending(x => x.Title),
+        };
+
+        //hack
+        await Task.Delay(1).ConfigureAwait(false);
+
+        foreach (var f in files)
+        {
+            yield return f;
+        }
+    }
+
+    public async Task<Stream> GetFileStreamAsync(File<string> file, long offset)
+    {
+        var fileToDownload = GetFileById(file.ID);
+
+        if (fileToDownload == null)
+        {
+            throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
+        }
+
+        if (fileToDownload is ErrorEntry errorEntry)
+        {
+            throw new Exception(errorEntry.Error);
+        }
+
+        var fileStream = fileToDownload.GetDataTransferAccessor().GetDownloadStream();
+
+        if (fileStream != null && offset > 0)
+        {
+            if (!fileStream.CanSeek)
             {
-                var hashIDs = Query(FilesDbContext.ThirdpartyIdMapping)
-                    .Where(r => r.Id.StartsWith(id))
-                    .Select(r => r.HashId)
-                    .ToList();
+                var tempBuffer = _tempStream.Create();
 
-                var link = Query(FilesDbContext.TagLink)
-                    .Where(r => hashIDs.Any(h => h == r.EntryId))
-                    .ToList();
+                await fileStream.CopyToAsync(tempBuffer).ConfigureAwait(false);
+                await tempBuffer.FlushAsync().ConfigureAwait(false);
+                tempBuffer.Seek(offset, SeekOrigin.Begin);
 
-                FilesDbContext.TagLink.RemoveRange(link);
-                FilesDbContext.SaveChanges();
+                await fileStream.DisposeAsync().ConfigureAwait(false);
 
-                var tagsToRemove = from ft in FilesDbContext.Tag
-                                   join ftl in FilesDbContext.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new { TenantId = ftl.TenantId, Id = ftl.TagId }
-                                   where ftl == null
-                                   select ft;
-
-                FilesDbContext.Tag.RemoveRange(tagsToRemove.ToList());
-
-                var securityToDelete = Query(FilesDbContext.Security)
-                    .Where(r => hashIDs.Any(h => h == r.EntryId));
-
-                FilesDbContext.Security.RemoveRange(securityToDelete);
-                FilesDbContext.SaveChanges();
-
-                var mappingToDelete = Query(FilesDbContext.ThirdpartyIdMapping)
-                    .Where(r => hashIDs.Any(h => h == r.HashId));
-
-                FilesDbContext.ThirdpartyIdMapping.RemoveRange(mappingToDelete);
-                FilesDbContext.SaveChanges();
-
-                tx.Commit();
+                return tempBuffer;
             }
 
-            if (!(file is ErrorEntry))
-                ProviderInfo.Storage.DeleteFileSystemEntry(file);
+            fileStream.Seek(offset, SeekOrigin.Begin);
         }
 
-        public bool IsExist(string title, object folderId)
+        return fileStream;
+    }
+
+    public Task<Uri> GetPreSignedUriAsync(File<string> file, TimeSpan expires)
+    {
+        throw new NotSupportedException();
+    }
+
+    public Task<bool> IsSupportedPreSignedUriAsync(File<string> file)
+    {
+        return Task.FromResult(false);
+    }
+
+    public override Task<Stream> GetFileStreamAsync(File<string> file)
+    {
+        return GetFileStreamAsync(file, 0);
+    }
+
+    public async Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
+    {
+        if (fileStream == null)
         {
-            var folder = ProviderInfo.Storage.GetFolder(MakePath(folderId));
-            return IsExist(title, folder);
+            throw new ArgumentNullException(nameof(fileStream));
         }
 
-        public bool IsExist(string title, ICloudDirectoryEntry folder)
+        ICloudFileSystemEntry entry = null;
+        if (file.ID != null)
         {
-            try
+            entry = ProviderInfo.Storage.GetFile(MakePath(file.ID), null);
+        }
+        else if (file.FolderID != null)
+        {
+            var folder = GetFolderById(file.FolderID);
+            file.Title = await GetAvailableTitleAsync(file.Title, folder, IsExistAsync).ConfigureAwait(false);
+            entry = ProviderInfo.Storage.CreateFile(folder, file.Title);
+        }
+
+        if (entry == null)
+        {
+            return null;
+        }
+
+        try
+        {
+            entry.GetDataTransferAccessor().Transfer(_tempStream.GetBuffered(fileStream), nTransferDirection.nUpload);
+        }
+        catch (SharpBoxException e)
+        {
+            var webException = (WebException)e.InnerException;
+            if (webException != null)
             {
-                return ProviderInfo.Storage.GetFileSystemObject(title, folder) != null;
-            }
-            catch (ArgumentException)
-            {
+                var response = (HttpWebResponse)webException.Response;
+                if (response != null)
+                {
+                    if (response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.Forbidden)
+                    {
+                        throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_Create);
+                    }
+                }
                 throw;
             }
-            catch (Exception)
-            {
-            }
-            return false;
         }
 
-        public TTo MoveFile<TTo>(string fileId, TTo toFolderId)
+        if (file.ID != null && !entry.Name.Equals(file.Title))
         {
-            if (toFolderId is int tId)
-            {
-                return (TTo)Convert.ChangeType(MoveFile(fileId, tId), typeof(TTo));
-            }
-
-            if (toFolderId is string tsId)
-            {
-                return (TTo)Convert.ChangeType(MoveFile(fileId, tsId), typeof(TTo));
-            }
-
-            throw new NotImplementedException();
+            file.Title = await GetAvailableTitleAsync(file.Title, entry.Parent, IsExistAsync).ConfigureAwait(false);
+            ProviderInfo.Storage.RenameFileSystemEntry(entry, file.Title);
         }
 
-        public int MoveFile(string fileId, int toFolderId)
-        {
-            var moved = CrossDao.PerformCrossDaoFileCopy(
-                fileId, this, SharpBoxDaoSelector.ConvertId,
-                toFolderId, FileDao, r => r,
-                true);
+        return ToFile(entry);
+    }
 
-            return moved.ID;
+    public Task<File<string>> ReplaceFileVersionAsync(File<string> file, Stream fileStream)
+    {
+        return SaveFileAsync(file, fileStream);
+    }
+
+    public async Task DeleteFileAsync(string fileId)
+    {
+        var file = GetFileById(fileId);
+        if (file == null)
+        {
+            return;
         }
 
-        public string MoveFile(string fileId, string toFolderId)
+        var id = MakeId(file);
+
+        using (var tx = FilesDbContext.Database.BeginTransaction())
         {
-            var entry = GetFileById(fileId);
-            var folder = GetFolderById(toFolderId);
+            var hashIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
+                .Where(r => r.Id.StartsWith(id))
+                .Select(r => r.HashId)
+                .ToListAsync()
+                .ConfigureAwait(false);
 
-            var oldFileId = MakeId(entry);
+            var link = await Query(FilesDbContext.TagLink)
+                .Where(r => hashIDs.Any(h => h == r.EntryId))
+                .ToListAsync()
+                .ConfigureAwait(false);
 
-            if (!ProviderInfo.Storage.MoveFileSystemEntry(entry, folder))
-                throw new Exception("Error while moving");
+            FilesDbContext.TagLink.RemoveRange(link);
+            await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-            var newFileId = MakeId(entry);
+            var tagsToRemove = from ft in FilesDbContext.Tag
+                               join ftl in FilesDbContext.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new { TenantId = ftl.TenantId, Id = ftl.TagId }
+                               where ftl == null
+                               select ft;
 
-            UpdatePathInDB(oldFileId, newFileId);
+            FilesDbContext.Tag.RemoveRange(await tagsToRemove.ToListAsync());
 
-            return newFileId;
+            var securityToDelete = Query(FilesDbContext.Security)
+                .Where(r => hashIDs.Any(h => h == r.EntryId));
+
+            FilesDbContext.Security.RemoveRange(await securityToDelete.ToListAsync());
+            await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+
+            var mappingToDelete = Query(FilesDbContext.ThirdpartyIdMapping)
+                .Where(r => hashIDs.Any(h => h == r.HashId));
+
+            FilesDbContext.ThirdpartyIdMapping.RemoveRange(await mappingToDelete.ToListAsync());
+            await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
+
+            await tx.CommitAsync().ConfigureAwait(false);
         }
 
-        public File<TTo> CopyFile<TTo>(string fileId, TTo toFolderId)
+        if (!(file is ErrorEntry))
         {
-            if (toFolderId is int tId)
-            {
-                return CopyFile(fileId, tId) as File<TTo>;
-            }
+            ProviderInfo.Storage.DeleteFileSystemEntry(file);
+        }
+    }
 
-            if (toFolderId is string tsId)
-            {
-                return CopyFile(fileId, tsId) as File<TTo>;
-            }
+    public Task<bool> IsExistAsync(string title, object folderId)
+    {
+        var folder = ProviderInfo.Storage.GetFolder(MakePath(folderId));
 
-            throw new NotImplementedException();
+        return IsExistAsync(title, folder);
+    }
+
+    public Task<bool> IsExistAsync(string title, ICloudDirectoryEntry folder)
+    {
+        try
+        {
+            return Task.FromResult(ProviderInfo.Storage.GetFileSystemObject(title, folder) != null);
+        }
+        catch (ArgumentException)
+        {
+            throw;
+        }
+        catch (Exception)
+        {
         }
 
-        public File<string> CopyFile(string fileId, string toFolderId)
+        return Task.FromResult(false);
+    }
+
+    public async Task<TTo> MoveFileAsync<TTo>(string fileId, TTo toFolderId)
+    {
+        if (toFolderId is int tId)
         {
-            var file = GetFileById(fileId);
-            if (!ProviderInfo.Storage.CopyFileSystemEntry(MakePath(fileId), MakePath(toFolderId)))
-                throw new Exception("Error while copying");
-            return ToFile(GetFolderById(toFolderId).FirstOrDefault(x => x.Name == file.Name));
+            return (TTo)Convert.ChangeType(await MoveFileAsync(fileId, tId).ConfigureAwait(false), typeof(TTo));
         }
 
-        public File<int> CopyFile(string fileId, int toFolderId)
+        if (toFolderId is string tsId)
         {
-            var moved = CrossDao.PerformCrossDaoFileCopy(
-                fileId, this, SharpBoxDaoSelector.ConvertId,
-                toFolderId, FileDao, r => r,
-                false);
-
-            return moved;
+            return (TTo)Convert.ChangeType(await MoveFileAsync(fileId, tsId).ConfigureAwait(false), typeof(TTo));
         }
 
-        public string FileRename(File<string> file, string newTitle)
+        throw new NotImplementedException();
+    }
+
+    public async Task<int> MoveFileAsync(string fileId, int toFolderId)
+    {
+        var moved = await _crossDao.PerformCrossDaoFileCopyAsync(
+            fileId, this, _sharpBoxDaoSelector.ConvertId,
+            toFolderId, _fileDao, r => r,
+            true)
+            .ConfigureAwait(false);
+
+        return moved.ID;
+    }
+
+    public async Task<string> MoveFileAsync(string fileId, string toFolderId)
+    {
+        var entry = GetFileById(fileId);
+        var folder = GetFolderById(toFolderId);
+
+        var oldFileId = MakeId(entry);
+
+        if (!ProviderInfo.Storage.MoveFileSystemEntry(entry, folder))
         {
-            var entry = GetFileById(file.ID);
+            throw new Exception("Error while moving");
+        }
 
-            if (entry == null)
-                throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
+        var newFileId = MakeId(entry);
 
-            var oldFileId = MakeId(entry);
-            var newFileId = oldFileId;
+        await UpdatePathInDBAsync(oldFileId, newFileId).ConfigureAwait(false);
 
+        return newFileId;
+    }
+
+    public async Task<File<TTo>> CopyFileAsync<TTo>(string fileId, TTo toFolderId)
+    {
+        if (toFolderId is int tId)
+        {
+            return await CopyFileAsync(fileId, tId).ConfigureAwait(false) as File<TTo>;
+        }
+
+        if (toFolderId is string tsId)
+        {
+            return await CopyFileAsync(fileId, tsId).ConfigureAwait(false) as File<TTo>;
+        }
+
+        throw new NotImplementedException();
+    }
+
+    public Task<File<string>> CopyFileAsync(string fileId, string toFolderId)
+    {
+        var file = GetFileById(fileId);
+        if (!ProviderInfo.Storage.CopyFileSystemEntry(MakePath(fileId), MakePath(toFolderId)))
+        {
+            throw new Exception("Error while copying");
+        }
+
+        return Task.FromResult(ToFile(GetFolderById(toFolderId).FirstOrDefault(x => x.Name == file.Name)));
+    }
+
+    public async Task<File<int>> CopyFileAsync(string fileId, int toFolderId)
+    {
+        var moved = await _crossDao.PerformCrossDaoFileCopyAsync(
+            fileId, this, _sharpBoxDaoSelector.ConvertId,
+            toFolderId, _fileDao, r => r,
+            false)
+            .ConfigureAwait(false);
+
+        return moved;
+    }
+
+    public async Task<string> FileRenameAsync(File<string> file, string newTitle)
+    {
+        var entry = GetFileById(file.ID);
+
+        if (entry == null)
+        {
+            throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
+        }
+
+        var oldFileId = MakeId(entry);
+        var newFileId = oldFileId;
+
+        var folder = GetFolderById(file.FolderID);
+        newTitle = await GetAvailableTitleAsync(newTitle, folder, IsExistAsync).ConfigureAwait(false);
+
+        if (ProviderInfo.Storage.RenameFileSystemEntry(entry, newTitle))
+        {
+            //File data must be already updated by provider
+            //We can't search google files by title because root can have multiple folders with the same name
+            //var newFile = SharpBoxProviderInfo.Storage.GetFileSystemObject(newTitle, file.Parent);
+            newFileId = MakeId(entry);
+        }
+
+        await UpdatePathInDBAsync(oldFileId, newFileId).ConfigureAwait(false);
+
+        return newFileId;
+    }
+
+    public Task<string> UpdateCommentAsync(string fileId, int fileVersion, string comment)
+    {
+        return Task.FromResult(string.Empty);
+    }
+
+    public Task CompleteVersionAsync(string fileId, int fileVersion)
+    {
+        return Task.CompletedTask;
+    }
+
+    public Task ContinueVersionAsync(string fileId, int fileVersion)
+    {
+        return Task.FromResult(0);
+    }
+
+    public bool UseTrashForRemove(File<string> file)
+    {
+        return false;
+    }
+
+    #region chunking
+
+    public async Task<ChunkedUploadSession<string>> CreateUploadSessionAsync(File<string> file, long contentLength)
+    {
+        if (SetupInfo.ChunkUploadSize > contentLength)
+        {
+            return new ChunkedUploadSession<string>(MakeId(file), contentLength) { UseChunks = false };
+        }
+
+        var uploadSession = new ChunkedUploadSession<string>(file, contentLength);
+
+        var isNewFile = false;
+
+        ICloudFileSystemEntry sharpboxFile;
+        if (file.ID != null)
+        {
+            sharpboxFile = GetFileById(file.ID);
+        }
+        else
+        {
             var folder = GetFolderById(file.FolderID);
-            newTitle = GetAvailableTitle(newTitle, folder, IsExist);
-
-            if (ProviderInfo.Storage.RenameFileSystemEntry(entry, newTitle))
-            {
-                //File data must be already updated by provider
-                //We can't search google files by title because root can have multiple folders with the same name
-                //var newFile = SharpBoxProviderInfo.Storage.GetFileSystemObject(newTitle, file.Parent);
-                newFileId = MakeId(entry);
-            }
-
-            UpdatePathInDB(oldFileId, newFileId);
-
-            return newFileId;
+            sharpboxFile = ProviderInfo.Storage.CreateFile(folder, await GetAvailableTitleAsync(file.Title, folder, IsExistAsync).ConfigureAwait(false));
+            isNewFile = true;
         }
 
-        public string UpdateComment(string fileId, int fileVersion, string comment)
+        var sharpboxSession = sharpboxFile.GetDataTransferAccessor().CreateResumableSession(contentLength);
+        if (sharpboxSession != null)
         {
-            return string.Empty;
+            uploadSession.Items["SharpboxSession"] = sharpboxSession;
+            uploadSession.Items["IsNewFile"] = isNewFile;
+        }
+        else
+        {
+            uploadSession.Items["TempPath"] = TempPath.GetTempFileName();
         }
 
-        public void CompleteVersion(string fileId, int fileVersion)
+        uploadSession.File = MakeId(uploadSession.File);
+
+        return uploadSession;
+    }
+
+    public async Task<File<string>> UploadChunkAsync(ChunkedUploadSession<string> uploadSession, Stream stream, long chunkLength)
+    {
+        if (!uploadSession.UseChunks)
         {
-        }
-
-        public void ContinueVersion(string fileId, int fileVersion)
-        {
-        }
-
-        public bool UseTrashForRemove(File<string> file)
-        {
-            return false;
-        }
-
-        #region chunking
-
-        public ChunkedUploadSession<string> CreateUploadSession(File<string> file, long contentLength)
-        {
-            if (SetupInfo.ChunkUploadSize > contentLength)
-                return new ChunkedUploadSession<string>(MakeId(file), contentLength) { UseChunks = false };
-
-            var uploadSession = new ChunkedUploadSession<string>(file, contentLength);
-
-            var isNewFile = false;
-
-            ICloudFileSystemEntry sharpboxFile;
-            if (file.ID != null)
+            if (uploadSession.BytesTotal == 0)
             {
-                sharpboxFile = GetFileById(file.ID);
-            }
-            else
-            {
-                var folder = GetFolderById(file.FolderID);
-                sharpboxFile = ProviderInfo.Storage.CreateFile(folder, GetAvailableTitle(file.Title, folder, IsExist));
-                isNewFile = true;
+                uploadSession.BytesTotal = chunkLength;
             }
 
-            var sharpboxSession = sharpboxFile.GetDataTransferAccessor().CreateResumableSession(contentLength);
-            if (sharpboxSession != null)
-            {
-                uploadSession.Items["SharpboxSession"] = sharpboxSession;
-                uploadSession.Items["IsNewFile"] = isNewFile;
-            }
-            else
-            {
-                uploadSession.Items["TempPath"] = TempPath.GetTempFileName();
-            }
-
-            uploadSession.File = MakeId(uploadSession.File);
-            return uploadSession;
-        }
-
-        public File<string> UploadChunk(ChunkedUploadSession<string> uploadSession, Stream stream, long chunkLength)
-        {
-            if (!uploadSession.UseChunks)
-            {
-                if (uploadSession.BytesTotal == 0)
-                    uploadSession.BytesTotal = chunkLength;
-
-                uploadSession.File = SaveFile(uploadSession.File, stream);
-                uploadSession.BytesUploaded = chunkLength;
-                return uploadSession.File;
-            }
-
-            if (uploadSession.Items.ContainsKey("SharpboxSession"))
-            {
-                var sharpboxSession =
-                    uploadSession.GetItemOrDefault<AppLimit.CloudComputing.SharpBox.StorageProvider.BaseObjects.ResumableUploadSession>("SharpboxSession");
-
-                var isNewFile = uploadSession.Items.ContainsKey("IsNewFile") && uploadSession.GetItemOrDefault<bool>("IsNewFile");
-                var sharpboxFile =
-                    isNewFile
-                        ? ProviderInfo.Storage.CreateFile(GetFolderById(sharpboxSession.ParentId), sharpboxSession.FileName)
-                        : GetFileById(sharpboxSession.FileId);
-
-                sharpboxFile.GetDataTransferAccessor().Transfer(sharpboxSession, stream, chunkLength);
-            }
-            else
-            {
-                var tempPath = uploadSession.GetItemOrDefault<string>("TempPath");
-                using var fs = new FileStream(tempPath, FileMode.Append);
-                stream.CopyTo(fs);
-            }
-
-            uploadSession.BytesUploaded += chunkLength;
-
-            if (uploadSession.BytesUploaded == uploadSession.BytesTotal)
-            {
-                uploadSession.File = FinalizeUploadSession(uploadSession);
-            }
-            else
-            {
-                uploadSession.File = MakeId(uploadSession.File);
-            }
+            uploadSession.File = await SaveFileAsync(uploadSession.File, stream).ConfigureAwait(false);
+            uploadSession.BytesUploaded = chunkLength;
 
             return uploadSession.File;
         }
 
-        public File<string> FinalizeUploadSession(ChunkedUploadSession<string> uploadSession)
+        if (uploadSession.Items.ContainsKey("SharpboxSession"))
         {
-            if (uploadSession.Items.ContainsKey("SharpboxSession"))
-            {
-                var sharpboxSession =
-                    uploadSession.GetItemOrDefault<AppLimit.CloudComputing.SharpBox.StorageProvider.BaseObjects.ResumableUploadSession>("SharpboxSession");
-                return ToFile(GetFileById(sharpboxSession.FileId));
-            }
+            var sharpboxSession =
+                uploadSession.GetItemOrDefault<AppLimit.CloudComputing.SharpBox.StorageProvider.BaseObjects.ResumableUploadSession>("SharpboxSession");
 
-            using var fs = new FileStream(uploadSession.GetItemOrDefault<string>("TempPath"), FileMode.Open, FileAccess.Read, System.IO.FileShare.None, 4096, FileOptions.DeleteOnClose);
-            return SaveFile(uploadSession.File, fs);
+            var isNewFile = uploadSession.Items.ContainsKey("IsNewFile") && uploadSession.GetItemOrDefault<bool>("IsNewFile");
+            var sharpboxFile =
+                isNewFile
+                    ? ProviderInfo.Storage.CreateFile(GetFolderById(sharpboxSession.ParentId), sharpboxSession.FileName)
+                    : GetFileById(sharpboxSession.FileId);
+
+            sharpboxFile.GetDataTransferAccessor().Transfer(sharpboxSession, stream, chunkLength);
+        }
+        else
+        {
+            var tempPath = uploadSession.GetItemOrDefault<string>("TempPath");
+            using var fs = new FileStream(tempPath, FileMode.Append);
+            await stream.CopyToAsync(fs).ConfigureAwait(false);
         }
 
-        public void AbortUploadSession(ChunkedUploadSession<string> uploadSession)
-        {
-            if (uploadSession.Items.ContainsKey("SharpboxSession"))
-            {
-                var sharpboxSession =
-                    uploadSession.GetItemOrDefault<AppLimit.CloudComputing.SharpBox.StorageProvider.BaseObjects.ResumableUploadSession>("SharpboxSession");
+        uploadSession.BytesUploaded += chunkLength;
 
-                var isNewFile = uploadSession.Items.ContainsKey("IsNewFile") && uploadSession.GetItemOrDefault<bool>("IsNewFile");
-                var sharpboxFile =
-                    isNewFile
-                        ? ProviderInfo.Storage.CreateFile(GetFolderById(sharpboxSession.ParentId), sharpboxSession.FileName)
-                        : GetFileById(sharpboxSession.FileId);
-                sharpboxFile.GetDataTransferAccessor().AbortResumableSession(sharpboxSession);
-            }
-            else if (uploadSession.Items.ContainsKey("TempPath"))
-            {
-                File.Delete(uploadSession.GetItemOrDefault<string>("TempPath"));
-            }
+        if (uploadSession.BytesUploaded == uploadSession.BytesTotal)
+        {
+            uploadSession.File = await FinalizeUploadSessionAsync(uploadSession).ConfigureAwait(false);
+        }
+        else
+        {
+            uploadSession.File = MakeId(uploadSession.File);
         }
 
-        private File<string> MakeId(File<string> file)
-        {
-            if (file.ID != null)
-                file.ID = PathPrefix + "-" + file.ID;
-
-            if (file.FolderID != null)
-                file.FolderID = PathPrefix + "-" + file.FolderID;
-
-            return file;
-        }
-
-        #endregion
+        return uploadSession.File;
     }
+
+    public async Task<File<string>> FinalizeUploadSessionAsync(ChunkedUploadSession<string> uploadSession)
+    {
+        if (uploadSession.Items.ContainsKey("SharpboxSession"))
+        {
+            var sharpboxSession =
+                uploadSession.GetItemOrDefault<AppLimit.CloudComputing.SharpBox.StorageProvider.BaseObjects.ResumableUploadSession>("SharpboxSession");
+
+            return ToFile(GetFileById(sharpboxSession.FileId));
+        }
+
+        using var fs = new FileStream(uploadSession.GetItemOrDefault<string>("TempPath"), FileMode.Open, FileAccess.Read, System.IO.FileShare.None, 4096, FileOptions.DeleteOnClose);
+
+        return await SaveFileAsync(uploadSession.File, fs).ConfigureAwait(false);
+    }
+
+    public Task AbortUploadSessionAsync(ChunkedUploadSession<string> uploadSession)
+    {
+        if (uploadSession.Items.ContainsKey("SharpboxSession"))
+        {
+            var sharpboxSession =
+                uploadSession.GetItemOrDefault<AppLimit.CloudComputing.SharpBox.StorageProvider.BaseObjects.ResumableUploadSession>("SharpboxSession");
+
+            var isNewFile = uploadSession.Items.ContainsKey("IsNewFile") && uploadSession.GetItemOrDefault<bool>("IsNewFile");
+            var sharpboxFile =
+                isNewFile
+                    ? ProviderInfo.Storage.CreateFile(GetFolderById(sharpboxSession.ParentId), sharpboxSession.FileName)
+                    : GetFileById(sharpboxSession.FileId);
+            sharpboxFile.GetDataTransferAccessor().AbortResumableSession(sharpboxSession);
+
+            return Task.FromResult(0);
+        }
+        else if (uploadSession.Items.ContainsKey("TempPath"))
+        {
+            File.Delete(uploadSession.GetItemOrDefault<string>("TempPath"));
+
+            return Task.FromResult(0);
+        }
+
+        return Task.FromResult(0);
+    }
+
+    private File<string> MakeId(File<string> file)
+    {
+        if (file.ID != null)
+        {
+            file.ID = PathPrefix + "-" + file.ID;
+        }
+
+        if (file.FolderID != null)
+        {
+            file.FolderID = PathPrefix + "-" + file.FolderID;
+        }
+
+        return file;
+    }
+    #endregion
 }

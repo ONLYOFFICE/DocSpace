@@ -89,7 +89,7 @@ public class EmployeeWraperHelper
 
     protected EmployeeWraper Init(EmployeeWraper result, UserInfo userInfo)
     {
-        result.Id = userInfo.ID;
+        result.Id = userInfo.Id;
         result.DisplayName = _displayUserSettingsHelper.GetFullUserName(userInfo);
 
         if (!string.IsNullOrEmpty(userInfo.Title))
@@ -101,7 +101,7 @@ public class EmployeeWraperHelper
 
         if (_httpContext.Check("avatarSmall"))
         {
-            result.AvatarSmall = UserPhotoManager.GetSmallPhotoURL(userInfo.ID, out var isdef) 
+            result.AvatarSmall = UserPhotoManager.GetSmallPhotoURL(userInfo.Id, out var isdef) 
                 + (isdef ? "" : $"?_={userInfoLM}");
         }     
 

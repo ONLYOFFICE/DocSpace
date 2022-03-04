@@ -23,27 +23,18 @@
  *
 */
 
-namespace ASC.Files.Core.Security
+namespace ASC.Files.Core.Security;
+
+[Scope]
+public interface ISecurityDao<T>
 {
-    [Scope]
-    public interface ISecurityDao<T>
-    {
-        void SetShare(FileShareRecord r);
-
-        IEnumerable<FileShareRecord> GetShares(IEnumerable<Guid> subjects);
-
-        IEnumerable<FileShareRecord> GetShares(IEnumerable<FileEntry<T>> entry);
-
-        IEnumerable<FileShareRecord> GetShares(FileEntry<T> entry);
-
-        void RemoveSubject(Guid subject);
-
-        IEnumerable<FileShareRecord> GetPureShareRecords(IEnumerable<FileEntry<T>> entries);
-
-        IEnumerable<FileShareRecord> GetPureShareRecords(FileEntry<T> entry);
-
-        void DeleteShareRecords(IEnumerable<FileShareRecord> records);
-
-        bool IsShared(object entryId, FileEntryType type);
-    }
+    Task SetShareAsync(FileShareRecord r);
+    ValueTask<List<FileShareRecord>> GetSharesAsync(IEnumerable<Guid> subjects);
+    Task<IEnumerable<FileShareRecord>> GetSharesAsync(IEnumerable<FileEntry<T>> entry);
+    Task<IEnumerable<FileShareRecord>> GetSharesAsync(FileEntry<T> entry);
+    Task RemoveSubjectAsync(Guid subject);
+    Task<IEnumerable<FileShareRecord>> GetPureShareRecordsAsync(IEnumerable<FileEntry<T>> entries);
+    Task<IEnumerable<FileShareRecord>> GetPureShareRecordsAsync(FileEntry<T> entry);
+    Task DeleteShareRecordsAsync(IEnumerable<FileShareRecord> records);
+    ValueTask<bool> IsSharedAsync(object entryId, FileEntryType type);
 }

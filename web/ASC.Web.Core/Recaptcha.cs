@@ -24,8 +24,7 @@
             ClientFactory = clientFactory;
         }
 
-
-        public bool ValidateRecaptcha(string response, string ip)
+        public async Task<bool> ValidateRecaptchaAsync(string response, string ip)
         {
             try
             {
@@ -37,10 +36,10 @@
                 request.Content = new StringContent(data, Encoding.UTF8, "application/x-www-form-urlencoded");
 
                 var httpClient = ClientFactory.CreateClient();
-                using var httpClientResponse = httpClient.Send(request);
-                using (var reader = new StreamReader(httpClientResponse.Content.ReadAsStream()))
+                using var httpClientResponse = await httpClient.SendAsync(request);
+                using (var reader = new StreamReader(await httpClientResponse.Content.ReadAsStreamAsync()))
                 {
-                    var resp = reader.ReadToEnd();
+                    var resp = await reader.ReadToEndAsync();
                     var resObj = JObject.Parse(resp);
 
                     if (resObj["success"] != null && resObj.Value<bool>("success"))

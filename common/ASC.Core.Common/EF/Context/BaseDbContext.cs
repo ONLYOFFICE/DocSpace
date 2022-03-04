@@ -1,147 +1,159 @@
-﻿
-using DbContext = Microsoft.EntityFrameworkCore.DbContext;
+﻿using DbContext = Microsoft.EntityFrameworkCore.DbContext;
 
-namespace ASC.Core.Common.EF
+namespace ASC.Core.Common.EF;
+
+public enum Provider
 {
-    public enum Provider
+    PostgreSql,
+    MySql
+}
+
+public class BaseDbContext : DbContext
+{
+    public BaseDbContext() { }
+    public BaseDbContext(DbContextOptions options) : base(options) { }
+
+    internal string MigrateAssembly;
+    internal ILoggerFactory LoggerFactory;
+    public ConnectionStringSettings ConnectionStringSettings { get; set; }
+    protected internal Provider Provider;
+
+    public static readonly ServerVersion ServerVersion = ServerVersion.Parse("8.0.25");
+    protected virtual Dictionary<Provider, Func<BaseDbContext>> ProviderContext => null;
+
+    public void Migrate()
     {
-        PostgreSql,
-        MySql
+        if (ProviderContext != null)
+        {
+            var provider = GetProviderByConnectionString();
+
+            using var sqlProvider = ProviderContext[provider]();
+            sqlProvider.ConnectionStringSettings = ConnectionStringSettings;
+            sqlProvider.LoggerFactory = LoggerFactory;
+            sqlProvider.MigrateAssembly = MigrateAssembly;
+
+            sqlProvider.Database.Migrate();
+        }
+        else
+        {
+            Database.Migrate();
+        }
     }
 
-    public class BaseDbContext : DbContext
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        public BaseDbContext() { }
-        public BaseDbContext(DbContextOptions options) : base(options)
+        optionsBuilder.UseLoggerFactory(LoggerFactory);
+        optionsBuilder.EnableSensitiveDataLogging();
+        Provider = GetProviderByConnectionString();
+        switch (Provider)
         {
-
-        }
-
-        internal string MigrateAssembly { get; set; }
-        internal ILoggerFactory LoggerFactory { get; set; }
-        public ConnectionStringSettings ConnectionStringSettings { get; set; }
-        protected internal Provider Provider { get; set; }
-
-        public static readonly ServerVersion ServerVersion = ServerVersion.Parse("8.0.25");
-        protected virtual Dictionary<Provider, Func<BaseDbContext>> ProviderContext
-        {
-            get { return null; }
-        }
-
-        public void Migrate()
-        {
-            if (ProviderContext != null)
-            {
-                var provider = GetProviderByConnectionString();
-
-                using var sqlProvider = ProviderContext[provider]();
-                sqlProvider.ConnectionStringSettings = ConnectionStringSettings;
-                sqlProvider.LoggerFactory = LoggerFactory;
-                sqlProvider.MigrateAssembly = MigrateAssembly;
-
-                sqlProvider.Database.Migrate();
-            }
-            else
-            {
-                Database.Migrate();
-            }
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseLoggerFactory(LoggerFactory);
-            optionsBuilder.EnableSensitiveDataLogging();
-            Provider = GetProviderByConnectionString();
-            switch (Provider)
-            {
-                case Provider.MySql:
-                    optionsBuilder.UseMySql(ConnectionStringSettings.ConnectionString, ServerVersion, r =>
+            case Provider.MySql:
+                optionsBuilder.UseMySql(ConnectionStringSettings.ConnectionString, ServerVersion, r =>
+                {
+                    if (!string.IsNullOrEmpty(MigrateAssembly))
                     {
-                        if (!string.IsNullOrEmpty(MigrateAssembly))
-                        {
-                            r.MigrationsAssembly(MigrateAssembly);
-                        }
-                    });
-                    break;
-                case Provider.PostgreSql:
-                    optionsBuilder.UseNpgsql(ConnectionStringSettings.ConnectionString);
-                    break;
-            }
-        }
-
-        public Provider GetProviderByConnectionString()
-        {
-            switch (ConnectionStringSettings.ProviderName)
-            {
-                case "MySql.Data.MySqlClient":
-                    return Provider.MySql;
-                case "Npgsql":
-                    return Provider.PostgreSql;
-                default:
-                    break;
-            }
-
-            return Provider.MySql;
+                        r.MigrationsAssembly(MigrateAssembly);
+                    }
+                });
+                break;
+            case Provider.PostgreSql:
+                optionsBuilder.UseNpgsql(ConnectionStringSettings.ConnectionString);
+                break;
         }
     }
 
-    public static class BaseDbContextExtension
+    public Provider GetProviderByConnectionString()
     {
-        public static T AddOrUpdate<T, TContext>(this TContext b, Expression<Func<TContext, DbSet<T>>> expressionDbSet, T entity) where T : BaseEntity where TContext : BaseDbContext
+        switch (ConnectionStringSettings.ProviderName)
         {
-            var dbSet = expressionDbSet.Compile().Invoke(b);
-            var existingBlog = dbSet.Find(entity.GetKeys());
-            if (existingBlog == null)
+            case "MySql.Data.MySqlClient":
+                return Provider.MySql;
+            case "Npgsql":
+                return Provider.PostgreSql;
+            default:
+                break;
+        }
+
+        return Provider.MySql;
+    }
+}
+
+public static class BaseDbContextExtension
+{
+    public static T AddOrUpdate<T, TContext>(this TContext b, Expression<Func<TContext, DbSet<T>>> expressionDbSet, T entity) where T : BaseEntity where TContext : BaseDbContext
+    {
+        var dbSet = expressionDbSet.Compile().Invoke(b);
+        var existingBlog = dbSet.Find(entity.GetKeys());
+        if (existingBlog == null)
+        {
+            return dbSet.Add(entity).Entity;
+        }
+        else
+        {
+            b.Entry(existingBlog).CurrentValues.SetValues(entity);
+
+            return entity;
+        }
+    }
+
+    public static async Task<T> AddOrUpdateAsync<T, TContext>(this TContext b, Expression<Func<TContext, DbSet<T>>> expressionDbSet, T entity) where T : BaseEntity where TContext : BaseDbContext
+    {
+        var dbSet = expressionDbSet.Compile().Invoke(b);
+        var existingBlog = await dbSet.FindAsync(entity.GetKeys());
+        if (existingBlog == null)
+        {
+            var entityEntry = await dbSet.AddAsync(entity);
+
+            return entityEntry.Entity;
+        }
+        else
+        {
+            b.Entry(existingBlog).CurrentValues.SetValues(entity);
+
+            return entity;
+        }
+    }
+}
+
+public abstract class BaseEntity
+{
+    public abstract object[] GetKeys();
+}
+
+public class MultiRegionalDbContext<T> : IDisposable, IAsyncDisposable where T : BaseDbContext, new()
+{
+    public MultiRegionalDbContext() { }
+
+    internal List<T> Context;
+
+    public void Dispose()
+    {
+        if (Context == null)
+        {
+            return;
+        }
+
+        foreach (var c in Context)
+        {
+            if (c != null)
             {
-                return dbSet.Add(entity).Entity;
-            }
-            else
-            {
-                b.Entry(existingBlog).CurrentValues.SetValues(entity);
-                return entity;
+                c.Dispose();
             }
         }
     }
 
-    public abstract class BaseEntity
+    public ValueTask DisposeAsync()
     {
-        public abstract object[] GetKeys();
+        return Context == null ? ValueTask.CompletedTask : InternalDisposeAsync();
     }
 
-    public class MultiRegionalDbContext<T> : IDisposable, IAsyncDisposable where T : BaseDbContext, new()
+    private async ValueTask InternalDisposeAsync()
     {
-        public MultiRegionalDbContext() { }
-
-        internal List<T> Context { get; set; }
-
-        public void Dispose()
+        foreach (var c in Context)
         {
-            if (Context == null) return;
-
-            foreach (var c in Context)
+            if (c != null)
             {
-                if (c != null)
-                {
-                    c.Dispose();
-                }
-            }
-        }
-
-        public ValueTask DisposeAsync()
-        {
-            if (Context == null) return ValueTask.CompletedTask;
-
-            return InternalDisposeAsync();
-        }
-
-        private async ValueTask InternalDisposeAsync()
-        {
-            foreach (var c in Context)
-            {
-                if (c != null)
-                {
-                    await c.DisposeAsync();
-                }
+                await c.DisposeAsync();
             }
         }
     }

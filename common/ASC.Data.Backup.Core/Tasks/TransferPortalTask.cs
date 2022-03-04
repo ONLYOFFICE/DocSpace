@@ -23,224 +23,231 @@
  *
 */
 
-namespace ASC.Data.Backup.Tasks
+namespace ASC.Data.Backup.Tasks;
+
+[Scope]
+public class TransferPortalTask : PortalTaskBase
 {
-    [Scope]
-    public class TransferPortalTask : PortalTaskBase
+    public const string DefaultDirectoryName = "backup";
+
+    public string BackupDirectory { get; set; }
+    public bool DeleteBackupFileAfterCompletion { get; set; }
+    public bool BlockOldPortalAfterStart { get; set; }
+    public bool DeleteOldPortalAfterCompletion { get; set; }
+    public string ToConfigPath { get; private set; }
+    public int ToTenantId { get; private set; }
+    public int Limit { get; private set; }
+
+    private readonly IOptionsMonitor<ILog> _options;
+    private readonly TempStream _tempStream;
+    private readonly TempPath _tempPath;
+    private readonly IServiceProvider _serviceProvider;
+
+
+    public TransferPortalTask(
+        DbFactory dbFactory,
+        IServiceProvider serviceProvider,
+        IOptionsMonitor<ILog> options,
+        StorageFactory storageFactory,
+        StorageFactoryConfig storageFactoryConfig,
+        ModuleProvider moduleProvider,
+        TempStream tempStream,
+        TempPath tempPath)
+        : base(dbFactory, options, storageFactory, storageFactoryConfig, moduleProvider)
     {
-        public const string DefaultDirectoryName = "backup";
+        DeleteBackupFileAfterCompletion = true;
+        BlockOldPortalAfterStart = true;
+        DeleteOldPortalAfterCompletion = true;
+        _options = options;
+        _tempStream = tempStream;
+        _tempPath = tempPath;
+        _serviceProvider = serviceProvider;
+    }
 
-        public string ToConfigPath { get; private set; }
-
-        public string BackupDirectory { get; set; }
-        public bool DeleteBackupFileAfterCompletion { get; set; }
-        public bool BlockOldPortalAfterStart { get; set; }
-        public bool DeleteOldPortalAfterCompletion { get; set; }
-        private IOptionsMonitor<ILog> Options { get; set; }
-        private TempStream TempStream { get; }
-        private TempPath TempPath { get; }
-        private IServiceProvider ServiceProvider { get; set; }
-        public int ToTenantId { get; private set; }
-        public int Limit { get; private set; }
-
-        public TransferPortalTask(
-            DbFactory dbFactory, 
-            IServiceProvider serviceProvider,
-            IOptionsMonitor<ILog> options, 
-            StorageFactory storageFactory, 
-            StorageFactoryConfig storageFactoryConfig, 
-            ModuleProvider moduleProvider,
-            TempStream tempStream,
-            TempPath tempPath)
-            : base(dbFactory, options, storageFactory, storageFactoryConfig, moduleProvider)
-        {
-            DeleteBackupFileAfterCompletion = true;
-            BlockOldPortalAfterStart = true;
-            DeleteOldPortalAfterCompletion = true;
-            Options = options;
-            TempStream = tempStream;
-            TempPath = tempPath;
-            ServiceProvider = serviceProvider;
-        }
-
-        public void Init(int tenantId, string fromConfigPath, string toConfigPath, int limit, string backupDirectory)
-        {
-            Limit = limit;
+    public void Init(int tenantId, string fromConfigPath, string toConfigPath, int limit, string backupDirectory)
+    {
+        Limit = limit;
             ToConfigPath = toConfigPath ?? throw new ArgumentNullException(nameof(toConfigPath));
-            Init(tenantId, fromConfigPath);
+        Init(tenantId, fromConfigPath);
 
-            BackupDirectory = backupDirectory;
-        }
+        BackupDirectory = backupDirectory;
+    }
 
-        public override void RunJob()
+    public override void RunJob()
+    {
+        Logger.DebugFormat("begin transfer {0}", TenantId);
+        var fromDbFactory = new DbFactory(null, null);
+        var toDbFactory = new DbFactory(null, null);
+        var tenantAlias = GetTenantAlias(fromDbFactory);
+        var backupFilePath = GetBackupFilePath(tenantAlias);
+        var columnMapper = new ColumnMapper();
+        try
         {
-            Logger.DebugFormat("begin transfer {0}", TenantId);
-            var fromDbFactory = new DbFactory(null, null);
-            var toDbFactory = new DbFactory(null, null);
-            var tenantAlias = GetTenantAlias(fromDbFactory);
-            var backupFilePath = GetBackupFilePath(tenantAlias);
-            var columnMapper = new ColumnMapper();
-            try
+            //target db can have error tenant from the previous attempts
+            SaveTenant(toDbFactory, tenantAlias, TenantStatus.RemovePending, tenantAlias + "_error", "status = " + TenantStatus.Restoring.ToString("d"));
+
+            if (BlockOldPortalAfterStart)
             {
-                //target db can have error tenant from the previous attempts
-                SaveTenant(toDbFactory, tenantAlias, TenantStatus.RemovePending, tenantAlias + "_error", "status = " + TenantStatus.Restoring.ToString("d"));
-
-                if (BlockOldPortalAfterStart)
-                {
-                    SaveTenant(fromDbFactory, tenantAlias, TenantStatus.Transfering);
-                }
-
-                SetStepsCount(ProcessStorage ? 3 : 2);
-
-                //save db data to temporary file
-                var backupTask = ServiceProvider.GetService<BackupPortalTask>();
-                backupTask.Init(TenantId, ConfigPath, backupFilePath, Limit);
-                backupTask.ProcessStorage = false;
-                backupTask.ProgressChanged += (sender, args) => SetCurrentStepProgress(args.Progress);
-                foreach (var moduleName in IgnoredModules)
-                {
-                    backupTask.IgnoreModule(moduleName);
-                }
-                backupTask.RunJob();
-
-                //restore db data from temporary file
-                var restoreTask = ServiceProvider.GetService<RestorePortalTask>();
-                restoreTask.Init(ToConfigPath, backupFilePath, columnMapper: columnMapper);
-                restoreTask.ProcessStorage = false;
-                restoreTask.ProgressChanged += (sender, args) => SetCurrentStepProgress(args.Progress);
-                foreach (var moduleName in IgnoredModules)
-                {
-                    restoreTask.IgnoreModule(moduleName);
-                }
-                restoreTask.RunJob();
-
-                //transfer files
-                if (ProcessStorage)
-                {
-                    DoTransferStorage(columnMapper);
-                }
-
-                SaveTenant(toDbFactory, tenantAlias, TenantStatus.Active);
-                if (DeleteOldPortalAfterCompletion)
-                {
-                    SaveTenant(fromDbFactory, tenantAlias, TenantStatus.RemovePending, tenantAlias + "_deleted");
-                }
-                else if (BlockOldPortalAfterStart)
-                {
-                    SaveTenant(fromDbFactory, tenantAlias, TenantStatus.Active);
-                }
-
-                ToTenantId = columnMapper.GetTenantMapping();
+                SaveTenant(fromDbFactory, tenantAlias, TenantStatus.Transfering);
             }
-            catch
+
+            SetStepsCount(ProcessStorage ? 3 : 2);
+
+            //save db data to temporary file
+            var backupTask = _serviceProvider.GetService<BackupPortalTask>();
+            backupTask.Init(TenantId, ConfigPath, backupFilePath, Limit);
+            backupTask.ProcessStorage = false;
+            backupTask.ProgressChanged += (sender, args) => SetCurrentStepProgress(args.Progress);
+            foreach (var moduleName in IgnoredModules)
+            {
+                backupTask.IgnoreModule(moduleName);
+            }
+            backupTask.RunJob();
+
+            //restore db data from temporary file
+            var restoreTask = _serviceProvider.GetService<RestorePortalTask>();
+            restoreTask.Init(ToConfigPath, backupFilePath, columnMapper: columnMapper);
+            restoreTask.ProcessStorage = false;
+            restoreTask.ProgressChanged += (sender, args) => SetCurrentStepProgress(args.Progress);
+            foreach (var moduleName in IgnoredModules)
+            {
+                restoreTask.IgnoreModule(moduleName);
+            }
+            restoreTask.RunJob();
+
+            //transfer files
+            if (ProcessStorage)
+            {
+                DoTransferStorage(columnMapper);
+            }
+
+            SaveTenant(toDbFactory, tenantAlias, TenantStatus.Active);
+            if (DeleteOldPortalAfterCompletion)
+            {
+                SaveTenant(fromDbFactory, tenantAlias, TenantStatus.RemovePending, tenantAlias + "_deleted");
+            }
+            else if (BlockOldPortalAfterStart)
             {
                 SaveTenant(fromDbFactory, tenantAlias, TenantStatus.Active);
-                if (columnMapper.GetTenantMapping() > 0)
-                {
-                    SaveTenant(toDbFactory, tenantAlias, TenantStatus.RemovePending, tenantAlias + "_error");
-                }
-                throw;
             }
-            finally
+
+            ToTenantId = columnMapper.GetTenantMapping();
+        }
+        catch
+        {
+            SaveTenant(fromDbFactory, tenantAlias, TenantStatus.Active);
+            if (columnMapper.GetTenantMapping() > 0)
             {
-                if (DeleteBackupFileAfterCompletion)
-                {
-                    File.Delete(backupFilePath);
-                }
-                Logger.DebugFormat("end transfer {0}", TenantId);
+                SaveTenant(toDbFactory, tenantAlias, TenantStatus.RemovePending, tenantAlias + "_error");
             }
+            throw;
+        }
+        finally
+        {
+            if (DeleteBackupFileAfterCompletion)
+            {
+                File.Delete(backupFilePath);
+            }
+            Logger.DebugFormat("end transfer {0}", TenantId);
+        }
+    }
+
+    private void DoTransferStorage(ColumnMapper columnMapper)
+    {
+        Logger.Debug("begin transfer storage");
+        var fileGroups = GetFilesToProcess(TenantId).GroupBy(file => file.Module).ToList();
+        var groupsProcessed = 0;
+        foreach (var group in fileGroups)
+        {
+            var baseStorage = StorageFactory.GetStorage(ConfigPath, TenantId.ToString(), group.Key);
+            var destStorage = StorageFactory.GetStorage(ToConfigPath, columnMapper.GetTenantMapping().ToString(), group.Key);
+            var utility = new CrossModuleTransferUtility(_options, _tempStream, _tempPath, baseStorage, destStorage);
+
+            foreach (var file in group)
+            {
+                var adjustedPath = file.Path;
+
+                var module = ModuleProvider.GetByStorageModule(file.Module, file.Domain);
+                if (module == null || module.TryAdjustFilePath(false, columnMapper, ref adjustedPath))
+                {
+                    try
+                    {
+                            utility.CopyFileAsync(file.Domain, file.Path, file.Domain, adjustedPath).Wait();
+                    }
+                    catch (Exception error)
+                    {
+                        Logger.WarnFormat("Can't copy file ({0}:{1}): {2}", file.Module, file.Path, error);
+                    }
+                }
+                else
+                {
+                    Logger.WarnFormat("Can't adjust file path \"{0}\".", file.Path);
+                }
+            }
+            SetCurrentStepProgress((int)(++groupsProcessed * 100 / (double)fileGroups.Count));
         }
 
-        private void DoTransferStorage(ColumnMapper columnMapper)
+        if (fileGroups.Count == 0)
         {
-            Logger.Debug("begin transfer storage");
-            var fileGroups = GetFilesToProcess(TenantId).GroupBy(file => file.Module).ToList();
-            var groupsProcessed = 0;
-            foreach (var group in fileGroups)
-            {
-                var baseStorage = StorageFactory.GetStorage(ConfigPath, TenantId.ToString(), group.Key);
-                var destStorage = StorageFactory.GetStorage(ToConfigPath, columnMapper.GetTenantMapping().ToString(), group.Key);
-                var utility = new CrossModuleTransferUtility(Options, TempStream, TempPath, baseStorage, destStorage);
-
-                foreach (var file in group)
-                {
-                    var adjustedPath = file.Path;
-
-                    var module = ModuleProvider.GetByStorageModule(file.Module, file.Domain);
-                    if (module == null || module.TryAdjustFilePath(false, columnMapper, ref adjustedPath))
-                    {
-                        try
-                        {
-                            utility.CopyFile(file.Domain, file.Path, file.Domain, adjustedPath);
-                        }
-                        catch (Exception error)
-                        {
-                            Logger.WarnFormat("Can't copy file ({0}:{1}): {2}", file.Module, file.Path, error);
-                        }
-                    }
-                    else
-                    {
-                        Logger.WarnFormat("Can't adjust file path \"{0}\".", file.Path);
-                    }
-                }
-                SetCurrentStepProgress((int)(++groupsProcessed * 100 / (double)fileGroups.Count));
-            }
-
-            if (fileGroups.Count == 0)
-                SetStepCompleted();
-
-            Logger.Debug("end transfer storage");
+            SetStepCompleted();
         }
 
-        private void SaveTenant(DbFactory dbFactory, string alias, TenantStatus status, string newAlias = null, string whereCondition = null)
+        Logger.Debug("end transfer storage");
+    }
+
+    private void SaveTenant(DbFactory dbFactory, string alias, TenantStatus status, string newAlias = null, string whereCondition = null)
+    {
+        using var connection = dbFactory.OpenConnection();
+        if (newAlias == null)
         {
-            using var connection = dbFactory.OpenConnection();
-            if (newAlias == null)
-            {
-                newAlias = alias;
-            }
-            else if (newAlias != alias)
-            {
-                newAlias = GetUniqAlias(connection, newAlias);
-            }
+            newAlias = alias;
+        }
+        else if (newAlias != alias)
+        {
+            newAlias = GetUniqAlias(connection, newAlias);
+        }
 
             var commandText = "update tenants_tenants " +
-                "set " +
+            "set " +
                 $"  status={status.ToString("d")}, " +
                 $"  alias = '{newAlias}', " +
                 $"  last_modified='{DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss")}', " +
                 $"  statuschanged='{DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss")}' " +
                 $"where alias = '{alias}'";
 
-            if (!string.IsNullOrEmpty(whereCondition))
-                commandText += " and " + whereCondition;
-            var command = connection.CreateCommand();
-            command.CommandText = commandText;
-            command.WithTimeout(120).ExecuteNonQuery();
-        }
-
-        private string GetTenantAlias(DbFactory dbFactory)
+        if (!string.IsNullOrEmpty(whereCondition))
         {
-            using var connection = dbFactory.OpenConnection();
-            var command = connection.CreateCommand();
-            command.CommandText = "select alias from tenants_tenants where id = " + TenantId;
-            return (string)command.WithTimeout(120).ExecuteScalar();
+            commandText += " and " + whereCondition;
         }
 
-        private static string GetUniqAlias(DbConnection connection, string alias)
-        {
-            var command = connection.CreateCommand();
-            command.CommandText = "select count(*) from tenants_tenants where alias like '" + alias + "%'";
-            return alias + command.WithTimeout(120).ExecuteScalar();
-        }
-
-        private string GetBackupFilePath(string tenantAlias)
-        {
-            if (!Directory.Exists(BackupDirectory ?? DefaultDirectoryName))
-                Directory.CreateDirectory(BackupDirectory ?? DefaultDirectoryName);
-
-            return CrossPlatform.PathCombine(BackupDirectory ?? DefaultDirectoryName, tenantAlias + DateTime.UtcNow.ToString("(yyyy-MM-dd HH-mm-ss)") + ".backup");
-        }
-
+        var command = connection.CreateCommand();
+        command.CommandText = commandText;
+        command.WithTimeout(120).ExecuteNonQuery();
     }
+
+    private string GetTenantAlias(DbFactory dbFactory)
+    {
+        using var connection = dbFactory.OpenConnection();
+        var command = connection.CreateCommand();
+        command.CommandText = "select alias from tenants_tenants where id = " + TenantId;
+        return (string)command.WithTimeout(120).ExecuteScalar();
+    }
+
+    private static string GetUniqAlias(DbConnection connection, string alias)
+    {
+        var command = connection.CreateCommand();
+        command.CommandText = "select count(*) from tenants_tenants where alias like '" + alias + "%'";
+        return alias + command.WithTimeout(120).ExecuteScalar();
+    }
+
+    private string GetBackupFilePath(string tenantAlias)
+    {
+        if (!Directory.Exists(BackupDirectory ?? DefaultDirectoryName))
+        {
+            Directory.CreateDirectory(BackupDirectory ?? DefaultDirectoryName);
+        }
+
+        return CrossPlatform.PathCombine(BackupDirectory ?? DefaultDirectoryName, tenantAlias + DateTime.UtcNow.ToString("(yyyy-MM-dd HH-mm-ss)") + ".backup");
+    }
+
 }

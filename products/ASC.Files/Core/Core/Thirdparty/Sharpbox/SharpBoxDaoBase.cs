@@ -23,431 +23,492 @@
  *
 */
 
-namespace ASC.Files.Thirdparty.Sharpbox
+namespace ASC.Files.Thirdparty.Sharpbox;
+
+internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProviderInfo>
 {
-    internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProviderInfo>
+    protected override string Id => "sbox";
+
+    protected SharpBoxDaoBase(
+        IServiceProvider serviceProvider,
+        UserManager userManager,
+        TenantManager tenantManager,
+        TenantUtil tenantUtil,
+        DbContextManager<FilesDbContext> dbContextManager,
+        SetupInfo setupInfo,
+        IOptionsMonitor<ILog> monitor,
+        FileUtility fileUtility,
+        TempPath tempPath)
+        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
     {
-        protected override string Id { get => "sbox"; }
+    }
 
-        protected SharpBoxDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility, TempPath tempPath)
-            : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
+    protected class ErrorEntry : ICloudDirectoryEntry
+    {
+        public ErrorEntry(Exception e, object id)
         {
+            if (e != null)
+            {
+                Error = e.Message;
+            }
+
+            Id = string.IsNullOrEmpty((id ?? "").ToString()) ? "/" : (id ?? "").ToString();
         }
 
-        protected class ErrorEntry : ICloudDirectoryEntry
+        public string Error { get; set; }
+        public string Name => "/";
+        public string Id { get; private set; }
+        public long Length => 0;
+
+        public DateTime Modified => DateTime.UtcNow;
+
+        public string ParentID
         {
-            public ErrorEntry(Exception e, object id)
-            {
-                if (e != null) Error = e.Message;
-
-                Id = string.IsNullOrEmpty((id ?? "").ToString()) ? "/" : (id ?? "").ToString();
-            }
-
-            public string Error { get; set; }
-
-            public string Name
-            {
-                get { return "/"; }
-            }
-
-            public string Id { get; private set; }
-
-            public long Length
-            {
-                get { return 0; }
-            }
-
-            public DateTime Modified
-            {
-                get { return DateTime.UtcNow; }
-            }
-
-            public string ParentID
-            {
-                get { return ""; }
-                set { }
-            }
-
-            public ICloudDirectoryEntry Parent
-            {
-                get { return null; }
-                set { }
-            }
-
-            public ICloudFileDataTransfer GetDataTransferAccessor()
-            {
-                return null;
-            }
-
-            public string GetPropertyValue(string key)
-            {
-                return null;
-            }
-
-            private readonly List<ICloudFileSystemEntry> _entries = new List<ICloudFileSystemEntry>(0);
-
-            public IEnumerator<ICloudFileSystemEntry> GetEnumerator()
-            {
-                return _entries.GetEnumerator();
-            }
-
-            IEnumerator IEnumerable.GetEnumerator()
-            {
-                return GetEnumerator();
-            }
-
-            public ICloudFileSystemEntry GetChild(string name)
-            {
-                return null;
-            }
-
-            public ICloudFileSystemEntry GetChild(string name, bool bThrowException)
-            {
-                if (bThrowException) throw new ArgumentNullException(name);
-                return null;
-            }
-
-            public ICloudFileSystemEntry GetChild(string idOrName, bool bThrowException, bool firstByNameIfNotFound)
-            {
-                if (bThrowException) throw new ArgumentNullException(idOrName);
-                return null;
-            }
-
-            public ICloudFileSystemEntry GetChild(int idx)
-            {
-                return null;
-            }
-
-            public int Count
-            {
-                get { return 0; }
-            }
-
-            public nChildState HasChildrens
-            {
-                get { return nChildState.HasNoChilds; }
-            }
+            get => string.Empty;
+            set { }
         }
 
-        protected string MappingID(string id)
+        public ICloudDirectoryEntry Parent
         {
-            return MappingID(id, false);
+            get => null;
+            set { }
         }
 
-        protected void UpdatePathInDB(string oldValue, string newValue)
+        public ICloudFileDataTransfer GetDataTransferAccessor()
         {
-            if (oldValue.Equals(newValue)) return;
+            return null;
+        }
 
-            using var tx = FilesDbContext.Database.BeginTransaction();
-            var oldIDs = Query(FilesDbContext.ThirdpartyIdMapping)
-                .Where(r => r.Id.StartsWith(oldValue))
-                .Select(r => r.Id)
-                .ToList();
+        public string GetPropertyValue(string key)
+        {
+            return null;
+        }
 
-            foreach (var oldID in oldIDs)
+        private readonly List<ICloudFileSystemEntry> _entries = new List<ICloudFileSystemEntry>(0);
+
+        public IEnumerator<ICloudFileSystemEntry> GetEnumerator()
+        {
+            return _entries.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public ICloudFileSystemEntry GetChild(string name)
+        {
+            return null;
+        }
+
+        public ICloudFileSystemEntry GetChild(string name, bool bThrowException)
+        {
+            if (bThrowException) throw new ArgumentNullException(name);
+
+            return null;
+        }
+
+        public ICloudFileSystemEntry GetChild(string idOrName, bool bThrowException, bool firstByNameIfNotFound)
+        {
+            if (bThrowException) throw new ArgumentNullException(idOrName);
+
+            return null;
+        }
+
+        public ICloudFileSystemEntry GetChild(int idx)
+        {
+            return null;
+        }
+
+        public int Count => 0;
+
+        public nChildState HasChildrens => nChildState.HasNoChilds;
+    }
+
+    protected Task<string> MappingIDAsync(string id)
+    {
+        return MappingIDAsync(id, false);
+    }
+
+    protected async Task UpdatePathInDBAsync(string oldValue, string newValue)
+    {
+        if (oldValue.Equals(newValue))
+        {
+            return;
+        }
+
+        using var tx = FilesDbContext.Database.BeginTransaction();
+        var oldIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
+            .Where(r => r.Id.StartsWith(oldValue))
+            .Select(r => r.Id)
+            .ToListAsync();
+
+        foreach (var oldID in oldIDs)
+        {
+            var oldHashID = await MappingIDAsync(oldID);
+            var newID = oldID.Replace(oldValue, newValue);
+            var newHashID = await MappingIDAsync(newID);
+
+            var mappingForUpdate = await Query(FilesDbContext.ThirdpartyIdMapping)
+                .Where(r => r.HashId == oldHashID)
+                .ToListAsync();
+
+            foreach (var m in mappingForUpdate)
             {
-                var oldHashID = MappingID(oldID);
-                var newID = oldID.Replace(oldValue, newValue);
-                var newHashID = MappingID(newID);
-
-                var mappingForUpdate = Query(FilesDbContext.ThirdpartyIdMapping)
-                    .Where(r => r.HashId == oldHashID)
-                    .ToList();
-
-                foreach (var m in mappingForUpdate)
-                {
-                    m.Id = newID;
-                    m.HashId = newHashID;
-                }
-
-                FilesDbContext.SaveChanges();
-
-                var securityForUpdate = Query(FilesDbContext.Security)
-                    .Where(r => r.EntryId == oldHashID)
-                    .ToList();
-
-                foreach (var s in securityForUpdate)
-                {
-                    s.EntryId = newHashID;
-                }
-
-                FilesDbContext.SaveChanges();
-
-                var linkForUpdate = Query(FilesDbContext.TagLink)
-                    .Where(r => r.EntryId == oldHashID)
-                    .ToList();
-
-                foreach (var l in linkForUpdate)
-                {
-                    l.EntryId = newHashID;
-                }
-
-                FilesDbContext.SaveChanges();
+                m.Id = newID;
+                m.HashId = newHashID;
             }
 
-            tx.Commit();
-        }
+            await FilesDbContext.SaveChangesAsync();
 
-        protected string MakePath(object entryId)
-        {
-            return $"/{Convert.ToString(entryId, CultureInfo.InvariantCulture).Trim('/')}";
-        }
+            var securityForUpdate = await Query(FilesDbContext.Security)
+                .Where(r => r.EntryId == oldHashID)
+                .ToListAsync();
 
-        protected override string MakeId(string path = null)
-        {
-            return path;
-        }
-
-        protected string MakeId(ICloudFileSystemEntry entry)
-        {
-            var path = string.Empty;
-            if (entry != null && !(entry is ErrorEntry))
+            foreach (var s in securityForUpdate)
             {
-                try
-                {
-                    path = ProviderInfo.Storage.GetFileSystemObjectPath(entry);
-                }
-                catch (Exception ex)
-                {
-                    Log.Error("Sharpbox makeId error", ex);
-                }
-            }
-            else if (entry != null)
-            {
-                path = entry.Id;
-            }
-            var p = string.IsNullOrEmpty(path) || path == "/" ? "" : ("-" + path.Replace('/', '|'));
-            return $"{PathPrefix}{p}";
-        }
-
-        protected string MakeTitle(ICloudFileSystemEntry fsEntry)
-        {
-            if (fsEntry is ICloudDirectoryEntry && IsRoot(fsEntry as ICloudDirectoryEntry))
-            {
-                return ProviderInfo.CustomerTitle;
+                s.EntryId = newHashID;
             }
 
-            return Global.ReplaceInvalidCharsAndTruncate(fsEntry.Name);
-        }
+            await FilesDbContext.SaveChangesAsync();
 
-        protected string PathParent(string path)
-        {
-            if (!string.IsNullOrEmpty(path))
-            {
-                var index = path.TrimEnd('/').LastIndexOf('/');
-                if (index != -1)
-                {
-                    //Cut to it
-                    return path.Substring(0, index);
-                }
-            }
-            return path;
-        }
+            var linkForUpdate = await Query(FilesDbContext.TagLink)
+                .Where(r => r.EntryId == oldHashID)
+                .ToListAsync();
 
-        protected Folder<string> ToFolder(ICloudDirectoryEntry fsEntry)
-        {
-            if (fsEntry == null) return null;
-            if (fsEntry is ErrorEntry)
+            foreach (var l in linkForUpdate)
             {
-                //Return error entry
-                return ToErrorFolder(fsEntry as ErrorEntry);
+                l.EntryId = newHashID;
             }
 
-            //var childFoldersCount = fsEntry.OfType<ICloudDirectoryEntry>().Count();//NOTE: Removed due to performance isssues
-            var isRoot = IsRoot(fsEntry);
-
-            var folder = GetFolder();
-
-            folder.ID = MakeId(fsEntry);
-            folder.FolderID = isRoot ? null : MakeId(fsEntry.Parent);
-            folder.CreateOn = isRoot ? ProviderInfo.CreateOn : fsEntry.Modified;
-            folder.ModifiedOn = isRoot ? ProviderInfo.CreateOn : fsEntry.Modified;
-            folder.RootFolderId = RootFolderMakeId();
-
-            folder.Title = MakeTitle(fsEntry);
-            folder.TotalFiles = 0; /*fsEntry.Count - childFoldersCount NOTE: Removed due to performance isssues*/
-            folder.TotalSubFolders = 0; /*childFoldersCount NOTE: Removed due to performance isssues*/
-
-            if (folder.CreateOn != DateTime.MinValue && folder.CreateOn.Kind == DateTimeKind.Utc)
-                folder.CreateOn = TenantUtil.DateTimeFromUtc(folder.CreateOn);
-
-            if (folder.ModifiedOn != DateTime.MinValue && folder.ModifiedOn.Kind == DateTimeKind.Utc)
-                folder.ModifiedOn = TenantUtil.DateTimeFromUtc(folder.ModifiedOn);
-
-            return folder;
+            await FilesDbContext.SaveChangesAsync();
         }
 
-        private static bool IsRoot(ICloudDirectoryEntry entry)
-        {
-            if (entry != null && entry.Name != null)
-                return string.IsNullOrEmpty(entry.Name.Trim('/'));
-            return false;
-        }
+        await tx.CommitAsync();
+    }
 
-        private File<string> ToErrorFile(ErrorEntry fsEntry)
-        {
-            if (fsEntry == null) return null;
+    protected string MakePath(object entryId)
+    {
+        return $"/{Convert.ToString(entryId, CultureInfo.InvariantCulture).Trim('/')}";
+    }
 
-            var file = GetErrorFile(new Thirdparty.ErrorEntry(fsEntry.Error, null));
+    protected override string MakeId(string path = null)
+    {
+        return path;
+    }
 
-            file.ID = MakeId(fsEntry);
-            file.CreateOn = fsEntry.Modified;
-            file.ModifiedOn = fsEntry.Modified;
-            file.RootFolderId = MakeId(null);
-            file.Title = MakeTitle(fsEntry);
-
-            return file;
-        }
-
-        private Folder<string> ToErrorFolder(ErrorEntry fsEntry)
-        {
-            if (fsEntry == null) return null;
-            var folder = GetErrorFolder(new Thirdparty.ErrorEntry(fsEntry.Error, null));
-
-            folder.ID = MakeId(fsEntry);
-            folder.CreateOn = fsEntry.Modified;
-            folder.ModifiedOn = fsEntry.Modified;
-            folder.RootFolderId = MakeId(null);
-            folder.Title = MakeTitle(fsEntry);
-
-            return folder;
-        }
-
-        protected File<string> ToFile(ICloudFileSystemEntry fsEntry)
-        {
-            if (fsEntry == null) return null;
-
-            if (fsEntry is ErrorEntry)
-            {
-                //Return error entry
-                return ToErrorFile(fsEntry as ErrorEntry);
-            }
-
-            var file = GetFile();
-
-            file.ID = MakeId(fsEntry);
-            file.ContentLength = fsEntry.Length;
-            file.CreateOn = fsEntry.Modified.Kind == DateTimeKind.Utc ? TenantUtil.DateTimeFromUtc(fsEntry.Modified) : fsEntry.Modified;
-            file.FolderID = MakeId(fsEntry.Parent);
-            file.ModifiedOn = fsEntry.Modified.Kind == DateTimeKind.Utc ? TenantUtil.DateTimeFromUtc(fsEntry.Modified) : fsEntry.Modified;
-            file.NativeAccessor = fsEntry;
-            file.Title = MakeTitle(fsEntry);
-            file.RootFolderId = RootFolderMakeId();
-
-            return file;
-        }
-
-        private ICloudDirectoryEntry _rootFolder;
-        protected ICloudDirectoryEntry RootFolder()
-        {
-            return _rootFolder ??= ProviderInfo.Storage.GetRoot();
-        }
-
-        private string _rootFolderId;
-        protected string RootFolderMakeId()
-        {
-            return _rootFolderId ??= MakeId(RootFolder());
-        }
-
-        protected ICloudDirectoryEntry GetFolderById(object folderId)
+    protected string MakeId(ICloudFileSystemEntry entry)
+    {
+        var path = string.Empty;
+        if (entry != null && !(entry is ErrorEntry))
         {
             try
             {
-                var path = MakePath(folderId);
-                return path == "/"
-                           ? RootFolder()
-                           : ProviderInfo.Storage.GetFolder(path);
-            }
-            catch (SharpBoxException sharpBoxException)
-            {
-                if (sharpBoxException.ErrorCode == SharpBoxErrorCodes.ErrorFileNotFound)
-                {
-                    return null;
-                }
-                return new ErrorEntry(sharpBoxException, folderId);
+                path = ProviderInfo.Storage.GetFileSystemObjectPath(entry);
             }
             catch (Exception ex)
             {
-                return new ErrorEntry(ex, folderId);
+                Logger.Error("Sharpbox makeId error", ex);
             }
         }
-
-        protected ICloudFileSystemEntry GetFileById(object fileId)
+        else if (entry != null)
         {
-            try
+            path = entry.Id;
+        }
+        var p = string.IsNullOrEmpty(path) || path == "/" ? "" : ("-" + path.Replace('/', '|'));
+
+        return $"{PathPrefix}{p}";
+    }
+
+    protected string MakeTitle(ICloudFileSystemEntry fsEntry)
+    {
+        if (fsEntry is ICloudDirectoryEntry && IsRoot(fsEntry as ICloudDirectoryEntry))
+        {
+            return ProviderInfo.CustomerTitle;
+        }
+
+        return Global.ReplaceInvalidCharsAndTruncate(fsEntry.Name);
+    }
+
+    protected string PathParent(string path)
+    {
+        if (!string.IsNullOrEmpty(path))
+        {
+            var index = path.TrimEnd('/').LastIndexOf('/');
+            if (index != -1)
             {
-                return ProviderInfo.Storage.GetFile(MakePath(fileId), null);
+                //Cut to it
+                return path.Substring(0, index);
             }
-            catch (SharpBoxException sharpBoxException)
+        }
+
+        return path;
+    }
+
+    protected Folder<string> ToFolder(ICloudDirectoryEntry fsEntry)
+    {
+        if (fsEntry == null)
+        {
+            return null;
+        }
+
+        if (fsEntry is ErrorEntry)
+        {
+            //Return error entry
+            return ToErrorFolder(fsEntry as ErrorEntry);
+        }
+
+        //var childFoldersCount = fsEntry.OfType<ICloudDirectoryEntry>().Count();//NOTE: Removed due to performance isssues
+        var isRoot = IsRoot(fsEntry);
+
+        var folder = GetFolder();
+
+        folder.ID = MakeId(fsEntry);
+        folder.FolderID = isRoot ? null : MakeId(fsEntry.Parent);
+        folder.CreateOn = isRoot ? ProviderInfo.CreateOn : fsEntry.Modified;
+        folder.ModifiedOn = isRoot ? ProviderInfo.CreateOn : fsEntry.Modified;
+        folder.RootFolderId = RootFolderMakeId();
+
+        folder.Title = MakeTitle(fsEntry);
+        folder.TotalFiles = 0; /*fsEntry.Count - childFoldersCount NOTE: Removed due to performance isssues*/
+        folder.TotalSubFolders = 0; /*childFoldersCount NOTE: Removed due to performance isssues*/
+
+        if (folder.CreateOn != DateTime.MinValue && folder.CreateOn.Kind == DateTimeKind.Utc)
+        {
+            folder.CreateOn = TenantUtil.DateTimeFromUtc(folder.CreateOn);
+        }
+
+        if (folder.ModifiedOn != DateTime.MinValue && folder.ModifiedOn.Kind == DateTimeKind.Utc)
+        {
+            folder.ModifiedOn = TenantUtil.DateTimeFromUtc(folder.ModifiedOn);
+        }
+
+        return folder;
+    }
+
+    private static bool IsRoot(ICloudDirectoryEntry entry)
+    {
+        if (entry != null && entry.Name != null)
+        {
+            return string.IsNullOrEmpty(entry.Name.Trim('/'));
+        }
+
+        return false;
+    }
+
+    private File<string> ToErrorFile(ErrorEntry fsEntry)
+    {
+        if (fsEntry == null)
+        {
+            return null;
+        }
+
+        var file = GetErrorFile(new Thirdparty.ErrorEntry(fsEntry.Error, null));
+
+        file.ID = MakeId(fsEntry);
+        file.CreateOn = fsEntry.Modified;
+        file.ModifiedOn = fsEntry.Modified;
+        file.RootFolderId = MakeId(null);
+        file.Title = MakeTitle(fsEntry);
+
+        return file;
+    }
+
+    private Folder<string> ToErrorFolder(ErrorEntry fsEntry)
+    {
+        if (fsEntry == null)
+        {
+            return null;
+        }
+
+        var folder = GetErrorFolder(new Thirdparty.ErrorEntry(fsEntry.Error, null));
+
+        folder.ID = MakeId(fsEntry);
+        folder.CreateOn = fsEntry.Modified;
+        folder.ModifiedOn = fsEntry.Modified;
+        folder.RootFolderId = MakeId(null);
+        folder.Title = MakeTitle(fsEntry);
+
+        return folder;
+    }
+
+    protected File<string> ToFile(ICloudFileSystemEntry fsEntry)
+    {
+        if (fsEntry == null)
+        {
+            return null;
+        }
+
+        if (fsEntry is ErrorEntry)
+        {
+            //Return error entry
+
+            return ToErrorFile(fsEntry as ErrorEntry);
+        }
+
+        var file = GetFile();
+
+        file.ID = MakeId(fsEntry);
+        file.ContentLength = fsEntry.Length;
+        file.CreateOn = fsEntry.Modified.Kind == DateTimeKind.Utc ? TenantUtil.DateTimeFromUtc(fsEntry.Modified) : fsEntry.Modified;
+        file.FolderID = MakeId(fsEntry.Parent);
+        file.ModifiedOn = fsEntry.Modified.Kind == DateTimeKind.Utc ? TenantUtil.DateTimeFromUtc(fsEntry.Modified) : fsEntry.Modified;
+        file.NativeAccessor = fsEntry;
+        file.Title = MakeTitle(fsEntry);
+        file.RootFolderId = RootFolderMakeId();
+
+        return file;
+    }
+
+    private ICloudDirectoryEntry _rootFolder;
+    protected ICloudDirectoryEntry RootFolder()
+    {
+        return _rootFolder ??= ProviderInfo.Storage.GetRoot();
+    }
+
+    private string _rootFolderId;
+    protected string RootFolderMakeId()
+    {
+        return _rootFolderId ??= MakeId(RootFolder());
+    }
+
+    protected ICloudDirectoryEntry GetFolderById(object folderId)
+    {
+        try
+        {
+            var path = MakePath(folderId);
+
+            return path == "/"
+                       ? RootFolder()
+                       : ProviderInfo.Storage.GetFolder(path);
+        }
+        catch (SharpBoxException sharpBoxException)
+        {
+            if (sharpBoxException.ErrorCode == SharpBoxErrorCodes.ErrorFileNotFound)
             {
-                if (sharpBoxException.ErrorCode == SharpBoxErrorCodes.ErrorFileNotFound)
-                {
-                    return null;
-                }
-                return new ErrorEntry(sharpBoxException, fileId);
+                return null;
             }
-            catch (Exception ex)
+
+            return new ErrorEntry(sharpBoxException, folderId);
+        }
+        catch (Exception ex)
+        {
+            return new ErrorEntry(ex, folderId);
+        }
+    }
+
+    protected ICloudFileSystemEntry GetFileById(object fileId)
+    {
+        try
+        {
+            return ProviderInfo.Storage.GetFile(MakePath(fileId), null);
+        }
+        catch (SharpBoxException sharpBoxException)
+        {
+            if (sharpBoxException.ErrorCode == SharpBoxErrorCodes.ErrorFileNotFound)
             {
-                return new ErrorEntry(ex, fileId);
-            }
-        }
-
-        protected IEnumerable<ICloudFileSystemEntry> GetFolderFiles(object folderId)
-        {
-            return GetFolderFiles(ProviderInfo.Storage.GetFolder(MakePath(folderId)));
-        }
-
-        protected IEnumerable<ICloudFileSystemEntry> GetFolderSubfolders(object folderId)
-        {
-            return GetFolderSubfolders(ProviderInfo.Storage.GetFolder(MakePath(folderId)));
-        }
-
-        protected IEnumerable<ICloudFileSystemEntry> GetFolderFiles(ICloudDirectoryEntry folder)
-        {
-            return folder.Where(x => !(x is ICloudDirectoryEntry));
-        }
-
-        protected IEnumerable<ICloudFileSystemEntry> GetFolderSubfolders(ICloudDirectoryEntry folder)
-        {
-            return folder.Where(x => x is ICloudDirectoryEntry);
-        }
-
-        protected string GetAvailableTitle(string requestTitle, ICloudDirectoryEntry parentFolder, Func<string, ICloudDirectoryEntry, bool> isExist)
-        {
-            if (!isExist(requestTitle, parentFolder)) return requestTitle;
-
-            var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
-            var match = re.Match(requestTitle);
-
-            if (!match.Success)
-            {
-                var insertIndex = requestTitle.Length;
-                if (requestTitle.LastIndexOf('.') != -1)
-                {
-                    insertIndex = requestTitle.LastIndexOf('.');
-                }
-                requestTitle = requestTitle.Insert(insertIndex, " (1)");
+                return null;
             }
 
-            while (isExist(requestTitle, parentFolder))
-            {
-                requestTitle = re.Replace(requestTitle, MatchEvaluator);
-            }
+            return new ErrorEntry(sharpBoxException, fileId);
+        }
+        catch (Exception ex)
+        {
+            return new ErrorEntry(ex, fileId);
+        }
+    }
+
+    protected IEnumerable<ICloudFileSystemEntry> GetFolderFiles(object folderId)
+    {
+        return GetFolderFiles(ProviderInfo.Storage.GetFolder(MakePath(folderId)));
+    }
+
+    protected IEnumerable<ICloudFileSystemEntry> GetFolderSubfolders(object folderId)
+    {
+        return GetFolderSubfolders(ProviderInfo.Storage.GetFolder(MakePath(folderId)));
+    }
+
+    protected IEnumerable<ICloudFileSystemEntry> GetFolderFiles(ICloudDirectoryEntry folder)
+    {
+        return folder.Where(x => !(x is ICloudDirectoryEntry));
+    }
+
+    protected IEnumerable<ICloudFileSystemEntry> GetFolderSubfolders(ICloudDirectoryEntry folder)
+    {
+        return folder.Where(x => x is ICloudDirectoryEntry);
+    }
+
+    protected string GetAvailableTitle(string requestTitle, ICloudDirectoryEntry parentFolder, Func<string, ICloudDirectoryEntry, bool> isExist)
+    {
+        if (!isExist(requestTitle, parentFolder))
+        {
             return requestTitle;
         }
 
-        protected override IEnumerable<string> GetChildren(string folderId)
+        var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
+        var match = re.Match(requestTitle);
+
+        if (!match.Success)
         {
-            var subFolders = GetFolderSubfolders(folderId).Select(x => MakeId(x));
-            var files = GetFolderFiles(folderId).Select(x => MakeId(x));
-            return subFolders.Concat(files);
+            var insertIndex = requestTitle.Length;
+            if (requestTitle.LastIndexOf('.') != -1)
+            {
+                insertIndex = requestTitle.LastIndexOf('.');
+            }
+
+            requestTitle = requestTitle.Insert(insertIndex, " (1)");
         }
 
-        private string MatchEvaluator(Match match)
+        while (isExist(requestTitle, parentFolder))
         {
-            var index = Convert.ToInt32(match.Groups[2].Value);
-            var staticText = match.Value.Substring(string.Format(" ({0})", index).Length);
-            return string.Format(" ({0}){1}", index + 1, staticText);
+            requestTitle = re.Replace(requestTitle, MatchEvaluator);
         }
+
+        return requestTitle;
+    }
+
+    protected async Task<string> GetAvailableTitleAsync(string requestTitle, ICloudDirectoryEntry parentFolder, Func<string, ICloudDirectoryEntry, Task<bool>> isExist)
+    {
+        if (!await isExist(requestTitle, parentFolder))
+        {
+            return requestTitle;
+        }
+
+        var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
+        var match = re.Match(requestTitle);
+
+        if (!match.Success)
+        {
+            var insertIndex = requestTitle.Length;
+            if (requestTitle.LastIndexOf(".", StringComparison.InvariantCulture) != -1)
+            {
+                insertIndex = requestTitle.LastIndexOf(".", StringComparison.InvariantCulture);
+            }
+
+            requestTitle = requestTitle.Insert(insertIndex, " (1)");
+        }
+
+        while (await isExist(requestTitle, parentFolder))
+        {
+            requestTitle = re.Replace(requestTitle, MatchEvaluator);
+        }
+
+        return requestTitle;
+    }
+
+    protected override Task<IEnumerable<string>> GetChildrenAsync(string folderId)
+    {
+        var subFolders = GetFolderSubfolders(folderId).Select(x => MakeId(x));
+        var files = GetFolderFiles(folderId).Select(x => MakeId(x));
+
+        return Task.FromResult(subFolders.Concat(files));
+    }
+
+    private string MatchEvaluator(Match match)
+    {
+        var index = Convert.ToInt32(match.Groups[2].Value);
+        var staticText = match.Value.Substring(string.Format(" ({0})", index).Length);
+
+        return string.Format(" ({0}){1}", index + 1, staticText);
     }
 }

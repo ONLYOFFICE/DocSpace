@@ -26,232 +26,250 @@
 
 using BoxSDK = Box.V2;
 
-namespace ASC.Files.Thirdparty.Box
+namespace ASC.Files.Thirdparty.Box;
+
+internal class BoxStorage
 {
-    internal class BoxStorage
+    private BoxClient _boxClient;
+
+    private readonly List<string> _boxFields = new List<string> { "created_at", "modified_at", "name", "parent", "size" };
+
+    public bool IsOpened { get; private set; }
+    private readonly TempStream _tempStream;
+
+    public long MaxChunkedUploadFileSize = 250L * 1024L * 1024L;
+
+    public BoxStorage(TempStream tempStream)
     {
-        private BoxClient _boxClient;
+        _tempStream = tempStream;
+    }
 
-        private readonly List<string> _boxFields = new List<string> { "created_at", "modified_at", "name", "parent", "size" };
-
-        public bool IsOpened { get; private set; }
-        private TempStream TempStream { get; }
-
-        public long MaxChunkedUploadFileSize = 250L * 1024L * 1024L;
-
-        public BoxStorage(TempStream tempStream)
+    public void Open(OAuth20Token token)
+    {
+        if (IsOpened)
         {
-            TempStream = tempStream;
+            return;
         }
 
-        public void Open(OAuth20Token token)
+        var config = new BoxConfig(token.ClientID, token.ClientSecret, new Uri(token.RedirectUri));
+        var session = new OAuthSession(token.AccessToken, token.RefreshToken, (int)token.ExpiresIn, "bearer");
+        _boxClient = new BoxClient(config, session);
+
+        IsOpened = true;
+    }
+
+    public void Close()
+    {
+        IsOpened = false;
+    }
+
+    public async Task<string> GetRootFolderIdAsync()
+    {
+        var root = await GetFolderAsync("0");
+
+        return root.Id;
+    }
+
+    public async Task<BoxFolder> GetFolderAsync(string folderId)
+    {
+        try
         {
-            if (IsOpened)
-                return;
-
-            var config = new BoxConfig(token.ClientID, token.ClientSecret, new Uri(token.RedirectUri));
-            var session = new OAuthSession(token.AccessToken, token.RefreshToken, (int)token.ExpiresIn, "bearer");
-            _boxClient = new BoxClient(config, session);
-
-            IsOpened = true;
+            return await _boxClient.FoldersManager.GetInformationAsync(folderId, _boxFields);
         }
-
-        public void Close()
+        catch (Exception ex)
         {
-            IsOpened = false;
-        }
-
-
-        public string GetRootFolderId()
-        {
-            var root = GetFolder("0");
-
-            return root.Id;
-        }
-
-        public BoxFolder GetFolder(string folderId)
-        {
-            try
+            if (ex.InnerException is BoxSDK.Exceptions.BoxException boxException && boxException.Error.Status == ((int)HttpStatusCode.NotFound).ToString())
             {
-                return _boxClient.FoldersManager.GetInformationAsync(folderId, _boxFields).Result;
+                return null;
             }
-            catch (Exception ex)
+            throw;
+        }
+    }
+
+    public ValueTask<BoxFile> GetFileAsync(string fileId)
+    {
+        try
+        {
+            return new ValueTask<BoxFile>(_boxClient.FilesManager.GetInformationAsync(fileId, _boxFields));
+        }
+        catch (Exception ex)
+        {
+            if (ex.InnerException is BoxSDK.Exceptions.BoxException boxException && boxException.Error.Status == ((int)HttpStatusCode.NotFound).ToString())
             {
-                if (ex.InnerException is BoxSDK.Exceptions.BoxException boxException && boxException.Error.Status == ((int)HttpStatusCode.NotFound).ToString())
-                {
-                    return null;
-                }
-                throw;
+                return ValueTask.FromResult<BoxFile>(null);
             }
+            throw;
+        }
+    }
+
+    public async Task<List<BoxItem>> GetItemsAsync(string folderId, int limit = 500)
+    {
+        var folderItems = await _boxClient.FoldersManager.GetFolderItemsAsync(folderId, limit, 0, _boxFields);
+
+        return folderItems.Entries;
+    }
+
+    public Task<Stream> DownloadStreamAsync(BoxFile file, int offset = 0)
+    {
+        if (file == null)
+        {
+            throw new ArgumentNullException(nameof(file));
         }
 
-        public BoxFile GetFile(string fileId)
+        return InternalDownloadStreamAsync(file, offset);
+    }
+
+    public async Task<Stream> InternalDownloadStreamAsync(BoxFile file, int offset = 0)
+    {
+        if (offset > 0 && file.Size.HasValue)
         {
-            try
+            return await _boxClient.FilesManager.DownloadAsync(file.Id, startOffsetInBytes: offset, endOffsetInBytes: (int)file.Size - 1);
+        }
+
+        var str = await _boxClient.FilesManager.DownloadAsync(file.Id);
+        if (offset == 0)
+        {
+            return str;
+        }
+
+        var tempBuffer = _tempStream.Create();
+        if (str != null)
+        {
+            await str.CopyToAsync(tempBuffer);
+            await tempBuffer.FlushAsync();
+            tempBuffer.Seek(offset, SeekOrigin.Begin);
+
+            str.Dispose();
+        }
+
+        return tempBuffer;
+    }
+
+    public Task<BoxFolder> CreateFolderAsync(string title, string parentId)
+    {
+        var boxFolderRequest = new BoxFolderRequest
+        {
+            Name = title,
+            Parent = new BoxRequestEntity
             {
-                return _boxClient.FilesManager.GetInformationAsync(fileId, _boxFields).Result;
+                Id = parentId
             }
-            catch (Exception ex)
+        };
+
+        return _boxClient.FoldersManager.CreateAsync(boxFolderRequest, _boxFields);
+    }
+
+    public Task<BoxFile> CreateFileAsync(Stream fileStream, string title, string parentId)
+    {
+        var boxFileRequest = new BoxFileRequest
+        {
+            Name = title,
+            Parent = new BoxRequestEntity
             {
-                if (ex.InnerException is BoxSDK.Exceptions.BoxException boxException && boxException.Error.Status == ((int)HttpStatusCode.NotFound).ToString())
-                {
-                    return null;
-                }
-                throw;
+                Id = parentId
             }
-        }
+        };
 
-        public List<BoxItem> GetItems(string folderId, int limit = 500)
+        return _boxClient.FilesManager.UploadAsync(boxFileRequest, fileStream, _boxFields, setStreamPositionToZero: false);
+    }
+
+    public async Task DeleteItemAsync(BoxItem boxItem)
+    {
+        if (boxItem is BoxFolder)
         {
-            return _boxClient.FoldersManager.GetFolderItemsAsync(folderId, limit, 0, _boxFields).Result.Entries;
+            await _boxClient.FoldersManager.DeleteAsync(boxItem.Id, true);
         }
-
-        public Stream DownloadStream(BoxFile file, int offset = 0)
+        else
         {
-            if (file == null) throw new ArgumentNullException(nameof(file));
+            await _boxClient.FilesManager.DeleteAsync(boxItem.Id);
+        }
+    }
 
-            if (offset > 0 && file.Size.HasValue)
+    public Task<BoxFolder> MoveFolderAsync(string boxFolderId, string newFolderName, string toFolderId)
+    {
+        var boxFolderRequest = new BoxFolderRequest
+        {
+            Id = boxFolderId,
+            Name = newFolderName,
+            Parent = new BoxRequestEntity
             {
-                return _boxClient.FilesManager.DownloadAsync(file.Id, startOffsetInBytes: offset, endOffsetInBytes: (int)file.Size - 1).Result;
+                Id = toFolderId
             }
+        };
 
-            var str = _boxClient.FilesManager.DownloadAsync(file.Id).Result;
-            if (offset == 0)
+        return _boxClient.FoldersManager.UpdateInformationAsync(boxFolderRequest, _boxFields);
+    }
+
+    public Task<BoxFile> MoveFileAsync(string boxFileId, string newFileName, string toFolderId)
+    {
+        var boxFileRequest = new BoxFileRequest
+        {
+            Id = boxFileId,
+            Name = newFileName,
+            Parent = new BoxRequestEntity
             {
-                return str;
+                Id = toFolderId
             }
+        };
 
-            var tempBuffer = TempStream.Create();
-            if (str != null)
+        return _boxClient.FilesManager.UpdateInformationAsync(boxFileRequest, null, _boxFields);
+    }
+
+    public Task<BoxFolder> CopyFolderAsync(string boxFolderId, string newFolderName, string toFolderId)
+    {
+        var boxFolderRequest = new BoxFolderRequest
+        {
+            Id = boxFolderId,
+            Name = newFolderName,
+            Parent = new BoxRequestEntity
             {
-                str.CopyTo(tempBuffer);
-                tempBuffer.Flush();
-                tempBuffer.Seek(offset, SeekOrigin.Begin);
-
-                str.Dispose();
+                Id = toFolderId
             }
+        };
 
-            return tempBuffer;
-        }
+        return _boxClient.FoldersManager.CopyAsync(boxFolderRequest, _boxFields);
+    }
 
-        public BoxFolder CreateFolder(string title, string parentId)
+    public Task<BoxFile> CopyFileAsync(string boxFileId, string newFileName, string toFolderId)
+    {
+        var boxFileRequest = new BoxFileRequest
         {
-            var boxFolderRequest = new BoxFolderRequest
+            Id = boxFileId,
+            Name = newFileName,
+            Parent = new BoxRequestEntity
             {
-                Name = title,
-                Parent = new BoxRequestEntity
-                {
-                    Id = parentId
-                }
-            };
-            return _boxClient.FoldersManager.CreateAsync(boxFolderRequest, _boxFields).Result;
-        }
-
-        public BoxFile CreateFile(Stream fileStream, string title, string parentId)
-        {
-            var boxFileRequest = new BoxFileRequest
-            {
-                Name = title,
-                Parent = new BoxRequestEntity
-                {
-                    Id = parentId
-                }
-            };
-            return _boxClient.FilesManager.UploadAsync(boxFileRequest, fileStream, _boxFields, setStreamPositionToZero: false).Result;
-        }
-
-        public void DeleteItem(BoxItem boxItem)
-        {
-            if (boxItem is BoxFolder)
-            {
-                _boxClient.FoldersManager.DeleteAsync(boxItem.Id, true).Wait();
+                Id = toFolderId
             }
-            else
-            {
-                _boxClient.FilesManager.DeleteAsync(boxItem.Id).Wait();
-            }
-        }
+        };
 
-        public BoxFolder MoveFolder(string boxFolderId, string newFolderName, string toFolderId)
-        {
-            var boxFolderRequest = new BoxFolderRequest
-            {
-                Id = boxFolderId,
-                Name = newFolderName,
-                Parent = new BoxRequestEntity
-                {
-                    Id = toFolderId
-                }
-            };
-            return _boxClient.FoldersManager.UpdateInformationAsync(boxFolderRequest, _boxFields).Result;
-        }
+        return _boxClient.FilesManager.CopyAsync(boxFileRequest, _boxFields);
+    }
 
-        public BoxFile MoveFile(string boxFileId, string newFileName, string toFolderId)
-        {
-            var boxFileRequest = new BoxFileRequest
-            {
-                Id = boxFileId,
-                Name = newFileName,
-                Parent = new BoxRequestEntity
-                {
-                    Id = toFolderId
-                }
-            };
-            return _boxClient.FilesManager.UpdateInformationAsync(boxFileRequest, null, _boxFields).Result;
-        }
+    public Task<BoxFolder> RenameFolderAsync(string boxFolderId, string newName)
+    {
+        var boxFolderRequest = new BoxFolderRequest { Id = boxFolderId, Name = newName };
 
-        public BoxFolder CopyFolder(string boxFolderId, string newFolderName, string toFolderId)
-        {
-            var boxFolderRequest = new BoxFolderRequest
-            {
-                Id = boxFolderId,
-                Name = newFolderName,
-                Parent = new BoxRequestEntity
-                {
-                    Id = toFolderId
-                }
-            };
-            return _boxClient.FoldersManager.CopyAsync(boxFolderRequest, _boxFields).Result;
-        }
+        return _boxClient.FoldersManager.UpdateInformationAsync(boxFolderRequest, _boxFields);
+    }
 
-        public BoxFile CopyFile(string boxFileId, string newFileName, string toFolderId)
-        {
-            var boxFileRequest = new BoxFileRequest
-            {
-                Id = boxFileId,
-                Name = newFileName,
-                Parent = new BoxRequestEntity
-                {
-                    Id = toFolderId
-                }
-            };
-            return _boxClient.FilesManager.CopyAsync(boxFileRequest, _boxFields).Result;
-        }
+    public Task<BoxFile> RenameFileAsync(string boxFileId, string newName)
+    {
+        var boxFileRequest = new BoxFileRequest { Id = boxFileId, Name = newName };
 
-        public BoxFolder RenameFolder(string boxFolderId, string newName)
-        {
-            var boxFolderRequest = new BoxFolderRequest { Id = boxFolderId, Name = newName };
-            return _boxClient.FoldersManager.UpdateInformationAsync(boxFolderRequest, _boxFields).Result;
-        }
+        return _boxClient.FilesManager.UpdateInformationAsync(boxFileRequest, null, _boxFields);
+    }
 
-        public BoxFile RenameFile(string boxFileId, string newName)
-        {
-            var boxFileRequest = new BoxFileRequest { Id = boxFileId, Name = newName };
-            return _boxClient.FilesManager.UpdateInformationAsync(boxFileRequest, null, _boxFields).Result;
-        }
+    public Task<BoxFile> SaveStreamAsync(string fileId, Stream fileStream)
+    {
+        return _boxClient.FilesManager.UploadNewVersionAsync(null, fileId, fileStream, fields: _boxFields, setStreamPositionToZero: false);
+    }
 
-        public BoxFile SaveStream(string fileId, Stream fileStream)
-        {
-            return _boxClient.FilesManager.UploadNewVersionAsync(null, fileId, fileStream, fields: _boxFields, setStreamPositionToZero: false).Result;
-        }
+    public async Task<long> GetMaxUploadSizeAsync()
+    {
+        var boxUser = await _boxClient.UsersManager.GetCurrentUserInformationAsync(new List<string>() { "max_upload_size" });
+        var max = boxUser.MaxUploadSize ?? MaxChunkedUploadFileSize;
 
-        public long GetMaxUploadSize()
-        {
-            var boxUser = _boxClient.UsersManager.GetCurrentUserInformationAsync(new List<string>() { "max_upload_size" }).Result;
-            var max = boxUser.MaxUploadSize ?? MaxChunkedUploadFileSize;
-
-            //todo: without chunked uploader:
-            return Math.Min(max, MaxChunkedUploadFileSize);
-        }
+        //todo: without chunked uploader:
+        return Math.Min(max, MaxChunkedUploadFileSize);
     }
 }

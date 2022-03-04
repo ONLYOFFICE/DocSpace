@@ -1,8 +1,8 @@
 namespace ASC.Files
 {
     public class Startup : BaseStartup
-    { 
-        public override JsonConverter[] Converters { get => new JsonConverter[] { new FileEntryWrapperConverter() }; }
+    {
+        public override JsonConverter[] Converters { get => new JsonConverter[] { new FileEntryWrapperConverter(), new FileShareConverter() }; }
 
         public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment)
             : base(configuration, hostEnvironment)
@@ -18,8 +18,6 @@ namespace ASC.Files
 
             base.ConfigureServices(services);
 
-            DIHelper.TryAdd<FilesController>();
-            DIHelper.TryAdd<PrivacyRoomController>();
             DIHelper.TryAdd<FileHandlerService>();
             DIHelper.TryAdd<ChunkedUploaderHandlerService>();
             DIHelper.TryAdd<DocuSignHandlerService>();

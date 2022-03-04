@@ -74,7 +74,7 @@ public static class AutofacExtension
 
         if (!Path.IsPathRooted(folder))
         {
-            if (currentDir.EndsWith(CrossPlatform.PathCombine(Path.GetFileName(folder), Assembly.GetEntryAssembly().GetName().Name, subfolder)))
+            if (currentDir.TrimEnd('\\').EndsWith(CrossPlatform.PathCombine(Path.GetFileName(folder), Assembly.GetEntryAssembly().GetName().Name, subfolder)))
             {
                 productsDir = Path.GetFullPath(CrossPlatform.PathCombine("..", ".."));
             }
@@ -110,7 +110,7 @@ public static class AutofacExtension
 
         void LoadAssembly(string type)
         {
-                var dll = type.Substring(type.IndexOf(',') + 1).Trim();
+            var dll = type.Substring(type.IndexOf(',') + 1).Trim();
             var path = GetFullPath(dll);
 
             if (!string.IsNullOrEmpty(path))

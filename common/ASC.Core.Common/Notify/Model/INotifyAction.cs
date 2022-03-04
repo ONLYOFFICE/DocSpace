@@ -24,12 +24,10 @@
 */
 
 
-namespace ASC.Notify.Model
-{
-    public interface INotifyAction
-    {
-        string ID { get; }
+namespace ASC.Notify.Model;
 
-        string Name { get; }
-    }
+public interface INotifyAction
+{
+    string ID { get; }
+    string Name { get; }
 }

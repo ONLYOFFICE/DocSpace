@@ -29,8 +29,12 @@ namespace ASC.Data.Reassigns
     [Transient]
     public class ReassignProgressItem : DistributedTaskProgress
     {
-        private readonly IDictionary<string, StringValues> _httpHeaders;
+        public Guid FromUser { get; private set; }
+        public Guid ToUser { get; private set; }
 
+        private readonly IServiceScopeFactory _serviceScopeFactory;
+        private readonly QueueWorkerRemove _queueWorkerRemove;
+        private readonly IDictionary<string, StringValues> _httpHeaders;
         private int _tenantId;
         private Guid _currentUserId;
         private bool _deleteProfile;
@@ -38,18 +42,13 @@ namespace ASC.Data.Reassigns
         //private readonly IFileStorageService _docService;
         //private readonly ProjectsReassign _projectsReassign;
 
-        public Guid FromUser { get; private set; }
-        public Guid ToUser { get; private set; }
-        private IServiceProvider ServiceProvider { get; }
-        private QueueWorkerRemove QueueWorkerRemove { get; }
-
         public ReassignProgressItem(
-            IServiceProvider serviceProvider,
+            IServiceScopeFactory serviceScopeFactory,
             IHttpContextAccessor httpContextAccessor,
             QueueWorkerRemove queueWorkerRemove)
         {
-            ServiceProvider = serviceProvider;
-            QueueWorkerRemove = queueWorkerRemove;
+            _serviceScopeFactory = serviceScopeFactory;
+            _queueWorkerRemove = queueWorkerRemove;
             _httpHeaders = QueueWorker.GetHttpHeaders(httpContextAccessor.HttpContext.Request);
 
             //_docService = Web.Files.Classes.Global.FileStorageService;
@@ -76,7 +75,7 @@ namespace ASC.Data.Reassigns
 
         protected override void DoJob()
         {
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = _serviceScopeFactory.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<ReassignProgressItemScope>();
             var (tenantManager, coreBaseSettings, messageService, studioNotifyService, securityContext, userManager, userPhotoManager, displayUserSettingsHelper, messageTarget, options) = scopeClass;
             var logger = options.Get("ASC.Web");
@@ -142,6 +141,7 @@ namespace ASC.Data.Reassigns
                 logger.Info("data reassignment is complete");
                 IsCompleted = true;
             }
+
             PublishChanges();
         }
 
@@ -161,9 +161,13 @@ namespace ASC.Data.Reassigns
             var toUserName = toUser.DisplayUserName(false, displayUserSettingsHelper);
 
             if (_httpHeaders != null)
+            {
                 messageService.Send(_httpHeaders, MessageAction.UserDataReassigns, messageTarget.Create(FromUser), new[] { fromUserName, toUserName });
+            }
             else
+            {
                 messageService.Send(MessageAction.UserDataReassigns, messageTarget.Create(FromUser), fromUserName, toUserName);
+            }
         }
 
         private void SendErrorNotify(UserManager userManager, StudioNotifyService studioNotifyService, string errorMessage)
@@ -179,30 +183,34 @@ namespace ASC.Data.Reassigns
             var user = userManager.GetUsers(FromUser);
             var userName = user.DisplayUserName(false, displayUserSettingsHelper);
 
-            userPhotoManager.RemovePhoto(user.ID);
-            userManager.DeleteUser(user.ID);
-            QueueWorkerRemove.Start(_tenantId, user, _currentUserId, false);
+            userPhotoManager.RemovePhoto(user.Id);
+            userManager.DeleteUser(user.Id);
+            _queueWorkerRemove.Start(_tenantId, user, _currentUserId, false);
 
             if (_httpHeaders != null)
+            {
                 messageService.Send(_httpHeaders, MessageAction.UserDeleted, messageTarget.Create(FromUser), new[] { userName });
+            }
             else
+            {
                 messageService.Send(MessageAction.UserDeleted, messageTarget.Create(FromUser), userName);
+            }
         }
     }
 
     [Scope]
     public class ReassignProgressItemScope
     {
-        private TenantManager TenantManager { get; }
-        private CoreBaseSettings CoreBaseSettings { get; }
-        private MessageService MessageService { get; }
-        private StudioNotifyService StudioNotifyService { get; }
-        private SecurityContext SecurityContext { get; }
-        private UserManager UserManager { get; }
-        private UserPhotoManager UserPhotoManager { get; }
-        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-        private MessageTarget MessageTarget { get; }
-        private IOptionsMonitor<ILog> Options { get; }
+        private readonly TenantManager _tenantManager;
+        private readonly CoreBaseSettings _coreBaseSettings;
+        private readonly MessageService _messageService;
+        private readonly StudioNotifyService _studioNotifyService;
+        private readonly SecurityContext _securityContext;
+        private readonly UserManager _userManager;
+        private readonly UserPhotoManager _userPhotoManager;
+        private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
+        private readonly MessageTarget _messageTarget;
+        private readonly IOptionsMonitor<ILog> _options;
 
         public ReassignProgressItemScope(TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
@@ -215,16 +223,16 @@ namespace ASC.Data.Reassigns
             MessageTarget messageTarget,
             IOptionsMonitor<ILog> options)
         {
-            TenantManager = tenantManager;
-            CoreBaseSettings = coreBaseSettings;
-            MessageService = messageService;
-            StudioNotifyService = studioNotifyService;
-            SecurityContext = securityContext;
-            UserManager = userManager;
-            UserPhotoManager = userPhotoManager;
-            DisplayUserSettingsHelper = displayUserSettingsHelper;
-            MessageTarget = messageTarget;
-            Options = options;
+            _tenantManager = tenantManager;
+            _coreBaseSettings = coreBaseSettings;
+            _messageService = messageService;
+            _studioNotifyService = studioNotifyService;
+            _securityContext = securityContext;
+            _userManager = userManager;
+            _userPhotoManager = userPhotoManager;
+            _displayUserSettingsHelper = displayUserSettingsHelper;
+            _messageTarget = messageTarget;
+            _options = options;
         }
 
         public void Deconstruct(out TenantManager tenantManager,
@@ -238,16 +246,16 @@ namespace ASC.Data.Reassigns
             out MessageTarget messageTarget,
             out IOptionsMonitor<ILog> optionsMonitor)
         {
-            tenantManager = TenantManager;
-            coreBaseSettings = CoreBaseSettings;
-            messageService = MessageService;
-            studioNotifyService = StudioNotifyService;
-            securityContext = SecurityContext;
-            userManager = UserManager;
-            userPhotoManager = UserPhotoManager;
-            displayUserSettingsHelper = DisplayUserSettingsHelper;
-            messageTarget = MessageTarget;
-            optionsMonitor = Options;
+            tenantManager = _tenantManager;
+            coreBaseSettings = _coreBaseSettings;
+            messageService = _messageService;
+            studioNotifyService = _studioNotifyService;
+            securityContext = _securityContext;
+            userManager = _userManager;
+            userPhotoManager = _userPhotoManager;
+            displayUserSettingsHelper = _displayUserSettingsHelper;
+            messageTarget = _messageTarget;
+            optionsMonitor = _options;
         }
     }
 

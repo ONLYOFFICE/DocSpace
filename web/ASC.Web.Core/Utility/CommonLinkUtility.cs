@@ -105,7 +105,12 @@ namespace ASC.Web.Studio.Utility
 
         public string GetMyStaff()
         {
-            return CoreBaseSettings.Personal ? ToAbsolute("~/my.aspx") : ToAbsolute("~/products/people/view/@self");
+            return CoreBaseSettings.Personal ? ToAbsolute("~/my") : ToAbsolute("~/products/people/view/@self");
+        }
+
+        public string GetUnsubscribe()
+        {
+            return CoreBaseSettings.Personal ? ToAbsolute("~/my?unsubscribe=tips") : ToAbsolute("~/products/people/view/@self");
         }
 
         public string GetEmployees()
@@ -172,7 +177,7 @@ namespace ASC.Web.Studio.Utility
 
         public string GetUserProfile(UserInfo user, bool absolute = true)
         {
-            var queryParams = user.ID != Guid.Empty ? GetUserParamsPair(user) : HttpUtility.UrlEncode(user.UserName.ToLowerInvariant());
+            var queryParams = user.Id != Guid.Empty ? GetUserParamsPair(user) : HttpUtility.UrlEncode(user.UserName.ToLowerInvariant());
 
             var url = absolute ? ToAbsolute("~/products/people/") : "/products/people/";
             url += "view/";
@@ -504,7 +509,7 @@ namespace ASC.Web.Studio.Utility
 
         public string GetConfirmationUrlRelative(string email, ConfirmType confirmType, object postfix = null, Guid userId = default)
         {
-            return GetConfirmationUrlRelative(TenantManager.GetCurrentTenant().TenantId, email, confirmType, postfix, userId);
+            return GetConfirmationUrlRelative(TenantManager.GetCurrentTenant().Id, email, confirmType, postfix, userId);
         }
 
         public string GetConfirmationUrlRelative(int tenantId, string email, ConfirmType confirmType, object postfix = null, Guid userId = default)

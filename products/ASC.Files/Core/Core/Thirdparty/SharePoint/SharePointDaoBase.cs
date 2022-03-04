@@ -26,117 +26,163 @@
 
 using Folder = Microsoft.SharePoint.Client.Folder;
 
-namespace ASC.Files.Thirdparty.SharePoint
+namespace ASC.Files.Thirdparty.SharePoint;
+
+internal class SharePointDaoBase : ThirdPartyProviderDao<SharePointProviderInfo>
 {
-    internal class SharePointDaoBase : ThirdPartyProviderDao<SharePointProviderInfo>
+    protected override string Id => "spoint";
+
+    public SharePointDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility, TempPath tempPath)
+        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
     {
-        protected override string Id { get => "spoint"; }
+    }
 
-        public SharePointDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility, TempPath tempPath) 
-            : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
+    protected string GetAvailableTitle(string requestTitle, Folder parentFolderID, Func<string, Folder, bool> isExist)
+    {
+        if (!isExist(requestTitle, parentFolderID))
         {
-        }
-
-        protected string GetAvailableTitle(string requestTitle, Folder parentFolderID, Func<string, Folder, bool> isExist)
-        {
-            if (!isExist(requestTitle, parentFolderID)) return requestTitle;
-
-            var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
-            var match = re.Match(requestTitle);
-
-            if (!match.Success)
-            {
-                var insertIndex = requestTitle.Length;
-                if (requestTitle.LastIndexOf('.') != -1)
-                {
-                    insertIndex = requestTitle.LastIndexOf('.');
-                }
-                requestTitle = requestTitle.Insert(insertIndex, " (1)");
-            }
-
-            while (isExist(requestTitle, parentFolderID))
-            {
-                requestTitle = re.Replace(requestTitle, MatchEvaluator);
-            }
             return requestTitle;
         }
 
-        private string MatchEvaluator(Match match)
+        var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
+        var match = re.Match(requestTitle);
+
+        if (!match.Success)
         {
-            var index = Convert.ToInt32(match.Groups[2].Value);
-            var staticText = match.Value.Substring(string.Format(" ({0})", index).Length);
-            return string.Format(" ({0}){1}", index + 1, staticText);
-        }
-
-        protected void UpdatePathInDB(string oldValue, string newValue)
-        {
-            if (oldValue.Equals(newValue)) return;
-
-            using var tx = FilesDbContext.Database.BeginTransaction();
-            var oldIDs = Query(FilesDbContext.ThirdpartyIdMapping)
-                .Where(r => r.Id.StartsWith(oldValue))
-                .Select(r => r.Id)
-                .ToList();
-
-            foreach (var oldID in oldIDs)
+            var insertIndex = requestTitle.Length;
+            if (requestTitle.LastIndexOf('.') != -1)
             {
-                var oldHashID = MappingID(oldID);
-                var newID = oldID.Replace(oldValue, newValue);
-                var newHashID = MappingID(newID);
-
-                var mappingForUpdate = Query(FilesDbContext.ThirdpartyIdMapping)
-                    .Where(r => r.HashId == oldHashID)
-                    .ToList();
-
-                foreach (var m in mappingForUpdate)
-                {
-                    m.Id = newID;
-                    m.HashId = newHashID;
-                }
-
-                FilesDbContext.SaveChanges();
-
-                var securityForUpdate = Query(FilesDbContext.Security)
-                    .Where(r => r.EntryId == oldHashID)
-                    .ToList();
-
-                foreach (var s in securityForUpdate)
-                {
-                    s.EntryId = newHashID;
-                }
-
-                FilesDbContext.SaveChanges();
-
-                var linkForUpdate = Query(FilesDbContext.TagLink)
-                    .Where(r => r.EntryId == oldHashID)
-                    .ToList();
-
-                foreach (var l in linkForUpdate)
-                {
-                    l.EntryId = newHashID;
-                }
-
-                FilesDbContext.SaveChanges();
+                insertIndex = requestTitle.LastIndexOf('.');
             }
 
-            tx.Commit();
+            requestTitle = requestTitle.Insert(insertIndex, " (1)");
         }
 
-        protected string MappingID(string id)
+        while (isExist(requestTitle, parentFolderID))
         {
-            return MappingID(id, false);
+            requestTitle = re.Replace(requestTitle, MatchEvaluator);
         }
 
-        protected override string MakeId(string path = null)
+        return requestTitle;
+    }
+
+    protected async Task<string> GetAvailableTitleAsync(string requestTitle, Folder parentFolderID, Func<string, Folder, Task<bool>> isExist)
+    {
+        if (!await isExist(requestTitle, parentFolderID))
         {
-            return path;
+            return requestTitle;
         }
 
-        protected override IEnumerable<string> GetChildren(string folderId)
+        var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
+        var match = re.Match(requestTitle);
+
+        if (!match.Success)
         {
-            var subFolders = ProviderInfo.GetFolderFolders(folderId).Select(x => ProviderInfo.MakeId(x.ServerRelativeUrl));
-            var files = ProviderInfo.GetFolderFiles(folderId).Select(x => ProviderInfo.MakeId(x.ServerRelativeUrl));
-            return subFolders.Concat(files);
+            var insertIndex = requestTitle.Length;
+            if (requestTitle.LastIndexOf(".", StringComparison.Ordinal) != -1)
+            {
+                insertIndex = requestTitle.LastIndexOf(".", StringComparison.Ordinal);
+            }
+
+            requestTitle = requestTitle.Insert(insertIndex, " (1)");
         }
+
+        while (await isExist(requestTitle, parentFolderID))
+        {
+            requestTitle = re.Replace(requestTitle, MatchEvaluator);
+        }
+
+        return requestTitle;
+    }
+
+    private string MatchEvaluator(Match match)
+    {
+        var index = Convert.ToInt32(match.Groups[2].Value);
+        var staticText = match.Value.Substring(string.Format(" ({0})", index).Length);
+
+        return string.Format(" ({0}){1}", index + 1, staticText);
+    }
+
+    protected Task UpdatePathInDBAsync(string oldValue, string newValue)
+    {
+        if (oldValue.Equals(newValue))
+        {
+            return Task.CompletedTask;
+        }
+
+        return InternalUpdatePathInDBAsync(oldValue, newValue);
+    }
+
+    private async Task InternalUpdatePathInDBAsync(string oldValue, string newValue)
+    {
+        using var tx = FilesDbContext.Database.BeginTransaction();
+        var oldIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
+            .Where(r => r.Id.StartsWith(oldValue))
+            .Select(r => r.Id)
+            .ToListAsync();
+
+        foreach (var oldID in oldIDs)
+        {
+            var oldHashID = await MappingIDAsync(oldID);
+            var newID = oldID.Replace(oldValue, newValue);
+            var newHashID = await MappingIDAsync(newID);
+
+            var mappingForUpdate = await Query(FilesDbContext.ThirdpartyIdMapping)
+                .Where(r => r.HashId == oldHashID)
+                .ToListAsync();
+
+            foreach (var m in mappingForUpdate)
+            {
+                m.Id = newID;
+                m.HashId = newHashID;
+            }
+
+            await FilesDbContext.SaveChangesAsync();
+
+            var securityForUpdate = await Query(FilesDbContext.Security)
+                .Where(r => r.EntryId == oldHashID)
+                .ToListAsync();
+
+            foreach (var s in securityForUpdate)
+            {
+                s.EntryId = newHashID;
+            }
+
+            await FilesDbContext.SaveChangesAsync();
+
+            var linkForUpdate = await Query(FilesDbContext.TagLink)
+                .Where(r => r.EntryId == oldHashID)
+                .ToListAsync();
+
+            foreach (var l in linkForUpdate)
+            {
+                l.EntryId = newHashID;
+            }
+
+            await FilesDbContext.SaveChangesAsync();
+        }
+
+        await tx.CommitAsync();
+    }
+
+    protected Task<string> MappingIDAsync(string id)
+    {
+        return MappingIDAsync(id, false);
+    }
+
+    protected override string MakeId(string path = null)
+    {
+        return path;
+    }
+
+    protected override async Task<IEnumerable<string>> GetChildrenAsync(string folderId)
+    {
+        var folders = await ProviderInfo.GetFolderFoldersAsync(folderId);
+        var subFolders = folders.Select(x => ProviderInfo.MakeId(x.ServerRelativeUrl));
+
+        var folderFiles = await ProviderInfo.GetFolderFilesAsync(folderId);
+        var files = folderFiles.Select(x => ProviderInfo.MakeId(x.ServerRelativeUrl));
+
+        return subFolders.Concat(files);
     }
 }

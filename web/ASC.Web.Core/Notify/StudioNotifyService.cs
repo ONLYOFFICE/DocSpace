@@ -152,8 +152,8 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void UserPasswordChange(UserInfo userInfo)
         {
-            var hash = Authentication.GetUserPasswordStamp(userInfo.ID).ToString("s");
-            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(userInfo.Email, ConfirmType.PasswordChange, hash, userInfo.ID);
+            var hash = Authentication.GetUserPasswordStamp(userInfo.Id).ToString("s");
+            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(userInfo.Email, ConfirmType.PasswordChange, hash, userInfo.Id);
 
             string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangePassword;
 
@@ -192,7 +192,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void SendEmailActivationInstructions(UserInfo user, string email)
         {
-            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(email, ConfirmType.EmailActivation, null, user.ID);
+            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(email, ConfirmType.EmailActivation, null, user.Id);
 
             string greenButtonText() => WebstudioNotifyPatternResource.ButtonActivateEmail;
 
@@ -497,7 +497,7 @@ namespace ASC.Web.Studio.Core.Notify
         {
             var tenant = TenantManager.GetCurrentTenant();
             var admins = UserManager.GetUsers()
-                        .Where(u => WebItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, u.ID));
+                        .Where(u => WebItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, u.Id));
 
             ThreadPool.QueueUserWorkItem(_ =>
             {
@@ -775,10 +775,18 @@ namespace ASC.Web.Studio.Core.Notify
             var userInfo = UserManager.GetUserByEmail(email);
             if (!UserManager.UserExists(userInfo)) return;
 
+            var portalUrl = CommonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/');
+
+            var hash = Authentication.GetUserPasswordStamp(userInfo.Id).ToString("s");
+
+            var linkToRecovery = CommonLinkUtility.GetConfirmationUrl(userInfo.Email, ConfirmType.PasswordChange, hash, userInfo.Id);
+
             client.SendNoticeToAsync(
                 CoreBaseSettings.CustomMode ? Actions.PersonalCustomModeAlreadyExist : Actions.PersonalAlreadyExist,
                 StudioNotifyHelper.RecipientFromEmail(email, false),
                 new[] { EMailSenderName },
+                new TagValue(Tags.PortalUrl, portalUrl),
+                new TagValue(Tags.LinkToRecovery, linkToRecovery),
                 new TagValue(CommonTags.Footer, CoreBaseSettings.CustomMode ? "personalCustomMode" : "personal"),
                 new TagValue(CommonTags.Culture, Thread.CurrentThread.CurrentUICulture.Name));
         }
@@ -819,7 +827,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                         studioNotifyServiceHelper.SendNoticeToAsync(
                             Actions.PortalRename,
-                            new[] { StudioNotifyHelper.ToRecipient(u.ID) },
+                            new[] { StudioNotifyHelper.ToRecipient(u.Id) },
                             new[] { EMailSenderName },
                             new TagValue(Tags.PortalUrl, oldVirtualRootPath),
                             new TagValue(Tags.UserDisplayName, u.DisplayUserName(DisplayUserSettingsHelper)));
@@ -854,7 +862,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         private string GenerateActivationConfirmUrl(UserInfo user)
         {
-            var confirmUrl = CommonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.Activation, user.ID, user.ID);
+            var confirmUrl = CommonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.Activation, user.Id, user.Id);
 
             return confirmUrl + $"&firstname={HttpUtility.UrlEncode(user.FirstName)}&lastname={HttpUtility.UrlEncode(user.LastName)}";
         }
@@ -937,7 +945,7 @@ namespace ASC.Web.Studio.Core.Notify
                 client.SendNoticeToAsync(
                     action,
                     null,
-                    new[] { StudioNotifyHelper.ToRecipient(u.ID) },
+                    new[] { StudioNotifyHelper.ToRecipient(u.Id) },
                     new[] { EMailSenderName },
                     new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
                     new TagValue(Tags.PortalUrl, serverRootPath),

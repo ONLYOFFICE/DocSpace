@@ -25,193 +25,207 @@
 
 using ConfigurationManager = System.Configuration.ConfigurationManager;
 
-namespace ASC.Data.Backup
+namespace ASC.Data.Backup;
+
+[Scope]
+public class DbBackupProvider : IBackupProvider
 {
-    [Scope]
-    public class DbBackupProvider : IBackupProvider
+    public string Name => "databases";
+
+    private readonly List<string> _processedTables = new List<string>();
+    private readonly DbHelper _dbHelper;
+    private readonly TempStream _tempStream;
+
+    public DbBackupProvider(DbHelper dbHelper, TempStream tempStream)
     {
-        private readonly List<string> processedTables = new List<string>();
-        private readonly DbHelper dbHelper;
-        private readonly TempStream tempStream;
+        _dbHelper = dbHelper;
+        _tempStream = tempStream;
+    }
 
-        public string Name
-        {
-            get { return "databases"; }
-        }
+    public event EventHandler<ProgressChangedEventArgs> ProgressChanged;
 
-        public DbBackupProvider(DbHelper dbHelper, TempStream tempStream)
-        {
-            this.dbHelper = dbHelper;
-            this.tempStream = tempStream;
-        }
-        public IEnumerable<XElement> GetElements(int tenant, string[] configs, IDataWriteOperator writer)
-        {
-            processedTables.Clear();
-            var xml = new List<XElement>();
-            var connectionKeys = new Dictionary<string, string>();
-            foreach (var connectionString in GetConnectionStrings(configs))
-            {
-                //do not save the base, having the same provider and connection string is not to duplicate
-                //data, but also expose the ref attribute of repetitive bases for the correct recovery
-                var node = new XElement(connectionString.Name);
-                xml.Add(node);
+    public IEnumerable<XElement> GetElements(int tenant, string[] configs, IDataWriteOperator writer)
+    {
+        _processedTables.Clear();
+        var xml = new List<XElement>();
+        var connectionKeys = new Dictionary<string, string>();
 
-                var connectionKey = connectionString.ProviderName + connectionString.ConnectionString;
+        foreach (var connectionString in GetConnectionStrings(configs))
+        {
+            //do not save the base, having the same provider and connection string is not to duplicate
+            //data, but also expose the ref attribute of repetitive bases for the correct recovery
+            var node = new XElement(connectionString.Name);
+            xml.Add(node);
+
+            var connectionKey = connectionString.ProviderName + connectionString.ConnectionString;
                 if (connectionKeys.TryGetValue(connectionKey, out var value))
-                {
+            {
                     node.Add(new XAttribute("ref", value));
-                }
-                else
-                {
-                    connectionKeys.Add(connectionKey, connectionString.Name);
-                    node.Add(BackupDatabase(tenant, connectionString, writer));
-                }
             }
-
-            return xml;
-        }
-
-        public void LoadFrom(IEnumerable<XElement> elements, int tenant, string[] configs, IDataReadOperator reader)
-        {
-            processedTables.Clear();
-            foreach (var connectionString in GetConnectionStrings(configs))
+            else
             {
-                RestoreDatabase(connectionString, elements, reader);
+                connectionKeys.Add(connectionKey, connectionString.Name);
+                node.Add(BackupDatabase(tenant, connectionString, writer));
             }
         }
 
-        public event EventHandler<ProgressChangedEventArgs> ProgressChanged;
+        return xml;
+    }
 
+    public void LoadFrom(IEnumerable<XElement> elements, int tenant, string[] configs, IDataReadOperator reader)
+    {
+        _processedTables.Clear();
 
-        private void OnProgressChanged(string status, int progress)
+        foreach (var connectionString in GetConnectionStrings(configs))
         {
-            ProgressChanged?.Invoke(this, new ProgressChangedEventArgs(status, progress));
+            RestoreDatabase(connectionString, elements, reader);
         }
+    }
 
+    public IEnumerable<ConnectionStringSettings> GetConnectionStrings(string[] configs)
+    {
+        /*  if (configs.Length == 0)
+          {
+              configs = new string[] { AppDomain.CurrentDomain.SetupInformation.ConfigurationFile }; 
+          }
+          var connectionStrings = new List<ConnectionStringSettings>();
+          foreach (var config in configs)
+          {
+              connectionStrings.AddRange(GetConnectionStrings(GetConfiguration(config)));
+          }
+          return connectionStrings.GroupBy(cs => cs.Name).Select(g => g.First());*/
+        return null;
+    }
 
-        private Configuration GetConfiguration(string config)
+    public IEnumerable<ConnectionStringSettings> GetConnectionStrings(Configuration cfg)
+    {
+        var connectionStrings = new List<ConnectionStringSettings>();
+        foreach (ConnectionStringSettings connectionString in cfg.ConnectionStrings.ConnectionStrings)
         {
-            if (config.Contains(Path.DirectorySeparatorChar) && !Uri.IsWellFormedUriString(config, UriKind.Relative))
+            if (connectionString.Name == "LocalSqlServer" || connectionString.Name == "readonly")
             {
-                var map = new ExeConfigurationFileMap
-                {
-                    ExeConfigFilename = string.Equals(Path.GetExtension(config), ".config", StringComparison.OrdinalIgnoreCase) ? config : CrossPlatform.PathCombine(config, "Web.config")
-                };
-                return ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
+                continue;
             }
-            return ConfigurationManager.OpenExeConfiguration(config);
-        }
 
-        public IEnumerable<ConnectionStringSettings> GetConnectionStrings(string[] configs)
-        {
-            /*  if (configs.Length == 0)
-              {
-                  configs = new string[] { AppDomain.CurrentDomain.SetupInformation.ConfigurationFile }; 
-              }
-              var connectionStrings = new List<ConnectionStringSettings>();
-              foreach (var config in configs)
-              {
-                  connectionStrings.AddRange(GetConnectionStrings(GetConfiguration(config)));
-              }
-              return connectionStrings.GroupBy(cs => cs.Name).Select(g => g.First());*/
-            return null;
-        }
-
-        public IEnumerable<ConnectionStringSettings> GetConnectionStrings(Configuration cfg)
-        {
-            var connectionStrings = new List<ConnectionStringSettings>();
-            foreach (ConnectionStringSettings connectionString in cfg.ConnectionStrings.ConnectionStrings)
+            connectionStrings.Add(connectionString);
+            if (connectionString.ConnectionString.Contains("|DataDirectory|"))
             {
-                if (connectionString.Name == "LocalSqlServer" || connectionString.Name == "readonly") continue;
-                connectionStrings.Add(connectionString);
-                if (connectionString.ConnectionString.Contains("|DataDirectory|"))
-                {
-                    connectionString.ConnectionString = connectionString.ConnectionString.Replace("|DataDirectory|", Path.GetDirectoryName(cfg.FilePath) + '\\');
-                }
+                connectionString.ConnectionString = connectionString.ConnectionString.Replace("|DataDirectory|", Path.GetDirectoryName(cfg.FilePath) + '\\');
             }
-            return connectionStrings;
         }
 
-        private List<XElement> BackupDatabase(int tenant, ConnectionStringSettings connectionString, IDataWriteOperator writer)
+        return connectionStrings;
+    }
+
+    private void OnProgressChanged(string status, int progress)
+    {
+        ProgressChanged?.Invoke(this, new ProgressChangedEventArgs(status, progress));
+    }
+
+    private Configuration GetConfiguration(string config)
+    {
+        if (config.Contains(Path.DirectorySeparatorChar) && !Uri.IsWellFormedUriString(config, UriKind.Relative))
         {
-            var xml = new List<XElement>();
-            var errors = 0;
-            var timeout = TimeSpan.FromSeconds(1);
-            var tables = dbHelper.GetTables();
-            for (var i = 0; i < tables.Count; i++)
+            var map = new ExeConfigurationFileMap
             {
-                var table = tables[i];
-                OnProgressChanged(table, (int)(i / (double)tables.Count * 100));
+                ExeConfigFilename = string.Equals(Path.GetExtension(config), ".config", StringComparison.OrdinalIgnoreCase) ? config : CrossPlatform.PathCombine(config, "Web.config")
+            };
+            return ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
+        }
+        return ConfigurationManager.OpenExeConfiguration(config);
+    }
 
-                if (processedTables.Contains(table, StringComparer.InvariantCultureIgnoreCase))
-                {
-                    continue;
-                }
+    private List<XElement> BackupDatabase(int tenant, ConnectionStringSettings connectionString, IDataWriteOperator writer)
+    {
+        var xml = new List<XElement>();
+        var errors = 0;
+        var timeout = TimeSpan.FromSeconds(1);
+        var tables = _dbHelper.GetTables();
 
-                xml.Add(new XElement(table));
+        for (var i = 0; i < tables.Count; i++)
+        {
+            var table = tables[i];
+            OnProgressChanged(table, (int)(i / (double)tables.Count * 100));
+
+            if (_processedTables.Contains(table, StringComparer.InvariantCultureIgnoreCase))
+            {
+                continue;
+            }
+
+            xml.Add(new XElement(table));
                 DataTable dataTable;
-                while (true)
-                {
-                    try
-                    {
-                        dataTable = dbHelper.GetTable(table, tenant);
-                        break;
-                    }
-                    catch
-                    {
-                        errors++;
-                        if (20 < errors) throw;
-                        Thread.Sleep(timeout);
-                    }
-                }
-                foreach (DataColumn c in dataTable.Columns)
-                {
-                    if (c.DataType == typeof(DateTime)) c.DateTimeMode = DataSetDateTime.Unspecified;
-                }
 
-                using (var file = tempStream.Create())
+            while (true)
+            {
+                try
                 {
-                    dataTable.WriteXml(file, XmlWriteMode.WriteSchema);
-                    writer.WriteEntry($"{Name}\\{connectionString.Name}\\{table}".ToLower(), file);
+                    dataTable = _dbHelper.GetTable(table, tenant);
+                    break;
                 }
-
-                processedTables.Add(table);
+                catch
+                {
+                    errors++;
+                    if (20 < errors) throw;
+                    Thread.Sleep(timeout);
+                }
             }
-            return xml;
+
+            foreach (DataColumn c in dataTable.Columns)
+            {
+                if (c.DataType == typeof(DateTime))
+                {
+                    c.DateTimeMode = DataSetDateTime.Unspecified;
+                }
+            }
+
+            using (var file = _tempStream.Create())
+            {
+                dataTable.WriteXml(file, XmlWriteMode.WriteSchema);
+                    writer.WriteEntry($"{Name}\\{connectionString.Name}\\{table}".ToLower(), file);
+            }
+
+            _processedTables.Add(table);
         }
 
-        private void RestoreDatabase(ConnectionStringSettings connectionString, IEnumerable<XElement> elements, IDataReadOperator reader)
-        {
-            var dbName = connectionString.Name;
+        return xml;
+    }
+
+    private void RestoreDatabase(ConnectionStringSettings connectionString, IEnumerable<XElement> elements, IDataReadOperator reader)
+    {
+        var dbName = connectionString.Name;
             var dbElement = elements.SingleOrDefault(e => string.Equals(e.Name.LocalName, connectionString.Name, StringComparison.OrdinalIgnoreCase));
-            if (dbElement != null && dbElement.Attribute("ref") != null)
-            {
-                dbName = dbElement.Attribute("ref").Value;
+        if (dbElement != null && dbElement.Attribute("ref") != null)
+        {
+            dbName = dbElement.Attribute("ref").Value;
                 dbElement = elements.Single(e => string.Equals(e.Name.LocalName, dbElement.Attribute("ref").Value, StringComparison.OrdinalIgnoreCase));
-            }
-            if (dbElement == null) return;
+        }
 
-            var tables = dbHelper.GetTables();
-            for (var i = 0; i < tables.Count; i++)
+        if (dbElement == null)
+        {
+            return;
+        }
+
+        var tables = _dbHelper.GetTables();
+
+        for (var i = 0; i < tables.Count; i++)
+        {
+            var table = tables[i];
+            OnProgressChanged(table, (int)(i / (double)tables.Count * 100));
+
+            if (_processedTables.Contains(table, StringComparer.InvariantCultureIgnoreCase))
             {
-                var table = tables[i];
-                OnProgressChanged(table, (int)(i / (double)tables.Count * 100));
+                continue;
+            }
 
-                if (processedTables.Contains(table, StringComparer.InvariantCultureIgnoreCase))
-                {
-                    continue;
-                }
-
-                if (dbElement.Element(table) != null)
-                {
+            if (dbElement.Element(table) != null)
+            {
                     using (var stream = reader.GetEntry($"{Name}\\{dbName}\\{table}".ToLower()))
-                    {
-                        var data = new DataTable();
-                        data.ReadXml(stream);
-                        dbHelper.SetTable(data);
-                    }
-                    processedTables.Add(table);
+                {
+                    var data = new DataTable();
+                    data.ReadXml(stream);
+                    _dbHelper.SetTable(data);
                 }
+                _processedTables.Add(table);
             }
         }
     }

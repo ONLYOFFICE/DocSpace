@@ -27,16 +27,16 @@ namespace ASC.Web.Files.HttpHandlers
 {
     public class DocuSignHandler
     {
-        private IServiceProvider ServiceProvider { get; }
+        private readonly IServiceScopeFactory _serviceScopeFactory;
 
-        public DocuSignHandler(RequestDelegate next, IServiceProvider serviceProvider)
+        public DocuSignHandler(RequestDelegate next, IServiceScopeFactory serviceScopeFactory)
         {
-            ServiceProvider = serviceProvider;
+            _serviceScopeFactory = serviceScopeFactory;
         }
 
         public async Task Invoke(HttpContext context)
         {
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = _serviceScopeFactory.CreateScope();
             var docuSignHandlerService = scope.ServiceProvider.GetService<DocuSignHandlerService>();
             await docuSignHandlerService.Invoke(context).ConfigureAwait(false);
         }
@@ -87,7 +87,7 @@ namespace ASC.Web.Files.HttpHandlers
                         Redirect(context);
                         break;
                     case "webhook":
-                        Webhook(context);
+                        await WebhookAsync(context);
                         break;
                     default:
                         throw new HttpException((int)HttpStatusCode.BadRequest, FilesCommonResource.ErrorMassage_BadRequest);
@@ -123,7 +123,7 @@ namespace ASC.Web.Files.HttpHandlers
 
         private const string XmlPrefix = "docusign";
 
-        private void Webhook(HttpContext context)
+        private async Task WebhookAsync(HttpContext context)
         {
             Log.Info("DocuSign webhook: " + context.Request.QueryString);
             try
@@ -181,7 +181,7 @@ namespace ASC.Web.Files.HttpHandlers
                                     }
                                 }
 
-                                var file = DocuSignHelper.SaveDocument(envelopeId, documentId, documentName, folderId);
+                                var file = await DocuSignHelper.SaveDocumentAsync(envelopeId, documentId, documentName, folderId);
 
                                 NotifyClient.SendDocuSignComplete(file, sourceTitle ?? documentName);
                             }
