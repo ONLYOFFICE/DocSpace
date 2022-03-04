@@ -10,6 +10,7 @@
     <ROW Property="ARPCOMMENTS" Value="Эта база данных установщика содержит логику и данные, необходимые для установки [|[ProductName]." ValueLocId="*"/>
     <ROW Property="ARPNOREPAIR" MultiBuildValue="DefaultBuild:1"/>
     <ROW Property="AppDirChanged" Value=" "/>
+    <ROW Property="COMMON_SHORTCUT_NAME" Value="ONLYOFFICE"/>
     <ROW Property="DATABASE_PROP" Value="onlyoffice"/>
     <ROW Property="ENVIRONMENT" Value="test"/>
     <ROW Property="MYSQLODBCDRIVER" Value="MySQL ODBC 8.0 Unicode Driver"/>
@@ -82,6 +83,7 @@
     <ROW Directory="ASC.UrlShortener.Svc_Dir" Directory_Parent="services_Dir" DefaultDir="ASCURL~1.SVC|ASC.UrlShortener.Svc"/>
     <ROW Directory="ASC.Web.Api_Dir" Directory_Parent="services_Dir" DefaultDir="ASCWEB~1.API|ASC.Web.Api"/>
     <ROW Directory="ASC.Web.Studio_Dir" Directory_Parent="services_Dir" DefaultDir="ASCWEB~1.STU|ASC.Web.Studio"/>
+    <ROW Directory="DesktopFolder" Directory_Parent="TARGETDIR" DefaultDir="DESKTO~1|DesktopFolder" IsPseudoRoot="1"/>
     <ROW Directory="TARGETDIR" DefaultDir="SourceDir"/>
     <ROW Directory="config_Dir" Directory_Parent="APPDIR" DefaultDir="config"/>
     <ROW Directory="products_Dir" Directory_Parent="APPDIR" DefaultDir="products"/>
@@ -458,6 +460,10 @@
     <ROW Feature_="MainFeature" Component_="zookeeper.exe"/>
     <ROW Feature_="MainFeature" Component_="server"/>
     <ROW Feature_="MainFeature" Component_="ASC.SsoAuth.Svc.exe"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiIniFileComponent">
+    <ROW IniFile="URL" FileName="URL~1|[|COMMON_SHORTCUT_NAME].url" DirProperty="DesktopFolder" Section="InternetShortcut" Key="URL" Value="http://localhost/" Action="0" Component_="APPDIR"/>
+    <ROW IniFile="WorkingDirectory" FileName="URL~1|[|COMMON_SHORTCUT_NAME].url" DirProperty="DesktopFolder" Section="InternetShortcut" Key="WorkingDirectory" Value="[DesktopFolder]" Action="0" Component_="APPDIR"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstExSeqComponent">
     <ROW Action="AI_DOWNGRADE" Condition="AI_NEWERPRODUCTFOUND AND (UILevel &lt;&gt; 5)" Sequence="210"/>
