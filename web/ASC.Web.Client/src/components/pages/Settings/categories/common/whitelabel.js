@@ -265,20 +265,26 @@ class WhiteLabel extends React.Component {
     setWhiteLabelSettings(data);
   };
 
-  onChangeHandler = (input) => {
+  onChangeHandler = (e) => {
     const { setWhiteLabelSettings } = this.props;
 
-    let file = input;
+    // TODO: Добавить проверку на размер
 
-    console.log("file", file.target.value);
+    let file = e.target.files[0];
 
-    let fd = new FormData();
-    fd.append("logoText", "asas");
-    fd.append(`logo[${1}][key]`, 2);
-    fd.append(`logo[${1}][value]`, file.target.value);
+    let reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (e) => {
+      this.imgsrc = e.target.result;
 
-    const data = new URLSearchParams(fd);
-    setWhiteLabelSettings(data);
+      let fd = new FormData();
+      fd.append("logoText", "asas");
+      fd.append(`logo[${0}][key]`, 1);
+      fd.append(`logo[${0}][value]`, e.target.result);
+
+      const data = new URLSearchParams(fd);
+      setWhiteLabelSettings(data);
+    };
   };
 
   render() {
@@ -366,14 +372,10 @@ class WhiteLabel extends React.Component {
                 )}
               </div>
               {isPortalPaid && (
-                <Link
-                  type="action"
-                  color={theme.studio.settings.common.linkColorHelp}
-                  isHovered
-                  onClick={this.onChangeLogo}
-                >
-                  {t("ChangeLogoButton")}
-                </Link>
+                <FileInput
+                  placeholder={t("ChangeLogoButton")}
+                  onChange={this.onChangeHandler}
+                />
               )}
             </FieldContainer>
 
@@ -405,12 +407,6 @@ class WhiteLabel extends React.Component {
                   />
                 )}
               </div>
-              {isPortalPaid && (
-                <FileInput
-                  placeholder={t("ChangeLogoButton")}
-                  onChange={this.onChangeHandler}
-                />
-              )}
             </FieldContainer>
             <FieldContainer
               id="fieldContainerLogoFavicon"
