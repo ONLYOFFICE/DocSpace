@@ -32,7 +32,7 @@ namespace ASC.Common
 
         public Stream GetBuffered(Stream srcStream)
         {
-            if (srcStream == null) throw new ArgumentNullException("srcStream");
+            if (srcStream == null) throw new ArgumentNullException(nameof(srcStream));
             if (!srcStream.CanSeek || srcStream.CanTimeout)
             {
                 //Buffer it

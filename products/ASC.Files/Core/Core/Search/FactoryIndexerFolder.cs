@@ -127,6 +127,7 @@ namespace ASC.Web.Files.Core.Search
             }
 
             IQueryable<FolderTenant> GetBaseQuery(DateTime lastIndexed) => folderDao.FilesDbContext.Folders
+                    .AsQueryable()
                     .Where(r => r.ModifiedOn >= lastIndexed)
                     .Join(folderDao.FilesDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FolderTenant { DbFolder = f, DbTenant = t })
                     .Where(r => r.DbTenant.Status == ASC.Core.Tenants.TenantStatus.Active);
@@ -155,7 +156,7 @@ namespace ASC.Web.Files.Core.Search
                     }
                 }
 
-                if (tasks.Any())
+                if (tasks.Count > 0)
                 {
                     Task.WaitAll(tasks.ToArray());
                 }
@@ -174,7 +175,7 @@ namespace ASC.Web.Files.Core.Search
         public DbFolder DbFolder { get; set; }
     }
 
-    public class FactoryIndexerFolderExtension
+    public static class FactoryIndexerFolderExtension
     {
         public static void Register(DIHelper services)
         {

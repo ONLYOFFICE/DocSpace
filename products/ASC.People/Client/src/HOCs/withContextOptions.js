@@ -22,7 +22,15 @@ export default function withContextOptions(WrappedComponent) {
       setDeleteProfileDialogVisible,
       fetchProfile,
     } = props;
-    const { id, options, userName, email, mobilePhone, currentUserId } = item;
+    const {
+      id,
+      displayName,
+      options,
+      userName,
+      email,
+      mobilePhone,
+      currentUserId,
+    } = item;
 
     const isRefetchPeople = true; //TODO: why always true?
 

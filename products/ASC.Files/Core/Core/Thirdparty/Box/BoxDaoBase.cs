@@ -30,6 +30,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 using ASC.Common.Logging;
 using ASC.Core;
@@ -51,7 +52,7 @@ namespace ASC.Files.Thirdparty.Box
     {
         protected override string Id { get => "box"; }
 
-        public BoxDaoBase(
+        protected BoxDaoBase(
             IServiceProvider serviceProvider,
             UserManager userManager,
             TenantManager tenantManager,
@@ -93,7 +94,8 @@ namespace ASC.Files.Thirdparty.Box
 
         protected override string MakeId(string path = null)
         {
-            return string.Format("{0}{1}", PathPrefix, string.IsNullOrEmpty(path) || path == "0" ? "" : ("-|" + path.TrimStart('/')));
+            var p = string.IsNullOrEmpty(path) || path == "0" ? "" : ("-|" + path.TrimStart('/'));
+            return $"{PathPrefix}{p}";
         }
 
         protected string MakeFolderTitle(BoxFolder boxFolder)
@@ -197,17 +199,17 @@ namespace ASC.Files.Thirdparty.Box
             return file;
         }
 
-        public Folder<string> GetRootFolder(string folderId)
+        public async Task<Folder<string>> GetRootFolderAsync(string folderId)
         {
-            return ToFolder(GetBoxFolder("0"));
+            return ToFolder(await GetBoxFolderAsync("0"));
         }
 
-        protected BoxFolder GetBoxFolder(string folderId)
+        protected async Task<BoxFolder> GetBoxFolderAsync(string folderId)
         {
             var boxFolderId = MakeBoxId(folderId);
             try
             {
-                var folder = ProviderInfo.GetBoxFolder(boxFolderId);
+                var folder = await ProviderInfo.GetBoxFolderAsync(boxFolderId);
                 return folder;
             }
             catch (Exception ex)
@@ -216,29 +218,48 @@ namespace ASC.Files.Thirdparty.Box
             }
         }
 
-        protected BoxFile GetBoxFile(string fileId)
+        protected ValueTask<BoxFile> GetBoxFileAsync(string fileId)
         {
             var boxFileId = MakeBoxId(fileId);
             try
             {
-                var file = ProviderInfo.GetBoxFile(boxFileId);
+                var file = ProviderInfo.GetBoxFileAsync(boxFileId);
                 return file;
             }
             catch (Exception ex)
             {
-                return new ErrorFile(ex, boxFileId);
+                return ValueTask.FromResult<BoxFile>(new ErrorFile(ex, boxFileId));
             }
         }
 
-        protected override IEnumerable<string> GetChildren(string folderId)
+        protected override async Task<IEnumerable<string>> GetChildrenAsync(string folderId)
         {
-            return GetBoxItems(folderId).Select(entry => MakeId(entry.Id));
+            var items = await GetBoxItemsAsync(folderId);
+            return items.Select(entry => MakeId(entry.Id));
         }
 
         protected List<BoxItem> GetBoxItems(string parentId, bool? folder = null)
         {
             var boxFolderId = MakeBoxId(parentId);
-            var items = ProviderInfo.GetBoxItems(boxFolderId);
+            var items = ProviderInfo.GetBoxItemsAsync(boxFolderId).Result;
+
+            if (folder.HasValue)
+            {
+                if (folder.Value)
+                {
+                    return items.Where(i => i is BoxFolder).ToList();
+                }
+
+                return items.Where(i => i is BoxFile).ToList();
+            }
+
+            return items;
+        }
+
+        protected async Task<List<BoxItem>> GetBoxItemsAsync(string parentId, bool? folder = null)
+        {
+            var boxFolderId = MakeBoxId(parentId);
+            var items = await ProviderInfo.GetBoxItemsAsync(boxFolderId);
 
             if (folder.HasValue)
             {
@@ -297,9 +318,9 @@ namespace ASC.Files.Thirdparty.Box
             if (!match.Success)
             {
                 var insertIndex = requestTitle.Length;
-                if (requestTitle.LastIndexOf(".", StringComparison.InvariantCulture) != -1)
+                if (requestTitle.LastIndexOf('.') != -1)
                 {
-                    insertIndex = requestTitle.LastIndexOf(".", StringComparison.InvariantCulture);
+                    insertIndex = requestTitle.LastIndexOf('.');
                 }
                 requestTitle = requestTitle.Insert(insertIndex, " (1)");
             }
@@ -311,7 +332,31 @@ namespace ASC.Files.Thirdparty.Box
             return requestTitle;
         }
 
-        private static string MatchEvaluator(Match match)
+        protected async Task<string> GetAvailableTitleAsync(string requestTitle, string parentFolderId, Func<string, string, Task<bool>> isExist)
+        {
+            if (!await isExist(requestTitle, parentFolderId)) return requestTitle;
+
+            var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
+            var match = re.Match(requestTitle);
+
+            if (!match.Success)
+            {
+                var insertIndex = requestTitle.Length;
+                if (requestTitle.LastIndexOf(".", StringComparison.InvariantCulture) != -1)
+                {
+                    insertIndex = requestTitle.LastIndexOf(".", StringComparison.InvariantCulture);
+                }
+                requestTitle = requestTitle.Insert(insertIndex, " (1)");
+            }
+
+            while (!await isExist(requestTitle, parentFolderId))
+            {
+                requestTitle = re.Replace(requestTitle, MatchEvaluator);
+            }
+            return requestTitle;
+        }
+
+        private string MatchEvaluator(Match match)
         {
             var index = Convert.ToInt32(match.Groups[2].Value);
             var staticText = match.Value.Substring(string.Format(" ({0})", index).Length);

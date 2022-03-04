@@ -38,7 +38,7 @@ const StyledContainer = styled.div`
   .header-container {
     position: relative;
     ${(props) =>
-      props.title &&
+      props.isTitle &&
       css`
         display: grid;
         grid-template-columns: ${({
@@ -489,6 +489,7 @@ class SectionHeaderContent extends React.Component {
             canCreate={canCreate}
             isRecycleBinFolder={isRecycleBinFolder}
             title={title}
+            isTitle={title}
             isDesktop={isDesktop}
             isTabletView={isTabletView}
             isLoading={isLoading}
@@ -524,6 +525,7 @@ class SectionHeaderContent extends React.Component {
                       className="headline-header"
                       type="content"
                       truncate={true}
+                      title={title}
                     >
                       {title}
                     </Headline>

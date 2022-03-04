@@ -4,5 +4,7 @@
   "ConversionTitle": "ドキュメントのアップロード",
   "ConvertAndOpenTitle": "ドキュメントを変換して開く",
   "HideMessage": "このメッセージを再度表示しない",
-  "SaveOriginalFormatMessage": "コピーしたファイルを元のフォーマットで保存する"
+  "SaveOriginalFormatMessage": "コピーしたファイルを元のフォーマットで保存する",
+  "ConvertedFileDestination": "ファイルコピーは<strong>{{folderTitle}}</strong>フォルダに作成されます",
+  "InfoCreateFileIn": "新しい'{{fileTitle}}'ファイルが'{{folderTitle}}'に作成された"
 }

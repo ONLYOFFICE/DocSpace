@@ -14,7 +14,7 @@ using ASC.Web.Studio.Core.Notify;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Hosting; 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -24,7 +24,7 @@ using StackExchange.Redis.Extensions.Newtonsoft;
 
 namespace ASC.Studio.Notify
 {
-    public class Program
+    public static class Program
     {
         public async static Task Main(string[] args)
         {
@@ -71,6 +71,8 @@ namespace ASC.Studio.Notify
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddMemoryCache();
+                    services.AddHttpClient();
+
                     var diHelper = new DIHelper(services);
 
                     var redisConfiguration = hostContext.Configuration.GetSection("Redis").Get<RedisConfiguration>();

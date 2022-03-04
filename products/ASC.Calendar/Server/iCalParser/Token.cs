@@ -123,7 +123,7 @@ namespace ASC.Calendar.iCalParser
         {
             if (str.Length > 0)
             {
-                return CamelCase(str.Substring(0, 1).ToUpper() + str.Substring(1));
+                return CamelCase(str[0].ToString().ToUpper() + str.Substring(1));
             }
             else
             {
@@ -139,7 +139,9 @@ namespace ASC.Calendar.iCalParser
 
             for (int i = 0; i < lstr.Length; ++i)
             {
-                if (lstr[i] == '-')
+                var c = lstr[i];
+
+                if (c == '-')
                 {
                     upper = true;
                 }
@@ -147,12 +149,12 @@ namespace ASC.Calendar.iCalParser
                 {
                     if (upper)
                     {
-                        buff.Append(Char.ToUpper(lstr[i]));
+                        buff.Append(Char.ToUpper(c));
                         upper = false;
                     }
                     else
                     {
-                        buff.Append(lstr[i]);
+                        buff.Append(c);
                     }
                 }
             }
@@ -179,8 +181,8 @@ namespace ASC.Calendar.iCalParser
 
             
             
-            isUTC= icalDate.ToLowerInvariant().EndsWith("z");
-            isDate = !icalDate.ToLowerInvariant().Contains("t");
+            isUTC= icalDate.EndsWith("z", StringComparison.OrdinalIgnoreCase);
+            isDate = icalDate.IndexOf("t", StringComparison.OrdinalIgnoreCase) == -1;
 
 
             DateTime dateTime ;

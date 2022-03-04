@@ -35,7 +35,7 @@ using SixLabors.ImageSharp.Processing;
 
 namespace ASC.Web.Core.Users
 {
-    public class UserPhotoThumbnailManager
+    public static class UserPhotoThumbnailManager
     {
         public static List<ThumbnailItem> SaveThumbnails(UserPhotoManager userPhotoManager, SettingsManager settingsManager, int x, int y, int width, int height, Guid userId)
         {

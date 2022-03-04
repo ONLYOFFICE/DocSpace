@@ -347,7 +347,7 @@ namespace ASC.CRM.Core.Dao
 
                     if (fieldType == CustomFieldType.SelectBox)
                     {
-                        if (oldMask == customField.Mask || customField.Mask == "")
+                        if (oldMask == customField.Mask || customField.Mask.Length == 0)
                         {
                             resultMask = oldMask;
                         }

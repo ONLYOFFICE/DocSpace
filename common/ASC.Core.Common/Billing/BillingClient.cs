@@ -53,6 +53,8 @@ namespace ASC.Core.Billing
 
         private const int AvangatePaymentSystemId = 1;
 
+        static readonly HttpClient HttpClient = new HttpClient();
+
 
         public BillingClient(IConfiguration configuration)
             : this(false, configuration)
@@ -159,13 +161,21 @@ namespace ASC.Core.Billing
                 string url;
                 var paymentUrl = (Uri)null;
                 var upgradeUrl = (Uri)null;
-                if (paymentUrls.TryGetValue(p, out url) && !string.IsNullOrEmpty(url = ToUrl(url)))
+                if (paymentUrls.TryGetValue(p, out url))
                 {
-                    paymentUrl = new Uri(url);
+                    url = ToUrl(url);
+                    if (!string.IsNullOrEmpty(url))
+                    {
+                        paymentUrl = new Uri(url);
+                    }
                 }
-                if (upgradeUrls.TryGetValue(p, out url) && !string.IsNullOrEmpty(url = ToUrl(url)))
+                if (upgradeUrls.TryGetValue(p, out url))
                 {
-                    upgradeUrl = new Uri(url);
+                    url = ToUrl(url);
+                    if (!string.IsNullOrEmpty(url))
+                    {
+                        upgradeUrl = new Uri(url);
+                    }
                 }
                 urls[p] = Tuple.Create(paymentUrl, upgradeUrl);
             }
@@ -176,7 +186,7 @@ namespace ASC.Core.Billing
         {
             if (productIds == null)
             {
-                throw new ArgumentNullException("productIds");
+                throw new ArgumentNullException(nameof(productIds));
             }
 
             var parameters = productIds.Select(pid => Tuple.Create("ProductId", pid)).ToList();
@@ -185,15 +195,13 @@ namespace ASC.Core.Billing
             var result = Request("GetProductsPrices", null, parameters.ToArray());
             var prices = JsonSerializer.Deserialize<Dictionary<int, Dictionary<string, Dictionary<string, decimal>>>>(result);
 
-            if (prices.ContainsKey(AvangatePaymentSystemId))
+            if (prices.TryGetValue(AvangatePaymentSystemId, out var pricesPaymentSystem))
             {
-                var pricesPaymentSystem = prices[AvangatePaymentSystemId];
-
                 return productIds.Select(productId =>
                 {
-                    if (pricesPaymentSystem.ContainsKey(productId))
+                    if (pricesPaymentSystem.TryGetValue(productId, out var prices))
                     {
-                        return new { ProductId = productId, Prices = pricesPaymentSystem[productId] };
+                        return new { ProductId = productId, Prices = prices };
                     }
                     return new { ProductId = productId, Prices = new Dictionary<string, decimal>() };
                 })
@@ -210,7 +218,7 @@ namespace ASC.Core.Billing
             {
                 var now = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
                 var hash = WebEncoders.Base64UrlEncode(hasher.ComputeHash(Encoding.UTF8.GetBytes(string.Join("\n", now, pkey))));
-                return string.Format("ASC {0}:{1}:{2}", pkey, now, hash);
+                return "ASC " + pkey + ":" + now + ":" + hash;
             }
         }
 
@@ -226,8 +234,7 @@ namespace ASC.Core.Billing
                 request.Headers.Add("Authorization", CreateAuthToken(_billingKey, _billingSecret));
             }
 
-            using var httpClient = new HttpClient();
-            httpClient.Timeout = TimeSpan.FromMilliseconds(60000);
+            HttpClient.Timeout = TimeSpan.FromMilliseconds(60000);
 
             var data = new Dictionary<string, List<string>>();
             if (!string.IsNullOrEmpty(portalId))
@@ -250,7 +257,7 @@ namespace ASC.Core.Billing
             request.Content = new StringContent(body, Encoding.UTF8, "application/json");
 
             string result;
-            using (var response = httpClient.Send(request))
+            using (var response = HttpClient.Send(request))
             using (var stream = response.Content.ReadAsStream())
             {
                 if (stream == null)
@@ -272,7 +279,7 @@ namespace ASC.Core.Billing
                 return result;
             }
 
-            var @params = (parameters ?? Enumerable.Empty<Tuple<string, string>>()).Select(p => string.Format("{0}: {1}", p.Item1, p.Item2));
+            var @params = parameters.Select(p => p.Item1 + ": " + p.Item2);
             var info = new { Method = method, PortalId = portalId, Params = string.Join(", ", @params) };
             if (result.Contains("{\"Message\":\"error: cannot find "))
             {

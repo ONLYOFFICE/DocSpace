@@ -11,6 +11,7 @@ import TableView from "./TableView/TableContainer";
 import { Consumer } from "@appserver/components/utils/context";
 
 let currentDroppable = null;
+let isDragActive = false;
 
 const SectionBodyContent = (props) => {
   const {
@@ -85,6 +86,7 @@ const SectionBodyContent = (props) => {
       return false;
     }
 
+    isDragActive = true;
     if (!dragging) {
       document.body.classList.add("drag-cursor");
       setDragging(true);
@@ -136,27 +138,31 @@ const SectionBodyContent = (props) => {
     const splitValue = treeDataValue && treeDataValue.split(" ");
     const isDragging = splitValue && splitValue.includes("dragging");
     const treeValue = isDragging ? splitValue[0] : null;
+    const treeProvider = splitValue && splitValue[splitValue.length - 1];
 
     const elem = e.target.closest(".droppable");
     const title = elem && elem.dataset.title;
     const value = elem && elem.getAttribute("value");
-    if ((!value && !treeValue) || isRecycleBinFolder) {
+    if ((!value && !treeValue) || isRecycleBinFolder || !isDragActive) {
       setDragging(false);
       setStartDrag(false);
+      isDragActive = false;
       return;
     }
 
     const folderId = value ? value.split("_")[1] : treeValue;
+    const providerKey = value ? value.split("_")[2].trim() : treeProvider;
 
     setStartDrag(false);
     setDragging(false);
-    onMoveTo(folderId, title);
+    onMoveTo(folderId, title, providerKey);
+    isDragActive = false;
     return;
   };
 
-  const onMoveTo = (destFolderId, title) => {
+  const onMoveTo = (destFolderId, title, providerKey) => {
     const id = isNaN(+destFolderId) ? destFolderId : +destFolderId;
-    moveDragItems(id, title, {
+    moveDragItems(id, title, providerKey, {
       copy: t("Translations:CopyOperation"),
       move: t("Translations:MoveToOperation"),
     }); //TODO: then catch

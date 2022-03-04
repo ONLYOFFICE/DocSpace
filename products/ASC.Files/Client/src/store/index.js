@@ -20,11 +20,8 @@ import TreeFoldersStore from "./TreeFoldersStore";
 import UploadDataStore from "./UploadDataStore";
 import VersionHistoryStore from "./VersionHistoryStore";
 
-const formatsStore = new FormatsStore(
-  iconFormatsStore,
-  mediaViewersFormatsStore,
-  docserviceStore
-);
+const selectedFolderStore = new SelectedFolderStore(store.auth.settingsStore);
+
 const treeFoldersStore = new TreeFoldersStore(selectedFolderStore);
 
 const settingsStore = new SettingsStore(thirdPartyStore, treeFoldersStore);
@@ -37,20 +34,24 @@ const filesStore = new FilesStore(
   selectedFolderStore,
   treeFoldersStore,
   formatsStore,
+  settingsStore,
+  selectedFilesStore
+);
+const mediaViewerDataStore = new MediaViewerDataStore(
+  filesStore,
   settingsStore
 );
-const mediaViewerDataStore = new MediaViewerDataStore(filesStore, formatsStore);
 
 const secondaryProgressDataStore = new SecondaryProgressDataStore();
 const primaryProgressDataStore = new PrimaryProgressDataStore();
 
 const dialogsStore = new DialogsStore(
+  store.auth,
   treeFoldersStore,
   filesStore,
   selectedFolderStore
 );
 const uploadDataStore = new UploadDataStore(
-  formatsStore,
   treeFoldersStore,
   selectedFolderStore,
   filesStore,
@@ -81,7 +82,6 @@ const stores = {
   filesStore,
   settingsStore,
   mediaViewerDataStore,
-  formatsStore,
   versionHistoryStore,
   uploadDataStore,
   dialogsStore,

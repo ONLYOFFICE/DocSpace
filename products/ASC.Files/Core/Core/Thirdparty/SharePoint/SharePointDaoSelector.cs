@@ -77,7 +77,7 @@ namespace ASC.Files.Thirdparty.SharePoint
         }
     }
 
-    public class SharePointDaoSelectorExtension
+    public static class SharePointDaoSelectorExtension
     {
         public static void Register(DIHelper services)
         {

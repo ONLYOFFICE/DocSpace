@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 using ASC.Common.Logging;
 using ASC.Core;
@@ -49,7 +50,7 @@ namespace ASC.Files.Thirdparty.OneDrive
     {
         protected override string Id { get => "onedrive"; }
 
-        public OneDriveDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility, TempPath tempPath) 
+        protected OneDriveDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility, TempPath tempPath) 
             : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
         {
         }
@@ -84,18 +85,17 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         protected override string MakeId(string id = null)
         {
-            return string.Format("{0}{1}", PathPrefix,
-                                 string.IsNullOrEmpty(id) || id == ""
-                                     ? "" : ("-|" + id.TrimStart('/')));
+            var i = string.IsNullOrEmpty(id) ? "" : ("-|" + id.TrimStart('/'));
+            return $"{PathPrefix}{i}";
         }
 
         public string MakeOneDrivePath(Item onedriveItem)
         {
             return onedriveItem == null || IsRoot(onedriveItem)
                        ? string.Empty
-                       : (OneDriveStorage.MakeOneDrivePath(
+                       : OneDriveStorage.MakeOneDrivePath(
                            new Regex("^" + OneDriveStorage.RootPath).Replace(onedriveItem.ParentReference.Path, ""),
-                           onedriveItem.Name));
+                           onedriveItem.Name);
         }
 
         protected string MakeItemTitle(Item onedriveItem)
@@ -185,9 +185,9 @@ namespace ASC.Files.Thirdparty.OneDrive
             return file;
         }
 
-        public Folder<string> GetRootFolder(string folderId)
+        public async Task<Folder<string>> GetRootFolderAsync(string folderId)
         {
-            return ToFolder(GetOneDriveItem(""));
+            return ToFolder(await GetOneDriveItemAsync(""));
         }
 
         protected Item GetOneDriveItem(string itemId)
@@ -195,7 +195,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             var onedriveId = MakeOneDriveId(itemId);
             try
             {
-                return ProviderInfo.GetOneDriveItem(onedriveId);
+                return ProviderInfo.GetOneDriveItemAsync(onedriveId).Result;
             }
             catch (Exception ex)
             {
@@ -203,15 +203,47 @@ namespace ASC.Files.Thirdparty.OneDrive
             }
         }
 
-        protected override IEnumerable<string> GetChildren(string folderId)
+        protected async Task<Item> GetOneDriveItemAsync(string itemId)
         {
-            return GetOneDriveItems(folderId).Select(entry => MakeId(entry.Id));
+            var onedriveId = MakeOneDriveId(itemId);
+            try
+            {
+                return await ProviderInfo.GetOneDriveItemAsync(onedriveId);
+            }
+            catch (Exception ex)
+            {
+                return new ErrorItem(ex, onedriveId);
+            }
+        }
+
+        protected override async Task<IEnumerable<string>> GetChildrenAsync(string folderId)
+        {
+            var items = await GetOneDriveItemsAsync(folderId);
+            return items.Select(entry => MakeId(entry.Id));
         }
 
         protected List<Item> GetOneDriveItems(string parentId, bool? folder = null)
         {
             var onedriveFolderId = MakeOneDriveId(parentId);
-            var items = ProviderInfo.GetOneDriveItems(onedriveFolderId);
+            var items = ProviderInfo.GetOneDriveItemsAsync(onedriveFolderId).Result;
+
+            if (folder.HasValue)
+            {
+                if (folder.Value)
+                {
+                    return items.Where(i => i.Folder != null).ToList();
+                }
+
+                return items.Where(i => i.File != null).ToList();
+            }
+
+            return items;
+        }
+
+        protected async Task<List<Item>> GetOneDriveItemsAsync(string parentId, bool? folder = null)
+        {
+            var onedriveFolderId = MakeOneDriveId(parentId);
+            var items = await ProviderInfo.GetOneDriveItemsAsync(onedriveFolderId);
 
             if (folder.HasValue)
             {
@@ -254,9 +286,9 @@ namespace ASC.Files.Thirdparty.OneDrive
             if (!match.Success)
             {
                 var insertIndex = requestTitle.Length;
-                if (requestTitle.LastIndexOf(".", StringComparison.InvariantCulture) != -1)
+                if (requestTitle.LastIndexOf('.') != -1)
                 {
-                    insertIndex = requestTitle.LastIndexOf(".", StringComparison.InvariantCulture);
+                    insertIndex = requestTitle.LastIndexOf('.');
                 }
                 requestTitle = requestTitle.Insert(insertIndex, " (1)");
             }
@@ -268,7 +300,32 @@ namespace ASC.Files.Thirdparty.OneDrive
             return requestTitle;
         }
 
-        private static string MatchEvaluator(Match match)
+        protected async Task<string> GetAvailableTitleAsync(string requestTitle, string parentFolderId, Func<string, string, Task<bool>> isExist)
+        {
+            requestTitle = new Regex("\\.$").Replace(requestTitle, "_");
+            if (!await isExist(requestTitle, parentFolderId)) return requestTitle;
+
+            var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
+            var match = re.Match(requestTitle);
+
+            if (!match.Success)
+            {
+                var insertIndex = requestTitle.Length;
+                if (requestTitle.LastIndexOf(".", StringComparison.InvariantCulture) != -1)
+                {
+                    insertIndex = requestTitle.LastIndexOf(".", StringComparison.InvariantCulture);
+                }
+                requestTitle = requestTitle.Insert(insertIndex, " (1)");
+            }
+
+            while (await isExist(requestTitle, parentFolderId))
+            {
+                requestTitle = re.Replace(requestTitle, MatchEvaluator);
+            }
+            return requestTitle;
+        }
+
+        private string MatchEvaluator(Match match)
         {
             var index = Convert.ToInt32(match.Groups[2].Value);
             var staticText = match.Value.Substring(string.Format(" ({0})", index).Length);

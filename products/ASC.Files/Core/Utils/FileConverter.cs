@@ -35,6 +35,7 @@ using System.Security;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Web;
 
 using ASC.Common;
@@ -117,12 +118,12 @@ namespace ASC.Web.Files.Utils
             }
         }
 
-        public ConvertFileOperationResult GetStatus(KeyValuePair<File<T>, bool> pair, FileSecurity fileSecurity)
+        public async Task<ConvertFileOperationResult> GetStatusAsync(KeyValuePair<File<T>, bool> pair, FileSecurity fileSecurity)
         {
             var file = pair.Key;
             var key = GetKey(file);
             var operation = cache.Get<ConvertFileOperationResult>(key);
-            if (operation != null && (pair.Value || fileSecurity.CanRead(file)))
+            if (operation != null && (pair.Value || await fileSecurity.CanReadAsync(file)))
             {
                 lock (locker)
                 {
@@ -170,15 +171,16 @@ namespace ASC.Web.Files.Utils
                     {
                         timer.Change(Timeout.Infinite, Timeout.Infinite);
 
-                        conversionQueue.Where(x => !string.IsNullOrEmpty(x.Value.Processed)
+                        var queues = conversionQueue.Where(x => !string.IsNullOrEmpty(x.Value.Processed)
                                                    && (x.Value.Progress == 100 && DateTime.UtcNow - x.Value.StopDateTime > TimeSpan.FromMinutes(1) ||
                                                        DateTime.UtcNow - x.Value.StopDateTime > TimeSpan.FromMinutes(10)))
-                                       .ToList()
-                                       .ForEach(x =>
-                                       {
-                                           conversionQueue.Remove(x);
-                                           cache.Remove(GetKey(x.Key));
-                                       });
+                            .ToList();
+
+                        foreach (var q in queues)
+                        {
+                            conversionQueue.Remove(q);
+                            cache.Remove(GetKey(q.Key));
+                        }
 
                         logger.DebugFormat("Run CheckConvertFilesStatus: count {0}", conversionQueue.Count);
 
@@ -193,10 +195,11 @@ namespace ASC.Web.Files.Utils
                             .ToList();
                     }
 
+                    string convertedFileUrl = null;
+
                     foreach (var file in filesIsConverting)
                     {
                         var fileUri = file.ID.ToString();
-                        string convertedFileUrl;
                         int operationResultProgress;
 
                         try
@@ -244,7 +247,7 @@ namespace ASC.Web.Files.Utils
                             Thread.CurrentThread.CurrentCulture = culture;
                             Thread.CurrentThread.CurrentUICulture = culture;
 
-                            if (!fileSecurity.CanRead(file) && file.RootFolderType != FolderType.BUNCH)
+                            if (!fileSecurity.CanReadAsync(file).Result && file.RootFolderType != FolderType.BUNCH)
                             {
                                 //No rights in CRM after upload before attach
                                 throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
@@ -261,20 +264,18 @@ namespace ASC.Web.Files.Utils
                             var docKey = documentServiceHelper.GetDocKey(file);
 
                             fileUri = documentServiceConnector.ReplaceCommunityAdress(fileUri);
-                            operationResultProgress = documentServiceConnector.GetConvertedUri(fileUri, fileExtension, toExtension, docKey, password, null, null, true, out convertedFileUrl);
+                            (operationResultProgress, convertedFileUrl) = documentServiceConnector.GetConvertedUriAsync(fileUri, fileExtension, toExtension, docKey, password, null, null, true).Result;
                         }
                         catch (Exception exception)
                         {
-                            var password = exception.InnerException != null
-                                           && (exception.InnerException is DocumentService.DocumentServiceException documentServiceException)
+                            var password = exception.InnerException is DocumentService.DocumentServiceException documentServiceException
                                            && documentServiceException.Code == DocumentService.DocumentServiceException.ErrorCode.ConvertPassword;
 
                             logger.Error(string.Format("Error convert {0} with url {1}", file.ID, fileUri), exception);
                             lock (locker)
                             {
-                                if (conversionQueue.Keys.Contains(file))
+                                if (conversionQueue.TryGetValue(file, out var operationResult))
                                 {
-                                    var operationResult = conversionQueue[file];
                                     if (operationResult.Delete)
                                     {
                                         conversionQueue.Remove(file);
@@ -298,10 +299,8 @@ namespace ASC.Web.Files.Utils
                         {
                             lock (locker)
                             {
-                                if (conversionQueue.Keys.Contains(file))
+                                if (conversionQueue.TryGetValue(file, out var operationResult))
                                 {
-                                    var operationResult = conversionQueue[file];
-
                                     if (DateTime.Now - operationResult.StartDateTime > TimeSpan.FromMinutes(10))
                                     {
                                         operationResult.StopDateTime = DateTime.UtcNow;
@@ -326,7 +325,7 @@ namespace ASC.Web.Files.Utils
 
                         try
                         {
-                            newFile = fileConverter.SaveConvertedFile(file, convertedFileUrl);
+                            newFile = fileConverter.SaveConvertedFileAsync(file, convertedFileUrl).Result;
                         }
                         catch (Exception e)
                         {
@@ -339,9 +338,8 @@ namespace ASC.Web.Files.Utils
                         {
                             lock (locker)
                             {
-                                if (conversionQueue.Keys.Contains(file))
+                                if (conversionQueue.TryGetValue(file, out var operationResult))
                                 {
-                                    var operationResult = conversionQueue[file];
                                     if (operationResult.Delete)
                                     {
                                         conversionQueue.Remove(file);
@@ -352,9 +350,9 @@ namespace ASC.Web.Files.Utils
                                         if (newFile != null)
                                         {
                                             var folderDao = daoFactory.GetFolderDao<T>();
-                                            var folder = folderDao.GetFolder(newFile.FolderID);
-                                            var folderTitle = fileSecurity.CanRead(folder) ? folder.Title : null;
-                                            operationResult.Result = FileJsonSerializer(entryManager, newFile, folderTitle);
+                                            var folder = folderDao.GetFolderAsync(newFile.FolderID).Result;
+                                            var folderTitle = fileSecurity.CanReadAsync(folder).Result ? folder.Title : null;
+                                            operationResult.Result = FileJsonSerializerAsync(entryManager, newFile, folderTitle).Result;
                                         }
 
                                         operationResult.Progress = 100;
@@ -398,11 +396,11 @@ namespace ASC.Web.Files.Utils
             return string.Format("fileConvertation-{0}", f.ID);
         }
 
-        internal string FileJsonSerializer(EntryStatusManager EntryManager, File<T> file, string folderTitle)
+        internal async Task<string> FileJsonSerializerAsync(EntryStatusManager EntryManager, File<T> file, string folderTitle)
         {
             if (file == null) return string.Empty;
 
-            EntryManager.SetFileStatus(file);
+            await EntryManager.SetFileStatusAsync(file);
 
             var options = new JsonSerializerOptions()
             {
@@ -544,6 +542,7 @@ namespace ASC.Web.Files.Utils
         private EntryStatusManager EntryStatusManager { get; }
         private IServiceProvider ServiceProvider { get; }
         private IHttpContextAccessor HttpContextAccesor { get; }
+        private IHttpClientFactory ClientFactory { get; }
 
         public FileConverter(
             FileUtility fileUtility,
@@ -565,7 +564,8 @@ namespace ASC.Web.Files.Utils
             FileTrackerHelper fileTracker,
             BaseCommonLinkUtility baseCommonLinkUtility,
             EntryStatusManager entryStatusManager,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider,
+            IHttpClientFactory clientFactory)
         {
             FileUtility = fileUtility;
             FilesLinkUtility = filesLinkUtility;
@@ -587,6 +587,7 @@ namespace ASC.Web.Files.Utils
             BaseCommonLinkUtility = baseCommonLinkUtility;
             EntryStatusManager = entryStatusManager;
             ServiceProvider = serviceProvider;
+            ClientFactory = clientFactory;
         }
         public FileConverter(
             FileUtility fileUtility,
@@ -609,18 +610,19 @@ namespace ASC.Web.Files.Utils
             BaseCommonLinkUtility baseCommonLinkUtility,
             EntryStatusManager entryStatusManager,
             IServiceProvider serviceProvider,
-            IHttpContextAccessor httpContextAccesor)
+            IHttpContextAccessor httpContextAccesor,
+            IHttpClientFactory clientFactory)
             : this(fileUtility, filesLinkUtility, daoFactory, setupInfo, pathProvider, fileSecurity,
                   fileMarker, tenantManager, authContext, entryManager, filesSettingsHelper,
                   globalFolderHelper, filesMessageService, fileShareLink, documentServiceHelper, documentServiceConnector, fileTracker,
-                  baseCommonLinkUtility, entryStatusManager, serviceProvider)
+                  baseCommonLinkUtility, entryStatusManager, serviceProvider, clientFactory)
         {
             HttpContextAccesor = httpContextAccesor;
         }
 
         public bool EnableAsUploaded
         {
-            get { return FileUtility.ExtsMustConvert.Any() && !string.IsNullOrEmpty(FilesLinkUtility.DocServiceConverterUrl); }
+            get { return FileUtility.ExtsMustConvert.Count > 0 && !string.IsNullOrEmpty(FilesLinkUtility.DocServiceConverterUrl); }
         }
 
         public bool MustConvert<T>(File<T> file)
@@ -658,17 +660,17 @@ namespace ASC.Web.Files.Utils
             return FileUtility.ExtsConvertible.Keys.Contains(fileExtension) && FileUtility.ExtsConvertible[fileExtension].Contains(toExtension);
         }
 
-        public Stream Exec<T>(File<T> file)
+        public Task<Stream> ExecAsync<T>(File<T> file)
         {
-            return Exec(file, FileUtility.GetInternalExtension(file.Title));
-        }
+            return ExecAsync(file, FileUtility.GetInternalExtension(file.Title));
+        }      
 
-        public Stream Exec<T>(File<T> file, string toExtension)
+        public async Task<Stream> ExecAsync<T>(File<T> file, string toExtension, string password = null)
         {
             if (!EnableConvert(file, toExtension))
             {
                 var fileDao = DaoFactory.GetFileDao<T>();
-                return fileDao.GetFileStream(file);
+                return await fileDao.GetFileStreamAsync(file);
             }
 
             if (file.ContentLength > SetupInfo.AvailableFileSize)
@@ -679,30 +681,27 @@ namespace ASC.Web.Files.Utils
             var fileUri = PathProvider.GetFileStreamUrl(file);
             var docKey = DocumentServiceHelper.GetDocKey(file);
             fileUri = DocumentServiceConnector.ReplaceCommunityAdress(fileUri);
-            DocumentServiceConnector.GetConvertedUri(fileUri, file.ConvertedExtension, toExtension, docKey, null, null, null, false, out var convertUri);
 
-            if (WorkContext.IsMono && ServicePointManager.ServerCertificateValidationCallback == null)
-            {
-                ServicePointManager.ServerCertificateValidationCallback += (s, c, n, p) => true; //HACK: http://ubuntuforums.org/showthread.php?t=1841740
-            }
+            var uriTuple = await DocumentServiceConnector.GetConvertedUriAsync(fileUri, file.ConvertedExtension, toExtension, docKey, password, null, null, false);
+            var convertUri = uriTuple.ConvertedDocumentUri;
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(convertUri);
 
-            using var httpClient = new HttpClient();
-            using var response = httpClient.Send(request);
+            using var httpClient = ClientFactory.CreateClient();
+            using var response = await httpClient.SendAsync(request);
             return new ResponseStream(response);
         }
 
-        public FileOperationResult ExecSync<T>(File<T> file, string doc)
+        public async Task<FileOperationResult> ExecSynchronouslyAsync<T>(File<T> file, string doc)
         {
             var fileDao = DaoFactory.GetFileDao<T>();
             var fileSecurity = FileSecurity;
-            if (!fileSecurity.CanRead(file))
+            if (!await fileSecurity.CanReadAsync(file))
             {
-                var readLink = FileShareLink.Check(doc, true, fileDao, out file);
+                (var readLink, file) = await FileShareLink.CheckAsync(doc, true, fileDao);
                 if (file == null)
                 {
-                    throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
+                    throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
                 }
                 if (!readLink)
                 {
@@ -716,7 +715,9 @@ namespace ASC.Web.Files.Utils
             var docKey = DocumentServiceHelper.GetDocKey(file);
 
             fileUri = DocumentServiceConnector.ReplaceCommunityAdress(fileUri);
-            DocumentServiceConnector.GetConvertedUri(fileUri, fileExtension, toExtension, docKey, null, null, null, false, out var convertUri);
+
+            var uriTuple = await DocumentServiceConnector.GetConvertedUriAsync(fileUri, fileExtension, toExtension, docKey, null, null, null, false);
+            var convertUri = uriTuple.ConvertedDocumentUri;
 
             var operationResult = new ConvertFileOperationResult
             {
@@ -738,13 +739,13 @@ namespace ASC.Web.Files.Utils
 
             var operationResultError = string.Empty;
 
-            var newFile = SaveConvertedFile(file, convertUri);
+            var newFile = await SaveConvertedFileAsync(file, convertUri);
             if (newFile != null)
             {
                 var folderDao = DaoFactory.GetFolderDao<T>();
-                var folder = folderDao.GetFolder(newFile.FolderID);
-                var folderTitle = fileSecurity.CanRead(folder) ? folder.Title : null;
-                operationResult.Result = GetFileConverter<T>().FileJsonSerializer(EntryStatusManager, newFile, folderTitle);
+                var folder = await folderDao.GetFolderAsync(newFile.FolderID);
+                var folderTitle = await fileSecurity.CanReadAsync(folder) ? folder.Title : null;
+                operationResult.Result = await GetFileConverter<T>().FileJsonSerializerAsync(EntryStatusManager, newFile, folderTitle);
             }
 
             operationResult.Progress = 100;
@@ -759,7 +760,7 @@ namespace ASC.Web.Files.Utils
             return operationResult;
         }
 
-        public void ExecAsync<T>(File<T> file, bool deleteAfter, string password = null)
+        public async Task ExecAsynchronouslyAsync<T>(File<T> file, bool deleteAfter, string password = null)
         {
             if (!MustConvert(file))
             {
@@ -770,7 +771,7 @@ namespace ASC.Web.Files.Utils
                 return;
             }
 
-            FileMarker.RemoveMarkAsNew(file);
+            await FileMarker.RemoveMarkAsNewAsync(file);
             GetFileConverter<T>().Add(file, password, TenantManager.GetCurrentTenant().TenantId, AuthContext.CurrentAccount, deleteAfter, HttpContextAccesor?.HttpContext != null ? HttpContextAccesor.HttpContext.Request.GetUrlRewriter().ToString() : null, BaseCommonLinkUtility.ServerRootPath);
         }
 
@@ -784,22 +785,21 @@ namespace ASC.Web.Files.Utils
             return GetFileConverter<T>().IsConverting(file);
         }
 
-        public IEnumerable<FileOperationResult> GetStatus<T>(IEnumerable<KeyValuePair<File<T>, bool>> filesPair)
+        public async IAsyncEnumerable<FileOperationResult> GetStatusAsync<T>(IEnumerable<KeyValuePair<File<T>, bool>> filesPair)
         {
             var result = new List<FileOperationResult>();
             foreach (var pair in filesPair)
             {
-                var r = GetFileConverter<T>().GetStatus(pair, FileSecurity);
+                var r = await GetFileConverter<T>().GetStatusAsync(pair, FileSecurity);
 
                 if (r != null)
                 {
-                    result.Add(r);
+                    yield return r;
                 }
             }
-            return result;
         }
 
-        public File<T> SaveConvertedFile<T>(File<T> file, string convertedFileUrl)
+        public async Task<File<T>> SaveConvertedFileAsync<T>(File<T> file, string convertedFileUrl)
         {
             var fileSecurity = FileSecurity;
             var fileDao = DaoFactory.GetFileDao<T>();
@@ -808,7 +808,7 @@ namespace ASC.Web.Files.Utils
             var markAsTemplate = false;
             var newFileTitle = FileUtility.ReplaceFileExtension(file.Title, FileUtility.GetInternalExtension(file.Title));
 
-            if (!FilesSettingsHelper.StoreOriginalFiles && fileSecurity.CanEdit(file))
+            if (!FilesSettingsHelper.StoreOriginalFiles && await fileSecurity.CanEditAsync(file))
             {
                 newFile = (File<T>)file.Clone();
                 newFile.Version++;
@@ -819,9 +819,9 @@ namespace ASC.Web.Files.Utils
             {
                 var folderId = GlobalFolderHelper.GetFolderMy<T>();
 
-                var parent = folderDao.GetFolder(file.FolderID);
+                var parent = await folderDao.GetFolderAsync(file.FolderID);
                 if (parent != null
-                    && fileSecurity.CanCreate(parent))
+                    && await fileSecurity.CanCreateAsync(parent))
                 {
                     folderId = parent.ID;
                 }
@@ -830,8 +830,8 @@ namespace ASC.Web.Files.Utils
 
                 if (FilesSettingsHelper.UpdateIfExist && (parent != null && !folderId.Equals(parent.ID) || !file.ProviderEntry))
                 {
-                    newFile = fileDao.GetFile(folderId, newFileTitle);
-                    if (newFile != null && fileSecurity.CanEdit(newFile) && !EntryManager.FileLockedForMe(newFile.ID) && !FileTracker.IsEditing(newFile.ID))
+                    newFile = await fileDao.GetFileAsync(folderId, newFileTitle);
+                    if (newFile != null && await fileSecurity.CanEditAsync(newFile) && !await EntryManager.FileLockedForMeAsync(newFile.ID) && !FileTracker.IsEditing(newFile.ID))
                     {
                         newFile.Version++;
                     }
@@ -856,29 +856,24 @@ namespace ASC.Web.Files.Utils
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(convertedFileUrl);
 
-            using var httpClient = new HttpClient();
-
-            if (WorkContext.IsMono && ServicePointManager.ServerCertificateValidationCallback == null)
-            {
-                ServicePointManager.ServerCertificateValidationCallback += (s, c, n, p) => true; //HACK: http://ubuntuforums.org/showthread.php?t=1841740
-            }
+            var httpClient = ClientFactory.CreateClient();
 
             try
             {
-                using var response = httpClient.Send(request);
+                using var response = await httpClient.SendAsync(request);
                 using var convertedFileStream = new ResponseStream(response);
                 newFile.ContentLength = convertedFileStream.Length;
-                newFile = fileDao.SaveFile(newFile, convertedFileStream);
+                newFile = await fileDao.SaveFileAsync(newFile, convertedFileStream);
             }
             catch (HttpRequestException e)
             {
-                var errorString = string.Format("HttpRequestException: {0}", e.StatusCode);
+                var errorString = $"HttpRequestException: {e.StatusCode}";
 
                 if (e.StatusCode != HttpStatusCode.NotFound)
                 {
                     if (e.Message != null)
                     {
-                        errorString += string.Format(" Error message: {0}", e.Message);
+                        errorString += $" Error message: {e.Message}";
                     }
                 }
 
@@ -888,13 +883,13 @@ namespace ASC.Web.Files.Utils
             FilesMessageService.Send(newFile, MessageInitiator.DocsService, MessageAction.FileConverted, newFile.Title);
 
             var linkDao = DaoFactory.GetLinkDao();
-            linkDao.DeleteAllLink(file.ID.ToString());
+            await linkDao.DeleteAllLinkAsync(file.ID.ToString());
 
-            FileMarker.MarkAsNew(newFile);
+            await FileMarker.MarkAsNewAsync(newFile);
 
             var tagDao = DaoFactory.GetTagDao<T>();
-            var tags = tagDao.GetTags(file.ID, FileEntryType.File, TagType.System).ToList();
-            if (tags.Any())
+            var tags = await tagDao.GetTagsAsync(file.ID, FileEntryType.File, TagType.System).ToListAsync();
+            if (tags.Count > 0)
             {
                 tags.ForEach(r => r.EntryId = newFile.ID);
                 tagDao.SaveTags(tags);
@@ -941,7 +936,7 @@ namespace ASC.Web.Files.Utils
         public string ServerRootPath { get; set; }
     }
 
-    public class FileConverterQueueExtension
+    public static class FileConverterQueueExtension
     {
         public static void Register(DIHelper services)
         {
@@ -949,7 +944,7 @@ namespace ASC.Web.Files.Utils
         }
     }
 
-    public class FileConverterExtension
+    public static class FileConverterExtension
     {
         public static void Register(DIHelper services)
         {

@@ -115,12 +115,12 @@ namespace ASC.Thumbnails.Svc
 
                 ids = ae.Select(r => r.ef).ToList();
 
-                if (!ids.Any()) return;
+                if (ids.Count == 0) return;
 
                 table.RemoveRange(ids);
                 ef.SaveChanges();
 
-            } while (ids.Any());
+            } while (ids.Count > 0);
         }
     }
 
@@ -131,7 +131,7 @@ namespace ASC.Thumbnails.Svc
         public DbSet<DbWebstudioSettings> WebstudioSettings { get; }
     }
     
-public class MessagesRepositoryExtension
+    public static class MessagesRepositoryExtension
     {
         public static void Register(DIHelper services)
         {
