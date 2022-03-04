@@ -2,6 +2,7 @@ import React from "react";
 import SelectFolderInput from "files/SelectFolderInput";
 import ScheduleComponent from "./ScheduleComponent";
 import { inject, observer } from "mobx-react";
+import { BackupTypes } from "@appserver/common/constants";
 
 class DocumentsModule extends React.PureComponent {
   constructor(props) {
@@ -67,7 +68,9 @@ class DocumentsModule extends React.PureComponent {
 export default inject(({ backup }) => {
   const { setSelectedFolder, defaultFolderId, defaultStorageType } = backup;
 
-  const isDocumentsDefault = defaultStorageType === `0`;
+  const isDocumentsDefault =
+    defaultStorageType === `${BackupTypes.DocumentModuleType}`;
+
   const passedId = isDocumentsDefault ? defaultFolderId : "";
 
   return {

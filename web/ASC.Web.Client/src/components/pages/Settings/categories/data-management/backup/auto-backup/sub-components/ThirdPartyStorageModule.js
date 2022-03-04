@@ -1,7 +1,6 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
 import ComboBox from "@appserver/components/combobox";
-import { getBackupStorage } from "@appserver/common/api/settings";
 import GoogleCloudStorage from "./storages/GoogleCloudStorage";
 import RackspaceStorage from "./storages/RackspaceStorage";
 import SelectelStorage from "./storages/SelectelStorage";
@@ -20,7 +19,6 @@ class ThirdPartyStorageModule extends React.PureComponent {
     this.state = {
       availableOptions: [],
       availableStorage: {},
-   
     };
 
     thirdPartyStorage && this.getOptions(thirdPartyStorage);
@@ -35,13 +33,10 @@ class ThirdPartyStorageModule extends React.PureComponent {
   }
   componentDidUpdate(prevProps) {
     const { isSuccessSave, isReset, thirdPartyStorage } = this.props;
-  
 
     if (isSuccessSave && isSuccessSave !== prevProps.isSuccessSave) {
       thirdPartyStorage && this.getOptions(thirdPartyStorage);
     }
-
-   
   }
 
   getOptions = (storageBackup) => {
@@ -52,8 +47,6 @@ class ThirdPartyStorageModule extends React.PureComponent {
     let firstSetId = "";
     let options = [];
     let availableStorage = {};
-
-    let newState = {};
 
     for (let item = 0; item < storageBackup.length; item++) {
       const backupElem = storageBackup[item];
@@ -81,8 +74,6 @@ class ThirdPartyStorageModule extends React.PureComponent {
       if (current) {
         isSetDefaultIdStorage = true;
         !this._isMount ? setStorageId(null, id) : setStorageId(id);
-
-       
       }
 
       if (!isFirstSet && isSet) {
@@ -93,31 +84,27 @@ class ThirdPartyStorageModule extends React.PureComponent {
 
     if (!isSetDefaultIdStorage && !isFirstSet) {
       const currentStorage = availableStorage[googleStorageId];
-      const { id, title } = currentStorage;
+      const { id } = currentStorage;
 
       !this._isMount ? setStorageId(null, id) : setStorageId(id);
-
-     
     }
 
     if (!isSetDefaultIdStorage && isFirstSet) {
       const currentStorage = availableStorage[firstSetId];
-      const { id, title } = currentStorage;
+      const { id } = currentStorage;
 
       !this._isMount ? setStorageId(null, id) : setStorageId(id);
-
-    
     }
 
-    newState = {
-
-      availableOptions: options,
-      availableStorage: availableStorage,
-    };
-
     this._isMount
-      ? this.setState({ ...newState })
-      : (this.state = { ...newState });
+      ? this.setState({
+          availableOptions: options,
+          availableStorage: availableStorage,
+        })
+      : (this.state = {
+          availableOptions: options,
+          availableStorage: availableStorage,
+        });
   };
 
   onSelect = (option) => {
@@ -127,8 +114,6 @@ class ThirdPartyStorageModule extends React.PureComponent {
     const storage = availableStorage[selectedStorageId];
 
     setStorageId(storage.id);
-
-  
   };
 
   render() {
@@ -138,11 +123,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
       selectedStorageId,
       ...rest
     } = this.props;
-    const {
-      availableOptions,
-      availableStorage,
-  
-    } = this.state;
+    const { availableOptions, availableStorage } = this.state;
 
     const commonProps = {
       selectedStorage: availableStorage[selectedStorageId],
@@ -153,6 +134,8 @@ class ThirdPartyStorageModule extends React.PureComponent {
 
     const { GoogleId, RackspaceId, SelectelId, AmazonId } = ThirdPartyStorages;
 
+    const storageTitle = availableStorage[selectedStorageId]?.title;
+
     return (
       <StyledAutoBackup>
         <div className="auto-backup_storages-module">
@@ -160,7 +143,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
             options={availableOptions}
             selectedOption={{
               key: 0,
-              label: availableStorage[selectedStorageId]?.title,
+              label: storageTitle,
             }}
             onSelect={this.onSelect}
             isDisabled={isLoadingData}
@@ -194,7 +177,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
 
 export default inject(({ backup }) => {
   const { thirdPartyStorage, setStorageId, selectedStorageId } = backup;
-  console.log("selectedStorageId in module", selectedStorageId);
+
   return {
     thirdPartyStorage,
     setStorageId,

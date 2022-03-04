@@ -14,7 +14,7 @@ import {
 import toastr from "@appserver/components/toast/toastr";
 import SelectFolderDialog from "files/SelectFolderDialog";
 import Loader from "@appserver/components/loader";
-import { AppServerConfig } from "@appserver/common/constants";
+import { AppServerConfig, BackupTypes } from "@appserver/common/constants";
 import { combineUrl } from "@appserver/common/utils";
 import FloatingButton from "@appserver/common/components/FloatingButton";
 import { StyledModules, StyledAutoBackup } from "../StyledBackup";
@@ -26,14 +26,15 @@ import { getBackupStorage } from "@appserver/common/api/settings";
 import { isMobileOnly } from "react-device-detect";
 
 const { proxyURL } = AppServerConfig;
+const {
+  DocumentModuleType,
+  ResourcesModuleType,
+  StorageModuleType,
+  EveryDayType,
+  EveryWeekType,
+  EveryMonthType,
+} = BackupTypes;
 
-const DOCUMENT_MODULE_TYPE = 0;
-const RESOURCES_MODULE_TYPE = 1;
-const STORAGES_MODULE_TYPE = 5;
-
-const EVERY_DAY_TYPE = 0;
-const EVERY_WEEK_TYPE = 1;
-const EVERY_MONTH_TYPE = 2;
 class AutomaticBackup extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -279,7 +280,7 @@ class AutomaticBackup extends React.PureComponent {
     const { isEnable } = this.state;
     const { seStorageType, backupSchedule } = this.props;
 
-    seStorageType(DOCUMENT_MODULE_TYPE.toString());
+    seStorageType(DocumentModuleType.toString());
 
     if (backupSchedule) {
       this.setState({
@@ -397,14 +398,14 @@ class AutomaticBackup extends React.PureComponent {
       let day, period;
 
       if (selectedPeriodNumber === "1") {
-        period = EVERY_WEEK_TYPE;
+        period = EveryWeekType;
         day = selectedWeekday;
       } else {
         if (selectedPeriodNumber === "2") {
-          period = EVERY_MONTH_TYPE;
+          period = EveryMonthType;
           day = selectedMonthDay;
         } else {
-          period = EVERY_DAY_TYPE;
+          period = EveryDayType;
           day = null;
         }
       }
@@ -412,10 +413,10 @@ class AutomaticBackup extends React.PureComponent {
       let time = selectedHour.substring(0, selectedHour.indexOf(":"));
 
       const storageType = isCheckedDocuments
-        ? DOCUMENT_MODULE_TYPE
+        ? DocumentModuleType
         : isCheckedThirdParty
-        ? RESOURCES_MODULE_TYPE
-        : STORAGES_MODULE_TYPE;
+        ? ResourcesModuleType
+        : StorageModuleType;
 
       const storageParams = [
         {
@@ -576,7 +577,15 @@ class AutomaticBackup extends React.PureComponent {
       isChangedInStorage,
     } = this.state;
 
-    console.log("backupSchedule", backupSchedule);
+    console.log(
+      "backupSchedule",
+      DocumentModuleType,
+      ResourcesModuleType,
+      StorageModuleType,
+      EveryDayType,
+      EveryWeekType,
+      EveryMonthType
+    );
 
     const isDisabledThirdPartyList = !!this.commonThirdPartyList;
 
@@ -622,7 +631,7 @@ class AutomaticBackup extends React.PureComponent {
               <RadioButton
                 {...commonRadioButtonProps}
                 label={t("DocumentsModule")}
-                name={`${DOCUMENT_MODULE_TYPE}`}
+                name={`${DocumentModuleType}`}
                 key={0}
                 isChecked={isCheckedDocuments}
                 isDisabled={isLoadingData}
@@ -639,7 +648,7 @@ class AutomaticBackup extends React.PureComponent {
               <RadioButton
                 {...commonRadioButtonProps}
                 label={t("ThirdPartyResource")}
-                name={`${RESOURCES_MODULE_TYPE}`}
+                name={`${ResourcesModuleType}`}
                 isChecked={isCheckedThirdParty}
                 isDisabled={isLoadingData || isDisabledThirdPartyList}
               />
@@ -662,7 +671,7 @@ class AutomaticBackup extends React.PureComponent {
               <RadioButton
                 {...commonRadioButtonProps}
                 label={t("ThirdPartyStorage")}
-                name={`${STORAGES_MODULE_TYPE}`}
+                name={`${StorageModuleType}`}
                 isChecked={isCheckedThirdPartyStorage}
                 isDisabled={isLoadingData}
               />
@@ -745,11 +754,10 @@ export default inject(({ auth, backup }) => {
     selectedFolderId,
     selectedStorageId,
   } = backup;
-  const isCheckedDocuments = selectedStorageType === `${DOCUMENT_MODULE_TYPE}`;
-  const isCheckedThirdParty =
-    selectedStorageType === `${RESOURCES_MODULE_TYPE}`;
+  const isCheckedDocuments = selectedStorageType === `${DocumentModuleType}`;
+  const isCheckedThirdParty = selectedStorageType === `${ResourcesModuleType}`;
   const isCheckedThirdPartyStorage =
-    selectedStorageType === `${STORAGES_MODULE_TYPE}`;
+    selectedStorageType === `${StorageModuleType}`;
 
   return {
     language,

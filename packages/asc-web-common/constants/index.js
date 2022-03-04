@@ -142,11 +142,28 @@ export const LoaderStyle = {
   animate: true,
 };
 
+/**
+ * Enum for third-party storages.
+ * @readonly
+ */
 export const ThirdPartyStorages = Object.freeze({
   GoogleId: "googlecloud",
   RackspaceId: "rackspace",
   SelectelId: "selectel",
   AmazonId: "s3",
+});
+/**
+ * Enum for backup types.
+ * @readonly
+ */
+export const BackupTypes = Object.freeze({
+  DocumentModuleType: 0,
+  ResourcesModuleType: 1,
+  StorageModuleType: 5,
+
+  EveryDayType: 0,
+  EveryWeekType: 1,
+  EveryMonthType: 2,
 });
 
 import config from "./AppServerConfig";

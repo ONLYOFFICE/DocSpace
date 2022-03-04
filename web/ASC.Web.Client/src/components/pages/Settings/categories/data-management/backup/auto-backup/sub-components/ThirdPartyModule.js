@@ -3,6 +3,7 @@ import { withTranslation } from "react-i18next";
 import SelectFolderInput from "files/SelectFolderInput";
 import ScheduleComponent from "./ScheduleComponent";
 import { inject, observer } from "mobx-react";
+import { BackupTypes } from "@appserver/common/constants";
 class ThirdPartyModule extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -24,26 +25,27 @@ class ThirdPartyModule extends React.PureComponent {
     });
   };
 
+  onSelectFolder = (selectedFolder) => {
+    const { setSelectedFolder } = this.props;
+    setSelectedFolder(selectedFolder);
+  };
+
   render() {
     const { isPanelVisible } = this.state;
     const {
-   
       isError,
       isLoadingData,
       isReset,
-      isThirdPartyDefault,
-      defaultSelectedFolder,
       isSuccessSave,
-      setSelectedFolder,
+      passedId,
       ...rest
     } = this.props;
 
-    const passedId = isThirdPartyDefault ? defaultSelectedFolder : "";
     return (
       <>
         <div className="auto-backup_folder-input">
           <SelectFolderInput
-            onSelectFolder={setSelectedFolder}
+            onSelectFolder={this.onSelectFolder}
             onClose={this.onClose}
             onClickInput={this.onClickInput}
             isPanelVisible={isPanelVisible}
@@ -62,9 +64,14 @@ class ThirdPartyModule extends React.PureComponent {
 }
 
 export default inject(({ backup }) => {
-  const { setSelectedFolder } = backup;
+  const { setSelectedFolder, defaultFolderId, defaultStorageType } = backup;
+
+  const isResourcesDefault =
+    defaultStorageType === `${BackupTypes.ResourcesModuleType}`;
+  const passedId = isResourcesDefault ? defaultFolderId : "";
 
   return {
     setSelectedFolder,
+    passedId,
   };
 })(withTranslation("Settings")(observer(ThirdPartyModule)));
