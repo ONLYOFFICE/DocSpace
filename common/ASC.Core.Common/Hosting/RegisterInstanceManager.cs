@@ -34,7 +34,9 @@ public class RegisterInstanceManager<T> : IRegisterInstanceManager<T> where T : 
 
         if (instances.Any() && !instances.Any(x => x.IsActive))
         {
-            if (GetFirstAliveInstance(instances).InstanceRegistrationId == instance.InstanceRegistrationId)
+            var firstAliceInstance = GetFirstAliveInstance(instances);
+
+            if (firstAliceInstance != null && firstAliceInstance.InstanceRegistrationId == instance.InstanceRegistrationId)
             {
                 instance.IsActive = true;
             }
@@ -69,7 +71,7 @@ public class RegisterInstanceManager<T> : IRegisterInstanceManager<T> where T : 
         return oldRegistrations.Select(x => x.InstanceRegistrationId).ToList();
     }
 
-    private InstanceRegistration GetFirstAliveInstance(IEnumerable<InstanceRegistration> instances)
+    private InstanceRegistration? GetFirstAliveInstance(IEnumerable<InstanceRegistration> instances)
     {
         Func<InstanceRegistration, long> _getTicksCreationService = x => Convert.ToInt64(x.InstanceRegistrationId.Split('_')[1]);
 

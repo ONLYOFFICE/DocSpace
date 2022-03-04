@@ -1,13 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using ASC.Core.Common.Hosting.Interfaces;
 
-using ASC.Common;
-
-using ASC.Core.Common.EF;
-using ASC.Core.Common.Hosting.Interfaces;
-
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 
 namespace ASC.Core.Common.Hosting;
@@ -15,10 +7,14 @@ namespace ASC.Core.Common.Hosting;
 [Scope]
 public class RegisterInstanceDao<T> : IRegisterInstanceDao<T> where T : IHostedService
 {
+    private readonly ILog _logger;
     private InstanceRegistrationContext _instanceRegistrationContext;
 
-    public RegisterInstanceDao(DbContextManager<InstanceRegistrationContext> dbContextManager)
+    public RegisterInstanceDao(
+        IOptionsMonitor<ILog> options,
+        DbContextManager<InstanceRegistrationContext> dbContextManager)
     {
+        _logger = options.CurrentValue;
         _instanceRegistrationContext = dbContextManager.Value;
     }
 
@@ -31,7 +27,29 @@ public class RegisterInstanceDao<T> : IRegisterInstanceDao<T> where T : IHostedS
            await  _instanceRegistrationContext.AddAsync(obj);
         }
 
-        await _instanceRegistrationContext.SaveChangesAsync();
+        bool saveFailed;
+
+        do
+        {
+            saveFailed = false;
+
+            try
+            {
+                await _instanceRegistrationContext.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                _logger.TraceFormat("DbUpdateConcurrencyException: then updating {instanceName} at {time} time.", obj.InstanceRegistrationId, DateTimeOffset.Now);
+
+                saveFailed = true;
+
+                var entry = ex.Entries.Single();
+
+                if (entry.State == EntityState.Modified)
+                    entry.State = EntityState.Added;
+            }
+        }
+        while (saveFailed);
     }
 
     public async Task<IEnumerable<InstanceRegistration>> GetAll()

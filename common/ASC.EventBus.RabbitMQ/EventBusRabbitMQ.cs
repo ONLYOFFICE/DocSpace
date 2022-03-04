@@ -16,6 +16,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
     private readonly ILifetimeScope _autofac;
     private readonly int _retryCount;
 
+    private string _consumerTag;
     private IModel _consumerChannel;
     private string _queueName;
     private string _deadLetterQueueName;
@@ -182,11 +183,18 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
 
         if (_consumerChannel != null)
         {
+            if (!String.IsNullOrEmpty(_consumerTag))
+            {
+                _logger.TraceFormat("Consumer tag {ConsumerTag} already exist. Cancelled BasicConsume again", _consumerTag );
+
+                return;
+            }
+
             var consumer = new AsyncEventingBasicConsumer(_consumerChannel);
 
             consumer.Received += Consumer_Received;
 
-            _consumerChannel.BasicConsume(
+            _consumerTag = _consumerChannel.BasicConsume(
                 queue: _queueName,
                 autoAck: false,
                 consumer: consumer);
@@ -282,7 +290,8 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
 
             _consumerChannel.Dispose();
             _consumerChannel = CreateConsumerChannel();
-
+            _consumerTag = String.Empty;
+            
             StartBasicConsume();
         };
 

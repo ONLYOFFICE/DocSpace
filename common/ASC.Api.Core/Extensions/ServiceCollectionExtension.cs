@@ -39,7 +39,7 @@ namespace ASC.Api.Core.Extensions
                     var factory = new ConnectionFactory()
                     {
                         HostName = settings.HostName,
-                        DispatchConsumersAsync = true
+                        DispatchConsumersAsync = true                        
                     };
 
                     if (!string.IsNullOrEmpty(settings.UserName))
@@ -71,7 +71,7 @@ namespace ASC.Api.Core.Extensions
                     var logger = sp.GetRequiredService<IOptionsMonitor<ILog>>();
                     var eventBusSubcriptionsManager = sp.GetRequiredService<IEventBusSubscriptionsManager>();
 
-                    var subscriptionClientName = "backup";
+                    var subscriptionClientName = "asc_event_bus_default_queue";
 
                     if (!string.IsNullOrEmpty(cfg["core:eventBus:subscriptionClientName"]))
                     {
@@ -104,6 +104,10 @@ namespace ASC.Api.Core.Extensions
 
         }
 
+        /// <remarks>
+        /// Add a IHostedService for given type. 
+        /// Only one copy of this instance type will active in multi process architecture.
+        /// </remarks>
         public static void AddActivePassiveHostedService<T>(this IServiceCollection services) where T : class, IHostedService
         {
             var diHelper = new DIHelper(services);
