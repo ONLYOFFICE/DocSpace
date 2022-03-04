@@ -9,14 +9,6 @@ $AllProtocols = [System.Net.SecurityProtocolType]'Ssl3,Tls,Tls11,Tls12,Tls13'
 #                  name - name of the dowmloaded component
 #                  link - component download link
 
-# Функция 'DownloadComponents' скачивает некоторые компоненты, которые нужны при сборке
-#
-# Принимает два параметра: список хэш-таблиц и путь загрузки
-#
-# Хэш-таблица состоит из: download_allways ($true/$false) - должен ли этот компонент скачиваться каждый раз
-#                         name - имя загружаемого компонента
-#                         link - ссылка на скачивание компонента
-
 function DownloadComponents {
 
   param ( $prereq_list, $path )
@@ -65,41 +57,42 @@ $prerequisites = @(
 )
 
 $path_sql = "${pwd}\build\install\docker\config\"
+$url_sql = "https://raw.githubusercontent.com/ONLYOFFICE/CommunityServer/master/build/sql/"
 
 $sql_community = @(
   @{  
     download_allways = $true; 
     name = "onlyoffice.sql"; 
-    link = "https://raw.githubusercontent.com/ONLYOFFICE/CommunityServer/master/build/sql/onlyoffice.sql";
+    link = $url_sql + "onlyoffice.sql";
   }
 
   @{  
     download_allways = $true; 
     name = "onlyoffice.data.sql"; 
-    link = "https://raw.githubusercontent.com/ONLYOFFICE/CommunityServer/master/build/sql/onlyoffice.data.sql";
+    link = $url_sql + "onlyoffice.data.sql";
   }
   @{  
     download_allways = $true; 
     name = "onlyoffice.upgradev110.sql"; 
-    link = "https://raw.githubusercontent.com/ONLYOFFICE/CommunityServer/master/build/sql/onlyoffice.upgradev110.sql";
+    link = $url_sql + "onlyoffice.upgradev110.sql";
   }
 
   @{  
     download_allways = $true; 
     name = "onlyoffice.upgradev111.sql"; 
-    link = "https://raw.githubusercontent.com/ONLYOFFICE/CommunityServer/master/build/sql/onlyoffice.upgradev111.sql";
+    link = $url_sql + "onlyoffice.upgradev111.sql";
   }
 
   @{  
     download_allways = $true; 
     name = "onlyoffice.upgradev115.sql"; 
-    link = "https://raw.githubusercontent.com/ONLYOFFICE/CommunityServer/master/build/sql/onlyoffice.upgradev115.sql";
+    link = $url_sql + "onlyoffice.upgradev115.sql";
   }
 
   @{  
     download_allways = $true; 
     name = "onlyoffice.upgradev116.sql"; 
-    link = "https://raw.githubusercontent.com/ONLYOFFICE/CommunityServer/master/build/sql/onlyoffice.upgradev116.sql";
+    link = $url_sql + "onlyoffice.upgradev116.sql";
   }
 )
 
