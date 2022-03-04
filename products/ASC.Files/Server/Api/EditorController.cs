@@ -36,19 +36,19 @@ public class EditorController : ApiControllerBase
     /// <category>Files</category>
     /// <returns></returns>
     [Update("file/{fileId}/saveediting")]
-    public Task<FileWrapper<string>> SaveEditingFromFormAsync(string fileId, [FromForm] SaveEditingModel model)
+    public Task<FileDto<string>> SaveEditingFromFormAsync(string fileId, [FromForm] SaveEditingRequestDto requestDto)
     {
-        using var stream = _filesControllerHelperInt.GetFileFromRequest(model).OpenReadStream();
+        using var stream = _filesControllerHelperInt.GetFileFromRequest(requestDto).OpenReadStream();
 
-        return _filesControllerHelperString.SaveEditingAsync(fileId, model.FileExtension, model.DownloadUri, stream, model.Doc, model.Forcesave);
+        return _filesControllerHelperString.SaveEditingAsync(fileId, requestDto.FileExtension, requestDto.DownloadUri, stream, requestDto.Doc, requestDto.Forcesave);
     }
 
     [Update("file/{fileId:int}/saveediting")]
-    public Task<FileWrapper<int>> SaveEditingFromFormAsync(int fileId, [FromForm] SaveEditingModel model)
+    public Task<FileDto<int>> SaveEditingFromFormAsync(int fileId, [FromForm] SaveEditingRequestDto requestDto)
     {
-        using var stream = _filesControllerHelperInt.GetFileFromRequest(model).OpenReadStream();
+        using var stream = _filesControllerHelperInt.GetFileFromRequest(requestDto).OpenReadStream();
 
-        return _filesControllerHelperInt.SaveEditingAsync(fileId, model.FileExtension, model.DownloadUri, stream, model.Doc, model.Forcesave);
+        return _filesControllerHelperInt.SaveEditingAsync(fileId, requestDto.FileExtension, requestDto.DownloadUri, stream, requestDto.Doc, requestDto.Forcesave);
     }
 
     /// <summary>
@@ -61,23 +61,23 @@ public class EditorController : ApiControllerBase
     /// <returns></returns>
     [Create("file/{fileId}/startedit")]
     [Consumes("application/json")]
-    public async Task<object> StartEditFromBodyAsync(string fileId, [FromBody] StartEditModel model)
+    public async Task<object> StartEditFromBodyAsync(string fileId, [FromBody] StartEditRequestDto requestDto)
     {
-        return await _filesControllerHelperString.StartEditAsync(fileId, model.EditingAlone, model.Doc);
+        return await _filesControllerHelperString.StartEditAsync(fileId, requestDto.EditingAlone, requestDto.Doc);
     }
 
     [Create("file/{fileId}/startedit")]
     [Consumes("application/x-www-form-urlencoded")]
-    public async Task<object> StartEditFromFormAsync(string fileId, [FromForm] StartEditModel model)
+    public async Task<object> StartEditFromFormAsync(string fileId, [FromForm] StartEditRequestDto requestDto)
     {
-        return await _filesControllerHelperString.StartEditAsync(fileId, model.EditingAlone, model.Doc);
+        return await _filesControllerHelperString.StartEditAsync(fileId, requestDto.EditingAlone, requestDto.Doc);
     }
 
     [Create("file/{fileId:int}/startedit")]
     [Consumes("application/json")]
-    public async Task<object> StartEditFromBodyAsync(int fileId, [FromBody] StartEditModel model)
+    public async Task<object> StartEditFromBodyAsync(int fileId, [FromBody] StartEditRequestDto requestDto)
     {
-        return await _filesControllerHelperInt.StartEditAsync(fileId, model.EditingAlone, model.Doc);
+        return await _filesControllerHelperInt.StartEditAsync(fileId, requestDto.EditingAlone, requestDto.Doc);
     }
 
     [Create("file/{fileId:int}/startedit")]
@@ -88,9 +88,9 @@ public class EditorController : ApiControllerBase
 
     [Create("file/{fileId:int}/startedit")]
     [Consumes("application/x-www-form-urlencoded")]
-    public async Task<object> StartEditFromFormAsync(int fileId, [FromForm] StartEditModel model)
+    public async Task<object> StartEditFromFormAsync(int fileId, [FromForm] StartEditRequestDto requestDto)
     {
-        return await _filesControllerHelperInt.StartEditAsync(fileId, model.EditingAlone, model.Doc);
+        return await _filesControllerHelperInt.StartEditAsync(fileId, requestDto.EditingAlone, requestDto.Doc);
     }
 
     /// <summary>
@@ -145,16 +145,16 @@ public class EditorController : ApiControllerBase
     /// <param name="docServiceUrlPortal">Community Server Address</param>
     /// <returns></returns>
     [Update("docservice")]
-    public Task<IEnumerable<string>> CheckDocServiceUrlFromBodyAsync([FromBody] CheckDocServiceUrlModel model)
+    public Task<IEnumerable<string>> CheckDocServiceUrlFromBodyAsync([FromBody] CheckDocServiceUrlRequestDto requestDto)
     {
-        return CheckDocServiceUrlAsync(model);
+        return CheckDocServiceUrlAsync(requestDto);
     }
 
     [Update("docservice")]
     [Consumes("application/x-www-form-urlencoded")]
-    public Task<IEnumerable<string>> CheckDocServiceUrlFromFormAsync([FromForm] CheckDocServiceUrlModel model)
+    public Task<IEnumerable<string>> CheckDocServiceUrlFromFormAsync([FromForm] CheckDocServiceUrlRequestDto requestDto)
     {
-        return CheckDocServiceUrlAsync(model);
+        return CheckDocServiceUrlAsync(requestDto);
     }
 
     /// <visible>false</visible>
@@ -194,11 +194,11 @@ public class EditorController : ApiControllerBase
         };
     }
 
-    private Task<IEnumerable<string>> CheckDocServiceUrlAsync(CheckDocServiceUrlModel model)
+    private Task<IEnumerable<string>> CheckDocServiceUrlAsync(CheckDocServiceUrlRequestDto requestDto)
     {
-        _filesLinkUtility.DocServiceUrl = model.DocServiceUrl;
-        _filesLinkUtility.DocServiceUrlInternal = model.DocServiceUrlInternal;
-        _filesLinkUtility.DocServicePortalUrl = model.DocServiceUrlPortal;
+        _filesLinkUtility.DocServiceUrl = requestDto.DocServiceUrl;
+        _filesLinkUtility.DocServiceUrlInternal = requestDto.DocServiceUrlInternal;
+        _filesLinkUtility.DocServicePortalUrl = requestDto.DocServiceUrlPortal;
 
         _messageService.Send(MessageAction.DocumentServiceLocationSetting);
 
@@ -218,9 +218,9 @@ public class EditorController : ApiControllerBase
 
         return new[]
         {
-                    _filesLinkUtility.DocServiceUrl,
-                    _filesLinkUtility.DocServiceUrlInternal,
-                    _filesLinkUtility.DocServicePortalUrl
+            _filesLinkUtility.DocServiceUrl,
+            _filesLinkUtility.DocServiceUrlInternal,
+            _filesLinkUtility.DocServicePortalUrl
         };
     }
 }

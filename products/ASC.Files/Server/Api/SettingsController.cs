@@ -30,16 +30,16 @@ public class SettingsController : ApiControllerBase
     /// <param name="set"></param>
     /// <returns></returns>
     [Update(@"thirdparty")]
-    public bool ChangeAccessToThirdpartyFromBody([FromBody] SettingsModel model)
+    public bool ChangeAccessToThirdpartyFromBody([FromBody] SettingsRequestDto requestDto)
     {
-        return _fileStorageServiceString.ChangeAccessToThirdparty(model.Set);
+        return _fileStorageServiceString.ChangeAccessToThirdparty(requestDto.Set);
     }
 
     [Update(@"thirdparty")]
     [Consumes("application/x-www-form-urlencoded")]
-    public bool ChangeAccessToThirdpartyFromForm([FromForm] SettingsModel model)
+    public bool ChangeAccessToThirdpartyFromForm([FromForm] SettingsRequestDto requestDto)
     {
-        return _fileStorageServiceString.ChangeAccessToThirdparty(model.Set);
+        return _fileStorageServiceString.ChangeAccessToThirdparty(requestDto.Set);
     }
 
     /// <summary>
@@ -48,16 +48,16 @@ public class SettingsController : ApiControllerBase
     /// <param name="set"></param>
     /// <returns></returns>
     [Update(@"changedeleteconfrim")]
-    public bool ChangeDeleteConfrimFromBody([FromBody] SettingsModel model)
+    public bool ChangeDeleteConfrimFromBody([FromBody] SettingsRequestDto requestDto)
     {
-        return _fileStorageServiceString.ChangeDeleteConfrim(model.Set);
+        return _fileStorageServiceString.ChangeDeleteConfrim(requestDto.Set);
     }
 
     [Update(@"changedeleteconfrim")]
     [Consumes("application/x-www-form-urlencoded")]
-    public bool ChangeDeleteConfrimFromForm([FromForm] SettingsModel model)
+    public bool ChangeDeleteConfrimFromForm([FromForm] SettingsRequestDto requestDto)
     {
-        return _fileStorageServiceString.ChangeDeleteConfrim(model.Set);
+        return _fileStorageServiceString.ChangeDeleteConfrim(requestDto.Set);
     }
 
     /// <summary>
@@ -67,15 +67,15 @@ public class SettingsController : ApiControllerBase
     /// <category>Settings</category>
     /// <returns></returns>
     [Update(@"settings/downloadtargz")]
-    public ICompress ChangeDownloadZipFromBody([FromBody] DisplayModel model)
+    public ICompress ChangeDownloadZipFromBody([FromBody] DisplayRequestDto requestDto)
     {
-        return _fileStorageServiceString.ChangeDownloadTarGz(model.Set);
+        return _fileStorageServiceString.ChangeDownloadTarGz(requestDto.Set);
     }
 
     [Update(@"settings/downloadtargz")]
-    public ICompress ChangeDownloadZipFromForm([FromForm] DisplayModel model)
+    public ICompress ChangeDownloadZipFromForm([FromForm] DisplayRequestDto requestDto)
     {
-        return _fileStorageServiceString.ChangeDownloadTarGz(model.Set);
+        return _fileStorageServiceString.ChangeDownloadTarGz(requestDto.Set);
     }
 
     /// <summary>
@@ -85,16 +85,16 @@ public class SettingsController : ApiControllerBase
     /// <category>Settings</category>
     /// <returns></returns>
     [Update(@"settings/favorites")]
-    public bool DisplayFavoriteFromBody([FromBody] DisplayModel model)
+    public bool DisplayFavoriteFromBody([FromBody] DisplayRequestDto requestDto)
     {
-        return _fileStorageServiceString.DisplayFavorite(model.Set);
+        return _fileStorageServiceString.DisplayFavorite(requestDto.Set);
     }
 
     [Update(@"settings/favorites")]
     [Consumes("application/x-www-form-urlencoded")]
-    public bool DisplayFavoriteFromForm([FromForm] DisplayModel model)
+    public bool DisplayFavoriteFromForm([FromForm] DisplayRequestDto requestDto)
     {
-        return _fileStorageServiceString.DisplayFavorite(model.Set);
+        return _fileStorageServiceString.DisplayFavorite(requestDto.Set);
     }
 
     /// <summary>
@@ -104,16 +104,16 @@ public class SettingsController : ApiControllerBase
     /// <category>Settings</category>
     /// <returns></returns>
     [Update(@"displayRecent")]
-    public bool DisplayRecentFromBody([FromBody] DisplayModel model)
+    public bool DisplayRecentFromBody([FromBody] DisplayRequestDto requestDto)
     {
-        return _fileStorageServiceString.DisplayRecent(model.Set);
+        return _fileStorageServiceString.DisplayRecent(requestDto.Set);
     }
 
     [Update(@"displayRecent")]
     [Consumes("application/x-www-form-urlencoded")]
-    public bool DisplayRecentFromForm([FromForm] DisplayModel model)
+    public bool DisplayRecentFromForm([FromForm] DisplayRequestDto requestDto)
     {
-        return _fileStorageServiceString.DisplayRecent(model.Set);
+        return _fileStorageServiceString.DisplayRecent(requestDto.Set);
     }
 
     /// <summary>
@@ -123,16 +123,16 @@ public class SettingsController : ApiControllerBase
     /// <category>Settings</category>
     /// <returns></returns>
     [Update(@"settings/templates")]
-    public bool DisplayTemplatesFromBody([FromBody] DisplayModel model)
+    public bool DisplayTemplatesFromBody([FromBody] DisplayRequestDto requestDto)
     {
-        return _fileStorageServiceString.DisplayTemplates(model.Set);
+        return _fileStorageServiceString.DisplayTemplates(requestDto.Set);
     }
 
     [Update(@"settings/templates")]
     [Consumes("application/x-www-form-urlencoded")]
-    public bool DisplayTemplatesFromForm([FromForm] DisplayModel model)
+    public bool DisplayTemplatesFromForm([FromForm] DisplayRequestDto requestDto)
     {
-        return _fileStorageServiceString.DisplayTemplates(model.Set);
+        return _fileStorageServiceString.DisplayTemplates(requestDto.Set);
     }
 
     /// <summary>
@@ -141,16 +141,16 @@ public class SettingsController : ApiControllerBase
     /// <param name="set"></param>
     /// <returns></returns>
     [Update(@"forcesave")]
-    public bool ForcesaveFromBody([FromBody] SettingsModel model)
+    public bool ForcesaveFromBody([FromBody] SettingsRequestDto requestDto)
     {
-        return _fileStorageServiceString.Forcesave(model.Set);
+        return _fileStorageServiceString.Forcesave(requestDto.Set);
     }
 
     [Update(@"forcesave")]
     [Consumes("application/x-www-form-urlencoded")]
-    public bool ForcesaveFromForm([FromForm] SettingsModel model)
+    public bool ForcesaveFromForm([FromForm] SettingsRequestDto requestDto)
     {
-        return _fileStorageServiceString.Forcesave(model.Set);
+        return _fileStorageServiceString.Forcesave(requestDto.Set);
     }
 
     /// <summary>
@@ -177,16 +177,16 @@ public class SettingsController : ApiControllerBase
     /// <visible>false</visible>
     /// <returns></returns>
     [Update(@"hideconfirmconvert")]
-    public bool HideConfirmConvertFromBody([FromBody] HideConfirmConvertModel model)
+    public bool HideConfirmConvertFromBody([FromBody] HideConfirmConvertRequestDto requestDto)
     {
-        return _fileStorageServiceString.HideConfirmConvert(model.Save);
+        return _fileStorageServiceString.HideConfirmConvert(requestDto.Save);
     }
 
     [Update(@"hideconfirmconvert")]
     [Consumes("application/x-www-form-urlencoded")]
-    public bool HideConfirmConvertFromForm([FromForm] HideConfirmConvertModel model)
+    public bool HideConfirmConvertFromForm([FromForm] HideConfirmConvertRequestDto requestDto)
     {
-        return _fileStorageServiceString.HideConfirmConvert(model.Save);
+        return _fileStorageServiceString.HideConfirmConvert(requestDto.Save);
     }
 
     [Read("@privacy/available")]
@@ -201,16 +201,16 @@ public class SettingsController : ApiControllerBase
     /// <param name="set"></param>
     /// <returns></returns>
     [Update(@"storeforcesave")]
-    public bool StoreForcesaveFromBody([FromBody] SettingsModel model)
+    public bool StoreForcesaveFromBody([FromBody] SettingsRequestDto requestDto)
     {
-        return _fileStorageServiceString.StoreForcesave(model.Set);
+        return _fileStorageServiceString.StoreForcesave(requestDto.Set);
     }
 
     [Update(@"storeforcesave")]
     [Consumes("application/x-www-form-urlencoded")]
-    public bool StoreForcesaveFromForm([FromForm] SettingsModel model)
+    public bool StoreForcesaveFromForm([FromForm] SettingsRequestDto requestDto)
     {
-        return _fileStorageServiceString.StoreForcesave(model.Set);
+        return _fileStorageServiceString.StoreForcesave(requestDto.Set);
     }
 
     /// <summary>
@@ -219,16 +219,16 @@ public class SettingsController : ApiControllerBase
     /// <param name="set"></param>
     /// <returns></returns>
     [Update(@"storeoriginal")]
-    public bool StoreOriginalFromBody([FromBody] SettingsModel model)
+    public bool StoreOriginalFromBody([FromBody] SettingsRequestDto requestDto)
     {
-        return _fileStorageServiceString.StoreOriginal(model.Set);
+        return _fileStorageServiceString.StoreOriginal(requestDto.Set);
     }
 
     [Update(@"storeoriginal")]
     [Consumes("application/x-www-form-urlencoded")]
-    public bool StoreOriginalFromForm([FromForm] SettingsModel model)
+    public bool StoreOriginalFromForm([FromForm] SettingsRequestDto requestDto)
     {
-        return _fileStorageServiceString.StoreOriginal(model.Set);
+        return _fileStorageServiceString.StoreOriginal(requestDto.Set);
     }
     /// <summary>
     /// 
@@ -236,15 +236,15 @@ public class SettingsController : ApiControllerBase
     /// <param name="set"></param>
     /// <returns></returns>
     [Update(@"updateifexist")]
-    public bool UpdateIfExistFromBody([FromBody] SettingsModel model)
+    public bool UpdateIfExistFromBody([FromBody] SettingsRequestDto requestDto)
     {
-        return _fileStorageServiceString.UpdateIfExist(model.Set);
+        return _fileStorageServiceString.UpdateIfExist(requestDto.Set);
     }
 
     [Update(@"updateifexist")]
     [Consumes("application/x-www-form-urlencoded")]
-    public bool UpdateIfExistFromForm([FromForm] SettingsModel model)
+    public bool UpdateIfExistFromForm([FromForm] SettingsRequestDto requestDto)
     {
-        return _fileStorageServiceString.UpdateIfExist(model.Set);
+        return _fileStorageServiceString.UpdateIfExist(requestDto.Set);
     }
 }

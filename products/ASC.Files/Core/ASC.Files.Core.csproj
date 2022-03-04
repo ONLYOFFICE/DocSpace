@@ -5,6 +5,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <OutputType>Library</OutputType>
     <NoWarn>NU1701</NoWarn>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
@@ -166,6 +167,10 @@
     <EmbeddedResource Update="Resources\FilesUCResource.ru.resx">
       <DependentUpon>FilesUCResource.resx</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="ApiModels\RequestDto\" />
   </ItemGroup>
 
 </Project>

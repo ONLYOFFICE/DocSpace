@@ -49,7 +49,7 @@ namespace ASC.CRM.Api
     public class ReportsController : BaseApiController
     {
         private readonly DocbuilderReportsUtilityHelper _docbuilderReportsUtilityHelper;
-        private readonly FileWrapperHelper _fileWrapperHelper;
+        private readonly FileDtoHelper _fileWrapperHelper;
         private readonly ReportHelper _reportHelper;
         private readonly Global _global;
         private readonly SettingsManager _settingsManager;
@@ -59,7 +59,7 @@ namespace ASC.CRM.Api
                      SettingsManager settingsManager,
                      Global global,
                      ReportHelper reportHelper,
-                     FileWrapperHelper fileWrapperHelper,
+                     FileDtoHelper fileWrapperHelper,
                      DocbuilderReportsUtilityHelper docbuilderReportsUtilityHelper,
                      IMapper mapper
                      )

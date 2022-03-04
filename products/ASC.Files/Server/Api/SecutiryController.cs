@@ -17,16 +17,16 @@ public class SecutiryController : ApiControllerBase
     }
 
     [Create("owner")]
-    public IAsyncEnumerable<FileEntryWrapper> ChangeOwnerFromBodyAsync([FromBody] ChangeOwnerModel model)
+    public IAsyncEnumerable<FileEntryDto> ChangeOwnerFromBodyAsync([FromBody] ChangeOwnerRequestDto requestDto)
     {
-        return ChangeOwnerAsync(model);
+        return ChangeOwnerAsync(requestDto);
     }
 
     [Create("owner")]
     [Consumes("application/x-www-form-urlencoded")]
-    public IAsyncEnumerable<FileEntryWrapper> ChangeOwnerFromFormAsync([FromForm] ChangeOwnerModel model)
+    public IAsyncEnumerable<FileEntryDto> ChangeOwnerFromFormAsync([FromForm] ChangeOwnerRequestDto requestDto)
     {
-        return ChangeOwnerAsync(model);
+        return ChangeOwnerAsync(requestDto);
     }
 
     /// <summary>
@@ -40,29 +40,29 @@ public class SecutiryController : ApiControllerBase
     /// <category>Files</category>
     /// <returns>Shared file link</returns>
     [Update("{fileId}/sharedlinkAsync")]
-    public async Task<object> GenerateSharedLinkFromBodyAsync(string fileId, [FromBody] GenerateSharedLinkModel model)
+    public async Task<object> GenerateSharedLinkFromBodyAsync(string fileId, [FromBody] GenerateSharedLinkRequestDto requestDto)
     {
-        return await _filesControllerHelperString.GenerateSharedLinkAsync(fileId, model.Share);
+        return await _filesControllerHelperString.GenerateSharedLinkAsync(fileId, requestDto.Share);
     }
 
     [Update("{fileId:int}/sharedlinkAsync")]
-    public async Task<object> GenerateSharedLinkFromBodyAsync(int fileId, [FromBody] GenerateSharedLinkModel model)
+    public async Task<object> GenerateSharedLinkFromBodyAsync(int fileId, [FromBody] GenerateSharedLinkRequestDto requestDto)
     {
-        return await _filesControllerHelperInt.GenerateSharedLinkAsync(fileId, model.Share);
+        return await _filesControllerHelperInt.GenerateSharedLinkAsync(fileId, requestDto.Share);
     }
 
     [Update("{fileId}/sharedlinkAsync")]
     [Consumes("application/x-www-form-urlencoded")]
-    public async Task<object> GenerateSharedLinkFromFormAsync(string fileId, [FromForm] GenerateSharedLinkModel model)
+    public async Task<object> GenerateSharedLinkFromFormAsync(string fileId, [FromForm] GenerateSharedLinkRequestDto requestDto)
     {
-        return await _filesControllerHelperString.GenerateSharedLinkAsync(fileId, model.Share);
+        return await _filesControllerHelperString.GenerateSharedLinkAsync(fileId, requestDto.Share);
     }
 
     [Update("{fileId:int}/sharedlinkAsync")]
     [Consumes("application/x-www-form-urlencoded")]
-    public async Task<object> GenerateSharedLinkFromFormAsync(int fileId, [FromForm] GenerateSharedLinkModel model)
+    public async Task<object> GenerateSharedLinkFromFormAsync(int fileId, [FromForm] GenerateSharedLinkRequestDto requestDto)
     {
-        return await _filesControllerHelperInt.GenerateSharedLinkAsync(fileId, model.Share);
+        return await _filesControllerHelperInt.GenerateSharedLinkAsync(fileId, requestDto.Share);
     }
 
     /// <summary>
@@ -73,13 +73,13 @@ public class SecutiryController : ApiControllerBase
     /// <param name="fileId">File ID</param>
     /// <returns>Shared file information</returns>
     [Read("file/{fileId}/share")]
-    public Task<IEnumerable<FileShareWrapper>> GetFileSecurityInfoAsync(string fileId)
+    public Task<IEnumerable<FileShareDto>> GetFileSecurityInfoAsync(string fileId)
     {
         return _filesControllerHelperString.GetFileSecurityInfoAsync(fileId);
     }
 
     [Read("file/{fileId:int}/share")]
-    public Task<IEnumerable<FileShareWrapper>> GetFileSecurityInfoAsync(int fileId)
+    public Task<IEnumerable<FileShareDto>> GetFileSecurityInfoAsync(int fileId)
     {
         return _filesControllerHelperInt.GetFileSecurityInfoAsync(fileId);
     }
@@ -92,24 +92,24 @@ public class SecutiryController : ApiControllerBase
     /// <category>Sharing</category>
     /// <returns>Shared folder information</returns>
     [Read("folder/{folderId}/share")]
-    public Task<IEnumerable<FileShareWrapper>> GetFolderSecurityInfoAsync(string folderId)
+    public Task<IEnumerable<FileShareDto>> GetFolderSecurityInfoAsync(string folderId)
     {
         return _filesControllerHelperString.GetFolderSecurityInfoAsync(folderId);
     }
 
     [Read("folder/{folderId:int}/share")]
-    public Task<IEnumerable<FileShareWrapper>> GetFolderSecurityInfoAsync(int folderId)
+    public Task<IEnumerable<FileShareDto>> GetFolderSecurityInfoAsync(int folderId)
     {
         return _filesControllerHelperInt.GetFolderSecurityInfoAsync(folderId);
     }
 
     [Create("share")]
-    public async Task<IEnumerable<FileShareWrapper>> GetSecurityInfoFromBodyAsync([FromBody] BaseBatchModel model)
+    public async Task<IEnumerable<FileShareDto>> GetSecurityInfoFromBodyAsync([FromBody] BaseBatchRequestDto requestDto)
     {
-        var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(model.FolderIds);
-        var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(model.FileIds);
+        var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(requestDto.FolderIds);
+        var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(requestDto.FileIds);
 
-        var result = new List<FileShareWrapper>();
+        var result = new List<FileShareDto>();
         result.AddRange(await _filesControllerHelperInt.GetSecurityInfoAsync(fileIntIds, folderIntIds));
         result.AddRange(await _filesControllerHelperString.GetSecurityInfoAsync(fileStringIds, folderStringIds));
 
@@ -118,12 +118,12 @@ public class SecutiryController : ApiControllerBase
 
     [Create("share")]
     [Consumes("application/x-www-form-urlencoded")]
-    public async Task<IEnumerable<FileShareWrapper>> GetSecurityInfoFromFormAsync([FromForm][ModelBinder(BinderType = typeof(BaseBatchModelBinder))] BaseBatchModel model)
+    public async Task<IEnumerable<FileShareDto>> GetSecurityInfoFromFormAsync([FromForm][ModelBinder(BinderType = typeof(BaseBatchModelBinder))] BaseBatchRequestDto requestDto)
     {
-        var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(model.FolderIds);
-        var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(model.FileIds);
+        var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(requestDto.FolderIds);
+        var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(requestDto.FileIds);
 
-        var result = new List<FileShareWrapper>();
+        var result = new List<FileShareDto>();
         result.AddRange(await _filesControllerHelperInt.GetSecurityInfoAsync(fileIntIds, folderIntIds));
         result.AddRange(await _filesControllerHelperString.GetSecurityInfoAsync(fileStringIds, folderStringIds));
 
@@ -139,10 +139,10 @@ public class SecutiryController : ApiControllerBase
     /// <category>Sharing</category>
     /// <returns>Shared file information</returns>
     [Delete("share")]
-    public async Task<bool> RemoveSecurityInfoAsync(BaseBatchModel model)
+    public async Task<bool> RemoveSecurityInfoAsync(BaseBatchRequestDto requestDto)
     {
-        var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(model.FolderIds);
-        var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(model.FileIds);
+        var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(requestDto.FolderIds);
+        var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(requestDto.FileIds);
 
         await _filesControllerHelperInt.RemoveSecurityInfoAsync(fileIntIds, folderIntIds);
         await _filesControllerHelperString.RemoveSecurityInfoAsync(fileStringIds, folderStringIds);
@@ -151,15 +151,15 @@ public class SecutiryController : ApiControllerBase
     }
 
     [Update("{fileId:int}/setacelink")]
-    public Task<bool> SetAceLinkAsync(int fileId, [FromBody] GenerateSharedLinkModel model)
+    public Task<bool> SetAceLinkAsync(int fileId, [FromBody] GenerateSharedLinkRequestDto requestDto)
     {
-        return _filesControllerHelperInt.SetAceLinkAsync(fileId, model.Share);
+        return _filesControllerHelperInt.SetAceLinkAsync(fileId, requestDto.Share);
     }
 
     [Update("{fileId}/setacelink")]
-    public Task<bool> SetAceLinkAsync(string fileId, [FromBody] GenerateSharedLinkModel model)
+    public Task<bool> SetAceLinkAsync(string fileId, [FromBody] GenerateSharedLinkRequestDto requestDto)
     {
-        return _filesControllerHelperString.SetAceLinkAsync(fileId, model.Share);
+        return _filesControllerHelperString.SetAceLinkAsync(fileId, requestDto.Share);
     }
 
     /// <summary>
@@ -176,29 +176,29 @@ public class SecutiryController : ApiControllerBase
     /// </remarks>
     /// <returns>Shared file information</returns>
     [Update("file/{fileId}/share")]
-    public Task<IEnumerable<FileShareWrapper>> SetFileSecurityInfoFromBodyAsync(string fileId, [FromBody] SecurityInfoModel model)
+    public Task<IEnumerable<FileShareDto>> SetFileSecurityInfoFromBodyAsync(string fileId, [FromBody] SecurityInfoRequestDto requestDto)
     {
-        return _filesControllerHelperString.SetFileSecurityInfoAsync(fileId, model.Share, model.Notify, model.SharingMessage);
+        return _filesControllerHelperString.SetFileSecurityInfoAsync(fileId, requestDto.Share, requestDto.Notify, requestDto.SharingMessage);
     }
 
     [Update("file/{fileId:int}/share")]
-    public Task<IEnumerable<FileShareWrapper>> SetFileSecurityInfoFromBodyAsync(int fileId, [FromBody] SecurityInfoModel model)
+    public Task<IEnumerable<FileShareDto>> SetFileSecurityInfoFromBodyAsync(int fileId, [FromBody] SecurityInfoRequestDto requestDto)
     {
-        return _filesControllerHelperInt.SetFileSecurityInfoAsync(fileId, model.Share, model.Notify, model.SharingMessage);
+        return _filesControllerHelperInt.SetFileSecurityInfoAsync(fileId, requestDto.Share, requestDto.Notify, requestDto.SharingMessage);
     }
 
     [Update("file/{fileId}/share")]
     [Consumes("application/x-www-form-urlencoded")]
-    public Task<IEnumerable<FileShareWrapper>> SetFileSecurityInfoFromFormAsync(string fileId, [FromForm] SecurityInfoModel model)
+    public Task<IEnumerable<FileShareDto>> SetFileSecurityInfoFromFormAsync(string fileId, [FromForm] SecurityInfoRequestDto requestDto)
     {
-        return _filesControllerHelperString.SetFileSecurityInfoAsync(fileId, model.Share, model.Notify, model.SharingMessage);
+        return _filesControllerHelperString.SetFileSecurityInfoAsync(fileId, requestDto.Share, requestDto.Notify, requestDto.SharingMessage);
     }
 
     [Update("file/{fileId:int}/share")]
     [Consumes("application/x-www-form-urlencoded")]
-    public Task<IEnumerable<FileShareWrapper>> SetFileSecurityInfoFromFormAsync(int fileId, [FromForm] SecurityInfoModel model)
+    public Task<IEnumerable<FileShareDto>> SetFileSecurityInfoFromFormAsync(int fileId, [FromForm] SecurityInfoRequestDto requestDto)
     {
-        return _filesControllerHelperInt.SetFileSecurityInfoAsync(fileId, model.Share, model.Notify, model.SharingMessage);
+        return _filesControllerHelperInt.SetFileSecurityInfoAsync(fileId, requestDto.Share, requestDto.Notify, requestDto.SharingMessage);
     }
 
     /// <summary>
@@ -215,68 +215,68 @@ public class SecutiryController : ApiControllerBase
     /// <category>Sharing</category>
     /// <returns>Shared folder information</returns>
     [Update("folder/{folderId}/share")]
-    public Task<IEnumerable<FileShareWrapper>> SetFolderSecurityInfoFromBodyAsync(string folderId, [FromBody] SecurityInfoModel model)
+    public Task<IEnumerable<FileShareDto>> SetFolderSecurityInfoFromBodyAsync(string folderId, [FromBody] SecurityInfoRequestDto requestDto)
     {
-        return _filesControllerHelperString.SetFolderSecurityInfoAsync(folderId, model.Share, model.Notify, model.SharingMessage);
+        return _filesControllerHelperString.SetFolderSecurityInfoAsync(folderId, requestDto.Share, requestDto.Notify, requestDto.SharingMessage);
     }
 
     [Update("folder/{folderId:int}/share")]
-    public Task<IEnumerable<FileShareWrapper>> SetFolderSecurityInfoFromBodyAsync(int folderId, [FromBody] SecurityInfoModel model)
+    public Task<IEnumerable<FileShareDto>> SetFolderSecurityInfoFromBodyAsync(int folderId, [FromBody] SecurityInfoRequestDto requestDto)
     {
-        return _filesControllerHelperInt.SetFolderSecurityInfoAsync(folderId, model.Share, model.Notify, model.SharingMessage);
+        return _filesControllerHelperInt.SetFolderSecurityInfoAsync(folderId, requestDto.Share, requestDto.Notify, requestDto.SharingMessage);
     }
 
     [Update("folder/{folderId}/share")]
     [Consumes("application/x-www-form-urlencoded")]
-    public Task<IEnumerable<FileShareWrapper>> SetFolderSecurityInfoFromFormAsync(string folderId, [FromForm] SecurityInfoModel model)
+    public Task<IEnumerable<FileShareDto>> SetFolderSecurityInfoFromFormAsync(string folderId, [FromForm] SecurityInfoRequestDto requestDto)
     {
-        return _filesControllerHelperString.SetFolderSecurityInfoAsync(folderId, model.Share, model.Notify, model.SharingMessage);
+        return _filesControllerHelperString.SetFolderSecurityInfoAsync(folderId, requestDto.Share, requestDto.Notify, requestDto.SharingMessage);
     }
 
     [Update("folder/{folderId:int}/share")]
     [Consumes("application/x-www-form-urlencoded")]
-    public Task<IEnumerable<FileShareWrapper>> SetFolderSecurityInfoFromFormAsync(int folderId, [FromForm] SecurityInfoModel model)
+    public Task<IEnumerable<FileShareDto>> SetFolderSecurityInfoFromFormAsync(int folderId, [FromForm] SecurityInfoRequestDto requestDto)
     {
-        return _filesControllerHelperInt.SetFolderSecurityInfoAsync(folderId, model.Share, model.Notify, model.SharingMessage);
-    }
-
-    public async Task<IEnumerable<FileShareWrapper>> SetSecurityInfoAsync(SecurityInfoModel model)
-    {
-        var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(model.FolderIds);
-        var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(model.FileIds);
-
-        var result = new List<FileShareWrapper>();
-        result.AddRange(await _filesControllerHelperInt.SetSecurityInfoAsync(fileIntIds, folderIntIds, model.Share, model.Notify, model.SharingMessage));
-        result.AddRange(await _filesControllerHelperString.SetSecurityInfoAsync(fileStringIds, folderStringIds, model.Share, model.Notify, model.SharingMessage));
-
-        return result;
+        return _filesControllerHelperInt.SetFolderSecurityInfoAsync(folderId, requestDto.Share, requestDto.Notify, requestDto.SharingMessage);
     }
 
     [Update("share")]
-    public Task<IEnumerable<FileShareWrapper>> SetSecurityInfoFromBodyAsync([FromBody] SecurityInfoModel model)
+    public Task<IEnumerable<FileShareDto>> SetSecurityInfoFromBodyAsync([FromBody] SecurityInfoRequestDto requestDto)
     {
-        return SetSecurityInfoAsync(model);
+        return SetSecurityInfoAsync(requestDto);
     }
 
     [Update("share")]
     [Consumes("application/x-www-form-urlencoded")]
-    public Task<IEnumerable<FileShareWrapper>> SetSecurityInfoFromFormAsync([FromForm] SecurityInfoModel model)
+    public Task<IEnumerable<FileShareDto>> SetSecurityInfoFromFormAsync([FromForm] SecurityInfoRequestDto requestDto)
     {
-        return SetSecurityInfoAsync(model);
+        return SetSecurityInfoAsync(requestDto);
     }
 
-    private async IAsyncEnumerable<FileEntryWrapper> ChangeOwnerAsync(ChangeOwnerModel model)
+    private async IAsyncEnumerable<FileEntryDto> ChangeOwnerAsync(ChangeOwnerRequestDto requestDto)
     {
-        var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(model.FolderIds);
-        var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(model.FileIds);
+        var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(requestDto.FolderIds);
+        var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(requestDto.FileIds);
 
         var result = AsyncEnumerable.Empty<FileEntry>();
-        result.Concat(_fileStorageServiceInt.ChangeOwnerAsync(folderIntIds, fileIntIds, model.UserId));
-        result.Concat(_fileStorageServiceString.ChangeOwnerAsync(folderStringIds, fileStringIds, model.UserId));
+        result.Concat(_fileStorageServiceInt.ChangeOwnerAsync(folderIntIds, fileIntIds, requestDto.UserId));
+        result.Concat(_fileStorageServiceString.ChangeOwnerAsync(folderStringIds, fileStringIds, requestDto.UserId));
 
         await foreach (var e in result)
         {
             yield return await _filesControllerHelperInt.GetFileEntryWrapperAsync(e);
         }
+    }
+
+    private async Task<IEnumerable<FileShareDto>> SetSecurityInfoAsync(SecurityInfoRequestDto requestDto)
+    {
+        var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(requestDto.FolderIds);
+        var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(requestDto.FileIds);
+
+        var result = new List<FileShareDto>();
+        result.AddRange(await _filesControllerHelperInt.SetSecurityInfoAsync(fileIntIds, folderIntIds, requestDto.Share, requestDto.Notify, requestDto.SharingMessage));
+        result.AddRange(await _filesControllerHelperString.SetSecurityInfoAsync(fileStringIds, folderStringIds, requestDto.Share, requestDto.Notify, requestDto.SharingMessage));
+
+        return result;
     }
 }

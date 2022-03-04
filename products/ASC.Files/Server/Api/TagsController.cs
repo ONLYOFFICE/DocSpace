@@ -25,16 +25,16 @@ public class TagsController : ApiControllerBase
     /// <param name="fileIds">File IDs</param>
     /// <returns></returns>
     [Create("favorites")]
-    public Task<bool> AddFavoritesFromBodyAsync([FromBody] BaseBatchModel model)
+    public Task<bool> AddFavoritesFromBodyAsync([FromBody] BaseBatchRequestDto requestDto)
     {
-        return AddFavoritesAsync(model);
+        return AddFavoritesAsync(requestDto);
     }
 
     [Create("favorites")]
     [Consumes("application/x-www-form-urlencoded")]
-    public async Task<bool> AddFavoritesFromFormAsync([FromForm][ModelBinder(BinderType = typeof(BaseBatchModelBinder))] BaseBatchModel model)
+    public async Task<bool> AddFavoritesFromFormAsync([FromForm][ModelBinder(BinderType = typeof(BaseBatchModelBinder))] BaseBatchRequestDto requestDto)
     {
-        return await AddFavoritesAsync(model);
+        return await AddFavoritesAsync(requestDto);
     }
 
     /// <summary>
@@ -45,30 +45,30 @@ public class TagsController : ApiControllerBase
     /// <param name="fileIds">File IDs</param>
     /// <returns></returns>
     [Create("templates")]
-    public async Task<bool> AddTemplatesFromBodyAsync([FromBody] TemplatesModel model)
+    public async Task<bool> AddTemplatesFromBodyAsync([FromBody] TemplatesRequestDto requestDto)
     {
-        await _fileStorageServiceInt.AddToTemplatesAsync(model.FileIds);
+        await _fileStorageServiceInt.AddToTemplatesAsync(requestDto.FileIds);
 
         return true;
     }
 
     [Create("templates")]
     [Consumes("application/x-www-form-urlencoded")]
-    public async Task<bool> AddTemplatesFromFormAsync([FromForm] TemplatesModel model)
+    public async Task<bool> AddTemplatesFromFormAsync([FromForm] TemplatesRequestDto requestDto)
     {
-        await _fileStorageServiceInt.AddToTemplatesAsync(model.FileIds);
+        await _fileStorageServiceInt.AddToTemplatesAsync(requestDto.FileIds);
 
         return true;
     }
 
     [Create("file/{fileId}/recent", order: int.MaxValue)]
-    public Task<FileWrapper<string>> AddToRecentAsync(string fileId)
+    public Task<FileDto<string>> AddToRecentAsync(string fileId)
     {
         return _filesControllerHelperString.AddToRecentAsync(fileId);
     }
 
     [Create("file/{fileId:int}/recent", order: int.MaxValue - 1)]
-    public Task<FileWrapper<int>> AddToRecentAsync(int fileId)
+    public Task<FileDto<int>> AddToRecentAsync(int fileId)
     {
         return _filesControllerHelperInt.AddToRecentAsync(fileId);
     }
@@ -82,15 +82,15 @@ public class TagsController : ApiControllerBase
     /// <returns></returns>
     [Delete("favorites")]
     [Consumes("application/json")]
-    public Task<bool> DeleteFavoritesFromBodyAsync([FromBody] BaseBatchModel model)
+    public Task<bool> DeleteFavoritesFromBodyAsync([FromBody] BaseBatchRequestDto requestDto)
     {
-        return DeleteFavoritesAsync(model);
+        return DeleteFavoritesAsync(requestDto);
     }
 
     [Delete("favorites")]
-    public async Task<bool> DeleteFavoritesFromQueryAsync([FromQuery][ModelBinder(BinderType = typeof(BaseBatchModelBinder))] BaseBatchModel model)
+    public async Task<bool> DeleteFavoritesFromQueryAsync([FromQuery][ModelBinder(BinderType = typeof(BaseBatchModelBinder))] BaseBatchRequestDto requestDto)
     {
-        return await DeleteFavoritesAsync(model);
+        return await DeleteFavoritesAsync(requestDto);
     }
 
     /// <summary>
@@ -120,10 +120,10 @@ public class TagsController : ApiControllerBase
         return _fileStorageServiceString.ToggleFileFavoriteAsync(fileId, favorite);
     }
 
-    private async Task<bool> AddFavoritesAsync(BaseBatchModel model)
+    private async Task<bool> AddFavoritesAsync(BaseBatchRequestDto requestDto)
     {
-        var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(model.FolderIds);
-        var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(model.FileIds);
+        var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(requestDto.FolderIds);
+        var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(requestDto.FileIds);
 
         await _fileStorageServiceInt.AddToFavoritesAsync(folderIntIds, fileIntIds);
         await _fileStorageServiceString.AddToFavoritesAsync(folderStringIds, fileStringIds);
@@ -131,10 +131,10 @@ public class TagsController : ApiControllerBase
         return true;
     }
 
-    private async Task<bool> DeleteFavoritesAsync(BaseBatchModel model)
+    private async Task<bool> DeleteFavoritesAsync(BaseBatchRequestDto requestDto)
     {
-        var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(model.FolderIds);
-        var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(model.FileIds);
+        var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(requestDto.FolderIds);
+        var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(requestDto.FileIds);
 
         await _fileStorageServiceInt.DeleteFavoritesAsync(folderIntIds, fileIntIds);
         await _fileStorageServiceString.DeleteFavoritesAsync(folderStringIds, fileStringIds);

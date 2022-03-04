@@ -31,7 +31,7 @@ namespace ASC.Api.Documents;
 public class PrivacyRoomController : ControllerBase
 {
     private readonly AuthContext _authContext;
-    private readonly EncryptionKeyPairHelper _encryptionKeyPairHelper;
+    private readonly EncryptionKeyPairDtoHelper _encryptionKeyPairHelper;
     private readonly FileStorageService<string> _fileStorageService;
     private readonly FileStorageService<int> _fileStorageServiceInt;
     private readonly ILog _logger;
@@ -45,7 +45,7 @@ public class PrivacyRoomController : ControllerBase
         PermissionContext permissionContext,
         SettingsManager settingsManager,
         TenantManager tenantManager,
-        EncryptionKeyPairHelper encryptionKeyPairHelper,
+        EncryptionKeyPairDtoHelper encryptionKeyPairHelper,
         FileStorageService<int> fileStorageServiceInt,
         FileStorageService<string> fileStorageService,
         MessageService messageService,
@@ -67,7 +67,7 @@ public class PrivacyRoomController : ControllerBase
     /// </summary>
     /// <visible>false</visible>
     [Read("keys")]
-    public EncryptionKeyPair GetKeys()
+    public EncryptionKeyPairDto GetKeys()
     {
         _permissionContext.DemandPermissions(new UserSecurityProvider(_authContext.CurrentAccount.ID), Constants.Action_EditUser);
 
@@ -81,7 +81,7 @@ public class PrivacyRoomController : ControllerBase
     /// </summary>
     /// <visible>false</visible>
     [Read("access/{fileId}")]
-    public Task<IEnumerable<EncryptionKeyPair>> GetPublicKeysWithAccess(string fileId)
+    public Task<IEnumerable<EncryptionKeyPairDto>> GetPublicKeysWithAccess(string fileId)
     {
         if (!PrivacyRoomSettings.GetEnabled(_settingsManager)) throw new System.Security.SecurityException();
 
@@ -89,7 +89,7 @@ public class PrivacyRoomController : ControllerBase
     }
 
     [Read("access/{fileId:int}")]
-    public Task<IEnumerable<EncryptionKeyPair>> GetPublicKeysWithAccess(int fileId)
+    public Task<IEnumerable<EncryptionKeyPairDto>> GetPublicKeysWithAccess(int fileId)
     {
         if (!PrivacyRoomSettings.GetEnabled(_settingsManager)) throw new System.Security.SecurityException();
 
@@ -114,16 +114,16 @@ public class PrivacyRoomController : ControllerBase
     /// </summary>
     /// <visible>false</visible>
     [Update("keys")]
-    public object SetKeysFromBody([FromBody] PrivacyRoomModel model)
+    public object SetKeysFromBody([FromBody] PrivacyRoomRequestDto requestDto)
     {
-        return SetKeys(model);
+        return SetKeys(requestDto);
     }
 
     [Update("keys")]
     [Consumes("application/x-www-form-urlencoded")]
-    public object SetKeysFromForm([FromForm] PrivacyRoomModel model)
+    public object SetKeysFromForm([FromForm] PrivacyRoomRequestDto requestDto)
     {
-        return SetKeys(model);
+        return SetKeys(requestDto);
     }
 
     /// <summary>
@@ -133,19 +133,19 @@ public class PrivacyRoomController : ControllerBase
     /// <returns></returns>
     /// <visible>false</visible>
     [Update("")]
-    public bool SetPrivacyRoomFromBody([FromBody] PrivacyRoomModel model)
+    public bool SetPrivacyRoomFromBody([FromBody] PrivacyRoomRequestDto requestDto)
     {
-        return SetPrivacyRoom(model);
+        return SetPrivacyRoom(requestDto);
     }
 
     [Update("")]
     [Consumes("application/x-www-form-urlencoded")]
-    public bool SetPrivacyRoomFromForm([FromForm] PrivacyRoomModel model)
+    public bool SetPrivacyRoomFromForm([FromForm] PrivacyRoomRequestDto requestDto)
     {
-        return SetPrivacyRoom(model);
+        return SetPrivacyRoom(requestDto);
     }
 
-    private object SetKeys(PrivacyRoomModel model)
+    private object SetKeys(PrivacyRoomRequestDto requestDto)
     {
         _permissionContext.DemandPermissions(new UserSecurityProvider(_authContext.CurrentAccount.ID), Constants.Action_EditUser);
 
@@ -154,7 +154,7 @@ public class PrivacyRoomController : ControllerBase
         var keyPair = _encryptionKeyPairHelper.GetKeyPair();
         if (keyPair != null)
         {
-            if (!string.IsNullOrEmpty(keyPair.PublicKey) && !model.Update)
+            if (!string.IsNullOrEmpty(keyPair.PublicKey) && !requestDto.Update)
             {
                 return new { isset = true };
             }
@@ -162,7 +162,7 @@ public class PrivacyRoomController : ControllerBase
             _logger.InfoFormat("User {0} updates address", _authContext.CurrentAccount.ID);
         }
 
-        _encryptionKeyPairHelper.SetKeyPair(model.PublicKey, model.PrivateKeyEnc);
+        _encryptionKeyPairHelper.SetKeyPair(requestDto.PublicKey, requestDto.PrivateKeyEnc);
 
         return new
         {
@@ -170,11 +170,11 @@ public class PrivacyRoomController : ControllerBase
         };
     }
 
-    private bool SetPrivacyRoom(PrivacyRoomModel model)
+    private bool SetPrivacyRoom(PrivacyRoomRequestDto requestDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        if (model.Enable)
+        if (requestDto.Enable)
         {
             if (!PrivacyRoomSettings.IsAvailable(_tenantManager))
             {
@@ -182,10 +182,10 @@ public class PrivacyRoomController : ControllerBase
             }
         }
 
-        PrivacyRoomSettings.SetEnabled(_tenantManager, _settingsManager, model.Enable);
+        PrivacyRoomSettings.SetEnabled(_tenantManager, _settingsManager, requestDto.Enable);
 
-        _messageService.Send(model.Enable ? MessageAction.PrivacyRoomEnable : MessageAction.PrivacyRoomDisable);
+        _messageService.Send(requestDto.Enable ? MessageAction.PrivacyRoomEnable : MessageAction.PrivacyRoomDisable);
 
-        return model.Enable;
+        return requestDto.Enable;
     }
 }
