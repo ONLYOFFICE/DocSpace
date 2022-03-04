@@ -159,6 +159,8 @@ export const ThirdPartyStorages = Object.freeze({
 export const BackupTypes = Object.freeze({
   DocumentModuleType: 0,
   ResourcesModuleType: 1,
+  LocalFileModuleType: 3,
+  TemporaryModuleType: 4,
   StorageModuleType: 5,
 
   EveryDayType: 0,

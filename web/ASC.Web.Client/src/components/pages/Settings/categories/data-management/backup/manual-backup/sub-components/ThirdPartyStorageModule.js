@@ -8,7 +8,7 @@ import RackspaceStorage from "./storages/RackspaceStorage";
 import SelectelStorage from "./storages/SelectelStorage";
 import AmazonStorage from "./storages/AmazonStorage";
 import { getOptions } from "../../GetOptions";
-import { ThirdPartyStorages } from "@appserver/common/constants";
+import { BackupTypes, ThirdPartyStorages } from "@appserver/common/constants";
 import { getFromSessionStorage } from "../../../../../utils";
 import { StyledManualBackup } from "../../StyledBackup";
 
@@ -75,6 +75,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
   onMakeCopyIntoStorage = async (arraySettings) => {
     const { selectedId, selectedStorage } = this.state;
     const { onMakeCopy } = this.props;
+    const { StorageModuleType } = BackupTypes;
 
     let obj = {};
     let inputValueArray = [];
@@ -95,7 +96,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
     await onMakeCopy(
       null,
       "ThirdPartyStorage",
-      "5",
+      `${StorageModuleType}`,
       "module",
       selectedId,
       inputValueArray,

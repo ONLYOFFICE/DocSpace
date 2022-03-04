@@ -16,14 +16,19 @@ import ThirdPartyStorages from "./sub-components/ThirdPartyStoragesModule";
 import LocalFile from "./sub-components/LocalFileModule";
 import toastr from "@appserver/components/toast/toastr";
 import { getBackupProgress, startRestore } from "@appserver/common/api/portal";
-import { getSettings } from "@appserver/common/api/settings";
 import { combineUrl } from "@appserver/common/utils";
-import { AppServerConfig } from "@appserver/common/constants";
+import { AppServerConfig, BackupTypes } from "@appserver/common/constants";
 import config from "../../../../../../../../package.json";
 import FloatingButton from "@appserver/common/components/FloatingButton";
 import { request } from "@appserver/common/api/client";
 import { inject, observer } from "mobx-react";
 
+const {
+  DocumentModuleType,
+  ResourcesModuleType,
+  StorageModuleType,
+  LocalFileModuleType,
+} = BackupTypes;
 class RestoreBackup extends React.Component {
   constructor(props) {
     super(props);
@@ -276,12 +281,12 @@ class RestoreBackup extends React.Component {
 
     const backupId = "";
     const storageType = isCheckedDocuments
-      ? "0"
+      ? `${DocumentModuleType}`
       : isCheckedThirdParty
-      ? "1"
+      ? `${ResourcesModuleType}`
       : isCheckedLocalFile
-      ? "3"
-      : "5";
+      ? `${LocalFileModuleType}`
+      : `${StorageModuleType}`;
 
     if (isCheckedThirdPartyStorage) {
       storageParams.push({

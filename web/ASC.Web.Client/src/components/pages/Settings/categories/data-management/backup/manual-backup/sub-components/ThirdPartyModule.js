@@ -64,7 +64,7 @@ class ThirdPartyModule extends React.Component {
   onMakeCopy = async () => {
     const { onMakeCopy } = this.props;
     const { selectedFolder, isError } = this.state;
-
+    const { ResourcesModuleType } = BackupTypes;
     if (this.isInvalidForm()) return;
 
     isError &&
@@ -76,7 +76,12 @@ class ThirdPartyModule extends React.Component {
       isStartCopy: true,
     });
 
-    await onMakeCopy(selectedFolder, "ThirdPartyResource", "1", "folderId");
+    await onMakeCopy(
+      selectedFolder,
+      "ThirdPartyResource",
+      `${ResourcesModuleType}`,
+      "folderId"
+    );
 
     this.setState({
       isStartCopy: false,

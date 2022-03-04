@@ -577,16 +577,6 @@ class AutomaticBackup extends React.PureComponent {
       isChangedInStorage,
     } = this.state;
 
-    console.log(
-      "backupSchedule",
-      DocumentModuleType,
-      ResourcesModuleType,
-      StorageModuleType,
-      EveryDayType,
-      EveryWeekType,
-      EveryMonthType
-    );
-
     const isDisabledThirdPartyList = !!this.commonThirdPartyList;
 
     const commonProps = {
@@ -607,7 +597,7 @@ class AutomaticBackup extends React.PureComponent {
       className: "backup_radio-button",
       onClick: this.onClickShowStorage,
     };
-    console.log("render auto ");
+    console.log("render auto ", this.state);
 
     return isInitialLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
@@ -742,11 +732,7 @@ export default inject(({ auth, backup }) => {
     selectedHour,
     selectedMonthDay,
     selectedMaxCopiesNumber,
-    setPeriod,
-    setMonthNumber,
-    setTime,
-    setMaxCopies,
-    setWeekday,
+
     selectedPeriodNumber,
     backupSchedule,
     deleteSchedule,
@@ -758,7 +744,7 @@ export default inject(({ auth, backup }) => {
   const isCheckedThirdParty = selectedStorageType === `${ResourcesModuleType}`;
   const isCheckedThirdPartyStorage =
     selectedStorageType === `${StorageModuleType}`;
-
+ 
   return {
     language,
     setThirdPartyStorage,
@@ -774,11 +760,7 @@ export default inject(({ auth, backup }) => {
     selectedHour,
     selectedMonthDay,
     selectedMaxCopiesNumber,
-    setPeriod,
-    setMonthNumber,
-    setTime,
-    setMaxCopies,
-    setWeekday,
+
     selectedPeriodNumber,
     backupSchedule,
     deleteSchedule,

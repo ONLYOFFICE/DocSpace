@@ -16,6 +16,7 @@ import SelectFolderDialog from "files/SelectFolderDialog";
 import Loader from "@appserver/components/loader";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../../utils";
 import { isDesktop } from "@appserver/components/utils/device";
+import { BackupTypes } from "@appserver/common/constants";
 
 let selectedStorageType = "";
 
@@ -137,18 +138,19 @@ class ManualBackup extends React.Component {
 
   onMakeTemporaryBackup = () => {
     const { isDesktop, setBackupProgress } = this.props;
+    const { TemporaryModuleType } = BackupTypes;
 
     saveToSessionStorage("LocalCopyStorageType", "TemporaryStorage");
 
     if (isDesktop) {
-      startBackup("4", null)
+      startBackup(`${TemporaryModuleType}`, null)
         .then(() => setBackupProgress())
         .catch((err) => {
           toastr.error(`${t("BackupCreatedError")}`);
           console.error(err);
         });
     } else {
-      startBackup("4", null)
+      startBackup(`${TemporaryModuleType}`, null)
         .then(() =>
           this.setState({
             downloadingProgress: 1,
