@@ -12,6 +12,7 @@ const Slider = ({
   step,
   value,
   withPouring,
+  style,
 }) => {
   const [size, setSize] = useState("0%");
 
@@ -28,6 +29,7 @@ const Slider = ({
 
   return (
     <StyledSlider
+      style={style}
       id={id}
       type={type}
       className={className}
