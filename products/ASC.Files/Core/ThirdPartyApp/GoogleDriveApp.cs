@@ -180,7 +180,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
         var jsonFile = JObject.Parse(driveFile);
 
         var file = _serviceProvider.GetService<File<string>>();
-        file.ID = ThirdPartySelector.BuildAppFileId(AppAttr, jsonFile.Value<string>("id"));
+        file.Id = ThirdPartySelector.BuildAppFileId(AppAttr, jsonFile.Value<string>("id"));
         file.Title = Global.ReplaceInvalidCharsAndTruncate(GetCorrectTitle(jsonFile));
         file.CreateOn = _tenantUtil.DateTimeFromUtc(jsonFile.Value<DateTime>("createdTime"));
         file.ModifiedOn = _tenantUtil.DateTimeFromUtc(jsonFile.Value<DateTime>("modifiedTime"));
@@ -206,7 +206,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
             return string.Empty;
         }
 
-        var fileId = ThirdPartySelector.GetFileId(file.ID);
+        var fileId = ThirdPartySelector.GetFileId(file.Id);
 
         return GetFileStreamUrl(fileId);
     }

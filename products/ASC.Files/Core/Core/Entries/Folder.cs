@@ -23,6 +23,10 @@
  *
 */
 
+using ASC.Files.Core.Mapping;
+
+using Profile = AutoMapper.Profile;
+
 namespace ASC.Files.Core;
 
 public enum FolderType
@@ -52,7 +56,7 @@ public interface IFolder
 
 [DebuggerDisplay("{Title} ({ID})")]
 [Transient]
-public class Folder<T> : FileEntry<T>, IFolder
+public class Folder<T> : FileEntry<T>, IFolder, IMapFrom<DbFolder>
 {
     public FolderType FolderType { get; set; }
     public int TotalFiles { get; set; }
@@ -78,5 +82,11 @@ public class Folder<T> : FileEntry<T>, IFolder
         Global = global;
     }
 
-    public override string UniqID => $"folder_{ID}";
+    public override string UniqID => $"folder_{Id}";
+
+    public void Mapping(Profile profile)
+    {
+        profile.CreateMap<DbFolder, Folder<int>>();
+        profile.CreateMap<DbFolderQuery, Folder<int>>().ConvertUsing<FilesTypeConverter>();
+    }
 }

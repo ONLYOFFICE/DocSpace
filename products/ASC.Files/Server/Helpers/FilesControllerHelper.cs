@@ -284,7 +284,7 @@ public class FilesControllerHelper<T>
         configuration.EditorType = EditorType.External;
         if (configuration.EditorConfig.ModeWrite)
         {
-            configuration.EditorConfig.CallbackUrl = _documentServiceTracker.GetCallbackUrl(configuration.Document.Info.GetFile().ID.ToString());
+            configuration.EditorConfig.CallbackUrl = _documentServiceTracker.GetCallbackUrl(configuration.Document.Info.GetFile().Id.ToString());
         }
 
         if (configuration.Document.Info.GetFile().RootFolderType == FolderType.Privacy && PrivacyRoomSettings.GetEnabled(_settingsManager))
@@ -313,7 +313,7 @@ public class FilesControllerHelper<T>
 
         if (_filesLinkUtility.IsLocalFileUploader)
         {
-            var session = await _fileUploader.InitiateUploadAsync(file.FolderID, file.ID ?? default, file.Title, file.ContentLength, encrypted);
+            var session = await _fileUploader.InitiateUploadAsync(file.ParentId, file.Id ?? default, file.Title, file.ContentLength, encrypted);
 
             var responseObject = await _chunkedUploadSessionHelper.ToResponseObjectAsync(session, true);
 
@@ -324,7 +324,7 @@ public class FilesControllerHelper<T>
             };
         }
 
-        var createSessionUrl = _filesLinkUtility.GetInitiateUploadSessionUrl(_tenantManager.GetCurrentTenant().Id, file.FolderID, file.ID, file.Title, file.ContentLength, encrypted, _securityContext);
+        var createSessionUrl = _filesLinkUtility.GetInitiateUploadSessionUrl(_tenantManager.GetCurrentTenant().Id, file.ParentId, file.Id, file.Title, file.ContentLength, encrypted, _securityContext);
 
         var httpClient = _clientFactory.CreateClient();
 

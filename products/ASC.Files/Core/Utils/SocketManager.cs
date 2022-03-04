@@ -73,7 +73,7 @@ public class SocketManager
 
     public async Task CreateFileAsync<T>(File<T> file)
     {
-        var room = GetFolderRoom(file.FolderID);
+        var room = GetFolderRoom(file.ParentId);
         var serializerSettings = new JsonSerializerOptions()
         {
             WriteIndented = false,
@@ -84,13 +84,13 @@ public class SocketManager
         serializerSettings.Converters.Add(new FileEntryWrapperConverter());
         var data = JsonSerializer.Serialize(await _filesWrapperHelper.GetAsync(file), serializerSettings);
 
-        _signalrServiceClient.CreateFile(file.ID, room, data);
+        _signalrServiceClient.CreateFile(file.Id, room, data);
     }
 
     public void DeleteFile<T>(File<T> file)
     {
-        var room = GetFolderRoom(file.FolderID);
-        _signalrServiceClient.DeleteFile(file.ID, room);
+        var room = GetFolderRoom(file.ParentId);
+        _signalrServiceClient.DeleteFile(file.Id, room);
     }
 
     private string GetFileRoom<T>(T fileId)

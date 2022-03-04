@@ -414,7 +414,7 @@ public class DocuSignHelper
         }
 
         var file = _serviceProvider.GetService<File<T>>();
-        file.FolderID = folderId;
+        file.ParentId = folderId;
         file.Comment = FilesCommonResource.CommentCreateByDocuSign;
         file.Title = FileUtility.ReplaceFileExtension(documentName, ".pdf");
 

@@ -66,7 +66,7 @@ public class FilesMessageService
             return;
         }
 
-        SendHeadersMessage(headers, action, _messageTarget.Create(entry.ID), description);
+        SendHeadersMessage(headers, action, _messageTarget.Create(entry.Id), description);
     }
 
     public void Send<T1, T2>(FileEntry<T1> entry1, FileEntry<T2> entry2, IDictionary<string, StringValues> headers, MessageAction action, params string[] description)
@@ -77,7 +77,7 @@ public class FilesMessageService
             return;
         }
 
-        SendHeadersMessage(headers, action, _messageTarget.Create(new[] { entry1.ID.ToString(), entry2.ID.ToString() }), description);
+        SendHeadersMessage(headers, action, _messageTarget.Create(new[] { entry1.Id.ToString(), entry2.Id.ToString() }), description);
     }
 
     private void SendHeadersMessage(IDictionary<string, StringValues> headers, MessageAction action, MessageTarget target, params string[] description)
@@ -107,7 +107,7 @@ public class FilesMessageService
             return;
         }
 
-        _messageService.Send(action, _messageTarget.Create(entry.ID), description);
+        _messageService.Send(action, _messageTarget.Create(entry.Id), description);
     }
 
     public void Send<T>(FileEntry<T> entry, MessageInitiator initiator, MessageAction action, params string[] description)
@@ -117,6 +117,6 @@ public class FilesMessageService
             return;
         }
 
-        _messageService.Send(initiator, action, _messageTarget.Create(entry.ID), description);
+        _messageService.Send(initiator, action, _messageTarget.Create(entry.Id), description);
     }
 }

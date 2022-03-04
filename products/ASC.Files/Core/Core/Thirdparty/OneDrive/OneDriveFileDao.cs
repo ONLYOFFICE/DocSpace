@@ -263,10 +263,10 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
 
     public async Task<Stream> GetFileStreamAsync(File<string> file, long offset)
     {
-        var onedriveFileId = MakeOneDriveId(file.ID);
+        var onedriveFileId = MakeOneDriveId(file.Id);
         await ProviderInfo.CacheResetAsync(onedriveFileId).ConfigureAwait(false);
 
-        var onedriveFile = await GetOneDriveItemAsync(file.ID).ConfigureAwait(false);
+        var onedriveFile = await GetOneDriveItemAsync(file.Id).ConfigureAwait(false);
         if (onedriveFile == null)
         {
             throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
@@ -311,18 +311,18 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
         Item newOneDriveFile = null;
         var storage = await ProviderInfo.StorageAsync;
 
-        if (file.ID != null)
+        if (file.Id != null)
         {
-            newOneDriveFile = await storage.SaveStreamAsync(MakeOneDriveId(file.ID), fileStream).ConfigureAwait(false);
+            newOneDriveFile = await storage.SaveStreamAsync(MakeOneDriveId(file.Id), fileStream).ConfigureAwait(false);
             if (!newOneDriveFile.Name.Equals(file.Title))
             {
                 file.Title = await GetAvailableTitleAsync(file.Title, GetParentFolderId(newOneDriveFile), IsExistAsync).ConfigureAwait(false);
                 newOneDriveFile = await storage.RenameItemAsync(newOneDriveFile.Id, file.Title).ConfigureAwait(false);
             }
         }
-        else if (file.FolderID != null)
+        else if (file.ParentId != null)
         {
-            var folderId = MakeOneDriveId(file.FolderID);
+            var folderId = MakeOneDriveId(file.ParentId);
             var folder = await GetOneDriveItemAsync(folderId).ConfigureAwait(false);
             file.Title = await GetAvailableTitleAsync(file.Title, folderId, IsExistAsync).ConfigureAwait(false);
             newOneDriveFile = await storage.CreateFileAsync(fileStream, file.Title, MakeOneDrivePath(folder)).ConfigureAwait(false);
@@ -439,7 +439,7 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
             true)
             .ConfigureAwait(false);
 
-        return moved.ID;
+        return moved.Id;
     }
 
     public async Task<string> MoveFileAsync(string fileId, string toFolderId)
@@ -524,7 +524,7 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
 
     public async Task<string> FileRenameAsync(File<string> file, string newTitle)
     {
-        var onedriveFile = await GetOneDriveItemAsync(file.ID).ConfigureAwait(false);
+        var onedriveFile = await GetOneDriveItemAsync(file.Id).ConfigureAwait(false);
         newTitle = await GetAvailableTitleAsync(newTitle, GetParentFolderId(onedriveFile), IsExistAsync).ConfigureAwait(false);
 
         var storage = await ProviderInfo.StorageAsync;
@@ -570,14 +570,14 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
             return null;
         }
 
-        if (file.ID != null)
+        if (file.Id != null)
         {
-            file.ID = MakeId(file.ID);
+            file.Id = MakeId(file.Id);
         }
 
-        if (file.FolderID != null)
+        if (file.ParentId != null)
         {
-            file.FolderID = MakeId(file.FolderID);
+            file.ParentId = MakeId(file.ParentId);
         }
 
         return file;
@@ -598,13 +598,13 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
         var uploadSession = new ChunkedUploadSession<string>(file, contentLength);
 
         Item onedriveFile;
-        if (file.ID != null)
+        if (file.Id != null)
         {
-            onedriveFile = await GetOneDriveItemAsync(file.ID).ConfigureAwait(false);
+            onedriveFile = await GetOneDriveItemAsync(file.Id).ConfigureAwait(false);
         }
         else
         {
-            var folder = await GetOneDriveItemAsync(file.FolderID).ConfigureAwait(false);
+            var folder = await GetOneDriveItemAsync(file.ParentId).ConfigureAwait(false);
             onedriveFile = new Item { Name = file.Title, ParentReference = new ItemReference { Id = folder.Id } };
         }
 

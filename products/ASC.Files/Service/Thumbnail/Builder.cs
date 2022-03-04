@@ -170,7 +170,7 @@ public class Builder<T>
 
     private void MakeThumbnail(IFileDao<T> fileDao, File<T> file)
     {
-        _logger.DebugFormat("MakeThumbnail: FileId: {0}.", file.ID);
+        _logger.DebugFormat("MakeThumbnail: FileId: {0}.", file.Id);
 
         string thumbnailUrl = null;
         var attempt = 1;
@@ -193,11 +193,11 @@ public class Builder<T>
                     {
                         if (documentServiceException.Code == DocumentService.DocumentServiceException.ErrorCode.ConvertPassword)
                         {
-                            throw new Exception(string.Format("MakeThumbnail: FileId: {0}. Encrypted file.", file.ID));
+                            throw new Exception(string.Format("MakeThumbnail: FileId: {0}. Encrypted file.", file.Id));
                         }
                         if (documentServiceException.Code == DocumentService.DocumentServiceException.ErrorCode.Convert)
                         {
-                            throw new Exception(string.Format("MakeThumbnail: FileId: {0}. Could not convert.", file.ID));
+                            throw new Exception(string.Format("MakeThumbnail: FileId: {0}. Could not convert.", file.Id));
                         }
                     }
                 }
@@ -205,11 +205,11 @@ public class Builder<T>
 
             if (attempt >= _config.AttemptsLimit)
             {
-                throw new Exception(string.Format("MakeThumbnail: FileId: {0}. Attempts limmit exceeded.", file.ID));
+                throw new Exception(string.Format("MakeThumbnail: FileId: {0}. Attempts limmit exceeded.", file.Id));
             }
             else
             {
-                _logger.DebugFormat("MakeThumbnail: FileId: {0}. Sleep {1} after attempt #{2}. ", file.ID, _config.AttemptWaitInterval, attempt);
+                _logger.DebugFormat("MakeThumbnail: FileId: {0}. Sleep {1} after attempt #{2}. ", file.Id, _config.AttemptWaitInterval, attempt);
                 attempt++;
             }
 
@@ -265,7 +265,7 @@ public class Builder<T>
 
     private void SaveThumbnail(IFileDao<T> fileDao, File<T> file, string thumbnailUrl)
     {
-        _logger.DebugFormat("SaveThumbnail: FileId: {0}. ThumbnailUrl {1}.", file.ID, thumbnailUrl);
+        _logger.DebugFormat("SaveThumbnail: FileId: {0}. ThumbnailUrl {1}.", file.Id, thumbnailUrl);
 
         var request = new HttpRequestMessage();
         request.RequestUri = new Uri(thumbnailUrl);
@@ -277,7 +277,7 @@ public class Builder<T>
             Crop(fileDao, file, stream);
         }
 
-        _logger.DebugFormat("SaveThumbnail: FileId: {0}. Successfully saved.", file.ID);
+        _logger.DebugFormat("SaveThumbnail: FileId: {0}. Successfully saved.", file.Id);
     }
 
     private bool IsImage(File<T> file)
@@ -289,14 +289,14 @@ public class Builder<T>
 
     private void CropImage(IFileDao<T> fileDao, File<T> file)
     {
-        _logger.DebugFormat("CropImage: FileId: {0}.", file.ID);
+        _logger.DebugFormat("CropImage: FileId: {0}.", file.Id);
 
         using (var stream = fileDao.GetFileStreamAsync(file).Result)
         {
             Crop(fileDao, file, stream);
         }
 
-        _logger.DebugFormat("CropImage: FileId: {0}. Successfully saved.", file.ID);
+        _logger.DebugFormat("CropImage: FileId: {0}. Successfully saved.", file.Id);
     }
 
     private void Crop(IFileDao<T> fileDao, File<T> file, Stream stream)

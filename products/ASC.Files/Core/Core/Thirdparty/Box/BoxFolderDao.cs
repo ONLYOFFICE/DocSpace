@@ -187,14 +187,14 @@ internal class BoxFolderDao : BoxDaoBase, IFolderDao<string>
 
     private async Task<string> InternalSaveFolderAsync(Folder<string> folder)
     {
-        if (folder.ID != null)
+        if (folder.Id != null)
         {
             return await RenameFolderAsync(folder, folder.Title).ConfigureAwait(false);
         }
 
-        if (folder.FolderID != null)
+        if (folder.ParentId != null)
         {
-            var boxFolderId = MakeBoxId(folder.FolderID);
+            var boxFolderId = MakeBoxId(folder.ParentId);
 
             folder.Title = await GetAvailableTitleAsync(folder.Title, boxFolderId, IsExistAsync).ConfigureAwait(false);
 
@@ -329,7 +329,7 @@ internal class BoxFolderDao : BoxDaoBase, IFolderDao<string>
                 true, cancellationToken)
             .ConfigureAwait(false);
 
-        return moved.ID;
+        return moved.Id;
     }
 
     public async Task<Folder<TTo>> CopyFolderAsync<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
@@ -410,7 +410,7 @@ internal class BoxFolderDao : BoxDaoBase, IFolderDao<string>
 
     public async Task<string> RenameFolderAsync(Folder<string> folder, string newTitle)
     {
-        var boxFolder = await GetBoxFolderAsync(folder.ID).ConfigureAwait(false);
+        var boxFolder = await GetBoxFolderAsync(folder.Id).ConfigureAwait(false);
         var parentFolderId = GetParentFolderId(boxFolder);
 
         if (IsRoot(boxFolder))

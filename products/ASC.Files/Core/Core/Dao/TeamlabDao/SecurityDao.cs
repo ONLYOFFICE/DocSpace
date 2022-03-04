@@ -316,8 +316,8 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
         T folderId;
         if (entry.FileEntryType == FileEntryType.File)
         {
-            var fileId = await MappingIDAsync(entry.ID);
-            folderId = ((File<T>)entry).FolderID;
+            var fileId = await MappingIDAsync(entry.Id);
+            folderId = ((File<T>)entry).ParentId;
             if (!files.Contains(fileId.ToString()))
             {
                 files.Add(fileId.ToString());
@@ -325,7 +325,7 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
         }
         else
         {
-            folderId = entry.ID;
+            folderId = entry.Id;
         }
 
         if (foldersInt != null && int.TryParse(folderId.ToString(), out var folderIdInt) && !foldersInt.Contains(folderIdInt))

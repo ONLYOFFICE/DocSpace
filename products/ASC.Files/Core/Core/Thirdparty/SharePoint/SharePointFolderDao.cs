@@ -176,23 +176,23 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
 
     public async Task<string> SaveFolderAsync(Folder<string> folder)
     {
-        if (folder.ID != null)
+        if (folder.Id != null)
         {
             //Create with id
-            var savedfolder = await ProviderInfo.CreateFolderAsync(folder.ID).ConfigureAwait(false);
+            var savedfolder = await ProviderInfo.CreateFolderAsync(folder.Id).ConfigureAwait(false);
 
-            return ProviderInfo.ToFolder(savedfolder).ID;
+            return ProviderInfo.ToFolder(savedfolder).Id;
         }
 
-        if (folder.FolderID != null)
+        if (folder.ParentId != null)
         {
-            var parentFolder = await ProviderInfo.GetFolderByIdAsync(folder.FolderID).ConfigureAwait(false);
+            var parentFolder = await ProviderInfo.GetFolderByIdAsync(folder.ParentId).ConfigureAwait(false);
 
             folder.Title = await GetAvailableTitleAsync(folder.Title, parentFolder, IsExistAsync).ConfigureAwait(false);
 
             var newFolder = await ProviderInfo.CreateFolderAsync(parentFolder.ServerRelativeUrl + "/" + folder.Title).ConfigureAwait(false);
 
-            return ProviderInfo.ToFolder(newFolder).ID;
+            return ProviderInfo.ToFolder(newFolder).Id;
         }
 
         return null;
@@ -273,7 +273,7 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
                 true, cancellationToken)
             .ConfigureAwait(false);
 
-        return moved.ID;
+        return moved.Id;
     }
 
     public async Task<string> MoveFolderAsync(string folderId, string toFolderId, CancellationToken? cancellationToken)
@@ -342,9 +342,9 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
 
     public async Task<string> RenameFolderAsync(Folder<string> folder, string newTitle)
     {
-        var oldId = ProviderInfo.MakeId(folder.ID);
+        var oldId = ProviderInfo.MakeId(folder.Id);
         var newFolderId = oldId;
-        if (ProviderInfo.SpRootFolderId.Equals(folder.ID))
+        if (ProviderInfo.SpRootFolderId.Equals(folder.Id))
         {
             //It's root folder
             await DaoSelector.RenameProviderAsync(ProviderInfo, newTitle).ConfigureAwait(false);
@@ -352,7 +352,7 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
         }
         else
         {
-            newFolderId = (string)await ProviderInfo.RenameFolderAsync(folder.ID, newTitle).ConfigureAwait(false);
+            newFolderId = (string)await ProviderInfo.RenameFolderAsync(folder.Id, newTitle).ConfigureAwait(false);
         }
         await UpdatePathInDBAsync(oldId, newFolderId).ConfigureAwait(false);
 

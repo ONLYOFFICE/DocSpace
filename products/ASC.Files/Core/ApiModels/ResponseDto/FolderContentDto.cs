@@ -135,7 +135,7 @@ public class FolderContentDtoHelper
 
         async ValueTask<List<Tuple<FileEntry<T1>, bool>>> GetFoldersIntWithRightsAsync<T1>()
         {
-            var ids = folderItems.Entries.OfType<FileEntry<T1>>().Select(r => r.FolderID).Distinct();
+            var ids = folderItems.Entries.OfType<FileEntry<T1>>().Select(r => r.ParentId).Distinct();
             if (ids.Any())
             {
                 var folderDao = _daoFactory.GetFolderDao<T1>();

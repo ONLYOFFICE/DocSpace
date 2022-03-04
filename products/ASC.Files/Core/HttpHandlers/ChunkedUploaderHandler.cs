@@ -231,8 +231,8 @@ public class ChunkedUploaderHandlerService
     {
         return new
         {
-            id = file.ID,
-            folderId = file.FolderID,
+            id = file.Id,
+            folderId = file.ParentId,
             version = file.Version,
             title = file.Title,
             provider_key = file.ProviderKey,

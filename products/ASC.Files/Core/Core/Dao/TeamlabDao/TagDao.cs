@@ -67,7 +67,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
         foreach (var f in fileEntries)
         {
-            var idObj = await MappingIDAsync(f.ID).ConfigureAwait(false);
+            var idObj = await MappingIDAsync(f.Id).ConfigureAwait(false);
             var id = idObj.ToString();
             if (f.FileEntryType == FileEntryType.File)
             {
@@ -114,7 +114,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
         foreach (var f in fileEntries)
         {
-            var idObj = await MappingIDAsync(f.ID).ConfigureAwait(false);
+            var idObj = await MappingIDAsync(f.Id).ConfigureAwait(false);
             var id = idObj.ToString();
             if (f.FileEntryType == FileEntryType.File)
             {
@@ -705,7 +705,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
         foreach (var r in fileEntries)
         {
-            var idObj = await MappingIDAsync(r.ID).ConfigureAwait(false);
+            var idObj = await MappingIDAsync(r.Id).ConfigureAwait(false);
             var id = idObj.ToString();
             var entryType = (r.FileEntryType == FileEntryType.File) ? FileEntryType.File : FileEntryType.Folder;
 
@@ -746,7 +746,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
     public IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, Folder<T> parentFolder, bool deepSearch)
     {
-        if (parentFolder == null || EqualityComparer<T>.Default.Equals(parentFolder.ID, default(T)))
+        if (parentFolder == null || EqualityComparer<T>.Default.Equals(parentFolder.Id, default(T)))
         {
             throw new ArgumentException("folderId");
         }
@@ -758,7 +758,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
     {
         var result = AsyncEnumerable.Empty<Tag>();
 
-        var monitorFolderIds = new object[] { parentFolder.ID }.ToAsyncEnumerable();
+        var monitorFolderIds = new object[] { parentFolder.Id }.ToAsyncEnumerable();
 
         var tenantId = TenantID;
 
@@ -805,7 +805,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
         result.Concat(FromQueryAsync(newTagsForFoldersQuery(FilesDbContext, tenantId, subject, monitorFolderIdsStrings)));
 
-        var where = (deepSearch ? await monitorFolderIds.ToArrayAsync().ConfigureAwait(false) : new object[] { parentFolder.ID })
+        var where = (deepSearch ? await monitorFolderIds.ToArrayAsync().ConfigureAwait(false) : new object[] { parentFolder.Id })
             .Select(r => r.ToString())
             .ToList();
 

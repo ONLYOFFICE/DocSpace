@@ -100,7 +100,7 @@ internal class ProviderDaoBase : ThirdPartyProviderDao, IDisposable
 
         foreach (var id in ids)
         {
-            var firstEntry = await entries.FirstOrDefaultAsync(y => y.ID.Equals(id));
+            var firstEntry = await entries.FirstOrDefaultAsync(y => y.Id.Equals(id));
 
             if (firstEntry != null)
             {

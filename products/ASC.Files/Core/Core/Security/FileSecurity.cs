@@ -186,7 +186,7 @@ public class FileSecurity : IFileSecurity
                 defaultShareRecord = new FileShareRecord
                 {
                     Level = int.MaxValue,
-                    EntryId = entry.ID,
+                    EntryId = entry.Id,
                     EntryType = entry.FileEntryType,
                     Share = DefaultCommonShare,
                     Subject = Constants.GroupEveryone.ID,
@@ -212,7 +212,7 @@ public class FileSecurity : IFileSecurity
                 defaultShareRecord = new FileShareRecord
                 {
                     Level = int.MaxValue,
-                    EntryId = entry.ID,
+                    EntryId = entry.Id,
                     EntryType = entry.FileEntryType,
                     Share = DefaultMyShare,
                     Subject = entry.RootFolderCreator,
@@ -234,7 +234,7 @@ public class FileSecurity : IFileSecurity
                 defaultShareRecord = new FileShareRecord
                 {
                     Level = int.MaxValue,
-                    EntryId = entry.ID,
+                    EntryId = entry.Id,
                     EntryType = entry.FileEntryType,
                     Share = DefaultPrivacyShare,
                     Subject = entry.RootFolderCreator,
@@ -259,7 +259,7 @@ public class FileSecurity : IFileSecurity
                     var root = await folderDao.GetFolderAsync(entry.RootFolderId);
                     if (root != null)
                     {
-                        var path = await folderDao.GetBunchObjectIDAsync(root.ID);
+                        var path = await folderDao.GetBunchObjectIDAsync(root.Id);
 
                         var adapter = FilesIntegration.GetFileSecurity(path);
 
@@ -339,7 +339,7 @@ public class FileSecurity : IFileSecurity
     {
         var filtres = await FilterAsync(entry, action, userId);
 
-        return entry.Select(r => new Tuple<FileEntry<T>, bool>(r, filtres.Any(a => a.ID.Equals(r.ID)))).ToList();
+        return entry.Select(r => new Tuple<FileEntry<T>, bool>(r, filtres.Any(a => a.Id.Equals(r.Id)))).ToList();
     }
 
     private Task<IEnumerable<FileEntry<T>>> FilterAsync<T>(IEnumerable<FileEntry<T>> entries, FilesSecurityActions action, Guid userId, IEnumerable<FileShareRecord> shares = null)
@@ -560,11 +560,11 @@ public class FileSecurity : IFileSecurity
                     ace = shares
                         .OrderBy(r => r, new SubjectComparer(subjects))
                         .ThenByDescending(r => r.Share, new FileShareRecord.ShareComparer())
-                        .FirstOrDefault(r => Equals(r.EntryId, e.ID) && r.EntryType == FileEntryType.File);
+                        .FirstOrDefault(r => Equals(r.EntryId, e.Id) && r.EntryType == FileEntryType.File);
                     if (ace == null)
                     {
                         // share on parent folders
-                        ace = shares.Where(r => Equals(r.EntryId, file.FolderID) && r.EntryType == FileEntryType.Folder)
+                        ace = shares.Where(r => Equals(r.EntryId, file.ParentId) && r.EntryType == FileEntryType.Folder)
                                     .OrderBy(r => r, new SubjectComparer(subjects))
                                     .ThenBy(r => r.Level)
                                     .ThenByDescending(r => r.Share, new FileShareRecord.ShareComparer())
@@ -573,7 +573,7 @@ public class FileSecurity : IFileSecurity
                 }
                 else
                 {
-                    ace = shares.Where(r => Equals(r.EntryId, e.ID) && r.EntryType == FileEntryType.Folder)
+                    ace = shares.Where(r => Equals(r.EntryId, e.Id) && r.EntryType == FileEntryType.Folder)
                                 .OrderBy(r => r, new SubjectComparer(subjects))
                                 .ThenBy(r => r.Level)
                                 .ThenByDescending(r => r.Share, new FileShareRecord.ShareComparer())
@@ -641,7 +641,7 @@ public class FileSecurity : IFileSecurity
                     .ToList();
 
             var rootsFolders = folderDao.GetFoldersAsync(roots);
-            var bunches = await folderDao.GetBunchObjectIDsAsync(await rootsFolders.Select(r => r.ID).ToListAsync());
+            var bunches = await folderDao.GetBunchObjectIDsAsync(await rootsFolders.Select(r => r.Id).ToListAsync());
             var findedAdapters = FilesIntegration.GetFileSecurity(bunches);
 
             foreach (var e in filteredEntries)
@@ -818,9 +818,9 @@ public class FileSecurity : IFileSecurity
 
             files.ForEach(x =>
             {
-                if (fileIds.TryGetValue(x.ID, out var access))
+                if (fileIds.TryGetValue(x.Id, out var access))
                 {
-                    x.Access = fileIds[x.ID];
+                    x.Access = fileIds[x.Id];
                     x.FolderIdDisplay = share;
                 }
             });
@@ -841,9 +841,9 @@ public class FileSecurity : IFileSecurity
             var share = await _globalFolder.GetFolderShareAsync<T>(_daoFactory);
             folders.ForEach(x =>
             {
-                if (folderIds.TryGetValue(x.ID, out var access))
+                if (folderIds.TryGetValue(x.Id, out var access))
                 {
-                    x.Access = folderIds[x.ID];
+                    x.Access = folderIds[x.Id];
                     x.FolderIdDisplay = share;
                 }
             });
@@ -876,7 +876,7 @@ public class FileSecurity : IFileSecurity
         {
             var entryType = failedEntry.FileEntryType;
 
-            var failedRecord = records.First(x => x.EntryId.Equals(failedEntry.ID) && x.EntryType == entryType);
+            var failedRecord = records.First(x => x.EntryId.Equals(failedEntry.Id) && x.EntryType == entryType);
 
             failedRecord.Share = FileShare.None;
 
@@ -946,7 +946,7 @@ public class FileSecurity : IFileSecurity
 
             files.ForEach(x =>
             {
-                if (fileIds.TryGetValue(x.ID, out var access))
+                if (fileIds.TryGetValue(x.Id, out var access))
                 {
                     x.Access = access;
                     x.FolderIdDisplay = privateFolder;
@@ -969,7 +969,7 @@ public class FileSecurity : IFileSecurity
             var privacyFolder = await _globalFolder.GetFolderPrivacyAsync<T>(_daoFactory);
             folders.ForEach(x =>
             {
-                if (folderIds.TryGetValue(x.ID, out var access))
+                if (folderIds.TryGetValue(x.Id, out var access))
                 {
                     x.Access = access;
                     x.FolderIdDisplay = privacyFolder;

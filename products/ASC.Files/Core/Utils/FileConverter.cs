@@ -59,7 +59,7 @@ internal class FileConverterQueue<T> : IDisposable
 
             var queueResult = new ConvertFileOperationResult
             {
-                Source = string.Format("{{\"id\":\"{0}\", \"version\":\"{1}\"}}", file.ID, file.Version),
+                Source = string.Format("{{\"id\":\"{0}\", \"version\":\"{1}\"}}", file.Id, file.Version),
                 OperationType = FileOperationType.Convert,
                 Error = string.Empty,
                 Progress = 0,
@@ -165,7 +165,7 @@ internal class FileConverterQueue<T> : IDisposable
 
                 foreach (var file in filesIsConverting)
                 {
-                    var fileUri = file.ID.ToString();
+                    var fileUri = file.Id.ToString();
                     int operationResultProgress;
 
                     try
@@ -243,7 +243,7 @@ internal class FileConverterQueue<T> : IDisposable
                         var password = exception.InnerException is DocumentService.DocumentServiceException documentServiceException
                                        && documentServiceException.Code == DocumentService.DocumentServiceException.ErrorCode.ConvertPassword;
 
-                        logger.Error(string.Format("Error convert {0} with url {1}", file.ID, fileUri), exception);
+                        logger.Error(string.Format("Error convert {0} with url {1}", file.Id, fileUri), exception);
                         lock (_locker)
                         {
                             if (_conversionQueue.TryGetValue(file, out var operationResult))
@@ -278,7 +278,7 @@ internal class FileConverterQueue<T> : IDisposable
                                 {
                                     operationResult.StopDateTime = DateTime.UtcNow;
                                     operationResult.Error = FilesCommonResource.ErrorMassage_ConvertTimeout;
-                                    logger.ErrorFormat("CheckConvertFilesStatus timeout: {0} ({1})", file.ID, file.ContentLengthString);
+                                    logger.ErrorFormat("CheckConvertFilesStatus timeout: {0} ({1})", file.Id, file.ContentLengthString);
                                 }
                                 else
                                 {
@@ -325,7 +325,7 @@ internal class FileConverterQueue<T> : IDisposable
                                     if (newFile != null)
                                     {
                                         var folderDao = daoFactory.GetFolderDao<T>();
-                                        var folder = folderDao.GetFolderAsync(newFile.FolderID).Result;
+                                        var folder = folderDao.GetFolderAsync(newFile.ParentId).Result;
                                         var folderTitle = fileSecurity.CanReadAsync(folder).Result ? folder.Title : null;
                                         operationResult.Result = FileJsonSerializerAsync(entryManager, newFile, folderTitle).Result;
                                     }
@@ -369,7 +369,7 @@ internal class FileConverterQueue<T> : IDisposable
 
     private string GetKey(File<T> f)
     {
-        return string.Format("fileConvertation-{0}", f.ID);
+        return string.Format("fileConvertation-{0}", f.Id);
     }
 
     internal async Task<string> FileJsonSerializerAsync(EntryStatusManager EntryManager, File<T> file, string folderTitle)
@@ -391,10 +391,10 @@ internal class FileConverterQueue<T> : IDisposable
         return JsonSerializer.Serialize(
             new FileJsonSerializerData<T>()
             {
-                Id = file.ID,
+                Id = file.Id,
                 Title = file.Title,
                 Version = file.Version,
-                FolderID = file.FolderID,
+                FolderID = file.ParentId,
                 FolderTitle = folderTitle ?? "",
                 FileJson = JsonSerializer.Serialize(file, options)
             }, options);
@@ -703,7 +703,7 @@ public class FileConverter
 
         var operationResult = new ConvertFileOperationResult
         {
-            Source = string.Format("{{\"id\":\"{0}\", \"version\":\"{1}\"}}", file.ID, file.Version),
+            Source = string.Format("{{\"id\":\"{0}\", \"version\":\"{1}\"}}", file.Id, file.Version),
             OperationType = FileOperationType.Convert,
             Error = string.Empty,
             Progress = 0,
@@ -725,7 +725,7 @@ public class FileConverter
         if (newFile != null)
         {
             var folderDao = _daoFactory.GetFolderDao<T>();
-            var folder = await folderDao.GetFolderAsync(newFile.FolderID);
+            var folder = await folderDao.GetFolderAsync(newFile.ParentId);
             var folderTitle = await fileSecurity.CanReadAsync(folder) ? folder.Title : null;
             operationResult.Result = await GetFileConverter<T>().FileJsonSerializerAsync(_entryStatusManager, newFile, folderTitle);
         }
@@ -801,11 +801,11 @@ public class FileConverter
         {
             var folderId = _globalFolderHelper.GetFolderMy<T>();
 
-            var parent = await folderDao.GetFolderAsync(file.FolderID);
+            var parent = await folderDao.GetFolderAsync(file.ParentId);
             if (parent != null
                 && await fileSecurity.CanCreateAsync(parent))
             {
-                folderId = parent.ID;
+                folderId = parent.Id;
             }
 
             if (Equals(folderId, 0))
@@ -813,10 +813,10 @@ public class FileConverter
                 throw new SecurityException(FilesCommonResource.ErrorMassage_FolderNotFound);
             }
 
-            if (_filesSettingsHelper.UpdateIfExist && (parent != null && !folderId.Equals(parent.ID) || !file.ProviderEntry))
+            if (_filesSettingsHelper.UpdateIfExist && (parent != null && !folderId.Equals(parent.Id) || !file.ProviderEntry))
             {
                 newFile = await fileDao.GetFileAsync(folderId, newFileTitle);
-                if (newFile != null && await fileSecurity.CanEditAsync(newFile) && !await _entryManager.FileLockedForMeAsync(newFile.ID) && !_fileTracker.IsEditing(newFile.ID))
+                if (newFile != null && await fileSecurity.CanEditAsync(newFile) && !await _entryManager.FileLockedForMeAsync(newFile.Id) && !_fileTracker.IsEditing(newFile.Id))
                 {
                     newFile.Version++;
                 }
@@ -829,7 +829,7 @@ public class FileConverter
             if (newFile == null)
             {
                 newFile = _serviceProvider.GetService<File<T>>();
-                newFile.FolderID = folderId;
+                newFile.ParentId = folderId;
             }
         }
 
@@ -868,15 +868,15 @@ public class FileConverter
         _filesMessageService.Send(newFile, MessageInitiator.DocsService, MessageAction.FileConverted, newFile.Title);
 
         var linkDao = _daoFactory.GetLinkDao();
-        await linkDao.DeleteAllLinkAsync(file.ID.ToString());
+        await linkDao.DeleteAllLinkAsync(file.Id.ToString());
 
         await _fileMarker.MarkAsNewAsync(newFile);
 
         var tagDao = _daoFactory.GetTagDao<T>();
-        var tags = await tagDao.GetTagsAsync(file.ID, FileEntryType.File, TagType.System).ToListAsync();
+        var tags = await tagDao.GetTagsAsync(file.Id, FileEntryType.File, TagType.System).ToListAsync();
         if (tags.Count > 0)
         {
-            tags.ForEach(r => r.EntryId = newFile.ID);
+            tags.ForEach(r => r.EntryId = newFile.Id);
             tagDao.SaveTags(tags);
         }
 
@@ -898,12 +898,12 @@ internal class FileComparer<T> : IEqualityComparer<File<T>>
 {
     public bool Equals(File<T> x, File<T> y)
     {
-        return x != null && y != null && Equals(x.ID, y.ID) && x.Version == y.Version;
+        return x != null && y != null && Equals(x.Id, y.Id) && x.Version == y.Version;
     }
 
     public int GetHashCode(File<T> obj)
     {
-        return obj.ID.GetHashCode() + obj.Version.GetHashCode();
+        return obj.Id.GetHashCode() + obj.Version.GetHashCode();
     }
 }
 

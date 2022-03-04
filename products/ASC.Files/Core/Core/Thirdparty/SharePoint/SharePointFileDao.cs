@@ -163,7 +163,7 @@ internal class SharePointFileDao : SharePointDaoBase, IFileDao<string>
     {
         var files = await ProviderInfo.GetFolderFilesAsync(parentId).ConfigureAwait(false);
 
-        return files.Select(r => ProviderInfo.ToFile(r).ID).ToList();
+        return files.Select(r => ProviderInfo.ToFile(r).Id).ToList();
     }
 
     public async IAsyncEnumerable<File<string>> GetFilesAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
@@ -253,7 +253,7 @@ internal class SharePointFileDao : SharePointDaoBase, IFileDao<string>
 
     public async Task<Stream> GetFileStreamAsync(File<string> file, long offset)
     {
-        var fileToDownload = await ProviderInfo.GetFileByIdAsync(file.ID).ConfigureAwait(false);
+        var fileToDownload = await ProviderInfo.GetFileByIdAsync(file.Id).ConfigureAwait(false);
         if (fileToDownload == null)
         {
             throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
@@ -286,17 +286,17 @@ internal class SharePointFileDao : SharePointDaoBase, IFileDao<string>
 
     private async Task<File<string>> internalSaveFileAsync(File<string> file, Stream fileStream)
     {
-        if (file.ID != null)
+        if (file.Id != null)
         {
-            var sharePointFile = await ProviderInfo.CreateFileAsync(file.ID, fileStream).ConfigureAwait(false);
+            var sharePointFile = await ProviderInfo.CreateFileAsync(file.Id, fileStream).ConfigureAwait(false);
 
             var resultFile = ProviderInfo.ToFile(sharePointFile);
             if (!sharePointFile.Name.Equals(file.Title))
             {
-                var folder = await ProviderInfo.GetFolderByIdAsync(file.FolderID).ConfigureAwait(false);
+                var folder = await ProviderInfo.GetFolderByIdAsync(file.ParentId).ConfigureAwait(false);
                 file.Title = await GetAvailableTitleAsync(file.Title, folder, IsExistAsync).ConfigureAwait(false);
 
-                var id = await ProviderInfo.RenameFileAsync(DaoSelector.ConvertId(resultFile.ID), file.Title).ConfigureAwait(false);
+                var id = await ProviderInfo.RenameFileAsync(DaoSelector.ConvertId(resultFile.Id), file.Title).ConfigureAwait(false);
 
                 return await GetFileAsync(DaoSelector.ConvertId(id)).ConfigureAwait(false);
             }
@@ -304,9 +304,9 @@ internal class SharePointFileDao : SharePointDaoBase, IFileDao<string>
             return resultFile;
         }
 
-        if (file.FolderID != null)
+        if (file.ParentId != null)
         {
-            var folder = await ProviderInfo.GetFolderByIdAsync(file.FolderID).ConfigureAwait(false);
+            var folder = await ProviderInfo.GetFolderByIdAsync(file.ParentId).ConfigureAwait(false);
             file.Title = await GetAvailableTitleAsync(file.Title, folder, IsExistAsync).ConfigureAwait(false);
 
             return ProviderInfo.ToFile(await ProviderInfo.CreateFileAsync(folder.ServerRelativeUrl + "/" + file.Title, fileStream).ConfigureAwait(false));
@@ -363,7 +363,7 @@ internal class SharePointFileDao : SharePointDaoBase, IFileDao<string>
             true)
             .ConfigureAwait(false);
 
-        return moved.ID;
+        return moved.Id;
     }
 
     public async Task<string> MoveFileAsync(string fileId, string toFolderId)
@@ -408,8 +408,8 @@ internal class SharePointFileDao : SharePointDaoBase, IFileDao<string>
 
     public async Task<string> FileRenameAsync(File<string> file, string newTitle)
     {
-        var newFileId = await ProviderInfo.RenameFileAsync(file.ID, newTitle).ConfigureAwait(false);
-        await UpdatePathInDBAsync(ProviderInfo.MakeId(file.ID), newFileId).ConfigureAwait(false);
+        var newFileId = await ProviderInfo.RenameFileAsync(file.Id, newTitle).ConfigureAwait(false);
+        await UpdatePathInDBAsync(ProviderInfo.MakeId(file.Id), newFileId).ConfigureAwait(false);
 
         return newFileId;
     }
@@ -465,14 +465,14 @@ internal class SharePointFileDao : SharePointDaoBase, IFileDao<string>
 
     private File<string> FixId(File<string> file)
     {
-        if (file.ID != null)
+        if (file.Id != null)
         {
-            file.ID = ProviderInfo.MakeId(file.ID);
+            file.Id = ProviderInfo.MakeId(file.Id);
         }
 
-        if (file.FolderID != null)
+        if (file.ParentId != null)
         {
-            file.FolderID = ProviderInfo.MakeId(file.FolderID);
+            file.ParentId = ProviderInfo.MakeId(file.ParentId);
         }
 
         return file;

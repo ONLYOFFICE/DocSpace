@@ -106,8 +106,8 @@ public interface IFileEntry<in T>
 [Serializable]
 public abstract class FileEntry<T> : FileEntry, ICloneable, IFileEntry<T>
 {
-    public T ID { get; set; }
-    public T FolderID { get; set; }
+    public T Id { get; set; }
+    public T ParentId { get; set; }
     private T _folderIdDisplay;
 
     protected FileEntry() { }
@@ -123,7 +123,7 @@ public abstract class FileEntry<T> : FileEntry, ICloneable, IFileEntry<T>
                 return _folderIdDisplay;
             }
 
-            return FolderID;
+            return ParentId;
         }
         set => _folderIdDisplay = value;
     }
@@ -131,21 +131,21 @@ public abstract class FileEntry<T> : FileEntry, ICloneable, IFileEntry<T>
     public T RootFolderId { get; set; }
 
     [JsonIgnore]
-    public virtual string UniqID => $"{GetType().Name.ToLower()}_{ID}";
+    public virtual string UniqID => $"{GetType().Name.ToLower()}_{Id}";
 
     public override bool Equals(object obj)
     {
-        return obj is FileEntry<T> f && Equals(f.ID, ID);
+        return obj is FileEntry<T> f && Equals(f.Id, Id);
     }
 
     public virtual bool Equals(FileEntry<T> obj)
     {
-        return Equals(obj.ID, ID);
+        return Equals(obj.Id, Id);
     }
 
     public override int GetHashCode()
     {
-        return ID.GetHashCode();
+        return Id.GetHashCode();
     }
 
     public override string ToString()

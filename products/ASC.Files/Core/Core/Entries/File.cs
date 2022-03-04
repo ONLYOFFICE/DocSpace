@@ -105,7 +105,7 @@ public class File<T> : FileEntry<T>, IFileEntry<T>
         set => _status = value;
     }
 
-    public override string UniqID => $"file_{ID}";
+    public override string UniqID => $"file_{Id}";
 
     [JsonIgnore]
     public override string Title => FileHelper.GetTitle(this);

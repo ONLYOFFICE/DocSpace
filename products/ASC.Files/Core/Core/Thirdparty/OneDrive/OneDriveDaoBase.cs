@@ -120,8 +120,8 @@ internal abstract class OneDriveDaoBase : ThirdPartyProviderDao<OneDriveProvider
 
         var folder = GetFolder();
 
-        folder.ID = MakeId(isRoot ? string.Empty : onedriveFolder.Id);
-        folder.FolderID = isRoot ? null : MakeId(GetParentFolderId(onedriveFolder));
+        folder.Id = MakeId(isRoot ? string.Empty : onedriveFolder.Id);
+        folder.ParentId = isRoot ? null : MakeId(GetParentFolderId(onedriveFolder));
         folder.CreateOn = isRoot ? ProviderInfo.CreateOn : (onedriveFolder.CreatedDateTime.HasValue ? TenantUtil.DateTimeFromUtc(onedriveFolder.CreatedDateTime.Value.DateTime) : default);
         folder.ModifiedOn = isRoot ? ProviderInfo.CreateOn : (onedriveFolder.LastModifiedDateTime.HasValue ? TenantUtil.DateTimeFromUtc(onedriveFolder.LastModifiedDateTime.Value.DateTime) : default);
 
@@ -183,10 +183,10 @@ internal abstract class OneDriveDaoBase : ThirdPartyProviderDao<OneDriveProvider
 
         var file = GetFile();
 
-        file.ID = MakeId(onedriveFile.Id);
+        file.Id = MakeId(onedriveFile.Id);
         file.ContentLength = onedriveFile.Size.HasValue ? (long)onedriveFile.Size : 0;
         file.CreateOn = onedriveFile.CreatedDateTime.HasValue ? TenantUtil.DateTimeFromUtc(onedriveFile.CreatedDateTime.Value.DateTime) : default;
-        file.FolderID = MakeId(GetParentFolderId(onedriveFile));
+        file.ParentId = MakeId(GetParentFolderId(onedriveFile));
         file.ModifiedOn = onedriveFile.LastModifiedDateTime.HasValue ? TenantUtil.DateTimeFromUtc(onedriveFile.LastModifiedDateTime.Value.DateTime) : default;
         file.NativeAccessor = onedriveFile;
         file.Title = MakeItemTitle(onedriveFile);

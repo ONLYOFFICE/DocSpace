@@ -113,8 +113,8 @@ internal abstract class BoxDaoBase : ThirdPartyProviderDao<BoxProviderInfo>
 
         var folder = GetFolder();
 
-        folder.ID = MakeId(boxFolder.Id);
-        folder.FolderID = isRoot ? null : MakeId(GetParentFolderId(boxFolder));
+        folder.Id = MakeId(boxFolder.Id);
+        folder.ParentId = isRoot ? null : MakeId(GetParentFolderId(boxFolder));
         folder.CreateOn = isRoot ? ProviderInfo.CreateOn : (boxFolder.CreatedAt ?? default);
         folder.ModifiedOn = isRoot ? ProviderInfo.CreateOn : (boxFolder.ModifiedAt ?? default);
 
@@ -183,10 +183,10 @@ internal abstract class BoxDaoBase : ThirdPartyProviderDao<BoxProviderInfo>
 
         var file = GetFile();
 
-        file.ID = MakeId(boxFile.Id);
+        file.Id = MakeId(boxFile.Id);
         file.ContentLength = boxFile.Size.HasValue ? (long)boxFile.Size : 0;
         file.CreateOn = boxFile.CreatedAt.HasValue ? TenantUtil.DateTimeFromUtc(boxFile.CreatedAt.Value) : default;
-        file.FolderID = MakeId(GetParentFolderId(boxFile));
+        file.ParentId = MakeId(GetParentFolderId(boxFile));
         file.ModifiedOn = boxFile.ModifiedAt.HasValue ? TenantUtil.DateTimeFromUtc(boxFile.ModifiedAt.Value) : default;
         file.NativeAccessor = boxFile;
         file.Title = MakeFileTitle(boxFile);

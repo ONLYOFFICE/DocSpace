@@ -159,25 +159,25 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
 
     private async Task<string> InternalSaveFolderAsync(Folder<string> folder)
     {
-        if (folder.ID != null)
+        if (folder.Id != null)
         {
-            var folderId = folder.ID;
+            var folderId = folder.Id;
             var selector = GetSelector(folderId);
-            folder.ID = selector.ConvertId(folderId);
+            folder.Id = selector.ConvertId(folderId);
             var folderDao = selector.GetFolderDao(folderId);
             var newFolderId = await folderDao.SaveFolderAsync(folder).ConfigureAwait(false);
-            folder.ID = folderId;
+            folder.Id = folderId;
 
             return newFolderId;
         }
-        if (folder.FolderID != null)
+        if (folder.ParentId != null)
         {
-            var folderId = folder.FolderID;
+            var folderId = folder.ParentId;
             var selector = GetSelector(folderId);
-            folder.FolderID = selector.ConvertId(folderId);
+            folder.ParentId = selector.ConvertId(folderId);
             var folderDao = selector.GetFolderDao(folderId);
             var newFolderId = await folderDao.SaveFolderAsync(folder).ConfigureAwait(false);
-            folder.FolderID = folderId;
+            folder.ParentId = folderId;
 
             return newFolderId;
 
@@ -216,7 +216,7 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         {
             var newFolder = await PerformCrossDaoFolderCopyAsync(folderId, toFolderId, true, cancellationToken).ConfigureAwait(false);
 
-            return newFolder?.ID;
+            return newFolder?.Id;
         }
         var folderDao = selector.GetFolderDao(folderId);
 
@@ -227,7 +227,7 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
     {
         var newFolder = await PerformCrossDaoFolderCopyAsync(folderId, toFolderId, true, cancellationToken).ConfigureAwait(false);
 
-        return newFolder.ID;
+        return newFolder.Id;
     }
 
     public async Task<Folder<TTo>> CopyFolderAsync<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
@@ -307,10 +307,10 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
 
     public Task<string> RenameFolderAsync(Folder<string> folder, string newTitle)
     {
-        var folderId = folder.ID;
+        var folderId = folder.Id;
         var selector = GetSelector(folderId);
-        folder.ID = selector.ConvertId(folderId);
-        folder.FolderID = selector.ConvertId(folder.FolderID);
+        folder.Id = selector.ConvertId(folderId);
+        folder.ParentId = selector.ConvertId(folder.ParentId);
         var folderDao = selector.GetFolderDao(folderId);
 
         return folderDao.RenameFolderAsync(folder, newTitle);
@@ -334,8 +334,8 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
 
     public bool UseTrashForRemove(Folder<string> folder)
     {
-        var selector = GetSelector(folder.ID);
-        var folderDao = selector.GetFolderDao(folder.ID);
+        var selector = GetSelector(folder.Id);
+        var folderDao = selector.GetFolderDao(folder.Id);
 
         return folderDao.UseTrashForRemove(folder);
     }

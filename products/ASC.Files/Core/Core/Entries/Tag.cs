@@ -67,7 +67,7 @@ public sealed class Tag
     {
         if (entry != null)
         {
-            EntryId = entry.ID;
+            EntryId = entry.Id;
             EntryType = entry.FileEntryType;
         }
 

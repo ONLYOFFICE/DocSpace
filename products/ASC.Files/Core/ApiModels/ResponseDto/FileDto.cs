@@ -108,7 +108,7 @@ public class FileDtoHelper : FileEntryDtoHelper
     {
         var result = await GetFileWrapperAsync(file);
 
-        result.FolderId = file.FolderID;
+        result.FolderId = file.ParentId;
         if (file.RootFolderType == FolderType.USER
             && !Equals(file.RootFolderCreator, _authContext.CurrentAccount.ID))
         {
@@ -118,7 +118,7 @@ public class FileDtoHelper : FileEntryDtoHelper
 
             if (folders != null)
             {
-                var folderWithRight = folders.FirstOrDefault(f => f.Item1.ID.Equals(file.FolderID));
+                var folderWithRight = folders.FirstOrDefault(f => f.Item1.Id.Equals(file.ParentId));
                 if (folderWithRight == null || !folderWithRight.Item2)
                 {
                     result.FolderId = await _globalFolderHelper.GetFolderShareAsync<T>();
@@ -126,7 +126,7 @@ public class FileDtoHelper : FileEntryDtoHelper
             }
             else
             {
-                parentFolder = await folderDao.GetFolderAsync(file.FolderID);
+                parentFolder = await folderDao.GetFolderAsync(file.ParentId);
                 if (!await _fileSecurity.CanReadAsync(parentFolder))
                 {
                     result.FolderId = await _globalFolderHelper.GetFolderShareAsync<T>();
@@ -159,13 +159,13 @@ public class FileDtoHelper : FileEntryDtoHelper
         {
             result.ViewUrl = _commonLinkUtility.GetFullAbsolutePath(file.DownloadUrl);
 
-            result.WebUrl = _commonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.GetFileWebPreviewUrl(_fileUtility, file.Title, file.ID, file.Version));
+            result.WebUrl = _commonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.GetFileWebPreviewUrl(_fileUtility, file.Title, file.Id, file.Version));
 
             result.ThumbnailStatus = file.ThumbnailStatus;
 
             if (file.ThumbnailStatus == Thumbnail.Created)
             {
-                result.ThumbnailUrl = _commonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.GetFileThumbnailUrl(file.ID, file.Version));
+                result.ThumbnailUrl = _commonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.GetFileThumbnailUrl(file.Id, file.Version));
             }
         }
         catch (Exception)

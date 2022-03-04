@@ -630,7 +630,7 @@ public class GlobalFolder
         {
             var folder = _serviceProvider.GetService<Folder<int>>();
             folder.Title = folderName;
-            folder.FolderID = folderId;
+            folder.ParentId = folderId;
 
             var subFolderId = await folderDao.SaveFolderAsync(folder);
 
@@ -652,7 +652,7 @@ public class GlobalFolder
             var file = _serviceProvider.GetService<File<int>>();
 
             file.Title = fileName;
-            file.FolderID = folder;
+            file.ParentId = folder;
             file.Comment = FilesCommonResource.CommentCreate;
 
             using (var stream = await storeTemp.GetReadStreamAsync("", filePath))

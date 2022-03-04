@@ -188,14 +188,14 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
 
     public async Task<string> InternalSaveFolderAsync(Folder<string> folder)
     {
-        if (folder.ID != null)
+        if (folder.Id != null)
         {
             return await RenameFolderAsync(folder, folder.Title).ConfigureAwait(false);
         }
 
-        if (folder.FolderID != null)
+        if (folder.ParentId != null)
         {
-            var dropboxFolderPath = MakeDropboxPath(folder.FolderID);
+            var dropboxFolderPath = MakeDropboxPath(folder.ParentId);
 
             folder.Title = await GetAvailableTitleAsync(folder.Title, dropboxFolderPath, IsExistAsync).ConfigureAwait(false);
 
@@ -300,7 +300,7 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
             true, cancellationToken)
             .ConfigureAwait(false);
 
-        return moved.ID;
+        return moved.Id;
     }
 
     public async Task<string> MoveFolderAsync(string folderId, string toFolderId, CancellationToken? cancellationToken)
@@ -404,7 +404,7 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
 
     public async Task<string> RenameFolderAsync(Folder<string> folder, string newTitle)
     {
-        var dropboxFolder = await GetDropboxFolderAsync(folder.ID).ConfigureAwait(false);
+        var dropboxFolder = await GetDropboxFolderAsync(folder.Id).ConfigureAwait(false);
         var parentFolderPath = GetParentFolderPath(dropboxFolder);
 
         if (IsRoot(dropboxFolder))

@@ -36,17 +36,17 @@ internal class CrossDao //Additional SharpBox
 
         var fromFileShareRecords = (await securityDao.GetPureShareRecordsAsync(fromFile)).Where(x => x.EntryType == FileEntryType.File);
         var fromFileNewTags = await tagDao.GetNewTagsAsync(Guid.Empty, fromFile).ToListAsync();
-        var fromFileLockTag = (await tagDao.GetTagsAsync(fromFile.ID, FileEntryType.File, TagType.Locked).ToListAsync()).FirstOrDefault();
-        var fromFileFavoriteTag = await tagDao.GetTagsAsync(fromFile.ID, FileEntryType.File, TagType.Favorite).ToListAsync();
-        var fromFileTemplateTag = await tagDao.GetTagsAsync(fromFile.ID, FileEntryType.File, TagType.Template).ToListAsync();
+        var fromFileLockTag = (await tagDao.GetTagsAsync(fromFile.Id, FileEntryType.File, TagType.Locked).ToListAsync()).FirstOrDefault();
+        var fromFileFavoriteTag = await tagDao.GetTagsAsync(fromFile.Id, FileEntryType.File, TagType.Favorite).ToListAsync();
+        var fromFileTemplateTag = await tagDao.GetTagsAsync(fromFile.Id, FileEntryType.File, TagType.Template).ToListAsync();
 
         var toFile = _serviceProvider.GetService<File<TTo>>();
 
         toFile.Title = fromFile.Title;
         toFile.Encrypted = fromFile.Encrypted;
-        toFile.FolderID = toConverter(toFolderId);
+        toFile.ParentId = toConverter(toFolderId);
 
-        fromFile.ID = fromConverter(fromFile.ID);
+        fromFile.Id = fromConverter(fromFile.Id);
 
         var mustConvert = !string.IsNullOrEmpty(fromFile.ConvertedType);
         using (var fromFileStream = mustConvert
@@ -72,7 +72,7 @@ internal class CrossDao //Additional SharpBox
             {
                 foreach (var record in fromFileShareRecords)
                 {
-                    record.EntryId = toFile.ID;
+                    record.EntryId = toFile.Id;
                     await securityDao.SetShareAsync(record);
                 }
             }
@@ -95,7 +95,7 @@ internal class CrossDao //Additional SharpBox
 
             if (fromFileTags.Count > 0)
             {
-                fromFileTags.ForEach(x => x.EntryId = toFile.ID);
+                fromFileTags.ForEach(x => x.EntryId = toFile.Id);
 
                 tagDao.SaveTags(fromFileTags);
             }
@@ -116,11 +116,11 @@ internal class CrossDao //Additional SharpBox
 
         var toFolder1 = _serviceProvider.GetService<Folder<TTo>>();
         toFolder1.Title = fromFolder.Title;
-        toFolder1.FolderID = toConverter(toRootFolderId);
+        toFolder1.ParentId = toConverter(toRootFolderId);
 
         var toFolder = await toFolderDao.GetFolderAsync(fromFolder.Title, toConverter(toRootFolderId));
         var toFolderId = toFolder != null
-                             ? toFolder.ID
+                             ? toFolder.Id
                              : await toFolderDao.SaveFolderAsync(toFolder1);
 
         var foldersToCopy = await fromFolderDao.GetFoldersAsync(fromConverter(fromFolderId)).ToListAsync();
@@ -154,7 +154,7 @@ internal class CrossDao //Additional SharpBox
 
             try
             {
-                await PerformCrossDaoFolderCopyAsync(folder.ID, fromFolderDao, fromFileDao, fromConverter,
+                await PerformCrossDaoFolderCopyAsync(folder.Id, fromFolderDao, fromFileDao, fromConverter,
                     toFolderId, toFolderDao, toFileDao, toConverter,
                     deleteSourceFolder, cancellationToken);
             }

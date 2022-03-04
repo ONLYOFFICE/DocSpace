@@ -220,13 +220,13 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
 
     private async Task<Stream> InternalGetFileStreamAsync(File<string> file, long offset)
     {
-        var fileId = file.ID;
+        var fileId = file.Id;
         var selector = GetSelector(fileId);
-        file.ID = selector.ConvertId(fileId);
+        file.Id = selector.ConvertId(fileId);
 
         var fileDao = selector.GetFileDao(fileId);
         var stream = await fileDao.GetFileStreamAsync(file, offset).ConfigureAwait(false);
-        file.ID = fileId; //Restore id
+        file.Id = fileId; //Restore id
 
         return stream;
     }
@@ -243,13 +243,13 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
 
     private async Task<bool> InternalIsSupportedPreSignedUriAsync(File<string> file)
     {
-        var fileId = file.ID;
+        var fileId = file.Id;
         var selector = GetSelector(fileId);
-        file.ID = selector.ConvertId(fileId);
+        file.Id = selector.ConvertId(fileId);
 
         var fileDao = selector.GetFileDao(fileId);
         var isSupported = await fileDao.IsSupportedPreSignedUriAsync(file).ConfigureAwait(false);
-        file.ID = fileId; //Restore id
+        file.Id = fileId; //Restore id
 
         return isSupported;
     }
@@ -266,13 +266,13 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
 
     private async Task<Uri> InternalGetPreSignedUriAsync(File<string> file, TimeSpan expires)
     {
-        var fileId = file.ID;
+        var fileId = file.Id;
         var selector = GetSelector(fileId);
-        file.ID = selector.ConvertId(fileId);
+        file.Id = selector.ConvertId(fileId);
 
         var fileDao = selector.GetFileDao(fileId);
         var streamUri = await fileDao.GetPreSignedUriAsync(file, expires).ConfigureAwait(false);
-        file.ID = fileId; //Restore id
+        file.Id = fileId; //Restore id
 
         return streamUri;
     }
@@ -289,8 +289,8 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
 
     private async Task<File<string>> InternalSaveFileAsync(File<string> file, Stream fileStream)
     {
-        var fileId = file.ID;
-        var folderId = file.FolderID;
+        var fileId = file.Id;
+        var folderId = file.ParentId;
 
         IDaoSelector selector;
         File<string> fileSaved = null;
@@ -298,10 +298,10 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
         if (fileId != null)
         {
             selector = GetSelector(fileId);
-            file.ID = selector.ConvertId(fileId);
+            file.Id = selector.ConvertId(fileId);
             if (folderId != null)
             {
-                file.FolderID = selector.ConvertId(folderId);
+                file.ParentId = selector.ConvertId(folderId);
             }
 
             var fileDao = selector.GetFileDao(fileId);
@@ -310,7 +310,7 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
         else if (folderId != null)
         {
             selector = GetSelector(folderId);
-            file.FolderID = selector.ConvertId(folderId);
+            file.ParentId = selector.ConvertId(folderId);
             var fileDao = selector.GetFileDao(folderId);
             fileSaved = await fileDao.SaveFileAsync(file, fileStream).ConfigureAwait(false);
         }
@@ -329,21 +329,21 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
         {
             throw new ArgumentNullException(nameof(file));
         }
-        if (file.ID == null)
+        if (file.Id == null)
         {
             throw new ArgumentException("No file id or folder id toFolderId determine provider");
         }
 
-        var fileId = file.ID;
-        var folderId = file.FolderID;
+        var fileId = file.Id;
+        var folderId = file.ParentId;
 
         //Convert
         var selector = GetSelector(fileId);
 
-        file.ID = selector.ConvertId(fileId);
+        file.Id = selector.ConvertId(fileId);
         if (folderId != null)
         {
-            file.FolderID = selector.ConvertId(folderId);
+            file.ParentId = selector.ConvertId(folderId);
         }
 
         var fileDao = selector.GetFileDao(fileId);
@@ -387,7 +387,7 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
     {
         var movedFile = await PerformCrossDaoFileCopyAsync(fileId, toFolderId, true).ConfigureAwait(false);
 
-        return movedFile.ID;
+        return movedFile.Id;
     }
 
     public async Task<string> MoveFileAsync(string fileId, string toFolderId)
@@ -397,7 +397,7 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
         {
             var movedFile = await PerformCrossDaoFileCopyAsync(fileId, toFolderId, true).ConfigureAwait(false);
 
-            return movedFile.ID;
+            return movedFile.Id;
         }
 
         var fileDao = selector.GetFileDao(fileId);
@@ -440,8 +440,8 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
 
     public Task<string> FileRenameAsync(File<string> file, string newTitle)
     {
-        var selector = GetSelector(file.ID);
-        var fileDao = selector.GetFileDao(file.ID);
+        var selector = GetSelector(file.Id);
+        var fileDao = selector.GetFileDao(file.Id);
 
         return fileDao.FileRenameAsync(ConvertId(file), newTitle);
     }
@@ -474,8 +474,8 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
 
     public bool UseTrashForRemove(File<string> file)
     {
-        var selector = GetSelector(file.ID);
-        var fileDao = selector.GetFileDao(file.ID);
+        var selector = GetSelector(file.Id);
+        var fileDao = selector.GetFileDao(file.Id);
 
         return UseTrashForRemove(file);
     }
@@ -508,14 +508,14 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
 
     private IFileDao<string> GetFileDao(File<string> file)
     {
-        if (file.ID != null)
+        if (file.Id != null)
         {
-            return GetSelector(file.ID).GetFileDao(file.ID);
+            return GetSelector(file.Id).GetFileDao(file.Id);
         }
 
-        if (file.FolderID != null)
+        if (file.ParentId != null)
         {
-            return GetSelector(file.FolderID).GetFileDao(file.FolderID);
+            return GetSelector(file.ParentId).GetFileDao(file.ParentId);
         }
 
         throw new ArgumentException("Can't create instance of dao for given file.", nameof(file));
@@ -528,8 +528,8 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
 
     private File<string> ConvertId(File<string> file)
     {
-        file.ID = ConvertId(file.ID);
-        file.FolderID = ConvertId(file.FolderID);
+        file.Id = ConvertId(file.Id);
+        file.ParentId = ConvertId(file.ParentId);
 
         return file;
     }

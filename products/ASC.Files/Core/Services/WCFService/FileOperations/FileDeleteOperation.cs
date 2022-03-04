@@ -92,7 +92,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
         }
         if (root != null)
         {
-            Result += string.Format("folder_{0}{1}", root.ID, SplitChar);
+            Result += string.Format("folder_{0}{1}", root.Id, SplitChar);
         }
 
         await DeleteFilesAsync(Files, scope);
@@ -128,12 +128,12 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                 canCalculate = FolderDao.CanCalculateSubitems(folderId) ? default : folderId;
 
                 await fileMarker.RemoveMarkAsNewForAllAsync(folder);
-                if (folder.ProviderEntry && folder.ID.Equals(folder.RootFolderId))
+                if (folder.ProviderEntry && folder.Id.Equals(folder.RootFolderId))
                 {
                     if (ProviderDao != null)
                     {
                         await ProviderDao.RemoveProviderInfoAsync(folder.ProviderId);
-                        filesMessageService.Send(folder, _headers, MessageAction.ThirdPartyDeleted, folder.ID.ToString(), folder.ProviderKey);
+                        filesMessageService.Send(folder, _headers, MessageAction.ThirdPartyDeleted, folder.Id.ToString(), folder.ProviderKey);
                     }
 
                     ProcessedFolder(folderId);
@@ -141,17 +141,17 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                 else
                 {
                     var immediately = _immediately || !FolderDao.UseTrashForRemove(folder);
-                    if (immediately && FolderDao.UseRecursiveOperation(folder.ID, default(T)))
+                    if (immediately && FolderDao.UseRecursiveOperation(folder.Id, default(T)))
                     {
-                        var files = await FileDao.GetFilesAsync(folder.ID);
+                        var files = await FileDao.GetFilesAsync(folder.Id);
                         await DeleteFilesAsync(files, scope);
 
-                        var folders = await FolderDao.GetFoldersAsync(folder.ID).ToListAsync();
-                        await DeleteFoldersAsync(folders.Select(f => f.ID).ToList(), scope);
+                        var folders = await FolderDao.GetFoldersAsync(folder.Id).ToListAsync();
+                        await DeleteFoldersAsync(folders.Select(f => f.Id).ToList(), scope);
 
-                        if (await FolderDao.IsEmptyAsync(folder.ID))
+                        if (await FolderDao.IsEmptyAsync(folder.Id))
                         {
-                            await FolderDao.DeleteFolderAsync(folder.ID);
+                            await FolderDao.DeleteFolderAsync(folder.Id);
                             filesMessageService.Send(folder, _headers, MessageAction.FolderDeleted, folder.Title);
 
                             ProcessedFolder(folderId);
@@ -159,7 +159,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                     }
                     else
                     {
-                        var files = await FileDao.GetFilesAsync(folder.ID, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, true).ToListAsync();
+                        var files = await FileDao.GetFilesAsync(folder.Id, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, true).ToListAsync();
                         var (isError, message) = await WithErrorAsync(scope, files, true);
                         if (!_ignoreException && isError)
                         {
@@ -169,12 +169,12 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                         {
                             if (immediately)
                             {
-                                await FolderDao.DeleteFolderAsync(folder.ID);
+                                await FolderDao.DeleteFolderAsync(folder.Id);
                                 filesMessageService.Send(folder, _headers, MessageAction.FolderDeleted, folder.Title);
                             }
                             else
                             {
-                                await FolderDao.MoveFolderAsync(folder.ID, _trashId, CancellationToken);
+                                await FolderDao.MoveFolderAsync(folder.Id, _trashId, CancellationToken);
                                 filesMessageService.Send(folder, _headers, MessageAction.FolderMovedToTrash, folder.Title);
                             }
 
@@ -212,7 +212,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                 await fileMarker.RemoveMarkAsNewForAllAsync(file);
                 if (!_immediately && FileDao.UseTrashForRemove(file))
                 {
-                    await FileDao.MoveFileAsync(file.ID, _trashId);
+                    await FileDao.MoveFileAsync(file.Id, _trashId);
                     filesMessageService.Send(file, _headers, MessageAction.FileMovedToTrash, file.Title);
 
                     if (file.ThumbnailStatus == Thumbnail.Waiting)
@@ -227,7 +227,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                 {
                     try
                     {
-                        await FileDao.DeleteFileAsync(file.ID);
+                        await FileDao.DeleteFileAsync(file.Id);
                         filesMessageService.Send(file, _headers, MessageAction.FileDeleted, file.Title);
 
                         socketManager.DeleteFile(file);
@@ -238,7 +238,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                         Logger.Error(Error, ex);
                     }
 
-                    await LinkDao.DeleteAllLinkAsync(file.ID.ToString());
+                    await LinkDao.DeleteAllLinkAsync(file.Id.ToString());
                 }
 
                 ProcessedFile(fileId);
@@ -262,13 +262,13 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
 
                 return (true, error);
             }
-            if (await entryManager.FileLockedForMeAsync(file.ID))
+            if (await entryManager.FileLockedForMeAsync(file.Id))
             {
                 error = FilesCommonResource.ErrorMassage_LockedFile;
 
                 return (true, error);
             }
-            if (fileTracker.IsEditing(file.ID))
+            if (fileTracker.IsEditing(file.Id))
             {
                 error = folder ? FilesCommonResource.ErrorMassage_SecurityException_DeleteEditingFolder : FilesCommonResource.ErrorMassage_SecurityException_DeleteEditingFile;
 

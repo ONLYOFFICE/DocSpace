@@ -164,7 +164,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
         var jsonFile = JObject.Parse(boxFile);
 
         var file = _serviceProvider.GetService<File<string>>();
-        file.ID = ThirdPartySelector.BuildAppFileId(AppAttr, jsonFile.Value<string>("id"));
+        file.Id = ThirdPartySelector.BuildAppFileId(AppAttr, jsonFile.Value<string>("id"));
         file.Title = Global.ReplaceInvalidCharsAndTruncate(jsonFile.Value<string>("name"));
         file.CreateOn = _tenantUtil.DateTimeFromUtc(jsonFile.Value<DateTime>("created_at"));
         file.ModifiedOn = _tenantUtil.DateTimeFromUtc(jsonFile.Value<DateTime>("modified_at"));
@@ -207,7 +207,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
             return string.Empty;
         }
 
-        var fileId = ThirdPartySelector.GetFileId(file.ID);
+        var fileId = ThirdPartySelector.GetFileId(file.Id);
 
         Logger.Debug("BoxApp: get file stream url " + fileId);
 

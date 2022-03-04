@@ -100,7 +100,7 @@ public class FilesModule : FeedModule
 
         foreach (var f in feed1)
         {
-            if (IsTarget(f.Item1.Feed.Target, userId) && canRead.Any(r => r.Item1.ID.Equals(f.Item2.ID)))
+            if (IsTarget(f.Item1.Feed.Target, userId) && canRead.Any(r => r.Item1.Id.Equals(f.Item2.Id)))
             {
                 f.Item1.Users.Add(userId);
             }
@@ -113,10 +113,10 @@ public class FilesModule : FeedModule
             .Where(f => f.Item1.RootFolderType != FolderType.TRASH && f.Item1.RootFolderType != FolderType.BUNCH)
             .ToList();
 
-        var folderIDs = files.Select(r => r.Item1.FolderID).ToList();
+        var folderIDs = files.Select(r => r.Item1.ParentId).ToList();
         var folders = _folderDao.GetFoldersAsync(folderIDs, checkShare: false).ToListAsync().Result;
 
-        return files.Select(f => new Tuple<Feed.Aggregator.Feed, object>(ToFeed(f, folders.FirstOrDefault(r => r.ID.Equals(f.Item1.FolderID))), f));
+        return files.Select(f => new Tuple<Feed.Aggregator.Feed, object>(ToFeed(f, folders.FirstOrDefault(r => r.Id.Equals(f.Item1.ParentId))), f));
     }
 
     public override IEnumerable<int> GetTenantsWithFeeds(DateTime fromTime)
@@ -134,19 +134,19 @@ public class FilesModule : FeedModule
             var feed = new Feed.Aggregator.Feed(shareRecord.ShareBy, shareRecord.ShareOn, true)
             {
                 Item = SharedFileItem,
-                ItemId = string.Format("{0}_{1}", file.ID, shareRecord.ShareTo),
-                ItemUrl = _filesLinkUtility.GetFileRedirectPreviewUrl(file.ID, true),
+                ItemId = string.Format("{0}_{1}", file.Id, shareRecord.ShareTo),
+                ItemUrl = _filesLinkUtility.GetFileRedirectPreviewUrl(file.Id, true),
                 Product = Product,
                 Module = Name,
                 Title = file.Title,
                 ExtraLocation = rootFolder.FolderType == FolderType.DEFAULT ? rootFolder.Title : string.Empty,
-                ExtraLocationUrl = rootFolder.FolderType == FolderType.DEFAULT ? _filesLinkUtility.GetFileRedirectPreviewUrl(file.FolderID, false) : string.Empty,
+                ExtraLocationUrl = rootFolder.FolderType == FolderType.DEFAULT ? _filesLinkUtility.GetFileRedirectPreviewUrl(file.ParentId, false) : string.Empty,
                 AdditionalInfo = file.ContentLengthString,
                 Keywords = file.Title,
                 HasPreview = false,
                 CanComment = false,
                 Target = shareRecord.ShareTo,
-                GroupId = GetGroupId(SharedFileItem, shareRecord.ShareBy, file.FolderID.ToString())
+                GroupId = GetGroupId(SharedFileItem, shareRecord.ShareBy, file.ParentId.ToString())
             };
 
             return feed;
@@ -157,20 +157,20 @@ public class FilesModule : FeedModule
         return new Feed.Aggregator.Feed(file.ModifiedBy, file.ModifiedOn, true)
         {
             Item = FileItem,
-            ItemId = string.Format("{0}_{1}", file.ID, file.Version > 1 ? 1 : 0),
-            ItemUrl = _filesLinkUtility.GetFileRedirectPreviewUrl(file.ID, true),
+            ItemId = string.Format("{0}_{1}", file.Id, file.Version > 1 ? 1 : 0),
+            ItemUrl = _filesLinkUtility.GetFileRedirectPreviewUrl(file.Id, true),
             Product = Product,
             Module = Name,
             Action = updated ? FeedAction.Updated : FeedAction.Created,
             Title = file.Title,
             ExtraLocation = rootFolder.FolderType == FolderType.DEFAULT ? rootFolder.Title : string.Empty,
-            ExtraLocationUrl = rootFolder.FolderType == FolderType.DEFAULT ? _filesLinkUtility.GetFileRedirectPreviewUrl(file.FolderID, false) : string.Empty,
+            ExtraLocationUrl = rootFolder.FolderType == FolderType.DEFAULT ? _filesLinkUtility.GetFileRedirectPreviewUrl(file.ParentId, false) : string.Empty,
             AdditionalInfo = file.ContentLengthString,
             Keywords = file.Title,
             HasPreview = false,
             CanComment = false,
             Target = null,
-            GroupId = GetGroupId(FileItem, file.ModifiedBy, file.FolderID.ToString(), updated ? 1 : 0)
+            GroupId = GetGroupId(FileItem, file.ModifiedBy, file.ParentId.ToString(), updated ? 1 : 0)
         };
     }
 

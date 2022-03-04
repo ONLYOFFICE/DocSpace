@@ -113,7 +113,7 @@ public class FileSharingAceHelper<T>
                 share = w.Share == FileShare.Restrict ? FileShare.None : w.Share;
             }
 
-            await fileSecurity.ShareAsync(entry.ID, entryType, w.SubjectId, share);
+            await fileSecurity.ShareAsync(entry.Id, entryType, w.SubjectId, share);
             changed = true;
 
             if (w.SubjectId == FileConstant.ShareLinkId)
@@ -138,7 +138,7 @@ public class FileSharingAceHelper<T>
 
             if (entryType == FileEntryType.File)
             {
-                listUsersId.ForEach(uid => _fileTracker.ChangeRight(entry.ID, uid, true));
+                listUsersId.ForEach(uid => _fileTracker.ChangeRight(entry.Id, uid, true));
             }
 
             var addRecipient = share == FileShare.Read
@@ -206,7 +206,7 @@ public class FileSharingAceHelper<T>
                 }
 
                 var entryType = entry.FileEntryType;
-                await fileSecurity.ShareAsync(entry.ID, entryType, _authContext.CurrentAccount.ID,
+                await fileSecurity.ShareAsync(entry.Id, entryType, _authContext.CurrentAccount.ID,
                      entry.RootFolderType == FolderType.USER
                         ? fileSecurity.DefaultMyShare
                         : fileSecurity.DefaultPrivacyShare);
@@ -308,7 +308,7 @@ public class FileSharing
 
         if (!await CanSetAccessAsync(entry))
         {
-            Logger.ErrorFormat("User {0} can't get shared info for {1} {2}", _authContext.CurrentAccount.ID, entry.FileEntryType == FileEntryType.File ? "file" : "folder", entry.ID);
+            Logger.ErrorFormat("User {0} can't get shared info for {1} {2}", _authContext.CurrentAccount.ID, entry.FileEntryType == FileEntryType.File ? "file" : "folder", entry.Id);
 
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
         }

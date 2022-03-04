@@ -263,9 +263,9 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
 
     public async Task<Stream> GetFileStreamAsync(File<string> file, long offset)
     {
-        var driveId = MakeDriveId(file.ID);
+        var driveId = MakeDriveId(file.Id);
         await ProviderInfo.CacheResetAsync(driveId, true).ConfigureAwait(false);
-        var driveFile = await GetDriveEntryAsync(file.ID).ConfigureAwait(false);
+        var driveFile = await GetDriveEntryAsync(file.Id).ConfigureAwait(false);
         if (driveFile == null)
         {
             throw new ArgumentNullException(nameof(file), FilesCommonResource.ErrorMassage_FileNotFound);
@@ -317,13 +317,13 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
         DriveFile newDriveFile = null;
         var storage = await ProviderInfo.StorageAsync;
 
-        if (file.ID != null)
+        if (file.Id != null)
         {
-            newDriveFile = await storage.SaveStreamAsync(MakeDriveId(file.ID), fileStream, file.Title).ConfigureAwait(false);
+            newDriveFile = await storage.SaveStreamAsync(MakeDriveId(file.Id), fileStream, file.Title).ConfigureAwait(false);
         }
-        else if (file.FolderID != null)
+        else if (file.ParentId != null)
         {
-            newDriveFile = await storage.InsertEntryAsync(fileStream, file.Title, MakeDriveId(file.FolderID)).ConfigureAwait(false);
+            newDriveFile = await storage.InsertEntryAsync(fileStream, file.Title, MakeDriveId(file.ParentId)).ConfigureAwait(false);
         }
 
         await ProviderInfo.CacheResetAsync(newDriveFile).ConfigureAwait(false);
@@ -434,7 +434,7 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
             true)
             .ConfigureAwait(false);
 
-        return moved.ID;
+        return moved.Id;
     }
 
     public async Task<string> MoveFileAsync(string fileId, string toFolderId)
@@ -518,7 +518,7 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
 
     public async Task<string> FileRenameAsync(File<string> file, string newTitle)
     {
-        var driveFile = await GetDriveEntryAsync(file.ID).ConfigureAwait(false);
+        var driveFile = await GetDriveEntryAsync(file.Id).ConfigureAwait(false);
         driveFile.Name = newTitle;
 
         var storage = await ProviderInfo.StorageAsync;
@@ -563,14 +563,14 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
             return null;
         }
 
-        if (file.ID != null)
+        if (file.Id != null)
         {
-            file.ID = MakeId(file.ID);
+            file.Id = MakeId(file.Id);
         }
 
-        if (file.FolderID != null)
+        if (file.ParentId != null)
         {
-            file.FolderID = MakeId(file.FolderID);
+            file.ParentId = MakeId(file.ParentId);
         }
 
         return file;
@@ -595,13 +595,13 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
         var storageTask = ProviderInfo.StorageAsync;
         GoogleDriveStorage storage;
 
-        if (file.ID != null)
+        if (file.Id != null)
         {
-            driveFile = await GetDriveEntryAsync(file.ID).ConfigureAwait(false);
+            driveFile = await GetDriveEntryAsync(file.Id).ConfigureAwait(false);
         }
         else
         {
-            var folder = await GetDriveEntryAsync(file.FolderID).ConfigureAwait(false);
+            var folder = await GetDriveEntryAsync(file.ParentId).ConfigureAwait(false);
             storage = await storageTask;
             driveFile = storage.FileConstructor(file.Title, null, folder.Id);
         }

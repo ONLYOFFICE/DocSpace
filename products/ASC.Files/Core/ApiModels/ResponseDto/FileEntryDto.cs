@@ -74,7 +74,7 @@ public abstract class FileEntryWrapper<T> : FileEntryDto
     protected FileEntryWrapper(FileEntry<T> entry, EmployeeWraperHelper employeeWraperHelper, ApiDateTimeHelper apiDateTimeHelper)
         : base(entry, employeeWraperHelper, apiDateTimeHelper)
     {
-        Id = entry.ID;
+        Id = entry.Id;
         RootFolderId = entry.RootFolderId;
     }
 
@@ -105,7 +105,7 @@ public class FileEntryDtoHelper
     {
         return new T
         {
-            Id = entry.ID,
+            Id = entry.Id,
             Title = entry.Title,
             Access = entry.Access,
             Shared = entry.Shared,

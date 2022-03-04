@@ -193,7 +193,7 @@ public class DocumentServiceHelper
 
         string strError = null;
         if ((editPossible || reviewPossible || fillFormsPossible || commentPossible)
-            && await _lockerManager.FileLockedForMeAsync(file.ID))
+            && await _lockerManager.FileLockedForMeAsync(file.Id))
         {
             if (tryEdit)
             {
@@ -248,18 +248,18 @@ public class DocumentServiceHelper
 
         var rightChangeHistory = rightToEdit && !file.Encrypted;
 
-        if (_fileTracker.IsEditing(file.ID))
+        if (_fileTracker.IsEditing(file.Id))
         {
             rightChangeHistory = false;
 
             bool coauth;
             if ((editPossible || reviewPossible || fillFormsPossible || commentPossible)
                 && tryCoauth
-                && (!(coauth = _fileUtility.CanCoAuhtoring(file.Title)) || _fileTracker.IsEditingAlone(file.ID)))
+                && (!(coauth = _fileUtility.CanCoAuhtoring(file.Title)) || _fileTracker.IsEditingAlone(file.Id)))
             {
                 if (tryEdit)
                 {
-                    var editingBy = _fileTracker.GetEditingBy(file.ID).FirstOrDefault();
+                    var editingBy = _fileTracker.GetEditingBy(file.Id).FirstOrDefault();
                     strError = string.Format(!coauth
                                                  ? FilesCommonResource.ErrorMassage_EditingCoauth
                                                  : FilesCommonResource.ErrorMassage_EditingMobile,
@@ -273,13 +273,13 @@ public class DocumentServiceHelper
         if (lastVersion && file.Forcesave != ForcesaveType.None && tryEdit)
         {
             var fileDao = _daoFactory.GetFileDao<T>();
-            fileStable = await fileDao.GetFileStableAsync(file.ID, file.Version);
+            fileStable = await fileDao.GetFileStableAsync(file.Id, file.Version);
         }
 
         var docKey = GetDocKey(fileStable);
         var modeWrite = (editPossible || reviewPossible || fillFormsPossible || commentPossible) && tryEdit;
 
-        if (file.FolderID != null)
+        if (file.ParentId != null)
         {
             await _entryStatusManager.SetFileStatusAsync(file);
         }
@@ -329,7 +329,7 @@ public class DocumentServiceHelper
 
     public string GetDocKey<T>(File<T> file)
     {
-        return GetDocKey(file.ID, file.Version, file.ProviderEntry ? file.ModifiedOn : file.CreateOn);
+        return GetDocKey(file.Id, file.Version, file.ProviderEntry ? file.ModifiedOn : file.CreateOn);
     }
 
     public string GetDocKey<T>(T fileId, int fileVersion, DateTime modified)
@@ -356,7 +356,7 @@ public class DocumentServiceHelper
 
         var usersDrop = new List<string>();
 
-        foreach (var uid in _fileTracker.GetEditingBy(file.ID))
+        foreach (var uid in _fileTracker.GetEditingBy(file.Id))
         {
             if (!_userManager.UserExists(uid) && !sharedLink)
             {
@@ -383,12 +383,12 @@ public class DocumentServiceHelper
         if (file.Forcesave != ForcesaveType.None)
         {
             var fileDao = _daoFactory.GetFileDao<T>();
-            fileStable = await fileDao.GetFileStableAsync(file.ID, file.Version);
+            fileStable = await fileDao.GetFileStableAsync(file.Id, file.Version);
         }
 
         var docKey = GetDocKey(fileStable);
 
-        await DropUserAsync(docKey, usersDrop.ToArray(), file.ID);
+        await DropUserAsync(docKey, usersDrop.ToArray(), file.Id);
     }
 
     public Task<bool> DropUserAsync(string docKeyForTrack, string[] users, object fileId = null)
@@ -408,11 +408,11 @@ public class DocumentServiceHelper
             return true;
         }
 
-        var fileStable = file.Forcesave == ForcesaveType.None ? file : await fileDao.GetFileStableAsync(file.ID, file.Version);
+        var fileStable = file.Forcesave == ForcesaveType.None ? file : await fileDao.GetFileStableAsync(file.Id, file.Version);
         var docKeyForTrack = GetDocKey(fileStable);
 
         var meta = new MetaData { Title = file.Title };
 
-        return await _documentServiceConnector.CommandAsync(CommandMethod.Meta, docKeyForTrack, file.ID, meta: meta);
+        return await _documentServiceConnector.CommandAsync(CommandMethod.Meta, docKeyForTrack, file.Id, meta: meta);
     }
 }

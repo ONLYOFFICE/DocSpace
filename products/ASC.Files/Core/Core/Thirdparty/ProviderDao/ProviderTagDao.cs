@@ -50,8 +50,8 @@ internal class ProviderTagDao : ProviderDaoBase, ITagDao<string>
 
     public IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, Folder<string> parentFolder, bool deepSearch)
     {
-        return GetSelector(parentFolder.ID)
-            .GetTagDao(parentFolder.ID)
+        return GetSelector(parentFolder.Id)
+            .GetTagDao(parentFolder.Id)
             .GetNewTagsAsync(subject, parentFolder, deepSearch);
     }
 

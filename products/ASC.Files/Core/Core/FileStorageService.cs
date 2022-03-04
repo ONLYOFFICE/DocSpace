@@ -210,12 +210,12 @@ public class FileStorageService<T> //: IFileStorageService
         {
             if (f is Folder<string> f1)
             {
-                return (object)f1.ID;
+                return (object)f1.Id;
             }
 
             if (f is Folder<int> f2)
             {
-                return f2.ID;
+                return f2.Id;
             }
 
             return 0;
@@ -249,7 +249,7 @@ public class FileStorageService<T> //: IFileStorageService
 
         ErrorIf(parent == null, FilesCommonResource.ErrorMassage_FolderNotFound);
         ErrorIf(!await _fileSecurity.CanReadAsync(parent), FilesCommonResource.ErrorMassage_SecurityException_ViewFolder);
-        ErrorIf(parent.RootFolderType == FolderType.TRASH && !Equals(parent.ID, _globalFolderHelper.FolderTrash), FilesCommonResource.ErrorMassage_ViewTrashItem);
+        ErrorIf(parent.RootFolderType == FolderType.TRASH && !Equals(parent.Id, _globalFolderHelper.FolderTrash), FilesCommonResource.ErrorMassage_ViewTrashItem);
 
         if (orderBy != null)
         {
@@ -260,7 +260,7 @@ public class FileStorageService<T> //: IFileStorageService
             orderBy = _filesSettingsHelper.DefaultOrder;
         }
 
-        if (Equals(parent.ID, await _globalFolderHelper.FolderShareAsync) && orderBy.SortedBy == SortedByType.DateAndTime)
+        if (Equals(parent.Id, await _globalFolderHelper.FolderShareAsync) && orderBy.SortedBy == SortedByType.DateAndTime)
         {
             orderBy.SortedBy = SortedByType.New;
         }
@@ -288,12 +288,12 @@ public class FileStorageService<T> //: IFileStorageService
         {
             if (prevVisible is Folder<string> f1)
             {
-                parent.FolderID = (T)Convert.ChangeType(f1.ID, typeof(T));
+                parent.ParentId = (T)Convert.ChangeType(f1.Id, typeof(T));
             }
 
             if (prevVisible is Folder<int> f2)
             {
-                parent.FolderID = (T)Convert.ChangeType(f2.ID, typeof(T));
+                parent.ParentId = (T)Convert.ChangeType(f2.Id, typeof(T));
             }
         }
 
@@ -313,12 +313,12 @@ public class FileStorageService<T> //: IFileStorageService
             {
                 if (f is Folder<string> f1)
                 {
-                    return (object)f1.ID;
+                    return (object)f1.Id;
                 }
 
                 if (f is Folder<int> f2)
                 {
-                    return f2.ID;
+                    return f2.Id;
                 }
 
                 return 0;
@@ -409,7 +409,7 @@ public class FileStorageService<T> //: IFileStorageService
         {
             var newFolder = _serviceProvider.GetService<Folder<T>>();
             newFolder.Title = title;
-            newFolder.FolderID = parent.ID;
+            newFolder.ParentId = parent.Id;
 
             var folderId = await folderDao.SaveFolderAsync(newFolder);
             var folder = await folderDao.GetFolderAsync(folderId);
@@ -462,7 +462,7 @@ public class FileStorageService<T> //: IFileStorageService
 
         if (folder.RootFolderType == FolderType.USER
             && !Equals(folder.RootFolderCreator, _authContext.CurrentAccount.ID)
-            && !await _fileSecurity.CanReadAsync(await folderDao.GetFolderAsync(folder.FolderID)))
+            && !await _fileSecurity.CanReadAsync(await folderDao.GetFolderAsync(folder.ParentId)))
         {
             folder.FolderIdDisplay = await _globalFolderHelper.GetFolderShareAsync<T>();
         }
@@ -487,7 +487,7 @@ public class FileStorageService<T> //: IFileStorageService
             && !Equals(file.RootFolderCreator, _authContext.CurrentAccount.ID))
         {
             var folderDao = GetFolderDao();
-            if (!await _fileSecurity.CanReadAsync(await folderDao.GetFolderAsync(file.FolderID)))
+            if (!await _fileSecurity.CanReadAsync(await folderDao.GetFolderAsync(file.ParentId)))
             {
                 file.FolderIdDisplay = await _globalFolderHelper.GetFolderShareAsync<T>();
             }
@@ -507,7 +507,7 @@ public class FileStorageService<T> //: IFileStorageService
         ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
         ErrorIf(!await _fileSecurity.CanReadAsync(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
 
-        var parent = await folderDao.GetFolderAsync(EqualityComparer<T>.Default.Equals(parentId, default(T)) ? file.FolderID : parentId);
+        var parent = await folderDao.GetFolderAsync(EqualityComparer<T>.Default.Equals(parentId, default(T)) ? file.ParentId : parentId);
         ErrorIf(parent == null, FilesCommonResource.ErrorMassage_FolderNotFound);
         ErrorIf(parent.RootFolderType == FolderType.TRASH, FilesCommonResource.ErrorMassage_ViewTrashItem);
 
@@ -524,7 +524,7 @@ public class FileStorageService<T> //: IFileStorageService
         {
             orderBy = _filesSettingsHelper.DefaultOrder;
         }
-        if (Equals(parent.ID, await _globalFolderHelper.GetFolderShareAsync<T>()) && orderBy.SortedBy == SortedByType.DateAndTime)
+        if (Equals(parent.Id, await _globalFolderHelper.GetFolderShareAsync<T>()) && orderBy.SortedBy == SortedByType.DateAndTime)
         {
             orderBy.SortedBy = SortedByType.New;
         }
@@ -533,7 +533,7 @@ public class FileStorageService<T> //: IFileStorageService
 
         if (!await _fileSecurity.CanReadAsync(parent))
         {
-            file.FolderID = await _globalFolderHelper.GetFolderShareAsync<T>();
+            file.ParentId = await _globalFolderHelper.GetFolderShareAsync<T>();
             entries = entries.Concat(new[] { file });
         }
         else
@@ -593,7 +593,7 @@ public class FileStorageService<T> //: IFileStorageService
 
 
         var file = _serviceProvider.GetService<File<T>>();
-        file.FolderID = folder.ID;
+        file.ParentId = folder.Id;
         file.Comment = FilesCommonResource.CommentCreate;
 
         if (string.IsNullOrEmpty(fileWrapper.Title))
@@ -766,9 +766,9 @@ public class FileStorageService<T> //: IFileStorageService
                 continue;
             }
 
-            var usersId = _fileTracker.GetEditingBy(file.ID);
+            var usersId = _fileTracker.GetEditingBy(file.Id);
             var value = string.Join(", ", usersId.Select(userId => _global.GetUserName(userId, true)).ToArray());
-            result[file.ID.ToString()] = value;
+            result[file.Id.ToString()] = value;
         }
 
         return result;
@@ -910,7 +910,7 @@ public class FileStorageService<T> //: IFileStorageService
                 && !Equals(file.RootFolderCreator, _authContext.CurrentAccount.ID))
             {
                 var folderDao = GetFolderDao();
-                if (!await _fileSecurity.CanReadAsync(await folderDao.GetFolderAsync(file.FolderID)))
+                if (!await _fileSecurity.CanReadAsync(await folderDao.GetFolderAsync(file.ParentId)))
                 {
                     file.FolderIdDisplay = await _globalFolderHelper.GetFolderShareAsync<T>();
                 }
@@ -942,7 +942,7 @@ public class FileStorageService<T> //: IFileStorageService
             && !Equals(file.RootFolderCreator, _authContext.CurrentAccount.ID))
         {
             var folderDao = GetFolderDao();
-            if (!await _fileSecurity.CanReadAsync(await folderDao.GetFolderAsync(file.FolderID)))
+            if (!await _fileSecurity.CanReadAsync(await folderDao.GetFolderAsync(file.ParentId)))
             {
                 file.FolderIdDisplay = await _globalFolderHelper.GetFolderShareAsync<T>();
             }
@@ -957,7 +957,7 @@ public class FileStorageService<T> //: IFileStorageService
         var file = await fileDao.GetFileAsync(fileId, version);
         ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
         ErrorIf(!await _fileSecurity.CanEditAsync(file) || _userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager), FilesCommonResource.ErrorMassage_SecurityException_EditFile);
-        ErrorIf(await _entryManager.FileLockedForMeAsync(file.ID), FilesCommonResource.ErrorMassage_LockedFile);
+        ErrorIf(await _entryManager.FileLockedForMeAsync(file.Id), FilesCommonResource.ErrorMassage_LockedFile);
         ErrorIf(file.RootFolderType == FolderType.TRASH, FilesCommonResource.ErrorMassage_ViewTrashItem);
 
         comment = await fileDao.UpdateCommentAsync(fileId, version, comment);
@@ -979,7 +979,7 @@ public class FileStorageService<T> //: IFileStorageService
             && !Equals(file.RootFolderCreator, _authContext.CurrentAccount.ID))
         {
             var folderDao = GetFolderDao();
-            if (!await _fileSecurity.CanReadAsync(await folderDao.GetFolderAsync(file.FolderID)))
+            if (!await _fileSecurity.CanReadAsync(await folderDao.GetFolderAsync(file.ParentId)))
             {
                 file.FolderIdDisplay = await _globalFolderHelper.GetFolderShareAsync<T>();
             }
@@ -998,7 +998,7 @@ public class FileStorageService<T> //: IFileStorageService
         ErrorIf(!await _fileSecurity.CanEditAsync(file) || lockfile && _userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager), FilesCommonResource.ErrorMassage_SecurityException_EditFile);
         ErrorIf(file.RootFolderType == FolderType.TRASH, FilesCommonResource.ErrorMassage_ViewTrashItem);
 
-        var tags = tagDao.GetTagsAsync(file.ID, FileEntryType.File, TagType.Locked);
+        var tags = tagDao.GetTagsAsync(file.Id, FileEntryType.File, TagType.Locked);
         var tagLocked = await tags.FirstOrDefaultAsync();
 
         ErrorIf(tagLocked != null
@@ -1015,12 +1015,12 @@ public class FileStorageService<T> //: IFileStorageService
                 tagDao.SaveTags(tagLocked);
             }
 
-            var usersDrop = _fileTracker.GetEditingBy(file.ID).Where(uid => uid != _authContext.CurrentAccount.ID).Select(u => u.ToString()).ToArray();
+            var usersDrop = _fileTracker.GetEditingBy(file.Id).Where(uid => uid != _authContext.CurrentAccount.ID).Select(u => u.ToString()).ToArray();
             if (usersDrop.Length > 0)
             {
-                var fileStable = file.Forcesave == ForcesaveType.None ? file : await fileDao.GetFileStableAsync(file.ID, file.Version);
+                var fileStable = file.Forcesave == ForcesaveType.None ? file : await fileDao.GetFileStableAsync(file.Id, file.Version);
                 var docKey = _documentServiceHelper.GetDocKey(fileStable);
-                await _documentServiceHelper.DropUserAsync(docKey, usersDrop, file.ID);
+                await _documentServiceHelper.DropUserAsync(docKey, usersDrop, file.Id);
             }
 
             _filesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileLocked, file.Title);
@@ -1036,8 +1036,8 @@ public class FileStorageService<T> //: IFileStorageService
 
             if (!file.ProviderEntry)
             {
-                file = await _entryManager.CompleteVersionFileAsync(file.ID, 0, false);
-                await UpdateCommentAsync(file.ID, file.Version, FilesCommonResource.UnlockComment);
+                file = await _entryManager.CompleteVersionFileAsync(file.Id, 0, false);
+                await UpdateCommentAsync(file.Id, file.Version, FilesCommonResource.UnlockComment);
             }
         }
 
@@ -1047,7 +1047,7 @@ public class FileStorageService<T> //: IFileStorageService
             && !Equals(file.RootFolderCreator, _authContext.CurrentAccount.ID))
         {
             var folderDao = GetFolderDao();
-            if (!await _fileSecurity.CanReadAsync(await folderDao.GetFolderAsync(file.FolderID)))
+            if (!await _fileSecurity.CanReadAsync(await folderDao.GetFolderAsync(file.ParentId)))
             {
                 file.FolderIdDisplay = await _globalFolderHelper.GetFolderShareAsync<T>();
             }
@@ -1069,7 +1069,7 @@ public class FileStorageService<T> //: IFileStorageService
         ErrorIf(!readLink && !await _fileSecurity.CanReadAsync(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
         ErrorIf(file.ProviderEntry, FilesCommonResource.ErrorMassage_BadRequest);
 
-        return new List<EditHistory>(await fileDao.GetEditHistoryAsync(_documentServiceHelper, file.ID));
+        return new List<EditHistory>(await fileDao.GetEditHistoryAsync(_documentServiceHelper, file.Id));
     }
 
     public async Task<EditHistoryDataDto> GetEditDiffUrlAsync(T fileId, int version = 0, string doc = null)
@@ -1079,7 +1079,7 @@ public class FileStorageService<T> //: IFileStorageService
 
         if (file != null)
         {
-            fileId = file.ID;
+            fileId = file.Id;
         }
 
         if (file == null
@@ -1102,7 +1102,7 @@ public class FileStorageService<T> //: IFileStorageService
             FileType = GetFileExtensionWithoutDot(FileUtility.GetFileExtension(file.Title))
         };
 
-        if (await fileDao.ContainChangesAsync(file.ID, file.Version))
+        if (await fileDao.ContainChangesAsync(file.Id, file.Version))
         {
             string previouseKey;
             string sourceFileUrl;
@@ -1110,7 +1110,7 @@ public class FileStorageService<T> //: IFileStorageService
 
             if (file.Version > 1)
             {
-                var previousFileStable = await fileDao.GetFileStableAsync(file.ID, file.Version - 1);
+                var previousFileStable = await fileDao.GetFileStableAsync(file.Id, file.Version - 1);
                 ErrorIf(previousFileStable == null, FilesCommonResource.ErrorMassage_FileNotFound);
 
                 sourceFileUrl = _pathProvider.GetFileStreamUrl(previousFileStable, doc);
@@ -1182,7 +1182,7 @@ public class FileStorageService<T> //: IFileStorageService
 
         fileDao = GetFileDao();
 
-        return new List<EditHistory>(await fileDao.GetEditHistoryAsync(_documentServiceHelper, file.ID));
+        return new List<EditHistory>(await fileDao.GetEditHistoryAsync(_documentServiceHelper, file.Id));
     }
 
     public async Task<Web.Core.Files.DocumentService.FileLink> GetPresignedUriAsync(T fileId)
@@ -1371,7 +1371,7 @@ public class FileStorageService<T> //: IFileStorageService
         var folder = await folderDao1.GetFolderAsync((T)Convert.ChangeType(provider.RootFolderId, typeof(T)));
         ErrorIf(!await _fileSecurity.CanReadAsync(folder), FilesCommonResource.ErrorMassage_SecurityException_ViewFolder);
 
-        _filesMessageService.Send(parentFolder, GetHttpHeaders(), messageAction, folder.ID.ToString(), provider.ProviderKey);
+        _filesMessageService.Send(parentFolder, GetHttpHeaders(), messageAction, folder.Id.ToString(), provider.ProviderKey);
 
         if (thirdPartyParams.Corporate && lostFolderType != FolderType.COMMON)
         {
@@ -1406,9 +1406,9 @@ public class FileStorageService<T> //: IFileStorageService
         }
 
         await providerDao.RemoveProviderInfoAsync(folder.ProviderId);
-        _filesMessageService.Send(folder, GetHttpHeaders(), MessageAction.ThirdPartyDeleted, folder.ID, providerInfo.ProviderKey);
+        _filesMessageService.Send(folder, GetHttpHeaders(), MessageAction.ThirdPartyDeleted, folder.Id, providerInfo.ProviderKey);
 
-        return folder.ID;
+        return folder.Id;
     }
 
     public bool ChangeAccessToThirdparty(bool enable)
@@ -1532,7 +1532,7 @@ public class FileStorageService<T> //: IFileStorageService
             var file = await fileDao.GetFileAsync(id);
             if (file != null
                 && !file.Encrypted
-                && await destFileDao.IsExistAsync(file.Title, toFolder.ID))
+                && await destFileDao.IsExistAsync(file.Title, toFolder.Id))
             {
                 checkedFiles.Add(id);
             }
@@ -1540,7 +1540,7 @@ public class FileStorageService<T> //: IFileStorageService
 
         var folders = folderDao.GetFoldersAsync(foldersId);
         var foldersProject = folders.Where(folder => folder.FolderType == FolderType.BUNCH);
-        var toSubfolders = destFolderDao.GetFoldersAsync(toFolder.ID);
+        var toSubfolders = destFolderDao.GetFoldersAsync(toFolder.Id);
 
         await foreach (var folderProject in foldersProject)
         {
@@ -1550,18 +1550,18 @@ public class FileStorageService<T> //: IFileStorageService
                 continue;
             }
 
-            var filesPr = fileDao.GetFilesAsync(folderProject.ID);
-            var foldersTmp = folderDao.GetFoldersAsync(folderProject.ID);
-            var foldersPr = foldersTmp.Select(d => d.ID).ToListAsync();
+            var filesPr = fileDao.GetFilesAsync(folderProject.Id);
+            var foldersTmp = folderDao.GetFoldersAsync(folderProject.Id);
+            var foldersPr = foldersTmp.Select(d => d.Id).ToListAsync();
 
-            var (cFiles, cFolders) = await MoveOrCopyFilesCheckAsync(await filesPr, await foldersPr, toSub.ID);
+            var (cFiles, cFolders) = await MoveOrCopyFilesCheckAsync(await filesPr, await foldersPr, toSub.Id);
             checkedFiles.AddRange(cFiles);
             checkedFolders.AddRange(cFolders);
         }
 
         try
         {
-            foreach (var pair in await folderDao.CanMoveOrCopyAsync(foldersId.ToArray(), toFolder.ID))
+            foreach (var pair in await folderDao.CanMoveOrCopyAsync(foldersId.ToArray(), toFolder.Id))
             {
                 checkedFolders.Add(pair.Key);
             }
@@ -1608,7 +1608,7 @@ public class FileStorageService<T> //: IFileStorageService
         var folderDao = GetFolderDao();
         var fileDao = GetFileDao();
         var trashId = await folderDao.GetFolderIDTrashAsync(true);
-        var foldersIdTask = await folderDao.GetFoldersAsync(trashId).Select(f => f.ID).ToListAsync();
+        var foldersIdTask = await folderDao.GetFoldersAsync(trashId).Select(f => f.Id).ToListAsync();
         var filesIdTask = await fileDao.GetFilesAsync(trashId);
 
         return _fileOperationsManager.Delete(_authContext.CurrentAccount.ID, _tenantManager.GetCurrentTenant(), foldersIdTask, filesIdTask, false, true, false, GetHttpHeaders());
@@ -1633,7 +1633,7 @@ public class FileStorageService<T> //: IFileStorageService
             if (file == null)
             {
                 var newFile = _serviceProvider.GetService<File<T>>();
-                newFile.ID = fileInfo.FileId;
+                newFile.Id = fileInfo.FileId;
                 newFile.Version = fileInfo.Version;
 
                 files.Add(new KeyValuePair<File<T>, bool>(newFile, true));
@@ -1711,17 +1711,17 @@ public class FileStorageService<T> //: IFileStorageService
                     ? string.Empty
                     : "#message/" + HttpUtility.UrlEncode(string.Format(FilesCommonResource.MessageFillFormDraftCreated, folderIfNew.Title));
 
-                return _filesLinkUtility.GetFileWebEditorUrl(form.ID) + comment;
+                return _filesLinkUtility.GetFileWebEditorUrl(form.Id) + comment;
             }
             else if (!await _entryManager.CheckFillFormDraftAsync(file))
             {
                 var comment = "#message/" + HttpUtility.UrlEncode(FilesCommonResource.MessageFillFormDraftDiscard);
 
-                return _filesLinkUtility.GetFileWebEditorUrl(file.ID) + comment;
+                return _filesLinkUtility.GetFileWebEditorUrl(file.Id) + comment;
             }
         }
 
-        return _filesLinkUtility.GetFileWebEditorUrl(file.ID);
+        return _filesLinkUtility.GetFileWebEditorUrl(file.Id);
     }
 
     public async Task ReassignStorageAsync(Guid userFromId, Guid userToId)
@@ -1765,7 +1765,7 @@ public class FileStorageService<T> //: IFileStorageService
                 var folderIdToMy = await folderDao.GetFolderIDUserAsync(true, userTo.Id);
                 var newFolder = _serviceProvider.GetService<Folder<T>>();
                 newFolder.Title = string.Format(_customNamingPeople.Substitute<FilesCommonResource>("TitleDeletedUserFolder"), userFrom.DisplayUserName(false, _displayUserSettingsHelper));
-                newFolder.FolderID = folderIdToMy;
+                newFolder.ParentId = folderIdToMy;
 
                 var newFolderTo = await folderDao.SaveFolderAsync(newFolder);
 
@@ -2039,9 +2039,9 @@ public class FileStorageService<T> //: IFileStorageService
             }
 
             var securityDao = GetSecurityDao();
-            if (await securityDao.IsSharedAsync(entry.ID, entry.FileEntryType))
+            if (await securityDao.IsSharedAsync(entry.Id, entry.FileEntryType))
             {
-                result.Add(entry.ID);
+                result.Add(entry.Id);
             }
         }
 
@@ -2110,7 +2110,7 @@ public class FileStorageService<T> //: IFileStorageService
 
         var securityDao = GetSecurityDao();
 
-        return await securityDao.IsSharedAsync(file.ID, FileEntryType.File);
+        return await securityDao.IsSharedAsync(file.Id, FileEntryType.File);
     }
 
     public Task<List<MentionWrapper>> SharedUsersAsync(T fileId)
@@ -2237,7 +2237,7 @@ public class FileStorageService<T> //: IFileStorageService
             _filesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileUpdatedAccess, file.Title);
         }
 
-        var fileLink = _filesLinkUtility.GetFileWebEditorUrl(file.ID);
+        var fileLink = _filesLinkUtility.GetFileWebEditorUrl(file.Id);
         if (mentionMessage.ActionLink != null)
         {
             fileLink += "&" + FilesLinkUtility.Anchor + "=" + HttpUtility.UrlEncode(ActionLinkConfig.Serialize(mentionMessage.ActionLink));
@@ -2333,8 +2333,8 @@ public class FileStorageService<T> //: IFileStorageService
         await foreach (var file in files)
         {
             ErrorIf(!await _fileSecurity.CanEditAsync(file), FilesCommonResource.ErrorMassage_SecurityException);
-            ErrorIf(await _entryManager.FileLockedForMeAsync(file.ID), FilesCommonResource.ErrorMassage_LockedFile);
-            ErrorIf(_fileTracker.IsEditing(file.ID), FilesCommonResource.ErrorMassage_UpdateEditingFile);
+            ErrorIf(await _entryManager.FileLockedForMeAsync(file.Id), FilesCommonResource.ErrorMassage_LockedFile);
+            ErrorIf(_fileTracker.IsEditing(file.Id), FilesCommonResource.ErrorMassage_UpdateEditingFile);
             ErrorIf(file.RootFolderType != FolderType.COMMON, FilesCommonResource.ErrorMassage_SecurityException);
             if (file.ProviderEntry)
             {
@@ -2345,12 +2345,12 @@ public class FileStorageService<T> //: IFileStorageService
             if (file.CreateBy != userInfo.Id)
             {
                 newFile = _serviceProvider.GetService<File<T>>();
-                newFile.ID = file.ID;
+                newFile.Id = file.Id;
                 newFile.Version = file.Version + 1;
                 newFile.VersionGroup = file.VersionGroup + 1;
                 newFile.Title = file.Title;
                 newFile.FileStatus = file.FileStatus;
-                newFile.FolderID = file.FolderID;
+                newFile.ParentId = file.ParentId;
                 newFile.CreateBy = userInfo.Id;
                 newFile.CreateOn = file.CreateOn;
                 newFile.ConvertedType = file.ConvertedType;

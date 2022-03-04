@@ -109,12 +109,12 @@ public class SearchHandler
             {
                 Name = file.Title ?? string.Empty,
                 Description = string.Empty,
-                URL = _filesLinkUtility.GetFileWebPreviewUrl(_fileUtility, file.Title, file.ID),
+                URL = _filesLinkUtility.GetFileWebPreviewUrl(_fileUtility, file.Title, file.Id),
                 Date = file.ModifiedOn,
                 Additional = new Dictionary<string, object>
                                 {
                                     { "Author", file.CreateByString.HtmlEncode() },
-                                    { "Path", FolderPathBuilder(await _entryManager.GetBreadCrumbsAsync(file.FolderID, folderDao)) },
+                                    { "Path", FolderPathBuilder(await _entryManager.GetBreadCrumbsAsync(file.ParentId, folderDao)) },
                                     { "Size", FileSizeComment.FilesSizeToString(file.ContentLength) }
                                 }
             };
@@ -134,7 +134,7 @@ public class SearchHandler
                 Additional = new Dictionary<string, object>
                                     {
                                             { "Author", folder.CreateByString.HtmlEncode() },
-                                            { "Path", FolderPathBuilder(await _entryManager.GetBreadCrumbsAsync(folder.ID, folderDao)) },
+                                            { "Path", FolderPathBuilder(await _entryManager.GetBreadCrumbsAsync(folder.Id, folderDao)) },
                                             { "IsFolder", true }
                                     }
             };

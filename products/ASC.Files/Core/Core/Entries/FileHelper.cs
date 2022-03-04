@@ -50,12 +50,12 @@ public class FileHelper
 
     internal FileStatus GetFileStatus<T>(File<T> file, ref FileStatus currentStatus)
     {
-        if (_fileTracker.IsEditing(file.ID))
+        if (_fileTracker.IsEditing(file.Id))
         {
             currentStatus |= FileStatus.IsEditing;
         }
 
-        if (_fileTracker.IsEditingAlone(file.ID))
+        if (_fileTracker.IsEditingAlone(file.Id))
         {
             currentStatus |= FileStatus.IsEditingAlone;
         }
@@ -70,6 +70,6 @@ public class FileHelper
 
     public string GetDownloadUrl<T>(FileEntry<T> fileEntry)
     {
-        return _filesLinkUtility.GetFileDownloadUrl(fileEntry.ID);
+        return _filesLinkUtility.GetFileDownloadUrl(fileEntry.Id);
     }
 }

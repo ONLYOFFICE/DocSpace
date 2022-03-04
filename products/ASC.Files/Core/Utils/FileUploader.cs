@@ -108,7 +108,7 @@ public class FileUploader
         file = await dao.SaveFileAsync(file, data);
 
         var linkDao = _daoFactory.GetLinkDao();
-        await linkDao.DeleteAllLinkAsync(file.ID.ToString());
+        await linkDao.DeleteAllLinkAsync(file.Id.ToString());
 
         await _fileMarker.MarkAsNewAsync(file);
 
@@ -148,7 +148,7 @@ public class FileUploader
         }
 
         var newFile = _serviceProvider.GetService<File<T>>();
-        newFile.FolderID = folderId;
+        newFile.ParentId = folderId;
         newFile.Title = fileName;
 
         return newFile;
@@ -179,8 +179,8 @@ public class FileUploader
         return file != null
                && await _fileSecurity.CanEditAsync(file)
                && !_userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager)
-               && !await _entryManager.FileLockedForMeAsync(file.ID)
-               && !_fileTracker.IsEditing(file.ID)
+               && !await _entryManager.FileLockedForMeAsync(file.Id)
+               && !_fileTracker.IsEditing(file.Id)
                && file.RootFolderType != FolderType.TRASH
                && !file.Encrypted;
     }
@@ -206,13 +206,13 @@ public class FileUploader
 
             if (!string.IsNullOrEmpty(subFolderTitle))
             {
-                folder = await folderDao.GetFolderAsync(subFolderTitle, folder.ID);
+                folder = await folderDao.GetFolderAsync(subFolderTitle, folder.Id);
 
                 if (folder == null)
                 {
                     var newFolder = _serviceProvider.GetService<Folder<T>>();
                     newFolder.Title = subFolderTitle;
-                    newFolder.FolderID = folderId;
+                    newFolder.ParentId = folderId;
 
                     folderId = await folderDao.SaveFolderAsync(newFolder);
 
@@ -220,7 +220,7 @@ public class FileUploader
                     _filesMessageService.Send(folder, MessageAction.FolderCreated, folder.Title);
                 }
 
-                folderId = folder.ID;
+                folderId = folder.Id;
 
                 relativePath.RemoveAt(0);
                 folderId = await GetFolderIdAsync(folderId, relativePath);
@@ -255,8 +255,8 @@ public class FileUploader
     public async Task<ChunkedUploadSession<T>> InitiateUploadAsync<T>(T folderId, T fileId, string fileName, long contentLength, bool encrypted)
     {
         var file = _serviceProvider.GetService<File<T>>();
-        file.ID = fileId;
-        file.FolderID = folderId;
+        file.Id = fileId;
+        file.ParentId = folderId;
         file.Title = fileName;
         file.ContentLength = contentLength;
 
@@ -306,7 +306,7 @@ public class FileUploader
         if (uploadSession.BytesUploaded == uploadSession.BytesTotal)
         {
             var linkDao = _daoFactory.GetLinkDao();
-            await linkDao.DeleteAllLinkAsync(uploadSession.File.ID.ToString());
+            await linkDao.DeleteAllLinkAsync(uploadSession.File.Id.ToString());
 
             await _fileMarker.MarkAsNewAsync(uploadSession.File);
             await _chunkedUploadSessionHolder.RemoveSessionAsync(uploadSession);

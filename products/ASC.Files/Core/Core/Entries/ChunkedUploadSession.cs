@@ -96,12 +96,12 @@ public class ChunkedUploadSessionHelper
 
                 if (f is Folder<string> f1)
                 {
-                    return (T)Convert.ChangeType(f1.ID, typeof(T));
+                    return (T)Convert.ChangeType(f1.Id, typeof(T));
                 }
 
                 if (f is Folder<int> f2)
                 {
-                    return (T)Convert.ChangeType(f2.ID, typeof(T));
+                    return (T)Convert.ChangeType(f2.Id, typeof(T));
                 }
 
                 return (T)Convert.ChangeType(0, typeof(T));

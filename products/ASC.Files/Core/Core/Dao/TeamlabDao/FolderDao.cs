@@ -43,6 +43,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     private readonly IDaoFactory _daoFactory;
     private readonly ProviderFolderDao _providerFolderDao;
     private readonly CrossDao _crossDao;
+    private readonly IMapper _mapper;
 
     public FolderDao(
         FactoryIndexerFolder factoryIndexer,
@@ -62,7 +63,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         GlobalSpace globalSpace,
         IDaoFactory daoFactory,
         ProviderFolderDao providerFolderDao,
-        CrossDao crossDao)
+        CrossDao crossDao,
+        IMapper mapper)
         : base(
               dbContextManager,
               userManager,
@@ -83,6 +85,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         _daoFactory = daoFactory;
         _providerFolderDao = providerFolderDao;
         _crossDao = crossDao;
+        _mapper = mapper;
     }
 
     public async Task<Folder<int>> GetFolderAsync(int folderId)
@@ -312,10 +315,10 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
         var tx = transaction ?? FilesDbContext.Database.BeginTransaction();
 
-        if (folder.ID != default && await IsExistAsync(folder.ID).ConfigureAwait(false))
+        if (folder.Id != default && await IsExistAsync(folder.Id).ConfigureAwait(false))
         {
             var toUpdate = await Query(FilesDbContext.Folders)
-                .Where(r => r.Id == folder.ID)
+                .Where(r => r.Id == folder.Id)
                 .FirstOrDefaultAsync()
                 .ConfigureAwait(false);
 
@@ -337,7 +340,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             var newFolder = new DbFolder
             {
                 Id = 0,
-                ParentId = folder.FolderID,
+                ParentId = folder.ParentId,
                 Title = folder.Title,
                 CreateOn = TenantUtil.DateTimeToUtc(folder.CreateOn),
                 CreateBy = folder.CreateBy,
@@ -356,13 +359,13 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                 _ = _factoryIndexer.IndexAsync(newFolder).ConfigureAwait(false);
             }
 
-            folder.ID = newFolder.Id;
+            folder.Id = newFolder.Id;
 
             //itself link
             var newTree = new DbFolderTree
             {
-                FolderId = folder.ID,
-                ParentId = folder.ID,
+                FolderId = folder.Id,
+                ParentId = folder.Id,
                 Level = 0
             };
 
@@ -372,13 +375,13 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             //full path to root
             var oldTree = FilesDbContext.Tree
                 .AsQueryable()
-                .Where(r => r.FolderId == folder.FolderID);
+                .Where(r => r.FolderId == folder.ParentId);
 
             foreach (var o in oldTree)
             {
                 var treeToAdd = new DbFolderTree
                 {
-                    FolderId = folder.ID,
+                    FolderId = folder.Id,
                     ParentId = o.ParentId,
                     Level = o.Level + 1
                 };
@@ -397,11 +400,11 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
         if (isnew)
         {
-            await RecalculateFoldersCountAsync(folder.ID).ConfigureAwait(false);
+            await RecalculateFoldersCountAsync(folder.Id).ConfigureAwait(false);
         }
 
         //FactoryIndexer.IndexAsync(FoldersWrapper.GetFolderWrapper(ServiceProvider, folder));
-        return folder.ID;
+        return folder.Id;
     }
 
     private Task<bool> IsExistAsync(int folderId)
@@ -597,7 +600,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             true, cancellationToken)
             .ConfigureAwait(false);
 
-        return moved.ID;
+        return moved.Id;
     }
 
     public async Task<Folder<TTo>> CopyFolderAsync<TTo>(int folderId, TTo toFolderId, CancellationToken? cancellationToken)
@@ -627,7 +630,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         }
 
         var copy = ServiceProvider.GetService<Folder<int>>();
-        copy.FolderID = toFolderId;
+        copy.ParentId = toFolderId;
         copy.RootFolderId = toFolder.RootFolderId;
         copy.RootFolderCreator = toFolder.RootFolderCreator;
         copy.RootFolderType = toFolder.RootFolderType;
@@ -739,7 +742,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     public async Task<int> RenameFolderAsync(Folder<int> folder, string newTitle)
     {
         var toUpdate = await Query(FilesDbContext.Folders)
-            .Where(r => r.Id == folder.ID)
+            .Where(r => r.Id == folder.Id)
             .FirstOrDefaultAsync()
             .ConfigureAwait(false);
 
@@ -751,7 +754,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
         _ = _factoryIndexer.IndexAsync(toUpdate).ConfigureAwait(false);
 
-        return folder.ID;
+        return folder.Id;
     }
 
     public async Task<int> GetItemsCountAsync(int folderId)
@@ -1018,7 +1021,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         if (createIfNotExists)
         {
             var folder = ServiceProvider.GetService<Folder<int>>();
-            folder.FolderID = 0;
+            folder.ParentId = 0;
             switch (bunch)
             {
                 case My:
@@ -1194,8 +1197,9 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         }
 
         var result = ServiceProvider.GetService<Folder<int>>();
-        result.ID = r.Folder.Id;
-        result.FolderID = r.Folder.ParentId;
+
+        result.Id = r.Folder.Id;
+        result.ParentId = r.Folder.ParentId;
         result.Title = r.Folder.Title;
         result.CreateOn = TenantUtil.DateTimeFromUtc(r.Folder.CreateOn);
         result.CreateBy = r.Folder.CreateBy;
@@ -1238,7 +1242,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             case FolderType.BUNCH:
                 try
                 {
-                    result.Title = GetProjectTitle(result.ID);
+                    result.Title = GetProjectTitle(result.Id);
                 }
                 catch (Exception)
                 {
@@ -1247,7 +1251,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                 break;
         }
 
-        if (result.FolderType != FolderType.DEFAULT && 0.Equals(result.FolderID))
+        if (result.FolderType != FolderType.DEFAULT && 0.Equals(result.ParentId))
         {
             result.RootFolderType = result.FolderType;
         }
@@ -1259,7 +1263,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
         if (result.FolderType != FolderType.DEFAULT && 0.Equals(result.RootFolderId))
         {
-            result.RootFolderId = result.ID;
+            result.RootFolderId = result.Id;
         }
 
         return result;
@@ -1401,8 +1405,6 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         //}
         //return projectTitle;
     }
-
-
 }
 
 public class DbFolderQuery

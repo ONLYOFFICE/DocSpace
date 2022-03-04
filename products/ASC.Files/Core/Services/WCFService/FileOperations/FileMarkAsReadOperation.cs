@@ -85,11 +85,11 @@ class FileMarkAsReadOperation<T> : FileOperation<FileMarkAsReadOperationData<T>,
 
             if (x.FileEntryType == FileEntryType.File)
             {
-                ProcessedFile(((File<T>)x).ID);
+                ProcessedFile(((File<T>)x).Id);
             }
             else
             {
-                ProcessedFolder(((Folder<T>)x).ID);
+                ProcessedFolder(((Folder<T>)x).Id);
             }
 
             ProgressStep();

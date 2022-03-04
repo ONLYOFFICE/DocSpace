@@ -288,8 +288,8 @@ public class SharePointProviderInfo : IProviderInfo
 
         if (file is SharePointFileErrorEntry errorFile)
         {
-            result.ID = MakeId(errorFile.ID);
-            result.FolderID = MakeId(GetParentFolderId(errorFile.ID));
+            result.Id = MakeId(errorFile.ID);
+            result.ParentId = MakeId(GetParentFolderId(errorFile.ID));
             result.CreateBy = Owner;
             result.CreateOn = DateTime.UtcNow;
             result.ModifiedBy = Owner;
@@ -305,12 +305,12 @@ public class SharePointProviderInfo : IProviderInfo
             return result;
         }
 
-        result.ID = MakeId(file.ServerRelativeUrl);
+        result.Id = MakeId(file.ServerRelativeUrl);
         result.Access = Core.Security.FileShare.None;
         //ContentLength = file.Length,
         result.CreateBy = Owner;
         result.CreateOn = file.TimeCreated.Kind == DateTimeKind.Utc ? _tenantUtil.DateTimeFromUtc(file.TimeCreated) : file.TimeCreated;
-        result.FolderID = MakeId(GetParentFolderId(file.ServerRelativeUrl));
+        result.ParentId = MakeId(GetParentFolderId(file.ServerRelativeUrl));
         result.ModifiedBy = Owner;
         result.ModifiedOn = file.TimeLastModified.Kind == DateTimeKind.Utc ? _tenantUtil.DateTimeFromUtc(file.TimeLastModified) : file.TimeLastModified;
         result.NativeAccessor = file;
@@ -554,8 +554,8 @@ public class SharePointProviderInfo : IProviderInfo
 
         if (folder is SharePointFolderErrorEntry errorFolder)
         {
-            result.ID = MakeId(errorFolder.ID);
-            result.FolderID = null;
+            result.Id = MakeId(errorFolder.ID);
+            result.ParentId = null;
             result.CreateBy = Owner;
             result.CreateOn = DateTime.UtcNow;
             result.FolderType = FolderType.DEFAULT;
@@ -577,8 +577,8 @@ public class SharePointProviderInfo : IProviderInfo
 
         var isRoot = folder.ServerRelativeUrl == SpRootFolderId;
 
-        result.ID = MakeId(isRoot ? "" : folder.ServerRelativeUrl);
-        result.FolderID = isRoot ? null : MakeId(GetParentFolderId(folder.ServerRelativeUrl));
+        result.Id = MakeId(isRoot ? "" : folder.ServerRelativeUrl);
+        result.ParentId = isRoot ? null : MakeId(GetParentFolderId(folder.ServerRelativeUrl));
         result.CreateBy = Owner;
         result.CreateOn = CreateOn;
         result.FolderType = FolderType.DEFAULT;

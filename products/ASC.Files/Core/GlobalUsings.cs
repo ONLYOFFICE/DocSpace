@@ -1,7 +1,6 @@
 ﻿global using System.Collections;
 global using System.Collections.Concurrent;
 global using System.Diagnostics;
-global using System.Diagnostics.CodeAnalysis;
 global using System.Globalization;
 global using System.Linq.Expressions;
 global using System.Net;
@@ -28,6 +27,7 @@ global using ASC.Api.Core;
 global using ASC.Api.Utils;
 global using ASC.Common;
 global using ASC.Common.Caching;
+global using ASC.Common.Mapping;
 global using ASC.Common.Logging;
 global using ASC.Common.Security.Authentication;
 global using ASC.Common.Security.Authorizing;
@@ -149,6 +149,8 @@ global using Microsoft.OneDrive.Sdk;
 global using Microsoft.SharePoint.Client;
 
 global using Nest;
+
+global using AutoMapper;
 
 global using Newtonsoft.Json;
 global using Newtonsoft.Json.Linq;

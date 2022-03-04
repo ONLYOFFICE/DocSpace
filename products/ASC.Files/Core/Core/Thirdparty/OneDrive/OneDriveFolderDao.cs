@@ -167,7 +167,7 @@ internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
     public Task<string> SaveFolderAsync(Folder<string> folder)
     {
         if (folder == null) throw new ArgumentNullException(nameof(folder));
-        if (folder.ID != null)
+        if (folder.Id != null)
         {
             return RenameFolderAsync(folder, folder.Title);
         }
@@ -177,9 +177,9 @@ internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
 
     private async Task<string> InternalSaveFolderAsync(Folder<string> folder)
     {
-        if (folder.FolderID != null)
+        if (folder.ParentId != null)
         {
-            var onedriveFolderId = MakeOneDriveId(folder.FolderID);
+            var onedriveFolderId = MakeOneDriveId(folder.ParentId);
 
             folder.Title = await GetAvailableTitleAsync(folder.Title, onedriveFolderId, IsExistAsync).ConfigureAwait(false);
 
@@ -282,7 +282,7 @@ internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
             true, cancellationToken)
             .ConfigureAwait(false);
 
-        return moved.ID;
+        return moved.Id;
     }
 
     public async Task<string> MoveFolderAsync(string folderId, string toFolderId, CancellationToken? cancellationToken)
@@ -389,7 +389,7 @@ internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
 
     public async Task<string> RenameFolderAsync(Folder<string> folder, string newTitle)
     {
-        var onedriveFolder = await GetOneDriveItemAsync(folder.ID).ConfigureAwait(false);
+        var onedriveFolder = await GetOneDriveItemAsync(folder.Id).ConfigureAwait(false);
         var parentFolderId = GetParentFolderId(onedriveFolder);
 
         if (IsRoot(onedriveFolder))

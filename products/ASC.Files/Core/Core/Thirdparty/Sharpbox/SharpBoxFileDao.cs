@@ -246,7 +246,7 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
 
     public async Task<Stream> GetFileStreamAsync(File<string> file, long offset)
     {
-        var fileToDownload = GetFileById(file.ID);
+        var fileToDownload = GetFileById(file.Id);
 
         if (fileToDownload == null)
         {
@@ -304,13 +304,13 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
         }
 
         ICloudFileSystemEntry entry = null;
-        if (file.ID != null)
+        if (file.Id != null)
         {
-            entry = ProviderInfo.Storage.GetFile(MakePath(file.ID), null);
+            entry = ProviderInfo.Storage.GetFile(MakePath(file.Id), null);
         }
-        else if (file.FolderID != null)
+        else if (file.ParentId != null)
         {
-            var folder = GetFolderById(file.FolderID);
+            var folder = GetFolderById(file.ParentId);
             file.Title = await GetAvailableTitleAsync(file.Title, folder, IsExistAsync).ConfigureAwait(false);
             entry = ProviderInfo.Storage.CreateFile(folder, file.Title);
         }
@@ -341,7 +341,7 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
             }
         }
 
-        if (file.ID != null && !entry.Name.Equals(file.Title))
+        if (file.Id != null && !entry.Name.Equals(file.Title))
         {
             file.Title = await GetAvailableTitleAsync(file.Title, entry.Parent, IsExistAsync).ConfigureAwait(false);
             ProviderInfo.Storage.RenameFileSystemEntry(entry, file.Title);
@@ -456,7 +456,7 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
             true)
             .ConfigureAwait(false);
 
-        return moved.ID;
+        return moved.Id;
     }
 
     public async Task<string> MoveFileAsync(string fileId, string toFolderId)
@@ -517,7 +517,7 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
 
     public async Task<string> FileRenameAsync(File<string> file, string newTitle)
     {
-        var entry = GetFileById(file.ID);
+        var entry = GetFileById(file.Id);
 
         if (entry == null)
         {
@@ -527,7 +527,7 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
         var oldFileId = MakeId(entry);
         var newFileId = oldFileId;
 
-        var folder = GetFolderById(file.FolderID);
+        var folder = GetFolderById(file.ParentId);
         newTitle = await GetAvailableTitleAsync(newTitle, folder, IsExistAsync).ConfigureAwait(false);
 
         if (ProviderInfo.Storage.RenameFileSystemEntry(entry, newTitle))
@@ -577,13 +577,13 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
         var isNewFile = false;
 
         ICloudFileSystemEntry sharpboxFile;
-        if (file.ID != null)
+        if (file.Id != null)
         {
-            sharpboxFile = GetFileById(file.ID);
+            sharpboxFile = GetFileById(file.Id);
         }
         else
         {
-            var folder = GetFolderById(file.FolderID);
+            var folder = GetFolderById(file.ParentId);
             sharpboxFile = ProviderInfo.Storage.CreateFile(folder, await GetAvailableTitleAsync(file.Title, folder, IsExistAsync).ConfigureAwait(false));
             isNewFile = true;
         }
@@ -696,14 +696,14 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
 
     private File<string> MakeId(File<string> file)
     {
-        if (file.ID != null)
+        if (file.Id != null)
         {
-            file.ID = PathPrefix + "-" + file.ID;
+            file.Id = PathPrefix + "-" + file.Id;
         }
 
-        if (file.FolderID != null)
+        if (file.ParentId != null)
         {
-            file.FolderID = PathPrefix + "-" + file.FolderID;
+            file.ParentId = PathPrefix + "-" + file.ParentId;
         }
 
         return file;

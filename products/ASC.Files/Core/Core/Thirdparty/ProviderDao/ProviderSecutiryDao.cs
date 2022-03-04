@@ -52,7 +52,7 @@ internal class ProviderSecurityDao : ProviderDaoBase, ISecurityDao<string>
 
         if (files.Length > 0)
         {
-            var folderIds = files.Select(x => ((File<string>)x).FolderID).Distinct();
+            var folderIds = files.Select(x => ((File<string>)x).ParentId).Distinct();
             foreach (var folderId in folderIds)
             {
                 await GetFoldersForShareAsync(folderId, folders);
@@ -103,7 +103,7 @@ internal class ProviderSecurityDao : ProviderDaoBase, ISecurityDao<string>
 
         if (entry is File<string> file)
         {
-            await GetFoldersForShareAsync(file.FolderID, folders);
+            await GetFoldersForShareAsync(file.ParentId, folders);
 
             var pureShareRecords = await SecurityDao.GetPureShareRecordsAsync(entry);
             if (pureShareRecords != null)
@@ -164,14 +164,14 @@ internal class ProviderSecurityDao : ProviderDaoBase, ISecurityDao<string>
 
         foreach (var folder in folders)
         {
-            var selector = GetSelector(folder.ID);
-            var folderDao = selector.GetFolderDao(folder.ID);
+            var selector = GetSelector(folder.Id);
+            var folderDao = selector.GetFolderDao(folder.Id);
             if (folderDao == null)
             {
                 continue;
             }
 
-            var parentFolders = await folderDao.GetParentFoldersAsync(selector.ConvertId(folder.ID));
+            var parentFolders = await folderDao.GetParentFoldersAsync(selector.ConvertId(folder.Id));
             if (parentFolders == null || parentFolders.Count > 0)
             {
                 continue;
@@ -192,10 +192,10 @@ internal class ProviderSecurityDao : ProviderDaoBase, ISecurityDao<string>
                 }
 
                 var f = ServiceProvider.GetService<Folder<string>>();
-                f.ID = pureShareRecord.EntryId.ToString();
+                f.Id = pureShareRecord.EntryId.ToString();
 
                 pureShareRecord.Level = parentFolders.IndexOf(f);
-                pureShareRecord.EntryId = folder.ID;
+                pureShareRecord.EntryId = folder.Id;
                 result.Add(pureShareRecord);
             }
         }

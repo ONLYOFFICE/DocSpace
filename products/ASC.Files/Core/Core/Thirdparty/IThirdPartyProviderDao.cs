@@ -290,7 +290,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
 
         InitFileEntryError(folder, entry);
 
-        folder.FolderID = null;
+        folder.ParentId = null;
 
         return folder;
     }
@@ -329,7 +329,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
 
     protected void InitFileEntryError(FileEntry<string> fileEntry, ErrorEntry entry)
     {
-        fileEntry.ID = MakeId(entry.ErrorId);
+        fileEntry.Id = MakeId(entry.ErrorId);
         fileEntry.CreateOn = TenantUtil.DateTimeNow();
         fileEntry.ModifiedOn = TenantUtil.DateTimeNow();
         fileEntry.Error = entry.Error;
@@ -468,11 +468,11 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
 
     public async IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, Folder<string> parentFolder, bool deepSearch)
     {
-        var folderId = DaoSelector.ConvertId(parentFolder.ID);
+        var folderId = DaoSelector.ConvertId(parentFolder.Id);
 
         var entryIDs = await FilesDbContext.ThirdpartyIdMapping
                    .AsQueryable()
-                   .Where(r => r.Id.StartsWith(parentFolder.ID))
+                   .Where(r => r.Id.StartsWith(parentFolder.Id))
                    .Select(r => r.HashId)
                    .ToListAsync()
                    .ConfigureAwait(false);
@@ -519,7 +519,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
             yield break;
         }
 
-        var folderFileIds = new[] { parentFolder.ID }
+        var folderFileIds = new[] { parentFolder.Id }
             .Concat(await GetChildrenAsync(folderId).ConfigureAwait(false));
 
         await foreach (var e in tags.Where(tag => folderFileIds.Contains(tag.EntryId.ToString())).ConfigureAwait(false))

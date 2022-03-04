@@ -120,8 +120,8 @@ internal abstract class DropboxDaoBase : ThirdPartyProviderDao<DropboxProviderIn
 
         var folder = GetFolder();
 
-        folder.ID = MakeId(dropboxFolder);
-        folder.FolderID = isRoot ? null : MakeId(GetParentFolderPath(dropboxFolder));
+        folder.Id = MakeId(dropboxFolder);
+        folder.ParentId = isRoot ? null : MakeId(GetParentFolderPath(dropboxFolder));
         folder.CreateOn = isRoot ? ProviderInfo.CreateOn : default;
         folder.ModifiedOn = isRoot ? ProviderInfo.CreateOn : default;
         folder.Title = MakeFolderTitle(dropboxFolder);
@@ -187,10 +187,10 @@ internal abstract class DropboxDaoBase : ThirdPartyProviderDao<DropboxProviderIn
 
         var file = GetFile();
 
-        file.ID = MakeId(dropboxFile);
+        file.Id = MakeId(dropboxFile);
         file.ContentLength = (long)dropboxFile.Size;
         file.CreateOn = TenantUtil.DateTimeFromUtc(dropboxFile.ServerModified);
-        file.FolderID = MakeId(GetParentFolderPath(dropboxFile));
+        file.ParentId = MakeId(GetParentFolderPath(dropboxFile));
         file.ModifiedOn = TenantUtil.DateTimeFromUtc(dropboxFile.ServerModified);
         file.NativeAccessor = dropboxFile;
         file.Title = MakeFileTitle(dropboxFile);

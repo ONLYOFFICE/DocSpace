@@ -54,12 +54,12 @@ public class FileShareLink
 
         if (_fileUtility.CanWebView(file.Title))
         {
-            url = _filesLinkUtility.GetFileWebPreviewUrl(_fileUtility, file.Title, file.ID);
+            url = _filesLinkUtility.GetFileWebPreviewUrl(_fileUtility, file.Title, file.Id);
         }
 
         if (withHash)
         {
-            var linkParams = CreateKey(file.ID);
+            var linkParams = CreateKey(file.Id);
             url += "&" + FilesLinkUtility.DocShareKey + "=" + HttpUtility.UrlEncode(linkParams);
         }
 
