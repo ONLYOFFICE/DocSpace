@@ -3,21 +3,20 @@ import ComboBox from "@appserver/components/combobox";
 import { useTranslation } from "react-i18next";
 import { StyledScheduleComponent } from "../../StyledBackup";
 import Text from "@appserver/components/text";
-const ScheduleComponent = ({
-  selectedMonthlySchedule,
-  selectedWeeklySchedule,
+import { inject, observer } from "mobx-react";
 
+const ScheduleComponent = ({
   selectedPeriodLabel,
   selectedWeekdayLabel,
   selectedHour,
   selectedMonthDay,
   selectedMaxCopiesNumber,
 
-  onSelectMaxCopies,
-  onSelectPeriod,
-  onSelectWeekDay,
-  onSelectMonthNumber,
-  onSelectTime,
+  setMaxCopies,
+  setPeriod,
+  setWeekday,
+  setMonthNumber,
+  setTime,
 
   isLoadingData,
   isDisableOptions,
@@ -27,13 +26,15 @@ const ScheduleComponent = ({
   monthNumbersArray,
   hoursArray,
   maxNumberCopiesArray,
+
+  selectedPeriodNumber,
 }) => {
   const { t } = useTranslation("Settings");
 
   return (
     <StyledScheduleComponent
-      weeklySchedule={selectedWeeklySchedule}
-      monthlySchedule={selectedMonthlySchedule}
+      weeklySchedule={selectedPeriodNumber === "1"}
+      monthlySchedule={selectedPeriodNumber === "2"}
       className="backup_schedule-component"
     >
       <Text className="schedule_description"> {t("AutoSavePeriod")}</Text>
@@ -44,7 +45,7 @@ const ScheduleComponent = ({
             key: 0,
             label: selectedPeriodLabel,
           }}
-          onSelect={onSelectPeriod}
+          onSelect={setPeriod}
           isDisabled={isLoadingData || isDisableOptions}
           noBorder={false}
           scaled={false}
@@ -52,14 +53,14 @@ const ScheduleComponent = ({
           dropDownMaxHeight={500}
           className="schedule-backup_combobox days_option"
         />
-        {selectedWeeklySchedule && (
+        {selectedPeriodNumber === "1" && (
           <ComboBox
             options={weekdaysLabelArray}
             selectedOption={{
               key: 0,
               label: selectedWeekdayLabel,
             }}
-            onSelect={onSelectWeekDay}
+            onSelect={setWeekday}
             isDisabled={isLoadingData || isDisableOptions}
             noBorder={false}
             scaled={false}
@@ -68,14 +69,14 @@ const ScheduleComponent = ({
             className="schedule-backup_combobox weekly_option"
           />
         )}
-        {selectedMonthlySchedule && (
+        {selectedPeriodNumber === "2" && (
           <ComboBox
             options={monthNumbersArray}
             selectedOption={{
               key: 0,
               label: selectedMonthDay,
             }}
-            onSelect={onSelectMonthNumber}
+            onSelect={setMonthNumber}
             isDisabled={isLoadingData || isDisableOptions}
             noBorder={false}
             scaled={false}
@@ -90,7 +91,7 @@ const ScheduleComponent = ({
             key: 0,
             label: selectedHour,
           }}
-          onSelect={onSelectTime}
+          onSelect={setTime}
           isDisabled={isLoadingData || isDisableOptions}
           noBorder={false}
           scaled={false}
@@ -106,7 +107,7 @@ const ScheduleComponent = ({
             key: 0,
             label: `${selectedMaxCopiesNumber} ${t("MaxCopies")}`,
           }}
-          onSelect={onSelectMaxCopies}
+          onSelect={setMaxCopies}
           isDisabled={isLoadingData || isDisableOptions}
           noBorder={false}
           scaled={false}
@@ -121,4 +122,43 @@ const ScheduleComponent = ({
 ScheduleComponent.defaultProps = {
   isDisableOptions: false,
 };
-export default ScheduleComponent;
+//export default ScheduleComponent;
+
+export default inject(({ backup }) => {
+  const {
+    selectedPeriodLabel,
+    selectedWeekdayLabel,
+    selectedHour,
+    selectedMonthDay,
+    selectedMaxCopiesNumber,
+    setPeriod,
+    setMonthNumber,
+    setTime,
+    setMaxCopies,
+    setWeekday,
+    selectedPeriodNumber,
+  } = backup;
+
+  // console.log(
+  //   selectedPeriodLabel,
+  //   selectedWeekdayLabel,
+  //   selectedHour,
+  //   selectedMonthDay,
+  //   selectedMaxCopiesNumber,
+  //   selectedPeriodNumber
+  // );
+  return {
+    selectedPeriodLabel,
+    selectedWeekdayLabel,
+    selectedHour,
+    selectedMonthDay,
+    selectedMaxCopiesNumber,
+    selectedPeriodNumber,
+
+    setPeriod,
+    setMonthNumber,
+    setTime,
+    setMaxCopies,
+    setWeekday,
+  };
+})(observer(ScheduleComponent));

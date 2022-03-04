@@ -2,7 +2,7 @@ import React from "react";
 import { withTranslation } from "react-i18next";
 import SelectFolderInput from "files/SelectFolderInput";
 import ScheduleComponent from "./ScheduleComponent";
-
+import { inject, observer } from "mobx-react";
 class ThirdPartyModule extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -27,13 +27,14 @@ class ThirdPartyModule extends React.PureComponent {
   render() {
     const { isPanelVisible } = this.state;
     const {
-      onSelectFolder,
+   
       isError,
       isLoadingData,
       isReset,
       isThirdPartyDefault,
       defaultSelectedFolder,
       isSuccessSave,
+      setSelectedFolder,
       ...rest
     } = this.props;
 
@@ -42,7 +43,7 @@ class ThirdPartyModule extends React.PureComponent {
       <>
         <div className="auto-backup_folder-input">
           <SelectFolderInput
-            onSelectFolder={onSelectFolder}
+            onSelectFolder={setSelectedFolder}
             onClose={this.onClose}
             onClickInput={this.onClickInput}
             isPanelVisible={isPanelVisible}
@@ -59,4 +60,11 @@ class ThirdPartyModule extends React.PureComponent {
     );
   }
 }
-export default withTranslation("Settings")(ThirdPartyModule);
+
+export default inject(({ backup }) => {
+  const { setSelectedFolder } = backup;
+
+  return {
+    setSelectedFolder,
+  };
+})(withTranslation("Settings")(observer(ThirdPartyModule)));

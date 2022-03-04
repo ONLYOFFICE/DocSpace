@@ -1,7 +1,7 @@
 import React from "react";
-import { withTranslation } from "react-i18next";
 import SelectFolderInput from "files/SelectFolderInput";
 import ScheduleComponent from "./ScheduleComponent";
+import { inject, observer } from "mobx-react";
 
 class DocumentsModule extends React.PureComponent {
   constructor(props) {
@@ -24,25 +24,28 @@ class DocumentsModule extends React.PureComponent {
     });
   };
 
+  onSelectFolder = (selectedFolder) => {
+    const { setSelectedFolder } = this.props;
+    setSelectedFolder(selectedFolder);
+  };
+
   render() {
     const { isPanelVisible } = this.state;
     const {
-      onSelectFolder,
       isError,
       isLoadingData,
       isReset,
-      isThirdPartyDefault,
-      defaultSelectedFolder,
       isSuccessSave,
+      passedId,
       ...rest
     } = this.props;
 
-    const passedId = !isThirdPartyDefault ? defaultSelectedFolder : "";
+    console.log("render documents");
     return (
       <>
         <div className="auto-backup_folder-input">
           <SelectFolderInput
-            onSelectFolder={onSelectFolder}
+            onSelectFolder={this.onSelectFolder}
             onClose={this.onClose}
             onClickInput={this.onClickInput}
             isPanelVisible={isPanelVisible}
@@ -60,4 +63,15 @@ class DocumentsModule extends React.PureComponent {
     );
   }
 }
-export default withTranslation(["Settings", "Common"])(DocumentsModule);
+
+export default inject(({ backup }) => {
+  const { setSelectedFolder, defaultFolderId, defaultStorageType } = backup;
+
+  const isDocumentsDefault = defaultStorageType === `0`;
+  const passedId = isDocumentsDefault ? defaultFolderId : "";
+
+  return {
+    setSelectedFolder,
+    passedId,
+  };
+})(observer(DocumentsModule));

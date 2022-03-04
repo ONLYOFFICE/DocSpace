@@ -20,9 +20,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
     this.state = {
       availableOptions: [],
       availableStorage: {},
-      selectedStorage: "",
-      defaultSelectedStorage: "",
-      selectedId: "",
+   
     };
 
     thirdPartyStorage && this.getOptions(thirdPartyStorage);
@@ -37,28 +35,17 @@ class ThirdPartyStorageModule extends React.PureComponent {
   }
   componentDidUpdate(prevProps) {
     const { isSuccessSave, isReset, thirdPartyStorage } = this.props;
-    const {
-      defaultSelectedStorage,
-      selectedStorage,
-      defaultSelectedId,
-    } = this.state;
+  
 
     if (isSuccessSave && isSuccessSave !== prevProps.isSuccessSave) {
       thirdPartyStorage && this.getOptions(thirdPartyStorage);
     }
 
-    if (isReset && isReset !== prevProps.isReset) {
-      if (defaultSelectedStorage !== selectedStorage) {
-        this.setState({
-          selectedId: defaultSelectedId,
-          selectedStorage: defaultSelectedStorage,
-        });
-      }
-    }
+   
   }
 
   getOptions = (storageBackup) => {
-    const { onSetStorageId } = this.props;
+    const { setStorageId } = this.props;
 
     let isSetDefaultIdStorage = false;
     let isFirstSet = false;
@@ -93,14 +80,9 @@ class ThirdPartyStorageModule extends React.PureComponent {
 
       if (current) {
         isSetDefaultIdStorage = true;
-        onSetStorageId(id);
+        !this._isMount ? setStorageId(null, id) : setStorageId(id);
 
-        newState = {
-          selectedStorage: title,
-          defaultSelectedStorage: title,
-          selectedId: id,
-          defaultSelectedId: id,
-        };
+       
       }
 
       if (!isFirstSet && isSet) {
@@ -113,32 +95,22 @@ class ThirdPartyStorageModule extends React.PureComponent {
       const currentStorage = availableStorage[googleStorageId];
       const { id, title } = currentStorage;
 
-      onSetStorageId(id);
+      !this._isMount ? setStorageId(null, id) : setStorageId(id);
 
-      newState = {
-        selectedStorage: title,
-        defaultSelectedStorage: title,
-        selectedId: id,
-        defaultSelectedId: id,
-      };
+     
     }
 
     if (!isSetDefaultIdStorage && isFirstSet) {
       const currentStorage = availableStorage[firstSetId];
       const { id, title } = currentStorage;
 
-      onSetStorageId(id);
+      !this._isMount ? setStorageId(null, id) : setStorageId(id);
 
-      newState = {
-        selectedStorage: title,
-        defaultSelectedStorage: title,
-        selectedId: id,
-        defaultSelectedId: id,
-      };
+    
     }
 
     newState = {
-      ...newState,
+
       availableOptions: options,
       availableStorage: availableStorage,
     };
@@ -148,48 +120,33 @@ class ThirdPartyStorageModule extends React.PureComponent {
       : (this.state = { ...newState });
   };
 
-  checkChanges = () => {
-    const { defaultSelectedStorage, selectedStorage } = this.state;
-    const { onSetIsChanged } = this.props;
-
-    if (defaultSelectedStorage !== selectedStorage) {
-      onSetIsChanged(true);
-    } else {
-      onSetIsChanged(false);
-    }
-  };
-
   onSelect = (option) => {
     const selectedStorageId = option.key;
     const { availableStorage } = this.state;
-    const { onSetStorageId } = this.props;
+    const { setStorageId } = this.props;
     const storage = availableStorage[selectedStorageId];
 
-    onSetStorageId(storage.id);
+    setStorageId(storage.id);
 
-    this.setState(
-      {
-        selectedStorage: storage.title,
-        selectedId: storage.id,
-      },
-      () => {
-        this.checkChanges();
-      }
-    );
+  
   };
 
   render() {
-    const { isLoadingData, isErrorsFields, ...rest } = this.props;
+    const {
+      isLoadingData,
+      isErrorsFields,
+      selectedStorageId,
+      ...rest
+    } = this.props;
     const {
       availableOptions,
       availableStorage,
-      selectedStorage,
-      selectedId,
+  
     } = this.state;
 
     const commonProps = {
-      selectedStorage: availableStorage[selectedId],
-      selectedId,
+      selectedStorage: availableStorage[selectedStorageId],
+      selectedId: selectedStorageId,
       formErrors: isErrorsFields,
       isLoadingData,
     };
@@ -201,7 +158,10 @@ class ThirdPartyStorageModule extends React.PureComponent {
         <div className="auto-backup_storages-module">
           <ComboBox
             options={availableOptions}
-            selectedOption={{ key: 0, label: selectedStorage }}
+            selectedOption={{
+              key: 0,
+              label: availableStorage[selectedStorageId]?.title,
+            }}
             onSelect={this.onSelect}
             isDisabled={isLoadingData}
             noBorder={false}
@@ -211,19 +171,19 @@ class ThirdPartyStorageModule extends React.PureComponent {
             className="backup_combo"
           />
 
-          {selectedId === GoogleId && (
+          {selectedStorageId === GoogleId && (
             <GoogleCloudStorage {...rest} {...commonProps} />
           )}
 
-          {selectedId === RackspaceId && (
+          {selectedStorageId === RackspaceId && (
             <RackspaceStorage {...rest} {...commonProps} />
           )}
 
-          {selectedId === SelectelId && (
+          {selectedStorageId === SelectelId && (
             <SelectelStorage {...rest} {...commonProps} />
           )}
 
-          {selectedId === AmazonId && (
+          {selectedStorageId === AmazonId && (
             <AmazonStorage {...rest} {...commonProps} />
           )}
         </div>
@@ -233,8 +193,11 @@ class ThirdPartyStorageModule extends React.PureComponent {
 }
 
 export default inject(({ backup }) => {
-  const { thirdPartyStorage } = backup;
+  const { thirdPartyStorage, setStorageId, selectedStorageId } = backup;
+  console.log("selectedStorageId in module", selectedStorageId);
   return {
     thirdPartyStorage,
+    setStorageId,
+    selectedStorageId,
   };
 })(withTranslation("Settings")(observer(ThirdPartyStorageModule)));
