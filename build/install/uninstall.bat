@@ -10,6 +10,7 @@ if %errorlevel% == 0 (
 		call sc delete "Onlyoffice%%~nf"
 	)
 	for /R "run\" %%f in (*.xml) do (
+		call install\win\WinSW3.0.0.exe stop %%f
 		call install\win\WinSW3.0.0.exe uninstall %%f
 	)
 )
