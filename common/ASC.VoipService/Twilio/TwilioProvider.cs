@@ -58,7 +58,7 @@ namespace ASC.VoipService.Twilio
 
         public VoipRecord GetRecord(string callId, string recordSid)
         {
-            var result = new VoipRecord { Id = recordSid };
+            var result = new VoipRecord { Sid = recordSid };
             var count = 6;
 
             while (count > 0)

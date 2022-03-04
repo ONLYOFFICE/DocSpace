@@ -120,14 +120,14 @@ public class VoipDao : AbstractDao
         {
             TenantId = TenantID,
             Id = call.Id,
-            NumberFrom = call.From,
-            NumberTo = call.To,
+            NumberFrom = call.NumberFrom,
+            NumberTo = call.NumberTo,
             ContactId = call.ContactId
         };
 
-        if (!string.IsNullOrEmpty(call.ParentID))
+        if (!string.IsNullOrEmpty(call.ParentCallId))
         {
-            voipCall.ParentCallId = call.ParentID;
+            voipCall.ParentCallId = call.ParentCallId;
         }
 
         if (call.Status.HasValue)
@@ -159,19 +159,19 @@ public class VoipDao : AbstractDao
 
         if (call.VoipRecord != null)
         {
-            if (!string.IsNullOrEmpty(call.VoipRecord.Id))
+            if (!string.IsNullOrEmpty(call.VoipRecord.Sid))
             {
-                voipCall.RecordSid = call.VoipRecord.Id;
+                voipCall.Sid = call.VoipRecord.Sid;
             }
 
             if (!string.IsNullOrEmpty(call.VoipRecord.Uri))
             {
-                voipCall.RecordUrl = call.VoipRecord.Uri;
+                voipCall.Uri = call.VoipRecord.Uri;
             }
 
             if (call.VoipRecord.Duration != 0)
             {
-                voipCall.RecordDuration = call.VoipRecord.Duration;
+                voipCall.Duration = call.VoipRecord.Duration;
             }
 
             if (call.VoipRecord.Price != default)
@@ -200,11 +200,11 @@ public class VoipDao : AbstractDao
 
         var calls = _mapper.Map<List<CallContact>, IEnumerable<VoipCall>>(query.ToList());
 
-        calls = calls.GroupJoin(calls, call => call.Id, h => h.ParentID, (call, h) =>
+        calls = calls.GroupJoin(calls, call => call.Id, h => h.ParentCallId, (call, h) =>
         {
             call.ChildCalls.AddRange(h);
             return call;
-        }).Where(r => string.IsNullOrEmpty(r.ParentID)).ToList();
+        }).Where(r => string.IsNullOrEmpty(r.ParentCallId)).ToList();
 
         return calls;
     }
@@ -296,44 +296,6 @@ public class VoipDao : AbstractDao
     private VoipPhone ToPhone(VoipNumber r)
     {
         return GetProvider().GetPhone(r);
-    }
-
-    private VoipCall ToCall(CallContact dbVoipCall)
-    {
-        var call = new VoipCall
-        {
-            Id = dbVoipCall.DbVoipCall.Id,
-            ParentID = dbVoipCall.DbVoipCall.ParentCallId,
-            From = dbVoipCall.DbVoipCall.NumberFrom,
-            To = dbVoipCall.DbVoipCall.NumberTo,
-            AnsweredBy = dbVoipCall.DbVoipCall.AnsweredBy,
-            DialDate = _tenantUtil.DateTimeFromUtc(dbVoipCall.DbVoipCall.DialDate),
-            DialDuration = dbVoipCall.DbVoipCall.DialDuration,
-            Price = dbVoipCall.DbVoipCall.Price,
-            Status = (VoipCallStatus)dbVoipCall.DbVoipCall.Status,
-            VoipRecord = new VoipRecord
-            {
-                Id = dbVoipCall.DbVoipCall.RecordSid,
-                Uri = dbVoipCall.DbVoipCall.RecordUrl,
-                Duration = dbVoipCall.DbVoipCall.RecordDuration,
-                Price = dbVoipCall.DbVoipCall.RecordPrice
-            }
-        };
-
-        if (dbVoipCall.CrmContact != null)
-        {
-            call.ContactId = dbVoipCall.CrmContact.Id;
-            call.ContactIsCompany = dbVoipCall.CrmContact.IsCompany;
-            call.ContactTitle = call.ContactIsCompany
-                                    ? dbVoipCall.CrmContact.CompanyName
-                                    : dbVoipCall.CrmContact.FirstName == null || dbVoipCall.CrmContact.LastName == null ? null : $"{dbVoipCall.CrmContact.FirstName} {dbVoipCall.CrmContact.LastName}";
-        }
-        else
-        {
-            call.ContactId = 0;
-        }
-
-        return call;
     }
 
     public Consumer Consumer

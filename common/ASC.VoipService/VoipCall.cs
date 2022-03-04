@@ -28,9 +28,9 @@ namespace ASC.VoipService;
 public class VoipCall : IMapFrom<CallContact>
 {
     public string Id { get; set; }
-    public string ParentID { get; set; }
-    public string From { get; set; }
-    public string To { get; set; }
+    public string ParentCallId { get; set; }
+    public string NumberFrom { get; set; }
+    public string NumberTo { get; set; }
     public Guid AnsweredBy { get; set; }
     public DateTime DialDate { get; set; }
     public int DialDuration { get; set; }
@@ -55,7 +55,7 @@ public class VoipCall : IMapFrom<CallContact>
         profile.CreateMap<DbVoipCall, VoipCall>();
 
         profile.CreateMap<CallContact, VoipCall>()
-            .ConvertUsing<CallConverter>();
+            .ConvertUsing<CallTypeConverter>();
     }
 }
 

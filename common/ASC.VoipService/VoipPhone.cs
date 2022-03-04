@@ -23,6 +23,8 @@
  *
 */
 
+using AutoMapper;
+
 namespace ASC.VoipService;
 
 public class VoipPhone
@@ -72,10 +74,16 @@ public class VoipPhone
     }
 }
 
-public class VoipRecord
+public class VoipRecord : IMapFrom<DbVoipCall>
 {
-    public string Id { get; set; }
+    public string Sid { get; set; }
     public string Uri { get; set; }
     public int Duration { get; set; }
     public decimal Price { get; set; }
+
+    public void Mapping(Profile profile)
+    {
+        profile.CreateMap<DbVoipCall, VoipRecord>()
+            .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.RecordPrice));
+    }
 }

@@ -1,20 +1,12 @@
 ﻿namespace ASC.VoipService.Mappings;
 
 [Scope]
-public class CallConverter : ITypeConverter<CallContact, VoipCall>
+public class CallTypeConverter : ITypeConverter<CallContact, VoipCall>
 {
     public VoipCall Convert(CallContact source, VoipCall destination, ResolutionContext context)
     {
-        var result = context.Mapper.Map<VoipCall>(source.DbVoipCall);
-        result.ParentID = source.DbVoipCall.ParentCallId;
-        result.To = source.DbVoipCall.NumberTo;
-        result.VoipRecord = new VoipRecord
-        {
-            Id = source.DbVoipCall.RecordSid,
-            Uri = source.DbVoipCall.RecordUrl,
-            Duration = source.DbVoipCall.RecordDuration,
-            Price = source.DbVoipCall.RecordPrice
-        };
+        var result = context.Mapper.Map<DbVoipCall, VoipCall>(source.DbVoipCall);
+        result.VoipRecord = context.Mapper.Map<DbVoipCall, VoipRecord>(source.DbVoipCall);
 
         if (source.CrmContact != null)
         {
@@ -37,6 +29,6 @@ public class EventTypeConverterExtension
 {
     public static void Register(DIHelper services)
     {
-        services.TryAdd<CallConverter>();
+        services.TryAdd<CallTypeConverter>();
     }
 }

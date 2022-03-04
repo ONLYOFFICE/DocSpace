@@ -55,7 +55,7 @@ namespace ASC.VoipService.Twilio
                 Url = new System.Uri(Settings.Connect(contactId: contactId))
             }, _twilio);
 
-            return new VoipCall { Id = call.Sid, From = call.From, To = call.To };
+            return new VoipCall { Id = call.Sid, NumberFrom = call.From, NumberTo = call.To };
         }
 
         public override VoipCall LocalCall(string to)
@@ -66,7 +66,7 @@ namespace ASC.VoipService.Twilio
         public override VoipCall RedirectCall(string callId, string to)
         {
             var call = CallResource.Update(callId, url: new System.Uri(Settings.Redirect(to)), method: HttpMethod.Post, client: _twilio);
-            return new VoipCall { Id = call.Sid, To = to };
+            return new VoipCall { Id = call.Sid, NumberTo = to };
         }
 
         public override VoipCall HoldUp(string callId)
