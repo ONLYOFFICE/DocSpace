@@ -27,29 +27,29 @@ public class FoldersController : ApiControllerBase
     /// <param name="title">Title of new folder</param>
     /// <returns>New folder contents</returns>
     [Create("folder/{folderId}", order: int.MaxValue, DisableFormat = true)]
-    public Task<FolderDto<string>> CreateFolderFromBodyAsync(string folderId, [FromBody] CreateFolderRequestDto folderRequestDto)
+    public Task<FolderDto<string>> CreateFolderFromBodyAsync(string folderId, [FromBody] CreateFolderRequestDto inDto)
     {
-        return _filesControllerHelperString.CreateFolderAsync(folderId, folderRequestDto.Title);
+        return _filesControllerHelperString.CreateFolderAsync(folderId, inDto.Title);
     }
 
     [Create("folder/{folderId:int}", order: int.MaxValue - 1, DisableFormat = true)]
-    public Task<FolderDto<int>> CreateFolderFromBodyAsync(int folderId, [FromBody] CreateFolderRequestDto folderRequestDto)
+    public Task<FolderDto<int>> CreateFolderFromBodyAsync(int folderId, [FromBody] CreateFolderRequestDto inDto)
     {
-        return _filesControllerHelperInt.CreateFolderAsync(folderId, folderRequestDto.Title);
+        return _filesControllerHelperInt.CreateFolderAsync(folderId, inDto.Title);
     }
 
     [Create("folder/{folderId}", order: int.MaxValue, DisableFormat = true)]
     [Consumes("application/x-www-form-urlencoded")]
-    public Task<FolderDto<string>> CreateFolderFromFormAsync(string folderId, [FromForm] CreateFolderRequestDto folderRequestDto)
+    public Task<FolderDto<string>> CreateFolderFromFormAsync(string folderId, [FromForm] CreateFolderRequestDto inDto)
     {
-        return _filesControllerHelperString.CreateFolderAsync(folderId, folderRequestDto.Title);
+        return _filesControllerHelperString.CreateFolderAsync(folderId, inDto.Title);
     }
 
     [Create("folder/{folderId:int}", order: int.MaxValue - 1, DisableFormat = true)]
     [Consumes("application/x-www-form-urlencoded")]
-    public Task<FolderDto<int>> CreateFolderFromFormAsync(int folderId, [FromForm] CreateFolderRequestDto folderRequestDto)
+    public Task<FolderDto<int>> CreateFolderFromFormAsync(int folderId, [FromForm] CreateFolderRequestDto inDto)
     {
-        return _filesControllerHelperInt.CreateFolderAsync(folderId, folderRequestDto.Title);
+        return _filesControllerHelperInt.CreateFolderAsync(folderId, inDto.Title);
     }
 
     /// <summary>
@@ -299,29 +299,29 @@ public class FoldersController : ApiControllerBase
     /// <param name="title">New title</param>
     /// <returns>Folder contents</returns>
     [Update("folder/{folderId}", order: int.MaxValue, DisableFormat = true)]
-    public Task<FolderDto<string>> RenameFolderFromBodyAsync(string folderId, [FromBody] CreateFolderRequestDto folderRequestDto)
+    public Task<FolderDto<string>> RenameFolderFromBodyAsync(string folderId, [FromBody] CreateFolderRequestDto inDto)
     {
-        return _filesControllerHelperString.RenameFolderAsync(folderId, folderRequestDto.Title);
+        return _filesControllerHelperString.RenameFolderAsync(folderId, inDto.Title);
     }
 
     [Update("folder/{folderId:int}", order: int.MaxValue - 1, DisableFormat = true)]
-    public Task<FolderDto<int>> RenameFolderFromBodyAsync(int folderId, [FromBody] CreateFolderRequestDto folderRequestDto)
+    public Task<FolderDto<int>> RenameFolderFromBodyAsync(int folderId, [FromBody] CreateFolderRequestDto inDto)
     {
-        return _filesControllerHelperInt.RenameFolderAsync(folderId, folderRequestDto.Title);
+        return _filesControllerHelperInt.RenameFolderAsync(folderId, inDto.Title);
     }
 
     [Update("folder/{folderId}", order: int.MaxValue, DisableFormat = true)]
     [Consumes("application/x-www-form-urlencoded")]
-    public Task<FolderDto<string>> RenameFolderFromFormAsync(string folderId, [FromForm] CreateFolderRequestDto folderRequestDto)
+    public Task<FolderDto<string>> RenameFolderFromFormAsync(string folderId, [FromForm] CreateFolderRequestDto inDto)
     {
-        return _filesControllerHelperString.RenameFolderAsync(folderId, folderRequestDto.Title);
+        return _filesControllerHelperString.RenameFolderAsync(folderId, inDto.Title);
     }
 
     [Update("folder/{folderId:int}", order: int.MaxValue - 1, DisableFormat = true)]
     [Consumes("application/x-www-form-urlencoded")]
-    public Task<FolderDto<int>> RenameFolderFromFormAsync(int folderId, [FromForm] CreateFolderRequestDto folderRequestDto)
+    public Task<FolderDto<int>> RenameFolderFromFormAsync(int folderId, [FromForm] CreateFolderRequestDto inDto)
     {
-        return _filesControllerHelperInt.RenameFolderAsync(folderId, folderRequestDto.Title);
+        return _filesControllerHelperInt.RenameFolderAsync(folderId, inDto.Title);
     }
 
     private async Task<FolderContentDto<int>> InternalGetPrivacyFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)

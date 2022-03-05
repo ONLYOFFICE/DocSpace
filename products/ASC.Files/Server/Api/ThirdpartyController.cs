@@ -74,16 +74,16 @@ public class ThirdpartyController : ApiControllerBase
 
     /// <visible>false</visible>
     [Create("wordpress")]
-    public bool CreateWordpressPostFromBody([FromBody] CreateWordpressPostRequestDto requestDto)
+    public bool CreateWordpressPostFromBody([FromBody] CreateWordpressPostRequestDto inDto)
     {
-        return CreateWordpressPost(requestDto);
+        return CreateWordpressPost(inDto);
     }
 
     [Create("wordpress")]
     [Consumes("application/x-www-form-urlencoded")]
-    public bool CreateWordpressPostFromForm([FromForm] CreateWordpressPostRequestDto requestDto)
+    public bool CreateWordpressPostFromForm([FromForm] CreateWordpressPostRequestDto inDto)
     {
-        return CreateWordpressPost(requestDto);
+        return CreateWordpressPost(inDto);
     }
 
     /// <summary>
@@ -124,16 +124,16 @@ public class ThirdpartyController : ApiControllerBase
 
     /// <visible>false</visible>
     [Create("easybib-citation")]
-    public object EasyBibCitationBookFromBody([FromBody] EasyBibCitationBookRequestDto requestDto)
+    public object EasyBibCitationBookFromBody([FromBody] EasyBibCitationBookRequestDto inDto)
     {
-        return EasyBibCitationBook(requestDto);
+        return EasyBibCitationBook(inDto);
     }
 
     [Create("easybib-citation")]
     [Consumes("application/x-www-form-urlencoded")]
-    public object EasyBibCitationBookFromForm([FromForm] EasyBibCitationBookRequestDto requestDto)
+    public object EasyBibCitationBookFromForm([FromForm] EasyBibCitationBookRequestDto inDto)
     {
-        return EasyBibCitationBook(requestDto);
+        return EasyBibCitationBook(inDto);
     }
 
     /// <summary>
@@ -258,33 +258,33 @@ public class ThirdpartyController : ApiControllerBase
     /// <remarks>List of provider key: DropboxV2, Box, WebDav, Yandex, OneDrive, SharePoint, GoogleDrive</remarks>
     /// <exception cref="ArgumentException"></exception>
     [Create("thirdparty")]
-    public Task<FolderDto<string>> SaveThirdPartyFromBodyAsync([FromBody] ThirdPartyRequestDto requestDto)
+    public Task<FolderDto<string>> SaveThirdPartyFromBodyAsync([FromBody] ThirdPartyRequestDto inDto)
     {
-        return SaveThirdPartyAsync(requestDto);
+        return SaveThirdPartyAsync(inDto);
     }
 
     [Create("thirdparty")]
     [Consumes("application/x-www-form-urlencoded")]
-    public Task<FolderDto<string>> SaveThirdPartyFromFormAsync([FromForm] ThirdPartyRequestDto requestDto)
+    public Task<FolderDto<string>> SaveThirdPartyFromFormAsync([FromForm] ThirdPartyRequestDto inDto)
     {
-        return SaveThirdPartyAsync(requestDto);
+        return SaveThirdPartyAsync(inDto);
     }
 
     /// <visible>false</visible>
     [Create("wordpress-save")]
-    public object WordpressSaveFromBody([FromBody] WordpressSaveRequestDto requestDto)
+    public object WordpressSaveFromBody([FromBody] WordpressSaveRequestDto inDto)
     {
-        return WordpressSave(requestDto);
+        return WordpressSave(inDto);
     }
 
     [Create("wordpress-save")]
     [Consumes("application/x-www-form-urlencoded")]
-    public object WordpressSaveFromForm([FromForm] WordpressSaveRequestDto requestDto)
+    public object WordpressSaveFromForm([FromForm] WordpressSaveRequestDto inDto)
     {
-        return WordpressSave(requestDto);
+        return WordpressSave(inDto);
     }
 
-    private bool CreateWordpressPost(CreateWordpressPostRequestDto requestDto)
+    private bool CreateWordpressPost(CreateWordpressPostRequestDto inDto)
     {
         try
         {
@@ -296,7 +296,7 @@ public class ThirdpartyController : ApiControllerBase
 
             if (blogId != null)
             {
-                var createPost = _wordpressHelper.CreateWordpressPost(requestDto.Title, requestDto.Content, requestDto.Status, blogId, token);
+                var createPost = _wordpressHelper.CreateWordpressPost(inDto.Title, inDto.Content, inDto.Status, blogId, token);
                 return createPost;
             }
             return false;
@@ -307,11 +307,11 @@ public class ThirdpartyController : ApiControllerBase
         }
     }
 
-    private object EasyBibCitationBook(EasyBibCitationBookRequestDto requestDto)
+    private object EasyBibCitationBook(EasyBibCitationBookRequestDto inDto)
     {
         try
         {
-            var citat = _easyBibHelper.GetEasyBibCitation(requestDto.CitationData);
+            var citat = _easyBibHelper.GetEasyBibCitation(inDto.CitationData);
             if (citat != null)
             {
                 return new
@@ -338,15 +338,15 @@ public class ThirdpartyController : ApiControllerBase
         }
     }
 
-    private async Task<FolderDto<string>> SaveThirdPartyAsync(ThirdPartyRequestDto requestDto)
+    private async Task<FolderDto<string>> SaveThirdPartyAsync(ThirdPartyRequestDto inDto)
     {
         var thirdPartyParams = new ThirdPartyParams
         {
-            AuthData = new AuthData(requestDto.Url, requestDto.Login, requestDto.Password, requestDto.Token),
-            Corporate = requestDto.IsCorporate,
-            CustomerTitle = requestDto.CustomerTitle,
-            ProviderId = requestDto.ProviderId,
-            ProviderKey = requestDto.ProviderKey,
+            AuthData = new AuthData(inDto.Url, inDto.Login, inDto.Password, inDto.Token),
+            Corporate = inDto.IsCorporate,
+            CustomerTitle = inDto.CustomerTitle,
+            ProviderId = inDto.ProviderId,
+            ProviderKey = inDto.ProviderKey,
         };
 
         var folder = await _fileStorageServiceString.SaveThirdPartyAsync(thirdPartyParams);
@@ -354,9 +354,9 @@ public class ThirdpartyController : ApiControllerBase
         return await _folderDtoHelper.GetAsync(folder);
     }
 
-    private object WordpressSave(WordpressSaveRequestDto model)
+    private object WordpressSave(WordpressSaveRequestDto inDto)
     {
-        if (model.Code.Length == 0)
+        if (inDto.Code.Length == 0)
         {
             return new
             {
@@ -365,7 +365,7 @@ public class ThirdpartyController : ApiControllerBase
         }
         try
         {
-            var token = _wordpressToken.SaveTokenFromCode(model.Code);
+            var token = _wordpressToken.SaveTokenFromCode(inDto.Code);
             var meInfo = _wordpressHelper.GetWordpressMeInfo(token.AccessToken);
             var blogId = JObject.Parse(meInfo).Value<string>("token_site_id");
 

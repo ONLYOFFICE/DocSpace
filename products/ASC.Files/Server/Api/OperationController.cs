@@ -26,16 +26,16 @@ public class OperationController : ApiControllerBase
     /// <category>File operations</category>
     /// <returns>Operation result</returns>
     [Update("fileops/bulkdownload")]
-    public Task<IEnumerable<FileOperationDto>> BulkDownload([FromBody] DownloadRequestDto requestDto)
+    public Task<IEnumerable<FileOperationDto>> BulkDownload([FromBody] DownloadRequestDto inDto)
     {
-        return _filesControllerHelperString.BulkDownloadAsync(requestDto);
+        return _filesControllerHelperString.BulkDownloadAsync(inDto);
     }
 
     [Update("fileops/bulkdownload")]
     [Consumes("application/x-www-form-urlencoded")]
-    public Task<IEnumerable<FileOperationDto>> BulkDownloadFromForm([FromForm] DownloadRequestDto requestDto)
+    public Task<IEnumerable<FileOperationDto>> BulkDownloadFromForm([FromForm] DownloadRequestDto inDto)
     {
-        return _filesControllerHelperString.BulkDownloadAsync(requestDto);
+        return _filesControllerHelperString.BulkDownloadAsync(inDto);
     }
 
     /// <summary>
@@ -50,16 +50,16 @@ public class OperationController : ApiControllerBase
     /// <param name="deleteAfter">Delete after finished</param>
     /// <returns>Operation result</returns>
     [Update("fileops/copy")]
-    public Task<IEnumerable<FileOperationDto>> CopyBatchItemsFromBody([FromBody] BatchRequestDto requestDto)
+    public Task<IEnumerable<FileOperationDto>> CopyBatchItemsFromBody([FromBody] BatchRequestDto inDto)
     {
-        return _filesControllerHelperString.CopyBatchItemsAsync(requestDto);
+        return _filesControllerHelperString.CopyBatchItemsAsync(inDto);
     }
 
     [Update("fileops/copy")]
     [Consumes("application/x-www-form-urlencoded")]
-    public Task<IEnumerable<FileOperationDto>> CopyBatchItemsFromForm([FromForm][ModelBinder(BinderType = typeof(BatchModelBinder))] BatchRequestDto requestDto)
+    public Task<IEnumerable<FileOperationDto>> CopyBatchItemsFromForm([FromForm][ModelBinder(BinderType = typeof(BatchModelBinder))] BatchRequestDto inDto)
     {
-        return _filesControllerHelperString.CopyBatchItemsAsync(requestDto);
+        return _filesControllerHelperString.CopyBatchItemsAsync(inDto);
     }
 
     /// <summary>
@@ -73,9 +73,9 @@ public class OperationController : ApiControllerBase
     /// <category>File operations</category>
     /// <returns>Operation result</returns>
     [Update("fileops/delete")]
-    public async IAsyncEnumerable<FileOperationDto> DeleteBatchItemsFromBody([FromBody] DeleteBatchRequestDto requestDto)
+    public async IAsyncEnumerable<FileOperationDto> DeleteBatchItemsFromBody([FromBody] DeleteBatchRequestDto inDto)
     {
-        var tasks = _fileStorageServiceString.DeleteItems("delete", requestDto.FileIds.ToList(), requestDto.FolderIds.ToList(), false, requestDto.DeleteAfter, requestDto.Immediately);
+        var tasks = _fileStorageServiceString.DeleteItems("delete", inDto.FileIds.ToList(), inDto.FolderIds.ToList(), false, inDto.DeleteAfter, inDto.Immediately);
 
         foreach (var e in tasks)
         {
@@ -85,9 +85,9 @@ public class OperationController : ApiControllerBase
 
     [Update("fileops/delete")]
     [Consumes("application/x-www-form-urlencoded")]
-    public async IAsyncEnumerable<FileOperationDto> DeleteBatchItemsFromForm([FromForm][ModelBinder(BinderType = typeof(DeleteBatchModelBinder))] DeleteBatchRequestDto requestDto)
+    public async IAsyncEnumerable<FileOperationDto> DeleteBatchItemsFromForm([FromForm][ModelBinder(BinderType = typeof(DeleteBatchModelBinder))] DeleteBatchRequestDto inDto)
     {
-        var tasks = _fileStorageServiceString.DeleteItems("delete", requestDto.FileIds.ToList(), requestDto.FolderIds.ToList(), false, requestDto.DeleteAfter, requestDto.Immediately);
+        var tasks = _fileStorageServiceString.DeleteItems("delete", inDto.FileIds.ToList(), inDto.FolderIds.ToList(), false, inDto.DeleteAfter, inDto.Immediately);
 
         foreach (var e in tasks)
         {
@@ -133,16 +133,16 @@ public class OperationController : ApiControllerBase
     /// <category>File operations</category>
     /// <returns>Operation result</returns>
     [Update("fileops/markasread")]
-    public Task<IEnumerable<FileOperationDto>> MarkAsReadFromBody([FromBody] BaseBatchRequestDto requestDto)
+    public Task<IEnumerable<FileOperationDto>> MarkAsReadFromBody([FromBody] BaseBatchRequestDto inDto)
     {
-        return _filesControllerHelperString.MarkAsReadAsync(requestDto);
+        return _filesControllerHelperString.MarkAsReadAsync(inDto);
     }
 
     [Update("fileops/markasread")]
     [Consumes("application/x-www-form-urlencoded")]
-    public Task<IEnumerable<FileOperationDto>> MarkAsReadFromForm([FromForm][ModelBinder(BinderType = typeof(BaseBatchModelBinder))] BaseBatchRequestDto requestDto)
+    public Task<IEnumerable<FileOperationDto>> MarkAsReadFromForm([FromForm][ModelBinder(BinderType = typeof(BaseBatchModelBinder))] BaseBatchRequestDto inDto)
     {
-        return _filesControllerHelperString.MarkAsReadAsync(requestDto);
+        return _filesControllerHelperString.MarkAsReadAsync(inDto);
     }
 
     /// <summary>
@@ -157,16 +157,16 @@ public class OperationController : ApiControllerBase
     /// <param name="deleteAfter">Delete after finished</param>
     /// <returns>Operation result</returns>
     [Update("fileops/move")]
-    public Task<IEnumerable<FileOperationDto>> MoveBatchItemsFromBody([FromBody] BatchRequestDto requestDto)
+    public Task<IEnumerable<FileOperationDto>> MoveBatchItemsFromBody([FromBody] BatchRequestDto inDto)
     {
-        return _filesControllerHelperString.MoveBatchItemsAsync(requestDto);
+        return _filesControllerHelperString.MoveBatchItemsAsync(inDto);
     }
 
     [Update("fileops/move")]
     [Consumes("application/x-www-form-urlencoded")]
-    public Task<IEnumerable<FileOperationDto>> MoveBatchItemsFromForm([FromForm][ModelBinder(BinderType = typeof(BatchModelBinder))] BatchRequestDto requestDto)
+    public Task<IEnumerable<FileOperationDto>> MoveBatchItemsFromForm([FromForm][ModelBinder(BinderType = typeof(BatchModelBinder))] BatchRequestDto inDto)
     {
-        return _filesControllerHelperString.MoveBatchItemsAsync(requestDto);
+        return _filesControllerHelperString.MoveBatchItemsAsync(inDto);
     }
 
     /// <summary>
@@ -178,9 +178,9 @@ public class OperationController : ApiControllerBase
     /// <param name="fileIds">File ID list</param>
     /// <returns>Conflicts file ids</returns>
     [Read("fileops/move")]
-    public IAsyncEnumerable<FileEntryDto> MoveOrCopyBatchCheckAsync([ModelBinder(BinderType = typeof(BatchModelBinder))] BatchRequestDto requestDto)
+    public IAsyncEnumerable<FileEntryDto> MoveOrCopyBatchCheckAsync([ModelBinder(BinderType = typeof(BatchModelBinder))] BatchRequestDto inDto)
     {
-        return _filesControllerHelperString.MoveOrCopyBatchCheckAsync(requestDto);
+        return _filesControllerHelperString.MoveOrCopyBatchCheckAsync(inDto);
     }
     /// <summary>
     ///  Finishes all the active file operations
