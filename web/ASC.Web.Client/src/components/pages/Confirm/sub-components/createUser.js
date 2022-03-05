@@ -290,7 +290,7 @@ const Confirm = (props) => {
       .then(() => window.location.replace(defaultPage))
       .catch((error) => {
         console.error("confirm error", error);
-        setErrorText(error);
+        setEmailErrorText(error);
         setEmailValid(false);
         setIsLoading(false);
       });
@@ -558,9 +558,7 @@ const Confirm = (props) => {
               hasError={!emailValid}
               errorMessage={
                 emailErrorText
-                  ? emailErrorText
-                  : errorText
-                  ? errorText
+                  ? t(`Common:${emailErrorText}`)
                   : t("Common:RequiredField")
               }
             >
