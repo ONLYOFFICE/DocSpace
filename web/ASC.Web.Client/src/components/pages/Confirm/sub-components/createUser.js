@@ -167,6 +167,7 @@ const RegisterContainer = styled.div`
 
 const Confirm = (props) => {
   const { settings, t, greetingTitle, providers, isDesktop } = props;
+  const inputRef = React.useRef(null);
 
   const [moreAuthVisible, setMoreAuthVisible] = useState(false);
   const [ssoLabel, setSsoLabel] = useState("");
@@ -199,6 +200,12 @@ const Confirm = (props) => {
     setSsoUrl(data.ssoUrl);
   };
 
+  const focusInput = () => {
+    if (inputRef) {
+      inputRef.current.focus();
+    }
+  };
+
   useEffect(async () => {
     const { linkData } = props;
     const uid = linkData.uid;
@@ -208,7 +215,10 @@ const Confirm = (props) => {
 
     window.authCallback = authCallback;
 
-    Promise.all([setProviders(), getSso()]).then(() => setIsLoaded(true));
+    Promise.all([setProviders(), getSso()]).then(() => {
+      setIsLoaded(true);
+      focusInput();
+    });
   }, []);
 
   const onSubmit = () => {
@@ -566,6 +576,7 @@ const Confirm = (props) => {
                   allowStrictLocalPart: true,
                 }}
                 onValidateInput={onValidateEmail}
+                forwardedRef={inputRef}
               />
             </FieldContainer>
 
@@ -619,11 +630,12 @@ const Confirm = (props) => {
               isVertical={true}
               labelVisible={false}
               hasError={!passwordValid}
-              //errorMessage={errorText ? "" : t("Common:RequiredField")}
+              errorMessage={errorText ? "" : t("Common:RequiredField")}
             >
               <PasswordInput
                 simpleView={false}
                 hideNewPasswordButton
+                showCopyLink={false}
                 passwordSettings={settings}
                 id="password"
                 inputName="password"
