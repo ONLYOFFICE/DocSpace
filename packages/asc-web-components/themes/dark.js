@@ -2054,6 +2054,9 @@ const Dark = {
       selectedViewIcon: "rgba(255, 255, 255, 0.88)",
       viewIcon: "#858585",
       sortFill: "rgba(255, 255, 255, 0.6)",
+
+      tileSortFill: "#eeeeee",
+      tileSortColor: "#eeeeee",
     },
   },
 

@@ -2052,6 +2052,9 @@ const Base = {
       selectedViewIcon: "#dfe2e3",
       viewIcon: "#a3a9ae",
       sortFill: "#657077",
+
+      tileSortFill: black,
+      tileSortColor: black,
     },
   },
 
