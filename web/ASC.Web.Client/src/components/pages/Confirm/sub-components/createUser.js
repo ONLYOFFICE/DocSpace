@@ -557,7 +557,11 @@ const Confirm = (props) => {
               labelVisible={false}
               hasError={!emailValid}
               errorMessage={
-                emailErrorText ? emailErrorText : t("Common:RequiredField")
+                emailErrorText
+                  ? emailErrorText
+                  : errorText
+                  ? errorText
+                  : t("Common:RequiredField")
               }
             >
               <EmailInput
