@@ -23,91 +23,104 @@
  *
 */
 
-namespace ASC.Core.Users
+namespace ASC.Core.Users;
+
+public static class UserExtensions
 {
-    public static class UserExtensions
+    public static bool IsOwner(this UserInfo ui, Tenant tenant)
     {
-        public static bool IsOwner(this UserInfo ui, Tenant tenant)
+        if (ui == null)
         {
-            if (ui == null) return false;
-
-            return tenant != null && tenant.OwnerId.Equals(ui.ID);
+            return false;
         }
 
-        public static bool IsMe(this UserInfo ui, AuthContext authContext)
+        return tenant != null && tenant.OwnerId.Equals(ui.Id);
+    }
+
+    public static bool IsMe(this UserInfo ui, AuthContext authContext)
+    {
+        return ui != null && ui.Id == authContext.CurrentAccount.ID;
+    }
+
+    public static bool IsAdmin(this UserInfo ui, UserManager UserManager)
+    {
+        return ui != null && UserManager.IsUserInGroup(ui.Id, Constants.GroupAdmin.ID);
+    }
+
+    public static bool IsVisitor(this UserInfo ui, UserManager UserManager)
+    {
+        return ui != null && UserManager.IsUserInGroup(ui.Id, Constants.GroupVisitor.ID);
+    }
+
+    public static bool IsOutsider(this UserInfo ui, UserManager userManager)
+    {
+        return IsVisitor(ui, userManager) && ui.Id == Constants.OutsideUser.Id;
+    }
+
+    public static bool IsLDAP(this UserInfo ui)
+    {
+        if (ui == null)
         {
-            return ui != null && ui.ID == authContext.CurrentAccount.ID;
+            return false;
         }
 
-        public static bool IsAdmin(this UserInfo ui, UserManager UserManager)
+        return !string.IsNullOrEmpty(ui.Sid);
+    }
+
+    // ReSharper disable once InconsistentNaming
+    public static bool IsSSO(this UserInfo ui)
+    {
+        if (ui == null)
         {
-            return ui != null && UserManager.IsUserInGroup(ui.ID, Constants.GroupAdmin.ID);
+            return false;
         }
 
-        public static bool IsVisitor(this UserInfo ui, UserManager UserManager)
+        return !string.IsNullOrEmpty(ui.SsoNameId);
+    }
+
+    private const string ExtMobPhone = "extmobphone";
+    private const string MobPhone = "mobphone";
+    private const string ExtMail = "extmail";
+    private const string Mail = "mail";
+
+    public static void ConvertExternalContactsToOrdinary(this UserInfo ui)
+    {
+        var ldapUserContacts = ui.ContactsList;
+
+        if (ui.ContactsList == null)
         {
-            return ui != null && UserManager.IsUserInGroup(ui.ID, Constants.GroupVisitor.ID);
+            return;
         }
 
-        public static bool IsOutsider(this UserInfo ui, UserManager userManager)
+        var newContacts = new List<string>();
+
+        for (int i = 0, m = ldapUserContacts.Count; i < m; i += 2)
         {
-            return IsVisitor(ui, userManager) && ui.ID == Constants.OutsideUser.ID;
-        }
-
-        public static bool IsLDAP(this UserInfo ui)
-        {
-            if (ui == null) return false;
-
-            return !string.IsNullOrEmpty(ui.Sid);
-        }
-
-        // ReSharper disable once InconsistentNaming
-        public static bool IsSSO(this UserInfo ui)
-        {
-            if (ui == null) return false;
-
-            return !string.IsNullOrEmpty(ui.SsoNameId);
-        }
-
-        private const string EXT_MOB_PHONE = "extmobphone";
-        private const string MOB_PHONE = "mobphone";
-        private const string EXT_MAIL = "extmail";
-        private const string MAIL = "mail";
-
-        public static void ConvertExternalContactsToOrdinary(this UserInfo ui)
-        {
-            var ldapUserContacts = ui.ContactsList;
-
-            if (ui.ContactsList == null) return;
-
-            var newContacts = new List<string>();
-
-            for (int i = 0, m = ldapUserContacts.Count; i < m; i += 2)
+            if (i + 1 >= ldapUserContacts.Count)
             {
-                if (i + 1 >= ldapUserContacts.Count)
-                    continue;
-
-                var type = ldapUserContacts[i];
-                var value = ldapUserContacts[i + 1];
-
-                switch (type)
-                {
-                    case EXT_MOB_PHONE:
-                        newContacts.Add(MOB_PHONE);
-                        newContacts.Add(value);
-                        break;
-                    case EXT_MAIL:
-                        newContacts.Add(MAIL);
-                        newContacts.Add(value);
-                        break;
-                    default:
-                        newContacts.Add(type);
-                        newContacts.Add(value);
-                        break;
-                }
+                continue;
             }
 
-            ui.ContactsList = newContacts;
+            var type = ldapUserContacts[i];
+            var value = ldapUserContacts[i + 1];
+
+            switch (type)
+            {
+                case ExtMobPhone:
+                    newContacts.Add(MobPhone);
+                    newContacts.Add(value);
+                    break;
+                case ExtMail:
+                    newContacts.Add(Mail);
+                    newContacts.Add(value);
+                    break;
+                default:
+                    newContacts.Add(type);
+                    newContacts.Add(value);
+                    break;
+            }
         }
+
+        ui.ContactsList = newContacts;
     }
 }

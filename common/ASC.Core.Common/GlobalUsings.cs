@@ -85,9 +85,9 @@ global using ASC.Notify.Sinks;
 global using ASC.Security.Cryptography;
 global using ASC.Web.Studio.Utility;
 
-global using AutoMapper;
-
 global using Autofac;
+
+global using AutoMapper;
 
 global using MailKit.Security;
 

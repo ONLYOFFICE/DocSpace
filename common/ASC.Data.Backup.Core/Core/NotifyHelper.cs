@@ -96,10 +96,10 @@ public class NotifyHelper
             ? userManager.GetUsers(EmployeeStatus.Active)
             : new[] { userManager.GetUsers(tenantManager.GetCurrentTenant().OwnerId) };
 
-        foreach (var user in users)
-        {
-            var hash = authManager.GetUserPasswordStamp(user.ID).ToString("s");
-            var confirmationUrl = commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.PasswordChange, hash);
+            foreach (var user in users)
+            {
+                var hash = authManager.GetUserPasswordStamp(user.Id).ToString("s");
+                var confirmationUrl = commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.PasswordChange, hash);
 
             Func<string> greenButtonText = () => BackupResource.ButtonSetPassword;
 
@@ -133,32 +133,32 @@ public class NotifyHelper
                 {
                     var currentArgs = new List<ITagValue>(args);
 
-                    var newTenantId = toTenantId.HasValue ? toTenantId.Value : tenant.TenantId;
-                    var hash = authManager.GetUserPasswordStamp(user.ID).ToString("s");
-                    var confirmationUrl = url + "/" + commonLinkUtility.GetConfirmationUrlRelative(newTenantId, user.Email, ConfirmType.PasswordChange, hash);
+                        var newTenantId = toTenantId.HasValue ? toTenantId.Value : tenant.Id;
+                        var hash = authManager.GetUserPasswordStamp(user.Id).ToString("s");
+                        var confirmationUrl = url + "/" + commonLinkUtility.GetConfirmationUrlRelative(newTenantId, user.Email, ConfirmType.PasswordChange, hash);
 
                     Func<string> greenButtonText = () => BackupResource.ButtonSetPassword;
                     currentArgs.Add(TagValues.GreenButton(greenButtonText, confirmationUrl));
 
+                        client.SendNoticeToAsync(
+                            action,
+                            null,
+                            new IRecipient[] { user },
+                            new[] { StudioNotifyService.EMailSenderName },
+                            currentArgs.ToArray());
+                    }
+                }
+                else
+                {
                     client.SendNoticeToAsync(
                         action,
                         null,
-                        new IRecipient[] { user },
+                        users.Select(u => studioNotifyHelper.ToRecipient(u.Id)).ToArray(),
                         new[] { StudioNotifyService.EMailSenderName },
-                        currentArgs.ToArray());
+                        args.ToArray());
                 }
             }
-            else
-            {
-                client.SendNoticeToAsync(
-                    action,
-                    null,
-                    users.Select(u => studioNotifyHelper.ToRecipient(u.ID)).ToArray(),
-                    new[] { StudioNotifyService.EMailSenderName },
-                    args.ToArray());
-            }
         }
-    }
 
     private List<ITagValue> CreateArgs(IServiceScope scope, string region, string url)
     {

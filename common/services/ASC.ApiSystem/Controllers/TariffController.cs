@@ -86,7 +86,7 @@ namespace ASC.ApiSystem.Controllers
                 });
             }
 
-            var quota = new TenantQuota(tenant.TenantId)
+            var quota = new TenantQuota(tenant.Id)
             {
                 ActiveUsers = 10000,
                 Features = model.Features ?? "",
@@ -114,11 +114,11 @@ namespace ASC.ApiSystem.Controllers
 
             var tariff = new Tariff
             {
-                QuotaId = quota.Id,
+                QuotaId = quota.Tenant,
                 DueDate = model.DueDate != default ? model.DueDate : DateTime.MaxValue,
             };
 
-            HostedSolution.SetTariff(tenant.TenantId, tariff);
+            HostedSolution.SetTariff(tenant.Id, tariff);
 
             return GetTariff(tenant);
         }
@@ -160,7 +160,7 @@ namespace ASC.ApiSystem.Controllers
             var tariffs = HostedSolution.GetTenantQuotas()
                 .Where(q => !q.Trial && !q.Free && !q.Open)
                 .OrderBy(q => q.ActiveUsers)
-                .ThenByDescending(q => q.Id)
+                .ThenByDescending(q => q.Tenant)
                 .Select(q => ToTariffWrapper(null, q));
 
             return Ok(new
@@ -175,9 +175,9 @@ namespace ASC.ApiSystem.Controllers
 
         private IActionResult GetTariff(Tenant tenant)
         {
-            var tariff = HostedSolution.GetTariff(tenant.TenantId, false);
+            var tariff = HostedSolution.GetTariff(tenant.Id, false);
 
-            var quota = HostedSolution.GetTenantQuota(tenant.TenantId);
+            var quota = HostedSolution.GetTenantQuota(tenant.Id);
 
             return Ok(new
             {

@@ -23,174 +23,126 @@
  *
 */
 
-namespace ASC.Core.Data
+using System.Diagnostics.Metrics;
+
+using AutoMapper.QueryableExtensions;
+
+namespace ASC.Core.Data;
+
+[Scope]
+class ConfigureDbQuotaService : IConfigureNamedOptions<DbQuotaService>
 {
-    [Scope]
-    class ConfigureDbQuotaService : IConfigureNamedOptions<DbQuotaService>
+    private readonly DbContextManager<CoreDbContext> _dbContextManager;
+    public string DbId { get; set; }
+
+    public ConfigureDbQuotaService(DbContextManager<CoreDbContext> dbContextManager)
     {
-        private DbContextManager<CoreDbContext> DbContextManager { get; }
-        public string DbId { get; set; }
-
-        public ConfigureDbQuotaService(DbContextManager<CoreDbContext> dbContextManager)
-        {
-            DbContextManager = dbContextManager;
-        }
-
-        public void Configure(string name, DbQuotaService options)
-        {
-            options.LazyCoreDbContext = new Lazy<CoreDbContext>(() => DbContextManager.Get(name));
-        }
-
-        public void Configure(DbQuotaService options)
-        {
-            options.LazyCoreDbContext = new Lazy<CoreDbContext>(() => DbContextManager.Value);
-        }
+        _dbContextManager = dbContextManager;
     }
 
-    [Scope]
-    class DbQuotaService : IQuotaService
+    public void Configure(string name, DbQuotaService options)
     {
-        private static Expression<Func<DbQuota, TenantQuota>> FromDbQuotaToTenantQuota { get; set; }
-        private static Expression<Func<DbQuotaRow, TenantQuotaRow>> FromDbQuotaRowToTenantQuotaRow { get; set; }
-        internal CoreDbContext CoreDbContext { get => LazyCoreDbContext.Value; }
-        internal Lazy<CoreDbContext> LazyCoreDbContext { get; set; }
+        options.LazyCoreDbContext = new Lazy<CoreDbContext>(() => _dbContextManager.Get(name));
+    }
 
-        static DbQuotaService()
+    public void Configure(DbQuotaService options)
+    {
+        options.LazyCoreDbContext = new Lazy<CoreDbContext>(() => _dbContextManager.Value);
+    }
+}
+
+[Scope]
+class DbQuotaService : IQuotaService
+{
+    internal CoreDbContext CoreDbContext => LazyCoreDbContext.Value;
+    internal Lazy<CoreDbContext> LazyCoreDbContext;
+    private readonly IMapper _mapper;
+
+    public DbQuotaService(DbContextManager<CoreDbContext> dbContextManager, IMapper mapper)
+    {
+        LazyCoreDbContext = new Lazy<CoreDbContext>(() => dbContextManager.Value);
+        _mapper = mapper;
+    }
+
+    public IEnumerable<TenantQuota> GetTenantQuotas()
+    {
+        return CoreDbContext.Quotas
+            .ProjectTo<TenantQuota>(_mapper.ConfigurationProvider)
+            .ToList();
+    }
+
+    public TenantQuota GetTenantQuota(int id)
+    {
+        return CoreDbContext.Quotas
+            .Where(r => r.Tenant == id)
+            .ProjectTo<TenantQuota>(_mapper.ConfigurationProvider)
+            .SingleOrDefault();
+    }
+
+    public TenantQuota SaveTenantQuota(TenantQuota quota)
+    {
+        if (quota == null)
         {
-            FromDbQuotaToTenantQuota = r => new TenantQuota()
-            {
-                Id = r.Tenant,
-                Name = r.Name,
-                ActiveUsers = r.ActiveUsers != 0 ? r.ActiveUsers : int.MaxValue,
-                AvangateId = r.AvangateId,
-                Features = r.Features,
-                MaxFileSize = GetInBytes(r.MaxFileSize),
-                MaxTotalSize = GetInBytes(r.MaxTotalSize),
-                Price = r.Price,
-                Visible = r.Visible
-            };
-
-            FromDbQuotaRowToTenantQuotaRow = r => new TenantQuotaRow
-            {
-                Counter = r.Counter,
-                Path = r.Path,
-                Tag = r.Tag,
-                Tenant = r.Tenant
-            };
+            throw new ArgumentNullException(nameof(quota));
         }
 
-        public DbQuotaService(DbContextManager<CoreDbContext> dbContextManager)
+        CoreDbContext.AddOrUpdate(r => r.Quotas, _mapper.Map<TenantQuota, DbQuota>(quota));
+        CoreDbContext.SaveChanges();
+
+        return quota;
+    }
+
+    public void RemoveTenantQuota(int id)
+    {
+        using var tr = CoreDbContext.Database.BeginTransaction();
+        var d = CoreDbContext.Quotas
+             .Where(r => r.Tenant == id)
+             .SingleOrDefault();
+
+        if (d != null)
         {
-            LazyCoreDbContext = new Lazy<CoreDbContext>(() => dbContextManager.Value);
-        }
-
-        public IEnumerable<TenantQuota> GetTenantQuotas()
-        {
-            return
-                CoreDbContext.Quotas
-                .Select(FromDbQuotaToTenantQuota)
-                .ToList();
-        }
-
-        public TenantQuota GetTenantQuota(int id)
-        {
-            return
-                 CoreDbContext.Quotas
-                 .Where(r => r.Tenant == id)
-                .Select(FromDbQuotaToTenantQuota)
-                .SingleOrDefault();
-        }
-
-        public TenantQuota SaveTenantQuota(TenantQuota quota)
-        {
-            if (quota == null) throw new ArgumentNullException(nameof(quota));
-
-            var dbQuota = new DbQuota
-            {
-                Tenant = quota.Id,
-                Name = quota.Name,
-                MaxFileSize = GetInMBytes(quota.MaxFileSize),
-                MaxTotalSize = GetInMBytes(quota.MaxTotalSize),
-                ActiveUsers = quota.ActiveUsers,
-                Features = quota.Features,
-                Price = quota.Price,
-                AvangateId = quota.AvangateId,
-                Visible = quota.Visible
-            };
-
-            CoreDbContext.AddOrUpdate(r => r.Quotas, dbQuota);
+            CoreDbContext.Quotas.Remove(d);
             CoreDbContext.SaveChanges();
-
-            return quota;
         }
 
-        public void RemoveTenantQuota(int id)
+        tr.Commit();
+    }
+
+
+    public void SetTenantQuotaRow(TenantQuotaRow row, bool exchange)
+    {
+        if (row == null)
         {
-            using var tr = CoreDbContext.Database.BeginTransaction();
-            var d = CoreDbContext.Quotas
-                 .Where(r => r.Tenant == id)
-                 .SingleOrDefault();
-
-            if (d != null)
-            {
-                CoreDbContext.Quotas.Remove(d);
-                CoreDbContext.SaveChanges();
-            }
-
-            tr.Commit();
+            throw new ArgumentNullException(nameof(row));
         }
 
+        using var tx = CoreDbContext.Database.BeginTransaction();
 
-        public void SetTenantQuotaRow(TenantQuotaRow row, bool exchange)
+        var counter = CoreDbContext.QuotaRows
+            .Where(r => r.Path == row.Path && r.Tenant == row.Tenant)
+            .Select(r => r.Counter)
+            .Take(1)
+            .FirstOrDefault();
+
+        var dbQuotaRow = _mapper.Map<TenantQuotaRow, DbQuotaRow>(row);
+        dbQuotaRow.Counter = exchange ? counter + row.Counter : row.Counter;
+        dbQuotaRow.LastModified = DateTime.UtcNow;
+
+        CoreDbContext.AddOrUpdate(r => r.QuotaRows, dbQuotaRow);
+        CoreDbContext.SaveChanges();
+
+        tx.Commit();
+    }
+
+    public IEnumerable<TenantQuotaRow> FindTenantQuotaRows(int tenantId)
+    {
+        IQueryable<DbQuotaRow> q = CoreDbContext.QuotaRows;
+
+        if (tenantId != Tenant.DefaultTenant)
         {
-            if (row == null) throw new ArgumentNullException(nameof(row));
-
-            using var tx = CoreDbContext.Database.BeginTransaction();
-
-            var counter = CoreDbContext.QuotaRows
-                .Where(r => r.Path == row.Path && r.Tenant == row.Tenant)
-                .Select(r => r.Counter)
-                .Take(1)
-                .FirstOrDefault();
-
-            var dbQuotaRow = new DbQuotaRow
-            {
-                Tenant = row.Tenant,
-                Path = row.Path,
-                Counter = exchange ? counter + row.Counter : row.Counter,
-                Tag = row.Tag,
-                LastModified = DateTime.UtcNow
-            };
-
-            CoreDbContext.AddOrUpdate(r => r.QuotaRows, dbQuotaRow);
-            CoreDbContext.SaveChanges();
-
-            tx.Commit();
+            q = q.Where(r => r.Tenant == tenantId);
         }
 
-        public IEnumerable<TenantQuotaRow> FindTenantQuotaRows(int tenantId)
-        {
-            IQueryable<DbQuotaRow> q = CoreDbContext.QuotaRows;
-
-            if (tenantId != Tenant.DEFAULT_TENANT)
-            {
-                q = q.Where(r => r.Tenant == tenantId);
-            }
-
-            return q.Select(FromDbQuotaRowToTenantQuotaRow).ToList();
-        }
-
-
-        private static long GetInBytes(long bytes)
-        {
-            const long MB = 1024 * 1024;
-            return bytes < MB ? bytes * MB : bytes;
-        }
-
-        private static long GetInMBytes(long bytes)
-        {
-            const long MB = 1024 * 1024;
-            return bytes < MB * MB ? bytes / MB : bytes;
-        }
+        return q.ProjectTo<TenantQuotaRow>(_mapper.ConfigurationProvider).ToList();
     }
 }

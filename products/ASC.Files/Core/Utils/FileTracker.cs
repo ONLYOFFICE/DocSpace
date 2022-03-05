@@ -23,225 +23,230 @@
  *
 */
 
-namespace ASC.Web.Files.Utils
+namespace ASC.Web.Files.Utils;
+
+[Singletone]
+public class FileTrackerHelper
 {
-    [Singletone]
-    public class FileTrackerHelper
+    private const string Tracker = "filesTracker";
+    private readonly ICache _cache;
+
+    public static readonly TimeSpan TrackTimeout = TimeSpan.FromSeconds(12);
+    public static readonly TimeSpan CacheTimeout = TimeSpan.FromSeconds(60);
+    public static readonly TimeSpan CheckRightTimeout = TimeSpan.FromMinutes(1);
+
+    public FileTrackerHelper(ICache cache)
     {
-        private const string TRACKER = "filesTracker";
-        private ICache Cache { get; }
+        _cache = cache;
+    }
 
-        public static readonly TimeSpan TrackTimeout = TimeSpan.FromSeconds(12);
-        public static readonly TimeSpan CacheTimeout = TimeSpan.FromSeconds(60);
-        public static readonly TimeSpan CheckRightTimeout = TimeSpan.FromMinutes(1);
+    public Guid Add<T>(Guid userId, T fileId)
+    {
+        var tabId = Guid.NewGuid();
+        ProlongEditing(fileId, tabId, userId);
 
-        public FileTrackerHelper(ICache cache)
+        return tabId;
+    }
+
+    public bool ProlongEditing<T>(T fileId, Guid tabId, Guid userId, bool editingAlone = false)
+    {
+        var checkRight = true;
+        var tracker = GetTracker(fileId);
+        if (tracker != null && IsEditing(fileId))
         {
-            Cache = cache;
-        }
-
-        public Guid Add<T>(Guid userId, T fileId)
-        {
-            var tabId = Guid.NewGuid();
-            ProlongEditing(fileId, tabId, userId);
-            return tabId;
-        }
-
-        public bool ProlongEditing<T>(T fileId, Guid tabId, Guid userId, bool editingAlone = false)
-        {
-            var checkRight = true;
-            var tracker = GetTracker(fileId);
-            if (tracker != null && IsEditing(fileId))
+            if (tracker.EditingBy.TryGetValue(tabId, out var trackInfo))
             {
-                if (tracker.EditingBy.TryGetValue(tabId, out var trackInfo))
-                {
-                    trackInfo.TrackTime = DateTime.UtcNow;
-                    checkRight = DateTime.UtcNow - tracker.EditingBy[tabId].CheckRightTime > CheckRightTimeout;
-                }
-                else
-                {
-                    tracker.EditingBy.Add(tabId, new TrackInfo(userId, tabId == userId, editingAlone));
-                }
+                trackInfo.TrackTime = DateTime.UtcNow;
+                checkRight = DateTime.UtcNow - tracker.EditingBy[tabId].CheckRightTime > CheckRightTimeout;
             }
             else
             {
-                tracker = new FileTracker(tabId, userId, tabId == userId, editingAlone);
+                tracker.EditingBy.Add(tabId, new TrackInfo(userId, tabId == userId, editingAlone));
             }
-
-            SetTracker(fileId, tracker);
-
-            return checkRight;
+        }
+        else
+        {
+            tracker = new FileTracker(tabId, userId, tabId == userId, editingAlone);
         }
 
-        public void Remove<T>(T fileId, Guid tabId = default, Guid userId = default)
+        SetTracker(fileId, tracker);
+
+        return checkRight;
+    }
+
+    public void Remove<T>(T fileId, Guid tabId = default, Guid userId = default)
+    {
+        var tracker = GetTracker(fileId);
+        if (tracker != null)
         {
-            var tracker = GetTracker(fileId);
-            if (tracker != null)
+            if (tabId != default)
             {
-                if (tabId != default)
-                {
-                    tracker.EditingBy.Remove(tabId);
-                    SetTracker(fileId, tracker);
-                    return;
-                }
-                if (userId != default)
-                {
-                    var listForRemove = tracker.EditingBy
-                                               .Where(b => tracker.EditingBy[b.Key].UserId == userId);
+                tracker.EditingBy.Remove(tabId);
+                SetTracker(fileId, tracker);
 
-                    foreach (var editTab in listForRemove)
-                    {
-                        tracker.EditingBy.Remove(editTab.Key);
-                    }
-                    SetTracker(fileId, tracker);
-                    return;
-                }
+                return;
             }
-
-            SetTracker(fileId, null);
-        }
-
-        public void RemoveAllOther<T>(Guid userId, T fileId)
-        {
-            var tracker = GetTracker(fileId);
-            if (tracker != null)
+            if (userId != default)
             {
                 var listForRemove = tracker.EditingBy
-                                           .Where(b => b.Value.UserId != userId);
-
-                if (listForRemove.Count() != tracker.EditingBy.Count)
-                {
-                    foreach (var forRemove in listForRemove)
-                    {
-                        tracker.EditingBy.Remove(forRemove.Key);
-                    }
-                    SetTracker(fileId, tracker);
-                    return;
-                }
-            }
-            SetTracker(fileId, null);
-        }
-
-        public bool IsEditing<T>(T fileId)
-        {
-            var tracker = GetTracker(fileId);
-            if (tracker != null)
-            {
-                var listForRemove = tracker.EditingBy
-                                           .Where(e => !e.Value.NewScheme && (DateTime.UtcNow - e.Value.TrackTime).Duration() > TrackTimeout);
+                                           .Where(b => tracker.EditingBy[b.Key].UserId == userId);
 
                 foreach (var editTab in listForRemove)
                 {
                     tracker.EditingBy.Remove(editTab.Key);
                 }
 
-                if (tracker.EditingBy.Count == 0)
-                {
-                    SetTracker(fileId, null);
-                    return false;
-                }
-
                 SetTracker(fileId, tracker);
-                return true;
+
+                return;
             }
-            SetTracker(fileId, null);
-            return false;
         }
 
-        public bool IsEditingAlone<T>(T fileId)
-        {
-            var tracker = GetTracker(fileId);
-            return tracker != null && tracker.EditingBy.Count == 1 && tracker.EditingBy.FirstOrDefault().Value.EditingAlone;
-        }
+        SetTracker(fileId, null);
+    }
 
-        public void ChangeRight<T>(T fileId, Guid userId, bool check)
+    public void RemoveAllOther<T>(Guid userId, T fileId)
+    {
+        var tracker = GetTracker(fileId);
+        if (tracker != null)
         {
-            var tracker = GetTracker(fileId);
-            if (tracker != null)
+            var listForRemove = tracker.EditingBy
+                                       .Where(b => b.Value.UserId != userId);
+
+            if (listForRemove.Count() != tracker.EditingBy.Count)
             {
-                foreach(var value in tracker.EditingBy.Values)
+                foreach (var forRemove in listForRemove)
                 {
-                    if (value.UserId == userId || userId == Guid.Empty)
-                    {
-                        value.CheckRightTime = check ? DateTime.MinValue : DateTime.UtcNow;
-                    }
+                    tracker.EditingBy.Remove(forRemove.Key);
                 }
+
                 SetTracker(fileId, tracker);
+
+                return;
             }
-            else
+        }
+        SetTracker(fileId, null);
+    }
+
+    public bool IsEditing<T>(T fileId)
+    {
+        var tracker = GetTracker(fileId);
+        if (tracker != null)
+        {
+            var listForRemove = tracker.EditingBy
+                                       .Where(e => !e.Value.NewScheme && (DateTime.UtcNow - e.Value.TrackTime).Duration() > TrackTimeout);
+
+            foreach (var editTab in listForRemove)
+            {
+                tracker.EditingBy.Remove(editTab.Key);
+            }
+
+            if (tracker.EditingBy.Count == 0)
             {
                 SetTracker(fileId, null);
+
+                return false;
             }
+
+            SetTracker(fileId, tracker);
+
+            return true;
         }
 
-        public List<Guid> GetEditingBy<T>(T fileId)
-        {
-            var tracker = GetTracker(fileId);
-            return tracker != null && IsEditing(fileId) ? tracker.EditingBy.Values.Select(i => i.UserId).Distinct().ToList() : new List<Guid>();
-        }
+        SetTracker(fileId, null);
 
-        private FileTracker GetTracker<T>(T fileId)
+        return false;
+    }
+
+    public bool IsEditingAlone<T>(T fileId)
+    {
+        var tracker = GetTracker(fileId);
+
+        return tracker != null && tracker.EditingBy.Count == 1 && tracker.EditingBy.FirstOrDefault().Value.EditingAlone;
+    }
+
+    public void ChangeRight<T>(T fileId, Guid userId, bool check)
+    {
+        var tracker = GetTracker(fileId);
+        if (tracker != null)
         {
-            if (!EqualityComparer<T>.Default.Equals(fileId, default(T)))
+            foreach (var value in tracker.EditingBy.Values)
             {
-                return Cache.Get<FileTracker>(TRACKER + fileId);
+                if (value.UserId == userId || userId == Guid.Empty)
+                {
+                    value.CheckRightTime = check ? DateTime.MinValue : DateTime.UtcNow;
+                }
             }
-            return null;
-        }
 
-        private void SetTracker<T>(T fileId, FileTracker tracker)
+            SetTracker(fileId, tracker);
+        }
+        else
         {
-            if (!EqualityComparer<T>.Default.Equals(fileId, default(T)))
-            {
-                if (tracker != null)
-                {
-                    Cache.Insert(TRACKER + fileId, tracker, CacheTimeout);
-                }
-                else
-                {
-                    Cache.Remove(TRACKER + fileId);
-                }
-            }
+            SetTracker(fileId, null);
         }
     }
 
-
-
-    public class FileTracker
+    public List<Guid> GetEditingBy<T>(T fileId)
     {
+        var tracker = GetTracker(fileId);
 
-        internal Dictionary<Guid, TrackInfo> EditingBy { get; private set; }
+        return tracker != null && IsEditing(fileId) ? tracker.EditingBy.Values.Select(i => i.UserId).Distinct().ToList() : new List<Guid>();
+    }
 
-        internal FileTracker(Guid tabId, Guid userId, bool newScheme, bool editingAlone)
+    private FileTracker GetTracker<T>(T fileId)
+    {
+        if (!EqualityComparer<T>.Default.Equals(fileId, default(T)))
         {
-            EditingBy = new Dictionary<Guid, TrackInfo> { { tabId, new TrackInfo(userId, newScheme, editingAlone) } };
+            return _cache.Get<FileTracker>(Tracker + fileId);
         }
 
+        return null;
+    }
 
-        internal class TrackInfo
+    private void SetTracker<T>(T fileId, FileTracker tracker)
+    {
+        if (!EqualityComparer<T>.Default.Equals(fileId, default(T)))
         {
-            public DateTime CheckRightTime;
-
-            public DateTime TrackTime;
-
-            public Guid UserId;
-
-            public bool NewScheme;
-
-            public bool EditingAlone;
-
-            public TrackInfo()
+            if (tracker != null)
             {
+                _cache.Insert(Tracker + fileId, tracker, CacheTimeout);
             }
-
-            public TrackInfo(Guid userId, bool newScheme, bool editingAlone)
+            else
             {
-                CheckRightTime = DateTime.UtcNow;
-                TrackTime = DateTime.UtcNow;
-                NewScheme = newScheme;
-                UserId = userId;
-                EditingAlone = editingAlone;
+                _cache.Remove(Tracker + fileId);
             }
+        }
+    }
+}
+
+public class FileTracker
+{
+
+    internal Dictionary<Guid, TrackInfo> EditingBy { get; private set; }
+
+    internal FileTracker(Guid tabId, Guid userId, bool newScheme, bool editingAlone)
+    {
+        EditingBy = new Dictionary<Guid, TrackInfo> { { tabId, new TrackInfo(userId, newScheme, editingAlone) } };
+    }
+
+
+    internal class TrackInfo
+    {
+        public DateTime CheckRightTime { get; set; }
+        public DateTime TrackTime { get; set; }
+        public Guid UserId { get; set; }
+        public bool NewScheme { get; set; }
+        public bool EditingAlone { get; set; }
+
+        public TrackInfo() { }
+
+        public TrackInfo(Guid userId, bool newScheme, bool editingAlone)
+        {
+            CheckRightTime = DateTime.UtcNow;
+            TrackTime = DateTime.UtcNow;
+            NewScheme = newScheme;
+            UserId = userId;
+            EditingAlone = editingAlone;
         }
     }
 }

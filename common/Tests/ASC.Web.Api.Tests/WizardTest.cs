@@ -1,13 +1,15 @@
 using System;
+using System.Text.Json;
+
 using ASC.Core;
 using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.EF.Model;
-using System.Text.Json;
 using ASC.Core.Data;
 using ASC.Core.Users;
 using ASC.Web.Api.Models;
 using ASC.Web.Api.Tests.Infrastructure;
 using ASC.Web.Core.Utility.Settings;
+
 using NUnit.Framework;
 
 namespace ASC.Web.Api.Tests
@@ -16,7 +18,7 @@ namespace ASC.Web.Api.Tests
     public class WizardData
     {
         public bool Completed { get; set; }
-    } 
+    }
 
     [TestFixture]
     class WizardTest : BaseApiTests
@@ -41,11 +43,11 @@ namespace ASC.Web.Api.Tests
         public void WizardDataTest(int tenant, Guid userId, string data)
         {
             var user = UserManager.GetUsers(Guid.Parse("99223c7b-e3c9-11eb-9063-982cbc0ea1e5"));
-            SecurityContext.AuthenticateMe(user.ID);
+            SecurityContext.AuthenticateMe(user.Id);
             var WebStudioData = new DbWebstudioSettings
             {
                 TenantId = tenant,
-                Id = user.ID,
+                Id = user.Id,
                 UserId = userId,
                 Data = data
             };
@@ -82,5 +84,5 @@ namespace ASC.Web.Api.Tests
         }
 
     }
-    
+
 }

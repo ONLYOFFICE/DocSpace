@@ -109,16 +109,16 @@ public abstract class BaseStorage : IDataStore
         {
             var expireString = expire.TotalMinutes.ToString(CultureInfo.InvariantCulture);
 
-            int currentTenantId;
-            var currentTenant = TenantManager.GetCurrentTenant(false);
-            if (currentTenant != null)
-            {
-                currentTenantId = currentTenant.TenantId;
-            }
-            else if (!TenantPath.TryGetTenant(Tenant, out currentTenantId))
-            {
-                currentTenantId = 0;
-            }
+                int currentTenantId;
+                var currentTenant = TenantManager.GetCurrentTenant(false);
+                if (currentTenant != null)
+                {
+                    currentTenantId = currentTenant.Id;
+                }
+                else if (!TenantPath.TryGetTenant(Tenant, out currentTenantId))
+                {
+                    currentTenantId = 0;
+                }
 
             var auth = TemailValidationKeyProvider.GetEmailKey(currentTenantId, path.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar) + "." + headerAttr + "." + expireString);
             query = $"{(path.IndexOf('?') >= 0 ? "&" : "?")}{Constants.QueryExpire}={expireString}&{Constants.QueryAuth}={auth}";

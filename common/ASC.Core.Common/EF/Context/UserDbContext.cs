@@ -1,56 +1,50 @@
-﻿namespace ASC.Core.Common.EF
+﻿namespace ASC.Core.Common.EF;
+
+public class MySqlUserDbContext : UserDbContext { }
+public class PostgreSqlUserDbContext : UserDbContext { }
+
+public class UserDbContext : BaseDbContext
 {
-    public class MySqlUserDbContext : UserDbContext { }
+    public DbSet<User> Users { get; set; }
+    public DbSet<UserSecurity> UserSecurity { get; set; }
+    public DbSet<UserPhoto> Photos { get; set; }
+    public DbSet<Acl> Acl { get; set; }
+    public DbSet<DbGroup> Groups { get; set; }
+    public DbSet<UserGroup> UserGroups { get; set; }
+    public DbSet<Subscription> Subscriptions { get; set; }
+    public DbSet<DbSubscriptionMethod> SubscriptionMethods { get; set; }
 
-
-    public class PostgreSqlUserDbContext : UserDbContext
+    protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
     {
-
-    }
-
-    public class UserDbContext : BaseDbContext
-    {
-        public DbSet<User> Users { get; set; }
-        public DbSet<UserSecurity> UserSecurity { get; set; }
-        public DbSet<UserPhoto> Photos { get; set; }
-        public DbSet<Acl> Acl { get; set; }
-        public DbSet<DbGroup> Groups { get; set; }
-        public DbSet<UserGroup> UserGroups { get; set; }
-        public DbSet<Subscription> Subscriptions { get; set; }
-        public DbSet<DbSubscriptionMethod> SubscriptionMethods { get; set; }
-
-        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
+        get
         {
-            get
-            {
-                return new Dictionary<Provider, Func<BaseDbContext>>()
+            return new Dictionary<Provider, Func<BaseDbContext>>()
                 {
                     { Provider.MySql, () => new MySqlUserDbContext() } ,
                     { Provider.PostgreSql, () => new PostgreSqlUserDbContext() } ,
                 };
-            }
-        }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            ModelBuilderWrapper
-            .From(modelBuilder, Provider)
-            .AddSubscriptionMethod()
-            .AddUser()
-            .AddAcl()
-            .AddUserSecurity()
-            .AddUserPhoto()
-            .AddDbGroup()
-            .AddUserGroup()
-            .AddSubscription();
         }
     }
 
-    public static class UserDbExtension
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        public static DIHelper AddUserDbContextService(this DIHelper services)
-        {
-            return services.AddDbContextManagerService<UserDbContext>();
-        }
+        ModelBuilderWrapper
+        .From(modelBuilder, Provider)
+        .AddSubscriptionMethod()
+        .AddUser()
+        .AddAcl()
+        .AddUserSecurity()
+        .AddUserPhoto()
+        .AddDbGroup()
+        .AddUserGroup()
+        .AddSubscription();
+    }
+}
+
+public static class UserDbExtension
+{
+    public static DIHelper AddUserDbContextService(this DIHelper services)
+    {
+        return services.AddDbContextManagerService<UserDbContext>();
     }
 }

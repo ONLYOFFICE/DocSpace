@@ -127,7 +127,7 @@ public class SearchSettingsHelper
         settings.Data = JsonConvert.SerializeObject(items);
         _settingsManager.Save(settings);
 
-        var action = new ReIndexAction() { Tenant = _tenantManager.GetCurrentTenant().TenantId };
+        var action = new ReIndexAction() { Tenant = _tenantManager.GetCurrentTenant().Id };
         action.Names.AddRange(toReIndex.Select(r => r.ID).ToList());
 
         _cacheNotify.Publish(action, CacheNotifyAction.Any);
@@ -167,7 +167,7 @@ public class SearchSettingsHelper
 
     public bool CanSearchByContent(Type t)
     {
-        var tenantId = _tenantManager.GetCurrentTenant().TenantId;
+        var tenantId = _tenantManager.GetCurrentTenant().Id;
         if (!CanIndexByContent(t, tenantId))
         {
             return false;

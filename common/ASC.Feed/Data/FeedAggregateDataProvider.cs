@@ -190,7 +190,7 @@ public class FeedAggregateDataProvider
     private List<FeedResultItem> GetFeedsInternal(FeedApiFilter filter)
     {
         var q = FeedDbContext.FeedAggregates
-            .Where(r => r.Tenant == _tenantManager.GetCurrentTenant().TenantId)
+            .Where(r => r.Tenant == _tenantManager.GetCurrentTenant().Id)
             .Where(r => r.ModifiedBy != _authContext.CurrentAccount.ID)
             .Join(FeedDbContext.FeedUsers, a => a.Id, b => b.FeedId, (aggregates, users) => new { aggregates, users })
             .Where(r => r.users.UserId == _authContext.CurrentAccount.ID)
@@ -242,7 +242,7 @@ public class FeedAggregateDataProvider
     public int GetNewFeedsCount(DateTime lastReadedTime, AuthContext authContext, TenantManager tenantManager)
     {
         var count = FeedDbContext.FeedAggregates
-            .Where(r => r.Tenant == tenantManager.GetCurrentTenant().TenantId)
+            .Where(r => r.Tenant == tenantManager.GetCurrentTenant().Id)
             .Where(r => r.ModifiedBy != authContext.CurrentAccount.ID)
             .Join(FeedDbContext.FeedUsers, r => r.Id, u => u.FeedId, (agg, user) => new { agg, user })
             .Where(r => r.user.UserId == authContext.CurrentAccount.ID);
@@ -302,6 +302,8 @@ public class FeedResultItem : IMapFrom<FeedAggregate>
     public DateTime CreatedDate { get; private set; }
     public DateTime ModifiedDate { get; private set; }
     public DateTime AggregatedDate { get; private set; }
+
+    public FeedResultItem() { }
 
     public FeedResultItem(
         string json,

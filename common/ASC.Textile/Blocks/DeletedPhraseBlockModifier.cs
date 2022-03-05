@@ -1,10 +1,9 @@
-namespace Textile.Blocks
+namespace Textile.Blocks;
+
+public class DeletedPhraseBlockModifier : PhraseBlockModifier
 {
-    public class DeletedPhraseBlockModifier : PhraseBlockModifier
+    public override string ModifyLine(string line)
     {
-        public override string ModifyLine(string line)
-        {
-            return PhraseModifierFormat(line, @"\-", "del");
-        }
+        return PhraseModifierFormat(line, @"\-", "del");
     }
 }

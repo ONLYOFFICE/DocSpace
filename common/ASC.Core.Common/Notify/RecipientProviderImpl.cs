@@ -25,129 +25,168 @@
 
 using Constants = ASC.Core.Users.Constants;
 
-namespace ASC.Core.Notify
+namespace ASC.Core.Notify;
+
+public class RecipientProviderImpl : IRecipientProvider
 {
-    public class RecipientProviderImpl : IRecipientProvider
+    private readonly UserManager _userManager;
+
+    public RecipientProviderImpl(UserManager userManager)
     {
-        private UserManager UserManager { get; }
+        _userManager = userManager;
+    }
 
-        public RecipientProviderImpl(UserManager userManager) =>
-            UserManager = userManager;
-        public virtual IRecipient GetRecipient(string id)
+    public virtual IRecipient GetRecipient(string id)
+    {
+        if (TryParseGuid(id, out var recID))
         {
-            if (TryParseGuid(id, out var recID))
+            var user = _userManager.GetUsers(recID);
+            if (user.Id != Constants.LostUser.Id)
             {
-                var user = UserManager.GetUsers(recID);
-                if (user.ID != Constants.LostUser.ID) return new DirectRecipient(user.ID.ToString(), user.ToString());
-
-                var group = UserManager.GetGroupInfo(recID);
-                if (group.ID != Constants.LostGroupInfo.ID) return new RecipientsGroup(group.ID.ToString(), group.Name);
+                return new DirectRecipient(user.Id.ToString(), user.ToString());
             }
-            return null;
+
+            var group = _userManager.GetGroupInfo(recID);
+            if (group.ID != Constants.LostGroupInfo.ID)
+            {
+                return new RecipientsGroup(group.ID.ToString(), group.Name);
+            }
         }
 
-        public virtual IRecipient[] GetGroupEntries(IRecipientsGroup group)
-        {
-            if (group == null) throw new ArgumentNullException(nameof(group));
+        return null;
+    }
 
-            var result = new List<IRecipient>();
-            if (TryParseGuid(group.ID, out var groupID))
-            {
-                var coreGroup = UserManager.GetGroupInfo(groupID);
-                if (coreGroup.ID != Constants.LostGroupInfo.ID)
-                {
-                    var users = UserManager.GetUsersByGroup(coreGroup.ID);
-                    Array.ForEach(users, u => result.Add(new DirectRecipient(u.ID.ToString(), u.ToString())));
-                }
-            }
-            return result.ToArray();
+    public virtual IRecipient[] GetGroupEntries(IRecipientsGroup group)
+    {
+        if (group == null)
+        {
+            throw new ArgumentNullException(nameof(group));
         }
 
-        public virtual IRecipientsGroup[] GetGroups(IRecipient recipient)
+        var result = new List<IRecipient>();
+        if (TryParseGuid(group.ID, out var groupID))
         {
-            if (recipient == null) throw new ArgumentNullException(nameof(recipient));
-
-            var result = new List<IRecipientsGroup>();
-            if (TryParseGuid(recipient.ID, out var recID))
+            var coreGroup = _userManager.GetGroupInfo(groupID);
+            if (coreGroup.ID != Constants.LostGroupInfo.ID)
             {
-                if (recipient is IRecipientsGroup)
-                {
-                    var group = UserManager.GetGroupInfo(recID);
-                    while (group != null && group.Parent != null)
-                    {
-                        result.Add(new RecipientsGroup(group.Parent.ID.ToString(), group.Parent.Name));
-                        group = group.Parent;
-                    }
-                }
-                else if (recipient is IDirectRecipient)
-                {
-                    foreach (var group in UserManager.GetUserGroups(recID, IncludeType.Distinct))
-                    {
-                        result.Add(new RecipientsGroup(group.ID.ToString(), group.Name));
-                    }
-                }
+                var users = _userManager.GetUsersByGroup(coreGroup.ID);
+                Array.ForEach(users, u => result.Add(new DirectRecipient(u.Id.ToString(), u.ToString())));
             }
-            return result.ToArray();
         }
 
-        public virtual string[] GetRecipientAddresses(IDirectRecipient recipient, string senderName)
-        {
-            if (recipient == null) throw new ArgumentNullException(nameof(recipient));
+        return result.ToArray();
+    }
 
-            if (TryParseGuid(recipient.ID, out var userID))
-            {
-                var user = UserManager.GetUsers(userID);
-                if (user.ID != Constants.LostUser.ID)
-                {
-                    if (senderName == ASC.Core.Configuration.Constants.NotifyEMailSenderSysName) return new[] { user.Email };
-                    if (senderName == ASC.Core.Configuration.Constants.NotifyMessengerSenderSysName) return new[] { user.UserName };
-                    if (senderName == ASC.Core.Configuration.Constants.NotifyPushSenderSysName) return new[] { user.UserName };
-                    if (senderName == ASC.Core.Configuration.Constants.NotifyTelegramSenderSysName) return new[] { user.ID.ToString() };
-                }
-            }
-            return Array.Empty<string>();
+    public virtual IRecipientsGroup[] GetGroups(IRecipient recipient)
+    {
+        if (recipient == null)
+        {
+            throw new ArgumentNullException(nameof(recipient));
         }
 
-        /// <summary>
-        /// Check if user with this email is activated
-        /// </summary>
-        /// <param name="recipient"></param>
-        /// <returns></returns>
-        public IDirectRecipient FilterRecipientAddresses(IDirectRecipient recipient)
+        var result = new List<IRecipientsGroup>();
+        if (TryParseGuid(recipient.ID, out var recID))
         {
-            //Check activation
-            if (recipient.CheckActivation)
+            if (recipient is IRecipientsGroup)
             {
-                //It's direct email
-                if (recipient.Addresses != null && recipient.Addresses.Length > 0)
+                var group = _userManager.GetGroupInfo(recID);
+                while (group != null && group.Parent != null)
                 {
-                    //Filtering only missing users and users who activated already
-                    var filteredAddresses = from address in recipient.Addresses
-                                            let user = UserManager.GetUserByEmail(address)
-                                            where user.ID == Constants.LostUser.ID || (user.IsActive && (user.Status & EmployeeStatus.Default) == user.Status)
-                                            select address;
-
-                    return new DirectRecipient(recipient.ID, recipient.Name, filteredAddresses.ToArray(), false);
+                    result.Add(new RecipientsGroup(group.Parent.ID.ToString(), group.Parent.Name));
+                    group = group.Parent;
                 }
             }
-            return recipient;
-        }
-
-
-        private bool TryParseGuid(string id, out Guid guid)
-        {
-            guid = Guid.Empty;
-            if (!string.IsNullOrEmpty(id))
+            else if (recipient is IDirectRecipient)
             {
-                try
+                foreach (var group in _userManager.GetUserGroups(recID, IncludeType.Distinct))
                 {
-                    guid = new Guid(id);
-                    return true;
+                    result.Add(new RecipientsGroup(group.ID.ToString(), group.Name));
                 }
-                catch (FormatException) { }
-                catch (OverflowException) { }
             }
-            return false;
         }
+
+        return result.ToArray();
+    }
+
+    public virtual string[] GetRecipientAddresses(IDirectRecipient recipient, string senderName)
+    {
+        if (recipient == null)
+        {
+            throw new ArgumentNullException(nameof(recipient));
+        }
+
+        if (TryParseGuid(recipient.ID, out var userID))
+        {
+            var user = _userManager.GetUsers(userID);
+            if (user.Id != Constants.LostUser.Id)
+            {
+                if (senderName == Configuration.Constants.NotifyEMailSenderSysName)
+                {
+                    return new[] { user.Email };
+                }
+
+                if (senderName == Configuration.Constants.NotifyMessengerSenderSysName)
+                {
+                    return new[] { user.UserName };
+                }
+
+                if (senderName == Configuration.Constants.NotifyPushSenderSysName)
+                {
+                    return new[] { user.UserName };
+                }
+
+                if (senderName == Configuration.Constants.NotifyTelegramSenderSysName)
+                {
+                    return new[] { user.Id.ToString() };
+                }
+            }
+        }
+
+        return Array.Empty<string>();
+    }
+
+    /// <summary>
+    /// Check if user with this email is activated
+    /// </summary>
+    /// <param name="recipient"></param>
+    /// <returns></returns>
+    public IDirectRecipient FilterRecipientAddresses(IDirectRecipient recipient)
+    {
+        //Check activation
+        if (recipient.CheckActivation)
+        {
+            //It's direct email
+            if (recipient.Addresses != null && recipient.Addresses.Length > 0)
+            {
+                //Filtering only missing users and users who activated already
+                var filteredAddresses = from address in recipient.Addresses
+                                        let user = _userManager.GetUserByEmail(address)
+                                        where user.Id == Constants.LostUser.Id || (user.IsActive && (user.Status & EmployeeStatus.Default) == user.Status)
+                                        select address;
+
+                return new DirectRecipient(recipient.ID, recipient.Name, filteredAddresses.ToArray(), false);
+            }
+        }
+
+        return recipient;
+    }
+
+
+    private bool TryParseGuid(string id, out Guid guid)
+    {
+        guid = Guid.Empty;
+        if (!string.IsNullOrEmpty(id))
+        {
+            try
+            {
+                guid = new Guid(id);
+
+                return true;
+            }
+            catch (FormatException) { }
+            catch (OverflowException) { }
+        }
+
+        return false;
     }
 }

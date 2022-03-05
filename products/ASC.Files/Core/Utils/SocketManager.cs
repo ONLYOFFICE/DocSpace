@@ -23,87 +23,87 @@
  *
 */
 
-namespace ASC.Web.Files.Utils
+namespace ASC.Web.Files.Utils;
+
+[Scope]
+public class SocketManager
 {
-    [Scope]
-    public class SocketManager
+    private readonly SignalrServiceClient _signalrServiceClient;
+    private readonly FileWrapperHelper _filesWrapperHelper;
+    private readonly TenantManager _tenantManager;
+    public IDaoFactory DaoFactory { get; }
+
+    public SocketManager(
+        IOptionsSnapshot<SignalrServiceClient> optionsSnapshot,
+        FileWrapperHelper filesWrapperHelper,
+        TenantManager tenantManager,
+        IDaoFactory daoFactory
+        )
     {
-        private readonly SignalrServiceClient _signalrServiceClient;
-        private FileWrapperHelper FilesWrapperHelper { get; }
-        private TenantManager TenantManager { get; }
-        public IDaoFactory DaoFactory { get; }
-
-        public SocketManager(
-            IOptionsSnapshot<SignalrServiceClient> optionsSnapshot,
-            FileWrapperHelper filesWrapperHelper,
-            TenantManager tenantManager,
-            IDaoFactory daoFactory
-            )
-        {
-            _signalrServiceClient = optionsSnapshot.Get("files");
-            FilesWrapperHelper = filesWrapperHelper;
-            TenantManager = tenantManager;
-            DaoFactory = daoFactory;
-        }
-
-        public void StartEdit<T>(T fileId)
-        {
-            var room = GetFileRoom(fileId);
-            _signalrServiceClient.StartEdit(fileId, room);
-        }
-
-        public async Task StopEditAsync<T>(T fileId)
-        {
-            var room = GetFileRoom(fileId);
-            var file = await DaoFactory.GetFileDao<T>().GetFileStableAsync(fileId);
-
-            var serializerSettings = new JsonSerializerOptions()
-            {
-                WriteIndented = false,
-                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            };
-            serializerSettings.Converters.Add(new ApiDateTimeConverter());
-            serializerSettings.Converters.Add(new FileEntryWrapperConverter());
-            var data = JsonSerializer.Serialize(await FilesWrapperHelper.GetAsync(file), serializerSettings);
-
-            _signalrServiceClient.StopEdit(fileId, room, data);
-        }
-
-        public async Task CreateFileAsync<T>(File<T> file)
-        {
-            var room = GetFolderRoom(file.FolderID);
-            var serializerSettings = new JsonSerializerOptions()
-            {
-                WriteIndented = false,
-                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            };
-            serializerSettings.Converters.Add(new ApiDateTimeConverter());
-            serializerSettings.Converters.Add(new FileEntryWrapperConverter());
-            var data = JsonSerializer.Serialize(await FilesWrapperHelper.GetAsync(file), serializerSettings);
-
-            _signalrServiceClient.CreateFile(file.ID, room, data);
+        _signalrServiceClient = optionsSnapshot.Get("files");
+        _filesWrapperHelper = filesWrapperHelper;
+        _tenantManager = tenantManager;
+        DaoFactory = daoFactory;
     }
 
-        public void DeleteFile<T>(File<T> file)
+    public void StartEdit<T>(T fileId)
+    {
+        var room = GetFileRoom(fileId);
+        _signalrServiceClient.StartEdit(fileId, room);
+    }
+
+    public async Task StopEditAsync<T>(T fileId)
+    {
+        var room = GetFileRoom(fileId);
+        var file = await DaoFactory.GetFileDao<T>().GetFileStableAsync(fileId);
+
+        var serializerSettings = new JsonSerializerOptions()
         {
-            var room = GetFolderRoom(file.FolderID);
-            _signalrServiceClient.DeleteFile(file.ID, room);
-        }
+            WriteIndented = false,
+            DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
 
-        private string GetFileRoom<T>(T fileId)
+        serializerSettings.Converters.Add(new ApiDateTimeConverter());
+        serializerSettings.Converters.Add(new FileEntryWrapperConverter());
+        var data = JsonSerializer.Serialize(await _filesWrapperHelper.GetAsync(file), serializerSettings);
+
+        _signalrServiceClient.StopEdit(fileId, room, data);
+    }
+
+    public async Task CreateFileAsync<T>(File<T> file)
+    {
+        var room = GetFolderRoom(file.FolderID);
+        var serializerSettings = new JsonSerializerOptions()
         {
-            var tenantId = TenantManager.GetCurrentTenant().TenantId;
+            WriteIndented = false,
+            DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
+        serializerSettings.Converters.Add(new ApiDateTimeConverter());
+        serializerSettings.Converters.Add(new FileEntryWrapperConverter());
+        var data = JsonSerializer.Serialize(await _filesWrapperHelper.GetAsync(file), serializerSettings);
 
-            return $"{tenantId}-FILE-{fileId}";
-        }
+        _signalrServiceClient.CreateFile(file.ID, room, data);
+    }
 
-        private string GetFolderRoom<T>(T folderId)
-        {
-            var tenantId = TenantManager.GetCurrentTenant().TenantId;
+    public void DeleteFile<T>(File<T> file)
+    {
+        var room = GetFolderRoom(file.FolderID);
+        _signalrServiceClient.DeleteFile(file.ID, room);
+    }
 
-            return $"{tenantId}-DIR-{folderId}";
-        }
+    private string GetFileRoom<T>(T fileId)
+    {
+        var tenantId = _tenantManager.GetCurrentTenant().Id;
+
+        return $"{tenantId}-FILE-{fileId}";
+    }
+
+    private string GetFolderRoom<T>(T folderId)
+    {
+        var tenantId = _tenantManager.GetCurrentTenant().Id;
+
+        return $"{tenantId}-DIR-{folderId}";
     }
 }

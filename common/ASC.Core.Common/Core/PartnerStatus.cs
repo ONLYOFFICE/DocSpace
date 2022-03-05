@@ -24,13 +24,12 @@
 */
 
 
-namespace ASC.Core
+namespace ASC.Core;
+
+public enum PartnerStatus
 {
-    public enum PartnerStatus
-    {
-        Created,
-        Approved,
-        Rejected,
-        Blocked
-    }
+    Created,
+    Approved,
+    Rejected,
+    Blocked
 }

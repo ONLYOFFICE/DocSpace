@@ -54,7 +54,7 @@ public class FilesModule : FeedModule
             }
 
             var owner = (Guid)feed.Target;
-            var groupUsers = _userManager.GetUsersByGroup(owner).Select(x => x.ID).ToList();
+            var groupUsers = _userManager.GetUsersByGroup(owner).Select(x => x.Id).ToList();
             if (groupUsers.Count == 0)
             {
                 groupUsers.Add(owner);
@@ -182,7 +182,7 @@ public class FilesModule : FeedModule
         }
 
         var owner = (Guid)target;
-        var groupUsers = _userManager.GetUsersByGroup(owner).Select(x => x.ID).ToList();
+        var groupUsers = _userManager.GetUsersByGroup(owner).Select(x => x.Id).ToList();
         if (groupUsers.Count == 0)
         {
             groupUsers.Add(owner);

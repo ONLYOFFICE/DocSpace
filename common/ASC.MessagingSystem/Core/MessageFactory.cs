@@ -53,7 +53,7 @@ public class MessageFactory
                 Ip = request != null ? request.Headers[ForwardedHeader].ToString() ?? request.GetUserHostAddress() : null,
                 Initiator = initiator,
                 Date = DateTime.UtcNow,
-                TenantId = _tenantManager.GetCurrentTenant().TenantId,
+                TenantId = _tenantManager.GetCurrentTenant().Id,
                 UserId = _authContext.CurrentAccount.ID,
                 Page = request?.GetTypedHeaders().Referer?.ToString(),
                 Action = action,
@@ -77,7 +77,7 @@ public class MessageFactory
             var message = new EventMessage
             {
                 Date = DateTime.UtcNow,
-                TenantId = userData == null ? _tenantManager.GetCurrentTenant().TenantId : userData.TenantId,
+                TenantId = userData == null ? _tenantManager.GetCurrentTenant().Id : userData.TenantId,
                 UserId = userData == null ? _authContext.CurrentAccount.ID : userData.UserId,
                 Action = action,
                 Description = description,
@@ -114,7 +114,7 @@ public class MessageFactory
             {
                 Initiator = initiator,
                 Date = DateTime.UtcNow,
-                TenantId = _tenantManager.GetCurrentTenant().TenantId,
+                TenantId = _tenantManager.GetCurrentTenant().Id,
                 Action = action,
                 Description = description,
                 Target = target

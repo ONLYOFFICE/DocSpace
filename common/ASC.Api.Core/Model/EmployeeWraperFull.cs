@@ -188,7 +188,7 @@ public class EmployeeWraperFullHelper : EmployeeWraperHelper
 
         if (_context.Check("groups") || _context.Check("department"))
         {
-            var groups = UserManager.GetUserGroups(userInfo.ID)
+            var groups = UserManager.GetUserGroups(userInfo.Id)
                 .Select(x => new GroupWrapperSummary(x, UserManager))
                 .ToList();
 
@@ -207,17 +207,17 @@ public class EmployeeWraperFullHelper : EmployeeWraperHelper
 
         if (_context.Check("avatarMax"))
         {
-            result.AvatarMax = UserPhotoManager.GetMaxPhotoURL(userInfo.ID, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
+            result.AvatarMax = UserPhotoManager.GetMaxPhotoURL(userInfo.Id, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
         }
 
         if (_context.Check("avatarMedium"))
         {
-            result.AvatarMedium = UserPhotoManager.GetMediumPhotoURL(userInfo.ID, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
+            result.AvatarMedium = UserPhotoManager.GetMediumPhotoURL(userInfo.Id, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
         }
 
         if (_context.Check("avatar"))
         {
-            result.Avatar = UserPhotoManager.GetBigPhotoURL(userInfo.ID, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
+            result.Avatar = UserPhotoManager.GetBigPhotoURL(userInfo.Id, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
         }
 
         if (_context.Check("listAdminModules"))

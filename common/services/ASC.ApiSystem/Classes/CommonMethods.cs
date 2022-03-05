@@ -100,7 +100,7 @@ namespace ASC.ApiSystem.Controllers
         {
             return new
             {
-                created = t.CreatedDateTime,
+                created = t.CreationDateTime,
                 domain = t.GetTenantDomain(CoreSettings),
                 hostedRegion = t.HostedRegion,
                 industry = t.Industry,
@@ -109,9 +109,9 @@ namespace ASC.ApiSystem.Controllers
                 ownerId = t.OwnerId,
                 partnerId = t.PartnerId,
                 paymentId = t.PaymentId,
-                portalName = t.TenantAlias,
+                portalName = t.Alias,
                 status = t.Status.ToString(),
-                tenantId = t.TenantId,
+                tenantId = t.Id,
                 timeZoneName = TimeZoneConverter.GetTimeZone(t.TimeZone).DisplayName,
             };
         }
@@ -124,7 +124,7 @@ namespace ASC.ApiSystem.Controllers
 
         public bool SendCongratulations(string requestUriScheme, Tenant tenant, bool skipWelcome, out string url)
         {
-            var validationKey = EmailValidationKeyProvider.GetEmailKey(tenant.TenantId, tenant.OwnerId.ToString() + ConfirmType.Auth);
+            var validationKey = EmailValidationKeyProvider.GetEmailKey(tenant.Id, tenant.OwnerId.ToString() + ConfirmType.Auth);
 
             url = string.Format("{0}{1}{2}{3}{4}?userid={5}&key={6}",
                                 requestUriScheme,
