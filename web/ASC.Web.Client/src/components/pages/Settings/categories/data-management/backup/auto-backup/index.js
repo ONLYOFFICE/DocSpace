@@ -7,7 +7,6 @@ import moment from "moment";
 import Button from "@appserver/components/button";
 import {
   deleteBackupSchedule,
-  getBackupProgress,
   getBackupSchedule,
   createBackupSchedule,
 } from "@appserver/common/api/portal";
@@ -52,7 +51,6 @@ class AutomaticBackup extends React.PureComponent {
       isChangedInStorage: false,
       isReset: false,
       isSuccessSave: false,
-      downloadingProgress: 100,
     };
 
     this.periodsObject = [
@@ -84,22 +82,22 @@ class AutomaticBackup extends React.PureComponent {
   }
 
   setBasicSettings = async () => {
-    const { downloadingProgress } = this.state;
     const {
       setDefaultOptions,
       t,
       setThirdPartyStorage,
       setBackupSchedule,
+      getProgress,
     } = this.props;
     try {
+      getProgress(t);
+
       const [
         commonThirdPartyList,
-        backupProgress,
         backupSchedule,
         backupStorage,
       ] = await Promise.all([
         SelectFolderDialog.getCommonThirdPartyList(),
-        getBackupProgress(),
         getBackupSchedule(),
         getBackupStorage(),
       ]);
@@ -109,18 +107,6 @@ class AutomaticBackup extends React.PureComponent {
       this.commonThirdPartyList = commonThirdPartyList;
 
       setDefaultOptions(t, this.periodsObject, this.weekdaysLabelArray);
-
-      if (backupProgress && !backupProgress.error) {
-        const { progress } = backupProgress;
-        this._isMounted && downloadingProgress !== progress;
-        this.setState({
-          downloadingProgress: progress,
-        });
-
-        if (progress !== 100 && !this.timerId) {
-          this.timerId = setInterval(() => this.getProgress(), 1000);
-        }
-      }
 
       this.setState({
         isEnable: !!backupSchedule,
@@ -174,59 +160,10 @@ class AutomaticBackup extends React.PureComponent {
   }
 
   componentWillUnmount() {
+    const { clearProgressInterval } = this.props;
     this._isMounted = false;
-    clearInterval(this.timerId);
+    clearProgressInterval();
   }
-
-  getProgress = () => {
-    const { t } = this.props;
-    const { downloadingProgress } = this.state;
-    getBackupProgress()
-      .then((res) => {
-        if (res) {
-          const { error, progress } = res;
-          if (error.length > 0 && progress !== 100) {
-            clearInterval(this.timerId);
-            this.timerId && toastr.error(`${error}`);
-            this.timerId = null;
-            this.setState({
-              downloadingProgress: 100,
-            });
-            return;
-          }
-          this._isMounted &&
-            downloadingProgress !== progress &&
-            this.setState({
-              downloadingProgress: progress,
-            });
-
-          if (progress === 100) {
-            clearInterval(this.timerId);
-            this.timerId && toastr.success(`${t("BackupCreatedSuccess")}`);
-            this.timerId = null;
-          }
-        } else {
-          clearInterval(this.timerId);
-          this.timerId && toastr.success(`${t("BackupCreatedSuccess")}`);
-          this.timerId = null;
-
-          this._isMounted &&
-            this.setState({
-              downloadingProgress: 100,
-            });
-        }
-      })
-      .catch((err) => {
-        clearInterval(this.timerId);
-        this.timerId && toastr.error(err);
-        this.timerId = null;
-
-        this._isMounted &&
-          this.setState({
-            downloadingProgress: 100,
-          });
-      });
-  };
 
   getTime = () => {
     for (let item = 0; item < 24; item++) {
@@ -561,12 +498,11 @@ class AutomaticBackup extends React.PureComponent {
       isCheckedThirdPartyStorage,
       isCheckedThirdParty,
       isCheckedDocuments,
-      backupSchedule,
+      downloadingProgress,
     } = this.props;
 
     const {
       isInitialLoading,
-      downloadingProgress,
       isEnable,
       isReset,
       isLoadingData,
@@ -701,15 +637,17 @@ class AutomaticBackup extends React.PureComponent {
             />
           </div>
         )}
-        {downloadingProgress > 0 && downloadingProgress !== 100 && (
-          <FloatingButton
-            className="layout-progress-bar"
-            icon="file"
-            alert={false}
-            percent={downloadingProgress}
-            onClick={this.onClickFloatingButton}
-          />
-        )}
+        {isMobileOnly &&
+          downloadingProgress > 0 &&
+          downloadingProgress !== 100 && (
+            <FloatingButton
+              className="layout-progress-bar"
+              icon="file"
+              alert={false}
+              percent={downloadingProgress}
+              onClick={this.onClickFloatingButton}
+            />
+          )}
       </StyledAutoBackup>
     );
   }
@@ -739,12 +677,15 @@ export default inject(({ auth, backup }) => {
 
     selectedFolderId,
     selectedStorageId,
+    downloadingProgress,
+    clearProgressInterval,
+    getProgress,
   } = backup;
   const isCheckedDocuments = selectedStorageType === `${DocumentModuleType}`;
   const isCheckedThirdParty = selectedStorageType === `${ResourcesModuleType}`;
   const isCheckedThirdPartyStorage =
     selectedStorageType === `${StorageModuleType}`;
- 
+
   return {
     language,
     setThirdPartyStorage,
@@ -767,6 +708,9 @@ export default inject(({ auth, backup }) => {
     selectedFolderId,
     selectedStorageId,
     selectedWeekday,
+    downloadingProgress,
+    clearProgressInterval,
+    getProgress,
 
     isCheckedThirdPartyStorage,
     isCheckedThirdParty,

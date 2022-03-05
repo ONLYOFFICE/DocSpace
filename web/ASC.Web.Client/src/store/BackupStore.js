@@ -1,5 +1,11 @@
 import api from "@appserver/common/api";
+import { getBackupProgress } from "@appserver/common/api/portal";
 import { makeAutoObservable } from "mobx";
+import {
+  saveToSessionStorage,
+  getFromSessionStorage,
+} from "../components/pages/Settings/utils";
+import toastr from "../helpers/toastr";
 
 const DOCUMENT_MODULE_TYPE = 0;
 const RESOURCES_MODULE_TYPE = 1;
@@ -43,6 +49,11 @@ class BackupStore {
   thirdPartyStorage = [];
 
   preparationPortalDialogVisible = false;
+
+  downloadingProgress = 100;
+
+  temporaryLink = null;
+  timerId = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -273,7 +284,105 @@ class BackupStore {
     console.log("this.selectedStorageId", this.selectedStorageId);
   };
 
- 
+  clearSessionStorage = () => {
+    saveToSessionStorage("LocalCopyStorageType", "");
+
+    getFromSessionStorage("LocalCopyPath") &&
+      saveToSessionStorage("LocalCopyPath", "");
+
+    getFromSessionStorage("LocalCopyFolder") &&
+      saveToSessionStorage("LocalCopyFolder", "");
+
+    getFromSessionStorage("LocalCopyStorage") &&
+      saveToSessionStorage("LocalCopyStorage", "");
+
+    getFromSessionStorage("LocalCopyThirdPartyStorageType") &&
+      saveToSessionStorage("LocalCopyThirdPartyStorageType", "");
+  };
+
+  getProgress = async (t) => {
+    try {
+      const response = await getBackupProgress();
+      console.log(" this.downloadingProgress", this.downloadingProgress);
+      const { progress, link, error } = response;
+      if (!error) {
+        this.downloadingProgress = progress;
+
+        if (link && link.slice(0, 1) === "/") {
+          this.temporaryLink = link;
+        }
+
+        if (progress !== 100) {
+          this.getIntervalProgress(t);
+        } else {
+          this.clearSessionStorage();
+        }
+      }
+    } catch (e) {
+      toastr.error(`${t("BackupCreatedError")}`);
+      this.clearSessionStorage();
+    }
+  };
+  getIntervalProgress = (t) => {
+    console.log("this.timerId", this.timerId);
+    if (this.timerId) {
+      return;
+    }
+
+    this.timerId = setInterval(async () => {
+      try {
+        const response = await getBackupProgress();
+        const { progress, link, error } = response;
+        console.log("here");
+        if (error.length > 0 && progress !== 100) {
+          clearInterval(timerId);
+          this.timerId && toastr.error(`${t("BackupCreatedError")}`);
+          this.timerId = null;
+          this.clearSessionStorage();
+          this.downloadingProgress = 100;
+          return;
+        }
+
+        if (progress !== this.downloadingProgress) {
+          this.downloadingProgress = progress;
+        }
+
+        if (progress === 100) {
+          clearInterval(this.timerId);
+          this.clearSessionStorage();
+
+          if (link && link.slice(0, 1) === "/") {
+            this.temporaryLink = link;
+          }
+
+          this.timerId && toastr.success(`${t("BackupCreatedSuccess")}`);
+          this.timerId = null;
+          console.log("this.timerId success", this.timerId);
+          return;
+        }
+      } catch (e) {
+        clearInterval(this.timerId);
+        this.clearSessionStorage();
+        this.downloadingProgress = 100;
+        this.timerId && toastr.error(`${t("BackupCreatedError")}`);
+        this.timerId = null;
+      }
+    }, 1000);
+  };
+
+  clearProgressInterval = () => {
+    console.log("clearInterval", this.timerId);
+    this.timerId && clearInterval(this.timerId);
+    this.timerId = null;
+  };
+
+  setDownloadingProgress = (progress) => {
+    this.downloadingProgress = progress;
+  };
+
+  setTemporaryLink = (link) => {
+    this.temporaryLink = link;
+  };
 }
 
 export default BackupStore;

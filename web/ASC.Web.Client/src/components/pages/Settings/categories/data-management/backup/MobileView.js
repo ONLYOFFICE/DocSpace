@@ -10,18 +10,12 @@ import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import Box from "@appserver/components/box";
 import styled from "styled-components";
 import FloatingButton from "@appserver/common/components/FloatingButton";
-import {
-  enableAutoBackup,
-  enableRestore,
-  getBackupProgress,
-  getBackupSchedule,
-} from "@appserver/common/api/portal";
+import { enableAutoBackup, enableRestore } from "@appserver/common/api/portal";
 import Loader from "@appserver/components/loader";
 import { StyledBackup } from "./StyledBackup";
 
 const { proxyURL } = AppServerConfig;
 
-import toastr from "@appserver/components/toast/toastr";
 import moment from "moment";
 
 const StyledArrowRightIcon = styled(ArrowRightIcon)`
@@ -40,46 +34,32 @@ class BackupMobileView extends React.Component {
     moment.locale(this.lng);
 
     this.state = {
-      downloadingProgress: 100,
       enableRestore: false,
       enableAutoBackup: false,
       isLoading: true,
     };
-    this._isMounted = false;
-    this.timerId = null;
-    this.scheduleInformation = "";
   }
 
   componentDidMount() {
-    this._isMounted = true;
-
     this.setBasicSettings();
   }
+  componentWillUnmount() {
+    const { clearProgressInterval } = this.props;
 
+    clearProgressInterval();
+  }
   setBasicSettings = async () => {
-    const { t } = this.props;
+    const { t, getProgress } = this.props;
 
-    const requests = [enableRestore(), enableAutoBackup(), getBackupProgress()];
+    const requests = [enableRestore(), enableAutoBackup()];
 
     try {
-      const [restore, autoBackup, progress] = await Promise.allSettled(
-        requests
-      );
+      getProgress(t);
 
-      const backupProgress = progress.value;
+      const [restore, autoBackup] = await Promise.allSettled(requests);
 
       const canRestore = restore.value;
       const canAutoBackup = autoBackup.value;
-
-      if (backupProgress && !backupProgress.error) {
-        this._isMounted &&
-          this.setState({
-            downloadingProgress: backupProgress.progress,
-          });
-        if (backupProgress.progress !== 100) {
-          this.timerId = setInterval(() => this.getProgress(), 5000);
-        }
-      }
 
       this.setState({
         isLoading: false,
@@ -94,58 +74,10 @@ class BackupMobileView extends React.Component {
     }
   };
 
-  componentWillUnmount() {
-    this._isMounted = false;
-    clearInterval(this.timerId);
-  }
-
   onClickLink = (e) => {
     const { history } = this.props;
     e.preventDefault();
     history.push(e.target.pathname);
-  };
-  getProgress = () => {
-    const { t } = this.props;
-    const { downloadingProgress } = this.state;
-
-    getBackupProgress()
-      .then((response) => {
-        if (response) {
-          if (response.error.length > 0 && response.progress !== 100) {
-            clearInterval(this.timerId);
-            this.timerId && toastr.error(`${t("BackupCreatedError")}`);
-            console.log("error", response.error);
-            this.timerId = null;
-            this.setState({
-              downloadingProgress: 100,
-            });
-            return;
-          }
-          if (this._isMounted) {
-            downloadingProgress !== response.progress &&
-              this.setState({
-                downloadingProgress: response.progress,
-              });
-          }
-          if (response.progress === 100) {
-            clearInterval(this.timerId);
-
-            this.timerId && toastr.success(`${t("BackupCreatedSuccess")}`);
-            this.timerId = null;
-          }
-        }
-      })
-      .catch((err) => {
-        clearInterval(this.timerId);
-        this.timerId && toastr.error(`${t("BackupCreatedError")}`);
-        console.log("err", err);
-        this.timerId = null;
-        if (this._isMounted) {
-          this.setState({
-            downloadingProgress: 100,
-          });
-        }
-      });
   };
 
   onClickFloatingButton = () => {
@@ -155,13 +87,8 @@ class BackupMobileView extends React.Component {
     );
   };
   render() {
-    const { t, helpUrlCreatingBackup } = this.props;
-    const {
-      downloadingProgress,
-      isLoading,
-      enableRestore,
-      enableAutoBackup,
-    } = this.state;
+    const { t, helpUrlCreatingBackup, downloadingProgress } = this.props;
+    const { isLoading, enableRestore, enableAutoBackup } = this.state;
 
     return isLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
@@ -184,9 +111,6 @@ class BackupMobileView extends React.Component {
               <StyledArrowRightIcon size="small" color="#333333" />
             </div>
 
-            <Text className="schedule-information">
-              {this.scheduleInformation}
-            </Text>
             <Text className="category-item-description">
               {t("AutomaticBackupSettingsDescription")}
             </Text>
@@ -262,11 +186,15 @@ class BackupMobileView extends React.Component {
   }
 }
 
-export default inject(({ auth }) => {
+export default inject(({ auth, backup }) => {
   const { language } = auth;
   const { helpUrlCreatingBackup } = auth.settingsStore;
+  const { getProgress, downloadingProgress, clearProgressInterval } = backup;
   return {
     helpUrlCreatingBackup,
     language,
+    getProgress,
+    downloadingProgress,
+    clearProgressInterval,
   };
 })(observer(withTranslation(["Settings", "Common"])(BackupMobileView)));

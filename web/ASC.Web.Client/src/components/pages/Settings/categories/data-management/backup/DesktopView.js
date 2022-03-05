@@ -1,19 +1,12 @@
 import React from "react";
 import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
-import { AppServerConfig } from "@appserver/common/constants";
-import { combineUrl } from "@appserver/common/utils";
 import { withTranslation, Trans } from "react-i18next";
 import { inject, observer } from "mobx-react";
-import ArrowRightIcon from "../../../../../../../public/images/arrow.right.react.svg";
-import commonIconsStyles from "@appserver/components/utils/common-icons-style";
-import Box from "@appserver/components/box";
-import styled from "styled-components";
 import FloatingButton from "@appserver/common/components/FloatingButton";
 import {
   enableAutoBackup,
   enableRestore,
-  getBackupProgress,
   getBackupSchedule,
 } from "@appserver/common/api/portal";
 import Loader from "@appserver/components/loader";
@@ -37,73 +30,61 @@ class BackupDesktopView extends React.Component {
     moment.locale(this.lng);
 
     this.state = {
-      downloadingProgress: 100,
       enableRestore: false,
       enableAutoBackup: false,
-      backupSchedule: {},
       commonThirdPartyList: {},
-      isLoading: true,
+      isInitialLoading: true,
     };
-    this._isMounted = false;
-    this.timerId = null;
   }
 
   componentDidMount() {
-    this._isMounted = true;
-
     this.setBasicSettings();
   }
 
   componentWillUnmount() {
-    this._isMounted = false;
-    clearInterval(this.timerId);
+    const { clearProgressInterval } = this.props;
+    clearProgressInterval();
   }
   setBasicSettings = async () => {
-    const { setThirdPartyStorage, setBackupSchedule } = this.props;
+    const {
+      setThirdPartyStorage,
+      setBackupSchedule,
+      getProgress,
+      t,
+    } = this.props;
 
     const requests = [
       enableRestore(),
       enableAutoBackup(),
-      getBackupProgress(),
       getBackupSchedule(),
       getBackupStorage(),
       SelectFolderDialog.getCommonThirdPartyList(),
     ];
 
     try {
+      getProgress(t);
+
       const [
         canRestore,
         canAutoBackup,
-        backupProgress,
         backupSchedule,
         backupStorage,
         commonThirdPartyList,
       ] = await Promise.all(requests);
 
-      if (backupProgress && !backupProgress.error) {
-        this._isMounted &&
-          this.setState({
-            downloadingProgress: backupProgress.progress,
-          });
-        if (backupProgress.progress !== 100) {
-          this.timerId = setInterval(() => this.getProgress(), 5000);
-        }
-      }
-
       setThirdPartyStorage(backupStorage);
       setBackupSchedule(backupSchedule);
 
       this.setState({
-        isLoading: false,
+        isInitialLoading: false,
         enableRestore: canRestore,
         enableAutoBackup: canAutoBackup,
-        backupSchedule,
         commonThirdPartyList,
       });
     } catch (error) {
-      console.error(error);
+      toastr.error(error);
       this.setState({
-        isLoading: false,
+        isInitialLoading: false,
       });
     }
   };
@@ -114,76 +95,18 @@ class BackupDesktopView extends React.Component {
     history.push(e.target.pathname);
   };
 
-  setBackupProgress = () => {
-    this.setState({
-      downloadingProgress: 1,
-    });
-
-    if (!this.timerId) {
-      this.timerId = setInterval(() => this.getProgress(), 1000);
-    }
-  };
-
-  getProgress = () => {
-    const { t } = this.props;
-    const { downloadingProgress } = this.state;
-
-    getBackupProgress()
-      .then((response) => {
-        if (response) {
-          if (response.error.length > 0 && response.progress !== 100) {
-            clearInterval(this.timerId);
-            this.timerId && toastr.error(`${t("BackupCreatedError")}`);
-            console.log("error", response.error);
-            this.timerId = null;
-            this.setState({
-              downloadingProgress: 100,
-            });
-            return;
-          }
-          if (this._isMounted) {
-            downloadingProgress !== response.progress &&
-              this.setState({
-                downloadingProgress: response.progress,
-              });
-          }
-          if (response.progress === 100) {
-            clearInterval(this.timerId);
-
-            this._isMounted &&
-              this.setState({
-                ...(response.link &&
-                  response.link.slice(0, 1) === "/" && { link: response.link }),
-              });
-
-            this.timerId && toastr.success(`${t("BackupCreatedSuccess")}`);
-            this.timerId = null;
-          }
-        }
-      })
-      .catch((err) => {
-        clearInterval(this.timerId);
-        this.timerId && toastr.error(`${t("BackupCreatedError")}`);
-        console.log("err", err);
-        this.timerId = null;
-        if (this._isMounted) {
-          this.setState({
-            downloadingProgress: 100,
-          });
-        }
-      });
-  };
-
   render() {
-    const { t, history, helpUrlCreatingBackup } = this.props;
     const {
+      t,
+      history,
+      helpUrlCreatingBackup,
       downloadingProgress,
-      isLoading,
+    } = this.props;
+    const {
+      isInitialLoading,
       enableRestore,
       enableAutoBackup,
-      backupSchedule,
       commonThirdPartyList,
-      link,
     } = this.state;
 
     const renderTooltip = (helpInfo) => {
@@ -221,7 +144,7 @@ class BackupDesktopView extends React.Component {
       );
     };
 
-    return isLoading ? (
+    return isInitialLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
       <StyledBackup isDesktop={true}>
@@ -234,12 +157,7 @@ class BackupDesktopView extends React.Component {
             {t("ManualBackupDescription")}
           </Text>
 
-          <ManualBackup
-            isDesktop
-            setBackupProgress={this.setBackupProgress}
-            isCopyingLocal={downloadingProgress}
-            temporaryLink={link}
-          />
+          <ManualBackup />
         </div>
 
         {enableAutoBackup && (
@@ -252,10 +170,7 @@ class BackupDesktopView extends React.Component {
               {t("AutoBackupDescription")}
             </Text>
 
-            <AutoBackup
-              backupSchedule={backupSchedule}
-              commonThirdPartyList={commonThirdPartyList}
-            />
+            <AutoBackup commonThirdPartyList={commonThirdPartyList} />
           </div>
         )}
 
@@ -267,11 +182,7 @@ class BackupDesktopView extends React.Component {
               </Text>
               {renderTooltip(t("RestoreBackupHelp"))}
             </div>
-            <RestoreBackup
-              isDesktop
-              history={history}
-              isCopyingLocal={downloadingProgress}
-            />
+            <RestoreBackup history={history} />
           </>
         )}
 
@@ -291,12 +202,21 @@ class BackupDesktopView extends React.Component {
 export default inject(({ auth, backup }) => {
   const { language } = auth;
   const { helpUrlCreatingBackup } = auth.settingsStore;
-  const { setThirdPartyStorage, setBackupSchedule } = backup;
+  const {
+    setThirdPartyStorage,
+    setBackupSchedule,
+    getProgress,
+    clearProgressInterval,
+    downloadingProgress,
+  } = backup;
 
   return {
     helpUrlCreatingBackup,
     language,
     setThirdPartyStorage,
     setBackupSchedule,
+    getProgress,
+    clearProgressInterval,
+    downloadingProgress,
   };
 })(observer(withTranslation(["Settings", "Common"])(BackupDesktopView)));

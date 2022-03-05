@@ -1,30 +1,27 @@
 import React from "react";
 import Text from "@appserver/components/text";
 import { withTranslation } from "react-i18next";
-
 import Button from "@appserver/components/button";
-import { getBackupProgress, startBackup } from "@appserver/common/api/portal";
+import { startBackup } from "@appserver/common/api/portal";
 import toastr from "@appserver/components/toast/toastr";
 import ThirdPartyModule from "./sub-components/ThirdPartyModule";
 import DocumentsModule from "./sub-components/DocumentsModule";
 import ThirdPartyStorageModule from "./sub-components/ThirdPartyStorageModule";
-
 import FloatingButton from "@appserver/common/components/FloatingButton";
 import RadioButton from "@appserver/components/radio-button";
 import { StyledModules, StyledManualBackup } from "./../StyledBackup";
 import SelectFolderDialog from "files/SelectFolderDialog";
 import Loader from "@appserver/components/loader";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../../utils";
-import { isDesktop } from "@appserver/components/utils/device";
 import { BackupTypes } from "@appserver/common/constants";
+import { isMobileOnly } from "react-device-detect";
+import { inject, observer } from "mobx-react";
 
 let selectedStorageType = "";
 
 class ManualBackup extends React.Component {
   constructor(props) {
     super(props);
-
-    const { isDesktop } = this.props;
 
     selectedStorageType = getFromSessionStorage("LocalCopyStorageType");
 
@@ -42,11 +39,9 @@ class ManualBackup extends React.Component {
       : false;
 
     this.state = {
-      downloadingProgress: 100,
-      link: "",
       selectedFolder: "",
       isPanelVisible: false,
-      isInitialLoading: isDesktop ? false : true,
+      isInitialLoading: isMobileOnly ? true : false,
       isCheckedTemporaryStorage: checkedTemporary,
       isCheckedDocuments: checkedDocuments,
       isCheckedThirdParty: checkedThirdPartyResource,
@@ -59,57 +54,14 @@ class ManualBackup extends React.Component {
       "isCheckedThirdParty",
       "isCheckedThirdPartyStorage",
     ];
-
-    this._isMounted = false;
-    this.timerId = null;
   }
 
-  clearSessionStorage = () => {
-    saveToSessionStorage("LocalCopyStorageType", "");
-
-    getFromSessionStorage("LocalCopyPath") &&
-      saveToSessionStorage("LocalCopyPath", "");
-
-    getFromSessionStorage("LocalCopyFolder") &&
-      saveToSessionStorage("LocalCopyFolder", "");
-
-    getFromSessionStorage("LocalCopyStorage") &&
-      saveToSessionStorage("LocalCopyStorage", "");
-
-    getFromSessionStorage("LocalCopyThirdPartyStorageType") &&
-      saveToSessionStorage("LocalCopyThirdPartyStorageType", "");
-  };
-
-  checkDownloadingProgress = async () => {
+  setBasicSettings = async () => {
+    const { getProgress, t } = this.props;
     try {
-      const [commonThirdPartyList, backupProgress] = await Promise.all([
-        SelectFolderDialog.getCommonThirdPartyList(),
-        getBackupProgress(),
-      ]);
+      getProgress(t);
 
-      this.commonThirdPartyList = commonThirdPartyList;
-
-      if (backupProgress && !backupProgress.error) {
-        if (backupProgress.progress !== 100) {
-          this._isMounted &&
-            this.setState({
-              downloadingProgress: backupProgress.progress,
-            });
-
-          this.setIntervalProcess();
-        } else {
-          backupProgress.link &&
-            backupProgress.link.slice(0, 1) === "/" &&
-            this.setState({
-              link: backupProgress.link,
-              downloadingProgress: 100,
-            });
-
-          this.clearSessionStorage();
-        }
-      } else {
-        this.clearSessionStorage();
-      }
+      this.commonThirdPartyList = await SelectFolderDialog.getCommonThirdPartyList();
     } catch (error) {
       console.error(error);
       this.clearSessionStorage();
@@ -121,119 +73,34 @@ class ManualBackup extends React.Component {
   };
 
   componentDidMount() {
-    const { isDesktop } = this.props;
-
-    this._isMounted = true;
-    !isDesktop && this.checkDownloadingProgress();
+    isMobileOnly && this.setBasicSettings();
   }
 
   componentWillUnmount() {
-    this._isMounted = false;
-    clearInterval(this.timerId);
+    const { clearProgressInterval } = this.props;
+    clearProgressInterval();
   }
 
-  setIntervalProcess = () => {
-    this.timerId = setInterval(() => this.getProgress(), 1000);
-  };
-
-  onMakeTemporaryBackup = () => {
-    const { isDesktop, setBackupProgress } = this.props;
+  onMakeTemporaryBackup = async () => {
+    const { getIntervalProgress, setDownloadingProgress, t } = this.props;
     const { TemporaryModuleType } = BackupTypes;
 
     saveToSessionStorage("LocalCopyStorageType", "TemporaryStorage");
 
-    if (isDesktop) {
-      startBackup(`${TemporaryModuleType}`, null)
-        .then(() => setBackupProgress())
-        .catch((err) => {
-          toastr.error(`${t("BackupCreatedError")}`);
-          console.error(err);
-        });
-    } else {
-      startBackup(`${TemporaryModuleType}`, null)
-        .then(() =>
-          this.setState({
-            downloadingProgress: 1,
-          })
-        )
-        .then(() => !this.timerId && this.setIntervalProcess())
-        .catch((err) => {
-          toastr.error(`${t("BackupCreatedError")}`);
-          console.error(err);
-        });
+    try {
+      await startBackup(`${TemporaryModuleType}`, null);
+      setDownloadingProgress(1);
+      getIntervalProgress(t);
+    } catch (e) {
+      toastr.error(`${t("BackupCreatedError")}`);
+      console.error(err);
     }
-  };
-
-  getProgress = () => {
-    const { downloadingProgress } = this.state;
-    const { t } = this.props;
-
-    getBackupProgress()
-      .then((response) => {
-        if (response) {
-          const { progress, link, error } = response;
-          if (error.length > 0 && progress !== 100) {
-            console.log("error", error);
-
-            this.clearSessionStorage();
-            clearInterval(this.timerId);
-
-            this.timerId && toastr.error(`${t("BackupCreatedError")}`);
-            this.timerId = null;
-
-            this.setState({
-              downloadingProgress: 100,
-            });
-
-            return;
-          }
-
-          if (progress === 100) {
-            this.clearSessionStorage();
-            clearInterval(this.timerId);
-
-            this._isMounted &&
-              this.setState({
-                downloadingProgress: 100,
-                ...(link && link.slice(0, 1) === "/" && { link: link }),
-              });
-
-            this.timerId && toastr.success(`${t("BackupCreatedSuccess")}`);
-            this.timerId = null;
-
-            return;
-          }
-
-          this._isMounted &&
-            downloadingProgress !== progress &&
-            this.setState({
-              downloadingProgress: progress,
-            });
-        } else {
-          clearInterval(this.timerId);
-        }
-      })
-      .catch((err) => {
-        console.log("error", err);
-
-        this.clearSessionStorage();
-        clearInterval(this.timerId);
-
-        this.timerId && toastr.error(`${t("BackupCreatedError")}`);
-        this.timerId = null;
-
-        this._isMounted &&
-          this.setState({
-            downloadingProgress: 100,
-          });
-      });
   };
 
   onClickDownloadBackup = () => {
     const { temporaryLink } = this.props;
-    const { link } = this.state;
     const url = window.location.origin;
-    const downloadUrl = `${url}` + `${link ? link : temporaryLink}`;
+    const downloadUrl = `${url}` + `${temporaryLink}`;
     window.open(downloadUrl, "_self");
   };
 
@@ -261,12 +128,13 @@ class ManualBackup extends React.Component {
     selectedStorage
   ) => {
     const { isCheckedDocuments, isCheckedThirdParty } = this.state;
-    const { t, isDesktop, setBackupProgress, temporaryLink } = this.props;
-
-    !isDesktop &&
-      this.setState({
-        downloadingProgress: 1,
-      });
+    const {
+      t,
+      getIntervalProgress,
+      setDownloadingProgress,
+      clearSessionStorage,
+      setTemporaryLink,
+    } = this.props;
 
     const storageValue =
       isCheckedDocuments || isCheckedThirdParty ? selectedFolder : selectedId;
@@ -300,26 +168,19 @@ class ManualBackup extends React.Component {
 
     try {
       await startBackup(moduleType, storageParams);
-      if (isDesktop) {
-        setBackupProgress();
-      } else {
-        !this.timerId && this.setIntervalProcess();
-      }
+      setDownloadingProgress(1);
+      setTemporaryLink("");
+      getIntervalProgress(t);
     } catch (err) {
       toastr.error(`${t("BackupCreatedError")}`);
       console.error(err);
 
-      this.clearSessionStorage();
-      this.setState({
-        downloadingProgress: 100,
-      });
+      clearSessionStorage();
     }
   };
   render() {
-    const { t, isDesktop, isCopyingLocal, temporaryLink } = this.props;
+    const { t, temporaryLink, downloadingProgress } = this.props;
     const {
-      downloadingProgress,
-      link,
       isInitialLoading,
       isCheckedTemporaryStorage,
       isCheckedDocuments,
@@ -327,8 +188,7 @@ class ManualBackup extends React.Component {
       isCheckedThirdPartyStorage,
     } = this.state;
 
-    const isMaxProgress =
-      (isDesktop ? isCopyingLocal : downloadingProgress) === 100;
+    const isMaxProgress = downloadingProgress === 100;
 
     const isDisabledThirdParty =
       this.commonThirdPartyList && this.commonThirdPartyList.length === 0;
@@ -371,7 +231,7 @@ class ManualBackup extends React.Component {
                 isDisabled={!isMaxProgress}
                 size="medium"
               />
-              {((link.length > 0 && isMaxProgress) || temporaryLink) && (
+              {temporaryLink?.length > 0 && isMaxProgress && (
                 <Button
                   label={t("DownloadCopy")}
                   onClick={this.onClickDownloadBackup}
@@ -452,17 +312,41 @@ class ManualBackup extends React.Component {
           )}
         </StyledModules>
 
-        {downloadingProgress > 0 && downloadingProgress !== 100 && (
-          <FloatingButton
-            className="layout-progress-bar"
-            icon="file"
-            alert={false}
-            percent={downloadingProgress}
-          />
-        )}
+        {isMobileOnly &&
+          downloadingProgress > 0 &&
+          downloadingProgress !== 100 && (
+            <FloatingButton
+              className="layout-progress-bar"
+              icon="file"
+              alert={false}
+              percent={downloadingProgress}
+            />
+          )}
       </StyledManualBackup>
     );
   }
 }
 
-export default withTranslation("Settings")(ManualBackup);
+export default inject(({ backup }) => {
+  const {
+    setDownloadingProgress,
+    getProgress,
+    setTemporaryLink,
+    downloadingProgress,
+    temporaryLink,
+    clearProgressInterval,
+    getIntervalProgress,
+    clearSessionStorage,
+  } = backup;
+
+  return {
+    setDownloadingProgress,
+    getProgress,
+    getIntervalProgress,
+    setTemporaryLink,
+    downloadingProgress,
+    temporaryLink,
+    clearProgressInterval,
+    clearSessionStorage,
+  };
+})(withTranslation("Settings")(observer(ManualBackup)));

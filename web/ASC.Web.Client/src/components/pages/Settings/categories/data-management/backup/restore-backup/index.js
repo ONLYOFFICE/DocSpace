@@ -1,7 +1,5 @@
 import React from "react";
-
 import { withTranslation } from "react-i18next";
-
 import Button from "@appserver/components/button";
 import Loader from "@appserver/components/loader";
 import Checkbox from "@appserver/components/checkbox";
@@ -15,13 +13,14 @@ import ThirdPartyResources from "./sub-components/ThirdPartyResourcesModule";
 import ThirdPartyStorages from "./sub-components/ThirdPartyStoragesModule";
 import LocalFile from "./sub-components/LocalFileModule";
 import toastr from "@appserver/components/toast/toastr";
-import { getBackupProgress, startRestore } from "@appserver/common/api/portal";
+import { startRestore } from "@appserver/common/api/portal";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig, BackupTypes } from "@appserver/common/constants";
 import config from "../../../../../../../../package.json";
 import FloatingButton from "@appserver/common/components/FloatingButton";
 import { request } from "@appserver/common/api/client";
 import { inject, observer } from "mobx-react";
+import { isMobileOnly } from "react-device-detect";
 
 const {
   DocumentModuleType,
@@ -32,7 +31,6 @@ const {
 class RestoreBackup extends React.Component {
   constructor(props) {
     super(props);
-    const { isDesktop } = this.props;
 
     this.state = {
       isChecked: false,
@@ -46,12 +44,10 @@ class RestoreBackup extends React.Component {
       selectedFileId: "",
       selectedFile: "",
       isErrors: {},
-      downloadingProgress: 100,
-      isInitialLoading: isDesktop ? false : true,
+      isInitialLoading: isMobileOnly ? true : false,
     };
 
     this._isMounted = false;
-    this.timerId = null;
 
     this.switches = [
       "isCheckedLocalFile",
@@ -64,25 +60,13 @@ class RestoreBackup extends React.Component {
     this.formSettings = "";
   }
 
-  checkDownloadingProgress = async () => {
+  setBasicSettings = async () => {
+    const { getProgress, t } = this.props;
+
     try {
-      const [commonThirdPartyList, backupProgress] = await Promise.all([
-        SelectFolderDialog.getCommonThirdPartyList(),
-        getBackupProgress(),
-      ]);
+      getProgress(t);
 
-      this.commonThirdPartyList = commonThirdPartyList;
-
-      if (backupProgress && !backupProgress.error) {
-        if (backupProgress.progress !== 100) {
-          this._isMounted &&
-            this.setState({
-              downloadingProgress: backupProgress.progress,
-            });
-
-          this.timerId = setInterval(() => this.getProgress(), 1000);
-        }
-      }
+      this.commonThirdPartyList = await SelectFolderDialog.getCommonThirdPartyList();
     } catch (error) {
       console.error(error);
     }
@@ -93,65 +77,16 @@ class RestoreBackup extends React.Component {
   };
 
   componentDidMount() {
-    const { isDesktop } = this.props;
     this._isMounted = true;
 
-    !isDesktop && this.checkDownloadingProgress();
+    isMobileOnly && this.setBasicSettings();
   }
 
   componentWillUnmount() {
     this._isMounted = false;
-    clearInterval(this.timerId);
+    const { clearProgressInterval } = this.props;
+    clearProgressInterval();
   }
-  getProgress = () => {
-    const { t } = this.props;
-
-    getBackupProgress()
-      .then((res) => {
-        if (res) {
-          if (res.error) {
-            clearInterval(this.timerId);
-            this.timerId && toastr.error(`${res.error}`);
-            console.log("error", res.error);
-            this.timerId = null;
-            this.setState({
-              downloadingProgress: 100,
-            });
-            return;
-          }
-
-          this._isMounted &&
-            this.setState({
-              downloadingProgress: res.progress,
-            });
-
-          if (res.progress === 100) {
-            clearInterval(this.timerId);
-
-            this.timerId && toastr.success(`${t("BackupCreatedSuccess")}`);
-            this.timerId = null;
-
-            this._isMounted &&
-              this.setState({
-                downloadingProgress: 100,
-              });
-          }
-        } else {
-          clearInterval(this.timerId);
-        }
-      })
-      .catch((err) => {
-        clearInterval(this.timerId);
-        this.timerId && toastr.error(err);
-        console.log("err", err);
-        this.timerId = null;
-
-        this._isMounted &&
-          this.setState({
-            downloadingProgress: 100,
-          });
-      });
-  };
 
   onChangeCheckbox = () => {
     this.setState({
@@ -399,7 +334,7 @@ class RestoreBackup extends React.Component {
     };
   };
   render() {
-    const { t, history, isCopyingLocal, isDesktop } = this.props;
+    const { t, history, downloadingProgress } = this.props;
     const {
       isChecked,
       isInitialLoading,
@@ -411,7 +346,6 @@ class RestoreBackup extends React.Component {
       isCheckedThirdPartyStorage,
       isCheckedLocalFile,
       isErrors,
-      downloadingProgress,
     } = this.state;
 
     const commonRadioButtonProps = {
@@ -425,8 +359,7 @@ class RestoreBackup extends React.Component {
     const isDisabledThirdParty =
       this.commonThirdPartyList && this.commonThirdPartyList.length === 0;
 
-    const isMaxProgress =
-      (isDesktop ? isCopyingLocal : downloadingProgress) === 100;
+    const isMaxProgress = downloadingProgress === 100;
 
     console.log("render restore backup ", this.state, this.props);
     return isInitialLoading ? (
@@ -570,25 +503,31 @@ class RestoreBackup extends React.Component {
           tabIndex={10}
         />
 
-        {downloadingProgress > 0 && downloadingProgress !== 100 && (
-          <FloatingButton
-            className="layout-progress-bar"
-            icon="file"
-            alert={false}
-            percent={downloadingProgress}
-            onClick={this.onClickFloatingButton}
-          />
-        )}
+        {isMobileOnly &&
+          downloadingProgress > 0 &&
+          downloadingProgress !== 100 && (
+            <FloatingButton
+              className="layout-progress-bar"
+              icon="file"
+              alert={false}
+              percent={downloadingProgress}
+              onClick={this.onClickFloatingButton}
+            />
+          )}
       </StyledRestoreBackup>
     );
   }
 }
 
-export default inject(({ auth }) => {
+export default inject(({ auth, backup }) => {
   const { settingsStore } = auth;
   const { socketHelper } = settingsStore;
+  const { downloadingProgress, getProgress, clearProgressInterval } = backup;
 
   return {
     socketHelper,
+    downloadingProgress,
+    getProgress,
+    clearProgressInterval,
   };
 })(withTranslation(["Settings", "Common"])(observer(RestoreBackup)));
