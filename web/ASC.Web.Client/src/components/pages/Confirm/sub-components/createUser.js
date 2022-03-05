@@ -604,7 +604,6 @@ const Confirm = (props) => {
                 placeholder={t("FirstName")}
                 size="large"
                 scale={true}
-                isAutoFocussed={true}
                 tabIndex={1}
                 isDisabled={isLoading}
                 onChange={onChangeFname}
@@ -627,7 +626,6 @@ const Confirm = (props) => {
                 placeholder={t("Common:LastName")}
                 size="large"
                 scale={true}
-                isAutoFocussed={true}
                 tabIndex={1}
                 isDisabled={isLoading}
                 onChange={onChangeSname}
