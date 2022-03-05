@@ -8,11 +8,14 @@ const StyledHotkeysPanel = styled.div`
     @media (max-width: 550px) {
       width: 320px;
     }
+
+    .scroll-body {
+      padding-right: 0 !important;
+    }
   }
 
   .hotkeys_header {
-    padding-right: 16px;
-    margin-left: 16px;
+    margin: 0 16px;
     border-bottom: 1px solid #eceef1;
 
     .hotkeys_heading {
@@ -29,7 +32,7 @@ const StyledHotkeysPanel = styled.div`
   }
 
   .hotkeys_row {
-    width: calc(100% - 16px);
+    width: calc(100% - 32px);
     min-height: 41px;
     margin: 0 16px;
     box-sizing: border-box;
@@ -54,7 +57,6 @@ const StyledScrollbar = styled(Scrollbar)`
   position: relative;
   padding: 16px 0;
   height: calc(100vh - 87px) !important;
-  width: calc(100% + 16px) !important;
 `;
 
 export { StyledHotkeysPanel, StyledScrollbar };

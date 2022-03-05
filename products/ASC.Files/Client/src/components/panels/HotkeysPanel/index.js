@@ -10,6 +10,9 @@ import MoveBlock from "./MoveBlock";
 import ActionsBlock from "./ActionsBlock";
 import ApplicationActionsBlock from "./ApplicationActionsBlock";
 import PreviewActionsBlock from "./PreviewActionsBlock";
+import NavigationBlock from "./NavigationBlock";
+import CreationBlock from "./CreationBlock";
+import UploadBlock from "./UploadBlock";
 import { isMacOs } from "react-device-detect";
 
 const HotkeyPanel = ({ visible, setHotkeyPanelVisible, t, tReady }) => {
@@ -44,14 +47,38 @@ const HotkeyPanel = ({ visible, setHotkeyPanelVisible, t, tReady }) => {
         </div>
         <StyledScrollbar stype="mediumBlack">
           <Heading className="hotkeys_sub-header">
+            {t("HotkeysNavigation")}
+          </Heading>
+          <NavigationBlock
+            t={t}
+            textStyles={textStyles}
+            keyTextStyles={keyTextStyles}
+          />
+          <Heading className="hotkeys_sub-header">
+            {t("HotkeysCreatingObjects")}
+          </Heading>
+          <CreationBlock
+            t={t}
+            textStyles={textStyles}
+            keyTextStyles={keyTextStyles}
+          />
+          <Heading className="hotkeys_sub-header">
+            {t("HotkeysUploadingObjects")}
+          </Heading>
+          <UploadBlock
+            t={t}
+            textStyles={textStyles}
+            keyTextStyles={keyTextStyles}
+          />
+          <Heading className="hotkeys_sub-header">
             {t("HotkeysSelection")}
           </Heading>
           <SelectionBlock
             t={t}
             textStyles={textStyles}
             keyTextStyles={keyTextStyles}
+            CtrlKey={CtrlKey}
           />
-
           <Heading className="hotkeys_sub-header">{t("HotkeysMove")}</Heading>
           <MoveBlock
             t={t}
@@ -59,7 +86,6 @@ const HotkeyPanel = ({ visible, setHotkeyPanelVisible, t, tReady }) => {
             keyTextStyles={keyTextStyles}
             CtrlKey={CtrlKey}
           />
-
           <Heading className="hotkeys_sub-header">
             {t("HotkeysActions")}
           </Heading>
@@ -78,7 +104,6 @@ const HotkeyPanel = ({ visible, setHotkeyPanelVisible, t, tReady }) => {
             keyTextStyles={keyTextStyles}
             CtrlKey={CtrlKey}
           />
-
           <Heading className="hotkeys_sub-header">
             {t("HotkeysActionsInPreview")}
           </Heading>

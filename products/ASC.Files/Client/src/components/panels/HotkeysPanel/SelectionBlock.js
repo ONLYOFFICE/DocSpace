@@ -2,7 +2,7 @@ import React from "react";
 import Row from "@appserver/components/row";
 import Text from "@appserver/components/text";
 
-const SelectionBlock = ({ t, textStyles, keyTextStyles }) => {
+const SelectionBlock = ({ t, textStyles, keyTextStyles, CtrlKey }) => {
   return (
     <>
       <Row className="hotkeys_row">
@@ -62,13 +62,15 @@ const SelectionBlock = ({ t, textStyles, keyTextStyles }) => {
       <Row className="hotkeys_row">
         <>
           <Text {...textStyles}>{t("HotkeysSelectAll")}</Text>
-          <Text {...keyTextStyles}>Shift + а</Text>
+          <Text {...keyTextStyles}>
+            {CtrlKey} + a {t("HotkeysOr")} Shift + а
+          </Text>
         </>
       </Row>
       <Row className="hotkeys_row">
         <>
           <Text {...textStyles}>{t("HotkeysClearAll")}</Text>
-          <Text {...keyTextStyles}>Shift + n</Text>
+          <Text {...keyTextStyles}>Shift + n {t("HotkeysOr")} Esc</Text>
         </>
       </Row>
     </>

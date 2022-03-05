@@ -31,5 +31,14 @@
   "HotkeysClose": "Close",
   "HotkeysPlayPause": "Play/Pause",
   "HotkeysZoomIn": "Zoom in",
-  "HotkeysZoomOut": "Zoom out"
+  "HotkeysZoomOut": "Zoom out",
+  "HotkeysNavigation": "Navigation",
+  "HotkeysCreateDocument": "Create document",
+  "HotkeysCreateSpreadsheet": "Create spreadsheet",
+  "HotkeysCreatePresentation": "Create presentation",
+  "HotkeysCreateForm": "Create presentation",
+  "HotkeysCreateFormFromFile": "Create presentation",
+  "HotkeysCreateFolder": "Create folder",
+  "HotkeysUploadFile": "Upload file",
+  "HotkeysUploadFolder": "Upload folder"
 }
