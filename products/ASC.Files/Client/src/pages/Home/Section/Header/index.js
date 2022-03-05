@@ -186,17 +186,9 @@ const StyledInfoPanelToggleWrapper = styled.div`
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background-color: ${(props) =>
-      props.isInfoPanelVisible ? "#F8F9F9" : "#FFFFFF"};
+    /* background-color: ${(props) =>
+       props.isInfoPanelVisible ? "#F8F9F9" : "#FFFFFF"}; */
   }
-
-  ${(props) =>
-    props.isHeaderVisible &&
-    css`
-      margin-bottom: 2px;
-      margin-right: 24px;
-      padding-left: 12px;
-    `}
 `;
 
 class SectionHeaderContent extends React.Component {
@@ -462,24 +454,6 @@ class SectionHeaderContent extends React.Component {
     const isLoading = !title || !tReady;
     const headerMenu = getHeaderMenu(t);
 
-    const infoPanelToggle = (
-      <StyledInfoPanelToggleWrapper
-        isInfoPanelVisible={isInfoPanelVisible}
-        isHeaderVisible={isHeaderVisible}
-      >
-        <div className="info-panel-toggle-bg">
-          <IconButton
-            className="info-panel-toggle"
-            iconName="images/panel.svg"
-            size="16"
-            color={isInfoPanelVisible ? "#3B72A7" : "#A3A9AE"}
-            isFill={true}
-            onClick={this.onToggleInfoPanel}
-          />
-        </div>
-      </StyledInfoPanelToggleWrapper>
-    );
-
     return (
       <Consumer>
         {(context) => (
@@ -502,7 +476,6 @@ class SectionHeaderContent extends React.Component {
                 isChecked={isHeaderChecked}
                 isIndeterminate={isHeaderIndeterminate}
                 headerMenu={headerMenu}
-                infoPanelToggle={infoPanelToggle}
               />
             ) : (
               <div className="header-container">
@@ -583,7 +556,22 @@ class SectionHeaderContent extends React.Component {
                         />
                       </span>
                     )}
-                    {infoPanelToggle}
+                    <StyledInfoPanelToggleWrapper
+                      isInfoPanelVisible={isInfoPanelVisible}
+                      isHeaderVisible={isHeaderVisible}
+                    >
+                      <div className="info-panel-toggle-bg">
+                        <IconButton
+                          className="info-panel-toggle"
+                          iconName="images/panel.svg"
+                          size="16"
+                          //color={isInfoPanelVisible ? "#3B72A7" : "#A3A9AE"}
+                          isFill={true}
+                          onClick={() => toastr.info("Feature in development", <b>Room info panel</b>, true)}
+                          //onClick={this.onToggleInfoPanel}
+                        />
+                      </div>
+                    </StyledInfoPanelToggleWrapper>
                   </>
                 )}
               </div>
