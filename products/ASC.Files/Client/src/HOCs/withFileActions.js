@@ -306,6 +306,7 @@ export default function withFileActions(WrappedFileItem) {
         uploadDataStore,
         mediaViewerDataStore,
         settingsStore,
+        contextOptionsStore,
       },
       { item, t, history }
     ) => {
@@ -371,11 +372,15 @@ export default function withFileActions(WrappedFileItem) {
             (item.isFolder || (!item.fileExst && item.id === -1))
         ) !== -1;
 
-      const isActive =
+      let isActive = false;
+
+      if (
         bufferSelection &&
         bufferSelection.id === item.id &&
         bufferSelection.fileExst === item.fileExst &&
-        !selection.length; // need for select row item
+        !selection.length
+      )
+        isActive = true;
 
       return {
         t,
@@ -421,7 +426,7 @@ export default function withFileActions(WrappedFileItem) {
         isActive,
         inProgress,
         setBufferSelection,
-        bufferSelection,
+        getModel: contextOptionsStore.getModel,
       };
     }
   )(observer(WithFileActions));

@@ -8,7 +8,6 @@ import FilesTileContent from "./FilesTileContent";
 import { withRouter } from "react-router-dom";
 
 import withFileActions from "../../../../../HOCs/withFileActions";
-import withContextOptions from "../../../../../HOCs/withContextOptions";
 import withQuickButtons from "../../../../../HOCs/withQuickButtons";
 import ItemIcon from "../../../../../components/ItemIcon";
 import withBadges from "../../../../../HOCs/withBadges";
@@ -27,7 +26,6 @@ const FileTile = (props) => {
     value,
     displayShareButton,
     isPrivacy,
-    contextOptionsProps,
     checkedProps,
     getIcon,
     onFilesClick,
@@ -38,6 +36,7 @@ const FileTile = (props) => {
     quickButtonsComponent,
     badgesComponent,
     t,
+    getModel,
   } = props;
 
   const temporaryExtension =
@@ -64,7 +63,7 @@ const FileTile = (props) => {
         onDrop={onDrop}
         onMouseDown={onMouseDown}
         dragging={dragging && isDragging}
-        {...contextOptionsProps}
+        contextOptions={item.contextOptions}
       >
         <Tile
           key={item.id}
@@ -82,11 +81,13 @@ const FileTile = (props) => {
           thumbnailClick={onFilesClick}
           onDoubleClick={onFilesClick}
           checked={checkedProps}
-          {...contextOptionsProps}
+          contextOptions={item.contextOptions}
           contextButtonSpacerWidth={displayShareButton}
           isActive={isActive}
           inProgress={inProgress}
           isEdit={isEdit}
+          getModel={getModel}
+          t={t}
           title={
             item.isFolder
               ? t("Translations:TitleShowFolderActions")
@@ -111,9 +112,7 @@ export default inject(({ settingsStore }) => {
 })(
   withTranslation(["Home", "VersionBadge"])(
     withFileActions(
-      withContextOptions(
-        withRouter(withBadges(withQuickButtons(observer(FileTile))))
-      )
+      withRouter(withBadges(withQuickButtons(observer(FileTile))))
     )
   )
 );
