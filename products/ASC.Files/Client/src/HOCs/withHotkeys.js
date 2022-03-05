@@ -1,15 +1,20 @@
 import React, { useEffect } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { observer, inject } from "mobx-react";
+import { FileAction } from "@appserver/common/constants";
 
 const withHotkeys = (Component) => {
   const WithHotkeys = (props) => {
     const {
       t,
       setSelected,
+      viewAs,
+      setViewAs,
+      setAction,
       setHotkeyPanelVisible,
       confirmDelete,
       setDeleteDialogVisible,
+      setSelectFileDialogVisible,
       deleteAction,
       isAvailableOption,
 
@@ -29,6 +34,9 @@ const withHotkeys = (Component) => {
       openItem,
       selectAll,
       activateHotkeys,
+      backToParentFolder,
+
+      hideArticle,
     } = props;
 
     const hotkeysFilter = {
@@ -74,10 +82,10 @@ const withHotkeys = (Component) => {
     useHotkeys("shift+LEFT", () => multiSelectLeft(), hotkeysFilter);
 
     //Select all files and folders
-    useHotkeys("shift+a", selectAll, hotkeysFilter);
+    useHotkeys("shift+a, ctrl+a", selectAll, hotkeysFilter);
 
     //Deselect all files and folders
-    useHotkeys("shift+n", () => setSelected("none"), hotkeysFilter);
+    useHotkeys("shift+n, ESC", () => setSelected("none"), hotkeysFilter);
 
     //Move down without changing selection
     useHotkeys("ctrl+DOWN, command+DOWN", moveCaretBottom, hotkeysFilter);
@@ -94,9 +102,64 @@ const withHotkeys = (Component) => {
     //Open item
     useHotkeys("Enter", openItem, hotkeysFilter);
 
+    //Back to parent folder
+    useHotkeys("Backspace", backToParentFolder, hotkeysFilter);
+
+    //Change viewAs
+    useHotkeys(
+      "v",
+      () => (viewAs === "tile" ? setViewAs("table") : setViewAs("tile")),
+      hotkeysFilter
+    );
+
+    //Crete document
+    useHotkeys(
+      "Shift+d",
+      () => setAction({ type: FileAction.Create, extension: "docx", id: -1 }),
+      hotkeysFilter
+    );
+
+    //Crete spreadsheet
+    useHotkeys(
+      "Shift+s",
+      () => setAction({ type: FileAction.Create, extension: "xlsx", id: -1 }),
+      hotkeysFilter
+    );
+
+    //Crete presentation
+    useHotkeys(
+      "Shift+p",
+      () => setAction({ type: FileAction.Create, extension: "pptx", id: -1 }),
+      hotkeysFilter
+    );
+
+    //Crete form template
+    useHotkeys(
+      "Shift+o",
+      () => setAction({ type: FileAction.Create, extension: "docxf", id: -1 }),
+      hotkeysFilter
+    );
+
+    //Crete form template from file
+    useHotkeys(
+      "Alt+Shift+o",
+      () => {
+        hideArticle();
+        setSelectFileDialogVisible(true);
+      },
+      hotkeysFilter
+    );
+
+    //Crete folder
+    useHotkeys(
+      "Shift+f",
+      () => setAction({ type: FileAction.Create, id: -1 }),
+      hotkeysFilter
+    );
+
     //Delete selection
     useHotkeys(
-      "Delete, shift+3",
+      "delete, shift+3, command+delete",
       () => {
         if (isAvailableOption("delete")) {
           if (confirmDelete) setDeleteDialogVisible(true);
@@ -139,18 +202,60 @@ const withHotkeys = (Component) => {
       hotkeysFilter
     );
 
+    //Upload file
+    useHotkeys(
+      "Shift+u",
+      () => {
+        // if (this.props.isPrivacy) {
+        //   encryptionUploadDialog((encryptedFile, encrypted) => {
+        //     const { startUpload, t } = this.props;
+        //     encryptedFile.encrypted = encrypted;
+        //     this.goToHomePage();
+        //     startUpload([encryptedFile], null, t);
+        //   });
+        // } else {
+        const fileInput = document.getElementById("customFileInput");
+        fileInput && fileInput.click();
+        // }
+      },
+      hotkeysFilter
+    );
+
+    //Upload folder
+    useHotkeys(
+      "Shift+i",
+      () => {
+        const folderInput = document.getElementById("customFolderInput");
+        folderInput && folderInput.click();
+      },
+      hotkeysFilter
+    );
+
+    //Go to the top of the list
+    useHotkeys(
+      "Alt+UP",
+      () => {
+        const elem = document.getElementsByClassName("section-scroll");
+        elem.length && elem[0].scrollTo(0, 0);
+      },
+      hotkeysFilter
+    );
+
     return <Component {...props} />;
   };
 
   return inject(
     ({
+      auth,
       filesStore,
       dialogsStore,
       settingsStore,
       filesActionsStore,
       hotkeyStore,
     }) => {
-      const { setSelected } = filesStore;
+      const { hideArticle } = auth.settingsStore;
+      const { setSelected, viewAs, setViewAs, fileActionStore } = filesStore;
+      const { setAction } = fileActionStore;
 
       const {
         selectFile,
@@ -171,14 +276,26 @@ const withHotkeys = (Component) => {
         activateHotkeys,
       } = hotkeyStore;
 
-      const { setHotkeyPanelVisible, setDeleteDialogVisible } = dialogsStore;
-      const { isAvailableOption, deleteAction } = filesActionsStore;
+      const {
+        setHotkeyPanelVisible,
+        setDeleteDialogVisible,
+        setSelectFileDialogVisible,
+      } = dialogsStore;
+      const {
+        isAvailableOption,
+        deleteAction,
+        backToParentFolder,
+      } = filesActionsStore;
 
       return {
         setSelected,
+        viewAs,
+        setViewAs,
+        setAction,
 
         setHotkeyPanelVisible,
         setDeleteDialogVisible,
+        setSelectFileDialogVisible,
         confirmDelete: settingsStore.confirmDelete,
         deleteAction,
         isAvailableOption,
@@ -199,6 +316,9 @@ const withHotkeys = (Component) => {
         openItem,
         selectAll,
         activateHotkeys,
+        backToParentFolder,
+
+        hideArticle,
       };
     }
   )(observer(WithHotkeys));

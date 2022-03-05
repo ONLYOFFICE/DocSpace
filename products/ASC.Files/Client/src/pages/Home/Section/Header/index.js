@@ -368,11 +368,7 @@ class SectionHeaderContent extends React.Component {
     ];
   };
 
-  onBackToParentFolder = () => {
-    const { setIsLoading, parentId, filter, fetchFiles } = this.props;
-    setIsLoading(true);
-    fetchFiles(parentId, null, true, false).finally(() => setIsLoading(false));
-  };
+  onBackToParentFolder = () => this.props.backToParentFolder();
 
   onSelect = (e) => {
     const key = e.currentTarget.dataset.key;
@@ -559,14 +555,11 @@ export default inject(
       setSelected,
       setSelection,
       fileActionStore,
-      fetchFiles,
-      filter,
       canCreate,
       isHeaderVisible,
       isHeaderIndeterminate,
       isHeaderChecked,
       isThirdPartySelection,
-      setIsLoading,
       cbMenuItems,
       getCheckboxItemLabel,
       isEmptyFilesList,
@@ -586,15 +579,18 @@ export default inject(
     } = dialogsStore;
 
     const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
-    const { deleteAction, downloadAction, getHeaderMenu } = filesActionsStore;
+    const {
+      deleteAction,
+      downloadAction,
+      getHeaderMenu,
+      backToParentFolder,
+    } = filesActionsStore;
 
     return {
       isDesktop: auth.settingsStore.isDesktopClient,
       isRootFolder: selectedFolderStore.parentId === 0,
       title: selectedFolderStore.title,
-      parentId: selectedFolderStore.parentId,
       currentFolderId: selectedFolderStore.id,
-      filter,
       canCreate,
       isHeaderVisible,
       isHeaderIndeterminate,
@@ -609,8 +605,6 @@ export default inject(
       setSelected,
       setSelection,
       setAction,
-      setIsLoading,
-      fetchFiles,
       setSharingPanelVisible,
       setMoveToPanelVisible,
       setCopyPanelVisible,
@@ -620,6 +614,7 @@ export default inject(
       setDeleteDialogVisible,
       downloadAction,
       getHeaderMenu,
+      backToParentFolder,
       getCheckboxItemLabel,
       setSelectFileDialogVisible,
 

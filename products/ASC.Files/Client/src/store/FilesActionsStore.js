@@ -35,7 +35,6 @@ class FilesActionStore {
   settingsStore;
   dialogsStore;
   mediaViewerDataStore;
-  formatsStore;
 
   constructor(
     authStore,
@@ -45,8 +44,7 @@ class FilesActionStore {
     selectedFolderStore,
     settingsStore,
     dialogsStore,
-    mediaViewerDataStore,
-    formatsStore
+    mediaViewerDataStore
   ) {
     makeAutoObservable(this);
     this.authStore = authStore;
@@ -57,7 +55,6 @@ class FilesActionStore {
     this.settingsStore = settingsStore;
     this.dialogsStore = dialogsStore;
     this.mediaViewerDataStore = mediaViewerDataStore;
-    this.formatsStore = formatsStore;
   }
 
   isMediaOpen = () => {
@@ -1058,7 +1055,6 @@ class FilesActionStore {
 
   openFileAction = (item) => {
     const { setIsLoading, fetchFiles, openDocEditor } = this.filesStore;
-    const { mediaViewersFormatsStore, docserviceStore } = this.formatsStore;
     const {
       isRecycleBinFolder,
       setExpandedKeys,
@@ -1067,12 +1063,10 @@ class FilesActionStore {
     const { setMediaViewerData } = this.mediaViewerDataStore;
     const { setConvertDialogVisible, setConvertItem } = this.dialogsStore;
 
-    const isMediaOrImage = mediaViewersFormatsStore.isMediaOrImage(
-      item.fileExst
-    );
-    const canConvert = docserviceStore.canConvert(item.fileExst);
-    const canWebEdit = docserviceStore.canWebEdit(item.fileExst);
-    const canViewedDocs = docserviceStore.canViewedDocs(item.fileExst);
+    const isMediaOrImage = this.settingsStore.isMediaOrImage(item.fileExst);
+    const canConvert = this.settingsStore.canConvert(item.fileExst);
+    const canWebEdit = this.settingsStore.canWebEdit(item.fileExst);
+    const canViewedDocs = this.settingsStore.canViewedDocs(item.fileExst);
 
     const { id, viewUrl, providerKey, fileStatus, encrypted, isFolder } = item;
     if (encrypted && isPrivacyFolder) return checkProtocol(item.id, true);
@@ -1133,6 +1127,19 @@ class FilesActionStore {
 
       return window.open(viewUrl, "_self");
     }
+  };
+
+  backToParentFolder = () => {
+    const { setIsLoading, fetchFiles } = this.filesStore;
+
+    setIsLoading(true);
+
+    fetchFiles(
+      this.selectedFolderStore.parentId,
+      null,
+      true,
+      false
+    ).finally(() => setIsLoading(false));
   };
 }
 
