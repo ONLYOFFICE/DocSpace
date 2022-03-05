@@ -10,79 +10,78 @@
 // You must not remove this notice, or any other, from this software.
 #endregion
 
-namespace Textile.Blocks
+namespace Textile.Blocks;
+
+public class GlyphBlockModifier : BlockModifier
 {
-    public class GlyphBlockModifier : BlockModifier
+    public override string ModifyLine(string line)
     {
-        public override string ModifyLine(string line)
+        line = Regex.Replace(line, "\"\\z", "\" ");
+
+        // fix: hackish
+        string[,] glyphs = {
+                            { @"([^\s[{(>_*])?\'(?(1)|(\s|s\b|" + Globals.PunctuationPattern + @"))", "$1&#8217;$2" },    //  single closing
+                            { @"\'", "&#8216;" },                                                   //  single opening
+                            { @"([^\s[{(>_*])?""(?(1)|(\s|" + Globals.PunctuationPattern + @"))", "$1&#8221;$2" },        //  double closing
+                            { @"""", "&#8220;" },                                                   //  double opening
+                            { @"\b( )?\.{3}", "$1&#8230;" },                                        //  ellipsis
+                            { @"\b([A-Z][A-Z0-9]{2,})\b(?:[(]([^)]*)[)])", "<acronym title=\"$2\">$1</acronym>" },        //  3+ uppercase acronym
+                            { @"(\s)?--(\s)?", "$1&#8212;$2" },                                     //  em dash
+                            { @"\s-\s", " &#8211; " },                                              //  en dash
+                            { @"(\d+)( )?x( )?(\d+)", "$1$2&#215;$3$4" },                           //  dimension sign
+                            { @"\b ?[([](TM|tm)[])]", "&#8482;" },                                  //  trademark
+                            { @"\b ?[([](R|r)[])]", "&#174;" },                                     //  registered
+                            { @"\b ?[([](C|c)[])]", "&#169;" }                                      //  copyright
+                            };
+
+        var sb = new StringBuilder();
+
+        if (!Regex.IsMatch(line, "<.*>"))
         {
-            line = Regex.Replace(line, "\"\\z", "\" ");
-
-            // fix: hackish
-            string[,] glyphs = {
-                                { @"([^\s[{(>_*])?\'(?(1)|(\s|s\b|" + Globals.PunctuationPattern + @"))", "$1&#8217;$2" },    //  single closing
-                                { @"\'", "&#8216;" },                                                   //  single opening
-                                { @"([^\s[{(>_*])?""(?(1)|(\s|" + Globals.PunctuationPattern + @"))", "$1&#8221;$2" },        //  double closing
-                                { @"""", "&#8220;" },                                                   //  double opening
-                                { @"\b( )?\.{3}", "$1&#8230;" },                                        //  ellipsis
-                                { @"\b([A-Z][A-Z0-9]{2,})\b(?:[(]([^)]*)[)])", "<acronym title=\"$2\">$1</acronym>" },        //  3+ uppercase acronym
-                                { @"(\s)?--(\s)?", "$1&#8212;$2" },                                     //  em dash
-                                { @"\s-\s", " &#8211; " },                                              //  en dash
-                                { @"(\d+)( )?x( )?(\d+)", "$1$2&#215;$3$4" },                           //  dimension sign
-                                { @"\b ?[([](TM|tm)[])]", "&#8482;" },                                  //  trademark
-                                { @"\b ?[([](R|r)[])]", "&#174;" },                                     //  registered
-                                { @"\b ?[([](C|c)[])]", "&#169;" }                                      //  copyright
-                              };
-
-            var sb = new StringBuilder();
-
-            if (!Regex.IsMatch(line, "<.*>"))
+            // If no HTML, do a simple search & replace.
+            for (var i = 0; i < glyphs.GetLength(0); ++i)
             {
-                // If no HTML, do a simple search & replace.
-                for (var i = 0; i < glyphs.GetLength(0); ++i)
-                {
-                    line = Regex.Replace(line, glyphs[i, 0], glyphs[i, 1]);
-                }
-                sb.Append(line);
+                line = Regex.Replace(line, glyphs[i, 0], glyphs[i, 1]);
             }
-            else
-            {
-                var splits = Regex.Split(line, "(<.*?>)");
-                var offtags = "code|pre|notextile";
-                var codepre = false;
-                
-                foreach (var split in splits)
-                {
-                    var modifiedSplit = split;
-                    if (modifiedSplit.Length == 0)
-                        continue;
-
-                    if (Regex.IsMatch(modifiedSplit, @"<(" + offtags + ")>"))
-                        codepre = true;
-                    if (Regex.IsMatch(modifiedSplit, @"<\/(" + offtags + ")>"))
-                        codepre = false;
-
-                    if (!Regex.IsMatch(modifiedSplit, "<.*>") && !codepre)
-                    {
-                        for (var i = 0; i < glyphs.GetLength(0); ++i)
-                        {
-                            modifiedSplit = Regex.Replace(modifiedSplit, glyphs[i, 0], glyphs[i, 1]);
-                        }
-                    }
-
-                    // do htmlspecial if between <code>
-                    if (codepre)
-                    {
-                        //TODO: htmlspecialchars(line)
-                        //line = Regex.Replace(line, @"&lt;(\/?" + offtags + ")&gt;", "<$1>");
-                        //line = line.Replace("&amp;#", "&#");
-                    }
-
-                    sb.Append(modifiedSplit);
-                }
-            }
-
-            return sb.ToString();
+            sb.Append(line);
         }
+        else
+        {
+            var splits = Regex.Split(line, "(<.*?>)");
+            var offtags = "code|pre|notextile";
+            var codepre = false;
+                
+            foreach (var split in splits)
+            {
+                var modifiedSplit = split;
+                if (modifiedSplit.Length == 0)
+                    continue;
+
+                if (Regex.IsMatch(modifiedSplit, @"<(" + offtags + ")>"))
+                    codepre = true;
+                if (Regex.IsMatch(modifiedSplit, @"<\/(" + offtags + ")>"))
+                    codepre = false;
+
+                if (!Regex.IsMatch(modifiedSplit, "<.*>") && !codepre)
+                {
+                    for (var i = 0; i < glyphs.GetLength(0); ++i)
+                    {
+                        modifiedSplit = Regex.Replace(modifiedSplit, glyphs[i, 0], glyphs[i, 1]);
+                    }
+                }
+
+                // do htmlspecial if between <code>
+                if (codepre)
+                {
+                    //TODO: htmlspecialchars(line)
+                    //line = Regex.Replace(line, @"&lt;(\/?" + offtags + ")&gt;", "<$1>");
+                    //line = line.Replace("&amp;#", "&#");
+                }
+
+                sb.Append(modifiedSplit);
+            }
+        }
+
+        return sb.ToString();
     }
 }
