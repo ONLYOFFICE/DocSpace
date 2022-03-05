@@ -71,6 +71,8 @@ namespace ASC.Api.Core.Extensions
                     var logger = sp.GetRequiredService<IOptionsMonitor<ILog>>();
                     var eventBusSubcriptionsManager = sp.GetRequiredService<IEventBusSubscriptionsManager>();
 
+                    var serializer = new ASC.EventBus.Serializers.ProtobufSerializer();
+
                     var subscriptionClientName = "asc_event_bus_default_queue";
 
                     if (!string.IsNullOrEmpty(cfg["core:eventBus:subscriptionClientName"]))
@@ -85,7 +87,7 @@ namespace ASC.Api.Core.Extensions
                         retryCount = int.Parse(cfg["core:eventBus:connectRetryCount"]);
                     }
 
-                    return new EventBusRabbitMQ(rabbitMQPersistentConnection, logger, iLifetimeScope, eventBusSubcriptionsManager, subscriptionClientName, retryCount);
+                    return new EventBusRabbitMQ(rabbitMQPersistentConnection, logger, iLifetimeScope, eventBusSubcriptionsManager, serializer, subscriptionClientName, retryCount);
                 });
             }
             else

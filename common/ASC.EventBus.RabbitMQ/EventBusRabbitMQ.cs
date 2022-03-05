@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
 
 using ASC.EventBus.Exceptions;
+using ASC.EventBus.Serializers;
 
 namespace ASC.EventBus.RabbitMQ;
 
@@ -15,6 +16,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
     private readonly IEventBusSubscriptionsManager _subsManager;
     private readonly ILifetimeScope _autofac;
     private readonly int _retryCount;
+    private IIntegrationEventSerializer _serializer;
 
     private string _consumerTag;
     private IModel _consumerChannel;
@@ -23,8 +25,13 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
 
     private static ConcurrentQueue<Guid> _rejectedEvents;
 
-    public EventBusRabbitMQ(IRabbitMQPersistentConnection persistentConnection, IOptionsMonitor<ILog> options,
-        ILifetimeScope autofac, IEventBusSubscriptionsManager subsManager, string queueName = null, int retryCount = 5)
+    public EventBusRabbitMQ(IRabbitMQPersistentConnection persistentConnection,
+                            IOptionsMonitor<ILog> options,
+                            ILifetimeScope autofac,
+                            IEventBusSubscriptionsManager subsManager,
+                            IIntegrationEventSerializer serializer,
+                            string queueName = null,
+                            int retryCount = 5)
     {
         _persistentConnection = persistentConnection ?? throw new ArgumentNullException(nameof(persistentConnection));
         _logger = options.CurrentValue ?? throw new ArgumentNullException(nameof(options.CurrentValue));
@@ -35,7 +42,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
         _autofac = autofac;
         _retryCount = retryCount;
         _subsManager.OnEventRemoved += SubsManager_OnEventRemoved;
-
+        _serializer = serializer;
         _rejectedEvents = new ConcurrentQueue<Guid>();
 
     }
@@ -84,12 +91,9 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
             _logger.TraceFormat("Declaring RabbitMQ exchange to publish event: {EventId}", @event.Id);
 
             channel.ExchangeDeclare(exchange: EXCHANGE_NAME, type: "direct");
-
-            var body = JsonSerializer.SerializeToUtf8Bytes(@event, @event.GetType(), new JsonSerializerOptions
-            {
-                WriteIndented = true
-            });
-
+                                   
+            var body = _serializer.Serialize(@event);
+          
             policy.Execute(() =>
             {
                 var properties = channel.CreateBasicProperties();
@@ -185,7 +189,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
         {
             if (!String.IsNullOrEmpty(_consumerTag))
             {
-                _logger.TraceFormat("Consumer tag {ConsumerTag} already exist. Cancelled BasicConsume again", _consumerTag );
+                _logger.TraceFormat("Consumer tag {ConsumerTag} already exist. Cancelled BasicConsume again", _consumerTag);
 
                 return;
             }
@@ -208,8 +212,10 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
     private async Task Consumer_Received(object sender, BasicDeliverEventArgs eventArgs)
     {
         var eventName = eventArgs.RoutingKey;
-        var message = Encoding.UTF8.GetString(eventArgs.Body.Span);
-      
+
+        var @event = GetEvent(eventName, eventArgs.Body.Span.ToArray());
+        var message = @event.ToString();
+
         try
         {
             if (message.ToLowerInvariant().Contains("throw-fake-exception"))
@@ -217,9 +223,9 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
                 throw new InvalidOperationException($"Fake exception requested: \"{message}\"");
             }
 
-            await ProcessEvent(eventName, message);
+            await ProcessEvent(eventName, @event);
 
-           _consumerChannel.BasicAck(eventArgs.DeliveryTag, multiple: false);
+            _consumerChannel.BasicAck(eventArgs.DeliveryTag, multiple: false);
         }
         catch (IntegrationEventRejectExeption ex)
         {
@@ -264,13 +270,13 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
         channel.ExchangeDeclare(exchange: EXCHANGE_NAME,
                                 type: "direct");
 
-        channel.ExchangeDeclare(exchange: DEAD_LETTER_EXCHANGE_NAME,              
+        channel.ExchangeDeclare(exchange: DEAD_LETTER_EXCHANGE_NAME,
                                 type: "direct");
 
         channel.QueueDeclare(queue: _deadLetterQueueName,
                         durable: true,
                         exclusive: false,
-                        autoDelete: false,                          
+                        autoDelete: false,
                         arguments: null);
 
 
@@ -291,54 +297,37 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
             _consumerChannel.Dispose();
             _consumerChannel = CreateConsumerChannel();
             _consumerTag = String.Empty;
-            
+
             StartBasicConsume();
         };
 
         return channel;
     }
 
-
-    public void PreProcessEvent(string eventName, ref string message)
-    {
-        if (_rejectedEvents.Count == 0) return;
-
-        var eventType = _subsManager.GetEventTypeByName(eventName);
-
-        var integrationEvent = (IntegrationEvent)JsonSerializer.Deserialize(message, eventType, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
-
-        if (_rejectedEvents.TryPeek(out Guid result) && result.Equals(integrationEvent.Id))
-        {
-            integrationEvent.Redelivered = true;
-        }
-
-        message = Encoding.UTF8.GetString(JsonSerializer.SerializeToUtf8Bytes(integrationEvent, eventType, new JsonSerializerOptions
-        {
-            WriteIndented = true
-        }));
-    }
-
-    private IntegrationEvent PreProcessEvent(string eventName, string message)
+    private IntegrationEvent GetEvent(string eventName, byte[] serializedMessage)
     {
         var eventType = _subsManager.GetEventTypeByName(eventName);
 
-        var integrationEvent = (IntegrationEvent)JsonSerializer.Deserialize(message, eventType, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
-
-        if (_rejectedEvents.Count == 0) return integrationEvent;
-
-        if (_rejectedEvents.TryPeek(out Guid result) && result.Equals(integrationEvent.Id))
-        {
-            integrationEvent.Redelivered = true;
-        }
+        var integrationEvent = (IntegrationEvent)_serializer.Deserialize(serializedMessage, eventType);
 
         return integrationEvent;
     }
 
-    private async Task ProcessEvent(string eventName, string message)
+    private void PreProcessEvent(IntegrationEvent @event)
+    {
+        if (_rejectedEvents.Count == 0) return;
+
+        if (_rejectedEvents.TryPeek(out Guid result) && result.Equals(@event.Id))
+        {
+            @event.Redelivered = true;
+        }
+    }
+
+    private async Task ProcessEvent(string eventName, IntegrationEvent @event)
     {
         _logger.TraceFormat("Processing RabbitMQ event: {EventName}", eventName);
 
-        var @event = PreProcessEvent(eventName, message);
+        PreProcessEvent(@event);
 
         if (_subsManager.HasSubscriptionsForEvent(eventName))
         {

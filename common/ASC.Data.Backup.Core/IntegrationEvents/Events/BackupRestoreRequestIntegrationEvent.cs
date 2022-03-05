@@ -1,5 +1,6 @@
 ﻿namespace ASC.Data.Backup.Core.IntegrationEvents.Events;
 
+[ProtoContract]
 public record BackupRestoreRequestIntegrationEvent : IntegrationEvent
 {
     public BackupRestoreRequestIntegrationEvent(BackupStorageType storageType, 
@@ -16,10 +17,16 @@ public record BackupRestoreRequestIntegrationEvent : IntegrationEvent
         BackupId = backupId;
     }
 
+    [ProtoMember(1)]
     public bool Notify { get; set; }
+
+    [ProtoMember(2)]
     public string BackupId { get; set; }
+
+    [ProtoMember(3)]
     public BackupStorageType StorageType { get; private init; }
-    public Dictionary<string, string> StorageParams { get; private init; }
-   
+
+    [ProtoMember(4)]
+    public Dictionary<string, string> StorageParams { get; private init; }   
 }
 

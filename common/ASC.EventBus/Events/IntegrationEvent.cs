@@ -1,13 +1,13 @@
 ﻿namespace ASC.EventBus.Events;
 
+[ProtoContract]
 public record IntegrationEvent
-{        
-    private IntegrationEvent()
+{          
+    protected IntegrationEvent()
     {
 
     }
 
-    [JsonConstructor]
     public IntegrationEvent(Guid createBy, int tenantId) 
     {
         Id = Guid.NewGuid();
@@ -16,18 +16,19 @@ public record IntegrationEvent
         TenantId = tenantId;
     }
 
-    [JsonInclude]
+    [ProtoMember(1)]
     public Guid Id { get; private init; }
 
-    [JsonInclude]
+    [ProtoMember(2)]
     public DateTime CreateOn { get; private init; }
 
-    [JsonInclude]
+    [ProtoMember(3)]
     public Guid CreateBy { get; private init; }
 
-    [JsonInclude]
+    [ProtoMember(4)]
+    public bool Redelivered { get; set; }
+
+    [ProtoMember(5)]
     public int TenantId { get; private init; }
 
-    [JsonInclude]
-    public bool Redelivered { get; set; }
 }

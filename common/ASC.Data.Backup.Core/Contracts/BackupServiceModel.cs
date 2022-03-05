@@ -25,6 +25,7 @@
 
 namespace ASC.Data.Backup.Contracts;
 
+
 public enum BackupStorageType
 {
     Documents = 0,

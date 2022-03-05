@@ -8,3 +8,6 @@ global using ASC.EventBus.Abstractions;
 global using ASC.EventBus.Events;
 
 global using static ASC.EventBus.InMemoryEventBusSubscriptionsManager;
+global using ProtoBuf;
+global using System.Security.Cryptography;
+global using ProtoBuf.Meta;
