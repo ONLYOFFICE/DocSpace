@@ -2,7 +2,7 @@
 <DOCUMENT Type="Advanced Installer" CreateVersion="18.6" version="18.6.1" Modules="enterprise" RootPath="." Language="ru" Id="{2D2C7C0E-FA78-4158-A222-DA463E882AAC}">
   <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
     <ROW Property="AI_BITMAP_DISPLAY_MODE" Value="0"/>
-    <ROW Property="AI_CURRENT_YEAR" Value="2021" ValueLocId="-"/>
+    <ROW Property="AI_CURRENT_YEAR" Value="2022" ValueLocId="-"/>
     <ROW Property="ALLUSERS" Value="1"/>
     <ROW Property="ARPCOMMENTS" Value="Эта база данных установщика содержит логику и данные, необходимые для установки [|[ProductName]." ValueLocId="*"/>
     <ROW Property="MYSQL_VERSION" Value="8.0.21"/>
@@ -11,7 +11,7 @@
     <ROW Property="ProductCode" Value="1049:{79F55836-69B9-46CE-B03D-7679D38C0AD4} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="Apache Kafka"/>
-    <ROW Property="ProductVersion" Value="1.0.0" Type="32"/>
+    <ROW Property="ProductVersion" Value="1.0.0"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
     <ROW Property="UpgradeCode" Value="{9202447D-B999-4041-B479-B3789A872456}"/>
     <ROW Property="WindowsType9X" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>
@@ -383,7 +383,10 @@
     <ROW Condition="VersionNT" Description="[ProductName] не может быть установлен на [WindowsType9XDisplay]." DescriptionLocId="AI.LaunchCondition.No9X" IsPredefined="true" Builds="DefaultBuild"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiRegsComponent">
+    <ROW Registry="Manufacturer" Root="-1" Key="Software\[Manufacturer]" Name="\"/>
     <ROW Registry="Path" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Path" Value="[APPDIR]" Component_="ProductInformation"/>
+    <ROW Registry="ProductName" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="\"/>
+    <ROW Registry="Software" Root="-1" Key="Software" Name="\"/>
     <ROW Registry="Version" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Version" Value="[ProductVersion]" Component_="ProductInformation"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiThemeComponent">
@@ -394,9 +397,13 @@
     <ROW UpgradeCode="[|UpgradeCode]" VersionMin="[|ProductVersion]" Attributes="2" ActionProperty="AI_NEWERPRODUCTFOUND"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.TxtUpdateComponent">
-    <ROW Name="ReplaceWindowsVolume" TxtUpdateSet="bat" FindPattern="{WindowsVolume}" ReplacePattern="[WindowsVolume]" Options="2" Order="0" FileEncoding="-1"/>
+    <ROW Name="Append/Create" TxtUpdateSet="zookeeperserverstart.bat" FindPattern="exit /b 1" Options="64" Order="0" FileEncoding="2"/>
+    <ROW Name="Replace" TxtUpdateSet="zookeeperserverstart.bat" FindPattern="{WindowsVolume}" ReplacePattern="[WindowsVolume]" Options="2" Order="1" FileEncoding="-1"/>
+    <ROW Name="Append/Create" TxtUpdateSet="kafkaserverstart.bat" FindPattern="exit /b 1" Options="64" Order="0" FileEncoding="2"/>
+    <ROW Name="Replace" TxtUpdateSet="kafkaserverstart.bat" FindPattern="{WindowsVolume}" ReplacePattern="[WindowsVolume]" Options="2" Order="1" FileEncoding="-1"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.TxtUpdateSetComponent">
-    <ROW Key="bat" Component="APPDIR" FileName="*.bat" Directory="windows_Dir" Options="25"/>
+    <ROW Key="kafkaserverstart.bat" Component="Apache" FileName="kafka-server-start.bat" Directory="windows_Dir" Options="25"/>
+    <ROW Key="zookeeperserverstart.bat" Component="Apache" FileName="zookeeper-server-start.bat" Directory="windows_Dir" Options="25"/>
   </COMPONENT>
 </DOCUMENT>
