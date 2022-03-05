@@ -21,6 +21,7 @@ const PureSettingsItems = ({
   t,
   showText,
   toggleShowText,
+  toggleCatalogOpen,
 }) => {
   const { setting } = match.params;
   const iconUrl = "/static/images/settings.react.svg";
@@ -41,7 +42,7 @@ const PureSettingsItems = ({
 
     setSelectedNode(["common"]);
     setExpandSettingsTree(["common"]);
-    if (isMobile() || isMobileOnly) toggleShowText();
+    if (isMobile() || isMobileOnly) toggleCatalogOpen();
     history.push(
       combineUrl(AppServerConfig.proxyURL, config.homepage, "/settings/common")
     );
@@ -88,6 +89,7 @@ export default inject(
       setExpandSettingsTree,
       showText: auth.settingsStore.showText,
       toggleShowText: auth.settingsStore.toggleShowText,
+      toggleCatalogOpen: auth.settingsStore.toggleCatalogOpen,
     };
   }
 )(observer(SettingsItems));
