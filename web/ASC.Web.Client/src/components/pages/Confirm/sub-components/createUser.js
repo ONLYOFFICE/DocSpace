@@ -206,6 +206,14 @@ const Confirm = (props) => {
     }
   };
 
+  useEffect(() => {
+    const { isAuthenticated, logout } = props;
+    if (isAuthenticated) {
+      const path = window.location;
+      logout(true, path);
+    }
+  }, []);
+
   useEffect(async () => {
     const { linkData } = props;
     const uid = linkData.uid;
@@ -466,6 +474,7 @@ const Confirm = (props) => {
 
   const onGreetingSubmit = () => {
     setIsGreetingMode(false);
+    focusInput();
   };
 
   const onValidateEmail = (res) => {
