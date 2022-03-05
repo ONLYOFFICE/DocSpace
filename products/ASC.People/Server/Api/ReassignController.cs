@@ -38,66 +38,66 @@ public class ReassignController : ApiControllerBase
     }
 
     [Create(@"reassign/start")]
-    public ReassignProgressItem StartReassignFromBody([FromBody] StartReassignRequestDto model)
+    public ReassignProgressItem StartReassignFromBody([FromBody] StartReassignRequestDto inDto)
     {
-        return StartReassign(model);
+        return StartReassign(inDto);
     }
 
     [Create(@"reassign/start")]
     [Consumes("application/x-www-form-urlencoded")]
-    public ReassignProgressItem StartReassignFromForm([FromForm] StartReassignRequestDto model)
+    public ReassignProgressItem StartReassignFromForm([FromForm] StartReassignRequestDto inDto)
     {
-        return StartReassign(model);
+        return StartReassign(inDto);
     }
 
     [Update(@"reassign/terminate")]
-    public void TerminateReassignFromBody([FromBody] TerminateRequestDto model)
+    public void TerminateReassignFromBody([FromBody] TerminateRequestDto inDto)
     {
-        TerminateReassign(model);
+        TerminateReassign(inDto);
     }
 
     [Update(@"reassign/terminate")]
     [Consumes("application/x-www-form-urlencoded")]
-    public void TerminateReassignFromForm([FromForm] TerminateRequestDto model)
+    public void TerminateReassignFromForm([FromForm] TerminateRequestDto inDto)
     {
-        TerminateReassign(model);
+        TerminateReassign(inDto);
     }
 
-    private ReassignProgressItem StartReassign(StartReassignRequestDto model)
+    private ReassignProgressItem StartReassign(StartReassignRequestDto inDto)
     {
         _permissionContext.DemandPermissions(Constants.Action_EditUser);
 
-        var fromUser = _userManager.GetUsers(model.FromUserId);
+        var fromUser = _userManager.GetUsers(inDto.FromUserId);
 
         if (fromUser == null || fromUser.Id == Constants.LostUser.Id)
         {
-            throw new ArgumentException("User with id = " + model.FromUserId + " not found");
+            throw new ArgumentException("User with id = " + inDto.FromUserId + " not found");
         }
 
         if (fromUser.IsOwner(Tenant) || fromUser.IsMe(_authContext) || fromUser.Status != EmployeeStatus.Terminated)
         {
-            throw new ArgumentException("Can not delete user with id = " + model.FromUserId);
+            throw new ArgumentException("Can not delete user with id = " + inDto.FromUserId);
         }
 
-        var toUser = _userManager.GetUsers(model.ToUserId);
+        var toUser = _userManager.GetUsers(inDto.ToUserId);
 
         if (toUser == null || toUser.Id == Constants.LostUser.Id)
         {
-            throw new ArgumentException("User with id = " + model.ToUserId + " not found");
+            throw new ArgumentException("User with id = " + inDto.ToUserId + " not found");
         }
 
         if (toUser.IsVisitor(_userManager) || toUser.Status == EmployeeStatus.Terminated)
         {
-            throw new ArgumentException("Can not reassign data to user with id = " + model.ToUserId);
+            throw new ArgumentException("Can not reassign data to user with id = " + inDto.ToUserId);
         }
 
-        return _queueWorkerReassign.Start(Tenant.Id, model.FromUserId, model.ToUserId, _securityContext.CurrentAccount.ID, model.DeleteProfile);
+        return _queueWorkerReassign.Start(Tenant.Id, inDto.FromUserId, inDto.ToUserId, _securityContext.CurrentAccount.ID, inDto.DeleteProfile);
     }
 
-    private void TerminateReassign(TerminateRequestDto model)
+    private void TerminateReassign(TerminateRequestDto inDto)
     {
         _permissionContext.DemandPermissions(Constants.Action_EditUser);
 
-        _queueWorkerReassign.Terminate(Tenant.Id, model.UserId);
+        _queueWorkerReassign.Terminate(Tenant.Id, inDto.UserId);
     }
 }

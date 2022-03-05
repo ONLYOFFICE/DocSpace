@@ -17,45 +17,45 @@ public class ContactsController : PeopleControllerBase
     }
 
     [Delete("{userid}/contacts")]
-    public EmployeeFullDto DeleteMemberContactsFromBody(string userid, [FromBody] UpdateMemberRequestDto memberModel)
+    public EmployeeFullDto DeleteMemberContactsFromBody(string userid, [FromBody] UpdateMemberRequestDto inDto)
     {
-        return DeleteMemberContacts(userid, memberModel);
+        return DeleteMemberContacts(userid, inDto);
     }
 
     [Delete("{userid}/contacts")]
     [Consumes("application/x-www-form-urlencoded")]
-    public EmployeeFullDto DeleteMemberContactsFromForm(string userid, [FromForm] UpdateMemberRequestDto memberModel)
+    public EmployeeFullDto DeleteMemberContactsFromForm(string userid, [FromForm] UpdateMemberRequestDto inDto)
     {
-        return DeleteMemberContacts(userid, memberModel);
+        return DeleteMemberContacts(userid, inDto);
     }
 
     [Create("{userid}/contacts")]
-    public EmployeeFullDto SetMemberContactsFromBody(string userid, [FromBody] UpdateMemberRequestDto memberModel)
+    public EmployeeFullDto SetMemberContactsFromBody(string userid, [FromBody] UpdateMemberRequestDto inDto)
     {
-        return SetMemberContacts(userid, memberModel);
+        return SetMemberContacts(userid, inDto);
     }
 
     [Create("{userid}/contacts")]
     [Consumes("application/x-www-form-urlencoded")]
-    public EmployeeFullDto SetMemberContactsFromForm(string userid, [FromForm] UpdateMemberRequestDto memberModel)
+    public EmployeeFullDto SetMemberContactsFromForm(string userid, [FromForm] UpdateMemberRequestDto inDto)
     {
-        return SetMemberContacts(userid, memberModel);
+        return SetMemberContacts(userid, inDto);
     }
 
     [Update("{userid}/contacts")]
-    public EmployeeFullDto UpdateMemberContactsFromBody(string userid, [FromBody] UpdateMemberRequestDto memberModel)
+    public EmployeeFullDto UpdateMemberContactsFromBody(string userid, [FromBody] UpdateMemberRequestDto inDto)
     {
-        return UpdateMemberContacts(userid, memberModel);
+        return UpdateMemberContacts(userid, inDto);
     }
 
     [Update("{userid}/contacts")]
     [Consumes("application/x-www-form-urlencoded")]
-    public EmployeeFullDto UpdateMemberContactsFromForm(string userid, [FromForm] UpdateMemberRequestDto memberModel)
+    public EmployeeFullDto UpdateMemberContactsFromForm(string userid, [FromForm] UpdateMemberRequestDto inDto)
     {
-        return UpdateMemberContacts(userid, memberModel);
+        return UpdateMemberContacts(userid, inDto);
     }
 
-    private EmployeeFullDto DeleteMemberContacts(string userid, UpdateMemberRequestDto memberModel)
+    private EmployeeFullDto DeleteMemberContacts(string userid, UpdateMemberRequestDto inDto)
     {
         var user = GetUserInfo(userid);
 
@@ -64,13 +64,13 @@ public class ContactsController : PeopleControllerBase
             throw new SecurityException();
         }
 
-        DeleteContacts(memberModel.Contacts, user);
+        DeleteContacts(inDto.Contacts, user);
         _userManager.SaveUserInfo(user);
 
         return _employeeFullDtoHelper.GetFull(user);
     }
 
-    private EmployeeFullDto SetMemberContacts(string userid, UpdateMemberRequestDto memberModel)
+    private EmployeeFullDto SetMemberContacts(string userid, UpdateMemberRequestDto inDto)
     {
         var user = GetUserInfo(userid);
 
@@ -80,13 +80,13 @@ public class ContactsController : PeopleControllerBase
         }
 
         user.ContactsList.Clear();
-        UpdateContacts(memberModel.Contacts, user);
+        UpdateContacts(inDto.Contacts, user);
         _userManager.SaveUserInfo(user);
 
         return _employeeFullDtoHelper.GetFull(user);
     }
 
-    private EmployeeFullDto UpdateMemberContacts(string userid, UpdateMemberRequestDto memberModel)
+    private EmployeeFullDto UpdateMemberContacts(string userid, UpdateMemberRequestDto inDto)
     {
         var user = GetUserInfo(userid);
 
@@ -95,7 +95,7 @@ public class ContactsController : PeopleControllerBase
             throw new SecurityException();
         }
 
-        UpdateContacts(memberModel.Contacts, user);
+        UpdateContacts(inDto.Contacts, user);
         _userManager.SaveUserInfo(user);
 
         return _employeeFullDtoHelper.GetFull(user);

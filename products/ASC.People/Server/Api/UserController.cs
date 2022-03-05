@@ -97,46 +97,46 @@ public class UserController : PeopleControllerBase
     }
 
     [Create("active")]
-    public EmployeeDto AddMemberAsActivatedFromBody([FromBody] MemberRequestDto memberModel)
+    public EmployeeDto AddMemberAsActivatedFromBody([FromBody] MemberRequestDto inDto)
     {
-        return AddMemberAsActivated(memberModel);
+        return AddMemberAsActivated(inDto);
     }
 
     [Create("active")]
     [Consumes("application/x-www-form-urlencoded")]
-    public EmployeeDto AddMemberAsActivatedFromForm([FromForm] MemberRequestDto memberModel)
+    public EmployeeDto AddMemberAsActivatedFromForm([FromForm] MemberRequestDto inDto)
     {
-        return AddMemberAsActivated(memberModel);
+        return AddMemberAsActivated(inDto);
     }
 
     [Create]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Everyone")]
-    public EmployeeDto AddMemberFromBody([FromBody] MemberRequestDto memberModel)
+    public EmployeeDto AddMemberFromBody([FromBody] MemberRequestDto inDto)
     {
-        return AddMember(memberModel);
+        return AddMember(inDto);
     }
 
     [Create]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Everyone")]
     [Consumes("application/x-www-form-urlencoded")]
-    public EmployeeDto AddMemberFromForm([FromForm] MemberRequestDto memberModel)
+    public EmployeeDto AddMemberFromForm([FromForm] MemberRequestDto inDto)
     {
-        return AddMember(memberModel);
+        return AddMember(inDto);
     }
 
     [Update("{userid}/password")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,Activation,EmailActivation,Everyone")]
-    public EmployeeDto ChangeUserPasswordFromBody(Guid userid, [FromBody] MemberRequestDto memberModel)
+    public EmployeeDto ChangeUserPasswordFromBody(Guid userid, [FromBody] MemberRequestDto inDto)
     {
-        return ChangeUserPassword(userid, memberModel);
+        return ChangeUserPassword(userid, inDto);
     }
 
     [Update("{userid}/password")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,Activation,EmailActivation,Everyone")]
     [Consumes("application/x-www-form-urlencoded")]
-    public EmployeeDto ChangeUserPasswordFromForm(Guid userid, [FromForm] MemberRequestDto memberModel)
+    public EmployeeDto ChangeUserPasswordFromForm(Guid userid, [FromForm] MemberRequestDto inDto)
     {
-        return ChangeUserPassword(userid, memberModel);
+        return ChangeUserPassword(userid, inDto);
     }
 
     [Delete("{userid}")]
@@ -379,40 +379,40 @@ public class UserController : PeopleControllerBase
 
     [AllowAnonymous]
     [Create(@"register")]
-    public Task<string> RegisterUserOnPersonalAsync(RegisterPersonalUserRequestDto model)
+    public Task<string> RegisterUserOnPersonalAsync(RegisterPersonalUserRequestDto inDto)
     {
         if (!_coreBaseSettings.Personal)
         {
             throw new MethodAccessException("Method is only available on personal.onlyoffice.com");
         }
 
-        return InternalRegisterUserOnPersonalAsync(model);
+        return InternalRegisterUserOnPersonalAsync(inDto);
     }
 
     [Update("delete", Order = -1)]
-    public IEnumerable<EmployeeDto> RemoveUsersFromBody([FromBody] UpdateMembersRequestDto model)
+    public IEnumerable<EmployeeDto> RemoveUsersFromBody([FromBody] UpdateMembersRequestDto inDto)
     {
-        return RemoveUsers(model);
+        return RemoveUsers(inDto);
     }
 
     [Update("delete", Order = -1)]
     [Consumes("application/x-www-form-urlencoded")]
-    public IEnumerable<EmployeeDto> RemoveUsersFromForm([FromForm] UpdateMembersRequestDto model)
+    public IEnumerable<EmployeeDto> RemoveUsersFromForm([FromForm] UpdateMembersRequestDto inDto)
     {
-        return RemoveUsers(model);
+        return RemoveUsers(inDto);
     }
 
     [Update("invite")]
-    public IEnumerable<EmployeeDto> ResendUserInvitesFromBody([FromBody] UpdateMembersRequestDto model)
+    public IEnumerable<EmployeeDto> ResendUserInvitesFromBody([FromBody] UpdateMembersRequestDto inDto)
     {
-        return ResendUserInvites(model);
+        return ResendUserInvites(inDto);
     }
 
     [Update("invite")]
     [Consumes("application/x-www-form-urlencoded")]
-    public IEnumerable<EmployeeDto> ResendUserInvitesFromForm([FromForm] UpdateMembersRequestDto model)
+    public IEnumerable<EmployeeDto> ResendUserInvitesFromForm([FromForm] UpdateMembersRequestDto inDto)
     {
-        return ResendUserInvites(model);
+        return ResendUserInvites(inDto);
     }
 
     [Read("@self")]
@@ -424,150 +424,150 @@ public class UserController : PeopleControllerBase
     }
 
     [Create("email", false)]
-    public object SendEmailChangeInstructionsFromBody([FromBody] UpdateMemberRequestDto model)
+    public object SendEmailChangeInstructionsFromBody([FromBody] UpdateMemberRequestDto inDto)
     {
-        return SendEmailChangeInstructions(model);
+        return SendEmailChangeInstructions(inDto);
     }
 
     [Create("email", false)]
     [Consumes("application/x-www-form-urlencoded")]
-    public object SendEmailChangeInstructionsFromForm([FromForm] UpdateMemberRequestDto model)
+    public object SendEmailChangeInstructionsFromForm([FromForm] UpdateMemberRequestDto inDto)
     {
-        return SendEmailChangeInstructions(model);
+        return SendEmailChangeInstructions(inDto);
     }
 
     [AllowAnonymous]
     [Create("password", false)]
-    public object SendUserPasswordFromBody([FromBody] MemberRequestDto memberModel)
+    public object SendUserPasswordFromBody([FromBody] MemberRequestDto inDto)
     {
-        return SendUserPassword(memberModel);
+        return SendUserPassword(inDto);
     }
 
     [AllowAnonymous]
     [Create("password", false)]
     [Consumes("application/x-www-form-urlencoded")]
-    public object SendUserPasswordFromForm([FromForm] MemberRequestDto memberModel)
+    public object SendUserPasswordFromForm([FromForm] MemberRequestDto inDto)
     {
-        return SendUserPassword(memberModel);
+        return SendUserPassword(inDto);
     }
 
     [Update("activationstatus/{activationstatus}")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Activation,Everyone")]
-    public IEnumerable<EmployeeDto> UpdateEmployeeActivationStatusFromBody(EmployeeActivationStatus activationstatus, [FromBody] UpdateMembersRequestDto model)
+    public IEnumerable<EmployeeDto> UpdateEmployeeActivationStatusFromBody(EmployeeActivationStatus activationstatus, [FromBody] UpdateMembersRequestDto inDto)
     {
-        return UpdateEmployeeActivationStatus(activationstatus, model);
+        return UpdateEmployeeActivationStatus(activationstatus, inDto);
     }
 
     [Update("activationstatus/{activationstatus}")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Activation,Everyone")]
     [Consumes("application/x-www-form-urlencoded")]
-    public IEnumerable<EmployeeDto> UpdateEmployeeActivationStatusFromForm(EmployeeActivationStatus activationstatus, [FromForm] UpdateMembersRequestDto model)
+    public IEnumerable<EmployeeDto> UpdateEmployeeActivationStatusFromForm(EmployeeActivationStatus activationstatus, [FromForm] UpdateMembersRequestDto inDto)
     {
-        return UpdateEmployeeActivationStatus(activationstatus, model);
+        return UpdateEmployeeActivationStatus(activationstatus, inDto);
     }
 
     [Update("{userid}/culture")]
-    public EmployeeDto UpdateMemberCultureFromBody(string userid, [FromBody] UpdateMemberRequestDto memberModel)
+    public EmployeeDto UpdateMemberCultureFromBody(string userid, [FromBody] UpdateMemberRequestDto inDto)
     {
-        return UpdateMemberCulture(userid, memberModel);
+        return UpdateMemberCulture(userid, inDto);
     }
 
     [Update("{userid}/culture")]
     [Consumes("application/x-www-form-urlencoded")]
-    public EmployeeDto UpdateMemberCultureFromForm(string userid, [FromForm] UpdateMemberRequestDto memberModel)
+    public EmployeeDto UpdateMemberCultureFromForm(string userid, [FromForm] UpdateMemberRequestDto inDto)
     {
-        return UpdateMemberCulture(userid, memberModel);
+        return UpdateMemberCulture(userid, inDto);
     }
 
     [Update("{userid}")]
-    public EmployeeDto UpdateMemberFromBody(string userid, [FromBody] UpdateMemberRequestDto memberModel)
+    public EmployeeDto UpdateMemberFromBody(string userid, [FromBody] UpdateMemberRequestDto inDto)
     {
-        return UpdateMember(userid, memberModel);
+        return UpdateMember(userid, inDto);
     }
 
     [Update("{userid}")]
     [Consumes("application/x-www-form-urlencoded")]
-    public EmployeeDto UpdateMemberFromForm(string userid, [FromForm] UpdateMemberRequestDto memberModel)
+    public EmployeeDto UpdateMemberFromForm(string userid, [FromForm] UpdateMemberRequestDto inDto)
     {
-        return UpdateMember(userid, memberModel);
+        return UpdateMember(userid, inDto);
     }
 
     [Update("status/{status}")]
-    public IEnumerable<EmployeeDto> UpdateUserStatusFromBody(EmployeeStatus status, [FromBody] UpdateMembersRequestDto model)
+    public IEnumerable<EmployeeDto> UpdateUserStatusFromBody(EmployeeStatus status, [FromBody] UpdateMembersRequestDto inDto)
     {
-        return UpdateUserStatus(status, model);
+        return UpdateUserStatus(status, inDto);
     }
 
     [Update("status/{status}")]
     [Consumes("application/x-www-form-urlencoded")]
-    public IEnumerable<EmployeeDto> UpdateUserStatusFromForm(EmployeeStatus status, [FromForm] UpdateMembersRequestDto model)
+    public IEnumerable<EmployeeDto> UpdateUserStatusFromForm(EmployeeStatus status, [FromForm] UpdateMembersRequestDto inDto)
     {
-        return UpdateUserStatus(status, model);
+        return UpdateUserStatus(status, inDto);
     }
 
     [Update("type/{type}")]
-    public IEnumerable<EmployeeDto> UpdateUserTypeFromBody(EmployeeType type, [FromBody] UpdateMembersRequestDto model)
+    public IEnumerable<EmployeeDto> UpdateUserTypeFromBody(EmployeeType type, [FromBody] UpdateMembersRequestDto inDto)
     {
-        return UpdateUserType(type, model);
+        return UpdateUserType(type, inDto);
     }
 
     [Update("type/{type}")]
     [Consumes("application/x-www-form-urlencoded")]
-    public IEnumerable<EmployeeDto> UpdateUserTypeFromForm(EmployeeType type, [FromForm] UpdateMembersRequestDto model)
+    public IEnumerable<EmployeeDto> UpdateUserTypeFromForm(EmployeeType type, [FromForm] UpdateMembersRequestDto inDto)
     {
-        return UpdateUserType(type, model);
+        return UpdateUserType(type, inDto);
     }
 
-    private EmployeeDto AddMemberAsActivated(MemberRequestDto memberModel)
+    private EmployeeDto AddMemberAsActivated(MemberRequestDto inDto)
     {
         _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
 
         var user = new UserInfo();
 
-        memberModel.PasswordHash = (memberModel.PasswordHash ?? "").Trim();
-        if (string.IsNullOrEmpty(memberModel.PasswordHash))
+        inDto.PasswordHash = (inDto.PasswordHash ?? "").Trim();
+        if (string.IsNullOrEmpty(inDto.PasswordHash))
         {
-            memberModel.Password = (memberModel.Password ?? "").Trim();
+            inDto.Password = (inDto.Password ?? "").Trim();
 
-            if (string.IsNullOrEmpty(memberModel.Password))
+            if (string.IsNullOrEmpty(inDto.Password))
             {
-                memberModel.Password = UserManagerWrapper.GeneratePassword();
+                inDto.Password = UserManagerWrapper.GeneratePassword();
             }
             else
             {
-                _userManagerWrapper.CheckPasswordPolicy(memberModel.Password);
+                _userManagerWrapper.CheckPasswordPolicy(inDto.Password);
             }
 
-            memberModel.PasswordHash = _passwordHasher.GetClientPassword(memberModel.Password);
+            inDto.PasswordHash = _passwordHasher.GetClientPassword(inDto.Password);
         }
 
         //Validate email
-        var address = new MailAddress(memberModel.Email);
+        var address = new MailAddress(inDto.Email);
         user.Email = address.Address;
         //Set common fields
-        user.FirstName = memberModel.Firstname;
-        user.LastName = memberModel.Lastname;
-        user.Title = memberModel.Title;
-        user.Location = memberModel.Location;
-        user.Notes = memberModel.Comment;
-        user.Sex = "male".Equals(memberModel.Sex, StringComparison.OrdinalIgnoreCase)
+        user.FirstName = inDto.Firstname;
+        user.LastName = inDto.Lastname;
+        user.Title = inDto.Title;
+        user.Location = inDto.Location;
+        user.Notes = inDto.Comment;
+        user.Sex = "male".Equals(inDto.Sex, StringComparison.OrdinalIgnoreCase)
                        ? true
-                       : ("female".Equals(memberModel.Sex, StringComparison.OrdinalIgnoreCase) ? (bool?)false : null);
+                       : ("female".Equals(inDto.Sex, StringComparison.OrdinalIgnoreCase) ? (bool?)false : null);
 
-        user.BirthDate = memberModel.Birthday != null ? _tenantUtil.DateTimeFromUtc(memberModel.Birthday) : null;
-        user.WorkFromDate = memberModel.Worksfrom != null ? _tenantUtil.DateTimeFromUtc(memberModel.Worksfrom) : DateTime.UtcNow.Date;
+        user.BirthDate = inDto.Birthday != null ? _tenantUtil.DateTimeFromUtc(inDto.Birthday) : null;
+        user.WorkFromDate = inDto.Worksfrom != null ? _tenantUtil.DateTimeFromUtc(inDto.Worksfrom) : DateTime.UtcNow.Date;
 
-        UpdateContacts(memberModel.Contacts, user);
+        UpdateContacts(inDto.Contacts, user);
 
-        user = _userManagerWrapper.AddUser(user, memberModel.PasswordHash, false, false, memberModel.IsVisitor);
+        user = _userManagerWrapper.AddUser(user, inDto.PasswordHash, false, false, inDto.IsVisitor);
 
         user.ActivationStatus = EmployeeActivationStatus.Activated;
 
-        UpdateDepartments(memberModel.Department, user);
+        UpdateDepartments(inDto.Department, user);
 
-        if (memberModel.Files != _userPhotoManager.GetDefaultPhotoAbsoluteWebPath())
+        if (inDto.Files != _userPhotoManager.GetDefaultPhotoAbsoluteWebPath())
         {
-            UpdatePhotoUrl(memberModel.Files, user);
+            UpdatePhotoUrl(inDto.Files, user);
         }
 
         return _employeeFullDtoHelper.GetFull(user);
@@ -627,42 +627,42 @@ public class UserController : PeopleControllerBase
         }
     }
 
-    private async Task<string> InternalRegisterUserOnPersonalAsync(RegisterPersonalUserRequestDto model)
+    private async Task<string> InternalRegisterUserOnPersonalAsync(RegisterPersonalUserRequestDto inDto)
     {
         try
         {
-            if (_coreBaseSettings.CustomMode) model.Lang = "ru-RU";
+            if (_coreBaseSettings.CustomMode) inDto.Lang = "ru-RU";
 
-            var cultureInfo = _setupInfo.GetPersonalCulture(model.Lang).Value;
+            var cultureInfo = _setupInfo.GetPersonalCulture(inDto.Lang).Value;
 
             if (cultureInfo != null)
             {
                 Thread.CurrentThread.CurrentUICulture = cultureInfo;
             }
 
-            model.Email.ThrowIfNull(new ArgumentException(Resource.ErrorEmailEmpty, "email"));
+            inDto.Email.ThrowIfNull(new ArgumentException(Resource.ErrorEmailEmpty, "email"));
 
-            if (!model.Email.TestEmailRegex()) throw new ArgumentException(Resource.ErrorNotCorrectEmail, "email");
+            if (!inDto.Email.TestEmailRegex()) throw new ArgumentException(Resource.ErrorNotCorrectEmail, "email");
 
-            if (!SetupInfo.IsSecretEmail(model.Email)
+            if (!SetupInfo.IsSecretEmail(inDto.Email)
                 && !string.IsNullOrEmpty(_setupInfo.RecaptchaPublicKey) && !string.IsNullOrEmpty(_setupInfo.RecaptchaPrivateKey))
             {
                 var ip = Request.Headers["X-Forwarded-For"].ToString() ?? Request.GetUserHostAddress();
 
-                if (string.IsNullOrEmpty(model.RecaptchaResponse)
-                    || !await _recaptcha.ValidateRecaptchaAsync(model.RecaptchaResponse, ip))
+                if (string.IsNullOrEmpty(inDto.RecaptchaResponse)
+                    || !await _recaptcha.ValidateRecaptchaAsync(inDto.RecaptchaResponse, ip))
                 {
                     throw new RecaptchaException(Resource.RecaptchaInvalid);
                 }
             }
 
-            var newUserInfo = _userManager.GetUserByEmail(model.Email);
+            var newUserInfo = _userManager.GetUserByEmail(inDto.Email);
 
             if (_userManager.UserExists(newUserInfo.Id))
             {
-                if (!SetupInfo.IsSecretEmail(model.Email) || _securityContext.IsAuthenticated)
+                if (!SetupInfo.IsSecretEmail(inDto.Email) || _securityContext.IsAuthenticated)
                 {
-                    _studioNotifyService.SendAlreadyExist(model.Email);
+                    _studioNotifyService.SendAlreadyExist(inDto.Email);
                     return string.Empty;
                 }
 
@@ -676,7 +676,7 @@ public class UserController : PeopleControllerBase
                     _securityContext.Logout();
                 }
             }
-            if (!model.Spam)
+            if (!inDto.Spam)
             {
                 try
                 {
@@ -693,11 +693,11 @@ public class UserController : PeopleControllerBase
                 }
                 catch (Exception ex)
                 {
-                    _logger.Debug($"ERROR write to template_unsubscribe {ex.Message}, email:{model.Email.ToLowerInvariant()}");
+                    _logger.Debug($"ERROR write to template_unsubscribe {ex.Message}, email:{inDto.Email.ToLowerInvariant()}");
                 }
             }
 
-            _studioNotifyService.SendInvitePersonal(model.Email);
+            _studioNotifyService.SendInvitePersonal(inDto.Email);
         }
         catch (Exception ex)
         {
@@ -707,64 +707,64 @@ public class UserController : PeopleControllerBase
         return string.Empty;
     }
 
-    public EmployeeDto AddMember(MemberRequestDto memberModel)
+    public EmployeeDto AddMember(MemberRequestDto inDto)
     {
         _apiContext.AuthByClaim();
 
         _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
 
-        memberModel.PasswordHash = (memberModel.PasswordHash ?? "").Trim();
-        if (string.IsNullOrEmpty(memberModel.PasswordHash))
+        inDto.PasswordHash = (inDto.PasswordHash ?? "").Trim();
+        if (string.IsNullOrEmpty(inDto.PasswordHash))
         {
-            memberModel.Password = (memberModel.Password ?? "").Trim();
+            inDto.Password = (inDto.Password ?? "").Trim();
 
-            if (string.IsNullOrEmpty(memberModel.Password))
+            if (string.IsNullOrEmpty(inDto.Password))
             {
-                memberModel.Password = UserManagerWrapper.GeneratePassword();
+                inDto.Password = UserManagerWrapper.GeneratePassword();
             }
             else
             {
-                _userManagerWrapper.CheckPasswordPolicy(memberModel.Password);
+                _userManagerWrapper.CheckPasswordPolicy(inDto.Password);
             }
-            memberModel.PasswordHash = _passwordHasher.GetClientPassword(memberModel.Password);
+            inDto.PasswordHash = _passwordHasher.GetClientPassword(inDto.Password);
         }
 
         var user = new UserInfo();
 
         //Validate email
-        var address = new MailAddress(memberModel.Email);
+        var address = new MailAddress(inDto.Email);
         user.Email = address.Address;
         //Set common fields
-        user.FirstName = memberModel.Firstname;
-        user.LastName = memberModel.Lastname;
-        user.Title = memberModel.Title;
-        user.Location = memberModel.Location;
-        user.Notes = memberModel.Comment;
-        user.Sex = "male".Equals(memberModel.Sex, StringComparison.OrdinalIgnoreCase)
+        user.FirstName = inDto.Firstname;
+        user.LastName = inDto.Lastname;
+        user.Title = inDto.Title;
+        user.Location = inDto.Location;
+        user.Notes = inDto.Comment;
+        user.Sex = "male".Equals(inDto.Sex, StringComparison.OrdinalIgnoreCase)
                        ? true
-                       : ("female".Equals(memberModel.Sex, StringComparison.OrdinalIgnoreCase) ? (bool?)false : null);
+                       : ("female".Equals(inDto.Sex, StringComparison.OrdinalIgnoreCase) ? (bool?)false : null);
 
-        user.BirthDate = memberModel.Birthday != null && memberModel.Birthday != DateTime.MinValue ? _tenantUtil.DateTimeFromUtc(memberModel.Birthday) : null;
-        user.WorkFromDate = memberModel.Worksfrom != null && memberModel.Worksfrom != DateTime.MinValue ? _tenantUtil.DateTimeFromUtc(memberModel.Worksfrom) : DateTime.UtcNow.Date;
+        user.BirthDate = inDto.Birthday != null && inDto.Birthday != DateTime.MinValue ? _tenantUtil.DateTimeFromUtc(inDto.Birthday) : null;
+        user.WorkFromDate = inDto.Worksfrom != null && inDto.Worksfrom != DateTime.MinValue ? _tenantUtil.DateTimeFromUtc(inDto.Worksfrom) : DateTime.UtcNow.Date;
 
-        UpdateContacts(memberModel.Contacts, user);
+        UpdateContacts(inDto.Contacts, user);
 
-        user = _userManagerWrapper.AddUser(user, memberModel.PasswordHash, memberModel.FromInviteLink, true, memberModel.IsVisitor, memberModel.FromInviteLink);
+        user = _userManagerWrapper.AddUser(user, inDto.PasswordHash, inDto.FromInviteLink, true, inDto.IsVisitor, inDto.FromInviteLink);
 
-        var messageAction = memberModel.IsVisitor ? MessageAction.GuestCreated : MessageAction.UserCreated;
+        var messageAction = inDto.IsVisitor ? MessageAction.GuestCreated : MessageAction.UserCreated;
         _messageService.Send(messageAction, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
-        UpdateDepartments(memberModel.Department, user);
+        UpdateDepartments(inDto.Department, user);
 
-        if (memberModel.Files != _userPhotoManager.GetDefaultPhotoAbsoluteWebPath())
+        if (inDto.Files != _userPhotoManager.GetDefaultPhotoAbsoluteWebPath())
         {
-            UpdatePhotoUrl(memberModel.Files, user);
+            UpdatePhotoUrl(inDto.Files, user);
         }
 
         return _employeeFullDtoHelper.GetFull(user);
     }
 
-    private EmployeeDto ChangeUserPassword(Guid userid, MemberRequestDto memberModel)
+    private EmployeeDto ChangeUserPassword(Guid userid, MemberRequestDto inDto)
     {
         _apiContext.AuthByClaim();
         _permissionContext.DemandPermissions(new UserSecurityProvider(userid), Constants.Action_EditUser);
@@ -781,9 +781,9 @@ public class UserController : PeopleControllerBase
             throw new SecurityException();
         }
 
-        if (!string.IsNullOrEmpty(memberModel.Email))
+        if (!string.IsNullOrEmpty(inDto.Email))
         {
-            var address = new MailAddress(memberModel.Email);
+            var address = new MailAddress(inDto.Email);
             if (!string.Equals(address.Address, user.Email, StringComparison.OrdinalIgnoreCase))
             {
                 user.Email = address.Address.ToLowerInvariant();
@@ -792,21 +792,21 @@ public class UserController : PeopleControllerBase
             }
         }
 
-        memberModel.PasswordHash = (memberModel.PasswordHash ?? "").Trim();
+        inDto.PasswordHash = (inDto.PasswordHash ?? "").Trim();
 
-        if (string.IsNullOrEmpty(memberModel.PasswordHash))
+        if (string.IsNullOrEmpty(inDto.PasswordHash))
         {
-            memberModel.Password = (memberModel.Password ?? "").Trim();
+            inDto.Password = (inDto.Password ?? "").Trim();
 
-            if (!string.IsNullOrEmpty(memberModel.Password))
+            if (!string.IsNullOrEmpty(inDto.Password))
             {
-                memberModel.PasswordHash = _passwordHasher.GetClientPassword(memberModel.Password);
+                inDto.PasswordHash = _passwordHasher.GetClientPassword(inDto.Password);
             }
         }
 
-        if (!string.IsNullOrEmpty(memberModel.PasswordHash))
+        if (!string.IsNullOrEmpty(inDto.PasswordHash))
         {
-            _securityContext.SetUserPasswordHash(userid, memberModel.PasswordHash);
+            _securityContext.SetUserPasswordHash(userid, inDto.PasswordHash);
             _messageService.Send(MessageAction.UserUpdatedPassword);
 
             _cookiesManager.ResetUserCookie(userid);
@@ -866,16 +866,16 @@ public class UserController : PeopleControllerBase
         return users;
     }
 
-    public object SendEmailChangeInstructions(UpdateMemberRequestDto model)
+    public object SendEmailChangeInstructions(UpdateMemberRequestDto inDto)
     {
-        Guid.TryParse(model.UserId, out var userid);
+        Guid.TryParse(inDto.UserId, out var userid);
 
         if (userid == Guid.Empty)
         {
             throw new ArgumentNullException("userid");
         }
 
-        var email = (model.Email ?? "").Trim();
+        var email = (inDto.Email ?? "").Trim();
 
         if (string.IsNullOrEmpty(email))
         {
@@ -929,13 +929,13 @@ public class UserController : PeopleControllerBase
         return string.Format(Resource.MessageEmailChangeInstuctionsSentOnEmail, email);
     }
 
-    public IEnumerable<EmployeeDto> RemoveUsers(UpdateMembersRequestDto model)
+    public IEnumerable<EmployeeDto> RemoveUsers(UpdateMembersRequestDto inDto)
     {
         _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
 
-        CheckReassignProccess(model.UserIds);
+        CheckReassignProccess(inDto.UserIds);
 
-        var users = model.UserIds.Select(userId => _userManager.GetUsers(userId))
+        var users = inDto.UserIds.Select(userId => _userManager.GetUsers(userId))
             .Where(u => !_userManager.IsSystemUser(u.Id) && !u.IsLDAP())
             .ToList();
 
@@ -958,9 +958,9 @@ public class UserController : PeopleControllerBase
         return users.Select(u => _employeeFullDtoHelper.GetFull(u));
     }
 
-    public IEnumerable<EmployeeDto> ResendUserInvites(UpdateMembersRequestDto model)
+    public IEnumerable<EmployeeDto> ResendUserInvites(UpdateMembersRequestDto inDto)
     {
-        var users = model.UserIds
+        var users = inDto.UserIds
             .Where(userId => !_userManager.IsSystemUser(userId))
             .Select(userId => _userManager.GetUsers(userId))
             .ToList();
@@ -1015,23 +1015,23 @@ public class UserController : PeopleControllerBase
         return users.Select(u => _employeeFullDtoHelper.GetFull(u));
     }
 
-    public object SendUserPassword(MemberRequestDto memberModel)
+    public object SendUserPassword(MemberRequestDto inDto)
     {
-        string error = _userManagerWrapper.SendUserPassword(memberModel.Email);
+        string error = _userManagerWrapper.SendUserPassword(inDto.Email);
         if (!string.IsNullOrEmpty(error))
         {
-            _logger.ErrorFormat("Password recovery ({0}): {1}", memberModel.Email, error);
+            _logger.ErrorFormat("Password recovery ({0}): {1}", inDto.Email, error);
         }
 
-        return string.Format(Resource.MessageYourPasswordSendedToEmail, memberModel.Email);
+        return string.Format(Resource.MessageYourPasswordSendedToEmail, inDto.Email);
     }
 
-    public IEnumerable<EmployeeDto> UpdateEmployeeActivationStatus(EmployeeActivationStatus activationstatus, UpdateMembersRequestDto model)
+    public IEnumerable<EmployeeDto> UpdateEmployeeActivationStatus(EmployeeActivationStatus activationstatus, UpdateMembersRequestDto inDto)
     {
         _apiContext.AuthByClaim();
 
         var retuls = new List<EmployeeDto>();
-        foreach (var id in model.UserIds.Where(userId => !_userManager.IsSystemUser(userId)))
+        foreach (var id in inDto.UserIds.Where(userId => !_userManager.IsSystemUser(userId)))
         {
             _permissionContext.DemandPermissions(new UserSecurityProvider(id), Constants.Action_EditUser);
             var u = _userManager.GetUsers(id);
@@ -1048,7 +1048,7 @@ public class UserController : PeopleControllerBase
         return retuls;
     }
 
-    public EmployeeDto UpdateMemberCulture(string userid, UpdateMemberRequestDto memberModel)
+    public EmployeeDto UpdateMemberCulture(string userid, UpdateMemberRequestDto inDto)
     {
         var user = GetUserInfo(userid);
 
@@ -1061,11 +1061,11 @@ public class UserController : PeopleControllerBase
 
         var curLng = user.CultureName;
 
-        if (_setupInfo.EnabledCultures.Find(c => string.Equals(c.Name, memberModel.CultureName, StringComparison.InvariantCultureIgnoreCase)) != null)
+        if (_setupInfo.EnabledCultures.Find(c => string.Equals(c.Name, inDto.CultureName, StringComparison.InvariantCultureIgnoreCase)) != null)
         {
-            if (curLng != memberModel.CultureName)
+            if (curLng != inDto.CultureName)
             {
-                user.CultureName = memberModel.CultureName;
+                user.CultureName = inDto.CultureName;
 
                 try
                 {
@@ -1085,7 +1085,7 @@ public class UserController : PeopleControllerBase
         return _employeeFullDtoHelper.GetFull(user);
     }
 
-    public EmployeeDto UpdateMember(string userid, UpdateMemberRequestDto memberModel)
+    public EmployeeDto UpdateMember(string userid, UpdateMemberRequestDto inDto)
     {
         var user = GetUserInfo(userid);
 
@@ -1108,13 +1108,13 @@ public class UserController : PeopleControllerBase
         {
             //Set common fields
 
-            user.FirstName = memberModel.Firstname ?? user.FirstName;
-            user.LastName = memberModel.Lastname ?? user.LastName;
-            user.Location = memberModel.Location ?? user.Location;
+            user.FirstName = inDto.Firstname ?? user.FirstName;
+            user.LastName = inDto.Lastname ?? user.LastName;
+            user.Location = inDto.Location ?? user.Location;
 
             if (isAdmin)
             {
-                user.Title = memberModel.Title ?? user.Title;
+                user.Title = inDto.Title ?? user.Title;
             }
         }
 
@@ -1123,19 +1123,19 @@ public class UserController : PeopleControllerBase
             throw new Exception(Resource.ErrorIncorrectUserName);
         }
 
-        user.Notes = memberModel.Comment ?? user.Notes;
-        user.Sex = ("male".Equals(memberModel.Sex, StringComparison.OrdinalIgnoreCase)
+        user.Notes = inDto.Comment ?? user.Notes;
+        user.Sex = ("male".Equals(inDto.Sex, StringComparison.OrdinalIgnoreCase)
             ? true
-            : ("female".Equals(memberModel.Sex, StringComparison.OrdinalIgnoreCase) ? (bool?)false : null)) ?? user.Sex;
+            : ("female".Equals(inDto.Sex, StringComparison.OrdinalIgnoreCase) ? (bool?)false : null)) ?? user.Sex;
 
-        user.BirthDate = memberModel.Birthday != null ? _tenantUtil.DateTimeFromUtc(memberModel.Birthday) : user.BirthDate;
+        user.BirthDate = inDto.Birthday != null ? _tenantUtil.DateTimeFromUtc(inDto.Birthday) : user.BirthDate;
 
         if (user.BirthDate == resetDate)
         {
             user.BirthDate = null;
         }
 
-        user.WorkFromDate = memberModel.Worksfrom != null ? _tenantUtil.DateTimeFromUtc(memberModel.Worksfrom) : user.WorkFromDate;
+        user.WorkFromDate = inDto.Worksfrom != null ? _tenantUtil.DateTimeFromUtc(inDto.Worksfrom) : user.WorkFromDate;
 
         if (user.WorkFromDate == resetDate)
         {
@@ -1143,17 +1143,17 @@ public class UserController : PeopleControllerBase
         }
 
         //Update contacts
-        UpdateContacts(memberModel.Contacts, user);
-        UpdateDepartments(memberModel.Department, user);
+        UpdateContacts(inDto.Contacts, user);
+        UpdateDepartments(inDto.Department, user);
 
-        if (memberModel.Files != _userPhotoManager.GetPhotoAbsoluteWebPath(user.Id))
+        if (inDto.Files != _userPhotoManager.GetPhotoAbsoluteWebPath(user.Id))
         {
-            UpdatePhotoUrl(memberModel.Files, user);
+            UpdatePhotoUrl(inDto.Files, user);
         }
-        if (memberModel.Disable.HasValue)
+        if (inDto.Disable.HasValue)
         {
-            user.Status = memberModel.Disable.Value ? EmployeeStatus.Terminated : EmployeeStatus.Active;
-            user.TerminatedDate = memberModel.Disable.Value ? DateTime.UtcNow : null;
+            user.Status = inDto.Disable.Value ? EmployeeStatus.Terminated : EmployeeStatus.Active;
+            user.TerminatedDate = inDto.Disable.Value ? DateTime.UtcNow : null;
         }
         if (self && !isAdmin)
         {
@@ -1163,13 +1163,13 @@ public class UserController : PeopleControllerBase
         // change user type
         var canBeGuestFlag = !user.IsOwner(Tenant) && !user.IsAdmin(_userManager) && user.GetListAdminModules(_webItemSecurity).Count == 0 && !user.IsMe(_authContext);
 
-        if (memberModel.IsVisitor && !user.IsVisitor(_userManager) && canBeGuestFlag)
+        if (inDto.IsVisitor && !user.IsVisitor(_userManager) && canBeGuestFlag)
         {
             _userManager.AddUserIntoGroup(user.Id, Constants.GroupVisitor.ID);
             _webItemSecurityCache.ClearCache(Tenant.Id);
         }
 
-        if (!self && !memberModel.IsVisitor && user.IsVisitor(_userManager))
+        if (!self && !inDto.IsVisitor && user.IsVisitor(_userManager))
         {
             var usersQuota = _tenantExtra.GetTenantQuota().ActiveUsers;
             if (_tenantStatisticsProvider.GetUsersCount() < usersQuota)
@@ -1186,7 +1186,7 @@ public class UserController : PeopleControllerBase
         _userManager.SaveUserInfo(user);
         _messageService.Send(MessageAction.UserUpdated, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
-        if (memberModel.Disable.HasValue && memberModel.Disable.Value)
+        if (inDto.Disable.HasValue && inDto.Disable.Value)
         {
             _cookiesManager.ResetUserCookie(user.Id);
             _messageService.Send(MessageAction.CookieSettingsUpdated);
@@ -1195,11 +1195,11 @@ public class UserController : PeopleControllerBase
         return _employeeFullDtoHelper.GetFull(user);
     }
 
-    public IEnumerable<EmployeeDto> UpdateUserStatus(EmployeeStatus status, UpdateMembersRequestDto model)
+    public IEnumerable<EmployeeDto> UpdateUserStatus(EmployeeStatus status, UpdateMembersRequestDto inDto)
     {
         _permissionContext.DemandPermissions(Constants.Action_EditUser);
 
-        var users = model.UserIds.Select(userId => _userManager.GetUsers(userId))
+        var users = inDto.UserIds.Select(userId => _userManager.GetUsers(userId))
             .Where(u => !_userManager.IsSystemUser(u.Id) && !u.IsLDAP())
             .ToList();
 
@@ -1237,9 +1237,9 @@ public class UserController : PeopleControllerBase
         return users.Select(u => _employeeFullDtoHelper.GetFull(u));
     }
 
-    public IEnumerable<EmployeeDto> UpdateUserType(EmployeeType type, UpdateMembersRequestDto model)
+    public IEnumerable<EmployeeDto> UpdateUserType(EmployeeType type, UpdateMembersRequestDto inDto)
     {
-        var users = model.UserIds
+        var users = inDto.UserIds
             .Where(userId => !_userManager.IsSystemUser(userId))
             .Select(userId => _userManager.GetUsers(userId))
             .ToList();

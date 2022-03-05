@@ -60,52 +60,52 @@ public class RemoveUserDataController : ApiControllerBase
     }
 
     [Create(@"remove/start")]
-    public RemoveProgressItem StartRemoveFromBody([FromBody] TerminateRequestDto model)
+    public RemoveProgressItem StartRemoveFromBody([FromBody] TerminateRequestDto inDto)
     {
-        return StartRemove(model);
+        return StartRemove(inDto);
     }
 
     [Create(@"remove/start")]
     [Consumes("application/x-www-form-urlencoded")]
-    public RemoveProgressItem StartRemoveFromForm([FromForm] TerminateRequestDto model)
+    public RemoveProgressItem StartRemoveFromForm([FromForm] TerminateRequestDto inDto)
     {
-        return StartRemove(model);
+        return StartRemove(inDto);
     }
 
     [Update(@"remove/terminate")]
-    public void TerminateRemoveFromBody([FromBody] TerminateRequestDto model)
+    public void TerminateRemoveFromBody([FromBody] TerminateRequestDto inDto)
     {
-        TerminateRemove(model);
+        TerminateRemove(inDto);
     }
 
     [Update(@"remove/terminate")]
     [Consumes("application/x-www-form-urlencoded")]
-    public void TerminateRemoveFromForm([FromForm] TerminateRequestDto model)
+    public void TerminateRemoveFromForm([FromForm] TerminateRequestDto inDto)
     {
-        TerminateRemove(model);
+        TerminateRemove(inDto);
     }
 
-    private void TerminateRemove(TerminateRequestDto model)
+    private void TerminateRemove(TerminateRequestDto inDto)
     {
         _permissionContext.DemandPermissions(Constants.Action_EditUser);
 
-        _queueWorkerRemove.Terminate(Tenant.Id, model.UserId);
+        _queueWorkerRemove.Terminate(Tenant.Id, inDto.UserId);
     }
 
-    private RemoveProgressItem StartRemove(TerminateRequestDto model)
+    private RemoveProgressItem StartRemove(TerminateRequestDto inDto)
     {
         _permissionContext.DemandPermissions(Constants.Action_EditUser);
 
-        var user = _userManager.GetUsers(model.UserId);
+        var user = _userManager.GetUsers(inDto.UserId);
 
         if (user == null || user.Id == Constants.LostUser.Id)
         {
-            throw new ArgumentException("User with id = " + model.UserId + " not found");
+            throw new ArgumentException("User with id = " + inDto.UserId + " not found");
         }
 
         if (user.IsOwner(Tenant) || user.IsMe(_authContext) || user.Status != EmployeeStatus.Terminated)
         {
-            throw new ArgumentException("Can not delete user with id = " + model.UserId);
+            throw new ArgumentException("Can not delete user with id = " + inDto.UserId);
         }
 
         return _queueWorkerRemove.Start(Tenant.Id, user, _securityContext.CurrentAccount.ID, true);

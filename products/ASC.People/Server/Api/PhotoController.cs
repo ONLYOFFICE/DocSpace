@@ -37,16 +37,16 @@ public class PhotoController : PeopleControllerBase
     }
 
     [Create("{userid}/photo/thumbnails")]
-    public ThumbnailsDataDto CreateMemberPhotoThumbnailsFromBody(string userid, [FromBody] ThumbnailsRequestDto thumbnailsModel)
+    public ThumbnailsDataDto CreateMemberPhotoThumbnailsFromBody(string userid, [FromBody] ThumbnailsRequestDto inDto)
     {
-        return CreateMemberPhotoThumbnails(userid, thumbnailsModel);
+        return CreateMemberPhotoThumbnails(userid, inDto);
     }
 
     [Create("{userid}/photo/thumbnails")]
     [Consumes("application/x-www-form-urlencoded")]
-    public ThumbnailsDataDto CreateMemberPhotoThumbnailsFromForm(string userid, [FromForm] ThumbnailsRequestDto thumbnailsModel)
+    public ThumbnailsDataDto CreateMemberPhotoThumbnailsFromForm(string userid, [FromForm] ThumbnailsRequestDto inDto)
     {
-        return CreateMemberPhotoThumbnails(userid, thumbnailsModel);
+        return CreateMemberPhotoThumbnails(userid, inDto);
     }
 
     [Delete("{userid}/photo")]
@@ -82,27 +82,27 @@ public class PhotoController : PeopleControllerBase
     }
 
     [Update("{userid}/photo")]
-    public ThumbnailsDataDto UpdateMemberPhotoFromBody(string userid, [FromBody] UpdateMemberRequestDto model)
+    public ThumbnailsDataDto UpdateMemberPhotoFromBody(string userid, [FromBody] UpdateMemberRequestDto inDto)
     {
-        return UpdateMemberPhoto(userid, model);
+        return UpdateMemberPhoto(userid, inDto);
     }
 
     [Update("{userid}/photo")]
     [Consumes("application/x-www-form-urlencoded")]
-    public ThumbnailsDataDto UpdateMemberPhotoFromForm(string userid, [FromForm] UpdateMemberRequestDto model)
+    public ThumbnailsDataDto UpdateMemberPhotoFromForm(string userid, [FromForm] UpdateMemberRequestDto inDto)
     {
-        return UpdateMemberPhoto(userid, model);
+        return UpdateMemberPhoto(userid, inDto);
     }
 
     [Create("{userid}/photo")]
-    public FileUploadResultDto UploadMemberPhoto(string userid, IFormCollection model)
+    public FileUploadResultDto UploadMemberPhoto(string userid, IFormCollection formCollection)
     {
         var result = new FileUploadResultDto();
-        var autosave = bool.Parse(model["Autosave"]);
+        var autosave = bool.Parse(formCollection["Autosave"]);
 
         try
         {
-            if (model.Files.Count != 0)
+            if (formCollection.Files.Count != 0)
             {
                 Guid userId;
                 try
@@ -116,7 +116,7 @@ public class PhotoController : PeopleControllerBase
 
                 _permissionContext.DemandPermissions(new UserSecurityProvider(userId), Constants.Action_EditUser);
 
-                var userPhoto = model.Files[0];
+                var userPhoto = formCollection.Files[0];
 
                 if (userPhoto.Length > _setupInfo.MaxImageUploadSize)
                 {
@@ -193,7 +193,7 @@ public class PhotoController : PeopleControllerBase
         return result;
     }
 
-    private ThumbnailsDataDto CreateMemberPhotoThumbnails(string userid, ThumbnailsRequestDto thumbnailsModel)
+    private ThumbnailsDataDto CreateMemberPhotoThumbnails(string userid, ThumbnailsRequestDto inDto)
     {
         var user = GetUserInfo(userid);
 
@@ -204,12 +204,12 @@ public class PhotoController : PeopleControllerBase
 
         _permissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
 
-        if (!string.IsNullOrEmpty(thumbnailsModel.TmpFile))
+        if (!string.IsNullOrEmpty(inDto.TmpFile))
         {
-            var fileName = Path.GetFileName(thumbnailsModel.TmpFile);
+            var fileName = Path.GetFileName(inDto.TmpFile);
             var data = _userPhotoManager.GetTempPhotoData(fileName);
 
-            var settings = new UserPhotoThumbnailSettings(thumbnailsModel.X, thumbnailsModel.Y, thumbnailsModel.Width, thumbnailsModel.Height);
+            var settings = new UserPhotoThumbnailSettings(inDto.X, inDto.Y, inDto.Width, inDto.Height);
 
             _settingsManager.SaveForUser(settings, user.Id);
             _userPhotoManager.RemovePhoto(user.Id);
@@ -218,7 +218,7 @@ public class PhotoController : PeopleControllerBase
         }
         else
         {
-            UserPhotoThumbnailManager.SaveThumbnails(_userPhotoManager, _settingsManager, thumbnailsModel.X, thumbnailsModel.Y, thumbnailsModel.Width, thumbnailsModel.Height, user.Id);
+            UserPhotoThumbnailManager.SaveThumbnails(_userPhotoManager, _settingsManager, inDto.X, inDto.Y, inDto.Width, inDto.Height, user.Id);
         }
 
         _userManager.SaveUserInfo(user);
@@ -227,7 +227,7 @@ public class PhotoController : PeopleControllerBase
         return new ThumbnailsDataDto(user.Id, _userPhotoManager);
     }
 
-    private ThumbnailsDataDto UpdateMemberPhoto(string userid, UpdateMemberRequestDto model)
+    private ThumbnailsDataDto UpdateMemberPhoto(string userid, UpdateMemberRequestDto inDto)
     {
         var user = GetUserInfo(userid);
 
@@ -236,9 +236,9 @@ public class PhotoController : PeopleControllerBase
             throw new SecurityException();
         }
 
-        if (model.Files != _userPhotoManager.GetPhotoAbsoluteWebPath(user.Id))
+        if (inDto.Files != _userPhotoManager.GetPhotoAbsoluteWebPath(user.Id))
         {
-            UpdatePhotoUrl(model.Files, user);
+            UpdatePhotoUrl(inDto.Files, user);
         }
 
         _userManager.SaveUserInfo(user);

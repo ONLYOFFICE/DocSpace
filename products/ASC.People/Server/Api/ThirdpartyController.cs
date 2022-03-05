@@ -111,31 +111,31 @@ public class ThirdpartyController : ApiControllerBase
     }
 
     [Update("thirdparty/linkaccount")]
-    public void LinkAccountFromBody([FromBody] LinkAccountRequestDto model)
+    public void LinkAccountFromBody([FromBody] LinkAccountRequestDto inDto)
     {
-        LinkAccount(model);
+        LinkAccount(inDto);
     }
 
     [Update("thirdparty/linkaccount")]
     [Consumes("application/x-www-form-urlencoded")]
-    public void LinkAccountFromForm([FromForm] LinkAccountRequestDto model)
+    public void LinkAccountFromForm([FromForm] LinkAccountRequestDto inDto)
     {
-        LinkAccount(model);
+        LinkAccount(inDto);
     }
 
     [AllowAnonymous]
     [Create("thirdparty/signup")]
-    public void SignupAccountFromBody([FromBody] SignupAccountRequestDto model)
+    public void SignupAccountFromBody([FromBody] SignupAccountRequestDto inDto)
     {
-        SignupAccount(model);
+        SignupAccount(inDto);
     }
 
     [AllowAnonymous]
     [Create("thirdparty/signup")]
     [Consumes("application/x-www-form-urlencoded")]
-    public void SignupAccountFromForm([FromForm] SignupAccountRequestDto model)
+    public void SignupAccountFromForm([FromForm] SignupAccountRequestDto inDto)
     {
-        SignupAccount(model);
+        SignupAccount(inDto);
     }
 
     [Delete("thirdparty/unlinkaccount")]
@@ -146,9 +146,9 @@ public class ThirdpartyController : ApiControllerBase
         _messageService.Send(MessageAction.UserUnlinkedSocialAccount, GetMeaningfulProviderName(provider));
     }
 
-    private void LinkAccount(LinkAccountRequestDto model)
+    private void LinkAccount(LinkAccountRequestDto inDto)
     {
-        var profile = new LoginProfile(_signature, _instanceCrypto, model.SerializedProfile);
+        var profile = new LoginProfile(_signature, _instanceCrypto, inDto.SerializedProfile);
 
         if (!(_coreBaseSettings.Standalone || _tenantExtra.GetTenantQuota().Oauth))
         {
@@ -170,10 +170,10 @@ public class ThirdpartyController : ApiControllerBase
         }
     }
 
-    private void SignupAccount(SignupAccountRequestDto model)
+    private void SignupAccount(SignupAccountRequestDto inDto)
     {
-        var employeeType = model.EmplType ?? EmployeeType.User;
-        var passwordHash = model.PasswordHash;
+        var employeeType = inDto.EmplType ?? EmployeeType.User;
+        var passwordHash = inDto.PasswordHash;
         var mustChangePassword = false;
         if (string.IsNullOrEmpty(passwordHash))
         {
@@ -181,7 +181,7 @@ public class ThirdpartyController : ApiControllerBase
             mustChangePassword = true;
         }
 
-        var thirdPartyProfile = new LoginProfile(_signature, _instanceCrypto, model.SerializedProfile);
+        var thirdPartyProfile = new LoginProfile(_signature, _instanceCrypto, inDto.SerializedProfile);
         if (!string.IsNullOrEmpty(thirdPartyProfile.AuthorizationError))
         {
             // ignore cancellation
@@ -202,7 +202,7 @@ public class ThirdpartyController : ApiControllerBase
         try
         {
             _securityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
-            var newUser = CreateNewUser(GetFirstName(model, thirdPartyProfile), GetLastName(model, thirdPartyProfile), GetEmailAddress(model, thirdPartyProfile), passwordHash, employeeType, false);
+            var newUser = CreateNewUser(GetFirstName(inDto, thirdPartyProfile), GetLastName(inDto, thirdPartyProfile), GetEmailAddress(inDto, thirdPartyProfile), passwordHash, employeeType, false);
             var messageAction = employeeType == EmployeeType.User ? MessageAction.UserCreatedViaInvite : MessageAction.GuestCreatedViaInvite;
             _messageService.Send(MessageInitiator.System, messageAction, _messageTarget.Create(newUser.Id), newUser.DisplayUserName(false, _displayUserSettingsHelper));
             userID = newUser.Id;
@@ -291,55 +291,55 @@ public class ThirdpartyController : ApiControllerBase
         }
     }
 
-    private string GetEmailAddress(SignupAccountRequestDto model)
+    private string GetEmailAddress(SignupAccountRequestDto inDto)
     {
-        if (!string.IsNullOrEmpty(model.Email))
+        if (!string.IsNullOrEmpty(inDto.Email))
         {
-            return model.Email.Trim();
+            return inDto.Email.Trim();
         }
 
         return string.Empty;
     }
 
-    private string GetEmailAddress(SignupAccountRequestDto model, LoginProfile account)
+    private string GetEmailAddress(SignupAccountRequestDto inDto, LoginProfile account)
     {
-        var value = GetEmailAddress(model);
+        var value = GetEmailAddress(inDto);
 
         return string.IsNullOrEmpty(value) ? account.EMail : value;
     }
 
-    private string GetFirstName(SignupAccountRequestDto model)
+    private string GetFirstName(SignupAccountRequestDto inDto)
     {
         var value = string.Empty;
-        if (!string.IsNullOrEmpty(model.FirstName))
+        if (!string.IsNullOrEmpty(inDto.FirstName))
         {
-            value = model.FirstName.Trim();
+            value = inDto.FirstName.Trim();
         }
 
         return HtmlUtil.GetText(value);
     }
 
-    private string GetFirstName(SignupAccountRequestDto model, LoginProfile account)
+    private string GetFirstName(SignupAccountRequestDto inDto, LoginProfile account)
     {
-        var value = GetFirstName(model);
+        var value = GetFirstName(inDto);
 
         return string.IsNullOrEmpty(value) ? account.FirstName : value;
     }
 
-    private string GetLastName(SignupAccountRequestDto model)
+    private string GetLastName(SignupAccountRequestDto inDto)
     {
         var value = string.Empty;
-        if (!string.IsNullOrEmpty(model.LastName))
+        if (!string.IsNullOrEmpty(inDto.LastName))
         {
-            value = model.LastName.Trim();
+            value = inDto.LastName.Trim();
         }
 
         return HtmlUtil.GetText(value);
     }
 
-    private string GetLastName(SignupAccountRequestDto model, LoginProfile account)
+    private string GetLastName(SignupAccountRequestDto inDto, LoginProfile account)
     {
-        var value = GetLastName(model);
+        var value = GetLastName(inDto);
 
         return string.IsNullOrEmpty(value) ? account.LastName : value;
     }

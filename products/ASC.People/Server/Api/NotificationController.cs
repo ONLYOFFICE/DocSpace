@@ -28,16 +28,16 @@ public class NotificationController : ApiControllerBase
     }
 
     [Create("phone")]
-    public object SendNotificationToChangeFromBody([FromBody] UpdateMemberRequestDto model)
+    public object SendNotificationToChangeFromBody([FromBody] UpdateMemberRequestDto inDto)
     {
-        return SendNotificationToChange(model.UserId);
+        return SendNotificationToChange(inDto.UserId);
     }
 
     [Create("phone")]
     [Consumes("application/x-www-form-urlencoded")]
-    public object SendNotificationToChangeFromForm([FromForm] UpdateMemberRequestDto model)
+    public object SendNotificationToChangeFromForm([FromForm] UpdateMemberRequestDto inDto)
     {
-        return SendNotificationToChange(model.UserId);
+        return SendNotificationToChange(inDto.UserId);
     }
 
     private object SendNotificationToChange(string userId)
