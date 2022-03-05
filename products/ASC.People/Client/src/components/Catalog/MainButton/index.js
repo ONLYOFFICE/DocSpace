@@ -150,6 +150,7 @@ class CatalogMainButtonContent extends React.Component {
       <>
         {isMobile || isMobileUtils() || isTabletUtils() ? (
           <MobileView
+            labelProps={t("OtherOperations")}
             actionOptions={menuModel}
             buttonOptions={links}
             sectionWidth={sectionWidth}

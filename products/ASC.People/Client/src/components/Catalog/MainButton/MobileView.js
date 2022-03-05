@@ -24,7 +24,12 @@ const StyledMainButtonMobile = styled(MainButtonMobile)`
   `}
 `;
 
-const MobileView = ({ actionOptions, buttonOptions, sectionWidth }) => {
+const MobileView = ({
+  actionOptions,
+  buttonOptions,
+  sectionWidth,
+  labelProps,
+}) => {
   const [isOpenButton, setIsOpenButton] = React.useState(false);
 
   const openButtonToggler = () => {
@@ -39,7 +44,7 @@ const MobileView = ({ actionOptions, buttonOptions, sectionWidth }) => {
       isOpenButton={isOpenButton}
       onUploadClick={openButtonToggler}
       onClose={openButtonToggler}
-      title="Upload"
+      title={labelProps}
       percent={0}
       withButton={true}
     />
