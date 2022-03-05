@@ -30,7 +30,6 @@ import {
   onItemClick,
 } from "@appserver/studio/src/helpers/utils";
 import StyledExternalLinkIcon from "@appserver/studio/src/components/StyledExternalLinkIcon";
-import NavDesktopItem from "./nav-desktop-item";
 import { Base } from "@appserver/components/themes";
 
 const { proxyURL } = AppServerConfig;
@@ -236,7 +235,7 @@ const HeaderComponent = ({
           )}
         </LinkWithoutRedirect>
 
-        {!isPersonal && (
+        {isNavAvailable && isDesktopView && !isPersonal && (
           <StyledNavigationIconsWrapper>
             {mainModules.map((item) => {
               return (
@@ -261,18 +260,6 @@ const HeaderComponent = ({
               );
             })}
           </StyledNavigationIconsWrapper>
-        )}
-
-        {isNavAvailable && isDesktopView && !isPersonal && (
-          <div className="header-items-wrapper not-selectable">
-            {mainModulesWithoutSettings.map((module) => (
-              <NavDesktopItem
-                isActive={module.id == currentProductId}
-                key={module.id}
-                module={module}
-              />
-            ))}
-          </div>
         )}
       </Header>
 

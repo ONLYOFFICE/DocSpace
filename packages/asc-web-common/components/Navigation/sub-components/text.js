@@ -13,16 +13,20 @@ import { Base } from "@appserver/components/themes";
 
 const StyledTextContainer = styled.div`
   width: fit-content;
+
   position: relative;
   display: grid;
-  grid-template-columns: auto 14px;
+
+  grid-template-columns: ${(props) =>
+    props.isRootFolder ? "auto" : "auto 12px"};
 
   align-items: center;
+
   ${(props) => !props.isRootFolder && "cursor: pointer"};
 `;
 
 const StyledHeadline = styled(Headline)`
-  width: 100%;
+  width: calc(100% + 1px);
   font-weight: 700;
   font-size: ${isMobile ? "21px !important" : "18px"};
   line-height: ${isMobile ? "28px !important" : "24px"};
@@ -36,8 +40,7 @@ const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
   min-width: 8px !important;
   width: 8px !important;
   min-height: 18px !important;
-  padding-left: 6px;
-
+  padding: 0 2px 0 4px;
   path {
     fill: ${(props) => props.theme.navigation.expanderColor};
   }
@@ -51,7 +54,7 @@ const StyledExpanderDownIconRotate = styled(ExpanderDownIcon)`
   min-width: 8px !important;
   width: 8px !important;
   min-height: 18px !important;
-  padding-right: 6px;
+  padding: 0 4px 0 1px;
   transform: rotate(-180deg);
 
   path {

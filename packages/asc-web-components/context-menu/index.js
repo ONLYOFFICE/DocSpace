@@ -7,6 +7,16 @@ import Portal from "../portal";
 import StyledContextMenu from "./styled-context-menu";
 import SubMenu from "./sub-components/sub-menu";
 
+import { isMobile, isMobileOnly } from "react-device-detect";
+import {
+  isMobile as isMobileUtils,
+  isTablet as isTabletUtils,
+} from "../utils/device";
+
+import Backdrop from "../backdrop";
+import Text from "../text";
+import { ReactSVG } from "react-svg";
+
 class ContextMenu extends Component {
   constructor(props) {
     super(props);
@@ -15,6 +25,7 @@ class ContextMenu extends Component {
       visible: false,
       reshow: false,
       resetMenu: false,
+      changeView: false,
     };
 
     this.menuRef = React.createRef();
@@ -57,6 +68,7 @@ class ContextMenu extends Component {
           visible: false,
           reshow: false,
           resetMenu: true,
+          changeView: false,
         },
         () => this.show(event)
       );
@@ -65,7 +77,7 @@ class ContextMenu extends Component {
 
   hide = (e) => {
     this.currentEvent = e;
-    this.setState({ visible: false, reshow: false }, () => {
+    this.setState({ visible: false, reshow: false, changeView: false }, () => {
       if (this.props.onHide) {
         this.props.onHide(this.currentEvent);
       }
@@ -108,6 +120,16 @@ class ContextMenu extends Component {
         ? this.menuRef.current.offsetHeight
         : DomHelpers.getHiddenElementOuterHeight(this.menuRef.current);
       let viewport = DomHelpers.getViewport();
+
+      if ((isMobile || isTabletUtils()) && height > 483) {
+        this.setState({ changeView: true });
+        return;
+      }
+
+      if ((isMobileOnly || isMobileUtils()) && height > 210) {
+        this.setState({ changeView: true });
+        return;
+      }
 
       //flip
       if (left + width - document.body.scrollLeft > viewport.width) {
@@ -260,43 +282,68 @@ class ContextMenu extends Component {
       this.props.className
     );
 
+    const changeView = this.state.changeView;
+
     return (
-      <StyledContextMenu>
-        <CSSTransition
-          nodeRef={this.menuRef}
-          classNames="p-contextmenu"
-          in={this.state.visible}
-          timeout={{ enter: 250, exit: 0 }}
-          unmountOnExit
-          onEnter={this.onEnter}
-          onEntered={this.onEntered}
-          onExit={this.onExit}
-          onExited={this.onExited}
-        >
-          <div
-            ref={this.menuRef}
-            id={this.props.id}
-            className={className}
-            style={this.props.style}
-            onClick={this.onMenuClick}
-            onMouseEnter={this.onMenuMouseEnter}
+      <>
+        <StyledContextMenu changeView={changeView}>
+          <CSSTransition
+            nodeRef={this.menuRef}
+            classNames="p-contextmenu"
+            in={this.state.visible}
+            timeout={{ enter: 250, exit: 0 }}
+            unmountOnExit
+            onEnter={this.onEnter}
+            onEntered={this.onEntered}
+            onExit={this.onExit}
+            onExited={this.onExited}
           >
-            <SubMenu
-              model={this.props.model}
-              root
-              resetMenu={this.state.resetMenu}
-              onLeafClick={this.onLeafClick}
-            />
-          </div>
-        </CSSTransition>
-      </StyledContextMenu>
+            <div
+              ref={this.menuRef}
+              id={this.props.id}
+              className={className}
+              style={this.props.style}
+              onClick={this.onMenuClick}
+              onMouseEnter={this.onMenuMouseEnter}
+            >
+              {changeView && (
+                <div className="contextmenu-header">
+                  <div className="icon-wrapper">
+                    <ReactSVG
+                      src={this.props.header.icon}
+                      className="drop-down-item_icon"
+                    />
+                  </div>
+                  <Text className="text" truncate={true}>
+                    {this.props.header.title}
+                  </Text>
+                </div>
+              )}
+              <SubMenu
+                model={this.props.model}
+                root
+                resetMenu={this.state.resetMenu}
+                onLeafClick={this.onLeafClick}
+                changeView={changeView}
+              />
+            </div>
+          </CSSTransition>
+        </StyledContextMenu>
+      </>
     );
   };
 
   render() {
     const element = this.renderContextMenu();
 
-    return <Portal element={element} appendTo={this.props.appendTo} />;
+    return (
+      <>
+        {this.props.withBackdrop && (
+          <Backdrop visible={this.state.visible} withBackground={true} />
+        )}
+        <Portal element={element} appendTo={this.props.appendTo} />
+      </>
+    );
   }
 }
 
@@ -305,12 +352,16 @@ ContextMenu.propTypes = {
   id: PropTypes.string,
   /** An array of menuitems */
   model: PropTypes.array,
+  /** An object of header with icon and label */
+  header: PropTypes.object,
   /** Inline style of the component */
   style: PropTypes.object,
   /** Style class of the component */
   className: PropTypes.string,
   /** Attaches the menu to document instead of a particular item */
   global: PropTypes.bool,
+  /** Tell when context menu was render with backdrop */
+  withBackdrop: PropTypes.bool,
   /** Base zIndex value to use in layering */
   autoZIndex: PropTypes.bool,
   /** Whether to automatically manage layering */

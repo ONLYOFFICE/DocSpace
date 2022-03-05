@@ -340,7 +340,9 @@ class NewContextMenu extends React.Component {
   renderContextMenuItems() {
     if (!this.props.model) return null;
     if (this.state.changeView) {
-      const rowHeights = this.props.model.map((item, index) => {
+      const model = this.props.model.filter((item) => !!item);
+
+      const rowHeights = model.map((item, index) => {
         if (!item) return 0;
         if (item.isSeparator) return 13;
         return 36;
@@ -359,10 +361,10 @@ class NewContextMenu extends React.Component {
         <VariableSizeList
           height={listHeight}
           width={"auto"}
-          itemCount={this.props.model.length}
+          itemCount={model.length}
           itemSize={getItemSize}
           itemData={{
-            data: this.props.model,
+            data: model,
             hideMenu: this.hideMenu.bind(this),
           }}
           outerElementType={CustomScrollbarsVirtualList}

@@ -28,6 +28,8 @@ const FilterInput = ({
   contextMenuHeader,
   headerLabel,
   viewSelectorVisible,
+  isRecentFolder,
+  isFavoritesFolder,
   ...props
 }) => {
   const [viewSettings, setViewSettings] = React.useState([]);
@@ -84,7 +86,7 @@ const FilterInput = ({
         />
       ) : (
         <>
-          {(isMobile || isTabletUtils()) && (
+          {(isMobile || isTabletUtils() || isMobileUtils()) && (
             <SortButton
               selectedFilterData={selectedFilterData}
               getSortData={getSortData}
@@ -93,6 +95,8 @@ const FilterInput = ({
               viewSettings={viewSettings}
               onSort={onSort}
               viewSelectorVisible={viewSelectorVisible}
+              isRecentFolder={isRecentFolder}
+              isFavoritesFolder={isFavoritesFolder}
             />
           )}
         </>

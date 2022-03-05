@@ -3,7 +3,7 @@ import React from "react";
 
 import Checkbox from "../checkbox";
 import ContextMenuButton from "../context-menu-button";
-import NewContextMenu from "../new-context-menu";
+import ContextMenu from "../context-menu";
 import {
   StyledOptionButton,
   StyledContentElement,
@@ -125,11 +125,12 @@ class Row extends React.Component {
           ) : (
             <div className="expandButton"> </div>
           )}
-          <NewContextMenu
+          <ContextMenu
             model={contextOptions}
             ref={this.cm}
             header={contextMenuHeader}
-          ></NewContextMenu>
+            withBackdrop={true}
+          ></ContextMenu>
         </StyledOptionButton>
       </StyledRow>
     );
