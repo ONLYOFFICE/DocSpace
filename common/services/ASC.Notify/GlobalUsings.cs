@@ -27,6 +27,7 @@ global using AutoMapper;
 
 global using Google.Protobuf.Collections;
 
+global using Microsoft.AspNetCore.Builder;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Hosting.WindowsServices;
 global using Microsoft.Extensions.Options;

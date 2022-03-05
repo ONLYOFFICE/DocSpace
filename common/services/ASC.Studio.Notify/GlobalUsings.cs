@@ -12,6 +12,8 @@ global using ASC.Web.Studio.Core.Notify;
 
 global using Autofac.Extensions.DependencyInjection;
 
+global using Microsoft.AspNetCore.Builder;
+global using Microsoft.AspNetCore.Hosting;
 global using Microsoft.Extensions.Hosting.WindowsServices;
 
 global using StackExchange.Redis.Extensions.Core.Configuration;
