@@ -1,18 +1,33 @@
+import AppServerConfig from "@appserver/common/constants/AppServerConfig";
+import { combineUrl } from "@appserver/common/utils";
 import { isDesktop } from "@appserver/components/utils/device";
 import { makeAutoObservable } from "mobx";
+import config from "../../package.json";
+import { encryptionUploadDialog } from "../helpers/desktop";
 
 class HotkeyStore {
   filesStore;
   dialogsStore;
   settingsStore;
   filesActionsStore;
+  treeFoldersStore;
+  uploadDataStore;
 
-  constructor(filesStore, dialogsStore, settingsStore, filesActionsStore) {
+  constructor(
+    filesStore,
+    dialogsStore,
+    settingsStore,
+    filesActionsStore,
+    treeFoldersStore,
+    uploadDataStore
+  ) {
     makeAutoObservable(this);
     this.filesStore = filesStore;
     this.dialogsStore = dialogsStore;
     this.settingsStore = settingsStore;
     this.filesActionsStore = filesActionsStore;
+    this.treeFoldersStore = treeFoldersStore;
+    this.uploadDataStore = uploadDataStore;
   }
 
   activateHotkeys = () => {
@@ -334,6 +349,37 @@ class HotkeyStore {
     if (!hotkeyCaret) {
       setHotkeyCaret(filesList[0]);
       setHotkeyCaretStart(filesList[0]);
+    }
+  };
+
+  goToHomePage = (history) => {
+    const urlFilter = this.filesStore.filter.toUrlParams();
+
+    history.push(
+      combineUrl(
+        AppServerConfig.proxyURL,
+        config.homepage,
+        `/filter?${urlFilter}`
+      )
+    );
+  };
+
+  uploadFile = (isFolder, history, t) => {
+    if (isFolder) {
+      if (this.treeFoldersStore.isPrivacyFolder) return;
+      const folderInput = document.getElementById("customFolderInput");
+      folderInput && folderInput.click();
+    } else {
+      if (this.treeFoldersStore.isPrivacyFolder) {
+        encryptionUploadDialog((encryptedFile, encrypted) => {
+          encryptedFile.encrypted = encrypted;
+          this.goToHomePage(history);
+          this.uploadDataStore.startUpload([encryptedFile], null, t);
+        });
+      } else {
+        const fileInput = document.getElementById("customFileInput");
+        fileInput && fileInput.click();
+      }
     }
   };
 

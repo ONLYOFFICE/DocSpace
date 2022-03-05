@@ -7,6 +7,7 @@ const withHotkeys = (Component) => {
   const WithHotkeys = (props) => {
     const {
       t,
+      history,
       setSelected,
       viewAs,
       setViewAs,
@@ -37,6 +38,7 @@ const withHotkeys = (Component) => {
       backToParentFolder,
 
       hideArticle,
+      uploadFile,
     } = props;
 
     const hotkeysFilter = {
@@ -203,33 +205,10 @@ const withHotkeys = (Component) => {
     );
 
     //Upload file
-    useHotkeys(
-      "Shift+u",
-      () => {
-        // if (this.props.isPrivacy) {
-        //   encryptionUploadDialog((encryptedFile, encrypted) => {
-        //     const { startUpload, t } = this.props;
-        //     encryptedFile.encrypted = encrypted;
-        //     this.goToHomePage();
-        //     startUpload([encryptedFile], null, t);
-        //   });
-        // } else {
-        const fileInput = document.getElementById("customFileInput");
-        fileInput && fileInput.click();
-        // }
-      },
-      hotkeysFilter
-    );
+    useHotkeys("Shift+u", () => uploadFile(false, history, t), hotkeysFilter);
 
     //Upload folder
-    useHotkeys(
-      "Shift+i",
-      () => {
-        const folderInput = document.getElementById("customFolderInput");
-        folderInput && folderInput.click();
-      },
-      hotkeysFilter
-    );
+    useHotkeys("Shift+i", () => uploadFile(true), hotkeysFilter);
 
     //Go to the top of the list
     useHotkeys(
@@ -274,6 +253,7 @@ const withHotkeys = (Component) => {
         openItem,
         selectAll,
         activateHotkeys,
+        uploadFile,
       } = hotkeyStore;
 
       const {
@@ -319,6 +299,7 @@ const withHotkeys = (Component) => {
         backToParentFolder,
 
         hideArticle,
+        uploadFile,
       };
     }
   )(observer(WithHotkeys));

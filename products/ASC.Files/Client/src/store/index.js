@@ -73,7 +73,9 @@ const hotkeyStore = new HotkeyStore(
   filesStore,
   dialogsStore,
   settingsStore,
-  filesActionsStore
+  filesActionsStore,
+  treeFoldersStore,
+  uploadDataStore
 );
 
 //const selectedFilesStore = new SelectedFilesStore(selectedFilesStore);
