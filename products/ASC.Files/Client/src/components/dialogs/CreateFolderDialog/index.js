@@ -6,6 +6,7 @@ import Button from "@appserver/components/button";
 import ModalDialog from "@appserver/components/modal-dialog";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
+import toastr from "@appserver/components/toast/toastr";
 
 const CreateFolderDialogComponent = (props) => {
   const {
@@ -20,6 +21,8 @@ const CreateFolderDialogComponent = (props) => {
     renameFolder,
     renameItem,
     setRenameItem,
+    folderId,
+    setAction,
   } = props;
 
   const [folderName, setFolderName] = useState(
@@ -30,24 +33,29 @@ const CreateFolderDialogComponent = (props) => {
   const onClose = () => {
     setCreateFolderDialogVisible(false);
     setRenameItem(null);
+    setAction({
+      type: null,
+      id: null,
+      extension: null,
+      title: "",
+      templateId: null,
+    });
   };
 
-  const onCreate = () => {
+  const onCreate = async () => {
     if (folderName.length === 0) {
       setInputError(true);
       return;
     }
-    let folderId = filter.folder;
-    if (folderId === "@my") folderId = 2;
 
-    if (renameItem) {
-      renameFolder(renameItem.id, folderName).then(() =>
-        fetchFiles(folderId, filter)
-      );
-    } else {
-      createFolder(folderId, folderName).then(() =>
-        fetchFiles(folderId, filter)
-      );
+    try {
+      (await renameItem)
+        ? renameFolder(renameItem.id, folderName)
+        : createFolder(folderId, folderName);
+
+      await fetchFiles(folderId, filter);
+    } catch (e) {
+      toastr.error(e);
     }
     onClose();
   };
@@ -71,6 +79,7 @@ const CreateFolderDialogComponent = (props) => {
       isLoading={!tReady}
       visible={visible}
       onClose={onClose}
+      contentWidth={"400px"}
     >
       <ModalDialog.Header>{headerTranslate}</ModalDialog.Header>
       <ModalDialog.Body>
@@ -84,24 +93,27 @@ const CreateFolderDialogComponent = (props) => {
           placeholder={t("Home:NewFolder")}
           tabIndex={1}
           hasError={inputError}
+          isAutoFocussed={true}
         />
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
           key="OkButton"
           label={okButtonTranslate}
-          size="medium"
+          size="big"
           primary
           onClick={onCreate}
           isLoading={isLoading}
+          scale={true}
         />
         <Button
           className="button-dialog"
           key="CancelButton"
           label={t("Common:CancelButton")}
-          size="medium"
+          size="big"
           onClick={onClose}
           isLoading={isLoading}
+          scale={true}
         />
       </ModalDialog.Footer>
     </ModalDialogContainer>
@@ -119,6 +131,8 @@ export default inject(({ filesStore, dialogsStore }) => {
     isLoading,
     createFolder,
     renameFolder,
+    selectedFolderStore,
+    fileActionStore,
   } = filesStore;
 
   const {
@@ -138,5 +152,7 @@ export default inject(({ filesStore, dialogsStore }) => {
     renameFolder,
     renameItem,
     setRenameItem,
+    folderId: selectedFolderStore.id,
+    setAction: fileActionStore.setAction,
   };
 })(withRouter(observer(CreateFolderDialog)));

@@ -573,7 +573,7 @@ const Dark = {
     content: {
       backgroundColor: black,
       modalBorderRadius: "6px",
-      modalPadding: "0 12px 12px",
+      modalPadding: "0 16px 16px",
       asidePadding: "0 16px 16px",
 
       heading: {

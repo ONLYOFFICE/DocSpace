@@ -23,6 +23,7 @@ import {
   CreateFolderDialog,
 } from "../dialogs";
 import ConvertPasswordDialog from "../dialogs/ConvertPasswordDialog";
+import { FileAction } from "@appserver/common/constants";
 
 const Panels = (props) => {
   const {
@@ -47,6 +48,8 @@ const Panels = (props) => {
     setSelectFileDialogVisible,
     createFolderDialogVisible,
     convertPasswordDialogVisible,
+    actionType,
+    setCreateFolderDialogVisible,
   } = props;
 
   const { t } = useTranslation(["Translations", "SelectFile"]);
@@ -54,6 +57,13 @@ const Panels = (props) => {
   const onClose = () => {
     setSelectFileDialogVisible(false);
   };
+
+  React.useEffect(() => {
+    if (actionType === FileAction.Create) {
+      //this.onCreateAddTempItem(newItem);
+      setCreateFolderDialogVisible(true);
+    }
+  }, [actionType]);
 
   return [
     uploadPanelVisible && <UploadPanel key="upload-panel" />,
@@ -112,7 +122,7 @@ const Panels = (props) => {
 };
 
 export default inject(
-  ({ dialogsStore, uploadDataStore, versionHistoryStore }) => {
+  ({ dialogsStore, uploadDataStore, versionHistoryStore, filesStore }) => {
     const {
       sharingPanelVisible,
       ownerPanelVisible,
@@ -135,11 +145,12 @@ export default inject(
       selectFileDialogVisible,
       setSelectFileDialogVisible,
       createFolderDialogVisible,
+      setCreateFolderDialogVisible,
     } = dialogsStore;
 
     const { uploadPanelVisible } = uploadDataStore;
     const { isVisible: versionHistoryPanelVisible } = versionHistoryStore;
-
+    const { fileActionStore } = filesStore;
     return {
       sharingPanelVisible,
       uploadPanelVisible,
@@ -162,6 +173,8 @@ export default inject(
       createMasterForm,
       setSelectFileDialogVisible,
       createFolderDialogVisible,
+      actionType: fileActionStore.type,
+      setCreateFolderDialogVisible,
     };
   }
 )(observer(Panels));

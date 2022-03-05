@@ -24,7 +24,6 @@ const RootFolderContainer = (props) => {
     setIsLoading,
     rootFolderType,
     linkStyles,
-    onCreateFolder,
   } = props;
   const subheadingText = t("SubheadingEmptyText");
   const myDescription = t("MyEmptyContainerDescription");
@@ -161,10 +160,10 @@ const RootFolderContainer = (props) => {
         <img
           className="empty-folder_container_plus-image"
           src="images/plus.svg"
-          onClick={onCreateFolder}
+          onClick={onCreate}
           alt="plus_icon"
         />
-        <Link {...linkStyles} onClick={onCreateFolder}>
+        <Link {...linkStyles} onClick={onCreate}>
           {t("Folder")}
         </Link>
       </div>

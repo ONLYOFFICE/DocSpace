@@ -1,4 +1,4 @@
-import { makeObservable, action, observable } from "mobx";
+import { makeAutoObservable } from "mobx";
 
 class FileActionStore {
   id = null;
@@ -8,15 +8,7 @@ class FileActionStore {
   templateId = null;
 
   constructor() {
-    makeObservable(this, {
-      type: observable,
-      extension: observable,
-      id: observable,
-      title: observable,
-      templateId: observable,
-
-      setAction: action,
-    });
+    makeAutoObservable(this);
   }
 
   setAction = (fileAction) => {

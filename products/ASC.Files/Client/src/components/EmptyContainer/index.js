@@ -21,7 +21,7 @@ const EmptyContainer = ({
   parentId,
   isEncryptionSupport,
   theme,
-  setCreateFolderDialogVisible,
+  //setCreateFolderDialogVisible,
 }) => {
   linkStyles.color = theme.filesEmptyContainer.linkColor;
 
@@ -34,25 +34,17 @@ const EmptyContainer = ({
     });
   };
 
-  const onCreateFolder = () => {
-    console.log("onCreateFolder");
-    setCreateFolderDialogVisible(true);
-  };
+  // const onCreateFolder = () => {
+  //   console.log("onCreateFolder");
+  //   setCreateFolderDialogVisible(true);
+  // };
 
   return isFiltered ? (
     <EmptyFilterContainer linkStyles={linkStyles} />
   ) : parentId === 0 ? (
-    <RootFolderContainer
-      onCreate={onCreate}
-      onCreateFolder={onCreateFolder}
-      linkStyles={linkStyles}
-    />
+    <RootFolderContainer onCreate={onCreate} linkStyles={linkStyles} />
   ) : (
-    <EmptyFolderContainer
-      onCreate={onCreate}
-      onCreateFolder={onCreateFolder}
-      linkStyles={linkStyles}
-    />
+    <EmptyFolderContainer onCreate={onCreate} linkStyles={linkStyles} />
   );
 };
 

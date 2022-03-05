@@ -575,7 +575,7 @@ const Base = {
 
     content: {
       backgroundColor: white,
-      modalPadding: "0 12px 12px",
+      modalPadding: "0 16px 16px",
       modalBorderRadius: "6px",
       asidePadding: "0 16px 16px",
       heading: {

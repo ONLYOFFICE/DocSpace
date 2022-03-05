@@ -172,7 +172,9 @@ class ModalDialog extends React.Component {
                   <BodyBox paddingProp={modalBodyPadding}>
                     {body ? body.props.children : null}
                   </BodyBox>
-                  <Box>{footer ? footer.props.children : null}</Box>
+                  <Box displayProp={"flex"}>
+                    {footer ? footer.props.children : null}
+                  </Box>
                 </>
               )}
             </Content>
@@ -250,6 +252,7 @@ ModalDialog.propTypes = {
   /** CSS padding props for body section */
   asideBodyPadding: PropTypes.string,
   modalBodyPadding: PropTypes.string,
+  modalFooterPadding: PropTypes.string,
   contentHeight: PropTypes.string,
   contentWidth: PropTypes.string,
   isLoading: PropTypes.bool,
@@ -265,7 +268,7 @@ ModalDialog.defaultProps = {
   displayType: "auto",
   zIndex: 310,
   asideBodyPadding: "16px 0",
-  modalBodyPadding: "12px 0",
+  modalBodyPadding: "16px 0",
   contentWidth: "100%",
 };
 

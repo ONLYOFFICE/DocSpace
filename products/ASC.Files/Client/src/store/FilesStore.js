@@ -1349,13 +1349,15 @@ class FilesStore {
       ? getFileIcon(`.${extension}`, iconSize)
       : getFolderIcon(null, iconSize);
 
-    items.unshift({
-      id: -1,
-      title: title,
-      parentId: this.selectedFolderStore.id,
-      fileExst: extension,
-      icon,
-    });
+    setCreateFolderDialogVisible(true);
+
+    // items.unshift({
+    //   id: -1,
+    //   title: title,
+    //   parentId: this.selectedFolderStore.id,
+    //   fileExst: extension,
+    //   icon,
+    // });
   };
 
   get filterType() {
@@ -1371,7 +1373,7 @@ class FilesStore {
     //return [...this.folders, ...this.files];
 
     const items = [...this.folders, ...this.files];
-    const newItem = items.map((item) => {
+    const newItems = items.map((item) => {
       const {
         access,
         comment,
@@ -1504,11 +1506,7 @@ class FilesStore {
       };
     });
 
-    if (this.fileActionStore.type === FileAction.Create) {
-      this.onCreateAddTempItem(newItem);
-    }
-
-    return newItem;
+    return newItems;
   }
 
   get cbMenuItems() {
