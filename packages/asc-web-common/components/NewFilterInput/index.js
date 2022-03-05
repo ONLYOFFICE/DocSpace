@@ -67,6 +67,7 @@ const FilterInput = ({
       />
 
       <FilterButton
+        t={t}
         selectedFilterData={selectedFilterData}
         contextMenuHeader={contextMenuHeader}
         getFilterData={getFilterData}
