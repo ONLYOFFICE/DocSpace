@@ -47,8 +47,8 @@ public enum FolderType
 public interface IFolder
 {
     public FolderType FolderType { get; set; }
-    public int TotalFiles { get; set; }
-    public int TotalSubFolders { get; set; }
+    public int FilesCount { get; set; }
+    public int FoldersCount { get; set; }
     public bool Shareable { get; set; }
     public int NewForMe { get; set; }
     public string FolderUrl { get; set; }
@@ -59,8 +59,8 @@ public interface IFolder
 public class Folder<T> : FileEntry<T>, IFolder, IMapFrom<DbFolder>
 {
     public FolderType FolderType { get; set; }
-    public int TotalFiles { get; set; }
-    public int TotalSubFolders { get; set; }
+    public int FilesCount { get; set; }
+    public int FoldersCount { get; set; }
     public bool Shareable { get; set; }
     public int NewForMe { get; set; }
     public string FolderUrl { get; set; }

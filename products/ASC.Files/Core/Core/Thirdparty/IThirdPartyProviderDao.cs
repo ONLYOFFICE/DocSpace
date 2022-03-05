@@ -278,8 +278,8 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
 
         folder.FolderType = FolderType.DEFAULT;
         folder.Shareable = false;
-        folder.TotalFiles = 0;
-        folder.TotalSubFolders = 0;
+        folder.FilesCount = 0;
+        folder.FoldersCount = 0;
 
         return folder;
     }

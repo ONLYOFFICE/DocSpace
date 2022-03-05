@@ -16,6 +16,7 @@ global using System.Text.Json.Serialization;
 global using System.Text.RegularExpressions;
 global using System.Web;
 global using System.Xml;
+global using System.Diagnostics.CodeAnalysis;
 
 global using AppLimit.CloudComputing.SharpBox;
 global using AppLimit.CloudComputing.SharpBox.Exceptions;

@@ -172,7 +172,7 @@ public class FileSharingAceHelper<T>
         if (recipients.Count > 0)
         {
             if (entryType == FileEntryType.File
-                || ((Folder<T>)entry).TotalSubFolders + ((Folder<T>)entry).TotalFiles > 0
+                || ((Folder<T>)entry).FoldersCount + ((Folder<T>)entry).FilesCount > 0
                 || entry.ProviderEntry)
             {
                 await _fileMarker.MarkAsNewAsync(entry, recipients.Keys.ToList());

@@ -117,8 +117,8 @@ public class FolderDtoHelper : FileEntryDtoHelper
     private async Task<FolderDto<T>> GetFolderWrapperAsync<T>(Folder<T> folder)
     {
         var result = await GetAsync<FolderDto<T>, T>(folder);
-        result.FilesCount = folder.TotalFiles;
-        result.FoldersCount = folder.TotalSubFolders;
+        result.FilesCount = folder.FilesCount;
+        result.FoldersCount = folder.FoldersCount;
         result.IsShareable = folder.Shareable.NullIfDefault();
         result.New = folder.NewForMe;
 

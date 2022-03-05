@@ -6,6 +6,12 @@ public class FilesTypeConverter: ITypeConverter<DbFolderQuery, Folder<int>>
     private readonly IServiceProvider _serviceProvider;
     private readonly TenantUtil _tenantUtil;
 
+    public FilesTypeConverter(IServiceProvider serviceProvider, TenantUtil tenantUtil)
+    {
+        _serviceProvider = serviceProvider;
+        _tenantUtil = tenantUtil;
+    }
+
     public Folder<int> Convert(DbFolderQuery source, Folder<int> destination, ResolutionContext context)
     {
         var result = _serviceProvider.GetService<Folder<int>>();

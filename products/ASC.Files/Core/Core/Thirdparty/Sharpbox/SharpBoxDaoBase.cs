@@ -270,8 +270,8 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
         folder.RootFolderId = RootFolderMakeId();
 
         folder.Title = MakeTitle(fsEntry);
-        folder.TotalFiles = 0; /*fsEntry.Count - childFoldersCount NOTE: Removed due to performance isssues*/
-        folder.TotalSubFolders = 0; /*childFoldersCount NOTE: Removed due to performance isssues*/
+        folder.FilesCount = 0; /*fsEntry.Count - childFoldersCount NOTE: Removed due to performance isssues*/
+        folder.FoldersCount = 0; /*childFoldersCount NOTE: Removed due to performance isssues*/
 
         if (folder.CreateOn != DateTime.MinValue && folder.CreateOn.Kind == DateTimeKind.Utc)
         {

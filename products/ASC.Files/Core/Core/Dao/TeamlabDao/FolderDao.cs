@@ -92,7 +92,9 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     {
         var query = GetFolderQuery(r => r.Id == folderId).AsNoTracking();
 
-        return ToFolder(await FromQueryWithShared(query).Take(1).SingleOrDefaultAsync().ConfigureAwait(false));
+        var dbFolder = await FromQueryWithShared(query).Take(1).SingleOrDefaultAsync().ConfigureAwait(false);
+
+        return _mapper.Map<DbFolderQuery, Folder<int>>(dbFolder);
     }
 
     public Task<Folder<int>> GetFolderAsync(string title, int parentId)
@@ -110,7 +112,9 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         var query = GetFolderQuery(r => r.Title == title && r.ParentId == parentId).AsNoTracking()
             .OrderBy(r => r.CreateOn);
 
-        return ToFolder(await FromQueryWithShared(query).Take(1).FirstOrDefaultAsync().ConfigureAwait(false));
+        var dbFolder = await FromQueryWithShared(query).Take(1).FirstOrDefaultAsync().ConfigureAwait(false);
+
+        return _mapper.Map<DbFolderQuery, Folder<int>>(dbFolder);
     }
 
     public async Task<Folder<int>> GetRootFolderAsync(int folderId)
@@ -124,7 +128,9 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
         var query = GetFolderQuery(r => r.Id == id).AsNoTracking();
 
-        return ToFolder(await FromQueryWithShared(query).SingleOrDefaultAsync().ConfigureAwait(false));
+        var dbFolder = await FromQueryWithShared(query).SingleOrDefaultAsync().ConfigureAwait(false);
+
+        return _mapper.Map<DbFolderQuery, Folder<int>>(dbFolder);
     }
 
     public async Task<Folder<int>> GetRootFolderByFileAsync(int fileId)
@@ -143,7 +149,9 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
         var query = GetFolderQuery(r => r.Id == q).AsNoTracking();
 
-        return ToFolder(await FromQueryWithShared(query).SingleOrDefaultAsync().ConfigureAwait(false));
+        var dbFolder = await FromQueryWithShared(query).SingleOrDefaultAsync().ConfigureAwait(false);
+
+        return _mapper.Map<DbFolderQuery, Folder<int>>(dbFolder);
     }
 
     public IAsyncEnumerable<Folder<int>> GetFoldersAsync(int parentId)
@@ -209,7 +217,9 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             }
         }
 
-        return FromQueryWithShared(q).AsAsyncEnumerable().Select(ToFolder);
+        var dbFolders = FromQueryWithShared(q).AsAsyncEnumerable();
+
+        return dbFolders.Select(_mapper.Map<DbFolderQuery, Folder<int>>);
     }
 
     public IAsyncEnumerable<Folder<int>> GetFoldersAsync(IEnumerable<int> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
@@ -263,7 +273,9 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             }
         }
 
-        return (checkShare ? FromQueryWithShared(q) : FromQuery(q)).AsAsyncEnumerable().Select(e => ToFolder(e)).Distinct();
+        var dbFolders = (checkShare ? FromQueryWithShared(q) : FromQuery(q)).AsAsyncEnumerable();
+
+        return dbFolders.Select(_mapper.Map<DbFolderQuery, Folder<int>>).Distinct();
     }
 
     public async Task<List<Folder<int>>> GetParentFoldersAsync(int folderId)
@@ -277,7 +289,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
         var query = await FromQueryWithShared(q).ToListAsync().ConfigureAwait(false);
 
-        return query.ConvertAll(e => ToFolder(e));
+        return _mapper.Map<List<DbFolderQuery>, List<Folder<int>>>(query);
     }
 
     public Task<int> SaveFolderAsync(Folder<int> folder)
@@ -881,13 +893,13 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             var q1 = GetFolderQuery(r => ids.Contains(r.Id));
             var fromQuery1 = FromQueryWithShared(q1).AsAsyncEnumerable();
 
-            return fromQuery1.Select(ToFolder);
+            return fromQuery1.Select(_mapper.Map<DbFolderQuery, Folder<int>>);
         }
 
         var q = BuildSearch(GetFolderQuery(), text, SearhTypeEnum.Any);
         var fromQuery = FromQueryWithShared(q).AsAsyncEnumerable();
 
-        return fromQuery.Select(ToFolder);
+        return fromQuery.Select(_mapper.Map<DbFolderQuery, Folder<int>>);
     }
 
     public Task<IEnumerable<int>> GetFolderIDsAsync(string module, string bunch, IEnumerable<string> data, bool createIfNotExists)
@@ -1189,89 +1201,9 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             });
     }
 
-    public Folder<int> ToFolder(DbFolderQuery r)
-    {
-        if (r == null)
-        {
-            return null;
-        }
-
-        var result = ServiceProvider.GetService<Folder<int>>();
-
-        result.Id = r.Folder.Id;
-        result.ParentId = r.Folder.ParentId;
-        result.Title = r.Folder.Title;
-        result.CreateOn = TenantUtil.DateTimeFromUtc(r.Folder.CreateOn);
-        result.CreateBy = r.Folder.CreateBy;
-        result.ModifiedOn = TenantUtil.DateTimeFromUtc(r.Folder.ModifiedOn);
-        result.ModifiedBy = r.Folder.ModifiedBy;
-        result.FolderType = r.Folder.FolderType;
-        result.TotalSubFolders = r.Folder.FoldersCount;
-        result.TotalFiles = r.Folder.FilesCount;
-        result.RootFolderType = r.Root?.FolderType ?? default;
-        result.RootFolderCreator = r.Root?.CreateBy ?? default;
-        result.RootFolderId = r.Root?.Id ?? default;
-        result.Shared = r.Shared;
-
-        switch (result.FolderType)
-        {
-            case FolderType.COMMON:
-                result.Title = FilesUCResource.CorporateFiles;
-                break;
-            case FolderType.USER:
-                result.Title = FilesUCResource.MyFiles;
-                break;
-            case FolderType.SHARE:
-                result.Title = FilesUCResource.SharedForMe;
-                break;
-            case FolderType.Recent:
-                result.Title = FilesUCResource.Recent;
-                break;
-            case FolderType.Favorites:
-                result.Title = FilesUCResource.Favorites;
-                break;
-            case FolderType.TRASH:
-                result.Title = FilesUCResource.Trash;
-                break;
-            case FolderType.Privacy:
-                result.Title = FilesUCResource.PrivacyRoom;
-                break;
-            case FolderType.Projects:
-                result.Title = FilesUCResource.ProjectFiles;
-                break;
-            case FolderType.BUNCH:
-                try
-                {
-                    result.Title = GetProjectTitle(result.Id);
-                }
-                catch (Exception)
-                {
-                    //Global.Logger.Error(e);
-                }
-                break;
-        }
-
-        if (result.FolderType != FolderType.DEFAULT && 0.Equals(result.ParentId))
-        {
-            result.RootFolderType = result.FolderType;
-        }
-
-        if (result.FolderType != FolderType.DEFAULT && result.RootFolderCreator == default)
-        {
-            result.RootFolderCreator = result.CreateBy;
-        }
-
-        if (result.FolderType != FolderType.DEFAULT && 0.Equals(result.RootFolderId))
-        {
-            result.RootFolderId = result.Id;
-        }
-
-        return result;
-    }
-
     public (Folder<int>, SmallShareRecord) ToFolderWithShare(DbFolderQueryWithSecurity r)
     {
-        var file = ToFolder(r.DbFolderQuery);
+        var file = _mapper.Map<DbFolderQuery, Folder<int>>(r.DbFolderQuery);
         var record = r.Security != null
             ? new SmallShareRecord
             {

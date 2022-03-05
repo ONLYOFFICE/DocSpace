@@ -568,8 +568,8 @@ public class SharePointProviderInfo : IProviderInfo
             result.RootFolderType = RootFolderType;
             result.Shareable = false;
             result.Title = MakeTitle(GetTitleById(errorFolder.ID));
-            result.TotalFiles = 0;
-            result.TotalSubFolders = 0;
+            result.FilesCount = 0;
+            result.FoldersCount = 0;
             result.Error = errorFolder.Error;
 
             return result;
@@ -591,8 +591,8 @@ public class SharePointProviderInfo : IProviderInfo
         result.RootFolderType = RootFolderType;
         result.Shareable = false;
         result.Title = isRoot ? CustomerTitle : MakeTitle(folder.Name);
-        result.TotalFiles = 0;
-        result.TotalSubFolders = 0;
+        result.FilesCount = 0;
+        result.FoldersCount = 0;
 
         return result;
     }

@@ -579,12 +579,12 @@ public class EntryManager
             {
                 if (f is IFolder fold)
                 {
-                    parent.TotalFiles += fold.TotalFiles;
-                    parent.TotalSubFolders += fold.TotalSubFolders + 1;
+                    parent.FilesCount += fold.FilesCount;
+                    parent.FoldersCount += fold.FoldersCount + 1;
                 }
                 else
                 {
-                    parent.TotalFiles += 1;
+                    parent.FilesCount += 1;
                 }
             }
         }
@@ -907,8 +907,8 @@ public class EntryManager
         folder.RootFolderType = providerInfo.RootFolderType;
         folder.Shareable = false;
         folder.Title = providerInfo.CustomerTitle;
-        folder.TotalFiles = 0;
-        folder.TotalSubFolders = 0;
+        folder.FilesCount = 0;
+        folder.FoldersCount = 0;
 
         return folder;
     }

@@ -1,3 +1,5 @@
+using ASC.Files.Core.Mapping;
+
 namespace ASC.Files;
 
 public class Startup : BaseStartup
@@ -22,6 +24,7 @@ public class Startup : BaseStartup
         DIHelper.TryAdd<ChunkedUploaderHandlerService>();
         DIHelper.TryAdd<DocuSignHandlerService>();
         DIHelper.TryAdd<ThirdPartyAppHandlerService>();
+        DIHelper.TryAdd<FilesTypeConverter>();
 
         NotifyConfigurationExtension.Register(DIHelper);
     }
