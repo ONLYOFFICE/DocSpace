@@ -32,7 +32,7 @@ const TableRow = (props) => {
 
   const renderContext =
     Object.prototype.hasOwnProperty.call(
-      contextMenuData.item,
+      contextMenuData ? contextMenuData.item : props,
       "contextOptions"
     ) && contextOptions.length > 0;
 
