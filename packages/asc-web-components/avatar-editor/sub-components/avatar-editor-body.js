@@ -10,6 +10,7 @@ import Box from "../../box";
 import ContextMenuButton from "../../context-menu-button";
 import IconButton from "../../icon-button";
 
+import Slider from "../../slider";
 import {
   isDesktop,
   //isTablet,
@@ -27,7 +28,6 @@ import {
   StyledAvatarEditorBody,
   StyledAvatarContainer,
   DropZoneContainer,
-  Slider,
   StyledErrorContainer,
 } from "./styled-avatar-editor-body";
 
@@ -456,11 +456,11 @@ class AvatarEditorBody extends React.Component {
                           id="scale"
                           type="range"
                           className="custom-range"
-                          onChange={this.handleScale}
                           min={this.state.allowZoomOut ? "0.1" : min}
                           max={max}
                           step={step}
                           value={this.state.scale}
+                          onChange={this.handleScale}
                         />
                         <IconButton
                           size="16"
