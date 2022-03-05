@@ -50,7 +50,7 @@ public class MappingProfile : Profile
         {
             var resolvedType = type.IsGenericType ? type.MakeGenericType(new[] { typeof(int) }) : type;
 
-            var instance = Activator.CreateInstance(type);
+            var instance = Activator.CreateInstance(resolvedType);
 
             var methodInfo = resolvedType.GetMethod("Mapping")
                 ?? resolvedType.GetInterface("IMapFrom`1").GetMethod("Mapping");
