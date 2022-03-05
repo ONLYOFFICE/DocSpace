@@ -54,7 +54,8 @@ const StyledMobileComponent = styled.div`
     max-width: 100%;
   }
   .category-item-wrapper {
-    margin-bottom: 23px;
+    margin-top: 20px;
+
     .category-item-heading {
       display: flex;
       align-items: center;
@@ -280,7 +281,7 @@ class Customization extends React.Component {
                 <Text className="category-item-description">
                   {t("LanguageAndTimeZoneSettingsDescription")}
                 </Text>
-                <Box marginProp="16px 0 0 0">
+                <Box marginProp="16px 0 3px 0">
                   <Link
                     color={theme.studio.settings.common.linkColorHelp}
                     target="_blank"
