@@ -133,5 +133,15 @@
   "Video": "Vidéo",
   "View": "Afficher",
   "ViewWeb": "Voir la version web",
-  "Warning": "Attention"
+  "Warning": "Attention",
+  "IncorrectDomain": "Domaine incorrecte ",
+  "IncorrectEmail": "Adresse email non valide",
+  "IncorrectLocalPart": "Pièce locale incorrecte",
+  "LocalDomain": "Les domaines local ne sont pas supportés",
+  "ManyEmails": "Trop d'e-mails à analyser",
+  "MaxLengthExceeded": "La longueur maximale d'un nom d'utilisateur ou d'une autre partie locale est de 64 caractères.",
+  "PunycodeDomain": "Les domaines Punycode ne sont pas supportés",
+  "PunycodeLocalPart": "Une partie locale en Punycode n'est pas prise en charge",
+  "SameEmail": "Vous ne pouvez pas utiliser la même adresse e-mail",
+  "SpacesInLocalPart": "Le local ne peux pas contenir d'espace"
 }

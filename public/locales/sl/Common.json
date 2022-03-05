@@ -129,5 +129,15 @@
   "Video": "Video",
   "View": "Ogled",
   "ViewWeb": "Ogled spletne verzije",
-  "Warning": "Opozorilo"
+  "Warning": "Opozorilo",
+  "IncorrectDomain": "Napačna domena",
+  "IncorrectEmail": "Napačen email",
+  "IncorrectLocalPart": "Nepravilen lokalni del",
+  "LocalDomain": "Lokalne domene niso podprte",
+  "ManyEmails": "Razčlenjeno je preveč e-mailov",
+  "MaxLengthExceeded": "Največja dolžina uporabniškega imena ali drugega lokalnega dela je 64 znakov.",
+  "PunycodeDomain": "Punycode domene niso podprte",
+  "PunycodeLocalPart": "Punycode lokalni del ni podprt",
+  "SameEmail": "Ne morete uporabljati istega e-mail naslova",
+  "SpacesInLocalPart": "Lokalni del ne sme vsebovati presledkov"
 }

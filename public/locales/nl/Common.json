@@ -129,5 +129,15 @@
   "Video": "Video",
   "View": "Bekijk",
   "ViewWeb": "Webversie bekijken",
-  "Warning": "Waarschuwing"
+  "Warning": "Waarschuwing",
+  "IncorrectDomain": "Verkeerd domein",
+  "IncorrectEmail": "Verkeerde e-mail",
+  "IncorrectLocalPart": "Verkeerd lokaal deel",
+  "LocalDomain": "Lokale domeinen worden niet ondersteund",
+  "ManyEmails": "Te veel e-mails verwerkt",
+  "MaxLengthExceeded": "De maximale lengte van een gebruikersnaam of ander lokaal deel is 64 tekens.",
+  "PunycodeDomain": "Punycode domeinen worden niet ondersteund",
+  "PunycodeLocalPart": "Punycode lokaal deel wordt niet ondersteund",
+  "SameEmail": "U kunt niet hetzelfde e-mailadres gebruiken",
+  "SpacesInLocalPart": "Lokaal deel kan geen spaties bevatten"
 }

@@ -129,5 +129,15 @@
   "Video": "Video",
   "View": "Zobrazit",
   "ViewWeb": "Zobrazit webovou verzi",
-  "Warning": "Varování"
+  "Warning": "Varování",
+  "IncorrectDomain": "Nesprávná doména",
+  "IncorrectEmail": "Nesprávná emailová adresa",
+  "IncorrectLocalPart": "Nesprávná místní část",
+  "LocalDomain": "Místní domény nejsou podporovány",
+  "ManyEmails": "Příliš mnoho e-mailů analyzovaných",
+  "MaxLengthExceeded": "Maximální délka uživatelského jména nebo jiné místní části je 64 znaků.",
+  "PunycodeDomain": "Domény Punycode nejsou podporovány",
+  "PunycodeLocalPart": "Místní část Punycode není podporována",
+  "SameEmail": "Nelze použít stejný e-mail",
+  "SpacesInLocalPart": "Místní část nemůže obsahovat mezery"
 }

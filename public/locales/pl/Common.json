@@ -129,5 +129,15 @@
   "Video": "Wideo",
   "View": "Podgląd",
   "ViewWeb": "Zobacz wersję internetową",
-  "Warning": "Ostrzeżenie"
+  "Warning": "Ostrzeżenie",
+  "IncorrectDomain": "Niepoprawna domena",
+  "IncorrectEmail": "Niepoprawny adres e-mail",
+  "IncorrectLocalPart": "Niepoprawny identyfikator użytkownika",
+  "LocalDomain": "Domeny lokalne nie są obsługiwane",
+  "ManyEmails": "Podano za dużo adresów e-mail",
+  "MaxLengthExceeded": "Maksymalna długość identyfikatora użytkownika wynosi 64 znaki.",
+  "PunycodeDomain": "Domeny Punycode nie są obsługiwane",
+  "PunycodeLocalPart": "Identyfikator użytkownika Punycode nie jest obsługiwany",
+  "SameEmail": "Nie można użyć tego samego adresu e-mail",
+  "SpacesInLocalPart": "Identyfikator użytkownika nie może zawierać spacji"
 }

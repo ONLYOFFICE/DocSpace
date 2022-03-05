@@ -132,5 +132,15 @@
   "Video": "Video",
   "View": "Anzeigen",
   "ViewWeb": "Web-Version öffnen",
-  "Warning": "Warnung"
+  "Warning": "Warnung",
+  "IncorrectDomain": "Falsche Domäne",
+  "IncorrectEmail": "Ungültige E-Mail-Adresse",
+  "IncorrectLocalPart": "Ungültiger lokaler Teil",
+  "LocalDomain": "Lokale Domains sind nicht unterstützt",
+  "ManyEmails": "Mehrere E-Mails im Feld",
+  "MaxLengthExceeded": "Die maximale Länge für den Benutzernamen oder anderen lokalen Teil beträgt 64 Symbole.",
+  "PunycodeDomain": "Punycode-Domänen werden nicht unterstützt.",
+  "PunycodeLocalPart": "Punycode wird beim lokalen Teil nicht unterstützt",
+  "SameEmail": "Dasselbe E-Mail darf nicht benutzt werden",
+  "SpacesInLocalPart": "Lokaler Teil beinhaltet Leerzeichen"
 }

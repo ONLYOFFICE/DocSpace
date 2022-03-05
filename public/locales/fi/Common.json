@@ -129,5 +129,15 @@
   "Video": "Video",
   "View": "Näkymä",
   "ViewWeb": "Näytä verkkoversio",
-  "Warning": "Varoitus"
+  "Warning": "Varoitus",
+  "IncorrectDomain": "Virheellinen verkkotunnus",
+  "IncorrectEmail": "Virheellinen sähköposti",
+  "IncorrectLocalPart": "Virheellinen paikallinen osa",
+  "LocalDomain": "Paikallisia verkkotunnuksia ei tueta",
+  "ManyEmails": "Liian monta jäsenneltyä sähköpostia",
+  "MaxLengthExceeded": "Käyttäjänimen tai muun paikallisen osan enimmäispituus on 64 merkkiä.",
+  "PunycodeDomain": "Paikallisia verkkotunnuksia ei tueta",
+  "PunycodeLocalPart": "Punycode-verkkotunnuksia ei tueta",
+  "SameEmail": "Et voi käyttää samaa sähköpostiosoitetta",
+  "SpacesInLocalPart": "Paikallinen osa ei voi sisältää välilyöntejä"
 }

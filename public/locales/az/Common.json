@@ -129,5 +129,15 @@
   "Video": "Video",
   "View": "Baxın",
   "ViewWeb": "Veb versiyaya baxın",
-  "Warning": "Xəbərdarlıq"
+  "Warning": "Xəbərdarlıq",
+  "IncorrectDomain": "Yanlış domen",
+  "IncorrectEmail": "Etibarsız elektron poçt",
+  "IncorrectLocalPart": "Yanlış lokal yol",
+  "LocalDomain": "Lokal domen dəstəklənmir",
+  "ManyEmails": "Xanada xeyli elektron poçt qeyd olunub",
+  "MaxLengthExceeded": "Elektron poçtun maksimal uzunluğu 64 simvoldur.",
+  "PunycodeDomain": "Domen icazəsi olmayan simvollardan ibarətdir",
+  "PunycodeLocalPart": "Lokal yolda icazə verilməyən simvollardan istifadə olunur",
+  "SameEmail": "Eyni elektron poçtu istifadəd edə bilməzsiniz",
+  "SpacesInLocalPart": "Lokal yolda boşluqlar icazə verilmir"
 }

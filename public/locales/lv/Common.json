@@ -129,5 +129,15 @@
   "Video": "Video",
   "View": "Skatīt",
   "ViewWeb": "Skatīt tīmekļa versiju",
-  "Warning": "Brīdinājums"
+  "Warning": "Brīdinājums",
+  "IncorrectDomain": "Nepareizs domēns",
+  "IncorrectEmail": "Nepareiza e-pasta adrese",
+  "IncorrectLocalPart": "Nepareiza lokālā daļa",
+  "LocalDomain": "Lokālie domēni netiek atbalstīti",
+  "ManyEmails": "Pārāk daudz e-pasta ziņojumu parsēts",
+  "MaxLengthExceeded": "Maksimālais lietotājvārda vai citas vietējās daļas garums ir 64 rakstzīmes.",
+  "PunycodeDomain": "Punycode domēni netiek atbalstīti",
+  "PunycodeLocalPart": "Punycode lokālā daļa netiek atbalstīta",
+  "SameEmail": "Jūs nevarat izmantot to pašu e-pastu",
+  "SpacesInLocalPart": "Lokālajā daļā nedrīkst būt atstarpes"
 }

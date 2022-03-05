@@ -129,5 +129,15 @@
   "Video": "Vídeo",
   "View": "Ver",
   "ViewWeb": "Ver versão web",
-  "Warning": "Aviso"
+  "Warning": "Aviso",
+  "IncorrectDomain": "Domínio incorreto",
+  "IncorrectEmail": "E-mail inválido",
+  "IncorrectLocalPart": "Parte local incorreta",
+  "LocalDomain": "Domínios locais não são suportados",
+  "ManyEmails": "Demasiados e-mails analisados",
+  "MaxLengthExceeded": "O comprimento máximo de um nome de utilizador ou outra parte local é de 64 caracteres.",
+  "PunycodeDomain": "Os domínios Punycode não são suportados",
+  "PunycodeLocalPart": "A peça local Punycode não é suportada",
+  "SameEmail": "Não pode usar o mesmo e-mail",
+  "SpacesInLocalPart": "A parte local não pode conter espaços"
 }
