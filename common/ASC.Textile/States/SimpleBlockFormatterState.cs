@@ -1,64 +1,63 @@
-namespace Textile.States
+namespace Textile.States;
+
+public abstract class SimpleBlockFormatterState : FormatterState
 {
-    public abstract class SimpleBlockFormatterState : FormatterState
+    internal const string PatternBegin = @"^\s*(?<tag>";
+    internal const string PatternEnd = @")" + Globals.AlignPattern + Globals.BlockModifiersPattern + @"\.(?:\s+)?(?<content>.*)$";
+
+    public string Tag { get; private set; } = null;
+
+    public string AlignInfo { get; private set; } = null;
+
+    public string AttInfo { get; private set; } = null;
+
+    protected SimpleBlockFormatterState(TextileFormatter formatter)
+        : base(formatter)
     {
-        internal const string PatternBegin = @"^\s*(?<tag>";
-        internal const string PatternEnd = @")" + Globals.AlignPattern + Globals.BlockModifiersPattern + @"\.(?:\s+)?(?<content>.*)$";
+    }
 
-        public string Tag { get; private set; } = null;
+    public override string Consume(string input, Match m)
+    {
+        Tag = m.Groups["tag"].Value;
+        AlignInfo = m.Groups["align"].Value;
+        AttInfo = m.Groups["atts"].Value;
+        input = m.Groups["content"].Value;
 
-        public string AlignInfo { get; private set; } = null;
+        OnContextAcquired();
 
-        public string AttInfo { get; private set; } = null;
+        this.Formatter.ChangeState(this);
 
-        protected SimpleBlockFormatterState(TextileFormatter formatter)
-            : base(formatter)
-        {
-        }
+        return input;
+    }
 
-        public override string Consume(string input, Match m)
-        {
-            Tag = m.Groups["tag"].Value;
-            AlignInfo = m.Groups["align"].Value;
-            AttInfo = m.Groups["atts"].Value;
-            input = m.Groups["content"].Value;
+    public override bool ShouldNestState(FormatterState other)
+    {
+        var blockFormatterState = (SimpleBlockFormatterState)other;
+        return blockFormatterState.Tag != Tag ||
+                blockFormatterState.AlignInfo != AlignInfo ||
+                blockFormatterState.AttInfo != AttInfo;
+    }
 
-            OnContextAcquired();
+    protected virtual void OnContextAcquired()
+    {
+    }
 
-            this.Formatter.ChangeState(this);
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    protected string FormattedAlignment()
+    {
+        return Blocks.BlockAttributesParser.ParseBlockAttributes(AlignInfo);
+    }
 
-            return input;
-        }
+    protected string FormattedStyles(string element)
+    {
+        return Blocks.BlockAttributesParser.ParseBlockAttributes(AttInfo, element);
+    }
 
-        public override bool ShouldNestState(FormatterState other)
-        {
-            var blockFormatterState = (SimpleBlockFormatterState)other;
-            return blockFormatterState.Tag != Tag ||
-                    blockFormatterState.AlignInfo != AlignInfo ||
-                    blockFormatterState.AttInfo != AttInfo;
-        }
-
-        protected virtual void OnContextAcquired()
-        {
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        protected string FormattedAlignment()
-        {
-            return Blocks.BlockAttributesParser.ParseBlockAttributes(AlignInfo);
-        }
-
-        protected string FormattedStyles(string element)
-        {
-            return Blocks.BlockAttributesParser.ParseBlockAttributes(AttInfo, element);
-        }
-
-        protected string FormattedStylesAndAlignment(string element)
-        {
-            return Blocks.BlockAttributesParser.ParseBlockAttributes(AlignInfo + AttInfo, element);
-        }
+    protected string FormattedStylesAndAlignment(string element)
+    {
+        return Blocks.BlockAttributesParser.ParseBlockAttributes(AlignInfo + AttInfo, element);
     }
 }

@@ -1,14 +1,9 @@
-﻿global using System;
-global using System.Collections.Concurrent;
-global using System.Collections.Generic;
+﻿global using System.Collections.Concurrent;
 global using System.ComponentModel;
 global using System.Data;
 global using System.Diagnostics;
 global using System.Globalization;
-global using System.IO;
-global using System.Linq;
 global using System.Net;
-global using System.Net.Http;
 global using System.Net.Http.Headers;
 global using System.Net.Mail;
 global using System.Net.Mime;
@@ -21,8 +16,6 @@ global using System.Text;
 global using System.Text.Encodings.Web;
 global using System.Text.Json.Serialization;
 global using System.Text.RegularExpressions;
-global using System.Threading;
-global using System.Threading.Tasks;
 global using System.Web;
 global using System.Xml;
 
@@ -85,6 +78,8 @@ global using ASC.Web.Studio.UserControls.Management;
 global using ASC.Web.Studio.UserControls.Statistics;
 global using ASC.Web.Studio.Utility;
 
+global using AutoMapper;
+
 global using Google.Authenticator;
 global using Google.Protobuf;
 
@@ -102,8 +97,6 @@ global using MimeKit.Utils;
 
 global using Newtonsoft.Json;
 global using Newtonsoft.Json.Linq;
-
-global using AutoMapper;
 
 global using SixLabors.ImageSharp;
 global using SixLabors.ImageSharp.Drawing.Processing;

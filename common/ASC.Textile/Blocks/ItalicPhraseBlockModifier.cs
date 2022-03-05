@@ -1,10 +1,9 @@
-namespace Textile.Blocks
+namespace Textile.Blocks;
+
+public class ItalicPhraseBlockModifier : PhraseBlockModifier
 {
-    public class ItalicPhraseBlockModifier : PhraseBlockModifier
+    public override string ModifyLine(string line)
     {
-        public override string ModifyLine(string line)
-        {
-            return PhraseModifierFormat(line, @"__", "i");
-        }
+        return PhraseModifierFormat(line, @"__", "i");
     }
 }

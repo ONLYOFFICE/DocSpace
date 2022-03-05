@@ -1,10 +1,9 @@
-namespace Textile.Blocks
+namespace Textile.Blocks;
+
+public class CitePhraseBlockModifier : PhraseBlockModifier
 {
-    public class CitePhraseBlockModifier : PhraseBlockModifier
+    public override string ModifyLine(string line)
     {
-        public override string ModifyLine(string line)
-        {
-            return PhraseModifierFormat(line, @"\?\?", "cite");
-        }
+        return PhraseModifierFormat(line, @"\?\?", "cite");
     }
 }

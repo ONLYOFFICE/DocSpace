@@ -23,295 +23,332 @@
  *
 */
 
-namespace ASC.Files.Thirdparty.Dropbox
+namespace ASC.Files.Thirdparty.Dropbox;
+
+internal abstract class DropboxDaoBase : ThirdPartyProviderDao<DropboxProviderInfo>
 {
-    internal abstract class DropboxDaoBase : ThirdPartyProviderDao<DropboxProviderInfo>
+    protected override string Id => "dropbox";
+
+    protected DropboxDaoBase(
+        IServiceProvider serviceProvider,
+        UserManager userManager,
+        TenantManager tenantManager,
+        TenantUtil tenantUtil,
+        DbContextManager<FilesDbContext> dbContextManager,
+        SetupInfo setupInfo,
+        IOptionsMonitor<ILog> monitor,
+        FileUtility fileUtility,
+        TempPath tempPath)
+        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
     {
-        protected override string Id { get => "dropbox"; }
+    }
 
-        protected DropboxDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility, TempPath tempPath) 
-            : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
+    protected static string GetParentFolderPath(Metadata dropboxItem)
+    {
+        if (dropboxItem == null || IsRoot(dropboxItem.AsFolder))
         {
+            return null;
         }
 
-        protected static string GetParentFolderPath(Metadata dropboxItem)
-        {
-            if (dropboxItem == null || IsRoot(dropboxItem.AsFolder))
-                return null;
+        var pathLength = dropboxItem.PathDisplay.Length - dropboxItem.Name.Length;
 
-            var pathLength = dropboxItem.PathDisplay.Length - dropboxItem.Name.Length;
-            return dropboxItem.PathDisplay.Substring(0, pathLength > 1 ? pathLength - 1 : 0);
+        return dropboxItem.PathDisplay.Substring(0, pathLength > 1 ? pathLength - 1 : 0);
+    }
+
+    protected static string MakeDropboxPath(object entryId)
+    {
+        return Convert.ToString(entryId, CultureInfo.InvariantCulture);
+    }
+
+    protected string MakeDropboxPath(Metadata dropboxItem)
+    {
+        string path = null;
+        if (dropboxItem != null)
+        {
+            path = dropboxItem.PathDisplay;
         }
 
-        protected static string MakeDropboxPath(object entryId)
+        return path;
+    }
+
+    protected string MakeId(Metadata dropboxItem)
+    {
+        return MakeId(MakeDropboxPath(dropboxItem));
+    }
+
+    protected override string MakeId(string path = null)
+    {
+        var p = string.IsNullOrEmpty(path) || path == "/" ? "" : ("-" + path.Replace('/', '|'));
+
+        return $"{PathPrefix}{p}";
+    }
+
+    protected string MakeFolderTitle(FolderMetadata dropboxFolder)
+    {
+        if (dropboxFolder == null || IsRoot(dropboxFolder))
         {
-            return Convert.ToString(entryId, CultureInfo.InvariantCulture);
+            return ProviderInfo.CustomerTitle;
         }
 
-        protected string MakeDropboxPath(Metadata dropboxItem)
-        {
-            string path = null;
-            if (dropboxItem != null)
-            {
-                path = dropboxItem.PathDisplay;
-            }
+        return Global.ReplaceInvalidCharsAndTruncate(dropboxFolder.Name);
+    }
 
-            return path;
+    protected string MakeFileTitle(FileMetadata dropboxFile)
+    {
+        if (dropboxFile == null || string.IsNullOrEmpty(dropboxFile.Name))
+        {
+            return ProviderInfo.ProviderKey;
         }
 
-        protected string MakeId(Metadata dropboxItem)
+        return Global.ReplaceInvalidCharsAndTruncate(dropboxFile.Name);
+    }
+
+    protected Folder<string> ToFolder(FolderMetadata dropboxFolder)
+    {
+        if (dropboxFolder == null)
         {
-            return MakeId(MakeDropboxPath(dropboxItem));
+            return null;
         }
 
-        protected override string MakeId(string path = null)
+        if (dropboxFolder is ErrorFolder)
         {
-            var p = string.IsNullOrEmpty(path) || path == "/" ? "" : ("-" + path.Replace('/', '|'));
-            return $"{PathPrefix}{p}";
+            //Return error entry
+            return ToErrorFolder(dropboxFolder as ErrorFolder);
         }
 
-        protected string MakeFolderTitle(FolderMetadata dropboxFolder)
-        {
-            if (dropboxFolder == null || IsRoot(dropboxFolder))
-            {
-                return ProviderInfo.CustomerTitle;
-            }
+        var isRoot = IsRoot(dropboxFolder);
 
-            return Global.ReplaceInvalidCharsAndTruncate(dropboxFolder.Name);
+        var folder = GetFolder();
+
+        folder.ID = MakeId(dropboxFolder);
+        folder.FolderID = isRoot ? null : MakeId(GetParentFolderPath(dropboxFolder));
+        folder.CreateOn = isRoot ? ProviderInfo.CreateOn : default;
+        folder.ModifiedOn = isRoot ? ProviderInfo.CreateOn : default;
+        folder.Title = MakeFolderTitle(dropboxFolder);
+
+        if (folder.CreateOn != DateTime.MinValue && folder.CreateOn.Kind == DateTimeKind.Utc)
+        {
+            folder.CreateOn = TenantUtil.DateTimeFromUtc(folder.CreateOn);
         }
 
-        protected string MakeFileTitle(FileMetadata dropboxFile)
+        if (folder.ModifiedOn != DateTime.MinValue && folder.ModifiedOn.Kind == DateTimeKind.Utc)
         {
-            if (dropboxFile == null || string.IsNullOrEmpty(dropboxFile.Name))
-            {
-                return ProviderInfo.ProviderKey;
-            }
-
-            return Global.ReplaceInvalidCharsAndTruncate(dropboxFile.Name);
+            folder.ModifiedOn = TenantUtil.DateTimeFromUtc(folder.ModifiedOn);
         }
 
-        protected Folder<string> ToFolder(FolderMetadata dropboxFolder)
+        return folder;
+    }
+
+    protected static bool IsRoot(FolderMetadata dropboxFolder)
+    {
+        return dropboxFolder != null && dropboxFolder.Id == "/";
+    }
+
+    private File<string> ToErrorFile(ErrorFile dropboxFile)
+    {
+        if (dropboxFile == null)
         {
-            if (dropboxFolder == null) return null;
-            if (dropboxFolder is ErrorFolder)
-            {
-                //Return error entry
-                return ToErrorFolder(dropboxFolder as ErrorFolder);
-            }
+            return null;
+        }
 
-            var isRoot = IsRoot(dropboxFolder);
+        var file = GetErrorFile(new ErrorEntry(dropboxFile.ErrorId, dropboxFile.Error));
 
-            var folder = GetFolder();
+        file.Title = MakeFileTitle(dropboxFile);
 
-            folder.ID = MakeId(dropboxFolder);
-            folder.FolderID = isRoot ? null : MakeId(GetParentFolderPath(dropboxFolder));
-            folder.CreateOn = isRoot ? ProviderInfo.CreateOn : default;
-            folder.ModifiedOn = isRoot ? ProviderInfo.CreateOn : default;
-            folder.Title = MakeFolderTitle(dropboxFolder);
+        return file;
+    }
 
-            if (folder.CreateOn != DateTime.MinValue && folder.CreateOn.Kind == DateTimeKind.Utc)
-                folder.CreateOn = TenantUtil.DateTimeFromUtc(folder.CreateOn);
+    private Folder<string> ToErrorFolder(ErrorFolder dropboxFolder)
+    {
+        if (dropboxFolder == null)
+        {
+            return null;
+        }
 
-            if (folder.ModifiedOn != DateTime.MinValue && folder.ModifiedOn.Kind == DateTimeKind.Utc)
-                folder.ModifiedOn = TenantUtil.DateTimeFromUtc(folder.ModifiedOn);
+        var folder = GetErrorFolder(new ErrorEntry(dropboxFolder.Error, dropboxFolder.ErrorId));
 
+        folder.Title = MakeFolderTitle(dropboxFolder);
+
+        return folder;
+    }
+
+    public File<string> ToFile(FileMetadata dropboxFile)
+    {
+        if (dropboxFile == null)
+        {
+            return null;
+        }
+
+        if (dropboxFile is ErrorFile)
+        {
+            //Return error entry
+            return ToErrorFile(dropboxFile as ErrorFile);
+        }
+
+        var file = GetFile();
+
+        file.ID = MakeId(dropboxFile);
+        file.ContentLength = (long)dropboxFile.Size;
+        file.CreateOn = TenantUtil.DateTimeFromUtc(dropboxFile.ServerModified);
+        file.FolderID = MakeId(GetParentFolderPath(dropboxFile));
+        file.ModifiedOn = TenantUtil.DateTimeFromUtc(dropboxFile.ServerModified);
+        file.NativeAccessor = dropboxFile;
+        file.Title = MakeFileTitle(dropboxFile);
+
+        return file;
+    }
+
+    public async Task<Folder<string>> GetRootFolderAsync(string folderId)
+    {
+        return ToFolder(await GetDropboxFolderAsync(string.Empty));
+    }
+
+    protected async Task<FolderMetadata> GetDropboxFolderAsync(string folderId)
+    {
+        var dropboxFolderPath = MakeDropboxPath(folderId);
+        try
+        {
+            var folder = await ProviderInfo.GetDropboxFolderAsync(dropboxFolderPath);
             return folder;
         }
-
-        protected static bool IsRoot(FolderMetadata dropboxFolder)
+        catch (Exception ex)
         {
-            return dropboxFolder != null && dropboxFolder.Id == "/";
+            return new ErrorFolder(ex, dropboxFolderPath);
         }
+    }
 
-        private File<string> ToErrorFile(ErrorFile dropboxFile)
+    protected ValueTask<FileMetadata> GetDropboxFileAsync(object fileId)
+    {
+        var dropboxFilePath = MakeDropboxPath(fileId);
+        try
         {
-            if (dropboxFile == null) return null;
-
-            var file = GetErrorFile(new ErrorEntry(dropboxFile.ErrorId, dropboxFile.Error));
-
-            file.Title = MakeFileTitle(dropboxFile);
-
+            var file = ProviderInfo.GetDropboxFileAsync(dropboxFilePath);
             return file;
         }
-
-        private Folder<string> ToErrorFolder(ErrorFolder dropboxFolder)
+        catch (Exception ex)
         {
-            if (dropboxFolder == null) return null;
+            return ValueTask.FromResult<FileMetadata>(new ErrorFile(ex, dropboxFilePath));
+        }
+    }
 
-            var folder = GetErrorFolder(new ErrorEntry(dropboxFolder.Error, dropboxFolder.ErrorId));
+    protected override async Task<IEnumerable<string>> GetChildrenAsync(string folderId)
+    {
+        var items = await GetDropboxItemsAsync(folderId);
 
-            folder.Title = MakeFolderTitle(dropboxFolder);
+        return items.Select(MakeId);
+    }
 
-            return folder;
+    protected async Task<List<Metadata>> GetDropboxItemsAsync(object parentId, bool? folder = null)
+    {
+        var dropboxFolderPath = MakeDropboxPath(parentId);
+        var items = await ProviderInfo.GetDropboxItemsAsync(dropboxFolderPath);
+
+        if (folder.HasValue)
+        {
+            if (folder.Value)
+            {
+                return items.Where(i => i.AsFolder != null).ToList();
+            }
+
+            return items.Where(i => i.AsFile != null).ToList();
         }
 
-        public File<string> ToFile(FileMetadata dropboxFile)
+        return items;
+    }
+
+    protected sealed class ErrorFolder : FolderMetadata
+    {
+        public string Error { get; set; }
+        public string ErrorId { get; private set; }
+
+        public ErrorFolder(Exception e, object id)
         {
-            if (dropboxFile == null) return null;
-
-            if (dropboxFile is ErrorFile)
+            ErrorId = id.ToString();
+            if (e != null)
             {
-                //Return error entry
-                return ToErrorFile(dropboxFile as ErrorFile);
-            }
-
-            var file = GetFile();
-
-            file.ID = MakeId(dropboxFile);
-            file.ContentLength = (long)dropboxFile.Size;
-            file.CreateOn = TenantUtil.DateTimeFromUtc(dropboxFile.ServerModified);
-            file.FolderID = MakeId(GetParentFolderPath(dropboxFile));
-            file.ModifiedOn = TenantUtil.DateTimeFromUtc(dropboxFile.ServerModified);
-            file.NativeAccessor = dropboxFile;
-            file.Title = MakeFileTitle(dropboxFile);
-
-            return file;
-        }
-
-        public async Task<Folder<string>> GetRootFolderAsync(string folderId)
-        {
-            return ToFolder(await GetDropboxFolderAsync(string.Empty));
-        }
-
-        protected async Task<FolderMetadata> GetDropboxFolderAsync(string folderId)
-        {
-            var dropboxFolderPath = MakeDropboxPath(folderId);
-            try
-            {
-                var folder = await ProviderInfo.GetDropboxFolderAsync(dropboxFolderPath);
-                return folder;
-            }
-            catch (Exception ex)
-            {
-                return new ErrorFolder(ex, dropboxFolderPath);
+                Error = e.Message;
             }
         }
+    }
 
-        protected ValueTask<FileMetadata> GetDropboxFileAsync(object fileId)
+    protected sealed class ErrorFile : FileMetadata
+    {
+        public string Error { get; set; }
+        public string ErrorId { get; private set; }
+
+        public ErrorFile(Exception e, object id)
         {
-            var dropboxFilePath = MakeDropboxPath(fileId);
-            try
+            ErrorId = id.ToString();
+            if (e != null)
             {
-                var file = ProviderInfo.GetDropboxFileAsync(dropboxFilePath);
-                return file;
-            }
-            catch (Exception ex)
-            {
-                return ValueTask.FromResult<FileMetadata>(new ErrorFile(ex, dropboxFilePath));
+                Error = e.Message;
             }
         }
+    }
 
-        protected override async Task<IEnumerable<string>> GetChildrenAsync(string folderId)
+    protected string GetAvailableTitle(string requestTitle, string parentFolderPath, Func<string, string, bool> isExist)
+    {
+        if (!isExist(requestTitle, parentFolderPath))
         {
-            var items = await GetDropboxItemsAsync(folderId);
-            return items.Select(MakeId);
-        }
-
-        protected async Task<List<Metadata>> GetDropboxItemsAsync(object parentId, bool? folder = null)
-        {
-            var dropboxFolderPath = MakeDropboxPath(parentId);
-            var items = await ProviderInfo.GetDropboxItemsAsync(dropboxFolderPath);
-
-            if (folder.HasValue)
-            {
-                if (folder.Value)
-                {
-                    return items.Where(i => i.AsFolder != null).ToList();
-                }
-
-                return items.Where(i => i.AsFile != null).ToList();
-            }
-
-            return items;
-        }
-
-        protected sealed class ErrorFolder : FolderMetadata
-        {
-            public string Error { get; set; }
-
-            public string ErrorId { get; private set; }
-
-
-            public ErrorFolder(Exception e, object id)
-            {
-                ErrorId = id.ToString();
-                if (e != null)
-                {
-                    Error = e.Message;
-                }
-            }
-        }
-
-        protected sealed class ErrorFile : FileMetadata
-        {
-            public string Error { get; set; }
-
-            public string ErrorId { get; private set; }
-
-
-            public ErrorFile(Exception e, object id)
-            {
-                ErrorId = id.ToString();
-                if (e != null)
-                {
-                    Error = e.Message;
-                }
-            }
-        }
-
-        protected string GetAvailableTitle(string requestTitle, string parentFolderPath, Func<string, string, bool> isExist)
-        {
-            if (!isExist(requestTitle, parentFolderPath)) return requestTitle;
-
-            var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
-            var match = re.Match(requestTitle);
-
-            if (!match.Success)
-            {
-                var insertIndex = requestTitle.Length;
-                if (requestTitle.LastIndexOf('.') != -1)
-                {
-                    insertIndex = requestTitle.LastIndexOf('.');
-                }
-                requestTitle = requestTitle.Insert(insertIndex, " (1)");
-            }
-
-            while (isExist(requestTitle, parentFolderPath))
-            {
-                requestTitle = re.Replace(requestTitle, MatchEvaluator);
-            }
             return requestTitle;
         }
 
-        protected async Task<string> GetAvailableTitleAsync(string requestTitle, string parentFolderPath, Func<string, string, Task<bool>> isExist)
+        var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
+        var match = re.Match(requestTitle);
+
+        if (!match.Success)
         {
-            if (!await isExist(requestTitle, parentFolderPath)) return requestTitle;
-
-            var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
-            var match = re.Match(requestTitle);
-
-            if (!match.Success)
+            var insertIndex = requestTitle.Length;
+            if (requestTitle.LastIndexOf('.') != -1)
             {
-                var insertIndex = requestTitle.Length;
-                if (requestTitle.LastIndexOf(".", StringComparison.InvariantCulture) != -1)
-                {
-                    insertIndex = requestTitle.LastIndexOf(".", StringComparison.InvariantCulture);
-                }
-                requestTitle = requestTitle.Insert(insertIndex, " (1)");
+                insertIndex = requestTitle.LastIndexOf('.');
             }
 
-            while (await isExist(requestTitle, parentFolderPath))
-            {
-                requestTitle = re.Replace(requestTitle, MatchEvaluator);
-            }
+            requestTitle = requestTitle.Insert(insertIndex, " (1)");
+        }
+
+        while (isExist(requestTitle, parentFolderPath))
+        {
+            requestTitle = re.Replace(requestTitle, MatchEvaluator);
+        }
+
+        return requestTitle;
+    }
+
+    protected async Task<string> GetAvailableTitleAsync(string requestTitle, string parentFolderPath, Func<string, string, Task<bool>> isExist)
+    {
+        if (!await isExist(requestTitle, parentFolderPath))
+        {
             return requestTitle;
         }
 
-        private string MatchEvaluator(Match match)
+        var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
+        var match = re.Match(requestTitle);
+
+        if (!match.Success)
         {
-            var index = Convert.ToInt32(match.Groups[2].Value);
-            var staticText = match.Value.Substring(string.Format(" ({0})", index).Length);
-            return string.Format(" ({0}){1}", index + 1, staticText);
+            var insertIndex = requestTitle.Length;
+            if (requestTitle.LastIndexOf(".", StringComparison.InvariantCulture) != -1)
+            {
+                insertIndex = requestTitle.LastIndexOf(".", StringComparison.InvariantCulture);
+            }
+
+            requestTitle = requestTitle.Insert(insertIndex, " (1)");
         }
+
+        while (await isExist(requestTitle, parentFolderPath))
+        {
+            requestTitle = re.Replace(requestTitle, MatchEvaluator);
+        }
+
+        return requestTitle;
+    }
+
+    private string MatchEvaluator(Match match)
+    {
+        var index = Convert.ToInt32(match.Groups[2].Value);
+        var staticText = match.Value.Substring(string.Format(" ({0})", index).Length);
+
+        return string.Format(" ({0}){1}", index + 1, staticText);
     }
 }
