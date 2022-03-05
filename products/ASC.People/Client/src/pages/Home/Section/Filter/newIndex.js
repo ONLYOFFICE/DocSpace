@@ -251,6 +251,7 @@ const SectionFilterContent = ({
       onSort={onSort}
       onSearch={onSearch}
       contextMenuHeader={t("Common:AddFilter")}
+      placeholder={t("Common:Search")}
       isMobile={isMobileOnly}
       viewAs={viewAs}
       viewSelectorVisible={false}
