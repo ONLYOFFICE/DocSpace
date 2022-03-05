@@ -31,7 +31,7 @@ public abstract class FileEntryDto
     public FileShare Access { get; set; }
     public bool Shared { get; set; }
     public ApiDateTime Created { get; set; }
-    public EmployeeWraper CreatedBy { get; set; }
+    public EmployeeDto CreatedBy { get; set; }
 
     private ApiDateTime _updated;
     public ApiDateTime Updated
@@ -41,12 +41,12 @@ public abstract class FileEntryDto
     }
 
     public FolderType RootFolderType { get; set; }
-    public EmployeeWraper UpdatedBy { get; set; }
+    public EmployeeDto UpdatedBy { get; set; }
     public bool? ProviderItem { get; set; }
     public string ProviderKey { get; set; }
     public int? ProviderId { get; set; }
 
-    protected FileEntryDto(FileEntry entry, EmployeeWraperHelper employeeWraperHelper, ApiDateTimeHelper apiDateTimeHelper)
+    protected FileEntryDto(FileEntry entry, EmployeeDtoHelper employeeWraperHelper, ApiDateTimeHelper apiDateTimeHelper)
     {
         Title = entry.Title;
         Access = entry.Access;
@@ -71,7 +71,7 @@ public abstract class FileEntryWrapper<T> : FileEntryDto
     public bool CanShare { get; set; }
     public bool CanEdit { get; set; }
 
-    protected FileEntryWrapper(FileEntry<T> entry, EmployeeWraperHelper employeeWraperHelper, ApiDateTimeHelper apiDateTimeHelper)
+    protected FileEntryWrapper(FileEntry<T> entry, EmployeeDtoHelper employeeWraperHelper, ApiDateTimeHelper apiDateTimeHelper)
         : base(entry, employeeWraperHelper, apiDateTimeHelper)
     {
         Id = entry.ID;
@@ -85,13 +85,13 @@ public abstract class FileEntryWrapper<T> : FileEntryDto
 public class FileEntryWrapperHelper
 {
     private readonly ApiDateTimeHelper _apiDateTimeHelper;
-    private readonly EmployeeWraperHelper _employeeWraperHelper;
+    private readonly EmployeeDtoHelper _employeeWraperHelper;
     public readonly FileSharingHelper _fileSharingHelper;
     public readonly FileSecurity _fileSecurity;
 
     public FileEntryWrapperHelper(
         ApiDateTimeHelper apiDateTimeHelper,
-        EmployeeWraperHelper employeeWraperHelper,
+        EmployeeDtoHelper employeeWraperHelper,
         FileSharingHelper fileSharingHelper, FileSecurity fileSecurity
         )
     {

@@ -65,7 +65,7 @@ public class FolderDtoHelper : FileEntryWrapperHelper
 
     public FolderDtoHelper(
         ApiDateTimeHelper apiDateTimeHelper,
-        EmployeeWraperHelper employeeWrapperHelper,
+        EmployeeDtoHelper employeeWrapperHelper,
         AuthContext authContext,
         IDaoFactory daoFactory,
         FileSecurity fileSecurity,

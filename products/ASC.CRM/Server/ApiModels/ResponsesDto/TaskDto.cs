@@ -44,14 +44,14 @@ namespace ASC.CRM.ApiModels
     public class TaskDto : IMapFrom<Task>
     {
         public int Id { get; set; }
-        public EmployeeWraper CreateBy { get; set; }
+        public EmployeeDto CreateBy { get; set; }
         public ApiDateTime Created { get; set; }
         public ContactBaseWithEmailDto Contact { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public ApiDateTime DeadLine { get; set; }
         public int AlertValue { get; set; }
-        public EmployeeWraper Responsible { get; set; }
+        public EmployeeDto Responsible { get; set; }
         public bool IsClosed { get; set; }
         public TaskCategoryBaseDto Category { get; set; }
         public EntityDto Entity { get; set; }
@@ -61,10 +61,10 @@ namespace ASC.CRM.ApiModels
             return new TaskDto
             {
                 Created = ApiDateTime.GetSample(),
-                CreateBy = EmployeeWraper.GetSample(),
+                CreateBy = EmployeeDto.GetSample(),
                 DeadLine = ApiDateTime.GetSample(),
                 IsClosed = false,
-                Responsible = EmployeeWraper.GetSample(),
+                Responsible = EmployeeDto.GetSample(),
                 //                 Category = TaskCategoryBaseDto.GetSample(),
                 CanEdit = true,
                 Title = "Send a commercial offer",
@@ -84,7 +84,7 @@ namespace ASC.CRM.ApiModels
         public String Description { get; set; }
         public ApiDateTime DeadLine { get; set; }
         public int AlertValue { get; set; }
-        public EmployeeWraper Responsible { get; set; }
+        public EmployeeDto Responsible { get; set; }
         public bool IsClosed { get; set; }
         public TaskCategoryBaseDto Category { get; set; }
         public EntityDto Entity { get; set; }
@@ -95,7 +95,7 @@ namespace ASC.CRM.ApiModels
             {
                 DeadLine = ApiDateTime.GetSample(),
                 IsClosed = false,
-                Responsible = EmployeeWraper.GetSample(),
+                Responsible = EmployeeDto.GetSample(),
                 Category = TaskCategoryBaseDto.GetSample(),
                 CanEdit = true,
                 Title = "Send a commercial offer",

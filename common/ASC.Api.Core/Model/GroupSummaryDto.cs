@@ -23,48 +23,32 @@
  *
 */
 
-namespace ASC.Web.Api.Models
+using GroupInfo = ASC.Core.Users.GroupInfo;
+
+namespace ASC.Web.Api.Models;
+
+public class GroupSummaryDto
 {
-    public class ThumbnailsDataWrapper
+    public Guid Id { get; set; }
+    public string Name { get; set; }
+    public string Manager { get; set; }
+
+    protected GroupSummaryDto() { }
+
+    public GroupSummaryDto(GroupInfo group, UserManager userManager)
     {
-        public ThumbnailsDataWrapper(Guid userId, UserPhotoManager userPhotoManager)
+        Id = group.ID;
+        Name = group.Name;
+        Manager = userManager.GetUsers(userManager.GetDepartmentManager(group.ID)).UserName;
+    }
+
+    public static GroupSummaryDto GetSample()
+    {
+        return new GroupSummaryDto 
         {
-            Original = userPhotoManager.GetPhotoAbsoluteWebPath(userId);
-            Retina = userPhotoManager.GetRetinaPhotoURL(userId);
-            Max = userPhotoManager.GetMaxPhotoURL(userId);
-            Big = userPhotoManager.GetBigPhotoURL(userId);
-            Medium = userPhotoManager.GetMediumPhotoURL(userId);
-            Small = userPhotoManager.GetSmallPhotoURL(userId);
-        }
-
-        private ThumbnailsDataWrapper()
-        {
-        }
-
-        public string Original { get; set; }
-
-        public string Retina { get; set; }
-
-        public string Max { get; set; }
-
-        public string Big { get; set; }
-
-        public string Medium { get; set; }
-
-        public string Small { get; set; }
-
-
-        public static ThumbnailsDataWrapper GetSample()
-        {
-            return new ThumbnailsDataWrapper
-            {
-                Original = "default_user_photo_size_1280-1280.png",
-                Retina = "default_user_photo_size_360-360.png",
-                Max = "default_user_photo_size_200-200.png",
-                Big = "default_user_photo_size_82-82.png",
-                Medium = "default_user_photo_size_48-48.png",
-                Small = "default_user_photo_size_32-32.png",
-            };
-        }
+            Id = Guid.Empty, 
+            Manager = "Jake.Zazhitski", 
+            Name = "Group Name" 
+        };
     }
 }

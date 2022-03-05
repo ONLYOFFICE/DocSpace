@@ -43,7 +43,7 @@ namespace ASC.Api.Settings
         private StudioNotifyService StudioNotifyService { get; }
         private IWebHostEnvironment WebHostEnvironment { get; }
         private IServiceProvider ServiceProvider { get; }
-        private EmployeeWraperHelper EmployeeWraperHelper { get; }
+        private EmployeeDtoHelper EmployeeWraperHelper { get; }
         private ConsumerFactory ConsumerFactory { get; }
         private SmsProviderManager SmsProviderManager { get; }
         private TimeZoneConverter TimeZoneConverter { get; }
@@ -143,7 +143,7 @@ namespace ASC.Api.Settings
             StorageSettingsHelper storageSettingsHelper,
             IWebHostEnvironment webHostEnvironment,
             IServiceProvider serviceProvider,
-            EmployeeWraperHelper employeeWraperHelper,
+            EmployeeDtoHelper employeeWraperHelper,
             ConsumerFactory consumerFactory,
             SmsProviderManager smsProviderManager,
             TimeZoneConverter timeZoneConverter,
@@ -789,7 +789,7 @@ namespace ASC.Api.Settings
                           WebItemId = i.WebItemId,
                           Enabled = i.Enabled,
                           Users = i.Users.Select(EmployeeWraperHelper.Get),
-                          Groups = i.Groups.Select(g => new GroupWrapperSummary(g, UserManager)),
+                          Groups = i.Groups.Select(g => new GroupSummaryDto(g, UserManager)),
                           IsSubItem = subItemList.Contains(i.WebItemId),
                       }).ToList();
         }
@@ -931,7 +931,7 @@ namespace ASC.Api.Settings
         }
 
         [Read("security/administrator/{productid}")]
-        public IEnumerable<EmployeeWraper> GetProductAdministrators(Guid productid)
+        public IEnumerable<EmployeeDto> GetProductAdministrators(Guid productid)
         {
             return WebItemSecurity.GetProductAdministrators(productid)
                                   .Select(EmployeeWraperHelper.Get)

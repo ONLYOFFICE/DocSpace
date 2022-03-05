@@ -59,7 +59,7 @@ namespace ASC.CRM.ApiModels
         public string Description { get; set; }
         public int FileID { get; set; }
         public ApiDateTime CreateOn { get; set; }
-        public EmployeeWraper CreateBy { get; set; }
+        public EmployeeDto CreateBy { get; set; }
         public decimal Cost { get; set; }
         public bool CanEdit { get; set; }
         public bool CanDelete { get; set; }
@@ -94,7 +94,7 @@ namespace ASC.CRM.ApiModels
                 Description = string.Empty,
                 FileID = -1,
                 CreateOn = ApiDateTime.GetSample(),
-                CreateBy = EmployeeWraper.GetSample(),
+                CreateBy = EmployeeDto.GetSample(),
                 CanEdit = true,
                 CanDelete = true,
                 Cost = 0,

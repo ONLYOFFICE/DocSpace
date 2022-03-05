@@ -88,7 +88,7 @@ public class FileWrapperHelper : FileEntryWrapperHelper
 
     public FileWrapperHelper(
         ApiDateTimeHelper apiDateTimeHelper,
-        EmployeeWraperHelper employeeWrapperHelper,
+        EmployeeDtoHelper employeeWrapperHelper,
         AuthContext authContext,
         IDaoFactory daoFactory,
         FileSecurity fileSecurity,
