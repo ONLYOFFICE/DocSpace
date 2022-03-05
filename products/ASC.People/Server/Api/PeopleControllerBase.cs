@@ -1,41 +1,25 @@
-﻿using SecurityContext = ASC.Core.SecurityContext;
+﻿namespace ASC.People.Api;
 
-namespace ASC.People.ApiHelpers;
-
-public abstract class PeopleControllerEngine : ApiControllerEngineBase
+public abstract class PeopleControllerBase : ApiControllerBase
 {
-    protected readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
-    protected readonly SetupInfo _setupInfo;
+    protected readonly UserManager _userManager;
+    protected readonly PermissionContext _permissionContext;
+    protected readonly ApiContext _apiContext;
     protected readonly UserPhotoManager _userPhotoManager;
-    private readonly IHttpClientFactory _httpClientFactory;
+    protected readonly IHttpClientFactory _httpClientFactory;
 
-    protected PeopleControllerEngine(
+    public PeopleControllerBase(
         UserManager userManager,
-        AuthContext authContext,
-        ApiContext apiContext,
         PermissionContext permissionContext,
-        SecurityContext securityContext,
-        MessageService messageService,
-        MessageTarget messageTarget,
-        StudioNotifyService studioNotifyService,
+        ApiContext apiContext,
         UserPhotoManager userPhotoManager,
-        IHttpClientFactory httpClientFactory,
-        DisplayUserSettingsHelper displayUserSettingsHelper,
-        SetupInfo setupInfo)
-        : base(
-            userManager,
-            authContext,
-            apiContext,
-            permissionContext,
-            securityContext,
-            messageService,
-            messageTarget,
-            studioNotifyService)
+        IHttpClientFactory httpClientFactory)
     {
+        _userManager = userManager;
+        _permissionContext = permissionContext;
+        _apiContext = apiContext;
         _userPhotoManager = userPhotoManager;
         _httpClientFactory = httpClientFactory;
-        _displayUserSettingsHelper = displayUserSettingsHelper;
-        _setupInfo = setupInfo;
     }
 
     protected UserInfo GetUserInfo(string userNameOrId)
@@ -85,6 +69,7 @@ public abstract class PeopleControllerEngine : ApiControllerEngineBase
         {
             files = new Uri(_apiContext.HttpContextAccessor.HttpContext.Request.GetDisplayUrl()).GetLeftPart(UriPartial.Authority) + "/" + files.TrimStart('/');
         }
+
         var request = new HttpRequestMessage();
         request.RequestUri = new Uri(files);
 
@@ -93,6 +78,7 @@ public abstract class PeopleControllerEngine : ApiControllerEngineBase
         using var inputStream = response.Content.ReadAsStream();
         using var br = new BinaryReader(inputStream);
         var imageByteArray = br.ReadBytes((int)inputStream.Length);
+
         _userPhotoManager.SaveOrUpdatePhoto(user.Id, imageByteArray);
     }
 }

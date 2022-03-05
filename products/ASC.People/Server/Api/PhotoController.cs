@@ -1,55 +1,272 @@
-﻿namespace ASC.People.Api;
+﻿using SecurityContext = ASC.Core.SecurityContext;
 
-public class PhotoController : ApiControllerBase
+namespace ASC.People.Api;
+
+public class PhotoController : PeopleControllerBase
 {
-    private readonly PhotoControllerEngine _photoControllerEgine;
+    private readonly MessageService _messageService;
+    private readonly MessageTarget _messageTarget;
+    private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
+    private readonly SecurityContext _securityContext;
+    private readonly SettingsManager _settingsManager;
+    private readonly FileSizeComment _fileSizeComment;
+    private readonly SetupInfo _setupInfo;
 
-    public PhotoController(PhotoControllerEngine photoControllerEgine)
+    public PhotoController(
+        UserManager userManager,
+        PermissionContext permissionContext,
+        ApiContext apiContext,
+        UserPhotoManager userPhotoManager,
+        MessageService messageService,
+        MessageTarget messageTarget,
+        DisplayUserSettingsHelper displayUserSettingsHelper,
+        SecurityContext securityContext,
+        SettingsManager settingsManager,
+        FileSizeComment fileSizeComment,
+        SetupInfo setupInfo,
+        IHttpClientFactory httpClientFactory) 
+        : base(userManager, permissionContext, apiContext, userPhotoManager, httpClientFactory)
     {
-        _photoControllerEgine = photoControllerEgine;
+        _messageService = messageService;
+        _messageTarget = messageTarget;
+        _displayUserSettingsHelper = displayUserSettingsHelper;
+        _securityContext = securityContext;
+        _settingsManager = settingsManager;
+        _fileSizeComment = fileSizeComment;
+        _setupInfo = setupInfo;
     }
 
     [Create("{userid}/photo/thumbnails")]
     public ThumbnailsDataDto CreateMemberPhotoThumbnailsFromBody(string userid, [FromBody] ThumbnailsRequestDto thumbnailsModel)
     {
-        return _photoControllerEgine.CreateMemberPhotoThumbnails(userid, thumbnailsModel);
+        return CreateMemberPhotoThumbnails(userid, thumbnailsModel);
     }
 
     [Create("{userid}/photo/thumbnails")]
     [Consumes("application/x-www-form-urlencoded")]
     public ThumbnailsDataDto CreateMemberPhotoThumbnailsFromForm(string userid, [FromForm] ThumbnailsRequestDto thumbnailsModel)
     {
-        return _photoControllerEgine.CreateMemberPhotoThumbnails(userid, thumbnailsModel);
+        return CreateMemberPhotoThumbnails(userid, thumbnailsModel);
     }
 
     [Delete("{userid}/photo")]
     public ThumbnailsDataDto DeleteMemberPhoto(string userid)
     {
-        return _photoControllerEgine.DeleteMemberPhoto(userid);
+        var user = GetUserInfo(userid);
+
+        if (_userManager.IsSystemUser(user.Id))
+        {
+            throw new SecurityException();
+        }
+
+        _permissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
+
+        _userPhotoManager.RemovePhoto(user.Id);
+        _userManager.SaveUserInfo(user);
+        _messageService.Send(MessageAction.UserDeletedAvatar, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
+
+        return new ThumbnailsDataDto(user.Id, _userPhotoManager);
     }
 
     [Read("{userid}/photo")]
     public ThumbnailsDataDto GetMemberPhoto(string userid)
     {
-        return _photoControllerEgine.GetMemberPhoto(userid);
+        var user = GetUserInfo(userid);
+
+        if (_userManager.IsSystemUser(user.Id))
+        {
+            throw new SecurityException();
+        }
+
+        return new ThumbnailsDataDto(user.Id, _userPhotoManager);
     }
 
     [Update("{userid}/photo")]
     public ThumbnailsDataDto UpdateMemberPhotoFromBody(string userid, [FromBody] UpdateMemberRequestDto model)
     {
-        return _photoControllerEgine.UpdateMemberPhoto(userid, model);
+        return UpdateMemberPhoto(userid, model);
     }
 
     [Update("{userid}/photo")]
     [Consumes("application/x-www-form-urlencoded")]
     public ThumbnailsDataDto UpdateMemberPhotoFromForm(string userid, [FromForm] UpdateMemberRequestDto model)
     {
-        return _photoControllerEgine.UpdateMemberPhoto(userid, model);
+        return UpdateMemberPhoto(userid, model);
     }
 
     [Create("{userid}/photo")]
     public FileUploadResultDto UploadMemberPhoto(string userid, IFormCollection model)
     {
-        return _photoControllerEgine.UploadMemberPhoto(userid, model);
+        var result = new FileUploadResultDto();
+        var autosave = bool.Parse(model["Autosave"]);
+
+        try
+        {
+            if (model.Files.Count != 0)
+            {
+                Guid userId;
+                try
+                {
+                    userId = new Guid(userid);
+                }
+                catch
+                {
+                    userId = _securityContext.CurrentAccount.ID;
+                }
+
+                _permissionContext.DemandPermissions(new UserSecurityProvider(userId), Constants.Action_EditUser);
+
+                var userPhoto = model.Files[0];
+
+                if (userPhoto.Length > _setupInfo.MaxImageUploadSize)
+                {
+                    result.Success = false;
+                    result.Message = _fileSizeComment.FileImageSizeExceptionString;
+
+                    return result;
+                }
+
+                var data = new byte[userPhoto.Length];
+                using var inputStream = userPhoto.OpenReadStream();
+
+                var br = new BinaryReader(inputStream);
+                br.Read(data, 0, (int)userPhoto.Length);
+                br.Close();
+
+                CheckImgFormat(data);
+
+                if (autosave)
+                {
+                    if (data.Length > _setupInfo.MaxImageUploadSize)
+                    {
+                        throw new ImageSizeLimitException();
+                    }
+
+                    var mainPhoto = _userPhotoManager.SaveOrUpdatePhoto(userId, data);
+
+                    result.Data =
+                        new
+                        {
+                            main = mainPhoto,
+                            retina = _userPhotoManager.GetRetinaPhotoURL(userId),
+                            max = _userPhotoManager.GetMaxPhotoURL(userId),
+                            big = _userPhotoManager.GetBigPhotoURL(userId),
+                            medium = _userPhotoManager.GetMediumPhotoURL(userId),
+                            small = _userPhotoManager.GetSmallPhotoURL(userId),
+                        };
+                }
+                else
+                {
+                    result.Data = _userPhotoManager.SaveTempPhoto(data, _setupInfo.MaxImageUploadSize, UserPhotoManager.OriginalFotoSize.Width, UserPhotoManager.OriginalFotoSize.Height);
+                }
+
+                result.Success = true;
+            }
+            else
+            {
+                result.Success = false;
+                result.Message = PeopleResource.ErrorEmptyUploadFileSelected;
+            }
+
+        }
+        catch (Web.Core.Users.UnknownImageFormatException)
+        {
+            result.Success = false;
+            result.Message = PeopleResource.ErrorUnknownFileImageType;
+        }
+        catch (ImageWeightLimitException)
+        {
+            result.Success = false;
+            result.Message = PeopleResource.ErrorImageWeightLimit;
+        }
+        catch (ImageSizeLimitException)
+        {
+            result.Success = false;
+            result.Message = PeopleResource.ErrorImageSizetLimit;
+        }
+        catch (Exception ex)
+        {
+            result.Success = false;
+            result.Message = ex.Message.HtmlEncode();
+        }
+
+        return result;
+    }
+
+    private ThumbnailsDataDto CreateMemberPhotoThumbnails(string userid, ThumbnailsRequestDto thumbnailsModel)
+    {
+        var user = GetUserInfo(userid);
+
+        if (_userManager.IsSystemUser(user.Id))
+        {
+            throw new SecurityException();
+        }
+
+        _permissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
+
+        if (!string.IsNullOrEmpty(thumbnailsModel.TmpFile))
+        {
+            var fileName = Path.GetFileName(thumbnailsModel.TmpFile);
+            var data = _userPhotoManager.GetTempPhotoData(fileName);
+
+            var settings = new UserPhotoThumbnailSettings(thumbnailsModel.X, thumbnailsModel.Y, thumbnailsModel.Width, thumbnailsModel.Height);
+
+            _settingsManager.SaveForUser(settings, user.Id);
+            _userPhotoManager.RemovePhoto(user.Id);
+            _userPhotoManager.SaveOrUpdatePhoto(user.Id, data);
+            _userPhotoManager.RemoveTempPhoto(fileName);
+        }
+        else
+        {
+            UserPhotoThumbnailManager.SaveThumbnails(_userPhotoManager, _settingsManager, thumbnailsModel.X, thumbnailsModel.Y, thumbnailsModel.Width, thumbnailsModel.Height, user.Id);
+        }
+
+        _userManager.SaveUserInfo(user);
+        _messageService.Send(MessageAction.UserUpdatedAvatarThumbnails, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
+
+        return new ThumbnailsDataDto(user.Id, _userPhotoManager);
+    }
+
+    private ThumbnailsDataDto UpdateMemberPhoto(string userid, UpdateMemberRequestDto model)
+    {
+        var user = GetUserInfo(userid);
+
+        if (_userManager.IsSystemUser(user.Id))
+        {
+            throw new SecurityException();
+        }
+
+        if (model.Files != _userPhotoManager.GetPhotoAbsoluteWebPath(user.Id))
+        {
+            UpdatePhotoUrl(model.Files, user);
+        }
+
+        _userManager.SaveUserInfo(user);
+        _messageService.Send(MessageAction.UserAddedAvatar, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
+
+        return new ThumbnailsDataDto(user.Id, _userPhotoManager);
+    }
+
+    private static void CheckImgFormat(byte[] data)
+    {
+        IImageFormat imgFormat;
+        try
+        {
+            using var img = Image.Load(data, out var format);
+            imgFormat = format;
+        }
+        catch (OutOfMemoryException)
+        {
+            throw new ImageSizeLimitException();
+        }
+        catch (ArgumentException error)
+        {
+            throw new Web.Core.Users.UnknownImageFormatException(error);
+        }
+
+        if (imgFormat.Name != "PNG" && imgFormat.Name != "JPEG")
+        {
+            throw new Web.Core.Users.UnknownImageFormatException();
+        }
     }
 }
