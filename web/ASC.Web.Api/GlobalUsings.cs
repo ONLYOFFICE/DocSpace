@@ -1,11 +1,6 @@
-﻿global using System;
-global using System.Collections.Generic;
-global using System.Collections.Specialized;
+﻿global using System.Collections.Specialized;
 global using System.Globalization;
-global using System.IO;
-global using System.Linq;
 global using System.Net;
-global using System.Net.Http;
 global using System.Net.Mail;
 global using System.Net.Sockets;
 global using System.Runtime.InteropServices;
@@ -14,18 +9,16 @@ global using System.ServiceModel.Security;
 global using System.Text.Json;
 global using System.Text.Json.Serialization;
 global using System.Text.RegularExpressions;
-global using System.Threading;
-global using System.Threading.Tasks;
 global using System.Web;
 
 global using ASC.Api.Collections;
 global using ASC.Api.Core;
 global using ASC.Api.Security;
-global using ASC.Api.Settings;
 global using ASC.Api.Settings.Smtp;
 global using ASC.Api.Utils;
 global using ASC.AuditTrail;
 global using ASC.AuditTrail.Models;
+global using ASC.AuditTrail.Repositories;
 global using ASC.Common;
 global using ASC.Common.Caching;
 global using ASC.Common.Logging;
@@ -57,7 +50,6 @@ global using ASC.IPSecurity;
 global using ASC.MessagingSystem.Core;
 global using ASC.MessagingSystem.Models;
 global using ASC.Security.Cryptography;
-global using ASC.Web.Api.Controllers;
 global using ASC.Web.Api.Core;
 global using ASC.Web.Api.Models;
 global using ASC.Web.Api.Routing;
@@ -84,7 +76,6 @@ global using ASC.Web.Studio.UserControls.Statistics;
 global using ASC.Web.Studio.Utility;
 global using ASC.Webhooks.Core;
 global using ASC.Webhooks.Core.Dao.Models;
-global using ASC.AuditTrail.Repositories;
 
 global using Autofac.Extensions.DependencyInjection;
 
@@ -93,14 +84,9 @@ global using Google.Authenticator;
 global using MailKit.Security;
 
 global using Microsoft.AspNetCore.Authorization;
-global using Microsoft.AspNetCore.Hosting;
-global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.AspNetCore.Mvc.ModelBinding;
 global using Microsoft.Extensions.Caching.Memory;
-global using Microsoft.Extensions.Configuration;
-global using Microsoft.Extensions.DependencyInjection;
-global using Microsoft.Extensions.Hosting;
 global using Microsoft.Extensions.Options;
 
 global using MimeKit;

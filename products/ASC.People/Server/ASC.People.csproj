@@ -11,6 +11,7 @@
     <Company>Ascensio System SIA</Company>
     <Product>ASC.People</Product>
     <Copyright>(c) Ascensio System SIA. All rights reserved</Copyright>
+	  <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

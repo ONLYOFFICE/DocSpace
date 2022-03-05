@@ -1,14 +1,7 @@
-﻿global using System;
-global using System.Collections.Generic;
-global using System.IO;
-global using System.Linq;
-global using System.Net.Http;
-global using System.Net.Mail;
+﻿global using System.Net.Mail;
 global using System.Runtime.InteropServices;
 global using System.Security;
 global using System.ServiceModel.Security;
-global using System.Threading;
-global using System.Threading.Tasks;
 global using System.Web;
 
 global using ASC.Api.Core;
@@ -22,7 +15,6 @@ global using ASC.Core.Common.Settings;
 global using ASC.Core.Tenants;
 global using ASC.Core.Users;
 global using ASC.Data.Reassigns;
-global using ASC.Employee.Core.Controllers;
 global using ASC.FederatedLogin;
 global using ASC.FederatedLogin.LoginProviders;
 global using ASC.FederatedLogin.Profile;
@@ -46,17 +38,9 @@ global using ASC.Web.Studio.Utility;
 global using Autofac.Extensions.DependencyInjection;
 
 global using Microsoft.AspNetCore.Authorization;
-global using Microsoft.AspNetCore.Hosting;
-global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.Http.Extensions;
 global using Microsoft.AspNetCore.Mvc;
-global using Microsoft.Extensions.Configuration;
-global using Microsoft.Extensions.DependencyInjection;
-global using Microsoft.Extensions.Hosting;
 global using Microsoft.Extensions.Options;
 
 global using SixLabors.ImageSharp;
 global using SixLabors.ImageSharp.Formats;
-
-global using StackExchange.Redis.Extensions.Core.Configuration;
-global using StackExchange.Redis.Extensions.Newtonsoft;
