@@ -52,9 +52,11 @@ class Row extends React.Component {
       "contentElement"
     );
 
+    const contextData = data.contextOptions ? data : this.props;
+
     const renderContext =
-      Object.prototype.hasOwnProperty.call(data, "contextOptions") &&
-      data.contextOptions.length > 0;
+      Object.prototype.hasOwnProperty.call(contextData, "contextOptions") &&
+      contextData.contextOptions.length > 0;
 
     const changeCheckbox = (e) => {
       onSelect && onSelect(e.target.checked, data);
@@ -62,7 +64,7 @@ class Row extends React.Component {
 
     const getOptions = () => {
       rowContextClick && rowContextClick();
-      return data.contextOptions; //contextOptions
+      return contextData.contextOptions;
     };
 
     const onContextMenu = (e) => {
@@ -122,6 +124,7 @@ class Row extends React.Component {
           <ContextMenu
             contextMenuData={contextMenuData}
             ref={this.cm}
+            model={contextData.contextOptions}
           ></ContextMenu>
         </StyledOptionButton>
       </StyledRow>

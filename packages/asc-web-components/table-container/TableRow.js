@@ -58,6 +58,7 @@ const TableRow = (props) => {
           <ContextMenu
             onHide={onHideContextMenu}
             ref={cm}
+            model={contextOptions}
             contextMenuData={contextMenuData}
           ></ContextMenu>
           {renderContext ? (

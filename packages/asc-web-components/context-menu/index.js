@@ -289,7 +289,9 @@ class ContextMenu extends Component {
             onMouseEnter={this.onMenuMouseEnter}
           >
             <SubMenu
-              model={this.props.model ? this.props.model : this.state.model}
+              model={
+                this.props.contextMenuData ? this.state.model : this.props.model
+              }
               root
               resetMenu={this.state.resetMenu}
               onLeafClick={this.onLeafClick}
