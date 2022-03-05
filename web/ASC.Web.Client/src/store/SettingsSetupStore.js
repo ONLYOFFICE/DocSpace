@@ -216,12 +216,12 @@ class SettingsSetupStore {
     const res = await api.portal.setPortalRename(alias);
   };
 
-  setMailDomainSettings = async (type, domains, inviteUsersAsVisitors) => {
-    const res = await api.settings.setMailDomainSettings(
-      type,
-      domains,
-      inviteUsersAsVisitors
-    );
+  setMailDomainSettings = async (data) => {
+    const res = await api.settings.setMailDomainSettings(data);
+  };
+
+  setDNSSettings = async (dnsName, enable) => {
+    const res = await api.settings.setMailDomainSettings(dnsName, enable);
   };
 
   setIpRestrictions = async (data) => {
@@ -240,10 +240,12 @@ class SettingsSetupStore {
     const res = await api.settings.setCookieSettings(lifeTime);
   };
 
-  setLifetimeAuditSettings = async (loginHistoryLifeTime) => {
-    const res = await api.settings.setLifetimeAuditSettings(
-      loginHistoryLifeTime
-    );
+  setLifetimeAuditSettings = async (data) => {
+    const res = await api.settings.setLifetimeAuditSettings(data);
+  };
+
+  getAuditTrailReport = async () => {
+    const res = await api.settings.getAuditTrailReport();
   };
 
   setGreetingTitle = async (greetingTitle) => {
