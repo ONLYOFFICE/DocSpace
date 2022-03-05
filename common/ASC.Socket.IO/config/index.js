@@ -34,7 +34,10 @@ function getAndSaveAppsettings(){
     }
     var hosts = nconf.get("Redis").Hosts;
     var redis = nconf.get("redis");
-    redis.host = hosts[0].Host; 
-    redis.port = hosts[0].Port; 
-    nconf.set("redis", redis);
+    if(hosts && hosts.count > 0)
+    {
+        redis.host = hosts[0].Host; 
+        redis.port = hosts[0].Port; 
+        nconf.set("redis", redis);
+    }
 }
