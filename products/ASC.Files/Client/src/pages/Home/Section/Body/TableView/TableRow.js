@@ -19,8 +19,6 @@ import globalColors from "@appserver/components/utils/globalColors";
 import styled, { css } from "styled-components";
 import Base from "@appserver/components/themes/base";
 import { isSafari } from "react-device-detect";
-const sideColor = globalColors.gray;
-const { acceptBackground, background } = Base.dragAndDrop;
 
 const rowCheckboxDraggingStyle = css`
   border-image-source: ${(props) =>
@@ -104,11 +102,8 @@ const StyledTableRow = styled(TableRow)`
       css`
         border-image-slice: 1;
         border-bottom: 1px solid;
-        border-image-source: linear-gradient(
-          to right,
-          #ffffff 17px,
-          #eceef1 31px
-        );
+        border-image-source: ${(props) =>
+          props.theme.filesSection.tableView.row.borderImageRight};
       `};
 
     border-top: 0;
@@ -133,11 +128,8 @@ const StyledTableRow = styled(TableRow)`
       css`
         border-bottom: 1px solid;
         border-image-slice: 1;
-        border-image-source: linear-gradient(
-          to left,
-          #ffffff 17px,
-          #eceef1 31px
-        );
+        border-image-source: ${(props) =>
+          props.theme.filesSection.tableView.row.borderImageLeft};
       `};
 
     border-top: 0;

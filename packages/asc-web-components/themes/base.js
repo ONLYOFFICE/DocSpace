@@ -2143,6 +2143,13 @@ const Base = {
         borderHover: gray,
         sideColor: gray,
         shareHoverColor: "#3b72a7",
+
+        borderImageRight:
+          "linear-gradient(to right, #ffffff 17px,#eceef1 31px)",
+        borderImageLeft: "linear-gradient(to left, #ffffff 17px,#eceef1 31px)",
+
+        borderColor: "#ECEEf1",
+        borderColorTransition: "#f3f4f4",
       },
     },
 
