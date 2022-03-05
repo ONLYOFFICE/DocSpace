@@ -6,6 +6,7 @@ import { AppServerConfig, FileStatus } from "@appserver/common/constants";
 import { combineUrl } from "@appserver/common/utils";
 import config from "../../package.json";
 import { isMobile } from "react-device-detect";
+import { isDesktop } from "@appserver/components/utils/device";
 
 export default function withFileActions(WrappedFileItem) {
   class WithFileActions extends React.Component {
@@ -17,13 +18,12 @@ export default function withFileActions(WrappedFileItem) {
       const { selectRowAction, infoPanelIsVisible, showInfoPanel } = this.props;
       if (!file || file.id === -1) return;
       selectRowAction(checked, file);
-      if (!infoPanelIsVisible) showInfoPanel();
+
+      if (!infoPanelIsVisible && isDesktop()) showInfoPanel();
     };
 
     fileContextClick = () => {
-      if (!this.props.infoPanelIsVisible) this.props.showInfoPanel();
-
-      const { onSelectItem, item } = this.props;
+      const { onSelectItem, item, infoPanelIsVisible, showInfoPanel } = this.props;
       const { id, isFolder } = item;
 
       id !== -1 && onSelectItem({ id, isFolder });
@@ -108,17 +108,18 @@ export default function withFileActions(WrappedFileItem) {
         showInfoPanel,
       } = this.props;
 
-      if (
-        e.target.closest(".checkbox") ||
+      if(
         e.target.tagName === "INPUT" ||
         e.target.tagName === "SPAN" ||
         e.target.tagName === "A" ||
-        e.target.closest(".expandButton") ||
-        e.target.closest(".badges") ||
+        e.target.closest(".checkbox") ||
         e.button !== 0 ||
+        e.target.closest('.expandButton') || 
+        e.target.querySelector('.expandButton') ||
+        e.target.closest(".badges") ||
         e.target.closest(".not-selectable")
       )
-        return;
+        return
 
       if (viewAs === "tile") {
         if (e.target.closest(".edit-button") || e.target.tagName === "IMG")
@@ -129,7 +130,7 @@ export default function withFileActions(WrappedFileItem) {
         this.fileContextClick();
       }
 
-      if (!infoPanelIsVisible) showInfoPanel();
+      if (!infoPanelIsVisible && isDesktop()) showInfoPanel();
     };
     onFilesClick = (e) => {
       const {

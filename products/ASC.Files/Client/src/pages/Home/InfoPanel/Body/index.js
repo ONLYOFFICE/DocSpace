@@ -49,7 +49,7 @@ const InfoPanelBodyContent = ({
 export default inject(
     ({
         filesStore,
-        formatsStore,
+        settingsStore,
         filesActionsStore,
         dialogsStore,
         treeFoldersStore,
@@ -58,9 +58,10 @@ export default inject(
         const bufferSelectedItem = JSON.parse(
             JSON.stringify(filesStore.bufferSelection)
         );
-        const { getFolderInfo, getShareUsers } = filesStore;
 
-        const { getIcon, getFolderIcon } = formatsStore.iconFormatsStore;
+        //console.log(settin);
+        const { getFolderInfo, getShareUsers } = filesStore;
+        const { getIcon, getFolderIcon } = settingsStore;
         const { onSelectItem } = filesActionsStore;
         const { setSharingPanelVisible } = dialogsStore;
         const { isRecycleBinFolder } = treeFoldersStore;

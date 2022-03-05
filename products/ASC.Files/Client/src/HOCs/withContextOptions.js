@@ -54,11 +54,9 @@ export default function withContextOptions(WrappedComponent) {
       const locationId = !fileExst ? parentId : folderId;
       openLocationAction(locationId, !fileExst);
     };
-
     onSetInfoPanelVisible = () => {
       this.props.setIsVisible(true);
     };
-
     onOwnerChange = () => {
       const { setChangeOwnerPanelVisible } = this.props;
       setChangeOwnerPanelVisible(true);
@@ -397,16 +395,13 @@ export default function withContextOptions(WrappedComponent) {
           onClick: this.onOpenFolder,
           disabled: false,
         },
-
-        // case "show-info":
-        //     return {
-        //       key: option,
-        //       label: t("InfoPanel:Info"),
-        //       icon: "images/info.react.svg",
-        //       onClick: this.onSetInfoPanelVisible,
-        //       disabled: false,
-        //     };
-        
+        {
+          key: "show-info",
+          label: t("InfoPanel:Info"),
+          icon: "images/info.react.svg",
+          onClick: this.onSetInfoPanelVisible,
+          disabled: false, 
+        },
         {
           key: "fill-form",
           label: t("Common:FillFormButton"),
@@ -647,7 +642,6 @@ export default function withContextOptions(WrappedComponent) {
       const { setAction, type, extension, id } = fileActionStore;
       const { setMediaViewerData } = mediaViewerDataStore;
       const { copyAsAction } = uploadDataStore;
-      const { formfillingDocs } = formatsStore.docserviceStore;
       const { extsWebRestrictedEditing } = settingsStore;
 
       const { isRecycleBinFolder, isShare } = treeFoldersStore;

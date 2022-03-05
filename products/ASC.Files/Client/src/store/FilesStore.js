@@ -11,7 +11,6 @@ import {
 import history from "@appserver/common/history";
 import { combineUrl } from "@appserver/common/utils";
 import { updateTempContent } from "@appserver/common/utils";
-import { makeAutoObservable } from "mobx";
 import { isMobile } from "react-device-detect";
 import toastr from "studio/toastr";
 
