@@ -310,7 +310,7 @@ class PasswordInput extends React.Component {
         <StyledTooltipItem
           forwardedAs="div"
           title={this.props.tooltipPasswordLength}
-          valid={this.validLength}
+          valid={this.state.validLength}
         >
           {this.props.tooltipPasswordLength}
         </StyledTooltipItem>
@@ -318,7 +318,7 @@ class PasswordInput extends React.Component {
           <StyledTooltipItem
             forwardedAs="div"
             title={this.props.tooltipPasswordDigits}
-            valid={this.validDigits}
+            valid={this.state.validDigits}
           >
             {this.props.tooltipPasswordDigits}
           </StyledTooltipItem>
@@ -327,7 +327,7 @@ class PasswordInput extends React.Component {
           <StyledTooltipItem
             forwardedAs="div"
             title={this.props.tooltipPasswordCapital}
-            valid={this.validCapital}
+            valid={this.state.validCapital}
           >
             {this.props.tooltipPasswordCapital}
           </StyledTooltipItem>
@@ -336,7 +336,7 @@ class PasswordInput extends React.Component {
           <StyledTooltipItem
             forwardedAs="div"
             title={this.props.tooltipPasswordSpecial}
-            valid={this.validSpecial}
+            valid={this.state.validSpecial}
           >
             {this.props.tooltipPasswordSpecial}
           </StyledTooltipItem>
