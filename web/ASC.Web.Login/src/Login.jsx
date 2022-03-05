@@ -351,161 +351,169 @@ const Form = (props) => {
   if (!isLoaded) return <AppLoader />;
   return (
     <LoginContainer>
-      <Text
-        fontSize="23px"
-        fontWeight={700}
-        textAlign="center"
-        className="greeting-title"
-      >
-        {greetingTitle}
-      </Text>
-
-      {ssoExists() && <ButtonsWrapper>{ssoButton()}</ButtonsWrapper>}
-
-      {oauthDataExists() && (
+      {!isLoaded ? (
+        <AppLoader />
+      ) : (
         <>
-          <ButtonsWrapper>{providerButtons()}</ButtonsWrapper>
-          {providers && providers.length > 2 && (
-            <Link
-              isHovered
-              type="action"
-              fontSize="13px"
-              fontWeight="600"
-              color="#3B72A7"
-              className="more-label"
-              onClick={moreAuthOpen}
-            >
-              {t("Common:ShowMore")}
-            </Link>
+          <Text
+            fontSize="23px"
+            fontWeight={700}
+            textAlign="center"
+            className="greeting-title"
+          >
+            {greetingTitle}
+          </Text>
+
+          {ssoExists() && <ButtonsWrapper>{ssoButton()}</ButtonsWrapper>}
+
+          {oauthDataExists() && (
+            <>
+              <ButtonsWrapper>{providerButtons()}</ButtonsWrapper>
+              {providers && providers.length > 2 && (
+                <Link
+                  isHovered
+                  type="action"
+                  fontSize="13px"
+                  fontWeight="600"
+                  color="#3B72A7"
+                  className="more-label"
+                  onClick={moreAuthOpen}
+                >
+                  {t("Common:ShowMore")}
+                </Link>
+              )}
+            </>
           )}
+
+          {(oauthDataExists() || ssoExists()) && (
+            <div className="line">
+              <Text color="#A3A9AE" className="or-label">
+                {t("Or")}
+              </Text>
+            </div>
+          )}
+
+          <form className="auth-form-container">
+            <FieldContainer
+              isVertical={true}
+              labelVisible={false}
+              hasError={!identifierValid}
+              errorMessage={errorText ? errorText : t("Common:RequiredField")} //TODO: Add wrong login server error
+            >
+              <TextInput
+                id="login"
+                name="login"
+                type="email"
+                hasError={!identifierValid}
+                value={identifier}
+                placeholder={t("RegistrationEmailWatermark")}
+                size="large"
+                scale={true}
+                isAutoFocussed={true}
+                tabIndex={1}
+                isDisabled={isLoading}
+                autoComplete="username"
+                onChange={onChangeLogin}
+                onKeyDown={onKeyDown}
+                forwardedRef={inputRef}
+              />
+            </FieldContainer>
+            <FieldContainer
+              isVertical={true}
+              labelVisible={false}
+              hasError={!passwordValid}
+              errorMessage={errorText ? "" : t("Common:RequiredField")} //TODO: Add wrong password server error
+            >
+              <PasswordInput
+                simpleView={true}
+                passwordSettings={settings}
+                id="password"
+                inputName="password"
+                placeholder={t("Common:Password")}
+                type="password"
+                hasError={!passwordValid}
+                inputValue={password}
+                size="large"
+                scale={true}
+                tabIndex={1}
+                isDisabled={isLoading}
+                autoComplete="current-password"
+                onChange={onChangePassword}
+                onKeyDown={onKeyDown}
+              />
+            </FieldContainer>
+
+            <div className="login-forgot-wrapper">
+              <div className="login-checkbox-wrapper">
+                <Checkbox
+                  className="login-checkbox"
+                  isChecked={isChecked}
+                  onChange={onChangeCheckbox}
+                  label={<Text fontSize="13px">{t("Remember")}</Text>}
+                />
+                <HelpButton
+                  className="login-tooltip"
+                  helpButtonHeaderContent={t("CookieSettingsTitle")}
+                  tooltipContent={
+                    <Text fontSize="12px">{t("RememberHelper")}</Text>
+                  }
+                />
+                <Link
+                  fontSize="13px"
+                  color="#316DAA"
+                  className="login-link"
+                  type="page"
+                  isHovered={false}
+                  onClick={onClick}
+                >
+                  {t("ForgotPassword")}
+                </Link>
+              </div>
+            </div>
+
+            {isDialogVisible && (
+              <ForgotPasswordModalDialog
+                visible={isDialogVisible}
+                email={identifier}
+                onDialogClose={onDialogClose}
+              />
+            )}
+            <Button
+              id="submit"
+              className="login-button"
+              primary
+              size="large"
+              scale={true}
+              label={
+                isLoading
+                  ? t("Common:LoadingProcessing")
+                  : t("Common:LoginButton")
+              }
+              tabIndex={1}
+              isDisabled={isLoading}
+              isLoading={isLoading}
+              onClick={onSubmit}
+            />
+
+            {confirmedEmail && (
+              <Text isBold={true} fontSize="16px">
+                {t("MessageEmailConfirmed")} {t("MessageAuthorize")}
+              </Text>
+            )}
+          </form>
+          <Toast />
+
+          <MoreLoginModal
+            t={t}
+            visible={moreAuthVisible}
+            onClose={moreAuthClose}
+            providers={providers}
+            onSocialLoginClick={onSocialButtonClick}
+            ssoLabel={ssoLabel}
+            ssoUrl={ssoUrl}
+          />
         </>
       )}
-
-      {(oauthDataExists() || ssoExists()) && (
-        <div className="line">
-          <Text color="#A3A9AE" className="or-label">
-            {t("Or")}
-          </Text>
-        </div>
-      )}
-
-      <form className="auth-form-container">
-        <FieldContainer
-          isVertical={true}
-          labelVisible={false}
-          hasError={!identifierValid}
-          errorMessage={errorText ? errorText : t("Common:RequiredField")} //TODO: Add wrong login server error
-        >
-          <TextInput
-            id="login"
-            name="login"
-            type="email"
-            hasError={!identifierValid}
-            value={identifier}
-            placeholder={t("RegistrationEmailWatermark")}
-            size="large"
-            scale={true}
-            isAutoFocussed={true}
-            tabIndex={1}
-            isDisabled={isLoading}
-            autoComplete="username"
-            onChange={onChangeLogin}
-            onKeyDown={onKeyDown}
-            forwardedRef={inputRef}
-          />
-        </FieldContainer>
-        <FieldContainer
-          isVertical={true}
-          labelVisible={false}
-          hasError={!passwordValid}
-          errorMessage={errorText ? "" : t("Common:RequiredField")} //TODO: Add wrong password server error
-        >
-          <PasswordInput
-            simpleView={true}
-            passwordSettings={settings}
-            id="password"
-            inputName="password"
-            placeholder={t("Common:Password")}
-            type="password"
-            hasError={!passwordValid}
-            inputValue={password}
-            size="large"
-            scale={true}
-            tabIndex={1}
-            isDisabled={isLoading}
-            autoComplete="current-password"
-            onChange={onChangePassword}
-            onKeyDown={onKeyDown}
-          />
-        </FieldContainer>
-
-        <div className="login-forgot-wrapper">
-          <div className="login-checkbox-wrapper">
-            <Checkbox
-              className="login-checkbox"
-              isChecked={isChecked}
-              onChange={onChangeCheckbox}
-              label={<Text fontSize="13px">{t("Remember")}</Text>}
-            />
-            <HelpButton
-              className="login-tooltip"
-              helpButtonHeaderContent={t("CookieSettingsTitle")}
-              tooltipContent={
-                <Text fontSize="12px">{t("RememberHelper")}</Text>
-              }
-            />
-            <Link
-              fontSize="13px"
-              color="#316DAA"
-              className="login-link"
-              type="page"
-              isHovered={false}
-              onClick={onClick}
-            >
-              {t("ForgotPassword")}
-            </Link>
-          </div>
-        </div>
-
-        {isDialogVisible && (
-          <ForgotPasswordModalDialog
-            visible={isDialogVisible}
-            email={identifier}
-            onDialogClose={onDialogClose}
-          />
-        )}
-        <Button
-          id="submit"
-          className="login-button"
-          primary
-          size="large"
-          scale={true}
-          label={
-            isLoading ? t("Common:LoadingProcessing") : t("Common:LoginButton")
-          }
-          tabIndex={1}
-          isDisabled={isLoading}
-          isLoading={isLoading}
-          onClick={onSubmit}
-        />
-
-        {confirmedEmail && (
-          <Text isBold={true} fontSize="16px">
-            {t("MessageEmailConfirmed")} {t("MessageAuthorize")}
-          </Text>
-        )}
-      </form>
-      <Toast />
-
-      <MoreLoginModal
-        t={t}
-        visible={moreAuthVisible}
-        onClose={moreAuthClose}
-        providers={providers}
-        onSocialLoginClick={onSocialButtonClick}
-        ssoLabel={ssoLabel}
-        ssoUrl={ssoUrl}
-      />
     </LoginContainer>
   );
 };

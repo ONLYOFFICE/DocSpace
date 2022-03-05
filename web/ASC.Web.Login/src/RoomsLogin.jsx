@@ -288,115 +288,126 @@ const Form = (props) => {
 
   //console.log("Login render");
 
-  if (!isLoaded) return <AppLoader />;
   return (
     <LoginContainer>
-      <Text
-        fontSize="23px"
-        fontWeight={700}
-        textAlign="center"
-        className="greeting-title"
-      >
-        {greetingTitle}
-      </Text>
-
-      {ssoExists() && <ButtonsWrapper>{ssoButton()}</ButtonsWrapper>}
-
-      {oauthDataExists() && (
+      {!isLoaded ? (
+        <AppLoader />
+      ) : (
         <>
-          <ButtonsWrapper>{providerButtons()}</ButtonsWrapper>
-          {providers && providers.length > 2 && (
-            <Link
-              isHovered
-              type="action"
-              fontSize="13px"
-              fontWeight="600"
-              color="#3B72A7"
-              className="more-label"
-              onClick={moreAuthOpen}
-            >
-              {t("Common:ShowMore")}
-            </Link>
+          <Text
+            fontSize="23px"
+            fontWeight={700}
+            textAlign="center"
+            className="greeting-title"
+          >
+            {greetingTitle}
+          </Text>
+
+          {ssoExists() && <ButtonsWrapper>{ssoButton()}</ButtonsWrapper>}
+
+          {oauthDataExists() && (
+            <>
+              <ButtonsWrapper>{providerButtons()}</ButtonsWrapper>
+              {providers && providers.length > 2 && (
+                <Link
+                  isHovered
+                  type="action"
+                  fontSize="13px"
+                  fontWeight="600"
+                  color="#3B72A7"
+                  className="more-label"
+                  onClick={moreAuthOpen}
+                >
+                  {t("Common:ShowMore")}
+                </Link>
+              )}
+            </>
           )}
+
+          {(oauthDataExists() || ssoExists()) && (
+            <div className="line">
+              <Text color="#A3A9AE" className="or-label">
+                {t("Or")}
+              </Text>
+            </div>
+          )}
+
+          <form className="auth-form-container">
+            <FieldContainer
+              isVertical={true}
+              labelVisible={false}
+              hasError={!identifierValid}
+              errorMessage={errorText ? errorText : t("Common:RequiredField")} //TODO: Add wrong login server error
+            >
+              <TextInput
+                id="login"
+                name="login"
+                type="email"
+                hasError={!identifierValid}
+                value={identifier}
+                placeholder={t("RegistrationEmailWatermark")}
+                size="large"
+                scale={true}
+                isAutoFocussed={true}
+                tabIndex={1}
+                isDisabled={isLoading}
+                autoComplete="username"
+                onChange={onChangeLogin}
+                onKeyDown={onKeyDown}
+                forwardedRef={inputRef}
+              />
+            </FieldContainer>
+
+            <Button
+              id="submit"
+              className="login-button"
+              primary
+              size="large"
+              scale={true}
+              label={
+                isLoading
+                  ? t("Common:LoadingProcessing")
+                  : t("Common:LoginButton")
+              }
+              tabIndex={1}
+              isDisabled={isLoading}
+              isLoading={isLoading}
+              onClick={onSubmit}
+            />
+
+            <Text color="#A3A9AE" fontSize="12px">
+              <Trans t={t} i18nKey="LoginDescription" ns="Login">
+                We'll email you a magic code to sign in without a password. Or
+                you can
+                <Link
+                  color="#2DA7DB;"
+                  fontSize="12px"
+                  onClick={onManuallyLogin}
+                >
+                  log in manually.
+                </Link>
+              </Trans>
+            </Text>
+
+            {confirmedEmail && (
+              <Text isBold={true} fontSize="16px">
+                {t("MessageEmailConfirmed")} {t("MessageAuthorize")}
+              </Text>
+            )}
+          </form>
+          <Toast />
+
+          <MoreLoginModal
+            t={t}
+            visible={moreAuthVisible}
+            onClose={moreAuthClose}
+            providers={providers}
+            onSocialLoginClick={onSocialButtonClick}
+            ssoLabel={ssoLabel}
+            ssoUrl={ssoUrl}
+          />
         </>
       )}
-
-      {(oauthDataExists() || ssoExists()) && (
-        <div className="line">
-          <Text color="#A3A9AE" className="or-label">
-            {t("Or")}
-          </Text>
-        </div>
-      )}
-
-      <form className="auth-form-container">
-        <FieldContainer
-          isVertical={true}
-          labelVisible={false}
-          hasError={!identifierValid}
-          errorMessage={errorText ? errorText : t("Common:RequiredField")} //TODO: Add wrong login server error
-        >
-          <TextInput
-            id="login"
-            name="login"
-            type="email"
-            hasError={!identifierValid}
-            value={identifier}
-            placeholder={t("RegistrationEmailWatermark")}
-            size="large"
-            scale={true}
-            isAutoFocussed={true}
-            tabIndex={1}
-            isDisabled={isLoading}
-            autoComplete="username"
-            onChange={onChangeLogin}
-            onKeyDown={onKeyDown}
-            forwardedRef={inputRef}
-          />
-        </FieldContainer>
-
-        <Button
-          id="submit"
-          className="login-button"
-          primary
-          size="large"
-          scale={true}
-          label={
-            isLoading ? t("Common:LoadingProcessing") : t("Common:LoginButton")
-          }
-          tabIndex={1}
-          isDisabled={isLoading}
-          isLoading={isLoading}
-          onClick={onSubmit}
-        />
-
-        <Text color="#A3A9AE" fontSize="12px">
-          <Trans t={t} i18nKey="LoginDescription" ns="Login">
-            We'll email you a magic code to sign in without a password. Or you
-            can
-            <Link color="#2DA7DB;" fontSize="12px" onClick={onManuallyLogin}>
-              log in manually.
-            </Link>
-          </Trans>
-        </Text>
-
-        {confirmedEmail && (
-          <Text isBold={true} fontSize="16px">
-            {t("MessageEmailConfirmed")} {t("MessageAuthorize")}
-          </Text>
-        )}
-      </form>
-      <Toast />
-
-      <MoreLoginModal
-        t={t}
-        visible={moreAuthVisible}
-        onClose={moreAuthClose}
-        providers={providers}
-        onSocialLoginClick={onSocialButtonClick}
-        ssoLabel={ssoLabel}
-        ssoUrl={ssoUrl}
-      />
     </LoginContainer>
   );
 };
