@@ -1,6 +1,7 @@
 import React from "react";
 import styled, { css } from "styled-components";
 import { isMobileOnly } from "react-device-detect";
+import { withTranslation } from "react-i18next";
 
 import ComboBox from "@appserver/components/combobox";
 import DropDownItem from "@appserver/components/drop-down-item";
@@ -172,6 +173,7 @@ const StyledSortButton = styled.div`
 StyledSortButton.defaultProps = { theme: Base };
 
 const SortButton = ({
+  t,
   selectedFilterData,
   getSortData,
   onChangeViewAs,
@@ -240,7 +242,7 @@ const SortButton = ({
         {viewSelectorVisible && (
           <>
             <DropDownItem noHover className="view-selector-item">
-              <Text fontWeight={600}>View</Text>
+              <Text fontWeight={600}>{t("View")}</Text>
               <ViewSelector
                 className="view-selector"
                 onChangeView={onChangeViewAs}
@@ -313,4 +315,4 @@ const SortButton = ({
   );
 };
 
-export default React.memo(SortButton);
+export default React.memo(withTranslation("Common")(SortButton));

@@ -319,6 +319,7 @@ const SectionFilterContent = ({
 
   return (
     <FilterInput
+      t={t}
       sectionWidth={sectionWidth}
       getFilterData={getFilterData}
       getSortData={getSortData}
