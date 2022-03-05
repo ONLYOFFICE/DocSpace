@@ -1,10 +1,9 @@
-namespace Textile
+namespace Textile;
+
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+public sealed class BlockModifierAttribute : Attribute
 {
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-    public sealed class BlockModifierAttribute : Attribute
+    public BlockModifierAttribute()
     {
-        public BlockModifierAttribute()
-        {
-        }
     }
 }

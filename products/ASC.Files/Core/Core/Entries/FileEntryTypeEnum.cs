@@ -23,12 +23,11 @@
  *
 */
 
-namespace ASC.Files.Core
+namespace ASC.Files.Core;
+
+[Flags]
+public enum FileEntryType
 {
-    [Flags]
-    public enum FileEntryType
-    {
-        Folder = 1,
-        File = 2,
-    }
+    Folder = 1,
+    File = 2,
 }

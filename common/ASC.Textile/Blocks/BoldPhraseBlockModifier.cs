@@ -1,10 +1,9 @@
-namespace Textile.Blocks
+namespace Textile.Blocks;
+
+public class BoldPhraseBlockModifier : PhraseBlockModifier
 {
-    public class BoldPhraseBlockModifier : PhraseBlockModifier
+    public override string ModifyLine(string line)
     {
-        public override string ModifyLine(string line)
-        {
-            return PhraseModifierFormat(line, @"\*\*", "b");
-        }
+        return PhraseModifierFormat(line, @"\*\*", "b");
     }
 }

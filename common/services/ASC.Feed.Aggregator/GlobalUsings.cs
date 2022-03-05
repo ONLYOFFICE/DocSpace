@@ -1,9 +1,4 @@
-﻿global using System;
-global using System.Collections.Generic;
-global using System.Data;
-global using System.Linq;
-global using System.Threading;
-global using System.Threading.Tasks;
+﻿global using System.Data;
 
 global using ASC.Common;
 global using ASC.Common.Caching;

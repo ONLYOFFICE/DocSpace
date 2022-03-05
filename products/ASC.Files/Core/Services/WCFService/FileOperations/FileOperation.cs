@@ -23,380 +23,371 @@
  *
 */
 
-namespace ASC.Web.Files.Services.WCFService.FileOperations
+namespace ASC.Web.Files.Services.WCFService.FileOperations;
+
+public abstract class FileOperation : DistributedTask
 {
-    public abstract class FileOperation : DistributedTask
+    public const string SplitChar = ":";
+    public const string Owner = "Owner";
+    public const string OpType = "OperationType";
+    public const string Src = "Source";
+    public const string Progress = "Progress";
+    public const string Res = "Result";
+    public const string Err = "Error";
+    public const string Process = "Processed";
+    public const string Finish = "Finished";
+    public const string Hold = "Hold";
+
+    protected readonly IPrincipal Principal;
+    protected readonly string Culture;
+    public int Total { get; set; }
+    public string Source { get; set; }
+
+    protected int Processed;
+    protected int SuccessProcessed;
+
+    public virtual FileOperationType OperationType { get; }
+    public bool HoldResult { get; set; }
+    public string Result { get; set; }
+    public string Error { get; set; }
+
+    protected DistributedTask TaskInfo;
+
+    protected FileOperation(IServiceProvider serviceProvider)
     {
-        public const string SPLIT_CHAR = ":";
-        public const string OWNER = "Owner";
-        public const string OPERATION_TYPE = "OperationType";
-        public const string SOURCE = "Source";
-        public const string PROGRESS = "Progress";
-        public const string RESULT = "Result";
-        public const string ERROR = "Error";
-        public const string PROCESSED = "Processed";
-        public const string FINISHED = "Finished";
-        public const string HOLD = "Hold";
+        Principal = serviceProvider.GetService<Microsoft.AspNetCore.Http.IHttpContextAccessor>()?.HttpContext?.User ?? Thread.CurrentPrincipal;
+        Culture = Thread.CurrentThread.CurrentCulture.Name;
 
-        protected readonly IPrincipal principal;
-        protected readonly string culture;
-        public int Total { get; set; }
-        public string Source { get; set; }
-
-        protected int processed;
-        protected int successProcessed;
-
-        public virtual FileOperationType OperationType { get; }
-        public bool HoldResult { get; set; }
-
-        public string Result { get; set; }
-
-        public string Error { get; set; }
-
-        protected DistributedTask TaskInfo { get; set; }
-
-        protected FileOperation(IServiceProvider serviceProvider)
-        {
-            principal = serviceProvider.GetService<Microsoft.AspNetCore.Http.IHttpContextAccessor>()?.HttpContext?.User ?? Thread.CurrentPrincipal;
-            culture = Thread.CurrentThread.CurrentCulture.Name;
-
-            TaskInfo = new DistributedTask();
-        }
-
-        public virtual DistributedTask GetDistributedTask()
-        {
-            FillDistributedTask();
-            return TaskInfo;
-        }
-
-
-        protected internal virtual void FillDistributedTask()
-        {
-            var progress = Total != 0 ? 100 * processed / Total : 0;
-
-            TaskInfo.SetProperty(OPERATION_TYPE, OperationType);
-            TaskInfo.SetProperty(OWNER, ((IAccount)(principal ?? Thread.CurrentPrincipal).Identity).ID);
-            TaskInfo.SetProperty(PROGRESS, progress < 100 ? progress : 100);
-            TaskInfo.SetProperty(RESULT, Result);
-            TaskInfo.SetProperty(ERROR, Error);
-            TaskInfo.SetProperty(PROCESSED, successProcessed);
-            TaskInfo.SetProperty(HOLD, HoldResult);
-        }
-
-        public abstract Task RunJobAsync(DistributedTask _, CancellationToken cancellationToken);
-        protected abstract Task DoAsync(IServiceScope serviceScope);
-
+        TaskInfo = new DistributedTask();
     }
 
-    internal class ComposeFileOperation<T1, T2> : FileOperation
-        where T1 : FileOperationData<string>
-        where T2 : FileOperationData<int>
+    public virtual DistributedTask GetDistributedTask()
     {
-        public FileOperation<T1, string> ThirdPartyOperation { get; set; }
-        public FileOperation<T2, int> DaoOperation { get; set; }
+        FillDistributedTask();
 
-        public ComposeFileOperation(
-            IServiceProvider serviceProvider,
-            FileOperation<T1, string> thirdPartyOperation,
-            FileOperation<T2, int> daoOperation)
-            : base(serviceProvider)
-        {
-            ThirdPartyOperation = thirdPartyOperation;
-            DaoOperation = daoOperation;
-        }
-
-        public override async Task RunJobAsync(DistributedTask _, CancellationToken cancellationToken)
-        {
-            ThirdPartyOperation.GetDistributedTask().Publication = PublishChanges;
-            await ThirdPartyOperation.RunJobAsync(_, cancellationToken);
-
-            DaoOperation.GetDistributedTask().Publication = PublishChanges;
-            await DaoOperation.RunJobAsync(_, cancellationToken);
-        }
-
-        protected internal override void FillDistributedTask()
-        {
-            ThirdPartyOperation.FillDistributedTask();
-            DaoOperation.FillDistributedTask();
-
-            HoldResult = ThirdPartyOperation.HoldResult || DaoOperation.HoldResult;
-            Total = ThirdPartyOperation.Total + DaoOperation.Total;
-            Source = string.Join(SPLIT_CHAR, ThirdPartyOperation.Source, DaoOperation.Source);
-            base.FillDistributedTask();
-        }
-
-        public virtual void PublishChanges(DistributedTask task)
-        {
-            var thirdpartyTask = ThirdPartyOperation.GetDistributedTask();
-            var daoTask = DaoOperation.GetDistributedTask();
-
-            var error1 = thirdpartyTask.GetProperty<string>(ERROR);
-            var error2 = daoTask.GetProperty<string>(ERROR);
-
-            if (!string.IsNullOrEmpty(error1))
-            {
-                Error = error1;
-            }
-            else if (!string.IsNullOrEmpty(error2))
-            {
-                Error = error2;
-            }
-
-            var status1 = thirdpartyTask.GetProperty<string>(RESULT);
-            var status2 = daoTask.GetProperty<string>(RESULT);
-
-            if (!string.IsNullOrEmpty(status1))
-            {
-                Result = status1;
-            }
-            else if (!string.IsNullOrEmpty(status2))
-            {
-                Result = status2;
-            }
-
-            var finished1 = thirdpartyTask.GetProperty<bool?>(FINISHED);
-            var finished2 = daoTask.GetProperty<bool?>(FINISHED);
-
-            if (finished1 != null && finished2 != null)
-            {
-                TaskInfo.SetProperty(FINISHED, finished1);
-            }
-
-            successProcessed = thirdpartyTask.GetProperty<int>(PROCESSED) + daoTask.GetProperty<int>(PROCESSED);
-
-
-            base.FillDistributedTask();
-
-            var progress = 0;
-
-            if (ThirdPartyOperation.Total != 0)
-            {
-                progress += thirdpartyTask.GetProperty<int>(PROGRESS);
-            }
-
-            if (DaoOperation.Total != 0)
-            {
-                progress += daoTask.GetProperty<int>(PROGRESS);
-            }
-
-            if (ThirdPartyOperation.Total != 0 && DaoOperation.Total != 0)
-            {
-                progress /= 2;
-            }
-
-            TaskInfo.SetProperty(PROGRESS, progress < 100 ? progress : 100);
-            TaskInfo.PublishChanges();
-        }
-
-        protected override Task DoAsync(IServiceScope serviceScope)
-        {
-            throw new NotImplementedException();
-        }
+        return TaskInfo;
     }
 
-    abstract class FileOperationData<T>
+
+    protected internal virtual void FillDistributedTask()
     {
-        public List<T> Folders { get; private set; }
+        var progress = Total != 0 ? 100 * Processed / Total : 0;
 
-        public List<T> Files { get; private set; }
-
-        public Tenant Tenant { get; }
-
-        public bool HoldResult { get; set; }
-
-        protected FileOperationData(IEnumerable<T> folders, IEnumerable<T> files, Tenant tenant, bool holdResult = true)
-        {
-            Folders = folders?.ToList() ?? new List<T>();
-            Files = files?.ToList() ?? new List<T>();
-            Tenant = tenant;
-            HoldResult = holdResult;
-        }
+        TaskInfo.SetProperty(OpType, OperationType);
+        TaskInfo.SetProperty(Owner, ((IAccount)(Principal ?? Thread.CurrentPrincipal).Identity).ID);
+        TaskInfo.SetProperty(Progress, progress < 100 ? progress : 100);
+        TaskInfo.SetProperty(Res, Result);
+        TaskInfo.SetProperty(Err, Error);
+        TaskInfo.SetProperty(Process, SuccessProcessed);
+        TaskInfo.SetProperty(Hold, HoldResult);
     }
 
-    abstract class FileOperation<T, TId> : FileOperation where T : FileOperationData<TId>
+    public abstract Task RunJobAsync(DistributedTask _, CancellationToken cancellationToken);
+
+    protected abstract Task DoAsync(IServiceScope serviceScope);
+}
+
+internal class ComposeFileOperation<T1, T2> : FileOperation
+    where T1 : FileOperationData<string>
+    where T2 : FileOperationData<int>
+{
+    public FileOperation<T1, string> ThirdPartyOperation { get; set; }
+    public FileOperation<T2, int> DaoOperation { get; set; }
+
+    public ComposeFileOperation(
+        IServiceProvider serviceProvider,
+        FileOperation<T1, string> thirdPartyOperation,
+        FileOperation<T2, int> daoOperation)
+        : base(serviceProvider)
     {
-        protected Tenant CurrentTenant { get; private set; }
+        ThirdPartyOperation = thirdPartyOperation;
+        DaoOperation = daoOperation;
+    }
 
-        protected FileSecurity FilesSecurity { get; private set; }
+    public override async Task RunJobAsync(DistributedTask _, CancellationToken cancellationToken)
+    {
+        ThirdPartyOperation.GetDistributedTask().Publication = PublishChanges;
+        await ThirdPartyOperation.RunJobAsync(_, cancellationToken);
 
-        protected IFolderDao<TId> FolderDao { get; private set; }
+        DaoOperation.GetDistributedTask().Publication = PublishChanges;
+        await DaoOperation.RunJobAsync(_, cancellationToken);
+    }
 
-        protected IFileDao<TId> FileDao { get; private set; }
+    protected internal override void FillDistributedTask()
+    {
+        ThirdPartyOperation.FillDistributedTask();
+        DaoOperation.FillDistributedTask();
 
-        protected ITagDao<TId> TagDao { get; private set; }
+        HoldResult = ThirdPartyOperation.HoldResult || DaoOperation.HoldResult;
+        Total = ThirdPartyOperation.Total + DaoOperation.Total;
+        Source = string.Join(SplitChar, ThirdPartyOperation.Source, DaoOperation.Source);
+        base.FillDistributedTask();
+    }
 
-        protected ILinkDao LinkDao { get; private set; }
+    public virtual void PublishChanges(DistributedTask task)
+    {
+        var thirdpartyTask = ThirdPartyOperation.GetDistributedTask();
+        var daoTask = DaoOperation.GetDistributedTask();
 
-        protected IProviderDao ProviderDao { get; private set; }
+        var error1 = thirdpartyTask.GetProperty<string>(Err);
+        var error2 = daoTask.GetProperty<string>(Err);
 
-        protected ILog Logger { get; private set; }
-
-        protected CancellationToken CancellationToken { get; private set; }
-
-        protected List<TId> Folders { get; private set; }
-
-        protected List<TId> Files { get; private set; }
-
-        private IServiceProvider ServiceProvider { get; }
-
-        protected FileOperation(IServiceProvider serviceProvider, T fileOperationData) : base(serviceProvider)
+        if (!string.IsNullOrEmpty(error1))
         {
-            ServiceProvider = serviceProvider;
-            Files = fileOperationData.Files;
-            Folders = fileOperationData.Folders;
-            HoldResult = fileOperationData.HoldResult;
-            CurrentTenant = fileOperationData.Tenant;
+            Error = error1;
+        }
+        else if (!string.IsNullOrEmpty(error2))
+        {
+            Error = error2;
+        }
 
-            using var scope = ServiceProvider.CreateScope();
-            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+        var status1 = thirdpartyTask.GetProperty<string>(Res);
+        var status2 = daoTask.GetProperty<string>(Res);
+
+        if (!string.IsNullOrEmpty(status1))
+        {
+            Result = status1;
+        }
+        else if (!string.IsNullOrEmpty(status2))
+        {
+            Result = status2;
+        }
+
+        var finished1 = thirdpartyTask.GetProperty<bool?>(Finish);
+        var finished2 = daoTask.GetProperty<bool?>(Finish);
+
+        if (finished1 != null && finished2 != null)
+        {
+            TaskInfo.SetProperty(Finish, finished1);
+        }
+
+        SuccessProcessed = thirdpartyTask.GetProperty<int>(Process) + daoTask.GetProperty<int>(Process);
+
+
+        base.FillDistributedTask();
+
+        var progress = 0;
+
+        if (ThirdPartyOperation.Total != 0)
+        {
+            progress += thirdpartyTask.GetProperty<int>(Progress);
+        }
+
+        if (DaoOperation.Total != 0)
+        {
+            progress += daoTask.GetProperty<int>(Progress);
+        }
+
+        if (ThirdPartyOperation.Total != 0 && DaoOperation.Total != 0)
+        {
+            progress /= 2;
+        }
+
+        TaskInfo.SetProperty(Progress, progress < 100 ? progress : 100);
+        TaskInfo.PublishChanges();
+    }
+
+    protected override Task DoAsync(IServiceScope serviceScope)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+abstract class FileOperationData<T>
+{
+    public List<T> Folders { get; private set; }
+    public List<T> Files { get; private set; }
+    public Tenant Tenant { get; }
+    public bool HoldResult { get; set; }
+
+    protected FileOperationData(IEnumerable<T> folders, IEnumerable<T> files, Tenant tenant, bool holdResult = true)
+    {
+        Folders = folders?.ToList() ?? new List<T>();
+        Files = files?.ToList() ?? new List<T>();
+        Tenant = tenant;
+        HoldResult = holdResult;
+    }
+}
+
+abstract class FileOperation<T, TId> : FileOperation where T : FileOperationData<TId>
+{
+    protected Tenant CurrentTenant { get; private set; }
+    protected FileSecurity FilesSecurity { get; private set; }
+    protected IFolderDao<TId> FolderDao { get; private set; }
+    protected IFileDao<TId> FileDao { get; private set; }
+    protected ITagDao<TId> TagDao { get; private set; }
+    protected ILinkDao LinkDao { get; private set; }
+    protected IProviderDao ProviderDao { get; private set; }
+    protected ILog Logger { get; private set; }
+    protected CancellationToken CancellationToken { get; private set; }
+    protected List<TId> Folders { get; private set; }
+    protected List<TId> Files { get; private set; }
+
+    private readonly IServiceProvider _serviceProvider;
+
+    protected FileOperation(IServiceProvider serviceProvider, T fileOperationData) : base(serviceProvider)
+    {
+        _serviceProvider = serviceProvider;
+        Files = fileOperationData.Files;
+        Folders = fileOperationData.Folders;
+        HoldResult = fileOperationData.HoldResult;
+        CurrentTenant = fileOperationData.Tenant;
+
+        using var scope = _serviceProvider.CreateScope();
+        var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+        tenantManager.SetCurrentTenant(CurrentTenant);
+
+        var daoFactory = scope.ServiceProvider.GetService<IDaoFactory>();
+        FolderDao = daoFactory.GetFolderDao<TId>();
+
+        Total = InitTotalProgressSteps();
+        Source = string.Join(SplitChar, Folders.Select(f => "folder_" + f).Concat(Files.Select(f => "file_" + f)).ToArray());
+    }
+
+    public override async Task RunJobAsync(DistributedTask _, CancellationToken cancellationToken)
+    {
+        try
+        {
+            //todo check files> 0 or folders > 0
+            CancellationToken = cancellationToken;
+
+            using var scope = _serviceProvider.CreateScope();
+            var scopeClass = scope.ServiceProvider.GetService<FileOperationScope>();
+            var (tenantManager, daoFactory, fileSecurity, options) = scopeClass;
             tenantManager.SetCurrentTenant(CurrentTenant);
 
-            var daoFactory = scope.ServiceProvider.GetService<IDaoFactory>();
+
+            Thread.CurrentPrincipal = Principal;
+            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(Culture);
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(Culture);
+
             FolderDao = daoFactory.GetFolderDao<TId>();
+            FileDao = daoFactory.GetFileDao<TId>();
+            TagDao = daoFactory.GetTagDao<TId>();
+            LinkDao = daoFactory.GetLinkDao();
+            ProviderDao = daoFactory.ProviderDao;
+            FilesSecurity = fileSecurity;
 
-            Total = InitTotalProgressSteps();
-            Source = string.Join(SPLIT_CHAR, Folders.Select(f => "folder_" + f).Concat(Files.Select(f => "file_" + f)).ToArray());
+            Logger = options.CurrentValue;
+
+            await DoAsync(scope);
         }
-
-        public override async Task RunJobAsync(DistributedTask _, CancellationToken cancellationToken)
+        catch (AuthorizingException authError)
+        {
+            Error = FilesCommonResource.ErrorMassage_SecurityException;
+            Logger.Error(Error, new SecurityException(Error, authError));
+        }
+        catch (AggregateException ae)
+        {
+            ae.Flatten().Handle(e => e is TaskCanceledException || e is OperationCanceledException);
+        }
+        catch (Exception error)
+        {
+            Error = error is TaskCanceledException || error is OperationCanceledException
+                        ? FilesCommonResource.ErrorMassage_OperationCanceledException
+                        : error.Message;
+            Logger.Error(error, error);
+        }
+        finally
         {
             try
             {
-                //todo check files> 0 or folders > 0
-                CancellationToken = cancellationToken;
-
-                using var scope = ServiceProvider.CreateScope();
-                var scopeClass = scope.ServiceProvider.GetService<FileOperationScope>();
-                var (tenantManager, daoFactory, fileSecurity, options) = scopeClass;
-                tenantManager.SetCurrentTenant(CurrentTenant);
-
-
-                Thread.CurrentPrincipal = principal;
-                Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(culture);
-                Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(culture);
-
-                FolderDao = daoFactory.GetFolderDao<TId>();
-                FileDao = daoFactory.GetFileDao<TId>();
-                TagDao = daoFactory.GetTagDao<TId>();
-                LinkDao = daoFactory.GetLinkDao();
-                ProviderDao = daoFactory.ProviderDao;
-                FilesSecurity = fileSecurity;
-
-                Logger = options.CurrentValue;
-
-                await DoAsync(scope);
-            }
-            catch (AuthorizingException authError)
-            {
-                Error = FilesCommonResource.ErrorMassage_SecurityException;
-                Logger.Error(Error, new SecurityException(Error, authError));
-            }
-            catch (AggregateException ae)
-            {
-                ae.Flatten().Handle(e => e is TaskCanceledException || e is OperationCanceledException);
-            }
-            catch (Exception error)
-            {
-                Error = error is TaskCanceledException || error is OperationCanceledException
-                            ? FilesCommonResource.ErrorMassage_OperationCanceledException
-                            : error.Message;
-                Logger.Error(error, error);
-            }
-            finally
-            {
-                try
-                {
-                    TaskInfo.SetProperty(FINISHED, true);
-                    PublishTaskInfo();
-                }
-                catch { /* ignore */ }
-            }
-        }
-
-        public IServiceScope CreateScope()
-        {
-            var scope = ServiceProvider.CreateScope();
-            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-            tenantManager.SetCurrentTenant(CurrentTenant);
-            return scope;
-        }
-
-        protected internal override void FillDistributedTask()
-        {
-            base.FillDistributedTask();
-
-            TaskInfo.SetProperty(SOURCE, Source);
-        }
-
-        protected virtual int InitTotalProgressSteps()
-        {
-            var count = Files.Count;
-            Folders.ForEach(f => count += 1 + (FolderDao.CanCalculateSubitems(f) ? FolderDao.GetItemsCountAsync(f).Result : 0));
-            return count;
-        }
-
-        protected void ProgressStep(TId folderId = default, TId fileId = default)
-        {
-            if (Equals(folderId, default(TId)) && Equals(fileId, default(TId))
-                || !Equals(folderId, default(TId)) && Folders.Contains(folderId)
-                || !Equals(fileId, default(TId)) && Files.Contains(fileId))
-            {
-                processed++;
+                TaskInfo.SetProperty(Finish, true);
                 PublishTaskInfo();
             }
-        }
-
-        protected bool ProcessedFolder(TId folderId)
-        {
-            successProcessed++;
-            if (Folders.Contains(folderId))
-            {
-                Result += string.Format("folder_{0}{1}", folderId, SPLIT_CHAR);
-                return true;
-            }
-            return false;
-        }
-
-        protected bool ProcessedFile(TId fileId)
-        {
-            successProcessed++;
-            if (Files.Contains(fileId))
-            {
-                Result += string.Format("file_{0}{1}", fileId, SPLIT_CHAR);
-                return true;
-            }
-            return false;
-        }
-
-        protected void PublishTaskInfo()
-        {
-            FillDistributedTask();
-            TaskInfo.PublishChanges();
+            catch { /* ignore */ }
         }
     }
 
-    [Scope]
-    public class FileOperationScope
+    public IServiceScope CreateScope()
     {
-        private TenantManager TenantManager { get; }
-        private IDaoFactory DaoFactory { get; }
-        private FileSecurity FileSecurity { get; }
-        private IOptionsMonitor<ILog> Options { get; }
+        var scope = _serviceProvider.CreateScope();
+        var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+        tenantManager.SetCurrentTenant(CurrentTenant);
 
-        public FileOperationScope(TenantManager tenantManager, IDaoFactory daoFactory, FileSecurity fileSecurity, IOptionsMonitor<ILog> options)
+        return scope;
+    }
+
+    protected internal override void FillDistributedTask()
+    {
+        base.FillDistributedTask();
+
+        TaskInfo.SetProperty(Src, Source);
+    }
+
+    protected virtual int InitTotalProgressSteps()
+    {
+        var count = Files.Count;
+        Folders.ForEach(f => count += 1 + (FolderDao.CanCalculateSubitems(f) ? FolderDao.GetItemsCountAsync(f).Result : 0));
+
+        return count;
+    }
+
+    protected void ProgressStep(TId folderId = default, TId fileId = default)
+    {
+        if (Equals(folderId, default(TId)) && Equals(fileId, default(TId))
+            || !Equals(folderId, default(TId)) && Folders.Contains(folderId)
+            || !Equals(fileId, default(TId)) && Files.Contains(fileId))
         {
-            TenantManager = tenantManager;
-            DaoFactory = daoFactory;
-            FileSecurity = fileSecurity;
-            Options = options;
+            Processed++;
+            PublishTaskInfo();
+        }
+    }
+
+    protected bool ProcessedFolder(TId folderId)
+    {
+        SuccessProcessed++;
+        if (Folders.Contains(folderId))
+        {
+            Result += $"folder_{folderId}{SplitChar}";
+
+            return true;
         }
 
-        public void Deconstruct(out TenantManager tenantManager, out IDaoFactory daoFactory, out FileSecurity fileSecurity, out IOptionsMonitor<ILog> optionsMonitor)
+        return false;
+    }
+
+    protected bool ProcessedFile(TId fileId)
+    {
+        SuccessProcessed++;
+        if (Files.Contains(fileId))
         {
-            tenantManager = TenantManager;
-            daoFactory = DaoFactory;
-            fileSecurity = FileSecurity;
-            optionsMonitor = Options;
+            Result += $"file_{fileId}{SplitChar}";
+
+            return true;
         }
+
+        return false;
+    }
+
+    protected void PublishTaskInfo()
+    {
+        FillDistributedTask();
+        TaskInfo.PublishChanges();
+    }
+}
+
+[Scope]
+public class FileOperationScope
+{
+    private readonly TenantManager _tenantManager;
+    private readonly IDaoFactory _daoFactory;
+    private readonly FileSecurity _fileSecurity;
+    private readonly IOptionsMonitor<ILog> _options;
+
+    public FileOperationScope(TenantManager tenantManager, IDaoFactory daoFactory, FileSecurity fileSecurity, IOptionsMonitor<ILog> options)
+    {
+        _tenantManager = tenantManager;
+        _daoFactory = daoFactory;
+        _fileSecurity = fileSecurity;
+        _options = options;
+    }
+
+    public void Deconstruct(out TenantManager tenantManager, out IDaoFactory daoFactory, out FileSecurity fileSecurity, out IOptionsMonitor<ILog> optionsMonitor)
+    {
+        tenantManager = _tenantManager;
+        daoFactory = _daoFactory;
+        fileSecurity = _fileSecurity;
+        optionsMonitor = _options;
     }
 }

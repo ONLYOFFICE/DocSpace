@@ -23,637 +23,674 @@
  *
 */
 
-namespace ASC.Web.Files.Services.WCFService.FileOperations
+namespace ASC.Web.Files.Services.WCFService.FileOperations;
+
+[Transient]
+class FileMoveCopyOperation : ComposeFileOperation<FileMoveCopyOperationData<string>, FileMoveCopyOperationData<int>>
 {
-    [Transient]
-    class FileMoveCopyOperation : ComposeFileOperation<FileMoveCopyOperationData<string>, FileMoveCopyOperationData<int>>
+    public FileMoveCopyOperation(IServiceProvider serviceProvider,
+        FileOperation<FileMoveCopyOperationData<string>, string> thirdPartyOperation,
+        FileOperation<FileMoveCopyOperationData<int>, int> daoOperation)
+        : base(serviceProvider, thirdPartyOperation, daoOperation)
     {
-        public FileMoveCopyOperation(IServiceProvider serviceProvider,
-            FileOperation<FileMoveCopyOperationData<string>, string> thirdPartyOperation,
-            FileOperation<FileMoveCopyOperationData<int>, int> daoOperation)
-            : base(serviceProvider, thirdPartyOperation, daoOperation)
-        {
 
+    }
+
+    public override FileOperationType OperationType => ThirdPartyOperation.OperationType;
+}
+
+internal class FileMoveCopyOperationData<T> : FileOperationData<T>
+{
+    public string ThirdpartyFolderId { get; }
+    public int DaoFolderId { get; }
+    public bool Copy { get; }
+    public FileConflictResolveType ResolveType { get; }
+    public IDictionary<string, StringValues> Headers { get; }
+
+    public FileMoveCopyOperationData(IEnumerable<object> folders, IEnumerable<object> files, Tenant tenant, JsonElement toFolderId, bool copy, FileConflictResolveType resolveType, bool holdResult = true, IDictionary<string, StringValues> headers = null)
+        : this(folders.OfType<T>(), files.OfType<T>(), tenant, toFolderId, copy, resolveType, holdResult, headers)
+    {
+    }
+
+    public FileMoveCopyOperationData(IEnumerable<T> folders, IEnumerable<T> files, Tenant tenant, JsonElement toFolderId, bool copy, FileConflictResolveType resolveType, bool holdResult = true, IDictionary<string, StringValues> headers = null)
+        : base(folders, files, tenant, holdResult)
+    {
+        if (toFolderId.ValueKind == JsonValueKind.String)
+        {
+            if (!int.TryParse(toFolderId.GetString(), out var i))
+            {
+                ThirdpartyFolderId = toFolderId.GetString();
+            }
+            else
+            {
+                DaoFolderId = i;
+            }
+        }
+        else if (toFolderId.ValueKind == JsonValueKind.Number)
+        {
+            DaoFolderId = toFolderId.GetInt32();
         }
 
-        public override FileOperationType OperationType
+        Copy = copy;
+        ResolveType = resolveType;
+        Headers = headers;
+    }
+}
+
+class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
+{
+    private readonly int _daoFolderId;
+    private readonly string _thirdpartyFolderId;
+    private readonly bool _copy;
+    private readonly FileConflictResolveType _resolveType;
+    private readonly IDictionary<string, StringValues> _headers;
+
+    public override FileOperationType OperationType => _copy ? FileOperationType.Copy : FileOperationType.Move;
+
+    public FileMoveCopyOperation(IServiceProvider serviceProvider, FileMoveCopyOperationData<T> data)
+        : base(serviceProvider, data)
+    {
+        _daoFolderId = data.DaoFolderId;
+        _thirdpartyFolderId = data.ThirdpartyFolderId;
+        _copy = data.Copy;
+        _resolveType = data.ResolveType;
+
+        _headers = data.Headers;
+    }
+
+    protected override async Task DoAsync(IServiceScope scope)
+    {
+        if (_daoFolderId != 0)
         {
-            get
-            {
-                return ThirdPartyOperation.OperationType;
-            }
+            await DoAsync(scope, _daoFolderId);
+        }
+
+        if (!string.IsNullOrEmpty(_thirdpartyFolderId))
+        {
+            await DoAsync(scope, _thirdpartyFolderId);
         }
     }
 
-    internal class FileMoveCopyOperationData<T> : FileOperationData<T>
+    private async Task DoAsync<TTo>(IServiceScope scope, TTo tto)
     {
-        public string ThirdpartyFolderId { get; }
-        public int DaoFolderId { get; }
-        public bool Copy { get; }
-        public FileConflictResolveType ResolveType { get; }
-        public IDictionary<string, StringValues> Headers { get; }
+        var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
+        var folderDao = scope.ServiceProvider.GetService<IFolderDao<TTo>>();
 
-        public FileMoveCopyOperationData(IEnumerable<object> folders, IEnumerable<object> files, Tenant tenant, JsonElement toFolderId, bool copy, FileConflictResolveType resolveType, bool holdResult = true, IDictionary<string, StringValues> headers = null)
-            : this(folders.OfType<T>(), files.OfType<T>(), tenant, toFolderId, copy, resolveType, holdResult, headers)
+        Result += string.Format("folder_{0}{1}", _daoFolderId, SplitChar);
+
+        //TODO: check on each iteration?
+        var toFolder = await folderDao.GetFolderAsync(tto);
+        if (toFolder == null)
         {
+            return;
         }
 
-        public FileMoveCopyOperationData(IEnumerable<T> folders, IEnumerable<T> files, Tenant tenant, JsonElement toFolderId, bool copy, FileConflictResolveType resolveType, bool holdResult = true, IDictionary<string, StringValues> headers = null)
-            : base(folders, files, tenant, holdResult)
+        if (!await FilesSecurity.CanCreateAsync(toFolder))
         {
-            if (toFolderId.ValueKind == JsonValueKind.String)
+            throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_Create);
+        }
+
+        var parentFolders = await folderDao.GetParentFoldersAsync(toFolder.ID);
+        if (parentFolders.Any(parent => Folders.Any(r => r.ToString() == parent.ID.ToString())))
+        {
+            Error = FilesCommonResource.ErrorMassage_FolderCopyError;
+
+            return;
+        }
+
+        if (_copy)
+        {
+            Folder<T> rootFrom = null;
+            if (0 < Folders.Count)
             {
-                if (!int.TryParse(toFolderId.GetString(), out var i))
-                {
-                    ThirdpartyFolderId = toFolderId.GetString();
-                }
-                else
-                {
-                    DaoFolderId = i;
-                }
-            }
-            else if (toFolderId.ValueKind == JsonValueKind.Number)
-            {
-                DaoFolderId = toFolderId.GetInt32();
+                rootFrom = await FolderDao.GetRootFolderAsync(Folders[0]);
             }
 
-            Copy = copy;
-            ResolveType = resolveType;
-            Headers = headers;
+            if (0 < Files.Count)
+            {
+                rootFrom = await FolderDao.GetRootFolderByFileAsync(Files[0]);
+            }
+
+            if (rootFrom != null && rootFrom.FolderType == FolderType.TRASH)
+            {
+                throw new InvalidOperationException("Can not copy from Trash.");
+            }
+
+            if (toFolder.RootFolderType == FolderType.TRASH)
+            {
+                throw new InvalidOperationException("Can not copy to Trash.");
+            }
+        }
+
+        var needToMark = new List<FileEntry<TTo>>();
+
+        var moveOrCopyFoldersTask = MoveOrCopyFoldersAsync(scope, Folders, toFolder, _copy);
+        var moveOrCopyFilesTask = MoveOrCopyFilesAsync(scope, Files, toFolder, _copy);
+
+        needToMark.AddRange(await moveOrCopyFoldersTask);
+        needToMark.AddRange(await moveOrCopyFilesTask);
+
+        var ntm = needToMark.Distinct();
+        foreach (var n in ntm)
+        {
+            await fileMarker.MarkAsNewAsync(n);
         }
     }
 
-    class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
+    private async Task<List<FileEntry<TTo>>> MoveOrCopyFoldersAsync<TTo>(IServiceScope scope, List<T> folderIds, Folder<TTo> toFolder, bool copy)
     {
-        private readonly int DaoFolderId;
-        private readonly string ThirdpartyFolderId;
-        private readonly bool _copy;
-        private readonly FileConflictResolveType _resolveType;
+        var needToMark = new List<FileEntry<TTo>>();
 
-        private readonly IDictionary<string, StringValues> _headers;
-
-        public override FileOperationType OperationType
+        if (folderIds.Count == 0)
         {
-            get { return _copy ? FileOperationType.Copy : FileOperationType.Move; }
+            return needToMark;
         }
 
-        public FileMoveCopyOperation(IServiceProvider serviceProvider, FileMoveCopyOperationData<T> data)
-            : base(serviceProvider, data)
-        {
-            DaoFolderId = data.DaoFolderId;
-            ThirdpartyFolderId = data.ThirdpartyFolderId;
-            _copy = data.Copy;
-            _resolveType = data.ResolveType;
+        var scopeClass = scope.ServiceProvider.GetService<FileMoveCopyOperationScope>();
+        var (filesMessageService, fileMarker, _, _, _) = scopeClass;
+        var folderDao = scope.ServiceProvider.GetService<IFolderDao<TTo>>();
 
-            _headers = data.Headers;
-        }
+        var toFolderId = toFolder.ID;
+        var isToFolder = Equals(toFolderId, _daoFolderId);
 
-        protected override async Task DoAsync(IServiceScope scope)
+        var sb = new StringBuilder();
+        sb.Append(Result);
+        foreach (var folderId in folderIds)
         {
-            if (DaoFolderId != 0)
+            CancellationToken.ThrowIfCancellationRequested();
+
+            var folder = await FolderDao.GetFolderAsync(folderId);
+            var taskError = WithErrorAsync(scope, await FileDao.GetFilesAsync(folder.ID, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, true).ToListAsync());
+
+            if (folder == null)
             {
-                await DoAsync(scope, DaoFolderId);
+                Error = FilesCommonResource.ErrorMassage_FolderNotFound;
             }
-
-            if (!string.IsNullOrEmpty(ThirdpartyFolderId))
+            else if (!await FilesSecurity.CanReadAsync(folder))
             {
-                await DoAsync(scope, ThirdpartyFolderId);
+                Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFolder;
             }
-        }
-
-        private async Task DoAsync<TTo>(IServiceScope scope, TTo tto)
-        {
-            var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
-            var folderDao = scope.ServiceProvider.GetService<IFolderDao<TTo>>();
-
-            Result += string.Format("folder_{0}{1}", DaoFolderId, SPLIT_CHAR);
-
-            //TODO: check on each iteration?
-            var toFolder = await folderDao.GetFolderAsync(tto);
-            if (toFolder == null) return;
-            if (!await FilesSecurity.CanCreateAsync(toFolder)) throw new System.Security.SecurityException(FilesCommonResource.ErrorMassage_SecurityException_Create);
-
-            var parentFolders = await folderDao.GetParentFoldersAsync(toFolder.ID);
-            if (parentFolders.Any(parent => Folders.Any(r => r.ToString() == parent.ID.ToString())))
+            else if (folder.RootFolderType == FolderType.Privacy
+                && (copy || toFolder.RootFolderType != FolderType.Privacy))
             {
-                Error = FilesCommonResource.ErrorMassage_FolderCopyError;
-                return;
+                Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
             }
-
-            if (_copy)
+            else if (!Equals(folder.FolderID ?? default, toFolderId) || _resolveType == FileConflictResolveType.Duplicate)
             {
-                Folder<T> rootFrom = null;
-                if (0 < Folders.Count) rootFrom = await FolderDao.GetRootFolderAsync(Folders[0]);
-                if (0 < Files.Count) rootFrom = await FolderDao.GetRootFolderByFileAsync(Files[0]);
-                if (rootFrom != null && rootFrom.FolderType == FolderType.TRASH) throw new InvalidOperationException("Can not copy from Trash.");
-                if (toFolder.RootFolderType == FolderType.TRASH) throw new InvalidOperationException("Can not copy to Trash.");
-            }
-
-            var needToMark = new List<FileEntry<TTo>>();
-
-            var moveOrCopyFoldersTask = MoveOrCopyFoldersAsync(scope, Folders, toFolder, _copy);
-            var moveOrCopyFilesTask = MoveOrCopyFilesAsync(scope, Files, toFolder, _copy);
-
-            needToMark.AddRange(await moveOrCopyFoldersTask);
-            needToMark.AddRange(await moveOrCopyFilesTask);
-
-            var ntm = needToMark.Distinct(); foreach (var n in ntm)
-            {
-                await fileMarker.MarkAsNewAsync(n);
-        }
-        }
-
-        private async Task<List<FileEntry<TTo>>> MoveOrCopyFoldersAsync<TTo>(IServiceScope scope, List<T> folderIds, Folder<TTo> toFolder, bool copy)
-        {
-            var needToMark = new List<FileEntry<TTo>>();
-
-            if (folderIds.Count == 0) return needToMark;
-
-            var scopeClass = scope.ServiceProvider.GetService<FileMoveCopyOperationScope>();
-            var (filesMessageService, fileMarker, _, _, _) = scopeClass;
-            var folderDao = scope.ServiceProvider.GetService<IFolderDao<TTo>>();
-
-            var toFolderId = toFolder.ID;
-            var isToFolder = Equals(toFolderId, DaoFolderId);
-
-            var sb = new StringBuilder();
-            sb.Append(Result);
-            foreach (var folderId in folderIds)
-            {
-                CancellationToken.ThrowIfCancellationRequested();
-
-                var folder = await FolderDao.GetFolderAsync(folderId);
-                var taskError = WithErrorAsync(scope, await FileDao.GetFilesAsync(folder.ID, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, true).ToListAsync());
-
-                if (folder == null)
+                try
                 {
-                    Error = FilesCommonResource.ErrorMassage_FolderNotFound;
-                }
-                else if (!await FilesSecurity.CanReadAsync(folder))
-                {
-                    Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFolder;
-                }
-                else if (folder.RootFolderType == FolderType.Privacy
-                    && (copy || toFolder.RootFolderType != FolderType.Privacy))
-                {
-                    Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
-                }
-                else if (!Equals(folder.FolderID ?? default, toFolderId) || _resolveType == FileConflictResolveType.Duplicate)
-                {
-                    try
+                    //if destination folder contains folder with same name then merge folders
+                    var conflictFolder = folder.RootFolderType == FolderType.Privacy
+                        ? null
+                        : await folderDao.GetFolderAsync(folder.Title, toFolderId);
+                    Folder<TTo> newFolder;
+
+                    if (copy || conflictFolder != null)
                     {
-                        //if destination folder contains folder with same name then merge folders
-                        var conflictFolder = folder.RootFolderType == FolderType.Privacy
-                            ? null
-                            : await folderDao.GetFolderAsync(folder.Title, toFolderId);
-                        Folder<TTo> newFolder;
-
-                        if (copy || conflictFolder != null)
+                        if (conflictFolder != null)
                         {
-                            if (conflictFolder != null)
-                            {
-                                newFolder = conflictFolder;
+                            newFolder = conflictFolder;
 
-                                if (isToFolder)
-                                    needToMark.Add(conflictFolder);
+                            if (isToFolder)
+                            {
+                                needToMark.Add(conflictFolder);
                             }
-                            else
+                        }
+                        else
+                        {
+                            newFolder = await FolderDao.CopyFolderAsync(folder.ID, toFolderId, CancellationToken);
+                            filesMessageService.Send(newFolder, toFolder, _headers, MessageAction.FolderCopied, newFolder.Title, toFolder.Title);
+
+                            if (isToFolder)
                             {
-                                newFolder = await FolderDao.CopyFolderAsync(folder.ID, toFolderId, CancellationToken);
-                                filesMessageService.Send(newFolder, toFolder, _headers, MessageAction.FolderCopied, newFolder.Title, toFolder.Title);
+                                needToMark.Add(newFolder);
+                            }
 
-                                if (isToFolder)
-                                    needToMark.Add(newFolder);
+                            if (ProcessedFolder(folderId))
+                            {
+                                sb.Append($"folder_{newFolder.ID}{SplitChar}");
+                            }
+                        }
 
-                                if (ProcessedFolder(folderId))
+                        if (toFolder.ProviderId == folder.ProviderId // crossDao operation is always recursive
+                            && FolderDao.UseRecursiveOperation(folder.ID, toFolderId))
+                        {
+                            await MoveOrCopyFilesAsync(scope, await FileDao.GetFilesAsync(folder.ID), newFolder, copy);
+                            await MoveOrCopyFoldersAsync(scope, await FolderDao.GetFoldersAsync(folder.ID).Select(f => f.ID).ToListAsync(), newFolder, copy);
+
+                            if (!copy)
+                            {
+                                if (!await FilesSecurity.CanDeleteAsync(folder))
                                 {
-                                    sb.Append($"folder_{newFolder.ID}{SPLIT_CHAR}");
+                                    Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
                                 }
-                            }
-
-                            if (toFolder.ProviderId == folder.ProviderId // crossDao operation is always recursive
-                                && FolderDao.UseRecursiveOperation(folder.ID, toFolderId))
-                            {
-                                await MoveOrCopyFilesAsync(scope, await FileDao.GetFilesAsync(folder.ID), newFolder, copy);
-                                await MoveOrCopyFoldersAsync(scope, await FolderDao.GetFoldersAsync(folder.ID).Select(f => f.ID).ToListAsync(), newFolder, copy);
-
-                                if (!copy)
+                                else if (await FolderDao.IsEmptyAsync(folder.ID))
                                 {
-                                    if (!await FilesSecurity.CanDeleteAsync(folder))
+                                    await FolderDao.DeleteFolderAsync(folder.ID);
+
+                                    if (ProcessedFolder(folderId))
                                     {
-                                        Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
-                                    }
-                                    else if (await FolderDao.IsEmptyAsync(folder.ID))
-                                    {
-                                        await FolderDao.DeleteFolderAsync(folder.ID);
-
-                                        if (ProcessedFolder(folderId))
-                                        {
-                                            sb.Append($"folder_{newFolder.ID}{SPLIT_CHAR}");
-                                        }
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                if (conflictFolder != null)
-                                {
-                                    TTo newFolderId;
-                                    if (copy)
-                                    {
-                                        newFolder = await FolderDao.CopyFolderAsync(folder.ID, toFolderId, CancellationToken);
-                                        newFolderId = newFolder.ID;
-                                        filesMessageService.Send(newFolder, toFolder, _headers, MessageAction.FolderCopiedWithOverwriting, newFolder.Title, toFolder.Title);
-
-                                        if (isToFolder)
-                                            needToMark.Add(newFolder);
-
-                                        if (ProcessedFolder(folderId))
-                                        {
-                                            sb.Append($"folder_{newFolderId}{SPLIT_CHAR}");
-                                        }
-                                    }
-                                    else if (!await FilesSecurity.CanDeleteAsync(folder))
-                                    {
-                                        Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
-                                    }
-                                    else if ((await taskError).isError)
-                                    {
-                                        Error = (await taskError).message;
-                                    }
-                                    else
-                                    {
-                                        await fileMarker.RemoveMarkAsNewForAllAsync(folder);
-
-                                        newFolderId = await FolderDao.MoveFolderAsync(folder.ID, toFolderId, CancellationToken);
-                                        newFolder = await folderDao.GetFolderAsync(newFolderId);
-
-                                        if (folder.RootFolderType != FolderType.USER)
-                                        {
-                                            filesMessageService.Send(folder, toFolder, _headers, MessageAction.FolderMovedWithOverwriting, folder.Title, toFolder.Title);
-                                        }
-                                        else
-                                        {
-                                            filesMessageService.Send(newFolder, toFolder, _headers, MessageAction.FolderMovedWithOverwriting, folder.Title, toFolder.Title);
-                                        }
-
-                                        if (isToFolder)
-                                            needToMark.Add(newFolder);
-
-                                        if (ProcessedFolder(folderId))
-                                        {
-                                            sb.Append($"folder_{newFolderId}{SPLIT_CHAR}");
-                                        }
+                                        sb.Append($"folder_{newFolder.ID}{SplitChar}");
                                     }
                                 }
                             }
                         }
                         else
                         {
-                            if (!await FilesSecurity.CanDeleteAsync(folder))
+                            if (conflictFolder != null)
                             {
-                                Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
-                            }
-                            else if ((await taskError).isError)
-                            {
-                                Error = (await taskError).message;
-                            }
-                            else
-                            {
-                                await fileMarker.RemoveMarkAsNewForAllAsync(folder);
-
-                                var newFolderId = await FolderDao.MoveFolderAsync(folder.ID, toFolderId, CancellationToken);
-                                newFolder = await folderDao.GetFolderAsync(newFolderId);
-
-                                if (folder.RootFolderType != FolderType.USER)
+                                TTo newFolderId;
+                                if (copy)
                                 {
-                                    filesMessageService.Send(folder, toFolder, _headers, MessageAction.FolderMoved, folder.Title, toFolder.Title);
-                                }
-                                else
-                                {
-                                    filesMessageService.Send(newFolder, toFolder, _headers, MessageAction.FolderMoved, folder.Title, toFolder.Title);
-                                }
+                                    newFolder = await FolderDao.CopyFolderAsync(folder.ID, toFolderId, CancellationToken);
+                                    newFolderId = newFolder.ID;
+                                    filesMessageService.Send(newFolder, toFolder, _headers, MessageAction.FolderCopiedWithOverwriting, newFolder.Title, toFolder.Title);
 
-                                if (isToFolder)
-                                    needToMark.Add(newFolder);
-
-                                if (ProcessedFolder(folderId))
-                                {
-                                    sb.Append($"folder_{newFolderId}{SPLIT_CHAR}");
-                                }
-                            }
-                        }
-                        Result = sb.ToString();
-                    }
-                    catch (Exception ex)
-                    {
-                        Error = ex.Message;
-
-                        Logger.Error(Error, ex);
-                    }
-                }
-                ProgressStep(FolderDao.CanCalculateSubitems(folderId) ? default : folderId);
-            }
-
-            return needToMark;
-        }
-
-        private async Task<List<FileEntry<TTo>>> MoveOrCopyFilesAsync<TTo>(IServiceScope scope, List<T> fileIds, Folder<TTo> toFolder, bool copy)
-        {
-            var needToMark = new List<FileEntry<TTo>>();
-
-            if (fileIds.Count == 0) return needToMark;
-
-            var scopeClass = scope.ServiceProvider.GetService<FileMoveCopyOperationScope>();
-            var (filesMessageService, fileMarker, fileUtility, global, entryManager) = scopeClass;
-            var fileDao = scope.ServiceProvider.GetService<IFileDao<TTo>>();
-            var fileTracker = scope.ServiceProvider.GetService<FileTrackerHelper>();
-            var socketManager = scope.ServiceProvider.GetService<SocketManager>();
-
-            var toFolderId = toFolder.ID;
-            var sb = new StringBuilder();
-            foreach (var fileId in fileIds)
-            {
-                CancellationToken.ThrowIfCancellationRequested();
-
-                var file = await FileDao.GetFileAsync(fileId);
-                var taskError = WithErrorAsync(scope, new[] { file });
-
-                if (file == null)
-                {
-                    Error = FilesCommonResource.ErrorMassage_FileNotFound;
-                }
-                else if (!await FilesSecurity.CanReadAsync(file))
-                {
-                    Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFile;
-                }
-                else if (file.RootFolderType == FolderType.Privacy
-                    && (copy || toFolder.RootFolderType != FolderType.Privacy))
-                {
-                    Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFile;
-                }
-                else if (global.EnableUploadFilter
-                         && !fileUtility.ExtsUploadable.Contains(FileUtility.GetFileExtension(file.Title)))
-                {
-                    Error = FilesCommonResource.ErrorMassage_NotSupportedFormat;
-                }
-                else
-                {
-                    var parentFolder = await FolderDao.GetFolderAsync(file.FolderID);
-                    try
-                    {
-                        var conflict = _resolveType == FileConflictResolveType.Duplicate
-                            || file.RootFolderType == FolderType.Privacy
-                                           ? null
-                                           : await fileDao.GetFileAsync(toFolderId, file.Title);
-                        if (conflict == null)
-                        {
-                            File<TTo> newFile = null;
-                            if (copy)
-                            {
-                                try
-                                {
-                                    newFile = await FileDao.CopyFileAsync(file.ID, toFolderId); //Stream copy will occur inside dao
-                                    filesMessageService.Send(newFile, toFolder, _headers, MessageAction.FileCopied, newFile.Title, parentFolder.Title, toFolder.Title);
-
-                                    if (Equals(newFile.FolderID.ToString(), DaoFolderId))
+                                    if (isToFolder)
                                     {
-                                        needToMark.Add(newFile);
+                                        needToMark.Add(newFolder);
                                     }
 
-                                    await socketManager.CreateFileAsync(newFile);
-
-                                    if (ProcessedFile(fileId))
+                                    if (ProcessedFolder(folderId))
                                     {
-                                        sb.Append($"file_{newFile.ID}{SPLIT_CHAR}");
+                                        sb.Append($"folder_{newFolderId}{SplitChar}");
                                     }
                                 }
-                                catch
+                                else if (!await FilesSecurity.CanDeleteAsync(folder))
                                 {
-                                    if (newFile != null)
-                                    {
-                                        await fileDao.DeleteFileAsync(newFile.ID);
-                                    }
-                                    throw;
+                                    Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
                                 }
-                            }
-                            else
-                            {
-                                if ((await taskError).isError)
+                                else if ((await taskError).isError)
                                 {
                                     Error = (await taskError).message;
                                 }
                                 else
                                 {
-                                    await fileMarker.RemoveMarkAsNewForAllAsync(file);
+                                    await fileMarker.RemoveMarkAsNewForAllAsync(folder);
 
-                                    var newFileId = await FileDao.MoveFileAsync(file.ID, toFolderId);
-                                    newFile = await fileDao.GetFileAsync(newFileId);
+                                    newFolderId = await FolderDao.MoveFolderAsync(folder.ID, toFolderId, CancellationToken);
+                                    newFolder = await folderDao.GetFolderAsync(newFolderId);
 
-                                    if (file.RootFolderType != FolderType.USER)
+                                    if (folder.RootFolderType != FolderType.USER)
                                     {
-                                        filesMessageService.Send(file, toFolder, _headers, MessageAction.FileMoved, file.Title, parentFolder.Title, toFolder.Title);
+                                        filesMessageService.Send(folder, toFolder, _headers, MessageAction.FolderMovedWithOverwriting, folder.Title, toFolder.Title);
                                     }
                                     else
                                     {
-                                        filesMessageService.Send(newFile, toFolder, _headers, MessageAction.FileMoved, file.Title, parentFolder.Title, toFolder.Title);
+                                        filesMessageService.Send(newFolder, toFolder, _headers, MessageAction.FolderMovedWithOverwriting, folder.Title, toFolder.Title);
                                     }
 
-                                    if (file.RootFolderType == FolderType.TRASH && newFile.ThumbnailStatus == Thumbnail.NotRequired)
+                                    if (isToFolder)
                                     {
-                                        newFile.ThumbnailStatus = Thumbnail.Waiting;
-                                        await fileDao.SaveThumbnailAsync(newFile, null);
+                                        needToMark.Add(newFolder);
                                     }
 
-                                    if (newFile.ProviderEntry)
+                                    if (ProcessedFolder(folderId))
                                     {
-                                        await LinkDao.DeleteAllLinkAsync(file.ID.ToString());
-                                    }
-
-                                    if (Equals(toFolderId.ToString(), DaoFolderId))
-                                    {
-                                        needToMark.Add(newFile);
-                                    }
-
-                                    socketManager.DeleteFile(file);
-
-                                    await socketManager.CreateFileAsync(newFile);
-
-                                    if (ProcessedFile(fileId))
-                                    {
-                                        sb.Append($"file_{newFileId}{SPLIT_CHAR}");
+                                        sb.Append($"folder_{newFolderId}{SplitChar}");
                                     }
                                 }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (!await FilesSecurity.CanDeleteAsync(folder))
+                        {
+                            Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
+                        }
+                        else if ((await taskError).isError)
+                        {
+                            Error = (await taskError).message;
+                        }
+                        else
+                        {
+                            await fileMarker.RemoveMarkAsNewForAllAsync(folder);
+
+                            var newFolderId = await FolderDao.MoveFolderAsync(folder.ID, toFolderId, CancellationToken);
+                            newFolder = await folderDao.GetFolderAsync(newFolderId);
+
+                            if (folder.RootFolderType != FolderType.USER)
+                            {
+                                filesMessageService.Send(folder, toFolder, _headers, MessageAction.FolderMoved, folder.Title, toFolder.Title);
+                            }
+                            else
+                            {
+                                filesMessageService.Send(newFolder, toFolder, _headers, MessageAction.FolderMoved, folder.Title, toFolder.Title);
+                            }
+
+                            if (isToFolder)
+                            {
+                                needToMark.Add(newFolder);
+                            }
+
+                            if (ProcessedFolder(folderId))
+                            {
+                                sb.Append($"folder_{newFolderId}{SplitChar}");
+                            }
+                        }
+                    }
+                    Result = sb.ToString();
+                }
+                catch (Exception ex)
+                {
+                    Error = ex.Message;
+
+                    Logger.Error(Error, ex);
+                }
+            }
+
+            ProgressStep(FolderDao.CanCalculateSubitems(folderId) ? default : folderId);
+        }
+
+        return needToMark;
+    }
+
+    private async Task<List<FileEntry<TTo>>> MoveOrCopyFilesAsync<TTo>(IServiceScope scope, List<T> fileIds, Folder<TTo> toFolder, bool copy)
+    {
+        var needToMark = new List<FileEntry<TTo>>();
+
+        if (fileIds.Count == 0)
+        {
+            return needToMark;
+        }
+
+        var scopeClass = scope.ServiceProvider.GetService<FileMoveCopyOperationScope>();
+        var (filesMessageService, fileMarker, fileUtility, global, entryManager) = scopeClass;
+        var fileDao = scope.ServiceProvider.GetService<IFileDao<TTo>>();
+        var fileTracker = scope.ServiceProvider.GetService<FileTrackerHelper>();
+        var socketManager = scope.ServiceProvider.GetService<SocketManager>();
+
+        var toFolderId = toFolder.ID;
+        var sb = new StringBuilder();
+        foreach (var fileId in fileIds)
+        {
+            CancellationToken.ThrowIfCancellationRequested();
+
+            var file = await FileDao.GetFileAsync(fileId);
+            var taskError = WithErrorAsync(scope, new[] { file });
+
+            if (file == null)
+            {
+                Error = FilesCommonResource.ErrorMassage_FileNotFound;
+            }
+            else if (!await FilesSecurity.CanReadAsync(file))
+            {
+                Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFile;
+            }
+            else if (file.RootFolderType == FolderType.Privacy
+                && (copy || toFolder.RootFolderType != FolderType.Privacy))
+            {
+                Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFile;
+            }
+            else if (global.EnableUploadFilter
+                     && !fileUtility.ExtsUploadable.Contains(FileUtility.GetFileExtension(file.Title)))
+            {
+                Error = FilesCommonResource.ErrorMassage_NotSupportedFormat;
+            }
+            else
+            {
+                var parentFolder = await FolderDao.GetFolderAsync(file.FolderID);
+                try
+                {
+                    var conflict = _resolveType == FileConflictResolveType.Duplicate
+                        || file.RootFolderType == FolderType.Privacy
+                                       ? null
+                                       : await fileDao.GetFileAsync(toFolderId, file.Title);
+                    if (conflict == null)
+                    {
+                        File<TTo> newFile = null;
+                        if (copy)
+                        {
+                            try
+                            {
+                                newFile = await FileDao.CopyFileAsync(file.ID, toFolderId); //Stream copy will occur inside dao
+                                filesMessageService.Send(newFile, toFolder, _headers, MessageAction.FileCopied, newFile.Title, parentFolder.Title, toFolder.Title);
+
+                                if (Equals(newFile.FolderID.ToString(), _daoFolderId))
+                                {
+                                    needToMark.Add(newFile);
+                                }
+
+                                await socketManager.CreateFileAsync(newFile);
+
+                                if (ProcessedFile(fileId))
+                                {
+                                    sb.Append($"file_{newFile.ID}{SplitChar}");
+                                }
+                            }
+                            catch
+                            {
+                                if (newFile != null)
+                                {
+                                    await fileDao.DeleteFileAsync(newFile.ID);
+                                }
+
+                                throw;
                             }
                         }
                         else
                         {
-                            if (_resolveType == FileConflictResolveType.Overwrite)
+                            if ((await taskError).isError)
                             {
-                                if (!await FilesSecurity.CanEditAsync(conflict))
+                                Error = (await taskError).message;
+                            }
+                            else
+                            {
+                                await fileMarker.RemoveMarkAsNewForAllAsync(file);
+
+                                var newFileId = await FileDao.MoveFileAsync(file.ID, toFolderId);
+                                newFile = await fileDao.GetFileAsync(newFileId);
+
+                                if (file.RootFolderType != FolderType.USER)
                                 {
-                                    Error = FilesCommonResource.ErrorMassage_SecurityException;
-                                }
-                                else if (await entryManager.FileLockedForMeAsync(conflict.ID))
-                                {
-                                    Error = FilesCommonResource.ErrorMassage_LockedFile;
-                                }
-                                else if (fileTracker.IsEditing(conflict.ID))
-                                {
-                                    Error = FilesCommonResource.ErrorMassage_SecurityException_UpdateEditingFile;
+                                    filesMessageService.Send(file, toFolder, _headers, MessageAction.FileMoved, file.Title, parentFolder.Title, toFolder.Title);
                                 }
                                 else
                                 {
-                                    var newFile = conflict;
-                                    newFile.Version++;
-                                    newFile.VersionGroup++;
-                                    newFile.PureTitle = file.PureTitle;
-                                    newFile.ConvertedType = file.ConvertedType;
-                                    newFile.Comment = FilesCommonResource.CommentOverwrite;
-                                    newFile.Encrypted = file.Encrypted;
+                                    filesMessageService.Send(newFile, toFolder, _headers, MessageAction.FileMoved, file.Title, parentFolder.Title, toFolder.Title);
+                                }
+
+                                if (file.RootFolderType == FolderType.TRASH && newFile.ThumbnailStatus == Thumbnail.NotRequired)
+                                {
                                     newFile.ThumbnailStatus = Thumbnail.Waiting;
+                                    await fileDao.SaveThumbnailAsync(newFile, null);
+                                }
 
-                                    using (var stream = await FileDao.GetFileStreamAsync(file))
-                                    {
-                                        newFile.ContentLength = stream.CanSeek ? stream.Length : file.ContentLength;
+                                if (newFile.ProviderEntry)
+                                {
+                                    await LinkDao.DeleteAllLinkAsync(file.ID.ToString());
+                                }
 
-                                        newFile = await fileDao.SaveFileAsync(newFile, stream);
-                                    }
-
-                                    if (file.ThumbnailStatus == Thumbnail.Created)
-                                    {
-                                        using (var thumbnail = await FileDao.GetThumbnailAsync(file))
-                                        {
-                                            await fileDao.SaveThumbnailAsync(newFile, thumbnail);
-                                        }
-                                        newFile.ThumbnailStatus = Thumbnail.Created;
-                                    }
-
-                                    await LinkDao.DeleteAllLinkAsync(newFile.ID.ToString());
-
+                                if (Equals(toFolderId.ToString(), _daoFolderId))
+                                {
                                     needToMark.Add(newFile);
+                                }
 
-                                    await socketManager.CreateFileAsync(newFile);
+                                socketManager.DeleteFile(file);
 
-                                    if (copy)
+                                await socketManager.CreateFileAsync(newFile);
+
+                                if (ProcessedFile(fileId))
+                                {
+                                    sb.Append($"file_{newFileId}{SplitChar}");
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (_resolveType == FileConflictResolveType.Overwrite)
+                        {
+                            if (!await FilesSecurity.CanEditAsync(conflict))
+                            {
+                                Error = FilesCommonResource.ErrorMassage_SecurityException;
+                            }
+                            else if (await entryManager.FileLockedForMeAsync(conflict.ID))
+                            {
+                                Error = FilesCommonResource.ErrorMassage_LockedFile;
+                            }
+                            else if (fileTracker.IsEditing(conflict.ID))
+                            {
+                                Error = FilesCommonResource.ErrorMassage_SecurityException_UpdateEditingFile;
+                            }
+                            else
+                            {
+                                var newFile = conflict;
+                                newFile.Version++;
+                                newFile.VersionGroup++;
+                                newFile.PureTitle = file.PureTitle;
+                                newFile.ConvertedType = file.ConvertedType;
+                                newFile.Comment = FilesCommonResource.CommentOverwrite;
+                                newFile.Encrypted = file.Encrypted;
+                                newFile.ThumbnailStatus = Thumbnail.Waiting;
+
+                                using (var stream = await FileDao.GetFileStreamAsync(file))
+                                {
+                                    newFile.ContentLength = stream.CanSeek ? stream.Length : file.ContentLength;
+
+                                    newFile = await fileDao.SaveFileAsync(newFile, stream);
+                                }
+
+                                if (file.ThumbnailStatus == Thumbnail.Created)
+                                {
+                                    using (var thumbnail = await FileDao.GetThumbnailAsync(file))
                                     {
-                                        filesMessageService.Send(newFile, toFolder, _headers, MessageAction.FileCopiedWithOverwriting, newFile.Title, parentFolder.Title, toFolder.Title);
+                                        await fileDao.SaveThumbnailAsync(newFile, thumbnail);
+                                    }
+                                    newFile.ThumbnailStatus = Thumbnail.Created;
+                                }
+
+                                await LinkDao.DeleteAllLinkAsync(newFile.ID.ToString());
+
+                                needToMark.Add(newFile);
+
+                                await socketManager.CreateFileAsync(newFile);
+
+                                if (copy)
+                                {
+                                    filesMessageService.Send(newFile, toFolder, _headers, MessageAction.FileCopiedWithOverwriting, newFile.Title, parentFolder.Title, toFolder.Title);
+                                    if (ProcessedFile(fileId))
+                                    {
+                                        sb.Append($"file_{newFile.ID}{SplitChar}");
+                                    }
+                                }
+                                else
+                                {
+                                    if (Equals(file.FolderID.ToString(), toFolderId.ToString()))
+                                    {
                                         if (ProcessedFile(fileId))
                                         {
-                                            sb.Append($"file_{newFile.ID}{SPLIT_CHAR}");
+                                            sb.Append($"file_{newFile.ID}{SplitChar}");
                                         }
                                     }
                                     else
                                     {
-                                        if (Equals(file.FolderID.ToString(), toFolderId.ToString()))
+                                        if ((await taskError).isError)
                                         {
-                                            if (ProcessedFile(fileId))
-                                            {
-                                                sb.Append($"file_{newFile.ID}{SPLIT_CHAR}");
-                                            }
+                                            Error = (await taskError).message;
                                         }
                                         else
                                         {
-                                            if ((await taskError).isError)
+                                            await FileDao.DeleteFileAsync(file.ID);
+
+                                            await LinkDao.DeleteAllLinkAsync(file.ID.ToString());
+
+                                            if (file.RootFolderType != FolderType.USER)
                                             {
-                                                Error = (await taskError).message;
+                                                filesMessageService.Send(file, toFolder, _headers, MessageAction.FileMovedWithOverwriting, file.Title, parentFolder.Title, toFolder.Title);
                                             }
                                             else
                                             {
-                                                await FileDao.DeleteFileAsync(file.ID);
+                                                filesMessageService.Send(newFile, toFolder, _headers, MessageAction.FileMovedWithOverwriting, file.Title, parentFolder.Title, toFolder.Title);
+                                            }
 
-                                                await LinkDao.DeleteAllLinkAsync(file.ID.ToString());
+                                            socketManager.DeleteFile(file);
 
-                                                if (file.RootFolderType != FolderType.USER)
-                                                {
-                                                    filesMessageService.Send(file, toFolder, _headers, MessageAction.FileMovedWithOverwriting, file.Title, parentFolder.Title, toFolder.Title);
-                                                }
-                                                else
-                                                {
-                                                    filesMessageService.Send(newFile, toFolder, _headers, MessageAction.FileMovedWithOverwriting, file.Title, parentFolder.Title, toFolder.Title);
-                                                }
-
-                                                socketManager.DeleteFile(file);
-
-                                                if (ProcessedFile(fileId))
-                                                {
-                                                    sb.Append($"file_{newFile.ID}{SPLIT_CHAR}");
-                                                }
+                                            if (ProcessedFile(fileId))
+                                            {
+                                                sb.Append($"file_{newFile.ID}{SplitChar}");
                                             }
                                         }
                                     }
                                 }
                             }
-                            else if (_resolveType == FileConflictResolveType.Skip)
-                            {
-                                //nothing
-                            }
+                        }
+                        else if (_resolveType == FileConflictResolveType.Skip)
+                        {
+                            //nothing
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        Error = ex.Message;
-                        Logger.Error(Error, ex);
-                    }
                 }
-                ProgressStep(fileId: FolderDao.CanCalculateSubitems(fileId) ? default : fileId);
+                catch (Exception ex)
+                {
+                    Error = ex.Message;
+                    Logger.Error(Error, ex);
+                }
             }
-            Result = sb.ToString();
-            return needToMark;
+
+            ProgressStep(fileId: FolderDao.CanCalculateSubitems(fileId) ? default : fileId);
         }
 
-        private async Task<(bool isError, string message)> WithErrorAsync(IServiceScope scope, IEnumerable<File<T>> files)
-        {
-            var entryManager = scope.ServiceProvider.GetService<EntryManager>();
-            var fileTracker = scope.ServiceProvider.GetService<FileTrackerHelper>();
-            string error = null;
-            foreach (var file in files)
-            {
-                if (!await FilesSecurity.CanDeleteAsync(file))
-                {
-                    error = FilesCommonResource.ErrorMassage_SecurityException_MoveFile;
-                    return (true, error);
-                }
-                if (await entryManager.FileLockedForMeAsync(file.ID))
-                {
-                    error = FilesCommonResource.ErrorMassage_LockedFile;
-                    return (true, error);
-                }
-                if (fileTracker.IsEditing(file.ID))
-                {
-                    error = FilesCommonResource.ErrorMassage_SecurityException_UpdateEditingFile;
-                    return (true, error);
-                }
-            }
-            return (false, error);
-        }
+        Result = sb.ToString();
+
+        return needToMark;
     }
 
-    [Scope]
-    public class FileMoveCopyOperationScope
+    private async Task<(bool isError, string message)> WithErrorAsync(IServiceScope scope, IEnumerable<File<T>> files)
     {
-        private FilesMessageService FilesMessageService { get; }
-        private FileMarker FileMarker { get; }
-        private FileUtility FileUtility { get; }
-        private Global Global { get; }
-        private EntryManager EntryManager { get; }
-
-        public FileMoveCopyOperationScope(FilesMessageService filesMessageService, FileMarker fileMarker, FileUtility fileUtility, Global global, EntryManager entryManager)
+        var entryManager = scope.ServiceProvider.GetService<EntryManager>();
+        var fileTracker = scope.ServiceProvider.GetService<FileTrackerHelper>();
+        string error = null;
+        foreach (var file in files)
         {
-            FilesMessageService = filesMessageService;
-            FileMarker = fileMarker;
-            FileUtility = fileUtility;
-            Global = global;
-            EntryManager = entryManager;
-        }
+            if (!await FilesSecurity.CanDeleteAsync(file))
+            {
+                error = FilesCommonResource.ErrorMassage_SecurityException_MoveFile;
 
-        public void Deconstruct(out FilesMessageService filesMessageService, out FileMarker fileMarker, out FileUtility fileUtility, out Global global, out EntryManager entryManager)
-        {
-            filesMessageService = FilesMessageService;
-            fileMarker = FileMarker;
-            fileUtility = FileUtility;
-            global = Global;
-            entryManager = EntryManager;
+                return (true, error);
+            }
+            if (await entryManager.FileLockedForMeAsync(file.ID))
+            {
+                error = FilesCommonResource.ErrorMassage_LockedFile;
+
+                return (true, error);
+            }
+            if (fileTracker.IsEditing(file.ID))
+            {
+                error = FilesCommonResource.ErrorMassage_SecurityException_UpdateEditingFile;
+
+                return (true, error);
+            }
         }
+        return (false, error);
+    }
+}
+
+[Scope]
+public class FileMoveCopyOperationScope
+{
+    private readonly FilesMessageService _filesMessageService;
+    private readonly FileMarker _fileMarker;
+    private readonly FileUtility _fileUtility;
+    private readonly Global _global;
+    private readonly EntryManager _entryManager;
+
+    public FileMoveCopyOperationScope(FilesMessageService filesMessageService, FileMarker fileMarker, FileUtility fileUtility, Global global, EntryManager entryManager)
+    {
+        _filesMessageService = filesMessageService;
+        _fileMarker = fileMarker;
+        _fileUtility = fileUtility;
+        _global = global;
+        _entryManager = entryManager;
+    }
+
+    public void Deconstruct(out FilesMessageService filesMessageService, out FileMarker fileMarker, out FileUtility fileUtility, out Global global, out EntryManager entryManager)
+    {
+        filesMessageService = _filesMessageService;
+        fileMarker = _fileMarker;
+        fileUtility = _fileUtility;
+        global = _global;
+        entryManager = _entryManager;
     }
 }
