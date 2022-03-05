@@ -33,7 +33,7 @@ const StyledCatalog = styled.div`
   ${isMobileOnly &&
   css`
     position: fixed;
-    margin-top: 64px;
+    margin-top: 64px !important;
     height: calc(100vh - 64px) !important;
   `}
 
@@ -139,7 +139,6 @@ const Catalog = (props) => {
     clearTimeout(refTimer.current);
 
     refTimer.current = setTimeout(() => {
-      console.log(window.innerWidth === 375);
       if (isMobileOnly || isMobileUtils() || window.innerWidth === 375)
         props.setShowText(true);
       if (
