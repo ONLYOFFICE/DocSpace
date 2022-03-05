@@ -29,6 +29,7 @@ import withLoader from "../withLoader";
 import MoreLoginModal from "login/moreLogin";
 import AppLoader from "@appserver/common/components/AppLoader";
 import { isDesktop as DesktopView } from "@appserver/components/utils/device";
+import EmailInput from "@appserver/components/email-input";
 
 export const ButtonsWrapper = styled.div`
   display: flex;
@@ -158,6 +159,10 @@ const RegisterContainer = styled.div`
       width: 100%;
     }
   }
+
+  .password-field-wrapper {
+    width: 100%;
+  }
 `;
 
 const Confirm = (props) => {
@@ -168,6 +173,8 @@ const Confirm = (props) => {
   const [ssoUrl, setSsoUrl] = useState("");
   const [email, setEmail] = useState("");
   const [emailValid, setEmailValid] = useState(true);
+  const [emailErrorText, setEmailErrorText] = useState("");
+
   const [password, setPassword] = useState("");
   const [passwordValid, setPasswordValid] = useState(true);
 
@@ -188,7 +195,6 @@ const Confirm = (props) => {
 
   const getSso = async () => {
     const data = await getCapabilities();
-    console.log(data);
     setSsoLabel(data.ssoLabel);
     setSsoUrl(data.ssoUrl);
   };
@@ -198,7 +204,6 @@ const Confirm = (props) => {
     const uid = linkData.uid;
     const confirmKey = linkData.confirmHeader;
     const user = await getUserFromConfirm(uid, confirmKey);
-    console.log(user);
     setUser(user);
 
     window.authCallback = authCallback;
@@ -207,7 +212,6 @@ const Confirm = (props) => {
   }, []);
 
   const onSubmit = () => {
-    console.log("onSubmit");
     const { defaultPage, linkData, hashSettings } = props;
     const isVisitor = parseInt(linkData.emplType) === 2;
 
@@ -278,8 +282,6 @@ const Confirm = (props) => {
     const { defaultPage } = props;
     const { FirstName, LastName, EMail, Serialized } = profile;
 
-    console.log(profile);
-
     const signupAccount = {
       EmployeeType: null,
       FirstName: FirstName,
@@ -321,13 +323,9 @@ const Confirm = (props) => {
 
     const user = await createUser(data, key);
 
-    console.log("Created user", user);
-
     const { userName, passwordHash } = loginData;
 
     const response = await login(userName, passwordHash);
-
-    console.log("Login", response);
 
     return user;
   };
@@ -342,8 +340,6 @@ const Confirm = (props) => {
 
   const onChangeEmail = (e) => {
     setEmail(e.target.value);
-    setEmailValid(true);
-    setErrorText("");
   };
 
   const onChangeFname = (e) => {
@@ -360,7 +356,6 @@ const Confirm = (props) => {
 
   const onChangePassword = (e) => {
     setPassword(e.target.value);
-    setPasswordValid(true);
     setErrorText("");
   };
 
@@ -463,6 +458,17 @@ const Confirm = (props) => {
     setIsGreetingMode(false);
   };
 
+  const onValidateEmail = (res) => {
+    //console.log("onValidateEmail", res);
+    setEmailValid(res.isValid);
+    setEmailErrorText(res.errors[0]);
+  };
+
+  const onValidatePassword = (res) => {
+    //console.log("onValidatePassword", res);
+    setPasswordValid(res);
+  };
+
   if (!isLoaded) return <AppLoader />;
   return (
     <ConfirmContainer>
@@ -531,9 +537,11 @@ const Confirm = (props) => {
               isVertical={true}
               labelVisible={false}
               hasError={!emailValid}
-              errorMessage={errorText ? errorText : t("Common:RequiredField")}
+              errorMessage={
+                emailErrorText ? emailErrorText : t("Common:RequiredField")
+              }
             >
-              <TextInput
+              <EmailInput
                 id="login"
                 name="login"
                 type="email"
@@ -548,6 +556,16 @@ const Confirm = (props) => {
                 autoComplete="username"
                 onChange={onChangeEmail}
                 onKeyDown={onKeyPress}
+                emailSettings={{
+                  allowDomainIp: false,
+                  allowDomainPunycode: false,
+                  allowLocalDomainName: false,
+                  allowLocalPartPunycode: false,
+                  allowName: false,
+                  allowSpaces: false,
+                  allowStrictLocalPart: true,
+                }}
+                onValidateInput={onValidateEmail}
               />
             </FieldContainer>
 
@@ -601,10 +619,11 @@ const Confirm = (props) => {
               isVertical={true}
               labelVisible={false}
               hasError={!passwordValid}
-              errorMessage={errorText ? "" : t("Common:RequiredField")}
+              //errorMessage={errorText ? "" : t("Common:RequiredField")}
             >
               <PasswordInput
-                simpleView={true}
+                simpleView={false}
+                hideNewPasswordButton
                 passwordSettings={settings}
                 id="password"
                 inputName="password"
@@ -619,6 +638,12 @@ const Confirm = (props) => {
                 autoComplete="current-password"
                 onChange={onChangePassword}
                 onKeyDown={onKeyPress}
+                onValidateInput={onValidatePassword}
+                tooltipPasswordTitle={`${t("Common:PasswordLimitLength")}:`}
+                tooltipPasswordLength={`${t("Common:PasswordLimitLength", {
+                  fromNumber: settings ? settings.minLength : 8,
+                  toNumber: 30,
+                })};`}
               />
             </FieldContainer>
 
