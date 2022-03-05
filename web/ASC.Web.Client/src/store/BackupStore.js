@@ -210,6 +210,9 @@ class BackupStore {
         this.selectedWeekday = this.defaultWeekday;
       }
     } else {
+      this.defaultPeriodLabel = periodObj[+this.defaultPeriodNumber].label;
+      this.selectedPeriodLabel = this.defaultPeriodLabel;
+
       this.defaultWeekday = weekdayArr[0].key;
       this.defaultWeekdayLabel = weekdayArr[0].label;
 
