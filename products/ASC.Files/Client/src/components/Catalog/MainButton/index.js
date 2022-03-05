@@ -209,6 +209,7 @@ class CatalogMainButtonContent extends React.Component {
               !isCommonFolder &&
               !isRecycleBinFolder && (
                 <MobileView
+                  titleProp={t("Upload")}
                   actionOptions={actions}
                   buttonOptions={uploadActions}
                   sectionWidth={sectionWidth}
