@@ -23,189 +23,127 @@
  *
 */
 
-namespace ASC.Web.Files.Helpers
-{
-    [Singletone]
-    public class ThirdpartyConfigurationData
-    {
-        private IConfiguration Configuration { get; }
+namespace ASC.Web.Files.Helpers;
 
-        private List<string> thirdPartyProviders;
-        public List<string> ThirdPartyProviders
-        {
-            get
-            {
-                return thirdPartyProviders ??= Configuration.GetSection("files:thirdparty:enable").Get<List<string>>() ?? new List<string>();
-            }
-        }
-        public ThirdpartyConfigurationData(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+[Singletone]
+public class ThirdpartyConfigurationData
+{
+    private readonly IConfiguration _configuration;
+    private List<string> _thirdPartyProviders;
+    public List<string> ThirdPartyProviders => _thirdPartyProviders ??= _configuration.GetSection("files:thirdparty:enable").Get<List<string>>() ?? new List<string>();
+    public ThirdpartyConfigurationData(IConfiguration configuration)
+    {
+        _configuration = configuration;
+    }
+}
+
+[Scope(Additional = typeof(BaseLoginProviderExtension))]
+public class ThirdpartyConfiguration
+{
+    private readonly ThirdpartyConfigurationData _configuration;
+    private readonly Lazy<BoxLoginProvider> _boxLoginProvider;
+    private readonly Lazy<DropboxLoginProvider> _dropboxLoginProvider;
+    private readonly Lazy<OneDriveLoginProvider> _oneDriveLoginProvider;
+    private readonly Lazy<DocuSignLoginProvider> _docuSignLoginProvider;
+    private readonly Lazy<GoogleLoginProvider> _googleLoginProvider;
+
+    public ThirdpartyConfiguration(
+        ThirdpartyConfigurationData configuration,
+        ConsumerFactory consumerFactory)
+    {
+        _configuration = configuration;
+        _boxLoginProvider = new Lazy<BoxLoginProvider>(() => consumerFactory.Get<BoxLoginProvider>());
+        _dropboxLoginProvider = new Lazy<DropboxLoginProvider>(() => consumerFactory.Get<DropboxLoginProvider>());
+        _oneDriveLoginProvider = new Lazy<OneDriveLoginProvider>(() => consumerFactory.Get<OneDriveLoginProvider>());
+        _docuSignLoginProvider = new Lazy<DocuSignLoginProvider>(() => consumerFactory.Get<DocuSignLoginProvider>());
+        _googleLoginProvider = new Lazy<GoogleLoginProvider>(() => consumerFactory.Get<GoogleLoginProvider>());
     }
 
-    [Scope(Additional = typeof(BaseLoginProviderExtension))]
-    public class ThirdpartyConfiguration
+    public List<string> ThirdPartyProviders => _configuration.ThirdPartyProviders;
+
+    public bool SupportInclusion(IDaoFactory daoFactory)
     {
-        private ThirdpartyConfigurationData Configuration { get; }
-        private Lazy<BoxLoginProvider> BoxLoginProvider { get; }
-        private Lazy<DropboxLoginProvider> DropboxLoginProvider { get; }
-        private Lazy<OneDriveLoginProvider> OneDriveLoginProvider { get; }
-        private Lazy<DocuSignLoginProvider> DocuSignLoginProvider { get; }
-        private Lazy<GoogleLoginProvider> GoogleLoginProvider { get; }
-
-        public ThirdpartyConfiguration(
-            ThirdpartyConfigurationData configuration,
-            ConsumerFactory consumerFactory)
+        var providerDao = daoFactory.ProviderDao;
+        if (providerDao == null)
         {
-            Configuration = configuration;
-            BoxLoginProvider = new Lazy<BoxLoginProvider>(() => consumerFactory.Get<BoxLoginProvider>());
-            DropboxLoginProvider = new Lazy<DropboxLoginProvider>(() => consumerFactory.Get<DropboxLoginProvider>());
-            OneDriveLoginProvider = new Lazy<OneDriveLoginProvider>(() => consumerFactory.Get<OneDriveLoginProvider>());
-            DocuSignLoginProvider = new Lazy<DocuSignLoginProvider>(() => consumerFactory.Get<DocuSignLoginProvider>());
-            GoogleLoginProvider = new Lazy<GoogleLoginProvider>(() => consumerFactory.Get<GoogleLoginProvider>());
+            return false;
         }
 
-        public List<string> ThirdPartyProviders
+        return SupportBoxInclusion || SupportDropboxInclusion || SupportDocuSignInclusion || SupportGoogleDriveInclusion || SupportOneDriveInclusion || SupportSharePointInclusion || SupportWebDavInclusion || SupportNextcloudInclusion || SupportOwncloudInclusion || SupportkDriveInclusion || SupportYandexInclusion;
+    }
+
+    public bool SupportBoxInclusion => ThirdPartyProviders.Exists(r => r == "box") && _boxLoginProvider.Value.IsEnabled;
+
+    public bool SupportDropboxInclusion => ThirdPartyProviders.Exists(r => r == "dropboxv2") && _dropboxLoginProvider.Value.IsEnabled;
+
+    public bool SupportOneDriveInclusion => ThirdPartyProviders.Exists(r => r == "onedrive") && _oneDriveLoginProvider.Value.IsEnabled;
+
+    public bool SupportSharePointInclusion => ThirdPartyProviders.Exists(r => r == "sharepoint");
+
+    public bool SupportWebDavInclusion => ThirdPartyProviders.Exists(r => r == "webdav");
+
+    public bool SupportNextcloudInclusion => ThirdPartyProviders.Exists(r => r == "nextcloud");
+
+    public bool SupportOwncloudInclusion => ThirdPartyProviders.Exists(r => r == "owncloud");
+
+    public bool SupportkDriveInclusion => ThirdPartyProviders.Exists(r => r == "kdrive");
+
+    public bool SupportYandexInclusion => ThirdPartyProviders.Exists(r => r == "yandex");
+
+    public string DropboxAppKey => _dropboxLoginProvider.Value["dropboxappkey"];
+
+    public string DropboxAppSecret => _dropboxLoginProvider.Value["dropboxappsecret"];
+
+    public bool SupportDocuSignInclusion => ThirdPartyProviders.Exists(r => r == "docusign") && _docuSignLoginProvider.Value.IsEnabled;
+
+    public bool SupportGoogleDriveInclusion => ThirdPartyProviders.Exists(r => r == "google") && _googleLoginProvider.Value.IsEnabled;
+
+    public List<List<string>> GetProviders()
+    {
+        var result = new List<List<string>>();
+
+        if (SupportBoxInclusion)
         {
-            get => Configuration.ThirdPartyProviders;
+            result.Add(new List<string> { "Box", _boxLoginProvider.Value.ClientID, _boxLoginProvider.Value.RedirectUri });
         }
 
-        public bool SupportInclusion(IDaoFactory daoFactory)
+        if (SupportDropboxInclusion)
         {
-            var providerDao = daoFactory.ProviderDao;
-            if (providerDao == null) return false;
-
-            return SupportBoxInclusion || SupportDropboxInclusion || SupportDocuSignInclusion || SupportGoogleDriveInclusion || SupportOneDriveInclusion || SupportSharePointInclusion || SupportWebDavInclusion || SupportNextcloudInclusion || SupportOwncloudInclusion || SupportkDriveInclusion || SupportYandexInclusion;
+            result.Add(new List<string> { "DropboxV2", _dropboxLoginProvider.Value.ClientID, _dropboxLoginProvider.Value.RedirectUri });
         }
 
-        public bool SupportBoxInclusion
+        if (SupportGoogleDriveInclusion)
         {
-            get
-            {
-                return ThirdPartyProviders.Exists(r => r == "box") && BoxLoginProvider.Value.IsEnabled;
-            }
+            result.Add(new List<string> { "GoogleDrive", _googleLoginProvider.Value.ClientID, _googleLoginProvider.Value.RedirectUri });
         }
 
-        public bool SupportDropboxInclusion
+        if (SupportOneDriveInclusion)
         {
-            get
-            {
-                return ThirdPartyProviders.Exists(r => r == "dropboxv2") && DropboxLoginProvider.Value.IsEnabled;
-            }
+            result.Add(new List<string> { "OneDrive", _oneDriveLoginProvider.Value.ClientID, _oneDriveLoginProvider.Value.RedirectUri });
         }
 
-        public bool SupportOneDriveInclusion
+        if (SupportSharePointInclusion)
         {
-            get
-            {
-                return ThirdPartyProviders.Exists(r => r == "onedrive") && OneDriveLoginProvider.Value.IsEnabled;
-            }
+            result.Add(new List<string> { "SharePoint" });
         }
 
-        public bool SupportSharePointInclusion
+        if (SupportkDriveInclusion)
         {
-            get { return ThirdPartyProviders.Exists(r => r == "sharepoint"); }
+            result.Add(new List<string> { "kDrive" });
         }
 
-        public bool SupportWebDavInclusion
+        if (SupportYandexInclusion)
         {
-            get { return ThirdPartyProviders.Exists(r => r == "webdav"); }
+            result.Add(new List<string> { "Yandex" });
         }
 
-        public bool SupportNextcloudInclusion
+        if (SupportWebDavInclusion)
         {
-            get { return ThirdPartyProviders.Exists(r => r == "nextcloud"); }
+            result.Add(new List<string> { "WebDav" });
         }
 
-        public bool SupportOwncloudInclusion
-        {
-            get { return ThirdPartyProviders.Exists(r => r == "owncloud"); }
-        }
+        //Obsolete BoxNet, DropBox, Google, SkyDrive,
 
-        public bool SupportkDriveInclusion
-        {
-            get { return ThirdPartyProviders.Exists(r => r == "kdrive"); }
-        }
-
-        public bool SupportYandexInclusion
-        {
-            get { return ThirdPartyProviders.Exists(r => r == "yandex"); }
-        }
-
-        public string DropboxAppKey
-        {
-            get { return DropboxLoginProvider.Value["dropboxappkey"]; }
-        }
-
-        public string DropboxAppSecret
-        {
-            get { return DropboxLoginProvider.Value["dropboxappsecret"]; }
-        }
-
-        public bool SupportDocuSignInclusion
-        {
-            get
-            {
-                return ThirdPartyProviders.Exists(r => r == "docusign") && DocuSignLoginProvider.Value.IsEnabled;
-            }
-        }
-
-        public bool SupportGoogleDriveInclusion
-        {
-            get
-            {
-                return ThirdPartyProviders.Exists(r => r == "google") && GoogleLoginProvider.Value.IsEnabled;
-            }
-        }
-
-        public List<List<string>> GetProviders()
-        {
-            var result = new List<List<string>>();
-
-            if (SupportBoxInclusion)
-            {
-                result.Add(new List<string> { "Box", BoxLoginProvider.Value.ClientID, BoxLoginProvider.Value.RedirectUri });
-            }
-
-            if (SupportDropboxInclusion)
-            {
-                result.Add(new List<string> { "DropboxV2", DropboxLoginProvider.Value.ClientID, DropboxLoginProvider.Value.RedirectUri });
-            }
-
-            if (SupportGoogleDriveInclusion)
-            {
-                result.Add(new List<string> { "GoogleDrive", GoogleLoginProvider.Value.ClientID, GoogleLoginProvider.Value.RedirectUri });
-            }
-
-            if (SupportOneDriveInclusion)
-            {
-                result.Add(new List<string> { "OneDrive", OneDriveLoginProvider.Value.ClientID, OneDriveLoginProvider.Value.RedirectUri });
-            }
-
-            if (SupportSharePointInclusion)
-            {
-                result.Add(new List<string> { "SharePoint" });
-            }
-
-            if (SupportkDriveInclusion)
-            {
-                result.Add(new List<string> { "kDrive" });
-            }
-
-            if (SupportYandexInclusion)
-            {
-                result.Add(new List<string> { "Yandex" });
-            }
-
-            if (SupportWebDavInclusion)
-            {
-                result.Add(new List<string> { "WebDav" });
-            }
-
-            //Obsolete BoxNet, DropBox, Google, SkyDrive,
-
-            return result;
-        }
+        return result;
     }
 }
