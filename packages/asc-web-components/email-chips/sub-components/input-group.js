@@ -3,9 +3,9 @@ import PropTypes from "prop-types";
 
 import Link from "../../link";
 import TextInput from "../../text-input";
-import { getChipsFromString } from "./helpers";
 
-import { StyledInputWithLink, StyledTooltip } from "../styled-inputwithchips";
+import { StyledInputWithLink, StyledTooltip } from "../styled-emailchips";
+import { EmailSettings, parseAddresses } from "../../utils/email";
 
 const InputGroup = memo(
   ({
@@ -65,7 +65,14 @@ const InputGroup = memo(
       if (isExceededLimitChips) return;
       if (isExistedOn) return;
       if (value.trim().length == 0) return;
-      const chipsFromString = getChipsFromString(value);
+      const settings = new EmailSettings();
+      settings.allowName = true;
+      const chipsFromString = parseAddresses(value, settings).map((it) => ({
+        name: it.name === "" ? it.email : it.name,
+        email: it.email,
+        isValid: it.isValid(),
+        parseErrors: it.parseErrors,
+      }));
       onAddChip(chipsFromString);
       setValue("");
     };

@@ -17,7 +17,7 @@ import {
   StyledChipInput,
   StyledChipValue,
   StyledContainer,
-} from "../styled-inputwithchips.js";
+} from "../styled-emailchips.js";
 
 const Chip = (props) => {
   const {
@@ -33,11 +33,13 @@ const Chip = (props) => {
     onClick,
   } = props;
 
-  const [newValue, setNewValue] = useState(
-    value?.value === value?.label
-      ? value?.value
-      : `"${value?.label}" <${value?.value}>`
-  );
+  function initNewValue() {
+    return value?.email === value?.name || value?.name === ""
+      ? value?.email
+      : `"${value?.name}" <${value?.email}>`;
+  }
+
+  const [newValue, setNewValue] = useState(initNewValue());
   const [chipWidth, setChipWidth] = useState(0);
   const [isChipOverLimit, setIsChipOverLimit] = useState(false);
 
@@ -105,11 +107,11 @@ const Chip = (props) => {
         case "Enter":
         case "NumpadEnter": {
           onSaveNewChip(value, newValue);
-          setNewValue(sliceEmail(newValue).value);
+          setNewValue(sliceEmail(newValue).email);
           break;
         }
         case "Escape": {
-          setNewValue(value.value);
+          setNewValue(initNewValue());
           onDoubleClick(null);
           return false;
         }
@@ -117,7 +119,7 @@ const Chip = (props) => {
     },
     [newValue]
   );
-  if (value?.value === currentChip?.value) {
+  if (value?.email === currentChip?.email) {
     return (
       <StyledContainer>
         {isChipOverLimit && (
@@ -134,7 +136,7 @@ const Chip = (props) => {
           withBorder={false}
           maxLength={MAX_EMAIL_LENGTH_WITH_DOTS}
           flexvalue={
-            value?.label !== value?.value ? "0 1 auto" : `0 0 ${chipWidth}px`
+            value?.name !== value?.email ? "0 1 auto" : `0 0 ${chipWidth}px`
           }
         />
       </StyledContainer>
@@ -166,7 +168,7 @@ const Chip = (props) => {
           />
         </div>
       )}
-      <StyledChipValue>{value?.label}</StyledChipValue>
+      <StyledChipValue>{value?.name || value?.email}</StyledChipValue>
       <IconButton iconName={DeleteIcon} size={12} onClick={onIconClick} />
     </StyledChip>
   );

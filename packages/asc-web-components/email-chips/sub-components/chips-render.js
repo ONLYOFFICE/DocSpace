@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { EmailSettings, parseAddress } from "../../utils/email";
 import Chip from "./chip";
 
-import { StyledAllChips } from "../styled-inputwithchips";
+import { StyledAllChips } from "../styled-emailchips";
 
 const ChipsRender = memo(
   ({
@@ -36,11 +36,11 @@ const ChipsRender = memo(
         {chips?.map((it) => {
           return (
             <Chip
-              key={it?.value}
+              key={it?.email}
               value={it}
               currentChip={currentChip}
               isSelected={checkIsSelected(it)}
-              isValid={checkEmail(it?.value)}
+              isValid={checkEmail(it?.email)}
               invalidEmailText={invalidEmailText}
               chipOverLimitText={chipOverLimitText}
               onDelete={onDelete}

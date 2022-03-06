@@ -7,19 +7,20 @@ import {
   StyledContent,
   StyledChipGroup,
   StyledChipWithInput,
-} from "./styled-inputwithchips";
+} from "./styled-emailchips";
 import {
   MAX_EMAIL_LENGTH_WITH_DOTS,
   sliceEmail,
-  tryParseEmail,
 } from "./sub-components/helpers";
 import InputGroup from "./sub-components/input-group";
 import ChipsRender from "./sub-components/chips-render";
+import { EmailSettings, parseAddresses } from "../utils/email";
+import _ from "lodash";
 
 const calcMaxLengthInput = (exceededLimit) =>
   exceededLimit * MAX_EMAIL_LENGTH_WITH_DOTS;
 
-const InputWithChips = ({
+const EmailChips = ({
   options,
   placeholder,
   onChange,
@@ -47,7 +48,21 @@ const InputWithChips = ({
   const chipsCount = useRef(options?.length);
 
   useEffect(() => {
-    onChange(chips);
+    onChange(
+      chips
+        .filter((it) => it.isValid === true)
+        .map((it) => {
+          if (it?.name === it?.email || it?.name === "") {
+            return {
+              email: it?.email,
+            };
+          }
+          return {
+            name: it?.name,
+            email: it?.email,
+          };
+        })
+    );
   }, [chips]);
 
   useEffect(() => {
@@ -74,10 +89,10 @@ const InputWithChips = ({
 
   const onClick = (value, isShiftKey) => {
     if (isShiftKey) {
-      const isExisted = !!selectedChips?.find((it) => it.value === value.value);
+      const isExisted = !!selectedChips?.find((it) => it.email === value.email);
       return isExisted
         ? setSelectedChips(
-            selectedChips.filter((it) => it.value != value.value)
+            selectedChips.filter((it) => it.email != value.email)
           )
         : setSelectedChips([value, ...selectedChips]);
     } else {
@@ -91,36 +106,26 @@ const InputWithChips = ({
 
   const onDelete = useCallback(
     (value) => {
-      setChips(chips.filter((it) => it.value !== value.value));
+      setChips(chips.filter((it) => it.email !== value.email));
     },
     [chips]
   );
 
   const checkSelected = (value) => {
-    return !!selectedChips?.find((item) => item?.value === value?.value);
+    return !!selectedChips?.find((item) => item?.email === value?.email);
   };
 
   const onSaveNewChip = (value, newValue) => {
-    let parsed = tryParseEmail(newValue);
-    if (!parsed) {
-      if (newValue && newValue !== value.value) {
-        const newChips = chips.map((it) => {
-          return it.value === value.value ? sliceEmail(newValue) : it;
-        });
-        setChips(newChips);
-        setSelectedChips([sliceEmail(newValue)]);
-      }
-    } else {
-      if (
-        parsed.value &&
-        (parsed.value !== value.value || parsed.label !== value.label)
-      ) {
-        const newChips = chips.map((it) => {
-          return it.value === value.value ? sliceEmail(parsed) : it;
-        });
-        setChips(newChips);
-        setSelectedChips([parsed]);
-      }
+    const settings = new EmailSettings();
+    settings.allowName = true;
+    let parsed = parseAddresses(newValue, settings);
+    parsed[0].isValid = parsed[0].isValid();
+    if (newValue && newValue !== `"${value?.name}" <${value?.email}>`) {
+      const newChips = chips.map((it) => {
+        return it.email === value.email ? sliceEmail(parsed[0]) : it;
+      });
+      setChips(newChips);
+      setSelectedChips([sliceEmail(parsed[0])]);
     }
 
     containerRef.current.setAttribute("tabindex", "-1");
@@ -134,11 +139,11 @@ const InputWithChips = ({
       navigator.clipboard.writeText(
         selectedChips
           .map((it) => {
-            if (it.label !== it.value) {
-              let copyItem = `"${it.label}" <${it.value}>`;
+            if (it.name !== it.email) {
+              let copyItem = `"${it.name}" <${it.email}>`;
               return copyItem;
             } else {
-              return it.value;
+              return it.email;
             }
           })
           .join(", ")
@@ -201,7 +206,7 @@ const InputWithChips = ({
         chip = selectedChips[0];
       }
 
-      const index = chips.findIndex((it) => it.value === chip?.value);
+      const index = chips.findIndex((it) => it.email === chip?.email);
 
       switch (code) {
         case "ArrowLeft": {
@@ -268,16 +273,17 @@ const InputWithChips = ({
   const onAddChip = (chipsToAdd) => {
     setIsExceededLimitChips(chips.length >= exceededLimit);
     if (chips.length >= exceededLimit) return;
+    const filterLimit = exceededLimit - chips.length;
 
-    const filteredChips = chipsToAdd.map(sliceEmail).filter((it) => {
+    const filteredChips = chipsToAdd.map(sliceEmail).filter((it, index) => {
       const isExisted = !!chips.find(
-        (chip) => chip.value === it || chip.value === it?.value
+        (chip) => chip.email === it || chip.email === it?.email
       );
       if (chipsToAdd.length === 1) {
         setIsExistedOn(isExisted);
         if (isExisted) return false;
       }
-      return !isExisted;
+      return !isExisted && index < filterLimit;
     });
     setChips([...chips, ...filteredChips]);
   };
@@ -325,7 +331,7 @@ const InputWithChips = ({
   );
 };
 
-InputWithChips.propTypes = {
+EmailChips.propTypes = {
   /** Array of objects with chips */
   options: PropTypes.arrayOf(PropTypes.object),
   /** Placeholder text for the input */
@@ -348,7 +354,7 @@ InputWithChips.propTypes = {
   onChange: PropTypes.func.isRequired,
 };
 
-InputWithChips.defaultProps = {
+EmailChips.defaultProps = {
   placeholder: "Invite people by name or email",
   clearButtonLabel: "Clear list",
   existEmailText: "This email address has already been entered",
@@ -360,4 +366,4 @@ InputWithChips.defaultProps = {
   exceededLimit: 50,
 };
 
-export default InputWithChips;
+export default EmailChips;

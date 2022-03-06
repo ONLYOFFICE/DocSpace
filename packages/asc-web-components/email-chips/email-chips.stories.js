@@ -1,24 +1,27 @@
 import React from "react";
-import InputWithChips from ".";
+import EmailChips from ".";
 
 const Options = [
-  { label: "Ivan Petrov", value: "myname@gmul.com" },
-  { label: "Donna Cross", value: "myname45@gmul.com" },
-  { label: "myname@gmul.co45", value: "myname@gmul.co45" },
-  { label: "Lisa Cooper", value: "myn348ame@gmul.com" },
-  { label: "myname19@gmail.com", value: "myname19@gmail.com" },
-  { label: "myname@gmail.com", value: "myname@gmail.com" },
+  { name: "Ivan Petrov", email: "myname@gmul.com", isValid: true },
+  { name: "Donna Cross", email: "myname45@gmul.com", isValid: true },
+  { name: "myname@gmul.co45", email: "myname@gmul.co45", isValid: false },
+  { name: "Lisa Cooper", email: "myn348ame@gmul.com", isValid: true },
+  { name: "myname19@gmail.com", email: "myname19@gmail.com", isValid: true },
+  { name: "myname@gmail.com", email: "myname@gmail.com", isValid: true },
   {
-    label: "mynameiskonstantine1353434@gmail.com",
-    value: "mynameiskonstantine1353434@gmail.com",
+    name: "mynameiskonstantine1353434@gmail.com",
+    email: "mynameiskonstantine1353434@gmail.com",
+    isValid: true,
   },
   {
-    label: "mynameiskonstantine56454864846455488875454654846454@gmail.com",
-    value: "mynameiskonstantine56454864846455488875454654846454@gmail.com",
+    name: "mynameiskonstantine56454864846455488875454654846454@gmail.com",
+    email: "mynameiskonstantine56454864846455488875454654846454@gmail.com",
+    isValid: true,
   },
   {
-    label: "mynameiskonstantine3246@gmail.com",
-    value: "mynameiskonstantine3246@gmail.com",
+    name: "mynameiskonstantine3246@gmail.com",
+    email: "mynameiskonstantine3246@gmail.com",
+    isValid: true,
   },
 ];
 
@@ -34,7 +37,7 @@ const Wrapper = (props) => (
 
 const Template = (args) => (
   <Wrapper>
-    <InputWithChips {...args} />
+    <EmailChips {...args} />
   </Wrapper>
 );
 

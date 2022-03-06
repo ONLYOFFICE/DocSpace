@@ -1,15 +1,15 @@
-# InputWithChips
+# EmailChips
 
-Custom input-with-chips
+Custom email-chips
 
 ### Usage
 
 ```js
-import InputWithChips from "@appserver/components/input-with-chips";
+import EmailChips from "@appserver/components/email-chips";
 ```
 
 ```jsx
-<InputWithChips
+<EmailChips
   options={[]}
   onChange={(selected) => console.log(selected)}
   placeholder="Invite people by name or email"
@@ -28,23 +28,25 @@ import InputWithChips from "@appserver/components/input-with-chips";
 ```js
 const options = [
   {
-    label: "Ivan Petrov",
-    value: "myname@gmul.com",
+    name: "Ivan Petrov",
+    email: "myname@gmul.com",
+    isValid: true,
   },
 ];
 ```
 
 Options have options:
 
-- label - Display text
-- value - Email address
+- name - Display text
+- email - Email address
+- isValid - Displays whether the email is valid
 
 #### Actions that can be performed on chips and input:
 
 - Enter a chip into the input (chips are checked for a valid email, and the same chips).
 - Add chips by pressing Enter or NumpadEnter.
 - By double-clicking on the mouse button or pressing enter on a specific selected chip, you can switch to the chip editing mode.
-- You can exit the editing mode by pressing Escape, Enter or NumpadEnter.
+- You can exit the editing mode by pressing Escape, Enter, NumpadEnter or by clicking ouside.
 - Remove the chips by clicking on the button in the form of a cross.
 - Click on the chip once, thereby highlighting it.
 - Hold down the shift button by moving the arrows to the left, right or clicking the mouse on the chips, thereby highlighting several chips.
@@ -57,7 +59,7 @@ Options have options:
 | Props                    |      Type      | Required | Values |                                     Default                                     | Description                                                                      |
 | ------------------------ | :------------: | :------: | :----: | :-----------------------------------------------------------------------------: | -------------------------------------------------------------------------------- |
 | `options`                | `obj`, `array` |    -     |   -    |                                        -                                        | Array of objects with chips                                                      |
-| `onChange`               |     `func`     |    ✅    |   -    |                                        -                                        | Will be called when the selected items are changed                               |
+| `onChange`               |     `func`     |    ✅    |   -    |                                        -                                        | displays valid email addresses. Called when changing chips                       |
 | `placeholder`            |    `string`    |    -     |   -    |                         Invite people by name or email                          | Placeholder text for the input                                                   |
 | `clearButtonLabel`       |    `string`    |    -     |   -    |                                   Clear list                                    | The text of the button for cleaning all chips                                    |
 | `existEmailText`         |    `string`    |    -     |   -    |                   This email address has already been entered                   | Warning text when entering an existing email                                     |
