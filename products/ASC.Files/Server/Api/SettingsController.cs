@@ -10,13 +10,10 @@ public class SettingsController : ApiControllerBase
     private readonly ProductEntryPoint _productEntryPoint;
 
     public SettingsController(
-        FilesControllerHelper<int> filesControllerHelperInt,
-        FilesControllerHelper<string> filesControllerHelperString,
         FileStorageService<string> fileStorageServiceString,
         FilesSettingsHelper filesSettingsHelper,
         TenantManager tenantManager,
-        ProductEntryPoint productEntryPoint) 
-        : base(filesControllerHelperInt, filesControllerHelperString)
+        ProductEntryPoint productEntryPoint)
     {
         _fileStorageServiceString = fileStorageServiceString;
         _filesSettingsHelper = filesSettingsHelper;

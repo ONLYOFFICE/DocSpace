@@ -97,7 +97,10 @@ public class PrivacyRoomController : ControllerBase
     [Read("access/{fileId:int}")]
     public Task<IEnumerable<EncryptionKeyPairDto>> GetPublicKeysWithAccess(int fileId)
     {
-        if (!PrivacyRoomSettings.GetEnabled(_settingsManager)) throw new System.Security.SecurityException();
+        if (!PrivacyRoomSettings.GetEnabled(_settingsManager))
+        {
+            throw new System.Security.SecurityException();
+        }
 
         return _encryptionKeyPairHelper.GetKeyPairAsync(fileId, _fileStorageServiceInt);
     }

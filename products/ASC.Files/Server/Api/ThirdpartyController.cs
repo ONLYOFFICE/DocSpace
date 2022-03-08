@@ -3,7 +3,6 @@
 public class ThirdpartyController : ApiControllerBase
 {
     private readonly CoreBaseSettings _coreBaseSettings;
-    private readonly EasyBibHelper _easyBibHelper;
     private readonly EntryManager _entryManager;
     private readonly FilesSettingsHelper _filesSettingsHelper;
     private readonly FileStorageService<int> _fileStorageServiceInt;
@@ -17,37 +16,31 @@ public class ThirdpartyController : ApiControllerBase
     private readonly WordpressToken _wordpressToken;
 
     public ThirdpartyController(
-        FilesControllerHelper<int> filesControllerHelperInt, 
-        FilesControllerHelper<string> filesControllerHelperString,
         CoreBaseSettings coreBaseSettings,
-        ConsumerFactory consumerFactory,
         EntryManager entryManager,
         FilesSettingsHelper filesSettingsHelper,
         FileStorageService<int> fileStorageServiceInt,
         FileStorageService<string> fileStorageServiceString,
-        FolderDtoHelper folderWrapperHelper,
+        FolderDtoHelper folderDtoHelper,
         GlobalFolderHelper globalFolderHelper,
         SecurityContext securityContext,
         ThirdpartyConfiguration thirdpartyConfiguration,
         UserManager userManager,
         WordpressHelper wordpressHelper,
-        WordpressToken wordpressToken
-        ) 
-        : base(filesControllerHelperInt, filesControllerHelperString)
+        WordpressToken wordpressToken)
     {
-        _userManager = userManager;
-        _wordpressHelper = wordpressHelper;
-        _wordpressToken = wordpressToken;
-        _folderDtoHelper = folderWrapperHelper;
+        _coreBaseSettings = coreBaseSettings;
+        _entryManager = entryManager;
+        _filesSettingsHelper = filesSettingsHelper;
+        _fileStorageServiceInt = fileStorageServiceInt;
+        _fileStorageServiceString = fileStorageServiceString;
+        _folderDtoHelper = folderDtoHelper;
         _globalFolderHelper = globalFolderHelper;
         _securityContext = securityContext;
         _thirdpartyConfiguration = thirdpartyConfiguration;
-        _coreBaseSettings = coreBaseSettings;
-        _entryManager = entryManager;
-        _fileStorageServiceInt = fileStorageServiceInt;
-        _fileStorageServiceString = fileStorageServiceString;
-        _filesSettingsHelper = filesSettingsHelper;
-        _easyBibHelper = consumerFactory.Get<EasyBibHelper>();
+        _userManager = userManager;
+        _wordpressHelper = wordpressHelper;
+        _wordpressToken = wordpressToken;
     }
 
     /// <summary>
@@ -122,20 +115,6 @@ public class ThirdpartyController : ApiControllerBase
         };
     }
 
-    /// <visible>false</visible>
-    [Create("easybib-citation")]
-    public object EasyBibCitationBookFromBody([FromBody] EasyBibCitationBookRequestDto inDto)
-    {
-        return EasyBibCitationBook(inDto);
-    }
-
-    [Create("easybib-citation")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public object EasyBibCitationBookFromForm([FromForm] EasyBibCitationBookRequestDto inDto)
-    {
-        return EasyBibCitationBook(inDto);
-    }
-
     /// <summary>
     ///    Returns the list of third party services connected in the 'Common Documents' section
     /// </summary>
@@ -154,51 +133,6 @@ public class ThirdpartyController : ApiControllerBase
             result.Add(await _folderDtoHelper.GetAsync(r));
         }
         return result;
-    }
-
-    /// <visible>false</visible>
-    [Read("easybib-citation-list")]
-    public object GetEasybibCitationList(int source, string data)
-    {
-        try
-        {
-            var citationList = EasyBibHelper.GetEasyBibCitationsList(source, data);
-            return new
-            {
-                success = true,
-                citations = citationList
-            };
-        }
-        catch (Exception)
-        {
-            return new
-            {
-                success = false
-            };
-        }
-
-    }
-
-    /// <visible>false</visible>
-    [Read("easybib-styles")]
-    public object GetEasybibStyles()
-    {
-        try
-        {
-            var data = EasyBibHelper.GetEasyBibStyles();
-            return new
-            {
-                success = true,
-                styles = data
-            };
-        }
-        catch (Exception)
-        {
-            return new
-            {
-                success = false
-            };
-        }
     }
 
     /// <summary>
@@ -291,50 +225,25 @@ public class ThirdpartyController : ApiControllerBase
             var token = _wordpressToken.GetToken();
             var meInfo = _wordpressHelper.GetWordpressMeInfo(token.AccessToken);
             var parser = JObject.Parse(meInfo);
-            if (parser == null) return false;
+            if (parser == null)
+            {
+                return false;
+            }
+
             var blogId = parser.Value<string>("token_site_id");
 
             if (blogId != null)
             {
                 var createPost = _wordpressHelper.CreateWordpressPost(inDto.Title, inDto.Content, inDto.Status, blogId, token);
+
                 return createPost;
             }
+
             return false;
         }
         catch (Exception)
         {
             return false;
-        }
-    }
-
-    private object EasyBibCitationBook(EasyBibCitationBookRequestDto inDto)
-    {
-        try
-        {
-            var citat = _easyBibHelper.GetEasyBibCitation(inDto.CitationData);
-            if (citat != null)
-            {
-                return new
-                {
-                    success = true,
-                    citation = citat
-                };
-            }
-            else
-            {
-                return new
-                {
-                    success = false
-                };
-            }
-
-        }
-        catch (Exception)
-        {
-            return new
-            {
-                success = false
-            };
         }
     }
 

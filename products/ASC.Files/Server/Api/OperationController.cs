@@ -4,16 +4,19 @@ public class OperationController : ApiControllerBase
 {
     private readonly FileOperationDtoHelper _fileOperationWraperHelper;
     private readonly FileStorageService<string> _fileStorageServiceString;
+    private readonly OperationControllerHelper<string> _operationControllerHelperString;
+    private readonly OperationControllerHelper<int> _operationControllerHelperInt;
 
     public OperationController(
-        FilesControllerHelper<int> filesControllerHelperInt,
-        FilesControllerHelper<string> filesControllerHelperString,
         FileOperationDtoHelper fileOperationWraperHelper,
-        FileStorageService<string> fileStorageServiceString) 
-        : base(filesControllerHelperInt, filesControllerHelperString)
+        FileStorageService<string> fileStorageServiceString,
+        OperationControllerHelper<string> operationControllerHelperString,
+        OperationControllerHelper<int> operationControllerHelperInt)
     {
         _fileOperationWraperHelper = fileOperationWraperHelper;
         _fileStorageServiceString = fileStorageServiceString;
+        _operationControllerHelperString = operationControllerHelperString;
+        _operationControllerHelperInt = operationControllerHelperInt;
     }
 
     /// <summary>
@@ -28,14 +31,14 @@ public class OperationController : ApiControllerBase
     [Update("fileops/bulkdownload")]
     public Task<IEnumerable<FileOperationDto>> BulkDownload([FromBody] DownloadRequestDto inDto)
     {
-        return _filesControllerHelperString.BulkDownloadAsync(inDto);
+        return _operationControllerHelperString.BulkDownloadAsync(inDto);
     }
 
     [Update("fileops/bulkdownload")]
     [Consumes("application/x-www-form-urlencoded")]
     public Task<IEnumerable<FileOperationDto>> BulkDownloadFromForm([FromForm] DownloadRequestDto inDto)
     {
-        return _filesControllerHelperString.BulkDownloadAsync(inDto);
+        return _operationControllerHelperString.BulkDownloadAsync(inDto);
     }
 
     /// <summary>
@@ -52,14 +55,14 @@ public class OperationController : ApiControllerBase
     [Update("fileops/copy")]
     public Task<IEnumerable<FileOperationDto>> CopyBatchItemsFromBody([FromBody] BatchRequestDto inDto)
     {
-        return _filesControllerHelperString.CopyBatchItemsAsync(inDto);
+        return _operationControllerHelperString.CopyBatchItemsAsync(inDto);
     }
 
     [Update("fileops/copy")]
     [Consumes("application/x-www-form-urlencoded")]
     public Task<IEnumerable<FileOperationDto>> CopyBatchItemsFromForm([FromForm][ModelBinder(BinderType = typeof(BatchModelBinder))] BatchRequestDto inDto)
     {
-        return _filesControllerHelperString.CopyBatchItemsAsync(inDto);
+        return _operationControllerHelperString.CopyBatchItemsAsync(inDto);
     }
 
     /// <summary>
@@ -104,7 +107,7 @@ public class OperationController : ApiControllerBase
     [Update("fileops/emptytrash")]
     public Task<IEnumerable<FileOperationDto>> EmptyTrashAsync()
     {
-        return _filesControllerHelperInt.EmptyTrashAsync();
+        return _operationControllerHelperInt.EmptyTrashAsync();
     }
 
     /// <summary>
@@ -135,14 +138,14 @@ public class OperationController : ApiControllerBase
     [Update("fileops/markasread")]
     public Task<IEnumerable<FileOperationDto>> MarkAsReadFromBody([FromBody] BaseBatchRequestDto inDto)
     {
-        return _filesControllerHelperString.MarkAsReadAsync(inDto);
+        return _operationControllerHelperString.MarkAsReadAsync(inDto);
     }
 
     [Update("fileops/markasread")]
     [Consumes("application/x-www-form-urlencoded")]
     public Task<IEnumerable<FileOperationDto>> MarkAsReadFromForm([FromForm][ModelBinder(BinderType = typeof(BaseBatchModelBinder))] BaseBatchRequestDto inDto)
     {
-        return _filesControllerHelperString.MarkAsReadAsync(inDto);
+        return _operationControllerHelperString.MarkAsReadAsync(inDto);
     }
 
     /// <summary>
@@ -159,14 +162,14 @@ public class OperationController : ApiControllerBase
     [Update("fileops/move")]
     public Task<IEnumerable<FileOperationDto>> MoveBatchItemsFromBody([FromBody] BatchRequestDto inDto)
     {
-        return _filesControllerHelperString.MoveBatchItemsAsync(inDto);
+        return _operationControllerHelperString.MoveBatchItemsAsync(inDto);
     }
 
     [Update("fileops/move")]
     [Consumes("application/x-www-form-urlencoded")]
     public Task<IEnumerable<FileOperationDto>> MoveBatchItemsFromForm([FromForm][ModelBinder(BinderType = typeof(BatchModelBinder))] BatchRequestDto inDto)
     {
-        return _filesControllerHelperString.MoveBatchItemsAsync(inDto);
+        return _operationControllerHelperString.MoveBatchItemsAsync(inDto);
     }
 
     /// <summary>
@@ -180,7 +183,7 @@ public class OperationController : ApiControllerBase
     [Read("fileops/move")]
     public IAsyncEnumerable<FileEntryDto> MoveOrCopyBatchCheckAsync([ModelBinder(BinderType = typeof(BatchModelBinder))] BatchRequestDto inDto)
     {
-        return _filesControllerHelperString.MoveOrCopyBatchCheckAsync(inDto);
+        return _operationControllerHelperString.MoveOrCopyBatchCheckAsync(inDto);
     }
     /// <summary>
     ///  Finishes all the active file operations

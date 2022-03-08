@@ -1,22 +1,25 @@
 ﻿namespace ASC.Files.Api;
 
-public class FileController : ApiControllerBase
+public class FilesController : ApiControllerBase
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly FileStorageService<string> _fileStorageServiceString;
+    private readonly FileControllerHelper<int> _filesControllerHelperInt;
+    private readonly FileControllerHelper<string> _filesControllerHelperString;
 
-    public FileController(
-        FilesControllerHelper<int> filesControllerHelperInt,
-        FilesControllerHelper<string> filesControllerHelperString,
+    public FilesController(
         IServiceProvider serviceProvider,
         GlobalFolderHelper globalFolderHelper,
-        FileStorageService<string> fileStorageServiceString) 
-        : base(filesControllerHelperInt, filesControllerHelperString)
+        FileStorageService<string> fileStorageServiceString,
+        FileControllerHelper<int> filesControllerHelperInt,
+        FileControllerHelper<string> filesControllerHelperString)
     {
         _serviceProvider = serviceProvider;
         _globalFolderHelper = globalFolderHelper;
         _fileStorageServiceString = fileStorageServiceString;
+        _filesControllerHelperInt = filesControllerHelperInt;
+        _filesControllerHelperString = filesControllerHelperString;
     }
 
     /// <summary>
@@ -471,6 +474,7 @@ public class FileController : ApiControllerBase
             inDto = new CheckConversionRequestDto<string>();
         }
         inDto.FileId = fileId;
+
         return _filesControllerHelperString.StartConversionAsync(inDto);
     }
 
@@ -568,7 +572,7 @@ public class FileController : ApiControllerBase
 
     private object CopyFile<T>(T fileId, CopyAsRequestDto<JsonElement> inDto)
     {
-        var helper = _serviceProvider.GetService<FilesControllerHelper<T>>();
+        var helper = _serviceProvider.GetService<FileControllerHelper<T>>();
         if (inDto.DestFolderId.ValueKind == JsonValueKind.Number)
         {
             return helper.CopyFileAsAsync(fileId, inDto.DestFolderId.GetInt32(), inDto.DestTitle, inDto.Password);

@@ -3,14 +3,17 @@
 public class UploadController : ApiControllerBase
 {
     private readonly GlobalFolderHelper _globalFolderHelper;
+    private readonly UploadControllerHelper<string> _filesControllerHelperString;
+    private readonly UploadControllerHelper<int> _filesControllerHelperInt;
 
     public UploadController(
-        FilesControllerHelper<int> filesControllerHelperInt,
-        FilesControllerHelper<string> filesControllerHelperString,
-        GlobalFolderHelper globalFolderHelper) 
-        : base(filesControllerHelperInt, filesControllerHelperString)
+        GlobalFolderHelper globalFolderHelper,
+        UploadControllerHelper<string> filesControllerHelperString,
+        UploadControllerHelper<int> filesControllerHelperInt)
     {
         _globalFolderHelper = globalFolderHelper;
+        _filesControllerHelperString = filesControllerHelperString;
+        _filesControllerHelperInt = filesControllerHelperInt;
     }
 
     /// <summary>
