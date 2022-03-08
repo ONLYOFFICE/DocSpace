@@ -5,15 +5,15 @@ public class FilesController : ApiControllerBase
     private readonly IServiceProvider _serviceProvider;
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly FileStorageService<string> _fileStorageServiceString;
-    private readonly FileControllerHelper<int> _filesControllerHelperInt;
-    private readonly FileControllerHelper<string> _filesControllerHelperString;
+    private readonly FilesControllerHelper<int> _filesControllerHelperInt;
+    private readonly FilesControllerHelper<string> _filesControllerHelperString;
 
     public FilesController(
         IServiceProvider serviceProvider,
         GlobalFolderHelper globalFolderHelper,
         FileStorageService<string> fileStorageServiceString,
-        FileControllerHelper<int> filesControllerHelperInt,
-        FileControllerHelper<string> filesControllerHelperString)
+        FilesControllerHelper<int> filesControllerHelperInt,
+        FilesControllerHelper<string> filesControllerHelperString)
     {
         _serviceProvider = serviceProvider;
         _globalFolderHelper = globalFolderHelper;
@@ -572,7 +572,7 @@ public class FilesController : ApiControllerBase
 
     private object CopyFile<T>(T fileId, CopyAsRequestDto<JsonElement> inDto)
     {
-        var helper = _serviceProvider.GetService<FileControllerHelper<T>>();
+        var helper = _serviceProvider.GetService<FilesControllerHelper<T>>();
         if (inDto.DestFolderId.ValueKind == JsonValueKind.Number)
         {
             return helper.CopyFileAsAsync(fileId, inDto.DestFolderId.GetInt32(), inDto.DestTitle, inDto.Password);

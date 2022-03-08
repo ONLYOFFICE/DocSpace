@@ -1,6 +1,6 @@
 ﻿namespace ASC.Files.Helpers;
 
-public class FileControllerHelper<T> : FilesHelperBase<T>
+public class FilesControllerHelper<T> : FilesHelperBase<T>
 {
     private readonly ILog _logger;
     private readonly ApiDateTimeHelper _apiDateTimeHelper;
@@ -10,7 +10,7 @@ public class FileControllerHelper<T> : FilesHelperBase<T>
     private readonly FileConverter _fileConverter;
     private readonly FileOperationDtoHelper _fileOperationDtoHelper;
 
-    public FileControllerHelper(
+    public FilesControllerHelper(
         FilesSettingsHelper filesSettingsHelper,
         FileUploader fileUploader,
         SocketManager socketManager,
@@ -245,7 +245,7 @@ public class FileControllerHelper<T> : FilesHelperBase<T>
     public async Task<FileDto<TTemplate>> CopyFileAsAsync<TTemplate>(T fileId, TTemplate destFolderId, string destTitle, string password = null)
     {
         var service = _serviceProvider.GetService<FileStorageService<TTemplate>>();
-        var controller = _serviceProvider.GetService<FileControllerHelper<TTemplate>>();
+        var controller = _serviceProvider.GetService<FilesControllerHelper<TTemplate>>();
         var file = await _fileStorageService.GetFileAsync(fileId, -1);
         var ext = FileUtility.GetFileExtension(file.Title);
         var destExt = FileUtility.GetFileExtension(destTitle);
