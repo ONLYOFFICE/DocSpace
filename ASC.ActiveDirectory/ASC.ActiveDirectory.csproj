@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Mono.Security" Version="5.4.0.201" />
+    <PackageReference Include="Novell.Directory.LDAP" Version="2.3.8.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\common\ASC.Common\ASC.Common.csproj" />
+    <ProjectReference Include="..\common\ASC.Core.Common\ASC.Core.Common.csproj" />
+    <ProjectReference Include="..\web\ASC.Web.Core\ASC.Web.Core.csproj" />
+  </ItemGroup>
+
+</Project>

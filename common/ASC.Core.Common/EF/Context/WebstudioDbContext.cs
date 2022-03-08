@@ -32,7 +32,8 @@ namespace ASC.Core.Common.EF.Context
                 .From(modelBuilder, Provider)
                 .AddWebstudioSettings()
                 .AddWebstudioUserVisit()
-                .AddDbWebstudioIndex();
+                .AddDbWebstudioIndex()
+                .AddDbFunction();
         }
     }
 
