@@ -8,8 +8,8 @@ export default function template(
   const { docApiUrl } = initialState.props;
 
   const scripts = `   
-    <script id="__STATE__">
-      window.__STATE__ = ${JSON.stringify(initialState)}
+    <script id="__ASC_INITIAL_STATE__">
+      window.__ASC_INITIAL_STATE__ = ${JSON.stringify(initialState)}
     </script>
     <script type='text/javascript' id='scripDocServiceAddress' src="${docApiUrl}" async></script>
     ${scriptTags}
