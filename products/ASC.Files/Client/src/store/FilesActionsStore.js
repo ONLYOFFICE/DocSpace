@@ -593,14 +593,9 @@ class FilesActionStore {
       selectFile,
       deselectFile,
       setBufferSelection,
-      setHotkeyCaretStart,
-      setHotkeyCaret,
     } = this.filesStore;
     //selected === "close" && setSelected("none");
     setBufferSelection(null);
-
-    setHotkeyCaretStart(file);
-    setHotkeyCaret(file);
 
     if (checked) {
       selectFile(file);

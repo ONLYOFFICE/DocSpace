@@ -115,6 +115,7 @@ const StyledTableRow = styled(TableRow)`
     border-right: 0;
     border-left: 0;
 
+    ${(props) => props.showHotkeyBorder && hotkeyBorderStyle};
     ${(props) => props.dragging && rowCheckboxDraggingStyle};
   }
 
@@ -157,6 +158,7 @@ const StyledTableRow = styled(TableRow)`
       .table-container_cell {
         margin-top: -1px;
         border-top: 1px solid #2da7db;
+        z-index: 1;
       }
     `}
 `;
@@ -314,7 +316,11 @@ const FilesTableRow = (props) => {
       data-title={item.title}
       value={value}
       className={`files-item ${className} ${
-        checkedProps || isActive ? "table-row-selected" : ""
+        showHotkeyBorder
+          ? "table-hotkey-border"
+          : checkedProps || isActive
+          ? "table-row-selected"
+          : ""
       }`}
       onDrop={onDrop}
       onMouseDown={onMouseDown}

@@ -35,16 +35,16 @@ const StyledTableContainer = styled(TableContainer)`
     }
   }
 
-  .files-item:not(.table-row-selected) + .table-row-selected {
+  /* .files-item:not(.table-row-selected) + .table-row-selected {
     .table-row {
       .table-container_file-name-cell,
       .table-container_row-context-menu-wrapper {
         margin-top: -1px;
         border-top: ${`1px ${(props) =>
-          props.theme.filesSection.tableView.row.borderColor} solid`};
+    props.theme.filesSection.tableView.row.borderColor} solid`};
       }
     }
-  }
+  } */
 `;
 
 StyledTableContainer.defaultProps = { theme: Base };
