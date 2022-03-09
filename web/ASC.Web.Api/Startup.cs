@@ -8,20 +8,5 @@
         {
 
         }
-
-        public override void ConfigureServices(IServiceCollection services)
-        {
-            base.ConfigureServices(services);
-
-            services.AddMemoryCache();
-
-            DIHelper.TryAdd<AuthenticationController>();
-            DIHelper.TryAdd<ModulesController>();
-            DIHelper.TryAdd<PortalController>();
-            DIHelper.TryAdd<SettingsController>();
-            DIHelper.TryAdd<SecurityController>();
-            DIHelper.TryAdd<SmtpSettingsController>();
-            DIHelper.TryAdd<ThirdPartyController>();
-        }
     }
 }

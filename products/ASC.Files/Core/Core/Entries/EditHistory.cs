@@ -23,186 +23,176 @@
  *
 */
 
-namespace ASC.Files.Core
+namespace ASC.Files.Core;
+
+[Transient]
+[DebuggerDisplay("{ID} v{Version}")]
+public class EditHistory
 {
-    [Transient]
-    [DebuggerDisplay("{ID} v{Version}")]
-    public class EditHistory
+    private readonly ILog _logger;
+    private readonly TenantUtil _tenantUtil;
+    private readonly UserManager _userManager;
+    private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
+
+    public EditHistory(
+        IOptionsMonitor<ILog> options,
+        TenantUtil tenantUtil,
+        UserManager userManager,
+        DisplayUserSettingsHelper displayUserSettingsHelper)
     {
-        private ILog Logger { get; }
-        private TenantUtil TenantUtil { get; }
-        private UserManager UserManager { get; }
-        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        _logger = options.CurrentValue;
+        _tenantUtil = tenantUtil;
+        _userManager = userManager;
+        _displayUserSettingsHelper = displayUserSettingsHelper;
+    }
 
-        public EditHistory(
-            IOptionsMonitor<ILog> options,
-            TenantUtil tenantUtil,
-            UserManager userManager,
-            DisplayUserSettingsHelper displayUserSettingsHelper)
+    public int ID { get; set; }
+    public string Key { get; set; }
+    public int Version { get; set; }
+    public int VersionGroup { get; set; }
+    public DateTime ModifiedOn { get; set; }
+    public Guid ModifiedBy { get; set; }
+    public string ChangesString { get; set; }
+    public string ServerVersion { get; set; }
+
+    public List<EditHistoryChanges> Changes
+    {
+        get
         {
-            Logger = options.CurrentValue;
-            TenantUtil = tenantUtil;
-            UserManager = userManager;
-            DisplayUserSettingsHelper = displayUserSettingsHelper;
-        }
-
-        public int ID { get; set; }
-        public string Key { get; set; }
-        public int Version { get; set; }
-        public int VersionGroup { get; set; }
-
-        public DateTime ModifiedOn { get; set; }
-        public Guid ModifiedBy { get; set; }
-        public string ChangesString { get; set; }
-
-        public string ServerVersion { get; set; }
-
-        public List<EditHistoryChanges> Changes
-        {
-            get
+            var changes = new List<EditHistoryChanges>();
+            if (string.IsNullOrEmpty(ChangesString))
             {
-                var changes = new List<EditHistoryChanges>();
-                if (string.IsNullOrEmpty(ChangesString)) return changes;
+                return changes;
+            }
 
-                try
+            try
+            {
+                var options = new JsonSerializerOptions
                 {
-                    var options = new JsonSerializerOptions
-                    {
-                        AllowTrailingCommas = true,
-                        PropertyNameCaseInsensitive = true
-                    };
+                    AllowTrailingCommas = true,
+                    PropertyNameCaseInsensitive = true
+                };
 
-                    var jObject = JsonSerializer.Deserialize<ChangesDataList>(ChangesString, options);
-                    ServerVersion = jObject.ServerVersion;
+                var jObject = JsonSerializer.Deserialize<ChangesDataList>(ChangesString, options);
+                ServerVersion = jObject.ServerVersion;
 
-                    if (string.IsNullOrEmpty(ServerVersion))
-                        return changes;
-
-                    changes = jObject.Changes.Select(r =>
-                    {
-                        var result = new EditHistoryChanges()
-                        {
-                            Author = new EditHistoryAuthor(UserManager, DisplayUserSettingsHelper)
-                            {
-                                Id = new Guid(r.User.Id ?? Guid.Empty.ToString()),
-                                Name = r.User.Name,
-                            }
-                        };
-
-
-                        if (DateTime.TryParse(r.Created, out var _date))
-                        {
-                            _date = TenantUtil.DateTimeFromUtc(_date);
-                        }
-                        result.Date = _date;
-
-                        return result;
-                    })
-                    .ToList();
-
+                if (string.IsNullOrEmpty(ServerVersion))
+                {
                     return changes;
                 }
-                catch (Exception ex)
+
+                changes = jObject.Changes.Select(r =>
                 {
-                    Logger.Error("DeSerialize old scheme exception", ex);
-                }
+                    var result = new EditHistoryChanges()
+                    {
+                        Author = new EditHistoryAuthor(_userManager, _displayUserSettingsHelper)
+                        {
+                            Id = new Guid(r.User.Id ?? Guid.Empty.ToString()),
+                            Name = r.User.Name,
+                        }
+                    };
+
+
+                    if (DateTime.TryParse(r.Created, out var _date))
+                    {
+                        _date = _tenantUtil.DateTimeFromUtc(_date);
+                    }
+                    result.Date = _date;
+
+                    return result;
+                })
+                .ToList();
 
                 return changes;
             }
-            set { throw new NotImplementedException(); }
-        }
-    }
-
-    class ChangesDataList
-    {
-        public string ServerVersion { get; set; }
-        public ChangesData[] Changes { get; set; }
-    }
-
-    class ChangesData
-    {
-        public string Created { get; set; }
-        public ChangesUserData User { get; set; }
-    }
-
-    class ChangesUserData
-    {
-        public string Id { get; set; }
-        public string Name { get; set; }
-    }
-
-    [Transient]
-    [DebuggerDisplay("{Id} {Name}")]
-    public class EditHistoryAuthor
-    {
-        public EditHistoryAuthor(
-            UserManager userManager,
-            DisplayUserSettingsHelper displayUserSettingsHelper)
-        {
-            UserManager = userManager;
-            DisplayUserSettingsHelper = displayUserSettingsHelper;
-        }
-
-        public Guid Id { get; set; }
-
-        private string _name;
-
-        public string Name
-        {
-            get
+            catch (Exception ex)
             {
-                UserInfo user;
-                return
-                    Id.Equals(Guid.Empty)
-                          || Id.Equals(ASC.Core.Configuration.Constants.Guest.ID)
-                          || (user = UserManager.GetUsers(Id)).Equals(Constants.LostUser)
-                              ? string.IsNullOrEmpty(_name)
-                                    ? FilesCommonResource.Guest
-                                    : _name
-                              : user.DisplayUserName(false, DisplayUserSettingsHelper);
+                _logger.Error("DeSerialize old scheme exception", ex);
             }
-            set { _name = value; }
+
+            return changes;
         }
-
-        private UserManager UserManager { get; }
-        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        set => throw new NotImplementedException();
     }
+}
 
-    [DebuggerDisplay("{Author.Name}")]
-    public class EditHistoryChanges
+class ChangesDataList
+{
+    public string ServerVersion { get; set; }
+    public ChangesData[] Changes { get; set; }
+}
+
+class ChangesData
+{
+    public string Created { get; set; }
+    public ChangesUserData User { get; set; }
+}
+
+class ChangesUserData
+{
+    public string Id { get; set; }
+    public string Name { get; set; }
+}
+
+[Transient]
+[DebuggerDisplay("{Id} {Name}")]
+public class EditHistoryAuthor
+{
+    private readonly UserManager _userManager;
+    private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
+
+    public EditHistoryAuthor(
+        UserManager userManager,
+        DisplayUserSettingsHelper displayUserSettingsHelper)
     {
-        public EditHistoryAuthor Author { get; set; }
-
-        public DateTime Date { get; set; }
-
-
+        _userManager = userManager;
+        _displayUserSettingsHelper = displayUserSettingsHelper;
     }
 
-    [DebuggerDisplay("{Version}")]
-    public class EditHistoryData
+    public Guid Id { get; set; }
+
+    private string _name;
+    public string Name
     {
-        public string ChangesUrl { get; set; }
-
-        public string Key { get; set; }
-
-        public EditHistoryUrl Previous { get; set; }
-
-        public string Token { get; set; }
-
-        public string Url { get; set; }
-
-        public int Version { get; set; }
-
-        public string FileType { get; set; }
+        get
+        {
+            UserInfo user;
+            return
+                Id.Equals(Guid.Empty)
+                      || Id.Equals(ASC.Core.Configuration.Constants.Guest.ID)
+                      || (user = _userManager.GetUsers(Id)).Equals(Constants.LostUser)
+                          ? string.IsNullOrEmpty(_name)
+                                ? FilesCommonResource.Guest
+                                : _name
+                          : user.DisplayUserName(false, _displayUserSettingsHelper);
+        }
+        set => _name = value;
     }
+}
 
-    [DebuggerDisplay("{Key} - {Url}")]
-    public class EditHistoryUrl
-    {
-        public string Key { get; set; }
+[DebuggerDisplay("{Author.Name}")]
+public class EditHistoryChanges
+{
+    public EditHistoryAuthor Author { get; set; }
+    public DateTime Date { get; set; }
+}
 
-        public string Url { get; set; }
+[DebuggerDisplay("{Version}")]
+public class EditHistoryData
+{
+    public string ChangesUrl { get; set; }
+    public string Key { get; set; }
+    public EditHistoryUrl Previous { get; set; }
+    public string Token { get; set; }
+    public string Url { get; set; }
+    public int Version { get; set; }
+    public string FileType { get; set; }
+}
 
-        public string FileType { get; set; }
-    }
+[DebuggerDisplay("{Key} - {Url}")]
+public class EditHistoryUrl
+{
+    public string Key { get; set; }
+    public string Url { get; set; }
+    public string FileType { get; set; }
 }

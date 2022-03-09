@@ -187,16 +187,16 @@ public class FeedAggregateDataProvider
         return feeds.Take(filterLimit).SelectMany(group => group.Value).ToList();
     }
 
-        private List<FeedResultItem> GetFeedsInternal(FeedApiFilter filter)
-        {
-            var q = FeedDbContext.FeedAggregates
-                .Where(r => r.Tenant == _tenantManager.GetCurrentTenant().Id)
-                .Where(r => r.ModifiedBy != _authContext.CurrentAccount.ID)
-                .Join(FeedDbContext.FeedUsers, a => a.Id, b => b.FeedId, (aggregates, users) => new { aggregates, users })
-                .Where(r => r.users.UserId == _authContext.CurrentAccount.ID)
-                .OrderByDescending(r => r.aggregates.ModifiedDate)
-                .Skip(filter.Offset)
-                .Take(filter.Max);
+    private List<FeedResultItem> GetFeedsInternal(FeedApiFilter filter)
+    {
+        var q = FeedDbContext.FeedAggregates
+            .Where(r => r.Tenant == _tenantManager.GetCurrentTenant().Id)
+            .Where(r => r.ModifiedBy != _authContext.CurrentAccount.ID)
+            .Join(FeedDbContext.FeedUsers, a => a.Id, b => b.FeedId, (aggregates, users) => new { aggregates, users })
+            .Where(r => r.users.UserId == _authContext.CurrentAccount.ID)
+            .OrderByDescending(r => r.aggregates.ModifiedDate)
+            .Skip(filter.Offset)
+            .Take(filter.Max);
 
         if (filter.OnlyNew)
         {
@@ -239,13 +239,13 @@ public class FeedAggregateDataProvider
         return _mapper.Map<IEnumerable<FeedAggregate>, List<FeedResultItem>>(news);
     }
 
-        public int GetNewFeedsCount(DateTime lastReadedTime, AuthContext authContext, TenantManager tenantManager)
-        {
-            var count = FeedDbContext.FeedAggregates
-                .Where(r => r.Tenant == tenantManager.GetCurrentTenant().Id)
-                .Where(r => r.ModifiedBy != authContext.CurrentAccount.ID)
-                .Join(FeedDbContext.FeedUsers, r => r.Id, u => u.FeedId, (agg, user) => new { agg, user })
-                .Where(r => r.user.UserId == authContext.CurrentAccount.ID);
+    public int GetNewFeedsCount(DateTime lastReadedTime, AuthContext authContext, TenantManager tenantManager)
+    {
+        var count = FeedDbContext.FeedAggregates
+            .Where(r => r.Tenant == tenantManager.GetCurrentTenant().Id)
+            .Where(r => r.ModifiedBy != authContext.CurrentAccount.ID)
+            .Join(FeedDbContext.FeedUsers, r => r.Id, u => u.FeedId, (agg, user) => new { agg, user })
+            .Where(r => r.user.UserId == authContext.CurrentAccount.ID);
 
         if (1 < lastReadedTime.Year)
         {
@@ -302,6 +302,8 @@ public class FeedResultItem : IMapFrom<FeedAggregate>
     public DateTime CreatedDate { get; private set; }
     public DateTime ModifiedDate { get; private set; }
     public DateTime AggregatedDate { get; private set; }
+
+    public FeedResultItem() { }
 
     public FeedResultItem(
         string json,

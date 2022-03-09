@@ -5,14 +5,14 @@ public class WebhookSender
 {
     private readonly IHttpClientFactory _clientFactory;
     private readonly ILog _log;
-    private readonly int? _repeatCount;
+    public int? RepeatCount { get; init; }
     private readonly IServiceScopeFactory _scopeFactory;
 
     public WebhookSender(IOptionsMonitor<ILog> options, IServiceScopeFactory scopeFactory, Settings settings, IHttpClientFactory clientFactory)
     {
         _log = options.Get("ASC.Webhooks.Core");
         _scopeFactory = scopeFactory;
-        _repeatCount = settings.RepeatCount;
+        RepeatCount = settings.RepeatCount;
         _clientFactory = clientFactory;
     }
 
@@ -30,7 +30,7 @@ public class WebhookSender
         HttpResponseMessage response = new HttpResponseMessage();
         HttpRequestMessage request = new HttpRequestMessage();
 
-        for (int i = 0; i < _repeatCount; i++)
+        for (int i = 0; i < RepeatCount; i++)
         {
             try
             {
@@ -52,7 +52,7 @@ public class WebhookSender
                     _log.Debug("Response: " + response);
                     break;
                 }
-                else if (i == _repeatCount - 1)
+                else if (i == RepeatCount - 1)
                 {
                     UpdateDb(dbWorker, id, response, request, ProcessStatus.Failed);
                     _log.Debug("Response: " + response);
@@ -60,7 +60,7 @@ public class WebhookSender
             }
             catch (Exception ex)
             {
-                if (i == _repeatCount - 1)
+                if (i == RepeatCount - 1)
                 {
                     UpdateDb(dbWorker, id, response, request, ProcessStatus.Failed);
                 }

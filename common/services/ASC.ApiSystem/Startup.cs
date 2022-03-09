@@ -23,11 +23,6 @@
  *
 */
 
-
-using ASC.ApiSystem.Controllers;
-
-using StackExchange.Redis.Extensions.Newtonsoft;
-
 namespace ASC.ApiSystem
 {
     public class Startup : BaseWorkerStartup
@@ -64,7 +59,7 @@ namespace ASC.ApiSystem
 
             if (kafkaConfiguration != null)
             {
-                diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCacheNotify<>));
             }
             else if (rabbitMQConfiguration != null)
             {
@@ -72,7 +67,7 @@ namespace ASC.ApiSystem
             }
             else if (redisConfiguration != null)
             {
-                diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCache<>));
+                diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCacheNotify<>));
             }
             else
             {

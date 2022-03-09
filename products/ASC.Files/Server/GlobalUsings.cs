@@ -1,15 +1,9 @@
-﻿global using System;
-global using System.Collections.Generic;
-global using System.Globalization;
-global using System.IO;
-global using System.Linq;
-global using System.Net.Http;
+﻿global using System.Globalization;
 global using System.Runtime.InteropServices;
 global using System.Text;
 global using System.Text.Json;
 global using System.Text.Json.Serialization;
 global using System.Text.RegularExpressions;
-global using System.Threading.Tasks;
 global using System.Web;
 
 global using ASC.Api.Core;
@@ -54,13 +48,7 @@ global using ASC.Web.Studio.Utility;
 global using Autofac.Extensions.DependencyInjection;
 
 global using Microsoft.AspNetCore.Authorization;
-global using Microsoft.AspNetCore.Builder;
-global using Microsoft.AspNetCore.Hosting;
-global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.Mvc;
-global using Microsoft.Extensions.Configuration;
-global using Microsoft.Extensions.DependencyInjection;
-global using Microsoft.Extensions.Hosting;
 global using Microsoft.Extensions.Options;
 
 global using Newtonsoft.Json.Linq;

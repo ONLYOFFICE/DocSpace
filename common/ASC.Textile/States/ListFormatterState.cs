@@ -21,15 +21,15 @@ namespace Textile.States
         internal const string PatternBegin = @"^\s*(?<tag>";
         internal const string PatternEnd = @")" + Globals.BlockModifiersPattern + @"(?:\s+)? (?<content>.*)$";
 
-        private bool m_firstItem = true;
-        private bool m_firstItemLine = true;
-        private string m_tag;
-        private string m_attsInfo;
-        private string m_alignInfo;
+        private bool _firstItem = true;
+        private bool _firstItemLine = true;
+        private string _tag;
+        private string _attsInfo;
+        private string _alignInfo;
 
         protected int NestingDepth
         {
-            get { return m_tag.Length; }
+            get { return _tag.Length; }
         }
 
         protected ListFormatterState(TextileFormatter formatter)
@@ -39,9 +39,9 @@ namespace Textile.States
 
         public override string Consume(string input, Match m)
         {
-            m_tag = m.Groups["tag"].Value;
-            m_alignInfo = m.Groups["align"].Value;
-            m_attsInfo = m.Groups["atts"].Value;
+            _tag = m.Groups["tag"].Value;
+            _alignInfo = m.Groups["align"].Value;
+            _attsInfo = m.Groups["atts"].Value;
             input = m.Groups["content"].Value;
 
             this.Formatter.ChangeState(this);
@@ -51,8 +51,8 @@ namespace Textile.States
 
         public sealed override void Enter()
         {
-            m_firstItem = true;
-            m_firstItemLine = true;
+            _firstItem = true;
+            _firstItemLine = true;
             WriteIndent();
         }
 
@@ -64,19 +64,19 @@ namespace Textile.States
 
         public sealed override void FormatLine(string input)
         {
-            if (m_firstItemLine)
+            if (_firstItemLine)
             {
-                if (!m_firstItem)
+                if (!_firstItem)
                     Formatter.Output.WriteLine("</li>");
                 Formatter.Output.Write("<li " + FormattedStylesAndAlignment("li") + ">");
-                m_firstItemLine = false;
+                _firstItemLine = false;
             }
             else
             {
                 Formatter.Output.WriteLine("<br />");
             }
             Formatter.Output.Write(input);
-            m_firstItem = false;
+            _firstItem = false;
         }
 
         public sealed override bool ShouldNestState(FormatterState other)
@@ -109,7 +109,7 @@ namespace Textile.States
             // previously (no "**" or "##" tags), or if it's
             // a new list item.
             if (IsMatchForMe(input, NestingDepth, NestingDepth))
-                m_firstItemLine = true;
+                _firstItemLine = true;
 
             return false;
         }
@@ -131,7 +131,7 @@ namespace Textile.States
 
         protected string FormattedStylesAndAlignment(string element)
         {
-            return Blocks.BlockAttributesParser.ParseBlockAttributes(m_alignInfo + m_attsInfo, element);
+            return Blocks.BlockAttributesParser.ParseBlockAttributes(_alignInfo + _attsInfo, element);
         }
     }
 }

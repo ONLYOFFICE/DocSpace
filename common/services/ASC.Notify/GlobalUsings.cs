@@ -1,5 +1,5 @@
-﻿global using System.Reflection;
-global using System.Data;
+﻿global using System.Data;
+global using System.Reflection;
 
 global using ASC.Api.Core;
 global using ASC.Common;
@@ -14,22 +14,23 @@ global using ASC.Core.Common.EF.Context;
 global using ASC.Core.Common.EF.Model;
 global using ASC.Core.Common.Settings;
 global using ASC.Core.Notify.Senders;
-global using ASC.Notify.Services;
 global using ASC.Notify.Config;
 global using ASC.Notify.Messages;
+global using ASC.Notify.Services;
 global using ASC.Web.Core.WhiteLabel;
 global using ASC.Web.Studio.Core.Notify;
-
-global using AutoMapper;
 
 global using Autofac;
 global using Autofac.Extensions.DependencyInjection;
 
+global using AutoMapper;
+
 global using Google.Protobuf.Collections;
 
-global using Microsoft.Extensions.Options;
+global using Microsoft.AspNetCore.Builder;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Hosting.WindowsServices;
+global using Microsoft.Extensions.Options;
 
 global using Newtonsoft.Json;
 

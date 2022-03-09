@@ -27,16 +27,16 @@ namespace ASC.Web.Files.HttpHandlers
 {
     public class DocuSignHandler
     {
-        private IServiceProvider ServiceProvider { get; }
+        private readonly IServiceScopeFactory _serviceScopeFactory;
 
-        public DocuSignHandler(RequestDelegate next, IServiceProvider serviceProvider)
+        public DocuSignHandler(RequestDelegate next, IServiceScopeFactory serviceScopeFactory)
         {
-            ServiceProvider = serviceProvider;
+            _serviceScopeFactory = serviceScopeFactory;
         }
 
         public async Task Invoke(HttpContext context)
         {
-            using var scope = ServiceProvider.CreateScope();
+            using var scope = _serviceScopeFactory.CreateScope();
             var docuSignHandlerService = scope.ServiceProvider.GetService<DocuSignHandlerService>();
             await docuSignHandlerService.Invoke(context).ConfigureAwait(false);
         }

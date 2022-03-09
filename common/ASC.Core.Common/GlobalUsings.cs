@@ -1,16 +1,11 @@
-﻿global using System;
-global using System.Collections;
+﻿global using System.Collections;
 global using System.Collections.Concurrent;
-global using System.Collections.Generic;
 global using System.Configuration;
 global using System.Data.Common;
 global using System.Diagnostics;
 global using System.Globalization;
-global using System.IO;
-global using System.Linq;
 global using System.Linq.Expressions;
 global using System.Net;
-global using System.Net.Http;
 global using System.Reflection;
 global using System.Resources;
 global using System.Runtime.Caching;
@@ -25,8 +20,6 @@ global using System.Text;
 global using System.Text.Json;
 global using System.Text.Json.Serialization;
 global using System.Text.RegularExpressions;
-global using System.Threading;
-global using System.Threading.Tasks;
 global using System.Web;
 global using System.Xml;
 
@@ -41,7 +34,6 @@ global using ASC.Common.Caching;
 global using ASC.Common.Logging;
 global using ASC.Common.Mapping;
 global using ASC.Common.Module;
-global using ASC.Common.Mapping;
 global using ASC.Common.Notify.Engine;
 global using ASC.Common.Notify.Patterns;
 global using ASC.Common.Security;
@@ -85,8 +77,6 @@ global using ASC.Notify.Recipients;
 global using ASC.Notify.Sinks;
 global using ASC.Security.Cryptography;
 global using ASC.Web.Studio.Utility;
-
-global using AutoMapper;
 
 global using Autofac;
 
