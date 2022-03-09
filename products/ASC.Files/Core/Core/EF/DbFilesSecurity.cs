@@ -1,18 +1,26 @@
-﻿namespace ASC.Files.Core.EF;
+﻿using Profile = AutoMapper.Profile;
 
-public class DbFilesSecurity : BaseEntity, IDbFile
+namespace ASC.Files.Core.EF;
+
+public class DbFilesSecurity : BaseEntity, IDbFile, IMapFrom<FileShareRecord>
 {
     public int TenantId { get; set; }
     public string EntryId { get; set; }
     public FileEntryType EntryType { get; set; }
     public Guid Subject { get; set; }
     public Guid Owner { get; set; }
-    public FileShare Security { get; set; }
+    public FileShare Share { get; set; }
     public DateTime TimeStamp { get; set; }
 
     public override object[] GetKeys()
     {
         return new object[] { TenantId, EntryId, EntryType, Subject };
+    }
+
+    public void Mapping(Profile profile)
+    {
+        profile.CreateMap<FileShareRecord, DbFilesSecurity>()
+            .ForMember(dest => dest.TimeStamp, opt => opt.MapFrom(src => DateTime.UtcNow));
     }
 }
 
@@ -65,7 +73,7 @@ public static class DbFilesSecurityExtension
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
 
-            entity.Property(e => e.Security).HasColumnName("security");
+            entity.Property(e => e.Share).HasColumnName("security");
 
             entity.Property(e => e.TimeStamp)
                 .HasColumnName("timestamp")
@@ -108,7 +116,7 @@ public static class DbFilesSecurityExtension
                 .HasMaxLength(38)
                 .IsFixedLength();
 
-            entity.Property(e => e.Security).HasColumnName("security");
+            entity.Property(e => e.Share).HasColumnName("security");
 
             entity.Property(e => e.TimeStamp)
                 .HasColumnName("timestamp")

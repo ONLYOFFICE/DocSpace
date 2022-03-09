@@ -8,7 +8,7 @@ public class DbFilesTagLink : BaseEntity, IDbFile
     public string EntryId { get; set; }
     public Guid? CreateBy { get; set; }
     public DateTime? CreateOn { get; set; }
-    public int TagCount { get; set; }
+    public int Count { get; set; }
 
     public override object[] GetKeys()
     {
@@ -64,7 +64,7 @@ public static class DbFilesTagLinkExtension
                 .HasColumnName("create_on")
                 .HasColumnType("datetime");
 
-            entity.Property(e => e.TagCount).HasColumnName("tag_count");
+            entity.Property(e => e.Count).HasColumnName("tag_count");
         });
     }
     public static void PgSqlAddDbFilesTagLink(this ModelBuilder modelBuilder)
@@ -100,7 +100,7 @@ public static class DbFilesTagLinkExtension
 
             entity.Property(e => e.CreateOn).HasColumnName("create_on");
 
-            entity.Property(e => e.TagCount).HasColumnName("tag_count");
+            entity.Property(e => e.Count).HasColumnName("tag_count");
         });
     }
 }

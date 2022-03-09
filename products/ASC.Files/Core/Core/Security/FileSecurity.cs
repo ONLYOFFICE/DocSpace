@@ -190,7 +190,7 @@ public class FileSecurity : IFileSecurity
                     EntryType = entry.FileEntryType,
                     Share = DefaultCommonShare,
                     Subject = Constants.GroupEveryone.ID,
-                    Tenant = _tenantManager.GetCurrentTenant().Id,
+                    TenantId = _tenantManager.GetCurrentTenant().Id,
                     Owner = _authContext.CurrentAccount.ID
                 };
 
@@ -216,7 +216,7 @@ public class FileSecurity : IFileSecurity
                     EntryType = entry.FileEntryType,
                     Share = DefaultMyShare,
                     Subject = entry.RootFolderCreator,
-                    Tenant = _tenantManager.GetCurrentTenant().Id,
+                    TenantId = _tenantManager.GetCurrentTenant().Id,
                     Owner = entry.RootFolderCreator
                 };
 
@@ -238,7 +238,7 @@ public class FileSecurity : IFileSecurity
                     EntryType = entry.FileEntryType,
                     Share = DefaultPrivacyShare,
                     Subject = entry.RootFolderCreator,
-                    Tenant = _tenantManager.GetCurrentTenant().Id,
+                    TenantId = _tenantManager.GetCurrentTenant().Id,
                     Owner = entry.RootFolderCreator
                 };
 
@@ -741,7 +741,7 @@ public class FileSecurity : IFileSecurity
         var securityDao = _daoFactory.GetSecurityDao<T>();
         var r = new FileShareRecord
         {
-            Tenant = _tenantManager.GetCurrentTenant().Id,
+            TenantId = _tenantManager.GetCurrentTenant().Id,
             EntryId = entryId,
             EntryType = entryType,
             Subject = @for,

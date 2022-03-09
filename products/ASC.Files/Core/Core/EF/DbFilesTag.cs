@@ -6,7 +6,7 @@ public class DbFilesTag : IDbFile
     public int Id { get; set; }
     public string Name { get; set; }
     public Guid Owner { get; set; }
-    public TagType Flag { get; set; }
+    public TagType Type { get; set; }
 }
 public static class DbFilesTagExtension
 {
@@ -25,12 +25,12 @@ public static class DbFilesTagExtension
         {
             entity.ToTable("files_tag");
 
-            entity.HasIndex(e => new { e.TenantId, e.Owner, e.Name, e.Flag })
+            entity.HasIndex(e => new { e.TenantId, e.Owner, e.Name, e.Type })
                 .HasDatabaseName("name");
 
             entity.Property(e => e.Id).HasColumnName("id");
 
-            entity.Property(e => e.Flag).HasColumnName("flag");
+            entity.Property(e => e.Type).HasColumnName("flag");
 
             entity.Property(e => e.Name)
                 .IsRequired()
@@ -55,12 +55,12 @@ public static class DbFilesTagExtension
         {
             entity.ToTable("files_tag", "onlyoffice");
 
-            entity.HasIndex(e => new { e.TenantId, e.Owner, e.Name, e.Flag })
+            entity.HasIndex(e => new { e.TenantId, e.Owner, e.Name, e.Type })
                 .HasDatabaseName("name_files_tag");
 
             entity.Property(e => e.Id).HasColumnName("id");
 
-            entity.Property(e => e.Flag).HasColumnName("flag");
+            entity.Property(e => e.Type).HasColumnName("flag");
 
             entity.Property(e => e.Name)
                 .IsRequired()

@@ -484,7 +484,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
 
         var q = from r in FilesDbContext.Tag
                 from l in FilesDbContext.TagLink.AsQueryable().Where(a => a.TenantId == r.TenantId && a.TagId == r.Id).DefaultIfEmpty()
-                where r.TenantId == TenantID && l.TenantId == TenantID && r.Flag == TagType.New && entryIDs.Contains(l.EntryId)
+                where r.TenantId == TenantID && l.TenantId == TenantID && r.Type == TagType.New && entryIDs.Contains(l.EntryId)
                 select new { tag = r, tagLink = l };
 
         if (subject != Guid.Empty)
@@ -499,12 +499,12 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         var tags = qList
             .SelectAwait(async r => new Tag
             {
-                TagName = r.tag.Name,
-                TagType = r.tag.Flag,
+                Name = r.tag.Name,
+                Type = r.tag.Type,
                 Owner = r.tag.Owner,
                 EntryId = await MappingIDAsync(r.tagLink.EntryId).ConfigureAwait(false),
                 EntryType = r.tagLink.EntryType,
-                Count = r.tagLink.TagCount,
+                Count = r.tagLink.Count,
                 Id = r.tag.Id
             });
 

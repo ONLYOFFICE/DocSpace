@@ -28,6 +28,8 @@ namespace ASC.Files.Core.Data;
 [Scope]
 internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
 {
+    private readonly IMapper _mapper;
+
     public SecurityDao(UserManager userManager,
         DbContextManager<FilesDbContext> dbContextManager,
         TenantManager tenantManager,
@@ -40,7 +42,8 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
         SettingsManager settingsManager,
         AuthContext authContext,
         IServiceProvider serviceProvider,
-        ICache cache)
+        ICache cache,
+        IMapper mapper)
         : base(dbContextManager,
               userManager,
               tenantManager,
@@ -55,6 +58,7 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
               serviceProvider,
               cache)
     {
+        _mapper = mapper;
     }
 
     public async Task DeleteShareRecordsAsync(IEnumerable<FileShareRecord> records)
@@ -65,7 +69,7 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
         {
             var query = await FilesDbContext.Security
                 .AsQueryable()
-                .Where(r => r.TenantId == record.Tenant)
+                .Where(r => r.TenantId == record.TenantId)
                 .Where(r => r.EntryType == record.EntryType)
                 .Where(r => r.Subject == record.Subject)
                 .AsAsyncEnumerable()
@@ -120,7 +124,7 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
 
                 var toDelete = await FilesDbContext.Security
                     .AsQueryable()
-                    .Where(a => a.TenantId == r.Tenant &&
+                    .Where(a => a.TenantId == r.TenantId &&
                                 folders.Contains(a.EntryId) &&
                                 a.EntryType == FileEntryType.Folder &&
                                 a.Subject == r.Subject)
@@ -139,7 +143,7 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
             {
                 var toDelete = await FilesDbContext.Security
                     .AsQueryable()
-                    .Where(a => a.TenantId == r.Tenant &&
+                    .Where(a => a.TenantId == r.TenantId &&
                                 files.Contains(a.EntryId) &&
                                 a.EntryType == FileEntryType.File &&
                                 a.Subject == r.Subject)
@@ -153,16 +157,8 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
         }
         else
         {
-            var toInsert = new DbFilesSecurity
-            {
-                TenantId = r.Tenant,
-                EntryId = (await MappingIDAsync(r.EntryId, true)).ToString(),
-                EntryType = r.EntryType,
-                Subject = r.Subject,
-                Owner = r.Owner,
-                Security = r.Share,
-                TimeStamp = DateTime.UtcNow
-            };
+            var toInsert = _mapper.Map<FileShareRecord, DbFilesSecurity>(r);
+            toInsert.EntryId = (await MappingIDAsync(r.EntryId, true)).ToString();
 
             await FilesDbContext.AddOrUpdateAsync(r => r.Security, toInsert);
             await FilesDbContext.SaveChangesAsync();
@@ -401,15 +397,10 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
 
     private async Task<FileShareRecord> ToFileShareRecordAsync(DbFilesSecurity r)
     {
-        return new FileShareRecord
-        {
-            Tenant = r.TenantId,
-            EntryId = await MappingIDAsync(r.EntryId),
-            EntryType = r.EntryType,
-            Subject = r.Subject,
-            Owner = r.Owner,
-            Share = r.Security
-        };
+        var result = _mapper.Map<DbFilesSecurity, FileShareRecord>(r);
+        result.EntryId = await MappingIDAsync(r.EntryId);
+
+        return result;
     }
 
     private async Task<FileShareRecord> ToFileShareRecordAsync(SecurityTreeRecord r)

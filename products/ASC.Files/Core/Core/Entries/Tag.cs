@@ -23,6 +23,8 @@
  *
 */
 
+using Profile = AutoMapper.Profile;
+
 namespace ASC.Files.Core;
 
 [Flags]
@@ -38,10 +40,10 @@ public enum TagType
 
 [Serializable]
 [DebuggerDisplay("{TagName} ({Id}) entry {EntryType} ({EntryId})")]
-public sealed class Tag
+public sealed class Tag : IMapFrom<DbFilesTag>
 {
-    public string TagName { get; set; }
-    public TagType TagType { get; set; }
+    public string Name { get; set; }
+    public TagType Type { get; set; }
     public Guid Owner { get; set; }
     public object EntryId { get; set; }
     public FileEntryType EntryType { get; set; }
@@ -57,8 +59,8 @@ public sealed class Tag
 
     public Tag(string name, TagType type, Guid owner, int count)
     {
-        TagName = name;
-        TagType = type;
+        Name = name;
+        Type = type;
         Owner = owner;
         Count = count;
     }
@@ -111,5 +113,11 @@ public sealed class Tag
     public override int GetHashCode()
     {
         return (Id + EntryType + EntryId.ToString()).GetHashCode();
+    }
+
+    public void Mapping(Profile profile)
+    {
+        profile.CreateMap<DbFilesTag, Tag>();
+        profile.CreateMap<DbFilesTagLink, Tag>();
     }
 }

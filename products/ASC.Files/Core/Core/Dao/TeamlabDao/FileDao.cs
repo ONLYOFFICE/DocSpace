@@ -1366,7 +1366,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
             .Join(FilesDbContext.Security.AsQueryable().DefaultIfEmpty(), r => r.File.Id.ToString(), s => s.EntryId, (f, s) => new DbFileQueryWithSecurity { DbFileQuery = f, Security = s })
             .Where(r => r.Security.TenantId == tenant)
             .Where(r => r.Security.EntryType == FileEntryType.File)
-            .Where(r => r.Security.Security == Security.FileShare.Restrict)
+            .Where(r => r.Security.Share == Security.FileShare.Restrict)
             .Where(r => r.Security.TimeStamp >= from && r.Security.TimeStamp <= to)
             .ToListAsync();
 

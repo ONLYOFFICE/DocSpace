@@ -1238,7 +1238,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             .Join(FilesDbContext.Security.AsQueryable().DefaultIfEmpty(), r => r.Folder.Id.ToString(), s => s.EntryId, (f, s) => new DbFolderQueryWithSecurity { DbFolderQuery = f, Security = s })
             .Where(r => r.Security.TenantId == tenant)
             .Where(r => r.Security.EntryType == FileEntryType.Folder)
-            .Where(r => r.Security.Security == FileShare.Restrict)
+            .Where(r => r.Security.Share == FileShare.Restrict)
             .Where(r => r.Security.TimeStamp >= from && r.Security.TimeStamp <= to);
 
         var firstQuery = await q2.ToListAsync().ConfigureAwait(false);

@@ -215,17 +215,17 @@ public class EntryStatusManager
                     continue;
                 }
 
-                if (t.Value.Any(r => r.TagType == TagType.Favorite))
+                if (t.Value.Any(r => r.Type == TagType.Favorite))
                 {
                     file.IsFavorite = true;
                 }
 
-                if (t.Value.Any(r => r.TagType == TagType.Template))
+                if (t.Value.Any(r => r.Type == TagType.Template))
                 {
                     file.IsTemplate = true;
                 }
 
-                var lockedTag = t.Value.FirstOrDefault(r => r.TagType == TagType.Locked);
+                var lockedTag = t.Value.FirstOrDefault(r => r.Type == TagType.Locked);
                 if (lockedTag != null)
                 {
                     var lockedBy = lockedTag.Owner;
