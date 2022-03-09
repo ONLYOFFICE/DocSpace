@@ -4,9 +4,8 @@
 	<description>This service runs kafka</description>
 	<priority>RealTime</priority>
 	<startmode>Automatic</startmode>
-	<onfailure action="restart" delay="1 sec"/>
-	<executable>{WindowsVolume}Apache\kafka\bin\windows\kafka-server-start.bat</executable>
-	<arguments>{WindowsVolume}Apache\kafka\config\server.properties</arguments>
+	<onfailure action="restart" delay="10 sec"/>
+	<executable>{WindowsVolume}Apache\kafka\bin\windows\kafka-server-save-start.bat</executable>
 	<workingdirectory>{WindowsVolume}Apache\kafka</workingdirectory>
 	<log mode="roll-by-size">
   		<sizeThreshold>10240</sizeThreshold>
