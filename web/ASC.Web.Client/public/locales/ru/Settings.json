@@ -100,7 +100,7 @@
   "EveryMonth": "Каждый месяц",
   "EveryDay": "Каждый день",
   "EveryWeek": "Каждую неделю",
-  "MaxCopies": "копий максимум будет сохранено",
+  "MaxCopies": "{{copiesCount}} копий максимум будет сохранено",
   "Copying": "Копирование...",
   "BackupCreatedSuccess": "Резервная копия успешно создана.",
   "UseHttp": "Использовать Http",

@@ -190,7 +190,7 @@ class AutomaticBackup extends React.PureComponent {
     for (let item = 1; item <= 30; item++) {
       let obj = {
         key: `${item}`,
-        label: `${item} ${t("MaxCopies")}`,
+        label: `${t("MaxCopies", { copiesCount: item })}`,
       };
       this.maxNumberCopiesArray.push(obj);
     }

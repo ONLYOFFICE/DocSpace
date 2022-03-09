@@ -105,7 +105,9 @@ const ScheduleComponent = ({
           options={maxNumberCopiesArray}
           selectedOption={{
             key: 0,
-            label: `${selectedMaxCopiesNumber} ${t("MaxCopies")}`,
+            label: `${t("MaxCopies", {
+              copiesCount: selectedMaxCopiesNumber,
+            })}`,
           }}
           onSelect={setMaxCopies}
           isDisabled={isLoadingData || isDisableOptions}
