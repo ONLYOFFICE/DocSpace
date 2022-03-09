@@ -143,51 +143,49 @@ public class HostedSolution
         TenantService.ValidateDomain(address);
     }
 
-    public void RegisterTenant(TenantRegistrationInfo ri, out Tenant tenant)
+    public void RegisterTenant(TenantRegistrationInfo registrationInfo, out Tenant tenant)
     {
-        if (ri == null)
-        {
-            throw new ArgumentNullException("registrationInfo");
-        }
-        if (string.IsNullOrEmpty(ri.Address))
+        ArgumentNullException.ThrowIfNull(registrationInfo);
+
+        if (string.IsNullOrEmpty(registrationInfo.Address))
         {
             throw new Exception("Address can not be empty");
         }
-        if (string.IsNullOrEmpty(ri.Email))
+        if (string.IsNullOrEmpty(registrationInfo.Email))
         {
             throw new Exception("Account email can not be empty");
         }
-        if (ri.FirstName == null)
+        if (registrationInfo.FirstName == null)
         {
             throw new Exception("Account firstname can not be empty");
         }
-        if (ri.LastName == null)
+        if (registrationInfo.LastName == null)
         {
             throw new Exception("Account lastname can not be empty");
         }
-        if (!UserFormatter.IsValidUserName(ri.FirstName, ri.LastName))
+        if (!UserFormatter.IsValidUserName(registrationInfo.FirstName, registrationInfo.LastName))
         {
             throw new Exception("Incorrect firstname or lastname");
         }
 
-        if (string.IsNullOrEmpty(ri.PasswordHash))
+        if (string.IsNullOrEmpty(registrationInfo.PasswordHash))
         {
-            ri.PasswordHash = Guid.NewGuid().ToString();
+            registrationInfo.PasswordHash = Guid.NewGuid().ToString();
         }
 
         // create tenant
-        tenant = new Tenant(ri.Address.ToLowerInvariant())
+        tenant = new Tenant(registrationInfo.Address.ToLowerInvariant())
         {
-            Name = ri.Name,
-            Language = ri.Culture.Name,
-            TimeZone = ri.TimeZoneInfo.Id,
-            HostedRegion = ri.HostedRegion,
-            PartnerId = ri.PartnerId,
-            AffiliateId = ri.AffiliateId,
-            Campaign = ri.Campaign,
-            Industry = ri.Industry,
-            Spam = ri.Spam,
-            Calls = ri.Calls
+            Name = registrationInfo.Name,
+            Language = registrationInfo.Culture.Name,
+            TimeZone = registrationInfo.TimeZoneInfo.Id,
+            HostedRegion = registrationInfo.HostedRegion,
+            PartnerId = registrationInfo.PartnerId,
+            AffiliateId = registrationInfo.AffiliateId,
+            Campaign = registrationInfo.Campaign,
+            Industry = registrationInfo.Industry,
+            Spam = registrationInfo.Spam,
+            Calls = registrationInfo.Calls
         };
 
         tenant = TenantService.SaveTenant(CoreSettings, tenant);
@@ -195,24 +193,24 @@ public class HostedSolution
         // create user
         var user = new UserInfo
         {
-            UserName = ri.Email.Substring(0, ri.Email.IndexOf('@')),
-            LastName = ri.LastName,
-            FirstName = ri.FirstName,
-            Email = ri.Email,
-            MobilePhone = ri.MobilePhone,
+            UserName = registrationInfo.Email.Substring(0, registrationInfo.Email.IndexOf('@')),
+            LastName = registrationInfo.LastName,
+            FirstName = registrationInfo.FirstName,
+            Email = registrationInfo.Email,
+            MobilePhone = registrationInfo.MobilePhone,
             WorkFromDate = TenantUtil.DateTimeNow(tenant.TimeZone),
-            ActivationStatus = ri.ActivationStatus
+            ActivationStatus = registrationInfo.ActivationStatus
         };
 
         user = UserService.SaveUser(tenant.Id, user);
-        UserService.SetUserPasswordHash(tenant.Id, user.Id, ri.PasswordHash);
+        UserService.SetUserPasswordHash(tenant.Id, user.Id, registrationInfo.PasswordHash);
         UserService.SaveUserGroupRef(tenant.Id, new UserGroupRef(user.Id, Constants.GroupAdmin.ID, UserGroupRefType.Contains));
 
         // save tenant owner
         tenant.OwnerId = user.Id;
         tenant = TenantService.SaveTenant(CoreSettings, tenant);
 
-        SettingsManager.SaveSettings(new TenantControlPanelSettings { LimitedAccess = ri.LimitedControlPanel }, tenant.Id);
+        SettingsManager.SaveSettings(new TenantControlPanelSettings { LimitedAccess = registrationInfo.LimitedControlPanel }, tenant.Id);
     }
 
     public Tenant SaveTenant(Tenant tenant)

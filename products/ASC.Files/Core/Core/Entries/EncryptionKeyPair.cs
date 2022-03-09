@@ -57,14 +57,8 @@ public class EncryptionKeyPairHelper
 
     public void SetKeyPair(string publicKey, string privateKeyEnc)
     {
-        if (string.IsNullOrEmpty(publicKey))
-        {
-            throw new ArgumentNullException(nameof(publicKey));
-        }
-        if (string.IsNullOrEmpty(privateKeyEnc))
-        {
-            throw new ArgumentNullException(nameof(privateKeyEnc));
-        }
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(publicKey);
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(privateKeyEnc);
 
         var user = _userManager.GetUsers(_authContext.CurrentAccount.ID);
         if (!_authContext.IsAuthenticated || user.IsVisitor(_userManager))

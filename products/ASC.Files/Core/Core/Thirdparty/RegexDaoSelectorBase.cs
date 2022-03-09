@@ -126,10 +126,7 @@ internal abstract class RegexDaoSelectorBase<T> : IDaoSelector<T> where T : clas
 
     internal BaseProviderInfo<T> GetInfo(string objectId)
     {
-        if (objectId == null)
-        {
-            throw new ArgumentNullException(nameof(objectId));
-        }
+        ArgumentNullException.ThrowIfNull(objectId);
 
         var id = objectId;
         var match = Selector.Match(id);

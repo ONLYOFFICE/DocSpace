@@ -140,10 +140,7 @@ internal class DropboxStorage : IDisposable
 
     public Task<Stream> DownloadStreamAsync(string filePath, int offset = 0)
     {
-        if (string.IsNullOrEmpty(filePath))
-        {
-            throw new ArgumentNullException(nameof(filePath));
-        }
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(filePath);
 
         return InternalDownloadStreamAsync(filePath, offset);
     }

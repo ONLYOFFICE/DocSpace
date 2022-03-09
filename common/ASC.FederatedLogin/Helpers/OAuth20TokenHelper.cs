@@ -107,20 +107,9 @@ public class OAuth20TokenHelper
         var clientSecret = loginProvider.ClientSecret;
         var redirectUri = loginProvider.RedirectUri;
 
-        if (string.IsNullOrEmpty(authCode))
-        {
-            throw new ArgumentNullException(nameof(authCode));
-        }
-
-        if (string.IsNullOrEmpty(clientID))
-        {
-            throw new ArgumentNullException(nameof(clientID));
-        }
-
-        if (string.IsNullOrEmpty(clientSecret))
-        {
-            throw new ArgumentNullException(nameof(clientSecret));
-        }
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(authCode);
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(clientID);
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(clientSecret);
 
         var data = $"code={HttpUtility.UrlEncode(authCode)}&client_id={HttpUtility.UrlEncode(clientID)}&client_secret={HttpUtility.UrlEncode(clientSecret)}";
 

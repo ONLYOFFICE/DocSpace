@@ -163,10 +163,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
     public IAsyncEnumerable<Tag> GetTagsAsync(string[] names, TagType tagType)
     {
-        if (names == null)
-        {
-            throw new ArgumentNullException(nameof(names));
-        }
+        ArgumentNullException.ThrowIfNull(names);
 
         return InternalGetTagsAsync(names, tagType);
     }
@@ -188,10 +185,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
     public IAsyncEnumerable<Tag> GetTagsAsync(string name, TagType tagType)
     {
-        if (string.IsNullOrEmpty(name))
-        {
-            throw new ArgumentNullException(nameof(name));
-        }
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(name);
 
         return GetTagsAsync(new[] { name }, tagType);
     }

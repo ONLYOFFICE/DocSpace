@@ -136,7 +136,7 @@ namespace ASC.Files.Helpers
                 foreach (var postedFile in uploadModel.Files)
                 {
                     result.Add(await InsertFileAsync(folderId, postedFile.OpenReadStream(), postedFile.FileName, uploadModel.CreateNewIfExist, uploadModel.KeepConvertStatus));
-            }
+                }
 
                 return result;
             }
@@ -275,7 +275,7 @@ namespace ASC.Files.Helpers
 
         public Task<FileDto<T>> CreateTextFileAsync(T folderId, string title, string content)
         {
-            if (title == null) throw new ArgumentNullException(nameof(title));
+            ArgumentNullException.ThrowIfNull(title);
             //Try detect content
             var extension = ".txt";
             if (!string.IsNullOrEmpty(content))
@@ -299,7 +299,7 @@ namespace ASC.Files.Helpers
 
         public Task<FileDto<T>> CreateHtmlFileAsync(T folderId, string title, string content)
         {
-            if (title == null) throw new ArgumentNullException(nameof(title));
+            ArgumentNullException.ThrowIfNull(title);
             return CreateFileAsync(folderId, title, content, ".html");
         }
 
@@ -350,7 +350,7 @@ namespace ASC.Files.Helpers
             foreach (var e in breadCrumbs)
             {
                 yield return await GetFileEntryWrapperAsync(e);
-        }
+            }
         }
 
         public async Task<FileDto<T>> GetFileInfoAsync(T fileId, int version = -1)
@@ -395,7 +395,7 @@ namespace ASC.Files.Helpers
             foreach (var e in newItems)
             {
                 result.Add(await GetFileEntryWrapperAsync(e));
-        }
+            }
 
             return result;
         }
@@ -418,7 +418,7 @@ namespace ASC.Files.Helpers
             foreach (var e in FileStorageService.DeleteFile("delete", fileId, false, deleteAfter, immediately))
             {
                 result.Add(await FileOperationWraperHelper.GetAsync(e));
-        }
+            }
 
             return result;
         }
@@ -463,7 +463,7 @@ namespace ASC.Files.Helpers
                     }
                 }
                 yield return o;
-        }
+            }
         }
 
         public Task<string> CheckFillFormDraftAsync(T fileId, int version, string doc, bool editPossible, bool view)
@@ -478,7 +478,7 @@ namespace ASC.Files.Helpers
             foreach (var e in FileStorageService.DeleteFolder("delete", folderId, false, deleteAfter, immediately))
             {
                 result.Add(await FileOperationWraperHelper.GetAsync(e));
-        }
+            }
 
             return result;
         }
@@ -504,7 +504,7 @@ namespace ASC.Files.Helpers
             foreach (var e in entries)
             {
                 yield return await GetFileEntryWrapperAsync(e);
-        }
+            }
         }
 
         public async Task<IEnumerable<FileOperationDto>> MoveBatchItemsAsync(BatchRequestDto batchModel)
@@ -514,7 +514,7 @@ namespace ASC.Files.Helpers
             foreach (var e in FileStorageService.MoveOrCopyItems(batchModel.FolderIds.ToList(), batchModel.FileIds.ToList(), batchModel.DestFolderId, batchModel.ConflictResolveType, false, batchModel.DeleteAfter))
             {
                 result.Add(await FileOperationWraperHelper.GetAsync(e));
-        }
+            }
 
             return result;
         }
@@ -526,7 +526,7 @@ namespace ASC.Files.Helpers
             foreach (var e in FileStorageService.MoveOrCopyItems(batchModel.FolderIds.ToList(), batchModel.FileIds.ToList(), batchModel.DestFolderId, batchModel.ConflictResolveType, true, batchModel.DeleteAfter))
             {
                 result.Add(await FileOperationWraperHelper.GetAsync(e));
-        }
+            }
 
             return result;
         }
@@ -538,7 +538,7 @@ namespace ASC.Files.Helpers
             foreach (var e in FileStorageService.MarkAsRead(model.FolderIds.ToList(), model.FileIds.ToList()))
             {
                 result.Add(await FileOperationWraperHelper.GetAsync(e));
-        }
+            }
 
             return result;
         }
@@ -550,7 +550,7 @@ namespace ASC.Files.Helpers
             foreach (var e in FileStorageService.TerminateTasks())
             {
                 result.Add(await FileOperationWraperHelper.GetAsync(e));
-        }
+            }
 
             return result;
         }
@@ -562,7 +562,7 @@ namespace ASC.Files.Helpers
             foreach (var e in FileStorageService.GetTasksStatuses())
             {
                 result.Add(await FileOperationWraperHelper.GetAsync(e));
-        }
+            }
 
             return result;
         }
@@ -592,7 +592,7 @@ namespace ASC.Files.Helpers
             foreach (var e in FileStorageService.BulkDownload(folders, files))
             {
                 result.Add(await FileOperationWraperHelper.GetAsync(e));
-        }
+            }
 
             return result;
         }
@@ -605,7 +605,7 @@ namespace ASC.Files.Helpers
             foreach (var e in emptyTrash)
             {
                 result.Add(await FileOperationWraperHelper.GetAsync(e));
-        }
+            }
 
             return result;
         }
@@ -618,7 +618,7 @@ namespace ASC.Files.Helpers
             foreach (var e in files)
             {
                 result.Add(await FileWrapperHelper.GetAsync(e));
-        }
+            }
 
             return result;
         }
@@ -633,7 +633,7 @@ namespace ASC.Files.Helpers
             foreach (var e in history)
             {
                 result.Add(await FileWrapperHelper.GetAsync(e));
-        }
+            }
 
             return result;
         }
@@ -687,7 +687,7 @@ namespace ASC.Files.Helpers
             foreach (var folder in folders)
             {
                 yield return await GetFileEntryWrapperAsync(folder);
-        }
+            }
         }
 
         public async Task<IEnumerable<FileShareDto>> GetSecurityInfoAsync(IEnumerable<T> fileIds, IEnumerable<T> folderIds)

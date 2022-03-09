@@ -58,10 +58,7 @@ public class RecipientProviderImpl : IRecipientProvider
 
     public virtual IRecipient[] GetGroupEntries(IRecipientsGroup group)
     {
-        if (group == null)
-        {
-            throw new ArgumentNullException(nameof(group));
-        }
+        ArgumentNullException.ThrowIfNull(group);
 
         var result = new List<IRecipient>();
         if (TryParseGuid(group.ID, out var groupID))
@@ -79,10 +76,7 @@ public class RecipientProviderImpl : IRecipientProvider
 
     public virtual IRecipientsGroup[] GetGroups(IRecipient recipient)
     {
-        if (recipient == null)
-        {
-            throw new ArgumentNullException(nameof(recipient));
-        }
+        ArgumentNullException.ThrowIfNull(recipient);
 
         var result = new List<IRecipientsGroup>();
         if (TryParseGuid(recipient.ID, out var recID))
@@ -110,10 +104,7 @@ public class RecipientProviderImpl : IRecipientProvider
 
     public virtual string[] GetRecipientAddresses(IDirectRecipient recipient, string senderName)
     {
-        if (recipient == null)
-        {
-            throw new ArgumentNullException(nameof(recipient));
-        }
+        ArgumentNullException.ThrowIfNull(recipient);
 
         if (TryParseGuid(recipient.ID, out var userID))
         {

@@ -41,10 +41,7 @@ public class UserFormatter : IComparer<UserInfo>
 
     public string GetUserName(UserInfo userInfo, DisplayUserNameFormat format)
     {
-        if (userInfo == null)
-        {
-            throw new ArgumentNullException(nameof(userInfo));
-        }
+        ArgumentNullException.ThrowIfNull(userInfo);
 
         return string.Format(GetUserDisplayFormat(format), userInfo.FirstName, userInfo.LastName);
     }

@@ -55,25 +55,10 @@ public class CrossModuleTransferUtility
 
     public Task CopyFileAsync(string srcDomain, string srcPath, string destDomain, string destPath)
     {
-        if (srcDomain == null)
-        {
-            throw new ArgumentNullException(nameof(srcDomain));
-        }
-
-        if (srcPath == null)
-        {
-            throw new ArgumentNullException(nameof(srcPath));
-        }
-
-        if (destDomain == null)
-        {
-            throw new ArgumentNullException(nameof(destDomain));
-        }
-
-        if (destPath == null)
-        {
-            throw new ArgumentNullException(nameof(destPath));
-        }
+        ArgumentNullException.ThrowIfNull(srcDomain);
+        ArgumentNullException.ThrowIfNull(srcPath);
+        ArgumentNullException.ThrowIfNull(destDomain);
+        ArgumentNullException.ThrowIfNull(destPath);
 
         return InternalCopyFileAsync(srcDomain, srcPath, destDomain, destPath);
     }

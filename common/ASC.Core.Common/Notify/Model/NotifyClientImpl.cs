@@ -98,10 +98,7 @@ class NotifyClientImpl : INotifyClient
 
     public void SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, string[] senderNames, bool checkSubsciption, params ITagValue[] args)
     {
-        if (recipients == null)
-        {
-            throw new ArgumentNullException(nameof(recipients));
-        }
+        ArgumentNullException.ThrowIfNull(recipients);
 
         BeginSingleRecipientEvent("__syspreventduplicateinterceptor");
 
@@ -120,14 +117,8 @@ class NotifyClientImpl : INotifyClient
 
     private NotifyRequest CreateRequest(INotifyAction action, string objectID, IRecipient recipient, ITagValue[] args, string[] senders, bool checkSubsciption)
     {
-        if (action == null)
-        {
-            throw new ArgumentNullException(nameof(action));
-        }
-        if (recipient == null)
-        {
-            throw new ArgumentNullException(nameof(recipient));
-        }
+        ArgumentNullException.ThrowIfNull(action);
+        ArgumentNullException.ThrowIfNull(recipient);
 
         var request = new NotifyRequest(_notifySource, action, objectID, recipient)
         {

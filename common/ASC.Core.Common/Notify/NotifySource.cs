@@ -41,10 +41,7 @@ public abstract class NotifySource : INotifySource
 
     protected NotifySource(string id, UserManager userManager, IRecipientProvider recipientsProvider, SubscriptionManager subscriptionManager)
     {
-        if (string.IsNullOrEmpty(id))
-        {
-            throw new ArgumentNullException(nameof(id));
-        }
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(id);
 
         Id = id;
         _userManager = userManager;
