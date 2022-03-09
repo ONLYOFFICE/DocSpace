@@ -248,7 +248,6 @@ const Confirm = (props) => {
   }, []);
 
   const onSubmit = () => {
-    console.log("onSubmit");
     const { defaultPage, linkData, hashSettings } = props;
     const isVisitor = parseInt(linkData.emplType) === 2;
 
@@ -492,7 +491,6 @@ const Confirm = (props) => {
   };
 
   const onGreetingSubmit = () => {
-    console.log("onGreetingSubmit");
     setIsGreetingMode(false);
     focusInput();
   };
