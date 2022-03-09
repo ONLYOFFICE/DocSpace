@@ -8,7 +8,6 @@ import { withRouter } from "react-router-dom";
 import { isTablet } from "react-device-detect";
 
 import withFileActions from "../../../../../HOCs/withFileActions";
-import withContextOptions from "../../../../../HOCs/withContextOptions";
 import withQuickButtons from "../../../../../HOCs/withQuickButtons";
 import ItemIcon from "../../../../../components/ItemIcon";
 import marginStyles from "./CommonStyles";
@@ -181,7 +180,6 @@ const SimpleFilesRow = (props) => {
     quickButtonsComponent,
     displayShareButton,
     isPrivacy,
-    contextOptionsProps,
     checkedProps,
     onFilesClick,
     onMouseClick,
@@ -190,6 +188,8 @@ const SimpleFilesRow = (props) => {
     inProgress,
     isAdmin,
     showHotkeyBorder,
+    getModel,
+    t,
   } = props;
 
   const withAccess = isAdmin || item.access === 0;
@@ -198,6 +198,8 @@ const SimpleFilesRow = (props) => {
   const element = (
     <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
   );
+
+  const contextMenuData = { getModel, t, item };
 
   return (
     <StyledWrapper
@@ -226,7 +228,7 @@ const SimpleFilesRow = (props) => {
           onClick={onMouseClick}
           onDoubleClick={onFilesClick}
           checked={checkedProps}
-          {...contextOptionsProps}
+          contextOptions={item.contextOptions}
           contextButtonSpacerWidth={displayShareButton}
           dragging={dragging && isDragging}
           isActive={isActive}
@@ -234,6 +236,7 @@ const SimpleFilesRow = (props) => {
           isThirdPartyFolder={item.isThirdPartyFolder}
           className="files-row"
           withAccess={withAccess}
+          contextMenuData={contextMenuData}
           showHotkeyBorder={showHotkeyBorder}
         >
           <FilesRowContent
@@ -249,7 +252,5 @@ const SimpleFilesRow = (props) => {
 };
 
 export default withTranslation(["Home", "Translations"])(
-  withFileActions(
-    withRouter(withContextOptions(withQuickButtons(SimpleFilesRow)))
-  )
+  withFileActions(withRouter(withQuickButtons(SimpleFilesRow)))
 );

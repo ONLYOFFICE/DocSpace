@@ -13,6 +13,7 @@ import PrimaryProgressDataStore from "./PrimaryProgressDataStore";
 import VersionHistoryStore from "./VersionHistoryStore";
 import DialogsStore from "./DialogsStore";
 import selectedFilesStore from "./SelectedFilesStore";
+import ContextOptionsStore from "./ContextOptionsStore";
 import HotkeyStore from "./HotkeyStore";
 import store from "studio/store";
 
@@ -69,6 +70,18 @@ const filesActionsStore = new FilesActionsStore(
 
 const versionHistoryStore = new VersionHistoryStore(filesStore);
 
+const contextOptionsStore = new ContextOptionsStore(
+  store.auth,
+  dialogsStore,
+  filesActionsStore,
+  filesStore,
+  mediaViewerDataStore,
+  treeFoldersStore,
+  uploadDataStore,
+  versionHistoryStore,
+  settingsStore
+);
+
 const hotkeyStore = new HotkeyStore(
   filesStore,
   dialogsStore,
@@ -90,6 +103,7 @@ const stores = {
   selectedFolderStore,
   filesActionsStore,
   selectedFilesStore,
+  contextOptionsStore,
   hotkeyStore,
 };
 

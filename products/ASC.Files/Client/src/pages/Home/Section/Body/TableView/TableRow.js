@@ -4,7 +4,6 @@ import withContent from "../../../../../HOCs/withContent";
 import withBadges from "../../../../../HOCs/withBadges";
 import withQuickButtons from "../../../../../HOCs/withQuickButtons";
 import withFileActions from "../../../../../HOCs/withFileActions";
-import withContextOptions from "../../../../../HOCs/withContextOptions";
 import ItemIcon from "../../../../../components/ItemIcon";
 import { withTranslation } from "react-i18next";
 import TableRow from "@appserver/components/table-container/TableRow";
@@ -234,7 +233,6 @@ const StyledQuickButtonsContainer = styled.div`
 const FilesTableRow = (props) => {
   const {
     t,
-    contextOptionsProps,
     fileContextClick,
     item,
     onContentFileSelect,
@@ -255,8 +253,11 @@ const FilesTableRow = (props) => {
     index,
     setFirsElemChecked,
     quickButtonsComponent,
+    getModel,
     showHotkeyBorder,
   } = props;
+
+  const contextMenuData = { getModel, t, item };
 
   const element = (
     <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
@@ -319,7 +320,6 @@ const FilesTableRow = (props) => {
         key={item.id}
         fileContextClick={fileContextClick}
         onClick={onMouseClick}
-        {...contextOptionsProps}
         isActive={isActive}
         inProgress={inProgress}
         isFolder={item.isFolder}
@@ -327,6 +327,8 @@ const FilesTableRow = (props) => {
         isThirdPartyFolder={item.isThirdPartyFolder}
         onDoubleClick={onFilesClick}
         checked={checkedProps}
+        contextOptions={item.contextOptions}
+        contextMenuData={contextMenuData}
         showHotkeyBorder={showHotkeyBorder}
         title={
           item.isFolder
@@ -379,10 +381,6 @@ const FilesTableRow = (props) => {
 
 export default withTranslation(["Home", "Common", "VersionBadge"])(
   withFileActions(
-    withRouter(
-      withContextOptions(
-        withContent(withQuickButtons(withBadges(FilesTableRow)))
-      )
-    )
+    withRouter(withContent(withQuickButtons(withBadges(FilesTableRow))))
   )
 );

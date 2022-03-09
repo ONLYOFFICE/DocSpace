@@ -347,8 +347,11 @@ class Tile extends React.PureComponent {
       contentElement,
       title,
       showHotkeyBorder,
+      getModel,
+      t,
     } = this.props;
     const { isFolder, id, fileExst } = item;
+    const contextMenuData = { getModel, t, item };
 
     const renderElement = Object.prototype.hasOwnProperty.call(
       this.props,
@@ -361,7 +364,7 @@ class Tile extends React.PureComponent {
     );
 
     const renderContext =
-      Object.prototype.hasOwnProperty.call(this.props, "contextOptions") &&
+      Object.prototype.hasOwnProperty.call(item, "contextOptions") &&
       contextOptions.length > 0;
 
     const getOptions = () => {
@@ -444,7 +447,7 @@ class Tile extends React.PureComponent {
               ) : (
                 <div className="expandButton" />
               )}
-              <ContextMenu model={contextOptions} ref={this.cm} />
+              <ContextMenu contextMenuData={contextMenuData} ref={this.cm} />
             </StyledOptionButton>
           </>
         ) : (
@@ -507,7 +510,7 @@ class Tile extends React.PureComponent {
                 ) : (
                   <div className="expandButton" />
                 )}
-                <ContextMenu model={contextOptions} ref={this.cm} />
+                <ContextMenu contextMenuData={contextMenuData} ref={this.cm} />
               </StyledOptionButton>
             </StyledFileTileBottom>
           </>
@@ -540,6 +543,7 @@ Tile.propTypes = {
 
 Tile.defaultProps = {
   contextButtonSpacerWidth: "32px",
+  item: {},
 };
 
 export default Tile;
