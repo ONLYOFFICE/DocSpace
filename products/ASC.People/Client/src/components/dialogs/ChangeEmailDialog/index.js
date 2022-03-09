@@ -91,7 +91,7 @@ class ChangeEmailDialogComponent extends React.Component {
           case errorKeys.IncorrectDomain:
             return t("Common:IncorrectDomain");
           case errorKeys.DomainIpAddress:
-            return t("DomainIpAddress");
+            return t("Common:DomainIpAddress");
           case errorKeys.PunycodeDomain:
             return t("Common:PunycodeDomain");
           case errorKeys.PunycodeLocalPart:
@@ -107,7 +107,7 @@ class ChangeEmailDialogComponent extends React.Component {
           case errorKeys.ManyEmails:
             return t("Common:ManyEmails");
           case errorKeys.EmptyEmail:
-            return t("EmptyEmail");
+            return t("Common:EmptyEmail");
           default:
             throw new Error("Unknown translation key");
         }
