@@ -2,7 +2,7 @@
 
 public class ProtobufSerializer : IIntegrationEventSerializer
 {
-    private SynchronizedCollection<string> _processedProtoTypes;
+    private readonly SynchronizedCollection<string> _processedProtoTypes;
     private readonly int _baseFieldNumber;
     
     public ProtobufSerializer()
@@ -14,8 +14,7 @@ public class ProtobufSerializer : IIntegrationEventSerializer
     /// <inheritdoc/>
     public byte[] Serialize<T>(T? item)
     {
-        if (item == null)
-            return Array.Empty<byte>();
+        if (item == null) return Array.Empty<byte>();
         
         ProcessProtoType(item.GetType());
 
@@ -29,7 +28,7 @@ public class ProtobufSerializer : IIntegrationEventSerializer
     /// <inheritdoc/>
     public T Deserialize<T>(byte[] serializedObject)
     {
-      //  ProcessProtoType(returnType);
+        ProcessProtoType(typeof(T));
 
         using var ms = new MemoryStream(serializedObject);
 
@@ -58,12 +57,7 @@ public class ProtobufSerializer : IIntegrationEventSerializer
         
         if (!baseType.GetSubtypes().Any(s => s.DerivedType == itemType))
         {
-            baseType.AddSubType(_baseFieldNumber, protoType);
-
-            //foreach (var field in baseType.GetFields())
-            //{
-            //    myType.Add(field.FieldNumber + _baseTypeIncrement, field.Name);
-            //}
+            baseType.AddSubType(_baseFieldNumber, protoType);                     
         }
 
         _processedProtoTypes.Add(protoType.FullName);
