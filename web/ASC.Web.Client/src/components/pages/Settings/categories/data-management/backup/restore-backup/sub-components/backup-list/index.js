@@ -18,6 +18,7 @@ import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../../../../../../../../../package.json";
 import toastr from "@appserver/components/toast/toastr";
 import Loaders from "@appserver/common/components/Loaders";
+import { inject, observer } from "mobx-react";
 
 class BackupListModalDialog extends React.Component {
   constructor(props) {
@@ -85,7 +86,7 @@ class BackupListModalDialog extends React.Component {
   };
   onRestorePortal = () => {
     const { selectedFileId } = this.state;
-    const { isNotify, history } = this.props;
+    const { isNotify, history, socketHelper } = this.props;
 
     if (!selectedFileId) return;
     this.setState({ isLoading: true }, function () {
@@ -99,6 +100,11 @@ class BackupListModalDialog extends React.Component {
       ];
 
       startRestore(backupId, storageType, storageParams, isNotify)
+        .then(() => {
+          socketHelper.emit({
+            command: "restore-backup",
+          });
+        })
         .then(() =>
           history.push(
             combineUrl(
@@ -204,6 +210,15 @@ BackupListModalDialog.propTypes = {
   isVisibleDialog: PropTypes.bool.isRequired,
 };
 
-export default withTranslation(["Settings", "Common", "Translations"])(
-  BackupListModalDialog
+export default inject(({ auth }) => {
+  const { settingsStore } = auth;
+  const { socketHelper } = settingsStore;
+
+  return {
+    socketHelper,
+  };
+})(
+  withTranslation(["Settings", "Common", "Translations"])(
+    observer(BackupListModalDialog)
+  )
 );
