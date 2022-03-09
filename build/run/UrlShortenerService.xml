@@ -4,7 +4,7 @@
   <startmode>manual</startmode>
   <executable>node</executable>
   <arguments>../../common/ASC.UrlShortener/index.js</arguments>
-  <logpath>../../../Logs</logpath>
+  <log mode="none"/>
   <delayedAutoStart>true</delayedAutoStart>
   <onfailure action="restart" delay="5 sec" />
 </service>
