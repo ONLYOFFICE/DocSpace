@@ -142,6 +142,8 @@ export default function withFileActions(WrappedFileItem) {
         personal,
         canWebEdit,
         canViewedDocs,
+        getModel,
+        t,
       } = this.props;
       const { fileExst, access, id } = item;
 
@@ -175,6 +177,7 @@ export default function withFileActions(WrappedFileItem) {
           : true;
 
       const checkedProps = isEdit || id <= 0 ? false : checked;
+      const contextMenuData = { getModel, t, item };
 
       return (
         <WrappedFileItem
@@ -195,6 +198,7 @@ export default function withFileActions(WrappedFileItem) {
           checkedProps={checkedProps}
           dragging={dragging}
           isEdit={isEdit}
+          contextMenuData={contextMenuData}
           {...this.props}
         />
       );

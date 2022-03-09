@@ -195,9 +195,7 @@ const SimpleFilesRow = (props) => {
     isActive,
     inProgress,
     isAdmin,
-    showHotkeyBorder,
-    getModel,
-    t,
+    contextMenuData,
   } = props;
 
   const withAccess = isAdmin || item.access === 0;
@@ -206,8 +204,6 @@ const SimpleFilesRow = (props) => {
   const element = (
     <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
   );
-
-  const contextMenuData = { getModel, t, item };
 
   return (
     <StyledWrapper

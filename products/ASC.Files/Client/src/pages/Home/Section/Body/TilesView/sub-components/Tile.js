@@ -353,12 +353,9 @@ class Tile extends React.PureComponent {
       isEdit,
       contentElement,
       title,
-      showHotkeyBorder,
-      getModel,
-      t,
+      contextMenuData,
     } = this.props;
     const { isFolder, id, fileExst } = item;
-    const contextMenuData = { getModel, t, item };
 
     const renderElement = Object.prototype.hasOwnProperty.call(
       this.props,
