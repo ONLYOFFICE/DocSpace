@@ -550,161 +550,130 @@ const Confirm = (props) => {
           </div>
         )}
 
-        {DesktopView() || !isGreetingMode ? (
-          <form className="auth-form-container">
-            <FieldContainer
-              isVertical={true}
-              labelVisible={false}
+        <form className="auth-form-container">
+          <FieldContainer
+            isVertical={true}
+            labelVisible={false}
+            hasError={!emailValid}
+            errorMessage={
+              emailErrorText
+                ? t(`Common:${emailErrorText}`)
+                : t("Common:RequiredField")
+            }
+          >
+            <EmailInput
+              id="login"
+              name="login"
+              type="email"
               hasError={!emailValid}
-              errorMessage={
-                emailErrorText
-                  ? t(`Common:${emailErrorText}`)
-                  : t("Common:RequiredField")
-              }
-            >
-              <EmailInput
-                id="login"
-                name="login"
-                type="email"
-                hasError={!emailValid}
-                value={email}
-                placeholder={t("Common:Email")}
-                size="large"
-                scale={true}
-                isAutoFocussed={true}
-                tabIndex={1}
-                isDisabled={isLoading}
-                autoComplete="username"
-                onChange={onChangeEmail}
-                onKeyDown={onKeyPress}
-                emailSettings={{
-                  allowDomainIp: false,
-                  allowDomainPunycode: false,
-                  allowLocalDomainName: false,
-                  allowLocalPartPunycode: false,
-                  allowName: false,
-                  allowSpaces: false,
-                  allowStrictLocalPart: true,
-                }}
-                onValidateInput={onValidateEmail}
-                forwardedRef={inputRef}
-              />
-            </FieldContainer>
+              value={email}
+              placeholder={t("Common:Email")}
+              size="large"
+              scale={true}
+              isAutoFocussed={true}
+              tabIndex={1}
+              isDisabled={isLoading}
+              autoComplete="username"
+              onChange={onChangeEmail}
+              onValidateInput={onValidateEmail}
+              forwardedRef={inputRef}
+            />
+          </FieldContainer>
 
-            <FieldContainer
-              isVertical={true}
-              labelVisible={false}
+          <FieldContainer
+            isVertical={true}
+            labelVisible={false}
+            hasError={!fnameValid}
+            errorMessage={errorText ? errorText : t("Common:RequiredField")}
+          >
+            <TextInput
+              id="first-name"
+              name="first-name"
+              type="text"
               hasError={!fnameValid}
-              errorMessage={errorText ? errorText : t("Common:RequiredField")}
-            >
-              <TextInput
-                id="first-name"
-                name="first-name"
-                type="text"
-                hasError={!fnameValid}
-                value={fname}
-                placeholder={t("FirstName")}
-                size="large"
-                scale={true}
-                tabIndex={1}
-                isDisabled={isLoading}
-                onChange={onChangeFname}
-                onKeyDown={onKeyPress}
-              />
-            </FieldContainer>
+              value={fname}
+              placeholder={t("FirstName")}
+              size="large"
+              scale={true}
+              tabIndex={1}
+              isDisabled={isLoading}
+              onChange={onChangeFname}
+              onKeyDown={onKeyPress}
+            />
+          </FieldContainer>
 
-            <FieldContainer
-              isVertical={true}
-              labelVisible={false}
+          <FieldContainer
+            isVertical={true}
+            labelVisible={false}
+            hasError={!snameValid}
+            errorMessage={errorText ? errorText : t("Common:RequiredField")}
+          >
+            <TextInput
+              id="last-name"
+              name="last-name"
+              type="text"
               hasError={!snameValid}
-              errorMessage={errorText ? errorText : t("Common:RequiredField")}
-            >
-              <TextInput
-                id="last-name"
-                name="last-name"
-                type="text"
-                hasError={!snameValid}
-                value={sname}
-                placeholder={t("Common:LastName")}
-                size="large"
-                scale={true}
-                tabIndex={1}
-                isDisabled={isLoading}
-                onChange={onChangeSname}
-                onKeyDown={onKeyPress}
-              />
-            </FieldContainer>
+              value={sname}
+              placeholder={t("Common:LastName")}
+              size="large"
+              scale={true}
+              tabIndex={1}
+              isDisabled={isLoading}
+              onChange={onChangeSname}
+              onKeyDown={onKeyPress}
+            />
+          </FieldContainer>
 
-            <FieldContainer
-              isVertical={true}
-              labelVisible={false}
+          <FieldContainer
+            isVertical={true}
+            labelVisible={false}
+            hasError={!passwordValid}
+            errorMessage={errorText ? "" : t("Common:RequiredField")}
+          >
+            <PasswordInput
+              simpleView={false}
+              hideNewPasswordButton
+              showCopyLink={false}
+              passwordSettings={settings}
+              id="password"
+              inputName="password"
+              placeholder={t("Common:Password")}
+              type="password"
               hasError={!passwordValid}
-              errorMessage={errorText ? "" : t("Common:RequiredField")}
-            >
-              <PasswordInput
-                simpleView={false}
-                hideNewPasswordButton
-                showCopyLink={false}
-                passwordSettings={settings}
-                id="password"
-                inputName="password"
-                placeholder={t("Common:Password")}
-                type="password"
-                hasError={!passwordValid}
-                inputValue={password}
-                size="large"
-                scale={true}
-                tabIndex={1}
-                isDisabled={isLoading}
-                autoComplete="current-password"
-                onChange={onChangePassword}
-                onKeyDown={onKeyPress}
-                onValidateInput={onValidatePassword}
-                tooltipPasswordTitle={`${t("Common:PasswordLimitLength")}:`}
-                tooltipPasswordLength={`${t("Common:PasswordLimitLength", {
-                  fromNumber: settings ? settings.minLength : 8,
-                  toNumber: 30,
-                })};`}
-              />
-            </FieldContainer>
+              inputValue={password}
+              size="large"
+              scale={true}
+              tabIndex={1}
+              isDisabled={isLoading}
+              autoComplete="current-password"
+              onChange={onChangePassword}
+              onKeyDown={onKeyPress}
+              onValidateInput={onValidatePassword}
+              tooltipPasswordTitle={`${t("Common:PasswordLimitLength")}:`}
+              tooltipPasswordLength={`${t("Common:PasswordLimitLength", {
+                fromNumber: settings ? settings.minLength : 8,
+                toNumber: 30,
+              })};`}
+            />
+          </FieldContainer>
 
-            <Button
-              id="submit"
-              className="login-button"
-              primary
-              size="large"
-              scale={true}
-              label={
-                isLoading
-                  ? t("Common:LoadingProcessing")
-                  : t("LoginRegistryButton")
-              }
-              tabIndex={1}
-              isDisabled={isLoading}
-              isLoading={isLoading}
-              onClick={onSubmit}
-            />
-          </form>
-        ) : (
-          <form className="auth-form-container">
-            <Button
-              id="submit"
-              className="login-button"
-              primary
-              size="large"
-              scale={true}
-              label={
-                isLoading
-                  ? t("Common:LoadingProcessing")
-                  : t("LoginRegistryButton")
-              }
-              tabIndex={1}
-              isDisabled={isLoading}
-              isLoading={isLoading}
-              onClick={onGreetingSubmit}
-            />
-          </form>
-        )}
+          <Button
+            id="submit"
+            className="login-button"
+            primary
+            size="large"
+            scale={true}
+            label={
+              isLoading
+                ? t("Common:LoadingProcessing")
+                : t("LoginRegistryButton")
+            }
+            tabIndex={1}
+            isDisabled={isLoading}
+            isLoading={isLoading}
+            onClick={onSubmit}
+          />
+        </form>
 
         <MoreLoginModal
           t={t}
