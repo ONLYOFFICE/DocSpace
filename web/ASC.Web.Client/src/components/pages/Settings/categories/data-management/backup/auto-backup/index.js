@@ -48,7 +48,7 @@ class AutomaticBackup extends React.PureComponent {
       isEnable: false,
       isLoadingData: false,
       isInitialLoading: !isMobileOnly ? false : true,
-      isChangedInStorage: false,
+      isAdditionalChanged: false,
       isReset: false,
       isSuccessSave: false,
     };
@@ -135,18 +135,18 @@ class AutomaticBackup extends React.PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { isChangedInStorage, isSuccessSave, isReset } = this.state;
+    const { isAdditionalChanged, isSuccessSave, isReset } = this.state;
 
     const { isChanged } = this.props;
     if (
-      (isChangedInStorage !== prevState.isChangedInStorage ||
+      (isAdditionalChanged !== prevState.isAdditionalChanged ||
         isChanged !== prevProps.isChanged) &&
       isSuccessSave
     ) {
       this.setState({ isSuccessSave: false });
     }
     if (
-      (isChangedInStorage !== prevState.isChangedInStorage ||
+      (isAdditionalChanged !== prevState.isAdditionalChanged ||
         isChanged !== prevProps.isChanged) &&
       isReset
     ) {
@@ -216,11 +216,11 @@ class AutomaticBackup extends React.PureComponent {
 
     if (backupSchedule) {
       this.setState({
-        isChangedInStorage: !isEnable ? false : true,
+        isAdditionalChanged: !isEnable ? false : true,
       });
     } else {
       this.setState({
-        isChangedInStorage: isEnable ? true : false,
+        isAdditionalChanged: isEnable ? true : false,
       });
     }
     this.setState({
@@ -248,7 +248,7 @@ class AutomaticBackup extends React.PureComponent {
     this.setState({
       ...(isError && { isError: false }),
       ...(isErrorsFields && { isErrorsFields: false }),
-      isChangedInStorage: false,
+      isAdditionalChanged: false,
       isReset: true,
     });
   };
@@ -421,7 +421,7 @@ class AutomaticBackup extends React.PureComponent {
       this.setState({
         isLoadingData: false,
         isSuccessSave: true,
-        isChangedInStorage: false,
+        isAdditionalChanged: false,
       });
     } catch (e) {
       toastr.error(e);
@@ -443,14 +443,14 @@ class AutomaticBackup extends React.PureComponent {
           this.setState({
             isLoadingData: false,
 
-            isChangedInStorage: false,
+            isAdditionalChanged: false,
           });
         })
         .catch((error) => {
           toastr.error(error);
           this.setState({
             isLoadingData: false,
-            isChangedInStorage: false,
+            isAdditionalChanged: false,
           });
         });
     });
@@ -463,9 +463,9 @@ class AutomaticBackup extends React.PureComponent {
     );
   };
 
-  onSetIsChangedInStorage = (changed) => {
+  onSetIsChanged = (changed) => {
     this.setState({
-      isChangedInStorage: changed,
+      isAdditionalChanged: changed,
     });
   };
   onSetFormSettings = (name, value, initialObj) => {
@@ -506,7 +506,7 @@ class AutomaticBackup extends React.PureComponent {
       isError,
       isSuccessSave,
       isErrorsFields,
-      isChangedInStorage,
+      isAdditionalChanged,
     } = this.state;
 
     const isDisabledThirdPartyList = !!commonThirdPartyList;
@@ -603,7 +603,7 @@ class AutomaticBackup extends React.PureComponent {
               {isCheckedThirdPartyStorage && (
                 <ThirdPartyStorageModule
                   {...commonProps}
-                  onSetIsChanged={this.onSetIsChangedInStorage}
+                  onSetIsChanged={this.onSetIsChanged}
                   onSetFormSettings={this.onSetFormSettings}
                   onSetRequiredFormNames={this.onSetRequiredFormNames}
                   isErrorsFields={isErrorsFields}
@@ -613,7 +613,7 @@ class AutomaticBackup extends React.PureComponent {
           </div>
         )}
 
-        {(isChangedInStorage || isChanged) && (
+        {(isAdditionalChanged || isChanged) && (
           <div className="auto-backup_buttons">
             <Button
               label={t("Common:SaveButton")}
