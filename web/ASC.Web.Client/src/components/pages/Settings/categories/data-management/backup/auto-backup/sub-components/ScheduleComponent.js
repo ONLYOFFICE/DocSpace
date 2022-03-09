@@ -124,7 +124,6 @@ const ScheduleComponent = ({
 ScheduleComponent.defaultProps = {
   isDisableOptions: false,
 };
-//export default ScheduleComponent;
 
 export default inject(({ backup }) => {
   const {
@@ -141,14 +140,6 @@ export default inject(({ backup }) => {
     selectedPeriodNumber,
   } = backup;
 
-  // console.log(
-  //   selectedPeriodLabel,
-  //   selectedWeekdayLabel,
-  //   selectedHour,
-  //   selectedMonthDay,
-  //   selectedMaxCopiesNumber,
-  //   selectedPeriodNumber
-  // );
   return {
     selectedPeriodLabel,
     selectedWeekdayLabel,

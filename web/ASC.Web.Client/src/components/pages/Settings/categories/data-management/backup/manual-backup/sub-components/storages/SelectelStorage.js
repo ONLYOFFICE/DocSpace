@@ -76,7 +76,6 @@ class SelectelStorage extends React.Component {
           {!isMaxProgress && (
             <Button
               label={t("Copying")}
-              onClick={() => console.log("click")}
               isDisabled={true}
               size="medium"
               style={{ marginLeft: "8px" }}

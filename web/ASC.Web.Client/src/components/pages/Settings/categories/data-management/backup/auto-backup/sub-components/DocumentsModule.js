@@ -41,7 +41,6 @@ class DocumentsModule extends React.PureComponent {
       ...rest
     } = this.props;
 
-    console.log("render documents");
     return (
       <>
         <div className="auto-backup_folder-input">

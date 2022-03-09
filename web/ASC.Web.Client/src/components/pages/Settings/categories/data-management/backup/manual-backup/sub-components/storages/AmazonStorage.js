@@ -77,16 +77,13 @@ class AmazonStorage extends React.Component {
             primary
             isDisabled={!isMaxProgress || this.isDisabled}
             size="medium"
-            tabIndex={10}
           />
           {!isMaxProgress && (
             <Button
               label={t("Copying")}
-              onClick={() => console.log("click")}
               isDisabled={true}
               size="medium"
               style={{ marginLeft: "8px" }}
-              tabIndex={11}
             />
           )}
         </div>

@@ -288,7 +288,6 @@ class AutomaticBackup extends React.PureComponent {
             firstError = true;
           }
           errors[key] = !field.trim();
-          console.log("errors[key]", errors[key]);
         }
       }
 
@@ -479,7 +478,6 @@ class AutomaticBackup extends React.PureComponent {
         ...initialObj,
       };
     }
-    console.log("this.formSettings", this.formSettings);
   };
 
   onSetRequiredFormNames = (namesArray) => {
@@ -529,7 +527,6 @@ class AutomaticBackup extends React.PureComponent {
       className: "backup_radio-button",
       onClick: this.onClickShowStorage,
     };
-    console.log("render auto ", this.state);
 
     return isInitialLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
