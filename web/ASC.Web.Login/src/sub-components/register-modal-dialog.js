@@ -9,7 +9,6 @@ import FieldContainer from "@appserver/components/field-container";
 
 import ModalDialogContainer from "./modal-dialog-container";
 import { TenantTrustedDomainsType } from "@appserver/common/constants";
-import { isMobile } from "react-device-detect";
 
 const RegisterModalDialog = ({
   visible,
@@ -44,12 +43,9 @@ const RegisterModalDialog = ({
     );
   };
 
-  const dialogWidth = isMobile ? "90%" : "520px";
-
   return (
     <ModalDialogContainer
       displayType="modal"
-      width={dialogWidth}
       visible={visible}
       modalBodyPadding="12px 0 0 0"
       asideBodyPadding="16px 0 0 0"

@@ -10,7 +10,6 @@ import toastr from "@appserver/components/toast/toastr";
 import ModalDialogContainer from "./modal-dialog-container";
 import { sendInstructionsToChangePassword } from "@appserver/common/api/people";
 import { useTranslation } from "react-i18next";
-import { isMobile } from "react-device-detect";
 
 const ForgotPasswordModalDialog = (props) => {
   const [email, setEmail] = useState(props.email);
@@ -51,12 +50,9 @@ const ForgotPasswordModalDialog = (props) => {
     }
   };
 
-  const dialogWidth = isMobile ? "90%" : "400px";
-
   return (
     <ModalDialogContainer
       displayType="modal"
-      width={dialogWidth}
       visible={visible}
       modalBodyPadding="12px 0 0 0"
       asideBodyPadding="16px 0 0 0"
