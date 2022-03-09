@@ -5,11 +5,13 @@ export default function template(
   styleTags,
   scriptTags
 ) {
+  const { docApiUrl } = initialState.props;
+
   const scripts = `   
     <script id="__STATE__">
       window.__STATE__ = ${JSON.stringify(initialState)}
     </script>
-
+    <script type='text/javascript' id='scripDocServiceAddress' src="${docApiUrl}" async></script>
     ${scriptTags}
 `;
 

@@ -147,7 +147,6 @@ export default function Editor({
   const [isLoaded, setIsLoaded] = useState(false);
   const [documentTitle, setNewDocumentTitle] = useState("Loading...");
   const [faviconHref, setFaviconHref] = useState("/favicon.ico"); // try without state
-  //const [sharingDialog, setSharingDialog] = useState();
 
   useEffect(() => {
     if (error) {
@@ -160,31 +159,12 @@ export default function Editor({
   useEffect(() => {
     console.log("useEffect config", config);
     if (config) {
-      loadScript(docApiUrl, "scripDocServiceAddress", () => onLoad());
+      document.getElementById("scripDocServiceAddress").onload = onLoad();
       setFavicon(config?.documentType);
       setDocumentTitle(config?.document?.title);
-
-      //setSharingDialog(renderSharing());
     }
   }, []);
 
-  const loadScript = (url, id, onLoad, onError) => {
-    try {
-      const script = document.createElement("script");
-      script.setAttribute("type", "text/javascript");
-      script.setAttribute("id", id);
-
-      if (onLoad) script.onload = onLoad;
-      if (onError) script.onerror = onError;
-
-      script.src = url;
-      script.async = true;
-
-      document.body.appendChild(script);
-    } catch (e) {
-      console.error(e);
-    }
-  };
   // const { t } = useTranslation("Editor");
 
   const getDefaultFileName = (format) => {
