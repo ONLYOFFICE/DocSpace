@@ -25,7 +25,7 @@
 
 namespace ASC.Files.Core;
 
-[Scope]
+[Scope(Additional = typeof(FolderDaoExtension))]
 public interface IFolderDao<T>
 {
     /// <summary>
@@ -317,9 +317,17 @@ public interface IFolderDao<T>
     /// <returns></returns>
     Task<Dictionary<string, string>> GetBunchObjectIDsAsync(List<T> folderIDs);
 
-    Task<IEnumerable<(Folder<T>, SmallShareRecord)>> GetFeedsForFoldersAsync(int tenant, DateTime from, DateTime to);
+    Task<IEnumerable<FolderWithShare>> GetFeedsForFoldersAsync(int tenant, DateTime from, DateTime to);
 
     Task<IEnumerable<T>> GetTenantsWithFeedsForFoldersAsync(DateTime fromTime);
 
     #endregion
+}
+
+public static class FolderDaoExtension
+{
+    public static void Register(DIHelper services)
+    {
+        services.TryAdd<FoldersTypeConverter>();
+    }
 }

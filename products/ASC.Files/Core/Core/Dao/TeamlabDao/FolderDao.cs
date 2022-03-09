@@ -25,7 +25,7 @@
 
 namespace ASC.Files.Core.Data;
 
-[Scope]
+[Scope(Additional = typeof(FolderDaoExtension))]
 internal class FolderDao : AbstractDao, IFolderDao<int>
 {
     private const string My = "my";
@@ -1201,21 +1201,6 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             });
     }
 
-    public (Folder<int>, SmallShareRecord) ToFolderWithShare(DbFolderQueryWithSecurity r)
-    {
-        var file = _mapper.Map<DbFolderQuery, Folder<int>>(r.DbFolderQuery);
-        var record = r.Security != null
-            ? new SmallShareRecord
-            {
-                ShareOn = r.Security.TimeStamp,
-                ShareBy = r.Security.Owner,
-                ShareTo = r.Security.Subject
-            }
-            : null;
-
-        return (file, record);
-    }
-
     public Task<string> GetBunchObjectIDAsync(int folderID)
     {
         return Query(FilesDbContext.BunchObjects)
@@ -1233,7 +1218,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             .ToDictionaryAsync(r => r.LeftNode, r => r.RightNode);
     }
 
-    public async Task<IEnumerable<(Folder<int>, SmallShareRecord)>> GetFeedsForFoldersAsync(int tenant, DateTime from, DateTime to)
+    public async Task<IEnumerable<FolderWithShare>> GetFeedsForFoldersAsync(int tenant, DateTime from, DateTime to)
     {
         var q1 = FilesDbContext.Folders
             .AsQueryable()
@@ -1259,7 +1244,10 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         var firstQuery = await q2.ToListAsync().ConfigureAwait(false);
         var secondQuery = await q4.ToListAsync().ConfigureAwait(false);
 
-        return firstQuery.Select(ToFolderWithShare).Union(secondQuery.Select(ToFolderWithShare));
+        //return firstQuery.Select(ToFolderWithShare).Union(secondQuery.Select(ToFolderWithShare));
+
+        return _mapper.Map<IEnumerable<DbFolderQueryWithSecurity>, IEnumerable<FolderWithShare>>(firstQuery)
+            .Union(_mapper.Map<IEnumerable<DbFolderQueryWithSecurity>, IEnumerable<FolderWithShare>>(secondQuery));
     }
 
     public async Task<IEnumerable<int>> GetTenantsWithFeedsForFoldersAsync(DateTime fromTime)

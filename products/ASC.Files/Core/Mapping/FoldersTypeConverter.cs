@@ -1,7 +1,7 @@
 ﻿namespace ASC.Files.Core.Mapping;
 
 [Scope]
-public class FoldersTypeConverter: ITypeConverter<DbFolderQuery, Folder<int>>
+public class FoldersTypeConverter: ITypeConverter<DbFolderQuery, Folder<int>>, ITypeConverter<DbFolderQueryWithSecurity, FolderWithShare>
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly TenantUtil _tenantUtil;
@@ -79,5 +79,25 @@ public class FoldersTypeConverter: ITypeConverter<DbFolderQuery, Folder<int>>
         }
 
         return result;
+    }
+
+    public FolderWithShare Convert(DbFolderQueryWithSecurity source, FolderWithShare destination, ResolutionContext context)
+    {
+        var folder = context.Mapper.Map<DbFolderQuery, Folder<int>>(source.DbFolderQuery);
+
+        var record = source.Security != null
+            ? new SmallShareRecord
+            {
+                ShareOn = source.Security.TimeStamp,
+                ShareBy = source.Security.Owner,
+                ShareTo = source.Security.Subject
+            }
+            : null;
+
+        return new FolderWithShare
+        {
+            Folder = folder,
+            ShareRecord = record
+        };
     }
 }

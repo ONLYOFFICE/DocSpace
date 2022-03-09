@@ -18,6 +18,7 @@ global using ASC.ElasticSearch.Service;
 global using ASC.Feed;
 global using ASC.Feed.Aggregator.Service;
 global using ASC.Feed.Core;
+global using ASC.Files.Core.Core.Entries;
 global using ASC.Feed.Data;
 global using ASC.Files.Core;
 global using ASC.Files.Core.EF;

@@ -27,7 +27,7 @@ using Document = ASC.ElasticSearch.Document;
 
 namespace ASC.Files.Core.Data;
 
-[Scope]
+[Scope(Additional = typeof(FilesTypeConverter))]
 internal class FileDao : AbstractDao, IFileDao<int>
 {
     private static readonly object _syncRoot = new object();
@@ -1346,7 +1346,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 ;
     }
 
-    public async Task<IEnumerable<(File<int>, SmallShareRecord)>> GetFeedsAsync(int tenant, DateTime from, DateTime to)
+    public async Task<IEnumerable<FileWithShare>> GetFeedsAsync(int tenant, DateTime from, DateTime to)
     {
         var q1 = FilesDbContext.Files
             .AsQueryable()
@@ -1370,10 +1370,11 @@ internal class FileDao : AbstractDao, IFileDao<int>
             .Where(r => r.Security.TimeStamp >= from && r.Security.TimeStamp <= to)
             .ToListAsync();
 
-        var fileWithShare = await q2.Select(e => ToFileWithShare(e)).ToListAsync().ConfigureAwait(false);
+        var fileWithShare = await q2.Select(e => _mapper.Map<DbFileQueryWithSecurity, FileWithShare>(e))
+            .ToListAsync().ConfigureAwait(false);
         var q4 = await q4Task.ConfigureAwait(false);
 
-        return fileWithShare.Union(q4.Select(ToFileWithShare));
+        return fileWithShare.Union(_mapper.Map<IEnumerable<DbFileQueryWithSecurity>, IEnumerable<FileWithShare>>(q4));
     }
 
     public async Task<IEnumerable<int>> GetTenantsWithFeedsAsync(DateTime fromTime)
@@ -1610,21 +1611,6 @@ internal class FileDao : AbstractDao, IFileDao<int>
         file.IsFillFormDraft = r.Linked;
 
         return file;
-    }
-
-    public (File<int>, SmallShareRecord) ToFileWithShare(DbFileQueryWithSecurity r)
-    {
-        var file = _mapper.Map<DbFileQuery, File<int>>(r.DbFileQuery);
-        var record = r.Security != null
-            ? new SmallShareRecord
-            {
-                ShareOn = r.Security.TimeStamp,
-                ShareBy = r.Security.Owner,
-                ShareTo = r.Security.Subject
-            }
-            : null;
-
-        return (file, record);
     }
 
     internal protected Task<DbFile> InitDocumentAsync(DbFile dbFile)

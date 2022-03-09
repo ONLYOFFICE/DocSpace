@@ -110,13 +110,13 @@ public class FilesModule : FeedModule
     public override IEnumerable<Tuple<Feed.Aggregator.Feed, object>> GetFeeds(FeedFilter filter)
     {
         var files = _fileDao.GetFeedsAsync(filter.Tenant, filter.Time.From, filter.Time.To).Result
-            .Where(f => f.Item1.RootFolderType != FolderType.TRASH && f.Item1.RootFolderType != FolderType.BUNCH)
+            .Where(f => f.File.RootFolderType != FolderType.TRASH && f.File.RootFolderType != FolderType.BUNCH)
             .ToList();
 
-        var folderIDs = files.Select(r => r.Item1.ParentId).ToList();
+        var folderIDs = files.Select(r => r.File.ParentId).ToList();
         var folders = _folderDao.GetFoldersAsync(folderIDs, checkShare: false).ToListAsync().Result;
 
-        return files.Select(f => new Tuple<Feed.Aggregator.Feed, object>(ToFeed(f, folders.FirstOrDefault(r => r.Id.Equals(f.Item1.ParentId))), f));
+        return files.Select(f => new Tuple<Feed.Aggregator.Feed, object>(ToFeed(f, folders.FirstOrDefault(r => r.Id.Equals(f.File.ParentId))), f));
     }
 
     public override IEnumerable<int> GetTenantsWithFeeds(DateTime fromTime)
@@ -124,10 +124,10 @@ public class FilesModule : FeedModule
         return _fileDao.GetTenantsWithFeedsAsync(fromTime).Result;
     }
 
-    private Feed.Aggregator.Feed ToFeed((File<int>, SmallShareRecord) tuple, Folder<int> rootFolder)
+    private Feed.Aggregator.Feed ToFeed(FileWithShare tuple, Folder<int> rootFolder)
     {
-        var file = tuple.Item1;
-        var shareRecord = tuple.Item2;
+        var file = tuple.File;
+        var shareRecord = tuple.ShareRecord;
 
         if (shareRecord != null)
         {

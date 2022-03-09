@@ -1,7 +1,7 @@
 ﻿namespace ASC.Files.Core.Mapping;
 
 [Scope]
-public class FilesTypeConverter : ITypeConverter<DbFileQuery, File<int>>
+public class FilesTypeConverter : ITypeConverter<DbFileQuery, File<int>>, ITypeConverter<DbFileQueryWithSecurity, FileWithShare>
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly TenantUtil _tenantUtil;
@@ -32,5 +32,25 @@ public class FilesTypeConverter : ITypeConverter<DbFileQuery, File<int>>
         file.RootFolderId = source.Root?.Id ?? default;
 
         return file;
+    }
+
+    public FileWithShare Convert(DbFileQueryWithSecurity source, FileWithShare destination, ResolutionContext context)
+    {
+        var file = context.Mapper.Map<DbFileQuery, File<int>>(source.DbFileQuery);
+
+        var record = source.Security != null
+            ? new SmallShareRecord
+            {
+                ShareOn = source.Security.TimeStamp,
+                ShareBy = source.Security.Owner,
+                ShareTo = source.Security.Subject
+            }
+            : null;
+
+        return new FileWithShare
+        {
+            File = file,
+            ShareRecord = record
+        };
     }
 }

@@ -66,7 +66,7 @@ internal abstract class ThirdPartyProviderDao
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<(File<int>, SmallShareRecord)>> GetFeedsAsync(int tenant, DateTime from, DateTime to)
+    public Task<IEnumerable<FileWithShare>> GetFeedsAsync(int tenant, DateTime from, DateTime to)
     {
         throw new NotImplementedException();
     }
@@ -163,7 +163,7 @@ internal abstract class ThirdPartyProviderDao
         return null;
     }
 
-    public Task<IEnumerable<(Folder<string>, SmallShareRecord)>> GetFeedsForFoldersAsync(int tenant, DateTime from, DateTime to)
+    public Task<IEnumerable<FolderWithShare>> GetFeedsForFoldersAsync(int tenant, DateTime from, DateTime to)
     {
         throw new NotImplementedException();
     }

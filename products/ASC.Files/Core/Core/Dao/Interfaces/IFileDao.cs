@@ -25,7 +25,7 @@
 
 namespace ASC.Files.Core;
 
-[Scope]
+[Scope(Additional = typeof(FileDaoExtension))]
 public interface IFileDao<T>
 {
     /// <summary>
@@ -286,9 +286,18 @@ public interface IFileDao<T>
 
     Task<Stream> GetThumbnailAsync(File<T> file);
 
-    Task<IEnumerable<(File<int>, SmallShareRecord)>> GetFeedsAsync(int tenant, DateTime from, DateTime to);
+    Task<IEnumerable<FileWithShare>> GetFeedsAsync(int tenant, DateTime from, DateTime to);
 
     Task<IEnumerable<int>> GetTenantsWithFeedsAsync(DateTime fromTime);
 
     #endregion
+}
+
+
+public static class FileDaoExtension
+{
+    public static void Register(DIHelper services)
+    {
+        services.TryAdd<FilesTypeConverter>();
+    }
 }

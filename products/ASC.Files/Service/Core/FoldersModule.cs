@@ -1,4 +1,6 @@
 ﻿
+using ASC.Files.Core.Core.Entries;
+
 using FeedModule = ASC.Feed.Aggregator.Modules.FeedModule;
 
 namespace ASC.Files.Service.Core;
@@ -77,19 +79,19 @@ public class FoldersModule : FeedModule
     public override IEnumerable<Tuple<Feed.Aggregator.Feed, object>> GetFeeds(FeedFilter filter)
     {
         var folders = _folderDao.GetFeedsForFoldersAsync(filter.Tenant, filter.Time.From, filter.Time.To).Result
-                    .Where(f => f.Item1.RootFolderType != FolderType.TRASH && f.Item1.RootFolderType != FolderType.BUNCH)
+                    .Where(f => f.Folder.RootFolderType != FolderType.TRASH && f.Folder.RootFolderType != FolderType.BUNCH)
                     .ToList();
 
-        var parentFolderIDs = folders.Select(r => r.Item1.ParentId).ToList();
+        var parentFolderIDs = folders.Select(r => r.Folder.ParentId).ToList();
         var parentFolders = _folderDao.GetFoldersAsync(parentFolderIDs, checkShare: false).ToListAsync().Result;
 
-        return folders.Select(f => new Tuple<Feed.Aggregator.Feed, object>(ToFeed(f, parentFolders.FirstOrDefault(r => r.Id.Equals(f.Item1.ParentId))), f));
+        return folders.Select(f => new Tuple<Feed.Aggregator.Feed, object>(ToFeed(f, parentFolders.FirstOrDefault(r => r.Id.Equals(f.Folder.ParentId))), f));
     }
 
-    private Feed.Aggregator.Feed ToFeed((Folder<int>, SmallShareRecord) tuple, Folder<int> rootFolder)
+    private Feed.Aggregator.Feed ToFeed(FolderWithShare folderWithSecurity, Folder<int> rootFolder)
     {
-        var folder = tuple.Item1;
-        var shareRecord = tuple.Item2;
+        var folder = folderWithSecurity.Folder;
+        var shareRecord = folderWithSecurity.ShareRecord;
 
         if (shareRecord != null)
         {
