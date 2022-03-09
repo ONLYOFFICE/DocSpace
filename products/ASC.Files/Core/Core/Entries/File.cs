@@ -23,6 +23,7 @@
  *
 */
 
+using Profile = AutoMapper.Profile;
 
 namespace ASC.Files.Core;
 
@@ -43,7 +44,7 @@ public enum FileStatus
 [Transient]
 [Serializable]
 [DebuggerDisplay("{Title} ({ID} v{Version})")]
-public class File<T> : FileEntry<T>, IFileEntry<T>
+public class File<T> : FileEntry<T>, IFileEntry<T>, IMapFrom<DbFileQuery>
 {
     private FileStatus _status;
 
@@ -213,4 +214,12 @@ public class File<T> : FileEntry<T>, IFileEntry<T>
     }
 
     public object NativeAccessor { get; set; }
+
+    public void Mapping(Profile profile)
+    {
+        profile.CreateMap<DbFileQuery, File<int>>()
+            .ConvertUsing<FilesTypeConverter>();
+
+        profile.CreateMap<DbFile, File<int>>();
+    }
 }

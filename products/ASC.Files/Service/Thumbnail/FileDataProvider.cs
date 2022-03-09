@@ -107,7 +107,7 @@ internal class FileDataProvider
     {
         var search = filesDbContext.Files
             .AsQueryable()
-            .Where(r => r.CurrentVersion && r.Thumb == Thumbnail.Waiting && !r.Encrypted)
+            .Where(r => r.CurrentVersion && r.ThumbnailStatus == Thumbnail.Waiting && !r.Encrypted)
             .OrderByDescending(r => r.ModifiedOn)
             .Take(_thumbnailSettings.SqlMaxResults);
 

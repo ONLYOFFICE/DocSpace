@@ -23,8 +23,6 @@
  *
 */
 
-using ASC.Files.Core.Mapping;
-
 using Profile = AutoMapper.Profile;
 
 namespace ASC.Files.Core;
@@ -87,6 +85,6 @@ public class Folder<T> : FileEntry<T>, IFolder, IMapFrom<DbFolder>
     public void Mapping(Profile profile)
     {
         profile.CreateMap<DbFolder, Folder<int>>();
-        profile.CreateMap<DbFolderQuery, Folder<int>>().ConvertUsing<FilesTypeConverter>();
+        profile.CreateMap<DbFolderQuery, Folder<int>>().ConvertUsing<FoldersTypeConverter>();
     }
 }

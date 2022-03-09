@@ -63,7 +63,7 @@ public class FilesSpaceUsageStatManager : SpaceUsageStatManager
     {
         var myFiles = FilesDbContext.Files
             .AsQueryable()
-            .Join(FilesDbContext.Tree, a => a.FolderId, b => b.FolderId, (file, tree) => new { file, tree })
+            .Join(FilesDbContext.Tree, a => a.ParentId, b => b.FolderId, (file, tree) => new { file, tree })
             .Join(FilesDbContext.BunchObjects, a => a.tree.ParentId.ToString(), b => b.LeftNode, (fileTree, bunch) => new { fileTree.file, fileTree.tree, bunch })
             .Where(r => r.file.TenantId == r.bunch.TenantId)
             .Where(r => r.file.TenantId == _tenantManager.GetCurrentTenant().Id)
@@ -73,7 +73,7 @@ public class FilesSpaceUsageStatManager : SpaceUsageStatManager
 
         var commonFiles = FilesDbContext.Files
             .AsQueryable()
-            .Join(FilesDbContext.Tree, a => a.FolderId, b => b.FolderId, (file, tree) => new { file, tree })
+            .Join(FilesDbContext.Tree, a => a.ParentId, b => b.FolderId, (file, tree) => new { file, tree })
             .Join(FilesDbContext.BunchObjects, a => a.tree.ParentId.ToString(), b => b.LeftNode, (fileTree, bunch) => new { fileTree.file, fileTree.tree, bunch })
             .Where(r => r.file.TenantId == r.bunch.TenantId)
             .Where(r => r.file.TenantId == _tenantManager.GetCurrentTenant().Id)
@@ -144,7 +144,7 @@ public class FilesUserSpaceUsage : IUserSpaceUsage
 
         return await FilesDbContext.Files
             .AsQueryable()
-            .Where(r => r.TenantId == tenantId && (r.FolderId == my || r.FolderId == trash))
+            .Where(r => r.TenantId == tenantId && (r.ParentId == my || r.ParentId == trash))
             .SumAsync(r => r.ContentLength);
     }
 }

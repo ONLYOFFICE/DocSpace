@@ -517,7 +517,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
         .Where(r => r.Link.TenantId == r.Tag.TenantId)
         .Join(ctx.Files, r => Regex.IsMatch(r.Link.EntryId, "^[0-9]+$") ? Convert.ToInt32(r.Link.EntryId) : -1, r => r.Id, (tagLink, file) => new { tagLink, file })
         .Where(r => r.file.TenantId == r.tagLink.Link.TenantId)
-        .Where(r => where.Contains(r.file.FolderId.ToString()))
+        .Where(r => where.Contains(r.file.ParentId.ToString()))
         .Where(r => r.tagLink.Link.EntryType == FileEntryType.File)
         .Select(r => r.tagLink)
         .Distinct()
@@ -561,7 +561,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
             r.tagLink,
             root = ctx.Folders
                 .Join(ctx.Tree, a => a.Id, b => b.ParentId, (folder, tree) => new { folder, tree })
-                .Where(x => x.folder.TenantId == tenantId && x.tree.FolderId == r.file.FolderId)
+                .Where(x => x.folder.TenantId == tenantId && x.tree.FolderId == r.file.ParentId)
                 .OrderByDescending(r => r.tree.Level)
                 .Select(r => r.folder)
                 .Take(1)

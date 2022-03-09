@@ -1,7 +1,7 @@
 ﻿namespace ASC.Files.Core.Mapping;
 
 [Scope]
-public class FilesTypeConverter: ITypeConverter<DbFolderQuery, Folder<int>>
+public class FilesTypeConverter : ITypeConverter<DbFileQuery, File<int>>
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly TenantUtil _tenantUtil;
@@ -12,72 +12,25 @@ public class FilesTypeConverter: ITypeConverter<DbFolderQuery, Folder<int>>
         _tenantUtil = tenantUtil;
     }
 
-    public Folder<int> Convert(DbFolderQuery source, Folder<int> destination, ResolutionContext context)
+    public File<int> Convert(DbFileQuery source, File<int> destination, ResolutionContext context)
     {
-        var result = _serviceProvider.GetService<Folder<int>>();
-
-        _ = context.Mapper.Map(source.Folder, result);
-
-        result.CreateOn = _tenantUtil.DateTimeFromUtc(source.Folder.CreateOn);
-        result.ModifiedOn = _tenantUtil.DateTimeFromUtc(source.Folder.ModifiedOn);
-        result.RootFolderType = source.Root?.FolderType ?? default;
-        result.RootFolderCreator = source.Root?.CreateBy ?? default;
-        result.RootFolderId = source.Root?.Id ?? default;
-        result.Shared = source.Shared;
-
-        switch (result.FolderType)
+        if (source == null)
         {
-            case FolderType.COMMON:
-                result.Title = FilesUCResource.CorporateFiles;
-                break;
-            case FolderType.USER:
-                result.Title = FilesUCResource.MyFiles;
-                break;
-            case FolderType.SHARE:
-                result.Title = FilesUCResource.SharedForMe;
-                break;
-            case FolderType.Recent:
-                result.Title = FilesUCResource.Recent;
-                break;
-            case FolderType.Favorites:
-                result.Title = FilesUCResource.Favorites;
-                break;
-            case FolderType.TRASH:
-                result.Title = FilesUCResource.Trash;
-                break;
-            case FolderType.Privacy:
-                result.Title = FilesUCResource.PrivacyRoom;
-                break;
-            case FolderType.Projects:
-                result.Title = FilesUCResource.ProjectFiles;
-                break;
-            case FolderType.BUNCH:
-                try
-                {
-                    result.Title = string.Empty;
-                }
-                catch (Exception)
-                {
-                    //Global.Logger.Error(e);
-                }
-                break;
+            return null;
         }
 
-        if (result.FolderType != FolderType.DEFAULT && 0.Equals(result.ParentId))
-        {
-            result.RootFolderType = result.FolderType;
-        }
+        var file = _serviceProvider.GetService<File<int>>();
 
-        if (result.FolderType != FolderType.DEFAULT && result.RootFolderCreator == default)
-        {
-            result.RootFolderCreator = result.CreateBy;
-        }
+        _ = context.Mapper.Map(source.File, file);
 
-        if (result.FolderType != FolderType.DEFAULT && 0.Equals(result.RootFolderId))
-        {
-            result.RootFolderId = result.Id;
-        }
+        file.CreateOn = _tenantUtil.DateTimeFromUtc(source.File.CreateOn);
+        file.ModifiedOn = _tenantUtil.DateTimeFromUtc(source.File.ModifiedOn);
+        file.Shared = source.Shared;
+        file.IsFillFormDraft = source.Linked;
+        file.RootFolderType = source.Root?.FolderType ?? default;
+        file.RootFolderCreator = source.Root?.CreateBy ?? default;
+        file.RootFolderId = source.Root?.Id ?? default;
 
-        return result;
+        return file;
     }
 }

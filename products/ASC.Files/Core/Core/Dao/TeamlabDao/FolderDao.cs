@@ -137,7 +137,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     {
         var subq = Query(FilesDbContext.Files).AsNoTracking()
             .Where(r => r.Id == fileId && r.CurrentVersion)
-            .Select(r => r.FolderId)
+            .Select(r => r.ParentId)
             .Distinct();
 
         var q = await FilesDbContext.Tree.AsNoTracking()
@@ -724,8 +724,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                 var files = await FilesDbContext.Files
                     .AsNoTracking()
                     .Join(FilesDbContext.Files, f1 => f1.Title.ToLower(), f2 => f2.Title.ToLower(), (f1, f2) => new { f1, f2 })
-                    .Where(r => r.f1.TenantId == TenantID && r.f1.CurrentVersion && r.f1.FolderId == folderId)
-                    .Where(r => r.f2.TenantId == TenantID && r.f2.CurrentVersion && r.f2.FolderId == conflict)
+                    .Where(r => r.f1.TenantId == TenantID && r.f1.CurrentVersion && r.f1.ParentId == folderId)
+                    .Where(r => r.f2.TenantId == TenantID && r.f2.CurrentVersion && r.f2.ParentId == conflict)
                     .Select(r => r.f1)
                     .ToListAsync()
                     .ConfigureAwait(false);
@@ -788,7 +788,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     private async Task<int> GetFilesCountAsync(int folderId)
     {
         var count = await Query(FilesDbContext.Files)
-            .Join(FilesDbContext.Tree, r => r.FolderId, r => r.FolderId, (file, tree) => new { tree, file })
+            .Join(FilesDbContext.Tree, r => r.ParentId, r => r.FolderId, (file, tree) => new { tree, file })
             .Where(r => r.tree.ParentId == folderId)
             .Select(r => r.file.Id)
             .Distinct()

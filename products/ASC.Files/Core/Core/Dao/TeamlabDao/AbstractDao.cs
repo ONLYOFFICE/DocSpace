@@ -113,7 +113,7 @@ public class AbstractDao
             f.FilesCount = await
                 FilesDbContext.Files
                 .AsQueryable()
-                .Join(FilesDbContext.Tree, a => a.FolderId, b => b.FolderId, (file, tree) => new { file, tree })
+                .Join(FilesDbContext.Tree, a => a.ParentId, b => b.FolderId, (file, tree) => new { file, tree })
                 .Where(r => r.file.TenantId == f.TenantId)
                 .Where(r => r.tree.ParentId == f.Id)
                 .Select(r => r.file.Id)

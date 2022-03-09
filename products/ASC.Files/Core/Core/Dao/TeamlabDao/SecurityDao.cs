@@ -111,7 +111,7 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
                         .ToListAsync();
 
                     folders.AddRange(foldersInt.Select(folderInt => folderInt.ToString()));
-                    files.AddRange(await Query(FilesDbContext.Files).Where(r => foldersInt.Contains(r.FolderId)).Select(r => r.Id.ToString()).ToListAsync());
+                    files.AddRange(await Query(FilesDbContext.Files).Where(r => foldersInt.Contains(r.ParentId)).Select(r => r.Id.ToString()).ToListAsync());
                 }
                 else
                 {
