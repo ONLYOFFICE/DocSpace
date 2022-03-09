@@ -55,8 +55,12 @@ const StyledSimpleFilesRow = styled(Row)`
   ${(props) =>
     props.showHotkeyBorder &&
     css`
-      border-top: 1px solid #2da7db;
+      border-top: 1px solid #2da7db !important;
       margin-top: -3px;
+      margin-left: -24px;
+      margin-right: -24px;
+      padding-left: 24px;
+      padding-right: 24px;
     `}
 
   ::after {
@@ -208,7 +212,11 @@ const SimpleFilesRow = (props) => {
   return (
     <StyledWrapper
       className={`row-wrapper ${
-        checkedProps || isActive ? "row-selected" : ""
+        showHotkeyBorder
+          ? "row-hotkey-border"
+          : checkedProps || isActive
+          ? "row-selected"
+          : ""
       }`}
     >
       <DragAndDrop
