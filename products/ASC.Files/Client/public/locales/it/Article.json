@@ -2,12 +2,13 @@
   "ButtonAddBoxNet": "Aggiungi account Box",
   "ButtonAddDropBox": "Aggiungi account Dropbox",
   "ButtonAddGoogle": "Aggiungi account Google",
-  "ButtonAddNextcloud": "Aggiungi un account Nextcloud",
+  "ButtonAddNextcloud": "Aggiungi account Nextcloud",
   "ButtonAddSkyDrive": "Aggiungi account OneDrive",
   "NewDocument": "Nuovo documento",
   "NewFolder": "Nuova cartella",
   "NewPresentation": "Nuova presentazione",
   "NewSpreadsheet": "Nuovo foglio di calcolo elettronico",
   "UploadFiles": "Caricamento file",
-  "UploadFolder": "Carica cartella"
+  "UploadFolder": "Carica cartella",
+  "Upload": "Carica"
 }

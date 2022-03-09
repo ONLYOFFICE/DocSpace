@@ -1,8 +1,14 @@
 ﻿{
+  "ButtonAddBoxNet": "Pievienot Box kontu",
+  "ButtonAddDropBox": "Pievienot Dropbox kontu",
+  "ButtonAddGoogle": "Pievienot Google kontu",
+  "ButtonAddNextcloud": "Pievienot Nextcloud kontu",
+  "ButtonAddSkyDrive": "Pievienot OneDrive kontu",
   "NewDocument": "Jauns dokuments",
   "NewFolder": "Jauna mape",
   "NewPresentation": "Jauna prezentācija",
   "NewSpreadsheet": "Jauna izklājlapa",
   "UploadFiles": "Augšupielādējiet failus",
-  "UploadFolder": "Augšupielādēt mapi"
+  "UploadFolder": "Augšupielādēt mapi",
+  "Upload": "Augšupielādēt"
 }
