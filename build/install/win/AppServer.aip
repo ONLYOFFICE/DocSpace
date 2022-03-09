@@ -5,30 +5,23 @@
     <ROW Property="AI_CURRENT_YEAR" Value="2022" ValueLocId="-"/>
     <ROW Property="AI_FINDEXE_TITLE" Value="Выберите установочный пакет для [|ProductName]" ValueLocId="AI.Property.FindExeTitle"/>
     <ROW Property="AI_PREDEF_LCONDS_PROPS" Value="AI_DETECTED_INTERNET_CONNECTION"/>
-    <ROW Property="AI_PRODUCTNAME_ARP" Value="ONLYOFFICE AppServer [|ProductVersion]"/>
-    <ROW Property="AI_UNINSTALLER" Value="msiexec.exe"/>
     <ROW Property="ALLUSERS" Value="1"/>
     <ROW Property="APP_URLS" Value="http://0.0.0.0"/>
-    <ROW Property="ARPCOMMENTS" Value="ONLYOFFICE App Server is a platform based on .NET Core and React engines which comprises document management features and makes it possible to implement advanced folder management." ValueLocId="*"/>
-    <ROW Property="ARPNOMODIFY" MultiBuildValue="DefaultBuild:1"/>
-    <ROW Property="ARPNOREPAIR" Value="1" MultiBuildValue="DefaultBuild:1"/>
-    <ROW Property="ARPPRODUCTICON" Value="icon.exe" Type="8"/>
-    <ROW Property="ARPSYSTEMCOMPONENT" Value="1"/>
+    <ROW Property="ARPCOMMENTS" Value="Эта база данных установщика содержит логику и данные, необходимые для установки [|[ProductName]." ValueLocId="*"/>
+    <ROW Property="ARPNOREPAIR" MultiBuildValue="DefaultBuild:1"/>
     <ROW Property="AppDirChanged" Value=" "/>
     <ROW Property="COMMON_SHORTCUT_NAME" Value="ONLYOFFICE"/>
     <ROW Property="DATABASE_PROP" Value="onlyoffice"/>
     <ROW Property="ENVIRONMENT" Value="test"/>
-    <ROW Property="MSIFASTINSTALL" MultiBuildValue="DefaultBuild:3"/>
     <ROW Property="MYSQLODBCDRIVER" Value="MySQL ODBC 8.0 Unicode Driver"/>
     <ROW Property="Manufacturer" Value="Ascensio System SIA"/>
     <ROW Property="MySQLConnector" Value="MySQL Connector/ODBC 8.0.21 x86"/>
-    <ROW Property="PACKAGE_NAME" Value="ONLYOFFICE_AppServer_Win-install.v[|ProductVersion]"/>
     <ROW Property="PASSWORD_PROP" Value="root"/>
     <ROW Property="PORT_PROP" Value="3306"/>
     <ROW Property="ProductCode" Value="1049:{3FABEB4A-D27F-4BA6-A40E-16BE47540727} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1049"/>
-    <ROW Property="ProductName" Value="ONLYOFFICE AppServer [|ProductVersion]"/>
-    <ROW Property="ProductVersion" Value="1.0.0"/>
+    <ROW Property="ProductName" Value="ONLYOFFICE AppServer"/>
+    <ROW Property="ProductVersion" Value="1.0.0" Type="32"/>
     <ROW Property="SERVER_PROP" Value="localhost"/>
     <ROW Property="SUBFOLDER_SERVER" Value="--core:products:subfolder=server"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
@@ -120,8 +113,6 @@
     <ROW Directory="tools_Dir" Directory_Parent="APPDIR" DefaultDir="tools"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCompsComponent">
-    <ROW Component="AI_CustomARPName" ComponentId="{39F954AA-15FF-4FF7-9EEB-59782B6C04C5}" Directory_="APPDIR" Attributes="4" KeyPath="DisplayName" Options="1"/>
-    <ROW Component="AI_DisableModify" ComponentId="{B28FDA79-8F6A-4157-BB13-1D3873501A78}" Directory_="APPDIR" Attributes="4" KeyPath="NoModify" Options="1"/>
     <ROW Component="AI_ExePath" ComponentId="{EDF666FF-8C56-4EB7-8255-67DA879A090C}" Directory_="APPDIR" Attributes="4" KeyPath="AI_ExePath"/>
     <ROW Component="APPDIR" ComponentId="{E32A4F89-E985-4E8E-AB26-DFCD685A316B}" Directory_="APPDIR" Attributes="0"/>
     <ROW Component="ASC.ApiSystem.exe" ComponentId="{B781377D-457D-4304-B43D-A80B609B13E5}" Directory_="service_Dir" Attributes="256" KeyPath="ASC.ApiSystem.exe"/>
@@ -145,13 +136,9 @@
     <ROW Component="ASC.UrlShortener.Svc.exe" ComponentId="{9C4DF952-CF5B-4B0E-8377-383F20F39FD3}" Directory_="service_14_Dir" Attributes="256" KeyPath="ASC.UrlShortener.Svc.exe"/>
     <ROW Component="ASC.Web.Api.exe" ComponentId="{E726DF21-2E7E-4C62-8F6E-C63C65B041EC}" Directory_="service_15_Dir" Attributes="256" KeyPath="ASC.Web.Api.exe"/>
     <ROW Component="ASC.Web.Studio.exe" ComponentId="{00F95035-98D9-44AD-9DB4-B34306EE2170}" Directory_="service_16_Dir" Attributes="256" KeyPath="ASC.Web.Studio.exe"/>
-    <ROW Component="Control" ComponentId="{A5257050-EC28-4613-BDD2-2F27D8180500}" Directory_="APPDIR" Attributes="4" KeyPath="Control"/>
-    <ROW Component="CurrentControlSet" ComponentId="{8F694C21-8496-4648-BE44-C72329960CD9}" Directory_="APPDIR" Attributes="4" KeyPath="CurrentControlSet"/>
-    <ROW Component="LongPathsEnabled" ComponentId="{5B9DD10B-F802-4D38-A45E-75C6F16794EC}" Directory_="APPDIR" Attributes="4" KeyPath="LongPathsEnabled"/>
     <ROW Component="OnlyofficeApiSystemService.xml" ComponentId="{92B2BA6A-009B-4731-A0E2-A6C729DC8A68}" Directory_="tools_Dir" Attributes="0" KeyPath="OnlyofficeProxy.xml" Type="0"/>
     <ROW Component="OnlyofficeProxy.exe" ComponentId="{913596AD-5C75-4418-8C3A-FAB2A70530DB}" Directory_="tools_Dir" Attributes="0" KeyPath="OnlyofficeProxy.exe"/>
     <ROW Component="ProductInformation" ComponentId="{5FB28D19-6A7D-4078-901F-58C2DF0DE176}" Directory_="APPDIR" Attributes="4" KeyPath="Version"/>
-    <ROW Component="_" ComponentId="{229E94E4-22F3-4F7F-9ADE-633BF2058592}" Directory_="APPDIR" Attributes="4" KeyPath="_"/>
     <ROW Component="appsettings.test.json" ComponentId="{5A38709C-74EF-463B-97A4-0FADCE61E4B4}" Directory_="config_Dir" Attributes="0" KeyPath="appsettings.test.json" Type="0"/>
     <ROW Component="kafka.exe" ComponentId="{7E9839BF-BC4E-4211-93A6-EE2F1069B92A}" Directory_="tools_Dir" Attributes="0" KeyPath="kafka.exe"/>
     <ROW Component="server" ComponentId="{34816F11-60C3-458A-9CB6-9D1A0AD9347B}" Directory_="server_3_Dir" Attributes="0"/>
@@ -204,7 +191,7 @@
     <ROW Action="AI_DetectSoftware" Sequence="151"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
-    <ROW BuildKey="DefaultBuild" BuildName="ONLYOFFICE_EXE" BuildOrder="1" BuildType="0" PackageFolder="publish" Languages="ru" InstallationType="4" CabsLocation="1" PackageType="1" FilesInsideExe="true" ExeIconPath="Resources\icon.ico" ExtractionFolder="[AppDataFolder][|Manufacturer]\AppServer\install" ExtUI="true" UseLargeSchema="true" Unicode="true" ExeName="[|PACKAGE_NAME]" UACExecutionLevel="2"/>
+    <ROW BuildKey="DefaultBuild" BuildName="ONLYOFFICE_EXE" BuildOrder="1" BuildType="0" Languages="ru" InstallationType="4" CabsLocation="1" PackageType="1" FilesInsideExe="true" ExtractionFolder="[AppDataFolder][|Manufacturer]\[|ProductName] [|ProductVersion]\install" ExtUI="true" UseLargeSchema="true" ExeName="[|ProductName]" UACExecutionLevel="2"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BuildEventsComponent">
     <ROW EventId="0" EventRun="build\install\win\build-batch.bat" EventOrder="1" EventType="1" EventInterupt="false" EventEnabled="true" EventPrecompression="false" RollbackEvent="false" EventBuild="DefaultBuild"/>
@@ -396,7 +383,6 @@
     <ROW Action="AI_ExtractFiles" Type="1" Source="Prereq.dll" Target="ExtractSourceFiles" AdditionalSeq="AI_DATA_SETTER_2"/>
     <ROW Action="AI_ExtractLzma" Type="1025" Source="lzmaextractor.dll" Target="ExtractLZMAFiles"/>
     <ROW Action="AI_FindExeLzma" Type="1" Source="lzmaextractor.dll" Target="FindEXE"/>
-    <ROW Action="AI_GetArpIconPath" Type="1" Source="aicustact.dll" Target="GetArpIconPath"/>
     <ROW Action="AI_InstallModeCheck" Type="1" Source="aicustact.dll" Target="UpdateInstallMode" WithoutSeq="true"/>
     <ROW Action="AI_JsonCommit" Type="11777" Source="jsonCfg.dll" Target="OnJsonCommit" WithoutSeq="true"/>
     <ROW Action="AI_JsonConfig" Type="11265" Source="jsonCfg.dll" Target="OnJsonConfig" WithoutSeq="true"/>
@@ -429,7 +415,7 @@
     <ROW Action="MySQLConfigure" Type="70" Source="utils.vbs" Target="MySQLConfigure"/>
     <ROW Action="MySQLConfigureGUI" Type="6" Source="utils.vbs" Target="MySQLConfigure"/>
     <ROW Action="SET_APPDIR" Type="307" Source="APPDIR" Target="[ProgramFilesFolder][Manufacturer]\[ProductName]"/>
-    <ROW Action="SET_SHORTCUTDIR" Type="307" Source="SHORTCUTDIR" Target="[ProgramMenuFolder][ProductName]" MultiBuildTarget="DefaultBuild:[ProgramFilesFolder][Manufacturer]\[ProductName]"/>
+    <ROW Action="SET_SHORTCUTDIR" Type="307" Source="SHORTCUTDIR" Target="[ProgramMenuFolder][ProductName]"/>
     <ROW Action="SET_TARGETDIR_TO_APPDIR" Type="51" Source="TARGETDIR" Target="[APPDIR]"/>
     <ROW Action="SetPropertyAppDirConf" Type="51" Source="AppDirChanged" Target="[APPDIR]"/>
     <ROW Action="StartElasticSearchService" Type="3073" Source="aicustact.dll" Target="StartWinService" Options="1" AdditionalSeq="AI_DATA_SETTER_13"/>
@@ -474,15 +460,6 @@
     <ROW Feature_="MainFeature" Component_="zookeeper.exe"/>
     <ROW Feature_="MainFeature" Component_="server"/>
     <ROW Feature_="MainFeature" Component_="ASC.SsoAuth.Svc.exe"/>
-    <ROW Feature_="MainFeature" Component_="AI_CustomARPName"/>
-    <ROW Feature_="MainFeature" Component_="AI_DisableModify"/>
-    <ROW Feature_="MainFeature" Component_="_"/>
-    <ROW Feature_="MainFeature" Component_="CurrentControlSet"/>
-    <ROW Feature_="MainFeature" Component_="Control"/>
-    <ROW Feature_="MainFeature" Component_="LongPathsEnabled"/>
-  </COMPONENT>
-  <COMPONENT cid="caphyon.advinst.msicomp.MsiIconsComponent">
-    <ROW Name="icon.exe" SourcePath="Resources\icon.ico" Index="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIniFileComponent">
     <ROW IniFile="URL" FileName="URL~1|[|COMMON_SHORTCUT_NAME].url" DirProperty="DesktopFolder" Section="InternetShortcut" Key="URL" Value="http://localhost/" Action="0" Component_="APPDIR"/>
@@ -535,7 +512,6 @@
     <ROW Action="ElasticSearchInstallPlugin" Condition="( NOT Installed )" Sequence="1610"/>
     <ROW Action="StartElasticSearchService" Condition="( NOT Installed )" Sequence="1613"/>
     <ROW Action="AI_DATA_SETTER_13" Condition="( NOT Installed )" Sequence="1612"/>
-    <ROW Action="AI_GetArpIconPath" Sequence="1401"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstallUISequenceComponent">
     <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="749"/>
@@ -563,46 +539,8 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiRegsComponent">
     <ROW Registry="AI_ExePath" Root="-1" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="AI_ExePath" Value="[AI_SETUPEXEPATH]" Component_="AI_ExePath"/>
-    <ROW Registry="AdvancedInstaller" Root="-1" Key="Software\Caphyon\Advanced Installer" Name="\"/>
-    <ROW Registry="Caphyon" Root="-1" Key="Software\Caphyon" Name="\"/>
-    <ROW Registry="Comments" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="Comments" Value="[ARPCOMMENTS]" Component_="AI_CustomARPName"/>
-    <ROW Registry="Contact" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="Contact" Value="[ARPCONTACT]" Component_="AI_CustomARPName"/>
-    <ROW Registry="Control" Root="2" Key="SYSTEM\CurrentControlSet\Control" Name="+" Component_="Control"/>
-    <ROW Registry="CurrentControlSet" Root="2" Key="SYSTEM\CurrentControlSet" Name="+" Component_="CurrentControlSet"/>
-    <ROW Registry="CurrentVersion" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion" Name="\"/>
-    <ROW Registry="DisplayIcon" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="DisplayIcon" Value="[ARP_ICON_PATH]" Component_="AI_CustomARPName"/>
-    <ROW Registry="DisplayName" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="DisplayName" Value="[AI_PRODUCTNAME_ARP]" Component_="AI_CustomARPName"/>
-    <ROW Registry="DisplayVersion" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="DisplayVersion" Value="[ProductVersion]" Component_="AI_CustomARPName"/>
-    <ROW Registry="EstimatedSize" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="EstimatedSize" Value="#[AI_ARP_SIZE]" Component_="AI_CustomARPName" VirtualValue="#"/>
-    <ROW Registry="FileSystem" Root="2" Key="SYSTEM\CurrentControlSet\Control\FileSystem" Name="\"/>
-    <ROW Registry="HelpLink" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="HelpLink" Value="[ARPHELPLINK]" Component_="AI_CustomARPName"/>
-    <ROW Registry="HelpTelephone" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="HelpTelephone" Value="[ARPHELPTELEPHONE]" Component_="AI_CustomARPName"/>
-    <ROW Registry="InstallLocation" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="InstallLocation" Value="[APPDIR]" Component_="AI_CustomARPName"/>
-    <ROW Registry="LZMA" Root="-1" Key="Software\Caphyon\Advanced Installer\LZMA" Name="\"/>
-    <ROW Registry="LongPathsEnabled" Root="2" Key="SYSTEM\CurrentControlSet\Control\FileSystem" Name="LongPathsEnabled" Value="#1" Component_="LongPathsEnabled" VirtualValue="#"/>
-    <ROW Registry="Manufacturer" Root="-1" Key="Software\[Manufacturer]" Name="\"/>
-    <ROW Registry="Microsoft" Root="-1" Key="Software\Microsoft" Name="\"/>
-    <ROW Registry="ModifyPath" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="ModifyPath" Value="[AI_UNINSTALLER] /i [ProductCode] AI_UNINSTALLER_CTP=1" Component_="AI_CustomARPName"/>
-    <ROW Registry="NoModify" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="NoModify" Value="#1" Component_="AI_DisableModify" VirtualValue="#"/>
-    <ROW Registry="NoRepair" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="NoRepair" Value="#1" Component_="AI_CustomARPName" VirtualValue="#"/>
     <ROW Registry="Path" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Path" Value="[APPDIR]" Component_="ProductInformation"/>
-    <ROW Registry="ProductCode" Root="-1" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]" Name="\"/>
-    <ROW Registry="ProductName" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="\"/>
-    <ROW Registry="ProductNameProductVersion" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="\"/>
-    <ROW Registry="ProductVersion" Root="-1" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="\"/>
-    <ROW Registry="Publisher" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="Publisher" Value="[Manufacturer]" Component_="AI_CustomARPName"/>
-    <ROW Registry="Readme" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="Readme" Value="[ARPREADME]" Component_="AI_CustomARPName"/>
-    <ROW Registry="Software" Root="-1" Key="Software" Name="\"/>
-    <ROW Registry="URLInfoAbout" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="URLInfoAbout" Value="[ARPURLINFOABOUT]" Component_="AI_CustomARPName"/>
-    <ROW Registry="URLUpdateInfo" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="URLUpdateInfo" Value="[ARPURLUPDATEINFO]" Component_="AI_CustomARPName"/>
-    <ROW Registry="Uninstall" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall" Name="\"/>
-    <ROW Registry="UninstallPath" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="UninstallPath" Value="[AI_UNINSTALLER] /x [ProductCode] AI_UNINSTALLER_CTP=1" Component_="AI_CustomARPName"/>
-    <ROW Registry="UninstallString" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="UninstallString" Value="[AI_UNINSTALLER] /x [ProductCode] AI_UNINSTALLER_CTP=1" Component_="AI_CustomARPName"/>
     <ROW Registry="Version" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Version" Value="[ProductVersion]" Component_="ProductInformation"/>
-    <ROW Registry="VersionMajor" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="VersionMajor" Value="#1" Component_="AI_CustomARPName" VirtualValue="#"/>
-    <ROW Registry="VersionMinor" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="VersionMinor" Value="#0" Component_="AI_CustomARPName" VirtualValue="#"/>
-    <ROW Registry="Windows" Root="-1" Key="Software\Microsoft\Windows" Name="\"/>
-    <ROW Registry="_" Root="2" Key="SYSTEM" Name="+" Component_="_"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiServConfigComponent">
     <ROW MsiServiceConfig="_" Name="[ServiceName_OnlyofficeApiSystemService]" Event="1" ConfigType="3" Argument="1" Component_="ASC.ApiSystem.exe"/>
