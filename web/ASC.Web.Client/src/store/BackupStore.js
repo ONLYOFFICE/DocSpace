@@ -297,19 +297,21 @@ class BackupStore {
   getProgress = async (t) => {
     try {
       const response = await getBackupProgress();
-      console.log(" this.downloadingProgress", this.downloadingProgress);
-      const { progress, link, error } = response;
-      if (!error) {
-        this.downloadingProgress = progress;
 
-        if (link && link.slice(0, 1) === "/") {
-          this.temporaryLink = link;
-        }
+      if (response) {
+        const { progress, link, error } = response;
+        if (!error) {
+          this.downloadingProgress = progress;
 
-        if (progress !== 100) {
-          this.getIntervalProgress(t);
-        } else {
-          this.clearSessionStorage();
+          if (link && link.slice(0, 1) === "/") {
+            this.temporaryLink = link;
+          }
+
+          if (progress !== 100) {
+            this.getIntervalProgress(t);
+          } else {
+            this.clearSessionStorage();
+          }
         }
       }
     } catch (e) {
@@ -326,32 +328,40 @@ class BackupStore {
     this.timerId = setInterval(async () => {
       try {
         const response = await getBackupProgress();
-        const { progress, link, error } = response;
-        console.log("here");
-        if (error.length > 0 && progress !== 100) {
-          clearInterval(timerId);
-          this.timerId && toastr.error(`${t("BackupCreatedError")}`);
-          this.timerId = null;
-          this.clearSessionStorage();
-          this.downloadingProgress = 100;
-          return;
-        }
 
-        if (progress !== this.downloadingProgress) {
-          this.downloadingProgress = progress;
-        }
+        if (response) {
+          const { progress, link, error } = response;
 
-        if (progress === 100) {
-          clearInterval(this.timerId);
-          this.clearSessionStorage();
-
-          if (link && link.slice(0, 1) === "/") {
-            this.temporaryLink = link;
+          if (error.length > 0 && progress !== 100) {
+            clearInterval(timerId);
+            this.timerId && toastr.error(`${t("BackupCreatedError")}`);
+            this.timerId = null;
+            this.clearSessionStorage();
+            this.downloadingProgress = 100;
+            return;
           }
 
-          this.timerId && toastr.success(`${t("BackupCreatedSuccess")}`);
+          if (progress !== this.downloadingProgress) {
+            this.downloadingProgress = progress;
+          }
+
+          if (progress === 100) {
+            clearInterval(this.timerId);
+            this.clearSessionStorage();
+
+            if (link && link.slice(0, 1) === "/") {
+              this.temporaryLink = link;
+            }
+
+            this.timerId && toastr.success(`${t("BackupCreatedSuccess")}`);
+            this.timerId = null;
+            console.log("this.timerId success", this.timerId);
+            return;
+          }
+        } else {
+          clearInterval(this.timerId);
+          this.clearSessionStorage();
           this.timerId = null;
-          console.log("this.timerId success", this.timerId);
           return;
         }
       } catch (e) {
