@@ -1,5 +1,4 @@
 [Setup]
-SignTool=signtool $f
 AppName=MySQL Installer Runner
 AppVersion=0.1.0
 AppCopyright=© Ascensio System SIA 2019. All rights reserved
