@@ -40,7 +40,7 @@ namespace ASC.CRM.ApiModels
         public string From { get; set; }
         public string To { get; set; }
         public VoipCallStatus? Status { get; set; }
-        public EmployeeWraper AnsweredBy { get; set; }
+        public EmployeeDto AnsweredBy { get; set; }
         public ApiDateTime DialDate { get; set; }
         public int DialDuration { get; set; }
         public decimal Cost { get; set; }

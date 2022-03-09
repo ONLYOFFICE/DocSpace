@@ -105,6 +105,8 @@ builder.Host.ConfigureServices((hostContext, services) =>
     diHelper.TryAdd<SecurityContext>();
     diHelper.TryAdd<TenantManager>();
     diHelper.TryAdd<UserManager>();
+
+    services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
 });
 
 builder.Host.ConfigureContainer<ContainerBuilder>((context, builder) =>

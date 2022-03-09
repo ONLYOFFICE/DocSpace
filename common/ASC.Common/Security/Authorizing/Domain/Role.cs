@@ -46,10 +46,8 @@ public sealed class Role : IRole
         {
             throw new ArgumentException(nameof(id));
         }
-        if (string.IsNullOrEmpty(name))
-        {
-            throw new ArgumentNullException(nameof(name));
-        }
+
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(name);
 
         ID = id;
         Name = name;

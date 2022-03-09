@@ -23,93 +23,100 @@
  *
 */
 
-namespace ASC.Web.Files.Helpers
+namespace ASC.Web.Files.Helpers;
+
+[Scope]
+public class WordpressToken
 {
-    [Scope]
-    public class WordpressToken
+    public ILog Logger { get; set; }
+    private readonly TokenHelper _tokenHelper;
+    public ConsumerFactory ConsumerFactory { get; }
+
+    public const string AppAttr = "wordpress";
+
+    public WordpressToken(IOptionsMonitor<ILog> optionsMonitor, TokenHelper tokenHelper, ConsumerFactory consumerFactory)
     {
-        public ILog Log { get; set; }
-        private TokenHelper TokenHelper { get; }
-        public ConsumerFactory ConsumerFactory { get; }
-
-        public const string AppAttr = "wordpress";
-
-        public WordpressToken(IOptionsMonitor<ILog> optionsMonitor, TokenHelper tokenHelper, ConsumerFactory consumerFactory)
-        {
-            Log = optionsMonitor.CurrentValue;
-            TokenHelper = tokenHelper;
-            ConsumerFactory = consumerFactory;
-        }
-
-        public OAuth20Token GetToken()
-        {
-            return TokenHelper.GetToken(AppAttr);
-        }
-
-        public void SaveToken(OAuth20Token token)
-        {
-            if (token == null) throw new ArgumentNullException(nameof(token));
-            TokenHelper.SaveToken(new Token(token, AppAttr));
-        }
-
-        public OAuth20Token SaveTokenFromCode(string code)
-        {
-            var token = OAuth20TokenHelper.GetAccessToken<WordpressLoginProvider>(ConsumerFactory, code);
-            if (token == null) throw new ArgumentNullException("token");
-            TokenHelper.SaveToken(new Token(token, AppAttr));
-            return token;
-        }
-
-        public void DeleteToken(OAuth20Token token)
-        {
-            if (token == null) throw new ArgumentNullException(nameof(token));
-            TokenHelper.DeleteToken(AppAttr);
-
-        }
+        Logger = optionsMonitor.CurrentValue;
+        _tokenHelper = tokenHelper;
+        ConsumerFactory = consumerFactory;
     }
 
-    [Singletone]
-    public class WordpressHelper
+    public OAuth20Token GetToken()
     {
-        public ILog Log { get; set; }
-        public enum WordpressStatus
+        return _tokenHelper.GetToken(AppAttr);
+    }
+
+    public void SaveToken(OAuth20Token token)
+    {
+        ArgumentNullException.ThrowIfNull(token);
+
+        _tokenHelper.SaveToken(new Token(token, AppAttr));
+    }
+
+    public OAuth20Token SaveTokenFromCode(string code)
+    {
+        var token = OAuth20TokenHelper.GetAccessToken<WordpressLoginProvider>(ConsumerFactory, code);
+        ArgumentNullException.ThrowIfNull(token);
+
+        _tokenHelper.SaveToken(new Token(token, AppAttr));
+
+        return token;
+    }
+
+    public void DeleteToken(OAuth20Token token)
+    {
+        ArgumentNullException.ThrowIfNull(token);
+
+        _tokenHelper.DeleteToken(AppAttr);
+
+    }
+}
+
+[Singletone]
+public class WordpressHelper
+{
+    public ILog Logger { get; set; }
+
+    public enum WordpressStatus
+    {
+        draft = 0,
+        publish = 1
+    }
+
+    public WordpressHelper(IOptionsMonitor<ILog> optionsMonitor)
+    {
+        Logger = optionsMonitor.CurrentValue;
+    }
+
+    public string GetWordpressMeInfo(string token)
+    {
+        try
         {
-            draft = 0,
-            publish = 1
+            return WordpressLoginProvider.GetWordpressMeInfo(token);
+        }
+        catch (Exception ex)
+        {
+            Logger.Error("Get Wordpress info about me ", ex);
+
+            return string.Empty;
         }
 
-        public WordpressHelper(IOptionsMonitor<ILog> optionsMonitor)
+    }
+
+    public bool CreateWordpressPost(string title, string content, int status, string blogId, OAuth20Token token)
+    {
+        try
         {
-            Log = optionsMonitor.CurrentValue;
+            var wpStatus = ((WordpressStatus)status).ToString();
+            WordpressLoginProvider.CreateWordpressPost(title, content, wpStatus, blogId, token);
+
+            return true;
         }
-
-        public string GetWordpressMeInfo(string token)
+        catch (Exception ex)
         {
-            try
-            {
-                return WordpressLoginProvider.GetWordpressMeInfo(token);
-            }
-            catch (Exception ex)
-            {
-                Log.Error("Get Wordpress info about me ", ex);
-                return "";
-            }
+            Logger.Error("Create Wordpress post ", ex);
 
-        }
-
-        public bool CreateWordpressPost(string title, string content, int status, string blogId, OAuth20Token token)
-        {
-            try
-            {
-                var wpStatus = ((WordpressStatus)status).ToString();
-                WordpressLoginProvider.CreateWordpressPost(title, content, wpStatus, blogId, token);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Log.Error("Create Wordpress post ", ex);
-                return false;
-            }
+            return false;
         }
     }
 }

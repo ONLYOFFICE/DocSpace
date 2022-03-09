@@ -23,110 +23,135 @@
  *
 */
 
-namespace ASC.Web.Files.Core.Entries
+namespace ASC.Web.Files.Core.Entries;
+
+public class EncryptionKeyPair
 {
-    public class EncryptionKeyPair
+    public string PrivateKeyEnc { get; set; }
+    public string PublicKey { get; set; }
+    public Guid UserId { get; set; }
+}
+
+[Scope]
+public class EncryptionKeyPairHelper
+{
+    private readonly UserManager _userManager;
+    private readonly AuthContext _authContext;
+    private readonly EncryptionLoginProvider _encryptionLoginProvider;
+    private readonly FileSecurity _fileSecurity;
+    private readonly IDaoFactory _daoFactory;
+
+    public EncryptionKeyPairHelper(
+        UserManager userManager,
+        AuthContext authContext,
+        EncryptionLoginProvider encryptionLoginProvider,
+        FileSecurity fileSecurity,
+        IDaoFactory daoFactory)
     {
-        public string PrivateKeyEnc { get; set; }
-        public string PublicKey { get; set; }
-        public Guid UserId { get; set; }
+        _userManager = userManager;
+        _authContext = authContext;
+        _encryptionLoginProvider = encryptionLoginProvider;
+        _fileSecurity = fileSecurity;
+        _daoFactory = daoFactory;
     }
 
-    [Scope]
-    public class EncryptionKeyPairHelper
+    public void SetKeyPair(string publicKey, string privateKeyEnc)
     {
-        private UserManager UserManager { get; }
-        private AuthContext AuthContext { get; }
-        private EncryptionLoginProvider EncryptionLoginProvider { get; }
-        private FileSecurity FileSecurity { get; }
-        private IDaoFactory DaoFactory { get; }
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(publicKey);
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(privateKeyEnc);
 
-        public EncryptionKeyPairHelper(
-            UserManager userManager,
-            AuthContext authContext,
-            EncryptionLoginProvider encryptionLoginProvider,
-            FileSecurity fileSecurity,
-            IDaoFactory daoFactory)
+        var user = _userManager.GetUsers(_authContext.CurrentAccount.ID);
+        if (!_authContext.IsAuthenticated || user.IsVisitor(_userManager))
         {
-            UserManager = userManager;
-            AuthContext = authContext;
-            EncryptionLoginProvider = encryptionLoginProvider;
-            FileSecurity = fileSecurity;
-            DaoFactory = daoFactory;
+            throw new SecurityException();
         }
 
-        public void SetKeyPair(string publicKey, string privateKeyEnc)
+        var keyPair = new EncryptionKeyPair
         {
-            if (string.IsNullOrEmpty(publicKey)) throw new ArgumentNullException(nameof(publicKey));
-            if (string.IsNullOrEmpty(privateKeyEnc)) throw new ArgumentNullException(nameof(privateKeyEnc));
+            PrivateKeyEnc = privateKeyEnc,
+            PublicKey = publicKey,
+            UserId = user.Id,
+        };
 
-            var user = UserManager.GetUsers(AuthContext.CurrentAccount.ID);
-            if (!AuthContext.IsAuthenticated || user.IsVisitor(UserManager)) throw new System.Security.SecurityException();
+        var keyPairString = JsonSerializer.Serialize(keyPair);
+        _encryptionLoginProvider.SetKeys(user.Id, keyPairString);
+    }
 
-            var keyPair = new EncryptionKeyPair
+    public EncryptionKeyPair GetKeyPair()
+    {
+        var currentAddressString = _encryptionLoginProvider.GetKeys();
+        if (string.IsNullOrEmpty(currentAddressString))
+        {
+            return null;
+        }
+
+        var options = new JsonSerializerOptions
+        {
+            AllowTrailingCommas = true,
+            PropertyNameCaseInsensitive = true
+        };
+        var keyPair = JsonSerializer.Deserialize<EncryptionKeyPair>(currentAddressString, options);
+        if (keyPair.UserId != _authContext.CurrentAccount.ID)
+        {
+            return null;
+        }
+
+        return keyPair;
+    }
+
+    public async Task<IEnumerable<EncryptionKeyPair>> GetKeyPairAsync<T>(T fileId, FileStorageService<T> FileStorageService)
+    {
+        var fileDao = _daoFactory.GetFileDao<T>();
+
+        await fileDao.InvalidateCacheAsync(fileId);
+
+        var file = await fileDao.GetFileAsync(fileId);
+        if (file == null)
+        {
+            throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
+        }
+
+        if (!await _fileSecurity.CanEditAsync(file))
+        {
+            throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
+        }
+
+        if (file.RootFolderType != FolderType.Privacy)
+        {
+            throw new NotSupportedException();
+        }
+
+        var tmpFiles = await FileStorageService.GetSharedInfoAsync(new List<T> { fileId }, new List<T> { });
+        var fileShares = tmpFiles.ToList();
+        fileShares = fileShares.Where(share => !share.SubjectGroup
+                                        && !share.SubjectId.Equals(FileConstant.ShareLinkId)
+                                        && share.Share == FileShare.ReadWrite).ToList();
+
+        var fileKeysPair = fileShares.Select(share =>
+        {
+            var fileKeyPairString = _encryptionLoginProvider.GetKeys(share.SubjectId);
+            if (string.IsNullOrEmpty(fileKeyPairString))
             {
-                PrivateKeyEnc = privateKeyEnc,
-                PublicKey = publicKey,
-                UserId = user.Id,
-            };
-
-            var keyPairString = JsonSerializer.Serialize(keyPair);
-            EncryptionLoginProvider.SetKeys(user.Id, keyPairString);
-        }
-
-        public EncryptionKeyPair GetKeyPair()
-        {
-            var currentAddressString = EncryptionLoginProvider.GetKeys();
-            if (string.IsNullOrEmpty(currentAddressString)) return null;
+                return null;
+            }
 
             var options = new JsonSerializerOptions
             {
                 AllowTrailingCommas = true,
                 PropertyNameCaseInsensitive = true
             };
-            var keyPair = JsonSerializer.Deserialize<EncryptionKeyPair>(currentAddressString, options);
-            if (keyPair.UserId != AuthContext.CurrentAccount.ID) return null;
-            return keyPair;
-        }
-
-        public async Task<IEnumerable<EncryptionKeyPair>> GetKeyPairAsync<T>(T fileId, FileStorageService<T> FileStorageService)
-        {
-            var fileDao = DaoFactory.GetFileDao<T>();
-
-            await fileDao.InvalidateCacheAsync(fileId);
-
-            var file = await fileDao.GetFileAsync(fileId);
-            if (file == null) throw new System.IO.FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
-            if (!await FileSecurity.CanEditAsync(file)) throw new System.Security.SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
-            if (file.RootFolderType != FolderType.Privacy) throw new NotSupportedException();
-
-            var tmpFiles = await FileStorageService.GetSharedInfoAsync(new List<T> { fileId }, new List<T> { });
-            var fileShares = tmpFiles.ToList();
-            fileShares = fileShares.Where(share => !share.SubjectGroup
-                                            && !share.SubjectId.Equals(FileConstant.ShareLinkId)
-                                            && share.Share == FileShare.ReadWrite).ToList();
-
-            var fileKeysPair = fileShares.Select(share =>
+            var fileKeyPair = JsonSerializer.Deserialize<EncryptionKeyPair>(fileKeyPairString, options);
+            if (fileKeyPair.UserId != share.SubjectId)
             {
-                var fileKeyPairString = EncryptionLoginProvider.GetKeys(share.SubjectId);
-                if (string.IsNullOrEmpty(fileKeyPairString)) return null;
+                return null;
+            }
 
+            fileKeyPair.PrivateKeyEnc = null;
 
-                var options = new JsonSerializerOptions
-                {
-                    AllowTrailingCommas = true,
-                    PropertyNameCaseInsensitive = true
-                };
-                var fileKeyPair = JsonSerializer.Deserialize<EncryptionKeyPair>(fileKeyPairString, options);
-                if (fileKeyPair.UserId != share.SubjectId) return null;
+            return fileKeyPair;
+        })
+            .Where(keyPair => keyPair != null);
 
-                fileKeyPair.PrivateKeyEnc = null;
-
-                return fileKeyPair;
-            })
-                .Where(keyPair => keyPair != null);
-
-            return fileKeysPair;
-        }
+        return fileKeysPair;
     }
 }

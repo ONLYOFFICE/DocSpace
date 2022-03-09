@@ -43,7 +43,7 @@ namespace ASC.Api.Settings
         private StudioNotifyService StudioNotifyService { get; }
         private IWebHostEnvironment WebHostEnvironment { get; }
         private IServiceProvider ServiceProvider { get; }
-        private EmployeeWraperHelper EmployeeWraperHelper { get; }
+        private EmployeeDtoHelper EmployeeWraperHelper { get; }
         private ConsumerFactory ConsumerFactory { get; }
         private SmsProviderManager SmsProviderManager { get; }
         private TimeZoneConverter TimeZoneConverter { get; }
@@ -143,7 +143,7 @@ namespace ASC.Api.Settings
             StorageSettingsHelper storageSettingsHelper,
             IWebHostEnvironment webHostEnvironment,
             IServiceProvider serviceProvider,
-            EmployeeWraperHelper employeeWraperHelper,
+            EmployeeDtoHelper employeeWraperHelper,
             ConsumerFactory consumerFactory,
             SmsProviderManager smsProviderManager,
             TimeZoneConverter timeZoneConverter,
@@ -469,23 +469,23 @@ namespace ASC.Api.Settings
                 switch (Tenant.TrustedDomainsType)
                 {
                     case TenantTrustedDomainsType.Custom:
-                    {
-                        var address = new MailAddress(email);
-                        if (Tenant.TrustedDomains.Any(d => address.Address.EndsWith("@" + d.Replace("*", ""), StringComparison.InvariantCultureIgnoreCase)))
+                        {
+                            var address = new MailAddress(email);
+                            if (Tenant.TrustedDomains.Any(d => address.Address.EndsWith("@" + d.Replace("*", ""), StringComparison.InvariantCultureIgnoreCase)))
+                            {
+                                StudioNotifyService.SendJoinMsg(email, emplType);
+                                MessageService.Send(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
+                                return Resource.FinishInviteJoinEmailMessage;
+                            }
+
+                            throw new Exception(Resource.ErrorEmailDomainNotAllowed);
+                        }
+                    case TenantTrustedDomainsType.All:
                         {
                             StudioNotifyService.SendJoinMsg(email, emplType);
                             MessageService.Send(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
                             return Resource.FinishInviteJoinEmailMessage;
                         }
-
-                        throw new Exception(Resource.ErrorEmailDomainNotAllowed);
-                    }
-                    case TenantTrustedDomainsType.All:
-                    {
-                        StudioNotifyService.SendJoinMsg(email, emplType);
-                        MessageService.Send(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
-                        return Resource.FinishInviteJoinEmailMessage;
-                    }
                     default:
                         throw new Exception(Resource.ErrorNotCorrectEmail);
                 }
@@ -789,7 +789,7 @@ namespace ASC.Api.Settings
                           WebItemId = i.WebItemId,
                           Enabled = i.Enabled,
                           Users = i.Users.Select(EmployeeWraperHelper.Get),
-                          Groups = i.Groups.Select(g => new GroupWrapperSummary(g, UserManager)),
+                          Groups = i.Groups.Select(g => new GroupSummaryDto(g, UserManager)),
                           IsSubItem = subItemList.Contains(i.WebItemId),
                       }).ToList();
         }
@@ -931,7 +931,7 @@ namespace ASC.Api.Settings
         }
 
         [Read("security/administrator/{productid}")]
-        public IEnumerable<EmployeeWraper> GetProductAdministrators(Guid productid)
+        public IEnumerable<EmployeeDto> GetProductAdministrators(Guid productid)
         {
             return WebItemSecurity.GetProductAdministrators(productid)
                                   .Select(EmployeeWraperHelper.Get)
@@ -1042,7 +1042,7 @@ namespace ASC.Api.Settings
             {
                 var logoDict = new Dictionary<int, string>();
 
-                foreach(var l in model.Logo)
+                foreach (var l in model.Logo)
                 {
                     logoDict.Add(Int32.Parse(l.Key), l.Value);
                 }
@@ -2109,17 +2109,17 @@ namespace ASC.Api.Settings
         }
 
         private async Task<List<UsageSpaceStatItemWrapper>> InternalGetSpaceUsageStatistics(IWebItem webitem)
-                         {
+        {
             var statData = await webitem.Context.SpaceUsageStatManager.GetStatDataAsync();
 
             return statData.ConvertAll(it => new UsageSpaceStatItemWrapper
             {
-                             Name = it.Name.HtmlEncode(),
-                             Icon = it.ImgUrl,
-                             Disabled = it.Disabled,
-                             Size = FileSizeComment.FilesSizeToString(it.SpaceUsage),
-                             Url = it.Url
-                         });
+                Name = it.Name.HtmlEncode(),
+                Icon = it.ImgUrl,
+                Disabled = it.Disabled,
+                Size = FileSizeComment.FilesSizeToString(it.SpaceUsage),
+                Url = it.Url
+            });
         }
 
         [Read("statistics/visit")]
@@ -2694,7 +2694,7 @@ namespace ASC.Api.Settings
 
         private bool SaveMailWhiteLabelSettings(MailWhiteLabelSettings settings)
         {
-            if (settings == null) throw new ArgumentNullException(nameof(settings));
+            ArgumentNullException.ThrowIfNull(settings);
 
             DemandRebrandingPermission();
 

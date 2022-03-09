@@ -103,7 +103,7 @@ namespace ASC.Web.Core.Users
 
         public UserInfo AddUser(UserInfo userInfo, string passwordHash, bool afterInvite = false, bool notify = true, bool isVisitor = false, bool fromInviteLink = false, bool makeUniqueName = true)
         {
-            if (userInfo == null) throw new ArgumentNullException(nameof(userInfo));
+            ArgumentNullException.ThrowIfNull(userInfo);
 
             if (!UserFormatter.IsValidUserName(userInfo.FirstName, userInfo.LastName))
                 throw new Exception(Resource.ErrorIncorrectUserName);

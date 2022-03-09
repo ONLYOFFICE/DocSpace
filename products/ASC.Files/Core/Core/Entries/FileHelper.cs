@@ -23,57 +23,53 @@
  *
 */
 
-namespace ASC.Files.Core
+namespace ASC.Files.Core;
+
+[Scope]
+public class FileHelper
 {
-    [Scope]
-    public class FileHelper
+    private readonly FileTrackerHelper _fileTracker;
+    private readonly FilesLinkUtility _filesLinkUtility;
+    private readonly FileUtility _fileUtility;
+    private readonly FileConverter _fileConverter;
+
+    public FileHelper(FileTrackerHelper fileTracker, FilesLinkUtility filesLinkUtility, FileUtility fileUtility, FileConverter fileConverter)
     {
-        private FileTrackerHelper FileTracker { get; set; }
+        _fileTracker = fileTracker;
+        _filesLinkUtility = filesLinkUtility;
+        _fileUtility = fileUtility;
+        _fileConverter = fileConverter;
+    }
 
-        private FilesLinkUtility FilesLinkUtility { get; set; }
+    internal string GetTitle<T>(File<T> file)
+    {
+        return string.IsNullOrEmpty(file.ConvertedType)
+                    ? file.PureTitle
+                    : FileUtility.ReplaceFileExtension(file.PureTitle, _fileUtility.GetInternalExtension(file.PureTitle));
+    }
 
-        private FileUtility FileUtility { get; set; }
-
-        private FileConverter FileConverter { get; set; }
-
-        public FileHelper(FileTrackerHelper fileTracker, FilesLinkUtility filesLinkUtility, FileUtility fileUtility, FileConverter fileConverter)
+    internal FileStatus GetFileStatus<T>(File<T> file, ref FileStatus currentStatus)
+    {
+        if (_fileTracker.IsEditing(file.ID))
         {
-            FileTracker = fileTracker;
-            FilesLinkUtility = filesLinkUtility;
-            FileUtility = fileUtility;
-            FileConverter = fileConverter;
+            currentStatus |= FileStatus.IsEditing;
         }
 
-        internal string GetTitle<T>(File<T> file)
+        if (_fileTracker.IsEditingAlone(file.ID))
         {
-            return string.IsNullOrEmpty(file.ConvertedType)
-                        ? file.PureTitle
-                        : FileUtility.ReplaceFileExtension(file.PureTitle, FileUtility.GetInternalExtension(file.PureTitle));
+            currentStatus |= FileStatus.IsEditingAlone;
         }
 
-        internal FileStatus GetFileStatus<T>(File<T> file, ref FileStatus currentStatus)
+        if (_fileConverter.IsConverting(file))
         {
-            if (FileTracker.IsEditing(file.ID))
-            {
-                currentStatus |= FileStatus.IsEditing;
-            }
-
-            if (FileTracker.IsEditingAlone(file.ID))
-            {
-                currentStatus |= FileStatus.IsEditingAlone;
-            }
-
-            if (FileConverter.IsConverting(file))
-            {
-                currentStatus |= FileStatus.IsConverting;
-            }
-
-            return currentStatus;
+            currentStatus |= FileStatus.IsConverting;
         }
 
-        public string GetDownloadUrl<T>(FileEntry<T> fileEntry)
-        {
-            return FilesLinkUtility.GetFileDownloadUrl(fileEntry.ID);
-        }
+        return currentStatus;
+    }
+
+    public string GetDownloadUrl<T>(FileEntry<T> fileEntry)
+    {
+        return _filesLinkUtility.GetFileDownloadUrl(fileEntry.ID);
     }
 }

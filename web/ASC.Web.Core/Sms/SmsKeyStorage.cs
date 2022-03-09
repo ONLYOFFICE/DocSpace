@@ -93,10 +93,7 @@ namespace ASC.Web.Core.Sms
 
         public bool GenerateKey(string phone, out string key)
         {
-            if (string.IsNullOrEmpty(phone))
-            {
-                throw new ArgumentNullException(nameof(phone));
-            }
+            ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(phone);
 
             lock (KeyLocker)
             {

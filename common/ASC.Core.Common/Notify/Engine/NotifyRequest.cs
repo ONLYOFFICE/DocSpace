@@ -100,10 +100,7 @@ public class NotifyRequest
 
     internal NotifyRequest Split(IRecipient recipient)
     {
-        if (recipient == null)
-        {
-            throw new ArgumentNullException(nameof(recipient));
-        }
+        ArgumentNullException.ThrowIfNull(recipient);
 
         var newRequest = new NotifyRequest(NotifySource, NotifyAction, ObjectID, recipient)
         {

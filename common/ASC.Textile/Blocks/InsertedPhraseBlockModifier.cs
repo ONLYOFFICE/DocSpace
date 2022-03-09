@@ -1,10 +1,9 @@
-namespace Textile.Blocks
+namespace Textile.Blocks;
+
+public class InsertedPhraseBlockModifier : PhraseBlockModifier
 {
-    public class InsertedPhraseBlockModifier : PhraseBlockModifier
+    public override string ModifyLine(string line)
     {
-        public override string ModifyLine(string line)
-        {
-            return PhraseModifierFormat(line, @"\+", "ins");
-        }
+        return PhraseModifierFormat(line, @"\+", "ins");
     }
 }

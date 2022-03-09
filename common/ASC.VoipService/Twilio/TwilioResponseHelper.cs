@@ -23,189 +23,187 @@
  *
 */
 
-namespace ASC.VoipService.Twilio
+namespace ASC.VoipService.Twilio;
+
+public class TwilioResponseHelper
 {
-    public class TwilioResponseHelper
+    private readonly VoipSettings _settings;
+    private readonly string _baseUrl;
+    private readonly AuthContext _authContext;
+    private readonly TenantUtil _tenantUtil;
+    private readonly SecurityContext _securityContext;
+
+    public TwilioResponseHelper(
+        VoipSettings settings,
+        string baseUrl,
+        AuthContext authContext,
+        TenantUtil tenantUtil,
+        SecurityContext securityContext)
     {
-        private readonly VoipSettings settings;
-        private readonly string baseUrl;
+        _settings = settings;
+        _authContext = authContext;
+        _tenantUtil = tenantUtil;
+        _securityContext = securityContext;
+        _baseUrl = baseUrl.TrimEnd('/') + "/twilio/";
+    }
 
-        private AuthContext AuthContext { get; }
-        private TenantUtil TenantUtil { get; }
-        private SecurityContext SecurityContext { get; }
+    public VoiceResponse Inbound(Tuple<Agent, bool> agentTuple)
+    {
+        var agent = agentTuple?.Item1;
+        var anyOnline = agentTuple != null && agentTuple.Item2;
+        var response = new VoiceResponse();
 
-        public TwilioResponseHelper(
-            VoipSettings settings,
-            string baseUrl,
-            AuthContext authContext,
-            TenantUtil tenantUtil,
-            SecurityContext securityContext)
+        if (_settings.WorkingHours != null && _settings.WorkingHours.Enabled)
         {
-            this.settings = settings;
-            AuthContext = authContext;
-            TenantUtil = tenantUtil;
-            SecurityContext = securityContext;
-            this.baseUrl = baseUrl.TrimEnd('/') + "/twilio/";
+            var now = _tenantUtil.DateTimeFromUtc(DateTime.UtcNow);
+            if (!(_settings.WorkingHours.From <= now.TimeOfDay && _settings.WorkingHours.To >= now.TimeOfDay))
+            {
+                return AddVoiceMail(response);
+            }
         }
 
-        public VoiceResponse Inbound(Tuple<Agent, bool> agentTuple)
+        if (anyOnline)
         {
-            var agent = agentTuple?.Item1;
-            var anyOnline = agentTuple != null && agentTuple.Item2;
-            var response = new VoiceResponse();
-
-            if (settings.WorkingHours != null && settings.WorkingHours.Enabled)
+            if (!string.IsNullOrEmpty(_settings.GreetingAudio))
             {
-                var now = TenantUtil.DateTimeFromUtc(DateTime.UtcNow);
-                if (!(settings.WorkingHours.From <= now.TimeOfDay && settings.WorkingHours.To >= now.TimeOfDay))
-                {
-                    return AddVoiceMail(response);
-                }
+                response.Play(Uri.EscapeDataString(_settings.GreetingAudio));
             }
 
-            if (anyOnline)
-            {
-                if (!string.IsNullOrEmpty(settings.GreetingAudio))
-                {
-                    response.Play(Uri.EscapeDataString(settings.GreetingAudio));
-                }
-
-                response.Enqueue(settings.Queue.Name, GetEcho("Enqueue", agent != null), "POST",
-                    GetEcho("Wait", agent != null), "POST");
-            }
-
-            return AddVoiceMail(response);
+            response.Enqueue(_settings.Queue.Name, GetEcho("Enqueue", agent != null), "POST",
+                GetEcho("Wait", agent != null), "POST");
         }
 
-        public VoiceResponse Outbound()
+        return AddVoiceMail(response);
+    }
+
+    public VoiceResponse Outbound()
+    {
+        return !_settings.Caller.AllowOutgoingCalls
+                    ? new VoiceResponse()
+                    : AddToResponse(new VoiceResponse(), _settings.Caller);
+    }
+
+    public VoiceResponse Dial()
+    {
+        return new VoiceResponse();
+    }
+
+    public VoiceResponse Queue()
+    {
+        return new VoiceResponse();
+    }
+
+    public VoiceResponse Enqueue(string queueResult)
+    {
+        return queueResult == "leave" ? AddVoiceMail(new VoiceResponse()) : new VoiceResponse();
+    }
+
+    public VoiceResponse Dequeue()
+    {
+        return AddToResponse(new VoiceResponse(), _settings.Caller);
+    }
+
+    public VoiceResponse Leave()
+    {
+        return AddVoiceMail(new VoiceResponse());
+    }
+
+    public VoiceResponse Wait(string queueTime, string queueSize)
+    {
+        var response = new VoiceResponse();
+        var queue = _settings.Queue;
+
+        if (Convert.ToInt32(queueTime) > queue.WaitTime || Convert.ToInt32(queueSize) > queue.Size) return response.Leave();
+
+        if (!string.IsNullOrEmpty(queue.WaitUrl))
         {
-            return !settings.Caller.AllowOutgoingCalls
-                       ? new VoiceResponse()
-                       : AddToResponse(new VoiceResponse(), settings.Caller);
+            var gather = new Gather(method: "POST", action: GetEcho("gatherQueue"));
+            gather.Play(Uri.EscapeDataString(queue.WaitUrl));
+            response.Gather(gather);
         }
-
-        public VoiceResponse Dial()
+        else
         {
-            return new VoiceResponse();
+            response.Pause(queue.WaitTime);
         }
 
-        public VoiceResponse Queue()
+        return response;
+    }
+
+    public VoiceResponse GatherQueue(string digits, List<Agent> availableOperators)
+    {
+        var response = new VoiceResponse();
+
+        if (digits == "#") return AddVoiceMail(response);
+
+        var oper = _settings.Operators.Find(r => r.PostFix == digits && availableOperators.Contains(r)) ??
+            _settings.Operators.FirstOrDefault(r => availableOperators.Contains(r));
+
+        return oper != null ? AddToResponse(response, oper) : response;
+    }
+
+    public VoiceResponse Redirect(string to)
+    {
+        if (to == "hold")
         {
-            return new VoiceResponse();
+            return new VoiceResponse().Play(Uri.EscapeDataString(_settings.HoldAudio), 0);
         }
 
-        public VoiceResponse Enqueue(string queueResult)
+
+        if (Guid.TryParse(to, out var newCallerId))
         {
-            return queueResult == "leave" ? AddVoiceMail(new VoiceResponse()) : new VoiceResponse();
+            _securityContext.AuthenticateMeWithoutCookie(newCallerId);
         }
 
-        public VoiceResponse Dequeue()
+        return new VoiceResponse().Enqueue(_settings.Queue.Name, GetEcho("enqueue"), "POST",
+            GetEcho("wait") + "&RedirectTo=" + to, "POST");
+    }
+
+    public VoiceResponse VoiceMail()
+    {
+        return new VoiceResponse();
+    }
+
+    private VoiceResponse AddToResponse(VoiceResponse response, Agent agent)
+    {
+        var dial = new Dial(method: "POST", action: GetEcho("dial"), timeout: agent.TimeOut, record: agent.Record ? "record-from-answer" : "do-not-record");
+
+        switch (agent.Answer)
         {
-            return AddToResponse(new VoiceResponse(), settings.Caller);
+            case AnswerType.Number:
+                response.Dial(dial.Number(agent.PhoneNumber, method: "POST", url: GetEcho("client")));
+                break;
+            case AnswerType.Client:
+                response.Dial(dial.Client(agent.ClientID, "POST", GetEcho("client")));
+                break;
+            case AnswerType.Sip:
+                response.Dial(dial.Sip(agent.ClientID, method: "POST", url: GetEcho("client")));
+                break;
         }
 
-        public VoiceResponse Leave()
+        return response;
+    }
+
+
+    private VoiceResponse AddVoiceMail(VoiceResponse response)
+    {
+        return string.IsNullOrEmpty(_settings.VoiceMail)
+                    ? response.Say("")
+                    : response.Play(Uri.EscapeDataString(_settings.VoiceMail)).Record(method: "POST", action: GetEcho("voiceMail"), maxLength: 30);
+    }
+
+    public string GetEcho(string action, bool user = true)
+    {
+        var result = _baseUrl.TrimEnd('/');
+
+        if (!string.IsNullOrEmpty(action))
         {
-            return AddVoiceMail(new VoiceResponse());
+            result += "/" + action.TrimStart('/');
         }
-
-        public VoiceResponse Wait(string queueTime, string queueSize)
+        if (user)
         {
-            var response = new VoiceResponse();
-            var queue = settings.Queue;
-
-            if (Convert.ToInt32(queueTime) > queue.WaitTime || Convert.ToInt32(queueSize) > queue.Size) return response.Leave();
-
-            if (!string.IsNullOrEmpty(queue.WaitUrl))
-            {
-                var gather = new Gather(method: "POST", action: GetEcho("gatherQueue"));
-                gather.Play(Uri.EscapeDataString(queue.WaitUrl));
-                response.Gather(gather);
-            }
-            else
-            {
-                response.Pause(queue.WaitTime);
-            }
-
-            return response;
+            result += "?CallerId=" + _authContext.CurrentAccount.ID;
         }
 
-        public VoiceResponse GatherQueue(string digits, List<Agent> availableOperators)
-        {
-            var response = new VoiceResponse();
-
-            if (digits == "#") return AddVoiceMail(response);
-
-            var oper = settings.Operators.Find(r => r.PostFix == digits && availableOperators.Contains(r)) ??
-                settings.Operators.FirstOrDefault(r => availableOperators.Contains(r));
-
-            return oper != null ? AddToResponse(response, oper) : response;
-        }
-
-        public VoiceResponse Redirect(string to)
-        {
-            if (to == "hold")
-            {
-                return new VoiceResponse().Play(Uri.EscapeDataString(settings.HoldAudio), 0);
-            }
-
-
-            if (Guid.TryParse(to, out var newCallerId))
-            {
-                SecurityContext.AuthenticateMeWithoutCookie(newCallerId);
-            }
-
-            return new VoiceResponse().Enqueue(settings.Queue.Name, GetEcho("enqueue"), "POST",
-                GetEcho("wait") + "&RedirectTo=" + to, "POST");
-        }
-
-        public VoiceResponse VoiceMail()
-        {
-            return new VoiceResponse();
-        }
-
-        private VoiceResponse AddToResponse(VoiceResponse response, Agent agent)
-        {
-            var dial = new Dial(method: "POST", action: GetEcho("dial"), timeout: agent.TimeOut, record: agent.Record ? "record-from-answer" : "do-not-record");
-
-            switch (agent.Answer)
-            {
-                case AnswerType.Number:
-                    response.Dial(dial.Number(agent.PhoneNumber, method: "POST", url: GetEcho("client")));
-                    break;
-                case AnswerType.Client:
-                    response.Dial(dial.Client(agent.ClientID, "POST", GetEcho("client")));
-                    break;
-                case AnswerType.Sip:
-                    response.Dial(dial.Sip(agent.ClientID, method: "POST", url: GetEcho("client")));
-                    break;
-            }
-
-            return response;
-        }
-
-
-        private VoiceResponse AddVoiceMail(VoiceResponse response)
-        {
-            return string.IsNullOrEmpty(settings.VoiceMail)
-                       ? response.Say("")
-                       : response.Play(Uri.EscapeDataString(settings.VoiceMail)).Record(method: "POST", action: GetEcho("voiceMail"), maxLength: 30);
-        }
-
-        public string GetEcho(string action, bool user = true)
-        {
-            var result = baseUrl.TrimEnd('/');
-
-            if (!string.IsNullOrEmpty(action))
-            {
-                result += "/" + action.TrimStart('/');
-            }
-            if (user)
-            {
-                result += "?CallerId=" + AuthContext.CurrentAccount.ID;
-            }
-
-            return result;
-        }
+        return result;
     }
 }
