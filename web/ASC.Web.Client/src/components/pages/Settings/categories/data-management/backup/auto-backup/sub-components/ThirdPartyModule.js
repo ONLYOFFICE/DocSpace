@@ -38,6 +38,7 @@ class ThirdPartyModule extends React.PureComponent {
       isReset,
       isSuccessSave,
       passedId,
+      commonThirdPartyList,
       ...rest
     } = this.props;
 
@@ -55,6 +56,7 @@ class ThirdPartyModule extends React.PureComponent {
             id={passedId}
             isReset={isReset}
             isSuccessSave={isSuccessSave}
+            foldersList={commonThirdPartyList}
           />
         </div>
         <ScheduleComponent isLoadingData={isLoadingData} {...rest} />
@@ -64,7 +66,12 @@ class ThirdPartyModule extends React.PureComponent {
 }
 
 export default inject(({ backup }) => {
-  const { setSelectedFolder, defaultFolderId, defaultStorageType } = backup;
+  const {
+    setSelectedFolder,
+    defaultFolderId,
+    defaultStorageType,
+    commonThirdPartyList,
+  } = backup;
 
   const isResourcesDefault =
     defaultStorageType === `${BackupTypes.ResourcesModuleType}`;
@@ -73,5 +80,6 @@ export default inject(({ backup }) => {
   return {
     setSelectedFolder,
     passedId,
+    commonThirdPartyList,
   };
 })(withTranslation("Settings")(observer(ThirdPartyModule)));

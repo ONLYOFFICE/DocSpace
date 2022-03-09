@@ -32,7 +32,6 @@ class BackupDesktopView extends React.Component {
     this.state = {
       enableRestore: false,
       enableAutoBackup: false,
-      commonThirdPartyList: {},
       isInitialLoading: true,
     };
   }
@@ -49,6 +48,7 @@ class BackupDesktopView extends React.Component {
     const {
       setThirdPartyStorage,
       setBackupSchedule,
+      setCommonThirdPartyList,
       getProgress,
       t,
     } = this.props;
@@ -74,12 +74,12 @@ class BackupDesktopView extends React.Component {
 
       setThirdPartyStorage(backupStorage);
       setBackupSchedule(backupSchedule);
+      commonThirdPartyList && setCommonThirdPartyList(commonThirdPartyList);
 
       this.setState({
         isInitialLoading: false,
         enableRestore: canRestore,
         enableAutoBackup: canAutoBackup,
-        commonThirdPartyList,
       });
     } catch (error) {
       toastr.error(error);
@@ -102,12 +102,7 @@ class BackupDesktopView extends React.Component {
       helpUrlCreatingBackup,
       downloadingProgress,
     } = this.props;
-    const {
-      isInitialLoading,
-      enableRestore,
-      enableAutoBackup,
-      commonThirdPartyList,
-    } = this.state;
+    const { isInitialLoading, enableRestore, enableAutoBackup } = this.state;
 
     const renderTooltip = (helpInfo) => {
       return (
@@ -170,7 +165,7 @@ class BackupDesktopView extends React.Component {
               {t("AutoBackupDescription")}
             </Text>
 
-            <AutoBackup commonThirdPartyList={commonThirdPartyList} />
+            <AutoBackup />
           </div>
         )}
 
@@ -205,6 +200,7 @@ export default inject(({ auth, backup }) => {
   const {
     setThirdPartyStorage,
     setBackupSchedule,
+    setCommonThirdPartyList,
     getProgress,
     clearProgressInterval,
     downloadingProgress,
@@ -215,6 +211,7 @@ export default inject(({ auth, backup }) => {
     language,
     setThirdPartyStorage,
     setBackupSchedule,
+    setCommonThirdPartyList,
     getProgress,
     clearProgressInterval,
     downloadingProgress,

@@ -66,7 +66,8 @@ class RestoreBackup extends React.Component {
     try {
       getProgress(t);
 
-      this.commonThirdPartyList = await SelectFolderDialog.getCommonThirdPartyList();
+      const commonThirdPartyList = await SelectFolderDialog.getCommonThirdPartyList();
+      commonThirdPartyList && setCommonThirdPartyList(commonThirdPartyList);
     } catch (error) {
       console.error(error);
     }
@@ -334,7 +335,12 @@ class RestoreBackup extends React.Component {
     };
   };
   render() {
-    const { t, history, downloadingProgress } = this.props;
+    const {
+      t,
+      history,
+      downloadingProgress,
+      commonThirdPartyList,
+    } = this.props;
     const {
       isChecked,
       isInitialLoading,
@@ -356,8 +362,7 @@ class RestoreBackup extends React.Component {
       onClick: this.onClickShowStorage,
     };
 
-    const isDisabledThirdParty =
-      this.commonThirdPartyList && this.commonThirdPartyList.length === 0;
+    const isDisabledThirdParty = !!commonThirdPartyList;
 
     const isMaxProgress = downloadingProgress === 100;
 
@@ -418,7 +423,6 @@ class RestoreBackup extends React.Component {
           )}
           {isCheckedThirdParty && (
             <ThirdPartyResources
-              foldersList={this.commonThirdPartyList}
               isPanelVisible={isPanelVisible}
               onClose={this.onPanelClose}
               onClickInput={this.onClickInput}
@@ -522,12 +526,20 @@ class RestoreBackup extends React.Component {
 export default inject(({ auth, backup }) => {
   const { settingsStore } = auth;
   const { socketHelper } = settingsStore;
-  const { downloadingProgress, getProgress, clearProgressInterval } = backup;
+  const {
+    downloadingProgress,
+    getProgress,
+    clearProgressInterval,
+    commonThirdPartyList,
+    setCommonThirdPartyList,
+  } = backup;
 
   return {
     socketHelper,
     downloadingProgress,
     getProgress,
     clearProgressInterval,
+    commonThirdPartyList,
+    setCommonThirdPartyList,
   };
 })(withTranslation(["Settings", "Common"])(observer(RestoreBackup)));

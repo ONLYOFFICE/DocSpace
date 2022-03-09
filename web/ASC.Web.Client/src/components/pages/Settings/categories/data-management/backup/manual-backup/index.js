@@ -57,11 +57,12 @@ class ManualBackup extends React.Component {
   }
 
   setBasicSettings = async () => {
-    const { getProgress, t } = this.props;
+    const { getProgress, setCommonThirdPartyList, t } = this.props;
     try {
       getProgress(t);
 
-      this.commonThirdPartyList = await SelectFolderDialog.getCommonThirdPartyList();
+      const commonThirdPartyList = await SelectFolderDialog.getCommonThirdPartyList();
+      commonThirdPartyList && setCommonThirdPartyList(commonThirdPartyList);
     } catch (error) {
       console.error(error);
       this.clearSessionStorage();
@@ -179,7 +180,12 @@ class ManualBackup extends React.Component {
     }
   };
   render() {
-    const { t, temporaryLink, downloadingProgress } = this.props;
+    const {
+      t,
+      temporaryLink,
+      downloadingProgress,
+      commonThirdPartyList,
+    } = this.props;
     const {
       isInitialLoading,
       isCheckedTemporaryStorage,
@@ -190,8 +196,7 @@ class ManualBackup extends React.Component {
 
     const isMaxProgress = downloadingProgress === 100;
 
-    const isDisabledThirdParty =
-      this.commonThirdPartyList && this.commonThirdPartyList.length === 0;
+    const isDisabledThirdParty = !!commonThirdPartyList;
 
     const commonRadioButtonProps = {
       fontSize: "13px",
@@ -287,12 +292,7 @@ class ManualBackup extends React.Component {
           <Text className="backup-description">
             {t("ThirdPartyResourceDescription")}
           </Text>
-          {isCheckedThirdParty && (
-            <ThirdPartyModule
-              {...commonModulesProps}
-              commonThirdPartyList={this.commonThirdPartyList}
-            />
-          )}
+          {isCheckedThirdParty && <ThirdPartyModule {...commonModulesProps} />}
         </StyledModules>
 
         <StyledModules>
@@ -332,11 +332,13 @@ export default inject(({ backup }) => {
     setDownloadingProgress,
     getProgress,
     setTemporaryLink,
+    setCommonThirdPartyList,
     downloadingProgress,
     temporaryLink,
     clearProgressInterval,
     getIntervalProgress,
     clearSessionStorage,
+    commonThirdPartyList,
   } = backup;
 
   return {
@@ -344,9 +346,11 @@ export default inject(({ backup }) => {
     getProgress,
     getIntervalProgress,
     setTemporaryLink,
+    setCommonThirdPartyList,
     downloadingProgress,
     temporaryLink,
     clearProgressInterval,
     clearSessionStorage,
+    commonThirdPartyList,
   };
 })(withTranslation("Settings")(observer(ManualBackup)));

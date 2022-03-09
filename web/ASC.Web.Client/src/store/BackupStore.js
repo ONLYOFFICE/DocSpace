@@ -1,4 +1,3 @@
-import api from "@appserver/common/api";
 import { getBackupProgress } from "@appserver/common/api/portal";
 import { makeAutoObservable } from "mobx";
 import {
@@ -6,14 +5,9 @@ import {
   getFromSessionStorage,
 } from "../components/pages/Settings/utils";
 import toastr from "../helpers/toastr";
+import { BackupTypes } from "@appserver/common/constants";
 
-const DOCUMENT_MODULE_TYPE = 0;
-const RESOURCES_MODULE_TYPE = 1;
-const STORAGES_MODULE_TYPE = 5;
-
-const EVERY_DAY_TYPE = "0";
-const EVERY_WEEK_TYPE = "1";
-const EVERY_MONTH_TYPE = "2";
+const { EveryDayType, EveryWeekType } = BackupTypes;
 
 class BackupStore {
   backupSchedule = {};
@@ -47,6 +41,7 @@ class BackupStore {
   defaultStorageId = null;
 
   thirdPartyStorage = [];
+  commonThirdPartyList = [];
 
   preparationPortalDialogVisible = false;
 
@@ -119,12 +114,7 @@ class BackupStore {
         return true;
       }
     }
-    console.log(
-      "this.selectedFolderId",
-      this.selectedFolderId,
-      "this.defaultFolderId",
-      this.defaultFolderId
-    );
+
     if (this.selectedFolderId !== this.defaultFolderId) return true;
 
     if (this.selectedStorageId !== this.defaultStorageId) return true;
@@ -178,14 +168,14 @@ class BackupStore {
       this.selectedPeriodLabel = this.defaultPeriodLabel;
 
       this.defaultMonthDay =
-        this.defaultPeriodNumber === EVERY_WEEK_TYPE ||
-        this.defaultPeriodNumber === EVERY_DAY_TYPE
+        +this.defaultPeriodNumber === +EveryWeekType ||
+        +this.defaultPeriodNumber === +EveryDayType
           ? "1"
           : this.defaultDay;
 
       this.selectedMonthDay = this.defaultMonthDay;
 
-      if (this.defaultPeriodNumber === EVERY_WEEK_TYPE) {
+      if (+this.defaultPeriodNumber === +EveryWeekType) {
         let weekDay;
 
         if (this.defaultDay) {
@@ -233,6 +223,9 @@ class BackupStore {
     this.backupSchedule = backupSchedule;
   };
 
+  setCommonThirdPartyList = (list) => {
+    this.commonThirdPartyList = list;
+  };
   setPeriod = (options) => {
     const key = options.key;
     const label = options.label;
@@ -273,7 +266,6 @@ class BackupStore {
   };
 
   setSelectedFolder = (folderId) => {
-    console.log("setSelectedFolder");
     if (folderId !== this.selectedFolderId) this.selectedFolderId = folderId;
   };
 
@@ -284,7 +276,6 @@ class BackupStore {
     } else {
       this.selectedStorageId = selectedStorage;
     }
-    console.log("this.selectedStorageId", this.selectedStorageId);
   };
 
   clearSessionStorage = () => {

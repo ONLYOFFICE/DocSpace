@@ -87,6 +87,7 @@ class AutomaticBackup extends React.PureComponent {
       t,
       setThirdPartyStorage,
       setBackupSchedule,
+      setCommonThirdPartyList,
       getProgress,
     } = this.props;
     try {
@@ -104,7 +105,7 @@ class AutomaticBackup extends React.PureComponent {
 
       setThirdPartyStorage(backupStorage);
       setBackupSchedule(backupSchedule);
-      this.commonThirdPartyList = commonThirdPartyList;
+      commonThirdPartyList && setCommonThirdPartyList(commonThirdPartyList);
 
       setDefaultOptions(t, this.periodsObject, this.weekdaysLabelArray);
 
@@ -118,18 +119,12 @@ class AutomaticBackup extends React.PureComponent {
   };
 
   componentDidMount() {
-    const {
-      setDefaultOptions,
-      t,
-      backupSchedule,
-      commonThirdPartyList,
-    } = this.props;
+    const { setDefaultOptions, t, backupSchedule } = this.props;
 
     this._isMounted = true;
     this.getWeekdays();
 
     if (!isMobileOnly) {
-      this.commonThirdPartyList = commonThirdPartyList;
       setDefaultOptions(t, this.periodsObject, this.weekdaysLabelArray);
       this.setState({
         isEnable: !!backupSchedule,
@@ -499,6 +494,7 @@ class AutomaticBackup extends React.PureComponent {
       isCheckedThirdParty,
       isCheckedDocuments,
       downloadingProgress,
+      commonThirdPartyList,
     } = this.props;
 
     const {
@@ -513,7 +509,7 @@ class AutomaticBackup extends React.PureComponent {
       isChangedInStorage,
     } = this.state;
 
-    const isDisabledThirdPartyList = !!this.commonThirdPartyList;
+    const isDisabledThirdPartyList = !!commonThirdPartyList;
 
     const commonProps = {
       isLoadingData,
@@ -585,7 +581,6 @@ class AutomaticBackup extends React.PureComponent {
               {isCheckedThirdParty && (
                 <ThirdPartyModule
                   {...commonProps}
-                  isThirdPartyDefault={isThirdPartyDefault}
                   isError={isError}
                   defaultSelectedFolder={this.defaultSelectedFolder}
                   onSetDefaultFolderPath={this.onSetDefaultFolderPath}
@@ -663,6 +658,7 @@ export default inject(({ auth, backup }) => {
 
     selectedStorageType,
     seStorageType,
+    setCommonThirdPartyList,
 
     selectedPeriodLabel,
     selectedWeekdayLabel,
@@ -680,6 +676,7 @@ export default inject(({ auth, backup }) => {
     downloadingProgress,
     clearProgressInterval,
     getProgress,
+    commonThirdPartyList,
   } = backup;
   const isCheckedDocuments = selectedStorageType === `${DocumentModuleType}`;
   const isCheckedThirdParty = selectedStorageType === `${ResourcesModuleType}`;
@@ -695,6 +692,7 @@ export default inject(({ auth, backup }) => {
     toDefault,
     selectedStorageType,
     seStorageType,
+    setCommonThirdPartyList,
 
     selectedPeriodLabel,
     selectedWeekdayLabel,
@@ -711,6 +709,7 @@ export default inject(({ auth, backup }) => {
     downloadingProgress,
     clearProgressInterval,
     getProgress,
+    commonThirdPartyList,
 
     isCheckedThirdPartyStorage,
     isCheckedThirdParty,

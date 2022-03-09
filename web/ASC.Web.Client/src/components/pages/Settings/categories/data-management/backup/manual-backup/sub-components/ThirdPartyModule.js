@@ -2,7 +2,7 @@ import React from "react";
 import { withTranslation } from "react-i18next";
 import SelectFolderInput from "files/SelectFolderInput";
 import Button from "@appserver/components/button";
-
+import { inject, observer } from "mobx-react";
 import { getFromSessionStorage } from "../../../../../utils";
 
 let folderPath = "";
@@ -138,4 +138,10 @@ class ThirdPartyModule extends React.Component {
     );
   }
 }
-export default withTranslation("Settings")(ThirdPartyModule);
+export default inject(({ backup }) => {
+  const { commonThirdPartyList } = backup;
+
+  return {
+    commonThirdPartyList,
+  };
+})(withTranslation("Settings")(observer(ThirdPartyModule)));
