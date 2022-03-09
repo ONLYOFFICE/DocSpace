@@ -139,5 +139,7 @@
   "PunycodeDomain": "不支持Punycode域",
   "PunycodeLocalPart": "不支持Punycode本地部分",
   "SameEmail": "您不能使用相同的邮箱",
-  "SpacesInLocalPart": "本地部分中不能包含空格"
+  "SpacesInLocalPart": "本地部分中不能包含空格",
+  "DomainIpAddress": "不支持使用域作为IP地址",
+  "EmptyEmail": "没有解析邮件"
 }

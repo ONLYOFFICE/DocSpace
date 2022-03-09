@@ -139,5 +139,7 @@
   "PunycodeDomain": "Punycode domeinen worden niet ondersteund",
   "PunycodeLocalPart": "Punycode lokaal deel wordt niet ondersteund",
   "SameEmail": "U kunt niet hetzelfde e-mailadres gebruiken",
-  "SpacesInLocalPart": "Lokaal deel kan geen spaties bevatten"
+  "SpacesInLocalPart": "Lokaal deel kan geen spaties bevatten",
+  "DomainIpAddress": "Domeinen als IP-adres worden niet ondersteund",
+  "EmptyEmail": "Geen enkele e-mail verwerkt"
 }

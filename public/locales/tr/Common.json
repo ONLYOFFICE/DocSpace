@@ -139,5 +139,7 @@
   "PunycodeDomain": "Punycode domainler desteklenmemektedir",
   "PunycodeLocalPart": "Punycode yerel kısmı desteklenmiyor",
   "SameEmail": "Aynı e-postayı kullanamazsınız",
-  "SpacesInLocalPart": "Yerel kısım boşluk içeremez"
+  "SpacesInLocalPart": "Yerel kısım boşluk içeremez",
+  "DomainIpAddress": "IP adresi olarak alan adları desteklenmez",
+  "EmptyEmail": "Hiçbir e-posta ayrıştırılmadı"
 }

@@ -139,5 +139,7 @@
   "PunycodeDomain": "지원되지 않는 퓨니코드 도메인입니다",
   "PunycodeLocalPart": "지원되지 않는 퓨니코드 로컬 파트입니다",
   "SameEmail": "같은 이메일을 사용할 수 없습니다",
-  "SpacesInLocalPart": "로컬 파트는 공백을 포함할 수 없습니다"
+  "SpacesInLocalPart": "로컬 파트는 공백을 포함할 수 없습니다",
+  "DomainIpAddress": "지원되지 않는 도메인 IP 주소입니다",
+  "EmptyEmail": "파싱된 이메일이 하나도 없습니다"
 }

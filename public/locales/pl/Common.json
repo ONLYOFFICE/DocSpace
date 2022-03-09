@@ -139,5 +139,7 @@
   "PunycodeDomain": "Domeny Punycode nie są obsługiwane",
   "PunycodeLocalPart": "Identyfikator użytkownika Punycode nie jest obsługiwany",
   "SameEmail": "Nie można użyć tego samego adresu e-mail",
-  "SpacesInLocalPart": "Identyfikator użytkownika nie może zawierać spacji"
+  "SpacesInLocalPart": "Identyfikator użytkownika nie może zawierać spacji",
+  "DomainIpAddress": "Domena i adres IP nie są obsługiwane",
+  "EmptyEmail": "Adres e-mail nie może być pusty"
 }

@@ -1,7 +1,5 @@
 ﻿{
-  "DomainIpAddress": "IPアドレスとしてのドメインには対応していません",
   "EmailActivationDescription": "入力されたメールにアクティベーションの手順が送られてきます。l",
   "EmailChangeTitle": "メールの変更",
-  "EmptyEmail": "誰もメールを解析しない",
   "EnterEmail": "新しいメールアドレスの入力"
 }

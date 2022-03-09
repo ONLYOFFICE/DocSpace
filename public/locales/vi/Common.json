@@ -139,5 +139,7 @@
   "PunycodeDomain": "Các tên miền punycode không được hỗ trợ",
   "PunycodeLocalPart": "Phần cục bộ Punycode không được hỗ trợ",
   "SameEmail": "Bạn không thể sử dụng cùng một email",
-  "SpacesInLocalPart": "Phần cục bộ không được chứa khoảng trắng"
+  "SpacesInLocalPart": "Phần cục bộ không được chứa khoảng trắng",
+  "DomainIpAddress": "Các tên miền dưới dạng địa chỉ IP không được hỗ trợ",
+  "EmptyEmail": "Không có email nào được phân tích"
 }

@@ -139,5 +139,7 @@
   "PunycodeDomain": "Punycode domene niso podprte",
   "PunycodeLocalPart": "Punycode lokalni del ni podprt",
   "SameEmail": "Ne morete uporabljati istega e-mail naslova",
-  "SpacesInLocalPart": "Lokalni del ne sme vsebovati presledkov"
+  "SpacesInLocalPart": "Lokalni del ne sme vsebovati presledkov",
+  "DomainIpAddress": "Domene kot IP naslov niso podprte",
+  "EmptyEmail": "Noben e-mail ni razčlenjen"
 }

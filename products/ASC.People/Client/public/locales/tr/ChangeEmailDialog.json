@@ -1,7 +1,5 @@
 ﻿{
-  "DomainIpAddress": "IP adresi olarak alan adları desteklenmez",
   "EmailActivationDescription": "Aktivasyon talimatları girilen e-postaya gönderilecektir",
   "EmailChangeTitle": "E-posta değişikliği",
-  "EmptyEmail": "Hiçbir e-posta ayrıştırılmadı",
   "EnterEmail": "Yeni e-posta adresi girin"
 }

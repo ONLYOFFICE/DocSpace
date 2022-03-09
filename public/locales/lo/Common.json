@@ -139,5 +139,7 @@
   "PunycodeDomain": "ບໍ່ຮອງຮັບໂດເມນ Punycode",
   "PunycodeLocalPart": "ພື້ນທີ່ບໍ່ຮອງຮັບ Punycode",
   "SameEmail": "ທີ່ບໍ່ສາມາດໃຊ້ອີເມວຊໍ່າກັນ",
-  "SpacesInLocalPart": "ພື່ນທີ່ທ້ອງຖິ້ນບໍ່ພຽງພໍ"
+  "SpacesInLocalPart": "ພື່ນທີ່ທ້ອງຖິ້ນບໍ່ພຽງພໍ",
+  "DomainIpAddress": "ທີ່ຢູ່ IP ໂດເມນຍັງບໍ່ຮອງຮັບ",
+  "EmptyEmail": "ບໍ່ແບ່ງແຍກອີເມວ"
 }

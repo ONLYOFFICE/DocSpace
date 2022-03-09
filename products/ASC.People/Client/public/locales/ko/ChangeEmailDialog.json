@@ -1,7 +1,5 @@
 ﻿{
-  "DomainIpAddress": "지원되지 않는 도메인 IP 주소입니다",
   "EmailActivationDescription": "활성화 방법이 입력하신 이메일로 전송됩니다",
   "EmailChangeTitle": "이메일 변경",
-  "EmptyEmail": "파싱된 이메일이 하나도 없습니다",
   "EnterEmail": "새 이메일 주소를 입력해주세요"
 }

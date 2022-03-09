@@ -139,5 +139,7 @@
   "PunycodeDomain": "Домените на Punycode не се поддържат",
   "PunycodeLocalPart": "Местните части на Punycode не се поддържат",
   "SameEmail": "Не може да използвате същия имейл",
-  "SpacesInLocalPart": "Местната част не може да съдържа интервали"
+  "SpacesInLocalPart": "Местната част не може да съдържа интервали",
+  "DomainIpAddress": "Домейни като IP адрес не се поддържат",
+  "EmptyEmail": "Никой имейл не е анализиран"
 }

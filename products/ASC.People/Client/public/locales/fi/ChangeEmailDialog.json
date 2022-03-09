@@ -1,7 +1,5 @@
 ﻿{
-  "DomainIpAddress": "Verkkotunnuksia IP-osoitteina ei tueta",
   "EmailActivationDescription": "Aktivointiohjeet lähetetään syötettyyn sähköpostiosoitteeseen",
   "EmailChangeTitle": "Sähköpostin muuttaminen",
-  "EmptyEmail": "Yhtään sähköpostia ei ole jäsennelty",
   "EnterEmail": "Anna uusi sähköpostiosoite"
 }

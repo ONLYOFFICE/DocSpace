@@ -1,7 +1,5 @@
 ﻿{
-  "DomainIpAddress": "Οι τομείς ως διεύθυνση IP δεν υποστηρίζονται",
   "EmailActivationDescription": "Οι οδηγίες ενεργοποίησης θα αποσταλούν στο email που καταχωρίσατε",
   "EmailChangeTitle": "Αλλαγή email",
-  "EmptyEmail": "Δεν αναλύθηκε email",
   "EnterEmail": "Εισαγάγετε μια νέα διεύθυνση email"
 }

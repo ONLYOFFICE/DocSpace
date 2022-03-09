@@ -1,7 +1,5 @@
 ﻿{
-  "DomainIpAddress": "Các tên miền dưới dạng địa chỉ IP không được hỗ trợ",
   "EmailActivationDescription": "Hướng dẫn kích hoạt sẽ được gửi đến email đã nhập",
   "EmailChangeTitle": "Thay đổi email",
-  "EmptyEmail": "Không có email nào được phân tích",
   "EnterEmail": "Nhập địa chỉ email mới"
 }

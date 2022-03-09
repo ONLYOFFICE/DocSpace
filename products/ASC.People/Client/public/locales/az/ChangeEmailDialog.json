@@ -1,7 +1,5 @@
 ﻿{
-  "DomainIpAddress": "IP ünvan kimi domen dəstəklənmir",
   "EmailActivationDescription": "Aktivləşdirmə təlimatları daxil edilmiş elektron poçta göndəriləcək.",
   "EmailChangeTitle": "Elektron poçtun dəyişdirilməsi",
-  "EmptyEmail": "Elektron poçt sahəsi boşdur",
   "EnterEmail": "Yeni elektron poçt ünvanı daxil edin"
 }

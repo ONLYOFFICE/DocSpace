@@ -139,5 +139,7 @@
   "PunycodeDomain": "Punycode domēni netiek atbalstīti",
   "PunycodeLocalPart": "Punycode lokālā daļa netiek atbalstīta",
   "SameEmail": "Jūs nevarat izmantot to pašu e-pastu",
-  "SpacesInLocalPart": "Lokālajā daļā nedrīkst būt atstarpes"
+  "SpacesInLocalPart": "Lokālajā daļā nedrīkst būt atstarpes",
+  "DomainIpAddress": "Domēni kā IP adrese netiek atbalstīti",
+  "EmptyEmail": "Neviens e-pasts nav parsēts"
 }

@@ -139,5 +139,7 @@
   "PunycodeDomain": "ピュニコード・ドメインはサポートされていません",
   "PunycodeLocalPart": "ピュニコードのローカルパートには対応されていません",
   "SameEmail": "同じメールを使用することはできません",
-  "SpacesInLocalPart": "ローカルパートはスペースを含むことができません"
+  "SpacesInLocalPart": "ローカルパートはスペースを含むことができません",
+  "DomainIpAddress": "IPアドレスとしてのドメインには対応していません",
+  "EmptyEmail": "誰もメールを解析しない"
 }

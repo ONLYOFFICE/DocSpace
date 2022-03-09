@@ -1,7 +1,5 @@
 ﻿{
-  "DomainIpAddress": "Domény ako adresa IP nie sú podporované",
   "EmailActivationDescription": "Pokyny na aktiváciu budú odoslané na zadaný e-mail",
   "EmailChangeTitle": "Zmena e-mailu",
-  "EmptyEmail": "Žiadny e-mail nebol analyzovaný",
   "EnterEmail": "Zadajte nový e-mail"
 }

@@ -1,7 +1,5 @@
 ﻿{
-  "DomainIpAddress": "Les domaines sous forme d'adresse IP ne sont pas pris en charge",
   "EmailActivationDescription": "Les instructions d'activation seront envoyées à l'adresse indiquée",
   "EmailChangeTitle": "Changement d'adresse email",
-  "EmptyEmail": "Aucun e-mail n'a été analysé",
   "EnterEmail": "Entrer une nouvelle adresse email"
 }

@@ -143,5 +143,7 @@
   "PunycodeDomain": "Os domínios Punycode não são suportados",
   "PunycodeLocalPart": "A peça local Punycode não é suportada",
   "SameEmail": "Você não pode usar o mesmo e-mail",
-  "SpacesInLocalPart": "A parte local não pode conter espaços"
+  "SpacesInLocalPart": "A parte local não pode conter espaços",
+  "DomainIpAddress": "Os domínios como endereço IP não são suportados",
+  "EmptyEmail": "Ninguém analisou o e-mail"
 }

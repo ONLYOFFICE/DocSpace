@@ -141,5 +141,7 @@
   "PunycodeDomain": "Domeniile Punycode nu sunt acceptate",
   "PunycodeLocalPart": "Partea locală Punycode nu este acceptată",
   "SameEmail": "Nu puteți folosi una și aceeaşi adresă adresa e-mail ",
-  "SpacesInLocalPart": "Partea locală nu trebuie să conțină spații"
+  "SpacesInLocalPart": "Partea locală nu trebuie să conțină spații",
+  "DomainIpAddress": "Domenii sub forma unei adrese IP nu sunt acceptate",
+  "EmptyEmail": "Niciun e-mail nu a fost parsat"
 }

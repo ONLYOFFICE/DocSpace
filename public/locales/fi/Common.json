@@ -139,5 +139,7 @@
   "PunycodeDomain": "Paikallisia verkkotunnuksia ei tueta",
   "PunycodeLocalPart": "Punycode-verkkotunnuksia ei tueta",
   "SameEmail": "Et voi käyttää samaa sähköpostiosoitetta",
-  "SpacesInLocalPart": "Paikallinen osa ei voi sisältää välilyöntejä"
+  "SpacesInLocalPart": "Paikallinen osa ei voi sisältää välilyöntejä",
+  "DomainIpAddress": "Verkkotunnuksia IP-osoitteina ei tueta",
+  "EmptyEmail": "Yhtään sähköpostia ei ole jäsennelty"
 }

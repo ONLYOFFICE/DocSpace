@@ -139,5 +139,7 @@
   "PunycodeDomain": "Domény Punycode nejsou podporovány",
   "PunycodeLocalPart": "Místní část Punycode není podporována",
   "SameEmail": "Nelze použít stejný e-mail",
-  "SpacesInLocalPart": "Místní část nemůže obsahovat mezery"
+  "SpacesInLocalPart": "Místní část nemůže obsahovat mezery",
+  "DomainIpAddress": "Domény jako IP adresa nejsou podporovány",
+  "EmptyEmail": "Nebyl analyzován žádný e-mail"
 }

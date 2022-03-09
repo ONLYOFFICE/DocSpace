@@ -1,7 +1,5 @@
 ﻿{
-  "DomainIpAddress": "Domēni kā IP adrese netiek atbalstīti",
   "EmailActivationDescription": "Aktivizācijas norādījumi tiks nosūtīti uz ievadīto e -pastu",
   "EmailChangeTitle": "E-pasta maiņa",
-  "EmptyEmail": "Neviens e-pasts nav parsēts",
   "EnterEmail": "Ievadiet jaunu e-pasta adresi"
 }
