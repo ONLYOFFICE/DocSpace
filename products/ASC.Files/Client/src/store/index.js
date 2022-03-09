@@ -13,6 +13,7 @@ import PrimaryProgressDataStore from "./PrimaryProgressDataStore";
 import VersionHistoryStore from "./VersionHistoryStore";
 import DialogsStore from "./DialogsStore";
 import selectedFilesStore from "./SelectedFilesStore";
+import ContextOptionsStore from "./ContextOptionsStore";
 import store from "studio/store";
 
 const selectedFolderStore = new SelectedFolderStore(store.auth.settingsStore);
@@ -68,6 +69,18 @@ const filesActionsStore = new FilesActionsStore(
 
 const versionHistoryStore = new VersionHistoryStore(filesStore);
 
+const contextOptionsStore = new ContextOptionsStore(
+  store.auth,
+  dialogsStore,
+  filesActionsStore,
+  filesStore,
+  mediaViewerDataStore,
+  treeFoldersStore,
+  uploadDataStore,
+  versionHistoryStore,
+  settingsStore
+);
+
 //const selectedFilesStore = new SelectedFilesStore(selectedFilesStore);
 const stores = {
   filesStore,
@@ -80,6 +93,7 @@ const stores = {
   selectedFolderStore,
   filesActionsStore,
   selectedFilesStore,
+  contextOptionsStore,
 };
 
 export default stores;
