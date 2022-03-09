@@ -17,7 +17,7 @@ class AmazonStorage extends React.PureComponent {
 
     this.requiredFields = AmazonSettings.requiredFormsName();
 
-    onSetRequiredFormNames([...this.requiredFields, "path"]);
+    onSetRequiredFormNames([...this.requiredFields, "filePath"]);
 
     this.state = {
       formSettings,
@@ -61,15 +61,15 @@ class AmazonStorage extends React.PureComponent {
         />
 
         <TextInput
-          name="path"
+          name="filePath"
           className="backup_text-input"
           scale={true}
-          value={formSettings.path}
+          value={formSettings.filePath}
           onChange={this.onChange}
           isDisabled={isInitialLoading || !availableStorage[selectedId]?.isSet}
           placeholder={t("Path")}
           tabIndex={this.namesArray.length}
-          hasError={isErrors?.path}
+          hasError={isErrors?.filePath}
         />
       </>
     );

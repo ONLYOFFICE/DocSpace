@@ -230,7 +230,7 @@ class RestoreBackup extends React.Component {
         value: this.storageId,
       });
       let tmpObj = {};
-      const arraySettings = Object.entries(formSettings);
+      const arraySettings = Object.entries(this.formSettings);
       console.log("this.state.formSettings", arraySettings);
       for (let i = 0; i < this.formNames.length; i++) {
         tmpObj = {

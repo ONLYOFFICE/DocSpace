@@ -13,7 +13,7 @@ class RackspaceStorage extends React.Component {
     this.namesArray = RackspaceSettings.formNames();
     this.namesArray.forEach((elem) => (formSettings[elem] = ""));
 
-    onSetRequiredFormNames([...this.namesArray, "path"]);
+    onSetRequiredFormNames([...this.namesArray, "filePath"]);
 
     this.state = {
       formSettings,
@@ -58,15 +58,15 @@ class RackspaceStorage extends React.Component {
         />
 
         <TextInput
-          name="path"
+          name="filePath"
           className="backup_text-input"
           scale={true}
-          value={formSettings.path}
+          value={formSettings.filePath}
           onChange={this.onChange}
           isDisabled={isInitialLoading || !availableStorage[selectedId]?.isSet}
           placeholder={t("Path")}
           tabIndex={this.namesArray.length}
-          hasError={isErrors?.path}
+          hasError={isErrors?.filePath}
         />
       </>
     );
