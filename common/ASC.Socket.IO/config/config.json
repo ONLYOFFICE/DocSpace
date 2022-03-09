@@ -1,11 +1,5 @@
 {
   "port": 9899,
   "appsettings": "../../../config",
-  "environment": "Development",
-  "redis": {
-    "enabled": false,
-    "db": 0,
-    "pass": "",
-    "ttl": 84600
-  }
+  "environment": "Development"
 }

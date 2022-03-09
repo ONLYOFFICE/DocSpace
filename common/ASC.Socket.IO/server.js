@@ -24,10 +24,10 @@ const secret = config.get("core").machinekey + new Date().getTime();
 const secretCookieParser = cookieParser(secret);
 const baseCookieParser = cookieParser();
 
-const redisOptions = config.get("redis");
+const redisOptions = config.get("Redis");
 
 let store;
-if (redisOptions?.enabled) {
+if (redisOptions != null) {
   const redisClient = redis.createClient(redisOptions);
   store = new RedisStore({ client: redisClient });
 } else {

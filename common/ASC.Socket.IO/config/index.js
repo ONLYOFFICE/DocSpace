@@ -36,12 +36,14 @@ function getAndSaveAppsettings(){
     else{
         nconf.file("redis", path.join(__dirname, appsettings, 'redis.json'));
     }
-    var hosts = nconf.get("Redis").Hosts;
-    var redis = nconf.get("redis");
-    if(hosts && hosts.count > 0)
+
+    var redis = nconf.get("Redis");
+    if(redis != null)
     {
-        redis.host = hosts[0].Host; 
-        redis.port = hosts[0].Port; 
-        nconf.set("redis", redis);
+        redis.host = redis.Hosts[0].Host; 
+        redis.port = redis.Hosts[0].Port; 
+        redis.connect_timeout = redis.ConnectTimeout;
+        redis.db = redis.Database;
+        nconf.set("Redis", redis);
     }
 }
