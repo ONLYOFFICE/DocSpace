@@ -87,5 +87,6 @@
   "ManualBackupDescription": "如果要将门户中包含的所有数据作为文件获取，请使用此选项。",
   "ManualBackupHelp": "选项<strong>数据备份</strong>用于创建数据备份，进一步可以将它们还原到本地服务器或在SaaS门户。选择一个位置的数据（不要忘了指定访问亚马逊的信息）。<br/><strong>注：</strong>之前，你可以备份第三方账户（投放箱，Box.com，OneDrive或谷歌驱动器），需要将其连接到文件夹的“共享文档”ONLYOFFICE。",
   "AutoBackupHelp": "<strong>自动备份</strong>选项用于自动化门户数据备份过程，以便稍后在本地服务器或SaaS门户上进行恢复。选择数据存储，自动备份期和最多保存的副本。<br/><strong>注意：</strong>在将备份数据保存到第三方帐户（DropBox，Box.com，OneDrive或Google Drive）前，您将需要将此账户连接到ONLYOFFICE 共用文档文件夹。",
-  "RestoreBackupHelp": "选项<strong>数据恢复</strong>用于恢复以前保存的数据门户网站（从本地服务器或SaaS的门户网站）。选择数据所在的位置，输入所需信息，并检查该选项<strong>通知门户网站的用户</strong>，提醒用户保存的备份/恢复。"
+  "RestoreBackupHelp": "选项<strong>数据恢复</strong>用于恢复以前保存的数据门户网站（从本地服务器或SaaS的门户网站）。选择数据所在的位置，输入所需信息，并检查该选项<strong>通知门户网站的用户</strong>，提醒用户保存的备份/恢复。",
+  "RestoreBackupWarningText": "在恢复过程中，门户将不可用。恢复完成后，所选的恢复点日期后所做的所有更改均将丢失。"
 }
