@@ -64,6 +64,7 @@ using ASC.FederatedLogin.LoginProviders;
 using ASC.IPSecurity;
 using ASC.MessagingSystem;
 using ASC.Security.Cryptography;
+using ASC.Web.Api.Core;
 using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core;
@@ -175,6 +176,7 @@ namespace ASC.Api.Settings
         private InstanceCrypto InstanceCrypto { get; }
         private Signature Signature { get; }
         private DbWorker WebhookDbWorker { get; }
+        private DnsSettings DnsSettings { get; }
         public IHttpClientFactory ClientFactory { get; }
 
         public SettingsController(
@@ -241,6 +243,7 @@ namespace ASC.Api.Settings
             InstanceCrypto instanceCrypto,
             Signature signature,
             DbWorker dbWorker,
+            DnsSettings dnsSettings,
             IHttpClientFactory clientFactory)
         {
             Log = option.Get("ASC.Api");
@@ -303,6 +306,7 @@ namespace ASC.Api.Settings
             TelegramHelper = telegramHelper;
             PaymentManager = paymentManager;
             WebhookDbWorker = dbWorker;
+            DnsSettings = dnsSettings;
             Constants = constants;
             InstanceCrypto = instanceCrypto;
             Signature = signature;
@@ -406,6 +410,41 @@ namespace ASC.Api.Settings
             SettingsManager.Save(new StudioAdminMessageSettings { Enable = model.TurnOn });
 
             MessageService.Send(MessageAction.AdministratorMessageSettingsUpdated);
+
+            return Resource.SuccessfullySaveSettingsMessage;
+        }
+
+        [Read("cookiesettings")]
+        public int GetCookieSettings()
+        {
+            return CookiesManager.GetLifeTime(TenantManager.GetCurrentTenant().TenantId);
+        }
+
+        [Update("cookiesettings")]
+        public object UpdateCookieSettingsFromBody([FromBody] CookieSettingsModel model)
+        {
+            return UpdateCookieSettings(model);
+        }
+
+        [Update("messagesettings")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public object UpdateCookieSettingsFromForm([FromForm] CookieSettingsModel model)
+        {
+            return UpdateCookieSettings(model);
+        }
+
+        private object UpdateCookieSettings(CookieSettingsModel model)
+        {
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+            if (!SetupInfo.IsVisibleSettings("CookieSettings"))
+            {
+                throw new BillingException(Resource.ErrorNotAllowedOption, "CookieSettings");
+            }
+
+            CookiesManager.SetLifeTime(model.LifeTime);
+
+            MessageService.Send(MessageAction.CookieSettingsUpdated);
 
             return Resource.SuccessfullySaveSettingsMessage;
         }
@@ -733,6 +772,13 @@ namespace ASC.Api.Settings
             return Dns.GetHostName().ToLowerInvariant();
         }
 
+        [Update("dns")]
+        public object SaveDnsSettings(DnsSettingsModel model)
+        {
+            return DnsSettings.SaveDnsSettings(model.DnsName, model.Enable);
+        }
+
+
         [Read("greetingsettings")]
         public ContentResult GetGreetingSettings()
         {
@@ -892,11 +938,29 @@ namespace ASC.Api.Settings
 
         [Read("security/password", Check = false)]
         [Authorize(AuthenticationSchemes = "confirm", Roles = "Everyone")]
-        public object GetPasswordSettings()
+        public PasswordSettings GetPasswordSettings()
         {
-            var UserPasswordSettings = SettingsManager.Load<PasswordSettings>();
+            return SettingsManager.Load<PasswordSettings>();
+        }
 
-            return UserPasswordSettings;
+        [Update("security/password")]
+        public PasswordSettings UpdatePasswordSettings(PasswordSettingsModel model)
+        {
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+            var userPasswordSettings = SettingsManager.Load<PasswordSettings>();
+
+            userPasswordSettings.MinLength = model.MinLength;
+            userPasswordSettings.UpperCase = model.UpperCase;
+            userPasswordSettings.Digits = model.Digits;
+            userPasswordSettings.SpecSymbols = model.SpecSymbols;
+
+            SettingsManager.Save(userPasswordSettings);
+
+            MessageService.Send(MessageAction.PasswordStrengthSettingsUpdated);
+
+            return userPasswordSettings;
+
         }
 
         [Update("security")]
@@ -1116,7 +1180,7 @@ namespace ASC.Api.Settings
             {
                 var logoDict = new Dictionary<int, string>();
 
-                foreach(var l in model.Logo)
+                foreach (var l in model.Logo)
                 {
                     logoDict.Add(Int32.Parse(l.Key), l.Value);
                 }

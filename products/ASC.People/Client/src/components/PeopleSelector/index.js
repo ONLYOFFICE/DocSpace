@@ -1,4 +1,5 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 import { I18nextProvider, withTranslation } from "react-i18next";
 import i18n from "./i18n";
@@ -22,7 +23,7 @@ class PeopleSelector extends React.Component {
   }
 
   componentDidMount() {
-    const { t, groupsCaption, groupList, useFake } = this.props;
+    const { groupList, useFake, t } = this.props;
 
     if (!groupList) {
       getGroupList(useFake)
@@ -31,7 +32,8 @@ class PeopleSelector extends React.Component {
             groups: [
               {
                 key: "all",
-                label: t("CustomAllGroups", { groupsCaption }),
+                id: "all",
+                label: `${t("AllUsers")}`,
                 total: 0,
               },
             ].concat(this.convertGroups(groups)),
@@ -43,7 +45,8 @@ class PeopleSelector extends React.Component {
         groups: [
           {
             key: "all",
-            label: t("CustomAllGroups", { groupsCaption }),
+            id: "all",
+            label: `${t("AllUsers")}`,
             total: 0,
           },
         ].concat(groupList),
@@ -56,6 +59,7 @@ class PeopleSelector extends React.Component {
       ? groups.map((g) => {
           return {
             key: g.id,
+            id: g.id,
             label: g.name,
             total: 0,
           };
@@ -79,9 +83,9 @@ class PeopleSelector extends React.Component {
   };
 
   loadNextPage = ({ startIndex, searchValue, currentGroup }) => {
-    console.log(
-      `loadNextPage(startIndex=${startIndex}, searchValue="${searchValue}", currentGroup="${currentGroup}")`
-    );
+    // console.log(
+    //   `loadNextPage(startIndex=${startIndex}, searchValue="${searchValue}", currentGroup="${currentGroup}")`
+    // );
 
     const pageCount = 100;
 
@@ -175,7 +179,7 @@ class PeopleSelector extends React.Component {
 
     // console.log("onOptionTooltipShow", index, user);
 
-    const { defaultOption } = this.props;
+    const { defaultOption, theme } = this.props;
 
     const label =
       defaultOption && defaultOption.id === user.key
@@ -184,6 +188,7 @@ class PeopleSelector extends React.Component {
 
     return (
       <UserTooltip
+        theme={theme}
         avatarUrl={user.avatarUrl}
         label={label}
         email={user.email}
@@ -203,13 +208,7 @@ class PeopleSelector extends React.Component {
   };
 
   render() {
-    const {
-      options,
-      groups,
-      selectedGroups,
-      hasNextPage,
-      isNextPageLoading,
-    } = this.state;
+    const { options, groups, hasNextPage, isNextPageLoading } = this.state;
 
     const {
       id,
@@ -223,20 +222,22 @@ class PeopleSelector extends React.Component {
       onCancel,
       t,
       searchPlaceHolderLabel,
-      groupsCaption,
-      displayType,
       withoutAside,
       embeddedComponent,
       selectedOptions,
       showCounter,
       smallSectionWidth,
+      theme,
+      onArrowClick,
+      headerLabel,
     } = this.props;
 
-    console.log("CustomAllGroups", t("CustomAllGroups", { groupsCaption }));
+    // console.log("CustomAllGroups", t("CustomAllGroups", { groupsCaption }));
 
-    console.log("PeopleSelector render");
+    // console.log("PeopleSelector render");
     return (
       <AdvancedSelector
+        theme={theme}
         id={id}
         className={className}
         style={style}
@@ -247,9 +248,7 @@ class PeopleSelector extends React.Component {
         smallSectionWidth={smallSectionWidth}
         loadNextPage={this.loadNextPage}
         size={size}
-        displayType={displayType}
         selectedOptions={selectedOptions}
-        selectedGroups={selectedGroups}
         isOpen={isOpen}
         isMultiSelect={isMultiSelect}
         isDisabled={isDisabled}
@@ -258,8 +257,6 @@ class PeopleSelector extends React.Component {
         }
         isDefaultDisplayDropDown={false}
         selectButtonLabel={t("Translations:AddMembers")}
-        selectAllLabel={t("Common:SelectAll")}
-        groupsHeaderLabel={groupsCaption}
         emptySearchOptionsLabel={t("EmptySearchUsersResult")}
         emptyOptionsLabel={t("EmptyUsers")}
         loadingLabel={`${t("Common:LoadingProcessing")} ${t(
@@ -268,11 +265,12 @@ class PeopleSelector extends React.Component {
         onSelect={onSelect}
         onSearchChanged={this.onSearchChanged}
         onGroupChanged={this.onGroupChanged}
-        //getOptionTooltipContent={this.getOptionTooltipContent}
         onCancel={onCancel}
         withoutAside={withoutAside}
         embeddedComponent={embeddedComponent}
         showCounter={showCounter}
+        onArrowClick={onArrowClick}
+        headerLabel={headerLabel ? headerLabel : `${t("AddUsers")}`}
       />
     );
   }
@@ -280,7 +278,7 @@ class PeopleSelector extends React.Component {
 
 PeopleSelector.propTypes = {
   id: PropTypes.string,
-  className: PropTypes.oneOf([PropTypes.string, PropTypes.array]),
+  className: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   style: PropTypes.object,
   isOpen: PropTypes.bool,
   onSelect: PropTypes.func,
@@ -297,7 +295,6 @@ PeopleSelector.propTypes = {
   searchPlaceHolderLabel: PropTypes.string,
   role: PropTypes.oneOf(["admin", "user", "guest"]),
   employeeStatus: PropTypes.any,
-  displayType: PropTypes.oneOf(["auto", "aside", "dropdown"]),
   withoutAside: PropTypes.bool,
   embeddedComponent: PropTypes.any,
 };
@@ -310,16 +307,18 @@ PeopleSelector.defaultProps = {
   employeeStatus: null,
   defaultOption: null,
   defaultOptionLabel: "Me",
-  groupsCaption: "Groups",
-  displayType: "auto",
   withoutAside: false,
 };
 
-const ExtendedPeopleSelector = withTranslation([
-  "PeopleSelector",
-  "Translations",
-  "Common",
-])(PeopleSelector);
+const ExtendedPeopleSelector = inject(({ auth }) => {
+  return { theme: auth.settingsStore.theme };
+})(
+  observer(
+    withTranslation(["PeopleSelector", "Translations", "Common"])(
+      PeopleSelector
+    )
+  )
+);
 
 export default (props) => (
   <I18nextProvider i18n={i18n}>

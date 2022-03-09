@@ -4,70 +4,45 @@ import equal from "fast-deep-equal/react";
 import classnames from "classnames";
 import PropTypes from "prop-types";
 import { LayoutContextConsumer } from "studio/Layout/context";
-import { isMobile } from "react-device-detect";
-import { tablet, desktop } from "@appserver/components/utils/device";
+import { isMobile, isMobileOnly } from "react-device-detect";
+import { tablet, desktop, mobile } from "@appserver/components/utils/device";
 import NoUserSelect from "@appserver/components/utils/commonStyles";
+import Base from "@appserver/components/themes/base";
+
 const StyledSectionHeader = styled.div`
-  height: 42px;
-  margin-right: 24px;
+  position: relative;
+  height: 53px;
+  margin-right: 20px;
+
   ${NoUserSelect}
-  ${isMobile &&
-  css`
-    height: 20px;
-    width: ${(props) => !props.isLoaded && "100%"};
-
-    margin-top: 62px;
-    @media ${tablet} {
-      margin-top: 48px;
-    }
-  `}
-
-  @media ${desktop} {
-    ${(props) =>
-      (props.viewAs === "table" || props.viewAs === "tile") &&
-      "margin-left: -4px"};
-  }
 
   @media ${tablet} {
-    ${(props) =>
-      props.viewAs !== "tablet" &&
-      css`
-        height: 49px;
-
-        .arrow-button {
-          svg {
-            width: 14px;
-          }
-          margin-right: 10px;
-        }
-      `}
-  }
-
-  @media ${tablet} {
+    height: 61px;
     margin-right: 16px;
   }
 
-  .section-header {
-    height: 50px;
-    ${isMobile &&
-    css`
-      max-width: calc(100vw - 32px);
-      width: 100%;
-    `}
+  ${isMobile &&
+  css`
+    height: 61px !important;
+    margin-top: 48px !important;
+    margin-right: 0px !important;
+  `}
 
-    ${isMobile &&
-    css`
-      position: fixed;
-      top: 48px;
-
-      width: ${(props) =>
-        props.isArticlePinned ? `calc(100% - 272px)` : "100%"};
-
-      background-color: #fff;
-      z-index: 149;
-      padding-right: 16px;
-    `}
+  @media ${mobile} {
+    max-width: calc(100vw - 32px);
+    height: 53px;
+    margin-top: 0px;
+    margin-right: 0px;
   }
+
+  ${isMobileOnly &&
+  css`
+    max-width: calc(100vw - 32px);
+    height: 53px !important;
+    margin-top: 48px !important;
+    margin-right: 0px !important;
+  `}
+
   ${isMobile &&
   css`
     .section-header,
@@ -103,6 +78,8 @@ const StyledSectionHeader = styled.div`
   }
 `;
 
+StyledSectionHeader.defaultProps = { theme: Base };
+
 class SectionHeader extends React.Component {
   constructor(props) {
     super(props);
@@ -115,7 +92,7 @@ class SectionHeader extends React.Component {
   }
 
   render() {
-    //console.log("PageLayout SectionHeader render");
+    // console.log("PageLayout SectionHeader render");
     // eslint-disable-next-line react/prop-types
 
     const { isArticlePinned, isHeaderVisible, viewAs, ...rest } = this.props;

@@ -36,6 +36,8 @@
   "Guests": "Invités",
   "Job/Title": "Emploi/Titre",
   "LanguageAndTimeZoneSettingsDescription": "Modifier la langue pour l'ensemble des utilisateurs du portail et configurer le fuseau horaire afin que l'ensemble des événements s'affichent avec la date et l'heure correctes.",
+  "LanguageTimeSettingsTooltip": "Les <0>{{text}}</0> est un moyen de changer la langue du portail pour tous les utilisateurs et de configurer le fuseau horaire afin que tous les événements du portail ONLYOFFICE seront affichés avec la date et l'heure correctes.",
+  "LanguageTimeSettingsTooltipDescription": "Pour valider les changements effectués, utilisez le bouton <1>{{save}}</1> en bas de la section.<3>{{learnMore}}</3>",
   "LogoDark": "Logo pour les pages de Connexion et À propos",
   "LogoDocsEditor": "Logo pour l'en-tête des éditeurs",
   "LogoFavicon": "Favicon",

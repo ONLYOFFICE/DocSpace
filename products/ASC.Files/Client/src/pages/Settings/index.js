@@ -8,6 +8,11 @@ import {
   ArticleBodyContent,
   ArticleMainButtonContent,
 } from "../../components/Article";
+import {
+  CatalogBodyContent,
+  CatalogHeaderContent,
+  CatalogMainButtonContent,
+} from "../../components/Catalog";
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { withTranslation } from "react-i18next";
 import { setDocumentTitle } from "../../helpers/utils";
@@ -20,6 +25,7 @@ const PureSettings = ({
   isLoadedSettingsTree,
   setFirstLoad,
   tReady,
+  showCatalog,
 }) => {
   const [title, setTitle] = useState("");
   const { setting } = match.params;
@@ -62,17 +68,39 @@ const PureSettings = ({
   return (
     <>
       <PageLayout>
-        <PageLayout.ArticleHeader>
-          <ArticleHeaderContent />
-        </PageLayout.ArticleHeader>
+        {!showCatalog && (
+          <PageLayout.ArticleHeader>
+            <ArticleHeaderContent />
+          </PageLayout.ArticleHeader>
+        )}
 
-        <PageLayout.ArticleMainButton>
-          <ArticleMainButtonContent isDisabled={true} />
-        </PageLayout.ArticleMainButton>
+        {!showCatalog && (
+          <PageLayout.ArticleMainButton>
+            <ArticleMainButtonContent isDisabled={true} />
+          </PageLayout.ArticleMainButton>
+        )}
 
-        <PageLayout.ArticleBody>
-          <ArticleBodyContent />
-        </PageLayout.ArticleBody>
+        {!showCatalog && (
+          <PageLayout.ArticleBody>
+            <ArticleBodyContent />
+          </PageLayout.ArticleBody>
+        )}
+
+        {showCatalog && (
+          <PageLayout.CatalogHeader>
+            <CatalogHeaderContent />
+          </PageLayout.CatalogHeader>
+        )}
+        {showCatalog && (
+          <PageLayout.CatalogMainButton>
+            <CatalogMainButtonContent />
+          </PageLayout.CatalogMainButton>
+        )}
+        {showCatalog && (
+          <PageLayout.CatalogBody>
+            <CatalogBodyContent />
+          </PageLayout.CatalogBody>
+        )}
 
         <PageLayout.SectionHeader>
           {(!isLoadedSettingsTree && isLoading) || isLoading || !tReady ? (
@@ -100,17 +128,21 @@ const PureSettings = ({
 
 const Settings = withTranslation(["Settings", "Common"])(PureSettings);
 
-export default inject(({ filesStore, settingsStore, treeFoldersStore }) => {
-  const { setFirstLoad, isLoading } = filesStore;
-  const { setSelectedNode } = treeFoldersStore;
-  const { getFilesSettings, isLoadedSettingsTree } = settingsStore;
+export default inject(
+  ({ auth, filesStore, settingsStore, treeFoldersStore }) => {
+    const { setFirstLoad, isLoading } = filesStore;
+    const { setSelectedNode } = treeFoldersStore;
+    const { getFilesSettings, isLoadedSettingsTree } = settingsStore;
 
-  return {
-    isLoading,
-    isLoadedSettingsTree,
+    return {
+      isLoading,
+      isLoadedSettingsTree,
 
-    setFirstLoad,
-    setSelectedNode,
-    getFilesSettings,
-  };
-})(withRouter(observer(Settings)));
+      setFirstLoad,
+      setSelectedNode,
+      getFilesSettings,
+
+      showCatalog: auth.settingsStore.showCatalog,
+    };
+  }
+)(withRouter(observer(Settings)));

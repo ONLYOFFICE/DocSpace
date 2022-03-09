@@ -1,4 +1,5 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
 import Text from "@appserver/components/text";
 import Link from "@appserver/components/link";
 import NoUserSelect from "@appserver/components/utils/commonStyles";
@@ -35,7 +36,7 @@ const StyledAboutBody = styled.div`
   }
 `;
 
-const AboutContent = ({ personal, buildVersionInfo }) => {
+const AboutContent = ({ personal, buildVersionInfo, theme }) => {
   const { t } = useTranslation("About");
   const license = "AGPL-3.0";
   const linkAppServer = "https://github.com/ONLYOFFICE/AppServer";
@@ -55,7 +56,11 @@ const AboutContent = ({ personal, buildVersionInfo }) => {
           />
         ) : (
           <img
-            src="/images/dark_general.png"
+            src={
+              theme.isBase
+                ? "/images/dark_general.png"
+                : "/images/white_general.png"
+            }
             alt="Logo"
             className="no-select"
           />
@@ -68,7 +73,7 @@ const AboutContent = ({ personal, buildVersionInfo }) => {
         </Text>
         <Link
           className="row-el"
-          color="#2DA7DB"
+          color={theme.studio.about.linkColor}
           fontSize="13px"
           fontWeight="600"
           href={linkAppServer}
@@ -87,7 +92,7 @@ const AboutContent = ({ personal, buildVersionInfo }) => {
         </Text>
         <Link
           className="row-el"
-          color="#2DA7DB"
+          color={theme.studio.about.linkColor}
           fontSize="13px"
           fontWeight="600"
           href={linkDocs}
@@ -137,7 +142,7 @@ const AboutContent = ({ personal, buildVersionInfo }) => {
         </Text>
         <Link
           className="row-el"
-          color="#2DA7DB"
+          color={theme.studio.about.linkColor}
           fontSize="13px"
           fontWeight="600"
           href={`mailto:${email}`}
@@ -149,4 +154,6 @@ const AboutContent = ({ personal, buildVersionInfo }) => {
   );
 };
 
-export default AboutContent;
+export default inject(({ auth }) => {
+  return { theme: auth.settingsStore.theme };
+})(observer(AboutContent));

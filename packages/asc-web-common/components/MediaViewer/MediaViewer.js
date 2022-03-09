@@ -513,7 +513,7 @@ class MediaViewer extends React.Component {
 
         <div>
           <div className="details" ref={this.detailsContainer}>
-            <Text isBold fontSize="14px" color="#fff" className="title">
+            <Text isBold fontSize="14px" className="title">
               {title}
             </Text>
             <ControlBtn
@@ -521,7 +521,6 @@ class MediaViewer extends React.Component {
               className="mediaPlayerClose"
             >
               <IconButton
-                color="#fff"
                 iconName="/static/images/cross.react.svg"
                 size={25}
                 isClickable

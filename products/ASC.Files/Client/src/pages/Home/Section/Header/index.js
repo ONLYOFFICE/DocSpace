@@ -7,26 +7,47 @@ import Loaders from "@appserver/common/components/Loaders";
 import Headline from "@appserver/common/components/Headline";
 import { FilterType, FileAction } from "@appserver/common/constants";
 import { withTranslation } from "react-i18next";
-import { isMobile } from "react-device-detect";
+import { isMobile, isMobileOnly } from "react-device-detect";
 import ContextMenuButton from "@appserver/components/context-menu-button";
 import DropDownItem from "@appserver/components/drop-down-item";
 import IconButton from "@appserver/components/icon-button";
-import { tablet, desktop } from "@appserver/components/utils/device";
+import { tablet, desktop, mobile } from "@appserver/components/utils/device";
 import { Consumer } from "@appserver/components/utils/context";
 import { inject, observer } from "mobx-react";
 import TableGroupMenu from "@appserver/components/table-container/TableGroupMenu";
+import Navigation from "@appserver/common/components/Navigation";
 
 const StyledContainer = styled.div`
+  padding: 0 0 15px;
+
+  @media ${tablet} {
+    padding: 0 0 17px;
+  }
+
+  ${isMobile &&
+  css`
+    padding: 0 0 17px;
+  `}
+
+  @media ${mobile} {
+    padding: 0 0 13px;
+  }
+
+  ${isMobileOnly &&
+  css`
+    padding: 0 0 13px;
+  `}
+
   .table-container_group-menu {
     ${(props) =>
       props.viewAs === "table"
         ? css`
             margin: 0px -20px;
-            width: calc(100% + 44px);
+            width: calc(100% + 40px);
           `
         : css`
-            margin: 0px -24px;
-            width: calc(100% + 48px);
+            margin: 0px -20px;
+            width: calc(100% + 40px);
           `}
 
     @media ${tablet} {
@@ -34,148 +55,12 @@ const StyledContainer = styled.div`
       width: calc(100% + 32px);
     }
   }
-
-  .header-container {
-    position: relative;
-    ${(props) =>
-      props.isTitle &&
-      css`
-        display: grid;
-        grid-template-columns: ${(props) =>
-          props.isRootFolder
-            ? "auto auto 1fr"
-            : props.canCreate
-            ? "auto auto auto auto 1fr"
-            : "auto auto auto 1fr"};
-
-        @media ${tablet} {
-          grid-template-columns: ${(props) =>
-            props.isRootFolder
-              ? "1fr auto"
-              : props.canCreate
-              ? "auto 1fr auto auto"
-              : "auto 1fr auto"};
-          ${(props) => !props.isLoading && "top: 7px;"}
-        }
-      `}
-    align-items: center;
-    max-width: calc(100vw - 32px);
-
-    @media ${tablet} {
-      .headline-header {
-        margin-left: -1px;
-      }
-    }
-    .arrow-button {
-      margin-right: 15px;
-      min-width: 17px;
-
-      @media ${tablet} {
-        padding: 8px 0 8px 8px;
-        margin-left: -8px;
-        margin-right: 16px;
-      }
-    }
-
-    .add-button {
-      margin-bottom: -1px;
-      margin-left: 16px;
-
-      @media ${tablet} {
-        margin-left: auto;
-
-        & > div:first-child {
-          padding: 8px 8px 8px 8px;
-          margin-right: -8px;
-        }
-      }
-    }
-
-    .option-button {
-      margin-bottom: -1px;
-
-      @media (min-width: 1024px) {
-        margin-left: 8px;
-      }
-
-      @media ${tablet} {
-        & > div:first-child {
-          padding: 8px 8px 8px 8px;
-          margin-right: -8px;
-        }
-      }
-    }
-
-    .trash-button {
-      margin-bottom: -1px;
-
-      @media (min-width: 1024px) {
-        margin-left: 8px;
-      }
-
-      @media ${tablet} {
-        & > div:first-child {
-          margin-right: -8px;
-        }
-      }
-    }
-  }
-
-  .group-button-menu-container {
-    margin: 0 -16px;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-
-    ${isMobile &&
-    css`
-      position: sticky;
-    `}
-
-    ${(props) =>
-      !props.isTabletView
-        ? props.width &&
-          isMobile &&
-          css`
-            width: ${props.width + 40 + "px"};
-          `
-        : props.width &&
-          isMobile &&
-          css`
-            width: ${props.width + 32 + "px"};
-          `}
-
-    @media ${tablet} {
-      padding-bottom: 0;
-      ${!isMobile &&
-      css`
-        height: 56px;
-      `}
-      & > div:first-child {
-        ${(props) =>
-          !isMobile &&
-          props.width &&
-          css`
-            width: ${props.width + 16 + "px"};
-          `}
-
-        position: absolute;
-        ${(props) =>
-          !props.isDesktop &&
-          css`
-            top: 48px;
-          `}
-        z-index: 180;
-      }
-    }
-
-    @media ${desktop} {
-      margin: 0 -24px;
-    }
-  }
 `;
 
 class SectionHeaderContent extends React.Component {
   constructor(props) {
     super(props);
+    this.state = { navigationItems: [] };
   }
 
   onCreate = (format) => {
@@ -405,27 +290,37 @@ class SectionHeaderContent extends React.Component {
     this.props.setSelected(checked ? "all" : "none");
   };
 
+  onClickFolder = (data) => {
+    const { setSelectedNode, setIsLoading, fetchFiles } = this.props;
+    setSelectedNode(data);
+    setIsLoading(true);
+    fetchFiles(data, null, true, false)
+      .catch((err) => toastr.error(err))
+      .finally(() => setIsLoading(false));
+  };
+
   render() {
     //console.log("Body header render");
 
     const {
       t,
       tReady,
-      isHeaderVisible,
-      isHeaderChecked,
-      isHeaderIndeterminate,
       isRootFolder,
       title,
       canCreate,
       isDesktop,
       isTabletView,
       personal,
+      navigationPath,
       getHeaderMenu,
       viewAs,
       isRecycleBinFolder,
       isEmptyFilesList,
+      isHeaderVisible,
+      isHeaderChecked,
+      isHeaderIndeterminate,
+      showText,
     } = this.props;
-
     const menuItems = this.getMenuItems();
     const isLoading = !title || !tReady;
     const headerMenu = getHeaderMenu(t);
@@ -456,81 +351,27 @@ class SectionHeaderContent extends React.Component {
                 {isLoading ? (
                   <Loaders.SectionHeader />
                 ) : (
-                  <>
-                    {!isRootFolder && (
-                      <IconButton
-                        iconName="/static/images/arrow.path.react.svg"
-                        size="17"
-                        color="#A3A9AE"
-                        hoverColor="#657077"
-                        isFill={true}
-                        onClick={this.onBackToParentFolder}
-                        className="arrow-button"
-                      />
-                    )}
-                    <Headline
-                      className="headline-header"
-                      type="content"
-                      truncate={true}
-                      title={title}
-                    >
-                      {title}
-                    </Headline>
-                    {!isRootFolder && canCreate ? (
-                      <>
-                        <ContextMenuButton
-                          className="add-button"
-                          directionX="right"
-                          iconName="images/header.plus.svg"
-                          size={17}
-                          color="#A3A9AE"
-                          hoverColor="#657077"
-                          isFill
-                          getData={this.getContextOptionsPlus}
-                          isDisabled={false}
-                        />
-
-                        <ContextMenuButton
-                          className="option-button"
-                          directionX="right"
-                          iconName="images/vertical-dots.react.svg"
-                          size={17}
-                          color="#A3A9AE"
-                          hoverColor="#657077"
-                          isFill
-                          getData={this.getContextOptionsFolder}
-                          isDisabled={false}
-                        />
-                      </>
-                    ) : (
-                      canCreate && (
-                        <ContextMenuButton
-                          className="add-button"
-                          directionX="right"
-                          iconName="images/header.plus.svg"
-                          size={17}
-                          color="#A3A9AE"
-                          hoverColor="#657077"
-                          isFill
-                          getData={this.getContextOptionsPlus}
-                          isDisabled={false}
-                        />
-                      )
-                    )}
-                    {isRecycleBinFolder && !isEmptyFilesList && (
-                      <span title={t("EmptyRecycleBin")}>
-                        <IconButton
-                          iconName="images/clear.active.react.svg"
-                          size="15"
-                          color="#A3A9AE"
-                          hoverColor="#657077"
-                          isFill={true}
-                          onClick={this.onEmptyTrashAction}
-                          className="trash-button"
-                        />
-                      </span>
-                    )}
-                  </>
+                  <Navigation
+                    sectionWidth={context.sectionWidth}
+                    showText={showText}
+                    isRootFolder={isRootFolder}
+                    canCreate={canCreate}
+                    title={title}
+                    isDesktop={isDesktop}
+                    isTabletView={isTabletView}
+                    personal={personal}
+                    tReady={tReady}
+                    menuItems={menuItems}
+                    navigationItems={navigationPath}
+                    getContextOptionsPlus={this.getContextOptionsPlus}
+                    getContextOptionsFolder={this.getContextOptionsFolder}
+                    onClose={this.onClose}
+                    onClickFolder={this.onClickFolder}
+                    isRecycleBinFolder={isRecycleBinFolder}
+                    isEmptyFilesList={isEmptyFilesList}
+                    clearTrash={this.onEmptyTrashAction}
+                    onBackToParentFolder={this.onBackToParentFolder}
+                  />
                 )}
               </div>
             )}
@@ -547,9 +388,9 @@ export default inject(
     filesStore,
     dialogsStore,
     selectedFolderStore,
+    treeFoldersStore,
     filesActionsStore,
     settingsStore,
-    treeFoldersStore,
   }) => {
     const {
       setSelected,
@@ -587,10 +428,14 @@ export default inject(
     } = filesActionsStore;
 
     return {
+      showText: auth.settingsStore.showText,
+
       isDesktop: auth.settingsStore.isDesktopClient,
       isRootFolder: selectedFolderStore.parentId === 0,
       title: selectedFolderStore.title,
       currentFolderId: selectedFolderStore.id,
+      pathParts: selectedFolderStore.pathParts,
+      navigationPath: selectedFolderStore.navigationPath,
       canCreate,
       isHeaderVisible,
       isHeaderIndeterminate,
@@ -600,6 +445,7 @@ export default inject(
       confirmDelete: settingsStore.confirmDelete,
       personal: auth.settingsStore.personal,
       cbMenuItems,
+      setSelectedNode: treeFoldersStore.setSelectedNode,
       getFolderInfo,
 
       setSelected,

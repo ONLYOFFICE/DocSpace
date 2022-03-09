@@ -14,6 +14,7 @@ import isEmpty from "lodash/isEmpty";
 import { inject } from "mobx-react";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
+import { Base } from "@appserver/components/themes";
 
 const StyledWrapper = styled.div`
   .portal-owner-description {
@@ -38,7 +39,8 @@ const OwnerContainer = styled.div`
   .owner-content-wrapper {
     display: flex;
     padding: 16px;
-    background-color: #f8f9f9;
+    background-color: ${(props) =>
+      props.theme.studio.settings.security.owner.backgroundColor};
     border-radius: 12px;
 
     .avatar_wrapper {
@@ -75,6 +77,8 @@ const OwnerContainer = styled.div`
     margin-top: 8px;
   }
 `;
+
+OwnerContainer.defaultProps = { theme: Base };
 
 const getFormattedDepartments = (departments) => {
   const formattedDepartments = departments.map((department, index) => {
@@ -157,7 +161,7 @@ class OwnerSettings extends Component {
   };
 
   render() {
-    const { t, owner, me, groupsCaption } = this.props;
+    const { t, owner, me, groupsCaption, theme } = this.props;
     const {
       isLoading,
       showSelector,
@@ -189,7 +193,7 @@ class OwnerSettings extends Component {
                   fontSize="16px"
                   fontWeight={600}
                   isBold={true}
-                  color="#316DAA"
+                  color={theme.studio.settings.security.owner.linkColor}
                   href={owner.profileUrl}
                 >
                   {owner.displayName}
@@ -206,7 +210,9 @@ class OwnerSettings extends Component {
                   className="option-info"
                   offsetRight={0}
                   tooltipContent={this.ownerInfo()}
-                  tooltipColor="#F8F7BF"
+                  tooltipColor={
+                    theme.studio.settings.security.owner.tooltipColor
+                  }
                 />
               </div>
               <div className="chooseOwnerWrap">
@@ -219,7 +225,11 @@ class OwnerSettings extends Component {
                 >
                   {selectedOwner ? selectedOwner.label : t("ChooseOwner")}
                 </Link>
-                <Text as="span" fontSize="12px" color="#A3A9AE">
+                <Text
+                  as="span"
+                  fontSize="12px"
+                  color={theme.studio.settings.security.owner.departmentColor}
+                >
                   {t("AccessRightsChangeOwnerConfirmText")}
                 </Text>
               </div>
@@ -235,6 +245,8 @@ class OwnerSettings extends Component {
                 defaultOption={me}
                 defaultOptionLabel={t("Common:MeLabel")}
                 groupsCaption={groupsCaption}
+                onArrowClick={this.onCancelSelector}
+                headerLabel={t("ChooseOwner")}
               />
             </div>
           )}
@@ -253,9 +265,10 @@ OwnerSettings.propTypes = {
 };
 
 export default inject(({ auth, setup }) => {
-  const { customNames, getPortalOwner, owner } = auth.settingsStore;
+  const { customNames, getPortalOwner, owner, theme } = auth.settingsStore;
   const { sendOwnerChange } = setup;
   return {
+    theme,
     groupsCaption: customNames.groupsCaption,
     getPortalOwner,
     owner,

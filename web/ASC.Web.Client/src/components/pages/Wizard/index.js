@@ -380,6 +380,7 @@ class Body extends Component {
       isLicenseRequired,
       urlLicense,
       cultureNames,
+      theme,
     } = this.props;
 
     const {
@@ -436,6 +437,7 @@ class Body extends Component {
 
           <form className="wizard-form">
             <InputContainer
+              theme={theme}
               t={t}
               settingsPassword={passwordSettings}
               emailNeeded={emailNeeded}
@@ -529,6 +531,7 @@ export default inject(({ auth, wizard }) => {
     setWizardComplete,
     getPortalTimezones,
     getPortalPasswordSettings,
+    theme,
   } = auth.settingsStore;
 
   const { language } = auth;
@@ -546,6 +549,7 @@ export default inject(({ auth, wizard }) => {
   } = wizard;
 
   return {
+    theme,
     isLoaded: auth.isLoaded,
     culture: language,
     wizardToken,

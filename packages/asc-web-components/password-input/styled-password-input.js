@@ -5,6 +5,7 @@ import Text from "../text";
 import { tablet, mobile } from "../utils/device";
 import Base from "../themes/base";
 // eslint-disable-next-line no-unused-vars
+
 const SimpleInput = ({ onValidateInput, onCopyToClipboard, ...props }) => (
   <div {...props}></div>
 );
@@ -28,7 +29,18 @@ const StyledInput = styled(SimpleInput)`
         fill: ${(props) =>
           props.isDisabled
             ? props.theme.passwordInput.disableColor
-            : props.theme.passwordInput.color} !important;
+            : props.theme.passwordInput.iconColor} !important;
+      }
+    }
+
+    &:hover {
+      svg {
+        path {
+          fill: ${(props) =>
+            props.isDisabled
+              ? props.theme.passwordInput.disableColor
+              : props.theme.passwordInput.hoverIconColor} !important;
+        }
       }
     }
   }
@@ -149,7 +161,10 @@ const TooltipStyle = styled.div`
 
 const StyledTooltipContainer = styled(Text)`
   //margin: 8px 16px 16px 16px;
+  color: ${(props) => props.theme.passwordInput.tooltipTextColor} !important;
 `;
+
+StyledTooltipContainer.defaultProps = { theme: Base };
 
 const StyledTooltipItem = styled(Text)`
   margin-left: 8px;

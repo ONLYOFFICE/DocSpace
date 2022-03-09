@@ -60,11 +60,10 @@ const TableRow = (props) => {
             ref={cm}
             model={contextOptions}
             contextMenuData={contextMenuData}
+            withBackdrop={true}
           ></ContextMenu>
           {renderContext ? (
             <ContextMenuButton
-              color="#A3A9AE"
-              hoverColor="#657077"
               className="expandButton"
               getData={getOptions}
               directionX="right"

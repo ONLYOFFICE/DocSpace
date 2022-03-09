@@ -1,11 +1,12 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import { tablet, size } from "@appserver/components/utils/device";
+import { tablet, size, mobile } from "@appserver/components/utils/device";
 import {
   isIOS,
   isTablet,
   isSafari,
   isChrome,
+  isMobileOnly,
   isMobile,
 } from "react-device-detect";
 
@@ -16,15 +17,16 @@ const tabletProps = css`
 
   .section-body_filter {
     display: block;
-    margin: 0 0 25px;
+    margin: ${(props) => (props.viewAs === "tile" ? "0 0 18px" : "0 0 30px")};
   }
 `;
 
 const StyledSection = styled.section`
-  padding: 0 0 0 24px;
+  padding: 0 0 0 20px;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
+
   //width: ${(props) => `${props.widthProp}px`};
   .layout-progress-bar {
     position: fixed;

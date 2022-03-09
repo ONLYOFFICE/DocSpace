@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { Resizable } from "re-resizable";
 import { isMobile } from "react-device-detect";
 import { tablet } from "@appserver/components/utils/device";
+import Base from "@appserver/components/themes/base";
 
 const StyledArticle = styled.article`
   @media ${tablet} {
@@ -18,7 +19,7 @@ const StyledArticle = styled.article`
 
   .resizable-block {
     padding: 0 20px;
-    background: #f8f9f9;
+    background: ${(props) => props.theme.article.background};
     min-width: 256px;
     height: 100% !important;
     max-width: ${(props) =>
@@ -57,7 +58,7 @@ const StyledArticle = styled.article`
               top: 0;
               left: 0;
               min-width: 240px;
-              background: #f8f9f9;
+              background: ${(props) => props.theme.article.background};
               z-index: -1;
             }
           `
@@ -85,6 +86,8 @@ const StyledArticle = styled.article`
     }
   }
 `;
+
+StyledArticle.defaultProps = { theme: Base };
 
 class Article extends React.Component {
   render() {

@@ -19,6 +19,7 @@ const OwnerSelector = (props) => {
     onOwnerSelect,
     onClose,
     onClosePanel,
+    theme,
   } = props;
 
   const zIndex = 310;
@@ -33,22 +34,6 @@ const OwnerSelector = (props) => {
       />
       <Aside className="header_aside-panel">
         <StyledContent>
-          <StyledHeaderContent>
-            <IconButton
-              size="16"
-              iconName="/static/images/arrow.path.react.svg"
-              onClick={onClosePanel}
-              color="#A3A9AE"
-            />
-            <Heading
-              className="header_aside-panel-header"
-              size="medium"
-              truncate
-            >
-              {ownerLabel}
-            </Heading>
-          </StyledHeaderContent>
-
           <StyledBody /*ref={this.scrollRef}*/>
             <PeopleSelector
               role="user"
@@ -59,6 +44,8 @@ const OwnerSelector = (props) => {
               onSelect={onOwnerSelect}
               groupsCaption={groupsCaption}
               onCancel={onClose}
+              onArrowClick={onClosePanel}
+              headerLabel={ownerLabel}
             />
           </StyledBody>
         </StyledContent>

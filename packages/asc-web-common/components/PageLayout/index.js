@@ -1,7 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Backdrop from "@appserver/components/backdrop";
-import { desktop, size, tablet } from "@appserver/components/utils/device";
+import {
+  desktop,
+  size,
+  tablet,
+  isMobile as isMobileUtils,
+  isTablet as isTabletUtils,
+} from "@appserver/components/utils/device";
 import { Provider } from "@appserver/components/utils/context";
 import { isMobile, isFirefox, isMobileOnly } from "react-device-detect";
 import Article from "./sub-components/article";
@@ -21,6 +27,11 @@ import FloatingButton from "../FloatingButton";
 import { inject, observer } from "mobx-react";
 import Selecto from "react-selecto";
 import styled, { css } from "styled-components";
+import Catalog from "./sub-components/catalog";
+import SubCatalogBackdrop from "./sub-components/catalog-backdrop";
+import SubCatalogHeader from "./sub-components/catalog-header";
+import SubCatalogMainButton from "./sub-components/catalog-main-button";
+import SubCatalogBody from "./sub-components/catalog-body";
 
 const StyledSelectoWrapper = styled.div`
   .selecto-selection {
@@ -33,13 +44,12 @@ const StyledMainBar = styled.div`
 
   ${!isMobile
     ? css`
-        padding-right: 24px;
+        padding-right: 20px;
         @media ${tablet} {
           padding-right: 16px;
         }
       `
     : css`
-        margin-top: 10px;
         padding-right: 0px;
 
         @media ${desktop} {
@@ -47,6 +57,21 @@ const StyledMainBar = styled.div`
         }
       `}
 `;
+
+function CatalogHeader() {
+  return null;
+}
+CatalogHeader.displayName = "CatalogHeader";
+
+function CatalogMainButton() {
+  return null;
+}
+CatalogMainButton.displayName = "CatalogMainButton";
+
+function CatalogBody() {
+  return null;
+}
+CatalogBody.displayName = "CatalogBody";
 
 function ArticleHeader() {
   return null;
@@ -84,6 +109,9 @@ function SectionPaging() {
 SectionPaging.displayName = "SectionPaging";
 
 class PageLayout extends React.Component {
+  static CatalogHeader = CatalogHeader;
+  static CatalogMainButton = CatalogMainButton;
+  static CatalogBody = CatalogBody;
   static ArticleHeader = ArticleHeader;
   static ArticleMainButton = ArticleMainButton;
   static ArticleBody = ArticleBody;
@@ -231,7 +259,16 @@ class PageLayout extends React.Component {
       isArticlePinned,
       isDesktop,
       isHomepage,
+      showText,
+      catalogOpen,
+      userShowText,
+      setShowText,
+      toggleShowText,
+      toggleCatalogOpen,
     } = this.props;
+    let catalogHeaderContent = null;
+    let catalogMainButtonContent = null;
+    let catalogBodyContent = null;
     let articleHeaderContent = null;
     let articleMainButtonContent = null;
     let articleBodyContent = null;
@@ -239,12 +276,20 @@ class PageLayout extends React.Component {
     let sectionFilterContent = null;
     let sectionPagingContent = null;
     let sectionBodyContent = null;
-
     React.Children.forEach(children, (child) => {
       const childType =
         child && child.type && (child.type.displayName || child.type.name);
 
       switch (childType) {
+        case CatalogHeader.displayName:
+          catalogHeaderContent = child;
+          break;
+        case CatalogMainButton.displayName:
+          catalogMainButtonContent = child;
+          break;
+        case CatalogBody.displayName:
+          catalogBodyContent = child;
+          break;
         case ArticleHeader.displayName:
           articleHeaderContent = child;
           break;
@@ -291,11 +336,61 @@ class PageLayout extends React.Component {
         isSectionBodyAvailable ||
         isSectionPagingAvailable ||
         isArticleAvailable,
-      isBackdropAvailable = isArticleAvailable;
+      isBackdropAvailable = isArticleAvailable,
+      isCatalogHeaderAvailable = !!catalogHeaderContent,
+      isCatalogMainButtonAvailable = !!catalogMainButtonContent,
+      isCatalogBodyAvailable = !!catalogBodyContent,
+      isCatalogAvailable =
+        isCatalogHeaderAvailable ||
+        isCatalogMainButtonAvailable ||
+        isCatalogBodyAvailable;
 
     const renderPageLayout = () => {
       return (
         <>
+          {isCatalogAvailable && (
+            <>
+              {catalogOpen && (isMobileOnly || window.innerWidth <= 375) && (
+                <>
+                  <SubCatalogBackdrop onClick={toggleCatalogOpen} />
+                  <Backdrop visible={true} zIndex={201} />
+                </>
+              )}
+              <Catalog
+                showText={showText}
+                catalogOpen={catalogOpen}
+                toggleCatalogOpen={toggleCatalogOpen}
+                setShowText={setShowText}
+              >
+                {isCatalogHeaderAvailable && (
+                  <SubCatalogHeader
+                    showText={showText}
+                    onClick={toggleShowText}
+                  >
+                    {catalogHeaderContent
+                      ? catalogHeaderContent.props.children
+                      : null}
+                  </SubCatalogHeader>
+                )}
+
+                {isCatalogMainButtonAvailable && (
+                  <SubCatalogMainButton showText={showText}>
+                    {catalogMainButtonContent
+                      ? catalogMainButtonContent.props.children
+                      : null}
+                  </SubCatalogMainButton>
+                )}
+
+                {isCatalogBodyAvailable && (
+                  <SubCatalogBody showText={showText}>
+                    {catalogBodyContent
+                      ? catalogBodyContent.props.children
+                      : null}
+                  </SubCatalogBody>
+                )}
+              </Catalog>
+            </>
+          )}
           {isBackdropAvailable && (
             <Backdrop
               zIndex={400}
@@ -353,10 +448,12 @@ class PageLayout extends React.Component {
                   }}
                 >
                   <Section
+                    catalogOpen={catalogOpen}
                     widthProp={width}
                     unpinArticle={this.unpinArticle}
                     pinned={isArticlePinned}
                     visible={isArticleVisible}
+                    viewAs={viewAs}
                   >
                     {isSectionHeaderAvailable && (
                       <SubSectionHeader
@@ -416,9 +513,25 @@ class PageLayout extends React.Component {
                         </SubSectionBody>
                       </>
                     )}
-
-                    {showPrimaryProgressBar && showSecondaryProgressBar ? (
-                      <>
+                    {!(isMobile || isMobileUtils() || isTabletUtils()) ? (
+                      showPrimaryProgressBar && showSecondaryProgressBar ? (
+                        <>
+                          <FloatingButton
+                            className="layout-progress-bar"
+                            icon={primaryProgressBarIcon}
+                            percent={primaryProgressBarValue}
+                            alert={showPrimaryButtonAlert}
+                            onClick={onOpenUploadPanel}
+                          />
+                          <FloatingButton
+                            className="layout-progress-second-bar"
+                            icon={secondaryProgressBarIcon}
+                            percent={secondaryProgressBarValue}
+                            alert={showSecondaryButtonAlert}
+                          />
+                        </>
+                      ) : showPrimaryProgressBar &&
+                        !showSecondaryProgressBar ? (
                         <FloatingButton
                           className="layout-progress-bar"
                           icon={primaryProgressBarIcon}
@@ -426,28 +539,17 @@ class PageLayout extends React.Component {
                           alert={showPrimaryButtonAlert}
                           onClick={onOpenUploadPanel}
                         />
+                      ) : !showPrimaryProgressBar &&
+                        showSecondaryProgressBar ? (
                         <FloatingButton
-                          className="layout-progress-second-bar"
+                          className="layout-progress-bar"
                           icon={secondaryProgressBarIcon}
                           percent={secondaryProgressBarValue}
                           alert={showSecondaryButtonAlert}
                         />
-                      </>
-                    ) : showPrimaryProgressBar && !showSecondaryProgressBar ? (
-                      <FloatingButton
-                        className="layout-progress-bar"
-                        icon={primaryProgressBarIcon}
-                        percent={primaryProgressBarValue}
-                        alert={showPrimaryButtonAlert}
-                        onClick={onOpenUploadPanel}
-                      />
-                    ) : !showPrimaryProgressBar && showSecondaryProgressBar ? (
-                      <FloatingButton
-                        className="layout-progress-bar"
-                        icon={secondaryProgressBarIcon}
-                        percent={secondaryProgressBarValue}
-                        alert={showSecondaryButtonAlert}
-                      />
+                      ) : (
+                        <></>
+                      )
                     ) : (
                       <></>
                     )}
@@ -525,6 +627,13 @@ PageLayout.propTypes = {
   isHeaderVisible: PropTypes.bool,
   firstLoad: PropTypes.bool,
   isHomepage: PropTypes.bool,
+  showText: PropTypes.bool,
+  userShowText: PropTypes.bool,
+  setShowText: PropTypes.func,
+  toggleShowText: PropTypes.func,
+  showCatalog: PropTypes.bool,
+  toggleCatalogOpen: PropTypes.func,
+  catalogOpen: PropTypes.bool,
 };
 
 PageLayout.defaultProps = {
@@ -532,6 +641,8 @@ PageLayout.defaultProps = {
   withBodyAutoFocus: false,
 };
 
+PageLayout.CatalogHeader = CatalogHeader;
+PageLayout.CatalogMainButton = CatalogMainButton;
 PageLayout.ArticleHeader = ArticleHeader;
 PageLayout.ArticleMainButton = ArticleMainButton;
 PageLayout.ArticleBody = ArticleBody;
@@ -553,6 +664,13 @@ export default inject(({ auth }) => {
     setIsArticleVisible,
     setIsBackdropVisible,
     isDesktopClient,
+    showText,
+    userShowText,
+    setShowText,
+    toggleShowText,
+    showCatalog,
+    toggleCatalogOpen,
+    catalogOpen,
   } = settingsStore;
 
   return {
@@ -567,5 +685,12 @@ export default inject(({ auth }) => {
     isBackdropVisible,
     setIsBackdropVisible,
     isDesktop: isDesktopClient,
+    showText,
+    setShowText,
+    toggleShowText,
+    showCatalog,
+    userShowText,
+    toggleCatalogOpen,
+    catalogOpen,
   };
 })(observer(PageLayout));

@@ -12,15 +12,30 @@ const activeCss = css`
 
   color: ${(props) =>
     props.primary
-      ? props.theme.button.color.primary
-      : props.theme.button.color.base};
+      ? props.theme.button.color.primaryActive
+      : props.theme.button.color.baseActive};
 
   ${(props) =>
-    !props.primary &&
-    css`
-      border: ${(props) => props.theme.button.border.baseActive};
-      box-sizing: ${(props) => props.theme.button.boxSizing};
-    `}
+    !props.primary
+      ? css`
+          border: ${(props) => props.theme.button.border.baseActive};
+          box-sizing: ${(props) => props.theme.button.boxSizing};
+        `
+      : css`
+          border: ${(props) => props.theme.button.border.primaryActive};
+          box-sizing: ${(props) => props.theme.button.boxSizing};
+        `}
+
+  .btnIcon {
+    svg {
+      path {
+        fill: ${(props) =>
+          props.primary
+            ? props.theme.button.color.primaryActive
+            : props.theme.button.color.baseActive};
+      }
+    }
+  }
 `;
 
 const hoverCss = css`
@@ -31,15 +46,64 @@ const hoverCss = css`
 
   color: ${(props) =>
     props.primary
-      ? props.theme.button.color.primary
-      : props.theme.button.color.base};
+      ? props.theme.button.color.primaryHover
+      : props.theme.button.color.baseHover};
 
   ${(props) =>
-    !props.primary &&
-    css`
-      border: ${(props) => props.theme.button.border.baseHover};
-      box-sizing: ${(props) => props.theme.button.boxSizing};
-    `}
+    !props.primary
+      ? css`
+          border: ${(props) => props.theme.button.border.baseHover};
+          box-sizing: ${(props) => props.theme.button.boxSizing};
+        `
+      : css`
+          border: ${(props) => props.theme.button.border.primaryHover};
+          box-sizing: ${(props) => props.theme.button.boxSizing};
+        `}
+
+  .btnIcon {
+    svg {
+      path {
+        fill: ${(props) =>
+          props.primary
+            ? props.theme.button.color.primaryHover
+            : props.theme.button.color.baseHover};
+      }
+    }
+  }
+`;
+
+const disableCss = css`
+  background-color: ${(props) =>
+    props.primary
+      ? props.theme.button.backgroundColor.primaryDisabled
+      : props.theme.button.backgroundColor.baseDisabled};
+
+  color: ${(props) =>
+    props.primary
+      ? props.theme.button.color.primaryDisabled
+      : props.theme.button.color.baseDisabled};
+
+  ${(props) =>
+    !props.primary
+      ? css`
+          border: ${(props) => props.theme.button.border.baseDisabled};
+          box-sizing: ${(props) => props.theme.button.boxSizing};
+        `
+      : css`
+          border: ${(props) => props.theme.button.border.primaryDisabled};
+          box-sizing: ${(props) => props.theme.button.boxSizing};
+        `}
+
+  .btnIcon {
+    svg {
+      path {
+        fill: ${(props) =>
+          props.primary
+            ? props.theme.button.color.primaryDisabled
+            : props.theme.button.color.baseDisabled};
+      }
+    }
+  }
 `;
 
 const heightStyle = (props) => props.theme.button.height[props.size];
@@ -89,21 +153,32 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
   font-size: ${(props) => fontSizeStyle(props)};
 
   color: ${(props) =>
-    (props.primary && props.theme.button.color.primary) ||
-    (!props.isDisabled
+    !props.primary
       ? props.theme.button.color.base
-      : props.theme.button.color.disabled)};
+      : props.theme.button.color.primary};
 
   background-color: ${(props) =>
-    !props.isDisabled || props.isLoading
-      ? props.primary
-        ? props.theme.button.backgroundColor.primary
-        : props.theme.button.backgroundColor.base
-      : props.primary
-      ? props.theme.button.backgroundColor.primaryDisabled
+    props.primary
+      ? props.theme.button.backgroundColor.primary
       : props.theme.button.backgroundColor.base};
 
+  border: ${(props) =>
+    props.primary
+      ? props.theme.button.border.primary
+      : props.theme.button.border.base};
+
   ${(props) => props.scale && `width: 100%;`}
+
+  .btnIcon {
+    svg {
+      path {
+        fill: ${(props) =>
+          props.primary
+            ? props.theme.button.color.primary
+            : props.theme.button.color.base};
+      }
+    }
+  }
 
   padding: ${(props) =>
     (props.size === "large" &&
@@ -177,7 +252,6 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
     props.isDisabled || props.isLoading ? "default !important" : "pointer"};
 
   font-family: ${(props) => props.theme.fontFamily};
-  border: none;
   margin: ${(props) => props.theme.margin};
   display: ${(props) => props.theme.button.display};
   font-weight: ${(props) => props.theme.button.fontWeight};
@@ -197,16 +271,6 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   ${(props) =>
-    !props.primary &&
-    css`
-      box-sizing: ${(props) => props.theme.button.boxSizing};
-      border: ${(props) =>
-        !props.isDisabled && !props.isLoading
-          ? props.theme.button.border.base
-          : props.theme.button.border.baseDisabled};
-    `}
-
-  ${(props) =>
     !props.isDisabled &&
     !props.isLoading &&
     (props.isHovered
@@ -217,8 +281,8 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
             ${hoverCss}
           }
         `)}
-  
-    ${(props) =>
+
+  ${(props) =>
     !props.isDisabled &&
     !props.isLoading &&
     (props.isClicked
@@ -228,7 +292,10 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
             ${activeCss}
           }
         `)}
-  
+
+  ${(props) => props.isDisabled && disableCss}
+
+
     &:focus {
     outline: ${(props) => props.theme.button.outline};
   }
@@ -240,6 +307,12 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
   }
 
   .loader {
+    svg {
+      stroke: ${(props) =>
+        props.primary
+          ? props.theme.button.loader.primary
+          : props.theme.button.loader.base};
+    }
     vertical-align: ${(props) =>
       props.size === "large" || props.size === "base"
         ? props.theme.button.middleVerticalAlign

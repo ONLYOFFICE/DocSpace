@@ -14,13 +14,21 @@ import StyledDropdown from "./styled-drop-down";
 /* eslint-disable react/prop-types, react/display-name */
 
 const Row = memo(({ data, index, style }) => {
-  const option = data[index];
+  const option = data.children[index];
+
   const separator = option.props.isSeparator
     ? { width: `calc(100% - 32px)`, height: `1px` }
     : {};
   const newStyle = { ...style, ...separator };
 
-  return <DropDownItem {...option.props} style={newStyle} />;
+  return (
+    <DropDownItem
+      theme={data.theme}
+      // eslint-disable-next-line react/prop-types
+      {...option.props}
+      style={newStyle}
+    />
+  );
 });
 
 class DropDown extends React.PureComponent {
@@ -222,7 +230,7 @@ class DropDown extends React.PureComponent {
   };
 
   renderDropDown() {
-    const { maxHeight, children, showDisabledItems } = this.props;
+    const { maxHeight, children, showDisabledItems, theme } = this.props;
     const { directionX, directionY, width, manualY } = this.state;
     let cleanChildren;
 
@@ -254,7 +262,7 @@ class DropDown extends React.PureComponent {
             width={width}
             itemSize={getItemSize}
             itemCount={children.length}
-            itemData={children}
+            itemData={{ children: children, theme: theme }}
             outerElementType={CustomScrollbarsVirtualList}
           >
             {Row}
@@ -285,7 +293,7 @@ class DropDownContainer extends React.Component {
     this.props.clickOutsideAction({}, !this.props.open);
   };
   render() {
-    const { withBackdrop = true, open } = this.props;
+    const { withBackdrop = true, open, theme } = this.props;
     const eventTypesProp = isMobile ? { eventTypes: ["touchend"] } : {};
 
     return (

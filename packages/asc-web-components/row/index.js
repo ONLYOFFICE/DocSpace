@@ -75,6 +75,14 @@ class Row extends React.Component {
       this.cm.current.show(e);
     };
 
+    let contextMenuHeader = {};
+    if (children.props.item) {
+      contextMenuHeader = {
+        icon: children.props.item.icon,
+        title: children.props.item.title,
+      };
+    }
+
     const { onRowClick, inProgress, ...rest } = this.props;
 
     return (
@@ -110,8 +118,6 @@ class Row extends React.Component {
           )}
           {renderContext ? (
             <ContextMenuButton
-              color="#A3A9AE"
-              hoverColor="#657077"
               className="expandButton"
               getData={getOptions}
               directionX="right"
@@ -123,8 +129,10 @@ class Row extends React.Component {
           )}
           <ContextMenu
             contextMenuData={contextMenuData}
-            ref={this.cm}
             model={contextData.contextOptions}
+            ref={this.cm}
+            header={contextMenuHeader}
+            withBackdrop={true}
           ></ContextMenu>
         </StyledOptionButton>
       </StyledRow>

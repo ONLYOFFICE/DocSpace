@@ -18,41 +18,36 @@ import globalColors from "@appserver/components/utils/globalColors";
 import styled, { css } from "styled-components";
 import Base from "@appserver/components/themes/base";
 import { isSafari } from "react-device-detect";
-const sideColor = globalColors.gray;
-const { acceptBackground, background } = Base.dragAndDrop;
 
 const hotkeyBorderStyle = css`
   border-image-source: linear-gradient(to left, #2da7db 24px, #2da7db 24px);
 `;
 
 const rowCheckboxDraggingStyle = css`
-  border-image-source: linear-gradient(to right, #f8f7bf 24px, #eceef1 24px);
+  border-image-source: ${(props) =>
+    props.theme.filesSection.tableView.row.checkboxDragging};
 `;
 
 const contextMenuWrapperDraggingStyle = css`
-  border-image-source: linear-gradient(to left, #f8f7bf 24px, #eceef1 24px);
+  border-image-source: ${(props) =>
+    props.theme.filesSection.tableView.row.contextMenuWrapperDragging};
 `;
 
 const rowCheckboxDraggingHoverStyle = css`
-  border-image-source: linear-gradient(
-    to right,
-    rgb(239, 239, 178) 24px,
-    #eceef1 24px
-  );
+  border-image-source: ${(props) =>
+    props.theme.filesSection.tableView.row.checkboxDraggingHover};
 `;
 const contextMenuWrapperDraggingHoverStyle = css`
-  border-image-source: linear-gradient(
-    to left,
-    rgb(239, 239, 178) 24px,
-    #eceef1 24px
-  );
+  border-image-source: ${(props) =>
+    props.theme.filesSection.tableView.row.contextMenuWrapperDraggingHover};
 `;
 
 const StyledTableRow = styled(TableRow)`
   .table-container_cell {
     /* ${isSafari && `border-image-slice: 0 !important`}; */
     background: ${(props) =>
-      (props.checked || props.isActive) && "#F3F4F4 !important"};
+      (props.checked || props.isActive) &&
+      `${props.theme.filesSection.tableView.row.backgroundActive} !important`};
     cursor: ${(props) =>
       !props.isThirdPartyFolder &&
       (props.checked || props.isActive) &&
@@ -100,7 +95,11 @@ const StyledTableRow = styled(TableRow)`
   .table-container_file-name-cell {
     min-width: 30px;
     margin-left: -24px;
-    padding-left: 28px;
+    padding-left: 24px;
+    border-bottom: 1px solid;
+    border-image-slice: 1;
+    border-image-source: ${(props) =>
+      props.theme.filesSection.tableView.row.borderImageCheckbox};
 
     ${(props) =>
       !props.isActive &&
@@ -108,11 +107,8 @@ const StyledTableRow = styled(TableRow)`
       css`
         border-image-slice: 1;
         border-bottom: 1px solid;
-        border-image-source: linear-gradient(
-          to right,
-          #ffffff 17px,
-          #eceef1 31px
-        );
+        border-image-source: ${(props) =>
+          props.theme.filesSection.tableView.row.borderImageRight};
       `};
 
     border-top: 0;
@@ -126,6 +122,10 @@ const StyledTableRow = styled(TableRow)`
     margin-right: -20x;
     width: 28px;
     padding-right: 18px;
+    border-bottom: 1px solid;
+    border-image-slice: 1;
+    border-image-source: ${(props) =>
+      props.theme.filesSection.tableView.row.borderImageContextMenu};
 
     ${(props) =>
       !props.isActive &&
@@ -133,11 +133,8 @@ const StyledTableRow = styled(TableRow)`
       css`
         border-bottom: 1px solid;
         border-image-slice: 1;
-        border-image-source: linear-gradient(
-          to left,
-          #ffffff 17px,
-          #eceef1 31px
-        );
+        border-image-source: ${(props) =>
+          props.theme.filesSection.tableView.row.borderImageLeft};
       `};
 
     border-top: 0;
@@ -228,7 +225,18 @@ const StyledQuickButtonsContainer = styled.div`
   .favorite {
     margin-top: 1px;
   }
+
+  .share-button-icon:hover {
+    cursor: pointer;
+    path {
+      fill: ${(props) =>
+        props.theme.filesSection.tableView.row.shareHoverColor};
+    }
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  }
 `;
+
+StyledQuickButtonsContainer.defaultProps = { theme: Base };
 
 const FilesTableRow = (props) => {
   const {
@@ -252,10 +260,12 @@ const FilesTableRow = (props) => {
     inProgress,
     index,
     setFirsElemChecked,
+    theme,
     quickButtonsComponent,
     getModel,
     showHotkeyBorder,
   } = props;
+  const { acceptBackground, background } = theme.dragAndDrop;
 
   const contextMenuData = { getModel, t, item };
 
@@ -342,6 +352,7 @@ const FilesTableRow = (props) => {
           value={value}
         >
           <FileNameCell
+            theme={theme}
             onContentSelect={onContentFileSelect}
             checked={checkedProps}
             element={element}
@@ -352,21 +363,37 @@ const FilesTableRow = (props) => {
         </TableCell>
         {!personal && (
           <TableCell {...dragStyles} {...selectionProp}>
-            <AuthorCell sideColor={sideColor} {...props} />
+            <AuthorCell
+              sideColor={theme.filesSection.tableView.row.sideColor}
+              {...props}
+            />
           </TableCell>
         )}
         <TableCell {...dragStyles} {...selectionProp}>
-          <DateCell create sideColor={sideColor} {...props} />
+          <DateCell
+            create
+            sideColor={theme.filesSection.tableView.row.sideColor}
+            {...props}
+          />
         </TableCell>
         <TableCell {...dragStyles} {...selectionProp}>
-          <DateCell sideColor={sideColor} {...props} />
+          <DateCell
+            sideColor={theme.filesSection.tableView.row.sideColor}
+            {...props}
+          />
         </TableCell>
         <TableCell {...dragStyles} {...selectionProp}>
-          <SizeCell sideColor={sideColor} {...props} />
+          <SizeCell
+            sideColor={theme.filesSection.tableView.row.sideColor}
+            {...props}
+          />
         </TableCell>
 
         <TableCell {...dragStyles} {...selectionProp}>
-          <TypeCell sideColor={sideColor} {...props} />
+          <TypeCell
+            sideColor={theme.filesSection.tableView.row.sideColor}
+            {...props}
+          />
         </TableCell>
 
         <TableCell {...dragStyles} {...selectionProp}>

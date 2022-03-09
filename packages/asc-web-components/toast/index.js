@@ -21,6 +21,7 @@ const Toast = (props) => {
 
   return (
     <StyledToastContainer
+      theme={props.theme}
       className={props.className}
       draggable={true}
       position="top-right"

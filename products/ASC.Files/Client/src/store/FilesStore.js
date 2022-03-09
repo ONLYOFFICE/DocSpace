@@ -544,10 +544,23 @@ class FilesStore {
             this.setSelected("close");
           }
 
+          const navigationPath = await Promise.all(
+            data.pathParts.map(async (folder) => {
+              const data = await api.files.getFolderInfo(folder);
+
+              return { id: folder, title: data.title };
+            })
+          ).then((res) => {
+            return res
+              .filter((item, index) => index !== res.length - 1)
+              .reverse();
+          });
+
           this.selectedFolderStore.setSelectedFolder({
             folders: data.folders,
             ...data.current,
             pathParts: data.pathParts,
+            navigationPath: navigationPath,
             ...{ new: data.new },
           });
 
@@ -643,7 +656,7 @@ class FilesStore {
     const isThirdPartyItem = !!item.providerKey;
     const hasNew =
       item.new > 0 || (item.fileStatus & FileStatus.IsNew) === FileStatus.IsNew;
-    const canConvert = false; //TODO: fix of added convert check;
+    const canConvert = this.filesSettingsStore.extsConvertible[item.fileExst];
     const isEncrypted = item.encrypted;
     const isDocuSign = false; //TODO: need this prop;
     const isEditing =
@@ -739,7 +752,7 @@ class FilesStore {
         }
       }
 
-      if (!this.canConvertSelected) {
+      if (!canConvert) {
         fileOptions = this.removeOptions(fileOptions, ["download-as"]);
       }
 

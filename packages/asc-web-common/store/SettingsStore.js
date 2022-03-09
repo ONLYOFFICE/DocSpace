@@ -6,7 +6,15 @@ import FirebaseHelper from "../utils/firebase";
 import { AppServerConfig } from "../constants";
 import { version } from "../package.json";
 import SocketIOHelper from "../utils/socket";
+
+import { Dark, Base } from "@appserver/components/themes";
+
 const { proxyURL } = AppServerConfig;
+
+const themes = {
+  Dark: Dark,
+  Base: Base,
+};
 
 class SettingsStore {
   isLoading = false;
@@ -15,6 +23,9 @@ class SettingsStore {
   currentProductId = "";
   culture = "en";
   cultures = [];
+  theme = !!localStorage.getItem("theme")
+    ? themes[localStorage.getItem("theme")]
+    : Base;
   trustedDomains = [];
   trustedDomainsType = 0;
   trustedDomains = [];
@@ -64,8 +75,12 @@ class SettingsStore {
     localStorage.getItem(ARTICLE_PINNED_KEY) === "true" || false;
   isArticleVisible = false;
   isBackdropVisible = false;
-
   isArticleVisibleOnUnpin = false;
+
+  showText = false;
+  catalogOpen = false;
+  userShowText = false;
+  showCatalog = true;
 
   hashSettings = null;
   title = "";
@@ -309,6 +324,20 @@ class SettingsStore {
     this.setPasswordSettings(settings);
   };
 
+  setPortalPasswordSettings = async (
+    minLength,
+    upperCase,
+    digits,
+    specSymbols
+  ) => {
+    const settings = await api.settings.setPortalPasswordSettings(
+      minLength,
+      upperCase,
+      digits,
+      specSymbols
+    );
+  };
+
   setTimezones = (timezones) => {
     this.timezones = timezones;
   };
@@ -337,6 +366,27 @@ class SettingsStore {
     this.isArticleVisibleOnUnpin = visible;
   };
 
+  setShowText = (showText) => {
+    this.showText = showText;
+  };
+
+  setCatalogOpen = (catalogOpen) => {
+    this.catalogOpen = catalogOpen;
+  };
+
+  setUserShowText = (userShowText) => {
+    this.userShowText = userShowText;
+  };
+
+  toggleShowText = () => {
+    this.showText = !this.showText;
+    this.userShowText = !this.userShowText;
+  };
+
+  toggleCatalogOpen = () => {
+    this.catalogOpen = !this.catalogOpen;
+  };
+
   get firebaseHelper() {
     window.firebaseHelper = new FirebaseHelper(this.firebase);
     return window.firebaseHelper;
@@ -360,6 +410,21 @@ class SettingsStore {
 
     if (!this.buildVersionInfo.documentServer)
       this.buildVersionInfo.documentServer = "6.4.1";
+  };
+
+  changeTheme = () => {
+    const currentTheme =
+      JSON.stringify(this.theme) === JSON.stringify(Base) ? Dark : Base;
+    localStorage.setItem(
+      "theme",
+      JSON.stringify(this.theme) === JSON.stringify(Base) ? "Dark" : "Base"
+    );
+    this.theme = currentTheme;
+  };
+
+  setTheme = (theme) => {
+    this.theme = themes[theme];
+    localStorage.setItem("theme", theme);
   };
 }
 

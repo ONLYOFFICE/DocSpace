@@ -9,7 +9,7 @@ import IconButton from "@appserver/components/icon-button";
 import i18n from "./i18n";
 import { withTranslation, I18nextProvider } from "react-i18next";
 
-const EmbeddingBody = ({ embeddingLink, t }) => {
+const EmbeddingBody = ({ embeddingLink, t, theme }) => {
   const [size, setSize] = useState("auto");
   const [widthValue, setWidthValue] = useState("100%");
   const [heightValue, setHeightValue] = useState("100%");
@@ -113,10 +113,14 @@ const EmbeddingBody = ({ embeddingLink, t }) => {
           className="embedding-panel_copy-icon"
           size="16"
           iconName="/static/images/copy.react.svg"
-          color="#333"
+          // color={theme.filesPanels.embedding.iconColor}
           onClick={onCopyLink}
         />
-        <Textarea color="#AEAEAE" isReadOnly value={link} />
+        <Textarea
+          color={theme.filesPanels.embedding.textAreaColor}
+          isReadOnly
+          value={link}
+        />
       </div>
     </div>
   );

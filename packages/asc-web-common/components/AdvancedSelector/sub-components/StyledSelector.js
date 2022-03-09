@@ -1,11 +1,11 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import { tablet } from "@appserver/components/utils/device";
+
+import Base from "@appserver/components/themes/base";
 
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 const Container = ({
-  displayType,
   options,
   groups,
   isMultiSelect,
@@ -16,189 +16,93 @@ const Container = ({
 /* eslint-enable react/prop-types */
 /* eslint-enable no-unused-vars */
 
-const dropdownStyles = css`
-  grid-auto-rows: max-content;
+const StyledSelector = styled(Container)`
+  display: grid;
 
-  ${(props) =>
-    props.groups && props.groups.length > 0
-      ? css`
-          grid-template-areas: "column-options splitter column-groups" "footer footer footer";
-        `
-      : css`
-          grid-template-areas: "column-options column-groups" "footer footer";
-        `};
-
-  .column-groups {
-    box-sizing: border-box;
-    grid-area: column-groups;
-
-    display: grid;
-    /* background-color: gold; */
-    padding: 16px 16px 0 16px;
-    grid-row-gap: 2px;
-
-    grid-template-columns: 1fr;
-    grid-template-rows: 30px 1fr;
-    grid-template-areas: "header-groups" "body-groups";
-
-    .header-groups {
-      grid-area: header-groups;
-
-      .group_header {
-        line-height: 30px;
-      }
-      /* background-color: white; */
-    }
-
-    .body-groups {
-      grid-area: body-groups;
-      margin-left: -8px;
-      /* background-color: white; */
-
-      .row-group:first-child {
-        font-weight: 700;
-      }
-
-      .row-group {
-        box-sizing: border-box;
-        height: 32px;
-        cursor: pointer;
-        padding-top: 8px;
-        padding-left: 8px;
-
-        .group_checkbox {
-          display: inline-block;
-        }
-
-        &:hover {
-          background-color: #eceef1;
-          border-radius: 3px;
-        }
-      }
-
-      .row-group.selected {
-        background-color: #eceef1;
-        border-radius: 3px;
-      }
-    }
-  }
-
-  ${(props) =>
-    props.groups &&
-    props.groups.length > 0 &&
-    css`
-      .splitter {
-        grid-area: splitter;
-        border-left: 1px solid #eceef1;
-        margin-top: 16px;
-      }
-    `}
-`;
-
-const asideStyles = css`
   height: 100%;
   grid-template-columns: 1fr;
   ${(props) =>
     props.isMultiSelect && props.hasSelected
       ? css`
-          grid-template-rows: 1fr 69px;
-          grid-template-areas: "column-options" "footer";
+          grid-template-rows: 53px 1fr 69px;
+          grid-template-areas: "header" "column-options" "footer";
         `
       : css`
-          grid-template-rows: 1fr;
-          grid-template-areas: "column-options";
+          grid-template-rows: 53px 1fr;
+          grid-template-areas: "header" "column-options";
         `}
-`;
 
-const StyledSelector = styled(Container)`
-  display: grid;
+  .header {
+    grid-area: header;
 
-  ${(props) =>
-    props.displayType === "dropdown" ? dropdownStyles : asideStyles}
+    height: 53px;
+    min-height: 53px;
+
+    padding: 0 16px;
+    margin: 0;
+
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+    justify-content: start;
+
+    .arrow-button {
+      margin-right: 12px;
+    }
+
+    svg {
+      cursor: pointer;
+    }
+  }
 
   .column-options {
     grid-area: column-options;
     box-sizing: border-box;
 
     display: grid;
-    /* background-color: red; */
-    padding: 16px 16px 0 16px;
+
+    padding: 0;
     grid-row-gap: 2px;
+
     overflow: hidden;
 
     grid-template-columns: 1fr;
-    grid-template-rows: ${(props) =>
-        props.displayType === "aside"
-          ? props.isMultiSelect &&
-            props.allowGroupSelection &&
-            props.options &&
-            props.options.length > 0
-            ? props.groups && props.groups.length > 0
-              ? "100px"
-              : "30px"
-            : props.groups && props.groups.length > 0
-            ? "75px"
-            : "30px"
-          : "30px"} 1fr;
+    grid-template-rows: 30px 1fr;
     grid-template-areas: "header-options" "body-options";
 
     .header-options {
       grid-area: header-options;
-      margin-right: 2px;
-      /* background-color: white; */
 
-      ${(props) =>
-        props.displayType === "aside" &&
-        css`
-          display: grid;
-          grid-row-gap: 17px;
-          grid-template-columns: 1fr;
-          grid-template-rows: 30px 30px ${(props) =>
-              props.isMultiSelect &&
-              props.options &&
-              props.options.length > 0 &&
-              "30px"};
-          ${(props) =>
-            props.isMultiSelect && props.options && props.options.length > 0
-              ? css`
-                  grid-template-areas: "options_searcher" "options_group_selector" "options_group_select_all";
-                `
-              : css`
-                  grid-template-areas: "options_searcher" "options_group_selector";
-                `}
+      padding: 0 16px;
+      margin-right: 0px !important;
 
-          .options_searcher {
-            grid-area: options_searcher;
-          }
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: 30px;
 
-          .options_group_selector {
-            grid-area: options_group_selector;
-          }
+      grid-template-areas: "options_searcher";
 
-          ${(props) =>
-            props.isMultiSelect &&
-            props.options &&
-            props.options.length > 0 &&
-            css`
-              .options_group_select_all {
-                grid-area: options_group_select_all;
-              }
-            `}
-        `}
+      .options_searcher {
+        grid-area: options_searcher;
+      }
 
       .options_searcher {
         div:first-child {
           :hover {
-            border-color: #d0d5da;
+            border-color: ${(props) =>
+              props.theme.advancedSelector.searcher.hoverBorderColor};
           }
 
           :focus,
           :focus-within {
-            border-color: #2da7db;
+            border-color: ${(props) =>
+              props.theme.advancedSelector.searcher.focusBorderColor};
           }
 
           & > input::placeholder {
-            color: #a3a9ae;
+            color: ${(props) =>
+              props.theme.advancedSelector.searcher.placeholderColor};
           }
         }
       }
@@ -206,43 +110,74 @@ const StyledSelector = styled(Container)`
 
     .body-options {
       grid-area: body-options;
-      margin-left: -8px;
-      margin-top: 2px;
-
-      @media ${tablet} {
-        width: 290px;
-      }
-
-      /* background-color: white; */
+      margin-top: 8px;
 
       .row-option {
-        padding-left: 8px;
-        padding-top: 8px;
         box-sizing: border-box;
-        height: 32px;
-        margin-top: 16px;
+        height: 48px;
         cursor: pointer;
 
-        &:hover {
-          background-color: #eceef1;
-          border-radius: 3px;
-        }
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
 
-        .option_checkbox {
-          width: 265px;
+        padding: 0 16px;
+
+        &:hover {
+          background-color: ${(props) =>
+            props.theme.advancedSelector.hoverBackgroundColor};
         }
 
         .option-info {
-          position: absolute;
-          top: 12px;
-          right: 10px;
-          padding: 8px 0 8px 8px;
-          margin-top: -8px;
+          width: calc(100% - 32px);
+          display: flex;
+          align-items: center;
+          justify-content: start;
         }
 
-        /* .__react_component_tooltip {
-          left: 8px !important;
-        } */
+        .option-avatar {
+          margin-right: 12px;
+          min-width: 32px;
+          max-width: 32px;
+        }
+
+        .option-text {
+          max-width: 100%;
+          line-height: 16px;
+        }
+
+        .option-text__group {
+          width: auto;
+          border-bottom: 1px dashed #333333;
+        }
+
+        .option-text__header {
+          font-weight: 600;
+        }
+
+        .option-checkbox {
+          margin-left: 8px;
+          margin-right: 8px;
+          min-width: 16px;
+          max-width: 16px;
+        }
+      }
+      .option-separator {
+        height: 1px;
+        background: #dfe2e3;
+        margin: 8px 16px;
+      }
+
+      .row-header {
+        cursor: auto;
+
+        .option-checkbox {
+          margin-right: 0 !important;
+        }
+
+        :hover {
+          background: none;
+        }
       }
     }
   }
@@ -251,5 +186,7 @@ const StyledSelector = styled(Container)`
     grid-area: footer;
   }
 `;
+
+StyledSelector.defaultProps = { theme: Base };
 
 export default StyledSelector;

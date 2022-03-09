@@ -12,6 +12,11 @@ import { showLoader, hideLoader, combineUrl } from "@appserver/common/utils";
 import { inject, observer } from "mobx-react";
 import { AppServerConfig } from "@appserver/common/constants";
 import withCultureNames from "@appserver/common/hoc/withCultureNames";
+import LanguageAndTimeZone from "./language-and-time-zone";
+import CustomTitles from "./custom-titles";
+import PortalRenaming from "./portal-renaming";
+import { Base } from "@appserver/components/themes";
+import { Consumer } from "@appserver/components/utils/context";
 
 const mapTimezonesToArray = (timezones) => {
   return timezones.map((timezone) => {
@@ -26,7 +31,54 @@ const findSelectedItemByKey = (items, selectedItemKey) => {
 const StyledArrowRightIcon = styled(ArrowRightIcon)`
   ${commonIconsStyles}
   path {
-    fill: ${(props) => props.color};
+    fill: ${(props) => props.theme.studio.settings.common.arrowColor};
+  }
+`;
+
+StyledArrowRightIcon.defaultProps = { theme: Base };
+
+const StyledMobileComponent = styled.div`
+  .margin-top {
+    margin-top: 20px;
+  }
+  .margin-left {
+    margin-left: 20px;
+  }
+  .settings-block {
+    margin-bottom: 70px;
+  }
+  .field-container-width {
+    max-width: 500px;
+  }
+  .combo-button-label {
+    max-width: 100%;
+  }
+  .category-item-wrapper {
+    margin-top: 20px;
+
+    .category-item-heading {
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+    .category-item-subheader {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    .category-item-description {
+      color: #657077;
+      font-size: 13px;
+      max-width: 1024px;
+    }
+    .inherit-title-link {
+      margin-right: 7px;
+      font-size: 19px;
+      font-weight: 600;
+    }
+    .link-text {
+      margin: 0;
+    }
   }
 `;
 
@@ -40,7 +92,7 @@ const StyledComponent = styled.div`
   }
 
   .settings-block {
-    margin-bottom: 70px;
+    margin-bottom: 24px;
   }
 
   .field-container-width {
@@ -51,14 +103,16 @@ const StyledComponent = styled.div`
     max-width: 100%;
   }
 
-  .category-item-wrapper {
-    margin-bottom: 40px;
+  .category-description {
+    color: #657077;
+  }
 
-    .category-item-heading {
+  .category-item-wrapper {
+    /* .category-item-heading {
       display: flex;
       align-items: center;
-      margin-bottom: 5px;
-    }
+      margin-bottom: 16px;
+    } */
 
     .category-item-subheader {
       font-size: 13px;
@@ -67,22 +121,31 @@ const StyledComponent = styled.div`
     }
 
     .category-item-description {
-      color: #555f65;
+      color: ${(props) => props.theme.studio.settings.common.descriptionColor};
       font-size: 12px;
       max-width: 1024px;
     }
 
-    .inherit-title-link {
+    /* .inherit-title-link {
       margin-right: 7px;
       font-size: 19px;
       font-weight: 600;
-    }
+    } */
 
     .link-text {
       margin: 0;
     }
+
+    /* .category-item-title {
+      font-weight: bold;
+      font-size: 16px;
+      line-height: 22px;
+      margin-right: 4px;
+    } */
   }
 `;
+
+StyledComponent.defaultProps = { theme: Base };
 class Customization extends React.Component {
   constructor(props) {
     super(props);
@@ -192,87 +255,113 @@ class Customization extends React.Component {
   };
 
   render() {
-    const { t, helpUrlCommonSettings, customNames } = this.props;
+    const { t, helpUrlCommonSettings, customNames, theme } = this.props;
     const { language, timezone } = this.state;
 
     return (
-      <StyledComponent>
-        <div className="category-item-wrapper">
-          <div className="category-item-heading">
-            <Link
-              className="inherit-title-link header"
-              onClick={this.onClickLink}
-              truncate={true}
-              href={combineUrl(
-                AppServerConfig.proxyURL,
-                "/settings/common/customization/language-and-time-zone"
-              )}
-            >
-              {t("StudioTimeLanguageSettings")}
-            </Link>
-            <StyledArrowRightIcon size="small" color="#333333" />
-          </div>
-          {language && language.label && timezone && timezone.label && (
-            <Text className="category-item-subheader" truncate={true}>
-              {`${language.label} / ${timezone.label}`}
-            </Text>
-          )}
-          <Text className="category-item-description">
-            {t("LanguageAndTimeZoneSettingsDescription")}
-          </Text>
-        </div>
-        <div className="category-item-wrapper">
-          <div className="category-item-heading">
-            <Link
-              truncate={true}
-              className="inherit-title-link header"
-              onClick={this.onClickLink}
-              href={combineUrl(
-                AppServerConfig.proxyURL,
-                "/settings/common/customization/custom-titles"
-              )}
-            >
-              {t("CustomTitles")}
-            </Link>
-            <StyledArrowRightIcon size="small" color="#333333" />
-          </div>
-          <Text className="category-item-description">
-            {t("CustomTitlesSettingsDescription")}
-          </Text>
-        </div>
-        <div className="category-item-wrapper">
-          <div className="category-item-heading">
-            <Link
-              truncate={true}
-              className="inherit-title-link header"
-              onClick={this.onClickLink}
-              href={combineUrl(
-                AppServerConfig.proxyURL,
-                "/settings/common/customization/team-template"
-              )}
-            >
-              {t("TeamTemplate")}
-            </Link>
-            <StyledArrowRightIcon size="small" color="#333333" />
-          </div>
-          <Box marginProp="4px 0 6px 0">
-            <Text fontWeight="600">{`${customNames.name}`}</Text>
-          </Box>
-          <Text className="category-item-description">
-            {t("TeamTemplateSettingsDescription")}
-          </Text>
-          <Box marginProp="16px 0 0 0">
-            <Link
-              color="#316DAA"
-              target="_blank"
-              isHovered={true}
-              href={helpUrlCommonSettings}
-            >
-              {t("Common:LearnMore")}
-            </Link>
-          </Box>
-        </div>
-      </StyledComponent>
+      <Consumer>
+        {(context) =>
+          `${context.sectionWidth}` <= 375 ? (
+            <StyledMobileComponent>
+              <div className="category-item-wrapper">
+                <div className="category-item-heading">
+                  <Link
+                    className="inherit-title-link header"
+                    onClick={this.onClickLink}
+                    truncate={true}
+                    href={combineUrl(
+                      AppServerConfig.proxyURL,
+                      "/settings/common/customization/language-and-time-zone"
+                    )}
+                  >
+                    {t("StudioTimeLanguageSettings")}
+                  </Link>
+                  <StyledArrowRightIcon size="small" color="#333333" />
+                </div>
+                <Text className="category-item-description">
+                  {t("LanguageAndTimeZoneSettingsDescription")}
+                </Text>
+                <Box marginProp="16px 0 3px 0">
+                  <Link
+                    color={theme.studio.settings.common.linkColorHelp}
+                    target="_blank"
+                    isHovered={true}
+                    href={helpUrlCommonSettings}
+                  >
+                    {t("Common:LearnMore")}
+                  </Link>
+                </Box>
+              </div>
+              <div className="category-item-wrapper">
+                <div className="category-item-heading">
+                  <Link
+                    truncate={true}
+                    className="inherit-title-link header"
+                    onClick={this.onClickLink}
+                    href={combineUrl(
+                      AppServerConfig.proxyURL,
+                      "/settings/common/customization/custom-titles"
+                    )}
+                  >
+                    {t("CustomTitles")}
+                  </Link>
+                  <StyledArrowRightIcon size="small" color="#333333" />
+                </div>
+                <Text className="category-item-description">
+                  {t("CustomTitlesSettingsDescription")}
+                </Text>
+              </div>
+              <div className="category-item-wrapper">
+                <div className="category-item-heading">
+                  <Link
+                    truncate={true}
+                    className="inherit-title-link header"
+                    onClick={this.onClickLink}
+                    href={combineUrl(
+                      AppServerConfig.proxyURL,
+                      "/settings/common/customization/team-template"
+                    )}
+                  >
+                    {t("TeamTemplate")}
+                  </Link>
+                  <StyledArrowRightIcon size="small" color="#333333" />
+                </div>
+                <Box marginProp="4px 0 6px 0">
+                  <Text fontWeight="600">{`${customNames.name}`}</Text>
+                </Box>
+                <Text className="category-item-description">
+                  {t("TeamTemplateSettingsDescription")}
+                </Text>
+                <Box marginProp="16px 0 0 0">
+                  <Link
+                    color={theme.studio.settings.common.linkColorHelp}
+                    target="_blank"
+                    isHovered={true}
+                    href={helpUrlCommonSettings}
+                  >
+                    {t("Common:LearnMore")}
+                  </Link>
+                </Box>
+              </div>
+            </StyledMobileComponent>
+          ) : (
+            <StyledComponent>
+              <div className="category-description">{`${t(
+                "Settings:CustomizationDescription"
+              )}`}</div>
+              <div className="category-item-wrapper">
+                <LanguageAndTimeZone sectionWidth={context.sectionWidth} />
+              </div>
+              <div className="category-item-wrapper">
+                <CustomTitles sectionWidth={context.sectionWidth} />
+              </div>
+              <div className="category-item-wrapper">
+                <PortalRenaming sectionWidth={context.sectionWidth} />
+              </div>
+            </StyledComponent>
+          )
+        }
+      </Consumer>
     );
   }
 }
@@ -288,11 +377,13 @@ export default inject(({ auth, setup }) => {
     getPortalTimezones,
     helpUrlCommonSettings,
     customNames,
+    theme,
   } = auth.settingsStore;
 
   const { setLanguageAndTime } = setup;
 
   return {
+    theme,
     portalLanguage: culture,
     language: culture,
     portalTimeZoneId: timezone,

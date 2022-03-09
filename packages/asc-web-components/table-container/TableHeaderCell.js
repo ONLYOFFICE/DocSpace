@@ -45,11 +45,7 @@ const TableHeaderCell = ({
     >
       <div className="table-container_header-item">
         <div className="header-container-text-wrapper">
-          <Text
-            fontWeight={600}
-            color={isActive ? globalColors.grayMain : globalColors.gray}
-            className="header-container-text"
-          >
+          <Text fontWeight={600} className="header-container-text">
             {enable ? title : ""}
           </Text>
 
@@ -59,7 +55,6 @@ const TableHeaderCell = ({
               iconName="/static/images/sort.desc.react.svg"
               className="header-container-text-icon"
               size="small"
-              hoverColor="#657077"
               color={isActive ? globalColors.grayMain : globalColors.gray}
             />
           )}

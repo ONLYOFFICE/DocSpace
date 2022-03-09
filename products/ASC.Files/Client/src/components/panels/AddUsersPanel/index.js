@@ -1,4 +1,5 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 import Backdrop from "@appserver/components/backdrop";
 import Heading from "@appserver/components/heading";
@@ -107,6 +108,7 @@ class AddUsersPanelComponent extends React.Component {
       groupsCaption,
       accessOptions,
       isMultiSelect,
+      theme,
     } = this.props;
     const { accessRight } = this.state;
 
@@ -121,7 +123,7 @@ class AddUsersPanelComponent extends React.Component {
               directionX="right"
               onAccessChange={this.onAccessChange}
               accessOptions={accessOptions}
-              arrowIconColor="#000000"
+              arrowIconColor={theme.filesPanels.addUsers.arrowColor}
             />
           ),
         }
@@ -138,28 +140,6 @@ class AddUsersPanelComponent extends React.Component {
         />
         <Aside className="header_aside-panel">
           <StyledContent>
-            <StyledHeaderContent>
-              <IconButton
-                size="16"
-                iconName="/static/images/arrow.path.react.svg"
-                onClick={this.onArrowClick}
-                color="#A3A9AE"
-              />
-              <Heading
-                className="header_aside-panel-header"
-                size="medium"
-                truncate
-              >
-                {isMultiSelect ? t("LinkText") : t("Translations:OwnerChange")}
-              </Heading>
-              {/*<IconButton
-                size="16"
-                iconName="PlusIcon"
-                className="header_aside-panel-plus-icon"
-                onClick={() => console.log("onPlusClick")}
-              />*/}
-            </StyledHeaderContent>
-
             <StyledBody ref={this.scrollRef}>
               <PeopleSelector
                 className="peopleSelector"
@@ -175,6 +155,10 @@ class AddUsersPanelComponent extends React.Component {
                 {...embeddedComponent}
                 groupsCaption={groupsCaption}
                 showCounter
+                onArrowClick={this.onArrowClick}
+                headerLabel={
+                  isMultiSelect ? t("LinkText") : t("Translations:OwnerChange")
+                }
                 //onCancel={onClose}
               />
             </StyledBody>
@@ -191,6 +175,12 @@ AddUsersPanelComponent.propTypes = {
   onClose: PropTypes.func,
 };
 
-export default withTranslation(["SharingPanel", "Translations"])(
-  withLoader(AddUsersPanelComponent)(<Loaders.DialogAsideLoader isPanel />)
+export default inject(({ auth }) => {
+  return { theme: auth.settingsStore.theme };
+})(
+  observer(
+    withTranslation(["SharingPanel", "Translations"])(
+      withLoader(AddUsersPanelComponent)(<Loaders.DialogAsideLoader isPanel />)
+    )
+  )
 );

@@ -39,9 +39,9 @@ const SectionHeaderContent = (props) => {
       <div style={{ width: "17px" }}>
         <IconButton
           iconName="/static/images/arrow.path.react.svg"
-          color="#A3A9AE"
+          // color="#A3A9AE"
           size="17"
-          hoverColor="#657077"
+          // hoverColor="#657077"
           isFill={true}
           onClick={onClickBack}
           className="arrow-button"

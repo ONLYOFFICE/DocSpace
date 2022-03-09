@@ -10,6 +10,11 @@ import {
   ArticleMainButtonContent,
   ArticleBodyContent,
 } from "../../components/Article";
+import {
+  CatalogHeaderContent,
+  CatalogMainButtonContent,
+  CatalogBodyContent,
+} from "../../components/Catalog";
 import SectionUserBody from "./Section/Body/index";
 import {
   SectionHeaderContent,
@@ -79,7 +84,7 @@ class ProfileAction extends React.Component {
     console.log("ProfileAction render");
 
     this.loaded = false;
-    const { profile, match, isMy, tReady } = this.props;
+    const { profile, match, isMy, tReady, showCatalog, isAdmin } = this.props;
     const { userId, type } = match.params;
 
     if (type) {
@@ -90,17 +95,40 @@ class ProfileAction extends React.Component {
 
     return (
       <PageLayout>
-        <PageLayout.ArticleHeader>
-          <ArticleHeaderContent />
-        </PageLayout.ArticleHeader>
+        {showCatalog && (
+          <PageLayout.CatalogHeader>
+            <CatalogHeaderContent />
+          </PageLayout.CatalogHeader>
+        )}
 
-        <PageLayout.ArticleMainButton>
-          <ArticleMainButtonContent />
-        </PageLayout.ArticleMainButton>
+        {showCatalog && isAdmin && (
+          <PageLayout.CatalogMainButton>
+            <CatalogMainButtonContent />
+          </PageLayout.CatalogMainButton>
+        )}
+        {showCatalog && (
+          <PageLayout.CatalogBody>
+            <CatalogBodyContent />
+          </PageLayout.CatalogBody>
+        )}
 
-        <PageLayout.ArticleBody>
-          <ArticleBodyContent />
-        </PageLayout.ArticleBody>
+        {!showCatalog && (
+          <PageLayout.ArticleHeader>
+            <ArticleHeaderContent />
+          </PageLayout.ArticleHeader>
+        )}
+
+        {!showCatalog && (
+          <PageLayout.ArticleMainButton>
+            <ArticleMainButtonContent />
+          </PageLayout.ArticleMainButton>
+        )}
+
+        {!showCatalog && (
+          <PageLayout.ArticleBody>
+            <ArticleBodyContent />
+          </PageLayout.ArticleBody>
+        )}
 
         <PageLayout.SectionHeader>
           <SectionHeaderContent tReady={tReady} loaded={this.loaded} />
@@ -151,6 +179,8 @@ export default withRouter(
       setFirstLoad,
       setLoadedProfile,
       setIsEditTargetUser,
+      isAdmin: auth.isAdmin,
+      showCatalog: auth.settingsStore.showCatalog,
     };
   })(withTranslation(["ProfileAction", "Common"])(observer(ProfileAction)))
 );

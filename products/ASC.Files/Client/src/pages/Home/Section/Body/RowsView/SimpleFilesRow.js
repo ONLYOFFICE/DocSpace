@@ -11,16 +11,18 @@ import withFileActions from "../../../../../HOCs/withFileActions";
 import withQuickButtons from "../../../../../HOCs/withQuickButtons";
 import ItemIcon from "../../../../../components/ItemIcon";
 import marginStyles from "./CommonStyles";
+import { Base } from "@appserver/components/themes";
 
 const checkedStyle = css`
-  background: #f3f4f4;
+  background: ${(props) => props.theme.filesSection.rowView.checkedBackground};
   ${marginStyles}
 `;
 
 const draggingStyle = css`
-  background: #f8f7bf;
+  background: ${(props) => props.theme.filesSection.rowView.draggingBackground};
   &:hover {
-    background: #efefb2;
+    background: ${(props) =>
+      props.theme.filesSection.rowView.draggingHoverBackground};
   }
   ${marginStyles}
 `;
@@ -164,6 +166,8 @@ const StyledSimpleFilesRow = styled(Row)`
     }
   `}
 `;
+
+StyledSimpleFilesRow.defaultProps = { theme: Base };
 
 const SimpleFilesRow = (props) => {
   const {

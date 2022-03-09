@@ -133,6 +133,7 @@ class FilesActionStore {
       percent: 0,
       label: translations.deleteOperation,
       alert: false,
+      filesCount: selection.length,
     });
 
     const deleteAfter = false; //Delete after finished TODO: get from settings
@@ -526,6 +527,7 @@ class FilesActionStore {
   duplicateAction = (item, label) => {
     const {
       setSecondaryProgressBarData,
+      filesCount,
     } = this.uploadDataStore.secondaryProgressDataStore;
 
     //TODO: duplicate for folders?
@@ -541,6 +543,7 @@ class FilesActionStore {
       percent: 0,
       label,
       alert: false,
+      filesCount: filesCount + fileIds.length,
     });
 
     this.filesStore.addActiveItems(fileIds, folderIds);

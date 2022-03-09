@@ -4,12 +4,13 @@ import PropTypes from "prop-types";
 import React from "react";
 import { ReactSVG } from "react-svg";
 import styled, { css } from "styled-components";
-import ContextMenu from "@appserver/components/context-menu";
+import ContextMenu from "@appserver/components/new-context-menu";
 import { tablet } from "@appserver/components/utils/device";
 import { isDesktop } from "react-device-detect";
 
 import Link from "@appserver/components/link";
 import Loader from "@appserver/components/loader";
+import { Base } from "@appserver/components/themes";
 
 const svgLoader = () => <div style={{ width: "96px" }} />;
 
@@ -32,11 +33,12 @@ const FileStyles = css`
 `;
 
 const checkedStyle = css`
-  background: #f3f4f4 !important;
+  background: ${(props) =>
+    props.theme.filesSection.tilesView.tile.checkedColor} !important;
 `;
 
 const bottomFileBorder = css`
-  border-top-color: #d0d5da;
+  border: ${(props) => props.theme.filesSection.tilesView.tile.border};
   border-radius: 0 0 6px 6px;
 `;
 
@@ -50,7 +52,7 @@ const StyledTile = styled.div`
     `}
   box-sizing: border-box;
   width: 100%;
-  border: 1px solid #d0d5da;
+  border: ${(props) => props.theme.filesSection.tilesView.tile.border};
   border-radius: 6px;
   ${(props) => props.showHotkeyBorder && "border-color: #2DA7DB"};
   ${(props) => props.isFolder && "border-top-left-radius: 0px;"}
@@ -224,6 +226,8 @@ const StyledOptionButton = styled.div`
   }
 `;
 
+StyledOptionButton.defaultProps = { theme: Base };
+
 const badgesPosition = css`
   left: 9px;
 
@@ -271,11 +275,14 @@ const StyledIcons = styled.div`
     align-items: center;
     justify-content: center;
     padding: 8px;
-    background: rgb(255, 255, 255);
+    background: ${(props) =>
+      props.theme.filesSection.tilesView.tile.backgroundColor};
     border-radius: 4px;
     box-shadow: 0px 2px 4px rgba(4, 15, 27, 0.16);
   }
 `;
+
+StyledIcons.defaultProps = { theme: Base };
 
 class Tile extends React.PureComponent {
   constructor(props) {
@@ -384,6 +391,11 @@ class Tile extends React.PureComponent {
     const [FilesTileContent, badges] = children;
     const quickButtons = contentElement;
 
+    const contextMenuHeader = {
+      icon: children[0].props.item.icon,
+      title: children[0].props.item.title,
+    };
+
     return (
       <StyledTile
         ref={this.tile}
@@ -435,8 +447,6 @@ class Tile extends React.PureComponent {
             <StyledOptionButton spacerWidth={contextButtonSpacerWidth}>
               {renderContext ? (
                 <ContextMenuButton
-                  color="#A3A9AE"
-                  hoverColor="#657077"
                   className="expandButton"
                   directionX="right"
                   getData={getOptions}
@@ -447,7 +457,11 @@ class Tile extends React.PureComponent {
               ) : (
                 <div className="expandButton" />
               )}
-              <ContextMenu contextMenuData={contextMenuData} ref={this.cm} />
+              <ContextMenu
+                contextMenuData={contextMenuData}
+                ref={this.cm}
+                header={contextMenuHeader}
+              />
             </StyledOptionButton>
           </>
         ) : (
@@ -498,8 +512,6 @@ class Tile extends React.PureComponent {
               <StyledOptionButton spacerWidth={contextButtonSpacerWidth}>
                 {renderContext ? (
                   <ContextMenuButton
-                    color="#A3A9AE"
-                    hoverColor="#657077"
                     className="expandButton"
                     directionX="right"
                     getData={getOptions}
@@ -510,7 +522,12 @@ class Tile extends React.PureComponent {
                 ) : (
                   <div className="expandButton" />
                 )}
-                <ContextMenu contextMenuData={contextMenuData} ref={this.cm} />
+                <ContextMenu
+                  contextMenuData={contextMenuData}
+                  ref={this.cm}
+                  header={contextMenuHeader}
+                  withBackdrop={true}
+                />
               </StyledOptionButton>
             </StyledFileTileBottom>
           </>

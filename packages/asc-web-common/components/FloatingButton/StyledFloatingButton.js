@@ -1,14 +1,14 @@
+import Base from "@appserver/components/themes/base";
 import styled, { keyframes, css } from "styled-components";
 
-const backgroundColor = "none";
-const color = "#2DA7DB";
-
 const StyledCircleWrap = styled.div`
-  width: 54px;
-  height: 54px;
-  background: ${backgroundColor};
+  width: 48px;
+  height: 48px;
+  background: ${(props) =>
+    props.color ? props.color : props.theme.floatingButton.backgroundColor};
   border-radius: 50%;
   cursor: pointer;
+  box-shadow: ${(props) => props.theme.floatingButton.boxShadow};
 `;
 
 const rotate360 = keyframes`
@@ -20,20 +20,31 @@ const rotate360 = keyframes`
   }
 `;
 
+StyledCircleWrap.defaultProps = { theme: Base };
+
 const StyledCircle = styled.div`
   .circle__mask,
   .circle__fill {
-    width: 54px;
-    height: 54px;
+    width: 42px;
+    height: 42px;
     position: absolute;
     border-radius: 50%;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    margin: auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   ${(props) =>
     props.percent > 0
       ? css`
           .circle__mask {
-            clip: rect(0px, 54px, 54px, 27px);
+            clip: rect(0px, 42px, 42px, 21px);
           }
 
           .circle__fill {
@@ -49,8 +60,8 @@ const StyledCircle = styled.div`
         `}
 
   .circle__mask .circle__fill {
-    clip: rect(0px, 27px, 54px, 0px);
-    background-color: ${color};
+    clip: rect(0px, 21px, 42px, 0px);
+    background-color: ${(props) => props.theme.floatingButton.color};
   }
 
   .circle__mask.circle__full {
@@ -69,26 +80,36 @@ const StyledCircle = styled.div`
 `;
 
 const StyledFloatingButton = styled.div`
-  width: 48px;
-  height: 48px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
-  background: ${(props) => (props.color ? props.color : "#fff")};
-  box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
+  background: ${(props) =>
+    props.color ? props.color : props.theme.floatingButton.backgroundColor};
   text-align: center;
-  margin: 3px;
+  margin: 5px;
   position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
+StyledFloatingButton.defaultProps = { theme: Base };
+
 const IconBox = styled.div`
-  padding-top: 12px;
+  // padding-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
+
+IconBox.defaultProps = { theme: Base };
 
 const StyledAlertIcon = styled.div`
   position: absolute;
   width: 12px;
   height: 12px;
-  left: 26px;
-  top: -10px;
+  left: 19px;
+  top: 0px;
 `;
 
 export {

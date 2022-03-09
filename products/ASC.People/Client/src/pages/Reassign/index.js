@@ -9,6 +9,11 @@ import {
 // import { SectionHeaderContent } from './Section';
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { inject, observer } from "mobx-react";
+import {
+  CatalogBodyContent,
+  CatalogHeaderContent,
+  CatalogMainButtonContent,
+} from "../../components/Catalog";
 
 class Reassign extends React.Component {
   componentDidMount() {
@@ -45,17 +50,17 @@ class Reassign extends React.Component {
     return (
       <PageLayout>
         <PageLayout.ArticleHeader>
-          <ArticleHeaderContent />
+          <CatalogHeaderContent />
         </PageLayout.ArticleHeader>
 
         {isAdmin && (
           <PageLayout.ArticleMainButton>
-            <ArticleMainButtonContent />
+            <CatalogMainButtonContent />
           </PageLayout.ArticleMainButton>
         )}
 
         <PageLayout.ArticleBody>
-          <ArticleBodyContent />
+          <CatalogBodyContent />
         </PageLayout.ArticleBody>
 
         <PageLayout.SectionHeader>

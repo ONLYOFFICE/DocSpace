@@ -13,12 +13,20 @@ const StyledButton = styled.div`
 
   cursor: ${(props) => (!props.isDisabled ? "pointer" : "default")};
 
+  path {
+    ${(props) =>
+      !props.isDisabled &&
+      `
+    fill: ${props.theme.selectorAddButton.color};
+    `}
+  }
+
   &:hover {
     path {
       ${(props) =>
         !props.isDisabled &&
         `
-    fill: ${props.theme.selectorAddButton.color};
+    fill: ${props.theme.selectorAddButton.hoverColor};
     `}
     }
   }

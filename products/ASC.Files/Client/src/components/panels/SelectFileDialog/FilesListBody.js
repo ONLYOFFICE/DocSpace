@@ -27,6 +27,7 @@ const FilesListBody = ({
   selectedFolder,
   isMultiSelect,
   selectedFile,
+  theme,
 }) => {
   const { t } = useTranslation(["SelectFile", "Common"]);
   const filesListRef = useRef(null);
@@ -61,8 +62,15 @@ const FilesListBody = ({
             key="loader"
             className="panel-loader-wrapper loader-wrapper_margin"
           >
-            <Loader type="oval" size="16px" className="panel-loader" />
-            <Text as="span">{loadingText}</Text>
+            <Loader
+              theme={theme}
+              type="oval"
+              size="16px"
+              className="panel-loader"
+            />
+            <Text theme={theme} as="span">
+              {loadingText}
+            </Text>
           </div>
         </div>
       );
@@ -78,6 +86,7 @@ const FilesListBody = ({
             className="panel-loader-wrapper loader-wrapper_margin"
           >
             <Loaders.Rows
+              theme={theme}
               style={{
                 marginBottom: displayType === "aside" ? "24px" : "26px",
                 marginTop: displayType === "aside" ? "8px" : "10px",
@@ -125,6 +134,7 @@ const FilesListBody = ({
       return (
         <div style={style}>
           <FilesListRow
+            theme={theme}
             displayType={displayType}
             needRowSelection={needRowSelection}
             index={index}
@@ -148,6 +158,7 @@ const FilesListBody = ({
       <AutoSizer>
         {({ width, height }) => (
           <InfiniteLoader
+            theme={theme}
             ref={filesListRef}
             isItemLoaded={isItemLoaded}
             itemCount={itemCount}
@@ -155,6 +166,7 @@ const FilesListBody = ({
           >
             {({ onItemsRendered, ref }) => (
               <List
+                theme={theme}
                 height={displayType === "aside" ? height : listHeight}
                 itemCount={itemCount}
                 itemSize={displayType === "aside" ? 56 : 50}
@@ -173,6 +185,7 @@ const FilesListBody = ({
       {!hasNextPage && itemCount === 0 && (
         <div className="select-file-dialog_empty-container">
           <EmptyContainer
+            theme={theme}
             headerText={t("Home:EmptyFolderHeader")}
             imageSrc="/static/images/empty_screen.png"
           />

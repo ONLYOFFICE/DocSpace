@@ -6,6 +6,13 @@ const StyledAvatarEditorBody = styled.div`
   max-width: ${(props) => props.theme.avatarEditorBody.maxWidth};
   ${(props) => !props.useModalDialog && "margin-bottom: 40px;"}
   ${(props) => !props.useModalDialog && !props.image && "max-width: none;"}
+
+  .select_link {
+    color: ${(props) => props.theme.avatarEditorBody.selectLink.color};
+    a {
+      color: ${(props) => props.theme.avatarEditorBody.selectLink.linkColor};
+    }
+  }
 `;
 StyledAvatarEditorBody.defaultProps = { theme: Base };
 
@@ -172,6 +179,21 @@ const StyledAvatarContainer = styled.div`
         justify-items: center;
         .editor-button {
           margin: auto 0;
+          svg {
+            path {
+              fill: ${(props) =>
+                props.theme.avatarEditorBody.container.button.fill};
+            }
+          }
+
+          &:hover {
+            svg {
+              path {
+                fill: ${(props) =>
+                  props.theme.avatarEditorBody.container.button.hoverFill};
+              }
+            }
+          }
         }
       }
 

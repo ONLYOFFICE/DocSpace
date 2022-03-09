@@ -11,6 +11,7 @@ import { sendRegisterRequest } from "@appserver/common/api/settings";
 import { I18nextProvider, useTranslation } from "react-i18next";
 import i18n from "../i18n";
 import { inject, observer } from "mobx-react";
+import { Base } from "@appserver/components/themes";
 
 const StyledRegister = styled(Box)`
   display: flex;
@@ -22,9 +23,11 @@ const StyledRegister = styled(Box)`
   padding: 1.5em;
   bottom: 0;
   right: 0;
-  background-color: #f8f9f9;
+  background-color: ${(props) => props.theme.login.register.backgroundColor};
   cursor: pointer;
 `;
+
+StyledRegister.defaultProps = { theme: Base };
 
 const Register = (props) => {
   const {
@@ -32,6 +35,7 @@ const Register = (props) => {
     isAuthenticated,
     trustedDomainsType,
     trustedDomains,
+    theme,
   } = props;
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -74,7 +78,7 @@ const Register = (props) => {
   return enabledJoin && !isAuthenticated ? (
     <>
       <StyledRegister onClick={onRegisterClick}>
-        <Text color="#316DAA">{t("Register")}</Text>
+        <Text color={theme.login.register.textColor}>{t("Register")}</Text>
       </StyledRegister>
 
       {visible && (
@@ -105,8 +109,14 @@ Register.propTypes = {
 
 export default inject(({ auth }) => {
   const { settingsStore, isAuthenticated, language } = auth;
-  const { enabledJoin, trustedDomainsType, trustedDomains } = settingsStore;
+  const {
+    enabledJoin,
+    trustedDomainsType,
+    trustedDomains,
+    theme,
+  } = settingsStore;
   return {
+    theme,
     enabledJoin,
     trustedDomainsType,
     trustedDomains,

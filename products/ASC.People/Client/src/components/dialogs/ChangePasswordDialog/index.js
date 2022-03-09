@@ -1,4 +1,5 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 import ModalDialog from "@appserver/components/modal-dialog";
 import Button from "@appserver/components/button";
@@ -32,7 +33,7 @@ class ChangePasswordDialogComponent extends React.Component {
 
   render() {
     console.log("ChangePasswordDialog render");
-    const { t, tReady, visible, email, onClose } = this.props;
+    const { t, tReady, visible, email, onClose, theme } = this.props;
     const { isRequestRunning } = this.state;
 
     return (
@@ -50,7 +51,7 @@ class ChangePasswordDialogComponent extends React.Component {
                 type="page"
                 href={`mailto:${email}`}
                 noHover
-                color="#316DAA"
+                color={theme.peopleDialogs.changePassword.linkColor}
                 title={email}
               >
                 {{ email }}
@@ -74,10 +75,15 @@ class ChangePasswordDialogComponent extends React.Component {
   }
 }
 
-const ChangePasswordDialog = withTranslation([
-  "ChangePasswordDialog",
-  "Common",
-])(ChangePasswordDialogComponent);
+const ChangePasswordDialog = inject(({ auth }) => ({
+  theme: auth.settingsStore.theme,
+}))(
+  observer(
+    withTranslation(["ChangePasswordDialog", "Common"])(
+      ChangePasswordDialogComponent
+    )
+  )
+);
 
 ChangePasswordDialog.propTypes = {
   visible: PropTypes.bool.isRequired,

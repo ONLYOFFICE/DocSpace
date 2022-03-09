@@ -6,6 +6,7 @@ import Box from "@appserver/components/box";
 import { tablet } from "@appserver/components/utils/device";
 import { useTranslation, Trans } from "react-i18next";
 import { inject } from "mobx-react";
+import { Base } from "@appserver/components/themes";
 
 const StyledBodyAdvantages = styled.div`
   display: grid;
@@ -15,8 +16,9 @@ const StyledBodyAdvantages = styled.div`
   grid-template-rows: repeat(4, min-content);
   grid-row-gap: 18px;
 
-  background: url("images/payments_enterprise.svg") #f8f9f9 bottom 32px right
-    32px no-repeat;
+  background: url("images/payments_enterprise.svg")
+    ${(props) => props.theme.studio.paymentsEnterprise.background} bottom 32px
+    right 32px no-repeat;
 
   .header-advantages {
     line-height: 30px;
@@ -31,9 +33,11 @@ const StyledBodyAdvantages = styled.div`
   }
 
   @media ${tablet} {
-    background: #f8f9f9;
+    background: ${(props) => props.theme.studio.paymentsEnterprise.background};
   }
 `;
+
+StyledBodyAdvantages.defaultProps = { theme: Base };
 
 const AdvantagesContainer = ({ organizationName }) => {
   const { t } = useTranslation("PaymentsEnterprise");

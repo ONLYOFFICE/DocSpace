@@ -16,6 +16,12 @@ import {
   ArticleMainButtonContent,
 } from "../../components/Article";
 import {
+  CatalogBodyContent,
+  CatalogHeaderContent,
+  CatalogMainButtonContent,
+} from "../../components/Catalog";
+
+import {
   SectionBodyContent,
   SectionFilterContent,
   SectionHeaderContent,
@@ -279,6 +285,8 @@ class PureHome extends React.Component {
 
       dragging,
       tReady,
+
+      showCatalog,
     } = this.props;
     return (
       <>
@@ -309,18 +317,40 @@ class PureHome extends React.Component {
           isHeaderVisible={isHeaderVisible}
           onOpenUploadPanel={this.showUploadPanel}
           firstLoad={firstLoad}
+          dragging={dragging}
         >
-          <PageLayout.ArticleHeader>
-            <ArticleHeaderContent />
-          </PageLayout.ArticleHeader>
+          {!showCatalog && (
+            <PageLayout.ArticleHeader>
+              <ArticleHeaderContent />
+            </PageLayout.ArticleHeader>
+          )}
+          {!showCatalog && (
+            <PageLayout.ArticleMainButton>
+              <ArticleMainButtonContent />
+            </PageLayout.ArticleMainButton>
+          )}
+          {!showCatalog && (
+            <PageLayout.ArticleBody>
+              <ArticleBodyContent onTreeDrop={this.onDrop} />
+            </PageLayout.ArticleBody>
+          )}
 
-          <PageLayout.ArticleMainButton>
-            <ArticleMainButtonContent />
-          </PageLayout.ArticleMainButton>
+          {showCatalog && (
+            <PageLayout.CatalogHeader>
+              <CatalogHeaderContent />
+            </PageLayout.CatalogHeader>
+          )}
+          {showCatalog && (
+            <PageLayout.CatalogMainButton>
+              <CatalogMainButtonContent />
+            </PageLayout.CatalogMainButton>
+          )}
+          {showCatalog && (
+            <PageLayout.CatalogBody>
+              <CatalogBodyContent />
+            </PageLayout.CatalogBody>
+          )}
 
-          <PageLayout.ArticleBody>
-            <ArticleBodyContent onTreeDrop={this.onDrop} />
-          </PageLayout.ArticleBody>
           <PageLayout.SectionHeader>
             <SectionHeaderContent />
           </PageLayout.SectionHeader>
@@ -468,6 +498,7 @@ export default inject(
 
       setIsPrevSettingsModule,
       isPrevSettingsModule,
+      showCatalog: auth.settingsStore.showCatalog,
     };
   }
 )(withRouter(observer(Home)));

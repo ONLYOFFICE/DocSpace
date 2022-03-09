@@ -92,7 +92,6 @@ const OperationsPanelComponent = (props) => {
     let fileIds = [];
     let folderIds = [];
 
-
     for (let item of items) {
       if (item.fileExst || item.contentLength) {
         fileIds.push(item.id);
@@ -159,6 +158,7 @@ const OperationsPanelComponent = (props) => {
       </ModalDialog.Header>
       <ModalDialog.Body>
         <TreeFolders
+          isPanel={true}
           expandedPanelKeys={expandedKeys}
           data={operationsFolders}
           filter={filter}

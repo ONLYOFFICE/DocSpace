@@ -1,4 +1,5 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
@@ -63,12 +64,15 @@ const SimpleFilesTileContent = styled(TileContent)`
   }
 `;
 
-const FilesTileContent = ({ item, titleWithoutExt, linkStyles }) => {
+const FilesTileContent = ({ item, titleWithoutExt, linkStyles, theme }) => {
   const { fileExst, title } = item;
 
   return (
     <>
-      <SimpleFilesTileContent sideColor="#333" isFile={fileExst}>
+      <SimpleFilesTileContent
+        sideColor={theme.filesSection.tilesView.sideColor}
+        isFile={fileExst}
+      >
         <Link
           className="item-file-name"
           containerWidth="100%"
@@ -78,7 +82,7 @@ const FilesTileContent = ({ item, titleWithoutExt, linkStyles }) => {
           fontSize={isDesktop ? "13px" : "14px"}
           target="_blank"
           {...linkStyles}
-          color="#333"
+          color={theme.filesSection.tilesView.color}
           isTextOverflow
         >
           {titleWithoutExt}
@@ -88,8 +92,14 @@ const FilesTileContent = ({ item, titleWithoutExt, linkStyles }) => {
   );
 };
 
-export default withRouter(
-  withTranslation(["Home", "Translations"])(
-    withContent(withBadges(FilesTileContent))
+export default inject(({ auth }) => {
+  return { theme: auth.settingsStore.theme };
+})(
+  observer(
+    withRouter(
+      withTranslation(["Home", "Translations"])(
+        withContent(withBadges(FilesTileContent))
+      )
+    )
   )
 );
