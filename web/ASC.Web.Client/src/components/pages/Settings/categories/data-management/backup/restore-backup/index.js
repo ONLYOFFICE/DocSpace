@@ -173,7 +173,6 @@ class RestoreBackup extends React.Component {
 
       for (let key of this.formNames) {
         const field = this.formSettings[key];
-        //console.log("this.formNames", this.formNames, "key", key);
         if (!field) {
           if (!firstError) {
             firstError = true;
@@ -184,7 +183,6 @@ class RestoreBackup extends React.Component {
             firstError = true;
           }
           errors[key] = !field.trim();
-          console.log("errors[key]", errors[key]);
         }
       }
 
@@ -206,7 +204,6 @@ class RestoreBackup extends React.Component {
       selectedFile,
       isCheckedThirdPartyStorage,
       isCheckedThirdParty,
-      formSettings,
     } = this.state;
     const { history, socketHelper } = this.props;
 
@@ -231,7 +228,7 @@ class RestoreBackup extends React.Component {
       });
       let tmpObj = {};
       const arraySettings = Object.entries(this.formSettings);
-      console.log("this.state.formSettings", arraySettings);
+
       for (let i = 0; i < this.formNames.length; i++) {
         tmpObj = {
           key: arraySettings[i][0],
@@ -245,7 +242,7 @@ class RestoreBackup extends React.Component {
       if (isCheckedDocuments || isCheckedThirdParty) {
         obj.value = selectedFileId;
       } else {
-        obj.value = ""; //TODO: added upload of file.
+        obj.value = "";
       }
       storageParams.push(obj);
     }
@@ -272,7 +269,6 @@ class RestoreBackup extends React.Component {
           responseType: "text",
           data: selectedFile,
         });
-        console.log("data", checkedFile);
       }
     } catch (e) {
       toastr.error(e);
@@ -365,7 +361,6 @@ class RestoreBackup extends React.Component {
 
     const isMaxProgress = downloadingProgress === 100;
 
-    console.log("render restore backup ", this.state, this.props);
     return isInitialLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
@@ -488,20 +483,6 @@ class RestoreBackup extends React.Component {
           onClick={this.onRestoreClick}
           primary
           isDisabled={!isMaxProgress || !isChecked}
-          size="medium"
-          tabIndex={10}
-        />
-
-        <Button
-          label={"Fake restore"} //TODO: Remove fake button
-          onClick={() => {
-            const { socketHelper } = this.props;
-            socketHelper.emit({
-              command: "restore-backup",
-              data: new Date().toLocaleString(),
-            });
-          }}
-          primary
           size="medium"
           tabIndex={10}
         />
