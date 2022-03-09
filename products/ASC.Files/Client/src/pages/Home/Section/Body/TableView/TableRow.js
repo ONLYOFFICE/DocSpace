@@ -246,11 +246,9 @@ const FilesTableRow = (props) => {
     setFirsElemChecked,
     theme,
     quickButtonsComponent,
-    getModel,
+    contextMenuData,
   } = props;
   const { acceptBackground, background } = theme.dragAndDrop;
-
-  const contextMenuData = { getModel, t, item };
 
   const element = (
     <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
