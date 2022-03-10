@@ -38,7 +38,7 @@ class AmazonSettings extends React.Component {
       selectedStorage && selectedStorage.properties[2].title;
 
     this.serviceUrlPlaceholder = t("ServiceUrl");
-    this.SSEPlaceholder = t("SSE");
+    this.SSEPlaceholder = t("ServerSideEncryptionMethod");
     this.useHttpPlaceholder = t("UseHttp");
   }
 

@@ -456,7 +456,7 @@ class RestoreBackup extends React.Component {
           className="restore-backup-checkbox_notification"
           onChange={this.onChangeCheckboxNotify}
           isChecked={isNotify}
-          label={t("UserNotification")}
+          label={t("SendNotificationAboutRestoring")}
         />
 
         <Text className="restore-backup_warning">
