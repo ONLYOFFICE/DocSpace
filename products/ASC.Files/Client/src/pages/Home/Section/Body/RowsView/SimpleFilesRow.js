@@ -172,7 +172,7 @@ const SimpleFilesRow = (props) => {
     isActive,
     inProgress,
     isAdmin,
-    contextMenuData,
+    getContextModel,
   } = props;
 
   const withAccess = isAdmin || item.access === 0;
@@ -217,7 +217,7 @@ const SimpleFilesRow = (props) => {
           isThirdPartyFolder={item.isThirdPartyFolder}
           className="files-row"
           withAccess={withAccess}
-          contextMenuData={contextMenuData}
+          getContextModel={getContextModel}
         >
           <FilesRowContent
             item={item}

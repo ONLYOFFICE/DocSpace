@@ -36,7 +36,7 @@ const FileTile = (props) => {
     quickButtonsComponent,
     badgesComponent,
     t,
-    getModel,
+    getContextModel,
   } = props;
 
   const temporaryExtension =
@@ -86,7 +86,7 @@ const FileTile = (props) => {
           isActive={isActive}
           inProgress={inProgress}
           isEdit={isEdit}
-          getModel={getModel}
+          getContextModel={getContextModel}
           t={t}
           title={
             item.isFolder
