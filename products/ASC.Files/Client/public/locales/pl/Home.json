@@ -13,7 +13,6 @@
     "CopyItem": "Skopiowano <strong>{{title}}</strong>",
     "CopyItems": "Skopiowano <strong>{{qty}}</strong> element(y/ów)",
     "Document": "Dokument",
-    "Duplicate": "Utwórz kopię",
     "EmptyFile": "Pusty plik",
     "EmptyFilterDescriptionText": "Żaden plik ani folder nie pasują do wybranego filtra. Wypróbuj inny lub usuń go, aby zobaczyć wszystkie pliki. ",
     "EmptyFilterSubheadingText": "Brak plików do wyświetlenia dla danego filtra",
