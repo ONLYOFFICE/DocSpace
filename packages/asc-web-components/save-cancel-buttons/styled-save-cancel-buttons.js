@@ -2,27 +2,26 @@ import styled from "styled-components";
 
 import Base from "../themes/base";
 import { tablet } from "../utils/device";
-import { isMobile } from "react-device-detect";
+import { isMobile, isTablet } from "react-device-detect";
 
 const StyledSaveCancelButtons = styled.div`
   display: flex;
-  flex-direction: ${(props) => (props.displaySettings ? "column" : "row")};
-  position: ${(props) => (props.displaySettings ? "inherit" : "absolute")};
+  position: absolute;
   justify-content: space-between;
   box-sizing: border-box;
   align-items: center;
-
   bottom: ${(props) => props.theme.saveCancelButtons.bottom};
   width: ${(props) => props.theme.saveCancelButtons.width};
-
-  left: ${(props) => props.theme.saveCancelButtons.left};
+  left: ${(props) =>
+    props.displaySettings ? "auto" : props.theme.saveCancelButtons.left};
   padding: ${(props) =>
-    props.displaySettings ? "0" : props.theme.saveCancelButtons.padding};
+    props.displaySettings
+      ? "0 16px 16px 0"
+      : props.theme.saveCancelButtons.padding};
 
   .save-button {
     margin-right: ${(props) => props.theme.saveCancelButtons.marginRight};
   }
-
   .unsaved-changes {
     color: ${(props) => props.theme.saveCancelButtons.unsavedColor};
   }
@@ -30,56 +29,80 @@ const StyledSaveCancelButtons = styled.div`
   ${(props) =>
     props.displaySettings &&
     `
-    max-width:350px;
-
+    flex-direction: column-reverse;
+    align-items: flex-start;
+  
     .buttons-flex {
       display: flex;
       width: 100%;
-      margin-bottom:8px;
     }
 
     .save-button, .cancel-button {
       width: 100%;
-      min-width:100px;
+      height: auto;
       line-height: 16px;
+      padding-top:11px;
+      padding-bottom:11px;
+    }
+
+    .unsaved-changes {
+      margin-bottom:12px;
+    }
+  `}
+
+  ${(props) =>
+    props.displaySettings &&
+    ((!isMobile && props.sectionWidth > 375 && props.sectionWidth < 1440) ||
+      isTablet) &&
+    `
+    position: static;
+    max-width: none;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+
+    .buttons-flex {
+      width: auto;
+    }
+ 
+    .save-button, .cancel-button {
+      max-width: max-content;
+      padding-left: 28px;
+      padding-right: 28px;
+    }
+
+    .unsaved-changes {
+      margin-left: 8px;
+      margin-bottom: 0;
+    }
+   
+  `}
+
+${(props) =>
+    props.displaySettings &&
+    !isTablet &&
+    props.sectionWidth >= 1440 &&
+    `
+    .save-button, .cancel-button {
+      font-size: 13px;
+      line-height: 20px;
+      padding-top: 5px;
+      padding-bottom: 5px;
     }
   `}
 
   @media ${tablet} {
-    justify-content: ${(props) =>
-      props.displaySettings ? "normal" : "flex-end"};
-    position: ${(props) => (props.displaySettings ? "inherit" : "fixed")};
+    ${(props) =>
+      !props.displaySettings &&
+      `
+    justify-content: flex-end;
+    position: fixed;
 
     .unsaved-changes {
-      display: ${(props) => (props.displaySettings ? "block" : "none")};
-    }
+      display: none;
+    } 
+  `}
   }
-
-  ${(props) =>
-    props.displaySettings &&
-    !isMobile &&
-    props.sectionWidth >= 375 &&
-    `
-    align-items: flex-start;
-
-    .save-button, .cancel-button {
-      width: max-content;
-    }  
-  `}
-
-  ${(props) =>
-    props.displaySettings &&
-    props.showReminder &&
-    `
-    margin-bottom:14px; 
-  `}
-
-  ${(props) =>
-    props.displaySettings &&
-    !props.showReminder &&
-    `
-    margin-bottom:32px; 
-  `}
 `;
 StyledSaveCancelButtons.defaultProps = { theme: Base };
 export default StyledSaveCancelButtons;
