@@ -58,7 +58,7 @@ export const CustomTitlesTooltip = ({ t }) => {
   const welcomeText = t("Settings:CustomTitlesWelcome");
   const text = t("Settings:CustomTitlesText");
   const from = t("Settings:CustomTitlesFrom");
-  const header = t("Settings:CustomTitlesHeader");
+  const header = t("Common:Title");
   return (
     <StyledTooltip>
       <Text className="font-size">
