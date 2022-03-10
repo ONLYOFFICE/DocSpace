@@ -158,7 +158,6 @@ const StyledTableRow = styled(TableRow)`
       .table-container_cell {
         margin-top: -1px;
         border-top: 1px solid #2da7db;
-        z-index: 1;
       }
     `}
 `;

@@ -33,6 +33,11 @@ class HotkeyStore {
   activateHotkeys = () => {
     const { selection, hotkeyCaret } = this.filesStore;
 
+    if (!hotkeyCaret) {
+      const scroll = document.getElementsByClassName("section-scroll");
+      scroll && scroll[0].focus();
+    }
+
     if (!hotkeyCaret && selection.length) {
       this.filesStore.setHotkeyCaret(selection[0]);
       this.filesStore.setHotkeyCaretStart(selection[0]);

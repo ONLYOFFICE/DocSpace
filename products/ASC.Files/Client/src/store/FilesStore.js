@@ -383,8 +383,11 @@ class FilesStore {
   };
 
   setSelected = (selected) => {
-    if (selected === "close" || selected === "none")
+    if (selected === "close" || selected === "none") {
       this.setBufferSelection(null);
+      this.setHotkeyCaretStart(null);
+      this.setHotkeyCaret(null);
+    }
 
     this.selected = selected;
     const files = this.files.concat(this.folders);
