@@ -116,8 +116,8 @@ const Base = {
     },
 
     lineHeight: {
-      extraSmall: "15px",
-      small: "13px",
+      extraSmall: "12px",
+      small: "14px",
       normal36: "16px",
       normal40: "16px",
       medium: "22px",

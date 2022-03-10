@@ -130,6 +130,13 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
      ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// /////
 
   padding: ${(props) => `${props.theme.button.padding[props.size]}`};
+  ${({ icon }) =>
+    icon &&
+    css`
+      padding-top: 12px;
+      padding-bottom: 12px;
+      height: auto;
+    `}
 
   /* padding: ${(props) =>
     ((props.size === "normal40" || props.size === "small") &&
@@ -261,6 +268,8 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
 
   .btnIcon,
   .loader {
+    line-height: ${(props) => lineHeightStyle(props)};
+    margin-right: 4px;
     display: ${(props) => props.theme.button.display};
     vertical-align: ${(props) => props.theme.button.topVerticalAlign};
   }
