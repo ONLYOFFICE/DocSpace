@@ -36,8 +36,6 @@
   "HotkeysCreateDocument": "Create document",
   "HotkeysCreateSpreadsheet": "Create spreadsheet",
   "HotkeysCreatePresentation": "Create presentation",
-  "HotkeysCreateForm": "Create presentation",
-  "HotkeysCreateFormFromFile": "Create presentation",
   "HotkeysCreateFolder": "Create folder",
   "HotkeysUploadFile": "Upload file",
   "HotkeysUploadFolder": "Upload folder"
