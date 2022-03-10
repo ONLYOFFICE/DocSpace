@@ -81,9 +81,10 @@ class EmailInput extends React.Component {
   };
 
   onChange = (e) => {
-    const { onChange, onValidateInput } = this.props;
-    onChange ? onChange(e) : this.setState({ inputValue: e.target.value });
+    const { onChange, onValidateInput, disallowChar } = this.props;
+    if (e.target.value.includes(disallowChar)) return;
 
+    onChange ? onChange(e) : this.setState({ inputValue: e.target.value });
     const isValidEmail = this.checkEmail(e.target.value);
     this.setState({ isValidEmail });
 
@@ -150,6 +151,7 @@ EmailInput.propTypes = {
   placeholder: PropTypes.string,
   /** Indicates the input field has scale */
   scale: PropTypes.bool,
+  disallowChar: PropTypes.string,
 };
 
 EmailInput.defaultProps = {
