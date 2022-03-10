@@ -354,6 +354,7 @@ class Tile extends React.PureComponent {
       contentElement,
       title,
       getContextModel,
+      showHotkeyBorder,
     } = this.props;
     const { isFolder, id, fileExst } = item;
 

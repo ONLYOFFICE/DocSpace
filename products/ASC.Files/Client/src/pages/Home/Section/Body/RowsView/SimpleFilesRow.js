@@ -196,6 +196,7 @@ const SimpleFilesRow = (props) => {
     inProgress,
     isAdmin,
     getContextModel,
+    showHotkeyBorder,
   } = props;
 
   const withAccess = isAdmin || item.access === 0;
