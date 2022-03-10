@@ -39,7 +39,7 @@ const StyledComponent = styled.div`
   }
 
   .settings-block {
-    max-width: 350px;
+    max-width: 343px;
   }
 
   .combo-button-label {

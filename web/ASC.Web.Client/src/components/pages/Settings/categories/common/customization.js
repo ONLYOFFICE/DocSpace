@@ -17,6 +17,7 @@ import CustomTitles from "./custom-titles";
 import PortalRenaming from "./portal-renaming";
 import { Base } from "@appserver/components/themes";
 import { Consumer } from "@appserver/components/utils/context";
+import { isMobile } from "react-device-detect";
 
 const mapTimezonesToArray = (timezones) => {
   return timezones.map((timezone) => {
@@ -105,6 +106,10 @@ const StyledComponent = styled.div`
 
   .category-description {
     color: #657077;
+  }
+
+  .category-border {
+    border-bottom: 1px solid #eceef1;
   }
 
   .category-item-wrapper {
@@ -261,7 +266,7 @@ class Customization extends React.Component {
     return (
       <Consumer>
         {(context) =>
-          `${context.sectionWidth}` <= 375 ? (
+          `${context.sectionWidth}` <= 375 || isMobile ? (
             <StyledMobileComponent>
               <div className="category-item-wrapper">
                 <div className="category-item-heading">
@@ -303,45 +308,13 @@ class Customization extends React.Component {
                       "/settings/common/customization/custom-titles"
                     )}
                   >
-                    {t("CustomTitles")}
+                    {t("CustomTitlesWelcome")}
                   </Link>
                   <StyledArrowRightIcon size="small" color="#333333" />
                 </div>
                 <Text className="category-item-description">
                   {t("CustomTitlesSettingsDescription")}
                 </Text>
-              </div>
-              <div className="category-item-wrapper">
-                <div className="category-item-heading">
-                  <Link
-                    truncate={true}
-                    className="inherit-title-link header"
-                    onClick={this.onClickLink}
-                    href={combineUrl(
-                      AppServerConfig.proxyURL,
-                      "/settings/common/customization/team-template"
-                    )}
-                  >
-                    {t("TeamTemplate")}
-                  </Link>
-                  <StyledArrowRightIcon size="small" color="#333333" />
-                </div>
-                <Box marginProp="4px 0 6px 0">
-                  <Text fontWeight="600">{`${customNames.name}`}</Text>
-                </Box>
-                <Text className="category-item-description">
-                  {t("TeamTemplateSettingsDescription")}
-                </Text>
-                <Box marginProp="16px 0 0 0">
-                  <Link
-                    color={theme.studio.settings.common.linkColorHelp}
-                    target="_blank"
-                    isHovered={true}
-                    href={helpUrlCommonSettings}
-                  >
-                    {t("Common:LearnMore")}
-                  </Link>
-                </Box>
               </div>
             </StyledMobileComponent>
           ) : (
@@ -352,9 +325,11 @@ class Customization extends React.Component {
               <div className="category-item-wrapper">
                 <LanguageAndTimeZone sectionWidth={context.sectionWidth} />
               </div>
+              <div className="category-border"></div>
               <div className="category-item-wrapper">
                 <CustomTitles sectionWidth={context.sectionWidth} />
               </div>
+              <div className="category-border"></div>
               <div className="category-item-wrapper">
                 <PortalRenaming sectionWidth={context.sectionWidth} />
               </div>
