@@ -67,7 +67,7 @@ const PureThirdPartyMoveContainer = ({
       deleteAfter,
       isCopy,
       translations: {
-        copy: t("Translations:CopyOperation"),
+        copy: t("Common:CopyOperation"),
         move: t("Translations:MoveToOperation"),
       },
     };
