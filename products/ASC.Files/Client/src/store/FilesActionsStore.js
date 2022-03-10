@@ -1130,6 +1130,8 @@ class FilesActionStore {
   backToParentFolder = () => {
     const { setIsLoading, fetchFiles } = this.filesStore;
 
+    if (!this.selectedFolderStore.parentId) return;
+
     setIsLoading(true);
 
     fetchFiles(
