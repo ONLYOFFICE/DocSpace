@@ -5,6 +5,7 @@ global using System.Text;
 global using System.Text.Json;
 
 global using ASC.Api.Core;
+global using ASC.Api.Core.Extensions;
 global using ASC.Common;
 global using ASC.Common.Caching;
 global using ASC.Common.DependencyInjection;

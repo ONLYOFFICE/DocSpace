@@ -1,12 +1,12 @@
 ﻿global using System.Linq.Expressions;
 
 global using ASC.Api.Core;
+global using ASC.Api.Core.Extensions;
 global using ASC.ClearEvents.Services;
 global using ASC.Common;
 global using ASC.Common.Caching;
 global using ASC.Common.DependencyInjection;
 global using ASC.Common.Logging;
-global using ASC.Common.Utils;
 global using ASC.Core.Common.EF;
 global using ASC.Core.Tenants;
 global using ASC.MessagingSystem.Data;

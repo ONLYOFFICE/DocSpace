@@ -10,35 +10,12 @@ var startup = new BaseWorkerStartup(builder.Configuration);
 builder.Host.UseSystemd();
 builder.Host.UseWindowsService();
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
-builder.Host.ConfigureAppConfiguration((hostContext, config) =>
+
+builder.Host.ConfigureDefaultAppConfiguration(args, (hostContext, config, env, path) =>
 {
-    var buildedConfig = config.Build();
-    var path = buildedConfig["pathToConf"];
-    if (!Path.IsPathRooted(path))
-    {
-        path = Path.GetFullPath(CrossPlatform.PathCombine(hostContext.HostingEnvironment.ContentRootPath, path));
-    }
-
-    config.SetBasePath(path);
-
-    var env = hostContext.Configuration.GetValue("ENVIRONMENT", "Production");
-
-    config.AddJsonFile("appsettings.json")
-    .AddJsonFile($"appsettings.{env}.json", true)
-    .AddJsonFile($"appsettings.services.json", true)
-    .AddJsonFile("storage.json")
-    .AddJsonFile("notify.json")
-    .AddJsonFile($"notify.{env}.json", true)
-    .AddJsonFile("kafka.json")
-    .AddJsonFile($"kafka.{env}.json", true)
-    .AddJsonFile("redis.json")
-    .AddJsonFile($"redis.{env}.json", true)
-    .AddEnvironmentVariables()
-    .AddCommandLine(args)
-    .AddInMemoryCollection(new Dictionary<string, string>
-    {
-        {"pathToConf", path }
-    });
+    config.AddJsonFile($"appsettings.services.json", true)
+          .AddJsonFile("notify.json")
+          .AddJsonFile($"notify.{env.EnvironmentName}.json", true);
 });
 
 startup.ConfigureServices(builder.Services);

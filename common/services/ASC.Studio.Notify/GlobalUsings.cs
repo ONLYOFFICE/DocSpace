@@ -1,7 +1,7 @@
 ﻿global using System.Reflection;
-global using System.Runtime.InteropServices;
 
 global using ASC.Api.Core;
+global using ASC.Api.Core.Extensions;
 global using ASC.Common;
 global using ASC.Common.Caching;
 global using ASC.Common.Mapping;

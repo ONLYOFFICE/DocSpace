@@ -5,6 +5,7 @@ global using System.Linq.Expressions;
 global using System.Net;
 
 global using System.Reflection;
+global using System.Runtime.InteropServices;
 global using System.Runtime.Serialization;
 global using System.Security;
 global using System.Security.Authentication;
@@ -54,6 +55,7 @@ global using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 global using Microsoft.AspNetCore.Hosting;
 global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.HttpOverrides;
+global using Microsoft.AspNetCore.Server.Kestrel.Core;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.AspNetCore.Mvc.ApplicationModels;
 global using Microsoft.AspNetCore.Mvc.Authorization;

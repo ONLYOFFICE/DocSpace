@@ -5,10 +5,10 @@ global using System.Runtime.InteropServices;
 global using System.Text.RegularExpressions;
 
 global using ASC.Api.Core;
+global using ASC.Api.Core.Extensions;
 global using ASC.Common;
 global using ASC.Common.Caching;
 global using ASC.Common.Logging;
-global using ASC.Common.Utils;
 global using ASC.Core;
 global using ASC.Core.Common.Configuration;
 global using ASC.Core.Common.Notify;

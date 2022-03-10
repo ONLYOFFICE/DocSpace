@@ -1,3 +1,5 @@
+using ASC.Api.Core.Extensions;
+
 var options = new WebApplicationOptions
 {
     Args = args,
@@ -29,32 +31,34 @@ builder.WebHost.ConfigureKestrel((hostingContext, serverOptions) =>
     }
 });
 
-builder.Host.ConfigureAppConfiguration((hostContext, config) =>
-{
-    var buided = config.Build();
-    var path = buided["pathToConf"];
-    if (!Path.IsPathRooted(path))
-    {
-        path = Path.GetFullPath(CrossPlatform.PathCombine(hostContext.HostingEnvironment.ContentRootPath, path));
-    }
-    config.SetBasePath(path);
-    config
-    .AddJsonFile("appsettings.json")
-    .AddJsonFile($"appsettings.{hostContext.HostingEnvironment.EnvironmentName}.json", true)
-    .AddJsonFile("storage.json")
-    .AddJsonFile("kafka.json")
-    .AddJsonFile($"kafka.{hostContext.HostingEnvironment.EnvironmentName}.json", true)
-    .AddJsonFile("redis.json")
-    .AddJsonFile($"redis.{hostContext.HostingEnvironment.EnvironmentName}.json", true)
-    .AddEnvironmentVariables()
-    .AddCommandLine(args)
-    .AddInMemoryCollection(new Dictionary<string, string>
-            {
-                                {"pathToConf", path }
-            }
-        );
+builder.Host.ConfigureDefaultAppConfiguration(args);
 
-});
+//builder.Host.ConfigureAppConfiguration((hostContext, config) =>
+//{
+//    var buided = config.Build();
+//    var path = buided["pathToConf"];
+//    if (!Path.IsPathRooted(path))
+//    {
+//        path = Path.GetFullPath(CrossPlatform.PathCombine(hostContext.HostingEnvironment.ContentRootPath, path));
+//    }
+//    config.SetBasePath(path);
+//    config
+//    .AddJsonFile("appsettings.json")
+//    .AddJsonFile($"appsettings.{hostContext.HostingEnvironment.EnvironmentName}.json", true)
+//    .AddJsonFile("storage.json")
+//    .AddJsonFile("kafka.json")
+//    .AddJsonFile($"kafka.{hostContext.HostingEnvironment.EnvironmentName}.json", true)
+//    .AddJsonFile("redis.json")
+//    .AddJsonFile($"redis.{hostContext.HostingEnvironment.EnvironmentName}.json", true)
+//    .AddEnvironmentVariables()
+//    .AddCommandLine(args)
+//    .AddInMemoryCollection(new Dictionary<string, string>
+//            {
+//                                {"pathToConf", path }
+//            }
+//        );
+
+//});
 
 builder.Host.ConfigureNLogLogging();
 
