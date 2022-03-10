@@ -7,6 +7,7 @@
   "AccessRightsProductUsersCan": "{{category}} gebruikers kunnen",
   "AccessRightsUsersFromList": "{{users}} van de lijst",
   "AccessSettings": "Toegangsinstellingen",
+  "AutoBackup": "Automatische back-up",
   "AddAdmins": "Beheerders toevoegen",
   "AddName": "Voeg Naam Toe",
   "AdminInModules": "Beheerder in modules",
@@ -78,7 +79,5 @@
   "UseAsLogoButton": "Gebruik als logo",
   "Users": "Gebruikers",
   "WelcomePageTitle": "Welkomstpagina titel",
-  "YouHaveUnsavedChanges": "U hebt niet opgeslagen wijzigingen",
-
-  "AutoBackup": "Automatische back-up"
+  "YouHaveUnsavedChanges": "U hebt niet opgeslagen wijzigingen"
 }
