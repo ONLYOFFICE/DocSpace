@@ -21,9 +21,9 @@ public class RedisCacheNotify<T> : ICacheNotify<T> where T : IMessage<T>, new()
 {
     private readonly IRedisDatabase _redis;
 
-    public RedisCacheNotify(IRedisCacheClient redisCacheClient)
+    public RedisCacheNotify(IRedisClient redisCacheClient)
     {
-        _redis = redisCacheClient.GetDbFromConfiguration();
+        _redis = redisCacheClient.GetDefaultDatabase();
     }
 
     public void Publish(T obj, CacheNotifyAction action)
