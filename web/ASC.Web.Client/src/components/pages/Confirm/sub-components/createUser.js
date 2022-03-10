@@ -594,6 +594,7 @@ const Confirm = (props) => {
                 onChange={onChangeEmail}
                 onValidateInput={onValidateEmail}
                 forwardedRef={inputRef}
+                disallowChar='"'
               />
             </FieldContainer>
 
