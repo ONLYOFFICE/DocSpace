@@ -13,7 +13,6 @@
     "CopyItem": "<strong>{{title}}</strong> е копиран",
     "CopyItems": "<strong>{{qty}}</strong> елемента са копирани",
     "Document": "Документ",
-    "Duplicate": "Суздай копие",
     "EmptyFile": "Изпразни файл",
     "EmptyFilterDescriptionText": "Нито един файл или папка не пасват на този филтър. Изпробвайте друг или изчистете филтъра, за да видите всички файлове. ",
     "EmptyFilterSubheadingText": "Няма файлове, които да бъдат показани за този филтър тук",
