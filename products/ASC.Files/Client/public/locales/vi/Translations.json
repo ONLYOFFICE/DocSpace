@@ -3,7 +3,6 @@
   "ArchivingData": "Lưu trữ dữ liệu",
   "ConnectingAccount": "Đang kết nối tài khoản",
   "Copy": "Sao chép",
-  "CopyOperation": "Đang sao chép",
   "CreateMasterFormFromFile": "Tạo mẫu Biểu mẫu từ tệp",
   "DeleteFromTrash": "Đã xóa thành công các thành phần đã chọn khỏi Thùng rác",
   "DeleteOperation": "Đang xóa",
@@ -32,7 +31,7 @@
   "NewFormFile": "Mẫu biểu mẫu từ tệp",
   "OwnerChange": "Thay đổi chủ sở hữu",
   "Presentations": "Bản trình bày",
-  "Restore": "Khôi phục",
+
   "Spreadsheets": "Bảng tính",
   "SubNewForm": "Trống",
   "SubNewFormFile": "Từ một tệp văn bản",
