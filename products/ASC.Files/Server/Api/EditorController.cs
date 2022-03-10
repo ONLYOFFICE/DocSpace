@@ -6,22 +6,23 @@ public class EditorController : ApiControllerBase
     private readonly MessageService _messageService;
     private readonly DocumentServiceConnector _documentServiceConnector;
     private readonly CommonLinkUtility _commonLinkUtility;
+    private readonly EditorControllerHelper<int> _editorControllerHelperInt;
+    private readonly EditorControllerHelper<string> _editorControllerHelperString;
 
     public EditorController(
-        FilesControllerHelper<int> filesControllerHelperInt,
-        FilesControllerHelper<string> filesControllerHelperString,
         FilesLinkUtility filesLinkUtility,
         MessageService messageService,
         DocumentServiceConnector documentServiceConnector,
-        CommonLinkUtility commonLinkUtility) 
-        : base(
-            filesControllerHelperInt, 
-            filesControllerHelperString)
+        CommonLinkUtility commonLinkUtility,
+        EditorControllerHelper<int> editorControllerHelperInt,
+        EditorControllerHelper<string> editorControllerHelperString)
     {
         _filesLinkUtility = filesLinkUtility;
         _messageService = messageService;
         _documentServiceConnector = documentServiceConnector;
         _commonLinkUtility = commonLinkUtility;
+        _editorControllerHelperInt = editorControllerHelperInt;
+        _editorControllerHelperString = editorControllerHelperString;
     }
 
     /// <summary>
@@ -36,19 +37,19 @@ public class EditorController : ApiControllerBase
     /// <category>Files</category>
     /// <returns></returns>
     [Update("file/{fileId}/saveediting")]
-    public Task<FileDto<string>> SaveEditingFromFormAsync(string fileId, [FromForm] SaveEditingRequestDto requestDto)
+    public Task<FileDto<string>> SaveEditingFromFormAsync(string fileId, [FromForm] SaveEditingRequestDto inDto)
     {
-        using var stream = _filesControllerHelperInt.GetFileFromRequest(requestDto).OpenReadStream();
+        using var stream = _editorControllerHelperInt.GetFileFromRequest(inDto).OpenReadStream();
 
-        return _filesControllerHelperString.SaveEditingAsync(fileId, requestDto.FileExtension, requestDto.DownloadUri, stream, requestDto.Doc, requestDto.Forcesave);
+        return _editorControllerHelperString.SaveEditingAsync(fileId, inDto.FileExtension, inDto.DownloadUri, stream, inDto.Doc, inDto.Forcesave);
     }
 
     [Update("file/{fileId:int}/saveediting")]
-    public Task<FileDto<int>> SaveEditingFromFormAsync(int fileId, [FromForm] SaveEditingRequestDto requestDto)
+    public Task<FileDto<int>> SaveEditingFromFormAsync(int fileId, [FromForm] SaveEditingRequestDto inDto)
     {
-        using var stream = _filesControllerHelperInt.GetFileFromRequest(requestDto).OpenReadStream();
+        using var stream = _editorControllerHelperInt.GetFileFromRequest(inDto).OpenReadStream();
 
-        return _filesControllerHelperInt.SaveEditingAsync(fileId, requestDto.FileExtension, requestDto.DownloadUri, stream, requestDto.Doc, requestDto.Forcesave);
+        return _editorControllerHelperInt.SaveEditingAsync(fileId, inDto.FileExtension, inDto.DownloadUri, stream, inDto.Doc, inDto.Forcesave);
     }
 
     /// <summary>
@@ -61,36 +62,36 @@ public class EditorController : ApiControllerBase
     /// <returns></returns>
     [Create("file/{fileId}/startedit")]
     [Consumes("application/json")]
-    public async Task<object> StartEditFromBodyAsync(string fileId, [FromBody] StartEditRequestDto requestDto)
+    public async Task<object> StartEditFromBodyAsync(string fileId, [FromBody] StartEditRequestDto inDto)
     {
-        return await _filesControllerHelperString.StartEditAsync(fileId, requestDto.EditingAlone, requestDto.Doc);
+        return await _editorControllerHelperString.StartEditAsync(fileId, inDto.EditingAlone, inDto.Doc);
     }
 
     [Create("file/{fileId}/startedit")]
     [Consumes("application/x-www-form-urlencoded")]
-    public async Task<object> StartEditFromFormAsync(string fileId, [FromForm] StartEditRequestDto requestDto)
+    public async Task<object> StartEditFromFormAsync(string fileId, [FromForm] StartEditRequestDto inDto)
     {
-        return await _filesControllerHelperString.StartEditAsync(fileId, requestDto.EditingAlone, requestDto.Doc);
+        return await _editorControllerHelperString.StartEditAsync(fileId, inDto.EditingAlone, inDto.Doc);
     }
 
     [Create("file/{fileId:int}/startedit")]
     [Consumes("application/json")]
-    public async Task<object> StartEditFromBodyAsync(int fileId, [FromBody] StartEditRequestDto requestDto)
+    public async Task<object> StartEditFromBodyAsync(int fileId, [FromBody] StartEditRequestDto inDto)
     {
-        return await _filesControllerHelperInt.StartEditAsync(fileId, requestDto.EditingAlone, requestDto.Doc);
+        return await _editorControllerHelperInt.StartEditAsync(fileId, inDto.EditingAlone, inDto.Doc);
     }
 
     [Create("file/{fileId:int}/startedit")]
     public async Task<object> StartEditAsync(int fileId)
     {
-        return await _filesControllerHelperInt.StartEditAsync(fileId, false, null);
+        return await _editorControllerHelperInt.StartEditAsync(fileId, false, null);
     }
 
     [Create("file/{fileId:int}/startedit")]
     [Consumes("application/x-www-form-urlencoded")]
-    public async Task<object> StartEditFromFormAsync(int fileId, [FromForm] StartEditRequestDto requestDto)
+    public async Task<object> StartEditFromFormAsync(int fileId, [FromForm] StartEditRequestDto inDto)
     {
-        return await _filesControllerHelperInt.StartEditAsync(fileId, requestDto.EditingAlone, requestDto.Doc);
+        return await _editorControllerHelperInt.StartEditAsync(fileId, inDto.EditingAlone, inDto.Doc);
     }
 
     /// <summary>
@@ -106,13 +107,13 @@ public class EditorController : ApiControllerBase
     [Read("file/{fileId}/trackeditfile")]
     public Task<KeyValuePair<bool, string>> TrackEditFileAsync(string fileId, Guid tabId, string docKeyForTrack, string doc, bool isFinish)
     {
-        return _filesControllerHelperString.TrackEditFileAsync(fileId, tabId, docKeyForTrack, doc, isFinish);
+        return _editorControllerHelperString.TrackEditFileAsync(fileId, tabId, docKeyForTrack, doc, isFinish);
     }
 
     [Read("file/{fileId:int}/trackeditfile")]
     public Task<KeyValuePair<bool, string>> TrackEditFileAsync(int fileId, Guid tabId, string docKeyForTrack, string doc, bool isFinish)
     {
-        return _filesControllerHelperInt.TrackEditFileAsync(fileId, tabId, docKeyForTrack, doc, isFinish);
+        return _editorControllerHelperInt.TrackEditFileAsync(fileId, tabId, docKeyForTrack, doc, isFinish);
     }
 
     /// <summary>
@@ -127,14 +128,14 @@ public class EditorController : ApiControllerBase
     [Read("file/{fileId}/openedit", Check = false)]
     public Task<Configuration<string>> OpenEditAsync(string fileId, int version, string doc, bool view)
     {
-        return _filesControllerHelperString.OpenEditAsync(fileId, version, doc, view);
+        return _editorControllerHelperString.OpenEditAsync(fileId, version, doc, view);
     }
 
     [AllowAnonymous]
     [Read("file/{fileId:int}/openedit", Check = false)]
     public Task<Configuration<int>> OpenEditAsync(int fileId, int version, string doc, bool view)
     {
-        return _filesControllerHelperInt.OpenEditAsync(fileId, version, doc, view);
+        return _editorControllerHelperInt.OpenEditAsync(fileId, version, doc, view);
     }
 
     /// <summary>
@@ -145,16 +146,16 @@ public class EditorController : ApiControllerBase
     /// <param name="docServiceUrlPortal">Community Server Address</param>
     /// <returns></returns>
     [Update("docservice")]
-    public Task<IEnumerable<string>> CheckDocServiceUrlFromBodyAsync([FromBody] CheckDocServiceUrlRequestDto requestDto)
+    public Task<IEnumerable<string>> CheckDocServiceUrlFromBodyAsync([FromBody] CheckDocServiceUrlRequestDto inDto)
     {
-        return CheckDocServiceUrlAsync(requestDto);
+        return CheckDocServiceUrlAsync(inDto);
     }
 
     [Update("docservice")]
     [Consumes("application/x-www-form-urlencoded")]
-    public Task<IEnumerable<string>> CheckDocServiceUrlFromFormAsync([FromForm] CheckDocServiceUrlRequestDto requestDto)
+    public Task<IEnumerable<string>> CheckDocServiceUrlFromFormAsync([FromForm] CheckDocServiceUrlRequestDto inDto)
     {
-        return CheckDocServiceUrlAsync(requestDto);
+        return CheckDocServiceUrlAsync(inDto);
     }
 
     /// <visible>false</visible>
@@ -174,13 +175,13 @@ public class EditorController : ApiControllerBase
     [Read("file/{fileId}/presigned")]
     public Task<DocumentService.FileLink> GetPresignedUriAsync(string fileId)
     {
-        return _filesControllerHelperString.GetPresignedUriAsync(fileId);
+        return _editorControllerHelperString.GetPresignedUriAsync(fileId);
     }
 
     [Read("file/{fileId:int}/presigned")]
     public Task<DocumentService.FileLink> GetPresignedUriAsync(int fileId)
     {
-        return _filesControllerHelperInt.GetPresignedUriAsync(fileId);
+        return _editorControllerHelperInt.GetPresignedUriAsync(fileId);
     }
 
     private async Task<object> InternalGetDocServiceUrlAsync(string url)
@@ -194,11 +195,11 @@ public class EditorController : ApiControllerBase
         };
     }
 
-    private Task<IEnumerable<string>> CheckDocServiceUrlAsync(CheckDocServiceUrlRequestDto requestDto)
+    private Task<IEnumerable<string>> CheckDocServiceUrlAsync(CheckDocServiceUrlRequestDto inDto)
     {
-        _filesLinkUtility.DocServiceUrl = requestDto.DocServiceUrl;
-        _filesLinkUtility.DocServiceUrlInternal = requestDto.DocServiceUrlInternal;
-        _filesLinkUtility.DocServicePortalUrl = requestDto.DocServiceUrlPortal;
+        _filesLinkUtility.DocServiceUrl = inDto.DocServiceUrl;
+        _filesLinkUtility.DocServiceUrlInternal = inDto.DocServiceUrlInternal;
+        _filesLinkUtility.DocServicePortalUrl = inDto.DocServiceUrlPortal;
 
         _messageService.Send(MessageAction.DocumentServiceLocationSetting);
 

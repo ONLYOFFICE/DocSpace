@@ -55,6 +55,8 @@ global using ASC.FederatedLogin.Helpers;
 global using ASC.FederatedLogin.LoginProviders;
 global using ASC.FederatedLogin.Profile;
 global using ASC.Files.Core;
+global using ASC.Files.Core.ApiModels.RequestDto;
+global using ASC.Files.Core.ApiModels.ResponseDto;
 global using ASC.Files.Core.Data;
 global using ASC.Files.Core.EF;
 global using ASC.Files.Core.Mapping;

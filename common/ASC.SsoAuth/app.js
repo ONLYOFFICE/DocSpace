@@ -36,14 +36,22 @@ const fs = require("fs"),
 require('winston-daily-rotate-file');
 
 const app = express();
-let logDir = config["logPath"] ? config["logPath"] : config.app.logDir;
-// ensure log directory exists
-fs.existsSync(logDir) || fs.mkdirSync(logDir);
+
+let logpath = config["logPath"];
+if(logpath != null)
+{
+    if(!path.isAbsolute(logpath))
+    {
+        logpath = path.join(__dirname, logpath);
+    }
+    // ensure log directory exists
+    fs.existsSync(logpath) || fs.mkdirSync(logpath);
+}
 
 let transports = [];
 
 if (config.logger.file) {
-    logDir = config["logPath"] ? logDir : (config.app.logDir[0] === "." ? path.join(__dirname, config.app.logDir) : config.app.logDir);
+    let logDir = logpath ? logpath : (config.app.logDir[0] === "." ? path.join(__dirname, config.app.logDir) : config.app.logDir);
     config.logger.file.filename = path.join(logDir, config.app.logName);
     transports.push(new (winston.transports.DailyRotateFile)(config.logger.file));
 }
@@ -77,7 +85,7 @@ app.use(favicon(path.join(__dirname, "public", "favicon.ico")))
     {
         resave: true,
         saveUninitialized: true,
-        secret: config["core.machinekey"] ? config["core.machinekey"] : config.app.machinekey
+        secret: config["core"].machinekey ? config["core"].machinekey : config.app.machinekey
         }))
     .use(cors());
 

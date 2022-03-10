@@ -71,7 +71,10 @@ public class PrivacyRoomController : ControllerBase
     {
         _permissionContext.DemandPermissions(new UserSecurityProvider(_authContext.CurrentAccount.ID), Constants.Action_EditUser);
 
-        if (!PrivacyRoomSettings.GetEnabled(_settingsManager)) throw new System.Security.SecurityException();
+        if (!PrivacyRoomSettings.GetEnabled(_settingsManager))
+        {
+            throw new System.Security.SecurityException();
+        }
 
         return _encryptionKeyPairHelper.GetKeyPair();
     }
@@ -83,7 +86,10 @@ public class PrivacyRoomController : ControllerBase
     [Read("access/{fileId}")]
     public Task<IEnumerable<EncryptionKeyPairDto>> GetPublicKeysWithAccess(string fileId)
     {
-        if (!PrivacyRoomSettings.GetEnabled(_settingsManager)) throw new System.Security.SecurityException();
+        if (!PrivacyRoomSettings.GetEnabled(_settingsManager))
+        {
+            throw new System.Security.SecurityException();
+        }
 
         return _encryptionKeyPairHelper.GetKeyPairAsync(fileId, _fileStorageService);
     }
@@ -91,7 +97,10 @@ public class PrivacyRoomController : ControllerBase
     [Read("access/{fileId:int}")]
     public Task<IEnumerable<EncryptionKeyPairDto>> GetPublicKeysWithAccess(int fileId)
     {
-        if (!PrivacyRoomSettings.GetEnabled(_settingsManager)) throw new System.Security.SecurityException();
+        if (!PrivacyRoomSettings.GetEnabled(_settingsManager))
+        {
+            throw new System.Security.SecurityException();
+        }
 
         return _encryptionKeyPairHelper.GetKeyPairAsync(fileId, _fileStorageServiceInt);
     }
@@ -114,16 +123,16 @@ public class PrivacyRoomController : ControllerBase
     /// </summary>
     /// <visible>false</visible>
     [Update("keys")]
-    public object SetKeysFromBody([FromBody] PrivacyRoomRequestDto requestDto)
+    public object SetKeysFromBody([FromBody] PrivacyRoomRequestDto inDto)
     {
-        return SetKeys(requestDto);
+        return SetKeys(inDto);
     }
 
     [Update("keys")]
     [Consumes("application/x-www-form-urlencoded")]
-    public object SetKeysFromForm([FromForm] PrivacyRoomRequestDto requestDto)
+    public object SetKeysFromForm([FromForm] PrivacyRoomRequestDto inDto)
     {
-        return SetKeys(requestDto);
+        return SetKeys(inDto);
     }
 
     /// <summary>
@@ -133,28 +142,31 @@ public class PrivacyRoomController : ControllerBase
     /// <returns></returns>
     /// <visible>false</visible>
     [Update("")]
-    public bool SetPrivacyRoomFromBody([FromBody] PrivacyRoomRequestDto requestDto)
+    public bool SetPrivacyRoomFromBody([FromBody] PrivacyRoomRequestDto inDto)
     {
-        return SetPrivacyRoom(requestDto);
+        return SetPrivacyRoom(inDto);
     }
 
     [Update("")]
     [Consumes("application/x-www-form-urlencoded")]
-    public bool SetPrivacyRoomFromForm([FromForm] PrivacyRoomRequestDto requestDto)
+    public bool SetPrivacyRoomFromForm([FromForm] PrivacyRoomRequestDto inDto)
     {
-        return SetPrivacyRoom(requestDto);
+        return SetPrivacyRoom(inDto);
     }
 
-    private object SetKeys(PrivacyRoomRequestDto requestDto)
+    private object SetKeys(PrivacyRoomRequestDto inDto)
     {
         _permissionContext.DemandPermissions(new UserSecurityProvider(_authContext.CurrentAccount.ID), Constants.Action_EditUser);
 
-        if (!PrivacyRoomSettings.GetEnabled(_settingsManager)) throw new System.Security.SecurityException();
+        if (!PrivacyRoomSettings.GetEnabled(_settingsManager))
+        {
+            throw new System.Security.SecurityException();
+        }
 
         var keyPair = _encryptionKeyPairHelper.GetKeyPair();
         if (keyPair != null)
         {
-            if (!string.IsNullOrEmpty(keyPair.PublicKey) && !requestDto.Update)
+            if (!string.IsNullOrEmpty(keyPair.PublicKey) && !inDto.Update)
             {
                 return new { isset = true };
             }
@@ -162,7 +174,7 @@ public class PrivacyRoomController : ControllerBase
             _logger.InfoFormat("User {0} updates address", _authContext.CurrentAccount.ID);
         }
 
-        _encryptionKeyPairHelper.SetKeyPair(requestDto.PublicKey, requestDto.PrivateKeyEnc);
+        _encryptionKeyPairHelper.SetKeyPair(inDto.PublicKey, inDto.PrivateKeyEnc);
 
         return new
         {
@@ -170,11 +182,11 @@ public class PrivacyRoomController : ControllerBase
         };
     }
 
-    private bool SetPrivacyRoom(PrivacyRoomRequestDto requestDto)
+    private bool SetPrivacyRoom(PrivacyRoomRequestDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        if (requestDto.Enable)
+        if (inDto.Enable)
         {
             if (!PrivacyRoomSettings.IsAvailable(_tenantManager))
             {
@@ -182,10 +194,10 @@ public class PrivacyRoomController : ControllerBase
             }
         }
 
-        PrivacyRoomSettings.SetEnabled(_tenantManager, _settingsManager, requestDto.Enable);
+        PrivacyRoomSettings.SetEnabled(_tenantManager, _settingsManager, inDto.Enable);
 
-        _messageService.Send(requestDto.Enable ? MessageAction.PrivacyRoomEnable : MessageAction.PrivacyRoomDisable);
+        _messageService.Send(inDto.Enable ? MessageAction.PrivacyRoomEnable : MessageAction.PrivacyRoomDisable);
 
-        return requestDto.Enable;
+        return inDto.Enable;
     }
 }

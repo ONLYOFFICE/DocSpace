@@ -9,6 +9,9 @@ if %errorlevel% == 0 (
 		echo service create "Onlyoffice%%~nf"
 		call sc create "Onlyoffice%%~nf" displayname= "ONLYOFFICE %%~nf" binPath= "!servicepath!"
 	)
+	for /R "build\run\" %%f in (*.xml) do (
+		call build\install\win\WinSW3.0.0.exe install %%f
+	)
 )
 
 echo.
