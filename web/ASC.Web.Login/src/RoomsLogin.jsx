@@ -36,6 +36,7 @@ import {
   LoginFormWrapper,
 } from "./StyledLogin";
 import AppLoader from "@appserver/common/components/AppLoader";
+import EmailInput from "@appserver/components/email-input";
 
 const Form = (props) => {
   const inputRef = React.useRef(null);
@@ -286,6 +287,12 @@ const Form = (props) => {
     else return false;
   };
 
+  const onValidateEmail = (res) => {
+    //console.log("onValidateEmail", res);
+    setIdentifierValid(res.isValid);
+    setErrorText(res.errors[0]);
+  };
+
   //console.log("Login render");
 
   return (
@@ -337,9 +344,11 @@ const Form = (props) => {
               isVertical={true}
               labelVisible={false}
               hasError={!identifierValid}
-              errorMessage={errorText ? errorText : t("Common:RequiredField")} //TODO: Add wrong login server error
+              errorMessage={
+                errorText ? t(`Common:${errorText}`) : t("Common:RequiredField")
+              } //TODO: Add wrong login server error
             >
-              <TextInput
+              <EmailInput
                 id="login"
                 name="login"
                 type="email"
@@ -353,7 +362,8 @@ const Form = (props) => {
                 isDisabled={isLoading}
                 autoComplete="username"
                 onChange={onChangeLogin}
-                onKeyDown={onKeyDown}
+                onValidateInput={onValidateEmail}
+                disallowChar='"'
                 forwardedRef={inputRef}
               />
             </FieldContainer>
