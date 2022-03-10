@@ -2628,7 +2628,7 @@ const Dark = {
         linkColor: "#858585",
         linkColorHelp: "#E06A1B",
         tooltipLinkColor: "#e06a1b",
-        arrowColor: black,
+        arrowColor: white,
         descriptionColor: "#858585",
 
         whiteLabel: {
