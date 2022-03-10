@@ -1,6 +1,6 @@
 ﻿#nullable enable
 
-namespace ASC.Files.Model;
+namespace ASC.Files.Core.ApiModels;
 
 public static class ModelBindingContextExtension
 {
@@ -180,7 +180,7 @@ public class InsertFileModelBinder : IModelBinder
             bindingContext.ValueProvider = defaultBindingContext.OriginalValueProvider;
         }
 
-        var result = new InsertRequestDto();
+        var result = new InsertFileRequestDto();
 
         if (bindingContext.GetBoolValue(nameof(result.CreateNewIfExist), out var createNewIfExist))
         {
@@ -223,7 +223,7 @@ public class UploadModelBinder : IModelBinder
             bindingContext.ValueProvider = defaultBindingContext.OriginalValueProvider;
         }
 
-        var result = new UploadModelRequestDto();
+        var result = new UploadRequestDto();
 
         if (bindingContext.GetBoolValue(nameof(result.CreateNewIfExist), out var createNewIfExist))
         {

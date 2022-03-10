@@ -1,6 +1,6 @@
-﻿namespace ASC.Files.Core.Model;
+﻿namespace ASC.Files.Core.ApiModels.RequestDto;
 
-public class TemplatesModelRequestDto
+public class TemplatesRequestDto
 {
     public IEnumerable<int> FileIds { get; set; }
 }

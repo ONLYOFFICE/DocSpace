@@ -23,10 +23,7 @@
  *
 */
 
-
-using FileStatus = ASC.Files.Core.FileStatus;
-
-namespace ASC.Api.Documents;
+namespace ASC.Files.Core.ApiModels.ResponseDto;
 
 public class FileDto<T> : FileEntryWrapper<T>
 {
@@ -77,7 +74,7 @@ public class FileDto<T> : FileEntryWrapper<T>
 }
 
 [Scope]
-public class FileWrapperHelper : FileEntryWrapperHelper
+public class FileDtoHelper : FileEntryDtoHelper
 {
     private readonly AuthContext _authContext;
     private readonly IDaoFactory _daoFactory;
@@ -86,7 +83,7 @@ public class FileWrapperHelper : FileEntryWrapperHelper
     private readonly FilesLinkUtility _filesLinkUtility;
     private readonly FileUtility _fileUtility;
 
-    public FileWrapperHelper(
+    public FileDtoHelper(
         ApiDateTimeHelper apiDateTimeHelper,
         EmployeeDtoHelper employeeWrapperHelper,
         AuthContext authContext,

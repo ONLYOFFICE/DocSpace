@@ -68,7 +68,7 @@ public class FileStorageService<T> //: IFileStorageService
     private readonly IServiceProvider _serviceProvider;
     private readonly FileSharingAceHelper<T> _fileSharingAceHelper;
     private readonly ConsumerFactory _consumerFactory;
-    private readonly EncryptionKeyPairHelper _encryptionKeyPairHelper;
+    private readonly EncryptionKeyPairDtoHelper _encryptionKeyPairHelper;
     private readonly SettingsManager _settingsManager;
     private readonly FileOperationsManager _fileOperationsManager;
     private readonly TenantManager _tenantManager;
@@ -113,7 +113,7 @@ public class FileStorageService<T> //: IFileStorageService
         IServiceProvider serviceProvider,
         FileSharingAceHelper<T> fileSharingAceHelper,
         ConsumerFactory consumerFactory,
-        EncryptionKeyPairHelper encryptionKeyPairHelper,
+        EncryptionKeyPairDtoHelper encryptionKeyPairHelper,
         SettingsManager settingsManager,
         FileOperationsManager fileOperationsManager,
         TenantManager tenantManager,
@@ -1072,7 +1072,7 @@ public class FileStorageService<T> //: IFileStorageService
         return new List<EditHistory>(await fileDao.GetEditHistoryAsync(_documentServiceHelper, file.ID));
     }
 
-    public async Task<EditHistoryData> GetEditDiffUrlAsync(T fileId, int version = 0, string doc = null)
+    public async Task<EditHistoryDataDto> GetEditDiffUrlAsync(T fileId, int version = 0, string doc = null)
     {
         var fileDao = GetFileDao();
         var (readLink, file) = await _fileShareLink.CheckAsync(doc, true, fileDao);
@@ -1094,7 +1094,7 @@ public class FileStorageService<T> //: IFileStorageService
         ErrorIf(!readLink && !await _fileSecurity.CanReadAsync(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
         ErrorIf(file.ProviderEntry, FilesCommonResource.ErrorMassage_BadRequest);
 
-        var result = new EditHistoryData
+        var result = new EditHistoryDataDto
         {
             Key = _documentServiceHelper.GetDocKey(file),
             Url = _documentServiceConnector.ReplaceCommunityAdress(_pathProvider.GetFileStreamUrl(file, doc)),
@@ -2255,13 +2255,13 @@ public class FileStorageService<T> //: IFileStorageService
         return showSharingSettings ? await GetSharedInfoShortFileAsync(fileId) : null;
     }
 
-    public async Task<List<EncryptionKeyPair>> GetEncryptionAccessAsync(T fileId)
+    public async Task<List<EncryptionKeyPairDto>> GetEncryptionAccessAsync(T fileId)
     {
         ErrorIf(!PrivacyRoomSettings.GetEnabled(_settingsManager), FilesCommonResource.ErrorMassage_SecurityException);
 
         var fileKeyPair = await _encryptionKeyPairHelper.GetKeyPairAsync(fileId, this);
 
-        return new List<EncryptionKeyPair>(fileKeyPair);
+        return new List<EncryptionKeyPairDto>(fileKeyPair);
     }
 
     public List<string> GetMailAccounts()

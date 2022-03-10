@@ -23,7 +23,7 @@
  *
 */
 
-namespace ASC.Api.Documents;
+namespace ASC.Files.Core.ApiModels.ResponseDto;
 
 public abstract class FileEntryDto
 {
@@ -82,14 +82,14 @@ public abstract class FileEntryWrapper<T> : FileEntryDto
 }
 
 [Scope]
-public class FileEntryWrapperHelper
+public class FileEntryDtoHelper
 {
     private readonly ApiDateTimeHelper _apiDateTimeHelper;
     private readonly EmployeeDtoHelper _employeeWraperHelper;
     public readonly FileSharingHelper _fileSharingHelper;
     public readonly FileSecurity _fileSecurity;
 
-    public FileEntryWrapperHelper(
+    public FileEntryDtoHelper(
         ApiDateTimeHelper apiDateTimeHelper,
         EmployeeDtoHelper employeeWraperHelper,
         FileSharingHelper fileSharingHelper, FileSecurity fileSecurity

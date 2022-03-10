@@ -57,7 +57,7 @@ namespace ASC.CRM.Api
 
         private readonly PdfQueueWorker _pdfQueueWorker;
         private readonly Global _global;
-        private readonly FileWrapperHelper _fileWrapperHelper;
+        private readonly FileDtoHelper _fileWrapperHelper;
         private readonly PdfCreator _pdfCreator;
         private readonly SettingsManager _settingsManager;
         private readonly ApiDateTimeHelper _apiDateTimeHelper;
@@ -73,7 +73,7 @@ namespace ASC.CRM.Api
                      MessageService messageService,
                      ApiDateTimeHelper apiDateTimeHelper,
                      SettingsManager settingsManager,
-                     FileWrapperHelper fileWrapperHelper,
+                     FileDtoHelper fileWrapperHelper,
                      PdfCreator pdfCreator,
                      Global global,
                      PdfQueueWorker pdfQueueWorker,

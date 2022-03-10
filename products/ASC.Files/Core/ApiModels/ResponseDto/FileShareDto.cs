@@ -23,7 +23,7 @@
  *
 */
 
-namespace ASC.Api.Documents;
+namespace ASC.Files.Core.ApiModels.ResponseDto;
 
 public class FileShareDto
 {

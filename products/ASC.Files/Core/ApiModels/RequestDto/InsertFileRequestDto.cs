@@ -1,6 +1,6 @@
-﻿namespace ASC.Files.Core.Model;
+﻿namespace ASC.Files.Core.ApiModels.RequestDto;
 
-public class InsertRequestDto : IModelWithFile, IDisposable
+public class InsertFileRequestDto : IModelWithFile, IDisposable
 {
     public IFormFile File { get; set; }
     public string Title { get; set; }
@@ -31,7 +31,7 @@ public class InsertRequestDto : IModelWithFile, IDisposable
         }
     }
 
-    ~InsertRequestDto()
+    ~InsertFileRequestDto()
     {
         Dispose(disposing: false);
     }

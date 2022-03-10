@@ -23,7 +23,7 @@
  *
 */
 
-namespace ASC.Api.Documents;
+namespace ASC.Files.Core.ApiModels.ResponseDto;
 
 public class FolderDto<T> : FileEntryWrapper<T>
 {
@@ -57,7 +57,7 @@ public class FolderDto<T> : FileEntryWrapper<T>
 }
 
 [Scope]
-public class FolderDtoHelper : FileEntryWrapperHelper
+public class FolderDtoHelper : FileEntryDtoHelper
 {
     private readonly AuthContext _authContext;
     private readonly IDaoFactory _daoFactory;

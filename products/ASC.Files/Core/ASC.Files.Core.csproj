@@ -170,7 +170,6 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Folder Include="ApiModels\ResponseDto\" />
     <Folder Include="ApiModels\RequestDto\" />
   </ItemGroup>
 
