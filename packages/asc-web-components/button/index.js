@@ -11,7 +11,12 @@ const Icon = ({ size, primary, icon, isHovered }) => (
     {icon &&
       React.cloneElement(icon, {
         //isfill: true,
-        size: size === "large" ? "large" : size === "big" ? "medium" : "small",
+        size:
+          size === "medium"
+            ? "medium"
+            : size === "normal40"
+            ? "normal36"
+            : "extraSmall",
         color: icon.props.color
           ? isHovered
             ? icon.props.hoveredcolor
@@ -64,7 +69,13 @@ Button.propTypes = {
   /** Tells when the button should be primary */
   primary: PropTypes.bool,
   /** Size of button */
-  size: PropTypes.oneOf(["base", "medium", "big", "large"]),
+  size: PropTypes.oneOf([
+    "extraSmall",
+    "small",
+    "normal36",
+    "normal40",
+    "medium",
+  ]),
   /** Scale width of button to 100% */
   scale: PropTypes.bool,
   /** Icon node element */

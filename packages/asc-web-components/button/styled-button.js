@@ -66,7 +66,13 @@ const ButtonWrapper = ({
 ButtonWrapper.propTypes = {
   label: PropTypes.string,
   primary: PropTypes.bool,
-  size: PropTypes.oneOf(["base", "medium", "big", "large"]),
+  size: PropTypes.oneOf([
+    "extraSmall",
+    "small",
+    "normal36",
+    "normal40",
+    "medium",
+  ]),
   scale: PropTypes.bool,
   icon: PropTypes.node,
 
@@ -105,8 +111,28 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
 
   ${(props) => props.scale && `width: 100%;`}
 
-  padding: ${(props) =>
-    (props.size === "large" &&
+  /* padding: {
+      base: "0 14px",
+      medium: "0 18px",
+      big: "0 20px",
+    },
+
+  padding: {
+      extraSmall: "4.5px 12px",
+      small: "6px 28px",
+      normal36: "10px 28px",
+      normal40: "12px 28px",
+      medium: "11px 32px",
+    }, */
+
+    ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// /////
+    ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// /////
+     ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// /////
+
+  padding: ${(props) => `${props.theme.button.padding[props.size]}`};
+
+  /* padding: ${(props) =>
+    ((props.size === "normal40" || props.size === "small") &&
       (props.primary
         ? props.icon
           ? props.label
@@ -122,7 +148,7 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
         : props.label
         ? "11px 20px 12px 20px"
         : "0px")) ||
-    (props.size === "big" &&
+    (props.size === "normal36" &&
       (props.primary
         ? props.icon
           ? props.label
@@ -138,7 +164,7 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
         : props.label
         ? "7px 16px 8px 16px"
         : "0px")) ||
-    (props.size === "medium" &&
+    (props.size === "small" &&
       (props.primary
         ? props.icon
           ? props.label
@@ -154,7 +180,7 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
         : props.label
         ? "6px 16px 7px 16px"
         : "0px")) ||
-    (props.size === "base" &&
+    (props.size === "extraSamll" &&
       (props.primary
         ? props.icon
           ? props.label
@@ -169,7 +195,7 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
           : "2px 5px 5px 5px"
         : props.label
         ? "3px 12px 5px 12px"
-        : "0px"))};
+        : "0px"))}; */
 
   ${(props) => (props.minwidth ? `min-width: ${props.minwidth};` : null)}
 
@@ -241,9 +267,9 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
 
   .loader {
     vertical-align: ${(props) =>
-      props.size === "large" || props.size === "base"
+      props.size === "normal40" || props.size === "extraSmall"
         ? props.theme.button.middleVerticalAlign
-        : props.size === "medium"
+        : props.size === "small"
         ? props.theme.button.bottomVerticalAlign
         : props.theme.button.topVerticalAlign};
   }

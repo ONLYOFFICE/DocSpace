@@ -15,7 +15,7 @@ export default {
   },
 };
 
-const sizes = ["base", "medium", "big", "large"];
+const sizes = ["extraSmall", "small", "normal36", "normal40", "medium"];
 
 const Wrapper = (props) => (
   <div
@@ -224,8 +224,8 @@ const HoveredTemplate = (args) => {
 
 export const Default = Template.bind({});
 Default.args = {
-  size: "base",
-  label: "Base Button",
+  size: "small",
+  label: "Button",
 };
 export const PrimaryButtons = PrimaryTemplate.bind({});
 export const SecondaryButtons = SecondaryTemplate.bind({});
