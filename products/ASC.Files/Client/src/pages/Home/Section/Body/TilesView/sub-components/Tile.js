@@ -334,11 +334,9 @@ class Tile extends React.PureComponent {
       isEdit,
       contentElement,
       title,
-      getModel,
-      t,
+      getContextModel,
     } = this.props;
     const { isFolder, id, fileExst } = item;
-    const contextMenuData = { getModel, t, item };
 
     const renderElement = Object.prototype.hasOwnProperty.call(
       this.props,
@@ -437,7 +435,7 @@ class Tile extends React.PureComponent {
                 <div className="expandButton" />
               )}
               <ContextMenu
-                contextMenuData={contextMenuData}
+                getContextModel={getContextModel}
                 ref={this.cm}
                 header={contextMenuHeader}
               />
@@ -502,7 +500,7 @@ class Tile extends React.PureComponent {
                   <div className="expandButton" />
                 )}
                 <ContextMenu
-                  contextMenuData={contextMenuData}
+                  getContextModel={getContextModel}
                   ref={this.cm}
                   header={contextMenuHeader}
                   withBackdrop={true}
