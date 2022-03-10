@@ -72,7 +72,7 @@ class AmazonStorage extends React.Component {
 
         <div className="manual-backup_buttons">
           <Button
-            label={t("MakeCopy")}
+            label={t("Common:Duplicate")}
             onClick={this.onMakeCopy}
             primary
             isDisabled={!isMaxProgress || this.isDisabled}
@@ -80,7 +80,7 @@ class AmazonStorage extends React.Component {
           />
           {!isMaxProgress && (
             <Button
-              label={t("Copying")}
+              label={t("Common:CopyOperation") + "..."}
               isDisabled={true}
               size="medium"
               style={{ marginLeft: "8px" }}
@@ -91,4 +91,4 @@ class AmazonStorage extends React.Component {
     );
   }
 }
-export default withTranslation("Settings")(AmazonStorage);
+export default withTranslation(["Settings", "Common"])(AmazonStorage);

@@ -122,9 +122,5 @@
   "UserAgreement": "Я понимаю и хочу продолжить",
   "UseHttp": "Использовать Http",
   "WelcomePageTitle": "Заголовок страницы приветствия",
-  "YouHaveUnsavedChanges": "Имеются несохраненные изменения",
-
-  "MakeCopy": "Создание копии",
-  "Copying": "Копирование...",
-  "RestoreButton": "Восстановление"
+  "YouHaveUnsavedChanges": "Имеются несохраненные изменения"
 }

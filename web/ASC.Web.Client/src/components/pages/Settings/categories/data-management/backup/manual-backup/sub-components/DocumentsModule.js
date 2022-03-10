@@ -89,7 +89,7 @@ class DocumentsModule extends React.Component {
         </div>
         <div className="manual-backup_buttons">
           <Button
-            label={t("MakeCopy")}
+            label={t("Common:Duplicate")}
             onClick={this.onMakeCopy}
             primary
             isDisabled={isModuleDisabled}
@@ -97,7 +97,7 @@ class DocumentsModule extends React.Component {
           />
           {!isMaxProgress && (
             <Button
-              label={t("Copying")}
+              label={t("Common:CopyOperation") + "..."}
               isDisabled={true}
               size="medium"
               style={{ marginLeft: "8px" }}
@@ -108,4 +108,4 @@ class DocumentsModule extends React.Component {
     );
   }
 }
-export default withTranslation("Settings")(DocumentsModule);
+export default withTranslation(["Settings", "Common"])(DocumentsModule);

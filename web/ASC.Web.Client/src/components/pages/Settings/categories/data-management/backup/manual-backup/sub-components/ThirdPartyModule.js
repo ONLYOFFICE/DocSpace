@@ -118,7 +118,7 @@ class ThirdPartyModule extends React.Component {
         </div>
         <div className="manual-backup_buttons">
           <Button
-            label={t("MakeCopy")}
+            label={t("Common:Duplicate")}
             onClick={this.onMakeCopy}
             primary
             isDisabled={isModuleDisabled}
@@ -126,7 +126,7 @@ class ThirdPartyModule extends React.Component {
           />
           {!isMaxProgress && (
             <Button
-              label={t("Copying")}
+              label={t("Common:CopyOperation") + "..."}
               isDisabled={true}
               size="medium"
               style={{ marginLeft: "8px" }}
@@ -143,4 +143,4 @@ export default inject(({ backup }) => {
   return {
     commonThirdPartyList,
   };
-})(withTranslation("Settings")(observer(ThirdPartyModule)));
+})(withTranslation(["Settings", "Common"])(observer(ThirdPartyModule)));

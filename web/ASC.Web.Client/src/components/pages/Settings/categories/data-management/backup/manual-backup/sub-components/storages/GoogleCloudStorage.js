@@ -64,7 +64,7 @@ class GoogleCloudStorage extends React.Component {
 
         <div className="manual-backup_buttons">
           <Button
-            label={t("MakeCopy")}
+            label={t("Common:Duplicate")}
             onClick={this.onMakeCopy}
             primary
             isDisabled={!isMaxProgress || this.isDisabled}
@@ -72,7 +72,7 @@ class GoogleCloudStorage extends React.Component {
           />
           {!isMaxProgress && (
             <Button
-              label={t("Copying")}
+              label={t("Common:CopyOperation") + "..."}
               isDisabled
               size="medium"
               style={{ marginLeft: "8px" }}
@@ -83,4 +83,4 @@ class GoogleCloudStorage extends React.Component {
     );
   }
 }
-export default withTranslation("Settings")(GoogleCloudStorage);
+export default withTranslation(["Settings", "Common"])(GoogleCloudStorage);

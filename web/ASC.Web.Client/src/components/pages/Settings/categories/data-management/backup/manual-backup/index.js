@@ -230,7 +230,7 @@ class ManualBackup extends React.Component {
           {isCheckedTemporaryStorage && (
             <div className="manual-backup_buttons">
               <Button
-                label={t("MakeCopy")}
+                label={t("Common:Duplicate")}
                 onClick={this.onMakeTemporaryBackup}
                 primary
                 isDisabled={!isMaxProgress}
@@ -247,7 +247,7 @@ class ManualBackup extends React.Component {
               )}
               {!isMaxProgress && (
                 <Button
-                  label={t("Copying")}
+                  label={t("Common:CopyOperation") + "..."}
                   isDisabled={true}
                   size="medium"
                   style={{ marginLeft: "8px" }}
@@ -352,4 +352,4 @@ export default inject(({ backup }) => {
     clearSessionStorage,
     commonThirdPartyList,
   };
-})(withTranslation("Settings")(observer(ManualBackup)));
+})(withTranslation(["Settings", "Common"])(observer(ManualBackup)));

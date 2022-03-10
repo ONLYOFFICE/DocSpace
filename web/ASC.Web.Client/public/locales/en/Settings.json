@@ -114,9 +114,5 @@
   "UserAgreement": "I understand and want to proceed",
   "UseHttp": "Use Http",
   "WelcomePageTitle": "Welcome page title",
-  "YouHaveUnsavedChanges": "You have unsaved changes",
-
-  "MakeCopy": "Make copy",
-  "Copying": "Copying...",
-  "RestoreButton": "Restore"
+  "YouHaveUnsavedChanges": "You have unsaved changes"
 }

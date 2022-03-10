@@ -479,7 +479,7 @@ class RestoreBackup extends React.Component {
         />
 
         <Button
-          label={t("RestoreButton")}
+          label={t("Common:Restore")}
           onClick={this.onRestoreClick}
           primary
           isDisabled={!isMaxProgress || !isChecked}
