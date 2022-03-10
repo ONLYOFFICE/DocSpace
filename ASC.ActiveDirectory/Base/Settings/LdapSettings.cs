@@ -15,21 +15,14 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
 
 using ASC.Common;
-using ASC.Common.Data;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.Settings;
 using ASC.Web.Core;
-using ASC.Core.Common.EF.Model;
-
-using Microsoft.EntityFrameworkCore;
 
 namespace ASC.ActiveDirectory.Base.Settings
 {
@@ -114,17 +107,6 @@ namespace ASC.ActiveDirectory.Base.Settings
                 .Select(r => Convert.ToInt32(r[0]))
                 .ToList();
 
-            //var query = new SqlQuery("webstudio_settings t1")
-            //    .Select("tt.id")
-            //    .InnerJoin("tenants_tenants tt", Exp.EqColumns("tt.id", "t1.TenantID"))
-            //    .Where("t1.id", ID)
-            //    .Where("IFNULL(JSON_EXTRACT(`Data`, '$.EnableLdapAuthentication'), 'false')", "true")
-            //    .Distinct();
-
-            //using (var dbManager = DbManager.FromHttpContext("default", 180000))
-            //{
-            //    return dbManager.ExecuteList(query).ConvertAll(r => Convert.ToInt32(r[0]));
-            //}
             return data;
         }
 

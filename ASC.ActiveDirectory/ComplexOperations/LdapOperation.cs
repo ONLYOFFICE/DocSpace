@@ -15,25 +15,18 @@
 */
 
 
-using System;
 using System.Globalization;
-using System.Linq;
 using System.Security;
-using System.Threading;
-using System.Threading.Tasks;
 
 using ASC.ActiveDirectory.Base;
 using ASC.ActiveDirectory.Base.Settings;
 using ASC.ActiveDirectory.Novell;
-using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Security.Authorizing;
 using ASC.Common.Threading;
 using ASC.Core;
 using ASC.Core.Tenants;
-using ASC.Security.Cryptography;
 
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -85,9 +78,9 @@ namespace ASC.ActiveDirectory.ComplexOperations
 
         protected IOptionsMonitor<ILog> Options { get; private set; }
 
-        protected TenantManager TenantManager { get; }
+        protected TenantManager TenantManager { get; private set; }
 
-        protected SecurityContext SecurityContext { get; }
+        protected SecurityContext SecurityContext { get; private set; }
 
         protected NovellLdapHelper NovellLdapHelper { get; }
 
@@ -129,8 +122,8 @@ namespace ASC.ActiveDirectory.ComplexOperations
         public void RunJob(DistributedTask _, CancellationToken cancellationToken)
         {
             using var scope = _serviceProvider.CreateScope();
-            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+            TenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            SecurityContext = scope.ServiceProvider.GetService<SecurityContext>();
             LDAPUserManager = scope.ServiceProvider.GetService<LdapUserManager>();
             LDAPUserManager.Init(Resource);
             Importer = scope.ServiceProvider.GetService<NovellLdapUserImporter>();
@@ -139,9 +132,9 @@ namespace ASC.ActiveDirectory.ComplexOperations
             {
                 CancellationToken = cancellationToken;
 
-                tenantManager.SetCurrentTenant(CurrentTenant);
+                TenantManager.SetCurrentTenant(CurrentTenant);
 
-                securityContext.AuthenticateMe(Core.Configuration.Constants.CoreSystem);
+                SecurityContext.AuthenticateMe(Core.Configuration.Constants.CoreSystem);
 
                 Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(_culture);
                 Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(_culture);

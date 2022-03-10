@@ -21,10 +21,10 @@ namespace ASC.ActiveDirectory.ComplexOperations
 {
     public class LdapLocalization
     {
-        private readonly ResourceManager _resourceManager;
-        private readonly ResourceManager _notifyResourceManager;
+        private ResourceManager _resourceManager;
+        private ResourceManager _notifyResourceManager;
 
-        public LdapLocalization(ResourceManager resourceManager = null, ResourceManager notifyResourceManager = null)
+        public void Init(ResourceManager resourceManager = null, ResourceManager notifyResourceManager = null)
         {
             _resourceManager = resourceManager;
             _notifyResourceManager = notifyResourceManager;

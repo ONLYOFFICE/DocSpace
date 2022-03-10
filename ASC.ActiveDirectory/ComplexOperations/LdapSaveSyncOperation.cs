@@ -15,15 +15,11 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
 using ASC.ActiveDirectory.Base.Settings;
 using ASC.ActiveDirectory.ComplexOperations.Data;
-using ASC.ActiveDirectory.Novell;
 using ASC.ActiveDirectory.Novell.Exceptions;
 using ASC.Common;
 using ASC.Common.Logging;
@@ -31,11 +27,9 @@ using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
-using ASC.Security.Cryptography;
 using ASC.Web.Core;
 using ASC.Web.Core.Users;
 
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -61,7 +55,7 @@ namespace ASC.ActiveDirectory.ComplexOperations
         public LdapSaveSyncOperation(
             IServiceProvider serviceProvider,
             IOptionsMonitor<ILog> options)
-            : base( serviceProvider, options)
+            : base(serviceProvider, options)
         {
             _serviceProvider = serviceProvider;
         }

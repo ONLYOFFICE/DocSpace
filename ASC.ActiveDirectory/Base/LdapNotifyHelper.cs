@@ -15,22 +15,14 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
 using ASC.ActiveDirectory.Base.Settings;
 using ASC.ActiveDirectory.ComplexOperations;
 using ASC.Common;
-using ASC.Common.DependencyInjection;
 using ASC.Common.Threading;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Notify;
-using ASC.Notify.Model;
-
-using Autofac;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -41,9 +33,6 @@ namespace ASC.ActiveDirectory.Base
     {
         private readonly Dictionary<int, Tuple<INotifyClient, LdapNotifySource>> clients;
         private readonly DistributedTaskQueue ldapTasks;
-
-        private INotifySource studioNotify;
-        private INotifyClient notifyClient;
         private IServiceProvider ServiceProvider { get; set; }
 
         LdapNotifyHelper(

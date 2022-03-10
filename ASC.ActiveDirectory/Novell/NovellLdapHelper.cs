@@ -15,21 +15,16 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-
 using ASC.ActiveDirectory.Base;
 using ASC.ActiveDirectory.Base.Data;
 using ASC.ActiveDirectory.Base.Expressions;
 using ASC.ActiveDirectory.Base.Settings;
-using ASC.ActiveDirectory.Novell.Extensions;
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Security.Cryptography;
 
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace ASC.ActiveDirectory.Novell
@@ -40,21 +35,27 @@ namespace ASC.ActiveDirectory.Novell
         public NovellLdapSearcher LDAPSearcher { get; private set; }
 
         private readonly IConfiguration Configuration;
-        private readonly IOptionsMonitor<ILog> _options;
-        private readonly NovellLdapEntryExtension _novellLdapEntryExtension;
+        private readonly IServiceProvider _serviceProvider;
 
-        public NovellLdapHelper(LdapSettings settings, IOptionsMonitor<ILog> option, InstanceCrypto instanceCrypto, IConfiguration configuration, NovellLdapEntryExtension novellLdapEntryExtension) :
-            base(settings, option, instanceCrypto)
+        public NovellLdapHelper(IServiceProvider serviceProvider, IOptionsMonitor<ILog> option, InstanceCrypto instanceCrypto, IConfiguration configuration, NovellLdapSearcher novellLdapSearcher) :
+            base(option, instanceCrypto)
+        {
+            LDAPSearcher = novellLdapSearcher;
+
+            Configuration = configuration;
+            _serviceProvider = serviceProvider;
+        }
+
+        public void Init(LdapSettings settings)
         {
             var password = string.IsNullOrEmpty(settings.Password)
                 ? GetPassword(settings.PasswordBytes)
                 : settings.Password;
 
-            LDAPSearcher = new NovellLdapSearcher(settings.Login, password, settings.Server, settings.PortNumber,
-                settings.StartTls, settings.Ssl, settings.AcceptCertificate, configuration, option, novellLdapEntryExtension, settings.AcceptCertificateHash);
+            LDAPSearcher.Init(settings.Login, password, settings.Server, settings.PortNumber,
+                settings.StartTls, settings.Ssl, settings.AcceptCertificate, settings.AcceptCertificateHash);
 
-            Configuration = configuration;
-            _novellLdapEntryExtension = novellLdapEntryExtension;
+            base.Init(settings);
         }
 
         public override bool IsConnected
@@ -150,11 +151,9 @@ namespace ASC.ActiveDirectory.Novell
         public override void CheckCredentials(string login, string password, string server, int portNumber,
             bool startTls, bool ssl, bool acceptCertificate, string acceptCertificateHash)
         {
-            using (var novellLdapSearcher = new NovellLdapSearcher(login, password, server, portNumber,
-                startTls, ssl, acceptCertificate, Configuration, _options, _novellLdapEntryExtension, acceptCertificateHash))
-            {
-                novellLdapSearcher.Connect();
-            }
+            using var novellLdapSearcher = _serviceProvider.GetService<NovellLdapSearcher>();
+            novellLdapSearcher.Init(login, password, server, portNumber, startTls, ssl, acceptCertificate, acceptCertificateHash);
+            novellLdapSearcher.Connect();
         }
 
         public override bool CheckUserDn(string userDn)

@@ -15,10 +15,6 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 using ASC.ActiveDirectory.Base.Data;
@@ -26,12 +22,10 @@ using ASC.ActiveDirectory.Base.Expressions;
 using ASC.ActiveDirectory.Base.Settings;
 using ASC.ActiveDirectory.ComplexOperations;
 using ASC.ActiveDirectory.Novell;
-using ASC.ActiveDirectory.Novell.Extensions;
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Users;
-using ASC.Security.Cryptography;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -50,11 +44,6 @@ namespace ASC.ActiveDirectory.Base
 
         private string _ldapDomain;
         private readonly string UnknownDomain;
-        private readonly IOptionsMonitor<ILog> _options;
-        private readonly IConfiguration _configuration;
-        private readonly InstanceCrypto _instanceCrypto;
-        private readonly NovellLdapEntryExtension _novellLdapEntryExtension;
-
         public string LDAPDomain
         {
             get
@@ -91,9 +80,8 @@ namespace ASC.ActiveDirectory.Base
         public LdapUserImporter(
             IOptionsMonitor<ILog> option,
             UserManager userManager,
-            InstanceCrypto instanceCrypto,
-            NovellLdapEntryExtension novellLdapEntryExtension,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            NovellLdapHelper novellLdapHelper)
         {
             UnknownDomain = configuration["ldap:domain"] ?? "LDAP";
             AllDomainUsers = new List<LdapObject>();
@@ -101,10 +89,7 @@ namespace ASC.ActiveDirectory.Base
             AllSkipedDomainUsers = new Dictionary<LdapObject, LdapSettingsStatus>();
             AllSkipedDomainGroups = new Dictionary<LdapObject, LdapSettingsStatus>();
 
-            _instanceCrypto = instanceCrypto;
-            _novellLdapEntryExtension = novellLdapEntryExtension;
-            _configuration = configuration;
-            _options = option;
+            LdapHelper = novellLdapHelper;
             Log = option.Get("ASC");
             UserManager = userManager;
 
@@ -113,7 +98,7 @@ namespace ASC.ActiveDirectory.Base
 
         public void Init(LdapSettings settings, LdapLocalization resource)
         {
-            LdapHelper = new NovellLdapHelper(settings, _options, _instanceCrypto, _configuration, _novellLdapEntryExtension);
+            LdapHelper.Init(settings);
             Resource = resource;
         }
 

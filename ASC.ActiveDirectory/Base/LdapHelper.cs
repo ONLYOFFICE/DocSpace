@@ -15,22 +15,16 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 using ASC.ActiveDirectory.Base.Data;
 using ASC.ActiveDirectory.Base.Expressions;
 using ASC.ActiveDirectory.Base.Settings;
 using ASC.Common;
-using ASC.Core;
-using ASC.Core.Common;
 using ASC.Common.Logging;
 using ASC.Security.Cryptography;
 
 using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Configuration;
 
 namespace ASC.ActiveDirectory.Base
 {
@@ -45,13 +39,16 @@ namespace ASC.ActiveDirectory.Base
         protected readonly ILog Log;
 
         protected LdapHelper(
-            LdapSettings settings, 
             IOptionsMonitor<ILog> option,
             InstanceCrypto instanceCrypto)
         {
-            Settings = settings;
             Log = option.Get("ASC");
             InstanceCrypto = instanceCrypto;
+        }
+
+        public void Init(LdapSettings settings)
+        {
+            Settings = settings;
         }
 
         public abstract void Connect();

@@ -116,7 +116,6 @@ namespace ASC.Api.Settings
         //private const int ONE_THREAD = 1;
 
         //private static readonly DistributedTaskQueue quotaTasks = new DistributedTaskQueue("quotaOperations", ONE_THREAD);
-        private static DistributedTaskQueue LDAPTasks { get; } = new DistributedTaskQueue(/*"ldapOperations"*/);
         //private static DistributedTaskQueue SMTPTasks { get; } = new DistributedTaskQueue("smtpOperations");
         public Tenant Tenant { get { return ApiContext.Tenant; } }
         public ApiContext ApiContext { get; }
@@ -183,8 +182,10 @@ namespace ASC.Api.Settings
         private Signature Signature { get; }
         private DbWorker WebhookDbWorker { get; }
         public IHttpClientFactory ClientFactory { get; }
-        public LdapNotifyHelper LdapNotifyHelper { get; }
-        public LdapSaveSyncOperation LdapSaveSyncOperation { get; }
+        private LdapNotifyHelper LdapNotifyHelper { get; }
+        private LdapSaveSyncOperation LdapSaveSyncOperation { get; }
+        private DistributedTaskQueue LDAPTasks { get; }
+        private LdapLocalization LdapLocalization { get; }
 
         public SettingsController(
             IOptionsMonitor<ILog> option,
@@ -253,7 +254,8 @@ namespace ASC.Api.Settings
             IHttpClientFactory clientFactory,
             LdapNotifyHelper ldapNotifyHelper,
             LdapSaveSyncOperation ldapSaveSyncOperation,
-            DistributedTaskQueueOptionsManager distributedTaskQueue)
+            DistributedTaskQueueOptionsManager distributedTaskQueueOptionsManager,
+            LdapLocalization ldapLocalization)
         {
             Log = option.Get("ASC.Api");
             WebHostEnvironment = webHostEnvironment;
@@ -321,6 +323,8 @@ namespace ASC.Api.Settings
             ClientFactory = clientFactory;
             LdapNotifyHelper = ldapNotifyHelper;
             LdapSaveSyncOperation = ldapSaveSyncOperation;
+            LDAPTasks = distributedTaskQueueOptionsManager.Get("ldapOperations");
+            LdapLocalization = ldapLocalization;
         }
 
         [Read("", Check = false)]
@@ -3170,11 +3174,11 @@ namespace ASC.Api.Settings
 
             var ldapSettings = SettingsManager.Load<LdapSettings>();
 
-            var ldapLocalization = new LdapLocalization(Resource.ResourceManager);
+            LdapLocalization.Init(Resource.ResourceManager);
 
             var tenant = TenantManager.GetCurrentTenant();
 
-            LdapSaveSyncOperation.Init(ldapSettings, tenant, LdapOperationType.Sync, ldapLocalization, AuthContext.CurrentAccount.ID.ToString());
+            LdapSaveSyncOperation.Init(ldapSettings, tenant, LdapOperationType.Sync, LdapLocalization, AuthContext.CurrentAccount.ID.ToString());
 
             return QueueTask(LdapSaveSyncOperation);
         }
@@ -3216,11 +3220,11 @@ namespace ASC.Api.Settings
 
             var ldapSettings = SettingsManager.Load<LdapSettings>();
 
-            var ldapLocalization = new LdapLocalization(Resource.ResourceManager);
+            LdapLocalization.Init(Resource.ResourceManager);
 
             var tenant = TenantManager.GetCurrentTenant();
 
-            LdapSaveSyncOperation.Init(ldapSettings, tenant, LdapOperationType.SyncTest, ldapLocalization);
+            LdapSaveSyncOperation.Init(ldapSettings, tenant, LdapOperationType.SyncTest, LdapLocalization);
             return QueueTask(LdapSaveSyncOperation);
         }
 
@@ -3264,11 +3268,11 @@ namespace ASC.Api.Settings
                 ldapSettings.SendWelcomeEmail = false;
             }
 
-            var ldapLocalization = new LdapLocalization(Resource.ResourceManager, WebstudioNotifyPatternResource.ResourceManager);
+            LdapLocalization.Init(Resource.ResourceManager, WebstudioNotifyPatternResource.ResourceManager);
 
             var tenant = TenantManager.GetCurrentTenant();
 
-            LdapSaveSyncOperation.Init(ldapSettings, tenant, LdapOperationType.Save, ldapLocalization, AuthContext.CurrentAccount.ID.ToString());
+            LdapSaveSyncOperation.Init(ldapSettings, tenant, LdapOperationType.Save, LdapLocalization, AuthContext.CurrentAccount.ID.ToString());
             return QueueTask(LdapSaveSyncOperation);
         }
 
@@ -3313,11 +3317,11 @@ namespace ASC.Api.Settings
 
             ldapSettings.AcceptCertificate = acceptCertificate;
 
-            var ldapLocalization = new LdapLocalization(Resource.ResourceManager);
+            LdapLocalization.Init(Resource.ResourceManager);
 
             var tenant = TenantManager.GetCurrentTenant();
 
-            LdapSaveSyncOperation.Init(ldapSettings, tenant, LdapOperationType.SaveTest, ldapLocalization, AuthContext.CurrentAccount.ID.ToString());
+            LdapSaveSyncOperation.Init(ldapSettings, tenant, LdapOperationType.SaveTest, LdapLocalization, AuthContext.CurrentAccount.ID.ToString());
             return QueueTask(LdapSaveSyncOperation);
         }
 

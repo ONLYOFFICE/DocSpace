@@ -15,10 +15,6 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
@@ -68,16 +64,23 @@ namespace ASC.ActiveDirectory.Novell
         }
 
         public NovellLdapSearcher(
-            string login,
+            IConfiguration configuration,
+            IOptionsMonitor<ILog> option,
+            NovellLdapEntryExtension novellLdapEntryExtension)
+        {
+            _log = option.Get("ASC");
+            _configuration = configuration;
+            _novellLdapEntryExtension = novellLdapEntryExtension;
+            LdapUniqueIdAttribute = configuration["ldap:unique:id"];
+        }
+
+        public void Init(string login,
             string password,
             string server,
             int portNumber,
             bool startTls,
             bool ssl,
             bool acceptCertificate,
-            IConfiguration configuration,
-            IOptionsMonitor<ILog> option,
-            NovellLdapEntryExtension novellLdapEntryExtension,
             string acceptCertificateHash = null)
         {
             Login = login;
@@ -88,11 +91,6 @@ namespace ASC.ActiveDirectory.Novell
             Ssl = ssl;
             AcceptCertificate = acceptCertificate;
             AcceptCertificateHash = acceptCertificateHash;
-
-            _log = option.Get("ASC");
-            _configuration = configuration;
-            _novellLdapEntryExtension = novellLdapEntryExtension;
-            LdapUniqueIdAttribute = configuration["ldap:unique:id"];
         }
 
         public void Connect()

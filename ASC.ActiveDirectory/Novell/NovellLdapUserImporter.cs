@@ -16,12 +16,8 @@
 
 
 using ASC.ActiveDirectory.Base;
-using ASC.ActiveDirectory.Base.Settings;
-using ASC.ActiveDirectory.ComplexOperations;
-using ASC.ActiveDirectory.Novell.Extensions;
 using ASC.Common.Logging;
 using ASC.Core;
-using ASC.Security.Cryptography;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -30,8 +26,8 @@ namespace ASC.ActiveDirectory.Novell
 {
     public class NovellLdapUserImporter : LdapUserImporter
     {
-        public NovellLdapUserImporter(IOptionsMonitor<ILog> option, UserManager userManager, InstanceCrypto instanceCrypto, IConfiguration configuration, NovellLdapEntryExtension novellLdapEntryExtension)
-            : base(option, userManager, instanceCrypto, novellLdapEntryExtension, configuration)
+        public NovellLdapUserImporter(IOptionsMonitor<ILog> option, UserManager userManager, IConfiguration configuration, NovellLdapHelper novellLdapHelper)
+            : base(option, userManager, configuration, novellLdapHelper)
         {
         }
     }

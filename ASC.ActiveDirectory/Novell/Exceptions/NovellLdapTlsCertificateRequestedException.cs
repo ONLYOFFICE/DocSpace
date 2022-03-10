@@ -15,8 +15,6 @@
 */
 
 
-using System;
-
 using ASC.ActiveDirectory.Base.Data;
 
 namespace ASC.ActiveDirectory.Novell.Exceptions

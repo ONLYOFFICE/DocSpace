@@ -15,8 +15,6 @@
 */
 
 
-using System;
-
 using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 
