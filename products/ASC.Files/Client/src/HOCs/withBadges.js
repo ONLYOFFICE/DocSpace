@@ -5,7 +5,6 @@ import {
   AppServerConfig,
   FileStatus,
 } from "@appserver/common/constants";
-import toastr from "@appserver/components/toast/toastr";
 import { combineUrl } from "@appserver/common/utils";
 
 import Badges from "../components/Badges";
@@ -36,18 +35,11 @@ export default function withBadges(WrappedComponent) {
     };
 
     onBadgeClick = () => {
-      const {
-        item,
-        selectedFolderPathParts,
-        markAsRead,
-        setNewFilesPanelVisible,
-      } = this.props;
+      const { item, markAsRead, setNewFilesPanelVisible } = this.props;
       if (item.fileExst) {
         markAsRead([], [item.id], item);
       } else {
-        const newFolderIds = selectedFolderPathParts;
-        newFolderIds.push(item.id);
-        setNewFilesPanelVisible(true, newFolderIds, item);
+        setNewFilesPanelVisible(true, null, item);
       }
     };
 
@@ -115,7 +107,6 @@ export default function withBadges(WrappedComponent) {
         treeFoldersStore,
         filesActionsStore,
         versionHistoryStore,
-        selectedFolderStore,
         dialogsStore,
         filesStore,
         settingsStore,
@@ -146,7 +137,6 @@ export default function withBadges(WrappedComponent) {
         isTabletView,
         setIsVerHistoryPanel,
         fetchFileVersions,
-        selectedFolderPathParts: selectedFolderStore.pathParts,
         markAsRead,
         setNewFilesPanelVisible,
         setIsLoading,
