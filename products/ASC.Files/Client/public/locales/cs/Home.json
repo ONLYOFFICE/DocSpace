@@ -13,7 +13,6 @@
     "CopyItem": "<strong>{{title}}</strong> zkopírováno",
     "CopyItems": "Prvky <strong>{{qty}}</strong> zkopírovany",
     "Document": "Dokument",
-    "Duplicate": "Vytvořit kopii",
     "EmptyFile": "Prázdný soubor",
     "EmptyFilterDescriptionText": "Tomuto filtru neodpovídají žádné soubory ani složky. Vyzkoušejte jiný nebo vymažte filtr pro zobrazení všech souborů.",
     "EmptyFilterSubheadingText": "Pro tento filtr nejsou žádné soubory k zobrazení",
