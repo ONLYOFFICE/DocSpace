@@ -34,7 +34,7 @@ class Row extends React.Component {
       onSelect,
       rowContextClick,
       sectionWidth,
-      contextMenuData,
+      getContextModel,
     } = this.props;
 
     const renderCheckbox = Object.prototype.hasOwnProperty.call(
@@ -128,7 +128,7 @@ class Row extends React.Component {
             <div className="expandButton"> </div>
           )}
           <ContextMenu
-            contextMenuData={contextMenuData}
+            getContextModel={getContextModel}
             model={contextData.contextOptions}
             ref={this.cm}
             header={contextMenuHeader}
@@ -171,7 +171,7 @@ Row.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   sectionWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   inProgress: PropTypes.bool,
-  contextMenuData: PropTypes.object,
+  getContextModel: PropTypes.func,
 };
 
 Row.defaultProps = {
