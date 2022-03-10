@@ -13,7 +13,6 @@
     "CopyItem": "<strong> {{title}} </strong> kopioitu",
     "CopyItems": "<strong> {{qty}} </strong> elementtiä kopioitu",
     "Document": "Asiakirja",
-    "Duplicate": "Luo kopio",
     "EmptyFile": "Tyhjä tiedosto",
     "EmptyFilterDescriptionText": "Yksikään tiedosto tai kansio ei vastaa tätä suodatinta. Kokeile toista suodatinta tai poista suodatin nähdäksesi kaikki tiedostot.",
     "EmptyFilterSubheadingText": "Tässä suodattimessa ei ole näytettäviä tiedostoja",
