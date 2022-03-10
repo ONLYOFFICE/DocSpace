@@ -359,7 +359,7 @@ const Form = (props) => {
                 scale={true}
                 isAutoFocussed={true}
                 tabIndex={1}
-                isDisabled={isLoading}
+                isDisabled={isLoading || !identifierValid}
                 autoComplete="username"
                 onChange={onChangeLogin}
                 onValidateInput={onValidateEmail}
