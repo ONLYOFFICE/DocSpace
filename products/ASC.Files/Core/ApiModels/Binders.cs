@@ -71,10 +71,7 @@ public class BaseBatchModelBinder : IModelBinder
 {
     public virtual Task BindModelAsync(ModelBindingContext bindingContext)
     {
-        if (bindingContext == null)
-        {
-            throw new ArgumentNullException(nameof(bindingContext));
-        }
+        ArgumentNullException.ThrowIfNull(bindingContext);
 
         var result = new BaseBatchRequestDto();
 
@@ -92,10 +89,7 @@ public class DeleteBatchModelBinder : BaseBatchModelBinder
     public override Task BindModelAsync(ModelBindingContext bindingContext)
     {
         base.BindModelAsync(bindingContext);
-        if (bindingContext == null)
-        {
-            throw new ArgumentNullException(nameof(bindingContext));
-        }
+        ArgumentNullException.ThrowIfNull(bindingContext);
 
         var result = new DeleteBatchRequestDto();
 
@@ -132,10 +126,7 @@ public class BatchModelBinder : BaseBatchModelBinder
     public override Task BindModelAsync(ModelBindingContext bindingContext)
     {
         base.BindModelAsync(bindingContext);
-        if (bindingContext == null)
-        {
-            throw new ArgumentNullException(nameof(bindingContext));
-        }
+        ArgumentNullException.ThrowIfNull(bindingContext);
 
         var result = new BatchRequestDto();
 
@@ -179,10 +170,7 @@ public class InsertFileModelBinder : IModelBinder
 {
     public async Task BindModelAsync(ModelBindingContext bindingContext)
     {
-        if (bindingContext == null)
-        {
-            throw new ArgumentNullException(nameof(bindingContext));
-        }
+        ArgumentNullException.ThrowIfNull(bindingContext);
 
         var defaultBindingContext = bindingContext as DefaultModelBindingContext;
         var composite = bindingContext.ValueProvider as CompositeValueProvider;
@@ -225,10 +213,7 @@ public class UploadModelBinder : IModelBinder
 {
     public Task BindModelAsync(ModelBindingContext bindingContext)
     {
-        if (bindingContext == null)
-        {
-            throw new ArgumentNullException(nameof(bindingContext));
-        }
+        ArgumentNullException.ThrowIfNull(bindingContext);
 
         var defaultBindingContext = bindingContext as DefaultModelBindingContext;
         var composite = bindingContext.ValueProvider as CompositeValueProvider;

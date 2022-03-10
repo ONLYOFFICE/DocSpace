@@ -47,10 +47,7 @@ public class SenderChannel : ISenderChannel
 
     public void SendAsync(INoticeMessage message)
     {
-        if (message == null)
-        {
-            throw new ArgumentNullException(nameof(message));
-        }
+        ArgumentNullException.ThrowIfNull(message);
 
         _firstSink.ProcessMessageAsync(message);
     }

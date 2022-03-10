@@ -124,20 +124,14 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
 
     public Task<FileDto<T>> CreateHtmlFileAsync(T folderId, string title, string content)
     {
-        if (title == null)
-        {
-            throw new ArgumentNullException(nameof(title));
-        }
+        ArgumentNullException.ThrowIfNull(title);
 
         return CreateFileAsync(folderId, title, content, ".html");
     }
 
     public Task<FileDto<T>> CreateTextFileAsync(T folderId, string title, string content)
     {
-        if (title == null)
-        {
-            throw new ArgumentNullException(nameof(title));
-        }
+        ArgumentNullException.ThrowIfNull(title);
 
         //Try detect content
         var extension = ".txt";

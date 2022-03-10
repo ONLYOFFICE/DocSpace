@@ -78,10 +78,7 @@ public class BaseCommonLinkUtility
                 {
                     var u = HttpContextAccessor?.HttpContext.Request.GetUrlRewriter();
 
-                    if (u == null)
-                    {
-                        throw new ArgumentNullException(nameof(u));
-                    }
+                    ArgumentNullException.ThrowIfNull(u);
 
                     uriBuilder = new UriBuilder(u.Scheme, LocalHost, u.Port);
                 }
@@ -120,10 +117,7 @@ public class BaseCommonLinkUtility
             {
                 var u = HttpContextAccessor?.HttpContext?.Request.GetUrlRewriter();
 
-                if (u == null)
-                {
-                    throw new ArgumentNullException(nameof(u));
-                }
+                ArgumentNullException.ThrowIfNull(u);
 
                 result = new UriBuilder(u.Scheme, u.Host, u.Port);
 

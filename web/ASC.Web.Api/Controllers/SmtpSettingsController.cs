@@ -64,7 +64,7 @@ namespace ASC.Api.Settings
         }
 
         [Create("smtp")]
-        public SmtpSettingsWrapper SaveSmtpSettingsFromBody([FromBody]SmtpSettingsWrapper smtpSettings)
+        public SmtpSettingsWrapper SaveSmtpSettingsFromBody([FromBody] SmtpSettingsWrapper smtpSettings)
         {
             return SaveSmtpSettings(smtpSettings);
         }
@@ -82,8 +82,7 @@ namespace ASC.Api.Settings
 
             //TODO: Add validation check
 
-            if (smtpSettings == null)
-                throw new ArgumentNullException(nameof(smtpSettings));
+            ArgumentNullException.ThrowIfNull(smtpSettings);
 
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 

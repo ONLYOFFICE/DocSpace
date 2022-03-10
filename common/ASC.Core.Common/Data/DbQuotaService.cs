@@ -23,8 +23,6 @@
  *
 */
 
-using System.Diagnostics.Metrics;
-
 using AutoMapper.QueryableExtensions;
 
 namespace ASC.Core.Data;
@@ -81,10 +79,7 @@ class DbQuotaService : IQuotaService
 
     public TenantQuota SaveTenantQuota(TenantQuota quota)
     {
-        if (quota == null)
-        {
-            throw new ArgumentNullException(nameof(quota));
-        }
+        ArgumentNullException.ThrowIfNull(quota);
 
         CoreDbContext.AddOrUpdate(r => r.Quotas, _mapper.Map<TenantQuota, DbQuota>(quota));
         CoreDbContext.SaveChanges();
@@ -111,10 +106,7 @@ class DbQuotaService : IQuotaService
 
     public void SetTenantQuotaRow(TenantQuotaRow row, bool exchange)
     {
-        if (row == null)
-        {
-            throw new ArgumentNullException(nameof(row));
-        }
+        ArgumentNullException.ThrowIfNull(row);
 
         using var tx = CoreDbContext.Database.BeginTransaction();
 

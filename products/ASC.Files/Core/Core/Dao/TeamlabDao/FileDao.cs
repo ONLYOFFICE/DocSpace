@@ -120,10 +120,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     public Task<File<int>> GetFileAsync(int parentId, string title)
     {
-        if (string.IsNullOrEmpty(title))
-        {
-            throw new ArgumentNullException(title);
-        }
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(title);
 
         return InternalGetFileAsync(parentId, title);
     }
@@ -354,10 +351,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     public Task<File<int>> SaveFileAsync(File<int> file, Stream fileStream, bool checkQuota = true)
     {
-        if (file == null)
-        {
-            throw new ArgumentNullException(nameof(file));
-        }
+        ArgumentNullException.ThrowIfNull(file);
 
         var maxChunkedUploadSize = SetupInfo.MaxChunkedUploadSize(TenantExtra, TenantStatisticProvider);
         if (checkQuota && maxChunkedUploadSize < file.ContentLength)
@@ -516,10 +510,8 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     public Task<File<int>> ReplaceFileVersionAsync(File<int> file, Stream fileStream)
     {
-        if (file == null)
-        {
-            throw new ArgumentNullException(nameof(file));
-        }
+        ArgumentNullException.ThrowIfNull(file);
+
         if (file.ID == default)
         {
             throw new ArgumentException("No file id or folder id toFolderId determine provider");
@@ -1252,18 +1244,10 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     public Task SaveEditHistoryAsync(File<int> file, string changes, Stream differenceStream)
     {
-        if (file == null)
-        {
-            throw new ArgumentNullException(nameof(file));
-        }
-        if (string.IsNullOrEmpty(changes))
-        {
-            throw new ArgumentNullException(nameof(changes));
-        }
-        if (differenceStream == null)
-        {
-            throw new ArgumentNullException(nameof(differenceStream));
-        }
+        ArgumentNullException.ThrowIfNull(file);
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(changes);
+
+        ArgumentNullException.ThrowIfNull(differenceStream);
 
         return InternalSaveEditHistoryAsync(file, changes, differenceStream);
     }
@@ -1471,10 +1455,10 @@ internal class FileDao : AbstractDao, IFileDao<int>
                    case SortedByType.Size:
                        result.Sort(r => r.ContentLength, orderBy.IsAsc);
                        break;
-                       //case SortedByType.AZ:
-                       //    result.Sort(r => r.Title, orderBy.IsAsc);
-                       //    break;
-                       case SortedByType.DateAndTime:
+                   //case SortedByType.AZ:
+                   //    result.Sort(r => r.Title, orderBy.IsAsc);
+                   //    break;
+                   case SortedByType.DateAndTime:
                        result.Sort(r => r.ModifiedOn, orderBy.IsAsc);
                        break;
                    case SortedByType.DateAndTimeCreation:

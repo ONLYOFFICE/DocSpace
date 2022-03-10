@@ -73,20 +73,9 @@ public class DocuSignLoginProvider : Consumer, IOAuthProvider
 
     public OAuth20Token GetAccessToken(string authCode)
     {
-        if (string.IsNullOrEmpty(authCode))
-        {
-            throw new ArgumentNullException(nameof(authCode));
-        }
-
-        if (string.IsNullOrEmpty(ClientID))
-        {
-            throw new ArgumentException(nameof(ClientID));
-        }
-
-        if (string.IsNullOrEmpty(ClientSecret))
-        {
-            throw new ArgumentException(nameof(ClientSecret));
-        }
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(authCode);
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(ClientID);
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(ClientSecret);
 
         var data = $"grant_type=authorization_code&code={authCode}";
         var headers = new Dictionary<string, string> { { "Authorization", AuthHeader } };

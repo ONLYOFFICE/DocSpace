@@ -94,10 +94,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     public Task<Folder<int>> GetFolderAsync(string title, int parentId)
     {
-        if (string.IsNullOrEmpty(title))
-        {
-            throw new ArgumentNullException(title);
-        }
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(title);
 
         return InternalGetFolderAsync(title, parentId);
     }
@@ -284,10 +281,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     public Task<int> SaveFolderAsync(Folder<int> folder, IDbContextTransaction transaction)
     {
-        if (folder == null)
-        {
-            throw new ArgumentNullException(nameof(folder));
-        }
+        ArgumentNullException.ThrowIfNull(folder);
 
         return InternalSaveFolderAsync(folder, transaction);
     }
@@ -568,7 +562,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                         Level = subfolder.Value + 1 + f.Level
                     };
                     await FilesDbContext.AddOrUpdateAsync(r => r.Tree, newTree).ConfigureAwait(false);
-                }   
+                }
             }
 
             await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
@@ -889,15 +883,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     public Task<IEnumerable<int>> GetFolderIDsAsync(string module, string bunch, IEnumerable<string> data, bool createIfNotExists)
     {
-        if (string.IsNullOrEmpty(module))
-        {
-            throw new ArgumentNullException(nameof(module));
-        }
-
-        if (string.IsNullOrEmpty(bunch))
-        {
-            throw new ArgumentNullException(nameof(bunch));
-        }
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(module);
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(bunch);
 
         return InternalGetFolderIDsAsync(module, bunch, data, createIfNotExists);
     }
@@ -988,14 +975,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     public Task<int> GetFolderIDAsync(string module, string bunch, string data, bool createIfNotExists)
     {
-        if (string.IsNullOrEmpty(module))
-        {
-            throw new ArgumentNullException(nameof(module));
-        }
-        if (string.IsNullOrEmpty(bunch))
-        {
-            throw new ArgumentNullException(nameof(bunch));
-        }
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(module);
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(bunch);
 
         return InternalGetFolderIDAsync(module, bunch, data, createIfNotExists);
     }

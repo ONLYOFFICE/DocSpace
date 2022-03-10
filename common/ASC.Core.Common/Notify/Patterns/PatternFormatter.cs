@@ -53,10 +53,7 @@ public abstract class PatternFormatter : IPatternFormatter
 
     public string[] GetTags(IPattern pattern)
     {
-        if (pattern == null)
-        {
-            throw new ArgumentNullException(nameof(pattern));
-        }
+        ArgumentNullException.ThrowIfNull(pattern);
 
         var findedTags = new List<string>(SearchTags(pattern.Body));
         Array.ForEach(SearchTags(pattern.Subject), tag => { if (!findedTags.Contains(tag)) findedTags.Add(tag); });
@@ -65,18 +62,9 @@ public abstract class PatternFormatter : IPatternFormatter
 
     public void FormatMessage(INoticeMessage message, ITagValue[] tagsValues)
     {
-        if (message == null)
-        {
-            throw new ArgumentNullException(nameof(message));
-        }
-        if (message.Pattern == null)
-        {
-            throw new ArgumentException(nameof(message));
-        }
-        if (tagsValues == null)
-        {
-            throw new ArgumentNullException(nameof(tagsValues));
-        }
+        ArgumentNullException.ThrowIfNull(message);
+        ArgumentNullException.ThrowIfNull(message.Pattern);
+        ArgumentNullException.ThrowIfNull(tagsValues);
 
         BeforeFormat(message, tagsValues);
 

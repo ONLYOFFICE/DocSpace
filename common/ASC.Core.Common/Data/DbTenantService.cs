@@ -114,10 +114,7 @@ public class DbTenantService : ITenantService
 
     public IEnumerable<Tenant> GetTenants(string login, string passwordHash)
     {
-        if (string.IsNullOrEmpty(login))
-        {
-            throw new ArgumentNullException(nameof(login));
-        }
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(login);
 
         IQueryable<TenantUserSecurity> query() => TenantsQuery()
                 .Where(r => r.Status == TenantStatus.Active)
@@ -205,10 +202,7 @@ public class DbTenantService : ITenantService
 
     public Tenant GetTenant(string domain)
     {
-        if (string.IsNullOrEmpty(domain))
-        {
-            throw new ArgumentNullException(nameof(domain));
-        }
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(domain);
 
         domain = domain.ToLowerInvariant();
 
@@ -229,79 +223,76 @@ public class DbTenantService : ITenantService
             .FirstOrDefault();
     }
 
-    public Tenant SaveTenant(CoreSettings coreSettings, Tenant t)
+    public Tenant SaveTenant(CoreSettings coreSettings, Tenant tenant)
     {
-        if (t == null)
-        {
-            throw new ArgumentNullException("tenant");
-        }
+        ArgumentNullException.ThrowIfNull(tenant);
 
         using var tx = TenantDbContext.Database.BeginTransaction();
 
-        if (!string.IsNullOrEmpty(t.MappedDomain))
+        if (!string.IsNullOrEmpty(tenant.MappedDomain))
         {
-            var baseUrl = coreSettings.GetBaseDomain(t.HostedRegion);
+            var baseUrl = coreSettings.GetBaseDomain(tenant.HostedRegion);
 
-            if (baseUrl != null && t.MappedDomain.EndsWith("." + baseUrl, StringComparison.InvariantCultureIgnoreCase))
+            if (baseUrl != null && tenant.MappedDomain.EndsWith("." + baseUrl, StringComparison.InvariantCultureIgnoreCase))
             {
-                ValidateDomain(t.MappedDomain.Substring(0, t.MappedDomain.Length - baseUrl.Length - 1), t.Id, false);
+                ValidateDomain(tenant.MappedDomain.Substring(0, tenant.MappedDomain.Length - baseUrl.Length - 1), tenant.Id, false);
             }
             else
             {
-                ValidateDomain(t.MappedDomain, t.Id, false);
+                ValidateDomain(tenant.MappedDomain, tenant.Id, false);
             }
         }
 
-        if (t.Id == Tenant.DefaultTenant)
+        if (tenant.Id == Tenant.DefaultTenant)
         {
-            t.Version = TenantDbContext.TenantVersion
+            tenant.Version = TenantDbContext.TenantVersion
                 .Where(r => r.DefaultVersion == 1 || r.Id == 0)
                 .OrderByDescending(r => r.Id)
                 .Select(r => r.Id)
                 .FirstOrDefault();
 
-            t.LastModified = DateTime.UtcNow;
+            tenant.LastModified = DateTime.UtcNow;
 
-            var tenant = _mapper.Map<Tenant, DbTenant>(t);
+            var dbTenant = _mapper.Map<Tenant, DbTenant>(tenant);
 
-            tenant = TenantDbContext.Tenants.Add(tenant).Entity;
+            dbTenant = TenantDbContext.Tenants.Add(dbTenant).Entity;
             TenantDbContext.SaveChanges();
-            t.Id = tenant.Id;
+            tenant.Id = dbTenant.Id;
         }
         else
         {
-            var tenant = TenantDbContext.Tenants
-                .Where(r => r.Id == t.Id)
+            var dbTenant = TenantDbContext.Tenants
+                .Where(r => r.Id == tenant.Id)
                 .FirstOrDefault();
 
-            if (tenant != null)
+            if (dbTenant != null)
             {
-                tenant.Alias = t.Alias.ToLowerInvariant();
-                tenant.MappedDomain = !string.IsNullOrEmpty(t.MappedDomain) ? t.MappedDomain.ToLowerInvariant() : null;
-                tenant.Version = t.Version;
-                tenant.VersionChanged = t.VersionChanged;
-                tenant.Name = t.Name ?? t.Alias;
-                tenant.Language = t.Language;
-                tenant.TimeZone = t.TimeZone;
-                tenant.TrustedDomainsRaw = t.GetTrustedDomains();
-                tenant.TrustedDomainsEnabled = t.TrustedDomainsType;
-                tenant.CreationDateTime = t.CreationDateTime;
-                tenant.Status = t.Status;
-                tenant.StatusChanged = t.StatusChangeDate;
-                tenant.PaymentId = t.PaymentId;
-                tenant.LastModified = t.LastModified = DateTime.UtcNow;
-                tenant.Industry = t.Industry;
-                tenant.Spam = t.Spam;
-                tenant.Calls = t.Calls;
+                dbTenant.Alias = tenant.Alias.ToLowerInvariant();
+                dbTenant.MappedDomain = !string.IsNullOrEmpty(tenant.MappedDomain) ? tenant.MappedDomain.ToLowerInvariant() : null;
+                dbTenant.Version = tenant.Version;
+                dbTenant.VersionChanged = tenant.VersionChanged;
+                dbTenant.Name = tenant.Name ?? tenant.Alias;
+                dbTenant.Language = tenant.Language;
+                dbTenant.TimeZone = tenant.TimeZone;
+                dbTenant.TrustedDomainsRaw = tenant.GetTrustedDomains();
+                dbTenant.TrustedDomainsEnabled = tenant.TrustedDomainsType;
+                dbTenant.CreationDateTime = tenant.CreationDateTime;
+                dbTenant.Status = tenant.Status;
+                dbTenant.StatusChanged = tenant.StatusChangeDate;
+                dbTenant.PaymentId = tenant.PaymentId;
+                dbTenant.LastModified = tenant.LastModified = DateTime.UtcNow;
+                dbTenant.Industry = tenant.Industry;
+                dbTenant.Spam = tenant.Spam;
+                dbTenant.Calls = tenant.Calls;
             }
 
             TenantDbContext.SaveChanges();
         }
 
-        if (string.IsNullOrEmpty(t.PartnerId) && string.IsNullOrEmpty(t.AffiliateId) && string.IsNullOrEmpty(t.Campaign))
+        if (string.IsNullOrEmpty(tenant.PartnerId) && string.IsNullOrEmpty(tenant.AffiliateId) && string.IsNullOrEmpty(tenant.Campaign))
         {
             var p = TenantDbContext.TenantPartner
-                .Where(r => r.TenantId == t.Id)
+                .Where(r => r.TenantId == tenant.Id)
                 .FirstOrDefault();
 
             if (p != null)
@@ -313,10 +304,10 @@ public class DbTenantService : ITenantService
         {
             var tenantPartner = new DbTenantPartner
             {
-                TenantId = t.Id,
-                PartnerId = t.PartnerId,
-                AffiliateId = t.AffiliateId,
-                Campaign = t.Campaign
+                TenantId = tenant.Id,
+                PartnerId = tenant.PartnerId,
+                AffiliateId = tenant.AffiliateId,
+                Campaign = tenant.Campaign
             };
 
             TenantDbContext.TenantPartner.Add(tenantPartner);
@@ -325,7 +316,7 @@ public class DbTenantService : ITenantService
         tx.Commit();
 
         //CalculateTenantDomain(t);
-        return t;
+        return tenant;
     }
 
     public void RemoveTenant(int id, bool auto = false)

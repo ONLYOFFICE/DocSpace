@@ -46,10 +46,7 @@ public class FilesIntegration
 
     public Task<IEnumerable<T>> RegisterBunchFoldersAsync<T>(string module, string bunch, IEnumerable<string> data)
     {
-        if (data == null)
-        {
-            throw new ArgumentNullException(nameof(data));
-        }
+        ArgumentNullException.ThrowIfNull(data);
 
         data = data.ToList();
         if (!data.Any())
