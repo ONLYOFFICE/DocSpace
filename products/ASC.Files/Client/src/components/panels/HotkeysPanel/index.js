@@ -28,6 +28,7 @@ const HotkeyPanel = ({ visible, setHotkeyPanelVisible, t, tReady }) => {
   };
 
   const CtrlKey = isMacOs ? "⌘" : "Ctrl";
+  const AltKey = isMacOs ? "⌥" : "Alt";
 
   const onKeyPress = (e) =>
     (e.key === "Esc" || e.key === "Escape") && onClose();
@@ -53,6 +54,7 @@ const HotkeyPanel = ({ visible, setHotkeyPanelVisible, t, tReady }) => {
             t={t}
             textStyles={textStyles}
             keyTextStyles={keyTextStyles}
+            AltKey={AltKey}
           />
           <Heading className="hotkeys_sub-header">
             {t("HotkeysCreatingObjects")}
@@ -61,6 +63,7 @@ const HotkeyPanel = ({ visible, setHotkeyPanelVisible, t, tReady }) => {
             t={t}
             textStyles={textStyles}
             keyTextStyles={keyTextStyles}
+            AltKey={AltKey}
           />
           <Heading className="hotkeys_sub-header">
             {t("HotkeysUploadingObjects")}

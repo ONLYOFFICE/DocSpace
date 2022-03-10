@@ -2,7 +2,7 @@ import React from "react";
 import Row from "@appserver/components/row";
 import Text from "@appserver/components/text";
 
-const CreationBlock = ({ t, textStyles, keyTextStyles }) => {
+const CreationBlock = ({ t, textStyles, keyTextStyles, AltKey }) => {
   return (
     <>
       <Row className="hotkeys_row">
@@ -32,7 +32,7 @@ const CreationBlock = ({ t, textStyles, keyTextStyles }) => {
       <Row className="hotkeys_row">
         <>
           <Text {...textStyles}>{t("HotkeysCreateFormFromFile")}</Text>
-          <Text {...keyTextStyles}>Alt + Shift + o</Text>
+          <Text {...keyTextStyles}>{AltKey} + Shift + o</Text>
         </>
       </Row>
       <Row className="hotkeys_row">

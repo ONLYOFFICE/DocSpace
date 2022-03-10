@@ -2,7 +2,7 @@ import React from "react";
 import Row from "@appserver/components/row";
 import Text from "@appserver/components/text";
 
-const NavigationBlock = ({ t, textStyles, keyTextStyles }) => {
+const NavigationBlock = ({ t, textStyles, keyTextStyles, AltKey }) => {
   return (
     <>
       <Row className="hotkeys_row">
@@ -20,7 +20,7 @@ const NavigationBlock = ({ t, textStyles, keyTextStyles }) => {
       <Row className="hotkeys_row">
         <>
           <Text {...textStyles}>{t("HotkeysGoToTheTopOfTheList")}</Text>
-          <Text {...keyTextStyles}>Alt + ↑</Text>
+          <Text {...keyTextStyles}>{AltKey} + ↑</Text>
         </>
       </Row>
     </>
