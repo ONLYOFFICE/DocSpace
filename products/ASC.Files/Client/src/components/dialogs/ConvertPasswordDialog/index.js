@@ -193,7 +193,7 @@ const ConvertPasswordDialogComponent = (props) => {
               className="convert-password-dialog_button"
               key="ContinueButton"
               label={t("Common:SaveButton")}
-              size="medium"
+              size="small"
               primary
               onClick={onConvert}
               isLoading={isLoading}
@@ -202,7 +202,7 @@ const ConvertPasswordDialogComponent = (props) => {
               className="convert-password-dialog_button"
               key="CloseButton"
               label={t("Common:CloseButton")}
-              size="medium"
+              size="small"
               onClick={onClose}
             />
           </div>

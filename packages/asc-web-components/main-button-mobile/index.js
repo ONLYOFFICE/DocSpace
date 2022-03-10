@@ -180,7 +180,7 @@ const MainButtonMobile = (props) => {
               label={title}
               className="action-mobile-button"
               primary
-              size="large"
+              size="normal40"
               onClick={onUploadClick}
             />
           </StyledButtonWrapper>

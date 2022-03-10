@@ -115,7 +115,7 @@ class ChangeOwnerComponent extends React.Component {
             <StyledFooter>
               <Button
                 label={t("Common:SaveButton")}
-                size="medium"
+                size="small"
                 scale
                 primary
                 onClick={this.onOwnerChange}

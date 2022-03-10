@@ -111,8 +111,6 @@ class SharingPanelComponent extends React.Component {
   };
 
   onSaveClick = () => {
-
-
     const {
       baseShareData,
       isNotifyUsers,
@@ -356,14 +354,14 @@ class SharingPanelComponent extends React.Component {
       isPersonal,
     } = this.props;
 
-      getShareUsers(folderId, fileId)
-        .then((shareDataItems) => {
-          const baseShareData = JSON.parse(JSON.stringify(shareDataItems));
-          const accessOptions = getAccessOption(selection);
+    getShareUsers(folderId, fileId)
+      .then((shareDataItems) => {
+        const baseShareData = JSON.parse(JSON.stringify(shareDataItems));
+        const accessOptions = getAccessOption(selection);
 
-          const externalAccessOptions = getExternalAccessOption(selection);
-          const filesOwner = shareDataItems.find((x) => x.isOwner);
-          const filesOwnerId = filesOwner ? filesOwner.sharedTo.id : null;
+        const externalAccessOptions = getExternalAccessOption(selection);
+        const filesOwner = shareDataItems.find((x) => x.isOwner);
+        const filesOwnerId = filesOwner ? filesOwner.sharedTo.id : null;
 
         const baseExternalAccess = isPersonal
           ? shareDataItems.find((x) => x.sharedTo.shareLink)?.access
@@ -380,10 +378,10 @@ class SharingPanelComponent extends React.Component {
         });
       })
 
-        .catch((err) => {
-          toastr.error(err);
-          this.onClose();
-        })
+      .catch((err) => {
+        toastr.error(err);
+        this.onClose();
+      })
       .finally(() =>
         this.setState({
           isLoading: false,
@@ -589,7 +587,7 @@ class SharingPanelComponent extends React.Component {
           <Button
             className="sharing_panel-button"
             label={t("Common:SaveButton")}
-            size="big"
+            size="normal36"
             primary
             onClick={this.onSaveClick}
             isDisabled={isLoading || !isUpdated}
@@ -722,7 +720,7 @@ class SharingPanelComponent extends React.Component {
               <Button
                 className="sharing_panel-button"
                 label={t("Common:SaveButton")}
-                size={isMobile ? "big" : "medium"}
+                size={isMobile ? "normal36" : "small"}
                 minwidth="100px"
                 primary
                 onClick={this.onSaveClick}

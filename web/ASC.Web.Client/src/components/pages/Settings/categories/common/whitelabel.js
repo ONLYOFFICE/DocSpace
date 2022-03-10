@@ -263,7 +263,7 @@ class WhiteLabel extends React.Component {
                 <Button
                   id="btnUseAsLogo"
                   className="margin-top"
-                  size="medium"
+                  size="small"
                   label={t("UseAsLogoButton")}
                   onClick={this.onUseTextAsLogo}
                   tabIndex={2}
@@ -441,7 +441,7 @@ class WhiteLabel extends React.Component {
               id="btnSaveGreetingSetting"
               className="margin-top"
               primary={true}
-              size="medium"
+              size="small"
               label={t("Common:SaveButton")}
               isLoading={false}
               isDisabled={false}
@@ -451,7 +451,7 @@ class WhiteLabel extends React.Component {
             <Button
               id="btnRestoreToDefault"
               className="margin-top margin-left"
-              size="medium"
+              size="small"
               label={t("RestoreDefaultButton")}
               isLoading={false}
               isDisabled={false}

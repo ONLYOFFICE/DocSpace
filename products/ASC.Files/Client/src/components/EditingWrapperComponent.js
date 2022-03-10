@@ -226,7 +226,7 @@ const EditingWrapperComponent = (props) => {
         <>
           <Button
             className="edit-button not-selectable"
-            size="medium"
+            size="small"
             isDisabled={isLoading}
             onClick={onClickUpdateItem}
             icon={okIcon}

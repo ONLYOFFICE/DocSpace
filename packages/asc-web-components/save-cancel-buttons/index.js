@@ -50,7 +50,7 @@ class SaveCancelButtons extends React.Component {
         <div>
           <Button
             className="save-button"
-            size="big"
+            size="normal36"
             isDisabled={false}
             primary
             onClick={onSaveClick}
@@ -58,7 +58,7 @@ class SaveCancelButtons extends React.Component {
           />
           <Button
             className="cancel-button"
-            size="big"
+            size="normal36"
             isDisabled={false}
             onClick={onCancelClick}
             label={cancelButtonLabel}

@@ -32,7 +32,7 @@ const Template = ({ onClick, onClose, onOk, ...args }) => {
       <Button
         label="Show"
         primary={true}
-        size="medium"
+        size="small"
         onClick={toggleVisible}
       />
       <ModalDialog
@@ -55,7 +55,7 @@ const Template = ({ onClick, onClose, onOk, ...args }) => {
             key="SendBtn"
             label="Send"
             primary={true}
-            size="medium"
+            size="small"
             onClick={(e) => {
               onOk(e);
               setIsVisible(!isVisible);

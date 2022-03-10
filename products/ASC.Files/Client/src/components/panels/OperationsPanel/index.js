@@ -92,7 +92,6 @@ const OperationsPanelComponent = (props) => {
     let fileIds = [];
     let folderIds = [];
 
-
     for (let item of items) {
       if (item.fileExst || item.contentLength) {
         fileIds.push(item.id);
@@ -179,7 +178,7 @@ const OperationsPanelComponent = (props) => {
               ? t("Translations:Copy")
               : t("Translations:Move")
           }
-          size="medium"
+          size="small"
           primary
           onClick={onSubmit}
           isLoading={isLoading}

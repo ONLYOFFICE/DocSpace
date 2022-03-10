@@ -103,7 +103,7 @@ const ForgotPasswordModalDialog = (props) => {
           label={
             isLoading ? t("Common:LoadingProcessing") : t("Common:SendButton")
           }
-          size="big"
+          size="normal36"
           scale={false}
           primary={true}
           onClick={onSendPasswordInstructions}

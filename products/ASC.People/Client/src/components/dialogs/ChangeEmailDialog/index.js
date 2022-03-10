@@ -164,7 +164,7 @@ class ChangeEmailDialogComponent extends React.Component {
           <Button
             key="SendBtn"
             label={t("Common:SendButton")}
-            size="medium"
+            size="small"
             primary={true}
             onClick={this.onValidateEmail}
             isLoading={isRequestRunning}

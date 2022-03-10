@@ -195,7 +195,7 @@ const VersionRow = (props) => {
                         isDisabled={isSavingComment}
                         className="version_save-button"
                         label={t("Common:SaveButton")}
-                        size="big"
+                        size="normal36"
                         primary
                         onClick={onSaveClick}
                       />
@@ -244,7 +244,7 @@ const VersionRow = (props) => {
             >
               <Button
                 isDisabled={isSavingComment}
-                size="base"
+                size="extraSmall"
                 scale={true}
                 primary
                 onClick={onSaveClick}
@@ -257,7 +257,7 @@ const VersionRow = (props) => {
             >
               <Button
                 isDisabled={isSavingComment}
-                size="base"
+                size="extraSmall"
                 scale={true}
                 onClick={onCancelClick}
                 label={t("Common:CancelButton")}

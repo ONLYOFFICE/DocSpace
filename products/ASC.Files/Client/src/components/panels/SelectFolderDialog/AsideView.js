@@ -90,13 +90,13 @@ const SelectFolderDialogAsideView = ({
                 <Button
                   className="select-folder-dialog-buttons-save"
                   primary
-                  size="big"
+                  size="normal36"
                   label={primaryButtonName}
                   onClick={onSave}
                   isDisabled={isLoadingData || !isAvailable || !canCreate}
                 />
                 <Button
-                  size="big"
+                  size="normal36"
                   label={t("Common:CancelButton")}
                   onClick={onClose}
                   isDisabled={isLoadingData || isLoading}

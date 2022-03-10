@@ -101,7 +101,7 @@ const PhoneForm = (props) => {
       />
       <Button
         primary
-        size="big"
+        size="normal36"
         tabIndex={3}
         label={isLoading ? t("Common:LoadingProcessing") : buttonTranslation}
         isDisabled={isLoading}

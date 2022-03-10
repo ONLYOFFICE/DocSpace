@@ -184,7 +184,7 @@ class InviteDialogComponent extends React.Component {
                   ? t("Common:LoadingProcessing")
                   : t("Common:CloseButton")
               }
-              size="medium"
+              size="small"
               primary={true}
               onClick={this.onClickToCloseButton}
               isLoading={this.state.isLoading}

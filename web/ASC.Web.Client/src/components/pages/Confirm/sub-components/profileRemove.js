@@ -85,7 +85,7 @@ class ProfileRemove extends React.PureComponent {
               <Button
                 className="confirm-row"
                 primary
-                size="big"
+                size="normal36"
                 label={t("DeleteProfileBtn")}
                 tabIndex={1}
                 isLoading={this.state.isLoading}

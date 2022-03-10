@@ -187,7 +187,7 @@ class ConsumerModalDialog extends React.Component {
           <Button
             className="modal-dialog-button"
             primary
-            size="big"
+            size="normal36"
             label={isLoading ? t("Common:Sending") : t("Common:Enable")}
             tabIndex={1}
             isLoading={isLoading}

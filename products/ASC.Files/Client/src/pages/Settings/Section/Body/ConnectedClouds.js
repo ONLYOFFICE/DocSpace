@@ -208,7 +208,7 @@ class ConnectClouds extends React.Component {
         {!!providers.length ? (
           <>
             <Button
-              size="base"
+              size="extraSmall"
               style={{ marginBottom: "8px" }}
               onClick={this.onShowThirdPartyDialog}
               label={t("ConnectedCloud")}

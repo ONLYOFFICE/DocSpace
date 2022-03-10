@@ -173,7 +173,7 @@ class Form extends React.PureComponent {
           id="button"
           className="password-button"
           primary
-          size="big"
+          size="normal36"
           tabIndex={2}
           label={
             isLoading ? t("Common:LoadingProcessing") : t("Common:OKButton")

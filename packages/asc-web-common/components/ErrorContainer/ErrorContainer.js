@@ -335,7 +335,7 @@ const ErrorContainer = (props) => {
         <div id="button-container">
           <Button
             id="button"
-            size="big"
+            size="normal36"
             scale
             primary
             label={buttonText}

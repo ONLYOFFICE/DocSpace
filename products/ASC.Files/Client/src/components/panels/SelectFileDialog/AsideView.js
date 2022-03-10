@@ -98,19 +98,19 @@ const SelectFileDialogAsideView = ({
                   </Text>
                 )}
                 <div className="select-file-dialog_aside_body-files_list">
-                {selectedFolder && !isLoadingData ? (
-                  <FilesListBody
-                    filesList={filesList}
-                    onSelectFile={onSelectFile}
-                    hasNextPage={hasNextPage}
-                    isNextPageLoading={isNextPageLoading}
-                    loadNextPage={loadNextPage}
-                    selectedFolder={selectedFolder}
-                    displayType={DISPLAY_TYPE}
-                    loadingText={loadingText}
-                    selectedFile={selectedFile}
-                  />
-                ) : isAvailableFolderList ? (
+                  {selectedFolder && !isLoadingData ? (
+                    <FilesListBody
+                      filesList={filesList}
+                      onSelectFile={onSelectFile}
+                      hasNextPage={hasNextPage}
+                      isNextPageLoading={isNextPageLoading}
+                      loadNextPage={loadNextPage}
+                      selectedFolder={selectedFolder}
+                      displayType={DISPLAY_TYPE}
+                      loadingText={loadingText}
+                      selectedFile={selectedFile}
+                    />
+                  ) : isAvailableFolderList ? (
                     <div key="loader" className="panel-loader-wrapper">
                       <Loaders.Rows
                         style={{
@@ -119,17 +119,17 @@ const SelectFileDialogAsideView = ({
                         }}
                         count={12}
                       />
-                  </div>
-                ) : (
-                  <div className="select-file-dialog_empty-container">
-                    <EmptyContainer
-                      headerText={t("Home:EmptyFolderHeader")}
-                      imageSrc="/static/images/empty_screen.png"
-                    />
-                  </div>
-                )}
+                    </div>
+                  ) : (
+                    <div className="select-file-dialog_empty-container">
+                      <EmptyContainer
+                        headerText={t("Home:EmptyFolderHeader")}
+                        imageSrc="/static/images/empty_screen.png"
+                      />
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
             </div>
           </StyledSelectFilePanel>
         </ModalDialog.Body>
@@ -139,13 +139,13 @@ const SelectFileDialogAsideView = ({
               <Button
                 className="select-file-dialog-buttons-save"
                 primary
-                size="big"
+                size="normal36"
                 label={primaryButtonName}
                 onClick={onClickSave}
                 isDisabled={selectedFile.length === 0}
               />
               <Button
-                size="big"
+                size="normal36"
                 label={t("Common:CancelButton")}
                 onClick={onClose}
               />

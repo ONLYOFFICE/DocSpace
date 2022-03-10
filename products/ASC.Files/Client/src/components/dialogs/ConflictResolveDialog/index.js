@@ -194,7 +194,7 @@ const ConflictResolveDialog = (props) => {
           className="button-dialog-accept"
           key="OkButton"
           label={t("Common:OKButton")}
-          size="medium"
+          size="small"
           primary
           scale
           onClick={onAcceptType}
@@ -204,7 +204,7 @@ const ConflictResolveDialog = (props) => {
           className="button-dialog"
           key="CancelButton"
           label={t("Common:CancelButton")}
-          size="medium"
+          size="small"
           scale
           onClick={onCloseDialog}
           //isLoading={isLoading}
