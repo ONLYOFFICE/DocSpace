@@ -23,6 +23,7 @@
   "CompanyNameForCanvasLogo": "Company name",
   "ConfirmEmailSended": "Confirmation e-mail has been sent to {{ownerName}}",
   "Customization": "Customization",
+  "CustomizationDescription": "This subsection allows you to change the look and feel of your portal. You can use your own company logo, name and text to match your organization brand.",
   "CustomTitles": "Custom titles",
   "CustomTitlesFrom": "From",
   "CustomTitlesSettingsDescription": "Welcome Page Settings is a way to change the default portal title to be displayed on the Welcome Page of your portal. The same name is also used for the From field of your portal email notifications.",
