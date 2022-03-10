@@ -13,7 +13,6 @@
   "CopyItem": "<strong>{{title}}</strong> 복사 완료",
   "CopyItems": "<strong>{{qty}}</strong> 요소 복사 완료",
   "Document": "문서",
-  "Duplicate": "복사본 생성",
   "EmptyFile": "빈 파일",
   "EmptyFilterDescriptionText": "이 필터에 해당하는 파일이나 폴더가 없습니다. 다르게 시도하거나 필터를 삭제하여 모든 파일을 확인하세요.",
   "EmptyFilterSubheadingText": "이 필터에 대해 표시할 파일이 없습니다",
