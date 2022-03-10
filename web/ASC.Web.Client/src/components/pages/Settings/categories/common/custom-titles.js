@@ -207,7 +207,7 @@ class CustomTitles extends React.Component {
             <FieldContainer
               id="fieldContainerWelcomePage"
               className="field-container-width"
-              labelText={`${t("Title")}:`}
+              labelText={t("Common:Title")}
               isVertical={true}
             >
               <TextInput
