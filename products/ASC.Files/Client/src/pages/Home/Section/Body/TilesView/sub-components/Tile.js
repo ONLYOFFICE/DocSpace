@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import { ReactSVG } from "react-svg";
 import styled, { css } from "styled-components";
-import ContextMenu from "@appserver/components/new-context-menu";
+import ContextMenu from "@appserver/components/context-menu";
 import { tablet } from "@appserver/components/utils/device";
 import { isDesktop } from "react-device-detect";
 
@@ -334,6 +334,7 @@ class Tile extends React.PureComponent {
       isEdit,
       contentElement,
       title,
+      getContextModel,
     } = this.props;
     const { isFolder, id, fileExst } = item;
 
@@ -348,7 +349,7 @@ class Tile extends React.PureComponent {
     );
 
     const renderContext =
-      Object.prototype.hasOwnProperty.call(this.props, "contextOptions") &&
+      Object.prototype.hasOwnProperty.call(item, "contextOptions") &&
       contextOptions.length > 0;
 
     const getOptions = () => {
@@ -434,7 +435,7 @@ class Tile extends React.PureComponent {
                 <div className="expandButton" />
               )}
               <ContextMenu
-                model={contextOptions}
+                getContextModel={getContextModel}
                 ref={this.cm}
                 header={contextMenuHeader}
               />
@@ -499,7 +500,7 @@ class Tile extends React.PureComponent {
                   <div className="expandButton" />
                 )}
                 <ContextMenu
-                  model={contextOptions}
+                  getContextModel={getContextModel}
                   ref={this.cm}
                   header={contextMenuHeader}
                   withBackdrop={true}
@@ -536,6 +537,7 @@ Tile.propTypes = {
 
 Tile.defaultProps = {
   contextButtonSpacerWidth: "32px",
+  item: {},
 };
 
 export default Tile;

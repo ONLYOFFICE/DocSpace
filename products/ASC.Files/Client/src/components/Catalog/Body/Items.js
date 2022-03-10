@@ -150,7 +150,7 @@ const Items = ({
   };
 
   const onMoveTo = (destFolderId, title) => {
-    moveDragItems(destFolderId, title, {
+    moveDragItems(destFolderId, title, null, {
       copy: t("Translations:CopyOperation"),
       move: t("Translations:MoveToOperation"),
     });

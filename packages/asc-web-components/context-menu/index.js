@@ -25,6 +25,7 @@ class ContextMenu extends Component {
       visible: false,
       reshow: false,
       resetMenu: false,
+      model: null,
       changeView: false,
     };
 
@@ -44,6 +45,11 @@ class ContextMenu extends Component {
   };
 
   show = (e) => {
+    if (this.props.getContextModel) {
+      const model = this.props.getContextModel();
+      this.setState({ model });
+    }
+
     e.stopPropagation();
     e.preventDefault();
 
@@ -320,7 +326,11 @@ class ContextMenu extends Component {
                 </div>
               )}
               <SubMenu
-                model={this.props.model}
+                model={
+                  this.props.getContextModel
+                    ? this.state.model
+                    : this.props.model
+                }
                 root
                 resetMenu={this.state.resetMenu}
                 onLeafClick={this.onLeafClick}
@@ -376,11 +386,11 @@ ContextMenu.propTypes = {
   containerRef: PropTypes.any,
   /** Scale with by container component*/
   scaled: PropTypes.bool,
+  getContextModel: PropTypes.func,
 };
 
 ContextMenu.defaultProps = {
   id: null,
-  model: null,
   style: null,
   className: null,
   global: false,

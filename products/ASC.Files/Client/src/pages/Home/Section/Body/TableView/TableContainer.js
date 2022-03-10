@@ -6,6 +6,7 @@ import TableHeader from "./TableHeader";
 import TableBody from "@appserver/components/table-container/TableBody";
 import { isMobile } from "react-device-detect";
 import styled, { css } from "styled-components";
+import { Base } from "@appserver/components/themes";
 
 const borderColor = "#ECEEF1";
 const colorBorderTransition = "#f3f4f4";
@@ -20,10 +21,16 @@ const StyledTableContainer = styled(TableContainer)`
         border-top: 1px solid;
       }
       .table-container_file-name-cell {
-        border-image-source: ${`linear-gradient(to right, ${colorBorderTransition} 17px, ${borderColor} 31px)`};
+        border-image-source: ${`linear-gradient(to right, ${(props) =>
+          props.theme.filesSection.tableView.row
+            .borderColorTransition} 17px, ${(props) =>
+          props.theme.filesSection.tableView.row.borderColor} 31px)`};
       }
       .table-container_row-context-menu-wrapper {
-        border-image-source: ${`linear-gradient(to left, ${colorBorderTransition} 17px, ${borderColor} 31px)`};
+        border-image-source: ${`linear-gradient(to left, ${(props) =>
+          props.theme.filesSection.tableView.row
+            .borderColorTransition} 17px, ${(props) =>
+          props.theme.filesSection.tableView.row.borderColor} 31px)`};
       }
     }
   }
@@ -33,18 +40,21 @@ const StyledTableContainer = styled(TableContainer)`
       .table-container_file-name-cell,
       .table-container_row-context-menu-wrapper {
         margin-top: -1px;
-        border-top: ${`1px ${borderColor} solid`};
+        border-top: ${`1px ${(props) =>
+          props.theme.filesSection.tableView.row.borderColor} solid`};
       }
     }
   }
 `;
+
+StyledTableContainer.defaultProps = { theme: Base };
 
 const Table = ({
   filesList,
   sectionWidth,
   viewAs,
   setViewAs,
-  setFirsElemChecked, 
+  setFirsElemChecked,
   theme,
 }) => {
   const ref = useRef(null);

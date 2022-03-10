@@ -79,6 +79,11 @@ class CatalogMainButtonContent extends React.Component {
 
     const { dialogVisible } = this.state;
 
+    const separator = {
+      key: "separator",
+      isSeparator: true,
+    };
+
     const menuModel = [
       {
         key: "create-user",
@@ -110,10 +115,9 @@ class CatalogMainButtonContent extends React.Component {
         label: groupCaption,
         onClick: this.goToGroupCreate,
       },
-      {
-        key: "separator",
-        isSeparator: true,
-      },
+    ];
+
+    const links = [
       {
         key: "invite-link",
         icon: combineUrl(
@@ -131,6 +135,7 @@ class CatalogMainButtonContent extends React.Component {
         label: t("SendInvitesAgain"),
         onClick: this.onNotImplementedClick.bind(this, t("SendInvitesAgain")),
       },
+      separator,
       {
         icon: combineUrl(
           AppServerConfig.proxyURL,
@@ -144,13 +149,18 @@ class CatalogMainButtonContent extends React.Component {
     return isAdmin ? (
       <>
         {isMobile || isMobileUtils() || isTabletUtils() ? (
-          <MobileView actionOptions={menuModel} sectionWidth={sectionWidth} />
+          <MobileView
+            labelProps={t("OtherOperations")}
+            actionOptions={menuModel}
+            buttonOptions={links}
+            sectionWidth={sectionWidth}
+          />
         ) : (
           <MainButton
             isDisabled={false}
             isDropdown={true}
             text={t("Common:Actions")}
-            model={menuModel}
+            model={[...menuModel, separator, ...links]}
             className="main-button_invitation-link"
           />
         )}

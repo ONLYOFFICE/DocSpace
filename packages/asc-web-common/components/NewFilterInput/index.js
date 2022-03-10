@@ -14,6 +14,7 @@ import SortButton from "./sub-components/SortButton";
 import { StyledFilterInput, StyledSearchInput } from "./StyledFilterInput";
 
 const FilterInput = ({
+  t,
   sectionWidth,
   getFilterData,
   getSortData,
@@ -66,6 +67,7 @@ const FilterInput = ({
       />
 
       <FilterButton
+        t={t}
         selectedFilterData={selectedFilterData}
         contextMenuHeader={contextMenuHeader}
         getFilterData={getFilterData}
@@ -88,6 +90,7 @@ const FilterInput = ({
         <>
           {(isMobile || isTabletUtils() || isMobileUtils()) && (
             <SortButton
+              t={t}
               selectedFilterData={selectedFilterData}
               getSortData={getSortData}
               onChangeViewAs={onChangeViewAs}

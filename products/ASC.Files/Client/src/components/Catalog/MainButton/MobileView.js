@@ -26,6 +26,7 @@ const StyledMainButtonMobile = styled(MainButtonMobile)`
 `;
 
 const MobileView = ({
+  titleProp,
   actionOptions,
   buttonOptions,
   sectionWidth,
@@ -153,7 +154,7 @@ const MobileView = ({
       buttonOptions={buttonOptions}
       percent={percentProgress}
       progressOptions={progressOptions}
-      title="Upload"
+      title={titleProp}
       withButton={true}
     />
   );

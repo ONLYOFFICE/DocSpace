@@ -1093,7 +1093,7 @@ const Base = {
 
     slider: {
       width: "100%",
-      margin: "8px 0",
+      margin: "24px 0",
       backgroundColor: "transparent",
 
       runnableTrack: {
@@ -2052,6 +2052,9 @@ const Base = {
       selectedViewIcon: "#dfe2e3",
       viewIcon: "#a3a9ae",
       sortFill: "#657077",
+
+      tileSortFill: black,
+      tileSortColor: black,
     },
   },
 
@@ -2143,6 +2146,13 @@ const Base = {
         borderHover: gray,
         sideColor: gray,
         shareHoverColor: "#3b72a7",
+
+        borderImageRight:
+          "linear-gradient(to right, #ffffff 17px,#eceef1 31px)",
+        borderImageLeft: "linear-gradient(to left, #ffffff 17px,#eceef1 31px)",
+
+        borderColor: "#ECEEf1",
+        borderColorTransition: "#f3f4f4",
       },
     },
 

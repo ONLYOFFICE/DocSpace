@@ -20,7 +20,7 @@ const CatalogBodyContent = ({
   selectedKeys,
   groups,
   setFirstLoad,
-  toggleShowText,
+  toggleCatalogOpen,
   showText,
   groupsCaption,
   history,
@@ -58,7 +58,7 @@ const CatalogBodyContent = ({
 
     if (window.location.pathname.indexOf("/people/filter") > 0) {
       selectGroup(groupId);
-      if (isMobileOnly || isMobile()) toggleShowText();
+      if (isMobileOnly || isMobile()) toggleCatalogOpen();
     } else {
       setFirstLoad(true);
       const newFilter = isRoot ? Filter.getDefault() : filter.clone();
@@ -72,7 +72,7 @@ const CatalogBodyContent = ({
         `/filter?${urlFilter}`
       );
       history.push(url);
-      if (isMobileOnly || isMobile()) toggleShowText();
+      if (isMobileOnly || isMobile()) toggleCatalogOpen();
     }
   };
 
@@ -120,7 +120,7 @@ const BodyContent = withTranslation("Article")(
 
 export default inject(({ auth, peopleStore }) => {
   const { settingsStore, setDocumentTitle, isAdmin } = auth;
-  const { customNames, showText, toggleShowText } = settingsStore;
+  const { customNames, showText, toggleCatalogOpen } = settingsStore;
   const {
     groupsStore,
     selectedGroupStore,
@@ -152,6 +152,6 @@ export default inject(({ auth, peopleStore }) => {
     filter,
     setFirstLoad,
     showText,
-    toggleShowText,
+    toggleCatalogOpen,
   };
 })(observer(BodyContent));

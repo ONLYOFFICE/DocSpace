@@ -131,11 +131,14 @@ const StyledTileContainer = styled.div`
           font-size: 12px;
           font-weight: 600;
 
+          color: ${(props) => props.theme.newFilterInput.sort.tileSortColor};
+
           .sort-icon {
             margin-right: 8px;
             svg {
               path {
-                fill: #333333;
+                fill: ${(props) =>
+                  props.theme.newFilterInput.sort.tileSortFill};
               }
             }
           }

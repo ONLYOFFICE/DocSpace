@@ -2054,6 +2054,9 @@ const Dark = {
       selectedViewIcon: "rgba(255, 255, 255, 0.88)",
       viewIcon: "#858585",
       sortFill: "rgba(255, 255, 255, 0.6)",
+
+      tileSortFill: "#eeeeee",
+      tileSortColor: "#eeeeee",
     },
   },
 
@@ -2094,7 +2097,7 @@ const Dark = {
       activeIconColor: "#858585",
       hoverIconColor: grayMaxLight,
 
-      borderImageSource: "linear-gradient(0deg, #474747, #474747)",
+      borderImageSource: `linear-gradient(to right,${black} 24px,#474747 24px,#474747 calc(100% - 24px),${black} calc(100% - 24px))`,
     },
 
     tableCell: {
@@ -2151,6 +2154,13 @@ const Dark = {
         sideColor: gray,
 
         shareHoverColor: "#eeeeee",
+
+        borderImageRight:
+          "linear-gradient(to right, #333333 17px, #474747 31px)",
+        borderImageLeft: "linear-gradient(to left, #333333 17px, #474747 31px)",
+
+        borderColor: "#858585",
+        borderColorTransition: "#474747",
       },
     },
 

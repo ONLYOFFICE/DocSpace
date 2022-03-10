@@ -42,7 +42,7 @@ const StyledTableContainer = styled.div`
     border-top: 0;
   }
   .lengthen-header {
-    border-bottom: 1px solid #eceef1;
+    border-bottom: ${(props) => props.theme.tableContainer.header.borderBottom};
     border-image-source: none;
   }
 

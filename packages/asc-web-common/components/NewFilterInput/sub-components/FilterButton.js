@@ -25,6 +25,7 @@ const Indicator = styled.div`
 Indicator.defaultProps = { theme: Base };
 
 const FilterButton = ({
+  t,
   selectedFilterData,
   contextMenuHeader,
   getFilterData,
@@ -49,6 +50,7 @@ const FilterButton = ({
 
       {showFilterBlock && (
         <FilterBlock
+          t={t}
           contextMenuHeader={contextMenuHeader}
           selectedFilterData={selectedFilterData}
           hideFilterBlock={changeShowFilterBlock}

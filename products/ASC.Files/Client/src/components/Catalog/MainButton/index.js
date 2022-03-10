@@ -83,6 +83,10 @@ class CatalogMainButtonContent extends React.Component {
       firstLoad,
       isPrivacy,
       sectionWidth,
+      isFavoritesFolder,
+      isRecentFolder,
+      isCommonFolder,
+      isRecycleBinFolder,
     } = this.props;
     const folderUpload = !isMobile
       ? [
@@ -97,49 +101,50 @@ class CatalogMainButtonContent extends React.Component {
         ]
       : [];
 
-    const formActions = !isMobile
-      ? [
-          {
-            className: "main-button_drop-down",
-            icon: "images/form.react.svg",
-            label: t("Translations:NewForm"),
-            key: "new-form",
-            items: [
-              {
-                className: "main-button_drop-down_sub",
-                label: t("Translations:SubNewForm"),
-                onClick: this.onCreate,
-                action: "docxf",
-                key: "docxf",
-              },
-              {
-                className: "main-button_drop-down_sub",
-                label: t("Translations:SubNewFormFile"),
-                onClick: this.onShowSelectFileDialog,
-                disabled: isPrivacy,
-                key: "form-file",
-              },
-            ],
-          },
-        ]
-      : [
-          {
-            className: "main-button_drop-down_sub",
-            icon: "images/form.react.svg",
-            label: t("Translations:NewForm"),
-            onClick: this.onCreate,
-            action: "docxf",
-            key: "docxf",
-          },
-          {
-            className: "main-button_drop-down_sub",
-            icon: "images/form.file.react.svg",
-            label: t("Translations:NewFormFile"),
-            onClick: this.onShowSelectFileDialog,
-            disabled: isPrivacy,
-            key: "form-file",
-          },
-        ];
+    const formActions =
+      !isMobile && !isTabletUtils()
+        ? [
+            {
+              className: "main-button_drop-down",
+              icon: "images/form.react.svg",
+              label: t("Translations:NewForm"),
+              key: "new-form",
+              items: [
+                {
+                  className: "main-button_drop-down_sub",
+                  label: t("Translations:SubNewForm"),
+                  onClick: this.onCreate,
+                  action: "docxf",
+                  key: "docxf",
+                },
+                {
+                  className: "main-button_drop-down_sub",
+                  label: t("Translations:SubNewFormFile"),
+                  onClick: this.onShowSelectFileDialog,
+                  disabled: isPrivacy,
+                  key: "form-file",
+                },
+              ],
+            },
+          ]
+        : [
+            {
+              className: "main-button_drop-down_sub",
+              icon: "images/form.react.svg",
+              label: t("Translations:NewForm"),
+              onClick: this.onCreate,
+              action: "docxf",
+              key: "docxf",
+            },
+            {
+              className: "main-button_drop-down_sub",
+              icon: "images/form.file.react.svg",
+              label: t("Translations:NewFormFile"),
+              onClick: this.onShowSelectFileDialog,
+              disabled: isPrivacy,
+              key: "form-file",
+            },
+          ];
 
     const actions = [
       {
@@ -198,11 +203,19 @@ class CatalogMainButtonContent extends React.Component {
     return (
       <>
         {isMobile || isMobileUtils() || isTabletUtils() ? (
-          <MobileView
-            actionOptions={actions}
-            buttonOptions={uploadActions}
-            sectionWidth={sectionWidth}
-          />
+          <>
+            {!isFavoritesFolder &&
+              !isRecentFolder &&
+              !isCommonFolder &&
+              !isRecycleBinFolder && (
+                <MobileView
+                  titleProp={t("Upload")}
+                  actionOptions={actions}
+                  buttonOptions={uploadActions}
+                  sectionWidth={sectionWidth}
+                />
+              )}
+          </>
         ) : (
           <>
             <MainButton
@@ -247,13 +260,24 @@ CatalogMainButtonContent.propTypes = {
 export default inject(
   ({ auth, filesStore, dialogsStore, uploadDataStore, treeFoldersStore }) => {
     const { firstLoad, fileActionStore, filter, canCreate } = filesStore;
-    const { isPrivacyFolder } = treeFoldersStore;
+    const {
+      isPrivacyFolder,
+      isFavoritesFolder,
+      isRecentFolder,
+      isCommonFolder,
+      isRecycleBinFolder,
+    } = treeFoldersStore;
     const { startUpload } = uploadDataStore;
     const { setSelectFileDialogVisible } = dialogsStore;
+
     return {
       homepage: config.homepage,
       firstLoad,
       isPrivacy: isPrivacyFolder,
+      isFavoritesFolder,
+      isRecentFolder,
+      isCommonFolder,
+      isRecycleBinFolder,
       filter,
       canCreate,
 

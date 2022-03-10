@@ -252,6 +252,7 @@ const MainButtonMobile = (props) => {
           isMobile={isMobile || isTablet}
           heightProp={height}
           sectionWidth={sectionWidth}
+          isDefaultMode={false}
         >
           {isMobile || isTablet ? (
             <Scrollbar

@@ -17,9 +17,11 @@ import {
   StyledControlContainer,
   StyledCrossIcon,
 } from "./StyledFilterBlock";
+import { withTranslation } from "react-i18next";
 
 //TODO: fix translate
 const FilterBlock = ({
+  t,
   selectedFilterData,
   contextMenuHeader,
   getFilterData,
@@ -230,7 +232,7 @@ const FilterBlock = ({
             <Button
               size="large"
               primary={true}
-              label="Apply filters"
+              label={t("AddFilter")}
               scale={true}
               onClick={onFilterAction}
             />
@@ -251,4 +253,4 @@ const FilterBlock = ({
   );
 };
 
-export default React.memo(FilterBlock);
+export default React.memo(withTranslation("Common")(FilterBlock));

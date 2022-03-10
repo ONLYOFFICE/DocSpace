@@ -36,7 +36,7 @@ const CatalogBodyContent = (props) => {
   } = props;
   const onClick = React.useCallback((data) => {
     const {
-      toggleShowText,
+      toggleCatalogOpen,
       setIsLoading,
       setSelectedNode,
       fetchFiles,
@@ -51,7 +51,7 @@ const CatalogBodyContent = (props) => {
     if (window.location.pathname.indexOf("/filter") > 0) {
       fetchFiles(data, null, true, false)
         .then(() => {
-          (isMobileOnly || isMobile()) && toggleShowText();
+          (isMobileOnly || isMobile()) && toggleCatalogOpen();
         })
         .catch((err) => toastr.error(err))
         .finally(() => setIsLoading(false));
@@ -62,7 +62,7 @@ const CatalogBodyContent = (props) => {
       filter.folder = data;
 
       const urlFilter = filter.toUrlParams();
-      if (isMobileOnly || isMobile()) toggleShowText();
+      if (isMobileOnly || isMobile()) toggleCatalogOpen();
       history.push(
         combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
       );
@@ -107,7 +107,9 @@ export default inject(
 
     const {
       showText,
-      toggleShowText,
+      catalogOpen,
+
+      toggleCatalogOpen,
       personal,
       hideArticle,
       isDesktopClient,
@@ -121,9 +123,10 @@ export default inject(
       : setDocumentTitle();
 
     return {
+      toggleCatalogOpen,
       treeFolders,
       showText,
-      toggleShowText,
+      catalogOpen,
       enableThirdParty: settingsStore.enableThirdParty,
       isVisitor: auth.userStore.user.isVisitor,
       homepage: config.homepage,
