@@ -3,7 +3,7 @@ import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
 import { AppServerConfig } from "@appserver/common/constants";
 import { combineUrl } from "@appserver/common/utils";
-import { withTranslation } from "react-i18next";
+import { withTranslation, Trans } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import ArrowRightIcon from "../../../../../../../public/images/arrow.right.react.svg";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
@@ -111,9 +111,16 @@ class BackupMobileView extends React.Component {
               <StyledArrowRightIcon size="small" color="#333333" />
             </div>
 
-            <Text className="category-item-description">
-              {t("AutomaticBackupSettingsDescription")}
-            </Text>
+            <Trans
+              t={t}
+              i18nKey={"AutoBackupHelp"}
+              ns="Settings"
+              components={{ strong: <></> }}
+            >
+              {
+                "The <strong>Automatic backup</strong> option is used to automate the portal data backup process to be able to restore it later to a local server."
+              }
+            </Trans>
           </div>
         )}
 
@@ -132,12 +139,17 @@ class BackupMobileView extends React.Component {
             </Link>
             <StyledArrowRightIcon size="small" color="#333333" />
           </div>
-          <Text className="category-item-description">
-            {t("ManualBackupSettingsDescription")}
-          </Text>
-          <Text className="category-item-description">
-            {t("ManualBackupSettingsNoteDescription")}
-          </Text>
+
+          <Trans
+            t={t}
+            i18nKey={"ManualBackupHelp"}
+            ns="Settings"
+            components={{ strong: <></> }}
+          >
+            {
+              "<strong>Data Backup</strong> option is used to back up the portal data to be able to restore it later to your local server."
+            }
+          </Trans>
         </div>
 
         {enableRestore && (
@@ -156,9 +168,18 @@ class BackupMobileView extends React.Component {
               </Link>
               <StyledArrowRightIcon size="small" color="#333333" />
             </div>
-            <Text className="category-item-description">
-              {t("RestoreBackupSettingsDescription")}
-            </Text>
+
+            <Trans
+              t={t}
+              i18nKey={"RestoreBackupHelp"}
+              ns="Settings"
+              components={{ strong: <></> }}
+            >
+              {
+                "<strong>Data Restore</strong> option is used to restore your previously saved portal data (from a local server or SaaS portal)."
+              }
+            </Trans>
+
             <Box marginProp="16px 0 0 0">
               <Link
                 color="#316DAA"

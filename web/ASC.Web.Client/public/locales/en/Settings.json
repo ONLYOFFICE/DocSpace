@@ -81,15 +81,11 @@
   "YouHaveUnsavedChanges": "You have unsaved changes",
 
   "AutoBackup": "Automatic backup",
-  "AutomaticBackupSettingsDescription": "The Automatic backup option is used to automate the portal data backup process to be able to restore it later on a local server. Choose the data storage, automatic backup period and maximal number of saved copies.",
   "ManualBackup": "Manual backup",
-  "ManualBackupSettingsDescription": "Manual backup option is used to backup the portal data to be able to restore it later to your local server.",
-  "ManualBackupSettingsNoteDescription": "The license data will not be included into the backup. After restoring data from the backup, you will need to upload your license file again.",
   "TemporaryStorage": "Temporary storage",
   "MakeCopy": "Make copy",
   "DownloadCopy": "Download the copy",
   "RestoreBackup": "Data Restore",
-  "RestoreBackupSettingsDescription": "Data Restore option is used to restore your previously saved portal data (from a local server or SaaS portal). Select the storage where the data is saved, enter necessary details and check the Send notification to portal users to alert your portal users about the backup/restore operations.",
   "DocumentsModule": "Documents module",
   "ThirdPartyResource": "Third-party resource",
   "ThirdPartyStorage": "Third-party storage",
@@ -117,7 +113,10 @@
   "Path": "Path",
   "AutoBackupDescription": "Use this option for automatic backup of the portal data.",
   "ManualBackupDescription": "Use this option if you want to get all data contained on the portal as a file.",
-  "ManualBackupHelp": "<strong>Data Backup</strong> option is used to back up the portal data to be able to restore it later to your local server. Select the storage for the data (do not forget to enter your third-party storage details to be able to access it).<br/><strong>Note:</strong> you need to connect your third-party account (DropBox, Box.com, OneDrive or Google Drive) to ONLYOFFICE Common folder before you will be able to save your backup there.",
-  "AutoBackupHelp": "The <strong>Automatic backup</strong> option is used to automate the portal data backup process to be able to restore it later to a local server.<br/>Choose the data storage, automatic backup period and maximal number of saved copies.<br/><strong>Note:</strong> before you can save the backup data to a third-party account (DropBox, Box.com, OneDrive or Google Drive), you will need to connect this account to ONLYOFFICE Common folder.",
-  "RestoreBackupHelp": "<strong>Data Restore</strong> option is used to restore your previously saved portal data (from a local server or SaaS portal). Select the storage where the data is saved, enter necessary details and check the <strong>Send notification to portal users</strong> to alert your portal users about the backup/restore operations."
+  "ManualBackupHelp": "<strong>Data Backup</strong> option is used to back up the portal data to be able to restore it later to your local server. ",
+  "ManualBackupHelpNote": "Select the storage for the data (do not forget to enter your third-party storage details to be able to access it).<br/><strong>Note:</strong> you need to connect your third-party account (DropBox, Box.com, OneDrive or Google Drive) to ONLYOFFICE Common folder before you will be able to save your backup there.",
+  "AutoBackupHelp": "The <strong>Automatic backup</strong> option is used to automate the portal data backup process to be able to restore it later to a local server.",
+  "AutoBackupHelpNote": "Choose the data storage, automatic backup period and maximal number of saved copies.<br/><strong>Note:</strong> before you can save the backup data to a third-party account (DropBox, Box.com, OneDrive or Google Drive), you will need to connect this account to ONLYOFFICE Common folder.",
+  "RestoreBackupHelp": "<strong>Data Restore</strong> option is used to restore your previously saved portal data (from a local server or SaaS portal). ",
+  "RestoreBackupHelpNote": "Select the storage where the data is saved, enter necessary details and check the <strong>Send notification to portal users</strong> to alert your portal users about the backup/restore operations."
 }

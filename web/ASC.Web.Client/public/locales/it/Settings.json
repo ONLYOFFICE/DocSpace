@@ -84,9 +84,5 @@
   "ThirdPartyStorage": "Archiviazione di terze parti",
   "AutoBackupDescription": "Usa questa opzione per un backup automatico dei dati del portale.",
   "RestoreBackupDescription": "Utilizza questa opzione per ripristinare il portale dal file di backup precedentemente salvato.",
-  "ManualBackupDescription": "Usa questa opzione se desideri ottenere tutti i dati contenuti nel portale come file.",
-  "ManualBackupHelp": "<strong>Backup dei dati</strong> si usa per creare una copia di backup dei dati del portale per poter ripristinarla in seguito sul server locale. Seleziona la risorsa di archiviazione per i dati (non dimenticare di inserire i tuoi dati di Amazon per accedere).<br/><strong>Nota:</strong> prima di poter salvare la copia di backup creata su un account esterno (Dropbox, Box.com, OneDrive o Google Drive) hai bisogno di collegarlo ai Documenti ONLYOFFICE®.",
-  "AutoBackupHelp": "L'opzione <strong>Backup automatico</strong> si usa per automatizzare il processo di creazione del copia di backup del portale per poter restituirlo in seguito su un server locale. Seleziona il posto di memorizzazione dei dati, il periodo di backup automatico ed il numero massimo di copie salvate.<br/><strong>Nota:</strong> per poter salvare i dati di backup su un account di terzi (Dropbox, Box.com, OneDrive o Google Drive), hai bisogno di collegare questo account alla cartella dei Documenti Comuni ONLYOFFICE®.",
-  "RestoreBackupHelp": "<strong>Ripristino dati</strong> si usa per ripristinare i dati del portale salvati prima (da un server locale o portale SaaS). Seleziona la risorsa di archiviazione con i dati salvati, inserisci i dati adatti e spunta <strong>Invia notifica agli utenti del portale</strong> per informare gli utenti del tuo portale delle operazioni di backup/ripristino.",
-  "RestoreBackupWarningText": "Il portale non sarà disponibile durante il processo di ripristino. Dopo il ripristino tutte le modifiche effettuate dopo la data del punto di ripristino scelto andranno persi."
+  "ManualBackupDescription": "Usa questa opzione se desideri ottenere tutti i dati contenuti nel portale come file."
 }

@@ -146,7 +146,9 @@ class BackupDesktopView extends React.Component {
         <div className="backup_modules-separation">
           <div className="backup_modules-header_wrapper">
             <Text className="backup_modules-header">{t("ManualBackup")}</Text>
-            {renderTooltip(t("ManualBackupHelp"))}
+            {renderTooltip(
+              t("ManualBackupHelp") + " " + t("ManualBackupHelpNote")
+            )}
           </div>
           <Text className="backup_modules-description">
             {t("ManualBackupDescription")}
@@ -159,7 +161,9 @@ class BackupDesktopView extends React.Component {
           <div className="backup_modules-separation">
             <div className="backup_modules-header_wrapper">
               <Text className="backup_modules-header">{t("AutoBackup")}</Text>
-              {renderTooltip(t("AutoBackupHelp"))}
+              {renderTooltip(
+                t("AutoBackupHelp") + " " + t("AutoBackupHelpNote")
+              )}
             </div>
             <Text className="backup_modules-description">
               {t("AutoBackupDescription")}
@@ -175,7 +179,9 @@ class BackupDesktopView extends React.Component {
               <Text className="backup_modules-header">
                 {t("RestoreBackup")}
               </Text>
-              {renderTooltip(t("RestoreBackupHelp"))}
+              {renderTooltip(
+                t("RestoreBackupHelp") + " " + t("RestoreBackupHelpNote")
+              )}
             </div>
             <RestoreBackup history={history} />
           </>

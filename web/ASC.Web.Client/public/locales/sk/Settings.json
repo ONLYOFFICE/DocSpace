@@ -83,8 +83,5 @@
   "AutoBackup": "Automatická záloha",
   "AutoBackupDescription": "Túto možnosť použite na automatické zálohovanie údajov portálu.",
   "RestoreBackupDescription": "Túto možnosť použite na obnovenie Vášho portálu z predtým uloženého záložného súboru.",
-  "ManualBackupDescription": "Túto možnosť použite, ak chcete získať všetky údaje obsiahnuté na portáli ako súbor.",
-  "ManualBackupHelp": "Možnosť <strong>Zálohovanie dát</strong> sa používa na zálohovanie údajov portálu, aby ho bolo možné neskôr obnoviť na lokálny server. Vyberte miesto ukladania údajov (nezabudnite zadať podrobnosti služby Amazon, aby ste k ním mali prístup).<br/><strong>Poznámka:</strong> skôr ako budete môcť ukladať svoje zálohy, potrebujete prepojiť účet tretej strany (DropBox, Box.com, OneDrive alebo Google Drive) do priečinka ONLYOFFICE Všeobecné Dokumenty.",
-  "AutoBackupHelp": "Možnosť <strong>Automatické zálohovanie</strong> sa používa na automatizáciu procesu zálohovania dát v portáli, aby bolo možné ho neskôr obnoviť na lokálnom serveri. Vyberte si miesto uloženia dát, časový interval zálohovania a maximálny počet uložených kópií.<br/><strong>Upozornenie:</strong> skôr ako môžete uložiť zálohované údaje na účet tretích strán (DropBox, Box.com, OneDrive alebo Google Drive), budete musieť tento účet pripojiť k priečinku ONLYOFFICE Všeobecné dokumenty.",
-  "RestoreBackupHelp": "Možnosť <strong>Obnovenie údajov</strong> sa používa na obnovenie vašich predtým uložených údajov portálu (z lokálneho servera alebo portálu SaaS). Vyberte miesto, kde sú vaše údaje uložené, zadajte nevyhnutné podrobnosti a skontrolujte<strong>Odošlite upozornenie používateľom portálu</strong>, aby ste používateľov portálu upozornili na vykonanie zálohovania/obnovenia."
+  "ManualBackupDescription": "Túto možnosť použite, ak chcete získať všetky údaje obsiahnuté na portáli ako súbor."
 }

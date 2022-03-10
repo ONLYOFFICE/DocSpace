@@ -78,8 +78,5 @@
   "UseAsLogoButton": "Uporabi kot logo",
   "Users": "Uporabniki",
   "WelcomePageTitle": "Naslov pozdravne strani",
-  "YouHaveUnsavedChanges": "Imate neshranjene spremembe",
-
-  "ManualBackupHelp": "<strong>Varnostno kopiranje podatkov</strong> možnost je uporabljena za kasnejšnje obnavljanje podatkov na lokalni strežnik. Izberite shrambo podatkov (ne pozabite vnesti svojih Amazon podatkov, ki bodo omogočali dostop).<br/><strong>Opomba:</strong> Svoj tuj račun morate povezati (Dropbox, Box.com, OneDrive ali Google Drive) z ONLYOFFICE dokumenti, preden boste tam lahko shranili svoje varnostno kopiranje.",
-  "RestoreBackupHelp": "<strong>Obnavljanje podatkov</strong> možnost je uporabljena za predhodno shranjene podatke portala (z lokalnega strežnika ali SaaS portala). Izberite prostor, kjer so podatki shranjeni, vnesite potrebne podatke in preverite <strong>Pošlji obvestilo uporabnikom portala</strong>da svoje uporabnike portala obvestite o obnavljanju operacij"
+  "YouHaveUnsavedChanges": "Imate neshranjene spremembe"
 }

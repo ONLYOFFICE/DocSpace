@@ -84,7 +84,10 @@
   "ThirdPartyStorage": "第三者ストレージ",
   "AutoBackupDescription": "自動的なポータルデータのバックアップをするためにこの操作を使用してください。",
   "RestoreBackupDescription": "バックアップ・ファイルからポータルを復するためにこの操作を使用してください。",
-  "ManualBackupHelp": "<strong>データ バックアップ</strong>  はポータルデータの写しを取って保管し、ローカルサーバに復元するのために使用される機能です。データのためのストレージを選択してください。（アクセスすることができるように、第三者サービスストレージ詳細も入力してください）。<br/><strong>ご注意してください：</strong>バックアップを保存する前に、第三者サービスのアカウント（DropBox、Box.com、OneDriveまたはGoogle Drive）をONLYOFFICE「共通文書」フォルダーに接続する必要です。",
-  "AutoBackupHelp": "<strong>自動バックアップ</strong>はポータルデータの写しを自動的に取って保管し、ローカルサーバに復元するのために使用される機能です。データのためのストレージ、自動バックアップ期間、保存されるコピーの最大数を選択してください。<br/>　<strong>ご注意してください：</strong>バックアップを保存する前に、第三者サービスのアカウント（DropBox、Box.com、OneDriveまたはGoogle Drive）をONLYOFFICE「共通文書」フォルダーに接続する必要です。",
-  "RestoreBackupHelp": "<strong>データリストア(Data Restore)</strong>は以前に取っておいたポータルデータ（Saasポータルあるいはローカルサーバデータ）の複製を書き戻すなどして復元する機能です。データは保存しているストレージを選択し、必要な詳細を入力し、<strong>ポータルユーザに通知を送信する</strong>というオプションにチェックを付け、ポータルユーザをバックアップ／リストア過程を知らせてください。"
+  "ManualBackupHelp": "<strong>データ バックアップ</strong>  はポータルデータの写しを取って保管し、ローカルサーバに復元するのために使用される機能です。",
+  "ManualBackupHelpNote": "データのためのストレージを選択してください。（アクセスすることができるように、第三者サービスストレージ詳細も入力してください）。<br/><strong>ご注意してください：</strong>バックアップを保存する前に、第三者サービスのアカウント（DropBox、Box.com、OneDriveまたはGoogle Drive）をONLYOFFICE「共通文書」フォルダーに接続する必要です。",
+  "AutoBackupHelp": "<strong>自動バックアップ</strong>はポータルデータの写しを自動的に取って保管し、ローカルサーバに復元するのために使用される機能です。",
+  "AutoBackupHelpNote": "データのためのストレージ、自動バックアップ期間、保存されるコピーの最大数を選択してください。<br/>　<strong>ご注意してください：</strong>バックアップを保存する前に、第三者サービスのアカウント（DropBox、Box.com、OneDriveまたはGoogle Drive）をONLYOFFICE「共通文書」フォルダーに接続する必要です。",
+  "RestoreBackupHelp": "<strong>データリストア(Data Restore)</strong>は以前に取っておいたポータルデータ（Saasポータルあるいはローカルサーバデータ）の複製を書き戻すなどして復元する機能です。",
+  "RestoreBackupHelpNote": "データは保存しているストレージを選択し、必要な詳細を入力し、<strong>ポータルユーザに通知を送信する</strong>というオプションにチェックを付け、ポータルユーザをバックアップ／リストア過程を知らせてください。"
 }
