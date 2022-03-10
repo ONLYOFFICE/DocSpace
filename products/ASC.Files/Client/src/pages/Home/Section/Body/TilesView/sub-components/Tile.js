@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import { ReactSVG } from "react-svg";
 import styled, { css } from "styled-components";
-import ContextMenu from "@appserver/components/new-context-menu";
+import ContextMenu from "@appserver/components/context-menu";
 import { tablet } from "@appserver/components/utils/device";
 import { isDesktop } from "react-device-detect";
 
@@ -334,11 +334,9 @@ class Tile extends React.PureComponent {
       isEdit,
       contentElement,
       title,
-      getModel,
-      t,
+      getContextModel,
     } = this.props;
     const { isFolder, id, fileExst } = item;
-    const contextMenuData = { getModel, t, item };
 
     const renderElement = Object.prototype.hasOwnProperty.call(
       this.props,
@@ -437,7 +435,7 @@ class Tile extends React.PureComponent {
                 <div className="expandButton" />
               )}
               <ContextMenu
-                contextMenuData={contextMenuData}
+                getContextModel={getContextModel}
                 ref={this.cm}
                 header={contextMenuHeader}
               />
@@ -502,7 +500,7 @@ class Tile extends React.PureComponent {
                   <div className="expandButton" />
                 )}
                 <ContextMenu
-                  contextMenuData={contextMenuData}
+                  getContextModel={getContextModel}
                   ref={this.cm}
                   header={contextMenuHeader}
                   withBackdrop={true}

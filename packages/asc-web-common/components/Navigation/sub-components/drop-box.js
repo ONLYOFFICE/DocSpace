@@ -131,6 +131,7 @@ const DropBox = React.forwardRef(
           <ControlButtons
             personal={personal}
             isRootFolder={isRootFolder}
+            isDropBox={true}
             canCreate={canCreate}
             getContextOptionsFolder={getContextOptionsFolder}
             getContextOptionsPlus={getContextOptionsPlus}

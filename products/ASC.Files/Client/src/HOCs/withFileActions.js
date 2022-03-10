@@ -217,6 +217,8 @@ export default function withFileActions(WrappedFileItem) {
       }
     };
 
+    getContextModel = () => this.props.getModel(this.props.item, this.props.t);
+
     render() {
       const {
         item,
@@ -288,6 +290,7 @@ export default function withFileActions(WrappedFileItem) {
           checkedProps={checkedProps}
           dragging={dragging}
           isEdit={isEdit}
+          getContextModel={this.getContextModel}
           {...this.props}
         />
       );

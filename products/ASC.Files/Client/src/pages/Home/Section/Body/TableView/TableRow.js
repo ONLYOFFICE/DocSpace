@@ -246,11 +246,9 @@ const FilesTableRow = (props) => {
     setFirsElemChecked,
     theme,
     quickButtonsComponent,
-    getModel,
+    getContextModel,
   } = props;
   const { acceptBackground, background } = theme.dragAndDrop;
-
-  const contextMenuData = { getModel, t, item };
 
   const element = (
     <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
@@ -321,7 +319,7 @@ const FilesTableRow = (props) => {
         onDoubleClick={onFilesClick}
         checked={checkedProps}
         contextOptions={item.contextOptions}
-        contextMenuData={contextMenuData}
+        getContextModel={getContextModel}
         title={
           item.isFolder
             ? t("Translations:TitleShowFolderActions")

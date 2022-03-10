@@ -172,8 +172,7 @@ const SimpleFilesRow = (props) => {
     isActive,
     inProgress,
     isAdmin,
-    getModel,
-    t,
+    getContextModel,
   } = props;
 
   const withAccess = isAdmin || item.access === 0;
@@ -182,8 +181,6 @@ const SimpleFilesRow = (props) => {
   const element = (
     <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
   );
-
-  const contextMenuData = { getModel, t, item };
 
   return (
     <StyledWrapper
@@ -220,7 +217,7 @@ const SimpleFilesRow = (props) => {
           isThirdPartyFolder={item.isThirdPartyFolder}
           className="files-row"
           withAccess={withAccess}
-          contextMenuData={contextMenuData}
+          getContextModel={getContextModel}
         >
           <FilesRowContent
             item={item}
