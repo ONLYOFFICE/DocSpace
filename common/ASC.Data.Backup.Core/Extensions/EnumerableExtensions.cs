@@ -50,14 +50,9 @@ public static class EnumerableExtensions
                                                                      Func<TEntry, TKey> keySelector,
                                                                      Func<TEntry, TKey> parentKeySelector)
     {
-        if (elements == null)
-                throw new ArgumentNullException(nameof(elements));
-
-        if (keySelector == null)
-                throw new ArgumentNullException(nameof(keySelector));
-
-        if (parentKeySelector == null)
-                throw new ArgumentNullException(nameof(parentKeySelector));
+        ArgumentNullException.ThrowIfNull(elements);
+        ArgumentNullException.ThrowIfNull(keySelector);
+        ArgumentNullException.ThrowIfNull(parentKeySelector);
 
         var dic = elements.ToDictionary(keySelector, x => new TreeNode<TEntry>(x));
 
@@ -76,17 +71,16 @@ public static class EnumerableExtensions
 
     public static IEnumerable<IEnumerable<TEntry>> MakeParts<TEntry>(this IEnumerable<TEntry> collection, int partLength)
     {
-        if (collection == null)
-                throw new ArgumentNullException(nameof(collection));
+        ArgumentNullException.ThrowIfNull(collection);
 
         if (partLength <= 0)
-                throw new ArgumentOutOfRangeException(nameof(partLength), partLength, "Length must be positive integer");
+            throw new ArgumentOutOfRangeException(nameof(partLength), partLength, "Length must be positive integer");
 
-            return MakePartsIterator(collection, partLength);
-        }
+        return MakePartsIterator(collection, partLength);
+    }
 
-        private static IEnumerable<IEnumerable<TEntry>> MakePartsIterator<TEntry>(this IEnumerable<TEntry> collection, int partLength)
-        {
+    private static IEnumerable<IEnumerable<TEntry>> MakePartsIterator<TEntry>(this IEnumerable<TEntry> collection, int partLength)
+    {
         var part = new List<TEntry>(partLength);
 
         foreach (var entry in collection)

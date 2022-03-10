@@ -23,32 +23,31 @@
  *
 */
 
-namespace ASC.VoipService
+namespace ASC.VoipService;
+
+public interface IVoipProvider
 {
-    public interface IVoipProvider
-    {
-        IEnumerable<VoipPhone> GetExistingPhoneNumbers();
+    IEnumerable<VoipPhone> GetExistingPhoneNumbers();
 
-        IEnumerable<VoipPhone> GetAvailablePhoneNumbers(PhoneNumberType phoneNumberType, string isoCountryCode);
+    IEnumerable<VoipPhone> GetAvailablePhoneNumbers(PhoneNumberType phoneNumberType, string isoCountryCode);
 
-        VoipPhone BuyNumber(string phoneNumber);
+    VoipPhone BuyNumber(string phoneNumber);
 
-        VoipPhone DeleteNumber(VoipPhone phone);
+    VoipPhone DeleteNumber(VoipPhone phone);
 
-        VoipPhone GetPhone(VoipNumber r);
+    VoipPhone GetPhone(VoipNumber r);
 
-        VoipPhone GetPhone(string id);
+    VoipPhone GetPhone(string id);
 
-        VoipCall GetCall(string callId);
+    VoipCall GetCall(string callId);
 
-        string GetToken(Agent agent, int seconds = 60 * 60 * 24);
+    string GetToken(Agent agent, int seconds = 60 * 60 * 24);
 
-        void UpdateSettings(VoipPhone phone);
+    void UpdateSettings(VoipPhone phone);
 
-        VoipRecord GetRecord(string callId, string recordId);
+    VoipRecord GetRecord(string callId, string recordId);
 
-        void CreateQueue(VoipPhone newPhone);
+    void CreateQueue(VoipPhone newPhone);
 
-        void DisablePhone(VoipPhone phone);
-    }
+    void DisablePhone(VoipPhone phone);
 }

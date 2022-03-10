@@ -384,10 +384,7 @@ namespace ASC.Web.Core
 
             public static WebItemSecurityObject Create(string id, WebItemManager webItemManager)
             {
-                if (string.IsNullOrEmpty(id))
-                {
-                    throw new ArgumentNullException(nameof(id));
-                }
+                ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(id);
 
                 var itemId = Guid.Empty;
                 if (32 <= id.Length)

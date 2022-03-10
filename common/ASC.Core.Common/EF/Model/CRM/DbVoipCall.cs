@@ -10,9 +10,9 @@ public class DbVoipCall
     public Guid AnsweredBy { get; set; }
     public DateTime DialDate { get; set; }
     public int DialDuration { get; set; }
-    public string RecordSid { get; set; }
-    public string RecordUrl { get; set; }
-    public int RecordDuration { get; set; }
+    public string Sid { get; set; }
+    public string Uri { get; set; }
+    public int Duration { get; set; }
     public decimal RecordPrice { get; set; }
     public int ContactId { get; set; }
     public decimal Price { get; set; }
@@ -30,6 +30,7 @@ public static class DbVoipCallExtension
 
         return modelBuilder;
     }
+
     public static void MySqlAddDbVoipCall(this ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<DbVoipCall>(entity =>
@@ -89,19 +90,19 @@ public static class DbVoipCallExtension
                 .HasColumnName("price")
                 .HasColumnType("decimal(10,4)");
 
-            entity.Property(e => e.RecordDuration).HasColumnName("record_duration");
+            entity.Property(e => e.Duration).HasColumnName("record_duration");
 
             entity.Property(e => e.RecordPrice)
                 .HasColumnName("record_price")
                 .HasColumnType("decimal(10,4)");
 
-            entity.Property(e => e.RecordSid)
+            entity.Property(e => e.Sid)
                 .HasColumnName("record_sid")
                 .HasColumnType("varchar(50)")
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
 
-            entity.Property(e => e.RecordUrl)
+            entity.Property(e => e.Uri)
                 .HasColumnName("record_url")
                 .HasColumnType("text")
                 .HasCharSet("utf8")
@@ -160,18 +161,18 @@ public static class DbVoipCallExtension
                 .HasColumnType("numeric(10,4)")
                 .HasDefaultValueSql("NULL");
 
-            entity.Property(e => e.RecordDuration).HasColumnName("record_duration");
+            entity.Property(e => e.Duration).HasColumnName("record_duration");
 
             entity.Property(e => e.RecordPrice)
                 .HasColumnName("record_price")
                 .HasColumnType("numeric(10,4)");
 
-            entity.Property(e => e.RecordSid)
+            entity.Property(e => e.Sid)
                 .HasColumnName("record_sid")
                 .HasMaxLength(50)
                 .HasDefaultValueSql("NULL");
 
-            entity.Property(e => e.RecordUrl).HasColumnName("record_url");
+            entity.Property(e => e.Uri).HasColumnName("record_url");
 
             entity.Property(e => e.Status).HasColumnName("status");
 

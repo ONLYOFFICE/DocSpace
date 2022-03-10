@@ -84,10 +84,7 @@ public class PaymentManager
 
     public void ActivateKey(string key)
     {
-        if (string.IsNullOrEmpty(key))
-        {
-            throw new ArgumentNullException(nameof(key));
-        }
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(key);
 
         var now = DateTime.UtcNow;
         var actionUrl = "/partnerapi/ActivateKey?code=" + HttpUtility.UrlEncode(key) + "&portal=" + HttpUtility.UrlEncode(_tenantManager.GetCurrentTenant().Alias);

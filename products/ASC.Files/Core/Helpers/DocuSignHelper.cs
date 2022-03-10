@@ -63,10 +63,7 @@ public class DocuSignToken
 
     public void SaveToken(OAuth20Token token)
     {
-        if (token == null)
-        {
-            throw new ArgumentNullException(nameof(token));
-        }
+        ArgumentNullException.ThrowIfNull(token);
 
         _tokenHelper.SaveToken(new Token(token, AppAttr));
     }
@@ -176,10 +173,7 @@ public class DocuSignHelper
 
     public async Task<string> SendDocuSignAsync<T>(T fileId, DocuSignData docuSignData, IDictionary<string, StringValues> requestHeaders)
     {
-        if (docuSignData == null)
-        {
-            throw new ArgumentNullException(nameof(docuSignData));
-        }
+        ArgumentNullException.ThrowIfNull(docuSignData);
 
         var token = _docuSignToken.GetToken();
         var account = GetDocuSignAccount(token);
@@ -196,10 +190,7 @@ public class DocuSignHelper
 
     private DocuSignAccount GetDocuSignAccount(OAuth20Token token)
     {
-        if (token == null)
-        {
-            throw new ArgumentNullException(nameof(token));
-        }
+        ArgumentNullException.ThrowIfNull(token);
 
         var userInfoString = RequestHelper.PerformRequest(_consumerFactory.Get<DocuSignLoginProvider>().DocuSignHost + "/oauth/userinfo",
                                                           headers: new Dictionary<string, string> { { "Authorization", "Bearer " + _docuSignToken.GetRefreshedToken(token) } });
@@ -220,15 +211,8 @@ public class DocuSignHelper
 
     private DocuSign.eSign.Client.Configuration GetConfiguration(DocuSignAccount account, OAuth20Token token)
     {
-        if (account == null)
-        {
-            throw new ArgumentNullException(nameof(account));
-        }
-
-        if (token == null)
-        {
-            throw new ArgumentNullException(nameof(token));
-        }
+        ArgumentNullException.ThrowIfNull(account);
+        ArgumentNullException.ThrowIfNull(token);
 
         var apiClient = new ApiClient(account.BaseUri + "/restapi");
 
@@ -377,14 +361,8 @@ public class DocuSignHelper
 
     public async Task<File<T>> SaveDocumentAsync<T>(string envelopeId, string documentId, string documentName, T folderId)
     {
-        if (string.IsNullOrEmpty(envelopeId))
-        {
-            throw new ArgumentNullException(nameof(envelopeId));
-        }
-        if (string.IsNullOrEmpty(documentId))
-        {
-            throw new ArgumentNullException(nameof(documentId));
-        }
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(envelopeId);
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(documentId);
 
         var token = _docuSignToken.GetToken();
         var account = GetDocuSignAccount(token);

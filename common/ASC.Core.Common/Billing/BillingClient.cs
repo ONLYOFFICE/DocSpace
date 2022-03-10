@@ -170,10 +170,7 @@ public class BillingClient
 
     public IDictionary<string, Dictionary<string, decimal>> GetProductPriceInfo(params string[] productIds)
     {
-        if (productIds == null)
-        {
-            throw new ArgumentNullException(nameof(productIds));
-        }
+        ArgumentNullException.ThrowIfNull(productIds);
 
         var parameters = productIds.Select(pid => Tuple.Create("ProductId", pid)).ToList();
         parameters.Add(Tuple.Create("PaymentSystemId", AvangatePaymentSystemId.ToString()));

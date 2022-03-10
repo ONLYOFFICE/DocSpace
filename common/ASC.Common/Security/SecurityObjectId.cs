@@ -34,8 +34,10 @@ public class SecurityObjectId : ISecurityObjectId
 
     public SecurityObjectId(object id, Type objType)
     {
+        ArgumentNullException.ThrowIfNull(objType);
+
         SecurityId = id;
-        ObjectType = objType ?? throw new ArgumentNullException(nameof(objType));
+        ObjectType = objType;
     }
 
     public override int GetHashCode()

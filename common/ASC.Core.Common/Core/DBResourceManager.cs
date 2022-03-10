@@ -145,14 +145,8 @@ public class DBResourceManager : ResourceManager
             CultureInfo culture,
             string filename)
         {
-            if (culture == null)
-            {
-                throw new ArgumentNullException(nameof(culture));
-            }
-            if (string.IsNullOrEmpty(filename))
-            {
-                throw new ArgumentNullException(nameof(filename));
-            }
+            ArgumentNullException.ThrowIfNull(culture);
+            ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(filename);
 
             _dbContext = dbContext;
             _logger = option.CurrentValue;

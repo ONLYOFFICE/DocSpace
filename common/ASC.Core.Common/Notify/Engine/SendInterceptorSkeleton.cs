@@ -39,10 +39,7 @@ public class SendInterceptorSkeleton : ISendInterceptor
             throw new ArgumentException("Empty name.", nameof(name));
         }
 
-        if (sendInterceptor == null)
-        {
-            throw new ArgumentNullException(nameof(sendInterceptor));
-        }
+        ArgumentNullException.ThrowIfNull(sendInterceptor);
 
         _method = sendInterceptor;
         Name = name;

@@ -151,10 +151,7 @@ public class CoreSettings
 
     public void SaveSetting(string key, string value, int tenant = Tenant.DefaultTenant)
     {
-        if (string.IsNullOrEmpty(key))
-        {
-            throw new ArgumentNullException(nameof(key));
-        }
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(key);
 
         byte[] bytes = null;
         if (value != null)
@@ -167,10 +164,7 @@ public class CoreSettings
 
     public string GetSetting(string key, int tenant = Tenant.DefaultTenant)
     {
-        if (string.IsNullOrEmpty(key))
-        {
-            throw new ArgumentNullException(nameof(key));
-        }
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(key);
 
         var bytes = TenantService.GetTenantSettings(tenant, key);
 

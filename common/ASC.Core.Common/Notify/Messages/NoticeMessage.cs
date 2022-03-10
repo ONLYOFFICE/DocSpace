@@ -76,7 +76,8 @@ public class NoticeMessage : INoticeMessage
 
     public void AddArgument(params ITagValue[] tagValues)
     {
-        if (tagValues == null) throw new ArgumentNullException(nameof(tagValues));
+        ArgumentNullException.ThrowIfNull(tagValues);
+
         Array.ForEach(tagValues,
             tagValue =>
             {

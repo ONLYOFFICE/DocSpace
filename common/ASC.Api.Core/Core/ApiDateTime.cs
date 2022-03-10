@@ -85,18 +85,18 @@ public sealed class ApiDateTime : IComparable<ApiDateTime>, IComparable
 
     public static ApiDateTime Parse(string data, TimeZoneInfo tz, TenantManager tenantManager, TimeZoneConverter timeZoneConverter)
     {
-            if (string.IsNullOrEmpty(data)) throw new ArgumentNullException(nameof(data));
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(data);
 
         var offsetPart = data.Substring(data.Length - 6, 6);
         if (DateTime.TryParseExact(data, Formats, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out var dateTime))
         {
             //Parse time   
             var tzOffset = TimeSpan.Zero;
-                if (offsetPart.Contains(':') && TimeSpan.TryParse(offsetPart.TrimStart('+'), out tzOffset))
+            if (offsetPart.Contains(':') && TimeSpan.TryParse(offsetPart.TrimStart('+'), out tzOffset))
             {
                 return new ApiDateTime(dateTime, tzOffset);
             }
-                
+
             if (!data.EndsWith("Z", true, CultureInfo.InvariantCulture))
             {
                 if (tz == null)
@@ -139,7 +139,7 @@ public sealed class ApiDateTime : IComparable<ApiDateTime>, IComparable
         if (value.Kind == DateTimeKind.Unspecified)
         {
             value = new DateTime(value.Ticks, DateTimeKind.Utc); //Assume it's utc
-        } 
+        }
 
         if (value.Kind == DateTimeKind.Utc)
         {
@@ -166,8 +166,8 @@ public sealed class ApiDateTime : IComparable<ApiDateTime>, IComparable
     private string ToRoundTripString(DateTime date, TimeSpan offset)
     {
         var dateString = date.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffff", CultureInfo.InvariantCulture);
-        var offsetString = offset.Ticks == 0 
-            ? "Z" : ((offset < TimeSpan.Zero) 
+        var offsetString = offset.Ticks == 0
+            ? "Z" : ((offset < TimeSpan.Zero)
             ? "-" : "+") + offset.ToString("hh\\:mm", CultureInfo.InvariantCulture);
 
         return dateString + offsetString;
@@ -277,9 +277,9 @@ public sealed class ApiDateTime : IComparable<ApiDateTime>, IComparable
 
     public override bool Equals(object obj)
     {
-            if (obj is null) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (!(obj is ApiDateTime)) return false;
+        if (obj is null) return false;
+        if (ReferenceEquals(this, obj)) return true;
+        if (!(obj is ApiDateTime)) return false;
         return Equals((ApiDateTime)obj);
     }
 
@@ -369,7 +369,7 @@ public class ApiDateTimeConverter : System.Text.Json.Serialization.JsonConverter
         }
         else
         {
-            if (DateTime.TryParseExact(reader.GetString(), ApiDateTime.Formats, 
+            if (DateTime.TryParseExact(reader.GetString(), ApiDateTime.Formats,
                 CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var dateTime))
             {
                 return new ApiDateTime(dateTime, TimeSpan.Zero);
@@ -377,7 +377,7 @@ public class ApiDateTimeConverter : System.Text.Json.Serialization.JsonConverter
             else
             {
                 return new ApiDateTime();
-            }  
+            }
         }
     }
 

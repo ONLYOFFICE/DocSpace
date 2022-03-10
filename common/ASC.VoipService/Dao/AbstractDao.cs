@@ -24,39 +24,37 @@
 */
 
 
-namespace ASC.VoipService.Dao
+namespace ASC.VoipService.Dao;
+
+public class AbstractDao
 {
-    public class AbstractDao
+    private readonly string _dbid = "default";
+    private readonly Lazy<VoipDbContext> _lazyVoipDbContext;
+
+    protected VoipDbContext VoipDbContext { get => _lazyVoipDbContext.Value; }
+    protected int TenantID
     {
-        private readonly string dbid = "default";
+        get;
+        private set;
+    }
 
-        private Lazy<VoipDbContext> LazyVoipDbContext { get; }
-        protected VoipDbContext VoipDbContext { get => LazyVoipDbContext.Value; }
+    protected AbstractDao(DbContextManager<VoipDbContext> dbOptions, TenantManager tenantManager)
+    {
+        _lazyVoipDbContext = new Lazy<VoipDbContext>(() => dbOptions.Get(_dbid));
+        TenantID = tenantManager.GetCurrentTenant().Id;
+    }
 
-        protected AbstractDao(DbContextManager<VoipDbContext> dbOptions, TenantManager tenantManager)
-        {
-            LazyVoipDbContext = new Lazy<VoipDbContext>(() => dbOptions.Get(dbid));
-            TenantID = tenantManager.GetCurrentTenant().Id;
-        }
-
-        protected int TenantID
-        {
-            get;
-            private set;
-        }
-
-        protected string GetTenantColumnName(string table)
-        {
-            const string tenant = "tenant_id";
-            if (!table.Contains(' ')) return tenant;
-            return table.Substring(table.IndexOf(" ", StringComparison.Ordinal)).Trim() + "." + tenant;
-        }
+    protected string GetTenantColumnName(string table)
+    {
+        const string tenant = "tenant_id";
+        if (!table.Contains(' ')) return tenant;
+        return table.Substring(table.IndexOf(" ", StringComparison.Ordinal)).Trim() + "." + tenant;
+    }
 
 
-        protected static Guid ToGuid(object guid)
-        {
-            var str = guid as string;
-            return !string.IsNullOrEmpty(str) ? new Guid(str) : Guid.Empty;
-        }
+    protected static Guid ToGuid(object guid)
+    {
+        var str = guid as string;
+        return !string.IsNullOrEmpty(str) ? new Guid(str) : Guid.Empty;
     }
 }

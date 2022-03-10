@@ -298,10 +298,7 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
 
     public async Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
     {
-        if (fileStream == null)
-        {
-            throw new ArgumentNullException(nameof(fileStream));
-        }
+        ArgumentNullException.ThrowIfNull(fileStream);
 
         ICloudFileSystemEntry entry = null;
         if (file.Id != null)

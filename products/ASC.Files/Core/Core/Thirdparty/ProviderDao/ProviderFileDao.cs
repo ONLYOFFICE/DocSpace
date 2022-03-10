@@ -210,10 +210,7 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
     /// <returns>Stream</returns>
     public Task<Stream> GetFileStreamAsync(File<string> file, long offset)
     {
-        if (file == null)
-        {
-            throw new ArgumentNullException(nameof(file));
-        }
+        ArgumentNullException.ThrowIfNull(file);
 
         return InternalGetFileStreamAsync(file, offset);
     }
@@ -233,10 +230,7 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
 
     public Task<bool> IsSupportedPreSignedUriAsync(File<string> file)
     {
-        if (file == null)
-        {
-            throw new ArgumentNullException(nameof(file));
-        }
+        ArgumentNullException.ThrowIfNull(file);
 
         return InternalIsSupportedPreSignedUriAsync(file);
     }
@@ -256,10 +250,7 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
 
     public Task<Uri> GetPreSignedUriAsync(File<string> file, TimeSpan expires)
     {
-        if (file == null)
-        {
-            throw new ArgumentNullException(nameof(file));
-        }
+        ArgumentNullException.ThrowIfNull(file);
 
         return InternalGetPreSignedUriAsync(file, expires);
     }
@@ -279,10 +270,7 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
 
     public Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
     {
-        if (file == null)
-        {
-            throw new ArgumentNullException(nameof(file));
-        }
+        ArgumentNullException.ThrowIfNull(file);
 
         return InternalSaveFileAsync(file, fileStream);
     }
@@ -325,10 +313,8 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
 
     public Task<File<string>> ReplaceFileVersionAsync(File<string> file, Stream fileStream)
     {
-        if (file == null)
-        {
-            throw new ArgumentNullException(nameof(file));
-        }
+        ArgumentNullException.ThrowIfNull(file);
+
         if (file.Id == null)
         {
             throw new ArgumentException("No file id or folder id toFolderId determine provider");

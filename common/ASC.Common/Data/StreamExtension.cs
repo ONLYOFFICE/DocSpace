@@ -31,8 +31,8 @@ public static class StreamExtension
 
     public static void StreamCopyTo(this Stream srcStream, Stream dstStream, int length)
     {
-        if (srcStream == null) throw new ArgumentNullException(nameof(srcStream));
-        if (dstStream == null) throw new ArgumentNullException(nameof(dstStream));
+        ArgumentNullException.ThrowIfNull(srcStream);
+        ArgumentNullException.ThrowIfNull(dstStream);
 
         var buffer = new byte[BufferSize];
         int totalRead = 0;

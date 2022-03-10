@@ -115,10 +115,7 @@ public class EFUserService : IUserService
 
     public UserInfo GetUserByPasswordHash(int tenant, string login, string passwordHash)
     {
-        if (string.IsNullOrEmpty(login))
-        {
-            throw new ArgumentNullException(nameof(login));
-        }
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(login);
 
         if (Guid.TryParse(login, out var userId))
         {
@@ -430,10 +427,7 @@ public class EFUserService : IUserService
 
     public Group SaveGroup(int tenant, Group group)
     {
-        if (group == null)
-        {
-            throw new ArgumentNullException(nameof(group));
-        }
+        ArgumentNullException.ThrowIfNull(group);
 
         if (group.Id == default)
         {
@@ -452,10 +446,7 @@ public class EFUserService : IUserService
 
     public UserInfo SaveUser(int tenant, UserInfo user)
     {
-        if (user == null)
-        {
-            throw new ArgumentNullException(nameof(user));
-        }
+        ArgumentNullException.ThrowIfNull(user);
 
         if (string.IsNullOrEmpty(user.UserName))
         {
@@ -501,29 +492,26 @@ public class EFUserService : IUserService
         return user;
     }
 
-    public UserGroupRef SaveUserGroupRef(int tenant, UserGroupRef r)
+    public UserGroupRef SaveUserGroupRef(int tenant, UserGroupRef userGroupRef)
     {
-        if (r == null)
-        {
-            throw new ArgumentNullException("userGroupRef");
-        }
+        ArgumentNullException.ThrowIfNull(userGroupRef);
 
-        r.LastModified = DateTime.UtcNow;
-        r.Tenant = tenant;
+        userGroupRef.LastModified = DateTime.UtcNow;
+        userGroupRef.Tenant = tenant;
 
         using var tr = UserDbContext.Database.BeginTransaction();
 
-        var user = GetUserQuery(tenant).FirstOrDefault(a => a.Tenant == tenant && a.Id == r.UserId);
+        var user = GetUserQuery(tenant).FirstOrDefault(a => a.Tenant == tenant && a.Id == userGroupRef.UserId);
         if (user != null)
         {
-            user.LastModified = r.LastModified;
-            UserDbContext.AddOrUpdate(r => r.UserGroups, _mapper.Map<UserGroupRef, UserGroup>(r));
+            user.LastModified = userGroupRef.LastModified;
+            UserDbContext.AddOrUpdate(r => r.UserGroups, _mapper.Map<UserGroupRef, UserGroup>(userGroupRef));
         }
 
         UserDbContext.SaveChanges();
         tr.Commit();
 
-        return r;
+        return userGroupRef;
     }
 
     public void SetUserPasswordHash(int tenant, Guid id, string passwordHash)

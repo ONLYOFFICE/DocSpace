@@ -239,10 +239,7 @@ internal class GoogleDriveStorage : IDisposable
 
     public Task<Stream> DownloadStreamAsync(DriveFile file, int offset = 0)
     {
-        if (file == null)
-        {
-            throw new ArgumentNullException(nameof(file));
-        }
+        ArgumentNullException.ThrowIfNull(file);
 
         return InternalDownloadStreamAsync(file, offset);
     }
@@ -517,10 +514,7 @@ internal class GoogleDriveStorage : IDisposable
 
     public Task<ResumableUploadSession> CreateResumableSessionAsync(DriveFile driveFile, long contentLength)
     {
-        if (driveFile == null)
-        {
-            throw new ArgumentNullException(nameof(driveFile));
-        }
+        ArgumentNullException.ThrowIfNull(driveFile);
 
         return InternalCreateResumableSessionAsync(driveFile, contentLength);
     }
@@ -566,10 +560,7 @@ internal class GoogleDriveStorage : IDisposable
 
     public Task TransferAsync(ResumableUploadSession googleDriveSession, Stream stream, long chunkLength)
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException(nameof(stream));
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         if (googleDriveSession.Status != ResumableUploadSessionStatus.Started)
         {

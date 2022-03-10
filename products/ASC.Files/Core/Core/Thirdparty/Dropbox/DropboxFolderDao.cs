@@ -178,10 +178,7 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
 
     public Task<string> SaveFolderAsync(Folder<string> folder)
     {
-        if (folder == null)
-        {
-            throw new ArgumentNullException(nameof(folder));
-        }
+        ArgumentNullException.ThrowIfNull(folder);
 
         return InternalSaveFolderAsync(folder);
     }

@@ -85,7 +85,7 @@ public class FileDtoHelper : FileEntryDtoHelper
 
     public FileDtoHelper(
         ApiDateTimeHelper apiDateTimeHelper,
-        EmployeeWraperHelper employeeWrapperHelper,
+        EmployeeDtoHelper employeeWrapperHelper,
         AuthContext authContext,
         IDaoFactory daoFactory,
         FileSecurity fileSecurity,

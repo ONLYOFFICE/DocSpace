@@ -56,11 +56,11 @@ public class FileShareLink
 public class FileShareDtoHelper
 {
     private readonly UserManager _userManager;
-    private readonly EmployeeWraperFullHelper _employeeWraperFullHelper;
+    private readonly EmployeeFullDtoHelper _employeeWraperFullHelper;
 
     public FileShareDtoHelper(
         UserManager userManager,
-        EmployeeWraperFullHelper employeeWraperFullHelper)
+        EmployeeFullDtoHelper employeeWraperFullHelper)
     {
         _userManager = userManager;
         _employeeWraperFullHelper = employeeWraperFullHelper;
@@ -87,7 +87,7 @@ public class FileShareDtoHelper
             else
             {
                 //Shared to group
-                result.SharedTo = new GroupWrapperSummary(_userManager.GetGroupInfo(aceWrapper.SubjectId), _userManager);
+                result.SharedTo = new GroupSummaryDto(_userManager.GetGroupInfo(aceWrapper.SubjectId), _userManager);
             }
         }
         else

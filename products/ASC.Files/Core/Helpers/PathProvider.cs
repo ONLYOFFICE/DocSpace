@@ -172,10 +172,7 @@ public class PathProvider
 
     public async Task<string> GetTempUrlAsync(Stream stream, string ext)
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException(nameof(stream));
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         var store = _globalStore.GetStore();
         var fileName = string.Format("{0}{1}", Guid.NewGuid(), ext);

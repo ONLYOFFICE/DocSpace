@@ -299,15 +299,8 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
 
     public Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
     {
-        if (file == null)
-        {
-            throw new ArgumentNullException(nameof(file));
-        }
-
-        if (fileStream == null)
-        {
-            throw new ArgumentNullException(nameof(fileStream));
-        }
+        ArgumentNullException.ThrowIfNull(file);
+        ArgumentNullException.ThrowIfNull(fileStream);
 
         return InternalSaveFileAsync(file, fileStream);
     }

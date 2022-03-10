@@ -153,10 +153,7 @@ public class LicenseReader
 
     private static void SaveLicense(Stream licenseStream, string path)
     {
-        if (licenseStream == null)
-        {
-            throw new ArgumentNullException(nameof(licenseStream));
-        }
+        ArgumentNullException.ThrowIfNull(licenseStream);
 
         if (licenseStream.CanSeek)
         {
