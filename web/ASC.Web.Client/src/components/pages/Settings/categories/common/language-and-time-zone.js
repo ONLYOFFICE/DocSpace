@@ -49,7 +49,6 @@ const StyledComponent = styled.div`
   }
 
   .field-container-flex {
-    width: 100%;
     display: flex;
     justify-content: space-between;
     margin-top: 8px;
@@ -395,7 +394,7 @@ class LanguageAndTimeZone extends React.Component {
                     />
                   </FieldContainer>
 
-                  <div className="field-container-flex">
+                  <div className="field-container-flex field-container-width">
                     <div className="title">{`${t("Automatic time zone")}`}</div>
                     <ToggleButton
                       className="toggle"
