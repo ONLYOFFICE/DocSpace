@@ -30,8 +30,6 @@
   "HotkeysSpaceKey": "Пробел",
   "HotkeysClose": "Закрыть",
   "HotkeysPlayPause": "Воспроизвести/Пауза",
-  "HotkeysZoomIn": "Увеличить масштаб",
-  "HotkeysZoomOut": "Уменьшить масштаб",
   "HotkeysNavigation": "Навигация",
   "HotkeysGoToParentFolder": "Перейти к папке на уровень выше",
   "HotkeysChangeView": "Перейти из режима "Сетка" в режим "Список" или обратно при просмотре списка файлов",
