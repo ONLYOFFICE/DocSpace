@@ -1,13 +1,12 @@
 import React from "react";
 import { getOptions } from "../../GetOptions";
-import { getBackupStorage } from "@appserver/common/api/settings";
 import ComboBox from "@appserver/components/combobox";
 import { ThirdPartyStorages } from "@appserver/common/constants";
 import GoogleCloudStorage from "./storages/GoogleCloudStorage";
 import AmazonStorage from "./storages/AmazonStorage";
 import RackspaceStorage from "./storages/RackspaceStorage";
 import SelectelStorage from "./storages/SelectelStorage";
-
+import { inject, observer } from "mobx-react";
 class ThirdPartyStoragesModule extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -17,40 +16,31 @@ class ThirdPartyStoragesModule extends React.PureComponent {
 
       selectedStorage: "",
       selectedId: "",
-      isInitialLoading: true,
     };
   }
   componentDidMount() {
-    const { onSetStorageId } = this.props;
+    const { onSetStorageId, thirdPartyStorage } = this.props;
 
-    getBackupStorage()
-      .then((storageBackup) => {
-        const parameters = getOptions(storageBackup);
+    if (thirdPartyStorage) {
+      const parameters = getOptions(thirdPartyStorage);
 
-        const {
-          options,
-          availableStorage,
-          selectedStorage,
-          selectedId,
-        } = parameters;
+      const {
+        options,
+        availableStorage,
+        selectedStorage,
+        selectedId,
+      } = parameters;
 
-        onSetStorageId && onSetStorageId(selectedId);
+      onSetStorageId && onSetStorageId(selectedId);
 
-        this.setState({
-          availableOptions: options,
-          availableStorage,
+      this.setState({
+        availableOptions: options,
+        availableStorage,
 
-          selectedStorage,
-          selectedId,
-
-          isInitialLoading: false,
-        });
-      })
-      .catch(() =>
-        this.setState({
-          isInitialLoading: false,
-        })
-      );
+        selectedStorage,
+        selectedId,
+      });
+    }
   }
   onSelect = (option) => {
     const selectedStorageId = option.key;
@@ -69,13 +59,12 @@ class ThirdPartyStoragesModule extends React.PureComponent {
     const {
       availableOptions,
       selectedStorage,
-      isInitialLoading,
       selectedId,
       availableStorage,
     } = this.state;
+    const { thirdPartyStorage } = this.props;
 
     const commonProps = {
-      isInitialLoading,
       availableStorage,
       selectedId,
     };
@@ -89,7 +78,7 @@ class ThirdPartyStoragesModule extends React.PureComponent {
           options={availableOptions}
           selectedOption={{ key: 0, label: selectedStorage }}
           onSelect={this.onSelect}
-          isDisabled={isInitialLoading}
+          isDisabled={!!!thirdPartyStorage}
           noBorder={false}
           scaled
           scaledOptions
@@ -114,4 +103,10 @@ class ThirdPartyStoragesModule extends React.PureComponent {
   }
 }
 
-export default ThirdPartyStoragesModule;
+export default inject(({ backup }) => {
+  const { thirdPartyStorage } = backup;
+
+  return {
+    thirdPartyStorage,
+  };
+})(observer(ThirdPartyStoragesModule));

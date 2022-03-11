@@ -1,8 +1,5 @@
 import React from "react";
-import { withTranslation } from "react-i18next";
 import ComboBox from "@appserver/components/combobox";
-import { getBackupStorage } from "@appserver/common/api/settings";
-
 import GoogleCloudStorage from "./storages/GoogleCloudStorage";
 import RackspaceStorage from "./storages/RackspaceStorage";
 import SelectelStorage from "./storages/SelectelStorage";
@@ -11,6 +8,7 @@ import { getOptions } from "../../GetOptions";
 import { BackupTypes, ThirdPartyStorages } from "@appserver/common/constants";
 import { getFromSessionStorage } from "../../../../../utils";
 import { StyledManualBackup } from "../../StyledBackup";
+import { inject, observer } from "mobx-react";
 
 let storage = "";
 let storageId = "";
@@ -28,37 +26,32 @@ class ThirdPartyStorageModule extends React.PureComponent {
       availableStorage: {},
       selectedStorage: "",
       selectedId: "",
-      isInitialLoading: true,
       isStartCopy: false,
     };
 
     this.isFirstSet = false;
   }
   componentDidMount() {
-    getBackupStorage()
-      .then((storageBackup) => {
-        const parameters = getOptions(storageBackup);
+    const { thirdPartyStorage } = this.props;
 
-        const {
-          options,
-          availableStorage,
-          selectedStorage,
-          selectedId,
-        } = parameters;
+    if (thirdPartyStorage) {
+      const parameters = getOptions(thirdPartyStorage);
 
-        this.setState({
-          availableOptions: options,
-          availableStorage: availableStorage,
+      const {
+        options,
+        availableStorage,
+        selectedStorage,
+        selectedId,
+      } = parameters;
 
-          selectedStorage: storage || selectedStorage,
-          selectedId: storageId || selectedId,
+      this.setState({
+        availableOptions: options,
+        availableStorage: availableStorage,
 
-          isInitialLoading: false,
-        });
-      })
-      .catch(() => {
-        this.setState({ isInitialLoading: false });
+        selectedStorage: storage || selectedStorage,
+        selectedId: storageId || selectedId,
       });
+    }
   }
 
   onSelect = (option) => {
@@ -125,11 +118,10 @@ class ThirdPartyStorageModule extends React.PureComponent {
     return [firstError, errors];
   };
   render() {
-    const { isMaxProgress } = this.props;
+    const { isMaxProgress, thirdPartyStorage } = this.props;
     const {
       availableOptions,
       selectedStorage,
-      isInitialLoading,
       selectedId,
       isStartCopy,
       availableStorage,
@@ -152,7 +144,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
             options={availableOptions}
             selectedOption={{ key: 0, label: selectedStorage }}
             onSelect={this.onSelect}
-            isDisabled={!isMaxProgress || isStartCopy || isInitialLoading}
+            isDisabled={!isMaxProgress || isStartCopy || !!!thirdPartyStorage}
             noBorder={false}
             scaled
             scaledOptions
@@ -160,25 +152,23 @@ class ThirdPartyStorageModule extends React.PureComponent {
             className="backup_combo"
           />
 
-          {selectedId === GoogleId && !isInitialLoading && (
-            <GoogleCloudStorage {...commonProps} />
-          )}
+          {selectedId === GoogleId && <GoogleCloudStorage {...commonProps} />}
 
-          {selectedId === RackspaceId && !isInitialLoading && (
-            <RackspaceStorage {...commonProps} />
-          )}
+          {selectedId === RackspaceId && <RackspaceStorage {...commonProps} />}
 
-          {selectedId === SelectelId && !isInitialLoading && (
-            <SelectelStorage {...commonProps} />
-          )}
+          {selectedId === SelectelId && <SelectelStorage {...commonProps} />}
 
-          {selectedId === AmazonId && !isInitialLoading && (
-            <AmazonStorage {...commonProps} />
-          )}
+          {selectedId === AmazonId && <AmazonStorage {...commonProps} />}
         </div>
       </StyledManualBackup>
     );
   }
 }
 
-export default withTranslation("Settings")(ThirdPartyStorageModule);
+export default inject(({ backup }) => {
+  const { thirdPartyStorage } = backup;
+
+  return {
+    thirdPartyStorage,
+  };
+})(observer(ThirdPartyStorageModule));

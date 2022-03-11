@@ -10,6 +10,7 @@ import Box from "@appserver/components/box";
 import styled from "styled-components";
 import FloatingButton from "@appserver/common/components/FloatingButton";
 import { enableAutoBackup, enableRestore } from "@appserver/common/api/portal";
+import { getBackupStorage } from "@appserver/common/api/settings";
 import Loader from "@appserver/components/loader";
 import { StyledBackup, StyledSettingsHeader } from "./StyledBackup";
 import Headline from "@appserver/common/components/Headline";
@@ -53,14 +54,22 @@ class BackupMobileView extends React.Component {
     clearProgressInterval();
   }
   setBasicSettings = async () => {
-    const { t, getProgress } = this.props;
+    const { t, getProgress, setThirdPartyStorage } = this.props;
 
     try {
-      const requests = [enableRestore(), enableAutoBackup()];
+      const requests = [
+        enableRestore(),
+        enableAutoBackup(),
+        getBackupStorage(),
+      ];
 
       getProgress(t);
 
-      const [canRestore, canAutoBackup] = await Promise.all(requests);
+      const [canRestore, canAutoBackup, backupStorage] = await Promise.all(
+        requests
+      );
+
+      setThirdPartyStorage(backupStorage);
 
       this.setState({
         isLoading: false,
@@ -227,12 +236,18 @@ class BackupMobileView extends React.Component {
 export default inject(({ auth, backup }) => {
   const { language } = auth;
   const { helpUrlCreatingBackup } = auth.settingsStore;
-  const { getProgress, downloadingProgress, clearProgressInterval } = backup;
+  const {
+    getProgress,
+    downloadingProgress,
+    clearProgressInterval,
+    setThirdPartyStorage,
+  } = backup;
   return {
     helpUrlCreatingBackup,
     language,
     getProgress,
     downloadingProgress,
     clearProgressInterval,
+    setThirdPartyStorage,
   };
 })(observer(withTranslation(["Settings", "Common"])(BackupMobileView)));
