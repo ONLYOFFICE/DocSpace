@@ -181,21 +181,21 @@ const withHotkeys = (Component) => {
       [confirmDelete]
     );
 
-    //TODO: Undo the last action
-    useHotkeys(
-      "Ctrl+z, command+z",
-      () => alert("Undo the last action"),
-      hotkeysFilter,
-      []
-    );
+    // //TODO: Undo the last action
+    // useHotkeys(
+    //   "Ctrl+z, command+z",
+    //   () => alert("Undo the last action"),
+    //   hotkeysFilter,
+    //   []
+    // );
 
-    //TODO: Redo the last undone action
-    useHotkeys(
-      "Ctrl+Shift+z, command+Shift+z",
-      () => alert("Redo the last undone action"),
-      hotkeysFilter,
-      []
-    );
+    // //TODO: Redo the last undone action
+    // useHotkeys(
+    //   "Ctrl+Shift+z, command+Shift+z",
+    //   () => alert("Redo the last undone action"),
+    //   hotkeysFilter,
+    //   []
+    // );
 
     //Open hotkeys panel
     useHotkeys(

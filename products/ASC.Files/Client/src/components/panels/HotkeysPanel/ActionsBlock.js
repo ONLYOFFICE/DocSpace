@@ -17,7 +17,7 @@ const ActionsBlock = ({ t, textStyles, keyTextStyles, CtrlKey }) => {
           <Text {...keyTextStyles}># {t("HotkeysOr")} Delete</Text>
         </>
       </Row>
-      <Row className="hotkeys_row">
+      {/* <Row className="hotkeys_row">
         <>
           <Text {...textStyles}>{t("HotkeysUndoLastAction")}</Text>
           <Text {...keyTextStyles}>{CtrlKey}+z</Text>
@@ -28,7 +28,7 @@ const ActionsBlock = ({ t, textStyles, keyTextStyles, CtrlKey }) => {
           <Text {...textStyles}>{t("HotkeysRedoLastUndoneAction")}</Text>
           <Text {...keyTextStyles}>{CtrlKey}+Shift+z</Text>
         </>
-      </Row>
+      </Row> */}
     </>
   );
 };
