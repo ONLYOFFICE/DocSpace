@@ -77,6 +77,21 @@ const DeepLinkPage = (props) => {
 
   const onOpenAppClick = () => {
     window.location = deepLink;
+
+    setTimeout(() => {
+      if (document.hasFocus()) {
+        if (
+          navigator.userAgent.includes("iPhone;") ||
+          navigator.userAgent.includes("iPad;")
+        ) {
+          window.location.replace("https://apps.apple.com/app/id944896972");
+        } else {
+          window.location.replace(
+            "https://play.google.com/store/apps/details?id=com.onlyoffice.documents"
+          );
+        }
+      }
+    }, 1500);
   };
 
   if (!isLoading) return <AppLoader />;
