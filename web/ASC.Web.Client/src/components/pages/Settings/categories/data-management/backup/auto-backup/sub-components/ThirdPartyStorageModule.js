@@ -1,13 +1,13 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import ComboBox from "@appserver/components/combobox";
+import { ThirdPartyStorages } from "@appserver/common/constants";
 import GoogleCloudStorage from "./storages/GoogleCloudStorage";
 import RackspaceStorage from "./storages/RackspaceStorage";
 import SelectelStorage from "./storages/SelectelStorage";
 import AmazonStorage from "./storages/AmazonStorage";
-import { ThirdPartyStorages } from "@appserver/common/constants";
 import { StyledAutoBackup } from "../../StyledBackup";
-import { inject, observer } from "mobx-react";
 
 let googleStorageId = ThirdPartyStorages.GoogleId;
 
@@ -32,7 +32,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
     this._isMount = false;
   }
   componentDidUpdate(prevProps) {
-    const { isSuccessSave, isReset, thirdPartyStorage } = this.props;
+    const { isSuccessSave, thirdPartyStorage } = this.props;
 
     if (isSuccessSave && isSuccessSave !== prevProps.isSuccessSave) {
       thirdPartyStorage && this.getOptions(thirdPartyStorage);

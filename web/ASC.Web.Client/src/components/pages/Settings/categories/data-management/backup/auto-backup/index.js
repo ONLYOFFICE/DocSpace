@@ -1,26 +1,26 @@
 import React from "react";
-import Text from "@appserver/components/text";
+import moment from "moment";
+import { isMobileOnly } from "react-device-detect";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import RadioButton from "@appserver/components/radio-button";
-import moment from "moment";
+import Text from "@appserver/components/text";
 import Button from "@appserver/components/button";
 import {
   deleteBackupSchedule,
   getBackupSchedule,
   createBackupSchedule,
 } from "@appserver/common/api/portal";
-import toastr from "@appserver/components/toast/toastr";
-import SelectFolderDialog from "files/SelectFolderDialog";
 import Loader from "@appserver/components/loader";
+import toastr from "@appserver/components/toast/toastr";
 import { BackupTypes } from "@appserver/common/constants";
+import ToggleButton from "@appserver/components/toggle-button";
+import { getBackupStorage } from "@appserver/common/api/settings";
+import SelectFolderDialog from "files/SelectFolderDialog";
 import { StyledModules, StyledAutoBackup } from "../StyledBackup";
 import ThirdPartyModule from "./sub-components/ThirdPartyModule";
 import DocumentsModule from "./sub-components/DocumentsModule";
 import ThirdPartyStorageModule from "./sub-components/ThirdPartyStorageModule";
-import ToggleButton from "@appserver/components/toggle-button";
-import { getBackupStorage } from "@appserver/common/api/settings";
-import { isMobileOnly } from "react-device-detect";
 
 const {
   DocumentModuleType,
@@ -39,8 +39,6 @@ class AutomaticBackup extends React.PureComponent {
     this.lng = language.substring(0, language.indexOf("-"));
     moment.locale(this.lng);
 
-    this._isMounted = false;
-
     this.state = {
       isEnable: false,
       isLoadingData: false,
@@ -48,6 +46,8 @@ class AutomaticBackup extends React.PureComponent {
       isAdditionalChanged: false,
       isReset: false,
       isSuccessSave: false,
+      isErrorsFields: [],
+      isError: false,
     };
 
     this.periodsObject = [
@@ -65,12 +65,10 @@ class AutomaticBackup extends React.PureComponent {
       },
     ];
 
-    this._isMounted = false;
     this.hoursArray = [];
     this.monthNumbersArray = [];
     this.maxNumberCopiesArray = [];
     this.weekdaysLabelArray = [];
-    this.timerId = null;
     this.formSettings = "";
 
     this.getTime();
@@ -118,7 +116,6 @@ class AutomaticBackup extends React.PureComponent {
   componentDidMount() {
     const { setDefaultOptions, t, backupSchedule } = this.props;
 
-    this._isMounted = true;
     this.getWeekdays();
 
     if (!isMobileOnly) {
@@ -153,7 +150,6 @@ class AutomaticBackup extends React.PureComponent {
 
   componentWillUnmount() {
     const { clearProgressInterval } = this.props;
-    this._isMounted = false;
     clearProgressInterval();
   }
 
@@ -421,11 +417,9 @@ class AutomaticBackup extends React.PureComponent {
       });
     } catch (e) {
       toastr.error(e);
-
-      this._isMounted &&
-        this.setState({
-          isLoadingData: false,
-        });
+      this.setState({
+        isLoadingData: false,
+      });
     }
   };
 
@@ -438,7 +432,6 @@ class AutomaticBackup extends React.PureComponent {
           toastr.success(t("SuccessfullySaveSettingsMessage"));
           this.setState({
             isLoadingData: false,
-
             isAdditionalChanged: false,
           });
         })
@@ -446,7 +439,6 @@ class AutomaticBackup extends React.PureComponent {
           toastr.error(error);
           this.setState({
             isLoadingData: false,
-            isAdditionalChanged: false,
           });
         });
     });
@@ -489,7 +481,6 @@ class AutomaticBackup extends React.PureComponent {
       isEnable,
       isReset,
       isLoadingData,
-
       isError,
       isSuccessSave,
       isErrorsFields,
@@ -625,33 +616,30 @@ class AutomaticBackup extends React.PureComponent {
 export default inject(({ auth, backup }) => {
   const { language } = auth;
   const {
+    backupSchedule,
+    commonThirdPartyList,
+    clearProgressInterval,
+    deleteSchedule,
+    getProgress,
     setThirdPartyStorage,
     setDefaultOptions,
     setBackupSchedule,
-    isChanged,
-    toDefault,
-
     selectedStorageType,
     seStorageType,
     setCommonThirdPartyList,
-
     selectedPeriodLabel,
     selectedWeekdayLabel,
     selectedWeekday,
     selectedHour,
     selectedMonthDay,
     selectedMaxCopiesNumber,
-
     selectedPeriodNumber,
-    backupSchedule,
-    deleteSchedule,
-
     selectedFolderId,
     selectedStorageId,
-    clearProgressInterval,
-    getProgress,
-    commonThirdPartyList,
+    isChanged,
+    toDefault,
   } = backup;
+
   const isCheckedDocuments = selectedStorageType === `${DocumentModuleType}`;
   const isCheckedThirdParty = selectedStorageType === `${ResourcesModuleType}`;
   const isCheckedThirdPartyStorage =
@@ -659,30 +647,29 @@ export default inject(({ auth, backup }) => {
 
   return {
     language,
+
+    backupSchedule,
+    commonThirdPartyList,
+    clearProgressInterval,
+    deleteSchedule,
+    getProgress,
     setThirdPartyStorage,
     setDefaultOptions,
     setBackupSchedule,
-    isChanged,
-    toDefault,
     selectedStorageType,
     seStorageType,
     setCommonThirdPartyList,
-
     selectedPeriodLabel,
     selectedWeekdayLabel,
+    selectedWeekday,
     selectedHour,
     selectedMonthDay,
     selectedMaxCopiesNumber,
-
     selectedPeriodNumber,
-    backupSchedule,
-    deleteSchedule,
     selectedFolderId,
     selectedStorageId,
-    selectedWeekday,
-    clearProgressInterval,
-    getProgress,
-    commonThirdPartyList,
+    isChanged,
+    toDefault,
 
     isCheckedThirdPartyStorage,
     isCheckedThirdParty,

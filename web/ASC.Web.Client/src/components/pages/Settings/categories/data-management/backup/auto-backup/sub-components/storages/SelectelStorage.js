@@ -63,7 +63,7 @@ class SelectelStorage extends React.Component {
 
     if (isReset && isReset !== prevProps.isReset) {
       onSetFormSettings(null, null, this.defaultFormSettings);
-      console.log("onSetFormSettings update", this.defaultFormSettings);
+
       this.setState({
         formSettings: {
           ...this.defaultFormSettings,

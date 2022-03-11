@@ -1,9 +1,10 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
-import SelectFolderInput from "files/SelectFolderInput";
-import ScheduleComponent from "./ScheduleComponent";
 import { inject, observer } from "mobx-react";
 import { BackupTypes } from "@appserver/common/constants";
+import SelectFolderInput from "files/SelectFolderInput";
+import ScheduleComponent from "./ScheduleComponent";
+
 class ThirdPartyModule extends React.PureComponent {
   constructor(props) {
     super(props);

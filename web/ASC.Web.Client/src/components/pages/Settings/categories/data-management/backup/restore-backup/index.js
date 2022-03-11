@@ -415,7 +415,6 @@ class RestoreBackup extends React.Component {
 
         {isVisibleDialog && (
           <BackupListModalDialog
-            t={t}
             isVisibleDialog={isVisibleDialog}
             onModalClose={this.onModalClose}
             isNotify={isNotify}

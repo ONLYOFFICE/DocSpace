@@ -1,40 +1,38 @@
 import React from "react";
-import ComboBox from "@appserver/components/combobox";
-import { useTranslation } from "react-i18next";
-import { StyledScheduleComponent } from "../../StyledBackup";
-import Text from "@appserver/components/text";
 import { inject, observer } from "mobx-react";
+import { useTranslation } from "react-i18next";
+import ComboBox from "@appserver/components/combobox";
+import Text from "@appserver/components/text";
+import { StyledScheduleComponent } from "../../StyledBackup";
+import { BackupTypes } from "@appserver/common/constants";
 
+const { EveryWeekType, EveryMonthType } = BackupTypes;
 const ScheduleComponent = ({
   selectedPeriodLabel,
   selectedWeekdayLabel,
   selectedHour,
   selectedMonthDay,
   selectedMaxCopiesNumber,
-
   setMaxCopies,
   setPeriod,
   setWeekday,
   setMonthNumber,
   setTime,
-
   isLoadingData,
-  isDisableOptions,
-
   periodsObject,
   weekdaysLabelArray,
+  weeklySchedule,
   monthNumbersArray,
   hoursArray,
   maxNumberCopiesArray,
-
-  selectedPeriodNumber,
+  monthlySchedule,
 }) => {
   const { t } = useTranslation("Settings");
 
   return (
     <StyledScheduleComponent
-      weeklySchedule={selectedPeriodNumber === "1"}
-      monthlySchedule={selectedPeriodNumber === "2"}
+      weeklySchedule={weeklySchedule}
+      monthlySchedule={monthlySchedule}
       className="backup_schedule-component"
     >
       <Text className="schedule_description"> {t("AutoSavePeriod")}</Text>
@@ -46,14 +44,14 @@ const ScheduleComponent = ({
             label: selectedPeriodLabel,
           }}
           onSelect={setPeriod}
-          isDisabled={isLoadingData || isDisableOptions}
+          isDisabled={isLoadingData}
           noBorder={false}
           scaled={false}
           scaledOptions={true}
           dropDownMaxHeight={500}
           className="schedule-backup_combobox days_option"
         />
-        {selectedPeriodNumber === "1" && (
+        {weeklySchedule && (
           <ComboBox
             options={weekdaysLabelArray}
             selectedOption={{
@@ -61,7 +59,7 @@ const ScheduleComponent = ({
               label: selectedWeekdayLabel,
             }}
             onSelect={setWeekday}
-            isDisabled={isLoadingData || isDisableOptions}
+            isDisabled={isLoadingData}
             noBorder={false}
             scaled={false}
             scaledOptions={true}
@@ -69,7 +67,7 @@ const ScheduleComponent = ({
             className="schedule-backup_combobox weekly_option"
           />
         )}
-        {selectedPeriodNumber === "2" && (
+        {monthlySchedule && (
           <ComboBox
             options={monthNumbersArray}
             selectedOption={{
@@ -77,7 +75,7 @@ const ScheduleComponent = ({
               label: selectedMonthDay,
             }}
             onSelect={setMonthNumber}
-            isDisabled={isLoadingData || isDisableOptions}
+            isDisabled={isLoadingData}
             noBorder={false}
             scaled={false}
             scaledOptions={true}
@@ -92,7 +90,7 @@ const ScheduleComponent = ({
             label: selectedHour,
           }}
           onSelect={setTime}
-          isDisabled={isLoadingData || isDisableOptions}
+          isDisabled={isLoadingData}
           noBorder={false}
           scaled={false}
           scaledOptions={true}
@@ -110,7 +108,7 @@ const ScheduleComponent = ({
             })}`,
           }}
           onSelect={setMaxCopies}
-          isDisabled={isLoadingData || isDisableOptions}
+          isDisabled={isLoadingData}
           noBorder={false}
           scaled={false}
           scaledOptions={true}
@@ -120,9 +118,6 @@ const ScheduleComponent = ({
       </div>
     </StyledScheduleComponent>
   );
-};
-ScheduleComponent.defaultProps = {
-  isDisableOptions: false,
 };
 
 export default inject(({ backup }) => {
@@ -140,18 +135,22 @@ export default inject(({ backup }) => {
     selectedPeriodNumber,
   } = backup;
 
+  const weeklySchedule = +selectedPeriodNumber === EveryWeekType;
+  const monthlySchedule = +selectedPeriodNumber === EveryMonthType;
+
   return {
     selectedPeriodLabel,
     selectedWeekdayLabel,
     selectedHour,
     selectedMonthDay,
     selectedMaxCopiesNumber,
-    selectedPeriodNumber,
-
     setPeriod,
     setMonthNumber,
     setTime,
     setMaxCopies,
     setWeekday,
+
+    weeklySchedule,
+    monthlySchedule,
   };
 })(observer(ScheduleComponent));

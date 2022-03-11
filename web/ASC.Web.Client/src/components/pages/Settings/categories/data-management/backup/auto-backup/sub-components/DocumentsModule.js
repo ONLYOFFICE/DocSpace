@@ -1,8 +1,8 @@
 import React from "react";
-import SelectFolderInput from "files/SelectFolderInput";
-import ScheduleComponent from "./ScheduleComponent";
 import { inject, observer } from "mobx-react";
 import { BackupTypes } from "@appserver/common/constants";
+import SelectFolderInput from "files/SelectFolderInput";
+import ScheduleComponent from "./ScheduleComponent";
 
 class DocumentsModule extends React.PureComponent {
   constructor(props) {
