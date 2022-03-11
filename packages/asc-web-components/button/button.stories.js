@@ -129,7 +129,6 @@ const ScaleTemplate = (args) => {
           {...args}
           primary
           size={size}
-          isLoading={true}
           label={`Scale ${size[0].toUpperCase()}${size.slice(1)}`}
         />
       ))}
@@ -138,7 +137,6 @@ const ScaleTemplate = (args) => {
           key={`all-scale-sec-${size}`}
           {...args}
           size={size}
-          isLoading={true}
           label={`Scale ${size[0].toUpperCase()}${size.slice(1)}`}
         />
       ))}
@@ -182,7 +180,7 @@ const ClickedTemplate = (args) => {
           primary
           size={size}
           isClicked={true}
-          label={`Disabled ${size[0].toUpperCase()}${size.slice(1)}`}
+          label={`Clicked ${size[0].toUpperCase()}${size.slice(1)}`}
         />
       ))}
       {sizes.map((size) => (
@@ -208,7 +206,7 @@ const HoveredTemplate = (args) => {
           primary
           size={size}
           isHovered={true}
-          label={`Disabled ${size[0].toUpperCase()}${size.slice(1)}`}
+          label={`Hovered ${size[0].toUpperCase()}${size.slice(1)}`}
         />
       ))}
       {sizes.map((size) => (
@@ -217,7 +215,7 @@ const HoveredTemplate = (args) => {
           {...args}
           size={size}
           isHovered={true}
-          label={`Clicked ${size[0].toUpperCase()}${size.slice(1)}`}
+          label={`Hovered ${size[0].toUpperCase()}${size.slice(1)}`}
         />
       ))}
     </Wrapper>
