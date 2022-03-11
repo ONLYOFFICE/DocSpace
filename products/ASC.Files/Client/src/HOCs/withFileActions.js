@@ -189,6 +189,11 @@ export default function withFileActions(WrappedFileItem) {
           this.onMarkAsRead(id);
 
         if (canWebEdit || canViewedDocs) {
+          if (isMobile) {
+            const url = `/products/files/deeplink?fileId=${id}`;
+            return window.open(url, "_self");
+          }
+
           let tab =
             !isDesktop && !isFolder
               ? window.open(

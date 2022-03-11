@@ -19,9 +19,11 @@ import Home from "./pages/Home";
 import Settings from "./pages/Settings";
 import VersionHistory from "./pages/VersionHistory";
 import PrivateRoomsPage from "./pages/PrivateRoomsPage";
+import DeepLinkPage from "./pages/DeepLink";
 import ErrorBoundary from "@appserver/common/components/ErrorBoundary";
 import Panels from "./components/FilesPanels";
 import { AppServerConfig } from "@appserver/common/constants";
+import { isMobile } from "react-device-detect";
 
 const { proxyURL } = AppServerConfig;
 const homepage = config.homepage;
@@ -34,6 +36,7 @@ const HISTORY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/:fileId/history");
 const PRIVATE_ROOMS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/private");
 const FILTER_URL = combineUrl(PROXY_HOMEPAGE_URL, "/filter");
 const MEDIA_VIEW_URL = combineUrl(PROXY_HOMEPAGE_URL, "/#preview");
+const DEEP_LINK_URL = combineUrl(PROXY_HOMEPAGE_URL, "/deeplink");
 
 if (!window.AppServer) {
   window.AppServer = {};
@@ -128,6 +131,10 @@ class FilesContent extends React.Component {
           <PrivateRoute exact path={HOME_URL} component={Home} />
           <PrivateRoute path={FILTER_URL} component={Home} />
           <PrivateRoute path={MEDIA_VIEW_URL} component={Home} />
+          <PrivateRoute
+            path={DEEP_LINK_URL}
+            component={isMobile ? DeepLinkPage : Error404Route}
+          />
           <PrivateRoute component={Error404Route} />
         </Switch>
       </>
