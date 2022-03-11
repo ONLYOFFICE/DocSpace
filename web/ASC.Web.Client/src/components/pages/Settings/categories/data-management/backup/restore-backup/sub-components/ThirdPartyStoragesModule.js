@@ -1,12 +1,12 @@
 import React from "react";
-import { getOptions } from "../../GetOptions";
+import { inject, observer } from "mobx-react";
 import ComboBox from "@appserver/components/combobox";
 import { ThirdPartyStorages } from "@appserver/common/constants";
 import GoogleCloudStorage from "./storages/GoogleCloudStorage";
 import AmazonStorage from "./storages/AmazonStorage";
 import RackspaceStorage from "./storages/RackspaceStorage";
 import SelectelStorage from "./storages/SelectelStorage";
-import { inject, observer } from "mobx-react";
+import { getOptions } from "../../GetOptions";
 class ThirdPartyStoragesModule extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -71,7 +71,6 @@ class ThirdPartyStoragesModule extends React.PureComponent {
 
     const { GoogleId, RackspaceId, SelectelId, AmazonId } = ThirdPartyStorages;
 
-    console.log("render storage", this.state, this.props);
     return (
       <>
         <ComboBox

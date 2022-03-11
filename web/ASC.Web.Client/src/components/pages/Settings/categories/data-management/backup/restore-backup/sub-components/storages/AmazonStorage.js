@@ -40,13 +40,7 @@ class AmazonStorage extends React.PureComponent {
     this.setState({ formSettings: { ...formSettings, ...{ [name]: value } } });
   };
   render() {
-    const {
-      t,
-      isInitialLoading,
-      isErrors,
-      availableStorage,
-      selectedId,
-    } = this.props;
+    const { t, isErrors, availableStorage, selectedId } = this.props;
 
     const { formSettings } = this.state;
     return (
@@ -54,7 +48,6 @@ class AmazonStorage extends React.PureComponent {
         <AmazonSettings
           formSettings={formSettings}
           onChange={this.onChange}
-          isLoading={isInitialLoading}
           isError={isErrors}
           selectedStorage={availableStorage[selectedId]}
           t={t}
@@ -66,7 +59,7 @@ class AmazonStorage extends React.PureComponent {
           scale={true}
           value={formSettings.filePath}
           onChange={this.onChange}
-          isDisabled={isInitialLoading || !availableStorage[selectedId]?.isSet}
+          isDisabled={!availableStorage[selectedId]?.isSet}
           placeholder={t("Path")}
           tabIndex={this.namesArray.length}
           hasError={isErrors?.filePath}

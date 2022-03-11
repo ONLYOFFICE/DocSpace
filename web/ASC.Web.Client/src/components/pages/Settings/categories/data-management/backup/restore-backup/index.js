@@ -1,10 +1,17 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
+import { inject, observer } from "mobx-react";
+import { isMobileOnly } from "react-device-detect";
 import Button from "@appserver/components/button";
 import Loader from "@appserver/components/loader";
 import Checkbox from "@appserver/components/checkbox";
 import Text from "@appserver/components/text";
 import RadioButton from "@appserver/components/radio-button";
+import toastr from "@appserver/components/toast/toastr";
+import { startRestore } from "@appserver/common/api/portal";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig, BackupTypes } from "@appserver/common/constants";
+import { request } from "@appserver/common/api/client";
 import SelectFolderDialog from "files/SelectFolderDialog";
 import { StyledRestoreBackup } from "./../StyledBackup";
 import BackupListModalDialog from "./sub-components/backup-list";
@@ -12,14 +19,7 @@ import Documents from "./sub-components/DocumentsModule";
 import ThirdPartyResources from "./sub-components/ThirdPartyResourcesModule";
 import ThirdPartyStorages from "./sub-components/ThirdPartyStoragesModule";
 import LocalFile from "./sub-components/LocalFileModule";
-import toastr from "@appserver/components/toast/toastr";
-import { startRestore } from "@appserver/common/api/portal";
-import { combineUrl } from "@appserver/common/utils";
-import { AppServerConfig, BackupTypes } from "@appserver/common/constants";
 import config from "../../../../../../../../package.json";
-import { request } from "@appserver/common/api/client";
-import { inject, observer } from "mobx-react";
-import { isMobileOnly } from "react-device-detect";
 
 const {
   DocumentModuleType,
@@ -46,8 +46,6 @@ class RestoreBackup extends React.Component {
       isInitialLoading: isMobileOnly ? true : false,
     };
 
-    this._isMounted = false;
-
     this.switches = [
       "isCheckedLocalFile",
       "isCheckedDocuments",
@@ -68,7 +66,7 @@ class RestoreBackup extends React.Component {
       const commonThirdPartyList = await SelectFolderDialog.getCommonThirdPartyList();
       commonThirdPartyList && setCommonThirdPartyList(commonThirdPartyList);
     } catch (error) {
-      console.error(error);
+      toastr.error(error);
     }
 
     this.setState({
@@ -77,13 +75,10 @@ class RestoreBackup extends React.Component {
   };
 
   componentDidMount() {
-    this._isMounted = true;
-
     isMobileOnly && this.setBasicSettings();
   }
 
   componentWillUnmount() {
-    this._isMounted = false;
     const { clearProgressInterval } = this.props;
     clearProgressInterval();
   }
@@ -245,18 +240,6 @@ class RestoreBackup extends React.Component {
       }
       storageParams.push(obj);
     }
-
-    console.log(
-      "backupId",
-      backupId,
-      "storageType",
-      storageType,
-      "storageParams",
-      storageParams,
-      "isNotify",
-      isNotify,
-      selectedFile
-    );
 
     let checkedFile;
     try {
@@ -492,11 +475,11 @@ export default inject(({ auth, backup }) => {
   } = backup;
 
   return {
-    socketHelper,
-    downloadingProgress,
-    getProgress,
     clearProgressInterval,
     commonThirdPartyList,
+    downloadingProgress,
+    socketHelper,
     setCommonThirdPartyList,
+    getProgress,
   };
 })(withTranslation(["Settings", "Common"])(observer(RestoreBackup)));

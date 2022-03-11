@@ -1,12 +1,12 @@
 import React, { useCallback } from "react";
 import { FixedSizeList as List } from "react-window";
+import { ReactSVG } from "react-svg";
 import AutoSizer from "react-virtualized-auto-sizer";
 import CustomScrollbarsVirtualList from "@appserver/components/scrollbar/custom-scrollbars-virtual-list";
-import TrashIcon from "../../../../../../../../../../../../public/images/delete.react.svg";
-import { StyledBackupList } from "../../../StyledBackup";
-import { ReactSVG } from "react-svg";
 import Text from "@appserver/components/text";
 import RadioButton from "@appserver/components/radio-button";
+import TrashIcon from "../../../../../../../../../../../../public/images/delete.react.svg";
+import { StyledBackupList } from "../../../StyledBackup";
 
 const BackupListBody = ({
   filesList,

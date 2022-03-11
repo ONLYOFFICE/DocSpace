@@ -35,13 +35,7 @@ class GoogleCloudStorage extends React.Component {
     this.setState({ formSettings: { ...formSettings, ...{ [name]: value } } });
   };
   render() {
-    const {
-      t,
-      isInitialLoading,
-      isErrors,
-      availableStorage,
-      selectedId,
-    } = this.props;
+    const { t, isErrors, availableStorage, selectedId } = this.props;
 
     const { formSettings } = this.state;
 
@@ -60,7 +54,7 @@ class GoogleCloudStorage extends React.Component {
           scale={true}
           value={formSettings.filePath}
           onChange={this.onChange}
-          isDisabled={isInitialLoading || !availableStorage[selectedId]?.isSet}
+          isDisabled={!availableStorage[selectedId]?.isSet}
           placeholder={t("Path")}
           tabIndex={2}
           hasError={isErrors?.filePath}

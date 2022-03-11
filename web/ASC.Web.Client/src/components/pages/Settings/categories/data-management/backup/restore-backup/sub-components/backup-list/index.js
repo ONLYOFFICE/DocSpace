@@ -1,24 +1,24 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 import { withTranslation } from "react-i18next";
 import ModalDialog from "@appserver/components/modal-dialog";
 import Text from "@appserver/components/text";
 import Button from "@appserver/components/button";
 import Link from "@appserver/components/link";
-import { StyledBackupList } from "../../../StyledBackup";
 import {
   deleteBackup,
   deleteBackupHistory,
   getBackupHistory,
   startRestore,
 } from "@appserver/common/api/portal";
-import BackupListBody from "./BackupListBody";
+import toastr from "@appserver/components/toast/toastr";
+import Loaders from "@appserver/common/components/Loaders";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../../../../../../../../../package.json";
-import toastr from "@appserver/components/toast/toastr";
-import Loaders from "@appserver/common/components/Loaders";
-import { inject, observer } from "mobx-react";
+import { StyledBackupList } from "../../../StyledBackup";
+import BackupListBody from "./BackupListBody";
 
 class BackupListModalDialog extends React.Component {
   constructor(props) {

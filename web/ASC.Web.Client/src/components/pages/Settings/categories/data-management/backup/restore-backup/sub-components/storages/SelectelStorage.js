@@ -36,13 +36,7 @@ class RackspaceStorage extends React.Component {
   };
 
   render() {
-    const {
-      t,
-      isInitialLoading,
-      isErrors,
-      availableStorage,
-      selectedId,
-    } = this.props;
+    const { t, isErrors, availableStorage, selectedId } = this.props;
 
     const { formSettings } = this.state;
 
@@ -51,7 +45,6 @@ class RackspaceStorage extends React.Component {
         <SelectelSettings
           formSettings={formSettings}
           onChange={this.onChange}
-          isLoading={isInitialLoading}
           isError={isErrors}
           selectedStorage={availableStorage[selectedId]}
         />
@@ -62,7 +55,7 @@ class RackspaceStorage extends React.Component {
           scale={true}
           value={formSettings.filePath}
           onChange={this.onChange}
-          isDisabled={isInitialLoading || !availableStorage[selectedId]?.isSet}
+          isDisabled={!availableStorage[selectedId]?.isSet}
           placeholder={t("Path")}
           tabIndex={this.namesArray.length}
           hasError={isErrors?.filePath}
