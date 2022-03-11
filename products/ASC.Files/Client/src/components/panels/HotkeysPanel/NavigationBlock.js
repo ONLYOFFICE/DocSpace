@@ -17,12 +17,6 @@ const NavigationBlock = ({ t, textStyles, keyTextStyles, AltKey }) => {
           <Text {...keyTextStyles}>v</Text>
         </>
       </Row>
-      <Row className="hotkeys_row">
-        <>
-          <Text {...textStyles}>{t("HotkeysGoToTheTopOfTheList")}</Text>
-          <Text {...keyTextStyles}>{AltKey} + ↑</Text>
-        </>
-      </Row>
     </>
   );
 };

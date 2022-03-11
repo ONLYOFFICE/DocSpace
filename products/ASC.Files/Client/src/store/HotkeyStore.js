@@ -53,7 +53,7 @@ class HotkeyStore {
       item = item[0].getElementsByClassName("table-container_cell");
     }
 
-    if (item) {
+    if (item && item[0]) {
       const el = item[0];
       const rect = el.getBoundingClientRect();
       const scroll = document.getElementsByClassName("section-scroll")[0];

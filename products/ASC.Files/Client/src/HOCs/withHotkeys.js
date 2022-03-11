@@ -221,16 +221,6 @@ const withHotkeys = (Component) => {
     //Upload folder
     useHotkeys("Shift+i", () => uploadFile(true), hotkeysFilter);
 
-    //Go to the top of the list
-    useHotkeys(
-      "Alt+UP",
-      () => {
-        const elem = document.getElementsByClassName("section-scroll");
-        elem.length && elem[0].scrollTo(0, 0);
-      },
-      hotkeysFilter
-    );
-
     return <Component {...props} />;
   };
 
