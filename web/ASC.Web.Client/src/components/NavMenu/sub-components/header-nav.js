@@ -173,10 +173,12 @@ const HeaderNav = ({
 
     return actions;
   }, [onProfileClick, onAboutClick, onLogoutClick]);
+
+  const isDeepLinkPage = window.location.href.includes("/deeplink");
   //console.log("HeaderNav render");
   return (
     <StyledNav className="profileMenuIcon hidingHeader">
-      {isAuthenticated && user ? (
+      {isAuthenticated && user && !isDeepLinkPage ? (
         <>
           <ProfileActions
             userActions={getCurrentUserActions()}
