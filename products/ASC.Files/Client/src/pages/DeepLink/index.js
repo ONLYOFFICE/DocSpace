@@ -10,6 +10,11 @@ import api from "@appserver/common/api";
 import { getTitleWithoutExst } from "../../helpers/files-helpers";
 import { inject, observer } from "mobx-react";
 import AppLoader from "@appserver/common/components/AppLoader";
+import {
+  DEEP_LINK,
+  DOCUMENTS_FOR_IOS,
+  DOCUMENTS_FOR_ANDROID,
+} from "../../helpers/constants";
 
 const StyledBody = styled.div`
   display: flex;
@@ -38,7 +43,7 @@ const StyledFileTile = styled.div`
 `;
 
 const DeepLinkPage = (props) => {
-  const { t, location, getIconSrc, user, openDocEditor } = props;
+  const { t, location, getIconSrc, user } = props;
   const [title, setTitle] = useState("");
   const [icon, setIcon] = useState("");
   const [deepLink, setDeepLink] = useState("");
@@ -70,7 +75,7 @@ const DeepLinkPage = (props) => {
     };
     const deepLinkData = btoa(JSON.stringify(jsonData));
 
-    return `oodocuments:://openfile?data=${deepLinkData}`;
+    return `${DEEP_LINK}${deepLinkData}`;
   };
 
   const onOpenAppClick = () => {
@@ -82,11 +87,9 @@ const DeepLinkPage = (props) => {
           navigator.userAgent.includes("iPhone;") ||
           navigator.userAgent.includes("iPad;")
         ) {
-          window.location.replace("https://apps.apple.com/app/id944896972");
+          window.location.replace(DOCUMENTS_FOR_IOS);
         } else {
-          window.location.replace(
-            "https://play.google.com/store/apps/details?id=com.onlyoffice.documents"
-          );
+          window.location.replace(DOCUMENTS_FOR_ANDROID);
         }
       }
     }, 1500);
@@ -136,10 +139,9 @@ const DeepLinkPage = (props) => {
   );
 };
 
-export default inject(({ auth, settingsStore, filesStore }) => {
+export default inject(({ auth, settingsStore }) => {
   return {
     getIconSrc: settingsStore.getIconSrc,
     user: auth.userStore.user,
-    openDocEditor: filesStore.openDocEditor,
   };
 })(withRouter(withTranslation(["DeepLink"])(observer(DeepLinkPage))));
