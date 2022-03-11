@@ -101,14 +101,6 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
 
   padding: ${(props) => `${props.theme.button.padding[props.size]}`};
 
-  ${({ icon }) =>
-    icon &&
-    css`
-      padding-top: 12px;
-      padding-bottom: 12px;
-      height: auto;
-    `}
-
   ${(props) => (props.minwidth ? `min-width: ${props.minwidth};` : null)}
 
   cursor: ${(props) =>
