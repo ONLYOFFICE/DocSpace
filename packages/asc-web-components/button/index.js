@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import Loader from "../loader";
 import StyledButton from "./styled-button";
 import Base from "../themes/base";
-import { isDesktop } from "../utils/device";
 
 // eslint-disable-next-line no-unused-vars, react/prop-types
 
@@ -72,7 +71,9 @@ Button.propTypes = {
   label: PropTypes.string,
   /** Tells when the button should be primary */
   primary: PropTypes.bool,
-  /** Size of button */
+  /** Size of button.     
+
+   The normal size equals 36px and 40px in height on the Desktop and Touchcreen devices. */
   size: PropTypes.oneOf(["extraSmall", "small", "normal", "medium"]),
   /** Scale width of button to 100% */
   scale: PropTypes.bool,

@@ -32,7 +32,9 @@ const Wrapper = (props) => (
   </div>
 );
 
-const Template = (args) => <Button {...args} />;
+const Template = (args) => (
+  <Button {...args} onClick={() => alert("Button clicked")} />
+);
 const PrimaryTemplate = (args) => {
   return (
     <Wrapper>
