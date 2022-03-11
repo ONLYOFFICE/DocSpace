@@ -7,7 +7,7 @@ import Base from "../themes/base";
 // eslint-disable-next-line no-unused-vars, react/prop-types
 
 const Icon = ({ size, primary, icon, isHovered }) => (
-  <div className="btnIcon">
+  <span className="btnIcon">
     {icon &&
       React.cloneElement(icon, {
         //isfill: true,
@@ -25,7 +25,7 @@ const Icon = ({ size, primary, icon, isHovered }) => (
           ? "#FFFFFF"
           : "#333333",
       })}
-  </div>
+  </span>
 );
 
 Icon.propTypes = {
@@ -45,23 +45,25 @@ const Button = React.forwardRef((props, ref) => {
 
   return (
     <StyledButton innerRef={ref} {...props}>
-      {isLoading || icon ? (
-        isLoading ? (
-          <Loader
-            type="oval"
-            size={
-              size === "medium" ? "20px" : size === "normal" ? "16px" : "14px"
-            }
-            color={primary ? "#FFFFFF" : "#333333"}
-            className="loader"
-          />
+      <div className="button-content">
+        {isLoading || icon ? (
+          isLoading ? (
+            <Loader
+              type="oval"
+              size={
+                size === "medium" ? "20px" : size === "normal" ? "16px" : "12px"
+              }
+              color={primary ? "#FFFFFF" : "#333333"}
+              className="loader"
+            />
+          ) : (
+            <Icon {...iconProps} />
+          )
         ) : (
-          <Icon {...iconProps} />
-        )
-      ) : (
-        ""
-      )}
-      {label}
+          ""
+        )}
+        {label}
+      </div>
     </StyledButton>
   );
 });

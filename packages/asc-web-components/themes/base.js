@@ -102,8 +102,8 @@ const Base = {
     },
 
     lineHeight: {
-      extraSmall: "12px",
-      small: "14px",
+      extraSmall: "15px",
+      small: "20px",
       normalDesktop: "16px",
       normalTouchscreen: "16px",
       medium: "22px",
@@ -118,7 +118,7 @@ const Base = {
     },
 
     padding: {
-      extraSmall: "4.5px 12px",
+      extraSmall: "5px 12px",
       small: "6px 28px",
       normalDesktop: "10px 28px",
       normalTouchscreen: "12px 28px",

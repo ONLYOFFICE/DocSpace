@@ -44,7 +44,6 @@ const hoverCss = css`
 `;
 
 const heightStyle = (props) => props.theme.button.height[props.size];
-const lineHeightStyle = (props) => props.theme.button.lineHeight[props.size];
 const fontSizeStyle = (props) => props.theme.button.fontSize[props.size];
 
 const ButtonWrapper = ({ innerRef, ...props }) => {
@@ -79,7 +78,6 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
       : props.size,
 }))`
   height: ${(props) => heightStyle(props)};
-  line-height: ${(props) => lineHeightStyle(props)};
   font-size: ${(props) => fontSizeStyle(props)};
 
   color: ${(props) =>
@@ -163,12 +161,18 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
     outline: ${(props) => props.theme.button.outline};
   }
 
+  .button-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+  }
+
   .btnIcon,
   .loader {
-    line-height: ${(props) => lineHeightStyle(props)};
-    margin-right: 4px;
-    display: ${(props) => props.theme.button.display};
-    vertical-align: ${(props) => props.theme.button.topVerticalAlign};
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   .loader {
