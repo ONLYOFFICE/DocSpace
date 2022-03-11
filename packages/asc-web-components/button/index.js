@@ -105,7 +105,7 @@ Button.propTypes = {
 Button.defaultProps = {
   label: "",
   primary: false,
-  size: "base",
+  size: "extraSmall",
   theme: Base,
   scale: false,
   icon: null,

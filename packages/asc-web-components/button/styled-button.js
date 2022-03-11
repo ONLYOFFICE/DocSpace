@@ -47,21 +47,7 @@ const heightStyle = (props) => props.theme.button.height[props.size];
 const lineHeightStyle = (props) => props.theme.button.lineHeight[props.size];
 const fontSizeStyle = (props) => props.theme.button.fontSize[props.size];
 
-const ButtonWrapper = ({
-  primary,
-  scale,
-  size,
-  isHovered,
-  isClicked,
-  isDisabled,
-  disableHover,
-  isLoading,
-  label,
-  innerRef,
-  minWidth,
-  ...props
-}) => {
-  console.log(size);
+const ButtonWrapper = ({ innerRef, ...props }) => {
   return <button ref={innerRef} type="button" {...props}></button>;
 };
 

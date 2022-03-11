@@ -224,7 +224,7 @@ const HoveredTemplate = (args) => {
 
 export const Default = Template.bind({});
 Default.args = {
-  size: "small",
+  size: "extraSmall",
   label: "Button",
 };
 export const PrimaryButtons = PrimaryTemplate.bind({});
