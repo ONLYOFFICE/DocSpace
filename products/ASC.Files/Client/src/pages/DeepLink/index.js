@@ -43,7 +43,7 @@ const StyledFileTile = styled.div`
 `;
 
 const DeepLinkPage = (props) => {
-  const { t, location, getIconSrc, user } = props;
+  const { t, location, getIconSrc, user, history } = props;
   const [title, setTitle] = useState("");
   const [icon, setIcon] = useState("");
   const [deepLink, setDeepLink] = useState("");
@@ -79,20 +79,20 @@ const DeepLinkPage = (props) => {
   };
 
   const onOpenAppClick = () => {
+    const nav = navigator.userAgent;
+    const storeUrl =
+      nav.includes("iPhone;") || nav.includes("iPad;")
+        ? DOCUMENTS_FOR_IOS
+        : DOCUMENTS_FOR_ANDROID;
+
     window.location = deepLink;
 
     setTimeout(() => {
       if (document.hasFocus()) {
-        if (
-          navigator.userAgent.includes("iPhone;") ||
-          navigator.userAgent.includes("iPad;")
-        ) {
-          window.location.replace(DOCUMENTS_FOR_IOS);
-        } else {
-          window.location.replace(DOCUMENTS_FOR_ANDROID);
-        }
+        window.location.replace(storeUrl);
       }
-    }, 1500);
+      history.goBack();
+    }, 3000);
   };
 
   const onStayBrowserClick = () => {
