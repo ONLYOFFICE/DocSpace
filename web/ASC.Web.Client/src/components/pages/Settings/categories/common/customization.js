@@ -323,7 +323,7 @@ class Customization extends React.Component {
                 "Settings:CustomizationDescription"
               )}`}</div>
               <div className="category-item-wrapper">
-                <LanguageAndTimeZone sectionWidth={context.sectionWidth} />
+                <LanguageAndTimeZone />
               </div>
               <div className="category-border"></div>
               <div className="category-item-wrapper">
