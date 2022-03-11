@@ -41,7 +41,6 @@ const DeepLinkPage = (props) => {
   const { t, location, getIconSrc, user, openDocEditor } = props;
   const [title, setTitle] = useState("");
   const [icon, setIcon] = useState("");
-  const [fileUrl, setFileUrl] = useState("");
   const [deepLink, setDeepLink] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
@@ -52,7 +51,6 @@ const DeepLinkPage = (props) => {
 
     setTitle(getTitleWithoutExst(file));
     setIcon(getIconSrc(file.fileExst, 32));
-    setFileUrl(file.webUrl);
     setDeepLink(getDeepLink(file));
     setIsLoading(true);
   }, []);
@@ -94,6 +92,12 @@ const DeepLinkPage = (props) => {
     }, 1500);
   };
 
+  const onStayBrowserClick = () => {
+    const fileId = queryString.parse(location.search).fileId;
+    const url = `/products/files/doceditor?fileId=${fileId}`;
+    return window.open(url, "_self");
+  };
+
   if (!isLoading) return <AppLoader />;
   return (
     <StyledBody>
@@ -122,7 +126,7 @@ const DeepLinkPage = (props) => {
         className="link"
         color="#316DAA"
         fontWeight="600"
-        href={fileUrl}
+        onClick={onStayBrowserClick}
         target="_self"
         type="action"
       >
