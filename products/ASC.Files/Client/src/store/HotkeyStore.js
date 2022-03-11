@@ -30,7 +30,7 @@ class HotkeyStore {
     this.uploadDataStore = uploadDataStore;
   }
 
-  activateHotkeys = () => {
+  activateHotkeys = (isDefaultKeys) => {
     const { selection, hotkeyCaret, viewAs } = this.filesStore;
 
     if (!hotkeyCaret) {
@@ -43,14 +43,14 @@ class HotkeyStore {
       this.filesStore.setHotkeyCaretStart(selection[0]);
     }
 
-    if (!hotkeyCaret) return;
+    if (!hotkeyCaret || isDefaultKeys) return;
 
     let item = document.getElementsByClassName(
       `${hotkeyCaret.id}_${hotkeyCaret.fileExst}`
     );
 
     if (viewAs === "table") {
-      item = item[0].getElementsByClassName("table-container_cell");
+      item = item && item[0].getElementsByClassName("table-container_cell");
     }
 
     if (item && item[0]) {
@@ -66,7 +66,7 @@ class HotkeyStore {
         //console.log("element is visible");
       } else {
         el.scrollIntoView({ block: "center" });
-        //console.log("element is not visible");
+        console.log("element is not visible");
       }
     }
   };

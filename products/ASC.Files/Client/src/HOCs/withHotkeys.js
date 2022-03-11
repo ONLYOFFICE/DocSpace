@@ -51,7 +51,10 @@ const withHotkeys = (Component) => {
     };
 
     const onKeyDown = (e) => {
-      activateHotkeys();
+      const isDefaultKeys =
+        ["PageUp", "PageDown", "Home", "End"].indexOf(e.code) > -1;
+
+      activateHotkeys(isDefaultKeys);
       if (
         ["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(
           e.code
