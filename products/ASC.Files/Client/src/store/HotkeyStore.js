@@ -31,7 +31,7 @@ class HotkeyStore {
   }
 
   activateHotkeys = () => {
-    const { selection, hotkeyCaret } = this.filesStore;
+    const { selection, hotkeyCaret, viewAs } = this.filesStore;
 
     if (!hotkeyCaret) {
       const scroll = document.getElementsByClassName("section-scroll");
@@ -41,6 +41,33 @@ class HotkeyStore {
     if (!hotkeyCaret && selection.length) {
       this.filesStore.setHotkeyCaret(selection[0]);
       this.filesStore.setHotkeyCaretStart(selection[0]);
+    }
+
+    if (!hotkeyCaret) return;
+
+    let item = document.getElementsByClassName(
+      `${hotkeyCaret.id}_${hotkeyCaret.fileExst}`
+    );
+
+    if (viewAs === "table") {
+      item = item[0].getElementsByClassName("table-container_cell");
+    }
+
+    if (item) {
+      const el = item[0];
+      const rect = el.getBoundingClientRect();
+      const scroll = document.getElementsByClassName("section-scroll")[0];
+      const scrollRect = scroll.getBoundingClientRect();
+
+      if (
+        scrollRect.top + scrollRect.height - rect.height > rect.top &&
+        scrollRect.top < rect.top + el.offsetHeight
+      ) {
+        //console.log("element is visible");
+      } else {
+        el.scrollIntoView({ block: "center" });
+        //console.log("element is not visible");
+      }
     }
   };
 

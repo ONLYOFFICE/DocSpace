@@ -39,6 +39,7 @@ const withHotkeys = (Component) => {
 
       hideArticle,
       uploadFile,
+      someDialogIsOpen,
     } = props;
 
     const hotkeysFilter = {
@@ -46,14 +47,24 @@ const withHotkeys = (Component) => {
         ev.target?.type === "checkbox" || ev.target?.tagName !== "INPUT",
       filterPreventDefault: false,
       enableOnTags: ["INPUT"],
+      enabled: !someDialogIsOpen,
     };
 
-    const onKeyDown = () => activateHotkeys();
+    const onKeyDown = (e) => {
+      activateHotkeys();
+      if (
+        ["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(
+          e.code
+        ) > -1
+      ) {
+        e.preventDefault();
+      }
+    };
 
     useEffect(() => {
-      document.addEventListener("keydown", onKeyDown);
+      window.addEventListener("keydown", onKeyDown);
 
-      return () => document.removeEventListener("keypress", onKeyDown);
+      return () => window.removeEventListener("keypress", onKeyDown);
     });
 
     //Select/deselect item
@@ -260,6 +271,7 @@ const withHotkeys = (Component) => {
         setHotkeyPanelVisible,
         setDeleteDialogVisible,
         setSelectFileDialogVisible,
+        someDialogIsOpen,
       } = dialogsStore;
       const {
         isAvailableOption,
@@ -300,6 +312,7 @@ const withHotkeys = (Component) => {
 
         hideArticle,
         uploadFile,
+        someDialogIsOpen,
       };
     }
   )(observer(WithHotkeys));

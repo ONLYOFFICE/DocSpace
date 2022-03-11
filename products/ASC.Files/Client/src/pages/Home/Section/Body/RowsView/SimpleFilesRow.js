@@ -219,7 +219,7 @@ const SimpleFilesRow = (props) => {
       <DragAndDrop
         data-title={item.title}
         value={value}
-        className={`files-item ${className}`}
+        className={`files-item ${className} ${item.id}_${item.file}`}
         onDrop={onDrop}
         onMouseDown={onMouseDown}
         dragging={dragging && isDragging}

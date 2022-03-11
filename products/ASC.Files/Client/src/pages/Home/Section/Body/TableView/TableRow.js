@@ -320,7 +320,7 @@ const FilesTableRow = (props) => {
     <StyledDragAndDrop
       data-title={item.title}
       value={value}
-      className={`files-item ${className} ${
+      className={`files-item ${className} ${item.id}_${item.fileExst} ${
         showHotkeyBorder
           ? "table-hotkey-border"
           : checkedProps || isActive

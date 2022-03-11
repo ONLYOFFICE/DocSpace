@@ -60,7 +60,7 @@ const FileTile = (props) => {
       <DragAndDrop
         data-title={item.title}
         value={value}
-        className={`files-item ${className}`}
+        className={`files-item ${className} ${item.id}_${item.fileExst}`}
         onDrop={onDrop}
         onMouseDown={onMouseDown}
         dragging={dragging && isDragging}
