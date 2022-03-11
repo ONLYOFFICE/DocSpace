@@ -15,6 +15,12 @@ import { LANGUAGE } from "@appserver/common/constants";
 import { convertLanguage } from "@appserver/common/utils";
 import withCultureNames from "@appserver/common/hoc/withCultureNames";
 import { LanguageTimeSettingsTooltip } from "./sub-components/common-tooltips";
+import { Consumer } from "@appserver/components/utils/context";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
+import config from "../../../../../../package.json";
+import history from "@appserver/common/history";
+import { isMobile } from "react-device-detect";
 const mapTimezonesToArray = (timezones) => {
   return timezones.map((timezone) => {
     return { key: timezone.id, label: timezone.displayName };
@@ -36,10 +42,6 @@ const StyledComponent = styled.div`
 
   .settings-block {
     margin-bottom: 24px;
-  }
-
-  .settings-block {
-    max-width: 343px;
   }
 
   .combo-button-label {
@@ -131,6 +133,7 @@ class LanguageAndTimeZone extends React.Component {
       isLoadingGreetingRestore: false,
       hasChanged: false,
       showReminder: false,
+      sectionWidth: null,
     };
   }
 
@@ -319,8 +322,23 @@ class LanguageAndTimeZone extends React.Component {
     }
   };
 
+  checkSectionWidth = (width) => {
+    if (this.state.sectionWidth === width) return;
+    this.setState({ sectionWidth: width });
+
+    if (width > 375 && !isMobile) {
+      history.push(
+        combineUrl(
+          AppServerConfig.proxyURL,
+          config.homepage,
+          "/settings/common/customization"
+        )
+      );
+    }
+  };
+
   render() {
-    const { t, theme, cultureNames, sectionWidth } = this.props;
+    const { t, theme, cultureNames } = this.props;
     const {
       isLoadedData,
       language,
@@ -335,84 +353,92 @@ class LanguageAndTimeZone extends React.Component {
       <LanguageTimeSettingsTooltip theme={theme} t={t} />
     );
 
-    return !isLoadedData ? (
-      <Loader className="pageLoader" type="rombs" size="40px" />
-    ) : (
-      <>
-        <StyledComponent>
-          <div className="category-item-heading">
-            <div className="category-item-title">
-              {t("StudioTimeLanguageSettings")}
-            </div>
-            <HelpButton
-              iconName="static/images/combined.shape.svg"
-              size={12}
-              tooltipContent={tooltipLanguageTimeSettings}
-            />
-          </div>
-          <div className="settings-block">
-            <FieldContainer
-              id="fieldContainerLanguage"
-              className="field-container-width"
-              labelText={`${t("Common:Language")}:`}
-              isVertical={true}
-            >
-              <ComboBox
-                id="comboBoxLanguage"
-                options={cultureNames}
-                selectedOption={language}
-                onSelect={this.onLanguageSelect}
-                isDisabled={isLoading}
-                noBorder={false}
-                scaled={true}
-                scaledOptions={true}
-                dropDownMaxHeight={300}
-                className="dropdown-item-width"
-              />
-            </FieldContainer>
+    return (
+      <Consumer>
+        {(context) => {
+          this.checkSectionWidth(context.sectionWidth);
+          return !isLoadedData ? (
+            <Loader className="pageLoader" type="rombs" size="40px" />
+          ) : (
+            <>
+              <StyledComponent>
+                {`${context.sectionWidth}` > 375 && !isMobile && (
+                  <div className="category-item-heading">
+                    <div className="category-item-title">
+                      {t("StudioTimeLanguageSettings")}
+                    </div>
+                    <HelpButton
+                      iconName="static/images/combined.shape.svg"
+                      size={12}
+                      tooltipContent={tooltipLanguageTimeSettings}
+                    />
+                  </div>
+                )}
+                <div className="settings-block">
+                  <FieldContainer
+                    id="fieldContainerLanguage"
+                    className="field-container-width"
+                    labelText={`${t("Common:Language")}:`}
+                    isVertical={true}
+                  >
+                    <ComboBox
+                      id="comboBoxLanguage"
+                      options={cultureNames}
+                      selectedOption={language}
+                      onSelect={this.onLanguageSelect}
+                      isDisabled={isLoading}
+                      noBorder={false}
+                      scaled={true}
+                      scaledOptions={true}
+                      dropDownMaxHeight={300}
+                      className="dropdown-item-width"
+                    />
+                  </FieldContainer>
 
-            <div className="field-container-flex">
-              <div className="title">{`${t("Automatic time zone")}`}</div>
-              <ToggleButton
-                className="toggle"
-                onChange={() => toastr.info(<>Not implemented</>)}
-              />
-            </div>
-
-            <FieldContainer
-              id="fieldContainerTimezone"
-              className="field-container-width"
-              labelText={`${t("TimeZone")}:`}
-              isVertical={true}
-            >
-              <ComboBox
-                id="comboBoxTimezone"
-                options={timezones}
-                selectedOption={timezone}
-                onSelect={this.onTimezoneSelect}
-                isDisabled={isLoading}
-                noBorder={false}
-                scaled={true}
-                scaledOptions={true}
-                dropDownMaxHeight={300}
-                className="dropdown-item-width"
-              />
-            </FieldContainer>
-          </div>
-          <SaveCancelButtons
-            className="save-cancel-buttons"
-            onSaveClick={this.onSaveLngTZSettings}
-            onCancelClick={this.onCancelClick}
-            showReminder={showReminder}
-            reminderTest={t("YouHaveUnsavedChanges")}
-            saveButtonLabel={t("Common:SaveButton")}
-            cancelButtonLabel={t("Common:CancelButton")}
-            displaySettings={true}
-            sectionWidth={sectionWidth}
-            hasChanged={hasChanged}
-          />
-        </StyledComponent>
-      </>
+                  <div className="field-container-flex">
+                    <div className="title">{`${t("Automatic time zone")}`}</div>
+                    <ToggleButton
+                      className="toggle"
+                      onChange={() => toastr.info(<>Not implemented</>)}
+                    />
+                  </div>
+                  <FieldContainer
+                    id="fieldContainerTimezone"
+                    className="field-container-width"
+                    labelText={`${t("TimeZone")}:`}
+                    isVertical={true}
+                  >
+                    <ComboBox
+                      id="comboBoxTimezone"
+                      options={timezones}
+                      selectedOption={timezone}
+                      onSelect={this.onTimezoneSelect}
+                      isDisabled={isLoading}
+                      noBorder={false}
+                      scaled={true}
+                      scaledOptions={true}
+                      dropDownMaxHeight={300}
+                      className="dropdown-item-width"
+                    />
+                  </FieldContainer>
+                </div>
+                <SaveCancelButtons
+                  className="save-cancel-buttons"
+                  onSaveClick={this.onSaveLngTZSettings}
+                  onCancelClick={this.onCancelClick}
+                  showReminder={showReminder}
+                  reminderTest={t("YouHaveUnsavedChanges")}
+                  saveButtonLabel={t("Common:SaveButton")}
+                  cancelButtonLabel={t("Common:CancelButton")}
+                  displaySettings={true}
+                  sectionWidth={context.sectionWidth}
+                  hasChanged={hasChanged}
+                />
+              </StyledComponent>
+            </>
+          );
+        }}
+      </Consumer>
     );
   }
 }
