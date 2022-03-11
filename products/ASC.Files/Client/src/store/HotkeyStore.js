@@ -47,9 +47,11 @@ class HotkeyStore {
   selectFirstFile = () => {
     const { filesList } = this.filesStore;
 
-    this.filesStore.setSelection([filesList[0]]);
-    this.filesStore.setHotkeyCaret(filesList[0]);
-    this.filesStore.setHotkeyCaretStart(filesList[0]);
+    if (filesList.length) {
+      this.filesStore.setSelection([filesList[0]]);
+      this.filesStore.setHotkeyCaret(filesList[0]);
+      this.filesStore.setHotkeyCaretStart(filesList[0]);
+    }
   };
 
   setSelectionWithCaret = (selection) => {
