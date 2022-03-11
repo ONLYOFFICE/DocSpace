@@ -13,9 +13,7 @@ import {
 import toastr from "@appserver/components/toast/toastr";
 import SelectFolderDialog from "files/SelectFolderDialog";
 import Loader from "@appserver/components/loader";
-import { AppServerConfig, BackupTypes } from "@appserver/common/constants";
-import { combineUrl } from "@appserver/common/utils";
-import FloatingButton from "@appserver/common/components/FloatingButton";
+import { BackupTypes } from "@appserver/common/constants";
 import { StyledModules, StyledAutoBackup } from "../StyledBackup";
 import ThirdPartyModule from "./sub-components/ThirdPartyModule";
 import DocumentsModule from "./sub-components/DocumentsModule";
@@ -24,7 +22,6 @@ import ToggleButton from "@appserver/components/toggle-button";
 import { getBackupStorage } from "@appserver/common/api/settings";
 import { isMobileOnly } from "react-device-detect";
 
-const { proxyURL } = AppServerConfig;
 const {
   DocumentModuleType,
   ResourcesModuleType,
@@ -455,13 +452,6 @@ class AutomaticBackup extends React.PureComponent {
     });
   };
 
-  onClickFloatingButton = () => {
-    const { history } = this.props;
-    history.push(
-      combineUrl(proxyURL, "/settings/datamanagement/backup/manual-backup")
-    );
-  };
-
   onSetIsChanged = (changed) => {
     this.setState({
       isAdditionalChanged: changed,
@@ -491,7 +481,6 @@ class AutomaticBackup extends React.PureComponent {
       isCheckedThirdPartyStorage,
       isCheckedThirdParty,
       isCheckedDocuments,
-      downloadingProgress,
       commonThirdPartyList,
     } = this.props;
 
@@ -629,17 +618,6 @@ class AutomaticBackup extends React.PureComponent {
             />
           </div>
         )}
-        {isMobileOnly &&
-          downloadingProgress > 0 &&
-          downloadingProgress !== 100 && (
-            <FloatingButton
-              className="layout-progress-bar"
-              icon="file"
-              alert={false}
-              percent={downloadingProgress}
-              onClick={this.onClickFloatingButton}
-            />
-          )}
       </StyledAutoBackup>
     );
   }
@@ -670,7 +648,6 @@ export default inject(({ auth, backup }) => {
 
     selectedFolderId,
     selectedStorageId,
-    downloadingProgress,
     clearProgressInterval,
     getProgress,
     commonThirdPartyList,
@@ -703,7 +680,6 @@ export default inject(({ auth, backup }) => {
     selectedFolderId,
     selectedStorageId,
     selectedWeekday,
-    downloadingProgress,
     clearProgressInterval,
     getProgress,
     commonThirdPartyList,

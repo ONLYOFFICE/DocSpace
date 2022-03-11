@@ -17,7 +17,6 @@ import { startRestore } from "@appserver/common/api/portal";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig, BackupTypes } from "@appserver/common/constants";
 import config from "../../../../../../../../package.json";
-import FloatingButton from "@appserver/common/components/FloatingButton";
 import { request } from "@appserver/common/api/client";
 import { inject, observer } from "mobx-react";
 import { isMobileOnly } from "react-device-detect";
@@ -61,7 +60,7 @@ class RestoreBackup extends React.Component {
   }
 
   setBasicSettings = async () => {
-    const { getProgress, t } = this.props;
+    const { getProgress, t, setCommonThirdPartyList } = this.props;
 
     try {
       getProgress(t);
@@ -309,16 +308,6 @@ class RestoreBackup extends React.Component {
     });
   };
 
-  onClickFloatingButton = () => {
-    const { history } = this.props;
-    history.push(
-      combineUrl(
-        AppServerConfig.proxyURL,
-        "/settings/datamanagement/backup/manual-backup"
-      )
-    );
-  };
-
   onSetStorageId = (storageId) => {
     this.storageId = storageId;
   };
@@ -486,18 +475,6 @@ class RestoreBackup extends React.Component {
           size="medium"
           tabIndex={10}
         />
-
-        {isMobileOnly &&
-          downloadingProgress > 0 &&
-          downloadingProgress !== 100 && (
-            <FloatingButton
-              className="layout-progress-bar"
-              icon="file"
-              alert={false}
-              percent={downloadingProgress}
-              onClick={this.onClickFloatingButton}
-            />
-          )}
       </StyledRestoreBackup>
     );
   }

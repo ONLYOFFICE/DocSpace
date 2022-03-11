@@ -7,7 +7,6 @@ import toastr from "@appserver/components/toast/toastr";
 import ThirdPartyModule from "./sub-components/ThirdPartyModule";
 import DocumentsModule from "./sub-components/DocumentsModule";
 import ThirdPartyStorageModule from "./sub-components/ThirdPartyStorageModule";
-import FloatingButton from "@appserver/common/components/FloatingButton";
 import RadioButton from "@appserver/components/radio-button";
 import { StyledModules, StyledManualBackup } from "./../StyledBackup";
 import SelectFolderDialog from "files/SelectFolderDialog";
@@ -310,17 +309,6 @@ class ManualBackup extends React.Component {
             <ThirdPartyStorageModule {...commonModulesProps} />
           )}
         </StyledModules>
-
-        {isMobileOnly &&
-          downloadingProgress > 0 &&
-          downloadingProgress !== 100 && (
-            <FloatingButton
-              className="layout-progress-bar"
-              icon="file"
-              alert={false}
-              percent={downloadingProgress}
-            />
-          )}
       </StyledManualBackup>
     );
   }

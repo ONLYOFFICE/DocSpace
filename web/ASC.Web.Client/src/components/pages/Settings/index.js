@@ -73,20 +73,8 @@ const DATA_MANAGEMENT_URL = combineUrl(
   "/datamanagement/backup"
 );
 
-const AUTOMATIC_BACKUP_URL = combineUrl(
-  PROXY_BASE_URL,
-  "/datamanagement/backup/automatic-backup"
-);
-const MANUAL_BACKUP_URL = combineUrl(
-  PROXY_BASE_URL,
-  "/datamanagement/backup/manual-backup"
-);
-const RESTORE_BACKUP_URL = combineUrl(
-  PROXY_BASE_URL,
-  "/datamanagement/backup/restore-backup"
-);
 const ERROR_404_URL = combineUrl(AppServerConfig.proxyURL, "/error/404");
-console.log();
+
 const Settings = () => {
   return (
     <Layout key="1">
@@ -117,13 +105,7 @@ const Settings = () => {
             path={DATA_MANAGEMENT_URL}
             component={DataManagementSettings}
           />
-          <Route
-            exact
-            path={AUTOMATIC_BACKUP_URL}
-            component={AutomaticBackup}
-          />
-          <Route exact path={MANUAL_BACKUP_URL} component={ManualBackup} />
-          <Route exact path={RESTORE_BACKUP_URL} component={RestoreBackup} />
+
           <Redirect
             to={{
               pathname: ERROR_404_URL,

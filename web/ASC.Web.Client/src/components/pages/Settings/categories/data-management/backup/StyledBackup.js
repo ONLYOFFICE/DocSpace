@@ -338,6 +338,23 @@ const StyledBackup = styled.div`
       margin: 5px 0 0 4px;
     }
   }
+
+  .backup-section_wrapper {
+    margin-bottom: 27px;
+    .backup-section_heading {
+      display: flex;
+      margin-bottom: 8px;
+      .backup-section_text {
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 22px;
+        margin-right: 7.29px;
+      }
+      .backup-section_arrow-button {
+        margin: auto 0;
+      }
+    }
+  }
 `;
 
 const StyledBackupList = styled.div`
@@ -446,6 +463,23 @@ const StyledBackupList = styled.div`
     margin-top: 96px;
   }
 `;
+
+const StyledSettingsHeader = styled.div`
+  display: flex;
+  position: fixed;
+  top: 48px;
+  background-color: #fff;
+  z-index: 149;
+  width: 100%;
+  height: 50px;
+
+  .backup_header {
+    margin-left: 14.5px;
+  }
+  .backup_arrow-button {
+    margin: auto 0;
+  }
+`;
 export {
   StyledModules,
   StyledRestoreBackup,
@@ -455,4 +489,5 @@ export {
   StyledManualBackup,
   StyledAutoBackup,
   StyledStoragesModule,
+  StyledSettingsHeader,
 };

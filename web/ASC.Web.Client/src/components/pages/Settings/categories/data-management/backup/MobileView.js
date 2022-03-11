@@ -1,8 +1,7 @@
 import React from "react";
+import moment from "moment";
 import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
-import { AppServerConfig } from "@appserver/common/constants";
-import { combineUrl } from "@appserver/common/utils";
 import { withTranslation, Trans } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import ArrowRightIcon from "../../../../../../../public/images/arrow.right.react.svg";
@@ -12,11 +11,13 @@ import styled from "styled-components";
 import FloatingButton from "@appserver/common/components/FloatingButton";
 import { enableAutoBackup, enableRestore } from "@appserver/common/api/portal";
 import Loader from "@appserver/components/loader";
-import { StyledBackup } from "./StyledBackup";
-
-const { proxyURL } = AppServerConfig;
-
-import moment from "moment";
+import { StyledBackup, StyledSettingsHeader } from "./StyledBackup";
+import Headline from "@appserver/common/components/Headline";
+import IconButton from "@appserver/components/icon-button";
+import toastr from "@appserver/components/toast/toastr";
+import AutoBackup from "./auto-backup";
+import ManualBackup from "./manual-backup";
+import RestoreBackup from "./restore-backup";
 
 const StyledArrowRightIcon = styled(ArrowRightIcon)`
   ${commonIconsStyles}
@@ -37,6 +38,9 @@ class BackupMobileView extends React.Component {
       enableRestore: false,
       enableAutoBackup: false,
       isLoading: true,
+      autoBackup: false,
+      manualBackup: false,
+      restoreBackup: false,
     };
   }
 
@@ -51,15 +55,12 @@ class BackupMobileView extends React.Component {
   setBasicSettings = async () => {
     const { t, getProgress } = this.props;
 
-    const requests = [enableRestore(), enableAutoBackup()];
-
     try {
+      const requests = [enableRestore(), enableAutoBackup()];
+
       getProgress(t);
 
-      const [restore, autoBackup] = await Promise.allSettled(requests);
-
-      const canRestore = restore.value;
-      const canAutoBackup = autoBackup.value;
+      const [canRestore, canAutoBackup] = await Promise.all(requests);
 
       this.setState({
         isLoading: false,
@@ -67,131 +68,147 @@ class BackupMobileView extends React.Component {
         enableAutoBackup: canAutoBackup,
       });
     } catch (error) {
-      console.error(error);
+      toastr.error(error);
       this.setState({
         isLoading: false,
       });
     }
   };
 
-  onClickLink = (e) => {
-    const { history } = this.props;
-    e.preventDefault();
-    history.push(e.target.pathname);
+  onClickFloatingButton = () => {
+    const { manualBackup } = this.state;
+
+    !manualBackup &&
+      this.setState({
+        manualBackup: true,
+        autoBackup: false,
+        restoreBackup: false,
+      });
   };
 
-  onClickFloatingButton = () => {
-    const { history } = this.props;
-    history.push(
-      combineUrl(proxyURL, "/settings/datamanagement/backup/manual-backup")
-    );
+  onClickModule = (name) => {
+    this.setState({
+      [name]: true,
+    });
+  };
+
+  onBackToParent = () => {
+    this.setState({
+      autoBackup: false,
+      manualBackup: false,
+      restoreBackup: false,
+    });
   };
   render() {
-    const { t, helpUrlCreatingBackup, downloadingProgress } = this.props;
-    const { isLoading, enableRestore, enableAutoBackup } = this.state;
+    const {
+      t,
+      helpUrlCreatingBackup,
+      downloadingProgress,
+      history,
+    } = this.props;
+    const {
+      isLoading,
+      enableRestore,
+      enableAutoBackup,
+      autoBackup,
+      manualBackup,
+      restoreBackup,
+    } = this.state;
+
+    const autoBackupTitle = t("AutoBackup");
+    const manualBackupTitle = t("ManualBackup");
+    const restoreBackupTitle = t("RestoreBackup");
+
+    const isSectionOpen = autoBackup || manualBackup || restoreBackup;
+    const headerTitle = autoBackup
+      ? autoBackupTitle
+      : manualBackup
+      ? manualBackupTitle
+      : restoreBackup
+      ? restoreBackupTitle
+      : "";
+
+    const renderSection = (section, sectionTitle, keyHelp) => (
+      <div className="backup-section_wrapper">
+        <div className="backup-section_heading">
+          <Text
+            className="backup-section_text"
+            onClick={() => this.onClickModule(section)}
+          >
+            {sectionTitle}
+          </Text>
+          <StyledArrowRightIcon
+            className="backup-section_arrow-button"
+            size="small"
+            color="#333333"
+          />
+        </div>
+
+        <Trans
+          t={t}
+          i18nKey={keyHelp}
+          ns="Settings"
+          components={{ strong: <></> }}
+        />
+
+        <Box marginProp="10px 0 0 0">
+          <Link
+            color="#316DAA"
+            target="_blank"
+            isHovered={true}
+            href={helpUrlCreatingBackup}
+            fontWeight={600}
+          >
+            {t("Common:LearnMore")}
+          </Link>
+        </Box>
+      </div>
+    );
+    const renderBackupSections = () => (
+      <>
+        {renderSection("manualBackup", manualBackupTitle, "ManualBackupHelp")}
+
+        {enableAutoBackup &&
+          renderSection("autoBackup", autoBackupTitle, "AutoBackupHelp")}
+
+        {enableRestore &&
+          renderSection(
+            "restoreBackup",
+            restoreBackupTitle,
+            "RestoreBackupHelp"
+          )}
+      </>
+    );
+
+    console.log("render");
 
     return isLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
       <StyledBackup>
-        {enableAutoBackup && (
-          <div className="category-item-wrapper">
-            <div className="category-item-heading">
-              <Link
-                truncate={true}
-                className="inherit-title-link header"
-                onClick={this.onClickLink}
-                href={combineUrl(
-                  AppServerConfig.proxyURL,
-                  "/settings/datamanagement/backup/automatic-backup"
-                )}
-              >
-                {t("AutoBackup")}
-              </Link>
-              <StyledArrowRightIcon size="small" color="#333333" />
-            </div>
+        {isSectionOpen && (
+          <StyledSettingsHeader>
+            <IconButton
+              iconName="/static/images/arrow.path.react.svg"
+              size="17"
+              color="#A3A9AE"
+              hoverColor="#657077"
+              isFill={true}
+              onClick={this.onBackToParent}
+              className="backup_arrow-button"
+            />
 
-            <Trans
-              t={t}
-              i18nKey={"AutoBackupHelp"}
-              ns="Settings"
-              components={{ strong: <></> }}
-            >
-              {
-                "The <strong>Automatic backup</strong> option is used to automate the portal data backup process to be able to restore it later to a local server."
-              }
-            </Trans>
-          </div>
+            <Headline type="content" className="backup_header" truncate={true}>
+              {headerTitle}
+            </Headline>
+          </StyledSettingsHeader>
         )}
 
-        <div className="category-item-wrapper">
-          <div className="category-item-heading">
-            <Link
-              truncate={true}
-              className="inherit-title-link header"
-              onClick={this.onClickLink}
-              href={combineUrl(
-                AppServerConfig.proxyURL,
-                "/settings/datamanagement/backup/manual-backup"
-              )}
-            >
-              {t("ManualBackup")}
-            </Link>
-            <StyledArrowRightIcon size="small" color="#333333" />
-          </div>
+        {autoBackup && <AutoBackup />}
+        {manualBackup && <ManualBackup />}
+        {restoreBackup && <RestoreBackup history={history} />}
 
-          <Trans
-            t={t}
-            i18nKey={"ManualBackupHelp"}
-            ns="Settings"
-            components={{ strong: <></> }}
-          >
-            {
-              "<strong>Data Backup</strong> option is used to back up the portal data to be able to restore it later to your local server."
-            }
-          </Trans>
-        </div>
-
-        {enableRestore && (
-          <div className="category-item-wrapper">
-            <div className="category-item-heading">
-              <Link
-                truncate={true}
-                className="inherit-title-link header"
-                onClick={this.onClickLink}
-                href={combineUrl(
-                  AppServerConfig.proxyURL,
-                  "/settings/datamanagement/backup/restore-backup"
-                )}
-              >
-                {t("RestoreBackup")}
-              </Link>
-              <StyledArrowRightIcon size="small" color="#333333" />
-            </div>
-
-            <Trans
-              t={t}
-              i18nKey={"RestoreBackupHelp"}
-              ns="Settings"
-              components={{ strong: <></> }}
-            >
-              {
-                "<strong>Data Restore</strong> option is used to restore your previously saved portal data (from a local server or SaaS portal)."
-              }
-            </Trans>
-
-            <Box marginProp="16px 0 0 0">
-              <Link
-                color="#316DAA"
-                target="_blank"
-                isHovered={true}
-                href={helpUrlCreatingBackup}
-              >
-                {t("Common:LearnMore")}
-              </Link>
-            </Box>
-          </div>
-        )}
+        {!isSectionOpen && renderBackupSections()}
 
         {downloadingProgress > 0 && downloadingProgress !== 100 && (
           <FloatingButton
