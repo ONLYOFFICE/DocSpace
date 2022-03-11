@@ -75,6 +75,10 @@ const DeepLinkPage = (props) => {
     return `oodocuments:://openfile?data=${deepLinkData}`;
   };
 
+  const onOpenAppClick = () => {
+    window.location = deepLink;
+  };
+
   if (!isLoading) return <AppLoader />;
   return (
     <StyledBody>
@@ -93,7 +97,7 @@ const DeepLinkPage = (props) => {
       <Button
         className="button"
         label={t("OpenInApp")}
-        onClick={() => (window.location = deepLink)}
+        onClick={onOpenAppClick}
         primary
         scale
         size="large"
