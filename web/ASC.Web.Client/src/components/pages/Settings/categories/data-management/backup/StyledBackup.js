@@ -117,7 +117,7 @@ const StyledAutoBackup = styled.div`
     box-sizing: border-box;
   }
   .auto-backup_buttons {
-    ${(props) => !props.isMobileOnly && "margin-bottom: 24px"}
+    ${!isMobileOnly && "margin-bottom: 24px"}
   }
 `;
 
@@ -182,6 +182,9 @@ const StyledRestoreBackup = styled.div`
   .backup_radio-button {
     margin-bottom: 16px;
   }
+  .restore-backup_button {
+    ${isMobileOnly && "width:100%"}
+  }
 `;
 
 const StyledModules = styled.div`
@@ -244,47 +247,45 @@ const StyledScheduleComponent = styled.div`
     max-width: 363px;
   }
 
-  ${(props) =>
-    !props.isMobileOnly
-      ? css`
-          .main_options {
-            max-width: ${INPUT_LENGTH};
-            display: grid;
+  ${!isMobileOnly
+    ? css`
+        .main_options {
+          max-width: ${INPUT_LENGTH};
+          display: grid;
 
-            ${(props) =>
-              props.weeklySchedule || props.monthlySchedule
-                ? css`
-                    grid-template-areas: "days weekly-monthly time";
-                    grid-template-columns: 1fr 1fr 1fr;
-                  `
-                : css`
-                    grid-template-areas: "days  time";
-                    grid-template-columns: 1fr 1fr;
-                  `};
-            grid-gap: 8px;
+          ${(props) =>
+            props.weeklySchedule || props.monthlySchedule
+              ? css`
+                  grid-template-areas: "days weekly-monthly time";
+                  grid-template-columns: 1fr 1fr 1fr;
+                `
+              : css`
+                  grid-template-areas: "days  time";
+                  grid-template-columns: 1fr 1fr;
+                `};
+          grid-gap: 8px;
+        }
+      `
+    : css`
+        .days_option {
+          grid-area: time;
+
+          max-width: ${INPUT_LENGTH};
+
+          width: 100%;
+          .drop-down_variable-size {
+            max-width: ${INPUT_LENGTH} !important;
+            width: 100% !important;
           }
-        `
-      : css`
-          .days_option {
-            grid-area: time;
-
-            max-width: ${INPUT_LENGTH};
-
-            width: 100%;
-            .drop-down_variable-size {
-              max-width: ${INPUT_LENGTH} !important;
-              width: 100% !important;
-            }
-          }
-        `}
+        }
+      `}
 
   .time_options {
     grid-area: time;
-    ${(props) =>
-      props.isMobileOnly &&
-      css`
-        max-width: ${INPUT_LENGTH};
-      `};
+    ${isMobileOnly &&
+    css`
+      max-width: ${INPUT_LENGTH};
+    `};
     width: 100%;
     .drop-down_variable-size {
       max-width: ${INPUT_LENGTH} !important;
@@ -325,7 +326,7 @@ const StyledBackup = styled.div`
     padding-bottom: 8px;
   }
   .layout-progress-bar {
-    ${(props) => !props.isMobileOnly && "cursor: default;"}
+    ${!isMobileOnly && "cursor: default;"}
   }
 
   .backup_modules-description {
@@ -348,10 +349,9 @@ const StyledBackup = styled.div`
         font-weight: 700;
         font-size: 16px;
         line-height: 22px;
-        margin-right: 7.29px;
       }
       .backup-section_arrow-button {
-        margin: auto 0;
+        margin: auto 0 auto 7.29px;
       }
     }
   }

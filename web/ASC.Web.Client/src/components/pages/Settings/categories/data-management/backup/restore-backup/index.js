@@ -450,6 +450,7 @@ class RestoreBackup extends React.Component {
         />
 
         <Button
+          className="restore-backup_button"
           label={t("Common:Restore")}
           onClick={this.onRestoreClick}
           primary

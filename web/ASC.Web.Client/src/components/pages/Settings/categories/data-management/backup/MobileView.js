@@ -145,12 +145,12 @@ class BackupMobileView extends React.Component {
             onClick={() => this.onClickModule(section)}
           >
             {sectionTitle}
+            <StyledArrowRightIcon
+              className="backup-section_arrow-button"
+              size="small"
+              color="#333333"
+            />
           </Text>
-          <StyledArrowRightIcon
-            className="backup-section_arrow-button"
-            size="small"
-            color="#333333"
-          />
         </div>
 
         <Trans
