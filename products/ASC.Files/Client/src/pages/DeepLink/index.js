@@ -59,7 +59,7 @@ const DeepLinkPage = (props) => {
 
   const getDeepLink = (file) => {
     const jsonData = {
-      portal: "", //TODO: get portal url
+      portal: window.location.origin,
       email: user.email,
       file: {
         id: file.fileId,
