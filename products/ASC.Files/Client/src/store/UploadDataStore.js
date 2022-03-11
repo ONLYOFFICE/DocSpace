@@ -1165,7 +1165,7 @@ class UploadDataStore {
     return promise;
   };
 
-  clearActiveOperations = (fileIds, folderIds) => {
+  clearActiveOperations = (fileIds = [], folderIds = []) => {
     const {
       activeFiles,
       activeFolders,
