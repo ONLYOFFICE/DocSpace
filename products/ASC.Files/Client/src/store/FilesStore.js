@@ -58,6 +58,7 @@ class FilesStore {
   activeFolders = [];
 
   firstElemChecked = false;
+  headerBorder = false;
 
   isPrevSettingsModule = false;
 
@@ -1323,6 +1324,10 @@ class FilesStore {
 
   setFirsElemChecked = (checked) => {
     this.firstElemChecked = checked;
+  };
+
+  setHeaderBorder = (headerBorder) => {
+    this.headerBorder = headerBorder;
   };
 
   get canCreate() {

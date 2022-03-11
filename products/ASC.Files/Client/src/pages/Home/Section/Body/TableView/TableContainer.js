@@ -55,6 +55,7 @@ const Table = ({
   viewAs,
   setViewAs,
   setFirsElemChecked,
+  setHeaderBorder,
   theme,
 }) => {
   const ref = useRef(null);
@@ -79,6 +80,7 @@ const Table = ({
             item={item}
             index={index}
             setFirsElemChecked={setFirsElemChecked}
+            setHeaderBorder={setHeaderBorder}
             theme={theme}
           />
         ))}
@@ -88,13 +90,20 @@ const Table = ({
 };
 
 export default inject(({ filesStore, auth }) => {
-  const { filesList, viewAs, setViewAs, setFirsElemChecked } = filesStore;
+  const {
+    filesList,
+    viewAs,
+    setViewAs,
+    setFirsElemChecked,
+    setHeaderBorder,
+  } = filesStore;
 
   return {
     filesList,
     viewAs,
     setViewAs,
     setFirsElemChecked,
+    setHeaderBorder,
     theme: auth.settingsStore.theme,
   };
 })(observer(Table));

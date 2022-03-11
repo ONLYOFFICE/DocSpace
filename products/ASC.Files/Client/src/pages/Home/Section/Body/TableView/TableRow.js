@@ -261,6 +261,7 @@ const FilesTableRow = (props) => {
     inProgress,
     index,
     setFirsElemChecked,
+    setHeaderBorder,
     theme,
     quickButtonsComponent,
     getContextModel,
@@ -301,12 +302,19 @@ const FilesTableRow = (props) => {
   };
 
   React.useEffect(() => {
-    if (index === 0 && (checkedProps || isActive)) {
-      setFirsElemChecked(true);
-    } else {
-      index === 0 && setFirsElemChecked(false);
+    if (index === 0) {
+      if (checkedProps || isActive) {
+        setFirsElemChecked(true);
+      } else {
+        setFirsElemChecked(false);
+      }
+      if (showHotkeyBorder) {
+        setHeaderBorder(true);
+      } else {
+        setHeaderBorder(false);
+      }
     }
-  }, [checkedProps, isActive]);
+  }, [checkedProps, isActive, showHotkeyBorder]);
 
   return (
     <StyledDragAndDrop
