@@ -11,12 +11,15 @@ const StyledSaveCancelButtons = styled.div`
   box-sizing: border-box;
   align-items: center;
   bottom: ${(props) => props.theme.saveCancelButtons.bottom};
-  width: ${(props) => props.theme.saveCancelButtons.width};
+  width: ${(props) =>
+    props.displaySettings
+      ? "calc(100% - 40px)"
+      : props.theme.saveCancelButtons.width};
   left: ${(props) =>
     props.displaySettings ? "auto" : props.theme.saveCancelButtons.left};
   padding: ${(props) =>
     props.displaySettings
-      ? "0 16px 16px 0"
+      ? "0px 0px 16px 0px"
       : props.theme.saveCancelButtons.padding};
 
   .save-button {
@@ -41,12 +44,12 @@ const StyledSaveCancelButtons = styled.div`
       width: 100%;
       height: auto;
       line-height: 16px;
-      padding-top:11px;
-      padding-bottom:11px;
+      padding-top: 11px;
+      padding-bottom: 11px;
     }
 
     .unsaved-changes {
-      margin-bottom:12px;
+      margin-bottom: 12px;
     }
   `}
 
