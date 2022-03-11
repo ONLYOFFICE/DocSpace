@@ -5,7 +5,7 @@ public record BackupRequestIntegrationEvent : IntegrationEvent
 {
     private BackupRequestIntegrationEvent() :base()
     {
-
+        StorageParams = new Dictionary<string, string>();
     }
 
     public BackupRequestIntegrationEvent(BackupStorageType storageType, 
