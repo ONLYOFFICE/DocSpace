@@ -110,40 +110,40 @@ const Base = {
     height: {
       extraSmall: "24px",
       small: "32px",
-      normal36: "36px",
-      normal40: "40px",
+      normalDesktop: "36px",
+      normalTouchscreen: "40px",
       medium: "44px",
     },
 
     lineHeight: {
       extraSmall: "12px",
       small: "14px",
-      normal36: "16px",
-      normal40: "16px",
+      normalDesktop: "16px",
+      normalTouchscreen: "16px",
       medium: "22px",
     },
 
     fontSize: {
       extraSmall: "12px",
       small: "13px",
-      normal36: "14px",
-      normal40: "14px",
+      normalDesktop: "14px",
+      normalTouchscreen: "14px",
       medium: "16px",
     },
 
     padding: {
       extraSmall: "4.5px 12px",
       small: "6px 28px",
-      normal36: "10px 28px",
-      normal40: "12px 28px",
+      normalDesktop: "10px 28px",
+      normalTouchscreen: "12px 28px",
       medium: "11px 32px",
     },
 
     minWidth: {
       extraSmall: "none",
       small: "100px",
-      normal36: "100px",
-      normal40: "100px",
+      normalDesktop: "100px",
+      normalTouchscreen: "100px",
       medium: "100px",
     },
 

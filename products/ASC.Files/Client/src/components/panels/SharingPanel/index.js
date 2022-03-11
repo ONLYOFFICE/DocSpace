@@ -587,7 +587,7 @@ class SharingPanelComponent extends React.Component {
           <Button
             className="sharing_panel-button"
             label={t("Common:SaveButton")}
-            size="normal36"
+            size="normal"
             primary
             onClick={this.onSaveClick}
             isDisabled={isLoading || !isUpdated}
@@ -720,7 +720,7 @@ class SharingPanelComponent extends React.Component {
               <Button
                 className="sharing_panel-button"
                 label={t("Common:SaveButton")}
-                size={isMobile ? "normal36" : "small"}
+                size={isMobile ? "normal" : "small"}
                 minwidth="100px"
                 primary
                 onClick={this.onSaveClick}

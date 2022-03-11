@@ -111,7 +111,7 @@ const PureThirdPartyMoveContainer = ({
         <Button
           className="operation-button"
           label={t("Translations:Move")}
-          size="normal36"
+          size="normal"
           scale
           primary
           onClick={startOperation}
@@ -122,7 +122,7 @@ const PureThirdPartyMoveContainer = ({
           data-copy="copy"
           className="operation-button"
           label={t("Translations:Copy")}
-          size="normal36"
+          size="normal"
           scale
           onClick={startOperation}
           isLoading={isLoading}
@@ -131,7 +131,7 @@ const PureThirdPartyMoveContainer = ({
         <Button
           className="operation-button"
           label={t("Common:CancelButton")}
-          size="normal36"
+          size="normal"
           scale
           onClick={onClose}
           isLoading={isLoading}

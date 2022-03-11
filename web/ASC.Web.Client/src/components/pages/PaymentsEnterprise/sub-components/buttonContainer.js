@@ -67,7 +67,7 @@ class Body extends React.PureComponent {
         <Button
           label={t("ButtonBuyLicense")}
           value={`${buyUrl}`}
-          size="normal40"
+          size="medium"
           primary={true}
           onClick={this.onClickBuy}
         />
@@ -82,7 +82,7 @@ class Body extends React.PureComponent {
         <Button
           type="submit"
           label={t("ButtonUploadLicense")}
-          size="normal40"
+          size="medium"
           primary={true}
           onClick={this.onClickSubmit}
         />

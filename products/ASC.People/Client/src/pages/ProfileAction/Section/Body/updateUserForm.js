@@ -983,14 +983,14 @@ class UpdateUserForm extends React.Component {
             onClick={this.handleSubmit}
             primary
             isDisabled={isLoading}
-            size="normal36"
+            size="normal"
             tabIndex={11}
           />
           <Button
             label={t("Common:CancelButton")}
             onClick={this.onCancelHandler}
             isDisabled={isLoading}
-            size="normal36"
+            size="normal"
             style={{ marginLeft: "8px" }}
             tabIndex={12}
           />

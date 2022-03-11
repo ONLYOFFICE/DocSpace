@@ -336,7 +336,7 @@ class Confirm extends React.PureComponent {
             <Button
               className="confirm-row"
               primary
-              size="normal36"
+              size="normal"
               label={t("LoginRegistryButton")}
               tabIndex={5}
               isLoading={this.state.isLoading}

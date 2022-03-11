@@ -139,13 +139,13 @@ const SelectFileDialogAsideView = ({
               <Button
                 className="select-file-dialog-buttons-save"
                 primary
-                size="normal36"
+                size="normal"
                 label={primaryButtonName}
                 onClick={onClickSave}
                 isDisabled={selectedFile.length === 0}
               />
               <Button
-                size="normal36"
+                size="normal"
                 label={t("Common:CancelButton")}
                 onClick={onClose}
               />

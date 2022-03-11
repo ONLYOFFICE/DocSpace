@@ -3,6 +3,7 @@ import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
 import NoUserSelect from "../utils/commonStyles";
 import Base from "../themes/base";
+import { isDesktop } from "../utils/device";
 
 const activeCss = css`
   background-color: ${(props) =>
@@ -60,19 +61,14 @@ const ButtonWrapper = ({
   minWidth,
   ...props
 }) => {
+  console.log(size);
   return <button ref={innerRef} type="button" {...props}></button>;
 };
 
 ButtonWrapper.propTypes = {
   label: PropTypes.string,
   primary: PropTypes.bool,
-  size: PropTypes.oneOf([
-    "extraSmall",
-    "small",
-    "normal36",
-    "normal40",
-    "medium",
-  ]),
+  size: PropTypes.oneOf(["extraSmall", "small", "normal", "medium"]),
   scale: PropTypes.bool,
   icon: PropTypes.node,
 
@@ -89,6 +85,12 @@ ButtonWrapper.propTypes = {
 const StyledButton = styled(ButtonWrapper).attrs((props) => ({
   disabled: props.isDisabled || props.isLoading ? "disabled" : "",
   tabIndex: props.tabIndex,
+  size:
+    props.size === "normal"
+      ? isDesktop()
+        ? "normalDesktop"
+        : "normalTouchscreen"
+      : props.size,
 }))`
   height: ${(props) => heightStyle(props)};
   line-height: ${(props) => lineHeightStyle(props)};
@@ -111,25 +113,8 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
 
   ${(props) => props.scale && `width: 100%;`}
 
-  /* padding: {
-      base: "0 14px",
-      medium: "0 18px",
-      big: "0 20px",
-    },
-
-  padding: {
-      extraSmall: "4.5px 12px",
-      small: "6px 28px",
-      normal36: "10px 28px",
-      normal40: "12px 28px",
-      medium: "11px 32px",
-    }, */
-
-    ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// /////
-    ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// /////
-     ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// /////
-
   padding: ${(props) => `${props.theme.button.padding[props.size]}`};
+
   ${({ icon }) =>
     icon &&
     css`
@@ -137,72 +122,6 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
       padding-bottom: 12px;
       height: auto;
     `}
-
-  /* padding: ${(props) =>
-    ((props.size === "normal40" || props.size === "small") &&
-      (props.primary
-        ? props.icon
-          ? props.label
-            ? "11px 24px 13px 24px"
-            : "11px 11px 13px 11px"
-          : props.label
-          ? "12px 20px 12px 20px"
-          : "0px"
-        : props.icon
-        ? props.label
-          ? "10px 24px 13px 24px"
-          : "10px 11px 13px 11px"
-        : props.label
-        ? "11px 20px 12px 20px"
-        : "0px")) ||
-    (props.size === "normal36" &&
-      (props.primary
-        ? props.icon
-          ? props.label
-            ? "8px 24px 9px 24px"
-            : "8px 10px 9px 10px"
-          : props.label
-          ? "8px 16px 8px 16px"
-          : "0px"
-        : props.icon
-        ? props.label
-          ? "7px 24px 9px 24px"
-          : "7px 10px 9px 10px"
-        : props.label
-        ? "7px 16px 8px 16px"
-        : "0px")) ||
-    (props.size === "small" &&
-      (props.primary
-        ? props.icon
-          ? props.label
-            ? "6px 24px 7px 24px"
-            : "6px 10px 7px 10px"
-          : props.label
-          ? "7px 16px 7px 16px"
-          : "0px"
-        : props.icon
-        ? props.label
-          ? "5px 24px 7px 24px"
-          : "5px 10px 7px 10px"
-        : props.label
-        ? "6px 16px 7px 16px"
-        : "0px")) ||
-    (props.size === "extraSamll" &&
-      (props.primary
-        ? props.icon
-          ? props.label
-            ? "3px 20px 5px 20px"
-            : "3px 5px 5px 5px"
-          : props.label
-          ? "4px 12px 5px 12px"
-          : "0px"
-        : props.icon
-        ? props.label
-          ? "2px 20px 5px 20px"
-          : "2px 5px 5px 5px"
-        : props.label
-        ? "3px 12px 5px 12px"
-        : "0px"))}; */
 
   ${(props) => (props.minwidth ? `min-width: ${props.minwidth};` : null)}
 
@@ -276,7 +195,7 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
 
   .loader {
     vertical-align: ${(props) =>
-      props.size === "normal40" || props.size === "extraSmall"
+      props.size === "normalTouchscreen" || props.size === "extraSmall"
         ? props.theme.button.middleVerticalAlign
         : props.size === "small"
         ? props.theme.button.bottomVerticalAlign

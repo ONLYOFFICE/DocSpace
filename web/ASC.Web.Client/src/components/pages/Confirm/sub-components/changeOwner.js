@@ -90,7 +90,7 @@ class Form extends React.PureComponent {
                 <Button
                   className="owner-button owner-buttons"
                   primary
-                  size="normal36"
+                  size="normal"
                   label={t("Common:SaveButton")}
                   tabIndex={2}
                   isDisabled={false}
@@ -98,7 +98,7 @@ class Form extends React.PureComponent {
                 />
                 <Button
                   className="owner-buttons"
-                  size="normal36"
+                  size="normal"
                   label={t("Common:CancelButton")}
                   tabIndex={2}
                   isDisabled={false}

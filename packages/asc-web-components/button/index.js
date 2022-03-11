@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import Loader from "../loader";
 import StyledButton from "./styled-button";
 import Base from "../themes/base";
+import { isDesktop } from "../utils/device";
 
 // eslint-disable-next-line no-unused-vars, react/prop-types
 
@@ -14,8 +15,8 @@ const Icon = ({ size, primary, icon, isHovered }) => (
         size:
           size === "medium"
             ? "medium"
-            : size === "normal40"
-            ? "normal36"
+            : size === "normalTouchscreen"
+            ? "normalDesktop"
             : "extraSmall",
         color: icon.props.color
           ? isHovered
@@ -39,7 +40,8 @@ Icon.defaultProps = {
 };
 
 const Button = React.forwardRef((props, ref) => {
-  const { primary, size, isLoading, icon, label, isHovered } = props;
+  let { primary, size, isLoading, icon, label, isHovered } = props;
+
   const iconProps = { primary, size, icon, isHovered };
 
   return (
@@ -48,7 +50,9 @@ const Button = React.forwardRef((props, ref) => {
         isLoading ? (
           <Loader
             type="oval"
-            size={size === "large" ? "18px" : size === "big" ? "16px" : "14px"}
+            size={
+              size === "medium" ? "20px" : size === "normal" ? "16px" : "14px"
+            }
             color={primary ? "#FFFFFF" : "#333333"}
             className="loader"
           />
@@ -69,13 +73,7 @@ Button.propTypes = {
   /** Tells when the button should be primary */
   primary: PropTypes.bool,
   /** Size of button */
-  size: PropTypes.oneOf([
-    "extraSmall",
-    "small",
-    "normal36",
-    "normal40",
-    "medium",
-  ]),
+  size: PropTypes.oneOf(["extraSmall", "small", "normal", "medium"]),
   /** Scale width of button to 100% */
   scale: PropTypes.bool,
   /** Icon node element */

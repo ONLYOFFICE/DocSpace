@@ -170,7 +170,7 @@ const TfaActivationForm = withLoader((props) => {
                 <Button
                   scale
                   primary
-                  size={width <= 1024 ? "normal40" : "normal36"}
+                  size={width <= 1024 ? "medium" : "normal"}
                   tabIndex={3}
                   label={
                     isLoading

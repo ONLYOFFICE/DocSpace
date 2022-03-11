@@ -15,7 +15,7 @@ export default {
   },
 };
 
-const sizes = ["extraSmall", "small", "normal36", "normal40", "medium"];
+const sizes = ["extraSmall", "small", "normal", "medium"];
 
 const Wrapper = (props) => (
   <div

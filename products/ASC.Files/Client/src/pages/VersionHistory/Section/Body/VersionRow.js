@@ -195,7 +195,7 @@ const VersionRow = (props) => {
                         isDisabled={isSavingComment}
                         className="version_save-button"
                         label={t("Common:SaveButton")}
-                        size="normal36"
+                        size="normal"
                         primary
                         onClick={onSaveClick}
                       />

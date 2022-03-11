@@ -307,7 +307,7 @@ const PureConnectDialogContainer = (props) => {
         <Button
           tabIndex={5}
           label={t("Common:SaveButton")}
-          size="normal36"
+          size="normal"
           primary
           onClick={onSave}
           isDisabled={isLoading}

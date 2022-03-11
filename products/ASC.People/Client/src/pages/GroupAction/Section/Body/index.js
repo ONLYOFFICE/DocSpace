@@ -368,14 +368,14 @@ const SectionBodyContent = ({
             primary
             type="submit"
             isLoading={inLoading}
-            size="normal36"
+            size="normal"
             tabIndex={4}
             onClick={onSave}
           />
           <Button
             label={t("Common:CancelButton")}
             className="cancel-button"
-            size="normal36"
+            size="normal"
             isDisabled={inLoading}
             onClick={onCancel}
             tabIndex={5}
