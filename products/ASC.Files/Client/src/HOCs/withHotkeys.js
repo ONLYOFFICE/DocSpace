@@ -172,7 +172,7 @@ const withHotkeys = (Component) => {
 
     //Delete selection
     useHotkeys(
-      "delete, shift+3, command+delete",
+      "delete, shift+3, command+delete, command+Backspace",
       () => {
         if (isAvailableOption("delete")) {
           if (confirmDelete) setDeleteDialogVisible(true);
