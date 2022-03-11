@@ -5,7 +5,6 @@ import StyledButton from "./styled-button";
 import Base from "../themes/base";
 
 // eslint-disable-next-line no-unused-vars, react/prop-types
-
 const Button = React.forwardRef((props, ref) => {
   let { primary, size, isLoading, icon, label } = props;
 
@@ -23,7 +22,7 @@ const Button = React.forwardRef((props, ref) => {
               className="loader"
             />
           ) : (
-            React.cloneElement(icon)
+            <div className="icon">{React.cloneElement(icon)}</div>
           )
         ) : (
           ""

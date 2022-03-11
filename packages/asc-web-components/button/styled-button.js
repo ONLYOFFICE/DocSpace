@@ -165,17 +165,18 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 4px;
+    gap: 8px;
   }
 
-  .btnIcon,
+  .icon {
+    width: auto;
+    height: 100%;
+  }
+
   .loader {
     display: flex;
     justify-content: center;
     align-items: center;
-  }
-
-  .loader {
     vertical-align: ${(props) =>
       props.size === "normalTouchscreen" || props.size === "extraSmall"
         ? props.theme.button.middleVerticalAlign
