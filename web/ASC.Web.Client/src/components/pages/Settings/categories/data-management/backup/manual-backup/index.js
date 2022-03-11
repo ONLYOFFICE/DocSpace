@@ -1,20 +1,20 @@
 import React from "react";
-import Text from "@appserver/components/text";
 import { withTranslation } from "react-i18next";
+import { isMobileOnly } from "react-device-detect";
+import { inject, observer } from "mobx-react";
+import Text from "@appserver/components/text";
 import Button from "@appserver/components/button";
 import { startBackup } from "@appserver/common/api/portal";
+import RadioButton from "@appserver/components/radio-button";
 import toastr from "@appserver/components/toast/toastr";
+import Loader from "@appserver/components/loader";
+import { BackupTypes } from "@appserver/common/constants";
+import SelectFolderDialog from "files/SelectFolderDialog";
 import ThirdPartyModule from "./sub-components/ThirdPartyModule";
 import DocumentsModule from "./sub-components/DocumentsModule";
 import ThirdPartyStorageModule from "./sub-components/ThirdPartyStorageModule";
-import RadioButton from "@appserver/components/radio-button";
 import { StyledModules, StyledManualBackup } from "./../StyledBackup";
-import SelectFolderDialog from "files/SelectFolderDialog";
-import Loader from "@appserver/components/loader";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../../utils";
-import { BackupTypes } from "@appserver/common/constants";
-import { isMobileOnly } from "react-device-detect";
-import { inject, observer } from "mobx-react";
 
 let selectedStorageType = "";
 
@@ -316,28 +316,28 @@ class ManualBackup extends React.Component {
 
 export default inject(({ backup }) => {
   const {
-    setDownloadingProgress,
-    getProgress,
-    setTemporaryLink,
-    setCommonThirdPartyList,
-    downloadingProgress,
-    temporaryLink,
     clearProgressInterval,
-    getIntervalProgress,
     clearSessionStorage,
     commonThirdPartyList,
+    downloadingProgress,
+    getProgress,
+    getIntervalProgress,
+    setDownloadingProgress,
+    setTemporaryLink,
+    setCommonThirdPartyList,
+    temporaryLink,
   } = backup;
 
   return {
-    setDownloadingProgress,
-    getProgress,
-    getIntervalProgress,
-    setTemporaryLink,
-    setCommonThirdPartyList,
-    downloadingProgress,
-    temporaryLink,
     clearProgressInterval,
     clearSessionStorage,
     commonThirdPartyList,
+    downloadingProgress,
+    getProgress,
+    getIntervalProgress,
+    setDownloadingProgress,
+    setTemporaryLink,
+    setCommonThirdPartyList,
+    temporaryLink,
   };
 })(withTranslation(["Settings", "Common"])(observer(ManualBackup)));

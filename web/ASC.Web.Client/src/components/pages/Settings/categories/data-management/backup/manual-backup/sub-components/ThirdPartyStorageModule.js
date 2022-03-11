@@ -1,22 +1,20 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
 import ComboBox from "@appserver/components/combobox";
+import { BackupTypes, ThirdPartyStorages } from "@appserver/common/constants";
 import GoogleCloudStorage from "./storages/GoogleCloudStorage";
 import RackspaceStorage from "./storages/RackspaceStorage";
 import SelectelStorage from "./storages/SelectelStorage";
 import AmazonStorage from "./storages/AmazonStorage";
 import { getOptions } from "../../GetOptions";
-import { BackupTypes, ThirdPartyStorages } from "@appserver/common/constants";
 import { getFromSessionStorage } from "../../../../../utils";
 import { StyledManualBackup } from "../../StyledBackup";
-import { inject, observer } from "mobx-react";
 
 let storage = "";
 let storageId = "";
 class ThirdPartyStorageModule extends React.PureComponent {
   constructor(props) {
     super(props);
-
-    this.isSetDefaultIdStorage = false;
 
     storage = getFromSessionStorage("LocalCopyThirdPartyStorageType");
     storageId = getFromSessionStorage("LocalCopyStorage");

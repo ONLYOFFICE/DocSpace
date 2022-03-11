@@ -1,8 +1,8 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import SelectFolderInput from "files/SelectFolderInput";
 import Button from "@appserver/components/button";
-import { inject, observer } from "mobx-react";
 import { getFromSessionStorage } from "../../../../../utils";
 
 let folderPath = "";
