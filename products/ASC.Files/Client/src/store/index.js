@@ -14,6 +14,7 @@ import VersionHistoryStore from "./VersionHistoryStore";
 import DialogsStore from "./DialogsStore";
 import selectedFilesStore from "./SelectedFilesStore";
 import ContextOptionsStore from "./ContextOptionsStore";
+import HotkeyStore from "./HotkeyStore";
 import store from "studio/store";
 
 const selectedFolderStore = new SelectedFolderStore(store.auth.settingsStore);
@@ -81,6 +82,15 @@ const contextOptionsStore = new ContextOptionsStore(
   settingsStore
 );
 
+const hotkeyStore = new HotkeyStore(
+  filesStore,
+  dialogsStore,
+  settingsStore,
+  filesActionsStore,
+  treeFoldersStore,
+  uploadDataStore
+);
+
 //const selectedFilesStore = new SelectedFilesStore(selectedFilesStore);
 const stores = {
   filesStore,
@@ -94,6 +104,7 @@ const stores = {
   filesActionsStore,
   selectedFilesStore,
   contextOptionsStore,
+  hotkeyStore,
 };
 
 export default stores;

@@ -12,6 +12,7 @@ import FilesTileContainer from "./TilesView/FilesTileContainer";
 import EmptyContainer from "../../../../components/EmptyContainer";
 import withLoader from "../../../../HOCs/withLoader";
 import TableView from "./TableView/TableContainer";
+import withHotkeys from "../../../../HOCs/withHotkeys";
 import { Consumer } from "@appserver/components/utils/context";
 import { CatalogMainButtonContent } from "../../../../components/Catalog";
 
@@ -37,6 +38,8 @@ const SectionBodyContent = (props) => {
     setBufferSelection,
     tooltipPageX,
     tooltipPageY,
+    setHotkeyCaretStart,
+    setHotkeyCaret,
   } = props;
 
   useEffect(() => {
@@ -79,6 +82,8 @@ const SectionBodyContent = (props) => {
     ) {
       setSelection([]);
       setBufferSelection(null);
+      setHotkeyCaretStart(null);
+      setHotkeyCaret(null);
     }
   };
 
@@ -255,6 +260,8 @@ export default inject(
       tooltipPageX,
       tooltipPageY,
       setBufferSelection,
+      setHotkeyCaretStart,
+      setHotkeyCaret,
     } = filesStore;
 
     return {
@@ -273,12 +280,14 @@ export default inject(
       setBufferSelection,
       tooltipPageX,
       tooltipPageY,
+      setHotkeyCaretStart,
+      setHotkeyCaret,
     };
   }
 )(
   withRouter(
     withTranslation(["Home", "Common", "Translations"])(
-      withLoader(observer(SectionBodyContent))()
+      withLoader(withHotkeys(observer(SectionBodyContent)))()
     )
   )
 );

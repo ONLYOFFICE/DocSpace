@@ -19,6 +19,10 @@ import styled, { css } from "styled-components";
 import Base from "@appserver/components/themes/base";
 import { isSafari } from "react-device-detect";
 
+const hotkeyBorderStyle = css`
+  border-image-source: linear-gradient(to left, #2da7db 24px, #2da7db 24px);
+`;
+
 const rowCheckboxDraggingStyle = css`
   border-image-source: ${(props) =>
     props.theme.filesSection.tableView.row.checkboxDragging};
@@ -55,6 +59,8 @@ const StyledTableRow = styled(TableRow)`
         pointer-events: none;
         /* cursor: wait; */
       `}
+
+    ${(props) => props.showHotkeyBorder && "border-color: #2DA7DB"}
   }
 
   .table-container_element-wrapper,
@@ -109,6 +115,7 @@ const StyledTableRow = styled(TableRow)`
     border-right: 0;
     border-left: 0;
 
+    ${(props) => props.showHotkeyBorder && hotkeyBorderStyle};
     ${(props) => props.dragging && rowCheckboxDraggingStyle};
   }
 
@@ -135,6 +142,7 @@ const StyledTableRow = styled(TableRow)`
     border-left: 0;
 
     ${(props) => props.dragging && contextMenuWrapperDraggingStyle};
+    ${(props) => props.showHotkeyBorder && hotkeyBorderStyle};
   }
 
   .edit {
@@ -143,6 +151,15 @@ const StyledTableRow = styled(TableRow)`
       height: 12px;
     }
   }
+
+  ${(props) =>
+    props.showHotkeyBorder &&
+    css`
+      .table-container_cell {
+        margin-top: -1px;
+        border-top: 1px solid #2da7db;
+      }
+    `}
 `;
 
 const StyledDragAndDrop = styled(DragAndDrop)`
@@ -244,9 +261,11 @@ const FilesTableRow = (props) => {
     inProgress,
     index,
     setFirsElemChecked,
+    setHeaderBorder,
     theme,
     quickButtonsComponent,
     getContextModel,
+    showHotkeyBorder,
   } = props;
   const { acceptBackground, background } = theme.dragAndDrop;
 
@@ -283,19 +302,30 @@ const FilesTableRow = (props) => {
   };
 
   React.useEffect(() => {
-    if (index === 0 && (checkedProps || isActive)) {
-      setFirsElemChecked(true);
-    } else {
-      index === 0 && setFirsElemChecked(false);
+    if (index === 0) {
+      if (checkedProps || isActive) {
+        setFirsElemChecked(true);
+      } else {
+        setFirsElemChecked(false);
+      }
+      if (showHotkeyBorder) {
+        setHeaderBorder(true);
+      } else {
+        setHeaderBorder(false);
+      }
     }
-  }, [checkedProps, isActive]);
+  }, [checkedProps, isActive, showHotkeyBorder]);
 
   return (
     <StyledDragAndDrop
       data-title={item.title}
       value={value}
-      className={`files-item ${className} ${
-        checkedProps || isActive ? "table-row-selected" : ""
+      className={`files-item ${className} ${item.id}_${item.fileExst} ${
+        showHotkeyBorder
+          ? "table-hotkey-border"
+          : checkedProps || isActive
+          ? "table-row-selected"
+          : ""
       }`}
       onDrop={onDrop}
       onMouseDown={onMouseDown}
@@ -320,6 +350,7 @@ const FilesTableRow = (props) => {
         checked={checkedProps}
         contextOptions={item.contextOptions}
         getContextModel={getContextModel}
+        showHotkeyBorder={showHotkeyBorder}
         title={
           item.isFolder
             ? t("Translations:TitleShowFolderActions")

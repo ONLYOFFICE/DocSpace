@@ -1,10 +1,5 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-import toastr from "@appserver/components/toast/toastr";
-import { checkProtocol } from "../helpers/files-helpers";
-import { AppServerConfig, FileStatus } from "@appserver/common/constants";
-import { combineUrl } from "@appserver/common/utils";
-import config from "../../package.json";
 import { isMobile } from "react-device-detect";
 
 export default function withFileActions(WrappedFileItem) {
@@ -93,9 +88,6 @@ export default function withFileActions(WrappedFileItem) {
       !isActive && setBufferSelection(null);
     };
 
-    onMarkAsRead = (id) =>
-      this.props.markAsRead([], [`${id}`], this.props.item);
-
     onMouseClick = (e) => {
       const { viewAs } = this.props;
 
@@ -121,38 +113,7 @@ export default function withFileActions(WrappedFileItem) {
       }
     };
     onFilesClick = (e) => {
-      const {
-        isDesktop,
-        //parentFolder,
-        setIsLoading,
-        fetchFiles,
-        isMediaOrImage,
-        canConvert,
-        canWebEdit,
-        canViewedDocs,
-        item,
-        isTrashFolder,
-        isPrivacy,
-        openDocEditor,
-        //addExpandedKeys,
-        setExpandedKeys,
-        createNewExpandedKeys,
-        setMediaViewerData,
-        setConvertItem,
-        setConvertDialogVisible,
-        setNewBadgeCount,
-      } = this.props;
-      const {
-        id,
-        viewUrl,
-        providerKey,
-        fileStatus,
-        encrypted,
-        isFolder,
-      } = item;
-      if (encrypted && isPrivacy) return checkProtocol(item.id, true);
-
-      if (isTrashFolder) return;
+      const { item, openFileAction } = this.props;
       if (
         (e && e.target.tagName === "INPUT") ||
         !!e.target.closest(".lock-file")
@@ -160,61 +121,7 @@ export default function withFileActions(WrappedFileItem) {
         return;
 
       e.preventDefault();
-
-      if (isFolder) {
-        setIsLoading(true);
-        //addExpandedKeys(parentFolder + "");
-
-        fetchFiles(id, null, true, false)
-          .then((data) => {
-            const pathParts = data.selectedFolder.pathParts;
-            const newExpandedKeys = createNewExpandedKeys(pathParts);
-            setExpandedKeys(newExpandedKeys);
-
-            setNewBadgeCount(item);
-          })
-          .catch((err) => {
-            toastr.error(err);
-            setIsLoading(false);
-          })
-          .finally(() => setIsLoading(false));
-      } else {
-        if (canConvert) {
-          setConvertItem(item);
-          setConvertDialogVisible(true);
-          return;
-        }
-
-        if ((fileStatus & FileStatus.IsNew) === FileStatus.IsNew)
-          this.onMarkAsRead(id);
-
-        if (canWebEdit || canViewedDocs) {
-          let tab =
-            !isDesktop && !isFolder
-              ? window.open(
-                  combineUrl(
-                    AppServerConfig.proxyURL,
-                    config.homepage,
-                    "/doceditor"
-                  ),
-                  "_blank"
-                )
-              : null;
-
-          return openDocEditor(id, providerKey, tab);
-        }
-
-        if (isMediaOrImage) {
-          localStorage.setItem("isFirstUrl", window.location.href);
-          setMediaViewerData({ visible: true, id });
-
-          const url = "/products/files/#preview/" + id;
-          history.pushState(null, null, url);
-          return;
-        }
-
-        return window.open(viewUrl, "_self");
-      }
+      openFileAction(item);
     };
 
     getContextModel = () => this.props.getModel(this.props.item, this.props.t);
@@ -307,29 +214,22 @@ export default function withFileActions(WrappedFileItem) {
         //selectedFolderStore,
         filesStore,
         uploadDataStore,
-        mediaViewerDataStore,
         settingsStore,
         contextOptionsStore,
       },
-      { item, t, history }
+      { item, t }
     ) => {
       const {
         selectRowAction,
         onSelectItem,
-        markAsRead,
         setNewBadgeCount,
+        openFileAction,
       } = filesActionsStore;
-      const {
-        setSharingPanelVisible,
-        setConvertDialogVisible,
-        setConvertItem,
-      } = dialogsStore;
+      const { setSharingPanelVisible } = dialogsStore;
       const {
         isPrivacyFolder,
         isRecycleBinFolder,
         //addExpandedKeys,
-        setExpandedKeys,
-        createNewExpandedKeys,
       } = treeFoldersStore;
       const {
         dragging,
@@ -339,19 +239,16 @@ export default function withFileActions(WrappedFileItem) {
         setStartDrag,
         fileActionStore,
         isFileSelected,
-        setIsLoading,
-        fetchFiles,
-        openDocEditor,
         getFolderInfo,
         viewAs,
         bufferSelection,
         setBufferSelection,
+        hotkeyCaret,
         activeFiles,
         activeFolders,
       } = filesStore;
       const { startUpload } = uploadDataStore;
       const { type, extension, id } = fileActionStore;
-      const { setMediaViewerData } = mediaViewerDataStore;
 
       const selectedItem = selection.find(
         (x) => x.id === item.id && x.fileExst === item.fileExst
@@ -361,12 +258,8 @@ export default function withFileActions(WrappedFileItem) {
         !isRecycleBinFolder && selectedItem && selectedItem.id !== id;
 
       const isFolder = selectedItem ? false : !item.isFolder ? false : true;
-
-      const isMediaOrImage = settingsStore.isMediaOrImage(item.fileExst);
       const canWebEdit = settingsStore.canWebEdit(item.fileExst);
-      const canConvert = settingsStore.canConvert(item.fileExst);
       const canViewedDocs = settingsStore.canViewedDocs(item.fileExst);
-
       const inProgress =
         activeFiles.findIndex((x) => x === item.id) !== -1 ||
         activeFolders.findIndex(
@@ -385,6 +278,8 @@ export default function withFileActions(WrappedFileItem) {
       )
         isActive = true;
 
+      const showHotkeyBorder = hotkeyCaret?.id === item.id;
+
       return {
         t,
         item,
@@ -398,7 +293,6 @@ export default function withFileActions(WrappedFileItem) {
         draggable,
         setTooltipPosition,
         setStartDrag,
-        history,
         isFolder,
         allowShareIn: filesStore.canShare,
         actionType: type,
@@ -406,23 +300,12 @@ export default function withFileActions(WrappedFileItem) {
         actionId: id,
         checked: isFileSelected(item.id, item.parentId),
         //parentFolder: selectedFolderStore.parentId,
-        setIsLoading,
-        fetchFiles,
-        isMediaOrImage,
         canWebEdit,
         canViewedDocs,
-        canConvert,
         isTrashFolder: isRecycleBinFolder,
-        openDocEditor,
         //addExpandedKeys,
-        setExpandedKeys,
-        createNewExpandedKeys,
-        setMediaViewerData,
         getFolderInfo,
-        markAsRead,
         viewAs,
-        setConvertItem,
-        setConvertDialogVisible,
         isDesktop: auth.settingsStore.isDesktopClient,
         personal: auth.settingsStore.personal,
         setNewBadgeCount,
@@ -430,6 +313,8 @@ export default function withFileActions(WrappedFileItem) {
         inProgress,
         setBufferSelection,
         getModel: contextOptionsStore.getModel,
+        showHotkeyBorder,
+        openFileAction,
       };
     }
   )(observer(WithFileActions));
