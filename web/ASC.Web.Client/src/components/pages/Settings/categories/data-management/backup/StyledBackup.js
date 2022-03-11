@@ -467,7 +467,14 @@ const StyledBackupList = styled.div`
 const StyledSettingsHeader = styled.div`
   display: flex;
   position: fixed;
-  top: 48px;
+  top: ${(props) => (props.isVisible ? "48px" : "-48px")};
+
+  transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
+  -moz-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
+  -ms-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
+  -webkit-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
+  -o-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
+
   background-color: #fff;
   z-index: 149;
   width: 100%;

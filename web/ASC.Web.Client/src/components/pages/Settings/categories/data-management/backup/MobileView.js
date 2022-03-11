@@ -19,6 +19,7 @@ import toastr from "@appserver/components/toast/toastr";
 import AutoBackup from "./auto-backup";
 import ManualBackup from "./manual-backup";
 import RestoreBackup from "./restore-backup";
+import { LayoutContextConsumer } from "../../../../../Layout/context";
 
 const StyledArrowRightIcon = styled(ArrowRightIcon)`
   ${commonIconsStyles}
@@ -141,7 +142,7 @@ class BackupMobileView extends React.Component {
       <div className="backup-section_wrapper">
         <div className="backup-section_heading">
           <Text
-            className="backup-section_text"
+            className="backup-section_text hidingHeader"
             onClick={() => this.onClickModule(section)}
           >
             {sectionTitle}
@@ -194,41 +195,49 @@ class BackupMobileView extends React.Component {
     return isLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
-      <StyledBackup>
-        {isSectionOpen && (
-          <StyledSettingsHeader>
-            <IconButton
-              iconName="/static/images/arrow.path.react.svg"
-              size="17"
-              color="#A3A9AE"
-              hoverColor="#657077"
-              isFill={true}
-              onClick={this.onBackToParent}
-              className="backup_arrow-button"
-            />
+      <LayoutContextConsumer>
+        {(value) => (
+          <StyledBackup>
+            {isSectionOpen && (
+              <StyledSettingsHeader isVisible={value.isVisible}>
+                <IconButton
+                  iconName="/static/images/arrow.path.react.svg"
+                  size="17"
+                  color="#A3A9AE"
+                  hoverColor="#657077"
+                  isFill={true}
+                  onClick={this.onBackToParent}
+                  className="backup_arrow-button"
+                />
 
-            <Headline type="content" className="backup_header" truncate={true}>
-              {headerTitle}
-            </Headline>
-          </StyledSettingsHeader>
+                <Headline
+                  type="content"
+                  className="backup_header"
+                  truncate={true}
+                >
+                  {headerTitle}
+                </Headline>
+              </StyledSettingsHeader>
+            )}
+
+            {autoBackup && <AutoBackup />}
+            {manualBackup && <ManualBackup />}
+            {restoreBackup && <RestoreBackup history={history} />}
+
+            {!isSectionOpen && renderBackupSections()}
+
+            {downloadingProgress > 0 && downloadingProgress !== 100 && (
+              <FloatingButton
+                className="layout-progress-bar"
+                icon="file"
+                alert={false}
+                percent={downloadingProgress}
+                onClick={this.onClickFloatingButton}
+              />
+            )}
+          </StyledBackup>
         )}
-
-        {autoBackup && <AutoBackup />}
-        {manualBackup && <ManualBackup />}
-        {restoreBackup && <RestoreBackup history={history} />}
-
-        {!isSectionOpen && renderBackupSections()}
-
-        {downloadingProgress > 0 && downloadingProgress !== 100 && (
-          <FloatingButton
-            className="layout-progress-bar"
-            icon="file"
-            alert={false}
-            percent={downloadingProgress}
-            onClick={this.onClickFloatingButton}
-          />
-        )}
-      </StyledBackup>
+      </LayoutContextConsumer>
     );
   }
 }
