@@ -25,6 +25,7 @@ import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../package.json";
 import history from "@appserver/common/history";
+import { isMobile } from "react-device-detect";
 
 class FilesActionStore {
   authStore;
@@ -1099,6 +1100,11 @@ class FilesActionStore {
         this.onMarkAsRead(id);
 
       if (canWebEdit || canViewedDocs) {
+        if (isMobile) {
+          const url = `/products/files/deeplink?fileId=${id}`;
+          return window.open(url, "_self");
+        }
+
         let tab =
           !this.authStore.settingsStore.isDesktopClient && !isFolder
             ? window.open(
