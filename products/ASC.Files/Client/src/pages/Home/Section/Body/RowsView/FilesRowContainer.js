@@ -17,7 +17,9 @@ const StyledRowContainer = styled(RowContainer)`
     }
   }
 
-  .row-wrapper:not(.row-selected) + .row-selected {
+  .row-wrapper:not(.row-selected)
+    + .row-wrapper:not(.row-hotkey-border)
+    + .row-selected {
     .files-row {
       border-top: ${`1px ${borderColor} solid`};
       margin-top: -3px;
