@@ -45,7 +45,8 @@ case "$1" in
         db_get onlyoffice/ds-port || true  
         DOCUMENT_SERVER_PORT="$RET"
 
-        bash /usr/bin/appserver-configuration.sh -e $ENVIRONMENT -ash $APP_HOST -asp $APP_PORT -dsh $DOCUMENT_SERVER_HOST -dsp $DOCUMENT_SERVER_PORT -kh $KAFKA_HOST -kp $KAFKA_PORT -zkh $ZOOKEEPER_HOST -zkp $ZOOKEEPER_PORT -ess $ELK_SHEME -esh $ELK_HOST -esp $ELK_PORT
+        bash /usr/bin/appserver-configuration.sh -e $ENVIRONMENT -mysqlh $DB_HOST -mysqld $DB_NAME -mysqlu $DB_USER -mysqlp $DB_PWD -ash $APP_HOST -asp $APP_PORT \
+        -dsh $DOCUMENT_SERVER_HOST -dsp $DOCUMENT_SERVER_PORT -kh $KAFKA_HOST -kp $KAFKA_PORT -zkh $ZOOKEEPER_HOST -zkp $ZOOKEEPER_PORT -ess $ELK_SHEME -esh $ELK_HOST -esp $ELK_PORT
 	;;
 
 	abort-upgrade|abort-remove|abort-deconfigure)

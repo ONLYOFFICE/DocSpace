@@ -126,6 +126,34 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
+		-mysqlh | --mysqlhost )
+			if [ "$2" != "" ]; then
+				DB_HOST=$2
+				shift
+			fi
+		;;
+
+		-mysqld | --mysqldatabase )
+			if [ "$2" != "" ]; then
+				DB_NAME=$2
+				shift
+			fi
+		;;
+
+		-mysqlu | --mysqluser )
+			if [ "$2" != "" ]; then
+				DB_USER=$2
+				shift
+			fi
+		;;
+
+		-mysqlp | --mysqlpassword )
+			if [ "$2" != "" ]; then
+				DB_PWD=$2
+				shift
+			fi
+		;;
+		
 		-? | -h | --help )
 			echo "  Usage: bash ${PRODUCT}-configuration.sh [PARAMETER] [[PARAMETER], ...]"
 			echo
@@ -140,6 +168,10 @@ while [ "$1" != "" ]; do
 			echo "      -zkp, --zookeeperport               zookeeper port (default 2181)"
 			echo "      -esh, --elastichost                 elasticsearch ip"
 			echo "      -esp, --elasticport                 elasticsearch port (default 9200)"
+			echo "      -mysqlh, --mysqlhost                mysql server host"
+			echo "      -mysqld, --mysqldatabase            ${PRODUCT} database name"
+			echo "      -mysqlu, --mysqluser                ${PRODUCT} database user"
+			echo "      -mysqlp, --mysqlpassword            ${PRODUCT} database password"
 			echo "      -e, --environment                   environment (default 'production')"
 			echo "      -?, -h, --help                      this help"
 			echo
