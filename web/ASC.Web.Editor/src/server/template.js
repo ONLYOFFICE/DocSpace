@@ -27,7 +27,17 @@ export default function template(
         <head>
           <meta charset="utf-8">
           <title> ${title} </title>
-          <link rel="stylesheet" href="style.css">
+          <meta charset="utf-8" />
+          <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
+          />
+          <meta name="theme-color" content="#000000" />
+          <link id="favicon" rel="shortcut icon" href="/favicon.ico" />
+          <link rel="manifest" href="/manifest.json" />
+          <meta name="mobile-web-app-capable" content="yes" />
+          <meta name="apple-mobile-web-app-capable" content="yes" />
+          <link rel="apple-touch-icon" href="/appIcon.png" />
           ${styleTags}
         </head>
         <body>
