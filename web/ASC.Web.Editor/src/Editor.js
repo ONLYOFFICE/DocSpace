@@ -18,6 +18,7 @@ import {
 
 import { EditorWrapper } from "./StyledEditor";
 import DynamicComponent from "./components/dynamic";
+import { useTranslation } from "react-i18next";
 
 const { homepage } = pkg;
 
@@ -147,6 +148,9 @@ export default function Editor({
   const [isLoaded, setIsLoaded] = useState(false);
   const [documentTitle, setNewDocumentTitle] = useState("Loading...");
   const [faviconHref, setFaviconHref] = useState("/favicon.ico"); // try without state
+
+  const [t] = useTranslation();
+  // console.log(t, i18n);
 
   useEffect(() => {
     if (error) {
@@ -500,7 +504,7 @@ export default function Editor({
         goBack = {
           blank: true,
           requestClose: false,
-          text: 't("FileLocation")',
+          text: t("FileLocation"),
           url: `${combineUrl(filesUrl, `/filter?${urlFilter}`)}`,
         };
       }
