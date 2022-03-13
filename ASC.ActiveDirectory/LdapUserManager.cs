@@ -53,17 +53,12 @@ namespace ASC.ActiveDirectory
         private readonly TenantManager _tenantManager;
         private readonly TenantUtil _tenantUtil;
         private readonly SecurityContext _securityContext;
-        private readonly CookiesManager _cookiesManager;
         private readonly CommonLinkUtility _commonLinkUtility;
-        private readonly LdapNotifyHelper _ldapNotifyHelper;
         private readonly SettingsManager _settingsManager;
         private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
         private readonly UserFormatter _userFormatter;
         private readonly IServiceProvider _serviceProvider;
         private readonly IServiceScope _serviceScope;
-        private readonly IOptionsMonitor<ILog> _options;
-        private readonly InstanceCrypto _instanceCrypto;
-        private readonly IConfiguration _configuration;
         private readonly NovellLdapUserImporter _novellLdapUserImporter;
         private readonly LdapNotifySource _ldapNotifySource;
 
@@ -71,40 +66,31 @@ namespace ASC.ActiveDirectory
 
         public LdapUserManager(
             IOptionsMonitor<ILog> option,
-            IConfiguration configuration,
             IServiceProvider serviceProvider,
             IServiceScope serviceScope,
             UserManager userManager,
             TenantManager tenantManager,
             TenantUtil tenantUtil,
             SecurityContext securityContext,
-            CookiesManager cookiesManager,
             CommonLinkUtility commonLinkUtility,
-            LdapNotifyHelper ldapNotifyHelper,
             SettingsManager settingsManager,
             DisplayUserSettingsHelper displayUserSettingsHelper,
             UserFormatter userFormatter,
-            InstanceCrypto instanceCrypto,
             LdapNotifySource ldapNotifySource,
             NovellLdapUserImporter novellLdapUserImporter)
         {
             _log = option.Get("ASC");
-            _options = option;
             _userManager = userManager;
-            _configuration = configuration;
             _ldapNotifySource = ldapNotifySource;
             _tenantManager = tenantManager;
             _serviceScope = serviceScope;
             _tenantUtil = tenantUtil;
             _securityContext = securityContext;
-            _cookiesManager = cookiesManager;
             _commonLinkUtility = commonLinkUtility;
-            _ldapNotifyHelper = ldapNotifyHelper;
             _settingsManager = settingsManager;
             _displayUserSettingsHelper = displayUserSettingsHelper;
             _userFormatter = userFormatter;
             _serviceProvider = serviceProvider;
-            _instanceCrypto = instanceCrypto;
             _novellLdapUserImporter = novellLdapUserImporter;
         }
 

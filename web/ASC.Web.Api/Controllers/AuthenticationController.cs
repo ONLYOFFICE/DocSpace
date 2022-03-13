@@ -4,6 +4,9 @@ using System.Linq;
 using System.Security.Authentication;
 using System.Threading;
 
+using ASC.ActiveDirectory;
+using ASC.ActiveDirectory.Base.Settings;
+using ASC.ActiveDirectory.ComplexOperations;
 using ASC.Api.Core;
 using ASC.Api.Utils;
 using ASC.Common;
@@ -34,6 +37,7 @@ using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 using static ASC.Security.Cryptography.EmailValidationKeyProvider;
@@ -76,6 +80,7 @@ namespace ASC.Web.Api.Controllers
         private ApiContext ApiContext { get; }
         private AuthContext AuthContext { get; }
         private UserManagerWrapper UserManagerWrapper { get; }
+        private TenantExtra TenantExtra { get; }
 
         public AuthenticationController(
             UserManager userManager,
@@ -107,7 +112,8 @@ namespace ASC.Web.Api.Controllers
             SmsKeyStorage smsKeyStorage,
             CommonLinkUtility commonLinkUtility,
             ApiContext apiContext,
-            AuthContext authContext)
+            AuthContext authContext,
+            TenantExtra tenantExtra)
         {
             UserManager = userManager;
             TenantManager = tenantManager;
@@ -139,6 +145,7 @@ namespace ASC.Web.Api.Controllers
             ApiContext = apiContext;
             AuthContext = authContext;
             UserManagerWrapper = userManagerWrapper;
+            TenantExtra = tenantExtra;
         }
 
 
@@ -414,6 +421,13 @@ namespace ASC.Web.Api.Controllers
                     }
                     Cache.Insert("loginsec/" + memberModel.UserName, counter.ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)));
 
+                    if (EnableLdap)
+                    {
+                        var localization = new LdapLocalization(Resource.ResourceManager);
+                        var ldapUserManager = new LdapUserManager(localization);
+
+                        ldapUserManager.TryGetAndSyncLdapUserInfo(memberModel.UserName, memberModel.Password, out user);
+                    }
 
                     memberModel.PasswordHash = (memberModel.PasswordHash ?? "").Trim();
 
@@ -625,6 +639,23 @@ namespace ASC.Web.Api.Controllers
             if (linkedProfiles.Any(profileId => Guid.TryParse(profileId, out tmp) && UserManager.UserExists(tmp)))
                 userId = tmp;
             return true;
+        }
+
+        private bool EnableLdap
+        {
+            get
+            {
+                if (!CoreBaseSettings.Standalone
+                    && (!SetupInfo.IsVisibleSettings(ManagementType.LdapSettings.ToString())
+                        || !TenantExtra.GetTenantQuota().Ldap))
+                {
+                    return false;
+                }
+
+                var enabled = SettingsManager.Load<LdapSettings>().EnableLdapAuthentication;
+
+                return enabled;
+            }
         }
     }
 

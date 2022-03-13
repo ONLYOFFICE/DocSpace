@@ -21,6 +21,7 @@ using System.Text;
 using ASC.ActiveDirectory.Base;
 using ASC.ActiveDirectory.Base.Data;
 using ASC.ActiveDirectory.Novell.Data;
+using ASC.Common;
 using ASC.Common.Logging;
 
 using Microsoft.Extensions.Options;
@@ -29,6 +30,7 @@ using Novell.Directory.Ldap;
 
 namespace ASC.ActiveDirectory.Novell.Extensions
 {
+    [Singletone]
     public class NovellLdapEntryExtension
     {
         private readonly IOptionsMonitor<ILog> _options;
@@ -125,7 +127,10 @@ namespace ASC.ActiveDirectory.Novell.Extensions
             if (ldapEntry == null)
                 throw new ArgumentNullException("ldapEntry");
 
-            return new NovellLdapObject(ldapEntry, _options, this, ldapUniqueIdAttribute);
+            var novellLdapObject = new NovellLdapObject(_options, this);
+            novellLdapObject.Init(ldapEntry, ldapUniqueIdAttribute);
+
+            return novellLdapObject;
         }
 
         /// <summary>

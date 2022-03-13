@@ -24,6 +24,7 @@ using ASC.ActiveDirectory.Base;
 using ASC.ActiveDirectory.Base.Data;
 using ASC.ActiveDirectory.Novell.Exceptions;
 using ASC.ActiveDirectory.Novell.Extensions;
+using ASC.Common;
 using ASC.Common.Logging;
 
 using Microsoft.Extensions.Configuration;
@@ -35,6 +36,7 @@ using Novell.Directory.Ldap.Utilclass;
 
 namespace ASC.ActiveDirectory.Novell
 {
+    [Scope]
     public class NovellLdapSearcher : IDisposable
     {
         private readonly ILog _log;

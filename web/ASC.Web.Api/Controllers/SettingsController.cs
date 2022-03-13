@@ -3415,7 +3415,7 @@ namespace ASC.Api.Settings
 
             if (!CoreBaseSettings.Standalone
                 && (!SetupInfo.IsVisibleSettings(ManagementType.LdapSettings.ToString())
-                    || !TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().TenantId).Ldap))
+                    || !TenantExtra.GetTenantQuota().Ldap))
             {
                 throw new BillingException(Resource.ErrorNotAllowedOption, "Ldap");
             }

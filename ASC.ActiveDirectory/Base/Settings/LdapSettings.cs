@@ -422,6 +422,7 @@ namespace ASC.ActiveDirectory.Base.Settings
         }
     }
 
+    [Scope]
     [Serializable]
     [DataContract]
     public class LdapCronSettings : ISettings

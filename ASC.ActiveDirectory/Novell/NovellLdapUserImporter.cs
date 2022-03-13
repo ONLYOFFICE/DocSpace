@@ -16,6 +16,7 @@
 
 
 using ASC.ActiveDirectory.Base;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 
@@ -24,6 +25,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.ActiveDirectory.Novell
 {
+    [Scope]
     public class NovellLdapUserImporter : LdapUserImporter
     {
         public NovellLdapUserImporter(IOptionsMonitor<ILog> option, UserManager userManager, IConfiguration configuration, NovellLdapHelper novellLdapHelper)
