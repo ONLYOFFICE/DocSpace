@@ -48,6 +48,8 @@
   "dependencies": {
     "@loadable/component": "^5.15.2",
     "@loadable/server": "^5.15.2",
-    "express": "^4.17.2"
+    "express": "^4.17.2",
+    "i18next-express-middleware": "^2.0.0",
+    "i18next-node-fs-backend": "^2.1.3"
   }
 }
