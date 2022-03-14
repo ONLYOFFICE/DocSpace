@@ -354,14 +354,11 @@ export default function Editor({
   }; // +++
 
   const loadUsersRightsList = () => {
-    console.log("loadUsersRightsList", SharingDialog.getSharingSettings);
-    // SharingDialog?.getSharingSettings(fileId).then((sharingSettings) => {
-    //   console.log("sharingSettings", sharingSettings);
-    //   docEditor.setSharingSettings({
-    //     sharingSettings,
-    //   });
-    // });
-    //TODO:
+    window.SharingDialog.getSharingSettings(fileId).then((sharingSettings) => {
+      docEditor.setSharingSettings({
+        sharingSettings,
+      });
+    });
   };
 
   const onDocumentReady = () => {
@@ -451,11 +448,6 @@ export default function Editor({
       history.pushState({}, null, url.substring(0, index));
       docEditor.showMessage(message);
     }
-
-    // const tempElm = document.getElementById("loader");
-    // if (tempElm) {
-    //   tempElm.outerHTML = "";
-    // } not need to ssr
   }; // +++
 
   const onLoad = () => {
@@ -602,6 +594,7 @@ export default function Editor({
             scope: "files",
             url: "/products/files/remoteEntry.js",
             module: "./SharingDialog",
+            name: "SharingDialog",
           }}
           isVisible={isVisible}
           sharingObject={fileInfo}

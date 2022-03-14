@@ -4,7 +4,7 @@ import React from "react";
 // import Error520 from "studio/Error520";
 // import Error404 from "studio/Error404";
 
-function loadComponent(scope, module) {
+function loadComponent(scope, module, moduleName = null) {
   return async () => {
     // Initializes the share scope. This fills it with known provided modules from this build and all remotes
     await __webpack_init_sharing__("default");
@@ -13,6 +13,8 @@ function loadComponent(scope, module) {
     await container.init(__webpack_share_scopes__.default);
     const factory = await window[scope].get(module);
     const Module = factory();
+
+    moduleName && (window[moduleName] = Module.default);
     return Module;
   };
 }
@@ -96,7 +98,9 @@ const DynamicComponent = ({ system, ...rest }) => {
     throw Error("failed");
   }
 
-  const Component = React.lazy(loadComponent(system.scope, system.module));
+  const Component = React.lazy(
+    loadComponent(system.scope, system.module, system.name)
+  );
 
   return (
     <React.Suspense fallback={<div />}>
