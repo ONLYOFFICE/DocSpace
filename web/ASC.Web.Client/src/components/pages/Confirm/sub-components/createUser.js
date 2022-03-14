@@ -519,6 +519,13 @@ const Confirm = (props) => {
     setIsPasswordErrorShow(true);
   };
 
+  const passwordErrorMessage = `${t("Common:PasswordLimitLength", {
+    fromNumber: settings ? settings.minLength : 8,
+    toNumber: 30,
+  })} ${settings.digits ? t("Common:PasswordLimitDigits") : ""} ${
+    settings.upperCase ? t("Common:PasswordLimitUpperCase") : ""
+  } ${settings.specSymbols ? t("Common:PasswordLimitSpecialSymbols") : ""}`;
+
   if (!isLoaded) return <AppLoader />;
   return (
     <ConfirmContainer>
@@ -660,7 +667,9 @@ const Confirm = (props) => {
               isVertical={true}
               labelVisible={false}
               hasError={isPasswordErrorShow && !passwordValid}
-              errorMessage={errorText ? "" : t("Common:RequiredField")}
+              errorMessage={`${t(
+                "Common:PasswordLimitMessage"
+              )}: ${passwordErrorMessage}`}
             >
               <PasswordInput
                 simpleView={false}
@@ -686,7 +695,12 @@ const Confirm = (props) => {
                 tooltipPasswordLength={`${t("Common:PasswordLimitLength", {
                   fromNumber: settings ? settings.minLength : 8,
                   toNumber: 30,
-                })};`}
+                })}`}
+                tooltipPasswordDigits={`${t("Common:PasswordLimitDigits")}`}
+                tooltipPasswordCapital={`${t("Common:PasswordLimitUpperCase")}`}
+                tooltipPasswordSpecial={`${t(
+                  "Common:PasswordLimitSpecialSymbols"
+                )}`}
                 generatePasswordTitle={t("Wizard:GeneratePassword")}
               />
             </FieldContainer>
