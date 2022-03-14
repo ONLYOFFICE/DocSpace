@@ -118,11 +118,11 @@ const Base = {
     },
 
     padding: {
-      extraSmall: "5px 12px",
-      small: "6px 28px",
-      normalDesktop: "10px 28px",
-      normalTouchscreen: "12px 28px",
-      medium: "11px 32px",
+      extraSmall: "0 12px",
+      small: "0 28px",
+      normalDesktop: "0 28px",
+      normalTouchscreen: "0 28px",
+      medium: "0 32px",
     },
 
     minWidth: {
