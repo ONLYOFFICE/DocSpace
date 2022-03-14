@@ -1,9 +1,7 @@
 ﻿global using System.ComponentModel;
 global using System.Globalization;
-
 global using System.Linq.Expressions;
 global using System.Net;
-
 global using System.Reflection;
 global using System.Runtime.Serialization;
 global using System.Security;
@@ -12,7 +10,6 @@ global using System.Security.Claims;
 global using System.Text.Encodings.Web;
 global using System.Text.Json;
 global using System.Text.Json.Serialization;
-
 global using System.Web;
 global using System.Xml.Linq;
 
@@ -62,6 +59,7 @@ global using Microsoft.AspNetCore.Mvc.Filters;
 global using Microsoft.AspNetCore.Mvc.Formatters;
 global using Microsoft.AspNetCore.Mvc.Routing;
 global using Microsoft.AspNetCore.Routing;
+global using Microsoft.AspNetCore.Routing.Constraints;
 global using Microsoft.AspNetCore.Routing.Patterns;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;

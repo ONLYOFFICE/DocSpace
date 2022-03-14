@@ -1,28 +1,49 @@
 ﻿namespace ASC.Files.Api;
 
-public class EditorController : ApiControllerBase
+[ConstraintRoute("int")]
+public class EditorControllerInternal : EditorController<int>
 {
-    private readonly FilesLinkUtility _filesLinkUtility;
-    private readonly MessageService _messageService;
-    private readonly DocumentServiceConnector _documentServiceConnector;
-    private readonly CommonLinkUtility _commonLinkUtility;
-    private readonly EditorControllerHelper<int> _editorControllerHelperInt;
-    private readonly EditorControllerHelper<string> _editorControllerHelperString;
+    public EditorControllerInternal(FileStorageService<int> fileStorageService, FileDtoHelper fileDtoHelper, DocumentServiceHelper documentServiceHelper, DocumentServiceTrackerHelper documentServiceTrackerHelper, EncryptionKeyPairDtoHelper encryptionKeyPairDtoHelper, SettingsManager settingsManager, EntryManager entryManager, IHttpContextAccessor httpContextAccessor) : base(fileStorageService, fileDtoHelper, documentServiceHelper, documentServiceTrackerHelper, encryptionKeyPairDtoHelper, settingsManager, entryManager, httpContextAccessor)
+    {
+    }
+}
+
+public class EditorControllerThirdparty : EditorController<string>
+{
+    public EditorControllerThirdparty(FileStorageService<string> fileStorageService, FileDtoHelper fileDtoHelper, DocumentServiceHelper documentServiceHelper, DocumentServiceTrackerHelper documentServiceTrackerHelper, EncryptionKeyPairDtoHelper encryptionKeyPairDtoHelper, SettingsManager settingsManager, EntryManager entryManager, IHttpContextAccessor httpContextAccessor) : base(fileStorageService, fileDtoHelper, documentServiceHelper, documentServiceTrackerHelper, encryptionKeyPairDtoHelper, settingsManager, entryManager, httpContextAccessor)
+    {
+    }
+}
+
+public abstract class EditorController<T> : ApiControllerBase
+{
+    private readonly FileStorageService<T> _fileStorageService;
+    private readonly FileDtoHelper _fileDtoHelper;
+    private readonly DocumentServiceHelper _documentServiceHelper;
+    private readonly DocumentServiceTrackerHelper _documentServiceTrackerHelper;
+    private readonly EncryptionKeyPairDtoHelper _encryptionKeyPairDtoHelper;
+    private readonly SettingsManager _settingsManager;
+    private readonly EntryManager _entryManager;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     public EditorController(
-        FilesLinkUtility filesLinkUtility,
-        MessageService messageService,
-        DocumentServiceConnector documentServiceConnector,
-        CommonLinkUtility commonLinkUtility,
-        EditorControllerHelper<int> editorControllerHelperInt,
-        EditorControllerHelper<string> editorControllerHelperString)
+        FileStorageService<T> fileStorageService,
+        FileDtoHelper fileDtoHelper,
+        DocumentServiceHelper documentServiceHelper,
+        DocumentServiceTrackerHelper documentServiceTrackerHelper,
+        EncryptionKeyPairDtoHelper encryptionKeyPairDtoHelper,
+        SettingsManager settingsManager,
+        EntryManager entryManager,
+        IHttpContextAccessor httpContextAccessor)
     {
-        _filesLinkUtility = filesLinkUtility;
-        _messageService = messageService;
-        _documentServiceConnector = documentServiceConnector;
-        _commonLinkUtility = commonLinkUtility;
-        _editorControllerHelperInt = editorControllerHelperInt;
-        _editorControllerHelperString = editorControllerHelperString;
+        _fileStorageService = fileStorageService;
+        _fileDtoHelper = fileDtoHelper;
+        _documentServiceHelper = documentServiceHelper;
+        _documentServiceTrackerHelper = documentServiceTrackerHelper;
+        _encryptionKeyPairDtoHelper = encryptionKeyPairDtoHelper;
+        _settingsManager = settingsManager;
+        _entryManager = entryManager;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     /// <summary>
@@ -37,19 +58,18 @@ public class EditorController : ApiControllerBase
     /// <category>Files</category>
     /// <returns></returns>
     [Update("file/{fileId}/saveediting")]
-    public Task<FileDto<string>> SaveEditingFromFormAsync(string fileId, [FromForm] SaveEditingRequestDto inDto)
+    public async Task<FileDto<T>> SaveEditingFromFormAsync(T fileId, [FromForm] SaveEditingRequestDto inDto)
     {
-        using var stream = _editorControllerHelperInt.GetFileFromRequest(inDto).OpenReadStream();
+        var file = inDto.File;
+        IEnumerable<IFormFile> files = _httpContextAccessor.HttpContext.Request.Form.Files;
+        if (files != null && files.Any())
+        {
+            file = files.First();
+        }
 
-        return _editorControllerHelperString.SaveEditingAsync(fileId, inDto.FileExtension, inDto.DownloadUri, stream, inDto.Doc, inDto.Forcesave);
-    }
+        using var stream = file.OpenReadStream();
 
-    [Update("file/{fileId:int}/saveediting")]
-    public Task<FileDto<int>> SaveEditingFromFormAsync(int fileId, [FromForm] SaveEditingRequestDto inDto)
-    {
-        using var stream = _editorControllerHelperInt.GetFileFromRequest(inDto).OpenReadStream();
-
-        return _editorControllerHelperInt.SaveEditingAsync(fileId, inDto.FileExtension, inDto.DownloadUri, stream, inDto.Doc, inDto.Forcesave);
+        return await _fileDtoHelper.GetAsync(await _fileStorageService.SaveEditingAsync(fileId, inDto.FileExtension, inDto.DownloadUri, stream, inDto.Doc, inDto.Forcesave));
     }
 
     /// <summary>
@@ -61,37 +81,16 @@ public class EditorController : ApiControllerBase
     /// <category>Files</category>
     /// <returns></returns>
     [Create("file/{fileId}/startedit")]
-    [Consumes("application/json")]
-    public async Task<object> StartEditFromBodyAsync(string fileId, [FromBody] StartEditRequestDto inDto)
+    public async Task<object> StartEditFromBodyAsync(T fileId, [FromBody] StartEditRequestDto inDto)
     {
-        return await _editorControllerHelperString.StartEditAsync(fileId, inDto.EditingAlone, inDto.Doc);
+        return await _fileStorageService.StartEditAsync(fileId, inDto.EditingAlone, inDto.Doc);
     }
 
     [Create("file/{fileId}/startedit")]
     [Consumes("application/x-www-form-urlencoded")]
-    public async Task<object> StartEditFromFormAsync(string fileId, [FromForm] StartEditRequestDto inDto)
+    public async Task<object> StartEditFromFormAsync(T fileId, [FromForm] StartEditRequestDto inDto)
     {
-        return await _editorControllerHelperString.StartEditAsync(fileId, inDto.EditingAlone, inDto.Doc);
-    }
-
-    [Create("file/{fileId:int}/startedit")]
-    [Consumes("application/json")]
-    public async Task<object> StartEditFromBodyAsync(int fileId, [FromBody] StartEditRequestDto inDto)
-    {
-        return await _editorControllerHelperInt.StartEditAsync(fileId, inDto.EditingAlone, inDto.Doc);
-    }
-
-    [Create("file/{fileId:int}/startedit")]
-    public async Task<object> StartEditAsync(int fileId)
-    {
-        return await _editorControllerHelperInt.StartEditAsync(fileId, false, null);
-    }
-
-    [Create("file/{fileId:int}/startedit")]
-    [Consumes("application/x-www-form-urlencoded")]
-    public async Task<object> StartEditFromFormAsync(int fileId, [FromForm] StartEditRequestDto inDto)
-    {
-        return await _editorControllerHelperInt.StartEditAsync(fileId, inDto.EditingAlone, inDto.Doc);
+        return await _fileStorageService.StartEditAsync(fileId, inDto.EditingAlone, inDto.Doc);
     }
 
     /// <summary>
@@ -105,15 +104,9 @@ public class EditorController : ApiControllerBase
     /// <category>Files</category>
     /// <returns></returns>
     [Read("file/{fileId}/trackeditfile")]
-    public Task<KeyValuePair<bool, string>> TrackEditFileAsync(string fileId, Guid tabId, string docKeyForTrack, string doc, bool isFinish)
+    public Task<KeyValuePair<bool, string>> TrackEditFileAsync(T fileId, Guid tabId, string docKeyForTrack, string doc, bool isFinish)
     {
-        return _editorControllerHelperString.TrackEditFileAsync(fileId, tabId, docKeyForTrack, doc, isFinish);
-    }
-
-    [Read("file/{fileId:int}/trackeditfile")]
-    public Task<KeyValuePair<bool, string>> TrackEditFileAsync(int fileId, Guid tabId, string docKeyForTrack, string doc, bool isFinish)
-    {
-        return _editorControllerHelperInt.TrackEditFileAsync(fileId, tabId, docKeyForTrack, doc, isFinish);
+        return _fileStorageService.TrackEditFileAsync(fileId, tabId, docKeyForTrack, doc, isFinish);
     }
 
     /// <summary>
@@ -126,17 +119,66 @@ public class EditorController : ApiControllerBase
     /// <returns></returns>
     [AllowAnonymous]
     [Read("file/{fileId}/openedit", Check = false)]
-    public Task<Configuration<string>> OpenEditAsync(string fileId, int version, string doc, bool view)
+    public async Task<Configuration<T>> OpenEditAsync(T fileId, int version, string doc, bool view)
     {
-        return _editorControllerHelperString.OpenEditAsync(fileId, version, doc, view);
+        var docParams = await _documentServiceHelper.GetParamsAsync(fileId, version, doc, true, !view, true);
+        var configuration = docParams.Configuration;
+
+        configuration.EditorType = EditorType.External;
+        if (configuration.EditorConfig.ModeWrite)
+        {
+            configuration.EditorConfig.CallbackUrl = _documentServiceTrackerHelper.GetCallbackUrl(configuration.Document.Info.GetFile().ID.ToString());
+        }
+
+        if (configuration.Document.Info.GetFile().RootFolderType == FolderType.Privacy && PrivacyRoomSettings.GetEnabled(_settingsManager))
+        {
+            var keyPair = _encryptionKeyPairDtoHelper.GetKeyPair();
+            if (keyPair != null)
+            {
+                configuration.EditorConfig.EncryptionKeys = new EncryptionKeysConfig
+                {
+                    PrivateKeyEnc = keyPair.PrivateKeyEnc,
+                    PublicKey = keyPair.PublicKey,
+                };
+            }
+        }
+
+        if (!configuration.Document.Info.GetFile().Encrypted && !configuration.Document.Info.GetFile().ProviderEntry)
+        {
+            _entryManager.MarkAsRecent(configuration.Document.Info.GetFile());
+        }
+
+        configuration.Token = _documentServiceHelper.GetSignature(configuration);
+
+        return configuration;
     }
 
-    [AllowAnonymous]
-    [Read("file/{fileId:int}/openedit", Check = false)]
-    public Task<Configuration<int>> OpenEditAsync(int fileId, int version, string doc, bool view)
+    [Read("file/{fileId}/presigned")]
+    public Task<DocumentService.FileLink> GetPresignedUriAsync(T fileId)
     {
-        return _editorControllerHelperInt.OpenEditAsync(fileId, version, doc, view);
+        return _fileStorageService.GetPresignedUriAsync(fileId);
     }
+}
+
+public class EditorController : ApiControllerBase
+{
+    private readonly FilesLinkUtility _filesLinkUtility;
+    private readonly MessageService _messageService;
+    private readonly DocumentServiceConnector _documentServiceConnector;
+    private readonly CommonLinkUtility _commonLinkUtility;
+
+    public EditorController(
+        FilesLinkUtility filesLinkUtility,
+        MessageService messageService,
+        DocumentServiceConnector documentServiceConnector,
+        CommonLinkUtility commonLinkUtility)
+    {
+        _filesLinkUtility = filesLinkUtility;
+        _messageService = messageService;
+        _documentServiceConnector = documentServiceConnector;
+        _commonLinkUtility = commonLinkUtility;
+    }
+
 
     /// <summary>
     ///  Checking document service location
@@ -170,18 +212,6 @@ public class EditorController : ApiControllerBase
         }
 
         return InternalGetDocServiceUrlAsync(url);
-    }
-
-    [Read("file/{fileId}/presigned")]
-    public Task<DocumentService.FileLink> GetPresignedUriAsync(string fileId)
-    {
-        return _editorControllerHelperString.GetPresignedUriAsync(fileId);
-    }
-
-    [Read("file/{fileId:int}/presigned")]
-    public Task<DocumentService.FileLink> GetPresignedUriAsync(int fileId)
-    {
-        return _editorControllerHelperInt.GetPresignedUriAsync(fileId);
     }
 
     private async Task<object> InternalGetDocServiceUrlAsync(string url)

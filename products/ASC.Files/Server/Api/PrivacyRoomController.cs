@@ -25,29 +25,77 @@
 
 namespace ASC.Api.Documents;
 
+[ConstraintRoute("int")]
+internal class PrivacyRoomControllerInternal : PrivacyRoomController<int>
+{
+    public PrivacyRoomControllerInternal(SettingsManager settingsManager, EncryptionKeyPairDtoHelper encryptionKeyPairHelper, FileStorageService<int> fileStorageService) : base(settingsManager, encryptionKeyPairHelper, fileStorageService)
+    {
+    }
+}
+
+internal class PrivacyRoomControllerThirdparty : PrivacyRoomController<string>
+{
+    public PrivacyRoomControllerThirdparty(SettingsManager settingsManager, EncryptionKeyPairDtoHelper encryptionKeyPairHelper, FileStorageService<string> fileStorageService) : base(settingsManager, encryptionKeyPairHelper, fileStorageService)
+    {
+    }
+}
+
 [Scope]
 [DefaultRoute]
 [ApiController]
-public class PrivacyRoomController : ControllerBase
+[ControllerName("privacyroom")]
+internal abstract class PrivacyRoomController<T> : ControllerBase
+{
+    private readonly EncryptionKeyPairDtoHelper _encryptionKeyPairHelper;
+    private readonly FileStorageService<T> _fileStorageService;
+    private readonly SettingsManager _settingsManager;
+
+    public PrivacyRoomController(
+        SettingsManager settingsManager,
+        EncryptionKeyPairDtoHelper encryptionKeyPairHelper,
+        FileStorageService<T> fileStorageService)
+    {
+        _settingsManager = settingsManager;
+        _encryptionKeyPairHelper = encryptionKeyPairHelper;
+        _fileStorageService = fileStorageService;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <visible>false</visible>
+    [Read("access/{fileId}")]
+    public Task<IEnumerable<EncryptionKeyPairDto>> GetPublicKeysWithAccess(T fileId)
+    {
+        if (!PrivacyRoomSettings.GetEnabled(_settingsManager))
+        {
+            throw new System.Security.SecurityException();
+        }
+
+        return _encryptionKeyPairHelper.GetKeyPairAsync(fileId, _fileStorageService);
+    }
+}
+
+[Scope]
+[DefaultRoute]
+[ApiController]
+[ControllerName("privacyroom")]
+public abstract class PrivacyRoomControllerCommon : ControllerBase
 {
     private readonly AuthContext _authContext;
     private readonly EncryptionKeyPairDtoHelper _encryptionKeyPairHelper;
-    private readonly FileStorageService<string> _fileStorageService;
-    private readonly FileStorageService<int> _fileStorageServiceInt;
     private readonly ILog _logger;
     private readonly MessageService _messageService;
     private readonly PermissionContext _permissionContext;
     private readonly SettingsManager _settingsManager;
     private readonly TenantManager _tenantManager;
 
-    public PrivacyRoomController(
+    public PrivacyRoomControllerCommon(
         AuthContext authContext,
         PermissionContext permissionContext,
         SettingsManager settingsManager,
         TenantManager tenantManager,
         EncryptionKeyPairDtoHelper encryptionKeyPairHelper,
-        FileStorageService<int> fileStorageServiceInt,
-        FileStorageService<string> fileStorageService,
         MessageService messageService,
         IOptionsMonitor<ILog> option)
     {
@@ -56,8 +104,6 @@ public class PrivacyRoomController : ControllerBase
         _settingsManager = settingsManager;
         _tenantManager = tenantManager;
         _encryptionKeyPairHelper = encryptionKeyPairHelper;
-        _fileStorageServiceInt = fileStorageServiceInt;
-        _fileStorageService = fileStorageService;
         _messageService = messageService;
         _logger = option.Get("ASC.Api.Documents");
     }
@@ -79,31 +125,6 @@ public class PrivacyRoomController : ControllerBase
         return _encryptionKeyPairHelper.GetKeyPair();
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <visible>false</visible>
-    [Read("access/{fileId}")]
-    public Task<IEnumerable<EncryptionKeyPairDto>> GetPublicKeysWithAccess(string fileId)
-    {
-        if (!PrivacyRoomSettings.GetEnabled(_settingsManager))
-        {
-            throw new System.Security.SecurityException();
-        }
-
-        return _encryptionKeyPairHelper.GetKeyPairAsync(fileId, _fileStorageService);
-    }
-
-    [Read("access/{fileId:int}")]
-    public Task<IEnumerable<EncryptionKeyPairDto>> GetPublicKeysWithAccess(int fileId)
-    {
-        if (!PrivacyRoomSettings.GetEnabled(_settingsManager))
-        {
-            throw new System.Security.SecurityException();
-        }
-
-        return _encryptionKeyPairHelper.GetKeyPairAsync(fileId, _fileStorageServiceInt);
-    }
 
     /// <summary>
     /// 

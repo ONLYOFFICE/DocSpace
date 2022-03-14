@@ -1,4 +1,6 @@
-﻿namespace ASC.Api.Core.Core;
+﻿using ASC.Api.Core.Routing;
+
+namespace ASC.Api.Core.Core;
 
 public class CustomEndpointDataSource : EndpointDataSource
 {
@@ -15,20 +17,40 @@ public class CustomEndpointDataSource : EndpointDataSource
                 var endpoints = new List<RouteEndpoint>();
 
                 var attr = r.Metadata.OfType<CustomHttpMethodAttribute>().FirstOrDefault();
+                var constraintRouteAttr = r.Metadata.OfType<ConstraintRoute>().FirstOrDefault();
                 var enableFormat = attr == null || !attr.DisableFormat;
 
-                if (enableFormat)
+                if (r.RoutePattern.Parameters.Any() && constraintRouteAttr != null)
                 {
-                    endpoints.Add(new RouteEndpoint(r.RequestDelegate, RoutePatternFactory.Parse(r.RoutePattern.RawText 
-                        + ".{format}"), r.Order, r.Metadata, r.DisplayName));
+                    var routeValueDictionary = new RouteValueDictionary
+                    {
+                        { r.RoutePattern.Parameters.FirstOrDefault().Name, constraintRouteAttr.GetRouteConstraint() }
+                    };
+
+                    AddEndpoints(r.RoutePattern.Defaults, routeValueDictionary);
+
                 }
                 else
                 {
-                    endpoints.Add(new RouteEndpoint(r.RequestDelegate, RoutePatternFactory.Parse(r.RoutePattern.RawText + ".json"), r.Order - 1, r.Metadata, r.DisplayName));
-                    endpoints.Add(new RouteEndpoint(r.RequestDelegate, RoutePatternFactory.Parse(r.RoutePattern.RawText + ".xml"), r.Order - 1, r.Metadata, r.DisplayName));
+                    AddEndpoints();
                 }
-                 
+
                 return endpoints;
+
+                void AddEndpoints(IReadOnlyDictionary<string, object> defaults = null, RouteValueDictionary policies = null)
+                {
+                    endpoints.Add(new RouteEndpoint(r.RequestDelegate, RoutePatternFactory.Parse(r.RoutePattern.RawText, defaults, policies), r.Order, r.Metadata, r.DisplayName));
+
+                    if (enableFormat)
+                    {
+                        endpoints.Add(new RouteEndpoint(r.RequestDelegate, RoutePatternFactory.Parse(r.RoutePattern.RawText + ".{format}", defaults, policies), r.Order, r.Metadata, r.DisplayName));
+                    }
+                    else
+                    {
+                        endpoints.Add(new RouteEndpoint(r.RequestDelegate, RoutePatternFactory.Parse(r.RoutePattern.RawText + ".json", defaults, policies), r.Order - 1, r.Metadata, r.DisplayName));
+                        endpoints.Add(new RouteEndpoint(r.RequestDelegate, RoutePatternFactory.Parse(r.RoutePattern.RawText + ".xml", defaults, policies), r.Order - 1, r.Metadata, r.DisplayName));
+                    }
+                }
 
             }).ToList();
     }
@@ -43,7 +65,10 @@ public static class EndpointExtension
 {
     public static IEndpointRouteBuilder MapCustom(this IEndpointRouteBuilder endpoints)
     {
-        endpoints.DataSources.Add(new CustomEndpointDataSource(endpoints.DataSources.First()));
+        endpoints.MapControllers();
+        var sources = endpoints.DataSources.First();
+        endpoints.DataSources.Clear();
+        endpoints.DataSources.Add(new CustomEndpointDataSource(sources));
 
         return endpoints;
     }

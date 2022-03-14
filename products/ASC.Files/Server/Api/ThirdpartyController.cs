@@ -5,8 +5,8 @@ public class ThirdpartyController : ApiControllerBase
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly EntryManager _entryManager;
     private readonly FilesSettingsHelper _filesSettingsHelper;
-    private readonly FileStorageService<int> _fileStorageServiceInt;
-    private readonly FileStorageService<string> _fileStorageServiceString;
+    private readonly FileStorageService<int> _fileStorageService;
+    private readonly FileStorageService<string> _fileStorageServiceThirdparty;
     private readonly FolderDtoHelper _folderDtoHelper;
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly SecurityContext _securityContext;
@@ -19,8 +19,8 @@ public class ThirdpartyController : ApiControllerBase
         CoreBaseSettings coreBaseSettings,
         EntryManager entryManager,
         FilesSettingsHelper filesSettingsHelper,
-        FileStorageService<int> fileStorageServiceInt,
-        FileStorageService<string> fileStorageServiceString,
+        FileStorageService<int> fileStorageService,
+        FileStorageService<string> fileStorageServiceThirdparty,
         FolderDtoHelper folderDtoHelper,
         GlobalFolderHelper globalFolderHelper,
         SecurityContext securityContext,
@@ -32,8 +32,8 @@ public class ThirdpartyController : ApiControllerBase
         _coreBaseSettings = coreBaseSettings;
         _entryManager = entryManager;
         _filesSettingsHelper = filesSettingsHelper;
-        _fileStorageServiceInt = fileStorageServiceInt;
-        _fileStorageServiceString = fileStorageServiceString;
+        _fileStorageService = fileStorageService;
+        _fileStorageServiceThirdparty = fileStorageServiceThirdparty;
         _folderDtoHelper = folderDtoHelper;
         _globalFolderHelper = globalFolderHelper;
         _securityContext = securityContext;
@@ -92,7 +92,7 @@ public class ThirdpartyController : ApiControllerBase
     [Delete("thirdparty/{providerId:int}")]
     public Task<object> DeleteThirdPartyAsync(int providerId)
     {
-        return _fileStorageServiceString.DeleteThirdPartyAsync(providerId.ToString(CultureInfo.InvariantCulture));
+        return _fileStorageServiceThirdparty.DeleteThirdPartyAsync(providerId.ToString(CultureInfo.InvariantCulture));
 
     }
 
@@ -124,7 +124,7 @@ public class ThirdpartyController : ApiControllerBase
     [Read("thirdparty/common")]
     public async Task<IEnumerable<FolderDto<string>>> GetCommonThirdPartyFoldersAsync()
     {
-        var parent = await _fileStorageServiceInt.GetFolderAsync(await _globalFolderHelper.FolderCommonAsync);
+        var parent = await _fileStorageService.GetFolderAsync(await _globalFolderHelper.FolderCommonAsync);
         var thirdpartyFolders = await _entryManager.GetThirpartyFoldersAsync(parent);
         var result = new List<FolderDto<string>>();
 
@@ -144,7 +144,7 @@ public class ThirdpartyController : ApiControllerBase
     [Read("thirdparty")]
     public async Task<IEnumerable<ThirdPartyParams>> GetThirdPartyAccountsAsync()
     {
-        return await _fileStorageServiceString.GetThirdPartyAsync();
+        return await _fileStorageServiceThirdparty.GetThirdPartyAsync();
     }
 
     /// <visible>false</visible>
@@ -258,7 +258,7 @@ public class ThirdpartyController : ApiControllerBase
             ProviderKey = inDto.ProviderKey,
         };
 
-        var folder = await _fileStorageServiceString.SaveThirdPartyAsync(thirdPartyParams);
+        var folder = await _fileStorageServiceThirdparty.SaveThirdPartyAsync(thirdPartyParams);
 
         return await _folderDtoHelper.GetAsync(folder);
     }

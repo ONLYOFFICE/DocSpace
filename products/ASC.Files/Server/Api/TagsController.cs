@@ -1,22 +1,63 @@
 ﻿namespace ASC.Files.Api;
 
-public class TagsController : ApiControllerBase
+[ConstraintRoute("int")]
+public class TagsControllerInternal : TagsController<int>
 {
-    private readonly FileStorageService<int> _fileStorageServiceInt;
-    private readonly FileStorageService<string> _fileStorageServiceString;
+    public TagsControllerInternal(FileStorageService<int> fileStorageServiceString, EntryManager entryManager, FileDtoHelper fileDtoHelper) : base(fileStorageServiceString, entryManager, fileDtoHelper)
+    {
+    }
+}
+
+public class TagsControllerThirdparty : TagsController<string>
+{
+    public TagsControllerThirdparty(FileStorageService<string> fileStorageServiceString, EntryManager entryManager, FileDtoHelper fileDtoHelper) : base(fileStorageServiceString, entryManager, fileDtoHelper)
+    {
+    }
+}
+
+public abstract class TagsController<T> : ApiControllerBase
+{
+    private readonly FileStorageService<T> _fileStorageServiceString;
     private readonly EntryManager _entryManager;
     private readonly FileDtoHelper _fileDtoHelper;
 
     public TagsController(
-        FileStorageService<int> fileStorageServiceInt,
-        FileStorageService<string> fileStorageServiceString,
+        FileStorageService<T> fileStorageServiceString,
         EntryManager entryManager,
         FileDtoHelper fileDtoHelper)
     {
-        _fileStorageServiceInt = fileStorageServiceInt;
         _fileStorageServiceString = fileStorageServiceString;
         _entryManager = entryManager;
         _fileDtoHelper = fileDtoHelper;
+    }
+
+    [Create("file/{fileId}/recent", order: int.MaxValue)]
+    public async Task<FileDto<T>> AddToRecentAsync(T fileId)
+    {
+        var file = await _fileStorageServiceString.GetFileAsync(fileId, -1).NotFoundIfNull("File not found");
+        _entryManager.MarkAsRecent(file);
+
+        return await _fileDtoHelper.GetAsync(file);
+    }
+
+    [Read("favorites/{fileId}")]
+    public Task<bool> ToggleFileFavoriteAsync(T fileId, bool favorite)
+    {
+        return _fileStorageServiceString.ToggleFileFavoriteAsync(fileId, favorite);
+    }
+}
+
+public class TagsControllerCommon : ApiControllerBase
+{
+    private readonly FileStorageService<int> _fileStorageService;
+    private readonly FileStorageService<string> _fileStorageServiceThirdparty;
+
+    public TagsControllerCommon(
+        FileStorageService<int> fileStorageService,
+        FileStorageService<string> fileStorageServiceThirdparty)
+    {
+        _fileStorageService = fileStorageService;
+        _fileStorageServiceThirdparty = fileStorageServiceThirdparty;
     }
 
     /// <summary>
@@ -50,7 +91,7 @@ public class TagsController : ApiControllerBase
     [Create("templates")]
     public async Task<bool> AddTemplatesFromBodyAsync([FromBody] TemplatesRequestDto inDto)
     {
-        await _fileStorageServiceInt.AddToTemplatesAsync(inDto.FileIds);
+        await _fileStorageService.AddToTemplatesAsync(inDto.FileIds);
 
         return true;
     }
@@ -59,21 +100,9 @@ public class TagsController : ApiControllerBase
     [Consumes("application/x-www-form-urlencoded")]
     public async Task<bool> AddTemplatesFromFormAsync([FromForm] TemplatesRequestDto inDto)
     {
-        await _fileStorageServiceInt.AddToTemplatesAsync(inDto.FileIds);
+        await _fileStorageService.AddToTemplatesAsync(inDto.FileIds);
 
         return true;
-    }
-
-    [Create("file/{fileId}/recent", order: int.MaxValue)]
-    public Task<FileDto<string>> AddToRecentAsync(string fileId)
-    {
-        return AddToRecentStringAsync(fileId);
-    }
-
-    [Create("file/{fileId:int}/recent", order: int.MaxValue - 1)]
-    public Task<FileDto<int>> AddToRecentAsync(int fileId)
-    {
-        return AddToRecentIntAsync(fileId);
     }
 
     /// <summary>
@@ -107,21 +136,9 @@ public class TagsController : ApiControllerBase
     [Delete("templates")]
     public async Task<bool> DeleteTemplatesAsync(IEnumerable<int> fileIds)
     {
-        await _fileStorageServiceInt.DeleteTemplatesAsync(fileIds);
+        await _fileStorageService.DeleteTemplatesAsync(fileIds);
 
         return true;
-    }
-
-    [Read("favorites/{fileId:int}")]
-    public Task<bool> ToggleFavoriteFromFormAsync(int fileId, bool favorite)
-    {
-        return _fileStorageServiceInt.ToggleFileFavoriteAsync(fileId, favorite);
-    }
-
-    [Read("favorites/{fileId}")]
-    public Task<bool> ToggleFileFavoriteAsync(string fileId, bool favorite)
-    {
-        return _fileStorageServiceString.ToggleFileFavoriteAsync(fileId, favorite);
     }
 
     private async Task<bool> AddFavoritesAsync(BaseBatchRequestDto inDto)
@@ -129,8 +146,8 @@ public class TagsController : ApiControllerBase
         var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(inDto.FolderIds);
         var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(inDto.FileIds);
 
-        await _fileStorageServiceInt.AddToFavoritesAsync(folderIntIds, fileIntIds);
-        await _fileStorageServiceString.AddToFavoritesAsync(folderStringIds, fileStringIds);
+        await _fileStorageService.AddToFavoritesAsync(folderIntIds, fileIntIds);
+        await _fileStorageServiceThirdparty.AddToFavoritesAsync(folderStringIds, fileStringIds);
 
         return true;
     }
@@ -140,25 +157,9 @@ public class TagsController : ApiControllerBase
         var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(inDto.FolderIds);
         var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(inDto.FileIds);
 
-        await _fileStorageServiceInt.DeleteFavoritesAsync(folderIntIds, fileIntIds);
-        await _fileStorageServiceString.DeleteFavoritesAsync(folderStringIds, fileStringIds);
+        await _fileStorageService.DeleteFavoritesAsync(folderIntIds, fileIntIds);
+        await _fileStorageServiceThirdparty.DeleteFavoritesAsync(folderStringIds, fileStringIds);
 
         return true;
-    }
-
-    private async Task<FileDto<string>> AddToRecentStringAsync(string fileId)
-    {
-        var file = await _fileStorageServiceString.GetFileAsync(fileId, -1).NotFoundIfNull("File not found");
-        _entryManager.MarkAsRecent(file);
-
-        return await _fileDtoHelper.GetAsync(file);
-    }
-
-    private async Task<FileDto<int>> AddToRecentIntAsync(int fileId)
-    {
-        var file = await _fileStorageServiceInt.GetFileAsync(fileId, -1).NotFoundIfNull("File not found");
-        _entryManager.MarkAsRecent(file);
-
-        return await _fileDtoHelper.GetAsync(file);
     }
 }

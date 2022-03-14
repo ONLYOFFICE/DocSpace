@@ -1,22 +1,27 @@
 ﻿namespace ASC.Files.Api;
 
-public class FoldersController : ApiControllerBase
+[ConstraintRoute("int")]
+public class FoldersControllerInternal : FoldersController<int>
 {
-    private readonly GlobalFolderHelper _globalFolderHelper;
-    private readonly TenantManager _tenantManager;
-    private readonly FoldersControllerHelper<int> _foldersControllerHelperInt;
-    private readonly FoldersControllerHelper<string> _foldersControllerHelperString;
-
-    public FoldersController(
-        GlobalFolderHelper globalFolderHelper,
-        TenantManager tenantManager,
-        FoldersControllerHelper<int> foldersControllerHelperInt,
-        FoldersControllerHelper<string> foldersControllerHelperString)
+    public FoldersControllerInternal(FoldersControllerHelper<int> foldersControllerHelper) : base(foldersControllerHelper)
     {
-        _globalFolderHelper = globalFolderHelper;
-        _tenantManager = tenantManager;
-        _foldersControllerHelperInt = foldersControllerHelperInt;
-        _foldersControllerHelperString = foldersControllerHelperString;
+    }
+}
+
+public class FoldersControllerThirdparty : FoldersController<string>
+{
+    public FoldersControllerThirdparty(FoldersControllerHelper<string> foldersControllerHelper) : base(foldersControllerHelper)
+    {
+    }
+}
+
+public abstract class FoldersController<T> : ApiControllerBase
+{
+    private readonly FoldersControllerHelper<T> _foldersControllerHelper;
+
+    public FoldersController(FoldersControllerHelper<T> foldersControllerHelper)
+    {
+        _foldersControllerHelper = foldersControllerHelper;
     }
 
     /// <summary>
@@ -30,29 +35,16 @@ public class FoldersController : ApiControllerBase
     /// <param name="title">Title of new folder</param>
     /// <returns>New folder contents</returns>
     [Create("folder/{folderId}", order: int.MaxValue, DisableFormat = true)]
-    public Task<FolderDto<string>> CreateFolderFromBodyAsync(string folderId, [FromBody] CreateFolderRequestDto inDto)
+    public Task<FolderDto<T>> CreateFolderFromBodyAsync(T folderId, [FromBody] CreateFolderRequestDto inDto)
     {
-        return _foldersControllerHelperString.CreateFolderAsync(folderId, inDto.Title);
-    }
-
-    [Create("folder/{folderId:int}", order: int.MaxValue - 1, DisableFormat = true)]
-    public Task<FolderDto<int>> CreateFolderFromBodyAsync(int folderId, [FromBody] CreateFolderRequestDto inDto)
-    {
-        return _foldersControllerHelperInt.CreateFolderAsync(folderId, inDto.Title);
+        return _foldersControllerHelper.CreateFolderAsync(folderId, inDto.Title);
     }
 
     [Create("folder/{folderId}", order: int.MaxValue, DisableFormat = true)]
     [Consumes("application/x-www-form-urlencoded")]
-    public Task<FolderDto<string>> CreateFolderFromFormAsync(string folderId, [FromForm] CreateFolderRequestDto inDto)
+    public Task<FolderDto<T>> CreateFolderFromFormAsync(T folderId, [FromForm] CreateFolderRequestDto inDto)
     {
-        return _foldersControllerHelperString.CreateFolderAsync(folderId, inDto.Title);
-    }
-
-    [Create("folder/{folderId:int}", order: int.MaxValue - 1, DisableFormat = true)]
-    [Consumes("application/x-www-form-urlencoded")]
-    public Task<FolderDto<int>> CreateFolderFromFormAsync(int folderId, [FromForm] CreateFolderRequestDto inDto)
-    {
-        return _foldersControllerHelperInt.CreateFolderAsync(folderId, inDto.Title);
+        return _foldersControllerHelper.CreateFolderAsync(folderId, inDto.Title);
     }
 
     /// <summary>
@@ -65,15 +57,107 @@ public class FoldersController : ApiControllerBase
     /// <param name="immediately">Don't move to the Recycle Bin</param>
     /// <returns>Operation result</returns>
     [Delete("folder/{folderId}", order: int.MaxValue - 1, DisableFormat = true)]
-    public Task<IEnumerable<FileOperationDto>> DeleteFolder(string folderId, bool deleteAfter, bool immediately)
+    public Task<IEnumerable<FileOperationDto>> DeleteFolder(T folderId, bool deleteAfter, bool immediately)
     {
-        return _foldersControllerHelperString.DeleteFolder(folderId, deleteAfter, immediately);
+        return _foldersControllerHelper.DeleteFolder(folderId, deleteAfter, immediately);
     }
 
-    [Delete("folder/{folderId:int}")]
-    public Task<IEnumerable<FileOperationDto>> DeleteFolder(int folderId, bool deleteAfter, bool immediately)
+    /// <summary>
+    /// Returns the detailed list of files and folders located in the folder with the ID specified in the request
+    /// </summary>
+    /// <short>
+    /// Folder by ID
+    /// </short>
+    /// <category>Folders</category>
+    /// <param name="folderId">Folder ID</param>
+    /// <param name="userIdOrGroupId" optional="true">User or group ID</param>
+    /// <param name="filterType" optional="true" remark="Allowed values: None (0), FilesOnly (1), FoldersOnly (2), DocumentsOnly (3), PresentationsOnly (4), SpreadsheetsOnly (5) or ImagesOnly (7)">Filter type</param>
+    /// <returns>Folder contents</returns>
+    [Read("{folderId}", order: int.MaxValue, DisableFormat = true)]
+    public async Task<FolderContentDto<T>> GetFolderAsync(T folderId, Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
     {
-        return _foldersControllerHelperInt.DeleteFolder(folderId, deleteAfter, immediately);
+        var folder = await _foldersControllerHelper.GetFolderAsync(folderId, userIdOrGroupId, filterType, withsubfolders);
+
+        return folder.NotFoundIfNull();
+    }
+
+    /// <summary>
+    /// Returns a detailed information about the folder with the ID specified in the request
+    /// </summary>
+    /// <short>Folder information</short>
+    /// <category>Folders</category>
+    /// <returns>Folder info</returns>
+    [Read("folder/{folderId}", order: int.MaxValue, DisableFormat = true)]
+    public Task<FolderDto<T>> GetFolderInfoAsync(T folderId)
+    {
+        return _foldersControllerHelper.GetFolderInfoAsync(folderId);
+    }
+
+    /// <summary>
+    /// Returns parent folders
+    /// </summary>
+    /// <param name="folderId"></param>
+    /// <category>Folders</category>
+    /// <returns>Parent folders</returns>
+    [Read("folder/{folderId}/path")]
+    public IAsyncEnumerable<FileEntryDto> GetFolderPathAsync(T folderId)
+    {
+        return _foldersControllerHelper.GetFolderPathAsync(folderId);
+    }
+
+    [Read("{folderId}/subfolders")]
+    public IAsyncEnumerable<FileEntryDto> GetFoldersAsync(T folderId)
+    {
+        return _foldersControllerHelper.GetFoldersAsync(folderId);
+    }
+
+    [Read("{folderId}/news")]
+    public Task<List<FileEntryDto>> GetNewItemsAsync(T folderId)
+    {
+        return _foldersControllerHelper.GetNewItemsAsync(folderId);
+    }
+
+    /// <summary>
+    /// Renames the selected folder to the new title specified in the request
+    /// </summary>
+    /// <short>
+    /// Rename folder
+    /// </short>
+    /// <category>Folders</category>
+    /// <param name="folderId">Folder ID</param>
+    /// <param name="title">New title</param>
+    /// <returns>Folder contents</returns>
+    [Update("folder/{folderId}", order: int.MaxValue, DisableFormat = true)]
+    public Task<FolderDto<T>> RenameFolderFromBodyAsync(T folderId, [FromBody] CreateFolderRequestDto inDto)
+    {
+        return _foldersControllerHelper.RenameFolderAsync(folderId, inDto.Title);
+    }
+
+    [Update("folder/{folderId}", order: int.MaxValue, DisableFormat = true)]
+    [Consumes("application/x-www-form-urlencoded")]
+    public Task<FolderDto<T>> RenameFolderFromFormAsync(T folderId, [FromForm] CreateFolderRequestDto inDto)
+    {
+        return _foldersControllerHelper.RenameFolderAsync(folderId, inDto.Title);
+    }
+}
+
+public class FoldersControllerCommon : ApiControllerBase
+{
+    private readonly GlobalFolderHelper _globalFolderHelper;
+    private readonly TenantManager _tenantManager;
+    private readonly FoldersControllerHelper<int> _foldersControllerHelperInt;
+    private readonly FoldersControllerHelper<string> _foldersControllerHelperString;
+
+    public FoldersControllerCommon(
+        GlobalFolderHelper globalFolderHelper,
+        TenantManager tenantManager,
+        FoldersControllerHelper<int> foldersControllerHelperInt,
+        FoldersControllerHelper<string> foldersControllerHelperString)
+    {
+        _globalFolderHelper = globalFolderHelper;
+        _tenantManager = tenantManager;
+        _foldersControllerHelperInt = foldersControllerHelperInt;
+        _foldersControllerHelperString = foldersControllerHelperString;
     }
 
     /// <summary>
@@ -103,79 +187,6 @@ public class FoldersController : ApiControllerBase
     }
 
     /// <summary>
-    /// Returns the detailed list of files and folders located in the folder with the ID specified in the request
-    /// </summary>
-    /// <short>
-    /// Folder by ID
-    /// </short>
-    /// <category>Folders</category>
-    /// <param name="folderId">Folder ID</param>
-    /// <param name="userIdOrGroupId" optional="true">User or group ID</param>
-    /// <param name="filterType" optional="true" remark="Allowed values: None (0), FilesOnly (1), FoldersOnly (2), DocumentsOnly (3), PresentationsOnly (4), SpreadsheetsOnly (5) or ImagesOnly (7)">Filter type</param>
-    /// <returns>Folder contents</returns>
-    [Read("{folderId}", order: int.MaxValue, DisableFormat = true)]
-    public async Task<FolderContentDto<string>> GetFolderAsync(string folderId, Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
-    {
-        var folder = await _foldersControllerHelperString.GetFolderAsync(folderId, userIdOrGroupId, filterType, withsubfolders);
-
-        return folder.NotFoundIfNull();
-    }
-
-    [Read("{folderId:int}", order: int.MaxValue - 1, DisableFormat = true)]
-    public Task<FolderContentDto<int>> GetFolderAsync(int folderId, Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
-    {
-        return _foldersControllerHelperInt.GetFolderAsync(folderId, userIdOrGroupId, filterType, withsubfolders);
-    }
-
-    /// <summary>
-    /// Returns a detailed information about the folder with the ID specified in the request
-    /// </summary>
-    /// <short>Folder information</short>
-    /// <category>Folders</category>
-    /// <returns>Folder info</returns>
-    [Read("folder/{folderId}", order: int.MaxValue, DisableFormat = true)]
-    public Task<FolderDto<string>> GetFolderInfoAsync(string folderId)
-    {
-        return _foldersControllerHelperString.GetFolderInfoAsync(folderId);
-    }
-
-    [Read("folder/{folderId:int}", order: int.MaxValue - 1, DisableFormat = true)]
-    public Task<FolderDto<int>> GetFolderInfoAsync(int folderId)
-    {
-        return _foldersControllerHelperInt.GetFolderInfoAsync(folderId);
-    }
-
-    /// <summary>
-    /// Returns parent folders
-    /// </summary>
-    /// <param name="folderId"></param>
-    /// <category>Folders</category>
-    /// <returns>Parent folders</returns>
-    [Read("folder/{folderId}/path")]
-    public IAsyncEnumerable<FileEntryDto> GetFolderPathAsync(string folderId)
-    {
-        return _foldersControllerHelperString.GetFolderPathAsync(folderId);
-    }
-
-    [Read("folder/{folderId:int}/path")]
-    public IAsyncEnumerable<FileEntryDto> GetFolderPathAsync(int folderId)
-    {
-        return _foldersControllerHelperInt.GetFolderPathAsync(folderId);
-    }
-
-    [Read("{folderId}/subfolders")]
-    public IAsyncEnumerable<FileEntryDto> GetFoldersAsync(string folderId)
-    {
-        return _foldersControllerHelperString.GetFoldersAsync(folderId);
-    }
-
-    [Read("{folderId:int}/subfolders")]
-    public IAsyncEnumerable<FileEntryDto> GetFoldersAsync(int folderId)
-    {
-        return _foldersControllerHelperInt.GetFoldersAsync(folderId);
-    }
-
-    /// <summary>
     /// Returns the detailed list of files and folders located in the current user 'My Documents' section
     /// </summary>
     /// <short>
@@ -189,27 +200,15 @@ public class FoldersController : ApiControllerBase
         return _foldersControllerHelperInt.GetFolderAsync(_globalFolderHelper.FolderMy, userIdOrGroupId, filterType, withsubfolders);
     }
 
-    [Read("{folderId}/news")]
-    public Task<List<FileEntryDto>> GetNewItemsAsync(string folderId)
-    {
-        return _foldersControllerHelperString.GetNewItemsAsync(folderId);
-    }
-
-    [Read("{folderId:int}/news")]
-    public Task<List<FileEntryDto>> GetNewItemsAsync(int folderId)
-    {
-        return _foldersControllerHelperInt.GetNewItemsAsync(folderId);
-    }
-
     [Read("@privacy")]
-    public Task<FolderContentDto<int>> GetPrivacyFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+    public async Task<FolderContentDto<int>> GetPrivacyFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
     {
         if (PrivacyRoomSettings.IsAvailable(_tenantManager))
         {
             throw new System.Security.SecurityException();
         }
 
-        return InternalGetPrivacyFolderAsync(userIdOrGroupId, filterType, withsubfolders);
+        return await _foldersControllerHelperInt.GetFolderAsync(await _globalFolderHelper.FolderPrivacyAsync, userIdOrGroupId, filterType, withsubfolders);
     }
 
     /// <summary>
@@ -290,46 +289,5 @@ public class FoldersController : ApiControllerBase
     public Task<FolderContentDto<int>> GetTrashFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
     {
         return _foldersControllerHelperInt.GetFolderAsync(Convert.ToInt32(_globalFolderHelper.FolderTrash), userIdOrGroupId, filterType, withsubfolders);
-    }
-
-    /// <summary>
-    /// Renames the selected folder to the new title specified in the request
-    /// </summary>
-    /// <short>
-    /// Rename folder
-    /// </short>
-    /// <category>Folders</category>
-    /// <param name="folderId">Folder ID</param>
-    /// <param name="title">New title</param>
-    /// <returns>Folder contents</returns>
-    [Update("folder/{folderId}", order: int.MaxValue, DisableFormat = true)]
-    public Task<FolderDto<string>> RenameFolderFromBodyAsync(string folderId, [FromBody] CreateFolderRequestDto inDto)
-    {
-        return _foldersControllerHelperString.RenameFolderAsync(folderId, inDto.Title);
-    }
-
-    [Update("folder/{folderId:int}", order: int.MaxValue - 1, DisableFormat = true)]
-    public Task<FolderDto<int>> RenameFolderFromBodyAsync(int folderId, [FromBody] CreateFolderRequestDto inDto)
-    {
-        return _foldersControllerHelperInt.RenameFolderAsync(folderId, inDto.Title);
-    }
-
-    [Update("folder/{folderId}", order: int.MaxValue, DisableFormat = true)]
-    [Consumes("application/x-www-form-urlencoded")]
-    public Task<FolderDto<string>> RenameFolderFromFormAsync(string folderId, [FromForm] CreateFolderRequestDto inDto)
-    {
-        return _foldersControllerHelperString.RenameFolderAsync(folderId, inDto.Title);
-    }
-
-    [Update("folder/{folderId:int}", order: int.MaxValue - 1, DisableFormat = true)]
-    [Consumes("application/x-www-form-urlencoded")]
-    public Task<FolderDto<int>> RenameFolderFromFormAsync(int folderId, [FromForm] CreateFolderRequestDto inDto)
-    {
-        return _foldersControllerHelperInt.RenameFolderAsync(folderId, inDto.Title);
-    }
-
-    private async Task<FolderContentDto<int>> InternalGetPrivacyFolderAsync(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
-    {
-        return await _foldersControllerHelperInt.GetFolderAsync(await _globalFolderHelper.FolderPrivacyAsync, userIdOrGroupId, filterType, withsubfolders);
     }
 }

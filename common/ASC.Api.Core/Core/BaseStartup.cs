@@ -153,7 +153,6 @@ public abstract class BaseStartup
 
         app.UseEndpoints(endpoints =>
         {
-            endpoints.MapControllers();
             endpoints.MapCustom();
 
             endpoints.MapHealthChecks("/health", new HealthCheckOptions()
