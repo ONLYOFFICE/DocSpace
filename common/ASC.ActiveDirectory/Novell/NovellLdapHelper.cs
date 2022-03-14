@@ -138,7 +138,7 @@ namespace ASC.ActiveDirectory.Novell
                     LDAPSearcher.Search(Settings.UserDN, NovellLdapSearcher.LdapScope.Sub, Settings.UserFilter, limit: 1)
                         .FirstOrDefault();
 
-                return searchResult != null ? searchResult.GetDomainFromDn() : null;
+                return searchResult != null ? LdapObjectExtension.GetDomainFromDn(searchResult) : null;
             }
             catch (Exception e)
             {

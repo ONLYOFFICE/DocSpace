@@ -12,9 +12,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\common\ASC.Common\ASC.Common.csproj" />
-    <ProjectReference Include="..\common\ASC.Core.Common\ASC.Core.Common.csproj" />
-    <ProjectReference Include="..\web\ASC.Web.Core\ASC.Web.Core.csproj" />
+    <ProjectReference Include="..\ASC.Common\ASC.Common.csproj" />
+    <ProjectReference Include="..\ASC.Core.Common\ASC.Core.Common.csproj" />
+    <ProjectReference Include="..\..\web\ASC.Web.Core\ASC.Web.Core.csproj" />
   </ItemGroup>
 
 </Project>

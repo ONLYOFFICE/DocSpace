@@ -32,12 +32,10 @@ using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
-using ASC.Security.Cryptography;
 using ASC.Web.Core;
 using ASC.Web.Core.Users;
 using ASC.Web.Studio.Utility;
 
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 

@@ -73,7 +73,8 @@ namespace ASC.ActiveDirectory.Base
 
         private List<string> _watchedNestedGroups;
 
-        private readonly ILog Log;
+        private readonly ILog _log;
+        private readonly LdapObjectExtension _ldapObjectExtension;
 
         private UserManager UserManager { get; set; }
 
@@ -81,7 +82,8 @@ namespace ASC.ActiveDirectory.Base
             IOptionsMonitor<ILog> option,
             UserManager userManager,
             IConfiguration configuration,
-            NovellLdapHelper novellLdapHelper)
+            NovellLdapHelper novellLdapHelper,
+            LdapObjectExtension ldapObjectExtension)
         {
             UnknownDomain = configuration["ldap:domain"] ?? "LDAP";
             AllDomainUsers = new List<LdapObject>();
@@ -90,10 +92,11 @@ namespace ASC.ActiveDirectory.Base
             AllSkipedDomainGroups = new Dictionary<LdapObject, LdapSettingsStatus>();
 
             LdapHelper = novellLdapHelper;
-            Log = option.Get("ASC");
+            _log = option.Get("ASC");
             UserManager = userManager;
 
             _watchedNestedGroups = new List<string>();
+            _ldapObjectExtension = ldapObjectExtension;
         }
 
         public void Init(LdapSettings settings, LdapLocalization resource)
@@ -109,7 +112,7 @@ namespace ASC.ActiveDirectory.Base
             if (!AllDomainUsers.Any() && !TryLoadLDAPUsers())
                 return users;
 
-            var usersToAdd = AllDomainUsers.Select(ldapObject => ldapObject.ToUserInfo(this, Log));
+            var usersToAdd = AllDomainUsers.Select(ldapObject => _ldapObjectExtension.ToUserInfo(ldapObject, this, _log));
 
             users.AddRange(usersToAdd);
 
@@ -126,7 +129,7 @@ namespace ASC.ActiveDirectory.Base
 
             var groups = new List<GroupInfo>();
 
-            var groupsToAdd = AllDomainGroups.ConvertAll(g => g.ToGroupInfo(Settings));
+            var groupsToAdd = AllDomainGroups.ConvertAll(g => LdapObjectExtension.ToGroupInfo(g, Settings));
 
             groups.AddRange(groupsToAdd);
 
@@ -143,7 +146,7 @@ namespace ASC.ActiveDirectory.Base
             if (!LdapHelper.IsConnected)
                 LdapHelper.Connect();
 
-            Log.DebugFormat("LdapUserImporter.GetGroupUsers(Group name: {0})", groupInfo.Name);
+            _log.DebugFormat("LdapUserImporter.GetGroupUsers(Group name: {0})", groupInfo.Name);
 
             var users = new List<UserInfo>();
 
@@ -155,7 +158,7 @@ namespace ASC.ActiveDirectory.Base
             if (domainGroup == null)
                 return users;
 
-            var members = domainGroup.GetAttributes(Settings.GroupAttribute, Log);
+            var members = LdapObjectExtension.GetAttributes(domainGroup, Settings.GroupAttribute, _log);
 
             foreach (var member in members)
             {
@@ -167,20 +170,20 @@ namespace ASC.ActiveDirectory.Base
 
                     if (nestedLdapGroup != null)
                     {
-                        Log.DebugFormat("Found nested LDAP Group: {0}", nestedLdapGroup.DistinguishedName);
+                        _log.DebugFormat("Found nested LDAP Group: {0}", nestedLdapGroup.DistinguishedName);
 
                         if (clearCache)
                             _watchedNestedGroups = new List<string>();
 
                         if (_watchedNestedGroups.Contains(nestedLdapGroup.DistinguishedName))
                         {
-                            Log.DebugFormat("Skip already watched nested LDAP Group: {0}", nestedLdapGroup.DistinguishedName);
+                            _log.DebugFormat("Skip already watched nested LDAP Group: {0}", nestedLdapGroup.DistinguishedName);
                             continue;
                         }
 
                         _watchedNestedGroups.Add(nestedLdapGroup.DistinguishedName);
 
-                        var nestedGroupInfo = nestedLdapGroup.ToGroupInfo(Settings, Log);
+                        var nestedGroupInfo = LdapObjectExtension.ToGroupInfo(nestedLdapGroup, Settings, _log);
 
                         var nestedGroupUsers = GetGroupUsers(nestedGroupInfo, false);
 
@@ -194,7 +197,7 @@ namespace ASC.ActiveDirectory.Base
                     continue;
                 }
 
-                var userInfo = ldapUser.ToUserInfo(this, Log);
+                var userInfo = _ldapObjectExtension.ToUserInfo(ldapUser, this, _log);
 
                 if (!users.Exists(u => u.Sid == userInfo.Sid))
                     users.Add(userInfo);
@@ -207,7 +210,7 @@ namespace ASC.ActiveDirectory.Base
 
                 foreach (var ldapUser in ldapUsers)
                 {
-                    var userInfo = ldapUser.ToUserInfo(this, Log);
+                    var userInfo = _ldapObjectExtension.ToUserInfo(ldapUser, this, _log);
 
                     if (!users.Exists(u => u.Sid == userInfo.Sid))
                         users.Add(userInfo);
@@ -238,13 +241,13 @@ namespace ASC.ActiveDirectory.Base
                 if (!LdapHelper.IsConnected)
                     LdapHelper.Connect();
 
-                var userGroups = ldapUser.GetAttributes(LdapConstants.ADSchemaAttributes.MEMBER_OF, Log)
+                var userGroups = LdapObjectExtension.GetAttributes(ldapUser, LdapConstants.ADSchemaAttributes.MEMBER_OF, _log)
                     .Select(s => LdapUtils.UnescapeLdapString(s))
                     .ToList();
 
                 if (!userGroups.Any())
                 {
-                    userGroups = ldapUser.GetAttributes(GROUP_MEMBERSHIP, Log);
+                    userGroups = LdapObjectExtension.GetAttributes(ldapUser, GROUP_MEMBERSHIP, _log);
                 }
 
                 var searchExpressions = new List<Expression>();
@@ -294,7 +297,7 @@ namespace ASC.ActiveDirectory.Base
             catch (Exception ex)
             {
                 if (ldapUser != null)
-                    Log.ErrorFormat("IsUserExistInGroups(login: '{0}' sid: '{1}') error {2}",
+                    _log.ErrorFormat("IsUserExistInGroups(login: '{0}' sid: '{1}') error {2}",
                         ldapUser.DistinguishedName, ldapUser.Sid, ex);
             }
 
@@ -335,7 +338,7 @@ namespace ASC.ActiveDirectory.Base
             catch (Exception ex)
             {
                 if (ldapUser != null)
-                    Log.ErrorFormat("GetAndCheckCurrentGroups(login: '{0}' sid: '{1}') error {2}",
+                    _log.ErrorFormat("GetAndCheckCurrentGroups(login: '{0}' sid: '{1}') error {2}",
                         ldapUser.DistinguishedName, ldapUser.Sid, ex);
             }
             return result;
@@ -372,15 +375,15 @@ namespace ASC.ActiveDirectory.Base
 
                 if (Equals(groupInfo, Constants.LostGroupInfo))
                 {
-                    Log.DebugFormat("TrySyncUserGroupMembership(groupname: '{0}' sid: '{1}') no portal group found, creating", ldapUserGroup.DistinguishedName, ldapUserGroup.Sid);
-                    groupInfo = UserManager.SaveGroupInfo(ldapUserGroup.ToGroupInfo(Settings, Log));
+                    _log.DebugFormat("TrySyncUserGroupMembership(groupname: '{0}' sid: '{1}') no portal group found, creating", ldapUserGroup.DistinguishedName, ldapUserGroup.Sid);
+                    groupInfo = UserManager.SaveGroupInfo(LdapObjectExtension.ToGroupInfo(ldapUserGroup, Settings, _log));
 
-                    Log.DebugFormat("TrySyncUserGroupMembership(username: '{0}' sid: '{1}') adding user to group (groupname: '{2}' sid: '{3}')", userInfo.UserName, ldapUser.Sid, groupInfo.Name, groupInfo.Sid);
+                    _log.DebugFormat("TrySyncUserGroupMembership(username: '{0}' sid: '{1}') adding user to group (groupname: '{2}' sid: '{3}')", userInfo.UserName, ldapUser.Sid, groupInfo.Name, groupInfo.Sid);
                     UserManager.AddUserIntoGroup(userInfo.ID, groupInfo.ID);
                 }
                 else if (!portalUserLdapGroups.Contains(groupInfo))
                 {
-                    Log.DebugFormat("TrySyncUserGroupMembership(username: '{0}' sid: '{1}') adding user to group (groupname: '{2}' sid: '{3}')", userInfo.UserName, ldapUser.Sid, groupInfo.Name, groupInfo.Sid);
+                    _log.DebugFormat("TrySyncUserGroupMembership(username: '{0}' sid: '{1}') adding user to group (groupname: '{2}' sid: '{3}')", userInfo.UserName, ldapUser.Sid, groupInfo.Name, groupInfo.Sid);
                     UserManager.AddUserIntoGroup(userInfo.ID, groupInfo.ID);
                 }
 
@@ -391,7 +394,7 @@ namespace ASC.ActiveDirectory.Base
             {
                 if (!actualPortalLdapGroups.Contains(portalUserLdapGroup))
                 {
-                    Log.DebugFormat("TrySyncUserGroupMembership(username: '{0}' sid: '{1}') removing user from group (groupname: '{2}' sid: '{3}')", userInfo.UserName, ldapUser.Sid, portalUserLdapGroup.Name, portalUserLdapGroup.Sid);
+                    _log.DebugFormat("TrySyncUserGroupMembership(username: '{0}' sid: '{1}') removing user from group (groupname: '{2}' sid: '{3}')", userInfo.UserName, ldapUser.Sid, portalUserLdapGroup.Name, portalUserLdapGroup.Sid);
                     UserManager.RemoveUserFromGroup(userInfo.ID, portalUserLdapGroup.ID);
                 }
             }
@@ -451,7 +454,7 @@ namespace ASC.ActiveDirectory.Base
             }
             catch (ArgumentException)
             {
-                Log.ErrorFormat("TryLoadLDAPUsers(): Incorrect filter. userFilter = {0}", Settings.UserFilter);
+                _log.ErrorFormat("TryLoadLDAPUsers(): Incorrect filter. userFilter = {0}", Settings.UserFilter);
             }
 
             return false;
@@ -498,7 +501,7 @@ namespace ASC.ActiveDirectory.Base
             }
             catch (ArgumentException)
             {
-                Log.ErrorFormat("TryLoadLDAPGroups(): Incorrect group filter. groupFilter = {0}", Settings.GroupFilter);
+                _log.ErrorFormat("TryLoadLDAPGroups(): Incorrect group filter. groupFilter = {0}", Settings.GroupFilter);
             }
 
             return false;
@@ -518,7 +521,7 @@ namespace ASC.ActiveDirectory.Base
 
                 if (AllDomainUsers.Any())
                 {
-                    ldapDomain = AllDomainUsers.First().GetDomainFromDn();
+                    ldapDomain = LdapObjectExtension.GetDomainFromDn(AllDomainUsers.First());
 
                     if (!string.IsNullOrEmpty(ldapDomain))
                         return ldapDomain;
@@ -541,7 +544,7 @@ namespace ASC.ActiveDirectory.Base
             }
             catch (Exception ex)
             {
-                Log.ErrorFormat("LoadLDAPDomain(): Error: {0}", ex);
+                _log.ErrorFormat("LoadLDAPDomain(): Error: {0}", ex);
             }
 
             return null;
@@ -554,14 +557,14 @@ namespace ASC.ActiveDirectory.Base
                 var member = user.GetValue(loginAttribute);
                 if (member == null || string.IsNullOrWhiteSpace(member.ToString()))
                 {
-                    Log.DebugFormat("Login Attribute parameter ({0}) not found: DN = {1}", Settings.LoginAttribute,
+                    _log.DebugFormat("Login Attribute parameter ({0}) not found: DN = {1}", Settings.LoginAttribute,
                         user.DistinguishedName);
                     return false;
                 }
             }
             catch (Exception e)
             {
-                Log.ErrorFormat("Login Attribute parameter ({0}) not found: loginAttribute = {1}. {2}", Settings.LoginAttribute,
+                _log.ErrorFormat("Login Attribute parameter ({0}) not found: loginAttribute = {1}. {2}", Settings.LoginAttribute,
                     loginAttribute, e);
                 return false;
             }
@@ -575,14 +578,14 @@ namespace ASC.ActiveDirectory.Base
                 var userAttribute = user.GetValue(userAttr);
                 if (userAttribute == null || string.IsNullOrWhiteSpace(userAttribute.ToString()))
                 {
-                    Log.DebugFormat("User Attribute parameter ({0}) not found: DN = {1}", Settings.UserAttribute,
+                    _log.DebugFormat("User Attribute parameter ({0}) not found: DN = {1}", Settings.UserAttribute,
                         user.DistinguishedName);
                     return false;
                 }
             }
             catch (Exception e)
             {
-                Log.ErrorFormat("User Attribute parameter ({0}) not found: userAttr = {1}. {2}",
+                _log.ErrorFormat("User Attribute parameter ({0}) not found: userAttr = {1}. {2}",
                     Settings.UserAttribute, userAttr, e);
                 return false;
             }
@@ -597,7 +600,7 @@ namespace ASC.ActiveDirectory.Base
             }
             catch (Exception e)
             {
-                Log.ErrorFormat("Group Attribute parameter ({0}) not found: {1}. {2}",
+                _log.ErrorFormat("Group Attribute parameter ({0}) not found: {1}. {2}",
                     Settings.GroupAttribute, groupAttr, e);
                 return false;
             }
@@ -611,14 +614,14 @@ namespace ASC.ActiveDirectory.Base
                 var groupNameAttribute = group.GetValues(groupAttr);
                 if (!groupNameAttribute.Any())
                 {
-                    Log.DebugFormat("Group Name Attribute parameter ({0}) not found: {1}", Settings.GroupNameAttribute,
+                    _log.DebugFormat("Group Name Attribute parameter ({0}) not found: {1}", Settings.GroupNameAttribute,
                         groupAttr);
                     return false;
                 }
             }
             catch (Exception e)
             {
-                Log.ErrorFormat("Group Attribute parameter ({0}) not found: {1}. {2}", Settings.GroupNameAttribute,
+                _log.ErrorFormat("Group Attribute parameter ({0}) not found: {1}. {2}", Settings.GroupNameAttribute,
                     groupAttr, e);
                 return false;
             }
@@ -627,7 +630,7 @@ namespace ASC.ActiveDirectory.Base
 
         private List<LdapObject> FindUsersByPrimaryGroup(string sid)
         {
-            Log.Debug("LdapUserImporter.FindUsersByPrimaryGroup()");
+            _log.Debug("LdapUserImporter.FindUsersByPrimaryGroup()");
 
             if (!AllDomainUsers.Any() && !TryLoadLDAPUsers())
                 return null;
@@ -650,7 +653,7 @@ namespace ASC.ActiveDirectory.Base
             if (!AllDomainUsers.Any() && !TryLoadLDAPUsers())
                 return null;
 
-            Log.DebugFormat("LdapUserImporter.FindUserByMember(user attr: {0})", userAttributeValue);
+            _log.DebugFormat("LdapUserImporter.FindUserByMember(user attr: {0})", userAttributeValue);
 
             return AllDomainUsers.FirstOrDefault(u =>
                 u.DistinguishedName.Equals(userAttributeValue, StringComparison.InvariantCultureIgnoreCase)
@@ -663,7 +666,7 @@ namespace ASC.ActiveDirectory.Base
             if (!AllDomainGroups.Any() && !TryLoadLDAPGroups())
                 return null;
 
-            Log.DebugFormat("LdapUserImporter.FindGroupByMember(member: {0})", member);
+            _log.DebugFormat("LdapUserImporter.FindGroupByMember(member: {0})", member);
 
             return AllDomainGroups.FirstOrDefault(g =>
                 g.DistinguishedName.Equals(member, StringComparison.InvariantCultureIgnoreCase));
@@ -711,11 +714,11 @@ namespace ASC.ActiveDirectory.Base
                             _ldapDomain = LdapUtils.DistinguishedNameToDomain(lu.DistinguishedName);
                         }
 
-                        ui = lu.ToUserInfo(this, Log);
+                        ui = _ldapObjectExtension.ToUserInfo(lu, this, _log);
                     }
                     catch (Exception ex)
                     {
-                        Log.ErrorFormat("FindLdapUser->ToUserInfo() failed. Error: {0}", ex.ToString());
+                        _log.ErrorFormat("FindLdapUser->ToUserInfo() failed. Error: {0}", ex.ToString());
                     }
 
                     return Tuple.Create(ui, lu);
@@ -738,7 +741,7 @@ namespace ASC.ActiveDirectory.Base
 
                 if (string.IsNullOrEmpty(ldapLoginAttribute))
                 {
-                    Log.WarnFormat("LDAP: DN: '{0}' Login Attribute '{1}' is empty", ul.DistinguishedName, Settings.LoginAttribute);
+                    _log.WarnFormat("LDAP: DN: '{0}' Login Attribute '{1}' is empty", ul.DistinguishedName, Settings.LoginAttribute);
                     continue;
                 }
 
@@ -815,7 +818,7 @@ namespace ASC.ActiveDirectory.Base
 
                 var ldapUsers = FindLdapUsers(login);
 
-                Log.DebugFormat("FindLdapUsers(login '{0}') found: {1} users", login, ldapUsers.Count);
+                _log.DebugFormat("FindLdapUsers(login '{0}') found: {1} users", login, ldapUsers.Count);
 
                 foreach (var ldapUser in ldapUsers)
                 {
@@ -833,13 +836,13 @@ namespace ASC.ActiveDirectory.Base
                         else if (string.IsNullOrEmpty(ldapUserObject.DistinguishedName)
                             || string.IsNullOrEmpty(ldapUserObject.Sid))
                         {
-                            Log.DebugFormat("LdapUserImporter->Login(login: '{0}', dn: '{1}') failed. Error: missing DN or SID", login, ldapUserObject.Sid);
+                            _log.DebugFormat("LdapUserImporter->Login(login: '{0}', dn: '{1}') failed. Error: missing DN or SID", login, ldapUserObject.Sid);
                             continue;
                         }
 
                         currentLogin = ldapUserObject.DistinguishedName;
 
-                        Log.DebugFormat("LdapUserImporter.Login('{0}')", currentLogin);
+                        _log.DebugFormat("LdapUserImporter.Login('{0}')", currentLogin);
 
                         LdapHelper.CheckCredentials(currentLogin, password, Settings.Server,
                             Settings.PortNumber, Settings.StartTls, Settings.Ssl, Settings.AcceptCertificate,
@@ -849,13 +852,13 @@ namespace ASC.ActiveDirectory.Base
                     }
                     catch (Exception ex)
                     {
-                        Log.ErrorFormat("LdapUserImporter->Login(login: '{0}') failed. Error: {1}", currentLogin ?? login, ex);
+                        _log.ErrorFormat("LdapUserImporter->Login(login: '{0}') failed. Error: {1}", currentLogin ?? login, ex);
                     }
                 }
             }
             catch (Exception ex)
             {
-                Log.ErrorFormat("LdapUserImporter->Login({0}) failed {1}", login, ex);
+                _log.ErrorFormat("LdapUserImporter->Login({0}) failed {1}", login, ex);
             }
 
             return null;

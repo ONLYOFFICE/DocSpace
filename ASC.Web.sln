@@ -101,7 +101,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Webhooks.Core", "common
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Webhooks.Service", "common\services\ASC.Webhooks.Service\ASC.Webhooks.Service.csproj", "{DAE2912D-1465-4D60-B1D7-90EE835003E4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.ActiveDirectory", "ASC.ActiveDirectory\ASC.ActiveDirectory.csproj", "{22C9564B-C7AF-4DE9-993D-D9FF7B012B30}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.ActiveDirectory", "common\ASC.ActiveDirectory\ASC.ActiveDirectory.csproj", "{9F81862F-303D-467F-8DC9-044BE2CCF329}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -289,10 +289,10 @@ Global
 		{DAE2912D-1465-4D60-B1D7-90EE835003E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DAE2912D-1465-4D60-B1D7-90EE835003E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DAE2912D-1465-4D60-B1D7-90EE835003E4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{22C9564B-C7AF-4DE9-993D-D9FF7B012B30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{22C9564B-C7AF-4DE9-993D-D9FF7B012B30}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{22C9564B-C7AF-4DE9-993D-D9FF7B012B30}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{22C9564B-C7AF-4DE9-993D-D9FF7B012B30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F81862F-303D-467F-8DC9-044BE2CCF329}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F81862F-303D-467F-8DC9-044BE2CCF329}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F81862F-303D-467F-8DC9-044BE2CCF329}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F81862F-303D-467F-8DC9-044BE2CCF329}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

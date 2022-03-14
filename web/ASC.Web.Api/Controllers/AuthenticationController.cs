@@ -37,7 +37,6 @@ using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 using static ASC.Security.Cryptography.EmailValidationKeyProvider;
@@ -81,6 +80,8 @@ namespace ASC.Web.Api.Controllers
         private AuthContext AuthContext { get; }
         private UserManagerWrapper UserManagerWrapper { get; }
         private TenantExtra TenantExtra { get; }
+        private LdapLocalization LdapLocalization { get; }
+        private LdapUserManager LdapUserManager { get; }
 
         public AuthenticationController(
             UserManager userManager,
@@ -113,7 +114,9 @@ namespace ASC.Web.Api.Controllers
             CommonLinkUtility commonLinkUtility,
             ApiContext apiContext,
             AuthContext authContext,
-            TenantExtra tenantExtra)
+            TenantExtra tenantExtra,
+            LdapLocalization ldapLocalization,
+            LdapUserManager ldapUserManager)
         {
             UserManager = userManager;
             TenantManager = tenantManager;
@@ -146,6 +149,8 @@ namespace ASC.Web.Api.Controllers
             AuthContext = authContext;
             UserManagerWrapper = userManagerWrapper;
             TenantExtra = tenantExtra;
+            LdapLocalization = ldapLocalization;
+            LdapUserManager = ldapUserManager;
         }
 
 
@@ -360,7 +365,7 @@ namespace ASC.Web.Api.Controllers
                 var token = SecurityContext.AuthenticateMe(user.ID);
 
                 MessageService.Send(sms ? MessageAction.LoginSuccessViaApiSms : MessageAction.LoginSuccessViaApiTfa);
-                
+
                 var expires = TenantCookieSettingsHelper.GetExpiresTime(tenant);
 
                 var result = new AuthenticationTokenData
@@ -399,7 +404,7 @@ namespace ASC.Web.Api.Controllers
         {
             viaEmail = true;
             var action = MessageAction.LoginFailViaApi;
-            UserInfo user;
+            UserInfo user = null;
             try
             {
                 if ((string.IsNullOrEmpty(memberModel.Provider) && string.IsNullOrEmpty(memberModel.SerializedProfile)) || memberModel.Provider == "email")
@@ -423,28 +428,31 @@ namespace ASC.Web.Api.Controllers
 
                     if (EnableLdap)
                     {
-                        var localization = new LdapLocalization(Resource.ResourceManager);
-                        var ldapUserManager = new LdapUserManager(localization);
+                        LdapLocalization.Init(Resource.ResourceManager);
+                        LdapUserManager.Init(LdapLocalization);
 
-                        ldapUserManager.TryGetAndSyncLdapUserInfo(memberModel.UserName, memberModel.Password, out user);
+                        LdapUserManager.TryGetAndSyncLdapUserInfo(memberModel.UserName, memberModel.Password, out user);
                     }
 
-                    memberModel.PasswordHash = (memberModel.PasswordHash ?? "").Trim();
-
-                    if (string.IsNullOrEmpty(memberModel.PasswordHash))
+                    if (user == null || !UserManager.UserExists(user))
                     {
-                        memberModel.Password = (memberModel.Password ?? "").Trim();
+                        memberModel.PasswordHash = (memberModel.PasswordHash ?? "").Trim();
 
-                        if (!string.IsNullOrEmpty(memberModel.Password))
+                        if (string.IsNullOrEmpty(memberModel.PasswordHash))
                         {
-                            memberModel.PasswordHash = PasswordHasher.GetClientPassword(memberModel.Password);
-                        }
-                    }
+                            memberModel.Password = (memberModel.Password ?? "").Trim();
 
-                    user = UserManager.GetUsersByPasswordHash(
-                        TenantManager.GetCurrentTenant().TenantId,
-                        memberModel.UserName,
-                        memberModel.PasswordHash);
+                            if (!string.IsNullOrEmpty(memberModel.Password))
+                            {
+                                memberModel.PasswordHash = PasswordHasher.GetClientPassword(memberModel.Password);
+                            }
+                        }
+
+                        user = UserManager.GetUsersByPasswordHash(
+                            TenantManager.GetCurrentTenant().TenantId,
+                            memberModel.UserName,
+                            memberModel.PasswordHash);
+                    }
 
                     if (user == null || !UserManager.UserExists(user))
                     {
