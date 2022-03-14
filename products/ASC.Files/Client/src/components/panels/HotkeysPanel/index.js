@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { observer, inject } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import Heading from "@appserver/components/heading";
@@ -16,6 +16,8 @@ import UploadBlock from "./UploadBlock";
 import { isMacOs } from "react-device-detect";
 
 const HotkeyPanel = ({ visible, setHotkeyPanelVisible, t, tReady }) => {
+  const scrollRef = useRef(null);
+
   const onClose = () => setHotkeyPanelVisible(false);
   const textStyles = {
     fontSize: "13px",
@@ -34,6 +36,8 @@ const HotkeyPanel = ({ visible, setHotkeyPanelVisible, t, tReady }) => {
     (e.key === "Esc" || e.key === "Escape") && onClose();
 
   useEffect(() => {
+    scrollRef.current && scrollRef.current.view.focus();
+
     document.addEventListener("keyup", onKeyPress);
 
     return () => document.removeEventListener("keyup", onKeyPress);
@@ -46,7 +50,7 @@ const HotkeyPanel = ({ visible, setHotkeyPanelVisible, t, tReady }) => {
         <div className="hotkeys_header">
           <Heading className="hotkeys_heading">{t("Hotkeys")}</Heading>
         </div>
-        <StyledScrollbar stype="mediumBlack">
+        <StyledScrollbar ref={scrollRef} stype="mediumBlack">
           <Heading className="hotkeys_sub-header">
             {t("HotkeysNavigation")}
           </Heading>
