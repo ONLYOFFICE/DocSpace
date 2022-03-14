@@ -103,10 +103,7 @@ const SelectFileDialogAsideView = ({
                 <div className="select-file-dialog_aside_body-files_list">
                   {selectedFolder && !isLoadingData ? (
                     <FilesListBody
-<<<<<<< HEAD
-=======
                       theme={theme}
->>>>>>> feature/virtual-rooms-1.2
                       filesList={filesList}
                       onSelectFile={onSelectFile}
                       hasNextPage={hasNextPage}
@@ -131,19 +128,13 @@ const SelectFileDialogAsideView = ({
                   ) : (
                     <div className="select-file-dialog_empty-container">
                       <EmptyContainer
-<<<<<<< HEAD
-=======
                         theme={theme}
->>>>>>> feature/virtual-rooms-1.2
                         headerText={t("Home:EmptyFolderHeader")}
                         imageSrc="/static/images/empty_screen.png"
                       />
                     </div>
                   )}
-<<<<<<< HEAD
                 </div>
-=======
->>>>>>> feature/virtual-rooms-1.2
               </div>
             </div>
           </StyledSelectFilePanel>
@@ -164,12 +155,8 @@ const SelectFileDialogAsideView = ({
                 isDisabled={selectedFile.length === 0}
               />
               <Button
-<<<<<<< HEAD
                 size="normal"
-=======
                 theme={theme}
-                size="big"
->>>>>>> feature/virtual-rooms-1.2
                 label={t("Common:CancelButton")}
                 onClick={onClose}
               />

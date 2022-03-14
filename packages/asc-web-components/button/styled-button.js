@@ -146,7 +146,7 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
   ${(props) => (props.minwidth ? `min-width: ${props.minwidth};` : null)}
 
   padding: ${(props) => `${props.theme.button.padding[props.size]}`};
-  
+
   cursor: ${(props) =>
     props.isDisabled || props.isLoading ? "default !important" : "pointer"};
 
@@ -214,18 +214,15 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
   }
 
   .loader {
-<<<<<<< HEAD
     display: flex;
     justify-content: center;
     align-items: center;
-=======
     svg {
       stroke: ${(props) =>
         props.primary
           ? props.theme.button.loader.primary
           : props.theme.button.loader.base};
     }
->>>>>>> feature/virtual-rooms-1.2
     vertical-align: ${(props) =>
       props.size === "normalTouchscreen" || props.size === "extraSmall"
         ? props.theme.button.middleVerticalAlign
