@@ -212,6 +212,8 @@ const Confirm = (props) => {
 
   const [isGreetingMode, setIsGreetingMode] = useState(true);
 
+  const [isEmailErrorShow, setIsEmailErrorShow] = useState(false);
+
   const getSso = async () => {
     const data = await getCapabilities();
     setSsoLabel(data.ssoLabel);
@@ -376,6 +378,7 @@ const Confirm = (props) => {
 
   const onChangeEmail = (e) => {
     setEmail(e.target.value);
+    setIsEmailErrorShow(false);
   };
 
   const onChangeFname = (e) => {
@@ -506,6 +509,10 @@ const Confirm = (props) => {
     setPasswordValid(res);
   };
 
+  const onBlurEmail = () => {
+    setIsEmailErrorShow(true);
+  };
+
   if (!isLoaded) return <AppLoader />;
   return (
     <ConfirmContainer>
@@ -571,7 +578,7 @@ const Confirm = (props) => {
             <FieldContainer
               isVertical={true}
               labelVisible={false}
-              hasError={!emailValid}
+              hasError={isEmailErrorShow && !emailValid}
               errorMessage={
                 emailErrorText
                   ? t(`Common:${emailErrorText}`)
@@ -582,7 +589,7 @@ const Confirm = (props) => {
                 id="login"
                 name="login"
                 type="email"
-                hasError={!emailValid}
+                hasError={isEmailErrorShow && !emailValid}
                 value={email}
                 placeholder={t("Common:Email")}
                 size="large"
@@ -592,6 +599,7 @@ const Confirm = (props) => {
                 isDisabled={isLoading}
                 autoComplete="username"
                 onChange={onChangeEmail}
+                onBlur={onBlurEmail}
                 onValidateInput={onValidateEmail}
                 forwardedRef={inputRef}
                 disallowChar='"'
