@@ -135,7 +135,6 @@ const Form = (props) => {
     !identifierValid && setIdentifierValid(true);
     !passwordValid && setPasswordValid(true);
     errorText && setErrorText("");
-    setIsEmailErrorShow(false);
   };
 
   //const throttledKeyPress = throttle(onKeyPress, 500);
@@ -185,6 +184,7 @@ const Form = (props) => {
   const onChangeLogin = (e) => {
     //console.log("onChangeLogin", e.target.value);
     setIdentifier(e.target.value);
+    setIsEmailErrorShow(false);
     onClearErrors(e);
   };
 
