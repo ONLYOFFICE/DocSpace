@@ -6,13 +6,12 @@ import Base from "../themes/base";
 
 // eslint-disable-next-line no-unused-vars, react/prop-types
 const Button = React.forwardRef((props, ref) => {
-  let { primary, size, isLoading, icon, label } = props;
-
+  const { primary, size, isLoading, icon, label } = props;
   return (
     <StyledButton innerRef={ref} {...props}>
       <div className="button-content">
-        {isLoading || icon ? (
-          isLoading ? (
+        {(isLoading || icon) &&
+          (isLoading ? (
             <Loader
               type="oval"
               size={
@@ -22,11 +21,8 @@ const Button = React.forwardRef((props, ref) => {
               className="loader"
             />
           ) : (
-            <div className="icon">{React.cloneElement(icon)}</div>
-          )
-        ) : (
-          ""
-        )}
+            <div className="icon">{icon}</div>
+          ))}
         {label}
       </div>
     </StyledButton>
@@ -77,11 +73,8 @@ Button.defaultProps = {
   theme: Base,
   scale: false,
   icon: null,
-
   tabIndex: -1,
-
   minwidth: null,
-
   isHovered: false,
   disableHover: false,
   isClicked: false,
@@ -90,5 +83,4 @@ Button.defaultProps = {
 };
 
 Button.displayName = "Button";
-
 export default Button;

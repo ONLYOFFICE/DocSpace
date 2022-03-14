@@ -50,23 +50,6 @@ const ButtonWrapper = ({ innerRef, ...props }) => {
   return <button ref={innerRef} type="button" {...props}></button>;
 };
 
-ButtonWrapper.propTypes = {
-  label: PropTypes.string,
-  primary: PropTypes.bool,
-  size: PropTypes.oneOf(["extraSmall", "small", "normal", "medium"]),
-  scale: PropTypes.bool,
-  icon: PropTypes.node,
-
-  tabIndex: PropTypes.number,
-
-  isHovered: PropTypes.bool,
-  isClicked: PropTypes.bool,
-  isDisabled: PropTypes.bool,
-  disableHover: PropTypes.bool,
-  isLoading: PropTypes.bool,
-
-  onClick: PropTypes.func,
-};
 const StyledButton = styled(ButtonWrapper).attrs((props) => ({
   disabled: props.isDisabled || props.isLoading ? "disabled" : "",
   tabIndex: props.tabIndex,
@@ -171,6 +154,8 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
   .icon {
     width: auto;
     height: 100%;
+    display: flex;
+    align-items: center;
   }
 
   .loader {
@@ -194,6 +179,24 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
       }
     `}
 `;
+
+ButtonWrapper.propTypes = {
+  label: PropTypes.string,
+  primary: PropTypes.bool,
+  size: PropTypes.oneOf(["extraSmall", "small", "normal", "medium"]),
+  scale: PropTypes.bool,
+  icon: PropTypes.node,
+
+  tabIndex: PropTypes.number,
+
+  isHovered: PropTypes.bool,
+  isClicked: PropTypes.bool,
+  isDisabled: PropTypes.bool,
+  disableHover: PropTypes.bool,
+  isLoading: PropTypes.bool,
+
+  onClick: PropTypes.func,
+};
 
 StyledButton.defaultProps = { theme: Base };
 
