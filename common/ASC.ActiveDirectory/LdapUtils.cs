@@ -20,11 +20,8 @@ using System.Text.RegularExpressions;
 
 using ASC.ActiveDirectory.Base.Data;
 using ASC.Common.Logging;
-using ASC.Core;
 using ASC.Core.Users;
 
-using Monocert = Mono.Security.X509;
-using Syscert = System.Security.Cryptography.X509Certificates;
 
 namespace ASC.ActiveDirectory
 {
@@ -131,52 +128,6 @@ namespace ASC.ActiveDirectory
         public static string GeneratePassword()
         {
             return Guid.NewGuid().ToString();
-        }
-
-        public static bool IsCertInstalled(Syscert.X509Certificate certificate, ILog log = null)
-        {
-            try
-            {
-                var monoX509 = new Monocert.X509Certificate(certificate.GetRawCertData());
-
-                var store = WorkContext.IsMono
-                    ? Monocert.X509StoreManager.CurrentUser.TrustedRoot
-                    : Monocert.X509StoreManager.LocalMachine.TrustedRoot;
-
-                return store.Certificates.Contains(monoX509);
-            }
-            catch (Exception ex)
-            {
-                if (log != null)
-                    log.ErrorFormat("IsCertInstalled() failed. Error: {0}", ex);
-            }
-
-            return false;
-        }
-
-        public static bool TryInstallCert(Syscert.X509Certificate certificate, ILog log = null)
-        {
-            try
-            {
-                var monoX509 = new Monocert.X509Certificate(certificate.GetRawCertData());
-
-                var store = WorkContext.IsMono
-                    ? Monocert.X509StoreManager.CurrentUser.TrustedRoot
-                    : Monocert.X509StoreManager.LocalMachine.TrustedRoot;
-
-                // Add the certificate to the store.
-                store.Import(monoX509);
-                store.Certificates.Add(monoX509);
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                if (log != null)
-                    log.ErrorFormat("TryInstallCert() failed. Error: {0}", ex);
-            }
-
-            return false;
         }
 
         public static void SkipErrors(Action method, ILog log = null)

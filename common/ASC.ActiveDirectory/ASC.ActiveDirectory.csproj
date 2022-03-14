@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -7,8 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Mono.Security" Version="5.4.0.201" />
-    <PackageReference Include="Novell.Directory.LDAP" Version="2.3.8.1" />
+    <PackageReference Include="Novell.Directory.Ldap.NETStandard" Version="3.6.0" />
   </ItemGroup>
 
   <ItemGroup>

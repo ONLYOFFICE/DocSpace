@@ -182,22 +182,10 @@ namespace ASC.ActiveDirectory.Novell
             {
                 var certHash = certificate.GetCertHashString();
 
-                if (LdapUtils.IsCertInstalled(certificate, _log))
-                {
-                    AcceptCertificate = true;
-                    AcceptCertificateHash = certHash;
-                    return true;
-                }
-
                 if (AcceptCertificate)
                 {
                     if (AcceptCertificateHash == null || AcceptCertificateHash.Equals(certHash))
                     {
-                        if (LdapUtils.TryInstallCert(certificate, _log))
-                        {
-                            AcceptCertificateHash = certHash;
-                        }
-
                         return true;
                     }
 
@@ -215,9 +203,9 @@ namespace ASC.ActiveDirectory.Novell
 
         public enum LdapScope
         {
-            Base = LdapConnection.SCOPE_BASE,
-            One = LdapConnection.SCOPE_ONE,
-            Sub = LdapConnection.SCOPE_SUB
+            Base = LdapConnection.ScopeBase,
+            One = LdapConnection.ScopeOne,
+            Sub = LdapConnection.ScopeSub
         }
 
         public List<LdapObject> Search(LdapScope scope, string searchFilter,
@@ -282,12 +270,12 @@ namespace ASC.ActiveDirectory.Novell
             var queue = _ldapConnection.Search(searchBase,
                 (int)scope, searchFilter, attributes, false, ldapSearchConstraints);
 
-            while (queue.hasMore())
+            while (queue.HasMore())
             {
                 LdapEntry nextEntry;
                 try
                 {
-                    nextEntry = queue.next();
+                    nextEntry = queue.Next();
 
                     if (nextEntry == null)
                         continue;
@@ -406,25 +394,25 @@ namespace ASC.ActiveDirectory.Novell
 
             // initially, cookie must be set to an empty string
             var pageSize = 2;
-            sbyte[] cookie = Array.ConvertAll(Encoding.ASCII.GetBytes(""), b => unchecked((sbyte)b));
+            byte[] cookie = Array.ConvertAll(Encoding.ASCII.GetBytes(""), b => unchecked(b));
             var i = 0;
 
             do
             {
                 var requestControls = new LdapControl[1];
-                requestControls[0] = new LdapPagedResultsControl(pageSize, cookie);
-                ldapSearchConstraints.setControls(requestControls);
+                requestControls[0] = new SimplePagedResultsControl(pageSize, cookie);
+                ldapSearchConstraints.SetControls(requestControls);
                 _ldapConnection.Constraints = ldapSearchConstraints;
 
                 var res = _ldapConnection.Search(searchBase,
                     (int)scope, searchFilter, attributes, false, (LdapSearchConstraints)null);
 
-                while (res.hasMore())
+                while (res.HasMore())
                 {
                     LdapEntry nextEntry;
                     try
                     {
-                        nextEntry = res.next();
+                        nextEntry = res.Next();
 
                         if (nextEntry == null)
                             continue;
@@ -441,7 +429,7 @@ namespace ASC.ActiveDirectory.Novell
                         continue;
                     }
 
-                    _log.DebugFormat("{0}. DN: {1}", ++i, nextEntry.DN);
+                    _log.DebugFormat("{0}. DN: {1}", ++i, nextEntry.Dn);
 
                     entries.Add(nextEntry);
 
@@ -465,11 +453,11 @@ namespace ASC.ActiveDirectory.Novell
                     foreach (LdapControl control in controls)
                     {
                         /* Is this the LdapPagedResultsResponse control? */
-                        if (!(control is LdapPagedResultsResponse))
+                        if (!(control is SimplePagedResultsControl))
                             continue;
 
-                        var response = new LdapPagedResultsResponse(control.ID,
-                            control.Critical, control.getValue());
+                        var response = new SimplePagedResultsControl(control.Id,
+                            control.Critical, control.GetValue());
 
                         cookie = response.Cookie;
                     }
@@ -498,15 +486,15 @@ namespace ASC.ActiveDirectory.Novell
                     ReferralFollowing = true
                 };
 
-                var ldapSearchResults = _ldapConnection.Search("", LdapConnection.SCOPE_BASE, LdapConstants.OBJECT_FILTER,
+                var ldapSearchResults = _ldapConnection.Search("", LdapConnection.ScopeBase, LdapConstants.OBJECT_FILTER,
                     new[] { "*", "supportedControls", "supportedCapabilities" }, false, ldapSearchConstraints);
 
-                while (ldapSearchResults.hasMore())
+                while (ldapSearchResults.HasMore())
                 {
                     LdapEntry nextEntry;
                     try
                     {
-                        nextEntry = ldapSearchResults.next();
+                        nextEntry = ldapSearchResults.Next();
 
                         if (nextEntry == null)
                             continue;
@@ -517,7 +505,7 @@ namespace ASC.ActiveDirectory.Novell
                         continue;
                     }
 
-                    var attributeSet = nextEntry.getAttributeSet();
+                    var attributeSet = nextEntry.GetAttributeSet();
 
                     var ienum = attributeSet.GetEnumerator();
 
@@ -532,10 +520,8 @@ namespace ASC.ActiveDirectory.Novell
                             .ToList()
                             .Select(s =>
                             {
-                                if (Base64.isLDIFSafe(s)) return s;
-                                var tbyte = SupportClass.ToByteArray(s);
-                                s = Base64.encode(SupportClass.ToSByteArray(tbyte));
-
+                                if (Base64.IsLdifSafe(s)) return s;
+                                s =  Base64.Encode(s);
                                 return s;
                             }).ToArray();
 
@@ -603,7 +589,7 @@ namespace ASC.ActiveDirectory.Novell
                 _ldapConnection.SearchConstraints.TimeLimit = 10000;
                 _ldapConnection.ConnectionTimeout = 10000;
 
-                if (_ldapConnection.TLS)
+                if (_ldapConnection.Tls)
                 {
                     _log.Debug("ldapConnection.StopTls();");
                     _ldapConnection.StopTls();
