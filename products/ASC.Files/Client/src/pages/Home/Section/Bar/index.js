@@ -18,8 +18,10 @@ const loadLanguagePath = async () => {
   let index = Number(localStorage.getItem("barIndex") || 0);
   const currentBar = bar[index];
 
+  const barStatus = localStorage.getItem("barClose");
+
   let htmlUrl =
-    currentBar && window.firebaseHelper.config.authDomain
+    currentBar && !barStatus && window.firebaseHelper.config.authDomain
       ? `https://${window.firebaseHelper.config.authDomain}/${language}/${currentBar}/index.html`
       : null;
 
@@ -70,6 +72,7 @@ const bannerHOC = (props) => {
   const onClose = () => {
     const bar = document.querySelector(`#main-bar`);
     setMaintenanceExist(false);
+    localStorage.setItem("barClose", true);
     bar.remove();
   };
 
