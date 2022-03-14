@@ -8,11 +8,7 @@ import {
   ArticleBodyContent,
   ArticleMainButtonContent,
 } from "../../components/Article";
-import {
-  CatalogBodyContent,
-  CatalogHeaderContent,
-  CatalogMainButtonContent,
-} from "../../components/Catalog";
+
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { withTranslation } from "react-i18next";
 import { setDocumentTitle } from "../../helpers/utils";
@@ -84,22 +80,6 @@ const PureSettings = ({
           <PageLayout.ArticleBody>
             <ArticleBodyContent />
           </PageLayout.ArticleBody>
-        )}
-
-        {showCatalog && (
-          <PageLayout.CatalogHeader>
-            <CatalogHeaderContent />
-          </PageLayout.CatalogHeader>
-        )}
-        {showCatalog && (
-          <PageLayout.CatalogMainButton>
-            <CatalogMainButtonContent />
-          </PageLayout.CatalogMainButton>
-        )}
-        {showCatalog && (
-          <PageLayout.CatalogBody>
-            <CatalogBodyContent />
-          </PageLayout.CatalogBody>
         )}
 
         <PageLayout.SectionHeader>

@@ -22,6 +22,12 @@ import PrivateRoomsPage from "./pages/PrivateRoomsPage";
 import ErrorBoundary from "@appserver/common/components/ErrorBoundary";
 import Panels from "./components/FilesPanels";
 import { AppServerConfig } from "@appserver/common/constants";
+import Catalog from "@appserver/common/components/catalog";
+import {
+  CatalogBodyContent,
+  CatalogHeaderContent,
+  CatalogMainButtonContent,
+} from "./components/Catalog";
 
 const { proxyURL } = AppServerConfig;
 const homepage = config.homepage;
@@ -115,12 +121,30 @@ class FilesContent extends React.Component {
     }
   }
 
+  renderCatalog() {
+    return (
+      <Catalog>
+        <Catalog.Header>
+          <CatalogHeaderContent />
+        </Catalog.Header>
+        <Catalog.MainButton>
+          <CatalogMainButtonContent />
+        </Catalog.MainButton>
+        <Catalog.Body>
+          <CatalogBodyContent />
+        </Catalog.Body>
+      </Catalog>
+    );
+  }
+
   render() {
     //const { /*, isDesktop*/ } = this.props;
+    const catalog = this.renderCatalog();
 
     return (
       <>
         <Panels />
+        {catalog}
         <Switch>
           <PrivateRoute exact path={SETTINGS_URL} component={Settings} />
           <PrivateRoute exact path={HISTORY_URL} component={VersionHistory} />

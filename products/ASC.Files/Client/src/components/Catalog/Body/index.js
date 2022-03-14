@@ -14,6 +14,7 @@ import { isDesktop, isTablet, isMobileOnly } from "react-device-detect";
 import ThirdPartyList from "./ThirdPartyList";
 import DownloadAppList from "./DownloadAppList";
 import Banner from "./Banner";
+import { showLoader, hideLoader } from "@appserver/common/utils";
 
 const StyledBlock = styled.div`
   padding: 0 20px;
@@ -38,35 +39,45 @@ const CatalogBodyContent = (props) => {
     const {
       toggleCatalogOpen,
       setIsLoading,
-      setSelectedNode,
       fetchFiles,
       homepage,
       history,
-      setFirstLoad,
     } = props;
 
-    setSelectedNode(data);
-    setIsLoading(true);
+    const filesSection = window.location.pathname.indexOf("/filter") > 0;
 
-    if (window.location.pathname.indexOf("/filter") > 0) {
-      fetchFiles(data, null, true, false)
-        .then(() => {
-          (isMobileOnly || isMobile()) && toggleCatalogOpen();
-        })
-        .catch((err) => toastr.error(err))
-        .finally(() => setIsLoading(false));
+    if (filesSection) {
+      setIsLoading(true);
     } else {
-      setFirstLoad(true);
-      const filter = FilesFilter.getDefault();
-
-      filter.folder = data;
-
-      const urlFilter = filter.toUrlParams();
-      if (isMobileOnly || isMobile()) toggleCatalogOpen();
-      history.push(
-        combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
-      );
+      showLoader();
     }
+
+    fetchFiles(data, null, true, false)
+      .then(() => {
+        if (!filesSection) {
+          const filter = FilesFilter.getDefault();
+
+          filter.folder = data[0];
+
+          const urlFilter = filter.toUrlParams();
+
+          history.push(
+            combineUrl(
+              AppServerConfig.proxyURL,
+              homepage,
+              `/filter?${urlFilter}`
+            )
+          );
+        }
+      })
+      .catch((err) => toastr.error(err))
+      .finally(() => {
+        if (isMobileOnly || isMobile()) {
+          toggleCatalogOpen();
+        }
+        if (filesSection) setIsLoading(false);
+        else hideLoader();
+      });
   }, []);
 
   const onShowNewFilesPanel = React.useCallback((folderId) => {
@@ -75,7 +86,11 @@ const CatalogBodyContent = (props) => {
 
   return (
     <>
-      <Items onClick={onClick} onBadgeClick={onShowNewFilesPanel} />
+      <Items
+        onClick={onClick}
+        onBadgeClick={onShowNewFilesPanel}
+        showText={showText}
+      />
       {!personal && !firstLoad && <SettingsItems />}
       {!isDesktopClient && showText && (
         <StyledBlock showText={showText}>
@@ -101,7 +116,7 @@ export default inject(
     settingsStore,
   }) => {
     const { fetchFiles, setIsLoading, setFirstLoad, firstLoad } = filesStore;
-    const { treeFolders, setSelectedNode, setTreeFolders } = treeFoldersStore;
+    const { treeFolders, setTreeFolders } = treeFoldersStore;
 
     const { setNewFilesPanelVisible } = dialogsStore;
 
@@ -135,7 +150,7 @@ export default inject(
       setIsLoading,
       setFirstLoad,
       fetchFiles,
-      setSelectedNode,
+
       setTreeFolders,
       setNewFilesPanelVisible,
       hideArticle,

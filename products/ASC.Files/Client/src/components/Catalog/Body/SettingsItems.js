@@ -9,7 +9,7 @@ import { AppServerConfig } from "@appserver/common/constants";
 import withLoader from "../../../HOCs/withLoader";
 import { isMobile } from "@appserver/components/utils/device";
 import { isMobileOnly } from "react-device-detect";
-
+const iconUrl = "/static/images/settings.react.svg";
 const PureSettingsItems = ({
   match,
   expandedSetting,
@@ -20,11 +20,9 @@ const PureSettingsItems = ({
   setIsLoading,
   t,
   showText,
-  toggleShowText,
   toggleCatalogOpen,
 }) => {
   const { setting } = match.params;
-  const iconUrl = "/static/images/settings.react.svg";
 
   React.useEffect(() => {
     setIsLoading(true);
@@ -33,11 +31,10 @@ const PureSettingsItems = ({
   }, [setting, setIsLoading, setSelectedNode]);
 
   React.useEffect(() => {
-    const { setting } = match.params;
     if (setting && !expandedSetting) setExpandSettingsTree(["settings"]);
-  }, [match, expandedSetting, setExpandSettingsTree]);
+  }, [expandedSetting, setExpandSettingsTree]);
 
-  const onClick = () => {
+  const onClick = React.useCallback(() => {
     setSelectedFolder(null);
 
     setSelectedNode(["common"]);
@@ -46,7 +43,13 @@ const PureSettingsItems = ({
     history.push(
       combineUrl(AppServerConfig.proxyURL, config.homepage, "/settings/common")
     );
-  };
+  }, [
+    setSelectedFolder,
+    setSelectedNode,
+    setExpandSettingsTree,
+    toggleCatalogOpen,
+    history,
+  ]);
 
   const isActive = () => {
     return window.location.pathname.indexOf("/settings") > 0;
@@ -88,7 +91,6 @@ export default inject(
       setSelectedNode,
       setExpandSettingsTree,
       showText: auth.settingsStore.showText,
-      toggleShowText: auth.settingsStore.toggleShowText,
       toggleCatalogOpen: auth.settingsStore.toggleCatalogOpen,
     };
   }

@@ -10,16 +10,6 @@ import FilesFilter from "@appserver/common/api/files/filter";
 import { getGroup } from "@appserver/common/api/groups";
 import { getUserById } from "@appserver/common/api/people";
 import { withTranslation, Trans } from "react-i18next";
-import {
-  ArticleBodyContent,
-  ArticleHeaderContent,
-  ArticleMainButtonContent,
-} from "../../components/Article";
-import {
-  CatalogBodyContent,
-  CatalogHeaderContent,
-  CatalogMainButtonContent,
-} from "../../components/Catalog";
 
 import {
   SectionBodyContent,
@@ -284,8 +274,6 @@ class PureHome extends React.Component {
 
       dragging,
       tReady,
-
-      showCatalog,
     } = this.props;
     return (
       <>
@@ -316,40 +304,7 @@ class PureHome extends React.Component {
           isHeaderVisible={isHeaderVisible}
           onOpenUploadPanel={this.showUploadPanel}
           firstLoad={firstLoad}
-          dragging={dragging}
         >
-          {!showCatalog && (
-            <PageLayout.ArticleHeader>
-              <ArticleHeaderContent />
-            </PageLayout.ArticleHeader>
-          )}
-          {!showCatalog && (
-            <PageLayout.ArticleMainButton>
-              <ArticleMainButtonContent />
-            </PageLayout.ArticleMainButton>
-          )}
-          {!showCatalog && (
-            <PageLayout.ArticleBody>
-              <ArticleBodyContent onTreeDrop={this.onDrop} />
-            </PageLayout.ArticleBody>
-          )}
-
-          {showCatalog && (
-            <PageLayout.CatalogHeader>
-              <CatalogHeaderContent />
-            </PageLayout.CatalogHeader>
-          )}
-          {showCatalog && (
-            <PageLayout.CatalogMainButton>
-              <CatalogMainButtonContent />
-            </PageLayout.CatalogMainButton>
-          )}
-          {showCatalog && (
-            <PageLayout.CatalogBody>
-              <CatalogBodyContent />
-            </PageLayout.CatalogBody>
-          )}
-
           <PageLayout.SectionHeader>
             <SectionHeaderContent />
           </PageLayout.SectionHeader>
@@ -493,7 +448,6 @@ export default inject(
 
       setIsPrevSettingsModule,
       isPrevSettingsModule,
-      showCatalog: auth.settingsStore.showCatalog,
     };
   }
 )(withRouter(observer(Home)));

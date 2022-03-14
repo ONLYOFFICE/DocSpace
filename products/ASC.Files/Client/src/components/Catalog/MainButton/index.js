@@ -77,10 +77,11 @@ class CatalogMainButtonContent extends React.Component {
     //console.log("Files ArticleMainButtonContent render");
     const {
       t,
-      tReady,
       canCreate,
       isDisabled,
+      isLoading,
       firstLoad,
+      isLoaded,
       isPrivacy,
       sectionWidth,
       isFavoritesFolder,
@@ -216,15 +217,24 @@ class CatalogMainButtonContent extends React.Component {
                 />
               )}
           </>
-        ) : (
-          <>
+        ) : firstLoad || !isLoaded ? (
+          isLoading || !isLoaded ? (
+            <Loaders.MainButton />
+          ) : (
             <MainButton
               isDisabled={isDisabled ? isDisabled : !canCreate}
               isDropdown={true}
               text={t("Common:Actions")}
               model={menuModel}
             />
-          </>
+          )
+        ) : (
+          <MainButton
+            isDisabled={isDisabled ? isDisabled : !canCreate}
+            isDropdown={true}
+            text={t("Common:Actions")}
+            model={menuModel}
+          />
         )}
 
         <input
@@ -259,7 +269,14 @@ CatalogMainButtonContent.propTypes = {
 
 export default inject(
   ({ auth, filesStore, dialogsStore, uploadDataStore, treeFoldersStore }) => {
-    const { firstLoad, fileActionStore, filter, canCreate } = filesStore;
+    const {
+      isLoading,
+      firstLoad,
+      isLoaded,
+      fileActionStore,
+      filter,
+      canCreate,
+    } = filesStore;
     const {
       isPrivacyFolder,
       isFavoritesFolder,
@@ -272,7 +289,9 @@ export default inject(
 
     return {
       homepage: config.homepage,
+      isLoading,
       firstLoad,
+      isLoaded,
       isPrivacy: isPrivacyFolder,
       isFavoritesFolder,
       isRecentFolder,
@@ -291,8 +310,6 @@ export default inject(
   }
 )(
   withRouter(
-    withTranslation(["Article", "Common"])(
-      withLoader(observer(CatalogMainButtonContent))(<Loaders.MainButton />)
-    )
+    withTranslation(["Article", "Common"])(observer(CatalogMainButtonContent))
   )
 );

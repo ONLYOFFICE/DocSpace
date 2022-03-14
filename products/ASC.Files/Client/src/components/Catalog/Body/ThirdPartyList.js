@@ -109,7 +109,7 @@ const PureThirdPartyListContainer = ({
   setThirdPartyDialogVisible,
   history,
 }) => {
-  const redirectAction = () => {
+  const redirectAction = useCallback(() => {
     const thirdPartyUrl = "/settings/thirdParty";
     if (history.location.pathname.indexOf(thirdPartyUrl) === -1) {
       setSelectedNode(["thirdParty"]);
@@ -118,45 +118,56 @@ const PureThirdPartyListContainer = ({
         combineUrl(AppServerConfig.proxyURL, config.homepage, thirdPartyUrl)
       );
     }
-  };
+  }, [setSelectedNode, setSelectedFolder]);
 
-  const onConnect = (e) => {
-    const data = e.currentTarget.dataset;
+  const onConnect = useCallback(
+    (e) => {
+      const data = e.currentTarget.dataset;
 
-    if (data.link) {
-      let authModal = window.open(
-        "",
-        "Authorization",
-        "height=600, width=1020"
-      );
-      openConnectWindow(data.title, authModal)
-        .then(() => redirectAction())
-        .then((modal) =>
-          getOAuthToken(modal).then((token) => {
-            authModal.close();
-            const serviceData = {
-              title: connectedCloudsTitleTranslation(data.title, t),
-              provider_key: data.title,
-              link: data.link,
-              token,
-            };
-            setConnectItem(serviceData);
-            setConnectDialogVisible(true);
-          })
-        )
-        .catch((e) => console.error(e));
-    } else {
-      data.title = connectedCloudsTitleTranslation(data.title, t);
-      setConnectItem(data);
-      setConnectDialogVisible(true);
-      redirectAction();
-    }
-  };
+      if (data.link) {
+        let authModal = window.open(
+          "",
+          "Authorization",
+          "height=600, width=1020"
+        );
+        openConnectWindow(data.title, authModal)
+          .then(() => redirectAction())
+          .then((modal) =>
+            getOAuthToken(modal).then((token) => {
+              authModal.close();
+              const serviceData = {
+                title: connectedCloudsTitleTranslation(data.title, t),
+                provider_key: data.title,
+                link: data.link,
+                token,
+              };
+              setConnectItem(serviceData);
+              setConnectDialogVisible(true);
+            })
+          )
+          .catch((e) => console.error(e));
+      } else {
+        data.title = connectedCloudsTitleTranslation(data.title, t);
+        setConnectItem(data);
+        setConnectDialogVisible(true);
+        redirectAction();
+      }
+    },
+    [
+      openConnectWindow,
+      redirectAction,
+      getOAuthToken,
+      connectedCloudsTitleTranslation,
+      setConnectItem,
+      setConnectDialogVisible,
+      connectedCloudsTitleTranslation,
+    ]
+  );
 
   const onShowConnectPanel = useCallback(() => {
     setThirdPartyDialogVisible(true);
     redirectAction();
-  }, []);
+  }, [setThirdPartyDialogVisible, redirectAction]);
 
   return (
     <StyledThirdParty>

@@ -15,27 +15,27 @@ const Items = ({
   selectedTreeNode,
   onClick,
   onBadgeClick,
-  selection,
-  setIsLoading,
-  isLoading,
+
   dragging,
   isAdmin,
   myId,
   commonId,
   currentId,
   draggableItems,
-  setDragging,
-  setStartDrag,
+
   moveDragItems,
 }) => {
-  const isActive = (item) => {
-    if (selectedTreeNode.length > 0) {
-      if (pathParts && pathParts.includes(item.id)) return true;
-      if (selectedTreeNode[0] === "@my" && item.key === "0-0") return true;
-      return `${item.id}` === selectedTreeNode[0];
-    }
-  };
-  const getEndOfBlock = (item) => {
+  const isActive = React.useCallback(
+    (item) => {
+      if (selectedTreeNode.length > 0) {
+        if (pathParts && pathParts.includes(item.id)) return true;
+        if (selectedTreeNode[0] === "@my" && item.key === "0-0") return true;
+        return `${item.id}` === selectedTreeNode[0];
+      }
+    },
+    [selectedTreeNode, pathParts]
+  );
+  const getEndOfBlock = React.useCallback((item) => {
     switch (item.key) {
       case "0-3":
       case "0-5":
@@ -44,9 +44,9 @@ const Items = ({
       default:
         return false;
     }
-  };
+  }, []);
 
-  const getFolderIcon = (item) => {
+  const getFolderIcon = React.useCallback((item) => {
     let iconUrl = "images/catalog.folder.react.svg";
 
     switch (item.rootFolderType) {
@@ -111,82 +111,101 @@ const Items = ({
     }
 
     return iconUrl;
-  };
+  }, []);
 
-  const showDragItems = (item) => {
-    if (item.id === currentId) {
-      return false;
-    }
+  const showDragItems = React.useCallback(
+    (item) => {
+      if (item.id === currentId) {
+        return false;
+      }
 
-    if (!draggableItems || draggableItems.find((x) => x.id === item.id))
-      return false;
+      if (!draggableItems || draggableItems.find((x) => x.id === item.id))
+        return false;
 
-    if (
-      item.rootFolderType === FolderType.SHARE &&
-      item.access === ShareAccessRights.FullAccess
-    ) {
-      return true;
-    }
-
-    if (isAdmin) {
       if (
-        (item.pathParts &&
-          (item.pathParts[0] === myId || item.pathParts[0] === commonId)) ||
-        item.rootFolderType === FolderType.USER ||
-        item.rootFolderType === FolderType.COMMON
+        item.rootFolderType === FolderType.SHARE &&
+        item.access === ShareAccessRights.FullAccess
       ) {
         return true;
       }
-    } else {
-      if (
-        (item.pathParts && item.pathParts[0] === myId) ||
-        item.rootFolderType === FolderType.USER
-      ) {
-        return true;
+
+      if (isAdmin) {
+        if (
+          (item.pathParts &&
+            (item.pathParts[0] === myId || item.pathParts[0] === commonId)) ||
+          item.rootFolderType === FolderType.USER ||
+          item.rootFolderType === FolderType.COMMON
+        ) {
+          return true;
+        }
+      } else {
+        if (
+          (item.pathParts && item.pathParts[0] === myId) ||
+          item.rootFolderType === FolderType.USER
+        ) {
+          return true;
+        }
       }
-    }
 
-    return false;
-  };
+      return false;
+    },
+    [currentId, draggableItems, isAdmin]
+  );
 
-  const onMoveTo = (destFolderId, title) => {
-    moveDragItems(destFolderId, title, null, {
-      copy: t("Translations:CopyOperation"),
-      move: t("Translations:MoveToOperation"),
-    });
-  };
+  const onMoveTo = React.useCallback(
+    (destFolderId, title) => {
+      moveDragItems(destFolderId, title, null, {
+        copy: t("Translations:CopyOperation"),
+        move: t("Translations:MoveToOperation"),
+      });
+    },
+    [moveDragItems, t]
+  );
 
-  const getItem = (data) => {
-    const items = data.map((item) => {
-      const showBadge = item.newItems ? item.newItems > 0 && true : false;
+  const getItem = React.useCallback(
+    (data) => {
+      const items = data.map((item) => {
+        const showBadge = item.newItems ? item.newItems > 0 && true : false;
 
-      const isDragging = dragging ? showDragItems(item) : false;
+        const isDragging = dragging ? showDragItems(item) : false;
 
-      let value = "";
-      if (isDragging) value = `${item.id} dragging`;
+        let value = "";
+        if (isDragging) value = `${item.id} dragging`;
 
-      return (
-        <CatalogItem
-          key={item.id}
-          id={item.id}
-          className={`tree-drag ${item.folderClassName}`}
-          icon={getFolderIcon(item)}
-          showText={showText}
-          text={item.title}
-          isActive={isActive(item)}
-          onClick={onClick}
-          onDrop={onMoveTo}
-          isEndOfBlock={getEndOfBlock(item)}
-          isDragging={isDragging}
-          value={value}
-          showBadge={showBadge}
-          labelBadge={showBadge ? item.newItems : null}
-          onClickBadge={onBadgeClick}
-        />
-      );
-    });
-    return items;
-  };
+        return (
+          <CatalogItem
+            key={item.id}
+            id={item.id}
+            className={`tree-drag ${item.folderClassName}`}
+            icon={getFolderIcon(item)}
+            showText={showText}
+            text={item.title}
+            isActive={isActive(item)}
+            onClick={onClick}
+            onDrop={onMoveTo}
+            isEndOfBlock={getEndOfBlock(item)}
+            isDragging={isDragging}
+            value={value}
+            showBadge={showBadge}
+            labelBadge={showBadge ? item.newItems : null}
+            onClickBadge={onBadgeClick}
+          />
+        );
+      });
+      return items;
+    },
+    [
+      dragging,
+      getFolderIcon,
+      isActive,
+      onClick,
+      onMoveTo,
+      getEndOfBlock,
+      onBadgeClick,
+      showDragItems,
+      showText,
+    ]
+  );
 
   return <>{getItem(data)}</>;
 };
@@ -207,26 +226,14 @@ export default inject(
     filesStore,
     filesActionsStore,
   }) => {
-    const {
-      selection,
-      setIsLoading,
-      isLoading,
-      dragging,
-      setDragging,
-      setStartDrag,
-    } = filesStore;
+    const { selection, dragging, setDragging, setStartDrag } = filesStore;
 
     const {
       selectedTreeNode,
       treeFolders,
-      setTreeFolders,
       myFolderId,
       commonFolderId,
       isPrivacyFolder,
-      expandedKeys,
-      setExpandedKeys,
-      setExpandedPanelKeys,
-      getSubfolders,
     } = treeFoldersStore;
 
     const { id } = selectedFolderStore;
@@ -242,8 +249,6 @@ export default inject(
       data: treeFolders,
       selectedTreeNode,
       draggableItems: dragging ? selection : null,
-      setIsLoading,
-      isLoading,
       dragging,
       setDragging,
       setStartDrag,

@@ -20,7 +20,7 @@ const StyledDownloadAppList = styled.div`
   }
 `;
 
-const DownloadAppListContainer = ({ t }) => {
+const DownloadAppListContainer = React.memo(({ t }) => {
   const windowsLink =
     "https://www.onlyoffice.com/download-desktop.aspx#windows";
   const macLink = "https://www.onlyoffice.com/download-desktop.aspx#mac";
@@ -82,7 +82,7 @@ const DownloadAppListContainer = ({ t }) => {
       </div>
     </StyledDownloadAppList>
   );
-};
+});
 
 const DownloadAppList = withTranslation(["Translations"])(
   withLoader(DownloadAppListContainer)(<></>)
