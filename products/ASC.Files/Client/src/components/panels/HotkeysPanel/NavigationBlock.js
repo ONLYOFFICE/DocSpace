@@ -13,7 +13,12 @@ const NavigationBlock = ({ t, textStyles, keyTextStyles, AltKey }) => {
       </Row>
       <Row className="hotkeys_row">
         <>
-          <Text {...textStyles}>{t("HotkeysChangeView")}</Text>
+          <Text {...textStyles}>
+            {t("HotkeysChangeView", {
+              tileView: t("ViewTiles"),
+              rowView: t("ViewList"),
+            })}
+          </Text>
           <Text {...keyTextStyles}>v</Text>
         </>
       </Row>
