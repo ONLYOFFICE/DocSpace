@@ -12,7 +12,7 @@ const BaseTemplate = ({ type, data, title, timeout, withCross, ...args }) => {
       <Button
         label="Show toast"
         primary
-        size="medium"
+        size="small"
         onClick={() => {
           switch (type) {
             case "error":
@@ -150,7 +150,7 @@ const AllTemplate = (args) => {
       <Button
         label="Show all toast"
         primary
-        size="medium"
+        size="small"
         onClick={() => renderAllToast()}
       />
     </>

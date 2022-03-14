@@ -30,7 +30,20 @@ class HotkeyStore {
     this.uploadDataStore = uploadDataStore;
   }
 
-  activateHotkeys = (isDefaultKeys) => {
+  activateHotkeys = (e) => {
+    if (this.dialogsStore.someDialogIsOpen) return;
+
+    const isDefaultKeys =
+      ["PageUp", "PageDown", "Home", "End"].indexOf(e.code) > -1;
+
+    if (
+      ["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(
+        e.code
+      ) > -1
+    ) {
+      e.preventDefault();
+    }
+
     const { selection, hotkeyCaret, viewAs } = this.filesStore;
 
     if (!hotkeyCaret) {
@@ -66,7 +79,7 @@ class HotkeyStore {
         //console.log("element is visible");
       } else {
         el.scrollIntoView({ block: "center" });
-        console.log("element is not visible");
+        //console.log("element is not visible");
       }
     }
   };

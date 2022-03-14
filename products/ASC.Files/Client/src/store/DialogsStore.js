@@ -221,8 +221,7 @@ class DialogsStore {
   };
 
   setHotkeyPanelVisible = (hotkeyPanelVisible) => {
-    if (!this.someDialogIsOpen || !hotkeyPanelVisible)
-      this.hotkeyPanelVisible = hotkeyPanelVisible;
+    this.hotkeyPanelVisible = hotkeyPanelVisible;
   };
 
   get someDialogIsOpen() {

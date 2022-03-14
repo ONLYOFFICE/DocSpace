@@ -50,19 +50,7 @@ const withHotkeys = (Component) => {
       enabled: !someDialogIsOpen,
     };
 
-    const onKeyDown = (e) => {
-      const isDefaultKeys =
-        ["PageUp", "PageDown", "Home", "End"].indexOf(e.code) > -1;
-
-      activateHotkeys(isDefaultKeys);
-      if (
-        ["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(
-          e.code
-        ) > -1
-      ) {
-        e.preventDefault();
-      }
-    };
+    const onKeyDown = (e) => activateHotkeys(e);
 
     useEffect(() => {
       window.addEventListener("keydown", onKeyDown);

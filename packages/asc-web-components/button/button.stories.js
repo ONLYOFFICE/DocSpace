@@ -15,7 +15,7 @@ export default {
   },
 };
 
-const sizes = ["base", "medium", "big", "large"];
+const sizes = ["extraSmall", "small", "normal", "medium"];
 
 const Wrapper = (props) => (
   <div
@@ -32,7 +32,9 @@ const Wrapper = (props) => (
   </div>
 );
 
-const Template = (args) => <Button {...args} />;
+const Template = (args) => (
+  <Button {...args} onClick={() => alert("Button clicked")} />
+);
 const PrimaryTemplate = (args) => {
   return (
     <Wrapper>
@@ -127,7 +129,6 @@ const ScaleTemplate = (args) => {
           {...args}
           primary
           size={size}
-          isLoading={true}
           label={`Scale ${size[0].toUpperCase()}${size.slice(1)}`}
         />
       ))}
@@ -136,7 +137,6 @@ const ScaleTemplate = (args) => {
           key={`all-scale-sec-${size}`}
           {...args}
           size={size}
-          isLoading={true}
           label={`Scale ${size[0].toUpperCase()}${size.slice(1)}`}
         />
       ))}
@@ -180,7 +180,7 @@ const ClickedTemplate = (args) => {
           primary
           size={size}
           isClicked={true}
-          label={`Disabled ${size[0].toUpperCase()}${size.slice(1)}`}
+          label={`Clicked ${size[0].toUpperCase()}${size.slice(1)}`}
         />
       ))}
       {sizes.map((size) => (
@@ -206,7 +206,7 @@ const HoveredTemplate = (args) => {
           primary
           size={size}
           isHovered={true}
-          label={`Disabled ${size[0].toUpperCase()}${size.slice(1)}`}
+          label={`Hovered ${size[0].toUpperCase()}${size.slice(1)}`}
         />
       ))}
       {sizes.map((size) => (
@@ -215,7 +215,7 @@ const HoveredTemplate = (args) => {
           {...args}
           size={size}
           isHovered={true}
-          label={`Clicked ${size[0].toUpperCase()}${size.slice(1)}`}
+          label={`Hovered ${size[0].toUpperCase()}${size.slice(1)}`}
         />
       ))}
     </Wrapper>
@@ -224,8 +224,8 @@ const HoveredTemplate = (args) => {
 
 export const Default = Template.bind({});
 Default.args = {
-  size: "base",
-  label: "Base Button",
+  size: "extraSmall",
+  label: "Button",
 };
 export const PrimaryButtons = PrimaryTemplate.bind({});
 export const SecondaryButtons = SecondaryTemplate.bind({});
