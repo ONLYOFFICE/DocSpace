@@ -1,7 +1,7 @@
 import { getFavicon } from "../helpers/utils";
+import pkg from "../../package.json";
 
 export default function template(
-  title,
   initialState = {},
   content = "",
   styleTags,
@@ -9,6 +9,7 @@ export default function template(
   initialI18nStore,
   initialLanguage
 ) {
+  const { title } = pkg;
   const { docApiUrl } = initialState;
   const faviconHref = getFavicon(initialState?.config?.documentType);
 

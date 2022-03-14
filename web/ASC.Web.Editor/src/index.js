@@ -5,9 +5,7 @@ import render from "./server/render";
 import i18nextMiddleware from "i18next-express-middleware";
 import i18next from "i18next";
 import Backend from "i18next-node-fs-backend";
-import pkg from "../package.json";
 
-const { title } = pkg;
 const app = express();
 const port = process.env.PORT || 5013;
 
@@ -60,7 +58,6 @@ app.get("/products/files/doceditor", async (req, res) => {
     });
 
     const response = template(
-      title,
       props,
       content,
       styleTags,

@@ -419,7 +419,6 @@ export default function Editor({
     } else {
       title = organizationName;
     }
-    console.log("setDocumentTitle", title);
     document.title = title;
     setNewDocumentTitle(title);
   }; //+++
@@ -613,10 +612,7 @@ export default function Editor({
   };
 
   const SharingDialog = renderSharing();
-  /* <Head>
-        <title>{documentTitle}</title>
-        <link id="favicon" rel="shortcut icon" href={faviconHref} />
-      </Head> */
+
   return (
     <EditorWrapper isVisibleSharingDialog={isVisible}>
       {needLoader ? (
