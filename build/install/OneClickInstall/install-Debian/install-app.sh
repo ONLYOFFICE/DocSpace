@@ -66,8 +66,7 @@ if [ "$APPSERVER_INSTALLED" = "false" ]; then
 	echo ${product} ${product}/db-pwd select $MYSQL_SERVER_PASS | sudo debconf-set-selections
 	echo ${product} ${product}/db-user select $MYSQL_SERVER_USER | sudo debconf-set-selections
 	echo ${product} ${product}/db-name select $MYSQL_SERVER_DB_NAME | sudo debconf-set-selections
-
-		#проверить
+	
 	apt-get install -y ${product} || true #Fix error 'Failed to fetch'
 	apt-get install -y ${product}
 elif [ "$UPDATE" = "true" ] && [ "$APPSERVER_INSTALLED" = "true" ]; then
