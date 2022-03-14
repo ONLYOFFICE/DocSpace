@@ -73,14 +73,13 @@ const SelectFolderDialogModalView = ({
                   theme={theme}
                   className="select-folder-dialog-buttons-save"
                   primary
-                  size="medium"
+                  size="small"
                   label={primaryButtonName}
                   onClick={onSave}
                   isDisabled={isLoadingData || !isAvailable || !canCreate}
                 />
                 <Button
-                  theme={theme}
-                  size="medium"
+                  size="small"
                   label={t("Common:CancelButton")}
                   onClick={onClose}
                   isDisabled={isLoadingData || isLoading}

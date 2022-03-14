@@ -546,7 +546,7 @@ const Form = (props) => {
           id="submit"
           className="login-button"
           primary
-          size="large"
+          size="medium"
           scale={true}
           label={isLoading ? t("Common:LoadingProcessing") : t("LoginButton")}
           tabIndex={1}

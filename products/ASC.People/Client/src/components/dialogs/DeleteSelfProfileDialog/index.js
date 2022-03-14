@@ -69,7 +69,7 @@ class DeleteSelfProfileDialogComponent extends React.Component {
           <Button
             key="SendBtn"
             label={t("Common:SendButton")}
-            size="medium"
+            size="small"
             primary={true}
             onClick={this.onDeleteSelfProfileInstructions}
             isLoading={isRequestRunning}
@@ -78,7 +78,7 @@ class DeleteSelfProfileDialogComponent extends React.Component {
             className="button-dialog"
             key="CloseBtn"
             label={t("Common:CloseButton")}
-            size="medium"
+            size="small"
             onClick={onClose}
             isDisabled={isRequestRunning}
           />

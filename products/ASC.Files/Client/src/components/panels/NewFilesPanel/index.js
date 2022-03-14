@@ -231,14 +231,14 @@ class NewFilesPanel extends React.Component {
               <Button
                 className="new_files_panel-button"
                 label={t("MarkAsRead")}
-                size="big"
+                size="normal"
                 primary
                 onClick={this.onMarkAsRead}
               />
               <Button
                 className="sharing_panel-button"
                 label={t("Common:CloseButton")}
-                size="big"
+                size="normal"
                 onClick={this.onClose}
               />
             </StyledFooter>

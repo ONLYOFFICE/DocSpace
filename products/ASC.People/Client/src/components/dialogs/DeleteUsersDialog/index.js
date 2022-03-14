@@ -141,7 +141,7 @@ class DeleteGroupUsersDialogComponent extends React.Component {
         <ModalDialog.Footer>
           <Button
             label={t("Common:OKButton")}
-            size="medium"
+            size="small"
             primary
             onClick={this.onDeleteGroupUsers}
             isLoading={isRequestRunning}
@@ -150,7 +150,7 @@ class DeleteGroupUsersDialogComponent extends React.Component {
           <Button
             className="button-dialog"
             label={t("Common:CancelButton")}
-            size="medium"
+            size="small"
             onClick={onClose}
             isDisabled={isRequestRunning}
           />
