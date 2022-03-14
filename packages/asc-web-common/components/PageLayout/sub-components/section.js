@@ -30,11 +30,11 @@ const StyledSection = styled.section`
   .main-bar--hidden {
     ${isMobile &&
     css`
-      transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
-      -moz-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
-      -ms-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
-      -webkit-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
-      -o-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
+      transition: top 0.3s cubic-bezier(0, 0, 0.5, 1);
+      -moz-transition: top 0.3s cubic-bezier(0, 0, 0.5, 1);
+      -ms-transition: top 0.3s cubic-bezier(0, 0, 0.5, 1);
+      -webkit-transition: top 0.3s cubic-bezier(0, 0, 0.5, 1);
+      -o-transition: top 0.3s cubic-bezier(0, 0, 0.5, 1);
     `}
   }
   .main-bar--hidden {
