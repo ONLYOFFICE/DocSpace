@@ -7,7 +7,7 @@ import i18next from "i18next";
 import Backend from "i18next-node-fs-backend";
 import pkg from "../package.json";
 
-const title = pkg.title;
+const { title } = pkg;
 const app = express();
 const port = process.env.PORT || 5013;
 

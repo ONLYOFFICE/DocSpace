@@ -9,6 +9,7 @@ import {
   checkFillFormDraft,
   openEdit,
 } from "@appserver/common/api/files";
+import pkg from "../../package.json";
 
 export const initDocEditor = async (req) => {
   if (!req) return false;
@@ -133,4 +134,26 @@ export const initDocEditor = async (req) => {
       },
     };
   }
+};
+
+export const getFavicon = (documentType) => {
+  const { homepage } = pkg;
+  let icon = null;
+
+  switch (documentType) {
+    case "text":
+      icon = "text.ico";
+      break;
+    case "presentation":
+      icon = "presentation.ico";
+      break;
+    case "spreadsheet":
+      icon = "spreadsheet.ico";
+      break;
+    default:
+      break;
+  }
+
+  const favicon = icon ? `${homepage}/images/${icon}` : "/favicon.ico";
+  return favicon;
 };

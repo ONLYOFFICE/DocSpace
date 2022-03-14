@@ -1,3 +1,5 @@
+import { getFavicon } from "../helpers/utils";
+
 export default function template(
   title,
   initialState = {},
@@ -8,6 +10,7 @@ export default function template(
   initialLanguage
 ) {
   const { docApiUrl } = initialState;
+  const faviconHref = getFavicon(initialState?.config?.documentType);
 
   const scripts = `   
     <script id="__ASC_INITIAL_STATE__">
@@ -33,7 +36,7 @@ export default function template(
             content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
           />
           <meta name="theme-color" content="#000000" />
-          <link id="favicon" rel="shortcut icon" href="/favicon.ico" />
+          <link id="favicon" rel="shortcut icon" href=${faviconHref} />
           <link rel="manifest" href="/manifest.json" />
           <meta name="mobile-web-app-capable" content="yes" />
           <meta name="apple-mobile-web-app-capable" content="yes" />

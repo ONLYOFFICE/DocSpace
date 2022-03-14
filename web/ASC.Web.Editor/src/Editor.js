@@ -147,7 +147,6 @@ export default function Editor({
   const [isVisible, setIsVisible] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [documentTitle, setNewDocumentTitle] = useState("Loading...");
-  const [faviconHref, setFaviconHref] = useState("/favicon.ico"); // try without state
 
   const [t] = useTranslation();
   // console.log(t, i18n);
@@ -164,7 +163,6 @@ export default function Editor({
     console.log("useEffect config", config);
     if (config) {
       document.getElementById("scripDocServiceAddress").onload = onLoad();
-      setFavicon(config?.documentType);
       setDocumentTitle(config?.document?.title);
     }
   }, []);
@@ -184,26 +182,6 @@ export default function Editor({
       default:
         return 't("NewFolder")';
     }
-  };
-
-  const setFavicon = (documentType) => {
-    const favicon = document.getElementById("favicon");
-    if (!favicon) return;
-    let icon = null;
-    switch (documentType) {
-      case "text":
-        icon = "text.ico";
-        break;
-      case "presentation":
-        icon = "presentation.ico";
-        break;
-      case "spreadsheet":
-        icon = "spreadsheet.ico";
-        break;
-      default:
-        break;
-    }
-    if (icon) setFaviconHref(`${homepage}/images/${icon}`);
   };
 
   const throttledChangeTitle = throttle(() => changeTitle(), 500);
