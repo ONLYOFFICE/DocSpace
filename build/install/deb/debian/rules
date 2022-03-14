@@ -38,8 +38,13 @@ override_dh_auto_build:
 	sed -i "s@var/www@var/www/${PRODUCT}@g" ${SRC_PATH}/config/nginx/*.conf 
 	sed -i "s@var/www@var/www/${PRODUCT}@g" ${SRC_PATH}/config/nginx/includes/*.conf
 	
+override_dh_fixperms:
+	dh_fixperms
+
 override_dh_auto_install:
 	dh_installinit
+	dh_systemd_enable
+	dh_systemd_start --no-start
 
 override_dh_strip:
 #	dh_strip --exclude=/site-packages/

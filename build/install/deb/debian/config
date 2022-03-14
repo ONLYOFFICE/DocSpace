@@ -1,0 +1,24 @@
+#!/bin/sh -e
+
+set -e
+
+. /usr/share/debconf/confmodule
+
+db_input medium appserver/environment || true
+db_input medium appserver/host || true
+db_input medium appserver/port || true
+db_input medium appserver/kafka-host || true
+db_input medium appserver/kafka-port || true
+db_input medium appserver/zookeeper-host || true
+db_input medium appserver/zookeeper-port || true
+db_input medium appserver/elasticsearch-sheme || true
+db_input medium appserver/elasticsearch-host || true
+db_input medium appserver/elasticsearch-port || true
+
+db_input medium appserver/db-host || true
+db_input medium appserver/db-name || true
+db_input medium appserver/db-user || true
+db_go
+
+db_input critical appserver/db-pwd || true
+db_go
