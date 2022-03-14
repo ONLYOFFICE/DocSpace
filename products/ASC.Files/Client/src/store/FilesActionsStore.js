@@ -24,7 +24,6 @@ import toastr from "studio/toastr";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../package.json";
-import history from "@appserver/common/history";
 
 class FilesActionStore {
   authStore;
