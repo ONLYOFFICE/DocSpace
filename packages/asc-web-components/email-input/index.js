@@ -91,6 +91,11 @@ class EmailInput extends React.Component {
     onValidateInput && onValidateInput(isValidEmail);
   };
 
+  onBlur = (e) => {
+    const { onBlur } = this.props;
+    onBlur && onBlur(e);
+  };
+
   render() {
     //console.log('EmailInput render()');
     // eslint-disable-next-line no-unused-vars
@@ -110,6 +115,7 @@ class EmailInput extends React.Component {
         onChange={this.onChange}
         type="text"
         onValidateInput={onValidateInput}
+        onBlur={this.onBlur}
       />
     );
   }
@@ -133,6 +139,8 @@ EmailInput.propTypes = {
   id: PropTypes.string,
   /** Function for your custom handling changes in input */
   onChange: PropTypes.func,
+
+  onBlur: PropTypes.func,
   /** Will be validate our value, return object with following parameters: `isValid`: boolean result of validating, `errors`: array of errors */
   onValidateInput: PropTypes.func,
   /** Accepts css style */
