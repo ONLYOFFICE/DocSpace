@@ -276,6 +276,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
         targetDate: targetDate,
         productName: "ONLYOFFICE Personal",
       })} ${t("BarMaintenanceDisclaimer")}`,
+      isMaintenance: true,
       clickAction: () => {
         setMaintenanceExist(false);
         setSnackbarExist(false);
