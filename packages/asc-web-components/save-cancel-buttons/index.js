@@ -62,26 +62,16 @@ class SaveCancelButtons extends React.Component {
         <div className="buttons-flex">
           <Button
             className="save-button"
-<<<<<<< HEAD
             size="normal"
-            isDisabled={false}
-=======
-            size="big"
             isDisabled={isDisabled}
->>>>>>> feature/virtual-rooms-1.2
             primary
             onClick={onSaveClick}
             label={saveButtonLabel}
           />
           <Button
             className="cancel-button"
-<<<<<<< HEAD
             size="normal"
-            isDisabled={false}
-=======
-            size="big"
             isDisabled={isDisabled}
->>>>>>> feature/virtual-rooms-1.2
             onClick={onCancelClick}
             label={cancelButtonLabel}
           />

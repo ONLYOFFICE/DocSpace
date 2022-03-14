@@ -96,36 +96,43 @@ const Dark = {
     paddingRight: "4px",
 
     height: {
-      base: "24px",
-      medium: "32px",
-      big: "36px",
-      large: "44px",
+      extraSmall: "24px",
+      small: "32px",
+      normalDesktop: "36px",
+      normalTouchscreen: "40px",
+      medium: "44px",
     },
 
     lineHeight: {
-      base: "15px",
-      medium: "18px",
-      big: "20px",
-      large: "20px",
+      extraSmall: "15px",
+      small: "20px",
+      normalDesktop: "16px",
+      normalTouchscreen: "16px",
+      medium: "22px",
     },
 
     fontSize: {
-      base: "12px",
-      medium: "13px",
-      big: "14px",
-      large: "16px",
+      extraSmall: "12px",
+      small: "13px",
+      normalDesktop: "14px",
+      normalTouchscreen: "14px",
+      medium: "16px",
     },
 
     padding: {
-      base: "0 14px",
-      medium: "0 18px",
-      big: "0 20px",
+      extraSmall: "0 12px",
+      small: "0 28px",
+      normalDesktop: "0 28px",
+      normalTouchscreen: "0 28px",
+      medium: "0 32px",
     },
 
     minWidth: {
-      base: "65px",
-      medium: "80px",
-      big: "85px",
+      extraSmall: "none",
+      small: "100px",
+      normalDesktop: "100px",
+      normalTouchscreen: "100px",
+      medium: "100px",
     },
 
     color: {
@@ -327,96 +334,6 @@ const Dark = {
       height: "18px",
       minWidth: "18px",
       minHeight: "18px",
-    },
-  },
-
-  button: {
-    fontWeight: "600",
-    margin: "0",
-    display: "inline-block",
-    textAlign: "center",
-    textDecoration: "none",
-
-    topVerticalAlign: "text-top",
-    middleVerticalAlign: "middle",
-    bottomVerticalAlign: "text-bottom",
-
-    borderRadius: "3px",
-    stroke: "none",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    whiteSpace: "nowrap",
-    outline: "none",
-    boxSizing: "border-box",
-
-    paddingRight: "4px",
-
-    height: {
-      extraSmall: "24px",
-      small: "32px",
-      normalDesktop: "36px",
-      normalTouchscreen: "40px",
-      medium: "44px",
-    },
-
-    lineHeight: {
-      extraSmall: "15px",
-      small: "20px",
-      normalDesktop: "16px",
-      normalTouchscreen: "16px",
-      medium: "22px",
-    },
-
-    fontSize: {
-      extraSmall: "12px",
-      small: "13px",
-      normalDesktop: "14px",
-      normalTouchscreen: "14px",
-      medium: "16px",
-    },
-
-    padding: {
-      extraSmall: "0 12px",
-      small: "0 28px",
-      normalDesktop: "0 28px",
-      normalTouchscreen: "0 28px",
-      medium: "0 32px",
-    },
-
-    minWidth: {
-      extraSmall: "none",
-      small: "100px",
-      normalDesktop: "100px",
-      normalTouchscreen: "100px",
-      medium: "100px",
-    },
-
-    color: {
-      base: black,
-      primary: white,
-      disabled: grayLightMid,
-    },
-
-    backgroundColor: {
-      base: white,
-      baseHover: white,
-      baseActive: grayLightMid,
-      baseDisabled: grayLight,
-      primary: blueMain,
-      primaryHover: blueHover,
-      primaryActive: blueActive,
-      primaryDisabled: blueDisabled,
-    },
-
-    border: {
-      base: `1px solid ${globalColors.grayMid}`,
-      baseHover: `1px solid ${globalColors.blueMain}`,
-      baseActive: `1px solid ${globalColors.blueMain}`,
-      baseDisabled: `1px solid ${globalColors.grayLightMid}`,
-      primary: `1px solid ${globalColors.blueMain}`,
-      primaryHover: `1px solid ${globalColors.blueHover}`,
-      primaryActive: `1px solid ${globalColors.blueActive}`,
-      primaryDisabled: `1px solid ${globalColors.blueDisabled}`,
     },
   },
 
