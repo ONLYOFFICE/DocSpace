@@ -1,17 +1,55 @@
-import React from "react";
+import React, { useState } from "react";
+import styled from "styled-components";
 import Badge from "@appserver/components/badge";
 import IconButton from "@appserver/components/icon-button";
-import {
-  StyledFavoriteIcon,
-  StyledFileActionsConvertEditDocIcon,
-  StyledFileActionsEditFormIcon,
-  StyledFileActionsLockedIcon,
-} from "./Icons";
+import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+import { isTablet } from "react-device-detect";
 import { FileStatus } from "@appserver/common/constants";
+
+export const StyledIcon = styled(IconButton)`
+  ${commonIconsStyles}
+`;
+
+const StyledWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: white;
+  padding: 6px;
+  border-radius: 4px;
+  box-shadow: 0px 2px 4px rgba(4, 15, 27, 0.16);
+`;
+
+const BadgeWrapper = ({ onClick, isTile, children: badge }) => {
+  if (!isTile) return badge;
+
+  const [isHovered, setIsHovered] = useState(false);
+
+  const onMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const onMouseLeave = () => {
+    setIsHovered(false);
+  };
+
+  const newBadge = React.cloneElement(badge, { isHovered: isHovered });
+
+  return (
+    <StyledWrapper
+      onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
+      {newBadge}
+    </StyledWrapper>
+  );
+};
 
 const Badges = ({
   t,
   newItems,
+  sectionWidth,
   item,
   canWebEdit,
   isTrashFolder,
@@ -21,138 +59,121 @@ const Badges = ({
   accessToEdit,
   showNew,
   onFilesClick,
-  onClickLock,
-  onClickFavorite,
   onShowVersionHistory,
   onBadgeClick,
   setConvertDialogVisible,
+  viewAs,
 }) => {
-  const {
-    id,
-    locked,
-    fileStatus,
-    version,
-    versionGroup,
-    title,
-    fileExst,
-    isEditing,
-  } = item;
+  const { id, locked, version, versionGroup, fileExst, isEditing } = item;
 
-  const isFavorite =
-    (fileStatus & FileStatus.IsFavorite) === FileStatus.IsFavorite;
   const showEditBadge = !locked || item.access === 0;
   const isPrivacy = isPrivacyFolder && isDesktopClient;
   const isForm = fileExst === ".oform";
+  const isTile = viewAs === "tile";
+
+  const iconEdit = isForm
+    ? "/static/images/access.edit.form.react.svg"
+    : "/static/images/file.actions.convert.edit.doc.react.svg";
+
+  const iconForm = "/static/images/access.edit.form.react.svg";
+
+  const iconRefresh = "/static/images/refresh.react.svg";
+
+  const countVersions = versionGroup > 999 ? "999+" : versionGroup;
+
+  const contentNewItems = newItems > 999 ? "999+" : newItems;
+
+  const tabletViewBadge =
+    !isTile && ((sectionWidth > 500 && sectionWidth <= 1024) || isTablet);
+
+  const sizeBadge = isTile || tabletViewBadge ? "medium" : "small";
+
+  const lineHeightBadge = isTile || tabletViewBadge ? "1.46" : "1.34";
+
+  const paddingBadge = isTile || tabletViewBadge ? "0 5px" : "0 3px";
+
+  const fontSizeBadge = isTile || tabletViewBadge ? "11px" : "9px";
+
+  const commonBadgeProps = {
+    borderRadius: "11px",
+    color: "#FFFFFF",
+    fontSize: fontSizeBadge,
+    fontWeight: 800,
+    maxWidth: "50px",
+    padding: paddingBadge,
+    lineHeight: lineHeightBadge,
+    "data-id": id,
+  };
 
   return fileExst ? (
     <div className="badges additional-badges">
-      {canConvert && !isTrashFolder && (
-        <IconButton
-          onClick={setConvertDialogVisible}
-          iconName="/static/images/refresh.react.svg"
-          className="badge icons-group can-convert"
-          size="small"
-          isfill={true}
-          color="#A3A9AE"
-          hoverColor="#3B72A7"
-        />
-      )}
       {canWebEdit &&
         !isEditing &&
         !isTrashFolder &&
         !isPrivacy &&
         accessToEdit &&
         showEditBadge &&
-        !canConvert && (
-          <IconButton
+        !canConvert &&
+        isForm && (
+          <StyledIcon
+            iconName={iconForm}
+            className="badge tablet-badge icons-group tablet-edit edit"
+            size={sizeBadge}
             onClick={onFilesClick}
-            iconName={
-              isForm
-                ? "/static/images/access.edit.form.react.svg"
-                : "/static/images/access.edit.react.svg"
-            }
-            className="badge icons-group edit"
-            size="small"
-            isfill={true}
-            color="#A3A9AE"
             hoverColor="#3B72A7"
+            title={t("Common:FillFormButton")}
           />
         )}
-      {isEditing &&
-        React.createElement(
-          isForm
-            ? StyledFileActionsEditFormIcon
-            : StyledFileActionsConvertEditDocIcon,
-          {
-            onClick: onFilesClick,
-            className: "badge icons-group is-editing",
-            size: "small",
-          }
-        )}
-      {locked && accessToEdit && !isTrashFolder && (
-        <StyledFileActionsLockedIcon
-          className="badge lock-file icons-group"
-          size="small"
-          data-id={id}
-          data-locked={true}
-          onClick={onClickLock}
+      {isEditing && (
+        <StyledIcon
+          iconName={iconEdit}
+          className="badge icons-group is-editing tablet-badge tablet-edit"
+          size={sizeBadge}
+          onClick={onFilesClick}
+          hoverColor="#3B72A7"
+          title={t("Common:EditButton")}
         />
       )}
-      {isFavorite && !isTrashFolder && (
-        <StyledFavoriteIcon
-          className="favorite icons-group badge"
-          size="small"
-          data-action="remove"
-          data-id={id}
-          data-title={title}
-          onClick={onClickFavorite}
+      {canConvert && !isTrashFolder && (
+        <StyledIcon
+          onClick={setConvertDialogVisible}
+          iconName={iconRefresh}
+          className="badge tablet-badge icons-group can-convert"
+          size={sizeBadge}
+          hoverColor="#3B72A7"
         />
       )}
       {version > 1 && (
-        <Badge
-          className="badge-version icons-group"
-          backgroundColor="#A3A9AE"
-          borderRadius="11px"
-          color="#FFFFFF"
-          fontSize="10px"
-          fontWeight={800}
-          label={`Ver.${versionGroup}`}
-          maxWidth="50px"
-          onClick={onShowVersionHistory}
-          padding="0 5px"
-          data-id={id}
-        />
+        <BadgeWrapper onClick={onShowVersionHistory} isTile={isTile}>
+          <Badge
+            {...commonBadgeProps}
+            className="badge-version badge-version-current tablet-badge icons-group"
+            backgroundColor="#A3A9AE"
+            label={t("VersionBadge:Version", { version: countVersions })}
+            onClick={onShowVersionHistory}
+          />
+        </BadgeWrapper>
       )}
       {showNew && (
-        <Badge
-          className="badge-version icons-group"
-          backgroundColor="#ED7309"
-          borderRadius="11px"
-          color="#FFFFFF"
-          fontSize="10px"
-          fontWeight={800}
-          label={t("New")}
-          maxWidth="50px"
-          onClick={onBadgeClick}
-          padding="0 5px"
-          data-id={id}
-        />
+        <BadgeWrapper onClick={onBadgeClick} isTile={isTile}>
+          <Badge
+            {...commonBadgeProps}
+            className="badge-version badge-new-version tablet-badge icons-group"
+            backgroundColor="#ED7309"
+            label={t("New")}
+            onClick={onBadgeClick}
+          />
+        </BadgeWrapper>
       )}
     </div>
   ) : (
     showNew && (
       <Badge
-        className="new-items"
+        {...commonBadgeProps}
+        className="new-items tablet-badge"
         backgroundColor="#ED7309"
-        borderRadius="11px"
-        color="#FFFFFF"
-        fontSize="10px"
-        fontWeight={800}
-        label={newItems}
-        maxWidth="50px"
+        label={contentNewItems}
         onClick={onBadgeClick}
-        padding="0 5px"
-        data-id={id}
       />
     )
   );

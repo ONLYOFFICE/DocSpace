@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import api from "@appserver/common/api";
 import {
   FolderType,
@@ -519,8 +519,11 @@ class FilesStore {
             data.current.rootFolderType === FolderType.Privacy;
 
           this.setFilesFilter(filterData, isPrefSettings); //TODO: FILTER
-          this.setFolders(isPrivacyFolder && isMobile ? [] : data.folders);
-          this.setFiles(isPrivacyFolder && isMobile ? [] : data.files);
+
+          runInAction(() => {
+            this.setFolders(isPrivacyFolder && isMobile ? [] : data.folders);
+            this.setFiles(isPrivacyFolder && isMobile ? [] : data.files);
+          });
 
           if (clearFilter) {
             this.fileActionStore.setAction({ type: null });
@@ -1314,6 +1317,14 @@ class FilesStore {
     }
   }
 
+  get filterType() {
+    return this.filter.filterType;
+  }
+
+  get filterSearch() {
+    return this.filter.search;
+  }
+
   onCreateAddTempItem = (items) => {
     const { getFileIcon, getFolderIcon } = this.filesSettingsStore;
     const { extension, title } = this.fileActionStore;
@@ -1396,7 +1407,7 @@ class FilesStore {
       const contextOptions = this.getFilesContextOptions(item, canOpenPlayer);
       const isThirdPartyFolder = providerKey && id === rootFolderId;
 
-      const iconSize = this.viewAs === "tile" && isMobile ? 32 : 24;
+      const iconSize = this.viewAs === "table" ? 24 : 32;
       const icon = getIcon(iconSize, fileExst, providerKey, contentLength);
 
       let isFolder = false;
@@ -1864,6 +1875,7 @@ class FilesStore {
   getFolderInfo = async (id) => {
     const folderInfo = await api.files.getFolderInfo(id);
     this.setFolder(folderInfo);
+    return folderInfo;
   };
 
   openDocEditor = (id, providerKey = null, tab = null, url = null) => {

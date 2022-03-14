@@ -1093,7 +1093,15 @@ class UploadDataStore {
       label,
     } = this.secondaryProgressDataStore;
 
-    getFolder(destFolderId).then((data) => {
+    let receivedFolder = destFolderId;
+    let updatedFolder = this.selectedFolderStore.id;
+
+    if (this.dialogsStore.isFolderActions) {
+      receivedFolder = this.selectedFolderStore.parentId;
+      updatedFolder = destFolderId;
+    }
+
+    getFolder(receivedFolder).then((data) => {
       let newTreeFolders = treeFolders;
       let path = data.pathParts.slice(0);
       let folders = data.folders;
@@ -1108,13 +1116,14 @@ class UploadDataStore {
         }
 
         fetchFiles(
-          this.selectedFolderStore.id,
+          updatedFolder,
           newFilter ? newFilter : filter,
           true,
           true
         ).finally(() => {
           this.clearActiveOperations(fileIds, folderIds);
           setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+          this.dialogsStore.setIsFolderActions(false);
         });
       } else {
         this.clearActiveOperations(fileIds, folderIds);

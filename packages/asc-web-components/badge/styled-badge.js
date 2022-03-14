@@ -1,5 +1,9 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Base from "../themes/base";
+
+const hoveredCss = css`
+  border-color: ${(props) => props.backgroundColor};
+`;
 
 const StyledBadge = styled.div`
   display: ${(props) =>
@@ -12,9 +16,11 @@ const StyledBadge = styled.div`
   cursor: pointer;
   overflow: ${(props) => props.theme.badge.overflow};
 
-  :hover {
-    border-color: ${(props) => props.backgroundColor};
+  &:hover {
+    ${(props) => !props.noHover && hoveredCss};
   }
+
+  ${(props) => !props.noHover && props.isHovered && hoveredCss}
 `;
 StyledBadge.defaultProps = { theme: Base };
 
@@ -25,7 +31,7 @@ const StyledInner = styled.div`
   max-width: ${(props) => props.maxWidth};
   text-align: center;
   user-select: none;
-  line-height: 1.5;
+  line-height: ${(props) => props.lineHeight};
 `;
 
 export { StyledBadge, StyledInner };

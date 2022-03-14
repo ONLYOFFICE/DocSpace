@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Security.Authentication;
@@ -36,7 +37,6 @@ using ASC.Common.Threading;
 using ASC.Common.Web;
 using ASC.Core.Tenants;
 using ASC.Files.Core;
-using ASC.Files.Core.EF;
 using ASC.Files.Core.Resources;
 using ASC.MessagingSystem;
 using ASC.Web.Core.Files;
@@ -80,23 +80,23 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         private TempStream TempStream { get; }
 
-        public override void RunJob(DistributedTask distributedTask, CancellationToken cancellationToken)
+        public override async Task RunJobAsync(DistributedTask distributedTask, CancellationToken cancellationToken)
         {
-            base.RunJob(distributedTask, cancellationToken);
+            await base.RunJobAsync(distributedTask, cancellationToken);
 
             using var scope = ThirdPartyOperation.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<FileDownloadOperationScope>();
             var (globalStore, filesLinkUtility, _, _, _) = scopeClass;
             var stream = TempStream.Create();
 
-            (ThirdPartyOperation as FileDownloadOperation<string>).CompressToZip(stream, scope);
-            (DaoOperation as FileDownloadOperation<int>).CompressToZip(stream, scope);
+            await (ThirdPartyOperation as FileDownloadOperation<string>).CompressToZipAsync(stream, scope);
+            await (DaoOperation as FileDownloadOperation<int>).CompressToZipAsync(stream, scope);
 
             if (stream != null)
             {
                 var archiveExtension = "";
 
-                using(var zip = scope.ServiceProvider.GetService<CompressToArchive>())
+                using (var zip = scope.ServiceProvider.GetService<CompressToArchive>())
                 {
                     archiveExtension = zip.ArchiveExtension;
                 }
@@ -106,25 +106,21 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 var store = globalStore.GetStore();
                 var path = string.Format(@"{0}\{1}", ((IAccount)Thread.CurrentPrincipal.Identity).ID, fileName);
 
-                if (store.IsFile(FileConstant.StorageDomainTmp, path))
+                if (await store.IsFileAsync(FileConstant.StorageDomainTmp, path))
                 {
-                    store.Delete(FileConstant.StorageDomainTmp, path);
+                    await store.DeleteAsync(FileConstant.StorageDomainTmp, path);
                 }
 
-                store.Save(
+                await store.SaveAsync(
                     FileConstant.StorageDomainTmp,
                     path,
                     stream,
                     MimeMapping.GetMimeMapping(path),
                     "attachment; filename=\"" + fileName + "\"");
                 Result = string.Format("{0}?{1}=bulk&ext={2}", filesLinkUtility.FileHandlerPath, FilesLinkUtility.Action, archiveExtension);
-
-                TaskInfo.SetProperty(PROGRESS, 100);
-                TaskInfo.SetProperty(RESULT, Result);
-                TaskInfo.SetProperty(FINISHED, true);
-
             }
 
+            FillDistributedTask();
             TaskInfo.PublishChanges();
         }
 
@@ -153,16 +149,16 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
             base.FillDistributedTask();
 
-            TaskInfo.SetProperty(PROGRESS, progress < 100 ? progress : progress);
+            TaskInfo.SetProperty(PROGRESS, progress);
             TaskInfo.PublishChanges();
         }
     }
 
     class FileDownloadOperation<T> : FileOperation<FileDownloadOperationData<T>, T>
     {
-        private readonly Dictionary<T, string> files;
+        private readonly Dictionary<T, string> _files;
         private readonly IDictionary<string, StringValues> headers;
-        ItemNameValueCollection<T> entriesPathId;
+        private ItemNameValueCollection<T> _entriesPathId;
         public override FileOperationType OperationType
         {
             get { return FileOperationType.Download; }
@@ -171,17 +167,16 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         public FileDownloadOperation(IServiceProvider serviceProvider, FileDownloadOperationData<T> fileDownloadOperationData)
             : base(serviceProvider, fileDownloadOperationData)
         {
-            files = fileDownloadOperationData.FilesDownload;
+            _files = fileDownloadOperationData.FilesDownload;
             headers = fileDownloadOperationData.Headers;
         }
 
-        protected override void Do(IServiceScope scope)
+        protected override async Task DoAsync(IServiceScope scope)
         {
-            if (!Files.Any() && !Folders.Any()) return;
+            if (Files.Count == 0 && Folders.Count == 0) return;
 
-            entriesPathId = GetEntriesPathId(scope);
-
-            if (entriesPathId == null || entriesPathId.Count == 0)
+            _entriesPathId = await GetEntriesPathIdAsync(scope);
+            if (_entriesPathId == null || _entriesPathId.Count == 0)
             {
                 if (Files.Count > 0)
                 {
@@ -191,24 +186,22 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 throw new DirectoryNotFoundException(FilesCommonResource.ErrorMassage_FolderNotFound);
             }
 
-            ReplaceLongPath(entriesPathId);
+            ReplaceLongPath(_entriesPathId);
 
-            Total = entriesPathId.Count;
+            Total = _entriesPathId.Count;
 
             TaskInfo.PublishChanges();
         }
 
-        private ItemNameValueCollection<T> ExecPathFromFile(IServiceScope scope, File<T> file, string path)
+        private async Task<ItemNameValueCollection<T>> ExecPathFromFileAsync(IServiceScope scope, File<T> file, string path)
         {
             var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
-            fileMarker.RemoveMarkAsNew(file);
+            await fileMarker.RemoveMarkAsNewAsync(file);
 
             var title = file.Title;
 
-            if (files.ContainsKey(file.ID))
+            if (_files.TryGetValue(file.ID, out var convertToExt))
             {
-                var convertToExt = files[file.ID];
-
                 if (!string.IsNullOrEmpty(convertToExt))
                 {
                     title = FileUtility.ReplaceFileExtension(title, convertToExt);
@@ -221,28 +214,36 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             return entriesPathId;
         }
 
-        private ItemNameValueCollection<T> GetEntriesPathId(IServiceScope scope)
+        private async Task<ItemNameValueCollection<T>> GetEntriesPathIdAsync(IServiceScope scope)
         {
             var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
             var entriesPathId = new ItemNameValueCollection<T>();
             if (0 < Files.Count)
             {
-                var files = FileDao.GetFiles(Files);
-                files = FilesSecurity.FilterRead(files).ToList();
-                files.ForEach(file => entriesPathId.Add(ExecPathFromFile(scope, file, string.Empty)));
+                var files = await FileDao.GetFilesAsync(Files).ToListAsync();
+                files = (await FilesSecurity.FilterReadAsync(files)).ToList();
+
+                foreach (var file in files)
+                {
+                    entriesPathId.Add(await ExecPathFromFileAsync(scope, file, string.Empty));
+                }
             }
             if (0 < Folders.Count)
             {
-                FilesSecurity.FilterRead(FolderDao.GetFolders(Files)).Cast<FileEntry<T>>().ToList()
-                             .ForEach(folder => fileMarker.RemoveMarkAsNew(folder));
+                var filteredFolders = await FilesSecurity.FilterReadAsync(await FolderDao.GetFoldersAsync(Files).ToListAsync());
 
-                var filesInFolder = GetFilesInFolders(scope, Folders, string.Empty);
+                foreach (var folder in filteredFolders)
+                {
+                    await fileMarker.RemoveMarkAsNewAsync(folder);
+                }
+
+                var filesInFolder = await GetFilesInFoldersAsync(scope, Folders, string.Empty);
                 entriesPathId.Add(filesInFolder);
             }
             return entriesPathId;
         }
 
-        private ItemNameValueCollection<T> GetFilesInFolders(IServiceScope scope, IEnumerable<T> folderIds, string path)
+        private async Task<ItemNameValueCollection<T>> GetFilesInFoldersAsync(IServiceScope scope, IEnumerable<T> folderIds, string path)
         {
             var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
 
@@ -253,32 +254,38 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             {
                 CancellationToken.ThrowIfCancellationRequested();
 
-                var folder = FolderDao.GetFolder(folderId);
-                if (folder == null || !FilesSecurity.CanRead(folder)) continue;
+                var folder = await FolderDao.GetFolderAsync(folderId);
+                if (folder == null || !await FilesSecurity.CanReadAsync(folder)) continue;
                 var folderPath = path + folder.Title + "/";
 
-                var files = FileDao.GetFiles(folder.ID, null, FilterType.None, false, Guid.Empty, string.Empty, true);
-                files = FilesSecurity.FilterRead(files).ToList();
-                files.ForEach(file => entriesPathId.Add(ExecPathFromFile(scope, file, folderPath)));
+                var files = await FileDao.GetFilesAsync(folder.ID, null, FilterType.None, false, Guid.Empty, string.Empty, true).ToListAsync();
+                var filteredFiles = await FilesSecurity.FilterReadAsync(files);
+                files = filteredFiles.ToList();
 
-                fileMarker.RemoveMarkAsNew(folder);
+                foreach (var file in filteredFiles)
+                {
+                    entriesPathId.Add(await ExecPathFromFileAsync(scope, file, folderPath));
+                }
 
-                var nestedFolders = FolderDao.GetFolders(folder.ID);
-                nestedFolders = FilesSecurity.FilterRead(nestedFolders).ToList();
+                await fileMarker.RemoveMarkAsNewAsync(folder);
+
+                var nestedFolders = await FolderDao.GetFoldersAsync(folder.ID).ToListAsync();
+                var filteredNestedFolders = await FilesSecurity.FilterReadAsync(nestedFolders);
+                nestedFolders = filteredNestedFolders.ToList();
                 if (files.Count == 0 && nestedFolders.Count == 0)
                 {
                     entriesPathId.Add(folderPath, default(T));
                 }
 
-                var filesInFolder = GetFilesInFolders(scope, nestedFolders.ConvertAll(f => f.ID), folderPath);
+                var filesInFolder = await GetFilesInFoldersAsync(scope, nestedFolders.ConvertAll(f => f.ID), folderPath);
                 entriesPathId.Add(filesInFolder);
             }
             return entriesPathId;
         }
-            
-        internal void CompressToZip(Stream stream, IServiceScope scope)
+
+        internal async Task CompressToZipAsync(Stream stream, IServiceScope scope)
         {
-            if (entriesPathId == null) return;
+            if (_entriesPathId == null) return;
             var scopeClass = scope.ServiceProvider.GetService<FileDownloadOperationScope>();
             var (_, _, _, fileConverter, filesMessageService) = scopeClass;
             var FileDao = scope.ServiceProvider.GetService<IFileDao<T>>();
@@ -287,15 +294,13 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             {
                 compressTo.SetStream(stream);
 
-                foreach (var path in entriesPathId.AllKeys)
+                foreach (var path in _entriesPathId.AllKeys)
                 {
                     var counter = 0;
-                    foreach (var entryId in entriesPathId[path])
+                    foreach (var entryId in _entriesPathId[path])
                     {
                         if (CancellationToken.IsCancellationRequested)
                         {
-                            compressTo.Dispose();
-                            stream.Dispose();
                             CancellationToken.ThrowIfCancellationRequested();
                         }
 
@@ -306,8 +311,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                         if (!Equals(entryId, default(T)))
                         {
-                            FileDao.InvalidateCache(entryId);
-                            file = FileDao.GetFile(entryId);
+                            await FileDao.InvalidateCacheAsync(entryId);
+                            file = await FileDao.GetFileAsync(entryId);
 
                             if (file == null)
                             {
@@ -315,9 +320,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                 continue;
                             }
 
-                            if (files.ContainsKey(file.ID))
+                            if (_files.TryGetValue(file.ID, out convertToExt))
                             {
-                                convertToExt = files[file.ID];
                                 if (!string.IsNullOrEmpty(convertToExt))
                                 {
                                     newtitle = FileUtility.ReplaceFileExtension(path, convertToExt);
@@ -331,7 +335,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                             if (!Equals(entryId, default(T)))
                             {
-                                newtitle = 0 < newtitle.IndexOf('.') ? newtitle.Insert(newtitle.LastIndexOf('.'), suffix) : newtitle + suffix;
+                                newtitle = newtitle.IndexOf('.') > 0 ? newtitle.Insert(newtitle.LastIndexOf('.'), suffix) : newtitle + suffix;
                             }
                             else
                             {
@@ -348,7 +352,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                 if (fileConverter.EnableConvert(file, convertToExt))
                                 {
                                     //Take from converter
-                                    using (var readStream = fileConverter.Exec(file, convertToExt))
+                                    using (var readStream = await fileConverter.ExecAsync(file, convertToExt))
                                     {
                                         compressTo.PutStream(readStream);
 
@@ -364,7 +368,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                 }
                                 else
                                 {
-                                    using (var readStream = FileDao.GetFileStream(file))
+                                    using (var readStream = await FileDao.GetFileStreamAsync(file))
                                     {
                                         compressTo.PutStream(readStream);
 
@@ -384,15 +388,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                         }
                         compressTo.CloseEntry();
                         counter++;
-
-                        if (!Equals(entryId, default(T)) && file != null)
-                        {
-                            ProcessedFile(entryId);
-                        }
-                        else
-                        {
-                            ProcessedFolder(default(T));
-                        }
                     }
 
                     ProgressStep();
@@ -401,6 +396,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
 
         }
+
 
         private void ReplaceLongPath(ItemNameValueCollection<T> entriesPathId)
         {

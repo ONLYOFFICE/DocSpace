@@ -6,12 +6,12 @@ import { ReactSVG } from "react-svg";
 import styled, { css } from "styled-components";
 import ContextMenu from "@appserver/components/context-menu";
 import { tablet } from "@appserver/components/utils/device";
-import { isDesktop, isMobile } from "react-device-detect";
+import { isDesktop } from "react-device-detect";
 
 import Link from "@appserver/components/link";
 import Loader from "@appserver/components/loader";
 
-const svgLoader = () => <div style={{ width: "96px" }}></div>;
+const svgLoader = () => <div style={{ width: "96px" }} />;
 
 const FlexBoxStyles = css`
   display: flex;
@@ -24,21 +24,20 @@ const FlexBoxStyles = css`
 `;
 
 const FolderStyles = css`
-  padding-left: 13px;
-  padding-bottom: 2px;
-  box-sizing: border-box;
+  height: 64px;
 `;
 
-const draggingStyle = css`
-  background-color: #f8f7bf;
-`;
-
-const draggingHoverStyle = css`
-  background-color: #efefb2;
+const FileStyles = css`
+  height: 220px;
 `;
 
 const checkedStyle = css`
   background: #f3f4f4 !important;
+`;
+
+const bottomFileBorder = css`
+  border-top-color: #d0d5da;
+  border-radius: 0 0 6px 6px;
 `;
 
 const StyledTile = styled.div`
@@ -49,70 +48,24 @@ const StyledTile = styled.div`
       pointer-events: none;
       /* cursor: wait; */
     `}
-  min-height: 57px;
   box-sizing: border-box;
   width: 100%;
   border: 1px solid #d0d5da;
-  border-radius: 3px;
-  ${(props) => props.isFolder && "border-top-left-radius: 0px;"}
+  border-radius: 6px;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   ${(props) => props.isFolder && FlexBoxStyles}
-  ${(props) => props.isFolder && FolderStyles}
-  ${(props) => (props.checked || props.isActive) && checkedStyle}
-    ${(props) =>
+  ${(props) => (props.isFolder ? FolderStyles : FileStyles)}
+  ${(props) =>
+    !props.isEdit &&
     props.isFolder &&
-    css`
-      &:before {
-        content: "";
-        position: absolute;
-        top: -5px;
-        left: 0px;
-        border-top: 1px solid #d0d5da;
-        border-top-left-radius: 3px;
-        border-left: 1px solid #d0d5da;
-        width: 38px;
-        height: 8px;
-        background-color: #fff;
-        border-bottom: transparent;
-      }
-      &:after {
-        content: "";
-        position: absolute;
-        top: -3.5px;
-        left: 36px;
-        border-top: 1px solid #d0d5da;
-        background-color: #fff;
-        width: 9px;
-        height: 10px;
-        transform: rotateZ(35deg);
-
-        @media ${tablet} {
-          left: 35px;
-        }
-      }
-    `}
-
-  &:before, 
-  &:after {
-    ${(props) => props.isFolder && props.dragging && draggingStyle};
-  }
-
-  &:before,
-  &:after {
-    ${(props) => (props.checked || props.isActive) && checkedStyle};
-  }
-
-  &:hover:before,
-  &:hover:after {
-    ${(props) => props.isFolder && props.dragging && draggingHoverStyle};
-  }
+    (props.checked || props.isActive) &&
+    checkedStyle}
 
   .checkbox {
     display: flex;
     opacity: ${(props) => (props.checked ? 1 : 0)};
     flex: 0 0 16px;
-    margin-right: 4px;
     justify-content: center;
 
     @media ${tablet} {
@@ -123,66 +76,26 @@ const StyledTile = styled.div`
   .file-checkbox {
     display: ${(props) => (props.checked ? "flex" : "none")};
     flex: 0 0 16px;
-    margin-top: 3px;
-
-    margin-left: ${(props) =>
-      isMobile
-        ? css`
-            ${props.isFolder ? "6px" : "12px"};
-          `
-        : css`
-            ${props.isFolder ? "5px" : "8px"}
-          `};
-
-    @media ${tablet} {
-      margin-top: 2px;
-    }
+    margin-top: 8px;
+    margin-left: ${(props) => (props.isFolder ? "8px" : "7px")};
   }
 
   .file-icon {
     display: ${(props) => (props.checked ? "none" : "flex")};
     flex: 0 0 auto;
-    margin-right: 4px;
     user-select: none;
-    margin-top: ${(props) => (props.isFolder ? "-8px" : "-6px")};
-
-    height: ${isMobile ? "32px" : "24px"};
-    width: ${isMobile ? "32px" : "24px"};
-
-    img {
-      height: ${isMobile ? "32px" : "24px"};
-      width: ${isMobile ? "32px" : "24px"};
-    }
-
-    margin-left: ${(props) =>
-      isMobile
-        ? css`
-            ${props.isFolder ? "2px" : "4px"};
-          `
-        : css`
-            ${props.isFolder ? "2px" : "4px"}
-          `};
+    margin-top: ${(props) => (props.isFolder ? "0" : "-2px")};
   }
 
   .file-icon_container {
-    min-width: ${isMobile ? "36px" : "28px"};
+    width: 32px;
+    height: 32px;
+    margin-left: ${(props) => (props.isFolder ? "15px" : "16px")};
+    margin-right: ${(props) => (props.isFolder ? "7px" : "8px")};
   }
 
   .tile-folder-loader {
     padding-top: 4px;
-  }
-
-  .styled-content {
-    padding-left: 10px;
-
-    padding-left: ${(props) =>
-      isMobile
-        ? css`
-            ${props.isFolder ? "8px" : "12px"};
-          `
-        : css`
-            ${props.isFolder ? "10px" : "13px"}
-          `};
   }
 
   :hover {
@@ -205,39 +118,40 @@ const StyledTile = styled.div`
 `;
 
 const StyledFileTileTop = styled.div`
-  ${FlexBoxStyles}
+  ${FlexBoxStyles};
   justify-content: space-between;
   align-items: baseline;
-  background-color: #f8f9f9;
-  padding-top: 21px;
-  height: ${(props) => (props.checked || props.isActive ? "156px" : "156px")};
+  height: 156px;
   position: relative;
-  border-bottom: ${(props) =>
-    props.checked || props.isActive
-      ? "1px solid #D0D5DA"
-      : "1px solid transparent"};
 
-  .thumbnail-image,
-  .temporary-icon > .injected-svg {
+  .thumbnail-image {
     pointer-events: none;
     position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    margin: auto;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 6px 6px 0 0;
     z-index: 0;
   }
 
   .temporary-icon > .injected-svg {
-    margin-bottom: 16px;
+    position: absolute;
+    width: 100%;
+    bottom: 16px;
   }
 `;
 
 const StyledFileTileBottom = styled.div`
-  ${FlexBoxStyles}
-  padding: 9px 10px;
-  padding-right: 0;
-  height: 56px;
+  ${FlexBoxStyles};
+  ${(props) =>
+    !props.isEdit && (props.checked || props.isActive) && checkedStyle}
+
+  border-top: 1px solid transparent;
+  ${(props) =>
+    !props.isEdit && (props.checked || props.isActive) && bottomFileBorder}
+
+  padding: 9px 0;
+  height: 62px;
   box-sizing: border-box;
 
   .tile-file-loader {
@@ -256,13 +170,13 @@ const StyledContent = styled.div`
     max-width: 400px;
     height: auto;
     margin: 0 auto;
-    font-size: 15px;
     line-height: 19px;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: normal;
+    word-break: break-word;
   }
 
   @media (max-width: 1024px) {
@@ -287,10 +201,60 @@ const StyledOptionButton = styled.div`
   display: block;
 
   .expandButton > div:first-child {
-    padding-top: 8px;
-    padding-bottom: 8px;
-    padding-left: 12px;
-    padding-right: 13px;
+    padding: 8px 21px 8px 12px;
+  }
+`;
+
+const badgesPosition = css`
+  left: 9px;
+
+  .badges {
+    display: grid;
+    grid-template-columns: repeat(3, fit-content(50px));
+    grid-template-rows: 32px;
+    grid-gap: 7px;
+
+    .badge-new-version {
+      order: 1;
+    }
+
+    .badge-version-current {
+      order: 2;
+    }
+
+    .is-editing,
+    .can-convert {
+      order: 3;
+    }
+  }
+`;
+
+const quickButtonsPosition = css`
+  right: 9px;
+
+  .badges {
+    display: grid;
+    grid-template-columns: 32px;
+    grid-template-rows: repeat(3, 32px);
+    grid-gap: 7px;
+  }
+`;
+
+const StyledIcons = styled.div`
+  position: absolute;
+  top: 8px;
+
+  ${(props) => props.isBadges && badgesPosition}
+  ${(props) => props.isQuickButtons && quickButtonsPosition}
+  
+  .badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    background: rgb(255, 255, 255);
+    border-radius: 4px;
+    box-shadow: 0px 2px 4px rgba(4, 15, 27, 0.16);
   }
 `;
 
@@ -361,21 +325,26 @@ class Tile extends React.PureComponent {
       isActive,
       inProgress,
       isEdit,
+      contentElement,
+      title,
+      getModel,
+      t,
     } = this.props;
     const { isFolder, id, fileExst } = item;
-
-    const renderCheckbox = Object.prototype.hasOwnProperty.call(
-      this.props,
-      "checked"
-    );
+    const contextMenuData = { getModel, t, item };
 
     const renderElement = Object.prototype.hasOwnProperty.call(
       this.props,
       "element"
     );
 
+    const renderContentElement = Object.prototype.hasOwnProperty.call(
+      this.props,
+      "contentElement"
+    );
+
     const renderContext =
-      Object.prototype.hasOwnProperty.call(this.props, "contextOptions") &&
+      Object.prototype.hasOwnProperty.call(item, "contextOptions") &&
       contextOptions.length > 0;
 
     const getOptions = () => {
@@ -392,6 +361,8 @@ class Tile extends React.PureComponent {
     };
 
     const icon = this.getIconFile();
+    const [FilesTileContent, badges] = children;
+    const quickButtons = contentElement;
 
     return (
       <StyledTile
@@ -436,10 +407,9 @@ class Tile extends React.PureComponent {
               </>
             )}
             <StyledContent
-              className="styled-content"
               isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
             >
-              {children}
+              {FilesTileContent}
             </StyledContent>
             <StyledOptionButton spacerWidth={contextButtonSpacerWidth}>
               {renderContext ? (
@@ -451,11 +421,12 @@ class Tile extends React.PureComponent {
                   getData={getOptions}
                   isNew={true}
                   onClick={onContextMenu}
+                  title={title}
                 />
               ) : (
-                <div className="expandButton"> </div>
+                <div className="expandButton" />
               )}
-              <ContextMenu model={contextOptions} ref={this.cm}></ContextMenu>
+              <ContextMenu contextMenuData={contextMenuData} ref={this.cm} />
             </StyledOptionButton>
           </>
         ) : (
@@ -463,7 +434,18 @@ class Tile extends React.PureComponent {
             <StyledFileTileTop checked={checked} isActive={isActive}>
               {icon}
             </StyledFileTileTop>
-            <StyledFileTileBottom>
+
+            <StyledIcons isBadges>{badges}</StyledIcons>
+
+            {renderContentElement && (
+              <StyledIcons isQuickButtons>{quickButtons}</StyledIcons>
+            )}
+
+            <StyledFileTileBottom
+              checked={checked}
+              isActive={isActive}
+              isEdit={isEdit}
+            >
               {id !== -1 && !isEdit && (
                 <>
                   {!inProgress ? (
@@ -488,10 +470,9 @@ class Tile extends React.PureComponent {
                 </>
               )}
               <StyledContent
-                className="styled-content"
                 isFolder={(isFolder && !fileExst) || (!fileExst && id === -1)}
               >
-                {children}
+                {FilesTileContent}
               </StyledContent>
               <StyledOptionButton spacerWidth={contextButtonSpacerWidth}>
                 {renderContext ? (
@@ -503,11 +484,12 @@ class Tile extends React.PureComponent {
                     getData={getOptions}
                     isNew={true}
                     onClick={onContextMenu}
+                    title={title}
                   />
                 ) : (
-                  <div className="expandButton"> </div>
+                  <div className="expandButton" />
                 )}
-                <ContextMenu model={contextOptions} ref={this.cm}></ContextMenu>
+                <ContextMenu contextMenuData={contextMenuData} ref={this.cm} />
               </StyledOptionButton>
             </StyledFileTileBottom>
           </>
@@ -519,7 +501,10 @@ class Tile extends React.PureComponent {
 
 Tile.propTypes = {
   checked: PropTypes.bool,
-  children: PropTypes.element,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.element),
+    PropTypes.element,
+  ]),
   className: PropTypes.string,
   contextButtonSpacerWidth: PropTypes.string,
   contextOptions: PropTypes.array,
@@ -532,10 +517,12 @@ Tile.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   viewAs: PropTypes.string,
   tileContextClick: PropTypes.func,
+  contentElement: PropTypes.element,
 };
 
 Tile.defaultProps = {
   contextButtonSpacerWidth: "32px",
+  item: {},
 };
 
 export default Tile;

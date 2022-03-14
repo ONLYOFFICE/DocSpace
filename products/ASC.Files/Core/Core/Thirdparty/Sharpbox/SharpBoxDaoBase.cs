@@ -31,6 +31,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 using AppLimit.CloudComputing.SharpBox;
 using AppLimit.CloudComputing.SharpBox.Exceptions;
@@ -45,6 +46,7 @@ using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
 using ASC.Web.Studio.Core;
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.Sharpbox
@@ -53,7 +55,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
     {
         protected override string Id { get => "sbox"; }
 
-        public SharpBoxDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility, TempPath tempPath)
+        protected SharpBoxDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility, TempPath tempPath)
             : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath)
         {
         }
@@ -153,30 +155,30 @@ namespace ASC.Files.Thirdparty.Sharpbox
             }
         }
 
-        protected string MappingID(string id)
+        protected Task<string> MappingIDAsync(string id)
         {
-            return MappingID(id, false);
+            return MappingIDAsync(id, false);
         }
 
-        protected void UpdatePathInDB(string oldValue, string newValue)
+        protected async Task UpdatePathInDBAsync(string oldValue, string newValue)
         {
             if (oldValue.Equals(newValue)) return;
 
             using var tx = FilesDbContext.Database.BeginTransaction();
-            var oldIDs = Query(FilesDbContext.ThirdpartyIdMapping)
+            var oldIDs = await Query(FilesDbContext.ThirdpartyIdMapping)
                 .Where(r => r.Id.StartsWith(oldValue))
                 .Select(r => r.Id)
-                .ToList();
+                .ToListAsync();
 
             foreach (var oldID in oldIDs)
             {
-                var oldHashID = MappingID(oldID);
+                var oldHashID = await MappingIDAsync(oldID);
                 var newID = oldID.Replace(oldValue, newValue);
-                var newHashID = MappingID(newID);
+                var newHashID = await MappingIDAsync (newID);
 
-                var mappingForUpdate = Query(FilesDbContext.ThirdpartyIdMapping)
+                var mappingForUpdate = await Query(FilesDbContext.ThirdpartyIdMapping)
                     .Where(r => r.HashId == oldHashID)
-                    .ToList();
+                    .ToListAsync();
 
                 foreach (var m in mappingForUpdate)
                 {
@@ -184,37 +186,37 @@ namespace ASC.Files.Thirdparty.Sharpbox
                     m.HashId = newHashID;
                 }
 
-                FilesDbContext.SaveChanges();
+                await FilesDbContext.SaveChangesAsync();
 
-                var securityForUpdate = Query(FilesDbContext.Security)
+                var securityForUpdate = await Query(FilesDbContext.Security)
                     .Where(r => r.EntryId == oldHashID)
-                    .ToList();
+                    .ToListAsync();
 
                 foreach (var s in securityForUpdate)
                 {
                     s.EntryId = newHashID;
                 }
 
-                FilesDbContext.SaveChanges();
+                await FilesDbContext.SaveChangesAsync();
 
-                var linkForUpdate = Query(FilesDbContext.TagLink)
+                var linkForUpdate = await Query(FilesDbContext.TagLink)
                     .Where(r => r.EntryId == oldHashID)
-                    .ToList();
+                    .ToListAsync();
 
                 foreach (var l in linkForUpdate)
                 {
                     l.EntryId = newHashID;
                 }
 
-                FilesDbContext.SaveChanges();
+                await FilesDbContext.SaveChangesAsync();
             }
 
-            tx.Commit();
+            await tx.CommitAsync();
         }
 
         protected string MakePath(object entryId)
         {
-            return string.Format("/{0}", Convert.ToString(entryId, CultureInfo.InvariantCulture).Trim('/'));
+            return $"/{Convert.ToString(entryId, CultureInfo.InvariantCulture).Trim('/')}";
         }
 
         protected override string MakeId(string path = null)
@@ -240,8 +242,8 @@ namespace ASC.Files.Thirdparty.Sharpbox
             {
                 path = entry.Id;
             }
-
-            return string.Format("{0}{1}", PathPrefix, string.IsNullOrEmpty(path) || path == "/" ? "" : ("-" + path.Replace('/', '|')));
+            var p = string.IsNullOrEmpty(path) || path == "/" ? "" : ("-" + path.Replace('/', '|'));
+            return $"{PathPrefix}{p}";
         }
 
         protected string MakeTitle(ICloudFileSystemEntry fsEntry)
@@ -433,12 +435,36 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         protected IEnumerable<ICloudFileSystemEntry> GetFolderSubfolders(ICloudDirectoryEntry folder)
         {
-            return folder.Where(x => (x is ICloudDirectoryEntry));
+            return folder.Where(x => x is ICloudDirectoryEntry);
         }
 
         protected string GetAvailableTitle(string requestTitle, ICloudDirectoryEntry parentFolder, Func<string, ICloudDirectoryEntry, bool> isExist)
         {
             if (!isExist(requestTitle, parentFolder)) return requestTitle;
+
+            var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
+            var match = re.Match(requestTitle);
+
+            if (!match.Success)
+            {
+                var insertIndex = requestTitle.Length;
+                if (requestTitle.LastIndexOf('.') != -1)
+                {
+                    insertIndex = requestTitle.LastIndexOf('.');
+                }
+                requestTitle = requestTitle.Insert(insertIndex, " (1)");
+            }
+
+            while (isExist(requestTitle, parentFolder))
+            {
+                requestTitle = re.Replace(requestTitle, MatchEvaluator);
+            }
+            return requestTitle;
+        }
+
+        protected async Task<string> GetAvailableTitleAsync(string requestTitle, ICloudDirectoryEntry parentFolder, Func<string, ICloudDirectoryEntry, Task<bool>> isExist)
+        {
+            if (!await isExist(requestTitle, parentFolder)) return requestTitle;
 
             var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
             var match = re.Match(requestTitle);
@@ -453,21 +479,21 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 requestTitle = requestTitle.Insert(insertIndex, " (1)");
             }
 
-            while (isExist(requestTitle, parentFolder))
+            while (await isExist(requestTitle, parentFolder))
             {
                 requestTitle = re.Replace(requestTitle, MatchEvaluator);
             }
             return requestTitle;
         }
 
-        protected override IEnumerable<string> GetChildren(string folderId)
+        protected override Task<IEnumerable<string>> GetChildrenAsync(string folderId)
         {
             var subFolders = GetFolderSubfolders(folderId).Select(x => MakeId(x));
             var files = GetFolderFiles(folderId).Select(x => MakeId(x));
-            return subFolders.Concat(files);
+            return Task.FromResult(subFolders.Concat(files));
         }
 
-        private static string MatchEvaluator(Match match)
+        private string MatchEvaluator(Match match)
         {
             var index = Convert.ToInt32(match.Groups[2].Value);
             var staticText = match.Value.Substring(string.Format(" ({0})", index).Length);

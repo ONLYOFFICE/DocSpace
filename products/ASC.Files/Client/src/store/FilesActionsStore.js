@@ -81,18 +81,28 @@ class FilesActionStore {
       newFilter = resetFilterPage();
     }
 
+    let updatedFolder = this.selectedFolderStore.id;
+
+    if (this.dialogsStore.isFolderActions) {
+      updatedFolder = this.selectedFolderStore.parentId;
+    }
+
     fetchFiles(
-      this.selectedFolderStore.id,
+      updatedFolder,
       newFilter ? newFilter : filter,
       true,
       true
     ).finally(() => {
-      this.uploadDataStore.clearActiveOperations(fileIds, folderIds);
-      setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+      this.dialogsStore.setIsFolderActions(false);
+      return setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
     });
   };
 
-  deleteAction = async (translations, newSelection = null) => {
+  deleteAction = async (
+    translations,
+    newSelection = null,
+    withoutDialog = false
+  ) => {
     const { isRecycleBinFolder, isPrivacyFolder } = this.treeFoldersStore;
     const { addActiveItems } = this.filesStore;
     const {
@@ -120,8 +130,8 @@ class FilesActionStore {
     const deleteAfter = false; //Delete after finished TODO: get from settings
     const immediately = isRecycleBinFolder || isPrivacyFolder ? true : false; //Don't move to the Recycle Bin
 
-    const folderIds = [];
-    const fileIds = [];
+    let folderIds = [];
+    let fileIds = [];
 
     let i = 0;
     while (selection.length !== i) {
@@ -135,6 +145,13 @@ class FilesActionStore {
 
     addActiveItems(fileIds);
     addActiveItems(null, folderIds);
+
+    if (this.dialogsStore.isFolderActions && withoutDialog) {
+      folderIds = [];
+      fileIds = [];
+
+      folderIds.push(selection[0]);
+    }
 
     if (folderIds.length || fileIds.length) {
       this.isMediaOpen();
@@ -292,18 +309,18 @@ class FilesActionStore {
     }
   };
 
-  downloadAction = (label) => {
+  downloadAction = (label, folderId) => {
     const { bufferSelection } = this.filesStore;
 
     const selection = this.filesStore.selection.length
       ? this.filesStore.selection
       : [bufferSelection];
 
-    const fileIds = [];
-    const folderIds = [];
+    let fileIds = [];
+    let folderIds = [];
     const items = [];
 
-    if (selection.length === 1 && selection[0].fileExst) {
+    if (selection.length === 1 && selection[0].fileExst && !folderId) {
       window.open(selection[0].viewUrl, "_self");
       return Promise.resolve();
     }
@@ -316,6 +333,14 @@ class FilesActionStore {
         folderIds.push(item.id);
         items.push({ id: item.id });
       }
+    }
+
+    if (this.dialogsStore.isFolderActions) {
+      fileIds = [];
+      folderIds = [];
+
+      folderIds.push(bufferSelection);
+      this.dialogsStore.setIsFolderActions(false);
     }
 
     return this.downloadFiles(fileIds, folderIds, label);
@@ -790,6 +815,8 @@ class FilesActionStore {
           return {
             label: t("Share"),
             onClick: () => setSharingPanelVisible(true),
+            iconUrl: "/static/images/share.react.svg",
+            title: t("Translations:ButtonShareAccess"),
           };
 
       case "copy":
@@ -798,6 +825,7 @@ class FilesActionStore {
           return {
             label: t("Translations:Copy"),
             onClick: () => setCopyPanelVisible(true),
+            iconUrl: "/static/images/copyTo.react.svg",
           };
 
       case "download":
@@ -809,6 +837,7 @@ class FilesActionStore {
               this.downloadAction(
                 t("Translations:ArchivingData")
               ).catch((err) => toastr.error(err)),
+            iconUrl: "/static/images/download.react.svg",
           };
 
       case "downloadAs":
@@ -817,6 +846,7 @@ class FilesActionStore {
           return {
             label: t("Translations:DownloadAs"),
             onClick: () => setDownloadDialogVisible(true),
+            iconUrl: "/static/images/downloadAs.react.svg",
           };
 
       case "moveTo":
@@ -825,6 +855,7 @@ class FilesActionStore {
           return {
             label: t("MoveTo"),
             onClick: () => setMoveToPanelVisible(true),
+            iconUrl: "/static/images/move.react.svg",
           };
 
       case "delete":
@@ -849,6 +880,7 @@ class FilesActionStore {
                 );
               }
             },
+            iconUrl: "/static/images/delete.react.svg",
           };
     }
   };
@@ -964,6 +996,7 @@ class FilesActionStore {
       .set("restore", {
         label: t("Translations:Restore"),
         onClick: () => setMoveToPanelVisible(true),
+        iconUrl: "/static/images/move.react.svg",
       })
       .set("delete", deleteOption);
     return this.convertToArray(itemsCollection);

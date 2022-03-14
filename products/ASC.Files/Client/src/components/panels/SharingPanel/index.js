@@ -99,7 +99,11 @@ class SharingPanelComponent extends React.Component {
   };
 
   updateRowData = (newRowData) => {
-    const { getFileInfo, getFolderInfo } = this.props;
+    const { getFileInfo, getFolderInfo, isFolderActions, id } = this.props;
+
+    if (isFolderActions) {
+      return getFolderInfo(id);
+    }
 
     for (let item of newRowData) {
       !item.fileExst ? getFolderInfo(item.id) : getFileInfo(item.id);
@@ -107,8 +111,31 @@ class SharingPanelComponent extends React.Component {
   };
 
   onSaveClick = () => {
-    const { baseShareData, shareDataItems, filesOwnerId } = this.state;
-    const { selection } = this.props;
+
+
+    const {
+      baseShareData,
+      isNotifyUsers,
+      message,
+      shareDataItems,
+      filesOwnerId,
+    } = this.state;
+    const {
+      selection,
+      setIsLoading,
+      isPrivacy,
+      replaceFileStream,
+      t,
+      uploadPanelVisible,
+      updateUploadedItem,
+      uploadSelection,
+      isDesktop,
+      setEncryptionAccess,
+      setShareFiles,
+      setIsFolderActions,
+      onSuccess,
+      isFolderActions,
+    } = this.props;
 
     let folderIds = [];
     let fileIds = [];
@@ -153,6 +180,13 @@ class SharingPanelComponent extends React.Component {
       } else {
         folderIds.push(item.id);
       }
+    }
+
+    if (isFolderActions) {
+      folderIds = [];
+      fileIds = [];
+
+      folderIds.push(selection[0]);
     }
 
     const owner = shareDataItems.find((x) => x.isOwner);
@@ -226,7 +260,11 @@ class SharingPanelComponent extends React.Component {
         return Promise.resolve();
       })
       .then(() => onSuccess && onSuccess())
-      .catch((err) => toastr.error(err));
+      .catch((err) => toastr.error(err))
+      .finally(() => {
+        setIsFolderActions(false);
+        setIsLoading(false);
+      });
   };
 
   onNotifyUsersChange = () =>
@@ -267,9 +305,10 @@ class SharingPanelComponent extends React.Component {
   };
 
   getData = () => {
-    const { selection } = this.props;
-    const folderId = [];
-    const fileId = [];
+    const { selection, id, access } = this.props;
+
+    let folderId = [];
+    let fileId = [];
 
     for (let item of selection) {
       if (item.access === 1 || item.access === 0) {
@@ -279,6 +318,13 @@ class SharingPanelComponent extends React.Component {
           folderId.push(item.id);
         }
       }
+    }
+
+    if (this.props.isFolderActions) {
+      folderId = [];
+      fileId = [];
+
+      folderId = access === 1 || access === 0 ? [id] : [];
     }
 
     return [folderId, fileId];
@@ -310,14 +356,14 @@ class SharingPanelComponent extends React.Component {
       isPersonal,
     } = this.props;
 
-    getShareUsers(folderId, fileId)
-      .then((shareDataItems) => {
-        const baseShareData = JSON.parse(JSON.stringify(shareDataItems));
-        const accessOptions = getAccessOption(selection);
+      getShareUsers(folderId, fileId)
+        .then((shareDataItems) => {
+          const baseShareData = JSON.parse(JSON.stringify(shareDataItems));
+          const accessOptions = getAccessOption(selection);
 
-        const externalAccessOptions = getExternalAccessOption(selection);
-        const filesOwner = shareDataItems.find((x) => x.isOwner);
-        const filesOwnerId = filesOwner ? filesOwner.sharedTo.id : null;
+          const externalAccessOptions = getExternalAccessOption(selection);
+          const filesOwner = shareDataItems.find((x) => x.isOwner);
+          const filesOwnerId = filesOwner ? filesOwner.sharedTo.id : null;
 
         const baseExternalAccess = isPersonal
           ? shareDataItems.find((x) => x.sharedTo.shareLink)?.access
@@ -334,10 +380,10 @@ class SharingPanelComponent extends React.Component {
         });
       })
 
-      .catch((err) => {
-        toastr.error(err);
-        this.onClose();
-      })
+        .catch((err) => {
+          toastr.error(err);
+          this.onClose();
+        })
       .finally(() =>
         this.setState({
           isLoading: false,
@@ -393,10 +439,14 @@ class SharingPanelComponent extends React.Component {
       onCancel,
       setSharingPanelVisible,
       selectUploadedFile,
+      setIsFolderActions,
+      setSelection,
       setBufferSelection,
     } = this.props;
 
     setSharingPanelVisible(false);
+    setSelection([]);
+
     selectUploadedFile([]);
     setBufferSelection(null);
     onCancel && onCancel();
@@ -733,11 +783,20 @@ class SharingPanelComponent extends React.Component {
 
 const SharingPanel = inject(
   (
-    { auth, filesStore, uploadDataStore, dialogsStore, treeFoldersStore },
+    {
+      auth,
+      filesStore,
+      uploadDataStore,
+      dialogsStore,
+      treeFoldersStore,
+      selectedFolderStore,
+    },
     { uploadPanelVisible }
   ) => {
     const { replaceFileStream, setEncryptionAccess } = auth;
     const { personal, customNames, isDesktopClient } = auth.settingsStore;
+
+    const { id, access } = selectedFolderStore;
 
     const {
       selection,
@@ -749,12 +808,18 @@ const SharingPanel = inject(
       setFolder,
       getShareUsers,
       setShareFiles,
+      setSelection,
       getFileInfo,
       getFolderInfo,
       setBufferSelection,
     } = filesStore;
     const { isPrivacyFolder } = treeFoldersStore;
-    const { setSharingPanelVisible, sharingPanelVisible } = dialogsStore;
+    const {
+      setSharingPanelVisible,
+      sharingPanelVisible,
+      setIsFolderActions,
+      isFolderActions,
+    } = dialogsStore;
     const {
       selectedUploadFile,
       selectUploadedFile,
@@ -773,10 +838,13 @@ const SharingPanel = inject(
         ? selection
         : [bufferSelection],
       isPrivacy: isPrivacyFolder,
+      isFolderActions,
       selectedUploadFile,
       canShareOwnerChange,
 
       setSharingPanelVisible,
+      setIsFolderActions,
+      setSelection,
       sharingPanelVisible,
       selectUploadedFile,
       updateUploadedItem,
@@ -790,7 +858,9 @@ const SharingPanel = inject(
       setShareFiles,
       getFileInfo,
       getFolderInfo,
+      id,
       setBufferSelection,
+      access,
     };
   }
 )(

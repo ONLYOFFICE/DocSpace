@@ -17,11 +17,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
-using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -38,6 +36,9 @@ using ASC.Web.Files.Services.DocumentService;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Png;
 
 namespace ASC.Files.ThumbnailBuilder
 {
@@ -92,6 +93,7 @@ namespace ASC.Files.ThumbnailBuilder
         private DocumentServiceHelper DocumentServiceHelper { get; }
         private Global Global { get; }
         private PathProvider PathProvider { get; }
+        private IHttpClientFactory ClientFactory { get; }
 
         public Builder(
             ThumbnailSettings settings,
@@ -101,7 +103,8 @@ namespace ASC.Files.ThumbnailBuilder
             DocumentServiceHelper documentServiceHelper,
             Global global,
             PathProvider pathProvider,
-            IOptionsMonitor<ILog> log)
+            IOptionsMonitor<ILog> log,
+            IHttpClientFactory clientFactory)
         {
             this.config = settings;
             TenantManager = tenantManager;
@@ -111,6 +114,7 @@ namespace ASC.Files.ThumbnailBuilder
             Global = global;
             PathProvider = pathProvider;
             logger = log.Get("ASC.Files.ThumbnailBuilder");
+            ClientFactory = clientFactory;
         }
 
         internal void BuildThumbnail(FileData<T> fileData)
@@ -144,7 +148,7 @@ namespace ASC.Files.ThumbnailBuilder
 
             try
             {
-                file = fileDao.GetFile(fileData.FileId);
+                file = fileDao.GetFileAsync(fileData.FileId).Result;
 
                 if (file == null)
                 {
@@ -163,7 +167,7 @@ namespace ASC.Files.ThumbnailBuilder
                 if (!config.FormatsArray.Contains(ext) || file.Encrypted || file.RootFolderType == FolderType.TRASH || file.ContentLength > config.AvailableFileSize)
                 {
                     file.ThumbnailStatus = Thumbnail.NotRequired;
-                    fileDao.SaveThumbnail(file, null);
+                    fileDao.SaveThumbnailAsync(file, null).Wait();
                     return;
                 }
 
@@ -182,7 +186,7 @@ namespace ASC.Files.ThumbnailBuilder
                 if (file != null)
                 {
                     file.ThumbnailStatus = Thumbnail.Error;
-                    fileDao.SaveThumbnail(file, null);
+                    fileDao.SaveThumbnailAsync(file, null).Wait();
                 }
             }
         }
@@ -274,7 +278,8 @@ namespace ASC.Files.ThumbnailBuilder
                     Height = (config.ThumbnaillHeight * 1.5) + "mm" // 128 * 1.5 = "192mm"
                 }
             };
-            var operationResultProgress = DocumentServiceConnector.GetConvertedUri(fileUri, fileExtension, toExtension, docKey, null, thumbnail, spreadsheetLayout, false, out url);
+
+            (var operationResultProgress, url) = DocumentServiceConnector.GetConvertedUriAsync(fileUri, fileExtension, toExtension, docKey, null, thumbnail, spreadsheetLayout, false).Result;
 
             operationResultProgress = Math.Min(operationResultProgress, 100);
             return operationResultProgress == 100;
@@ -284,15 +289,12 @@ namespace ASC.Files.ThumbnailBuilder
         {
             logger.DebugFormat("SaveThumbnail: FileId: {0}. ThumbnailUrl {1}.", file.ID, thumbnailUrl);
 
-            var req = (HttpWebRequest)WebRequest.Create(thumbnailUrl);
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri(thumbnailUrl);
 
-            //HACK: http://ubuntuforums.org/showthread.php?t=1841740
-            if (WorkContext.IsMono && ServicePointManager.ServerCertificateValidationCallback == null)
-            {
-                ServicePointManager.ServerCertificateValidationCallback += (s, c, n, p) => true;
-            }
-
-            using (var stream = new ResponseStream(req.GetResponse()))
+            var httpClient = ClientFactory.CreateClient();
+            using var response = httpClient.Send(request);
+            using (var stream = new ResponseStream(response))
             {
                 Crop(fileDao, file, stream);
             }
@@ -310,7 +312,7 @@ namespace ASC.Files.ThumbnailBuilder
         {
             logger.DebugFormat("CropImage: FileId: {0}.", file.ID);
 
-            using (var stream = fileDao.GetFileStream(file))
+            using (var stream = fileDao.GetFileStreamAsync(file).Result)
             {
                 Crop(fileDao, file, stream);
             }
@@ -320,21 +322,21 @@ namespace ASC.Files.ThumbnailBuilder
 
         private void Crop(IFileDao<T> fileDao, File<T> file, Stream stream)
         {
-            using (var sourceBitmap = new Bitmap(stream))
+            using (var sourceImg = Image.Load(stream))
             {
-                using (var targetBitmap = GetImageThumbnail(sourceBitmap))
+                using (var targetImg = GetImageThumbnail(sourceImg))
                 {
                     using (var targetStream = new MemoryStream())
                     {
-                        targetBitmap.Save(targetStream, System.Drawing.Imaging.ImageFormat.Png);
-                        fileDao.SaveThumbnail(file, targetStream);
+                        targetImg.Save(targetStream, PngFormat.Instance);
+                        fileDao.SaveThumbnailAsync(file, targetStream).Wait();
                     }
                 }
             }
             GC.Collect();
         }
 
-        private Image GetImageThumbnail(Bitmap sourceBitmap)
+        private Image GetImageThumbnail(Image sourceBitmap)
         {
             //bad for small or disproportionate images
             //return sourceBitmap.GetThumbnailImage(config.ThumbnaillWidth, config.ThumbnaillHeight, () => false, IntPtr.Zero);
@@ -364,7 +366,7 @@ namespace ASC.Files.ThumbnailBuilder
 
             var targetThumbnailSettings = new UserPhotoThumbnailSettings(point, size);
 
-            return UserPhotoThumbnailManager.GetBitmap(sourceBitmap, targetSize, targetThumbnailSettings, InterpolationMode.Bilinear);
+            return UserPhotoThumbnailManager.GetImage(sourceBitmap, targetSize, targetThumbnailSettings);
         }
     }
 }

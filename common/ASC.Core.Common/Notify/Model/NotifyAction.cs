@@ -43,18 +43,18 @@ namespace ASC.Notify.Model
 
         public NotifyAction(string id, string name)
         {
-            ID = id ?? throw new ArgumentNullException("id");
+            ID = id ?? throw new ArgumentNullException(nameof(id));
             Name = name;
         }
 
         public static implicit operator NotifyActionItem(NotifyAction cache)
         {
-            return new NotifyActionItem() { ID = cache.ID };
+            return new NotifyActionItem() {  Id = cache.ID };
         }
 
         public static explicit operator NotifyAction(NotifyActionItem cache)
         {
-            return new NotifyAction(cache.ID);
+            return new NotifyAction(cache.Id);
         }
 
         public override bool Equals(object obj)
@@ -69,7 +69,7 @@ namespace ASC.Notify.Model
 
         public override string ToString()
         {
-            return string.Format("action: {0}", ID);
+            return $"action: {ID}";
         }
     }
 }

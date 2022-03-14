@@ -1,8 +1,8 @@
-{
-    "Account": "Akkaunt",
-    "ConnectFolderTitle": "Qovluq başlığı",
-    "ConnectionUrl": "Qoşulma üçün URL",
-    "ConnectMakeShared": "Paylaş və 'Ümumi' qovluğa yerləşdir",
-    "Login": "Giriş edin",
-    "Reconnect": "Yenidən qoşul"
+﻿{
+  "Account": "Akkaunt",
+  "ConnectFolderTitle": "Qovluq başlığı",
+  "ConnectionUrl": "Qoşulma üçün URL",
+  "ConnectMakeShared": "Paylaş və 'Ümumi' qovluğa yerləşdir",
+  "Login": "Giriş edin",
+  "Reconnect": "Yenidən qoşul"
 }

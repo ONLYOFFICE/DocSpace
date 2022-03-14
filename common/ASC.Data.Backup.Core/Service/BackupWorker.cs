@@ -51,7 +51,7 @@ using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json;
 
-namespace ASC.Data.Backup.Service
+namespace ASC.Data.Backup.Services
 {
     [Singletone(Additional = typeof(BackupWorkerExtension))]
     public class BackupWorker
@@ -334,7 +334,7 @@ namespace ASC.Data.Backup.Service
 
         protected IServiceProvider ServiceProvider { get; set; }
 
-        public BaseBackupProgressItem(IOptionsMonitor<ILog> options, IServiceProvider serviceProvider)
+        protected BaseBackupProgressItem(IOptionsMonitor<ILog> options, IServiceProvider serviceProvider)
         {
             Log = options.CurrentValue;
             ServiceProvider = serviceProvider;
@@ -405,7 +405,6 @@ namespace ASC.Data.Backup.Service
             var scopeClass = scope.ServiceProvider.GetService<BackupWorkerScope>();
             var (tenantManager, backupStorageFactory, notifyHelper, backupRepository, backupWorker, backupPortalTask, _, _, coreBaseSettings) = scopeClass;
 
-            var tenant = tenantManager.GetTenant(TenantId);
             var dateTime = coreBaseSettings.Standalone ? DateTime.Now : DateTime.UtcNow;
             var backupName = string.Format("{0}_{1:yyyy-MM-dd_HH-mm-ss}.{2}", tenantManager.GetTenant(TenantId).TenantAlias, dateTime, ArchiveFormat);
 
@@ -560,14 +559,14 @@ namespace ASC.Data.Backup.Service
                 tenantManager.SaveTenant(tenant);
 
                 var columnMapper = new ColumnMapper();
-                columnMapper.SetMapping("tenants_tenants", "alias", tenant.TenantAlias, (Guid.Parse(Id)).ToString("N"));
+                columnMapper.SetMapping("tenants_tenants", "alias", tenant.TenantAlias, Guid.Parse(Id).ToString("N"));
                 columnMapper.Commit();
 
                 var restoreTask = restorePortalTask;
                 restoreTask.Init(ConfigPaths[CurrentRegion], tempFile, TenantId, columnMapper, UpgradesPath);
                 restoreTask.ProgressChanged += (sender, args) =>
                 {
-                    Percentage = Percentage = (10d + 0.65 * args.Progress);
+                    Percentage = Percentage = 10d + 0.65 * args.Progress;
                     PublishChanges();
                 };
                 restoreTask.RunJob();
@@ -881,7 +880,7 @@ namespace ASC.Data.Backup.Service
         }
     }
 
-    public class BackupWorkerExtension
+    public static class BackupWorkerExtension
     {
         public static void Register(DIHelper services)
         {
@@ -890,7 +889,7 @@ namespace ASC.Data.Backup.Service
         }
     }
 
-    public class FactoryProgressItemExtension
+    public static class FactoryProgressItemExtension
     {
         public static void Register(DIHelper services)
         {

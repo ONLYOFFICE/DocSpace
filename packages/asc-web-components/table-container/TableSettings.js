@@ -32,7 +32,7 @@ const TableSettings = ({ columns }) => {
         hoverColor="#657077"
         size={12}
         isFill
-        iconName="/static/images/settings.react.svg"
+        iconName="/static/images/settings.desc.react.svg"
         onClick={onClick}
       />
       <DropDown

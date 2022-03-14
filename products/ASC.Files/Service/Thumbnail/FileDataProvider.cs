@@ -35,23 +35,18 @@ namespace ASC.Files.ThumbnailBuilder
     {
         private readonly ThumbnailSettings thumbnailSettings;
         private readonly ICache cache;
-        private Lazy<FilesDbContext> LazyFilesDbContext { get; }
-        private FilesDbContext filesDbContext { get => LazyFilesDbContext.Value; }
-        private Lazy<CoreDbContext> LazyCoreDbContext { get; }
-        private CoreDbContext coreDbContext { get => LazyCoreDbContext.Value; }
+        private Lazy<Core.EF.FilesDbContext> LazyFilesDbContext { get; }
+        private Core.EF.FilesDbContext filesDbContext { get => LazyFilesDbContext.Value; }
         private readonly string cacheKey;
 
         public FileDataProvider(
             ThumbnailSettings settings,
             ICache ascCache,
-            DbContextManager<FilesDbContext> dbContextManager,
-            DbContextManager<CoreDbContext> coredbContextManager
-            )
+            DbContextManager<Core.EF.FilesDbContext> dbContextManager)
         {
             thumbnailSettings = settings;
             cache = ascCache;
-            LazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(thumbnailSettings.ConnectionStringName));
-            LazyCoreDbContext = new Lazy<CoreDbContext>(() => coredbContextManager.Get(thumbnailSettings.ConnectionStringName));
+            LazyFilesDbContext = new Lazy<Core.EF.FilesDbContext>(() => dbContextManager.Get(thumbnailSettings.ConnectionStringName));
             cacheKey = "PremiumTenants";
         }
 
@@ -92,8 +87,8 @@ namespace ASC.Files.ThumbnailBuilder
             */
 
             var search =
-                coreDbContext.Tariffs
-                .Join(coreDbContext.Quotas.DefaultIfEmpty(), a => a.Tariff, b => b.Tenant, (tariff, quota) => new { tariff, quota })
+                filesDbContext.Tariffs
+                .Join(filesDbContext.Quotas.AsQueryable().DefaultIfEmpty(), a => a.Tariff, b => b.Tenant, (tariff, quota) => new { tariff, quota })
                 .Where(r =>
                         (
                             r.tariff.Comment == null ||
@@ -104,11 +99,11 @@ namespace ASC.Files.ThumbnailBuilder
                              !r.tariff.Comment.Contains("trial")
                             )
                         ) &&
-                        (
+                        
                             !r.quota.Features.Contains("free") &&
                             !r.quota.Features.Contains("non-profit") &&
                             !r.quota.Features.Contains("trial")
-                        )
+                        
                 )
                 .GroupBy(r => r.tariff.Tenant)
                 .Select(r => new { tenant = r.Key, stamp = r.Max(b => b.tariff.Stamp) })
@@ -124,6 +119,7 @@ namespace ASC.Files.ThumbnailBuilder
         private IEnumerable<FileData<int>> GetFileData(Expression<Func<DbFile, bool>> where)
         {
             var search = filesDbContext.Files
+                .AsQueryable()
                 .Where(r => r.CurrentVersion && r.Thumb == Thumbnail.Waiting && !r.Encrypted)
                 .OrderByDescending(r => r.ModifiedOn)
                 .Take(thumbnailSettings.SqlMaxResults);
@@ -146,7 +142,7 @@ namespace ASC.Files.ThumbnailBuilder
 
             var premiumTenants = GetPremiumTenants();
 
-            if (premiumTenants.Any())
+            if (premiumTenants.Length > 0)
             {
                 result = GetFileData(r => premiumTenants.Contains(r.TenantId));
 

@@ -287,7 +287,7 @@ namespace ASC.Web.Studio.Utility
                     foreach (var item in WebItemManager.GetItemsAll())
                     {
                         var _itemName = GetWebItemNameFromUrl(item.StartURL);
-                        if (string.Compare(itemName, _itemName, StringComparison.InvariantCultureIgnoreCase) == 0)
+                        if (itemName.Equals(_itemName, StringComparison.InvariantCultureIgnoreCase))
                             return item;
                     }
                 }
@@ -350,7 +350,7 @@ namespace ASC.Web.Studio.Utility
                     var _productName = GetProductNameFromUrl(product.StartURL);
                     if (!string.IsNullOrEmpty(_productName))
                     {
-                        if (string.Compare(productName, _productName, StringComparison.InvariantCultureIgnoreCase) == 0)
+                        if (string.Equals(productName, _productName, StringComparison.InvariantCultureIgnoreCase))
                         {
                             currentProduct = product;
 
@@ -361,7 +361,7 @@ namespace ASC.Web.Studio.Utility
                                     var _moduleName = GetModuleNameFromUrl(module.StartURL);
                                     if (!string.IsNullOrEmpty(_moduleName))
                                     {
-                                        if (string.Compare(moduleName, _moduleName, StringComparison.InvariantCultureIgnoreCase) == 0)
+                                        if (string.Equals(moduleName, _moduleName, StringComparison.InvariantCultureIgnoreCase))
                                         {
                                             currentModule = module;
                                             break;
@@ -468,7 +468,7 @@ namespace ASC.Web.Studio.Utility
             if (!string.IsNullOrEmpty(sysName))
                 foreach (var product in WebItemManager.GetItemsAll<IProduct>())
                 {
-                    if (string.CompareOrdinal(sysName, WebItemExtension.GetSysName(product)) == 0)
+                    if (string.Equals(sysName, WebItemExtension.GetSysName(product)))
                     {
                         result = product;
                         break;

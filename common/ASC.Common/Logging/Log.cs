@@ -35,6 +35,7 @@ using log4net.Config;
 using log4net.Core;
 
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
 using NLog;
@@ -385,10 +386,11 @@ namespace ASC.Common.Logging
         private IConfiguration Configuration { get; }
         private ConfigurationExtension ConfigurationExtension { get; }
 
-        public ConfigureLogNLog(IConfiguration configuration, ConfigurationExtension configurationExtension)
+        public ConfigureLogNLog(IConfiguration configuration, ConfigurationExtension configurationExtension, IHostEnvironment hostingEnvironment)
         {
             Configuration = configuration;
             ConfigurationExtension = configurationExtension;
+
 
             LogManager.Configuration = new NLog.Config.XmlLoggingConfiguration(CrossPlatform.PathCombine(Configuration["pathToConf"], "nlog.config"));
             LogManager.ThrowConfigExceptions = false;
@@ -401,14 +403,14 @@ namespace ASC.Common.Logging
 
             if (!string.IsNullOrEmpty(settings.Dir))
             {
-                LogManager.Configuration.Variables["dir"] = settings.Dir.TrimEnd('/').TrimEnd('\\') + Path.DirectorySeparatorChar;
+                LogManager.Configuration.Variables["dir"] = CrossPlatform.PathCombine(hostingEnvironment.ContentRootPath, settings.Dir).TrimEnd('/').TrimEnd('\\') + Path.DirectorySeparatorChar;
             }
 
             NLog.Targets.Target.Register<SelfCleaningTarget>("SelfCleaning");
         }
 
         public void Configure(LogNLog options)
-{
+        {
             options.Configure("ASC");
         }
 
@@ -873,7 +875,7 @@ namespace ASC.Common.Logging
         }
     }
 
-    public class LoggerExtension<T> where T : class, ILog, new()
+    public static class LoggerExtension<T> where T : class, ILog, new()
     {
         public static void RegisterLog(DIHelper services)
         {
@@ -881,11 +883,11 @@ namespace ASC.Common.Logging
         }
     }
 
-    public class LogNLogExtension : LoggerExtension<LogNLog>
+    public static class LogNLogExtension
     {
         public static void Register(DIHelper services)
         {
-            RegisterLog(services);
+            LoggerExtension<LogNLog>.RegisterLog(services);
         }
     }
 }

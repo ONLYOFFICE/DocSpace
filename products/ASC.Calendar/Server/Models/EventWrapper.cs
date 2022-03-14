@@ -30,17 +30,15 @@ using System.Runtime.Serialization;
 using ASC.Calendar.ExternalCalendars;
 using ASC.Common.Security;
 using ASC.Core;
-using ASC.Core.Common;
 using ASC.Web.Core.Users;
 using ASC.Core.Users;
 using ASC.Api.Core;
 using ASC.Web.Core.Calendars;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using ASC.Common.Utils;
 using ASC.Common;
 using ASC.Calendar.iCalParser;
 using ASC.Calendar.BusinessObjects;
+using System.Net.Http;
 
 namespace ASC.Calendar.Models
 {
@@ -143,6 +141,7 @@ namespace ASC.Calendar.Models
         private AuthContext AuthContext { get; }
         private TimeZoneConverter TimeZoneConverter { get; }
         private DataProvider DataProvider { get; }
+        private IHttpClientFactory ClientFactory { get; }
 
         public EventWrapperHelper(
             UserManager userManager,
@@ -153,7 +152,8 @@ namespace ASC.Calendar.Models
             PublicItemCollectionHelper publicItemCollectionHelper,
             AuthContext context,
             TimeZoneConverter timeZoneConverter,
-            DataProvider dataProvider)
+            DataProvider dataProvider,
+            IHttpClientFactory clientFactory)
         {
             Authentication = authentication;
             TenantManager = tenantManager;
@@ -164,6 +164,7 @@ namespace ASC.Calendar.Models
             AuthContext = context;
             TimeZoneConverter = timeZoneConverter;
             DataProvider = dataProvider;
+            ClientFactory = clientFactory;
         }
         public EventWrapper Get(IEvent baseEvent, Guid userId, TimeZoneInfo timeZone, DateTime utcStartDate, DateTime utcEndDate, DateTime utcUpdateDate)
         {
@@ -187,7 +188,7 @@ namespace ASC.Calendar.Models
             eventWraper.Description = _baseEvent.Description;
             eventWraper.AllDayLong = _baseEvent.AllDayLong; ;
 
-            var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager);
+            var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager, ClientFactory);
             //---
             var startD = _utcStartDate != DateTime.MinValue ? _utcStartDate : _baseEvent.UtcStartDate;
             startD = new DateTime(startD.Ticks, DateTimeKind.Utc);

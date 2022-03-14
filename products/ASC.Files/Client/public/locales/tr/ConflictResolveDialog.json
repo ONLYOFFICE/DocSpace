@@ -1,4 +1,4 @@
-{
+﻿{
   "ConflictResolveDescription": "{{file}} isimli dosya {{folder}} klasöründe zaten mevcut.",
   "ConflictResolveDescriptionFiles": "{{filesCount}} belgeleri, '{{folder}}' klasöründe aynı isimle zaten mevcut.",
   "ConflictResolveSelectAction": "Lütfen işlemi seçin:",

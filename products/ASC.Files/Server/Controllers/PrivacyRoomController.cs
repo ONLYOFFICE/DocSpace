@@ -25,6 +25,7 @@
 
 
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Logging;
@@ -143,19 +144,20 @@ namespace ASC.Api.Documents
         /// </summary>
         /// <visible>false</visible>
         [Read("access/{fileId}")]
-        public IEnumerable<EncryptionKeyPair> GetPublicKeysWithAccess(string fileId)
+        public Task<IEnumerable<EncryptionKeyPair>> GetPublicKeysWithAccess(string fileId)
         {
             if (!PrivacyRoomSettings.GetEnabled(SettingsManager)) throw new System.Security.SecurityException();
 
-            return EncryptionKeyPairHelper.GetKeyPair(fileId, FileStorageService);
+            return EncryptionKeyPairHelper.GetKeyPairAsync(fileId, FileStorageService);
         }
 
+
         [Read("access/{fileId:int}")]
-        public IEnumerable<EncryptionKeyPair> GetPublicKeysWithAccess(int fileId)
+        public Task<IEnumerable<EncryptionKeyPair>> GetPublicKeysWithAccess(int fileId)
         {
             if (!PrivacyRoomSettings.GetEnabled(SettingsManager)) throw new System.Security.SecurityException();
 
-            return EncryptionKeyPairHelper.GetKeyPair(fileId, FileStorageServiceInt);
+            return EncryptionKeyPairHelper.GetKeyPairAsync(fileId, FileStorageServiceInt);
         }
 
 

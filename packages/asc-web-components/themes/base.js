@@ -167,6 +167,18 @@ const Base = {
     bodyPadding: "16px 0",
   },
 
+  mainButtonMobile: {
+    dropDown: {
+      right: "15%",
+      bottom: "15%",
+      width: "400px",
+    },
+
+    dropDownItem: {
+      padding: "10px",
+    },
+  },
+
   mainButton: {
     backgroundColor: orangeMain,
     disableBackgroundColor: orangeDisabled,
@@ -963,7 +975,7 @@ const Base = {
 
     slider: {
       width: "100%",
-      margin: "8px 0",
+      margin: "24px 0",
       backgroundColor: "transparent",
 
       runnableTrack: {

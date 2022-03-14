@@ -31,7 +31,7 @@ using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Data.Storage.Configuration;
-using ASC.Migration;
+using ASC.Protos.Migration;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

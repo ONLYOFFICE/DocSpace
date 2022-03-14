@@ -25,7 +25,6 @@
 
 
 using System;
-using System.Linq;
 
 using ASC.Common.Threading;
 using ASC.Core;
@@ -56,17 +55,17 @@ namespace ASC.Web.Studio.Core.Quota
             var (tenantManager, storageFactoryConfig, storageFactory) = scopeClass;
             tenantManager.SetCurrentTenant(TenantId);
 
-            var storageModules = storageFactoryConfig.GetModuleList(string.Empty).ToList();
+            var storageModules = storageFactoryConfig.GetModuleList(string.Empty);
 
             foreach (var module in storageModules)
             {
                 var storage = storageFactory.GetStorage(TenantId.ToString(), module);
-                storage.ResetQuota("");
+                storage.ResetQuotaAsync("").Wait();
 
-                var domains = storageFactoryConfig.GetDomainList(string.Empty, module).ToList();
+                var domains = storageFactoryConfig.GetDomainList(string.Empty, module);
                 foreach (var domain in domains)
                 {
-                    storage.ResetQuota(domain);
+                    storage.ResetQuotaAsync(domain).Wait();
                 }
 
             }

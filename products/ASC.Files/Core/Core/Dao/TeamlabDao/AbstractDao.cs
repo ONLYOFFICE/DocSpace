@@ -29,10 +29,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Files.Core.EF;
@@ -49,11 +51,16 @@ namespace ASC.Files.Core.Data
     {
         protected readonly ICache cache;
 
-        private Lazy<FilesDbContext> LazyFilesDbContext { get; }
-        public FilesDbContext FilesDbContext { get => LazyFilesDbContext.Value; }
-
+        private Lazy<EF.FilesDbContext> LazyFilesDbContext { get; }
+        public EF.FilesDbContext FilesDbContext { get => LazyFilesDbContext.Value; }
         private int tenantID;
-        protected internal int TenantID { get => tenantID != 0 ? tenantID : (tenantID = TenantManager.GetCurrentTenant().TenantId); }
+        protected internal int TenantID { 
+            get 
+            {
+                if (tenantID == 0) tenantID = TenantManager.GetCurrentTenant().TenantId;
+                return tenantID; 
+            }
+        }
         protected UserManager UserManager { get; }
         protected TenantManager TenantManager { get; }
         protected TenantUtil TenantUtil { get; }
@@ -67,7 +74,7 @@ namespace ASC.Files.Core.Data
         protected IServiceProvider ServiceProvider { get; }
 
         protected AbstractDao(
-            DbContextManager<FilesDbContext> dbContextManager,
+            DbContextManager<EF.FilesDbContext> dbContextManager,
             UserManager userManager,
             TenantManager tenantManager,
             TenantUtil tenantUtil,
@@ -78,11 +85,11 @@ namespace ASC.Files.Core.Data
             CoreConfiguration coreConfiguration,
             SettingsManager settingsManager,
             AuthContext authContext,
-            IServiceProvider serviceProvider, 
+            IServiceProvider serviceProvider,
             ICache cache)
         {
             this.cache = cache;
-            LazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
+            LazyFilesDbContext = new Lazy<EF.FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
             UserManager = userManager;
             TenantManager = tenantManager;
             TenantUtil = tenantUtil;
@@ -100,7 +107,7 @@ namespace ASC.Files.Core.Data
         protected IQueryable<T> Query<T>(DbSet<T> set) where T : class, IDbFile
         {
             var tenantId = TenantID;
-            return set.Where(r => r.TenantId == tenantId);
+            return set.AsQueryable().Where(r => r.TenantId == tenantId);
         }
 
         protected internal IQueryable<DbFile> GetFileQuery(Expression<Func<DbFile, bool>> where)
@@ -109,38 +116,43 @@ namespace ASC.Files.Core.Data
                 .Where(where);
         }
 
-        protected void GetRecalculateFilesCountUpdate(int folderId)
+        protected async Task GetRecalculateFilesCountUpdateAsync(int folderId)
         {
-            var folders = FilesDbContext.Folders
+            var folders = await FilesDbContext.Folders
+                .AsQueryable()
                 .Where(r => r.TenantId == TenantID)
-                .Where(r => FilesDbContext.Tree.Where(r => r.FolderId == folderId).Select(r => r.ParentId).Any(a => a == r.Id))
-                .ToList();
+                .Where(r => FilesDbContext.Tree.AsQueryable().Where(r => r.FolderId == folderId).Select(r => r.ParentId).Any(a => a == r.Id))
+                .ToListAsync();
 
             foreach (var f in folders)
             {
-                var filesCount =
+                f.FilesCount = await
                     FilesDbContext.Files
+                    .AsQueryable()
                     .Join(FilesDbContext.Tree, a => a.FolderId, b => b.FolderId, (file, tree) => new { file, tree })
                     .Where(r => r.file.TenantId == f.TenantId)
                     .Where(r => r.tree.ParentId == f.Id)
-                    .Select(r=> r.file.Id)
+                    .Select(r => r.file.Id)
                     .Distinct()
-                    .Count();
-
-                f.FilesCount = filesCount;
+                    .CountAsync();
             }
 
-            FilesDbContext.SaveChanges();
-        }
+            await FilesDbContext.SaveChangesAsync();
+        }   
 
-        protected object MappingID(object id, bool saveIfNotExist)
+        protected ValueTask<object> MappingIDAsync(object id, bool saveIfNotExist = false)
         {
-            if (id == null) return null;
+            if (id == null) return ValueTask.FromResult<object>(null);
 
             var isNumeric = int.TryParse(id.ToString(), out var n);
 
-            if (isNumeric) return n;
+            if (isNumeric) return ValueTask.FromResult<object>(n);
 
+            return InternalMappingIDAsync(id, saveIfNotExist);
+        }
+
+        private async ValueTask<object> InternalMappingIDAsync(object id, bool saveIfNotExist = false)
+        {
             object result;
 
             if (id.ToString().StartsWith("sbox")
@@ -154,10 +166,10 @@ namespace ASC.Files.Core.Data
             }
             else
             {
-                result = Query(FilesDbContext.ThirdpartyIdMapping)
+                result = await Query(FilesDbContext.ThirdpartyIdMapping)
                     .Where(r => r.HashId == id.ToString())
                     .Select(r => r.Id)
-                    .FirstOrDefault();
+                    .FirstOrDefaultAsync();
             }
 
             if (saveIfNotExist)
@@ -169,24 +181,20 @@ namespace ASC.Files.Core.Data
                     TenantId = TenantID
                 };
 
-                FilesDbContext.AddOrUpdate(r => r.ThirdpartyIdMapping, newItem);
+                await FilesDbContext.AddOrUpdateAsync(r => r.ThirdpartyIdMapping, newItem);
             }
 
             return result;
         }
 
-        protected int MappingID(int id)
+        protected ValueTask<object> MappingIDAsync(object id)
         {
-            return id;
-        }
-        protected object MappingID(object id)
-        {
-            return MappingID(id, false);
+            return MappingIDAsync(id, false);
         }
 
         internal static IQueryable<T> BuildSearch<T>(IQueryable<T> query, string text, SearhTypeEnum searhTypeEnum) where T : IDbSearch
         {
-            var lowerText = text.ToLower().Trim().Replace("%", "\\%").Replace("_", "\\_");
+            var lowerText = GetSearchText(text);
 
             return searhTypeEnum switch
             {
@@ -196,6 +204,8 @@ namespace ASC.Files.Core.Data
                 _ => query,
             };
         }
+
+        internal static string GetSearchText(string text) => (text ?? "").ToLower().Trim().Replace("%", "\\%").Replace("_", "\\_");
 
         internal enum SearhTypeEnum
         {

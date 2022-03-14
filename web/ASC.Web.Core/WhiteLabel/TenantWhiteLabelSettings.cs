@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -44,7 +43,11 @@ using ASC.Web.Core.Utility.Skins;
 
 using Microsoft.Extensions.Options;
 
+using SixLabors.ImageSharp;
+
 using TMResourceData;
+
+using UnknownImageFormatException = SixLabors.ImageSharp.UnknownImageFormatException;
 
 namespace ASC.Web.Core.WhiteLabel
 {
@@ -288,7 +291,7 @@ namespace ASC.Web.Core.WhiteLabel
 
             try
             {
-                store.DeleteFiles("", "*", false);
+                store.DeleteFilesAsync("", "*", false).Wait();
             }
             catch (Exception e)
             {
@@ -341,13 +344,12 @@ namespace ASC.Web.Core.WhiteLabel
             #endregion
 
             using (var memory = new MemoryStream(data))
-            using (var image = Image.FromStream(memory))
+            using (var image = Image.Load(memory))
             {
-                var logoSize = image.Size;
                 var logoFileName = BuildLogoFileName(type, logoFileExt, false);
 
                 memory.Seek(0, SeekOrigin.Begin);
-                store.Save(logoFileName, memory);
+                store.SaveAsync(logoFileName, memory).Wait();
             }
 
             tenantWhiteLabelSettings.SetExt(type, logoFileExt);
@@ -364,7 +366,7 @@ namespace ASC.Web.Core.WhiteLabel
 
             foreach (var currentLogo in logo)
             {
-                var currentLogoType = (WhiteLabelLogoTypeEnum)(currentLogo.Key);
+                var currentLogoType = (WhiteLabelLogoTypeEnum)currentLogo.Key;
                 var currentLogoPath = currentLogo.Value;
 
                 if (!string.IsNullOrEmpty(currentLogoPath))
@@ -401,7 +403,7 @@ namespace ASC.Web.Core.WhiteLabel
 
         public void SetLogoFromStream(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type, string fileExt, Stream fileStream, IDataStore storage = null)
         {
-            byte[] data = null;
+            byte[] data;
             using (var memoryStream = new MemoryStream())
             {
                 fileStream.CopyTo(memoryStream);
@@ -433,9 +435,9 @@ namespace ASC.Web.Core.WhiteLabel
             var store = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().TenantId.ToString(), moduleName);
             var fileName = BuildLogoFileName(type, tenantWhiteLabelSettings.GetExt(type), general);
 
-            if (store.IsFile(fileName))
+            if (store.IsFileAsync(fileName).Result)
             {
-                return store.GetUri(fileName).ToString();
+                return store.GetUriAsync(fileName).Result.ToString();
             }
             return GetAbsoluteDefaultLogoPath(type, general);
         }
@@ -469,7 +471,7 @@ namespace ASC.Web.Core.WhiteLabel
 
             var logoPath = BuildLogoFileName(type, partnerSettings.GetExt(type), general);
 
-            return partnerStorage.IsFile(logoPath) ? partnerStorage.GetUri(logoPath).ToString() : null;
+            return partnerStorage.IsFileAsync(logoPath).Result ? partnerStorage.GetUriAsync(logoPath).Result.ToString() : null;
         }
 
         #endregion
@@ -495,7 +497,7 @@ namespace ASC.Web.Core.WhiteLabel
 
             var fileName = BuildLogoFileName(type, tenantWhiteLabelSettings.GetExt(type), general);
 
-            return storage.IsFile(fileName) ? storage.GetReadStream(fileName) : null;
+            return storage.IsFileAsync(fileName).Result ? storage.GetReadStreamAsync(fileName).Result : null;
         }
 
         private Stream GetPartnerStorageLogoData(WhiteLabelLogoTypeEnum type, bool general)
@@ -510,14 +512,14 @@ namespace ASC.Web.Core.WhiteLabel
 
             var fileName = BuildLogoFileName(type, partnerSettings.GetExt(type), general);
 
-            return partnerStorage.IsFile(fileName) ? partnerStorage.GetReadStream(fileName) : null;
+            return partnerStorage.IsFileAsync(fileName).Result ? partnerStorage.GetReadStreamAsync(fileName).Result : null;
         }
 
         #endregion
 
         public static string BuildLogoFileName(WhiteLabelLogoTypeEnum type, string fileExt, bool general)
         {
-            return string.Format("logo_{0}{2}.{1}", type.ToString().ToLowerInvariant(), fileExt, general ? "_general" : "");
+            return $"logo_{type.ToString().ToLowerInvariant()}{(general ? "_general" : "")}.{fileExt}";
         }
 
         public static Size GetSize(WhiteLabelLogoTypeEnum type, bool general)
@@ -546,15 +548,15 @@ namespace ASC.Web.Core.WhiteLabel
         private static void ResizeLogo(string fileName, byte[] data, long maxFileSize, Size size, IDataStore store)
         {
             //Resize synchronously
-            if (data == null || data.Length <= 0) throw new UnknownImageFormatException();
+            if (data == null || data.Length <= 0) throw new UnknownImageFormatException("data null");
             if (maxFileSize != -1 && data.Length > maxFileSize) throw new ImageWeightLimitException();
 
             try
             {
                 using var stream = new MemoryStream(data);
-                using var img = Image.FromStream(stream);
-                var imgFormat = img.RawFormat;
-                if (size != img.Size)
+                using var img = Image.Load(stream, out var format);
+
+                if (size != img.Size())
                 {
                     using var img2 = CommonPhotoManager.DoThumbnail(img, size, false, true, false);
                     data = CommonPhotoManager.SaveToBytes(img2);
@@ -567,11 +569,11 @@ namespace ASC.Web.Core.WhiteLabel
                 //fileExt = CommonPhotoManager.GetImgFormatName(imgFormat);
 
                 using var stream2 = new MemoryStream(data);
-                store.Save(fileName, stream2);
+                store.SaveAsync(fileName, stream2).Wait();
             }
             catch (ArgumentException error)
             {
-                throw new UnknownImageFormatException(error);
+                throw new UnknownImageFormatException(error.Message);
             }
         }
 
@@ -632,9 +634,9 @@ namespace ASC.Web.Core.WhiteLabel
         {
             var fileExt = tenantWhiteLabelSettings.GetExt(type);
             var logo = BuildLogoFileName(type, fileExt, general);
-            if (store.IsFile(logo))
+            if (store.IsFileAsync(logo).Result)
             {
-                store.Delete(logo);
+                store.DeleteAsync(logo).Wait();
             }
         }
 
