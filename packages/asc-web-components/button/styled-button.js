@@ -169,15 +169,6 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
         ? props.theme.button.bottomVerticalAlign
         : props.theme.button.topVerticalAlign};
   }
-
-  ${(props) =>
-    props.label &&
-    css`
-      .btnIcon,
-      .loader {
-        padding-right: ${(props) => props.theme.button.paddingRight};
-      }
-    `}
 `;
 
 ButtonWrapper.propTypes = {
