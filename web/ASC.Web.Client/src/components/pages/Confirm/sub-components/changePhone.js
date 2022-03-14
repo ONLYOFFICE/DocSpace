@@ -8,6 +8,7 @@ import Text from "@appserver/components/text";
 import PageLayout from "@appserver/common/components/PageLayout";
 import { inject, observer } from "mobx-react";
 import withLoader from "../withLoader";
+import { Base } from "@appserver/components/themes";
 
 const BodyStyle = styled.div`
   margin: 70px auto 0 auto;
@@ -24,7 +25,7 @@ const BodyStyle = styled.div`
       margin: 8px 0;
       text-align: left;
       font-size: 24px;
-      color: #116d9d;
+      color: ${(props) => props.theme.studio.confirm.change.titleColor};
     }
   }
 
@@ -36,6 +37,8 @@ const BodyStyle = styled.div`
     margin-bottom: 24px;
   }
 `;
+
+BodyStyle.defaultProps = { theme: Base };
 
 const PhoneForm = (props) => {
   const { t, currentPhone, greetingTitle } = props;

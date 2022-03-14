@@ -38,28 +38,50 @@ class SaveCancelButtons extends React.Component {
     const {
       onSaveClick,
       onCancelClick,
+      displaySettings,
       showReminder,
       reminderTest,
       saveButtonLabel,
       cancelButtonLabel,
+      sectionWidth,
+      hasChanged,
       className,
       id,
     } = this.props;
+
+    const isDisabled = hasChanged !== undefined ? !hasChanged : false;
+
     return (
-      <StyledSaveCancelButtons className={className} id={id}>
-        <div>
+      <StyledSaveCancelButtons
+        className={className}
+        id={id}
+        displaySettings={displaySettings}
+        sectionWidth={sectionWidth}
+        showReminder={showReminder}
+      >
+        <div className="buttons-flex">
           <Button
             className="save-button"
+<<<<<<< HEAD
             size="normal"
             isDisabled={false}
+=======
+            size="big"
+            isDisabled={isDisabled}
+>>>>>>> feature/virtual-rooms-1.2
             primary
             onClick={onSaveClick}
             label={saveButtonLabel}
           />
           <Button
             className="cancel-button"
+<<<<<<< HEAD
             size="normal"
             isDisabled={false}
+=======
+            size="big"
+            isDisabled={isDisabled}
+>>>>>>> feature/virtual-rooms-1.2
             onClick={onCancelClick}
             label={cancelButtonLabel}
           />
@@ -89,6 +111,9 @@ SaveCancelButtons.propTypes = {
   onCancelClick: PropTypes.func,
   /** Show message about unsaved changes (Only shown on desktops) */
   showReminder: PropTypes.bool,
+  displaySettings: PropTypes.bool,
+  sectionWidth: PropTypes.number,
+  hasChanged: PropTypes.bool,
 };
 
 SaveCancelButtons.defaultProps = {

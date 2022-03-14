@@ -209,6 +209,8 @@ class SharingPanelComponent extends React.Component {
       setEncryptionAccess,
       setShareFiles,
       onSuccess,
+      setIsFolderActions,
+      setIsLoading,
     } = this.props;
 
     this.onClose();
@@ -496,6 +498,7 @@ class SharingPanelComponent extends React.Component {
     //console.log("Sharing panel render");
     const {
       t,
+      theme,
       tReady,
       isPersonal,
       isMyId,
@@ -549,6 +552,7 @@ class SharingPanelComponent extends React.Component {
               shareDataItems.map((item, index) => (
                 <SharingRow
                   t={t}
+                  theme={theme}
                   isPersonal={isPersonal}
                   index={index}
                   key={`${item.sharedTo.id}_${index}`}
@@ -627,7 +631,7 @@ class SharingPanelComponent extends React.Component {
                       iconName="/static/images/actions.header.touch.react.svg"
                       className="sharing_panel-plus-icon"
                       {...onPlusClickProp}
-                      color="A3A9AE"
+                      // color="A3A9AE"
                       isDisabled={isLoading}
                     />
 
@@ -669,6 +673,7 @@ class SharingPanelComponent extends React.Component {
                 shareDataItems.map((item, index) => (
                   <SharingRow
                     t={t}
+                    theme={theme}
                     isPersonal={isPersonal}
                     index={index}
                     key={`${item.sharedTo.id}_${index}`}
@@ -825,6 +830,7 @@ const SharingPanel = inject(
     } = uploadDataStore;
 
     return {
+      theme: auth.settingsStore.theme,
       isPersonal: personal,
       isMyId: auth.userStore.user && auth.userStore.user.id,
       groupsCaption: customNames.groupsCaption,

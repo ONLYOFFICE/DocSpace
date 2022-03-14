@@ -158,6 +158,7 @@ const OperationsPanelComponent = (props) => {
       </ModalDialog.Header>
       <ModalDialog.Body>
         <TreeFolders
+          isPanel={true}
           expandedPanelKeys={expandedKeys}
           data={operationsFolders}
           filter={filter}

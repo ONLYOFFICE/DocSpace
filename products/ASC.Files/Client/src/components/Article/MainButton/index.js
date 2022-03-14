@@ -2,7 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import MainButton from "@appserver/components/main-button";
-import DropDownItem from "@appserver/components/drop-down-item";
 import { withTranslation } from "react-i18next";
 import { isMobile } from "react-device-detect";
 import Loaders from "@appserver/common/components/Loaders";
@@ -61,24 +60,9 @@ class ArticleMainButtonContent extends React.Component {
 
   onInputClick = (e) => (e.target.value = null);
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   return (
-  //     nextProps.canCreate !== this.props.canCreate ||
-  //     nextProps.firstLoad !== this.props.firstLoad ||
-  //     nextProps.isPrivacy !== this.props.isPrivacy
-  //   );
-  // }
-
   render() {
     //console.log("Files ArticleMainButtonContent render");
-    const {
-      t,
-      tReady,
-      canCreate,
-      isDisabled,
-      firstLoad,
-      isPrivacy,
-    } = this.props;
+    const { t, canCreate, isDisabled, isPrivacy } = this.props;
 
     const folderUpload = !isMobile
       ? [
@@ -216,14 +200,13 @@ ArticleMainButtonContent.propTypes = {
 
 export default inject(
   ({ auth, filesStore, uploadDataStore, treeFoldersStore, dialogsStore }) => {
-    const { firstLoad, fileActionStore, filter, canCreate } = filesStore;
+    const { fileActionStore, filter, canCreate } = filesStore;
     const { isPrivacyFolder } = treeFoldersStore;
     const { startUpload } = uploadDataStore;
     const { setSelectFileDialogVisible } = dialogsStore;
     const { hideArticle } = auth.settingsStore;
     return {
       homepage: config.homepage,
-      firstLoad,
       isPrivacy: isPrivacyFolder,
       filter,
       canCreate,

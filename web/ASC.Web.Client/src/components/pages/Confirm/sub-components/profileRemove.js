@@ -59,7 +59,7 @@ class ProfileRemove extends React.PureComponent {
 
   render() {
     console.log("profileRemove render");
-    const { t, greetingTitle } = this.props;
+    const { t, greetingTitle, theme } = this.props;
     const { isProfileDeleted } = this.state;
     return (
       <ProfileRemoveContainer>
@@ -68,7 +68,11 @@ class ProfileRemove extends React.PureComponent {
             <a href="/login">
               <img src="images/dark_general.png" alt="Logo" />
             </a>
-            <Text as="p" fontSize="24px" color="#116d9d">
+            <Text
+              as="p"
+              fontSize="24px"
+              color={theme.studio.confirm.change.titleColor}
+            >
               {greetingTitle}
             </Text>
           </div>
@@ -121,6 +125,7 @@ const ProfileRemoveForm = (props) => (
 
 export default inject(({ auth }) => ({
   greetingTitle: auth.settingsStore.greetingSettings,
+  theme: auth.settingsStore.theme,
   logout: auth.logout,
 }))(
   withRouter(

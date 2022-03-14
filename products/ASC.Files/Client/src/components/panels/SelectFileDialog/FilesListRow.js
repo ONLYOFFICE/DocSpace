@@ -16,10 +16,12 @@ const FilesListRow = ({
   iconSrc,
   isMultiSelect, // it will be needed
   isChecked,
+  theme,
 }) => {
   return (
     <StyledFilesList
       displayType={displayType}
+      theme={theme}
       needRowSelection={needRowSelection}
       isChecked={isChecked}
     >
@@ -30,12 +32,14 @@ const FilesListRow = ({
       >
         {isMultiSelect ? ( //  it will be needed
           <Checkbox
+            theme={theme}
             label=""
             isChecked={isChecked}
             className="select-file-dialog_checked"
           />
         ) : (
           <RadioButton
+            theme={theme}
             fontSize="13px"
             fontWeight="400"
             name={`${index}`}
@@ -48,9 +52,14 @@ const FilesListRow = ({
         )}
         <ReactSVG src={iconSrc} className="select-file-dialog_icon" />
         <div data-index={index} className="files-list_full-name">
-          <Text data-index={index} className="entry-title">
+          <Text theme={theme} data-index={index} className="entry-title">
             {fileName}
-            <Text data-index={index} className="file-exst" as="span">
+            <Text
+              theme={theme}
+              data-index={index}
+              className="file-exst"
+              as="span"
+            >
               {fileExst}
             </Text>
           </Text>

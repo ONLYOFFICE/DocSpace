@@ -8,9 +8,9 @@ class Body extends React.Component {
   }
 
   render() {
-    const { children, displayType, className, style } = this.props;
+    const { children, className, style } = this.props;
     return (
-      <StyledBody displayType={displayType} className={className} style={style}>
+      <StyledBody className={className} style={style}>
         {children}
       </StyledBody>
     );
@@ -21,7 +21,6 @@ Body.propTypes = {
   children: PropTypes.any,
   className: PropTypes.string,
   style: PropTypes.object,
-  displayType: PropTypes.oneOf(["dropdown", "aside"]),
 };
 
 export default Body;

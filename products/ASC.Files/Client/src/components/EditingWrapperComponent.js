@@ -8,26 +8,31 @@ import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import CheckIcon from "../../public/images/check.react.svg";
 import CrossIcon from "../../../../../public/images/cross.react.svg";
 import { tablet } from "@appserver/components/utils/device";
+import { Base } from "@appserver/components/themes";
 
 const StyledCheckIcon = styled(CheckIcon)`
   ${commonIconsStyles}
   path {
-    fill: #a3a9ae;
+    fill: ${(props) => props.theme.filesEditingWrapper.fill} !important;
   }
   :hover {
-    fill: #657077;
+    fill: ${(props) => props.theme.filesEditingWrapper.hoverFill} !important;
   }
 `;
+
+StyledCheckIcon.defaultProps = { theme: Base };
 
 const StyledCrossIcon = styled(CrossIcon)`
   ${commonIconsStyles}
   path {
-    fill: #a3a9ae;
+    fill: ${(props) => props.theme.filesEditingWrapper.fill} !important;
   }
   :hover {
-    fill: #657077;
+    fill: ${(props) => props.theme.filesEditingWrapper.hoverFill} !important;
   }
 `;
+
+StyledCrossIcon.defaultProps = { theme: Base };
 
 export const okIcon = <StyledCheckIcon className="edit-ok-icon" size="scale" />;
 export const cancelIcon = (
@@ -45,7 +50,7 @@ const EditingWrapper = styled.div`
       grid-column-start: 1;
       grid-column-end: -1;
 
-      border-bottom: 1px solid #eceef1;
+      border-bottom: ${(props) => props.theme.filesEditingWrapper.borderBottom};
       padding-bottom: 4px;
       margin-top: 4px;
 
@@ -74,7 +79,7 @@ const EditingWrapper = styled.div`
     margin: 0;
     font-family: "Open Sans", sans-serif, Arial;
     text-align: left;
-    color: #333333;
+    color: ${(props) => props.theme.filesEditingWrapper.color};
     ${(props) =>
       props.viewAs === "tile" &&
       css`
@@ -106,7 +111,7 @@ const EditingWrapper = styled.div`
         border: 1px solid transparent;
 
         :hover {
-          border-color: #d0d5da;
+          border: ${(props) => props.theme.filesEditingWrapper.border};
         }
 
         &:last-child {
@@ -123,7 +128,7 @@ const EditingWrapper = styled.div`
         padding: 4px 0 0 0;
 
         :hover {
-          border: 1px solid #d0d5da;
+          border: ${(props) => props.theme.filesEditingWrapper.border};
         }
       `}
   }
@@ -146,6 +151,8 @@ const EditingWrapper = styled.div`
     ${(props) => props.viewAs === "table" && `padding-left: 4px;`}
   }
 `;
+
+EditingWrapper.defaultProps = { theme: Base };
 
 const EditingWrapperComponent = (props) => {
   const {

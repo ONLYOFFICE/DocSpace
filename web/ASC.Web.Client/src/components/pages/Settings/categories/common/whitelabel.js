@@ -9,8 +9,10 @@ import Button from "@appserver/components/button";
 import toastr from "@appserver/components/toast/toastr";
 import Link from "@appserver/components/link";
 import TextInput from "@appserver/components/text-input";
+import FileInput from "@appserver/components/file-input";
 
 import { inject, observer } from "mobx-react";
+import { Base } from "@appserver/components/themes";
 
 const StyledComponent = styled.div`
   .margin-top {
@@ -34,7 +36,8 @@ const StyledComponent = styled.div`
   }
 
   .border-img {
-    border: solid 1px #d1d1d1;
+    border: ${(props) =>
+      props.theme.studio.settings.common.whiteLabel.borderImg};
     box-sizing: content-box;
   }
 
@@ -42,7 +45,8 @@ const StyledComponent = styled.div`
     width: 142px;
     height: 23px;
     padding: 10px;
-    background-color: #0f4071;
+    background-color: ${(props) =>
+      props.theme.studio.settings.common.whiteLabel.backgroundColor};
   }
 
   .logo-dark {
@@ -63,17 +67,22 @@ const StyledComponent = styled.div`
   }
 
   .background-green {
-    background-color: #7e983f;
+    background-color: ${(props) =>
+      props.theme.studio.settings.common.whiteLabel.greenBackgroundColor};
   }
 
   .background-blue {
-    background-color: #5170b5;
+    background-color: ${(props) =>
+      props.theme.studio.settings.common.whiteLabel.blueBackgroundColor};
   }
 
   .background-orange {
-    background-color: #e86e2e;
+    background-color: ${(props) =>
+      props.theme.studio.settings.common.whiteLabel.orangeBackgroundColor};
   }
 `;
+
+StyledComponent.defaultProps = { theme: Base };
 
 const mapSizesToArray = (sizes) => {
   return sizes.map((size) => {
@@ -211,12 +220,75 @@ class WhiteLabel extends React.Component {
   };
 
   onRestoreLogo = () => {
+    const { restoreWhiteLabelSettings } = this.props;
     console.log("restore button action");
+    restoreWhiteLabelSettings(true);
     this.setState({ isCanvasProcessing: false });
   };
 
+  onSaveImageBase64 = (url) => {
+    let img = document.createElement("img");
+    img.src = url;
+
+    let key = encodeURIComponent(url),
+      canvas = document.createElement("canvas");
+    canvas.width = img.width;
+    canvas.height = img.height;
+    let ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0);
+
+    return canvas.toDataURL("image/png");
+  };
+
+  onSave = () => {
+    const { setWhiteLabelSettings } = this.props;
+    const { logoText } = this.state;
+
+    // TODO: Для всех картинок написать логику
+    let fd = new FormData();
+    fd.append("logoText", logoText);
+
+    let elem = document.getElementById("canvas_logo_1");
+    let dataURL = elem.toDataURL();
+
+    fd.append(`logo[${0}][key]`, 1);
+    fd.append(`logo[${0}][value]`, dataURL);
+
+    // for (let i = 1; i < logoUrls.length; i++) {
+    //   fd.append(`logo[${i}][key]`, i);
+    //   console.log(this.onSaveImageBase64(logoUrls[i]));
+    //   fd.append(`logo[${i}][value]`, this.onSaveImageBase64(logoUrls[i - 1]));
+    // }
+
+    const data = new URLSearchParams(fd);
+
+    setWhiteLabelSettings(data);
+  };
+
+  onChangeHandler = (e) => {
+    const { setWhiteLabelSettings } = this.props;
+
+    // TODO: Добавить проверку на размер
+
+    let file = e.target.files[0];
+
+    let reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (e) => {
+      this.imgsrc = e.target.result;
+
+      let fd = new FormData();
+      fd.append("logoText", "asas");
+      fd.append(`logo[${0}][key]`, 1);
+      fd.append(`logo[${0}][value]`, e.target.result);
+
+      const data = new URLSearchParams(fd);
+      setWhiteLabelSettings(data);
+    };
+  };
+
   render() {
-    const { t } = this.props;
+    const { t, theme } = this.props;
     const {
       isLoadedData,
       isPortalPaid,
@@ -285,7 +357,9 @@ class WhiteLabel extends React.Component {
                     width="284"
                     height="46"
                     data-fontsize="36"
-                    data-fontcolor="#fff"
+                    data-fontcolor={
+                      theme.studio.settings.common.whiteLabel.dataFontColor
+                    }
                   >
                     {t("BrowserNoCanvasSupport")}
                   </canvas>
@@ -298,9 +372,10 @@ class WhiteLabel extends React.Component {
                 )}
               </div>
               {isPortalPaid && (
-                <Link type="action" isHovered onClick={this.onChangeLogo}>
-                  {t("ChangeLogoButton")}
-                </Link>
+                <FileInput
+                  placeholder={t("ChangeLogoButton")}
+                  onChange={this.onChangeHandler}
+                />
               )}
             </FieldContainer>
 
@@ -318,7 +393,9 @@ class WhiteLabel extends React.Component {
                     width="432"
                     height="70"
                     data-fontsize="54"
-                    data-fontcolor="#333"
+                    data-fontcolor={
+                      theme.studio.settings.common.whiteLabel.dataFontColorBlack
+                    }
                   >
                     {t("BrowserNoCanvasSupport")}
                   </canvas>
@@ -330,11 +407,6 @@ class WhiteLabel extends React.Component {
                   />
                 )}
               </div>
-              {isPortalPaid && (
-                <Link type="action" isHovered onClick={this.onChangeLogo}>
-                  {t("ChangeLogoButton")}
-                </Link>
-              )}
             </FieldContainer>
             <FieldContainer
               id="fieldContainerLogoFavicon"
@@ -350,7 +422,9 @@ class WhiteLabel extends React.Component {
                     width="32"
                     height="32"
                     data-fontsize="28"
-                    data-fontcolor="#333"
+                    data-fontcolor={
+                      theme.studio.settings.common.whiteLabel.dataFontColorBlack
+                    }
                   >
                     {t("BrowserNoCanvasSupport")}
                   </canvas>
@@ -363,7 +437,12 @@ class WhiteLabel extends React.Component {
                 )}
               </div>
               {isPortalPaid && (
-                <Link type="action" isHovered onClick={this.onChangeLogo}>
+                <Link
+                  type="action"
+                  color={theme.studio.settings.common.linkColorHelp}
+                  isHovered
+                  onClick={this.onChangeLogo}
+                >
                   {t("ChangeLogoButton")}
                 </Link>
               )}
@@ -384,7 +463,9 @@ class WhiteLabel extends React.Component {
                       width="172"
                       height="40"
                       data-fontsize="22"
-                      data-fontcolor="#fff"
+                      data-fontcolor={
+                        theme.studio.settings.common.whiteLabel.dataFontColor
+                      }
                     >
                       {t("BrowserNoCanvasSupport")}
                     </canvas>
@@ -394,7 +475,9 @@ class WhiteLabel extends React.Component {
                       width="172"
                       height="40"
                       data-fontsize="22"
-                      data-fontcolor="#fff"
+                      data-fontcolor={
+                        theme.studio.settings.common.whiteLabel.dataFontColor
+                      }
                     >
                       {t("BrowserNoCanvasSupport")}
                     </canvas>
@@ -404,7 +487,9 @@ class WhiteLabel extends React.Component {
                       width="172"
                       height="40"
                       data-fontsize="22"
-                      data-fontcolor="#fff"
+                      data-fontcolor={
+                        theme.studio.settings.common.whiteLabel.dataFontColor
+                      }
                     >
                       {t("BrowserNoCanvasSupport")}
                     </canvas>
@@ -431,7 +516,12 @@ class WhiteLabel extends React.Component {
               </div>
 
               {isPortalPaid && (
-                <Link type="action" isHovered onClick={this.onChangeLogo}>
+                <Link
+                  type="action"
+                  color={theme.studio.settings.common.linkColorHelp}
+                  isHovered
+                  onClick={this.onChangeLogo}
+                >
                   {t("ChangeLogoButton")}
                 </Link>
               )}
@@ -445,7 +535,8 @@ class WhiteLabel extends React.Component {
               label={t("Common:SaveButton")}
               isLoading={false}
               isDisabled={false}
-              onClick={() => console.log("Save button action")}
+              //onClick={() => console.log("Save button action")}
+              onClick={this.onSave}
             />
 
             <Button
@@ -464,22 +555,27 @@ class WhiteLabel extends React.Component {
   }
 }
 
-export default inject(({ setup }) => {
+export default inject(({ setup, auth }) => {
   const {
     common,
     getWhiteLabelLogoText,
     getWhiteLabelLogoSizes,
     getWhiteLabelLogoUrls,
+    setWhiteLabelSettings,
+    restoreWhiteLabelSettings,
   } = setup;
 
   const { logoText, logoSizes: rawSizes, logoUrls } = common.whiteLabel;
 
   return {
+    theme: auth.settingsStore.theme,
     logoText,
     rawSizes,
     logoUrls,
     getWhiteLabelLogoText,
     getWhiteLabelLogoSizes,
     getWhiteLabelLogoUrls,
+    setWhiteLabelSettings,
+    restoreWhiteLabelSettings,
   };
 })(withTranslation(["Settings", "Common"])(observer(WhiteLabel)));

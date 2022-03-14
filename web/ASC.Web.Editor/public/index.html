@@ -351,6 +351,10 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
     <script>
+      const tempElm = document.getElementById("loader");
+      tempElm.style.backgroundColor =
+        localStorage.theme === "Dark" ? "#333333" : "#f4f4f4";
+
       console.log("It's Editor INIT");
     </script>
   </body>

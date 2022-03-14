@@ -7,7 +7,7 @@ import TableBody from "@appserver/components/table-container/TableBody";
 import EmptyScreen from "../EmptyScreen";
 import { isMobile } from "react-device-detect";
 
-const Table = ({ peopleList, sectionWidth, viewAs, setViewAs }) => {
+const Table = ({ peopleList, sectionWidth, viewAs, setViewAs, theme }) => {
   const ref = useRef(null);
 
   useEffect(() => {
@@ -24,7 +24,7 @@ const Table = ({ peopleList, sectionWidth, viewAs, setViewAs }) => {
       <TableHeader sectionWidth={sectionWidth} containerRef={ref} />
       <TableBody>
         {peopleList.map((item) => (
-          <TableRow key={item.id} item={item} />
+          <TableRow theme={theme} key={item.id} item={item} />
         ))}
       </TableBody>
     </TableContainer>
@@ -33,13 +33,15 @@ const Table = ({ peopleList, sectionWidth, viewAs, setViewAs }) => {
   );
 };
 
-export default inject(({ peopleStore }) => {
+export default inject(({ peopleStore, auth }) => {
   const { usersStore, viewAs, setViewAs } = peopleStore;
+  const { theme } = auth.settingsStore;
   const { peopleList } = usersStore;
 
   return {
     peopleList,
     viewAs,
     setViewAs,
+    theme,
   };
 })(observer(Table));

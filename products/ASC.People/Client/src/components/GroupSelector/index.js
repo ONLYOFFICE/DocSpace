@@ -90,25 +90,37 @@ class GroupSelector extends React.Component {
       onCancel,
       t,
       searchPlaceHolderLabel,
-      displayType,
+      headerLabel,
+      onArrowClick,
       withoutAside,
       embeddedComponent,
       showCounter,
       smallSectionWidth,
+      theme,
     } = this.props;
+
+    const groups = [
+      {
+        key: "all",
+        id: "all",
+        label: t("AllGroups"),
+        total: 0,
+      },
+    ];
 
     return (
       <AdvancedSelector
+        theme={theme}
         id={id}
         className={className}
         style={style}
         options={options}
+        groups={groups}
         hasNextPage={hasNextPage}
         smallSectionWidth={smallSectionWidth}
         isNextPageLoading={isNextPageLoading}
         loadNextPage={this.loadNextPage}
         size={"compact"}
-        displayType={displayType}
         selectedOptions={selectedOptions}
         isOpen={isOpen}
         isMultiSelect={isMultiSelect}
@@ -130,13 +142,15 @@ class GroupSelector extends React.Component {
         withoutAside={withoutAside}
         embeddedComponent={embeddedComponent}
         showCounter={showCounter}
+        headerLabel={headerLabel ? headerLabel : t("AddDepartmentsButtonLabel")}
+        onArrowClick={onArrowClick}
       />
     );
   }
 }
 
 GroupSelector.propTypes = {
-  className: PropTypes.oneOf([PropTypes.string, PropTypes.array]),
+  className: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   id: PropTypes.string,
   isDisabled: PropTypes.bool,
   isMultiSelect: PropTypes.bool,
@@ -148,14 +162,12 @@ GroupSelector.propTypes = {
   style: PropTypes.object,
   t: PropTypes.func,
   useFake: PropTypes.bool,
-  displayType: PropTypes.oneOf(["auto", "aside", "dropdown"]),
   withoutAside: PropTypes.bool,
   embeddedComponent: PropTypes.any,
 };
 
 GroupSelector.defaultProps = {
   useFake: false,
-  displayType: "auto",
   withoutAside: false,
 };
 

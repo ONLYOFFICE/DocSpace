@@ -72,7 +72,7 @@ class DeleteGroupUsersDialogComponent extends React.Component {
   };
 
   render() {
-    const { t, tReady, onClose, visible } = this.props;
+    const { t, tReady, onClose, visible, theme } = this.props;
     const { isRequestRunning, userIds, listUsers } = this.state;
     const itemSize = 25;
     const containerStyles = { height: listUsers.length * 25, maxHeight: 220 };
@@ -121,7 +121,10 @@ class DeleteGroupUsersDialogComponent extends React.Component {
           <Text>{t("DeleteGroupUsersMessage")}</Text>
           <Text>{t("Translations:NotBeUndone")}</Text>
           <br />
-          <Text color="#c30" fontSize="18px">
+          <Text
+            color={theme.peopleDialogs.deleteUser.textColor}
+            fontSize="18px"
+          >
             {t("Common:Warning")}!
           </Text>
           <br />
@@ -176,11 +179,12 @@ DeleteUsersDialog.propTypes = {
 };
 
 export default withRouter(
-  inject(({ peopleStore }) => ({
+  inject(({ peopleStore, auth }) => ({
     filter: peopleStore.filterStore.filter,
     removeUser: peopleStore.usersStore.removeUser,
     selectedUsers: peopleStore.selectionStore.selection,
     setSelected: peopleStore.selectionStore.setSelected,
     userIds: peopleStore.selectionStore.getUsersToRemoveIds,
+    theme: auth.settingsStore.theme,
   }))(observer(DeleteUsersDialog))
 );

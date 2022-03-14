@@ -6,9 +6,12 @@ import { classNames } from "../../utils/classNames";
 import { CSSTransition } from "react-transition-group";
 import { ReactSVG } from "react-svg";
 import ArrowIcon from "../svg/arrow.right.react.svg";
+import CustomScrollbarsVirtualList from "../../scrollbar/custom-scrollbars-virtual-list";
+
+import { VariableSizeList } from "react-window";
 
 const SubMenu = (props) => {
-  const { onLeafClick, root, resetMenu, model } = props;
+  const { onLeafClick, root, resetMenu, model, changeView } = props;
 
   const [activeItem, setActiveItem] = useState(null);
   const subMenuRef = useRef();
@@ -82,11 +85,12 @@ const SubMenu = (props) => {
     }
   });
 
-  const renderSeparator = (index) => (
+  const renderSeparator = (index, style) => (
     <li
       key={"separator_" + index}
       className="p-menu-separator not-selectable"
       role="separator"
+      style={style}
     ></li>
   );
 
@@ -104,7 +108,7 @@ const SubMenu = (props) => {
     return null;
   };
 
-  const renderMenuitem = (item, index) => {
+  const renderMenuitem = (item, index, style) => {
     if (item.disabled) return;
     //TODO: Not render disabled items
     const active = activeItem === item;
@@ -175,7 +179,7 @@ const SubMenu = (props) => {
         key={item.label + "_" + index}
         role="none"
         className={className}
-        style={item.style}
+        style={{ ...item.style, ...style }}
         onMouseEnter={(e) => onItemMouseEnter(e, item)}
       >
         {content}
@@ -184,15 +188,67 @@ const SubMenu = (props) => {
     );
   };
 
-  const renderItem = (item, index) => {
+  const renderItem = (data, idx) => {
+    let item = data;
+    let index = idx;
+    let style = {};
+
+    if (Array.isArray(data.data)) {
+      item = data.data[data.index] ? data.data[data.index] : null;
+      index = data.index;
+      style = data.style;
+    }
+
     if (!item) return null;
-    if (item.isSeparator) return renderSeparator(index);
-    else return renderMenuitem(item, index);
+    if (item.isSeparator)
+      return (
+        <React.Fragment key={item.key}>
+          {renderSeparator(index, style)}
+        </React.Fragment>
+      );
+
+    return (
+      <React.Fragment key={item.key}>
+        {renderMenuitem(item, index, style)}
+      </React.Fragment>
+    );
   };
 
   const renderMenu = () => {
     if (model) {
+      if (changeView) {
+        const newModel = model.filter((item) => item && !item.disabled);
+        const rowHeights = newModel.map((item) => {
+          if (!item) return 0;
+          if (item.isSeparator) return 13;
+          return 36;
+        });
+
+        const getItemSize = (index) => rowHeights[index];
+
+        const height = rowHeights.reduce((a, b) => a + b);
+
+        const viewport = DomHelpers.getViewport();
+
+        const listHeight =
+          height + 61 > viewport.height - 64 ? viewport.height - 125 : height;
+
+        return (
+          <VariableSizeList
+            height={listHeight}
+            width={"auto"}
+            itemCount={newModel.length}
+            itemSize={getItemSize}
+            itemData={newModel}
+            outerElementType={CustomScrollbarsVirtualList}
+          >
+            {renderItem}
+          </VariableSizeList>
+        );
+      }
+
       return model.map((item, index) => {
+        if (item.disabled) return null;
         return renderItem(item, index);
       });
     }
@@ -226,6 +282,7 @@ SubMenu.propTypes = {
   className: PropTypes.string,
   resetMenu: PropTypes.bool,
   onLeafClick: PropTypes.func,
+  changeView: PropTypes.bool,
 };
 
 SubMenu.defaultProps = {

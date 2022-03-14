@@ -18,6 +18,7 @@ import { withRouter } from "react-router";
 import config from "../../../../package.json";
 import { clickBackdrop, combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
+import Base from "@appserver/components/themes/base";
 
 const StyledTreeMenu = styled(TreeMenu)`
   ${(props) =>
@@ -30,27 +31,34 @@ const StyledTreeMenu = styled(TreeMenu)`
 const StyledCatalogFolderIcon = styled(CatalogFolderIcon)`
   ${commonIconsStyles}
   path {
-    fill: ${(props) => props.color};
+    fill: ${(props) => props.theme.peopleArticleBody.iconColor};
   }
 `;
+StyledCatalogFolderIcon.defaultProps = { theme: Base };
+
 const StyledDepartmentsGroupIcon = styled(DepartmentsGroupIcon)`
   ${commonIconsStyles}
   path {
-    fill: ${(props) => props.color};
+    fill: ${(props) => props.theme.peopleArticleBody.iconColor};
   }
 `;
+StyledDepartmentsGroupIcon.defaultProps = { theme: Base };
+
 const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
   ${commonIconsStyles}
   path {
-    fill: ${(props) => props.color};
+    fill: ${(props) => props.theme.peopleArticleBody.expanderColor};
   }
 `;
+StyledExpanderDownIcon.defaultProps = { theme: Base };
+
 const StyledExpanderRightIcon = styled(ExpanderRightIcon)`
   ${commonIconsStyles}
   path {
-    fill: ${(props) => props.color};
+    fill: ${(props) => props.theme.peopleArticleBody.expanderColor};
   }
 `;
+StyledExpanderRightIcon.defaultProps = { theme: Base };
 const getItems = (data) => {
   return data.map((item) => {
     if (item.children) {
@@ -61,10 +69,7 @@ const getItems = (data) => {
           key={item.key}
           icon={
             item.root ? (
-              <StyledDepartmentsGroupIcon
-                size="scale"
-                color="#657077" /* isfill={true} */
-              /> // TODO: Add isFill prop if need
+              <StyledDepartmentsGroupIcon size="scale" /* isfill={true} */ /> // TODO: Add isFill prop if need
             ) : (
               // <DepartmentsGroupIcon
               //   size="scale"
@@ -84,7 +89,7 @@ const getItems = (data) => {
         className="inner-folder"
         key={item.key}
         title={item.title}
-        icon={<StyledCatalogFolderIcon size="scale" color="#657077" />}
+        icon={<StyledCatalogFolderIcon size="scale" />}
       />
     );
   });
@@ -196,9 +201,9 @@ class ArticleBodyContent extends React.Component {
       return null;
     }
     if (obj.expanded) {
-      return <StyledExpanderDownIcon size="scale" color="dimgray" />;
+      return <StyledExpanderDownIcon size="scale" />;
     } else {
-      return <StyledExpanderRightIcon size="scale" color="dimgray" />;
+      return <StyledExpanderRightIcon size="scale" />;
     }
   };
 

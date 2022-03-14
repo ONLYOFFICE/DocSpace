@@ -1,6 +1,6 @@
 {
   "count": 6,
-  "response": ["en-US", "it-IT", "de-DE", "pt-BR", "ru-RU", "fr-FR"],
+  "response": ["en", "fr", "de", "it", "pt-BR", "ru"],
   "status": 0,
   "statusCode": 200
 }
