@@ -543,6 +543,7 @@ namespace ASC.Data.Backup.Services
             CurrentRegion = currentRegion;
             ConfigPaths = configPaths;
             BackupProgressItemEnum = BackupProgressItemEnum.Restore;
+            StorageParams = request.StorageParams;
         }
 
         protected override void DoJob()
