@@ -43,13 +43,13 @@ namespace ASC.ActiveDirectory.ComplexOperations
     {
         private LdapChangeCollection _ldapChanges;
         private UserInfo _currentUser;
-        private readonly UserFormatter _userFormatter;
-        private readonly SettingsManager _settingsManager;
-        private readonly UserPhotoManager _userPhotoManager;
-        private readonly WebItemSecurity _webItemSecurity;
-        private readonly UserManager _userManager;
-        private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
-        private readonly TenantManager _tenantManager;
+        private UserFormatter _userFormatter;
+        private SettingsManager _settingsManager;
+        private UserPhotoManager _userPhotoManager;
+        private WebItemSecurity _webItemSecurity;
+        private UserManager _userManager;
+        private DisplayUserSettingsHelper _displayUserSettingsHelper;
+        private TenantManager _tenantManager;
         private readonly IServiceProvider _serviceProvider;
 
         public LdapSaveSyncOperation(
@@ -76,11 +76,15 @@ namespace ASC.ActiveDirectory.ComplexOperations
         protected override void Do()
         {
             using var scope = _serviceProvider.CreateScope();
-            var settingsManager = scope.ServiceProvider.GetService<SettingsManager>();
             _ldapChanges = scope.ServiceProvider.GetService<LdapChangeCollection>();
             _ldapChanges.Tenant = CurrentTenant;
-            var options = scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>();
-            var logger = options.Get("ASC");
+            _userFormatter = scope.ServiceProvider.GetService<UserFormatter>();
+            _settingsManager = scope.ServiceProvider.GetService<SettingsManager>();
+            _userPhotoManager = scope.ServiceProvider.GetService<UserPhotoManager>();
+            _webItemSecurity = scope.ServiceProvider.GetService<WebItemSecurity>();
+            _userManager = scope.ServiceProvider.GetService<UserManager>();
+            _displayUserSettingsHelper = scope.ServiceProvider.GetService<DisplayUserSettingsHelper>();
+            _tenantManager = scope.ServiceProvider.GetService<TenantManager>();
 
             try
             {
@@ -90,9 +94,9 @@ namespace ASC.ActiveDirectory.ComplexOperations
 
                     LDAPSettings.IsDefault = LDAPSettings.Equals(LDAPSettings.GetDefault(_serviceProvider));
 
-                    if (!settingsManager.Save(LDAPSettings))
+                    if (!_settingsManager.Save(LDAPSettings))
                     {
-                        logger.Error("Can't save LDAP settings.");
+                        Logger.Error("Can't save LDAP settings.");
                         Error = Resource.LdapSettingsErrorCantSaveLdapSettings;
                         return;
                     }
@@ -100,7 +104,7 @@ namespace ASC.ActiveDirectory.ComplexOperations
 
                 if (LDAPSettings.EnableLdapAuthentication)
                 {
-                    if (logger.IsDebugEnabled)
+                    if (Logger.IsDebugEnabled)
                     {
                         var sb = new StringBuilder();
                         sb.AppendLine("SyncLDAP()");
@@ -118,7 +122,7 @@ namespace ASC.ActiveDirectory.ComplexOperations
                             sb.AppendLine("GroupMember: " + LDAPSettings.GroupAttribute);
                         }
 
-                        logger.Debug(sb.ToString());
+                        Logger.Debug(sb.ToString());
                     }
 
                     SyncLDAP();
@@ -128,14 +132,14 @@ namespace ASC.ActiveDirectory.ComplexOperations
                 }
                 else
                 {
-                    logger.Debug("TurnOffLDAP()");
+                    Logger.Debug("TurnOffLDAP()");
 
                     TurnOffLDAP();
-                    var ldapCurrentUserPhotos = settingsManager.Load<LdapCurrentUserPhotos>().GetDefault(_serviceProvider);
-                    settingsManager.Save(ldapCurrentUserPhotos);
+                    var ldapCurrentUserPhotos = _settingsManager.Load<LdapCurrentUserPhotos>().GetDefault(_serviceProvider);
+                    _settingsManager.Save(ldapCurrentUserPhotos);
 
-                    var ldapCurrentAcccessSettings = settingsManager.Load<LdapCurrentAcccessSettings>().GetDefault(_serviceProvider);
-                    settingsManager.Save(ldapCurrentAcccessSettings);
+                    var ldapCurrentAcccessSettings = _settingsManager.Load<LdapCurrentAcccessSettings>().GetDefault(_serviceProvider);
+                    _settingsManager.Save(ldapCurrentAcccessSettings);
                     //не снимать права при выключении
                     //var rights = new List<LdapSettings.AccessRight>();
                     //TakeUsersRights(rights);
@@ -148,7 +152,7 @@ namespace ASC.ActiveDirectory.ComplexOperations
             }
             catch (NovellLdapTlsCertificateRequestedException ex)
             {
-                logger.ErrorFormat(
+                Logger.ErrorFormat(
                     "CheckSettings(acceptCertificate={0}, cert thumbprint: {1}): NovellLdapTlsCertificateRequestedException: {2}",
                     LDAPSettings.AcceptCertificate, LDAPSettings.AcceptCertificateHash, ex.ToString());
                 Error = Resource.LdapSettingsStatusCertificateVerification;
@@ -157,17 +161,17 @@ namespace ASC.ActiveDirectory.ComplexOperations
             }
             catch (TenantQuotaException e)
             {
-                logger.ErrorFormat("TenantQuotaException. {0}", e.ToString());
+                Logger.ErrorFormat("TenantQuotaException. {0}", e.ToString());
                 Error = Resource.LdapSettingsTenantQuotaSettled;
             }
             catch (FormatException e)
             {
-                logger.ErrorFormat("FormatException error. {0}", e.ToString());
+                Logger.ErrorFormat("FormatException error. {0}", e.ToString());
                 Error = Resource.LdapSettingsErrorCantCreateUsers;
             }
             catch (Exception e)
             {
-                logger.ErrorFormat("Internal server error. {0}", e.ToString());
+                Logger.ErrorFormat("Internal server error. {0}", e.ToString());
                 Error = Resource.LdapSettingsInternalServerError;
             }
             finally

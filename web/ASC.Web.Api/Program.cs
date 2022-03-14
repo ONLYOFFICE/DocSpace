@@ -4,6 +4,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
+using ASC.ActiveDirectory.Base;
 using ASC.Api.Core;
 using ASC.Common.Utils;
 
@@ -11,6 +12,7 @@ using Autofac.Extensions.DependencyInjection;
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace ASC.Web.Api
@@ -20,6 +22,12 @@ namespace ASC.Web.Api
         public async static Task Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
+
+            using (var scope = host.Services.CreateScope())
+            {
+                var ldapNotifyHelper = scope.ServiceProvider.GetRequiredService<LdapNotifyHelper>();
+                ldapNotifyHelper.RegisterAll();
+            }
 
             await host.RunAsync();
         }
