@@ -143,7 +143,9 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
       : props.theme.button.border.base};
 
   ${(props) => props.scale && `width: 100%;`};
-  min-width: ${(props) => props.theme.button.minWidth[props.size]};
+  min-width: ${(props) =>
+    props.minwidth ? props.minwidth : props.theme.button.minWidth[props.size]};
+
   padding: ${(props) => `${props.theme.button.padding[props.size]}`};
 
   cursor: ${(props) =>
