@@ -213,6 +213,7 @@ const Confirm = (props) => {
   const [isGreetingMode, setIsGreetingMode] = useState(true);
 
   const [isEmailErrorShow, setIsEmailErrorShow] = useState(false);
+  const [isPasswordErrorShow, setIsPasswordErrorShow] = useState(false);
 
   const getSso = async () => {
     const data = await getCapabilities();
@@ -396,6 +397,7 @@ const Confirm = (props) => {
   const onChangePassword = (e) => {
     setPassword(e.target.value);
     setErrorText("");
+    setIsPasswordErrorShow(false);
   };
 
   const onKeyPress = (event) => {
@@ -511,6 +513,10 @@ const Confirm = (props) => {
 
   const onBlurEmail = () => {
     setIsEmailErrorShow(true);
+  };
+
+  const onBlurPassword = () => {
+    setIsPasswordErrorShow(true);
   };
 
   if (!isLoaded) return <AppLoader />;
@@ -653,7 +659,7 @@ const Confirm = (props) => {
             <FieldContainer
               isVertical={true}
               labelVisible={false}
-              hasError={!passwordValid}
+              hasError={isPasswordErrorShow && !passwordValid}
               errorMessage={errorText ? "" : t("Common:RequiredField")}
             >
               <PasswordInput
@@ -665,7 +671,7 @@ const Confirm = (props) => {
                 inputName="password"
                 placeholder={t("Common:Password")}
                 type="password"
-                hasError={!passwordValid}
+                hasError={isPasswordErrorShow && !passwordValid}
                 inputValue={password}
                 size="large"
                 scale={true}
@@ -673,13 +679,15 @@ const Confirm = (props) => {
                 isDisabled={isLoading}
                 autoComplete="current-password"
                 onChange={onChangePassword}
+                onBlur={onBlurPassword}
                 onKeyDown={onKeyPress}
                 onValidateInput={onValidatePassword}
-                tooltipPasswordTitle={`${t("Common:PasswordLimitLength")}:`}
+                tooltipPasswordTitle={`${t("Common:PasswordLimitMessage")}:`}
                 tooltipPasswordLength={`${t("Common:PasswordLimitLength", {
                   fromNumber: settings ? settings.minLength : 8,
                   toNumber: 30,
                 })};`}
+                generatePasswordTitle={t("Wizard:GeneratePassword")}
               />
             </FieldContainer>
 
@@ -784,6 +792,8 @@ export default inject(({ auth }) => {
   };
 })(
   withRouter(
-    withTranslation(["Confirm", "Common"])(withLoader(observer(CreateUserForm)))
+    withTranslation(["Confirm", "Common", "Wizard"])(
+      withLoader(observer(CreateUserForm))
+    )
   )
 );
