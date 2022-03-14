@@ -5,7 +5,9 @@ import render from "./server/render";
 import i18nextMiddleware from "i18next-express-middleware";
 import i18next from "i18next";
 import Backend from "i18next-node-fs-backend";
+import pkg from "../package.json";
 
+const title = pkg.title;
 const app = express();
 const port = process.env.PORT || 5013;
 
@@ -43,7 +45,7 @@ app.use(express.static(path.resolve(__dirname, "../clientBuild")));
 
 app.get("/products/files/doceditor", async (req, res) => {
   const { props, content, styleTags, scriptTags } = await render(req);
-  const userLng = props?.props?.user?.cultureName || "en";
+  const userLng = props?.user?.cultureName || "en";
 
   i18next.changeLanguage(userLng).then(() => {
     const initialLanguage = userLng;
@@ -58,7 +60,7 @@ app.get("/products/files/doceditor", async (req, res) => {
     });
 
     const response = template(
-      "Server Rendered Page",
+      title,
       props,
       content,
       styleTags,
