@@ -152,7 +152,6 @@ const StyledTooltipContainer = styled(Text)`
 `;
 
 const StyledTooltipItem = styled(Text)`
-  margin-left: 8px;
   height: 24px;
   color: ${(props) => (props.valid ? "#44bb00" : "#B40404")};
 `;

@@ -3,15 +3,12 @@ import PropTypes from "prop-types";
 import equal from "fast-deep-equal/react";
 
 import InputBlock from "../input-block";
-import { RefreshIcon } from "./svg";
 import Link from "../link";
 import Text from "../text";
 import Tooltip from "../tooltip";
 import Base from "../themes/base";
 import {
   Progress,
-  CopyLink,
-  NewPasswordButton,
   PasswordProgress,
   StyledInput,
   TooltipStyle,
@@ -341,6 +338,17 @@ class PasswordInput extends React.Component {
             {this.props.tooltipPasswordSpecial}
           </StyledTooltipItem>
         )}
+
+        {this.props.generatePasswordTitle && (
+          <Link
+            type="action"
+            fontWeight="600"
+            isHovered={true}
+            onClick={this.onGeneratePassword}
+          >
+            {this.props.generatePasswordTitle}
+          </Link>
+        )}
       </StyledTooltipContainer>
     ) : null;
 
@@ -421,12 +429,8 @@ class PasswordInput extends React.Component {
       className,
       style,
       simpleView,
-      hideNewPasswordButton,
       isDisabled,
-      showCopyLink,
     } = this.props;
-
-    const { copyLabel, disableCopyAction, type } = this.state;
 
     return (
       <StyledInput
@@ -452,33 +456,8 @@ class PasswordInput extends React.Component {
               >
                 {this.renderInputGroup()}
               </PasswordProgress>
-              {!hideNewPasswordButton ? (
-                <NewPasswordButton
-                  className="password-input_refresh"
-                  isDisabled={isDisabled}
-                >
-                  <RefreshIcon
-                    size="medium"
-                    onClick={this.onGeneratePassword}
-                  />
-                </NewPasswordButton>
-              ) : null}
             </div>
             {this.renderTextTooltip()}
-            {showCopyLink && (
-              <CopyLink>
-                <Link
-                  type="action"
-                  isHovered={true}
-                  fontSize="13px"
-                  className="password-input_link"
-                  isSemitransparent={disableCopyAction}
-                  onClick={this.copyToClipboard.bind(this, emailInputName)}
-                >
-                  {copyLabel}
-                </Link>
-              </CopyLink>
-            )}
           </>
         )}
       </StyledInput>
@@ -491,7 +470,7 @@ PasswordInput.propTypes = {
   id: PropTypes.string,
   /** Allows you to set the component auto-complete  */
   autoComplete: PropTypes.string,
-  /** It is necessary for correct display of values ​​inside input */
+  /** It is necessary for correct display of values inside input */
   inputType: PropTypes.oneOf(["text", "password"]),
   /** Input name */
   inputName: PropTypes.string,
@@ -518,8 +497,6 @@ PasswordInput.propTypes = {
   isDisabled: PropTypes.bool,
   size: PropTypes.oneOf(["base", "middle", "big", "huge", "large"]),
   scale: PropTypes.bool,
-  /** Allows to hide NewPasswordButton */
-  hideNewPasswordButton: PropTypes.bool,
   /** Allows to hide Tooltip */
   isDisableTooltip: PropTypes.bool,
   /** Allows to show text Tooltip */
@@ -555,8 +532,7 @@ PasswordInput.propTypes = {
   tooltipOffsetLeft: PropTypes.number,
   /** Set simple view of password input (without tooltips, password progress bar and several additional buttons (copy and generate password) */
   simpleView: PropTypes.bool,
-  /** Sets the link to copy the password visible  */
-  showCopyLink: PropTypes.bool,
+  generatePasswordTitle: PropTypes.string,
 };
 
 PasswordInput.defaultProps = {
@@ -568,7 +544,6 @@ PasswordInput.defaultProps = {
   size: "base",
   scale: true,
 
-  hideNewPasswordButton: false,
   isDisableTooltip: false,
   isTextTooltipVisible: false,
 
@@ -587,7 +562,6 @@ PasswordInput.defaultProps = {
     digits: false,
     specSymbols: false,
   },
-  showCopyLink: true,
 };
 
 export default PasswordInput;
