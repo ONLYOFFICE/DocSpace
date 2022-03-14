@@ -54,6 +54,8 @@ const Form = (props) => {
 
   const [isLoaded, setIsLoaded] = useState(false);
 
+  const [isEmailErrorShow, setIsEmailErrorShow] = useState(false);
+
   const { t } = useTranslation("Login");
 
   const {
@@ -116,6 +118,7 @@ const Form = (props) => {
     //console.log("onClearErrors", e);
     !identifierValid && setIdentifierValid(true);
     errorText && setErrorText("");
+    setIsEmailErrorShow(false);
   };
 
   //const throttledKeyPress = throttle(onKeyPress, 500);
@@ -293,6 +296,10 @@ const Form = (props) => {
     setErrorText(res.errors[0]);
   };
 
+  const onBlurEmail = () => {
+    setIsEmailErrorShow(true);
+  };
+
   //console.log("Login render");
 
   return (
@@ -343,7 +350,7 @@ const Form = (props) => {
             <FieldContainer
               isVertical={true}
               labelVisible={false}
-              hasError={!identifierValid}
+              hasError={isEmailErrorShow && !identifierValid}
               errorMessage={
                 errorText ? t(`Common:${errorText}`) : t("Common:RequiredField")
               } //TODO: Add wrong login server error
@@ -352,7 +359,7 @@ const Form = (props) => {
                 id="login"
                 name="login"
                 type="email"
-                hasError={!identifierValid}
+                hasError={isEmailErrorShow && !identifierValid}
                 value={identifier}
                 placeholder={t("RegistrationEmailWatermark")}
                 size="large"
@@ -362,6 +369,7 @@ const Form = (props) => {
                 isDisabled={isLoading || !identifierValid}
                 autoComplete="username"
                 onChange={onChangeLogin}
+                onBlur={onBlurEmail}
                 onValidateInput={onValidateEmail}
                 disallowChar='"'
                 forwardedRef={inputRef}
