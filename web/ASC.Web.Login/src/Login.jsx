@@ -362,7 +362,6 @@ const Form = (props) => {
 
   //console.log("Login render");
 
-  if (!isLoaded) return <AppLoader />;
   return (
     <LoginContainer>
       {!isLoaded ? (
