@@ -23,5 +23,5 @@ export default async (req) => {
   );
   const styleTags = sheet.getStyleTags();
 
-  return { props, content, styleTags, scriptTags };
+  return { ...props, content, styleTags, scriptTags };
 };

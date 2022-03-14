@@ -16,13 +16,11 @@ delete window.initialLanguage;
 const stateJS = document.getElementById("__ASC_INITIAL_STATE__");
 stateJS.parentNode.removeChild(stateJS);
 
-const { props } = propsObj;
-
 const AppWrapper = () => {
   useSSR(initialI18nStore, initialLanguage);
   return (
     <Suspense fallback={<div />}>
-      <App {...props} />
+      <App {...propsObj} />
     </Suspense>
   );
 };

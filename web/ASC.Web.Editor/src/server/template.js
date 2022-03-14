@@ -7,7 +7,7 @@ export default function template(
   initialI18nStore,
   initialLanguage
 ) {
-  const { docApiUrl } = initialState.props;
+  const { docApiUrl } = initialState;
 
   const scripts = `   
     <script id="__ASC_INITIAL_STATE__">
