@@ -42,8 +42,10 @@ class SnackBar extends React.Component {
   };
 
   componentDidMount() {
-    const { onLoad } = this.props;
-    onLoad();
+    const { onLoad, isMaintenance } = this.props;
+    if (isMaintenance) {
+      onLoad();
+    }
   }
 
   // Renderer callback with condition
@@ -79,6 +81,7 @@ class SnackBar extends React.Component {
       countDownTime,
       isCampaigns,
       sectionWidth,
+      onLoad,
       ...rest
     } = this.props;
 
@@ -93,6 +96,9 @@ class SnackBar extends React.Component {
               src={htmlContent}
               scrolling="no"
               sectionWidth={sectionWidth}
+              onLoad={() => {
+                onLoad();
+              }}
             ></StyledIframe>
             <StyledAction className="action" onClick={this.onActionClick}>
               <StyledCrossIcon size="medium" />
@@ -184,6 +190,7 @@ SnackBar.propTypes = {
   sectionWidth: PropTypes.number,
   isCampaigns: PropTypes.bool,
   onLoad: PropTypes.func,
+  isMaintenance: PropTypes.bool,
 };
 
 SnackBar.defaultProps = {
