@@ -105,12 +105,18 @@ class SectionHeader extends React.Component {
   constructor(props) {
     super(props);
 
-    this.focusRef = React.createRef();
+    this.state = { orientationChanged: false };
   }
 
-  shouldComponentUpdate(nextProps) {
-    return !equal(this.props, nextProps);
+  componentDidMount() {
+    window.addEventListener("orientationchange", this.orientationChangeHandler);
   }
+
+  orientationChangeHandler = () => {
+    this.setState((state) => ({
+      orientationChanged: !state.orientationChanged,
+    }));
+  };
 
   render() {
     //console.log("PageLayout SectionHeader render");
