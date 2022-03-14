@@ -19,29 +19,8 @@ builder.Host.ConfigureDefaultAppConfiguration(args, (hostContext, config, env, p
 });
 
 startup.ConfigureServices(builder.Services);
-builder.Host.ConfigureServices((hostContext, services) =>
+builder.Host.ConfigureDefaultServices((hostContext, services, diHelper) =>
 {
-    services.AddMemoryCache();
-    var diHelper = new DIHelper(services);
-
-    var redisConfiguration = hostContext.Configuration.GetSection("Redis").Get<RedisConfiguration>();
-    var kafkaConfiguration = hostContext.Configuration.GetSection("kafka").Get<KafkaSettings>();
-
-    if (kafkaConfiguration != null)
-    {
-        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCacheNotify<>));
-    }
-    else if (redisConfiguration != null)
-    {
-        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCacheNotify<>));
-
-        services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
-    }
-    else
-    {
-        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(MemoryCacheNotify<>));
-    }
-
     diHelper.RegisterProducts(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
 
     services.Configure<NotifyServiceCfg>(hostContext.Configuration.GetSection("notify"));

@@ -22,30 +22,8 @@ builder.Host.ConfigureDefaultAppConfiguration(args, (hostContext, config, env, p
     config.AddJsonFile($"appsettings.services.json", true);
 });
 
-builder.WebHost.ConfigureServices((hostContext, services) =>
+builder.Host.ConfigureDefaultServices((hostContext, services, diHelper) =>
 {
-    services.AddMemoryCache();
-
-    var diHelper = new DIHelper(services);
-
-    var redisConfiguration = hostContext.Configuration.GetSection("Redis").Get<RedisConfiguration>();
-    var kafkaConfiguration = hostContext.Configuration.GetSection("kafka").Get<KafkaSettings>();
-
-    if (kafkaConfiguration != null)
-    {
-        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCacheNotify<>));
-    }
-    else if (redisConfiguration != null)
-    {
-        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCacheNotify<>));
-
-        services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
-    }
-    else
-    {
-        diHelper.TryAdd(typeof(ICacheNotify<>), typeof(MemoryCacheNotify<>));
-    }
-
     services.AddHttpClient();
 
     diHelper.TryAdd<DbWorker>();
