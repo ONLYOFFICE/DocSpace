@@ -5,7 +5,7 @@ import { getLanguage } from "@appserver/common/utils";
 import SnackBar from "@appserver/components/snackbar";
 import { Consumer } from "@appserver/components/utils/context";
 
-const loadLanguagePath = () => {
+const loadLanguagePath = async () => {
   if (!window.firebaseHelper) return;
 
   const lng = localStorage.getItem(LANGUAGE) || "en";
@@ -18,11 +18,15 @@ const loadLanguagePath = () => {
   let index = Number(localStorage.getItem("barIndex") || 0);
   const currentBar = bar[index];
 
-  const htmlUrl =
+  let htmlUrl =
     currentBar && window.firebaseHelper.config.authDomain
       ? `https://${window.firebaseHelper.config.authDomain}/${language}/${currentBar}/index.html`
       : null;
 
+  await fetch(htmlUrl).then((data) => {
+    if (data.ok) return;
+    htmlUrl = null;
+  });
   return htmlUrl;
 };
 
@@ -35,7 +39,7 @@ const bannerHOC = (props) => {
     .split(",")
     .filter((bar) => bar.length > 0);
 
-  const updateBanner = () => {
+  const updateBanner = async () => {
     let index = Number(localStorage.getItem("barIndex") || 0);
 
     if (bar.length < 1 || index + 1 >= bar.length) {
@@ -45,7 +49,7 @@ const bannerHOC = (props) => {
     }
 
     try {
-      const htmlUrl = loadLanguagePath();
+      const htmlUrl = await loadLanguagePath();
       setHtmlLink(htmlUrl);
     } catch (e) {
       updateBanner();
