@@ -9,11 +9,6 @@ import {
 // import { SectionHeaderContent } from './Section';
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { inject, observer } from "mobx-react";
-import {
-  CatalogBodyContent,
-  CatalogHeaderContent,
-  CatalogMainButtonContent,
-} from "../../components/Catalog";
 
 class Reassign extends React.Component {
   componentDidMount() {
@@ -35,7 +30,7 @@ class Reassign extends React.Component {
 
   render() {
     const { isAdmin } = this.props;
-    console.log("Reassign render");
+    // console.log("Reassign render");
 
     // let loaded = false;
     // const { profile, match } = this.props;
@@ -49,20 +44,6 @@ class Reassign extends React.Component {
 
     return (
       <PageLayout>
-        <PageLayout.ArticleHeader>
-          <CatalogHeaderContent />
-        </PageLayout.ArticleHeader>
-
-        {isAdmin && (
-          <PageLayout.ArticleMainButton>
-            <CatalogMainButtonContent />
-          </PageLayout.ArticleMainButton>
-        )}
-
-        <PageLayout.ArticleBody>
-          <CatalogBodyContent />
-        </PageLayout.ArticleBody>
-
         <PageLayout.SectionHeader>
           <SectionHeaderContent />
         </PageLayout.SectionHeader>

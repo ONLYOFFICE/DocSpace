@@ -6,11 +6,7 @@ import {
   ArticleMainButtonContent,
   ArticleBodyContent,
 } from "../../components/Article";
-import {
-  CatalogHeaderContent,
-  CatalogMainButtonContent,
-  CatalogBodyContent,
-} from "../../components/Catalog";
+
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
@@ -43,7 +39,7 @@ class GroupAction extends React.Component {
   }
 
   render() {
-    console.log("GroupAction render");
+    // console.log("GroupAction render");
 
     const { group, match, tReady, isAdmin, showCatalog } = this.props;
 
@@ -51,23 +47,6 @@ class GroupAction extends React.Component {
       <>
         {group || !match.params.groupId ? (
           <PageLayout withBodyScroll={true}>
-            {showCatalog && (
-              <PageLayout.CatalogHeader>
-                <CatalogHeaderContent />
-              </PageLayout.CatalogHeader>
-            )}
-
-            {showCatalog && isAdmin && (
-              <PageLayout.CatalogMainButton>
-                <CatalogMainButtonContent />
-              </PageLayout.CatalogMainButton>
-            )}
-            {showCatalog && (
-              <PageLayout.CatalogBody>
-                <CatalogBodyContent />
-              </PageLayout.CatalogBody>
-            )}
-
             {!showCatalog && (
               <PageLayout.ArticleHeader>
                 <ArticleHeaderContent />
@@ -96,23 +75,6 @@ class GroupAction extends React.Component {
           </PageLayout>
         ) : (
           <PageLayout>
-            {showCatalog && (
-              <PageLayout.CatalogHeader>
-                <CatalogHeaderContent />
-              </PageLayout.CatalogHeader>
-            )}
-
-            {showCatalog && isAdmin && (
-              <PageLayout.CatalogMainButton>
-                <CatalogMainButtonContent />
-              </PageLayout.CatalogMainButton>
-            )}
-            {showCatalog && (
-              <PageLayout.CatalogBody>
-                <CatalogBodyContent />
-              </PageLayout.CatalogBody>
-            )}
-
             <PageLayout.SectionBody>
               <Loader className="pageLoader" type="rombs" size="40px" />
             </PageLayout.SectionBody>

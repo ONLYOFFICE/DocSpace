@@ -7,11 +7,7 @@ import {
   ArticleMainButtonContent,
   ArticleBodyContent,
 } from "../../components/Article";
-import {
-  CatalogHeaderContent,
-  CatalogMainButtonContent,
-  CatalogBodyContent,
-} from "../../components/Catalog";
+
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { withRouter } from "react-router";
 
@@ -98,23 +94,6 @@ class Profile extends React.Component {
 
     return (
       <PageLayout withBodyAutoFocus>
-        {showCatalog && (
-          <PageLayout.CatalogHeader>
-            <CatalogHeaderContent />
-          </PageLayout.CatalogHeader>
-        )}
-
-        {showCatalog && isAdmin && (
-          <PageLayout.CatalogMainButton>
-            <CatalogMainButtonContent />
-          </PageLayout.CatalogMainButton>
-        )}
-        {showCatalog && (
-          <PageLayout.CatalogBody>
-            <CatalogBodyContent />
-          </PageLayout.CatalogBody>
-        )}
-
         {!showCatalog && (
           <PageLayout.ArticleHeader>
             <ArticleHeaderContent />

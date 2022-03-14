@@ -9,11 +9,7 @@ import {
   ArticleBodyContent,
   ArticleMainButtonContent,
 } from "../../components/Article";
-import {
-  CatalogHeaderContent,
-  CatalogMainButtonContent,
-  CatalogBodyContent,
-} from "../../components/Catalog";
+
 import {
   SectionHeaderContent,
   SectionBodyContent,
@@ -69,8 +65,6 @@ const PureHome = ({
     isLoading ? showLoader() : hideLoader();
   }, [isLoading]);
 
-  useEffect(() => {});
-
   return (
     <>
       <PageLayout
@@ -80,21 +74,6 @@ const PureHome = ({
         firstLoad={firstLoad}
         viewAs={viewAs}
       >
-        {showCatalog && (
-          <PageLayout.CatalogHeader>
-            <CatalogHeaderContent />
-          </PageLayout.CatalogHeader>
-        )}
-        {showCatalog && isAdmin && (
-          <PageLayout.CatalogMainButton>
-            <CatalogMainButtonContent />
-          </PageLayout.CatalogMainButton>
-        )}
-        {showCatalog && (
-          <PageLayout.CatalogBody>
-            <CatalogBodyContent />
-          </PageLayout.CatalogBody>
-        )}
         {!showCatalog && (
           <PageLayout.ArticleHeader>
             <ArticleHeaderContent />

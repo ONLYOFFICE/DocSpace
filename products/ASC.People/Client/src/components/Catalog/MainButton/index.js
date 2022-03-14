@@ -10,7 +10,6 @@ import { inject, observer } from "mobx-react";
 import config from "../../../../package.json";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
-import withLoader from "../../../HOCs/withLoader";
 import { isMobile } from "react-device-detect";
 import {
   isMobile as isMobileUtils,
@@ -75,6 +74,8 @@ class CatalogMainButtonContent extends React.Component {
       guestCaption,
       groupCaption,
       sectionWidth,
+      isLoading,
+      firstLoad,
     } = this.props;
 
     const { dialogVisible } = this.state;
@@ -155,6 +156,18 @@ class CatalogMainButtonContent extends React.Component {
             buttonOptions={links}
             sectionWidth={sectionWidth}
           />
+        ) : firstLoad ? (
+          isLoading ? (
+            <Loaders.MainButton />
+          ) : (
+            <MainButton
+              isDisabled={false}
+              isDropdown={true}
+              text={t("Common:Actions")}
+              model={[...menuModel, separator, ...links]}
+              className="main-button_invitation-link"
+            />
+          )
         ) : (
           <MainButton
             isDisabled={false}
@@ -180,12 +193,15 @@ class CatalogMainButtonContent extends React.Component {
 }
 
 export default withRouter(
-  inject(({ auth }) => {
+  inject(({ auth, peopleStore }) => {
     const {
       userCaption,
       guestCaption,
       groupCaption,
     } = auth.settingsStore.customNames;
+
+    const { loadingStore } = peopleStore;
+
     return {
       isAdmin: auth.isAdmin,
       homepage: config.homepage,
@@ -193,10 +209,12 @@ export default withRouter(
       guestCaption,
       groupCaption,
       toggleShowText: auth.settingsStore.toggleShowText,
+      isLoading: loadingStore.isLoading,
+      firstLoad: loadingStore.firstLoad,
     };
   })(
     withTranslation(["Article", "Common", "Translations"])(
-      withLoader(observer(CatalogMainButtonContent))(<Loaders.MainButton />)
+      observer(CatalogMainButtonContent)
     )
   )
 );

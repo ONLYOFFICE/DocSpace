@@ -10,11 +10,7 @@ import {
   ArticleMainButtonContent,
   ArticleBodyContent,
 } from "../../components/Article";
-import {
-  CatalogHeaderContent,
-  CatalogMainButtonContent,
-  CatalogBodyContent,
-} from "../../components/Catalog";
+
 import SectionUserBody from "./Section/Body/index";
 import {
   SectionHeaderContent,
@@ -81,7 +77,7 @@ class ProfileAction extends React.Component {
   }
 
   render() {
-    console.log("ProfileAction render");
+    // console.log("ProfileAction render");
 
     this.loaded = false;
     const { profile, match, isMy, tReady, showCatalog, isAdmin } = this.props;
@@ -95,23 +91,6 @@ class ProfileAction extends React.Component {
 
     return (
       <PageLayout>
-        {showCatalog && (
-          <PageLayout.CatalogHeader>
-            <CatalogHeaderContent />
-          </PageLayout.CatalogHeader>
-        )}
-
-        {showCatalog && isAdmin && (
-          <PageLayout.CatalogMainButton>
-            <CatalogMainButtonContent />
-          </PageLayout.CatalogMainButton>
-        )}
-        {showCatalog && (
-          <PageLayout.CatalogBody>
-            <CatalogBodyContent />
-          </PageLayout.CatalogBody>
-        )}
-
         {!showCatalog && (
           <PageLayout.ArticleHeader>
             <ArticleHeaderContent />
