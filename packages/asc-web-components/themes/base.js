@@ -502,13 +502,13 @@ const Base = {
 
     content: {
       backgroundColor: white,
-      modalPadding: "8px 16px",
+      modalPadding: "0",
       modalBorderRadius: "6px",
       asidePadding: "0 16px 16px",
       heading: {
         maxWidth: "500px",
-        margin: "0",
-        modalLineHeight: "40px",
+        margin: "14px 0 12px 16px",
+        modalLineHeight: "28px",
         asideLineHeight: "56px",
         fontWeight: "700",
         asideFontSize: "21px",

@@ -49,17 +49,17 @@ const Template = ({ onClick, onClose, onOk, ...args }) => {
             label="Send"
             primary={true}
             scale
-            size="medium"
+            size="big"
             onClick={(e) => {
+              toggleVisible(e);
               onOk(e);
-              toggleVisible;
             }}
           />
           <Button
-            key="SendBtn"
+            key="CloseBtn"
             label="Cancel"
             scale
-            size="medium"
+            size="normal"
             onClick={toggleVisible}
           />
         </ModalDialog.Footer>
@@ -71,7 +71,7 @@ const Template = ({ onClick, onClose, onOk, ...args }) => {
 export const Default = Template.bind({});
 Default.args = {
   scale: false,
-  displayType: "modal",
+  displayType: "aside",
   zIndex: 310,
   headerContent: "Change password",
 };

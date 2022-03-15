@@ -8,6 +8,7 @@ import { getModalType } from "../utils/device";
 import throttle from "lodash/throttle";
 import Box from "../box";
 import {
+  StyledModal,
   CloseButton,
   StyledHeader,
   Content,
@@ -138,94 +139,114 @@ class ModalDialog extends React.Component {
     });
 
     const renderModal = () => {
-      return this.state.displayType === "modal" ? (
-        <Backdrop
-          visible={visible}
-          zIndex={zIndex}
-          withBackground={true}
-          isModalDialog
-        >
-          <Dialog
-            className={`${className} not-selectable`}
-            id={id}
-            style={style}
-          >
-            <Content
-              contentHeight={contentHeight}
-              contentWidth={contentWidth}
-              displayType={this.state.displayType}
+      return (
+        <StyledModal>
+          {this.state.displayType === "modal" ? (
+            <Backdrop
+              visible={visible}
+              zIndex={zIndex}
+              withBackground={true}
+              isModalDialog
+              className="backdrop"
             >
-              {isLoading ? (
-                <Loaders.DialogLoader bodyHeight={modalLoaderBodyHeight} />
-              ) : (
-                <>
-                  <StyledHeader>
-                    <Heading className="heading" size="medium" truncate={true}>
-                      {header ? header.props.children : null}
-                    </Heading>
-                    <CloseButton
-                      className="modal-dialog-button_close"
-                      onClick={() => onClose()}
-                    ></CloseButton>
-                  </StyledHeader>
-                  <BodyBox paddingProp={modalBodyPadding}>
-                    {body ? body.props.children : null}
-                  </BodyBox>
-                  <Box>
-                    <StyledFooter>
-                      {footer ? footer.props.children : null}
-                    </StyledFooter>
-                  </Box>
-                </>
-              )}
-            </Content>
-          </Dialog>
-        </Backdrop>
-      ) : (
-        <Backdrop
-          visible={visible}
-          onClick={onClose}
-          zIndex={zIndex}
-          isAside={true}
-        >
-          <Dialog
-            className={`${className} not-selectable`}
-            id={id}
-            style={style}
-          >
-            <Content
-              contentHeight={contentHeight}
-              contentWidth={contentWidth}
-              removeScroll={removeScroll}
-              displayType={this.state.displayType}
+              <Dialog
+                className={`${className} dialog not-selectable`}
+                id={id}
+                style={style}
+              >
+                <Content
+                  contentHeight={contentHeight}
+                  contentWidth={contentWidth}
+                  displayType={this.state.displayType}
+                >
+                  {isLoading ? (
+                    <Loaders.DialogLoader bodyHeight={modalLoaderBodyHeight} />
+                  ) : (
+                    <>
+                      <StyledHeader>
+                        <Heading
+                          level={1}
+                          className="heading"
+                          size="medium"
+                          truncate={true}
+                        >
+                          {header ? header.props.children : null}
+                          <CloseButton
+                            className="modal-dialog-button_close"
+                            onClick={() => onClose()}
+                          />
+                        </Heading>
+                      </StyledHeader>
+                      <BodyBox paddingProp={"0 16px"}>
+                        {body ? body.props.children : null}
+                      </BodyBox>
+                      <Box>
+                        <StyledFooter>
+                          {footer ? footer.props.children : null}
+                        </StyledFooter>
+                      </Box>
+                    </>
+                  )}
+                </Content>
+              </Dialog>
+            </Backdrop>
+          ) : (
+            <Backdrop
+              visible={visible}
+              zIndex={zIndex}
+              isAside={true}
+              className="backdrop"
             >
-              {isLoading ? (
-                <Loaders.DialogAsideLoader withoutAside />
-              ) : (
-                <>
-                  <StyledHeader className="modal-dialog-aside-header">
-                    <Heading className="heading" size="medium" truncate={true}>
-                      {header ? header.props.children : null}
-                    </Heading>
-                    {scale ? <CloseButton onClick={onClose}></CloseButton> : ""}
-                  </StyledHeader>
-                  <BodyBox
-                    className="modal-dialog-aside-body"
-                    paddingProp={asideBodyPadding}
-                    removeScroll={removeScroll}
-                  >
-                    {body ? body.props.children : null}
-                  </BodyBox>
-                  <Box className="modal-dialog-aside-footer">
-                    <StyledFooter>
-                      {footer ? footer.props.children : null}
-                    </StyledFooter>
-                  </Box>
-                </>
-              )}
-            </Content>
-          </Dialog>
-        </Backdrop>
+              <Dialog
+                className={`${className} not-selectable`}
+                id={id}
+                style={style}
+              >
+                <Content
+                  contentHeight={contentHeight}
+                  contentWidth={contentWidth}
+                  removeScroll={removeScroll}
+                  displayType={this.state.displayType}
+                >
+                  {isLoading ? (
+                    <Loaders.DialogAsideLoader withoutAside />
+                  ) : (
+                    <>
+                      <StyledHeader className="modal-dialog-aside-header">
+                        <div className="heading-wrapper">
+                          <Heading
+                            className="heading"
+                            size="medium"
+                            truncate={true}
+                          >
+                            {header ? header.props.children : null}
+                          </Heading>
+                        </div>
+                        {scale ? (
+                          <CloseButton onClick={onClose}></CloseButton>
+                        ) : (
+                          ""
+                        )}
+                      </StyledHeader>
+                      <BodyBox
+                        className="modal-dialog-aside-body"
+                        paddingProp={asideBodyPadding}
+                        removeScroll={removeScroll}
+                      >
+                        {body ? body.props.children : null}
+                      </BodyBox>
+                      <Box className="modal-dialog-aside-footer">
+                        <StyledFooter>
+                          {footer ? footer.props.children : null}
+                        </StyledFooter>
+                      </Box>
+                    </>
+                  )}
+                </Content>
+              </Dialog>
+            </Backdrop>
+          )}
+        </StyledModal>
       );
     };
 
@@ -265,8 +286,8 @@ ModalDialog.defaultProps = {
   displayType: "auto",
   zIndex: 310,
   asideBodyPadding: "16px 0",
-  modalBodyPadding: "12px 0",
-  contentWidth: "400px",
+  //modalBodyPadding: "12px 0",
+  //contentWidth: "400px",
 };
 
 ModalDialog.Header = Header;
