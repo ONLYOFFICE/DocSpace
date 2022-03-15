@@ -30,8 +30,6 @@ class PreparationPortal extends React.Component {
     this.progressTimerId = null;
   }
   componentDidMount() {
-    this.props.getSettings();
-
     getRestoreProgress()
       .then((response) => {
         if (response) {
@@ -223,7 +221,7 @@ class PreparationPortal extends React.Component {
   }
 }
 
-const PreparationPortalWrapper = inject(({ auth, backup }) => {
+const PreparationPortalWrapper = inject(({ backup }) => {
   const { backupSize } = backup;
 
   const multiplicationFactor = backupSize
@@ -231,7 +229,6 @@ const PreparationPortalWrapper = inject(({ auth, backup }) => {
     : unSizeMultiplicationFactor;
 
   return {
-    getSettings: auth.settingsStore.getSettings,
     multiplicationFactor,
   };
 })(withTranslation("PreparationPortal")(observer(PreparationPortal)));
