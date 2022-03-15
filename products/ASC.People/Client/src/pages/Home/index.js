@@ -4,11 +4,6 @@ import { withRouter } from "react-router";
 import Filter from "@appserver/common/api/people/filter";
 import PageLayout from "@appserver/common/components/PageLayout";
 import { showLoader, hideLoader, isAdmin } from "@appserver/common/utils";
-import {
-  ArticleHeaderContent,
-  ArticleBodyContent,
-  ArticleMainButtonContent,
-} from "../../components/Article";
 
 import {
   SectionHeaderContent,

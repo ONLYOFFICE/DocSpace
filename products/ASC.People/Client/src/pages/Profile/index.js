@@ -2,11 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import PageLayout from "@appserver/common/components/PageLayout";
 import toastr from "studio/toastr";
-import {
-  ArticleHeaderContent,
-  ArticleMainButtonContent,
-  ArticleBodyContent,
-} from "../../components/Article";
 
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { withRouter } from "react-router";
@@ -94,24 +89,6 @@ class Profile extends React.Component {
 
     return (
       <PageLayout withBodyAutoFocus>
-        {!showCatalog && (
-          <PageLayout.ArticleHeader>
-            <ArticleHeaderContent />
-          </PageLayout.ArticleHeader>
-        )}
-
-        {!showCatalog && (
-          <PageLayout.ArticleMainButton>
-            <ArticleMainButtonContent />
-          </PageLayout.ArticleMainButton>
-        )}
-
-        {!showCatalog && (
-          <PageLayout.ArticleBody>
-            <ArticleBodyContent />
-          </PageLayout.ArticleBody>
-        )}
-
         <PageLayout.SectionHeader>
           <SectionHeaderContent profile={profile} />
         </PageLayout.SectionHeader>

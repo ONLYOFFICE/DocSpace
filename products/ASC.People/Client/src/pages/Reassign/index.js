@@ -1,11 +1,7 @@
 import React from "react";
 // import PropTypes from "prop-types";
 import PageLayout from "@appserver/common/components/PageLayout";
-import {
-  ArticleHeaderContent,
-  ArticleMainButtonContent,
-  ArticleBodyContent,
-} from "../../components/Article";
+
 // import { SectionHeaderContent } from './Section';
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { inject, observer } from "mobx-react";

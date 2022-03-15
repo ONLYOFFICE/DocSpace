@@ -5,11 +5,6 @@ import Loaders from "@appserver/common/components/Loaders";
 import toastr from "studio/toastr";
 import { linkOAuth } from "@appserver/common/api/people";
 import { getAuthProviders } from "@appserver/common/api/settings";
-import {
-  ArticleHeaderContent,
-  ArticleMainButtonContent,
-  ArticleBodyContent,
-} from "../../components/Article";
 
 import SectionUserBody from "./Section/Body/index";
 import {
@@ -91,24 +86,6 @@ class ProfileAction extends React.Component {
 
     return (
       <PageLayout>
-        {!showCatalog && (
-          <PageLayout.ArticleHeader>
-            <ArticleHeaderContent />
-          </PageLayout.ArticleHeader>
-        )}
-
-        {!showCatalog && (
-          <PageLayout.ArticleMainButton>
-            <ArticleMainButtonContent />
-          </PageLayout.ArticleMainButton>
-        )}
-
-        {!showCatalog && (
-          <PageLayout.ArticleBody>
-            <ArticleBodyContent />
-          </PageLayout.ArticleBody>
-        )}
-
         <PageLayout.SectionHeader>
           <SectionHeaderContent tReady={tReady} loaded={this.loaded} />
         </PageLayout.SectionHeader>

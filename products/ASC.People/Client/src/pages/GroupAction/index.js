@@ -1,11 +1,6 @@
 import React from "react";
 import Loader from "@appserver/components/loader";
 import PageLayout from "@appserver/common/components/PageLayout";
-import {
-  ArticleHeaderContent,
-  ArticleMainButtonContent,
-  ArticleBodyContent,
-} from "../../components/Article";
 
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { withTranslation } from "react-i18next";
@@ -47,24 +42,6 @@ class GroupAction extends React.Component {
       <>
         {group || !match.params.groupId ? (
           <PageLayout withBodyScroll={true}>
-            {!showCatalog && (
-              <PageLayout.ArticleHeader>
-                <ArticleHeaderContent />
-              </PageLayout.ArticleHeader>
-            )}
-
-            {!showCatalog && (
-              <PageLayout.ArticleMainButton>
-                <ArticleMainButtonContent />
-              </PageLayout.ArticleMainButton>
-            )}
-
-            {!showCatalog && (
-              <PageLayout.ArticleBody>
-                <ArticleBodyContent />
-              </PageLayout.ArticleBody>
-            )}
-
             <PageLayout.SectionHeader>
               <SectionHeaderContent />
             </PageLayout.SectionHeader>
