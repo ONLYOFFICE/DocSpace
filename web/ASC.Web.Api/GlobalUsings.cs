@@ -14,6 +14,7 @@ global using System.Web;
 global using ASC.Api.Collections;
 global using ASC.Api.Core;
 global using ASC.Api.Core.Convention;
+global using ASC.Api.Core.Extensions;
 global using ASC.Api.Settings;
 global using ASC.Api.Utils;
 global using ASC.AuditTrail;
