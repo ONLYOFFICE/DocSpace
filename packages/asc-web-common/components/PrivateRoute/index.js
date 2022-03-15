@@ -33,14 +33,6 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
   const { userId } = params;
 
   const renderComponent = (props) => {
-    console.log(
-      "private rout render tenantStatus",
-      tenantStatus,
-      "isLoaded",
-      isLoaded,
-      "isAuthenticated",
-      isAuthenticated
-    );
     if (isLoaded && !isAuthenticated) {
       if (personal) {
         window.location.replace("/");
