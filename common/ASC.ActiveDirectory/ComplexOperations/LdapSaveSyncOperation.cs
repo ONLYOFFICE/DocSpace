@@ -17,6 +17,7 @@
 
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 
 using ASC.ActiveDirectory.Base.Settings;
 using ASC.ActiveDirectory.ComplexOperations.Data;
@@ -32,8 +33,6 @@ using ASC.Web.Core.Users;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-
-using Newtonsoft.Json;
 // ReSharper disable RedundantToStringCall
 
 namespace ASC.ActiveDirectory.ComplexOperations
@@ -181,7 +180,7 @@ namespace ASC.ActiveDirectory.ComplexOperations
 
             SetProgress(100, OperationType == LdapOperationType.SaveTest ||
                              OperationType == LdapOperationType.SyncTest
-                ? JsonConvert.SerializeObject(_ldapChanges)
+                ? JsonSerializer.Serialize(_ldapChanges)
                 : "", "");
         }
 

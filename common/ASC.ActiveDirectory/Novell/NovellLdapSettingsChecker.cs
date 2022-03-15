@@ -22,6 +22,7 @@ using ASC.ActiveDirectory.Base;
 using ASC.ActiveDirectory.Base.Data;
 using ASC.ActiveDirectory.Base.Settings;
 using ASC.ActiveDirectory.Novell.Exceptions;
+using ASC.Common;
 using ASC.Common.Logging;
 
 using Microsoft.Extensions.Options;
@@ -30,6 +31,7 @@ using Novell.Directory.Ldap.Rfc2251;
 
 namespace ASC.ActiveDirectory.Novell
 {
+    [Scope]
     public class NovellLdapSettingsChecker : LdapSettingsChecker
     {
         public LdapCertificateConfirmRequest CertificateConfirmRequest { get; set; }
