@@ -1,4 +1,5 @@
 ﻿namespace ASC.Api.Core.Routing;
+
 public class ConstraintRoute : Attribute
 {
     private readonly string _constraint;

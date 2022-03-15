@@ -18,6 +18,7 @@ global using ASC.Api.Core.Auth;
 global using ASC.Api.Core.Convention;
 global using ASC.Api.Core.Core;
 global using ASC.Api.Core.Middleware;
+global using ASC.Api.Core.Routing;
 global using ASC.Common;
 global using ASC.Common.Caching;
 global using ASC.Common.DependencyInjection;
