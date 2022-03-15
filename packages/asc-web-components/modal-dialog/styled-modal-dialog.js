@@ -9,6 +9,7 @@ const Dialog = styled.div`
   display: flex;
   cursor: default;
   align-items: center;
+  justify-content: center;
 
   width: ${(props) => props.theme.modalDialog.width};
   max-width: ${(props) => props.theme.modalDialog.maxwidth};
@@ -71,11 +72,17 @@ const CloseButton = styled(CrossSidebarIcon)`
   min-width: ${(props) => props.theme.modalDialog.closeButton.minWidth};
   min-height: ${(props) => props.theme.modalDialog.closeButton.minHeight};
 
+  path {
+    stroke: #fff;
+  }
+
   right: 0;
   top: 0;
+  margin-right: -23px;
 
   @media ${mobile} {
-    margin-right: 13px;
+    margin-right: none;
+    margin-top: -23px;
   }
 
   &:hover {

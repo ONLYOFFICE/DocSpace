@@ -521,10 +521,10 @@ const Base = {
     },
 
     closeButton: {
-      width: "14px",
-      height: "14px",
-      minWidth: "14px",
-      minHeight: "14px",
+      width: "17px",
+      height: "17px",
+      minWidth: "17px",
+      minHeight: "17px",
 
       right: "16px",
       top: "13px",
