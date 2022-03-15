@@ -2684,6 +2684,12 @@ const Dark = {
     color: "#eeeeee",
     background: black,
   },
+
+  deeplink: {
+    tile: {
+      background: "#3d3d3d",
+    },
+  },
 };
 
 export default Dark;

@@ -2674,6 +2674,12 @@ const Base = {
     color: "#555f65",
     background: white,
   },
+
+  deeplink: {
+    tile: {
+      background: "#f3f4f4",
+    },
+  },
 };
 
 export default Base;
