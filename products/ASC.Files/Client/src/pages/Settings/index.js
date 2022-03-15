@@ -3,11 +3,6 @@ import { withRouter } from "react-router";
 import PageLayout from "@appserver/common/components/PageLayout";
 import Loaders from "@appserver/common/components/Loaders";
 import { showLoader, hideLoader } from "@appserver/common/utils";
-import {
-  ArticleHeaderContent,
-  ArticleBodyContent,
-  ArticleMainButtonContent,
-} from "../../components/Article";
 
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { withTranslation } from "react-i18next";
@@ -64,24 +59,6 @@ const PureSettings = ({
   return (
     <>
       <PageLayout>
-        {!showCatalog && (
-          <PageLayout.ArticleHeader>
-            <ArticleHeaderContent />
-          </PageLayout.ArticleHeader>
-        )}
-
-        {!showCatalog && (
-          <PageLayout.ArticleMainButton>
-            <ArticleMainButtonContent isDisabled={true} />
-          </PageLayout.ArticleMainButton>
-        )}
-
-        {!showCatalog && (
-          <PageLayout.ArticleBody>
-            <ArticleBodyContent />
-          </PageLayout.ArticleBody>
-        )}
-
         <PageLayout.SectionHeader>
           {(!isLoadedSettingsTree && isLoading) || isLoading || !tReady ? (
             <Loaders.SectionHeader />
