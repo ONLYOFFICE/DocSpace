@@ -79,8 +79,7 @@ public class SmtpSettingsController : ControllerBase
 
         //TODO: Add validation check
 
-        if (inDto == null)
-            throw new ArgumentNullException(nameof(inDto));
+        ArgumentNullException.ThrowIfNull(inDto);
 
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 

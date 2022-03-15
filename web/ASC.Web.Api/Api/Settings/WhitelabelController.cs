@@ -427,7 +427,7 @@ public class WhitelabelController: BaseSettingsController
 
     private bool SaveMailWhiteLabelSettings(MailWhiteLabelSettings settings)
     {
-        if (settings == null) throw new ArgumentNullException(nameof(settings));
+        ArgumentNullException.ThrowIfNull(settings);
 
         DemandRebrandingPermission();
 
