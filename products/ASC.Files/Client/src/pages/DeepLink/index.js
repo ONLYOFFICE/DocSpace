@@ -122,7 +122,7 @@ const DeepLinkPage = (props) => {
         onClick={onOpenAppClick}
         primary
         scale
-        size="large"
+        size="normal"
       />
 
       <Link
