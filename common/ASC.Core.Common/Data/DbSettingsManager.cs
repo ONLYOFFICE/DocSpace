@@ -169,10 +169,7 @@ public class DbSettingsManager
 
     public bool SaveSettingsFor<T>(T settings, int tenantId, Guid userId) where T : ISettings
     {
-        if (settings == null)
-        {
-            throw new ArgumentNullException(nameof(settings));
-        }
+        ArgumentNullException.ThrowIfNull(settings);
 
         try
         {

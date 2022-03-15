@@ -48,10 +48,7 @@ public class WordpressToken
 
     public void SaveToken(OAuth20Token token)
     {
-        if (token == null)
-        {
-            throw new ArgumentNullException(nameof(token));
-        }
+        ArgumentNullException.ThrowIfNull(token);
 
         _tokenHelper.SaveToken(new Token(token, AppAttr));
     }
@@ -59,10 +56,7 @@ public class WordpressToken
     public OAuth20Token SaveTokenFromCode(string code)
     {
         var token = OAuth20TokenHelper.GetAccessToken<WordpressLoginProvider>(ConsumerFactory, code);
-        if (token == null)
-        {
-            throw new ArgumentNullException("token");
-        }
+        ArgumentNullException.ThrowIfNull(token);
 
         _tokenHelper.SaveToken(new Token(token, AppAttr));
 
@@ -71,10 +65,7 @@ public class WordpressToken
 
     public void DeleteToken(OAuth20Token token)
     {
-        if (token == null)
-        {
-            throw new ArgumentNullException(nameof(token));
-        }
+        ArgumentNullException.ThrowIfNull(token);
 
         _tokenHelper.DeleteToken(AppAttr);
 

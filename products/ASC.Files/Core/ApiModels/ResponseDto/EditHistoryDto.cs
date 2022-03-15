@@ -1,4 +1,4 @@
-﻿namespace ASC.Files.Core.Model;
+﻿namespace ASC.Files.Core.ApiModels.ResponseDto;
 
 public class EditHistoryDto
 {

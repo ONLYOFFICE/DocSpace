@@ -276,10 +276,7 @@ internal class SharePointFileDao : SharePointDaoBase, IFileDao<string>
 
     public Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
     {
-        if (fileStream == null)
-        {
-            throw new ArgumentNullException(nameof(fileStream));
-        }
+        ArgumentNullException.ThrowIfNull(fileStream);
 
         return internalSaveFileAsync(file, fileStream);
     }

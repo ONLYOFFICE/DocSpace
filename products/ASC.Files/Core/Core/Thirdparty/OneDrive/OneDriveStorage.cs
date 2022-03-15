@@ -132,10 +132,8 @@ internal class OneDriveStorage
 
     public Task<Stream> DownloadStreamAsync(Item file, int offset = 0)
     {
-        if (file == null || file.File == null)
-        {
-            throw new ArgumentNullException(nameof(file));
-        }
+        ArgumentNullException.ThrowIfNull(file);
+        ArgumentNullException.ThrowIfNull(file.File);
 
         return InternalDownloadStreamAsync(file, offset);
     }
@@ -245,10 +243,7 @@ internal class OneDriveStorage
 
     public Task<ResumableUploadSession> CreateResumableSessionAsync(Item onedriveFile, long contentLength)
     {
-        if (onedriveFile == null)
-        {
-            throw new ArgumentNullException(nameof(onedriveFile));
-        }
+        ArgumentNullException.ThrowIfNull(onedriveFile);
 
         return InternalCreateResumableSessionAsync(onedriveFile, contentLength);
     }
@@ -294,10 +289,7 @@ internal class OneDriveStorage
 
     public Task TransferAsync(ResumableUploadSession oneDriveSession, Stream stream, long chunkLength)
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException(nameof(stream));
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         if (oneDriveSession.Status != ResumableUploadSessionStatus.Started)
         {

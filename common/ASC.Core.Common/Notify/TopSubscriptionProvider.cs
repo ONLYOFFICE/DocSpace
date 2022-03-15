@@ -47,14 +47,8 @@ public class TopSubscriptionProvider : ISubscriptionProvider
 
     public virtual string[] GetSubscriptionMethod(INotifyAction action, IRecipient recipient)
     {
-        if (action == null)
-        {
-            throw new ArgumentNullException(nameof(action));
-        }
-        if (recipient == null)
-        {
-            throw new ArgumentNullException(nameof(recipient));
-        }
+        ArgumentNullException.ThrowIfNull(action);
+        ArgumentNullException.ThrowIfNull(recipient);
 
         var senders = _subscriptionProvider.GetSubscriptionMethod(action, recipient);
         if (senders == null || senders.Length == 0)
@@ -75,10 +69,7 @@ public class TopSubscriptionProvider : ISubscriptionProvider
 
     public virtual IRecipient[] GetRecipients(INotifyAction action, string objectID)
     {
-        if (action == null)
-        {
-            throw new ArgumentNullException(nameof(action));
-        }
+        ArgumentNullException.ThrowIfNull(action);
 
         var recipents = new List<IRecipient>(5);
         var directRecipients = _subscriptionProvider.GetRecipients(action, objectID) ?? new IRecipient[0];
@@ -89,14 +80,8 @@ public class TopSubscriptionProvider : ISubscriptionProvider
 
     public virtual bool IsUnsubscribe(IDirectRecipient recipient, INotifyAction action, string objectID)
     {
-        if (action == null)
-        {
-            throw new ArgumentNullException(nameof(action));
-        }
-        if (recipient == null)
-        {
-            throw new ArgumentNullException(nameof(recipient));
-        }
+        ArgumentNullException.ThrowIfNull(action);
+        ArgumentNullException.ThrowIfNull(recipient);
 
         return _subscriptionProvider.IsUnsubscribe(recipient, action, objectID);
     }
@@ -104,48 +89,30 @@ public class TopSubscriptionProvider : ISubscriptionProvider
 
     public virtual void Subscribe(INotifyAction action, string objectID, IRecipient recipient)
     {
-        if (action == null)
-        {
-            throw new ArgumentNullException(nameof(action));
-        }
-        if (recipient == null)
-        {
-            throw new ArgumentNullException(nameof(recipient));
-        }
+        ArgumentNullException.ThrowIfNull(action);
+        ArgumentNullException.ThrowIfNull(recipient);
 
         _subscriptionProvider.Subscribe(action, objectID, recipient);
     }
 
     public virtual void UnSubscribe(INotifyAction action, string objectID, IRecipient recipient)
     {
-        if (action == null)
-        {
-            throw new ArgumentNullException(nameof(action));
-        }
-        if (recipient == null)
-        {
-            throw new ArgumentNullException(nameof(recipient));
-        }
+        ArgumentNullException.ThrowIfNull(action);
+        ArgumentNullException.ThrowIfNull(recipient);
 
         _subscriptionProvider.UnSubscribe(action, objectID, recipient);
     }
 
     public void UnSubscribe(INotifyAction action, string objectID)
     {
-        if (action == null)
-        {
-            throw new ArgumentNullException(nameof(action));
-        }
+        ArgumentNullException.ThrowIfNull(action);
 
         _subscriptionProvider.UnSubscribe(action, objectID);
     }
 
     public void UnSubscribe(INotifyAction action)
     {
-        if (action == null)
-        {
-            throw new ArgumentNullException(nameof(action));
-        }
+        ArgumentNullException.ThrowIfNull(action);
 
         _subscriptionProvider.UnSubscribe(action);
     }
@@ -161,32 +128,17 @@ public class TopSubscriptionProvider : ISubscriptionProvider
 
     public virtual void UpdateSubscriptionMethod(INotifyAction action, IRecipient recipient, params string[] senderNames)
     {
-        if (action == null)
-        {
-            throw new ArgumentNullException(nameof(action));
-        }
-        if (recipient == null)
-        {
-            throw new ArgumentNullException(nameof(recipient));
-        }
-        if (senderNames == null)
-        {
-            throw new ArgumentNullException(nameof(senderNames));
-        }
+        ArgumentNullException.ThrowIfNull(action);
+        ArgumentNullException.ThrowIfNull(recipient);
+        ArgumentNullException.ThrowIfNull(senderNames);
 
         _subscriptionProvider.UpdateSubscriptionMethod(action, recipient, senderNames);
     }
 
     public virtual object GetSubscriptionRecord(INotifyAction action, IRecipient recipient, string objectID)
     {
-        if (recipient == null)
-        {
-            throw new ArgumentNullException(nameof(recipient));
-        }
-        if (action == null)
-        {
-            throw new ArgumentNullException(nameof(action));
-        }
+        ArgumentNullException.ThrowIfNull(action);
+        ArgumentNullException.ThrowIfNull(recipient);
 
         var subscriptionRecord = _subscriptionProvider.GetSubscriptionRecord(action, recipient, objectID);
 
@@ -212,14 +164,8 @@ public class TopSubscriptionProvider : ISubscriptionProvider
 
     public virtual string[] GetSubscriptions(INotifyAction action, IRecipient recipient, bool checkSubscription = true)
     {
-        if (recipient == null)
-        {
-            throw new ArgumentNullException(nameof(recipient));
-        }
-        if (action == null)
-        {
-            throw new ArgumentNullException(nameof(action));
-        }
+        ArgumentNullException.ThrowIfNull(action);
+        ArgumentNullException.ThrowIfNull(recipient);
 
         var objects = new List<string>();
         var direct = _subscriptionProvider.GetSubscriptions(action, recipient, checkSubscription) ?? Array.Empty<string>();

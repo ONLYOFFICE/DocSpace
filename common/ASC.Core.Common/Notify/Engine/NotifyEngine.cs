@@ -73,15 +73,8 @@ public class NotifyEngine : INotifyEngine
 
     internal void RegisterSendMethod(Action<DateTime> method, string cron)
     {
-        if (method == null)
-        {
-            throw new ArgumentNullException(nameof(method));
-        }
-
-        if (string.IsNullOrEmpty(cron))
-        {
-            throw new ArgumentNullException(nameof(cron));
-        }
+        ArgumentNullException.ThrowIfNull(method);
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(cron);
 
         var w = new SendMethodWrapper(method, cron, _logger);
         lock (_sendMethods)
@@ -99,10 +92,7 @@ public class NotifyEngine : INotifyEngine
 
     internal void UnregisterSendMethod(Action<DateTime> method)
     {
-        if (method == null)
-        {
-            throw new ArgumentNullException(nameof(method));
-        }
+        ArgumentNullException.ThrowIfNull(method);
 
         lock (_sendMethods)
         {
@@ -418,10 +408,7 @@ public class NotifyEngine : INotifyEngine
 
     private SendResponse CreateNoticeMessageFromNotifyRequest(NotifyRequest request, string sender, IServiceScope serviceScope, out NoticeMessage noticeMessage)
     {
-        if (request == null)
-        {
-            throw new ArgumentNullException(nameof(request));
-        }
+        ArgumentNullException.ThrowIfNull(request);
 
         var recipientProvider = request.GetRecipientsProvider(serviceScope);
         var recipient = request.Recipient as IDirectRecipient;

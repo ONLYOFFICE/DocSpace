@@ -1,6 +1,6 @@
-﻿namespace ASC.Files.Model;
+﻿namespace ASC.Files.Core.ApiModels.RequestDto;
 
-public class UploadModelRequestDto : IModelWithFile, IDisposable
+public class UploadRequestDto : IModelWithFile, IDisposable
 {
     public IFormFile File { get; set; }
     public ContentType ContentType { get; set; }
@@ -34,7 +34,7 @@ public class UploadModelRequestDto : IModelWithFile, IDisposable
         }
     }
 
-    ~UploadModelRequestDto()
+    ~UploadRequestDto()
     {
         Dispose(disposing: false);
     }

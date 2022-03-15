@@ -44,15 +44,8 @@ public class AzManager
                                 ISecurityObjectProvider securityObjProvider, out ISubject denySubject,
                                 out IAction denyAction)
     {
-        if (subject == null)
-        {
-            throw new ArgumentNullException(nameof(subject));
-        }
-
-        if (action == null)
-        {
-            throw new ArgumentNullException(nameof(action));
-        }
+        ArgumentNullException.ThrowIfNull(action);
+        ArgumentNullException.ThrowIfNull(subject);
 
         var acl = GetAzManagerAcl(subject, action, objectId, securityObjProvider);
         denySubject = acl.DenySubject;

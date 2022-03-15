@@ -111,10 +111,7 @@ internal class BoxStorage
 
     public Task<Stream> DownloadStreamAsync(BoxFile file, int offset = 0)
     {
-        if (file == null)
-        {
-            throw new ArgumentNullException(nameof(file));
-        }
+        ArgumentNullException.ThrowIfNull(file);
 
         return InternalDownloadStreamAsync(file, offset);
     }

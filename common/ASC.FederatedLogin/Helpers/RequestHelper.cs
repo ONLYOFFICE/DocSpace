@@ -31,10 +31,7 @@ public static class RequestHelper
 
     public static string PerformRequest(string uri, string contentType = "", string method = "GET", string body = "", Dictionary<string, string> headers = null, int timeout = 30000)
     {
-        if (string.IsNullOrEmpty(uri))
-        {
-            throw new ArgumentNullException(nameof(uri));
-        }
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(uri);
 
         var request = new HttpRequestMessage();
         request.RequestUri = new Uri(uri);

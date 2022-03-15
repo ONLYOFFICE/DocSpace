@@ -23,7 +23,7 @@
  *
 */
 
-namespace ASC.Api.Documents;
+namespace ASC.Files.Core.ApiModels.ResponseDto;
 
 public class FileOperationDto
 {
@@ -59,16 +59,16 @@ public class FileOperationDto
 }
 
 [Scope]
-public class FileOperationWraperHelper
+public class FileOperationDtoHelper
 {
     private readonly FolderDtoHelper _folderWrapperHelper;
-    private readonly FileWrapperHelper _filesWrapperHelper;
+    private readonly FileDtoHelper _filesWrapperHelper;
     private readonly IDaoFactory _daoFactory;
     private readonly CommonLinkUtility _commonLinkUtility;
 
-    public FileOperationWraperHelper(
+    public FileOperationDtoHelper(
         FolderDtoHelper folderWrapperHelper,
-        FileWrapperHelper filesWrapperHelper,
+        FileDtoHelper filesWrapperHelper,
         IDaoFactory daoFactory,
         CommonLinkUtility commonLinkUtility)
     {

@@ -45,7 +45,9 @@ public class AuthorizingException : Exception
             throw new ArgumentNullException(nameof(actions));
         }
 
-        Subject = subject ?? throw new ArgumentNullException(nameof(subject));
+        ArgumentNullException.ThrowIfNull(subject);
+
+        Subject = subject;
         Actions = actions;
         var sactions = "";
 
@@ -80,10 +82,8 @@ public class AuthorizingException : Exception
     internal static string FormatErrorMessage(ISubject subject, IAction[] actions, ISubject[] denySubjects,
                                               IAction[] denyActions)
     {
-        if (subject == null)
-        {
-            throw new ArgumentNullException(nameof(subject));
-        }
+        ArgumentNullException.ThrowIfNull(subject);
+
         if (actions == null || actions.Length == 0)
         {
             throw new ArgumentNullException(nameof(actions));

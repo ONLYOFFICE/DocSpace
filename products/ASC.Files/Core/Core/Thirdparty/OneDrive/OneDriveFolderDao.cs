@@ -166,7 +166,8 @@ internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
 
     public Task<string> SaveFolderAsync(Folder<string> folder)
     {
-        if (folder == null) throw new ArgumentNullException(nameof(folder));
+        ArgumentNullException.ThrowIfNull(folder);
+
         if (folder.ID != null)
         {
             return RenameFolderAsync(folder, folder.Title);

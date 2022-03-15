@@ -69,7 +69,8 @@ public class DisposableHttpContext : IDisposable
 
     public DisposableHttpContext(HttpContext ctx)
     {
-        _context = ctx ?? throw new ArgumentNullException(nameof(ctx));
+        ArgumentNullException.ThrowIfNull(ctx);
+        _context = ctx;
     }
 
     public void Dispose()

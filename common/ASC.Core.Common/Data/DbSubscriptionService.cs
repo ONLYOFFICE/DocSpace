@@ -40,14 +40,8 @@ public class DbSubscriptionService : ISubscriptionService
 
     public string[] GetRecipients(int tenant, string sourceId, string actionId, string objectId)
     {
-        if (sourceId == null)
-        {
-            throw new ArgumentNullException(nameof(sourceId));
-        }
-        if (actionId == null)
-        {
-            throw new ArgumentNullException(nameof(actionId));
-        }
+        ArgumentNullException.ThrowIfNull(sourceId);
+        ArgumentNullException.ThrowIfNull(actionId);
 
         var q = GetQuery(tenant, sourceId, actionId)
             .Where(r => r.Object == (objectId ?? string.Empty))
@@ -60,14 +54,8 @@ public class DbSubscriptionService : ISubscriptionService
 
     public IEnumerable<SubscriptionRecord> GetSubscriptions(int tenant, string sourceId, string actionId)
     {
-        if (sourceId == null)
-        {
-            throw new ArgumentNullException(nameof(sourceId));
-        }
-        if (actionId == null)
-        {
-            throw new ArgumentNullException(nameof(actionId));
-        }
+        ArgumentNullException.ThrowIfNull(sourceId);
+        ArgumentNullException.ThrowIfNull(actionId);
 
         var q = GetQuery(tenant, sourceId, actionId);
 
@@ -92,10 +80,7 @@ public class DbSubscriptionService : ISubscriptionService
 
     public SubscriptionRecord GetSubscription(int tenant, string sourceId, string actionId, string recipientId, string objectId)
     {
-        if (recipientId == null)
-        {
-            throw new ArgumentNullException(nameof(recipientId));
-        }
+        ArgumentNullException.ThrowIfNull(recipientId);
 
         var q = GetQuery(tenant, sourceId, actionId)
             .Where(r => r.Recipient == recipientId)
@@ -106,18 +91,9 @@ public class DbSubscriptionService : ISubscriptionService
 
     public bool IsUnsubscribe(int tenant, string sourceId, string actionId, string recipientId, string objectId)
     {
-        if (recipientId == null)
-        {
-            throw new ArgumentNullException(nameof(recipientId));
-        }
-        if (sourceId == null)
-        {
-            throw new ArgumentNullException(nameof(sourceId));
-        }
-        if (actionId == null)
-        {
-            throw new ArgumentNullException(nameof(actionId));
-        }
+        ArgumentNullException.ThrowIfNull(recipientId);
+        ArgumentNullException.ThrowIfNull(sourceId);
+        ArgumentNullException.ThrowIfNull(actionId);
 
         var q = UserDbContext.Subscriptions
             .Where(r => r.Source == sourceId &&
@@ -140,18 +116,9 @@ public class DbSubscriptionService : ISubscriptionService
 
     public string[] GetSubscriptions(int tenant, string sourceId, string actionId, string recipientId, bool checkSubscribe)
     {
-        if (recipientId == null)
-        {
-            throw new ArgumentNullException(nameof(recipientId));
-        }
-        if (sourceId == null)
-        {
-            throw new ArgumentNullException(nameof(sourceId));
-        }
-        if (actionId == null)
-        {
-            throw new ArgumentNullException(nameof(actionId));
-        }
+        ArgumentNullException.ThrowIfNull(recipientId);
+        ArgumentNullException.ThrowIfNull(sourceId);
+        ArgumentNullException.ThrowIfNull(actionId);
 
         var q = GetQuery(tenant, sourceId, actionId)
             .Where(r => r.Recipient == recipientId)
@@ -168,10 +135,7 @@ public class DbSubscriptionService : ISubscriptionService
 
     public void SaveSubscription(SubscriptionRecord s)
     {
-        if (s == null)
-        {
-            throw new ArgumentNullException(nameof(s));
-        }
+        ArgumentNullException.ThrowIfNull(s);
 
         var subs = new Subscription
         {
@@ -194,15 +158,8 @@ public class DbSubscriptionService : ISubscriptionService
 
     public void RemoveSubscriptions(int tenant, string sourceId, string actionId, string objectId)
     {
-        if (sourceId == null)
-        {
-            throw new ArgumentNullException(nameof(sourceId));
-        }
-
-        if (actionId == null)
-        {
-            throw new ArgumentNullException(nameof(actionId));
-        }
+        ArgumentNullException.ThrowIfNull(sourceId);
+        ArgumentNullException.ThrowIfNull(actionId);
 
         using var tr = UserDbContext.Database.BeginTransaction();
         var q = UserDbContext.Subscriptions
@@ -228,14 +185,8 @@ public class DbSubscriptionService : ISubscriptionService
 
     public IEnumerable<SubscriptionMethod> GetSubscriptionMethods(int tenant, string sourceId, string actionId, string recipientId)
     {
-        if (sourceId == null)
-        {
-            throw new ArgumentNullException(nameof(sourceId));
-        }
-        if (actionId == null)
-        {
-            throw new ArgumentNullException(nameof(actionId));
-        }
+        ArgumentNullException.ThrowIfNull(sourceId);
+        ArgumentNullException.ThrowIfNull(actionId);
 
         var q = UserDbContext.SubscriptionMethods
             .Where(r => r.Tenant == -1 || r.Tenant == tenant)
@@ -278,10 +229,7 @@ public class DbSubscriptionService : ISubscriptionService
 
     public void SetSubscriptionMethod(SubscriptionMethod m)
     {
-        if (m == null)
-        {
-            throw new ArgumentNullException(nameof(m));
-        }
+        ArgumentNullException.ThrowIfNull(m);
 
         using var tr = UserDbContext.Database.BeginTransaction();
 
@@ -320,14 +268,8 @@ public class DbSubscriptionService : ISubscriptionService
 
     private IQueryable<Subscription> GetQuery(int tenant, string sourceId, string actionId)
     {
-        if (sourceId == null)
-        {
-            throw new ArgumentNullException(nameof(sourceId));
-        }
-        if (actionId == null)
-        {
-            throw new ArgumentNullException(nameof(actionId));
-        }
+        ArgumentNullException.ThrowIfNull(sourceId);
+        ArgumentNullException.ThrowIfNull(actionId);
 
         return
             UserDbContext.Subscriptions

@@ -36,8 +36,9 @@ public class AzObjectSecurityProviderHelper
 
     public AzObjectSecurityProviderHelper(ISecurityObjectId objectId, ISecurityObjectProvider secObjProvider)
     {
+        ArgumentNullException.ThrowIfNull(objectId);
         _currObjIdAsProvider = false;
-        CurrentObjectId = objectId ?? throw new ArgumentNullException(nameof(objectId));
+        CurrentObjectId = objectId;
         _currSecObjProvider = secObjProvider;
 
         if (_currSecObjProvider == null && CurrentObjectId is ISecurityObjectProvider securityObjectProvider)

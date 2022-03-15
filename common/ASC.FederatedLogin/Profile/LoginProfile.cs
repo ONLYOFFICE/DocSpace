@@ -204,10 +204,7 @@ public class LoginProfile
 
     public static bool HasProfile(HttpRequest request)
     {
-        if (request == null)
-        {
-            throw new ArgumentNullException(nameof(request));
-        }
+        ArgumentNullException.ThrowIfNull(request);
 
         return new Uri(request.GetDisplayUrl()).HasProfile();
     }
@@ -239,10 +236,7 @@ public class LoginProfile
 
     internal void SetField(string name, string value)
     {
-        if (name == null)
-        {
-            throw new ArgumentNullException(nameof(name));
-        }
+        ArgumentNullException.ThrowIfNull(name);
 
         if (!string.IsNullOrEmpty(value))
         {
@@ -328,10 +322,7 @@ public class LoginProfile
 
     internal void FromSerializedString(string serialized)
     {
-        if (serialized == null)
-        {
-            throw new ArgumentNullException(nameof(serialized));
-        }
+        ArgumentNullException.ThrowIfNull(serialized);
 
         _fields = serialized.Split(PairSeparator).ToDictionary(x => x.Split(KeyValueSeparator)[0], y => y.Split(KeyValueSeparator)[1]);
     }
@@ -355,10 +346,7 @@ public class LoginProfile
 
     protected LoginProfile(Signature signature, InstanceCrypto instanceCrypto, SerializationInfo info) : this(signature, instanceCrypto)
     {
-        if (info == null)
-        {
-            throw new ArgumentNullException(nameof(info));
-        }
+        ArgumentNullException.ThrowIfNull(info);
 
         var transformed = (string)info.GetValue(QueryParamName, typeof(string));
         FromTransport(transformed);

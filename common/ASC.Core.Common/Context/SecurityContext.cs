@@ -80,15 +80,8 @@ public class SecurityContext
 
     public string AuthenticateMe(string login, string passwordHash)
     {
-        if (login == null)
-        {
-            throw new ArgumentNullException(nameof(login));
-        }
-
-        if (passwordHash == null)
-        {
-            throw new ArgumentNullException(nameof(passwordHash));
-        }
+        ArgumentNullException.ThrowIfNull(login);
+        ArgumentNullException.ThrowIfNull(passwordHash);
 
         var tenantid = _tenantManager.GetCurrentTenant().Id;
         var u = _userManager.GetUsersByPasswordHash(tenantid, login, passwordHash);
@@ -109,10 +102,7 @@ public class SecurityContext
                 {
                     var request = _httpContextAccessor?.HttpContext.Request;
 
-                    if (request == null)
-                    {
-                        throw new ArgumentNullException(nameof(request));
-                    }
+                    ArgumentNullException.ThrowIfNull(request);
 
                     ipFrom = "from " + (request.Headers["X-Forwarded-For"].ToString() ?? request.GetUserHostAddress());
                     address = "for " + request.GetUrlRewriter();
@@ -170,10 +160,7 @@ public class SecurityContext
                 {
                     var request = _httpContextAccessor?.HttpContext.Request;
 
-                    if (request == null)
-                    {
-                        throw new ArgumentNullException(nameof(request));
-                    }
+                    ArgumentNullException.ThrowIfNull(request);
 
                     address = "for " + request.GetUrlRewriter();
                     ipFrom = "from " + (request.Headers["X-Forwarded-For"].ToString() ?? request.GetUserHostAddress());

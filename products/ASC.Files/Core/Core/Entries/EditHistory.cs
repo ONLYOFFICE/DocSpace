@@ -178,7 +178,7 @@ public class EditHistoryChanges
 }
 
 [DebuggerDisplay("{Version}")]
-public class EditHistoryData
+public class EditHistoryDataDto
 {
     public string ChangesUrl { get; set; }
     public string Key { get; set; }

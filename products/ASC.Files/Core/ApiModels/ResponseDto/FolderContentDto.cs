@@ -23,7 +23,7 @@
  *
 */
 
-namespace ASC.Api.Documents;
+namespace ASC.Files.Core.ApiModels.ResponseDto;
 
 public class FolderContentDto<T>
 {
@@ -63,13 +63,13 @@ public class FolderContentDtoHelper
 {
     private readonly FileSecurity _fileSecurity;
     private readonly IDaoFactory _daoFactory;
-    private readonly FileWrapperHelper _fileWrapperHelper;
+    private readonly FileDtoHelper _fileWrapperHelper;
     private readonly FolderDtoHelper _folderWrapperHelper;
 
     public FolderContentDtoHelper(
         FileSecurity fileSecurity,
         IDaoFactory daoFactory,
-        FileWrapperHelper fileWrapperHelper,
+        FileDtoHelper fileWrapperHelper,
         FolderDtoHelper folderWrapperHelper)
     {
         _fileSecurity = fileSecurity;

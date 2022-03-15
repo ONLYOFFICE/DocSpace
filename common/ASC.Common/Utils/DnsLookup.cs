@@ -45,10 +45,7 @@ public class DnsLookup
     /// <returns>list of MxRecord</returns>
     public List<MxRecord> GetDomainMxRecords(string domainName)
     {
-        if (string.IsNullOrEmpty(domainName))
-        {
-            throw new ArgumentNullException(nameof(domainName));
-        }
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(domainName);
 
         var mxRecords = DnsResolve<MxRecord>(domainName, RecordType.Mx);
 
@@ -65,15 +62,8 @@ public class DnsLookup
     /// <returns>true if exists and vice versa</returns>
     public bool IsDomainMxRecordExists(string domainName, string mxRecord)
     {
-        if (string.IsNullOrEmpty(domainName))
-        {
-            throw new ArgumentNullException(nameof(domainName));
-        }
-
-        if (string.IsNullOrEmpty(mxRecord))
-        {
-            throw new ArgumentNullException(nameof(mxRecord));
-        }
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(domainName);
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(mxRecord);
 
         var mxDomain = DomainName.Parse(mxRecord);
 
@@ -93,14 +83,11 @@ public class DnsLookup
     /// <returns>true if any DNS record exists and vice versa</returns>
     public bool IsDomainExists(string domainName)
     {
-        if (string.IsNullOrEmpty(domainName))
-        {
-            throw new ArgumentNullException(nameof(domainName));
-        }
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(domainName);
 
         var dnsMessage = GetDnsMessage(domainName);
 
-            return dnsMessage.AnswerRecords.Count != 0;
+        return dnsMessage.AnswerRecords.Count != 0;
     }
 
     /// <summary>
@@ -112,10 +99,7 @@ public class DnsLookup
     /// <returns>list of ARecord</returns>
     public List<ARecord> GetDomainARecords(string domainName)
     {
-        if (string.IsNullOrEmpty(domainName))
-        {
-            throw new ArgumentNullException(nameof(domainName));
-        }
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(domainName);
 
         var aRecords = DnsResolve<ARecord>(domainName, RecordType.A);
 
@@ -131,10 +115,7 @@ public class DnsLookup
     /// <returns>list of IPAddress</returns>
     public List<IPAddress> GetDomainIPs(string domainName)
     {
-        if (string.IsNullOrEmpty(domainName))
-        {
-            throw new ArgumentNullException(nameof(domainName));
-        }
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(domainName);
 
         var addresses = _sDnsResolver.ResolveHost(domainName);
 
@@ -150,10 +131,7 @@ public class DnsLookup
     /// <returns>list of TxtRecord</returns>
     public List<TxtRecord> GetDomainTxtRecords(string domainName)
     {
-        if (string.IsNullOrEmpty(domainName))
-        {
-            throw new ArgumentNullException(nameof(domainName));
-        }
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(domainName);
 
         var txtRecords = DnsResolve<TxtRecord>(domainName, RecordType.Txt);
 
@@ -206,14 +184,9 @@ public class DnsLookup
     /// <returns>true if exists and vice versa</returns>
     public bool IsDomainPtrRecordExists(IPAddress ipAddress, string domainName)
     {
-        if (string.IsNullOrEmpty(domainName))
-        {
-            throw new ArgumentNullException(nameof(domainName));
-        }
-        if (ipAddress == null)
-        {
-            throw new ArgumentNullException(nameof(ipAddress));
-        }
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(domainName);
+
+        ArgumentNullException.ThrowIfNull(ipAddress);
 
         var domain = DomainName.Parse(domainName);
 
@@ -238,10 +211,7 @@ public class DnsLookup
 
     private DnsMessage GetDnsMessage(string domainName, RecordType? type = null)
     {
-        if (string.IsNullOrEmpty(domainName))
-        {
-            throw new ArgumentNullException(nameof(domainName));
-        }
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(domainName);
 
         var domain = DomainName.Parse(domainName);
 
@@ -257,10 +227,7 @@ public class DnsLookup
 
     private List<T> DnsResolve<T>(string domainName, RecordType type)
     {
-        if (string.IsNullOrEmpty(domainName))
-        {
-            throw new ArgumentNullException(nameof(domainName));
-        }
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(domainName);
 
         var dnsMessage = GetDnsMessage(domainName, type);
 

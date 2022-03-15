@@ -47,10 +47,7 @@ public static class ActionInvoker
         int sleepMs = 1000,
         bool isSleepExponential = true)
     {
-        if (action == null)
-        {
-            throw new ArgumentNullException(nameof(action));
-        }
+        ArgumentNullException.ThrowIfNull(action);
 
         var countAttempts = 0;
         while (countAttempts++ < maxAttempts)

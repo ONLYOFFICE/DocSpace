@@ -51,8 +51,8 @@ public class BackupPortalTask : PortalTaskBase
 
     public void Init(int tenantId, string fromConfigPath, string toFilePath, int limit)
     {
-        if (string.IsNullOrEmpty(toFilePath))
-                throw new ArgumentNullException(nameof(toFilePath));
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(toFilePath);
+
         BackupFilePath = toFilePath;
         Limit = limit;
         Init(tenantId, fromConfigPath);
@@ -130,18 +130,18 @@ public class BackupPortalTask : PortalTaskBase
               tables = dbManager.ExecuteList("show tables;").Select(r => Convert.ToString(r[0])).ToList();
           }*/
 
-            var stepscount = tables.Count * 4; // (schema + data) * (dump + zip)
-            if (ProcessStorage)
+        var stepscount = tables.Count * 4; // (schema + data) * (dump + zip)
+        if (ProcessStorage)
+        {
+            var tenants = _tenantManager.GetTenants(false).Select(r => r.Id);
+            foreach (var t in tenants)
             {
-                var tenants = _tenantManager.GetTenants(false).Select(r => r.Id);
-                foreach (var t in tenants)
-                {
-                    files.AddRange(GetFiles(t));
-                }
-
-                stepscount += files.Count * 2 + 1;
-                Logger.Debug("files:" + files.Count);
+                files.AddRange(GetFiles(t));
             }
+
+            stepscount += files.Count * 2 + 1;
+            Logger.Debug("files:" + files.Count);
+        }
 
         SetStepsCount(stepscount);
 
@@ -201,8 +201,8 @@ public class BackupPortalTask : PortalTaskBase
     private IEnumerable<BackupFileInfo> GetFiles(int tenantId)
     {
         var files = GetFilesToProcess(tenantId).ToList();
-            var exclude = BackupRecordContext.Backups.AsQueryable().Where(b => b.TenantId == tenantId && b.StorageType == 0 && b.StoragePath != null).ToList();
-            files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains($"/file_{e.StoragePath}/"))).ToList();
+        var exclude = BackupRecordContext.Backups.AsQueryable().Where(b => b.TenantId == tenantId && b.StorageType == 0 && b.StoragePath != null).ToList();
+        files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains($"/file_{e.StoragePath}/"))).ToList();
         return files;
 
     }
@@ -215,15 +215,15 @@ public class BackupPortalTask : PortalTaskBase
             using (var connection = DbFactory.OpenConnection())
             {
                 var command = connection.CreateCommand();
-                    command.CommandText = $"SHOW CREATE TABLE `{t}`";
+                command.CommandText = $"SHOW CREATE TABLE `{t}`";
                 var createScheme = ExecuteList(command);
                 var creates = new StringBuilder();
-                    creates.Append($"DROP TABLE IF EXISTS `{t}`;");
+                creates.Append($"DROP TABLE IF EXISTS `{t}`;");
                 creates.AppendLine();
                 creates.Append(createScheme
                         .Select(r => Convert.ToString(r[1]))
                         .FirstOrDefault());
-                    creates.Append(';');
+                creates.Append(';');
 
                 var path = CrossPlatform.PathCombine(dir, t);
                 using (var stream = File.OpenWrite(path))
@@ -279,7 +279,7 @@ public class BackupPortalTask : PortalTaskBase
             }
 
             Logger.DebugFormat("dump table data start {0}", t);
-                bool searchWithPrimary;
+            bool searchWithPrimary;
             string primaryIndex;
             var primaryIndexStep = 0;
             var primaryIndexStart = 0;
@@ -289,7 +289,7 @@ public class BackupPortalTask : PortalTaskBase
             using (var connection = DbFactory.OpenConnection())
             {
                 var command = connection.CreateCommand();
-                    command.CommandText = string.Format($"SHOW COLUMNS FROM `{t}`");
+                command.CommandText = string.Format($"SHOW COLUMNS FROM `{t}`");
                 columns = ExecuteList(command).Select(r => "`" + Convert.ToString(r[0]) + "`").ToList();
                 if (command.CommandText.Contains("tenants_quota") || command.CommandText.Contains("webstudio_settings"))
                 {
@@ -300,7 +300,7 @@ public class BackupPortalTask : PortalTaskBase
             using (var connection = DbFactory.OpenConnection())
             {
                 var command = connection.CreateCommand();
-                    command.CommandText = $"select COLUMN_NAME from information_schema.`COLUMNS` where TABLE_SCHEMA = '{connection.Database}' and TABLE_NAME = '{t}' and COLUMN_KEY = 'PRI' and DATA_TYPE = 'int'";
+                command.CommandText = $"select COLUMN_NAME from information_schema.`COLUMNS` where TABLE_SCHEMA = '{connection.Database}' and TABLE_NAME = '{t}' and COLUMN_KEY = 'PRI' and DATA_TYPE = 'int'";
                 primaryIndex = ExecuteList(command).ConvertAll(r => Convert.ToString(r[0])).FirstOrDefault();
 
             }
@@ -308,7 +308,7 @@ public class BackupPortalTask : PortalTaskBase
             using (var connection = DbFactory.OpenConnection())
             {
                 var command = connection.CreateCommand();
-                    command.CommandText = $"SHOW INDEXES FROM {t} WHERE COLUMN_NAME='{primaryIndex}' AND seq_in_index=1";
+                command.CommandText = $"SHOW INDEXES FROM {t} WHERE COLUMN_NAME='{primaryIndex}' AND seq_in_index=1";
                 var isLeft = ExecuteList(command);
                 searchWithPrimary = isLeft.Count == 1;
             }
@@ -317,7 +317,7 @@ public class BackupPortalTask : PortalTaskBase
             {
                 using var connection = DbFactory.OpenConnection();
                 var command = connection.CreateCommand();
-                    command.CommandText = $"select max({primaryIndex}), min({primaryIndex}) from {t}";
+                command.CommandText = $"select max({primaryIndex}), min({primaryIndex}) from {t}";
                 var minMax = ExecuteList(command).ConvertAll(r => new Tuple<int, int>(Convert.ToInt32(r[0]), Convert.ToInt32(r[1]))).FirstOrDefault();
                 primaryIndexStart = minMax.Item2;
                 primaryIndexStep = (minMax.Item1 - minMax.Item2) / count;
@@ -398,7 +398,7 @@ public class BackupPortalTask : PortalTaskBase
     {
         Logger.DebugFormat("save to file {0}", t);
         List<object[]> portion;
-            while ((portion = data.Take(BatchLimit).ToList()).Count > 0)
+        while ((portion = data.Take(BatchLimit).ToList()).Count > 0)
         {
             using (var sw = new StreamWriter(path, true))
             using (var writer = new JsonTextWriter(sw))
@@ -415,8 +415,8 @@ public class BackupPortalTask : PortalTaskBase
 
                     for (var i = 0; i < obj.Length; i++)
                     {
-                            var value = obj[i];
-                            if (value is byte[] byteArray)
+                        var value = obj[i];
+                        if (value is byte[] byteArray)
                         {
                             sw.Write("0x");
                             foreach (var b in byteArray)
@@ -427,7 +427,7 @@ public class BackupPortalTask : PortalTaskBase
                         else
                         {
                             var ser = new JsonSerializer();
-                                ser.Serialize(writer, value);
+                            ser.Serialize(writer, value);
                         }
                         if (i != obj.Length - 1)
                         {
@@ -520,7 +520,7 @@ public class BackupPortalTask : PortalTaskBase
             filePath = @"\\?\" + filePath;
         }
 
-            using (var fileStream = await storage.GetReadStreamAsync(file.Domain, file.Path))
+        using (var fileStream = await storage.GetReadStreamAsync(file.Domain, file.Path))
         using (var tmpFile = File.OpenWrite(filePath))
         {
             await fileStream.CopyToAsync(tmpFile);
@@ -554,9 +554,9 @@ public class BackupPortalTask : PortalTaskBase
     private List<IGrouping<string, BackupFileInfo>> GetFilesGroup()
     {
         var files = GetFilesToProcess(TenantId).ToList();
-            var exclude = BackupRecordContext.Backups.AsQueryable().Where(b => b.TenantId == TenantId && b.StorageType == 0 && b.StoragePath != null).ToList();
+        var exclude = BackupRecordContext.Backups.AsQueryable().Where(b => b.TenantId == TenantId && b.StorageType == 0 && b.StoragePath != null).ToList();
 
-            files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains($"/file_{e.StoragePath}/"))).ToList();
+        files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains($"/file_{e.StoragePath}/"))).ToList();
 
         return files.GroupBy(file => file.Module).ToList();
     }
@@ -618,7 +618,7 @@ public class BackupPortalTask : PortalTaskBase
                     Logger.DebugFormat("end saving table {0}", table.Name);
                 }
 
-                    SetCurrentStepProgress((int)(++tablesProcessed * 100 / (double)tablesCount));
+                SetCurrentStepProgress((int)(++tablesProcessed * 100 / (double)tablesCount));
             }
         }
 
@@ -641,7 +641,7 @@ public class BackupPortalTask : PortalTaskBase
                 ActionInvoker.Try(state =>
                 {
                     var f = (BackupFileInfo)state;
-                        using var fileStream = storage.GetReadStreamAsync(f.Domain, f.Path).Result;
+                    using var fileStream = storage.GetReadStreamAsync(f.Domain, f.Path).Result;
                     writer.WriteEntry(file1.GetZipKey(), fileStream);
                 }, file, 5, error => Logger.WarnFormat("can't backup file ({0}:{1}): {2}", file1.Module, file1.Path, error));
 

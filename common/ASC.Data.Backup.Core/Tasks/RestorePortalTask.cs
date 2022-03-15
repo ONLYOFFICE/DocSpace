@@ -62,10 +62,7 @@ public class RestorePortalTask : PortalTaskBase
 
     public void Init(string toConfigPath, string fromFilePath, int tenantId = -1, ColumnMapper columnMapper = null, string upgradesPath = null)
     {
-        if (fromFilePath == null)
-        {
-            throw new ArgumentNullException(nameof(fromFilePath));
-        }
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(fromFilePath);
 
         if (!File.Exists(fromFilePath))
         {
@@ -292,7 +289,7 @@ public class RestorePortalTask : PortalTaskBase
                         using var stream = dataReader.GetEntry(key);
                         try
                         {
-                                storage.SaveAsync(file.Domain, adjustedPath, module != null ? module.PrepareData(key, stream, _columnMapper) : stream).Wait();
+                            storage.SaveAsync(file.Domain, adjustedPath, module != null ? module.PrepareData(key, stream, _columnMapper) : stream).Wait();
                         }
                         catch (Exception error)
                         {
@@ -324,12 +321,12 @@ public class RestorePortalTask : PortalTaskBase
     {
         Logger.Debug("begin delete storage");
 
-            foreach (var tenant in tenants)
+        foreach (var tenant in tenants)
+        {
+            foreach (var module in storageModules)
             {
-                foreach (var module in storageModules)
-                {
-                    var storage = StorageFactory.GetStorage(ConfigPath, tenant.Id.ToString(), module);
-                    var domains = StorageFactoryConfig.GetDomainList(ConfigPath, module).ToList();
+                var storage = StorageFactory.GetStorage(ConfigPath, tenant.Id.ToString(), module);
+                var domains = StorageFactoryConfig.GetDomainList(ConfigPath, module).ToList();
 
                 domains.Add(string.Empty); //instead storage.DeleteFiles("\\", "*.*", true);
 
@@ -338,9 +335,9 @@ public class RestorePortalTask : PortalTaskBase
                     ActionInvoker.Try(
                         state =>
                         {
-                                if (storage.IsDirectoryAsync((string)state).Result)
+                            if (storage.IsDirectoryAsync((string)state).Result)
                             {
-                                    storage.DeleteFilesAsync((string)state, "\\", "*.*", true).Wait();
+                                storage.DeleteFilesAsync((string)state, "\\", "*.*", true).Wait();
                             }
                         },
                         domain,
@@ -383,8 +380,8 @@ public class RestorePortalTask : PortalTaskBase
             DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"),
             tenantId);
 
-            var command = connection.CreateCommand().WithTimeout(120);
-            command.CommandText = commandText;
-            command.ExecuteNonQuery();
+        var command = connection.CreateCommand().WithTimeout(120);
+        command.CommandText = commandText;
+        command.ExecuteNonQuery();
     }
 }

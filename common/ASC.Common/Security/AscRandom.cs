@@ -88,10 +88,7 @@ public class AscRandom : Random
 
     public override void NextBytes(byte[] buffer)
     {
-        if (buffer == null)
-        {
-            throw new ArgumentNullException(nameof(buffer));
-        }
+        ArgumentNullException.ThrowIfNull(buffer);
 
         for (var i = 0; i < buffer.Length; i++)
         {

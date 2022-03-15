@@ -29,13 +29,13 @@ namespace ASC.Web.Files.Utils;
 public class SocketManager
 {
     private readonly SignalrServiceClient _signalrServiceClient;
-    private readonly FileWrapperHelper _filesWrapperHelper;
+    private readonly FileDtoHelper _filesWrapperHelper;
     private readonly TenantManager _tenantManager;
     public IDaoFactory DaoFactory { get; }
 
     public SocketManager(
         IOptionsSnapshot<SignalrServiceClient> optionsSnapshot,
-        FileWrapperHelper filesWrapperHelper,
+        FileDtoHelper filesWrapperHelper,
         TenantManager tenantManager,
         IDaoFactory daoFactory
         )

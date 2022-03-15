@@ -76,7 +76,7 @@ namespace ASC.Web.Core.Files
         /// </example>
         /// <exception>
         /// </exception>
-        
+
         public static Task<(int ResultPercent, string ConvertedDocumentUri)> GetConvertedUriAsync(
             FileUtility fileUtility,
             string documentConverterUrl,
@@ -296,7 +296,7 @@ namespace ASC.Web.Core.Files
             }
         }
 
-        public static Task<(string DocBuilderKey, Dictionary<string, string>  Urls)> DocbuilderRequestAsync(
+        public static Task<(string DocBuilderKey, Dictionary<string, string> Urls)> DocbuilderRequestAsync(
             FileUtility fileUtility,
             string docbuilderUrl,
             string requestKey,
@@ -305,8 +305,7 @@ namespace ASC.Web.Core.Files
             string signatureSecret,
            IHttpClientFactory clientFactory)
         {
-            if (string.IsNullOrEmpty(docbuilderUrl))
-                throw new ArgumentNullException(nameof(docbuilderUrl));
+            ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(docbuilderUrl);
 
             if (string.IsNullOrEmpty(requestKey) && string.IsNullOrEmpty(scriptUrl))
                 throw new ArgumentException("requestKey or inputScript is empty");
@@ -398,8 +397,7 @@ namespace ASC.Web.Core.Files
 
         public static Task<bool> HealthcheckRequestAsync(string healthcheckUrl, IHttpClientFactory clientFactory)
         {
-            if (string.IsNullOrEmpty(healthcheckUrl))
-                throw new ArgumentNullException(nameof(healthcheckUrl));
+            ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(healthcheckUrl);
 
             return InternalHealthcheckRequestAsync(healthcheckUrl, clientFactory);
         }

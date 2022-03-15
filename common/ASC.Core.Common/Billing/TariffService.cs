@@ -40,7 +40,7 @@ public class TariffServiceStorage
             Cache.Remove(TariffService.GetTariffCacheKey(i.TenantId));
             Cache.Remove(TariffService.GetBillingUrlCacheKey(i.TenantId));
             Cache.Remove(TariffService.GetBillingPaymentCacheKey(i.TenantId)); // clear all payments
-            }, CacheNotifyAction.Remove);
+        }, CacheNotifyAction.Remove);
 
         //TODO: Change code of WCF -> not supported in .NET standard/.Net Core
         /*try
@@ -259,10 +259,7 @@ public class TariffService : ITariffService
 
     public void SetTariff(int tenantId, Tariff tariff)
     {
-        if (tariff == null)
-        {
-            throw new ArgumentNullException(nameof(tariff));
-        }
+        ArgumentNullException.ThrowIfNull(tariff);
 
         var q = QuotaService.GetTenantQuota(tariff.QuotaId);
         if (q == null)
@@ -423,10 +420,8 @@ public class TariffService : ITariffService
 
     public IDictionary<string, Dictionary<string, decimal>> GetProductPriceInfo(params string[] productIds)
     {
-        if (productIds == null)
-        {
-            throw new ArgumentNullException(nameof(productIds));
-        }
+        ArgumentNullException.ThrowIfNull(productIds);
+
         try
         {
             var key = "biling-prices" + string.Join(",", productIds);

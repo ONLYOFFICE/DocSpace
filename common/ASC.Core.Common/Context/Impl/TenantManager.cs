@@ -185,10 +185,7 @@ public class TenantManager
 
     public Tenant SetTenantVersion(Tenant tenant, int version)
     {
-        if (tenant == null)
-        {
-            throw new ArgumentNullException(nameof(tenant));
-        }
+        ArgumentNullException.ThrowIfNull(tenant);
 
         if (tenant.Version != version)
         {

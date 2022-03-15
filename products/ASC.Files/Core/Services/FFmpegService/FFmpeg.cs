@@ -131,15 +131,8 @@ public class FFmpegService
 
     private static Task<int> StreamCopyToAsync(Stream srcStream, Stream dstStream, bool closeSrc = false, bool closeDst = false)
     {
-        if (srcStream == null)
-        {
-            throw new ArgumentNullException(nameof(srcStream));
-        }
-
-        if (dstStream == null)
-        {
-            throw new ArgumentNullException(nameof(dstStream));
-        }
+        ArgumentNullException.ThrowIfNull(srcStream);
+        ArgumentNullException.ThrowIfNull(dstStream);
 
         return StreamCopyToAsyncInternal(srcStream, dstStream, closeSrc, closeDst);
     }

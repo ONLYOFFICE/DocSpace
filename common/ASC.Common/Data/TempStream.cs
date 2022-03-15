@@ -28,7 +28,7 @@ public class TempStream
 
     public Stream GetBuffered(Stream srcStream)
     {
-            if (srcStream == null) throw new ArgumentNullException(nameof(srcStream));
+        ArgumentNullException.ThrowIfNull(srcStream);
         if (!srcStream.CanSeek || srcStream.CanTimeout)
         {
             //Buffer it

@@ -1,4 +1,4 @@
-﻿namespace ASC.Files.Model;
+﻿namespace ASC.Files.Core.ApiModels.RequestDto;
 
 public class SecurityInfoRequestDto : BaseBatchRequestDto
 {

@@ -1,4 +1,4 @@
-﻿namespace ASC.Files.Core.Model;
+﻿namespace ASC.Files.Core.ApiModels.RequestDto;
 
 public class UpdateCommentRequestDto
 {

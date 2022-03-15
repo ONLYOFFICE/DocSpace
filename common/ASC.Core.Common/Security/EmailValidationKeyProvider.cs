@@ -23,8 +23,6 @@
  *
 */
 
-using static ASC.Security.Cryptography.EmailValidationKeyProvider;
-
 namespace ASC.Security.Cryptography;
 
 [Scope]
@@ -69,10 +67,7 @@ public class EmailValidationKeyProvider
 
     public string GetEmailKey(int tenantId, string email)
     {
-        if (string.IsNullOrEmpty(email))
-        {
-            throw new ArgumentNullException(nameof(email));
-        }
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(email);
 
         email = FormatEmail(tenantId, email);
 
@@ -84,10 +79,7 @@ public class EmailValidationKeyProvider
 
     private string FormatEmail(int tenantId, string email)
     {
-        if (email == null)
-        {
-            throw new ArgumentNullException(nameof(email));
-        }
+        ArgumentNullException.ThrowIfNull(email);
 
         try
         {
@@ -116,14 +108,8 @@ public class EmailValidationKeyProvider
 
     private ValidationResult ValidateEmailKeyInternal(string email, string key, TimeSpan validInterval)
     {
-        if (string.IsNullOrEmpty(email))
-        {
-            throw new ArgumentNullException(nameof(email));
-        }
-        if (key == null)
-        {
-            throw new ArgumentNullException(nameof(key));
-        }
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(email);
+        ArgumentNullException.ThrowIfNull(key);
 
         email = FormatEmail(_tenantManager.GetCurrentTenant().Id, email);
         var parts = key.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);

@@ -47,14 +47,9 @@ namespace ASC.Web.Core.Sms
 
         public Task<bool> SendSMSAsync(string number, string message)
         {
-            if (string.IsNullOrEmpty(number))
-            {
-                throw new ArgumentNullException(nameof(number));
-            }
-            if (string.IsNullOrEmpty(message))
-            {
-                throw new ArgumentNullException(nameof(message));
-            }
+            ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(number);
+            ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(message);
+
             if (!SmsProviderManager.Enabled())
             {
                 throw new MethodAccessException();
@@ -99,7 +94,7 @@ namespace ASC.Web.Core.Sms
             {
                 sb.Append('*');
             }
-            sb.Append(mobilePhone, mobilePhone.Length - endLen, mobilePhone.Length - (endLen +1));
+            sb.Append(mobilePhone, mobilePhone.Length - endLen, mobilePhone.Length - (endLen + 1));
             return sb.ToString();
         }
     }

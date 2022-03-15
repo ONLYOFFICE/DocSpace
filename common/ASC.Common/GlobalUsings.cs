@@ -7,6 +7,7 @@ global using System.Net;
 global using System.Net.Mail;
 global using System.Reflection;
 global using System.Runtime.Caching;
+global using System.Runtime.CompilerServices;
 global using System.Runtime.Loader;
 global using System.Runtime.Serialization;
 global using System.Security.Cryptography;

@@ -47,7 +47,7 @@ class InterceptorStorage
 
     public void Add(ISendInterceptor interceptor)
     {
-        if (interceptor == null) throw new ArgumentNullException(nameof(interceptor));
+        ArgumentNullException.ThrowIfNull(interceptor);
         if (string.IsNullOrEmpty(interceptor.Name)) throw new ArgumentException("empty name property", nameof(interceptor));
 
         switch (interceptor.Lifetime)
