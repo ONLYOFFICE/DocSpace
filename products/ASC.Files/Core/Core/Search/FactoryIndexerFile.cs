@@ -32,6 +32,8 @@ using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.EF.Model;
 using ASC.ElasticSearch;
 using ASC.ElasticSearch.Core;
@@ -42,8 +44,51 @@ using ASC.Files.Core.EF;
 using ASC.Files.Core.Resources;
 
 using Microsoft.Extensions.Options;
+
 namespace ASC.Web.Files.Core.Search
 {
+    [Scope]
+    public class BaseIndexerFile : BaseIndexer<DbFile>
+    {
+        private readonly IDaoFactory _daoFactory;
+
+        public BaseIndexerFile(
+            Client client,
+            IOptionsMonitor<ILog> log,
+            DbContextManager<WebstudioDbContext> dbContextManager,
+            TenantManager tenantManager, BaseIndexerHelper baseIndexerHelper,
+            Settings settings,
+            IServiceProvider serviceProvider,
+            IDaoFactory daoFactory)
+            : base(client, log, dbContextManager, tenantManager, baseIndexerHelper, settings, serviceProvider)
+        {
+            _daoFactory = daoFactory;
+        }
+
+        protected override bool BeforeIndex(DbFile data)
+        {
+            if (!base.BeforeIndex(data)) return false;
+
+            var fileDao = _daoFactory.GetFileDao<int>() as FileDao;
+            TenantManager.SetCurrentTenant(data.TenantId);
+            fileDao.InitDocumentAsync(data).Wait();
+
+            return true;
+        }
+
+        protected override async Task<bool> BeforeIndexAsync(DbFile data)
+        {
+            if (!base.BeforeIndex(data)) return false;
+
+            var fileDao = _daoFactory.GetFileDao<int>() as FileDao;
+            TenantManager.SetCurrentTenant(data.TenantId);
+            await fileDao.InitDocumentAsync(data);
+
+            return true;
+        }
+    }
+
+
     [Scope(Additional = typeof(FactoryIndexerFileExtension))]
     public class FactoryIndexerFile : FactoryIndexer<DbFile>
     {
@@ -55,7 +100,7 @@ namespace ASC.Web.Files.Core.Search
             TenantManager tenantManager,
             SearchSettingsHelper searchSettingsHelper,
             FactoryIndexer factoryIndexer,
-            BaseIndexer<DbFile> baseIndexer,
+            BaseIndexerFile baseIndexer,
             IServiceProvider serviceProvider,
             IDaoFactory daoFactory,
             ICache cache,
@@ -145,22 +190,10 @@ namespace ASC.Web.Files.Core.Search
                 {
                     if (Settings.Threads == 1)
                     {
-                        data.ForEach(r =>
-                        {
-                            TenantManager.SetCurrentTenant(r.TenantId);
-                            fileDao.InitDocumentAsync(r).Wait();
-                        });
                         Index(data);
                     }
                     else
                     {
-                        //TODO: refactoring
-                        data.ForEach(r =>
-                        {
-                            TenantManager.SetCurrentTenant(r.TenantId);
-                            fileDao.InitDocumentAsync(r).Wait();
-                        });
-
                         tasks.Add(IndexAsync(data));
                         j++;
                         if (j >= Settings.Threads)
@@ -183,7 +216,6 @@ namespace ASC.Web.Files.Core.Search
                 throw;
             }
         }
-
 
         public override string SettingsTitle
         {
