@@ -10,6 +10,7 @@ export function login(userName, passwordHash, session) {
   return request({
     method: "post",
     url: "/authentication.json",
+    skipLogout: true,
     data,
   });
 }
