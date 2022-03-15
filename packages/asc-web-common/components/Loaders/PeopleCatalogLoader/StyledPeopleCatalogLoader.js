@@ -23,7 +23,7 @@ const StyledContainer = styled.div`
 
 const StyledRectangleLoader = styled(RectangleLoader)`
   height: 20px;
-  width: 208px;
+  width: 216px;
   padding: 0 0 16px;
 
   @media ${tablet} {

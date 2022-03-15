@@ -3,7 +3,7 @@ import { isTablet } from "react-device-detect";
 import styled from "styled-components";
 
 const StyledContainer = styled.div`
-  width: 208px;
+  width: 216px;
   @media ${tablet} {
     display: none;
   }
