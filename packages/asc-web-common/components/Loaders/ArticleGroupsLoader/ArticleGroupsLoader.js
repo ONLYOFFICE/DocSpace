@@ -3,10 +3,10 @@ import PropTypes from "prop-types";
 import {
   StyledContainer,
   StyledRectangleLoader,
-} from "./StyledPeopleCatalogLoader";
+} from "./StyledArticleGroupsLoader";
 import { inject, observer } from "mobx-react";
 
-const PeopleCatalogLoader = ({ id, className, style, showText, ...rest }) => {
+const ArticleGroupsLoader = ({ id, className, style, showText, ...rest }) => {
   return (
     <StyledContainer
       id={id}
@@ -26,14 +26,14 @@ const PeopleCatalogLoader = ({ id, className, style, showText, ...rest }) => {
   );
 };
 
-PeopleCatalogLoader.propTypes = {
+ArticleGroupsLoader.propTypes = {
   id: PropTypes.string,
   className: PropTypes.string,
   style: PropTypes.object,
   showText: PropTypes.bool,
 };
 
-PeopleCatalogLoader.defaultProps = {
+ArticleGroupsLoader.defaultProps = {
   id: undefined,
   className: undefined,
   style: undefined,
@@ -41,4 +41,4 @@ PeopleCatalogLoader.defaultProps = {
 
 export default inject(({ auth }) => ({
   showText: auth.settingsStore.showText,
-}))(observer(PeopleCatalogLoader));
+}))(observer(ArticleGroupsLoader));

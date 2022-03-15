@@ -4,16 +4,10 @@ import {
   StyledContainer,
   StyledBlock,
   StyledRectangleLoader,
-} from "./StyledDocumentCatalogFolderLoader";
+} from "./StyledArticleFolderLoader";
 import { inject, observer } from "mobx-react";
 
-const DocumentCatalogFolderLoader = ({
-  id,
-  className,
-  style,
-  showText,
-  ...rest
-}) => {
+const ArticleFolderLoader = ({ id, className, style, showText, ...rest }) => {
   return (
     <StyledContainer
       id={id}
@@ -41,14 +35,14 @@ const DocumentCatalogFolderLoader = ({
   );
 };
 
-DocumentCatalogFolderLoader.propTypes = {
+ArticleFolderLoader.propTypes = {
   id: PropTypes.string,
   className: PropTypes.string,
   style: PropTypes.object,
   showText: PropTypes.bool,
 };
 
-DocumentCatalogFolderLoader.defaultProps = {
+ArticleFolderLoader.defaultProps = {
   id: undefined,
   className: undefined,
   style: undefined,
@@ -56,4 +50,4 @@ DocumentCatalogFolderLoader.defaultProps = {
 
 export default inject(({ auth }) => ({
   showText: auth.settingsStore.showText,
-}))(observer(DocumentCatalogFolderLoader));
+}))(observer(ArticleFolderLoader));

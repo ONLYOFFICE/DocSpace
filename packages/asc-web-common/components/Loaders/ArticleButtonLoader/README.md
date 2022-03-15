@@ -9,7 +9,7 @@ import Loaders from "@appserver/common/components/Loaders";
 ```
 
 ```jsx
-<Loaders.MainButton />
+<Loaders.ArticleButton />
 ```
 
 ### Properties

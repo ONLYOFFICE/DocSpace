@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import StyledContainer from "./StyledMainButton";
 import RectangleLoader from "../RectangleLoader";
 
-const MainButtonLoader = ({ id, className, style, ...rest }) => {
+const ArticleButtonLoader = ({ id, className, style, ...rest }) => {
   const {
     title,
     width,
@@ -34,16 +34,16 @@ const MainButtonLoader = ({ id, className, style, ...rest }) => {
   );
 };
 
-MainButtonLoader.propTypes = {
+ArticleButtonLoader.propTypes = {
   id: PropTypes.string,
   className: PropTypes.string,
   style: PropTypes.object,
 };
 
-MainButtonLoader.defaultProps = {
+ArticleButtonLoader.defaultProps = {
   id: undefined,
   className: undefined,
   style: undefined,
 };
 
-export default MainButtonLoader;
+export default ArticleButtonLoader;
