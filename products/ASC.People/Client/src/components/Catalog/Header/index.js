@@ -5,13 +5,14 @@ import { inject, observer } from "mobx-react";
 const CatalogHeaderContent = ({
   isVisitor,
   isLoading,
+  isLoaded,
   firstLoad,
   currentModuleName,
 }) => {
   return (
     !isVisitor &&
-    (firstLoad ? (
-      isLoading ? (
+    (firstLoad || !isLoaded ? (
+      isLoading || !isLoaded ? (
         <Loaders.ArticleHeader />
       ) : (
         <>{currentModuleName}</>
@@ -27,6 +28,7 @@ export default inject(({ auth, peopleStore }) => {
   return {
     isVisitor: auth.userStore.user.isVisitor,
     isLoading: loadingStore.isLoading,
+    isLoaded: loadingStore.isLoaded,
     firstLoad: loadingStore.firstLoad,
     currentModuleName: auth.product.title,
   };

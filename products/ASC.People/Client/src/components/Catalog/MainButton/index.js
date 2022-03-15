@@ -76,6 +76,7 @@ class CatalogMainButtonContent extends React.Component {
       sectionWidth,
       isLoading,
       firstLoad,
+      isLoaded,
     } = this.props;
 
     const { dialogVisible } = this.state;
@@ -156,8 +157,8 @@ class CatalogMainButtonContent extends React.Component {
             buttonOptions={links}
             sectionWidth={sectionWidth}
           />
-        ) : firstLoad ? (
-          isLoading ? (
+        ) : firstLoad || !isLoaded ? (
+          isLoading || !isLoaded ? (
             <Loaders.MainButton />
           ) : (
             <MainButton
@@ -210,6 +211,7 @@ export default withRouter(
       groupCaption,
       toggleShowText: auth.settingsStore.toggleShowText,
       isLoading: loadingStore.isLoading,
+      isLoaded: loadingStore.isLoaded,
       firstLoad: loadingStore.firstLoad,
     };
   })(
