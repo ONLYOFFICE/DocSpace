@@ -139,8 +139,8 @@ class SettingsStore {
   };
 
   get helpUrlCreatingBackup() {
-    const lang = this.culture.length > 0 ? this.culture : "en";
-
+    const splitted = this.culture.split("-");
+    const lang = splitted.length > 0 ? splitted[0] : "en";
     return `https://helpcenter.onlyoffice.com/${lang}/administration/configuration.aspx#CreatingBackup_block`;
   }
 
