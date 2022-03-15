@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 import Text from "@appserver/components/text";
 import Button from "@appserver/components/button";
 import Link from "@appserver/components/link";
@@ -15,6 +16,7 @@ import {
   DOCUMENTS_FOR_IOS,
   DOCUMENTS_FOR_ANDROID,
 } from "../../helpers/constants";
+import { Base } from "@appserver/components/themes";
 
 const StyledBody = styled.div`
   display: flex;
@@ -37,7 +39,7 @@ const StyledFileTile = styled.div`
   gap: 16px;
   padding: 16px;
   margin: 16px 0;
-  background: #f3f4f4;
+  background: ${(props) => props.theme.deeplink.tile.background};
   border-radius: 3px;
   align-items: center;
 `;
@@ -142,6 +144,8 @@ const DeepLinkPage = (props) => {
     </StyledBody>
   );
 };
+
+DeepLinkPage.defaultProps = { theme: Base };
 
 export default inject(({ auth, settingsStore }) => {
   return {
