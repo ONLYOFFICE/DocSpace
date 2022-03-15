@@ -56,7 +56,7 @@ class RackspaceStorage extends React.Component {
           scale={true}
           value={formSettings.filePath}
           onChange={this.onChange}
-          isDisabled={isInitialLoading || !availableStorage[selectedId]?.isSet}
+          isDisabled={!availableStorage[selectedId]?.isSet}
           placeholder={t("Path")}
           tabIndex={this.namesArray.length}
           hasError={isErrors?.filePath}
