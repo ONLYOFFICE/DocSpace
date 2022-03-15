@@ -22,6 +22,7 @@ global using ASC.AuditTrail.Repositories;
 global using ASC.Common;
 global using ASC.Common.Caching;
 global using ASC.Common.Logging;
+global using ASC.Common.Mapping;
 global using ASC.Common.Security.Authorizing;
 global using ASC.Common.Threading;
 global using ASC.Common.Utils;
@@ -82,6 +83,8 @@ global using ASC.Webhooks.Core.Dao.Models;
 
 global using Autofac;
 global using Autofac.Extensions.DependencyInjection;
+
+global using AutoMapper;
 
 global using Google.Authenticator;
 

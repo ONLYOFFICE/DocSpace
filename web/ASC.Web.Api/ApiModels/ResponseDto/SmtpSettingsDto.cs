@@ -25,7 +25,7 @@
 
 namespace ASC.Web.Api.ApiModel.ResponseDto;
 
-public class SmtpSettingsDto
+public class SmtpSettingsDto : IMapFrom<SmtpSettings>
 {
     public string Host { get; set; }
     public int? Port { get; set; }
@@ -49,5 +49,10 @@ public class SmtpSettingsDto
             SenderAddress = "notify@example.com",
             SenderDisplayName = "Postman"
         };
+    }
+
+    public void Mapping(Profile profile)
+    {
+        profile.CreateMap<SmtpSettings, SmtpSettingsDto>();
     }
 }

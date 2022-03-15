@@ -33,16 +33,19 @@ public class SmtpSettingsController : ControllerBase
     private readonly PermissionContext _permissionContext;
     private readonly CoreConfiguration _coreConfiguration;
     private readonly CoreBaseSettings _coreBaseSettings;
+    private readonly IMapper _mapper;
 
 
     public SmtpSettingsController(
         PermissionContext permissionContext,
         CoreConfiguration coreConfiguration,
-        CoreBaseSettings coreBaseSettings)
+        CoreBaseSettings coreBaseSettings,
+        IMapper mapper)
     {
         _permissionContext = permissionContext;
         _coreConfiguration = coreConfiguration;
         _coreBaseSettings = coreBaseSettings;
+        _mapper = mapper;
     }
 
 
@@ -51,13 +54,14 @@ public class SmtpSettingsController : ControllerBase
     {
         CheckSmtpPermissions();
 
-        var settings = ToSmtpSettings(_coreConfiguration.SmtpSettings, true);
+        var settings = _mapper.Map<SmtpSettings, SmtpSettingsDto>(_coreConfiguration.SmtpSettings);
+        settings.CredentialsUserPassword = "";
 
         return settings;
     }
 
     [Create("smtp")]
-    public SmtpSettingsDto SaveSmtpSettingsFromBody([FromBody]SmtpSettingsDto inDto)
+    public SmtpSettingsDto SaveSmtpSettingsFromBody([FromBody] SmtpSettingsDto inDto)
     {
         return SaveSmtpSettings(inDto);
     }
@@ -84,7 +88,8 @@ public class SmtpSettingsController : ControllerBase
 
         _coreConfiguration.SmtpSettings = settingConfig;
 
-        var settings = ToSmtpSettings(settingConfig, true);
+        var settings = _mapper.Map<SmtpSettings, SmtpSettingsDto>(settingConfig);
+        settings.CredentialsUserPassword = "";
 
         return settings;
     }
@@ -102,7 +107,10 @@ public class SmtpSettingsController : ControllerBase
 
         var current = _coreBaseSettings.Standalone ? _coreConfiguration.SmtpSettings : SmtpSettings.Empty;
 
-        return ToSmtpSettings(current, true);
+        var settings = _mapper.Map<SmtpSettings, SmtpSettingsDto>(current);
+        settings.CredentialsUserPassword = "";
+
+        return settings;
     }
 
     //[Read("smtp/test")]
@@ -189,22 +197,6 @@ public class SmtpSettingsController : ControllerBase
 
         return settingsConfig;
     }
-
-    private static SmtpSettingsDto ToSmtpSettings(SmtpSettings settingsConfig, bool hidePassword = false)
-    {
-        return new SmtpSettingsDto
-        {
-            Host = settingsConfig.Host,
-            Port = settingsConfig.Port,
-            SenderAddress = settingsConfig.SenderAddress,
-            SenderDisplayName = settingsConfig.SenderDisplayName,
-            CredentialsUserName = settingsConfig.CredentialsUserName,
-            CredentialsUserPassword = hidePassword ? "" : settingsConfig.CredentialsUserPassword,
-            EnableSSL = settingsConfig.EnableSSL,
-            EnableAuth = settingsConfig.EnableAuth
-        };
-    }
-
     private static void CheckSmtpPermissions()
     {
         if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.SmtpSettings)))
