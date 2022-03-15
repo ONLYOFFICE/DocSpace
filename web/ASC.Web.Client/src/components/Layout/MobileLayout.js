@@ -77,6 +77,14 @@ class MobileLayout extends Component {
       return;
     }
 
+    if (currentScrollPosition <= 150 && prevScrollPosition === 0) {
+      if (!this.state.visibleContent)
+        this.setState({
+          visibleContent: true,
+        });
+      return;
+    }
+
     if (
       (isSafari || isIOS) &&
       Math.abs(currentScrollPosition - prevScrollPosition) <= 112 &&
@@ -89,7 +97,7 @@ class MobileLayout extends Component {
       return;
     }
 
-    if (Math.abs(currentScrollPosition - prevScrollPosition) <= 112) {
+    if (Math.abs(currentScrollPosition - prevScrollPosition) <= 240) {
       return;
     }
 
@@ -111,7 +119,7 @@ class MobileLayout extends Component {
     }
 
     this.setState({
-      prevScrollPosition: currentScrollPosition,
+      prevScrollPosition: prevScrollPosition,
       visibleContent: isVisible,
     });
   };
