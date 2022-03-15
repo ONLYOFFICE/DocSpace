@@ -23,23 +23,20 @@
  *
 */
 
-namespace ASC.Web.Studio.Core;
+namespace ASC.Web.Api.ApiModel.ResponseDto;
 
-public class OpensourceGiftSettings : ISettings
+public class EventDto
 {
-    public bool Readed { get; set; }
-
-    #region ISettings Members
-
-    public Guid ID
+    public EventDto(BaseEvent auditEvent)
     {
-        get { return new Guid("{1F4FEA2C-2D9F-47A6-ADEF-CEC4D1E1E243}"); }
+        Id = auditEvent.Id;
+        Date = new ApiDateTime(auditEvent.Date, TimeSpan.Zero);
+        User = auditEvent.UserName;
+        Action = auditEvent.ActionText;
     }
 
-    public ISettings GetDefault(IServiceProvider serviceProvider)
-    {
-        return new OpensourceGiftSettings { Readed = false };
-    }
-
-    #endregion
+    public int Id { get; private set; }
+    public ApiDateTime Date { get; private set; }
+    public string User { get; private set; }
+    public string Action { get; private set; }
 }
