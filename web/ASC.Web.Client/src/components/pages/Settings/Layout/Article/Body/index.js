@@ -20,12 +20,13 @@ import { ReactSVG } from "react-svg";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import { clickBackdrop } from "@appserver/common/utils";
 import { tablet } from "@appserver/components/utils/device";
+import { Base } from "@appserver/components/themes";
 
 const StyledTreeMenu = styled(TreeMenu)`
   .inherit-title-link {
     font-size: inherit;
     font-weight: inherit;
-    color: #657077;
+    color: ${(props) => props.theme.studio.settings.article.titleColor};
 
     &.header {
       font-weight: bold;
@@ -50,7 +51,7 @@ const StyledTreeMenu = styled(TreeMenu)`
   .tree_icon {
     display: inline;
     path {
-      fill: dimgray;
+      fill: ${(props) => props.theme.studio.settings.article.fillIcon};
     }
   }
   svg {
@@ -61,19 +62,25 @@ const StyledTreeMenu = styled(TreeMenu)`
   }
 `;
 
+StyledTreeMenu.defaultProps = { theme: Base };
+
 const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
   ${commonIconsStyles}
   path {
-    fill: ${(props) => props.color};
+    fill: ${(props) => props.theme.studio.settings.article.expanderColor};
   }
 `;
+
+StyledExpanderDownIcon.defaultProps = { theme: Base };
 
 const StyledExpanderRightIcon = styled(ExpanderRightIcon)`
   ${commonIconsStyles}
   path {
-    fill: ${(props) => props.color};
+    fill: ${(props) => props.theme.studio.settings.article.expanderColor};
   }
 `;
+
+StyledExpanderRightIcon.defaultProps = { theme: Base };
 const getTreeItems = (data, path, t) => {
   const maptKeys = (tKey) => {
     switch (tKey) {
@@ -201,9 +208,9 @@ class ArticleBodyContent extends React.Component {
       return null;
     }
     if (obj.expanded) {
-      return <StyledExpanderDownIcon size="scale" color="dimgray" />;
+      return <StyledExpanderDownIcon size="scale" />;
     } else {
-      return <StyledExpanderRightIcon size="scale" color="dimgray" />;
+      return <StyledExpanderRightIcon size="scale" />;
     }
   };
 

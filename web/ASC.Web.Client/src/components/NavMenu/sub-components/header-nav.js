@@ -10,15 +10,17 @@ import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
 import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../../../package.json";
-import { isDesktop } from "react-device-detect";
+import { isDesktop, isMobile } from "react-device-detect";
 import AboutDialog from "../../pages/About/AboutDialog";
 import DebugInfoDialog from "../../pages/DebugInfo";
+import HeaderCatalogBurger from "./header-catalog-burger";
 
 const { proxyURL } = AppServerConfig;
 const homepage = config.homepage;
 
 const PROXY_HOMEPAGE_URL = combineUrl(proxyURL, homepage);
 const ABOUT_URL = combineUrl(PROXY_HOMEPAGE_URL, "/about");
+const SETTINGS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/settings");
 const PROFILE_SELF_URL = combineUrl(
   PROXY_HOMEPAGE_URL,
   "/products/people/view/@self"
@@ -69,6 +71,10 @@ const HeaderNav = ({
   buildVersionInfo,
   debugInfo,
   settingsModule,
+  currentProductId,
+  toggleCatalogOpen,
+  showCatalog,
+  changeTheme,
 }) => {
   const { t } = useTranslation(["NavMenu", "Common", "About"]);
   const [visibleAboutDialog, setVisibleAboutDialog] = useState(false);
@@ -88,6 +94,7 @@ const HeaderNav = ({
     }
   }, []);
 
+  const onCloseDialog = () => setVisibleDialog(false);
   const onDebugClick = useCallback(() => {
     setVisibleDebugDialog(true);
   }, []);
@@ -140,6 +147,10 @@ const HeaderNav = ({
         }),
       },
       {
+        key: "ChangeTheme",
+        ...(!isPersonal && { label: "Change theme", onClick: changeTheme }),
+      },
+      {
         key: "AboutBtn",
         label: t("AboutCompanyTitle"),
         onClick: onAboutClick,
@@ -162,34 +173,25 @@ const HeaderNav = ({
 
     return actions;
   }, [onProfileClick, onAboutClick, onLogoutClick]);
-
   //console.log("HeaderNav render");
   return (
     <StyledNav className="profileMenuIcon hidingHeader">
-      {modules
-        .filter((m) => m.isolateMode)
-        .map((m) => (
-          <NavItem
-            key={m.id}
-            iconName={m.iconName}
-            iconUrl={m.iconUrl}
-            badgeNumber={m.notifications}
-            url={m.link}
-            onClick={(e) => {
-              history.push(m.link);
-              e.preventDefault();
-            }}
-            onBadgeClick={(e) => console.log(m.iconName + "Badge Clicked", e)}
-            noHover={true}
-          />
-        ))}
       {isAuthenticated && user ? (
-        <ProfileActions
-          userActions={getCurrentUserActions()}
-          user={user}
-          userIsUpdate={userIsUpdate}
-          setUserIsUpdate={setUserIsUpdate}
-        />
+        <>
+          <ProfileActions
+            userActions={getCurrentUserActions()}
+            user={user}
+            userIsUpdate={userIsUpdate}
+            setUserIsUpdate={setUserIsUpdate}
+            isProduct={currentProductId !== "home"}
+            showCatalog={showCatalog}
+          />
+          <HeaderCatalogBurger
+            isProduct={currentProductId !== "home"}
+            showCatalog={showCatalog}
+            onClick={toggleCatalogOpen}
+          />
+        </>
       ) : (
         <></>
       )}
@@ -221,6 +223,8 @@ HeaderNav.propTypes = {
   logout: PropTypes.func,
   isAuthenticated: PropTypes.bool,
   isLoaded: PropTypes.bool,
+  currentProductId: PropTypes.string,
+  toggleCatalogOpen: PropTypes.func,
 };
 
 export default withRouter(
@@ -236,8 +240,13 @@ export default withRouter(
     const {
       defaultPage,
       personal: isPersonal,
+      version: versionAppServer,
+      currentProductId,
+      toggleCatalogOpen,
+      showCatalog,
       buildVersionInfo,
       debugInfo,
+      changeTheme,
     } = settingsStore;
     const { user, userIsUpdate, setUserIsUpdate } = userStore;
     const modules = auth.availableModules;
@@ -253,11 +262,16 @@ export default withRouter(
       modules,
       logout,
       peopleAvailable: modules.some((m) => m.appName === "people"),
+      versionAppServer,
       userIsUpdate,
       setUserIsUpdate,
+      currentProductId,
+      toggleCatalogOpen,
+      showCatalog,
       buildVersionInfo,
       debugInfo,
       settingsModule,
+      changeTheme,
     };
   })(observer(HeaderNav))
 );

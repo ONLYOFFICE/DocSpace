@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.9.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.9.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
     <value>Das Feld mit dem Prüfcode darf nicht leer sein</value>
@@ -545,6 +545,9 @@
   <data name="CustomNamingPeopleSchema" xml:space="preserve">
     <value>Einstellbar</value>
   </data>
+  <data name="DnsChangeMsg" xml:space="preserve">
+    <value>Der Link zum Bestätigen der Operation wurde an {0} verschickt (die E-Mail-Adresse des Portalbesitzers).</value>
+  </data>
   <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
     <value>Falsche Instanz-ID.</value>
   </data>
@@ -626,6 +629,12 @@
   <data name="ErrorRequestLimitExceeded" xml:space="preserve">
     <value>Anforderungslimit wurde überschritten</value>
   </data>
+  <data name="ErrorTenantTooShort" xml:space="preserve">
+    <value>Die Mandantendomäne darf nicht leer sein.</value>
+  </data>
+  <data name="ErrorTenantTooShortFormat" xml:space="preserve">
+    <value>Der Domänenname muss zwischen {0} und {1} Zeichen lang sein.</value>
+  </data>
   <data name="ErrorUserNotFound" xml:space="preserve">
     <value>Der Benutzer konnte nicht gefunden werden</value>
   </data>
@@ -692,6 +701,9 @@
   <data name="PersonalFreeSpaceException" xml:space="preserve">
     <value>Der verfügbare Speicherplatz ist überschritten</value>
   </data>
+  <data name="PortalAccessSettingsTariffException" xml:space="preserve">
+    <value>Diese Funktion ist nur für den kostenlosen Tarif verfügbar</value>
+  </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Zugang zum Portal</value>
   </data>
@@ -733,6 +745,9 @@
   </data>
   <data name="SsoSettingsInvalidMapping" xml:space="preserve">
     <value>Ungültige Feldzuordnung</value>
+  </data>
+  <data name="SuccessfullyPortalRenameMessage" xml:space="preserve">
+    <value>Portal wurde erfolgreich umbenannt </value>
   </data>
   <data name="SuccessfullySaveGreetingSettingsMessage" xml:space="preserve">
     <value>Die Begrüßungseinstellungen wurden erfolgreich gespeichert</value>

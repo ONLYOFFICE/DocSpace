@@ -14,7 +14,7 @@ const BodyStyle = styled.div`
   padding: ${isMobileOnly ? "48px 0 0" : "80px 147px 0"};
 `;
 
-const Body = ({ t, personal, buildVersionInfo }) => {
+const Body = ({ t, personal, buildVersionInfo, theme }) => {
   useEffect(() => {
     setDocumentTitle(t("Common:About"));
   }, [t]);
@@ -25,16 +25,21 @@ const Body = ({ t, personal, buildVersionInfo }) => {
         {t("AboutHeader")}
       </Text>
 
-      <AboutContent personal={personal} buildVersionInfo={buildVersionInfo} />
+      <AboutContent
+        theme={theme}
+        personal={personal}
+        buildVersionInfo={buildVersionInfo}
+      />
     </BodyStyle>
   );
 };
 
 const BodyWrapper = inject(({ auth }) => {
-  const { personal, buildVersionInfo } = auth.settingsStore;
+  const { personal, buildVersionInfo, theme } = auth.settingsStore;
   return {
     personal,
     buildVersionInfo,
+    theme,
   };
 })(withTranslation(["About", "Common"])(withLoader(observer(Body))));
 

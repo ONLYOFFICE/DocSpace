@@ -7,6 +7,7 @@ import { tablet, smallTablet } from "@appserver/components/utils/device";
 import CatalogPinIcon from "../../../../../public/images/catalog.pin.react.svg";
 import CatalogUnpinIcon from "../../../../../public/images/catalog.unpin.react.svg";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
+import Base from "@appserver/components/themes/base";
 
 const StyledCatalogPinIcon = styled(CatalogPinIcon)`
   ${commonIconsStyles}
@@ -17,7 +18,7 @@ const StyledCatalogUnpinIcon = styled(CatalogUnpinIcon)`
 `;
 
 const StyledArticlePinPanel = styled.div`
-  border-top: 1px solid #eceef1;
+  border-top: 1px solid ${(props) => props.theme.article.pinBorderColor};
   height: 47px;
   min-height: 47px;
   display: none;
@@ -29,7 +30,7 @@ const StyledArticlePinPanel = styled.div`
     bottom: 0;
     width: 208px;
     z-index: 10;
-    background-color: #f8f9f9;
+    background-color: ${(props) => props.theme.article.background};
   }
 
   @media ${smallTablet} {
@@ -57,6 +58,8 @@ const StyledArticlePinPanel = styled.div`
     }
   }
 `;
+
+StyledArticlePinPanel.defaultProps = { theme: Base };
 
 const ArticlePinPanel = React.memo((props) => {
   //console.log("PageLayout ArticlePinPanel render");

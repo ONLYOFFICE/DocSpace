@@ -7,6 +7,7 @@ import Main from "studio/Main";
 import PageLayout from ".";
 import history from "../../history";
 import Headline from "../Headline";
+import CatalogItem from "@appserver/components/catalog-item";
 import store from "../../store";
 import { Provider as MobxProvider } from "mobx-react";
 import IconButton from "@appserver/components/icon-button";
@@ -57,6 +58,8 @@ const perPageItems = [
 
 const articleHeaderContent = <Headline type="menu">Article Header</Headline>;
 
+const catalogHeaderContent = <>Catalog Header</>;
+
 const articleMainButtonContent = (
   <MainButton
     text="Actions"
@@ -64,7 +67,53 @@ const articleMainButtonContent = (
   />
 );
 
+const catalogMainButtonContent = (
+  <MainButton
+    text="Actions"
+    clickAction={(e) => action("MainButton Clicked")(e)}
+  />
+);
+
 const articleBodyContent = <p style={{ padding: 40 }}>Article Content</p>;
+
+const catalogBodyContent = (
+  <>
+    <CatalogItem
+      key={1}
+      id={1}
+      icon={"static/images/actions.header.touch.react.svg"}
+      showText={true}
+      text={"Test item"}
+      isActive={true}
+      onClick={() => {
+        console.log("click");
+      }}
+      isEndOfBlock={true}
+      showBadge={false}
+      labelBadge={false ? item.newItems : null}
+      onClickBadge={() => {
+        console.log("badge clicked");
+      }}
+    ></CatalogItem>
+    <CatalogItem
+      key={2}
+      id={2}
+      icon={"static/images/actions.header.touch.react.svg"}
+      showText={true}
+      text={"Test item"}
+      isActive={false}
+      onClick={() => {
+        console.log("click 2");
+      }}
+      isEndOfBlock={true}
+      showBadge={true}
+      labelBadge={false ? 2 : null}
+      onClickBadge={() => {
+        console.log("badge clicked");
+      }}
+    ></CatalogItem>
+  </>
+);
 
 const sectionHeaderContent = (
   <HeaderContent>
@@ -180,4 +229,47 @@ storiesOf("Components|PageLayout", module)
         </Main>
       </Router>
     </MobxProvider>
-  ));
+  ))
+  .add("catalog", () => {
+    <MobxProvider auth={authStore}>
+      <Router history={history}>
+        <NavMenu
+          isBackdropVisible={boolean("isBackdropVisible", false)}
+          isNavHoverEnabled={boolean("isNavHoverEnabled", true)}
+          isNavOpened={boolean("isNavOpened", false)}
+          isAsideVisible={boolean("isAsideVisible", false)}
+        />
+        <Main>
+          <PageLayout withBodyScroll={true}>
+            <PageLayout.CatalogHeader>
+              {catalogHeaderContent}
+            </PageLayout.CatalogHeader>
+
+            <PageLayout.CatalogMainButton>
+              {catalogMainButtonContent}
+            </PageLayout.CatalogMainButton>
+
+            <PageLayout.CatalogBody>
+              {catalogBodyContent}
+            </PageLayout.CatalogBody>
+
+            <PageLayout.SectionHeader>
+              {sectionHeaderContent}
+            </PageLayout.SectionHeader>
+
+            <PageLayout.SectionFilter>
+              {sectionFilterContent}
+            </PageLayout.SectionFilter>
+
+            <PageLayout.SectionBody>
+              {sectionBodyContent}
+            </PageLayout.SectionBody>
+
+            <PageLayout.SectionPaging>
+              {sectionPagingContent}
+            </PageLayout.SectionPaging>
+          </PageLayout>
+        </Main>
+      </Router>
+    </MobxProvider>;
+  });

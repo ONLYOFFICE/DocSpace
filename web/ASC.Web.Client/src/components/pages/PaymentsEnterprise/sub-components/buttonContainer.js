@@ -7,9 +7,11 @@ import Button from "@appserver/components/button";
 import { tablet } from "@appserver/components/utils/device";
 import toastr from "@appserver/components/toast/toastr";
 import { withRouter } from "react-router";
+import { Base } from "@appserver/components/themes";
 
 const StyledButtonContainer = styled.div`
-  background: #edf2f7;
+  background: ${(props) =>
+    props.theme.studio.paymentsEnterprise.buttonBackground};
   margin-bottom: 16px;
   display: grid;
   padding: 32px;
@@ -26,6 +28,8 @@ const StyledButtonContainer = styled.div`
     grid-row-gap: 16px;
   }
 `;
+
+StyledButtonContainer.defaultProps = { theme: Base };
 
 class Body extends React.PureComponent {
   constructor(props) {
@@ -67,7 +71,7 @@ class Body extends React.PureComponent {
         <Button
           label={t("ButtonBuyLicense")}
           value={`${buyUrl}`}
-          size="large"
+          size="medium"
           primary={true}
           onClick={this.onClickBuy}
         />
@@ -82,7 +86,7 @@ class Body extends React.PureComponent {
         <Button
           type="submit"
           label={t("ButtonUploadLicense")}
-          size="large"
+          size="medium"
           primary={true}
           onClick={this.onClickSubmit}
         />

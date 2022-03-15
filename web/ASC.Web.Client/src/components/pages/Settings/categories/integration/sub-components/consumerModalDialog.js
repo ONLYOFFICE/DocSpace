@@ -103,7 +103,7 @@ class ConsumerModalDialog extends React.Component {
           For more detailed instructions about connecting this service, please
           refer to our{" "}
           <Link
-            color="#316DAA"
+            color={this.props.theme.studio.settings.integration.linkColor}
             isHovered={false}
             target="_blank"
             href={`${this.props.urlAuthKeys}#${this.props.selectedConsumer.name}`}
@@ -121,7 +121,7 @@ class ConsumerModalDialog extends React.Component {
       If you still have some questions on how to connect this service or need
       technical assistance, please feel free to contact our{" "}
       <Link
-        color="#316DAA"
+        color={this.props.theme.studio.settings.integration.linkColor}
         isHovered={false}
         target="_blank"
         href={this.props.urlSupport}
@@ -187,7 +187,7 @@ class ConsumerModalDialog extends React.Component {
           <Button
             className="modal-dialog-button"
             primary
-            size="big"
+            size="normal"
             label={isLoading ? t("Common:Sending") : t("Common:Enable")}
             tabIndex={1}
             isLoading={isLoading}
@@ -214,11 +214,12 @@ ConsumerModalDialog.propTypes = {
 
 export default inject(({ setup, auth }) => {
   const { settingsStore } = auth;
-  const { urlAuthKeys, urlSupport } = settingsStore;
+  const { urlAuthKeys, urlSupport, theme } = settingsStore;
   const { integration } = setup;
   const { selectedConsumer } = integration;
 
   return {
+    theme,
     selectedConsumer,
     urlSupport,
     urlAuthKeys,

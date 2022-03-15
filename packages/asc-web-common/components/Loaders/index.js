@@ -18,6 +18,8 @@ import Tiles from "./TilesLoader";
 import DialogLoader from "./DialogLoader";
 import DialogAsideLoader from "./DialogAsideLoader";
 import MainButton from "./MainButtonLoader";
+import DocumentCatalogFolderLoader from "./DocumentCatalogFolderLoader";
+import PeopleCatalogLoader from "./PeopleCatalogLoader";
 
 export default {
   Rectangle,
@@ -40,4 +42,6 @@ export default {
   DialogLoader,
   DialogAsideLoader,
   MainButton,
+  DocumentCatalogFolderLoader,
+  PeopleCatalogLoader,
 };

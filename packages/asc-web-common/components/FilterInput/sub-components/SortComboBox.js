@@ -171,7 +171,6 @@ class SortComboBox extends React.Component {
       >
         <StyledIconButton sortDirection={!!sortDirection}>
           <IconButton
-            color={"#A3A9AE"}
             iconName={selectorIcon}
             isDisabled={isDisabled}
             isFill={true}

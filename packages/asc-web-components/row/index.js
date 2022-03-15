@@ -28,13 +28,13 @@ class Row extends React.Component {
       children,
       contentElement,
       contextButtonSpacerWidth,
-      contextOptions,
       data,
       element,
       indeterminate,
       onSelect,
       rowContextClick,
       sectionWidth,
+      getContextModel,
     } = this.props;
 
     const renderCheckbox = Object.prototype.hasOwnProperty.call(
@@ -52,9 +52,12 @@ class Row extends React.Component {
       "contentElement"
     );
 
+    const contextData = data.contextOptions ? data : this.props;
+
     const renderContext =
-      Object.prototype.hasOwnProperty.call(this.props, "contextOptions") &&
-      contextOptions.length > 0;
+      Object.prototype.hasOwnProperty.call(contextData, "contextOptions") &&
+      contextData.contextOptions &&
+      contextData.contextOptions.length > 0;
 
     const changeCheckbox = (e) => {
       onSelect && onSelect(e.target.checked, data);
@@ -62,7 +65,7 @@ class Row extends React.Component {
 
     const getOptions = () => {
       rowContextClick && rowContextClick();
-      return contextOptions;
+      return contextData.contextOptions;
     };
 
     const onContextMenu = (e) => {
@@ -72,6 +75,14 @@ class Row extends React.Component {
       }
       this.cm.current.show(e);
     };
+
+    let contextMenuHeader = {};
+    if (children.props.item) {
+      contextMenuHeader = {
+        icon: children.props.item.icon,
+        title: children.props.item.title,
+      };
+    }
 
     const { onRowClick, inProgress, ...rest } = this.props;
 
@@ -108,8 +119,6 @@ class Row extends React.Component {
           )}
           {renderContext ? (
             <ContextMenuButton
-              color="#A3A9AE"
-              hoverColor="#657077"
               className="expandButton"
               getData={getOptions}
               directionX="right"
@@ -119,7 +128,13 @@ class Row extends React.Component {
           ) : (
             <div className="expandButton"> </div>
           )}
-          <ContextMenu model={contextOptions} ref={this.cm}></ContextMenu>
+          <ContextMenu
+            getContextModel={getContextModel}
+            model={contextData.contextOptions}
+            ref={this.cm}
+            header={contextMenuHeader}
+            withBackdrop={true}
+          ></ContextMenu>
         </StyledOptionButton>
       </StyledRow>
     );
@@ -157,10 +172,12 @@ Row.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   sectionWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   inProgress: PropTypes.bool,
+  getContextModel: PropTypes.func,
 };
 
 Row.defaultProps = {
   contextButtonSpacerWidth: "26px",
+  data: {},
 };
 
 export default Row;

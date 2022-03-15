@@ -7,7 +7,7 @@ import { Rombs } from "./types/rombs";
 import Text from "../text";
 
 const Loader = (props) => {
-  const { type, color, size, label, className, style, id } = props;
+  const { type, color, size, label, className, style, id, theme } = props;
 
   const svgRenderer = (type) => {
     switch (type) {

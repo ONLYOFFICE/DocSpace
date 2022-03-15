@@ -1,9 +1,11 @@
 import styled from "styled-components";
 
+import { Base } from "@appserver/components/themes";
+
 const StyledErrorContainer = styled.div`
-  //background: #ffffff;
+  background: ${(props) => props.theme.errorContainer.background};
   cursor: default;
-  height: 100%;
+  height: 100vh;
   width: 100%;
   min-height: 100%;
   overflow-x: hidden;
@@ -1035,5 +1037,7 @@ const StyledErrorContainer = styled.div`
     }
   }
 `;
+
+StyledErrorContainer.defaultProps = { theme: Base };
 
 export default StyledErrorContainer;
