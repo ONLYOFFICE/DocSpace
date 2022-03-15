@@ -248,4 +248,14 @@ describe("email", () => {
     expect(parsed[0].email).toBe("test@test.com");
     expect(parsed[1].email).toBe("test2@test2.com");
   });
+
+  it("parsing wrong email with comma in local part", () => {
+    const emailAddress = 'te"st@test.com';
+    const parsed = parseAddress(emailAddress);
+
+    expect(parsed.isValid()).toBe(false);
+    expect(parsed.parseErrors[0].message).toBe("Incorrect email");
+    expect(parsed.email).toBe(emailAddress);
+    expect(parsed.name).toBe("");
+  });
 });
