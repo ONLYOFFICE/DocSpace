@@ -36,8 +36,7 @@ class AutomaticBackup extends React.PureComponent {
     super(props);
     const { t, language } = props;
 
-    this.lng = language.substring(0, language.indexOf("-"));
-    moment.locale(this.lng);
+    moment.locale(language);
 
     this.state = {
       isEnable: false,
@@ -184,6 +183,7 @@ class AutomaticBackup extends React.PureComponent {
     }
   };
   getWeekdays = () => {
+    const { language } = this.props;
     const gettingWeekdays = moment.weekdays();
 
     for (let item = 0; item < gettingWeekdays.length; item++) {
@@ -194,7 +194,7 @@ class AutomaticBackup extends React.PureComponent {
       this.weekdaysLabelArray.push(obj);
     }
 
-    const isEnglishLanguage = this.lng === "en";
+    const isEnglishLanguage = language === "en";
 
     if (!isEnglishLanguage) {
       this.weekdaysLabelArray.push(this.weekdaysLabelArray.shift());

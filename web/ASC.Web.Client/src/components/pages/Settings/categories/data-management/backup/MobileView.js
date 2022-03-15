@@ -1,5 +1,4 @@
 import React from "react";
-import moment from "moment";
 import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
 import { withTranslation, Trans } from "react-i18next";
@@ -31,10 +30,6 @@ const StyledArrowRightIcon = styled(ArrowRightIcon)`
 class BackupMobileView extends React.Component {
   constructor(props) {
     super(props);
-    const { language } = props;
-
-    this.lng = language.substring(0, language.indexOf("-"));
-    moment.locale(this.lng);
 
     this.state = {
       enableRestore: false,
@@ -243,7 +238,6 @@ class BackupMobileView extends React.Component {
 }
 
 export default inject(({ auth, backup }) => {
-  const { language } = auth;
   const { helpUrlCreatingBackup } = auth.settingsStore;
   const {
     getProgress,
@@ -253,7 +247,7 @@ export default inject(({ auth, backup }) => {
   } = backup;
   return {
     helpUrlCreatingBackup,
-    language,
+
     getProgress,
     downloadingProgress,
     clearProgressInterval,
