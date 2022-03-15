@@ -428,7 +428,6 @@ const Form = (props) => {
                 onChange={onChangeLogin}
                 onBlur={onBlurEmail}
                 onValidateInput={onValidateEmail}
-                disallowChar='"'
                 forwardedRef={inputRef}
               />
             </FieldContainer>
