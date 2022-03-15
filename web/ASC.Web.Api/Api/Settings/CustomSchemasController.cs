@@ -23,7 +23,7 @@ public class CustomSchemasController : BaseSettingsController
     }
 
     [Read("customschemas")]
-    public List<SchemaDto> PeopleSchemas()
+    public List<SchemaRequestsDto> PeopleSchemas()
     {
         return _customNamingPeople
                 .GetSchemas()
@@ -31,7 +31,7 @@ public class CustomSchemasController : BaseSettingsController
                 {
                     var names = _customNamingPeople.GetPeopleNames(r.Key);
 
-                    return new SchemaDto
+                    return new SchemaRequestsDto
                     {
                         Id = names.Id,
                         Name = names.SchemaName,
@@ -50,7 +50,7 @@ public class CustomSchemasController : BaseSettingsController
     }
 
     [Create("customschemas")]
-    public SchemaDto SaveNamingSettings(SchemaDto model)
+    public SchemaRequestsDto SaveNamingSettings(SchemaRequestsDto model)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -64,7 +64,7 @@ public class CustomSchemasController : BaseSettingsController
     }
 
     [Update("customschemas")]
-    public SchemaDto SaveCustomNamingSettings(SchemaDto model)
+    public SchemaRequestsDto SaveCustomNamingSettings(SchemaRequestsDto model)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -115,10 +115,10 @@ public class CustomSchemasController : BaseSettingsController
     }
 
     [Read("customschemas/{id}")]
-    public SchemaDto PeopleSchema(string id)
+    public SchemaRequestsDto PeopleSchema(string id)
     {
         var names = _customNamingPeople.GetPeopleNames(id);
-        var schemaItem = new SchemaDto
+        var schemaItem = new SchemaRequestsDto
         {
             Id = names.Id,
             Name = names.SchemaName,

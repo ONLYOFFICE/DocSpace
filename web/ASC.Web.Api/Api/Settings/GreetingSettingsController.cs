@@ -31,19 +31,19 @@ public class GreetingSettingsController : BaseSettingsController
     }
 
     [Create("greetingsettings")]
-    public ContentResult SaveGreetingSettingsFromBody([FromBody] GreetingSettingsDto model)
+    public ContentResult SaveGreetingSettingsFromBody([FromBody] GreetingSettingsRequestsDto model)
     {
         return SaveGreetingSettings(model);
     }
 
     [Create("greetingsettings")]
     [Consumes("application/x-www-form-urlencoded")]
-    public ContentResult SaveGreetingSettingsFromForm([FromForm] GreetingSettingsDto model)
+    public ContentResult SaveGreetingSettingsFromForm([FromForm] GreetingSettingsRequestsDto model)
     {
         return SaveGreetingSettings(model);
     }
 
-    private ContentResult SaveGreetingSettings(GreetingSettingsDto model)
+    private ContentResult SaveGreetingSettings(GreetingSettingsRequestsDto model)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 

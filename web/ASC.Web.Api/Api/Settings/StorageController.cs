@@ -67,7 +67,7 @@ public class StorageController : BaseSettingsController
     }
 
     [Read("storage")]
-    public List<StorageResponseDto> GetAllStorages()
+    public List<StorageDto> GetAllStorages()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -75,7 +75,7 @@ public class StorageController : BaseSettingsController
 
         var current = _settingsManager.Load<StorageSettings>();
         var consumers = _consumerFactory.GetAll<DataStoreConsumer>();
-        return consumers.Select(consumer => new StorageResponseDto(consumer, current)).ToList();
+        return consumers.Select(consumer => new StorageDto(consumer, current)).ToList();
     }
 
     [Read("storage/progress", false)]
@@ -91,19 +91,19 @@ public class StorageController : BaseSettingsController
     public readonly object Locker = new object();
 
     [Create("encryption/start")]
-    public bool StartStorageEncryptionFromBody([FromBody] StorageEncryptionDto storageEncryption)
+    public bool StartStorageEncryptionFromBody([FromBody] StorageEncryptionRequestsDto storageEncryption)
     {
         return StartStorageEncryption(storageEncryption);
     }
 
     [Create("encryption/start")]
     [Consumes("application/x-www-form-urlencoded")]
-    public bool StartStorageEncryptionFromForm([FromForm] StorageEncryptionDto storageEncryption)
+    public bool StartStorageEncryptionFromForm([FromForm] StorageEncryptionRequestsDto storageEncryption)
     {
         return StartStorageEncryption(storageEncryption);
     }
 
-    private bool StartStorageEncryption(StorageEncryptionDto storageEncryption)
+    private bool StartStorageEncryption(StorageEncryptionRequestsDto storageEncryption)
     {
         if (_coreBaseSettings.CustomMode)
         {
@@ -297,19 +297,19 @@ public class StorageController : BaseSettingsController
     }
 
     [Update("storage")]
-    public StorageSettings UpdateStorageFromBody([FromBody] StorageDto model)
+    public StorageSettings UpdateStorageFromBody([FromBody] StorageRequestsDto model)
     {
         return UpdateStorage(model);
     }
 
     [Update("storage")]
     [Consumes("application/x-www-form-urlencoded")]
-    public StorageSettings UpdateStorageFromForm([FromForm] StorageDto model)
+    public StorageSettings UpdateStorageFromForm([FromForm] StorageRequestsDto model)
     {
         return UpdateStorage(model);
     }
 
-    private StorageSettings UpdateStorage(StorageDto model)
+    private StorageSettings UpdateStorage(StorageRequestsDto model)
     {
         try
         {
@@ -364,7 +364,7 @@ public class StorageController : BaseSettingsController
     }
 
     [Read("storage/cdn")]
-    public List<StorageResponseDto> GetAllCdnStorages()
+    public List<StorageDto> GetAllCdnStorages()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
         if (!_coreBaseSettings.Standalone) return null;
@@ -373,23 +373,23 @@ public class StorageController : BaseSettingsController
 
         var current = _settingsManager.Load<CdnStorageSettings>();
         var consumers = _consumerFactory.GetAll<DataStoreConsumer>().Where(r => r.Cdn != null);
-        return consumers.Select(consumer => new StorageResponseDto(consumer, current)).ToList();
+        return consumers.Select(consumer => new StorageDto(consumer, current)).ToList();
     }
 
     [Update("storage/cdn")]
-    public CdnStorageSettings UpdateCdnFromBody([FromBody] StorageDto model)
+    public CdnStorageSettings UpdateCdnFromBody([FromBody] StorageRequestsDto model)
     {
         return UpdateCdn(model);
     }
 
     [Update("storage/cdn")]
     [Consumes("application/x-www-form-urlencoded")]
-    public CdnStorageSettings UpdateCdnFromForm([FromForm] StorageDto model)
+    public CdnStorageSettings UpdateCdnFromForm([FromForm] StorageRequestsDto model)
     {
         return UpdateCdn(model);
     }
 
-    private CdnStorageSettings UpdateCdn(StorageDto model)
+    private CdnStorageSettings UpdateCdn(StorageRequestsDto model)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
         if (!_coreBaseSettings.Standalone) return null;
@@ -431,7 +431,7 @@ public class StorageController : BaseSettingsController
     }
 
     [Read("storage/backup")]
-    public List<StorageResponseDto> GetAllBackupStorages()
+    public List<StorageDto> GetAllBackupStorages()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
         if (_coreBaseSettings.Standalone)
@@ -451,7 +451,7 @@ public class StorageController : BaseSettingsController
         }
 
         var consumers = _consumerFactory.GetAll<DataStoreConsumer>();
-        return consumers.Select(consumer => new StorageResponseDto(consumer, current)).ToList();
+        return consumers.Select(consumer => new StorageDto(consumer, current)).ToList();
     }
 
     private void StartMigrate(StorageSettings settings)

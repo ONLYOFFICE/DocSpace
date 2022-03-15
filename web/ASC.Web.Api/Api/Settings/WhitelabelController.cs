@@ -53,19 +53,19 @@ public class WhitelabelController: BaseSettingsController
 
     ///<visible>false</visible>
     [Create("whitelabel/save")]
-    public bool SaveWhiteLabelSettingsFromBody([FromBody] WhiteLabelDto model, [FromQuery] WhiteLabelQueryDto query)
+    public bool SaveWhiteLabelSettingsFromBody([FromBody] WhiteLabelRequestsDto model, [FromQuery] WhiteLabelQueryRequestsDto query)
     {
         return SaveWhiteLabelSettings(model, query);
     }
 
     [Create("whitelabel/save")]
     [Consumes("application/x-www-form-urlencoded")]
-    public bool SaveWhiteLabelSettingsFromForm([FromForm] WhiteLabelDto model, [FromQuery] WhiteLabelQueryDto query)
+    public bool SaveWhiteLabelSettingsFromForm([FromForm] WhiteLabelRequestsDto model, [FromQuery] WhiteLabelQueryRequestsDto query)
     {
         return SaveWhiteLabelSettings(model, query);
     }
 
-    private bool SaveWhiteLabelSettings(WhiteLabelDto model, WhiteLabelQueryDto query)
+    private bool SaveWhiteLabelSettings(WhiteLabelRequestsDto model, WhiteLabelQueryRequestsDto query)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -86,14 +86,14 @@ public class WhitelabelController: BaseSettingsController
         return true;
     }
 
-    private void SaveWhiteLabelSettingsForCurrentTenant(WhiteLabelDto model)
+    private void SaveWhiteLabelSettingsForCurrentTenant(WhiteLabelRequestsDto model)
     {
         var settings = _settingsManager.Load<TenantWhiteLabelSettings>();
 
         SaveWhiteLabelSettingsForTenant(settings, null, Tenant.Id, model);
     }
 
-    private void SaveWhiteLabelSettingsForDefaultTenant(WhiteLabelDto model)
+    private void SaveWhiteLabelSettingsForDefaultTenant(WhiteLabelRequestsDto model)
     {
         var settings = _settingsManager.LoadForDefaultTenant<TenantWhiteLabelSettings>();
         var storage = _storageFactory.GetStorage(string.Empty, "static_partnerdata");
@@ -101,7 +101,7 @@ public class WhitelabelController: BaseSettingsController
         SaveWhiteLabelSettingsForTenant(settings, storage, Tenant.DefaultTenant, model);
     }
 
-    private void SaveWhiteLabelSettingsForTenant(TenantWhiteLabelSettings settings, IDataStore storage, int tenantId, WhiteLabelDto model)
+    private void SaveWhiteLabelSettingsForTenant(TenantWhiteLabelSettings settings, IDataStore storage, int tenantId, WhiteLabelRequestsDto model)
     {
         if (model.Logo != null)
         {
@@ -122,7 +122,7 @@ public class WhitelabelController: BaseSettingsController
 
     ///<visible>false</visible>
     [Create("whitelabel/savefromfiles")]
-    public bool SaveWhiteLabelSettingsFromFiles([FromQuery] WhiteLabelQueryDto query)
+    public bool SaveWhiteLabelSettingsFromFiles([FromQuery] WhiteLabelQueryRequestsDto query)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -204,7 +204,7 @@ public class WhitelabelController: BaseSettingsController
 
     ///<visible>false</visible>
     [Read("whitelabel/logos")]
-    public Dictionary<string, string> GetWhiteLabelLogos([FromQuery] WhiteLabelQueryDto query)
+    public Dictionary<string, string> GetWhiteLabelLogos([FromQuery] WhiteLabelQueryRequestsDto query)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -245,7 +245,7 @@ public class WhitelabelController: BaseSettingsController
 
     ///<visible>false</visible>
     [Read("whitelabel/logotext")]
-    public object GetWhiteLabelLogoText([FromQuery] WhiteLabelQueryDto query)
+    public object GetWhiteLabelLogoText([FromQuery] WhiteLabelQueryRequestsDto query)
     {
         if (!_tenantLogoManager.WhiteLabelEnabled)
         {
@@ -260,7 +260,7 @@ public class WhitelabelController: BaseSettingsController
 
     ///<visible>false</visible>
     [Update("whitelabel/restore")]
-    public bool RestoreWhiteLabelOptions(WhiteLabelQueryDto query)
+    public bool RestoreWhiteLabelOptions(WhiteLabelQueryRequestsDto query)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -437,19 +437,19 @@ public class WhitelabelController: BaseSettingsController
 
     ///<visible>false</visible>
     [Update("rebranding/mail")]
-    public bool UpdateMailWhiteLabelSettingsFromBody([FromBody] MailWhiteLabelSettingsDto model)
+    public bool UpdateMailWhiteLabelSettingsFromBody([FromBody] MailWhiteLabelSettingsRequestsDto model)
     {
         return UpdateMailWhiteLabelSettings(model);
     }
 
     [Update("rebranding/mail")]
     [Consumes("application/x-www-form-urlencoded")]
-    public bool UpdateMailWhiteLabelSettingsFromForm([FromForm] MailWhiteLabelSettingsDto model)
+    public bool UpdateMailWhiteLabelSettingsFromForm([FromForm] MailWhiteLabelSettingsRequestsDto model)
     {
         return UpdateMailWhiteLabelSettings(model);
     }
 
-    private bool UpdateMailWhiteLabelSettings(MailWhiteLabelSettingsDto model)
+    private bool UpdateMailWhiteLabelSettings(MailWhiteLabelSettingsRequestsDto model)
     {
         DemandRebrandingPermission();
 

@@ -29,38 +29,38 @@ public class IpRestrictionsController: BaseSettingsController
     }
 
     [Update("iprestrictions")]
-    public IEnumerable<string> SaveIpRestrictionsFromBody([FromBody] IpRestrictionsDto model)
+    public IEnumerable<string> SaveIpRestrictionsFromBody([FromBody] IpRestrictionsRequestsDto model)
     {
         return SaveIpRestrictions(model);
     }
 
     [Update("iprestrictions")]
     [Consumes("application/x-www-form-urlencoded")]
-    public IEnumerable<string> SaveIpRestrictionsFromForm([FromForm] IpRestrictionsDto model)
+    public IEnumerable<string> SaveIpRestrictionsFromForm([FromForm] IpRestrictionsRequestsDto model)
     {
         return SaveIpRestrictions(model);
     }
 
-    private IEnumerable<string> SaveIpRestrictions(IpRestrictionsDto model)
+    private IEnumerable<string> SaveIpRestrictions(IpRestrictionsRequestsDto model)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
         return _iPRestrictionsService.Save(model.Ips, Tenant.Id);
     }
 
     [Update("iprestrictions/settings")]
-    public IPRestrictionsSettings UpdateIpRestrictionsSettingsFromBody([FromBody] IpRestrictionsDto model)
+    public IPRestrictionsSettings UpdateIpRestrictionsSettingsFromBody([FromBody] IpRestrictionsRequestsDto model)
     {
         return UpdateIpRestrictionsSettings(model);
     }
 
     [Update("iprestrictions/settings")]
     [Consumes("application/x-www-form-urlencoded")]
-    public IPRestrictionsSettings UpdateIpRestrictionsSettingsFromForm([FromForm] IpRestrictionsDto model)
+    public IPRestrictionsSettings UpdateIpRestrictionsSettingsFromForm([FromForm] IpRestrictionsRequestsDto model)
     {
         return UpdateIpRestrictionsSettings(model);
     }
 
-    private IPRestrictionsSettings UpdateIpRestrictionsSettings(IpRestrictionsDto model)
+    private IPRestrictionsSettings UpdateIpRestrictionsSettings(IpRestrictionsRequestsDto model)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 

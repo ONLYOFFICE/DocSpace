@@ -31,19 +31,19 @@ public class TipsController: BaseSettingsController
     }
 
     [Update("tips")]
-    public TipsSettings UpdateTipsSettingsFromBody([FromBody] SettingsDto model)
+    public TipsSettings UpdateTipsSettingsFromBody([FromBody] SettingsRequestsDto model)
     {
         return UpdateTipsSettings(model);
     }
 
     [Update("tips")]
     [Consumes("application/x-www-form-urlencoded")]
-    public TipsSettings UpdateTipsSettingsFromForm([FromForm] SettingsDto model)
+    public TipsSettings UpdateTipsSettingsFromForm([FromForm] SettingsRequestsDto model)
     {
         return UpdateTipsSettings(model);
     }
 
-    private TipsSettings UpdateTipsSettings(SettingsDto model)
+    private TipsSettings UpdateTipsSettings(SettingsRequestsDto model)
     {
         var settings = new TipsSettings { Show = model.Show };
         _settingsManager.SaveForCurrentUser(settings);

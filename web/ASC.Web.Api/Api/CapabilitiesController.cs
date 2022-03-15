@@ -37,9 +37,9 @@ public class CapabilitiesController : ControllerBase
     ///</short>
     ///<returns>CapabilitiesData</returns>
     [Read(Check = false)] //NOTE: this method doesn't requires auth!!!  //NOTE: this method doesn't check payment!!!
-    public CapabilitiesResponseDto GetPortalCapabilities()
+    public CapabilitiesDto GetPortalCapabilities()
     {
-        var result = new CapabilitiesResponseDto
+        var result = new CapabilitiesDto
         {
             LdapEnabled = false,
             Providers = null,

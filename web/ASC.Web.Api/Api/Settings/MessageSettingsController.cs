@@ -45,19 +45,19 @@ public class MessageSettingsController: BaseSettingsController
     }
 
     [Create("messagesettings")]
-    public object EnableAdminMessageSettingsFromBody([FromBody] AdminMessageSettingsDto model)
+    public object EnableAdminMessageSettingsFromBody([FromBody] AdminMessageSettingsRequestsDto model)
     {
         return EnableAdminMessageSettings(model);
     }
 
     [Create("messagesettings")]
     [Consumes("application/x-www-form-urlencoded")]
-    public object EnableAdminMessageSettingsFromForm([FromForm] AdminMessageSettingsDto model)
+    public object EnableAdminMessageSettingsFromForm([FromForm] AdminMessageSettingsRequestsDto model)
     {
         return EnableAdminMessageSettings(model);
     }
 
-    private object EnableAdminMessageSettings(AdminMessageSettingsDto model)
+    private object EnableAdminMessageSettings(AdminMessageSettingsRequestsDto model)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -70,7 +70,7 @@ public class MessageSettingsController: BaseSettingsController
 
     [AllowAnonymous]
     [Create("sendadmmail")]
-    public object SendAdmMailFromBody([FromBody] AdminMessageSettingsDto model)
+    public object SendAdmMailFromBody([FromBody] AdminMessageSettingsRequestsDto model)
     {
         return SendAdmMail(model);
     }
@@ -78,12 +78,12 @@ public class MessageSettingsController: BaseSettingsController
     [AllowAnonymous]
     [Create("sendadmmail")]
     [Consumes("application/x-www-form-urlencoded")]
-    public object SendAdmMailFromForm([FromForm] AdminMessageSettingsDto model)
+    public object SendAdmMailFromForm([FromForm] AdminMessageSettingsRequestsDto model)
     {
         return SendAdmMail(model);
     }
 
-    private object SendAdmMail(AdminMessageSettingsDto model)
+    private object SendAdmMail(AdminMessageSettingsRequestsDto model)
     {
         var studioAdminMessageSettings = _settingsManager.Load<StudioAdminMessageSettings>();
         var enableAdmMess = studioAdminMessageSettings.Enable || _tenantExtra.IsNotPaid();
@@ -107,7 +107,7 @@ public class MessageSettingsController: BaseSettingsController
 
     [AllowAnonymous]
     [Create("sendjoininvite")]
-    public object SendJoinInviteMailFromBody([FromBody] AdminMessageSettingsDto model)
+    public object SendJoinInviteMailFromBody([FromBody] AdminMessageSettingsRequestsDto model)
     {
         return SendJoinInviteMail(model);
     }
@@ -115,12 +115,12 @@ public class MessageSettingsController: BaseSettingsController
     [AllowAnonymous]
     [Create("sendjoininvite")]
     [Consumes("application/x-www-form-urlencoded")]
-    public object SendJoinInviteMailFromForm([FromForm] AdminMessageSettingsDto model)
+    public object SendJoinInviteMailFromForm([FromForm] AdminMessageSettingsRequestsDto model)
     {
         return SendJoinInviteMail(model);
     }
 
-    private object SendJoinInviteMail(AdminMessageSettingsDto model)
+    private object SendJoinInviteMail(AdminMessageSettingsRequestsDto model)
     {
         try
         {

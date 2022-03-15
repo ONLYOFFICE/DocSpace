@@ -29,25 +29,25 @@ public class VersionController : BaseSettingsController
     }
 
     [Read("version")]
-    public TenantVersionResponseDto GetVersions()
+    public TenantVersionDto GetVersions()
     {
-        return new TenantVersionResponseDto(Tenant.Version, _tenantManager.GetTenantVersions());
+        return new TenantVersionDto(Tenant.Version, _tenantManager.GetTenantVersions());
     }
 
     [Update("version")]
-    public TenantVersionResponseDto SetVersionFromBody([FromBody] SettingsDto model)
+    public TenantVersionDto SetVersionFromBody([FromBody] SettingsRequestsDto model)
     {
         return SetVersion(model);
     }
 
     [Update("version")]
     [Consumes("application/x-www-form-urlencoded")]
-    public TenantVersionResponseDto SetVersionFromForm([FromForm] SettingsDto model)
+    public TenantVersionDto SetVersionFromForm([FromForm] SettingsRequestsDto model)
     {
         return SetVersion(model);
     }
 
-    private TenantVersionResponseDto SetVersion(SettingsDto model)
+    private TenantVersionDto SetVersion(SettingsRequestsDto model)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 

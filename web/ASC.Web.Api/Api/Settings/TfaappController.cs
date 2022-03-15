@@ -61,9 +61,9 @@ public class TfaappController : BaseSettingsController
     }
 
     [Read("tfaapp")]
-    public IEnumerable<TfaSettingsDto> GetTfaSettings()
+    public IEnumerable<TfaSettingsRequestsDto> GetTfaSettings()
     {
-        var result = new List<TfaSettingsDto>();
+        var result = new List<TfaSettingsRequestsDto>();
 
         var SmsVisible = _studioSmsNotificationSettingsHelper.IsVisibleSettings();
         var SmsEnable = SmsVisible && _smsProviderManager.Enabled();
@@ -71,7 +71,7 @@ public class TfaappController : BaseSettingsController
 
         if (SmsVisible)
         {
-            result.Add(new TfaSettingsDto
+            result.Add(new TfaSettingsRequestsDto
             {
                 Enabled = _studioSmsNotificationSettingsHelper.Enable,
                 Id = "sms",
@@ -82,7 +82,7 @@ public class TfaappController : BaseSettingsController
 
         if (TfaVisible)
         {
-            result.Add(new TfaSettingsDto
+            result.Add(new TfaSettingsRequestsDto
             {
                 Enabled = _settingsManager.Load<TfaAppAuthSettings>().EnableSetting,
                 Id = "app",
@@ -96,7 +96,7 @@ public class TfaappController : BaseSettingsController
 
     [Create("tfaapp/validate")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "TfaActivation,Everyone")]
-    public bool TfaValidateAuthCode(TfaValidateDto model)
+    public bool TfaValidateAuthCode(TfaValidateRequestsDto model)
     {
         _apiContext.AuthByClaim();
         var user = _userManager.GetUsers(_authContext.CurrentAccount.ID);
@@ -130,19 +130,19 @@ public class TfaappController : BaseSettingsController
     }
 
     [Update("tfaapp")]
-    public bool TfaSettingsFromBody([FromBody] TfaDto model)
+    public bool TfaSettingsFromBody([FromBody] TfaRequestsDto model)
     {
         return TfaSettingsUpdate(model);
     }
 
     [Update("tfaapp")]
     [Consumes("application/x-www-form-urlencoded")]
-    public bool TfaSettingsFromForm([FromForm] TfaDto model)
+    public bool TfaSettingsFromForm([FromForm] TfaRequestsDto model)
     {
         return TfaSettingsUpdate(model);
     }
 
-    private bool TfaSettingsUpdate(TfaDto model)
+    private bool TfaSettingsUpdate(TfaRequestsDto model)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -268,19 +268,19 @@ public class TfaappController : BaseSettingsController
     }
 
     [Update("tfaappnewapp")]
-    public object TfaAppNewAppFromBody([FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] TfaDto model)
+    public object TfaAppNewAppFromBody([FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] TfaRequestsDto model)
     {
         return TfaAppNewApp(model);
     }
 
     [Update("tfaappnewapp")]
     [Consumes("application/x-www-form-urlencoded")]
-    public object TfaAppNewAppFromForm([FromForm] TfaDto model)
+    public object TfaAppNewAppFromForm([FromForm] TfaRequestsDto model)
     {
         return TfaAppNewApp(model);
     }
 
-    private object TfaAppNewApp(TfaDto model)
+    private object TfaAppNewApp(TfaRequestsDto model)
     {
         var id = model?.Id ?? Guid.Empty;
         var isMe = id.Equals(Guid.Empty);

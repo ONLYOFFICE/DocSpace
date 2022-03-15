@@ -47,7 +47,7 @@ public class SmtpSettingsController : ControllerBase
 
 
     [Read("smtp")]
-    public SmtpSettingsResponseDto GetSmtpSettings()
+    public SmtpSettingsDto GetSmtpSettings()
     {
         CheckSmtpPermissions();
 
@@ -57,19 +57,19 @@ public class SmtpSettingsController : ControllerBase
     }
 
     [Create("smtp")]
-    public SmtpSettingsResponseDto SaveSmtpSettingsFromBody([FromBody]SmtpSettingsResponseDto smtpSettings)
+    public SmtpSettingsDto SaveSmtpSettingsFromBody([FromBody]SmtpSettingsDto smtpSettings)
     {
         return SaveSmtpSettings(smtpSettings);
     }
 
     [Create("smtp")]
     [Consumes("application/x-www-form-urlencoded")]
-    public SmtpSettingsResponseDto SaveSmtpSettingsFromForm([FromForm] SmtpSettingsResponseDto smtpSettings)
+    public SmtpSettingsDto SaveSmtpSettingsFromForm([FromForm] SmtpSettingsDto smtpSettings)
     {
         return SaveSmtpSettings(smtpSettings);
     }
 
-    private SmtpSettingsResponseDto SaveSmtpSettings(SmtpSettingsResponseDto smtpSettings)
+    private SmtpSettingsDto SaveSmtpSettings(SmtpSettingsDto smtpSettings)
     {
         CheckSmtpPermissions();
 
@@ -90,7 +90,7 @@ public class SmtpSettingsController : ControllerBase
     }
 
     [Delete("smtp")]
-    public SmtpSettingsResponseDto ResetSmtpSettings()
+    public SmtpSettingsDto ResetSmtpSettings()
     {
         CheckSmtpPermissions();
 
@@ -170,7 +170,7 @@ public class SmtpSettingsController : ControllerBase
     //    return result;
     //}
 
-    public static SmtpSettings ToSmtpSettingsConfig(SmtpSettingsResponseDto settingsWrapper)
+    public static SmtpSettings ToSmtpSettingsConfig(SmtpSettingsDto settingsWrapper)
     {
         var settingsConfig = new SmtpSettings(
             settingsWrapper.Host,
@@ -190,9 +190,9 @@ public class SmtpSettingsController : ControllerBase
         return settingsConfig;
     }
 
-    private static SmtpSettingsResponseDto ToSmtpSettings(SmtpSettings settingsConfig, bool hidePassword = false)
+    private static SmtpSettingsDto ToSmtpSettings(SmtpSettings settingsConfig, bool hidePassword = false)
     {
-        return new SmtpSettingsResponseDto
+        return new SmtpSettingsDto
         {
             Host = settingsConfig.Host,
             Port = settingsConfig.Port,

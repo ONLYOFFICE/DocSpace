@@ -77,7 +77,7 @@ public class FirstTimeTenantSettings
         _clientFactory = clientFactory;
     }
 
-    public WizardSettings SaveData(WizardDto wizardModel)
+    public WizardSettings SaveData(WizardRequestsDto wizardModel)
     {
         try
         {

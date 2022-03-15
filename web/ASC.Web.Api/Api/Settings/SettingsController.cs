@@ -100,9 +100,9 @@ public class SettingsController: BaseSettingsController
 
     [Read("", Check = false)]
     [AllowAnonymous]
-    public SettingsResponseDto GetSettings(bool? withpassword)
+    public SettingsDto GetSettings(bool? withpassword)
     {
-        var settings = new SettingsResponseDto
+        var settings = new SettingsDto
         {
             Culture = Tenant.GetCulture().ToString(),
             GreetingSettings = Tenant.Name,
@@ -121,7 +121,7 @@ public class SettingsController: BaseSettingsController
             settings.OwnerId = Tenant.OwnerId;
             settings.NameSchemaId = _customNamingPeople.Current.Id;
 
-            settings.Firebase = new FirebaseResponseDto
+            settings.Firebase = new FirebaseDto
             {
                 ApiKey = _configuration["firebase:apiKey"] ?? "",
                 AuthDomain = _configuration["firebase:authDomain"] ?? "",
@@ -174,19 +174,19 @@ public class SettingsController: BaseSettingsController
     }
 
     [Create("maildomainsettings")]
-    public object SaveMailDomainSettingsFromBody([FromBody] MailDomainSettingsDto model)
+    public object SaveMailDomainSettingsFromBody([FromBody] MailDomainSettingsRequestsDto model)
     {
         return SaveMailDomainSettings(model);
     }
 
     [Create("maildomainsettings")]
     [Consumes("application/x-www-form-urlencoded")]
-    public object SaveMailDomainSettingsFromForm([FromForm] MailDomainSettingsDto model)
+    public object SaveMailDomainSettingsFromForm([FromForm] MailDomainSettingsRequestsDto model)
     {
         return SaveMailDomainSettings(model);
     }
 
-    private object SaveMailDomainSettings(MailDomainSettingsDto model)
+    private object SaveMailDomainSettings(MailDomainSettingsRequestsDto model)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -217,9 +217,9 @@ public class SettingsController: BaseSettingsController
     }
 
     [Read("quota")]
-    public QuotaResponseDto GetQuotaUsed()
+    public QuotaDto GetQuotaUsed()
     {
-        return new QuotaResponseDto(Tenant, _coreBaseSettings, _coreConfiguration, _tenantExtra, _tenantStatisticsProvider, _authContext, _settingsManager, _webItemManager, _constants);
+        return new QuotaDto(Tenant, _coreBaseSettings, _coreConfiguration, _tenantExtra, _tenantStatisticsProvider, _authContext, _settingsManager, _webItemManager, _constants);
     }
 
     [AllowAnonymous]
@@ -231,7 +231,7 @@ public class SettingsController: BaseSettingsController
 
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard,Administrators")]
     [Read("timezones", Check = false)]
-    public List<TimezonesDto> GetTimeZones()
+    public List<TimezonesRequestsDto> GetTimeZones()
     {
         _apiContext.AuthByClaim();
         var timeZones = TimeZoneInfo.GetSystemTimeZones().ToList();
@@ -241,11 +241,11 @@ public class SettingsController: BaseSettingsController
             timeZones.Add(TimeZoneInfo.Utc);
         }
 
-        var listOfTimezones = new List<TimezonesDto>();
+        var listOfTimezones = new List<TimezonesRequestsDto>();
 
         foreach (var tz in timeZones.OrderBy(z => z.BaseUtcOffset))
         {
-            listOfTimezones.Add(new TimezonesDto
+            listOfTimezones.Add(new TimezonesRequestsDto
             {
                 Id = tz.Id,
                 DisplayName = _timeZoneConverter.GetTimeZoneDisplayName(tz)
@@ -304,7 +304,7 @@ public class SettingsController: BaseSettingsController
 
     [Update("wizard/complete", Check = false)]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
-    public WizardSettings CompleteWizardFromBody([FromBody] WizardDto wizardModel)
+    public WizardSettings CompleteWizardFromBody([FromBody] WizardRequestsDto wizardModel)
     {
         return CompleteWizard(wizardModel);
     }
@@ -312,12 +312,12 @@ public class SettingsController: BaseSettingsController
     [Update("wizard/complete", Check = false)]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
     [Consumes("application/x-www-form-urlencoded")]
-    public WizardSettings CompleteWizardFromForm([FromForm] WizardDto wizardModel)
+    public WizardSettings CompleteWizardFromForm([FromForm] WizardRequestsDto wizardModel)
     {
         return CompleteWizard(wizardModel);
     }
 
-    private WizardSettings CompleteWizard(WizardDto wizardModel)
+    private WizardSettings CompleteWizard(WizardRequestsDto wizardModel)
     {
         _apiContext.AuthByClaim();
 
@@ -343,19 +343,19 @@ public class SettingsController: BaseSettingsController
 
     ///<visible>false</visible>
     [Update("colortheme")]
-    public void SaveColorThemeFromBody([FromBody] SettingsDto model)
+    public void SaveColorThemeFromBody([FromBody] SettingsRequestsDto model)
     {
         SaveColorTheme(model);
     }
 
     [Update("colortheme")]
     [Consumes("application/x-www-form-urlencoded")]
-    public void SaveColorThemeFromForm([FromForm] SettingsDto model)
+    public void SaveColorThemeFromForm([FromForm] SettingsRequestsDto model)
     {
         SaveColorTheme(model);
     }
 
-    private void SaveColorTheme(SettingsDto model)
+    private void SaveColorTheme(SettingsRequestsDto model)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
         _colorThemesSettingsHelper.SaveColorTheme(model.Theme);
@@ -363,19 +363,19 @@ public class SettingsController: BaseSettingsController
     }
     ///<visible>false</visible>
     [Update("timeandlanguage")]
-    public object TimaAndLanguageFromBody([FromBody] SettingsDto model)
+    public object TimaAndLanguageFromBody([FromBody] SettingsRequestsDto model)
     {
         return TimaAndLanguage(model);
     }
 
     [Update("timeandlanguage")]
     [Consumes("application/x-www-form-urlencoded")]
-    public object TimaAndLanguageFromForm([FromForm] SettingsDto model)
+    public object TimaAndLanguageFromForm([FromForm] SettingsRequestsDto model)
     {
         return TimaAndLanguage(model);
     }
 
-    private object TimaAndLanguage(SettingsDto model)
+    private object TimaAndLanguage(SettingsRequestsDto model)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -418,19 +418,19 @@ public class SettingsController: BaseSettingsController
 
     ///<visible>false</visible>
     [Update("defaultpage")]
-    public object SaveDefaultPageSettingsFromBody([FromBody] SettingsDto model)
+    public object SaveDefaultPageSettingsFromBody([FromBody] SettingsRequestsDto model)
     {
         return SaveDefaultPageSettings(model);
     }
 
     [Update("defaultpage")]
     [Consumes("application/x-www-form-urlencoded")]
-    public object SaveDefaultPageSettingsFromForm([FromForm] SettingsDto model)
+    public object SaveDefaultPageSettingsFromForm([FromForm] SettingsRequestsDto model)
     {
         return SaveDefaultPageSettings(model);
     }
 
-    private object SaveDefaultPageSettings(SettingsDto model)
+    private object SaveDefaultPageSettings(SettingsRequestsDto model)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -457,7 +457,7 @@ public class SettingsController: BaseSettingsController
     }
 
     [Read("statistics/spaceusage/{id}")]
-    public Task<List<UsageSpaceStatItemResponseDto>> GetSpaceUsageStatistics(Guid id)
+    public Task<List<UsageSpaceStatItemDto>> GetSpaceUsageStatistics(Guid id)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -468,16 +468,16 @@ public class SettingsController: BaseSettingsController
                                                    item.Context != null &&
                                                    item.Context.SpaceUsageStatManager != null);
 
-        if (webitem == null) return Task.FromResult(new List<UsageSpaceStatItemResponseDto>());
+        if (webitem == null) return Task.FromResult(new List<UsageSpaceStatItemDto>());
 
         return InternalGetSpaceUsageStatistics(webitem);
     }
 
-    private async Task<List<UsageSpaceStatItemResponseDto>> InternalGetSpaceUsageStatistics(IWebItem webitem)
+    private async Task<List<UsageSpaceStatItemDto>> InternalGetSpaceUsageStatistics(IWebItem webitem)
     {
         var statData = await webitem.Context.SpaceUsageStatManager.GetStatDataAsync();
 
-        return statData.ConvertAll(it => new UsageSpaceStatItemResponseDto
+        return statData.ConvertAll(it => new UsageSpaceStatItemDto
         {
             Name = it.Name.HtmlEncode(),
             Icon = it.ImgUrl,
@@ -488,20 +488,20 @@ public class SettingsController: BaseSettingsController
     }
 
     [Read("statistics/visit")]
-    public List<ChartPointResponseDto> GetVisitStatistics(ApiDateTime fromDate, ApiDateTime toDate)
+    public List<ChartPointDto> GetVisitStatistics(ApiDateTime fromDate, ApiDateTime toDate)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
         var from = _tenantUtil.DateTimeFromUtc(fromDate);
         var to = _tenantUtil.DateTimeFromUtc(toDate);
 
-        var points = new List<ChartPointResponseDto>();
+        var points = new List<ChartPointDto>();
 
         if (from.CompareTo(to) >= 0) return points;
 
         for (var d = new DateTime(from.Ticks); d.Date.CompareTo(to.Date) <= 0; d = d.AddDays(1))
         {
-            points.Add(new ChartPointResponseDto
+            points.Add(new ChartPointDto
             {
                 DisplayDate = d.Date.ToShortDateString(),
                 Date = d.Date,
@@ -558,29 +558,29 @@ public class SettingsController: BaseSettingsController
     }
 
     [Read("authservice")]
-    public IEnumerable<AuthServiceDto> GetAuthServices()
+    public IEnumerable<AuthServiceRequestsDto> GetAuthServices()
     {
         return _consumerFactory.GetAll<Consumer>()
             .Where(consumer => consumer.ManagedKeys.Any())
             .OrderBy(services => services.Order)
-            .Select(r => new AuthServiceDto(r))
+            .Select(r => new AuthServiceRequestsDto(r))
             .ToList();
     }
 
     [Create("authservice")]
-    public bool SaveAuthKeysFromBody([FromBody] AuthServiceDto model)
+    public bool SaveAuthKeysFromBody([FromBody] AuthServiceRequestsDto model)
     {
         return SaveAuthKeys(model);
     }
 
     [Create("authservice")]
     [Consumes("application/x-www-form-urlencoded")]
-    public bool SaveAuthKeysFromForm([FromForm] AuthServiceDto model)
+    public bool SaveAuthKeysFromForm([FromForm] AuthServiceRequestsDto model)
     {
         return SaveAuthKeys(model);
     }
 
-    private bool SaveAuthKeys(AuthServiceDto model)
+    private bool SaveAuthKeys(AuthServiceRequestsDto model)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 

@@ -98,7 +98,7 @@ public class PortalController : ControllerBase
     }
 
     [Update("getshortenlink")]
-    public async Task<object> GetShortenLinkAsync(ShortenLinkDto model)
+    public async Task<object> GetShortenLinkAsync(ShortenLinkRequestsDto model)
     {
         try
         {
@@ -229,7 +229,7 @@ public class PortalController : ControllerBase
     }
 
     [Create("mobile/registration")]
-    public void RegisterMobileAppInstallFromBody([FromBody] MobileAppDto model)
+    public void RegisterMobileAppInstallFromBody([FromBody] MobileAppRequestsDto model)
     {
         var currentUser = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
         _mobileAppInstallRegistrator.RegisterInstall(currentUser.Email, model.Type);
@@ -237,7 +237,7 @@ public class PortalController : ControllerBase
 
     [Create("mobile/registration")]
     [Consumes("application/x-www-form-urlencoded")]
-    public void RegisterMobileAppInstallFromForm([FromForm] MobileAppDto model)
+    public void RegisterMobileAppInstallFromForm([FromForm] MobileAppRequestsDto model)
     {
         var currentUser = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
         _mobileAppInstallRegistrator.RegisterInstall(currentUser.Email, model.Type);

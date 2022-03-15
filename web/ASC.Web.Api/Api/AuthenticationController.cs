@@ -113,27 +113,27 @@ public class AuthenticationController : ControllerBase
     }
 
     [Create("{code}", false, order: int.MaxValue)]
-    public AuthenticationTokenResponseDto AuthenticateMeFromBodyWithCode([FromBody] AuthDto auth)
+    public AuthenticationTokenDto AuthenticateMeFromBodyWithCode([FromBody] AuthRequestsDto auth)
     {
         return AuthenticateMeWithCode(auth);
     }
 
     [Create("{code}", false, order: int.MaxValue)]
     [Consumes("application/x-www-form-urlencoded")]
-    public AuthenticationTokenResponseDto AuthenticateMeFromFormWithCode([FromForm] AuthDto auth)
+    public AuthenticationTokenDto AuthenticateMeFromFormWithCode([FromForm] AuthRequestsDto auth)
     {
         return AuthenticateMeWithCode(auth);
     }
 
     [Create(false)]
-    public Task<AuthenticationTokenResponseDto> AuthenticateMeFromBodyAsync([FromBody] AuthDto auth)
+    public Task<AuthenticationTokenDto> AuthenticateMeFromBodyAsync([FromBody] AuthRequestsDto auth)
     {
         return AuthenticateMeAsync(auth);
     }
 
     [Create(false)]
     [Consumes("application/x-www-form-urlencoded")]
-    public Task<AuthenticationTokenResponseDto> AuthenticateMeFromFormAsync([FromForm] AuthDto auth)
+    public Task<AuthenticationTokenDto> AuthenticateMeFromFormAsync([FromForm] AuthRequestsDto auth)
     {
         return AuthenticateMeAsync(auth);
     }
@@ -166,7 +166,7 @@ public class AuthenticationController : ControllerBase
 
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PhoneActivation")]
     [Create("setphone", false)]
-    public Task<AuthenticationTokenResponseDto> SaveMobilePhoneFromBodyAsync([FromBody] MobileDto model)
+    public Task<AuthenticationTokenDto> SaveMobilePhoneFromBodyAsync([FromBody] MobileRequestsDto model)
     {
         return SaveMobilePhoneAsync(model);
     }
@@ -174,19 +174,19 @@ public class AuthenticationController : ControllerBase
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PhoneActivation")]
     [Create("setphone", false)]
     [Consumes("application/x-www-form-urlencoded")]
-    public Task<AuthenticationTokenResponseDto> SaveMobilePhoneFromFormAsync([FromForm] MobileDto model)
+    public Task<AuthenticationTokenDto> SaveMobilePhoneFromFormAsync([FromForm] MobileRequestsDto model)
     {
         return SaveMobilePhoneAsync(model);
     }
 
-    private async Task<AuthenticationTokenResponseDto> SaveMobilePhoneAsync(MobileDto model)
+    private async Task<AuthenticationTokenDto> SaveMobilePhoneAsync(MobileRequestsDto model)
     {
         _apiContext.AuthByClaim();
         var user = _userManager.GetUsers(_authContext.CurrentAccount.ID);
         model.MobilePhone = await _smsManager.SaveMobilePhoneAsync(user, model.MobilePhone);
         _messageService.Send(MessageAction.UserUpdatedMobileNumber, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper), model.MobilePhone);
 
-        return new AuthenticationTokenResponseDto
+        return new AuthenticationTokenDto
         {
             Sms = true,
             PhoneNoise = SmsSender.BuildPhoneNoise(model.MobilePhone),
@@ -195,24 +195,24 @@ public class AuthenticationController : ControllerBase
     }
 
     [Create(@"sendsms", false)]
-    public Task<AuthenticationTokenResponseDto> SendSmsCodeFromBodyAsync([FromBody] AuthDto model)
+    public Task<AuthenticationTokenDto> SendSmsCodeFromBodyAsync([FromBody] AuthRequestsDto model)
     {
         return SendSmsCodeAsync(model);
     }
 
     [Create(@"sendsms", false)]
     [Consumes("application/x-www-form-urlencoded")]
-    public Task<AuthenticationTokenResponseDto> SendSmsCodeFromFormAsync([FromForm] AuthDto model)
+    public Task<AuthenticationTokenDto> SendSmsCodeFromFormAsync([FromForm] AuthRequestsDto model)
     {
         return SendSmsCodeAsync(model);
     }
 
-    private async Task<AuthenticationTokenResponseDto> SendSmsCodeAsync(AuthDto model)
+    private async Task<AuthenticationTokenDto> SendSmsCodeAsync(AuthRequestsDto model)
     {
         var user = GetUser(model, out _);
         await _smsManager.PutAuthCodeAsync(user, true);
 
-        return new AuthenticationTokenResponseDto
+        return new AuthenticationTokenDto
         {
             Sms = true,
             PhoneNoise = SmsSender.BuildPhoneNoise(user.MobilePhone),
@@ -220,7 +220,7 @@ public class AuthenticationController : ControllerBase
         };
     }
 
-    private async Task<AuthenticationTokenResponseDto> AuthenticateMeAsync(AuthDto auth)
+    private async Task<AuthenticationTokenDto> AuthenticateMeAsync(AuthRequestsDto auth)
     {
         bool viaEmail;
         var user = GetUser(auth, out viaEmail);
@@ -228,7 +228,7 @@ public class AuthenticationController : ControllerBase
         if (_studioSmsNotificationSettingsHelper.IsVisibleSettings() && _studioSmsNotificationSettingsHelper.Enable)
         {
             if (string.IsNullOrEmpty(user.MobilePhone) || user.MobilePhoneActivationStatus == MobilePhoneActivationStatus.NotActivated)
-                return new AuthenticationTokenResponseDto
+                return new AuthenticationTokenDto
                 {
                     Sms = true,
                     ConfirmUrl = _commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.PhoneActivation)
@@ -236,7 +236,7 @@ public class AuthenticationController : ControllerBase
 
             await _smsManager.PutAuthCodeAsync(user, false);
 
-            return new AuthenticationTokenResponseDto
+            return new AuthenticationTokenDto
             {
                 Sms = true,
                 PhoneNoise = SmsSender.BuildPhoneNoise(user.MobilePhone),
@@ -248,14 +248,14 @@ public class AuthenticationController : ControllerBase
         if (TfaAppAuthSettings.IsVisibleSettings && _settingsManager.Load<TfaAppAuthSettings>().EnableSetting)
         {
             if (!TfaAppUserSettings.EnableForUser(_settingsManager, user.Id))
-                return new AuthenticationTokenResponseDto
+                return new AuthenticationTokenDto
                 {
                     Tfa = true,
                     TfaKey = _tfaManager.GenerateSetupCode(user).ManualEntryKey,
                     ConfirmUrl = _commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.TfaActivation)
                 };
 
-            return new AuthenticationTokenResponseDto
+            return new AuthenticationTokenDto
             {
                 Tfa = true,
                 ConfirmUrl = _commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.TfaAuth)
@@ -272,7 +272,7 @@ public class AuthenticationController : ControllerBase
             var tenant = _tenantManager.GetCurrentTenant().Id;
             var expires = _tenantCookieSettingsHelper.GetExpiresTime(tenant);
 
-            return new AuthenticationTokenResponseDto
+            return new AuthenticationTokenDto
             {
                 Token = token,
                 Expires = new ApiDateTime(_tenantManager, _timeZoneConverter, expires)
@@ -289,7 +289,7 @@ public class AuthenticationController : ControllerBase
         }
     }
 
-    private AuthenticationTokenResponseDto AuthenticateMeWithCode(AuthDto auth)
+    private AuthenticationTokenDto AuthenticateMeWithCode(AuthRequestsDto auth)
     {
         var tenant = _tenantManager.GetCurrentTenant().Id;
         var user = GetUser(auth, out _);
@@ -320,7 +320,7 @@ public class AuthenticationController : ControllerBase
 
             var expires = _tenantCookieSettingsHelper.GetExpiresTime(tenant);
 
-            var result = new AuthenticationTokenResponseDto
+            var result = new AuthenticationTokenDto
             {
                 Token = token,
                 Expires = new ApiDateTime(_tenantManager, _timeZoneConverter, expires)
@@ -352,7 +352,7 @@ public class AuthenticationController : ControllerBase
         }
     }
 
-    private UserInfo GetUser(AuthDto memberModel, out bool viaEmail)
+    private UserInfo GetUser(AuthRequestsDto memberModel, out bool viaEmail)
     {
         viaEmail = true;
         var action = MessageAction.LoginFailViaApi;

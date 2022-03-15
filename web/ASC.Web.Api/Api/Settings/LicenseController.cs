@@ -136,7 +136,7 @@ public class LicenseController: BaseSettingsController
 
     [Create("license", Check = false)]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard, Administrators")]
-    public object UploadLicense([FromForm] UploadLicenseDto model)
+    public object UploadLicense([FromForm] UploadLicenseRequestsDto model)
     {
         try
         {
