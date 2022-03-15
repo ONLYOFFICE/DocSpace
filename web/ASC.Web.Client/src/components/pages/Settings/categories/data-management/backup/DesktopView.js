@@ -15,11 +15,10 @@ import AutoBackup from "./auto-backup";
 import ManualBackup from "./manual-backup";
 import RestoreBackup from "./restore-backup";
 import SelectFolderDialog from "files/SelectFolderDialog";
-import Tooltip from "@appserver/components/tooltip";
 import toastr from "@appserver/components/toast/toastr";
 import moment from "moment";
 import { getBackupStorage } from "@appserver/common/api/settings";
-import HelpIcon from "../../../../../../../../../packages/asc-web-components/public/static/images/help.react.svg";
+import HelpButton from "@appserver/components/help-button";
 
 class BackupDesktopView extends React.Component {
   constructor(props) {
@@ -107,14 +106,12 @@ class BackupDesktopView extends React.Component {
     const renderTooltip = (helpInfo) => {
       return (
         <>
-          <HelpIcon size="medium" data-tip={helpInfo} data-for="help-tooltip" />
-          <Tooltip
-            id="help-tooltip"
-            offsetTop={0}
-            getContent={(dataTip) => (
+          <HelpButton
+            iconName={"/static/images/help.react.svg"}
+            tooltipContent={
               <>
                 <Trans t={t} i18nKey={`${helpInfo}`} ns="Settings">
-                  {dataTip}
+                  {helpInfo}
                 </Trans>
                 <div>
                   <Link
@@ -129,11 +126,7 @@ class BackupDesktopView extends React.Component {
                   </Link>
                 </div>
               </>
-            )}
-            effect="float"
-            place="right"
-            maxWidth="320px"
-            color="#F8F7BF"
+            }
           />
         </>
       );
