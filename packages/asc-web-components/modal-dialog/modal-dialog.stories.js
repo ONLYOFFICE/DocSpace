@@ -35,31 +35,32 @@ const Template = ({ onClick, onClose, onOk, ...args }) => {
         size="medium"
         onClick={toggleVisible}
       />
-      <ModalDialog
-        {...args}
-        visible={isVisible}
-        onClose={(e) => {
-          onClose(e);
-          setIsVisible(!isVisible);
-        }}
-      >
+      <ModalDialog {...args} visible={isVisible} onClose={toggleVisible}>
         <ModalDialog.Header>{"Change password"}</ModalDialog.Header>
         <ModalDialog.Body>
-          <div>
+          <span>
             Send the password change instruction to the{" "}
             <a href="mailto:asc@story.book">asc@story.book</a> email address
-          </div>
+          </span>
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button
             key="SendBtn"
             label="Send"
             primary={true}
+            scale
             size="medium"
             onClick={(e) => {
               onOk(e);
-              setIsVisible(!isVisible);
+              toggleVisible;
             }}
+          />
+          <Button
+            key="SendBtn"
+            label="Cancel"
+            scale
+            size="medium"
+            onClick={toggleVisible}
           />
         </ModalDialog.Footer>
       </ModalDialog>
@@ -70,7 +71,7 @@ const Template = ({ onClick, onClose, onOk, ...args }) => {
 export const Default = Template.bind({});
 Default.args = {
   scale: false,
-  displayType: "auto",
+  displayType: "modal",
   zIndex: 310,
   headerContent: "Change password",
 };

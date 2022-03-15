@@ -2,6 +2,7 @@ import styled, { css } from "styled-components";
 import Base from "../themes/base";
 import Box from "../box";
 import CrossSidebarIcon from "../../../public/images/cross.sidebar.react.svg";
+import { mobile } from "../utils/device";
 
 const Dialog = styled.div`
   position: relative;
@@ -70,8 +71,12 @@ const CloseButton = styled(CrossSidebarIcon)`
   min-width: ${(props) => props.theme.modalDialog.closeButton.minWidth};
   min-height: ${(props) => props.theme.modalDialog.closeButton.minHeight};
 
-  right: ${(props) => props.theme.modalDialog.closeButton.right};
-  top: ${(props) => props.theme.modalDialog.closeButton.top};
+  right: 0;
+  top: 0;
+
+  @media ${mobile} {
+    margin-right: 13px;
+  }
 
   &:hover {
     path {
@@ -80,6 +85,12 @@ const CloseButton = styled(CrossSidebarIcon)`
   }
 `;
 CloseButton.defaultProps = { theme: Base };
+
+const StyledFooter = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+`;
 
 const BodyBox = styled(Box)`
   position: relative;
@@ -91,4 +102,4 @@ const BodyBox = styled(Box)`
     `}
 `;
 
-export { CloseButton, StyledHeader, Content, Dialog, BodyBox };
+export { CloseButton, StyledHeader, Content, Dialog, BodyBox, StyledFooter };

@@ -13,6 +13,7 @@ import {
   Content,
   Dialog,
   BodyBox,
+  StyledFooter,
 } from "./styled-modal-dialog";
 import Portal from "../portal";
 import Loaders from "@appserver/common/components/Loaders";
@@ -37,9 +38,7 @@ class ModalDialog extends React.Component {
   static Body = Body;
   constructor(props) {
     super(props);
-
     this.state = { displayType: this.getTypeByWidth() };
-
     this.getTypeByWidth = this.getTypeByWidth.bind(this);
     this.resize = this.resize.bind(this);
     this.popstate = this.popstate.bind(this);
@@ -112,6 +111,7 @@ class ModalDialog extends React.Component {
       contentPaddingBottom,
       removeScroll,
       modalLoaderBodyHeight,
+      theme,
     } = this.props;
 
     let header = null;
@@ -165,33 +165,33 @@ class ModalDialog extends React.Component {
                     </Heading>
                     <CloseButton
                       className="modal-dialog-button_close"
-                      onClick={onClose}
+                      onClick={() => onClose()}
                     ></CloseButton>
                   </StyledHeader>
                   <BodyBox paddingProp={modalBodyPadding}>
                     {body ? body.props.children : null}
                   </BodyBox>
-                  <Box>{footer ? footer.props.children : null}</Box>
+                  <Box>
+                    <StyledFooter>
+                      {footer ? footer.props.children : null}
+                    </StyledFooter>
+                  </Box>
                 </>
               )}
             </Content>
           </Dialog>
         </Backdrop>
       ) : (
-        <Box className={className} id={id} style={style}>
-          <Backdrop
-            visible={visible}
-            onClick={onClose}
-            zIndex={zIndex}
-            isAside={true}
-          />
-          <Aside
-            visible={visible}
-            scale={scale}
-            zIndex={zIndex}
-            contentPaddingBottom={contentPaddingBottom}
-            className="modal-dialog-aside not-selectable"
-            withoutBodyScroll={removeScroll}
+        <Backdrop
+          visible={visible}
+          onClick={onClose}
+          zIndex={zIndex}
+          isAside={true}
+        >
+          <Dialog
+            className={`${className} not-selectable`}
+            id={id}
+            style={style}
           >
             <Content
               contentHeight={contentHeight}
@@ -217,18 +217,19 @@ class ModalDialog extends React.Component {
                     {body ? body.props.children : null}
                   </BodyBox>
                   <Box className="modal-dialog-aside-footer">
-                    {footer ? footer.props.children : null}
+                    <StyledFooter>
+                      {footer ? footer.props.children : null}
+                    </StyledFooter>
                   </Box>
                 </>
               )}
             </Content>
-          </Aside>
-        </Box>
+          </Dialog>
+        </Backdrop>
       );
     };
 
     const modalDialog = renderModal();
-
     return <Portal element={modalDialog} />;
   }
 }
@@ -265,7 +266,7 @@ ModalDialog.defaultProps = {
   zIndex: 310,
   asideBodyPadding: "16px 0",
   modalBodyPadding: "12px 0",
-  contentWidth: "100%",
+  contentWidth: "400px",
 };
 
 ModalDialog.Header = Header;
