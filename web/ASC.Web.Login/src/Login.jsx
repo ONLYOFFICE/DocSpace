@@ -503,7 +503,7 @@ const Form = (props) => {
                   : t("Common:LoginButton")
               }
               tabIndex={1}
-              isDisabled={isLoading || !identifierValid || !passwordValid}
+              isDisabled={isLoading}
               isLoading={isLoading}
               onClick={onSubmit}
             />
