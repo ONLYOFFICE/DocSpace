@@ -5,12 +5,12 @@ import styled from "styled-components";
 import { FolderType, ShareAccessRights } from "@appserver/common/constants";
 import toastr from "studio/toastr";
 
-import { onConvertFiles } from "../../../helpers/files-converter";
+import { onConvertFiles } from "../../helpers/files-converter";
 import { ReactSVG } from "react-svg";
-import ExpanderDownIcon from "../../../../../../../public/images/expander-down.react.svg";
-import ExpanderRightIcon from "../../../../../../../public/images/expander-right.react.svg";
+import ExpanderDownIcon from "../../../../../../public/images/expander-down.react.svg";
+import ExpanderRightIcon from "../../../../../../public/images/expander-right.react.svg";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
-import withLoader from "../../../HOCs/withLoader";
+import withLoader from "../../HOCs/withLoader";
 import Loaders from "@appserver/common/components/Loaders";
 
 import { observer, inject } from "mobx-react";
