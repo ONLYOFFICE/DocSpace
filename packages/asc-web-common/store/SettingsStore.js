@@ -189,7 +189,6 @@ class SettingsStore {
   };
 
   getFolderPath = async (id) => {
-    //debugger;
     this.folderPath = await api.files.getFolderPath(id);
   };
 
