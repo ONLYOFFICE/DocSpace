@@ -15,31 +15,35 @@
  * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
  * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
  *
- * Pursuant to Section 7 ง 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
+ * Pursuant to Section 7 ยง 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
  * relevant author attributions when distributing the software. If the display of the logo in its graphic 
  * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
  * in every copy of the program you distribute. 
- * Pursuant to Section 7 ง 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
+ * Pursuant to Section 7 ยง 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
  *
 */
 
-namespace ASC.Web.Studio.Core;
+namespace ASC.Api.Settings.Smtp;
 
-public class OpensourceGiftSettings : ISettings
+public class SmtpOperationStatusRequestsDto
 {
-    public bool Readed { get; set; }
+    public bool Completed { get; set; }
+    public string Id { get; set; }
+    public string Status { get; set; }
+    public string Error { get; set; }
+    public int Percents { get; set; }
+    public string Source { get; set; }
 
-    #region ISettings Members
-
-    public Guid ID
+    public static SmtpOperationStatusRequestsDto GetSample()
     {
-        get { return new Guid("{1F4FEA2C-2D9F-47A6-ADEF-CEC4D1E1E243}"); }
+        return new SmtpOperationStatusRequestsDto
+        {
+            Id = "{some-random-guid}",
+            Error = "",
+            Percents = 0,
+            Completed = true,
+            Status = "",
+            Source = ""
+        };
     }
-
-    public ISettings GetDefault(IServiceProvider serviceProvider)
-    {
-        return new OpensourceGiftSettings { Readed = false };
-    }
-
-    #endregion
 }

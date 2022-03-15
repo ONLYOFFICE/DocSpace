@@ -15,31 +15,44 @@
  * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
  * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
  *
- * Pursuant to Section 7 ง 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
+ * Pursuant to Section 7 ยง 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
  * relevant author attributions when distributing the software. If the display of the logo in its graphic 
  * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
  * in every copy of the program you distribute. 
- * Pursuant to Section 7 ง 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
+ * Pursuant to Section 7 ยง 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
  *
 */
 
-namespace ASC.Web.Studio.Core;
+namespace ASC.Web.Api.ApiModel.ResponseDto;
 
-public class OpensourceGiftSettings : ISettings
+public class SmtpSettingsDto : IMapFrom<SmtpSettings>
 {
-    public bool Readed { get; set; }
+    public string Host { get; set; }
+    public int? Port { get; set; }
+    public string SenderAddress { get; set; }
+    public string SenderDisplayName { get; set; }
+    public string CredentialsUserName { get; set; }
+    public string CredentialsUserPassword { get; set; }
+    public bool EnableSSL { get; set; }
+    public bool EnableAuth { get; set; }
 
-    #region ISettings Members
-
-    public Guid ID
+    public static SmtpSettingsDto GetSample()
     {
-        get { return new Guid("{1F4FEA2C-2D9F-47A6-ADEF-CEC4D1E1E243}"); }
+        return new SmtpSettingsDto
+        {
+            Host = "mail.example.com",
+            Port = 25,
+            CredentialsUserName = "notify@example.com",
+            CredentialsUserPassword = "{password}",
+            EnableAuth = true,
+            EnableSSL = false,
+            SenderAddress = "notify@example.com",
+            SenderDisplayName = "Postman"
+        };
     }
 
-    public ISettings GetDefault(IServiceProvider serviceProvider)
+    public void Mapping(Profile profile)
     {
-        return new OpensourceGiftSettings { Readed = false };
+        profile.CreateMap<SmtpSettings, SmtpSettingsDto>();
     }
-
-    #endregion
 }
