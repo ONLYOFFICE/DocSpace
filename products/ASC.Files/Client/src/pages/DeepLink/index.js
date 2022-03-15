@@ -50,7 +50,11 @@ const DeepLinkPage = (props) => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(async () => {
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
     const fileId = queryString.parse(location.search).fileId;
     const file = await api.files.getFileInfo(fileId);
 
@@ -58,7 +62,7 @@ const DeepLinkPage = (props) => {
     setIcon(getIconSrc(file.fileExst, 32));
     setDeepLink(getDeepLink(file));
     setIsLoading(true);
-  }, []);
+  };
 
   const getDeepLink = (file) => {
     const jsonData = {
