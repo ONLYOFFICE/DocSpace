@@ -57,30 +57,30 @@ public class SmtpSettingsController : ControllerBase
     }
 
     [Create("smtp")]
-    public SmtpSettingsDto SaveSmtpSettingsFromBody([FromBody]SmtpSettingsDto smtpSettings)
+    public SmtpSettingsDto SaveSmtpSettingsFromBody([FromBody]SmtpSettingsDto inDto)
     {
-        return SaveSmtpSettings(smtpSettings);
+        return SaveSmtpSettings(inDto);
     }
 
     [Create("smtp")]
     [Consumes("application/x-www-form-urlencoded")]
-    public SmtpSettingsDto SaveSmtpSettingsFromForm([FromForm] SmtpSettingsDto smtpSettings)
+    public SmtpSettingsDto SaveSmtpSettingsFromForm([FromForm] SmtpSettingsDto inDto)
     {
-        return SaveSmtpSettings(smtpSettings);
+        return SaveSmtpSettings(inDto);
     }
 
-    private SmtpSettingsDto SaveSmtpSettings(SmtpSettingsDto smtpSettings)
+    private SmtpSettingsDto SaveSmtpSettings(SmtpSettingsDto inDto)
     {
         CheckSmtpPermissions();
 
         //TODO: Add validation check
 
-        if (smtpSettings == null)
-            throw new ArgumentNullException(nameof(smtpSettings));
+        if (inDto == null)
+            throw new ArgumentNullException(nameof(inDto));
 
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        var settingConfig = ToSmtpSettingsConfig(smtpSettings);
+        var settingConfig = ToSmtpSettingsConfig(inDto);
 
         _coreConfiguration.SmtpSettings = settingConfig;
 
@@ -170,21 +170,21 @@ public class SmtpSettingsController : ControllerBase
     //    return result;
     //}
 
-    public static SmtpSettings ToSmtpSettingsConfig(SmtpSettingsDto settingsWrapper)
+    public static SmtpSettings ToSmtpSettingsConfig(SmtpSettingsDto inDto)
     {
         var settingsConfig = new SmtpSettings(
-            settingsWrapper.Host,
-            settingsWrapper.Port ?? SmtpSettings.DefaultSmtpPort,
-            settingsWrapper.SenderAddress,
-            settingsWrapper.SenderDisplayName)
+            inDto.Host,
+            inDto.Port ?? SmtpSettings.DefaultSmtpPort,
+            inDto.SenderAddress,
+            inDto.SenderDisplayName)
         {
-            EnableSSL = settingsWrapper.EnableSSL,
-            EnableAuth = settingsWrapper.EnableAuth
+            EnableSSL = inDto.EnableSSL,
+            EnableAuth = inDto.EnableAuth
         };
 
-        if (settingsWrapper.EnableAuth)
+        if (inDto.EnableAuth)
         {
-            settingsConfig.SetCredentials(settingsWrapper.CredentialsUserName, settingsWrapper.CredentialsUserPassword);
+            settingsConfig.SetCredentials(inDto.CredentialsUserName, inDto.CredentialsUserPassword);
         }
 
         return settingsConfig;

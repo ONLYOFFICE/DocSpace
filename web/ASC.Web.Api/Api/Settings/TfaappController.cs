@@ -96,11 +96,11 @@ public class TfaappController : BaseSettingsController
 
     [Create("tfaapp/validate")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "TfaActivation,Everyone")]
-    public bool TfaValidateAuthCode(TfaValidateRequestsDto model)
+    public bool TfaValidateAuthCode(TfaValidateRequestsDto inDto)
     {
         _apiContext.AuthByClaim();
         var user = _userManager.GetUsers(_authContext.CurrentAccount.ID);
-        return _tfaManager.ValidateAuthCode(user, model.Code);
+        return _tfaManager.ValidateAuthCode(user, inDto.Code);
     }
 
     [Read("tfaapp/confirm")]
@@ -130,19 +130,19 @@ public class TfaappController : BaseSettingsController
     }
 
     [Update("tfaapp")]
-    public bool TfaSettingsFromBody([FromBody] TfaRequestsDto model)
+    public bool TfaSettingsFromBody([FromBody] TfaRequestsDto inDto)
     {
-        return TfaSettingsUpdate(model);
+        return TfaSettingsUpdate(inDto);
     }
 
     [Update("tfaapp")]
     [Consumes("application/x-www-form-urlencoded")]
-    public bool TfaSettingsFromForm([FromForm] TfaRequestsDto model)
+    public bool TfaSettingsFromForm([FromForm] TfaRequestsDto inDto)
     {
-        return TfaSettingsUpdate(model);
+        return TfaSettingsUpdate(inDto);
     }
 
-    private bool TfaSettingsUpdate(TfaRequestsDto model)
+    private bool TfaSettingsUpdate(TfaRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -151,7 +151,7 @@ public class TfaappController : BaseSettingsController
         MessageAction action;
         var settings = _settingsManager.Load<TfaAppAuthSettings>();
 
-        switch (model.Type)
+        switch (inDto.Type)
         {
             case "sms":
                 if (!_studioSmsNotificationSettingsHelper.IsVisibleSettings())
@@ -268,21 +268,21 @@ public class TfaappController : BaseSettingsController
     }
 
     [Update("tfaappnewapp")]
-    public object TfaAppNewAppFromBody([FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] TfaRequestsDto model)
+    public object TfaAppNewAppFromBody([FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] TfaRequestsDto inDto)
     {
-        return TfaAppNewApp(model);
+        return TfaAppNewApp(inDto);
     }
 
     [Update("tfaappnewapp")]
     [Consumes("application/x-www-form-urlencoded")]
-    public object TfaAppNewAppFromForm([FromForm] TfaRequestsDto model)
+    public object TfaAppNewAppFromForm([FromForm] TfaRequestsDto inDto)
     {
-        return TfaAppNewApp(model);
+        return TfaAppNewApp(inDto);
     }
 
-    private object TfaAppNewApp(TfaRequestsDto model)
+    private object TfaAppNewApp(TfaRequestsDto inDto)
     {
-        var id = model?.Id ?? Guid.Empty;
+        var id = inDto?.Id ?? Guid.Empty;
         var isMe = id.Equals(Guid.Empty);
         var user = _userManager.GetUsers(isMe ? _authContext.CurrentAccount.ID : id);
 

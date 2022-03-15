@@ -91,19 +91,19 @@ public class StorageController : BaseSettingsController
     public readonly object Locker = new object();
 
     [Create("encryption/start")]
-    public bool StartStorageEncryptionFromBody([FromBody] StorageEncryptionRequestsDto storageEncryption)
+    public bool StartStorageEncryptionFromBody([FromBody] StorageEncryptionRequestsDto inDto)
     {
-        return StartStorageEncryption(storageEncryption);
+        return StartStorageEncryption(inDto);
     }
 
     [Create("encryption/start")]
     [Consumes("application/x-www-form-urlencoded")]
-    public bool StartStorageEncryptionFromForm([FromForm] StorageEncryptionRequestsDto storageEncryption)
+    public bool StartStorageEncryptionFromForm([FromForm] StorageEncryptionRequestsDto inDto)
     {
-        return StartStorageEncryption(storageEncryption);
+        return StartStorageEncryption(inDto);
     }
 
-    private bool StartStorageEncryption(StorageEncryptionRequestsDto storageEncryption)
+    private bool StartStorageEncryption(StorageEncryptionRequestsDto inDto)
     {
         if (_coreBaseSettings.CustomMode)
         {
@@ -116,7 +116,7 @@ public class StorageController : BaseSettingsController
 
             if (activeTenants.Count > 0)
             {
-                StartEncryption(storageEncryption.NotifyUsers);
+                StartEncryption(inDto.NotifyUsers);
             }
         }
         return true;
@@ -297,19 +297,19 @@ public class StorageController : BaseSettingsController
     }
 
     [Update("storage")]
-    public StorageSettings UpdateStorageFromBody([FromBody] StorageRequestsDto model)
+    public StorageSettings UpdateStorageFromBody([FromBody] StorageRequestsDto inDto)
     {
-        return UpdateStorage(model);
+        return UpdateStorage(inDto);
     }
 
     [Update("storage")]
     [Consumes("application/x-www-form-urlencoded")]
-    public StorageSettings UpdateStorageFromForm([FromForm] StorageRequestsDto model)
+    public StorageSettings UpdateStorageFromForm([FromForm] StorageRequestsDto inDto)
     {
-        return UpdateStorage(model);
+        return UpdateStorage(inDto);
     }
 
-    private StorageSettings UpdateStorage(StorageRequestsDto model)
+    private StorageSettings UpdateStorage(StorageRequestsDto inDto)
     {
         try
         {
@@ -318,15 +318,15 @@ public class StorageController : BaseSettingsController
 
             _tenantExtra.DemandControlPanelPermission();
 
-            var consumer = _consumerFactory.GetByKey(model.Module);
+            var consumer = _consumerFactory.GetByKey(inDto.Module);
             if (!consumer.IsSet)
                 throw new ArgumentException("module");
 
             var settings = _settingsManager.Load<StorageSettings>();
-            if (settings.Module == model.Module) return settings;
+            if (settings.Module == inDto.Module) return settings;
 
-            settings.Module = model.Module;
-            settings.Props = model.Props.ToDictionary(r => r.Key, b => b.Value);
+            settings.Module = inDto.Module;
+            settings.Props = inDto.Props.ToDictionary(r => r.Key, b => b.Value);
 
             StartMigrate(settings);
             return settings;
@@ -377,34 +377,34 @@ public class StorageController : BaseSettingsController
     }
 
     [Update("storage/cdn")]
-    public CdnStorageSettings UpdateCdnFromBody([FromBody] StorageRequestsDto model)
+    public CdnStorageSettings UpdateCdnFromBody([FromBody] StorageRequestsDto inDto)
     {
-        return UpdateCdn(model);
+        return UpdateCdn(inDto);
     }
 
     [Update("storage/cdn")]
     [Consumes("application/x-www-form-urlencoded")]
-    public CdnStorageSettings UpdateCdnFromForm([FromForm] StorageRequestsDto model)
+    public CdnStorageSettings UpdateCdnFromForm([FromForm] StorageRequestsDto inDto)
     {
-        return UpdateCdn(model);
+        return UpdateCdn(inDto);
     }
 
-    private CdnStorageSettings UpdateCdn(StorageRequestsDto model)
+    private CdnStorageSettings UpdateCdn(StorageRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
         if (!_coreBaseSettings.Standalone) return null;
 
         _tenantExtra.DemandControlPanelPermission();
 
-        var consumer = _consumerFactory.GetByKey(model.Module);
+        var consumer = _consumerFactory.GetByKey(inDto.Module);
         if (!consumer.IsSet)
             throw new ArgumentException("module");
 
         var settings = _settingsManager.Load<CdnStorageSettings>();
-        if (settings.Module == model.Module) return settings;
+        if (settings.Module == inDto.Module) return settings;
 
-        settings.Module = model.Module;
-        settings.Props = model.Props.ToDictionary(r => r.Key, b => b.Value);
+        settings.Module = inDto.Module;
+        settings.Props = inDto.Props.ToDictionary(r => r.Key, b => b.Value);
 
         try
         {

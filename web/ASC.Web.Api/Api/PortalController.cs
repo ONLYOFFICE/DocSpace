@@ -98,16 +98,16 @@ public class PortalController : ControllerBase
     }
 
     [Update("getshortenlink")]
-    public async Task<object> GetShortenLinkAsync(ShortenLinkRequestsDto model)
+    public async Task<object> GetShortenLinkAsync(ShortenLinkRequestsDto inDto)
     {
         try
         {
-            return await _urlShortener.Instance.GetShortenLinkAsync(model.Link);
+            return await _urlShortener.Instance.GetShortenLinkAsync(inDto.Link);
         }
         catch (Exception ex)
         {
             _log.Error("getshortenlink", ex);
-            return model.Link;
+            return inDto.Link;
         }
     }
 
@@ -229,18 +229,18 @@ public class PortalController : ControllerBase
     }
 
     [Create("mobile/registration")]
-    public void RegisterMobileAppInstallFromBody([FromBody] MobileAppRequestsDto model)
+    public void RegisterMobileAppInstallFromBody([FromBody] MobileAppRequestsDto inDto)
     {
         var currentUser = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
-        _mobileAppInstallRegistrator.RegisterInstall(currentUser.Email, model.Type);
+        _mobileAppInstallRegistrator.RegisterInstall(currentUser.Email, inDto.Type);
     }
 
     [Create("mobile/registration")]
     [Consumes("application/x-www-form-urlencoded")]
-    public void RegisterMobileAppInstallFromForm([FromForm] MobileAppRequestsDto model)
+    public void RegisterMobileAppInstallFromForm([FromForm] MobileAppRequestsDto inDto)
     {
         var currentUser = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
-        _mobileAppInstallRegistrator.RegisterInstall(currentUser.Email, model.Type);
+        _mobileAppInstallRegistrator.RegisterInstall(currentUser.Email, inDto.Type);
     }
 
     [Create("mobile/registration")]

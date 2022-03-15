@@ -4,7 +4,7 @@ public class SecurityController : BaseSettingsController
 {
     private readonly MessageService _messageService;
     private readonly IServiceProvider _serviceProvider;
-    private readonly EmployeeWraperHelper _employeeWraperHelper;
+    private readonly EmployeeDtoHelper _employeeHelperDto;
     private readonly UserManager _userManager;
     private readonly AuthContext _authContext;
     private readonly WebItemSecurity _webItemSecurity;
@@ -26,12 +26,12 @@ public class SecurityController : BaseSettingsController
         WebItemManagerSecurity webItemManagerSecurity,
         DisplayUserSettingsHelper displayUserSettingsHelper,
         IServiceProvider serviceProvider,
-        EmployeeWraperHelper employeeWraperHelper,
+        EmployeeDtoHelper employeeWraperHelper,
         MessageTarget messageTarget,
         IMemoryCache memoryCache) : base(apiContext, memoryCache, webItemManager)
     {
         _serviceProvider = serviceProvider;
-        _employeeWraperHelper = employeeWraperHelper;
+        _employeeHelperDto = employeeWraperHelper;
         _messageService = messageService;
         _userManager = userManager;
         _authContext = authContext;
@@ -58,8 +58,8 @@ public class SecurityController : BaseSettingsController
                     {
                         WebItemId = i.WebItemId,
                         Enabled = i.Enabled,
-                        Users = i.Users.Select(_employeeWraperHelper.Get),
-                        Groups = i.Groups.Select(g => new GroupWrapperSummary(g, _userManager)),
+                        Users = i.Users.Select(_employeeHelperDto.Get),
+                        Groups = i.Groups.Select(g => new GroupSummaryDto(g, _userManager)),
                         IsSubItem = subItemList.Contains(i.WebItemId),
                     }).ToList();
     }
@@ -96,30 +96,30 @@ public class SecurityController : BaseSettingsController
     }
 
     [Update("security")]
-    public IEnumerable<SecurityDto> SetWebItemSecurityFromBody([FromBody] WebItemSecurityRequestsDto model)
+    public IEnumerable<SecurityDto> SetWebItemSecurityFromBody([FromBody] WebItemSecurityRequestsDto inDto)
     {
-        return SetWebItemSecurity(model);
+        return SetWebItemSecurity(inDto);
     }
 
     [Update("security")]
     [Consumes("application/x-www-form-urlencoded")]
-    public IEnumerable<SecurityDto> SetWebItemSecurityFromForm([FromForm] WebItemSecurityRequestsDto model)
+    public IEnumerable<SecurityDto> SetWebItemSecurityFromForm([FromForm] WebItemSecurityRequestsDto inDto)
     {
-        return SetWebItemSecurity(model);
+        return SetWebItemSecurity(inDto);
     }
 
-    private IEnumerable<SecurityDto> SetWebItemSecurity(WebItemSecurityRequestsDto model)
+    private IEnumerable<SecurityDto> SetWebItemSecurity(WebItemSecurityRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        _webItemSecurity.SetSecurity(model.Id, model.Enabled, model.Subjects?.ToArray());
-        var securityInfo = GetWebItemSecurityInfo(new List<string> { model.Id });
+        _webItemSecurity.SetSecurity(inDto.Id, inDto.Enabled, inDto.Subjects?.ToArray());
+        var securityInfo = GetWebItemSecurityInfo(new List<string> { inDto.Id });
 
-        if (model.Subjects == null) return securityInfo;
+        if (inDto.Subjects == null) return securityInfo;
 
-        var productName = GetProductName(new Guid(model.Id));
+        var productName = GetProductName(new Guid(inDto.Id));
 
-        if (!model.Subjects.Any())
+        if (!inDto.Subjects.Any())
         {
             _messageService.Send(MessageAction.ProductAccessOpened, productName);
         }
@@ -142,25 +142,25 @@ public class SecurityController : BaseSettingsController
     }
 
     [Update("security/access")]
-    public IEnumerable<SecurityDto> SetAccessToWebItemsFromBody([FromBody] WebItemSecurityRequestsDto model)
+    public IEnumerable<SecurityDto> SetAccessToWebItemsFromBody([FromBody] WebItemSecurityRequestsDto inDto)
     {
-        return SetAccessToWebItems(model);
+        return SetAccessToWebItems(inDto);
     }
 
     [Update("security/access")]
     [Consumes("application/x-www-form-urlencoded")]
-    public IEnumerable<SecurityDto> SetAccessToWebItemsFromForm([FromForm] WebItemSecurityRequestsDto model)
+    public IEnumerable<SecurityDto> SetAccessToWebItemsFromForm([FromForm] WebItemSecurityRequestsDto inDto)
     {
-        return SetAccessToWebItems(model);
+        return SetAccessToWebItems(inDto);
     }
 
-    private IEnumerable<SecurityDto> SetAccessToWebItems(WebItemSecurityRequestsDto model)
+    private IEnumerable<SecurityDto> SetAccessToWebItems(WebItemSecurityRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
         var itemList = new ItemDictionary<string, bool>();
 
-        foreach (var item in model.Items)
+        foreach (var item in inDto.Items)
         {
             if (!itemList.ContainsKey(item.Key))
                 itemList.Add(item.Key, item.Value);
@@ -201,10 +201,10 @@ public class SecurityController : BaseSettingsController
     }
 
     [Read("security/administrator/{productid}")]
-    public IEnumerable<EmployeeWraper> GetProductAdministrators(Guid productid)
+    public IEnumerable<EmployeeDto> GetProductAdministrators(Guid productid)
     {
         return _webItemSecurity.GetProductAdministrators(productid)
-                                .Select(_employeeWraperHelper.Get)
+                                .Select(_employeeHelperDto.Get)
                                 .ToList();
     }
 
@@ -216,37 +216,37 @@ public class SecurityController : BaseSettingsController
     }
 
     [Update("security/administrator")]
-    public object SetProductAdministratorFromBody([FromBody] SecurityRequestsDto model)
+    public object SetProductAdministratorFromBody([FromBody] SecurityRequestsDto inDto)
     {
-        return SetProductAdministrator(model);
+        return SetProductAdministrator(inDto);
     }
 
     [Update("security/administrator")]
     [Consumes("application/x-www-form-urlencoded")]
-    public object SetProductAdministratorFromForm([FromForm] SecurityRequestsDto model)
+    public object SetProductAdministratorFromForm([FromForm] SecurityRequestsDto inDto)
     {
-        return SetProductAdministrator(model);
+        return SetProductAdministrator(inDto);
     }
 
-    private object SetProductAdministrator(SecurityRequestsDto model)
+    private object SetProductAdministrator(SecurityRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        _webItemSecurity.SetProductAdministrator(model.ProductId, model.UserId, model.Administrator);
+        _webItemSecurity.SetProductAdministrator(inDto.ProductId, inDto.UserId, inDto.Administrator);
 
-        var admin = _userManager.GetUsers(model.UserId);
+        var admin = _userManager.GetUsers(inDto.UserId);
 
-        if (model.ProductId == Guid.Empty)
+        if (inDto.ProductId == Guid.Empty)
         {
-            var messageAction = model.Administrator ? MessageAction.AdministratorOpenedFullAccess : MessageAction.AdministratorDeleted;
+            var messageAction = inDto.Administrator ? MessageAction.AdministratorOpenedFullAccess : MessageAction.AdministratorDeleted;
             _messageService.Send(messageAction, _messageTarget.Create(admin.Id), admin.DisplayUserName(false, _displayUserSettingsHelper));
         }
         else
         {
-            var messageAction = model.Administrator ? MessageAction.ProductAddedAdministrator : MessageAction.ProductDeletedAdministrator;
-            _messageService.Send(messageAction, _messageTarget.Create(admin.Id), GetProductName(model.ProductId), admin.DisplayUserName(false, _displayUserSettingsHelper));
+            var messageAction = inDto.Administrator ? MessageAction.ProductAddedAdministrator : MessageAction.ProductDeletedAdministrator;
+            _messageService.Send(messageAction, _messageTarget.Create(admin.Id), GetProductName(inDto.ProductId), admin.DisplayUserName(false, _displayUserSettingsHelper));
         }
 
-        return new { model.ProductId, model.UserId, model.Administrator };
+        return new { inDto.ProductId, inDto.UserId, inDto.Administrator };
     }
 }

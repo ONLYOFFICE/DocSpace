@@ -113,29 +113,29 @@ public class AuthenticationController : ControllerBase
     }
 
     [Create("{code}", false, order: int.MaxValue)]
-    public AuthenticationTokenDto AuthenticateMeFromBodyWithCode([FromBody] AuthRequestsDto auth)
+    public AuthenticationTokenDto AuthenticateMeFromBodyWithCode([FromBody] AuthRequestsDto inDto)
     {
-        return AuthenticateMeWithCode(auth);
+        return AuthenticateMeWithCode(inDto);
     }
 
     [Create("{code}", false, order: int.MaxValue)]
     [Consumes("application/x-www-form-urlencoded")]
-    public AuthenticationTokenDto AuthenticateMeFromFormWithCode([FromForm] AuthRequestsDto auth)
+    public AuthenticationTokenDto AuthenticateMeFromFormWithCode([FromForm] AuthRequestsDto inDto)
     {
-        return AuthenticateMeWithCode(auth);
+        return AuthenticateMeWithCode(inDto);
     }
 
     [Create(false)]
-    public Task<AuthenticationTokenDto> AuthenticateMeFromBodyAsync([FromBody] AuthRequestsDto auth)
+    public Task<AuthenticationTokenDto> AuthenticateMeFromBodyAsync([FromBody] AuthRequestsDto inDto)
     {
-        return AuthenticateMeAsync(auth);
+        return AuthenticateMeAsync(inDto);
     }
 
     [Create(false)]
     [Consumes("application/x-www-form-urlencoded")]
-    public Task<AuthenticationTokenDto> AuthenticateMeFromFormAsync([FromForm] AuthRequestsDto auth)
+    public Task<AuthenticationTokenDto> AuthenticateMeFromFormAsync([FromForm] AuthRequestsDto inDto)
     {
-        return AuthenticateMeAsync(auth);
+        return AuthenticateMeAsync(inDto);
     }
 
     [Create("logout")]
@@ -152,64 +152,64 @@ public class AuthenticationController : ControllerBase
     }
 
     [Create("confirm", false)]
-    public ValidationResult CheckConfirmFromBody([FromBody] EmailValidationKeyModel model)
+    public ValidationResult CheckConfirmFromBody([FromBody] EmailValidationKeyModel inDto)
     {
-        return _emailValidationKeyModelHelper.Validate(model);
+        return _emailValidationKeyModelHelper.Validate(inDto);
     }
 
     [Create("confirm", false)]
     [Consumes("application/x-www-form-urlencoded")]
-    public ValidationResult CheckConfirmFromForm([FromForm] EmailValidationKeyModel model)
+    public ValidationResult CheckConfirmFromForm([FromForm] EmailValidationKeyModel inDto)
     {
-        return _emailValidationKeyModelHelper.Validate(model);
+        return _emailValidationKeyModelHelper.Validate(inDto);
     }
 
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PhoneActivation")]
     [Create("setphone", false)]
-    public Task<AuthenticationTokenDto> SaveMobilePhoneFromBodyAsync([FromBody] MobileRequestsDto model)
+    public Task<AuthenticationTokenDto> SaveMobilePhoneFromBodyAsync([FromBody] MobileRequestsDto inDto)
     {
-        return SaveMobilePhoneAsync(model);
+        return SaveMobilePhoneAsync(inDto);
     }
 
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PhoneActivation")]
     [Create("setphone", false)]
     [Consumes("application/x-www-form-urlencoded")]
-    public Task<AuthenticationTokenDto> SaveMobilePhoneFromFormAsync([FromForm] MobileRequestsDto model)
+    public Task<AuthenticationTokenDto> SaveMobilePhoneFromFormAsync([FromForm] MobileRequestsDto inDto)
     {
-        return SaveMobilePhoneAsync(model);
+        return SaveMobilePhoneAsync(inDto);
     }
 
-    private async Task<AuthenticationTokenDto> SaveMobilePhoneAsync(MobileRequestsDto model)
+    private async Task<AuthenticationTokenDto> SaveMobilePhoneAsync(MobileRequestsDto inDto)
     {
         _apiContext.AuthByClaim();
         var user = _userManager.GetUsers(_authContext.CurrentAccount.ID);
-        model.MobilePhone = await _smsManager.SaveMobilePhoneAsync(user, model.MobilePhone);
-        _messageService.Send(MessageAction.UserUpdatedMobileNumber, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper), model.MobilePhone);
+        inDto.MobilePhone = await _smsManager.SaveMobilePhoneAsync(user, inDto.MobilePhone);
+        _messageService.Send(MessageAction.UserUpdatedMobileNumber, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper), inDto.MobilePhone);
 
         return new AuthenticationTokenDto
         {
             Sms = true,
-            PhoneNoise = SmsSender.BuildPhoneNoise(model.MobilePhone),
+            PhoneNoise = SmsSender.BuildPhoneNoise(inDto.MobilePhone),
             Expires = new ApiDateTime(_tenantManager, _timeZoneConverter, DateTime.UtcNow.Add(_smsKeyStorage.StoreInterval))
         };
     }
 
     [Create(@"sendsms", false)]
-    public Task<AuthenticationTokenDto> SendSmsCodeFromBodyAsync([FromBody] AuthRequestsDto model)
+    public Task<AuthenticationTokenDto> SendSmsCodeFromBodyAsync([FromBody] AuthRequestsDto inDto)
     {
-        return SendSmsCodeAsync(model);
+        return SendSmsCodeAsync(inDto);
     }
 
     [Create(@"sendsms", false)]
     [Consumes("application/x-www-form-urlencoded")]
-    public Task<AuthenticationTokenDto> SendSmsCodeFromFormAsync([FromForm] AuthRequestsDto model)
+    public Task<AuthenticationTokenDto> SendSmsCodeFromFormAsync([FromForm] AuthRequestsDto inDto)
     {
-        return SendSmsCodeAsync(model);
+        return SendSmsCodeAsync(inDto);
     }
 
-    private async Task<AuthenticationTokenDto> SendSmsCodeAsync(AuthRequestsDto model)
+    private async Task<AuthenticationTokenDto> SendSmsCodeAsync(AuthRequestsDto inDto)
     {
-        var user = GetUser(model, out _);
+        var user = GetUser(inDto, out _);
         await _smsManager.PutAuthCodeAsync(user, true);
 
         return new AuthenticationTokenDto
@@ -220,10 +220,10 @@ public class AuthenticationController : ControllerBase
         };
     }
 
-    private async Task<AuthenticationTokenDto> AuthenticateMeAsync(AuthRequestsDto auth)
+    private async Task<AuthenticationTokenDto> AuthenticateMeAsync(AuthRequestsDto inDto)
     {
         bool viaEmail;
-        var user = GetUser(auth, out viaEmail);
+        var user = GetUser(inDto, out viaEmail);
 
         if (_studioSmsNotificationSettingsHelper.IsVisibleSettings() && _studioSmsNotificationSettingsHelper.Enable)
         {
@@ -265,7 +265,7 @@ public class AuthenticationController : ControllerBase
         try
         {
             var token = _securityContext.AuthenticateMe(user.Id);
-            _cookiesManager.SetCookies(CookiesType.AuthKey, token, auth.Session);
+            _cookiesManager.SetCookies(CookiesType.AuthKey, token, inDto.Session);
 
             _messageService.Send(viaEmail ? MessageAction.LoginSuccessViaApi : MessageAction.LoginSuccessViaApiSocialAccount);
 
@@ -289,10 +289,10 @@ public class AuthenticationController : ControllerBase
         }
     }
 
-    private AuthenticationTokenDto AuthenticateMeWithCode(AuthRequestsDto auth)
+    private AuthenticationTokenDto AuthenticateMeWithCode(AuthRequestsDto inDto)
     {
         var tenant = _tenantManager.GetCurrentTenant().Id;
-        var user = GetUser(auth, out _);
+        var user = GetUser(inDto, out _);
 
         var sms = false;
         try
@@ -300,11 +300,11 @@ public class AuthenticationController : ControllerBase
             if (_studioSmsNotificationSettingsHelper.IsVisibleSettings() && _studioSmsNotificationSettingsHelper.Enable)
             {
                 sms = true;
-                _smsManager.ValidateSmsCode(user, auth.Code);
+                _smsManager.ValidateSmsCode(user, inDto.Code);
             }
             else if (TfaAppAuthSettings.IsVisibleSettings && _settingsManager.Load<TfaAppAuthSettings>().EnableSetting)
             {
-                if (_tfaManager.ValidateAuthCode(user, auth.Code))
+                if (_tfaManager.ValidateAuthCode(user, inDto.Code))
                 {
                     _messageService.Send(MessageAction.UserConnectedTfaApp, _messageTarget.Create(user.Id));
                 }
@@ -352,84 +352,84 @@ public class AuthenticationController : ControllerBase
         }
     }
 
-    private UserInfo GetUser(AuthRequestsDto memberModel, out bool viaEmail)
+    private UserInfo GetUser(AuthRequestsDto inDto, out bool viaEmail)
     {
         viaEmail = true;
         var action = MessageAction.LoginFailViaApi;
         UserInfo user;
         try
         {
-            if ((string.IsNullOrEmpty(memberModel.Provider) && string.IsNullOrEmpty(memberModel.SerializedProfile)) || memberModel.Provider == "email")
+            if ((string.IsNullOrEmpty(inDto.Provider) && string.IsNullOrEmpty(inDto.SerializedProfile)) || inDto.Provider == "email")
             {
-                memberModel.UserName.ThrowIfNull(new ArgumentException(@"userName empty", "userName"));
-                if (!string.IsNullOrEmpty(memberModel.Password))
+                inDto.UserName.ThrowIfNull(new ArgumentException(@"userName empty", "userName"));
+                if (!string.IsNullOrEmpty(inDto.Password))
                 {
-                    memberModel.Password.ThrowIfNull(new ArgumentException(@"password empty", "password"));
+                    inDto.Password.ThrowIfNull(new ArgumentException(@"password empty", "password"));
                 }
                 else
                 {
-                    memberModel.PasswordHash.ThrowIfNull(new ArgumentException(@"PasswordHash empty", "PasswordHash"));
+                    inDto.PasswordHash.ThrowIfNull(new ArgumentException(@"PasswordHash empty", "PasswordHash"));
                 }
                 int counter;
-                int.TryParse(_cache.Get<string>("loginsec/" + memberModel.UserName), out counter);
-                if (++counter > _setupInfo.LoginThreshold && !SetupInfo.IsSecretEmail(memberModel.UserName))
+                int.TryParse(_cache.Get<string>("loginsec/" + inDto.UserName), out counter);
+                if (++counter > _setupInfo.LoginThreshold && !SetupInfo.IsSecretEmail(inDto.UserName))
                 {
                     throw new BruteForceCredentialException();
                 }
-                _cache.Insert("loginsec/" + memberModel.UserName, counter.ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)));
+                _cache.Insert("loginsec/" + inDto.UserName, counter.ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)));
 
 
-                memberModel.PasswordHash = (memberModel.PasswordHash ?? "").Trim();
+                inDto.PasswordHash = (inDto.PasswordHash ?? "").Trim();
 
-                if (string.IsNullOrEmpty(memberModel.PasswordHash))
+                if (string.IsNullOrEmpty(inDto.PasswordHash))
                 {
-                    memberModel.Password = (memberModel.Password ?? "").Trim();
+                    inDto.Password = (inDto.Password ?? "").Trim();
 
-                    if (!string.IsNullOrEmpty(memberModel.Password))
+                    if (!string.IsNullOrEmpty(inDto.Password))
                     {
-                        memberModel.PasswordHash = _passwordHasher.GetClientPassword(memberModel.Password);
+                        inDto.PasswordHash = _passwordHasher.GetClientPassword(inDto.Password);
                     }
                 }
 
                 user = _userManager.GetUsersByPasswordHash(
                     _tenantManager.GetCurrentTenant().Id,
-                    memberModel.UserName,
-                    memberModel.PasswordHash);
+                    inDto.UserName,
+                    inDto.PasswordHash);
 
                 if (user == null || !_userManager.UserExists(user))
                 {
                     throw new Exception("user not found");
                 }
 
-                _cache.Insert("loginsec/" + memberModel.UserName, (--counter).ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)));
+                _cache.Insert("loginsec/" + inDto.UserName, (--counter).ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)));
             }
             else
             {
                 viaEmail = false;
                 action = MessageAction.LoginFailViaApiSocialAccount;
                 LoginProfile thirdPartyProfile;
-                if (!string.IsNullOrEmpty(memberModel.SerializedProfile))
+                if (!string.IsNullOrEmpty(inDto.SerializedProfile))
                 {
-                    thirdPartyProfile = new LoginProfile(_signature, _instanceCrypto, memberModel.SerializedProfile);
+                    thirdPartyProfile = new LoginProfile(_signature, _instanceCrypto, inDto.SerializedProfile);
                 }
                 else
                 {
-                    thirdPartyProfile = _providerManager.GetLoginProfile(memberModel.Provider, memberModel.AccessToken);
+                    thirdPartyProfile = _providerManager.GetLoginProfile(inDto.Provider, inDto.AccessToken);
                 }
 
-                memberModel.UserName = thirdPartyProfile.EMail;
+                inDto.UserName = thirdPartyProfile.EMail;
 
                 user = GetUserByThirdParty(thirdPartyProfile);
             }
         }
         catch (BruteForceCredentialException)
         {
-            _messageService.Send(!string.IsNullOrEmpty(memberModel.UserName) ? memberModel.UserName : AuditResource.EmailNotSpecified, MessageAction.LoginFailBruteForce);
+            _messageService.Send(!string.IsNullOrEmpty(inDto.UserName) ? inDto.UserName : AuditResource.EmailNotSpecified, MessageAction.LoginFailBruteForce);
             throw new AuthenticationException("Login Fail. Too many attempts");
         }
         catch
         {
-            _messageService.Send(!string.IsNullOrEmpty(memberModel.UserName) ? memberModel.UserName : AuditResource.EmailNotSpecified, action);
+            _messageService.Send(!string.IsNullOrEmpty(inDto.UserName) ? inDto.UserName : AuditResource.EmailNotSpecified, action);
             throw new AuthenticationException("User authentication failed");
         }
 

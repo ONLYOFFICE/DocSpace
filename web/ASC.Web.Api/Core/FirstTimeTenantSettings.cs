@@ -77,11 +77,11 @@ public class FirstTimeTenantSettings
         _clientFactory = clientFactory;
     }
 
-    public WizardSettings SaveData(WizardRequestsDto wizardModel)
+    public WizardSettings SaveData(WizardRequestsDto inDto)
     {
         try
         {
-            var (email, passwordHash, lng, timeZone, promocode, amiid, subscribeFromSite) = wizardModel;
+            var (email, passwordHash, lng, timeZone, promocode, amiid, subscribeFromSite) = inDto;
 
             var tenant = _tenantManager.GetCurrentTenant();
             var settings = _settingsManager.Load<WizardSettings>();

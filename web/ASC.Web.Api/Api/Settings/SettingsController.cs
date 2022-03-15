@@ -174,26 +174,26 @@ public class SettingsController: BaseSettingsController
     }
 
     [Create("maildomainsettings")]
-    public object SaveMailDomainSettingsFromBody([FromBody] MailDomainSettingsRequestsDto model)
+    public object SaveMailDomainSettingsFromBody([FromBody] MailDomainSettingsRequestsDto inDto)
     {
-        return SaveMailDomainSettings(model);
+        return SaveMailDomainSettings(inDto);
     }
 
     [Create("maildomainsettings")]
     [Consumes("application/x-www-form-urlencoded")]
-    public object SaveMailDomainSettingsFromForm([FromForm] MailDomainSettingsRequestsDto model)
+    public object SaveMailDomainSettingsFromForm([FromForm] MailDomainSettingsRequestsDto inDto)
     {
-        return SaveMailDomainSettings(model);
+        return SaveMailDomainSettings(inDto);
     }
 
-    private object SaveMailDomainSettings(MailDomainSettingsRequestsDto model)
+    private object SaveMailDomainSettings(MailDomainSettingsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        if (model.Type == TenantTrustedDomainsType.Custom)
+        if (inDto.Type == TenantTrustedDomainsType.Custom)
         {
             Tenant.TrustedDomains.Clear();
-            foreach (var d in model.Domains.Select(domain => (domain ?? "").Trim().ToLower()))
+            foreach (var d in inDto.Domains.Select(domain => (domain ?? "").Trim().ToLower()))
             {
                 if (!(!string.IsNullOrEmpty(d) && new Regex("^[a-z0-9]([a-z0-9-.]){1,98}[a-z0-9]$").IsMatch(d)))
                     return Resource.ErrorNotCorrectTrustedDomain;
@@ -202,12 +202,12 @@ public class SettingsController: BaseSettingsController
             }
 
             if (Tenant.TrustedDomains.Count == 0)
-                model.Type = TenantTrustedDomainsType.None;
+                inDto.Type = TenantTrustedDomainsType.None;
         }
 
-        Tenant.TrustedDomainsType = model.Type;
+        Tenant.TrustedDomainsType = inDto.Type;
 
-        _settingsManager.Save(new StudioTrustedDomainSettings { InviteUsersAsVisitors = model.InviteUsersAsVisitors });
+        _settingsManager.Save(new StudioTrustedDomainSettings { InviteUsersAsVisitors = inDto.InviteUsersAsVisitors });
 
         _tenantManager.SaveTenant(Tenant);
 
@@ -304,17 +304,17 @@ public class SettingsController: BaseSettingsController
 
     [Update("wizard/complete", Check = false)]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
-    public WizardSettings CompleteWizardFromBody([FromBody] WizardRequestsDto wizardModel)
+    public WizardSettings CompleteWizardFromBody([FromBody] WizardRequestsDto inDto)
     {
-        return CompleteWizard(wizardModel);
+        return CompleteWizard(inDto);
     }
 
     [Update("wizard/complete", Check = false)]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
     [Consumes("application/x-www-form-urlencoded")]
-    public WizardSettings CompleteWizardFromForm([FromForm] WizardRequestsDto wizardModel)
+    public WizardSettings CompleteWizardFromForm([FromForm] WizardRequestsDto inDto)
     {
-        return CompleteWizard(wizardModel);
+        return CompleteWizard(inDto);
     }
 
     private WizardSettings CompleteWizard(WizardRequestsDto wizardModel)
@@ -343,43 +343,43 @@ public class SettingsController: BaseSettingsController
 
     ///<visible>false</visible>
     [Update("colortheme")]
-    public void SaveColorThemeFromBody([FromBody] SettingsRequestsDto model)
+    public void SaveColorThemeFromBody([FromBody] SettingsRequestsDto inDto)
     {
-        SaveColorTheme(model);
+        SaveColorTheme(inDto);
     }
 
     [Update("colortheme")]
     [Consumes("application/x-www-form-urlencoded")]
-    public void SaveColorThemeFromForm([FromForm] SettingsRequestsDto model)
+    public void SaveColorThemeFromForm([FromForm] SettingsRequestsDto inDto)
     {
-        SaveColorTheme(model);
+        SaveColorTheme(inDto);
     }
 
-    private void SaveColorTheme(SettingsRequestsDto model)
+    private void SaveColorTheme(SettingsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-        _colorThemesSettingsHelper.SaveColorTheme(model.Theme);
+        _colorThemesSettingsHelper.SaveColorTheme(inDto.Theme);
         _messageService.Send(MessageAction.ColorThemeChanged);
     }
     ///<visible>false</visible>
     [Update("timeandlanguage")]
-    public object TimaAndLanguageFromBody([FromBody] SettingsRequestsDto model)
+    public object TimaAndLanguageFromBody([FromBody] SettingsRequestsDto inDto)
     {
-        return TimaAndLanguage(model);
+        return TimaAndLanguage(inDto);
     }
 
     [Update("timeandlanguage")]
     [Consumes("application/x-www-form-urlencoded")]
-    public object TimaAndLanguageFromForm([FromForm] SettingsRequestsDto model)
+    public object TimaAndLanguageFromForm([FromForm] SettingsRequestsDto inDto)
     {
-        return TimaAndLanguage(model);
+        return TimaAndLanguage(inDto);
     }
 
-    private object TimaAndLanguage(SettingsRequestsDto model)
+    private object TimaAndLanguage(SettingsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        var culture = CultureInfo.GetCultureInfo(model.Lng);
+        var culture = CultureInfo.GetCultureInfo(inDto.Lng);
 
         var changelng = false;
         if (_setupInfo.EnabledCultures.Find(c => string.Equals(c.Name, culture.Name, StringComparison.InvariantCultureIgnoreCase)) != null)
@@ -397,7 +397,7 @@ public class SettingsController: BaseSettingsController
         {
             timeZones.Add(TimeZoneInfo.Utc);
         }
-        Tenant.TimeZone = timeZones.FirstOrDefault(tz => tz.Id == model.TimeZoneID)?.Id ?? TimeZoneInfo.Utc.Id;
+        Tenant.TimeZone = timeZones.FirstOrDefault(tz => tz.Id == inDto.TimeZoneID)?.Id ?? TimeZoneInfo.Utc.Id;
 
         _tenantManager.SaveTenant(Tenant);
 
@@ -418,23 +418,23 @@ public class SettingsController: BaseSettingsController
 
     ///<visible>false</visible>
     [Update("defaultpage")]
-    public object SaveDefaultPageSettingsFromBody([FromBody] SettingsRequestsDto model)
+    public object SaveDefaultPageSettingsFromBody([FromBody] SettingsRequestsDto inDto)
     {
-        return SaveDefaultPageSettings(model);
+        return SaveDefaultPageSettings(inDto);
     }
 
     [Update("defaultpage")]
     [Consumes("application/x-www-form-urlencoded")]
-    public object SaveDefaultPageSettingsFromForm([FromForm] SettingsRequestsDto model)
+    public object SaveDefaultPageSettingsFromForm([FromForm] SettingsRequestsDto inDto)
     {
-        return SaveDefaultPageSettings(model);
+        return SaveDefaultPageSettings(inDto);
     }
 
-    private object SaveDefaultPageSettings(SettingsRequestsDto model)
+    private object SaveDefaultPageSettings(SettingsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        _settingsManager.Save(new StudioDefaultPageSettings { DefaultProductID = model.DefaultProductID });
+        _settingsManager.Save(new StudioDefaultPageSettings { DefaultProductID = inDto.DefaultProductID });
 
         _messageService.Send(MessageAction.DefaultStartPageSettingsUpdated);
 
@@ -568,19 +568,19 @@ public class SettingsController: BaseSettingsController
     }
 
     [Create("authservice")]
-    public bool SaveAuthKeysFromBody([FromBody] AuthServiceRequestsDto model)
+    public bool SaveAuthKeysFromBody([FromBody] AuthServiceRequestsDto inDto)
     {
-        return SaveAuthKeys(model);
+        return SaveAuthKeys(inDto);
     }
 
     [Create("authservice")]
     [Consumes("application/x-www-form-urlencoded")]
-    public bool SaveAuthKeysFromForm([FromForm] AuthServiceRequestsDto model)
+    public bool SaveAuthKeysFromForm([FromForm] AuthServiceRequestsDto inDto)
     {
-        return SaveAuthKeys(model);
+        return SaveAuthKeys(inDto);
     }
 
-    private bool SaveAuthKeys(AuthServiceRequestsDto model)
+    private bool SaveAuthKeys(AuthServiceRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -590,7 +590,7 @@ public class SettingsController: BaseSettingsController
             throw new BillingException(Resource.ErrorNotAllowedOption, "ThirdPartyAuthorization");
 
         var changed = false;
-        var consumer = _consumerFactory.GetByKey<Consumer>(model.Name);
+        var consumer = _consumerFactory.GetByKey<Consumer>(inDto.Name);
 
         var validateKeyProvider = consumer as IValidateKeysProvider;
 
@@ -613,14 +613,14 @@ public class SettingsController: BaseSettingsController
             }
         }
 
-        if (model.Props.All(r => string.IsNullOrEmpty(r.Value)))
+        if (inDto.Props.All(r => string.IsNullOrEmpty(r.Value)))
         {
             consumer.Clear();
             changed = true;
         }
         else
         {
-            foreach (var authKey in model.Props.Where(authKey => consumer[authKey.Name] != authKey.Value))
+            foreach (var authKey in inDto.Props.Where(authKey => consumer[authKey.Name] != authKey.Value))
             {
                 consumer[authKey.Name] = authKey.Value;
                 changed = true;

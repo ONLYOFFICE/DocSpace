@@ -29,42 +29,42 @@ public class IpRestrictionsController: BaseSettingsController
     }
 
     [Update("iprestrictions")]
-    public IEnumerable<string> SaveIpRestrictionsFromBody([FromBody] IpRestrictionsRequestsDto model)
+    public IEnumerable<string> SaveIpRestrictionsFromBody([FromBody] IpRestrictionsRequestsDto inDto)
     {
-        return SaveIpRestrictions(model);
+        return SaveIpRestrictions(inDto);
     }
 
     [Update("iprestrictions")]
     [Consumes("application/x-www-form-urlencoded")]
-    public IEnumerable<string> SaveIpRestrictionsFromForm([FromForm] IpRestrictionsRequestsDto model)
+    public IEnumerable<string> SaveIpRestrictionsFromForm([FromForm] IpRestrictionsRequestsDto inDto)
     {
-        return SaveIpRestrictions(model);
+        return SaveIpRestrictions(inDto);
     }
 
-    private IEnumerable<string> SaveIpRestrictions(IpRestrictionsRequestsDto model)
+    private IEnumerable<string> SaveIpRestrictions(IpRestrictionsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-        return _iPRestrictionsService.Save(model.Ips, Tenant.Id);
+        return _iPRestrictionsService.Save(inDto.Ips, Tenant.Id);
     }
 
     [Update("iprestrictions/settings")]
-    public IPRestrictionsSettings UpdateIpRestrictionsSettingsFromBody([FromBody] IpRestrictionsRequestsDto model)
+    public IPRestrictionsSettings UpdateIpRestrictionsSettingsFromBody([FromBody] IpRestrictionsRequestsDto inDto)
     {
-        return UpdateIpRestrictionsSettings(model);
+        return UpdateIpRestrictionsSettings(inDto);
     }
 
     [Update("iprestrictions/settings")]
     [Consumes("application/x-www-form-urlencoded")]
-    public IPRestrictionsSettings UpdateIpRestrictionsSettingsFromForm([FromForm] IpRestrictionsRequestsDto model)
+    public IPRestrictionsSettings UpdateIpRestrictionsSettingsFromForm([FromForm] IpRestrictionsRequestsDto inDto)
     {
-        return UpdateIpRestrictionsSettings(model);
+        return UpdateIpRestrictionsSettings(inDto);
     }
 
-    private IPRestrictionsSettings UpdateIpRestrictionsSettings(IpRestrictionsRequestsDto model)
+    private IPRestrictionsSettings UpdateIpRestrictionsSettings(IpRestrictionsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        var settings = new IPRestrictionsSettings { Enable = model.Enable };
+        var settings = new IPRestrictionsSettings { Enable = inDto.Enable };
         _settingsManager.Save(settings);
 
         return settings;

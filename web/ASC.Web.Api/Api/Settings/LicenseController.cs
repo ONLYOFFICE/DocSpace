@@ -136,17 +136,17 @@ public class LicenseController: BaseSettingsController
 
     [Create("license", Check = false)]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard, Administrators")]
-    public object UploadLicense([FromForm] UploadLicenseRequestsDto model)
+    public object UploadLicense([FromForm] UploadLicenseRequestsDto inDto)
     {
         try
         {
             _apiContext.AuthByClaim();
             if (!_authContext.IsAuthenticated && _settingsManager.Load<WizardSettings>().Completed) throw new SecurityException(Resource.PortalSecurity);
-            if (!model.Files.Any()) throw new Exception(Resource.ErrorEmptyUploadFileSelected);
+            if (!inDto.Files.Any()) throw new Exception(Resource.ErrorEmptyUploadFileSelected);
 
 
 
-            var licenseFile = model.Files.First();
+            var licenseFile = inDto.Files.First();
             var dueDate = _licenseReader.SaveLicenseTemp(licenseFile.OpenReadStream());
 
             return dueDate >= DateTime.UtcNow.Date

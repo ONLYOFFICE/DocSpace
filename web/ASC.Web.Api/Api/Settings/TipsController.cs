@@ -31,24 +31,24 @@ public class TipsController: BaseSettingsController
     }
 
     [Update("tips")]
-    public TipsSettings UpdateTipsSettingsFromBody([FromBody] SettingsRequestsDto model)
+    public TipsSettings UpdateTipsSettingsFromBody([FromBody] SettingsRequestsDto inDto)
     {
-        return UpdateTipsSettings(model);
+        return UpdateTipsSettings(inDto);
     }
 
     [Update("tips")]
     [Consumes("application/x-www-form-urlencoded")]
-    public TipsSettings UpdateTipsSettingsFromForm([FromForm] SettingsRequestsDto model)
+    public TipsSettings UpdateTipsSettingsFromForm([FromForm] SettingsRequestsDto inDto)
     {
-        return UpdateTipsSettings(model);
+        return UpdateTipsSettings(inDto);
     }
 
-    private TipsSettings UpdateTipsSettings(SettingsRequestsDto model)
+    private TipsSettings UpdateTipsSettings(SettingsRequestsDto inDto)
     {
-        var settings = new TipsSettings { Show = model.Show };
+        var settings = new TipsSettings { Show = inDto.Show };
         _settingsManager.SaveForCurrentUser(settings);
 
-        if (!model.Show && !string.IsNullOrEmpty(_setupInfo.TipsAddress))
+        if (!inDto.Show && !string.IsNullOrEmpty(_setupInfo.TipsAddress))
         {
             try
             {

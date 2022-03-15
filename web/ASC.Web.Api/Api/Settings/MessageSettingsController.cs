@@ -45,23 +45,23 @@ public class MessageSettingsController: BaseSettingsController
     }
 
     [Create("messagesettings")]
-    public object EnableAdminMessageSettingsFromBody([FromBody] AdminMessageSettingsRequestsDto model)
+    public object EnableAdminMessageSettingsFromBody([FromBody] AdminMessageSettingsRequestsDto inDto)
     {
-        return EnableAdminMessageSettings(model);
+        return EnableAdminMessageSettings(inDto);
     }
 
     [Create("messagesettings")]
     [Consumes("application/x-www-form-urlencoded")]
-    public object EnableAdminMessageSettingsFromForm([FromForm] AdminMessageSettingsRequestsDto model)
+    public object EnableAdminMessageSettingsFromForm([FromForm] AdminMessageSettingsRequestsDto inDto)
     {
-        return EnableAdminMessageSettings(model);
+        return EnableAdminMessageSettings(inDto);
     }
 
-    private object EnableAdminMessageSettings(AdminMessageSettingsRequestsDto model)
+    private object EnableAdminMessageSettings(AdminMessageSettingsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        _settingsManager.Save(new StudioAdminMessageSettings { Enable = model.TurnOn });
+        _settingsManager.Save(new StudioAdminMessageSettings { Enable = inDto.TurnOn });
 
         _messageService.Send(MessageAction.AdministratorMessageSettingsUpdated);
 
@@ -70,20 +70,20 @@ public class MessageSettingsController: BaseSettingsController
 
     [AllowAnonymous]
     [Create("sendadmmail")]
-    public object SendAdmMailFromBody([FromBody] AdminMessageSettingsRequestsDto model)
+    public object SendAdmMailFromBody([FromBody] AdminMessageSettingsRequestsDto inDto)
     {
-        return SendAdmMail(model);
+        return SendAdmMail(inDto);
     }
 
     [AllowAnonymous]
     [Create("sendadmmail")]
     [Consumes("application/x-www-form-urlencoded")]
-    public object SendAdmMailFromForm([FromForm] AdminMessageSettingsRequestsDto model)
+    public object SendAdmMailFromForm([FromForm] AdminMessageSettingsRequestsDto inDto)
     {
-        return SendAdmMail(model);
+        return SendAdmMail(inDto);
     }
 
-    private object SendAdmMail(AdminMessageSettingsRequestsDto model)
+    private object SendAdmMail(AdminMessageSettingsRequestsDto inDto)
     {
         var studioAdminMessageSettings = _settingsManager.Load<StudioAdminMessageSettings>();
         var enableAdmMess = studioAdminMessageSettings.Enable || _tenantExtra.IsNotPaid();
@@ -91,15 +91,15 @@ public class MessageSettingsController: BaseSettingsController
         if (!enableAdmMess)
             throw new MethodAccessException("Method not available");
 
-        if (!model.Email.TestEmailRegex())
+        if (!inDto.Email.TestEmailRegex())
             throw new Exception(Resource.ErrorNotCorrectEmail);
 
-        if (string.IsNullOrEmpty(model.Message))
+        if (string.IsNullOrEmpty(inDto.Message))
             throw new Exception(Resource.ErrorEmptyMessage);
 
         CheckCache("sendadmmail");
 
-        _studioNotifyService.SendMsgToAdminFromNotAuthUser(model.Email, model.Message);
+        _studioNotifyService.SendMsgToAdminFromNotAuthUser(inDto.Email, inDto.Message);
         _messageService.Send(MessageAction.ContactAdminMailSent);
 
         return Resource.AdminMessageSent;
@@ -107,24 +107,24 @@ public class MessageSettingsController: BaseSettingsController
 
     [AllowAnonymous]
     [Create("sendjoininvite")]
-    public object SendJoinInviteMailFromBody([FromBody] AdminMessageSettingsRequestsDto model)
+    public object SendJoinInviteMailFromBody([FromBody] AdminMessageSettingsRequestsDto inDto)
     {
-        return SendJoinInviteMail(model);
+        return SendJoinInviteMail(inDto);
     }
 
     [AllowAnonymous]
     [Create("sendjoininvite")]
     [Consumes("application/x-www-form-urlencoded")]
-    public object SendJoinInviteMailFromForm([FromForm] AdminMessageSettingsRequestsDto model)
+    public object SendJoinInviteMailFromForm([FromForm] AdminMessageSettingsRequestsDto inDto)
     {
-        return SendJoinInviteMail(model);
+        return SendJoinInviteMail(inDto);
     }
 
-    private object SendJoinInviteMail(AdminMessageSettingsRequestsDto model)
+    private object SendJoinInviteMail(AdminMessageSettingsRequestsDto inDto)
     {
         try
         {
-            var email = model.Email;
+            var email = inDto.Email;
             if (!(
                 (Tenant.TrustedDomainsType == TenantTrustedDomainsType.Custom &&
                 Tenant.TrustedDomains.Count > 0) ||

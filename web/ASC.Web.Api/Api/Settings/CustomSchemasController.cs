@@ -50,33 +50,33 @@ public class CustomSchemasController : BaseSettingsController
     }
 
     [Create("customschemas")]
-    public SchemaRequestsDto SaveNamingSettings(SchemaRequestsDto model)
+    public SchemaRequestsDto SaveNamingSettings(SchemaRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        _customNamingPeople.SetPeopleNames(model.Id);
+        _customNamingPeople.SetPeopleNames(inDto.Id);
 
         _tenantManager.SaveTenant(_tenantManager.GetCurrentTenant());
 
         _messageService.Send(MessageAction.TeamTemplateChanged);
 
-        return PeopleSchema(model.Id);
+        return PeopleSchema(inDto.Id);
     }
 
     [Update("customschemas")]
-    public SchemaRequestsDto SaveCustomNamingSettings(SchemaRequestsDto model)
+    public SchemaRequestsDto SaveCustomNamingSettings(SchemaRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        var usrCaption = (model.UserCaption ?? "").Trim();
-        var usrsCaption = (model.UsersCaption ?? "").Trim();
-        var grpCaption = (model.GroupCaption ?? "").Trim();
-        var grpsCaption = (model.GroupsCaption ?? "").Trim();
-        var usrStatusCaption = (model.UserPostCaption ?? "").Trim();
-        var regDateCaption = (model.RegDateCaption ?? "").Trim();
-        var grpHeadCaption = (model.GroupHeadCaption ?? "").Trim();
-        var guestCaption = (model.GuestCaption ?? "").Trim();
-        var guestsCaption = (model.GuestsCaption ?? "").Trim();
+        var usrCaption = (inDto.UserCaption ?? "").Trim();
+        var usrsCaption = (inDto.UsersCaption ?? "").Trim();
+        var grpCaption = (inDto.GroupCaption ?? "").Trim();
+        var grpsCaption = (inDto.GroupsCaption ?? "").Trim();
+        var usrStatusCaption = (inDto.UserPostCaption ?? "").Trim();
+        var regDateCaption = (inDto.RegDateCaption ?? "").Trim();
+        var grpHeadCaption = (inDto.GroupHeadCaption ?? "").Trim();
+        var guestCaption = (inDto.GuestCaption ?? "").Trim();
+        var guestsCaption = (inDto.GuestsCaption ?? "").Trim();
 
         if (string.IsNullOrEmpty(usrCaption)
             || string.IsNullOrEmpty(usrsCaption)

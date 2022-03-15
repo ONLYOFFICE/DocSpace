@@ -40,25 +40,25 @@ public class OwnerController : BaseSettingsController
     }
 
     [Create("owner")]
-    public object SendOwnerChangeInstructionsFromBody([FromBody] SettingsRequestsDto model)
+    public object SendOwnerChangeInstructionsFromBody([FromBody] SettingsRequestsDto inDto)
     {
-        return SendOwnerChangeInstructions(model);
+        return SendOwnerChangeInstructions(inDto);
     }
 
     [Create("owner")]
     [Consumes("application/x-www-form-urlencoded")]
-    public object SendOwnerChangeInstructionsFromForm([FromForm] SettingsRequestsDto model)
+    public object SendOwnerChangeInstructionsFromForm([FromForm] SettingsRequestsDto inDto)
     {
-        return SendOwnerChangeInstructions(model);
+        return SendOwnerChangeInstructions(inDto);
     }
 
-    private object SendOwnerChangeInstructions(SettingsRequestsDto model)
+    private object SendOwnerChangeInstructions(SettingsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
         var curTenant = _tenantManager.GetCurrentTenant();
         var owner = _userManager.GetUsers(curTenant.OwnerId);
-        var newOwner = _userManager.GetUsers(model.OwnerId);
+        var newOwner = _userManager.GetUsers(inDto.OwnerId);
 
         if (newOwner.IsVisitor(_userManager)) throw new System.Security.SecurityException("Collaborator can not be an owner");
 
@@ -78,25 +78,25 @@ public class OwnerController : BaseSettingsController
 
     [Update("owner")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalOwnerChange")]
-    public void OwnerFromBody([FromBody] SettingsRequestsDto model)
+    public void OwnerFromBody([FromBody] SettingsRequestsDto inDto)
     {
-        Owner(model);
+        Owner(inDto);
     }
 
     [Update("owner")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalOwnerChange")]
     [Consumes("application/x-www-form-urlencoded")]
-    public void OwnerFromForm([FromForm] SettingsRequestsDto model)
+    public void OwnerFromForm([FromForm] SettingsRequestsDto inDto)
     {
-        Owner(model);
+        Owner(inDto);
     }
 
-    private void Owner(SettingsRequestsDto model)
+    private void Owner(SettingsRequestsDto inDto)
     {
         var newOwner = Constants.LostUser;
         try
         {
-            newOwner = _userManager.GetUsers(model.OwnerId);
+            newOwner = _userManager.GetUsers(inDto.OwnerId);
         }
         catch
         {

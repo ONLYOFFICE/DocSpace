@@ -31,23 +31,23 @@ public class GreetingSettingsController : BaseSettingsController
     }
 
     [Create("greetingsettings")]
-    public ContentResult SaveGreetingSettingsFromBody([FromBody] GreetingSettingsRequestsDto model)
+    public ContentResult SaveGreetingSettingsFromBody([FromBody] GreetingSettingsRequestsDto inDto)
     {
-        return SaveGreetingSettings(model);
+        return SaveGreetingSettings(inDto);
     }
 
     [Create("greetingsettings")]
     [Consumes("application/x-www-form-urlencoded")]
-    public ContentResult SaveGreetingSettingsFromForm([FromForm] GreetingSettingsRequestsDto model)
+    public ContentResult SaveGreetingSettingsFromForm([FromForm] GreetingSettingsRequestsDto inDto)
     {
-        return SaveGreetingSettings(model);
+        return SaveGreetingSettings(inDto);
     }
 
-    private ContentResult SaveGreetingSettings(GreetingSettingsRequestsDto model)
+    private ContentResult SaveGreetingSettings(GreetingSettingsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        Tenant.Name = model.Title;
+        Tenant.Name = inDto.Title;
         _tenantManager.SaveTenant(Tenant);
 
         _messageService.Send(MessageAction.GreetingSettingsUpdated);
