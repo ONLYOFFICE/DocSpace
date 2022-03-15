@@ -9,7 +9,7 @@ import AppLoader from "../AppLoader";
 import { inject, observer } from "mobx-react";
 import { isMe } from "../../utils";
 import combineUrl from "../../utils/combineUrl";
-import { AppServerConfig } from "../../constants";
+import { AppServerConfig, TenantStatus } from "../../constants";
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const {
@@ -64,7 +64,12 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       );
     }
 
-    if (isLoaded && isAuthenticated && tenantStatus === 4 && !isPortal) {
+    if (
+      isLoaded &&
+      isAuthenticated &&
+      tenantStatus === TenantStatus.PortalRestore &&
+      !isPortal
+    ) {
       return (
         <Redirect
           to={{
