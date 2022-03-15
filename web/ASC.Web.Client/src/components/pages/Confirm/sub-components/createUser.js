@@ -615,7 +615,6 @@ const Confirm = (props) => {
                 onBlur={onBlurEmail}
                 onValidateInput={onValidateEmail}
                 forwardedRef={inputRef}
-                disallowChar='"'
               />
             </FieldContainer>
 

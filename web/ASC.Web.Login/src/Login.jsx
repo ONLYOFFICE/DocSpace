@@ -428,7 +428,6 @@ const Form = (props) => {
                 onChange={onChangeLogin}
                 onBlur={onBlurEmail}
                 onValidateInput={onValidateEmail}
-                disallowChar='"'
                 forwardedRef={inputRef}
               />
             </FieldContainer>
@@ -504,7 +503,7 @@ const Form = (props) => {
                   : t("Common:LoginButton")
               }
               tabIndex={1}
-              isDisabled={isLoading || !identifierValid || !passwordValid}
+              isDisabled={isLoading}
               isLoading={isLoading}
               onClick={onSubmit}
             />
