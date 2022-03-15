@@ -22,12 +22,12 @@ import PrivateRoomsPage from "./pages/PrivateRoomsPage";
 import ErrorBoundary from "@appserver/common/components/ErrorBoundary";
 import Panels from "./components/FilesPanels";
 import { AppServerConfig } from "@appserver/common/constants";
-import Catalog from "@appserver/common/components/catalog";
+import Article from "@appserver/common/components/Article";
 import {
-  CatalogBodyContent,
-  CatalogHeaderContent,
-  CatalogMainButtonContent,
-} from "./components/Catalog";
+  ArticleBodyContent,
+  ArticleHeaderContent,
+  ArticleMainButtonContent,
+} from "./components/Article";
 
 const { proxyURL } = AppServerConfig;
 const homepage = config.homepage;
@@ -121,30 +121,30 @@ class FilesContent extends React.Component {
     }
   }
 
-  renderCatalog() {
+  renderArticle() {
     return (
-      <Catalog>
-        <Catalog.Header>
-          <CatalogHeaderContent />
-        </Catalog.Header>
-        <Catalog.MainButton>
-          <CatalogMainButtonContent />
-        </Catalog.MainButton>
-        <Catalog.Body>
-          <CatalogBodyContent />
-        </Catalog.Body>
-      </Catalog>
+      <Article>
+        <Article.Header>
+          <ArticleHeaderContent />
+        </Article.Header>
+        <Article.MainButton>
+          <ArticleMainButtonContent />
+        </Article.MainButton>
+        <Article.Body>
+          <ArticleBodyContent />
+        </Article.Body>
+      </Article>
     );
   }
 
   render() {
     //const { /*, isDesktop*/ } = this.props;
-    const catalog = this.renderCatalog();
+    const article = this.renderArticle();
 
     return (
       <>
         <Panels />
-        {catalog}
+        {article}
         <Switch>
           <PrivateRoute exact path={SETTINGS_URL} component={Settings} />
           <PrivateRoute exact path={HISTORY_URL} component={VersionHistory} />

@@ -20,7 +20,7 @@ const PureSettingsItems = ({
   setIsLoading,
   t,
   showText,
-  toggleCatalogOpen,
+  toggleArticleOpen,
 }) => {
   const { setting } = match.params;
 
@@ -39,7 +39,7 @@ const PureSettingsItems = ({
 
     setSelectedNode(["common"]);
     setExpandSettingsTree(["common"]);
-    if (isMobile() || isMobileOnly) toggleCatalogOpen();
+    if (isMobile() || isMobileOnly) toggleArticleOpen();
     history.push(
       combineUrl(AppServerConfig.proxyURL, config.homepage, "/settings/common")
     );
@@ -47,7 +47,7 @@ const PureSettingsItems = ({
     setSelectedFolder,
     setSelectedNode,
     setExpandSettingsTree,
-    toggleCatalogOpen,
+    toggleArticleOpen,
     history,
   ]);
 
@@ -91,7 +91,7 @@ export default inject(
       setSelectedNode,
       setExpandSettingsTree,
       showText: auth.settingsStore.showText,
-      toggleCatalogOpen: auth.settingsStore.toggleCatalogOpen,
+      toggleArticleOpen: auth.settingsStore.toggleArticleOpen,
     };
   }
 )(observer(SettingsItems));

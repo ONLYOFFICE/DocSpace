@@ -24,7 +24,7 @@ const StyledBlock = styled.div`
   }
 `;
 
-const CatalogBodyContent = (props) => {
+const ArticleBodyContent = (props) => {
   const {
     personal,
     firstLoad,
@@ -37,7 +37,7 @@ const CatalogBodyContent = (props) => {
   } = props;
   const onClick = React.useCallback((data) => {
     const {
-      toggleCatalogOpen,
+      toggleArticleOpen,
       setIsLoading,
       fetchFiles,
       homepage,
@@ -73,7 +73,7 @@ const CatalogBodyContent = (props) => {
       .catch((err) => toastr.error(err))
       .finally(() => {
         if (isMobileOnly || isMobile()) {
-          toggleCatalogOpen();
+          toggleArticleOpen();
         }
         if (filesSection) setIsLoading(false);
         else hideLoader();
@@ -122,9 +122,9 @@ export default inject(
 
     const {
       showText,
-      catalogOpen,
+      articleOpen,
 
-      toggleCatalogOpen,
+      toggleArticleOpen,
       personal,
       hideArticle,
       isDesktopClient,
@@ -138,10 +138,10 @@ export default inject(
       : setDocumentTitle();
 
     return {
-      toggleCatalogOpen,
+      toggleArticleOpen,
       treeFolders,
       showText,
-      catalogOpen,
+      articleOpen,
       enableThirdParty: settingsStore.enableThirdParty,
       isVisitor: auth.userStore.user.isVisitor,
       homepage: config.homepage,
@@ -159,4 +159,4 @@ export default inject(
       FirebaseHelper,
     };
   }
-)(observer(withRouter(CatalogBodyContent)));
+)(observer(withRouter(ArticleBodyContent)));

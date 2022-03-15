@@ -2,7 +2,7 @@ import React from "react";
 import Loaders from "@appserver/common/components/Loaders";
 import { inject, observer } from "mobx-react";
 
-const CatalogHeaderContent = ({
+const ArticleHeaderContent = ({
   currentModuleName,
   isLoading,
   firstLoad,
@@ -28,4 +28,4 @@ export default inject(({ auth, filesStore }) => {
     isLoaded,
     currentModuleName: (auth.product && auth.product.title) || "",
   };
-})(observer(CatalogHeaderContent));
+})(observer(ArticleHeaderContent));

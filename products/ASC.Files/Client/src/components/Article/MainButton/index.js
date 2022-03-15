@@ -17,7 +17,7 @@ import { combineUrl } from "@appserver/common/utils";
 import withLoader from "../../../HOCs/withLoader";
 import MobileView from "./MobileView";
 
-class CatalogMainButtonContent extends React.Component {
+class ArticleMainButtonContent extends React.Component {
   onCreate = (e) => {
     // this.goToHomePage();
 
@@ -263,7 +263,7 @@ class CatalogMainButtonContent extends React.Component {
   }
 }
 
-CatalogMainButtonContent.propTypes = {
+ArticleMainButtonContent.propTypes = {
   history: PropTypes.object.isRequired,
 };
 
@@ -310,6 +310,6 @@ export default inject(
   }
 )(
   withRouter(
-    withTranslation(["Article", "Common"])(observer(CatalogMainButtonContent))
+    withTranslation(["Article", "Common"])(observer(ArticleMainButtonContent))
   )
 );
