@@ -15,7 +15,7 @@ import { Base } from "@appserver/components/themes";
 import MenuIcon from "@appserver/components/public/static/images/menu.react.svg";
 import CrossIcon from "@appserver/components/public/static/images/cross.react.svg";
 
-const StyledCatalog = styled.div`
+const StyledArticle = styled.article`
   position: relative;
 
   background: ${(props) => props.theme.catalog.background};
@@ -75,7 +75,7 @@ const StyledCatalog = styled.div`
     }
 
     @media ${mobile} {
-      display: ${(props) => (props.catalogOpen ? "flex" : "none")};
+      display: ${(props) => (props.articleOpen ? "flex" : "none")};
       min-width: 100vw;
       width: 100vw;
       height: calc(100vh - 64px) !important;
@@ -95,7 +95,7 @@ const StyledCatalog = styled.div`
 
     ${isMobileOnly &&
     css`
-      display: ${(props) => (props.catalogOpen ? "flex" : "none")};
+      display: ${(props) => (props.articleOpen ? "flex" : "none")};
       min-width: 100vw !important;
       width: 100vw;
       height: calc(100vh - 64px) !important;
@@ -106,13 +106,15 @@ const StyledCatalog = styled.div`
   }
 `;
 
-StyledCatalog.defaultProps = { theme: Base };
+StyledArticle.defaultProps = { theme: Base };
 
-const StyledCatalogHeader = styled.div`
+const StyledArticleHeader = styled.div`
   padding: 12px 20px 13px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
+
+  max-width: 216px;
 
   @media ${tablet} {
     padding: 16px 16px 17px;
@@ -142,7 +144,7 @@ const StyledCatalogHeader = styled.div`
   `}
 `;
 
-StyledCatalogHeader.defaultProps = { theme: Base };
+StyledArticleHeader.defaultProps = { theme: Base };
 
 const StyledHeading = styled(Heading)`
   margin: 0;
@@ -208,7 +210,7 @@ const StyledMenuIcon = styled(MenuIcon)`
 
 StyledMenuIcon.defaultProps = { theme: Base };
 
-const StyledCatalogMainButton = styled.div`
+const StyledArticleMainButton = styled.div`
   padding: 0px 20px 16px;
   max-width: 216px;
   @media ${tablet} {
@@ -258,12 +260,12 @@ const StyledCrossIcon = styled(CrossIcon)`
 StyledCrossIcon.defaultProps = { theme: Base };
 
 export {
-  StyledCatalog,
-  StyledCatalogHeader,
+  StyledArticle,
+  StyledArticleHeader,
   StyledHeading,
   StyledIconBox,
   StyledMenuIcon,
-  StyledCatalogMainButton,
+  StyledArticleMainButton,
   StyledControlContainer,
   StyledCrossIcon,
 };

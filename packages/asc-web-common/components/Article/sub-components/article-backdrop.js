@@ -3,9 +3,9 @@ import PropTypes from "prop-types";
 
 import Backdrop from "@appserver/components/backdrop";
 
-import { StyledControlContainer, StyledCrossIcon } from "../styled-catalog";
+import { StyledControlContainer, StyledCrossIcon } from "../styled-article";
 
-const CatalogBackdrop = ({ showText, onClick, ...rest }) => {
+const ArticleBackdrop = ({ showText, onClick, ...rest }) => {
   return (
     <>
       <StyledControlContainer onClick={onClick} {...rest}>
@@ -16,9 +16,9 @@ const CatalogBackdrop = ({ showText, onClick, ...rest }) => {
   );
 };
 
-CatalogBackdrop.propTypes = {
+ArticleBackdrop.propTypes = {
   showText: PropTypes.bool,
   onClick: PropTypes.func,
 };
 
-export default React.memo(CatalogBackdrop);
+export default React.memo(ArticleBackdrop);

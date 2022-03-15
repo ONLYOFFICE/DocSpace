@@ -10,12 +10,12 @@ import {
   isMobile as isMobileUtils,
 } from "@appserver/components/utils/device";
 
-import SubCatalogBackdrop from "./sub-components/catalog-backdrop";
-import SubCatalogHeader from "./sub-components/catalog-header";
-import SubCatalogMainButton from "./sub-components/catalog-main-button";
-import SubCatalogBody from "./sub-components/catalog-body";
+import SubArticleBackdrop from "./sub-components/article-backdrop";
+import SubArticleHeader from "./sub-components/article-header";
+import SubArticleMainButton from "./sub-components/article-main-button";
+import SubArticleBody from "./sub-components/article-body";
 
-import { StyledCatalog } from "./styled-catalog";
+import { StyledArticle } from "./styled-article";
 
 const enable = {
   top: false,
@@ -24,21 +24,21 @@ const enable = {
   left: false,
 };
 
-const Catalog = ({
+const Article = ({
   showText,
   setShowText,
-  catalogOpen,
+  articleOpen,
   toggleShowText,
-  toggleCatalogOpen,
+  toggleArticleOpen,
   children,
   ...rest
 }) => {
-  const [catalogHeaderContent, setCatalogHeaderContent] = React.useState(null);
+  const [articleHeaderContent, setArticleHeaderContent] = React.useState(null);
   const [
-    catalogMainButtonContent,
-    setCatalogMainButtonContent,
+    articleMainButtonContent,
+    setArticleMainButtonContent,
   ] = React.useState(null);
-  const [catalogBodyContent, setCatalogBodyContent] = React.useState(null);
+  const [articleBodyContent, setArticleBodyContent] = React.useState(null);
 
   const refTimer = React.useRef(null);
 
@@ -64,14 +64,14 @@ const Catalog = ({
         child && child.type && (child.type.displayName || child.type.name);
 
       switch (childType) {
-        case Catalog.Header.displayName:
-          setCatalogHeaderContent(child);
+        case Article.Header.displayName:
+          setArticleHeaderContent(child);
           break;
-        case Catalog.MainButton.displayName:
-          setCatalogMainButtonContent(child);
+        case Article.MainButton.displayName:
+          setArticleMainButtonContent(child);
           break;
-        case Catalog.Body.displayName:
-          setCatalogBodyContent(child);
+        case Article.Body.displayName:
+          setArticleBodyContent(child);
           break;
         default:
           break;
@@ -101,7 +101,7 @@ const Catalog = ({
 
   return (
     <>
-      <StyledCatalog showText={showText} catalogOpen={catalogOpen} {...rest}>
+      <StyledArticle showText={showText} articleOpen={articleOpen} {...rest}>
         <Resizable
           defaultSize={{
             width: 256,
@@ -110,67 +110,67 @@ const Catalog = ({
           className="resizable-block"
           handleWrapperClass="resizable-border not-selectable"
         >
-          <SubCatalogHeader showText={showText} onClick={toggleShowText}>
-            {catalogHeaderContent ? catalogHeaderContent.props.children : null}
-          </SubCatalogHeader>
-          <SubCatalogMainButton showText={showText}>
-            {catalogMainButtonContent
-              ? catalogMainButtonContent.props.children
+          <SubArticleHeader showText={showText} onClick={toggleShowText}>
+            {articleHeaderContent ? articleHeaderContent.props.children : null}
+          </SubArticleHeader>
+          <SubArticleMainButton showText={showText}>
+            {articleMainButtonContent
+              ? articleMainButtonContent.props.children
               : null}
-          </SubCatalogMainButton>
-          <SubCatalogBody showText={showText}>
-            {catalogBodyContent ? catalogBodyContent.props.children : null}
-          </SubCatalogBody>
+          </SubArticleMainButton>
+          <SubArticleBody showText={showText}>
+            {articleBodyContent ? articleBodyContent.props.children : null}
+          </SubArticleBody>
         </Resizable>
-      </StyledCatalog>
-      {catalogOpen && (isMobileOnly || window.innerWidth <= 375) && (
+      </StyledArticle>
+      {articleOpen && (isMobileOnly || window.innerWidth <= 375) && (
         <>
-          <SubCatalogBackdrop onClick={toggleCatalogOpen} />
+          <SubArticleBackdrop onClick={toggleArticleOpen} />
         </>
       )}
     </>
   );
 };
 
-Catalog.propTypes = {
+Article.propTypes = {
   showText: PropTypes.bool,
   setShowText: PropTypes.func,
-  catalogOpen: PropTypes.bool,
-  toggleCatalogOpen: PropTypes.func,
+  articleOpen: PropTypes.bool,
+  toggleArticleOpen: PropTypes.func,
   children: PropTypes.any,
 };
 
-Catalog.Header = () => {
+Article.Header = () => {
   return null;
 };
-Catalog.Header.displayName = "Header";
+Article.Header.displayName = "Header";
 
-Catalog.MainButton = () => {
+Article.MainButton = () => {
   return null;
 };
-Catalog.MainButton.displayName = "MainButton";
+Article.MainButton.displayName = "MainButton";
 
-Catalog.Body = () => {
+Article.Body = () => {
   return null;
 };
-Catalog.Body.displayName = "Body";
+Article.Body.displayName = "Body";
 
 export default inject(({ auth }) => {
-  const { isLoaded, settingsStore } = auth;
+  const { settingsStore } = auth;
 
   const {
     showText,
     setShowText,
-    catalogOpen,
+    articleOpen,
     toggleShowText,
-    toggleCatalogOpen,
+    toggleArticleOpen,
   } = settingsStore;
 
   return {
     showText,
     setShowText,
-    catalogOpen,
+    articleOpen,
     toggleShowText,
-    toggleCatalogOpen,
+    toggleArticleOpen,
   };
-})(observer(Catalog));
+})(observer(Article));

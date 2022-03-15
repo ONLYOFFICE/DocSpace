@@ -2,32 +2,32 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import {
-  StyledCatalogHeader,
+  StyledArticleHeader,
   StyledHeading,
   StyledIconBox,
   StyledMenuIcon,
-} from "../styled-catalog";
+} from "../styled-article";
 
-const CatalogHeader = ({ showText, children, onClick, ...rest }) => {
+const ArticleHeader = ({ showText, children, onClick, ...rest }) => {
   return (
-    <StyledCatalogHeader showText={showText} {...rest}>
-      <StyledIconBox name="catalog-burger">
+    <StyledArticleHeader showText={showText} {...rest}>
+      <StyledIconBox name="article-burger">
         <StyledMenuIcon onClick={onClick} />
       </StyledIconBox>
 
       <StyledHeading showText={showText} size="large">
         {children}
       </StyledHeading>
-    </StyledCatalogHeader>
+    </StyledArticleHeader>
   );
 };
 
-CatalogHeader.propTypes = {
+ArticleHeader.propTypes = {
   children: PropTypes.any,
   showText: PropTypes.bool,
   onClick: PropTypes.func,
 };
 
-CatalogHeader.displayName = "Header";
+ArticleHeader.displayName = "Header";
 
-export default React.memo(CatalogHeader);
+export default React.memo(ArticleHeader);
