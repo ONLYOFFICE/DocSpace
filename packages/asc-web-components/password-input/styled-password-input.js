@@ -155,13 +155,19 @@ const Progress = styled.div`
 Progress.defaultProps = { theme: Base };
 
 const TooltipStyle = styled.div`
+  width: 280px;
+
   .__react_component_tooltip {
   }
 `;
 
 const StyledTooltipContainer = styled(Text)`
-  //margin: 8px 16px 16px 16px;
+  // margin: 8px 16px 16px 16px;
   color: ${(props) => props.theme.passwordInput.tooltipTextColor} !important;
+
+  .generate-btn {
+    color: ${(props) => props.theme.passwordInput.tooltipTextColor};
+  }
 `;
 
 StyledTooltipContainer.defaultProps = { theme: Base };

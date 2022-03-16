@@ -299,57 +299,60 @@ class PasswordInput extends React.Component {
 
   renderTooltipContent = () =>
     !this.props.isDisableTooltip && !this.props.isDisabled ? (
-      <StyledTooltipContainer
-        forwardedAs="div"
-        title={this.props.tooltipPasswordTitle}
-      >
-        {this.props.tooltipPasswordTitle}
-        <StyledTooltipItem
+      <TooltipStyle>
+        <StyledTooltipContainer
           forwardedAs="div"
-          title={this.props.tooltipPasswordLength}
-          valid={this.state.validLength}
+          title={this.props.tooltipPasswordTitle}
         >
-          {this.props.tooltipPasswordLength}
-        </StyledTooltipItem>
-        {this.props.passwordSettings.digits && (
+          {this.props.tooltipPasswordTitle}
           <StyledTooltipItem
             forwardedAs="div"
-            title={this.props.tooltipPasswordDigits}
-            valid={this.state.validDigits}
+            title={this.props.tooltipPasswordLength}
+            valid={this.state.validLength}
           >
-            {this.props.tooltipPasswordDigits}
+            {this.props.tooltipPasswordLength}
           </StyledTooltipItem>
-        )}
-        {this.props.passwordSettings.upperCase && (
-          <StyledTooltipItem
-            forwardedAs="div"
-            title={this.props.tooltipPasswordCapital}
-            valid={this.state.validCapital}
-          >
-            {this.props.tooltipPasswordCapital}
-          </StyledTooltipItem>
-        )}
-        {this.props.passwordSettings.specSymbols && (
-          <StyledTooltipItem
-            forwardedAs="div"
-            title={this.props.tooltipPasswordSpecial}
-            valid={this.state.validSpecial}
-          >
-            {this.props.tooltipPasswordSpecial}
-          </StyledTooltipItem>
-        )}
+          {this.props.passwordSettings.digits && (
+            <StyledTooltipItem
+              forwardedAs="div"
+              title={this.props.tooltipPasswordDigits}
+              valid={this.state.validDigits}
+            >
+              {this.props.tooltipPasswordDigits}
+            </StyledTooltipItem>
+          )}
+          {this.props.passwordSettings.upperCase && (
+            <StyledTooltipItem
+              forwardedAs="div"
+              title={this.props.tooltipPasswordCapital}
+              valid={this.state.validCapital}
+            >
+              {this.props.tooltipPasswordCapital}
+            </StyledTooltipItem>
+          )}
+          {this.props.passwordSettings.specSymbols && (
+            <StyledTooltipItem
+              forwardedAs="div"
+              title={this.props.tooltipPasswordSpecial}
+              valid={this.state.validSpecial}
+            >
+              {this.props.tooltipPasswordSpecial}
+            </StyledTooltipItem>
+          )}
 
-        {this.props.generatePasswordTitle && (
-          <Link
-            type="action"
-            fontWeight="600"
-            isHovered={true}
-            onClick={this.onGeneratePassword}
-          >
-            {this.props.generatePasswordTitle}
-          </Link>
-        )}
-      </StyledTooltipContainer>
+          {this.props.generatePasswordTitle && (
+            <Link
+              className="generate-btn"
+              type="action"
+              fontWeight="600"
+              isHovered={true}
+              onClick={this.onGeneratePassword}
+            >
+              {this.props.generatePasswordTitle}
+            </Link>
+          )}
+        </StyledTooltipContainer>
+      </TooltipStyle>
     ) : null;
 
   renderInputGroup = () => {
@@ -398,17 +401,17 @@ class PasswordInput extends React.Component {
           maxLength={maxLength}
           autoComplete={autoComplete}
         ></InputBlock>
-        <TooltipStyle>
-          <Tooltip
-            id="tooltipContent"
-            effect="solid"
-            place="top"
-            offsetLeft={this.tooltipOffsetLeft}
-            reference={this.refTooltip}
-          >
-            {this.renderTooltipContent()}
-          </Tooltip>
-        </TooltipStyle>
+
+        <Tooltip
+          id="tooltipContent"
+          effect="solid"
+          place="top"
+          offsetLeft={this.tooltipOffsetLeft}
+          reference={this.refTooltip}
+        >
+          {this.renderTooltipContent()}
+        </Tooltip>
+
         <Progress
           progressColor={progressColor}
           progressWidth={progressWidth}
