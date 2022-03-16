@@ -33,6 +33,7 @@ const StyledFileInput = styled.div`
     padding-right: 40px;
     padding-right: ${(props) => paddingRightStyle(props)};
     cursor: ${(props) => (props.isDisabled ? "default" : "pointer")};
+    margin: 0;
   }
 
   :hover {
