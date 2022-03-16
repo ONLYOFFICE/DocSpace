@@ -725,7 +725,7 @@ const Confirm = (props) => {
             id="submit"
             className="login-button is-greeting-mode-button"
             primary
-            size="large"
+            size="normal"
             scale={true}
             label={
               isLoading
