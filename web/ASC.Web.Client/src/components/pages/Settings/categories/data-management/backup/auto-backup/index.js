@@ -521,7 +521,7 @@ class AutomaticBackup extends React.PureComponent {
             isDisabled={isLoadingData}
           />
           <Text className="backup_toggle-btn-description">
-            {t("RestoreBackupDescription")}
+            {t("EnableAutomaticBackupDescription")}
           </Text>
         </div>
         {isEnable && (
