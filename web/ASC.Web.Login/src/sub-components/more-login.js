@@ -75,7 +75,7 @@ const MoreLoginModal = (props) => {
             <Button
               label={t("Common:LoginButton")}
               className="signin-button"
-              size="medium"
+              size="normal"
               onClick={() => (window.location.href = ssoUrl)}
             />
           </ProviderRow>
@@ -94,7 +94,7 @@ const MoreLoginModal = (props) => {
               <Button
                 label={t("Common:LoginButton")}
                 className="signin-button"
-                size="medium"
+                size="normal"
                 data-url={item.url}
                 data-providername={item.provider}
                 onClick={onSocialLoginClick}
