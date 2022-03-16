@@ -21,7 +21,7 @@ const tabletProps = css`
   }
 `;
 
-const StyledSection = styled.section`
+const StyledSectionContainer = styled.section`
   padding: 0 0 0 20px;
   flex-grow: 1;
   display: flex;
@@ -74,7 +74,7 @@ const StyledSection = styled.section`
   `}
 `;
 
-class Section extends React.Component {
+class SectionContainer extends React.Component {
   /*shouldComponentUpdate() {
     return false;
   }*/
@@ -94,8 +94,8 @@ class Section extends React.Component {
   render() {
     //console.log("PageLayout Section render");
 
-    return <StyledSection id="section" {...this.props} />;
+    return <StyledSectionContainer id="section" {...this.props} />;
   }
 }
 
-export default Section;
+export default SectionContainer;

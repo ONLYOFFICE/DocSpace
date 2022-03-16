@@ -9,7 +9,7 @@ class SectionBodyContent extends React.Component {
 
   render() {
     const { children } = this.props;
-    //console.log("PageLayout SectionBodyContent render");
+    //console.log(" SectionBodyContent render");
     return <>{children}</>;
   }
 }

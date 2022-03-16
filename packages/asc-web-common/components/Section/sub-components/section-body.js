@@ -145,7 +145,7 @@ class SectionBody extends React.Component {
   }
 
   render() {
-    //console.log("PageLayout SectionBody render" );
+    //console.log(" SectionBody render" );
     const {
       autoFocus,
       children,

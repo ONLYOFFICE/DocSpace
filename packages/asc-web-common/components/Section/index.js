@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Backdrop from "@appserver/components/backdrop";
+
 import {
   desktop,
   size,
@@ -10,18 +10,14 @@ import {
 } from "@appserver/components/utils/device";
 import { Provider } from "@appserver/components/utils/context";
 import { isMobile, isFirefox, isMobileOnly } from "react-device-detect";
-import Article from "./sub-components/article";
-import SubArticleHeader from "./sub-components/article-header";
-import SubArticleMainButton from "./sub-components/article-main-button";
-import SubArticleBody from "./sub-components/article-body";
-import ArticlePinPanel from "./sub-components/article-pin-panel";
-import Section from "./sub-components/section";
+
+import SectionContainer from "./sub-components/section-container";
 import SubSectionHeader from "./sub-components/section-header";
 import SubSectionFilter from "./sub-components/section-filter";
 import SubSectionBody from "./sub-components/section-body";
 import SubSectionBodyContent from "./sub-components/section-body-content";
 import SubSectionPaging from "./sub-components/section-paging";
-import SectionToggler from "./sub-components/section-toggler";
+
 import ReactResizeDetector from "react-resize-detector";
 import FloatingButton from "../FloatingButton";
 import { inject, observer } from "mobx-react";
@@ -53,21 +49,6 @@ const StyledMainBar = styled.div`
       `}
 `;
 
-function ArticleHeader() {
-  return null;
-}
-ArticleHeader.displayName = "ArticleHeader";
-
-function ArticleMainButton() {
-  return null;
-}
-ArticleMainButton.displayName = "ArticleMainButton";
-
-function ArticleBody() {
-  return null;
-}
-ArticleBody.displayName = "ArticleBody";
-
 function SectionHeader() {
   return null;
 }
@@ -88,10 +69,7 @@ function SectionPaging() {
 }
 SectionPaging.displayName = "SectionPaging";
 
-class PageLayout extends React.Component {
-  static ArticleHeader = ArticleHeader;
-  static ArticleMainButton = ArticleMainButton;
-  static ArticleBody = ArticleBody;
+class Section extends React.Component {
   static SectionHeader = SectionHeader;
   static SectionFilter = SectionFilter;
   static SectionBody = SectionBody;
@@ -110,76 +88,14 @@ class PageLayout extends React.Component {
     if (!this.scroll) {
       this.scroll = document.getElementsByClassName("section-scroll")[0];
     }
-
-    if (
-      this.props.hideAside &&
-      !this.props.isArticlePinned &&
-      this.props.hideAside !== prevProps.hideAside
-    ) {
-      this.backdropClick();
-    }
   }
 
-  componentDidMount() {
-    window.addEventListener("orientationchange", this.orientationChangeHandler);
-
-    this.orientationChangeHandler();
-  }
+  componentDidMount() {}
 
   componentWillUnmount() {
-    window.removeEventListener(
-      "orientationchange",
-      this.orientationChangeHandler
-    );
-
     if (this.intervalHandler) clearInterval(this.intervalHandler);
     if (this.timeoutHandler) clearTimeout(this.timeoutHandler);
   }
-
-  orientationChangeHandler = () => {
-    const isValueExist = !!this.props.isArticlePinned;
-    const isEnoughWidth = screen.availWidth > size.smallTablet;
-    const isPortrait =
-      isFirefox &&
-      isMobileOnly &&
-      screen.orientation.type === "portrait-primary";
-
-    if ((!isEnoughWidth && isValueExist) || isPortrait) {
-      this.backdropClick();
-      return;
-    }
-    if (isEnoughWidth && isValueExist) {
-      this.pinArticle();
-    }
-  };
-
-  backdropClick = () => {
-    this.props.setArticlePinned(false);
-    this.props.setIsBackdropVisible(false);
-    this.props.setIsArticleVisible(false);
-    isMobile && this.props.setArticleVisibleOnUnpin(false);
-  };
-
-  pinArticle = () => {
-    this.props.setIsBackdropVisible(false);
-    this.props.setIsArticleVisible(true);
-    this.props.setArticlePinned(true);
-    isMobile && this.props.setArticleVisibleOnUnpin(false);
-  };
-
-  unpinArticle = () => {
-    this.props.setIsBackdropVisible(true);
-    this.props.setIsArticleVisible(true);
-    this.props.setArticlePinned(false);
-    isMobile && this.props.setArticleVisibleOnUnpin(true);
-  };
-
-  showArticle = () => {
-    this.props.setArticlePinned(false);
-    this.props.setIsBackdropVisible(true);
-    this.props.setIsArticleVisible(true);
-    isMobile && this.props.setArticleVisibleOnUnpin(true);
-  };
 
   onSelect = (e) => {
     if (this.props.dragging) return;
@@ -231,16 +147,11 @@ class PageLayout extends React.Component {
       isTabletView,
       firstLoad,
       dragging,
-      isArticleVisible,
       isBackdropVisible,
-      isArticlePinned,
       isDesktop,
       isHomepage,
     } = this.props;
 
-    let articleHeaderContent = null;
-    let articleMainButtonContent = null;
-    let articleBodyContent = null;
     let sectionHeaderContent = null;
     let sectionFilterContent = null;
     let sectionPagingContent = null;
@@ -250,15 +161,6 @@ class PageLayout extends React.Component {
         child && child.type && (child.type.displayName || child.type.name);
 
       switch (childType) {
-        case ArticleHeader.displayName:
-          articleHeaderContent = child;
-          break;
-        case ArticleMainButton.displayName:
-          articleMainButtonContent = child;
-          break;
-        case ArticleBody.displayName:
-          articleBodyContent = child;
-          break;
         case SectionHeader.displayName:
           sectionHeaderContent = child;
           break;
@@ -276,14 +178,7 @@ class PageLayout extends React.Component {
       }
     });
 
-    const isArticleHeaderAvailable = !!articleHeaderContent,
-      isArticleMainButtonAvailable = !!articleMainButtonContent,
-      isArticleBodyAvailable = !!articleBodyContent,
-      isArticleAvailable =
-        isArticleHeaderAvailable ||
-        isArticleMainButtonAvailable ||
-        isArticleBodyAvailable,
-      isSectionHeaderAvailable = !!sectionHeaderContent,
+    const isSectionHeaderAvailable = !!sectionHeaderContent,
       isSectionFilterAvailable = !!sectionFilterContent,
       isSectionPagingAvailable = !!sectionPagingContent,
       isSectionBodyAvailable =
@@ -294,56 +189,11 @@ class PageLayout extends React.Component {
         isSectionHeaderAvailable ||
         isSectionFilterAvailable ||
         isSectionBodyAvailable ||
-        isSectionPagingAvailable ||
-        isArticleAvailable,
-      isBackdropAvailable = isArticleAvailable;
+        isSectionPagingAvailable;
 
-    const renderPageLayout = () => {
+    const renderSection = () => {
       return (
         <>
-          {isBackdropAvailable && (
-            <Backdrop
-              zIndex={400}
-              visible={isBackdropVisible}
-              onClick={this.backdropClick}
-            />
-          )}
-          {isArticleAvailable && (
-            <Article
-              visible={isArticleVisible}
-              pinned={isArticlePinned}
-              firstLoad={firstLoad}
-            >
-              {isArticleHeaderAvailable && (
-                <SubArticleHeader>
-                  {articleHeaderContent
-                    ? articleHeaderContent.props.children
-                    : null}
-                </SubArticleHeader>
-              )}
-              {isArticleMainButtonAvailable && (
-                <SubArticleMainButton>
-                  {articleMainButtonContent
-                    ? articleMainButtonContent.props.children
-                    : null}
-                </SubArticleMainButton>
-              )}
-              {isArticleBodyAvailable && (
-                <SubArticleBody pinned={isArticlePinned} isDesktop={isDesktop}>
-                  {articleBodyContent
-                    ? articleBodyContent.props.children
-                    : null}
-                </SubArticleBody>
-              )}
-              {isArticleBodyAvailable && (
-                <ArticlePinPanel
-                  pinned={isArticlePinned}
-                  onPin={this.pinArticle}
-                  onUnpin={this.unpinArticle}
-                />
-              )}
-            </Article>
-          )}
           {isSectionAvailable && (
             <ReactResizeDetector
               refreshRate={100}
@@ -357,17 +207,10 @@ class PageLayout extends React.Component {
                     sectionHeight: height,
                   }}
                 >
-                  <Section
-                    widthProp={width}
-                    unpinArticle={this.unpinArticle}
-                    pinned={isArticlePinned}
-                    visible={isArticleVisible}
-                    viewAs={viewAs}
-                  >
+                  <SectionContainer widthProp={width} viewAs={viewAs}>
                     {isSectionHeaderAvailable && (
                       <SubSectionHeader
                         isHeaderVisible={isHeaderVisible}
-                        isArticlePinned={isArticlePinned}
                         viewAs={viewAs}
                       >
                         {sectionHeaderContent
@@ -396,7 +239,6 @@ class PageLayout extends React.Component {
                           uploadFiles={uploadFiles}
                           withScroll={withBodyScroll}
                           autoFocus={isMobile || isTabletView ? false : true}
-                          pinned={isArticlePinned}
                           viewAs={viewAs}
                           isHomepage={isHomepage}
                         >
@@ -462,14 +304,7 @@ class PageLayout extends React.Component {
                     ) : (
                       <></>
                     )}
-
-                    {isArticleAvailable && (
-                      <SectionToggler
-                        visible={!isArticleVisible}
-                        onClick={this.showArticle}
-                      />
-                    )}
-                  </Section>
+                  </SectionContainer>
                 </Provider>
               )}
             </ReactResizeDetector>
@@ -488,7 +323,7 @@ class PageLayout extends React.Component {
 
     return (
       <>
-        {renderPageLayout()}
+        {renderSection()}
         {!isMobile && uploadFiles && !dragging && (
           <StyledSelectoWrapper>
             <Selecto
@@ -512,7 +347,7 @@ class PageLayout extends React.Component {
   }
 }
 
-PageLayout.propTypes = {
+Section.propTypes = {
   children: PropTypes.any,
   withBodyScroll: PropTypes.bool,
   withBodyAutoFocus: PropTypes.bool,
@@ -538,30 +373,24 @@ PageLayout.propTypes = {
   isHomepage: PropTypes.bool,
 };
 
-PageLayout.defaultProps = {
+Section.defaultProps = {
   withBodyScroll: true,
   withBodyAutoFocus: false,
 };
 
-PageLayout.ArticleHeader = ArticleHeader;
-PageLayout.ArticleMainButton = ArticleMainButton;
-PageLayout.ArticleBody = ArticleBody;
-PageLayout.SectionHeader = SectionHeader;
-PageLayout.SectionFilter = SectionFilter;
-PageLayout.SectionBody = SectionBody;
-PageLayout.SectionPaging = SectionPaging;
+Section.SectionHeader = SectionHeader;
+Section.SectionFilter = SectionFilter;
+Section.SectionBody = SectionBody;
+Section.SectionPaging = SectionPaging;
 
 export default inject(({ auth }) => {
   const { isLoaded, settingsStore } = auth;
   const {
     isHeaderVisible,
     isTabletView,
-    isArticlePinned,
-    isArticleVisible,
+
     isBackdropVisible,
-    setArticlePinned,
-    setArticleVisibleOnUnpin,
-    setIsArticleVisible,
+
     setIsBackdropVisible,
     isDesktopClient,
   } = settingsStore;
@@ -570,13 +399,9 @@ export default inject(({ auth }) => {
     isLoaded,
     isTabletView,
     isHeaderVisible,
-    isArticlePinned,
-    isArticleVisible,
-    setArticlePinned,
-    setArticleVisibleOnUnpin,
-    setIsArticleVisible,
+
     isBackdropVisible,
     setIsBackdropVisible,
     isDesktop: isDesktopClient,
   };
-})(observer(PageLayout));
+})(observer(Section));
