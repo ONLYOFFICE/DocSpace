@@ -13,13 +13,12 @@ import {
   getEditDiff,
   getEditHistory,
   updateFile,
-  getPresignedUri,
 } from "@appserver/common/api/files";
 
 import { EditorWrapper } from "./StyledEditor";
-import DynamicComponent from "./components/dynamic";
 import { useTranslation } from "react-i18next";
 import useSharingDialog from "./helpers/useSharingDialog";
+import useSelectFileDialog from "./helpers/useSelectFileDialog";
 
 const LoaderComponent = (
   <Loader
@@ -37,22 +36,6 @@ const onSDKInfo = (event) => {
   console.log(
     "ONLYOFFICE Document Editor is opened in mode " + event.data.mode
   );
-};
-
-const onSDKRequestEditRights = async () => {
-  console.log("ONLYOFFICE Document Editor requests editing rights");
-  // const index = url.indexOf("&action=view");
-
-  // if (index) {
-  //   let convertUrl = url.substring(0, index);
-
-  //   if (canConvert(fileInfo.fileExst)) {
-  //     convertUrl = await convertDocumentUrl();
-  //   }
-
-  //   history.pushState({}, null, convertUrl);
-  //   document.location.reload();
-  // }
 };
 
 const onSDKWarning = (event) => {
@@ -117,8 +100,6 @@ let docSaved = null; // move to state?
 let docTitle = null;
 let docEditor;
 
-// const SharingDialog =
-//   typeof window === "undefined" ? null : dynamic(() => loadComponent());
 function Editor({
   fileInfo,
   docApiUrl,
@@ -139,20 +120,24 @@ function Editor({
   const [urlSelectorFolder, setUrlSelectorFolder] = useState("");
   const [extension, setExtension] = useState();
   const [isFolderDialogVisible, setIsFolderDialogVisible] = useState(false);
-  const [typeInsertImageAction, setTypeInsertImageAction] = useState();
-  const [filesType, setFilesType] = useState("");
-  const [isFileDialogVisible, setIsFileDialogVisible] = useState(false); // ??
   const [isLoaded, setIsLoaded] = useState(false);
   const [documentTitle, setNewDocumentTitle] = useState("Loading...");
 
   const { t } = useTranslation();
 
   const [
-    sharingComponent,
+    sharingDialog,
     onSDKRequestSharingSettings,
     loadUsersRightsList,
     isVisible,
   ] = useSharingDialog(fileInfo, fileId, docEditor);
+
+  const [
+    selectFileDialog,
+    onSDKRequestInsertImage,
+    onSDKRequestMailMergeRecipients,
+    onSDKRequestCompareFile,
+  ] = useSelectFileDialog(docEditor, t);
 
   useEffect(() => {
     if (error) {
@@ -249,22 +234,6 @@ function Editor({
         error: `${e}`, //TODO: maybe need to display something else.
       });
     }
-  };
-
-  const onSDKRequestCompareFile = () => {
-    setFilesType(compareFilesAction);
-    setIsFileDialogVisible(true);
-  };
-
-  const onSDKRequestMailMergeRecipients = () => {
-    setFilesType(mailMergeAction);
-    setIsFileDialogVisible(true);
-  };
-
-  const onSDKRequestInsertImage = (event) => {
-    setTypeInsertImageAction(event.data);
-    setFilesType(insertImageAction);
-    setIsFileDialogVisible(true);
   };
 
   const getDocumentHistory = (fileHistory, historyLength) => {
@@ -571,128 +540,6 @@ function Editor({
     }
   };
 
-  const insertImage = (link) => {
-    const token = link.token;
-
-    docEditor.insertImage({
-      ...typeInsertImageAction,
-      fileType: link.filetype,
-      ...(token && { token }),
-      url: link.url,
-    });
-  };
-
-  const mailMerge = (link) => {
-    const token = link.token;
-
-    docEditor.setMailMergeRecipients({
-      fileType: link.filetype,
-      ...(token && { token }),
-      url: link.url,
-    });
-  };
-
-  const compareFiles = (link) => {
-    const token = link.token;
-
-    docEditor.setRevisedFile({
-      fileType: link.filetype,
-      ...(token && { token }),
-      url: link.url,
-    });
-  };
-
-  const onSelectFile = async (file) => {
-    try {
-      const link = await getPresignedUri(file.id);
-
-      if (filesType === insertImageAction) insertImage(link);
-      if (filesType === mailMergeAction) mailMerge(link);
-      if (filesType === compareFilesAction) compareFiles(link);
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const onCloseFileDialog = () => {
-    setIsFileDialogVisible(false);
-  };
-
-  const insertImageActionProps = {
-    isImageOnly: true,
-  };
-
-  const mailMergeActionProps = {
-    isTablesOnly: true,
-    searchParam: ".xlsx",
-  };
-  const compareFilesActionProps = {
-    isDocumentsOnly: true,
-  };
-
-  const fileTypeDetection = () => {
-    if (filesType === insertImageAction) {
-      return insertImageActionProps;
-    }
-    if (filesType === mailMergeAction) {
-      return mailMergeActionProps;
-    }
-    if (filesType === compareFilesAction) {
-      return compareFilesActionProps;
-    }
-  };
-
-  const getFileTypeTranslation = () => {
-    switch (filesType) {
-      case mailMergeAction:
-        return t("MailMergeFileType");
-      case insertImageAction:
-        return t("ImageFileType");
-      case compareFilesAction:
-        return t("DocumentsFileType");
-    }
-  };
-
-  const selectFilesListTitle = () => {
-    const type = getFileTypeTranslation();
-    return (
-      <>
-        {
-          filesType === mailMergeAction ? type : type
-          // <Trans i18nKey="SelectFilesType" fileType={type}>
-          //   Select files of type: {{ type }}
-          // </Trans>
-        }
-      </>
-    );
-  };
-
-  const loadSelectFileDialog = () => {
-    if (typeof window !== "undefined") {
-      const headerName = t("SelectFileTitle");
-      console.log(headerName);
-      return isFileDialogVisible ? (
-        <DynamicComponent
-          system={{
-            scope: "files",
-            url: "/products/files/remoteEntry.js",
-            module: "./SelectFileDialog",
-          }}
-          resetTreeFolders
-          foldersType="exceptPrivacyTrashFolders"
-          isPanelVisible={isFileDialogVisible}
-          onSelectFile={onSelectFile}
-          onClose={onCloseFileDialog}
-          {...fileTypeDetection()}
-          titleFilesList={selectFilesListTitle()}
-          headerName={headerName}
-        />
-      ) : null;
-    }
-  };
-
-  const SelectFileDialog = loadSelectFileDialog();
-
   return (
     <EditorWrapper isVisibleSharingDialog={isVisible}>
       {needLoader ? (
@@ -703,8 +550,8 @@ function Editor({
           {!isLoaded && LoaderComponent}
         </>
       )}
-      {sharingComponent}
-      {SelectFileDialog}
+      {sharingDialog}
+      {selectFileDialog}
     </EditorWrapper>
   );
 }

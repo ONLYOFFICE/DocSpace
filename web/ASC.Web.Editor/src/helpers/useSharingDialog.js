@@ -19,7 +19,7 @@ function useSharingDialog(fileInfo, fileId, docEditor) {
     });
   };
 
-  const sharingComponent = (
+  const sharingDialog = (
     <DynamicComponent
       className="dynamic-sharing-dialog"
       system={{
@@ -36,7 +36,7 @@ function useSharingDialog(fileInfo, fileId, docEditor) {
   );
 
   return [
-    sharingComponent,
+    sharingDialog,
     onSDKRequestSharingSettings,
     loadUsersRightsList,
     isVisible,
