@@ -210,7 +210,7 @@ const ArticleMainButtonContent = ({
       },
       ...uploadActions,
     ];
-    console.log("upd");
+
     setModel(menuModel);
     setActions(actions);
     setUploadActions(uploadActions);
