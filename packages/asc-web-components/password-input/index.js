@@ -8,7 +8,6 @@ import Text from "../text";
 import Tooltip from "../tooltip";
 
 import {
-  Progress,
   PasswordProgress,
   StyledInput,
   TooltipStyle,
@@ -27,8 +26,6 @@ class PasswordInput extends React.Component {
 
     this.state = {
       type: inputType,
-      progressColor: "transparent",
-      progressWidth: 0,
       inputValue: inputValue,
       copyLabel: clipActionResource,
       disableCopyAction: emailInputName ? false : true,
@@ -99,20 +96,11 @@ class PasswordInput extends React.Component {
       passwordValidation.capital &&
       passwordValidation.special &&
       passwordValidation.length;
-    const progressWidth =
-      (value.trim().length * 100) / this.props.passwordSettings.minLength;
-    const progressColor = progressScore
-      ? greenColor
-      : value.length === 0
-      ? "transparent"
-      : redColor;
 
     this.props.onValidateInput &&
       this.props.onValidateInput(progressScore, passwordValidation);
 
     this.setState({
-      progressColor: progressColor,
-      progressWidth: progressWidth > 100 ? 100 : progressWidth,
       inputValue: value,
       validLength: passwordValidation.length,
       validDigits: passwordValidation.digits,
@@ -370,7 +358,7 @@ class PasswordInput extends React.Component {
       autoComplete,
     } = this.props;
 
-    const { type, progressColor, progressWidth, inputValue } = this.state;
+    const { type, inputValue } = this.state;
     const iconName =
       type === "password"
         ? "/static/images/eye.off.react.svg"
@@ -411,12 +399,6 @@ class PasswordInput extends React.Component {
         >
           {this.renderTooltipContent()}
         </Tooltip>
-
-        <Progress
-          progressColor={progressColor}
-          progressWidth={progressWidth}
-          isDisabled={isDisabled}
-        />
       </>
     );
   };

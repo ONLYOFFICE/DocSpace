@@ -105,55 +105,6 @@ const PasswordProgress = styled.div`
 `;
 PasswordProgress.defaultProps = { theme: Base };
 
-const NewPasswordButton = styled.div`
-  margin: ${(props) => props.theme.passwordInput.newPassword.margin};
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  svg {
-    overflow: ${(props) => props.theme.passwordInput.newPassword.svg.overflow};
-    vertical-align: middle;
-    margin-bottom: ${(props) =>
-      props.theme.passwordInput.newPassword.svg.marginBottom};
-    path {
-      fill: ${(props) =>
-        props.isDisabled
-          ? props.theme.passwordInput.disableColor
-          : props.theme.passwordInput.color};
-    }
-  }
-  :hover {
-    cursor: pointer;
-  }
-`;
-NewPasswordButton.defaultProps = { theme: Base };
-
-const CopyLink = styled.div`
-  margin-top: ${(props) => props.theme.passwordInput.link.marginTop};
-  .password-input_link {
-    color: ${(props) =>
-      props.isDisabled
-        ? props.theme.passwordInput.disableColor
-        : props.theme.passwordInput.color};
-  }
-  @media ${tablet} {
-    width: ${(props) => props.theme.passwordInput.link.tablet.width};
-    margin-left: ${(props) => props.theme.passwordInput.link.tablet.marginLeft};
-    margin-top: ${(props) => props.theme.passwordInput.link.tablet.marginTop};
-  }
-`;
-CopyLink.defaultProps = { theme: Base };
-
-const Progress = styled.div`
-  border: 1.5px solid
-    ${(props) =>
-      !props.isDisabled && props.progressColor
-        ? props.progressColor
-        : "transparent"};
-  border-radius: ${(props) => props.theme.passwordInput.progress.borderRadius};
-  margin-top: ${(props) => props.theme.passwordInput.progress.marginTop};
-  width: ${(props) => (props.progressWidth ? props.progressWidth + "%" : "0%")};
-`;
-Progress.defaultProps = { theme: Base };
-
 const TooltipStyle = styled.div`
   width: 280px;
 
@@ -178,9 +129,6 @@ const StyledTooltipItem = styled(Text)`
 `;
 
 export {
-  Progress,
-  CopyLink,
-  NewPasswordButton,
   PasswordProgress,
   StyledInput,
   TooltipStyle,
