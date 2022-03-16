@@ -954,7 +954,7 @@ const Base = {
 
       labelIcon: {
         width: "100%",
-        margin: "0 0 8px 0",
+        margin: "0 0 4px 0",
       },
 
       body: {
@@ -1523,7 +1523,7 @@ const Base = {
       marginTop: "12px",
       marginRight: "8px",
       marginLeft: "auto",
-      fillColor: gray,
+      fillColor: grayMain,
     },
 
     button: {

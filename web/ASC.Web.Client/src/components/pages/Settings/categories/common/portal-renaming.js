@@ -9,14 +9,6 @@ import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 import { inject, observer } from "mobx-react";
 
 const StyledComponent = styled.div`
-  .margin-top {
-    margin-top: 20px;
-  }
-
-  .margin-left {
-    margin-left: 20px;
-  }
-
   .settings-block {
     margin-bottom: 70px;
   }
@@ -28,22 +20,9 @@ const StyledComponent = styled.div`
   .combo-button-label {
     max-width: 100%;
   }
-
-  .category-item-heading {
-    display: flex;
-    align-items: center;
-    margin-bottom: 16px;
-  }
-
-  .category-item-title {
-    font-weight: bold;
-    font-size: 16px;
-    line-height: 22px;
-    margin-right: 4px;
-  }
 `;
 
-const PortalRenaming = ({ t, theme, sectionWidth }) => {
+const PortalRenaming = ({ t, theme }) => {
   // todo: Изменить на false
   const [isLoadedData, setIsLoadedData] = useState(true);
 
@@ -85,7 +64,6 @@ const PortalRenaming = ({ t, theme, sectionWidth }) => {
           saveButtonLabel={t("Common:SaveButton")}
           cancelButtonLabel={t("Common:CancelButton")}
           displaySettings={true}
-          sectionWidth={sectionWidth}
         />
       </StyledComponent>
     </>
