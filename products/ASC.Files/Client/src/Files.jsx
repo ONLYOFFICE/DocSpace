@@ -56,6 +56,36 @@ window.AppServer.files = {
 
 const Error404 = React.lazy(() => import("studio/Error404"));
 
+const FilesArticle = React.memo(() => {
+  return (
+    <Article>
+      <Article.Header>
+        <ArticleHeaderContent />
+      </Article.Header>
+      <Article.MainButton>
+        <ArticleMainButtonContent />
+      </Article.MainButton>
+      <Article.Body>
+        <ArticleBodyContent />
+      </Article.Body>
+    </Article>
+  );
+});
+
+const FilesSection = React.memo(() => {
+  return (
+    <Switch>
+      <PrivateRoute exact path={SETTINGS_URL} component={Settings} />
+      <PrivateRoute exact path={HISTORY_URL} component={VersionHistory} />
+      <PrivateRoute path={PRIVATE_ROOMS_URL} component={PrivateRoomsPage} />
+      <PrivateRoute exact path={HOME_URL} component={Home} />
+      <PrivateRoute path={FILTER_URL} component={Home} />
+      <PrivateRoute path={MEDIA_VIEW_URL} component={Home} />
+      <PrivateRoute component={Error404Route} />
+    </Switch>
+  );
+});
+
 const Error404Route = (props) => (
   <React.Suspense fallback={<AppLoader />}>
     <ErrorBoundary>
@@ -81,6 +111,7 @@ class FilesContent extends React.Component {
       .catch((err) => toastr.error(err))
       .finally(() => {
         this.props.setIsLoaded(true);
+        this.props.setIsArticleLoaded(true);
         updateTempContent();
       });
   }
@@ -100,7 +131,7 @@ class FilesContent extends React.Component {
       isLoaded,
       isDesktop,
     } = this.props;
-    //console.log("componentDidUpdate: ", this.props);
+    // console.log("componentDidUpdate: ", this.props);
     if (isAuthenticated && !this.isDesktopInit && isDesktop && isLoaded) {
       this.isDesktopInit = true;
       regDesktop(
@@ -121,39 +152,14 @@ class FilesContent extends React.Component {
     }
   }
 
-  renderArticle() {
-    return (
-      <Article>
-        <Article.Header>
-          <ArticleHeaderContent />
-        </Article.Header>
-        <Article.MainButton>
-          <ArticleMainButtonContent />
-        </Article.MainButton>
-        <Article.Body>
-          <ArticleBodyContent />
-        </Article.Body>
-      </Article>
-    );
-  }
-
   render() {
     //const { /*, isDesktop*/ } = this.props;
-    const article = this.renderArticle();
 
     return (
       <>
         <Panels />
-        {article}
-        <Switch>
-          <PrivateRoute exact path={SETTINGS_URL} component={Settings} />
-          <PrivateRoute exact path={HISTORY_URL} component={VersionHistory} />
-          <PrivateRoute path={PRIVATE_ROOMS_URL} component={PrivateRoomsPage} />
-          <PrivateRoute exact path={HOME_URL} component={Home} />
-          <PrivateRoute path={FILTER_URL} component={Home} />
-          <PrivateRoute path={MEDIA_VIEW_URL} component={Home} />
-          <PrivateRoute component={Error404Route} />
-        </Switch>
+        <FilesArticle />
+        <FilesSection />
       </>
     );
   }
@@ -168,6 +174,7 @@ const Files = inject(({ auth, filesStore }) => {
     isEncryption: auth.settingsStore.isEncryptionSupport,
     isLoaded: auth.isLoaded && filesStore.isLoaded,
     setIsLoaded: filesStore.setIsLoaded,
+    setIsArticleLoaded: filesStore.setIsArticleLoaded,
     setEncryptionKeys: auth.settingsStore.setEncryptionKeys,
     loadFilesInfo: async () => {
       //await auth.init();
