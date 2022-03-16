@@ -177,6 +177,7 @@ namespace ASC.Api.Settings
         private Signature Signature { get; }
         private DbWorker WebhookDbWorker { get; }
         private DnsSettings DnsSettings { get; }
+        public ConfigurationExtension ConfigurationExtension { get; }
         public IHttpClientFactory ClientFactory { get; }
 
         public SettingsController(
@@ -244,6 +245,7 @@ namespace ASC.Api.Settings
             Signature signature,
             DbWorker dbWorker,
             DnsSettings dnsSettings,
+            ConfigurationExtension configurationExtension,
             IHttpClientFactory clientFactory)
         {
             Log = option.Get("ASC.Api");
@@ -307,6 +309,7 @@ namespace ASC.Api.Settings
             PaymentManager = paymentManager;
             WebhookDbWorker = dbWorker;
             DnsSettings = dnsSettings;
+            ConfigurationExtension = configurationExtension;
             Constants = constants;
             InstanceCrypto = instanceCrypto;
             Signature = signature;
@@ -348,6 +351,8 @@ namespace ASC.Api.Settings
                     AppId = Configuration["firebase:appId"] ?? "",
                     MeasurementId = Configuration["firebase:measurementId"] ?? ""
                 };
+
+                settings.DeepLink = ConfigurationExtension.GetSetting<DeepLinkWrapper>("deeplink");
 
                 bool debugInfo;
                 if (bool.TryParse(Configuration["debug-info:enabled"], out debugInfo))
