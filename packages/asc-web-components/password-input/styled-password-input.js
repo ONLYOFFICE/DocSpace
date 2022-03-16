@@ -108,6 +108,10 @@ PasswordProgress.defaultProps = { theme: Base };
 const TooltipStyle = styled.div`
   width: 280px;
 
+  @media (max-width: 768px) {
+    width: 320px;
+  }
+
   .__react_component_tooltip {
   }
 `;
