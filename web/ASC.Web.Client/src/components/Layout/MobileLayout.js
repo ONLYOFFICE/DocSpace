@@ -48,6 +48,10 @@ class MobileLayout extends Component {
 
   scrolledTheVerticalAxis = () => {
     const { prevScrollPosition, visibleContent } = this.state;
+    const bar = document.getElementById("bar-banner"); //TODO: removed from here;
+    const mainBar = document.getElementById("main-bar"); //TODO: removed from here;
+    const rects = mainBar ? mainBar.getBoundingClientRect() : null; //TODO: removed from here;
+    const headerHeight = bar ? 108 + 50 : mainBar ? rects.height + 40 : 48 + 50; // nav-bar + {if exist - bar/mainBar} + section-header
 
     const currentScrollPosition =
       this.customScrollElm.scrollTop > 0 ? this.customScrollElm.scrollTop : 0;
@@ -68,7 +72,7 @@ class MobileLayout extends Component {
     if (
       (isSafari || isIOS) &&
       this.customScrollElm.scrollHeight - this.customScrollElm.clientHeight <
-        112
+        headerHeight
     ) {
       if (!this.state.visibleContent)
         this.setState({
@@ -77,7 +81,18 @@ class MobileLayout extends Component {
       return;
     }
 
-    if (currentScrollPosition <= 150 && prevScrollPosition === 0) {
+    // if (currentScrollPosition <= 150 && prevScrollPosition === 0) {
+    //   if (!this.state.visibleContent)
+    //     this.setState({
+    //       visibleContent: true,
+    //     });
+    //   return;
+    // }
+
+    if (
+      prevScrollPosition - currentScrollPosition > 0 &&
+      currentScrollPosition < headerHeight
+    ) {
       if (!this.state.visibleContent)
         this.setState({
           visibleContent: true,
@@ -87,7 +102,7 @@ class MobileLayout extends Component {
 
     if (
       (isSafari || isIOS) &&
-      Math.abs(currentScrollPosition - prevScrollPosition) <= 112 &&
+      Math.abs(currentScrollPosition - prevScrollPosition) <= headerHeight &&
       currentScrollPosition === 0
     ) {
       if (!this.state.visibleContent)
@@ -97,7 +112,7 @@ class MobileLayout extends Component {
       return;
     }
 
-    if (Math.abs(currentScrollPosition - prevScrollPosition) <= 240) {
+    if (Math.abs(currentScrollPosition - prevScrollPosition) <= headerHeight) {
       return;
     }
 
@@ -119,7 +134,7 @@ class MobileLayout extends Component {
     }
 
     this.setState({
-      prevScrollPosition: prevScrollPosition,
+      prevScrollPosition: currentScrollPosition,
       visibleContent: isVisible,
     });
   };
