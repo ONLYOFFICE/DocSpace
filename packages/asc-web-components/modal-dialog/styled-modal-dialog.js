@@ -2,12 +2,24 @@ import styled, { css } from "styled-components";
 import Base from "../themes/base";
 import Box from "../box";
 import CrossSidebarIcon from "../../../public/images/cross.sidebar.react.svg";
-import { mobile } from "../utils/device";
+import { mobile, isTablet, isDesktop } from "../utils/device";
 
 const StyledModal = styled.div`
   .backdrop {
     background: rgba(6, 22, 38, 0.2);
     backdrop-filter: blur(18px);
+  }
+
+  .heading-aside {
+    margin-right: -16px;
+  }
+
+  .bodybox-aside {
+    padding-left: 16px;
+  }
+
+  .footer-aside {
+    width: 100%;
   }
 `;
 
@@ -56,6 +68,9 @@ const StyledHeader = styled.div`
   margin-bottom: 16px;
 
   .heading {
+    height: 37px;
+    display: flex;
+    align-items: center;
     max-width: ${(props) => props.theme.modalDialog.content.heading.maxWidth};
     margin: ${(props) => props.theme.modalDialog.content.heading.margin};
     font-family: "Open Sans";
@@ -78,17 +93,26 @@ const CloseButton = styled(CrossSidebarIcon)`
   min-width: ${(props) => props.theme.modalDialog.closeButton.minWidth};
   min-height: ${(props) => props.theme.modalDialog.closeButton.minHeight};
 
-  right: 0;
-  top: 0;
-  margin-right: -23px;
-  @media ${mobile} {
-    margin-right: 10px;
-    margin-top: -23px;
-  }
-
   path {
     stroke: #fff;
   }
+
+  right: 0;
+  top: 0;
+  ${({ displayType }) =>
+    displayType === "modal" || (displayType === "auto" && isDesktop())
+      ? css`
+          margin-right: -23px;
+          @media ${mobile} {
+            margin-right: 10px;
+            margin-top: -23px;
+          }
+        `
+      : css`
+          margin-top: 17px;
+          margin-right: 325px;
+          padding-right: 10px;
+        `}
 `;
 
 const StyledFooter = styled.div`
