@@ -1,7 +1,6 @@
 import styled from "styled-components";
-
 import Base from "../themes/base";
-import { tablet } from "../utils/device";
+import { tablet, desktop } from "../utils/device";
 import { isMobile, isTablet } from "react-device-detect";
 
 const StyledSaveCancelButtons = styled.div`
@@ -50,19 +49,22 @@ const StyledSaveCancelButtons = styled.div`
 
     .unsaved-changes {
       margin-bottom: 12px;
+      font-size: 12px;
+      font-weight: 600;
     }
   `}
 
-  ${(props) =>
-    props.displaySettings &&
-    ((!isMobile && props.sectionWidth > 375 && props.sectionWidth < 1440) ||
-      isTablet) &&
-    `
+  @media (min-width: 376px) {
+    ${(props) =>
+      props.displaySettings &&
+      (!isMobile || isTablet) &&
+      `
     position: static;
     max-width: none;
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
+    padding-bottom: 24px;
 
     .buttons-flex {
       width: auto;
@@ -78,21 +80,8 @@ const StyledSaveCancelButtons = styled.div`
       margin-left: 8px;
       margin-bottom: 0;
     }
-   
   `}
-
-${(props) =>
-    props.displaySettings &&
-    !isTablet &&
-    props.sectionWidth >= 1440 &&
-    `
-    .save-button, .cancel-button {
-      font-size: 13px;
-      line-height: 20px;
-      padding-top: 5px;
-      padding-bottom: 5px;
-    }
-  `}
+  }
 
   @media ${tablet} {
     ${(props) =>
@@ -104,6 +93,20 @@ ${(props) =>
     .unsaved-changes {
       display: none;
     } 
+  `}
+  }
+
+  @media ${desktop} {
+    ${(props) =>
+      props.displaySettings &&
+      !isTablet &&
+      `
+    .save-button, .cancel-button {
+      font-size: 13px;
+      line-height: 20px;
+      padding-top: 5px;
+      padding-bottom: 5px;
+    }
   `}
   }
 `;
