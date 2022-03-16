@@ -117,7 +117,7 @@ const ForgotPasswordModalDialog = (props) => {
           className="modal-dialog-button"
           key="CancelBtn"
           label={t("Common:CancelButton")}
-          size="big"
+          size="normal"
           scale={false}
           primary={false}
           onClick={onDialogClose}
