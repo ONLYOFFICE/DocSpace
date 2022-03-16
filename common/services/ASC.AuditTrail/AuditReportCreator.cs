@@ -56,7 +56,7 @@ public class AuditReportCreator
             using var writer = new StreamWriter(stream, Encoding.UTF8);
             using var csv = new CsvWriter(writer, CultureInfo.CurrentCulture);
 
-            csv.Configuration.RegisterClassMap(new BaseEventMap<TEvent>());
+            csv.Context.RegisterClassMap(new BaseEventMap<TEvent>());
 
             csv.WriteHeader<TEvent>();
             csv.NextRecord();
