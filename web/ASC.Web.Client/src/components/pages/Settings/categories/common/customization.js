@@ -8,6 +8,7 @@ import CustomTitles from "./custom-titles";
 import PortalRenaming from "./portal-renaming";
 import { Base } from "@appserver/components/themes";
 import { isMobile } from "react-device-detect";
+import { Consumer } from "@appserver/components/utils/context";
 
 const StyledComponent = styled.div`
   .combo-button-label {
@@ -58,7 +59,7 @@ const Customization = ({ t }) => {
   const [mobileView, setMobileView] = useState();
 
   const checkInnerWidth = () => {
-    if (window.innerWidth <= 375 || isMobile) {
+    if (window.innerWidth <= 375) {
       setMobileView(true);
     } else {
       setMobileView(false);
@@ -70,25 +71,31 @@ const Customization = ({ t }) => {
     return () => window.removeEventListener("resize", checkInnerWidth);
   }, [checkInnerWidth]);
 
-  return mobileView ? (
-    <CustomizationNavbar />
-  ) : (
-    <StyledComponent>
-      <div className="category-description">{`${t(
-        "Settings:CustomizationDescription"
-      )}`}</div>
-      <div className="category-item-wrapper">
-        <LanguageAndTimeZone />
-      </div>
-      <div className="category-border"></div>
-      <div className="category-item-wrapper">
-        <CustomTitles />
-      </div>
-      <div className="category-border"></div>
-      <div className="category-item-wrapper">
-        <PortalRenaming />
-      </div>
-    </StyledComponent>
+  return (
+    <Consumer>
+      {(context) =>
+        `${context.sectionWidth}` <= 375 || isMobile || mobileView ? (
+          <CustomizationNavbar />
+        ) : (
+          <StyledComponent>
+            <div className="category-description">{`${t(
+              "Settings:CustomizationDescription"
+            )}`}</div>
+            <div className="category-item-wrapper">
+              <LanguageAndTimeZone />
+            </div>
+            <div className="category-border"></div>
+            <div className="category-item-wrapper">
+              <CustomTitles />
+            </div>
+            <div className="category-border"></div>
+            <div className="category-item-wrapper">
+              <PortalRenaming />
+            </div>
+          </StyledComponent>
+        )
+      }
+    </Consumer>
   );
 };
 
