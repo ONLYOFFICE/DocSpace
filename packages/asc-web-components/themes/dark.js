@@ -306,6 +306,7 @@ const Dark = {
     disableBackgroundColor: "rgba(0, 0, 0, 0.08)",
     hoverBackground: "#292929",
     activeBackground: "#292929",
+    hoverBorder: "#292929",
 
     boxShadow: "none",
     hoverBoxShadow: "none",
@@ -326,6 +327,7 @@ const Dark = {
       textOverflow: "ellipsis",
       whiteSpace: "nowrap",
       color: grayMaxLight,
+      hoverColor: grayMaxLight,
     },
 
     svg: {

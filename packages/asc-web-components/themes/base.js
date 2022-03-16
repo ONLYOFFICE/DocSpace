@@ -303,7 +303,8 @@ const Base = {
     background: white,
     disableBackgroundColor: "rgba(0, 0, 0, 0.08)",
     hoverBackground: white,
-    activeBackground: grayMaxLight,
+    activeBackground: "grayMaxLight",
+    hoverBorder: "#1877f2",
 
     boxShadow:
       "0px 1px 1px rgba(0, 0, 0, 0.24),0px 0px 1px rgba(0, 0, 0, 0.12)",
@@ -324,6 +325,7 @@ const Base = {
       textOverflow: "ellipsis",
       whiteSpace: "nowrap",
       color: "#757575",
+      hoverColor: "#1877f2",
     },
 
     svg: {
