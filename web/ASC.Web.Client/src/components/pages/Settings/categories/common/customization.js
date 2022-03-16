@@ -26,30 +26,28 @@ const StyledComponent = styled.div`
     margin-bottom: 20px;
   }
 
-  .category-border {
+  .category-item-wrapper:not(:last-child) {
     border-bottom: 1px solid #eceef1;
     margin-bottom: 24px;
   }
 
-  .category-item-wrapper {
-    .category-item-description {
-      color: ${(props) => props.theme.studio.settings.common.descriptionColor};
-      font-size: 12px;
-      max-width: 1024px;
-    }
+  .category-item-description {
+    color: ${(props) => props.theme.studio.settings.common.descriptionColor};
+    font-size: 12px;
+    max-width: 1024px;
+  }
 
-    .category-item-heading {
-      display: flex;
-      align-items: center;
-      padding-bottom: 16px;
-    }
+  .category-item-heading {
+    display: flex;
+    align-items: center;
+    padding-bottom: 16px;
+  }
 
-    .category-item-title {
-      font-weight: bold;
-      font-size: 16px;
-      line-height: 22px;
-      margin-right: 4px;
-    }
+  .category-item-title {
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 22px;
+    margin-right: 4px;
   }
 `;
 
@@ -84,11 +82,9 @@ const Customization = ({ t }) => {
             <div className="category-item-wrapper">
               <LanguageAndTimeZone sectionWidth={context.sectionWidth} />
             </div>
-            <div className="category-border"></div>
             <div className="category-item-wrapper">
               <CustomTitles sectionWidth={context.sectionWidth} />
             </div>
-            <div className="category-border"></div>
             <div className="category-item-wrapper">
               <PortalRenaming sectionWidth={context.sectionWidth} />
             </div>
