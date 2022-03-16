@@ -16,6 +16,12 @@ import {
   ArticleMainButtonContent,
 } from "../../components/Article";
 import {
+  CatalogBodyContent,
+  CatalogHeaderContent,
+  CatalogMainButtonContent,
+} from "../../components/Catalog";
+
+import {
   SectionBodyContent,
   SectionFilterContent,
   SectionHeaderContent,
@@ -27,6 +33,7 @@ import MediaViewer from "./MediaViewer";
 import DragTooltip from "../../components/DragTooltip";
 import { observer, inject } from "mobx-react";
 import config from "../../../package.json";
+import { Consumer } from "@appserver/components/utils/context";
 
 class PureHome extends React.Component {
   componentDidMount() {
@@ -278,6 +285,8 @@ class PureHome extends React.Component {
 
       dragging,
       tReady,
+
+      showCatalog,
     } = this.props;
     return (
       <>
@@ -308,18 +317,40 @@ class PureHome extends React.Component {
           isHeaderVisible={isHeaderVisible}
           onOpenUploadPanel={this.showUploadPanel}
           firstLoad={firstLoad}
+          dragging={dragging}
         >
-          <PageLayout.ArticleHeader>
-            <ArticleHeaderContent />
-          </PageLayout.ArticleHeader>
+          {!showCatalog && (
+            <PageLayout.ArticleHeader>
+              <ArticleHeaderContent />
+            </PageLayout.ArticleHeader>
+          )}
+          {!showCatalog && (
+            <PageLayout.ArticleMainButton>
+              <ArticleMainButtonContent />
+            </PageLayout.ArticleMainButton>
+          )}
+          {!showCatalog && (
+            <PageLayout.ArticleBody>
+              <ArticleBodyContent onTreeDrop={this.onDrop} />
+            </PageLayout.ArticleBody>
+          )}
 
-          <PageLayout.ArticleMainButton>
-            <ArticleMainButtonContent />
-          </PageLayout.ArticleMainButton>
+          {showCatalog && (
+            <PageLayout.CatalogHeader>
+              <CatalogHeaderContent />
+            </PageLayout.CatalogHeader>
+          )}
+          {showCatalog && (
+            <PageLayout.CatalogMainButton>
+              <CatalogMainButtonContent />
+            </PageLayout.CatalogMainButton>
+          )}
+          {showCatalog && (
+            <PageLayout.CatalogBody>
+              <CatalogBodyContent />
+            </PageLayout.CatalogBody>
+          )}
 
-          <PageLayout.ArticleBody>
-            <ArticleBodyContent onTreeDrop={this.onDrop} />
-          </PageLayout.ArticleBody>
           <PageLayout.SectionHeader>
             <SectionHeaderContent />
           </PageLayout.SectionHeader>
@@ -329,7 +360,11 @@ class PureHome extends React.Component {
           </PageLayout.SectionFilter>
 
           <PageLayout.SectionBody>
-            <SectionBodyContent />
+            <Consumer>
+              {(context) => (
+                <SectionBodyContent sectionWidth={context.sectionWidth} />
+              )}
+            </Consumer>
           </PageLayout.SectionBody>
 
           <PageLayout.SectionPaging>
@@ -463,6 +498,7 @@ export default inject(
 
       setIsPrevSettingsModule,
       isPrevSettingsModule,
+      showCatalog: auth.settingsStore.showCatalog,
     };
   }
 )(withRouter(observer(Home)));

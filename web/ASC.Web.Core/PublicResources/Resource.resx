@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.9.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.9.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
     <value>Validation code field cannot be empty</value>
@@ -541,6 +541,9 @@
   <data name="CustomNamingPeopleSchema" xml:space="preserve">
     <value>Custom</value>
   </data>
+  <data name="DnsChangeMsg" xml:space="preserve">
+    <value>A link to confirm the operation has been sent to {0} (the email address of the portal owner).</value>
+  </data>
   <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
     <value>Incorrect Instance id.</value>
   </data>
@@ -622,6 +625,12 @@
   <data name="ErrorRequestLimitExceeded" xml:space="preserve">
     <value>Request limit is exceeded</value>
   </data>
+  <data name="ErrorTenantTooShort" xml:space="preserve">
+    <value>The tenant domain can not be empty.</value>
+  </data>
+  <data name="ErrorTenantTooShortFormat" xml:space="preserve">
+    <value>The domain name must be between {0} and {1} characters long.</value>
+  </data>
   <data name="ErrorUserNotFound" xml:space="preserve">
     <value>The user could not be found</value>
   </data>
@@ -688,6 +697,9 @@
   <data name="PersonalFreeSpaceException" xml:space="preserve">
     <value>Disk space quota exceeded</value>
   </data>
+  <data name="PortalAccessSettingsTariffException" xml:space="preserve">
+    <value>This feature enabled on free tariff only</value>
+  </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Portal Access</value>
   </data>
@@ -729,6 +741,9 @@
   </data>
   <data name="SsoSettingsInvalidMapping" xml:space="preserve">
     <value>Invalid fields mapping</value>
+  </data>
+  <data name="SuccessfullyPortalRenameMessage" xml:space="preserve">
+    <value>Portal has been renamed successfully</value>
   </data>
   <data name="SuccessfullySaveGreetingSettingsMessage" xml:space="preserve">
     <value>Welcome Page settings have been successfully saved</value>

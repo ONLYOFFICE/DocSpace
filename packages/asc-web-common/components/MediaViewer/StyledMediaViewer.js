@@ -1,7 +1,8 @@
+import { Base } from "@appserver/components/themes";
 import styled from "styled-components";
 
 const StyledMediaViewer = styled.div`
-  color: #d1d1d1;
+  color: ${(props) => props.theme.mediaViewer.color};
   display: ${(props) => (props.visible ? "block" : "none")};
   overflow: hidden;
   .videoViewerOverlay {
@@ -20,7 +21,7 @@ const StyledMediaViewer = styled.div`
     padding-bottom: 14px;
     height: 20px;
     width: 100%;
-    background-color: rgba(11, 11, 11, 0.7);
+    background-color: ${(props) => props.theme.mediaViewer.backgroundColor};
     position: fixed;
     bottom: 0;
     left: 0;
@@ -43,7 +44,7 @@ const StyledMediaViewer = styled.div`
 
     svg {
       path {
-        fill: #fff;
+        fill: ${(props) => props.theme.mediaViewer.fill};
       }
     }
   }
@@ -53,7 +54,7 @@ const StyledMediaViewer = styled.div`
     padding-bottom: 14px;
     height: 20px;
     width: 100%;
-    background: rgba(17, 17, 17, 0.867);
+    background: ${(props) => props.theme.mediaViewer.background};
     position: fixed;
     top: 0;
     left: 0;
@@ -66,6 +67,7 @@ const StyledMediaViewer = styled.div`
       width: calc(100% - 50px);
       padding-left: 16px;
       box-sizing: border-box;
+      color: ${(props) => props.theme.mediaViewer.titleColor};
     }
   }
 
@@ -75,7 +77,15 @@ const StyledMediaViewer = styled.div`
     right: 10px;
     height: 25px;
     width: 25px;
+
+    svg {
+      path {
+        fill: ${(props) => props.theme.mediaViewer.iconColor};
+      }
+    }
   }
 `;
+
+StyledMediaViewer.defaultProps = { theme: Base };
 
 export default StyledMediaViewer;

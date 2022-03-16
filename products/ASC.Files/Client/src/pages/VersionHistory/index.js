@@ -5,10 +5,10 @@ import PageLayout from "@appserver/common/components/PageLayout";
 import Loaders from "@appserver/common/components/Loaders";
 import { withTranslation } from "react-i18next";
 import {
-  ArticleHeaderContent,
-  ArticleBodyContent,
-  ArticleMainButtonContent,
-} from "../../components/Article";
+  CatalogBodyContent,
+  CatalogHeaderContent,
+  CatalogMainButtonContent,
+} from "../../components/Catalog";
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 //import { setDocumentTitle } from "../../../helpers/utils";
 import { inject, observer } from "mobx-react";
@@ -52,17 +52,15 @@ class PureVersionHistory extends React.Component {
         showSecondaryButtonAlert={false}
         withBodyScroll={false}
       >
-        <PageLayout.ArticleHeader>
-          <ArticleHeaderContent />
-        </PageLayout.ArticleHeader>
-
-        <PageLayout.ArticleMainButton>
-          <ArticleMainButtonContent />
-        </PageLayout.ArticleMainButton>
-
-        <PageLayout.ArticleBody>
-          <ArticleBodyContent />
-        </PageLayout.ArticleBody>
+        <PageLayout.CatalogHeader>
+          <CatalogHeaderContent />
+        </PageLayout.CatalogHeader>
+        <PageLayout.CatalogMainButton>
+          <CatalogMainButtonContent />
+        </PageLayout.CatalogMainButton>
+        <PageLayout.CatalogBody>
+          <CatalogBodyContent />
+        </PageLayout.CatalogBody>
 
         <PageLayout.SectionHeader>
           {versions && !isLoading ? (

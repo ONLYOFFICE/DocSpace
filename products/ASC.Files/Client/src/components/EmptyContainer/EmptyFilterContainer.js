@@ -33,7 +33,6 @@ const EmptyFilterContainer = ({
         onClick={onResetFilter}
         iconName="/static/images/cross.react.svg"
         isFill
-        color="#657077"
       />
       <Link onClick={onResetFilter} {...linkStyles}>
         {t("Common:ClearButton")}

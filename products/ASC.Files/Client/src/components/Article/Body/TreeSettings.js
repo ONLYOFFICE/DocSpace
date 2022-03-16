@@ -14,6 +14,7 @@ import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import Loaders from "@appserver/common/components/Loaders";
 import withLoader from "../../../HOCs/withLoader";
+import Base from "@appserver/components/themes/base";
 
 const StyledTreeMenu = styled(TreeMenu)`
   margin-top: 18px !important;
@@ -26,7 +27,8 @@ const StyledTreeMenu = styled(TreeMenu)`
   }
 
   .rc-tree-node-selected {
-    background: #dfe2e3 !important;
+    background: ${(props) =>
+      props.theme.filesArticleBody.background} !important;
   }
 
   .rc-tree-treenode-disabled > span:not(.rc-tree-switcher),
@@ -54,24 +56,30 @@ const StyledTreeMenu = styled(TreeMenu)`
     }
   }
 `;
+
+StyledTreeMenu.defaultProps = { theme: Base };
+
 const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
   ${commonIconsStyles}
   path {
-    fill: dimgray;
+    fill: ${(props) => props.theme.filesArticleBody.expanderColor};
   }
 `;
+StyledExpanderDownIcon.defaultProps = { theme: Base };
 const StyledExpanderRightIcon = styled(ExpanderRightIcon)`
   ${commonIconsStyles}
   path {
-    fill: dimgray;
+    fill: ${(props) => props.theme.filesArticleBody.expanderColor};
   }
 `;
+StyledExpanderRightIcon.defaultProps = { theme: Base };
 const StyledSettingsIcon = styled(SettingsIcon)`
   ${commonIconsStyles}
   path {
-    fill: dimgray;
+    fill: ${(props) => props.theme.filesArticleBody.expanderColor};
   }
 `;
+StyledSettingsIcon.defaultProps = { theme: Base };
 const PureTreeSettings = ({
   match,
   enableThirdParty,

@@ -112,6 +112,7 @@ class ModalDialog extends React.Component {
       contentPaddingBottom,
       removeScroll,
       modalLoaderBodyHeight,
+      theme,
       width,
     } = this.props;
 

@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
+import { Base } from "@appserver/components/themes";
 
 const StyledVideoControlBtn = styled.div`
   display: inline-block;
@@ -13,9 +14,13 @@ const StyledVideoControlBtn = styled.div`
   text-align: center;
 
   &:hover {
-    background-color: rgba(200, 200, 200, 0.2);
+    background-color: ${(props) =>
+      props.theme.mediaViewer.controlBtn.backgroundColor};
   }
 `;
+
+StyledVideoControlBtn.defaultProps = { theme: Base };
+
 const ControlBtn = (props) => {
   return (
     <StyledVideoControlBtn {...props}>{props.children}</StyledVideoControlBtn>

@@ -294,7 +294,9 @@ const SectionBodyContent = ({
             defaultOption={me}
             defaultOptionLabel={t("Common:MeLabel")}
             employeeStatus={1}
-            groupList={groups}
+            headerLabel={t("AddHeadOfDepartment")}
+
+            // groupList={groups}
           />
         </FieldContainer>
         <FieldContainer
@@ -333,7 +335,9 @@ const SectionBodyContent = ({
             defaultOptionLabel={t("Common:MeLabel")}
             selectedOptions={newGroupMembers}
             employeeStatus={1}
-            groupList={groups}
+            showCounter={true}
+            headerLabel={t("Translations:AddMembers")}
+            // groupList={groups}
           />
         </FieldContainer>
         {newGroupMembers && newGroupMembers.length > 0 && (
@@ -368,14 +372,14 @@ const SectionBodyContent = ({
             primary
             type="submit"
             isLoading={inLoading}
-            size="big"
+            size="normal"
             tabIndex={4}
             onClick={onSave}
           />
           <Button
             label={t("Common:CancelButton")}
             className="cancel-button"
-            size="big"
+            size="normal"
             isDisabled={inLoading}
             onClick={onCancel}
             tabIndex={5}
