@@ -258,4 +258,14 @@ describe("email", () => {
     expect(parsed.email).toBe(emailAddress);
     expect(parsed.name).toBe("");
   });
+
+  it("parsing empty string", () => {
+    const emailAddress = "";
+    const parsed = parseAddress(emailAddress);
+
+    expect(parsed.isValid()).toBe(false);
+    expect(parsed.parseErrors[0].message).toBe("No one email parsed");
+    expect(parsed.email).toBe(emailAddress);
+    expect(parsed.name).toBe("");
+  });
 });
