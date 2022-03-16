@@ -83,6 +83,7 @@ using ASC.Web.Studio.Core.TFA;
 using ASC.Web.Studio.UserControls.CustomNavigation;
 using ASC.Web.Studio.UserControls.FirstTime;
 using ASC.Web.Studio.UserControls.Management;
+using ASC.Web.Studio.UserControls.Management.SingleSignOnSettings;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 using ASC.Webhooks.Core;
@@ -3028,6 +3029,186 @@ namespace ASC.Api.Settings
         public List<WebhooksLog> TenantWebhooks()
         {
             return WebhookDbWorker.GetTenantWebhooks();
+        }
+
+        /// <summary>
+        /// Returns the current portal SSO settings.
+        /// </summary>
+        /// <short>
+        /// Get the SSO settings
+        /// </short>
+        /// <category>SSO</category>
+        /// <returns>SSO settings</returns>
+        [Read("ssov2")]
+        public SsoSettingsV2 GetSsoSettingsV2()
+        {
+            CheckSsoPermissions();
+
+            var settings = SettingsManager.Load<SsoSettingsV2>();
+
+            if (string.IsNullOrEmpty(settings.SpLoginLabel))
+                settings.SpLoginLabel = SsoSettingsV2.SSO_SP_LOGIN_LABEL;
+
+            return settings;
+        }
+
+        /// <summary>
+        /// Returns the default portal SSO settings.
+        /// </summary>
+        /// <short>
+        /// Get the default SSO settings
+        /// </short>
+        /// <category>SSO</category>
+        /// <returns>Default SSO settings</returns>
+        [Read("ssov2/default")]
+        public SsoSettingsV2 GetDefaultSsoSettingsV2()
+        {
+            CheckSsoPermissions();
+            return new SsoSettingsV2().GetDefault(ServiceProvider) as SsoSettingsV2;
+        }
+
+        /// <summary>
+        /// Returns the constants of the SSO settings.
+        /// </summary>
+        /// <short>
+        /// Get the constants of the SSO settings
+        /// </short>
+        /// <category>SSO</category>
+        /// <returns>Constants of the SSO settings</returns>
+        [Read("ssov2/constants")]
+        public object GetSsoSettingsV2Constants()
+        {
+            return new
+            {
+                SsoNameIdFormatType = new SsoNameIdFormatType(),
+                SsoBindingType = new SsoBindingType(),
+                SsoSigningAlgorithmType = new SsoSigningAlgorithmType(),
+                SsoEncryptAlgorithmType = new SsoEncryptAlgorithmType(),
+                SsoSpCertificateActionType = new SsoSpCertificateActionType(),
+                SsoIdpCertificateActionType = new SsoIdpCertificateActionType()
+            };
+        }
+
+        /// <summary>
+        /// Saves the SSO settings for the current portal.
+        /// </summary>
+        /// <short>
+        /// Save the SSO settings
+        /// </short>
+        /// <category>SSO</category>
+        /// <param name="serializeSettings">Serialized SSO settings</param>
+        /// <returns>SSO settings</returns>
+        [Create("ssov2")]
+        public SsoSettingsV2 SaveSsoSettingsV2(string serializeSettings)
+        {
+            CheckSsoPermissions();
+
+            if (string.IsNullOrEmpty(serializeSettings))
+                throw new ArgumentException(Resource.SsoSettingsCouldNotBeNull);
+
+            var settings = JsonSerializer.Deserialize<SsoSettingsV2>(serializeSettings);
+
+            if (settings == null)
+                throw new ArgumentException(Resource.SsoSettingsCouldNotBeNull);
+
+            if (string.IsNullOrWhiteSpace(settings.IdpSettings.EntityId))
+                throw new Exception(Resource.SsoSettingsInvalidEntityId);
+
+            if (string.IsNullOrWhiteSpace(settings.IdpSettings.SsoUrl) ||
+                !CheckUri(settings.IdpSettings.SsoUrl))
+                throw new Exception(string.Format(Resource.SsoSettingsInvalidBinding, "SSO " + settings.IdpSettings.SsoBinding));
+
+            if (!string.IsNullOrWhiteSpace(settings.IdpSettings.SloUrl) &&
+                !CheckUri(settings.IdpSettings.SloUrl))
+                throw new Exception(string.Format(Resource.SsoSettingsInvalidBinding, "SLO " + settings.IdpSettings.SloBinding));
+
+            if (string.IsNullOrWhiteSpace(settings.FieldMapping.FirstName) ||
+                string.IsNullOrWhiteSpace(settings.FieldMapping.LastName) ||
+                string.IsNullOrWhiteSpace(settings.FieldMapping.Email))
+                throw new Exception(Resource.SsoSettingsInvalidMapping);
+
+            if (string.IsNullOrEmpty(settings.SpLoginLabel))
+            {
+                settings.SpLoginLabel = SsoSettingsV2.SSO_SP_LOGIN_LABEL;
+            }
+            else if (settings.SpLoginLabel.Length > 100)
+            {
+                settings.SpLoginLabel = settings.SpLoginLabel.Substring(0, 100);
+            }
+
+            if (!SettingsManager.Save(settings))
+                throw new Exception(Resource.SsoSettingsCantSaveSettings);
+
+            if (!settings.EnableSso)
+                ConverSsoUsersToOrdinary();
+
+            var messageAction = settings.EnableSso ? MessageAction.SSOEnabled : MessageAction.SSODisabled;
+
+            MessageService.Send(messageAction);
+
+            return settings;
+        }
+
+        /// <summary>
+        /// Resets the SSO settings of the current portal.
+        /// </summary>
+        /// <short>
+        /// Reset the SSO settings
+        /// </short>
+        /// <category>SSO</category>
+        /// <returns>Default SSO settings</returns>
+        [Delete("ssov2")]
+        public SsoSettingsV2 ResetSsoSettingsV2()
+        {
+            CheckSsoPermissions();
+
+            var defaultSettings = new SsoSettingsV2().GetDefault(ServiceProvider) as SsoSettingsV2;
+
+            if (defaultSettings != null && !SettingsManager.Save(defaultSettings))
+                throw new Exception(Resource.SsoSettingsCantSaveSettings);
+
+            ConverSsoUsersToOrdinary();
+
+            MessageService.Send(MessageAction.SSODisabled);
+
+            return defaultSettings;
+        }
+
+        private void ConverSsoUsersToOrdinary()
+        {
+            var ssoUsers = UserManager.GetUsers().Where(u => u.IsSSO()).ToList();
+
+            if (!ssoUsers.Any())
+                return;
+
+            foreach (var existingSsoUser in ssoUsers)
+            {
+                existingSsoUser.SsoNameId = null;
+                existingSsoUser.SsoSessionId = null;
+
+                existingSsoUser.ConvertExternalContactsToOrdinary();
+
+                UserManager.SaveUserInfo(existingSsoUser);
+            }
+        }
+
+        private static bool CheckUri(string uriName)
+        {
+            Uri uriResult;
+            return Uri.TryCreate(uriName, UriKind.Absolute, out uriResult) &&
+                   (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+        }
+
+        private void CheckSsoPermissions()
+        {
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+            if (!CoreBaseSettings.Standalone
+                && (!SetupInfo.IsVisibleSettings(ManagementType.SingleSignOnSettings.ToString())
+                    || !TenantExtra.GetTenantQuota().Sso))
+            {
+                throw new BillingException(Resource.ErrorNotAllowedOption, "Sso");
+            }
         }
 
 
