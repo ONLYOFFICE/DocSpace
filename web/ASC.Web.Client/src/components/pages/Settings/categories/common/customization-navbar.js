@@ -23,46 +23,27 @@ const StyledArrowRightIcon = styled(ArrowRightIcon)`
 StyledArrowRightIcon.defaultProps = { theme: Base };
 
 const StyledComponent = styled.div`
-  .margin-top {
-    margin-top: 20px;
-  }
-  .margin-left {
-    margin-left: 20px;
-  }
-  .settings-block {
-    margin-bottom: 70px;
-  }
-  .field-container-width {
-    max-width: 500px;
-  }
   .combo-button-label {
     max-width: 100%;
   }
+
   .category-item-wrapper {
-    margin-top: 20px;
+    padding-top: 20px;
 
     .category-item-heading {
-      display: flex;
-      align-items: center;
-      margin-bottom: 5px;
+      padding-bottom: 8px;
     }
-    .category-item-subheader {
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 5px;
-    }
+
     .category-item-description {
       color: #657077;
       font-size: 13px;
       max-width: 1024px;
     }
+
     .inherit-title-link {
-      margin-right: 7px;
-      font-size: 19px;
-      font-weight: 600;
-    }
-    .link-text {
-      margin: 0;
+      margin-right: 4px;
+      font-size: 16px;
+      font-weight: 700;
     }
   }
 `;
@@ -95,7 +76,7 @@ const CustomizationNavbar = ({ t, theme, helpUrlCommonSettings }) => {
         <Text className="category-item-description">
           {t("LanguageAndTimeZoneSettingsDescription")}
         </Text>
-        <Box marginProp="16px 0 3px 0">
+        <Box paddingProp="10px 0 3px 0">
           <Link
             color={theme.studio.settings.common.linkColorHelp}
             target="_blank"
