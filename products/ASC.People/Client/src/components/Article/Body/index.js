@@ -15,10 +15,10 @@ import CatalogItem from "@appserver/components/catalog-item";
 const departmentsIcon = "images/departments.group.react.svg";
 const groupIcon = "/static/images/catalog.folder.react.svg";
 
-const CatalogBodyContent = ({
+const ArticleBodyContent = ({
   selectedKey,
   groups,
-  toggleCatalogOpen,
+  toggleArticleOpen,
   showText,
   groupsCaption,
   history,
@@ -61,7 +61,7 @@ const CatalogBodyContent = ({
 
       if (window.location.pathname.indexOf("/people/filter") > 0) {
         selectGroup(groupId);
-        if (isMobileOnly || isMobile()) toggleCatalogOpen();
+        if (isMobileOnly || isMobile()) toggleArticleOpen();
       } else {
         const newFilter = isRoot ? Filter.getDefault() : filter.clone();
 
@@ -74,10 +74,10 @@ const CatalogBodyContent = ({
           `/filter?${urlFilter}`
         );
         history.push(url);
-        if (isMobileOnly || isMobile()) toggleCatalogOpen();
+        if (isMobileOnly || isMobile()) toggleArticleOpen();
       }
     },
-    [changeTitleDocument, selectGroup, toggleCatalogOpen, filter]
+    [changeTitleDocument, selectGroup, toggleArticleOpen, filter]
   );
 
   const getItems = React.useCallback(
@@ -111,7 +111,7 @@ const CatalogBodyContent = ({
       {!isVisitor &&
         (firstLoad || !isLoaded ? (
           isLoading || !isLoaded ? (
-            <Loaders.PeopleCatalogLoader />
+            <Loaders.ArticleGroup />
           ) : (
             <div
               style={!isAdmin && isMobileOnly ? { marginTop: "16px" } : null}
@@ -146,11 +146,11 @@ const CatalogBodyContent = ({
   );
 };
 
-const BodyContent = withTranslation("Article")(withRouter(CatalogBodyContent));
+const BodyContent = withTranslation("Article")(withRouter(ArticleBodyContent));
 
 export default inject(({ auth, peopleStore }) => {
   const { settingsStore, setDocumentTitle, isAdmin } = auth;
-  const { customNames, showText, toggleCatalogOpen } = settingsStore;
+  const { customNames, showText, toggleArticleOpen } = settingsStore;
   const {
     groupsStore,
     selectedGroupStore,
@@ -179,6 +179,6 @@ export default inject(({ auth, peopleStore }) => {
     filter,
 
     showText,
-    toggleCatalogOpen,
+    toggleArticleOpen,
   };
 })(observer(BodyContent));

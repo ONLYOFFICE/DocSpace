@@ -2,7 +2,7 @@ import React from "react";
 //import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import MainButton from "@appserver/components/main-button";
-import InviteDialog from "./../../dialogs/InviteDialog/index";
+import InviteDialog from "../../dialogs/InviteDialog/index";
 import { withTranslation } from "react-i18next";
 import toastr from "studio/toastr";
 import Loaders from "@appserver/common/components/Loaders";
@@ -17,7 +17,7 @@ import {
 } from "@appserver/components/utils/device";
 import MobileView from "./MobileView";
 
-class CatalogMainButtonContent extends React.Component {
+class ArticleMainButtonContent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -159,7 +159,7 @@ class CatalogMainButtonContent extends React.Component {
           />
         ) : firstLoad || !isLoaded ? (
           isLoading || !isLoaded ? (
-            <Loaders.MainButton />
+            <Loaders.ArticleButton />
           ) : (
             <MainButton
               isDisabled={false}
@@ -216,7 +216,7 @@ export default withRouter(
     };
   })(
     withTranslation(["Article", "Common", "Translations"])(
-      observer(CatalogMainButtonContent)
+      observer(ArticleMainButtonContent)
     )
   )
 );
