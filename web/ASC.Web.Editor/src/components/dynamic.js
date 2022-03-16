@@ -13,8 +13,8 @@ function loadComponent(scope, module, moduleName = null) {
     await container.init(__webpack_share_scopes__.default);
     const factory = await window[scope].get(module);
     const Module = factory();
+    if (moduleName) window[moduleName] = Module.default;
 
-    moduleName && (window[moduleName] = Module.default);
     return Module;
   };
 }
@@ -27,9 +27,8 @@ const useDynamicScript = (args) => {
     if (!args.url) {
       return;
     }
-
     const exists = document.getElementById(args.id);
-    console.log(exists);
+
     if (exists) {
       setReady(true);
       setFailed(false);

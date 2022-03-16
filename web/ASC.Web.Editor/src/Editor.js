@@ -3,7 +3,6 @@ import { isMobile } from "react-device-detect";
 import FilesFilter from "@appserver/common/api/files/filter";
 import combineUrl from "@appserver/common/utils/combineUrl";
 import { AppServerConfig } from "@appserver/common/constants";
-import pkg from "../package.json";
 import throttle from "lodash/throttle";
 import Loader from "@appserver/components/loader";
 
@@ -14,13 +13,13 @@ import {
   getEditDiff,
   getEditHistory,
   updateFile,
+  getPresignedUri,
 } from "@appserver/common/api/files";
 
 import { EditorWrapper } from "./StyledEditor";
 import DynamicComponent from "./components/dynamic";
 import { useTranslation } from "react-i18next";
-
-const { homepage } = pkg;
+import useSharingDialog from "./helpers/useSharingDialog";
 
 const LoaderComponent = (
   <Loader
@@ -33,8 +32,6 @@ const LoaderComponent = (
     }}
   />
 );
-
-// TODO:  i18n
 
 const onSDKInfo = (event) => {
   console.log(
@@ -106,13 +103,15 @@ const initDesktop = (cfg) => {
           // );
         });
     },
-    i18n.t
+    t
   );
 };
 
 const text = "text";
 const presentation = "presentation";
 const insertImageAction = "imageFileType";
+const mailMergeAction = "mailMergeFileType";
+const compareFilesAction = "documentsFileType";
 let documentIsReady = false; // move to state?
 let docSaved = null; // move to state?
 let docTitle = null;
@@ -120,8 +119,7 @@ let docEditor;
 
 // const SharingDialog =
 //   typeof window === "undefined" ? null : dynamic(() => loadComponent());
-
-export default function Editor({
+function Editor({
   fileInfo,
   docApiUrl,
   config,
@@ -144,12 +142,17 @@ export default function Editor({
   const [typeInsertImageAction, setTypeInsertImageAction] = useState();
   const [filesType, setFilesType] = useState("");
   const [isFileDialogVisible, setIsFileDialogVisible] = useState(false); // ??
-  const [isVisible, setIsVisible] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [documentTitle, setNewDocumentTitle] = useState("Loading...");
 
-  const [t] = useTranslation();
-  // console.log(t, i18n);
+  const { t } = useTranslation();
+
+  const [
+    sharingComponent,
+    onSDKRequestSharingSettings,
+    loadUsersRightsList,
+    isVisible,
+  ] = useSharingDialog(fileInfo, fileId, docEditor);
 
   useEffect(() => {
     if (error) {
@@ -166,8 +169,6 @@ export default function Editor({
       setDocumentTitle(config?.document?.title);
     }
   }, []);
-
-  // const { t } = useTranslation("Editor");
 
   const getDefaultFileName = (format) => {
     switch (format) {
@@ -225,10 +226,6 @@ export default function Editor({
   const onSDKRequestRename = (event) => {
     const title = event.data;
     updateFile(fileInfo.id, title);
-  };
-
-  const onSDKRequestSharingSettings = () => {
-    setIsVisible(true);
   };
 
   const onSDKRequestRestore = async (event) => {
@@ -352,14 +349,6 @@ export default function Editor({
       });
     }
   }; // +++
-
-  const loadUsersRightsList = () => {
-    window.SharingDialog.getSharingSettings(fileId).then((sharingSettings) => {
-      docEditor.setSharingSettings({
-        sharingSettings,
-      });
-    });
-  };
 
   const onDocumentReady = () => {
     documentIsReady = true;
@@ -574,37 +563,135 @@ export default function Editor({
       const newConfig = Object.assign(config, events);
 
       docEditor = window.DocsAPI.DocEditor("editor", newConfig);
-      console.log("docEditor", docEditor);
+
       setIsLoaded(true);
     } catch (error) {
       console.log(error, "init error");
       //toastr.error(error.message, null, 0, true);
     }
   };
-  const onCancel = () => {
-    setIsVisible(false);
+
+  const insertImage = (link) => {
+    const token = link.token;
+
+    docEditor.insertImage({
+      ...typeInsertImageAction,
+      fileType: link.filetype,
+      ...(token && { token }),
+      url: link.url,
+    });
   };
 
-  const renderSharing = () => {
-    if (typeof window !== "undefined")
-      return (
+  const mailMerge = (link) => {
+    const token = link.token;
+
+    docEditor.setMailMergeRecipients({
+      fileType: link.filetype,
+      ...(token && { token }),
+      url: link.url,
+    });
+  };
+
+  const compareFiles = (link) => {
+    const token = link.token;
+
+    docEditor.setRevisedFile({
+      fileType: link.filetype,
+      ...(token && { token }),
+      url: link.url,
+    });
+  };
+
+  const onSelectFile = async (file) => {
+    try {
+      const link = await getPresignedUri(file.id);
+
+      if (filesType === insertImageAction) insertImage(link);
+      if (filesType === mailMergeAction) mailMerge(link);
+      if (filesType === compareFilesAction) compareFiles(link);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const onCloseFileDialog = () => {
+    setIsFileDialogVisible(false);
+  };
+
+  const insertImageActionProps = {
+    isImageOnly: true,
+  };
+
+  const mailMergeActionProps = {
+    isTablesOnly: true,
+    searchParam: ".xlsx",
+  };
+  const compareFilesActionProps = {
+    isDocumentsOnly: true,
+  };
+
+  const fileTypeDetection = () => {
+    if (filesType === insertImageAction) {
+      return insertImageActionProps;
+    }
+    if (filesType === mailMergeAction) {
+      return mailMergeActionProps;
+    }
+    if (filesType === compareFilesAction) {
+      return compareFilesActionProps;
+    }
+  };
+
+  const getFileTypeTranslation = () => {
+    switch (filesType) {
+      case mailMergeAction:
+        return t("MailMergeFileType");
+      case insertImageAction:
+        return t("ImageFileType");
+      case compareFilesAction:
+        return t("DocumentsFileType");
+    }
+  };
+
+  const selectFilesListTitle = () => {
+    const type = getFileTypeTranslation();
+    return (
+      <>
+        {
+          filesType === mailMergeAction ? type : type
+          // <Trans i18nKey="SelectFilesType" fileType={type}>
+          //   Select files of type: {{ type }}
+          // </Trans>
+        }
+      </>
+    );
+  };
+
+  const loadSelectFileDialog = () => {
+    if (typeof window !== "undefined") {
+      const headerName = t("SelectFileTitle");
+      console.log(headerName);
+      return isFileDialogVisible ? (
         <DynamicComponent
-          className="dynamic-sharing-dialog"
           system={{
             scope: "files",
             url: "/products/files/remoteEntry.js",
-            module: "./SharingDialog",
-            name: "SharingDialog",
+            module: "./SelectFileDialog",
           }}
-          isVisible={isVisible}
-          sharingObject={fileInfo}
-          onCancel={onCancel}
-          onSuccess={loadUsersRightsList}
+          resetTreeFolders
+          foldersType="exceptPrivacyTrashFolders"
+          isPanelVisible={isFileDialogVisible}
+          onSelectFile={onSelectFile}
+          onClose={onCloseFileDialog}
+          {...fileTypeDetection()}
+          titleFilesList={selectFilesListTitle()}
+          headerName={headerName}
         />
-      );
+      ) : null;
+    }
   };
 
-  const SharingDialog = renderSharing();
+  const SelectFileDialog = loadSelectFileDialog();
 
   return (
     <EditorWrapper isVisibleSharingDialog={isVisible}>
@@ -616,7 +703,10 @@ export default function Editor({
           {!isLoaded && LoaderComponent}
         </>
       )}
-      {SharingDialog}
+      {sharingComponent}
+      {SelectFileDialog}
     </EditorWrapper>
   );
 }
+
+export default Editor;
