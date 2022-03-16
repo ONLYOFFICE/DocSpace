@@ -99,7 +99,6 @@ const GreetingContainer = styled.div`
   }
 
   .tooltip .tooltiptext {
-    background: #ffffff;
     border: 1px solid #eceef1;
     box-sizing: border-box;
     border-radius: 6px;
@@ -708,7 +707,7 @@ const Confirm = (props) => {
               id="submit"
               className="login-button"
               primary
-              size="large"
+              size="normal"
               scale={true}
               label={
                 isLoading
