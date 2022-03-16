@@ -4,7 +4,7 @@ import { withRouter } from "react-router";
 import { isMobile } from "react-device-detect";
 import axios from "axios";
 import toastr from "@appserver/components/toast/toastr";
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
 import { showLoader, hideLoader } from "@appserver/common/utils";
 import FilesFilter from "@appserver/common/api/files/filter";
 import { getGroup } from "@appserver/common/api/groups";
@@ -279,7 +279,7 @@ class PureHome extends React.Component {
       <>
         <MediaViewer />
         <DragTooltip />
-        <PageLayout
+        <Section
           dragging={dragging}
           withBodyScroll
           withBodyAutoFocus={!isMobile}
@@ -305,22 +305,22 @@ class PureHome extends React.Component {
           onOpenUploadPanel={this.showUploadPanel}
           firstLoad={firstLoad}
         >
-          <PageLayout.SectionHeader>
+          <Section.SectionHeader>
             <SectionHeaderContent />
-          </PageLayout.SectionHeader>
+          </Section.SectionHeader>
 
-          <PageLayout.SectionFilter>
+          <Section.SectionFilter>
             <SectionFilterContent />
-          </PageLayout.SectionFilter>
+          </Section.SectionFilter>
 
-          <PageLayout.SectionBody>
+          <Section.SectionBody>
             <SectionBodyContent />
-          </PageLayout.SectionBody>
+          </Section.SectionBody>
 
-          <PageLayout.SectionPaging>
+          <Section.SectionPaging>
             <SectionPagingContent tReady={tReady} />
-          </PageLayout.SectionPaging>
-        </PageLayout>
+          </Section.SectionPaging>
+        </Section>
       </>
     );
   }

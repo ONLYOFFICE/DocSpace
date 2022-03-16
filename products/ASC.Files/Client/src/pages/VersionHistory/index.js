@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
 import Loaders from "@appserver/common/components/Loaders";
 import { withTranslation } from "react-i18next";
 
@@ -40,7 +40,7 @@ class PureVersionHistory extends React.Component {
     const { isLoading, versions, showProgressBar } = this.props;
 
     return (
-      <PageLayout
+      <Section
         withBodyAutoFocus={true}
         headerBorderBottom={true}
         showSecondaryProgressBar={showProgressBar}
@@ -48,7 +48,7 @@ class PureVersionHistory extends React.Component {
         showSecondaryButtonAlert={false}
         withBodyScroll={false}
       >
-        <PageLayout.SectionHeader>
+        <Section.SectionHeader>
           {versions && !isLoading ? (
             <SectionHeaderContent
               title={versions[0].title}
@@ -57,12 +57,12 @@ class PureVersionHistory extends React.Component {
           ) : (
             <Loaders.SectionHeader title="version-history-title-loader" />
           )}
-        </PageLayout.SectionHeader>
+        </Section.SectionHeader>
 
-        <PageLayout.SectionBody>
+        <Section.SectionBody>
           <SectionBodyContent />
-        </PageLayout.SectionBody>
-      </PageLayout>
+        </Section.SectionBody>
+      </Section>
     );
   }
 }
