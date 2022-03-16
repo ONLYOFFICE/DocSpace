@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 import Button from "@appserver/components/button";
-import TextInput from "@appserver/components/text-input";
+import EmailInput from "@appserver/components/email-input";
 import Text from "@appserver/components/text";
 import ModalDialog from "@appserver/components/modal-dialog";
 import FieldContainer from "@appserver/components/field-container";
@@ -15,6 +15,7 @@ const ForgotPasswordModalDialog = (props) => {
   const [email, setEmail] = useState(props.email);
   const [emailError, setEmailError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [errorText, setErrorText] = useState("");
 
   const { t } = useTranslation("Login");
 
@@ -50,6 +51,11 @@ const ForgotPasswordModalDialog = (props) => {
     }
   };
 
+  const onValidateEmail = (res) => {
+    setEmailError(!res.isValid);
+    setErrorText(res.errors[0]);
+  };
+
   return (
     <ModalDialogContainer
       displayType="modal"
@@ -74,13 +80,16 @@ const ForgotPasswordModalDialog = (props) => {
         </Text>
 
         <FieldContainer
+          className="email-reg-field"
           key="e-mail"
           isVertical={true}
           hasError={emailError}
           labelVisible={false}
-          errorMessage={t("Common:RequiredField")}
+          errorMessage={
+            errorText ? t(`Common:${errorText}`) : t("Common:RequiredField")
+          }
         >
-          <TextInput
+          <EmailInput
             hasError={emailError}
             placeholder={t("RegistrationEmail")}
             isAutoFocussed={true}
@@ -94,6 +103,7 @@ const ForgotPasswordModalDialog = (props) => {
             value={email}
             onChange={onChangeEmail}
             onKeyDown={onKeyDown}
+            onValidateInput={onValidateEmail}
           />
         </FieldContainer>
       </ModalDialog.Body>
@@ -109,7 +119,7 @@ const ForgotPasswordModalDialog = (props) => {
           primary={true}
           onClick={onSendPasswordInstructions}
           isLoading={isLoading}
-          isDisabled={isLoading}
+          isDisabled={isLoading || emailError || !email.trim()}
           tabIndex={2}
         />
 
