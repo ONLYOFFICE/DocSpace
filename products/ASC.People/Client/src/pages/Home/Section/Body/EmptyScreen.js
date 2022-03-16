@@ -7,7 +7,7 @@ import Box from "@appserver/components/box";
 import Grid from "@appserver/components/grid";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
-import { CatalogMainButtonContent } from "../../../../components/Catalog";
+import { ArticleMainButtonContent } from "../../../../components/Article";
 import { Consumer } from "@appserver/components/utils/context";
 
 import { isMobile } from "react-device-detect";
@@ -71,7 +71,7 @@ const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading }) => {
       {isMobile || isMobileUtils() || isTabletUtils() ? (
         <Consumer>
           {(context) => (
-            <CatalogMainButtonContent sectionWidth={context.sectionWidth} />
+            <ArticleMainButtonContent sectionWidth={context.sectionWidth} />
           )}
         </Consumer>
       ) : (

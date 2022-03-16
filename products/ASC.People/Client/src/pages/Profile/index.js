@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
 import toastr from "studio/toastr";
 
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
@@ -88,15 +88,15 @@ class Profile extends React.Component {
     const { profile, showCatalog, isAdmin } = this.props;
 
     return (
-      <PageLayout withBodyAutoFocus>
-        <PageLayout.SectionHeader>
+      <Section withBodyAutoFocus>
+        <Section.SectionHeader>
           <SectionHeaderContent profile={profile} />
-        </PageLayout.SectionHeader>
+        </Section.SectionHeader>
 
-        <PageLayout.SectionBody>
+        <Section.SectionBody>
           <SectionBodyContent profile={profile} />
-        </PageLayout.SectionBody>
-      </PageLayout>
+        </Section.SectionBody>
+      </Section>
     );
   }
 }

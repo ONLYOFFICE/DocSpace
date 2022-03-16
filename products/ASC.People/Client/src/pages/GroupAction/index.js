@@ -1,6 +1,6 @@
 import React from "react";
 import Loader from "@appserver/components/loader";
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
 
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { withTranslation } from "react-i18next";
@@ -41,21 +41,21 @@ class GroupAction extends React.Component {
     return (
       <>
         {group || !match.params.groupId ? (
-          <PageLayout withBodyScroll={true}>
-            <PageLayout.SectionHeader>
+          <Section withBodyScroll={true}>
+            <Section.SectionHeader>
               <SectionHeaderContent />
-            </PageLayout.SectionHeader>
+            </Section.SectionHeader>
 
-            <PageLayout.SectionBody>
+            <Section.SectionBody>
               <SectionBodyContent tReady={tReady} />
-            </PageLayout.SectionBody>
-          </PageLayout>
+            </Section.SectionBody>
+          </Section>
         ) : (
-          <PageLayout>
-            <PageLayout.SectionBody>
+          <Section>
+            <Section.SectionBody>
               <Loader className="pageLoader" type="rombs" size="40px" />
-            </PageLayout.SectionBody>
-          </PageLayout>
+            </Section.SectionBody>
+          </Section>
         )}
       </>
     );

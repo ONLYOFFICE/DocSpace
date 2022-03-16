@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import Filter from "@appserver/common/api/people/filter";
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
 import { showLoader, hideLoader, isAdmin } from "@appserver/common/utils";
 
 import {
@@ -62,41 +62,26 @@ const PureHome = ({
 
   return (
     <>
-      <PageLayout
+      <Section
         withBodyScroll
         withBodyAutoFocus={!isMobile}
         isLoading={isLoading}
         firstLoad={firstLoad}
         viewAs={viewAs}
       >
-        {!showCatalog && (
-          <PageLayout.ArticleHeader>
-            <ArticleHeaderContent />
-          </PageLayout.ArticleHeader>
-        )}
-        {!showCatalog && (
-          <PageLayout.ArticleMainButton>
-            <ArticleMainButtonContent />
-          </PageLayout.ArticleMainButton>
-        )}
-        {!showCatalog && (
-          <PageLayout.ArticleBody>
-            <ArticleBodyContent />
-          </PageLayout.ArticleBody>
-        )}
-        <PageLayout.SectionHeader>
+        <Section.SectionHeader>
           <SectionHeaderContent />
-        </PageLayout.SectionHeader>
-        <PageLayout.SectionFilter>
+        </Section.SectionHeader>
+        <Section.SectionFilter>
           <SectionFilterContent />
-        </PageLayout.SectionFilter>
-        <PageLayout.SectionBody>
+        </Section.SectionFilter>
+        <Section.SectionBody>
           <SectionBodyContent />
-        </PageLayout.SectionBody>
-        <PageLayout.SectionPaging>
+        </Section.SectionBody>
+        <Section.SectionPaging>
           <SectionPagingContent tReady={tReady} />
-        </PageLayout.SectionPaging>
-      </PageLayout>
+        </Section.SectionPaging>
+      </Section>
 
       <Dialogs />
     </>
