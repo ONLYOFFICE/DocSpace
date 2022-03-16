@@ -2,7 +2,7 @@ import styled, { css } from "styled-components";
 import Base from "../themes/base";
 import Box from "../box";
 import CrossSidebarIcon from "../../../public/images/cross.sidebar.react.svg";
-import { mobile, isTablet, isDesktop } from "../utils/device";
+import { smallTablet, isTablet, isDesktop } from "../utils/device";
 
 const StyledModal = styled.div`
   .backdrop {
@@ -54,11 +54,16 @@ const Content = styled.div`
       overflow: hidden;
     `}
 
-  @media ${mobile} {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-  }
+  ${({ displayType }) =>
+    displayType === "modal" &&
+    css`
+      @media ${smallTablet} {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        border-radius: 6px 6px 0 0;
+      }
+    `}
 `;
 
 const StyledHeader = styled.div`
@@ -100,10 +105,10 @@ const CloseButton = styled(CrossSidebarIcon)`
   right: 0;
   top: 0;
   ${({ displayType }) =>
-    displayType === "modal" || (displayType === "auto" && isDesktop())
+    displayType === "modal"
       ? css`
           margin-right: -23px;
-          @media ${mobile} {
+          @media ${smallTablet} {
             margin-right: 10px;
             margin-top: -23px;
           }
@@ -115,17 +120,17 @@ const CloseButton = styled(CrossSidebarIcon)`
         `}
 `;
 
+const BodyBox = styled(Box)`
+  position: relative;
+  ${(props) => props.removeScroll && `height: 100%;`}
+  margin-bottom:8px;
+`;
+
 const StyledFooter = styled.div`
   display: flex;
   flex-direction: row;
   gap: 10px;
   padding: 16px;
-`;
-
-const BodyBox = styled(Box)`
-  position: relative;
-  ${(props) => props.removeScroll && `height: 100%;`}
-  margin-bottom:8px;
 `;
 
 Dialog.defaultProps = { theme: Base };

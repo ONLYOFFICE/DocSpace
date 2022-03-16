@@ -138,7 +138,7 @@ const ThirdPartyDialog = (props) => {
       isLoading={!tReady}
       visible={visible}
       scale={false}
-      displayType="auto"
+      displayType="modal"
       zIndex={310}
       onClose={onClose}
     >

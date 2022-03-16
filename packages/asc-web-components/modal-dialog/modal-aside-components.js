@@ -24,6 +24,7 @@ export const ModalBackdrop = ({ displayType, zIndex, children }) => {
         <Backdrop
           visible={true}
           zIndex={zIndex}
+          withBackground={true}
           isAside={true}
           className="backdrop"
         >

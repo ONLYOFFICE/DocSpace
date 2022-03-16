@@ -1,3 +1,4 @@
+import { smallTablet } from "../utils/device";
 import globalColors from "../utils/globalColors";
 
 const {
@@ -496,7 +497,7 @@ const Base = {
 
   modalDialog: {
     width: "auto",
-    maxwidth: "560px",
+    maxwidth: "600px",
     margin: " 0 auto",
     minHeight: "100%",
 
@@ -506,7 +507,7 @@ const Base = {
       modalBorderRadius: "6px",
       asidePadding: "0 0 -16px",
       heading: {
-        maxWidth: "500px",
+        maxWidth: "600px",
         margin: "8px 0 7px 16px",
         modalLineHeight: "28px",
         asideLineHeight: "56px",
