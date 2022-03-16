@@ -15,6 +15,7 @@ import ThirdPartyList from "./ThirdPartyList";
 import DownloadAppList from "./DownloadAppList";
 import Banner from "./Banner";
 import { showLoader, hideLoader } from "@appserver/common/utils";
+import Loaders from "@appserver/common/components/Loaders";
 
 const StyledBlock = styled.div`
   padding: 0 20px;
@@ -34,6 +35,7 @@ const ArticleBodyContent = (props) => {
     isVisitor,
     campaigns,
     FirebaseHelper,
+    isArticleLoaded,
   } = props;
   const onClick = React.useCallback((data) => {
     const {
@@ -84,7 +86,9 @@ const ArticleBodyContent = (props) => {
     props.setNewFilesPanelVisible(true, [`${folderId}`]);
   }, []);
 
-  return (
+  return !isArticleLoaded ? (
+    <Loaders.ArticleFolder />
+  ) : (
     <>
       <Items
         onClick={onClick}
@@ -115,7 +119,13 @@ export default inject(
     dialogsStore,
     settingsStore,
   }) => {
-    const { fetchFiles, setIsLoading, setFirstLoad, firstLoad } = filesStore;
+    const {
+      fetchFiles,
+      setIsLoading,
+      setFirstLoad,
+      firstLoad,
+      isArticleLoaded,
+    } = filesStore;
     const { treeFolders, setTreeFolders } = treeFoldersStore;
 
     const { setNewFilesPanelVisible } = dialogsStore;
@@ -147,6 +157,7 @@ export default inject(
       homepage: config.homepage,
       personal,
 
+      isArticleLoaded,
       setIsLoading,
       setFirstLoad,
       fetchFiles,

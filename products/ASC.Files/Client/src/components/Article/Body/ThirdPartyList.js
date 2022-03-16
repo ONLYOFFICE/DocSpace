@@ -28,8 +28,7 @@ const StyledThirdParty = styled.div`
     div {
       height: 25px;
       width: 25px;
-      //background: #eceef1;
-      //text-align: center;
+
       margin-right: 10px;
       color: #818b91;
       :first-of-type {
@@ -234,7 +233,7 @@ const PureThirdPartyListContainer = ({
 };
 
 const ThirdPartyList = withTranslation(["Article", "Translations"])(
-  withRouter(withLoader(PureThirdPartyListContainer)(<></>))
+  withRouter(PureThirdPartyListContainer)
 );
 
 export default inject(

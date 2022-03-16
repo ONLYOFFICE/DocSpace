@@ -50,9 +50,9 @@ const MobileView = ({
   const [primaryNumEl, setPrimaryNumEl] = React.useState(0);
   const primaryCurrentFile = React.useRef(null);
 
-  const openButtonToggler = () => {
+  const openButtonToggler = React.useCallback(() => {
     setIsOpenButton((prevState) => !prevState);
-  };
+  }, []);
 
   const showUploadPanel = React.useCallback(() => {
     setUploadPanelVisible && setUploadPanelVisible(true);

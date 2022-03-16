@@ -6,6 +6,7 @@ import { FolderType, ShareAccessRights } from "@appserver/common/constants";
 import { withTranslation } from "react-i18next";
 import withLoader from "../../../HOCs/withLoader";
 import Loaders from "@appserver/common/components/Loaders";
+import Loader from "@appserver/components/loader";
 
 const Items = ({
   t,
@@ -255,8 +256,4 @@ export default inject(
       moveDragItems: filesActionsStore.moveDragItems,
     };
   }
-)(
-  withTranslation(["Home", "Common", "Translations"])(
-    withLoader(observer(Items))(<Loaders.DocumentCatalogFolderLoader />)
-  )
-);
+)(withTranslation(["Home", "Common", "Translations"])(observer(Items)));

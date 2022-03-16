@@ -85,7 +85,7 @@ const DownloadAppListContainer = React.memo(({ t }) => {
 });
 
 const DownloadAppList = withTranslation(["Translations"])(
-  withLoader(DownloadAppListContainer)(<></>)
+  DownloadAppListContainer
 );
 
 export default DownloadAppList;
