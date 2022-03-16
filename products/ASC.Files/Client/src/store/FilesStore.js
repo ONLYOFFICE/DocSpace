@@ -45,6 +45,7 @@ class FilesStore {
   startDrag = false;
 
   firstLoad = true;
+  isArticleLoaded = false;
   files = [];
   folders = [];
   selection = [];
@@ -289,6 +290,10 @@ class FilesStore {
 
   setFirstLoad = (firstLoad) => {
     this.firstLoad = firstLoad;
+  };
+
+  setIsArticleLoaded = (isArticleLoaded) => {
+    this.isArticleLoaded = isArticleLoaded;
   };
 
   setFiles = (files) => {
