@@ -80,14 +80,14 @@ const Customization = ({ t }) => {
               "Settings:CustomizationDescription"
             )}`}</div>
             <div className="category-item-wrapper">
-              <LanguageAndTimeZone sectionWidth={context.sectionWidth} />
+              <LanguageAndTimeZone />
+            </div>
+            {/* <div className="category-item-wrapper">
+              <CustomTitles />
             </div>
             <div className="category-item-wrapper">
-              <CustomTitles sectionWidth={context.sectionWidth} />
-            </div>
-            <div className="category-item-wrapper">
-              <PortalRenaming sectionWidth={context.sectionWidth} />
-            </div>
+              <PortalRenaming />
+            </div> */}
           </StyledComponent>
         )
       }
