@@ -56,6 +56,7 @@ class Row extends React.Component {
 
     const renderContext =
       Object.prototype.hasOwnProperty.call(contextData, "contextOptions") &&
+      contextData.contextOptions &&
       contextData.contextOptions.length > 0;
 
     const changeCheckbox = (e) => {

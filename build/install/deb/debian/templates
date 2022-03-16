@@ -1,3 +1,18 @@
+Template: appserver/environment
+Type: string
+Default: production
+Description: Select environment for AppServer configuration:
+
+Template: appserver/host
+Type: string
+Default: localhost
+Description: AppServer host:
+
+Template: appserver/port
+Type: string
+Default: 80
+Description: AppServer port:
+
 Template: appserver/db-host
 Type: string
 Default: localhost
@@ -17,23 +32,39 @@ Type: string
 Default: onlyoffice
 Description: MySQL database name:
 
-Template: appserver/remove-db
-Type: boolean
-Default: false
-Description: Remove database?
- This operation will remove the database which contain all data. It is recommended to take backup before removing the database.
-
-Template: appserver/ds-jwt-enabled
-Type: boolean
-Default: false
-Description: To enabled Document Server JWT?:
-
-Template: appserver/ds-jwt-secret
+Template: appserver/kafka-host
 Type: string
-Default: {{package_sysname}}
-Description: Document Server JWT Secret:
+Default: localhost
+Description: Kafka host:
 
-Template: appserver/ds-jwt-secret-header
+Template: appserver/kafka-port
 Type: string
-Default: AuthorizationJwt
-Description: Document Server Secret Header:
+Default: 9092
+Description: Kafka port:
+
+Template: appserver/zookeeper-host
+Type: string
+Default: localhost
+Description: Zookeeper host:
+
+Template: appserver/zookeeper-port
+Type: string
+Default: 2181
+Description: Zookeeper port:
+
+Template: appserver/elasticsearch-sheme
+Type: select
+Choices: http, https
+Default: http
+Description: Elasticsearch sheme:
+
+Template: appserver/elasticsearch-host
+Type: string
+Default: localhost
+Description: Elasticsearch host:
+
+Template: appserver/elasticsearch-port
+Type: string
+Default: 9200
+Description: Elasticsearch port:
+

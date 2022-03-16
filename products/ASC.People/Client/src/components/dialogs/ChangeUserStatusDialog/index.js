@@ -148,7 +148,7 @@ class ChangeUserStatusDialogComponent extends React.Component {
         <ModalDialog.Footer>
           <Button
             label={t("ChangeUsersStatusButton")}
-            size="medium"
+            size="small"
             primary
             onClick={this.onChangeUserStatus}
             isLoading={isRequestRunning}
@@ -157,7 +157,7 @@ class ChangeUserStatusDialogComponent extends React.Component {
           <Button
             className="button-dialog"
             label={t("Common:CancelButton")}
-            size="medium"
+            size="small"
             onClick={onClose}
             isDisabled={isRequestRunning}
           />

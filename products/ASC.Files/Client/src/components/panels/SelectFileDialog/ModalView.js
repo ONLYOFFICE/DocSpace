@@ -259,7 +259,7 @@ class SelectFileDialogModalView extends React.Component {
                   theme={theme}
                   className="select-file-modal-dialog-buttons-save"
                   primary
-                  size="medium"
+                  size="small"
                   label={primaryButtonName}
                   onClick={onClickSave}
                   isDisabled={selectedFile.length === 0}
@@ -267,7 +267,7 @@ class SelectFileDialogModalView extends React.Component {
                 <Button
                   theme={theme}
                   className="modal-dialog-button"
-                  size="medium"
+                  size="small"
                   label={t("Common:CancelButton")}
                   onClick={onClose}
                 />
