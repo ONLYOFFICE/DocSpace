@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import Button from "@appserver/components/button";
-import TextInput from "@appserver/components/text-input";
+import EmailInput from "@appserver/components/email-input";
 import Text from "@appserver/components/text";
 import ModalDialog from "@appserver/components/modal-dialog";
 import FieldContainer from "@appserver/components/field-container";
@@ -17,10 +17,12 @@ const RegisterModalDialog = ({
   emailErr,
   t,
   onChangeEmail,
+  onValidateEmail,
   onRegisterModalClose,
   onSendRegisterRequest,
   trustedDomainsType,
   trustedDomains,
+  errorText,
 }) => {
   const getDomains = () => {
     return trustedDomains.map((domain, i) => (
@@ -67,21 +69,25 @@ const RegisterModalDialog = ({
           isVertical={true}
           hasError={emailErr}
           labelVisible={false}
-          errorMessage={t("Common:RequiredField")}
+          errorMessage={
+            errorText ? t(`Common:${errorText}`) : t("Common:RequiredField")
+          }
         >
-          <TextInput
+          <EmailInput
             hasError={emailErr}
             placeholder={t("RegistrationEmail")}
             isAutoFocussed={true}
             id="e-mail"
             name="e-mail"
-            type="text"
+            type="email"
             size="base"
             scale={true}
-            tabIndex={3}
+            tabIndex={1}
             isDisabled={loading}
             value={email}
             onChange={onChangeEmail}
+            onValidateInput={onValidateEmail}
+            autoComplete="username"
           />
         </FieldContainer>
       </ModalDialog.Body>
@@ -123,10 +129,12 @@ RegisterModalDialog.propTypes = {
   emailErr: PropTypes.bool.isRequired,
   t: PropTypes.func.isRequired,
   onChangeEmail: PropTypes.func.isRequired,
+  onValidateEmail: PropTypes.func.isRequired,
   onSendRegisterRequest: PropTypes.func.isRequired,
   onRegisterModalClose: PropTypes.func.isRequired,
   trustedDomainsType: PropTypes.number,
   trustedDomains: PropTypes.array,
+  errorText: PropTypes.string,
 };
 
 export default RegisterModalDialog;

@@ -42,21 +42,30 @@ const Register = (props) => {
 
   const [email, setEmail] = useState("");
   const [emailErr, setEmailErr] = useState(false);
+  const [errorText, setErrorText] = useState("");
 
   const { t } = useTranslation("Login");
 
   const onRegisterClick = () => {
     setVisible(true);
   };
+
   const onRegisterModalClose = () => {
     setVisible(false);
     setEmail("");
     setEmailErr(false);
   };
+
   const onChangeEmail = (e) => {
     setEmail(e.currentTarget.value);
     setEmailErr(false);
   };
+
+  const onValidateEmail = (res) => {
+    setEmailErr(!res.isValid);
+    setErrorText(res.errors[0]);
+  };
+
   const onSendRegisterRequest = () => {
     if (!email.trim()) {
       setEmailErr(true);
@@ -91,8 +100,10 @@ const Register = (props) => {
           trustedDomains={trustedDomains}
           t={t}
           onChangeEmail={onChangeEmail}
+          onValidateEmail={onValidateEmail}
           onRegisterModalClose={onRegisterModalClose}
           onSendRegisterRequest={onSendRegisterRequest}
+          errorText={errorText}
         />
       )}
     </>
