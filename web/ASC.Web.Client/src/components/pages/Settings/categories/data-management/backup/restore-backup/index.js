@@ -44,6 +44,7 @@ class RestoreBackup extends React.Component {
       selectedFile: "",
       isErrors: {},
       isInitialLoading: isMobileOnly ? true : false,
+      checkingRecoveryData: false,
     };
 
     this.switches = [
@@ -203,6 +204,10 @@ class RestoreBackup extends React.Component {
 
     if (!this.canRestore()) return;
 
+    this.setState({
+      checkingRecoveryData: true,
+    });
+
     let storageParams = [];
     let obj = {};
 
@@ -254,11 +259,17 @@ class RestoreBackup extends React.Component {
       }
     } catch (e) {
       toastr.error(e);
+      this.setState({
+        checkingRecoveryData: false,
+      });
       return;
     }
 
     if (isCheckedLocalFile && checkedFile?.Message) {
       toastr.error(checkedFile.Message);
+      this.setState({
+        checkingRecoveryData: false,
+      });
       return;
     }
 
@@ -268,6 +279,7 @@ class RestoreBackup extends React.Component {
           command: "restore-backup",
         });
       })
+      .then(() => this.setState({ checkingRecoveryData: false }))
       .then(() =>
         history.push(
           combineUrl(
@@ -277,7 +289,12 @@ class RestoreBackup extends React.Component {
           )
         )
       )
-      .catch((error) => toastr.error(error));
+      .catch((error) => {
+        toastr.error(error);
+        this.setState({
+          checkingRecoveryData: false,
+        });
+      });
   };
 
   onSetRequiredFormNames = (namesArray) => {
@@ -319,6 +336,7 @@ class RestoreBackup extends React.Component {
       isCheckedThirdPartyStorage,
       isCheckedLocalFile,
       isErrors,
+      checkingRecoveryData,
     } = this.state;
 
     const commonRadioButtonProps = {
@@ -454,7 +472,8 @@ class RestoreBackup extends React.Component {
           label={t("Common:Restore")}
           onClick={this.onRestoreClick}
           primary
-          isDisabled={!isMaxProgress || !isChecked}
+          isDisabled={checkingRecoveryData || !isMaxProgress || !isChecked}
+          isLoading={checkingRecoveryData}
           size="medium"
           tabIndex={10}
         />
