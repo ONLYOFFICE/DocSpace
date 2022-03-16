@@ -20,15 +20,14 @@ export default {
 };
 
 const Template = ({ onClick, onClose, onOk, ...args }) => {
-  const [isVisible, setIsVisible] = useState(args.visible);
+  const [isVisible, setIsVisible] = useState(false);
 
   const toggleVisible = (e) => {
     setIsVisible(!isVisible);
-    onClick(e);
   };
 
   return (
-    <div>
+    <>
       <Button
         label="Show"
         primary={true}
@@ -64,7 +63,7 @@ const Template = ({ onClick, onClose, onOk, ...args }) => {
           />
         </ModalDialog.Footer>
       </ModalDialog>
-    </div>
+    </>
   );
 };
 

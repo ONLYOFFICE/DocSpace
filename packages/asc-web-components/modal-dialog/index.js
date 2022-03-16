@@ -67,12 +67,12 @@ class ModalDialog extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    // if (this.props.displayType !== prevProps.displayType) {
-    //   this.setState({ displayType: this.getTypeByWidth() });
-    // }
-    // if (this.props.visible && this.state.displayType === "aside") {
-    //   window.addEventListener("popstate", this.popstate, false);
-    // }
+    if (this.props.displayType !== prevProps.displayType) {
+      this.setState({ displayType: this.getTypeByWidth() });
+    }
+    if (this.props.visible && this.state.displayType === "aside") {
+      window.addEventListener("popstate", this.popstate, false);
+    }
   }
 
   componentDidMount() {
@@ -133,16 +133,20 @@ class ModalDialog extends React.Component {
     });
 
     const renderModal = () => {
+      console.log(visible, this.state.displayType);
+      if (visible !== true) return null;
       return (
         <StyledModal>
-          <ModalBackdrop
-            displayType={this.state.displayType}
-            visible={visible}
-            zIndex={zIndex}
-          >
+          <ModalBackdrop displayType={this.state.displayType} zIndex={zIndex}>
+            {this.state.displayType === "aside" && !scale && (
+              <CloseButton
+                displayType={this.state.displayType}
+                className="modal-dialog-button_close"
+                onClick={onClose}
+              />
+            )}
             <ModalContentWrapper
               displayType={this.state.displayType}
-              visible={visible}
               scale={scale}
               zIndex={zIndex}
               contentPaddingBottom={contentPaddingBottom}
@@ -178,7 +182,7 @@ class ModalDialog extends React.Component {
                         <CloseButton
                           displayType={this.state.displayType}
                           className="modal-dialog-button_close"
-                          onClick={() => onClose()}
+                          onClick={onClose}
                         />
                       </Heading>
                     </StyledHeader>

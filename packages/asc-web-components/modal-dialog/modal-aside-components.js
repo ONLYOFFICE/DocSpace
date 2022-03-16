@@ -7,13 +7,12 @@ import Box from "../box";
 import { Dialog } from "./styled-modal-dialog";
 import Loaders from "@appserver/common/components/Loaders";
 
-export const ModalBackdrop = ({ displayType, visible, zIndex, children }) => {
-  console.log(visible);
+export const ModalBackdrop = ({ displayType, zIndex, children }) => {
   return (
     <>
       {displayType === "modal" ? (
         <Backdrop
-          visible={visible}
+          visible={true}
           zIndex={zIndex}
           withBackground={true}
           isModalDialog
@@ -23,7 +22,7 @@ export const ModalBackdrop = ({ displayType, visible, zIndex, children }) => {
         </Backdrop>
       ) : (
         <Backdrop
-          visible={visible}
+          visible={true}
           zIndex={zIndex}
           isAside={true}
           className="backdrop"
@@ -40,7 +39,6 @@ export const ModalContentWrapper = ({
   className,
   id,
   style,
-  visible,
   scale,
   zIndex,
   removeScroll,
@@ -60,8 +58,8 @@ export const ModalContentWrapper = ({
       ) : (
         <Box className={className} id={id} style={style}>
           <Aside
-            visible={visible}
             scale={scale}
+            visible={true}
             zIndex={zIndex}
             contentPaddingBottom={contentPaddingBottom}
             className="modal-dialog-aside not-selectable"
@@ -89,7 +87,6 @@ export const ModalLoader = ({ displayType, modalLoaderBodyHeight }) => {
 
 ModalBackdrop.propTypes = {
   children: PropTypes.any,
-  visible: PropTypes.bool,
   displayType: PropTypes.oneOf(["auto", "modal", "aside"]),
   zIndex: PropTypes.number,
 };
@@ -100,7 +97,6 @@ ModalContentWrapper.propTypes = {
   id: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   children: PropTypes.any,
-  visible: PropTypes.bool,
   zIndex: PropTypes.number,
   scale: PropTypes.bool,
   removeScroll: PropTypes.bool,
