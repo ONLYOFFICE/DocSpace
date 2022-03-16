@@ -65,6 +65,7 @@ const RegisterModalDialog = ({
         </Text>
 
         <FieldContainer
+          className="email-reg-field"
           key="e-mail"
           isVertical={true}
           hasError={emailErr}
@@ -101,7 +102,7 @@ const RegisterModalDialog = ({
           primary={true}
           onClick={onSendRegisterRequest}
           isLoading={loading}
-          isDisabled={loading}
+          isDisabled={loading || emailErr || !email.trim()}
           tabIndex={3}
         />
 
