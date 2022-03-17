@@ -15,54 +15,48 @@
 */
 
 
-using ASC.Common;
-using ASC.Core.Tenants;
-using ASC.Notify.Model;
-
-namespace ASC.ActiveDirectory.Base
+namespace ASC.ActiveDirectory.Base;
+[Scope]
+public class LdapNotifySource : INotifySource
 {
-    [Scope]
-    public class LdapNotifySource : INotifySource
+    public Tenant Tenant { get; set; }
+    private LdapNotifyHelper _ldapNotifyHelper;
+
+    public string ID
     {
-        public Tenant Tenant { get; set; }
-        private LdapNotifyHelper _ldapNotifyHelper;
+        get { return "asc.activedirectory." + Tenant.TenantId; }
+    }
 
-        public string ID
-        {
-            get { return "asc.activedirectory." + Tenant.TenantId; }
-        }
+    public LdapNotifySource(
+        Tenant tenant,
+        LdapNotifyHelper ldapNotifyHelper)
+    {
+        _ldapNotifyHelper = ldapNotifyHelper;
+        Tenant = tenant;
+    }
 
-        public LdapNotifySource(
-            Tenant tenant,
-            LdapNotifyHelper ldapNotifyHelper)
-        {
-            _ldapNotifyHelper = ldapNotifyHelper;
-            Tenant = tenant;
-        }
+    public void AutoSync(DateTime date)
+    {
+        _ldapNotifyHelper.AutoSync(Tenant);
+    }
 
-        public void AutoSync(DateTime date)
-        {
-            _ldapNotifyHelper.AutoSync(Tenant);
-        }
+    public IActionProvider GetActionProvider()
+    {
+        throw new NotImplementedException();
+    }
 
-        public IActionProvider GetActionProvider()
-        {
-            throw new NotImplementedException();
-        }
+    public IPatternProvider GetPatternProvider()
+    {
+        throw new NotImplementedException();
+    }
 
-        public Notify.Patterns.IPatternProvider GetPatternProvider()
-        {
-            throw new NotImplementedException();
-        }
+    public IRecipientProvider GetRecipientsProvider()
+    {
+        throw new NotImplementedException();
+    }
 
-        public Notify.Recipients.IRecipientProvider GetRecipientsProvider()
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISubscriptionProvider GetSubscriptionProvider()
-        {
-            throw new NotImplementedException();
-        }
+    public ISubscriptionProvider GetSubscriptionProvider()
+    {
+        throw new NotImplementedException();
     }
 }

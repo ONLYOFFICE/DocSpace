@@ -15,201 +15,192 @@
 */
 
 
-using System.ComponentModel;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core.Tenants;
-using ASC.Core.Users;
-
-namespace ASC.ActiveDirectory.ComplexOperations.Data
+namespace ASC.ActiveDirectory.ComplexOperations.Data;
+[Scope]
+public class LdapChangeCollection : List<LdapChange>
 {
-    [Scope]
-    public class LdapChangeCollection : List<LdapChange>
+    public Tenant Tenant { get; set; }
+    private UserFormatter _userFormatter;
+    public LdapChangeCollection(UserFormatter userFormatter)
     {
-        public Tenant Tenant { get; set; }
-        private UserFormatter UserFormatter { get; set; }
-        public LdapChangeCollection(UserFormatter userFormatter)
-        {
-            UserFormatter = userFormatter;
-        }
+        _userFormatter = userFormatter;
+    }
 
-        #region User
+    #region User
 
-        public void SetSkipUserChange(UserInfo user)
-        {
-            var change = new LdapChange(user.Sid,
-                UserFormatter.GetUserName(user, DisplayUserNameFormat.Default),
-                user.Email,
-                LdapChangeType.User, LdapChangeAction.Skip);
+    public void SetSkipUserChange(UserInfo user)
+    {
+        var change = new LdapChange(user.Sid,
+            _userFormatter.GetUserName(user, DisplayUserNameFormat.Default),
+            user.Email,
+            LdapChangeType.User, LdapChangeAction.Skip);
 
-            Add(change);
-        }
+        Add(change);
+    }
 
-        public void SetSaveAsPortalUserChange(UserInfo user)
-        {
-            var fieldChanges = new List<LdapItemChange>
+    public void SetSaveAsPortalUserChange(UserInfo user)
+    {
+        var fieldChanges = new List<LdapItemChange>
             {
                 new LdapItemChange(LdapItemChangeKey.Sid, user.Sid, null)
             };
 
-            var change = new LdapChange(user.Sid,
-                UserFormatter.GetUserName(user, DisplayUserNameFormat.Default),
-                user.Email, LdapChangeType.User, LdapChangeAction.SaveAsPortal, fieldChanges);
+        var change = new LdapChange(user.Sid,
+            _userFormatter.GetUserName(user, DisplayUserNameFormat.Default),
+            user.Email, LdapChangeType.User, LdapChangeAction.SaveAsPortal, fieldChanges);
 
-            Add(change);
-        }
+        Add(change);
+    }
 
-        public void SetNoneUserChange(UserInfo user)
-        {
-            var change = new LdapChange(user.Sid,
-                        UserFormatter.GetUserName(user, DisplayUserNameFormat.Default), user.Email,
-                        LdapChangeType.User, LdapChangeAction.None);
+    public void SetNoneUserChange(UserInfo user)
+    {
+        var change = new LdapChange(user.Sid,
+                    _userFormatter.GetUserName(user, DisplayUserNameFormat.Default), user.Email,
+                    LdapChangeType.User, LdapChangeAction.None);
 
-            Add(change);
-        }
+        Add(change);
+    }
 
-        public void SetUpdateUserChange(UserInfo beforeUserInfo, UserInfo afterUserInfo, ILog log = null)
-        {
-            var fieldChanges =
-                            LdapUserMapping.Fields.Select(field => GetPropChange(field, beforeUserInfo, afterUserInfo, log))
-                                .Where(pch => pch != null)
-                                .ToList();
-
-            var change = new LdapChange(beforeUserInfo.Sid,
-                UserFormatter.GetUserName(afterUserInfo, DisplayUserNameFormat.Default), afterUserInfo.Email,
-                LdapChangeType.User, LdapChangeAction.Update, fieldChanges);
-
-            Add(change);
-        }
-
-        public void SetAddUserChange(UserInfo user, ILog log = null)
-        {
-            var fieldChanges =
-                        LdapUserMapping.Fields.Select(field => GetPropChange(field, after: user, log: log))
+    public void SetUpdateUserChange(UserInfo beforeUserInfo, UserInfo afterUserInfo, ILog log = null)
+    {
+        var fieldChanges =
+                        LdapUserMapping.Fields.Select(field => GetPropChange(field, beforeUserInfo, afterUserInfo, log))
                             .Where(pch => pch != null)
                             .ToList();
 
-            var change = new LdapChange(user.Sid,
-                UserFormatter.GetUserName(user, DisplayUserNameFormat.Default), user.Email,
-                LdapChangeType.User, LdapChangeAction.Add, fieldChanges);
+        var change = new LdapChange(beforeUserInfo.Sid,
+            _userFormatter.GetUserName(afterUserInfo, DisplayUserNameFormat.Default), afterUserInfo.Email,
+            LdapChangeType.User, LdapChangeAction.Update, fieldChanges);
 
-            Add(change);
-        }
+        Add(change);
+    }
 
-        public void SetRemoveUserChange(UserInfo user)
-        {
-            var change = new LdapChange(user.Sid,
-                                UserFormatter.GetUserName(user, DisplayUserNameFormat.Default), user.Email,
-                                LdapChangeType.User, LdapChangeAction.Remove);
+    public void SetAddUserChange(UserInfo user, ILog log = null)
+    {
+        var fieldChanges =
+                    LdapUserMapping.Fields.Select(field => GetPropChange(field, after: user, log: log))
+                        .Where(pch => pch != null)
+                        .ToList();
 
-            Add(change);
-        }
-        #endregion
+        var change = new LdapChange(user.Sid,
+            _userFormatter.GetUserName(user, DisplayUserNameFormat.Default), user.Email,
+            LdapChangeType.User, LdapChangeAction.Add, fieldChanges);
 
-        #region Group
+        Add(change);
+    }
 
-        public void SetAddGroupChange(GroupInfo group, ILog log = null)
-        {
-            var fieldChanges = new List<LdapItemChange>
+    public void SetRemoveUserChange(UserInfo user)
+    {
+        var change = new LdapChange(user.Sid,
+                            _userFormatter.GetUserName(user, DisplayUserNameFormat.Default), user.Email,
+                            LdapChangeType.User, LdapChangeAction.Remove);
+
+        Add(change);
+    }
+    #endregion
+
+    #region Group
+
+    public void SetAddGroupChange(GroupInfo group, ILog log = null)
+    {
+        var fieldChanges = new List<LdapItemChange>
                                     {
                                         new LdapItemChange(LdapItemChangeKey.Name, null, group.Name),
                                         new LdapItemChange(LdapItemChangeKey.Sid, null, group.Sid)
                                     };
 
-            var change = new LdapChange(group.Sid, group.Name,
-                LdapChangeType.Group, LdapChangeAction.Add, fieldChanges);
+        var change = new LdapChange(group.Sid, group.Name,
+            LdapChangeType.Group, LdapChangeAction.Add, fieldChanges);
 
-            Add(change);
-        }
+        Add(change);
+    }
 
-        public void SetAddGroupMembersChange(GroupInfo group,
-            List<UserInfo> members)
-        {
-            var fieldChanges =
-                members.Select(
-                    member =>
-                        new LdapItemChange(LdapItemChangeKey.Member, null,
-                            UserFormatter.GetUserName(member, DisplayUserNameFormat.Default))).ToList();
+    public void SetAddGroupMembersChange(GroupInfo group,
+        List<UserInfo> members)
+    {
+        var fieldChanges =
+            members.Select(
+                member =>
+                    new LdapItemChange(LdapItemChangeKey.Member, null,
+                        _userFormatter.GetUserName(member, DisplayUserNameFormat.Default))).ToList();
 
-            var change = new LdapChange(group.Sid, group.Name,
-                LdapChangeType.Group, LdapChangeAction.AddMember, fieldChanges);
+        var change = new LdapChange(group.Sid, group.Name,
+            LdapChangeType.Group, LdapChangeAction.AddMember, fieldChanges);
 
-            Add(change);
-        }
+        Add(change);
+    }
 
-        public void SetSkipGroupChange(GroupInfo group)
-        {
-            var change = new LdapChange(group.Sid, group.Name, LdapChangeType.Group,
-                LdapChangeAction.Skip);
+    public void SetSkipGroupChange(GroupInfo group)
+    {
+        var change = new LdapChange(group.Sid, group.Name, LdapChangeType.Group,
+            LdapChangeAction.Skip);
 
-            Add(change);
-        }
+        Add(change);
+    }
 
-        public void SetUpdateGroupChange(GroupInfo group)
-        {
-            var fieldChanges = new List<LdapItemChange>
+    public void SetUpdateGroupChange(GroupInfo group)
+    {
+        var fieldChanges = new List<LdapItemChange>
                                 {
                                     new LdapItemChange(LdapItemChangeKey.Name, group.Name, group.Name)
                                 };
 
-            var change = new LdapChange(group.Sid, group.Name,
-                LdapChangeType.Group, LdapChangeAction.Update, fieldChanges);
+        var change = new LdapChange(group.Sid, group.Name,
+            LdapChangeType.Group, LdapChangeAction.Update, fieldChanges);
 
-            Add(change);
-        }
+        Add(change);
+    }
 
-        public void SetRemoveGroupChange(GroupInfo group, ILog log = null)
+    public void SetRemoveGroupChange(GroupInfo group, ILog log = null)
+    {
+        var change = new LdapChange(group.Sid, group.Name,
+                        LdapChangeType.Group, LdapChangeAction.Remove);
+
+        Add(change);
+    }
+
+    public void SetRemoveGroupMembersChange(GroupInfo group,
+        List<UserInfo> members)
+    {
+        var fieldChanges =
+            members.Select(
+                member =>
+                    new LdapItemChange(LdapItemChangeKey.Member, null,
+                        _userFormatter.GetUserName(member, DisplayUserNameFormat.Default))).ToList();
+
+        var change = new LdapChange(group.Sid, group.Name,
+            LdapChangeType.Group, LdapChangeAction.RemoveMember, fieldChanges);
+
+        Add(change);
+    }
+
+    #endregion
+
+    private static LdapItemChange GetPropChange(string propName, UserInfo before = null, UserInfo after = null, ILog log = null)
+    {
+        try
         {
-            var change = new LdapChange(group.Sid, group.Name,
-                            LdapChangeType.Group, LdapChangeAction.Remove);
+            var valueSrc = before != null
+                ? before.GetType().GetProperty(propName).GetValue(before, null) as string
+                : "";
+            var valueDst = after != null
+                ? after.GetType().GetProperty(propName).GetValue(before, null) as string
+                : "";
 
-            Add(change);
+            LdapItemChangeKey key;
+            if (!Enum.TryParse(propName, out key))
+                throw new InvalidEnumArgumentException(propName);
+
+            var change = new LdapItemChange(key, valueSrc, valueDst);
+
+            return change;
         }
-
-        public void SetRemoveGroupMembersChange(GroupInfo group,
-            List<UserInfo> members)
+        catch (Exception ex)
         {
-            var fieldChanges =
-                members.Select(
-                    member =>
-                        new LdapItemChange(LdapItemChangeKey.Member, null,
-                            UserFormatter.GetUserName(member, DisplayUserNameFormat.Default))).ToList();
-
-            var change = new LdapChange(group.Sid, group.Name,
-                LdapChangeType.Group, LdapChangeAction.RemoveMember, fieldChanges);
-
-            Add(change);
+            if (log != null)
+                log.ErrorFormat("GetPropChange({0}) error: {1}", propName, ex);
         }
 
-        #endregion
-
-        private static LdapItemChange GetPropChange(string propName, UserInfo before = null, UserInfo after = null, ILog log = null)
-        {
-            try
-            {
-                var valueSrc = before != null
-                    ? before.GetType().GetProperty(propName).GetValue(before, null) as string
-                    : "";
-                var valueDst = after != null
-                    ? after.GetType().GetProperty(propName).GetValue(before, null) as string
-                    : "";
-
-                LdapItemChangeKey key;
-                if (!Enum.TryParse(propName, out key))
-                    throw new InvalidEnumArgumentException(propName);
-
-                var change = new LdapItemChange(key, valueSrc, valueDst);
-
-                return change;
-            }
-            catch (Exception ex)
-            {
-                if (log != null)
-                    log.ErrorFormat("GetPropChange({0}) error: {1}", propName, ex);
-            }
-
-            return null;
-        }
+        return null;
     }
 }

@@ -15,276 +15,262 @@
 */
 
 
-using ASC.ActiveDirectory.Base;
-using ASC.ActiveDirectory.Base.Data;
-using ASC.ActiveDirectory.Base.Expressions;
-using ASC.ActiveDirectory.Base.Settings;
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Security.Cryptography;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
-namespace ASC.ActiveDirectory.Novell
+namespace ASC.ActiveDirectory.Novell;
+[Scope]
+public class NovellLdapHelper : LdapHelper
 {
-    [Scope]
-    public class NovellLdapHelper : LdapHelper
+    public NovellLdapSearcher LDAPSearcher { get; private set; }
+
+    private readonly IConfiguration _configuration;
+    private readonly IServiceProvider _serviceProvider;
+
+    public NovellLdapHelper(IServiceProvider serviceProvider, IOptionsMonitor<ILog> option, InstanceCrypto instanceCrypto, IConfiguration configuration, NovellLdapSearcher novellLdapSearcher) :
+        base(option, instanceCrypto)
     {
-        public NovellLdapSearcher LDAPSearcher { get; private set; }
+        LDAPSearcher = novellLdapSearcher;
 
-        private readonly IConfiguration Configuration;
-        private readonly IServiceProvider _serviceProvider;
+        _configuration = configuration;
+        _serviceProvider = serviceProvider;
+    }
 
-        public NovellLdapHelper(IServiceProvider serviceProvider, IOptionsMonitor<ILog> option, InstanceCrypto instanceCrypto, IConfiguration configuration, NovellLdapSearcher novellLdapSearcher) :
-            base(option, instanceCrypto)
+    public void Init(LdapSettings settings)
+    {
+        var password = string.IsNullOrEmpty(settings.Password)
+            ? GetPassword(settings.PasswordBytes)
+            : settings.Password;
+
+        LDAPSearcher.Init(settings.Login, password, settings.Server, settings.PortNumber,
+            settings.StartTls, settings.Ssl, settings.AcceptCertificate, settings.AcceptCertificateHash);
+
+        base.Init(settings);
+    }
+
+    public override bool IsConnected
+    {
+        get { return LDAPSearcher.IsConnected; }
+    }
+
+    public override void Connect()
+    {
+        LDAPSearcher.Connect();
+
+        Settings.AcceptCertificate = LDAPSearcher.AcceptCertificate;
+        Settings.AcceptCertificateHash = LDAPSearcher.AcceptCertificateHash;
+    }
+
+    public override Dictionary<string, string[]> GetCapabilities()
+    {
+        return LDAPSearcher.GetCapabilities();
+    }
+
+    public override string SearchDomain()
+    {
+        try
         {
-            LDAPSearcher = novellLdapSearcher;
+            var capabilities = GetCapabilities();
 
-            Configuration = configuration;
-            _serviceProvider = serviceProvider;
-        }
-
-        public void Init(LdapSettings settings)
-        {
-            var password = string.IsNullOrEmpty(settings.Password)
-                ? GetPassword(settings.PasswordBytes)
-                : settings.Password;
-
-            LDAPSearcher.Init(settings.Login, password, settings.Server, settings.PortNumber,
-                settings.StartTls, settings.Ssl, settings.AcceptCertificate, settings.AcceptCertificateHash);
-
-            base.Init(settings);
-        }
-
-        public override bool IsConnected
-        {
-            get { return LDAPSearcher.IsConnected; }
-        }
-
-        public override void Connect()
-        {
-            LDAPSearcher.Connect();
-
-            Settings.AcceptCertificate = LDAPSearcher.AcceptCertificate;
-            Settings.AcceptCertificateHash = LDAPSearcher.AcceptCertificateHash;
-        }
-
-        public override Dictionary<string, string[]> GetCapabilities()
-        {
-            return LDAPSearcher.GetCapabilities();
-        }
-
-        public override string SearchDomain()
-        {
-            try
+            if (capabilities.Count > 0)
             {
-                var capabilities = GetCapabilities();
-
-                if (capabilities.Count > 0)
+                if (capabilities.ContainsKey("defaultNamingContext"))
                 {
-                    if (capabilities.ContainsKey("defaultNamingContext"))
-                    {
-                        var dnList = capabilities["defaultNamingContext"];
+                    var dnList = capabilities["defaultNamingContext"];
 
-                        var dn = dnList.FirstOrDefault(dc =>
-                            !string.IsNullOrEmpty(dc) &&
-                            dc.IndexOf("dc=", StringComparison.InvariantCultureIgnoreCase) != -1);
+                    var dn = dnList.FirstOrDefault(dc =>
+                        !string.IsNullOrEmpty(dc) &&
+                        dc.IndexOf("dc=", StringComparison.InvariantCultureIgnoreCase) != -1);
 
-                        var domain = LdapUtils.DistinguishedNameToDomain(dn);
+                    var domain = LdapUtils.DistinguishedNameToDomain(dn);
 
-                        if (!string.IsNullOrEmpty(domain))
-                            return domain;
-                    }
-
-                    if (capabilities.ContainsKey("rootDomainNamingContext"))
-                    {
-                        var dnList = capabilities["rootDomainNamingContext"];
-
-                        var dn = dnList.FirstOrDefault(dc =>
-                            !string.IsNullOrEmpty(dc) &&
-                            dc.IndexOf("dc=", StringComparison.InvariantCultureIgnoreCase) != -1);
-
-                        var domain = LdapUtils.DistinguishedNameToDomain(dn);
-
-                        if (!string.IsNullOrEmpty(domain))
-                            return domain;
-                    }
-
-                    if (capabilities.ContainsKey("namingContexts"))
-                    {
-                        var dnList = capabilities["namingContexts"];
-
-                        var dn = dnList.FirstOrDefault(dc =>
-                            !string.IsNullOrEmpty(dc) &&
-                            dc.IndexOf("dc=", StringComparison.InvariantCultureIgnoreCase) != -1);
-
-                        var domain = LdapUtils.DistinguishedNameToDomain(dn);
-
-                        if (!string.IsNullOrEmpty(domain))
-                            return domain;
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Log.WarnFormat("NovellLdapHelper->SearchDomain() failed. Error: {0}", e);
-            }
-
-            try
-            {
-                var searchResult =
-                    LDAPSearcher.Search(Settings.UserDN, NovellLdapSearcher.LdapScope.Sub, Settings.UserFilter, limit: 1)
-                        .FirstOrDefault();
-
-                return searchResult != null ? LdapObjectExtension.GetDomainFromDn(searchResult) : null;
-            }
-            catch (Exception e)
-            {
-                Log.WarnFormat("NovellLdapHelper->SearchDomain() failed. Error: {0}", e);
-            }
-
-            return null;
-        }
-
-        public override void CheckCredentials(string login, string password, string server, int portNumber,
-            bool startTls, bool ssl, bool acceptCertificate, string acceptCertificateHash)
-        {
-            using var novellLdapSearcher = _serviceProvider.GetService<NovellLdapSearcher>();
-            novellLdapSearcher.Init(login, password, server, portNumber, startTls, ssl, acceptCertificate, acceptCertificateHash);
-            novellLdapSearcher.Connect();
-        }
-
-        public override bool CheckUserDn(string userDn)
-        {
-            string[] attributes = { LdapConstants.ADSchemaAttributes.OBJECT_CLASS };
-
-            var searchResult = LDAPSearcher.Search(userDn, NovellLdapSearcher.LdapScope.Base,
-                LdapConstants.OBJECT_FILTER, attributes, 1);
-
-            if (searchResult.Any())
-                return true;
-
-            Log.ErrorFormat("NovellLdapHelper->CheckUserDn(userDn: {0}) Wrong User DN parameter", userDn);
-            return false;
-        }
-
-        public override bool CheckGroupDn(string groupDn)
-        {
-            string[] attributes = { LdapConstants.ADSchemaAttributes.OBJECT_CLASS };
-
-            var searchResult = LDAPSearcher.Search(groupDn, NovellLdapSearcher.LdapScope.Base,
-                LdapConstants.OBJECT_FILTER, attributes, 1);
-
-            if (searchResult.Any())
-                return true;
-
-            Log.ErrorFormat("NovellLdapHelper->CheckGroupDn(groupDn: {0}): Wrong Group DN parameter", groupDn);
-            return false;
-        }
-
-        public override List<LdapObject> GetUsers(string filter = null, int limit = -1)
-        {
-            var list = new List<LdapObject>();
-
-            try
-            {
-                if (!string.IsNullOrEmpty(Settings.UserFilter) && !Settings.UserFilter.StartsWith("(") &&
-                    !Settings.UserFilter.EndsWith(")"))
-                {
-                    Settings.UserFilter = string.Format("({0})", Settings.UserFilter);
+                    if (!string.IsNullOrEmpty(domain))
+                        return domain;
                 }
 
-                if (!string.IsNullOrEmpty(filter) && !filter.StartsWith("(") &&
-                    !filter.EndsWith(")"))
+                if (capabilities.ContainsKey("rootDomainNamingContext"))
                 {
-                    filter = string.Format("({0})", Settings.UserFilter);
+                    var dnList = capabilities["rootDomainNamingContext"];
+
+                    var dn = dnList.FirstOrDefault(dc =>
+                        !string.IsNullOrEmpty(dc) &&
+                        dc.IndexOf("dc=", StringComparison.InvariantCultureIgnoreCase) != -1);
+
+                    var domain = LdapUtils.DistinguishedNameToDomain(dn);
+
+                    if (!string.IsNullOrEmpty(domain))
+                        return domain;
                 }
 
-                var searchfilter = string.IsNullOrEmpty(filter)
-                    ? Settings.UserFilter
-                    : string.Format("(&{0}{1})", Settings.UserFilter, filter);
+                if (capabilities.ContainsKey("namingContexts"))
+                {
+                    var dnList = capabilities["namingContexts"];
 
-                list = LDAPSearcher.Search(Settings.UserDN, NovellLdapSearcher.LdapScope.Sub, searchfilter, limit: limit);
+                    var dn = dnList.FirstOrDefault(dc =>
+                        !string.IsNullOrEmpty(dc) &&
+                        dc.IndexOf("dc=", StringComparison.InvariantCultureIgnoreCase) != -1);
 
-                return list;
+                    var domain = LdapUtils.DistinguishedNameToDomain(dn);
+
+                    if (!string.IsNullOrEmpty(domain))
+                        return domain;
+                }
             }
-            catch (Exception e)
+        }
+        catch (Exception e)
+        {
+            Log.WarnFormat("NovellLdapHelper->SearchDomain() failed. Error: {0}", e);
+        }
+
+        try
+        {
+            var searchResult =
+                LDAPSearcher.Search(Settings.UserDN, NovellLdapSearcher.LdapScope.Sub, Settings.UserFilter, limit: 1)
+                    .FirstOrDefault();
+
+            return searchResult != null ? LdapObjectExtension.GetDomainFromDn(searchResult) : null;
+        }
+        catch (Exception e)
+        {
+            Log.WarnFormat("NovellLdapHelper->SearchDomain() failed. Error: {0}", e);
+        }
+
+        return null;
+    }
+
+    public override void CheckCredentials(string login, string password, string server, int portNumber,
+        bool startTls, bool ssl, bool acceptCertificate, string acceptCertificateHash)
+    {
+        using var novellLdapSearcher = _serviceProvider.GetService<NovellLdapSearcher>();
+        novellLdapSearcher.Init(login, password, server, portNumber, startTls, ssl, acceptCertificate, acceptCertificateHash);
+        novellLdapSearcher.Connect();
+    }
+
+    public override bool CheckUserDn(string userDn)
+    {
+        string[] attributes = { LdapConstants.ADSchemaAttributes.OBJECT_CLASS };
+
+        var searchResult = LDAPSearcher.Search(userDn, NovellLdapSearcher.LdapScope.Base,
+            LdapConstants.OBJECT_FILTER, attributes, 1);
+
+        if (searchResult.Any())
+            return true;
+
+        Log.ErrorFormat("NovellLdapHelper->CheckUserDn(userDn: {0}) Wrong User DN parameter", userDn);
+        return false;
+    }
+
+    public override bool CheckGroupDn(string groupDn)
+    {
+        string[] attributes = { LdapConstants.ADSchemaAttributes.OBJECT_CLASS };
+
+        var searchResult = LDAPSearcher.Search(groupDn, NovellLdapSearcher.LdapScope.Base,
+            LdapConstants.OBJECT_FILTER, attributes, 1);
+
+        if (searchResult.Any())
+            return true;
+
+        Log.ErrorFormat("NovellLdapHelper->CheckGroupDn(groupDn: {0}): Wrong Group DN parameter", groupDn);
+        return false;
+    }
+
+    public override List<LdapObject> GetUsers(string filter = null, int limit = -1)
+    {
+        var list = new List<LdapObject>();
+
+        try
+        {
+            if (!string.IsNullOrEmpty(Settings.UserFilter) && !Settings.UserFilter.StartsWith("(") &&
+                !Settings.UserFilter.EndsWith(")"))
             {
-                Log.ErrorFormat("NovellLdapHelper->GetUsers(filter: '{0}' limit: {1}) failed. Error: {2}",
-                    filter, limit, e);
+                Settings.UserFilter = string.Format("({0})", Settings.UserFilter);
             }
+
+            if (!string.IsNullOrEmpty(filter) && !filter.StartsWith("(") &&
+                !filter.EndsWith(")"))
+            {
+                filter = string.Format("({0})", Settings.UserFilter);
+            }
+
+            var searchfilter = string.IsNullOrEmpty(filter)
+                ? Settings.UserFilter
+                : string.Format("(&{0}{1})", Settings.UserFilter, filter);
+
+            list = LDAPSearcher.Search(Settings.UserDN, NovellLdapSearcher.LdapScope.Sub, searchfilter, limit: limit);
 
             return list;
         }
-
-        public override LdapObject GetUserBySid(string sid)
+        catch (Exception e)
         {
-            try
-            {
-                var ldapUniqueIdAttribute = Configuration["ldap:unique:id"];
-
-                Criteria criteria;
-
-                if (ldapUniqueIdAttribute == null)
-                {
-                    criteria = Criteria.Any(
-                        Expression.Equal(LdapConstants.RfcLDAPAttributes.ENTRY_UUID, sid),
-                        Expression.Equal(LdapConstants.RfcLDAPAttributes.NS_UNIQUE_ID, sid),
-                        Expression.Equal(LdapConstants.RfcLDAPAttributes.GUID, sid),
-                        Expression.Equal(LdapConstants.ADSchemaAttributes.OBJECT_SID, sid)
-                        );
-                }
-                else
-                {
-                    criteria = Criteria.All(Expression.Equal(ldapUniqueIdAttribute, sid));
-                }
-
-                var searchfilter = string.Format("(&{0}{1})", Settings.UserFilter, criteria);
-
-                var list = LDAPSearcher.Search(Settings.UserDN, NovellLdapSearcher.LdapScope.Sub, searchfilter, limit: 1);
-
-                return list.FirstOrDefault();
-            }
-            catch (Exception e)
-            {
-                Log.ErrorFormat("NovellLdapHelper->GetUserBySid(sid: '{0}') failed. Error: {1}", sid, e);
-            }
-
-            return null;
+            Log.ErrorFormat("NovellLdapHelper->GetUsers(filter: '{0}' limit: {1}) failed. Error: {2}",
+                filter, limit, e);
         }
 
-        public override List<LdapObject> GetGroups(Criteria criteria = null)
+        return list;
+    }
+
+    public override LdapObject GetUserBySid(string sid)
+    {
+        try
         {
-            var list = new List<LdapObject>();
+            var ldapUniqueIdAttribute = _configuration["ldap:unique:id"];
 
-            try
+            Criteria criteria;
+
+            if (ldapUniqueIdAttribute == null)
             {
-                if (!string.IsNullOrEmpty(Settings.GroupFilter) && !Settings.GroupFilter.StartsWith("(") &&
-                    !Settings.GroupFilter.EndsWith(")"))
-                {
-                    Settings.GroupFilter = string.Format("({0})", Settings.GroupFilter);
-                }
-
-                var searchfilter = criteria == null
-                    ? Settings.GroupFilter
-                    : string.Format("(&{0}{1})", Settings.GroupFilter, criteria);
-
-
-                list = LDAPSearcher.Search(Settings.GroupDN, NovellLdapSearcher.LdapScope.Sub, searchfilter);
+                criteria = Criteria.Any(
+                    Expression.Equal(LdapConstants.RfcLDAPAttributes.ENTRY_UUID, sid),
+                    Expression.Equal(LdapConstants.RfcLDAPAttributes.NS_UNIQUE_ID, sid),
+                    Expression.Equal(LdapConstants.RfcLDAPAttributes.GUID, sid),
+                    Expression.Equal(LdapConstants.ADSchemaAttributes.OBJECT_SID, sid)
+                    );
             }
-            catch (Exception e)
+            else
             {
-                Log.ErrorFormat("NovellLdapHelper->GetGroups(criteria: '{0}') failed. Error: {1}", criteria, e);
+                criteria = Criteria.All(Expression.Equal(ldapUniqueIdAttribute, sid));
             }
 
-            return list;
+            var searchfilter = string.Format("(&{0}{1})", Settings.UserFilter, criteria);
+
+            var list = LDAPSearcher.Search(Settings.UserDN, NovellLdapSearcher.LdapScope.Sub, searchfilter, limit: 1);
+
+            return list.FirstOrDefault();
+        }
+        catch (Exception e)
+        {
+            Log.ErrorFormat("NovellLdapHelper->GetUserBySid(sid: '{0}') failed. Error: {1}", sid, e);
         }
 
-        public override void Dispose()
+        return null;
+    }
+
+    public override List<LdapObject> GetGroups(Criteria criteria = null)
+    {
+        var list = new List<LdapObject>();
+
+        try
         {
-            LDAPSearcher.Dispose();
+            if (!string.IsNullOrEmpty(Settings.GroupFilter) && !Settings.GroupFilter.StartsWith("(") &&
+                !Settings.GroupFilter.EndsWith(")"))
+            {
+                Settings.GroupFilter = string.Format("({0})", Settings.GroupFilter);
+            }
+
+            var searchfilter = criteria == null
+                ? Settings.GroupFilter
+                : string.Format("(&{0}{1})", Settings.GroupFilter, criteria);
+
+
+            list = LDAPSearcher.Search(Settings.GroupDN, NovellLdapSearcher.LdapScope.Sub, searchfilter);
         }
+        catch (Exception e)
+        {
+            Log.ErrorFormat("NovellLdapHelper->GetGroups(criteria: '{0}') failed. Error: {1}", criteria, e);
+        }
+
+        return list;
+    }
+
+    public override void Dispose()
+    {
+        LDAPSearcher.Dispose();
     }
 }

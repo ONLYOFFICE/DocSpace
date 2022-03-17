@@ -15,15 +15,13 @@
 */
 
 
-namespace ASC.ActiveDirectory.Base.Expressions
+namespace ASC.ActiveDirectory.Base.Expressions;
+/// <summary>
+/// Criteria enum
+/// </summary>
+public enum CriteriaType
 {
-    /// <summary>
-    /// Criteria enum
-    /// </summary>
-    public enum CriteriaType
-    {
-        None,
-        And,
-        Or
-    }
+    None,
+    And,
+    Or
 }

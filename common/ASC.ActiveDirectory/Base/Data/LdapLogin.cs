@@ -14,61 +14,59 @@
  *
 */
 
-namespace ASC.ActiveDirectory.Base.Data
+namespace ASC.ActiveDirectory.Base.Data;
+public class LdapLogin
 {
-    public class LdapLogin
+    public string Username { get; private set; }
+    public string Domain { get; private set; }
+
+    public LdapLogin(string username, string domain)
     {
-        public string Username { get; private set; }
-        public string Domain { get; private set; }
+        Username = username;
+        Domain = domain;
+    }
 
-        public LdapLogin(string username, string domain)
-        {
-            Username = username;
-            Domain = domain;
-        }
+    public override string ToString()
+    {
+        return !string.IsNullOrEmpty(Domain) ? string.Format("{0}@{1}", Username, Domain) : Username;
+    }
 
-        public override string ToString()
-        {
-            return !string.IsNullOrEmpty(Domain) ? string.Format("{0}@{1}", Username, Domain) : Username;
-        }
+    public static LdapLogin ParseLogin(string login)
+    {
+        if (string.IsNullOrEmpty(login))
+            return null;
 
-        public static LdapLogin ParseLogin(string login)
+        string username;
+        string domain = null;
+
+        if (login.Contains("\\"))
         {
-            if (string.IsNullOrEmpty(login))
+            var splited = login.Split('\\');
+
+            if (!splited.Any() || splited.Length != 2)
                 return null;
 
-            string username;
-            string domain = null;
+            domain = splited[0];
+            username = splited[1];
 
-            if (login.Contains("\\"))
-            {
-                var splited = login.Split('\\');
-
-                if (!splited.Any() || splited.Length != 2)
-                    return null;
-
-                domain = splited[0];
-                username = splited[1];
-
-            }
-            else if (login.Contains("@"))
-            {
-                var splited = login.Split('@');
-
-                if (!splited.Any() || splited.Length != 2)
-                    return null;
-
-                username = splited[0];
-                domain = splited[1];
-            }
-            else
-            {
-                username = login;
-            }
-
-            var result = new LdapLogin(username, domain);
-
-            return result;
         }
+        else if (login.Contains("@"))
+        {
+            var splited = login.Split('@');
+
+            if (!splited.Any() || splited.Length != 2)
+                return null;
+
+            username = splited[0];
+            domain = splited[1];
+        }
+        else
+        {
+            username = login;
+        }
+
+        var result = new LdapLogin(username, domain);
+
+        return result;
     }
 }

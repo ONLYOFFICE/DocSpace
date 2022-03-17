@@ -15,13 +15,9 @@
 */
 
 
-using ASC.ActiveDirectory.Base.Data;
-
-namespace ASC.ActiveDirectory.Novell.Exceptions
+namespace ASC.ActiveDirectory.Novell.Exceptions;
+[Serializable]
+public class NovellLdapTlsCertificateRequestedException : Exception
 {
-    [Serializable]
-    public class NovellLdapTlsCertificateRequestedException : Exception
-    {
-        public LdapCertificateConfirmRequest CertificateConfirmRequest { get; set; }
-    }
+    public LdapCertificateConfirmRequest CertificateConfirmRequest { get; set; }
 }

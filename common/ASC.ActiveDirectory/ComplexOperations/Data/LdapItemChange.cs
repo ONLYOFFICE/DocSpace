@@ -14,30 +14,23 @@
  *
 */
 
-
-
-using System.Text.Json.Serialization;
-
-
-namespace ASC.ActiveDirectory.ComplexOperations.Data
+namespace ASC.ActiveDirectory.ComplexOperations.Data;
+public class LdapItemChange
 {
-    public class LdapItemChange
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public LdapItemChangeKey Key { get; private set; }
+
+    public string Before { get; private set; }
+    public string After { get; private set; }
+
+    public bool IsChanged { get; private set; }
+
+    public LdapItemChange(LdapItemChangeKey key, string before, string after)
     {
-        [JsonConverter(typeof(JsonStringEnumConverter))]
-        public LdapItemChangeKey Key { get; private set; }
+        Key = key;
+        Before = before;
+        After = after;
 
-        public string Before { get; private set; }
-        public string After { get; private set; }
-
-        public bool IsChanged { get; private set; }
-
-        public LdapItemChange(LdapItemChangeKey key, string before, string after)
-        {
-            Key = key;
-            Before = before;
-            After = after;
-
-            IsChanged = Before != null && !Before.Equals(After) || After != null && !After.Equals(Before);
-        }
+        IsChanged = Before != null && !Before.Equals(After) || After != null && !After.Equals(Before);
     }
 }

@@ -15,28 +15,26 @@
 */
 
 
-namespace ASC.ActiveDirectory.Base.Settings
+namespace ASC.ActiveDirectory.Base.Settings;
+public enum LdapSettingsStatus
 {
-    public enum LdapSettingsStatus
-    {
-        Ok = 0,
-        WrongServerOrPort = 1,
-        WrongUserDn = 2,
-        IncorrectLDAPFilter = 3,
-        UsersNotFound = 4,
-        WrongLoginAttribute = 5,
-        WrongGroupDn = 6,
-        IncorrectGroupLDAPFilter = 7,
-        GroupsNotFound = 8,
-        WrongGroupAttribute = 9,
-        WrongUserAttribute = 10,
-        WrongGroupNameAttribute = 11,
-        CredentialsNotValid = 12,
-        ConnectError = 13,
-        StrongAuthRequired = 14,
-        WrongSidAttribute = 15,
-        CertificateRequest = 16,
-        TlsNotSupported = 17,
-        DomainNotFound = 18
-    }
+    Ok = 0,
+    WrongServerOrPort = 1,
+    WrongUserDn = 2,
+    IncorrectLDAPFilter = 3,
+    UsersNotFound = 4,
+    WrongLoginAttribute = 5,
+    WrongGroupDn = 6,
+    IncorrectGroupLDAPFilter = 7,
+    GroupsNotFound = 8,
+    WrongGroupAttribute = 9,
+    WrongUserAttribute = 10,
+    WrongGroupNameAttribute = 11,
+    CredentialsNotValid = 12,
+    ConnectError = 13,
+    StrongAuthRequired = 14,
+    WrongSidAttribute = 15,
+    CertificateRequest = 16,
+    TlsNotSupported = 17,
+    DomainNotFound = 18
 }

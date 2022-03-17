@@ -14,43 +14,42 @@
  *
 */
 
-namespace ASC.ActiveDirectory.ComplexOperations.Data
+namespace ASC.ActiveDirectory.ComplexOperations.Data;
+public enum LdapChangeType
 {
-    public enum LdapChangeType
-    {
-        User,
-        Group
-    }
+    User,
+    Group
+}
 
-    public enum LdapItemChangeKey
-    {
-        Sid,
-        Name,
-        FirstName,
-        LastName,
-        Mail,
-        Phone,
-        Title,
-        Location,
-        Member
-    }
+public enum LdapItemChangeKey
+{
+    Sid,
+    Name,
+    FirstName,
+    LastName,
+    Mail,
+    Phone,
+    Title,
+    Location,
+    Member
+}
 
-    public enum LdapChangeAction
-    {
-        None,
-        Skip,
-        Add,
-        AddMember,
-        Merge,
-        Update,
-        Remove,
-        RemoveMember,
-        SaveAsPortal
-    }
+public enum LdapChangeAction
+{
+    None,
+    Skip,
+    Add,
+    AddMember,
+    Merge,
+    Update,
+    Remove,
+    RemoveMember,
+    SaveAsPortal
+}
 
-    public static class LdapUserMapping
-    {
-        public static readonly List<string> Fields = new List<string>
+public static class LdapUserMapping
+{
+    public static readonly List<string> Fields = new List<string>
         {
             Enum.GetName(typeof(LdapItemChangeKey), LdapItemChangeKey.FirstName),
             Enum.GetName(typeof(LdapItemChangeKey), LdapItemChangeKey.LastName),
@@ -61,5 +60,4 @@ namespace ASC.ActiveDirectory.ComplexOperations.Data
             Enum.GetName(typeof(LdapItemChangeKey), LdapItemChangeKey.Sid),
             Enum.GetName(typeof(LdapItemChangeKey), LdapItemChangeKey.Member)
         };
-    }
 }

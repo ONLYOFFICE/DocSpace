@@ -15,133 +15,118 @@
 */
 
 
-using System.Globalization;
-using System.Text;
-
-using ASC.ActiveDirectory.Base;
-using ASC.ActiveDirectory.Base.Data;
-using ASC.ActiveDirectory.Novell.Data;
-using ASC.Common;
-using ASC.Common.Logging;
-
-using Microsoft.Extensions.Options;
-
-using Novell.Directory.Ldap;
-
-namespace ASC.ActiveDirectory.Novell.Extensions
+namespace ASC.ActiveDirectory.Novell.Extensions;
+[Singletone]
+public class NovellLdapEntryExtension
 {
-    [Singletone]
-    public class NovellLdapEntryExtension
+    private readonly IOptionsMonitor<ILog> _options;
+    public NovellLdapEntryExtension(IOptionsMonitor<ILog> option)
     {
-        private readonly IOptionsMonitor<ILog> _options;
-        public NovellLdapEntryExtension(IOptionsMonitor<ILog> option)
+        _options = option;
+    }
+    public object GetAttributeValue(LdapEntry ldapEntry, string attributeName, bool getBytes = false)
+    {
+        var attribute = ldapEntry.GetAttribute(attributeName);
+
+        if (attribute == null)
+            return null;
+
+        if (!(string.Equals(attributeName, LdapConstants.ADSchemaAttributes.OBJECT_SID,
+            StringComparison.OrdinalIgnoreCase) || getBytes))
         {
-            _options = option;
-        }
-        public object GetAttributeValue(LdapEntry ldapEntry, string attributeName, bool getBytes = false)
-        {
-            var attribute = ldapEntry.GetAttribute(attributeName);
-
-            if (attribute == null)
-                return null;
-
-            if (!(string.Equals(attributeName, LdapConstants.ADSchemaAttributes.OBJECT_SID,
-                StringComparison.OrdinalIgnoreCase) || getBytes))
-            {
-                return attribute.StringValue;
-            }
-
-            if (attribute.ByteValue == null)
-                return null;
-
-            var value = new byte[attribute.ByteValue.Length];
-
-            Buffer.BlockCopy(attribute.ByteValue, 0, value, 0, attribute.ByteValue.Length);
-
-            if (getBytes)
-            {
-                return value;
-            }
-
-            return DecodeSid(value);
+            return attribute.StringValue;
         }
 
-        public string[] GetAttributeArrayValue(LdapEntry ldapEntry, string attributeName)
+        if (attribute.ByteValue == null)
+            return null;
+
+        var value = new byte[attribute.ByteValue.Length];
+
+        Buffer.BlockCopy(attribute.ByteValue, 0, value, 0, attribute.ByteValue.Length);
+
+        if (getBytes)
         {
-            var attribute = ldapEntry.GetAttribute(attributeName);
-            return attribute == null ? null : attribute.StringValueArray;
+            return value;
         }
 
-        private string DecodeSid(byte[] sid)
+        return DecodeSid(value);
+    }
+
+    public string[] GetAttributeArrayValue(LdapEntry ldapEntry, string attributeName)
+    {
+        var attribute = ldapEntry.GetAttribute(attributeName);
+        return attribute == null ? null : attribute.StringValueArray;
+    }
+
+    private string DecodeSid(byte[] sid)
+    {
+        var strSid = new StringBuilder("S-");
+
+        // get version
+        int revision = sid[0];
+        strSid.Append(revision.ToString(CultureInfo.InvariantCulture));
+
+        //next byte is the count of sub-authorities
+        var countSubAuths = sid[1] & 0xFF;
+
+        //get the authority
+        long authority = 0;
+
+        //String rid = "";
+        for (var i = 2; i <= 7; i++)
         {
-            var strSid = new StringBuilder("S-");
+            authority |= ((long)sid[i]) << (8 * (5 - (i - 2)));
+        }
 
-            // get version
-            int revision = sid[0];
-            strSid.Append(revision.ToString(CultureInfo.InvariantCulture));
+        strSid.Append("-");
+        strSid.Append(authority);
 
-            //next byte is the count of sub-authorities
-            var countSubAuths = sid[1] & 0xFF;
+        //iterate all the sub-auths
+        var offset = 8;
+        const int size = 4; //4 bytes for each sub auth
 
-            //get the authority
-            long authority = 0;
-
-            //String rid = "";
-            for (var i = 2; i <= 7; i++)
+        for (var j = 0; j < countSubAuths; j++)
+        {
+            long subAuthority = 0;
+            for (var k = 0; k < size; k++)
             {
-                authority |= ((long)sid[i]) << (8 * (5 - (i - 2)));
+                subAuthority |= (long)(sid[offset + k] & 0xFF) << (8 * k);
             }
 
             strSid.Append("-");
-            strSid.Append(authority);
+            strSid.Append(subAuthority);
 
-            //iterate all the sub-auths
-            var offset = 8;
-            const int size = 4; //4 bytes for each sub auth
-
-            for (var j = 0; j < countSubAuths; j++)
-            {
-                long subAuthority = 0;
-                for (var k = 0; k < size; k++)
-                {
-                    subAuthority |= (long)(sid[offset + k] & 0xFF) << (8 * k);
-                }
-
-                strSid.Append("-");
-                strSid.Append(subAuthority);
-
-                offset += size;
-            }
-
-            return strSid.ToString();
+            offset += size;
         }
 
-        /// <summary>
-        /// Create LDAPObject by LdapEntry
-        /// </summary>
-        /// <param name="ldapEntry">init ldapEntry</param>
-        /// <param name="ldapUniqueIdAttribute"></param>
-        /// <returns>LDAPObject</returns>
-        public LdapObject ToLdapObject(LdapEntry ldapEntry, string ldapUniqueIdAttribute = null)
-        {
-            if (ldapEntry == null)
-                throw new ArgumentNullException("ldapEntry");
+        return strSid.ToString();
+    }
 
-            var novellLdapObject = new NovellLdapObject(_options, this);
-            novellLdapObject.Init(ldapEntry, ldapUniqueIdAttribute);
+    /// <summary>
+    /// Create LDAPObject by LdapEntry
+    /// </summary>
+    /// <param name="ldapEntry">init ldapEntry</param>
+    /// <param name="ldapUniqueIdAttribute"></param>
+    /// <returns>LDAPObject</returns>
+    public LdapObject ToLdapObject(LdapEntry ldapEntry, string ldapUniqueIdAttribute = null)
+    {
+        if (ldapEntry == null)
+            throw new ArgumentNullException("ldapEntry");
 
-            return novellLdapObject;
-        }
+        var novellLdapObject = new NovellLdapObject(_options, this);
+        novellLdapObject.Init(ldapEntry, ldapUniqueIdAttribute);
 
-        /// <summary>
-        /// Create lis of LDAPObject by LdapEntry list
-        /// </summary>
-        /// <param name="entries">list of LdapEntry</param>
-        /// <param name="ldapUniqueIdAttribute"></param>
-        /// <returns>list of LDAPObjects</returns>
-        public List<LdapObject> ToLdapObjects(IEnumerable<LdapEntry> entries, string ldapUniqueIdAttribute = null)
-        {
-            return entries.Select(e => ToLdapObject(e, ldapUniqueIdAttribute)).ToList();
-        }
+        return novellLdapObject;
+    }
+
+    /// <summary>
+    /// Create lis of LDAPObject by LdapEntry list
+    /// </summary>
+    /// <param name="entries">list of LdapEntry</param>
+    /// <param name="ldapUniqueIdAttribute"></param>
+    /// <returns>list of LDAPObjects</returns>
+    public List<LdapObject> ToLdapObjects(IEnumerable<LdapEntry> entries, string ldapUniqueIdAttribute = null)
+    {
+        return entries.Select(e => ToLdapObject(e, ldapUniqueIdAttribute)).ToList();
     }
 }

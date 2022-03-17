@@ -15,23 +15,12 @@
 */
 
 
-using ASC.ActiveDirectory.Base;
-using ASC.ActiveDirectory.Base.Data;
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-
-namespace ASC.ActiveDirectory.Novell
+namespace ASC.ActiveDirectory.Novell;
+[Scope]
+public class NovellLdapUserImporter : LdapUserImporter
 {
-    [Scope]
-    public class NovellLdapUserImporter : LdapUserImporter
+    public NovellLdapUserImporter(IOptionsMonitor<ILog> option, UserManager userManager, IConfiguration configuration, NovellLdapHelper novellLdapHelper, LdapObjectExtension ldapObjectExtension)
+        : base(option, userManager, configuration, novellLdapHelper, ldapObjectExtension)
     {
-        public NovellLdapUserImporter(IOptionsMonitor<ILog> option, UserManager userManager, IConfiguration configuration, NovellLdapHelper novellLdapHelper, LdapObjectExtension ldapObjectExtension)
-            : base(option, userManager, configuration, novellLdapHelper, ldapObjectExtension)
-        {
-        }
     }
 }

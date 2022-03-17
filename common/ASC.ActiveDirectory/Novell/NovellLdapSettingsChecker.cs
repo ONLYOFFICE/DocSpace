@@ -15,190 +15,174 @@
 */
 
 
-using System.Net.Sockets;
-using System.Security;
-
-using ASC.ActiveDirectory.Base;
-using ASC.ActiveDirectory.Base.Data;
-using ASC.ActiveDirectory.Base.Settings;
-using ASC.ActiveDirectory.Novell.Exceptions;
-using ASC.Common;
-using ASC.Common.Logging;
-
-using Microsoft.Extensions.Options;
-
-using Novell.Directory.Ldap.Rfc2251;
-
-namespace ASC.ActiveDirectory.Novell
+namespace ASC.ActiveDirectory.Novell;
+[Scope]
+public class NovellLdapSettingsChecker : LdapSettingsChecker
 {
-    [Scope]
-    public class NovellLdapSettingsChecker : LdapSettingsChecker
+    public LdapCertificateConfirmRequest CertificateConfirmRequest { get; set; }
+
+    public LdapHelper LdapHelper
     {
-        public LdapCertificateConfirmRequest CertificateConfirmRequest { get; set; }
+        get { return LdapImporter.LdapHelper; }
+    }
 
-        public LdapHelper LdapHelper
+    public NovellLdapSettingsChecker(IOptionsMonitor<ILog> option) :
+        base(option)
+    {
+    }
+
+    public void Init(LdapUserImporter importer)
+    {
+        base.Init(importer);
+    }
+
+    public override LdapSettingsStatus CheckSettings()
+    {
+        if (!Settings.EnableLdapAuthentication)
+            return LdapSettingsStatus.Ok;
+
+        if (Settings.Server.Equals("LDAP://", StringComparison.InvariantCultureIgnoreCase))
+            return LdapSettingsStatus.WrongServerOrPort;
+
+        if (!LdapHelper.IsConnected)
         {
-            get { return LdapImporter.LdapHelper; }
-        }
-
-        public NovellLdapSettingsChecker(IOptionsMonitor<ILog> option) :
-            base(option)
-        {
-        }
-
-        public void Init(LdapUserImporter importer)
-        {
-            base.Init(importer);
-        }
-
-        public override LdapSettingsStatus CheckSettings()
-        {
-            if (!Settings.EnableLdapAuthentication)
-                return LdapSettingsStatus.Ok;
-
-            if (Settings.Server.Equals("LDAP://", StringComparison.InvariantCultureIgnoreCase))
+            try
+            {
+                LdapHelper.Connect();
+            }
+            catch (NovellLdapTlsCertificateRequestedException ex)
+            {
+                log.ErrorFormat("CheckSettings(acceptCertificate={0}): NovellLdapTlsCertificateRequestedException: {1}", Settings.AcceptCertificate, ex);
+                CertificateConfirmRequest = ex.CertificateConfirmRequest;
+                return LdapSettingsStatus.CertificateRequest;
+            }
+            catch (NotSupportedException ex)
+            {
+                log.ErrorFormat("CheckSettings(): NotSupportedException: {0}", ex);
+                return LdapSettingsStatus.TlsNotSupported;
+            }
+            catch (SocketException ex)
+            {
+                log.ErrorFormat("CheckSettings(): SocketException: {0}", ex);
+                return LdapSettingsStatus.ConnectError;
+            }
+            catch (ArgumentException ex)
+            {
+                log.ErrorFormat("CheckSettings(): ArgumentException: {0}", ex);
                 return LdapSettingsStatus.WrongServerOrPort;
-
-            if (!LdapHelper.IsConnected)
-            {
-                try
-                {
-                    LdapHelper.Connect();
-                }
-                catch (NovellLdapTlsCertificateRequestedException ex)
-                {
-                    log.ErrorFormat("CheckSettings(acceptCertificate={0}): NovellLdapTlsCertificateRequestedException: {1}", Settings.AcceptCertificate, ex);
-                    CertificateConfirmRequest = ex.CertificateConfirmRequest;
-                    return LdapSettingsStatus.CertificateRequest;
-                }
-                catch (NotSupportedException ex)
-                {
-                    log.ErrorFormat("CheckSettings(): NotSupportedException: {0}", ex);
-                    return LdapSettingsStatus.TlsNotSupported;
-                }
-                catch (SocketException ex)
-                {
-                    log.ErrorFormat("CheckSettings(): SocketException: {0}", ex);
-                    return LdapSettingsStatus.ConnectError;
-                }
-                catch (ArgumentException ex)
-                {
-                    log.ErrorFormat("CheckSettings(): ArgumentException: {0}", ex);
-                    return LdapSettingsStatus.WrongServerOrPort;
-                }
-                catch (SecurityException ex)
-                {
-                    log.ErrorFormat("CheckSettings(): SecurityException: {0}", ex);
-                    return LdapSettingsStatus.StrongAuthRequired;
-                }
-                catch (SystemException ex)
-                {
-                    log.ErrorFormat("CheckSettings(): SystemException: {0}", ex);
-                    return LdapSettingsStatus.WrongServerOrPort;
-                }
-                catch (Exception ex)
-                {
-                    log.ErrorFormat("CheckSettings(): Exception: {0}", ex);
-                    return LdapSettingsStatus.CredentialsNotValid;
-                }
             }
-
-            if (!CheckUserDn(Settings.UserDN))
+            catch (SecurityException ex)
             {
-                return LdapSettingsStatus.WrongUserDn;
+                log.ErrorFormat("CheckSettings(): SecurityException: {0}", ex);
+                return LdapSettingsStatus.StrongAuthRequired;
             }
-
-            if (Settings.GroupMembership)
+            catch (SystemException ex)
             {
-                if (!CheckGroupDn(Settings.GroupDN))
-                {
-                    return LdapSettingsStatus.WrongGroupDn;
-                }
+                log.ErrorFormat("CheckSettings(): SystemException: {0}", ex);
+                return LdapSettingsStatus.WrongServerOrPort;
+            }
+            catch (Exception ex)
+            {
+                log.ErrorFormat("CheckSettings(): Exception: {0}", ex);
+                return LdapSettingsStatus.CredentialsNotValid;
+            }
+        }
 
-                try
-                {
-                    new RfcFilter(Settings.GroupFilter);
-                }
-                catch
-                {
-                    return LdapSettingsStatus.IncorrectGroupLDAPFilter;
-                }
+        if (!CheckUserDn(Settings.UserDN))
+        {
+            return LdapSettingsStatus.WrongUserDn;
+        }
 
-                if (!LdapImporter.TryLoadLDAPGroups())
-                {
-                    if (!LdapImporter.AllSkipedDomainGroups.Any())
-                        return LdapSettingsStatus.IncorrectGroupLDAPFilter;
-
-                    if (LdapImporter.AllSkipedDomainGroups.All(kv => kv.Value == LdapSettingsStatus.WrongSidAttribute))
-                        return LdapSettingsStatus.WrongSidAttribute;
-
-                    if (LdapImporter.AllSkipedDomainGroups.All(kv => kv.Value == LdapSettingsStatus.WrongGroupAttribute))
-                        return LdapSettingsStatus.WrongGroupAttribute;
-
-                    if (LdapImporter.AllSkipedDomainGroups.All(kv => kv.Value == LdapSettingsStatus.WrongGroupNameAttribute))
-                        return LdapSettingsStatus.WrongGroupNameAttribute;
-                }
-
-                if (!LdapImporter.AllDomainGroups.Any())
-                    return LdapSettingsStatus.GroupsNotFound;
+        if (Settings.GroupMembership)
+        {
+            if (!CheckGroupDn(Settings.GroupDN))
+            {
+                return LdapSettingsStatus.WrongGroupDn;
             }
 
             try
             {
-                new RfcFilter(Settings.UserFilter);
+                new RfcFilter(Settings.GroupFilter);
             }
             catch
             {
-                return LdapSettingsStatus.IncorrectLDAPFilter;
+                return LdapSettingsStatus.IncorrectGroupLDAPFilter;
             }
 
-            if (!LdapImporter.TryLoadLDAPUsers())
+            if (!LdapImporter.TryLoadLDAPGroups())
             {
-                if (!LdapImporter.AllSkipedDomainUsers.Any())
-                    return LdapSettingsStatus.IncorrectLDAPFilter;
+                if (!LdapImporter.AllSkipedDomainGroups.Any())
+                    return LdapSettingsStatus.IncorrectGroupLDAPFilter;
 
-                if (LdapImporter.AllSkipedDomainUsers.All(kv => kv.Value == LdapSettingsStatus.WrongSidAttribute))
+                if (LdapImporter.AllSkipedDomainGroups.All(kv => kv.Value == LdapSettingsStatus.WrongSidAttribute))
                     return LdapSettingsStatus.WrongSidAttribute;
 
-                if (LdapImporter.AllSkipedDomainUsers.All(kv => kv.Value == LdapSettingsStatus.WrongLoginAttribute))
-                    return LdapSettingsStatus.WrongLoginAttribute;
+                if (LdapImporter.AllSkipedDomainGroups.All(kv => kv.Value == LdapSettingsStatus.WrongGroupAttribute))
+                    return LdapSettingsStatus.WrongGroupAttribute;
 
-                if (LdapImporter.AllSkipedDomainUsers.All(kv => kv.Value == LdapSettingsStatus.WrongUserAttribute))
-                    return LdapSettingsStatus.WrongUserAttribute;
+                if (LdapImporter.AllSkipedDomainGroups.All(kv => kv.Value == LdapSettingsStatus.WrongGroupNameAttribute))
+                    return LdapSettingsStatus.WrongGroupNameAttribute;
             }
 
-            if (!LdapImporter.AllDomainUsers.Any())
-                return LdapSettingsStatus.UsersNotFound;
-
-            return string.IsNullOrEmpty(LdapImporter.LDAPDomain)
-                ? LdapSettingsStatus.DomainNotFound
-                : LdapSettingsStatus.Ok;
+            if (!LdapImporter.AllDomainGroups.Any())
+                return LdapSettingsStatus.GroupsNotFound;
         }
 
-        private bool CheckUserDn(string userDn)
+        try
         {
-            try
-            {
-                return LdapHelper.CheckUserDn(userDn);
-            }
-            catch (Exception e)
-            {
-                log.ErrorFormat("Wrong User DN parameter: {0}. {1}", userDn, e);
-                return false;
-            }
+            new RfcFilter(Settings.UserFilter);
+        }
+        catch
+        {
+            return LdapSettingsStatus.IncorrectLDAPFilter;
         }
 
-        private bool CheckGroupDn(string groupDn)
+        if (!LdapImporter.TryLoadLDAPUsers())
         {
-            try
-            {
-                return LdapHelper.CheckGroupDn(groupDn);
-            }
-            catch (Exception e)
-            {
-                log.ErrorFormat("Wrong Group DN parameter: {0}. {1}", groupDn, e);
-                return false;
-            }
+            if (!LdapImporter.AllSkipedDomainUsers.Any())
+                return LdapSettingsStatus.IncorrectLDAPFilter;
+
+            if (LdapImporter.AllSkipedDomainUsers.All(kv => kv.Value == LdapSettingsStatus.WrongSidAttribute))
+                return LdapSettingsStatus.WrongSidAttribute;
+
+            if (LdapImporter.AllSkipedDomainUsers.All(kv => kv.Value == LdapSettingsStatus.WrongLoginAttribute))
+                return LdapSettingsStatus.WrongLoginAttribute;
+
+            if (LdapImporter.AllSkipedDomainUsers.All(kv => kv.Value == LdapSettingsStatus.WrongUserAttribute))
+                return LdapSettingsStatus.WrongUserAttribute;
+        }
+
+        if (!LdapImporter.AllDomainUsers.Any())
+            return LdapSettingsStatus.UsersNotFound;
+
+        return string.IsNullOrEmpty(LdapImporter.LDAPDomain)
+            ? LdapSettingsStatus.DomainNotFound
+            : LdapSettingsStatus.Ok;
+    }
+
+    private bool CheckUserDn(string userDn)
+    {
+        try
+        {
+            return LdapHelper.CheckUserDn(userDn);
+        }
+        catch (Exception e)
+        {
+            log.ErrorFormat("Wrong User DN parameter: {0}. {1}", userDn, e);
+            return false;
+        }
+    }
+
+    private bool CheckGroupDn(string groupDn)
+    {
+        try
+        {
+            return LdapHelper.CheckGroupDn(groupDn);
+        }
+        catch (Exception e)
+        {
+            log.ErrorFormat("Wrong Group DN parameter: {0}. {1}", groupDn, e);
+            return false;
         }
     }
 }

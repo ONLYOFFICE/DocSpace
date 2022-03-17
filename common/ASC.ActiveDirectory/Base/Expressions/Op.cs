@@ -15,34 +15,32 @@
 */
 
 
-namespace ASC.ActiveDirectory.Base.Expressions
+namespace ASC.ActiveDirectory.Base.Expressions;
+/// <summary>
+/// Operations
+/// </summary>
+/// <remarks>
+/// [1 - negation][1 - binary][number]
+/// </remarks>
+public enum Op
 {
-    /// <summary>
-    /// Operations
-    /// </summary>
-    /// <remarks>
-    /// [1 - negation][1 - binary][number]
-    /// </remarks>
-    public enum Op
-    {
-        //------------  UNARY -------------
-        /// <summary>Attribute exists</summary>
-        Exists = 0x000001,
-        /// <summary>Attribute does not exist</summary>
-        NotExists = 0x010002,
+    //------------  UNARY -------------
+    /// <summary>Attribute exists</summary>
+    Exists = 0x000001,
+    /// <summary>Attribute does not exist</summary>
+    NotExists = 0x010002,
 
-        //------------  BINARY -------------
-        /// <summary>Equal</summary>
-        Equal = 0x000103,
-        /// <summary>Not equal</summary>
-        NotEqual = 0x010104,
-        /// <summary>Strong less</summary>
-        Less = 0x000105,
-        /// <summary>Less or equal</summary>
-        LessOrEqual = 0x000106,
-        /// <summary>Strong greater</summary>
-        Greater = 0x000107,
-        /// <summary>Greater or equal</summary>
-        GreaterOrEqual = 0x000108
-    }
+    //------------  BINARY -------------
+    /// <summary>Equal</summary>
+    Equal = 0x000103,
+    /// <summary>Not equal</summary>
+    NotEqual = 0x010104,
+    /// <summary>Strong less</summary>
+    Less = 0x000105,
+    /// <summary>Less or equal</summary>
+    LessOrEqual = 0x000106,
+    /// <summary>Strong greater</summary>
+    Greater = 0x000107,
+    /// <summary>Greater or equal</summary>
+    GreaterOrEqual = 0x000108
 }

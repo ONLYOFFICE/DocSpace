@@ -15,13 +15,11 @@
 */
 
 
-namespace ASC.ActiveDirectory.ComplexOperations
+namespace ASC.ActiveDirectory.ComplexOperations;
+public enum LdapOperationType
 {
-    public enum LdapOperationType
-    {
-        Save,
-        Sync,
-        SaveTest,
-        SyncTest
-    }
+    Save,
+    Sync,
+    SaveTest,
+    SyncTest
 }

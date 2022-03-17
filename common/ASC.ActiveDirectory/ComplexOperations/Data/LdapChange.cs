@@ -15,40 +15,36 @@
 */
 
 
-using System.Text.Json.Serialization;
-
-namespace ASC.ActiveDirectory.ComplexOperations.Data
+namespace ASC.ActiveDirectory.ComplexOperations.Data;
+public class LdapChange
 {
-    public class LdapChange
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public LdapChangeAction Action { get; private set; }
+
+    public string Sid { get; private set; }
+
+    public string Name { get; private set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string Email { get; private set; }
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public LdapChangeType Type { get; private set; }
+
+    public List<LdapItemChange> Changes { get; private set; }
+
+    public LdapChange(string sid, string name, LdapChangeType type, LdapChangeAction action,
+        List<LdapItemChange> changes = null) : this(sid, name, null, type, action, changes)
     {
-        [JsonConverter(typeof(JsonStringEnumConverter))]
-        public LdapChangeAction Action { get; private set; }
+    }
 
-        public string Sid { get; private set; }
-
-        public string Name { get; private set; }
-
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public string Email { get; private set; }
-
-        [JsonConverter(typeof(JsonStringEnumConverter))]
-        public LdapChangeType Type { get; private set; }
-
-        public List<LdapItemChange> Changes { get; private set; }
-
-        public LdapChange(string sid, string name, LdapChangeType type, LdapChangeAction action,
-            List<LdapItemChange> changes = null) : this(sid, name, null, type, action, changes)
-        {
-        }
-
-        public LdapChange(string sid, string name, string email, LdapChangeType type, LdapChangeAction action, List<LdapItemChange> changes = null)
-        {
-            Sid = sid;
-            Name = name;
-            Type = type;
-            Action = action;
-            Changes = changes ?? new List<LdapItemChange>();
-            Email = email;
-        }
+    public LdapChange(string sid, string name, string email, LdapChangeType type, LdapChangeAction action, List<LdapItemChange> changes = null)
+    {
+        Sid = sid;
+        Name = name;
+        Type = type;
+        Action = action;
+        Changes = changes ?? new List<LdapItemChange>();
+        Email = email;
     }
 }

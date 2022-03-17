@@ -15,38 +15,32 @@
 */
 
 
-using ASC.Common.Logging;
-
-using Microsoft.Extensions.Options;
-
-namespace ASC.ActiveDirectory.Base.Settings
+namespace ASC.ActiveDirectory.Base.Settings;
+public abstract class LdapSettingsChecker : IDisposable
 {
-    public abstract class LdapSettingsChecker : IDisposable
+    protected ILog log;
+
+    public LdapUserImporter LdapImporter { get; private set; }
+
+    public LdapSettings Settings
     {
-        protected ILog log;
+        get { return LdapImporter.Settings; }
+    }
 
-        public LdapUserImporter LdapImporter { get; private set; }
+    protected LdapSettingsChecker(IOptionsMonitor<ILog> option)
+    {
+        log = option.Get("ASC");
+    }
 
-        public LdapSettings Settings
-        {
-            get { return LdapImporter.Settings; }
-        }
+    public void Init(LdapUserImporter importer)
+    {
+        LdapImporter = importer;
+    }
 
-        protected LdapSettingsChecker(IOptionsMonitor<ILog> option)
-        {
-            log = option.Get("ASC");
-        }
+    public abstract LdapSettingsStatus CheckSettings();
 
-        public void Init(LdapUserImporter importer)
-        {
-            LdapImporter = importer;
-        }
-
-        public abstract LdapSettingsStatus CheckSettings();
-
-        public void Dispose()
-        {
-            LdapImporter.Dispose();
-        }
+    public void Dispose()
+    {
+        LdapImporter.Dispose();
     }
 }

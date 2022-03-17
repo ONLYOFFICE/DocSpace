@@ -15,593 +15,589 @@
 */
 
 
-using System.Resources;
-
-namespace ASC.ActiveDirectory.ComplexOperations
+namespace ASC.ActiveDirectory.ComplexOperations;
+public class LdapLocalization
 {
-    public class LdapLocalization
+    private ResourceManager _resourceManager;
+    private ResourceManager _notifyResourceManager;
+
+    public void Init(ResourceManager resourceManager = null, ResourceManager notifyResourceManager = null)
     {
-        private ResourceManager _resourceManager;
-        private ResourceManager _notifyResourceManager;
+        _resourceManager = resourceManager;
+        _notifyResourceManager = notifyResourceManager;
+    }
 
-        public void Init(ResourceManager resourceManager = null, ResourceManager notifyResourceManager = null)
+    public string FirstName
+    {
+        get
         {
-            _resourceManager = resourceManager;
-            _notifyResourceManager = notifyResourceManager;
+            const string def_key = "FirstName";
+            const string def_val = "First Name";
+
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string FirstName
+    public string LastName
+    {
+        get
         {
-            get
-            {
-                const string def_key = "FirstName";
-                const string def_val = "First Name";
+            const string def_key = "LastName";
+            const string def_val = "Last Name";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LastName
+    public string LdapSettingsModifyLdapUsers
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LastName";
-                const string def_val = "Last Name";
+            const string def_key = "LdapSettingsModifyLdapUsers";
+            const string def_val = "Modifying LDAP users on ordinary portal users";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsModifyLdapUsers
+    public string LdapSettingsTenantQuotaSettled
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsModifyLdapUsers";
-                const string def_val = "Modifying LDAP users on ordinary portal users";
+            const string def_key = "LdapSettingsTenantQuotaSettled";
+            const string def_val = "The current pricing plan user limit has been reached";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsTenantQuotaSettled
+    public string LdapSettingsErrorCantCreateUsers
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsTenantQuotaSettled";
-                const string def_val = "The current pricing plan user limit has been reached";
+            const string def_key = "LdapSettingsErrorCantCreateUsers";
+            const string def_val = "Users could not be created, the received data are incorrect.";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsErrorCantCreateUsers
+    public string LdapSettingsInternalServerError
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsErrorCantCreateUsers";
-                const string def_val = "Users could not be created, the received data are incorrect.";
+            const string def_key = "LdapSettingsInternalServerError";
+            const string def_val = "Server internal error.";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsInternalServerError
+    public string LdapSettingsStatusGettingUsersFromLdap
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsInternalServerError";
-                const string def_val = "Server internal error.";
+            const string def_key = "LdapSettingsStatusGettingUsersFromLdap";
+            const string def_val = "Retrieving the user list from the LDAP server";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsStatusGettingUsersFromLdap
+    public string LdapSettingsStatusGivingRights
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsStatusGettingUsersFromLdap";
-                const string def_val = "Retrieving the user list from the LDAP server";
+            const string def_key = "LdapSettingsStatusGivingRights";
+            const string def_val = "Setting user {0} as {1} admin";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsStatusGivingRights
+    public string LdapSettingsErrorUsersNotFound
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsStatusGivingRights";
-                const string def_val = "Setting user {0} as {1} admin";
+            const string def_key = "LdapSettingsErrorUsersNotFound";
+            const string def_val = "No users could be found.";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsErrorUsersNotFound
+    public string LdapSettingsStatusRemovingOldRights
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsErrorUsersNotFound";
-                const string def_val = "No users could be found.";
+            const string def_key = "LdapSettingsStatusRemovingOldRights";
+            const string def_val = "Removing outdated access rights that have been loaded via LDAP earlier";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsStatusRemovingOldRights
+    public string LdapSettingsStatusRemovingOldUsers
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsStatusRemovingOldRights";
-                const string def_val = "Removing outdated access rights that have been loaded via LDAP earlier";
+            const string def_key = "LdapSettingsStatusRemovingOldUsers";
+            const string def_val = "Removing outdated user profiles that have been loaded via LDAP earlier";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsStatusRemovingOldUsers
+    public string LdapSettingsStatusSavingUserPhoto
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsStatusRemovingOldUsers";
-                const string def_val = "Removing outdated user profiles that have been loaded via LDAP earlier";
+            const string def_key = "LdapSettingsStatusSavingUserPhoto";
+            const string def_val = "Saving photo";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsStatusSavingUserPhoto
+    public string LdapSettingsStatusSavingUsers
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsStatusSavingUserPhoto";
-                const string def_val = "Saving photo";
+            const string def_key = "LdapSettingsStatusSavingUsers";
+            const string def_val = "Saving users";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsStatusSavingUsers
+    public string LdapSettingsStatusSyncingUsers
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsStatusSavingUsers";
-                const string def_val = "Saving users";
+            const string def_key = "LdapSettingsStatusSyncingUsers";
+            const string def_val = "Syncing users";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsStatusSyncingUsers
+    public string LdapSettingsStatusRemovingOldGroups
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsStatusSyncingUsers";
-                const string def_val = "Syncing users";
+            const string def_key = "LdapSettingsStatusRemovingOldGroups";
+            const string def_val = "Removing outdated groups that have been loaded via LDAP earlier";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsStatusRemovingOldGroups
+    public string LdapSettingsStatusGettingGroupsFromLdap
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsStatusRemovingOldGroups";
-                const string def_val = "Removing outdated groups that have been loaded via LDAP earlier";
+            const string def_key = "LdapSettingsStatusGettingGroupsFromLdap";
+            const string def_val = "Retrieving the group list from the LDAP server";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsStatusGettingGroupsFromLdap
+    public string LdapSettingsErrorGroupsNotFound
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsStatusGettingGroupsFromLdap";
-                const string def_val = "Retrieving the group list from the LDAP server";
+            const string def_key = "LdapSettingsErrorGroupsNotFound";
+            const string def_val = "No groups could be found.";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsErrorGroupsNotFound
+    public string LdapSettingsStatusSavingGroups
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsErrorGroupsNotFound";
-                const string def_val = "No groups could be found.";
+            const string def_key = "LdapSettingsStatusSavingGroups";
+            const string def_val = "Saving groups";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsStatusSavingGroups
+    public string LdapSettingsErrorCantGetLdapSettings
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsStatusSavingGroups";
-                const string def_val = "Saving groups";
+            const string def_key = "LdapSettingsErrorCantGetLdapSettings";
+            const string def_val = "The server could not get settings.";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsErrorCantGetLdapSettings
+    public string LdapSettingsStatusCheckingLdapSettings
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsErrorCantGetLdapSettings";
-                const string def_val = "The server could not get settings.";
+            const string def_key = "LdapSettingsStatusCheckingLdapSettings";
+            const string def_val = "Checking LDAP support settings";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsStatusCheckingLdapSettings
+    public string LdapSettingsStatusLoadingBaseInfo
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsStatusCheckingLdapSettings";
-                const string def_val = "Checking LDAP support settings";
+            const string def_key = "LdapSettingsStatusLoadingBaseInfo";
+            const string def_val = "Loading LDAP base info";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsStatusLoadingBaseInfo
+    public string LdapSettingsStatusCertificateVerification
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsStatusLoadingBaseInfo";
-                const string def_val = "Loading LDAP base info";
+            const string def_key = "LdapSettingsStatusCertificateVerification";
+            const string def_val = "Certificate verification";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsStatusCertificateVerification
+    public string LdapSettingsErrorWrongServerOrPort
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsStatusCertificateVerification";
-                const string def_val = "Certificate verification";
+            const string def_key = "LdapSettingsErrorWrongServerOrPort";
+            const string def_val =
+                "Unable to connect to LDAP server. Please check if the server address and port number are correct.";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsErrorWrongServerOrPort
+    public string LdapSettingsErrorWrongUserDn
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsErrorWrongServerOrPort";
-                const string def_val =
-                    "Unable to connect to LDAP server. Please check if the server address and port number are correct.";
+            const string def_key = "LdapSettingsErrorWrongUserDN";
+            const string def_val = "Incorrect User DN.";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsErrorWrongUserDn
+    public string LdapSettingsErrorIncorrectLdapFilter
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsErrorWrongUserDN";
-                const string def_val = "Incorrect User DN.";
+            const string def_key = "LdapSettingsErrorIncorrectLdapFilter";
+            const string def_val = "Invalid User Filter value.";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsErrorIncorrectLdapFilter
+    public string LdapSettingsErrorLostRights
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsErrorIncorrectLdapFilter";
-                const string def_val = "Invalid User Filter value.";
+            const string def_key = "LdapSettingsErrorLostRights";
+            const string def_val = "You attempted to take away admin rights from yourself. Your admin rights was unaffected.";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsErrorLostRights
+    public string LdapSettingsErrorRemovedYourself
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsErrorLostRights";
-                const string def_val = "You attempted to take away admin rights from yourself. Your admin rights was unaffected.";
+            const string def_key = "LdapSettingsErrorRemovedYourself";
+            const string def_val = "Your account has been unlinked from LDAP. You may need to set a password for your account because you won't be able to login using LDAP password.";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsErrorRemovedYourself
+    public string LdapSettingsErrorWrongLoginAttribute
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsErrorRemovedYourself";
-                const string def_val = "Your account has been unlinked from LDAP. You may need to set a password for your account because you won't be able to login using LDAP password.";
+            const string def_key = "LdapSettingsErrorWrongLoginAttribute";
+            const string def_val = "Could not get Login Attribute for one or several users.";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsErrorWrongLoginAttribute
+    public string LdapSettingsErrorWrongGroupDn
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsErrorWrongLoginAttribute";
-                const string def_val = "Could not get Login Attribute for one or several users.";
+            const string def_key = "LdapSettingsErrorWrongGroupDN";
+            const string def_val = "Incorrect Group DN.";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsErrorWrongGroupDn
+    public string LdapSettingsErrorWrongGroupFilter
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsErrorWrongGroupDN";
-                const string def_val = "Incorrect Group DN.";
+            const string def_key = "LdapSettingsErrorWrongGroupFilter";
+            const string def_val = "Could not get Group Attribute for one or several groups.";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsErrorWrongGroupFilter
+    public string LdapSettingsErrorWrongGroupAttribute
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsErrorWrongGroupFilter";
-                const string def_val = "Could not get Group Attribute for one or several groups.";
+            const string def_key = "LdapSettingsErrorWrongGroupAttribute";
+            const string def_val = "Could not get User Attribute for one or several users.";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsErrorWrongGroupAttribute
+    public string LdapSettingsErrorWrongUserAttribute
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsErrorWrongGroupAttribute";
-                const string def_val = "Could not get User Attribute for one or several users.";
+            const string def_key = "LdapSettingsErrorWrongUserAttribute";
+            const string def_val = "Could not get User Attribute for one or several users.";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsErrorWrongUserAttribute
+    public string LdapSettingsErrorWrongGroupNameAttribute
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsErrorWrongUserAttribute";
-                const string def_val = "Could not get User Attribute for one or several users.";
+            const string def_key = "LdapSettingsErrorWrongGroupNameAttribute";
+            const string def_val = "Could not obtain Group Name Attribute for one or several groups.";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsErrorWrongGroupNameAttribute
+    public string LdapSettingsErrorCredentialsNotValid
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsErrorWrongGroupNameAttribute";
-                const string def_val = "Could not obtain Group Name Attribute for one or several groups.";
+            const string def_key = "LdapSettingsErrorCredentialsNotValid";
+            const string def_val = "Incorrect login or password.";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsErrorCredentialsNotValid
+    public string LdapSettingsConnectError
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsErrorCredentialsNotValid";
-                const string def_val = "Incorrect login or password.";
+            const string def_key = "LdapSettingsConnectError";
+            const string def_val =
+                "A more secure authentication type is required. Please use encripted connection or enable plain authentication on the server.";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsConnectError
+    public string LdapSettingsStrongAuthRequired
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsConnectError";
-                const string def_val =
-                    "A more secure authentication type is required. Please use encripted connection or enable plain authentication on the server.";
+            const string def_key = "LdapSettingsStrongAuthRequired";
+            const string def_val =
+                "A more secure authentication type is required. Please use encripted connection or enable plain authentication on the server.";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsStrongAuthRequired
+    public string LdapSettingsWrongSidAttribute
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsStrongAuthRequired";
-                const string def_val =
-                    "A more secure authentication type is required. Please use encripted connection or enable plain authentication on the server.";
+            const string def_key = "LdapSettingsWrongSidAttribute";
+            const string def_val =
+                "Unique ID for user/group objects could not be obtained. By default the system will try to match one of the following identifiers: entryUUID, nsuniqueid, GUID, objectSid. If none of the attributes corresponds to your LDAP server, please specify the necessary attribute in the ldap.unique.id setting of the web.appsettings.config file.";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsWrongSidAttribute
+    public string LdapSettingsTlsNotSupported
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsWrongSidAttribute";
-                const string def_val =
-                    "Unique ID for user/group objects could not be obtained. By default the system will try to match one of the following identifiers: entryUUID, nsuniqueid, GUID, objectSid. If none of the attributes corresponds to your LDAP server, please specify the necessary attribute in the ldap.unique.id setting of the web.appsettings.config file.";
+            const string def_key = "LdapSettingsTlsNotSupported";
+            const string def_val = "StartTLS not supported for current LDAP server.";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsTlsNotSupported
+    public string LdapSettingsErrorDomainNotFound
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsTlsNotSupported";
-                const string def_val = "StartTLS not supported for current LDAP server.";
+            const string def_key = "LdapSettingsErrorDomainNotFound";
+            const string def_val = "LDAP domain not found.";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsErrorDomainNotFound
+    public string LdapSettingsErrorUnknownError
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsErrorDomainNotFound";
-                const string def_val = "LDAP domain not found.";
+            const string def_key = "LdapSettingsErrorUnknownError";
+            const string def_val = "Unknown error.";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsErrorUnknownError
+    public string LdapSettingsStatusSavingSettings
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsErrorUnknownError";
-                const string def_val = "Unknown error.";
+            const string def_key = "LdapSettingsStatusSavingSettings";
+            const string def_val = "Saving settings";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsStatusSavingSettings
+    public string LdapSettingsErrorCantSaveLdapSettings
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsStatusSavingSettings";
-                const string def_val = "Saving settings";
+            const string def_key = "LdapSettingsErrorCantSaveLdapSettings";
+            const string def_val = "The server could not save settings.";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsErrorCantSaveLdapSettings
+    public string ErrorEmailEmpty
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsErrorCantSaveLdapSettings";
-                const string def_val = "The server could not save settings.";
+            const string def_key = "ErrorEmailEmpty";
+            const string def_val = "Email field is empty";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string ErrorEmailEmpty
+    public string ErrorAccessDenied
+    {
+        get
         {
-            get
-            {
-                const string def_key = "ErrorEmailEmpty";
-                const string def_val = "Email field is empty";
+            const string def_key = "ErrorAccessDenied";
+            const string def_val = "No permissions to perform this action";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string ErrorAccessDenied
+    public string LdapSettingsStatusAddingGroupUser
+    {
+        get
         {
-            get
-            {
-                const string def_key = "ErrorAccessDenied";
-                const string def_val = "No permissions to perform this action";
+            const string def_key = "LdapSettingsStatusAddingGroupUser";
+            const string def_val = "adding user";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsStatusAddingGroupUser
+    public string LdapSettingsStatusRemovingGroupUser
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsStatusAddingGroupUser";
-                const string def_val = "adding user";
+            const string def_key = "LdapSettingsStatusRemovingGroupUser";
+            const string def_val = "removing user";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsStatusRemovingGroupUser
+    public string LdapSettingsStatusUpdatingAccessRights
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsStatusRemovingGroupUser";
-                const string def_val = "removing user";
+            const string def_key = "LdapSettingsStatusUpdatingAccessRights";
+            const string def_val = "Updating users access rights";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsStatusUpdatingAccessRights
+    public string LdapSettingsStatusUpdatingUserPhotos
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsStatusUpdatingAccessRights";
-                const string def_val = "Updating users access rights";
+            const string def_key = "LdapSettingsStatusUpdatingUserPhotos";
+            const string def_val = "Updating user photos";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsStatusUpdatingUserPhotos
+    public string LdapSettingsStatusDisconnecting
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsStatusUpdatingUserPhotos";
-                const string def_val = "Updating user photos";
+            const string def_key = "LdapSettingsStatusDisconnecting";
+            const string def_val = "LDAP disconnecting";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string LdapSettingsStatusDisconnecting
+    public string NotifyButtonJoin
+    {
+        get
         {
-            get
-            {
-                const string def_key = "LdapSettingsStatusDisconnecting";
-                const string def_val = "LDAP disconnecting";
+            const string def_key = "ButtonAccessYourPortal";
+            const string def_val = "Click here to join the portal";
 
-                return GetValueOrDefault(def_key, def_val);
-            }
+            return GetValueOrDefault(def_key, def_val);
         }
+    }
 
-        public string NotifyButtonJoin
+    private string GetValueOrDefault(string key, string defaultValue)
+    {
+        try
         {
-            get
+            var val = _resourceManager != null ? _resourceManager.GetString(key) : null;
+            if (val == null && _notifyResourceManager != null)
             {
-                const string def_key = "ButtonAccessYourPortal";
-                const string def_val = "Click here to join the portal";
-
-                return GetValueOrDefault(def_key, def_val);
-            }
-        }
-
-        private string GetValueOrDefault(string key, string defaultValue)
-        {
-            try
-            {
-                var val = _resourceManager != null ? _resourceManager.GetString(key) : null;
-                if (val == null && _notifyResourceManager != null)
-                {
-                    val = _notifyResourceManager.GetString(key);
-                }
-
-                return val != null ? val : defaultValue;
-            }
-            catch
-            {
-                //
+                val = _notifyResourceManager.GetString(key);
             }
 
-            return defaultValue;
+            return val != null ? val : defaultValue;
         }
+        catch
+        {
+            //
+        }
+
+        return defaultValue;
     }
 }

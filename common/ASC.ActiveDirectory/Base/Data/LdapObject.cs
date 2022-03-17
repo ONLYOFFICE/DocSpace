@@ -14,37 +14,35 @@
  *
 */
 
-namespace ASC.ActiveDirectory.Base.Data
+namespace ASC.ActiveDirectory.Base.Data;
+/// <summary>
+/// LDAP object class
+/// </summary>
+public abstract class LdapObject
 {
+    #region .Public
+
+    public abstract string DistinguishedName { get; }
+
+    public abstract string Sid { get; }
+
+    public abstract string SidAttribute { get; }
+
+    public abstract bool IsDisabled { get; }
+
+    #endregion
+
     /// <summary>
-    /// LDAP object class
+    /// Get property object
     /// </summary>
-    public abstract class LdapObject
-    {
-        #region .Public
+    /// <param name="propertyName">property name</param>
+    /// <returns>value object</returns>
+    public abstract object GetValue(string propertyName, bool getBytes = false);
 
-        public abstract string DistinguishedName { get; }
-
-        public abstract string Sid { get; }
-
-        public abstract string SidAttribute { get; }
-
-        public abstract bool IsDisabled { get; }
-
-        #endregion
-
-        /// <summary>
-        /// Get property object
-        /// </summary>
-        /// <param name="propertyName">property name</param>
-        /// <returns>value object</returns>
-        public abstract object GetValue(string propertyName, bool getBytes = false);
-
-        /// <summary>
-        /// Get property values
-        /// </summary>
-        /// <param name="propertyName">property name</param>
-        /// <returns>list of values</returns>
-        public abstract List<string> GetValues(string propertyName);
-    }
+    /// <summary>
+    /// Get property values
+    /// </summary>
+    /// <param name="propertyName">property name</param>
+    /// <returns>list of values</returns>
+    public abstract List<string> GetValues(string propertyName);
 }
