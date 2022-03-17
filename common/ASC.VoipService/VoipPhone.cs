@@ -23,8 +23,6 @@
  *
 */
 
-using AutoMapper;
-
 namespace ASC.VoipService;
 
 public class VoipPhone

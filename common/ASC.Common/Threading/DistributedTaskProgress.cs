@@ -1,6 +1,4 @@
 ﻿namespace ASC.Common.Threading;
-using System.Threading.Tasks;
-
 [Transient]
 public class DistributedTaskProgress : DistributedTask
 {

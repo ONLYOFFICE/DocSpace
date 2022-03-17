@@ -1,6 +1,4 @@
 ﻿namespace ASC.Api.Core.Middleware;
-using System.Security.Authentication;
-
 public class CustomExceptionFilterAttribute : ExceptionFilterAttribute
 {
     public override void OnException(ExceptionContext context)

@@ -15,7 +15,6 @@ global using ASC.Common.Utils;
 global using ASC.Common.Web;
 global using ASC.Core;
 global using ASC.Core.Billing;
-global using ASC.Core.Common.Configuration;
 global using ASC.Core.Common.Settings;
 global using ASC.Core.Users;
 global using ASC.FederatedLogin.Helpers;
