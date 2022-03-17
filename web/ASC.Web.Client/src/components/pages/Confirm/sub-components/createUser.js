@@ -153,6 +153,10 @@ const RegisterContainer = styled.div`
     margin-top: 32px;
     width: 320px;
 
+    .form-field {
+      height: 48px;
+    }
+
     @media (max-width: 768px) {
       margin: 32px 0 0 0;
       width: 100%;
@@ -518,10 +522,9 @@ const Confirm = (props) => {
     setIsPasswordErrorShow(true);
   };
 
-  const passwordErrorMessage = `${t("Common:PasswordLimitLength", {
-    fromNumber: settings ? settings.minLength : 8,
-    toNumber: 30,
-  })} ${settings.digits ? t("Common:PasswordLimitDigits") : ""} ${
+  const passwordErrorMessage = `${t("Common:PasswordMinimumLength")} ${
+    settings ? settings.minLength : 8
+  } ${settings.digits ? t("Common:PasswordLimitDigits") : ""} ${
     settings.upperCase ? t("Common:PasswordLimitUpperCase") : ""
   } ${settings.specSymbols ? t("Common:PasswordLimitSpecialSymbols") : ""}`;
 
@@ -588,6 +591,7 @@ const Confirm = (props) => {
         <form className="auth-form-container">
           <div className="auth-form-fields">
             <FieldContainer
+              className="form-field"
               isVertical={true}
               labelVisible={false}
               hasError={isEmailErrorShow && !emailValid}
@@ -618,6 +622,7 @@ const Confirm = (props) => {
             </FieldContainer>
 
             <FieldContainer
+              className="form-field"
               isVertical={true}
               labelVisible={false}
               hasError={!fnameValid}
@@ -640,6 +645,7 @@ const Confirm = (props) => {
             </FieldContainer>
 
             <FieldContainer
+              className="form-field"
               isVertical={true}
               labelVisible={false}
               hasError={!snameValid}
@@ -662,6 +668,7 @@ const Confirm = (props) => {
             </FieldContainer>
 
             <FieldContainer
+              className="form-field"
               isVertical={true}
               labelVisible={false}
               hasError={isPasswordErrorShow && !passwordValid}
@@ -690,10 +697,9 @@ const Confirm = (props) => {
                 onKeyDown={onKeyPress}
                 onValidateInput={onValidatePassword}
                 tooltipPasswordTitle={`${t("Common:PasswordLimitMessage")}:`}
-                tooltipPasswordLength={`${t("Common:PasswordLimitLength", {
-                  fromNumber: settings ? settings.minLength : 8,
-                  toNumber: 30,
-                })}`}
+                tooltipPasswordLength={`${t("Common:PasswordMinimumLength")}: ${
+                  settings ? settings.minLength : 8
+                }`}
                 tooltipPasswordDigits={`${t("Common:PasswordLimitDigits")}`}
                 tooltipPasswordCapital={`${t("Common:PasswordLimitUpperCase")}`}
                 tooltipPasswordSpecial={`${t(
