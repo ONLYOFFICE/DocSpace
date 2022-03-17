@@ -100,7 +100,7 @@ public class CachedSubscriptionService : ISubscriptionService
     private readonly ICache _cache;
     private readonly ICacheNotify<SubscriptionRecord> _notifyRecord;
     private readonly ICacheNotify<SubscriptionMethodCache> _notifyMethod;
-    private TimeSpan _cacheExpiration;
+    private readonly TimeSpan _cacheExpiration;
 
     public CachedSubscriptionService(DbSubscriptionService service, SubscriptionServiceCache subscriptionServiceCache)
     {

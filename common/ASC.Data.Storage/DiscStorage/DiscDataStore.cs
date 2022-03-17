@@ -34,8 +34,8 @@ public class DiscDataStore : BaseStorage
 
     private readonly Dictionary<string, MappedPath> _mappedPaths = new Dictionary<string, MappedPath>();
     private ICrypt _crypt;
-    private EncryptionSettingsHelper _encryptionSettingsHelper;
-    private EncryptionFactory _encryptionFactory;
+    private readonly EncryptionSettingsHelper _encryptionSettingsHelper;
+    private readonly EncryptionFactory _encryptionFactory;
 
     public override IDataStore Configure(string tenant, Handler handlerConfig, Module moduleConfig, IDictionary<string, string> props)
     {

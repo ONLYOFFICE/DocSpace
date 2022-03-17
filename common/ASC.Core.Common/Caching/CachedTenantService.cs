@@ -29,7 +29,7 @@ namespace ASC.Core.Caching;
 class TenantServiceCache
 {
     private const string Key = "tenants";
-    private TimeSpan _cacheExpiration;
+    private readonly TimeSpan _cacheExpiration;
     internal readonly ICache Cache;
     internal readonly ICacheNotify<TenantCacheItem> CacheNotifyItem;
     internal readonly ICacheNotify<TenantSetting> CacheNotifySettings;
@@ -198,7 +198,7 @@ class CachedTenantService : ITenantService
     private readonly ICache _cache;
     internal ICacheNotify<TenantSetting> CacheNotifySettings;
     internal ICacheNotify<TenantCacheItem> CacheNotifyItem;
-    private TimeSpan _settingsExpiration;
+    private readonly TimeSpan _settingsExpiration;
     internal TenantServiceCache TenantServiceCache;
 
     public CachedTenantService()

@@ -75,7 +75,7 @@ public class FileStorageService<T> //: IFileStorageService
     private readonly FileTrackerHelper _fileTracker;
     private readonly ICacheNotify<ThumbnailRequest> _thumbnailNotify;
     private readonly EntryStatusManager _entryStatusManager;
-    private ILog _logger;
+    private readonly ILog _logger;
 
     public FileStorageService(
         Global global,

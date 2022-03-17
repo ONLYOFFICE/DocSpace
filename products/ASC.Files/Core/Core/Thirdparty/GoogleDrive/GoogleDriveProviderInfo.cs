@@ -80,7 +80,7 @@ internal class GoogleDriveProviderInfo : IProviderInfo
         }
     }
 
-    private GoogleDriveStorageDisposableWrapper _wrapper;
+    private readonly GoogleDriveStorageDisposableWrapper _wrapper;
     private readonly GoogleDriveProviderInfoHelper _googleDriveProviderInfoHelper;
 
     public GoogleDriveProviderInfo(

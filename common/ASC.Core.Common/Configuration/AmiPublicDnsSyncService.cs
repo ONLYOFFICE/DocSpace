@@ -92,9 +92,9 @@ public class AmiPublicDnsSyncService : IServiceController
 
 public class AmiPublicDnsSyncServiceScope
 {
-    private TenantManager _tenantManager;
-    private CoreBaseSettings _coreBaseSettings;
-    private IHttpClientFactory _clientFactory;
+    private readonly TenantManager _tenantManager;
+    private readonly CoreBaseSettings _coreBaseSettings;
+    private readonly IHttpClientFactory _clientFactory;
 
     public AmiPublicDnsSyncServiceScope(TenantManager tenantManager, CoreBaseSettings coreBaseSettings, IHttpClientFactory clientFactory)
     {

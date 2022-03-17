@@ -33,7 +33,7 @@ public class CouponManager
 {
     private IEnumerable<AvangateProduct> _products;
     private readonly IHttpClientFactory _clientFactory;
-    private IEnumerable<string> _groups;
+    private readonly IEnumerable<string> _groups;
     private readonly int _percent;
     private readonly int _schedule;
     private readonly string _vendorCode;

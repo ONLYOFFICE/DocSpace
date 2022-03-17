@@ -43,7 +43,7 @@ public class TenantQuotaController : IQuotaController
 
     private readonly int _tenant;
     private readonly TenantManager _tenantManager;
-    private Lazy<long> _lazyCurrentSize;
+    private readonly Lazy<long> _lazyCurrentSize;
     private long _currentSize;
 
     public TenantQuotaController(int tenant, TenantManager tenantManager)

@@ -110,7 +110,7 @@ public class ApiContext : ICloneable
     internal long SpecifiedStartIndex { get; set; }
 
     private Tenant _tenant;
-    private static int _maxCount = 1000;
+    private static readonly int _maxCount = 1000;
     private readonly SecurityContext _securityContext;
     private readonly TenantManager _tenantManager;
 

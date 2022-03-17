@@ -251,7 +251,7 @@ public class EntryManager
 {
     private const string UpdateList = "filesUpdateList";
 
-    private ICache _cache;
+    private readonly ICache _cache;
     private readonly FileTrackerHelper _fileTracker;
     private readonly EntryStatusManager _entryStatusManager;
     private readonly IDaoFactory _daoFactory;
