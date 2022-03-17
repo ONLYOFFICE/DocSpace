@@ -177,7 +177,7 @@ internal class FileConverterQueue<T> : IDisposable
 
                         lock (_locker)
                         {
-                            if (!_conversionQueue.Keys.Contains(file))
+                            if (!_conversionQueue.ContainsKey(file))
                             {
                                 continue;
                             }
@@ -632,12 +632,12 @@ public class FileConverter
         }
 
         fileExtension = FileUtility.GetFileExtension(file.Title);
-        if (_fileUtility.InternalExtension.Values.Contains(toExtension))
+        if (_fileUtility.InternalExtension.ContainsValue(toExtension))
         {
             return true;
         }
 
-        return _fileUtility.ExtsConvertible.Keys.Contains(fileExtension) && _fileUtility.ExtsConvertible[fileExtension].Contains(toExtension);
+        return _fileUtility.ExtsConvertible.ContainsKey(fileExtension) && _fileUtility.ExtsConvertible[fileExtension].Contains(toExtension);
     }
 
     public Task<Stream> ExecAsync<T>(File<T> file)
@@ -748,7 +748,7 @@ public class FileConverter
         {
             throw new ArgumentException(FilesCommonResource.ErrorMassage_NotSupportedFormat);
         }
-        if (!string.IsNullOrEmpty(file.ConvertedType) || _fileUtility.InternalExtension.Values.Contains(FileUtility.GetFileExtension(file.Title)))
+        if (!string.IsNullOrEmpty(file.ConvertedType) || _fileUtility.InternalExtension.ContainsValue(FileUtility.GetFileExtension(file.Title)))
         {
             return;
         }

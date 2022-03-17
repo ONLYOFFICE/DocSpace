@@ -607,7 +607,7 @@ public class FileStorageService<T> //: IFileStorageService
         if (fileExt != _fileUtility.MasterFormExtension)
         {
             fileExt = _fileUtility.GetInternalExtension(title);
-            if (!_fileUtility.InternalExtension.Values.Contains(fileExt))
+            if (!_fileUtility.InternalExtension.ContainsValue(fileExt))
             {
                 fileExt = _fileUtility.InternalExtension[FileType.Document];
                 file.Title = title + fileExt;

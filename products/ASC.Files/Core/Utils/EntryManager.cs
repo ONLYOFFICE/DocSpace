@@ -1162,8 +1162,7 @@ public class EntryManager
 
         if (file.ProviderEntry && !newExtension.Equals(currentExt))
         {
-            if (_fileUtility.ExtsConvertible.Keys.Contains(newExtension)
-                && _fileUtility.ExtsConvertible[newExtension].Contains(currentExt))
+            if (_fileUtility.ExtsConvertible.ContainsKey(newExtension) && _fileUtility.ExtsConvertible[newExtension].Contains(currentExt))
             {
                 if (stream != null)
                 {

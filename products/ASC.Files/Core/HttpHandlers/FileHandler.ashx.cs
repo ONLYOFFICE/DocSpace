@@ -346,8 +346,7 @@ namespace ASC.Web.Files
 
                             var outType = (context.Request.Query[FilesLinkUtility.OutType].FirstOrDefault() ?? "").Trim();
                             if (!string.IsNullOrEmpty(outType)
-                                && FileUtility.ExtsConvertible.Keys.Contains(ext)
-                                && FileUtility.ExtsConvertible[ext].Contains(outType))
+                                && FileUtility.ExtsConvertible.ContainsKey(ext) && FileUtility.ExtsConvertible[ext].Contains(outType))
                             {
                                 ext = outType;
                             }
