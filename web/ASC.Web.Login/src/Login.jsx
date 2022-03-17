@@ -467,7 +467,7 @@ const Form = (props) => {
                   className="login-checkbox"
                   isChecked={isChecked}
                   onChange={onChangeCheckbox}
-                  label={<Text fontSize="13px">{t("Remember")}</Text>}
+                  label={<Text fontSize="13px">{t("Common:Remember")}</Text>}
                 />
                 <HelpButton
                   className="login-tooltip"
