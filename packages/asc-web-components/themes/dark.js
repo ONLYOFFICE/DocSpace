@@ -883,7 +883,7 @@ const Dark = {
     borderRadius: "6px",
     boxShadow: "0px 12px 24px rgba(0, 0, 0, 0.12)",
     opacity: "1",
-    padding: "16px",
+    padding: "8px 12px",
     pointerEvents: "auto",
     maxWidth: "340px",
     color: "#F5E9BA",

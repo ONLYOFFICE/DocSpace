@@ -884,7 +884,7 @@ const Base = {
     borderRadius: "6px",
     boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.13)",
     opacity: "1",
-    padding: "16px",
+    padding: "8px 12px",
     pointerEvents: "auto",
     maxWidth: "340px",
     color: "#F8F7BF",
