@@ -882,7 +882,7 @@ const Base = {
 
   tooltip: {
     borderRadius: "6px",
-    boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.13)",
+    boxShadow: "0px 10px 15px rgba(4, 15, 27, 0.13)",
     opacity: "1",
     padding: "8px 12px",
     pointerEvents: "auto",
