@@ -23,99 +23,98 @@
  *
 */
 
-namespace ASC.Web.Files.HttpHandlers
+namespace ASC.Web.Files.HttpHandlers;
+
+public class ThirdPartyAppHandler
 {
-    public class ThirdPartyAppHandler
+    private readonly RequestDelegate _next;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
+
+    public ThirdPartyAppHandler(RequestDelegate next, IServiceScopeFactory serviceScopeFactory)
     {
-        private RequestDelegate Next { get; }
-        private IServiceProvider ServiceProvider { get; }
-
-        public ThirdPartyAppHandler(RequestDelegate next, IServiceProvider serviceProvider)
-        {
-            Next = next;
-            ServiceProvider = serviceProvider;
-        }
-
-        public async Task Invoke(HttpContext context)
-        {
-            using var scope = ServiceProvider.CreateScope();
-            var thirdPartyAppHandlerService = scope.ServiceProvider.GetService<ThirdPartyAppHandlerService>();
-            await thirdPartyAppHandlerService.InvokeAsync(context);
-            await Next.Invoke(context);
-        }
+        _next = next;
+        _serviceScopeFactory = serviceScopeFactory;
     }
 
-    [Scope]
-    public class ThirdPartyAppHandlerService
+    public async Task Invoke(HttpContext context)
     {
-        private AuthContext AuthContext { get; }
-        private CommonLinkUtility CommonLinkUtility { get; }
-        private ILog Log { get; set; }
+        using var scope = _serviceScopeFactory.CreateScope();
+        var thirdPartyAppHandlerService = scope.ServiceProvider.GetService<ThirdPartyAppHandlerService>();
+        await thirdPartyAppHandlerService.InvokeAsync(context);
+        await _next.Invoke(context);
+    }
+}
 
-        public string HandlerPath { get; set; }
+[Scope]
+public class ThirdPartyAppHandlerService
+{
+    private readonly AuthContext _authContext;
+    private readonly CommonLinkUtility _commonLinkUtility;
+    private readonly ILog _logger;
 
-        public ThirdPartyAppHandlerService(
-            IOptionsMonitor<ILog> optionsMonitor,
-            AuthContext authContext,
-            BaseCommonLinkUtility baseCommonLinkUtility,
-            CommonLinkUtility commonLinkUtility)
+    public string HandlerPath { get; set; }
+
+    public ThirdPartyAppHandlerService(
+        IOptionsMonitor<ILog> optionsMonitor,
+        AuthContext authContext,
+        BaseCommonLinkUtility baseCommonLinkUtility,
+        CommonLinkUtility commonLinkUtility)
+    {
+        _authContext = authContext;
+        _commonLinkUtility = commonLinkUtility;
+        _logger = optionsMonitor.CurrentValue;
+        HandlerPath = baseCommonLinkUtility.ToAbsolute("~/thirdpartyapp");
+    }
+
+    public async Task InvokeAsync(HttpContext context)
+    {
+        _logger.Debug("ThirdPartyApp: handler request - " + context.Request.Url());
+
+        var message = string.Empty;
+
+        try
         {
-            AuthContext = authContext;
-            CommonLinkUtility = commonLinkUtility;
-            Log = optionsMonitor.CurrentValue;
-            HandlerPath = baseCommonLinkUtility.ToAbsolute("~/thirdpartyapp");
-        }
+            var app = ThirdPartySelector.GetApp(context.Request.Query[ThirdPartySelector.AppAttr]);
+            _logger.Debug("ThirdPartyApp: app - " + app);
 
-        public async Task InvokeAsync(HttpContext context)
-        {
-            Log.Debug("ThirdPartyApp: handler request - " + context.Request.Url());
-
-            var message = string.Empty;
-
-            try
+            if (await app.RequestAsync(context))
             {
-                var app = ThirdPartySelector.GetApp(context.Request.Query[ThirdPartySelector.AppAttr]);
-                Log.Debug("ThirdPartyApp: app - " + app);
-
-                if (await app.RequestAsync(context))
-                {
-                    return;
-                }
-            }
-            catch (ThreadAbortException)
-            {
-                //Thats is responce ending
                 return;
             }
-            catch (Exception e)
-            {
-                Log.Error("ThirdPartyApp", e);
-                message = e.Message;
-            }
-
-            if (string.IsNullOrEmpty(message))
-            {
-                if ((context.Request.Query["error"].FirstOrDefault() ?? "").Equals("access_denied", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    message = context.Request.Query["error_description"].FirstOrDefault() ?? FilesCommonResource.AppAccessDenied;
-                }
-            }
-
-            var redirectUrl = CommonLinkUtility.GetDefault();
-            if (!string.IsNullOrEmpty(message))
-            {
-                redirectUrl += AuthContext.IsAuthenticated ? "#error/" : "?m=";
-                redirectUrl += HttpUtility.UrlEncode(message);
-            }
-            context.Response.Redirect(redirectUrl, true);
         }
-    }
-
-    public static class ThirdPartyAppHandlerExtention
-    {
-        public static IApplicationBuilder UseThirdPartyAppHandler(this IApplicationBuilder builder)
+        catch (ThreadAbortException)
         {
-            return builder.UseMiddleware<ThirdPartyAppHandler>();
+            //Thats is responce ending
+            return;
         }
+        catch (Exception e)
+        {
+            _logger.Error("ThirdPartyApp", e);
+            message = e.Message;
+        }
+
+        if (string.IsNullOrEmpty(message))
+        {
+            if ((context.Request.Query["error"].FirstOrDefault() ?? "").Equals("access_denied", StringComparison.InvariantCultureIgnoreCase))
+            {
+                message = context.Request.Query["error_description"].FirstOrDefault() ?? FilesCommonResource.AppAccessDenied;
+            }
+        }
+
+        var redirectUrl = _commonLinkUtility.GetDefault();
+        if (!string.IsNullOrEmpty(message))
+        {
+            redirectUrl += _authContext.IsAuthenticated ? "#error/" : "?m=";
+            redirectUrl += HttpUtility.UrlEncode(message);
+        }
+        context.Response.Redirect(redirectUrl, true);
+    }
+}
+
+public static class ThirdPartyAppHandlerExtention
+{
+    public static IApplicationBuilder UseThirdPartyAppHandler(this IApplicationBuilder builder)
+    {
+        return builder.UseMiddleware<ThirdPartyAppHandler>();
     }
 }
