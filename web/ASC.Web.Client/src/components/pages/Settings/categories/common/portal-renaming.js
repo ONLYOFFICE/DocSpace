@@ -22,7 +22,7 @@ const StyledComponent = styled.div`
   }
 `;
 
-const PortalRenaming = ({ t, theme }) => {
+const PortalRenaming = ({ t, theme, sectionWidth }) => {
   // todo: Изменить на false
   const [isLoadedData, setIsLoadedData] = useState(true);
 
@@ -64,6 +64,7 @@ const PortalRenaming = ({ t, theme }) => {
           saveButtonLabel={t("Common:SaveButton")}
           cancelButtonLabel={t("Common:CancelButton")}
           displaySettings={true}
+          sectionWidth={sectionWidth}
         />
       </StyledComponent>
     </>

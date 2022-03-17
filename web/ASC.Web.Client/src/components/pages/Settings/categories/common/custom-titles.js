@@ -207,6 +207,7 @@ class CustomTitles extends React.Component {
             cancelButtonLabel={t("Settings:RestoreDefaultButton")}
             displaySettings={true}
             hasChanged={hasChanged}
+            sectionWidth={sectionWidth}
           />
         </StyledComponent>
       </>

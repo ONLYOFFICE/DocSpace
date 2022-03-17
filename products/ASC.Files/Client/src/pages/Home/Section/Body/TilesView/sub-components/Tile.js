@@ -140,6 +140,8 @@ const StyledTile = styled.div`
 
 const StyledFileTileTop = styled.div`
   ${FlexBoxStyles};
+  background: ${(props) =>
+    props.theme.filesSection.tilesView.tile.backgroundColorTop};
   justify-content: space-between;
   align-items: baseline;
   height: 156px;
