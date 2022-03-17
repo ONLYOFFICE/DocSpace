@@ -141,7 +141,7 @@ HelpButton.propTypes = {
 HelpButton.defaultProps = {
   iconName: "/static/images/question.react.svg",
   place: "top",
-  offsetRight: 120,
+  offsetRight: 60,
   offsetLeft: 0,
   offsetTop: 0,
   offsetBottom: 0,
