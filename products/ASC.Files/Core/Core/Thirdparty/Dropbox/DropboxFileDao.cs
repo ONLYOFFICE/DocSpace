@@ -148,7 +148,7 @@ internal class DropboxFileDao : DropboxDaoBase, IFileDao<string>
             case FilterType.MediaOnly:
                 files = files.Where(x =>
                 {
-                    FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                    var fileType = FileUtility.GetFileTypeByFileName(x.Title);
                     return fileType == FileType.Audio || fileType == FileType.Video;
                 });
                 break;
@@ -217,7 +217,7 @@ internal class DropboxFileDao : DropboxDaoBase, IFileDao<string>
             case FilterType.MediaOnly:
                 files = files.Where(x =>
                 {
-                    FileType fileType = FileUtility.GetFileTypeByFileName(x.Title);
+                    var fileType = FileUtility.GetFileTypeByFileName(x.Title);
 
                     return fileType == FileType.Audio || fileType == FileType.Video;
                 });

@@ -1017,7 +1017,7 @@ public class UserController : PeopleControllerBase
 
     public object SendUserPassword(MemberRequestDto inDto)
     {
-        string error = _userManagerWrapper.SendUserPassword(inDto.Email);
+        var error = _userManagerWrapper.SendUserPassword(inDto.Email);
         if (!string.IsNullOrEmpty(error))
         {
             _logger.ErrorFormat("Password recovery ({0}): {1}", inDto.Email, error);

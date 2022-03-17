@@ -518,7 +518,7 @@ namespace ASC.Web.Core.Users
 
         public void SyncPhoto(Guid userID, byte[] data)
         {
-            data = TryParseImage(data, -1, OriginalFotoSize, out _, out int width, out int height);
+            data = TryParseImage(data, -1, OriginalFotoSize, out _, out var width, out var height);
             UserManager.SaveUserPhoto(userID, data);
             SetUserPhotoThumbnailSettings(userID, width, height);
             UserPhotoManagerCache.ClearCache(userID, tenant.Id);
@@ -627,7 +627,7 @@ namespace ASC.Web.Core.Users
                     var tmpW = width;
                     var tmpH = height;
                     #endregion
-                    using Image destRound = img.Clone(x => x.Resize(new ResizeOptions
+                    using var destRound = img.Clone(x => x.Resize(new ResizeOptions
                     {
                         Size = new Size(tmpW, tmpH),
                         Mode = ResizeMode.Stretch

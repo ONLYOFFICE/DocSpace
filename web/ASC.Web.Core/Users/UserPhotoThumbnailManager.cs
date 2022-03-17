@@ -76,7 +76,7 @@ namespace ASC.Web.Core.Users
                                      width,
                                      height);
 
-            Image destRound = mainImg.Clone(x => x.Crop(rect).Resize(new ResizeOptions
+            var destRound = mainImg.Clone(x => x.Crop(rect).Resize(new ResizeOptions
             {
                 Size = size,
                 Mode = ResizeMode.Stretch

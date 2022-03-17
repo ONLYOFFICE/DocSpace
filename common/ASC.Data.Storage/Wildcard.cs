@@ -38,7 +38,7 @@ public static class Wildcard
         var offsetInput = 0;
         var isAsterix = false;
 
-            int i = 0;
+            var i = 0;
             while (i < pattern.Length)
         {
             switch (pattern[i])

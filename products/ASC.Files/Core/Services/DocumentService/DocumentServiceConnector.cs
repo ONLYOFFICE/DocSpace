@@ -322,7 +322,7 @@ public class DocumentServiceConnector
 
         if (string.IsNullOrEmpty(docServicePortalUrl))
         {
-            Tenant tenant = _tenantManager.GetCurrentTenant();
+            var tenant = _tenantManager.GetCurrentTenant();
             if (!_tenantExtra.Saas
                 || string.IsNullOrEmpty(tenant.MappedDomain)
                 || !url.StartsWith("https://" + tenant.MappedDomain))

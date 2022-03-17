@@ -79,7 +79,7 @@ public class BillingClient
 
     public IEnumerable<PaymentInfo> GetPayments(string portalId)
     {
-        string result = Request("GetPayments", portalId);
+        var result = Request("GetPayments", portalId);
         var payments = JsonSerializer.Deserialize<List<PaymentInfo>>(result);
 
         return payments;

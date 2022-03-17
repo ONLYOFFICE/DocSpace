@@ -13,7 +13,7 @@ public class CustomExceptionFilterAttribute : ExceptionFilterAttribute
             status = HttpStatusCode.InternalServerError;
         }
 
-            bool withStackTrace = true;
+            var withStackTrace = true;
 
         switch (context.Exception)
         {

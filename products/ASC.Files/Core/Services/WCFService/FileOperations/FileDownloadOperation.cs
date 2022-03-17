@@ -73,7 +73,7 @@ class FileDownloadOperation : ComposeFileOperation<FileDownloadOperationData<str
             }
 
             stream.Position = 0;
-            string fileName = FileConstant.DownloadTitle + archiveExtension;
+            var fileName = FileConstant.DownloadTitle + archiveExtension;
             var store = globalStore.GetStore();
             var path = string.Format(@"{0}\{1}", ((IAccount)Thread.CurrentPrincipal.Identity).ID, fileName);
 

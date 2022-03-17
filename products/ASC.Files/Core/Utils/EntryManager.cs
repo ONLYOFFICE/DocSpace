@@ -336,7 +336,7 @@ public class EntryManager
 
     public async Task<(IEnumerable<FileEntry> Entries, int Total)> GetEntriesAsync<T>(Folder<T> parent, int from, int count, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy)
     {
-        int total = 0;
+        var total = 0;
 
         if (parent == null)
         {
@@ -662,7 +662,7 @@ public class EntryManager
         var fileIds = tags.Where(tag => tag.EntryType == FileEntryType.File).ToList();
 
         var filesEnum = await GetRecentByIdsAsync(fileIds.Where(r => r.EntryId is int).Select(r => (int)r.EntryId), filter, subjectGroup, subjectId, searchText, searchInContent);
-        List<FileEntry> files = filesEnum.ToList();
+        var files = filesEnum.ToList();
         files.AddRange(await GetRecentByIdsAsync(fileIds.Where(r => r.EntryId is string).Select(r => (string)r.EntryId), filter, subjectGroup, subjectId, searchText, searchInContent));
 
         var listFileIds = fileIds.Select(tag => tag.EntryId).ToList();

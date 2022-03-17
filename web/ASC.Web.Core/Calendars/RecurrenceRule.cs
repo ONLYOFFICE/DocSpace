@@ -469,7 +469,7 @@ namespace ASC.Web.Core.Calendars
                     while (d.Year <= (endDate == DateTime.MaxValue ? endDate : (endDate + utcStartDateOffset)).Year && CheckCount(dates, fromDate, maxCount))
                     {
                         var dateRange = new List<DateTime>();
-                        bool isFirst = true;
+                        var isFirst = true;
 
                         if (ByMonth != null)
                         {
