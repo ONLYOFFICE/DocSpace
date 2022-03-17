@@ -8,74 +8,96 @@ import SingleItem from "./SingleItem";
 import { StyledInfoRoomBody } from "./styles/styles.js";
 
 const InfoPanelBodyContent = ({
-    t,
-    selectedItems,
-    bufferSelectedItem,
-    getFolderInfo,
-    getIcon,
-    getFolderIcon,
-    getShareUsers,
-    onSelectItem,
-    setSharingPanelVisible,
-    isRecycleBinFolder,
+  t,
+  selectedItems,
+  bufferSelectedItem,
+  getFolderInfo,
+  getIcon,
+  getFolderIcon,
+  getShareUsers,
+  onSelectItem,
+  setSharingPanelVisible,
+  isRecycleBinFolder,
+  showCurrentFolder,
 }) => {
-    if (selectedItems.length) {
-    }
+  if (selectedItems.length) {
+  }
 
-    return (
-        <StyledInfoRoomBody>
-            {selectedItems.length === 0 && !bufferSelectedItem ? (
-                <div className="no-item">
-                    <h4>{t("NoItemsSelected")}</h4>
-                </div>
-            ) : selectedItems.length === 1 || bufferSelectedItem ? (
-                <SingleItem
-                    selectedItem={selectedItems[0] || bufferSelectedItem}
-                    isRecycleBinFolder={isRecycleBinFolder}
-                    onSelectItem={onSelectItem}
-                    setSharingPanelVisible={setSharingPanelVisible}
-                    getFolderInfo={getFolderInfo}
-                    getIcon={getIcon}
-                    getFolderIcon={getFolderIcon}
-                    getShareUsers={getShareUsers}
-                />
-            ) : (
-                <SeveralItems selectedItems={selectedItems} getIcon={getIcon} />
-            )}
-        </StyledInfoRoomBody>
-    );
+  return (
+    <StyledInfoRoomBody>
+      <>{console.log(showCurrentFolder)}</>
+
+      {showCurrentFolder ? (
+        <div>Room Info</div>
+      ) : (
+        // <SingleItem
+        //   selectedItem={selectedItems[0] || bufferSelectedItem}
+        //   isRecycleBinFolder={isRecycleBinFolder}
+        //   onSelectItem={onSelectItem}
+        //   setSharingPanelVisible={setSharingPanelVisible}
+        //   getFolderInfo={getFolderInfo}
+        //   getIcon={getIcon}
+        //   getFolderIcon={getFolderIcon}
+        //   getShareUsers={getShareUsers}
+        // />
+        <>
+          {selectedItems.length === 0 && !bufferSelectedItem ? (
+            <div className="no-item">
+              <h4>{t("NoItemsSelected")}</h4>
+            </div>
+          ) : selectedItems.length === 1 || bufferSelectedItem ? (
+            <SingleItem
+              selectedItem={selectedItems[0] || bufferSelectedItem}
+              isRecycleBinFolder={isRecycleBinFolder}
+              onSelectItem={onSelectItem}
+              setSharingPanelVisible={setSharingPanelVisible}
+              getFolderInfo={getFolderInfo}
+              getIcon={getIcon}
+              getFolderIcon={getFolderIcon}
+              getShareUsers={getShareUsers}
+            />
+          ) : (
+            <SeveralItems selectedItems={selectedItems} getIcon={getIcon} />
+          )}
+        </>
+      )}
+    </StyledInfoRoomBody>
+  );
 };
 
 export default inject(
-    ({
-        filesStore,
-        settingsStore,
-        filesActionsStore,
-        dialogsStore,
-        treeFoldersStore,
-    }) => {
-        const selectedItems = JSON.parse(JSON.stringify(filesStore.selection));
-        const bufferSelectedItem = JSON.parse(
-            JSON.stringify(filesStore.bufferSelection)
-        );
+  ({
+    infoPanelStore,
+    filesStore,
+    settingsStore,
+    filesActionsStore,
+    dialogsStore,
+    treeFoldersStore,
+  }) => {
+    const selectedItems = JSON.parse(JSON.stringify(filesStore.selection));
+    const bufferSelectedItem = JSON.parse(
+      JSON.stringify(filesStore.bufferSelection)
+    );
 
-        //console.log(settin);
-        const { getFolderInfo, getShareUsers } = filesStore;
-        const { getIcon, getFolderIcon } = settingsStore;
-        const { onSelectItem } = filesActionsStore;
-        const { setSharingPanelVisible } = dialogsStore;
-        const { isRecycleBinFolder } = treeFoldersStore;
+    //console.log(settin);
+    const { showCurrentFolder } = infoPanelStore;
+    const { getFolderInfo, getShareUsers } = filesStore;
+    const { getIcon, getFolderIcon } = settingsStore;
+    const { onSelectItem } = filesActionsStore;
+    const { setSharingPanelVisible } = dialogsStore;
+    const { isRecycleBinFolder } = treeFoldersStore;
 
-        return {
-            bufferSelectedItem,
-            selectedItems,
-            getFolderInfo,
-            getShareUsers,
-            getIcon,
-            getFolderIcon,
-            onSelectItem,
-            setSharingPanelVisible,
-            isRecycleBinFolder,
-        };
-    }
+    return {
+      bufferSelectedItem,
+      selectedItems,
+      getFolderInfo,
+      getShareUsers,
+      getIcon,
+      getFolderIcon,
+      onSelectItem,
+      setSharingPanelVisible,
+      isRecycleBinFolder,
+      showCurrentFolder,
+    };
+  }
 )(withRouter(withTranslation(["InfoPanel"])(observer(InfoPanelBodyContent))));

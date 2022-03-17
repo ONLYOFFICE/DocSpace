@@ -1,27 +1,36 @@
 import { makeAutoObservable } from "mobx";
 
 class InfoPanelStore {
-    isVisible = false;
+  isVisible = false;
+  showCurrentFolder = false;
 
-    constructor() {
-        makeAutoObservable(this);
-    }
+  constructor() {
+    makeAutoObservable(this);
+  }
 
-    toggleIsVisible = () => {
-        this.isVisible = !this.isVisible;
-    };
+  setShowCurrentFolder = (bool) => {
+    this.showCurrentFolder = bool;
+  };
 
-    setVisible = () => {
-        this.isVisible = true;
-    };
+  get showCurrenFolder() {
+    return this.showCurrenFolder;
+  }
 
-    setIsVisible = (bool) => {
-        this.isVisible = bool;
-    };
+  toggleIsVisible = () => {
+    this.isVisible = !this.isVisible;
+  };
 
-    get isVisible() {
-        return this.isVisible;
-    }
+  setVisible = () => {
+    this.isVisible = true;
+  };
+
+  setIsVisible = (bool) => {
+    this.isVisible = bool;
+  };
+
+  get isVisible() {
+    return this.isVisible;
+  }
 }
 
 export default InfoPanelStore;

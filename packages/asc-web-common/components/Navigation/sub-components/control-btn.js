@@ -30,12 +30,34 @@ const StyledContainer = styled.div`
   }
 
   .option-button {
-    margin-right: 8px;
+    margin-left: auto;
+    margin-right: 15px;
     min-width: 17px;
   }
 
   .trash-button {
     min-width: 17px;
+  }
+`;
+
+const StyledInfoPanelToggleWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  align-self: center;
+  justify-content: center;
+  margin-left: ${({ isRootFolder }) => (isRootFolder ? "auto" : "none")};
+
+  .info-panel-toggle-bg {
+    height: 32px;
+    width: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: ${(props) =>
+      props.isInfoPanelVisible && props.isCurrentFolderInfo
+        ? "#F8F9F9"
+        : "transparent"};
   }
 `;
 
@@ -49,43 +71,25 @@ const ControlButtons = ({
   isRecycleBinFolder,
   isEmptyFilesList,
   clearTrash,
+  showFolderInfo,
+  isCurrentFolderInfo,
+  isInfoPanelVisible,
 }) => {
   return (
     <StyledContainer isDropBox={isDropBox}>
-      {!isRootFolder && canCreate ? (
-        <>
-          <ContextMenuButton
-            className="add-button"
-            directionX="right"
-            iconName="images/plus.svg"
-            size={17}
-            isFill
-            getData={getContextOptionsPlus}
-            isDisabled={false}
-          />
-          {!personal && (
-            <ContextMenuButton
-              className="option-button"
-              directionX="right"
-              iconName="images/vertical-dots.react.svg"
-              size={17}
-              isFill
-              getData={getContextOptionsFolder}
-              isDisabled={false}
-            />
-          )}
-        </>
-      ) : canCreate ? (
+      {canCreate && (
         <ContextMenuButton
           className="add-button"
-          directionX="right"
+          directionX="left"
           iconName="images/plus.svg"
           size={17}
           isFill
           getData={getContextOptionsPlus}
           isDisabled={false}
         />
-      ) : isRecycleBinFolder && !isEmptyFilesList ? (
+      )}
+
+      {isRecycleBinFolder && !isEmptyFilesList && (
         <IconButton
           iconName="images/clear.active.react.svg"
           size={17}
@@ -93,9 +97,38 @@ const ControlButtons = ({
           onClick={clearTrash}
           className="trash-button"
         />
-      ) : (
-        <></>
       )}
+
+      {!isRootFolder && !personal && (
+        <ContextMenuButton
+          className="option-button"
+          directionX="right"
+          iconName="images/vertical-dots.react.svg"
+          size={17}
+          isFill
+          getData={getContextOptionsFolder}
+          isDisabled={false}
+        />
+      )}
+
+      <StyledInfoPanelToggleWrapper
+        isRootFolder={isRootFolder}
+        isCurrentFolderInfo={isCurrentFolderInfo}
+        isInfoPanelVisible={isInfoPanelVisible}
+      >
+        <div className="info-panel-toggle-bg">
+          <IconButton
+            className="info-panel-toggle"
+            iconName="images/panel.svg"
+            size="17"
+            color={
+              isInfoPanelVisible && isCurrentFolderInfo ? "#3B72A7" : "#A3A9AE"
+            }
+            isFill={true}
+            onClick={showFolderInfo}
+          />
+        </div>
+      </StyledInfoPanelToggleWrapper>
     </StyledContainer>
   );
 };

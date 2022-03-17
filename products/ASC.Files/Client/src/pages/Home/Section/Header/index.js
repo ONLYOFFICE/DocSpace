@@ -57,25 +57,6 @@ const StyledContainer = styled.div`
   }
 `;
 
-const StyledInfoPanelToggleWrapper = styled.div`
-  display: flex;
-  margin-left: auto;
-  align-items: center;
-  align-self: center;
-  justify-content: center;
-
-  .info-panel-toggle-bg {
-    height: 32px;
-    width: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    /* background-color: ${(props) =>
-       props.isInfoPanelVisible ? "#F8F9F9" : "#FFFFFF"}; */
-  }
-`;
-
 class SectionHeaderContent extends React.Component {
   constructor(props) {
     super(props);
@@ -221,7 +202,11 @@ class SectionHeaderContent extends React.Component {
   };
 
   onEmptyTrashAction = () => this.props.setEmptyTrashDialogVisible(true);
-  onToggleInfoPanel = () => this.props.toggleInfoPanel();
+  showFolderInfo = () => {
+    this.props.setShowCurrentFolder(true);
+    console.log(this.props.showCurrentFolder);
+    this.props.setIsInfoPanelVisible(true);
+  };
 
   getContextOptionsFolder = () => {
     const { t, personal } = this.props;
@@ -394,6 +379,9 @@ class SectionHeaderContent extends React.Component {
                     isEmptyFilesList={isEmptyFilesList}
                     clearTrash={this.onEmptyTrashAction}
                     onBackToParentFolder={this.onBackToParentFolder}
+                    showFolderInfo={this.showFolderInfo}
+                    isCurrentFolderInfo={this.props.showCurrentFolder}
+                    isInfoPanelVisible={this.props.isInfoPanelVisible}
                   />
                 )}
               </div>
@@ -451,13 +439,15 @@ export default inject(
       backToParentFolder,
     } = filesActionsStore;
 
-    //const { toggleInfoPanel, isInfoPanelVisible } = infoPanelStore;
-    const toggleInfoPanel = infoPanelStore.toggleIsVisible;
-    const isInfoPanelVisible = infoPanelStore.isVisible;
+    const {
+      showCurrentFolder,
+      setShowCurrentFolder,
+      setIsVisible,
+      isVisible,
+    } = infoPanelStore;
 
     return {
       showText: auth.settingsStore.showText,
-
       isDesktop: auth.settingsStore.isDesktopClient,
       isRootFolder: selectedFolderStore.parentId === 0,
       title: selectedFolderStore.title,
@@ -465,8 +455,10 @@ export default inject(
       pathParts: selectedFolderStore.pathParts,
       navigationPath: selectedFolderStore.navigationPath,
       canCreate,
-      toggleInfoPanel,
-      isInfoPanelVisible,
+      setIsInfoPanelVisible: setIsVisible,
+      isInfoPanelVisible: isVisible,
+      showCurrentFolder,
+      setShowCurrentFolder,
       isHeaderVisible,
       isHeaderIndeterminate,
       isHeaderChecked,

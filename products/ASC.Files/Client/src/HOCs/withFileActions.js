@@ -10,15 +10,28 @@ export default function withFileActions(WrappedFileItem) {
     }
 
     onContentFileSelect = (checked, file) => {
-      const { selectRowAction, infoPanelIsVisible, showInfoPanel } = this.props;
+      const {
+        selectRowAction,
+        infoPanelIsVisible,
+        showInfoPanel,
+        setShowCurrentFolder,
+      } = this.props;
       if (!file || file.id === -1) return;
       selectRowAction(checked, file);
 
-      if (!infoPanelIsVisible && isDesktop()) showInfoPanel();
+      if (!infoPanelIsVisible && isDesktop()) {
+        setShowCurrentFolder(false);
+        showInfoPanel();
+      }
     };
 
     fileContextClick = () => {
-      const { onSelectItem, item, infoPanelIsVisible, showInfoPanel } = this.props;
+      const {
+        onSelectItem,
+        item,
+        infoPanelIsVisible,
+        showInfoPanel,
+      } = this.props;
       const { id, isFolder } = item;
 
       id !== -1 && onSelectItem({ id, isFolder });
@@ -98,20 +111,21 @@ export default function withFileActions(WrappedFileItem) {
         isItemsSelected,
         infoPanelIsVisible,
         showInfoPanel,
+        setShowCurrentFolder,
       } = this.props;
 
-      if(
+      if (
         e.target.tagName === "INPUT" ||
         e.target.tagName === "SPAN" ||
         e.target.tagName === "A" ||
         e.target.closest(".checkbox") ||
         e.button !== 0 ||
-        e.target.closest('.expandButton') || 
-        e.target.querySelector('.expandButton') ||
+        e.target.closest(".expandButton") ||
+        e.target.querySelector(".expandButton") ||
         e.target.closest(".badges") ||
         e.target.closest(".not-selectable")
       )
-        return
+        return;
 
       if (viewAs === "tile") {
         if (e.target.closest(".edit-button") || e.target.tagName === "IMG")
@@ -122,8 +136,12 @@ export default function withFileActions(WrappedFileItem) {
         this.fileContextClick();
       }
 
-      if (!infoPanelIsVisible && isDesktop()) showInfoPanel();
+      if (!infoPanelIsVisible && isDesktop()) {
+        setShowCurrentFolder(false);
+        showInfoPanel();
+      }
     };
+
     onFilesClick = (e) => {
       const { item, openFileAction } = this.props;
       if (
@@ -263,7 +281,7 @@ export default function withFileActions(WrappedFileItem) {
 
       const { startUpload } = uploadDataStore;
       const { type, extension, id } = fileActionStore;
-      const { isVisible, setVisible } = infoPanelStore;
+      const { isVisible, setVisible, setShowCurrentFolder } = infoPanelStore;
 
       const selectedItem = selection.find(
         (x) => x.id === item.id && x.fileExst === item.fileExst
@@ -332,6 +350,7 @@ export default function withFileActions(WrappedFileItem) {
         openFileAction,
         isInfoPanelVisible: isVisible,
         showInfoPanel: setVisible,
+        setShowCurrentFolder,
       };
     }
   )(observer(WithFileActions));

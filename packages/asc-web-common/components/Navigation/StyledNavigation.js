@@ -5,12 +5,12 @@ import { tablet, desktop, mobile } from "@appserver/components/utils/device";
 const StyledContainer = styled.div`
   padding: ${(props) => (props.isDropBox ? "14px 0 3px" : "14px 0 0px")};
 
-  width: fit-content;
+  width: 100%;
 
   display: grid;
 
   grid-template-columns: ${(props) =>
-    props.isRootFolder ? "1fr auto" : "29px 1fr auto"};
+    props.isRootFolder ? "auto 1fr" : "29px auto 1fr"};
 
   align-items: center;
 
