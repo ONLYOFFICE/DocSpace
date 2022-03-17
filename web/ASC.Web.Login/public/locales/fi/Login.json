@@ -14,6 +14,5 @@
   "RegisterTitle": "Rekisteröintipyyntö",
   "RegistrationEmail": "Rekisteröitymisen sähköpostiosoitteesi",
   "RegistrationEmailWatermark": "sähköposti",
-  "Remember": "Muista minut",
   "RememberHelper": "Istunnon oletuskesto on 20 minuuttia. Valitse tämä vaihtoehto, jos haluat asettaa sen 1 vuodeksi. Voit asettaa oman arvon Asetuksissa."
 }

@@ -115,6 +115,7 @@
   "ProviderNotConnected": "Provider is not connected to your account",
   "PunycodeDomain": "Punycode domains are not supported",
   "PunycodeLocalPart": "Punycode local part is not supported",
+  "Remember": "Remember me",
   "RequiredField": "Required field",
   "ResetApplication": "Reset application",
   "Review": "Review",

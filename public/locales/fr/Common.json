@@ -113,6 +113,7 @@
   "ProviderNotConnected": "Le fournisseur n'est pas connecté à votre compte",
   "PunycodeDomain": "Les domaines Punycode ne sont pas supportés",
   "PunycodeLocalPart": "Une partie locale en Punycode n'est pas prise en charge",
+  "Remember": "Se souvenir de moi",
   "RequiredField": "Champ obligatoire",
   "ResetApplication": "Réinitialiser l'application",
   "Review": "Révision",

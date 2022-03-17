@@ -14,7 +14,6 @@
   "RegisterTitle": "Registration request",
   "RegistrationEmail": "Your registration email",
   "RegistrationEmailWatermark": "Email",
-  "Remember": "Remember me",
   "RememberHelper": "The default session lifetime is 20 minutes. Check this option to set it to 1 year. To set your own value, go to Settings.",
   "LoginDescription": "We'll email you a magic code to sign in without a password. Or you can <1>log in manually.</1>",
   "CodeTitle": "The code was emailed to you",

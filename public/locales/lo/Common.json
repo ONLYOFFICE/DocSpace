@@ -112,6 +112,7 @@
   "ProviderNotConnected": "ຜູ້ໃຫ້ບໍລິການບໍ່ໄດ້ເຊື່ອມຕໍ່ກັບບັນຊີຂອງທ່ານ",
   "PunycodeDomain": "ບໍ່ຮອງຮັບໂດເມນ Punycode",
   "PunycodeLocalPart": "ພື້ນທີ່ບໍ່ຮອງຮັບ Punycode",
+  "Remember": "ຈື່ຂ້ອຍ",
   "RequiredField": "ຟີວທີ່ຈຳເປັນ",
   "ResetApplication": "ຕັ້ງຄ່າແອບຄືນ",
   "Review": "ກວດຄືນ",

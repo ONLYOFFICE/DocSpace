@@ -112,6 +112,7 @@
   "ProviderNotConnected": "Ο πάροχος δεν είναι συνδεδεμένος με τον λογαριασμό σας",
   "PunycodeDomain": "Οι τομείς Punycode δεν υποστηρίζονται",
   "PunycodeLocalPart": "Το τοπικό τμήμα Punycode δεν υποστηρίζεται",
+  "Remember": "Απομνημόνευση των στοιχείων μου",
   "RequiredField": "Υποχρεωτικό πεδίο",
   "ResetApplication": "Επαναφορά εφαρμογής",
   "Review": "Αξιολόγηση",

@@ -14,6 +14,5 @@
   "RegisterTitle": "Registrierungsanfrage",
   "RegistrationEmail": "Ihr Registrierungsemail",
   "RegistrationEmailWatermark": "E-Mail",
-  "Remember": "Anmeldedaten speichern",
   "RememberHelper": "Lebensdauer der Sitzung ist standardmäßig 20 Minuten. Wählen Sie diese Option aus, um den Wert 1 Jahr zu setzen. Für benutzerdefinierte Werte öffnen Sie Einstellungen."
 }
