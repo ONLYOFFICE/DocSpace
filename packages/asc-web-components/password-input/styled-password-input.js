@@ -106,7 +106,7 @@ const PasswordProgress = styled.div`
 PasswordProgress.defaultProps = { theme: Base };
 
 const TooltipStyle = styled.div`
-  width: 280px;
+  width: 294px;
 
   @media (max-width: 768px) {
     width: 320px;
@@ -121,6 +121,7 @@ const StyledTooltipContainer = styled(Text)`
   color: ${(props) => props.theme.passwordInput.tooltipTextColor} !important;
 
   .generate-btn {
+    margin-top: 8px;
     color: ${(props) => props.theme.passwordInput.tooltipTextColor};
   }
 `;
@@ -128,7 +129,7 @@ const StyledTooltipContainer = styled(Text)`
 StyledTooltipContainer.defaultProps = { theme: Base };
 
 const StyledTooltipItem = styled(Text)`
-  height: 24px;
+  //height: 24px;
   color: ${(props) => (props.valid ? "#44bb00" : "#B40404")};
 `;
 

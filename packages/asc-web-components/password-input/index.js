@@ -88,8 +88,6 @@ class PasswordInput extends React.Component {
   };
 
   checkPassword = (value) => {
-    const greenColor = "#44bb00";
-    const redColor = "#B40404";
     const passwordValidation = this.testStrength(value);
     const progressScore =
       passwordValidation.digits &&
@@ -394,7 +392,8 @@ class PasswordInput extends React.Component {
           id="tooltipContent"
           effect="solid"
           place="top"
-          offsetLeft={this.tooltipOffsetLeft}
+          offsetLeft={this.props.tooltipOffsetLeft}
+          offsetTop={this.props.tooltipOffsetTop}
           reference={this.refTooltip}
         >
           {this.renderTooltipContent()}
@@ -405,7 +404,6 @@ class PasswordInput extends React.Component {
   render() {
     //console.log('PasswordInput render()');
     const {
-      emailInputName,
       inputWidth,
       onValidateInput,
       className,
@@ -534,8 +532,8 @@ PasswordInput.defaultProps = {
 
   generatorSpecial: "!@#$%^&*",
   className: "",
-  tooltipOffsetLeft: 110,
-
+  tooltipOffsetLeft: 0,
+  tooltipOffsetTop: -5,
   simpleView: false,
   passwordSettings: {
     minLength: 8,
