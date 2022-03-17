@@ -8,6 +8,7 @@ import CustomTitles from "./custom-titles";
 import PortalRenaming from "./portal-renaming";
 import { Base } from "@appserver/components/themes";
 import { isMobile } from "react-device-detect";
+import { Consumer } from "@appserver/components/utils/context";
 
 const StyledComponent = styled.div`
   .combo-button-label {
@@ -25,30 +26,28 @@ const StyledComponent = styled.div`
     margin-bottom: 20px;
   }
 
-  .category-border {
+  .category-item-wrapper:not(:last-child) {
     border-bottom: 1px solid #eceef1;
     margin-bottom: 24px;
   }
 
-  .category-item-wrapper {
-    .category-item-description {
-      color: ${(props) => props.theme.studio.settings.common.descriptionColor};
-      font-size: 12px;
-      max-width: 1024px;
-    }
+  .category-item-description {
+    color: ${(props) => props.theme.studio.settings.common.descriptionColor};
+    font-size: 12px;
+    max-width: 1024px;
+  }
 
-    .category-item-heading {
-      display: flex;
-      align-items: center;
-      padding-bottom: 16px;
-    }
+  .category-item-heading {
+    display: flex;
+    align-items: center;
+    padding-bottom: 16px;
+  }
 
-    .category-item-title {
-      font-weight: bold;
-      font-size: 16px;
-      line-height: 22px;
-      margin-right: 4px;
-    }
+  .category-item-title {
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 22px;
+    margin-right: 4px;
   }
 `;
 
@@ -58,7 +57,7 @@ const Customization = ({ t }) => {
   const [mobileView, setMobileView] = useState();
 
   const checkInnerWidth = () => {
-    if (window.innerWidth <= 375 || isMobile) {
+    if (window.innerWidth <= 375) {
       setMobileView(true);
     } else {
       setMobileView(false);
@@ -70,25 +69,29 @@ const Customization = ({ t }) => {
     return () => window.removeEventListener("resize", checkInnerWidth);
   }, [checkInnerWidth]);
 
-  return mobileView ? (
-    <CustomizationNavbar />
-  ) : (
-    <StyledComponent>
-      <div className="category-description">{`${t(
-        "Settings:CustomizationDescription"
-      )}`}</div>
-      <div className="category-item-wrapper">
-        <LanguageAndTimeZone />
-      </div>
-      <div className="category-border"></div>
-      <div className="category-item-wrapper">
-        <CustomTitles />
-      </div>
-      <div className="category-border"></div>
-      <div className="category-item-wrapper">
-        <PortalRenaming />
-      </div>
-    </StyledComponent>
+  return (
+    <Consumer>
+      {(context) =>
+        `${context.sectionWidth}` <= 375 || isMobile || mobileView ? (
+          <CustomizationNavbar />
+        ) : (
+          <StyledComponent>
+            <div className="category-description">{`${t(
+              "Settings:CustomizationDescription"
+            )}`}</div>
+            <div className="category-item-wrapper">
+              <LanguageAndTimeZone />
+            </div>
+            {/* <div className="category-item-wrapper">
+              <CustomTitles />
+            </div>
+            <div className="category-item-wrapper">
+              <PortalRenaming />
+            </div> */}
+          </StyledComponent>
+        )
+      }
+    </Consumer>
   );
 };
 
