@@ -1,17 +1,5 @@
 ﻿{
-  "DomainIpAddress": "Các tên miền dưới dạng địa chỉ IP không được hỗ trợ",
   "EmailActivationDescription": "Hướng dẫn kích hoạt sẽ được gửi đến email đã nhập",
   "EmailChangeTitle": "Thay đổi email",
-  "EmptyEmail": "Không có email nào được phân tích",
-  "EnterEmail": "Nhập địa chỉ email mới",
-  "IncorrectDomain": "Tên miền không chính xác",
-  "IncorrectEmail": "Email không chính xác",
-  "IncorrectLocalPart": "Tên miền cục bộ không chính xác",
-  "LocalDomain": "Các tên miền cục bộ không được hỗ trợ",
-  "ManyEmails": "Quá nhiều email được phân tích",
-  "MaxLengthExceeded": "Độ dài tối đa của tên người dùng hoặc phần cục bộ khác là 64 ký tự.",
-  "PunycodeDomain": "Các tên miền punycode không được hỗ trợ",
-  "PunycodeLocalPart": "Phần cục bộ Punycode không được hỗ trợ",
-  "SameEmail": "Bạn không thể sử dụng cùng một email",
-  "SpacesInLocalPart": "Phần cục bộ không được chứa khoảng trắng"
+  "EnterEmail": "Nhập địa chỉ email mới"
 }

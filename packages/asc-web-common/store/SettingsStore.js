@@ -69,6 +69,8 @@ class SettingsStore {
 
   personal = false;
 
+  roomsMode = false;
+
   isHeaderVisible = false;
   isTabletView = false;
   isArticlePinned =
@@ -222,6 +224,10 @@ class SettingsStore {
 
     this.setIsLoading(false);
     this.setIsLoaded(true);
+  };
+
+  setRoomsMode = (mode) => {
+    this.roomsMode = mode;
   };
 
   setIsLoading = (isLoading) => {

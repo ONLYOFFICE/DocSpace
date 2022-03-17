@@ -139,7 +139,7 @@ namespace ASC.Web.Api.Controllers
                 throw new SecurityException("Method not available");
             }
 
-            return CommonLinkUtility.GetConfirmationUrl(string.Empty, ConfirmType.LinkInvite, (int)employeeType)
+            return CommonLinkUtility.GetConfirmationUrl(string.Empty, ConfirmType.LinkInvite, (int)employeeType, SecurityContext.CurrentAccount.ID)
                    + $"&emplType={employeeType:d}";
         }
 

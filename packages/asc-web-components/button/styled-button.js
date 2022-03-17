@@ -110,7 +110,20 @@ const disableCss = css`
 const heightStyle = (props) => props.theme.button.height[props.size];
 const fontSizeStyle = (props) => props.theme.button.fontSize[props.size];
 
-const ButtonWrapper = ({ innerRef, ...props }) => {
+const ButtonWrapper = ({
+  primary,
+  scale,
+  size,
+  isHovered,
+  isClicked,
+  isDisabled,
+  disableHover,
+  isLoading,
+  label,
+  innerRef,
+  minWidth,
+  ...props
+}) => {
   return <button ref={innerRef} type="button" {...props}></button>;
 };
 
@@ -236,7 +249,14 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
 ButtonWrapper.propTypes = {
   label: PropTypes.string,
   primary: PropTypes.bool,
-  size: PropTypes.oneOf(["extraSmall", "small", "normal", "medium"]),
+  size: PropTypes.oneOf([
+    "extraSmall",
+    "small",
+    "normal",
+    "medium",
+    "normalDesktop",
+    "normalTouchscreen",
+  ]),
   scale: PropTypes.bool,
   icon: PropTypes.node,
 

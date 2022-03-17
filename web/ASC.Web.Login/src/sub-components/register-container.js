@@ -42,24 +42,40 @@ const Register = (props) => {
 
   const [email, setEmail] = useState("");
   const [emailErr, setEmailErr] = useState(false);
+  const [errorText, setErrorText] = useState("");
+  const [isShowError, setIsShowError] = useState(false);
 
   const { t } = useTranslation("Login");
 
   const onRegisterClick = () => {
     setVisible(true);
   };
+
   const onRegisterModalClose = () => {
     setVisible(false);
     setEmail("");
     setEmailErr(false);
   };
+
   const onChangeEmail = (e) => {
     setEmail(e.currentTarget.value);
     setEmailErr(false);
+    setIsShowError(false);
   };
+
+  const onValidateEmail = (res) => {
+    setEmailErr(!res.isValid);
+    setErrorText(res.errors[0]);
+  };
+
+  const onBlurEmail = () => {
+    setIsShowError(true);
+  };
+
   const onSendRegisterRequest = () => {
-    if (!email.trim()) {
+    if (!email.trim() || emailErr) {
       setEmailErr(true);
+      setIsShowError(true);
     } else {
       setLoading(true);
       sendRegisterRequest(email)
@@ -72,6 +88,13 @@ const Register = (props) => {
           toastr.error(error);
         })
         .finally(onRegisterModalClose);
+    }
+  };
+
+  const onKeyDown = (e) => {
+    if (e.key === "Enter") {
+      onSendRegisterRequest();
+      e.preventDefault();
     }
   };
 
@@ -91,8 +114,13 @@ const Register = (props) => {
           trustedDomains={trustedDomains}
           t={t}
           onChangeEmail={onChangeEmail}
+          onValidateEmail={onValidateEmail}
+          onBlurEmail={onBlurEmail}
           onRegisterModalClose={onRegisterModalClose}
           onSendRegisterRequest={onSendRegisterRequest}
+          onKeyDown={onKeyDown}
+          errorText={errorText}
+          isShowError={isShowError}
         />
       )}
     </>
