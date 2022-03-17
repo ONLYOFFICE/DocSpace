@@ -183,6 +183,7 @@ const Form = (props) => {
     //console.log("onChangeLogin", e.target.value);
     setIdentifier(e.target.value);
     setIsEmailErrorShow(false);
+    onClearErrors(e);
   };
 
   const onChangePassword = (e) => {
@@ -213,7 +214,7 @@ const Form = (props) => {
   };
 
   const onSubmit = () => {
-    errorText && setErrorText("");
+    //errorText && setErrorText("");
     let hasError = false;
 
     const userName = identifier.trim();
@@ -229,6 +230,8 @@ const Form = (props) => {
       hasError = true;
       setPasswordValid(false);
     }
+
+    if (!identifierValid) hasError = true;
 
     if (hasError) return false;
 
@@ -435,7 +438,7 @@ const Form = (props) => {
               isVertical={true}
               labelVisible={false}
               hasError={!passwordValid}
-              errorMessage={errorText ? "" : t("Common:RequiredField")} //TODO: Add wrong password server error
+              errorMessage={!password.trim() && t("Common:RequiredField")} //TODO: Add wrong password server error
             >
               <PasswordInput
                 simpleView={true}
