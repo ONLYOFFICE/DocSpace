@@ -28,7 +28,7 @@ namespace ASC.Web.Files.Services.WCFService;
 public class FileEntrySerializer
 {
     private static readonly IDictionary<Type, XmlObjectSerializer> _serializers = new Dictionary<Type, XmlObjectSerializer>();
-    private static readonly bool _oldMonoSerializer = false;
+    private static readonly bool _oldMonoSerializer;
 
 
     static FileEntrySerializer()

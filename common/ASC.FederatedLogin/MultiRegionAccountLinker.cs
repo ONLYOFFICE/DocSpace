@@ -28,7 +28,7 @@ namespace ASC.FederatedLogin;
 public class MultiRegionAccountLinker
 {
     private readonly Dictionary<string, AccountLinker> _accountLinkers = new Dictionary<string, AccountLinker>();
-    private readonly string _baseDatabaseId = null;
+    private readonly string _baseDatabaseId;
 
     public MultiRegionAccountLinker(string databaseId, ConfigurationExtension configuration, IOptionsSnapshot<AccountLinker> snapshot)
     {

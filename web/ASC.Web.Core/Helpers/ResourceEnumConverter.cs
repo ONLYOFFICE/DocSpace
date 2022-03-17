@@ -44,7 +44,7 @@ namespace ASC.Web.Core.Helpers
         private class LookupTable : Dictionary<string, object> { }
         private readonly Dictionary<CultureInfo, LookupTable> _lookupTables = new Dictionary<CultureInfo, LookupTable>();
         private readonly System.Resources.ResourceManager _resourceManager;
-        private readonly bool _isFlagEnum = false;
+        private readonly bool _isFlagEnum;
         private readonly Array _flagValues;
 
         /// <summary>

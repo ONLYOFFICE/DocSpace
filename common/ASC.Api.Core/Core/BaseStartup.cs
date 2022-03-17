@@ -7,9 +7,9 @@ public abstract class BaseStartup
     public IConfiguration Configuration { get; }
     public IHostEnvironment HostEnvironment { get; }
     public virtual JsonConverter[] Converters { get; }
-    public virtual bool AddControllersAsServices { get; } = false;
-    public virtual bool ConfirmAddScheme { get; } = false;
-    public virtual bool AddAndUseSession { get; } = false;
+    public virtual bool AddControllersAsServices { get; }
+    public virtual bool ConfirmAddScheme { get; }
+    public virtual bool AddAndUseSession { get; }
     protected DIHelper DIHelper { get; }
     protected bool LoadProducts { get; set; } = true;
     protected bool LoadConsumers { get; } = true;

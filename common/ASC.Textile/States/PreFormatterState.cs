@@ -3,8 +3,8 @@ namespace Textile.States;
 [FormatterState(@"^\s*<pre" + Globals.HtmlAttributesPattern + ">")]
 public class PreFormatterState : FormatterState
 {
-    private bool _shouldExitNextTime = false;
-    private int _fakeNestingDepth = 0;
+    private bool _shouldExitNextTime;
+    private int _fakeNestingDepth;
 
     public PreFormatterState(TextileFormatter f)
         : base(f)

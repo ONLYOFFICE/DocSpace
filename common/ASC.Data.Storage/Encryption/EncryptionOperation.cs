@@ -34,7 +34,7 @@ public class EncryptionOperation : DistributedTaskProgress
     private const string ProgressFileName = "EncryptionProgress.tmp";
 
     private readonly IServiceScopeFactory _serviceScopeFactory;
-    private bool _hasErrors = false;
+    private bool _hasErrors;
     private EncryptionSettings _encryptionSettings;
     private bool _isEncryption;
     private bool _useProgressFile;

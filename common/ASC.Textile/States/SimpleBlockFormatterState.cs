@@ -5,11 +5,11 @@ public abstract class SimpleBlockFormatterState : FormatterState
     internal const string PatternBegin = @"^\s*(?<tag>";
     internal const string PatternEnd = @")" + Globals.AlignPattern + Globals.BlockModifiersPattern + @"\.(?:\s+)?(?<content>.*)$";
 
-    public string Tag { get; private set; } = null;
+    public string Tag { get; private set; }
 
-    public string AlignInfo { get; private set; } = null;
+    public string AlignInfo { get; private set; }
 
-    public string AttInfo { get; private set; } = null;
+    public string AttInfo { get; private set; }
 
     protected SimpleBlockFormatterState(TextileFormatter formatter)
         : base(formatter)

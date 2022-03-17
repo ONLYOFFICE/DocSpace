@@ -3,7 +3,7 @@ namespace Textile.States;
 [FormatterState(@"^\s*<notextile>\s*$")]
 public class NoTextileFormatterState : FormatterState
 {
-    private bool _shouldExitNextTime = false;
+    private bool _shouldExitNextTime;
 
     public NoTextileFormatterState(TextileFormatter f)
         : base(f)
