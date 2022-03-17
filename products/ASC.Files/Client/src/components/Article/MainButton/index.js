@@ -33,6 +33,10 @@ const ArticleMainButtonContent = ({
   filter,
   sectionWidth,
   isArticleLoaded,
+  isFavoritesFolder,
+  isRecentFolder,
+  isCommonFolder,
+  isRecycleBinFolder,
 }) => {
   const inputFilesElement = React.useRef(null);
   const inputFolderElement = React.useRef(null);
@@ -207,6 +211,7 @@ const ArticleMainButtonContent = ({
       ...actions,
       {
         isSeparator: true,
+        key: "separator",
       },
       ...uploadActions,
     ];
