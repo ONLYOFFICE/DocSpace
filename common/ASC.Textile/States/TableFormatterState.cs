@@ -44,7 +44,9 @@ public class TableFormatterState : FormatterState
     public override void FormatLine(string input)
     {
         if (input.Length > 0)
+        {
             throw new Exception("The TableFormatter state is not supposed to format any lines!");
+        }
     }
 
     public override bool ShouldExit(string input)

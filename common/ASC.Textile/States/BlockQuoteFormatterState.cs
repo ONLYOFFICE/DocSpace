@@ -38,7 +38,10 @@ public class BlockQuoteFormatterState : SimpleBlockFormatterState
     public override bool ShouldExit(string input)
     {
         if (Regex.IsMatch(input, @"^\s*$"))
+        {
             return true;
+        }
+
         Formatter.Output.WriteLine("<br />");
         return false;
     }

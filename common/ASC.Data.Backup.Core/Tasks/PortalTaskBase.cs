@@ -220,7 +220,11 @@ public abstract class PortalTaskBase
 
         foreach (var p in parsed)
         {
-                if (string.IsNullOrWhiteSpace(p)) continue;
+                if (string.IsNullOrWhiteSpace(p))
+            {
+                continue;
+            }
+
             var keyValue = p.Split('=');
             result.Add(keyValue[0].ToLowerInvariant(), keyValue[1]);
         }
@@ -271,9 +275,12 @@ public abstract class PortalTaskBase
 
         protected Task RunMysqlFile(Stream stream, string delimiter = ";")
     {
-            if (stream == null) return Task.CompletedTask;
+            if (stream == null)
+        {
+            return Task.CompletedTask;
+        }
 
-            return InternalRunMysqlFile(stream, delimiter);
+        return InternalRunMysqlFile(stream, delimiter);
         }
 
         private async Task InternalRunMysqlFile(Stream stream, string delimiter)

@@ -63,7 +63,10 @@ public class CustomNavigationController : BaseSettingsController
 
         foreach (var existItem in settings.Items)
         {
-            if (existItem.Id != item.Id) continue;
+            if (existItem.Id != item.Id)
+            {
+                continue;
+            }
 
             existItem.Label = item.Label;
             existItem.Url = item.Url;
@@ -111,7 +114,10 @@ public class CustomNavigationController : BaseSettingsController
 
         var terget = settings.Items.FirstOrDefault(item => item.Id == id);
 
-        if (terget == null) return;
+        if (terget == null)
+        {
+            return;
+        }
 
         _storageHelper.DeleteLogo(terget.SmallImg);
         _storageHelper.DeleteLogo(terget.BigImg);

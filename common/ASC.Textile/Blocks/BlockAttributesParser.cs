@@ -47,8 +47,9 @@ public static class BlockAttributesParser
         }
 
         if (input.Length == 0)
+        {
             return style.Length > 0 ? " style=\"" + style + "\"" : "";
-
+        }
 
         Match m;
         var matched = input;
@@ -57,15 +58,21 @@ public static class BlockAttributesParser
             // column span
             m = Regex.Match(matched, @"\\(\d+)");
             if (m.Success)
+            {
                 colspan = m.Groups[1].Value;
+            }
             // row span
             m = Regex.Match(matched, @"/(\d+)");
             if (m.Success)
+            {
                 rowspan = m.Groups[1].Value;
+            }
             // vertical align
             m = Regex.Match(matched, @"(" + Globals.VerticalAlignPattern + @")");
             if (m.Success)
+            {
                 style += "vertical-align:" + Globals.VerticalAlign[m.Captures[0].Value] + ";";
+            }
         }
 
         // First, match custom styles
@@ -124,9 +131,9 @@ public static class BlockAttributesParser
         // Get the text alignment
         m = Regex.Match(matched, "(" + Globals.HorizontalAlignPattern + ")");
         if (m.Success)
+        {
             style += "text-align:" + Globals.HorizontalAlign[m.Groups[1].Value] + ";";
-
-
+        }
 
         return 
                 (style.Length > 0 ? " style=\"" + style + "\"" : "") +

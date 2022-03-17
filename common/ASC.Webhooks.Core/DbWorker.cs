@@ -21,7 +21,9 @@ public class DbWorker
         it.Uri == webhooksConfig.Uri).FirstOrDefault();
 
         if (addObj != null)
+        {
             return;
+        }
 
         WebhooksDbContext.WebhooksConfigs.Add(webhooksConfig);
         WebhooksDbContext.SaveChanges();

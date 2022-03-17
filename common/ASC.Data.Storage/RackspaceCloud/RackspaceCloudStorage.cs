@@ -301,7 +301,10 @@ public class RackspaceCloudStorage : BaseStorage
         var files = client.ListObjects(_private_container, null, null, null, MakePath(domain, folderPath), _region)
                           .Where(x => Wildcard.IsMatch(pattern, Path.GetFileName(x.Name)));
 
-            if (!files.Any()) return Task.CompletedTask;
+            if (!files.Any())
+        {
+            return Task.CompletedTask;
+        }
 
         foreach (var file in files)
         {
@@ -318,9 +321,12 @@ public class RackspaceCloudStorage : BaseStorage
 
         public override Task DeleteFilesAsync(string domain, List<string> paths)
     {
-            if (paths.Count == 0) return Task.CompletedTask;
+            if (paths.Count == 0)
+        {
+            return Task.CompletedTask;
+        }
 
-            return InternalDeleteFilesAsync(domain, paths);
+        return InternalDeleteFilesAsync(domain, paths);
         }
 
         private async Task InternalDeleteFilesAsync(string domain, List<string> paths)
@@ -348,7 +354,10 @@ public class RackspaceCloudStorage : BaseStorage
             }
         }
 
-        if (keysToDel.Count == 0) return;
+        if (keysToDel.Count == 0)
+        {
+            return;
+        }
 
         var client = GetClient();
 
@@ -367,7 +376,10 @@ public class RackspaceCloudStorage : BaseStorage
         var files = client.ListObjects(_private_container, null, null, null, MakePath(domain, folderPath), _region)
                            .Where(x => x.LastModified >= fromDate && x.LastModified <= toDate);
 
-            if (!files.Any()) return Task.CompletedTask;
+            if (!files.Any())
+        {
+            return Task.CompletedTask;
+        }
 
         foreach (var file in files)
         {
@@ -479,9 +491,11 @@ public class RackspaceCloudStorage : BaseStorage
                       .ListObjects(_private_container, null, null, null, MakePath(domain, path));
 
             if (obj.Any())
-                return Task.FromResult(obj.Single().Bytes);
+        {
+            return Task.FromResult(obj.Single().Bytes);
+        }
 
-            return Task.FromResult<long>(0);
+        return Task.FromResult<long>(0);
     }
 
         public override Task<long> GetDirectorySizeAsync(string domain, string path)
@@ -683,12 +697,18 @@ public class RackspaceCloudStorage : BaseStorage
         if (!string.IsNullOrEmpty(_subDir))
         {
             if (_subDir.Length == 1 && (_subDir[0] == '/' || _subDir[0] == '\\'))
+            {
                 result = path;
+            }
             else
+            {
                 result = $"{_subDir}/{path}"; // Ignory all, if _subDir is not null
+            }
         }
         else//Key combined from module+domain+filename
+        {
             result = $"{Tenant}/{Modulename}/{domain}/{path}";
+        }
 
         result = result.Replace("//", "/").TrimStart('/');
         if (_lowerCasing)

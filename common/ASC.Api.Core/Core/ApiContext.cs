@@ -231,7 +231,10 @@ public static class QueryExtension
         if (query != null)
         {
             var values = query[key + "[]"];
-            if (values.Count > 0) return values;
+            if (values.Count > 0)
+            {
+                return values;
+            }
 
             values = query[key];
             if (values.Count > 0)
@@ -240,7 +243,9 @@ public static class QueryExtension
                 {
                     //Try split
                     if (!string.IsNullOrEmpty(values[0]))
+                    {
                         return values[0].Split(',');
+                    }
                 }
 
                 return values;

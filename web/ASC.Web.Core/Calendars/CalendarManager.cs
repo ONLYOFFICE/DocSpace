@@ -38,7 +38,9 @@ namespace ASC.Web.Core.Calendars
             lock (this._calendars)
             {
                 if (!this._calendars.Exists(c => string.Equals(c.Id, calendar.Id, StringComparison.InvariantCultureIgnoreCase)))
+                {
                     this._calendars.Add(calendar);
+                }
             }
         }
 
@@ -55,7 +57,9 @@ namespace ASC.Web.Core.Calendars
             lock (this._calendarProviders)
             {
                 if (!this._calendarProviders.Exists(p => p.Equals(provider)))
+                {
                     this._calendarProviders.Add(provider);
+                }
             }
         }
 
@@ -79,7 +83,9 @@ namespace ASC.Web.Core.Calendars
             {
                 var list = h(userId);
                 if (list != null)
+                {
                     cals.AddRange(list.FindAll(c => c.SharingOptions.PublicForItem(userId, userManager)));
+                }
             }
 
             cals.AddRange(_calendars.FindAll(c => c.SharingOptions.PublicForItem(userId, userManager)));

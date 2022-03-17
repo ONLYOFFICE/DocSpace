@@ -42,7 +42,9 @@ public partial class TextileFormatter
 
             // Let's see if the current state(s) is(are) finished...
             while (CurrentState != null && CurrentState.ShouldExit(tmp))
+            {
                 PopState();
+            }
 
             if (!Regex.IsMatch(tmp, @"^\s*$"))
             {
@@ -81,7 +83,9 @@ public partial class TextileFormatter
         // list), so we must pop them all so that they have
         // their "Exit" method called correctly.
         while (_stackOfStates.Count > 0)
+        {
             PopState();
+        }
 
         Output.End();
     }

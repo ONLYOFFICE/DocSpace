@@ -10,7 +10,10 @@ public class WebhookEntry
     {
         var toCompareWith = other as WebhookEntry;
         if (toCompareWith == null)
+        {
             return false;
+        }
+
         return Id == toCompareWith.Id &&
             Payload == toCompareWith.Payload &&
             Uri == toCompareWith.Uri &&

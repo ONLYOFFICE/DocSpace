@@ -44,7 +44,10 @@ namespace ASC.Web.Core
 
             var scaleFactor = alignWidth ? (realWidth / (1.0 * width)) : (realHeight / (1.0 * height));
 
-            if (scaleFactor < 1) scaleFactor = 1;
+            if (scaleFactor < 1)
+            {
+                scaleFactor = 1;
+            }
 
             int locationX, locationY;
             int finalWidth, finalHeigth;

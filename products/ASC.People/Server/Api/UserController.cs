@@ -631,7 +631,10 @@ public class UserController : PeopleControllerBase
     {
         try
         {
-            if (_coreBaseSettings.CustomMode) inDto.Lang = "ru-RU";
+            if (_coreBaseSettings.CustomMode)
+            {
+                inDto.Lang = "ru-RU";
+            }
 
             var cultureInfo = _setupInfo.GetPersonalCulture(inDto.Lang).Value;
 
@@ -642,7 +645,10 @@ public class UserController : PeopleControllerBase
 
             inDto.Email.ThrowIfNull(new ArgumentException(Resource.ErrorEmailEmpty, "email"));
 
-            if (!inDto.Email.TestEmailRegex()) throw new ArgumentException(Resource.ErrorNotCorrectEmail, "email");
+            if (!inDto.Email.TestEmailRegex())
+            {
+                throw new ArgumentException(Resource.ErrorNotCorrectEmail, "email");
+            }
 
             if (!SetupInfo.IsSecretEmail(inDto.Email)
                 && !string.IsNullOrEmpty(_setupInfo.RecaptchaPublicKey) && !string.IsNullOrEmpty(_setupInfo.RecaptchaPrivateKey))

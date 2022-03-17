@@ -416,7 +416,10 @@ public class DiscDataStore : BaseStorage
             targetDir += Path.DirectorySeparatorChar;
         }
 
-        if (!Directory.Exists(targetDir)) return Task.CompletedTask;
+        if (!Directory.Exists(targetDir))
+        {
+            return Task.CompletedTask;
+        }
 
         var entries = Directory.GetFiles(targetDir, "*.*", SearchOption.AllDirectories);
         var size = entries.Select(entry => _crypt.GetFileSize(entry)).Sum();

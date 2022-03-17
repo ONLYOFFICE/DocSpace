@@ -76,14 +76,19 @@ namespace ASC.Web.Core.Users
         private bool TestUniqueUserName(string uniqueName)
         {
             if (string.IsNullOrEmpty(uniqueName))
+            {
                 return false;
+            }
+
             return Equals(UserManager.GetUserByUserName(uniqueName), Constants.LostUser);
         }
 
         private string MakeUniqueName(UserInfo userInfo)
         {
             if (string.IsNullOrEmpty(userInfo.Email))
+            {
                 throw new ArgumentException(Resource.ErrorEmailEmpty, nameof(userInfo));
+            }
 
             var uniqueName = new MailAddress(userInfo.Email).User;
             var startUniqueName = uniqueName;
@@ -106,10 +111,15 @@ namespace ASC.Web.Core.Users
             ArgumentNullException.ThrowIfNull(userInfo);
 
             if (!UserFormatter.IsValidUserName(userInfo.FirstName, userInfo.LastName))
+            {
                 throw new Exception(Resource.ErrorIncorrectUserName);
+            }
 
             if (!CheckUniqueEmail(userInfo.Id, userInfo.Email))
+            {
                 throw new Exception(CustomNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
+            }
+
             if (makeUniqueName)
             {
                 userInfo.UserName = MakeUniqueName(userInfo);
@@ -180,12 +190,16 @@ namespace ASC.Web.Core.Users
         public void CheckPasswordPolicy(string password)
         {
             if (string.IsNullOrWhiteSpace(password))
+            {
                 throw new Exception(Resource.ErrorPasswordEmpty);
+            }
 
             var passwordSettingsObj = SettingsManager.Load<PasswordSettings>();
 
             if (!CheckPasswordRegex(passwordSettingsObj, password))
+            {
                 throw new Exception(GenerateErrorMessage(passwordSettingsObj));
+            }
         }
 
         public string GetPasswordRegex(PasswordSettings passwordSettings)
@@ -197,13 +211,19 @@ namespace ASC.Web.Core.Users
                 pwdBuilder.Append(@"^(?=.*[a-z]{0,})");
 
                 if (passwordSettings.Digits)
+                {
                     pwdBuilder.Append(@"(?=.*\d)");
+                }
 
                 if (passwordSettings.UpperCase)
+                {
                     pwdBuilder.Append(@"(?=.*[A-Z])");
+                }
 
                 if (passwordSettings.SpecSymbols)
+                {
                     pwdBuilder.Append(@"(?=.*[_\-.~!$^*()=|])");
+                }
 
                 pwdBuilder.Append(@"[0-9a-zA-Z_\-.~!$^*()=|]");
             }
@@ -212,13 +232,19 @@ namespace ASC.Web.Core.Users
                 pwdBuilder.Append(@"^(?=.*\p{Ll}{0,})");
 
                 if (passwordSettings.Digits)
+                {
                     pwdBuilder.Append(@"(?=.*\d)");
+                }
 
                 if (passwordSettings.UpperCase)
+                {
                     pwdBuilder.Append(@"(?=.*\p{Lu})");
+                }
 
                 if (passwordSettings.SpecSymbols)
+                {
                     pwdBuilder.Append(@"(?=.*[\W])");
+                }
 
                 pwdBuilder.Append('.');
             }
@@ -242,7 +268,10 @@ namespace ASC.Web.Core.Users
         public string SendUserPassword(string email)
         {
             email = (email ?? "").Trim();
-            if (!email.TestEmailRegex()) throw new ArgumentNullException(nameof(email), Resource.ErrorNotCorrectEmail);
+            if (!email.TestEmailRegex())
+            {
+                throw new ArgumentNullException(nameof(email), Resource.ErrorNotCorrectEmail);
+            }
 
             if (!IPSecurity.Verify())
             {
@@ -299,11 +328,19 @@ namespace ASC.Web.Core.Users
             error.Append($"{Resource.ErrorPasswordMessage} ");
             error.AppendFormat(Resource.ErrorPasswordLength, passwordSettings.MinLength, PasswordSettings.MaxLength);
             if (passwordSettings.UpperCase)
+            {
                 error.AppendFormat($", {Resource.ErrorPasswordNoUpperCase}");
+            }
+
             if (passwordSettings.Digits)
+            {
                 error.Append($", {Resource.ErrorPasswordNoDigits}");
+            }
+
             if (passwordSettings.SpecSymbols)
+            {
                 error.Append($", {Resource.ErrorPasswordNoSpecialSymbols}");
+            }
 
             return error.ToString();
         }
@@ -315,11 +352,19 @@ namespace ASC.Web.Core.Users
             info.Append($"{Resource.ErrorPasswordMessageStart} ");
             info.AppendFormat(Resource.ErrorPasswordLength, passwordSettings.MinLength, PasswordSettings.MaxLength);
             if (passwordSettings.UpperCase)
+            {
                 info.Append($", {Resource.ErrorPasswordNoUpperCase}");
+            }
+
             if (passwordSettings.Digits)
+            {
                 info.Append($", {Resource.ErrorPasswordNoDigits}");
+            }
+
             if (passwordSettings.SpecSymbols)
+            {
                 info.Append($", {Resource.ErrorPasswordNoSpecialSymbols}");
+            }
 
             return info.ToString();
         }

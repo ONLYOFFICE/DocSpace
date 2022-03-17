@@ -48,7 +48,11 @@ namespace ASC.Web.Core.Mobile
 
         public void RegisterInstall(string userEmail, MobileAppType appType)
         {
-            if (string.IsNullOrEmpty(userEmail)) return;
+            if (string.IsNullOrEmpty(userEmail))
+            {
+                return;
+            }
+
             registrator.RegisterInstall(userEmail, appType);
             Cache.Insert(GetCacheKey(userEmail, null), true, cacheExpiration);
             Cache.Insert(GetCacheKey(userEmail, appType), true, cacheExpiration);
@@ -56,7 +60,10 @@ namespace ASC.Web.Core.Mobile
 
         public bool IsInstallRegistered(string userEmail, MobileAppType? appType)
         {
-            if (string.IsNullOrEmpty(userEmail)) return false;
+            if (string.IsNullOrEmpty(userEmail))
+            {
+                return false;
+            }
 
             var fromCache = Cache.Get<string>(GetCacheKey(userEmail, appType));
 

@@ -57,7 +57,9 @@ public partial class BaseSettingsController : ControllerBase
         if (_memoryCache.TryGetValue<int>(key, out var count))
         {
             if (count > _maxCount)
+            {
                 throw new Exception(Resource.ErrorRequestLimitExceeded);
+            }
         }
 
         _memoryCache.Set(key, count + 1, TimeSpan.FromMinutes(_expirationMinutes));

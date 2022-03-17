@@ -197,7 +197,10 @@ internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
 
             await ProviderInfo.CacheResetAsync(driveFolder).ConfigureAwait(false);
             var parentDriveId = GetParentDriveId(driveFolder);
-            if (parentDriveId != null) await ProviderInfo.CacheResetAsync(parentDriveId, true).ConfigureAwait(false);
+            if (parentDriveId != null)
+            {
+                await ProviderInfo.CacheResetAsync(parentDriveId, true).ConfigureAwait(false);
+            }
 
             return MakeId(driveFolder);
         }

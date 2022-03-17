@@ -258,7 +258,11 @@ internal class FileConverterQueue<T> : IDisposable
                                     operationResult.Progress = 100;
                                     operationResult.StopDateTime = DateTime.UtcNow;
                                     operationResult.Error = exception.Message;
-                                    if (password) operationResult.Result = "password";
+                                    if (password)
+                                    {
+                                        operationResult.Result = "password";
+                                    }
+
                                     _cache.Insert(GetKey(file), operationResult, TimeSpan.FromMinutes(10));
                                 }
                             }

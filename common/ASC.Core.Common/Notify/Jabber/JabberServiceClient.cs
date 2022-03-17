@@ -48,7 +48,10 @@ public class JabberServiceClient
 
     public bool SendMessage(int tenantId, string from, string to, string text, string subject)
     {
-        if (IsServiceProbablyNotAvailable()) return false;
+        if (IsServiceProbablyNotAvailable())
+        {
+            return false;
+        }
 
         using (var service = GetService())
         {

@@ -63,7 +63,10 @@ public class CommandModule
 
         foreach (var t in assembly.GetExportedTypes())
         {
-            if (t.IsAbstract) continue;
+            if (t.IsAbstract)
+            {
+                continue;
+            }
 
             if (t.IsSubclassOf(typeof(CommandContext)))
             {
@@ -99,7 +102,11 @@ public class CommandModule
 
         var cmdArgs = cmd.GetParameters();
 
-        if (cmdArgs.Length > 0 && args == null || cmdArgs.Length != args.Length) throw new Exception("Wrong parameters count");
+        if (cmdArgs.Length > 0 && args == null || cmdArgs.Length != args.Length)
+        {
+            throw new Exception("Wrong parameters count");
+        }
+
         for (var i = 0; i < cmdArgs.Length; i++)
         {
             var type = cmdArgs[i].ParameterType;
@@ -110,7 +117,10 @@ public class CommandModule
                 continue;
             }
 
-            if (!_parsers.ContainsKey(type)) throw new Exception(string.Format("No parser found for type '{0}'", type));
+            if (!_parsers.ContainsKey(type))
+            {
+                throw new Exception(string.Format("No parser found for type '{0}'", type));
+            }
 
             parsedParams.Add(_parsers[type].FromString(arg));
         }
@@ -124,7 +134,10 @@ public class CommandModule
         {
             var cmd = ParseCommand(msg);
 
-            if (!_commands.ContainsKey(cmd.CommandName)) throw new Exception($"No handler found for command '{cmd.CommandName}'");
+            if (!_commands.ContainsKey(cmd.CommandName))
+            {
+                throw new Exception($"No handler found for command '{cmd.CommandName}'");
+            }
 
             var command = _commands[cmd.CommandName];
             var context = (CommandContext)_scopeFactory.CreateScope().ServiceProvider.GetService(_contexts[cmd.CommandName]);

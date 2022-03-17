@@ -113,7 +113,10 @@ public class TwilioResponseHelper
         var response = new VoiceResponse();
         var queue = _settings.Queue;
 
-        if (Convert.ToInt32(queueTime) > queue.WaitTime || Convert.ToInt32(queueSize) > queue.Size) return response.Leave();
+        if (Convert.ToInt32(queueTime) > queue.WaitTime || Convert.ToInt32(queueSize) > queue.Size)
+        {
+            return response.Leave();
+        }
 
         if (!string.IsNullOrEmpty(queue.WaitUrl))
         {
@@ -133,7 +136,10 @@ public class TwilioResponseHelper
     {
         var response = new VoiceResponse();
 
-        if (digits == "#") return AddVoiceMail(response);
+        if (digits == "#")
+        {
+            return AddVoiceMail(response);
+        }
 
         var oper = _settings.Operators.Find(r => r.PostFix == digits && availableOperators.Contains(r)) ??
             _settings.Operators.FirstOrDefault(r => availableOperators.Contains(r));

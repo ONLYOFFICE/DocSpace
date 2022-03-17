@@ -99,7 +99,9 @@ namespace ASC.Web.Core.Calendars
             sb.AppendLine($"SUMMARY:{Name}");
 
             if (!string.IsNullOrEmpty(this.Description))
+            {
                 sb.AppendLine($"DESCRIPTION:{Description.Replace("\n", "\\n")}");
+            }
 
             if (this.AllDayLong)
             {
@@ -107,10 +109,14 @@ namespace ASC.Web.Core.Calendars
                 if (this.TimeZone != null)
                 {
                     if (this.UtcStartDate != DateTime.MinValue && startDate.Kind == DateTimeKind.Utc)
+                    {
                         startDate = startDate.Add(TimeZone.GetOffset());
+                    }
 
                     if (this.UtcEndDate != DateTime.MinValue && endDate.Kind == DateTimeKind.Utc)
+                    {
                         endDate = endDate.Add(TimeZone.GetOffset());
+                    }
                 }
 
                 if (this.UtcStartDate != DateTime.MinValue)
@@ -142,7 +148,9 @@ namespace ASC.Web.Core.Calendars
 
 
             if (this.RecurrenceRule != null)
+            {
                 sb.AppendLine(this.RecurrenceRule.ToiCalFormat());
+            }
 
             sb.Append("END:VEVENT");
             return sb.ToString();

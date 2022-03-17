@@ -55,12 +55,19 @@ public class GlyphBlockModifier : BlockModifier
             {
                 var modifiedSplit = split;
                 if (modifiedSplit.Length == 0)
+                {
                     continue;
+                }
 
                 if (Regex.IsMatch(modifiedSplit, @"<(" + offtags + ")>"))
+                {
                     codepre = true;
+                }
+
                 if (Regex.IsMatch(modifiedSplit, @"<\/(" + offtags + ")>"))
+                {
                     codepre = false;
+                }
 
                 if (!Regex.IsMatch(modifiedSplit, "<.*>") && !codepre)
                 {

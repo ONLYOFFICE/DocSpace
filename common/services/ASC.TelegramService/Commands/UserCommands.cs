@@ -38,7 +38,10 @@ public class UserCommands : CommandContext
     [Command("start")]
     public Task StartCommand(string token)
     {
-        if (string.IsNullOrEmpty(token)) return Task.CompletedTask;
+        if (string.IsNullOrEmpty(token))
+        {
+            return Task.CompletedTask;
+        }
 
         return InternalStartCommand(token);
     }

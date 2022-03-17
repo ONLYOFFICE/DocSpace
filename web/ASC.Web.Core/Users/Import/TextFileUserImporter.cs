@@ -121,7 +121,10 @@ namespace ASC.Web.Core.Users.Import
                 original =>
                 {
                     if (original.StartsWith(TextDelmiter) && original.EndsWith(TextDelmiter))
+                    {
                         return original[1..^1];
+                    }
+
                     return original;
                 }
              );

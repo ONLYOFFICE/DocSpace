@@ -225,16 +225,24 @@ public class SmtpOperation
     public void SetProgress(int? currentPercent = null, string currentStatus = null, string currentSource = null)
     {
         if (!currentPercent.HasValue && currentStatus == null && currentSource == null)
+        {
             return;
+        }
 
         if (currentPercent.HasValue)
+        {
             Progress = currentPercent.Value;
+        }
 
         if (currentStatus != null)
+        {
             Status = currentStatus;
+        }
 
         if (currentSource != null)
+        {
             Source = currentSource;
+        }
 
         _logger.InfoFormat(PROGRESS_STRING, Progress, Status, Source);
 

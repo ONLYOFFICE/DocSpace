@@ -144,7 +144,9 @@ namespace ASC.Web.Studio.Utility
             foreach (var quota in GetTenantQuotas().OrderBy(r => r.ActiveUsers).Where(r => r.Year == curQuota.Year && r.Year3 == curQuota.Year3))
             {
                 if (quota.Tenant == curQuota.Tenant)
+                {
                     return prev;
+                }
 
                 prev = quota;
             }
@@ -155,7 +157,10 @@ namespace ASC.Web.Studio.Utility
         {
             var prevQuota = GetPrevQuota(quota);
             if (prevQuota == null || prevQuota.Trial)
+            {
                 return 1;
+            }
+
             return prevQuota.ActiveUsers + 1;
         }
 

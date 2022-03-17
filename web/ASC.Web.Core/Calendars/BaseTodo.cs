@@ -84,8 +84,9 @@ namespace ASC.Web.Core.Calendars
             sb.AppendLine($"SUMMARY:{Name}");
 
             if (!string.IsNullOrEmpty(this.Description))
+            {
                 sb.AppendLine($"DESCRIPTION:{Description.Replace("\n", "\\n")}");
-
+            }
 
             if (this.UtcStartDate != DateTime.MinValue)
             {

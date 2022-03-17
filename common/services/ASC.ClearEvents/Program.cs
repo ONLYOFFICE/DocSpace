@@ -41,9 +41,11 @@ builder.Host.ConfigureAppConfiguration((hostContext, config) =>
     var path = configRoot["pathToConf"];
 
                     if (!Path.IsPathRooted(path))
-                        path = Path.GetFullPath(CrossPlatform.PathCombine(hostContext.HostingEnvironment.ContentRootPath, path));
+    {
+        path = Path.GetFullPath(CrossPlatform.PathCombine(hostContext.HostingEnvironment.ContentRootPath, path));
+    }
 
-                    config.SetBasePath(path);
+    config.SetBasePath(path);
 
 
     config.AddJsonFile("appsettings.json")

@@ -30,7 +30,9 @@ public abstract class PhraseBlockModifier : BlockModifier
         else if (modifier.Length == 2)
         {
             if (modifier[0] != '\\')
+            {
                 compressedModifier = modifier[0].ToString();
+            }
             //else: compressedModifier = modifier;
         }
         //else: compressedModifier = modifier;
@@ -73,13 +75,18 @@ public abstract class PhraseBlockModifier : BlockModifier
                 // when the user didn't want to give block attributes, but the content
                 // happens to match the syntax. For example: "*(blah)*".
                 if (m.Groups["atts"].Length == 0)
+                {
                     return m.ToString();
+                }
+
                 return "<" + _tag + ">" + m.Groups["atts"].Value + m.Groups["end"].Value + "</" + _tag + ">";
             }
 
             var atts = BlockAttributesParser.ParseBlockAttributes(m.Groups["atts"].Value, _tag);
             if (m.Groups["cite"].Length > 0)
+            {
                 atts += " cite=\"" + m.Groups["cite"] + "\"";
+            }
 
             var res = "<" + _tag + atts + ">" +
                             m.Groups["content"].Value + m.Groups["end"].Value +

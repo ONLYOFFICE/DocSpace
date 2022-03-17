@@ -56,7 +56,7 @@ public abstract class PatternFormatter : IPatternFormatter
         ArgumentNullException.ThrowIfNull(pattern);
 
         var findedTags = new List<string>(SearchTags(pattern.Body));
-        Array.ForEach(SearchTags(pattern.Subject), tag => { if (!findedTags.Contains(tag)) findedTags.Add(tag); });
+        Array.ForEach(SearchTags(pattern.Subject), tag => { if (!findedTags.Contains(tag)) { findedTags.Add(tag); } });
         return findedTags.ToArray();
     }
 

@@ -824,7 +824,9 @@ public class EntryManager
             {
                 var cmp = 0;
                 if (x.FileEntryType == FileEntryType.File && y.FileEntryType == FileEntryType.File)
+                {
                     cmp = c * FileUtility.GetFileExtension(x.Title).CompareTo(FileUtility.GetFileExtension(y.Title));
+                }
 
                 return cmp == 0 ? x.Title.EnumerableComparer(y.Title) : cmp;
             }
@@ -840,7 +842,9 @@ public class EntryManager
             {
                 var cmp = 0;
                 if (x.FileEntryType == FileEntryType.File && y.FileEntryType == FileEntryType.File)
+                {
                     cmp = c * ((File<T>)x).ContentLength.CompareTo(((File<T>)y).ContentLength);
+                }
 
                 return cmp == 0 ? x.Title.EnumerableComparer(y.Title) : cmp;
             }

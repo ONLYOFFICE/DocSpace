@@ -44,8 +44,15 @@ namespace ASC.Web.Core.Files
 
         private Task<CommandResponse> GetDocumentServiceLicenseAsync()
         {
-            if (!CoreBaseSettings.Standalone) return Task.FromResult<CommandResponse>(null);
-            if (string.IsNullOrEmpty(FilesLinkUtility.DocServiceCommandUrl)) return Task.FromResult<CommandResponse>(null);
+            if (!CoreBaseSettings.Standalone)
+            {
+                return Task.FromResult<CommandResponse>(null);
+            }
+
+            if (string.IsNullOrEmpty(FilesLinkUtility.DocServiceCommandUrl))
+            {
+                return Task.FromResult<CommandResponse>(null);
+            }
 
             return InternalGetDocumentServiceLicenseAsync();
         }
@@ -79,7 +86,9 @@ namespace ASC.Web.Core.Files
             if (commandResponse == null
                 || commandResponse.Quota == null
                 || commandResponse.Quota.Users == null)
+            {
                 return null;
+            }
 
             var result = new Dictionary<string, DateTime>();
             commandResponse.Quota.Users.ForEach(user => result.Add(user.UserId, user.Expire));
@@ -90,7 +99,9 @@ namespace ASC.Web.Core.Files
         {
             var commandResponse = await GetDocumentServiceLicenseAsync();
             if (commandResponse == null)
+            {
                 return null;
+            }
 
             return commandResponse.License;
         }

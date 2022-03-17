@@ -105,10 +105,14 @@ namespace ASC.Web.Core.Mail
         private void DemandPermission()
         {
             if (!CoreBaseSettings.Standalone)
+            {
                 throw new NotSupportedException("Method for server edition only.");
+            }
 
             if (!UserManager.IsUserInGroup(AuthContext.CurrentAccount.ID, Constants.GroupAdmin.ID))
+            {
                 throw new SecurityException();
+            }
         }
 
 
@@ -130,7 +134,9 @@ namespace ASC.Web.Core.Mail
             var cachedData = Cache.Get<Tuple<MailServerInfo>>(CacheKey);
 
             if (cachedData != null)
+            {
                 return cachedData.Item1;
+            }
 
             var value = MailDbContext.ServerServer.Select(r => r.ConnectionString).FirstOrDefault();
 
@@ -179,7 +185,9 @@ namespace ASC.Web.Core.Mail
             using var mailDbContext = new MailDbContext(options);
 
             if (!IPAddress.TryParse(ip, out var ipAddress))
+            {
                 return ip;
+            }
 
             var hostname = mailDbContext.GreyListingWhiteList
                 .Where(r => r.Source == "SenderIP:" + ip)

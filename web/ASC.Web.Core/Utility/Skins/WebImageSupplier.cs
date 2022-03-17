@@ -62,7 +62,10 @@ namespace ASC.Web.Core.Utility.Skins
 
         public string GetImageFolderAbsoluteWebPath(Guid moduleID)
         {
-            if (HttpContextAccessor?.HttpContext == null) return string.Empty;
+            if (HttpContextAccessor?.HttpContext == null)
+            {
+                return string.Empty;
+            }
 
             var currentThemePath = GetPartImageFolderRel(moduleID);
             return WebPath.GetPathAsync(currentThemePath).Result;

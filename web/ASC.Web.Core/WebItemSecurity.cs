@@ -204,7 +204,9 @@ namespace ASC.Web.Core
         public void SetSecurity(string id, bool enabled, params Guid[] subjects)
         {
             if (SettingsManager.Load<TenantAccessSettings>().Anyone)
+            {
                 throw new SecurityException("Security settings are disabled for an open portal");
+            }
 
             var securityObj = WebItemSecurityObject.Create(id, WebItemManager);
 
@@ -396,7 +398,10 @@ namespace ASC.Web.Core
                     var w = webItemManager
                         .GetItemsAll()
                         .FirstOrDefault(i => id.Equals(i.GetSysName(), StringComparison.InvariantCultureIgnoreCase));
-                    if (w != null) itemId = w.ID;
+                    if (w != null)
+                    {
+                        itemId = w.ID;
+                    }
                 }
                 return new WebItemSecurityObject(itemId, webItemManager);
             }

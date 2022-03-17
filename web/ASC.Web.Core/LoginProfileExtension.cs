@@ -4,10 +4,16 @@
     {
         public static UserInfo ProfileToUserInfo(this LoginProfile loginProfile, CoreBaseSettings coreBaseSettings)
         {
-            if (string.IsNullOrEmpty(loginProfile.EMail)) throw new Exception(Resource.ErrorNotCorrectEmail);
+            if (string.IsNullOrEmpty(loginProfile.EMail))
+            {
+                throw new Exception(Resource.ErrorNotCorrectEmail);
+            }
 
             var firstName = loginProfile.FirstName;
-            if (string.IsNullOrEmpty(firstName)) firstName = loginProfile.DisplayName;
+            if (string.IsNullOrEmpty(firstName))
+            {
+                firstName = loginProfile.DisplayName;
+            }
 
             var userInfo = new UserInfo
             {

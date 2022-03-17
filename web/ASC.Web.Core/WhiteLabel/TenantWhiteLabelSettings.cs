@@ -65,7 +65,9 @@ namespace ASC.Web.Core.WhiteLabel
         public string GetLogoText(SettingsManager settingsManager)
         {
             if (!string.IsNullOrEmpty(LogoText) && LogoText != DefaultLogoText)
+            {
                 return LogoText;
+            }
 
             var partnerSettings = settingsManager.LoadForDefaultTenant<TenantWhiteLabelSettings>();
             return string.IsNullOrEmpty(partnerSettings.LogoText) ? DefaultLogoText : partnerSettings.LogoText;
@@ -231,7 +233,10 @@ namespace ASC.Web.Core.WhiteLabel
         {
             var defaultSettings = tenantWhiteLabelSettings.GetDefault(ServiceProvider) as TenantWhiteLabelSettings;
 
-            if (defaultSettings == null) return false;
+            if (defaultSettings == null)
+            {
+                return false;
+            }
 
             return tenantWhiteLabelSettings.LogoLightSmallExt == defaultSettings.LogoLightSmallExt &&
                     tenantWhiteLabelSettings.LogoDarkExt == defaultSettings.LogoDarkExt &&
@@ -423,7 +428,9 @@ namespace ASC.Web.Core.WhiteLabel
         {
             var partnerLogoPath = GetPartnerStorageLogoPath(type, general);
             if (!string.IsNullOrEmpty(partnerLogoPath))
+            {
                 return partnerLogoPath;
+            }
 
             return type switch
             {
@@ -440,11 +447,17 @@ namespace ASC.Web.Core.WhiteLabel
         {
             var partnerSettings = SettingsManager.LoadForDefaultTenant<TenantWhiteLabelSettings>();
 
-            if (partnerSettings.GetIsDefault(type)) return null;
+            if (partnerSettings.GetIsDefault(type))
+            {
+                return null;
+            }
 
             var partnerStorage = StorageFactory.GetStorage(string.Empty, "static_partnerdata");
 
-            if (partnerStorage == null) return null;
+            if (partnerStorage == null)
+            {
+                return null;
+            }
 
             var logoPath = BuildLogoFileName(type, partnerSettings.GetExt(type), general);
 
@@ -461,7 +474,9 @@ namespace ASC.Web.Core.WhiteLabel
         public Stream GetWhitelabelLogoData(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type, bool general)
         {
             if (tenantWhiteLabelSettings.GetIsDefault(type))
+            {
                 return GetPartnerStorageLogoData(type, general);
+            }
 
             return GetStorageLogoData(tenantWhiteLabelSettings, type, general);
         }
@@ -470,7 +485,10 @@ namespace ASC.Web.Core.WhiteLabel
         {
             var storage = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().Id.ToString(CultureInfo.InvariantCulture), moduleName);
 
-            if (storage == null) return null;
+            if (storage == null)
+            {
+                return null;
+            }
 
             var fileName = BuildLogoFileName(type, tenantWhiteLabelSettings.GetExt(type), general);
 
@@ -481,11 +499,17 @@ namespace ASC.Web.Core.WhiteLabel
         {
             var partnerSettings = SettingsManager.LoadForDefaultTenant<TenantWhiteLabelSettings>();
 
-            if (partnerSettings.GetIsDefault(type)) return null;
+            if (partnerSettings.GetIsDefault(type))
+            {
+                return null;
+            }
 
             var partnerStorage = StorageFactory.GetStorage(string.Empty, "static_partnerdata");
 
-            if (partnerStorage == null) return null;
+            if (partnerStorage == null)
+            {
+                return null;
+            }
 
             var fileName = BuildLogoFileName(type, partnerSettings.GetExt(type), general);
 
@@ -525,8 +549,15 @@ namespace ASC.Web.Core.WhiteLabel
         private static void ResizeLogo(string fileName, byte[] data, long maxFileSize, Size size, IDataStore store)
         {
             //Resize synchronously
-            if (data == null || data.Length <= 0) throw new UnknownImageFormatException("data null");
-            if (maxFileSize != -1 && data.Length > maxFileSize) throw new ImageWeightLimitException();
+            if (data == null || data.Length <= 0)
+            {
+                throw new UnknownImageFormatException("data null");
+            }
+
+            if (maxFileSize != -1 && data.Length > maxFileSize)
+            {
+                throw new ImageWeightLimitException();
+            }
 
             try
             {
@@ -560,11 +591,17 @@ namespace ASC.Web.Core.WhiteLabel
 
         public void Apply(TenantWhiteLabelSettings tenantWhiteLabelSettings, int tenantId)
         {
-            if (AppliedTenants.Contains(tenantId)) return;
+            if (AppliedTenants.Contains(tenantId))
+            {
+                return;
+            }
 
             SetNewLogoText(tenantWhiteLabelSettings, tenantId);
 
-            if (!AppliedTenants.Contains(tenantId)) AppliedTenants.Add(tenantId);
+            if (!AppliedTenants.Contains(tenantId))
+            {
+                AppliedTenants.Add(tenantId);
+            }
         }
 
         public void Save(TenantWhiteLabelSettings tenantWhiteLabelSettings, int tenantId, TenantLogoManager tenantLogoManager, bool restore = false)

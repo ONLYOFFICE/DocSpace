@@ -41,7 +41,10 @@ public class CodeFormatterState : FormatterState
     public override void FormatLine(string input)
     {
         if (_shouldFixHtmlEntities)
+        {
             input = FixEntities(input);
+        }
+
         Formatter.Output.WriteLine(input);
         _shouldFixHtmlEntities = true;
     }
@@ -49,7 +52,10 @@ public class CodeFormatterState : FormatterState
     public override bool ShouldExit(string input)
     {
         if (_shouldExitNextTime)
+        {
             return true;
+        }
+
         _shouldExitNextTime = Regex.IsMatch(input, @"</code>");
         _shouldFixHtmlEntities = !_shouldExitNextTime;
         return false;

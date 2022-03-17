@@ -155,10 +155,14 @@ public class TfaappController : BaseSettingsController
         {
             case "sms":
                 if (!_studioSmsNotificationSettingsHelper.IsVisibleSettings())
+                {
                     throw new Exception(Resource.SmsNotAvailable);
+                }
 
                 if (!_smsProviderManager.Enabled())
+                {
                     throw new MethodAccessException();
+                }
 
                 _studioSmsNotificationSettingsHelper.Enable = true;
                 action = MessageAction.TwoFactorAuthenticationEnabledBySms;
@@ -229,10 +233,14 @@ public class TfaappController : BaseSettingsController
         if (!TfaAppAuthSettings.IsVisibleSettings ||
             !_settingsManager.Load<TfaAppAuthSettings>().EnableSetting ||
             TfaAppUserSettings.EnableForUser(_settingsManager, currentUser.Id))
+        {
             throw new Exception(Resource.TfaAppNotAvailable);
+        }
 
         if (currentUser.IsVisitor(_userManager) || currentUser.IsOutsider(_userManager))
+        {
             throw new NotSupportedException("Not available.");
+        }
 
         return _tfaManager.GenerateSetupCode(currentUser);
     }
@@ -243,10 +251,14 @@ public class TfaappController : BaseSettingsController
         var currentUser = _userManager.GetUsers(_authContext.CurrentAccount.ID);
 
         if (!TfaAppAuthSettings.IsVisibleSettings || !TfaAppUserSettings.EnableForUser(_settingsManager, currentUser.Id))
+        {
             throw new Exception(Resource.TfaAppNotAvailable);
+        }
 
         if (currentUser.IsVisitor(_userManager) || currentUser.IsOutsider(_userManager))
+        {
             throw new NotSupportedException("Not available.");
+        }
 
         return _settingsManager.LoadForCurrentUser<TfaAppUserSettings>().CodesSetting.Select(r => new { r.IsUsed, Code = r.GetEncryptedCode(_instanceCrypto, _signature) }).ToList();
     }
@@ -257,10 +269,14 @@ public class TfaappController : BaseSettingsController
         var currentUser = _userManager.GetUsers(_authContext.CurrentAccount.ID);
 
         if (!TfaAppAuthSettings.IsVisibleSettings || !TfaAppUserSettings.EnableForUser(_settingsManager, currentUser.Id))
+        {
             throw new Exception(Resource.TfaAppNotAvailable);
+        }
 
         if (currentUser.IsVisitor(_userManager) || currentUser.IsOutsider(_userManager))
+        {
             throw new NotSupportedException("Not available.");
+        }
 
         var codes = _tfaManager.GenerateBackupCodes().Select(r => new { r.IsUsed, Code = r.GetEncryptedCode(_instanceCrypto, _signature) }).ToList();
         _messageService.Send(MessageAction.UserConnectedTfaApp, _messageTarget.Create(currentUser.Id), currentUser.DisplayUserName(false, _displayUserSettingsHelper));
@@ -287,13 +303,19 @@ public class TfaappController : BaseSettingsController
         var user = _userManager.GetUsers(isMe ? _authContext.CurrentAccount.ID : id);
 
         if (!isMe && !_permissionContext.CheckPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser))
+        {
             throw new SecurityAccessDeniedException(Resource.ErrorAccessDenied);
+        }
 
         if (!TfaAppAuthSettings.IsVisibleSettings || !TfaAppUserSettings.EnableForUser(_settingsManager, user.Id))
+        {
             throw new Exception(Resource.TfaAppNotAvailable);
+        }
 
         if (user.IsVisitor(_userManager) || user.IsOutsider(_userManager))
+        {
             throw new NotSupportedException("Not available.");
+        }
 
         TfaAppUserSettings.DisableForUser(_serviceProvider, _settingsManager, user.Id);
         _messageService.Send(MessageAction.UserDisconnectedTfaApp, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));

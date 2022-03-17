@@ -178,7 +178,9 @@ public class LicenseReader
         }
 
         if (license.ActiveUsers.Equals(default) || license.ActiveUsers < 1)
+        {
             license.ActiveUsers = MaxUserCount;
+        }
 
         if (license.ActiveUsers < _userManager.GetUsers(EmployeeStatus.Default, EmployeeType.User).Length)
         {

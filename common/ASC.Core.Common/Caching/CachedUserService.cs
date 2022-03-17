@@ -307,7 +307,10 @@ public class CachedUserService : IUserService, ICachedService
         {
             group = Service.GetGroup(tenant, id);
 
-            if (group != null) Cache.Insert(key, group, _cacheExpiration);
+            if (group != null)
+            {
+                Cache.Insert(key, group, _cacheExpiration);
+            }
         }
 
         return group;

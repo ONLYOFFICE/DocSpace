@@ -57,16 +57,36 @@ namespace ASC.Web.Core.Users
 
         public override bool Equals(object obj)
         {
-            if (obj is null) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (!(obj is ResizeWorkerItem)) return false;
+            if (obj is null)
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (!(obj is ResizeWorkerItem))
+            {
+                return false;
+            }
+
             return Equals((ResizeWorkerItem)obj);
         }
 
         public bool Equals(ResizeWorkerItem other)
         {
-            if (other is null) return false;
-            if (ReferenceEquals(this, other)) return true;
+            if (other is null)
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
             return other.UserId.Equals(UserId) && other.MaxFileSize == MaxFileSize && other.Size.Equals(Size);
         }
 
@@ -332,7 +352,10 @@ namespace ASC.Web.Core.Users
         public string GetPhotoAbsoluteWebPath(Guid userID)
         {
             var path = SearchInCache(userID, Size.Empty, out _);
-            if (!string.IsNullOrEmpty(path)) return path;
+            if (!string.IsNullOrEmpty(path))
+            {
+                return path;
+            }
 
             try
             {
@@ -362,7 +385,10 @@ namespace ASC.Web.Core.Users
         internal Size GetPhotoSize(Guid userID)
         {
             var virtualPath = GetPhotoAbsoluteWebPath(userID);
-            if (virtualPath == null) return Size.Empty;
+            if (virtualPath == null)
+            {
+                return Size.Empty;
+            }
 
             try
             {
@@ -385,7 +411,10 @@ namespace ASC.Web.Core.Users
         private string GetSizedPhotoAbsoluteWebPath(Guid userID, Size size, out bool isdef)
         {
             var res = SearchInCache(userID, size, out isdef);
-            if (!string.IsNullOrEmpty(res)) return res;
+            if (!string.IsNullOrEmpty(res))
+            {
+                return res;
+            }
 
             try
             {
@@ -430,7 +459,9 @@ namespace ASC.Web.Core.Users
         private string SearchInCache(Guid userId, Size size, out bool isDef)
         {
             if (!UserPhotoManagerCache.IsCacheLoadedForTenant(Tenant.Id))
+            {
                 LoadDiskCache();
+            }
 
             isDef = false;
 
@@ -563,7 +594,10 @@ namespace ASC.Web.Core.Users
         {
             var settings = SettingsManager.LoadForUser<UserPhotoThumbnailSettings>(userId);
 
-            if (!settings.IsDefault) return;
+            if (!settings.IsDefault)
+            {
+                return;
+            }
 
             var max = Math.Max(Math.Max(width, height), SmallFotoSize.Width);
             var min = Math.Max(Math.Min(width, height), SmallFotoSize.Width);
@@ -579,8 +613,15 @@ namespace ASC.Web.Core.Users
 
         private byte[] TryParseImage(byte[] data, long maxFileSize, Size maxsize, out IImageFormat imgFormat, out int width, out int height)
         {
-            if (data == null || data.Length <= 0) throw new UnknownImageFormatException();
-            if (maxFileSize != -1 && data.Length > maxFileSize) throw new ImageSizeLimitException();
+            if (data == null || data.Length <= 0)
+            {
+                throw new UnknownImageFormatException();
+            }
+
+            if (maxFileSize != -1 && data.Length > maxFileSize)
+            {
+                throw new ImageSizeLimitException();
+            }
 
             //data = ImageHelper.RotateImageByExifOrientationData(data, Log);
 
@@ -654,8 +695,15 @@ namespace ASC.Web.Core.Users
 
         private string SizePhoto(Guid userID, byte[] data, long maxFileSize, Size size, bool now)
         {
-            if (data == null || data.Length <= 0) throw new UnknownImageFormatException();
-            if (maxFileSize != -1 && data.Length > maxFileSize) throw new ImageWeightLimitException();
+            if (data == null || data.Length <= 0)
+            {
+                throw new UnknownImageFormatException();
+            }
+
+            if (maxFileSize != -1 && data.Length > maxFileSize)
+            {
+                throw new ImageWeightLimitException();
+            }
 
             var resizeTask = new ResizeWorkerItem(userID, data, maxFileSize, size, GetDataStore(), SettingsManager.LoadForUser<UserPhotoThumbnailSettings>(userID));
             var key = $"{userID}{size}";
@@ -737,7 +785,11 @@ namespace ASC.Web.Core.Users
             while (true)
             {
                 var count = s.Read(buffer, 0, buffer.Length);
-                if (count == 0) break;
+                if (count == 0)
+                {
+                    break;
+                }
+
                 data.Write(buffer, 0, count);
             }
             return data.ToArray();
@@ -830,7 +882,10 @@ namespace ASC.Web.Core.Users
 
                 var fileName = GetDataStore().ListFilesRelativeAsync("", "", pattern, false).ToArrayAsync().Result.FirstOrDefault();
 
-                if (string.IsNullOrEmpty(fileName)) return null;
+                if (string.IsNullOrEmpty(fileName))
+                {
+                    return null;
+                }
 
                 using var s = GetDataStore().GetReadStreamAsync("", fileName).Result;
                 var data = new MemoryStream();
@@ -838,7 +893,11 @@ namespace ASC.Web.Core.Users
                 while (true)
                 {
                     var count = s.Read(buffer, 0, buffer.Length);
-                    if (count == 0) break;
+                    if (count == 0)
+                    {
+                        break;
+                    }
+
                     data.Write(buffer, 0, count);
                 }
                 return data.ToArray();

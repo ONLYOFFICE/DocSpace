@@ -72,7 +72,9 @@ namespace System
             while (xIndex < x.Length)
             {
                 if (yIndex >= y.Length)
+                {
                     return 1;
+                }
 
                 if (char.IsDigit(x[xIndex]) && char.IsDigit(y[yIndex]))
                 {
@@ -110,13 +112,17 @@ namespace System
 
                     int difference;
                     if ((difference = xValue.CompareTo(yValue)) != 0)
+                    {
                         return difference;
+                    }
                 }
                 else
                 {
                     int difference;
                     if ((difference = string.Compare(x[xIndex].ToString(CultureInfo.InvariantCulture), y[yIndex].ToString(CultureInfo.InvariantCulture), StringComparison.InvariantCultureIgnoreCase)) != 0)
+                    {
                         return difference;
+                    }
 
                     xIndex++;
                     yIndex++;
@@ -124,7 +130,9 @@ namespace System
             }
 
             if (yIndex < y.Length)
+            {
                 return -1;
+            }
 
             return 0;
         }

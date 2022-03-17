@@ -49,7 +49,10 @@ namespace ASC.Web.Core.Sms
 
         public Task<bool> SendMessageAsync(string number, string message)
         {
-            if (!Enabled()) return Task.FromResult(false);
+            if (!Enabled())
+            {
+                return Task.FromResult(false);
+            }
 
             SmsProvider provider = null;
             if (ClickatellProvider.Enable())
@@ -227,7 +230,10 @@ namespace ASC.Web.Core.Sms
             var tenantCache = tenant == null ? Tenant.DefaultTenant : tenant.Id;
 
             var key = "sms/smsc/" + tenantCache;
-            if (eraseCache) MemoryCache.Remove(key);
+            if (eraseCache)
+            {
+                MemoryCache.Remove(key);
+            }
 
             var balance = MemoryCache.Get<string>(key);
 
@@ -384,7 +390,11 @@ namespace ASC.Web.Core.Sms
 
         public override Task<bool> SendMessageAsync(string number, string message)
         {
-            if (!number.StartsWith('+')) number = "+" + number;
+            if (!number.StartsWith('+'))
+            {
+                number = "+" + number;
+            }
+
             var twilioRestClient = new TwilioRestClient(Key, Secret);
 
             try
@@ -502,7 +512,10 @@ namespace ASC.Web.Core.Sms
 
         public void ClearOldNumbers(string key, string secret)
         {
-            if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(secret)) return;
+            if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(secret))
+            {
+                return;
+            }
 
             var provider = new VoipService.Twilio.TwilioProvider(key, secret, AuthContext, TenantUtil, SecurityContext, BaseCommonLinkUtility);
 

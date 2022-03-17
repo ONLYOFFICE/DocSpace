@@ -183,7 +183,10 @@ public class AWSSender : SmtpSender
 
     private void RefreshQuotaIfNeeded()
     {
-        if (!IsRefreshNeeded()) return;
+        if (!IsRefreshNeeded())
+        {
+            return;
+        }
 
         lock (_locker)
         {

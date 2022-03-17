@@ -78,14 +78,18 @@ namespace ASC.Web.Core.Sms
         public static string BuildPhoneNoise(string mobilePhone)
         {
             if (string.IsNullOrEmpty(mobilePhone))
+            {
                 return string.Empty;
+            }
 
             mobilePhone = GetPhoneValueDigits(mobilePhone);
 
             const int startLen = 4;
             const int endLen = 4;
             if (mobilePhone.Length < startLen + endLen)
+            {
                 return mobilePhone;
+            }
 
             var sb = new StringBuilder();
             sb.Append('+');

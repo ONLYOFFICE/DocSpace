@@ -117,9 +117,16 @@ namespace ASC.Web.Studio.Core.Notify
             csize = (csize ?? "").Trim();
             ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(csize);
             site = (site ?? "").Trim();
-            if (string.IsNullOrEmpty(site) && !CoreBaseSettings.CustomMode) throw new ArgumentNullException(nameof(site));
+            if (string.IsNullOrEmpty(site) && !CoreBaseSettings.CustomMode)
+            {
+                throw new ArgumentNullException(nameof(site));
+            }
+
             message = (message ?? "").Trim();
-            if (string.IsNullOrEmpty(message) && !CoreBaseSettings.CustomMode) throw new ArgumentNullException(nameof(message));
+            if (string.IsNullOrEmpty(message) && !CoreBaseSettings.CustomMode)
+            {
+                throw new ArgumentNullException(nameof(message));
+            }
 
             var salesEmail = SettingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>().SalesEmail ?? SetupInfo.SalesEmail;
 
@@ -314,7 +321,10 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void UserInfoAddedAfterInvite(UserInfo newUserInfo)
         {
-            if (!UserManager.UserExists(newUserInfo)) return;
+            if (!UserManager.UserExists(newUserInfo))
+            {
+                return;
+            }
 
             INotifyAction notifyAction;
             var footer = "social";
@@ -369,7 +379,10 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void GuestInfoAddedAfterInvite(UserInfo newUserInfo)
         {
-            if (!UserManager.UserExists(newUserInfo)) return;
+            if (!UserManager.UserExists(newUserInfo))
+            {
+                return;
+            }
 
             INotifyAction notifyAction;
             var footer = "social";
@@ -407,7 +420,9 @@ namespace ASC.Web.Studio.Core.Notify
         public void UserInfoActivation(UserInfo newUserInfo)
         {
             if (newUserInfo.IsActive)
+            {
                 throw new ArgumentException("User is already activated!");
+            }
 
             INotifyAction notifyAction;
             var footer = "social";
@@ -445,7 +460,9 @@ namespace ASC.Web.Studio.Core.Notify
         public void GuestInfoActivation(UserInfo newUserInfo)
         {
             if (newUserInfo.IsActive)
+            {
                 throw new ArgumentException("User is already activated!");
+            }
 
             INotifyAction notifyAction;
             var footer = "social";
@@ -589,10 +606,15 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void SendAdminWelcome(UserInfo newUserInfo)
         {
-            if (!UserManager.UserExists(newUserInfo)) return;
+            if (!UserManager.UserExists(newUserInfo))
+            {
+                return;
+            }
 
             if (!newUserInfo.IsActive)
+            {
                 throw new ArgumentException("User is not activated yet!");
+            }
 
             INotifyAction notifyAction;
             var tagValues = new List<ITagValue>();
@@ -753,7 +775,10 @@ namespace ASC.Web.Studio.Core.Notify
         public void SendInvitePersonal(string email, string additionalMember = "")
         {
             var newUserInfo = UserManager.GetUserByEmail(email);
-            if (UserManager.UserExists(newUserInfo)) return;
+            if (UserManager.UserExists(newUserInfo))
+            {
+                return;
+            }
 
             var lang = CoreBaseSettings.CustomMode
                            ? "ru-RU"
@@ -778,7 +803,10 @@ namespace ASC.Web.Studio.Core.Notify
         public void SendAlreadyExist(string email)
         {
             var userInfo = UserManager.GetUserByEmail(email);
-            if (!UserManager.UserExists(userInfo)) return;
+            if (!UserManager.UserExists(userInfo))
+            {
+                return;
+            }
 
             var portalUrl = CommonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/');
 
@@ -877,12 +905,18 @@ namespace ASC.Web.Studio.Core.Notify
         {
             try
             {
-                if (!TenantExtra.Saas || !CoreBaseSettings.CustomMode) return;
+                if (!TenantExtra.Saas || !CoreBaseSettings.CustomMode)
+                {
+                    return;
+                }
 
                 var settings = SettingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>();
                 var salesEmail = settings.SalesEmail ?? SetupInfo.SalesEmail;
 
-                if (string.IsNullOrEmpty(salesEmail)) return;
+                if (string.IsNullOrEmpty(salesEmail))
+                {
+                    return;
+                }
 
                 var recipient = new DirectRecipient(salesEmail, null, new[] { salesEmail }, false);
 
@@ -963,11 +997,15 @@ namespace ASC.Web.Studio.Core.Notify
             var controlPanelUrl = SetupInfo.ControlPanelUrl;
 
             if (string.IsNullOrEmpty(controlPanelUrl))
+            {
                 return string.Empty;
+            }
 
             if (controlPanelUrl.StartsWith("http://", StringComparison.InvariantCultureIgnoreCase) ||
                 controlPanelUrl.StartsWith("https://", StringComparison.InvariantCultureIgnoreCase))
+            {
                 return controlPanelUrl;
+            }
 
             return serverRootPath + "/" + controlPanelUrl.TrimStart('~', '/').TrimEnd('/');
         }

@@ -379,7 +379,10 @@ public class S3Storage : BaseStorage
 
     public override Task DeleteFilesAsync(string domain, List<string> paths)
     {
-        if (paths.Count == 0) return Task.CompletedTask;
+        if (paths.Count == 0)
+        {
+            return Task.CompletedTask;
+        }
 
         return InternalDeleteFilesAsync(domain, paths);
     }
@@ -702,7 +705,10 @@ public class S3Storage : BaseStorage
         }
 
         if (!string.IsNullOrEmpty(contentDisposition))
+        {
             formBuilder.Append($"<input type=\"hidden\" name=\"Content-Disposition\" value=\"{contentDisposition}\" />");
+        }
+
         formBuilder.Append($"<input type=\"hidden\" name=\"AWSAccessKeyId\" value=\"{_accessKeyId}\"/>");
         formBuilder.Append($"<input type=\"hidden\" name=\"Policy\" value=\"{policyBase64}\" />");
         formBuilder.Append($"<input type=\"hidden\" name=\"Signature\" value=\"{sign}\" />");
@@ -765,7 +771,9 @@ public class S3Storage : BaseStorage
             .Select(x => x.Key.Substring((MakePath(domain, path) + "/").Length).TrimStart('/'));
 
         foreach (var e in obj)
+        {
             yield return e;
+        }
     }
 
     public override async Task<bool> IsFileAsync(string domain, string path)
@@ -1050,7 +1058,10 @@ public class S3Storage : BaseStorage
 
     private Task InvalidateCloudFrontAsync(params string[] paths)
     {
-        if (!_revalidateCloudFront || string.IsNullOrEmpty(_distributionId)) return Task.CompletedTask;
+        if (!_revalidateCloudFront || string.IsNullOrEmpty(_distributionId))
+        {
+            return Task.CompletedTask;
+        }
 
         return InternalInvalidateCloudFrontAsync(paths);
     }
@@ -1152,7 +1163,11 @@ public class S3Storage : BaseStorage
     {
         path = MakePath(domain, path) + '/';
         var s30Objects = await GetS3ObjectsByPathAsync(domain, path);
-        if (string.IsNullOrEmpty(_recycleDir) || !recycle) return s30Objects;
+        if (string.IsNullOrEmpty(_recycleDir) || !recycle)
+        {
+            return s30Objects;
+        }
+
         s30Objects.Concat(await GetS3ObjectsByPathAsync(domain, GetRecyclePath(path)));
         return s30Objects;
     }
@@ -1196,7 +1211,10 @@ public class S3Storage : BaseStorage
 
     private Task RecycleAsync(IAmazonS3 client, string domain, string key)
     {
-        if (string.IsNullOrEmpty(_recycleDir)) return Task.CompletedTask;
+        if (string.IsNullOrEmpty(_recycleDir))
+        {
+            return Task.CompletedTask;
+        }
 
         return InternalRecycleAsync(client, domain, key);
     }

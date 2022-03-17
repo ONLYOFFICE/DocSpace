@@ -95,7 +95,10 @@
             sKey = machinePseudoKeys.GetMachineConstant();
 
             if (!url.EndsWith('/'))
+            {
                 url += '/';
+            }
+
             CommonLinkUtility = commonLinkUtility;
             ClientFactory = clientFactory;
         }

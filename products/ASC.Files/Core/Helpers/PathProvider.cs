@@ -103,7 +103,10 @@ public class PathProvider
 
                     var projectIDFromDao = path.Split('/').Last();
 
-                    if (string.IsNullOrEmpty(projectIDFromDao)) return string.Empty;
+                    if (string.IsNullOrEmpty(projectIDFromDao))
+                    {
+                        return string.Empty;
+                    }
 
                     projectID = Convert.ToInt32(projectIDFromDao);
                 }

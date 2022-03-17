@@ -73,7 +73,9 @@ namespace ASC.Web.Studio.Core.TFA
             var query = settings.CodesSetting.Where(x => x.GetEncryptedCode(instanceCrypto, signature) == code).ToList();
 
             if (query.Count > 0)
+            {
                 query.First().IsUsed = true;
+            }
 
             settingsManager.SaveForUser(settings, userId);
         }

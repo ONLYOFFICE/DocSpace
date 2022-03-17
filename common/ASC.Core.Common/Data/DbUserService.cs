@@ -648,7 +648,11 @@ public class EFUserService : IUserService
                     }
                     break;
                 case EmployeeStatus.All:
-                    if (!isAdmin) q = q.Where(r => r.Status != EmployeeStatus.Terminated);
+                    if (!isAdmin)
+                    {
+                        q = q.Where(r => r.Status != EmployeeStatus.Terminated);
+                    }
+
                     break;
                 case EmployeeStatus.Default:
                 case EmployeeStatus.Active:

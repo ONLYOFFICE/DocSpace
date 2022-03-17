@@ -92,7 +92,10 @@ internal sealed class BackupCleanerService : IHostedService, IDisposable
             try
             {
                 var backupStorage = backupStorageFactory.GetBackupStorage(backupRecord);
-                if (backupStorage == null) continue;
+                if (backupStorage == null)
+                {
+                    continue;
+                }
 
                 backupStorage.Delete(backupRecord.StoragePath);
 

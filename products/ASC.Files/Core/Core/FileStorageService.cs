@@ -1863,7 +1863,10 @@ public class FileStorageService<T> //: IFileStorageService
 
     public Task<List<FileEntry<T>>> AddToFavoritesAsync(IEnumerable<T> foldersId, IEnumerable<T> filesId)
     {
-        if (_userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
+        if (_userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager))
+        {
+            throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
+        }
 
         return InternalAddToFavoritesAsync(foldersId, filesId);
     }

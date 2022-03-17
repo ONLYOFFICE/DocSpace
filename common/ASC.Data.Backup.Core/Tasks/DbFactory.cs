@@ -101,10 +101,12 @@ public class DbFactory
     {
         var command = DbProviderFactory.CreateCommand();
         if (command != null)
+        {
             command.CommandText =
                 ConnectionStringSettings.ProviderName.IndexOf("MySql", StringComparison.OrdinalIgnoreCase) != -1
                     ? "select Last_Insert_Id();"
                     : "select last_insert_rowid();";
+        }
 
         return command;
     }

@@ -221,7 +221,11 @@ namespace ASC.Web.Files.HttpHandlers
         private static XmlNode GetSingleNode(XmlNode node, string xpath, XmlNamespaceManager mgr, bool canMiss = false)
         {
             var result = node.SelectSingleNode(XmlPrefix + ":" + xpath, mgr);
-            if (!canMiss && result == null) throw new Exception(xpath + " is null");
+            if (!canMiss && result == null)
+            {
+                throw new Exception(xpath + " is null");
+            }
+
             return result;
         }
     }

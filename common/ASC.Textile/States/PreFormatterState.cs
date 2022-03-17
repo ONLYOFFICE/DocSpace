@@ -40,7 +40,9 @@ public class PreFormatterState : FormatterState
     public override void FormatLine(string input)
     {
         if (Regex.IsMatch(input, "<pre>"))
+        {
             _fakeNestingDepth++;
+        }
 
         Formatter.Output.WriteLine(input);
     }
@@ -48,11 +50,20 @@ public class PreFormatterState : FormatterState
     public override bool ShouldExit(string input)
     {
         if (_shouldExitNextTime)
+        {
             return true;
+        }
+
         if (Regex.IsMatch(input, @"</pre>"))
+        {
             _fakeNestingDepth--;
+        }
+
         if (_fakeNestingDepth <= 0)
+        {
             _shouldExitNextTime = true;
+        }
+
         return false;
     }
 

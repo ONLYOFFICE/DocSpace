@@ -50,7 +50,10 @@ namespace ASC.Web.Studio.Core
 
         public static void SetEnabled(TenantManager tenantManager, SettingsManager settingsManager, bool value)
         {
-            if (!IsAvailable(tenantManager)) return;
+            if (!IsAvailable(tenantManager))
+            {
+                return;
+            }
 
             var settings = settingsManager.Load<PrivacyRoomSettings>();
             settings.EnabledSetting = value;
