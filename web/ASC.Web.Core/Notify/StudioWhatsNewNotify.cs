@@ -23,369 +23,368 @@
  *
 */
 
-namespace ASC.Web.Studio.Core.Notify
+namespace ASC.Web.Studio.Core.Notify;
+
+[Singletone(Additional = typeof(StudioWhatsNewNotifyExtension))]
+public class StudioWhatsNewNotify
 {
-    [Singletone(Additional = typeof(StudioWhatsNewNotifyExtension))]
-    public class StudioWhatsNewNotify
+    private IServiceProvider ServiceProvider { get; }
+    public IConfiguration Confuguration { get; }
+
+    private readonly IMapper _mapper;
+
+    public StudioWhatsNewNotify(IServiceProvider serviceProvider, IConfiguration confuguration,
+        IMapper mapper)
     {
-        private IServiceProvider ServiceProvider { get; }
-        public IConfiguration Confuguration { get; }
+        ServiceProvider = serviceProvider;
+        Confuguration = confuguration;
+        _mapper = mapper;
+    }
 
-        private readonly IMapper _mapper;
+    public void SendMsgWhatsNew(DateTime scheduleDate)
+    {
+        var log = ServiceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.Notify");
+        var WebItemManager = ServiceProvider.GetService<WebItemManager>();
 
-        public StudioWhatsNewNotify(IServiceProvider serviceProvider, IConfiguration confuguration,
-            IMapper mapper)
+        if (WebItemManager.GetItemsAll<IProduct>().Count == 0)
         {
-            ServiceProvider = serviceProvider;
-            Confuguration = confuguration;
-            _mapper = mapper;
+            log.Info("No products. Return from function");
+            return;
         }
 
-        public void SendMsgWhatsNew(DateTime scheduleDate)
+        log.Info("Start send whats new.");
+
+        var products = WebItemManager.GetItemsAll().ToDictionary(p => p.GetSysName());
+
+        foreach (var tenantid in GetChangedTenants(ServiceProvider.GetService<FeedAggregateDataProvider>(), scheduleDate))
         {
-            var log = ServiceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.Notify");
-            var WebItemManager = ServiceProvider.GetService<WebItemManager>();
-
-            if (WebItemManager.GetItemsAll<IProduct>().Count == 0)
+            try
             {
-                log.Info("No products. Return from function");
-                return;
-            }
-
-            log.Info("Start send whats new.");
-
-            var products = WebItemManager.GetItemsAll().ToDictionary(p => p.GetSysName());
-
-            foreach (var tenantid in GetChangedTenants(ServiceProvider.GetService<FeedAggregateDataProvider>(), scheduleDate))
-            {
-                try
+                using var scope = ServiceProvider.CreateScope();
+                var scopeClass = scope.ServiceProvider.GetService<StudioWhatsNewNotifyScope>();
+                var (tenantManager, paymentManager, tenantUtil, studioNotifyHelper, userManager, securityContext, authContext, authManager, commonLinkUtility, displayUserSettingsHelper, feedAggregateDataProvider, coreSettings) = scopeClass;
+                var tenant = tenantManager.GetTenant(tenantid);
+                if (tenant == null ||
+                    tenant.Status != TenantStatus.Active ||
+                    !TimeToSendWhatsNew(tenantUtil.DateTimeFromUtc(tenant.TimeZone, scheduleDate)) ||
+                    TariffState.NotPaid <= paymentManager.GetTariff(tenantid).State)
                 {
-                    using var scope = ServiceProvider.CreateScope();
-                    var scopeClass = scope.ServiceProvider.GetService<StudioWhatsNewNotifyScope>();
-                    var (tenantManager, paymentManager, tenantUtil, studioNotifyHelper, userManager, securityContext, authContext, authManager, commonLinkUtility, displayUserSettingsHelper, feedAggregateDataProvider, coreSettings) = scopeClass;
-                    var tenant = tenantManager.GetTenant(tenantid);
-                    if (tenant == null ||
-                        tenant.Status != TenantStatus.Active ||
-                        !TimeToSendWhatsNew(tenantUtil.DateTimeFromUtc(tenant.TimeZone, scheduleDate)) ||
-                        TariffState.NotPaid <= paymentManager.GetTariff(tenantid).State)
+                    continue;
+                }
+
+                tenantManager.SetCurrentTenant(tenant);
+                var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
+
+                log.InfoFormat("Start send whats new in {0} ({1}).", tenant.GetTenantDomain(coreSettings), tenantid);
+                foreach (var user in userManager.GetUsers())
+                {
+                    if (!studioNotifyHelper.IsSubscribedToNotify(user, Actions.SendWhatsNew))
                     {
                         continue;
                     }
 
-                    tenantManager.SetCurrentTenant(tenant);
-                    var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
+                    securityContext.AuthenticateMeWithoutCookie(authManager.GetAccountByID(tenant.Id, user.Id));
 
-                    log.InfoFormat("Start send whats new in {0} ({1}).", tenant.GetTenantDomain(coreSettings), tenantid);
-                    foreach (var user in userManager.GetUsers())
+                    var culture = string.IsNullOrEmpty(user.CultureName) ? tenant.GetCulture() : user.GetCulture();
+
+                    Thread.CurrentThread.CurrentCulture = culture;
+                    Thread.CurrentThread.CurrentUICulture = culture;
+
+                    var feeds = feedAggregateDataProvider.GetFeeds(new FeedApiFilter
                     {
-                        if (!studioNotifyHelper.IsSubscribedToNotify(user, Actions.SendWhatsNew))
+                        From = scheduleDate.Date.AddDays(-1),
+                        To = scheduleDate.Date.AddSeconds(-1),
+                        Max = 100,
+                    });
+
+                    var feedMinWrappers = _mapper.Map<List<FeedResultItem>, List<FeedMin>>(feeds);
+
+                    var feedMinGroupedWrappers = feedMinWrappers
+                        .Where(f =>
+                            (f.CreatedDate == DateTime.MaxValue || f.CreatedDate >= scheduleDate.Date.AddDays(-1)) && //'cause here may be old posts with new comments
+                            products.ContainsKey(f.Product) &&
+                            !f.Id.StartsWith("participant")
+                        )
+                        .GroupBy(f => products[f.Product]);
+
+                    var ProjectsProductName = products["projects"]?.Name; //from ASC.Feed.Aggregator.Modules.ModulesHelper.ProjectsProductName
+
+                    var activities = feedMinGroupedWrappers
+                        .Where(f => f.Key.Name != ProjectsProductName) //not for project product
+                        .ToDictionary(
+                        g => g.Key.Name,
+                        g => g.Select(f => new WhatsNewUserActivity
                         {
-                            continue;
-                        }
-
-                        securityContext.AuthenticateMeWithoutCookie(authManager.GetAccountByID(tenant.Id, user.Id));
-
-                        var culture = string.IsNullOrEmpty(user.CultureName) ? tenant.GetCulture() : user.GetCulture();
-
-                        Thread.CurrentThread.CurrentCulture = culture;
-                        Thread.CurrentThread.CurrentUICulture = culture;
-
-                        var feeds = feedAggregateDataProvider.GetFeeds(new FeedApiFilter
-                        {
-                            From = scheduleDate.Date.AddDays(-1),
-                            To = scheduleDate.Date.AddSeconds(-1),
-                            Max = 100,
-                        });
-
-                        var feedMinWrappers = _mapper.Map<List<FeedResultItem>, List<FeedMin>>(feeds);
-
-                        var feedMinGroupedWrappers = feedMinWrappers
-                            .Where(f =>
-                                (f.CreatedDate == DateTime.MaxValue || f.CreatedDate >= scheduleDate.Date.AddDays(-1)) && //'cause here may be old posts with new comments
-                                products.ContainsKey(f.Product) &&
-                                !f.Id.StartsWith("participant")
-                            )
-                            .GroupBy(f => products[f.Product]);
-
-                        var ProjectsProductName = products["projects"]?.Name; //from ASC.Feed.Aggregator.Modules.ModulesHelper.ProjectsProductName
-
-                        var activities = feedMinGroupedWrappers
-                            .Where(f => f.Key.Name != ProjectsProductName) //not for project product
-                            .ToDictionary(
-                            g => g.Key.Name,
-                            g => g.Select(f => new WhatsNewUserActivity
-                            {
-                                Date = f.CreatedDate,
-                                UserName = f.Author != null && f.Author.UserInfo != null ? f.Author.UserInfo.DisplayUserName(displayUserSettingsHelper) : string.Empty,
-                                UserAbsoluteURL = f.Author != null && f.Author.UserInfo != null ? commonLinkUtility.GetFullAbsolutePath(f.Author.UserInfo.GetUserProfilePageURL(commonLinkUtility)) : string.Empty,
-                                Title = HtmlUtil.GetText(f.Title, 512),
-                                URL = commonLinkUtility.GetFullAbsolutePath(f.ItemUrl),
-                                BreadCrumbs = Array.Empty<string>(),
-                                Action = GetWhatsNewActionText(f)
-                            }).ToList());
+                            Date = f.CreatedDate,
+                            UserName = f.Author != null && f.Author.UserInfo != null ? f.Author.UserInfo.DisplayUserName(displayUserSettingsHelper) : string.Empty,
+                            UserAbsoluteURL = f.Author != null && f.Author.UserInfo != null ? commonLinkUtility.GetFullAbsolutePath(f.Author.UserInfo.GetUserProfilePageURL(commonLinkUtility)) : string.Empty,
+                            Title = HtmlUtil.GetText(f.Title, 512),
+                            URL = commonLinkUtility.GetFullAbsolutePath(f.ItemUrl),
+                            BreadCrumbs = Array.Empty<string>(),
+                            Action = GetWhatsNewActionText(f)
+                        }).ToList());
 
 
-                        var projectActivities = feedMinGroupedWrappers
-                            .Where(f => f.Key.Name == ProjectsProductName) // for project product
-                            .SelectMany(f => f);
+                    var projectActivities = feedMinGroupedWrappers
+                        .Where(f => f.Key.Name == ProjectsProductName) // for project product
+                        .SelectMany(f => f);
 
-                        var projectActivitiesWithoutBreadCrumbs = projectActivities.Where(p => string.IsNullOrEmpty(p.ExtraLocation));
+                    var projectActivitiesWithoutBreadCrumbs = projectActivities.Where(p => string.IsNullOrEmpty(p.ExtraLocation));
 
-                        var whatsNewUserActivityGroupByPrjs = new List<WhatsNewUserActivity>();
+                    var whatsNewUserActivityGroupByPrjs = new List<WhatsNewUserActivity>();
 
-                        foreach (var prawbc in projectActivitiesWithoutBreadCrumbs)
-                        {
-                            whatsNewUserActivityGroupByPrjs.Add(
-                                        new WhatsNewUserActivity
-                                        {
-                                            Date = prawbc.CreatedDate,
-                                            UserName = prawbc.Author != null && prawbc.Author.UserInfo != null ? prawbc.Author.UserInfo.DisplayUserName(displayUserSettingsHelper) : string.Empty,
-                                            UserAbsoluteURL = prawbc.Author != null && prawbc.Author.UserInfo != null ? commonLinkUtility.GetFullAbsolutePath(prawbc.Author.UserInfo.GetUserProfilePageURL(commonLinkUtility)) : string.Empty,
-                                            Title = HtmlUtil.GetText(prawbc.Title, 512),
-                                            URL = commonLinkUtility.GetFullAbsolutePath(prawbc.ItemUrl),
-                                            BreadCrumbs = Array.Empty<string>(),
-                                            Action = GetWhatsNewActionText(prawbc)
-                                        });
-                        }
-
-                        var groupByPrjs = projectActivities.Where(p => !string.IsNullOrEmpty(p.ExtraLocation)).GroupBy(f => f.ExtraLocation);
-                        foreach (var gr in groupByPrjs)
-                        {
-                            var grlist = gr.ToList();
-                            for (var i = 0; i < grlist.Count; i++)
-                            {
-                                var ls = grlist[i];
-                                whatsNewUserActivityGroupByPrjs.Add(
+                    foreach (var prawbc in projectActivitiesWithoutBreadCrumbs)
+                    {
+                        whatsNewUserActivityGroupByPrjs.Add(
                                     new WhatsNewUserActivity
                                     {
-                                        Date = ls.CreatedDate,
-                                        UserName = ls.Author != null && ls.Author.UserInfo != null ? ls.Author.UserInfo.DisplayUserName(displayUserSettingsHelper) : string.Empty,
-                                        UserAbsoluteURL = ls.Author != null && ls.Author.UserInfo != null ? commonLinkUtility.GetFullAbsolutePath(ls.Author.UserInfo.GetUserProfilePageURL(commonLinkUtility)) : string.Empty,
-                                        Title = HtmlUtil.GetText(ls.Title, 512),
-                                        URL = commonLinkUtility.GetFullAbsolutePath(ls.ItemUrl),
-                                        BreadCrumbs = i == 0 ? new string[1] { gr.Key } : Array.Empty<string>(),
-                                        Action = GetWhatsNewActionText(ls)
+                                        Date = prawbc.CreatedDate,
+                                        UserName = prawbc.Author != null && prawbc.Author.UserInfo != null ? prawbc.Author.UserInfo.DisplayUserName(displayUserSettingsHelper) : string.Empty,
+                                        UserAbsoluteURL = prawbc.Author != null && prawbc.Author.UserInfo != null ? commonLinkUtility.GetFullAbsolutePath(prawbc.Author.UserInfo.GetUserProfilePageURL(commonLinkUtility)) : string.Empty,
+                                        Title = HtmlUtil.GetText(prawbc.Title, 512),
+                                        URL = commonLinkUtility.GetFullAbsolutePath(prawbc.ItemUrl),
+                                        BreadCrumbs = Array.Empty<string>(),
+                                        Action = GetWhatsNewActionText(prawbc)
                                     });
-                            }
-                        }
+                    }
 
-                        if (whatsNewUserActivityGroupByPrjs.Count > 0)
+                    var groupByPrjs = projectActivities.Where(p => !string.IsNullOrEmpty(p.ExtraLocation)).GroupBy(f => f.ExtraLocation);
+                    foreach (var gr in groupByPrjs)
+                    {
+                        var grlist = gr.ToList();
+                        for (var i = 0; i < grlist.Count; i++)
                         {
-                            activities.Add(ProjectsProductName, whatsNewUserActivityGroupByPrjs);
-                        }
-
-                        if (activities.Count > 0)
-                        {
-                            log.InfoFormat("Send whats new to {0}", user.Email);
-                            client.SendNoticeAsync(
-                                Actions.SendWhatsNew, null, user,
-                                new TagValue(Tags.Activities, activities),
-                                new TagValue(Tags.Date, DateToString(scheduleDate.AddDays(-1), culture)),
-                                new TagValue(CommonTags.Priority, 1)
-                            );
+                            var ls = grlist[i];
+                            whatsNewUserActivityGroupByPrjs.Add(
+                                new WhatsNewUserActivity
+                                {
+                                    Date = ls.CreatedDate,
+                                    UserName = ls.Author != null && ls.Author.UserInfo != null ? ls.Author.UserInfo.DisplayUserName(displayUserSettingsHelper) : string.Empty,
+                                    UserAbsoluteURL = ls.Author != null && ls.Author.UserInfo != null ? commonLinkUtility.GetFullAbsolutePath(ls.Author.UserInfo.GetUserProfilePageURL(commonLinkUtility)) : string.Empty,
+                                    Title = HtmlUtil.GetText(ls.Title, 512),
+                                    URL = commonLinkUtility.GetFullAbsolutePath(ls.ItemUrl),
+                                    BreadCrumbs = i == 0 ? new string[1] { gr.Key } : Array.Empty<string>(),
+                                    Action = GetWhatsNewActionText(ls)
+                                });
                         }
                     }
-                }
-                catch (Exception error)
-                {
-                    log.Error(error);
-                }
-            }
-        }
 
-        private static string GetWhatsNewActionText(FeedMin feed)
-        {
+                    if (whatsNewUserActivityGroupByPrjs.Count > 0)
+                    {
+                        activities.Add(ProjectsProductName, whatsNewUserActivityGroupByPrjs);
+                    }
 
-            if (feed.Module == ASC.Feed.Constants.BookmarksModule)
-            {
-                return WebstudioNotifyPatternResource.ActionCreateBookmark;
-            }
-            else if (feed.Module == ASC.Feed.Constants.BlogsModule)
-            {
-                return WebstudioNotifyPatternResource.ActionCreateBlog;
-            }
-            else if (feed.Module == ASC.Feed.Constants.ForumsModule)
-            {
-                if (feed.Item == "forumTopic")
-                {
-                    return WebstudioNotifyPatternResource.ActionCreateForum;
-                }
-
-                if (feed.Item == "forumPost")
-                {
-                    return WebstudioNotifyPatternResource.ActionCreateForumPost;
-                }
-
-                if (feed.Item == "forumPoll")
-                {
-                    return WebstudioNotifyPatternResource.ActionCreateForumPoll;
+                    if (activities.Count > 0)
+                    {
+                        log.InfoFormat("Send whats new to {0}", user.Email);
+                        client.SendNoticeAsync(
+                            Actions.SendWhatsNew, null, user,
+                            new TagValue(Tags.Activities, activities),
+                            new TagValue(Tags.Date, DateToString(scheduleDate.AddDays(-1), culture)),
+                            new TagValue(CommonTags.Priority, 1)
+                        );
+                    }
                 }
             }
-            else if (feed.Module == ASC.Feed.Constants.EventsModule)
+            catch (Exception error)
             {
-                return WebstudioNotifyPatternResource.ActionCreateEvent;
+                log.Error(error);
             }
-            else if (feed.Module == ASC.Feed.Constants.ProjectsModule)
-            {
-                return WebstudioNotifyPatternResource.ActionCreateProject;
-            }
-            else if (feed.Module == ASC.Feed.Constants.MilestonesModule)
-            {
-                return WebstudioNotifyPatternResource.ActionCreateMilestone;
-            }
-            else if (feed.Module == ASC.Feed.Constants.DiscussionsModule)
-            {
-                return WebstudioNotifyPatternResource.ActionCreateDiscussion;
-            }
-            else if (feed.Module == ASC.Feed.Constants.TasksModule)
-            {
-                return WebstudioNotifyPatternResource.ActionCreateTask;
-            }
-            else if (feed.Module == ASC.Feed.Constants.CommentsModule)
-            {
-                return WebstudioNotifyPatternResource.ActionCreateComment;
-            }
-            else if (feed.Module == ASC.Feed.Constants.CrmTasksModule)
-            {
-                return WebstudioNotifyPatternResource.ActionCreateTask;
-            }
-            else if (feed.Module == ASC.Feed.Constants.ContactsModule)
-            {
-                return WebstudioNotifyPatternResource.ActionCreateContact;
-            }
-            else if (feed.Module == ASC.Feed.Constants.DealsModule)
-            {
-                return WebstudioNotifyPatternResource.ActionCreateDeal;
-            }
-            else if (feed.Module == ASC.Feed.Constants.CasesModule)
-            {
-                return WebstudioNotifyPatternResource.ActionCreateCase;
-            }
-            else if (feed.Module == ASC.Feed.Constants.FilesModule)
-            {
-                return WebstudioNotifyPatternResource.ActionCreateFile;
-            }
-            else if (feed.Module == ASC.Feed.Constants.FoldersModule)
-            {
-                return WebstudioNotifyPatternResource.ActionCreateFolder;
-            }
-
-            return "";
-        }
-
-        private static IEnumerable<int> GetChangedTenants(FeedAggregateDataProvider feedAggregateDataProvider, DateTime date)
-        {
-            return feedAggregateDataProvider.GetTenants(new TimeInterval(date.Date.AddDays(-1), date.Date.AddSeconds(-1)));
-        }
-
-        private bool TimeToSendWhatsNew(DateTime currentTime)
-        {
-            var hourToSend = 7;
-            if (!string.IsNullOrEmpty(Confuguration["web:whatsnew-time"]))
-            {
-                if (int.TryParse(Confuguration["web:whatsnew-time"], out var hour))
-                {
-                    hourToSend = hour;
-                }
-            }
-            return currentTime.Hour == hourToSend;
-        }
-
-        private static string DateToString(DateTime d, CultureInfo c)
-        {
-            return d.ToString(c.TwoLetterISOLanguageName == "ru" ? "d MMMM" : "M", c);
-        }
-
-        class WhatsNewUserActivity
-        {
-            public IList<string> BreadCrumbs { get; set; }
-            public string Title { get; set; }
-            public string URL { get; set; }
-            public string UserName { get; set; }
-            public string UserAbsoluteURL { get; set; }
-            public DateTime Date { get; set; }
-            public string Action { get; set; }
         }
     }
 
-    [Scope]
-    public class StudioWhatsNewNotifyScope
+    private static string GetWhatsNewActionText(FeedMin feed)
     {
-        private TenantManager TenantManager { get; }
-        private PaymentManager PaymentManager { get; }
-        private TenantUtil TenantUtil { get; }
-        private StudioNotifyHelper StudioNotifyHelper { get; }
-        private UserManager UserManager { get; }
-        private SecurityContext SecurityContext { get; }
-        private AuthContext AuthContext { get; }
-        private AuthManager AuthManager { get; }
-        private CommonLinkUtility CommonLinkUtility { get; }
-        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-        private FeedAggregateDataProvider FeedAggregateDataProvider { get; }
-        private CoreSettings CoreSettings { get; }
 
-        public StudioWhatsNewNotifyScope(TenantManager tenantManager,
-            PaymentManager paymentManager,
-            TenantUtil tenantUtil,
-            StudioNotifyHelper studioNotifyHelper,
-            UserManager userManager,
-            SecurityContext securityContext,
-            AuthContext authContext,
-            AuthManager authManager,
-            CommonLinkUtility commonLinkUtility,
-            DisplayUserSettingsHelper displayUserSettingsHelper,
-            FeedAggregateDataProvider feedAggregateDataProvider,
-            CoreSettings coreSettings)
+        if (feed.Module == ASC.Feed.Constants.BookmarksModule)
         {
-            TenantManager = tenantManager;
-            PaymentManager = paymentManager;
-            TenantUtil = tenantUtil;
-            StudioNotifyHelper = studioNotifyHelper;
-            UserManager = userManager;
-            SecurityContext = securityContext;
-            AuthContext = authContext;
-            AuthManager = authManager;
-            CommonLinkUtility = commonLinkUtility;
-            DisplayUserSettingsHelper = displayUserSettingsHelper;
-            FeedAggregateDataProvider = feedAggregateDataProvider;
-            CoreSettings = coreSettings;
+            return WebstudioNotifyPatternResource.ActionCreateBookmark;
+        }
+        else if (feed.Module == ASC.Feed.Constants.BlogsModule)
+        {
+            return WebstudioNotifyPatternResource.ActionCreateBlog;
+        }
+        else if (feed.Module == ASC.Feed.Constants.ForumsModule)
+        {
+            if (feed.Item == "forumTopic")
+            {
+                return WebstudioNotifyPatternResource.ActionCreateForum;
+            }
+
+            if (feed.Item == "forumPost")
+            {
+                return WebstudioNotifyPatternResource.ActionCreateForumPost;
+            }
+
+            if (feed.Item == "forumPoll")
+            {
+                return WebstudioNotifyPatternResource.ActionCreateForumPoll;
+            }
+        }
+        else if (feed.Module == ASC.Feed.Constants.EventsModule)
+        {
+            return WebstudioNotifyPatternResource.ActionCreateEvent;
+        }
+        else if (feed.Module == ASC.Feed.Constants.ProjectsModule)
+        {
+            return WebstudioNotifyPatternResource.ActionCreateProject;
+        }
+        else if (feed.Module == ASC.Feed.Constants.MilestonesModule)
+        {
+            return WebstudioNotifyPatternResource.ActionCreateMilestone;
+        }
+        else if (feed.Module == ASC.Feed.Constants.DiscussionsModule)
+        {
+            return WebstudioNotifyPatternResource.ActionCreateDiscussion;
+        }
+        else if (feed.Module == ASC.Feed.Constants.TasksModule)
+        {
+            return WebstudioNotifyPatternResource.ActionCreateTask;
+        }
+        else if (feed.Module == ASC.Feed.Constants.CommentsModule)
+        {
+            return WebstudioNotifyPatternResource.ActionCreateComment;
+        }
+        else if (feed.Module == ASC.Feed.Constants.CrmTasksModule)
+        {
+            return WebstudioNotifyPatternResource.ActionCreateTask;
+        }
+        else if (feed.Module == ASC.Feed.Constants.ContactsModule)
+        {
+            return WebstudioNotifyPatternResource.ActionCreateContact;
+        }
+        else if (feed.Module == ASC.Feed.Constants.DealsModule)
+        {
+            return WebstudioNotifyPatternResource.ActionCreateDeal;
+        }
+        else if (feed.Module == ASC.Feed.Constants.CasesModule)
+        {
+            return WebstudioNotifyPatternResource.ActionCreateCase;
+        }
+        else if (feed.Module == ASC.Feed.Constants.FilesModule)
+        {
+            return WebstudioNotifyPatternResource.ActionCreateFile;
+        }
+        else if (feed.Module == ASC.Feed.Constants.FoldersModule)
+        {
+            return WebstudioNotifyPatternResource.ActionCreateFolder;
         }
 
-        public void Deconstruct(out TenantManager tenantManager,
-            out PaymentManager paymentManager,
-            out TenantUtil tenantUtil,
-            out StudioNotifyHelper studioNotifyHelper,
-            out UserManager userManager,
-            out SecurityContext securityContext,
-            out AuthContext authContext,
-            out AuthManager authManager,
-            out CommonLinkUtility commonLinkUtility,
-            out DisplayUserSettingsHelper displayUserSettingsHelper,
-            out FeedAggregateDataProvider feedAggregateDataProvider,
-            out CoreSettings coreSettings)
-        {
-            tenantManager = TenantManager;
-            paymentManager = PaymentManager;
-            tenantUtil = TenantUtil;
-            studioNotifyHelper = StudioNotifyHelper;
-            userManager = UserManager;
-            securityContext = SecurityContext;
-            authContext = AuthContext;
-            authManager = AuthManager;
-            commonLinkUtility = CommonLinkUtility;
-            displayUserSettingsHelper = DisplayUserSettingsHelper;
-            feedAggregateDataProvider = FeedAggregateDataProvider;
-            coreSettings = CoreSettings;
-        }
+        return "";
     }
 
-    public static class StudioWhatsNewNotifyExtension
+    private static IEnumerable<int> GetChangedTenants(FeedAggregateDataProvider feedAggregateDataProvider, DateTime date)
     {
-        public static void Register(DIHelper services)
+        return feedAggregateDataProvider.GetTenants(new TimeInterval(date.Date.AddDays(-1), date.Date.AddSeconds(-1)));
+    }
+
+    private bool TimeToSendWhatsNew(DateTime currentTime)
+    {
+        var hourToSend = 7;
+        if (!string.IsNullOrEmpty(Confuguration["web:whatsnew-time"]))
         {
-            services.TryAdd<WebItemManager>();
-            services.TryAdd<FeedAggregateDataProvider>();
-            services.TryAdd<StudioWhatsNewNotifyScope>();
+            if (int.TryParse(Confuguration["web:whatsnew-time"], out var hour))
+            {
+                hourToSend = hour;
+            }
         }
+        return currentTime.Hour == hourToSend;
+    }
+
+    private static string DateToString(DateTime d, CultureInfo c)
+    {
+        return d.ToString(c.TwoLetterISOLanguageName == "ru" ? "d MMMM" : "M", c);
+    }
+
+    class WhatsNewUserActivity
+    {
+        public IList<string> BreadCrumbs { get; set; }
+        public string Title { get; set; }
+        public string URL { get; set; }
+        public string UserName { get; set; }
+        public string UserAbsoluteURL { get; set; }
+        public DateTime Date { get; set; }
+        public string Action { get; set; }
+    }
+}
+
+[Scope]
+public class StudioWhatsNewNotifyScope
+{
+    private TenantManager TenantManager { get; }
+    private PaymentManager PaymentManager { get; }
+    private TenantUtil TenantUtil { get; }
+    private StudioNotifyHelper StudioNotifyHelper { get; }
+    private UserManager UserManager { get; }
+    private SecurityContext SecurityContext { get; }
+    private AuthContext AuthContext { get; }
+    private AuthManager AuthManager { get; }
+    private CommonLinkUtility CommonLinkUtility { get; }
+    private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+    private FeedAggregateDataProvider FeedAggregateDataProvider { get; }
+    private CoreSettings CoreSettings { get; }
+
+    public StudioWhatsNewNotifyScope(TenantManager tenantManager,
+        PaymentManager paymentManager,
+        TenantUtil tenantUtil,
+        StudioNotifyHelper studioNotifyHelper,
+        UserManager userManager,
+        SecurityContext securityContext,
+        AuthContext authContext,
+        AuthManager authManager,
+        CommonLinkUtility commonLinkUtility,
+        DisplayUserSettingsHelper displayUserSettingsHelper,
+        FeedAggregateDataProvider feedAggregateDataProvider,
+        CoreSettings coreSettings)
+    {
+        TenantManager = tenantManager;
+        PaymentManager = paymentManager;
+        TenantUtil = tenantUtil;
+        StudioNotifyHelper = studioNotifyHelper;
+        UserManager = userManager;
+        SecurityContext = securityContext;
+        AuthContext = authContext;
+        AuthManager = authManager;
+        CommonLinkUtility = commonLinkUtility;
+        DisplayUserSettingsHelper = displayUserSettingsHelper;
+        FeedAggregateDataProvider = feedAggregateDataProvider;
+        CoreSettings = coreSettings;
+    }
+
+    public void Deconstruct(out TenantManager tenantManager,
+        out PaymentManager paymentManager,
+        out TenantUtil tenantUtil,
+        out StudioNotifyHelper studioNotifyHelper,
+        out UserManager userManager,
+        out SecurityContext securityContext,
+        out AuthContext authContext,
+        out AuthManager authManager,
+        out CommonLinkUtility commonLinkUtility,
+        out DisplayUserSettingsHelper displayUserSettingsHelper,
+        out FeedAggregateDataProvider feedAggregateDataProvider,
+        out CoreSettings coreSettings)
+    {
+        tenantManager = TenantManager;
+        paymentManager = PaymentManager;
+        tenantUtil = TenantUtil;
+        studioNotifyHelper = StudioNotifyHelper;
+        userManager = UserManager;
+        securityContext = SecurityContext;
+        authContext = AuthContext;
+        authManager = AuthManager;
+        commonLinkUtility = CommonLinkUtility;
+        displayUserSettingsHelper = DisplayUserSettingsHelper;
+        feedAggregateDataProvider = FeedAggregateDataProvider;
+        coreSettings = CoreSettings;
+    }
+}
+
+public static class StudioWhatsNewNotifyExtension
+{
+    public static void Register(DIHelper services)
+    {
+        services.TryAdd<WebItemManager>();
+        services.TryAdd<FeedAggregateDataProvider>();
+        services.TryAdd<StudioWhatsNewNotifyScope>();
     }
 }

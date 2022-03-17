@@ -25,307 +25,306 @@
 
 using Constants = ASC.Core.Users.Constants;
 
-namespace ASC.Web.Core.Mail
+namespace ASC.Web.Core.Mail;
+
+public class MailServiceHelperStorage
 {
-    public class MailServiceHelperStorage
+    private ICacheNotify<MailServiceHelperCache> CacheNotify { get; }
+    public ICache Cache { get; }
+    public MailServiceHelperStorage(ICacheNotify<MailServiceHelperCache> cacheNotify, ICache cache)
     {
-        private ICacheNotify<MailServiceHelperCache> CacheNotify { get; }
-        public ICache Cache { get; }
-        public MailServiceHelperStorage(ICacheNotify<MailServiceHelperCache> cacheNotify, ICache cache)
+        Cache = cache;
+        CacheNotify = cacheNotify;
+        CacheNotify.Subscribe(r => Cache.Remove(r.Key), Common.Caching.CacheNotifyAction.Remove);
+    }
+
+    public void Remove()
+    {
+        CacheNotify.Publish(new MailServiceHelperCache() { Key = MailServiceHelper.CacheKey }, Common.Caching.CacheNotifyAction.Remove);
+    }
+}
+
+public class MailServiceHelper
+{
+    public readonly string ConnectionStringFormat;
+    public const string MailServiceDbId = "mailservice";
+    public readonly string DefaultDatabase;
+    public const string DefaultUser = "mail_admin";
+    public const string DefaultPassword = "Isadmin123";
+    public const string DefaultProtocol = "http";
+    public const int DefaultPort = 8081;
+    public const string DefaultVersion = "v1";
+
+    internal const string CacheKey = "mailserverinfo";
+
+    private UserManager UserManager { get; }
+    private AuthContext AuthContext { get; }
+    private IConfiguration Configuration { get; }
+    private CoreBaseSettings CoreBaseSettings { get; }
+    public MailServiceHelperStorage MailServiceHelperStorage { get; }
+    private EFLoggerFactory LoggerFactory { get; }
+    private Lazy<MailDbContext> LazyMailDbContext { get; }
+    private MailDbContext MailDbContext { get => LazyMailDbContext.Value; }
+    private ICache Cache { get; }
+
+    public MailServiceHelper(
+        UserManager userManager,
+        AuthContext authContext,
+        IConfiguration configuration,
+        CoreBaseSettings coreBaseSettings,
+        MailServiceHelperStorage mailServiceHelperStorage,
+        DbContextManager<MailDbContext> dbContext,
+        EFLoggerFactory loggerFactory)
+    {
+        ConnectionStringFormat = GetConnectionStringFormat(configuration);
+        UserManager = userManager;
+        AuthContext = authContext;
+        Configuration = configuration;
+        CoreBaseSettings = coreBaseSettings;
+        MailServiceHelperStorage = mailServiceHelperStorage;
+        LoggerFactory = loggerFactory;
+        LazyMailDbContext = new Lazy<MailDbContext>(() => dbContext.Get("webstudio"));
+        Cache = mailServiceHelperStorage.Cache;
+        DefaultDatabase = GetDefaultDatabase();
+    }
+
+
+    private string GetConnectionStringFormat(IConfiguration configuration)
+    {
+        var value = configuration["mailservice:connection-string-format"];
+        return string.IsNullOrEmpty(value) ? "Server={0};Database={1};User ID={2};Password={3};Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;AllowPublicKeyRetrieval=true" : value;
+    }
+
+
+    private string GetDefaultDatabase()
+    {
+        var value = Configuration["mail:database-name"];
+        return string.IsNullOrEmpty(value) ? "onlyoffice_mailserver" : value;
+    }
+
+    private void DemandPermission()
+    {
+        if (!CoreBaseSettings.Standalone)
         {
-            Cache = cache;
-            CacheNotify = cacheNotify;
-            CacheNotify.Subscribe(r => Cache.Remove(r.Key), Common.Caching.CacheNotifyAction.Remove);
+            throw new NotSupportedException("Method for server edition only.");
         }
 
-        public void Remove()
+        if (!UserManager.IsUserInGroup(AuthContext.CurrentAccount.ID, Constants.GroupAdmin.ID))
         {
-            CacheNotify.Publish(new MailServiceHelperCache() { Key = MailServiceHelper.CacheKey }, Common.Caching.CacheNotifyAction.Remove);
+            throw new SecurityException();
         }
     }
 
-    public class MailServiceHelper
+
+    public bool IsMailServerAvailable()
     {
-        public readonly string ConnectionStringFormat;
-        public const string MailServiceDbId = "mailservice";
-        public readonly string DefaultDatabase;
-        public const string DefaultUser = "mail_admin";
-        public const string DefaultPassword = "Isadmin123";
-        public const string DefaultProtocol = "http";
-        public const int DefaultPort = 8081;
-        public const string DefaultVersion = "v1";
+        return InnerGetMailServerInfo() != null;
+    }
 
-        internal const string CacheKey = "mailserverinfo";
 
-        private UserManager UserManager { get; }
-        private AuthContext AuthContext { get; }
-        private IConfiguration Configuration { get; }
-        private CoreBaseSettings CoreBaseSettings { get; }
-        public MailServiceHelperStorage MailServiceHelperStorage { get; }
-        private EFLoggerFactory LoggerFactory { get; }
-        private Lazy<MailDbContext> LazyMailDbContext { get; }
-        private MailDbContext MailDbContext { get => LazyMailDbContext.Value; }
-        private ICache Cache { get; }
+    public MailServerInfo GetMailServerInfo()
+    {
+        DemandPermission();
 
-        public MailServiceHelper(
-            UserManager userManager,
-            AuthContext authContext,
-            IConfiguration configuration,
-            CoreBaseSettings coreBaseSettings,
-            MailServiceHelperStorage mailServiceHelperStorage,
-            DbContextManager<MailDbContext> dbContext,
-            EFLoggerFactory loggerFactory)
+        return InnerGetMailServerInfo();
+    }
+
+    private MailServerInfo InnerGetMailServerInfo()
+    {
+        var cachedData = Cache.Get<Tuple<MailServerInfo>>(CacheKey);
+
+        if (cachedData != null)
         {
-            ConnectionStringFormat = GetConnectionStringFormat(configuration);
-            UserManager = userManager;
-            AuthContext = authContext;
-            Configuration = configuration;
-            CoreBaseSettings = coreBaseSettings;
-            MailServiceHelperStorage = mailServiceHelperStorage;
-            LoggerFactory = loggerFactory;
-            LazyMailDbContext = new Lazy<MailDbContext>(() => dbContext.Get("webstudio"));
-            Cache = mailServiceHelperStorage.Cache;
-            DefaultDatabase = GetDefaultDatabase();
-        }
-
-
-        private string GetConnectionStringFormat(IConfiguration configuration)
-        {
-            var value = configuration["mailservice:connection-string-format"];
-            return string.IsNullOrEmpty(value) ? "Server={0};Database={1};User ID={2};Password={3};Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;AllowPublicKeyRetrieval=true" : value;
-        }
-
-
-        private string GetDefaultDatabase()
-        {
-            var value = Configuration["mail:database-name"];
-            return string.IsNullOrEmpty(value) ? "onlyoffice_mailserver" : value;
-        }
-
-        private void DemandPermission()
-        {
-            if (!CoreBaseSettings.Standalone)
-            {
-                throw new NotSupportedException("Method for server edition only.");
-            }
-
-            if (!UserManager.IsUserInGroup(AuthContext.CurrentAccount.ID, Constants.GroupAdmin.ID))
-            {
-                throw new SecurityException();
-            }
-        }
-
-
-        public bool IsMailServerAvailable()
-        {
-            return InnerGetMailServerInfo() != null;
-        }
-
-
-        public MailServerInfo GetMailServerInfo()
-        {
-            DemandPermission();
-
-            return InnerGetMailServerInfo();
-        }
-
-        private MailServerInfo InnerGetMailServerInfo()
-        {
-            var cachedData = Cache.Get<Tuple<MailServerInfo>>(CacheKey);
-
-            if (cachedData != null)
-            {
-                return cachedData.Item1;
-            }
-
-            var value = MailDbContext.ServerServer.Select(r => r.ConnectionString).FirstOrDefault();
-
-            cachedData =
-                new Tuple<MailServerInfo>(string.IsNullOrEmpty(value)
-                                                ? null
-                                                : Newtonsoft.Json.JsonConvert.DeserializeObject<MailServerInfo>(value));
-
-            Cache.Insert(CacheKey, cachedData, DateTime.UtcNow.Add(TimeSpan.FromDays(1)));
-
             return cachedData.Item1;
         }
 
+        var value = MailDbContext.ServerServer.Select(r => r.ConnectionString).FirstOrDefault();
 
-        public string GetTokenFromExternalDatabase(string connectionString)
-        {
-            DemandPermission();
+        cachedData =
+            new Tuple<MailServerInfo>(string.IsNullOrEmpty(value)
+                                            ? null
+                                            : Newtonsoft.Json.JsonConvert.DeserializeObject<MailServerInfo>(value));
 
-            var dbContextOptionsBuilder = new DbContextOptionsBuilder<MailDbContext>();
-            var options = dbContextOptionsBuilder
-                //.UseMySql(connectionString)
-                .UseNpgsql(connectionString)
-                .UseLoggerFactory(LoggerFactory)
-                .Options;
+        Cache.Insert(CacheKey, cachedData, DateTime.UtcNow.Add(TimeSpan.FromDays(1)));
 
-            using var mailDbContext = new MailDbContext(options);
-
-            var token = mailDbContext.ApiKeys
-                .Where(r => r.Id == 1)
-                .Select(r => r.AccessToken)
-                .FirstOrDefault();
-            return token;
-        }
-
-        public string GetHostnameFromExternalDatabase(string connectionString, string ip)
-        {
-            DemandPermission();
-
-            var dbContextOptionsBuilder = new DbContextOptionsBuilder<MailDbContext>();
-            var options = dbContextOptionsBuilder
-                //.UseMySql(connectionString)
-                .UseNpgsql(connectionString)
-                .UseLoggerFactory(LoggerFactory)
-                .Options;
-
-            using var mailDbContext = new MailDbContext(options);
-
-            if (!IPAddress.TryParse(ip, out var ipAddress))
-            {
-                return ip;
-            }
-
-            var hostname = mailDbContext.GreyListingWhiteList
-                .Where(r => r.Source == "SenderIP:" + ip)
-                .Select(r => r.Comment)
-                .FirstOrDefault();
-
-            return hostname;
-        }
-
-
-        public void UpdateDataFromInternalDatabase(string hostname, MailServerInfo mailServer)
-        {
-            DemandPermission();
-
-            using var transaction = MailDbContext.Database.BeginTransaction();
-
-            var mailboxProvider = new MailboxProvider
-            {
-                Id = 0,
-                Name = hostname
-            };
-
-            var pReq = MailDbContext.MailboxProvider.Add(mailboxProvider);
-            MailDbContext.SaveChanges();
-            mailboxProvider = pReq.Entity;
-
-            var providerId = mailboxProvider.Id;
-
-            var mailboxServer = new MailboxServer
-            {
-                Id = 0,
-                IdProvider = providerId,
-                Type = "smtp",
-                Hostname = hostname,
-                Port = 587,
-                SocketType = "STARTTLS",
-                UserName = "%EMAILADDRESS%",
-                Authentication = "",
-                IsUserData = false
-            };
-
-            var req = MailDbContext.MailboxServer.Add(mailboxServer);
-            MailDbContext.SaveChanges();
-
-            mailboxServer = req.Entity;
-
-            var smtpServerId = mailboxServer.Id;
-
-            mailboxServer = new MailboxServer
-            {
-                Id = 0,
-                IdProvider = providerId,
-                Type = "imap",
-                Hostname = hostname,
-                Port = 143,
-                SocketType = "STARTTLS",
-                UserName = "%EMAILADDRESS%",
-                Authentication = "",
-                IsUserData = false
-            };
-
-            req = MailDbContext.MailboxServer.Add(mailboxServer);
-            MailDbContext.SaveChanges();
-
-            mailboxServer = req.Entity;
-
-            var imapServerId = mailboxServer.Id;
-
-            var mailServerData = MailDbContext.ServerServer.FirstOrDefault();
-
-            var connectionString = Newtonsoft.Json.JsonConvert.SerializeObject(mailServer);
-
-            var server = new ServerServer
-            {
-                Id = 0,
-                MxRecord = hostname,
-                ConnectionString = connectionString,
-                ServerType = 2,
-                SmtpSettingsId = smtpServerId,
-                ImapSettingsId = imapServerId
-            };
-
-            MailDbContext.ServerServer.Add(server);
-            MailDbContext.SaveChanges();
-
-            if (mailServerData != null)
-            {
-                server = MailDbContext.ServerServer.Where(r => r.Id == mailServerData.Id).FirstOrDefault();
-                MailDbContext.ServerServer.Remove(server);
-                MailDbContext.SaveChanges();
-
-                providerId = MailDbContext.MailboxServer
-                    .Where(r => r.Id == mailServerData.SmtpSettingsId)
-                    .Select(r => r.IdProvider)
-                    .FirstOrDefault();
-
-                var providers = MailDbContext.MailboxProvider.Where(r => r.Id == providerId).ToList();
-                MailDbContext.MailboxProvider.RemoveRange(providers);
-                MailDbContext.SaveChanges();
-
-                var servers = MailDbContext.MailboxServer
-                    .Where(r => new[] { mailServerData.SmtpSettingsId, mailServerData.ImapSettingsId }.Any(a => a == r.Id))
-                    .ToList();
-
-                MailDbContext.MailboxServer.RemoveRange(servers);
-                MailDbContext.SaveChanges();
-
-                var mailboxId = MailDbContext.Mailbox
-                    .Where(r => r.IdSmtpServer == mailServerData.SmtpSettingsId)
-                    .Where(r => r.IdInServer == mailServerData.ImapSettingsId)
-                    .ToArray();
-
-                foreach (var m in mailboxId)
-                {
-                    m.IdSmtpServer = smtpServerId;
-                    m.IdInServer = imapServerId;
-                }
-                MailDbContext.SaveChanges();
-            }
-
-            transaction.Commit();
-
-            MailServiceHelperStorage.Remove();
-        }
+        return cachedData.Item1;
     }
 
-    public class MailServerInfo
+
+    public string GetTokenFromExternalDatabase(string connectionString)
     {
-        public string DbConnection { get; set; }
-        public MailServerApiInfo Api { get; set; }
+        DemandPermission();
+
+        var dbContextOptionsBuilder = new DbContextOptionsBuilder<MailDbContext>();
+        var options = dbContextOptionsBuilder
+            //.UseMySql(connectionString)
+            .UseNpgsql(connectionString)
+            .UseLoggerFactory(LoggerFactory)
+            .Options;
+
+        using var mailDbContext = new MailDbContext(options);
+
+        var token = mailDbContext.ApiKeys
+            .Where(r => r.Id == 1)
+            .Select(r => r.AccessToken)
+            .FirstOrDefault();
+        return token;
     }
 
-    public class MailServerApiInfo
+    public string GetHostnameFromExternalDatabase(string connectionString, string ip)
     {
-        public string Protocol { get; set; }
-        public string Server { get; set; }
-        public int Port { get; set; }
-        public string Version { get; set; }
-        public string Token { get; set; }
+        DemandPermission();
+
+        var dbContextOptionsBuilder = new DbContextOptionsBuilder<MailDbContext>();
+        var options = dbContextOptionsBuilder
+            //.UseMySql(connectionString)
+            .UseNpgsql(connectionString)
+            .UseLoggerFactory(LoggerFactory)
+            .Options;
+
+        using var mailDbContext = new MailDbContext(options);
+
+        if (!IPAddress.TryParse(ip, out var ipAddress))
+        {
+            return ip;
+        }
+
+        var hostname = mailDbContext.GreyListingWhiteList
+            .Where(r => r.Source == "SenderIP:" + ip)
+            .Select(r => r.Comment)
+            .FirstOrDefault();
+
+        return hostname;
     }
+
+
+    public void UpdateDataFromInternalDatabase(string hostname, MailServerInfo mailServer)
+    {
+        DemandPermission();
+
+        using var transaction = MailDbContext.Database.BeginTransaction();
+
+        var mailboxProvider = new MailboxProvider
+        {
+            Id = 0,
+            Name = hostname
+        };
+
+        var pReq = MailDbContext.MailboxProvider.Add(mailboxProvider);
+        MailDbContext.SaveChanges();
+        mailboxProvider = pReq.Entity;
+
+        var providerId = mailboxProvider.Id;
+
+        var mailboxServer = new MailboxServer
+        {
+            Id = 0,
+            IdProvider = providerId,
+            Type = "smtp",
+            Hostname = hostname,
+            Port = 587,
+            SocketType = "STARTTLS",
+            UserName = "%EMAILADDRESS%",
+            Authentication = "",
+            IsUserData = false
+        };
+
+        var req = MailDbContext.MailboxServer.Add(mailboxServer);
+        MailDbContext.SaveChanges();
+
+        mailboxServer = req.Entity;
+
+        var smtpServerId = mailboxServer.Id;
+
+        mailboxServer = new MailboxServer
+        {
+            Id = 0,
+            IdProvider = providerId,
+            Type = "imap",
+            Hostname = hostname,
+            Port = 143,
+            SocketType = "STARTTLS",
+            UserName = "%EMAILADDRESS%",
+            Authentication = "",
+            IsUserData = false
+        };
+
+        req = MailDbContext.MailboxServer.Add(mailboxServer);
+        MailDbContext.SaveChanges();
+
+        mailboxServer = req.Entity;
+
+        var imapServerId = mailboxServer.Id;
+
+        var mailServerData = MailDbContext.ServerServer.FirstOrDefault();
+
+        var connectionString = Newtonsoft.Json.JsonConvert.SerializeObject(mailServer);
+
+        var server = new ServerServer
+        {
+            Id = 0,
+            MxRecord = hostname,
+            ConnectionString = connectionString,
+            ServerType = 2,
+            SmtpSettingsId = smtpServerId,
+            ImapSettingsId = imapServerId
+        };
+
+        MailDbContext.ServerServer.Add(server);
+        MailDbContext.SaveChanges();
+
+        if (mailServerData != null)
+        {
+            server = MailDbContext.ServerServer.Where(r => r.Id == mailServerData.Id).FirstOrDefault();
+            MailDbContext.ServerServer.Remove(server);
+            MailDbContext.SaveChanges();
+
+            providerId = MailDbContext.MailboxServer
+                .Where(r => r.Id == mailServerData.SmtpSettingsId)
+                .Select(r => r.IdProvider)
+                .FirstOrDefault();
+
+            var providers = MailDbContext.MailboxProvider.Where(r => r.Id == providerId).ToList();
+            MailDbContext.MailboxProvider.RemoveRange(providers);
+            MailDbContext.SaveChanges();
+
+            var servers = MailDbContext.MailboxServer
+                .Where(r => new[] { mailServerData.SmtpSettingsId, mailServerData.ImapSettingsId }.Any(a => a == r.Id))
+                .ToList();
+
+            MailDbContext.MailboxServer.RemoveRange(servers);
+            MailDbContext.SaveChanges();
+
+            var mailboxId = MailDbContext.Mailbox
+                .Where(r => r.IdSmtpServer == mailServerData.SmtpSettingsId)
+                .Where(r => r.IdInServer == mailServerData.ImapSettingsId)
+                .ToArray();
+
+            foreach (var m in mailboxId)
+            {
+                m.IdSmtpServer = smtpServerId;
+                m.IdInServer = imapServerId;
+            }
+            MailDbContext.SaveChanges();
+        }
+
+        transaction.Commit();
+
+        MailServiceHelperStorage.Remove();
+    }
+}
+
+public class MailServerInfo
+{
+    public string DbConnection { get; set; }
+    public MailServerApiInfo Api { get; set; }
+}
+
+public class MailServerApiInfo
+{
+    public string Protocol { get; set; }
+    public string Server { get; set; }
+    public int Port { get; set; }
+    public string Version { get; set; }
+    public string Token { get; set; }
 }

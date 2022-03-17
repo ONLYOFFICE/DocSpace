@@ -23,92 +23,91 @@
  *
 */
 
-namespace ASC.Web.Core.Utility.Skins
+namespace ASC.Web.Core.Utility.Skins;
+
+[Scope]
+public class WebImageSupplier
 {
-    [Scope]
-    public class WebImageSupplier
+    private string FolderName { get; }
+    private WebItemManager WebItemManager { get; }
+    private WebPath WebPath { get; }
+    private IHttpContextAccessor HttpContextAccessor { get; }
+
+    public WebImageSupplier(WebItemManager webItemManager, WebPath webPath, IConfiguration configuration)
     {
-        private string FolderName { get; }
-        private WebItemManager WebItemManager { get; }
-        private WebPath WebPath { get; }
-        private IHttpContextAccessor HttpContextAccessor { get; }
+        WebItemManager = webItemManager;
+        WebPath = webPath;
+        FolderName = configuration["web:images"];
+    }
+    public WebImageSupplier(WebItemManager webItemManager, WebPath webPath, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
+        : this(webItemManager, webPath, configuration)
+    {
+        HttpContextAccessor = httpContextAccessor;
+    }
 
-        public WebImageSupplier(WebItemManager webItemManager, WebPath webPath, IConfiguration configuration)
+    public string GetAbsoluteWebPath(string imgFileName)
+    {
+        return GetAbsoluteWebPath(imgFileName, Guid.Empty);
+    }
+
+    public string GetAbsoluteWebPath(string imgFileName, Guid moduleID)
+    {
+        return GetImageAbsoluteWebPath(imgFileName, moduleID);
+    }
+
+    public string GetImageFolderAbsoluteWebPath()
+    {
+        return GetImageFolderAbsoluteWebPath(Guid.Empty);
+    }
+
+    public string GetImageFolderAbsoluteWebPath(Guid moduleID)
+    {
+        if (HttpContextAccessor?.HttpContext == null)
         {
-            WebItemManager = webItemManager;
-            WebPath = webPath;
-            FolderName = configuration["web:images"];
-        }
-        public WebImageSupplier(WebItemManager webItemManager, WebPath webPath, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
-            : this(webItemManager, webPath, configuration)
-        {
-            HttpContextAccessor = httpContextAccessor;
+            return string.Empty;
         }
 
-        public string GetAbsoluteWebPath(string imgFileName)
-        {
-            return GetAbsoluteWebPath(imgFileName, Guid.Empty);
-        }
+        var currentThemePath = GetPartImageFolderRel(moduleID);
+        return WebPath.GetPathAsync(currentThemePath).Result;
+    }
 
-        public string GetAbsoluteWebPath(string imgFileName, Guid moduleID)
+    private string GetImageAbsoluteWebPath(string fileName, Guid partID)
+    {
+        if (string.IsNullOrEmpty(fileName))
         {
-            return GetImageAbsoluteWebPath(imgFileName, moduleID);
+            return string.Empty;
         }
+        var filepath = GetPartImageFolderRel(partID) + "/" + fileName;
+        return WebPath.GetPathAsync(filepath).Result;
+    }
 
-        public string GetImageFolderAbsoluteWebPath()
+    private string GetPartImageFolderRel(Guid partID)
+    {
+        var folderName = FolderName;
+        string itemFolder = null;
+        if (!Guid.Empty.Equals(partID))
         {
-            return GetImageFolderAbsoluteWebPath(Guid.Empty);
-        }
-
-        public string GetImageFolderAbsoluteWebPath(Guid moduleID)
-        {
-            if (HttpContextAccessor?.HttpContext == null)
+            var product = WebItemManager[partID];
+            if (product != null && product.Context != null)
             {
-                return string.Empty;
+                itemFolder = GetAppThemeVirtualPath(product) + "/default/images";
             }
 
-            var currentThemePath = GetPartImageFolderRel(moduleID);
-            return WebPath.GetPathAsync(currentThemePath).Result;
+            folderName = itemFolder ?? folderName;
         }
+        return folderName.TrimStart('~');
+    }
 
-        private string GetImageAbsoluteWebPath(string fileName, Guid partID)
+    private static string GetAppThemeVirtualPath(IWebItem webitem)
+    {
+        if (webitem == null || string.IsNullOrEmpty(webitem.StartURL))
         {
-            if (string.IsNullOrEmpty(fileName))
-            {
-                return string.Empty;
-            }
-            var filepath = GetPartImageFolderRel(partID) + "/" + fileName;
-            return WebPath.GetPathAsync(filepath).Result;
+            return string.Empty;
         }
 
-        private string GetPartImageFolderRel(Guid partID)
-        {
-            var folderName = FolderName;
-            string itemFolder = null;
-            if (!Guid.Empty.Equals(partID))
-            {
-                var product = WebItemManager[partID];
-                if (product != null && product.Context != null)
-                {
-                    itemFolder = GetAppThemeVirtualPath(product) + "/default/images";
-                }
-
-                folderName = itemFolder ?? folderName;
-            }
-            return folderName.TrimStart('~');
-        }
-
-        private static string GetAppThemeVirtualPath(IWebItem webitem)
-        {
-            if (webitem == null || string.IsNullOrEmpty(webitem.StartURL))
-            {
-                return string.Empty;
-            }
-
-            var dir = webitem.StartURL.Contains('.') ?
-                          webitem.StartURL.Substring(0, webitem.StartURL.LastIndexOf('/')) :
-                          webitem.StartURL.TrimEnd('/');
-            return dir + "/App_Themes";
-        }
+        var dir = webitem.StartURL.Contains('.') ?
+                      webitem.StartURL.Substring(0, webitem.StartURL.LastIndexOf('/')) :
+                      webitem.StartURL.TrimEnd('/');
+        return dir + "/App_Themes";
     }
 }

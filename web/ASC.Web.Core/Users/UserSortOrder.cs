@@ -24,12 +24,11 @@
 */
 
 
-namespace ASC.Web.Core.Users
+namespace ASC.Web.Core.Users;
+
+public enum UserSortOrder
 {
-    public enum UserSortOrder
-    {
-        DisplayName,
-        FirstName,
-        LastName
-    }
+    DisplayName,
+    FirstName,
+    LastName
 }

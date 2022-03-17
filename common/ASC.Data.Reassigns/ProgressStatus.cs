@@ -24,13 +24,12 @@
 */
 
 
-namespace ASC.Data.Reassigns
+namespace ASC.Data.Reassigns;
+
+public enum ProgressStatus
 {
-    public enum ProgressStatus
-    {
-        Queued,
-        Started,
-        Done,
-        Failed
-    }
+    Queued,
+    Started,
+    Done,
+    Failed
 }

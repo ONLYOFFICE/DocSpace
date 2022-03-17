@@ -26,406 +26,405 @@
 
 using SecurityAction = ASC.Common.Security.Authorizing.Action;
 
-namespace ASC.Web.Core
+namespace ASC.Web.Core;
+
+[Singletone]
+public class WebItemSecurityCache
 {
-    [Singletone]
-    public class WebItemSecurityCache
+    private ICache Cache { get; }
+    private ICacheNotify<WebItemSecurityNotifier> CacheNotify { get; }
+
+    public WebItemSecurityCache(ICacheNotify<WebItemSecurityNotifier> cacheNotify, ICache cache)
     {
-        private ICache Cache { get; }
-        private ICacheNotify<WebItemSecurityNotifier> CacheNotify { get; }
-
-        public WebItemSecurityCache(ICacheNotify<WebItemSecurityNotifier> cacheNotify, ICache cache)
+        Cache = cache;
+        CacheNotify = cacheNotify;
+        CacheNotify.Subscribe((r) =>
         {
-            Cache = cache;
-            CacheNotify = cacheNotify;
-            CacheNotify.Subscribe((r) =>
-            {
-                ClearCache(r.Tenant);
-            }, Common.Caching.CacheNotifyAction.Any);
-        }
-
-        public void ClearCache(int tenantId)
-        {
-            Cache.Remove(GetCacheKey(tenantId));
-        }
-
-        public string GetCacheKey(int tenantId)
-        {
-            return $"{tenantId}:webitemsecurity";
-        }
-
-        public void Publish(int tenantId)
-        {
-            CacheNotify.Publish(new WebItemSecurityNotifier { Tenant = tenantId }, Common.Caching.CacheNotifyAction.Any);
-        }
-
-        public Dictionary<string, bool> Get(int tenantId)
-        {
-            return Cache.Get<Dictionary<string, bool>>(GetCacheKey(tenantId));
-        }
-
-        public Dictionary<string, bool> GetOrInsert(int tenantId)
-        {
-
-            var dic = Get(tenantId);
-            if (dic == null)
-            {
-                dic = new Dictionary<string, bool>();
-                Cache.Insert(GetCacheKey(tenantId), dic, DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)));
-            }
-
-            return dic;
-        }
+            ClearCache(r.Tenant);
+        }, Common.Caching.CacheNotifyAction.Any);
     }
 
-    [Scope]
-    public class WebItemSecurity
+    public void ClearCache(int tenantId)
     {
-        private static readonly SecurityAction Read = new SecurityAction(new Guid("77777777-32ae-425f-99b5-83176061d1ae"), "ReadWebItem", false, true);
+        Cache.Remove(GetCacheKey(tenantId));
+    }
 
-        private UserManager UserManager { get; }
-        private AuthContext AuthContext { get; }
-        private PermissionContext PermissionContext { get; }
-        private AuthManager Authentication { get; }
-        public WebItemManager WebItemManager { get; }
-        private TenantManager TenantManager { get; }
-        private AuthorizationManager AuthorizationManager { get; }
-        private CoreBaseSettings CoreBaseSettings { get; }
-        private WebItemSecurityCache WebItemSecurityCache { get; }
-        private SettingsManager SettingsManager { get; }
+    public string GetCacheKey(int tenantId)
+    {
+        return $"{tenantId}:webitemsecurity";
+    }
 
-        public WebItemSecurity(
-            UserManager userManager,
-            AuthContext authContext,
-            PermissionContext permissionContext,
-            AuthManager authentication,
-            WebItemManager webItemManager,
-            TenantManager tenantManager,
-            AuthorizationManager authorizationManager,
-            CoreBaseSettings coreBaseSettings,
-            WebItemSecurityCache webItemSecurityCache,
-            SettingsManager settingsManager)
+    public void Publish(int tenantId)
+    {
+        CacheNotify.Publish(new WebItemSecurityNotifier { Tenant = tenantId }, Common.Caching.CacheNotifyAction.Any);
+    }
+
+    public Dictionary<string, bool> Get(int tenantId)
+    {
+        return Cache.Get<Dictionary<string, bool>>(GetCacheKey(tenantId));
+    }
+
+    public Dictionary<string, bool> GetOrInsert(int tenantId)
+    {
+
+        var dic = Get(tenantId);
+        if (dic == null)
         {
-            UserManager = userManager;
-            AuthContext = authContext;
-            PermissionContext = permissionContext;
-            Authentication = authentication;
-            WebItemManager = webItemManager;
-            TenantManager = tenantManager;
-            AuthorizationManager = authorizationManager;
-            CoreBaseSettings = coreBaseSettings;
-            WebItemSecurityCache = webItemSecurityCache;
-            SettingsManager = settingsManager;
+            dic = new Dictionary<string, bool>();
+            Cache.Insert(GetCacheKey(tenantId), dic, DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)));
         }
 
-        //
-        public bool IsAvailableForMe(Guid id)
-        {
-            return IsAvailableForUser(id, AuthContext.CurrentAccount.ID);
-        }
+        return dic;
+    }
+}
 
-        public bool IsAvailableForUser(Guid itemId, Guid @for)
-        {
-            var id = itemId.ToString();
-            bool result;
+[Scope]
+public class WebItemSecurity
+{
+    private static readonly SecurityAction Read = new SecurityAction(new Guid("77777777-32ae-425f-99b5-83176061d1ae"), "ReadWebItem", false, true);
 
-            var tenant = TenantManager.GetCurrentTenant();
-            var dic = WebItemSecurityCache.GetOrInsert(tenant.Id);
-            if (dic != null)
+    private UserManager UserManager { get; }
+    private AuthContext AuthContext { get; }
+    private PermissionContext PermissionContext { get; }
+    private AuthManager Authentication { get; }
+    public WebItemManager WebItemManager { get; }
+    private TenantManager TenantManager { get; }
+    private AuthorizationManager AuthorizationManager { get; }
+    private CoreBaseSettings CoreBaseSettings { get; }
+    private WebItemSecurityCache WebItemSecurityCache { get; }
+    private SettingsManager SettingsManager { get; }
+
+    public WebItemSecurity(
+        UserManager userManager,
+        AuthContext authContext,
+        PermissionContext permissionContext,
+        AuthManager authentication,
+        WebItemManager webItemManager,
+        TenantManager tenantManager,
+        AuthorizationManager authorizationManager,
+        CoreBaseSettings coreBaseSettings,
+        WebItemSecurityCache webItemSecurityCache,
+        SettingsManager settingsManager)
+    {
+        UserManager = userManager;
+        AuthContext = authContext;
+        PermissionContext = permissionContext;
+        Authentication = authentication;
+        WebItemManager = webItemManager;
+        TenantManager = tenantManager;
+        AuthorizationManager = authorizationManager;
+        CoreBaseSettings = coreBaseSettings;
+        WebItemSecurityCache = webItemSecurityCache;
+        SettingsManager = settingsManager;
+    }
+
+    //
+    public bool IsAvailableForMe(Guid id)
+    {
+        return IsAvailableForUser(id, AuthContext.CurrentAccount.ID);
+    }
+
+    public bool IsAvailableForUser(Guid itemId, Guid @for)
+    {
+        var id = itemId.ToString();
+        bool result;
+
+        var tenant = TenantManager.GetCurrentTenant();
+        var dic = WebItemSecurityCache.GetOrInsert(tenant.Id);
+        if (dic != null)
+        {
+            lock (dic)
             {
-                lock (dic)
+                if (dic.TryGetValue(id + @for, out var value))
                 {
-                    if (dic.TryGetValue(id + @for, out var value))
-                    {
-                        return value;
-                    }
+                    return value;
                 }
             }
+        }
 
-            // can read or administrator
-            var securityObj = WebItemSecurityObject.Create(id, WebItemManager);
+        // can read or administrator
+        var securityObj = WebItemSecurityObject.Create(id, WebItemManager);
 
-            if (CoreBaseSettings.Personal
-                && securityObj.WebItemId != WebItemManager.DocumentsProductID)
+        if (CoreBaseSettings.Personal
+            && securityObj.WebItemId != WebItemManager.DocumentsProductID)
+        {
+            // only files visible in your-docs portal
+            result = false;
+        }
+        else
+        {
+            var webitem = WebItemManager[securityObj.WebItemId];
+            if (webitem != null)
             {
-                // only files visible in your-docs portal
-                result = false;
-            }
-            else
-            {
-                var webitem = WebItemManager[securityObj.WebItemId];
-                if (webitem != null)
+                if ((webitem.ID == WebItemManager.CRMProductID ||
+                    webitem.ID == WebItemManager.PeopleProductID ||
+                    webitem.ID == WebItemManager.BirthdaysProductID ||
+                    webitem.ID == WebItemManager.MailProductID) &&
+                    UserManager.GetUsers(@for).IsVisitor(UserManager))
                 {
-                    if ((webitem.ID == WebItemManager.CRMProductID ||
-                        webitem.ID == WebItemManager.PeopleProductID ||
-                        webitem.ID == WebItemManager.BirthdaysProductID ||
-                        webitem.ID == WebItemManager.MailProductID) &&
-                        UserManager.GetUsers(@for).IsVisitor(UserManager))
-                    {
-                        // hack: crm, people, birtthday and mail products not visible for collaborators
-                        result = false;
-                    }
-                    else if ((webitem.ID == WebItemManager.CalendarProductID ||
-                              webitem.ID == WebItemManager.TalkProductID) &&
-                             UserManager.GetUsers(@for).IsOutsider(UserManager))
-                    {
-                        // hack: calendar and talk products not visible for outsider
-                        result = false;
-                    }
-                    else if (webitem is IModule)
-                    {
-                        result = PermissionContext.PermissionResolver.Check(Authentication.GetAccountByID(tenant.Id, @for), securityObj, null, Read) &&
-                            IsAvailableForUser(WebItemManager.GetParentItemID(webitem.ID), @for);
-                    }
-                    else
-                    {
-                        var hasUsers = AuthorizationManager.GetAces(Guid.Empty, Read.ID, securityObj).Any(a => a.Subject != ASC.Core.Users.Constants.GroupEveryone.ID);
-                        result = PermissionContext.PermissionResolver.Check(Authentication.GetAccountByID(tenant.Id, @for), securityObj, null, Read) ||
-                                 (hasUsers && IsProductAdministrator(securityObj.WebItemId, @for));
-                    }
+                    // hack: crm, people, birtthday and mail products not visible for collaborators
+                    result = false;
+                }
+                else if ((webitem.ID == WebItemManager.CalendarProductID ||
+                          webitem.ID == WebItemManager.TalkProductID) &&
+                         UserManager.GetUsers(@for).IsOutsider(UserManager))
+                {
+                    // hack: calendar and talk products not visible for outsider
+                    result = false;
+                }
+                else if (webitem is IModule)
+                {
+                    result = PermissionContext.PermissionResolver.Check(Authentication.GetAccountByID(tenant.Id, @for), securityObj, null, Read) &&
+                        IsAvailableForUser(WebItemManager.GetParentItemID(webitem.ID), @for);
                 }
                 else
                 {
-                    result = false;
+                    var hasUsers = AuthorizationManager.GetAces(Guid.Empty, Read.ID, securityObj).Any(a => a.Subject != ASC.Core.Users.Constants.GroupEveryone.ID);
+                    result = PermissionContext.PermissionResolver.Check(Authentication.GetAccountByID(tenant.Id, @for), securityObj, null, Read) ||
+                             (hasUsers && IsProductAdministrator(securityObj.WebItemId, @for));
                 }
-            }
-
-            dic = WebItemSecurityCache.Get(tenant.Id);
-            if (dic != null)
-            {
-                lock (dic)
-                {
-                    dic[id + @for] = result;
-                }
-            }
-            return result;
-        }
-
-        public void SetSecurity(string id, bool enabled, params Guid[] subjects)
-        {
-            if (SettingsManager.Load<TenantAccessSettings>().Anyone)
-            {
-                throw new SecurityException("Security settings are disabled for an open portal");
-            }
-
-            var securityObj = WebItemSecurityObject.Create(id, WebItemManager);
-
-            // remove old aces
-            AuthorizationManager.RemoveAllAces(securityObj);
-            var allowToAll = new AzRecord(ASC.Core.Users.Constants.GroupEveryone.ID, Read.ID, AceType.Allow, securityObj.FullId);
-            AuthorizationManager.RemoveAce(allowToAll);
-
-            // set new aces
-            if (subjects == null || subjects.Length == 0 || subjects.Contains(ASC.Core.Users.Constants.GroupEveryone.ID))
-            {
-                if (!enabled && subjects != null && subjects.Length == 0)
-                {
-                    // users from list with no users equals allow to all users
-                    enabled = true;
-                }
-                subjects = new[] { ASC.Core.Users.Constants.GroupEveryone.ID };
-            }
-            foreach (var s in subjects)
-            {
-                var a = new AzRecord(s, Read.ID, enabled ? AceType.Allow : AceType.Deny, securityObj.FullId);
-                AuthorizationManager.AddAce(a);
-            }
-
-            WebItemSecurityCache.Publish(TenantManager.GetCurrentTenant().Id);
-        }
-
-        public WebItemSecurityInfo GetSecurityInfo(string id)
-        {
-            var info = GetSecurity(id).ToList();
-            var module = WebItemManager.GetParentItemID(new Guid(id)) != Guid.Empty;
-            return new WebItemSecurityInfo
-            {
-                WebItemId = id,
-
-                Enabled = info.Count == 0 || (!module && info.Any(i => i.Item2)) || (module && info.All(i => i.Item2)),
-
-                Users = info
-                               .Select(i => UserManager.GetUsers(i.Item1))
-                               .Where(u => u.Id != ASC.Core.Users.Constants.LostUser.Id),
-
-                Groups = info
-                               .Select(i => UserManager.GetGroupInfo(i.Item1))
-                               .Where(g => g.ID != ASC.Core.Users.Constants.LostGroupInfo.ID && g.CategoryID != ASC.Core.Users.Constants.SysGroupCategoryId)
-            };
-        }
-
-        private IEnumerable<Tuple<Guid, bool>> GetSecurity(string id)
-        {
-            var securityObj = WebItemSecurityObject.Create(id, WebItemManager);
-            var result = AuthorizationManager
-                .GetAcesWithInherits(Guid.Empty, Read.ID, securityObj, null)
-                .GroupBy(a => a.Subject)
-                .Select(a => Tuple.Create(a.Key, a.First().AceType == AceType.Allow))
-                .ToList();
-            if (result.Count == 0)
-            {
-                result.Add(Tuple.Create(ASC.Core.Users.Constants.GroupEveryone.ID, false));
-            }
-            return result;
-        }
-
-        public void SetProductAdministrator(Guid productid, Guid userid, bool administrator)
-        {
-            if (productid == Guid.Empty)
-            {
-                productid = ASC.Core.Users.Constants.GroupAdmin.ID;
-            }
-            if (administrator)
-            {
-                if (UserManager.IsUserInGroup(userid, ASC.Core.Users.Constants.GroupVisitor.ID))
-                {
-                    throw new SecurityException("Collaborator can not be an administrator");
-                }
-
-                if (productid == WebItemManager.PeopleProductID)
-                {
-                    foreach (var ace in GetPeopleModuleActions(userid))
-                    {
-                        AuthorizationManager.AddAce(ace);
-                    }
-                }
-
-                UserManager.AddUserIntoGroup(userid, productid);
             }
             else
             {
-                if (productid == ASC.Core.Users.Constants.GroupAdmin.ID)
-                {
-                    var groups = new List<Guid> { WebItemManager.MailProductID };
-                    groups.AddRange(WebItemManager.GetItemsAll().OfType<IProduct>().Select(p => p.ID));
+                result = false;
+            }
+        }
 
-                    foreach (var id in groups)
-                    {
-                        UserManager.RemoveUserFromGroup(userid, id);
-                    }
-                }
+        dic = WebItemSecurityCache.Get(tenant.Id);
+        if (dic != null)
+        {
+            lock (dic)
+            {
+                dic[id + @for] = result;
+            }
+        }
+        return result;
+    }
 
-                if (productid == ASC.Core.Users.Constants.GroupAdmin.ID || productid == WebItemManager.PeopleProductID)
-                {
-                    foreach (var ace in GetPeopleModuleActions(userid))
-                    {
-                        AuthorizationManager.RemoveAce(ace);
-                    }
-                }
+    public void SetSecurity(string id, bool enabled, params Guid[] subjects)
+    {
+        if (SettingsManager.Load<TenantAccessSettings>().Anyone)
+        {
+            throw new SecurityException("Security settings are disabled for an open portal");
+        }
 
-                UserManager.RemoveUserFromGroup(userid, productid);
+        var securityObj = WebItemSecurityObject.Create(id, WebItemManager);
+
+        // remove old aces
+        AuthorizationManager.RemoveAllAces(securityObj);
+        var allowToAll = new AzRecord(ASC.Core.Users.Constants.GroupEveryone.ID, Read.ID, AceType.Allow, securityObj.FullId);
+        AuthorizationManager.RemoveAce(allowToAll);
+
+        // set new aces
+        if (subjects == null || subjects.Length == 0 || subjects.Contains(ASC.Core.Users.Constants.GroupEveryone.ID))
+        {
+            if (!enabled && subjects != null && subjects.Length == 0)
+            {
+                // users from list with no users equals allow to all users
+                enabled = true;
+            }
+            subjects = new[] { ASC.Core.Users.Constants.GroupEveryone.ID };
+        }
+        foreach (var s in subjects)
+        {
+            var a = new AzRecord(s, Read.ID, enabled ? AceType.Allow : AceType.Deny, securityObj.FullId);
+            AuthorizationManager.AddAce(a);
+        }
+
+        WebItemSecurityCache.Publish(TenantManager.GetCurrentTenant().Id);
+    }
+
+    public WebItemSecurityInfo GetSecurityInfo(string id)
+    {
+        var info = GetSecurity(id).ToList();
+        var module = WebItemManager.GetParentItemID(new Guid(id)) != Guid.Empty;
+        return new WebItemSecurityInfo
+        {
+            WebItemId = id,
+
+            Enabled = info.Count == 0 || (!module && info.Any(i => i.Item2)) || (module && info.All(i => i.Item2)),
+
+            Users = info
+                           .Select(i => UserManager.GetUsers(i.Item1))
+                           .Where(u => u.Id != ASC.Core.Users.Constants.LostUser.Id),
+
+            Groups = info
+                           .Select(i => UserManager.GetGroupInfo(i.Item1))
+                           .Where(g => g.ID != ASC.Core.Users.Constants.LostGroupInfo.ID && g.CategoryID != ASC.Core.Users.Constants.SysGroupCategoryId)
+        };
+    }
+
+    private IEnumerable<Tuple<Guid, bool>> GetSecurity(string id)
+    {
+        var securityObj = WebItemSecurityObject.Create(id, WebItemManager);
+        var result = AuthorizationManager
+            .GetAcesWithInherits(Guid.Empty, Read.ID, securityObj, null)
+            .GroupBy(a => a.Subject)
+            .Select(a => Tuple.Create(a.Key, a.First().AceType == AceType.Allow))
+            .ToList();
+        if (result.Count == 0)
+        {
+            result.Add(Tuple.Create(ASC.Core.Users.Constants.GroupEveryone.ID, false));
+        }
+        return result;
+    }
+
+    public void SetProductAdministrator(Guid productid, Guid userid, bool administrator)
+    {
+        if (productid == Guid.Empty)
+        {
+            productid = ASC.Core.Users.Constants.GroupAdmin.ID;
+        }
+        if (administrator)
+        {
+            if (UserManager.IsUserInGroup(userid, ASC.Core.Users.Constants.GroupVisitor.ID))
+            {
+                throw new SecurityException("Collaborator can not be an administrator");
             }
 
-            WebItemSecurityCache.Publish(TenantManager.GetCurrentTenant().Id);
-        }
-
-        public bool IsProductAdministrator(Guid productid, Guid userid)
-        {
-            return UserManager.IsUserInGroup(userid, ASC.Core.Users.Constants.GroupAdmin.ID) ||
-                   UserManager.IsUserInGroup(userid, productid);
-        }
-
-        public IEnumerable<UserInfo> GetProductAdministrators(Guid productid)
-        {
-            var groups = new List<Guid>();
-            if (productid == Guid.Empty)
+            if (productid == WebItemManager.PeopleProductID)
             {
-                groups.Add(ASC.Core.Users.Constants.GroupAdmin.ID);
+                foreach (var ace in GetPeopleModuleActions(userid))
+                {
+                    AuthorizationManager.AddAce(ace);
+                }
+            }
+
+            UserManager.AddUserIntoGroup(userid, productid);
+        }
+        else
+        {
+            if (productid == ASC.Core.Users.Constants.GroupAdmin.ID)
+            {
+                var groups = new List<Guid> { WebItemManager.MailProductID };
                 groups.AddRange(WebItemManager.GetItemsAll().OfType<IProduct>().Select(p => p.ID));
-                groups.Add(WebItemManager.MailProductID);
-            }
-            else
-            {
-                groups.Add(productid);
+
+                foreach (var id in groups)
+                {
+                    UserManager.RemoveUserFromGroup(userid, id);
+                }
             }
 
-            var users = Enumerable.Empty<UserInfo>();
-            foreach (var id in groups)
+            if (productid == ASC.Core.Users.Constants.GroupAdmin.ID || productid == WebItemManager.PeopleProductID)
             {
-                users = users.Union(UserManager.GetUsersByGroup(id));
+                foreach (var ace in GetPeopleModuleActions(userid))
+                {
+                    AuthorizationManager.RemoveAce(ace);
+                }
             }
-            return users.ToList();
+
+            UserManager.RemoveUserFromGroup(userid, productid);
         }
 
-        private static IEnumerable<AzRecord> GetPeopleModuleActions(Guid userid)
+        WebItemSecurityCache.Publish(TenantManager.GetCurrentTenant().Id);
+    }
+
+    public bool IsProductAdministrator(Guid productid, Guid userid)
+    {
+        return UserManager.IsUserInGroup(userid, ASC.Core.Users.Constants.GroupAdmin.ID) ||
+               UserManager.IsUserInGroup(userid, productid);
+    }
+
+    public IEnumerable<UserInfo> GetProductAdministrators(Guid productid)
+    {
+        var groups = new List<Guid>();
+        if (productid == Guid.Empty)
         {
-            return new List<Guid>
+            groups.Add(ASC.Core.Users.Constants.GroupAdmin.ID);
+            groups.AddRange(WebItemManager.GetItemsAll().OfType<IProduct>().Select(p => p.ID));
+            groups.Add(WebItemManager.MailProductID);
+        }
+        else
+        {
+            groups.Add(productid);
+        }
+
+        var users = Enumerable.Empty<UserInfo>();
+        foreach (var id in groups)
+        {
+            users = users.Union(UserManager.GetUsersByGroup(id));
+        }
+        return users.ToList();
+    }
+
+    private static IEnumerable<AzRecord> GetPeopleModuleActions(Guid userid)
+    {
+        return new List<Guid>
                 {
                     ASC.Core.Users.Constants.Action_AddRemoveUser.ID,
                     ASC.Core.Users.Constants.Action_EditUser.ID,
                     ASC.Core.Users.Constants.Action_EditGroups.ID
                 }.Select(action => new AzRecord(userid, action, AceType.Allow));
+    }
+
+    private class WebItemSecurityObject : ISecurityObject
+    {
+        public Guid WebItemId { get; private set; }
+        private WebItemManager WebItemManager { get; }
+
+        public Type ObjectType
+        {
+            get { return GetType(); }
         }
 
-        private class WebItemSecurityObject : ISecurityObject
+        public object SecurityId
         {
-            public Guid WebItemId { get; private set; }
-            private WebItemManager WebItemManager { get; }
+            get { return WebItemId.ToString("N"); }
+        }
 
-            public Type ObjectType
+        public string FullId => AzObjectIdHelper.GetFullObjectId(this);
+
+        public bool InheritSupported
+        {
+            get { return true; }
+        }
+
+        public bool ObjectRolesSupported
+        {
+            get { return false; }
+        }
+
+        public static WebItemSecurityObject Create(string id, WebItemManager webItemManager)
+        {
+            ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(id);
+
+            var itemId = Guid.Empty;
+            if (32 <= id.Length)
             {
-                get { return GetType(); }
+                itemId = new Guid(id);
             }
-
-            public object SecurityId
+            else
             {
-                get { return WebItemId.ToString("N"); }
-            }
-
-            public string FullId => AzObjectIdHelper.GetFullObjectId(this);
-
-            public bool InheritSupported
-            {
-                get { return true; }
-            }
-
-            public bool ObjectRolesSupported
-            {
-                get { return false; }
-            }
-
-            public static WebItemSecurityObject Create(string id, WebItemManager webItemManager)
-            {
-                ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(id);
-
-                var itemId = Guid.Empty;
-                if (32 <= id.Length)
+                var w = webItemManager
+                    .GetItemsAll()
+                    .FirstOrDefault(i => id.Equals(i.GetSysName(), StringComparison.InvariantCultureIgnoreCase));
+                if (w != null)
                 {
-                    itemId = new Guid(id);
+                    itemId = w.ID;
                 }
-                else
-                {
-                    var w = webItemManager
-                        .GetItemsAll()
-                        .FirstOrDefault(i => id.Equals(i.GetSysName(), StringComparison.InvariantCultureIgnoreCase));
-                    if (w != null)
-                    {
-                        itemId = w.ID;
-                    }
-                }
-                return new WebItemSecurityObject(itemId, webItemManager);
             }
+            return new WebItemSecurityObject(itemId, webItemManager);
+        }
 
 
-            private WebItemSecurityObject(Guid itemId, WebItemManager webItemManager)
+        private WebItemSecurityObject(Guid itemId, WebItemManager webItemManager)
+        {
+            WebItemId = itemId;
+            WebItemManager = webItemManager;
+        }
+
+        public ISecurityObjectId InheritFrom(ISecurityObjectId objectId)
+        {
+            if (objectId is WebItemSecurityObject s)
             {
-                WebItemId = itemId;
-                WebItemManager = webItemManager;
+                return Create(WebItemManager.GetParentItemID(s.WebItemId).ToString("N"), WebItemManager) is WebItemSecurityObject parent && parent.WebItemId != s.WebItemId && parent.WebItemId != Guid.Empty ? parent : null;
             }
+            return null;
+        }
 
-            public ISecurityObjectId InheritFrom(ISecurityObjectId objectId)
-            {
-                if (objectId is WebItemSecurityObject s)
-                {
-                    return Create(WebItemManager.GetParentItemID(s.WebItemId).ToString("N"), WebItemManager) is WebItemSecurityObject parent && parent.WebItemId != s.WebItemId && parent.WebItemId != Guid.Empty ? parent : null;
-                }
-                return null;
-            }
-
-            public IEnumerable<IRole> GetObjectRoles(ISubject account, ISecurityObjectId objectId, SecurityCallContext callContext)
-            {
-                throw new NotImplementedException();
-            }
+        public IEnumerable<IRole> GetObjectRoles(ISubject account, ISecurityObjectId objectId, SecurityCallContext callContext)
+        {
+            throw new NotImplementedException();
         }
     }
 }

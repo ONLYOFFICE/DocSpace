@@ -23,135 +23,134 @@
  *
 */
 
-namespace ASC.Web.Studio.Core.Statistic
+namespace ASC.Web.Studio.Core.Statistic;
+
+[Scope]
+public class StatisticManager
 {
-    [Scope]
-    public class StatisticManager
+    private static DateTime lastSave = DateTime.UtcNow;
+    private static readonly TimeSpan cacheTime = TimeSpan.FromMinutes(2);
+    private static readonly IDictionary<string, UserVisit> cache = new Dictionary<string, UserVisit>();
+
+    private Lazy<WebstudioDbContext> LazyWebstudioDbContext { get; }
+    private WebstudioDbContext WebstudioDbContext { get => LazyWebstudioDbContext.Value; }
+
+    public StatisticManager(DbContextManager<WebstudioDbContext> dbContextManager)
     {
-        private static DateTime lastSave = DateTime.UtcNow;
-        private static readonly TimeSpan cacheTime = TimeSpan.FromMinutes(2);
-        private static readonly IDictionary<string, UserVisit> cache = new Dictionary<string, UserVisit>();
+        LazyWebstudioDbContext = new Lazy<WebstudioDbContext>(() => dbContextManager.Value);
+    }
 
-        private Lazy<WebstudioDbContext> LazyWebstudioDbContext { get; }
-        private WebstudioDbContext WebstudioDbContext { get => LazyWebstudioDbContext.Value; }
+    public void SaveUserVisit(int tenantID, Guid userID, Guid productID)
+    {
+        var now = DateTime.UtcNow;
+        var key = string.Format("{0}|{1}|{2}|{3}", tenantID, userID, productID, now.Date);
 
-        public StatisticManager(DbContextManager<WebstudioDbContext> dbContextManager)
+        lock (cache)
         {
-            LazyWebstudioDbContext = new Lazy<WebstudioDbContext>(() => dbContextManager.Value);
+            var visit = cache.ContainsKey(key) ?
+                            cache[key] :
+                            new UserVisit
+                            {
+                                TenantID = tenantID,
+                                UserID = userID,
+                                ProductID = productID,
+                                VisitDate = now
+                            };
+
+            visit.VisitCount++;
+            visit.LastVisitTime = now;
+            cache[key] = visit;
         }
 
-        public void SaveUserVisit(int tenantID, Guid userID, Guid productID)
+        if (cacheTime < DateTime.UtcNow - lastSave)
         {
-            var now = DateTime.UtcNow;
-            var key = string.Format("{0}|{1}|{2}|{3}", tenantID, userID, productID, now.Date);
-
-            lock (cache)
-            {
-                var visit = cache.ContainsKey(key) ?
-                                cache[key] :
-                                new UserVisit
-                                {
-                                    TenantID = tenantID,
-                                    UserID = userID,
-                                    ProductID = productID,
-                                    VisitDate = now
-                                };
-
-                visit.VisitCount++;
-                visit.LastVisitTime = now;
-                cache[key] = visit;
-            }
-
-            if (cacheTime < DateTime.UtcNow - lastSave)
-            {
-                FlushCache();
-            }
+            FlushCache();
         }
+    }
 
-        public List<Guid> GetVisitorsToday(int tenantID, Guid productID)
+    public List<Guid> GetVisitorsToday(int tenantID, Guid productID)
+    {
+        var users = WebstudioDbContext.WebstudioUserVisit
+            .Where(r => r.VisitDate == DateTime.UtcNow.Date)
+            .Where(r => r.TenantId == tenantID)
+            .Where(r => r.ProductId == productID)
+            .OrderBy(r => r.FirstVisitTime)
+            .GroupBy(r => r.UserId)
+            .Select(r => r.Key)
+            .ToList();
+
+        lock (cache)
         {
-            var users = WebstudioDbContext.WebstudioUserVisit
-                .Where(r => r.VisitDate == DateTime.UtcNow.Date)
-                .Where(r => r.TenantId == tenantID)
-                .Where(r => r.ProductId == productID)
-                .OrderBy(r => r.FirstVisitTime)
-                .GroupBy(r => r.UserId)
-                .Select(r => r.Key)
-                .ToList();
-
-            lock (cache)
+            foreach (var visit in cache.Values)
             {
-                foreach (var visit in cache.Values)
+                if (!users.Contains(visit.UserID) && visit.VisitDate.Date == DateTime.UtcNow.Date)
                 {
-                    if (!users.Contains(visit.UserID) && visit.VisitDate.Date == DateTime.UtcNow.Date)
-                    {
-                        users.Add(visit.UserID);
-                    }
+                    users.Add(visit.UserID);
                 }
             }
-            return users;
+        }
+        return users;
+    }
+
+    public List<UserVisit> GetHitsByPeriod(int tenantID, DateTime startDate, DateTime endPeriod)
+    {
+        return WebstudioDbContext.WebstudioUserVisit
+            .Where(r => r.TenantId == tenantID)
+            .Where(r => r.VisitDate >= startDate && r.VisitDate <= endPeriod)
+            .OrderBy(r => r.VisitDate)
+            .GroupBy(r => r.VisitDate)
+            .Select(r => new UserVisit { VisitDate = r.Key, VisitCount = r.Sum(a => a.VisitCount) })
+            .ToList();
+    }
+
+    public List<UserVisit> GetHostsByPeriod(int tenantID, DateTime startDate, DateTime endPeriod)
+    {
+        return
+            WebstudioDbContext.WebstudioUserVisit
+            .Where(r => r.TenantId == tenantID)
+            .Where(r => r.VisitDate >= startDate && r.VisitDate <= endPeriod)
+            .OrderBy(r => r.VisitDate)
+            .GroupBy(r => new { r.UserId, r.VisitDate })
+            .Select(r => new UserVisit { VisitDate = r.Key.VisitDate, UserID = r.Key.UserId })
+            .ToList();
+    }
+
+    private void FlushCache()
+    {
+        if (cache.Count == 0)
+        {
+            return;
         }
 
-        public List<UserVisit> GetHitsByPeriod(int tenantID, DateTime startDate, DateTime endPeriod)
+        List<UserVisit> visits;
+        lock (cache)
         {
-            return WebstudioDbContext.WebstudioUserVisit
-                .Where(r => r.TenantId == tenantID)
-                .Where(r => r.VisitDate >= startDate && r.VisitDate <= endPeriod)
-                .OrderBy(r => r.VisitDate)
-                .GroupBy(r => r.VisitDate)
-                .Select(r => new UserVisit { VisitDate = r.Key, VisitCount = r.Sum(a => a.VisitCount) })
-                .ToList();
+            visits = new List<UserVisit>(cache.Values);
+            cache.Clear();
+            lastSave = DateTime.UtcNow;
         }
 
-        public List<UserVisit> GetHostsByPeriod(int tenantID, DateTime startDate, DateTime endPeriod)
+        using var tx = WebstudioDbContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted);
+        foreach (var v in visits)
         {
-            return
-                WebstudioDbContext.WebstudioUserVisit
-                .Where(r => r.TenantId == tenantID)
-                .Where(r => r.VisitDate >= startDate && r.VisitDate <= endPeriod)
-                .OrderBy(r => r.VisitDate)
-                .GroupBy(r => new { r.UserId, r.VisitDate })
-                .Select(r => new UserVisit { VisitDate = r.Key.VisitDate, UserID = r.Key.UserId })
-                .ToList();
-        }
-
-        private void FlushCache()
-        {
-            if (cache.Count == 0)
+            var w = new DbWebstudioUserVisit
             {
-                return;
+                TenantId = v.TenantID,
+                ProductId = v.ProductID,
+                UserId = v.UserID,
+                VisitDate = v.VisitDate.Date,
+                FirstVisitTime = v.VisitDate,
+                VisitCount = v.VisitCount
+            };
+
+            if (v.LastVisitTime.HasValue)
+            {
+                w.LastVisitTime = v.LastVisitTime.Value;
             }
 
-            List<UserVisit> visits;
-            lock (cache)
-            {
-                visits = new List<UserVisit>(cache.Values);
-                cache.Clear();
-                lastSave = DateTime.UtcNow;
-            }
-
-            using var tx = WebstudioDbContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted);
-            foreach (var v in visits)
-            {
-                var w = new DbWebstudioUserVisit
-                {
-                    TenantId = v.TenantID,
-                    ProductId = v.ProductID,
-                    UserId = v.UserID,
-                    VisitDate = v.VisitDate.Date,
-                    FirstVisitTime = v.VisitDate,
-                    VisitCount = v.VisitCount
-                };
-
-                if (v.LastVisitTime.HasValue)
-                {
-                    w.LastVisitTime = v.LastVisitTime.Value;
-                }
-
-                WebstudioDbContext.WebstudioUserVisit.Add(w);
-                WebstudioDbContext.SaveChanges();
-            }
-            tx.Commit();
+            WebstudioDbContext.WebstudioUserVisit.Add(w);
+            WebstudioDbContext.SaveChanges();
         }
+        tx.Commit();
     }
 }

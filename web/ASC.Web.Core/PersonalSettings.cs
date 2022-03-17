@@ -23,63 +23,62 @@
  *
 */
 
-namespace ASC.Web.Studio.Core
+namespace ASC.Web.Studio.Core;
+
+[Serializable]
+public class PersonalSettings : ISettings
 {
-    [Serializable]
-    public class PersonalSettings : ISettings
+
+    [JsonPropertyName("IsNewUser")]
+    public bool IsNewUserSetting { get; set; }
+
+    [JsonPropertyName("IsNotActivated")]
+    public bool IsNotActivatedSetting { get; set; }
+
+    public Guid ID
     {
+        get { return new Guid("{B3427865-8E32-4E66-B6F3-91C61922239F}"); }
+    }
 
-        [JsonPropertyName("IsNewUser")]
-        public bool IsNewUserSetting { get; set; }
-
-        [JsonPropertyName("IsNotActivated")]
-        public bool IsNotActivatedSetting { get; set; }
-
-        public Guid ID
+    public ISettings GetDefault(IServiceProvider serviceProvider)
+    {
+        return new PersonalSettings
         {
-            get { return new Guid("{B3427865-8E32-4E66-B6F3-91C61922239F}"); }
-        }
+            IsNewUserSetting = false,
+            IsNotActivatedSetting = false,
+        };
+    }
+}
 
-        public ISettings GetDefault(IServiceProvider serviceProvider)
+[Scope]
+public class PersonalSettingsHelper
+{
+    public PersonalSettingsHelper(SettingsManager settingsManager)
+    {
+        SettingsManager = settingsManager;
+    }
+
+    public bool IsNewUser
+    {
+        get { return SettingsManager.LoadForCurrentUser<PersonalSettings>().IsNewUserSetting; }
+        set
         {
-            return new PersonalSettings
-            {
-                IsNewUserSetting = false,
-                IsNotActivatedSetting = false,
-            };
+            var settings = SettingsManager.LoadForCurrentUser<PersonalSettings>();
+            settings.IsNewUserSetting = value;
+            SettingsManager.SaveForCurrentUser(settings);
         }
     }
 
-    [Scope]
-    public class PersonalSettingsHelper
+    public bool IsNotActivated
     {
-        public PersonalSettingsHelper(SettingsManager settingsManager)
+        get { return SettingsManager.LoadForCurrentUser<PersonalSettings>().IsNotActivatedSetting; }
+        set
         {
-            SettingsManager = settingsManager;
+            var settings = SettingsManager.LoadForCurrentUser<PersonalSettings>();
+            settings.IsNotActivatedSetting = value;
+            SettingsManager.SaveForCurrentUser(settings);
         }
-
-        public bool IsNewUser
-        {
-            get { return SettingsManager.LoadForCurrentUser<PersonalSettings>().IsNewUserSetting; }
-            set
-            {
-                var settings = SettingsManager.LoadForCurrentUser<PersonalSettings>();
-                settings.IsNewUserSetting = value;
-                SettingsManager.SaveForCurrentUser(settings);
-            }
-        }
-
-        public bool IsNotActivated
-        {
-            get { return SettingsManager.LoadForCurrentUser<PersonalSettings>().IsNotActivatedSetting; }
-            set
-            {
-                var settings = SettingsManager.LoadForCurrentUser<PersonalSettings>();
-                settings.IsNotActivatedSetting = value;
-                SettingsManager.SaveForCurrentUser(settings);
-            }
-        }
-
-        private SettingsManager SettingsManager { get; }
     }
+
+    private SettingsManager SettingsManager { get; }
 }

@@ -23,17 +23,16 @@
  *
 */
 
-namespace ASC.Web.Core
+namespace ASC.Web.Core;
+
+[Serializable]
+public class WebItemSecurityInfo
 {
-    [Serializable]
-    public class WebItemSecurityInfo
-    {
-        public string WebItemId { get; set; }
+    public string WebItemId { get; set; }
 
-        public IEnumerable<UserInfo> Users { get; set; }
+    public IEnumerable<UserInfo> Users { get; set; }
 
-        public IEnumerable<GroupInfo> Groups { get; set; }
+    public IEnumerable<GroupInfo> Groups { get; set; }
 
-        public bool Enabled { get; set; }
-    }
+    public bool Enabled { get; set; }
 }

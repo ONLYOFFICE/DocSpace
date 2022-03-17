@@ -23,25 +23,25 @@
  *
 */
 
-namespace ASC.Web.Studio.Core.Notify
+namespace ASC.Web.Studio.Core.Notify;
+
+internal class StudioSubscriptionManager : ISubscriptionManager
 {
-    internal class StudioSubscriptionManager : ISubscriptionManager
+    public StudioSubscriptionManager(StudioNotifyHelper studioNotifyHelper)
     {
-        public StudioSubscriptionManager(StudioNotifyHelper studioNotifyHelper)
-        {
-            StudioNotifyHelper = studioNotifyHelper;
-        }
+        StudioNotifyHelper = studioNotifyHelper;
+    }
 
-        #region ISubscriptionManager Members
+    #region ISubscriptionManager Members
 
-        public List<SubscriptionObject> GetSubscriptionObjects(Guid subItem)
-        {
-            return new List<SubscriptionObject>();
-        }
+    public List<SubscriptionObject> GetSubscriptionObjects(Guid subItem)
+    {
+        return new List<SubscriptionObject>();
+    }
 
-        public List<SubscriptionType> GetSubscriptionTypes()
-        {
-            var types = new List<SubscriptionType>
+    public List<SubscriptionType> GetSubscriptionTypes()
+    {
+        var types = new List<SubscriptionType>
             {
                 new SubscriptionType()
                 {
@@ -52,26 +52,25 @@ namespace ASC.Web.Studio.Core.Notify
                 }
             };
 
-            var astype = new SubscriptionType()
-            {
-                ID = new Guid("{A4FFC01F-BDB5-450e-88C4-03FED17D67C5}"),
-                Name = Resource.AdministratorNotifySenderTypeName,
-                NotifyAction = Actions.SendWhatsNew,
-                Single = false
-            };
-
-            types.Add(astype);
-
-            return types;
-        }
-
-        public ISubscriptionProvider SubscriptionProvider
+        var astype = new SubscriptionType()
         {
-            get { return StudioNotifyHelper.SubscriptionProvider; }
-        }
+            ID = new Guid("{A4FFC01F-BDB5-450e-88C4-03FED17D67C5}"),
+            Name = Resource.AdministratorNotifySenderTypeName,
+            NotifyAction = Actions.SendWhatsNew,
+            Single = false
+        };
 
-        private StudioNotifyHelper StudioNotifyHelper { get; }
+        types.Add(astype);
 
-        #endregion
+        return types;
     }
+
+    public ISubscriptionProvider SubscriptionProvider
+    {
+        get { return StudioNotifyHelper.SubscriptionProvider; }
+    }
+
+    private StudioNotifyHelper StudioNotifyHelper { get; }
+
+    #endregion
 }

@@ -1,62 +1,61 @@
-﻿namespace ASC.Web.Core
-{
-    public class RecaptchaException : InvalidCredentialException
-    {
-        public RecaptchaException()
-        {
-        }
+﻿namespace ASC.Web.Core;
 
-        public RecaptchaException(string message)
-            : base(message)
-        {
-        }
+public class RecaptchaException : InvalidCredentialException
+{
+    public RecaptchaException()
+    {
     }
 
-    [Scope]
-    public class Recaptcha
+    public RecaptchaException(string message)
+        : base(message)
     {
-        private SetupInfo SetupInfo { get; }
-        private IHttpClientFactory ClientFactory { get; }
+    }
+}
 
-        public Recaptcha(SetupInfo setupInfo, IHttpClientFactory clientFactory)
-        {
-            SetupInfo = setupInfo;
-            ClientFactory = clientFactory;
-        }
+[Scope]
+public class Recaptcha
+{
+    private SetupInfo SetupInfo { get; }
+    private IHttpClientFactory ClientFactory { get; }
 
-        public async Task<bool> ValidateRecaptchaAsync(string response, string ip)
+    public Recaptcha(SetupInfo setupInfo, IHttpClientFactory clientFactory)
+    {
+        SetupInfo = setupInfo;
+        ClientFactory = clientFactory;
+    }
+
+    public async Task<bool> ValidateRecaptchaAsync(string response, string ip)
+    {
+        try
         {
-            try
+            var data = $"secret={SetupInfo.RecaptchaPrivateKey}&remoteip={ip}&response={response}";
+
+            var request = new HttpRequestMessage();
+            request.RequestUri = new Uri(SetupInfo.RecaptchaVerifyUrl);
+            request.Method = HttpMethod.Post;
+            request.Content = new StringContent(data, Encoding.UTF8, "application/x-www-form-urlencoded");
+
+            var httpClient = ClientFactory.CreateClient();
+            using var httpClientResponse = await httpClient.SendAsync(request);
+            using (var reader = new StreamReader(await httpClientResponse.Content.ReadAsStreamAsync()))
             {
-                var data = $"secret={SetupInfo.RecaptchaPrivateKey}&remoteip={ip}&response={response}";
+                var resp = await reader.ReadToEndAsync();
+                var resObj = JObject.Parse(resp);
 
-                var request = new HttpRequestMessage();
-                request.RequestUri = new Uri(SetupInfo.RecaptchaVerifyUrl);
-                request.Method = HttpMethod.Post;
-                request.Content = new StringContent(data, Encoding.UTF8, "application/x-www-form-urlencoded");
-
-                var httpClient = ClientFactory.CreateClient();
-                using var httpClientResponse = await httpClient.SendAsync(request);
-                using (var reader = new StreamReader(await httpClientResponse.Content.ReadAsStreamAsync()))
+                if (resObj["success"] != null && resObj.Value<bool>("success"))
                 {
-                    var resp = await reader.ReadToEndAsync();
-                    var resObj = JObject.Parse(resp);
-
-                    if (resObj["success"] != null && resObj.Value<bool>("success"))
-                    {
-                        return true;
-                    }
-                    if (resObj["error-codes"] != null && resObj["error-codes"].HasValues)
-                    {
-                        return false;
-                    }
+                    return true;
+                }
+                if (resObj["error-codes"] != null && resObj["error-codes"].HasValues)
+                {
+                    return false;
                 }
             }
-            catch (Exception)
-            {
-            }
-
-            return false;
         }
+        catch (Exception)
+        {
+        }
+
+        return false;
     }
 }

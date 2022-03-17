@@ -23,10 +23,9 @@
  *
 */
 
-namespace ASC.Web.Core.Security
+namespace ASC.Web.Core.Security;
+
+public abstract class SecurityAttribute : Attribute
 {
-    public abstract class SecurityAttribute : Attribute
-    {
-        public abstract bool CheckAuthorization(HttpContext context);
-    }
+    public abstract bool CheckAuthorization(HttpContext context);
 }

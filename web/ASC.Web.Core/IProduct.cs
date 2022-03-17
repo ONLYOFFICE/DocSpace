@@ -23,18 +23,17 @@
  *
 */
 
-namespace ASC.Web.Core
+namespace ASC.Web.Core;
+
+[WebZone(WebZoneType.TopNavigationProductList | WebZoneType.StartProductList)]
+public interface IProduct : IWebItem
 {
-    [WebZone(WebZoneType.TopNavigationProductList | WebZoneType.StartProductList)]
-    public interface IProduct : IWebItem
-    {
-        Guid ProductID { get; }
+    Guid ProductID { get; }
 
-        new ProductContext Context { get; }
+    new ProductContext Context { get; }
 
 
-        void Init();
+    void Init();
 
-        void Shutdown();
-    }
+    void Shutdown();
 }

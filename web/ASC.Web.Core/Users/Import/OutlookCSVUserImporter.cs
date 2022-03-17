@@ -23,15 +23,15 @@
  *
 */
 
-namespace ASC.Web.Core.Users.Import
+namespace ASC.Web.Core.Users.Import;
+
+public class OutlookCSVUserImporter : TextFileUserImporter
 {
-    public class OutlookCSVUserImporter : TextFileUserImporter
+    public OutlookCSVUserImporter(Stream stream)
+        : base(stream)
     {
-        public OutlookCSVUserImporter(Stream stream)
-            : base(stream)
-        {
-            HasHeader = true;
-            NameMapping = new Dictionary<string, string>()
+        HasHeader = true;
+        NameMapping = new Dictionary<string, string>()
                               {
                                   {"First Name", "FirstName"},
                                   {"Last Name", "LastName"},
@@ -62,6 +62,5 @@ namespace ASC.Web.Core.Users.Import
                                   {"Office Location", ""},
                                   {"Notes", "Notes"}
                               };
-        }
     }
 }

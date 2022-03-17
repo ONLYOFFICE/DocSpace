@@ -23,15 +23,13 @@
  *
 */
 
-namespace ASC.Web.Core.Subscriptions
+namespace ASC.Web.Core.Subscriptions;
+
+public interface ISubscriptionManager
 {
+    List<SubscriptionObject> GetSubscriptionObjects(Guid subItem);
 
-    public interface ISubscriptionManager
-    {
-        List<SubscriptionObject> GetSubscriptionObjects(Guid subItem);
+    List<SubscriptionType> GetSubscriptionTypes();
 
-        List<SubscriptionType> GetSubscriptionTypes();
-
-        ISubscriptionProvider SubscriptionProvider { get; }
-    }
+    ISubscriptionProvider SubscriptionProvider { get; }
 }

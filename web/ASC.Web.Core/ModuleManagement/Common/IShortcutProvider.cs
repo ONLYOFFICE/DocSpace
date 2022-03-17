@@ -23,12 +23,11 @@
  *
 */
 
-namespace ASC.Web.Core.ModuleManagement.Common
-{
-    public interface IShortcutProvider
-    {
-        string GetAbsoluteWebPathForShortcut(Guid shortcutID, string currentUrl);
+namespace ASC.Web.Core.ModuleManagement.Common;
 
-        bool CheckPermissions(Guid shortcutID, string currentUrl);
-    }
+public interface IShortcutProvider
+{
+    string GetAbsoluteWebPathForShortcut(Guid shortcutID, string currentUrl);
+
+    bool CheckPermissions(Guid shortcutID, string currentUrl);
 }

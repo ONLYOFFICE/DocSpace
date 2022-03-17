@@ -23,25 +23,24 @@
  *
 */
 
-namespace ASC.Web.Core
+namespace ASC.Web.Core;
+
+public interface IWebItem
 {
-    public interface IWebItem
-    {
-        Guid ID { get; }
+    Guid ID { get; }
 
-        string Name { get; }
+    string Name { get; }
 
-        string Description { get; }
+    string Description { get; }
 
-        string StartURL { get; }
-        string ApiURL { get; }
+    string StartURL { get; }
+    string ApiURL { get; }
 
-        string HelpURL { get; }
+    string HelpURL { get; }
 
-        string ProductClassName { get; }
+    string ProductClassName { get; }
 
-        bool Visible { get; }
+    bool Visible { get; }
 
-        WebItemContext Context { get; }
-    }
+    WebItemContext Context { get; }
 }

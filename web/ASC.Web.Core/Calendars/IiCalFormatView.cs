@@ -24,10 +24,9 @@
 */
 
 
-namespace ASC.Web.Core.Calendars
+namespace ASC.Web.Core.Calendars;
+
+public interface IICalFormatView
 {
-    public interface IICalFormatView
-    {
-        string ToiCalFormat();
-    }
+    string ToiCalFormat();
 }
