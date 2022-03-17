@@ -125,6 +125,10 @@ export const LoginContainer = styled.div`
       width: 100%;
     }
 
+    .form-field {
+      height: 48px;
+    }
+
     .login-forgot-wrapper {
       height: 36px;
       padding: 14px 0;
