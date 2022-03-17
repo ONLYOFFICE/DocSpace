@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Text from "@appserver/components/text";
 import Button from "@appserver/components/button";
 import Link from "@appserver/components/link";
+import Checkbox from "@appserver/components/checkbox";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import queryString from "query-string";
@@ -17,6 +18,10 @@ const StyledBody = styled.div`
   flex-direction: column;
   width: 100%;
   padding: 72px 16px 0 32px;
+
+  .description {
+    margin-bottom: 32px;
+  }
 
   .button {
     margin-top: 32px;
@@ -40,14 +45,22 @@ const StyledFileTile = styled.div`
 
 const DeepLinkPage = (props) => {
   const { t, location, getIconSrc, user, history, deepLinkSettings } = props;
+  const defaultOpen = localStorage.getItem("deeplink");
+
   const [title, setTitle] = useState("");
   const [icon, setIcon] = useState("");
   const [deepLink, setDeepLink] = useState("");
 
+  const [isChecked, setIsChecked] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     fetchData();
+
+    if (defaultOpen) {
+      if (defaultOpen === "app") onOpenAppClick();
+      else onStayBrowserClick();
+    }
   }, []);
 
   const fetchData = async () => {
@@ -85,6 +98,8 @@ const DeepLinkPage = (props) => {
         ? `https://apps.apple.com/app/id${deepLinkSettings.iosPackageId}`
         : `https://play.google.com/store/apps/details?id=${deepLinkSettings.androidPackageName}`;
 
+    if (isChecked) localStorage.setItem("deeplink", "app");
+
     window.location = deepLink;
 
     setTimeout(() => {
@@ -99,7 +114,13 @@ const DeepLinkPage = (props) => {
   const onStayBrowserClick = () => {
     const fileId = queryString.parse(location.search).fileId;
     const url = `/products/files/doceditor?fileId=${fileId}`;
+    if (isChecked) localStorage.setItem("deeplink", "web");
+
     return window.open(url, "_self");
+  };
+
+  const onChangeCheckbox = () => {
+    setIsChecked(!isChecked);
   };
 
   if (!isLoading) return <AppLoader />;
@@ -114,9 +135,14 @@ const DeepLinkPage = (props) => {
           {title}
         </Text>
       </StyledFileTile>
-      <Text fontSize="13px" fontWeight="400">
+      <Text className="description" fontSize="13px" fontWeight="400">
         {t("DeepLinkDescription")}
       </Text>
+      <Checkbox
+        label={t("Common:Remember")}
+        onChange={onChangeCheckbox}
+        isChecked={isChecked}
+      />
       <Button
         className="button"
         label={t("OpenInApp")}
