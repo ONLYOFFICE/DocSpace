@@ -10,8 +10,3 @@ export const thumbnailStatuses = {
 };
 
 export const ADS_TIMEOUT = 300000; // 5 min
-
-export const DEEP_LINK = "oodocuments:://openfile?data=";
-export const DOCUMENTS_FOR_IOS = "https://apps.apple.com/app/id944896972";
-export const DOCUMENTS_FOR_ANDROID =
-  "https://play.google.com/store/apps/details?id=com.onlyoffice.documents";
