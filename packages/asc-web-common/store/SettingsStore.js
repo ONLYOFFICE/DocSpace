@@ -101,6 +101,15 @@ class SettingsStore {
     appId: "",
     measurementId: "",
   };
+
+  deepLink = {
+    documents: {
+      androidPackageName: "",
+      url: "",
+      iosPackageId: "",
+    },
+  };
+
   version = "";
   buildVersionInfo = {
     appServer: version,
