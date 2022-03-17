@@ -80,7 +80,7 @@
   "ThirdPartyPropsActivated": "Updated successfully",
   "ThirdPartyPropsDeactivated": "Deactivated successfully",
   "ThirdPartyTitleDescription": "With Authorization keys, you can connect third-party services to your portal. Sign in easily with Facebook, Twitter, or LinkedIn; add Dropbox, OneDrive, etc. to work with files stored there from the Documents module.",
-  "TimeZone": "Time Zone",
+  "TimeZone": "Time zone",
   "TwoFactorAuth": "Two-factor authentication",
   "TwoFactorAuthDescription": "Two-factor authentication provides a more secure way to log in. After entering the credentials, the user will have to enter a code from an SMS or the authentication app. ",
   "UseAsLogoButton": "Use as logo",
