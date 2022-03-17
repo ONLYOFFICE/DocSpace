@@ -51,12 +51,12 @@ public class BackupWorker
     private readonly object _synchRoot = new object();
 
     public BackupWorker(
-        IOptionsMonitor<ILog> options,
+        ILog logger,
         DistributedTaskQueueOptionsManager progressQueue,
         FactoryProgressItem factoryProgressItem,
         TempPath tempPath)
     {
-        _logger = options.CurrentValue;
+        _logger = logger;
         _progressQueue = progressQueue.Get<BaseBackupProgressItem>();
         _factoryProgressItem = factoryProgressItem;
         _tempPath = tempPath;

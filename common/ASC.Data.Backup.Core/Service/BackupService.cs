@@ -35,13 +35,13 @@ public class BackupService : IBackupService
     private readonly ConfigurationExtension _configuration;
 
     public BackupService(
-        IOptionsMonitor<ILog> options,
+        ILog logger,
         BackupStorageFactory backupStorageFactory,
         BackupWorker backupWorker,
         BackupRepository backupRepository,
         ConfigurationExtension configuration)
     {
-        _logger = options.CurrentValue;
+        _logger = logger;
         _backupStorageFactory = backupStorageFactory;
         _backupWorker = backupWorker;
         _backupRepository = backupRepository;

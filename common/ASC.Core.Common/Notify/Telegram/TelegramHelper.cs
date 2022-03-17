@@ -44,12 +44,12 @@ public class TelegramHelper
         ConsumerFactory consumerFactory,
         IOptionsSnapshot<CachedTelegramDao> cachedTelegramDao,
         TelegramServiceClient telegramServiceClient,
-        IOptionsMonitor<ILog> options)
+        ILog logger)
     {
         _consumerFactory = consumerFactory;
         _cachedTelegramDao = cachedTelegramDao.Value;
         _telegramServiceClient = telegramServiceClient;
-        _logger = options.CurrentValue;
+        _logger = logger;
     }
 
     public string RegisterUser(Guid userId, int tenantId)

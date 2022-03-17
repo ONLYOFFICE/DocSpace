@@ -38,13 +38,13 @@ internal sealed class BackupSchedulerService : IHostedService, IDisposable
     private readonly IServiceScopeFactory _scopeFactory;
 
     public BackupSchedulerService(
-        IOptionsMonitor<ILog> options,
+        ILog logger,
         IServiceScopeFactory scopeFactory,
         ConfigurationExtension configuration,
         CoreBaseSettings coreBaseSettings,
         BackupWorker backupWorker)
     {
-        _logger = options.CurrentValue;
+        _logger = logger;
         _coreBaseSettings = coreBaseSettings;
         _backupWorker = backupWorker;
         _period = configuration.GetSetting<BackupSettings>("backup").Scheduler.Period;

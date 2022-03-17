@@ -39,7 +39,7 @@ public class MessageService
         MessageFactory messageFactory,
         DbMessageSender sender,
         MessagePolicy messagePolicy,
-        IOptionsMonitor<ILog> options)
+        ILog logger)
     {
         if (configuration["messaging:enabled"] != "true")
         {
@@ -49,7 +49,7 @@ public class MessageService
         _sender = sender;
         _messagePolicy = messagePolicy;
         _messageFactory = messageFactory;
-        _logger = options.CurrentValue;
+        _logger = logger;
     }
 
     public MessageService(
@@ -58,8 +58,8 @@ public class MessageService
         MessageFactory messageFactory,
         DbMessageSender sender,
         MessagePolicy messagePolicy,
-        IOptionsMonitor<ILog> options)
-        : this(configuration, messageFactory, sender, messagePolicy, options)
+        ILog logger)
+        : this(configuration, messageFactory, sender, messagePolicy, logger)
     {
         _request = httpContextAccessor?.HttpContext?.Request;
     }

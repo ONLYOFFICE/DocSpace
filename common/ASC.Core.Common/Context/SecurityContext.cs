@@ -49,10 +49,10 @@ public class SecurityContext
         UserFormatter userFormatter,
         CookieStorage cookieStorage,
         TenantCookieSettingsHelper tenantCookieSettingsHelper,
-        IOptionsMonitor<ILog> options
+        ILog logger
         )
     {
-        _logger = options.CurrentValue;
+        _logger = logger;
         _userManager = userManager;
         _authentication = authentication;
         _authContext = authContext;
@@ -71,8 +71,8 @@ public class SecurityContext
         UserFormatter userFormatter,
         CookieStorage cookieStorage,
         TenantCookieSettingsHelper tenantCookieSettingsHelper,
-        IOptionsMonitor<ILog> options
-        ) : this(userManager, authentication, authContext, tenantManager, userFormatter, cookieStorage, tenantCookieSettingsHelper, options)
+        ILog logger
+        ) : this(userManager, authentication, authContext, tenantManager, userFormatter, cookieStorage, tenantCookieSettingsHelper, logger)
     {
         _httpContextAccessor = httpContextAccessor;
     }

@@ -31,10 +31,10 @@ public class AuditActionMapper
     private readonly Dictionary<MessageAction, MessageMaps> _actions;
     private readonly ILog _logger;
 
-    public AuditActionMapper(IOptionsMonitor<ILog> options)
+    public AuditActionMapper(ILog logger)
     {
         _actions = new Dictionary<MessageAction, MessageMaps>();
-        _logger = options.CurrentValue;
+        _logger = logger;
 
         _actions = _actions
             .Union(LoginActionsMapper.GetMaps())

@@ -90,9 +90,9 @@ internal class MailModuleSpecifics : ModuleSpecificsBase
             new RelationInfo("mail_mailbox_server", "id", "mail_mailbox", "id_in_server")
         };
 
-    public MailModuleSpecifics(IOptionsMonitor<ILog> options, Helpers helpers) : base(helpers)
+    public MailModuleSpecifics(ILog logger, Helpers helpers) : base(helpers)
     {
-        _logger = options.CurrentValue;
+        _logger = logger;
         _helpers = helpers;
     }
 

@@ -339,7 +339,7 @@ public class EncryptionOperationScope
     private readonly StorageFactory _storageFactory;
     private readonly IConfiguration _configuration;
 
-    public EncryptionOperationScope(IOptionsMonitor<ILog> options,
+    public EncryptionOperationScope(ILog logger,
        StorageFactoryConfig storageFactoryConfig,
        StorageFactory storageFactory,
        TenantManager tenantManager,
@@ -348,7 +348,7 @@ public class EncryptionOperationScope
        EncryptionSettingsHelper encryptionSettingsHelper,
        IConfiguration configuration)
     {
-        _logger = options.CurrentValue;
+        _logger = logger;
         _storageFactoryConfig = storageFactoryConfig;
         _storageFactory = storageFactory;
         _tenantManager = tenantManager;

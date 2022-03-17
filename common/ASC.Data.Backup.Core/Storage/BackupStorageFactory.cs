@@ -43,12 +43,12 @@ public class BackupStorageFactory
         DocumentsBackupStorage documentsBackupStorage,
         TenantManager tenantManager,
         DataStoreBackupStorage dataStoreBackupStorage,
-        IOptionsMonitor<ILog> options)
+        ILog logger)
     {
         _configuration = configuration;
         _documentsBackupStorage = documentsBackupStorage;
         _dataStoreBackupStorage = dataStoreBackupStorage;
-        _logger = options.CurrentValue;
+        _logger = logger;
         _localBackupStorage = localBackupStorage;
         _consumerBackupStorage = consumerBackupStorage;
         _tenantManager = tenantManager;

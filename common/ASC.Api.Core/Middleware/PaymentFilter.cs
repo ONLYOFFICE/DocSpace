@@ -6,9 +6,9 @@ public class PaymentFilter : IResourceFilter
     private readonly TenantExtra _tenantExtra;
     private readonly ILog _logger;
 
-    public PaymentFilter(IOptionsMonitor<ILog> options, TenantExtra tenantExtra)
+    public PaymentFilter(ILog logger, TenantExtra tenantExtra)
     {
-        _logger = options.CurrentValue;
+        _logger = logger;
         _tenantExtra = tenantExtra;
     }
 

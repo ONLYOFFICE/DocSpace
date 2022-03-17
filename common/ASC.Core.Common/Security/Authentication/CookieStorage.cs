@@ -38,19 +38,19 @@ public class CookieStorage
     public CookieStorage(
         InstanceCrypto instanceCrypto,
         TenantCookieSettingsHelper tenantCookieSettingsHelper,
-        IOptionsMonitor<ILog> options)
+        ILog logger)
     {
         _instanceCrypto = instanceCrypto;
         _tenantCookieSettingsHelper = tenantCookieSettingsHelper;
-        _logger = options.CurrentValue;
+        _logger = logger;
     }
 
     public CookieStorage(
         IHttpContextAccessor httpContextAccessor,
         InstanceCrypto instanceCrypto,
         TenantCookieSettingsHelper tenantCookieSettingsHelper,
-        IOptionsMonitor<ILog> options)
-        : this(instanceCrypto, tenantCookieSettingsHelper, options)
+        ILog logger)
+        : this(instanceCrypto, tenantCookieSettingsHelper, logger)
     {
         _httpContext = httpContextAccessor.HttpContext;
     }

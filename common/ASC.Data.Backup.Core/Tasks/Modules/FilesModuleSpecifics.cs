@@ -97,9 +97,9 @@ public class FilesModuleSpecifics : ModuleSpecificsBase
             new RelationInfo("files_thirdparty_account", "id", "files_thirdparty_id_mapping", "hash_id")
         };
 
-    public FilesModuleSpecifics(IOptionsMonitor<ILog> options, Helpers helpers) : base(helpers)
+    public FilesModuleSpecifics(ILog logger, Helpers helpers) : base(helpers)
     {
-        _logger = options.CurrentValue;
+        _logger = logger;
         _helpers = helpers;
     }
 

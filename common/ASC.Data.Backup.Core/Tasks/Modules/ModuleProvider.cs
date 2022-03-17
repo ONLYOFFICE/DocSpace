@@ -30,7 +30,7 @@ public class ModuleProvider
 {
     public List<IModuleSpecifics> AllModules { get; }
 
-    public ModuleProvider(IOptionsMonitor<ILog> options, Helpers helpers, CoreSettings coreSettings)
+    public ModuleProvider(ILog logger, Helpers helpers, CoreSettings coreSettings)
     {
         AllModules = new List<IModuleSpecifics>
             {
@@ -40,8 +40,8 @@ public class ModuleProvider
                 new CalendarModuleSpecifics(helpers),
                 new ProjectsModuleSpecifics(helpers),
                 new CrmModuleSpecifics(helpers),
-                new FilesModuleSpecifics(options,helpers),
-                new MailModuleSpecifics(options,helpers),
+                new FilesModuleSpecifics(logger,helpers),
+                new MailModuleSpecifics(logger,helpers),
                 new CrmModuleSpecifics2(helpers),
                 new FilesModuleSpecifics2(helpers),
                 new CrmInvoiceModuleSpecifics(helpers),

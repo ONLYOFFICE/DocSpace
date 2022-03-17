@@ -35,12 +35,12 @@ public class EditHistory
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
 
     public EditHistory(
-        IOptionsMonitor<ILog> options,
+        ILog logger,
         TenantUtil tenantUtil,
         UserManager userManager,
         DisplayUserSettingsHelper displayUserSettingsHelper)
     {
-        _logger = options.CurrentValue;
+        _logger = logger;
         _tenantUtil = tenantUtil;
         _userManager = userManager;
         _displayUserSettingsHelper = displayUserSettingsHelper;

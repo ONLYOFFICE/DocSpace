@@ -41,7 +41,7 @@ public class LicenseReader
         PaymentManager paymentManager,
         CoreSettings coreSettings,
         IConfiguration configuration,
-        IOptionsMonitor<ILog> options)
+        ILog logger)
     {
         _userManager = userManager;
         _tenantManager = tenantManager;
@@ -50,7 +50,7 @@ public class LicenseReader
         _configuration = configuration;
         LicensePath = _configuration["license:file:path"] ?? "";
         _licensePathTemp = LicensePath + ".tmp";
-        _logger = options.CurrentValue;
+        _logger = logger;
     }
 
     public string CustomerId

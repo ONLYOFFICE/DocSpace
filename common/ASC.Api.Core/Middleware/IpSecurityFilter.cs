@@ -8,11 +8,11 @@ public class IpSecurityFilter : IResourceFilter
     private readonly ILog _logger;
 
     public IpSecurityFilter(
-        IOptionsMonitor<ILog> options,
+        ILog logger,
         AuthContext authContext,
         IPSecurity.IPSecurity IPSecurity)
     {
-        _logger = options.CurrentValue;
+        _logger = logger;
         _authContext = authContext;
         _iPSecurity = IPSecurity;
     }

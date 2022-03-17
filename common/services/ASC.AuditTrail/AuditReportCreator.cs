@@ -36,13 +36,13 @@ public class AuditReportCreator
 
     public AuditReportCreator(
         GlobalFolderHelper globalFolderHelper,
-        IOptionsMonitor<ILog> options,
+        ILog logger,
         FileUploader fileUploader,
         FilesLinkUtility filesLinkUtility,
         CommonLinkUtility commonLinkUtility)
     {
         _globalFolderHelper = globalFolderHelper;
-        _logger = options.CurrentValue;
+        _logger = logger;
         _fileUploader = fileUploader;
         _filesLinkUtility = filesLinkUtility;
         _commonLinkUtility = commonLinkUtility;
