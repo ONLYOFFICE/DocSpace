@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import PropTypes from "prop-types";
 import Text from "@appserver/components/text";
 import Button from "@appserver/components/button";
 import Link from "@appserver/components/link";
@@ -11,11 +10,6 @@ import api from "@appserver/common/api";
 import { getTitleWithoutExst } from "../../helpers/files-helpers";
 import { inject, observer } from "mobx-react";
 import AppLoader from "@appserver/common/components/AppLoader";
-import {
-  DEEP_LINK,
-  DOCUMENTS_FOR_IOS,
-  DOCUMENTS_FOR_ANDROID,
-} from "../../helpers/constants";
 import { Base } from "@appserver/components/themes";
 
 const StyledBody = styled.div`
@@ -45,7 +39,7 @@ const StyledFileTile = styled.div`
 `;
 
 const DeepLinkPage = (props) => {
-  const { t, location, getIconSrc, user, history } = props;
+  const { t, location, getIconSrc, user, history, deepLinkSettings } = props;
   const [title, setTitle] = useState("");
   const [icon, setIcon] = useState("");
   const [deepLink, setDeepLink] = useState("");
@@ -81,23 +75,24 @@ const DeepLinkPage = (props) => {
     };
     const deepLinkData = btoa(JSON.stringify(jsonData));
 
-    return `${DEEP_LINK}${deepLinkData}`;
+    return `${deepLinkSettings.url}?data=${deepLinkData}`;
   };
 
   const onOpenAppClick = () => {
     const nav = navigator.userAgent;
     const storeUrl =
       nav.includes("iPhone;") || nav.includes("iPad;")
-        ? DOCUMENTS_FOR_IOS
-        : DOCUMENTS_FOR_ANDROID;
+        ? `https://apps.apple.com/app/id${deepLinkSettings.iosPackageId}`
+        : `https://play.google.com/store/apps/details?id=${deepLinkSettings.androidPackageName}`;
 
     window.location = deepLink;
 
     setTimeout(() => {
       if (document.hasFocus()) {
         window.location.replace(storeUrl);
+      } else {
+        history.goBack();
       }
-      history.goBack();
     }, 3000);
   };
 
@@ -151,5 +146,6 @@ export default inject(({ auth, settingsStore }) => {
   return {
     getIconSrc: settingsStore.getIconSrc,
     user: auth.userStore.user,
+    deepLinkSettings: auth.settingsStore.deepLink.documents,
   };
 })(withRouter(withTranslation(["DeepLink"])(observer(DeepLinkPage))));
