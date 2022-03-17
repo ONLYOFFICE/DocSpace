@@ -5,7 +5,7 @@ import styled from "styled-components";
 import Button from "@appserver/components/button";
 import Text from "@appserver/components/text";
 import toastr from "@appserver/components/toast/toastr";
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
 import { tryRedirectTo } from "@appserver/common/utils";
 import { inject, observer } from "mobx-react";
 import withLoader from "../withLoader";
@@ -125,11 +125,11 @@ Form.propTypes = {};
 Form.defaultProps = {};
 
 const ChangeOwnerForm = (props) => (
-  <PageLayout>
-    <PageLayout.SectionBody>
+  <Section>
+    <Section.SectionBody>
       <Form {...props} />
-    </PageLayout.SectionBody>
-  </PageLayout>
+    </Section.SectionBody>
+  </Section>
 );
 
 export default inject(({ auth }) => ({

@@ -16,7 +16,7 @@ import SocialButton from "@appserver/components/social-button";
 import FacebookButton from "@appserver/components/facebook-button";
 import EmailInput from "@appserver/components/email-input";
 import { getAuthProviders } from "@appserver/common/api/settings";
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
 import {
   createPasswordHash,
   getProviderTranslation,
@@ -544,11 +544,11 @@ Confirm.propTypes = {
   history: PropTypes.object.isRequired,
 };
 const CreateUserForm = (props) => (
-  <PageLayout>
-    <PageLayout.SectionBody>
+  <Section>
+    <Section.SectionBody>
       <Confirm {...props} />
-    </PageLayout.SectionBody>
-  </PageLayout>
+    </Section.SectionBody>
+  </Section>
 );
 
 export default inject(({ auth }) => {
