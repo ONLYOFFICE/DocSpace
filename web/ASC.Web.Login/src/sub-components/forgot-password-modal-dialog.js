@@ -32,7 +32,7 @@ const ForgotPasswordModalDialog = (props) => {
   };
 
   const onSendPasswordInstructions = () => {
-    if (!email.trim()) {
+    if (!email.trim() || emailError) {
       setEmailError(true);
     } else {
       setIsLoading(true);
@@ -126,7 +126,7 @@ const ForgotPasswordModalDialog = (props) => {
           primary={true}
           onClick={onSendPasswordInstructions}
           isLoading={isLoading}
-          isDisabled={isLoading || emailError || !email.trim()}
+          isDisabled={isLoading}
           tabIndex={2}
         />
 

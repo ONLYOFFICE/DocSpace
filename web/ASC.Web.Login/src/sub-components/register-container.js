@@ -73,7 +73,7 @@ const Register = (props) => {
   };
 
   const onSendRegisterRequest = () => {
-    if (!email.trim()) {
+    if (!email.trim() || emailErr) {
       setEmailErr(true);
     } else {
       setLoading(true);

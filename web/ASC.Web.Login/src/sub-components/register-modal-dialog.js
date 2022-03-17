@@ -105,7 +105,7 @@ const RegisterModalDialog = ({
           primary={true}
           onClick={onSendRegisterRequest}
           isLoading={loading}
-          isDisabled={loading || emailErr || !email.trim()}
+          isDisabled={loading}
           tabIndex={3}
         />
 
