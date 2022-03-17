@@ -84,3 +84,4 @@ public interface ILog
 
     void Configure(string name);
 }
+

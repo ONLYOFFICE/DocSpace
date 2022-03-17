@@ -201,9 +201,9 @@ public static class LogNLogConfigureExtenstion
         return hostBuilder.ConfigureLogging((hostBuildexContext, r) =>
         {
             r.Services.ConfigureOptions<ConfigureLogNLog>();
-
             r.Services.AddSingleton(resolver => (IOptionsMonitor<ILog>)resolver.GetRequiredService<IOptionsMonitor<LogNLog>>());
             r.Services.AddSingleton(resolver => (ILog)resolver.GetRequiredService<IOptionsMonitor<LogNLog>>().CurrentValue);
+            r.Services.AddSingleton(typeof(ILog<>), typeof(Common.Logging.LogFactory<>));
 
             LogManager.ThrowConfigExceptions = false;
 
