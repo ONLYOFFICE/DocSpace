@@ -46,7 +46,10 @@ public class TwilioVoipSettings : VoipSettings
         BaseCommonLinkUtility baseCommonLinkUtility) :
         this(authContext, tenantUtil, securityContext, baseCommonLinkUtility)
     {
-        if (string.IsNullOrEmpty(voiceUrl.Query)) return;
+        if (string.IsNullOrEmpty(voiceUrl.Query))
+        {
+            return;
+        }
 
         JsonSettings = Encoding.UTF8.GetString(Convert.FromBase64String(HttpUtility.UrlDecode(HttpUtility.ParseQueryString(voiceUrl.Query)["settings"])));
     }

@@ -59,7 +59,10 @@ namespace ASC.Web.Core.WhiteLabel
 
         public bool IsDefault(IConfiguration configuration)
         {
-            if (!(GetDefault(configuration) is AdditionalWhiteLabelSettings defaultSettings)) return false;
+            if (!(GetDefault(configuration) is AdditionalWhiteLabelSettings defaultSettings))
+            {
+                return false;
+            }
 
             return StartDocsEnabled == defaultSettings.StartDocsEnabled &&
                     HelpCenterEnabled == defaultSettings.HelpCenterEnabled &&

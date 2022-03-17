@@ -143,11 +143,17 @@ namespace ASC.Web.Core.WhiteLabel
         /// </summary>
         public Stream GetStorageLogoData(TenantInfoSettings tenantInfoSettings)
         {
-            if (tenantInfoSettings.IsDefault) return null;
+            if (tenantInfoSettings.IsDefault)
+            {
+                return null;
+            }
 
             var storage = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().Id.ToString(CultureInfo.InvariantCulture), "logo");
 
-            if (storage == null) return null;
+            if (storage == null)
+            {
+                return null;
+            }
 
             var fileName = tenantInfoSettings.CompanyLogoFileName ?? "";
 

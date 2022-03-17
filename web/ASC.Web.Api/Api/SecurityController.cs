@@ -68,7 +68,9 @@ public class SecurityController : ControllerBase
         var tenantId = _tenantManager.GetCurrentTenant().Id;
 
         if (!_tenantExtra.GetTenantQuota().Audit || !SetupInfo.IsVisibleSettings(nameof(ManagementType.LoginHistory)))
+        {
             throw new BillingException(Resource.ErrorNotAllowedOption, "Audit");
+        }
 
         var settings = _settingsManager.LoadForTenant<TenantAuditSettings>(_tenantManager.GetCurrentTenant().Id);
 
@@ -91,7 +93,9 @@ public class SecurityController : ControllerBase
         var tenantId = _tenantManager.GetCurrentTenant().Id;
 
         if (!_tenantExtra.GetTenantQuota().Audit || !SetupInfo.IsVisibleSettings(nameof(ManagementType.AuditTrail)))
+        {
             throw new BillingException(Resource.ErrorNotAllowedOption, "Audit");
+        }
 
         var settings = _settingsManager.LoadForTenant<TenantAuditSettings>(_tenantManager.GetCurrentTenant().Id);
 
@@ -136,15 +140,21 @@ public class SecurityController : ControllerBase
     private TenantAuditSettings SetAuditSettings(TenantAuditSettingsWrapper wrapper)
     {
         if (!_tenantExtra.GetTenantQuota().Audit || !SetupInfo.IsVisibleSettings(nameof(ManagementType.LoginHistory)))
+        {
             throw new BillingException(Resource.ErrorNotAllowedOption, "Audit");
+        }
 
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
         if (wrapper.settings.LoginHistoryLifeTime <= 0 || wrapper.settings.LoginHistoryLifeTime > TenantAuditSettings.MaxLifeTime)
+        {
             throw new ArgumentException("LoginHistoryLifeTime");
+        }
 
         if (wrapper.settings.AuditTrailLifeTime <= 0 || wrapper.settings.AuditTrailLifeTime > TenantAuditSettings.MaxLifeTime)
+        {
             throw new ArgumentException("AuditTrailLifeTime");
+        }
 
         _settingsManager.SaveForTenant(wrapper.settings, _tenantManager.GetCurrentTenant().Id);
         _messageService.Send(MessageAction.AuditSettingsUpdated);

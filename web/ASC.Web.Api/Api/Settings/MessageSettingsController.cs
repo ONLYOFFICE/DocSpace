@@ -89,13 +89,19 @@ public class MessageSettingsController: BaseSettingsController
         var enableAdmMess = studioAdminMessageSettings.Enable || _tenantExtra.IsNotPaid();
 
         if (!enableAdmMess)
+        {
             throw new MethodAccessException("Method not available");
+        }
 
         if (!inDto.Email.TestEmailRegex())
+        {
             throw new Exception(Resource.ErrorNotCorrectEmail);
+        }
 
         if (string.IsNullOrEmpty(inDto.Message))
+        {
             throw new Exception(Resource.ErrorEmptyMessage);
+        }
 
         CheckCache("sendadmmail");
 
@@ -129,21 +135,29 @@ public class MessageSettingsController: BaseSettingsController
                 (Tenant.TrustedDomainsType == TenantTrustedDomainsType.Custom &&
                 Tenant.TrustedDomains.Count > 0) ||
                 Tenant.TrustedDomainsType == TenantTrustedDomainsType.All))
+            {
                 throw new MethodAccessException("Method not available");
+            }
 
             if (!email.TestEmailRegex())
+            {
                 throw new Exception(Resource.ErrorNotCorrectEmail);
+            }
 
             CheckCache("sendjoininvite");
 
             var user = _userManager.GetUserByEmail(email);
             if (!user.Id.Equals(Constants.LostUser.Id))
+            {
                 throw new Exception(_customNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
+            }
 
             var settings = _settingsManager.Load<IPRestrictionsSettings>();
 
             if (settings.Enable && !_ipSecurity.Verify())
+            {
                 throw new Exception(Resource.ErrorAccessRestricted);
+            }
 
             var trustedDomainSettings = _settingsManager.Load<StudioTrustedDomainSettings>();
             var emplType = trustedDomainSettings.InviteUsersAsVisitors ? EmployeeType.Visitor : EmployeeType.User;
@@ -152,7 +166,9 @@ public class MessageSettingsController: BaseSettingsController
                 var enableInviteUsers = _tenantStatisticsProvider.GetUsersCount() < _tenantExtra.GetTenantQuota().ActiveUsers;
 
                 if (!enableInviteUsers)
+                {
                     emplType = EmployeeType.Visitor;
+                }
             }
 
             switch (Tenant.TrustedDomainsType)

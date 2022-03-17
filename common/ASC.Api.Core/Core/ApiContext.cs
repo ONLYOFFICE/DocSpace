@@ -110,7 +110,7 @@ public class ApiContext : ICloneable
     internal long SpecifiedStartIndex { get; set; }
 
     private Tenant _tenant;
-    private static int _maxCount = 1000;
+    private static readonly int _maxCount = 1000;
     private readonly SecurityContext _securityContext;
     private readonly TenantManager _tenantManager;
 
@@ -231,7 +231,10 @@ public static class QueryExtension
         if (query != null)
         {
             var values = query[key + "[]"];
-            if (values.Count > 0) return values;
+            if (values.Count > 0)
+            {
+                return values;
+            }
 
             values = query[key];
             if (values.Count > 0)
@@ -240,7 +243,9 @@ public static class QueryExtension
                 {
                     //Try split
                     if (!string.IsNullOrEmpty(values[0]))
+                    {
                         return values[0].Split(',');
+                    }
                 }
 
                 return values;

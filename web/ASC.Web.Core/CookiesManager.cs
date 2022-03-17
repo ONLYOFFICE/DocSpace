@@ -75,7 +75,10 @@ namespace ASC.Web.Core
 
         public string GetRequestVar(CookiesType type)
         {
-            if (HttpContextAccessor?.HttpContext == null) return "";
+            if (HttpContextAccessor?.HttpContext == null)
+            {
+                return "";
+            }
 
             var cookie = HttpContextAccessor.HttpContext.Request.Query[GetCookiesName(type)].FirstOrDefault() ?? HttpContextAccessor.HttpContext.Request.Form[GetCookiesName(type)].FirstOrDefault();
 
@@ -84,7 +87,10 @@ namespace ASC.Web.Core
 
         public void SetCookies(CookiesType type, string value, bool session = false)
         {
-            if (HttpContextAccessor?.HttpContext == null) return;
+            if (HttpContextAccessor?.HttpContext == null)
+            {
+                return;
+            }
 
             var options = new CookieOptions
             {
@@ -111,7 +117,10 @@ namespace ASC.Web.Core
 
         public void SetCookies(CookiesType type, string value, string domain, bool session = false)
         {
-            if (HttpContextAccessor?.HttpContext == null) return;
+            if (HttpContextAccessor?.HttpContext == null)
+            {
+                return;
+            }
 
             var options = new CookieOptions
             {
@@ -144,14 +153,19 @@ namespace ASC.Web.Core
                 var cookieName = GetCookiesName(type);
 
                 if (HttpContextAccessor.HttpContext.Request.Cookies.ContainsKey(cookieName))
+                {
                     return HttpContextAccessor.HttpContext.Request.Cookies[cookieName] ?? "";
+                }
             }
             return "";
         }
 
         public void ClearCookies(CookiesType type)
         {
-            if (HttpContextAccessor?.HttpContext == null) return;
+            if (HttpContextAccessor?.HttpContext == null)
+            {
+                return;
+            }
 
             if (HttpContextAccessor.HttpContext.Request.Cookies.ContainsKey(GetCookiesName(type)))
             {

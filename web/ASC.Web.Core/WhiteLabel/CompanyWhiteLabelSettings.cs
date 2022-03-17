@@ -49,7 +49,10 @@ namespace ASC.Web.Core.WhiteLabel
 
         public bool IsDefault(CoreSettings coreSettings)
         {
-            if (!(GetDefault(coreSettings) is CompanyWhiteLabelSettings defaultSettings)) return false;
+            if (!(GetDefault(coreSettings) is CompanyWhiteLabelSettings defaultSettings))
+            {
+                return false;
+            }
 
             return CompanyName == defaultSettings.CompanyName &&
                     Site == defaultSettings.Site &&
@@ -70,14 +73,20 @@ namespace ASC.Web.Core.WhiteLabel
 
         public ISettings GetDefault(IServiceProvider serviceProvider)
         {
-            if (_default != null) return _default;
+            if (_default != null)
+            {
+                return _default;
+            }
 
             return GetDefault(serviceProvider.GetService<CoreSettings>());
         }
 
         public ISettings GetDefault(CoreSettings coreSettings)
         {
-            if (_default != null) return _default;
+            if (_default != null)
+            {
+                return _default;
+            }
 
             var settings = coreSettings.GetSetting("CompanyWhiteLabelSettings");
 

@@ -44,8 +44,15 @@ public class TelegramHandler
 
     public Task SendMessage(NotifyMessage msg)
     {
-        if (string.IsNullOrEmpty(msg.Reciever)) return Task.CompletedTask;
-        if (!_clients.ContainsKey(msg.TenantId)) return Task.CompletedTask;
+        if (string.IsNullOrEmpty(msg.Reciever))
+        {
+            return Task.CompletedTask;
+        }
+
+        if (!_clients.ContainsKey(msg.TenantId))
+        {
+            return Task.CompletedTask;
+        }
 
         return InternalSendMessage(msg);
     }
@@ -78,7 +85,10 @@ public class TelegramHandler
 
     public void DisableClient(int tenantId)
     {
-        if (!_clients.ContainsKey(tenantId)) return;
+        if (!_clients.ContainsKey(tenantId))
+        {
+            return;
+        }
 
         var client = _clients[tenantId];
         client.Client.StopReceiving();
@@ -100,7 +110,10 @@ public class TelegramHandler
             {
                 if (startTelegramService)
                 {
-                    if (!telegramHelper.TestingClient(newClient)) return;
+                    if (!telegramHelper.TestingClient(newClient))
+                    {
+                        return;
+                    }
                 }
 
                 client.Client.StopReceiving();
@@ -116,7 +129,10 @@ public class TelegramHandler
         {
             if (!force && startTelegramService)
             {
-                if (!telegramHelper.TestingClient(newClient)) return;
+                if (!telegramHelper.TestingClient(newClient))
+                {
+                    return;
+                }
             }
 
             BindClient(newClient, tenantId, stoppingToken);
@@ -134,7 +150,10 @@ public class TelegramHandler
 
     public void RegisterUser(string userId, int tenantId, string token)
     {
-        if (!_clients.ContainsKey(tenantId)) return;
+        if (!_clients.ContainsKey(tenantId))
+        {
+            return;
+        }
 
         var userKey = UserKey(userId, tenantId);
         var dateExpires = DateTimeOffset.Now.AddMinutes(_clients[tenantId].TokenLifeSpan);
@@ -143,7 +162,11 @@ public class TelegramHandler
 
     private Task OnMessage(object sender, MessageEventArgs e, TelegramBotClient client, int tenantId)
     {
-        if (string.IsNullOrEmpty(e.Message.Text) || e.Message.Text[0] != '/') return Task.CompletedTask;
+        if (string.IsNullOrEmpty(e.Message.Text) || e.Message.Text[0] != '/')
+        {
+            return Task.CompletedTask;
+        }
+
         return InternalOnMessage(sender, e, client, tenantId);
     }
 

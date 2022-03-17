@@ -117,7 +117,10 @@ namespace ASC.Web.Studio.Core.Statistic
 
         private void FlushCache()
         {
-            if (cache.Count == 0) return;
+            if (cache.Count == 0)
+            {
+                return;
+            }
 
             List<UserVisit> visits;
             lock (cache)

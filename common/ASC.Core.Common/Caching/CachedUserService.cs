@@ -170,8 +170,8 @@ public class CachedUserService : IUserService, ICachedService
     internal IUserService Service;
     internal ICache Cache;
     internal TrustInterval TrustInterval;
-    private TimeSpan _cacheExpiration;
-    private TimeSpan _photoExpiration;
+    private readonly TimeSpan _cacheExpiration;
+    private readonly TimeSpan _photoExpiration;
     internal CoreBaseSettings CoreBaseSettings;
     internal UserServiceCache UserServiceCache;
     internal ICacheNotify<UserInfoCacheItem> CacheUserInfoItem;
@@ -307,7 +307,10 @@ public class CachedUserService : IUserService, ICachedService
         {
             group = Service.GetGroup(tenant, id);
 
-            if (group != null) Cache.Insert(key, group, _cacheExpiration);
+            if (group != null)
+            {
+                Cache.Insert(key, group, _cacheExpiration);
+            }
         }
 
         return group;

@@ -47,10 +47,14 @@ namespace ASC.Web.Core.Calendars
         public bool PublicForItem(Guid itemId, UserManager userManager)
         {
             if (SharedForAll)
+            {
                 return true;
+            }
 
             if (PublicItems.Exists(i => i.Id.Equals(itemId)))
+            {
                 return true;
+            }
 
             var u = userManager.GetUsers(itemId);
             if (u != null && u.Id != ASC.Core.Users.Constants.LostUser.Id)
@@ -72,7 +76,9 @@ namespace ASC.Web.Core.Calendars
                 SharedForAll = this.SharedForAll
             };
             foreach (var i in this.PublicItems)
+            {
                 o.PublicItems.Add(new PublicItem() { Id = i.Id, IsGroup = i.IsGroup });
+            }
 
             return o;
         }

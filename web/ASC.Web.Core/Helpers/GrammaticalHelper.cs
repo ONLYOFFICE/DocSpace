@@ -44,7 +44,9 @@ namespace ASC.Web.Core.Helpers
                 };
             }
             else
+            {
                 return number == 1 ? nominative : genitivePlural;
+            }
         }
     }
 }

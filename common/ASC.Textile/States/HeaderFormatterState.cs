@@ -21,7 +21,7 @@ public class PaddingFormatterState : SimpleBlockFormatterState
     {
     }
 
-    public int HeaderLevel { get; private set; } = 0;
+    public int HeaderLevel { get; private set; }
 
 
     public override void Enter()
@@ -64,7 +64,7 @@ public class PaddingFormatterState : SimpleBlockFormatterState
 [FormatterState(SimpleBlockFormatterState.PatternBegin + @"h[0-9]+" + SimpleBlockFormatterState.PatternEnd)]
 public class HeaderFormatterState : SimpleBlockFormatterState
 {
-    public int HeaderLevel { get; private set; } = 0;
+    public int HeaderLevel { get; private set; }
 
     public HeaderFormatterState(TextileFormatter f)
         : base(f)

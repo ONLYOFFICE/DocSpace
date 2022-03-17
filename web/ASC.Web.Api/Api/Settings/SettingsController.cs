@@ -196,13 +196,17 @@ public class SettingsController: BaseSettingsController
             foreach (var d in inDto.Domains.Select(domain => (domain ?? "").Trim().ToLower()))
             {
                 if (!(!string.IsNullOrEmpty(d) && new Regex("^[a-z0-9]([a-z0-9-.]){1,98}[a-z0-9]$").IsMatch(d)))
+                {
                     return Resource.ErrorNotCorrectTrustedDomain;
+                }
 
                 Tenant.TrustedDomains.Add(d);
             }
 
             if (Tenant.TrustedDomains.Count == 0)
+            {
                 inDto.Type = TenantTrustedDomainsType.None;
+            }
         }
 
         Tenant.TrustedDomainsType = inDto.Type;
@@ -335,7 +339,9 @@ public class SettingsController: BaseSettingsController
         var collaboratorPopupSettings = _settingsManager.LoadForCurrentUser<CollaboratorSettings>();
 
         if (!(currentUser.IsVisitor(_userManager) && collaboratorPopupSettings.FirstVisit && !currentUser.IsOutsider(_userManager)))
+        {
             throw new NotSupportedException("Not available.");
+        }
 
         collaboratorPopupSettings.FirstVisit = false;
         _settingsManager.SaveForCurrentUser(collaboratorPopupSettings);
@@ -468,7 +474,10 @@ public class SettingsController: BaseSettingsController
                                                    item.Context != null &&
                                                    item.Context.SpaceUsageStatManager != null);
 
-        if (webitem == null) return Task.FromResult(new List<UsageSpaceStatItemDto>());
+        if (webitem == null)
+        {
+            return Task.FromResult(new List<UsageSpaceStatItemDto>());
+        }
 
         return InternalGetSpaceUsageStatistics(webitem);
     }
@@ -497,7 +506,10 @@ public class SettingsController: BaseSettingsController
 
         var points = new List<ChartPointDto>();
 
-        if (from.CompareTo(to) >= 0) return points;
+        if (from.CompareTo(to) >= 0)
+        {
+            return points;
+        }
 
         for (var d = new DateTime(from.Ticks); d.Date.CompareTo(to.Date) <= 0; d = d.AddDays(1))
         {
@@ -513,7 +525,10 @@ public class SettingsController: BaseSettingsController
         var hits = _statisticManager.GetHitsByPeriod(Tenant.Id, from, to);
         var hosts = _statisticManager.GetHostsByPeriod(Tenant.Id, from, to);
 
-        if (hits.Count == 0 || hosts.Count == 0) return points;
+        if (hits.Count == 0 || hosts.Count == 0)
+        {
+            return points;
+        }
 
         hits.Sort((x, y) => x.VisitDate.CompareTo(y.VisitDate));
         hosts.Sort((x, y) => x.VisitDate.CompareTo(y.VisitDate));
@@ -587,7 +602,9 @@ public class SettingsController: BaseSettingsController
         var saveAvailable = _coreBaseSettings.Standalone || _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).ThirdParty;
         if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.ThirdPartyAuthorization))
             || !saveAvailable)
+        {
             throw new BillingException(Resource.ErrorNotAllowedOption, "ThirdPartyAuthorization");
+        }
 
         var changed = false;
         var consumer = _consumerFactory.GetByKey<Consumer>(inDto.Name);
@@ -639,7 +656,9 @@ public class SettingsController: BaseSettingsController
         }
 
         if (changed)
+        {
             _messageService.Send(MessageAction.AuthorizationKeysSetting);
+        }
 
         return changed;
     }

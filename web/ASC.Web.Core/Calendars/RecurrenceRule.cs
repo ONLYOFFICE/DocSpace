@@ -140,15 +140,20 @@ namespace ASC.Web.Core.Calendars
                     {
                         count++;
                         if (!monthly && (!this.Number.HasValue || count == this.Number || this.Number == (count - (date.GetWeekOfYearCount(DayOfWeek.Monday) + 1))))
+                        {
                             dates.Add(date);
-
+                        }
                         else if (monthly && (!this.Number.HasValue || count == this.Number || this.Number == (count - (date.GetDayOfWeekInMonth() + 1))))
+                        {
                             dates.Add(date);
+                        }
 
                         date = date.AddDays(7);
                     }
                     else
+                    {
                         date = date.AddDays(1);
+                    }
                 }
                 return dates;
             }
@@ -215,24 +220,34 @@ namespace ASC.Web.Core.Calendars
         private bool CheckDate(DateTime d)
         {
             if (ByMonth != null && !ByMonth.Contains(d.Month))
+            {
                 return false;
+            }
 
             //only for YEARLY
             if (ByWeekNo != null)
             {
                 var weekOfYear = d.GetWeekOfYear(this.WKST.DayOfWeek);
                 if (!ByWeekNo.Contains(weekOfYear) && !ByWeekNo.Contains(weekOfYear - (d.GetWeekOfYearCount(this.WKST.DayOfWeek) + 1)))
+                {
                     return false;
+                }
             }
 
             if (ByYearDay != null && !ByYearDay.Contains(d.DayOfYear) && !ByYearDay.Contains(d.DayOfYear - (d.GetDaysInYear() + 1)))
+            {
                 return false;
+            }
 
             if (ByMonthDay != null && !ByMonthDay.Contains(d.Day) && !ByMonthDay.Contains(d.Day - d.GetDaysInMonth() + 1))
+            {
                 return false;
+            }
 
             if (ByDay != null && !ByDay.Any(item => item.DayOfWeek == d.DayOfWeek))
+            {
                 return false;
+            }
 
             return true;
         }
@@ -269,7 +284,9 @@ namespace ASC.Web.Core.Calendars
                         {
 
                             if (d >= utcStartDate && d <= endDate && !dates.Contains(d))
+                            {
                                 dates.Add(d);
+                            }
                         }
 
                         d = d.AddMinutes(this.Interval);
@@ -289,15 +306,21 @@ namespace ASC.Web.Core.Calendars
                             //seconds
                             var seconds = new List<int>();
                             if (BySecond != null)
+                            {
                                 seconds.AddRange(BySecond);
+                            }
                             else
+                            {
                                 seconds.Add(d.Second);
+                            }
 
                             foreach (var s in seconds)
                             {
                                 var newDate = new DateTime(d.Year, d.Month, d.Day, d.Hour, d.Minute, s);
                                 if (newDate >= utcStartDate && newDate <= endDate && !dates.Contains(newDate))
+                                {
                                     dates.Add(newDate);
+                                }
                             }
 
                         }
@@ -318,16 +341,24 @@ namespace ASC.Web.Core.Calendars
                             //minutes
                             var minutes = new List<int>();
                             if (ByMinute != null)
+                            {
                                 minutes.AddRange(ByMinute);
+                            }
                             else
+                            {
                                 minutes.Add(d.Minute);
+                            }
 
                             //seconds
                             var seconds = new List<int>();
                             if (BySecond != null)
+                            {
                                 seconds.AddRange(BySecond);
+                            }
                             else
+                            {
                                 seconds.Add(d.Second);
+                            }
 
                             foreach (var m in minutes)
                             {
@@ -335,7 +366,9 @@ namespace ASC.Web.Core.Calendars
                                 {
                                     var newDate = new DateTime(d.Year, d.Month, d.Day, d.Hour, m, s);
                                     if (newDate >= utcStartDate && newDate <= endDate && !dates.Contains(newDate))
+                                    {
                                         dates.Add(newDate);
+                                    }
                                 }
                             }
                         }
@@ -352,7 +385,9 @@ namespace ASC.Web.Core.Calendars
                     while (d <= endDate && CheckCount(dates, fromDate, maxCount))
                     {
                         if (CheckDate(d))
+                        {
                             GetDatesWithTime(ref dates, utcStartDate, endDate, d, new List<DateTime>() { d });
+                        }
 
                         d = d.AddDays(this.Interval);
                     }
@@ -368,22 +403,34 @@ namespace ASC.Web.Core.Calendars
                     {
                         var dateRange = new List<DateTime>();
                         for (var i = 0; i < 7; i++)
+                        {
                             dateRange.Add(d.AddDays(i));
+                        }
 
                         if (ByMonth != null)
+                        {
                             dateRange.RemoveAll(date => !ByMonth.Contains(date.Month));
+                        }
 
                         if (ByYearDay != null)
+                        {
                             dateRange.RemoveAll(date => !ByYearDay.Contains(date.DayOfYear) && !ByYearDay.Contains(date.DayOfYear - (date.GetDaysInYear() + 1)));
+                        }
 
                         if (ByMonthDay != null)
+                        {
                             dateRange.RemoveAll(date => !ByMonthDay.Contains(date.Day) && !ByMonthDay.Contains(date.Day - (date.GetDaysInMonth() + 1)));
+                        }
 
                         if (ByDay != null)
+                        {
                             dateRange.RemoveAll(date => !ByDay.Any(wd => wd.DayOfWeek == date.DayOfWeek));
+                        }
 
                         if (ByDay == null && ByMonthDay == null && ByYearDay == null)
+                        {
                             dateRange.RemoveAll(date => date.Day != d.Day);
+                        }
 
                         GetDatesWithTime(ref dates, utcStartDate, endDate, d - utcStartDateOffset, dateRange.Select(item => item - utcStartDateOffset).ToList());
 
@@ -415,23 +462,31 @@ namespace ASC.Web.Core.Calendars
                         }
 
                         if (ByYearDay != null)
+                        {
                             dateRange.RemoveAll(date => !ByYearDay.Contains(date.DayOfYear) && !ByYearDay.Contains(date.DayOfYear - (date.GetDaysInYear() + 1)));
+                        }
 
                         if (ByMonthDay != null)
+                        {
                             dateRange.RemoveAll(date => !ByMonthDay.Contains(date.Day) && !ByMonthDay.Contains(date.Day - (date.GetDaysInMonth() + 1)));
+                        }
 
                         //only for MONTHLY or YEARLY
                         if (ByDay != null)
                         {
                             var listDates = new List<DateTime>();
                             foreach (var date in ByDay)
+                            {
                                 listDates.AddRange(date.GetDates(new DateTime(d.Year, d.Month, 1), true));
+                            }
 
                             dateRange.RemoveAll(date => !listDates.Contains(date));
                         }
 
                         if (ByDay == null && ByMonthDay == null && ByYearDay == null)
+                        {
                             dateRange.RemoveAll(date => date.Day != d.Day);
+                        }
 
                         GetDatesWithTime(ref dates, utcStartDate, endDate, d - utcStartDateOffset, dateRange);
 
@@ -469,7 +524,7 @@ namespace ASC.Web.Core.Calendars
                     while (d.Year <= (endDate == DateTime.MaxValue ? endDate : (endDate + utcStartDateOffset)).Year && CheckCount(dates, fromDate, maxCount))
                     {
                         var dateRange = new List<DateTime>();
-                        bool isFirst = true;
+                        var isFirst = true;
 
                         if (ByMonth != null)
                         {
@@ -496,7 +551,9 @@ namespace ASC.Web.Core.Calendars
                                 {
                                     var weekOfYear = date.GetWeekOfYear(this.WKST.DayOfWeek);
                                     if (ByWeekNo.Contains(weekOfYear) || ByWeekNo.Contains(weekOfYear - (date.GetWeekOfYearCount(this.WKST.DayOfWeek) + 1)))
+                                    {
                                         dateRange.Add(date);
+                                    }
 
                                     date = date.AddDays(1);
                                 }
@@ -517,10 +574,14 @@ namespace ASC.Web.Core.Calendars
                             if (isFirst)
                             {
                                 foreach (var yearDay in ByYearDay)
+                                {
                                     dateRange.Add(new DateTime(d.Year, 1, 1).AddDays((yearDay > 0 ? yearDay : (d.GetDaysInYear() + yearDay)) - 1));
+                                }
                             }
                             else
+                            {
                                 dateRange.RemoveAll(date => !ByYearDay.Contains(date.DayOfYear) && !ByYearDay.Contains(date.DayOfYear - (date.GetDaysInYear() + 1)));
+                            }
 
                             isFirst = false;
                         }
@@ -540,7 +601,9 @@ namespace ASC.Web.Core.Calendars
                                 }
                             }
                             else
+                            {
                                 dateRange.RemoveAll(date => !ByMonthDay.Contains(date.Day) && !ByMonthDay.Contains(date.Day - (date.GetDaysInMonth() + 1)));
+                            }
 
                             isFirst = false;
                         }
@@ -550,24 +613,34 @@ namespace ASC.Web.Core.Calendars
                         {
                             var listDates = new List<DateTime>();
                             foreach (var day in ByDay)
+                            {
                                 listDates.AddRange(day.GetDates(new DateTime(d.Year, 1, 1), false));
+                            }
 
                             listDates.Sort();
 
                             if (isFirst)
+                            {
                                 dateRange.AddRange(listDates);
+                            }
                             else
+                            {
                                 dateRange.RemoveAll(date => !listDates.Contains(date));
+                            }
 
                             isFirst = false;
                         }
 
                         if (ByDay == null && ByMonthDay == null && ByYearDay == null && ByWeekNo == null)
+                        {
                             dateRange.RemoveAll(date => date.Day != d.Day);
+                        }
 
                         //add yearly same date
                         if (isFirst)
+                        {
                             dateRange.Add(d);
+                        }
 
                         GetDatesWithTime(ref dates, utcStartDate, endDate, d - utcStartDateOffset, dateRange);
 
@@ -592,7 +665,9 @@ namespace ASC.Web.Core.Calendars
             if (removeExDates && ExDates != null)
             {
                 foreach (var exDate in ExDates)
+                {
                     dates.RemoveAll(dt => (exDate.IsDateTime && dt == exDate.Date) || (!exDate.IsDateTime && dt.Date == exDate.Date));
+                }
             }
 
             dates.RemoveAll(dt => dt < fromDate || dt > endDate);
@@ -618,7 +693,9 @@ namespace ASC.Web.Core.Calendars
         private bool CheckCount(List<DateTime> dates, DateTime fromDate, int maxCount)
         {
             if (Count >= 0)
+            {
                 return dates.Count <= this.Count;
+            }
 
             if (maxCount != int.MaxValue)
             {
@@ -628,8 +705,9 @@ namespace ASC.Web.Core.Calendars
                         .Count < maxCount;
                 }
                 else
+                {
                     return dates.FindAll(d => d >= fromDate).Count < maxCount;
-
+                }
             }
 
             return true;
@@ -640,23 +718,35 @@ namespace ASC.Web.Core.Calendars
             //hours
             var hours = new List<int>();
             if (ByHour != null)
+            {
                 hours.AddRange(ByHour);
+            }
             else
+            {
                 hours.Add(d.Hour);
+            }
 
             //minutes
             var minutes = new List<int>();
             if (ByMinute != null)
+            {
                 minutes.AddRange(ByMinute);
+            }
             else
+            {
                 minutes.Add(d.Minute);
+            }
 
             //seconds
             var seconds = new List<int>();
             if (BySecond != null)
+            {
                 seconds.AddRange(BySecond);
+            }
             else
+            {
                 seconds.Add(d.Second);
+            }
 
             if (BySetPos != null && (ByDay != null || ByMonth != null || ByMonthDay != null || ByWeekNo != null || ByYearDay != null))
             {
@@ -664,9 +754,13 @@ namespace ASC.Web.Core.Calendars
                 foreach (var pos in BySetPos)
                 {
                     if (pos >= 1 && pos <= dateRange.Count)
+                    {
                         newDateRange.Add(dateRange[pos - 1]);
+                    }
                     else if (pos < 0 && (pos * (-1)) <= dateRange.Count)
+                    {
                         newDateRange.Add(dateRange[dateRange.Count + pos]);
+                    }
                 }
                 newDateRange.Sort();
                 dateRange = newDateRange;
@@ -683,7 +777,9 @@ namespace ASC.Web.Core.Calendars
                         {
                             var newDate = new DateTime(date.Year, date.Month, date.Day, h, m, s);
                             if (newDate >= startDate && newDate <= endDate && !dates.Contains(newDate))
+                            {
                                 dates.Add(newDate);
+                            }
                         }
                     }
                 }
@@ -747,7 +843,9 @@ namespace ASC.Web.Core.Calendars
             {
                 sb.Append(";bysecond=");
                 foreach (var s in BySecond)
+                {
                     sb.Append($"{s},");
+                }
 
                 sb.Remove(sb.Length - 1, 1);
             }
@@ -756,7 +854,9 @@ namespace ASC.Web.Core.Calendars
             {
                 sb.Append(";byminute=");
                 foreach (var m in ByMinute)
+                {
                     sb.AppendFormat("{0},", m);
+                }
 
                 sb.Remove(sb.Length - 1, 1);
             }
@@ -765,7 +865,9 @@ namespace ASC.Web.Core.Calendars
             {
                 sb.Append(";byhour=");
                 foreach (var h in ByHour)
+                {
                     sb.AppendFormat("{0},", h);
+                }
 
                 sb.Remove(sb.Length - 1, 1);
             }
@@ -774,7 +876,9 @@ namespace ASC.Web.Core.Calendars
             {
                 sb.Append(";byday=");
                 foreach (var d in ByDay)
+                {
                     sb.AppendFormat("{0},", d);
+                }
 
                 sb.Remove(sb.Length - 1, 1);
             }
@@ -784,7 +888,9 @@ namespace ASC.Web.Core.Calendars
             {
                 sb.Append(";bymonthday=");
                 foreach (var d in ByMonthDay)
+                {
                     sb.AppendFormat("{0},", d);
+                }
 
                 sb.Remove(sb.Length - 1, 1);
             }
@@ -793,7 +899,9 @@ namespace ASC.Web.Core.Calendars
             {
                 sb.Append(";byyearday=");
                 foreach (var d in ByYearDay)
+                {
                     sb.AppendFormat("{0},", d);
+                }
 
                 sb.Remove(sb.Length - 1, 1);
             }
@@ -802,7 +910,9 @@ namespace ASC.Web.Core.Calendars
             {
                 sb.Append(";byweekno=");
                 foreach (var w in ByWeekNo)
+                {
                     sb.AppendFormat("{0},", w);
+                }
 
                 sb.Remove(sb.Length - 1, 1);
             }
@@ -811,7 +921,9 @@ namespace ASC.Web.Core.Calendars
             {
                 sb.Append(";bymonth=");
                 foreach (var m in ByMonth)
+                {
                     sb.AppendFormat("{0},", m);
+                }
 
                 sb.Remove(sb.Length - 1, 1);
             }
@@ -820,13 +932,17 @@ namespace ASC.Web.Core.Calendars
             {
                 sb.Append(";bysetpos=");
                 foreach (var p in BySetPos)
+                {
                     sb.AppendFormat("{0},", p);
+                }
 
                 sb.Remove(sb.Length - 1, 1);
             }
 
             if (WKST.DayOfWeek != DayOfWeek.Monday)
+            {
                 sb.Append($";wkst={WKST.Id}");
+            }
 
             if (!iCal && ExDates != null && ExDates.Count > 0)
             {
@@ -834,15 +950,21 @@ namespace ASC.Web.Core.Calendars
                 foreach (var d in this.ExDates)
                 {
                     if (d.IsDateTime)
+                    {
                         sb.Append(d.Date.ToString("yyyyMMdd'T'HHmmssK") + ",");
+                    }
                     else
+                    {
                         sb.Append(d.Date.ToString("yyyyMMdd") + ",");
+                    }
                 }
                 sb.Remove(sb.Length - 1, 1);
             }
 
             if (sb.Length > 0)
+            {
                 sb.Insert(0, "freq=");
+            }
 
             return sb.ToString();
         }
@@ -899,7 +1021,9 @@ namespace ASC.Web.Core.Calendars
                     case "until":
                         DateTime d;
                         if (DateTime.TryParseExact(val.ToUpper(), _dateTimeFormats, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out d))
+                        {
                             rr.Until = d;
+                        }
 
                         break;
 
@@ -956,8 +1080,9 @@ namespace ASC.Web.Core.Calendars
                         foreach (var date in val.Split(','))
                         {
                             if (DateTime.TryParseExact(date.ToUpper(), _dateTimeFormats, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out var dt))
+                            {
                                 rr.ExDates.Add(new ExDate() { Date = dt, IsDateTime = date.IndexOf('t', StringComparison.InvariantCultureIgnoreCase) >= 0 });
-
+                            }
                         }
                         break;
                 }
@@ -971,7 +1096,9 @@ namespace ASC.Web.Core.Calendars
         public string ToiCalFormat()
         {
             if (this.Freq == Frequency.Never)
+            {
                 return string.Empty;
+            }
 
             var sb = new StringBuilder();
             sb.Append("RRULE:" + this.ToString(true));
@@ -980,15 +1107,21 @@ namespace ASC.Web.Core.Calendars
             {
                 sb.Append("\r\nEXDATE");
                 if (!this.ExDates[0].IsDateTime)
+                {
                     sb.Append(";VALUE=DATE");
+                }
 
                 sb.Append(':');
                 foreach (var d in this.ExDates)
                 {
                     if (d.IsDateTime)
+                    {
                         sb.Append(d.Date.ToString("yyyyMMdd'T'HHmmssK"));
+                    }
                     else
+                    {
                         sb.Append(d.Date.ToString("yyyyMMdd"));
+                    }
 
                     sb.Append(',');
                 }
@@ -1013,7 +1146,9 @@ namespace ASC.Web.Core.Calendars
             {
                 var days = new List<WeekDay>();
                 foreach (var d in ByDay)
+                {
                     days.Add(WeekDay.ParseWeekDay(d.ToString()));
+                }
 
                 o.ByDay = days.ToArray();
             }

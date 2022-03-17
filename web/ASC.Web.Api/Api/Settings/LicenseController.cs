@@ -48,7 +48,11 @@ public class LicenseController: BaseSettingsController
     [Read("license/refresh", Check = false)]
     public bool RefreshLicense()
     {
-        if (!_coreBaseSettings.Standalone) return false;
+        if (!_coreBaseSettings.Standalone)
+        {
+            return false;
+        }
+
         _licenseReader.RefreshLicense();
         return true;
     }
@@ -56,7 +60,10 @@ public class LicenseController: BaseSettingsController
     [Create("license/accept", Check = false)]
     public object AcceptLicense()
     {
-        if (!_coreBaseSettings.Standalone) return "";
+        if (!_coreBaseSettings.Standalone)
+        {
+            return "";
+        }
 
         TariffSettings.SetLicenseAccept(_settingsManager);
         _messageService.Send(MessageAction.LicenseKeyUploaded);
@@ -89,15 +96,32 @@ public class LicenseController: BaseSettingsController
     [Create("license/trial")]
     public bool ActivateTrial()
     {
-        if (!_coreBaseSettings.Standalone) throw new NotSupportedException();
-        if (!_userManager.GetUsers(_authContext.CurrentAccount.ID).IsAdmin(_userManager)) throw new SecurityException();
+        if (!_coreBaseSettings.Standalone)
+        {
+            throw new NotSupportedException();
+        }
+
+        if (!_userManager.GetUsers(_authContext.CurrentAccount.ID).IsAdmin(_userManager))
+        {
+            throw new SecurityException();
+        }
 
         var curQuota = _tenantExtra.GetTenantQuota();
-        if (curQuota.Tenant != Tenant.DefaultTenant) return false;
-        if (curQuota.Trial) return false;
+        if (curQuota.Tenant != Tenant.DefaultTenant)
+        {
+            return false;
+        }
+
+        if (curQuota.Trial)
+        {
+            return false;
+        }
 
         var curTariff = _tenantExtra.GetCurrentTariff();
-        if (curTariff.DueDate.Date != DateTime.MaxValue.Date) return false;
+        if (curTariff.DueDate.Date != DateTime.MaxValue.Date)
+        {
+            return false;
+        }
 
         var quota = new TenantQuota(-1000)
         {
@@ -141,10 +165,15 @@ public class LicenseController: BaseSettingsController
         try
         {
             _apiContext.AuthByClaim();
-            if (!_authContext.IsAuthenticated && _settingsManager.Load<WizardSettings>().Completed) throw new SecurityException(Resource.PortalSecurity);
-            if (!inDto.Files.Any()) throw new Exception(Resource.ErrorEmptyUploadFileSelected);
+            if (!_authContext.IsAuthenticated && _settingsManager.Load<WizardSettings>().Completed)
+            {
+                throw new SecurityException(Resource.PortalSecurity);
+            }
 
-
+            if (!inDto.Files.Any())
+            {
+                throw new Exception(Resource.ErrorEmptyUploadFileSelected);
+            }
 
             var licenseFile = inDto.Files.First();
             var dueDate = _licenseReader.SaveLicenseTemp(licenseFile.OpenReadStream());

@@ -131,7 +131,10 @@ public class DbSettingsManager
     {
         get
         {
-            if (_tenantID == 0) _tenantID = TenantManager.GetCurrentTenant().Id;
+            if (_tenantID == 0)
+            {
+                _tenantID = TenantManager.GetCurrentTenant().Id;
+            }
 
             return _tenantID;
         }

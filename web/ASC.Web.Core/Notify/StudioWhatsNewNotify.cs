@@ -197,42 +197,78 @@ namespace ASC.Web.Studio.Core.Notify
         {
 
             if (feed.Module == ASC.Feed.Constants.BookmarksModule)
+            {
                 return WebstudioNotifyPatternResource.ActionCreateBookmark;
+            }
             else if (feed.Module == ASC.Feed.Constants.BlogsModule)
+            {
                 return WebstudioNotifyPatternResource.ActionCreateBlog;
+            }
             else if (feed.Module == ASC.Feed.Constants.ForumsModule)
             {
                 if (feed.Item == "forumTopic")
+                {
                     return WebstudioNotifyPatternResource.ActionCreateForum;
+                }
+
                 if (feed.Item == "forumPost")
+                {
                     return WebstudioNotifyPatternResource.ActionCreateForumPost;
+                }
+
                 if (feed.Item == "forumPoll")
+                {
                     return WebstudioNotifyPatternResource.ActionCreateForumPoll;
+                }
             }
             else if (feed.Module == ASC.Feed.Constants.EventsModule)
+            {
                 return WebstudioNotifyPatternResource.ActionCreateEvent;
+            }
             else if (feed.Module == ASC.Feed.Constants.ProjectsModule)
+            {
                 return WebstudioNotifyPatternResource.ActionCreateProject;
+            }
             else if (feed.Module == ASC.Feed.Constants.MilestonesModule)
+            {
                 return WebstudioNotifyPatternResource.ActionCreateMilestone;
+            }
             else if (feed.Module == ASC.Feed.Constants.DiscussionsModule)
+            {
                 return WebstudioNotifyPatternResource.ActionCreateDiscussion;
+            }
             else if (feed.Module == ASC.Feed.Constants.TasksModule)
+            {
                 return WebstudioNotifyPatternResource.ActionCreateTask;
+            }
             else if (feed.Module == ASC.Feed.Constants.CommentsModule)
+            {
                 return WebstudioNotifyPatternResource.ActionCreateComment;
+            }
             else if (feed.Module == ASC.Feed.Constants.CrmTasksModule)
+            {
                 return WebstudioNotifyPatternResource.ActionCreateTask;
+            }
             else if (feed.Module == ASC.Feed.Constants.ContactsModule)
+            {
                 return WebstudioNotifyPatternResource.ActionCreateContact;
+            }
             else if (feed.Module == ASC.Feed.Constants.DealsModule)
+            {
                 return WebstudioNotifyPatternResource.ActionCreateDeal;
+            }
             else if (feed.Module == ASC.Feed.Constants.CasesModule)
+            {
                 return WebstudioNotifyPatternResource.ActionCreateCase;
+            }
             else if (feed.Module == ASC.Feed.Constants.FilesModule)
+            {
                 return WebstudioNotifyPatternResource.ActionCreateFile;
+            }
             else if (feed.Module == ASC.Feed.Constants.FoldersModule)
+            {
                 return WebstudioNotifyPatternResource.ActionCreateFolder;
+            }
 
             return "";
         }

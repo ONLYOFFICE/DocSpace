@@ -3,7 +3,7 @@ namespace Textile.States;
 [FormatterState(@"^\s*<notextile>\s*$")]
 public class NoTextileFormatterState : FormatterState
 {
-    private bool _shouldExitNextTime = false;
+    private bool _shouldExitNextTime;
 
     public NoTextileFormatterState(TextileFormatter f)
         : base(f)
@@ -32,13 +32,18 @@ public class NoTextileFormatterState : FormatterState
     public override void FormatLine(string input)
     {
         if (!_shouldExitNextTime)
+        {
             Formatter.Output.WriteLine(input);
+        }
     }
 
     public override bool ShouldExit(string input)
     {
         if (_shouldExitNextTime)
+        {
             return true;
+        }
+
         _shouldExitNextTime = Regex.IsMatch(input, @"^\s*</notextile>\s*$");
         return false;
     }

@@ -126,7 +126,7 @@ internal class ProviderAccountDao : IProviderDao
         }
     }
 
-    static Func<FilesDbContext, int, int, FolderType, Guid, string, IAsyncEnumerable<DbFilesThirdpartyAccount>> getProvidersInfoQuery =
+    static readonly Func<FilesDbContext, int, int, FolderType, Guid, string, IAsyncEnumerable<DbFilesThirdpartyAccount>> getProvidersInfoQuery =
         EF.CompileAsyncQuery((FilesDbContext ctx, int tenantId, int linkId, FolderType folderType, Guid userId, string searchText) =>
         ctx.ThirdpartyAccount
         .AsNoTracking()

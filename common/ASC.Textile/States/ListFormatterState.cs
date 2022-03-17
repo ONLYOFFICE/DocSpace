@@ -67,7 +67,10 @@ namespace Textile.States
             if (_firstItemLine)
             {
                 if (!_firstItem)
+                {
                     Formatter.Output.WriteLine("</li>");
+                }
+
                 Formatter.Output.Write("<li " + FormattedStylesAndAlignment("li") + ">");
                 _firstItemLine = false;
             }
@@ -89,7 +92,9 @@ namespace Textile.States
         {
             // If we have an empty line, we can exit.
             if (string.IsNullOrEmpty(input))
+            {
                 return true;
+            }
 
             // We exit this list if the next
             // list item is of the same type but less
@@ -98,10 +103,14 @@ namespace Textile.States
             if (NestingDepth > 1)
             {
                 if (IsMatchForMe(input, 1, NestingDepth - 1))
+                {
                     return true;
+                }
             }
             if (IsMatchForOthers(input, 1, NestingDepth))
+            {
                 return true;
+            }
 
             // As it seems we're going to continue taking
             // care of this line, we take the opportunity
@@ -109,7 +118,9 @@ namespace Textile.States
             // previously (no "**" or "##" tags), or if it's
             // a new list item.
             if (IsMatchForMe(input, NestingDepth, NestingDepth))
+            {
                 _firstItemLine = true;
+            }
 
             return false;
         }
@@ -118,9 +129,15 @@ namespace Textile.States
         {
             // We don't let anyone but ourselves mess with our stuff.
             if (IsMatchForMe(input, 1, 100))
+            {
                 return true;
+            }
+
             if (IsMatchForOthers(input, 1, 100))
+            {
                 return true;
+            }
+
             return false;
         }
 

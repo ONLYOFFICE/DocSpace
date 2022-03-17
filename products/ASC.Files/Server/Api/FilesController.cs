@@ -121,7 +121,7 @@ public class FilesController : ApiControllerBase
     [Create("@my/file")]
     public Task<FileDto<int>> CreateFileFromBodyAsync([FromBody] CreateFileRequestDto<JsonElement> inDto)
     {
-        return _filesControllerHelperInt.CreateFileAsync(_globalFolderHelper.FolderMy, inDto.Title, inDto.TemplateId, inDto.EnableExternalExt);
+        return _filesControllerHelperInt.CreateFileAsync(_globalFolderHelper.FolderMy, inDto.Title, inDto.TemplateId);
     }
 
     /// <summary>
@@ -136,34 +136,34 @@ public class FilesController : ApiControllerBase
     [Create("{folderId}/file")]
     public Task<FileDto<string>> CreateFileFromBodyAsync(string folderId, [FromBody] CreateFileRequestDto<JsonElement> inDto)
     {
-        return _filesControllerHelperString.CreateFileAsync(folderId, inDto.Title, inDto.TemplateId, inDto.EnableExternalExt);
+        return _filesControllerHelperString.CreateFileAsync(folderId, inDto.Title, inDto.TemplateId);
     }
 
     [Create("{folderId:int}/file")]
     public Task<FileDto<int>> CreateFileFromBodyAsync(int folderId, [FromBody] CreateFileRequestDto<JsonElement> inDto)
     {
-        return _filesControllerHelperInt.CreateFileAsync(folderId, inDto.Title, inDto.TemplateId, inDto.EnableExternalExt);
+        return _filesControllerHelperInt.CreateFileAsync(folderId, inDto.Title, inDto.TemplateId);
     }
 
     [Create("@my/file")]
     [Consumes("application/x-www-form-urlencoded")]
     public Task<FileDto<int>> CreateFileFromFormAsync([FromForm] CreateFileRequestDto<JsonElement> inDto)
     {
-        return _filesControllerHelperInt.CreateFileAsync(_globalFolderHelper.FolderMy, inDto.Title, inDto.TemplateId, inDto.EnableExternalExt);
+        return _filesControllerHelperInt.CreateFileAsync(_globalFolderHelper.FolderMy, inDto.Title, inDto.TemplateId);
     }
 
     [Create("{folderId}/file")]
     [Consumes("application/x-www-form-urlencoded")]
     public Task<FileDto<string>> CreateFileFromFormAsync(string folderId, [FromForm] CreateFileRequestDto<JsonElement> inDto)
     {
-        return _filesControllerHelperString.CreateFileAsync(folderId, inDto.Title, inDto.TemplateId, inDto.EnableExternalExt);
+        return _filesControllerHelperString.CreateFileAsync(folderId, inDto.Title, inDto.TemplateId);
     }
 
     [Create("{folderId:int}/file")]
     [Consumes("application/x-www-form-urlencoded")]
     public Task<FileDto<int>> CreateFileFromFormAsync(int folderId, [FromForm] CreateFileRequestDto<JsonElement> inDto)
     {
-        return _filesControllerHelperInt.CreateFileAsync(folderId, inDto.Title, inDto.TemplateId, inDto.EnableExternalExt);
+        return _filesControllerHelperInt.CreateFileAsync(folderId, inDto.Title, inDto.TemplateId);
     }
 
     /// <summary>

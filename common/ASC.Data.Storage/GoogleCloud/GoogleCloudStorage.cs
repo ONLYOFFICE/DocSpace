@@ -148,7 +148,9 @@ public class GoogleCloudStorage : BaseStorage
         await storage.DownloadObjectAsync(_bucket, MakePath(domain, path), tempStream);
 
         if (offset > 0)
+        {
             tempStream.Seek(offset, SeekOrigin.Begin);
+        }
 
         tempStream.Position = 0;
 
@@ -267,7 +269,10 @@ public class GoogleCloudStorage : BaseStorage
 
     public override Task DeleteFilesAsync(string domain, List<string> paths)
     {
-        if (paths.Count == 0) return Task.CompletedTask;
+        if (paths.Count == 0)
+        {
+            return Task.CompletedTask;
+        }
 
         return InternalDeleteFilesAsync(domain, paths);
     }
@@ -298,7 +303,10 @@ public class GoogleCloudStorage : BaseStorage
             }
         }
 
-        if (keysToDel.Count == 0) return;
+        if (keysToDel.Count == 0)
+        {
+            return;
+        }
 
         using var storage = GetStorage();
 
@@ -401,7 +409,10 @@ public class GoogleCloudStorage : BaseStorage
 
         var items = storage.ListObjectsAsync(_bucket, MakePath(domain, path));
 
-        if (recursive) return items;
+        if (recursive)
+        {
+            return items;
+        }
 
         return items.Where(x => x.Name.IndexOf('/', MakePath(domain, path + "/").Length) == -1);
     }
@@ -776,12 +787,18 @@ public class GoogleCloudStorage : BaseStorage
         if (!string.IsNullOrEmpty(_subDir))
         {
             if (_subDir.Length == 1 && (_subDir[0] == '/' || _subDir[0] == '\\'))
+            {
                 result = path;
+            }
             else
+            {
                 result = $"{_subDir}/{path}"; // Ignory all, if _subDir is not null
+            }
         }
         else//Key combined from module+domain+filename
+        {
             result = $"{Tenant}/{Modulename}/{domain}/{path}";
+        }
 
         result = result.Replace("//", "/").TrimStart('/');
         if (_lowerCasing)

@@ -338,7 +338,10 @@ public class WhitelabelController: BaseSettingsController
 
     private bool SaveCompanyWhiteLabelSettings(CompanyWhiteLabelSettingsWrapper companyWhiteLabelSettingsWrapper)
     {
-        if (companyWhiteLabelSettingsWrapper.Settings == null) throw new ArgumentNullException("settings");
+        if (companyWhiteLabelSettingsWrapper.Settings == null)
+        {
+            throw new ArgumentNullException("settings");
+        }
 
         DemandRebrandingPermission();
 
@@ -383,7 +386,10 @@ public class WhitelabelController: BaseSettingsController
 
     private bool SaveAdditionalWhiteLabelSettings(AdditionalWhiteLabelSettingsWrapper wrapper)
     {
-        if (wrapper.Settings == null) throw new ArgumentNullException("settings");
+        if (wrapper.Settings == null)
+        {
+            throw new ArgumentNullException("settings");
+        }
 
         DemandRebrandingPermission();
 

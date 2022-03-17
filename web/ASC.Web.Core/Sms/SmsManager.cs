@@ -59,9 +59,20 @@ namespace ASC.Web.Studio.Core.SMS
         {
             mobilePhone = SmsSender.GetPhoneValueDigits(mobilePhone);
 
-            if (user == null || Equals(user, Constants.LostUser)) throw new Exception(Resource.ErrorUserNotFound);
-            if (string.IsNullOrEmpty(mobilePhone)) throw new Exception(Resource.ActivateMobilePhoneEmptyPhoneNumber);
-            if (!string.IsNullOrEmpty(user.MobilePhone) && user.MobilePhoneActivationStatus == MobilePhoneActivationStatus.Activated) throw new Exception(Resource.MobilePhoneMustErase);
+            if (user == null || Equals(user, Constants.LostUser))
+            {
+                throw new Exception(Resource.ErrorUserNotFound);
+            }
+
+            if (string.IsNullOrEmpty(mobilePhone))
+            {
+                throw new Exception(Resource.ActivateMobilePhoneEmptyPhoneNumber);
+            }
+
+            if (!string.IsNullOrEmpty(user.MobilePhone) && user.MobilePhoneActivationStatus == MobilePhoneActivationStatus.Activated)
+            {
+                throw new Exception(Resource.MobilePhoneMustErase);
+            }
 
             return InternalSaveMobilePhoneAsync(user, mobilePhone);
         }
@@ -97,15 +108,28 @@ namespace ASC.Web.Studio.Core.SMS
 
         public Task PutAuthCodeAsync(UserInfo user, bool again)
         {
-            if (user == null || Equals(user, Constants.LostUser)) throw new Exception(Resource.ErrorUserNotFound);
+            if (user == null || Equals(user, Constants.LostUser))
+            {
+                throw new Exception(Resource.ErrorUserNotFound);
+            }
 
-            if (!StudioSmsNotificationSettingsHelper.IsVisibleSettings() || !StudioSmsNotificationSettingsHelper.Enable) throw new MethodAccessException();
+            if (!StudioSmsNotificationSettingsHelper.IsVisibleSettings() || !StudioSmsNotificationSettingsHelper.Enable)
+            {
+                throw new MethodAccessException();
+            }
 
             var mobilePhone = SmsSender.GetPhoneValueDigits(user.MobilePhone);
 
-            if (SmsKeyStorage.ExistsKey(mobilePhone) && !again) return Task.CompletedTask;
+            if (SmsKeyStorage.ExistsKey(mobilePhone) && !again)
+            {
+                return Task.CompletedTask;
+            }
 
-            if (!SmsKeyStorage.GenerateKey(mobilePhone, out var key)) throw new Exception(Resource.SmsTooMuchError);
+            if (!SmsKeyStorage.GenerateKey(mobilePhone, out var key))
+            {
+                throw new Exception(Resource.SmsTooMuchError);
+            }
+
             return InternalPutAuthCodeAsync(mobilePhone, key);
         }
 
@@ -125,7 +149,10 @@ namespace ASC.Web.Studio.Core.SMS
                 return;
             }
 
-            if (user == null || Equals(user, Constants.LostUser)) throw new Exception(Resource.ErrorUserNotFound);
+            if (user == null || Equals(user, Constants.LostUser))
+            {
+                throw new Exception(Resource.ErrorUserNotFound);
+            }
 
             var valid = SmsKeyStorage.ValidateKey(user.MobilePhone, code);
             switch (valid)
@@ -139,7 +166,10 @@ namespace ASC.Web.Studio.Core.SMS
                 case SmsKeyStorage.Result.Invalide:
                     throw new ArgumentException(Resource.SmsAuthenticationMessageError);
             }
-            if (valid != SmsKeyStorage.Result.Ok) throw new Exception("Error: " + valid);
+            if (valid != SmsKeyStorage.Result.Ok)
+            {
+                throw new Exception("Error: " + valid);
+            }
 
             if (!SecurityContext.IsAuthenticated)
             {

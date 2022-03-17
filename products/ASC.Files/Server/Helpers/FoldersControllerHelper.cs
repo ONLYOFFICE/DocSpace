@@ -61,7 +61,7 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
     {
         var result = new List<FileOperationDto>();
 
-        foreach (var e in _fileStorageService.DeleteFolder("delete", folderId, false, deleteAfter, immediately))
+        foreach (var e in _fileStorageService.DeleteFolder(folderId, false, deleteAfter, immediately))
         {
             result.Add(await _fileOperationDtoHelper.GetAsync(e));
         }

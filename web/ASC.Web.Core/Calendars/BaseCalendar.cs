@@ -95,7 +95,9 @@ namespace ASC.Web.Core.Calendars
             foreach (var e in LoadEvents(AuthContext.CurrentAccount.ID, DateTime.MinValue, DateTime.MaxValue))
             {
                 if (e is BaseEvent && e.GetType().GetCustomAttributes(typeof(AllDayLongUTCAttribute), true).Length == 0)
+                {
                     (e as BaseEvent).TimeZone = TimeZone;
+                }
 
                 sb.AppendLine(e.ToiCalFormat());
             }

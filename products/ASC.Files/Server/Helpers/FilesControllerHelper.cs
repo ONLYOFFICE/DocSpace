@@ -102,21 +102,21 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
         }
     }
 
-    public async Task<FileDto<T>> CreateFileAsync(T folderId, string title, JsonElement templateId, bool enableExternalExt = false)
+    public async Task<FileDto<T>> CreateFileAsync(T folderId, string title, JsonElement templateId)
     {
         File<T> file;
 
         if (templateId.ValueKind == JsonValueKind.Number)
         {
-            file = await _fileStorageService.CreateNewFileAsync(new FileModel<T, int> { ParentId = folderId, Title = title, TemplateId = templateId.GetInt32() }, enableExternalExt);
+            file = await _fileStorageService.CreateNewFileAsync(new FileModel<T, int> { ParentId = folderId, Title = title, TemplateId = templateId.GetInt32() });
         }
         else if (templateId.ValueKind == JsonValueKind.String)
         {
-            file = await _fileStorageService.CreateNewFileAsync(new FileModel<T, string> { ParentId = folderId, Title = title, TemplateId = templateId.GetString() }, enableExternalExt);
+            file = await _fileStorageService.CreateNewFileAsync(new FileModel<T, string> { ParentId = folderId, Title = title, TemplateId = templateId.GetString() });
         }
         else
         {
-            file = await _fileStorageService.CreateNewFileAsync(new FileModel<T, int> { ParentId = folderId, Title = title, TemplateId = 0 }, enableExternalExt);
+            file = await _fileStorageService.CreateNewFileAsync(new FileModel<T, int> { ParentId = folderId, Title = title, TemplateId = 0 });
         }
 
         return await _fileDtoHelper.GetAsync(file);
@@ -246,7 +246,7 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
 
         if (ext == destExt)
         {
-            var newFile = await service.CreateNewFileAsync(new FileModel<TTemplate, T> { ParentId = destFolderId, Title = destTitle, TemplateId = fileId }, false);
+            var newFile = await service.CreateNewFileAsync(new FileModel<TTemplate, T> { ParentId = destFolderId, Title = destTitle, TemplateId = fileId });
 
             return await _fileDtoHelper.GetAsync(newFile);
         }
@@ -261,7 +261,7 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
     {
         var result = new List<FileOperationDto>();
 
-        foreach (var e in _fileStorageService.DeleteFile("delete", fileId, false, deleteAfter, immediately))
+        foreach (var e in _fileStorageService.DeleteFile(fileId, false, deleteAfter, immediately))
         {
             result.Add(await _fileOperationDtoHelper.GetAsync(e));
         }

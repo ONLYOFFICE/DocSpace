@@ -44,7 +44,7 @@ namespace ASC.Web.Core.Helpers
         private class LookupTable : Dictionary<string, object> { }
         private readonly Dictionary<CultureInfo, LookupTable> _lookupTables = new Dictionary<CultureInfo, LookupTable>();
         private readonly System.Resources.ResourceManager _resourceManager;
-        private readonly bool _isFlagEnum = false;
+        private readonly bool _isFlagEnum;
         private readonly Array _flagValues;
 
         /// <summary>
@@ -55,7 +55,9 @@ namespace ASC.Web.Core.Helpers
         private LookupTable GetLookupTable(CultureInfo culture)
         {
             if (culture == null)
+            {
                 culture = CultureInfo.CurrentCulture;
+            }
 
             if (!_lookupTables.TryGetValue(culture, out var result))
             {
@@ -85,7 +87,10 @@ namespace ASC.Web.Core.Helpers
             var resourceName = $"{type.Name}_{value}";
             var result = _resourceManager.GetString(resourceName, culture);
             if (result == null)
+            {
                 result = resourceName;
+            }
+
             return result;
         }
 

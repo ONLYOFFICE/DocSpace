@@ -39,7 +39,10 @@ namespace ASC.Core.Users
 
         public static List<UserInfo> SortByUserName(this IEnumerable<UserInfo> userInfoCollection)
         {
-            if (userInfoCollection == null) return new List<UserInfo>();
+            if (userInfoCollection == null)
+            {
+                return new List<UserInfo>();
+            }
 
             var users = new List<UserInfo>(userInfoCollection);
             users.Sort(UserInfoComparer.Default);

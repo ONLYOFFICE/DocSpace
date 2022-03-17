@@ -72,25 +72,33 @@ namespace ASC.Web.Core.Utility
 
             //TODO check
             if (!urlHelper.IsLocalUrl(resolvedPath))
+            {
                 resolvedPath = urlHelper.Action(resolvedPath);
+            }
 
             try
             {
                 var filePath = CrossPlatform.PathCombine(HostEnvironment.ContentRootPath, resolvedPath);
                 if (!File.Exists(filePath))
+                {
                     throw new FileNotFoundException("", path);
+                }
             }
             catch (Exception)
             {
                 resolvedPath = path.ToLower().Replace(ColorThemesSettings.ThemeFolderTemplate, "default");
 
                 if (!urlHelper.IsLocalUrl(resolvedPath))
+                {
                     resolvedPath = urlHelper.Action(resolvedPath);
+                }
 
                 var filePath = CrossPlatform.PathCombine(HostEnvironment.ContentRootPath, resolvedPath);
 
                 if (!File.Exists(filePath))
+                {
                     throw new FileNotFoundException("", path);
+                }
             }
 
             return resolvedPath;

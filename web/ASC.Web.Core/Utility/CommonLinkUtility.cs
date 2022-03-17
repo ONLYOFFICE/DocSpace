@@ -134,7 +134,9 @@ namespace ASC.Web.Studio.Utility
         public string GetUserProfile(Guid userID)
         {
             if (!UserManager.UserExists(userID))
+            {
                 return GetEmployees();
+            }
 
             return GetUserProfile(userID.ToString());
         }
@@ -142,7 +144,9 @@ namespace ASC.Web.Studio.Utility
         public string GetUserProfile(UserInfo user)
         {
             if (!UserManager.UserExists(user))
+            {
                 return GetEmployees();
+            }
 
             return GetUserProfile(user, true);
         }
@@ -205,7 +209,10 @@ namespace ASC.Web.Studio.Utility
             if (HttpContextAccessor?.HttpContext != null)
             {
                 GetLocationByRequest(out var product, out _);
-                if (product != null) productID = product.ID;
+                if (product != null)
+                {
+                    productID = product.ID;
+                }
             }
 
             return productID;
@@ -268,7 +275,9 @@ namespace ASC.Web.Studio.Utility
                     {
                         var _itemName = GetWebItemNameFromUrl(item.StartURL);
                         if (itemName.Equals(_itemName, StringComparison.InvariantCultureIgnoreCase))
+                        {
                             return item;
+                        }
                     }
                 }
                 else
@@ -290,7 +299,9 @@ namespace ASC.Web.Studio.Utility
                     }
 
                     if (pid != Guid.Empty)
+                    {
                         return WebItemManager[pid];
+                    }
                 }
             }
 
@@ -302,7 +313,10 @@ namespace ASC.Web.Studio.Utility
             currentProduct = null;
             currentModule = null;
 
-            if (string.IsNullOrEmpty(currentURL)) return;
+            if (string.IsNullOrEmpty(currentURL))
+            {
+                return;
+            }
 
             var urlParams = HttpUtility.ParseQueryString(new Uri(currentURL).Query);
             var productByName = GetProductBySysName(urlParams[ParamName_ProductSysName]);
@@ -368,7 +382,9 @@ namespace ASC.Web.Studio.Utility
             }
 
             if (pid != Guid.Empty)
+            {
                 currentProduct = WebItemManager[pid] as IProduct;
+            }
         }
 
         private string GetWebItemNameFromUrl(string url)
@@ -446,6 +462,7 @@ namespace ASC.Web.Studio.Utility
             IProduct result = null;
 
             if (!string.IsNullOrEmpty(sysName))
+            {
                 foreach (var product in WebItemManager.GetItemsAll<IProduct>())
                 {
                     if (string.Equals(sysName, WebItemExtension.GetSysName(product)))
@@ -454,6 +471,7 @@ namespace ASC.Web.Studio.Utility
                         break;
                     }
                 }
+            }
 
             return result;
         }
@@ -466,7 +484,9 @@ namespace ASC.Web.Studio.Utility
         public string GetUserParamsPair(UserInfo user)
         {
             if (user == null || string.IsNullOrEmpty(user.UserName) || !UserManager.UserExists(user))
+            {
                 return "";
+            }
 
             return HttpUtility.UrlEncode(user.UserName.ToLowerInvariant());
         }
@@ -476,12 +496,16 @@ namespace ASC.Web.Studio.Utility
         public string GetHelpLink(SettingsManager settingsManager, AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper, bool inCurrentCulture = true)
         {
             if (!settingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>().HelpCenterEnabled)
+            {
                 return string.Empty;
+            }
 
             var url = additionalWhiteLabelSettingsHelper.DefaultHelpCenterUrl;
 
             if (string.IsNullOrEmpty(url))
+            {
                 return string.Empty;
+            }
 
             return GetRegionalUrl(url, inCurrentCulture ? CultureInfo.CurrentCulture.TwoLetterISOLanguageName : null);
         }
@@ -493,7 +517,9 @@ namespace ASC.Web.Studio.Utility
         public string GetAdministration(ManagementType managementType)
         {
             if (managementType == ManagementType.General)
+            {
                 return ToAbsolute("~/management.aspx") + string.Empty;
+            }
 
             return ToAbsolute("~/management.aspx") + "?" + "type=" + ((int)managementType).ToString();
         }

@@ -322,19 +322,27 @@ namespace ASC.Web.Core.Files
         {
             var url = string.Format(FileWebEditorExternalUrlString, HttpUtility.UrlEncode(fileUri), HttpUtility.UrlEncode(fileTitle));
             if (openFolder)
+            {
                 url += "&openfolder=true";
+            }
+
             return url;
         }
 
         public string GetFileWebPreviewUrl(FileUtility fileUtility, string fileTitle, object fileId, int fileVersion = 0)
         {
             if (fileUtility.CanImageView(fileTitle) || fileUtility.CanMediaView(fileTitle))
+            {
                 return GetFileWebMediaViewUrl(fileId);
+            }
 
             if (fileUtility.CanWebView(fileTitle))
             {
                 if (fileUtility.ExtsMustConvert.Contains(FileUtility.GetFileExtension(fileTitle)))
+                {
                     return string.Format(FileWebViewerUrlString, HttpUtility.UrlEncode(fileId.ToString()));
+                }
+
                 return GetFileWebEditorUrl(fileId, fileVersion);
             }
 
@@ -375,10 +383,14 @@ namespace ASC.Web.Core.Files
                                             encrypted.ToString().ToLower());
 
             if (fileId != null)
+            {
                 queryString = queryString + "&" + FileId + "=" + HttpUtility.UrlEncode(fileId.ToString());
+            }
 
             if (folderId != null)
+            {
                 queryString = queryString + "&" + FolderId + "=" + HttpUtility.UrlEncode(folderId.ToString());
+            }
 
             return CommonLinkUtility.GetFullAbsolutePath(GetFileUploaderHandlerVirtualPath() + queryString);
         }
@@ -421,9 +433,15 @@ namespace ASC.Web.Core.Files
                 throw new NotSupportedException("Method for server edition only.");
             }
             value = (value ?? "").Trim();
-            if (string.IsNullOrEmpty(value)) value = null;
+            if (string.IsNullOrEmpty(value))
+            {
+                value = null;
+            }
+
             if (GetUrlSetting(key) != value)
+            {
                 CoreSettings.SaveSetting(GetSettingsKey(key), value);
+            }
         }
 
         private string GetSettingsKey(string key)

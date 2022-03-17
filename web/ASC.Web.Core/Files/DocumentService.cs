@@ -51,7 +51,11 @@ namespace ASC.Web.Core.Files
             expectedKey ??= "";
             const int maxLength = 128;
             using var sha256 = SHA256.Create();
-            if (expectedKey.Length > maxLength) expectedKey = Convert.ToBase64String(sha256.ComputeHash(Encoding.UTF8.GetBytes(expectedKey)));
+            if (expectedKey.Length > maxLength)
+            {
+                expectedKey = Convert.ToBase64String(sha256.ComputeHash(Encoding.UTF8.GetBytes(expectedKey)));
+            }
+
             var key = Regex.Replace(expectedKey, "[^0-9a-zA-Z_]", "_");
             return key.Substring(key.Length - Math.Min(key.Length, maxLength));
         }
@@ -92,8 +96,15 @@ namespace ASC.Web.Core.Files
            IHttpClientFactory clientFactory)
         {
             fromExtension = string.IsNullOrEmpty(fromExtension) ? Path.GetExtension(documentUri) : fromExtension;
-            if (string.IsNullOrEmpty(fromExtension)) throw new ArgumentNullException(nameof(fromExtension), "Document's extension for conversion is not known");
-            if (string.IsNullOrEmpty(toExtension)) throw new ArgumentNullException(nameof(toExtension), "Extension for conversion is not known");
+            if (string.IsNullOrEmpty(fromExtension))
+            {
+                throw new ArgumentNullException(nameof(fromExtension), "Document's extension for conversion is not known");
+            }
+
+            if (string.IsNullOrEmpty(toExtension))
+            {
+                throw new ArgumentNullException(nameof(toExtension), "Extension for conversion is not known");
+            }
 
             return InternalGetConvertedUriAsync(fileUtility, documentConverterUrl, documentUri, fromExtension, toExtension, documentRevisionId, password, thumbnail, spreadsheetLayout, isAsync, signatureSecret, clientFactory);
         }
@@ -192,16 +203,25 @@ namespace ASC.Web.Core.Files
                     throw new HttpRequestException("Timeout");
                 }
 
-                if (responseStream == null) throw new WebException("Could not get an answer");
+                if (responseStream == null)
+                {
+                    throw new WebException("Could not get an answer");
+                }
+
                 using var reader = new StreamReader(responseStream);
                 dataResponse = await reader.ReadToEndAsync();
             }
             finally
             {
                 if (responseStream != null)
+                {
                     responseStream.Dispose();
+                }
+
                 if (response != null)
+                {
                     response.Dispose();
+                }
             }
 
             return GetResponseUri(dataResponse);
@@ -243,9 +263,20 @@ namespace ASC.Web.Core.Files
                 Key = documentRevisionId,
             };
 
-            if (!string.IsNullOrEmpty(callbackUrl)) body.Callback = callbackUrl;
-            if (users != null && users.Length > 0) body.Users = users;
-            if (meta != null) body.Meta = meta;
+            if (!string.IsNullOrEmpty(callbackUrl))
+            {
+                body.Callback = callbackUrl;
+            }
+
+            if (users != null && users.Length > 0)
+            {
+                body.Users = users;
+            }
+
+            if (meta != null)
+            {
+                body.Meta = meta;
+            }
 
             if (!string.IsNullOrEmpty(signatureSecret))
             {
@@ -274,7 +305,10 @@ namespace ASC.Web.Core.Files
             using (var response = await httpClient.SendAsync(request))
             using (var stream = await response.Content.ReadAsStreamAsync())
             {
-                if (stream == null) throw new Exception("Response is null");
+                if (stream == null)
+                {
+                    throw new Exception("Response is null");
+                }
 
                 using var reader = new StreamReader(stream);
                 dataResponse = await reader.ReadToEndAsync();
@@ -308,7 +342,9 @@ namespace ASC.Web.Core.Files
             ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(docbuilderUrl);
 
             if (string.IsNullOrEmpty(requestKey) && string.IsNullOrEmpty(scriptUrl))
+            {
                 throw new ArgumentException("requestKey or inputScript is empty");
+            }
 
             return InternalDocbuilderRequestAsync(fileUtility, docbuilderUrl, requestKey, scriptUrl, isAsync, signatureSecret, clientFactory);
         }
@@ -371,10 +407,16 @@ namespace ASC.Web.Core.Files
                 }
             }
 
-            if (string.IsNullOrEmpty(dataResponse)) throw new Exception("Invalid response");
+            if (string.IsNullOrEmpty(dataResponse))
+            {
+                throw new Exception("Invalid response");
+            }
 
             var responseFromService = JObject.Parse(dataResponse);
-            if (responseFromService == null) throw new Exception("Invalid answer format");
+            if (responseFromService == null)
+            {
+                throw new Exception("Invalid answer format");
+            }
 
             var errorElement = responseFromService.Value<string>("error");
             if (!string.IsNullOrEmpty(errorElement))
@@ -797,13 +839,22 @@ namespace ASC.Web.Core.Files
         /// <returns>The percentage of completion of conversion</returns>
         private static (int ResultPercent, string responseuri) GetResponseUri(string jsonDocumentResponse)
         {
-            if (string.IsNullOrEmpty(jsonDocumentResponse)) throw new ArgumentException("Invalid param", nameof(jsonDocumentResponse));
+            if (string.IsNullOrEmpty(jsonDocumentResponse))
+            {
+                throw new ArgumentException("Invalid param", nameof(jsonDocumentResponse));
+            }
 
             var responseFromService = JObject.Parse(jsonDocumentResponse);
-            if (responseFromService == null) throw new WebException("Invalid answer format");
+            if (responseFromService == null)
+            {
+                throw new WebException("Invalid answer format");
+            }
 
             var errorElement = responseFromService.Value<string>("error");
-            if (!string.IsNullOrEmpty(errorElement)) DocumentServiceException.ProcessResponseError(errorElement);
+            if (!string.IsNullOrEmpty(errorElement))
+            {
+                DocumentServiceException.ProcessResponseError(errorElement);
+            }
 
             var isEndConvert = responseFromService.Value<bool>("endConvert");
 
@@ -817,7 +868,10 @@ namespace ASC.Web.Core.Files
             else
             {
                 resultPercent = responseFromService.Value<int>("percent");
-                if (resultPercent >= 100) resultPercent = 99;
+                if (resultPercent >= 100)
+                {
+                    resultPercent = 99;
+                }
             }
 
             return (resultPercent, responseUri);

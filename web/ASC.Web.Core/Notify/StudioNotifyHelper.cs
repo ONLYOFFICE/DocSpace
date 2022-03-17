@@ -92,15 +92,19 @@ namespace ASC.Web.Studio.Core.Notify
                 if (tousers)
                 {
                     if (toguests)
+                    {
                         return UserManager.GetUsers();
+                    }
 
                     return UserManager.GetUsers(EmployeeStatus.Default, EmployeeType.User);
                 }
 
                 if (toguests)
+                {
                     return
                         UserManager.GetUsersByGroup(Constants.GroupAdmin.ID)
                                    .Concat(UserManager.GetUsers(EmployeeStatus.Default, EmployeeType.Visitor));
+                }
 
                 return UserManager.GetUsersByGroup(Constants.GroupAdmin.ID);
             }
@@ -108,15 +112,19 @@ namespace ASC.Web.Studio.Core.Notify
             if (tousers)
             {
                 if (toguests)
+                {
                     return UserManager.GetUsers()
                                       .Where(u => !UserManager.IsUserInGroup(u.Id, Constants.GroupAdmin.ID));
+                }
 
                 return UserManager.GetUsers(EmployeeStatus.Default, EmployeeType.User)
                                   .Where(u => !UserManager.IsUserInGroup(u.Id, Constants.GroupAdmin.ID));
             }
 
             if (toguests)
+            {
                 return UserManager.GetUsers(EmployeeStatus.Default, EmployeeType.Visitor);
+            }
 
             return new List<UserInfo>();
         }
@@ -135,7 +143,10 @@ namespace ASC.Web.Studio.Core.Notify
         {
             var res = new List<IRecipient>();
 
-            if (emails == null) return res.ToArray();
+            if (emails == null)
+            {
+                return res.ToArray();
+            }
 
             res.AddRange(emails.
                              Select(email => email.ToLower()).
@@ -198,7 +209,10 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void SubscribeToNotify(IRecipient recipient, INotifyAction notifyAction, bool subscribe)
         {
-            if (recipient == null) return;
+            if (recipient == null)
+            {
+                return;
+            }
 
             if (subscribe)
             {

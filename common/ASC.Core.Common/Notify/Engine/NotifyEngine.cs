@@ -25,7 +25,7 @@
 
 namespace ASC.Notify.Engine;
 
-public class NotifyEngine : INotifyEngine
+public class NotifyEngine : INotifyEngine, IDisposable
 {
     private readonly ILog _logger;
     private readonly Context _context;
@@ -567,6 +567,11 @@ public class NotifyEngine : INotifyEngine
         }
     }
 
+    public void Dispose()
+    {
+        _methodsEvent.Dispose();
+        _requestsEvent.Dispose();
+    }
 
     private sealed class SendMethodWrapper
     {

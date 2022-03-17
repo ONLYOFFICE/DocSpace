@@ -288,7 +288,9 @@ namespace ASC.Web.Studio.Core.Notify
                         logoData = ReadStreamToByteArray(logoStream) ?? GetDefaultMailLogo();
 
                         if (logoData != null)
+                        {
                             tenantLogoManager.InsertMailLogoDataToCache(logoData);
+                        }
                     }
 
                     if (logoData != null)
@@ -318,7 +320,10 @@ namespace ASC.Web.Studio.Core.Notify
 
         private static byte[] ReadStreamToByteArray(Stream inputStream)
         {
-            if (inputStream == null) return null;
+            if (inputStream == null)
+            {
+                return null;
+            }
 
             using (inputStream)
             {

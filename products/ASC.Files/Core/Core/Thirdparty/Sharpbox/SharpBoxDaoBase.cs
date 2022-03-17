@@ -103,14 +103,20 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
 
         public ICloudFileSystemEntry GetChild(string name, bool bThrowException)
         {
-            if (bThrowException) throw new ArgumentNullException(name);
+            if (bThrowException)
+            {
+                throw new ArgumentNullException(name);
+            }
 
             return null;
         }
 
         public ICloudFileSystemEntry GetChild(string idOrName, bool bThrowException, bool firstByNameIfNotFound)
         {
-            if (bThrowException) throw new ArgumentNullException(idOrName);
+            if (bThrowException)
+            {
+                throw new ArgumentNullException(idOrName);
+            }
 
             return null;
         }

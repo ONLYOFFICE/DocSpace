@@ -135,7 +135,10 @@ namespace ASC.Web.Core
                 var file = webitem.ID.ToString();
                 try
                 {
-                    if (DisabledWebItem(file)) continue;
+                    if (DisabledWebItem(file))
+                    {
+                        continue;
+                    }
 
                     RegistryItem(result, webitem);
                 }

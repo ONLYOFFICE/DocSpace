@@ -68,8 +68,8 @@ internal class BoxProviderInfo : IProviderInfo
         }
     }
 
-    private BoxStorageDisposableWrapper _wrapper;
-    private BoxProviderInfoHelper _boxProviderInfoHelper;
+    private readonly BoxStorageDisposableWrapper _wrapper;
+    private readonly BoxProviderInfoHelper _boxProviderInfoHelper;
 
     public BoxProviderInfo(
         BoxStorageDisposableWrapper wrapper,

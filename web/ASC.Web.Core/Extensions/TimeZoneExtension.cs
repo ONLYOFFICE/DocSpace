@@ -38,7 +38,9 @@ namespace System
         public static TimeSpan GetOffset(this TimeZoneInfo timeZone, bool baseOffset = false, DateTime dateTime = default)
         {
             if (baseOffset)
+            {
                 return timeZone.BaseUtcOffset;
+            }
 
             return timeZone.GetUtcOffset(dateTime == default ? DateTime.UtcNow : dateTime);
         }

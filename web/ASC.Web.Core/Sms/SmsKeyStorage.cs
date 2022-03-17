@@ -140,7 +140,10 @@ namespace ASC.Web.Core.Sms
             var cacheCheck = BuildCacheKey("check" + phone);
             int.TryParse(CheckCache.Get<string>(cacheCheck), out var counter);
             if (++counter > AttemptCount)
+            {
                 return Result.TooMuch;
+            }
+
             CheckCache.Insert(cacheCheck, counter.ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(StoreInterval));
 
             lock (KeyLocker)
@@ -148,15 +151,21 @@ namespace ASC.Web.Core.Sms
                 var cacheKey = BuildCacheKey(phone);
                 var phoneKeys = KeyCache.Get<Dictionary<string, DateTime>>(cacheKey);
                 if (phoneKeys == null)
+                {
                     return Result.Timeout;
+                }
 
                 if (!phoneKeys.ContainsKey(key))
+                {
                     return Result.Invalide;
+                }
 
                 var createDate = phoneKeys[key];
                 SmsKeyStorageCache.RemoveFromCache(cacheKey);
                 if (createDate.Add(StoreInterval) < DateTime.UtcNow)
+                {
                     return Result.Timeout;
+                }
 
                 CheckCache.Insert(cacheCheck, (counter - 1).ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(StoreInterval));
                 return Result.Ok;

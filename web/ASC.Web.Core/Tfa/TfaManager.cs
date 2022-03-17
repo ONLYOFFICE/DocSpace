@@ -101,11 +101,17 @@ namespace ASC.Web.Studio.Core.TFA
                 return false;
             }
 
-            if (user == null || Equals(user, Constants.LostUser)) throw new Exception(Resource.ErrorUserNotFound);
+            if (user == null || Equals(user, Constants.LostUser))
+            {
+                throw new Exception(Resource.ErrorUserNotFound);
+            }
 
             code = (code ?? "").Trim();
 
-            if (string.IsNullOrEmpty(code)) throw new Exception(Resource.ActivateTfaAppEmptyCode);
+            if (string.IsNullOrEmpty(code))
+            {
+                throw new Exception(Resource.ActivateTfaAppEmptyCode);
+            }
 
             int.TryParse(Cache.Get<string>("tfa/" + user.Id), out var counter);
             if (++counter > SetupInfo.LoginThreshold)

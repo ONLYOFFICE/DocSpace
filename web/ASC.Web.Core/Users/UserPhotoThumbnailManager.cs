@@ -39,7 +39,10 @@ namespace ASC.Web.Core.Users
 
         public static List<ThumbnailItem> SaveThumbnails(UserPhotoManager userPhotoManager, SettingsManager settingsManager, UserPhotoThumbnailSettings thumbnailSettings, Guid userId)
         {
-            if (thumbnailSettings.Size.IsEmpty) return null;
+            if (thumbnailSettings.Size.IsEmpty)
+            {
+                return null;
+            }
 
             var thumbnailsData = new ThumbnailsData(userId, userPhotoManager);
 
@@ -47,7 +50,10 @@ namespace ASC.Web.Core.Users
 
             using var img = thumbnailsData.MainImgBitmap(out var format);
 
-            if (img == null) return null;
+            if (img == null)
+            {
+                return null;
+            }
 
             foreach (var thumbnail in thumbnailsData.ThumbnailList())
             {
@@ -76,7 +82,7 @@ namespace ASC.Web.Core.Users
                                      width,
                                      height);
 
-            Image destRound = mainImg.Clone(x => x.Crop(rect).Resize(new ResizeOptions
+            var destRound = mainImg.Clone(x => x.Crop(rect).Resize(new ResizeOptions
             {
                 Size = size,
                 Mode = ResizeMode.Stretch

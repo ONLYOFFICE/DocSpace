@@ -30,7 +30,7 @@ public class DbMessageSender : IMessageSender
 {
     private readonly ILog _logger;
     private readonly MessagesRepository _messagesRepository;
-    private bool _messagingEnabled;
+    private readonly bool _messagingEnabled;
 
     public DbMessageSender(IConfiguration configuration, MessagesRepository messagesRepository, IOptionsMonitor<ILog> options)
     {

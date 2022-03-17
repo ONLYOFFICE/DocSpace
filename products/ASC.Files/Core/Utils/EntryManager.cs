@@ -249,9 +249,9 @@ public class EntryStatusManager
 [Scope]
 public class EntryManager
 {
-    private const string UpdateList = "filesUpdateList";
+    private const string _updateList = "filesUpdateList";
 
-    private ICache _cache;
+    private readonly ICache _cache;
     private readonly FileTrackerHelper _fileTracker;
     private readonly EntryStatusManager _entryStatusManager;
     private readonly IDaoFactory _daoFactory;
@@ -336,7 +336,7 @@ public class EntryManager
 
     public async Task<(IEnumerable<FileEntry> Entries, int Total)> GetEntriesAsync<T>(Folder<T> parent, int from, int count, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy)
     {
-        int total = 0;
+        var total = 0;
 
         if (parent == null)
         {
@@ -662,7 +662,7 @@ public class EntryManager
         var fileIds = tags.Where(tag => tag.EntryType == FileEntryType.File).ToList();
 
         var filesEnum = await GetRecentByIdsAsync(fileIds.Where(r => r.EntryId is int).Select(r => (int)r.EntryId), filter, subjectGroup, subjectId, searchText, searchInContent);
-        List<FileEntry> files = filesEnum.ToList();
+        var files = filesEnum.ToList();
         files.AddRange(await GetRecentByIdsAsync(fileIds.Where(r => r.EntryId is string).Select(r => (string)r.EntryId), filter, subjectGroup, subjectId, searchText, searchInContent));
 
         var listFileIds = fileIds.Select(tag => tag.EntryId).ToList();
@@ -824,7 +824,9 @@ public class EntryManager
             {
                 var cmp = 0;
                 if (x.FileEntryType == FileEntryType.File && y.FileEntryType == FileEntryType.File)
+                {
                     cmp = c * FileUtility.GetFileExtension(x.Title).CompareTo(FileUtility.GetFileExtension(y.Title));
+                }
 
                 return cmp == 0 ? x.Title.EnumerableComparer(y.Title) : cmp;
             }
@@ -840,7 +842,9 @@ public class EntryManager
             {
                 var cmp = 0;
                 if (x.FileEntryType == FileEntryType.File && y.FileEntryType == FileEntryType.File)
+                {
                     cmp = c * ((File<T>)x).ContentLength.CompareTo(((File<T>)y).ContentLength);
+                }
 
                 return cmp == 0 ? x.Title.EnumerableComparer(y.Title) : cmp;
             }
@@ -1162,8 +1166,7 @@ public class EntryManager
 
         if (file.ProviderEntry && !newExtension.Equals(currentExt))
         {
-            if (_fileUtility.ExtsConvertible.Keys.Contains(newExtension)
-                && _fileUtility.ExtsConvertible[newExtension].Contains(currentExt))
+            if (_fileUtility.ExtsConvertible.ContainsKey(newExtension) && _fileUtility.ExtsConvertible[newExtension].Contains(currentExt))
             {
                 if (stream != null)
                 {
@@ -1345,14 +1348,14 @@ public class EntryManager
             throw new Exception(FilesCommonResource.ErrorMassage_NotSupportedFormat);
         }
 
-        var exists = _cache.Get<string>(UpdateList + fileId.ToString()) != null;
+        var exists = _cache.Get<string>(_updateList + fileId.ToString()) != null;
         if (exists)
         {
             throw new Exception(FilesCommonResource.ErrorMassage_UpdateEditingFile);
         }
         else
         {
-            _cache.Insert(UpdateList + fileId.ToString(), fileId.ToString(), TimeSpan.FromMinutes(2));
+            _cache.Insert(_updateList + fileId.ToString(), fileId.ToString(), TimeSpan.FromMinutes(2));
         }
 
         try
@@ -1418,7 +1421,7 @@ public class EntryManager
         }
         finally
         {
-            _cache.Remove(UpdateList + fromFile.ID);
+            _cache.Remove(_updateList + fromFile.ID);
         }
     }
 

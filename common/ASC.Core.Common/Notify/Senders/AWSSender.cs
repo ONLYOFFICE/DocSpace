@@ -28,7 +28,7 @@ using Message = Amazon.SimpleEmail.Model.Message;
 namespace ASC.Core.Notify.Senders;
 
 [Singletone(Additional = typeof(AWSSenderExtension))]
-public class AWSSender : SmtpSender
+public class AWSSender : SmtpSender, IDisposable
 {
     private readonly object _locker = new object();
     private AmazonSimpleEmailServiceClient _amazonEmailServiceClient;
@@ -183,7 +183,10 @@ public class AWSSender : SmtpSender
 
     private void RefreshQuotaIfNeeded()
     {
-        if (!IsRefreshNeeded()) return;
+        if (!IsRefreshNeeded())
+        {
+            return;
+        }
 
         lock (_locker)
         {
@@ -211,6 +214,11 @@ public class AWSSender : SmtpSender
     private bool IsRefreshNeeded()
     {
         return _quota == null || (DateTime.UtcNow - _lastRefresh) > _refreshTimeout;
+    }
+
+    public void Dispose()
+    {
+        _amazonEmailServiceClient.Dispose();
     }
 }
 

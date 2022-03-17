@@ -31,7 +31,7 @@ namespace ASC.Core.Data;
 class DbAzService : IAzService
 {
     private UserDbContext UserDbContext => _lazyUserDbContext.Value;
-    private Lazy<UserDbContext> _lazyUserDbContext;
+    private readonly Lazy<UserDbContext> _lazyUserDbContext;
     private readonly IMapper _mapper;
 
     public DbAzService(DbContextManager<UserDbContext> dbContextManager, IMapper mapper)

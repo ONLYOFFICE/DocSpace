@@ -29,11 +29,11 @@ using ConfigurationSection = System.Configuration.ConfigurationSection;
 namespace ASC.Core.Common.Billing;
 
 [Singletone]
-public class CouponManager
+public class CouponManager : IDisposable
 {
     private IEnumerable<AvangateProduct> _products;
     private readonly IHttpClientFactory _clientFactory;
-    private IEnumerable<string> _groups;
+    private readonly IEnumerable<string> _groups;
     private readonly int _percent;
     private readonly int _schedule;
     private readonly string _vendorCode;
@@ -181,6 +181,11 @@ public class CouponManager
         stringBuilder.Append($"hash='{sBuilder}'");
 
         return stringBuilder.ToString();
+    }
+
+    public void Dispose()
+    {
+        _semaphoreSlim.Dispose();
     }
 }
 

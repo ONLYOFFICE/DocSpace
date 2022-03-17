@@ -1115,7 +1115,9 @@ public class CronExpression : ICloneable, IDeserializationCallback
     public virtual DateTime? GetTimeAfter(DateTime afterTimeUtc)
     {
         if (afterTimeUtc == DateTime.MaxValue)
+        {
             return null;
+        }
 
         afterTimeUtc = afterTimeUtc.AddSeconds(1);
 

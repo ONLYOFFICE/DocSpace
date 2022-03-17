@@ -66,7 +66,10 @@ namespace ASC.Web.Core.Helpers
             }
             catch (WebException exception)
             {
-                if (exception.Status != WebExceptionStatus.ProtocolError || exception.Response == null) return;
+                if (exception.Status != WebExceptionStatus.ProtocolError || exception.Response == null)
+                {
+                    return;
+                }
 
                 var response = exception.Response;
                 try

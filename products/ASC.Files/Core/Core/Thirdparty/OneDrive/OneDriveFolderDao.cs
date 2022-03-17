@@ -102,9 +102,14 @@ internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
         }
 
         if (!string.IsNullOrEmpty(searchText))
+        {
             folders = folders.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
+        }
 
-        if (orderBy == null) orderBy = new OrderBy(SortedByType.DateAndTime, false);
+        if (orderBy == null)
+        {
+            orderBy = new OrderBy(SortedByType.DateAndTime, false);
+        }
 
         folders = orderBy.SortedBy switch
         {
@@ -124,7 +129,9 @@ internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
             || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
             || filterType == FilterType.PresentationsOnly || filterType == FilterType.SpreadsheetsOnly
             || filterType == FilterType.ArchiveOnly || filterType == FilterType.MediaOnly)
+        {
             return AsyncEnumerable.Empty<Folder<string>>();
+        }
 
         var folders = folderIds.ToAsyncEnumerable().SelectAwait(async e => await GetFolderAsync(e).ConfigureAwait(false));
 
@@ -136,7 +143,9 @@ internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
         }
 
         if (!string.IsNullOrEmpty(searchText))
+        {
             folders = folders.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
+        }
 
         return folders;
     }
@@ -189,7 +198,10 @@ internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
 
             await ProviderInfo.CacheResetAsync(onedriveFolder.Id).ConfigureAwait(false);
             var parentFolderId = GetParentFolderId(onedriveFolder);
-            if (parentFolderId != null) await ProviderInfo.CacheResetAsync(parentFolderId).ConfigureAwait(false);
+            if (parentFolderId != null)
+            {
+                await ProviderInfo.CacheResetAsync(parentFolderId).ConfigureAwait(false);
+            }
 
             return MakeId(onedriveFolder);
         }

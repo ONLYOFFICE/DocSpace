@@ -3,7 +3,7 @@
 [Scope]
 public class DbWorker
 {
-    private Lazy<WebhooksDbContext> _lazyWebhooksDbContext;
+    private readonly Lazy<WebhooksDbContext> _lazyWebhooksDbContext;
     private readonly TenantManager _tenantManager;
     private WebhooksDbContext WebhooksDbContext { get => _lazyWebhooksDbContext.Value; }
     public DbWorker(DbContextManager<WebhooksDbContext> webhooksDbContext, TenantManager tenantManager)
@@ -21,7 +21,9 @@ public class DbWorker
         it.Uri == webhooksConfig.Uri).FirstOrDefault();
 
         if (addObj != null)
+        {
             return;
+        }
 
         WebhooksDbContext.WebhooksConfigs.Add(webhooksConfig);
         WebhooksDbContext.SaveChanges();

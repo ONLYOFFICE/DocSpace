@@ -15,7 +15,7 @@ namespace Textile;
 
 public class StringBuilderTextileFormatter : IOutputter
 {
-    private StringBuilder _stringBuilder = null;
+    private StringBuilder _stringBuilder;
 
     public StringBuilderTextileFormatter()
     {

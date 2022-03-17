@@ -91,7 +91,11 @@ public class FeedAggregatorService : FeedBaseService
             {
                 var result = new List<FeedRow>();
                 var fromTime = feedAggregateDataProvider.GetLastTimeAggregate(module.GetType().Name);
-                if (fromTime == default) fromTime = DateTime.UtcNow.Subtract((TimeSpan)interval);
+                if (fromTime == default)
+                {
+                    fromTime = DateTime.UtcNow.Subtract((TimeSpan)interval);
+                }
+
                 var toTime = DateTime.UtcNow;
 
                 var tenants = Attempt(10, () => module.GetTenantsWithFeeds(fromTime)).ToList();

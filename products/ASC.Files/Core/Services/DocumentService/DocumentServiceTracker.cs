@@ -519,6 +519,7 @@ public class DocumentServiceTrackerHelper
 
                     using (var httpResponse = await httpClient.SendAsync(httpRequest))
                     using (var stream = await httpResponse.Content.ReadAsStreamAsync())
+                    {
                         if (stream != null)
                         {
                             using (var reader = new StreamReader(stream, Encoding.GetEncoding(Encoding.UTF8.WebName)))
@@ -526,6 +527,7 @@ public class DocumentServiceTrackerHelper
                                 message = await reader.ReadToEndAsync();
                             }
                         }
+                    }
 
                     break;
             }

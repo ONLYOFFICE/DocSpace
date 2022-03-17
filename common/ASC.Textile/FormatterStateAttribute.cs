@@ -14,7 +14,10 @@ public sealed class FormatterStateAttribute : Attribute
     {
         var atts = type.GetCustomAttributes(typeof(FormatterStateAttribute), false);
         if (atts.Length == 0)
+        {
             return null;
+        }
+
         return (FormatterStateAttribute)atts[0];
     }
 }

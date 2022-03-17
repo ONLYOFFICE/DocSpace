@@ -287,7 +287,9 @@ namespace ASC.Web.Studio.Core.Notify
                                 catch (AggregateException ae)
                                 {
                                     foreach (var ex in ae.InnerExceptions)
+                                    {
                                         Log.Error(ex);
+                                    }
                                 }
                                 catch (Exception ex)
                                 {
@@ -393,7 +395,10 @@ namespace ASC.Web.Studio.Core.Notify
                     }
 
 
-                    if (action == null) continue;
+                    if (action == null)
+                    {
+                        continue;
+                    }
 
                     var users = toowner
                                     ? new List<UserInfo> { userManager.GetUsers(tenant.OwnerId) }
@@ -796,7 +801,10 @@ namespace ASC.Web.Studio.Core.Notify
                     }
 
 
-                    if (action == null) continue;
+                    if (action == null)
+                    {
+                        continue;
+                    }
 
                     var users = studioNotifyHelper.GetRecipients(toadmins, tousers, false);
 
@@ -1005,7 +1013,10 @@ namespace ASC.Web.Studio.Core.Notify
                             }
                         }
 
-                        if (action == null) continue;
+                        if (action == null)
+                        {
+                            continue;
+                        }
 
                         Log.InfoFormat(@"Send letter personal '{1}'  to {0} culture {2}. tenant id: {3} user culture {4} create on {5} now date {6}",
                               user.Email, action.ID, culture, tenant.Id, user.GetCulture(), user.CreateDate, scheduleDate.Date);

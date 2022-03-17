@@ -304,7 +304,10 @@ namespace ASC.Web.Files
                     return;
                 }
 
-                if (!string.IsNullOrEmpty(file.Error)) throw new Exception(file.Error);
+                if (!string.IsNullOrEmpty(file.Error))
+                {
+                    throw new Exception(file.Error);
+                }
 
                 if (!await fileDao.IsExistOnStorageAsync(file))
                 {
@@ -346,8 +349,7 @@ namespace ASC.Web.Files
 
                             var outType = (context.Request.Query[FilesLinkUtility.OutType].FirstOrDefault() ?? "").Trim();
                             if (!string.IsNullOrEmpty(outType)
-                                && FileUtility.ExtsConvertible.Keys.Contains(ext)
-                                && FileUtility.ExtsConvertible[ext].Contains(outType))
+                                && FileUtility.ExtsConvertible.ContainsKey(ext) && FileUtility.ExtsConvertible[ext].Contains(outType))
                             {
                                 ext = outType;
                             }
@@ -489,8 +491,15 @@ namespace ASC.Web.Files
 
         private long ProcessRangeHeader(HttpContext context, long fullLength, ref long offset)
         {
-            if (context == null) throw new ArgumentNullException();
-            if (context.Request.Headers["Range"].FirstOrDefault() == null) return fullLength;
+            if (context == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            if (context.Request.Headers["Range"].FirstOrDefault() == null)
+            {
+                return fullLength;
+            }
 
             long endOffset = -1;
 
@@ -507,7 +516,10 @@ namespace ASC.Web.Files
 
             var length = endOffset - offset + 1;
 
-            if (length <= 0) throw new HttpException(HttpStatusCode.RequestedRangeNotSatisfiable);
+            if (length <= 0)
+            {
+                throw new HttpException(HttpStatusCode.RequestedRangeNotSatisfiable);
+            }
 
             Logger.InfoFormat("Starting file download (chunk {0}-{1})", offset, endOffset);
             if (length < fullLength)
@@ -1060,9 +1072,16 @@ namespace ASC.Web.Files
             var folderDao = DaoFactory.GetFolderDao<T>();
             folder = await folderDao.GetFolderAsync(folderId);
 
-            if (folder == null) throw new HttpException((int)HttpStatusCode.NotFound, FilesCommonResource.ErrorMassage_FolderNotFound);
+            if (folder == null)
+            {
+                throw new HttpException((int)HttpStatusCode.NotFound, FilesCommonResource.ErrorMassage_FolderNotFound);
+            }
+
             var canCreate = await FileSecurity.CanCreateAsync(folder);
-            if (!canCreate) throw new HttpException((int)HttpStatusCode.Forbidden, FilesCommonResource.ErrorMassage_SecurityException_Create);
+            if (!canCreate)
+            {
+                throw new HttpException((int)HttpStatusCode.Forbidden, FilesCommonResource.ErrorMassage_SecurityException_Create);
+            }
 
             File<T> file;
             var fileUri = context.Request.Query[FilesLinkUtility.FileUri];
@@ -1118,7 +1137,9 @@ namespace ASC.Web.Files
             {
                 var message = string.Format(FilesCommonResource.MessageFileCreated, folder.Title);
                 if (FileUtility.CanWebRestrictedEditing(file.Title))
-                    message = string.Format(FilesCommonResource.MessageFileCreatedForm, folder.Title);
+            {
+                message = string.Format(FilesCommonResource.MessageFileCreatedForm, folder.Title);
+            }
 
             return context.Response.WriteAsync("ok: " + message);
             }
@@ -1135,14 +1156,19 @@ namespace ASC.Web.Files
                 var tmpFileType = Configuration<T>.DocType.FirstOrDefault(r => r.Value.Equals(docType, StringComparison.OrdinalIgnoreCase));
                 FileUtility.InternalExtension.TryGetValue(tmpFileType.Key, out var tmpFileExt);
                 if (!string.IsNullOrEmpty(tmpFileExt))
+                {
                     fileExt = tmpFileExt;
+                }
             }
 
             var templateName = "new" + fileExt;
 
             var templatePath = FileConstant.NewDocPath + lang + "/";
             if (!await storeTemplate.IsDirectoryAsync(templatePath))
+            {
                 templatePath = FileConstant.NewDocPath + "en-US/";
+            }
+
             templatePath += templateName;
 
             if (string.IsNullOrEmpty(fileTitle))
@@ -1168,7 +1194,9 @@ namespace ASC.Web.Files
         private async Task<File<T>> CreateFileFromUriAsync<T>(Folder<T> folder, string fileUri, string fileTitle)
         {
             if (string.IsNullOrEmpty(fileTitle))
+            {
                 fileTitle = Path.GetFileName(HttpUtility.UrlDecode(fileUri));
+            }
 
             var file = ServiceProvider.GetService<File<T>>();
             file.Title = fileTitle;
@@ -1248,7 +1276,10 @@ namespace ASC.Web.Files
             }
 
             if (string.IsNullOrEmpty(urlRedirect))
+            {
                 throw new HttpException((int)HttpStatusCode.BadRequest, FilesCommonResource.ErrorMassage_BadRequest);
+            }
+
             context.Response.Redirect(urlRedirect);
         }
 

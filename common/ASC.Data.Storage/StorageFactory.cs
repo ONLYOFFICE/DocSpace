@@ -79,10 +79,12 @@ public static class StorageFactoryExtenstion
                 foreach (var m in section.Module.Where(m => m.Type == "disc"))
                 {
                     if (m.Path.Contains(Constants.StorageRootParam))
+                    {
                         builder.RegisterDiscDataHandler(
                             pathUtils.ResolveVirtualPath(m.VirtualPath),
                             pathUtils.ResolvePhysicalPath(m.Path, props),
                             m.Public);
+                    }
 
                     if (m.Domain != null)
                     {
@@ -103,10 +105,12 @@ public static class StorageFactoryExtenstion
                 {
                     //todo: add path criterion
                     if (m.Type == "disc" || !m.Public || m.Path.Contains(Constants.StorageRootParam))
+                    {
                         builder.RegisterStorageHandler(
                             m.Name,
                             string.Empty,
                             m.Public);
+                    }
 
                     //todo: add path criterion
                     if (m.Domain != null)
@@ -193,7 +197,10 @@ public class StorageFactory
 
     public IDataStore GetStorageFromConsumer(string configpath, string tenant, string module, DataStoreConsumer consumer)
     {
-        if (tenant == null) tenant = DefaultTenantName;
+        if (tenant == null)
+        {
+            tenant = DefaultTenantName;
+        }
 
         //Make tennant path
         tenant = TenantPath.CreatePath(tenant);

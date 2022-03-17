@@ -28,8 +28,8 @@ namespace ASC.Core.Tenants;
 [Serializable]
 public class TenantTooShortException : Exception
 {
-    public int MinLength { get; set; } = 0;
-    public int MaxLength { get; set; } = 0;
+    public int MinLength { get; set; }
+    public int MaxLength { get; set; }
 
     public TenantTooShortException(string message)
         : base(message) { }

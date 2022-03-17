@@ -34,7 +34,7 @@ public class FeedAggregateDataProvider
     private readonly TenantManager _tenantManager;
     private readonly TenantUtil _tenantUtil;
     private readonly Lazy<FeedDbContext> _lazyFeedDbContext;
-    private IMapper _mapper;
+    private readonly IMapper _mapper;
 
     public FeedAggregateDataProvider(
         AuthContext authContext,

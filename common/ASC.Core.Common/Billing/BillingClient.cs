@@ -30,7 +30,7 @@ namespace ASC.Core.Billing;
 [Singletone]
 public class BillingClient
 {
-    public readonly bool Configured = false;
+    public readonly bool Configured;
     private readonly string _billingDomain;
     private readonly string _billingKey;
     private readonly string _billingSecret;
@@ -79,7 +79,7 @@ public class BillingClient
 
     public IEnumerable<PaymentInfo> GetPayments(string portalId)
     {
-        string result = Request("GetPayments", portalId);
+        var result = Request("GetPayments", portalId);
         var payments = JsonSerializer.Deserialize<List<PaymentInfo>>(result);
 
         return payments;

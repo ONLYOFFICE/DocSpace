@@ -538,7 +538,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
             var toDelete = await FilesDbContext.Tree
                 .AsQueryable()
-                .Where(r => subfolders.Keys.Contains(r.FolderId) && !subfolders.Keys.Contains(r.ParentId))
+                .Where(r => subfolders.ContainsKey(r.FolderId) && !subfolders.ContainsKey(r.ParentId))
                 .ToListAsync();
 
             FilesDbContext.Tree.RemoveRange(toDelete);

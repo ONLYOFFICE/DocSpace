@@ -148,7 +148,9 @@ namespace ASC.Web.Core.Files
             var regex = new Regex(@"^\s+$");
 
             if (regex.IsMatch(result))
+            {
                 result = "";
+            }
 
             return result;
         }
@@ -157,7 +159,10 @@ namespace ASC.Web.Core.Files
         {
             var result = (Configuration["files:docservice:secret:header"] ?? "").Trim();
             if (string.IsNullOrEmpty(result))
+            {
                 result = "Authorization";
+            }
+
             return result;
         }
 
@@ -189,7 +194,11 @@ namespace ASC.Web.Core.Files
 
         public static string GetFileExtension(string fileName)
         {
-            if (string.IsNullOrEmpty(fileName)) return string.Empty;
+            if (string.IsNullOrEmpty(fileName))
+            {
+                return string.Empty;
+            }
+
             string extension = null;
             try
             {
@@ -199,7 +208,9 @@ namespace ASC.Web.Core.Files
             {
                 var position = fileName.LastIndexOf('.');
                 if (0 <= position)
+                {
                     extension = fileName.Substring(position).Trim().ToLower();
+                }
             }
             return extension == null ? string.Empty : extension.Trim().ToLower();
         }
@@ -215,7 +226,11 @@ namespace ASC.Web.Core.Files
         public string GetGoogleDownloadableExtension(string googleExtension)
         {
             googleExtension = GetFileExtension(googleExtension);
-            if (googleExtension.Equals(".gdraw")) return ".pdf";
+            if (googleExtension.Equals(".gdraw"))
+            {
+                return ".pdf";
+            }
+
             return GetInternalExtension(googleExtension);
         }
 
@@ -234,13 +249,40 @@ namespace ASC.Web.Core.Files
         {
             extension = extension.ToLower();
 
-            if (ExtsDocument.Contains(extension)) return FileType.Document;
-            if (ExtsSpreadsheet.Contains(extension)) return FileType.Spreadsheet;
-            if (ExtsPresentation.Contains(extension)) return FileType.Presentation;
-            if (ExtsImage.Contains(extension)) return FileType.Image;
-            if (ExtsArchive.Contains(extension)) return FileType.Archive;
-            if (ExtsAudio.Contains(extension)) return FileType.Audio;
-            if (ExtsVideo.Contains(extension)) return FileType.Video;
+            if (ExtsDocument.Contains(extension))
+            {
+                return FileType.Document;
+            }
+
+            if (ExtsSpreadsheet.Contains(extension))
+            {
+                return FileType.Spreadsheet;
+            }
+
+            if (ExtsPresentation.Contains(extension))
+            {
+                return FileType.Presentation;
+            }
+
+            if (ExtsImage.Contains(extension))
+            {
+                return FileType.Image;
+            }
+
+            if (ExtsArchive.Contains(extension))
+            {
+                return FileType.Archive;
+            }
+
+            if (ExtsAudio.Contains(extension))
+            {
+                return FileType.Audio;
+            }
+
+            if (ExtsVideo.Contains(extension))
+            {
+                return FileType.Video;
+            }
 
             return FileType.Unknown;
         }
@@ -318,7 +360,10 @@ namespace ASC.Web.Core.Files
                 if (_extsConvertible == null)
                 {
                     _extsConvertible = new Dictionary<string, List<string>>();
-                    if (string.IsNullOrEmpty(FilesLinkUtility.DocServiceConverterUrl)) return _extsConvertible;
+                    if (string.IsNullOrEmpty(FilesLinkUtility.DocServiceConverterUrl))
+                    {
+                        return _extsConvertible;
+                    }
 
                     var dbManager = FilesDbContext;
                     var list = dbManager.FilesConverts.Select(r => new { r.Input, r.Output }).ToList();
@@ -328,11 +373,17 @@ namespace ASC.Web.Core.Files
                         var input = item.Input;
                         var output = item.Output;
                         if (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(output))
+                        {
                             continue;
+                        }
+
                         input = input.ToLower().Trim();
                         output = output.ToLower().Trim();
                         if (!_extsConvertible.ContainsKey(input))
+                        {
                             _extsConvertible[input] = new List<string>();
+                        }
+
                         _extsConvertible[input].Add(output);
                     }
                 }

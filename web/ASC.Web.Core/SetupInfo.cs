@@ -77,7 +77,9 @@ namespace ASC.Web.Studio.Core
         {
             email = Regex.Replace(email ?? "", "\\.*(?=\\S*(@gmail.com$))", "").ToLower();
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(web_autotest_secret_email))
+            {
                 return false;
+            }
 
             var regex = new Regex(web_autotest_secret_email, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
             return regex.IsMatch(email);
@@ -169,7 +171,10 @@ namespace ASC.Web.Studio.Core
             RecaptchaPrivateKey = GetAppSettings("web.recaptcha.private-key", "");
             RecaptchaVerifyUrl = GetAppSettings("web.recaptcha.verify-url", "https://www.recaptcha.net/recaptcha/api/siteverify");
             LoginThreshold = Convert.ToInt32(GetAppSettings("web.login.threshold", "0"));
-            if (LoginThreshold < 1) LoginThreshold = 5;
+            if (LoginThreshold < 1)
+            {
+                LoginThreshold = 5;
+            }
 
             web_display_mobapps_banner = (configuration["web.display.mobapps.banner"] ?? "").Trim().Split(new char[] { ',', ';', ' ' }, StringSplitOptions.RemoveEmptyEntries);
             ShareTwitterUrl = GetAppSettings("web.share.twitter", "https://twitter.com/intent/tweet?text={0}");
@@ -223,7 +228,9 @@ namespace ASC.Web.Studio.Core
             var result = Configuration[key] ?? defaultValue;
 
             if (!string.IsNullOrEmpty(result))
+            {
                 result = result.Trim();
+            }
 
             return result;
 

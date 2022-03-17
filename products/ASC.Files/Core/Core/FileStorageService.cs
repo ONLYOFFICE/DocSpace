@@ -75,7 +75,7 @@ public class FileStorageService<T> //: IFileStorageService
     private readonly FileTrackerHelper _fileTracker;
     private readonly ICacheNotify<ThumbnailRequest> _thumbnailNotify;
     private readonly EntryStatusManager _entryStatusManager;
-    private ILog _logger;
+    private readonly ILog _logger;
 
     public FileStorageService(
         Global global,
@@ -561,17 +561,17 @@ public class FileStorageService<T> //: IFileStorageService
         return new List<File<T>>(result);
     }
 
-    public Task<File<T>> CreateNewFileAsync<TTemplate>(FileModel<T, TTemplate> fileWrapper, bool enableExternalExt = false)
+    public Task<File<T>> CreateNewFileAsync<TTemplate>(FileModel<T, TTemplate> fileWrapper)
     {
         if (string.IsNullOrEmpty(fileWrapper.Title) || fileWrapper.ParentId == null)
         {
             throw new ArgumentException();
         }
 
-        return InternalCreateNewFileAsync(fileWrapper, enableExternalExt);
+        return InternalCreateNewFileAsync(fileWrapper);
     }
 
-    private async Task<File<T>> InternalCreateNewFileAsync<TTemplate>(FileModel<T, TTemplate> fileWrapper, bool enableExternalExt = false)
+    private async Task<File<T>> InternalCreateNewFileAsync<TTemplate>(FileModel<T, TTemplate> fileWrapper)
     {
         var fileDao = GetFileDao();
         var folderDao = GetFolderDao();
@@ -607,7 +607,7 @@ public class FileStorageService<T> //: IFileStorageService
         if (fileExt != _fileUtility.MasterFormExtension)
         {
             fileExt = _fileUtility.GetInternalExtension(title);
-            if (!_fileUtility.InternalExtension.Values.Contains(fileExt))
+            if (!_fileUtility.InternalExtension.ContainsValue(fileExt))
             {
                 fileExt = _fileUtility.InternalExtension[FileType.Document];
                 file.Title = title + fileExt;
@@ -1589,16 +1589,17 @@ public class FileStorageService<T> //: IFileStorageService
         return result;
     }
 
-    public List<FileOperationResult> DeleteFile(string action, T fileId, bool ignoreException = false, bool deleteAfter = false, bool immediately = false)
+    public List<FileOperationResult> DeleteFile(T fileId, bool ignoreException = false, bool deleteAfter = false, bool immediately = false)
     {
         return _fileOperationsManager.Delete(_authContext.CurrentAccount.ID, _tenantManager.GetCurrentTenant(), new List<T>(), new List<T>() { fileId }, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
     }
-    public List<FileOperationResult> DeleteFolder(string action, T folderId, bool ignoreException = false, bool deleteAfter = false, bool immediately = false)
+
+    public List<FileOperationResult> DeleteFolder(T folderId, bool ignoreException = false, bool deleteAfter = false, bool immediately = false)
     {
         return _fileOperationsManager.Delete(_authContext.CurrentAccount.ID, _tenantManager.GetCurrentTenant(), new List<T>() { folderId }, new List<T>(), ignoreException, !deleteAfter, immediately, GetHttpHeaders());
     }
 
-    public List<FileOperationResult> DeleteItems(string action, List<JsonElement> files, List<JsonElement> folders, bool ignoreException = false, bool deleteAfter = false, bool immediately = false)
+    public List<FileOperationResult> DeleteItems(List<JsonElement> files, List<JsonElement> folders, bool ignoreException = false, bool deleteAfter = false, bool immediately = false)
     {
         return _fileOperationsManager.Delete(_authContext.CurrentAccount.ID, _tenantManager.GetCurrentTenant(), folders, files, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
     }
@@ -1863,7 +1864,10 @@ public class FileStorageService<T> //: IFileStorageService
 
     public Task<List<FileEntry<T>>> AddToFavoritesAsync(IEnumerable<T> foldersId, IEnumerable<T> filesId)
     {
-        if (_userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
+        if (_userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager))
+        {
+            throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
+        }
 
         return InternalAddToFavoritesAsync(foldersId, filesId);
     }

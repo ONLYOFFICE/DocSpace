@@ -28,7 +28,7 @@ namespace ASC.Notify.Patterns;
 public class XmlPatternProvider2 : IPatternProvider
 {
     private readonly IDictionary<string, IPattern> _patterns = new Dictionary<string, IPattern>();
-    private readonly IPatternFormatter _formatter = null;
+    private readonly IPatternFormatter _formatter;
 
     public Func<INotifyAction, string, NotifyRequest, IPattern> GetPatternMethod { get; set; }
 

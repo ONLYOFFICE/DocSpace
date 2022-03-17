@@ -39,7 +39,10 @@ namespace ASC.Web.Core.Utility.Skins
             try
             {
                 var dir = CrossPlatform.PathCombine(webHostEnvironment.ContentRootPath, "~/skins/default/");
-                if (!Directory.Exists(dir)) return;
+                if (!Directory.Exists(dir))
+                {
+                    return;
+                }
 
                 foreach (var f in Directory.GetFiles(dir, "common_style.*.css"))
                 {

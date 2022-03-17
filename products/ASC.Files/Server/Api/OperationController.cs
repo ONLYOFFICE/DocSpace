@@ -78,7 +78,7 @@ public class OperationController : ApiControllerBase
     [Update("fileops/delete")]
     public async IAsyncEnumerable<FileOperationDto> DeleteBatchItemsFromBody([FromBody] DeleteBatchRequestDto inDto)
     {
-        var tasks = _fileStorageServiceString.DeleteItems("delete", inDto.FileIds.ToList(), inDto.FolderIds.ToList(), false, inDto.DeleteAfter, inDto.Immediately);
+        var tasks = _fileStorageServiceString.DeleteItems(inDto.FileIds.ToList(), inDto.FolderIds.ToList(), false, inDto.DeleteAfter, inDto.Immediately);
 
         foreach (var e in tasks)
         {
@@ -90,7 +90,7 @@ public class OperationController : ApiControllerBase
     [Consumes("application/x-www-form-urlencoded")]
     public async IAsyncEnumerable<FileOperationDto> DeleteBatchItemsFromForm([FromForm][ModelBinder(BinderType = typeof(DeleteBatchModelBinder))] DeleteBatchRequestDto inDto)
     {
-        var tasks = _fileStorageServiceString.DeleteItems("delete", inDto.FileIds.ToList(), inDto.FolderIds.ToList(), false, inDto.DeleteAfter, inDto.Immediately);
+        var tasks = _fileStorageServiceString.DeleteItems(inDto.FileIds.ToList(), inDto.FolderIds.ToList(), false, inDto.DeleteAfter, inDto.Immediately);
 
         foreach (var e in tasks)
         {

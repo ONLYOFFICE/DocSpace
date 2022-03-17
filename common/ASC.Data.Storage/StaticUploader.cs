@@ -29,7 +29,7 @@ namespace ASC.Data.Storage;
 public class StaticUploader
 {
     protected readonly DistributedTaskQueue Queue;
-    private ICache _cache;
+    private readonly ICache _cache;
     private static readonly TaskScheduler _scheduler;
     private static readonly CancellationTokenSource _tokenSource;
     private static readonly object _locker;

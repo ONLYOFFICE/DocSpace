@@ -111,7 +111,7 @@ public class TreeSet : ArrayList, ISortedSet
 
     private bool AddWithoutSorting(object obj)
     {
-        bool inserted = Contains(obj);
+        var inserted = Contains(obj);
         if (!inserted)
         {
             base.Add(obj);

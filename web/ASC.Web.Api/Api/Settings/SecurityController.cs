@@ -115,7 +115,10 @@ public class SecurityController : BaseSettingsController
         _webItemSecurity.SetSecurity(inDto.Id, inDto.Enabled, inDto.Subjects?.ToArray());
         var securityInfo = GetWebItemSecurityInfo(new List<string> { inDto.Id });
 
-        if (inDto.Subjects == null) return securityInfo;
+        if (inDto.Subjects == null)
+        {
+            return securityInfo;
+        }
 
         var productName = GetProductName(new Guid(inDto.Id));
 
@@ -163,7 +166,9 @@ public class SecurityController : BaseSettingsController
         foreach (var item in inDto.Items)
         {
             if (!itemList.ContainsKey(item.Key))
+            {
                 itemList.Add(item.Key, item.Value);
+            }
         }
 
         var defaultPageSettings = _settingsManager.Load<StudioDefaultPageSettings>();

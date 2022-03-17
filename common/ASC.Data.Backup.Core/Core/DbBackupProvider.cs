@@ -165,7 +165,11 @@ public class DbBackupProvider : IBackupProvider
                 catch
                 {
                     errors++;
-                    if (20 < errors) throw;
+                    if (20 < errors)
+                    {
+                        throw;
+                    }
+
                     Thread.Sleep(timeout);
                 }
             }
