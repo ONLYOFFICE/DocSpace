@@ -113,11 +113,11 @@ const Article = ({
           <SubArticleHeader showText={showText} onClick={toggleShowText}>
             {articleHeaderContent ? articleHeaderContent.props.children : null}
           </SubArticleHeader>
-          <SubArticleMainButton showText={showText}>
-            {articleMainButtonContent
-              ? articleMainButtonContent.props.children
-              : null}
-          </SubArticleMainButton>
+          {articleMainButtonContent ? (
+            <SubArticleMainButton showText={showText}>
+              {articleMainButtonContent.props.children}
+            </SubArticleMainButton>
+          ) : null}
           <SubArticleBody showText={showText}>
             {articleBodyContent ? articleBodyContent.props.children : null}
           </SubArticleBody>

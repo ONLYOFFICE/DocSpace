@@ -114,8 +114,6 @@ const StyledArticleHeader = styled.div`
   justify-content: flex-start;
   align-items: center;
 
-  max-width: 216px;
-
   @media ${tablet} {
     padding: 16px 16px 17px;
     margin: 0;
