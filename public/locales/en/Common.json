@@ -104,6 +104,7 @@
   "PasswordLimitMessage": "Password must contain",
   "PasswordLimitSpecialSymbols": "special characters",
   "PasswordLimitUpperCase": "capital letters",
+  "PasswordMinimumLength": "Minimum length",
   "People": "People",
   "Phone": "Phone",
   "Pin": "Pin",

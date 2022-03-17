@@ -104,6 +104,7 @@
   "PasswordLimitMessage": "Пароль должен содержать",
   "PasswordLimitSpecialSymbols": "специальные символы",
   "PasswordLimitUpperCase": "заглавные буквы",
+  "PasswordMinimumLength": "Минимальная длина",
   "People": "Люди",
   "Phone": "Телефон",
   "Pin": "Закрепить",
