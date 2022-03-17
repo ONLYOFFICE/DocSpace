@@ -75,6 +75,7 @@ const Register = (props) => {
   const onSendRegisterRequest = () => {
     if (!email.trim() || emailErr) {
       setEmailErr(true);
+      setIsShowError(true);
     } else {
       setLoading(true);
       sendRegisterRequest(email)
@@ -87,6 +88,13 @@ const Register = (props) => {
           toastr.error(error);
         })
         .finally(onRegisterModalClose);
+    }
+  };
+
+  const onKeyDown = (e) => {
+    if (e.key === "Enter") {
+      onSendRegisterRequest();
+      e.preventDefault();
     }
   };
 
@@ -110,6 +118,7 @@ const Register = (props) => {
           onBlurEmail={onBlurEmail}
           onRegisterModalClose={onRegisterModalClose}
           onSendRegisterRequest={onSendRegisterRequest}
+          onKeyDown={onKeyDown}
           errorText={errorText}
           isShowError={isShowError}
         />

@@ -34,6 +34,7 @@ const ForgotPasswordModalDialog = (props) => {
   const onSendPasswordInstructions = () => {
     if (!email.trim() || emailError) {
       setEmailError(true);
+      setIsShowError(true);
     } else {
       setIsLoading(true);
       sendInstructionsToChangePassword(email)
@@ -47,7 +48,7 @@ const ForgotPasswordModalDialog = (props) => {
 
   const onKeyDown = (e) => {
     //console.log("onKeyDown", e.key);
-    if (e.key === "Enter" && (!emailError || !email.trim())) {
+    if (e.key === "Enter") {
       onSendPasswordInstructions();
       e.preventDefault();
     }

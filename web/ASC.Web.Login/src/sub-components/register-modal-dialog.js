@@ -21,6 +21,7 @@ const RegisterModalDialog = ({
   onBlurEmail,
   onRegisterModalClose,
   onSendRegisterRequest,
+  onKeyDown,
   trustedDomainsType,
   trustedDomains,
   errorText,
@@ -92,6 +93,7 @@ const RegisterModalDialog = ({
             onValidateInput={onValidateEmail}
             onBlur={onBlurEmail}
             autoComplete="username"
+            onKeyDown={onKeyDown}
           />
         </FieldContainer>
       </ModalDialog.Body>
@@ -136,6 +138,7 @@ RegisterModalDialog.propTypes = {
   onValidateEmail: PropTypes.func.isRequired,
   onBlurEmail: PropTypes.func.isRequired,
   onSendRegisterRequest: PropTypes.func.isRequired,
+  onKeyDown: PropTypes.func.isRequired,
   onRegisterModalClose: PropTypes.func.isRequired,
   trustedDomainsType: PropTypes.number,
   trustedDomains: PropTypes.array,
