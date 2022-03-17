@@ -23,8 +23,9 @@ const StyledSocialButton = styled(ButtonWrapper).attrs((props) => ({
   font-family: ${(props) => props.theme.fontFamily};
   border: none;
   display: flex;
+  flex-direction: row;
   align-items: center;
-
+  justify-content: center;
   font-weight: ${(props) => props.theme.socialButton.fontWeight};
   text-decoration: ${(props) => props.theme.socialButton.textDecoration};
   margin: ${(props) => props.theme.socialButton.margin};
@@ -69,6 +70,12 @@ const StyledSocialButton = styled(ButtonWrapper).attrs((props) => ({
                 cursor: pointer;
                 box-shadow: ${(props) =>
                   props.theme.socialButton.hoverBoxShadow};
+                border: 1px solid
+                  ${(props) => props.theme.socialButton.hoverBorder};
+
+                .social_button_text {
+                  color: ${(props) => props.theme.socialButton.text.hoverColor};
+                }
               }
 
               :hover {
@@ -105,7 +112,6 @@ const StyledSocialButton = styled(ButtonWrapper).attrs((props) => ({
 
     width: ${(props) => props.theme.socialButton.text.width};
     height: ${(props) => props.theme.socialButton.text.height};
-    margin: ${(props) => props.theme.socialButton.text.margin};
     font-family: Roboto, "Open Sans", sans-serif, Arial;
     font-style: normal;
     font-weight: ${(props) => props.theme.socialButton.text.fontWeight};
