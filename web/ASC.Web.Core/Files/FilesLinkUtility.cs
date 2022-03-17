@@ -30,7 +30,7 @@ public class FilesLinkUtility
 {
     public const string FilesBaseVirtualPath = "~/products/files/";
     public const string EditorPage = "doceditor";
-    private readonly string FilesUploaderURL;
+    private readonly string _filesUploaderURL;
     private CommonLinkUtility CommonLinkUtility { get; set; }
     private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
     private CoreBaseSettings CoreBaseSettings { get; set; }
@@ -52,7 +52,7 @@ public class FilesLinkUtility
         CoreSettings = coreSettings;
         Configuration = configuration;
         InstanceCrypto = instanceCrypto;
-        FilesUploaderURL = Configuration["files:uploader:url"] ?? "~";
+        _filesUploaderURL = Configuration["files:uploader:url"] ?? "~";
     }
 
     public string FilesBaseAbsolutePath
@@ -403,12 +403,12 @@ public class FilesLinkUtility
 
     public bool IsLocalFileUploader
     {
-        get { return !Regex.IsMatch(FilesUploaderURL, "^http(s)?://\\.*"); }
+        get { return !Regex.IsMatch(_filesUploaderURL, "^http(s)?://\\.*"); }
     }
 
     private string GetFileUploaderHandlerVirtualPath()
     {
-        var virtualPath = FilesUploaderURL;
+        var virtualPath = _filesUploaderURL;
         return virtualPath.EndsWith(".ashx") ? virtualPath : virtualPath.TrimEnd('/') + "/ChunkedUploader.ashx";
     }
 

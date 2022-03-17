@@ -28,15 +28,15 @@ namespace ASC.Core.Caching;
 [Singletone]
 public class SubscriptionServiceCache
 {
-    internal readonly ICache Cache;
-    internal readonly ICacheNotify<SubscriptionRecord> NotifyRecord;
-    internal readonly ICacheNotify<SubscriptionMethodCache> NotifyMethod;
+    internal readonly ICache _cache;
+    internal readonly ICacheNotify<SubscriptionRecord> _notifyRecord;
+    internal readonly ICacheNotify<SubscriptionMethodCache> _notifyMethod;
 
     public SubscriptionServiceCache(ICacheNotify<SubscriptionRecord> notifyRecord, ICacheNotify<SubscriptionMethodCache> notifyMethod, ICache cache)
     {
-        Cache = cache;
-        NotifyRecord = notifyRecord;
-        NotifyMethod = notifyMethod;
+        _cache = cache;
+        _notifyRecord = notifyRecord;
+        _notifyMethod = notifyMethod;
 
         notifyRecord.Subscribe((s) =>
         {
@@ -84,7 +84,7 @@ public class SubscriptionServiceCache
 
     private SubsciptionsStore GetSubsciptionsStore(int tenant, string sourceId, string actionId)
     {
-        return Cache.Get<SubsciptionsStore>(GetKey(tenant, sourceId, actionId));
+        return _cache.Get<SubsciptionsStore>(GetKey(tenant, sourceId, actionId));
     }
 
     public static string GetKey(int tenant, string sourceId, string actionId)
@@ -105,9 +105,9 @@ public class CachedSubscriptionService : ISubscriptionService
     public CachedSubscriptionService(DbSubscriptionService service, SubscriptionServiceCache subscriptionServiceCache)
     {
         _service = service ?? throw new ArgumentNullException(nameof(service));
-        _cache = subscriptionServiceCache.Cache;
-        _notifyRecord = subscriptionServiceCache.NotifyRecord;
-        _notifyMethod = subscriptionServiceCache.NotifyMethod;
+        _cache = subscriptionServiceCache._cache;
+        _notifyRecord = subscriptionServiceCache._notifyRecord;
+        _notifyMethod = subscriptionServiceCache._notifyMethod;
         _cacheExpiration = TimeSpan.FromMinutes(5);
     }
 

@@ -57,7 +57,7 @@ internal class GoogleDriveStorage : IDisposable
 
     private DriveService _driveService;
     private readonly ConsumerFactory _consumerFactory;
-    private readonly FileUtility FileUtility;
+    private readonly FileUtility _fileUtility;
     private readonly TempStream _tempStream;
     private readonly IHttpClientFactory _clientFactory;
 
@@ -71,7 +71,7 @@ internal class GoogleDriveStorage : IDisposable
         IHttpClientFactory clientFactory)
     {
         _consumerFactory = consumerFactory;
-        FileUtility = fileUtility;
+        _fileUtility = fileUtility;
         Logger = monitor.Get("ASC.Files");
         _tempStream = tempStream;
         _clientFactory = clientFactory;
@@ -251,7 +251,7 @@ internal class GoogleDriveStorage : IDisposable
         var ext = MimeMapping.GetExtention(file.MimeType);
         if (GoogleLoginProvider.GoogleDriveExt.Contains(ext))
         {
-            var internalExt = FileUtility.GetGoogleDownloadableExtension(ext);
+            var internalExt = _fileUtility.GetGoogleDownloadableExtension(ext);
             var requiredMimeType = MimeMapping.GetMimeMapping(internalExt);
 
             downloadArg = $"{file.Id}/export?mimeType={HttpUtility.UrlEncode(requiredMimeType)}";

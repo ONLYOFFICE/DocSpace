@@ -126,7 +126,7 @@ public class DBResourceManager : ResourceManager
 
     class DBResourceSet : ResourceSet
     {
-        private const string NeutralCulture = "Neutral";
+        private const string _neutralCulture = "Neutral";
 
         private readonly TimeSpan _cacheTimeout = TimeSpan.FromMinutes(120); // for performance
         private readonly object _locker = new object();
@@ -162,7 +162,7 @@ public class DBResourceManager : ResourceManager
             }
 
             _invariant = invariant;
-            _culture = invariant != null ? NeutralCulture : culture.Name;
+            _culture = invariant != null ? _neutralCulture : culture.Name;
             _fileName = filename.Split('.').Last() + ".resx";
             _cache = MemoryCache.Default;
         }

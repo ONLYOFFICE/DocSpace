@@ -41,26 +41,26 @@ public class ConfigureEFUserService : IConfigureNamedOptions<EFUserService>
     public void Configure(string name, EFUserService options)
     {
         DbId = name;
-        options.LazyUserDbContext = new Lazy<UserDbContext>(() => _dbContextManager.Get(name));
-        options.UserDbContextManager = _dbContextManager;
+        options._lazyUserDbContext = new Lazy<UserDbContext>(() => _dbContextManager.Get(name));
+        options._userDbContextManager = _dbContextManager;
     }
 
     public void Configure(EFUserService options)
     {
-        options.LazyUserDbContext = new Lazy<UserDbContext>(() => _dbContextManager.Value);
-        options.UserDbContextManager = _dbContextManager;
+        options._lazyUserDbContext = new Lazy<UserDbContext>(() => _dbContextManager.Value);
+        options._userDbContextManager = _dbContextManager;
     }
 }
 
 [Scope]
 public class EFUserService : IUserService
 {
-    internal UserDbContext UserDbContext => LazyUserDbContext.Value;
-    internal Lazy<UserDbContext> LazyUserDbContext;
-    internal DbContextManager<UserDbContext> UserDbContextManager;
+    internal UserDbContext UserDbContext => _lazyUserDbContext.Value;
+    internal Lazy<UserDbContext> _lazyUserDbContext;
+    internal DbContextManager<UserDbContext> _userDbContextManager;
     private readonly PasswordHasher _passwordHasher;
     public readonly MachinePseudoKeys _machinePseudoKeys;
-    internal string DbId;
+    internal string _dbId;
     private readonly IMapper _mapper;
 
     public EFUserService(
@@ -69,10 +69,10 @@ public class EFUserService : IUserService
         MachinePseudoKeys machinePseudoKeys,
         IMapper mapper)
     {
-        UserDbContextManager = userDbContextManager;
+        _userDbContextManager = userDbContextManager;
         _passwordHasher = passwordHasher;
         _machinePseudoKeys = machinePseudoKeys;
-        LazyUserDbContext = new Lazy<UserDbContext>(() => UserDbContextManager.Value);
+        _lazyUserDbContext = new Lazy<UserDbContext>(() => _userDbContextManager.Value);
         _mapper = mapper;
     }
 
@@ -270,7 +270,7 @@ public class EFUserService : IUserService
 
     public IQueryable<UserInfo> GetUsers(int tenant, bool isAdmin, EmployeeStatus? employeeStatus, List<List<Guid>> includeGroups, List<Guid> excludeGroups, EmployeeActivationStatus? activationStatus, string text, string sortBy, bool sortOrderAsc, long limit, long offset, out int total, out int count)
     {
-        var userDbContext = UserDbContextManager.GetNew(DbId);
+        var userDbContext = _userDbContextManager.GetNew(_dbId);
         var totalQuery = GetUserQuery(userDbContext, tenant);
         totalQuery = GetUserQueryForFilter(totalQuery, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text);
         total = totalQuery.Count();
@@ -301,7 +301,7 @@ public class EFUserService : IUserService
 
     public IQueryable<UserInfo> GetUsers(int tenant, out int total)
     {
-        var userDbContext = UserDbContextManager.GetNew(DbId);
+        var userDbContext = _userDbContextManager.GetNew(_dbId);
         total = userDbContext.Users.Count(r => r.Tenant == tenant);
 
         return GetUserQuery(userDbContext, tenant)

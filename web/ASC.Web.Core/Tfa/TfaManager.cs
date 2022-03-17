@@ -57,7 +57,7 @@ public class BackupCode
 [Scope]
 public class TfaManager
 {
-    private static readonly TwoFactorAuthenticator Tfa = new TwoFactorAuthenticator();
+    private static readonly TwoFactorAuthenticator _tfa = new TwoFactorAuthenticator();
     private ICache Cache { get; set; }
 
     private SettingsManager SettingsManager { get; }
@@ -90,7 +90,7 @@ public class TfaManager
 
     public SetupCode GenerateSetupCode(UserInfo user)
     {
-        return Tfa.GenerateSetupCode(SetupInfo.TfaAppSender, user.Email, GenerateAccessToken(user), false, 4);
+        return _tfa.GenerateSetupCode(SetupInfo.TfaAppSender, user.Email, GenerateAccessToken(user), false, 4);
     }
 
     public bool ValidateAuthCode(UserInfo user, string code, bool checkBackup = true)
@@ -120,7 +120,7 @@ public class TfaManager
         }
         Cache.Insert("tfa/" + user.Id, counter.ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)));
 
-        if (!Tfa.ValidateTwoFactorPIN(GenerateAccessToken(user), code))
+        if (!_tfa.ValidateTwoFactorPIN(GenerateAccessToken(user), code))
         {
             if (checkBackup && TfaAppUserSettings.BackupCodesForUser(SettingsManager, user.Id).Any(x => x.GetEncryptedCode(InstanceCrypto, Signature) == code && !x.IsUsed))
             {

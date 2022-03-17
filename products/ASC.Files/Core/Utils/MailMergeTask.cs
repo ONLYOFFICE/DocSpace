@@ -27,7 +27,7 @@ namespace ASC.Web.Files.Utils;
 
 public class MailMergeTask : IDisposable
 {
-    internal const string MessageBodyFormat = "id={0}&from={1}&subject={2}&to%5B%5D={3}&body={4}&mimeReplyToId=";
+    internal const string _messageBodyFormat = "id={0}&from={1}&subject={2}&to%5B%5D={3}&body={4}&mimeReplyToId=";
 
     public string From { get; set; }
     public string Subject { get; set; }

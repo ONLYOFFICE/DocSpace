@@ -38,9 +38,9 @@ public class StudioNotifyHelper
 
     public readonly IRecipientProvider RecipientsProvider;
 
-    private readonly int CountMailsToNotActivated;
+    private readonly int _countMailsToNotActivated;
 
-    private readonly string NotificationImagePath;
+    private readonly string _notificationImagePath;
 
     private UserManager UserManager { get; }
     private SettingsManager SettingsManager { get; }
@@ -80,8 +80,8 @@ public class StudioNotifyHelper
         RecipientsProvider = NotifySource.GetRecipientsProvider();
         Log = option.CurrentValue;
 
-        int.TryParse(configuration["core:notify:countspam"], out CountMailsToNotActivated);
-        NotificationImagePath = configuration["web:notification:image:path"];
+        int.TryParse(configuration["core:notify:countspam"], out _countMailsToNotActivated);
+        _notificationImagePath = configuration["web:notification:image:path"];
     }
 
 
@@ -153,7 +153,7 @@ public class StudioNotifyHelper
                          Select(e => new DirectRecipient(e, null, new[] { e }, checkActivation)));
 
         if (!checkActivation
-            && CountMailsToNotActivated > 0
+            && _countMailsToNotActivated > 0
             && TenantExtra.Saas && !CoreBaseSettings.Personal)
         {
             var tenant = TenantManager.GetCurrentTenant();
@@ -163,7 +163,7 @@ public class StudioNotifyHelper
                 var spamEmailSettings = SettingsManager.Load<SpamEmailSettings>();
                 var sended = spamEmailSettings.MailsSended;
 
-                var mayTake = Math.Max(0, CountMailsToNotActivated - sended);
+                var mayTake = Math.Max(0, _countMailsToNotActivated - sended);
                 var tryCount = res.Count;
                 if (mayTake < tryCount)
                 {
@@ -181,14 +181,14 @@ public class StudioNotifyHelper
 
     public string GetNotificationImageUrl(string imageFileName)
     {
-        if (string.IsNullOrEmpty(NotificationImagePath))
+        if (string.IsNullOrEmpty(_notificationImagePath))
         {
             return
                 CommonLinkUtility.GetFullAbsolutePath(
                     WebImageSupplier.GetAbsoluteWebPath("notification/" + imageFileName));
         }
 
-        return NotificationImagePath.TrimEnd('/') + "/" + imageFileName;
+        return _notificationImagePath.TrimEnd('/') + "/" + imageFileName;
     }
 
 

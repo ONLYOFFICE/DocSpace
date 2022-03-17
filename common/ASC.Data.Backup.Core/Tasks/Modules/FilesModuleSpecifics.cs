@@ -31,10 +31,10 @@ public class FilesModuleSpecifics : ModuleSpecificsBase
     public override IEnumerable<TableInfo> Tables => _tables;
     public override IEnumerable<RelationInfo> TableRelations => _tableRelations;
 
-    private const string BunchRightNodeStartProject = "projects/project/";
-    private const string BunchRightNodeStartCrmOpportunity = "crm/opportunity/";
-    private const string BunchRightNodeStartMy = "files/my/";
-    private const string BunchRightNodeStartTrash = "files/trash/";
+    private const string _bunchRightNodeStartProject = "projects/project/";
+    private const string _bunchRightNodeStartCrmOpportunity = "crm/opportunity/";
+    private const string _bunchRightNodeStartMy = "files/my/";
+    private const string _bunchRightNodeStartTrash = "files/trash/";
 
     private static readonly Regex _regexIsInteger = new Regex(@"^\d+$", RegexOptions.Compiled);
     private readonly Helpers _helpers;
@@ -69,15 +69,15 @@ public class FilesModuleSpecifics : ModuleSpecificsBase
                 {
                     var rightNode = Convert.ToString(x["right_node"]);
 
-                    return rightNode.StartsWith(BunchRightNodeStartMy) || rightNode.StartsWith(BunchRightNodeStartTrash);
+                    return rightNode.StartsWith(_bunchRightNodeStartMy) || rightNode.StartsWith(_bunchRightNodeStartTrash);
                 }),
             new RelationInfo("core_user", "id", "files_security", "subject", typeof(TenantsModuleSpecifics)),
             new RelationInfo("core_group", "id", "files_security", "subject", typeof(TenantsModuleSpecifics)),
             new RelationInfo("crm_deal", "id", "files_bunch_objects", "right_node", typeof(CrmModuleSpecifics),
-                x => Convert.ToString(x["right_node"]).StartsWith(BunchRightNodeStartCrmOpportunity)),
+                x => Convert.ToString(x["right_node"]).StartsWith(_bunchRightNodeStartCrmOpportunity)),
 
             new RelationInfo("projects_projects", "id", "files_bunch_objects", "right_node", typeof(ProjectsModuleSpecifics),
-                x => Convert.ToString(x["right_node"]).StartsWith(BunchRightNodeStartProject, StringComparison.InvariantCultureIgnoreCase)),
+                x => Convert.ToString(x["right_node"]).StartsWith(_bunchRightNodeStartProject, StringComparison.InvariantCultureIgnoreCase)),
 
             new RelationInfo("files_folder", "id", "files_bunch_objects", "left_node"),
             new RelationInfo("files_folder", "id", "files_file", "folder_id"),
@@ -285,7 +285,7 @@ public class FilesModuleSpecifics : ModuleSpecificsBase
 
     private static string GetStart(string value)
     {
-        var allStarts = new[] { BunchRightNodeStartProject, BunchRightNodeStartMy, BunchRightNodeStartTrash, BunchRightNodeStartCrmOpportunity };
+        var allStarts = new[] { _bunchRightNodeStartProject, _bunchRightNodeStartMy, _bunchRightNodeStartTrash, _bunchRightNodeStartCrmOpportunity };
 
         return allStarts.FirstOrDefault(value.StartsWith);
     }
@@ -300,10 +300,10 @@ public class FilesModuleSpecifics2 : ModuleSpecificsBase
     public override IEnumerable<RelationInfo> TableRelations => _rels;
 
     private static readonly Regex _regexIsInteger = new Regex(@"^\d+$", RegexOptions.Compiled);
-    private const string TagStartMessage = "Message";
-    private const string TagStartTask = "Task";
-    private const string TagStartProject = "Project";
-    private const string TagStartRelationshipEvent = "RelationshipEvent_";
+    private const string _tagStartMessage = "Message";
+    private const string _tagStartTask = "Task";
+    private const string _tagStartProject = "Project";
+    private const string _tagStartRelationshipEvent = "RelationshipEvent_";
 
     private readonly TableInfo[] _tables = new[]
     {
@@ -318,16 +318,16 @@ public class FilesModuleSpecifics2 : ModuleSpecificsBase
     private readonly RelationInfo[] _rels = new[]
     {
             new RelationInfo("projects_messages", "id", "files_tag", "name", typeof(ProjectsModuleSpecifics),
-                x => Convert.ToString(x["name"]).StartsWith(TagStartMessage, StringComparison.InvariantCultureIgnoreCase)),
+                x => Convert.ToString(x["name"]).StartsWith(_tagStartMessage, StringComparison.InvariantCultureIgnoreCase)),
 
             new RelationInfo("projects_tasks", "id", "files_tag", "name", typeof(ProjectsModuleSpecifics),
-                x => Convert.ToString(x["name"]).StartsWith(TagStartTask, StringComparison.InvariantCultureIgnoreCase)),
+                x => Convert.ToString(x["name"]).StartsWith(_tagStartTask, StringComparison.InvariantCultureIgnoreCase)),
 
             new RelationInfo("projects_projects", "id", "files_tag", "name", typeof(ProjectsModuleSpecifics),
-                x => Convert.ToString(x["name"]).StartsWith(TagStartProject, StringComparison.InvariantCultureIgnoreCase)),
+                x => Convert.ToString(x["name"]).StartsWith(_tagStartProject, StringComparison.InvariantCultureIgnoreCase)),
 
             new RelationInfo("crm_relationship_event", "id", "files_tag", "name", typeof(CrmModuleSpecifics2),
-                x => Convert.ToString(x["name"]).StartsWith(TagStartRelationshipEvent, StringComparison.InvariantCultureIgnoreCase)),
+                x => Convert.ToString(x["name"]).StartsWith(_tagStartRelationshipEvent, StringComparison.InvariantCultureIgnoreCase)),
 
             new RelationInfo("files_tag", "id", "files_tag_link", "tag_id", typeof(FilesModuleSpecifics)),
 
@@ -368,7 +368,7 @@ public class FilesModuleSpecifics2 : ModuleSpecificsBase
 
     private static string GetStart(string value)
     {
-        var allStarts = new[] { TagStartMessage, TagStartTask, TagStartRelationshipEvent, TagStartProject, };
+        var allStarts = new[] { _tagStartMessage, _tagStartTask, _tagStartRelationshipEvent, _tagStartProject, };
 
         return allStarts.FirstOrDefault(value.StartsWith);
     }

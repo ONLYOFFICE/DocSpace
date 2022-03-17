@@ -77,9 +77,9 @@ public class BitLyShortener : IUrlShortener
 
 public class OnlyoShortener : IUrlShortener
 {
-    private readonly string url;
-    private readonly string internalUrl;
-    private readonly byte[] sKey;
+    private readonly string _url;
+    private readonly string _internalUrl;
+    private readonly byte[] _sKey;
 
     private CommonLinkUtility CommonLinkUtility { get; }
     private IHttpClientFactory ClientFactory { get; }
@@ -90,13 +90,13 @@ public class OnlyoShortener : IUrlShortener
         MachinePseudoKeys machinePseudoKeys,
         IHttpClientFactory clientFactory)
     {
-        url = configuration["web:url-shortener:value"];
-        internalUrl = configuration["web:url-shortener:internal"];
-        sKey = machinePseudoKeys.GetMachineConstant();
+        _url = configuration["web:url-shortener:value"];
+        _internalUrl = configuration["web:url-shortener:internal"];
+        _sKey = machinePseudoKeys.GetMachineConstant();
 
-        if (!url.EndsWith('/'))
+        if (!_url.EndsWith('/'))
         {
-            url += '/';
+            _url += '/';
         }
 
         CommonLinkUtility = commonLinkUtility;
@@ -106,7 +106,7 @@ public class OnlyoShortener : IUrlShortener
     public async Task<string> GetShortenLinkAsync(string shareLink)
     {
         var request = new HttpRequestMessage();
-        request.RequestUri = new Uri(internalUrl + "?url=" + HttpUtility.UrlEncode(shareLink));
+        request.RequestUri = new Uri(_internalUrl + "?url=" + HttpUtility.UrlEncode(shareLink));
         request.Headers.Add("Authorization", CreateAuthToken());
         request.Headers.Add("Encoding", Encoding.UTF8.ToString());//todo check 
 
@@ -114,12 +114,12 @@ public class OnlyoShortener : IUrlShortener
         using var response = await httpClient.SendAsync(request);
         using var stream = await response.Content.ReadAsStreamAsync();
         using var rs = new StreamReader(stream);
-        return CommonLinkUtility.GetFullAbsolutePath(url + await rs.ReadToEndAsync());
+        return CommonLinkUtility.GetFullAbsolutePath(_url + await rs.ReadToEndAsync());
     }
 
     private string CreateAuthToken(string pkey = "urlShortener")
     {
-        using var hasher = new HMACSHA1(sKey);
+        using var hasher = new HMACSHA1(_sKey);
         var now = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
         var hash = Convert.ToBase64String(hasher.ComputeHash(Encoding.UTF8.GetBytes(string.Join("\n", now, pkey))));
         return $"ASC {pkey}:{now}:{hash}";

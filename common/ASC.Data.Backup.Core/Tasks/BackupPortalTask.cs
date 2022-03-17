@@ -32,8 +32,8 @@ public class BackupPortalTask : PortalTaskBase
     public int Limit { get; private set; }
     private BackupsContext BackupRecordContext => _lazyBackupsContext.Value;
 
-    private const int MaxLength = 250;
-    private const int BatchLimit = 5000;
+    private const int _maxLength = 250;
+    private const int _batchLimit = 5000;
 
     private readonly bool _dump;
     private readonly TenantManager _tenantManager;
@@ -398,7 +398,7 @@ public class BackupPortalTask : PortalTaskBase
     {
         Logger.DebugFormat("save to file {0}", t);
         List<object[]> portion;
-        while ((portion = data.Take(BatchLimit).ToList()).Count > 0)
+        while ((portion = data.Take(_batchLimit).ToList()).Count > 0)
         {
             using (var sw = new StreamWriter(path, true))
             using (var writer = new JsonTextWriter(sw))
@@ -450,7 +450,7 @@ public class BackupPortalTask : PortalTaskBase
                 }
             }
 
-            data = data.Skip(BatchLimit).ToList();
+            data = data.Skip(_batchLimit).ToList();
         }
     }
 
@@ -515,7 +515,7 @@ public class BackupPortalTask : PortalTaskBase
             Directory.CreateDirectory(dirName);
         }
 
-        if (!WorkContext.IsMono && filePath.Length > MaxLength)
+        if (!WorkContext.IsMono && filePath.Length > _maxLength)
         {
             filePath = @"\\?\" + filePath;
         }
@@ -535,7 +535,7 @@ public class BackupPortalTask : PortalTaskBase
         foreach (var enumerateFile in Directory.EnumerateFiles(subDir, "*", SearchOption.AllDirectories))
         {
             var f = enumerateFile;
-            if (!WorkContext.IsMono && enumerateFile.Length > MaxLength)
+            if (!WorkContext.IsMono && enumerateFile.Length > _maxLength)
             {
                 f = @"\\?\" + f;
             }

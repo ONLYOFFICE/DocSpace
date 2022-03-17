@@ -111,7 +111,7 @@ class NotifyClientImpl : INotifyClient
 
     private void SendAsync(NotifyRequest request)
     {
-        request.Interceptors = _interceptors.GetAll();
+        request._interceptors = _interceptors.GetAll();
         _context.NotifyEngine.QueueRequest(request, _serviceScope);
     }
 
@@ -122,8 +122,8 @@ class NotifyClientImpl : INotifyClient
 
         var request = new NotifyRequest(_notifySource, action, objectID, recipient)
         {
-            SenderNames = senders,
-            IsNeedCheckSubscriptions = checkSubsciption
+            _senderNames = senders,
+            _isNeedCheckSubscriptions = checkSubsciption
         };
 
         if (args != null)

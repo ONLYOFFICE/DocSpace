@@ -112,7 +112,7 @@ public class Builder<T>
         }
         finally
         {
-            FileDataQueue.Queue.TryRemove(fileData.FileId, out _);
+            FileDataQueue._queue.TryRemove(fileData.FileId, out _);
         }
     }
 

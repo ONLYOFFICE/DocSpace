@@ -19,9 +19,9 @@ namespace ASC.Web.Studio.Core.Backup;
 [Scope]
 public class BackupFileUploadHandler
 {
-    private const long MaxBackupFileSize = 1024L * 1024L * 1024L;
-    private const string BackupTempFolder = "backup";
-    private const string BackupFileName = "backup.tmp";
+    private const long _maxBackupFileSize = 1024L * 1024L * 1024L;
+    private const string _backupTempFolder = "backup";
+    private const string _backupFileName = "backup.tmp";
 
     private readonly PermissionContext _permissionContext;
     private readonly TempPath _tempPath;
@@ -49,9 +49,9 @@ public class BackupFileUploadHandler
             return "Access denied.";
         }
 
-        if (file.Length <= 0 || file.Length > MaxBackupFileSize)
+        if (file.Length <= 0 || file.Length > _maxBackupFileSize)
         {
-            return $"File size must be greater than 0 and less than {MaxBackupFileSize} bytes";
+            return $"File size must be greater than 0 and less than {_maxBackupFileSize} bytes";
         }
 
         try
@@ -78,13 +78,13 @@ public class BackupFileUploadHandler
 
     internal string GetFilePath()
     {
-        var folder = Path.Combine(_tempPath.GetTempPath(), BackupTempFolder, _tenantManager.GetCurrentTenant().Id.ToString());
+        var folder = Path.Combine(_tempPath.GetTempPath(), _backupTempFolder, _tenantManager.GetCurrentTenant().Id.ToString());
 
         if (!Directory.Exists(folder))
         {
             Directory.CreateDirectory(folder);
         }
 
-        return Path.Combine(folder, BackupFileName);
+        return Path.Combine(folder, _backupFileName);
     }
 }

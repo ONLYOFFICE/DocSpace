@@ -28,7 +28,7 @@ namespace ASC.Data.Storage.Encryption;
 [Scope]
 public class NotifyHelper
 {
-    private const string NotifyService = "ASC.Web.Studio.Core.Notify.StudioNotifyService, ASC.Web.Core";
+    private const string _notifyService = "ASC.Web.Studio.Core.Notify.StudioNotifyService, ASC.Web.Core";
 
     private string _serverRootPath;
     private readonly NotifyServiceClient _notifyServiceClient;
@@ -79,7 +79,7 @@ public class NotifyHelper
     {
         var notifyInvoke = new NotifyInvoke()
         {
-            Service = NotifyService,
+            Service = _notifyService,
             Method = method,
             Tenant = tenantId
         };

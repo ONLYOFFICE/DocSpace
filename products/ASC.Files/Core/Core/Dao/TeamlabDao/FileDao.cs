@@ -1240,7 +1240,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         return _globalStore.GetStore().IsFileAsync(string.Empty, GetUniqFilePath(file));
     }
 
-    private const string DiffTitle = "diff.zip";
+    private const string _diffTitle = "diff.zip";
 
     public Task SaveEditHistoryAsync(File<int> file, string changes, Stream differenceStream)
     {
@@ -1269,7 +1269,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
         await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-        await _globalStore.GetStore().SaveAsync(string.Empty, GetUniqFilePath(file, DiffTitle), differenceStream, DiffTitle);
+        await _globalStore.GetStore().SaveAsync(string.Empty, GetUniqFilePath(file, _diffTitle), differenceStream, _diffTitle);
     }
 
     public async Task<List<EditHistory>> GetEditHistoryAsync(DocumentServiceHelper documentServiceHelper, int fileId, int fileVersion = 0)
@@ -1306,7 +1306,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     public Task<Stream> GetDifferenceStreamAsync(File<int> file)
     {
-        return _globalStore.GetStore().GetReadStreamAsync(string.Empty, GetUniqFilePath(file, DiffTitle), 0);
+        return _globalStore.GetStore().GetReadStreamAsync(string.Empty, GetUniqFilePath(file, _diffTitle), 0);
     }
 
     public Task<bool> ContainChangesAsync(int fileId, int fileVersion)
@@ -1374,7 +1374,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         return q1.Union(q2);
     }
 
-    private const string ThumbnailTitle = "thumb";
+    private const string _thumbnailTitle = "thumb";
 
     public Task SaveThumbnailAsync(File<int> file, Stream thumbnail)
     {
@@ -1404,13 +1404,13 @@ internal class FileDao : AbstractDao, IFileDao<int>
             return;
         }
 
-        var thumnailName = ThumbnailTitle + "." + _global.ThumbnailExtension;
+        var thumnailName = _thumbnailTitle + "." + _global.ThumbnailExtension;
         await _globalStore.GetStore().SaveAsync(string.Empty, GetUniqFilePath(file, thumnailName), thumbnail, thumnailName);
     }
 
     public async Task<Stream> GetThumbnailAsync(File<int> file)
     {
-        var thumnailName = ThumbnailTitle + "." + _global.ThumbnailExtension;
+        var thumnailName = _thumbnailTitle + "." + _global.ThumbnailExtension;
         var path = GetUniqFilePath(file, thumnailName);
         var storage = _globalStore.GetStore();
         var isFile = await storage.IsFileAsync(string.Empty, path).ConfigureAwait(false);

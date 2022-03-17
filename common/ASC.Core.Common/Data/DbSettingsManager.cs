@@ -77,19 +77,19 @@ class ConfigureDbSettingsManager : IConfigureNamedOptions<DbSettingsManager>
     {
         Configure(options);
 
-        options.TenantManager = _tenantManager.Get(name);
-        options.LazyWebstudioDbContext = new Lazy<WebstudioDbContext>(() => _dbContextManager.Get(name));
+        options._tenantManager = _tenantManager.Get(name);
+        options._lazyWebstudioDbContext = new Lazy<WebstudioDbContext>(() => _dbContextManager.Get(name));
     }
 
     public void Configure(DbSettingsManager options)
     {
-        options.ServiceProvider = _serviceProvider;
-        options.DbSettingsManagerCache = _dbSettingsManagerCache;
-        options.AuthContext = _authContext;
-        options.Logger = _logger.CurrentValue;
+        options._serviceProvider = _serviceProvider;
+        options._dbSettingsManagerCache = _dbSettingsManagerCache;
+        options._authContext = _authContext;
+        options._logger = _logger.CurrentValue;
 
-        options.TenantManager = _tenantManager.Value;
-        options.LazyWebstudioDbContext = new Lazy<WebstudioDbContext>(() => _dbContextManager.Value);
+        options._tenantManager = _tenantManager.Value;
+        options._lazyWebstudioDbContext = new Lazy<WebstudioDbContext>(() => _dbContextManager.Value);
     }
 }
 
@@ -98,14 +98,14 @@ public class DbSettingsManager
 {
     private readonly TimeSpan _expirationTimeout = TimeSpan.FromMinutes(5);
 
-    internal ILog Logger;
-    internal ICache Cache;
-    internal IServiceProvider ServiceProvider;
-    internal DbSettingsManagerCache DbSettingsManagerCache;
-    internal AuthContext AuthContext;
-    internal TenantManager TenantManager;
-    internal Lazy<WebstudioDbContext> LazyWebstudioDbContext;
-    internal WebstudioDbContext WebstudioDbContext => LazyWebstudioDbContext.Value;
+    internal ILog _logger;
+    internal ICache _cache;
+    internal IServiceProvider _serviceProvider;
+    internal DbSettingsManagerCache _dbSettingsManagerCache;
+    internal AuthContext _authContext;
+    internal TenantManager _tenantManager;
+    internal Lazy<WebstudioDbContext> _lazyWebstudioDbContext;
+    internal WebstudioDbContext WebstudioDbContext => _lazyWebstudioDbContext.Value;
 
     public DbSettingsManager() { }
 
@@ -117,13 +117,13 @@ public class DbSettingsManager
         TenantManager tenantManager,
         DbContextManager<WebstudioDbContext> dbContextManager)
     {
-        ServiceProvider = serviceProvider;
-        DbSettingsManagerCache = dbSettingsManagerCache;
-        AuthContext = authContext;
-        TenantManager = tenantManager;
-        Cache = dbSettingsManagerCache.Cache;
-        Logger = option.CurrentValue;
-        LazyWebstudioDbContext = new Lazy<WebstudioDbContext>(() => dbContextManager.Value);
+        _serviceProvider = serviceProvider;
+        _dbSettingsManagerCache = dbSettingsManagerCache;
+        _authContext = authContext;
+        _tenantManager = tenantManager;
+        _cache = dbSettingsManagerCache.Cache;
+        _logger = option.CurrentValue;
+        _lazyWebstudioDbContext = new Lazy<WebstudioDbContext>(() => dbContextManager.Value);
     }
 
     private int _tenantID;
@@ -133,7 +133,7 @@ public class DbSettingsManager
         {
             if (_tenantID == 0)
             {
-                _tenantID = TenantManager.GetCurrentTenant().Id;
+                _tenantID = _tenantManager.GetCurrentTenant().Id;
             }
 
             return _tenantID;
@@ -145,7 +145,7 @@ public class DbSettingsManager
     {
         get
         {
-            _currentUserID ??= AuthContext.CurrentAccount.ID;
+            _currentUserID ??= _authContext.CurrentAccount.ID;
 
             return _currentUserID.Value;
         }
@@ -166,7 +166,7 @@ public class DbSettingsManager
         var settings = LoadSettings<T>(tenantId);
         var key = settings.ID.ToString() + tenantId + Guid.Empty;
 
-        DbSettingsManagerCache.Remove(key);
+        _dbSettingsManagerCache.Remove(key);
     }
 
 
@@ -179,7 +179,7 @@ public class DbSettingsManager
             var key = settings.ID.ToString() + tenantId + userId;
             var data = Serialize(settings);
 
-            var def = (T)settings.GetDefault(ServiceProvider);
+            var def = (T)settings.GetDefault(_serviceProvider);
 
             var defaultData = Serialize(def);
 
@@ -216,15 +216,15 @@ public class DbSettingsManager
                 WebstudioDbContext.SaveChanges();
             }
 
-            DbSettingsManagerCache.Remove(key);
+            _dbSettingsManagerCache.Remove(key);
 
-            Cache.Insert(key, settings, _expirationTimeout);
+            _cache.Insert(key, settings, _expirationTimeout);
 
             return true;
         }
         catch (Exception ex)
         {
-            Logger.Error(ex);
+            _logger.Error(ex);
 
             return false;
         }
@@ -232,13 +232,13 @@ public class DbSettingsManager
 
     internal T LoadSettingsFor<T>(int tenantId, Guid userId) where T : class, ISettings
     {
-        var settingsInstance = ActivatorUtilities.CreateInstance<T>(ServiceProvider);
+        var settingsInstance = ActivatorUtilities.CreateInstance<T>(_serviceProvider);
         var key = settingsInstance.ID.ToString() + tenantId + userId;
-        var def = (T)settingsInstance.GetDefault(ServiceProvider);
+        var def = (T)settingsInstance.GetDefault(_serviceProvider);
 
         try
         {
-            var settings = Cache.Get<T>(key);
+            var settings = _cache.Get<T>(key);
             if (settings != null)
             {
                 return settings;
@@ -260,13 +260,13 @@ public class DbSettingsManager
                 settings = def;
             }
 
-            Cache.Insert(key, settings, _expirationTimeout);
+            _cache.Insert(key, settings, _expirationTimeout);
 
             return settings;
         }
         catch (Exception ex)
         {
-            Logger.Error(ex);
+            _logger.Error(ex);
         }
 
         return def;

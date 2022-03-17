@@ -90,7 +90,7 @@ public class CompressToTarGz : ICompress
     /// Extension the archive (does not affect the work of the class)
     /// </summary>
     /// <returns></returns>
-    public string ArchiveExtension => CompressToArchive.TarExt;
+    public string ArchiveExtension => CompressToArchive._tarExt;
 
     /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
     public void Dispose()

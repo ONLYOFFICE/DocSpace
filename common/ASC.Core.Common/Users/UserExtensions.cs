@@ -78,10 +78,10 @@ public static class UserExtensions
         return !string.IsNullOrEmpty(ui.SsoNameId);
     }
 
-    private const string ExtMobPhone = "extmobphone";
-    private const string MobPhone = "mobphone";
-    private const string ExtMail = "extmail";
-    private const string Mail = "mail";
+    private const string _extMobPhone = "extmobphone";
+    private const string _mobPhone = "mobphone";
+    private const string _extMail = "extmail";
+    private const string _mail = "mail";
 
     public static void ConvertExternalContactsToOrdinary(this UserInfo ui)
     {
@@ -106,12 +106,12 @@ public static class UserExtensions
 
             switch (type)
             {
-                case ExtMobPhone:
-                    newContacts.Add(MobPhone);
+                case _extMobPhone:
+                    newContacts.Add(_mobPhone);
                     newContacts.Add(value);
                     break;
-                case ExtMail:
-                    newContacts.Add(Mail);
+                case _extMail:
+                    newContacts.Add(_mail);
                     newContacts.Add(value);
                     break;
                 default:

@@ -121,7 +121,7 @@ public class DocuSignHandlerService
         context.Response.Redirect(PathProvider.StartURL, true);
     }
 
-    private const string XmlPrefix = "docusign";
+    private const string _xmlPrefix = "docusign";
 
     private async Task WebhookAsync(HttpContext context)
     {
@@ -133,9 +133,9 @@ public class DocuSignHandlerService
             Log.Info("DocuSign webhook outerXml: " + xmldoc.OuterXml);
 
             var mgr = new XmlNamespaceManager(xmldoc.NameTable);
-            mgr.AddNamespace(XmlPrefix, "http://www.docusign.net/API/3.0");
+            mgr.AddNamespace(_xmlPrefix, "http://www.docusign.net/API/3.0");
 
-            var envelopeStatusNode = GetSingleNode(xmldoc, "DocuSignEnvelopeInformation/" + XmlPrefix + ":EnvelopeStatus", mgr);
+            var envelopeStatusNode = GetSingleNode(xmldoc, "DocuSignEnvelopeInformation/" + _xmlPrefix + ":EnvelopeStatus", mgr);
             var envelopeId = GetSingleNode(envelopeStatusNode, "EnvelopeID", mgr).InnerText;
             var subject = GetSingleNode(envelopeStatusNode, "Subject", mgr).InnerText;
 
@@ -147,7 +147,7 @@ public class DocuSignHandlerService
 
             Log.Info("DocuSign webhook: " + envelopeId + " " + subject + " " + status);
 
-            var customFieldUserIdNode = GetSingleNode(envelopeStatusNode, "CustomFields/" + XmlPrefix + ":CustomField[" + XmlPrefix + ":Name='" + DocuSignHelper.UserField + "']", mgr);
+            var customFieldUserIdNode = GetSingleNode(envelopeStatusNode, "CustomFields/" + _xmlPrefix + ":CustomField[" + _xmlPrefix + ":Name='" + DocuSignHelper.UserField + "']", mgr);
             var userIdString = GetSingleNode(customFieldUserIdNode, "Value", mgr).InnerText;
             Auth(userIdString);
 
@@ -169,12 +169,12 @@ public class DocuSignHandlerService
                             var documentFiels = GetSingleNode(documentStatus, "DocumentFields", mgr, true);
                             if (documentFiels != null)
                             {
-                                var documentFieldFolderNode = GetSingleNode(documentFiels, "DocumentField[" + XmlPrefix + ":Name='" + FilesLinkUtility.FolderId + "']", mgr, true);
+                                var documentFieldFolderNode = GetSingleNode(documentFiels, "DocumentField[" + _xmlPrefix + ":Name='" + FilesLinkUtility.FolderId + "']", mgr, true);
                                 if (documentFieldFolderNode != null)
                                 {
                                     folderId = GetSingleNode(documentFieldFolderNode, "Value", mgr).InnerText;
                                 }
-                                var documentFieldTitleNode = GetSingleNode(documentFiels, "DocumentField[" + XmlPrefix + ":Name='" + FilesLinkUtility.FileTitle + "']", mgr, true);
+                                var documentFieldTitleNode = GetSingleNode(documentFiels, "DocumentField[" + _xmlPrefix + ":Name='" + FilesLinkUtility.FileTitle + "']", mgr, true);
                                 if (documentFieldTitleNode != null)
                                 {
                                     sourceTitle = GetSingleNode(documentFieldTitleNode, "Value", mgr).InnerText;
@@ -220,7 +220,7 @@ public class DocuSignHandlerService
 
     private static XmlNode GetSingleNode(XmlNode node, string xpath, XmlNamespaceManager mgr, bool canMiss = false)
     {
-        var result = node.SelectSingleNode(XmlPrefix + ":" + xpath, mgr);
+        var result = node.SelectSingleNode(_xmlPrefix + ":" + xpath, mgr);
         if (!canMiss && result == null)
         {
             throw new Exception(xpath + " is null");

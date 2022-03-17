@@ -62,8 +62,8 @@ public abstract class BaseLoginProvider<T> : Consumer, ILoginProvider where T : 
     public abstract string ClientSecret { get; }
     public virtual string Scopes => string.Empty;
 
-    internal readonly Signature Signature;
-    internal readonly InstanceCrypto InstanceCrypto;
+    internal readonly Signature _signature;
+    internal readonly InstanceCrypto _instanceCrypto;
 
     private readonly OAuth20TokenHelper _oAuth20TokenHelper;
 
@@ -83,8 +83,8 @@ public abstract class BaseLoginProvider<T> : Consumer, ILoginProvider where T : 
         : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, props, additional)
     {
         _oAuth20TokenHelper = oAuth20TokenHelper;
-        Signature = signature;
-        InstanceCrypto = instanceCrypto;
+        _signature = signature;
+        _instanceCrypto = instanceCrypto;
     }
 
     public virtual LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params, IDictionary<string, string> additionalStateArgs)
@@ -106,7 +106,7 @@ public abstract class BaseLoginProvider<T> : Consumer, ILoginProvider where T : 
         }
         catch (Exception ex)
         {
-            return LoginProfile.FromError(Signature, InstanceCrypto, ex);
+            return LoginProfile.FromError(_signature, _instanceCrypto, ex);
         }
     }
 

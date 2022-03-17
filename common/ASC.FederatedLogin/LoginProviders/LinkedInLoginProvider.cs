@@ -35,8 +35,8 @@ public class LinkedInLoginProvider : BaseLoginProvider<LinkedInLoginProvider>
     public override string CodeUrl => "https://www.linkedin.com/oauth/v2/authorization";
     public override string Scopes => "r_liteprofile r_emailaddress";
 
-    private const string LinkedInProfileUrl = "https://api.linkedin.com/v2/me";
-    private const string LinkedInEmailUrl = "https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))";
+    private const string _linkedInProfileUrl = "https://api.linkedin.com/v2/me";
+    private const string _linkedInEmailUrl = "https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))";
 
     public LinkedInLoginProvider() { }
 
@@ -71,7 +71,7 @@ public class LinkedInLoginProvider : BaseLoginProvider<LinkedInLoginProvider>
             throw new Exception("Failed to correctly process the response");
         }
 
-        var profile = new LoginProfile(Signature, InstanceCrypto)
+        var profile = new LoginProfile(_signature, _instanceCrypto)
         {
             Id = jProfile.Value<string>("id"),
             FirstName = jProfile.Value<string>("localizedFirstName"),
@@ -96,11 +96,11 @@ public class LinkedInLoginProvider : BaseLoginProvider<LinkedInLoginProvider>
 
     private LoginProfile RequestProfile(string accessToken)
     {
-        var linkedInProfile = RequestHelper.PerformRequest(LinkedInProfileUrl,
+        var linkedInProfile = RequestHelper.PerformRequest(_linkedInProfileUrl,
             headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
         var loginProfile = ProfileFromLinkedIn(linkedInProfile);
 
-        var linkedInEmail = RequestHelper.PerformRequest(LinkedInEmailUrl, headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
+        var linkedInEmail = RequestHelper.PerformRequest(_linkedInEmailUrl, headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
         loginProfile.EMail = EmailFromLinkedIn(linkedInEmail);
 
         return loginProfile;

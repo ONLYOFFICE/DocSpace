@@ -19,6 +19,6 @@ namespace ASC.Files.ThumbnailBuilder;
 [Singletone(Additional = typeof(WorkerExtension))]
 public class FileDataQueue
 {
-    internal static readonly ConcurrentDictionary<object, FileData<int>> Queue
+    internal static readonly ConcurrentDictionary<object, FileData<int>> _queue
         = new ConcurrentDictionary<object, FileData<int>>();
 }

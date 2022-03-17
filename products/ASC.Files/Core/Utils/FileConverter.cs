@@ -35,7 +35,7 @@ internal class FileConverterQueue<T> : IDisposable
     private readonly Timer _timer;
     private readonly object _locker;
     private readonly ICache _cache;
-    private const int TimerPeriod = 500;
+    private const int _timerPeriod = 500;
 
     private readonly IServiceScopeFactory _serviceScopeFactory;
 
@@ -353,7 +353,7 @@ internal class FileConverterQueue<T> : IDisposable
 
                 lock (_locker)
                 {
-                    _timer.Change(TimerPeriod, TimerPeriod);
+                    _timer.Change(_timerPeriod, _timerPeriod);
                 }
             }
             catch (Exception exception)

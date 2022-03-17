@@ -28,9 +28,9 @@ namespace ASC.Web.Studio.Core;
 [Singletone]
 public class SetupInfo
 {
-    private static string web_autotest_secret_email;
-    private static string[] web_display_mobapps_banner;
-    private static string[] hideSettings;
+    private static string _webAutotestSecretEmail;
+    private static string[] _webDisplayMobappsBanner;
+    private static string[] _hideSettings;
 
     public string MetaImageURL { get; private set; }
     public string StatisticTrackURL { get; private set; }
@@ -76,18 +76,18 @@ public class SetupInfo
     public static bool IsSecretEmail(string email)
     {
         email = Regex.Replace(email ?? "", "\\.*(?=\\S*(@gmail.com$))", "").ToLower();
-        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(web_autotest_secret_email))
+        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(_webAutotestSecretEmail))
         {
             return false;
         }
 
-        var regex = new Regex(web_autotest_secret_email, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
+        var regex = new Regex(_webAutotestSecretEmail, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
         return regex.IsMatch(email);
     }
 
     public static bool DisplayMobappBanner(string product)
     {
-        return web_display_mobapps_banner.Contains(product, StringComparer.InvariantCultureIgnoreCase);
+        return _webDisplayMobappsBanner.Contains(product, StringComparer.InvariantCultureIgnoreCase);
     }
 
     public string ShareTwitterUrl { get; private set; }
@@ -165,7 +165,7 @@ public class SetupInfo
         ValidAuthKeyInterval = GetAppSettings("auth.validinterval", TimeSpan.FromHours(1));
 
         SalesEmail = GetAppSettings("web.payment.email", "sales@onlyoffice.com");
-        web_autotest_secret_email = (configuration["web:autotest:secret-email"] ?? "").Trim();
+        _webAutotestSecretEmail = (configuration["web:autotest:secret-email"] ?? "").Trim();
 
         RecaptchaPublicKey = GetAppSettings("web.recaptcha.public-key", null);
         RecaptchaPrivateKey = GetAppSettings("web.recaptcha.private-key", "");
@@ -176,7 +176,7 @@ public class SetupInfo
             LoginThreshold = 5;
         }
 
-        web_display_mobapps_banner = (configuration["web.display.mobapps.banner"] ?? "").Trim().Split(new char[] { ',', ';', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+        _webDisplayMobappsBanner = (configuration["web.display.mobapps.banner"] ?? "").Trim().Split(new char[] { ',', ';', ' ' }, StringSplitOptions.RemoveEmptyEntries);
         ShareTwitterUrl = GetAppSettings("web.share.twitter", "https://twitter.com/intent/tweet?text={0}");
         ShareFacebookUrl = GetAppSettings("web.share.facebook", "");
         ControlPanelUrl = GetAppSettings("web:controlpanel:url", "");
@@ -186,7 +186,7 @@ public class SetupInfo
         SsoSamlLoginUrl = GetAppSettings("web.sso.saml.login.url", "");
         SsoSamlLogoutUrl = GetAppSettings("web.sso.saml.logout.url", "");
 
-        hideSettings = GetAppSettings("web.hide-settings", string.Empty).Split(new[] { ',', ';', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+        _hideSettings = GetAppSettings("web.hide-settings", string.Empty).Split(new[] { ',', ';', ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
         SmsTrial = GetAppSettings("core.sms.trial", false);
 
@@ -208,7 +208,7 @@ public class SetupInfo
 
     public static bool IsVisibleSettings(string settings)
     {
-        return hideSettings == null || !hideSettings.Contains(settings, StringComparer.CurrentCultureIgnoreCase);
+        return _hideSettings == null || !_hideSettings.Contains(settings, StringComparer.CurrentCultureIgnoreCase);
     }
 
     public long MaxChunkedUploadSize(TenantExtra tenantExtra, TenantStatisticsProvider tenantStatisticsProvider)

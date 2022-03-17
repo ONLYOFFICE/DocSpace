@@ -28,13 +28,13 @@ namespace ASC.FederatedLogin.LoginProviders;
 [Scope]
 public class OneDriveLoginProvider : Consumer, IOAuthProvider
 {
-    private const string OneDriveOauthUrl = "https://login.live.com/";
+    private const string _oneDriveOauthUrl = "https://login.live.com/";
     public const string OneDriveApiUrl = "https://api.onedrive.com";
 
     public static string OneDriveLoginProviderScopes => "wl.signin wl.skydrive_update wl.offline_access";
     public string Scopes => OneDriveLoginProviderScopes;
-    public string CodeUrl => OneDriveOauthUrl + "oauth20_authorize.srf";
-    public string AccessTokenUrl => OneDriveOauthUrl + "oauth20_token.srf";
+    public string CodeUrl => _oneDriveOauthUrl + "oauth20_authorize.srf";
+    public string AccessTokenUrl => _oneDriveOauthUrl + "oauth20_token.srf";
     public string RedirectUri => this["skydriveRedirectUrl"];
     public string ClientID => this["skydriveappkey"];
     public string ClientSecret => this["skydriveappsecret"];

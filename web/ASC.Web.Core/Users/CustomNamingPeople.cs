@@ -45,27 +45,27 @@ public class PeopleNamesSettings : ISettings
 
 public class PeopleNamesItem
 {
-    private static readonly StringComparison cmp = StringComparison.InvariantCultureIgnoreCase;
+    private static readonly StringComparison _cmp = StringComparison.InvariantCultureIgnoreCase;
 
-    private string schemaName;
+    private string _schemaName;
 
-    private string userCaption;
+    private string _userCaption;
 
-    private string usersCaption;
+    private string _usersCaption;
 
-    private string groupCaption;
+    private string _groupCaption;
 
-    private string groupsCaption;
+    private string _groupsCaption;
 
-    private string userPostCaption;
+    private string _userPostCaption;
 
-    private string groupHeadCaption;
+    private string _groupHeadCaption;
 
-    private string regDateCaption;
+    private string _regDateCaption;
 
-    private string guestCaption;
+    private string _guestCaption;
 
-    private string guestsCaption;
+    private string _guestsCaption;
 
 
     public static string DefaultID
@@ -82,62 +82,62 @@ public class PeopleNamesItem
 
     public string SchemaName
     {
-        get { return Id.Equals(CustomID, cmp) ? schemaName ?? string.Empty : GetResourceValue(schemaName); }
-        set { schemaName = value; }
+        get { return Id.Equals(CustomID, _cmp) ? _schemaName ?? string.Empty : GetResourceValue(_schemaName); }
+        set { _schemaName = value; }
     }
 
     public string UserCaption
     {
-        get { return Id.Equals(CustomID, cmp) ? userCaption ?? string.Empty : GetResourceValue(userCaption); }
-        set { userCaption = value; }
+        get { return Id.Equals(CustomID, _cmp) ? _userCaption ?? string.Empty : GetResourceValue(_userCaption); }
+        set { _userCaption = value; }
     }
 
     public string UsersCaption
     {
-        get { return Id.Equals(CustomID, cmp) ? usersCaption ?? string.Empty : GetResourceValue(usersCaption); }
-        set { usersCaption = value; }
+        get { return Id.Equals(CustomID, _cmp) ? _usersCaption ?? string.Empty : GetResourceValue(_usersCaption); }
+        set { _usersCaption = value; }
     }
 
     public string GroupCaption
     {
-        get { return Id.Equals(CustomID, cmp) ? groupCaption ?? string.Empty : GetResourceValue(groupCaption); }
-        set { groupCaption = value; }
+        get { return Id.Equals(CustomID, _cmp) ? _groupCaption ?? string.Empty : GetResourceValue(_groupCaption); }
+        set { _groupCaption = value; }
     }
 
     public string GroupsCaption
     {
-        get { return Id.Equals(CustomID, cmp) ? groupsCaption ?? string.Empty : GetResourceValue(groupsCaption); }
-        set { groupsCaption = value; }
+        get { return Id.Equals(CustomID, _cmp) ? _groupsCaption ?? string.Empty : GetResourceValue(_groupsCaption); }
+        set { _groupsCaption = value; }
     }
 
     public string UserPostCaption
     {
-        get { return Id.Equals(CustomID, cmp) ? userPostCaption ?? string.Empty : GetResourceValue(userPostCaption); }
-        set { userPostCaption = value; }
+        get { return Id.Equals(CustomID, _cmp) ? _userPostCaption ?? string.Empty : GetResourceValue(_userPostCaption); }
+        set { _userPostCaption = value; }
     }
 
     public string GroupHeadCaption
     {
-        get { return Id.Equals(CustomID, cmp) ? groupHeadCaption ?? string.Empty : GetResourceValue(groupHeadCaption); }
-        set { groupHeadCaption = value; }
+        get { return Id.Equals(CustomID, _cmp) ? _groupHeadCaption ?? string.Empty : GetResourceValue(_groupHeadCaption); }
+        set { _groupHeadCaption = value; }
     }
 
     public string RegDateCaption
     {
-        get { return Id.Equals(CustomID, cmp) ? regDateCaption ?? string.Empty : GetResourceValue(regDateCaption); }
-        set { regDateCaption = value; }
+        get { return Id.Equals(CustomID, _cmp) ? _regDateCaption ?? string.Empty : GetResourceValue(_regDateCaption); }
+        set { _regDateCaption = value; }
     }
 
     public string GuestCaption
     {
-        get { return Id.Equals(CustomID, cmp) ? guestCaption ?? NamingPeopleResource.CommonGuest : GetResourceValue(guestCaption); }
-        set { guestCaption = value; }
+        get { return Id.Equals(CustomID, _cmp) ? _guestCaption ?? NamingPeopleResource.CommonGuest : GetResourceValue(_guestCaption); }
+        set { _guestCaption = value; }
     }
 
     public string GuestsCaption
     {
-        get { return Id.Equals(CustomID, cmp) ? guestsCaption ?? NamingPeopleResource.CommonGuests : GetResourceValue(guestsCaption); }
-        set { guestsCaption = value; }
+        get { return Id.Equals(CustomID, _cmp) ? _guestsCaption ?? NamingPeopleResource.CommonGuests : GetResourceValue(_guestsCaption); }
+        set { _guestsCaption = value; }
     }
 
     private static string GetResourceValue(string resourceKey)
@@ -153,10 +153,10 @@ public class PeopleNamesItem
 [Scope]
 public class CustomNamingPeople
 {
-    private static readonly object Locked = new object();
-    private static bool loaded;
+    private static readonly object _locked = new object();
+    private static bool _loaded;
 
-    private static readonly List<PeopleNamesItem> items = new List<PeopleNamesItem>();
+    private static readonly List<PeopleNamesItem> _items = new List<PeopleNamesItem>();
     private SettingsManager SettingsManager { get; }
 
     public CustomNamingPeople(SettingsManager settingsManager)
@@ -190,7 +190,7 @@ public class CustomNamingPeople
     {
         Load();
 
-        var dict = items.ToDictionary(i => i.Id.ToLower(), i => i.SchemaName);
+        var dict = _items.ToDictionary(i => i.Id.ToLower(), i => i.SchemaName);
         dict.Add(PeopleNamesItem.CustomID, Resource.CustomNamingPeopleSchema);
         return dict;
     }
@@ -225,7 +225,7 @@ public class CustomNamingPeople
 
         Load();
 
-        return items.Find(i => i.Id.Equals(schemaId, StringComparison.InvariantCultureIgnoreCase));
+        return _items.Find(i => i.Id.Equals(schemaId, StringComparison.InvariantCultureIgnoreCase));
     }
 
     public void SetPeopleNames(string schemaId)
@@ -247,23 +247,23 @@ public class CustomNamingPeople
 
     private void Load()
     {
-        if (loaded)
+        if (_loaded)
         {
             return;
         }
 
-        lock (Locked)
+        lock (_locked)
         {
-            if (loaded)
+            if (_loaded)
             {
                 return;
             }
 
-            loaded = true;
+            _loaded = true;
             var doc = new XmlDocument();
             doc.LoadXml(NamingPeopleResource.PeopleNames);
 
-            items.Clear();
+            _items.Clear();
             foreach (XmlNode node in doc.SelectNodes("/root/item"))
             {
                 var item = new PeopleNamesItem
@@ -280,7 +280,7 @@ public class CustomNamingPeople
                     GuestCaption = node.SelectSingleNode("names/guest").InnerText,
                     GuestsCaption = node.SelectSingleNode("names/guests").InnerText,
                 };
-                items.Add(item);
+                _items.Add(item);
             }
         }
     }

@@ -29,7 +29,7 @@ namespace ASC.Web.Files.Configuration;
 [Scope]
 public class ProductEntryPoint : Product
 {
-    internal const string ProductPath = "/products/files/";
+    internal const string _productPath = "/products/files/";
 
     //public FilesSpaceUsageStatManager FilesSpaceUsageStatManager { get; }
     private readonly CoreBaseSettings _coreBaseSettings;
@@ -136,7 +136,7 @@ public class ProductEntryPoint : Product
         }
     }
 
-    public override string StartURL => ProductPath;
+    public override string StartURL => _productPath;
     public override string HelpURL => PathProvider.StartURL;
     public override string ProductClassName => "files";
     public override ProductContext Context => _productContext;

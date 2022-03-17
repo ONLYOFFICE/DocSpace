@@ -81,7 +81,7 @@ public class WebItemSecurityCache
 [Scope]
 public class WebItemSecurity
 {
-    private static readonly SecurityAction Read = new SecurityAction(new Guid("77777777-32ae-425f-99b5-83176061d1ae"), "ReadWebItem", false, true);
+    private static readonly SecurityAction _read = new SecurityAction(new Guid("77777777-32ae-425f-99b5-83176061d1ae"), "ReadWebItem", false, true);
 
     private UserManager UserManager { get; }
     private AuthContext AuthContext { get; }
@@ -174,13 +174,13 @@ public class WebItemSecurity
                 }
                 else if (webitem is IModule)
                 {
-                    result = PermissionContext.PermissionResolver.Check(Authentication.GetAccountByID(tenant.Id, @for), securityObj, null, Read) &&
+                    result = PermissionContext.PermissionResolver.Check(Authentication.GetAccountByID(tenant.Id, @for), securityObj, null, _read) &&
                         IsAvailableForUser(WebItemManager.GetParentItemID(webitem.ID), @for);
                 }
                 else
                 {
-                    var hasUsers = AuthorizationManager.GetAces(Guid.Empty, Read.ID, securityObj).Any(a => a.Subject != ASC.Core.Users.Constants.GroupEveryone.ID);
-                    result = PermissionContext.PermissionResolver.Check(Authentication.GetAccountByID(tenant.Id, @for), securityObj, null, Read) ||
+                    var hasUsers = AuthorizationManager.GetAces(Guid.Empty, _read.ID, securityObj).Any(a => a.Subject != ASC.Core.Users.Constants.GroupEveryone.ID);
+                    result = PermissionContext.PermissionResolver.Check(Authentication.GetAccountByID(tenant.Id, @for), securityObj, null, _read) ||
                              (hasUsers && IsProductAdministrator(securityObj.WebItemId, @for));
                 }
             }
@@ -212,7 +212,7 @@ public class WebItemSecurity
 
         // remove old aces
         AuthorizationManager.RemoveAllAces(securityObj);
-        var allowToAll = new AzRecord(ASC.Core.Users.Constants.GroupEveryone.ID, Read.ID, AceType.Allow, securityObj.FullId);
+        var allowToAll = new AzRecord(ASC.Core.Users.Constants.GroupEveryone.ID, _read.ID, AceType.Allow, securityObj.FullId);
         AuthorizationManager.RemoveAce(allowToAll);
 
         // set new aces
@@ -227,7 +227,7 @@ public class WebItemSecurity
         }
         foreach (var s in subjects)
         {
-            var a = new AzRecord(s, Read.ID, enabled ? AceType.Allow : AceType.Deny, securityObj.FullId);
+            var a = new AzRecord(s, _read.ID, enabled ? AceType.Allow : AceType.Deny, securityObj.FullId);
             AuthorizationManager.AddAce(a);
         }
 
@@ -258,7 +258,7 @@ public class WebItemSecurity
     {
         var securityObj = WebItemSecurityObject.Create(id, WebItemManager);
         var result = AuthorizationManager
-            .GetAcesWithInherits(Guid.Empty, Read.ID, securityObj, null)
+            .GetAcesWithInherits(Guid.Empty, _read.ID, securityObj, null)
             .GroupBy(a => a.Subject)
             .Select(a => Tuple.Create(a.Key, a.First().AceType == AceType.Allow))
             .ToList();

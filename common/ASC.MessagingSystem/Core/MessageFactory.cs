@@ -29,10 +29,10 @@ namespace ASC.MessagingSystem.Core;
 public class MessageFactory
 {
     private readonly ILog _logger;
-    private const string UserAgentHeader = "User-Agent";
-    private const string ForwardedHeader = "X-Forwarded-For";
-    private const string HostHeader = "Host";
-    private const string RefererHeader = "Referer";
+    private const string _userAgentHeader = "User-Agent";
+    private const string _forwardedHeader = "X-Forwarded-For";
+    private const string _hostHeader = "Host";
+    private const string _refererHeader = "Referer";
 
     private readonly AuthContext _authContext;
     private readonly TenantManager _tenantManager;
@@ -50,7 +50,7 @@ public class MessageFactory
         {
             return new EventMessage
             {
-                Ip = request != null ? request.Headers[ForwardedHeader].ToString() ?? request.GetUserHostAddress() : null,
+                Ip = request != null ? request.Headers[_forwardedHeader].ToString() ?? request.GetUserHostAddress() : null,
                 Initiator = initiator,
                 Date = DateTime.UtcNow,
                 TenantId = _tenantManager.GetCurrentTenant().Id,
@@ -59,7 +59,7 @@ public class MessageFactory
                 Action = action,
                 Description = description,
                 Target = target,
-                UAHeader = request?.Headers[UserAgentHeader].FirstOrDefault()
+                UAHeader = request?.Headers[_userAgentHeader].FirstOrDefault()
             };
         }
         catch (Exception ex)
@@ -86,10 +86,10 @@ public class MessageFactory
 
             if (headers != null)
             {
-                var userAgent = headers.ContainsKey(UserAgentHeader) ? headers[UserAgentHeader].ToString() : null;
-                var forwarded = headers.ContainsKey(ForwardedHeader) ? headers[ForwardedHeader].ToString() : null;
-                var host = headers.ContainsKey(HostHeader) ? headers[HostHeader].ToString() : null;
-                var referer = headers.ContainsKey(RefererHeader) ? headers[RefererHeader].ToString() : null;
+                var userAgent = headers.ContainsKey(_userAgentHeader) ? headers[_userAgentHeader].ToString() : null;
+                var forwarded = headers.ContainsKey(_forwardedHeader) ? headers[_forwardedHeader].ToString() : null;
+                var host = headers.ContainsKey(_hostHeader) ? headers[_hostHeader].ToString() : null;
+                var referer = headers.ContainsKey(_refererHeader) ? headers[_refererHeader].ToString() : null;
 
                 message.Ip = forwarded ?? host;
                 message.UAHeader = userAgent;

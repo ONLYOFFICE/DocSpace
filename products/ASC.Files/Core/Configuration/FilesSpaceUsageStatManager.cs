@@ -28,9 +28,9 @@ namespace ASC.Web.Files;
 [Scope]
 public class FilesSpaceUsageStatManager : SpaceUsageStatManager
 {
-    private FilesDbContext FilesDbContext => LazyFilesDbContext.Value;
+    private FilesDbContext FilesDbContext => _lazyFilesDbContext.Value;
 
-    private readonly Lazy<FilesDbContext> LazyFilesDbContext;
+    private readonly Lazy<FilesDbContext> _lazyFilesDbContext;
     private readonly TenantManager _tenantManager;
     private readonly UserManager _userManager;
     private readonly UserPhotoManager _userPhotoManager;
@@ -49,7 +49,7 @@ public class FilesSpaceUsageStatManager : SpaceUsageStatManager
         GlobalFolderHelper globalFolderHelper,
         PathProvider pathProvider)
     {
-        LazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
+        _lazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
         _tenantManager = tenantManager;
         _userManager = userManager;
         _userPhotoManager = userPhotoManager;
@@ -117,8 +117,8 @@ public class FilesUserSpaceUsage : IUserSpaceUsage
     private FilesDbContext FilesDbContext => _lazyFilesDbContext.Value;
 
     private readonly Lazy<FilesDbContext> _lazyFilesDbContext;
-    private readonly TenantManager TenantManager;
-    private readonly GlobalFolder GlobalFolder;
+    private readonly TenantManager _tenantManager;
+    private readonly GlobalFolder _globalFolder;
     private readonly FileMarker _fileMarker;
     private readonly IDaoFactory _daoFactory;
 
@@ -130,17 +130,17 @@ public class FilesUserSpaceUsage : IUserSpaceUsage
         IDaoFactory daoFactory)
     {
         _lazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
-        TenantManager = tenantManager;
-        GlobalFolder = globalFolder;
+        _tenantManager = tenantManager;
+        _globalFolder = globalFolder;
         _fileMarker = fileMarker;
         _daoFactory = daoFactory;
     }
 
     public async Task<long> GetUserSpaceUsageAsync(Guid userId)
     {
-        var tenantId = TenantManager.GetCurrentTenant().Id;
-        var my = GlobalFolder.GetFolderMy(_fileMarker, _daoFactory);
-        var trash = await GlobalFolder.GetFolderTrashAsync<int>(_daoFactory);
+        var tenantId = _tenantManager.GetCurrentTenant().Id;
+        var my = _globalFolder.GetFolderMy(_fileMarker, _daoFactory);
+        var trash = await _globalFolder.GetFolderTrashAsync<int>(_daoFactory);
 
         return await FilesDbContext.Files
             .AsQueryable()

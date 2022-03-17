@@ -36,7 +36,7 @@ public class BillingClient
     private readonly string _billingSecret;
     private readonly bool _test;
 
-    private const int AvangatePaymentSystemId = 1;
+    private const int _avangatePaymentSystemId = 1;
 
     private static readonly HttpClient _httpClient = new HttpClient();
 
@@ -89,7 +89,7 @@ public class BillingClient
     {
         var urls = new Dictionary<string, Tuple<Uri, Uri>>();
 
-        var additionalParameters = new List<Tuple<string, string>>() { Tuple.Create("PaymentSystemId", AvangatePaymentSystemId.ToString()) };
+        var additionalParameters = new List<Tuple<string, string>>() { Tuple.Create("PaymentSystemId", _avangatePaymentSystemId.ToString()) };
         if (!string.IsNullOrEmpty(affiliateId))
         {
             additionalParameters.Add(Tuple.Create("AffiliateId", affiliateId));
@@ -173,12 +173,12 @@ public class BillingClient
         ArgumentNullException.ThrowIfNull(productIds);
 
         var parameters = productIds.Select(pid => Tuple.Create("ProductId", pid)).ToList();
-        parameters.Add(Tuple.Create("PaymentSystemId", AvangatePaymentSystemId.ToString()));
+        parameters.Add(Tuple.Create("PaymentSystemId", _avangatePaymentSystemId.ToString()));
 
         var result = Request("GetProductsPrices", null, parameters.ToArray());
         var prices = JsonSerializer.Deserialize<Dictionary<int, Dictionary<string, Dictionary<string, decimal>>>>(result);
 
-        if (prices.TryGetValue(AvangatePaymentSystemId, out var pricesPaymentSystem))
+        if (prices.TryGetValue(_avangatePaymentSystemId, out var pricesPaymentSystem))
         {
             return productIds.Select(productId =>
             {

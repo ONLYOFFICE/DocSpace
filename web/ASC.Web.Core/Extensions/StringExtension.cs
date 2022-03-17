@@ -27,7 +27,7 @@ namespace System;
 
 public static class StringExtension
 {
-    private static readonly Regex reStrict = new Regex(@"^(([^<>()[\]\\.,;:\s@\""]+"
+    private static readonly Regex _reStrict = new Regex(@"^(([^<>()[\]\\.,;:\s@\""]+"
               + @"(\.[^<>()[\]\\.,;:\s@\""]+)*)|(\"".+\""))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}"
               + @"\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$");
 
@@ -50,7 +50,7 @@ public static class StringExtension
     public static bool TestEmailRegex(this string emailAddress)
     {
         emailAddress = (emailAddress ?? "").Trim();
-        return !string.IsNullOrEmpty(emailAddress) && reStrict.IsMatch(emailAddress);
+        return !string.IsNullOrEmpty(emailAddress) && _reStrict.IsMatch(emailAddress);
     }
 
     public static string GetMD5Hash(this string str)

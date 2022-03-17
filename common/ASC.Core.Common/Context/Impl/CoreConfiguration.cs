@@ -82,14 +82,14 @@ class ConfigureCoreSettings : IConfigureNamedOptions<CoreSettings>
     public void Configure(string name, CoreSettings options)
     {
         Configure(options);
-        options.TenantService = _tenantService.Get(name);
+        options._tenantService = _tenantService.Get(name);
     }
 
     public void Configure(CoreSettings options)
     {
-        options.Configuration = _configuration;
-        options.CoreBaseSettings = _coreBaseSettings;
-        options.TenantService = _tenantService.Value;
+        options._configuration = _configuration;
+        options._coreBaseSettings = _coreBaseSettings;
+        options._tenantService = _tenantService.Value;
     }
 }
 
@@ -101,28 +101,28 @@ public class CoreSettings
         get
         {
             string result;
-            if (CoreBaseSettings.Standalone || string.IsNullOrEmpty(CoreBaseSettings.Basedomain))
+            if (_coreBaseSettings.Standalone || string.IsNullOrEmpty(_coreBaseSettings.Basedomain))
             {
-                result = GetSetting("BaseDomain") ?? CoreBaseSettings.Basedomain;
+                result = GetSetting("BaseDomain") ?? _coreBaseSettings.Basedomain;
             }
             else
             {
-                result = CoreBaseSettings.Basedomain;
+                result = _coreBaseSettings.Basedomain;
             }
             return result;
         }
         set
         {
-            if (CoreBaseSettings.Standalone || string.IsNullOrEmpty(CoreBaseSettings.Basedomain))
+            if (_coreBaseSettings.Standalone || string.IsNullOrEmpty(_coreBaseSettings.Basedomain))
             {
                 SaveSetting("BaseDomain", value);
             }
         }
     }
 
-    internal ITenantService TenantService;
-    internal CoreBaseSettings CoreBaseSettings;
-    internal IConfiguration Configuration;
+    internal ITenantService _tenantService;
+    internal CoreBaseSettings _coreBaseSettings;
+    internal IConfiguration _configuration;
 
     public CoreSettings() { }
 
@@ -131,9 +131,9 @@ public class CoreSettings
         CoreBaseSettings coreBaseSettings,
         IConfiguration configuration)
     {
-        TenantService = tenantService;
-        CoreBaseSettings = coreBaseSettings;
-        Configuration = configuration;
+        _tenantService = tenantService;
+        _coreBaseSettings = coreBaseSettings;
+        _configuration = configuration;
     }
 
     public string GetBaseDomain(string hostedRegion)
@@ -159,14 +159,14 @@ public class CoreSettings
             bytes = Crypto.GetV(Encoding.UTF8.GetBytes(value), 2, true);
         }
 
-        TenantService.SetTenantSettings(tenant, key, bytes);
+        _tenantService.SetTenantSettings(tenant, key, bytes);
     }
 
     public string GetSetting(string key, int tenant = Tenant.DefaultTenant)
     {
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(key);
 
-        var bytes = TenantService.GetTenantSettings(tenant, key);
+        var bytes = _tenantService.GetTenantSettings(tenant, key);
 
         var result = bytes != null ? Encoding.UTF8.GetString(Crypto.GetV(bytes, 2, false)) : null;
 
@@ -175,12 +175,12 @@ public class CoreSettings
 
     public string GetKey(int tenant)
     {
-        if (CoreBaseSettings.Standalone)
+        if (_coreBaseSettings.Standalone)
         {
             var key = GetSetting("PortalId");
             if (string.IsNullOrEmpty(key))
             {
-                lock (TenantService)
+                lock (_tenantService)
                 {
                     // thread safe
                     key = GetSetting("PortalId");
@@ -196,19 +196,19 @@ public class CoreSettings
         }
         else
         {
-            var t = TenantService.GetTenant(tenant);
+            var t = _tenantService.GetTenant(tenant);
             if (t != null && !string.IsNullOrWhiteSpace(t.PaymentId))
             {
                 return t.PaymentId;
             }
 
-            return Configuration["core:payment:region"] + tenant;
+            return _configuration["core:payment:region"] + tenant;
         }
     }
 
     public string GetAffiliateId(int tenant)
     {
-        var t = TenantService.GetTenant(tenant);
+        var t = _tenantService.GetTenant(tenant);
         if (t != null && !string.IsNullOrWhiteSpace(t.AffiliateId))
         {
             return t.AffiliateId;
@@ -219,7 +219,7 @@ public class CoreSettings
 
     public string GetCampaign(int tenant)
     {
-        var t = TenantService.GetTenant(tenant);
+        var t = _tenantService.GetTenant(tenant);
         if (t != null && !string.IsNullOrWhiteSpace(t.Campaign))
         {
             return t.Campaign;

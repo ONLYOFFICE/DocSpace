@@ -88,7 +88,7 @@ public class CompressToZip : ICompress
     /// Extension the archive (does not affect the work of the class)
     /// </summary>
     /// <returns></returns>
-    public string ArchiveExtension => CompressToArchive.ZipExt;
+    public string ArchiveExtension => CompressToArchive._zipExt;
 
     public void Dispose()
     {

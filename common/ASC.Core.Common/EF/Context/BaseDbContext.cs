@@ -13,8 +13,8 @@ public class BaseDbContext : DbContext
     public BaseDbContext() { }
     public BaseDbContext(DbContextOptions options) : base(options) { }
 
-    internal string MigrateAssembly;
-    internal ILoggerFactory LoggerFactory;
+    internal string _migrateAssembly;
+    internal ILoggerFactory _loggerFactory;
     public ConnectionStringSettings ConnectionStringSettings { get; set; }
     protected internal Provider Provider;
 
@@ -29,8 +29,8 @@ public class BaseDbContext : DbContext
 
             using var sqlProvider = ProviderContext[provider]();
             sqlProvider.ConnectionStringSettings = ConnectionStringSettings;
-            sqlProvider.LoggerFactory = LoggerFactory;
-            sqlProvider.MigrateAssembly = MigrateAssembly;
+            sqlProvider._loggerFactory = _loggerFactory;
+            sqlProvider._migrateAssembly = _migrateAssembly;
 
             sqlProvider.Database.Migrate();
         }
@@ -42,7 +42,7 @@ public class BaseDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseLoggerFactory(LoggerFactory);
+        optionsBuilder.UseLoggerFactory(_loggerFactory);
         optionsBuilder.EnableSensitiveDataLogging();
         Provider = GetProviderByConnectionString();
         switch (Provider)
@@ -50,9 +50,9 @@ public class BaseDbContext : DbContext
             case Provider.MySql:
                 optionsBuilder.UseMySql(ConnectionStringSettings.ConnectionString, ServerVersion, r =>
                 {
-                    if (!string.IsNullOrEmpty(MigrateAssembly))
+                    if (!string.IsNullOrEmpty(_migrateAssembly))
                     {
-                        r.MigrationsAssembly(MigrateAssembly);
+                        r.MigrationsAssembly(_migrateAssembly);
                     }
                 });
                 break;
@@ -124,16 +124,16 @@ public class MultiRegionalDbContext<T> : IDisposable, IAsyncDisposable where T :
 {
     public MultiRegionalDbContext() { }
 
-    internal List<T> Context;
+    internal List<T> _context;
 
     public void Dispose()
     {
-        if (Context == null)
+        if (_context == null)
         {
             return;
         }
 
-        foreach (var c in Context)
+        foreach (var c in _context)
         {
             if (c != null)
             {
@@ -144,12 +144,12 @@ public class MultiRegionalDbContext<T> : IDisposable, IAsyncDisposable where T :
 
     public ValueTask DisposeAsync()
     {
-        return Context == null ? ValueTask.CompletedTask : InternalDisposeAsync();
+        return _context == null ? ValueTask.CompletedTask : InternalDisposeAsync();
     }
 
     private async ValueTask InternalDisposeAsync()
     {
-        foreach (var c in Context)
+        foreach (var c in _context)
         {
             if (c != null)
             {

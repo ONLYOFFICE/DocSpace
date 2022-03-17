@@ -28,8 +28,8 @@ namespace ASC.Web.Core.Mobile;
 public class CachedMobileAppInstallRegistrator : IMobileAppInstallRegistrator
 {
     private ICache Cache { get; set; }
-    private readonly TimeSpan cacheExpiration;
-    private readonly IMobileAppInstallRegistrator registrator;
+    private readonly TimeSpan _cacheExpiration;
+    private readonly IMobileAppInstallRegistrator _registrator;
 
     private TenantManager TenantManager { get; }
 
@@ -42,8 +42,8 @@ public class CachedMobileAppInstallRegistrator : IMobileAppInstallRegistrator
     {
         Cache = cache;
         TenantManager = tenantManager;
-        this.registrator = registrator ?? throw new ArgumentNullException(nameof(registrator));
-        this.cacheExpiration = cacheExpiration;
+        this._registrator = registrator ?? throw new ArgumentNullException(nameof(registrator));
+        this._cacheExpiration = cacheExpiration;
     }
 
     public void RegisterInstall(string userEmail, MobileAppType appType)
@@ -53,9 +53,9 @@ public class CachedMobileAppInstallRegistrator : IMobileAppInstallRegistrator
             return;
         }
 
-        registrator.RegisterInstall(userEmail, appType);
-        Cache.Insert(GetCacheKey(userEmail, null), true, cacheExpiration);
-        Cache.Insert(GetCacheKey(userEmail, appType), true, cacheExpiration);
+        _registrator.RegisterInstall(userEmail, appType);
+        Cache.Insert(GetCacheKey(userEmail, null), true, _cacheExpiration);
+        Cache.Insert(GetCacheKey(userEmail, appType), true, _cacheExpiration);
     }
 
     public bool IsInstallRegistered(string userEmail, MobileAppType? appType)
@@ -73,8 +73,8 @@ public class CachedMobileAppInstallRegistrator : IMobileAppInstallRegistrator
             return cachedValue;
         }
 
-        var isRegistered = registrator.IsInstallRegistered(userEmail, appType);
-        Cache.Insert(GetCacheKey(userEmail, appType), isRegistered.ToString(), cacheExpiration);
+        var isRegistered = _registrator.IsInstallRegistered(userEmail, appType);
+        Cache.Insert(GetCacheKey(userEmail, appType), isRegistered.ToString(), _cacheExpiration);
         return isRegistered;
     }
 

@@ -31,7 +31,7 @@ public sealed class ApiDateTime : IComparable<ApiDateTime>, IComparable
     public DateTime UtcTime { get; private set; }
     public TimeSpan TimeZoneOffset { get; private set; }
 
-    internal static readonly string[] Formats = new[]
+    internal static readonly string[] _formats = new[]
     {
             "o",
             "yyyy'-'MM'-'dd'T'HH'-'mm'-'ss'.'fffffffK",
@@ -88,7 +88,7 @@ public sealed class ApiDateTime : IComparable<ApiDateTime>, IComparable
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(data);
 
         var offsetPart = data.Substring(data.Length - 6, 6);
-        if (DateTime.TryParseExact(data, Formats, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out var dateTime))
+        if (DateTime.TryParseExact(data, _formats, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out var dateTime))
         {
             //Parse time   
             var tzOffset = TimeSpan.Zero;
@@ -381,7 +381,7 @@ public class ApiDateTimeConverter : System.Text.Json.Serialization.JsonConverter
         }
         else
         {
-            if (DateTime.TryParseExact(reader.GetString(), ApiDateTime.Formats,
+            if (DateTime.TryParseExact(reader.GetString(), ApiDateTime._formats,
                 CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var dateTime))
             {
                 return new ApiDateTime(dateTime, TimeSpan.Zero);

@@ -28,13 +28,13 @@ namespace ASC.Core.Caching;
 [Singletone]
 class AzServiceCache
 {
-    internal readonly ICache Cache;
-    internal readonly ICacheNotify<AzRecordCache> CacheNotify;
+    internal readonly ICache _cache;
+    internal readonly ICacheNotify<AzRecordCache> _cacheNotify;
 
     public AzServiceCache(ICacheNotify<AzRecordCache> cacheNotify, ICache cache)
     {
-        CacheNotify = cacheNotify;
-        Cache = cache;
+        _cacheNotify = cacheNotify;
+        _cache = cache;
 
         cacheNotify.Subscribe((r) => UpdateCache(r, true), CacheNotifyAction.Remove);
         cacheNotify.Subscribe((r) => UpdateCache(r, false), CacheNotifyAction.InsertOrUpdate);
@@ -42,7 +42,7 @@ class AzServiceCache
 
     private void UpdateCache(AzRecord r, bool remove)
     {
-        var aces = Cache.Get<AzRecordStore>(GetKey(r.Tenant));
+        var aces = _cache.Get<AzRecordStore>(GetKey(r.Tenant));
         if (aces != null)
         {
             lock (aces)
@@ -77,8 +77,8 @@ class CachedAzService : IAzService
     public CachedAzService(DbAzService service, AzServiceCache azServiceCache)
     {
         _service = service ?? throw new ArgumentNullException(nameof(service));
-        _cache = azServiceCache.Cache;
-        _cacheNotify = azServiceCache.CacheNotify;
+        _cache = azServiceCache._cache;
+        _cacheNotify = azServiceCache._cacheNotify;
         _cacheExpiration = TimeSpan.FromMinutes(10);
     }
 

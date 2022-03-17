@@ -40,7 +40,7 @@ public class MailServiceHelperStorage
 
     public void Remove()
     {
-        CacheNotify.Publish(new MailServiceHelperCache() { Key = MailServiceHelper.CacheKey }, Common.Caching.CacheNotifyAction.Remove);
+        CacheNotify.Publish(new MailServiceHelperCache() { Key = MailServiceHelper._cacheKey }, Common.Caching.CacheNotifyAction.Remove);
     }
 }
 
@@ -55,7 +55,7 @@ public class MailServiceHelper
     public const int DefaultPort = 8081;
     public const string DefaultVersion = "v1";
 
-    internal const string CacheKey = "mailserverinfo";
+    internal const string _cacheKey = "mailserverinfo";
 
     private UserManager UserManager { get; }
     private AuthContext AuthContext { get; }
@@ -131,7 +131,7 @@ public class MailServiceHelper
 
     private MailServerInfo InnerGetMailServerInfo()
     {
-        var cachedData = Cache.Get<Tuple<MailServerInfo>>(CacheKey);
+        var cachedData = Cache.Get<Tuple<MailServerInfo>>(_cacheKey);
 
         if (cachedData != null)
         {
@@ -145,7 +145,7 @@ public class MailServiceHelper
                                             ? null
                                             : Newtonsoft.Json.JsonConvert.DeserializeObject<MailServerInfo>(value));
 
-        Cache.Insert(CacheKey, cachedData, DateTime.UtcNow.Add(TimeSpan.FromDays(1)));
+        Cache.Insert(_cacheKey, cachedData, DateTime.UtcNow.Add(TimeSpan.FromDays(1)));
 
         return cachedData.Item1;
     }

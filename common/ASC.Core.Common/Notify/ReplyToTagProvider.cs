@@ -32,7 +32,7 @@ public class ReplyToTagProvider
 {
     private static readonly Regex _entityType = new Regex(@"blog|forum.topic|event|photo|file|wiki|bookmark|project\.milestone|project\.task|project\.message");
 
-    private const string TagName = "replyto";
+    private const string _tagName = "replyto";
 
     public ReplyToTagProvider(TenantManager tenantManager, CoreBaseSettings coreBaseSettings, CoreSettings coreSettings)
     {
@@ -73,7 +73,7 @@ public class ReplyToTagProvider
 
         var pId = parentId != Guid.Empty.ToString() && parentId != null ? parentId : string.Empty;
 
-        return new TagValue(TagName, $"reply_{entity}_{entityId}_{pId}@{AutoreplyDomain}");
+        return new TagValue(_tagName, $"reply_{entity}_{entityId}_{pId}@{AutoreplyDomain}");
     }
 
     /// <summary>
@@ -83,7 +83,7 @@ public class ReplyToTagProvider
     /// <returns>New TeamLab tag</returns>
     public TagValue Message(int projectId)
     {
-        return new TagValue(TagName, string.Format("message_{0}@{1}", projectId, AutoreplyDomain));
+        return new TagValue(_tagName, string.Format("message_{0}@{1}", projectId, AutoreplyDomain));
     }
 
     private string AutoreplyDomain

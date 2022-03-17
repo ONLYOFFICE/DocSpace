@@ -27,7 +27,7 @@ namespace ASC.Data.Backup.Tasks;
 
 internal class RestoreDbModuleTask : PortalTaskBase
 {
-    private const int TransactionLength = 10000;
+    private const int _transactionLength = 10000;
 
     private readonly IDataReadOperator _reader;
     private readonly IModuleSpecifics _module;
@@ -106,8 +106,8 @@ internal class RestoreDbModuleTask : PortalTaskBase
         foreach (
             var rows in
                 GetRows(tableInfo, stream)
-                    .Skip(transactionsCommited * TransactionLength)
-                    .MakeParts(TransactionLength))
+                    .Skip(transactionsCommited * _transactionLength)
+                    .MakeParts(_transactionLength))
         {
             using var transaction = connection.BeginTransaction();
             var rowsSuccess = 0;

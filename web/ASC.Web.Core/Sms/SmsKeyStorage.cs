@@ -52,7 +52,7 @@ public class SmsKeyStorage
     public readonly int KeyLength;
     public readonly TimeSpan StoreInterval;
     public readonly int AttemptCount;
-    private static readonly object KeyLocker = new object();
+    private static readonly object _keyLocker = new object();
     private ICache KeyCache { get; }
     private ICache CheckCache { get; }
 
@@ -95,7 +95,7 @@ public class SmsKeyStorage
     {
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(phone);
 
-        lock (KeyLocker)
+        lock (_keyLocker)
         {
             var cacheKey = BuildCacheKey(phone);
             var phoneKeys = KeyCache.Get<Dictionary<string, DateTime>>(cacheKey) ?? new Dictionary<string, DateTime>();
@@ -120,7 +120,7 @@ public class SmsKeyStorage
             return false;
         }
 
-        lock (KeyLocker)
+        lock (_keyLocker)
         {
             var cacheKey = BuildCacheKey(phone);
             var phoneKeys = KeyCache.Get<Dictionary<string, DateTime>>(cacheKey);
@@ -146,7 +146,7 @@ public class SmsKeyStorage
 
         CheckCache.Insert(cacheCheck, counter.ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(StoreInterval));
 
-        lock (KeyLocker)
+        lock (_keyLocker)
         {
             var cacheKey = BuildCacheKey(phone);
             var phoneKeys = KeyCache.Get<Dictionary<string, DateTime>>(cacheKey);

@@ -28,7 +28,7 @@ namespace ASC.Web.Core.Mobile;
 [Scope]
 public class MobileDetector
 {
-    private readonly Regex uaMobileRegex;
+    private readonly Regex _uaMobileRegex;
 
     private ICache cache { get; set; }
 
@@ -45,7 +45,7 @@ public class MobileDetector
         this.cache = cache;
         if (!string.IsNullOrEmpty(configuration["mobile:regex"]))
         {
-            uaMobileRegex = new Regex(configuration["mobile:regex"], RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
+            _uaMobileRegex = new Regex(configuration["mobile:regex"], RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
         }
 
         HttpContextAccessor = httpContextAccessor;
@@ -56,7 +56,7 @@ public class MobileDetector
     {
         bool? result = false;
         var ua = HttpContextAccessor.HttpContext.Request.Headers["User-Agent"].ToString();
-        var regex = uaMobileRegex;
+        var regex = _uaMobileRegex;
         if (!string.IsNullOrEmpty(ua) && regex != null)
         {
             var key = "mobileDetector/" + ua.GetHashCode();

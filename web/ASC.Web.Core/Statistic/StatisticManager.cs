@@ -28,9 +28,9 @@ namespace ASC.Web.Studio.Core.Statistic;
 [Scope]
 public class StatisticManager
 {
-    private static DateTime lastSave = DateTime.UtcNow;
-    private static readonly TimeSpan cacheTime = TimeSpan.FromMinutes(2);
-    private static readonly IDictionary<string, UserVisit> cache = new Dictionary<string, UserVisit>();
+    private static DateTime _lastSave = DateTime.UtcNow;
+    private static readonly TimeSpan _cacheTime = TimeSpan.FromMinutes(2);
+    private static readonly IDictionary<string, UserVisit> _cache = new Dictionary<string, UserVisit>();
 
     private Lazy<WebstudioDbContext> LazyWebstudioDbContext { get; }
     private WebstudioDbContext WebstudioDbContext { get => LazyWebstudioDbContext.Value; }
@@ -45,10 +45,10 @@ public class StatisticManager
         var now = DateTime.UtcNow;
         var key = string.Format("{0}|{1}|{2}|{3}", tenantID, userID, productID, now.Date);
 
-        lock (cache)
+        lock (_cache)
         {
-            var visit = cache.ContainsKey(key) ?
-                            cache[key] :
+            var visit = _cache.ContainsKey(key) ?
+                            _cache[key] :
                             new UserVisit
                             {
                                 TenantID = tenantID,
@@ -59,10 +59,10 @@ public class StatisticManager
 
             visit.VisitCount++;
             visit.LastVisitTime = now;
-            cache[key] = visit;
+            _cache[key] = visit;
         }
 
-        if (cacheTime < DateTime.UtcNow - lastSave)
+        if (_cacheTime < DateTime.UtcNow - _lastSave)
         {
             FlushCache();
         }
@@ -79,9 +79,9 @@ public class StatisticManager
             .Select(r => r.Key)
             .ToList();
 
-        lock (cache)
+        lock (_cache)
         {
-            foreach (var visit in cache.Values)
+            foreach (var visit in _cache.Values)
             {
                 if (!users.Contains(visit.UserID) && visit.VisitDate.Date == DateTime.UtcNow.Date)
                 {
@@ -117,17 +117,17 @@ public class StatisticManager
 
     private void FlushCache()
     {
-        if (cache.Count == 0)
+        if (_cache.Count == 0)
         {
             return;
         }
 
         List<UserVisit> visits;
-        lock (cache)
+        lock (_cache)
         {
-            visits = new List<UserVisit>(cache.Values);
-            cache.Clear();
-            lastSave = DateTime.UtcNow;
+            visits = new List<UserVisit>(_cache.Values);
+            _cache.Clear();
+            _lastSave = DateTime.UtcNow;
         }
 
         using var tx = WebstudioDbContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted);

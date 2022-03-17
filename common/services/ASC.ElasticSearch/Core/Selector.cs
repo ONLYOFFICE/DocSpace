@@ -32,7 +32,7 @@ public class Selector<T> where T : class, ISearchItem
     private readonly QueryContainerDescriptor<T> _queryContainerDescriptor = new QueryContainerDescriptor<T>();
     private SortDescriptor<T> _sortContainerDescriptor = new SortDescriptor<T>();
     private QueryContainer _queryContainer = new QueryContainer();
-    private int _limit = 1000, offset;
+    private int _limit = 1000, _offset;
 
     public Selector(IServiceProvider serviceProvider)
     {
@@ -181,7 +181,7 @@ public class Selector<T> where T : class, ISearchItem
 
     public Selector<T> Limit(int newOffset = 0, int newLimit = 1000)
     {
-        offset = newOffset;
+        _offset = newOffset;
         _limit = newLimit;
 
         return this;
@@ -248,7 +248,7 @@ public class Selector<T> where T : class, ISearchItem
             .Query(q => _queryContainer)
             .Index(indexer.IndexName)
             .Sort(r => _sortContainerDescriptor)
-            .From(offset)
+            .From(_offset)
             .Size(_limit);
 
             if (onlyId)

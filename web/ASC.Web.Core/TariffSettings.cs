@@ -28,7 +28,7 @@ namespace ASC.Web.Studio.UserControls.Management;
 [Serializable]
 public class TariffSettings : ISettings
 {
-    private static readonly CultureInfo CultureInfo = CultureInfo.CreateSpecificCulture("en-US");
+    private static readonly CultureInfo _cultureInfo = CultureInfo.CreateSpecificCulture("en-US");
 
     [JsonPropertyName("HideNotify")]
     public bool HideNotifySetting { get; set; }
@@ -45,7 +45,7 @@ public class TariffSettings : ISettings
         {
             HideNotifySetting = false,
             HidePricingPageForUsers = false,
-            LicenseAcceptSetting = DateTime.MinValue.ToString(CultureInfo),
+            LicenseAcceptSetting = DateTime.MinValue.ToString(_cultureInfo),
         };
     }
 
@@ -80,15 +80,15 @@ public class TariffSettings : ISettings
 
     public static bool GetLicenseAccept(SettingsManager settingsManager)
     {
-        return !DateTime.MinValue.ToString(CultureInfo).Equals(settingsManager.LoadForDefaultTenant<TariffSettings>().LicenseAcceptSetting);
+        return !DateTime.MinValue.ToString(_cultureInfo).Equals(settingsManager.LoadForDefaultTenant<TariffSettings>().LicenseAcceptSetting);
     }
 
     public static void SetLicenseAccept(SettingsManager settingsManager)
     {
         var tariffSettings = settingsManager.LoadForDefaultTenant<TariffSettings>();
-        if (DateTime.MinValue.ToString(CultureInfo).Equals(tariffSettings.LicenseAcceptSetting))
+        if (DateTime.MinValue.ToString(_cultureInfo).Equals(tariffSettings.LicenseAcceptSetting))
         {
-            tariffSettings.LicenseAcceptSetting = DateTime.UtcNow.ToString(CultureInfo);
+            tariffSettings.LicenseAcceptSetting = DateTime.UtcNow.ToString(_cultureInfo);
             settingsManager.SaveForDefaultTenant(tariffSettings);
         }
     }

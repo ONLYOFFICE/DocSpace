@@ -182,67 +182,67 @@ public class StudioNotifySource : NotifySource
 
     private class AdminNotifySubscriptionProvider : ISubscriptionProvider
     {
-        private readonly ISubscriptionProvider provider;
+        private readonly ISubscriptionProvider _provider;
 
 
         public AdminNotifySubscriptionProvider(ISubscriptionProvider provider)
         {
-            this.provider = provider;
+            this._provider = provider;
         }
 
         public object GetSubscriptionRecord(INotifyAction action, IRecipient recipient, string objectID)
         {
-            return provider.GetSubscriptionRecord(GetAdminAction(action), recipient, objectID);
+            return _provider.GetSubscriptionRecord(GetAdminAction(action), recipient, objectID);
         }
 
         public string[] GetSubscriptions(INotifyAction action, IRecipient recipient, bool checkSubscription = true)
         {
-            return provider.GetSubscriptions(GetAdminAction(action), recipient, checkSubscription);
+            return _provider.GetSubscriptions(GetAdminAction(action), recipient, checkSubscription);
         }
 
         public void Subscribe(INotifyAction action, string objectID, IRecipient recipient)
         {
-            provider.Subscribe(GetAdminAction(action), objectID, recipient);
+            _provider.Subscribe(GetAdminAction(action), objectID, recipient);
         }
 
         public void UnSubscribe(INotifyAction action, IRecipient recipient)
         {
-            provider.UnSubscribe(GetAdminAction(action), recipient);
+            _provider.UnSubscribe(GetAdminAction(action), recipient);
         }
 
         public void UnSubscribe(INotifyAction action)
         {
-            provider.UnSubscribe(GetAdminAction(action));
+            _provider.UnSubscribe(GetAdminAction(action));
         }
 
         public void UnSubscribe(INotifyAction action, string objectID)
         {
-            provider.UnSubscribe(GetAdminAction(action), objectID);
+            _provider.UnSubscribe(GetAdminAction(action), objectID);
         }
 
         public void UnSubscribe(INotifyAction action, string objectID, IRecipient recipient)
         {
-            provider.UnSubscribe(GetAdminAction(action), objectID, recipient);
+            _provider.UnSubscribe(GetAdminAction(action), objectID, recipient);
         }
 
         public void UpdateSubscriptionMethod(INotifyAction action, IRecipient recipient, params string[] senderNames)
         {
-            provider.UpdateSubscriptionMethod(GetAdminAction(action), recipient, senderNames);
+            _provider.UpdateSubscriptionMethod(GetAdminAction(action), recipient, senderNames);
         }
 
         public IRecipient[] GetRecipients(INotifyAction action, string objectID)
         {
-            return provider.GetRecipients(GetAdminAction(action), objectID);
+            return _provider.GetRecipients(GetAdminAction(action), objectID);
         }
 
         public string[] GetSubscriptionMethod(INotifyAction action, IRecipient recipient)
         {
-            return provider.GetSubscriptionMethod(GetAdminAction(action), recipient);
+            return _provider.GetSubscriptionMethod(GetAdminAction(action), recipient);
         }
 
         public bool IsUnsubscribe(IDirectRecipient recipient, INotifyAction action, string objectID)
         {
-            return provider.IsUnsubscribe(recipient, action, objectID);
+            return _provider.IsUnsubscribe(recipient, action, objectID);
         }
 
         private INotifyAction GetAdminAction(INotifyAction action)

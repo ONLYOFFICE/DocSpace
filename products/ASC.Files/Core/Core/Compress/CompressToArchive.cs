@@ -24,9 +24,9 @@ public class CompressToArchive : ICompress
 {
     private readonly ICompress _compress;
 
-    internal static readonly string TarExt = ".tar.gz";
-    internal static readonly string ZipExt = ".zip";
-    private static readonly List<string> _exts = new List<string>(2) { TarExt, ZipExt };
+    internal static readonly string _tarExt = ".tar.gz";
+    internal static readonly string _zipExt = ".zip";
+    private static readonly List<string> _exts = new List<string>(2) { _tarExt, _zipExt };
 
     public CompressToArchive(FilesSettingsHelper filesSettings, CompressToTarGz compressToTarGz, CompressToZip compressToZip)
     {

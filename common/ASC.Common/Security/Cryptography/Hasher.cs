@@ -27,7 +27,7 @@ namespace ASC.Security.Cryptography;
 
 public static class Hasher
 {
-    private const HashAlg DefaultAlg = HashAlg.SHA256;
+    private const HashAlg _defaultAlg = HashAlg.SHA256;
 
     public static byte[] Hash(string data, HashAlg hashAlg)
     {
@@ -36,7 +36,7 @@ public static class Hasher
 
     public static byte[] Hash(string data)
     {
-        return Hash(data, DefaultAlg);
+        return Hash(data, _defaultAlg);
     }
 
     public static byte[] Hash(byte[] data, HashAlg hashAlg)
@@ -46,7 +46,7 @@ public static class Hasher
 
     public static byte[] Hash(byte[] data)
     {
-        return Hash(data, DefaultAlg);
+        return Hash(data, _defaultAlg);
     }
 
     public static string Base64Hash(string data, HashAlg hashAlg)
@@ -56,7 +56,7 @@ public static class Hasher
 
     public static string Base64Hash(string data)
     {
-        return Base64Hash(data, DefaultAlg);
+        return Base64Hash(data, _defaultAlg);
     }
 
     public static string Base64Hash(byte[] data, HashAlg hashAlg)
@@ -66,12 +66,12 @@ public static class Hasher
 
     public static string Base64Hash(byte[] data)
     {
-        return Base64Hash(data, DefaultAlg);
+        return Base64Hash(data, _defaultAlg);
     }
 
     public static bool EqualHash(byte[] dataToCompare, byte[] hash)
     {
-        return EqualHash(dataToCompare, hash, DefaultAlg);
+        return EqualHash(dataToCompare, hash, _defaultAlg);
     }
 
     public static bool EqualHash(string dataToCompare, string hash, HashAlg hashAlg)
@@ -81,7 +81,7 @@ public static class Hasher
 
     public static bool EqualHash(string dataToCompare, string hash)
     {
-        return EqualHash(dataToCompare, hash, DefaultAlg);
+        return EqualHash(dataToCompare, hash, _defaultAlg);
     }
 
     public static bool EqualHash(byte[] dataToCompare, byte[] hash, HashAlg hashAlg)

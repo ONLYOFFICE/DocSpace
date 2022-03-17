@@ -30,10 +30,10 @@ namespace ASC.Web.Studio.Core.Notify;
 [Singletone(Additional = typeof(WorkContextExtension))]
 public class NotifyConfiguration
 {
-    private static bool configured;
-    private static readonly object locker = new object();
-    private static readonly Regex urlReplacer = new Regex(@"(<a [^>]*href=(('(?<url>[^>']*)')|(""(?<url>[^>""]*)""))[^>]*>)|(<img [^>]*src=(('(?<url>(?![data:|cid:])[^>']*)')|(""(?<url>(?![data:|cid:])[^>""]*)""))[^/>]*/?>)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-    private static readonly Regex textileLinkReplacer = new Regex(@"""(?<text>[\w\W]+?)"":""(?<link>[^""]+)""", RegexOptions.Singleline | RegexOptions.Compiled);
+    private static bool _configured;
+    private static readonly object _locker = new object();
+    private static readonly Regex _urlReplacer = new Regex(@"(<a [^>]*href=(('(?<url>[^>']*)')|(""(?<url>[^>""]*)""))[^>]*>)|(<img [^>]*src=(('(?<url>(?![data:|cid:])[^>']*)')|(""(?<url>(?![data:|cid:])[^>""]*)""))[^/>]*/?>)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    private static readonly Regex _textileLinkReplacer = new Regex(@"""(?<text>[\w\W]+?)"":""(?<link>[^""]+)""", RegexOptions.Singleline | RegexOptions.Compiled);
 
     private IServiceProvider ServiceProvider { get; }
 
@@ -44,11 +44,11 @@ public class NotifyConfiguration
 
     public void Configure()
     {
-        lock (locker)
+        lock (_locker)
         {
-            if (!configured)
+            if (!_configured)
             {
-                configured = true;
+                _configured = true;
                 WorkContext.NotifyStartUp(ServiceProvider);
                 WorkContext.NotifyContext.NotifyClientRegistration += NotifyClientRegisterCallback;
                 WorkContext.NotifyContext.NotifyEngine.BeforeTransferRequest += BeforeTransferRequest;
@@ -72,7 +72,7 @@ public class NotifyConfiguration
 
                     var body = r.CurrentMessage.Body;
 
-                    body = urlReplacer.Replace(body, m =>
+                    body = _urlReplacer.Replace(body, m =>
                     {
                         var url = m.Groups["url"].Value;
                         var ind = m.Groups["url"].Index - m.Index;
@@ -81,7 +81,7 @@ public class NotifyConfiguration
                             m.Value.Replace(url, commonLinkUtility.GetFullAbsolutePath(url));
                     });
 
-                    body = textileLinkReplacer.Replace(body, m =>
+                    body = _textileLinkReplacer.Replace(body, m =>
                     {
                         var url = m.Groups["link"].Value;
                         var ind = m.Groups["link"].Index - m.Index;

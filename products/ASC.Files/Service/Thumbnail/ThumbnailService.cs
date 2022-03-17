@@ -52,7 +52,7 @@ public class ThumbnailService : IHostedService
         {
             var fileData = new FileData<int>(request.Tenant, fileId, request.BaseUrl);
 
-            FileDataQueue.Queue.TryAdd(fileId, fileData);
+            FileDataQueue._queue.TryAdd(fileId, fileData);
         }
     }
 }

@@ -132,7 +132,7 @@ public static class StorageFactoryExtenstion
 [Scope(Additional = typeof(StorageFactoryExtension))]
 public class StorageFactory
 {
-    private const string DefaultTenantName = "default";
+    private const string _defaultTenantName = "default";
 
     private readonly StorageFactoryConfig _storageFactoryConfig;
     private readonly SettingsManager _settingsManager;
@@ -174,7 +174,7 @@ public class StorageFactory
         var tenantId = -2;
         if (string.IsNullOrEmpty(tenant))
         {
-            tenant = DefaultTenantName;
+            tenant = _defaultTenantName;
         }
         else
         {
@@ -199,7 +199,7 @@ public class StorageFactory
     {
         if (tenant == null)
         {
-            tenant = DefaultTenantName;
+            tenant = _defaultTenantName;
         }
 
         //Make tennant path

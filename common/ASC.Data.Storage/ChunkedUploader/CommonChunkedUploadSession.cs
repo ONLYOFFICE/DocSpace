@@ -43,27 +43,27 @@ public class CommonChunkedUploadSession : ICloneable
     [JsonIgnore]
     public string TempPath
     {
-        get => GetItemOrDefault<string>(TempPathKey);
-        set => Items[TempPathKey] = value;
+        get => GetItemOrDefault<string>(_tempPathKey);
+        set => Items[_tempPathKey] = value;
     }
 
     [JsonIgnore]
     public string UploadId
     {
-        get => GetItemOrDefault<string>(UploadIdKey);
-        set => Items[UploadIdKey] = value;
+        get => GetItemOrDefault<string>(_uploadIdKey);
+        set => Items[_uploadIdKey] = value;
     }
 
     [JsonIgnore]
     public string ChunksBuffer
     {
-        get => GetItemOrDefault<string>(ChunksBufferKey);
-        set => Items[ChunksBufferKey] = value;
+        get => GetItemOrDefault<string>(_chunksBufferKey);
+        set => Items[_chunksBufferKey] = value;
     }
 
-    private const string TempPathKey = "TempPath";
-    private const string UploadIdKey = "UploadId";
-    private const string ChunksBufferKey = "ChunksBuffer";
+    private const string _tempPathKey = "TempPath";
+    private const string _uploadIdKey = "UploadId";
+    private const string _chunksBufferKey = "ChunksBuffer";
 
     public CommonChunkedUploadSession(long bytesTotal)
     {

@@ -18,8 +18,8 @@ namespace Textile.States;
 /// </summary>
 abstract public class ListFormatterState : FormatterState
 {
-    internal const string PatternBegin = @"^\s*(?<tag>";
-    internal const string PatternEnd = @")" + Globals.BlockModifiersPattern + @"(?:\s+)? (?<content>.*)$";
+    internal const string _patternBegin = @"^\s*(?<tag>";
+    internal const string _patternEnd = @")" + Globals.BlockModifiersPattern + @"(?:\s+)? (?<content>.*)$";
 
     private bool _firstItem = true;
     private bool _firstItemLine = true;

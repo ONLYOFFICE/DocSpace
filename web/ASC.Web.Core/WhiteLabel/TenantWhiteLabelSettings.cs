@@ -55,7 +55,7 @@ public class TenantWhiteLabelSettings : ISettings
     [JsonPropertyName("DefaultLogoDocsEditor")]
     internal bool IsDefaultLogoDocsEditor { get; set; }
 
-    internal string LogoDocsEditorEmbedExt;
+    internal string _logoDocsEditorEmbedExt;
 
     [JsonPropertyName("DefaultLogoDocsEditorEmbed")]
     internal bool IsDefaultLogoDocsEditorEmbed { get; set; }
@@ -100,7 +100,7 @@ public class TenantWhiteLabelSettings : ISettings
             LogoDarkExt = null,
             LogoFaviconExt = null,
             LogoDocsEditorExt = null,
-            LogoDocsEditorEmbedExt = null,
+            _logoDocsEditorEmbedExt = null,
 
             IsDefaultLogoLightSmall = true,
             IsDefaultLogoDark = true,
@@ -163,7 +163,7 @@ public class TenantWhiteLabelSettings : ISettings
             WhiteLabelLogoTypeEnum.Dark => LogoDarkExt,
             WhiteLabelLogoTypeEnum.Favicon => LogoFaviconExt,
             WhiteLabelLogoTypeEnum.DocsEditor => LogoDocsEditorExt,
-            WhiteLabelLogoTypeEnum.DocsEditorEmbed => LogoDocsEditorEmbedExt,
+            WhiteLabelLogoTypeEnum.DocsEditorEmbed => _logoDocsEditorEmbedExt,
             _ => "",
         };
     }
@@ -185,7 +185,7 @@ public class TenantWhiteLabelSettings : ISettings
                 LogoDocsEditorExt = fileExt;
                 break;
             case WhiteLabelLogoTypeEnum.DocsEditorEmbed:
-                LogoDocsEditorEmbedExt = fileExt;
+                _logoDocsEditorEmbedExt = fileExt;
                 break;
         }
     }
@@ -196,7 +196,7 @@ public class TenantWhiteLabelSettings : ISettings
 [Scope]
 public class TenantWhiteLabelSettingsHelper
 {
-    private const string moduleName = "whitelabel";
+    private const string _moduleName = "whitelabel";
 
     private WebImageSupplier WebImageSupplier { get; }
     private UserPhotoManager UserPhotoManager { get; }
@@ -242,7 +242,7 @@ public class TenantWhiteLabelSettingsHelper
                 tenantWhiteLabelSettings.LogoDarkExt == defaultSettings.LogoDarkExt &&
                 tenantWhiteLabelSettings.LogoFaviconExt == defaultSettings.LogoFaviconExt &&
                 tenantWhiteLabelSettings.LogoDocsEditorExt == defaultSettings.LogoDocsEditorExt &&
-                tenantWhiteLabelSettings.LogoDocsEditorEmbedExt == defaultSettings.LogoDocsEditorEmbedExt &&
+                tenantWhiteLabelSettings._logoDocsEditorEmbedExt == defaultSettings._logoDocsEditorEmbedExt &&
 
                 tenantWhiteLabelSettings.IsDefaultLogoLightSmall == defaultSettings.IsDefaultLogoLightSmall &&
                 tenantWhiteLabelSettings.IsDefaultLogoDark == defaultSettings.IsDefaultLogoDark &&
@@ -259,7 +259,7 @@ public class TenantWhiteLabelSettingsHelper
         tenantWhiteLabelSettings.LogoDarkExt = null;
         tenantWhiteLabelSettings.LogoFaviconExt = null;
         tenantWhiteLabelSettings.LogoDocsEditorExt = null;
-        tenantWhiteLabelSettings.LogoDocsEditorEmbedExt = null;
+        tenantWhiteLabelSettings._logoDocsEditorEmbedExt = null;
 
         tenantWhiteLabelSettings.IsDefaultLogoLightSmall = true;
         tenantWhiteLabelSettings.IsDefaultLogoDark = true;
@@ -269,7 +269,7 @@ public class TenantWhiteLabelSettingsHelper
 
         tenantWhiteLabelSettings.SetLogoText(null);
 
-        var store = storage ?? StorageFactory.GetStorage(tenantId.ToString(), moduleName);
+        var store = storage ?? StorageFactory.GetStorage(tenantId.ToString(), _moduleName);
 
         try
         {
@@ -290,7 +290,7 @@ public class TenantWhiteLabelSettingsHelper
             try
             {
                 tenantWhiteLabelSettings.SetIsDefault(type, true);
-                var store = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().Id.ToString(), moduleName);
+                var store = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().Id.ToString(), _moduleName);
                 DeleteLogoFromStore(tenantWhiteLabelSettings, store, type);
             }
             catch (Exception e)
@@ -306,7 +306,7 @@ public class TenantWhiteLabelSettingsHelper
 
     public void SetLogo(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type, string logoFileExt, byte[] data, IDataStore storage = null)
     {
-        var store = storage ?? StorageFactory.GetStorage(TenantManager.GetCurrentTenant().Id.ToString(), moduleName);
+        var store = storage ?? StorageFactory.GetStorage(TenantManager.GetCurrentTenant().Id.ToString(), _moduleName);
 
         #region delete from storage if already exists
 
@@ -414,7 +414,7 @@ public class TenantWhiteLabelSettingsHelper
 
     private string GetAbsoluteStorageLogoPath(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type, bool general)
     {
-        var store = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().Id.ToString(), moduleName);
+        var store = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().Id.ToString(), _moduleName);
         var fileName = BuildLogoFileName(type, tenantWhiteLabelSettings.GetExt(type), general);
 
         if (store.IsFileAsync(fileName).Result)
@@ -483,7 +483,7 @@ public class TenantWhiteLabelSettingsHelper
 
     private Stream GetStorageLogoData(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type, bool general)
     {
-        var storage = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().Id.ToString(CultureInfo.InvariantCulture), moduleName);
+        var storage = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().Id.ToString(CultureInfo.InvariantCulture), _moduleName);
 
         if (storage == null)
         {
@@ -587,20 +587,20 @@ public class TenantWhiteLabelSettingsHelper
 
     #region Save for Resource replacement
 
-    private static readonly List<int> AppliedTenants = new List<int>();
+    private static readonly List<int> _appliedTenants = new List<int>();
 
     public void Apply(TenantWhiteLabelSettings tenantWhiteLabelSettings, int tenantId)
     {
-        if (AppliedTenants.Contains(tenantId))
+        if (_appliedTenants.Contains(tenantId))
         {
             return;
         }
 
         SetNewLogoText(tenantWhiteLabelSettings, tenantId);
 
-        if (!AppliedTenants.Contains(tenantId))
+        if (!_appliedTenants.Contains(tenantId))
         {
-            AppliedTenants.Add(tenantId);
+            _appliedTenants.Add(tenantId);
         }
     }
 
@@ -610,7 +610,7 @@ public class TenantWhiteLabelSettingsHelper
 
         if (tenantId == Tenant.DefaultTenant)
         {
-            AppliedTenants.Clear();
+            _appliedTenants.Clear();
         }
         else
         {

@@ -29,9 +29,9 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
 {
     public const string AppAttr = "box";
 
-    private const string BoxUrlUserInfo = "https://api.box.com/2.0/users/me";
-    private const string BoxUrlFile = "https://api.box.com/2.0/files/{fileId}";
-    private const string BoxUrlUpload = "https://upload.box.com/api/2.0/files/{fileId}/content";
+    private const string _boxUrlUserInfo = "https://api.box.com/2.0/users/me";
+    private const string _boxUrlFile = "https://api.box.com/2.0/files/{fileId}";
+    private const string _boxUrlUpload = "https://upload.box.com/api/2.0/files/{fileId}/content";
 
     public ILog Logger { get; }
     public IHttpClientFactory ClientFactory { get; }
@@ -276,7 +276,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
         var httpClient = ClientFactory.CreateClient();
 
         var request = new HttpRequestMessage();
-        request.RequestUri = new Uri(BoxUrlUpload.Replace("{fileId}", fileId));
+        request.RequestUri = new Uri(_boxUrlUpload.Replace("{fileId}", fileId));
 
         using (var tmpStream = new MemoryStream())
         {
@@ -434,7 +434,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
             }
 
             var request = new HttpRequestMessage();
-            request.RequestUri = new Uri(BoxUrlFile.Replace("{fileId}", fileId) + "/content");
+            request.RequestUri = new Uri(_boxUrlFile.Replace("{fileId}", fileId) + "/content");
             request.Method = HttpMethod.Get;
             request.Headers.Add("Authorization", "Bearer " + token);
 
@@ -491,7 +491,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
         var resultResponse = string.Empty;
         try
         {
-            resultResponse = RequestHelper.PerformRequest(BoxUrlUserInfo,
+            resultResponse = RequestHelper.PerformRequest(_boxUrlUserInfo,
                                                           headers: new Dictionary<string, string> { { "Authorization", "Bearer " + token } });
             Logger.Debug("BoxApp: userinfo response - " + resultResponse);
         }
@@ -573,7 +573,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
 
         try
         {
-            var resultResponse = RequestHelper.PerformRequest(BoxUrlFile.Replace("{fileId}", boxFileId),
+            var resultResponse = RequestHelper.PerformRequest(_boxUrlFile.Replace("{fileId}", boxFileId),
                                                               headers: new Dictionary<string, string> { { "Authorization", "Bearer " + token } });
             Logger.Debug("BoxApp: file response - " + resultResponse);
 

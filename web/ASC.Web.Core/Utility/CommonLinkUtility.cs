@@ -55,7 +55,7 @@ public enum ManagementType
 [Scope]
 public class CommonLinkUtility : BaseCommonLinkUtility
 {
-    private static readonly Regex RegFilePathTrim = new Regex("/[^/]*\\.aspx", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    private static readonly Regex _regFilePathTrim = new Regex("/[^/]*\\.aspx", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
     public const string ParamName_ProductSysName = "product";
     public const string ParamName_UserUserID = "uid";
@@ -367,7 +367,7 @@ public class CommonLinkUtility : BaseCommonLinkUtility
                         {
                             foreach (var module in WebItemManagerSecurity.GetSubItems(product.ID).OfType<IModule>())
                             {
-                                if (!module.StartURL.Equals(product.StartURL) && currentURL.Contains(RegFilePathTrim.Replace(module.StartURL, string.Empty)))
+                                if (!module.StartURL.Equals(product.StartURL) && currentURL.Contains(_regFilePathTrim.Replace(module.StartURL, string.Empty)))
                                 {
                                     currentModule = module;
                                     break;

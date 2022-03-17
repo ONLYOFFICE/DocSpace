@@ -35,100 +35,100 @@ public class FileUtilityConfiguration
         Configuration = configuration;
     }
 
-    private List<string> extsIndexing;
-    public List<string> ExtsIndexing { get => extsIndexing ??= Configuration.GetSection("files:index").Get<List<string>>() ?? new List<string>(); }
+    private List<string> _extsIndexing;
+    public List<string> ExtsIndexing { get => _extsIndexing ??= Configuration.GetSection("files:index").Get<List<string>>() ?? new List<string>(); }
 
-    private List<string> extsImagePreviewed;
-    public List<string> ExtsImagePreviewed { get => extsImagePreviewed ??= Configuration.GetSection("files:viewed-images").Get<List<string>>() ?? new List<string>(); }
+    private List<string> _extsImagePreviewed;
+    public List<string> ExtsImagePreviewed { get => _extsImagePreviewed ??= Configuration.GetSection("files:viewed-images").Get<List<string>>() ?? new List<string>(); }
 
-    private List<string> extsMediaPreviewed;
-    public List<string> ExtsMediaPreviewed { get => extsMediaPreviewed ??= Configuration.GetSection("files:viewed-media").Get<List<string>>() ?? new List<string>(); }
+    private List<string> _extsMediaPreviewed;
+    public List<string> ExtsMediaPreviewed { get => _extsMediaPreviewed ??= Configuration.GetSection("files:viewed-media").Get<List<string>>() ?? new List<string>(); }
 
-    private List<string> extsWebPreviewed;
+    private List<string> _extsWebPreviewed;
     public List<string> ExtsWebPreviewed
     {
         get
         {
-            return extsWebPreviewed ??= Configuration.GetSection("files:docservice:viewed-docs").Get<List<string>>() ?? new List<string>();
+            return _extsWebPreviewed ??= Configuration.GetSection("files:docservice:viewed-docs").Get<List<string>>() ?? new List<string>();
         }
     }
 
-    private List<string> extsWebEdited;
+    private List<string> _extsWebEdited;
     public List<string> ExtsWebEdited
     {
         get
         {
-            return extsWebEdited ??= Configuration.GetSection("files:docservice:edited-docs").Get<List<string>>() ?? new List<string>();
+            return _extsWebEdited ??= Configuration.GetSection("files:docservice:edited-docs").Get<List<string>>() ?? new List<string>();
         }
     }
 
-    private List<string> extsWebEncrypt;
-    public List<string> ExtsWebEncrypt { get => extsWebEncrypt ??= Configuration.GetSection("files:docservice:encrypted-docs").Get<List<string>>() ?? new List<string>(); }
+    private List<string> _extsWebEncrypt;
+    public List<string> ExtsWebEncrypt { get => _extsWebEncrypt ??= Configuration.GetSection("files:docservice:encrypted-docs").Get<List<string>>() ?? new List<string>(); }
 
-    private List<string> extsWebReviewed;
+    private List<string> _extsWebReviewed;
     public List<string> ExtsWebReviewed
     {
         get
         {
-            return extsWebReviewed ??= Configuration.GetSection("files:docservice:reviewed-docs").Get<List<string>>() ?? new List<string>();
+            return _extsWebReviewed ??= Configuration.GetSection("files:docservice:reviewed-docs").Get<List<string>>() ?? new List<string>();
         }
     }
 
-    private List<string> extsWebCustomFilterEditing;
+    private List<string> _extsWebCustomFilterEditing;
     public List<string> ExtsWebCustomFilterEditing
     {
         get
         {
-            return extsWebCustomFilterEditing ??= Configuration.GetSection("files:docservice:customfilter-docs").Get<List<string>>() ?? new List<string>();
+            return _extsWebCustomFilterEditing ??= Configuration.GetSection("files:docservice:customfilter-docs").Get<List<string>>() ?? new List<string>();
         }
     }
 
-    private List<string> extsWebRestrictedEditing;
+    private List<string> _extsWebRestrictedEditing;
     public List<string> ExtsWebRestrictedEditing
     {
         get
         {
-            return extsWebRestrictedEditing ??= Configuration.GetSection("files:docservice:formfilling-docs").Get<List<string>>() ?? new List<string>();
+            return _extsWebRestrictedEditing ??= Configuration.GetSection("files:docservice:formfilling-docs").Get<List<string>>() ?? new List<string>();
         }
     }
 
-    private List<string> extsWebCommented;
+    private List<string> _extsWebCommented;
     public List<string> ExtsWebCommented
     {
         get
         {
-            return extsWebCommented ??= Configuration.GetSection("files:docservice:commented-docs").Get<List<string>>() ?? new List<string>();
+            return _extsWebCommented ??= Configuration.GetSection("files:docservice:commented-docs").Get<List<string>>() ?? new List<string>();
         }
     }
 
-    private List<string> extsWebTemplate;
+    private List<string> _extsWebTemplate;
     public List<string> ExtsWebTemplate
     {
         get
         {
-            return extsWebTemplate ??= Configuration.GetSection("files:docservice:template-docs").Get<List<string>>() ?? new List<string>();
+            return _extsWebTemplate ??= Configuration.GetSection("files:docservice:template-docs").Get<List<string>>() ?? new List<string>();
         }
     }
 
-    private List<string> extsMustConvert;
+    private List<string> _extsMustConvert;
     public List<string> ExtsMustConvert
     {
         get
         {
-            return extsMustConvert ??= Configuration.GetSection("files:docservice:convert-docs").Get<List<string>>() ?? new List<string>();
+            return _extsMustConvert ??= Configuration.GetSection("files:docservice:convert-docs").Get<List<string>>() ?? new List<string>();
         }
     }
 
-    private List<string> extsCoAuthoring;
+    private List<string> _extsCoAuthoring;
     public List<string> ExtsCoAuthoring
     {
-        get => extsCoAuthoring ??= Configuration.GetSection("files:docservice:coauthor-docs").Get<List<string>>() ?? new List<string>();
+        get => _extsCoAuthoring ??= Configuration.GetSection("files:docservice:coauthor-docs").Get<List<string>>() ?? new List<string>();
     }
 
-    private string masterFormExtension;
+    private string _masterFormExtension;
     public string MasterFormExtension
     {
-        get => masterFormExtension ??= Configuration["files:docservice:internal-form"] ?? ".docxf";
+        get => _masterFormExtension ??= Configuration["files:docservice:internal-form"] ?? ".docxf";
     }
 
     public Dictionary<FileType, string> InternalExtension

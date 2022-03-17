@@ -149,8 +149,8 @@ public abstract class PortalTaskBase
 
     public event EventHandler<ProgressChangedEventArgs> ProgressChanged;
 
-    private int stepsCount = 1;
-    private volatile int stepsCompleted;
+    private int _stepsCount = 1;
+    private volatile int _stepsCompleted;
 
     protected void SetStepsCount(int value)
     {
@@ -158,22 +158,22 @@ public abstract class PortalTaskBase
         {
                 throw new ArgumentOutOfRangeException(nameof(value));
         }
-        stepsCount = value;
-        Logger.Debug("Steps: " + stepsCount);
+        _stepsCount = value;
+        Logger.Debug("Steps: " + _stepsCount);
     }
 
     protected void SetStepCompleted(int increment = 1)
     {
-        if (stepsCount == 1)
+        if (_stepsCount == 1)
         {
             return;
         }
-        if (stepsCompleted == stepsCount)
+        if (_stepsCompleted == _stepsCount)
         {
             throw new InvalidOperationException("All steps completed.");
         }
-        stepsCompleted += increment;
-        SetProgress(100 * stepsCompleted / stepsCount);
+        _stepsCompleted += increment;
+        SetProgress(100 * _stepsCompleted / _stepsCount);
     }
 
     protected void SetCurrentStepProgress(int value)
@@ -188,7 +188,7 @@ public abstract class PortalTaskBase
         }
         else
         {
-            SetProgress((100 * stepsCompleted + value) / stepsCount);
+            SetProgress((100 * _stepsCompleted + value) / _stepsCount);
         }
     }
 

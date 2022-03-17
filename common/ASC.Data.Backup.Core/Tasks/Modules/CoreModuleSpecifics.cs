@@ -31,18 +31,18 @@ public class CoreModuleSpecifics : ModuleSpecificsBase
     public override IEnumerable<TableInfo> Tables => _tables;
     public override IEnumerable<RelationInfo> TableRelations => _tableRelations;
 
-    private const string ForumsNewPostInTopicActionID = "new post in topic";
-    private const string ForumsNewPostInThreadActionID = "new post in thread";
-    private const string NewsNewCommentActionID = "new feed comment";
-    private const string BlogsNewCommentActionID = "new comment";
+    private const string _forumsNewPostInTopicActionID = "new post in topic";
+    private const string _forumsNewPostInThreadActionID = "new post in thread";
+    private const string _newsNewCommentActionID = "new feed comment";
+    private const string _blogsNewCommentActionID = "new comment";
 
-    private const string CrmCompanyAclObjectStart = "ASC.CRM.Core.Entities.Company|";
-    private const string CrmPersonAclObjectStart = "ASC.CRM.Core.Entities.Person|";
-    private const string CrmDealAclObjectStart = "ASC.CRM.Core.Entities.Deal|";
-    private const string CrmCasesAclObjectStart = "ASC.CRM.Core.Entities.Cases|";
-    private const string CrmRelationshipEventAclObjectStart = "ASC.CRM.Core.Entities.RelationshipEvent|";
-    private const string CalendarCalendarAclObjectStart = "ASC.Api.Calendar.BusinessObjects.Calendar|";
-    private const string CalendarEventAclObjectStart = "ASC.Api.Calendar.BusinessObjects.Event|";
+    private const string _crmCompanyAclObjectStart = "ASC.CRM.Core.Entities.Company|";
+    private const string _crmPersonAclObjectStart = "ASC.CRM.Core.Entities.Person|";
+    private const string _crmDealAclObjectStart = "ASC.CRM.Core.Entities.Deal|";
+    private const string _crmCasesAclObjectStart = "ASC.CRM.Core.Entities.Cases|";
+    private const string _crmRelationshipEventAclObjectStart = "ASC.CRM.Core.Entities.RelationshipEvent|";
+    private const string _calendarCalendarAclObjectStart = "ASC.Api.Calendar.BusinessObjects.Calendar|";
+    private const string _calendarEventAclObjectStart = "ASC.Api.Calendar.BusinessObjects.Event|";
 
     private static readonly Guid _projectsSourceID = new Guid("6045B68C-2C2E-42db-9E53-C272E814C4AD");
     private static readonly Guid _bookmarksSourceID = new Guid("28B10049-DD20-4f54-B986-873BC14CCFC7");
@@ -91,22 +91,22 @@ public class CoreModuleSpecifics : ModuleSpecificsBase
                                  x => !helpers.IsEmptyOrSystemGroup(Convert.ToString(x["groupid"]))),
 
                 new RelationInfo("crm_contact", "id", "core_acl", "object", typeof(CrmModuleSpecifics),
-                                 x => Convert.ToString(x["object"]).StartsWith(CrmCompanyAclObjectStart) || Convert.ToString(x["object"]).StartsWith(CrmPersonAclObjectStart)),
+                                 x => Convert.ToString(x["object"]).StartsWith(_crmCompanyAclObjectStart) || Convert.ToString(x["object"]).StartsWith(_crmPersonAclObjectStart)),
 
                 new RelationInfo("crm_deal", "id", "core_acl", "object", typeof(CrmModuleSpecifics),
-                                 x => Convert.ToString(x["object"]).StartsWith(CrmDealAclObjectStart)),
+                                 x => Convert.ToString(x["object"]).StartsWith(_crmDealAclObjectStart)),
 
                 new RelationInfo("crm_case", "id", "core_acl", "object", typeof(CrmModuleSpecifics),
-                                 x => Convert.ToString(x["object"]).StartsWith(CrmCasesAclObjectStart)),
+                                 x => Convert.ToString(x["object"]).StartsWith(_crmCasesAclObjectStart)),
 
                 new RelationInfo("crm_relationship_event", "id", "core_acl", "object", typeof(CrmModuleSpecifics2),
-                                 x => Convert.ToString(x["object"]).StartsWith(CrmRelationshipEventAclObjectStart)),
+                                 x => Convert.ToString(x["object"]).StartsWith(_crmRelationshipEventAclObjectStart)),
 
                 new RelationInfo("calendar_calendars", "id", "core_acl", "object", typeof(CalendarModuleSpecifics),
-                                 x => Convert.ToString(x["object"]).StartsWith(CalendarCalendarAclObjectStart)),
+                                 x => Convert.ToString(x["object"]).StartsWith(_calendarCalendarAclObjectStart)),
 
                 new RelationInfo("calendar_events", "id", "core_acl", "object", typeof(CalendarModuleSpecifics),
-                                 x => Convert.ToString(x["object"]).StartsWith(CalendarEventAclObjectStart)),
+                                 x => Convert.ToString(x["object"]).StartsWith(_calendarEventAclObjectStart)),
 
                 new RelationInfo("projects_projects", "id", "core_subscription", "object", typeof(ProjectsModuleSpecifics),
                                  x => ValidateSource(_projectsSourceID, x)),
@@ -124,16 +124,16 @@ public class CoreModuleSpecifics : ModuleSpecificsBase
                                  x => ValidateSource(_bookmarksSourceID, x) && !string.IsNullOrEmpty(Convert.ToString(x["object"]))),
 
                 new RelationInfo("forum_topic", "id", "core_subscription", "object", typeof(CommunityModuleSpecifics),
-                                 x => ValidateSource(_forumsSourceID, x) && Convert.ToString(x["action"]) == ForumsNewPostInTopicActionID && !string.IsNullOrEmpty(Convert.ToString(x["object"]))),
+                                 x => ValidateSource(_forumsSourceID, x) && Convert.ToString(x["action"]) == _forumsNewPostInTopicActionID && !string.IsNullOrEmpty(Convert.ToString(x["object"]))),
 
                 new RelationInfo("forum_thread", "id", "core_subscription", "object", typeof(CommunityModuleSpecifics),
-                                 x => ValidateSource(_forumsSourceID, x) && Convert.ToString(x["action"]) == ForumsNewPostInThreadActionID && !string.IsNullOrEmpty(Convert.ToString(x["object"]))),
+                                 x => ValidateSource(_forumsSourceID, x) && Convert.ToString(x["action"]) == _forumsNewPostInThreadActionID && !string.IsNullOrEmpty(Convert.ToString(x["object"]))),
 
                 new RelationInfo("events_feed", "id", "core_subscription", "object", typeof(CommunityModuleSpecifics),
-                                 x => ValidateSource(_newsSourceID, x) && Convert.ToString(x["action"]) == NewsNewCommentActionID && !string.IsNullOrEmpty(Convert.ToString(x["object"]))),
+                                 x => ValidateSource(_newsSourceID, x) && Convert.ToString(x["action"]) == _newsNewCommentActionID && !string.IsNullOrEmpty(Convert.ToString(x["object"]))),
 
                 new RelationInfo("blogs_posts", "id", "core_subscription", "object", typeof(CommunityModuleSpecifics),
-                                 x => ValidateSource(_blogsSourceID, x) && Convert.ToString(x["action"]) == BlogsNewCommentActionID),
+                                 x => ValidateSource(_blogsSourceID, x) && Convert.ToString(x["action"]) == _blogsNewCommentActionID),
 
                 new RelationInfo("core_user", "id", "feed_users", "user_id", typeof(CoreModuleSpecifics)),
 

@@ -19,7 +19,7 @@ namespace ASC.Web.Core.Files;
 [Scope]
 public class DocumentServiceLicense
 {
-    private static readonly TimeSpan CACHE_EXPIRATION = TimeSpan.FromMinutes(15);
+    private static readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(15);
 
     private ICache Cache { get; }
     public CoreBaseSettings CoreBaseSettings { get; }
@@ -74,7 +74,7 @@ public class DocumentServiceLicense
                    FileUtility.SignatureSecret,
                    ClientFactory
                    );
-            Cache.Insert(cacheKey, commandResponse, DateTime.UtcNow.Add(CACHE_EXPIRATION));
+            Cache.Insert(cacheKey, commandResponse, DateTime.UtcNow.Add(_cacheExpiration));
         }
 
         return commandResponse;

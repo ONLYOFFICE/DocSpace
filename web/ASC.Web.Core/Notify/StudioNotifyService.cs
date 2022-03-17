@@ -30,7 +30,7 @@ namespace ASC.Web.Studio.Core.Notify;
 [Scope(Additional = typeof(StudioNotifyServiceExtension))]
 public class StudioNotifyService
 {
-    private readonly StudioNotifyServiceHelper client;
+    private readonly StudioNotifyServiceHelper _client;
 
     public static string EMailSenderName { get { return ASC.Core.Configuration.Constants.NotifyEMailSenderSysName; } }
 
@@ -69,7 +69,7 @@ public class StudioNotifyService
         IOptionsMonitor<ILog> option)
     {
         Log = option.Get("ASC.Notify");
-        client = studioNotifyServiceHelper;
+        _client = studioNotifyServiceHelper;
         TenantExtra = tenantExtra;
         Authentication = authentication;
         AuthContext = authContext;
@@ -88,12 +88,12 @@ public class StudioNotifyService
 
     public void SendMsgToAdminAboutProfileUpdated()
     {
-        client.SendNoticeAsync(Actions.SelfProfileUpdated, null);
+        _client.SendNoticeAsync(Actions.SelfProfileUpdated, null);
     }
 
     public void SendMsgToAdminFromNotAuthUser(string email, string message)
     {
-        client.SendNoticeAsync(Actions.UserMessageToAdmin, null, new TagValue(Tags.Body, message), new TagValue(Tags.UserEmail, email));
+        _client.SendNoticeAsync(Actions.UserMessageToAdmin, null, new TagValue(Tags.Body, message), new TagValue(Tags.UserEmail, email));
     }
 
     public void SendRequestTariff(bool license, string fname, string lname, string title, string email, string phone, string ctitle, string csize, string site, string message)
@@ -132,7 +132,7 @@ public class StudioNotifyService
 
         var recipient = (IRecipient)new DirectRecipient(AuthContext.CurrentAccount.ID.ToString(), string.Empty, new[] { salesEmail }, false);
 
-        client.SendNoticeToAsync(license ? Actions.RequestLicense : Actions.RequestTariff,
+        _client.SendNoticeToAsync(license ? Actions.RequestLicense : Actions.RequestTariff,
                                  new[] { recipient },
                                  new[] { "email.sender" },
                                  new TagValue(Tags.UserName, fname),
@@ -150,12 +150,12 @@ public class StudioNotifyService
 
     public void SendToAdminVoipWarning(double balance)
     {
-        client.SendNoticeAsync(Actions.VoipWarning, null, new TagValue(Tags.Body, balance));
+        _client.SendNoticeAsync(Actions.VoipWarning, null, new TagValue(Tags.Body, balance));
     }
 
     public void SendToAdminVoipBlocked()
     {
-        client.SendNoticeAsync(Actions.VoipBlocked, null);
+        _client.SendNoticeAsync(Actions.VoipBlocked, null);
     }
 
     #endregion
@@ -173,7 +173,7 @@ public class StudioNotifyService
                          ? (CoreBaseSettings.CustomMode ? Actions.PersonalCustomModePasswordChange : Actions.PersonalPasswordChange)
                          : Actions.PasswordChange;
 
-        client.SendNoticeToAsync(
+        _client.SendNoticeToAsync(
                     action,
                     StudioNotifyHelper.RecipientFromEmail(userInfo.Email, false),
                     new[] { EMailSenderName },
@@ -194,7 +194,7 @@ public class StudioNotifyService
                          ? (CoreBaseSettings.CustomMode ? Actions.PersonalCustomModeEmailChangeV115 : Actions.PersonalEmailChangeV115)
                          : Actions.EmailChangeV115;
 
-        client.SendNoticeToAsync(
+        _client.SendNoticeToAsync(
                     action,
                     StudioNotifyHelper.RecipientFromEmail(email, false),
                     new[] { EMailSenderName },
@@ -208,7 +208,7 @@ public class StudioNotifyService
 
         string greenButtonText() => WebstudioNotifyPatternResource.ButtonActivateEmail;
 
-        client.SendNoticeToAsync(
+        _client.SendNoticeToAsync(
                     Actions.ActivateEmail,
                     StudioNotifyHelper.RecipientFromEmail(email, false),
                     new[] { EMailSenderName },
@@ -247,7 +247,7 @@ public class StudioNotifyService
             tags.Add(new TagValue(Tags.Login, login));
         }
 
-        client.SendNoticeToAsync(
+        _client.SendNoticeToAsync(
             skipSettings
                 ? Actions.MailboxWithoutSettingsCreated
                 : Actions.MailboxCreated,
@@ -258,7 +258,7 @@ public class StudioNotifyService
 
     public void SendMailboxPasswordChanged(List<string> toEmails, string username, string address)
     {
-        client.SendNoticeToAsync(
+        _client.SendNoticeToAsync(
             Actions.MailboxPasswordChanged,
             null,
             StudioNotifyHelper.RecipientFromEmail(toEmails, false),
@@ -275,7 +275,7 @@ public class StudioNotifyService
 
         string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangePhone;
 
-        client.SendNoticeToAsync(
+        _client.SendNoticeToAsync(
             Actions.PhoneChange,
             StudioNotifyHelper.RecipientFromEmail(userInfo.Email, false),
             new[] { EMailSenderName },
@@ -288,7 +288,7 @@ public class StudioNotifyService
 
         string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangeTfa;
 
-        client.SendNoticeToAsync(
+        _client.SendNoticeToAsync(
             Actions.TfaChange,
             StudioNotifyHelper.RecipientFromEmail(userInfo.Email, false),
             new[] { EMailSenderName },
@@ -300,7 +300,7 @@ public class StudioNotifyService
     {
         if (!CoreBaseSettings.Personal)
         {
-            client.SendNoticeAsync(Actions.UserHasJoin, null);
+            _client.SendNoticeAsync(Actions.UserHasJoin, null);
         }
     }
 
@@ -311,7 +311,7 @@ public class StudioNotifyService
 
         string greenButtonText() => WebstudioNotifyPatternResource.ButtonJoin;
 
-        client.SendNoticeToAsync(
+        _client.SendNoticeToAsync(
                     Actions.JoinUsers,
                     StudioNotifyHelper.RecipientFromEmail(email, true),
                     new[] { EMailSenderName },
@@ -366,7 +366,7 @@ public class StudioNotifyService
                                   ? WebstudioNotifyPatternResource.ButtonAccessYourPortal
                                   : WebstudioNotifyPatternResource.ButtonAccessYouWebOffice;
 
-        client.SendNoticeToAsync(
+        _client.SendNoticeToAsync(
             notifyAction,
             StudioNotifyHelper.RecipientFromEmail(newUserInfo.Email, false),
             new[] { EMailSenderName },
@@ -407,7 +407,7 @@ public class StudioNotifyService
                                   ? WebstudioNotifyPatternResource.ButtonAccessYourPortal
                                   : WebstudioNotifyPatternResource.ButtonAccessYouWebOffice;
 
-        client.SendNoticeToAsync(
+        _client.SendNoticeToAsync(
             notifyAction,
             StudioNotifyHelper.RecipientFromEmail(newUserInfo.Email, false),
             new[] { EMailSenderName },
@@ -447,7 +447,7 @@ public class StudioNotifyService
 
         string greenButtonText() => WebstudioNotifyPatternResource.ButtonAccept;
 
-        client.SendNoticeToAsync(
+        _client.SendNoticeToAsync(
             notifyAction,
             StudioNotifyHelper.RecipientFromEmail(newUserInfo.Email, false),
             new[] { EMailSenderName },
@@ -487,7 +487,7 @@ public class StudioNotifyService
 
         string greenButtonText() => WebstudioNotifyPatternResource.ButtonAccept;
 
-        client.SendNoticeToAsync(
+        _client.SendNoticeToAsync(
             notifyAction,
             StudioNotifyHelper.RecipientFromEmail(newUserInfo.Email, false),
             new[] { EMailSenderName },
@@ -507,7 +507,7 @@ public class StudioNotifyService
                          ? (CoreBaseSettings.CustomMode ? Actions.PersonalCustomModeProfileDelete : Actions.PersonalProfileDelete)
                          : Actions.ProfileDelete;
 
-        client.SendNoticeToAsync(
+        _client.SendNoticeToAsync(
             action,
             StudioNotifyHelper.RecipientFromEmail(user.Email, false),
             new[] { EMailSenderName },
@@ -533,7 +533,7 @@ public class StudioNotifyService
                     Thread.CurrentThread.CurrentCulture = culture;
                     Thread.CurrentThread.CurrentUICulture = culture;
 
-                    client.SendNoticeToAsync(
+                    _client.SendNoticeToAsync(
                         Actions.ProfileHasDeletedItself,
                         null,
                         new IRecipient[] { admin },
@@ -552,7 +552,7 @@ public class StudioNotifyService
 
     public void SendMsgReassignsCompleted(Guid recipientId, UserInfo fromUser, UserInfo toUser)
     {
-        client.SendNoticeToAsync(
+        _client.SendNoticeToAsync(
             Actions.ReassignsCompleted,
             new[] { StudioNotifyHelper.ToRecipient(recipientId) },
             new[] { EMailSenderName },
@@ -565,7 +565,7 @@ public class StudioNotifyService
 
     public void SendMsgReassignsFailed(Guid recipientId, UserInfo fromUser, UserInfo toUser, string message)
     {
-        client.SendNoticeToAsync(
+        _client.SendNoticeToAsync(
             Actions.ReassignsFailed,
             new[] { StudioNotifyHelper.ToRecipient(recipientId) },
             new[] { EMailSenderName },
@@ -579,7 +579,7 @@ public class StudioNotifyService
 
     public void SendMsgRemoveUserDataCompleted(Guid recipientId, UserInfo user, string fromUserName, long docsSpace, long crmSpace, long mailSpace, long talkSpace)
     {
-        client.SendNoticeToAsync(
+        _client.SendNoticeToAsync(
             CoreBaseSettings.CustomMode ? Actions.RemoveUserDataCompletedCustomMode : Actions.RemoveUserDataCompleted,
             new[] { StudioNotifyHelper.ToRecipient(recipientId) },
             new[] { EMailSenderName },
@@ -594,7 +594,7 @@ public class StudioNotifyService
 
     public void SendMsgRemoveUserDataFailed(Guid recipientId, UserInfo user, string fromUserName, string message)
     {
-        client.SendNoticeToAsync(
+        _client.SendNoticeToAsync(
             Actions.RemoveUserDataFailed,
             new[] { StudioNotifyHelper.ToRecipient(recipientId) },
             new[] { EMailSenderName },
@@ -642,7 +642,7 @@ public class StudioNotifyService
 
         tagValues.Add(new TagValue(Tags.UserName, newUserInfo.FirstName.HtmlEncode()));
 
-        client.SendNoticeToAsync(
+        _client.SendNoticeToAsync(
             notifyAction,
             StudioNotifyHelper.RecipientFromEmail(newUserInfo.Email, false),
             new[] { EMailSenderName },
@@ -657,7 +657,7 @@ public class StudioNotifyService
 
         string greenButtonText() => WebstudioNotifyPatternResource.ButtonDeactivatePortal;
 
-        client.SendNoticeToAsync(
+        _client.SendNoticeToAsync(
                     Actions.PortalDeactivate,
                     new IRecipient[] { u },
                     new[] { EMailSenderName },
@@ -672,7 +672,7 @@ public class StudioNotifyService
 
         string greenButtonText() => WebstudioNotifyPatternResource.ButtonDeletePortal;
 
-        client.SendNoticeToAsync(
+        _client.SendNoticeToAsync(
                     Actions.PortalDelete,
                     new IRecipient[] { u },
                     new[] { EMailSenderName },
@@ -685,7 +685,7 @@ public class StudioNotifyService
     {
         string greenButtonText() => WebstudioNotifyPatternResource.ButtonLeaveFeedback;
 
-        client.SendNoticeToAsync(
+        _client.SendNoticeToAsync(
                     Actions.PortalDeleteSuccessV115,
                     new IRecipient[] { owner },
                     new[] { EMailSenderName },
@@ -701,7 +701,7 @@ public class StudioNotifyService
 
         string greenButtonText() => WebstudioNotifyPatternResource.ButtonConfirmPortalAddressChange;
 
-        client.SendNoticeToAsync(
+        _client.SendNoticeToAsync(
                     Actions.DnsChange,
                     new IRecipient[] { u },
                     new[] { EMailSenderName },
@@ -716,7 +716,7 @@ public class StudioNotifyService
     {
         string greenButtonText() => WebstudioNotifyPatternResource.ButtonConfirmPortalOwnerUpdate;
 
-        client.SendNoticeToAsync(
+        _client.SendNoticeToAsync(
             Actions.ConfirmOwnerChange,
             null,
             new IRecipient[] { owner },
@@ -754,7 +754,7 @@ public class StudioNotifyService
 
             string greenButtonText() => WebstudioNotifyPatternResource.ButtonConfirm;
 
-            client.SendNoticeToAsync(
+            _client.SendNoticeToAsync(
                 notifyAction,
                 StudioNotifyHelper.RecipientFromEmail(u.Email, false),
                 new[] { EMailSenderName },
@@ -791,7 +791,7 @@ public class StudioNotifyService
                          + "&lang=" + culture.Key
                          + additionalMember;
 
-        client.SendNoticeToAsync(
+        _client.SendNoticeToAsync(
             CoreBaseSettings.CustomMode ? Actions.PersonalCustomModeConfirmation : Actions.PersonalConfirmation,
             StudioNotifyHelper.RecipientFromEmail(email, false),
             new[] { EMailSenderName },
@@ -814,7 +814,7 @@ public class StudioNotifyService
 
         var linkToRecovery = CommonLinkUtility.GetConfirmationUrl(userInfo.Email, ConfirmType.PasswordChange, hash, userInfo.Id);
 
-        client.SendNoticeToAsync(
+        _client.SendNoticeToAsync(
             CoreBaseSettings.CustomMode ? Actions.PersonalCustomModeAlreadyExist : Actions.PersonalAlreadyExist,
             StudioNotifyHelper.RecipientFromEmail(email, false),
             new[] { EMailSenderName },
@@ -826,7 +826,7 @@ public class StudioNotifyService
 
     public void SendUserWelcomePersonal(UserInfo newUserInfo)
     {
-        client.SendNoticeToAsync(
+        _client.SendNoticeToAsync(
             CoreBaseSettings.CustomMode ? Actions.PersonalCustomModeAfterRegistration1 : Actions.PersonalAfterRegistration1,
             StudioNotifyHelper.RecipientFromEmail(newUserInfo.Email, true),
             new[] { EMailSenderName },
@@ -920,7 +920,7 @@ public class StudioNotifyService
 
             var recipient = new DirectRecipient(salesEmail, null, new[] { salesEmail }, false);
 
-            client.SendNoticeToAsync(
+            _client.SendNoticeToAsync(
                 Actions.SaasCustomModeRegData,
                 null,
                 new IRecipient[] { recipient },
@@ -981,7 +981,7 @@ public class StudioNotifyService
 
         foreach (var u in users)
         {
-            client.SendNoticeToAsync(
+            _client.SendNoticeToAsync(
                 action,
                 null,
                 new[] { StudioNotifyHelper.ToRecipient(u.Id) },

@@ -12,7 +12,7 @@
 
 namespace Textile.States;
 
-[FormatterState(SimpleBlockFormatterState.PatternBegin + @"bq" + SimpleBlockFormatterState.PatternEnd)]
+[FormatterState(SimpleBlockFormatterState._patternBegin + @"bq" + SimpleBlockFormatterState._patternEnd)]
 public class BlockQuoteFormatterState : SimpleBlockFormatterState
 {
     public BlockQuoteFormatterState(TextileFormatter f)

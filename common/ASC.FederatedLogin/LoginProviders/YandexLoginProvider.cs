@@ -34,7 +34,7 @@ public class YandexLoginProvider : BaseLoginProvider<YandexLoginProvider>
     public override string ClientSecret => this["yandexClientSecret"];
     public override string RedirectUri => this["yandexRedirectUrl"];
 
-    private const string YandexProfileUrl = "https://login.yandex.ru/info";
+    private const string _yandexProfileUrl = "https://login.yandex.ru/info";
 
 
     public YandexLoginProvider() { }
@@ -78,7 +78,7 @@ public class YandexLoginProvider : BaseLoginProvider<YandexLoginProvider>
         }
         catch (Exception ex)
         {
-            return LoginProfile.FromError(Signature, InstanceCrypto, ex);
+            return LoginProfile.FromError(_signature, _instanceCrypto, ex);
         }
     }
 
@@ -94,7 +94,7 @@ public class YandexLoginProvider : BaseLoginProvider<YandexLoginProvider>
 
     private LoginProfile RequestProfile(string accessToken)
     {
-        var yandexProfile = RequestHelper.PerformRequest(YandexProfileUrl + "?format=json&oauth_token=" + accessToken);
+        var yandexProfile = RequestHelper.PerformRequest(_yandexProfileUrl + "?format=json&oauth_token=" + accessToken);
         var loginProfile = ProfileFromYandex(yandexProfile);
 
         return loginProfile;
@@ -108,7 +108,7 @@ public class YandexLoginProvider : BaseLoginProvider<YandexLoginProvider>
             throw new Exception("Failed to correctly process the response");
         }
 
-        var profile = new LoginProfile(Signature, InstanceCrypto)
+        var profile = new LoginProfile(_signature, _instanceCrypto)
         {
             EMail = jProfile.Value<string>("default_email"),
             Id = jProfile.Value<string>("id"),

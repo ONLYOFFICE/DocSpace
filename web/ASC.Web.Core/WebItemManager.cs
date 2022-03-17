@@ -36,23 +36,23 @@ public enum ItemAvailableState
 [Singletone]
 public class WebItemManager
 {
-    private readonly ILog log;
+    private readonly ILog _log;
 
-    private ConcurrentDictionary<Guid, IWebItem> items;
+    private ConcurrentDictionary<Guid, IWebItem> _items;
     private ConcurrentDictionary<Guid, IWebItem> Items
     {
         get
         {
-            if (lazyItems.IsValueCreated)
+            if (_lazyItems.IsValueCreated)
             {
-                return items;
+                return _items;
             }
 
-            return items = lazyItems.Value;
+            return _items = _lazyItems.Value;
         }
     }
-    private readonly Lazy<ConcurrentDictionary<Guid, IWebItem>> lazyItems;
-    private readonly List<string> disableItem;
+    private readonly Lazy<ConcurrentDictionary<Guid, IWebItem>> _lazyItems;
+    private readonly List<string> _disableItem;
 
     public static Guid CommunityProductID
     {
@@ -121,9 +121,9 @@ public class WebItemManager
     {
         ServiceProvider = serviceProvider;
         Configuration = configuration;
-        log = options.Get("ASC.Web");
-        disableItem = (Configuration["web:disabled-items"] ?? "").Split(",").ToList();
-        lazyItems = new Lazy<ConcurrentDictionary<Guid, IWebItem>>(LoadItems, System.Threading.LazyThreadSafetyMode.ExecutionAndPublication);
+        _log = options.Get("ASC.Web");
+        _disableItem = (Configuration["web:disabled-items"] ?? "").Split(",").ToList();
+        _lazyItems = new Lazy<ConcurrentDictionary<Guid, IWebItem>>(LoadItems, System.Threading.LazyThreadSafetyMode.ExecutionAndPublication);
     }
 
     private ConcurrentDictionary<Guid, IWebItem> LoadItems()
@@ -144,7 +144,7 @@ public class WebItemManager
             }
             catch (Exception exc)
             {
-                log.Error($"Couldn't load web item {file}", exc);
+                _log.Error($"Couldn't load web item {file}", exc);
             }
         }
 
@@ -174,7 +174,7 @@ public class WebItemManager
             }
 
             result.TryAdd(webitem.ID, webitem);
-            log.DebugFormat("Web item {0} loaded", webitem.Name);
+            _log.DebugFormat("Web item {0} loaded", webitem.Name);
         }
     }
 
@@ -202,7 +202,7 @@ public class WebItemManager
 
     private bool DisabledWebItem(string name)
     {
-        return disableItem.Contains(name);
+        return _disableItem.Contains(name);
     }
 }
 

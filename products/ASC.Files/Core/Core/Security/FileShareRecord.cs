@@ -37,7 +37,7 @@ public class FileShareRecord
 
     public class ShareComparer : IComparer<FileShare>
     {
-        private static readonly int[] ShareOrder = new[]
+        private static readonly int[] _shareOrder = new[]
         {
                 (int)FileShare.None,
                 (int)FileShare.ReadWrite,
@@ -52,7 +52,7 @@ public class FileShareRecord
 
         public int Compare(FileShare x, FileShare y)
         {
-            return Array.IndexOf(ShareOrder, (int)x).CompareTo(Array.IndexOf(ShareOrder, (int)y));
+            return Array.IndexOf(_shareOrder, (int)x).CompareTo(Array.IndexOf(_shareOrder, (int)y));
         }
     }
 }

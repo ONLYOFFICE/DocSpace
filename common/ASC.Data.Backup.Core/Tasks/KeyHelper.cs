@@ -27,7 +27,7 @@ namespace ASC.Data.Backup.Tasks;
 
 internal static class KeyHelper
 {
-    private const string Databases = "databases";
+    private const string _databases = "databases";
 
     public static string GetDumpKey()
     {
@@ -36,12 +36,12 @@ internal static class KeyHelper
 
     public static string GetDatabaseSchema()
     {
-            return $"{Databases}/scheme";
+            return $"{_databases}/scheme";
     }
 
     public static string GetDatabaseData()
     {
-            return $"{Databases}/data";
+            return $"{_databases}/data";
     }
 
     public static string GetDatabaseSchema(string table)
@@ -56,7 +56,7 @@ internal static class KeyHelper
 
     public static string GetTableZipKey(IModuleSpecifics module, string tableName)
     {
-            return $"{Databases}/{module.ConnectionStringName}/{tableName}";
+            return $"{_databases}/{module.ConnectionStringName}/{tableName}";
     }
 
     public static string GetZipKey(this BackupFileInfo file)

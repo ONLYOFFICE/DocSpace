@@ -30,10 +30,10 @@ public class EasyBibHelper : Consumer
 {
     public ILog Logger { get; set; }
 
-    static readonly string SearchBookUrl = "https://worldcat.citation-api.com/query?search=",
-                    SearchJournalUrl = "https://crossref.citation-api.com/query?search=",
-                    SearchWebSiteUrl = "https://web.citation-api.com/query?search=",
-                    EasyBibStyles = "https://api.citation-api.com/2.1/rest/styles";
+    static readonly string _searchBookUrl = "https://worldcat.citation-api.com/query?search=",
+                    _searchJournalUrl = "https://crossref.citation-api.com/query?search=",
+                    _searchWebSiteUrl = "https://web.citation-api.com/query?search=",
+                    _easyBibStyles = "https://api.citation-api.com/2.1/rest/styles";
 
     public enum EasyBibSource
     {
@@ -69,13 +69,13 @@ public class EasyBibHelper : Consumer
         switch (source)
         {
             case 0:
-                uri = SearchBookUrl;
+                uri = _searchBookUrl;
                 break;
             case 1:
-                uri = SearchJournalUrl;
+                uri = _searchJournalUrl;
                 break;
             case 2:
-                uri = SearchWebSiteUrl;
+                uri = _searchWebSiteUrl;
                 break;
             default:
                 break;
@@ -102,7 +102,7 @@ public class EasyBibHelper : Consumer
         var headers = new Dictionary<string, string>() { };
         try
         {
-            return RequestHelper.PerformRequest(EasyBibStyles, "", method, "", headers);
+            return RequestHelper.PerformRequest(_easyBibStyles, "", method, "", headers);
         }
         catch (Exception)
         {

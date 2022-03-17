@@ -35,7 +35,7 @@ public class CommonLinkUtilitySettings
 [Scope]
 public class BaseCommonLinkUtility
 {
-    private const string LocalHost = "localhost";
+    private const string _localHost = "localhost";
 
     private UriBuilder _serverRoot;
     private string _vpath;
@@ -65,7 +65,7 @@ public class BaseCommonLinkUtility
         if (!string.IsNullOrEmpty(serverUri))
         {
             var uri = new Uri(serverUri.Replace('*', 'x').Replace('+', 'x'));
-            _serverRoot = new UriBuilder(uri.Scheme, uri.Host != "x" ? uri.Host : LocalHost, uri.Port);
+            _serverRoot = new UriBuilder(uri.Scheme, uri.Host != "x" ? uri.Host : _localHost, uri.Port);
             _vpath = "/" + uri.AbsolutePath.Trim('/');
         }
         else
@@ -73,14 +73,14 @@ public class BaseCommonLinkUtility
             try
             {
                 HttpContextAccessor = httpContextAccessor;
-                var uriBuilder = new UriBuilder(Uri.UriSchemeHttp, LocalHost);
+                var uriBuilder = new UriBuilder(Uri.UriSchemeHttp, _localHost);
                 if (HttpContextAccessor?.HttpContext?.Request != null)
                 {
                     var u = HttpContextAccessor?.HttpContext.Request.GetUrlRewriter();
 
                     ArgumentNullException.ThrowIfNull(u);
 
-                    uriBuilder = new UriBuilder(u.Scheme, LocalHost, u.Port);
+                    uriBuilder = new UriBuilder(u.Scheme, _localHost, u.Port);
                 }
                 _serverRoot = uriBuilder;
             }
@@ -140,9 +140,9 @@ public class BaseCommonLinkUtility
 
 #if DEBUG
                 // for Visual Studio debug
-                if (tenant.Alias == LocalHost)
+                if (tenant.Alias == _localHost)
                 {
-                    result.Host = LocalHost;
+                    result.Host = _localHost;
                 }
 #endif
 
@@ -243,7 +243,7 @@ public class BaseCommonLinkUtility
     public void Initialize(string serverUri, bool localhost = true)
     {
         var uri = new Uri(serverUri.Replace('*', 'x').Replace('+', 'x'));
-        _serverRoot = new UriBuilder(uri.Scheme, localhost ? LocalHost : uri.Host, uri.Port);
+        _serverRoot = new UriBuilder(uri.Scheme, localhost ? _localHost : uri.Host, uri.Port);
         _vpath = "/" + uri.AbsolutePath.Trim('/');
     }
 }

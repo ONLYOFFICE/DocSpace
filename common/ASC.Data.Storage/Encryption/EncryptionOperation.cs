@@ -30,8 +30,8 @@ namespace ASC.Data.Storage.Encryption;
 [Transient(Additional = typeof(EncryptionOperationExtension))]
 public class EncryptionOperation : DistributedTaskProgress
 {
-    private const string ConfigPath = "";
-    private const string ProgressFileName = "EncryptionProgress.tmp";
+    private const string _configPath = "";
+    private const string _progressFileName = "EncryptionProgress.tmp";
 
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private bool _hasErrors;
@@ -62,7 +62,7 @@ public class EncryptionOperation : DistributedTaskProgress
         var (log, encryptionSettingsHelper, tenantManager, notifyHelper, coreBaseSettings, storageFactoryConfig, storageFactory, configuration) = scopeClass;
         notifyHelper.Init(_serverRootPath);
         _tenants = tenantManager.GetTenants(false);
-        _modules = storageFactoryConfig.GetModuleList(ConfigPath, true);
+        _modules = storageFactoryConfig.GetModuleList(_configPath, true);
         _useProgressFile = Convert.ToBoolean(configuration["storage:encryption:progressfile"] ?? "true");
 
         Percentage = 10;
@@ -91,7 +91,7 @@ public class EncryptionOperation : DistributedTaskProgress
 
                 foreach (var module in _modules)
                 {
-                    dictionary.Add(module, (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.Id.ToString(), module));
+                    dictionary.Add(module, (DiscDataStore)storageFactory.GetStorage(_configPath, tenant.Id.ToString(), module));
                 }
 
                 Parallel.ForEach(dictionary, (elem) =>
@@ -126,7 +126,7 @@ public class EncryptionOperation : DistributedTaskProgress
 
         private async Task EncryptStoreAsync(Tenant tenant, string module, DiscDataStore store, StorageFactoryConfig storageFactoryConfig, ILog log)
     {
-        var domains = storageFactoryConfig.GetDomainList(ConfigPath, module).ToList();
+        var domains = storageFactoryConfig.GetDomainList(_configPath, module).ToList();
 
         domains.Add(string.Empty);
 
@@ -160,9 +160,9 @@ public class EncryptionOperation : DistributedTaskProgress
         {
             var encryptedFiles = new List<string>();
 
-            if (await store.IsFileAsync(string.Empty, ProgressFileName))
+            if (await store.IsFileAsync(string.Empty, _progressFileName))
             {
-                using var stream = await store.GetReadStreamAsync(string.Empty, ProgressFileName);
+                using var stream = await store.GetReadStreamAsync(string.Empty, _progressFileName);
             using var reader = new StreamReader(stream);
                 string line;
 
@@ -173,7 +173,7 @@ public class EncryptionOperation : DistributedTaskProgress
             }
         else
         {
-            store.GetWriteStream(string.Empty, ProgressFileName).Close();
+            store.GetWriteStream(string.Empty, _progressFileName).Close();
         }
 
         return encryptedFiles;
@@ -200,7 +200,7 @@ public class EncryptionOperation : DistributedTaskProgress
             files = files.Where(path => notEmptyDomains.All(domain => !path.Contains(domain + Path.DirectorySeparatorChar)));
         }
 
-        files = files.Where(path => !path.EndsWith(ProgressFileName));
+        files = files.Where(path => !path.EndsWith(_progressFileName));
 
         return files;
     }
@@ -244,7 +244,7 @@ public class EncryptionOperation : DistributedTaskProgress
             return;
         }
 
-        using var stream = store.GetWriteStream(string.Empty, ProgressFileName, FileMode.Append);
+        using var stream = store.GetWriteStream(string.Empty, _progressFileName, FileMode.Append);
         using var writer = new StreamWriter(stream);
             writer.WriteLine(file);
         }
@@ -255,11 +255,11 @@ public class EncryptionOperation : DistributedTaskProgress
         {
             foreach (var module in _modules)
             {
-                var store = (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.Id.ToString(), module);
+                var store = (DiscDataStore)storageFactory.GetStorage(_configPath, tenant.Id.ToString(), module);
 
-                    if (await store.IsFileAsync(string.Empty, ProgressFileName))
+                    if (await store.IsFileAsync(string.Empty, _progressFileName))
                 {
-                        await store.DeleteAsync(string.Empty, ProgressFileName);
+                        await store.DeleteAsync(string.Empty, _progressFileName);
                 }
             }
         }

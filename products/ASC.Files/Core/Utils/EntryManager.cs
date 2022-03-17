@@ -249,7 +249,7 @@ public class EntryStatusManager
 [Scope]
 public class EntryManager
 {
-    private const string UpdateList = "filesUpdateList";
+    private const string _updateList = "filesUpdateList";
 
     private readonly ICache _cache;
     private readonly FileTrackerHelper _fileTracker;
@@ -1348,14 +1348,14 @@ public class EntryManager
             throw new Exception(FilesCommonResource.ErrorMassage_NotSupportedFormat);
         }
 
-        var exists = _cache.Get<string>(UpdateList + fileId.ToString()) != null;
+        var exists = _cache.Get<string>(_updateList + fileId.ToString()) != null;
         if (exists)
         {
             throw new Exception(FilesCommonResource.ErrorMassage_UpdateEditingFile);
         }
         else
         {
-            _cache.Insert(UpdateList + fileId.ToString(), fileId.ToString(), TimeSpan.FromMinutes(2));
+            _cache.Insert(_updateList + fileId.ToString(), fileId.ToString(), TimeSpan.FromMinutes(2));
         }
 
         try
@@ -1421,7 +1421,7 @@ public class EntryManager
         }
         finally
         {
-            _cache.Remove(UpdateList + fromFile.ID);
+            _cache.Remove(_updateList + fromFile.ID);
         }
     }
 

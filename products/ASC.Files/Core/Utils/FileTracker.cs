@@ -28,7 +28,7 @@ namespace ASC.Web.Files.Utils;
 [Singletone]
 public class FileTrackerHelper
 {
-    private const string Tracker = "filesTracker";
+    private const string _tracker = "filesTracker";
     private readonly ICache _cache;
 
     public static readonly TimeSpan TrackTimeout = TimeSpan.FromSeconds(12);
@@ -197,7 +197,7 @@ public class FileTrackerHelper
     {
         if (!EqualityComparer<T>.Default.Equals(fileId, default(T)))
         {
-            return _cache.Get<FileTracker>(Tracker + fileId);
+            return _cache.Get<FileTracker>(_tracker + fileId);
         }
 
         return null;
@@ -209,11 +209,11 @@ public class FileTrackerHelper
         {
             if (tracker != null)
             {
-                _cache.Insert(Tracker + fileId, tracker, CacheTimeout);
+                _cache.Insert(_tracker + fileId, tracker, CacheTimeout);
             }
             else
             {
-                _cache.Remove(Tracker + fileId);
+                _cache.Remove(_tracker + fileId);
             }
         }
     }

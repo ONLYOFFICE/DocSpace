@@ -27,7 +27,7 @@ namespace ASC.Web.Core.Users.Import;
 
 public class TextFileUserImporter : IUserImporter
 {
-    private readonly Stream stream;
+    private readonly Stream _stream;
 
     protected Dictionary<string, string> NameMapping { get; set; }
 
@@ -47,7 +47,7 @@ public class TextFileUserImporter : IUserImporter
 
     public TextFileUserImporter(Stream stream)
     {
-        this.stream = stream;
+        this._stream = stream;
         Encoding = Encoding.UTF8;
         Separator = ';';
         HasHeader = false;
@@ -61,7 +61,7 @@ public class TextFileUserImporter : IUserImporter
         var users = new List<UserInfo>();
 
         var fileLines = new List<string>();
-        using (var reader = new StreamReader(stream, Encoding, true))
+        using (var reader = new StreamReader(_stream, Encoding, true))
         {
             fileLines.AddRange(reader.ReadToEnd().Split(new[] { Environment.NewLine, "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries));
         }

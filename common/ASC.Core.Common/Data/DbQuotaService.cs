@@ -40,25 +40,25 @@ class ConfigureDbQuotaService : IConfigureNamedOptions<DbQuotaService>
 
     public void Configure(string name, DbQuotaService options)
     {
-        options.LazyCoreDbContext = new Lazy<CoreDbContext>(() => _dbContextManager.Get(name));
+        options._lazyCoreDbContext = new Lazy<CoreDbContext>(() => _dbContextManager.Get(name));
     }
 
     public void Configure(DbQuotaService options)
     {
-        options.LazyCoreDbContext = new Lazy<CoreDbContext>(() => _dbContextManager.Value);
+        options._lazyCoreDbContext = new Lazy<CoreDbContext>(() => _dbContextManager.Value);
     }
 }
 
 [Scope]
 class DbQuotaService : IQuotaService
 {
-    internal CoreDbContext CoreDbContext => LazyCoreDbContext.Value;
-    internal Lazy<CoreDbContext> LazyCoreDbContext;
+    internal CoreDbContext CoreDbContext => _lazyCoreDbContext.Value;
+    internal Lazy<CoreDbContext> _lazyCoreDbContext;
     private readonly IMapper _mapper;
 
     public DbQuotaService(DbContextManager<CoreDbContext> dbContextManager, IMapper mapper)
     {
-        LazyCoreDbContext = new Lazy<CoreDbContext>(() => dbContextManager.Value);
+        _lazyCoreDbContext = new Lazy<CoreDbContext>(() => dbContextManager.Value);
         _mapper = mapper;
     }
 

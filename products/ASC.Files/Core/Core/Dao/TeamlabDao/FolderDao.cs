@@ -28,15 +28,15 @@ namespace ASC.Files.Core.Data;
 [Scope]
 internal class FolderDao : AbstractDao, IFolderDao<int>
 {
-    private const string My = "my";
-    private const string Common = "common";
-    private const string Share = "share";
-    private const string Recent = "recent";
-    private const string Favorites = "favorites";
-    private const string Templates = "templates";
-    private const string Privacy = "privacy";
-    private const string Trash = "trash";
-    private const string Projects = "projects";
+    private const string _my = "my";
+    private const string _common = "common";
+    private const string _share = "share";
+    private const string _recent = "recent";
+    private const string _favorites = "favorites";
+    private const string _templates = "templates";
+    private const string _privacy = "privacy";
+    private const string _trash = "trash";
+    private const string _projects = "projects";
 
     private readonly FactoryIndexerFolder _factoryIndexer;
     private readonly GlobalSpace _globalSpace;
@@ -909,41 +909,41 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                 var folder = ServiceProvider.GetService<Folder<int>>();
                 switch (bunch)
                 {
-                    case My:
+                    case _my:
                         folder.FolderType = FolderType.USER;
-                        folder.Title = My;
+                        folder.Title = _my;
                         break;
-                    case Common:
+                    case _common:
                         folder.FolderType = FolderType.COMMON;
-                        folder.Title = Common;
+                        folder.Title = _common;
                         break;
-                    case Trash:
+                    case _trash:
                         folder.FolderType = FolderType.TRASH;
-                        folder.Title = Trash;
+                        folder.Title = _trash;
                         break;
-                    case Share:
+                    case _share:
                         folder.FolderType = FolderType.SHARE;
-                        folder.Title = Share;
+                        folder.Title = _share;
                         break;
-                    case Recent:
+                    case _recent:
                         folder.FolderType = FolderType.Recent;
-                        folder.Title = Recent;
+                        folder.Title = _recent;
                         break;
-                    case Favorites:
+                    case _favorites:
                         folder.FolderType = FolderType.Favorites;
-                        folder.Title = Favorites;
+                        folder.Title = _favorites;
                         break;
-                    case Templates:
+                    case _templates:
                         folder.FolderType = FolderType.Templates;
-                        folder.Title = Templates;
+                        folder.Title = _templates;
                         break;
-                    case Privacy:
+                    case _privacy:
                         folder.FolderType = FolderType.Privacy;
-                        folder.Title = Privacy;
+                        folder.Title = _privacy;
                         break;
-                    case Projects:
+                    case _projects:
                         folder.FolderType = FolderType.Projects;
-                        folder.Title = Projects;
+                        folder.Title = _projects;
                         break;
                     default:
                         folder.FolderType = FolderType.BUNCH;
@@ -1002,44 +1002,44 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             folder.FolderID = 0;
             switch (bunch)
             {
-                case My:
+                case _my:
                     folder.FolderType = FolderType.USER;
-                    folder.Title = My;
+                    folder.Title = _my;
                     folder.CreateBy = new Guid(data);
                     break;
-                case Common:
+                case _common:
                     folder.FolderType = FolderType.COMMON;
-                    folder.Title = Common;
+                    folder.Title = _common;
                     break;
-                case Trash:
+                case _trash:
                     folder.FolderType = FolderType.TRASH;
-                    folder.Title = Trash;
+                    folder.Title = _trash;
                     folder.CreateBy = new Guid(data);
                     break;
-                case Share:
+                case _share:
                     folder.FolderType = FolderType.SHARE;
-                    folder.Title = Share;
+                    folder.Title = _share;
                     break;
-                case Recent:
+                case _recent:
                     folder.FolderType = FolderType.Recent;
-                    folder.Title = Recent;
+                    folder.Title = _recent;
                     break;
-                case Favorites:
+                case _favorites:
                     folder.FolderType = FolderType.Favorites;
-                    folder.Title = Favorites;
+                    folder.Title = _favorites;
                     break;
-                case Templates:
+                case _templates:
                     folder.FolderType = FolderType.Templates;
-                    folder.Title = Templates;
+                    folder.Title = _templates;
                     break;
-                case Privacy:
+                case _privacy:
                     folder.FolderType = FolderType.Privacy;
-                    folder.Title = Privacy;
+                    folder.Title = _privacy;
                     folder.CreateBy = new Guid(data);
                     break;
-                case Projects:
+                case _projects:
                     folder.FolderType = FolderType.Projects;
-                    folder.Title = Projects;
+                    folder.Title = _projects;
                     break;
                 default:
                     folder.FolderType = FolderType.BUNCH;
@@ -1066,47 +1066,47 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     Task<int> IFolderDao<int>.GetFolderIDProjectsAsync(bool createIfNotExists)
     {
-        return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Projects, null, createIfNotExists);
+        return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, _projects, null, createIfNotExists);
     }
 
     public Task<int> GetFolderIDTrashAsync(bool createIfNotExists, Guid? userId = null)
     {
-        return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Trash, (userId ?? AuthContext.CurrentAccount.ID).ToString(), createIfNotExists);
+        return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, _trash, (userId ?? AuthContext.CurrentAccount.ID).ToString(), createIfNotExists);
     }
 
     public Task<int> GetFolderIDCommonAsync(bool createIfNotExists)
     {
-        return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Common, null, createIfNotExists);
+        return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, _common, null, createIfNotExists);
     }
 
     public Task<int> GetFolderIDUserAsync(bool createIfNotExists, Guid? userId = null)
     {
-        return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, My, (userId ?? AuthContext.CurrentAccount.ID).ToString(), createIfNotExists);
+        return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, _my, (userId ?? AuthContext.CurrentAccount.ID).ToString(), createIfNotExists);
     }
 
     public Task<int> GetFolderIDShareAsync(bool createIfNotExists)
     {
-        return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Share, null, createIfNotExists);
+        return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, _share, null, createIfNotExists);
     }
 
     public Task<int> GetFolderIDRecentAsync(bool createIfNotExists)
     {
-        return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Recent, null, createIfNotExists);
+        return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, _recent, null, createIfNotExists);
     }
 
     public Task<int> GetFolderIDFavoritesAsync(bool createIfNotExists)
     {
-        return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Favorites, null, createIfNotExists);
+        return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, _favorites, null, createIfNotExists);
     }
 
     public Task<int> GetFolderIDTemplatesAsync(bool createIfNotExists)
     {
-        return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Templates, null, createIfNotExists);
+        return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, _templates, null, createIfNotExists);
     }
 
     public Task<int> GetFolderIDPrivacyAsync(bool createIfNotExists, Guid? userId = null)
     {
-        return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Privacy, (userId ?? AuthContext.CurrentAccount.ID).ToString(), createIfNotExists);
+        return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, _privacy, (userId ?? AuthContext.CurrentAccount.ID).ToString(), createIfNotExists);
     }
 
     #endregion

@@ -37,7 +37,7 @@ public class SmtpSender : INotifySender
     private bool _ssl;
     private ICredentials _credentials;
     protected bool UseCoreSettings;
-    const int NetworkTimeout = 30000;
+    const int _networkTimeout = 30000;
 
     public SmtpSender(
         IServiceProvider serviceProvider,
@@ -266,7 +266,7 @@ public class SmtpSender : INotifySender
     {
         var smtpClient = new MailKit.Net.Smtp.SmtpClient
         {
-            Timeout = NetworkTimeout
+            Timeout = _networkTimeout
         };
 
         return smtpClient;

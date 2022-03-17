@@ -78,7 +78,7 @@ public class GosUslugiLoginProvider : BaseLoginProvider<GosUslugiLoginProvider>
         }
         catch (Exception ex)
         {
-            return LoginProfile.FromError(Signature, InstanceCrypto, ex);
+            return LoginProfile.FromError(_signature, _instanceCrypto, ex);
         }
     }
 
@@ -100,7 +100,7 @@ public class GosUslugiLoginProvider : BaseLoginProvider<GosUslugiLoginProvider>
             throw new Exception("userinfo is incorrect");
         }
 
-        var profile = new LoginProfile(Signature, InstanceCrypto)
+        var profile = new LoginProfile(_signature, _instanceCrypto)
         {
             Id = oid,
             FirstName = userInfo.Value<string>("firstName"),

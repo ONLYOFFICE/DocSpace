@@ -30,14 +30,14 @@ public class IPRestrictionsRepository
 {
     private TenantDbContext TenantDbContext => _lazyTenantDbContext.Value;
 
-    private const string DbId = "core";
+    private const string _dbId = "core";
 
     private readonly Lazy<TenantDbContext> _lazyTenantDbContext;
     private readonly IMapper _mapper;
 
     public IPRestrictionsRepository(DbContextManager<TenantDbContext> dbContextManager, IMapper mapper)
     {
-        _lazyTenantDbContext = new Lazy<TenantDbContext>(() => dbContextManager.Get(DbId));
+        _lazyTenantDbContext = new Lazy<TenantDbContext>(() => dbContextManager.Get(_dbId));
         _mapper = mapper;
     }
 

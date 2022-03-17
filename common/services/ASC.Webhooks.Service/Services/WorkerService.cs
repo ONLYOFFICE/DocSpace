@@ -16,7 +16,7 @@ public class WorkerService : BackgroundService
     {
         _logger = logger;
         _webhookSender = webhookSender;
-        _queue = buildQueueService.Queue;
+        _queue = buildQueueService._queue;
         _threadCount = settings.ThreadCount;
         _waitingPeriod = TimeSpan.FromSeconds(5);
     }
