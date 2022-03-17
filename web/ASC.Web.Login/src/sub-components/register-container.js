@@ -43,6 +43,7 @@ const Register = (props) => {
   const [email, setEmail] = useState("");
   const [emailErr, setEmailErr] = useState(false);
   const [errorText, setErrorText] = useState("");
+  const [isShowError, setIsShowError] = useState(false);
 
   const { t } = useTranslation("Login");
 
@@ -59,11 +60,16 @@ const Register = (props) => {
   const onChangeEmail = (e) => {
     setEmail(e.currentTarget.value);
     setEmailErr(false);
+    setIsShowError(false);
   };
 
   const onValidateEmail = (res) => {
     setEmailErr(!res.isValid);
     setErrorText(res.errors[0]);
+  };
+
+  const onBlurEmail = () => {
+    setIsShowError(true);
   };
 
   const onSendRegisterRequest = () => {
@@ -101,9 +107,11 @@ const Register = (props) => {
           t={t}
           onChangeEmail={onChangeEmail}
           onValidateEmail={onValidateEmail}
+          onBlurEmail={onBlurEmail}
           onRegisterModalClose={onRegisterModalClose}
           onSendRegisterRequest={onSendRegisterRequest}
           errorText={errorText}
+          isShowError={isShowError}
         />
       )}
     </>

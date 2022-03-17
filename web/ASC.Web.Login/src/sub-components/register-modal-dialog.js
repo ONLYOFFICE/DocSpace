@@ -18,11 +18,13 @@ const RegisterModalDialog = ({
   t,
   onChangeEmail,
   onValidateEmail,
+  onBlurEmail,
   onRegisterModalClose,
   onSendRegisterRequest,
   trustedDomainsType,
   trustedDomains,
   errorText,
+  isShowError,
 }) => {
   const getDomains = () => {
     return trustedDomains.map((domain, i) => (
@@ -68,14 +70,14 @@ const RegisterModalDialog = ({
           className="email-reg-field"
           key="e-mail"
           isVertical={true}
-          hasError={emailErr}
+          hasError={isShowError && emailErr}
           labelVisible={false}
           errorMessage={
             errorText ? t(`Common:${errorText}`) : t("Common:RequiredField")
           }
         >
           <EmailInput
-            hasError={emailErr}
+            hasError={isShowError && emailErr}
             placeholder={t("RegistrationEmail")}
             isAutoFocussed={true}
             id="e-mail"
@@ -88,6 +90,7 @@ const RegisterModalDialog = ({
             value={email}
             onChange={onChangeEmail}
             onValidateInput={onValidateEmail}
+            onBlur={onBlurEmail}
             autoComplete="username"
           />
         </FieldContainer>
@@ -131,11 +134,13 @@ RegisterModalDialog.propTypes = {
   t: PropTypes.func.isRequired,
   onChangeEmail: PropTypes.func.isRequired,
   onValidateEmail: PropTypes.func.isRequired,
+  onBlurEmail: PropTypes.func.isRequired,
   onSendRegisterRequest: PropTypes.func.isRequired,
   onRegisterModalClose: PropTypes.func.isRequired,
   trustedDomainsType: PropTypes.number,
   trustedDomains: PropTypes.array,
   errorText: PropTypes.string,
+  isShowError: PropTypes.bool,
 };
 
 export default RegisterModalDialog;

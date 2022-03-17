@@ -16,6 +16,7 @@ const ForgotPasswordModalDialog = (props) => {
   const [emailError, setEmailError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorText, setErrorText] = useState("");
+  const [isShowError, setIsShowError] = useState(false);
 
   const { t } = useTranslation("Login");
 
@@ -27,6 +28,7 @@ const ForgotPasswordModalDialog = (props) => {
     //console.log("onChangeEmail", event.target.value);
     setEmail(event.target.value);
     setEmailError(false);
+    setIsShowError(false);
   };
 
   const onSendPasswordInstructions = () => {
@@ -56,6 +58,10 @@ const ForgotPasswordModalDialog = (props) => {
     setErrorText(res.errors[0]);
   };
 
+  const onBlurEmail = () => {
+    setIsShowError(true);
+  };
+
   return (
     <ModalDialogContainer
       displayType="modal"
@@ -83,14 +89,14 @@ const ForgotPasswordModalDialog = (props) => {
           className="email-reg-field"
           key="e-mail"
           isVertical={true}
-          hasError={emailError}
+          hasError={isShowError && emailError}
           labelVisible={false}
           errorMessage={
             errorText ? t(`Common:${errorText}`) : t("Common:RequiredField")
           }
         >
           <EmailInput
-            hasError={emailError}
+            hasError={isShowError && emailError}
             placeholder={t("RegistrationEmail")}
             isAutoFocussed={true}
             id="e-mail"
@@ -104,6 +110,7 @@ const ForgotPasswordModalDialog = (props) => {
             onChange={onChangeEmail}
             onKeyDown={onKeyDown}
             onValidateInput={onValidateEmail}
+            onBlur={onBlurEmail}
           />
         </FieldContainer>
       </ModalDialog.Body>
