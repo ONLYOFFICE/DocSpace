@@ -204,8 +204,13 @@ export const parseAddresses = (str, options = new EmailSettings()) => {
   if (!(options instanceof EmailSettings))
     throw new TypeError("Invalid options");
 
-  const parts = getParts(str);
   const resultEmails = [];
+
+  if (!str || !str.trim()) {
+    return resultEmails;
+  }
+
+  const parts = getParts(str);
 
   let i,
     n = parts.length;
