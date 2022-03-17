@@ -120,8 +120,11 @@ const StyledTooltipContainer = styled(Text)`
   // margin: 8px 16px 16px 16px;
   color: ${(props) => props.theme.passwordInput.tooltipTextColor} !important;
 
+  .generate-btn-container {
+    margin-top: 10px;
+  }
+
   .generate-btn {
-    margin-top: 8px;
     color: ${(props) => props.theme.passwordInput.tooltipTextColor};
   }
 `;

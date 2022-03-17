@@ -327,15 +327,17 @@ class PasswordInput extends React.Component {
           )}
 
           {this.props.generatePasswordTitle && (
-            <Link
-              className="generate-btn"
-              type="action"
-              fontWeight="600"
-              isHovered={true}
-              onClick={this.onGeneratePassword}
-            >
-              {this.props.generatePasswordTitle}
-            </Link>
+            <div className="generate-btn-container">
+              <Link
+                className="generate-btn"
+                type="action"
+                fontWeight="600"
+                isHovered={true}
+                onClick={this.onGeneratePassword}
+              >
+                {this.props.generatePasswordTitle}
+              </Link>
+            </div>
           )}
         </StyledTooltipContainer>
       </TooltipStyle>
