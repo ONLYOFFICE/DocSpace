@@ -5,6 +5,7 @@ import ComboBox from "@appserver/components/combobox";
 import Text from "@appserver/components/text";
 import { StyledScheduleComponent } from "../../StyledBackup";
 import { BackupTypes } from "@appserver/common/constants";
+import { isMobileOnly } from "react-device-detect";
 
 const { EveryWeekType, EveryMonthType } = BackupTypes;
 const ScheduleComponent = ({
@@ -94,7 +95,7 @@ const ScheduleComponent = ({
           noBorder={false}
           scaled={false}
           scaledOptions={true}
-          dropDownMaxHeight={400}
+          dropDownMaxHeight={isMobileOnly ? 100 : 200}
           className="schedule-backup_combobox time_options"
         />
       </div>
@@ -112,7 +113,7 @@ const ScheduleComponent = ({
           noBorder={false}
           scaled={false}
           scaledOptions={true}
-          dropDownMaxHeight={400}
+          dropDownMaxHeight={isMobileOnly ? 100 : 200}
           className="schedule-backup_combobox max_copies"
         />
       </div>
