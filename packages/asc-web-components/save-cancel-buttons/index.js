@@ -45,9 +45,12 @@ class SaveCancelButtons extends React.Component {
       cancelButtonLabel,
       sectionWidth,
       hasChanged,
+      border,
       className,
       id,
     } = this.props;
+
+    // TODO: hasChanged не нужен, тк есть showReminder?
 
     const isDisabled = hasChanged !== undefined ? !hasChanged : false;
 
@@ -58,6 +61,7 @@ class SaveCancelButtons extends React.Component {
         displaySettings={displaySettings}
         sectionWidth={sectionWidth}
         showReminder={showReminder}
+        border={border}
       >
         <div className="buttons-flex">
           <Button
@@ -104,6 +108,7 @@ SaveCancelButtons.propTypes = {
   displaySettings: PropTypes.bool,
   sectionWidth: PropTypes.number,
   hasChanged: PropTypes.bool,
+  border: PropTypes.bool,
 };
 
 SaveCancelButtons.defaultProps = {
