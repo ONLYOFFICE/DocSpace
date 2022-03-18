@@ -5,9 +5,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using ASC.Api.Documents;
 using ASC.Core;
 using ASC.Core.Users;
+using ASC.Files.Core.ApiModels;
+using ASC.Files.Core.ApiModels.ResponseDto;
 using ASC.Files.Core.Resources;
 using ASC.Web.Api.Models;
 using ASC.Web.Files.Services.WCFService.FileOperations;
@@ -19,23 +20,23 @@ namespace ASC.Files.Tests
     [TestFixture]
     class SharedWithMeTest : BaseFilesTests
     {
-        private FolderWrapper<int> TestFolderRead { get; set; }
-        public FileWrapper<int> TestFileRead { get; private set; }
-        private FolderWrapper<int> TestFolderReadAndWrite { get; set; }
-        public FileWrapper<int> TestFileReadAndWrite { get; private set; }
+        private FolderDto<int> TestFolderRead { get; set; }
+        public FileDto<int> TestFileRead { get; private set; }
+        private FolderDto<int> TestFolderReadAndWrite { get; set; }
+        public FileDto<int> TestFileReadAndWrite { get; private set; }
         public IEnumerable<FileShareParams> TestFolderParamRead { get; private set; }
         public IEnumerable<FileShareParams> TestFolderParamReadAndWrite { get; private set; }
         public UserInfo NewUser { get; set; }
         public TenantManager tenantManager { get; private set; }
-        public EmployeeWraperFull TestUser { get; private set; }
+        public EmployeeFullDto TestUser { get; private set; }
 
         [OneTimeSetUp]
         public override async Task SetUp()
         {
             await base.SetUp();
-            TestFolderRead = await FilesControllerHelper.CreateFolderAsync(GlobalFolderHelper.FolderMy, "TestFolderRead");
+            TestFolderRead = await FoldersControllerHelper.CreateFolderAsync(GlobalFolderHelper.FolderMy, "TestFolderRead");
             TestFileRead = await FilesControllerHelper.CreateFileAsync(GlobalFolderHelper.FolderMy, "TestFileRead", default);
-            TestFolderReadAndWrite = await FilesControllerHelper.CreateFolderAsync(GlobalFolderHelper.FolderMy, "TestFolderReadAndWrite");
+            TestFolderReadAndWrite = await FoldersControllerHelper.CreateFolderAsync(GlobalFolderHelper.FolderMy, "TestFolderReadAndWrite");
             TestFileReadAndWrite = await FilesControllerHelper.CreateFileAsync(GlobalFolderHelper.FolderMy, "TestFileReadAndWrite", default);
             NewUser = UserManager.GetUsers(Guid.Parse("005bb3ff-7de3-47d2-9b3d-61b9ec8a76a5"));
             TestFolderParamRead = new List<FileShareParams> { new FileShareParams { Access = Core.Security.FileShare.Read, ShareTo = NewUser.Id } };
@@ -63,7 +64,7 @@ namespace ASC.Files.Tests
         [Order(1)]
         public void CreateSharedFolderReturnsFolderWrapperRead(string folderTitle)
         {
-            var folderWrapper = Assert.ThrowsAsync<InvalidOperationException>(async () => await FilesControllerHelper.CreateFolderAsync(await GlobalFolderHelper.FolderShareAsync, folderTitle));
+            var folderWrapper = Assert.ThrowsAsync<InvalidOperationException>(async () => await FoldersControllerHelper.CreateFolderAsync(await GlobalFolderHelper.FolderShareAsync, folderTitle));
             Assert.That(folderWrapper.Message == "You don't have enough permission to create");
         }
 
@@ -74,7 +75,7 @@ namespace ASC.Files.Tests
         [Order(2)]
         public async Task ShareFolderToAnotherUserRead(bool notify, string message)
         {
-            var shareFolder = await FilesControllerHelper.SetFolderSecurityInfoAsync(TestFolderRead.Id, TestFolderParamRead, notify, message);
+            var shareFolder = await SecurityControllerHelper.SetFolderSecurityInfoAsync(TestFolderRead.Id, TestFolderParamRead, notify, message);
             Assert.IsNotNull(shareFolder);
         }
 
@@ -84,7 +85,7 @@ namespace ASC.Files.Tests
         public async Task GetSharedFolderInfoReturnsFolderWrapperRead(string folderTitleExpected)
         {
             SecurityContext.AuthenticateMe(NewUser.Id);
-            var folderWrapper = await FilesControllerHelper.GetFolderInfoAsync(TestFolderRead.Id);
+            var folderWrapper = await FoldersControllerHelper.GetFolderInfoAsync(TestFolderRead.Id);
 
             Assert.IsNotNull(folderWrapper);
             Assert.AreEqual(folderTitleExpected, folderWrapper.Title);
@@ -97,7 +98,7 @@ namespace ASC.Files.Tests
         public void RenameSharedFolderReturnsFolderWrapperRead(string folderTitle)
         {
             SecurityContext.AuthenticateMe(NewUser.Id);
-            var folderWrapper = Assert.ThrowsAsync<InvalidOperationException>(async () => await FilesControllerHelper.RenameFolderAsync(TestFolderRead.Id, folderTitle));
+            var folderWrapper = Assert.ThrowsAsync<InvalidOperationException>(async () => await FoldersControllerHelper.RenameFolderAsync(TestFolderRead.Id, folderTitle));
             Assert.That(folderWrapper.Message == "You don't have enough permission to rename the folder");
         }
 
@@ -108,7 +109,7 @@ namespace ASC.Files.Tests
         {
             SecurityContext.AuthenticateMe(NewUser.Id);
 
-            var result = (await FilesControllerHelper.DeleteFolder(
+            var result = (await FoldersControllerHelper.DeleteFolder(
                 TestFolderRead.Id,
                 deleteAfter,
                 immediately))
@@ -131,7 +132,7 @@ namespace ASC.Files.Tests
         [Order(7)]
         public async Task ShareFileToAnotherUserRead(bool notify, string message)
         {
-            var shareFolder = await FilesControllerHelper.SetFileSecurityInfoAsync(TestFileRead.Id, TestFolderParamRead, notify, message);
+            var shareFolder = await SecurityControllerHelper.SetFileSecurityInfoAsync(TestFileRead.Id, TestFolderParamRead, notify, message);
             Assert.IsNotNull(shareFolder);
         }
 
@@ -181,7 +182,7 @@ namespace ASC.Files.Tests
         [Order(11)]
         public async Task ShareFolderToAnotherUserReadAndWrite(bool notify, string message)
         {
-            var shareFolder = await FilesControllerHelper.SetFolderSecurityInfoAsync(TestFolderReadAndWrite.Id, TestFolderParamReadAndWrite, notify, message);
+            var shareFolder = await SecurityControllerHelper.SetFolderSecurityInfoAsync(TestFolderReadAndWrite.Id, TestFolderParamReadAndWrite, notify, message);
             Assert.IsNotNull(shareFolder);
         }
 
@@ -191,7 +192,7 @@ namespace ASC.Files.Tests
         public async Task GetSharedFolderInfoReturnsFolderWrapperReadAndWrite(string folderTitleExpected)
         {
             SecurityContext.AuthenticateMe(NewUser.Id);
-            var folderWrapper = await FilesControllerHelper.GetFolderInfoAsync(TestFolderReadAndWrite.Id);
+            var folderWrapper = await FoldersControllerHelper.GetFolderInfoAsync(TestFolderReadAndWrite.Id);
 
             Assert.IsNotNull(folderWrapper);
             Assert.AreEqual(folderTitleExpected, folderWrapper.Title);
@@ -206,7 +207,7 @@ namespace ASC.Files.Tests
         public async Task RenameSharedFolderReturnsFolderWrapperReadAndWrite(string folderTitle)
         {
             SecurityContext.AuthenticateMe(NewUser.Id);
-            var folderWrapper = await FilesControllerHelper.RenameFolderAsync(TestFolderReadAndWrite.Id, folderTitle);
+            var folderWrapper = await FoldersControllerHelper.RenameFolderAsync(TestFolderReadAndWrite.Id, folderTitle);
 
             Assert.IsNotNull(folderWrapper);
             Assert.AreEqual(folderTitle, folderWrapper.Title);
@@ -219,7 +220,7 @@ namespace ASC.Files.Tests
         {
             SecurityContext.AuthenticateMe(NewUser.Id);
 
-            var result = (await FilesControllerHelper.DeleteFolder(
+            var result = (await FoldersControllerHelper.DeleteFolder(
                 TestFolderReadAndWrite.Id,
                 deleteAfter,
                 immediately))
@@ -233,7 +234,7 @@ namespace ASC.Files.Tests
         [Order(15)]
         public async Task ShareFileToAnotherUserReadAndWrite(bool notify, string message)
         {
-            var shareFolder = await FilesControllerHelper.SetFileSecurityInfoAsync(TestFileReadAndWrite.Id, TestFolderParamReadAndWrite, notify, message);
+            var shareFolder = await SecurityControllerHelper.SetFileSecurityInfoAsync(TestFileReadAndWrite.Id, TestFolderParamReadAndWrite, notify, message);
             Assert.IsNotNull(shareFolder);
         }
 
@@ -277,7 +278,7 @@ namespace ASC.Files.Tests
         }
         #endregion
 
-        private async Task WaitLongOperation(FileOperationWraper result, string assertError)
+        private async Task WaitLongOperation(FileOperationDto result, string assertError)
         {
             if (result != null && result.Finished)
             {

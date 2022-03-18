@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-using ASC.Api.Documents;
 using ASC.Core.Users;
+using ASC.Files.Core.ApiModels;
+using ASC.Files.Core.ApiModels.ResponseDto;
 
 using NUnit.Framework;
 
@@ -12,8 +13,8 @@ namespace ASC.Files.Tests
     [TestFixture]
     class Recent : BaseFilesTests
     {
-        private FolderWrapper<int> TestFolder { get; set; }
-        public FileWrapper<int> TestFile { get; private set; }
+        private FolderDto<int> TestFolder { get; set; }
+        public FileDto<int> TestFile { get; private set; }
         public IEnumerable<FileShareParams> TestFileShare { get; private set; }
         public UserInfo NewUser { get; set; }
 
@@ -21,7 +22,7 @@ namespace ASC.Files.Tests
         public override async Task SetUp()
         {
             await base.SetUp();
-            TestFolder = await FilesControllerHelper.CreateFolderAsync(GlobalFolderHelper.FolderMy, "TestFolder");
+            TestFolder = await FoldersControllerHelper.CreateFolderAsync(GlobalFolderHelper.FolderMy, "TestFolder");
             TestFile = await FilesControllerHelper.CreateFileAsync(GlobalFolderHelper.FolderMy, "TestFile", default);
             NewUser = UserManager.GetUsers(Guid.Parse("005bb3ff-7de3-47d2-9b3d-61b9ec8a76a5"));
             TestFileShare = new List<FileShareParams> { new FileShareParams { Access = Core.Security.FileShare.Read, ShareTo = NewUser.Id } };
@@ -45,7 +46,7 @@ namespace ASC.Files.Tests
         [Order(1)]
         public void CreateFolderReturnsFolderWrapper(string folderTitle)
         {
-            var folderWrapper = Assert.ThrowsAsync<InvalidOperationException>(async () => await FilesControllerHelper.CreateFolderAsync(await GlobalFolderHelper.FolderRecentAsync, folderTitle));
+            var folderWrapper = Assert.ThrowsAsync<InvalidOperationException>(async () => await FoldersControllerHelper.CreateFolderAsync(await GlobalFolderHelper.FolderRecentAsync, folderTitle));
             Assert.That(folderWrapper.Message == "You don't have enough permission to create");
         }
 
@@ -54,7 +55,7 @@ namespace ASC.Files.Tests
         [Order(1)]
         public void CreateFileReturnsFolderWrapper(string folderTitle)
         {
-            var folderWrapper = Assert.ThrowsAsync<InvalidOperationException>(async () => await FilesControllerHelper.CreateFolderAsync(await GlobalFolderHelper.FolderRecentAsync, folderTitle));
+            var folderWrapper = Assert.ThrowsAsync<InvalidOperationException>(async () => await FoldersControllerHelper.CreateFolderAsync(await GlobalFolderHelper.FolderRecentAsync, folderTitle));
             Assert.That(folderWrapper.Message == "You don't have enough permission to create");
         }
 
@@ -63,7 +64,7 @@ namespace ASC.Files.Tests
         [Order(2)]
         public async Task RecentFileReturnsFolderWrapper(string fileTitleExpected)
         {
-            var RecentFolder = await FilesControllerHelper.AddToRecentAsync(TestFile.Id);
+            var RecentFolder = await AddToRecentAsync(TestFile.Id);
             Assert.IsNotNull(RecentFolder);
             Assert.AreEqual(fileTitleExpected + ".docx", RecentFolder.Title);
         }
@@ -72,7 +73,7 @@ namespace ASC.Files.Tests
         [Order(4)]
         public async Task DeleteRecentFileReturnsFolderWrapper(string fileTitleExpected)
         {
-            var RecentFolder = await FilesControllerHelper.AddToRecentAsync(TestFile.Id);
+            var RecentFolder = await AddToRecentAsync(TestFile.Id);
             await FilesControllerHelper.DeleteFileAsync(
                 TestFile.Id,
                 false,
@@ -95,11 +96,19 @@ namespace ASC.Files.Tests
         [Order(3)]
         public async Task ShareFileToAnotherUserAddToRecent(string fileTitleExpected, bool notify, string message)
         {
-            await FilesControllerHelper.SetFileSecurityInfoAsync(TestFile.Id, TestFileShare, notify, message);
+            await SecurityControllerHelper.SetFileSecurityInfoAsync(TestFile.Id, TestFileShare, notify, message);
             SecurityContext.AuthenticateMe(NewUser.Id);
-            var RecentFile = await FilesControllerHelper.AddToRecentAsync(TestFile.Id);
+            var RecentFile = await AddToRecentAsync(TestFile.Id);
             Assert.IsNotNull(RecentFile);
             Assert.AreEqual(fileTitleExpected + ".docx", RecentFile.Title);
+        }
+
+        private async Task<FileDto<int>> AddToRecentAsync(int fileId)
+        {
+            var file = await FileStorageService.GetFileAsync(fileId, -1);
+            EntryManager.MarkAsRecent(file);
+
+            return await FileDtoHelper.GetAsync(file);
         }
     }
 }

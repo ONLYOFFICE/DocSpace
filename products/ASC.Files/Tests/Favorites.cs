@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-using ASC.Api.Documents;
+using ASC.Files.Core.ApiModels.ResponseDto;
 
 using NUnit.Framework;
 
@@ -11,8 +11,8 @@ namespace ASC.Files.Tests
     [TestFixture]
     class Favorites : BaseFilesTests
     {
-        private FolderWrapper<int> TestFolder { get; set; }
-        public FileWrapper<int> TestFile { get; private set; }
+        private FolderDto<int> TestFolder { get; set; }
+        public FileDto<int> TestFile { get; private set; }
 
         public IEnumerable<int> folderIds;
         public IEnumerable<int> fileIds;
@@ -21,7 +21,7 @@ namespace ASC.Files.Tests
         public override async Task SetUp()
         {
             await base.SetUp();
-            TestFolder = await FilesControllerHelper.CreateFolderAsync(GlobalFolderHelper.FolderMy, "TestFolder").ConfigureAwait(false);
+            TestFolder = await FoldersControllerHelper.CreateFolderAsync(GlobalFolderHelper.FolderMy, "TestFolder").ConfigureAwait(false);
             TestFile = await FilesControllerHelper.CreateFileAsync(GlobalFolderHelper.FolderMy, "TestFile", default).ConfigureAwait(false);
             folderIds = new List<int> { TestFolder.Id };
             fileIds = new List<int> { TestFile.Id };
@@ -45,7 +45,7 @@ namespace ASC.Files.Tests
         [Order(1)]
         public void CreateFolderReturnsFolderWrapper(string folderTitle)
         {
-            var folderWrapper = Assert.ThrowsAsync<InvalidOperationException>(async () => await FilesControllerHelper.CreateFolderAsync(await GlobalFolderHelper.FolderFavoritesAsync, folderTitle));
+            var folderWrapper = Assert.ThrowsAsync<InvalidOperationException>(async () => await FoldersControllerHelper.CreateFolderAsync(await GlobalFolderHelper.FolderFavoritesAsync, folderTitle));
             Assert.That(folderWrapper.Message == "You don't have enough permission to create");
         }
 
