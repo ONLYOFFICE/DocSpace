@@ -1,8 +1,9 @@
 import styled from "styled-components";
+import Base from "../themes/base";
 
 const BannerWrapper = styled.div`
   max-width: 185px;
-  border: 1px solid #d1d1d1;
+  border: ${(props) => props.theme.campaignsBanner.border};
   border-radius: 5px;
   padding: 15px;
   margin: 20px 0px 50px 0px;
@@ -13,7 +14,7 @@ const BannerWrapper = styled.div`
 
   a {
     text-decoration: none;
-    color: #000;
+    color: ${(props) => props.theme.campaignsBanner.color};
   }
 
   img {
@@ -28,17 +29,19 @@ const BannerWrapper = styled.div`
 
   .banner-btn {
     width: 100%;
-    color: #fff;
+    color: ${(props) => props.theme.campaignsBanner.btnColor};
     margin-top: 15px;
     border: none;
     border-radius: 5px;
   }
 
   .banner-btn:active {
-    color: #fff;
-    background: #2da7db;
+    color: ${(props) => props.theme.campaignsBanner.btnColor};
+    background: ${(props) => props.theme.campaignsBanner.btnBackgroundActive};
     border: none;
   }
 `;
+
+BannerWrapper.defaultProps = { theme: Base };
 
 export default BannerWrapper;

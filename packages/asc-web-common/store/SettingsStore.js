@@ -6,7 +6,15 @@ import FirebaseHelper from "../utils/firebase";
 import { AppServerConfig } from "../constants";
 import { version } from "../package.json";
 import SocketIOHelper from "../utils/socket";
+
+import { Dark, Base } from "@appserver/components/themes";
+
 const { proxyURL } = AppServerConfig;
+
+const themes = {
+  Dark: Dark,
+  Base: Base,
+};
 
 class SettingsStore {
   isLoading = false;
@@ -15,6 +23,9 @@ class SettingsStore {
   currentProductId = "";
   culture = "en";
   cultures = [];
+  theme = !!localStorage.getItem("theme")
+    ? themes[localStorage.getItem("theme")]
+    : Base;
   trustedDomains = [];
   trustedDomainsType = 0;
   trustedDomains = [];
@@ -58,14 +69,13 @@ class SettingsStore {
 
   personal = false;
 
+  roomsMode = false;
+
   isHeaderVisible = false;
   isTabletView = false;
-  isArticlePinned =
-    localStorage.getItem(ARTICLE_PINNED_KEY) === "true" || false;
-  isArticleVisible = false;
-  isBackdropVisible = false;
 
-  isArticleVisibleOnUnpin = false;
+  showText = false;
+  articleOpen = false;
 
   hashSettings = null;
   title = "";
@@ -117,19 +127,6 @@ class SettingsStore {
 
     return `https://helpcenter.onlyoffice.com/${lang}/administration/configuration.aspx#CustomizingPortal_block`;
   }
-
-  setIsArticleVisible = (visible) => {
-    this.isArticleVisible = this.isArticlePinned ? true : visible;
-  };
-
-  setIsBackdropVisible = (visible) => {
-    this.isBackdropVisible = visible;
-  };
-
-  hideArticle = () => {
-    this.setIsArticleVisible(false);
-    this.setIsBackdropVisible(false);
-  };
 
   setValue = (key, value) => {
     this[key] = value;
@@ -198,6 +195,10 @@ class SettingsStore {
 
     this.setIsLoading(false);
     this.setIsLoaded(true);
+  };
+
+  setRoomsMode = (mode) => {
+    this.roomsMode = mode;
   };
 
   setIsLoading = (isLoading) => {
@@ -309,6 +310,20 @@ class SettingsStore {
     this.setPasswordSettings(settings);
   };
 
+  setPortalPasswordSettings = async (
+    minLength,
+    upperCase,
+    digits,
+    specSymbols
+  ) => {
+    const settings = await api.settings.setPortalPasswordSettings(
+      minLength,
+      upperCase,
+      digits,
+      specSymbols
+    );
+  };
+
   setTimezones = (timezones) => {
     this.timezones = timezones;
   };
@@ -326,15 +341,20 @@ class SettingsStore {
     this.isTabletView = isTabletView;
   };
 
-  setArticlePinned = (isPinned) => {
-    isPinned
-      ? localStorage.setItem(ARTICLE_PINNED_KEY, isPinned)
-      : localStorage.removeItem(ARTICLE_PINNED_KEY);
-    this.isArticlePinned = isPinned;
+  setShowText = (showText) => {
+    this.showText = showText;
   };
 
-  setArticleVisibleOnUnpin = (visible) => {
-    this.isArticleVisibleOnUnpin = visible;
+  toggleShowText = () => {
+    this.showText = !this.showText;
+  };
+
+  setArticleOpen = (articleOpen) => {
+    this.articleOpen = articleOpen;
+  };
+
+  toggleArticleOpen = () => {
+    this.articleOpen = !this.articleOpen;
   };
 
   get firebaseHelper() {
@@ -360,6 +380,21 @@ class SettingsStore {
 
     if (!this.buildVersionInfo.documentServer)
       this.buildVersionInfo.documentServer = "6.4.1";
+  };
+
+  changeTheme = () => {
+    const currentTheme =
+      JSON.stringify(this.theme) === JSON.stringify(Base) ? Dark : Base;
+    localStorage.setItem(
+      "theme",
+      JSON.stringify(this.theme) === JSON.stringify(Base) ? "Dark" : "Base"
+    );
+    this.theme = currentTheme;
+  };
+
+  setTheme = (theme) => {
+    this.theme = themes[theme];
+    localStorage.setItem("theme", theme);
   };
 }
 

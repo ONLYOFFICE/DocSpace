@@ -1,15 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
 import Loaders from "@appserver/common/components/Loaders";
 import toastr from "studio/toastr";
 import { linkOAuth } from "@appserver/common/api/people";
 import { getAuthProviders } from "@appserver/common/api/settings";
-import {
-  ArticleHeaderContent,
-  ArticleMainButtonContent,
-  ArticleBodyContent,
-} from "../../components/Article";
+
 import SectionUserBody from "./Section/Body/index";
 import {
   SectionHeaderContent,
@@ -76,10 +72,10 @@ class ProfileAction extends React.Component {
   }
 
   render() {
-    console.log("ProfileAction render");
+    // console.log("ProfileAction render");
 
     this.loaded = false;
-    const { profile, match, isMy, tReady } = this.props;
+    const { profile, match, isMy, tReady, showCatalog, isAdmin } = this.props;
     const { userId, type } = match.params;
 
     if (type) {
@@ -89,27 +85,15 @@ class ProfileAction extends React.Component {
     }
 
     return (
-      <PageLayout>
-        <PageLayout.ArticleHeader>
-          <ArticleHeaderContent />
-        </PageLayout.ArticleHeader>
-
-        <PageLayout.ArticleMainButton>
-          <ArticleMainButtonContent />
-        </PageLayout.ArticleMainButton>
-
-        <PageLayout.ArticleBody>
-          <ArticleBodyContent />
-        </PageLayout.ArticleBody>
-
-        <PageLayout.SectionHeader>
+      <Section>
+        <Section.SectionHeader>
           <SectionHeaderContent tReady={tReady} loaded={this.loaded} />
-        </PageLayout.SectionHeader>
+        </Section.SectionHeader>
 
-        <PageLayout.SectionBody>
+        <Section.SectionBody>
           <SectionUserBody isMy={isMy} tReady={tReady} loaded={this.loaded} />
-        </PageLayout.SectionBody>
-      </PageLayout>
+        </Section.SectionBody>
+      </Section>
     );
   }
 }
@@ -151,6 +135,8 @@ export default withRouter(
       setFirstLoad,
       setLoadedProfile,
       setIsEditTargetUser,
+      isAdmin: auth.isAdmin,
+      showCatalog: auth.settingsStore.showCatalog,
     };
   })(withTranslation(["ProfileAction", "Common"])(observer(ProfileAction)))
 );

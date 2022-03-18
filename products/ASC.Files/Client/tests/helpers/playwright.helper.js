@@ -1,7 +1,7 @@
-const Helper = require('@codeceptjs/helper');
+const Helper = require("@codeceptjs/helper");
 
-const path = require('path');
-const assert = require('assert');
+const path = require("path");
+const assert = require("assert");
 
 class PlaywrightHelper extends Helper {
   // before/after hooks
@@ -20,23 +20,23 @@ class PlaywrightHelper extends Helper {
   // use: this.helpers['helperName']
   async mockEndpoint(endpoint, scenario) {
     const { page } = this.helpers.Playwright;
-    const rootDir = 'tests/mocking/mock-data/';
+    const rootDir = "tests/mocking/mock-data/";
     endpoint.url.forEach(async (url, index) => {
       await page.route(new RegExp(url), (route) =>
         route.fulfill({
           path: path.resolve(rootDir, endpoint.baseDir, `${scenario}.json`),
           headers: {
-            'content-type': 'application/json',
-            'access-control-allow-origin': '*',
+            "content-type": "application/json",
+            "access-control-allow-origin": "*",
           },
-        }),
+        })
       );
     });
   }
 
   async checkRequest(url, form, baseDir, scenario) {
     const { page } = this.helpers.Playwright;
-    const rootDir = 'tests/mocking/mock-data/';
+    const rootDir = "tests/mocking/mock-data/";
     await page.route(new RegExp(url), (route) => {
       for (let key in form) {
         assert(route.request().postData().includes(form[key]));
@@ -45,8 +45,8 @@ class PlaywrightHelper extends Helper {
       return route.fulfill({
         path: path.resolve(rootDir, baseDir, `${scenario}.json`),
         headers: {
-          'content-type': 'application/json',
-          'access-control-allow-origin': '*',
+          "content-type": "application/json",
+          "access-control-allow-origin": "*",
         },
       });
     });

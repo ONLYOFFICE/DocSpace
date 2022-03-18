@@ -38,28 +38,44 @@ class SaveCancelButtons extends React.Component {
     const {
       onSaveClick,
       onCancelClick,
+      displaySettings,
       showReminder,
       reminderTest,
       saveButtonLabel,
       cancelButtonLabel,
+      sectionWidth,
+      hasChanged,
+      border,
       className,
       id,
     } = this.props;
+
+    // TODO: hasChanged не нужен, тк есть showReminder?
+
+    const isDisabled = hasChanged !== undefined ? !hasChanged : false;
+
     return (
-      <StyledSaveCancelButtons className={className} id={id}>
-        <div>
+      <StyledSaveCancelButtons
+        className={className}
+        id={id}
+        displaySettings={displaySettings}
+        sectionWidth={sectionWidth}
+        showReminder={showReminder}
+        border={border}
+      >
+        <div className="buttons-flex">
           <Button
             className="save-button"
-            size="big"
-            isDisabled={false}
+            size="normal"
+            isDisabled={isDisabled}
             primary
             onClick={onSaveClick}
             label={saveButtonLabel}
           />
           <Button
             className="cancel-button"
-            size="big"
-            isDisabled={false}
+            size="normal"
+            isDisabled={isDisabled}
             onClick={onCancelClick}
             label={cancelButtonLabel}
           />
@@ -89,6 +105,10 @@ SaveCancelButtons.propTypes = {
   onCancelClick: PropTypes.func,
   /** Show message about unsaved changes (Only shown on desktops) */
   showReminder: PropTypes.bool,
+  displaySettings: PropTypes.bool,
+  sectionWidth: PropTypes.number,
+  hasChanged: PropTypes.bool,
+  border: PropTypes.bool,
 };
 
 SaveCancelButtons.defaultProps = {

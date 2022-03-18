@@ -61,16 +61,18 @@ class HelpButton extends React.Component {
       className,
       dataTip,
       style,
+      size,
     } = this.props;
 
     return (
       <div ref={this.ref} style={style}>
         <IconButton
+          theme={this.props.theme}
           id={this.id}
           className={`${className} help-icon`}
           isClickable={true}
           iconName={iconName}
-          size={13}
+          size={size}
           color={color}
           data-for={this.id}
           dataTip={dataTip}
@@ -78,6 +80,7 @@ class HelpButton extends React.Component {
         />
         {getContent ? (
           <Tooltip
+            theme={this.props.theme}
             id={this.id}
             reference={this.refTooltip}
             effect="solid"
@@ -92,6 +95,7 @@ class HelpButton extends React.Component {
           />
         ) : (
           <Tooltip
+            theme={this.props.theme}
             id={this.id}
             reference={this.refTooltip}
             effect="solid"
@@ -131,17 +135,18 @@ HelpButton.propTypes = {
   /** Accepts id */
   id: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  size: PropTypes.number,
 };
 
 HelpButton.defaultProps = {
   iconName: "/static/images/question.react.svg",
   place: "top",
-  offsetRight: 120,
+  offsetRight: 60,
   offsetLeft: 0,
   offsetTop: 0,
   offsetBottom: 0,
   className: "icon-button",
-  color: "#A3A9AE",
+  size: 13,
 };
 
 export default HelpButton;

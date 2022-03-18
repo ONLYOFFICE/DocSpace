@@ -27,6 +27,16 @@ import { withRouter } from "react-router";
 import { connectedCloudsTypeTitleTranslation } from "../../../../helpers/utils";
 import Loaders from "@appserver/common/components/Loaders";
 
+// TODO: remove when settings pages will be according to layouts 1.2.1
+const StyledButton = styled(Button)`
+  position: absolute;
+  top: 3px;
+`;
+
+const StyledRowContainer = styled(RowContainer)`
+  margin-top: 24px;
+`;
+
 const StyledBoxIcon = styled(BoxIcon)`
   ${commonIconsStyles}
 `;
@@ -62,7 +72,6 @@ const linkStyles = {
   isHovered: true,
   type: "action",
   fontWeight: "600",
-  color: "#555f65",
   className: "empty-folder_link",
   display: "flex",
 };
@@ -201,20 +210,22 @@ class ConnectClouds extends React.Component {
   };
 
   render() {
-    const { t, providers, tReady } = this.props;
+    const { t, providers, tReady, theme } = this.props;
+
+    linkStyles.color = theme.filesSettings.color;
 
     return (
       <>
         {!!providers.length ? (
           <>
-            <Button
-              size="base"
+            <StyledButton
+              size="small"
               style={{ marginBottom: "8px" }}
               onClick={this.onShowThirdPartyDialog}
               label={t("ConnectedCloud")}
               primary
             />
-            <RowContainer useReactWindow={false}>
+            <StyledRowContainer useReactWindow={false}>
               {providers.map((item, index) => {
                 const element = this.getThirdPartyIcon(item.provider_key);
                 const typeTitle = connectedCloudsTypeTitleTranslation(
@@ -244,7 +255,7 @@ class ConnectClouds extends React.Component {
                         title={item.provider_key}
                         fontWeight="600"
                         fontSize="15px"
-                        color="#333"
+                        color={theme.filesSettings.linkColor}
                         noSelect
                       >
                         {tReady ? (
@@ -256,7 +267,7 @@ class ConnectClouds extends React.Component {
                       <Link
                         type="page"
                         title={item.customer_title}
-                        color="#333"
+                        color={theme.filesSettings.linkColor}
                         fontSize="13px"
                         fontWeight={400}
                         truncate={true}
@@ -270,7 +281,7 @@ class ConnectClouds extends React.Component {
                   </Row>
                 );
               })}
-            </RowContainer>
+            </StyledRowContainer>
           </>
         ) : (
           <EmptyFolderContainer
@@ -300,7 +311,7 @@ class ConnectClouds extends React.Component {
 }
 
 export default inject(
-  ({ filesStore, settingsStore, treeFoldersStore, dialogsStore }) => {
+  ({ auth, filesStore, settingsStore, treeFoldersStore, dialogsStore }) => {
     const { providers, capabilities } = settingsStore.thirdPartyStore;
     const { filter, setFirstLoad } = filesStore;
     const { myFolder, commonFolder, getSubfolders } = treeFoldersStore;
@@ -313,6 +324,7 @@ export default inject(
     } = dialogsStore;
 
     return {
+      theme: auth.settingsStore.theme,
       filter,
       providers,
       capabilities,

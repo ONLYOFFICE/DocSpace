@@ -1,17 +1,5 @@
 ﻿{
-  "DomainIpAddress": "不支持使用域作为IP地址",
   "EmailActivationDescription": "激活说明将发送至输入的邮箱",
   "EmailChangeTitle": "邮箱变更",
-  "EmptyEmail": "没有解析邮件",
-  "EnterEmail": "输入新的邮箱地址",
-  "IncorrectDomain": "域不正确",
-  "IncorrectEmail": "邮箱不正确",
-  "IncorrectLocalPart": "不正确的本地部分",
-  "LocalDomain": "不支持本地域",
-  "ManyEmails": "解析的邮件过多",
-  "MaxLengthExceeded": "用户名或其他本地部分最长为64个字符。",
-  "PunycodeDomain": "不支持Punycode域",
-  "PunycodeLocalPart": "不支持Punycode本地部分",
-  "SameEmail": "您不能使用相同的邮箱",
-  "SpacesInLocalPart": "本地部分中不能包含空格"
+  "EnterEmail": "输入新的邮箱地址"
 }

@@ -1,23 +1,28 @@
 import React from "react";
-import Headline from "@appserver/common/components/Headline";
 import Loaders from "@appserver/common/components/Loaders";
 import { inject, observer } from "mobx-react";
 
-const ArticleHeaderContent = ({ isVisitor, isLoaded, currentModuleName }) => {
-  return (
-    !isVisitor &&
-    (isLoaded ? (
-      <Headline type="menu">{currentModuleName}</Headline>
-    ) : (
-      <Loaders.ArticleHeader />
-    ))
+const ArticleHeaderContent = ({
+  isVisitor,
+  isArticleLoading,
+  currentModuleName,
+}) => {
+  return !isVisitor && isArticleLoading ? (
+    <Loaders.ArticleHeader />
+  ) : (
+    <>{currentModuleName}</>
   );
 };
 
-export default inject(({ auth }) => {
+export default inject(({ auth, peopleStore }) => {
+  const { loadingStore } = peopleStore;
+
+  const { isLoading, isLoaded, firstLoad } = loadingStore;
+
+  const isArticleLoading = (isLoading || !isLoaded) && firstLoad;
   return {
     isVisitor: auth.userStore.user.isVisitor,
-    isLoaded: auth.isLoaded,
+    isArticleLoading,
     currentModuleName: auth.product.title,
   };
 })(observer(ArticleHeaderContent));

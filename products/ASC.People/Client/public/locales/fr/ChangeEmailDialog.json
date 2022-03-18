@@ -1,17 +1,5 @@
 ﻿{
-  "DomainIpAddress": "Les domaines sous forme d'adresse IP ne sont pas pris en charge",
   "EmailActivationDescription": "Les instructions d'activation seront envoyées à l'adresse indiquée",
   "EmailChangeTitle": "Changement d'adresse email",
-  "EmptyEmail": "Aucun e-mail n'a été analysé",
-  "EnterEmail": "Entrer une nouvelle adresse email",
-  "IncorrectDomain": "Domaine incorrecte ",
-  "IncorrectEmail": "Adresse email non valide",
-  "IncorrectLocalPart": "Pièce locale incorrecte",
-  "LocalDomain": "Les domaines local ne sont pas supportés",
-  "ManyEmails": "Trop d'e-mails à analyser",
-  "MaxLengthExceeded": "La longueur maximale d'un nom d'utilisateur ou d'une autre partie locale est de 64 caractères.",
-  "PunycodeDomain": "Les domaines Punycode ne sont pas supportés",
-  "PunycodeLocalPart": "Une partie locale en Punycode n'est pas prise en charge",
-  "SameEmail": "Vous ne pouvez pas utiliser la même adresse e-mail",
-  "SpacesInLocalPart": "Le local ne peux pas contenir d'espace"
+  "EnterEmail": "Entrer une nouvelle adresse email"
 }

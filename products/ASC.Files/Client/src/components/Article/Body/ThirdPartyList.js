@@ -12,9 +12,14 @@ import withLoader from "../../../HOCs/withLoader";
 import { useCallback } from "react";
 import IconButton from "@appserver/components/icon-button";
 import { connectedCloudsTitleTranslation } from "../../../helpers/utils";
+import { Base } from "@appserver/components/themes";
 
 const StyledThirdParty = styled.div`
   margin-top: 42px;
+
+  .thirdparty-text {
+    color: ${(props) => props.theme.filesArticleBody.thirdPartyList.linkColor};
+  }
 
   .tree-thirdparty-list {
     padding-top: 3px;
@@ -28,10 +33,9 @@ const StyledThirdParty = styled.div`
     div {
       height: 25px;
       width: 25px;
-      //background: #eceef1;
-      //text-align: center;
+
       margin-right: 10px;
-      color: #818b91;
+      color: ${(props) => props.theme.filesArticleBody.thirdPartyList.color};
       :first-of-type {
         border-radius: 3px 0 0 3px;
       }
@@ -66,9 +70,9 @@ const StyledThirdParty = styled.div`
   }
 `;
 
+StyledThirdParty.defaultProps = { theme: Base };
+
 const iconButtonProps = {
-  color: "#A3A9AE",
-  hoverColor: "#818b91",
   size: 25,
   className: "icon",
 };
@@ -109,7 +113,7 @@ const PureThirdPartyListContainer = ({
   setThirdPartyDialogVisible,
   history,
 }) => {
-  const redirectAction = () => {
+  const redirectAction = useCallback(() => {
     const thirdPartyUrl = "/settings/thirdParty";
     if (history.location.pathname.indexOf(thirdPartyUrl) === -1) {
       setSelectedNode(["thirdParty"]);
@@ -118,50 +122,61 @@ const PureThirdPartyListContainer = ({
         combineUrl(AppServerConfig.proxyURL, config.homepage, thirdPartyUrl)
       );
     }
-  };
+  }, [setSelectedNode, setSelectedFolder]);
 
-  const onConnect = (e) => {
-    const data = e.currentTarget.dataset;
+  const onConnect = useCallback(
+    (e) => {
+      const data = e.currentTarget.dataset;
 
-    if (data.link) {
-      let authModal = window.open(
-        "",
-        "Authorization",
-        "height=600, width=1020"
-      );
-      openConnectWindow(data.title, authModal)
-        .then(() => redirectAction())
-        .then((modal) =>
-          getOAuthToken(modal).then((token) => {
-            authModal.close();
-            const serviceData = {
-              title: connectedCloudsTitleTranslation(data.title, t),
-              provider_key: data.title,
-              link: data.link,
-              token,
-            };
-            setConnectItem(serviceData);
-            setConnectDialogVisible(true);
-          })
-        )
-        .catch((e) => console.error(e));
-    } else {
-      data.title = connectedCloudsTitleTranslation(data.title, t);
-      setConnectItem(data);
-      setConnectDialogVisible(true);
-      redirectAction();
-    }
-  };
+      if (data.link) {
+        let authModal = window.open(
+          "",
+          "Authorization",
+          "height=600, width=1020"
+        );
+        openConnectWindow(data.title, authModal)
+          .then(() => redirectAction())
+          .then((modal) =>
+            getOAuthToken(modal).then((token) => {
+              authModal.close();
+              const serviceData = {
+                title: connectedCloudsTitleTranslation(data.title, t),
+                provider_key: data.title,
+                link: data.link,
+                token,
+              };
+              setConnectItem(serviceData);
+              setConnectDialogVisible(true);
+            })
+          )
+          .catch((e) => console.error(e));
+      } else {
+        data.title = connectedCloudsTitleTranslation(data.title, t);
+        setConnectItem(data);
+        setConnectDialogVisible(true);
+        redirectAction();
+      }
+    },
+    [
+      openConnectWindow,
+      redirectAction,
+      getOAuthToken,
+      connectedCloudsTitleTranslation,
+      setConnectItem,
+      setConnectDialogVisible,
+      connectedCloudsTitleTranslation,
+    ]
+  );
 
   const onShowConnectPanel = useCallback(() => {
     setThirdPartyDialogVisible(true);
     redirectAction();
-  }, []);
+  }, [setThirdPartyDialogVisible, redirectAction]);
 
   return (
     <StyledThirdParty>
       <Link
-        color="#555F65"
+        className="thirdparty-text"
         fontSize="14px"
         fontWeight={600}
         onClick={onShowConnectPanel}
@@ -229,7 +244,7 @@ const PureThirdPartyListContainer = ({
 };
 
 const ThirdPartyList = withTranslation(["Article", "Translations"])(
-  withRouter(withLoader(PureThirdPartyListContainer)(<></>))
+  withRouter(PureThirdPartyListContainer)
 );
 
 export default inject(

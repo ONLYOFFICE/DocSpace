@@ -1,7 +1,7 @@
-const Endpoints = require('./mocking/endpoints.js');
+const Endpoints = require("./mocking/endpoints.js");
 
-const browser = process.env.profile || 'chromium';
-const deviceType = process.env.DEVICE_TYPE || 'desktop';
+const browser = process.env.profile || "chromium";
+const deviceType = process.env.DEVICE_TYPE || "desktop";
 
 const isModel = !!process.env.MODEL;
 
@@ -13,84 +13,85 @@ Feature(featureName);
 
 // doing it before others scenario
 Before(async ({ I }) => {
-  I.mockEndpoint(Endpoints.settings, 'settings');
-  I.mockEndpoint(Endpoints.build, 'build');
-  I.mockEndpoint(Endpoints.providers, 'providers');
-  I.mockEndpoint(Endpoints.people, '');
-  I.amOnPage('/login');
+  I.mockEndpoint(Endpoints.settings, "settings");
+  I.mockEndpoint(Endpoints.build, "build");
+  I.mockEndpoint(Endpoints.providers, "providers");
+  I.mockEndpoint(Endpoints.capabilities, "capabilities");
+  I.mockEndpoint(Endpoints.people, "");
+  I.amOnPage("/login");
   I.wait(2);
 });
 
-Scenario('Checkbox click test', async ({ I }) => {
+Scenario("Checkbox click test", async ({ I }) => {
   I.seeElement({
-    react: 'Checkbox',
+    react: "Checkbox",
     props: {
-      className: 'login-checkbox',
+      className: "login-checkbox",
       isChecked: false,
     },
   });
 
-  I.click({ react: 'Checkbox' });
+  I.click({ react: "Checkbox" });
 
   I.seeElement({
-    react: 'Checkbox',
+    react: "Checkbox",
     props: {
-      className: 'login-checkbox',
+      className: "login-checkbox",
       isChecked: true,
     },
   });
 
-  I.saveScreenshot(`5.checked-checkbox.png`);
+  I.saveScreenshot(`6.checked-checkbox.png`);
   if (!isModel) {
-    I.seeVisualDiff(`5.checked-checkbox.png`, {
+    I.seeVisualDiff(`6.checked-checkbox.png`, {
       tolerance: 1,
       prepareBaseImage: false,
     });
   }
 });
 
-Scenario('Test login error', async ({ I }) => {
-  I.mockEndpoint(Endpoints.auth, 'authError');
+Scenario("Test login error", async ({ I }) => {
+  I.mockEndpoint(Endpoints.auth, "authError");
   I.click({
-    react: 'Button',
+    react: "Button",
     props: {
-      className: 'login-button',
-      type: 'page',
+      className: "login-button",
+      type: "page",
     },
   });
-  I.see('Required field');
-  I.fillField('login', 'test@mail.ru');
+  I.see("Required field");
+  I.fillField("login", "test@mail.ru");
   I.click({
-    react: 'Button',
+    react: "Button",
     props: {
-      className: 'login-button',
-      type: 'page',
+      className: "login-button",
+      type: "page",
     },
   });
-  I.see('Required field');
-  I.fillField('password', secret('0000000'));
+  I.see("Required field");
+  I.fillField("password", secret("0000000"));
   I.click({
-    react: 'Button',
+    react: "Button",
     props: {
-      className: 'login-button',
-      type: 'page',
+      className: "login-button",
+      type: "page",
     },
   });
-  I.see('User authentication failed');
+  I.see("User authentication failed");
 });
 
-Scenario('Test login success', async ({ I }) => {
-  I.mockEndpoint(Endpoints.people, 'self');
-  I.mockEndpoint(Endpoints.modules, 'info');
-  I.mockEndpoint(Endpoints.auth, 'authSuccess');
-  I.fillField('login', 'test@mail.ru');
-  I.fillField('password', secret('12345678'));
+Scenario("Test login success", async ({ I }) => {
+  I.mockEndpoint(Endpoints.people, "self");
+  I.mockEndpoint(Endpoints.modules, "info");
+  I.mockEndpoint(Endpoints.auth, "authSuccess");
+  I.fillField("login", "test@mail.ru");
+  I.fillField("password", secret("12345678"));
   I.click({
-    react: 'Button',
+    react: "Button",
     props: {
-      className: 'login-button',
-      type: 'page',
+      className: "login-button",
+      type: "page",
     },
   });
-  I.see('Documents');
+  I.see("Documents");
 });
