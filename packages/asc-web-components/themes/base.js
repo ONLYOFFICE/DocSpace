@@ -96,36 +96,43 @@ const Base = {
     paddingRight: "4px",
 
     height: {
-      base: "24px",
-      medium: "32px",
-      big: "36px",
-      large: "44px",
+      extraSmall: "24px",
+      small: "32px",
+      normalDesktop: "36px",
+      normalTouchscreen: "40px",
+      medium: "44px",
     },
 
     lineHeight: {
-      base: "15px",
-      medium: "18px",
-      big: "20px",
-      large: "20px",
+      extraSmall: "15px",
+      small: "20px",
+      normalDesktop: "16px",
+      normalTouchscreen: "16px",
+      medium: "22px",
     },
 
     fontSize: {
-      base: "12px",
-      medium: "13px",
-      big: "14px",
-      large: "16px",
+      extraSmall: "12px",
+      small: "13px",
+      normalDesktop: "14px",
+      normalTouchscreen: "14px",
+      medium: "16px",
     },
 
     padding: {
-      base: "0 14px",
-      medium: "0 18px",
-      big: "0 20px",
+      extraSmall: "0 12px",
+      small: "0 28px",
+      normalDesktop: "0 28px",
+      normalTouchscreen: "0 28px",
+      medium: "0 32px",
     },
 
     minWidth: {
-      base: "65px",
-      medium: "80px",
-      big: "85px",
+      extraSmall: "none",
+      small: "100px",
+      normalDesktop: "100px",
+      normalTouchscreen: "100px",
+      medium: "100px",
     },
 
     color: {
@@ -296,12 +303,12 @@ const Base = {
     background: white,
     disableBackgroundColor: "rgba(0, 0, 0, 0.08)",
     hoverBackground: white,
-    activeBackground: grayMaxLight,
+    activeBackground: "grayMaxLight",
+    hoverBorder: "#1877f2",
 
     boxShadow:
       "0px 1px 1px rgba(0, 0, 0, 0.24),0px 0px 1px rgba(0, 0, 0, 0.12)",
-    hoverBoxShadow:
-      "0px 2px 2px rgba(0, 0, 0, 0.24),0px 0px 2px rgba(0, 0, 0, 0.12)",
+    hoverBoxShadow: "none",
 
     color: "rgba(0, 0, 0, 0.54)",
     disableColor: "rgba(0, 0, 0, 0.4)",
@@ -318,10 +325,11 @@ const Base = {
       textOverflow: "ellipsis",
       whiteSpace: "nowrap",
       color: "#757575",
+      hoverColor: "#1877f2",
     },
 
     svg: {
-      margin: "11px",
+      margin: "11px 16px",
       width: "18px",
       height: "18px",
       minWidth: "18px",
@@ -874,9 +882,9 @@ const Base = {
 
   tooltip: {
     borderRadius: "6px",
-    boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.13)",
+    boxShadow: "0px 10px 15px rgba(4, 15, 27, 0.13)",
     opacity: "1",
-    padding: "16px",
+    padding: "8px 12px",
     pointerEvents: "auto",
     maxWidth: "340px",
     color: "#F8F7BF",
@@ -946,7 +954,7 @@ const Base = {
 
       labelIcon: {
         width: "100%",
-        margin: "0 0 8px 0",
+        margin: "0 0 4px 0",
       },
 
       body: {
@@ -1515,7 +1523,7 @@ const Base = {
       marginTop: "12px",
       marginRight: "8px",
       marginLeft: "auto",
-      fillColor: gray,
+      fillColor: grayMain,
     },
 
     button: {

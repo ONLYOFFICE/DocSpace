@@ -393,7 +393,7 @@ class SectionBodyContent extends React.PureComponent {
           {profile.status !== 2 && (isAdmin || isSelf) && (
             <EditButtonWrapper>
               <Button
-                size="big"
+                size="normal"
                 scale={true}
                 label={t("EditUser")}
                 title={t("EditUser")}
@@ -442,7 +442,7 @@ class SectionBodyContent extends React.PureComponent {
             <ToggleContent label={t("Subscriptions")} isOpen={true}>
               <Text as="span">
                 <Button
-                  size="big"
+                  size="normal"
                   label={t("EditSubscriptionsBtn")}
                   primary={true}
                   onClick={this.onEditSubscriptionsClick}

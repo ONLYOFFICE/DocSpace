@@ -157,7 +157,7 @@ const PrivacyPageComponent = ({ t, history, tReady }) => {
         </Text>
         <Button
           onClick={onOpenEditorsPopup}
-          size="large"
+          size="medium"
           primary
           isDisabled={isDisabled}
           label={t("PrivacyButton")}

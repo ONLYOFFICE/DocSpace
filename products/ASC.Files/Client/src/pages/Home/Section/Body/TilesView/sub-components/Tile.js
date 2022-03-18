@@ -54,6 +54,8 @@ const StyledTile = styled.div`
   width: 100%;
   border: ${(props) => props.theme.filesSection.tilesView.tile.border};
   border-radius: 6px;
+  ${(props) => props.showHotkeyBorder && "border-color: #2DA7DB"};
+  ${(props) => props.isFolder && "border-top-left-radius: 0px;"}
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   ${(props) => props.isFolder && FlexBoxStyles}
@@ -63,6 +65,23 @@ const StyledTile = styled.div`
     props.isFolder &&
     (props.checked || props.isActive) &&
     checkedStyle}
+
+
+  &:before, 
+  &:after {
+    ${(props) => props.isFolder && props.dragging && draggingStyle};
+    ${(props) => props.showHotkeyBorder && "border-color: #2DA7DB"};
+  }
+
+  &:before,
+  &:after {
+    ${(props) => (props.checked || props.isActive) && checkedStyle};
+  }
+
+  &:hover:before,
+  &:hover:after {
+    ${(props) => props.isFolder && props.dragging && draggingHoverStyle};
+  }
 
   .checkbox {
     display: flex;
@@ -121,6 +140,8 @@ const StyledTile = styled.div`
 
 const StyledFileTileTop = styled.div`
   ${FlexBoxStyles};
+  background: ${(props) =>
+    props.theme.filesSection.tilesView.tile.backgroundColorTop};
   justify-content: space-between;
   align-items: baseline;
   height: 156px;
@@ -334,11 +355,10 @@ class Tile extends React.PureComponent {
       isEdit,
       contentElement,
       title,
-      getModel,
-      t,
+      getContextModel,
+      showHotkeyBorder,
     } = this.props;
     const { isFolder, id, fileExst } = item;
-    const contextMenuData = { getModel, t, item };
 
     const renderElement = Object.prototype.hasOwnProperty.call(
       this.props,
@@ -388,6 +408,7 @@ class Tile extends React.PureComponent {
         isActive={isActive}
         inProgress={inProgress}
         isDesktop={isDesktop}
+        showHotkeyBorder={showHotkeyBorder}
       >
         {isFolder || (!fileExst && id === -1) ? (
           <>
@@ -437,7 +458,7 @@ class Tile extends React.PureComponent {
                 <div className="expandButton" />
               )}
               <ContextMenu
-                contextMenuData={contextMenuData}
+                getContextModel={getContextModel}
                 ref={this.cm}
                 header={contextMenuHeader}
               />
@@ -502,7 +523,7 @@ class Tile extends React.PureComponent {
                   <div className="expandButton" />
                 )}
                 <ContextMenu
-                  contextMenuData={contextMenuData}
+                  getContextModel={getContextModel}
                   ref={this.cm}
                   header={contextMenuHeader}
                   withBackdrop={true}

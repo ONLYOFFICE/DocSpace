@@ -479,7 +479,7 @@ class DownloadDialogComponent extends React.Component {
             className="button-dialog-accept"
             key="DownloadButton"
             label={t("Common:Download")}
-            size="medium"
+            size="small"
             primary
             onClick={this.onDownload}
           />
@@ -487,7 +487,7 @@ class DownloadDialogComponent extends React.Component {
             className="button-dialog"
             key="CancelButton"
             label={t("Common:CancelButton")}
-            size="medium"
+            size="small"
             onClick={this.onClose}
           />
         </ModalDialog.Footer>

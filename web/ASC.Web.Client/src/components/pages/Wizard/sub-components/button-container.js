@@ -20,7 +20,7 @@ const ButtonContainer = ({ t, sending, onContinueHandler }) => {
   return (
     <StyledContainer>
       <Button
-        size="large"
+        size="medium"
         scale={true}
         primary
         isDisabled={sending}

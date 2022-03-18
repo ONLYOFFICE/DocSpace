@@ -15,13 +15,17 @@ const StyledContainer = styled.div`
     margin-right: 12px;
     min-width: 17px;
 
-    @media ${tablet} {
-      display: none;
-    }
+    ${(props) =>
+      !props.isDropBox &&
+      css`
+        @media ${tablet} {
+          display: none;
+        }
+      `}
 
     ${isMobile &&
     css`
-      display: none;
+      ${(props) => !props.isDropBox && "display: none"};
     `}
   }
 
@@ -37,6 +41,7 @@ const StyledContainer = styled.div`
 
 const ControlButtons = ({
   personal,
+  isDropBox,
   isRootFolder,
   canCreate,
   getContextOptionsFolder,
@@ -46,7 +51,7 @@ const ControlButtons = ({
   clearTrash,
 }) => {
   return (
-    <StyledContainer>
+    <StyledContainer isDropBox={isDropBox}>
       {!isRootFolder && canCreate ? (
         <>
           <ContextMenuButton

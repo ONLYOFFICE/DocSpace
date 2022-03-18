@@ -179,7 +179,7 @@ const OperationsPanelComponent = (props) => {
               ? t("Translations:Copy")
               : t("Translations:Move")
           }
-          size="medium"
+          size="small"
           primary
           onClick={onSubmit}
           isLoading={isLoading}

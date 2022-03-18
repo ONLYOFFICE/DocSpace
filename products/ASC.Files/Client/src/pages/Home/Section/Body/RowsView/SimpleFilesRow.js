@@ -53,6 +53,29 @@ const StyledSimpleFilesRow = styled(Row)`
   margin-top: -2px;
 
   ${(props) =>
+    props.showHotkeyBorder &&
+    css`
+      border-top: 1px solid #2da7db !important;
+      margin-top: -3px;
+      margin-left: -24px;
+      margin-right: -24px;
+      padding-left: 24px;
+      padding-right: 24px;
+    `}
+
+  ::after {
+    ${(props) =>
+      props.showHotkeyBorder &&
+      css`
+        background: #2da7db;
+        padding-left: 24px;
+        padding-right: 24px;
+        margin-left: -24px;
+        margin-right: -24px;
+      `}
+  }
+
+  ${(props) =>
     !props.contextOptions &&
     `
     & > div:last-child {
@@ -172,8 +195,8 @@ const SimpleFilesRow = (props) => {
     isActive,
     inProgress,
     isAdmin,
-    getModel,
-    t,
+    getContextModel,
+    showHotkeyBorder,
   } = props;
 
   const withAccess = isAdmin || item.access === 0;
@@ -183,18 +206,20 @@ const SimpleFilesRow = (props) => {
     <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
   );
 
-  const contextMenuData = { getModel, t, item };
-
   return (
     <StyledWrapper
       className={`row-wrapper ${
-        checkedProps || isActive ? "row-selected" : ""
+        showHotkeyBorder
+          ? "row-hotkey-border"
+          : checkedProps || isActive
+          ? "row-selected"
+          : ""
       }`}
     >
       <DragAndDrop
         data-title={item.title}
         value={value}
-        className={`files-item ${className}`}
+        className={`files-item ${className} ${item.id}_${item.file}`}
         onDrop={onDrop}
         onMouseDown={onMouseDown}
         dragging={dragging && isDragging}
@@ -220,7 +245,8 @@ const SimpleFilesRow = (props) => {
           isThirdPartyFolder={item.isThirdPartyFolder}
           className="files-row"
           withAccess={withAccess}
-          contextMenuData={contextMenuData}
+          getContextModel={getContextModel}
+          showHotkeyBorder={showHotkeyBorder}
         >
           <FilesRowContent
             item={item}

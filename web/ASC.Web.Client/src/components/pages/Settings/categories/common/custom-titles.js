@@ -14,14 +14,6 @@ import { inject, observer } from "mobx-react";
 import { CustomTitlesTooltip } from "./sub-components/common-tooltips";
 
 const StyledComponent = styled.div`
-  .margin-top {
-    margin-top: 20px;
-  }
-
-  .margin-left {
-    margin-left: 20px;
-  }
-
   .settings-block {
     margin-bottom: 70px;
   }
@@ -32,19 +24,6 @@ const StyledComponent = styled.div`
 
   .combo-button-label {
     max-width: 100%;
-  }
-
-  .category-item-heading {
-    display: flex;
-    align-items: center;
-    margin-bottom: 16px;
-  }
-
-  .category-item-title {
-    font-weight: bold;
-    font-size: 16px;
-    line-height: 22px;
-    margin-right: 4px;
   }
 `;
 
@@ -207,7 +186,7 @@ class CustomTitles extends React.Component {
             <FieldContainer
               id="fieldContainerWelcomePage"
               className="field-container-width"
-              labelText={`${t("Title")}:`}
+              labelText={t("Common:Title")}
               isVertical={true}
             >
               <TextInput
@@ -227,8 +206,8 @@ class CustomTitles extends React.Component {
             saveButtonLabel={t("Common:SaveButton")}
             cancelButtonLabel={t("Settings:RestoreDefaultButton")}
             displaySettings={true}
-            sectionWidth={sectionWidth}
             hasChanged={hasChanged}
+            sectionWidth={sectionWidth}
           />
         </StyledComponent>
       </>

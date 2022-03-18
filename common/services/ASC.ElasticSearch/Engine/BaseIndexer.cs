@@ -89,7 +89,7 @@ namespace ASC.ElasticSearch
         private bool IsExist { get; set; }
         private Client Client { get; }
         private ILog Log { get; }
-        private TenantManager TenantManager { get; }
+        protected TenantManager TenantManager { get; }
         private BaseIndexerHelper BaseIndexerHelper { get; }
         private Settings Settings { get; }
         private IServiceProvider ServiceProvider { get; }
@@ -116,7 +116,8 @@ namespace ASC.ElasticSearch
 
         internal void Index(T data, bool immediately = true)
         {
-            CreateIfNotExist(data);
+            if (!BeforeIndex(data)) return;
+
             Client.Instance.Index(data, idx => GetMeta(idx, data, immediately));
         }
 
@@ -124,7 +125,7 @@ namespace ASC.ElasticSearch
         {
             if (data.Count == 0) return;
 
-            CreateIfNotExist(data[0]);
+            if (!CheckExist(data[0])) return;
 
             if (data[0] is ISearchItemDocument)
             {
@@ -136,6 +137,8 @@ namespace ASC.ElasticSearch
                 {
                     var t = data[i];
                     var runBulk = i == data.Count - 1;
+
+                    BeforeIndex(t);
 
                     if (!(t is ISearchItemDocument wwd) || wwd.Document == null || string.IsNullOrEmpty(wwd.Document.Data))
                     {
@@ -208,13 +211,18 @@ namespace ASC.ElasticSearch
             }
             else
             {
+                foreach (var item in data)
+                {
+                    BeforeIndex(item);
+                }
+
                 Client.Instance.Bulk(r => r.IndexMany(data, GetMeta));
             }
         }
 
         internal async Task IndexAsync(List<T> data, bool immediately = true)
         {
-            CreateIfNotExist(data[0]);
+            if (!CheckExist(data[0])) return;
 
             if (data is ISearchItemDocument)
             {
@@ -226,6 +234,8 @@ namespace ASC.ElasticSearch
                 {
                     var t = data[i];
                     var runBulk = i == data.Count - 1;
+
+                    await BeforeIndexAsync(t);
 
                     var wwd = t as ISearchItemDocument;
 
@@ -298,31 +308,36 @@ namespace ASC.ElasticSearch
             }
             else
             {
+                foreach (var item in data)
+                {
+                    await BeforeIndexAsync(item);
+                }
+
                 await Client.Instance.BulkAsync(r => r.IndexMany(data, GetMeta));
             }
         }
 
         internal void Update(T data, bool immediately = true, params Expression<Func<T, object>>[] fields)
         {
-            CreateIfNotExist(data);
+            if (!CheckExist(data)) return;
             Client.Instance.Update(DocumentPath<T>.Id(data), r => GetMetaForUpdate(r, data, immediately, fields));
         }
 
         internal void Update(T data, UpdateAction action, Expression<Func<T, IList>> fields, bool immediately = true)
         {
-            CreateIfNotExist(data);
+            if (!CheckExist(data)) return;
             Client.Instance.Update(DocumentPath<T>.Id(data), r => GetMetaForUpdate(r, data, action, fields, immediately));
         }
 
         internal void Update(T data, Expression<Func<Selector<T>, Selector<T>>> expression, int tenantId, bool immediately = true, params Expression<Func<T, object>>[] fields)
         {
-            CreateIfNotExist(data);
+            if (!CheckExist(data)) return;
             Client.Instance.UpdateByQuery(GetDescriptorForUpdate(data, expression, tenantId, immediately, fields));
         }
 
         internal void Update(T data, Expression<Func<Selector<T>, Selector<T>>> expression, int tenantId, UpdateAction action, Expression<Func<T, IList>> fields, bool immediately = true)
         {
-            CreateIfNotExist(data);
+            if (!CheckExist(data)) return;
             Client.Instance.UpdateByQuery(GetDescriptorForUpdate(data, expression, tenantId, action, fields, immediately));
         }
 
@@ -390,7 +405,6 @@ namespace ASC.ElasticSearch
             Log.DebugFormat("Delete {0}", Wrapper.IndexName);
             Client.Instance.Indices.Delete(Wrapper.IndexName);
             BaseIndexerHelper.Clear(Wrapper);
-            CreateIfNotExist(Wrapper);
         }
 
         internal IReadOnlyCollection<T> Select(Expression<Func<Selector<T>, Selector<T>>> expression, bool onlyId = false)
@@ -409,6 +423,16 @@ namespace ASC.ElasticSearch
             var result = Client.Instance.Search(descriptor.GetDescriptor(this, onlyId));
             total = result.Total;
             return result.Documents;
+        }
+
+        protected virtual bool BeforeIndex(T data)
+        {
+            return CheckExist(data);
+        }
+
+        protected virtual Task<bool> BeforeIndexAsync(T data)
+        {
+            return Task.FromResult(CheckExist(data));
         }
 
         public void CreateIfNotExist(T data)

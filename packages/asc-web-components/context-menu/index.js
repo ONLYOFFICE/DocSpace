@@ -45,9 +45,8 @@ class ContextMenu extends Component {
   };
 
   show = (e) => {
-    if (this.props.contextMenuData) {
-      const { item, t, getModel } = this.props.contextMenuData;
-      const model = getModel(item, t);
+    if (this.props.getContextModel) {
+      const model = this.props.getContextModel();
       this.setState({ model });
     }
 
@@ -328,7 +327,9 @@ class ContextMenu extends Component {
               )}
               <SubMenu
                 model={
-                  this.props.contextMenuData ? this.state.model : this.props.model
+                  this.props.getContextModel
+                    ? this.state.model
+                    : this.props.model
                 }
                 root
                 resetMenu={this.state.resetMenu}
@@ -385,7 +386,7 @@ ContextMenu.propTypes = {
   containerRef: PropTypes.any,
   /** Scale with by container component*/
   scaled: PropTypes.bool,
-  contextMenuData: PropTypes.object,
+  getContextModel: PropTypes.func,
 };
 
 ContextMenu.defaultProps = {
