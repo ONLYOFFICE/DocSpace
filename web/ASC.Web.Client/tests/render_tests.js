@@ -97,31 +97,35 @@ Scenario("Create user page render test", async ({ I }) => {
 
   I.see("Web Office");
 
+  I.see("Test Test");
+
   I.seeElement({
     react: "SocialButton",
   });
 
-  I.seeElement({
-    react: "EmailInput",
-  });
+  if (deviceType === "desktop") {
+    I.seeElement({
+      react: "EmailInput",
+    });
 
-  I.seeElement({
-    react: "TextInput",
-    props: {
-      name: "first-name",
-    },
-  });
+    I.seeElement({
+      react: "TextInput",
+      props: {
+        name: "first-name",
+      },
+    });
 
-  I.seeElement({
-    react: "TextInput",
-    props: {
-      name: "last-name",
-    },
-  });
+    I.seeElement({
+      react: "TextInput",
+      props: {
+        name: "last-name",
+      },
+    });
 
-  I.seeElement({
-    react: "PasswordInput",
-  });
+    I.seeElement({
+      react: "PasswordInput",
+    });
+  }
 
   I.seeElement({
     react: "Button",
