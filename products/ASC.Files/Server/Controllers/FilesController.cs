@@ -76,6 +76,7 @@ namespace ASC.Api.Documents
     public class FilesController : ControllerBase
     {
         private readonly FileStorageService<string> FileStorageService;
+        private readonly RequestHelper _requestHelper;
 
         private FilesControllerHelper<string> FilesControllerHelperString { get; }
         private FilesControllerHelper<int> FilesControllerHelperInt { get; }
@@ -129,6 +130,7 @@ namespace ASC.Api.Documents
             TenantManager tenantManager,
             FileUtility fileUtility,
             ConsumerFactory consumerFactory,
+            RequestHelper requestHelper,
             IServiceProvider serviceProvider)
         {
             FilesControllerHelperString = filesControllerHelperString;
@@ -154,6 +156,7 @@ namespace ASC.Api.Documents
             ProductEntryPoint = productEntryPoint;
             TenantManager = tenantManager;
             FileUtility = fileUtility;
+            this._requestHelper = requestHelper;
             ServiceProvider = serviceProvider;
         }
 
@@ -2499,7 +2502,7 @@ namespace ASC.Api.Documents
                 var blogId = JObject.Parse(meInfo).Value<string>("token_site_id");
                 var wordpressUserName = JObject.Parse(meInfo).Value<string>("username");
 
-                var blogInfo = RequestHelper.PerformRequest(WordpressLoginProvider.WordpressSites + blogId, "", "GET", "");
+                var blogInfo = _requestHelper.PerformRequest(WordpressLoginProvider.WordpressSites + blogId, "", "GET", "");
                 var jsonBlogInfo = JObject.Parse(blogInfo);
                 jsonBlogInfo.Add("username", wordpressUserName);
 
@@ -2566,7 +2569,7 @@ namespace ASC.Api.Documents
 
                 var wordpressUserName = JObject.Parse(meInfo).Value<string>("username");
 
-                var blogInfo = RequestHelper.PerformRequest(WordpressLoginProvider.WordpressSites + blogId, "", "GET", "");
+                var blogInfo = _requestHelper.PerformRequest(WordpressLoginProvider.WordpressSites + blogId, "", "GET", "");
                 var jsonBlogInfo = JObject.Parse(blogInfo);
                 jsonBlogInfo.Add("username", wordpressUserName);
 

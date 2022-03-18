@@ -61,21 +61,23 @@ namespace ASC.FederatedLogin.LoginProviders
             ConsumerFactory consumerFactory,
             Signature signature,
             InstanceCrypto instanceCrypto,
+            RequestHelper requestHelper,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
             : base(oAuth20TokenHelper, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, signature, instanceCrypto, name, order, props, additional)
         {
+            _requestHelper = requestHelper;
         }
 
-        public static string GetWordpressMeInfo(string token)
+        public static string GetWordpressMeInfo(RequestHelper requestHelper, string token)
         {
             var headers = new Dictionary<string, string>
                 {
                     { "Authorization", "bearer " + token }
                 };
-            return RequestHelper.PerformRequest(WordpressMeInfoUrl, "", "GET", "", headers);
+            return requestHelper.PerformRequest(WordpressMeInfoUrl, "", "GET", "", headers);
         }
 
-        public static bool CreateWordpressPost(string title, string content, string status, string blogId, OAuth20Token token)
+        public static bool CreateWordpressPost(RequestHelper requestHelper, string title, string content, string status, string blogId, OAuth20Token token)
         {
             try
             {
@@ -88,7 +90,7 @@ namespace ASC.FederatedLogin.LoginProviders
                         { "Authorization", "bearer " + token.AccessToken }
                     };
 
-                RequestHelper.PerformRequest(uri, contentType, method, body, headers);
+                requestHelper.PerformRequest(uri, contentType, method, body, headers);
                 return true;
             }
             catch (Exception)
@@ -121,6 +123,8 @@ namespace ASC.FederatedLogin.LoginProviders
         {
             get { return this["wpClientSecret"]; }
         }
+
+        private readonly RequestHelper _requestHelper;
 
         public override LoginProfile GetLoginProfile(string accessToken)
         {
