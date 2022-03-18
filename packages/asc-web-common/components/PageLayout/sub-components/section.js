@@ -26,6 +26,45 @@ const StyledSection = styled.section`
   display: flex;
   flex-direction: column;
 
+  ${(props) =>
+    props.maintenanceExist &&
+    isMobile &&
+    css`
+      .main-bar {
+        animation-name: slideDown;
+        -webkit-animation-name: slideDown;
+
+        animation-duration: 0.3s;
+        -webkit-animation-duration: 0.3s;
+
+        animation-timing-function: linear;
+        -webkit-animation-timing-function: linear;
+
+        visibility: visible !important;
+      }
+
+      @keyframes slideDown {
+        0% {
+          transform: translateY(-100%);
+        }
+        50% {
+          transform: translateY(-60%);
+        }
+        65% {
+          transform: translateY(-30%);
+        }
+        80% {
+          transform: translateY(-10%);
+        }
+        95% {
+          transform: translateY(-5%);
+        }
+        100% {
+          transform: translateY(0%);
+        }
+      }
+    `}
+
   .main-bar,
   .main-bar--hidden {
     ${isMobile &&

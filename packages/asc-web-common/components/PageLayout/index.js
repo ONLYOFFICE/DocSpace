@@ -372,6 +372,7 @@ class PageLayout extends React.Component {
                     unpinArticle={this.unpinArticle}
                     pinned={isArticlePinned}
                     visible={isArticleVisible}
+                    maintenanceExist={maintenanceExist}
                   >
                     <LayoutContextConsumer>
                       {(value) => (
