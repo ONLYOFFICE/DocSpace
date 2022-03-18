@@ -124,8 +124,6 @@ const DeepLinkPage = (props) => {
     setIsChecked(!isChecked);
   };
 
-  console.log(currentFile);
-
   if (!isLoading) return <AppLoader />;
   return (
     <StyledBody>
