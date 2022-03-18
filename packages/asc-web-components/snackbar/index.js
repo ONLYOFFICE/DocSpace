@@ -9,8 +9,13 @@ import StyledLogoIcon from "./styled-snackbar-logo";
 import Box from "../box";
 import Heading from "../heading";
 import Text from "../text";
+import equal from "fast-deep-equal/react";
 
 class SnackBar extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { isLoaded: false };
+  }
   static show(barConfig) {
     const { parentElementId, ...rest } = barConfig;
 
@@ -41,12 +46,36 @@ class SnackBar extends React.Component {
     this.props.clickAction && this.props.clickAction(e);
   };
 
-  componentDidMount() {
-    const { onLoad, isMaintenance } = this.props;
-    if (isMaintenance) {
-      onLoad();
-    }
+  componentDidUpdate(nextProps, nextState) {
+    return !equal(this.state, nextState);
   }
+
+  componentDidMount() {
+    const { onLoad } = this.props;
+    onLoad();
+  }
+
+  bannerRenderer = () => {
+    const { htmlContent, sectionWidth } = this.props;
+    return (
+      <div id="bar-banner" style={{ position: "relative" }}>
+        <StyledIframe
+          id="bar-frame"
+          src={htmlContent}
+          scrolling="no"
+          sectionWidth={sectionWidth}
+          onLoad={() => {
+            this.setState({ isLoaded: true });
+          }}
+        ></StyledIframe>
+        {this.state.isLoaded && (
+          <StyledAction className="action" onClick={this.onActionClick}>
+            <StyledCrossIcon size="medium" />
+          </StyledAction>
+        )}
+      </div>
+    );
+  };
 
   // Renderer callback with condition
   countDownRenderer = ({ minutes, seconds, completed }) => {
@@ -80,30 +109,17 @@ class SnackBar extends React.Component {
       style,
       countDownTime,
       isCampaigns,
-      sectionWidth,
-      onLoad,
       ...rest
     } = this.props;
 
     const headerStyles = headerText ? {} : { display: "none" };
 
+    const bannerElement = this.bannerRenderer();
+
     return (
       <>
         {isCampaigns ? (
-          <div id="bar-banner" style={{ position: "relative" }}>
-            <StyledIframe
-              id="bar-frame"
-              src={htmlContent}
-              scrolling="no"
-              sectionWidth={sectionWidth}
-              onLoad={() => {
-                onLoad();
-              }}
-            ></StyledIframe>
-            <StyledAction className="action" onClick={this.onActionClick}>
-              <StyledCrossIcon size="medium" />
-            </StyledAction>
-          </div>
+          <>{bannerElement}</>
         ) : (
           <StyledSnackBar style={style} {...rest}>
             {htmlContent ? (
