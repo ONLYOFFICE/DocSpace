@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
 import MainButton from "@appserver/components/main-button";
 import { withTranslation } from "react-i18next";
@@ -9,35 +10,30 @@ import {
   isTablet as isTabletUtils,
 } from "@appserver/components/utils/device";
 import Loaders from "@appserver/common/components/Loaders";
-import { FileAction, AppServerConfig } from "@appserver/common/constants";
+import { FileAction } from "@appserver/common/constants";
 import { encryptionUploadDialog } from "../../../helpers/desktop";
-import { inject, observer } from "mobx-react";
 import config from "../../../../package.json";
-import { combineUrl } from "@appserver/common/utils";
 
 import MobileView from "./MobileView";
 
-const ArticleMainButtonContent = ({
-  t,
-  isDisabled,
-  canCreate,
-  isPrivacy,
-  encryptionUploadDialog,
-  encryptedFile,
-  encrypted,
-  startUpload,
-  setAction,
-  setSelectFileDialogVisible,
-  homepage,
-  history,
-  filter,
-  sectionWidth,
-  isArticleLoaded,
-  isFavoritesFolder,
-  isRecentFolder,
-  isCommonFolder,
-  isRecycleBinFolder,
-}) => {
+const ArticleMainButtonContent = (props) => {
+  const {
+    t,
+    isDisabled,
+    canCreate,
+    isPrivacy,
+    encryptedFile,
+    encrypted,
+    startUpload,
+    setAction,
+    setSelectFileDialogVisible,
+    sectionWidth,
+    isArticleLoaded,
+    isFavoritesFolder,
+    isRecentFolder,
+    isCommonFolder,
+    isRecycleBinFolder,
+  } = props;
   const inputFilesElement = React.useRef(null);
   const inputFolderElement = React.useRef(null);
 
@@ -47,8 +43,6 @@ const ArticleMainButtonContent = ({
 
   const onCreate = React.useCallback(
     (e) => {
-      // this.goToHomePage();
-
       const format = e.action || null;
       setAction({
         type: FileAction.Create,
@@ -63,13 +57,6 @@ const ArticleMainButtonContent = ({
     setSelectFileDialogVisible(true);
   }, [setSelectFileDialogVisible]);
 
-  const goToHomePage = React.useCallback(() => {
-    const urlFilter = filter.toUrlParams();
-    history.push(
-      combineUrl(AppServerConfig.proxyURL, homepage, `/filter?${urlFilter}`)
-    );
-  }, [homepage, history, filter]);
-
   const onFileChange = React.useCallback(
     (e) => {
       startUpload(e.target.files, null, t);
@@ -81,7 +68,6 @@ const ArticleMainButtonContent = ({
     if (isPrivacy) {
       encryptionUploadDialog((encryptedFile, encrypted) => {
         encryptedFile.encrypted = encrypted;
-        goToHomePage();
         startUpload([encryptedFile], null, t);
       });
     } else {
@@ -92,7 +78,6 @@ const ArticleMainButtonContent = ({
     encrypted,
     encryptedFile,
     encryptionUploadDialog,
-    goToHomePage,
     startUpload,
   ]);
 
@@ -280,13 +265,9 @@ const ArticleMainButtonContent = ({
   );
 };
 
-ArticleMainButtonContent.propTypes = {
-  history: PropTypes.object.isRequired,
-};
-
 export default inject(
-  ({ auth, filesStore, dialogsStore, uploadDataStore, treeFoldersStore }) => {
-    const { isArticleLoaded, fileActionStore, filter, canCreate } = filesStore;
+  ({ filesStore, dialogsStore, uploadDataStore, treeFoldersStore }) => {
+    const { isArticleLoaded, fileActionStore, canCreate } = filesStore;
     const {
       isPrivacyFolder,
       isFavoritesFolder,
@@ -305,7 +286,6 @@ export default inject(
       isRecentFolder,
       isCommonFolder,
       isRecycleBinFolder,
-      filter,
       canCreate,
 
       setAction: fileActionStore.setAction,
@@ -314,8 +294,4 @@ export default inject(
       setSelectFileDialogVisible,
     };
   }
-)(
-  withRouter(
-    withTranslation(["Article", "Common"])(observer(ArticleMainButtonContent))
-  )
-);
+)(withTranslation(["Article", "Common"])(observer(ArticleMainButtonContent)));
