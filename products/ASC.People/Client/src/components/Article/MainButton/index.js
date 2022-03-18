@@ -74,9 +74,7 @@ class ArticleMainButtonContent extends React.Component {
       guestCaption,
       groupCaption,
       sectionWidth,
-      isLoading,
-      firstLoad,
-      isLoaded,
+      isArticleLoading,
     } = this.props;
 
     const { dialogVisible } = this.state;
@@ -157,18 +155,8 @@ class ArticleMainButtonContent extends React.Component {
             buttonOptions={links}
             sectionWidth={sectionWidth}
           />
-        ) : firstLoad || !isLoaded ? (
-          isLoading || !isLoaded ? (
-            <Loaders.ArticleButton />
-          ) : (
-            <MainButton
-              isDisabled={false}
-              isDropdown={true}
-              text={t("Common:Actions")}
-              model={[...menuModel, separator, ...links]}
-              className="main-button_invitation-link"
-            />
-          )
+        ) : isArticleLoading ? (
+          <Loaders.ArticleButton />
         ) : (
           <MainButton
             isDisabled={false}
@@ -203,6 +191,10 @@ export default withRouter(
 
     const { loadingStore } = peopleStore;
 
+    const { isLoading, isLoaded, firstLoad } = loadingStore;
+
+    const isArticleLoading = (isLoading || !isLoaded) && firstLoad;
+
     return {
       isAdmin: auth.isAdmin,
       homepage: config.homepage,
@@ -210,9 +202,7 @@ export default withRouter(
       guestCaption,
       groupCaption,
       toggleShowText: auth.settingsStore.toggleShowText,
-      isLoading: loadingStore.isLoading,
-      isLoaded: loadingStore.isLoaded,
-      firstLoad: loadingStore.firstLoad,
+      isArticleLoading,
     };
   })(
     withTranslation(["Article", "Common", "Translations"])(

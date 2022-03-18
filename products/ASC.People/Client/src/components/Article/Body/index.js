@@ -26,10 +26,8 @@ const ArticleBodyContent = ({
   selectGroup,
   isVisitor,
   isAdmin,
-  isLoading,
-  firstLoad,
   setDocumentTitle,
-  isLoaded,
+  isArticleLoading,
 }) => {
   const [groupItems, setGroupItems] = React.useState(null);
 
@@ -109,25 +107,8 @@ const ArticleBodyContent = ({
   return (
     <>
       {!isVisitor &&
-        (firstLoad || !isLoaded ? (
-          isLoading || !isLoaded ? (
-            <Loaders.ArticleGroup />
-          ) : (
-            <div
-              style={!isAdmin && isMobileOnly ? { marginTop: "16px" } : null}
-            >
-              <CatalogItem
-                key={"root"}
-                id={"departments"}
-                icon={departmentsIcon}
-                onClick={onClick}
-                text={groupsCaption}
-                showText={showText}
-                isActive={isActive("root")}
-              />
-              {groupItems}
-            </div>
-          )
+        (isArticleLoading ? (
+          <Loaders.ArticleGroup />
         ) : (
           <div style={!isAdmin && isMobileOnly ? { marginTop: "16px" } : null}>
             <CatalogItem
@@ -163,12 +144,12 @@ export default inject(({ auth, peopleStore }) => {
   const { selectedGroup, selectGroup } = selectedGroupStore;
   const selectedKey = selectedGroup ? selectedGroup : "root";
 
-  const { isLoading, firstLoad, isLoaded } = loadingStore;
+  const { isLoading, isLoaded, firstLoad } = loadingStore;
+
+  const isArticleLoading = (isLoading || !isLoaded) && firstLoad;
   return {
     setDocumentTitle,
-    isLoaded,
-    isLoading,
-    firstLoad,
+    isArticleLoading,
     isVisitor: auth.userStore.user.isVisitor,
     isAdmin,
     groups,
