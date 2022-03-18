@@ -12,9 +12,14 @@ import withLoader from "../../../HOCs/withLoader";
 import { useCallback } from "react";
 import IconButton from "@appserver/components/icon-button";
 import { connectedCloudsTitleTranslation } from "../../../helpers/utils";
+import { Base } from "@appserver/components/themes";
 
 const StyledThirdParty = styled.div`
   margin-top: 42px;
+
+  .thirdparty-text {
+    color: ${(props) => props.theme.filesArticleBody.thirdPartyList.linkColor};
+  }
 
   .tree-thirdparty-list {
     padding-top: 3px;
@@ -30,7 +35,7 @@ const StyledThirdParty = styled.div`
       width: 25px;
 
       margin-right: 10px;
-      color: #818b91;
+      color: ${(props) => props.theme.filesArticleBody.thirdPartyList.color};
       :first-of-type {
         border-radius: 3px 0 0 3px;
       }
@@ -65,9 +70,9 @@ const StyledThirdParty = styled.div`
   }
 `;
 
+StyledThirdParty.defaultProps = { theme: Base };
+
 const iconButtonProps = {
-  color: "#A3A9AE",
-  hoverColor: "#818b91",
   size: 25,
   className: "icon",
 };
@@ -171,7 +176,7 @@ const PureThirdPartyListContainer = ({
   return (
     <StyledThirdParty>
       <Link
-        color="#555F65"
+        className="thirdparty-text"
         fontSize="14px"
         fontWeight={600}
         onClick={onShowConnectPanel}
@@ -184,6 +189,7 @@ const PureThirdPartyListContainer = ({
             capability={googleConnectItem}
             src="images/services/google_drive.svg"
             onClick={onConnect}
+            title={t("ButtonAddGoogle")}
           />
         )}
         {boxConnectItem && (
@@ -191,6 +197,7 @@ const PureThirdPartyListContainer = ({
             capability={boxConnectItem}
             src="images/services/box.svg"
             onClick={onConnect}
+            title={t("ButtonAddBoxNet")}
           />
         )}
         {dropboxConnectItem && (
@@ -198,6 +205,7 @@ const PureThirdPartyListContainer = ({
             capability={dropboxConnectItem}
             src="images/services/dropbox.svg"
             onClick={onConnect}
+            title={t("ButtonAddDropBox")}
           />
         )}
         {oneDriveConnectItem && (
@@ -205,6 +213,7 @@ const PureThirdPartyListContainer = ({
             capability={oneDriveConnectItem}
             src="images/services/onedrive.svg"
             onClick={onConnect}
+            title={t("ButtonAddSkyDrive")}
           />
         )}
         {nextCloudConnectItem && (
@@ -212,6 +221,7 @@ const PureThirdPartyListContainer = ({
             capability={nextCloudConnectItem}
             src="images/services/nextcloud.svg"
             onClick={onConnect}
+            title={t("ButtonAddNextcloud")}
           />
         )}
         {/* {webDavConnectItem && (
