@@ -108,7 +108,7 @@ const versionBadgeProps = {
 const StyledNavigationIconsWrapper = styled.div`
   height: 20px;
   position: absolute;
-  left: ${isMobile ? "254px" : "280px"};
+  left: ${isMobile ? "254px" : "275px"};
   display: ${isMobileOnly ? "none" : "flex"};
   justify-content: flex-start;
   align-items: center;
