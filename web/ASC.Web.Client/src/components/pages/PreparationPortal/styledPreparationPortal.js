@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { isMobile } from "react-device-detect";
 
 const StyledBodyPreparationPortal = styled.div`
   margin-bottom: 24px;
@@ -36,6 +37,10 @@ const StyledBodyPreparationPortal = styled.div`
 
 const StyledPreparationPortal = styled.div`
   width: 100%;
+  ${isMobile &&
+  `
+    margin-top: 48px;
+  `}
 
   #header {
     font-size: 23px;

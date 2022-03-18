@@ -57,6 +57,7 @@ class PreparationPortal extends React.Component {
   }
   componentWillUnmount() {
     clearInterval(this.timerId);
+    clearInterval(this.progressTimerId);
   }
 
   progressInitiationFirstBound = () => {
