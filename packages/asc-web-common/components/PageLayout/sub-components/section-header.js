@@ -7,6 +7,8 @@ import { LayoutContextConsumer } from "studio/Layout/context";
 import { isMobile } from "react-device-detect";
 import { tablet, desktop } from "@appserver/components/utils/device";
 import NoUserSelect from "@appserver/components/utils/commonStyles";
+import { getBannerAttribute } from "@appserver/components/utils/banner";
+
 const StyledSectionHeader = styled.div`
   height: 42px;
   margin-right: 24px;
@@ -133,17 +135,14 @@ class SectionHeader extends React.Component {
 
     let top = "48px";
     let marginTop = "52px";
-    let barExist = null;
 
     const mainBar = document.getElementById("main-bar");
 
     if (maintenanceExist) {
-      const bar = document.getElementById("bar-banner");
-      barExist = bar;
-      const rects = mainBar ? mainBar.getBoundingClientRect() : null;
+      const { sectionHeaderTop, sectionHeaderMarginTop } = getBannerAttribute();
 
-      top = bar ? "108px" : rects ? rects.height + 40 + "px" : "48px";
-      marginTop = bar ? "52px" : rects ? rects.height - 40 + 36 + "px" : "52px";
+      top = sectionHeaderTop;
+      marginTop = sectionHeaderMarginTop;
     }
 
     return (
