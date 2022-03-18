@@ -67,4 +67,16 @@ module.exports = class Endpoints {
     method: "GET",
     baseDir: "settings",
   };
+
+  static capabilities = {
+    url: ["http://localhost:8092/api/2.0/capabilities"],
+    method: "GET",
+    baseDir: "settings",
+  };
+
+  static user = {
+    url: ["http://localhost:8092/api/2.0/people/user.json"],
+    method: "GET",
+    baseDir: "people",
+  };
 };

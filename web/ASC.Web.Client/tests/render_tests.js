@@ -84,15 +84,48 @@ Scenario("Change phone page render test", async ({ I }) => {
 });
 
 Scenario("Create user page render test", async ({ I }) => {
+  I.mockEndpoint(Endpoints.confirm, "confirm");
   I.mockEndpoint(Endpoints.settings, "settings");
   I.mockEndpoint(Endpoints.build, "build");
+  I.mockEndpoint(Endpoints.settings, "settings");
   I.mockEndpoint(Endpoints.password, "password");
+  I.mockEndpoint(Endpoints.user, "user");
   I.mockEndpoint(Endpoints.providers, "providers");
-  I.mockEndpoint(Endpoints.confirm, "confirm");
+  I.mockEndpoint(Endpoints.capabilities, "capabilities");
 
-  I.amOnPage("/confirm/LinkInvite");
+  I.amOnPage("/confirm/LinkInvite?type=LinkInvite&key=KEY&uid=user&emplType=1");
 
   I.see("Web Office");
+
+  I.seeElement({
+    react: "SocialButton",
+  });
+
+  I.seeElement({
+    react: "EmailInput",
+  });
+
+  I.seeElement({
+    react: "TextInput",
+    props: {
+      name: "first-name",
+    },
+  });
+
+  I.seeElement({
+    react: "TextInput",
+    props: {
+      name: "last-name",
+    },
+  });
+
+  I.seeElement({
+    react: "PasswordInput",
+  });
+
+  I.seeElement({
+    react: "Button",
+  });
 
   I.saveScreenshot(`4.create-user.png`);
   if (!isModel) {
