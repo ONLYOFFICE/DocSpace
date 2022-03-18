@@ -27,7 +27,7 @@ using Document = ASC.ElasticSearch.Document;
 
 namespace ASC.Files.Core.Data;
 
-[Scope(Additional = typeof(FilesTypeConverter))]
+[Scope]
 internal class FileDao : AbstractDao, IFileDao<int>
 {
     private static readonly object _syncRoot = new object();
@@ -1351,7 +1351,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
             .Where(r => r.Security.TenantId == tenant)
             .Where(r => r.Security.EntryType == FileEntryType.File)
             .Where(r => r.Security.Share == Security.FileShare.Restrict)
-            .Where(r => r.Security.TimeStamp >= from && r.Security.TimeStamp <= to)
+            //.Where(r => r.Security.TimeStamp >= from && r.Security.TimeStamp <= to)
             .ToListAsync();
 
         var fileWithShare = await q2.Select(e => _mapper.Map<DbFileQueryWithSecurity, FileWithShare>(e))
@@ -1531,9 +1531,9 @@ internal class FileDao : AbstractDao, IFileDao<int>
                              where f.EntryType == FileEntryType.File && f.EntryId == r.Id.ToString() && f.TenantId == r.TenantId
                              select f
                              ).Any(),
-                   Linked = (from f in FilesDbContext.FilesLink
-                             where f.TenantId == r.TenantId && f.LinkedId == r.Id.ToString() && f.LinkedFor == cId
-                             select f)
+                   IsFillFormDraft = (from f in FilesDbContext.FilesLink
+                                      where f.TenantId == r.TenantId && f.LinkedId == r.Id.ToString() && f.LinkedFor == cId
+                                      select f)
                              .Any()
                };
     }
@@ -1557,44 +1557,11 @@ internal class FileDao : AbstractDao, IFileDao<int>
                         select f
                           ).FirstOrDefault(),
                 Shared = true,
-                Linked = (from f in FilesDbContext.FilesLink
-                          where f.TenantId == r.TenantId && f.LinkedId == r.Id.ToString() && f.LinkedFor == cId
-                          select f)
+                IsFillFormDraft = (from f in FilesDbContext.FilesLink
+                                   where f.TenantId == r.TenantId && f.LinkedId == r.Id.ToString() && f.LinkedFor == cId
+                                   select f)
                              .Any()
             });
-    }
-
-    public File<int> ToFile(DbFileQuery r)
-    {
-        var file = ServiceProvider.GetService<File<int>>();
-
-        if (r == null)
-        {
-            return null;
-        }
-
-        file.Id = r.File.Id;
-        file.Title = r.File.Title;
-        file.ParentId = r.File.ParentId;
-        file.CreateOn = TenantUtil.DateTimeFromUtc(r.File.CreateOn);
-        file.CreateBy = r.File.CreateBy;
-        file.Version = r.File.Version;
-        file.VersionGroup = r.File.VersionGroup;
-        file.ContentLength = r.File.ContentLength;
-        file.ModifiedOn = TenantUtil.DateTimeFromUtc(r.File.ModifiedOn);
-        file.ModifiedBy = r.File.ModifiedBy;
-        file.RootFolderType = r.Root?.FolderType ?? default;
-        file.RootFolderCreator = r.Root?.CreateBy ?? default;
-        file.RootFolderId = r.Root?.Id ?? default;
-        file.Shared = r.Shared;
-        file.ConvertedType = r.File.ConvertedType;
-        file.Comment = r.File.Comment;
-        file.Encrypted = r.File.Encrypted;
-        file.Forcesave = r.File.Forcesave;
-        file.ThumbnailStatus = r.File.ThumbnailStatus;
-        file.IsFillFormDraft = r.Linked;
-
-        return file;
     }
 
     internal protected Task<DbFile> InitDocumentAsync(DbFile dbFile)
@@ -1650,7 +1617,7 @@ public class DbFileQuery
     public DbFile File { get; set; }
     public DbFolder Root { get; set; }
     public bool Shared { get; set; }
-    public bool Linked { get; set; }
+    public bool IsFillFormDraft { get; set; }
 }
 
 public class DbFileQueryWithSecurity

@@ -215,16 +215,16 @@ public class FileSecurity : IFileSecurity
                     EntryId = entry.Id,
                     EntryType = entry.FileEntryType,
                     Share = DefaultMyShare,
-                    Subject = entry.RootFolderCreator,
+                    Subject = entry.RootCreateBy,
                     TenantId = _tenantManager.GetCurrentTenant().Id,
-                    Owner = entry.RootFolderCreator
+                    Owner = entry.RootCreateBy
                 };
 
                 if (!shares.Any())
                 {
                     return new List<Guid>
                         {
-                            entry.RootFolderCreator
+                            entry.RootCreateBy
                         };
                 }
 
@@ -237,16 +237,16 @@ public class FileSecurity : IFileSecurity
                     EntryId = entry.Id,
                     EntryType = entry.FileEntryType,
                     Share = DefaultPrivacyShare,
-                    Subject = entry.RootFolderCreator,
+                    Subject = entry.RootCreateBy,
                     TenantId = _tenantManager.GetCurrentTenant().Id,
-                    Owner = entry.RootFolderCreator
+                    Owner = entry.RootCreateBy
                 };
 
                 if (!shares.Any())
                 {
                     return new List<Guid>
                         {
-                            entry.RootFolderCreator
+                            entry.RootCreateBy
                         };
                 }
 
@@ -256,7 +256,7 @@ public class FileSecurity : IFileSecurity
                 if (action == FilesSecurityActions.Read)
                 {
                     var folderDao = _daoFactory.GetFolderDao<T>();
-                    var root = await folderDao.GetFolderAsync(entry.RootFolderId);
+                    var root = await folderDao.GetFolderAsync(entry.RootId);
                     if (root != null)
                     {
                         var path = await folderDao.GetBunchObjectIDAsync(root.Id);
@@ -477,14 +477,14 @@ public class FileSecurity : IFileSecurity
                 //    }
                 //}
 
-                if (e.RootFolderType == FolderType.USER && e.RootFolderCreator == userId && !isVisitor)
+                if (e.RootFolderType == FolderType.USER && e.RootCreateBy == userId && !isVisitor)
                 {
                     // user has all right in his folder
                     result.Add(e);
                     continue;
                 }
 
-                if (e.RootFolderType == FolderType.Privacy && e.RootFolderCreator == userId && !isVisitor)
+                if (e.RootFolderType == FolderType.Privacy && e.RootCreateBy == userId && !isVisitor)
                 {
                     // user has all right in his privacy folder
                     result.Add(e);
@@ -637,7 +637,7 @@ public class FileSecurity : IFileSecurity
             var folderDao = _daoFactory.GetFolderDao<T>();
             var filteredEntries = entries.Where(filter).ToList();
             var roots = filteredEntries
-                    .Select(r => r.RootFolderId)
+                    .Select(r => r.RootId)
                     .ToList();
 
             var rootsFolders = folderDao.GetFoldersAsync(roots);
@@ -646,7 +646,7 @@ public class FileSecurity : IFileSecurity
 
             foreach (var e in filteredEntries)
             {
-                findedAdapters.TryGetValue(e.RootFolderId.ToString(), out var adapter);
+                findedAdapters.TryGetValue(e.RootId.ToString(), out var adapter);
 
                 if (adapter == null)
                 {
@@ -719,7 +719,7 @@ public class FileSecurity : IFileSecurity
             var mytrashId = await folderDao.GetFolderIDTrashAsync(false, userId);
             if (!Equals(mytrashId, 0))
             {
-                result.AddRange(entries.Where(filter).Where(e => Equals(e.RootFolderId, mytrashId)));
+                result.AddRange(entries.Where(filter).Where(e => Equals(e.RootId, mytrashId)));
             }
         }
 
@@ -861,7 +861,7 @@ public class FileSecurity : IFileSecurity
 
         entries = entries.Where(f =>
                                 f.RootFolderType == FolderType.USER // show users files
-                                && f.RootFolderCreator != _authContext.CurrentAccount.ID // don't show my files
+                                && f.RootCreateBy != _authContext.CurrentAccount.ID // don't show my files
             ).ToList();
 
         if (_userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager))
@@ -989,7 +989,7 @@ public class FileSecurity : IFileSecurity
 
         entries = entries.Where(f =>
                                 f.RootFolderType == FolderType.Privacy // show users files
-                                && f.RootFolderCreator != _authContext.CurrentAccount.ID // don't show my files
+                                && f.RootCreateBy != _authContext.CurrentAccount.ID // don't show my files
             ).ToList();
 
         return entries;

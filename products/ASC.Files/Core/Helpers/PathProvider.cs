@@ -99,7 +99,7 @@ public class PathProvider
             case FolderType.BUNCH:
                 if (projectID == 0)
                 {
-                    var path = await folderDao.GetBunchObjectIDAsync(folder.RootFolderId);
+                    var path = await folderDao.GetBunchObjectIDAsync(folder.RootId);
 
                     var projectIDFromDao = path.Split('/').Last();
 

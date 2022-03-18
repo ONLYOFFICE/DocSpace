@@ -322,9 +322,9 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         fileEntry.ModifiedBy = ProviderInfo.Owner;
         fileEntry.ProviderId = ProviderInfo.ID;
         fileEntry.ProviderKey = ProviderInfo.ProviderKey;
-        fileEntry.RootFolderCreator = ProviderInfo.Owner;
+        fileEntry.RootCreateBy = ProviderInfo.Owner;
         fileEntry.RootFolderType = ProviderInfo.RootFolderType;
-        fileEntry.RootFolderId = MakeId();
+        fileEntry.RootId = MakeId();
     }
 
     protected void InitFileEntryError(FileEntry<string> fileEntry, ErrorEntry entry)

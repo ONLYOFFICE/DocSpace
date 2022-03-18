@@ -52,7 +52,7 @@ public interface IFolder
     public string FolderUrl { get; set; }
 }
 
-[DebuggerDisplay("{Title} ({ID})")]
+[DebuggerDisplay("{Title} ({Id})")]
 [Transient]
 public class Folder<T> : FileEntry<T>, IFolder, IMapFrom<DbFolder>
 {
@@ -85,6 +85,69 @@ public class Folder<T> : FileEntry<T>, IFolder, IMapFrom<DbFolder>
     public void Mapping(Profile profile)
     {
         profile.CreateMap<DbFolder, Folder<int>>();
-        profile.CreateMap<DbFolderQuery, Folder<int>>().ConvertUsing<FoldersTypeConverter>();
+
+        profile.CreateMap<DbFolderQuery, Folder<int>>()
+            .IncludeMembers(r => r.Folder)
+            .ForMember(r => r.CreateOn, r => r.ConvertUsing<TenantDateTimeConverter, DateTime>(s => s.Folder.CreateOn))
+            .ForMember(r => r.ModifiedOn, r => r.ConvertUsing<TenantDateTimeConverter, DateTime>(s => s.Folder.ModifiedOn))
+            .AfterMap((q, result) =>
+            {
+                switch (result.FolderType)
+                {
+                    case FolderType.COMMON:
+                        result.Title = FilesUCResource.CorporateFiles;
+                        break;
+                    case FolderType.USER:
+                        result.Title = FilesUCResource.MyFiles;
+                        break;
+                    case FolderType.SHARE:
+                        result.Title = FilesUCResource.SharedForMe;
+                        break;
+                    case FolderType.Recent:
+                        result.Title = FilesUCResource.Recent;
+                        break;
+                    case FolderType.Favorites:
+                        result.Title = FilesUCResource.Favorites;
+                        break;
+                    case FolderType.TRASH:
+                        result.Title = FilesUCResource.Trash;
+                        break;
+                    case FolderType.Privacy:
+                        result.Title = FilesUCResource.PrivacyRoom;
+                        break;
+                    case FolderType.Projects:
+                        result.Title = FilesUCResource.ProjectFiles;
+                        break;
+                    case FolderType.BUNCH:
+                        try
+                        {
+                            result.Title = string.Empty;
+                        }
+                        catch (Exception)
+                        {
+                            //Global.Logger.Error(e);
+                        }
+                        break;
+                }
+
+                if (result.FolderType != FolderType.DEFAULT)
+                {
+                    if (0.Equals(result.ParentId))
+                    {
+                        result.RootFolderType = result.FolderType;
+                    }
+
+                    if (result.RootCreateBy == default)
+                    {
+                        result.RootCreateBy = result.CreateBy;
+                    }
+
+                    if (0.Equals(result.RootId))
+                    {
+                        result.RootId = result.Id;
+                    }
+                }
+            })
+            .ConstructUsingServiceLocator();
     }
 }

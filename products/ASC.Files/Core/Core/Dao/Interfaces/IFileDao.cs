@@ -25,7 +25,7 @@
 
 namespace ASC.Files.Core;
 
-[Scope(Additional = typeof(FileDaoExtension))]
+[Scope]
 public interface IFileDao<T>
 {
     /// <summary>
@@ -291,13 +291,4 @@ public interface IFileDao<T>
     Task<IEnumerable<int>> GetTenantsWithFeedsAsync(DateTime fromTime);
 
     #endregion
-}
-
-
-public static class FileDaoExtension
-{
-    public static void Register(DIHelper services)
-    {
-        services.TryAdd<FilesTypeConverter>();
-    }
 }

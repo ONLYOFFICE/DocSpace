@@ -25,7 +25,7 @@
 
 namespace ASC.Files.Core;
 
-[Scope(Additional = typeof(FolderDaoExtension))]
+[Scope]
 public interface IFolderDao<T>
 {
     /// <summary>
@@ -322,12 +322,4 @@ public interface IFolderDao<T>
     Task<IEnumerable<T>> GetTenantsWithFeedsForFoldersAsync(DateTime fromTime);
 
     #endregion
-}
-
-public static class FolderDaoExtension
-{
-    public static void Register(DIHelper services)
-    {
-        services.TryAdd<FoldersTypeConverter>();
-    }
 }

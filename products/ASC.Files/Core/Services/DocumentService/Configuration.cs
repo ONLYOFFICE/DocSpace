@@ -726,7 +726,7 @@ public class CustomizationConfig<T>
                 var parent = folderDao.GetFolderAsync(_configuration.Document.Info.GetFile().ParentId).Result;
                 var fileSecurity = _fileSecurity;
                 if (_configuration.Document.Info.GetFile().RootFolderType == FolderType.USER
-                    && !Equals(_configuration.Document.Info.GetFile().RootFolderId, _globalFolderHelper.FolderMy)
+                    && !Equals(_configuration.Document.Info.GetFile().RootId, _globalFolderHelper.FolderMy)
                     && !fileSecurity.CanReadAsync(parent).Result)
                 {
                     if (fileSecurity.CanReadAsync(_configuration.Document.Info.GetFile()).Result)

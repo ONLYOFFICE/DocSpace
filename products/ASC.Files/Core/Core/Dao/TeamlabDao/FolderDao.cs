@@ -25,7 +25,7 @@
 
 namespace ASC.Files.Core.Data;
 
-[Scope(Additional = typeof(FolderDaoExtension))]
+[Scope]
 internal class FolderDao : AbstractDao, IFolderDao<int>
 {
     private const string My = "my";
@@ -637,8 +637,8 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
         var copy = ServiceProvider.GetService<Folder<int>>();
         copy.ParentId = toFolderId;
-        copy.RootFolderId = toFolder.RootFolderId;
-        copy.RootFolderCreator = toFolder.RootFolderCreator;
+        copy.RootId = toFolder.RootId;
+        copy.RootCreateBy = toFolder.RootCreateBy;
         copy.RootFolderType = toFolder.RootFolderType;
         copy.Title = folder.Title;
         copy.FolderType = folder.FolderType;

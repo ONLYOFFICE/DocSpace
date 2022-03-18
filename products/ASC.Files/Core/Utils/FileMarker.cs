@@ -202,11 +202,11 @@ public class FileMarker
                     Folder<int> rootFolder = null;
                     if (obj.FileEntry.ProviderEntry)
                     {
-                        rootFolder = obj.FileEntry.RootFolderCreator == userID
+                        rootFolder = obj.FileEntry.RootCreateBy == userID
                                          ? await folderDaoInt.GetFolderAsync(userFolderId)
                                          : folderShare;
                     }
-                    else if (!Equals(obj.FileEntry.RootFolderId, userFolderId))
+                    else if (!Equals(obj.FileEntry.RootId, userFolderId))
                     {
                         rootFolder = folderShare;
                     }
@@ -368,7 +368,7 @@ public class FileMarker
         if (fileEntry.RootFolderType == FolderType.BUNCH && userIDs.Count == 0)
         {
             var folderDao = _daoFactory.GetFolderDao<T>();
-            var path = await folderDao.GetBunchObjectIDAsync(fileEntry.RootFolderId);
+            var path = await folderDao.GetBunchObjectIDAsync(fileEntry.RootId);
 
             var projectID = path.Split('/').Last();
             if (string.IsNullOrEmpty(projectID))
@@ -486,12 +486,12 @@ public class FileMarker
         }
         else if (rootFolder.RootFolderType == FolderType.USER)
         {
-            if (rootFolder.ProviderEntry && rootFolder.RootFolderCreator == userID)
+            if (rootFolder.ProviderEntry && rootFolder.RootCreateBy == userID)
             {
                 cacheFolderId = rootFolderId = userFolderId;
             }
-            else if (!rootFolder.ProviderEntry && !Equals(rootFolder.RootFolderId, userFolderId)
-                     || rootFolder.ProviderEntry && rootFolder.RootFolderCreator != userID)
+            else if (!rootFolder.ProviderEntry && !Equals(rootFolder.RootId, userFolderId)
+                     || rootFolder.ProviderEntry && rootFolder.RootCreateBy != userID)
             {
                 cacheFolderId = rootFolderId = await _globalFolder.GetFolderShareAsync(_daoFactory);
             }
@@ -792,7 +792,7 @@ public class FileMarker
                         {
                             cacheFolderId = rootFolderId = await _globalFolder.GetFolderProjectsAsync<T>(_daoFactory);
                         }
-                        else if (rootFolder.RootFolderType == FolderType.USER && !Equals(rootFolder.RootFolderId, _globalFolder.GetFolderMy(this, _daoFactory)))
+                        else if (rootFolder.RootFolderType == FolderType.USER && !Equals(rootFolder.RootId, _globalFolder.GetFolderMy(this, _daoFactory)))
                         {
                             cacheFolderId = rootFolderId = await _globalFolder.GetFolderShareAsync<T>(_daoFactory);
                         }

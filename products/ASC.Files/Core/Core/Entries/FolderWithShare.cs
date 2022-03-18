@@ -10,6 +10,9 @@ public class FolderWithShare : IMapFrom<DbFolderQueryWithSecurity>
     public void Mapping(Profile profile)
     {
         profile.CreateMap<DbFolderQueryWithSecurity, FolderWithShare>()
-            .ConvertUsing<FoldersTypeConverter>();
+            .ForMember(r => r.Folder, r => r.MapFrom(s => s.DbFolderQuery))
+            .ForMember(r => r.ShareRecord, r => r.MapFrom(s => s.Security));
+
+        profile.CreateMap<DbFilesSecurity, SmallShareRecord>();
     }
 }

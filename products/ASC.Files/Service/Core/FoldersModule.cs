@@ -1,7 +1,4 @@
-﻿
-using ASC.Files.Core.Core.Entries;
-
-using FeedModule = ASC.Feed.Aggregator.Modules.FeedModule;
+﻿using FeedModule = ASC.Feed.Aggregator.Modules.FeedModule;
 
 namespace ASC.Files.Service.Core;
 
@@ -49,7 +46,7 @@ public class FoldersModule : FeedModule
         bool targetCond;
         if (feed.Target != null)
         {
-            if (shareRecord != null && shareRecord.ShareBy == userId)
+            if (shareRecord != null && shareRecord.Owner == userId)
             {
                 return false;
             }
@@ -95,10 +92,10 @@ public class FoldersModule : FeedModule
 
         if (shareRecord != null)
         {
-            var feed = new Feed.Aggregator.Feed(shareRecord.ShareBy, shareRecord.ShareOn, true)
+            var feed = new Feed.Aggregator.Feed(shareRecord.Owner, shareRecord.TimeStamp, true)
             {
                 Item = SharedFolderItem,
-                ItemId = string.Format("{0}_{1}", folder.Id, shareRecord.ShareTo),
+                ItemId = string.Format("{0}_{1}", folder.Id, shareRecord.Subject),
                 ItemUrl = _filesLinkUtility.GetFileRedirectPreviewUrl(folder.Id, false),
                 Product = Product,
                 Module = Name,
@@ -108,8 +105,8 @@ public class FoldersModule : FeedModule
                 Keywords = folder.Title,
                 HasPreview = false,
                 CanComment = false,
-                Target = shareRecord.ShareTo,
-                GroupId = GetGroupId(SharedFolderItem, shareRecord.ShareBy, folder.ParentId.ToString())
+                Target = shareRecord.Subject,
+                GroupId = GetGroupId(SharedFolderItem, shareRecord.Owner, folder.ParentId.ToString())
             };
 
             return feed;

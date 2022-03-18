@@ -1,6 +1,7 @@
 ﻿global using System.Collections;
 global using System.Collections.Concurrent;
 global using System.Diagnostics;
+global using System.Diagnostics.CodeAnalysis;
 global using System.Globalization;
 global using System.Linq.Expressions;
 global using System.Net;
@@ -16,7 +17,6 @@ global using System.Text.Json.Serialization;
 global using System.Text.RegularExpressions;
 global using System.Web;
 global using System.Xml;
-global using System.Diagnostics.CodeAnalysis;
 
 global using AppLimit.CloudComputing.SharpBox;
 global using AppLimit.CloudComputing.SharpBox.Exceptions;
@@ -28,8 +28,8 @@ global using ASC.Api.Core;
 global using ASC.Api.Utils;
 global using ASC.Common;
 global using ASC.Common.Caching;
-global using ASC.Common.Mapping;
 global using ASC.Common.Logging;
+global using ASC.Common.Mapping;
 global using ASC.Common.Security.Authentication;
 global using ASC.Common.Security.Authorizing;
 global using ASC.Common.Threading;
@@ -57,12 +57,10 @@ global using ASC.FederatedLogin.Profile;
 global using ASC.Files.Core;
 global using ASC.Files.Core.ApiModels.RequestDto;
 global using ASC.Files.Core.ApiModels.ResponseDto;
+global using ASC.Files.Core.Core.Entries;
 global using ASC.Files.Core.Data;
 global using ASC.Files.Core.EF;
 global using ASC.Files.Core.Mapping;
-global using ASC.Files.Core.Core.Entries;
-global using ASC.Files.Core.ApiModels.RequestDto;
-global using ASC.Files.Core.ApiModels.ResponseDto;
 global using ASC.Files.Core.Resources;
 global using ASC.Files.Core.Security;
 global using ASC.Files.Core.Services.NotifyService;
@@ -110,6 +108,8 @@ global using ASC.Web.Studio.Core.Notify;
 global using ASC.Web.Studio.UserControls.Statistics;
 global using ASC.Web.Studio.Utility;
 
+global using AutoMapper;
+
 global using Box.V2;
 global using Box.V2.Auth;
 global using Box.V2.Config;
@@ -154,8 +154,6 @@ global using Microsoft.OneDrive.Sdk;
 global using Microsoft.SharePoint.Client;
 
 global using Nest;
-
-global using AutoMapper;
 
 global using Newtonsoft.Json;
 global using Newtonsoft.Json.Linq;

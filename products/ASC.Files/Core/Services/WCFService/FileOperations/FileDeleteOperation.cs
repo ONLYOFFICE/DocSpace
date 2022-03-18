@@ -128,7 +128,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                 canCalculate = FolderDao.CanCalculateSubitems(folderId) ? default : folderId;
 
                 await fileMarker.RemoveMarkAsNewForAllAsync(folder);
-                if (folder.ProviderEntry && folder.Id.Equals(folder.RootFolderId))
+                if (folder.ProviderEntry && folder.Id.Equals(folder.RootId))
                 {
                     if (ProviderDao != null)
                     {

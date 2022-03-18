@@ -10,6 +10,9 @@ public class FileWithShare : IMapFrom<DbFileQueryWithSecurity>
     public void Mapping(Profile profile)
     {
         profile.CreateMap<DbFileQueryWithSecurity, FileWithShare>()
-            .ConvertUsing<FilesTypeConverter>();
+           .ForMember(r => r.File, r => r.MapFrom(s => s.DbFileQuery))
+           .ForMember(r => r.ShareRecord, r => r.MapFrom(s => s.Security));
+
+        profile.CreateMap<DbFilesSecurity, SmallShareRecord>();
     }
 }

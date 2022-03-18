@@ -110,7 +110,7 @@ public class FileDtoHelper : FileEntryDtoHelper
 
         result.FolderId = file.ParentId;
         if (file.RootFolderType == FolderType.USER
-            && !Equals(file.RootFolderCreator, _authContext.CurrentAccount.ID))
+            && !Equals(file.RootCreateBy, _authContext.CurrentAccount.ID))
         {
             result.RootFolderType = FolderType.SHARE;
             var folderDao = _daoFactory.GetFolderDao<T>();

@@ -85,7 +85,7 @@ public class FolderDtoHelper : FileEntryDtoHelper
         result.ParentId = folder.ParentId;
 
         if (folder.RootFolderType == FolderType.USER
-            && !Equals(folder.RootFolderCreator, _authContext.CurrentAccount.ID))
+            && !Equals(folder.RootCreateBy, _authContext.CurrentAccount.ID))
         {
             result.RootFolderType = FolderType.SHARE;
 

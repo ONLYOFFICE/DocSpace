@@ -365,7 +365,7 @@ public class FileStorageService<T> //: IFileStorageService
             if (fileEntry is File<TId> file)
             {
                 if (fileEntry.RootFolderType == FolderType.USER
-                    && !Equals(fileEntry.RootFolderCreator, _authContext.CurrentAccount.ID)
+                    && !Equals(fileEntry.RootCreateBy, _authContext.CurrentAccount.ID)
                     && !await _fileSecurity.CanReadAsync(await folderDao.GetFolderAsync(file.FolderIdDisplay)))
                 {
                     file.FolderIdDisplay = await _globalFolderHelper.GetFolderShareAsync<TId>();
@@ -374,7 +374,7 @@ public class FileStorageService<T> //: IFileStorageService
             else if (fileEntry is Folder<TId> folder)
             {
                 if (fileEntry.RootFolderType == FolderType.USER
-                    && !Equals(fileEntry.RootFolderCreator, _authContext.CurrentAccount.ID)
+                    && !Equals(fileEntry.RootCreateBy, _authContext.CurrentAccount.ID)
                     && !await _fileSecurity.CanReadAsync(await folderDao.GetFolderAsync(folder.FolderIdDisplay)))
                 {
                     folder.FolderIdDisplay = await _globalFolderHelper.GetFolderShareAsync<TId>();
@@ -461,7 +461,7 @@ public class FileStorageService<T> //: IFileStorageService
         }
 
         if (folder.RootFolderType == FolderType.USER
-            && !Equals(folder.RootFolderCreator, _authContext.CurrentAccount.ID)
+            && !Equals(folder.RootCreateBy, _authContext.CurrentAccount.ID)
             && !await _fileSecurity.CanReadAsync(await folderDao.GetFolderAsync(folder.ParentId)))
         {
             folder.FolderIdDisplay = await _globalFolderHelper.GetFolderShareAsync<T>();
@@ -484,7 +484,7 @@ public class FileStorageService<T> //: IFileStorageService
         await _entryStatusManager.SetFileStatusAsync(file);
 
         if (file.RootFolderType == FolderType.USER
-            && !Equals(file.RootFolderCreator, _authContext.CurrentAccount.ID))
+            && !Equals(file.RootCreateBy, _authContext.CurrentAccount.ID))
         {
             var folderDao = GetFolderDao();
             if (!await _fileSecurity.CanReadAsync(await folderDao.GetFolderAsync(file.ParentId)))
@@ -907,7 +907,7 @@ public class FileStorageService<T> //: IFileStorageService
             }
 
             if (file.RootFolderType == FolderType.USER
-                && !Equals(file.RootFolderCreator, _authContext.CurrentAccount.ID))
+                && !Equals(file.RootCreateBy, _authContext.CurrentAccount.ID))
             {
                 var folderDao = GetFolderDao();
                 if (!await _fileSecurity.CanReadAsync(await folderDao.GetFolderAsync(file.ParentId)))
@@ -939,7 +939,7 @@ public class FileStorageService<T> //: IFileStorageService
         _filesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileRestoreVersion, file.Title, version.ToString(CultureInfo.InvariantCulture));
 
         if (file.RootFolderType == FolderType.USER
-            && !Equals(file.RootFolderCreator, _authContext.CurrentAccount.ID))
+            && !Equals(file.RootCreateBy, _authContext.CurrentAccount.ID))
         {
             var folderDao = GetFolderDao();
             if (!await _fileSecurity.CanReadAsync(await folderDao.GetFolderAsync(file.ParentId)))
@@ -976,7 +976,7 @@ public class FileStorageService<T> //: IFileStorageService
                                  file.Title, version == 0 ? (file.Version - 1).ToString(CultureInfo.InvariantCulture) : version.ToString(CultureInfo.InvariantCulture));
 
         if (file.RootFolderType == FolderType.USER
-            && !Equals(file.RootFolderCreator, _authContext.CurrentAccount.ID))
+            && !Equals(file.RootCreateBy, _authContext.CurrentAccount.ID))
         {
             var folderDao = GetFolderDao();
             if (!await _fileSecurity.CanReadAsync(await folderDao.GetFolderAsync(file.ParentId)))
@@ -1004,7 +1004,7 @@ public class FileStorageService<T> //: IFileStorageService
         ErrorIf(tagLocked != null
                 && tagLocked.Owner != _authContext.CurrentAccount.ID
                 && !_global.IsAdministrator
-                && (file.RootFolderType != FolderType.USER || file.RootFolderCreator != _authContext.CurrentAccount.ID), FilesCommonResource.ErrorMassage_LockedFile);
+                && (file.RootFolderType != FolderType.USER || file.RootCreateBy != _authContext.CurrentAccount.ID), FilesCommonResource.ErrorMassage_LockedFile);
 
         if (lockfile)
         {
@@ -1044,7 +1044,7 @@ public class FileStorageService<T> //: IFileStorageService
         await _entryStatusManager.SetFileStatusAsync(file);
 
         if (file.RootFolderType == FolderType.USER
-            && !Equals(file.RootFolderCreator, _authContext.CurrentAccount.ID))
+            && !Equals(file.RootCreateBy, _authContext.CurrentAccount.ID))
         {
             var folderDao = GetFolderDao();
             if (!await _fileSecurity.CanReadAsync(await folderDao.GetFolderAsync(file.ParentId)))

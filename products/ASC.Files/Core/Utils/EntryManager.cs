@@ -141,7 +141,7 @@ public class BreadCrumbsManager
                         switch (firstVisible.RootFolderType)
                         {
                             case FolderType.USER:
-                                rootId = _authContext.CurrentAccount.ID == firstVisible.RootFolderCreator
+                                rootId = _authContext.CurrentAccount.ID == firstVisible.RootCreateBy
                                     ? _globalFolderHelper.FolderMy
                                     : await _globalFolderHelper.FolderShareAsync;
                                 break;
@@ -902,8 +902,8 @@ public class EntryManager
         folder.ModifiedOn = providerInfo.CreateOn;
         folder.ProviderId = providerInfo.ID;
         folder.ProviderKey = providerInfo.ProviderKey;
-        folder.RootFolderCreator = providerInfo.Owner;
-        folder.RootFolderId = providerInfo.RootFolderId;
+        folder.RootCreateBy = providerInfo.Owner;
+        folder.RootId = providerInfo.RootFolderId;
         folder.RootFolderType = providerInfo.RootFolderType;
         folder.Shareable = false;
         folder.Title = providerInfo.CustomerTitle;
@@ -928,7 +928,7 @@ public class EntryManager
         foreach (var entry in entries)
         {
             if (entry.RootFolderType == FolderType.USER
-                && entry.RootFolderCreator != _authContext.CurrentAccount.ID)
+                && entry.RootCreateBy != _authContext.CurrentAccount.ID)
             {
                 var folderId = entry.ParentId;
                 var folder = await folderDao.GetFolderAsync(folderId);

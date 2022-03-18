@@ -48,7 +48,7 @@ public class FilesModule : FeedModule
         bool targetCond;
         if (feed.Target != null)
         {
-            if (shareRecord != null && shareRecord.ShareBy == userId)
+            if (shareRecord != null && shareRecord.Owner == userId)
             {
                 return false;
             }
@@ -87,7 +87,7 @@ public class FilesModule : FeedModule
 
         var files = feed1.Where(r => r.Item1.Feed.Target == null).Select(r => r.Item2).ToList();
 
-        foreach (var f in feed1.Where(r => r.Item1.Feed.Target != null && !(r.Item3 != null && r.Item3.ShareBy == userId)))
+        foreach (var f in feed1.Where(r => r.Item1.Feed.Target != null && !(r.Item3 != null && r.Item3.Owner == userId)))
         {
             var file = f.Item2;
             if (IsTarget(f.Item1.Feed.Target, userId) && !files.Any(r => r.UniqID.Equals(file.UniqID)))
@@ -131,10 +131,10 @@ public class FilesModule : FeedModule
 
         if (shareRecord != null)
         {
-            var feed = new Feed.Aggregator.Feed(shareRecord.ShareBy, shareRecord.ShareOn, true)
+            var feed = new Feed.Aggregator.Feed(shareRecord.Owner, shareRecord.TimeStamp, true)
             {
                 Item = SharedFileItem,
-                ItemId = string.Format("{0}_{1}", file.Id, shareRecord.ShareTo),
+                ItemId = string.Format("{0}_{1}", file.Id, shareRecord.Subject),
                 ItemUrl = _filesLinkUtility.GetFileRedirectPreviewUrl(file.Id, true),
                 Product = Product,
                 Module = Name,
@@ -145,8 +145,8 @@ public class FilesModule : FeedModule
                 Keywords = file.Title,
                 HasPreview = false,
                 CanComment = false,
-                Target = shareRecord.ShareTo,
-                GroupId = GetGroupId(SharedFileItem, shareRecord.ShareBy, file.ParentId.ToString())
+                Target = shareRecord.Subject,
+                GroupId = GetGroupId(SharedFileItem, shareRecord.Owner, file.ParentId.ToString())
             };
 
             return feed;

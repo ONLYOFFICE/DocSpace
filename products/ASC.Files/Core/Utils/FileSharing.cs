@@ -89,7 +89,7 @@ public class FileSharingAceHelper<T>
         {
             var subjects = fileSecurity.GetUserSubjects(w.SubjectId);
 
-            var ownerId = entry.RootFolderType == FolderType.USER ? entry.RootFolderCreator : entry.CreateBy;
+            var ownerId = entry.RootFolderType == FolderType.USER ? entry.RootCreateBy : entry.CreateBy;
             if (entry.RootFolderType == FolderType.COMMON && subjects.Contains(Constants.GroupAdmin.ID)
                 || ownerId == w.SubjectId)
             {
@@ -199,8 +199,8 @@ public class FileSharingAceHelper<T>
             async entry =>
             {
                 if (entry.RootFolderType != FolderType.USER && entry.RootFolderType != FolderType.Privacy
-                        || Equals(entry.RootFolderId, _globalFolderHelper.FolderMy)
-                        || Equals(entry.RootFolderId, await _globalFolderHelper.FolderPrivacyAsync))
+                        || Equals(entry.RootId, _globalFolderHelper.FolderMy)
+                        || Equals(entry.RootId, await _globalFolderHelper.FolderPrivacyAsync))
                 {
                     return;
                 }
@@ -251,10 +251,10 @@ public class FileSharingHelper
             && (entry.RootFolderType == FolderType.COMMON && _global.IsAdministrator
                 || !_userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager)
                     && (entry.RootFolderType == FolderType.USER
-                        && (Equals(entry.RootFolderId, _globalFolderHelper.FolderMy) || await _fileSecurity.CanEditAsync(entry))
+                        && (Equals(entry.RootId, _globalFolderHelper.FolderMy) || await _fileSecurity.CanEditAsync(entry))
                         || entry.RootFolderType == FolderType.Privacy
                             && entry is File<T>
-                            && (Equals(entry.RootFolderId, await _globalFolderHelper.FolderPrivacyAsync) || await _fileSecurity.CanEditAsync(entry))));
+                            && (Equals(entry.RootId, await _globalFolderHelper.FolderPrivacyAsync) || await _fileSecurity.CanEditAsync(entry))));
     }
 }
 
@@ -374,7 +374,7 @@ public class FileSharing
                 Share = share,
                 Owner =
                         entry.RootFolderType == FolderType.USER
-                            ? entry.RootFolderCreator == r.Subject
+                            ? entry.RootCreateBy == r.Subject
                             : entry.CreateBy == r.Subject,
                 LockedRights = r.Subject == _authContext.CurrentAccount.ID
             };
@@ -400,7 +400,7 @@ public class FileSharing
 
         if (!result.Any(w => w.Owner))
         {
-            var ownerId = entry.RootFolderType == FolderType.USER ? entry.RootFolderCreator : entry.CreateBy;
+            var ownerId = entry.RootFolderType == FolderType.USER ? entry.RootCreateBy : entry.CreateBy;
             var w = new AceWrapper
             {
                 SubjectId = ownerId,

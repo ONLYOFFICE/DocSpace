@@ -296,8 +296,8 @@ public class SharePointProviderInfo : IProviderInfo
             result.ModifiedOn = DateTime.UtcNow;
             result.ProviderId = ID;
             result.ProviderKey = ProviderKey;
-            result.RootFolderCreator = Owner;
-            result.RootFolderId = MakeId(RootFolder.ServerRelativeUrl);
+            result.RootCreateBy = Owner;
+            result.RootId = MakeId(RootFolder.ServerRelativeUrl);
             result.RootFolderType = RootFolderType;
             result.Title = MakeTitle(GetTitleById(errorFile.ID));
             result.Error = errorFile.Error;
@@ -317,9 +317,9 @@ public class SharePointProviderInfo : IProviderInfo
         result.ProviderId = ID;
         result.ProviderKey = ProviderKey;
         result.Title = MakeTitle(file.Name);
-        result.RootFolderId = MakeId(SpRootFolderId);
+        result.RootId = MakeId(SpRootFolderId);
         result.RootFolderType = RootFolderType;
-        result.RootFolderCreator = Owner;
+        result.RootCreateBy = Owner;
         result.Shared = false;
         result.Version = 1;
 
@@ -563,8 +563,8 @@ public class SharePointProviderInfo : IProviderInfo
             result.ModifiedOn = DateTime.UtcNow;
             result.ProviderId = ID;
             result.ProviderKey = ProviderKey;
-            result.RootFolderCreator = Owner;
-            result.RootFolderId = MakeId(SpRootFolderId);
+            result.RootCreateBy = Owner;
+            result.RootId = MakeId(SpRootFolderId);
             result.RootFolderType = RootFolderType;
             result.Shareable = false;
             result.Title = MakeTitle(GetTitleById(errorFolder.ID));
@@ -586,8 +586,8 @@ public class SharePointProviderInfo : IProviderInfo
         result.ModifiedOn = CreateOn;
         result.ProviderId = ID;
         result.ProviderKey = ProviderKey;
-        result.RootFolderCreator = Owner;
-        result.RootFolderId = MakeId(RootFolder.ServerRelativeUrl);
+        result.RootCreateBy = Owner;
+        result.RootId = MakeId(RootFolder.ServerRelativeUrl);
         result.RootFolderType = RootFolderType;
         result.Shareable = false;
         result.Title = isRoot ? CustomerTitle : MakeTitle(folder.Name);

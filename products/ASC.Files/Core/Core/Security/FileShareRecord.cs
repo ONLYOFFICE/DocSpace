@@ -59,9 +59,9 @@ public class FileShareRecord : IMapFrom<DbFilesSecurity>
 
 public class SmallShareRecord
 {
-    public Guid ShareTo { get; set; }
+    public Guid Subject { get; set; }
     public Guid ShareParentTo { get; set; }
-    public Guid ShareBy { get; set; }
-    public DateTime ShareOn { get; set; }
+    public Guid Owner { get; set; }
+    public DateTime TimeStamp { get; set; }
     public FileShare Share { get; set; }
 }

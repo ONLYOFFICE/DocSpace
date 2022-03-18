@@ -75,7 +75,7 @@ public abstract class FileEntryWrapper<T> : FileEntryDto
         : base(entry, employeeWraperHelper, apiDateTimeHelper)
     {
         Id = entry.Id;
-        RootFolderId = entry.RootFolderId;
+        RootFolderId = entry.RootId;
     }
 
     protected FileEntryWrapper() { }
@@ -114,7 +114,7 @@ public class FileEntryDtoHelper
             Updated = _apiDateTimeHelper.Get(entry.ModifiedOn),
             UpdatedBy = _employeeWraperHelper.Get(entry.ModifiedBy),
             RootFolderType = entry.RootFolderType,
-            RootFolderId = entry.RootFolderId,
+            RootFolderId = entry.RootId,
             ProviderItem = entry.ProviderEntry.NullIfDefault(),
             ProviderKey = entry.ProviderKey,
             ProviderId = entry.ProviderId.NullIfDefault(),

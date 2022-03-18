@@ -79,7 +79,7 @@ public abstract class FileEntry : ICloneable
     public DateTime CreateOn { get; set; }
     public DateTime ModifiedOn { get; set; }
     public FolderType RootFolderType { get; set; }
-    public Guid RootFolderCreator { get; set; }
+    public Guid RootCreateBy { get; set; }
     public abstract bool IsNew { get; set; }
     public FileEntryType FileEntryType { get; set; }
 
@@ -128,7 +128,7 @@ public abstract class FileEntry<T> : FileEntry, ICloneable, IFileEntry<T>
         set => _folderIdDisplay = value;
     }
 
-    public T RootFolderId { get; set; }
+    public T RootId { get; set; }
 
     [JsonIgnore]
     public virtual string UniqID => $"{GetType().Name.ToLower()}_{Id}";

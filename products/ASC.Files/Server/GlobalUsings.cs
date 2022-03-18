@@ -15,15 +15,14 @@ global using ASC.Common.Utils;
 global using ASC.Common.Web;
 global using ASC.Core;
 global using ASC.Core.Billing;
-global using ASC.Core.Common.Configuration;
 global using ASC.Core.Common.Settings;
 global using ASC.Core.Users;
 global using ASC.FederatedLogin.Helpers;
 global using ASC.FederatedLogin.LoginProviders;
 global using ASC.Files.Core;
+global using ASC.Files.Core.ApiModels;
 global using ASC.Files.Core.ApiModels.RequestDto;
 global using ASC.Files.Core.ApiModels.ResponseDto;
-global using ASC.Files.Core.ApiModels;
 global using ASC.Files.Core.Security;
 global using ASC.Files.Helpers;
 global using ASC.MessagingSystem.Core;
@@ -51,7 +50,7 @@ global using Autofac.Extensions.DependencyInjection;
 
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Mvc;
-global using Microsoft.Extensions.Options;
 global using Microsoft.Extensions.Hosting.WindowsServices;
+global using Microsoft.Extensions.Options;
 
 global using Newtonsoft.Json.Linq;

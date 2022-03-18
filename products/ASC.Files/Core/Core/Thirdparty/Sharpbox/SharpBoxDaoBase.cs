@@ -267,7 +267,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
         folder.ParentId = isRoot ? null : MakeId(fsEntry.Parent);
         folder.CreateOn = isRoot ? ProviderInfo.CreateOn : fsEntry.Modified;
         folder.ModifiedOn = isRoot ? ProviderInfo.CreateOn : fsEntry.Modified;
-        folder.RootFolderId = RootFolderMakeId();
+        folder.RootId = RootFolderMakeId();
 
         folder.Title = MakeTitle(fsEntry);
         folder.FilesCount = 0; /*fsEntry.Count - childFoldersCount NOTE: Removed due to performance isssues*/
@@ -308,7 +308,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
         file.Id = MakeId(fsEntry);
         file.CreateOn = fsEntry.Modified;
         file.ModifiedOn = fsEntry.Modified;
-        file.RootFolderId = MakeId(null);
+        file.RootId = MakeId(null);
         file.Title = MakeTitle(fsEntry);
 
         return file;
@@ -326,7 +326,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
         folder.Id = MakeId(fsEntry);
         folder.CreateOn = fsEntry.Modified;
         folder.ModifiedOn = fsEntry.Modified;
-        folder.RootFolderId = MakeId(null);
+        folder.RootId = MakeId(null);
         folder.Title = MakeTitle(fsEntry);
 
         return folder;
@@ -355,7 +355,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
         file.ModifiedOn = fsEntry.Modified.Kind == DateTimeKind.Utc ? TenantUtil.DateTimeFromUtc(fsEntry.Modified) : fsEntry.Modified;
         file.NativeAccessor = fsEntry;
         file.Title = MakeTitle(fsEntry);
-        file.RootFolderId = RootFolderMakeId();
+        file.RootId = RootFolderMakeId();
 
         return file;
     }
