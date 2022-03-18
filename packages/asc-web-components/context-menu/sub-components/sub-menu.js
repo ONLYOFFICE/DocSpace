@@ -174,8 +174,6 @@ const SubMenu = (props) => {
       );
     }
 
-    console.log(item.key);
-
     return (
       <li
         key={item.key}
