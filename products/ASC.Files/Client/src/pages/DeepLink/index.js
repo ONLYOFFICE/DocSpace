@@ -47,30 +47,25 @@ const DeepLinkPage = (props) => {
   const { t, location, getIconSrc, user, history, deepLinkSettings } = props;
   const defaultOpen = localStorage.getItem("deeplink");
 
-  const [title, setTitle] = useState("");
-  const [icon, setIcon] = useState("");
-  const [deepLink, setDeepLink] = useState("");
-
+  const [currentFile, setCurrentFile] = useState([]);
   const [isChecked, setIsChecked] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     fetchData();
-
-    if (defaultOpen) {
-      if (defaultOpen === "app") onOpenAppClick();
-      else onStayBrowserClick();
-    }
   }, []);
 
   const fetchData = async () => {
     const fileId = queryString.parse(location.search).fileId;
     const file = await api.files.getFileInfo(fileId);
+    setCurrentFile(file);
 
-    setTitle(getTitleWithoutExst(file));
-    setIcon(getIconSrc(file.fileExst, 32));
-    setDeepLink(getDeepLink(file));
-    setIsLoading(true);
+    if (defaultOpen) {
+      if (defaultOpen === "app") onOpenApp();
+      else onStayBrowser();
+    } else {
+      setIsLoading(true);
+    }
   };
 
   const getDeepLink = (file) => {
@@ -91,16 +86,14 @@ const DeepLinkPage = (props) => {
     return `${deepLinkSettings.url}?data=${deepLinkData}`;
   };
 
-  const onOpenAppClick = () => {
+  const onOpenApp = () => {
     const nav = navigator.userAgent;
     const storeUrl =
       nav.includes("iPhone;") || nav.includes("iPad;")
         ? `https://apps.apple.com/app/id${deepLinkSettings.iosPackageId}`
         : `https://play.google.com/store/apps/details?id=${deepLinkSettings.androidPackageName}`;
 
-    if (isChecked) localStorage.setItem("deeplink", "app");
-
-    window.location = deepLink;
+    window.location = getDeepLink(currentFile);
 
     setTimeout(() => {
       if (document.hasFocus()) {
@@ -111,17 +104,27 @@ const DeepLinkPage = (props) => {
     }, 3000);
   };
 
-  const onStayBrowserClick = () => {
+  const onOpenAppClick = () => {
+    if (isChecked) localStorage.setItem("deeplink", "app");
+    onOpenApp();
+  };
+
+  const onStayBrowser = () => {
     const fileId = queryString.parse(location.search).fileId;
     const url = `/products/files/doceditor?fileId=${fileId}`;
-    if (isChecked) localStorage.setItem("deeplink", "web");
-
     return window.open(url, "_self");
+  };
+
+  const onStayBrowserClick = () => {
+    if (isChecked) localStorage.setItem("deeplink", "web");
+    onStayBrowser();
   };
 
   const onChangeCheckbox = () => {
     setIsChecked(!isChecked);
   };
+
+  console.log(currentFile);
 
   if (!isLoading) return <AppLoader />;
   return (
@@ -130,9 +133,9 @@ const DeepLinkPage = (props) => {
         {t("OpeningDocument")}
       </Text>
       <StyledFileTile>
-        <img src={icon}></img>
+        <img src={getIconSrc(currentFile.fileExst, 32)}></img>
         <Text fontSize="14px" fontWeight="600" truncate>
-          {title}
+          {getTitleWithoutExst(currentFile)}
         </Text>
       </StyledFileTile>
       <Text className="description" fontSize="13px" fontWeight="400">
