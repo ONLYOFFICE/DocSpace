@@ -291,7 +291,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
       },
     };
 
-    Snackbar.show(barConfig);
+    setTimeout(() => Snackbar.show(barConfig), 10000);
   };
 
   const fetchMaintenance = () => {
