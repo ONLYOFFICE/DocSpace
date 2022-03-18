@@ -325,8 +325,15 @@ class BackupStore {
       return;
     }
 
+    let isWaitRequest = false;
     this.timerId = setInterval(async () => {
       try {
+        if (isWaitRequest) {
+          return;
+        }
+
+        isWaitRequest = true;
+
         const response = await getBackupProgress();
 
         if (response) {
@@ -364,6 +371,8 @@ class BackupStore {
           this.timerId = null;
           return;
         }
+
+        isWaitRequest = false;
       } catch (e) {
         clearInterval(this.timerId);
         this.clearSessionStorage();
