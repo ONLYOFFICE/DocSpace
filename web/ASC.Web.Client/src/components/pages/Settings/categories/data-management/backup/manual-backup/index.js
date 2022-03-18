@@ -195,7 +195,7 @@ class ManualBackup extends React.Component {
 
     const isMaxProgress = downloadingProgress === 100;
 
-    const isDisabledThirdParty = !!commonThirdPartyList;
+    const isDisabledThirdParty = commonThirdPartyList?.length === 0;
 
     const commonRadioButtonProps = {
       fontSize: "13px",

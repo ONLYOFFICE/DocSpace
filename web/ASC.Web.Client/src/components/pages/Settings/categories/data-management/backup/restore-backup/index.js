@@ -347,7 +347,7 @@ class RestoreBackup extends React.Component {
       onClick: this.onClickShowStorage,
     };
 
-    const isDisabledThirdParty = !!commonThirdPartyList;
+    const isDisabledThirdParty = commonThirdPartyList?.length === 0;
 
     const isMaxProgress = downloadingProgress === 100;
 

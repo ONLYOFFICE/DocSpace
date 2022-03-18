@@ -487,7 +487,7 @@ class AutomaticBackup extends React.PureComponent {
       isAdditionalChanged,
     } = this.state;
 
-    const isDisabledThirdPartyList = !!commonThirdPartyList;
+    const isDisabledThirdPartyList = commonThirdPartyList?.length === 0;
 
     const commonProps = {
       isLoadingData,
