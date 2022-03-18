@@ -70,7 +70,7 @@ class ConfigureTariffService : IConfigureNamedOptions<TariffService>
         IConfiguration configuration,
         DbContextManager<CoreDbContext> coreDbContextManager,
         TariffServiceStorage tariffServiceStorage,
-        IOptionsMonitor<ILog> iLog)
+        ILog logger)
     {
         this._quotaService = quotaService;
         this._tenantService = tenantService;
@@ -79,7 +79,7 @@ class ConfigureTariffService : IConfigureNamedOptions<TariffService>
         _configuration = configuration;
         _coreDbContextManager = coreDbContextManager;
         _tariffServiceStorage = tariffServiceStorage;
-        _logger = iLog;
+        _logger = logger;
     }
 
     private readonly IOptionsSnapshot<CachedQuotaService> _quotaService;

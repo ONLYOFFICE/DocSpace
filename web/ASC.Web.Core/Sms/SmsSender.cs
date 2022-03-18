@@ -36,13 +36,13 @@ namespace ASC.Web.Core.Sms
         public SmsSender(
             IConfiguration configuration,
             TenantManager tenantManager,
-            IOptionsMonitor<ILog> options,
+            ILog logger,
             SmsProviderManager smsProviderManager)
         {
             Configuration = configuration;
             TenantManager = tenantManager;
             SmsProviderManager = smsProviderManager;
-            Log = options.CurrentValue;
+            Log = logger;
         }
 
         public Task<bool> SendSMSAsync(string number, string message)

@@ -75,7 +75,7 @@ namespace ASC.Api.Settings.Smtp
             SecurityContext securityContext,
             TenantManager tenantManager,
             IConfiguration configuration,
-            IOptionsMonitor<ILog> options)
+            ILog logger)
         {
             SmtpSettings = smtpSettings;
             CurrentTenant = tenant;
@@ -97,7 +97,7 @@ namespace ASC.Api.Settings.Smtp
 
             TaskInfo = new DistributedTask();
 
-            Logger = options.CurrentValue;
+            Logger = logger;
         }
 
         public void RunJob(DistributedTask distributedTask, CancellationToken cancellationToken)

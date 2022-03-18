@@ -55,9 +55,9 @@ public class FFmpegService
         }
     }
 
-    public FFmpegService(IOptionsMonitor<ILog> optionsMonitor, IConfiguration configuration)
+    public FFmpegService(ILog logger, IConfiguration configuration)
     {
-        _logger = optionsMonitor.CurrentValue;
+        _logger = logger;
         _fFmpegPath = configuration["files:ffmpeg:value"];
         _fFmpegArgs = configuration["files:ffmpeg:args"] ?? "-i - -preset ultrafast -movflags frag_keyframe+empty_moov -f {0} -";
 

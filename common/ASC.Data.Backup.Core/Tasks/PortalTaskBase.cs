@@ -52,9 +52,8 @@ public abstract class PortalTaskBase
     protected readonly List<ModuleName> IgnoredModules = new List<ModuleName>();
     protected readonly List<string> IgnoredTables = new List<string>(); //todo: add using to backup and transfer tasks
 
-    protected PortalTaskBase(DbFactory dbFactory, IOptionsMonitor<ILog> options, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider)
-    {
-        Logger = options.CurrentValue;
+    protected PortalTaskBase(DbFactory dbFactory, ILog logger, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, ModuleProvider moduleProvider)    {
+        Logger = logger;
         ProcessStorage = true;
         StorageFactory = storageFactory;
         StorageFactoryConfig = storageFactoryConfig;

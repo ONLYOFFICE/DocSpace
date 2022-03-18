@@ -23,7 +23,7 @@
             ProviderManager providerManager,
             IConfiguration configuration,
             IHttpContextAccessor httpContextAccessor,
-            IOptionsMonitor<ILog> options)
+            ILog logger)
         {
             SetupInfo = setupInfo;
             CoreBaseSettings = coreBaseSettings;
@@ -32,7 +32,7 @@
             ProviderManager = providerManager;
             Configuration = configuration;
             HttpContextAccessor = httpContextAccessor;
-            Log = options.CurrentValue;
+            Log = logger;
         }
 
         ///<summary>

@@ -44,8 +44,7 @@ public sealed class Context : INotifyRegistry
 
     public Context(IServiceProvider serviceProvider)
     {
-        var options = serviceProvider.GetService<IOptionsMonitor<ILog>>();
-        Logger = options.CurrentValue;
+        Logger = serviceProvider.GetService<ILog>();
         NotifyEngine = new NotifyEngine(this, serviceProvider);
         DispatchEngine = new DispatchEngine(this, serviceProvider.GetService<IConfiguration>(), options);
     }

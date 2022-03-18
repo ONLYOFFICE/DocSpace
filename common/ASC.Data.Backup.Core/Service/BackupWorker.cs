@@ -299,9 +299,9 @@ public abstract class BaseBackupProgressItem : DistributedTaskProgress
 
     private int? _tenantId;
 
-    protected BaseBackupProgressItem(IOptionsMonitor<ILog> options, IServiceScopeFactory serviceScopeFactory)
+    protected BaseBackupProgressItem(ILog logger, IServiceScopeFactory serviceScopeFactory)
     {
-        Logger = options.CurrentValue;
+        Logger = logger;
         ServiceScopeFactory = serviceScopeFactory;
     }
 
@@ -328,9 +328,9 @@ public class BackupProgressItem : BaseBackupProgressItem
     private int _limit;
 
     public BackupProgressItem(
-        IOptionsMonitor<ILog> options,
+        ILog logger,
         IServiceScopeFactory serviceScopeFactory)
-        : base(options, serviceScopeFactory)
+        : base(logger, serviceScopeFactory)
     {
     }
 
@@ -484,9 +484,9 @@ public class RestoreProgressItem : BaseBackupProgressItem
     private Dictionary<string, string> _configPaths;
 
     public RestoreProgressItem(
-        IOptionsMonitor<ILog> options,
+        ILog logger,
         IServiceScopeFactory serviceScopeFactory)
-        : base(options, serviceScopeFactory)
+        : base(logger, serviceScopeFactory)
     {
     }
 
@@ -638,8 +638,8 @@ public class TransferProgressItem : BaseBackupProgressItem
     public int Limit { get; set; }
 
     public TransferProgressItem(
-        IOptionsMonitor<ILog> options,
-        IServiceScopeFactory serviceScopeFactory) : base(options, serviceScopeFactory)
+        ILog logger,
+        IServiceScopeFactory serviceScopeFactory) : base(logger, serviceScopeFactory)
     {
     }
 

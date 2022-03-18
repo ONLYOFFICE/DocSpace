@@ -38,7 +38,7 @@ internal sealed class BackupSchedulerService : IHostedService, IDisposable
     private readonly IServiceScopeFactory _scopeFactory;
 
     public BackupSchedulerService(
-        ILog logger,
+        ILog<BackupSchedulerService> logger,
         IServiceScopeFactory scopeFactory,
         ConfigurationExtension configuration,
         CoreBaseSettings coreBaseSettings,

@@ -46,7 +46,7 @@ namespace ASC.Web.Studio.UserControls.FirstTime
         public IHttpClientFactory ClientFactory { get; }
 
         public FirstTimeTenantSettings(
-            IOptionsMonitor<ILog> options,
+            ILog logger,
             TenantManager tenantManager,
             TenantExtra tenantExtra,
             SettingsManager settingsManager,
@@ -61,7 +61,7 @@ namespace ASC.Web.Studio.UserControls.FirstTime
             CoreBaseSettings coreBaseSettings,
             IHttpClientFactory clientFactory)
         {
-            Log = options.CurrentValue;
+            Log = logger;
             TenantManager = tenantManager;
             TenantExtra = tenantExtra;
             SettingsManager = settingsManager;

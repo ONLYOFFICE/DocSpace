@@ -27,12 +27,12 @@ public class ThumbnailBuilderService : BackgroundService
     public ThumbnailBuilderService(
         BuilderQueue<int> builderQueue,
         IServiceScopeFactory serviceScopeFactory,
-        IOptionsMonitor<ILog> options,
+        ILog<ThumbnailBuilderService> logger,
         ThumbnailSettings settings)
     {
         _serviceScopeFactory = serviceScopeFactory;
         _thumbnailSettings = settings;
-        _logger = options.Get("ASC.Files.ThumbnailBuilder");
+        _logger = logger;
         _builderQueue = builderQueue;
     }
 

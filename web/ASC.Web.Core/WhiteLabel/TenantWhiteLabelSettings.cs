@@ -213,7 +213,7 @@ namespace ASC.Web.Core.WhiteLabel
             TenantManager tenantManager,
             SettingsManager settingsManager,
             IServiceProvider serviceProvider,
-            IOptionsMonitor<ILog> option)
+            ILog logger)
         {
             WebImageSupplier = webImageSupplier;
             UserPhotoManager = userPhotoManager;
@@ -222,7 +222,7 @@ namespace ASC.Web.Core.WhiteLabel
             TenantManager = tenantManager;
             SettingsManager = settingsManager;
             ServiceProvider = serviceProvider;
-            Log = option.CurrentValue;
+            Log = logger;
         }
 
         #region Restore default

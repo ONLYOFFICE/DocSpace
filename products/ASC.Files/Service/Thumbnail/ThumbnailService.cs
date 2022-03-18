@@ -22,10 +22,10 @@ public class ThumbnailService : IHostedService
     private readonly ICacheNotify<ThumbnailRequest> _cacheNotify;
     private readonly ILog _logger;
 
-    public ThumbnailService(ICacheNotify<ThumbnailRequest> cacheNotify, IOptionsMonitor<ILog> options)
+    public ThumbnailService(ICacheNotify<ThumbnailRequest> cacheNotify, ILog<ThumbnailService> logger)
     {
         _cacheNotify = cacheNotify;
-        _logger = options.Get("ASC.Files.ThumbnailService");
+        _logger = logger;
     }
 
     public Task StartAsync(CancellationToken cancellationToken)

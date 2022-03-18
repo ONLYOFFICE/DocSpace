@@ -75,10 +75,10 @@ public class ChunkedUploadSessionHelper
     public ILog Logger { get; }
     private readonly EntryManager _entryManager;
 
-    public ChunkedUploadSessionHelper(IOptionsMonitor<ILog> options, EntryManager entryManager)
+    public ChunkedUploadSessionHelper(ILog logger, EntryManager entryManager)
     {
         _entryManager = entryManager;
-        Logger = options.CurrentValue;
+        Logger = logger;
     }
 
     public async Task<object> ToResponseObjectAsync<T>(ChunkedUploadSession<T> session, bool appendBreadCrumbs = false)

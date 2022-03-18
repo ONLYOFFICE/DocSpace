@@ -32,7 +32,7 @@ namespace ASC.Web.Api.Controllers
 
 
         public PortalController(
-            IOptionsMonitor<ILog> options,
+            ILog logger,
             ApiContext apiContext,
             UserManager userManager,
             TenantManager tenantManager,
@@ -53,7 +53,7 @@ namespace ASC.Web.Api.Controllers
             IHttpClientFactory clientFactory
             )
         {
-            Log = options.CurrentValue;
+            Log = logger;
             ApiContext = apiContext;
             UserManager = userManager;
             TenantManager = tenantManager;

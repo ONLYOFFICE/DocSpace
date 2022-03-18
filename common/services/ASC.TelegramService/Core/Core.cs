@@ -54,10 +54,10 @@ public class CommandModule
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILog _log;
 
-    public CommandModule(IOptionsMonitor<ILog> options, IServiceScopeFactory scopeFactory)
+    public CommandModule(ILog logger, IServiceScopeFactory scopeFactory)
     {
         _scopeFactory = scopeFactory;
-        _log = options.CurrentValue;
+        _log = logger;
 
         var assembly = Assembly.GetExecutingAssembly();
 

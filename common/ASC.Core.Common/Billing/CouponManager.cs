@@ -43,10 +43,10 @@ public class CouponManager
     private readonly SemaphoreSlim _semaphoreSlim;
     private readonly ILog _logger;
 
-    public CouponManager(IOptionsMonitor<ILog> option, IHttpClientFactory clientFactory)
+    public CouponManager(ILog logger, IHttpClientFactory clientFactory)
     {
         _semaphoreSlim = new SemaphoreSlim(1, 1);
-        _logger = option.CurrentValue;
+        _logger = logger;
         _clientFactory = clientFactory;
 
         try

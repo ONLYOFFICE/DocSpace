@@ -41,14 +41,14 @@ public class DocuSignToken
 
     public DocuSignToken(
         TokenHelper tokenHelper,
-        IOptionsMonitor<ILog> options,
+        ILog logger,
         AuthContext authContext,
         ConsumerFactory consumerFactory)
     {
         _tokenHelper = tokenHelper;
         _authContext = authContext;
         _consumerFactory = consumerFactory;
-        Logger = options.CurrentValue;
+        Logger = logger;
     }
 
     public OAuth20Token GetToken()
@@ -136,7 +136,7 @@ public class DocuSignHelper
         DocuSignToken docuSignToken,
         FileSecurity fileSecurity,
         IDaoFactory daoFactory,
-        IOptionsMonitor<ILog> options,
+        ILog logger,
         BaseCommonLinkUtility baseCommonLinkUtility,
         UserManager userManager,
         AuthContext authContext,
@@ -161,7 +161,7 @@ public class DocuSignHelper
         _filesLinkUtility = filesLinkUtility;
         _serviceProvider = serviceProvider;
         _consumerFactory = consumerFactory;
-        Logger = options.CurrentValue;
+        Logger = logger;
     }
 
     public bool ValidateToken(OAuth20Token token)
