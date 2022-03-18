@@ -214,7 +214,6 @@ const ArticleMainButtonContent = (props) => {
     onUploadFolderClick,
   ]);
 
-  console.log("btn render");
   return (
     <>
       {isMobile || isMobileUtils() || isTabletUtils() ? (

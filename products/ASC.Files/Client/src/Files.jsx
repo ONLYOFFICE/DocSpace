@@ -111,7 +111,7 @@ class FilesContent extends React.Component {
       .catch((err) => toastr.error(err))
       .finally(() => {
         this.props.setIsLoaded(true);
-        this.props.setIsArticleLoaded(true);
+
         updateTempContent();
       });
   }
@@ -174,7 +174,7 @@ const Files = inject(({ auth, filesStore }) => {
     isEncryption: auth.settingsStore.isEncryptionSupport,
     isLoaded: auth.isLoaded && filesStore.isLoaded,
     setIsLoaded: filesStore.setIsLoaded,
-    setIsArticleLoaded: filesStore.setIsArticleLoaded,
+
     setEncryptionKeys: auth.settingsStore.setEncryptionKeys,
     loadFilesInfo: async () => {
       //await auth.init();
