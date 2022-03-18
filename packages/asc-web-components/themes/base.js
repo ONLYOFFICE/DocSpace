@@ -303,12 +303,12 @@ const Base = {
     background: white,
     disableBackgroundColor: "rgba(0, 0, 0, 0.08)",
     hoverBackground: white,
-    activeBackground: grayMaxLight,
+    activeBackground: "grayMaxLight",
+    hoverBorder: "#1877f2",
 
     boxShadow:
       "0px 1px 1px rgba(0, 0, 0, 0.24),0px 0px 1px rgba(0, 0, 0, 0.12)",
-    hoverBoxShadow:
-      "0px 2px 2px rgba(0, 0, 0, 0.24),0px 0px 2px rgba(0, 0, 0, 0.12)",
+    hoverBoxShadow: "none",
 
     color: "rgba(0, 0, 0, 0.54)",
     disableColor: "rgba(0, 0, 0, 0.4)",
@@ -325,10 +325,11 @@ const Base = {
       textOverflow: "ellipsis",
       whiteSpace: "nowrap",
       color: "#757575",
+      hoverColor: "#1877f2",
     },
 
     svg: {
-      margin: "11px",
+      margin: "11px 16px",
       width: "18px",
       height: "18px",
       minWidth: "18px",
@@ -881,9 +882,9 @@ const Base = {
 
   tooltip: {
     borderRadius: "6px",
-    boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.13)",
+    boxShadow: "0px 10px 15px rgba(4, 15, 27, 0.13)",
     opacity: "1",
-    padding: "16px",
+    padding: "8px 12px",
     pointerEvents: "auto",
     maxWidth: "340px",
     color: "#F8F7BF",
@@ -1578,8 +1579,6 @@ const Base = {
     hoverBorderBottom: "1px dashed",
     contentPadding: "10px 0px 0px 0px",
     arrowMargin: "4px 8px 4px 0px",
-    arrowMarginRight: "9px",
-    arrowMarginBottom: "5px",
     transform: "rotate(180deg)",
     iconColor: black,
 

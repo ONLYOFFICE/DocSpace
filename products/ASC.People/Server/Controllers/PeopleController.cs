@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Mail;
 using System.Security;
+using System.Security.Claims;
 using System.ServiceModel.Security;
 using System.Threading;
 using System.Threading.Tasks;
@@ -236,10 +237,17 @@ namespace ASC.Employee.Core.Controllers
             return EmployeeWraperFullHelper.GetFull(user);
         }
 
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Everyone")]
         [Read("{username}", order: int.MaxValue)]
         public EmployeeWraperFull GetById(string username)
         {
             if (CoreBaseSettings.Personal) throw new MethodAccessException("Method not available");
+
+            var isInvite = ApiContext.HttpContextAccessor.HttpContext.User.Claims
+                .Any(role => role.Type == ClaimTypes.Role && Enum.TryParse<ConfirmType>(role.Value, out var confirmType) && confirmType == ConfirmType.LinkInvite);
+
+            ApiContext.AuthByClaim();
+
             var user = UserManager.GetUserByUserName(username);
             if (user.ID == Constants.LostUser.ID)
             {
@@ -256,6 +264,11 @@ namespace ASC.Employee.Core.Controllers
             if (user.ID == Constants.LostUser.ID)
             {
                 throw new ItemNotFoundException("User not found");
+            }
+
+            if (isInvite)
+            {
+                return EmployeeWraperFullHelper.GetSimple(user);
             }
 
             return EmployeeWraperFullHelper.GetFull(user);

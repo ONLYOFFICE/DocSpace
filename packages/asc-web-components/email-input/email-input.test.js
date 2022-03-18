@@ -94,46 +94,6 @@ describe("<EmailInput />", () => {
     expect(wrapper).toExist();
   });
 
-  it("re-render test", () => {
-    const wrapper = shallow(<EmailInput {...baseProps} />).instance();
-
-    const shouldUpdate = wrapper.shouldComponentUpdate(
-      {
-        id: "newEmailInputId",
-        name: "emailInputName",
-        value: "",
-        size: "base",
-        scale: false,
-        isDisabled: false,
-        isReadOnly: false,
-        maxLength: 255,
-        placeholder: "email",
-        onValidateInput: () => jest.fn(),
-      },
-      wrapper.state
-    );
-
-    expect(shouldUpdate).toBe(true);
-  });
-
-  it("re-render after changing emailSettings prop", () => {
-    const emailSettings = new EmailSettings();
-    const wrapper = shallow(
-      <EmailInput {...baseProps} emailSettings={emailSettings} />
-    );
-    const instance = wrapper.instance();
-
-    emailSettings.allowName = true;
-    const shouldUpdate = instance.shouldComponentUpdate(
-      {
-        emailSettings,
-      },
-      wrapper.state
-    );
-
-    expect(shouldUpdate).toBe(true);
-    expect(wrapper.state("emailSettings")).toBe(emailSettings);
-  });
   it('isValidEmail is "false" after deleting value', () => {
     const wrapper = mount(<EmailInput {...baseProps} />);
 
@@ -148,17 +108,6 @@ describe("<EmailInput />", () => {
     wrapper.simulate("change", emptyValue);
 
     expect(wrapper.state().isValidEmail.isValid).toBe(false);
-  });
-
-  it("not re-render test", () => {
-    const wrapper = shallow(<EmailInput {...baseProps} />).instance();
-
-    const shouldUpdate = wrapper.shouldComponentUpdate(
-      wrapper.props,
-      wrapper.state
-    );
-
-    expect(shouldUpdate).toBe(false);
   });
 
   it("passed valid email: simple@example.com", () => {
@@ -352,7 +301,7 @@ describe("<EmailInput />", () => {
       <EmailInput
         {...baseProps}
         onValidateInput={onValidateInput}
-        emailSettings={emailSettings}
+        emailSettings={EmailSettings.parse(emailSettings)}
       />
     );
 
@@ -517,7 +466,7 @@ describe("<EmailInput />", () => {
       <EmailInput
         {...baseProps}
         onValidateInput={onValidateInput}
-        emailSettings={emailSettings}
+        emailSettings={EmailSettings.parse(emailSettings)}
       />
     );
 

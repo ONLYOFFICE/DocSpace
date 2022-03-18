@@ -148,7 +148,8 @@ const StyledSelector = styled(Container)`
 
         .option-text__group {
           width: auto;
-          border-bottom: 1px dashed #333333;
+          border-bottom: ${(props) =>
+            props.theme.toggleContent.hoverBorderBottom};
         }
 
         .option-text__header {

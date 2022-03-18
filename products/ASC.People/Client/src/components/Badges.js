@@ -8,13 +8,13 @@ import CatalogSpamIcon from "../../public/images/catalog.spam.react.svg";
 const StyledSendClockIcon = styled(SendClockIcon)`
   ${commonIconsStyles}
   path {
-    fill: #3b72a7;
+    fill: ${(props) => props.theme.peopleTableRow.fill};
   }
 `;
 const StyledCatalogSpamIcon = styled(CatalogSpamIcon)`
   ${commonIconsStyles}
   path {
-    fill: #3b72a7;
+    fill: ${(props) => props.theme.peopleTableRow.fill};
   }
 `;
 
