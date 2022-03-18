@@ -2,6 +2,7 @@ import React, { Component, createRef } from "react";
 import { isTouchDevice } from "@appserver/components/utils/device";
 import Scrollbar from "@appserver/components/scrollbar";
 import { LayoutContextProvider } from "./context";
+import { getBannerAttribute } from "@appserver/components/utils/banner";
 import PropTypes from "prop-types";
 import {
   isTablet,
@@ -48,10 +49,7 @@ class MobileLayout extends Component {
 
   scrolledTheVerticalAxis = () => {
     const { prevScrollPosition, visibleContent } = this.state;
-    const bar = document.getElementById("bar-banner"); //TODO: removed from here;
-    const mainBar = document.getElementById("main-bar"); //TODO: removed from here;
-    const rects = mainBar ? mainBar.getBoundingClientRect() : null; //TODO: removed from here;
-    const headerHeight = bar ? 108 + 50 : mainBar ? rects.height + 40 : 48 + 50; // nav-bar + {if exist - bar/mainBar} + section-header
+    const { headerHeight } = getBannerAttribute();
 
     const currentScrollPosition =
       this.customScrollElm.scrollTop > 0 ? this.customScrollElm.scrollTop : 0;
