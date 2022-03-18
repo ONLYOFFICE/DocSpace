@@ -33,6 +33,10 @@ const StyledButton = styled(Button)`
   top: 3px;
 `;
 
+const StyledRowContainer = styled(RowContainer)`
+  margin-top: 24px;
+`;
+
 const StyledBoxIcon = styled(BoxIcon)`
   ${commonIconsStyles}
 `;
@@ -212,7 +216,7 @@ class ConnectClouds extends React.Component {
 
     return (
       <>
-        {!!providers.length ? (
+        {!providers.length ? (
           <>
             <StyledButton
               size="small"
@@ -221,7 +225,7 @@ class ConnectClouds extends React.Component {
               label={t("ConnectedCloud")}
               primary
             />
-            <RowContainer useReactWindow={false}>
+            <StyledRowContainer useReactWindow={false}>
               {providers.map((item, index) => {
                 const element = this.getThirdPartyIcon(item.provider_key);
                 const typeTitle = connectedCloudsTypeTitleTranslation(
@@ -277,7 +281,7 @@ class ConnectClouds extends React.Component {
                   </Row>
                 );
               })}
-            </RowContainer>
+            </StyledRowContainer>
           </>
         ) : (
           <EmptyFolderContainer
