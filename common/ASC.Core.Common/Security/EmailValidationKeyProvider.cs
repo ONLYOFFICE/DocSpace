@@ -222,9 +222,9 @@ public class EmailValidationKeyModelHelper
         };
     }
 
-    public ValidationResult Validate(EmailValidationKeyModel model)
+    public ValidationResult Validate(EmailValidationKeyModel inDto)
     {
-        var (key, emplType, email, uiD, type) = model;
+        var (key, emplType, email, uiD, type) = inDto;
 
         ValidationResult checkKeyResult;
 

@@ -13,8 +13,8 @@ global using System.Web;
 
 global using ASC.Api.Collections;
 global using ASC.Api.Core;
-global using ASC.Api.Security;
-global using ASC.Api.Settings.Smtp;
+global using ASC.Api.Core.Convention;
+global using ASC.Api.Settings;
 global using ASC.Api.Utils;
 global using ASC.AuditTrail;
 global using ASC.AuditTrail.Models;
@@ -22,6 +22,7 @@ global using ASC.AuditTrail.Repositories;
 global using ASC.Common;
 global using ASC.Common.Caching;
 global using ASC.Common.Logging;
+global using ASC.Common.Mapping;
 global using ASC.Common.Security.Authorizing;
 global using ASC.Common.Threading;
 global using ASC.Common.Utils;
@@ -50,6 +51,9 @@ global using ASC.IPSecurity;
 global using ASC.MessagingSystem.Core;
 global using ASC.MessagingSystem.Models;
 global using ASC.Security.Cryptography;
+global using ASC.Web.Api;
+global using ASC.Web.Api.ApiModel.RequestsDto;
+global using ASC.Web.Api.ApiModel.ResponseDto;
 global using ASC.Web.Api.Core;
 global using ASC.Web.Api.Models;
 global using ASC.Web.Api.Routing;
@@ -63,9 +67,9 @@ global using ASC.Web.Core.Utility;
 global using ASC.Web.Core.Utility.Settings;
 global using ASC.Web.Core.WebZones;
 global using ASC.Web.Core.WhiteLabel;
+global using ASC.Web.Files.Services.DocumentService;
 global using ASC.Web.Studio.Core;
 global using ASC.Web.Studio.Core.Notify;
-global using ASC.Web.Studio.Core.Quota;
 global using ASC.Web.Studio.Core.SMS;
 global using ASC.Web.Studio.Core.Statistic;
 global using ASC.Web.Studio.Core.TFA;
@@ -77,7 +81,10 @@ global using ASC.Web.Studio.Utility;
 global using ASC.Webhooks.Core;
 global using ASC.Webhooks.Core.Dao.Models;
 
+global using Autofac;
 global using Autofac.Extensions.DependencyInjection;
+
+global using AutoMapper;
 
 global using Google.Authenticator;
 
@@ -87,6 +94,7 @@ global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.AspNetCore.Mvc.ModelBinding;
 global using Microsoft.Extensions.Caching.Memory;
+global using Microsoft.Extensions.Hosting.WindowsServices;
 global using Microsoft.Extensions.Options;
 
 global using MimeKit;
