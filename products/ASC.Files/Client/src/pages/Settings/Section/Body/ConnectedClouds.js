@@ -216,7 +216,7 @@ class ConnectClouds extends React.Component {
 
     return (
       <>
-        {!providers.length ? (
+        {!!providers.length ? (
           <>
             <StyledButton
               size="small"
