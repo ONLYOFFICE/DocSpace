@@ -197,5 +197,6 @@ public static class MessagesRepositoryExtension
     public static void Register(DIHelper services)
     {
         services.TryAdd<DbContextManager<MessagesContext>>();
+        services.TryAdd<EventTypeConverter>();
     }
 }
