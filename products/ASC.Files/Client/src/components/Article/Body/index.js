@@ -35,7 +35,7 @@ const ArticleBodyContent = (props) => {
     isVisitor,
     campaigns,
     FirebaseHelper,
-    isArticleLoaded,
+    isArticleLoading,
   } = props;
   const onClick = React.useCallback((data) => {
     const {
@@ -86,7 +86,7 @@ const ArticleBodyContent = (props) => {
     props.setNewFilesPanelVisible(true, [`${folderId}`]);
   }, []);
 
-  return !isArticleLoaded ? (
+  return isArticleLoading ? (
     <Loaders.ArticleFolder />
   ) : (
     <>
@@ -124,12 +124,13 @@ export default inject(
       setIsLoading,
       setFirstLoad,
       firstLoad,
-      isArticleLoaded,
+      isLoading,
+      isLoaded,
     } = filesStore;
     const { treeFolders, setTreeFolders } = treeFoldersStore;
 
     const { setNewFilesPanelVisible } = dialogsStore;
-
+    const isArticleLoading = (!isLoaded || isLoading) && firstLoad;
     const {
       showText,
       articleOpen,
@@ -157,7 +158,7 @@ export default inject(
       homepage: config.homepage,
       personal,
 
-      isArticleLoaded,
+      isArticleLoading,
       setIsLoading,
       setFirstLoad,
       fetchFiles,

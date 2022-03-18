@@ -15,6 +15,7 @@ import { encryptionUploadDialog } from "../../../helpers/desktop";
 import config from "../../../../package.json";
 
 import MobileView from "./MobileView";
+import withLoader from "../../../HOCs/withLoader";
 
 const ArticleMainButtonContent = (props) => {
   const {
@@ -28,7 +29,7 @@ const ArticleMainButtonContent = (props) => {
     setAction,
     setSelectFileDialogVisible,
     sectionWidth,
-    isArticleLoaded,
+    isArticleLoading,
     isFavoritesFolder,
     isRecentFolder,
     isCommonFolder,
@@ -213,6 +214,7 @@ const ArticleMainButtonContent = (props) => {
     onUploadFolderClick,
   ]);
 
+  console.log("btn render");
   return (
     <>
       {isMobile || isMobileUtils() || isTabletUtils() ? (
@@ -229,7 +231,7 @@ const ArticleMainButtonContent = (props) => {
               />
             )}
         </>
-      ) : !isArticleLoaded ? (
+      ) : isArticleLoading ? (
         <Loaders.ArticleButton />
       ) : (
         <MainButton
@@ -267,7 +269,13 @@ const ArticleMainButtonContent = (props) => {
 
 export default inject(
   ({ filesStore, dialogsStore, uploadDataStore, treeFoldersStore }) => {
-    const { isArticleLoaded, fileActionStore, canCreate } = filesStore;
+    const {
+      isLoaded,
+      firstLoad,
+      isLoading,
+      fileActionStore,
+      canCreate,
+    } = filesStore;
     const {
       isPrivacyFolder,
       isFavoritesFolder,
@@ -278,9 +286,10 @@ export default inject(
     const { startUpload } = uploadDataStore;
     const { setSelectFileDialogVisible } = dialogsStore;
 
+    const isArticleLoading = (!isLoaded || isLoading) && firstLoad;
+
     return {
-      homepage: config.homepage,
-      isArticleLoaded,
+      isArticleLoading,
       isPrivacy: isPrivacyFolder,
       isFavoritesFolder,
       isRecentFolder,

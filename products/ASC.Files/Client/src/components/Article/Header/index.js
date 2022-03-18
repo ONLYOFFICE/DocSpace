@@ -2,8 +2,8 @@ import React from "react";
 import Loaders from "@appserver/common/components/Loaders";
 import { inject, observer } from "mobx-react";
 
-const ArticleHeaderContent = ({ currentModuleName, isArticleLoaded }) => {
-  return !isArticleLoaded ? (
+const ArticleHeaderContent = ({ currentModuleName, isArticleLoading }) => {
+  return isArticleLoading ? (
     <Loaders.ArticleHeader />
   ) : (
     <>{currentModuleName}</>
@@ -11,10 +11,10 @@ const ArticleHeaderContent = ({ currentModuleName, isArticleLoaded }) => {
 };
 
 export default inject(({ auth, filesStore }) => {
-  const { isArticleLoaded } = filesStore;
-
+  const { isLoaded, isLoading, firstLoad } = filesStore;
+  const isArticleLoading = (!isLoaded || isLoading) && firstLoad;
   return {
-    isArticleLoaded,
+    isArticleLoading,
     currentModuleName: (auth.product && auth.product.title) || "",
   };
 })(observer(ArticleHeaderContent));
