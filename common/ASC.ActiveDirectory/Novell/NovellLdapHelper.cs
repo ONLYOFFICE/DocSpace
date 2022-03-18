@@ -19,15 +19,14 @@ namespace ASC.ActiveDirectory.Novell;
 [Scope]
 public class NovellLdapHelper : LdapHelper
 {
-    public NovellLdapSearcher LDAPSearcher { get; private set; }
-
+    private readonly NovellLdapSearcher _lDAPSearcher;
     private readonly IConfiguration _configuration;
     private readonly IServiceProvider _serviceProvider;
 
     public NovellLdapHelper(IServiceProvider serviceProvider, IOptionsMonitor<ILog> option, InstanceCrypto instanceCrypto, IConfiguration configuration, NovellLdapSearcher novellLdapSearcher) :
         base(option, instanceCrypto)
     {
-        LDAPSearcher = novellLdapSearcher;
+        _lDAPSearcher = novellLdapSearcher;
 
         _configuration = configuration;
         _serviceProvider = serviceProvider;
@@ -39,7 +38,7 @@ public class NovellLdapHelper : LdapHelper
             ? GetPassword(settings.PasswordBytes)
             : settings.Password;
 
-        LDAPSearcher.Init(settings.Login, password, settings.Server, settings.PortNumber,
+        _lDAPSearcher.Init(settings.Login, password, settings.Server, settings.PortNumber,
             settings.StartTls, settings.Ssl, settings.AcceptCertificate, settings.AcceptCertificateHash);
 
         base.Init(settings);
@@ -47,20 +46,20 @@ public class NovellLdapHelper : LdapHelper
 
     public override bool IsConnected
     {
-        get { return LDAPSearcher.IsConnected; }
+        get { return _lDAPSearcher.IsConnected; }
     }
 
     public override void Connect()
     {
-        LDAPSearcher.Connect();
+        _lDAPSearcher.Connect();
 
-        Settings.AcceptCertificate = LDAPSearcher.AcceptCertificate;
-        Settings.AcceptCertificateHash = LDAPSearcher.AcceptCertificateHash;
+        Settings.AcceptCertificate = _lDAPSearcher.AcceptCertificate;
+        Settings.AcceptCertificateHash = _lDAPSearcher.AcceptCertificateHash;
     }
 
     public override Dictionary<string, string[]> GetCapabilities()
     {
-        return LDAPSearcher.GetCapabilities();
+        return _lDAPSearcher.GetCapabilities();
     }
 
     public override string SearchDomain()
@@ -122,7 +121,7 @@ public class NovellLdapHelper : LdapHelper
         try
         {
             var searchResult =
-                LDAPSearcher.Search(Settings.UserDN, NovellLdapSearcher.LdapScope.Sub, Settings.UserFilter, limit: 1)
+                _lDAPSearcher.Search(Settings.UserDN, NovellLdapSearcher.LdapScope.Sub, Settings.UserFilter, limit: 1)
                     .FirstOrDefault();
 
             return searchResult != null ? LdapObjectExtension.GetDomainFromDn(searchResult) : null;
@@ -147,7 +146,7 @@ public class NovellLdapHelper : LdapHelper
     {
         string[] attributes = { LdapConstants.ADSchemaAttributes.OBJECT_CLASS };
 
-        var searchResult = LDAPSearcher.Search(userDn, NovellLdapSearcher.LdapScope.Base,
+        var searchResult = _lDAPSearcher.Search(userDn, NovellLdapSearcher.LdapScope.Base,
             LdapConstants.OBJECT_FILTER, attributes, 1);
 
         if (searchResult.Any())
@@ -161,7 +160,7 @@ public class NovellLdapHelper : LdapHelper
     {
         string[] attributes = { LdapConstants.ADSchemaAttributes.OBJECT_CLASS };
 
-        var searchResult = LDAPSearcher.Search(groupDn, NovellLdapSearcher.LdapScope.Base,
+        var searchResult = _lDAPSearcher.Search(groupDn, NovellLdapSearcher.LdapScope.Base,
             LdapConstants.OBJECT_FILTER, attributes, 1);
 
         if (searchResult.Any())
@@ -193,7 +192,7 @@ public class NovellLdapHelper : LdapHelper
                 ? Settings.UserFilter
                 : string.Format("(&{0}{1})", Settings.UserFilter, filter);
 
-            list = LDAPSearcher.Search(Settings.UserDN, NovellLdapSearcher.LdapScope.Sub, searchfilter, limit: limit);
+            list = _lDAPSearcher.Search(Settings.UserDN, NovellLdapSearcher.LdapScope.Sub, searchfilter, limit: limit);
 
             return list;
         }
@@ -230,7 +229,7 @@ public class NovellLdapHelper : LdapHelper
 
             var searchfilter = string.Format("(&{0}{1})", Settings.UserFilter, criteria);
 
-            var list = LDAPSearcher.Search(Settings.UserDN, NovellLdapSearcher.LdapScope.Sub, searchfilter, limit: 1);
+            var list = _lDAPSearcher.Search(Settings.UserDN, NovellLdapSearcher.LdapScope.Sub, searchfilter, limit: 1);
 
             return list.FirstOrDefault();
         }
@@ -259,7 +258,7 @@ public class NovellLdapHelper : LdapHelper
                 : string.Format("(&{0}{1})", Settings.GroupFilter, criteria);
 
 
-            list = LDAPSearcher.Search(Settings.GroupDN, NovellLdapSearcher.LdapScope.Sub, searchfilter);
+            list = _lDAPSearcher.Search(Settings.GroupDN, NovellLdapSearcher.LdapScope.Sub, searchfilter);
         }
         catch (Exception e)
         {
@@ -271,6 +270,6 @@ public class NovellLdapHelper : LdapHelper
 
     public override void Dispose()
     {
-        LDAPSearcher.Dispose();
+        _lDAPSearcher.Dispose();
     }
 }

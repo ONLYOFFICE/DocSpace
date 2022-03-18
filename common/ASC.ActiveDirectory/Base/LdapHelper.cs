@@ -23,15 +23,14 @@ public abstract class LdapHelper : IDisposable
     public abstract bool IsConnected { get; }
 
     protected readonly ILog Log;
-
-    private readonly InstanceCrypto _instanceCrypto;
+    protected readonly InstanceCrypto InstanceCrypto;
 
     protected LdapHelper(
         IOptionsMonitor<ILog> option,
         InstanceCrypto instanceCrypto)
     {
         Log = option.Get("ASC");
-        _instanceCrypto = instanceCrypto;
+        InstanceCrypto = instanceCrypto;
     }
 
     public void Init(LdapSettings settings)
@@ -108,7 +107,7 @@ public abstract class LdapHelper : IDisposable
         string password;
         try
         {
-            password = _instanceCrypto.Decrypt(passwordBytes);
+            password = InstanceCrypto.Decrypt(passwordBytes);
         }
         catch (Exception)
         {
@@ -123,7 +122,7 @@ public abstract class LdapHelper : IDisposable
 
         try
         {
-            passwordBytes = _instanceCrypto.Encrypt(new UnicodeEncoding().GetBytes(password));
+            passwordBytes = InstanceCrypto.Encrypt(new UnicodeEncoding().GetBytes(password));
         }
         catch (Exception)
         {

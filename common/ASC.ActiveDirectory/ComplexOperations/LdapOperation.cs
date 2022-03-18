@@ -60,21 +60,16 @@ public abstract class LdapOperation
 
     public static LdapLocalization Resource { get; private set; }
 
-    protected IOptionsMonitor<ILog> Options { get; private set; }
-
     protected TenantManager TenantManager { get; private set; }
 
-    protected SecurityContext SecurityContext { get; private set; }
-
-    protected NovellLdapHelper NovellLdapHelper { get; }
-
+    private SecurityContext _securityContext;
+    private NovellLdapHelper _novellLdapHelper;
     private readonly IServiceProvider _serviceProvider;
 
     protected LdapOperation(IServiceProvider serviceProvider, IOptionsMonitor<ILog> options)
     {
         _serviceProvider = serviceProvider;
-        Options = options;
-        Logger = Options.Get("ASC");
+        Logger = options.Get("ASC");
     }
 
     public void Init(
@@ -107,9 +102,10 @@ public abstract class LdapOperation
     {
         using var scope = _serviceProvider.CreateScope();
         TenantManager = scope.ServiceProvider.GetService<TenantManager>();
-        SecurityContext = scope.ServiceProvider.GetService<SecurityContext>();
+        _securityContext = scope.ServiceProvider.GetService<SecurityContext>();
         LDAPUserManager = scope.ServiceProvider.GetService<LdapUserManager>();
         LDAPUserManager.Init(Resource);
+        _novellLdapHelper = scope.ServiceProvider.GetService<NovellLdapHelper>();
         Importer = scope.ServiceProvider.GetService<NovellLdapUserImporter>();
 
         try
@@ -118,7 +114,7 @@ public abstract class LdapOperation
 
             TenantManager.SetCurrentTenant(CurrentTenant);
 
-            SecurityContext.AuthenticateMe(Core.Configuration.Constants.CoreSystem);
+            _securityContext.AuthenticateMe(Core.Configuration.Constants.CoreSystem);
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(_culture);
             Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(_culture);
@@ -221,7 +217,7 @@ public abstract class LdapOperation
             {
                 TaskInfo.SetProperty(FINISHED, true);
                 PublishTaskInfo();
-                SecurityContext.Logout();
+                _securityContext.Logout();
             }
             catch (Exception ex)
             {
@@ -397,7 +393,7 @@ public abstract class LdapOperation
         {
             if (!string.IsNullOrEmpty(settings.Password))
             {
-                settings.PasswordBytes = NovellLdapHelper.GetPasswordBytes(settings.Password);
+                settings.PasswordBytes = _novellLdapHelper.GetPasswordBytes(settings.Password);
 
                 if (settings.PasswordBytes == null)
                 {

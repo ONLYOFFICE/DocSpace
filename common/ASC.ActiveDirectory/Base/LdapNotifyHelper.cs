@@ -23,7 +23,7 @@ public class LdapNotifyHelper
     private readonly DistributedTaskQueue _ldapTasks;
     private readonly IServiceProvider _serviceProvider;
 
-    LdapNotifyHelper(
+    public LdapNotifyHelper(
         IServiceProvider serviceProvider,
         DistributedTaskQueueOptionsManager distributedTaskQueueOptionsManager)
     {
