@@ -11,7 +11,8 @@ import HelpButton from "@appserver/components/help-button";
 import PasswordInput from "@appserver/components/password-input";
 import FieldContainer from "@appserver/components/field-container";
 import SocialButton from "@appserver/components/social-button";
-import PageLayout from "@appserver/common/components/PageLayout";
+import FacebookButton from "@appserver/components/facebook-button";
+import Section from "@appserver/common/components/Section";
 import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-dialog";
 import Register from "./sub-components/register-container";
 import {
@@ -558,11 +559,11 @@ const LoginForm = (props) => {
 
   return (
     <LoginFormWrapper enabledJoin={enabledJoin} isDesktop={isDesktop}>
-      <PageLayout>
-        <PageLayout.SectionBody>
+      <Section>
+        <Section.SectionBody>
           <Form {...props} />
-        </PageLayout.SectionBody>
-      </PageLayout>
+        </Section.SectionBody>
+      </Section>
       <Register />
     </LoginFormWrapper>
   );

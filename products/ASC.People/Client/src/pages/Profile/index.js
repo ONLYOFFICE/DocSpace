@@ -1,17 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
 import toastr from "studio/toastr";
-import {
-  ArticleHeaderContent,
-  ArticleMainButtonContent,
-  ArticleBodyContent,
-} from "../../components/Article";
-import {
-  CatalogHeaderContent,
-  CatalogMainButtonContent,
-  CatalogBodyContent,
-} from "../../components/Catalog";
+
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { withRouter } from "react-router";
 
@@ -97,50 +88,15 @@ class Profile extends React.Component {
     const { profile, showCatalog, isAdmin } = this.props;
 
     return (
-      <PageLayout withBodyAutoFocus>
-        {showCatalog && (
-          <PageLayout.CatalogHeader>
-            <CatalogHeaderContent />
-          </PageLayout.CatalogHeader>
-        )}
-
-        {showCatalog && isAdmin && (
-          <PageLayout.CatalogMainButton>
-            <CatalogMainButtonContent />
-          </PageLayout.CatalogMainButton>
-        )}
-        {showCatalog && (
-          <PageLayout.CatalogBody>
-            <CatalogBodyContent />
-          </PageLayout.CatalogBody>
-        )}
-
-        {!showCatalog && (
-          <PageLayout.ArticleHeader>
-            <ArticleHeaderContent />
-          </PageLayout.ArticleHeader>
-        )}
-
-        {!showCatalog && (
-          <PageLayout.ArticleMainButton>
-            <ArticleMainButtonContent />
-          </PageLayout.ArticleMainButton>
-        )}
-
-        {!showCatalog && (
-          <PageLayout.ArticleBody>
-            <ArticleBodyContent />
-          </PageLayout.ArticleBody>
-        )}
-
-        <PageLayout.SectionHeader>
+      <Section withBodyAutoFocus>
+        <Section.SectionHeader>
           <SectionHeaderContent profile={profile} />
-        </PageLayout.SectionHeader>
+        </Section.SectionHeader>
 
-        <PageLayout.SectionBody>
+        <Section.SectionBody>
           <SectionBodyContent profile={profile} />
-        </PageLayout.SectionBody>
-      </PageLayout>
+        </Section.SectionBody>
+      </Section>
     );
   }
 }

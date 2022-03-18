@@ -4,7 +4,7 @@ import { withRouter } from "react-router";
 import { useTranslation } from "react-i18next";
 import Text from "@appserver/components/text";
 import toastr from "studio/toastr";
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
 import { tryRedirectTo } from "@appserver/common/utils";
 import { setDocumentTitle } from "../../../helpers/utils";
 import { inject, observer } from "mobx-react";
@@ -96,11 +96,11 @@ const Home = ({ defaultPage, ...rest }) => {
   return tryRedirectTo(defaultPage) ? (
     <></>
   ) : (
-    <PageLayout isHomepage>
-      <PageLayout.SectionBody>
+    <Section isHomepage>
+      <Section.SectionBody>
         <Body {...rest} />
-      </PageLayout.SectionBody>
-    </PageLayout>
+      </Section.SectionBody>
+    </Section>
   );
 };
 

@@ -3,7 +3,7 @@ import { Route } from "react-router-dom";
 import { ValidationResult } from "./../helpers/constants";
 import { withRouter } from "react-router";
 import Loader from "@appserver/components/loader";
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
 import { checkConfirmLink } from "@appserver/common/api/user"; //TODO: Move AuthStore
 import { combineUrl, getObjectByLocation } from "@appserver/common/utils";
 import { inject, observer } from "mobx-react";
@@ -82,18 +82,18 @@ class ConfirmRoute extends React.Component {
   render() {
     const { component: Component, ...rest } = this.props;
 
-    console.log(`ConfirmRoute render`, this.props, this.state);
+    // console.log(`ConfirmRoute render`, this.props, this.state);
 
     return (
       <Route
         {...rest}
         render={(props) =>
           !this.state.isLoaded ? (
-            <PageLayout>
-              <PageLayout.SectionBody>
+            <Section>
+              <Section.SectionBody>
                 <Loader className="pageLoader" type="rombs" size="40px" />
-              </PageLayout.SectionBody>
-            </PageLayout>
+              </Section.SectionBody>
+            </Section>
           ) : (
             <Component
               {...(props = { ...props, linkData: this.state.linkData })}

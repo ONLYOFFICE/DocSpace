@@ -8,7 +8,7 @@ import Link from "@appserver/components/link";
 import Toast from "@appserver/components/toast";
 import FieldContainer from "@appserver/components/field-container";
 import SocialButton from "@appserver/components/social-button";
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
 import Register from "./sub-components/register-container";
 import {
   getAuthProviders,
@@ -450,11 +450,11 @@ const LoginForm = (props) => {
 
   return (
     <LoginFormWrapper enabledJoin={enabledJoin} isDesktop={isDesktop}>
-      <PageLayout>
-        <PageLayout.SectionBody>
+      <Section>
+        <Section.SectionBody>
           <Form {...props} />
-        </PageLayout.SectionBody>
-      </PageLayout>
+        </Section.SectionBody>
+      </Section>
       <Register />
     </LoginFormWrapper>
   );

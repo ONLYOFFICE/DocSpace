@@ -176,7 +176,7 @@ const SubMenu = (props) => {
 
     return (
       <li
-        key={item.label + "_" + index}
+        key={item.key}
         role="none"
         className={className}
         style={{ ...item.style, ...style }}
@@ -202,13 +202,13 @@ const SubMenu = (props) => {
     if (!item) return null;
     if (item.isSeparator)
       return (
-        <React.Fragment key={item.key}>
+        <React.Fragment key={"fragment" + item.key}>
           {renderSeparator(index, style)}
         </React.Fragment>
       );
 
     return (
-      <React.Fragment key={item.key}>
+      <React.Fragment key={"fragment" + item.key}>
         {renderMenuitem(item, index, style)}
       </React.Fragment>
     );

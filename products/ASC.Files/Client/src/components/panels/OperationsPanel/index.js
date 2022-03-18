@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { withRouter } from "react-router";
 import ModalDialog from "@appserver/components/modal-dialog";
 import { withTranslation } from "react-i18next";
-import TreeFolders from "../../Article/Body/TreeFolders";
+import TreeFolders from "../../FolderTreeBody/TreeFolders";
 import { inject, observer } from "mobx-react";
 import toastr from "studio/toastr";
 import Button from "@appserver/components/button";

@@ -78,6 +78,7 @@ const StyledContainer = styled.div`
         }
       `}
 
+    margin-bottom: 3px;
     align-items: center;
     max-width: calc(100vw - 32px);
 
