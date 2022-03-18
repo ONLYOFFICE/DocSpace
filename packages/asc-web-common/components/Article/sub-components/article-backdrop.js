@@ -5,7 +5,7 @@ import Backdrop from "@appserver/components/backdrop";
 
 import { StyledControlContainer, StyledCrossIcon } from "../styled-article";
 
-const ArticleBackdrop = ({ showText, onClick, ...rest }) => {
+const ArticleBackdrop = ({ onClick, ...rest }) => {
   return (
     <>
       <StyledControlContainer onClick={onClick} {...rest}>
