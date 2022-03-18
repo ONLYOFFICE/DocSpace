@@ -4,6 +4,7 @@ import { withTranslation } from "react-i18next";
 import SelectFolderInput from "files/SelectFolderInput";
 import Button from "@appserver/components/button";
 import { getFromSessionStorage } from "../../../../../utils";
+import { BackupTypes } from "@appserver/common/constants";
 
 let folderPath = "";
 let folder = "";
