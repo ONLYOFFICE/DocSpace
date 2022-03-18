@@ -428,11 +428,10 @@ class SectionHeaderContent extends React.Component {
       viewAs,
       isRecycleBinFolder,
       isEmptyFilesList,
-      checkedMaintenance,
     } = this.props;
 
     const menuItems = this.getMenuItems();
-    const isLoading = !title || !tReady || !checkedMaintenance;
+    const isLoading = !title || !tReady;
     const headerMenu = getHeaderMenu(t);
 
     return (
@@ -592,7 +591,6 @@ export default inject(
     return {
       isDesktop: auth.settingsStore.isDesktopClient,
       isRootFolder: selectedFolderStore.parentId === 0,
-      checkedMaintenance: auth.settingsStore.checkedMaintenance,
       title: selectedFolderStore.title,
       parentId: selectedFolderStore.parentId,
       currentFolderId: selectedFolderStore.id,
