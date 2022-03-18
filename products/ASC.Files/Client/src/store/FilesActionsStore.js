@@ -1101,7 +1101,7 @@ class FilesActionStore {
       if (canWebEdit || canViewedDocs) {
         if (isMobile) {
           const url = `/products/files/deeplink?fileId=${id}`;
-          return window.open(url, "_self");
+          return window.open(url, "_blank");
         }
 
         let tab =
