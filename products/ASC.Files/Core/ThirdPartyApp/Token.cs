@@ -36,7 +36,7 @@ public class Token : OAuth20Token
         App = app;
     }
 
-    public string GetRefreshedToken(TokenHelper tokenHelper)
+        public string GetRefreshedToken(TokenHelper tokenHelper, OAuth20TokenHelper oAuth20TokenHelper)
     {
         if (IsExpired)
         {
@@ -47,7 +47,7 @@ public class Token : OAuth20Token
 
                 var refreshUrl = app.GetRefreshUrl();
 
-                var refreshed = OAuth20TokenHelper.RefreshToken(refreshUrl, this);
+                    var refreshed = oAuth20TokenHelper.RefreshToken(refreshUrl, this);
 
                 if (refreshed != null)
                 {

@@ -39,6 +39,8 @@ public class FacebookLoginProvider : BaseLoginProvider<FacebookLoginProvider>
 
     public FacebookLoginProvider() { }
 
+    private readonly RequestHelper _requestHelper;
+
     public FacebookLoginProvider(
         OAuth20TokenHelper oAuth20TokenHelper,
         TenantManager tenantManager,
@@ -49,8 +51,12 @@ public class FacebookLoginProvider : BaseLoginProvider<FacebookLoginProvider>
         ConsumerFactory consumerFactory,
         Signature signature,
         InstanceCrypto instanceCrypto,
+        RequestHelper requestHelper,
         string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-        : base(oAuth20TokenHelper, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, signature, instanceCrypto, name, order, props, additional) { }
+            : base(oAuth20TokenHelper, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, signature, instanceCrypto, name, order, props, additional)
+    {
+        _requestHelper = requestHelper;
+    }
 
     public override LoginProfile GetLoginProfile(string accessToken)
     {
@@ -90,7 +96,7 @@ public class FacebookLoginProvider : BaseLoginProvider<FacebookLoginProvider>
 
     private LoginProfile RequestProfile(string accessToken)
     {
-        var facebookProfile = RequestHelper.PerformRequest(FacebookProfileUrl + "&access_token=" + accessToken);
+        var facebookProfile = _requestHelper.PerformRequest(FacebookProfileUrl + "&access_token=" + accessToken);
         var loginProfile = ProfileFromFacebook(facebookProfile);
 
         return loginProfile;

@@ -49,6 +49,8 @@ public class GoogleLoginProvider : BaseLoginProvider<GoogleLoginProvider>
     public static readonly string FilesFields = "id,name,mimeType,parents,createdTime,modifiedTime,owners/displayName,lastModifyingUser/displayName,capabilities/canEdit,size";
     public static readonly string ProfileFields = "emailAddresses,genders,names";
 
+        private readonly RequestHelper _requestHelper;
+
     public GoogleLoginProvider() { }
     public GoogleLoginProvider(
         OAuth20TokenHelper oAuth20TokenHelper,
@@ -60,8 +62,12 @@ public class GoogleLoginProvider : BaseLoginProvider<GoogleLoginProvider>
         ConsumerFactory consumerFactory,
         Signature signature,
         InstanceCrypto instanceCrypto,
+            RequestHelper requestHelper,
         string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-        : base(oAuth20TokenHelper, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, signature, instanceCrypto, name, order, props, additional) { }
+            : base(oAuth20TokenHelper, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, signature, instanceCrypto, name, order, props, additional)
+        {
+            _requestHelper = requestHelper;
+        }
 
     public override LoginProfile GetLoginProfile(string accessToken)
     {
@@ -86,7 +92,7 @@ public class GoogleLoginProvider : BaseLoginProvider<GoogleLoginProvider>
 
     private LoginProfile RequestProfile(string accessToken)
     {
-        var googleProfile = RequestHelper.PerformRequest(GoogleUrlProfile + "?personFields=" + HttpUtility.UrlEncode(ProfileFields), headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
+            var googleProfile = _requestHelper.PerformRequest(GoogleUrlProfile + "?personFields=" + HttpUtility.UrlEncode(ProfileFields), headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
         var loginProfile = ProfileFromGoogle(googleProfile);
 
         return loginProfile;

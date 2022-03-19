@@ -6,11 +6,9 @@ import {
   StyledTableRow,
   StyledEmptyTableContainer,
 } from "./StyledTableContainer";
-import Checkbox from "../checkbox";
 import TableSettings from "./TableSettings";
 import TableHeaderCell from "./TableHeaderCell";
 import { size } from "../utils/device";
-import TableGroupMenu from "./TableGroupMenu";
 
 const minColumnSize = 150;
 const defaultMinColumnSize = 90;
@@ -413,15 +411,6 @@ class TableHeader extends React.Component {
       columns,
       sortBy,
       sorted,
-      isHeaderVisible,
-      checkboxOptions,
-      containerRef,
-      onChange,
-      isChecked,
-      isIndeterminate,
-      headerMenu,
-      columnStorageName,
-      hasAccess,
       isLengthenHeader,
       sortingVisible,
       ...rest
@@ -435,7 +424,7 @@ class TableHeader extends React.Component {
           id="table-container_caption-header"
           className={`${
             isLengthenHeader ? "lengthen-header" : ""
-          }table-container_header`}
+          } table-container_header`}
           ref={this.headerRef}
           {...rest}
         >
@@ -472,7 +461,6 @@ class TableHeader extends React.Component {
 }
 
 TableHeader.defaultProps = {
-  hasAccess: true,
   sortingVisible: true,
 };
 

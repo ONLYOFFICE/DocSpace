@@ -31,14 +31,11 @@ if [ "$DOCUMENT_SERVER_INSTALLED" = "false" ]; then
 
 	echo ${package_sysname}-documentserver $DS_COMMON_NAME/ds-port select $DS_PORT | sudo debconf-set-selections
 	echo ${package_sysname}-documentserver $DS_COMMON_NAME/db-pwd select $DS_DB_PWD | sudo debconf-set-selections
-	echo ${package_sysname}-documentserver $DS_COMMON_NAME/db-user $DS_DB_USER | sudo debconf-set-selections
-	echo ${package_sysname}-documentserver $DS_COMMON_NAME/db-name $DS_DB_NAME | sudo debconf-set-selections
-	echo ${package_sysname}-documentserver-de $DS_COMMON_NAME/jwt-enabled select ${DS_JWT_ENABLED} | sudo debconf-set-selections
-	echo ${package_sysname}-documentserver-de $DS_COMMON_NAME/jwt-secret select ${DS_JWT_SECRET} | sudo debconf-set-selections
-	echo ${package_sysname}-documentserver-de $DS_COMMON_NAME/jwt-header select ${DS_JWT_HEADER} | sudo debconf-set-selections
-	echo ${package_sysname}-documentserver-ee $DS_COMMON_NAME/jwt-enabled select ${DS_JWT_ENABLED} | sudo debconf-set-selections
-	echo ${package_sysname}-documentserver-ee $DS_COMMON_NAME/jwt-secret select ${DS_JWT_SECRET} | sudo debconf-set-selections
-	echo ${package_sysname}-documentserver-ee $DS_COMMON_NAME/jwt-header select ${DS_JWT_HEADER} | sudo debconf-set-selections
+	echo ${package_sysname}-documentserver $DS_COMMON_NAME/db-user select $DS_DB_USER | sudo debconf-set-selections
+	echo ${package_sysname}-documentserver $DS_COMMON_NAME/db-name select $DS_DB_NAME | sudo debconf-set-selections
+	echo ${package_sysname}-documentserver $DS_COMMON_NAME/jwt-enabled select ${DS_JWT_ENABLED} | sudo debconf-set-selections
+	echo ${package_sysname}-documentserver $DS_COMMON_NAME/jwt-secret select ${DS_JWT_SECRET} | sudo debconf-set-selections
+	echo ${package_sysname}-documentserver $DS_COMMON_NAME/jwt-header select ${DS_JWT_HEADER} | sudo debconf-set-selections
 	
 	apt-get install -yq ${package_sysname}-documentserver
 elif [ "$UPDATE" = "true" ] && [ "$DOCUMENT_SERVER_INSTALLED" = "true" ]; then
@@ -65,53 +62,15 @@ else
 	systemctl reload nginx
 fi
 
-APPSERVER_INSTALLED_VERSION=$(apt-cache policy ${product} | awk 'NR==2{print $2}')
-APPSERVER_LATEST_VERSION=$(apt-cache policy ${product} | awk 'NR==3{print $2}')
-if [ "$APPSERVER_INSTALLED_VERSION" != "$APPSERVER_LATEST_VERSION" ]; then
-	APPSERVER_NEED_UPDATE="true"
-fi
-
 if [ "$APPSERVER_INSTALLED" = "false" ]; then
+	echo ${product} ${product}/db-pwd select $MYSQL_SERVER_PASS | sudo debconf-set-selections
+	echo ${product} ${product}/db-user select $MYSQL_SERVER_USER | sudo debconf-set-selections
+	echo ${product} ${product}/db-name select $MYSQL_SERVER_DB_NAME | sudo debconf-set-selections
+	
 	apt-get install -y ${product} || true #Fix error 'Failed to fetch'
 	apt-get install -y ${product}
-elif [ "$APPSERVER_NEED_UPDATE" = "true" ]; then
-	ENVIRONMENT="$(cat /lib/systemd/system/${product}-api.service | grep -oP 'ENVIRONMENT=\K.*')"
-	USER_CONNECTIONSTRING=$(json -f /etc/onlyoffice/${product}/appsettings.$ENVIRONMENT.json ConnectionStrings.default.connectionString)
-	MYSQL_SERVER_HOST=$(echo $USER_CONNECTIONSTRING | grep -oP 'Server=\K.*' | grep -o '^[^;]*')
-	MYSQL_SERVER_DB_NAME=$(echo $USER_CONNECTIONSTRING | grep -oP 'Database=\K.*' | grep -o '^[^;]*')
-	MYSQL_SERVER_USER=$(echo $USER_CONNECTIONSTRING | grep -oP 'User ID=\K.*' | grep -o '^[^;]*')
-	MYSQL_SERVER_PORT=$(echo $USER_CONNECTIONSTRING | grep -oP 'Port=\K.*' | grep -o '^[^;]*')
-	MYSQL_SERVER_PASS=$(echo $USER_CONNECTIONSTRING | grep -oP 'Password=\K.*' | grep -o '^[^;]*')
-	
+elif [ "$UPDATE" = "true" ] && [ "$APPSERVER_INSTALLED" = "true" ]; then
 	apt-get install -o DPkg::options::="--force-confnew" -y --only-upgrade ${product} elasticsearch=${ELASTIC_VERSION}
-fi
-
-if [ "${APPSERVER_INSTALLED}" = "false" ] || [ "${APPSERVER_NEED_UPDATE}" = "true" ]; then
-expect << EOF
-	set timeout -1
-	log_user 1
-
-	if { "${UPDATE}" == "true" } {
-		spawn ${product}-configuration.sh -e ${ENVIRONMENT}
-	} else {
-		spawn ${product}-configuration.sh
-	}
-
-	expect -re "Database host:"
-	send "\025$MYSQL_SERVER_HOST\r"
-
-	expect -re "Database name:"
-	send "\025$MYSQL_SERVER_DB_NAME\r"
-
-	expect -re "Database user:"
-	send "\025$MYSQL_SERVER_USER\r"
-
-	expect -re "Database password:"
-	send "\025$MYSQL_SERVER_PASS\r"
-
-	expect eof	
-EOF
-	APPSERVER_INSTALLED="true";
 fi
 
 echo ""

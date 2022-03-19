@@ -111,7 +111,7 @@ const StyledContainer = styled.div`
 
       @media (min-width: 1024px) {
         margin-left: 8px;
-  }
+      }
 
       @media ${tablet} {
         & > div:first-child {
@@ -569,7 +569,8 @@ export default inject(
       setIsLoading,
       cbMenuItems,
       getCheckboxItemLabel,
-      isEmptyFilesList,      getFolderInfo,
+      isEmptyFilesList,
+      getFolderInfo,
       setBufferSelection,
       viewAs,
     } = filesStore;
@@ -626,7 +627,8 @@ export default inject(
       setEmptyTrashDialogVisible,
       isEmptyFilesList,
       isPrivacyFolder,
-      viewAs,    };
+      viewAs,
+    };
   }
 )(
   withTranslation(["Home", "Common", "Translations"])(

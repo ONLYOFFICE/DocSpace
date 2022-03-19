@@ -14,6 +14,7 @@ public class ThirdpartyController : ApiControllerBase
     private readonly UserManager _userManager;
     private readonly WordpressHelper _wordpressHelper;
     private readonly WordpressToken _wordpressToken;
+    private readonly RequestHelper _requestHelper;
 
     public ThirdpartyController(
         CoreBaseSettings coreBaseSettings,
@@ -27,7 +28,8 @@ public class ThirdpartyController : ApiControllerBase
         ThirdpartyConfiguration thirdpartyConfiguration,
         UserManager userManager,
         WordpressHelper wordpressHelper,
-        WordpressToken wordpressToken)
+        WordpressToken wordpressToken,
+        RequestHelper requestHelper)
     {
         _coreBaseSettings = coreBaseSettings;
         _entryManager = entryManager;
@@ -41,6 +43,7 @@ public class ThirdpartyController : ApiControllerBase
         _userManager = userManager;
         _wordpressHelper = wordpressHelper;
         _wordpressToken = wordpressToken;
+        _requestHelper = requestHelper;
     }
 
     /// <summary>
@@ -158,7 +161,7 @@ public class ThirdpartyController : ApiControllerBase
             var blogId = JObject.Parse(meInfo).Value<string>("token_site_id");
             var wordpressUserName = JObject.Parse(meInfo).Value<string>("username");
 
-            var blogInfo = RequestHelper.PerformRequest(WordpressLoginProvider.WordpressSites + blogId, "", "GET", "");
+            var blogInfo = _requestHelper.PerformRequest(WordpressLoginProvider.WordpressSites + blogId, "", "GET", "");
             var jsonBlogInfo = JObject.Parse(blogInfo);
             jsonBlogInfo.Add("username", wordpressUserName);
 
@@ -280,7 +283,7 @@ public class ThirdpartyController : ApiControllerBase
 
             var wordpressUserName = JObject.Parse(meInfo).Value<string>("username");
 
-            var blogInfo = RequestHelper.PerformRequest(WordpressLoginProvider.WordpressSites + blogId, "", "GET", "");
+            var blogInfo = _requestHelper.PerformRequest(WordpressLoginProvider.WordpressSites + blogId, "", "GET", "");
             var jsonBlogInfo = JObject.Parse(blogInfo);
             jsonBlogInfo.Add("username", wordpressUserName);
 

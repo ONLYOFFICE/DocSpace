@@ -3,6 +3,7 @@ import styled from "styled-components";
 import IconButton from "@appserver/components/icon-button";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import { isMobile, isTablet } from "react-device-detect";
+import { FileStatus } from "@appserver/common/constants";
 
 export const StyledIcon = styled(IconButton)`
   ${commonIconsStyles}
@@ -21,10 +22,8 @@ const QuickButtons = ({
 }) => {
   const { id, locked, fileStatus, title, fileExst, shared } = item;
 
-  const isFavorite = fileStatus === 32;
-  const isNewWithFav = fileStatus === 34;
-  const isEditingWithFav = fileStatus === 33;
-  const showFavorite = isFavorite || isNewWithFav || isEditingWithFav;
+  const isFavorite =
+    (fileStatus & FileStatus.IsFavorite) === FileStatus.IsFavorite;
 
   const isTile = viewAs === "tile";
 
@@ -36,7 +35,7 @@ const QuickButtons = ({
     ? "/static/images/file.actions.locked.react.svg"
     : "/static/images/locked.react.svg";
 
-  const iconFavorite = showFavorite
+  const iconFavorite = isFavorite
     ? "/static/images/file.actions.favorite.react.svg"
     : "/static/images/favorite.react.svg";
 
@@ -46,7 +45,9 @@ const QuickButtons = ({
 
   const displayShare = viewAs === "row" && (isMobile || sectionWidth <= 500);
   const displayLock = !locked && (isMobile || sectionWidth <= 500);
-  const displayFavorite = !showFavorite && (isMobile || sectionWidth <= 500);
+  const displayFavorite = !isFavorite && (isMobile || sectionWidth <= 500);
+
+  const setFavorite = () => onClickFavorite(isFavorite);
 
   return (
     <div className="badges additional-badges">
@@ -80,7 +81,7 @@ const QuickButtons = ({
           size={sizeQuickButton}
           data-id={id}
           data-title={title}
-          onClick={() => onClickFavorite(showFavorite)}
+          onClick={setFavorite}
           hoverColor="#3B72A7"
         />
       )}

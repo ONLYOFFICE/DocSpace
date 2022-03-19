@@ -43,6 +43,7 @@ public class EasyBibHelper : Consumer
     }
 
     public string AppKey => this["easyBibappkey"];
+    private readonly RequestHelper _requestHelper;
 
     public EasyBibHelper() { }
 
@@ -54,6 +55,7 @@ public class EasyBibHelper : Consumer
         IConfiguration configuration,
         ICacheNotify<ConsumerCacheItem> cache,
         ConsumerFactory factory,
+            RequestHelper requestHelper,
         string name,
         int order,
         Dictionary<string, string> props,
@@ -61,9 +63,10 @@ public class EasyBibHelper : Consumer
         : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, factory, name, order, props, additional)
     {
         Logger = option.CurrentValue;
+            _requestHelper = requestHelper;
     }
 
-    public static string GetEasyBibCitationsList(int source, string data)
+        public string GetEasyBibCitationsList(int source, string data)
     {
         var uri = "";
         switch (source)
@@ -86,7 +89,7 @@ public class EasyBibHelper : Consumer
         var headers = new Dictionary<string, string>() { };
         try
         {
-            return RequestHelper.PerformRequest(uri, "", method, "", headers);
+                return _requestHelper.PerformRequest(uri, "", method, "", headers);
         }
         catch (Exception)
         {
@@ -95,14 +98,14 @@ public class EasyBibHelper : Consumer
 
     }
 
-    public static string GetEasyBibStyles()
+        public string GetEasyBibStyles()
     {
 
         const string method = "GET";
         var headers = new Dictionary<string, string>() { };
         try
         {
-            return RequestHelper.PerformRequest(EasyBibStyles, "", method, "", headers);
+            return _requestHelper.PerformRequest(EasyBibStyles, "", method, "", headers);
         }
         catch (Exception)
         {
@@ -126,7 +129,7 @@ public class EasyBibHelper : Consumer
             var body = citationData;
             var headers = new Dictionary<string, string>() { };
 
-            return RequestHelper.PerformRequest(uri, contentType, method, body, headers);
+                return _requestHelper.PerformRequest(uri, contentType, method, body, headers);
 
         }
         catch (Exception)

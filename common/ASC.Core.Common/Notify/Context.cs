@@ -25,6 +25,7 @@
 
 namespace ASC.Notify;
 
+    [Singletone]
 public sealed class Context : INotifyRegistry
 {
     public const string SysRecipient = "_#" + SysRecipientId + "#_";
