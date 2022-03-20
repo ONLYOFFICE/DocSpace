@@ -1,5 +1,6 @@
 import { getFavicon } from "../helpers/utils";
 import pkg from "../../package.json";
+import { FILES_SCOPE, FILES_REMOTE_ENTRY_URL } from "../helpers/constants";
 
 export default function template(
   initialState = {},
@@ -22,6 +23,7 @@ export default function template(
       window.initialLanguage = '${initialLanguage}'
     </script>
     <script type='text/javascript' id='scripDocServiceAddress' src="${docApiUrl}" async></script>
+    <script id=${FILES_SCOPE} src=${FILES_REMOTE_ENTRY_URL} type="text/javascript" async=""></script>
     ${scriptTags}
 `;
 
