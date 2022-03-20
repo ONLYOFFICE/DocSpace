@@ -4,7 +4,7 @@ import React from "react";
 // import Error520 from "studio/Error520";
 // import Error404 from "studio/Error404";
 
-function loadComponent(scope, module, moduleName = null) {
+export function loadComponent(scope, module, moduleName = null) {
   return async () => {
     // Initializes the share scope. This fills it with known provided modules from this build and all remotes
     await __webpack_init_sharing__("default");
@@ -13,8 +13,9 @@ function loadComponent(scope, module, moduleName = null) {
     await container.init(__webpack_share_scopes__.default);
     const factory = await window[scope].get(module);
     const Module = factory();
-    if (moduleName) window[moduleName] = Module.default;
-
+    if (moduleName)
+      window[moduleName] =
+        moduleName === "filesUtils" ? Module : Module.default;
     return Module;
   };
 }
@@ -61,7 +62,7 @@ const useDynamicScript = (args) => {
     //TODO: Comment if you don't want to remove loaded remoteEntry
     return () => {
       console.log(`Dynamic Script Removed: ${args.url}`);
-      document.head.removeChild(element);
+      // document.head.removeChild(element);
     };
   }, [args.url]);
 
@@ -77,11 +78,6 @@ const DynamicComponent = ({ system, ...rest }) => {
     id: system && system.scope,
   });
 
-  React.useEffect(() => {
-    require("react-dom");
-    window.React2 = require("react");
-    console.log(window.React1 === window.React2);
-  });
   if (!system) {
     console.log(`Not system specified`);
     throw Error("Not system specified");
@@ -98,7 +94,7 @@ const DynamicComponent = ({ system, ...rest }) => {
   }
 
   const Component = React.lazy(
-    loadComponent(system.scope, system.module, system.name)
+    loadComponent(system.scope, system.module, system?.name)
   );
 
   return (
