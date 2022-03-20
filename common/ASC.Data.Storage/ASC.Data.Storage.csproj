@@ -31,8 +31,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.CloudFront" Version="3.7.4.46" />
-    <PackageReference Include="AWSSDK.S3" Version="3.7.8.8" />
+    <PackageReference Include="AWSSDK.CloudFront" Version="3.7.4.48" />
+    <PackageReference Include="AWSSDK.S3" Version="3.7.8.10" />
     <PackageReference Include="Google.Api.Gax" Version="3.7.0" />
     <PackageReference Include="Google.Api.Gax.Rest" Version="3.7.0" />
     <PackageReference Include="Google.Apis.Auth" Version="1.56.0" />

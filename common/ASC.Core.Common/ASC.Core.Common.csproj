@@ -50,8 +50,8 @@
     <None Remove="protos\user_photo_cache_item.proto" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="AWSSDK.Core" Version="3.7.8.10" />
-    <PackageReference Include="AWSSDK.SimpleEmail" Version="3.7.0.136" />
+    <PackageReference Include="AWSSDK.Core" Version="3.7.9" />
+    <PackageReference Include="AWSSDK.SimpleEmail" Version="3.7.0.138" />
     <PackageReference Include="Grpc.Tools" Version="2.44.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
