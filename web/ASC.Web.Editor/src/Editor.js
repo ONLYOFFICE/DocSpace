@@ -19,6 +19,8 @@ import { EditorWrapper } from "./StyledEditor";
 import { useTranslation } from "react-i18next";
 import useSharingDialog from "./helpers/useSharingDialog";
 import useSelectFileDialog from "./helpers/useSelectFileDialog";
+import useSelectFolderDialog from "./helpers/useSelectFolderDialog";
+import useFilesUtils from "./helpers/useFilesUtils";
 
 const LoaderComponent = (
   <Loader
@@ -102,7 +104,6 @@ let docEditor;
 
 function Editor({
   fileInfo,
-  docApiUrl,
   config,
   personal,
   successAuth,
@@ -114,15 +115,10 @@ function Editor({
   actionLink,
   error,
   needLoader,
-  ...rest
 }) {
-  const [titleSelectorFolder, setTitleSelectorFolder] = useState("");
-  const [urlSelectorFolder, setUrlSelectorFolder] = useState("");
-  const [extension, setExtension] = useState();
-  const [isFolderDialogVisible, setIsFolderDialogVisible] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [documentTitle, setNewDocumentTitle] = useState("Loading...");
-
+  useFilesUtils();
   const { t } = useTranslation();
 
   const [
@@ -138,6 +134,8 @@ function Editor({
     onSDKRequestMailMergeRecipients,
     onSDKRequestCompareFile,
   ] = useSelectFileDialog(docEditor, t);
+
+  const [selectFolderDialog, onSDKRequestSaveAs] = useSelectFolderDialog(t);
 
   useEffect(() => {
     if (error) {
@@ -389,13 +387,6 @@ function Editor({
     throttledChangeTitle();
   }; //+++
 
-  const onSDKRequestSaveAs = (event) => {
-    setTitleSelectorFolder(event.data.title);
-    setUrlSelectorFolder(event.data.url);
-    setExtension(event.data.title.split(".").pop());
-    setIsFolderDialogVisible(true);
-  }; // +++
-
   const onSDKAppReady = () => {
     console.log("ONLYOFFICE Document Editor is ready");
 
@@ -552,6 +543,7 @@ function Editor({
       )}
       {sharingDialog}
       {selectFileDialog}
+      {selectFolderDialog}
     </EditorWrapper>
   );
 }
