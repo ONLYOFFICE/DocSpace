@@ -70,7 +70,7 @@ class ConfigureTariffService : IConfigureNamedOptions<TariffService>
         IConfiguration configuration,
         DbContextManager<CoreDbContext> coreDbContextManager,
         TariffServiceStorage tariffServiceStorage,
-        ILog logger)
+        IOptionsMonitor<ILog> options)
     {
         this._quotaService = quotaService;
         this._tenantService = tenantService;
@@ -79,7 +79,7 @@ class ConfigureTariffService : IConfigureNamedOptions<TariffService>
         _configuration = configuration;
         _coreDbContextManager = coreDbContextManager;
         _tariffServiceStorage = tariffServiceStorage;
-        _logger = logger;
+        _options = options;
     }
 
     private readonly IOptionsSnapshot<CachedQuotaService> _quotaService;
@@ -89,7 +89,7 @@ class ConfigureTariffService : IConfigureNamedOptions<TariffService>
     private readonly IConfiguration _configuration;
     private readonly DbContextManager<CoreDbContext> _coreDbContextManager;
     private readonly TariffServiceStorage _tariffServiceStorage;
-    private readonly IOptionsMonitor<ILog> _logger;
+    private readonly IOptionsMonitor<ILog> _options;
 
     public void Configure(string name, TariffService options)
     {
@@ -101,11 +101,11 @@ class ConfigureTariffService : IConfigureNamedOptions<TariffService>
 
     public void Configure(TariffService options)
     {
-        options.Logger = _logger.CurrentValue;
+        options.Logger = _options.CurrentValue;
         options.CoreSettings = _coreSettings;
         options.Configuration = _configuration;
         options.TariffServiceStorage = _tariffServiceStorage;
-        options.Options = _logger;
+        options.Options = _options;
         options.CoreBaseSettings = _coreBaseSettings;
         options.Test = _configuration["core:payment:test"] == "true";
         int.TryParse(_configuration["core:payment:delay"], out var paymentDelay);

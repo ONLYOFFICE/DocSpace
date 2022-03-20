@@ -52,7 +52,7 @@ public abstract class BaseStorage : IDataStore
         PathUtils pathUtils,
         EmailValidationKeyProvider emailValidationKeyProvider,
         IHttpContextAccessor httpContextAccessor,
-        ILog options,
+        IOptionsMonitor<ILog> options,
         IHttpClientFactory clientFactory)
     {
 
