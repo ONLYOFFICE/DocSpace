@@ -30,6 +30,19 @@ const config = {
           "source-map-loader",
         ],
       },
+      {
+        test: /\.react.svg$/,
+        use: [
+          {
+            loader: "@svgr/webpack",
+            options: {
+              svgoConfig: {
+                plugins: [{ removeViewBox: false }],
+              },
+            },
+          },
+        ],
+      },
     ],
   },
 };
