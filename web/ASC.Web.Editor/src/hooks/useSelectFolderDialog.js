@@ -4,6 +4,7 @@ import Text from "@appserver/components/text";
 import TextInput from "@appserver/components/text-input";
 import Checkbox from "@appserver/components/checkbox";
 import { StyledSelectFolder } from "../StyledEditor";
+import { FILES_REMOTE_ENTRY_URL, FILES_SCOPE } from "../helpers/constants";
 
 function useSelectFolderDialog(t) {
   const [isFolderDialogVisible, setIsFolderDialogVisible] = useState(false);
@@ -71,8 +72,8 @@ function useSelectFolderDialog(t) {
         asideHeightContent="calc(100% - 50px)"
         foldersType="exceptSortedByTags"
         system={{
-          scope: "files",
-          url: "/products/files/remoteEntry.js",
+          scope: FILES_SCOPE,
+          url: FILES_REMOTE_ENTRY_URL,
           module: "./SelectFolderDialog",
         }}
         isPanelVisible={isFolderDialogVisible}

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import DynamicComponent from "../components/dynamic";
+import { FILES_REMOTE_ENTRY_URL, FILES_SCOPE } from "../helpers/constants";
 function useSharingDialog(fileInfo, fileId, docEditor) {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -23,8 +24,8 @@ function useSharingDialog(fileInfo, fileId, docEditor) {
     <DynamicComponent
       className="dynamic-sharing-dialog"
       system={{
-        scope: "files",
-        url: "/products/files/remoteEntry.js",
+        scope: FILES_SCOPE,
+        url: FILES_REMOTE_ENTRY_URL,
         module: "./SharingDialog",
         name: "SharingDialog",
       }}

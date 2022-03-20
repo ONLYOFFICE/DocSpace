@@ -17,10 +17,12 @@ import {
 
 import { EditorWrapper } from "./StyledEditor";
 import { useTranslation } from "react-i18next";
-import useSharingDialog from "./helpers/useSharingDialog";
-import useSelectFileDialog from "./helpers/useSelectFileDialog";
-import useSelectFolderDialog from "./helpers/useSelectFolderDialog";
-import useFilesUtils from "./helpers/useFilesUtils";
+import {
+  useFilesUtils,
+  useSelectFileDialog,
+  useSelectFolderDialog,
+  useSharingDialog,
+} from "./hooks";
 
 const LoaderComponent = (
   <Loader

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import DynamicComponent from "../components/dynamic";
 import { getPresignedUri } from "@appserver/common/api/files";
+import { FILES_REMOTE_ENTRY_URL, FILES_SCOPE } from "../helpers/constants";
 
 const insertImageAction = "imageFileType";
 const mailMergeAction = "mailMergeFileType";
@@ -122,8 +123,8 @@ function useSelectFileDialog(docEditor, t) {
     typeof window !== "undefined" && isFileDialogVisible ? (
       <DynamicComponent
         system={{
-          scope: "files",
-          url: "/products/files/remoteEntry.js",
+          scope: FILES_SCOPE,
+          url: FILES_REMOTE_ENTRY_URL,
           module: "./SelectFileDialog",
         }}
         resetTreeFolders
