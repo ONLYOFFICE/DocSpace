@@ -1,9 +1,9 @@
 import React from "react";
 import { loadComponent } from "../components/dynamic";
 import { FILES_SCOPE } from "../helpers/constants";
-function useFilesUtils() {
+function useFilesUtils(isReadyFilesRemote) {
   React.useEffect(() => {
-    if (document.getElementById(FILES_SCOPE)) {
+    if (isReadyFilesRemote) {
       loadComponent(FILES_SCOPE, "./utils", "filesUtils")();
     }
   }, []);

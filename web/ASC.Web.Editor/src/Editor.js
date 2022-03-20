@@ -117,10 +117,11 @@ function Editor({
   actionLink,
   error,
   needLoader,
+  isReadyFilesRemote,
 }) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [documentTitle, setNewDocumentTitle] = useState("Loading...");
-  useFilesUtils();
+  useFilesUtils(isReadyFilesRemote);
   const { t } = useTranslation();
 
   const [
@@ -137,7 +138,10 @@ function Editor({
     onSDKRequestCompareFile,
   ] = useSelectFileDialog(docEditor, t);
 
-  const [selectFolderDialog, onSDKRequestSaveAs] = useSelectFolderDialog(t);
+  const [selectFolderDialog, onSDKRequestSaveAs] = useSelectFolderDialog(
+    t,
+    docEditor
+  );
 
   useEffect(() => {
     if (error) {

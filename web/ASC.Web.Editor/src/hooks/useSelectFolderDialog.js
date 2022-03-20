@@ -6,7 +6,7 @@ import Checkbox from "@appserver/components/checkbox";
 import { StyledSelectFolder } from "../StyledEditor";
 import { FILES_REMOTE_ENTRY_URL, FILES_SCOPE } from "../helpers/constants";
 
-function useSelectFolderDialog(t) {
+function useSelectFolderDialog(t, docEditor) {
   const [isFolderDialogVisible, setIsFolderDialogVisible] = useState(false);
   const [titleSelectorFolder, setTitleSelectorFolder] = useState("");
   const [urlSelectorFolder, setUrlSelectorFolder] = useState("");
@@ -27,7 +27,7 @@ function useSelectFolderDialog(t) {
   };
 
   const getSavingInfo = async (title, folderId) => {
-    const savingInfo = await SaveAs(
+    const savingInfo = await window.filesUtils.SaveAs(
       title,
       urlSelectorFolder,
       folderId,
@@ -49,7 +49,7 @@ function useSelectFolderDialog(t) {
         : titleSelectorFolder;
 
     if (openNewTab) {
-      SaveAs(title, urlSelectorFolder, folderId, openNewTab);
+      window.filesUtils.SaveAs(title, urlSelectorFolder, folderId, openNewTab);
     } else {
       getSavingInfo(title, folderId);
     }
@@ -60,6 +60,7 @@ function useSelectFolderDialog(t) {
   };
 
   const onChangeInput = (e) => {
+    console.log(e.target.value);
     setTitleSelectorFolder(e.target.value);
   };
 
