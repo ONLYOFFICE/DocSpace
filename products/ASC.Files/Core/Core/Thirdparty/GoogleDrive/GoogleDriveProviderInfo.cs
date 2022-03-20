@@ -162,14 +162,16 @@ internal class GoogleDriveProviderInfo : IProviderInfo
 internal class GoogleDriveStorageDisposableWrapper : IDisposable
 {
     internal GoogleDriveStorage Storage { get; set; }
+        internal OAuth20TokenHelper _oAuth20TokenHelper { get; }
 
     internal readonly ConsumerFactory ConsumerFactory;
     internal readonly IServiceProvider ServiceProvider;
 
-    public GoogleDriveStorageDisposableWrapper(ConsumerFactory consumerFactory, IServiceProvider serviceProvider)
+    public GoogleDriveStorageDisposableWrapper(ConsumerFactory consumerFactory, IServiceProvider serviceProvider, OAuth20TokenHelper oAuth20TokenHelper)
     {
         ConsumerFactory = consumerFactory;
         ServiceProvider = serviceProvider;
+            _oAuth20TokenHelper = oAuth20TokenHelper;
     }
 
     public Task<GoogleDriveStorage> CreateStorageAsync(OAuth20Token token, int id)
@@ -207,7 +209,7 @@ internal class GoogleDriveStorageDisposableWrapper : IDisposable
     {
         if (token.IsExpired)
         {
-            token = OAuth20TokenHelper.RefreshToken<GoogleLoginProvider>(ConsumerFactory, token);
+                token = _oAuth20TokenHelper.RefreshToken<GoogleLoginProvider>(ConsumerFactory, token);
 
             var dbDao = ServiceProvider.GetService<ProviderAccountDao>();
             var authData = new AuthData(token: token.ToJson());

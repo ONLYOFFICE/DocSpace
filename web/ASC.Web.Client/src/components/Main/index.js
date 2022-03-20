@@ -24,8 +24,10 @@ const StyledMain = styled.main`
 `;
 
 const Main = React.memo((props) => {
-  const vh = (window.innerHeight - 57) * 0.01;
-  document.documentElement.style.setProperty("--vh", `${vh}px`);
+  if (isIOS && !isFirefox) {
+    const vh = (window.innerHeight - 57) * 0.01;
+    document.documentElement.style.setProperty("--vh", `${vh}px`);
+  }
   //console.log("Main render");
   return <StyledMain className="main" {...props} />;
 });

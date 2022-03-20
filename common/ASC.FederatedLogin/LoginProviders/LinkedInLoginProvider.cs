@@ -38,6 +38,7 @@ public class LinkedInLoginProvider : BaseLoginProvider<LinkedInLoginProvider>
 
     private const string LinkedInProfileUrl = "https://api.linkedin.com/v2/me";
     private const string LinkedInEmailUrl = "https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))";
+    private readonly RequestHelper _requestHelper;
 
     public LinkedInLoginProvider() { }
 
@@ -51,8 +52,12 @@ public class LinkedInLoginProvider : BaseLoginProvider<LinkedInLoginProvider>
         ConsumerFactory consumerFactory,
         Signature signature,
         InstanceCrypto instanceCrypto,
+            RequestHelper requestHelper,
         string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-        : base(oAuth20TokenHelper, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, signature, instanceCrypto, name, order, props, additional) { }
+            : base(oAuth20TokenHelper, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, signature, instanceCrypto, name, order, props, additional)
+    {
+        _requestHelper = requestHelper;
+    }
 
     public override LoginProfile GetLoginProfile(string accessToken)
     {
@@ -97,11 +102,11 @@ public class LinkedInLoginProvider : BaseLoginProvider<LinkedInLoginProvider>
 
     private LoginProfile RequestProfile(string accessToken)
     {
-        var linkedInProfile = RequestHelper.PerformRequest(LinkedInProfileUrl,
+        var linkedInProfile = _requestHelper.PerformRequest(LinkedInProfileUrl,
             headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
         var loginProfile = ProfileFromLinkedIn(linkedInProfile);
 
-        var linkedInEmail = RequestHelper.PerformRequest(LinkedInEmailUrl, headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
+        var linkedInEmail = _requestHelper.PerformRequest(LinkedInEmailUrl, headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
         loginProfile.EMail = EmailFromLinkedIn(linkedInEmail);
 
         return loginProfile;

@@ -26,6 +26,49 @@
 
 namespace ASC.Web.Files.Core.Search;
 
+[Scope]
+public class BaseIndexerFile : BaseIndexer<DbFile>
+{
+    private readonly IDaoFactory _daoFactory;
+
+    public BaseIndexerFile(
+        Client client,
+        IOptionsMonitor<ILog> log,
+        DbContextManager<WebstudioDbContext> dbContextManager,
+        TenantManager tenantManager,
+        BaseIndexerHelper baseIndexerHelper,
+        Settings settings,
+        IServiceProvider serviceProvider,
+        IDaoFactory daoFactory)
+        : base(client, log, dbContextManager, tenantManager, baseIndexerHelper, settings, serviceProvider)
+    {
+        _daoFactory = daoFactory;
+    }
+
+    protected override bool BeforeIndex(DbFile data)
+    {
+        if (!base.BeforeIndex(data)) return false;
+
+        var fileDao = _daoFactory.GetFileDao<int>() as FileDao;
+        _tenantManager.SetCurrentTenant(data.TenantId);
+        fileDao.InitDocumentAsync(data).Wait();
+
+        return true;
+    }
+
+    protected override async Task<bool> BeforeIndexAsync(DbFile data)
+    {
+        if (!base.BeforeIndex(data)) return false;
+
+        var fileDao = _daoFactory.GetFileDao<int>() as FileDao;
+        _tenantManager.SetCurrentTenant(data.TenantId);
+        await fileDao.InitDocumentAsync(data);
+
+        return true;
+    }
+}
+
+
 [Scope(Additional = typeof(FactoryIndexerFileExtension))]
 public class FactoryIndexerFile : FactoryIndexer<DbFile>
 {
@@ -37,7 +80,7 @@ public class FactoryIndexerFile : FactoryIndexer<DbFile>
         TenantManager tenantManager,
         SearchSettingsHelper searchSettingsHelper,
         FactoryIndexer factoryIndexer,
-        BaseIndexer<DbFile> baseIndexer,
+            BaseIndexerFile baseIndexer,
         IServiceProvider serviceProvider,
         IDaoFactory daoFactory,
         ICache cache,
@@ -127,22 +170,10 @@ public class FactoryIndexerFile : FactoryIndexer<DbFile>
             {
                 if (_settings.Threads == 1)
                 {
-                    data.ForEach(r =>
-                    {
-                        TenantManager.SetCurrentTenant(r.TenantId);
-                        fileDao.InitDocumentAsync(r).Wait();
-                    });
                     Index(data);
                 }
                 else
                 {
-                    //TODO: refactoring
-                    data.ForEach(r =>
-                    {
-                        TenantManager.SetCurrentTenant(r.TenantId);
-                        fileDao.InitDocumentAsync(r).Wait();
-                    });
-
                     tasks.Add(IndexAsync(data));
                     j++;
                     if (j >= _settings.Threads)

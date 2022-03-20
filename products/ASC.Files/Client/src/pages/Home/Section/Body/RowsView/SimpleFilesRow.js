@@ -8,7 +8,6 @@ import { withRouter } from "react-router-dom";
 import { isTablet } from "react-device-detect";
 
 import withFileActions from "../../../../../HOCs/withFileActions";
-import withContextOptions from "../../../../../HOCs/withContextOptions";
 import withQuickButtons from "../../../../../HOCs/withQuickButtons";
 import ItemIcon from "../../../../../components/ItemIcon";
 import marginStyles from "./CommonStyles";
@@ -73,8 +72,8 @@ const StyledSimpleFilesRow = styled(Row)`
   }
 
   .row_content {
-    max-width: min-content;
-    min-width: inherit;
+    ${(props) => props.sectionWidth > 500 && `max-width: fit-content;`}
+    min-width: auto;
   }
 
   .badges {
@@ -88,9 +87,13 @@ const StyledSimpleFilesRow = styled(Row)`
     margin-right: 8px;
   }
 
-  .badge:last-child {
-    margin-right: 0px;
-  }
+  ${(props) =>
+    props.sectionWidth > 500 &&
+    `
+      .badge:last-child {
+        margin-right: 0px;
+      }
+  `}
 
   .lock-file {
     cursor: ${(props) => (props.withAccess ? "pointer" : "default")};
@@ -158,7 +161,6 @@ const SimpleFilesRow = (props) => {
     quickButtonsComponent,
     displayShareButton,
     isPrivacy,
-    contextOptionsProps,
     checkedProps,
     onFilesClick,
     onMouseClick,
@@ -166,13 +168,18 @@ const SimpleFilesRow = (props) => {
     isActive,
     inProgress,
     isAdmin,
+    getModel,
+    t,
   } = props;
 
   const withAccess = isAdmin || item.access === 0;
+  const isSmallContainer = sectionWidth <= 500;
 
   const element = (
     <ItemIcon id={item.id} icon={item.icon} fileExst={item.fileExst} />
   );
+
+  const contextMenuData = { getModel, t, item };
 
   return (
     <StyledWrapper
@@ -194,14 +201,14 @@ const SimpleFilesRow = (props) => {
           isEdit={isEdit}
           element={element}
           sectionWidth={sectionWidth}
-          contentElement={quickButtonsComponent}
+          contentElement={isSmallContainer ? null : quickButtonsComponent}
           onSelect={onContentFileSelect}
           rowContextClick={fileContextClick}
           isPrivacy={isPrivacy}
           onClick={onMouseClick}
           onDoubleClick={onFilesClick}
           checked={checkedProps}
-          {...contextOptionsProps}
+          contextOptions={item.contextOptions}
           contextButtonSpacerWidth={displayShareButton}
           dragging={dragging && isDragging}
           isActive={isActive}
@@ -209,11 +216,13 @@ const SimpleFilesRow = (props) => {
           isThirdPartyFolder={item.isThirdPartyFolder}
           className="files-row"
           withAccess={withAccess}
+          contextMenuData={contextMenuData}
         >
           <FilesRowContent
             item={item}
             sectionWidth={sectionWidth}
             onFilesClick={onFilesClick}
+            quickButtons={isSmallContainer ? quickButtonsComponent : null}
           />
         </StyledSimpleFilesRow>
       </DragAndDrop>
@@ -222,7 +231,5 @@ const SimpleFilesRow = (props) => {
 };
 
 export default withTranslation(["Home", "Translations"])(
-  withFileActions(
-    withRouter(withContextOptions(withQuickButtons(SimpleFilesRow)))
-  )
+  withFileActions(withRouter(withQuickButtons(SimpleFilesRow)))
 );

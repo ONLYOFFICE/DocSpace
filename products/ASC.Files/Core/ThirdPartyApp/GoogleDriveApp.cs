@@ -66,6 +66,8 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
     private readonly ThirdPartyAppHandlerService _thirdPartyAppHandlerService;
     private readonly IServiceProvider _serviceProvider;
     private readonly IHttpClientFactory _clientFactory;
+    private readonly RequestHelper _requestHelper;
+    private readonly OAuth20TokenHelper _oAuth20TokenHelper;
 
     public GoogleDriveApp() { }
 
@@ -102,6 +104,8 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
         ICacheNotify<ConsumerCacheItem> cache,
         ConsumerFactory consumerFactory,
         IHttpClientFactory clientFactory,
+            OAuth20TokenHelper oAuth20TokenHelper,
+            RequestHelper requestHelper,
         string name, int order, Dictionary<string, string> additional)
         : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, additional)
     {
@@ -131,7 +135,8 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
         _thirdPartyAppHandlerService = thirdPartyAppHandlerService;
         _serviceProvider = serviceProvider;
         _clientFactory = clientFactory;
-    }
+        _oAuth20TokenHelper = oAuth20TokenHelper;
+        _requestHelper = requestHelper;    }
 
     public async Task<bool> RequestAsync(HttpContext context)
     {
@@ -584,7 +589,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
         try
         {
             Logger.Debug("GoogleDriveApp: GetAccessToken by code " + code);
-            var token = OAuth20TokenHelper.GetAccessToken<GoogleDriveApp>(ConsumerFactory, code);
+                var token = _oAuth20TokenHelper.GetAccessToken<GoogleDriveApp>(ConsumerFactory, code);
 
             return new Token(token, AppAttr);
         }
@@ -625,7 +630,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
         LoginProfile loginProfile = null;
         try
         {
-            loginProfile = _googleLoginProvider.Instance.GetLoginProfile(token.GetRefreshedToken(_tokenHelper));
+            loginProfile = _googleLoginProvider.Instance.GetLoginProfile(token.GetRefreshedToken(_tokenHelper, _oAuth20TokenHelper));
         }
         catch (Exception ex)
         {
@@ -689,7 +694,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
         try
         {
             var requestUrl = GoogleLoginProvider.GoogleUrlFile + googleFileId + "?fields=" + HttpUtility.UrlEncode(GoogleLoginProvider.FilesFields);
-            var resultResponse = RequestHelper.PerformRequest(requestUrl,
+                var resultResponse = _requestHelper.PerformRequest(requestUrl,
                                                               headers: new Dictionary<string, string> { { "Authorization", "Bearer " + token } });
             Logger.Debug("GoogleDriveApp: file response - " + resultResponse);
 

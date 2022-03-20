@@ -68,7 +68,7 @@ public class BaseIndexer<T> where T : class, ISearchItem
     private bool _isExist;
     private readonly Client _client;
     private readonly ILog _logger;
-    private readonly TenantManager _tenantManager;
+    protected readonly TenantManager _tenantManager;
     private readonly BaseIndexerHelper _baseIndexerHelper;
     private readonly Settings _settings;
     private readonly IServiceProvider _serviceProvider;
@@ -208,7 +208,8 @@ public class BaseIndexer<T> where T : class, ISearchItem
 
     internal void Index(T data, bool immediately = true)
     {
-        CreateIfNotExist(data);
+        if (!BeforeIndex(data)) return;
+
         _client.Instance.Index(data, idx => GetMeta(idx, data, immediately));
     }
 
@@ -219,7 +220,7 @@ public class BaseIndexer<T> where T : class, ISearchItem
             return;
         }
 
-        CreateIfNotExist(data[0]);
+        if (!CheckExist(data[0])) return;
 
         if (data[0] is ISearchItemDocument)
         {
@@ -231,6 +232,8 @@ public class BaseIndexer<T> where T : class, ISearchItem
             {
                 var t = data[i];
                 var runBulk = i == data.Count - 1;
+
+                BeforeIndex(t);
 
                 if (!(t is ISearchItemDocument wwd) || wwd.Document == null || string.IsNullOrEmpty(wwd.Document.Data))
                 {
@@ -303,13 +306,18 @@ public class BaseIndexer<T> where T : class, ISearchItem
         }
         else
         {
+            foreach (var item in data)
+            {
+                BeforeIndex(item);
+            }
+
             _client.Instance.Bulk(r => r.IndexMany(data, GetMeta));
         }
     }
 
     internal async Task IndexAsync(List<T> data, bool immediately = true)
     {
-        CreateIfNotExist(data[0]);
+        if (!CheckExist(data[0])) return;
 
         if (data is ISearchItemDocument)
         {
@@ -321,6 +329,8 @@ public class BaseIndexer<T> where T : class, ISearchItem
             {
                 var t = data[i];
                 var runBulk = i == data.Count - 1;
+
+                await BeforeIndexAsync(t);
 
                 var wwd = t as ISearchItemDocument;
 
@@ -393,31 +403,36 @@ public class BaseIndexer<T> where T : class, ISearchItem
         }
         else
         {
+            foreach (var item in data)
+            {
+                await BeforeIndexAsync(item);
+            }
+
             await _client.Instance.BulkAsync(r => r.IndexMany(data, GetMeta));
         }
     }
 
     internal void Update(T data, bool immediately = true, params Expression<Func<T, object>>[] fields)
     {
-        CreateIfNotExist(data);
+        if (!CheckExist(data)) return;
         _client.Instance.Update(DocumentPath<T>.Id(data), r => GetMetaForUpdate(r, data, immediately, fields));
     }
 
     internal void Update(T data, UpdateAction action, Expression<Func<T, IList>> fields, bool immediately = true)
     {
-        CreateIfNotExist(data);
+        if (!CheckExist(data)) return;
         _client.Instance.Update(DocumentPath<T>.Id(data), r => GetMetaForUpdate(r, data, action, fields, immediately));
     }
 
     internal void Update(T data, Expression<Func<Selector<T>, Selector<T>>> expression, int tenantId, bool immediately = true, params Expression<Func<T, object>>[] fields)
     {
-        CreateIfNotExist(data);
+        if (!CheckExist(data)) return;
         _client.Instance.UpdateByQuery(GetDescriptorForUpdate(data, expression, tenantId, immediately, fields));
     }
 
     internal void Update(T data, Expression<Func<Selector<T>, Selector<T>>> expression, int tenantId, UpdateAction action, Expression<Func<T, IList>> fields, bool immediately = true)
     {
-        CreateIfNotExist(data);
+        if (!CheckExist(data)) return;
         _client.Instance.UpdateByQuery(GetDescriptorForUpdate(data, expression, tenantId, action, fields, immediately));
     }
 
@@ -479,6 +494,16 @@ public class BaseIndexer<T> where T : class, ISearchItem
         total = result.Total;
 
         return result.Documents;
+    }
+
+    protected virtual bool BeforeIndex(T data)
+    {
+        return CheckExist(data);
+    }
+
+    protected virtual Task<bool> BeforeIndexAsync(T data)
+    {
+        return Task.FromResult(CheckExist(data));
     }
 
     private void Clear()
