@@ -205,12 +205,6 @@ const SingleItem = (props) => {
       const parentFolderId = selectedItem.isFolder
         ? selectedItem.parentId
         : selectedItem.folderId;
-
-      if (!parentFolderId)
-        return [...displayedItem.properties].filter(
-          (dip) => dip.title !== t("Location")
-        );
-
       const folderInfo = await getFolderInfo(parentFolderId);
 
       return [...displayedItem.properties].map((dip) =>

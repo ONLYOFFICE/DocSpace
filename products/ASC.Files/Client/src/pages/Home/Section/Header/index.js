@@ -203,8 +203,13 @@ class SectionHeaderContent extends React.Component {
 
   onEmptyTrashAction = () => this.props.setEmptyTrashDialogVisible(true);
   showFolderInfo = () => {
+    if (this.props.showCurrentFolder && this.props.isInfoPanelVisible) {
+      this.props.setShowCurrentFolder(false);
+      this.props.setIsInfoPanelVisible(false);
+      return;
+    }
+
     this.props.setShowCurrentFolder(true);
-    console.log(this.props.showCurrentFolder);
     this.props.setIsInfoPanelVisible(true);
   };
 
