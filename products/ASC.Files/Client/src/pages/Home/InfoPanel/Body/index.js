@@ -70,7 +70,7 @@ const InfoPanelBodyContent = ({
 
   return (
     <StyledInfoRoomBody>
-      {showCurrentFolder ? (
+      {showCurrentFolder && selectedItems.length === 0 ? (
         <>
           {currentFolderLoading ? <>Loading ...</> : singleItem(currentFolder)}
         </>
