@@ -96,9 +96,6 @@ const initDesktop = (cfg) => {
 
 const text = "text";
 const presentation = "presentation";
-const insertImageAction = "imageFileType";
-const mailMergeAction = "mailMergeFileType";
-const compareFilesAction = "documentsFileType";
 let documentIsReady = false; // move to state?
 let docSaved = null; // move to state?
 let docTitle = null;
@@ -117,11 +114,12 @@ function Editor({
   actionLink,
   error,
   needLoader,
-  isReadyFilesRemote,
 }) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [documentTitle, setNewDocumentTitle] = useState("Loading...");
-  useFilesUtils(isReadyFilesRemote);
+
+  useFilesUtils();
+
   const { t } = useTranslation();
 
   const [
