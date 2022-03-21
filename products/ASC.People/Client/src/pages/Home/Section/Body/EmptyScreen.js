@@ -68,7 +68,6 @@ const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading }) => {
           </Grid>
         }
       />
-      ) : (<></>)
     </>
   );
 };
