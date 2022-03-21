@@ -23,9 +23,6 @@
 
 	</Target>
 	<ItemGroup>
-	  <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.2.0" />
-	</ItemGroup>
-	<ItemGroup>
 	  <ProjectReference Include="..\..\ASC.Api.Core\ASC.Api.Core.csproj" />
 	  <ProjectReference Include="..\..\ASC.Data.Backup.Core\ASC.Data.Backup.Core.csproj" />
 	</ItemGroup>

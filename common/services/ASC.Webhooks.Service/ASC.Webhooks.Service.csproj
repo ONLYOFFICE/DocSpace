@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.2.0" />
     <PackageReference Include="StackExchange.Redis.Extensions.AspNetCore" Version="7.2.1" />
     <PackageReference Include="StackExchange.Redis.Extensions.Newtonsoft" Version="7.2.1" />
   </ItemGroup>
