@@ -290,8 +290,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
         setMaintenanceExist(true);
       },
     };
-
-    setTimeout(() => Snackbar.show(barConfig), 10000);
+    Snackbar.show(barConfig);
   };
 
   const fetchMaintenance = () => {
@@ -308,7 +307,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
             return;
           }
 
-          showSnackBar(campaign);
+          setTimeout(() => showSnackBar(campaign), 10000);
         })
         .catch((err) => {
           console.error(err);
