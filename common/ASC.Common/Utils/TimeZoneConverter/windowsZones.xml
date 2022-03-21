@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright © 1991-2013 Unicode, Inc.
+CLDR data files are interpreted according to the LDML specification (http://unicode.org/reports/tr35/)
+For terms of use, see http://www.unicode.org/copyright.html
+Source file http://unicode.org/repos/cldr/trunk/common/supplemental/windowsZones.xml
+-->
 <supplementalData>
 	<version number="$Revision$"/>
 	<windowsZones>
