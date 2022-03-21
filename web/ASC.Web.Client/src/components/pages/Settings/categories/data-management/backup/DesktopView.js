@@ -100,6 +100,7 @@ class BackupDesktopView extends React.Component {
       history,
       helpUrlCreatingBackup,
       downloadingProgress,
+      organizationName,
     } = this.props;
     const { isInitialLoading, enableRestore, enableAutoBackup } = this.state;
 
@@ -140,7 +141,9 @@ class BackupDesktopView extends React.Component {
           <div className="backup_modules-header_wrapper">
             <Text className="backup_modules-header">{t("ManualBackup")}</Text>
             {renderTooltip(
-              t("ManualBackupHelp") + " " + t("ManualBackupHelpNote")
+              t("ManualBackupHelp") +
+                " " +
+                t("ManualBackupHelpNote", { organizationName })
             )}
           </div>
           <Text className="backup_modules-description">
@@ -155,7 +158,9 @@ class BackupDesktopView extends React.Component {
             <div className="backup_modules-header_wrapper">
               <Text className="backup_modules-header">{t("AutoBackup")}</Text>
               {renderTooltip(
-                t("AutoBackupHelp") + " " + t("AutoBackupHelpNote")
+                t("AutoBackupHelp") +
+                  " " +
+                  t("AutoBackupHelpNote", { organizationName })
               )}
             </div>
             <Text className="backup_modules-description">
@@ -194,8 +199,8 @@ class BackupDesktopView extends React.Component {
 }
 
 export default inject(({ auth, backup }) => {
-  const { language } = auth;
-  const { helpUrlCreatingBackup } = auth.settingsStore;
+  const { language, settingsStore } = auth;
+  const { helpUrlCreatingBackup, organizationName } = settingsStore;
   const {
     setThirdPartyStorage,
     setBackupSchedule,
@@ -214,5 +219,6 @@ export default inject(({ auth, backup }) => {
     getProgress,
     clearProgressInterval,
     downloadingProgress,
+    organizationName,
   };
 })(observer(withTranslation(["Settings", "Common"])(BackupDesktopView)));
