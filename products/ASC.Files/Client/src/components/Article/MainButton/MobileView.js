@@ -29,7 +29,6 @@ const MobileView = ({
   titleProp,
   actionOptions,
   buttonOptions,
-  sectionWidth,
   files,
   clearUploadData,
   setUploadPanelVisible,
@@ -146,7 +145,6 @@ const MobileView = ({
 
   return (
     <StyledMainButtonMobile
-      sectionWidth={sectionWidth}
       actionOptions={actionOptions}
       isOpenButton={isOpenButton}
       onUploadClick={openButtonToggler}
