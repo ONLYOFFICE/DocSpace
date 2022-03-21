@@ -1,7 +1,10 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
 import ComboBox from "@appserver/components/combobox";
-import { BackupTypes, ThirdPartyStorages } from "@appserver/common/constants";
+import {
+  BackupStorageType,
+  ThirdPartyStorages,
+} from "@appserver/common/constants";
 import GoogleCloudStorage from "./storages/GoogleCloudStorage";
 import RackspaceStorage from "./storages/RackspaceStorage";
 import SelectelStorage from "./storages/SelectelStorage";
@@ -66,7 +69,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
   onMakeCopyIntoStorage = async (arraySettings) => {
     const { selectedId, selectedStorage } = this.state;
     const { onMakeCopy } = this.props;
-    const { StorageModuleType } = BackupTypes;
+    const { StorageModuleType } = BackupStorageType;
 
     let obj = {};
     let inputValueArray = [];

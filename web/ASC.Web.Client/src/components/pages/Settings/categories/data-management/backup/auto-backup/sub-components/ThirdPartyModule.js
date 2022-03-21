@@ -1,7 +1,7 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
-import { BackupTypes } from "@appserver/common/constants";
+import { BackupStorageType } from "@appserver/common/constants";
 import SelectFolderInput from "files/SelectFolderInput";
 import ScheduleComponent from "./ScheduleComponent";
 
@@ -75,7 +75,7 @@ export default inject(({ backup }) => {
   } = backup;
 
   const isResourcesDefault =
-    defaultStorageType === `${BackupTypes.ResourcesModuleType}`;
+    defaultStorageType === `${BackupStorageType.ResourcesModuleType}`;
   const passedId = isResourcesDefault ? defaultFolderId : "";
 
   return {

@@ -3,7 +3,7 @@ import { withTranslation } from "react-i18next";
 import SelectFolderInput from "files/SelectFolderInput";
 import Button from "@appserver/components/button";
 import { getFromSessionStorage } from "../../../../../utils";
-import { BackupTypes } from "@appserver/common/constants";
+import { BackupStorageType } from "@appserver/common/constants";
 
 let folderPath = "";
 let folder = "";
@@ -43,7 +43,7 @@ class DocumentsModule extends React.Component {
   onMakeCopy = async () => {
     const { onMakeCopy } = this.props;
     const { selectedFolder } = this.state;
-    const { DocumentModuleType } = BackupTypes;
+    const { DocumentModuleType } = BackupStorageType;
 
     this.setState({
       isStartCopy: true,

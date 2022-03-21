@@ -8,7 +8,7 @@ import { startBackup } from "@appserver/common/api/portal";
 import RadioButton from "@appserver/components/radio-button";
 import toastr from "@appserver/components/toast/toastr";
 import Loader from "@appserver/components/loader";
-import { BackupTypes } from "@appserver/common/constants";
+import { BackupStorageType } from "@appserver/common/constants";
 import SelectFolderDialog from "files/SelectFolderDialog";
 import ThirdPartyModule from "./sub-components/ThirdPartyModule";
 import DocumentsModule from "./sub-components/DocumentsModule";
@@ -83,7 +83,7 @@ class ManualBackup extends React.Component {
 
   onMakeTemporaryBackup = async () => {
     const { getIntervalProgress, setDownloadingProgress, t } = this.props;
-    const { TemporaryModuleType } = BackupTypes;
+    const { TemporaryModuleType } = BackupStorageType;
 
     saveToSessionStorage("LocalCopyStorageType", "TemporaryStorage");
 

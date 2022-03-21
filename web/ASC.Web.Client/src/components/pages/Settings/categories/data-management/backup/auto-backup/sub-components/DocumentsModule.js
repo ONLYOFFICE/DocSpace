@@ -1,6 +1,6 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-import { BackupTypes } from "@appserver/common/constants";
+import { BackupStorageType } from "@appserver/common/constants";
 import SelectFolderInput from "files/SelectFolderInput";
 import ScheduleComponent from "./ScheduleComponent";
 
@@ -68,7 +68,7 @@ export default inject(({ backup }) => {
   const { setSelectedFolder, defaultFolderId, defaultStorageType } = backup;
 
   const isDocumentsDefault =
-    defaultStorageType === `${BackupTypes.DocumentModuleType}`;
+    defaultStorageType === `${BackupStorageType.DocumentModuleType}`;
 
   const passedId = isDocumentsDefault ? defaultFolderId : "";
 

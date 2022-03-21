@@ -4,7 +4,7 @@ import { withTranslation } from "react-i18next";
 import SelectFolderInput from "files/SelectFolderInput";
 import Button from "@appserver/components/button";
 import { getFromSessionStorage } from "../../../../../utils";
-import { BackupTypes } from "@appserver/common/constants";
+import { BackupStorageType } from "@appserver/common/constants";
 
 let folderPath = "";
 let folder = "";
@@ -65,7 +65,7 @@ class ThirdPartyModule extends React.Component {
   onMakeCopy = async () => {
     const { onMakeCopy } = this.props;
     const { selectedFolder, isError } = this.state;
-    const { ResourcesModuleType } = BackupTypes;
+    const { ResourcesModuleType } = BackupStorageType;
     if (this.isInvalidForm()) return;
 
     isError &&

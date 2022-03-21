@@ -4,10 +4,10 @@ import { useTranslation } from "react-i18next";
 import ComboBox from "@appserver/components/combobox";
 import Text from "@appserver/components/text";
 import { StyledScheduleComponent } from "../../StyledBackup";
-import { BackupTypes } from "@appserver/common/constants";
+import { AutoBackupPeriod } from "@appserver/common/constants";
 import { isMobileOnly } from "react-device-detect";
 
-const { EveryWeekType, EveryMonthType } = BackupTypes;
+const { EveryWeekType, EveryMonthType } = AutoBackupPeriod;
 const ScheduleComponent = ({
   selectedPeriodLabel,
   selectedWeekdayLabel,

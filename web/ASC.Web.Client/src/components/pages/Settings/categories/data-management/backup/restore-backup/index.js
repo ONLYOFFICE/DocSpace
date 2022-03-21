@@ -10,7 +10,10 @@ import RadioButton from "@appserver/components/radio-button";
 import toastr from "@appserver/components/toast/toastr";
 import { startRestore } from "@appserver/common/api/portal";
 import { combineUrl } from "@appserver/common/utils";
-import { AppServerConfig, BackupTypes } from "@appserver/common/constants";
+import {
+  AppServerConfig,
+  BackupStorageType,
+} from "@appserver/common/constants";
 import { request } from "@appserver/common/api/client";
 import SelectFolderDialog from "files/SelectFolderDialog";
 import { StyledRestoreBackup } from "./../StyledBackup";
@@ -26,7 +29,7 @@ const {
   ResourcesModuleType,
   StorageModuleType,
   LocalFileModuleType,
-} = BackupTypes;
+} = BackupStorageType;
 class RestoreBackup extends React.Component {
   constructor(props) {
     super(props);

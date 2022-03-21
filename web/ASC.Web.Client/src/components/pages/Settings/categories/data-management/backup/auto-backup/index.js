@@ -13,7 +13,10 @@ import {
 } from "@appserver/common/api/portal";
 import Loader from "@appserver/components/loader";
 import toastr from "@appserver/components/toast/toastr";
-import { BackupTypes } from "@appserver/common/constants";
+import {
+  BackupStorageType,
+  AutoBackupPeriod,
+} from "@appserver/common/constants";
 import ToggleButton from "@appserver/components/toggle-button";
 import { getBackupStorage } from "@appserver/common/api/settings";
 import SelectFolderDialog from "files/SelectFolderDialog";
@@ -26,10 +29,8 @@ const {
   DocumentModuleType,
   ResourcesModuleType,
   StorageModuleType,
-  EveryDayType,
-  EveryWeekType,
-  EveryMonthType,
-} = BackupTypes;
+} = BackupStorageType;
+const { EveryDayType, EveryWeekType, EveryMonthType } = AutoBackupPeriod;
 
 class AutomaticBackup extends React.PureComponent {
   constructor(props) {

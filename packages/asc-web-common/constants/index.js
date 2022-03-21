@@ -156,13 +156,15 @@ export const ThirdPartyStorages = Object.freeze({
  * Enum for backup types.
  * @readonly
  */
-export const BackupTypes = Object.freeze({
+export const BackupStorageType = Object.freeze({
   DocumentModuleType: 0,
   ResourcesModuleType: 1,
   LocalFileModuleType: 3,
   TemporaryModuleType: 4,
   StorageModuleType: 5,
+});
 
+export const AutoBackupPeriod = Object.freeze({
   EveryDayType: 0,
   EveryWeekType: 1,
   EveryMonthType: 2,

@@ -5,9 +5,9 @@ import {
   getFromSessionStorage,
 } from "../components/pages/Settings/utils";
 import toastr from "../helpers/toastr";
-import { BackupTypes } from "@appserver/common/constants";
+import { AutoBackupPeriod } from "@appserver/common/constants";
 
-const { EveryDayType, EveryWeekType } = BackupTypes;
+const { EveryDayType, EveryWeekType } = AutoBackupPeriod;
 
 class BackupStore {
   backupSchedule = {};
