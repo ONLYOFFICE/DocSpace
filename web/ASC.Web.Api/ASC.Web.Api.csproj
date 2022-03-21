@@ -9,7 +9,7 @@
     <RazorCompileOnBuild>false</RazorCompileOnBuild>
     <GenerateMvcApplicationPartsAssemblyAttributes>false</GenerateMvcApplicationPartsAssemblyAttributes>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-	  <ImplicitUsings>enable</ImplicitUsings>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -17,10 +17,10 @@
     <Optimize>true</Optimize>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Controllers\LdapController.cs" />
-    <Compile Remove="Controllers\SsoSettingsV2Controller.cs" />
-  </ItemGroup>
+    <ItemGroup>
+	    <Compile Remove="Api\LdapController.cs" />
+	    <Compile Remove="Api\SsoSettingsV2Controller.cs" />
+    </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.2.0" />
