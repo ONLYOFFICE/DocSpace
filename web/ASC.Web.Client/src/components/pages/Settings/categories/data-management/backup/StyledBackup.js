@@ -273,10 +273,6 @@ const StyledScheduleComponent = styled.div`
   .max_copies {
     width: 100%;
     max-width: ${INPUT_LENGTH};
-    .drop-down_variable-size {
-      max-width: ${INPUT_LENGTH};
-      width: 100% !important;
-    }
   }
   .combo-button {
     width: 100% !important;
