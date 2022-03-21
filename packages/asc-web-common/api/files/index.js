@@ -731,20 +731,6 @@ export function getEncryptionAccess(fileId) {
   });
 }
 
-export function getFiles(
-  folderId,
-  filterType,
-  filterValue,
-  withSubfolders,
-  pageCount = 30,
-  startIndex = 0
-) {
-  return request({
-    method: "get",
-    url: `files/${folderId}?count=${pageCount}&withSubfolders=${withSubfolders}&startIndex=${startIndex}&filterType=${filterType}&filterValue=${filterValue}`,
-  });
-}
-
 export function updateFileStream(file, fileId, encrypted, forcesave) {
   let fd = new FormData();
   fd.append("file", file);
