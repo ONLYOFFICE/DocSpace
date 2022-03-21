@@ -212,22 +212,16 @@ StyledMenuIcon.defaultProps = { theme: Base };
 const StyledArticleMainButton = styled.div`
   padding: 0px 20px 16px;
   max-width: 216px;
+
   @media ${tablet} {
-    display: none;
+    padding: 0;
+    margin: 0;
   }
 
-  @media ${mobile} {
-    display: none;
-  }
-
-  ${isTablet &&
+  ${isMobile &&
   css`
-    display: none;
-  `}
-
-  ${isMobileOnly &&
-  css`
-    display: none;
+    padding: 0;
+    margin: 0;
   `}
 `;
 

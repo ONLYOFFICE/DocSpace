@@ -148,7 +148,8 @@ class ArticleMainButtonContent extends React.Component {
 
     return isAdmin ? (
       <>
-        {isMobile || isMobileUtils() || isTabletUtils() ? (
+        {(isMobile || isMobileUtils() || isTabletUtils()) &&
+        !isArticleLoading ? (
           <MobileView
             labelProps={t("OtherOperations")}
             actionOptions={menuModel}
@@ -202,6 +203,7 @@ export default withRouter(
       guestCaption,
       groupCaption,
       toggleShowText: auth.settingsStore.toggleShowText,
+      showText: auth.settingsStore.showText,
       isArticleLoading,
     };
   })(
