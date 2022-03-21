@@ -33,6 +33,15 @@ const findSelectedItemByKey = (items, selectedItemKey) => {
 };
 
 const StyledComponent = styled.div`
+  /* .section-wrapper-content {
+    min-height: 0px;
+  } */
+  .settings-block {
+    overflow: auto;
+    min-height: calc(100vh - 164px);
+    height: calc(100vh - 164px);
+  }
+
   .combo-button-label {
     max-width: 100%;
     font-weight: 400;
@@ -53,6 +62,15 @@ const StyledComponent = styled.div`
   .field-title {
     font-weight: 600;
     line-height: 20px;
+  }
+
+  @media (orientation: landscape) {
+    max-width: 343px;
+    .settings-block {
+      overflow: hidden;
+      min-height: auto;
+      height: auto;
+    }
   }
 `;
 
@@ -110,6 +128,7 @@ class LanguageAndTimeZone extends React.Component {
       hasChanged: false,
       showReminder: false,
       sectionWidth: null,
+      border: false,
     };
   }
 
@@ -169,7 +188,7 @@ class LanguageAndTimeZone extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { timezones, timezoneDefault, languageDefault } = this.state;
+    const { timezones, timezoneDefault, languageDefault, border } = this.state;
     const {
       i18n,
       language,
@@ -177,6 +196,20 @@ class LanguageAndTimeZone extends React.Component {
       getCurrentCustomSchema,
       cultureNames,
     } = this.props;
+
+    if (!this.settingsDiv) {
+      this.settingsDiv = document.getElementsByClassName("settings-block")[0];
+
+      if (this.settingsDiv) {
+        const height = getComputedStyle(this.settingsDiv).height.slice(0, -2);
+
+        if (this.settingsDiv.scrollHeight > height) {
+          this.setState({
+            border: true,
+          });
+        }
+      }
+    }
 
     if (timezones.length && !prevState.isLoadedData) {
       this.setState({ isLoadedData: true });
@@ -329,6 +362,7 @@ class LanguageAndTimeZone extends React.Component {
       timezone,
       showReminder,
       hasChanged,
+      border,
     } = this.state;
 
     const tooltipLanguageTimeSettings = (
@@ -374,7 +408,6 @@ class LanguageAndTimeZone extends React.Component {
                     className="dropdown-item-width"
                   />
                 </FieldContainer>
-
                 <div className="field-container-flex">
                   <div className="field-title">{`${t(
                     "Automatic time zone"
@@ -414,6 +447,7 @@ class LanguageAndTimeZone extends React.Component {
                 displaySettings={true}
                 hasChanged={hasChanged}
                 sectionWidth={context.sectionWidth}
+                border={border}
               />
             </StyledComponent>
           );

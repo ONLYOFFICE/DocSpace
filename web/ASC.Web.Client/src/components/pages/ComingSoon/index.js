@@ -10,7 +10,7 @@ import EmptyScreenContainer from "@appserver/components/empty-screen-container";
 import ExternalLinkIcon from "../../../../../../public/images/external.link.react.svg";
 import Loaders from "@appserver/common/components/Loaders";
 import toastr from "studio/toastr";
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
 import { useTranslation, withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { isMobile, isIOS } from "react-device-detect";
@@ -219,11 +219,11 @@ const Body = ({ modules, match, isLoaded, setCurrentProductId, t }) => {
 
 const ComingSoon = (props) => {
   return (
-    <PageLayout>
-      <PageLayout.SectionBody>
+    <Section>
+      <Section.SectionBody>
         <Body {...props} />
-      </PageLayout.SectionBody>
-    </PageLayout>
+      </Section.SectionBody>
+    </Section>
   );
 };
 

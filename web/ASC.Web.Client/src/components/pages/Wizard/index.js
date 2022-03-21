@@ -5,7 +5,7 @@ import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 import axios from "axios";
 
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
 import ErrorContainer from "@appserver/common/components/ErrorContainer";
 import history from "@appserver/common/history";
 import {
@@ -505,11 +505,11 @@ const WizardPage = (props) => {
 
   return (
     isLoaded && (
-      <PageLayout>
-        <PageLayout.SectionBody>
+      <Section>
+        <Section.SectionBody>
           <WizardWrapper {...props} />
-        </PageLayout.SectionBody>
-      </PageLayout>
+        </Section.SectionBody>
+      </Section>
     )
   );
 };

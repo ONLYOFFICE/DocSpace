@@ -13,11 +13,9 @@ const StyledDiv = styled.div`
   width: 32px;
   height: 32px;
   @media ${mobile} {
-    display: ${(props) =>
-      props.isProduct && props.showCatalog ? "none !important" : "block"};
+    display: ${(props) => (props.isProduct ? "none !important" : "block")};
   }
-  display: ${(props) =>
-    props.isProduct && props.showCatalog && isMobileOnly ? "none" : "block"};
+  display: ${(props) => (props.isProduct && isMobileOnly ? "none" : "block")};
 `;
 class ProfileActions extends React.PureComponent {
   constructor(props) {
@@ -100,11 +98,7 @@ class ProfileActions extends React.PureComponent {
     const userRole = this.getUserRole(user);
 
     return (
-      <StyledDiv
-        isProduct={this.props.isProduct}
-        showCatalog={this.props.showCatalog}
-        ref={this.ref}
-      >
+      <StyledDiv isProduct={this.props.isProduct} ref={this.ref}>
         <Avatar
           style={{ width: "32px", height: "32px" }}
           onClick={this.onClick}
@@ -152,7 +146,6 @@ ProfileActions.propTypes = {
   userIsUpdate: PropTypes.bool,
   setUserIsUpdate: PropTypes.func,
   isProduct: PropTypes.bool,
-  showCatalog: PropTypes.bool,
 };
 
 ProfileActions.defaultProps = {

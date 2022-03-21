@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
 import { withRouter } from "react-router";
 import {
   I18nextProvider,
@@ -105,11 +105,11 @@ const Form = () => {
 const CodeLoginForm = (props) => {
   return (
     <LoginFormWrapper>
-      <PageLayout>
-        <PageLayout.SectionBody>
+      <Section>
+        <Section.SectionBody>
           <Form {...props} />
-        </PageLayout.SectionBody>
-      </PageLayout>
+        </Section.SectionBody>
+      </Section>
     </LoginFormWrapper>
   );
 };
