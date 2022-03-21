@@ -284,6 +284,12 @@ const StyledScheduleComponent = styled.div`
   .schedule_description {
     font-weight: 600;
   }
+  .schedule_help-section {
+    display: flex;
+    .schedule_help-button {
+      margin: 3px 0 0 4px;
+    }
+  }
 `;
 
 const StyledBackup = styled.div`

@@ -6,6 +6,7 @@ import Text from "@appserver/components/text";
 import { StyledScheduleComponent } from "../../StyledBackup";
 import { AutoBackupPeriod } from "@appserver/common/constants";
 import { isMobileOnly } from "react-device-detect";
+import HelpButton from "@appserver/components/help-button";
 
 const { EveryWeekType, EveryMonthType } = AutoBackupPeriod;
 const ScheduleComponent = ({
@@ -29,6 +30,9 @@ const ScheduleComponent = ({
   monthlySchedule,
 }) => {
   const { t } = useTranslation("Settings");
+  const renderHelpContent = () => (
+    <Text className="schedule_description"> {t("AutoSavePeriodHelp")}</Text>
+  );
 
   return (
     <StyledScheduleComponent
@@ -36,7 +40,16 @@ const ScheduleComponent = ({
       monthlySchedule={monthlySchedule}
       className="backup_schedule-component"
     >
-      <Text className="schedule_description"> {t("AutoSavePeriod")}</Text>
+      <div className="schedule_help-section">
+        <Text className="schedule_description"> {t("AutoSavePeriod")}</Text>
+        <HelpButton
+          className="schedule_help-button"
+          iconName={"/static/images/help.react.svg"}
+          getContent={renderHelpContent}
+          tooltipMaxWidth="310px"
+          offsetLeft={160}
+        />
+      </div>
       <div className="main_options">
         <ComboBox
           options={periodsObject}
