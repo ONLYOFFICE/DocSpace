@@ -45,7 +45,7 @@ internal class GoogleDriveStorage : IDisposable
 
             if (_token.IsExpired)
             {
-                _token = OAuth20TokenHelper.RefreshToken<GoogleLoginProvider>(_consumerFactory, _token);
+                _token = _oAuth20TokenHelper.RefreshToken<GoogleLoginProvider>(_consumerFactory, _token);
             }
 
             return _token.AccessToken;
@@ -60,6 +60,7 @@ internal class GoogleDriveStorage : IDisposable
     private readonly FileUtility FileUtility;
     private readonly TempStream _tempStream;
     private readonly IHttpClientFactory _clientFactory;
+    private readonly OAuth20TokenHelper _oAuth20TokenHelper;
 
     public const long MaxChunkedUploadFileSize = 2L * 1024L * 1024L * 1024L;
 
@@ -68,6 +69,7 @@ internal class GoogleDriveStorage : IDisposable
         FileUtility fileUtility,
         IOptionsMonitor<ILog> monitor,
         TempStream tempStream,
+        OAuth20TokenHelper oAuth20TokenHelper,
         IHttpClientFactory clientFactory)
     {
         _consumerFactory = consumerFactory;
@@ -75,6 +77,7 @@ internal class GoogleDriveStorage : IDisposable
         Logger = monitor.Get("ASC.Files");
         _tempStream = tempStream;
         _clientFactory = clientFactory;
+        _oAuth20TokenHelper = oAuth20TokenHelper;
     }
 
     public void Open(OAuth20Token token)

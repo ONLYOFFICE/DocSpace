@@ -36,21 +36,19 @@ public class BillingClient
     private readonly string _billingKey;
     private readonly string _billingSecret;
     private readonly bool _test;
-
+        private readonly IHttpClientFactory _httpClientFactory;
     private const int AvangatePaymentSystemId = 1;
 
-    private static readonly HttpClient _httpClient = new HttpClient();
 
-
-    public BillingClient(IConfiguration configuration)
-        : this(false, configuration)
+        public BillingClient(IConfiguration configuration, IHttpClientFactory httpClientFactory)
+            : this(false, configuration, httpClientFactory)
     {
     }
 
-    public BillingClient(bool test, IConfiguration configuration)
+        public BillingClient(bool test, IConfiguration configuration, IHttpClientFactory httpClientFactory)
     {
         _test = test;
-
+            _httpClientFactory = httpClientFactory;
         var billingDomain = configuration["core:payment-url"];
 
         _billingDomain = (billingDomain ?? "").Trim().TrimEnd('/');
@@ -219,7 +217,8 @@ public class BillingClient
             request.Headers.Add("Authorization", CreateAuthToken(_billingKey, _billingSecret));
         }
 
-        _httpClient.Timeout = TimeSpan.FromMilliseconds(60000);
+            var httpClient = _httpClientFactory.CreateClient();
+            httpClient.Timeout = TimeSpan.FromMilliseconds(60000);
 
         var data = new Dictionary<string, List<string>>();
         if (!string.IsNullOrEmpty(portalId))
@@ -242,7 +241,7 @@ public class BillingClient
         request.Content = new StringContent(body, Encoding.UTF8, "application/json");
 
         string result;
-        using (var response = _httpClient.Send(request))
+            using (var response = httpClient.Send(request))
         using (var stream = response.Content.ReadAsStream())
         {
             if (stream == null)

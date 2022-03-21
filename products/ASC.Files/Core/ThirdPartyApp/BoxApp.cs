@@ -35,7 +35,6 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
     private const string BoxUrlUpload = "https://upload.box.com/api/2.0/files/{fileId}/content";
 
     public ILog Logger { get; }
-    public IHttpClientFactory ClientFactory { get; }
     public string Scopes => string.Empty;
     public string CodeUrl => string.Empty;
     public string AccessTokenUrl => "https://www.box.com/api/oauth2/token";
@@ -64,6 +63,10 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
     private readonly DocumentServiceConnector _documentServiceConnector;
     private readonly ThirdPartyAppHandlerService _thirdPartyAppHandlerService;
     private readonly IServiceProvider _serviceProvider;
+    private readonly IHttpClientFactory _clientFactory;
+
+    private readonly RequestHelper _requestHelper;
+    private readonly OAuth20TokenHelper _oAuth20TokenHelper;
 
     public BoxApp() { }
 
@@ -96,6 +99,8 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
         ICacheNotify<ConsumerCacheItem> cache,
         ConsumerFactory consumerFactory,
         IHttpClientFactory clientFactory,
+            RequestHelper requestHelper,
+            OAuth20TokenHelper oAuth20TokenHelper,
         string name, int order, Dictionary<string, string> additional)
         : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, additional)
     {
@@ -120,7 +125,9 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
         _thirdPartyAppHandlerService = thirdPartyAppHandlerService;
         _serviceProvider = serviceProvider;
         Logger = option.CurrentValue;
-        ClientFactory = clientFactory;
+            _clientFactory = clientFactory;
+            _requestHelper = requestHelper;
+            _oAuth20TokenHelper = oAuth20TokenHelper;
     }
 
     public async Task<bool> RequestAsync(HttpContext context)
@@ -274,7 +281,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
             }
         }
 
-        var httpClient = ClientFactory.CreateClient();
+            var httpClient = _clientFactory.CreateClient();
 
         var request = new HttpRequestMessage();
         request.RequestUri = new Uri(BoxUrlUpload.Replace("{fileId}", fileId));
@@ -439,7 +446,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
             request.Method = HttpMethod.Get;
             request.Headers.Add("Authorization", "Bearer " + token);
 
-            var httpClient = ClientFactory.CreateClient();
+                var httpClient = _clientFactory.CreateClient();
             using var response = await httpClient.SendAsync(request);
             using var stream = new ResponseStream(response);
             await stream.CopyToAsync(context.Response.Body);
@@ -492,7 +499,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
         var resultResponse = string.Empty;
         try
         {
-            resultResponse = RequestHelper.PerformRequest(BoxUrlUserInfo,
+                resultResponse = _requestHelper.PerformRequest(BoxUrlUserInfo,
                                                           headers: new Dictionary<string, string> { { "Authorization", "Bearer " + token } });
             Logger.Debug("BoxApp: userinfo response - " + resultResponse);
         }
@@ -574,7 +581,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
 
         try
         {
-            var resultResponse = RequestHelper.PerformRequest(BoxUrlFile.Replace("{fileId}", boxFileId),
+                var resultResponse = _requestHelper.PerformRequest(BoxUrlFile.Replace("{fileId}", boxFileId),
                                                               headers: new Dictionary<string, string> { { "Authorization", "Bearer " + token } });
             Logger.Debug("BoxApp: file response - " + resultResponse);
 
@@ -592,7 +599,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
         try
         {
             Logger.Debug("BoxApp: GetAccessToken by code " + code);
-            var token = OAuth20TokenHelper.GetAccessToken<BoxApp>(ConsumerFactory, code);
+                var token = _oAuth20TokenHelper.GetAccessToken<BoxApp>(ConsumerFactory, code);
 
             return new Token(token, AppAttr);
         }

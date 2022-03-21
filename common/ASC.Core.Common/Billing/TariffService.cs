@@ -143,6 +143,7 @@ public class TariffService : ITariffService
     internal TariffServiceStorage TariffServiceStorage;
     internal IOptionsMonitor<ILog> Options;
     public BillingClient BillingClient { get; }
+        public IHttpClientFactory HttpClientFactory { get; }
 
     public readonly int ActiveUsersMin;
     public readonly int ActiveUsersMax;
@@ -162,7 +163,8 @@ public class TariffService : ITariffService
         TariffServiceStorage tariffServiceStorage,
         IOptionsMonitor<ILog> options,
         Users.Constants constants,
-        BillingClient billingClient)
+            BillingClient billingClient,
+            IHttpClientFactory httpClientFactory)
         : this()
 
     {
@@ -174,6 +176,7 @@ public class TariffService : ITariffService
         TariffServiceStorage = tariffServiceStorage;
         Options = options;
         BillingClient = billingClient;
+            HttpClientFactory = httpClientFactory;
         CoreBaseSettings = coreBaseSettings;
         Test = configuration["core:payment:test"] == "true";
         int.TryParse(configuration["core:payment:delay"], out var paymentDelay);
@@ -642,7 +645,7 @@ public class TariffService : ITariffService
     {
         try
         {
-            return new BillingClient(Test, Configuration);
+                return new BillingClient(Test, Configuration, HttpClientFactory);
         }
         catch (InvalidOperationException ioe)
         {

@@ -37,6 +37,8 @@ public class MailRuLoginProvider : BaseLoginProvider<MailRuLoginProvider>
     public override string ClientSecret => this["mailRuClientSecret"];
     public override string RedirectUri => this["mailRuRedirectUrl"];
 
+        private readonly RequestHelper _requestHelper;
+
     private const string MailRuApiUrl = "http://www.appsmail.ru/platform/api";
 
     public MailRuLoginProvider() { }
@@ -51,9 +53,11 @@ public class MailRuLoginProvider : BaseLoginProvider<MailRuLoginProvider>
         ConsumerFactory consumerFactory,
         Signature signature,
         InstanceCrypto instanceCrypto,
+            RequestHelper requestHelper,
         string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
         : base(oAuth20TokenHelper, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, signature, instanceCrypto, name, order, props, additional)
     {
+            _requestHelper = requestHelper;
     }
 
     public override LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params, IDictionary<string, string> additionalStateArgs)
@@ -109,7 +113,7 @@ public class MailRuLoginProvider : BaseLoginProvider<MailRuLoginProvider>
         var mailruParams = string.Join("", sortedKeys.Select(key => key + "=" + queryDictionary[key]).ToList());
         var sig = string.Join("", md5.ComputeHash(Encoding.ASCII.GetBytes(mailruParams + ClientSecret)).Select(b => b.ToString("x2")));
 
-        var mailRuProfile = RequestHelper.PerformRequest(
+            var mailRuProfile = _requestHelper.PerformRequest(
             MailRuApiUrl
             + "?" + string.Join("&", queryDictionary.Select(pair => pair.Key + "=" + HttpUtility.UrlEncode(pair.Value)))
             + "&sig=" + HttpUtility.UrlEncode(sig));

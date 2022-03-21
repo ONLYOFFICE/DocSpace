@@ -35,6 +35,8 @@ public class YandexLoginProvider : BaseLoginProvider<YandexLoginProvider>
     public override string ClientSecret => this["yandexClientSecret"];
     public override string RedirectUri => this["yandexRedirectUrl"];
 
+        private readonly RequestHelper _requestHelper;
+
     private const string YandexProfileUrl = "https://login.yandex.ru/info";
 
 
@@ -50,9 +52,11 @@ public class YandexLoginProvider : BaseLoginProvider<YandexLoginProvider>
         ConsumerFactory consumerFactory,
         Signature signature,
         InstanceCrypto instanceCrypto,
+            RequestHelper requestHelper,
         string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
         : base(oAuth20TokenHelper, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, signature, instanceCrypto, name, order, props, additional)
     {
+            _requestHelper = requestHelper;
     }
 
     public override LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params, IDictionary<string, string> additionalStateArgs)
@@ -95,7 +99,7 @@ public class YandexLoginProvider : BaseLoginProvider<YandexLoginProvider>
 
     private LoginProfile RequestProfile(string accessToken)
     {
-        var yandexProfile = RequestHelper.PerformRequest(YandexProfileUrl + "?format=json&oauth_token=" + accessToken);
+            var yandexProfile = _requestHelper.PerformRequest(YandexProfileUrl + "?format=json&oauth_token=" + accessToken);
         var loginProfile = ProfileFromYandex(yandexProfile);
 
         return loginProfile;

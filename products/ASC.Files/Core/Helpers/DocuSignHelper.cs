@@ -131,6 +131,7 @@ public class DocuSignHelper
     private readonly FilesLinkUtility _filesLinkUtility;
     private readonly IServiceProvider _serviceProvider;
     private readonly ConsumerFactory _consumerFactory;
+        private readonly RequestHelper _requestHelper;
 
     public DocuSignHelper(
         DocuSignToken docuSignToken,
@@ -146,7 +147,8 @@ public class DocuSignHelper
         FilesMessageService filesMessageService,
         FilesLinkUtility filesLinkUtility,
         IServiceProvider serviceProvider,
-        ConsumerFactory consumerFactory)
+            ConsumerFactory consumerFactory,
+            RequestHelper requestHelper)
     {
         _docuSignToken = docuSignToken;
         _fileSecurity = fileSecurity;
@@ -162,7 +164,7 @@ public class DocuSignHelper
         _serviceProvider = serviceProvider;
         _consumerFactory = consumerFactory;
         Logger = options.CurrentValue;
-    }
+        _requestHelper = requestHelper;    }
 
     public bool ValidateToken(OAuth20Token token)
     {
@@ -192,7 +194,7 @@ public class DocuSignHelper
     {
         ArgumentNullException.ThrowIfNull(token);
 
-        var userInfoString = RequestHelper.PerformRequest(_consumerFactory.Get<DocuSignLoginProvider>().DocuSignHost + "/oauth/userinfo",
+        var userInfoString = _requestHelper.PerformRequest(_consumerFactory.Get<DocuSignLoginProvider>().DocuSignHost + "/oauth/userinfo",
                                                           headers: new Dictionary<string, string> { { "Authorization", "Bearer " + _docuSignToken.GetRefreshedToken(token) } });
 
         Logger.Debug("DocuSing userInfo: " + userInfoString);

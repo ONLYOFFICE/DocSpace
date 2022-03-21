@@ -151,16 +151,18 @@ internal class BoxProviderInfo : IProviderInfo
 internal class BoxStorageDisposableWrapper : IDisposable
 {
     public BoxStorage Storage { get; private set; }
+        private readonly OAuth20TokenHelper _oAuth20TokenHelper;
 
     private readonly ConsumerFactory _consumerFactory;
     private readonly TempStream _tempStream;
     private readonly IServiceProvider _serviceProvider;
 
-    public BoxStorageDisposableWrapper(ConsumerFactory consumerFactory, TempStream tempStream, IServiceProvider serviceProvider)
+    public BoxStorageDisposableWrapper(ConsumerFactory consumerFactory, TempStream tempStream, IServiceProvider serviceProvider, OAuth20TokenHelper oAuth20TokenHelper)
     {
         _consumerFactory = consumerFactory;
         _tempStream = tempStream;
         _serviceProvider = serviceProvider;
+            _oAuth20TokenHelper = oAuth20TokenHelper;
     }
 
     internal Task<BoxStorage> CreateStorageAsync(OAuth20Token token, int id)
@@ -197,7 +199,7 @@ internal class BoxStorageDisposableWrapper : IDisposable
     {
         if (token.IsExpired)
         {
-            token = OAuth20TokenHelper.RefreshToken<BoxLoginProvider>(_consumerFactory, token);
+            token = _oAuth20TokenHelper.RefreshToken<BoxLoginProvider>(_consumerFactory, token);
 
             var dbDao = _serviceProvider.GetService<ProviderAccountDao>();
             await dbDao.UpdateProviderInfoAsync(id, new AuthData(token: token.ToJson())).ConfigureAwait(false);
