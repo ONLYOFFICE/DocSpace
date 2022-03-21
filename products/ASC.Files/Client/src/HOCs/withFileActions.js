@@ -21,17 +21,12 @@ export default function withFileActions(WrappedFileItem) {
 
       if (!infoPanelIsVisible && isDesktop()) {
         setShowCurrentFolder(false);
-        showInfoPanel();
+        if (checked) showInfoPanel();
       }
     };
 
     fileContextClick = () => {
-      const {
-        onSelectItem,
-        item,
-        infoPanelIsVisible,
-        showInfoPanel,
-      } = this.props;
+      const { onSelectItem, item } = this.props;
       const { id, isFolder } = item;
 
       id !== -1 && onSelectItem({ id, isFolder });

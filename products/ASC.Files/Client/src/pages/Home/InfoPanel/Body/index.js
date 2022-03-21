@@ -5,6 +5,8 @@ import { withRouter } from "react-router";
 import SeveralItems from "./SeveralItems";
 import SingleItem from "./SingleItem";
 import { StyledInfoRoomBody } from "./styles/styles.js";
+import Loaders from "@appserver/common/components/Loaders";
+import Loader from "@appserver/components/loader";
 
 const InfoPanelBodyContent = ({
   t,
@@ -72,7 +74,13 @@ const InfoPanelBodyContent = ({
     <StyledInfoRoomBody>
       {showCurrentFolder && selectedItems.length === 0 ? (
         <>
-          {currentFolderLoading ? <>Loading ...</> : singleItem(currentFolder)}
+          {currentFolderLoading ? (
+            <div className="current-folder-loader-wrapper">
+              <Loader type="dual-ring" size="60px" />
+            </div>
+          ) : (
+            singleItem(currentFolder)
+          )}
         </>
       ) : (
         <>

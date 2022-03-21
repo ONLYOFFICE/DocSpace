@@ -12,7 +12,7 @@ class InfoPanelStore {
     this.showCurrentFolder = bool;
   };
 
-  get showCurrenFolder() {
+  get showCurrentFolder() {
     return this.showCurrenFolder;
   }
 
