@@ -56,7 +56,7 @@ const TableHeaderCell = ({
           {sortingVisible && (
             <IconButton
               onClick={column.onIconClick ? onIconClick : onClick}
-              iconName="/static/images/folder arrow.react.svg"
+              iconName="/static/images/sort.desc.react.svg"
               className="header-container-text-icon"
               size="small"
               hoverColor="#657077"

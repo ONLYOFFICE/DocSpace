@@ -1,7 +1,5 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-import { Trans } from "react-i18next";
-
 import toastr from "studio/toastr";
 import {
   AppServerConfig,
@@ -177,7 +175,6 @@ export default function withContent(WrappedContent) {
         createFolder,
         fileActionTemplateId,
         isDesktop,
-        isLoading,
         isPrivacy,
         item,
         openDocEditor,
@@ -197,8 +194,6 @@ export default function withContent(WrappedContent) {
       const isMakeFormFromFile = fileActionTemplateId ? true : false;
 
       let title = itemTitle;
-
-      if (isLoading) return;
 
       setIsLoading(true);
 
@@ -461,7 +456,6 @@ export default function withContent(WrappedContent) {
       const {
         createFile,
         createFolder,
-        isLoading,
         openDocEditor,
         renameFolder,
         setIsLoading,
@@ -511,7 +505,6 @@ export default function withContent(WrappedContent) {
         folderFormValidation,
         homepage: config.homepage,
         isDesktop: isDesktopClient,
-        isLoading,
         isPrivacy: isPrivacyFolder,
         isTrashFolder: isRecycleBinFolder,
         openDocEditor,
