@@ -129,8 +129,8 @@ const SingleItem = (props) => {
           id: "Owner",
           title: t("Common:Owner"),
           content: styledLink(
-            item.createdBy.displayName,
-            item.createdBy.profileUrl
+            item.createdBy?.displayName,
+            item.createdBy?.profileUrl
           ),
         },
         {
@@ -157,8 +157,8 @@ const SingleItem = (props) => {
           id: "LastModifiedBy",
           title: t("LastModifiedBy"),
           content: styledLink(
-            item.updatedBy.displayName,
-            item.updatedBy.profileUrl
+            item.updatedBy?.displayName,
+            item.updatedBy?.profileUrl
           ),
         },
         {
@@ -173,7 +173,7 @@ const SingleItem = (props) => {
       result.splice(3, 0, {
         id: "FileExtension",
         title: t("FileExtension"),
-        content: styledText(item.fileExst.split(".")[1].toUpperCase()),
+        content: styledText(item.fileExst?.split(".")[1].toUpperCase()),
       });
 
       result.push(
@@ -201,8 +201,8 @@ const SingleItem = (props) => {
       properties: getSingleItemProperties(selectedItem),
       access: {
         owner: {
-          img: selectedItem.createdBy.avatarSmall,
-          link: selectedItem.createdBy.profileUrl,
+          img: selectedItem.createdBy?.avatarSmall,
+          link: selectedItem.createdBy?.profileUrl,
         },
         others: [],
       },
