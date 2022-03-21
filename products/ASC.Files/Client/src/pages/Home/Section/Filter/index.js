@@ -5,7 +5,7 @@ import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import { FilterType } from "@appserver/common/constants";
 import Loaders from "@appserver/common/components/Loaders";
-import FilterInput from "@appserver/common/components/NewFilterInput";
+import FilterInput from "@appserver/common/components/FilterInput";
 import { withLayoutSize } from "@appserver/common/utils";
 import { isMobileOnly, isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";

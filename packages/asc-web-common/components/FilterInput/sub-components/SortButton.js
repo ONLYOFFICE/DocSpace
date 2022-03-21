@@ -17,7 +17,7 @@ import SortDesc from "../../../../../public/images/sort.desc.react.svg";
 const selectedViewIcon = css`
   svg {
     path {
-      fill: ${(props) => props.theme.newFilterInput.sort.selectedViewIcon};
+      fill: ${(props) => props.theme.filterInput.sort.selectedViewIcon};
     }
   }
 `;
@@ -25,7 +25,7 @@ const selectedViewIcon = css`
 const notSelectedViewIcon = css`
   svg {
     path {
-      fill: ${(props) => props.theme.newFilterInput.sort.viewIcon};
+      fill: ${(props) => props.theme.filterInput.sort.viewIcon};
     }
   }
 `;
@@ -43,7 +43,7 @@ const mobileView = css`
 const StyledSortButton = styled.div`
   .combo-button {
     background: ${(props) =>
-      props.theme.newFilterInput.sort.background} !important;
+      props.theme.filterInput.sort.background} !important;
 
     .icon-button_svg {
       cursor: pointer;
@@ -130,7 +130,7 @@ const StyledSortButton = styled.div`
             `}
 
           path {
-            fill: ${(props) => props.theme.newFilterInput.sort.sortFill};
+            fill: ${(props) => props.theme.filterInput.sort.sortFill};
           }
         }
 
@@ -142,8 +142,7 @@ const StyledSortButton = styled.div`
       }
 
       .selected-option-item {
-        background: ${(props) =>
-          props.theme.newFilterInput.sort.hoverBackground};
+        background: ${(props) => props.theme.filterInput.sort.hoverBackground};
         cursor: auto;
 
         .selected-option-item__icon {

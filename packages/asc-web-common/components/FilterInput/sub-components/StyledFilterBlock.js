@@ -27,7 +27,7 @@ const StyledFilterBlock = styled.div`
   display: flex;
   flex-direction: column;
 
-  background: ${(props) => props.theme.newFilterInput.filter.background};
+  background: ${(props) => props.theme.filterInput.filter.background};
 
   @media ${mobile} {
     ${mobileView}
@@ -58,7 +58,7 @@ const StyledFilterBlockHeader = styled.div`
   box-sizing: border-box;
 
   border-bottom: ${(props) =>
-    props.isSelector ? "none" : props.theme.newFilterInput.filter.border};
+    props.isSelector ? "none" : props.theme.filterInput.filter.border};
 
   display: flex;
   align-items: center;
@@ -118,7 +118,7 @@ const StyledFilterBlockItemSelectorText = styled(Text)`
   font-weight: 600;
   font-size: 13px;
   line-height: 15px;
-  color: ${(props) => props.theme.newFilterInput.filter.color};
+  color: ${(props) => props.theme.filterInput.filter.color};
 
   margin-left: 8px;
 `;
@@ -127,9 +127,9 @@ StyledFilterBlockItemSelectorText.defaultProps = { theme: Base };
 
 const selectedItemTag = css`
   background: ${(props) =>
-    props.theme.newFilterInput.filter.selectedItem.background};
+    props.theme.filterInput.filter.selectedItem.background};
   border-color: ${(props) =>
-    props.theme.newFilterInput.filter.selectedItem.border};
+    props.theme.filterInput.filter.selectedItem.border};
 `;
 
 const StyledFilterBlockItemTag = styled.div`
@@ -140,7 +140,7 @@ const StyledFilterBlockItemTag = styled.div`
   flex-direction: row;
   align-items: center;
 
-  border: ${(props) => props.theme.newFilterInput.filter.border};
+  border: ${(props) => props.theme.filterInput.filter.border};
   border-radius: 16px;
 
   box-sizing: border-box;
@@ -157,7 +157,7 @@ const StyledFilterBlockItemTag = styled.div`
 StyledFilterBlockItemTag.defaultProps = { theme: Base };
 
 const selectedItemTagText = css`
-  color: ${(props) => props.theme.newFilterInput.filter.selectedItem.color};
+  color: ${(props) => props.theme.filterInput.filter.selectedItem.color};
 `;
 
 const StyledFilterBlockItemTagText = styled(Text)`
@@ -181,7 +181,7 @@ const StyledFilterBlockItemTagIcon = styled.div`
 
   svg {
     path {
-      fill: ${(props) => props.theme.newFilterInput.filter.selectedItem.color};
+      fill: ${(props) => props.theme.filterInput.filter.selectedItem.color};
     }
   }
 `;
@@ -212,7 +212,7 @@ const StyledFilterBlockItemSeparator = styled.div`
   height: 1px;
   width: 100%;
 
-  background: ${(props) => props.theme.newFilterInput.filter.separatorColor};
+  background: ${(props) => props.theme.filterInput.filter.separatorColor};
 
   margin: 2px 0 0 0;
 `;
@@ -230,7 +230,7 @@ const StyledFilterBlockFooter = styled.div`
   height: 72px;
   min-height: 72px;
 
-  border-top: ${(props) => props.theme.newFilterInput.filter.border};
+  border-top: ${(props) => props.theme.filterInput.filter.border};
 
   box-sizing: border-box;
 

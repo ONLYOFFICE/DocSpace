@@ -3,7 +3,7 @@ import find from "lodash/find";
 import result from "lodash/result";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
-import FilterInput from "@appserver/common/components/NewFilterInput";
+import FilterInput from "@appserver/common/components/FilterInput";
 import Loaders from "@appserver/common/components/Loaders";
 import { withLayoutSize } from "@appserver/common/utils";
 import { isMobileOnly } from "react-device-detect";

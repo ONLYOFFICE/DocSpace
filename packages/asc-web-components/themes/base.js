@@ -1971,63 +1971,6 @@ const Base = {
   },
 
   filterInput: {
-    filterButton: {
-      stroke: grayLightMid,
-
-      fill: grayLight,
-
-      fillSecond: "#979797",
-    },
-
-    comboButtonLabelColor: black,
-    comboButtonLabelColorTwo: gray,
-
-    viewSelector: {
-      border: grayMid,
-      disabledBorder: grayLightMid,
-
-      disabledBackground: grayLight,
-
-      activeBackground: gray,
-      activeBorder: gray,
-    },
-
-    filterItem: {
-      border: `1px solid ${grayLightMid}`,
-      backgroundColor: grayLight,
-      color: cyanBlueDarkShade,
-    },
-
-    content: {
-      color: black,
-      background: grayLightMid,
-    },
-
-    closeButton: {
-      borderLeft: `1px solid ${grayLightMid}`,
-      background: grayLight,
-
-      activeBackground: grayLightMid,
-      activeFill: gray,
-
-      hoverFill: cyanBlueDarkShade,
-    },
-
-    hideButton: {
-      expanderFill: gray,
-
-      border: `1px solid ${grayLightMid}`,
-      background: grayLight,
-
-      hoverBorder: gray,
-      disabledHoverBorder: grayLightMid,
-
-      activeBackground: grayLightMid,
-      disabledActiveBackground: grayLight,
-    },
-  },
-
-  newFilterInput: {
     button: {
       border: "1px solid #d0d5da",
       hoverBorder: "1px solid #a3a9ae",

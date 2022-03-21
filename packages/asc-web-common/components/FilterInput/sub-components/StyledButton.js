@@ -8,7 +8,7 @@ const StyledButton = styled.div`
 
   position: relative;
 
-  border: ${(props) => props.theme.newFilterInput.button.border};
+  border: ${(props) => props.theme.filterInput.button.border};
   border-radius: 3px;
 
   box-sizing: border-box;
@@ -25,7 +25,7 @@ const StyledButton = styled.div`
   cursor: pointer;
 
   &:hover {
-    border: ${(props) => props.theme.newFilterInput.button.hoverBorder};
+    border: ${(props) => props.theme.filterInput.button.hoverBorder};
   }
 
   div {
@@ -35,13 +35,12 @@ const StyledButton = styled.div`
   ${(props) =>
     props.isOpen &&
     css`
-      background: ${(props) =>
-        props.theme.newFilterInput.button.openBackground};
+      background: ${(props) => props.theme.filterInput.button.openBackground};
       pointer-events: none;
 
       svg {
         path {
-          fill: ${(props) => props.theme.newFilterInput.button.openFill};
+          fill: ${(props) => props.theme.filterInput.button.openFill};
         }
       }
 
