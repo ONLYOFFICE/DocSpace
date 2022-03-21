@@ -7,7 +7,7 @@ import { mobile, tablet } from "../utils/device";
 
 const StyledButton = styled(Button)`
   border: none;
-  padding: 4px 10px 0 10px;
+  padding: 5px 10px 0 10px;
   height: 50px;
   min-width: fit-content;
 
@@ -25,7 +25,7 @@ const StyledButton = styled(Button)`
     display: flex;
     flex-direction: column;
     height: 60px;
-    padding: 12px 12px 0 12px;
+    padding: 22px 12px 0 12px;
     .btnIcon {
       padding: 0;
       margin: 0 auto;
