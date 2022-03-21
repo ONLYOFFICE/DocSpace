@@ -207,16 +207,6 @@ const StyledScheduleComponent = styled.div`
       css`
         max-width: 138px;
       `};
-
-    .drop-down_variable-size {
-      ${(props) =>
-        (props.weeklySchedule || props.monthlySchedule) &&
-        css`
-          max-width: 138px !important;
-        `};
-
-      width: 100% !important;
-    }
   }
   .additional_options {
     max-width: ${INPUT_LENGTH};
@@ -232,11 +222,6 @@ const StyledScheduleComponent = styled.div`
     width: 100%;
 
     max-width: ${(props) => (!props.isMobileOnly ? "124px" : INPUT_LENGTH)};
-    .drop-down_variable-size {
-      max-width: ${(props) =>
-        !props.isMobileOnly ? "124px" : INPUT_LENGTH} !important;
-      width: 100% !important;
-    }
   }
   .schedule-backup_combobox {
     display: inline-block;
@@ -273,10 +258,6 @@ const StyledScheduleComponent = styled.div`
           max-width: ${INPUT_LENGTH};
 
           width: 100%;
-          .drop-down_variable-size {
-            max-width: ${INPUT_LENGTH} !important;
-            width: 100% !important;
-          }
         }
       `}
 
@@ -287,10 +268,6 @@ const StyledScheduleComponent = styled.div`
       max-width: ${INPUT_LENGTH};
     `};
     width: 100%;
-    .drop-down_variable-size {
-      max-width: ${INPUT_LENGTH} !important;
-      width: 100% !important;
-    }
   }
 
   .max_copies {

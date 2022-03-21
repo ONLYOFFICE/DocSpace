@@ -256,7 +256,6 @@ class DropDown extends React.PureComponent {
             itemCount={children.length}
             itemData={children}
             outerElementType={CustomScrollbarsVirtualList}
-            className={"drop-down_variable-size"}
           >
             {Row}
           </VariableSizeList>
