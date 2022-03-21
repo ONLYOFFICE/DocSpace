@@ -11,11 +11,6 @@
     <DebugType>none</DebugType>
     <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="StackExchange.Redis.Extensions.AspNetCore" Version="7.2.1" />
-    <PackageReference Include="StackExchange.Redis.Extensions.Newtonsoft" Version="7.2.1" />
-  </ItemGroup>
   
   <ItemGroup>
     <ProjectReference Include="..\..\..\common\ASC.Api.Core\ASC.Api.Core.csproj" />

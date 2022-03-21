@@ -13,11 +13,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="StackExchange.Redis.Extensions.AspNetCore" Version="7.2.1" />
-    <PackageReference Include="StackExchange.Redis.Extensions.Newtonsoft" Version="7.2.1" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\..\web\ASC.Web.Core\ASC.Web.Core.csproj" />
     <ProjectReference Include="..\..\ASC.Api.Core\ASC.Api.Core.csproj" />
     <ProjectReference Include="..\..\ASC.Data.Storage\ASC.Data.Storage.csproj" />
