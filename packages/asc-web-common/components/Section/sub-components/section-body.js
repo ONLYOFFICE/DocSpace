@@ -45,12 +45,11 @@ const commonStyles = css`
   .section-wrapper-content {
     ${paddingStyles}
     flex: 1 0 auto;
-
+    padding-right: 0;
     outline: none;
     ${(props) =>
       props.viewAs == "tile" &&
       css`
-        padding-right: 0;
         padding-left: 20px;
       `}
 
