@@ -117,7 +117,7 @@ const StyledVersionRow = styled(Row)`
     padding-top: 12px;
     padding-bottom: 12px;
 
-    ${(props) => props.isTabletView && "height: auto"};
+    ${(props) => props.isTabletView && "height: 42px"};
     ${(props) => !props.isTabletView && "padding-right:16px"};
   }
 
@@ -146,7 +146,7 @@ const StyledVersionRow = styled(Row)`
     width: 10px;
     height: 10px;
     margin-left: 9px;
-    margin-right: 16px;
+    margin-right: 32px;
     @media ${tablet} {
       margin-top: -1px;
     }

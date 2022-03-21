@@ -136,7 +136,7 @@ public abstract class BaseLoginProvider<T> : Consumer, ILoginProvider where T : 
 
         redirect = false;
 
-        return OAuth20TokenHelper.GetAccessToken<T>(ConsumerFactory, code);
+        return _oAuth20TokenHelper.GetAccessToken<T>(ConsumerFactory, code);
     }
 }
 

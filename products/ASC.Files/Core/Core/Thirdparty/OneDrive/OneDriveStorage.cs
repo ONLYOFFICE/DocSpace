@@ -43,7 +43,7 @@ internal class OneDriveStorage
 
             if (_token.IsExpired)
             {
-                _token = OAuth20TokenHelper.RefreshToken<OneDriveLoginProvider>(_consumerFactory, _token);
+                _token = _oAuth20TokenHelper.RefreshToken<OneDriveLoginProvider>(_consumerFactory, _token);
                 _onedriveClientCache = null;
             }
 
@@ -58,13 +58,15 @@ internal class OneDriveStorage
     public bool IsOpened { get; private set; }
     private readonly ConsumerFactory _consumerFactory;
     private readonly IHttpClientFactory _clientFactory;
+    private readonly OAuth20TokenHelper _oAuth20TokenHelper;
 
     public long MaxChunkedUploadFileSize = 10L * 1024L * 1024L * 1024L;
 
-    public OneDriveStorage(ConsumerFactory consumerFactory, IHttpClientFactory clientFactory)
+    public OneDriveStorage(ConsumerFactory consumerFactory, IHttpClientFactory clientFactory, OAuth20TokenHelper oAuth20TokenHelper)
     {
         _consumerFactory = consumerFactory;
         _clientFactory = clientFactory;
+        _oAuth20TokenHelper = oAuth20TokenHelper;
     }
 
     public void Open(OAuth20Token token)

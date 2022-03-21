@@ -32,13 +32,16 @@ public class WordpressToken
     private readonly TokenHelper _tokenHelper;
     public ConsumerFactory ConsumerFactory { get; }
 
+        private readonly OAuth20TokenHelper _oAuth20TokenHelper;
+
     public const string AppAttr = "wordpress";
 
-    public WordpressToken(IOptionsMonitor<ILog> optionsMonitor, TokenHelper tokenHelper, ConsumerFactory consumerFactory)
+        public WordpressToken(IOptionsMonitor<ILog> optionsMonitor, TokenHelper tokenHelper, ConsumerFactory consumerFactory, OAuth20TokenHelper oAuth20TokenHelper)
     {
         Logger = optionsMonitor.CurrentValue;
         _tokenHelper = tokenHelper;
         ConsumerFactory = consumerFactory;
+            _oAuth20TokenHelper = oAuth20TokenHelper;
     }
 
     public OAuth20Token GetToken()
@@ -55,7 +58,7 @@ public class WordpressToken
 
     public OAuth20Token SaveTokenFromCode(string code)
     {
-        var token = OAuth20TokenHelper.GetAccessToken<WordpressLoginProvider>(ConsumerFactory, code);
+            var token = _oAuth20TokenHelper.GetAccessToken<WordpressLoginProvider>(ConsumerFactory, code);
         ArgumentNullException.ThrowIfNull(token);
 
         _tokenHelper.SaveToken(new Token(token, AppAttr));
@@ -77,22 +80,25 @@ public class WordpressHelper
 {
     public ILog Logger { get; set; }
 
+        public RequestHelper RequestHelper { get; }
+
     public enum WordpressStatus
     {
         draft = 0,
         publish = 1
     }
 
-    public WordpressHelper(IOptionsMonitor<ILog> optionsMonitor)
+        public WordpressHelper(IOptionsMonitor<ILog> optionsMonitor, RequestHelper requestHelper)
     {
         Logger = optionsMonitor.CurrentValue;
+            RequestHelper = requestHelper;
     }
 
     public string GetWordpressMeInfo(string token)
     {
         try
         {
-            return WordpressLoginProvider.GetWordpressMeInfo(token);
+                return WordpressLoginProvider.GetWordpressMeInfo(RequestHelper, token);
         }
         catch (Exception ex)
         {
@@ -108,7 +114,7 @@ public class WordpressHelper
         try
         {
             var wpStatus = ((WordpressStatus)status).ToString();
-            WordpressLoginProvider.CreateWordpressPost(title, content, wpStatus, blogId, token);
+                WordpressLoginProvider.CreateWordpressPost(RequestHelper, title, content, wpStatus, blogId, token);
 
             return true;
         }
