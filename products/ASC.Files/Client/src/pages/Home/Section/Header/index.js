@@ -208,7 +208,6 @@ class SectionHeaderContent extends React.Component {
       this.props.setIsInfoPanelVisible(false);
       return;
     }
-
     this.props.setShowCurrentFolder(true);
     this.props.setIsInfoPanelVisible(true);
   };

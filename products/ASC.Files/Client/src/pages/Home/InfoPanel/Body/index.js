@@ -2,9 +2,6 @@ import { inject, observer } from "mobx-react";
 import React, { useEffect, useState } from "react";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
-import { useParams } from "react-router-dom";
-import CurrentFolder from "./CurrentFolder";
-import api from "@appserver/common/api";
 import SeveralItems from "./SeveralItems";
 import SingleItem from "./SingleItem";
 import { StyledInfoRoomBody } from "./styles/styles.js";
@@ -21,7 +18,9 @@ const InfoPanelBodyContent = ({
   setSharingPanelVisible,
   isRecycleBinFolder,
   showCurrentFolder,
-  ...props
+  isCommonFolder,
+  isRecentFolder,
+  isFavoritesFolder,
 }) => {
   const [currentFolderLoading, setCurrentFolderLoading] = useState(false);
   const [currentFolder, setCurrentFolder] = useState({});
@@ -40,33 +39,40 @@ const InfoPanelBodyContent = ({
     folder.thumbnailUrl = getIcon(96, fileExst, providerKey, contentLength);
     folder.isFolder = true;
 
-    console.log(folder);
     setCurrentFolder(folder);
     setCurrentFolderLoading(false);
   };
 
   useEffect(() => {
-    getCurrentFolderInfo();
-  }, [window.location.href]);
+    if (showCurrentFolder) getCurrentFolderInfo();
+  }, [window.location.href, showCurrentFolder]);
+
+  const singleItem = (item) => {
+    const dontShowLocation = item.isFolder && item.parentId === 0;
+    const dontShowSize = item.isFolder && (isFavoritesFolder || isRecentFolder);
+    const dontShowAccess =
+      showCurrentFolder || isRecycleBinFolder || isCommonFolder;
+    return (
+      <SingleItem
+        selectedItem={item}
+        onSelectItem={onSelectItem}
+        setSharingPanelVisible={setSharingPanelVisible}
+        getFolderInfo={getFolderInfo}
+        getIcon={getIcon}
+        getFolderIcon={getFolderIcon}
+        getShareUsers={getShareUsers}
+        dontShowLocation={dontShowLocation}
+        dontShowSize={dontShowSize}
+        dontShowAccess={dontShowAccess}
+      />
+    );
+  };
 
   return (
     <StyledInfoRoomBody>
       {showCurrentFolder ? (
         <>
-          {currentFolderLoading ? (
-            <>Loading ...</>
-          ) : (
-            <SingleItem
-              selectedItem={currentFolder}
-              isRecycleBinFolder={isRecycleBinFolder}
-              onSelectItem={onSelectItem}
-              setSharingPanelVisible={setSharingPanelVisible}
-              getFolderInfo={getFolderInfo}
-              getIcon={getIcon}
-              getFolderIcon={getFolderIcon}
-              getShareUsers={getShareUsers}
-            />
-          )}
+          {currentFolderLoading ? <>Loading ...</> : singleItem(currentFolder)}
         </>
       ) : (
         <>
@@ -75,16 +81,7 @@ const InfoPanelBodyContent = ({
               <h4>{t("NoItemsSelected")}</h4>
             </div>
           ) : selectedItems.length === 1 || bufferSelectedItem ? (
-            <SingleItem
-              selectedItem={selectedItems[0] || bufferSelectedItem}
-              isRecycleBinFolder={isRecycleBinFolder}
-              onSelectItem={onSelectItem}
-              setSharingPanelVisible={setSharingPanelVisible}
-              getFolderInfo={getFolderInfo}
-              getIcon={getIcon}
-              getFolderIcon={getFolderIcon}
-              getShareUsers={getShareUsers}
-            />
+            singleItem(selectedItems[0] || bufferSelectedItem)
           ) : (
             <SeveralItems selectedItems={selectedItems} getIcon={getIcon} />
           )}
@@ -109,21 +106,16 @@ export default inject(
     );
 
     const { showCurrentFolder } = infoPanelStore;
-    const {
-      getFolderInfo,
-      getShareUsers,
-      getFileInfo,
-      filesList,
-      folders,
-      viewAs,
-    } = filesStore;
+    const { getFolderInfo, getShareUsers } = filesStore;
     const { getIcon, getFolderIcon } = settingsStore;
     const { onSelectItem } = filesActionsStore;
     const { setSharingPanelVisible } = dialogsStore;
-    const { isRecycleBinFolder } = treeFoldersStore;
-
-    console.log(filesList);
-    console.log(folders);
+    const {
+      isRecycleBinFolder,
+      isCommonFolder,
+      isRecentFolder,
+      isFavoritesFolder,
+    } = treeFoldersStore;
 
     return {
       bufferSelectedItem,
@@ -135,11 +127,10 @@ export default inject(
       onSelectItem,
       setSharingPanelVisible,
       isRecycleBinFolder,
+      isCommonFolder,
       showCurrentFolder,
-      getFileInfo,
-      filesList,
-      folders,
-      viewAs,
+      isRecentFolder,
+      isFavoritesFolder,
     };
   }
 )(withRouter(withTranslation(["InfoPanel"])(observer(InfoPanelBodyContent))));

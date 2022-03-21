@@ -22,13 +22,15 @@ const SingleItem = (props) => {
   const {
     t,
     selectedItem,
-    isRecycleBinFolder,
     onSelectItem,
     setSharingPanelVisible,
     getFolderInfo,
     getIcon,
     getFolderIcon,
     getShareUsers,
+    dontShowSize,
+    dontShowLocation,
+    dontShowAccess,
   } = props;
 
   let updateSubscription = true;
@@ -124,6 +126,7 @@ const SingleItem = (props) => {
 
       let result = [
         {
+          id: "Owner",
           title: t("Common:Owner"),
           content: styledLink(
             item.createdBy.displayName,
@@ -131,22 +134,27 @@ const SingleItem = (props) => {
           ),
         },
         {
+          id: "Location",
           title: t("InfoPanel:Location"),
           content: <RectangleLoader width="150" height="19" />,
         },
         {
+          id: "Type",
           title: t("Common:Type"),
           content: styledText(itemType),
         },
         {
+          id: "Size",
           title: t("Common:Size"),
           content: styledText(itemSize),
         },
         {
+          id: "ByLastModifiedDate",
           title: t("Home:ByLastModifiedDate"),
           content: styledText(parseAndFormatDate(item.updated)),
         },
         {
+          id: "LastModifiedBy",
           title: t("LastModifiedBy"),
           content: styledLink(
             item.updatedBy.displayName,
@@ -154,6 +162,7 @@ const SingleItem = (props) => {
           ),
         },
         {
+          id: "ByCreationDate",
           title: t("Home:ByCreationDate"),
           content: styledText(parseAndFormatDate(item.created)),
         },
@@ -162,16 +171,19 @@ const SingleItem = (props) => {
       if (item.isFolder) return result;
 
       result.splice(3, 0, {
+        id: "FileExtension",
         title: t("FileExtension"),
         content: styledText(item.fileExst.split(".")[1].toUpperCase()),
       });
 
       result.push(
         {
+          id: "Versions",
           title: t("Versions"),
           content: styledText(item.version),
         },
         {
+          id: "Comments",
           title: t("Comments"),
           content: styledText(item.comment),
         }
@@ -201,21 +213,19 @@ const SingleItem = (props) => {
   };
 
   const loadAsyncData = async (displayedItem, selectedItem) => {
+    if (!updateSubscription) return;
+
     const updateLoadedItemProperties = async (displayedItem, selectedItem) => {
       const parentFolderId = selectedItem.isFolder
         ? selectedItem.parentId
         : selectedItem.folderId;
 
-      if (!parentFolderId)
-        return [...displayedItem.properties].filter(
-          (dip) => dip.title !== t("Location")
-        );
-
       const folderInfo = await getFolderInfo(parentFolderId);
 
       return [...displayedItem.properties].map((dip) =>
-        dip.title === t("Location")
+        dip.id === "Location"
           ? {
+              id: "Location",
               title: t("Location"),
               content: (
                 <Link
@@ -264,7 +274,8 @@ const SingleItem = (props) => {
       selectedItem
     );
 
-    const access = await updateLoadedItemAccess(selectedItem);
+    let access;
+    if (!dontShowAccess) access = await updateLoadedItemAccess(selectedItem);
 
     if (updateSubscription)
       setItem({
@@ -280,7 +291,7 @@ const SingleItem = (props) => {
 
   const openSharingPanel = () => {
     const { id, isFolder } = item;
-
+    console.log(id, isFolder);
     onSelectItem({ id, isFolder });
     setSharingPanelVisible(true);
   };
@@ -317,15 +328,19 @@ const SingleItem = (props) => {
       </StyledSubtitle>
 
       <StyledProperties>
-        {item.properties.map((p) => (
-          <div key={p.title} className="property">
-            <Text className="property-title">{p.title}</Text>
-            {p.content}
-          </div>
-        ))}
+        {item.properties.map((p) => {
+          if (dontShowSize && p.id === "Size") return;
+          if (dontShowLocation && p.id === "Location") return;
+          return (
+            <div key={p.title} className="property">
+              <Text className="property-title">{p.title}</Text>
+              {p.content}
+            </div>
+          );
+        })}
       </StyledProperties>
 
-      {!isRecycleBinFolder && (
+      {!dontShowAccess && (
         <>
           <StyledSubtitle>
             <Text fontWeight="600" fontSize="14px" color="#000000">
