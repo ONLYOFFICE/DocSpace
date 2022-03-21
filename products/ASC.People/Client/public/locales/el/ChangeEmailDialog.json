@@ -1,17 +1,5 @@
 ﻿{
-  "DomainIpAddress": "Οι τομείς ως διεύθυνση IP δεν υποστηρίζονται",
   "EmailActivationDescription": "Οι οδηγίες ενεργοποίησης θα αποσταλούν στο email που καταχωρίσατε",
   "EmailChangeTitle": "Αλλαγή email",
-  "EmptyEmail": "Δεν αναλύθηκε email",
-  "EnterEmail": "Εισαγάγετε μια νέα διεύθυνση email",
-  "IncorrectDomain": "Εσφαλμένος τομέας",
-  "IncorrectEmail": "Άκυρα email",
-  "IncorrectLocalPart": "Εσφαλμένο τοπικό τμήμα",
-  "LocalDomain": "Οι τοπικοί τομείς δεν υποστηρίζονται",
-  "ManyEmails": "Αναλύθηκαν πάρα πολλά μηνύματα email",
-  "MaxLengthExceeded": "Το μέγιστο μήκος ενός ονόματος χρήστη ή άλλου τοπικού τμήματος είναι 64 χαρακτήρες.",
-  "PunycodeDomain": "Οι τομείς Punycode δεν υποστηρίζονται",
-  "PunycodeLocalPart": "Το τοπικό τμήμα Punycode δεν υποστηρίζεται",
-  "SameEmail": "Δεν μπορείτε να χρησιμοποιήσετε το ίδιο email",
-  "SpacesInLocalPart": "Το τοπικό τμήμα δεν μπορεί να περιέχει κενά"
+  "EnterEmail": "Εισαγάγετε μια νέα διεύθυνση email"
 }

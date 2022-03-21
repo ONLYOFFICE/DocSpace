@@ -35,7 +35,7 @@ const HeaderContainer = styled.div`
   }
 
   .arrow-button {
-    margin-right: 16px;
+    margin-right: 12px;
 
     @media ${tablet} {
       padding: 8px 0 8px 8px;

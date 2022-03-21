@@ -423,6 +423,8 @@ export default inject(
       getFolderInfo,
       setBufferSelection,
       viewAs,
+      setIsLoading,
+      fetchFiles,
     } = filesStore;
     const { setAction } = fileActionStore;
     const {
@@ -495,6 +497,9 @@ export default inject(
       isEmptyFilesList,
       isPrivacyFolder,
       viewAs,
+
+      setIsLoading,
+      fetchFiles,
     };
   }
 )(

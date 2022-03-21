@@ -14,7 +14,7 @@ import withLoader from "../../../../HOCs/withLoader";
 import TableView from "./TableView/TableContainer";
 import withHotkeys from "../../../../HOCs/withHotkeys";
 import { Consumer } from "@appserver/components/utils/context";
-import { CatalogMainButtonContent } from "../../../../components/Catalog";
+import { ArticleMainButtonContent } from "../../../../components/Article";
 
 let currentDroppable = null;
 let isDragActive = false;
@@ -208,21 +208,21 @@ const SectionBodyContent = (props) => {
           <>
             <EmptyContainer />
             {(isMobile || isMobileUtils() || isTabletUtils()) && (
-              <CatalogMainButtonContent sectionWidth={context.sectionWidth} />
+              <ArticleMainButtonContent sectionWidth={context.sectionWidth} />
             )}
           </>
         ) : viewAs === "tile" ? (
           <>
             <FilesTileContainer sectionWidth={context.sectionWidth} t={t} />
             {(isMobile || isMobileUtils() || isTabletUtils()) && (
-              <CatalogMainButtonContent sectionWidth={context.sectionWidth} />
+              <ArticleMainButtonContent sectionWidth={context.sectionWidth} />
             )}
           </>
         ) : viewAs === "table" ? (
           <>
             <TableView sectionWidth={context.sectionWidth} tReady={tReady} />
             {(isMobile || isMobileUtils() || isTabletUtils()) && (
-              <CatalogMainButtonContent sectionWidth={context.sectionWidth} />
+              <ArticleMainButtonContent sectionWidth={context.sectionWidth} />
             )}
           </>
         ) : (
@@ -232,7 +232,7 @@ const SectionBodyContent = (props) => {
               tReady={tReady}
             />
             {(isMobile || isMobileUtils() || isTabletUtils()) && (
-              <CatalogMainButtonContent sectionWidth={context.sectionWidth} />
+              <ArticleMainButtonContent sectionWidth={context.sectionWidth} />
             )}
           </>
         )

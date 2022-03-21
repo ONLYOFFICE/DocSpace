@@ -230,7 +230,7 @@ const FilterBlock = ({
           })}
           <StyledFilterBlockFooter>
             <Button
-              size="medium"
+              size="normal"
               primary={true}
               label={t("AddFilter")}
               scale={true}

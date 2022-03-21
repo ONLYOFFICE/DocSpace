@@ -306,6 +306,7 @@ const Dark = {
     disableBackgroundColor: "rgba(0, 0, 0, 0.08)",
     hoverBackground: "#292929",
     activeBackground: "#292929",
+    hoverBorder: "#292929",
 
     boxShadow: "none",
     hoverBoxShadow: "none",
@@ -326,10 +327,11 @@ const Dark = {
       textOverflow: "ellipsis",
       whiteSpace: "nowrap",
       color: grayMaxLight,
+      hoverColor: grayMaxLight,
     },
 
     svg: {
-      margin: "11px",
+      margin: "11px 16px",
       width: "18px",
       height: "18px",
       minWidth: "18px",
@@ -879,9 +881,9 @@ const Dark = {
 
   tooltip: {
     borderRadius: "6px",
-    boxShadow: "0px 12px 24px rgba(0, 0, 0, 0.12)",
+    boxShadow: "0px 10px 15px rgba(4, 15, 27, 0.13)",
     opacity: "1",
-    padding: "16px",
+    padding: "8px 12px",
     pointerEvents: "auto",
     maxWidth: "340px",
     color: "#F5E9BA",
@@ -951,7 +953,7 @@ const Dark = {
 
       labelIcon: {
         width: "100%",
-        margin: "0 0 8px 0",
+        margin: "0 0 4px 0",
       },
 
       body: {
@@ -1580,8 +1582,6 @@ const Dark = {
     hoverBorderBottom: "1px dashed",
     contentPadding: "10px 0px 0px 0px",
     arrowMargin: "4px 8px 4px 0px",
-    arrowMarginRight: "9px",
-    arrowMarginBottom: "5px",
     transform: "rotate(180deg)",
     iconColor: black,
 

@@ -423,11 +423,9 @@ const StyledSharingBody = styled(Scrollbar)`
   }
 
   .sharing-row {
-    margin: 0 16px;
+    padding-left: 16px;
     //width: calc(100% - 16px);
     box-sizing: border-box;
-
-    padding-right: 15px;
     border-bottom: none;
   }
 
@@ -590,7 +588,7 @@ const StyledFooter = styled.div`
 StyledFooter.defaultProps = { theme: Base };
 
 const StyledLinkRow = styled.div`
-  width: calc(100% + 16px);
+  margin-right: -16px;
   padding: 0 16px;
   box-sizing: border-box;
   background-color: ${(props) =>

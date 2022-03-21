@@ -46,6 +46,7 @@ class FilesStore {
   startDrag = false;
 
   firstLoad = true;
+
   files = [];
   folders = [];
   selection = [];

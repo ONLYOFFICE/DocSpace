@@ -56,6 +56,7 @@ class Row extends React.Component {
 
     const renderContext =
       Object.prototype.hasOwnProperty.call(contextData, "contextOptions") &&
+      contextData &&
       contextData.contextOptions &&
       contextData.contextOptions.length > 0;
 
