@@ -4,6 +4,7 @@ import { ADS_TIMEOUT } from "../../../../helpers/constants";
 import { getLanguage } from "@appserver/common/utils";
 import SnackBar from "@appserver/components/snackbar";
 import { Consumer } from "@appserver/components/utils/context";
+import difference from "lodash/difference";
 
 const loadLanguagePath = async () => {
   if (!window.firebaseHelper) return;
@@ -15,13 +16,18 @@ const loadLanguagePath = async () => {
     .split(",")
     .filter((bar) => bar.length > 0);
 
-  let index = Number(localStorage.getItem("barIndex") || 0);
-  const currentBar = bar[index];
+  const closed = JSON.parse(localStorage.getItem("barClose"));
 
-  const barStatus = localStorage.getItem("barClose");
+  const banner = difference(bar, closed);
+
+  let index = Number(localStorage.getItem("barIndex") || 0);
+  if (index >= banner.length) {
+    index -= 1;
+  }
+  const currentBar = banner[index];
 
   let htmlUrl =
-    currentBar && !barStatus && window.firebaseHelper.config.authDomain
+    currentBar && window.firebaseHelper.config.authDomain
       ? `https://${window.firebaseHelper.config.authDomain}/${language}/${currentBar}/index.html`
       : null;
 
@@ -29,30 +35,34 @@ const loadLanguagePath = async () => {
     if (data.ok) return;
     htmlUrl = null;
   });
-  return htmlUrl;
+  return [htmlUrl, currentBar];
 };
 
 const bannerHOC = (props) => {
-  const { firstLoad, personal, setMaintenanceExist } = props;
+  const { firstLoad, setMaintenanceExist } = props;
 
   const [htmlLink, setHtmlLink] = useState();
+  const [campaigns, setCampaigns] = useState();
 
   const bar = (localStorage.getItem("bar") || "")
     .split(",")
     .filter((bar) => bar.length > 0);
 
   const updateBanner = async () => {
+    const closed = JSON.parse(localStorage.getItem("barClose"));
+    const banner = difference(bar, closed);
     let index = Number(localStorage.getItem("barIndex") || 0);
 
-    if (bar.length < 1 || index + 1 >= bar.length) {
+    if (banner.length < 1 || index + 1 >= banner.length) {
       index = 0;
     } else {
       index++;
     }
 
     try {
-      const htmlUrl = await loadLanguagePath();
+      const [htmlUrl, campaigns] = await loadLanguagePath();
       setHtmlLink(htmlUrl);
+      setCampaigns(campaigns);
     } catch (e) {
       updateBanner();
     }
@@ -62,25 +72,24 @@ const bannerHOC = (props) => {
   };
 
   useEffect(() => {
-    setTimeout(() => updateBanner(), 5000);
+    setTimeout(() => updateBanner(), 10000);
     setInterval(updateBanner, ADS_TIMEOUT);
   }, []);
 
-  const mainBar = document.getElementById("main-bar");
-  const mainBarExistNode = mainBar ? mainBar.hasChildNodes() : false;
-
   const onClose = () => {
-    const bar = document.querySelector(`#main-bar`);
     setMaintenanceExist(false);
-    localStorage.setItem("barClose", true);
-    bar.remove();
+    const closeItems = JSON.parse(localStorage.getItem("barClose")) || [];
+    const closed =
+      closeItems.length > 0 ? [...closeItems, campaigns] : [campaigns];
+    localStorage.setItem("barClose", JSON.stringify(closed));
+    setHtmlLink(null);
   };
 
   const onLoad = () => {
     setMaintenanceExist(true);
   };
 
-  return !mainBarExistNode && htmlLink && !firstLoad ? (
+  return htmlLink && !firstLoad ? (
     <Consumer>
       {(context) => (
         <SnackBar
