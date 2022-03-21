@@ -66,7 +66,7 @@ const Header = styled.header`
     cursor: pointer;
 
     @media ${tablet} {
-      margin-left: 16px;
+      padding-left: 16px;
     }
   }
   .mobile-short-logo {

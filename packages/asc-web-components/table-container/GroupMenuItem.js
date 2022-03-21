@@ -11,10 +11,22 @@ const StyledButton = styled(Button)`
   height: 50px;
   min-width: fit-content;
 
+  svg {
+    path {
+      fill: ${(props) => props.theme.button.color.base};
+    }
+  }
+
   :hover,
   :active {
     border: none;
     background-color: unset;
+
+    svg {
+      path {
+        fill: ${(props) => props.theme.button.color.baseHover};
+      }
+    }
   }
 
   .btnIcon {
