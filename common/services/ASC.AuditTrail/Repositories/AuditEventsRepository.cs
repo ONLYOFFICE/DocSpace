@@ -26,7 +26,7 @@
 
 namespace ASC.AuditTrail.Repositories;
 
-[Scope]
+[Scope(Additional = typeof(AuditEventsRepositoryExtensions))]
 public class AuditEventsRepository
 {
     private MessagesContext AuditTrailContext => _lazyAuditTrailContext.Value;
@@ -92,5 +92,13 @@ public class AuditEventsRepository
         }
 
         return _mapper.Map<List<AuditEventQuery>, IEnumerable<AuditEventDto>>(query.ToList());
+    }
+}
+
+public static class AuditEventsRepositoryExtensions
+{
+    public static void Register(DIHelper services)
+    {
+        services.TryAdd<EventTypeConverter>();
     }
 }

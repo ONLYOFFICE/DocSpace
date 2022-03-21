@@ -26,7 +26,7 @@
 
 namespace ASC.AuditTrail.Repositories;
 
-[Scope]
+[Scope(Additional = typeof(LoginEventsRepositoryExtensions))]
 public class LoginEventsRepository
 {
     private MessagesContext MessagesContext => _lazyMessagesContext.Value;
@@ -92,5 +92,13 @@ public class LoginEventsRepository
         }
 
         return query.Count();
+    }
+}
+
+public static class LoginEventsRepositoryExtensions
+{
+    public static void Register(DIHelper services)
+    {
+        services.TryAdd<EventTypeConverter>();
     }
 }

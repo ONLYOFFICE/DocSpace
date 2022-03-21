@@ -107,4 +107,10 @@ public class TipsController: BaseSettingsController
     {
         return StudioPeriodicNotify.ChangeSubscription(_authContext.CurrentAccount.ID, _studioNotifyHelper);
     }
+
+    [Read("tips/subscription")]
+    public bool GetTipsSubscription()
+    {
+        return _studioNotifyHelper.IsSubscribedToNotify(_authContext.CurrentAccount.ID, Actions.PeriodicNotify);
+    }
 }

@@ -26,6 +26,7 @@
 
 namespace ASC.MessagingSystem.Mapping;
 
+[Scope]
 public class EventTypeConverter : ITypeConverter<EventMessage, LoginEvent>, ITypeConverter<EventMessage, AuditEvent>
 {
     public LoginEvent Convert(EventMessage source, LoginEvent destination, ResolutionContext context)
