@@ -113,7 +113,7 @@ const Article = ({
           <SubArticleHeader showText={showText} onClick={toggleShowText}>
             {articleHeaderContent ? articleHeaderContent.props.children : null}
           </SubArticleHeader>
-          {articleMainButtonContent ? (
+          {articleMainButtonContent && !isMobileOnly && !isMobileUtils() ? (
             <SubArticleMainButton showText={showText}>
               {articleMainButtonContent.props.children}
             </SubArticleMainButton>
@@ -128,6 +128,11 @@ const Article = ({
           <SubArticleBackdrop onClick={toggleArticleOpen} />
         </>
       )}
+      {articleMainButtonContent && (isMobileOnly || isMobileUtils()) ? (
+        <SubArticleMainButton showText={showText}>
+          {articleMainButtonContent.props.children}
+        </SubArticleMainButton>
+      ) : null}
     </>
   );
 };
