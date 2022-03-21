@@ -45,7 +45,8 @@ class RestoreBackup extends React.Component {
       isCheckedLocalFile: false,
       selectedFileId: "",
       selectedFile: "",
-      isErrors: {},
+      isStorageFillingError: {},
+      isFileSelectedError: false,
       isInitialLoading: isMobileOnly ? true : false,
       checkingRecoveryData: false,
     };
@@ -186,7 +187,7 @@ class RestoreBackup extends React.Component {
 
       if (firstError) {
         this.setState({
-          isErrors: errors,
+          isStorageFillingError: errors,
         });
         return false;
       }
@@ -205,10 +206,16 @@ class RestoreBackup extends React.Component {
     } = this.state;
     const { history, socketHelper } = this.props;
 
-    if (!this.canRestore()) return;
+    if (!this.canRestore()) {
+      this.setState({
+        isFileSelectedError: true,
+      });
+      return;
+    }
 
     this.setState({
       checkingRecoveryData: true,
+      isFileSelectedError: false,
     });
 
     let storageParams = [];
@@ -307,7 +314,7 @@ class RestoreBackup extends React.Component {
   onResetFormSettings = () => {
     this.formSettings = {};
     this.setState({
-      isErrors: {},
+      isStorageFillingError: {},
     });
   };
 
@@ -338,8 +345,9 @@ class RestoreBackup extends React.Component {
       isCheckedThirdParty,
       isCheckedThirdPartyStorage,
       isCheckedLocalFile,
-      isErrors,
+      isStorageFillingError,
       checkingRecoveryData,
+      isFileSelectedError,
     } = this.state;
 
     const commonRadioButtonProps = {
@@ -406,6 +414,7 @@ class RestoreBackup extends React.Component {
               onClose={this.onPanelClose}
               onClickInput={this.onClickInput}
               onSelectFile={this.onSelectFile}
+              isError={isFileSelectedError}
             />
           )}
           {isCheckedThirdParty && (
@@ -414,19 +423,23 @@ class RestoreBackup extends React.Component {
               onClose={this.onPanelClose}
               onClickInput={this.onClickInput}
               onSelectFile={this.onSelectFile}
+              isError={isFileSelectedError}
             />
           )}
           {isCheckedThirdPartyStorage && (
             <ThirdPartyStorages
               onSetRequiredFormNames={this.onSetRequiredFormNames}
               onResetFormSettings={this.onResetFormSettings}
-              isErrors={isErrors}
+              isErrors={isStorageFillingError}
               onSetStorageId={this.onSetStorageId}
               onSetFormSettings={this.onSetFormSettings}
             />
           )}
           {isCheckedLocalFile && (
-            <LocalFile onSelectLocalFile={this.onSelectLocalFile} />
+            <LocalFile
+              hasError={isFileSelectedError}
+              onSelectLocalFile={this.onSelectLocalFile}
+            />
           )}
         </div>
 

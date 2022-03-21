@@ -1,7 +1,7 @@
 import React from "react";
 import FileInput from "@appserver/components/file-input";
 
-const LocalFile = ({ onSelectLocalFile }) => {
+const LocalFile = ({ onSelectLocalFile, hasError }) => {
   const onClickInput = (file) => {
     let data = new FormData();
     data.append("file", file);
@@ -9,7 +9,12 @@ const LocalFile = ({ onSelectLocalFile }) => {
     onSelectLocalFile(data);
   };
   return (
-    <FileInput onInput={onClickInput} scale className="restore-backup_input" />
+    <FileInput
+      hasError={hasError}
+      onInput={onClickInput}
+      scale
+      className="restore-backup_input"
+    />
   );
 };
 
