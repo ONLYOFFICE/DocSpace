@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Notify.Channels;
 using ASC.Notify.Engine;
@@ -40,6 +41,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Notify
 {
+    [Singletone]
     public sealed class Context : INotifyRegistry
     {
         public const string SYS_RECIPIENT_ID = "_#" + _SYS_RECIPIENT_ID + "#_";
