@@ -80,7 +80,7 @@ namespace ASC.Web.CRM.HttpHandlers
 
             String assignedPath;
 
-            global.GetStore().SaveTemp("temp", out assignedPath, context.Request.Form.Files[0].OpenReadStream());
+            await global.GetStore().SaveTempAsync("temp", out assignedPath, context.Request.Form.Files[0].OpenReadStream());
 
             var jObject = importFromCSV.GetInfo(context.Request.Form.Files[0].OpenReadStream(), context.Request.Form["importSettings"]);
 

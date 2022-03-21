@@ -25,6 +25,7 @@
 
 
 using System;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Core;
@@ -62,7 +63,7 @@ namespace ASC.Web.Studio.Core.SMS
             StudioSmsNotificationSettingsHelper = studioSmsNotificationSettingsHelper;
         }
 
-        public string SaveMobilePhone(UserInfo user, string mobilePhone)
+        public Task<string> SaveMobilePhoneAsync(UserInfo user, string mobilePhone)
         {
             mobilePhone = SmsSender.GetPhoneValueDigits(mobilePhone);
 
@@ -70,6 +71,11 @@ namespace ASC.Web.Studio.Core.SMS
             if (string.IsNullOrEmpty(mobilePhone)) throw new Exception(Resource.ActivateMobilePhoneEmptyPhoneNumber);
             if (!string.IsNullOrEmpty(user.MobilePhone) && user.MobilePhoneActivationStatus == MobilePhoneActivationStatus.Activated) throw new Exception(Resource.MobilePhoneMustErase);
 
+            return InternalSaveMobilePhoneAsync(user, mobilePhone);
+        }
+
+        private async Task<string> InternalSaveMobilePhoneAsync(UserInfo user, string mobilePhone)
+        {
             user.MobilePhone = mobilePhone;
             user.MobilePhoneActivationStatus = MobilePhoneActivationStatus.NotActivated;
             if (SecurityContext.IsAuthenticated)
@@ -91,13 +97,13 @@ namespace ASC.Web.Studio.Core.SMS
 
             if (StudioSmsNotificationSettingsHelper.Enable)
             {
-                PutAuthCode(user, false);
+                await PutAuthCodeAsync(user, false);
             }
 
             return mobilePhone;
         }
 
-        public void PutAuthCode(UserInfo user, bool again)
+        public Task PutAuthCodeAsync(UserInfo user, bool again)
         {
             if (user == null || Equals(user, Constants.LostUser)) throw new Exception(Resource.ErrorUserNotFound);
 
@@ -105,10 +111,15 @@ namespace ASC.Web.Studio.Core.SMS
 
             var mobilePhone = SmsSender.GetPhoneValueDigits(user.MobilePhone);
 
-            if (SmsKeyStorage.ExistsKey(mobilePhone) && !again) return;
+            if (SmsKeyStorage.ExistsKey(mobilePhone) && !again) return Task.CompletedTask;
 
             if (!SmsKeyStorage.GenerateKey(mobilePhone, out var key)) throw new Exception(Resource.SmsTooMuchError);
-            if (SmsSender.SendSMS(mobilePhone, string.Format(Resource.SmsAuthenticationMessageToUser, key)))
+            return InternalPutAuthCodeAsync(mobilePhone, key);
+        }
+
+        private async Task InternalPutAuthCodeAsync(string mobilePhone, string key)
+        {
+            if (await SmsSender.SendSMSAsync(mobilePhone, string.Format(Resource.SmsAuthenticationMessageToUser, key)))
             {
                 TenantManager.SetTenantQuotaRow(new TenantQuotaRow { Tenant = TenantManager.GetCurrentTenant().TenantId, Path = "/sms", Counter = 1 }, true);
             }

@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Core;
@@ -40,6 +41,8 @@ using ASC.Web.Core.Users;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Utility;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Web.Files
 {
@@ -76,9 +79,10 @@ namespace ASC.Web.Files
             PathProvider = pathProvider;
         }
 
-        public override List<UsageSpaceStatItem> GetStatData()
+        public override ValueTask<List<UsageSpaceStatItem>> GetStatDataAsync()
         {
             var myFiles = FilesDbContext.Files
+                .AsQueryable()
                 .Join(FilesDbContext.Tree, a => a.FolderId, b => b.FolderId, (file, tree) => new { file, tree })
                 .Join(FilesDbContext.BunchObjects, a => a.tree.ParentId.ToString(), b => b.LeftNode, (fileTree, bunch) => new { fileTree.file, fileTree.tree, bunch })
                 .Where(r => r.file.TenantId == r.bunch.TenantId)
@@ -88,6 +92,7 @@ namespace ASC.Web.Files
                 .Select(r => new { CreateBy = r.Key, Size = r.Sum(a => a.file.ContentLength) });
 
             var commonFiles = FilesDbContext.Files
+                .AsQueryable()
                 .Join(FilesDbContext.Tree, a => a.FolderId, b => b.FolderId, (file, tree) => new { file, tree })
                 .Join(FilesDbContext.BunchObjects, a => a.tree.ParentId.ToString(), b => b.LeftNode, (fileTree, bunch) => new { fileTree.file, fileTree.tree, bunch })
                 .Where(r => r.file.TenantId == r.bunch.TenantId)
@@ -97,19 +102,19 @@ namespace ASC.Web.Files
                 .Select(r => new { CreateBy = Constants.LostUser.ID, Size = r.Sum(a => a.file.ContentLength) });
 
             return myFiles.Union(commonFiles)
-                .ToList()
-                .GroupBy(
-                r => r.CreateBy,
-                r => r.Size,
-                (userId, items) =>
+                .AsAsyncEnumerable()
+                .GroupByAwait(
+                async r => await Task.FromResult(r.CreateBy),
+                async r => await Task.FromResult(r.Size),
+                async (userId, items) =>
                 {
                     var user = UserManager.GetUsers(userId);
-                    var item = new UsageSpaceStatItem { SpaceUsage = items.Sum() };
+                    var item = new UsageSpaceStatItem { SpaceUsage = await items.SumAsync() };
                     if (user.Equals(Constants.LostUser))
                     {
                         item.Name = FilesUCResource.CorporateFiles;
                         item.ImgUrl = PathProvider.GetImagePath("corporatefiles_big.png");
-                        item.Url = PathProvider.GetFolderUrlById(GlobalFolderHelper.FolderCommon);
+                        item.Url = await PathProvider.GetFolderUrlByIdAsync(await GlobalFolderHelper.FolderCommonAsync);
                     }
                     else
                     {
@@ -121,7 +126,7 @@ namespace ASC.Web.Files
                     return item;
                 })
                 .OrderByDescending(i => i.SpaceUsage)
-                .ToList();
+                .ToListAsync();
 
         }
     }
@@ -150,15 +155,16 @@ namespace ASC.Web.Files
             DaoFactory = daoFactory;
         }
 
-        public long GetUserSpaceUsage(Guid userId)
+        public async Task<long> GetUserSpaceUsageAsync(Guid userId)
         {
             var tenantId = TenantManager.GetCurrentTenant().TenantId;
             var my = GlobalFolder.GetFolderMy(FileMarker, DaoFactory);
-            var trash = GlobalFolder.GetFolderTrash<int>(DaoFactory);
+            var trash = await GlobalFolder.GetFolderTrashAsync<int>(DaoFactory);
 
-            return FilesDbContext.Files
+            return await FilesDbContext.Files
+                .AsQueryable()
                 .Where(r => r.TenantId == tenantId && (r.FolderId == my || r.FolderId == trash))
-                .Sum(r => r.ContentLength);
+                .SumAsync(r => r.ContentLength);
         }
     }
 }

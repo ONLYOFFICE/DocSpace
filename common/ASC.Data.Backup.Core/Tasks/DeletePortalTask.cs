@@ -92,10 +92,10 @@ namespace ASC.Data.Backup.Tasks
                 var domains = StorageFactoryConfig.GetDomainList(ConfigPath, module);
                 foreach (var domain in domains)
                 {
-                    ActionInvoker.Try(state => storage.DeleteFiles((string)state, "\\", "*.*", true), domain, 5,
+                    ActionInvoker.Try(state => storage.DeleteFilesAsync((string)state, "\\", "*.*", true).Wait(), domain, 5,
                                       onFailure: error => Logger.WarnFormat("Can't delete files for domain {0}: \r\n{1}", domain, error));
                 }
-                storage.DeleteFiles("\\", "*.*", true);
+                storage.DeleteFilesAsync("\\", "*.*", true).Wait();
                 SetCurrentStepProgress((int)(++modulesProcessed * 100 / (double)storageModules.Count));
             }
             Logger.Debug("end delete storage");

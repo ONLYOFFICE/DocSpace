@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 
 using ASC.Api.Core;
 using ASC.Api.Utils;
@@ -183,9 +184,9 @@ namespace ASC.Api.Documents
             FileUtility = fileUtility;
         }
 
-        public FileWrapper<T> Get<T>(File<T> file, List<Tuple<FileEntry<T>, bool>> folders = null)
+        public async Task<FileWrapper<T>> GetAsync<T>(File<T> file, List<Tuple<FileEntry<T>, bool>> folders = null)
         {
-            var result = GetFileWrapper(file);
+            var result = await GetFileWrapperAsync(file);
 
             result.FolderId = file.FolderID;
             if (file.RootFolderType == FolderType.USER
@@ -200,15 +201,15 @@ namespace ASC.Api.Documents
                     var folderWithRight = folders.FirstOrDefault(f => f.Item1.ID.Equals(file.FolderID));
                     if (folderWithRight == null || !folderWithRight.Item2)
                     {
-                        result.FolderId = GlobalFolderHelper.GetFolderShare<T>();
+                        result.FolderId = await GlobalFolderHelper.GetFolderShareAsync<T>();
                     }
                 }
                 else
                 {
-                    parentFolder = folderDao.GetFolder(file.FolderID);
-                    if (!FileSecurity.CanRead(parentFolder))
+                    parentFolder = await folderDao.GetFolderAsync(file.FolderID);
+                    if (!await FileSecurity.CanReadAsync(parentFolder))
                     {
-                        result.FolderId = GlobalFolderHelper.GetFolderShare<T>();
+                        result.FolderId = await GlobalFolderHelper.GetFolderShareAsync<T>();
                     }
                 }
             }
@@ -217,9 +218,9 @@ namespace ASC.Api.Documents
             return result;
         }
 
-        private FileWrapper<T> GetFileWrapper<T>(File<T> file)
+        private async Task<FileWrapper<T>> GetFileWrapperAsync<T>(File<T> file)
         {
-            var result = Get<FileWrapper<T>, T>(file);
+            var result = await GetAsync<FileWrapper<T>, T>(file);
 
             result.FileExst = FileUtility.GetFileExtension(file.Title);
             result.FileType = FileUtility.GetFileTypeByExtention(result.FileExst);
@@ -233,7 +234,7 @@ namespace ASC.Api.Documents
             result.Locked = file.Locked.NullIfDefault();
             result.LockedBy = file.LockedBy;
             result.CanWebRestrictedEditing = FileUtility.CanWebRestrictedEditing(file.Title);
-            result.CanFillForms = FileSecurity.CanFillForms(file);
+            result.CanFillForms = await FileSecurity.CanFillFormsAsync(file);
 
             try
             {

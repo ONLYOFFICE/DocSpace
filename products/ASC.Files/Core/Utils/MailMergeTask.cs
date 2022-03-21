@@ -29,6 +29,7 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading.Tasks;
 using System.Web;
 
 using ASC.Common;
@@ -86,14 +87,14 @@ namespace ASC.Web.Files.Utils
             BaseCommonLinkUtility = baseCommonLinkUtility;
         }
 
-        public string Run(MailMergeTask mailMergeTask, IHttpClientFactory clientFactory)
+        public async Task<string> RunAsync(MailMergeTask mailMergeTask, IHttpClientFactory clientFactory)
         {
             if (string.IsNullOrEmpty(mailMergeTask.From)) throw new ArgumentException("From is null");
             if (string.IsNullOrEmpty(mailMergeTask.To)) throw new ArgumentException("To is null");
 
             CreateDraftMail(mailMergeTask);
 
-            var bodySendAttach = AttachToMail(mailMergeTask, clientFactory);
+            var bodySendAttach = await AttachToMailAsync(mailMergeTask, clientFactory);
 
             return SendMail(mailMergeTask, bodySendAttach);
         }
@@ -119,9 +120,9 @@ namespace ASC.Web.Files.Utils
 
             mailMergeTask.MessageId = responseCreate["response"]["id"].Value<int>();
             mailMergeTask.StreamId = responseCreate["response"]["streamId"].Value<string>();
-        }
+        }      
 
-        private string AttachToMail(MailMergeTask mailMergeTask, IHttpClientFactory clientFactory)
+        private async Task<string> AttachToMailAsync(MailMergeTask mailMergeTask, IHttpClientFactory clientFactory)
         {
             if (mailMergeTask.Attach == null) return string.Empty;
 
@@ -141,12 +142,12 @@ namespace ASC.Web.Files.Utils
 
             string responseAttachString;
             var httpClient = clientFactory.CreateClient();
-            using var response = httpClient.Send(request);
-            using (var stream = response.Content.ReadAsStream())
+            using var response = await httpClient.SendAsync(request);
+            using (var stream = await response.Content.ReadAsStreamAsync())
             {
                 if (stream == null) throw new HttpRequestException("Could not get an answer");
                 using var reader = new StreamReader(stream);
-                responseAttachString = reader.ReadToEnd();
+                responseAttachString = await reader.ReadToEndAsync();
             }
 
             var responseAttach = JObject.Parse(responseAttachString);

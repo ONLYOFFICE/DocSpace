@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 using ASC.Core;
 using ASC.Files.Core;
@@ -103,15 +104,16 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return Selectors.FirstOrDefault(selector => selector.IsMatch(id));
         }
 
-        protected void SetSharedProperty(IEnumerable<FileEntry<string>> entries)
+        protected async Task SetSharedPropertyAsync(IAsyncEnumerable<FileEntry<string>> entries)
         {
-            var ids = SecurityDao.GetPureShareRecords(entries)
+            var pureShareRecords = await SecurityDao.GetPureShareRecordsAsync(entries);
+            var ids = pureShareRecords
                 //.Where(x => x.Owner == SecurityContext.CurrentAccount.ID)
                 .Select(x => x.EntryId).Distinct();
 
             foreach(var id in ids)
             {
-                var firstEntry = entries.FirstOrDefault(y => y.ID.Equals(id));
+                var firstEntry = await entries.FirstOrDefaultAsync(y => y.ID.Equals(id));
 
                 if (firstEntry != null)
                     firstEntry.Shared = true;
@@ -123,47 +125,46 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return Selectors;
         }
 
-
-        protected internal File<string> PerformCrossDaoFileCopy(string fromFileId, string toFolderId, bool deleteSourceFile)
+        protected internal Task<File<string>> PerformCrossDaoFileCopyAsync(string fromFileId, string toFolderId, bool deleteSourceFile)
         {
             var fromSelector = GetSelector(fromFileId);
             var toSelector = GetSelector(toFolderId);
 
-            return CrossDao.PerformCrossDaoFileCopy(
+            return CrossDao.PerformCrossDaoFileCopyAsync(
                 fromFileId, fromSelector.GetFileDao(fromFileId), fromSelector.ConvertId,
                 toFolderId, toSelector.GetFileDao(toFolderId), toSelector.ConvertId,
                 deleteSourceFile);
         }
 
-        protected File<int> PerformCrossDaoFileCopy(string fromFileId, int toFolderId, bool deleteSourceFile)
+        protected async Task<File<int>> PerformCrossDaoFileCopyAsync(string fromFileId, int toFolderId, bool deleteSourceFile)
         {
             var fromSelector = GetSelector(fromFileId);
             using var scope = ServiceProvider.CreateScope();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
             tenantManager.SetCurrentTenant(TenantID);
 
-            return CrossDao.PerformCrossDaoFileCopy(
+            return await CrossDao.PerformCrossDaoFileCopyAsync(
                 fromFileId, fromSelector.GetFileDao(fromFileId), fromSelector.ConvertId,
                 toFolderId, scope.ServiceProvider.GetService<IFileDao<int>>(), r => r,
                 deleteSourceFile);
         }
 
-        protected Folder<string> PerformCrossDaoFolderCopy(string fromFolderId, string toRootFolderId, bool deleteSourceFolder, CancellationToken? cancellationToken)
+        protected Task<Folder<string>> PerformCrossDaoFolderCopyAsync(string fromFolderId, string toRootFolderId, bool deleteSourceFolder, CancellationToken? cancellationToken)
         {
             var fromSelector = GetSelector(fromFolderId);
             var toSelector = GetSelector(toRootFolderId);
 
-            return CrossDao.PerformCrossDaoFolderCopy(
+            return CrossDao.PerformCrossDaoFolderCopyAsync(
                 fromFolderId, fromSelector.GetFolderDao(fromFolderId), fromSelector.GetFileDao(fromFolderId), fromSelector.ConvertId,
                 toRootFolderId, toSelector.GetFolderDao(toRootFolderId), toSelector.GetFileDao(toRootFolderId), toSelector.ConvertId,
                 deleteSourceFolder, cancellationToken);
         }
 
-        protected Folder<int> PerformCrossDaoFolderCopy(string fromFolderId, int toRootFolderId, bool deleteSourceFolder, CancellationToken? cancellationToken)
+        protected Task<Folder<int>> PerformCrossDaoFolderCopyAsync(string fromFolderId, int toRootFolderId, bool deleteSourceFolder, CancellationToken? cancellationToken)
         {
             var fromSelector = GetSelector(fromFolderId);
 
-            return CrossDao.PerformCrossDaoFolderCopy(
+            return CrossDao.PerformCrossDaoFolderCopyAsync(
                 fromFolderId, fromSelector.GetFolderDao(fromFolderId), fromSelector.GetFileDao(fromFolderId), fromSelector.ConvertId,
                 toRootFolderId, ServiceProvider.GetService<IFolderDao<int>>(), ServiceProvider.GetService<IFileDao<int>>(), r => r,
                 deleteSourceFolder, cancellationToken);

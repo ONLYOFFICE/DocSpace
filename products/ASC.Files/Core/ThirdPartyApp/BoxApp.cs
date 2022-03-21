@@ -34,6 +34,7 @@ using System.Net.Http.Headers;
 using System.Security;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Web;
 
 using ASC.Common.Caching;
@@ -114,7 +115,11 @@ namespace ASC.Web.Files.ThirdPartyApp
         private ThirdPartyAppHandlerService ThirdPartyAppHandlerService { get; }
         private IServiceProvider ServiceProvider { get; }
         public ILog Logger { get; }
-        public IHttpClientFactory ClientFactory { get; }
+
+        private readonly IHttpClientFactory _clientFactory;
+
+        private readonly RequestHelper _requestHelper;
+        private readonly OAuth20TokenHelper _oAuth20TokenHelper;
 
         public BoxApp()
         {
@@ -149,6 +154,8 @@ namespace ASC.Web.Files.ThirdPartyApp
             ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
             IHttpClientFactory clientFactory,
+            RequestHelper requestHelper,
+            OAuth20TokenHelper oAuth20TokenHelper,
             string name, int order, Dictionary<string, string> additional)
             : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, additional)
         {
@@ -173,14 +180,16 @@ namespace ASC.Web.Files.ThirdPartyApp
             ThirdPartyAppHandlerService = thirdPartyAppHandlerService;
             ServiceProvider = serviceProvider;
             Logger = option.CurrentValue;
-            ClientFactory = clientFactory;
+            _clientFactory = clientFactory;
+            _requestHelper = requestHelper;
+            _oAuth20TokenHelper = oAuth20TokenHelper;
         }
 
-        public bool Request(HttpContext context)
+        public async Task<bool> RequestAsync(HttpContext context)
         {
             if ((context.Request.Query[FilesLinkUtility.Action].FirstOrDefault() ?? "").Equals("stream", StringComparison.InvariantCultureIgnoreCase))
             {
-                StreamFile(context);
+                await StreamFileAsync(context);
                 return true;
             }
 
@@ -272,7 +281,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             return uriBuilder.Uri + "?" + query;
         }
 
-        public void SaveFile(string fileId, string fileType, string downloadUrl, Stream stream)
+        public async Task SaveFileAsync(string fileId, string fileType, string downloadUrl, Stream stream)
         {
             Logger.Debug("BoxApp: save file stream " + fileId +
                                 (stream == null
@@ -298,14 +307,17 @@ namespace ASC.Web.Files.ThirdPartyApp
                 {
                     if (stream != null)
                     {
-                        downloadUrl = PathProvider.GetTempUrl(stream, fileType);
+                        downloadUrl = await PathProvider.GetTempUrlAsync(stream, fileType);
                         downloadUrl = DocumentServiceConnector.ReplaceCommunityAdress(downloadUrl);
                     }
 
                     Logger.Debug("BoxApp: GetConvertedUri from " + fileType + " to " + currentType + " - " + downloadUrl);
 
                     var key = DocumentServiceConnector.GenerateRevisionId(downloadUrl);
-                    DocumentServiceConnector.GetConvertedUri(downloadUrl, fileType, currentType, key, null, null, null, false, out downloadUrl);
+
+                    var resultTuple = await DocumentServiceConnector.GetConvertedUriAsync(downloadUrl, fileType, currentType, key, null, null, null, false);
+                    downloadUrl = resultTuple.ConvertedDocumentUri;
+
                     stream = null;
                 }
                 catch (Exception e)
@@ -314,7 +326,7 @@ namespace ASC.Web.Files.ThirdPartyApp
                 }
             }
 
-            var httpClient = ClientFactory.CreateClient();
+            var httpClient = _clientFactory.CreateClient();
 
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(BoxUrlUpload.Replace("{fileId}", fileId));
@@ -326,24 +338,24 @@ namespace ASC.Web.Files.ThirdPartyApp
                 var metadata = $"Content-Disposition: form-data; name=\"filename\"; filename=\"{title}\"\r\nContent-Type: application/octet-stream\r\n\r\n";
                 var metadataPart = $"--{boundary}\r\n{metadata}";
                 var bytes = Encoding.UTF8.GetBytes(metadataPart);
-                tmpStream.Write(bytes, 0, bytes.Length);
+                await tmpStream.WriteAsync(bytes, 0, bytes.Length);
 
                 if (stream != null)
                 {
-                    stream.CopyTo(tmpStream);
+                    await stream.CopyToAsync(tmpStream);
                 }
                 else
                 {
                     var downloadRequest = new HttpRequestMessage();
                     downloadRequest.RequestUri = new Uri(downloadUrl);
-                    using var response = httpClient.Send(request);
+                    using var response = await httpClient.SendAsync(request);
                     using var downloadStream = new ResponseStream(response);
-                    downloadStream.CopyTo(tmpStream);
+                    await downloadStream.CopyToAsync(tmpStream);
                 }
 
                 var mediaPartEnd = $"\r\n--{boundary}--\r\n";
                 bytes = Encoding.UTF8.GetBytes(mediaPartEnd);
-                tmpStream.Write(bytes, 0, bytes.Length);
+                await tmpStream.WriteAsync(bytes, 0, bytes.Length);
 
                 request.Method = HttpMethod.Post;
                 request.Headers.Add("Authorization", "Bearer " + token);
@@ -356,13 +368,13 @@ namespace ASC.Web.Files.ThirdPartyApp
 
             try
             {
-                using var response = httpClient.Send(request);
-                using var responseStream = response.Content.ReadAsStream();
+                using var response = await httpClient.SendAsync(request);
+                using var responseStream = await response.Content.ReadAsStreamAsync();
                 string result = null;
                 if (responseStream != null)
                 {
                     using var readStream = new StreamReader(responseStream);
-                    result = readStream.ReadToEnd();
+                    result = await readStream.ReadToEndAsync();
                 }
 
                 Logger.Debug("BoxApp: save file response - " + result);
@@ -437,7 +449,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             context.Response.Redirect(FilesLinkUtility.GetFileWebEditorUrl(ThirdPartySelector.BuildAppFileId(AppAttr, fileId)), true);
         }
 
-        private void StreamFile(HttpContext context)
+        private async Task StreamFileAsync(HttpContext context)
         {
             try
             {
@@ -475,21 +487,21 @@ namespace ASC.Web.Files.ThirdPartyApp
                 request.Method = HttpMethod.Get;
                 request.Headers.Add("Authorization", "Bearer " + token);
 
-                var httpClient = ClientFactory.CreateClient();
-                using var response = httpClient.Send(request);
+                var httpClient = _clientFactory.CreateClient();
+                using var response = await httpClient.SendAsync(request);
                 using var stream = new ResponseStream(response);
-                stream.CopyTo(context.Response.Body);
+                await stream.CopyToAsync(context.Response.Body);
             }
             catch (Exception ex)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                context.Response.WriteAsync(ex.Message).Wait();
+                await context.Response.WriteAsync(ex.Message);
                 Logger.Error("BoxApp: Error request " + context.Request.Url(), ex);
             }
 
             try
             {
-                context.Response.Body.Flush();
+                await context.Response.Body.FlushAsync();
                 //TODO
                 //context.Response.Body.SuppressContent = true;
                 //context.ApplicationInstance.CompleteRequest();
@@ -526,7 +538,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             var resultResponse = string.Empty;
             try
             {
-                resultResponse = RequestHelper.PerformRequest(BoxUrlUserInfo,
+                resultResponse = _requestHelper.PerformRequest(BoxUrlUserInfo,
                                                               headers: new Dictionary<string, string> { { "Authorization", "Bearer " + token } });
                 Logger.Debug("BoxApp: userinfo response - " + resultResponse);
             }
@@ -603,7 +615,7 @@ namespace ASC.Web.Files.ThirdPartyApp
 
             try
             {
-                var resultResponse = RequestHelper.PerformRequest(BoxUrlFile.Replace("{fileId}", boxFileId),
+                var resultResponse = _requestHelper.PerformRequest(BoxUrlFile.Replace("{fileId}", boxFileId),
                                                                   headers: new Dictionary<string, string> { { "Authorization", "Bearer " + token } });
                 Logger.Debug("BoxApp: file response - " + resultResponse);
                 return resultResponse;
@@ -620,7 +632,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             try
             {
                 Logger.Debug("BoxApp: GetAccessToken by code " + code);
-                var token = OAuth20TokenHelper.GetAccessToken<BoxApp>(ConsumerFactory, code);
+                var token = _oAuth20TokenHelper.GetAccessToken<BoxApp>(ConsumerFactory, code);
                 return new Token(token, AppAttr);
             }
             catch (Exception ex)

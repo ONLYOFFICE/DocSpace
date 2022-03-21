@@ -8,6 +8,7 @@ using System.Net.Mail;
 using System.Security;
 using System.ServiceModel.Security;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Web;
 
 using ASC.Api.Core;
@@ -431,10 +432,15 @@ namespace ASC.Employee.Core.Controllers
 
         [AllowAnonymous]
         [Create(@"register")]
-        public string RegisterUserOnPersonal(RegisterPersonalUserModel model)
+        public Task<string> RegisterUserOnPersonalAsync(RegisterPersonalUserModel model)
         {
             if (!CoreBaseSettings.Personal) throw new MethodAccessException("Method is only available on personal.onlyoffice.com");
 
+            return InternalRegisterUserOnPersonalAsync(model);
+        }
+
+        private async Task<string> InternalRegisterUserOnPersonalAsync(RegisterPersonalUserModel model)
+        {
             try
             {
                 if (CoreBaseSettings.CustomMode) model.Lang = "ru-RU";
@@ -456,7 +462,7 @@ namespace ASC.Employee.Core.Controllers
                     var ip = Request.Headers["X-Forwarded-For"].ToString() ?? Request.GetUserHostAddress();
 
                     if (string.IsNullOrEmpty(model.RecaptchaResponse)
-                        || !Recaptcha.ValidateRecaptcha(model.RecaptchaResponse, ip))
+                        || !await Recaptcha.ValidateRecaptchaAsync(model.RecaptchaResponse, ip))
                     {
                         throw new RecaptchaException(Resource.RecaptchaInvalid);
                     }

@@ -74,7 +74,7 @@ namespace ASC.Web.Core.Utility.Skins
             if (HttpContextAccessor?.HttpContext == null) return string.Empty;
 
             var currentThemePath = GetPartImageFolderRel(moduleID);
-            return WebPath.GetPath(currentThemePath);
+            return WebPath.GetPathAsync(currentThemePath).Result;
         }
 
         private string GetImageAbsoluteWebPath(string fileName, Guid partID)
@@ -84,7 +84,7 @@ namespace ASC.Web.Core.Utility.Skins
                 return string.Empty;
             }
             var filepath = GetPartImageFolderRel(partID) + "/" + fileName;
-            return WebPath.GetPath(filepath);
+            return WebPath.GetPathAsync(filepath).Result;
         }
 
         private string GetPartImageFolderRel(Guid partID)

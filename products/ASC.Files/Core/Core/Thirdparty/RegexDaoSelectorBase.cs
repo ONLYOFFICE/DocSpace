@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 using ASC.Files.Core;
 using ASC.Files.Core.Security;
@@ -147,10 +148,10 @@ namespace ASC.Files.Thirdparty
             throw new ArgumentException($"Id is not {Name} id");
         }
 
-        public void RenameProvider(T provider, string newTitle)
+        public async Task RenameProviderAsync(T provider, string newTitle)
         {
             var dbDao = ServiceProvider.GetService<ProviderAccountDao>();
-            dbDao.UpdateProviderInfo(provider.ID, newTitle, null, provider.RootFolderType);
+            await dbDao.UpdateProviderInfoAsync(provider.ID, newTitle, null, provider.RootFolderType);
             provider.UpdateTitle(newTitle); //This will update cached version too
         }
 
@@ -159,7 +160,7 @@ namespace ASC.Files.Thirdparty
             var dbDao = DaoFactory.ProviderDao;
             try
             {
-                return dbDao.GetProviderInfo(linkId) as T;
+                return dbDao.GetProviderInfoAsync(linkId).Result as T;
             }
             catch (InvalidOperationException)
             {

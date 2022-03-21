@@ -1,6 +1,6 @@
 {
   "name": "appserver",
-  "version": "0.1.10",
+  "version": "1.1.1",
   "private": true,
   "workspaces": [
     "packages/asc-web-components",
@@ -10,11 +10,7 @@
     "web/ASC.Web.Client",
     "web/ASC.Web.Editor",
     "products/ASC.People/Client",
-    "products/ASC.Files/Client",
-    "products/ASC.CRM/Client",
-    "products/ASC.Projects/Client",
-    "products/ASC.Mail/Client",
-    "products/ASC.Calendar/Client"
+    "products/ASC.Files/Client"
   ],
   "scripts": {
     "build": "lerna run build --parallel --ignore @appserver/common --ignore @appserver/components --ignore @appserver/browserslist-config-asc",
@@ -33,16 +29,12 @@
     "storybook-build": "yarn workspace @appserver/components run storybook-build",
     "sw-build": "workbox injectManifest config/workbox-config.js && yarn sw-modify && yarn sw-minimize",
     "sw-build:personal": "workbox injectManifest config/workbox-config.js && yarn sw-modify:personal && yarn sw-minimize",
-    "sw-calendar-replace": "replace-in-files --string='products/ASC.Calendar/client/' --replacement='products/calendar/' build/deploy/public/sw.js",
-    "sw-crm-replace": "replace-in-files --string='products/ASC.CRM/client/' --replacement='products/crm/' build/deploy/public/sw.js",
     "sw-files-editor-replace": "replace-in-files --string='products/ASC.Files/editor/' --replacement='products/files/doceditor/' build/deploy/public/sw.js",
     "sw-files-replace": "replace-in-files --string='products/ASC.Files/client/' --replacement='products/files/' build/deploy/public/sw.js",
-    "sw-mail-replace": "replace-in-files --string='products/ASC.Mail/client/' --replacement='products/mail/' build/deploy/public/sw.js",
     "sw-minimize": "yarn terser --compress --mangle -- build/deploy/public/sw.js --output build/deploy/public/sw.js",
-    "sw-modify": "yarn sw-calendar-replace && yarn sw-crm-replace && yarn sw-files-replace && yarn sw-files-editor-replace && yarn sw-mail-replace && yarn sw-people-replace && yarn sw-projects-replace && yarn sw-studio-replace && yarn sw-studio-login-replace && yarn sw-public-replace",
+    "sw-modify": "yarn sw-files-replace && yarn sw-files-editor-replace && yarn sw-people-replace && yarn sw-studio-replace && yarn sw-studio-login-replace && yarn sw-public-replace",
     "sw-modify:personal": "yarn sw-files-replace && yarn sw-files-editor-replace && yarn sw-people-replace && yarn sw-studio-replace && yarn sw-public-replace",
     "sw-people-replace": "replace-in-files --string='products/ASC.People/client/' --replacement='products/people/' build/deploy/public/sw.js",
-    "sw-projects-replace": "replace-in-files --string='products/ASC.Projects/client/' --replacement='products/projects/' build/deploy/public/sw.js",
     "sw-public-replace": "replace-in-files --string='public/' --replacement='static/' build/deploy/public/sw.js",
     "sw-studio-login-replace": "replace-in-files --string='studio/login/' --replacement='login/' build/deploy/public/sw.js",
     "sw-studio-replace": "replace-in-files --string='studio/client/' --replacement='/' build/deploy/public/sw.js",

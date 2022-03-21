@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Core;
@@ -50,69 +51,73 @@ namespace ASC.Files.Thirdparty.ProviderDao
         {
         }
 
-        public Folder<string> GetFolder(string folderId)
+        public Task<Folder<string>> GetFolderAsync(string folderId)
         {
             var selector = GetSelector(folderId);
             if (selector == null) return null;
 
+            return InternalGetFolderAsync(folderId, selector);
+        }
+
+        private async Task<Folder<string>> InternalGetFolderAsync(string folderId, IDaoSelector selector)
+        {
             var folderDao = selector.GetFolderDao(folderId);
-            var result = folderDao.GetFolder(selector.ConvertId(folderId));
+            var result = await folderDao.GetFolderAsync(selector.ConvertId(folderId)).ConfigureAwait(false);
 
             if (result != null)
             {
-                SetSharedProperty(new[] { result });
+                await SetSharedPropertyAsync(new[] { result }.ToAsyncEnumerable()).ConfigureAwait(false);
             }
 
             return result;
         }
 
-        public Folder<string> GetFolder(string title, string parentId)
+        public Task<Folder<string>> GetFolderAsync(string title, string parentId)
         {
             var selector = GetSelector(parentId);
-            return selector.GetFolderDao(parentId).GetFolder(title, selector.ConvertId(parentId));
+            return selector.GetFolderDao(parentId).GetFolderAsync(title, selector.ConvertId(parentId));
         }
 
-        public Folder<string> GetRootFolder(string folderId)
+        public Task<Folder<string>> GetRootFolderAsync(string folderId)
         {
             var selector = GetSelector(folderId);
             var folderDao = selector.GetFolderDao(folderId);
-            return folderDao.GetRootFolder(selector.ConvertId(folderId));
+            return folderDao.GetRootFolderAsync(selector.ConvertId(folderId));
         }
 
-        public Folder<string> GetRootFolderByFile(string fileId)
+        public Task<Folder<string>> GetRootFolderByFileAsync(string fileId)
         {
             var selector = GetSelector(fileId);
             var folderDao = selector.GetFolderDao(fileId);
-            return folderDao.GetRootFolderByFile(selector.ConvertId(fileId));
+            return folderDao.GetRootFolderByFileAsync(selector.ConvertId(fileId));
         }
 
-        public List<Folder<string>> GetFolders(string parentId)
+        public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId)
         {
             var selector = GetSelector(parentId);
             var folderDao = selector.GetFolderDao(parentId);
-            return folderDao
-                .GetFolders(selector.ConvertId(parentId))
-                .Where(r => r != null)
-                .ToList();
+            var folders = folderDao.GetFoldersAsync(selector.ConvertId(parentId));
+            return folders.Where(r => r != null);
         }
 
-        public List<Folder<string>> GetFolders(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
+        public async IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
         {
             var selector = GetSelector(parentId);
             var folderDao = selector.GetFolderDao(parentId);
-            var result = folderDao.GetFolders(selector.ConvertId(parentId), orderBy, filterType, subjectGroup, subjectID, searchText, withSubfolders)
-.Where(r => r != null).ToList();
+            var folders = folderDao.GetFoldersAsync(selector.ConvertId(parentId), orderBy, filterType, subjectGroup, subjectID, searchText, withSubfolders);
+            var result = folders.Where(r => r != null);
 
-            if (result.Count > 0) return new List<Folder<string>>();
+            await SetSharedPropertyAsync(result).ConfigureAwait(false);
 
-            SetSharedProperty(result);
-
-            return result;
+            await foreach (var r in result.ConfigureAwait(false))
+            {
+                yield return r;
+            }
         }
 
-        public List<Folder<string>> GetFolders(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
+        public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
         {
-            var result = Enumerable.Empty<Folder<string>>();
+            var result = AsyncEnumerable.Empty<Folder<string>>();
 
             foreach (var selector in GetSelectors())
             {
@@ -122,37 +127,44 @@ namespace ASC.Files.Thirdparty.ProviderDao
                 if (matchedIds.Count > 0) continue;
 
                 result = result.Concat(matchedIds.GroupBy(selectorLocal.GetIdCode)
+                                                .ToAsyncEnumerable()
                                                 .SelectMany(matchedId =>
                                                 {
                                                     var folderDao = selectorLocal.GetFolderDao(matchedId.FirstOrDefault());
                                                     return folderDao
-.GetFolders(matchedId.Select(selectorLocal.ConvertId).ToList(),
-filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
+                                                        .GetFoldersAsync(matchedId.Select(selectorLocal.ConvertId).ToList(),
+                                                        filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
                                                 })
                                                 .Where(r => r != null));
             }
 
-            return result.Distinct().ToList();
+            return result.Distinct();
         }
 
-        public List<Folder<string>> GetParentFolders(string folderId)
+        public Task<List<Folder<string>>> GetParentFoldersAsync(string folderId)
         {
             var selector = GetSelector(folderId);
             var folderDao = selector.GetFolderDao(folderId);
-            return folderDao.GetParentFolders(selector.ConvertId(folderId));
+            return folderDao.GetParentFoldersAsync(selector.ConvertId(folderId));
         }
 
-        public string SaveFolder(Folder<string> folder)
+
+        public Task<string> SaveFolderAsync(Folder<string> folder)
         {
             if (folder == null) throw new ArgumentNullException(nameof(folder));
 
+            return InternalSaveFolderAsync(folder);
+        }
+
+        private async Task<string> InternalSaveFolderAsync(Folder<string> folder)
+        {
             if (folder.ID != null)
             {
                 var folderId = folder.ID;
                 var selector = GetSelector(folderId);
                 folder.ID = selector.ConvertId(folderId);
                 var folderDao = selector.GetFolderDao(folderId);
-                var newFolderId = folderDao.SaveFolder(folder);
+                var newFolderId = await folderDao.SaveFolderAsync(folder).ConfigureAwait(false);
                 folder.ID = folderId;
                 return newFolderId;
             }
@@ -162,7 +174,7 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
                 var selector = GetSelector(folderId);
                 folder.FolderID = selector.ConvertId(folderId);
                 var folderDao = selector.GetFolderDao(folderId);
-                var newFolderId = folderDao.SaveFolder(folder);
+                var newFolderId = await folderDao.SaveFolderAsync(folder).ConfigureAwait(false);
                 folder.FolderID = folderId;
                 return newFolderId;
 
@@ -170,130 +182,135 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
             throw new ArgumentException("No folder id or parent folder id to determine provider");
         }
 
-        public void DeleteFolder(string folderId)
+        public Task DeleteFolderAsync(string folderId)
         {
             var selector = GetSelector(folderId);
             var folderDao = selector.GetFolderDao(folderId);
-            folderDao.DeleteFolder(selector.ConvertId(folderId));
+            return folderDao.DeleteFolderAsync(selector.ConvertId(folderId));
         }
 
-        public TTo MoveFolder<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
+        public async Task<TTo> MoveFolderAsync<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
         {
             if (toFolderId is int tId)
             {
-                return (TTo)Convert.ChangeType(MoveFolder(folderId, tId, cancellationToken), typeof(TTo));
+                return (TTo)Convert.ChangeType(await MoveFolderAsync(folderId, tId, cancellationToken).ConfigureAwait(false), typeof(TTo));
             }
 
             if (toFolderId is string tsId)
             {
-                return (TTo)Convert.ChangeType(MoveFolder(folderId, tsId, cancellationToken), typeof(TTo));
+                return (TTo)Convert.ChangeType(await MoveFolderAsync(folderId, tsId, cancellationToken).ConfigureAwait(false), typeof(TTo));
             }
 
             throw new NotImplementedException();
         }
 
-        public string MoveFolder(string folderId, string toFolderId, CancellationToken? cancellationToken)
+        public async Task<string> MoveFolderAsync(string folderId, string toFolderId, CancellationToken? cancellationToken)
         {
             var selector = GetSelector(folderId);
             if (IsCrossDao(folderId, toFolderId))
             {
-                var newFolder = PerformCrossDaoFolderCopy(folderId, toFolderId, true, cancellationToken);
+                var newFolder = await PerformCrossDaoFolderCopyAsync(folderId, toFolderId, true, cancellationToken).ConfigureAwait(false);
                 return newFolder?.ID;
             }
             var folderDao = selector.GetFolderDao(folderId);
-            return folderDao.MoveFolder(selector.ConvertId(folderId), selector.ConvertId(toFolderId), null);
+            return await folderDao.MoveFolderAsync(selector.ConvertId(folderId), selector.ConvertId(toFolderId), null).ConfigureAwait(false);
         }
 
-        public int MoveFolder(string folderId, int toFolderId, CancellationToken? cancellationToken)
+        public async Task<int> MoveFolderAsync(string folderId, int toFolderId, CancellationToken? cancellationToken)
         {
-            var newFolder = PerformCrossDaoFolderCopy(folderId, toFolderId, true, cancellationToken);
+            var newFolder = await PerformCrossDaoFolderCopyAsync(folderId, toFolderId, true, cancellationToken).ConfigureAwait(false);
             return newFolder.ID;
         }
 
-        public Folder<TTo> CopyFolder<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
+        public async Task<Folder<TTo>> CopyFolderAsync<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
         {
             if (toFolderId is int tId)
             {
-                return CopyFolder(folderId, tId, cancellationToken) as Folder<TTo>;
+                return await CopyFolderAsync(folderId, tId, cancellationToken).ConfigureAwait(false) as Folder<TTo>;
             }
 
             if (toFolderId is string tsId)
             {
-                return CopyFolder(folderId, tsId, cancellationToken) as Folder<TTo>;
+                return await CopyFolderAsync(folderId, tsId, cancellationToken).ConfigureAwait(false) as Folder<TTo>;
             }
 
             throw new NotImplementedException();
         }
 
-        public Folder<int> CopyFolder(string folderId, int toFolderId, CancellationToken? cancellationToken)
+        public Task<Folder<int>> CopyFolderAsync(string folderId, int toFolderId, CancellationToken? cancellationToken)
         {
-            return PerformCrossDaoFolderCopy(folderId, toFolderId, false, cancellationToken);
+            return PerformCrossDaoFolderCopyAsync(folderId, toFolderId, false, cancellationToken);
         }
 
-        public Folder<string> CopyFolder(string folderId, string toFolderId, CancellationToken? cancellationToken)
+        public async Task<Folder<string>> CopyFolderAsync(string folderId, string toFolderId, CancellationToken? cancellationToken)
         {
             var selector = GetSelector(folderId);
             var folderDao = selector.GetFolderDao(folderId);
             return IsCrossDao(folderId, toFolderId)
-                    ? PerformCrossDaoFolderCopy(folderId, toFolderId, false, cancellationToken)
-                    : folderDao.CopyFolder(selector.ConvertId(folderId), selector.ConvertId(toFolderId), null);
+                    ? await PerformCrossDaoFolderCopyAsync(folderId, toFolderId, false, cancellationToken).ConfigureAwait(false)
+                    : await folderDao.CopyFolderAsync(selector.ConvertId(folderId), selector.ConvertId(toFolderId), null).ConfigureAwait(false);
         }
 
-        public IDictionary<string, string> CanMoveOrCopy<TTo>(string[] folderIds, TTo to)
+        public Task<IDictionary<string, string>> CanMoveOrCopyAsync<TTo>(string[] folderIds, TTo to)
         {
             if (to is int tId)
             {
-                return CanMoveOrCopy(folderIds, tId);
+                return CanMoveOrCopyAsync(folderIds, tId);
             }
 
             if (to is string tsId)
             {
-                return CanMoveOrCopy(folderIds, tsId);
+                return CanMoveOrCopyAsync(folderIds, tsId);
             }
 
             throw new NotImplementedException();
         }
 
-        public IDictionary<string, string> CanMoveOrCopy(string[] folderIds, int to)
+        public Task<IDictionary<string, string>> CanMoveOrCopyAsync(string[] folderIds, int to)
         {
-            return new Dictionary<string, string>();
+            return Task.FromResult((IDictionary<string, string>)new Dictionary<string, string>());
         }
 
-        public IDictionary<string, string> CanMoveOrCopy(string[] folderIds, string to)
+        public Task<IDictionary<string, string>> CanMoveOrCopyAsync(string[] folderIds, string to)
         {
-            if (folderIds.Length > 0) return new Dictionary<string, string>();
+            if (folderIds.Length > 0) return Task.FromResult<IDictionary<string, string>>(new Dictionary<string, string>());
 
             var selector = GetSelector(to);
             var matchedIds = folderIds.Where(selector.IsMatch).ToArray();
 
-            if (matchedIds.Length > 0) return new Dictionary<string, string>();
+            if (matchedIds.Length > 0) return Task.FromResult<IDictionary<string, string>>(new Dictionary<string, string>());
 
-            var folderDao = selector.GetFolderDao(matchedIds.FirstOrDefault());
-            return folderDao.CanMoveOrCopy(matchedIds, to);
+            return InternalCanMoveOrCopyAsync(to, matchedIds, selector);
         }
 
-        public string RenameFolder(Folder<string> folder, string newTitle)
+        private Task<IDictionary<string, string>> InternalCanMoveOrCopyAsync(string to, string[] matchedIds, IDaoSelector selector)
+        {
+            var folderDao = selector.GetFolderDao(matchedIds.FirstOrDefault());
+            return folderDao.CanMoveOrCopyAsync(matchedIds, to);
+        }
+
+        public Task<string> RenameFolderAsync(Folder<string> folder, string newTitle)
         {
             var folderId = folder.ID;
             var selector = GetSelector(folderId);
             folder.ID = selector.ConvertId(folderId);
             folder.FolderID = selector.ConvertId(folder.FolderID);
             var folderDao = selector.GetFolderDao(folderId);
-            return folderDao.RenameFolder(folder, newTitle);
+            return folderDao.RenameFolderAsync(folder, newTitle);
         }
 
-        public int GetItemsCount(string folderId)
+        public Task<int> GetItemsCountAsync(string folderId)
         {
             var selector = GetSelector(folderId);
             var folderDao = selector.GetFolderDao(folderId);
-            return folderDao.GetItemsCount(selector.ConvertId(folderId));
+            return folderDao.GetItemsCountAsync(selector.ConvertId(folderId));
         }
 
-        public bool IsEmpty(string folderId)
+        public Task<bool> IsEmptyAsync(string folderId)
         {
             var selector = GetSelector(folderId);
             var folderDao = selector.GetFolderDao(folderId);
-            return folderDao.IsEmpty(selector.ConvertId(folderId));
+            return folderDao.IsEmptyAsync(selector.ConvertId(folderId));
         }
 
         public bool UseTrashForRemove(Folder<string> folder)
@@ -338,11 +355,11 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
             return folderDao.CanCalculateSubitems(entryId);
         }
 
-        public long GetMaxUploadSize(string folderId, bool chunkedUpload = false)
+        public async Task<long> GetMaxUploadSizeAsync(string folderId, bool chunkedUpload = false)
         {
             var selector = GetSelector(folderId);
             var folderDao = selector.GetFolderDao(folderId);
-            var storageMaxUploadSize = folderDao.GetMaxUploadSize(selector.ConvertId(folderId), chunkedUpload);
+            var storageMaxUploadSize = await folderDao.GetMaxUploadSizeAsync(selector.ConvertId(folderId), chunkedUpload).ConfigureAwait(false);
 
             if (storageMaxUploadSize == -1 || storageMaxUploadSize == long.MaxValue)
             {

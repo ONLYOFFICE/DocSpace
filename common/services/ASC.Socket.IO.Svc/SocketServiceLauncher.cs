@@ -84,6 +84,12 @@ namespace ASC.Socket.IO.Svc
             {
                 var settings = ConfigurationExtension.GetSetting<SocketSettings>("socket");
 
+                var path = settings.Path;
+                if (!Path.IsPathRooted(settings.Path))
+                {
+                    path = Path.GetFullPath(CrossPlatform.PathCombine(HostEnvironment.ContentRootPath, settings.Path));
+                }
+
                 PingInterval = settings.PingInterval.GetValueOrDefault(10000);
                 ReconnectAttempts = settings.ReconnectAttempts.GetValueOrDefault(5);
 
@@ -93,7 +99,7 @@ namespace ASC.Socket.IO.Svc
                     UseShellExecute = false,
                     FileName = "node",
                     WindowStyle = ProcessWindowStyle.Hidden,
-                    Arguments = $"\"{Path.GetFullPath(CrossPlatform.PathCombine(HostEnvironment.ContentRootPath, settings.Path, "server.js"))}\"",
+                    Arguments = $"\"{Path.Combine(path, "server.js")}\"",
                     WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory
                 };
 

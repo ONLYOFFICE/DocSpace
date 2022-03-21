@@ -27,6 +27,7 @@
 using System;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Logging;
@@ -58,7 +59,7 @@ namespace ASC.Web.Core.Sms
             Log = options.CurrentValue;
         }
 
-        public bool SendSMS(string number, string message)
+        public Task<bool> SendSMSAsync(string number, string message)
         {
             if (string.IsNullOrEmpty(number))
             {
@@ -79,11 +80,11 @@ namespace ASC.Web.Core.Sms
                 var tenantId = tenant == null ? Tenant.DEFAULT_TENANT : tenant.TenantId;
 
                 Log.InfoFormat("Tenant {0} send sms to phoneNumber {1} Message: {2}", tenantId, number, message);
-                return false;
+                return Task.FromResult(false);
             }
 
             number = new Regex("[^\\d+]").Replace(number, string.Empty);
-            return SmsProviderManager.SendMessage(number, message);
+            return SmsProviderManager.SendMessageAsync(number, message);
         }
 
         public static string GetPhoneValueDigits(string mobilePhone)

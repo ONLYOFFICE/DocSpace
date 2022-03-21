@@ -59,26 +59,13 @@ const Badges = ({
   accessToEdit,
   showNew,
   onFilesClick,
-  onClickLock,
-  onClickFavorite,
   onShowVersionHistory,
   onBadgeClick,
   setConvertDialogVisible,
   viewAs,
 }) => {
-  const {
-    id,
-    locked,
-    fileStatus,
-    version,
-    versionGroup,
-    title,
-    fileExst,
-    isEditing,
-  } = item;
+  const { id, locked, version, versionGroup, fileExst, isEditing } = item;
 
-  const isFavorite =
-    (fileStatus & FileStatus.IsFavorite) === FileStatus.IsFavorite;
   const showEditBadge = !locked || item.access === 0;
   const isPrivacy = isPrivacyFolder && isDesktopClient;
   const isForm = fileExst === ".oform";
@@ -145,47 +132,6 @@ const Badges = ({
           onClick={onFilesClick}
           hoverColor="#3B72A7"
           title={t("Common:EditButton")}
-        />
-      )}
-      {locked && accessToEdit && !isTrashFolder && (
-        // <StyledFileActionsLockedIcon
-        //   className="badge lock-file icons-group"
-        //   size="small"
-        //   data-id={id}
-        //   data-locked={true}
-        //   onClick={onClickLock}
-        // />
-        //TODO: Fix icon
-        <StyledIcon
-          onClick={onClickLock}
-          iconName={iconRefresh}
-          className="badge tablet-badge icons-group lock-file"
-          size={sizeBadge}
-          hoverColor="#3B72A7"
-          data-action="remove"
-          data-id={id}
-          data-locked={true}
-        />
-      )}
-      {isFavorite && !isTrashFolder && (
-        // <StyledFavoriteIcon
-        //   className="favorite icons-group badge"
-        //   size="small"
-        //   data-action="remove"
-        //   data-id={id}
-        //   data-title={title}
-        //   onClick={onClickFavorite}
-        // />
-        //TODO: Fix icon
-        <StyledIcon
-          onClick={onClickFavorite}
-          iconName={iconRefresh}
-          className="badge tablet-badge icons-group favorite"
-          size={sizeBadge}
-          hoverColor="#3B72A7"
-          data-action="remove"
-          data-id={id}
-          data-title={title}
         />
       )}
       {canConvert && !isTrashFolder && (

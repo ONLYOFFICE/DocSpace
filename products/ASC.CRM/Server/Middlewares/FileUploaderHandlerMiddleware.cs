@@ -83,10 +83,10 @@ namespace ASC.Web.CRM.HttpHandlers
             var document = serviceProvider.GetService<File<int>>();
 
             document.Title = fileName;
-            document.FolderID = daoFactory.GetFileDao().GetRoot();
+            document.FolderID = await daoFactory.GetFileDao().GetRootAsync();
             document.ContentLength = contentLength;
 
-            document = daoFactory.GetFileDao().SaveFile(document, context.Request.Form.Files[0].OpenReadStream());
+            document = await daoFactory.GetFileDao().SaveFileAsync(document, context.Request.Form.Files[0].OpenReadStream());
 
             fileUploadResult.Data = document.ID;
             fileUploadResult.FileName = document.Title;

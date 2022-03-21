@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -162,6 +163,7 @@ namespace ASC.Core.Billing
         internal TariffServiceStorage TariffServiceStorage { get; set; }
         internal IOptionsMonitor<ILog> Options { get; set; }
         public BillingClient BillingClient { get; }
+        public IHttpClientFactory HttpClientFactory { get; }
 
         public readonly int ACTIVE_USERS_MIN;
         public readonly int ACTIVE_USERS_MAX;
@@ -181,7 +183,8 @@ namespace ASC.Core.Billing
             TariffServiceStorage tariffServiceStorage,
             IOptionsMonitor<ILog> options,
             Constants constants,
-            BillingClient billingClient)
+            BillingClient billingClient,
+            IHttpClientFactory httpClientFactory)
             : this()
 
         {
@@ -193,6 +196,7 @@ namespace ASC.Core.Billing
             TariffServiceStorage = tariffServiceStorage;
             Options = options;
             BillingClient = billingClient;
+            HttpClientFactory = httpClientFactory;
             CoreBaseSettings = coreBaseSettings;
             Test = configuration["core:payment:test"] == "true";
             int.TryParse(configuration["core:payment:delay"], out var paymentDelay);
@@ -640,7 +644,7 @@ namespace ASC.Core.Billing
         {
             try
             {
-                return new BillingClient(Test, Configuration);
+                return new BillingClient(Test, Configuration, HttpClientFactory);
             }
             catch (InvalidOperationException ioe)
             {

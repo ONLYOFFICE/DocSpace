@@ -63,7 +63,7 @@ namespace ASC.Web.CRM.Classes
             var findedContactInfos = new List<ContactInfo>();
 
             #region Read csv
-            using (var CSVFileStream = _dataStore.GetReadStream("temp", _csvFileURI))
+            using (var CSVFileStream = _dataStore.GetReadStreamAsync("temp", _csvFileURI).Result)
             {
                 CsvReader csv = _importFromCSV.CreateCsvReaderInstance(CSVFileStream, _importSettings);
 
@@ -622,7 +622,7 @@ namespace ASC.Web.CRM.Classes
                                                     .ToArray();
 
                         _log.InfoFormat("_DuplicateRecordRuleProcess. Overwrite. FindDuplicateByEmail result count = {0}", duplicateContactsID.Length);
-                        var deleted = contactDao.DeleteBatchContact(duplicateContactsID);
+                        var deleted = contactDao.DeleteBatchContactAsync(duplicateContactsID).Result;
 
                         _log.InfoFormat("_DuplicateRecordRuleProcess. Overwrite. DeleteBatchContact. Was deleted {0} contacts", deleted != null ? deleted.Count : 0);
 
@@ -640,7 +640,7 @@ namespace ASC.Web.CRM.Classes
                 default:
                     break;
             }
-        }
+        }       
 
     }
 }
