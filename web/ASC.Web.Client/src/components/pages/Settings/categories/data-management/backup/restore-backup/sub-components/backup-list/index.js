@@ -89,9 +89,12 @@ class BackupListModalDialog extends React.Component {
   };
   onRestorePortal = () => {
     const { selectedFileId } = this.state;
-    const { isNotify, history, socketHelper } = this.props;
+    const { isNotify, history, socketHelper, t } = this.props;
 
-    if (!selectedFileId) return;
+    if (!selectedFileId) {
+      toastr.error(t("RecoveryFileNotSelected"));
+      return;
+    }
     this.setState({ isLoading: true }, function () {
       const backupId = selectedFileId;
       const storageType = "0";

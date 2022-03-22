@@ -92,6 +92,7 @@
   "RestoreBackupHelp": "<strong>Data Restore</strong> option is used to restore your previously saved portal data (from a local server or SaaS portal). ",
   "RestoreBackupHelpNote": "Select the storage where the data is saved, enter necessary details and check the <strong>Send notification to portal users</strong> to alert your portal users about the backup/restore operations.",
   "RestoreDefaultButton": "Restore to Default",
+  "RecoveryFileNotSelected": "Recovery error. Recovery file not selected",
   "SetDefaultTitle": "Set default title",
   "SendNotificationAboutRestoring": "Send notification about portal restoring to users",
   "ServerSideEncryptionMethod": "Server Side Encryption Method",
