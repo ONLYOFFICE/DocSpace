@@ -2600,7 +2600,7 @@ const Base = {
   },
 
   campaignsBanner: {
-    border: "border: 1px solid #d1d1d1",
+    border: "1px solid #d1d1d1",
     color: darkBlack,
 
     btnColor: white,

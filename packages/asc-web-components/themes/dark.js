@@ -2613,10 +2613,10 @@ const Dark = {
   },
 
   campaignsBanner: {
-    border: "border: 1px solid #d1d1d1",
+    border: "1px solid #CCCCCC",
     color: darkBlack,
 
-    btnColor: white,
+    btnColor: black,
     btnBackgroundActive: blueMain,
   },
 
