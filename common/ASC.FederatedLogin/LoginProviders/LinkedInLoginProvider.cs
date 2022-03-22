@@ -78,6 +78,8 @@ namespace ASC.FederatedLogin.LoginProviders
             get { return "r_liteprofile r_emailaddress"; }
         }
 
+        private readonly RequestHelper _requestHelper;
+
         public LinkedInLoginProvider() { }
         public LinkedInLoginProvider(
             OAuth20TokenHelper oAuth20TokenHelper,
@@ -89,8 +91,12 @@ namespace ASC.FederatedLogin.LoginProviders
             ConsumerFactory consumerFactory,
             Signature signature,
             InstanceCrypto instanceCrypto,
+            RequestHelper requestHelper,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(oAuth20TokenHelper, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, signature, instanceCrypto, name, order, props, additional) { }
+            : base(oAuth20TokenHelper, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, signature, instanceCrypto, name, order, props, additional)
+        {
+            _requestHelper = requestHelper;
+        }
 
         public override LoginProfile GetLoginProfile(string accessToken)
         {
@@ -102,11 +108,11 @@ namespace ASC.FederatedLogin.LoginProviders
 
         private LoginProfile RequestProfile(string accessToken)
         {
-            var linkedInProfile = RequestHelper.PerformRequest(LinkedInProfileUrl,
+            var linkedInProfile = _requestHelper.PerformRequest(LinkedInProfileUrl,
                 headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
             var loginProfile = ProfileFromLinkedIn(linkedInProfile);
 
-            var linkedInEmail = RequestHelper.PerformRequest(LinkedInEmailUrl, headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
+            var linkedInEmail = _requestHelper.PerformRequest(LinkedInEmailUrl, headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
             loginProfile.EMail = EmailFromLinkedIn(linkedInEmail);
 
             return loginProfile;

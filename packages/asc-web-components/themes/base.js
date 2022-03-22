@@ -2137,10 +2137,15 @@ const Base = {
   },
 
   floatingButton: {
-    backgroundColor: white,
-    color: blueMain,
+    backgroundColor: "#3B72A7",
+    color: white,
     boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.13)",
-    fill: gray,
+    fill: white,
+
+    alert: {
+      fill: "#F58D31",
+      path: white,
+    },
   },
 
   mediaViewer: {
