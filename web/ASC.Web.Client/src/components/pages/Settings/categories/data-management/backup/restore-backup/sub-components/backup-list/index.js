@@ -157,7 +157,7 @@ class BackupListModalDialog extends React.Component {
         visible={isVisibleDialog}
         onClose={onModalClose}
         displayType="aside"
-        removeScroll
+        withoutBodyScroll
         contentHeight="100%"
         contentPaddingBottom="0px"
       >

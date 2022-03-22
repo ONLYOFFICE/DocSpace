@@ -110,7 +110,7 @@ class ModalDialog extends React.Component {
       children,
       isLoading,
       contentPaddingBottom,
-      removeScroll,
+      withoutBodyScroll,
       modalLoaderBodyHeight,
       withoutCloseButton,
     } = this.props;
@@ -194,12 +194,12 @@ class ModalDialog extends React.Component {
             zIndex={zIndex}
             contentPaddingBottom={contentPaddingBottom}
             className="modal-dialog-aside not-selectable"
-            withoutBodyScroll={removeScroll}
+            withoutBodyScroll={withoutBodyScroll}
           >
             <Content
               contentHeight={contentHeight}
               contentWidth={contentWidth}
-              removeScroll={removeScroll}
+              withoutBodyScroll={withoutBodyScroll}
               displayType={this.state.displayType}
             >
               {isLoading ? (
@@ -215,7 +215,7 @@ class ModalDialog extends React.Component {
                   <BodyBox
                     className="modal-dialog-aside-body"
                     paddingProp={asideBodyPadding}
-                    removeScroll={removeScroll}
+                    withoutBodyScroll={withoutBodyScroll}
                   >
                     {body ? body.props.children : null}
                   </BodyBox>
@@ -257,7 +257,7 @@ ModalDialog.propTypes = {
   contentHeight: PropTypes.string,
   contentWidth: PropTypes.string,
   isLoading: PropTypes.bool,
-  removeScroll: PropTypes.bool,
+  withoutBodyScroll: PropTypes.bool,
   className: PropTypes.string,
   id: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
@@ -272,6 +272,7 @@ ModalDialog.defaultProps = {
   modalBodyPadding: "12px 0",
   contentWidth: "100%",
   withoutCloseButton: false,
+  withoutBodyScroll: false,
 };
 
 ModalDialog.Header = Header;
