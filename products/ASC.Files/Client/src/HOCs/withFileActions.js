@@ -13,16 +13,13 @@ export default function withFileActions(WrappedFileItem) {
       const {
         selectRowAction,
         infoPanelIsVisible,
-        showInfoPanel,
+        infoPanelonItemClick,
         setShowCurrentFolder,
       } = this.props;
       if (!file || file.id === -1) return;
       selectRowAction(checked, file);
 
-      if (!infoPanelIsVisible && isDesktop()) {
-        setShowCurrentFolder(false);
-        if (checked) showInfoPanel();
-      }
+      infoPanelonItemClick(checked);
     };
 
     fileContextClick = () => {
@@ -105,8 +102,7 @@ export default function withFileActions(WrappedFileItem) {
         viewAs,
         isItemsSelected,
         infoPanelIsVisible,
-        showInfoPanel,
-        setShowCurrentFolder,
+        infoPanelonItemClick,
       } = this.props;
 
       if (
@@ -125,16 +121,10 @@ export default function withFileActions(WrappedFileItem) {
       if (viewAs === "tile") {
         if (e.target.closest(".edit-button") || e.target.tagName === "IMG")
           return;
-
         if (e.detail === 1) this.fileContextClick();
-      } else {
-        this.fileContextClick();
-      }
+      } else this.fileContextClick();
 
-      if (!infoPanelIsVisible && isDesktop()) {
-        setShowCurrentFolder(false);
-        showInfoPanel();
-      }
+      infoPanelonItemClick();
     };
 
     onFilesClick = (e) => {
@@ -276,7 +266,7 @@ export default function withFileActions(WrappedFileItem) {
 
       const { startUpload } = uploadDataStore;
       const { type, extension, id } = fileActionStore;
-      const { isVisible, setVisible, setShowCurrentFolder } = infoPanelStore;
+      const { isVisible, onItemClick, setShowCurrentFolder } = infoPanelStore;
 
       const selectedItem = selection.find(
         (x) => x.id === item.id && x.fileExst === item.fileExst
@@ -344,7 +334,7 @@ export default function withFileActions(WrappedFileItem) {
         showHotkeyBorder,
         openFileAction,
         isInfoPanelVisible: isVisible,
-        showInfoPanel: setVisible,
+        infoPanelonItemClick: onItemClick,
         setShowCurrentFolder,
       };
     }

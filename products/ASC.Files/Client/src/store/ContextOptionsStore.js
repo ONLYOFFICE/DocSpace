@@ -18,6 +18,7 @@ class ContextOptionsStore {
   uploadDataStore;
   versionHistoryStore;
   settingsStore;
+  infoPanelStore;
 
   constructor(
     authStore,
@@ -28,7 +29,8 @@ class ContextOptionsStore {
     treeFoldersStore,
     uploadDataStore,
     versionHistoryStore,
-    settingsStore
+    settingsStore,
+    infoPanelStore
   ) {
     makeAutoObservable(this);
     this.authStore = authStore;
@@ -40,6 +42,7 @@ class ContextOptionsStore {
     this.uploadDataStore = uploadDataStore;
     this.versionHistoryStore = versionHistoryStore;
     this.settingsStore = settingsStore;
+    this.infoPanelStore = infoPanelStore;
   }
 
   onOpenFolder = (item) => {
@@ -331,6 +334,11 @@ class ContextOptionsStore {
     return options;
   };
 
+  onToggleInfoPanel = () => {
+    const { toggleIsVisible } = this.infoPanelStore;
+    toggleIsVisible();
+  };
+
   getFilesContextOptions = (item, t) => {
     const { contextOptions } = item;
     const isRootThirdPartyFolder =
@@ -435,6 +443,13 @@ class ContextOptionsStore {
         label: t("Open"),
         icon: "images/catalog.folder.react.svg",
         onClick: () => this.onOpenFolder(item),
+        disabled: false,
+      },
+      {
+        key: "show-info",
+        label: t("InfoPanel:Info"),
+        icon: "/static/images/info.outline.react.svg",
+        onClick: () => this.onToggleInfoPanel(),
         disabled: false,
       },
       {

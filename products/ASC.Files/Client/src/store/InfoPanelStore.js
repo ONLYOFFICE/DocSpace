@@ -1,3 +1,4 @@
+import { isDesktop } from "@appserver/components/utils/device";
 import { makeAutoObservable } from "mobx";
 
 class InfoPanelStore {
@@ -10,6 +11,23 @@ class InfoPanelStore {
 
   setShowCurrentFolder = (bool) => {
     this.showCurrentFolder = bool;
+  };
+
+  onItemClick = (checked = true) => {
+    if (localStorage.getItem("disableOpenOnFileClick")) return;
+    if (!this.isVisible && isDesktop()) {
+      this.showCurrentFolder = false;
+      if (checked) this.isVisible = true;
+    }
+  };
+
+  onHeaderCrossClick = () => {
+    localStorage.setItem("disableOpenOnFileClick", "true");
+    this.isVisible = false;
+  };
+
+  revertHeaderCrossClick = () => {
+    localStorage.removeItem("disableOpenOnFileClick");
   };
 
   get showCurrentFolder() {

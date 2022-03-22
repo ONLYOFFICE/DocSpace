@@ -28,7 +28,11 @@ const StyledInfoPanelHeader = styled.div`
   }
 `;
 
-const SubInfoPanelHeader = ({ children, toggleIsVisible }) => {
+const SubInfoPanelHeader = ({
+  children,
+  onHeaderCrossClick,
+  revertHeaderCrossClick,
+}) => {
   const content = children?.props?.children;
 
   return (
@@ -36,9 +40,20 @@ const SubInfoPanelHeader = ({ children, toggleIsVisible }) => {
       <Text className="header-text" fontSize="21px" fontWeight="700">
         {content}
       </Text>
+
       <IconButton
         className="close-btn"
-        onClick={toggleIsVisible}
+        onClick={revertHeaderCrossClick}
+        iconName="/static/images/eye.react.svg"
+        size="17"
+        color="#A3A9AE"
+        hoverColor="#657077"
+        isFill={true}
+      />
+
+      <IconButton
+        className="close-btn"
+        onClick={onHeaderCrossClick}
         iconName="/static/images/cross.react.svg"
         size="17"
         color="#A3A9AE"
@@ -61,9 +76,11 @@ SubInfoPanelHeader.propTypes = {
 };
 
 export default inject(({ infoPanelStore }) => {
-  let toggleIsVisible = () => {};
+  let onHeaderCrossClick = () => {};
+  let revertHeaderCrossClick = () => {};
   if (infoPanelStore) {
-    toggleIsVisible = infoPanelStore.toggleIsVisible;
+    onHeaderCrossClick = infoPanelStore.onHeaderCrossClick;
+    revertHeaderCrossClick = infoPanelStore.revertHeaderCrossClick;
   }
-  return { toggleIsVisible };
+  return { onHeaderCrossClick, revertHeaderCrossClick };
 })(observer(SubInfoPanelHeader));
