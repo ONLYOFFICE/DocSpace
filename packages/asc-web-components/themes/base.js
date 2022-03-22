@@ -2500,6 +2500,7 @@ const Base = {
     about: {
       linkColor: blueMain,
       border: "1px solid lightgray",
+      logoColor: black,
     },
 
     comingSoon: {

@@ -2513,6 +2513,7 @@ const Dark = {
     about: {
       linkColor: "#E06A1B",
       border: "1px solid #474747",
+      logoColor: white,
     },
 
     comingSoon: {
