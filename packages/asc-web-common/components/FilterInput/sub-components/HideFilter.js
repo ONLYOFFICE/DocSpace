@@ -66,6 +66,7 @@ class HideFilter extends React.Component {
             isDefaultMode={false}
             manualY="8px"
             open={popoverOpen}
+            fixedDirection={true}
           >
             {children}
           </DropDown>
