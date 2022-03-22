@@ -40,14 +40,6 @@ const saveCancelButtons = "56px";
 //const minHeight = "64px";
 const flex = "4px";
 
-const heightScrollbar = css`calc(
-      100vh -
-        (
-          ${menuHeight} + ${sectionHeight} + ${paddingSectionWrapperContent} +
-            ${saveCancelButtons} + ${flex}
-        )
-    )`;
-
 const landscapeMobile = css`
   ${(props) =>
     (isMobile || props.sectionWidth <= 375) &&
@@ -74,6 +66,19 @@ const portraitMobile = css`
         );
       }
     `}
+
+  ${(props) =>
+    props.hasScroll &&
+    css`
+      width: 100vw;
+      left: -16px;
+      position: relative;
+
+      .settings-block {
+        width: calc(100vw - 32px);
+        padding-left: 16px;
+      }
+    `}
 `;
 
 const StyledScrollbar = styled(Scrollbar)`
@@ -83,8 +88,8 @@ const StyledScrollbar = styled(Scrollbar)`
         ${menuHeight} + ${sectionHeight} + ${paddingSectionWrapperContent} +
           ${saveCancelButtons} + ${flex}
       )
-  );
-  width: 343;
+  ) !important;
+  width: 100% !important;
 `;
 
 const StyledComponent = styled.div`
@@ -478,7 +483,10 @@ class LanguageAndTimeZone extends React.Component {
           return !isLoadedData ? (
             <Loader className="pageLoader" type="rombs" size="40px" />
           ) : (
-            <StyledComponent sectionWidth={context.sectionWidth}>
+            <StyledComponent
+              hasScroll={hasScroll}
+              sectionWidth={context.sectionWidth}
+            >
               {`${context.sectionWidth}` > 375 && !isMobile && (
                 <div className="category-item-heading">
                   <div className="category-item-title">
@@ -492,12 +500,7 @@ class LanguageAndTimeZone extends React.Component {
                 </div>
               )}
               {hasScroll ? (
-                <StyledScrollbar
-                  style={{
-                    height: { heightScrollbar },
-                    width: 343,
-                  }}
-                >
+                <StyledScrollbar stype="smallBlack">
                   {settingsBlock}
                 </StyledScrollbar>
               ) : (
