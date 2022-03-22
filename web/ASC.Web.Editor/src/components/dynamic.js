@@ -88,7 +88,7 @@ const DynamicComponent = React.memo(({ system, ...rest }) => {
 
   if (!ready) {
     console.log(`Loading dynamic script: ${system.url}`);
-    return <div className={rest.className}>Loading</div>;
+    return <div className={rest.className} />;
   }
 
   if (failed) {
