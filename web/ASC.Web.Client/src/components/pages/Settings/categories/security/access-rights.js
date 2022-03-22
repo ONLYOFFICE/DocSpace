@@ -17,13 +17,16 @@ import { AppServerConfig } from "@appserver/common/constants";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import ArrowRightIcon from "@appserver/studio/public/images/arrow.right.react.svg";
 import Loader from "@appserver/components/loader";
+import { Base } from "@appserver/components/themes";
 
 const StyledArrowRightIcon = styled(ArrowRightIcon)`
   ${commonIconsStyles}
   path {
-    fill: ${(props) => props.color};
+    fill: ${(props) => props.theme.studio.settings.security.arrowFill};
   }
 `;
+
+StyledArrowRightIcon.defaultProps = { theme: Base };
 
 const MainContainer = styled.div`
   width: 100%;
@@ -55,7 +58,8 @@ const MainContainer = styled.div`
     }
 
     .category-item-description {
-      color: #555f65;
+      color: ${(props) =>
+        props.theme.studio.settings.security.descriptionColor};
       font-size: 12px;
       max-width: 1024px;
     }
@@ -71,6 +75,8 @@ const MainContainer = styled.div`
     }
   }
 `;
+
+MainContainer.defaultProps = { theme: Base };
 
 class AccessRights extends PureComponent {
   constructor(props) {
@@ -137,7 +143,7 @@ class AccessRights extends PureComponent {
               >
                 {t("PortalAdmins")}
               </Link>
-              <StyledArrowRightIcon size="small" color="#333333" />
+              <StyledArrowRightIcon size="small" />
             </div>
             {adminsTotal > 0 && (
               <Text className="category-item-subheader" truncate={true}>

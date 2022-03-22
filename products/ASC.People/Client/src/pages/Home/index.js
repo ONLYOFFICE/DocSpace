@@ -2,13 +2,9 @@ import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import Filter from "@appserver/common/api/people/filter";
-import PageLayout from "@appserver/common/components/PageLayout";
-import { showLoader, hideLoader } from "@appserver/common/utils";
-import {
-  ArticleHeaderContent,
-  ArticleBodyContent,
-  ArticleMainButtonContent,
-} from "../../components/Article";
+import Section from "@appserver/common/components/Section";
+import { showLoader, hideLoader, isAdmin } from "@appserver/common/utils";
+
 import {
   SectionHeaderContent,
   SectionBodyContent,
@@ -21,6 +17,7 @@ import { withTranslation } from "react-i18next";
 import Dialogs from "./Section/Body/Dialogs"; //TODO: Move dialogs to another folder
 
 const PureHome = ({
+  isAdmin,
   isLoading,
   history,
   getUsersList,
@@ -28,6 +25,9 @@ const PureHome = ({
   setIsRefresh,
   selectedGroup,
   tReady,
+  showCatalog,
+  firstLoad,
+  setFirstLoad,
   viewAs,
 }) => {
   const { location } = history;
@@ -41,6 +41,7 @@ const PureHome = ({
       const newFilter = Filter.getFilter(location);
       //console.log("PEOPLE URL changed", pathname, newFilter);
       getUsersList(newFilter).finally(() => {
+        setFirstLoad(false);
         setIsLoading(false);
         setIsRefresh(false);
       });
@@ -61,40 +62,26 @@ const PureHome = ({
 
   return (
     <>
-      <PageLayout
+      <Section
         withBodyScroll
         withBodyAutoFocus={!isMobile}
         isLoading={isLoading}
+        firstLoad={firstLoad}
         viewAs={viewAs}
       >
-        <PageLayout.ArticleHeader>
-          <ArticleHeaderContent />
-        </PageLayout.ArticleHeader>
-
-        <PageLayout.ArticleMainButton>
-          <ArticleMainButtonContent />
-        </PageLayout.ArticleMainButton>
-
-        <PageLayout.ArticleBody>
-          <ArticleBodyContent />
-        </PageLayout.ArticleBody>
-
-        <PageLayout.SectionHeader>
+        <Section.SectionHeader>
           <SectionHeaderContent />
-        </PageLayout.SectionHeader>
-
-        <PageLayout.SectionFilter>
+        </Section.SectionHeader>
+        <Section.SectionFilter>
           <SectionFilterContent />
-        </PageLayout.SectionFilter>
-
-        <PageLayout.SectionBody>
+        </Section.SectionFilter>
+        <Section.SectionBody>
           <SectionBodyContent />
-        </PageLayout.SectionBody>
-
-        <PageLayout.SectionPaging>
+        </Section.SectionBody>
+        <Section.SectionPaging>
           <SectionPagingContent tReady={tReady} />
-        </PageLayout.SectionPaging>
-      </PageLayout>
+        </Section.SectionPaging>
+      </Section>
 
       <Dialogs />
     </>
@@ -107,18 +94,30 @@ PureHome.propTypes = {
 
 const Home = withTranslation("Home")(PureHome);
 
-export default inject(({ peopleStore }) => {
+export default inject(({ auth, peopleStore }) => {
+  const { settingsStore } = auth;
+  const { showCatalog } = settingsStore;
   const { usersStore, selectedGroupStore, loadingStore, viewAs } = peopleStore;
   const { getUsersList } = usersStore;
   const { selectedGroup } = selectedGroupStore;
-  const { isLoading, setIsLoading, setIsRefresh } = loadingStore;
+  const {
+    isLoading,
+    setIsLoading,
+    setIsRefresh,
+    firstLoad,
+    setFirstLoad,
+  } = loadingStore;
 
   return {
+    isAdmin: auth.isAdmin,
     isLoading,
     getUsersList,
     setIsLoading,
     setIsRefresh,
     selectedGroup,
+    showCatalog,
+    firstLoad,
+    setFirstLoad,
     viewAs,
   };
 })(observer(withRouter(Home)));

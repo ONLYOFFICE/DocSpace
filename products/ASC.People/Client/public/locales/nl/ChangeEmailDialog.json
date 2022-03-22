@@ -1,17 +1,5 @@
 ﻿{
-  "DomainIpAddress": "Domeinen als IP-adres worden niet ondersteund",
   "EmailActivationDescription": "De activatie instructies worden naar het ingevoerde e-mailadres gestuurd",
   "EmailChangeTitle": "E-mail wijziging",
-  "EmptyEmail": "Geen enkele e-mail verwerkt",
-  "EnterEmail": "Voer een nieuw e-mailadres in",
-  "IncorrectDomain": "Verkeerd domein",
-  "IncorrectEmail": "Verkeerde e-mail",
-  "IncorrectLocalPart": "Verkeerd lokaal deel",
-  "LocalDomain": "Lokale domeinen worden niet ondersteund",
-  "ManyEmails": "Te veel e-mails verwerkt",
-  "MaxLengthExceeded": "De maximale lengte van een gebruikersnaam of ander lokaal deel is 64 tekens.",
-  "PunycodeDomain": "Punycode domeinen worden niet ondersteund",
-  "PunycodeLocalPart": "Punycode lokaal deel wordt niet ondersteund",
-  "SameEmail": "U kunt niet hetzelfde e-mailadres gebruiken",
-  "SpacesInLocalPart": "Lokaal deel kan geen spaties bevatten"
+  "EnterEmail": "Voer een nieuw e-mailadres in"
 }

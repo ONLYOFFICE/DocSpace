@@ -52,6 +52,7 @@ class DepartmentField extends React.Component {
           isMultiSelect={true}
           onSelect={selectorOnSelectGroups}
           onCancel={onCloseGroupSelector}
+          onArrowClick={onCloseGroupSelector}
         />
         {selectorSelectedOptions.map((option) => (
           <SelectedItem

@@ -78,6 +78,7 @@ const StyledContainer = styled.div`
         }
       `}
 
+    margin-bottom: 3px;
     align-items: center;
     max-width: calc(100vw - 32px);
 
@@ -302,7 +303,6 @@ const SectionHeaderContent = (props) => {
                       title={t("Common:Actions")}
                       iconName="/static/images/vertical-dots.react.svg"
                       size={17}
-                      color="#A3A9AE"
                       getData={getContextOptionsGroup}
                       isDisabled={false}
                     />
@@ -325,8 +325,6 @@ const SectionHeaderContent = (props) => {
                         title={t("Common:Actions")}
                         iconName="/static/images/actions.header.touch.react.svg"
                         size={17}
-                        color="#A3A9AE"
-                        hoverColor="#657077"
                         getData={getContextOptionsPlus}
                         isDisabled={false}
                       />

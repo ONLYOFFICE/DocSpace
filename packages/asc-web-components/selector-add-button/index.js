@@ -21,7 +21,6 @@ const SelectorAddButton = (props) => {
       style={style}
     >
       <IconButton
-        color="#979797"
         size={14}
         iconName="/static/images/actions.header.touch.react.svg"
         isFill={true}

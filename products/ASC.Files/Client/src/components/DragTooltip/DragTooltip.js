@@ -2,20 +2,21 @@ import React, { useCallback, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
+import { Base } from "@appserver/components/themes";
 
 const StyledTooltip = styled.div`
   position: fixed;
   padding: 8px;
   z-index: 150;
-  background: #fff;
+  background: ${(props) => props.theme.filesDragTooltip.background};
   border-radius: 6px;
   font-size: 15px;
   font-weight: 600;
   -moz-border-radius: 6px;
   -webkit-border-radius: 6px;
-  box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
-  -moz-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
-  -webkit-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
+  box-shadow: ${(props) => props.theme.filesDragTooltip.boxShadow};
+  -moz-box-shadow: ${(props) => props.theme.filesDragTooltip.boxShadow};
+  -webkit-box-shadow: ${(props) => props.theme.filesDragTooltip.boxShadow};
 
   .tooltip-moved-obj-wrapper {
     display: flex;
@@ -25,9 +26,11 @@ const StyledTooltip = styled.div`
     margin-right: 6px;
   }
   .tooltip-moved-obj-extension {
-    color: #a3a9ae;
+    color: ${(props) => props.theme.filesDragTooltip.color};
   }
 `;
+
+StyledTooltip.defaultProps = { theme: Base };
 
 const DragTooltip = (props) => {
   const tooltipRef = useRef(null);

@@ -118,7 +118,7 @@ class TfaPage extends Component {
         {showButton && (
           <Button
             label={t("Common:SaveButton")}
-            size="medium"
+            size="small"
             primary={true}
             className="save-button"
             onClick={this.saveSettings}

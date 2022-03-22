@@ -16,7 +16,7 @@ import Text from "@appserver/components/text";
 import PasswordInput from "@appserver/components/password-input";
 import toastr from "@appserver/components/toast/toastr";
 import Loader from "@appserver/components/loader";
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
 import {
   AppServerConfig,
   EmployeeActivationStatus,
@@ -231,7 +231,7 @@ class Confirm extends React.PureComponent {
 
   render() {
     console.log("ActivateUser render");
-    const { settings, t, greetingTitle } = this.props;
+    const { settings, t, greetingTitle, theme } = this.props;
     return !settings ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
@@ -246,7 +246,11 @@ class Confirm extends React.PureComponent {
               <a href="/login">
                 <img src="images/dark_general.png" alt="Logo" />
               </a>
-              <Text as="p" fontSize="24px" color="#116d9d">
+              <Text
+                as="p"
+                fontSize="24px"
+                color={theme.studio.confirm.activateUser.textColor}
+              >
                 {greetingTitle}
               </Text>
             </div>
@@ -336,7 +340,7 @@ class Confirm extends React.PureComponent {
             <Button
               className="confirm-row"
               primary
-              size="big"
+              size="normal"
               label={t("LoginRegistryButton")}
               tabIndex={5}
               isLoading={this.state.isLoading}
@@ -350,7 +354,11 @@ class Confirm extends React.PureComponent {
 
             </Row>
  */}
-          <Text className="confirm-row" fontSize="14px" color="#c30">
+          <Text
+            className="confirm-row"
+            fontSize="14px"
+            color={theme.studio.confirm.activateUser.textColorError}
+          >
             {this.state.errorText}
           </Text>
         </div>
@@ -364,11 +372,11 @@ Confirm.propTypes = {
   history: PropTypes.object.isRequired,
 };
 const ActivateUserForm = (props) => (
-  <PageLayout>
-    <PageLayout.SectionBody>
+  <Section>
+    <Section.SectionBody>
       <Confirm {...props} />
-    </PageLayout.SectionBody>
-  </PageLayout>
+    </Section.SectionBody>
+  </Section>
 );
 
 export default inject(({ auth }) => {
@@ -379,9 +387,11 @@ export default inject(({ auth }) => {
     passwordSettings,
     getSettings,
     getPortalPasswordSettings,
+    theme,
   } = auth.settingsStore;
 
   return {
+    theme,
     settings: passwordSettings,
     greetingTitle: greetingSettings,
     hashSettings,

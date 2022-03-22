@@ -5,7 +5,7 @@ import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 import axios from "axios";
 
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
 import ErrorContainer from "@appserver/common/components/ErrorContainer";
 import history from "@appserver/common/history";
 import {
@@ -380,6 +380,7 @@ class Body extends Component {
       isLicenseRequired,
       urlLicense,
       cultureNames,
+      theme,
     } = this.props;
 
     const {
@@ -436,6 +437,7 @@ class Body extends Component {
 
           <form className="wizard-form">
             <InputContainer
+              theme={theme}
               t={t}
               settingsPassword={passwordSettings}
               emailNeeded={emailNeeded}
@@ -503,11 +505,11 @@ const WizardPage = (props) => {
 
   return (
     isLoaded && (
-      <PageLayout>
-        <PageLayout.SectionBody>
+      <Section>
+        <Section.SectionBody>
           <WizardWrapper {...props} />
-        </PageLayout.SectionBody>
-      </PageLayout>
+        </Section.SectionBody>
+      </Section>
     )
   );
 };
@@ -529,6 +531,7 @@ export default inject(({ auth, wizard }) => {
     setWizardComplete,
     getPortalTimezones,
     getPortalPasswordSettings,
+    theme,
   } = auth.settingsStore;
 
   const { language } = auth;
@@ -546,6 +549,7 @@ export default inject(({ auth, wizard }) => {
   } = wizard;
 
   return {
+    theme,
     isLoaded: auth.isLoaded,
     culture: language,
     wizardToken,

@@ -1,13 +1,12 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
-import { Trans } from "react-i18next";
 import FieldContainer from "@appserver/components/field-container";
-import Text from "@appserver/components/text";
+import ToggleButton from "@appserver/components/toggle-button";
 import ComboBox from "@appserver/components/combobox";
 import Loader from "@appserver/components/loader";
 import toastr from "@appserver/components/toast/toastr";
-import Link from "@appserver/components/link";
+import HelpButton from "@appserver/components/help-button";
 import SaveCancelButtons from "@appserver/components/save-cancel-buttons";
 import { saveToSessionStorage, getFromSessionStorage } from "../../utils";
 import { setDocumentTitle } from "../../../../../helpers/utils";
@@ -15,6 +14,13 @@ import { inject, observer } from "mobx-react";
 import { LANGUAGE } from "@appserver/common/constants";
 import { convertLanguage } from "@appserver/common/utils";
 import withCultureNames from "@appserver/common/hoc/withCultureNames";
+import { LanguageTimeSettingsTooltip } from "./sub-components/common-tooltips";
+import { combineUrl } from "@appserver/common/utils";
+import { AppServerConfig } from "@appserver/common/constants";
+import config from "../../../../../../package.json";
+import history from "@appserver/common/history";
+import { isMobile } from "react-device-detect";
+import { Consumer } from "@appserver/components/utils/context";
 
 const mapTimezonesToArray = (timezones) => {
   return timezones.map((timezone) => {
@@ -27,29 +33,51 @@ const findSelectedItemByKey = (items, selectedItemKey) => {
 };
 
 const StyledComponent = styled.div`
-  .margin-top {
-    margin-top: 20px;
-  }
-
-  .margin-left {
-    margin-left: 20px;
-  }
-
+  /* .section-wrapper-content {
+    min-height: 0px;
+  } */
   .settings-block {
-    margin-bottom: 70px;
-  }
-
-  .field-container-width {
-    max-width: 500px;
+    overflow: auto;
+    min-height: calc(100vh - 164px);
+    height: calc(100vh - 164px);
   }
 
   .combo-button-label {
     max-width: 100%;
+    font-weight: 400;
+  }
+
+  .field-container-flex {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    margin-bottom: 12px;
+  }
+
+  .toggle {
+    position: inherit;
+    grid-gap: inherit;
+  }
+
+  .field-title {
+    font-weight: 600;
+    line-height: 20px;
+  }
+
+  @media (orientation: landscape) {
+    max-width: 343px;
+    .settings-block {
+      overflow: hidden;
+      min-height: auto;
+      height: auto;
+    }
   }
 `;
 
 let languageFromSessionStorage = "";
+let languageDefaultFromSessionStorage = "";
 let timezoneFromSessionStorage = "";
+let timezoneDefaultFromSessionStorage = "";
 
 const settingNames = ["language", "timezone"];
 
@@ -78,8 +106,13 @@ class LanguageAndTimeZone extends React.Component {
     );
 
     languageFromSessionStorage = getFromSessionStorage("language");
+    languageDefaultFromSessionStorage = getFromSessionStorage(
+      "languageDefault"
+    );
     timezoneFromSessionStorage = getFromSessionStorage("timezone");
-
+    timezoneDefaultFromSessionStorage = getFromSessionStorage(
+      "timezoneDefault"
+    );
     setDocumentTitle(t("Customization"));
 
     this.state = {
@@ -87,13 +120,15 @@ class LanguageAndTimeZone extends React.Component {
       isLoading: false,
       timezones,
       timezone: timezoneFromSessionStorage || timezone,
-      timezoneDefault: timezone,
+      timezoneDefault: timezoneDefaultFromSessionStorage || timezone,
       language: languageFromSessionStorage || language,
-      languageDefault: language,
+      languageDefault: languageDefaultFromSessionStorage || language,
       isLoadingGreetingSave: false,
       isLoadingGreetingRestore: false,
       hasChanged: false,
       showReminder: false,
+      sectionWidth: null,
+      border: false,
     };
   }
 
@@ -104,16 +139,9 @@ class LanguageAndTimeZone extends React.Component {
       portalTimeZoneId,
       getPortalTimezones,
     } = this.props;
-    const { timezones, isLoadedData, showReminder } = this.state;
+    const { timezones, isLoadedData } = this.state;
 
-    if (
-      (languageFromSessionStorage || timezoneFromSessionStorage) &&
-      !showReminder
-    ) {
-      this.setState({
-        showReminder: true,
-      });
-    }
+    window.addEventListener("resize", this.checkSectionWidth);
 
     if (!timezones.length) {
       getPortalTimezones().then(() => {
@@ -160,7 +188,7 @@ class LanguageAndTimeZone extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { timezones, timezoneDefault, languageDefault } = this.state;
+    const { timezones, timezoneDefault, languageDefault, border } = this.state;
     const {
       i18n,
       language,
@@ -168,6 +196,20 @@ class LanguageAndTimeZone extends React.Component {
       getCurrentCustomSchema,
       cultureNames,
     } = this.props;
+
+    if (!this.settingsDiv) {
+      this.settingsDiv = document.getElementsByClassName("settings-block")[0];
+
+      if (this.settingsDiv) {
+        const height = getComputedStyle(this.settingsDiv).height.slice(0, -2);
+
+        if (this.settingsDiv.scrollHeight > height) {
+          this.setState({
+            border: true,
+          });
+        }
+      }
+    }
 
     if (timezones.length && !prevState.isLoadedData) {
       this.setState({ isLoadedData: true });
@@ -191,10 +233,15 @@ class LanguageAndTimeZone extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.checkSectionWidth);
+  }
+
   onLanguageSelect = (language) => {
     this.setState({ language });
     if (this.settingIsEqualInitialValue("language", language)) {
       saveToSessionStorage("language", "");
+      saveToSessionStorage("languageDefault", "");
     } else {
       saveToSessionStorage("language", language);
     }
@@ -205,6 +252,7 @@ class LanguageAndTimeZone extends React.Component {
     this.setState({ timezone });
     if (this.settingIsEqualInitialValue("timezone", timezone)) {
       saveToSessionStorage("timezone", "");
+      saveToSessionStorage("timezoneDefault", "");
     } else {
       saveToSessionStorage("timezone", timezone);
     }
@@ -236,6 +284,9 @@ class LanguageAndTimeZone extends React.Component {
       timezoneDefault: this.state.timezone,
       languageDefault: this.state.language,
     });
+
+    saveToSessionStorage("languageDefault", language);
+    saveToSessionStorage("timezoneDefault", timezone);
   };
 
   onCancelClick = () => {
@@ -281,102 +332,127 @@ class LanguageAndTimeZone extends React.Component {
     if (hasChanged !== this.state.hasChanged) {
       this.setState({
         hasChanged: hasChanged,
+        showReminder: hasChanged,
       });
     }
   };
 
+  checkSectionWidth = (width) => {
+    if (this.state.sectionWidth === width) return;
+    this.setState({ sectionWidth: width });
+
+    if (width > 375 && !isMobile) {
+      history.push(
+        combineUrl(
+          AppServerConfig.proxyURL,
+          config.homepage,
+          "/settings/common/customization"
+        )
+      );
+    }
+  };
+
   render() {
-    const { t, cultureNames } = this.props;
+    const { t, theme, cultureNames } = this.props;
     const {
       isLoadedData,
       language,
       isLoading,
       timezones,
       timezone,
-      hasChanged,
       showReminder,
+      hasChanged,
+      border,
     } = this.state;
 
-    const supportEmail = "documentation@onlyoffice.com";
-    const tooltipLanguage = (
-      <Text fontSize="13px">
-        <Trans t={t} i18nKey="NotFoundLanguage" ns="Common">
-          "In case you cannot find your language in the list of the available
-          ones, feel free to write to us at
-          <Link href={`mailto:${supportEmail}`} isHovered={true}>
-            {{ supportEmail }}
-          </Link>{" "}
-          to take part in the translation and get up to 1 year free of charge."
-        </Trans>{" "}
-        <Link
-          isHovered={true}
-          href="https://helpcenter.onlyoffice.com/ru/guides/become-translator.aspx"
-        >
-          {t("Common:LearnMore")}
-        </Link>
-      </Text>
+    const tooltipLanguageTimeSettings = (
+      <LanguageTimeSettingsTooltip theme={theme} t={t} />
     );
 
-    return !isLoadedData ? (
-      <Loader className="pageLoader" type="rombs" size="40px" />
-    ) : (
-      <>
-        <StyledComponent>
-          <div className="settings-block">
-            <FieldContainer
-              id="fieldContainerLanguage"
-              className="field-container-width"
-              labelText={`${t("Common:Language")}:`}
-              tooltipContent={tooltipLanguage}
-              helpButtonHeaderContent={t("Common:Language")}
-              isVertical={true}
-            >
-              <ComboBox
-                id="comboBoxLanguage"
-                options={cultureNames}
-                selectedOption={language}
-                onSelect={this.onLanguageSelect}
-                isDisabled={isLoading}
-                noBorder={false}
-                scaled={true}
-                scaledOptions={true}
-                dropDownMaxHeight={300}
-                className="dropdown-item-width"
+    return (
+      <Consumer>
+        {(context) => {
+          this.checkSectionWidth(context.sectionWidth);
+          return !isLoadedData ? (
+            <Loader className="pageLoader" type="rombs" size="40px" />
+          ) : (
+            <StyledComponent>
+              {`${context.sectionWidth}` > 375 && !isMobile && (
+                <div className="category-item-heading">
+                  <div className="category-item-title">
+                    {t("StudioTimeLanguageSettings")}
+                  </div>
+                  <HelpButton
+                    iconName="static/images/combined.shape.svg"
+                    size={12}
+                    tooltipContent={tooltipLanguageTimeSettings}
+                  />
+                </div>
+              )}
+              <div className="settings-block">
+                <FieldContainer
+                  id="fieldContainerLanguage"
+                  labelText={`${t("Common:Language")}:`}
+                  isVertical={true}
+                >
+                  <ComboBox
+                    id="comboBoxLanguage"
+                    options={cultureNames}
+                    selectedOption={language}
+                    onSelect={this.onLanguageSelect}
+                    isDisabled={isLoading}
+                    noBorder={false}
+                    scaled={true}
+                    scaledOptions={true}
+                    dropDownMaxHeight={300}
+                    className="dropdown-item-width"
+                  />
+                </FieldContainer>
+                <div className="field-container-flex">
+                  <div className="field-title">{`${t(
+                    "Automatic time zone"
+                  )}`}</div>
+                  <ToggleButton
+                    className="toggle"
+                    onChange={() => toastr.info(<>Not implemented</>)}
+                  />
+                </div>
+                <FieldContainer
+                  id="fieldContainerTimezone"
+                  labelText={`${t("TimeZone")}:`}
+                  isVertical={true}
+                >
+                  <ComboBox
+                    id="comboBoxTimezone"
+                    options={timezones}
+                    selectedOption={timezone}
+                    onSelect={this.onTimezoneSelect}
+                    isDisabled={isLoading}
+                    noBorder={false}
+                    scaled={true}
+                    scaledOptions={true}
+                    dropDownMaxHeight={300}
+                    className="dropdown-item-width"
+                  />
+                </FieldContainer>
+              </div>
+              <SaveCancelButtons
+                className="save-cancel-buttons"
+                onSaveClick={this.onSaveLngTZSettings}
+                onCancelClick={this.onCancelClick}
+                showReminder={showReminder}
+                reminderTest={t("YouHaveUnsavedChanges")}
+                saveButtonLabel={t("Common:SaveButton")}
+                cancelButtonLabel={t("Common:CancelButton")}
+                displaySettings={true}
+                hasChanged={hasChanged}
+                sectionWidth={context.sectionWidth}
+                border={border}
               />
-            </FieldContainer>
-
-            <FieldContainer
-              id="fieldContainerTimezone"
-              className="field-container-width"
-              labelText={`${t("TimeZone")}:`}
-              isVertical={true}
-            >
-              <ComboBox
-                id="comboBoxTimezone"
-                options={timezones}
-                selectedOption={timezone}
-                onSelect={this.onTimezoneSelect}
-                isDisabled={isLoading}
-                noBorder={false}
-                scaled={true}
-                scaledOptions={true}
-                dropDownMaxHeight={300}
-                className="dropdown-item-width"
-              />
-            </FieldContainer>
-          </div>
-          {hasChanged && (
-            <SaveCancelButtons
-              onSaveClick={this.onSaveLngTZSettings}
-              onCancelClick={this.onCancelClick}
-              showReminder={showReminder}
-              reminderTest={t("YouHaveUnsavedChanges")}
-              saveButtonLabel={t("Common:SaveButton")}
-              cancelButtonLabel={t("Common:CancelButton")}
-            />
-          )}
-        </StyledComponent>
-      </>
+            </StyledComponent>
+          );
+        }}
+      </Consumer>
     );
   }
 }
@@ -400,6 +476,7 @@ export default inject(({ auth, setup }) => {
   const { setLanguageAndTime } = setup;
 
   return {
+    theme: auth.settingsStore.theme,
     user,
     portalLanguage: culture,
     portalTimeZoneId: timezone,

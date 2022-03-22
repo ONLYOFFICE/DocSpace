@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import Loader from "@appserver/components/loader";
 import Text from "@appserver/components/text";
 import Scrollbar from "@appserver/components/scrollbar";
-import TreeFolders from "../Article/Body/TreeFolders";
+import TreeFolders from "./TreeFolders";
 import { StyledSelectFolderPanel } from "../panels/StyledPanels";
 const FolderTreeBody = ({
   isLoadingData,
@@ -19,6 +19,7 @@ const FolderTreeBody = ({
   heightContent,
   displayType,
   isHeaderChildren,
+  theme,
 }) => {
   const { t } = useTranslation(["SelectFolder", "Common"]);
   return (
@@ -33,6 +34,7 @@ const FolderTreeBody = ({
             <div className="select-folder-dialog_tree-folder">
               <Scrollbar id="folder-tree-scroll-bar">
                 <TreeFolders
+                  isPanel={true}
                   expandedPanelKeys={expandedKeys}
                   data={folderList}
                   filter={filter}
