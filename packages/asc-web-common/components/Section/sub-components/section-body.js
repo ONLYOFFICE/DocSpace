@@ -215,7 +215,7 @@ class SectionBody extends React.Component {
               <div className="section-wrapper">
                 <div className="section-wrapper-content" {...focusProps}>
                   {children}
-                  <StyledSpacer pinned={pinned} />
+                  <StyledSpacer pinned={pinned} className="settings-mobile" />
                 </div>
               </div>
             </Scrollbar>
