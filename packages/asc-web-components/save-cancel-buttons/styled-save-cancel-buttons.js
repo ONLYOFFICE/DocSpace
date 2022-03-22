@@ -42,9 +42,11 @@ const displaySettings = css`
       .unsaved-changes {
         background-color: white;
         border-top: 1px solid #eceef1;
-        width: 100%;
+        width: calc(100vw - 16px);
+        left: 0px;
         bottom: 56px;
         padding-top: 16px;
+        padding-left: 16px;
       }
     `}
 `;
@@ -79,6 +81,16 @@ const tabletButtons = `
   }
 `;
 
+const portraitMobile = css`
+  ${(props) =>
+    (isMobile || props.sectionWidth <= 375) &&
+    props.displaySettings &&
+    props.hasScroll &&
+    css`
+      padding: 16px 16px 0px 16px;
+    `}
+`;
+
 const StyledSaveCancelButtons = styled.div`
   display: flex;
   position: absolute;
@@ -102,6 +114,10 @@ const StyledSaveCancelButtons = styled.div`
   }
 
   ${(props) => props.displaySettings && displaySettings}
+
+  @media (orientation: portrait) {
+    ${portraitMobile}
+  }
 
   ${(props) =>
     props.displaySettings &&
