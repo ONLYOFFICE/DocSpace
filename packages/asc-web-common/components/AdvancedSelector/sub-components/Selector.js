@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
 
+import Header from "./Header";
 import Search from "./Search";
 import Footer from "./Footer";
 
@@ -555,18 +556,10 @@ const Selector = (props) => {
       hasSelected={hasSelected()}
       className="selector-wrapper"
     >
-      <div className="header">
-        <IconButton
-          iconName="/static/images/arrow.path.react.svg"
-          size="17"
-          isFill={true}
-          className="arrow-button"
-          onClick={onArrowClickAction}
-        />
-        <Heading size="medium" truncate={true}>
-          {headerLabel.replace("()", "")}
-        </Heading>
-      </div>
+      <Header
+        headerLabel={headerLabel}
+        onArrowClickAction={onArrowClickAction}
+      />
       <div
         style={{ width: "320px", height: "100%" }}
         className="column-options"
