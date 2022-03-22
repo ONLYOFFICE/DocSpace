@@ -31,9 +31,9 @@ public class ApiSystemHelper
 {
     public string ApiSystemUrl { get; private set; }
     public string ApiCacheUrl { get; private set; }
-    private static byte[] Skey { get; set; }
-    private CommonLinkUtility CommonLinkUtility { get; }
-    private IHttpClientFactory ClientFactory { get; }
+    private static byte[] _skey;
+    private readonly CommonLinkUtility _commonLinkUtility;
+    private readonly IHttpClientFactory _clientFactory;
 
     public ApiSystemHelper(IConfiguration configuration,
         CommonLinkUtility commonLinkUtility,
@@ -42,15 +42,15 @@ public class ApiSystemHelper
     {
         ApiSystemUrl = configuration["web:api-system"];
         ApiCacheUrl = configuration["web:api-cache"];
-        CommonLinkUtility = commonLinkUtility;
-        Skey = machinePseudoKeys.GetMachineConstant();
-        ClientFactory = clientFactory;
+        _commonLinkUtility = commonLinkUtility;
+        _skey = machinePseudoKeys.GetMachineConstant();
+        _clientFactory = clientFactory;
     }
 
 
     public string CreateAuthToken(string pkey)
     {
-        using var hasher = new HMACSHA1(Skey);
+        using var hasher = new HMACSHA1(_skey);
         var now = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
         var hash = WebEncoders.Base64UrlEncode(hasher.ComputeHash(Encoding.UTF8.GetBytes(string.Join("\n", now, pkey))));
         return $"ASC {pkey}:{now}:{hash}";
@@ -131,7 +131,7 @@ public class ApiSystemHelper
     {
         if (!Uri.TryCreate(absoluteApiUrl, UriKind.Absolute, out var uri))
         {
-            var appUrl = CommonLinkUtility.GetFullAbsolutePath("/");
+            var appUrl = _commonLinkUtility.GetFullAbsolutePath("/");
             absoluteApiUrl = $"{appUrl.TrimEnd('/')}/{absoluteApiUrl.TrimStart('/')}".TrimEnd('/');
         }
 
@@ -148,7 +148,7 @@ public class ApiSystemHelper
             request.Content = new StringContent(data, Encoding.UTF8, "application/x-www-form-urlencoded");
         }
 
-        var httpClient = ClientFactory.CreateClient();
+        var httpClient = _clientFactory.CreateClient();
         using var response = await httpClient.SendAsync(request);
         using var stream = await response.Content.ReadAsStreamAsync();
         using var reader = new StreamReader(stream, Encoding.UTF8);

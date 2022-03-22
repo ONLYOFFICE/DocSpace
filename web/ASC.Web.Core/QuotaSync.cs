@@ -30,28 +30,28 @@ public class QuotaSync
 {
     public const string TenantIdKey = "tenantID";
     protected DistributedTask TaskInfo { get; private set; }
-    private int TenantId { get; set; }
-    private IServiceProvider ServiceProvider { get; }
+    private readonly int _tenantId;
+    private readonly IServiceProvider _serviceProvider;
 
     public QuotaSync(int tenantId, IServiceProvider serviceProvider)
     {
-        TenantId = tenantId;
+        _tenantId = tenantId;
         TaskInfo = new DistributedTask();
-        ServiceProvider = serviceProvider;
+        _serviceProvider = serviceProvider;
     }
 
     public void RunJob()//DistributedTask distributedTask, CancellationToken cancellationToken)
     {
-        using var scope = ServiceProvider.CreateScope();
+        using var scope = _serviceProvider.CreateScope();
         var scopeClass = scope.ServiceProvider.GetService<QuotaSyncScope>();
         var (tenantManager, storageFactoryConfig, storageFactory) = scopeClass;
-        tenantManager.SetCurrentTenant(TenantId);
+        tenantManager.SetCurrentTenant(_tenantId);
 
         var storageModules = storageFactoryConfig.GetModuleList(string.Empty);
 
         foreach (var module in storageModules)
         {
-            var storage = storageFactory.GetStorage(TenantId.ToString(), module);
+            var storage = storageFactory.GetStorage(_tenantId.ToString(), module);
             storage.ResetQuotaAsync("").Wait();
 
             var domains = storageFactoryConfig.GetDomainList(string.Empty, module);
@@ -65,28 +65,28 @@ public class QuotaSync
 
     public virtual DistributedTask GetDistributedTask()
     {
-        TaskInfo.SetProperty(TenantIdKey, TenantId);
+        TaskInfo.SetProperty(TenantIdKey, _tenantId);
         return TaskInfo;
     }
 }
 
 class QuotaSyncScope
 {
-    private TenantManager TenantManager { get; }
-    private StorageFactoryConfig StorageFactoryConfig { get; }
-    private StorageFactory StorageFactory { get; }
+    private readonly TenantManager _tenantManager;
+    private readonly StorageFactoryConfig _storageFactoryConfig;
+    private readonly StorageFactory _storageFactory;
 
     public QuotaSyncScope(TenantManager tenantManager, StorageFactoryConfig storageFactoryConfig, StorageFactory storageFactory)
     {
-        TenantManager = tenantManager;
-        StorageFactoryConfig = storageFactoryConfig;
-        StorageFactory = storageFactory;
+        _tenantManager = tenantManager;
+        _storageFactoryConfig = storageFactoryConfig;
+        _storageFactory = storageFactory;
     }
 
     public void Deconstruct(out TenantManager tenantManager, out StorageFactoryConfig storageFactoryConfig, out StorageFactory storageFactory)
     {
-        tenantManager = TenantManager;
-        storageFactoryConfig = StorageFactoryConfig;
-        storageFactory = StorageFactory;
+        tenantManager = _tenantManager;
+        storageFactoryConfig = _storageFactoryConfig;
+        storageFactory = _storageFactory;
     }
 }
