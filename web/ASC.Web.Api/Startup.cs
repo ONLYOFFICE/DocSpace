@@ -1,5 +1,4 @@
-﻿
-using ASC.Api.Core;
+﻿using ASC.Api.Core;
 using ASC.Api.Settings;
 using ASC.Web.Api.Controllers;
 

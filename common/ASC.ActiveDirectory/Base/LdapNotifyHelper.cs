@@ -16,7 +16,7 @@
 
 
 namespace ASC.ActiveDirectory.Base;
-[Singletone]
+[Singletone(Additional = typeof(DbHelperExtension))]
 public class LdapNotifyHelper
 {
     private readonly Dictionary<int, Tuple<INotifyClient, LdapNotifySource>> _clients;
@@ -37,10 +37,11 @@ public class LdapNotifyHelper
         var task = new Task(() =>
         {
             using var scope = _serviceProvider.CreateScope();
-            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-            var settingsManager = scope.ServiceProvider.GetService<SettingsManager>();
+            var tenantManager = scope.ServiceProvider.GetRequiredService<TenantManager>();
+            var settingsManager = scope.ServiceProvider.GetRequiredService<SettingsManager>();
+            var dbHelper = scope.ServiceProvider.GetRequiredService<DbHelper>();
 
-            var tenants = tenantManager.GetTenants(settingsManager.Load<LdapSettings>().GetTenants());
+            var tenants = tenantManager.GetTenants(dbHelper.GetTenants());
             foreach (var t in tenants)
             {
                 var tId = t.TenantId;
@@ -99,5 +100,13 @@ public class LdapNotifyHelper
 
         op.Init(ldapSettings, tenant, LdapOperationType.Sync);
         _ldapTasks.QueueTask(op.RunJob, op.GetDistributedTask());
+    }
+
+    public static class DbHelperExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<DbHelper>();
+        }
     }
 }

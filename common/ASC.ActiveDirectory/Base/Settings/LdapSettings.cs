@@ -22,27 +22,15 @@ namespace ASC.ActiveDirectory.Base.Settings;
 public class LdapSettings : ISettings, ICloneable
 {
     private readonly SettingsManager _settingsManager;
-    private readonly DbContextManager<WebstudioDbContext> _webstudioDbContextManager;
-    private readonly Lazy<WebstudioDbContext> _lazyWebstudioDbContext;
-    private readonly DbContextManager<TenantDbContext> _tenantDbContextManager;
-    private readonly Lazy<TenantDbContext> _lazyTenantDbContext;
-    private WebstudioDbContext WebstudioDbContext { get => _lazyWebstudioDbContext.Value; }
-    private TenantDbContext TenantDbContext { get => _lazyTenantDbContext.Value; }
     public Guid ID
     {
         get { return new Guid("{197149b3-fbc9-44c2-b42a-232f7e729c16}"); }
     }
 
     public LdapSettings(
-        SettingsManager settingsManager,
-        DbContextManager<WebstudioDbContext> webstudioDbContext,
-        DbContextManager<TenantDbContext> tenantDbContext)
+        SettingsManager settingsManager)
     {
         _settingsManager = settingsManager;
-        _webstudioDbContextManager = webstudioDbContext;
-        _lazyWebstudioDbContext = new Lazy<WebstudioDbContext>(() => _webstudioDbContextManager.Value);
-        _tenantDbContextManager = tenantDbContext;
-        _lazyTenantDbContext = new Lazy<TenantDbContext>(() => _tenantDbContextManager.Value);
         LdapMapping = new Dictionary<MappingFields, string>();
         AccessRights = new Dictionary<AccessRight, string>();
     }
@@ -87,24 +75,11 @@ public class LdapSettings : ISettings, ICloneable
             { AccessRight.Mail, WebItemManager.MailProductID }
         };
 
-    public List<int> GetTenants()
-    {
-        var data = WebstudioDbContext.WebstudioSettings
-            .Join(TenantDbContext.Tenants, r => r.TenantId, r => r.Id, (settings, tenant) => new { settings, tenant })
-            .Where(r => r.settings.Id == ID)
-            .Select(r => JsonExtensions.JsonValue(nameof(r.settings.Data).ToLower(), EnableLdapAuthentication.ToString()))
-            .Distinct()
-            .Select(r => Convert.ToInt32(r[0]))
-            .ToList();
-
-        return data;
-    }
-
     public ISettings GetDefault(IServiceProvider serviceProvider)
     {
         var isMono = WorkContext.IsMono;
 
-        var settings = new LdapSettings(_settingsManager, _webstudioDbContextManager, _tenantDbContextManager)
+        var settings = new LdapSettings(_settingsManager)
         {
             Server = "",
             UserDN = "",
