@@ -35,7 +35,7 @@ builder.Host.UseSystemd();
 builder.Host.UseWindowsService();
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
-builder.Host.ConfigureBaseAppConfiguration(args);
+builder.Host.ConfigureDefaultAppConfiguration(args);
 
 builder.Host.ConfigureDefaultServices((hostContext, services, diHelper) =>
 {

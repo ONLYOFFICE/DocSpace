@@ -2,7 +2,7 @@
 
 public static class HostBuilderExtension
 {
-    public static IHostBuilder ConfigureBaseAppConfiguration(this IHostBuilder hostBuilder, string[] args, Action<HostBuilderContext, IConfigurationBuilder, IHostEnvironment, string> configureDelegate = null)
+    public static IHostBuilder ConfigureDefaultAppConfiguration(this IHostBuilder hostBuilder, string[] args, Action<HostBuilderContext, IConfigurationBuilder, IHostEnvironment, string> configureDelegate = null)
     {
         hostBuilder.ConfigureAppConfiguration((hostContext, config) =>
         {
@@ -18,8 +18,13 @@ public static class HostBuilderExtension
             var env = hostContext.HostingEnvironment;
 
             config.SetBasePath(path);
-
-            config.AddJsonFile("appsettings.json");
+            config.AddJsonFile("appsettings.json")
+                  .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true)
+                  .AddJsonFile("storage.json")
+                  .AddJsonFile("kafka.json")
+                  .AddJsonFile($"kafka.{env.EnvironmentName}.json", true)
+                  .AddJsonFile("redis.json")
+                  .AddJsonFile($"redis.{env.EnvironmentName}.json", true);
 
             configureDelegate?.Invoke(hostContext, config, env, path);
 
@@ -29,23 +34,6 @@ public static class HostBuilderExtension
                   {
                       {"pathToConf", path }
                   });
-        });
-
-        return hostBuilder;
-    }
-
-    public static IHostBuilder ConfigureDefaultAppConfiguration(this IHostBuilder hostBuilder, string[] args, Action<HostBuilderContext, IConfigurationBuilder, IHostEnvironment, string> configureDelegate = null)
-    {
-        hostBuilder.ConfigureBaseAppConfiguration(args, (hostContext, config, env, path) =>
-        {
-            config.AddJsonFile($"appsettings.{env.EnvironmentName}.json", true)
-                  .AddJsonFile("storage.json")
-                  .AddJsonFile("kafka.json")
-                  .AddJsonFile($"kafka.{env.EnvironmentName}.json", true)
-                  .AddJsonFile("redis.json")
-                  .AddJsonFile($"redis.{env.EnvironmentName}.json", true);
-
-            configureDelegate?.Invoke(hostContext, config, env, path);
         });
 
         return hostBuilder;

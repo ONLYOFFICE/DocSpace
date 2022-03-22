@@ -4,7 +4,6 @@ global using ASC.Api.Core;
 global using ASC.Api.Core.Extensions;
 global using ASC.ClearEvents.Services;
 global using ASC.Common;
-global using ASC.Common.Caching;
 global using ASC.Common.DependencyInjection;
 global using ASC.Common.Logging;
 global using ASC.Core.Common.EF;
@@ -19,5 +18,3 @@ global using Microsoft.AspNetCore.Builder;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Hosting.WindowsServices;
 global using Microsoft.Extensions.Options;
-
-global using StackExchange.Redis.Extensions.Core.Configuration;
