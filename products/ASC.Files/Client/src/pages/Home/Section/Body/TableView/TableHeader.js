@@ -188,17 +188,11 @@ class FilesTableHeader extends React.Component {
 
   render() {
     const {
-      t,
       containerRef,
-      isHeaderVisible,
       isHeaderChecked,
-      isHeaderIndeterminate,
-      getHeaderMenu,
       filter,
       sectionWidth,
       userId,
-      cbMenuItems,
-      getCheckboxItemLabel,
       firstElemChecked,
       sortingVisible,
     } = this.props;
@@ -224,40 +218,22 @@ class FilesTableHeader extends React.Component {
 }
 
 export default inject(
-  ({
-    auth,
-    filesStore,
-    filesActionsStore,
-    selectedFolderStore,
-    treeFoldersStore,
-  }) => {
+  ({ auth, filesStore, selectedFolderStore, treeFoldersStore }) => {
     const {
-      setSelected,
-      isHeaderVisible,
-      isHeaderIndeterminate,
       isHeaderChecked,
       setIsLoading,
       filter,
       fetchFiles,
       canShare,
-      cbMenuItems,
-      getCheckboxItemLabel,
       firstElemChecked,
     } = filesStore;
-    const { getHeaderMenu } = filesActionsStore;
-    const {
-      isPrivacyFolder,
-      isFavoritesFolder,
-      isRecentFolder,
-    } = treeFoldersStore;
+    const { isPrivacyFolder, isRecentFolder } = treeFoldersStore;
 
     const withContent = canShare || (canShare && isPrivacyFolder && isDesktop);
     const sortingVisible = !isRecentFolder;
     const { personal } = auth.settingsStore;
 
     return {
-      isHeaderVisible,
-      isHeaderIndeterminate,
       isHeaderChecked,
       filter,
       selectedFolderId: selectedFolderStore.id,
@@ -265,13 +241,9 @@ export default inject(
       personal,
       sortingVisible,
 
-      setSelected,
       setIsLoading,
       fetchFiles,
-      getHeaderMenu,
       userId: auth.userStore.user.id,
-      cbMenuItems,
-      getCheckboxItemLabel,
 
       firstElemChecked,
     };

@@ -13,13 +13,13 @@ const colorBorderTransition = "#f3f4f4";
 const StyledTableContainer = styled(TableContainer)`
   .table-row-selected + .table-row-selected {
     .table-row {
-      .table-container_row-checkbox-wrapper,
+      .table-container_file-name-cell,
       .table-container_row-context-menu-wrapper {
         margin-top: -1px;
         border-image-slice: 1;
         border-top: 1px solid;
       }
-      .table-container_row-checkbox-wrapper {
+      .table-container_file-name-cell {
         border-image-source: ${`linear-gradient(to right, ${colorBorderTransition} 17px, ${borderColor} 31px)`};
       }
       .table-container_row-context-menu-wrapper {
@@ -30,7 +30,7 @@ const StyledTableContainer = styled(TableContainer)`
 
   .files-item:not(.table-row-selected) + .table-row-selected {
     .table-row {
-      .table-container_row-checkbox-wrapper,
+      .table-container_file-name-cell,
       .table-container_row-context-menu-wrapper {
         margin-top: -1px;
         border-top: ${`1px ${borderColor} solid`};

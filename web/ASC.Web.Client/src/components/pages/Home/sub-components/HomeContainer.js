@@ -16,9 +16,9 @@ const HomeContainer = styled.div`
 
   .greeting {
     font-weight: bold;
-    margin-bottom: 27px;
+    margin-bottom: 28px;
     text-align: center;
-    height: 30px;
+    word-break: break-word;
   }
 
   .home-modules-container {
