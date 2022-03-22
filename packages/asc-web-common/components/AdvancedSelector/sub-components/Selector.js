@@ -1,9 +1,9 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
-import Column from "./Column";
+
+import Search from "./Search";
 import Footer from "./Footer";
-import Header from "./Header";
-import Body from "./Body";
+
 import { FixedSizeList as List } from "react-window";
 import InfiniteLoader from "react-window-infinite-loader";
 import AutoSizer from "react-virtualized-auto-sizer";
@@ -11,7 +11,7 @@ import ReactTooltip from "react-tooltip";
 
 import Avatar from "@appserver/components/avatar";
 import Checkbox from "@appserver/components/checkbox";
-import SearchInput from "@appserver/components/search-input";
+
 import Loader from "@appserver/components/loader";
 import Text from "@appserver/components/text";
 import Tooltip from "@appserver/components/tooltip";
@@ -46,7 +46,6 @@ const getCurrentGroup = (items) => {
 const Selector = (props) => {
   const {
     groups,
-    selectButtonLabel,
     isDisabled,
     isMultiSelect,
     hasNextPage,
@@ -55,12 +54,10 @@ const Selector = (props) => {
     loadNextPage,
     selectedOptions,
     selectedGroups,
-    groupsHeaderLabel,
     searchPlaceHolderLabel,
     emptySearchOptionsLabel,
     emptyOptionsLabel,
     loadingLabel,
-    selectAllLabel,
     onSelect,
     getOptionTooltipContent,
     onSearchChanged,
@@ -193,14 +190,17 @@ const Selector = (props) => {
     }
   }, [listOptionsRef]);
 
-  const onSearchChange = useCallback((value) => {
-    setSearchValue(value);
-    onSearchChanged && onSearchChanged(value);
-  });
+  const onSearchChange = useCallback(
+    (value) => {
+      setSearchValue(value);
+      onSearchChanged && onSearchChanged(value);
+    },
+    [onSearchChanged]
+  );
 
   const onSearchReset = useCallback(() => {
     onSearchChanged && onSearchChange("");
-  });
+  }, [onSearchChanged]);
 
   const isOptionChecked = useCallback(
     (option) => {
@@ -567,21 +567,19 @@ const Selector = (props) => {
           {headerLabel.replace("()", "")}
         </Heading>
       </div>
-      <Column className="column-options" size={size}>
-        <Header className="header-options">
-          <SearchInput
-            className="options_searcher"
-            isDisabled={isDisabled}
-            size="base"
-            scale={true}
-            isNeedFilter={false}
-            placeholder={searchPlaceHolderLabel}
-            value={searchValue}
-            onChange={onSearchChange}
-            onClearSearch={onSearchReset}
-          />
-        </Header>
-        <Body className="body-options">
+      <div
+        style={{ width: "320px", height: "100%" }}
+        className="column-options"
+        size={size}
+      >
+        <Search
+          isDisabled={isDisabled}
+          placeholder={searchPlaceHolderLabel}
+          value={searchValue}
+          onChange={onSearchChange}
+          onClearSearch={onSearchReset}
+        />
+        <div style={{ width: "100%", height: "100%" }} className="body-options">
           {!groupHeader && !searchValue && groups ? (
             renderGroupsList()
           ) : (
@@ -630,8 +628,8 @@ const Selector = (props) => {
               getContent={getOptionTooltipContent}
             />
           )}
-        </Body>
-      </Column>
+        </div>
+      </div>
       <Footer
         className="footer"
         selectButtonLabel={headerLabel}
