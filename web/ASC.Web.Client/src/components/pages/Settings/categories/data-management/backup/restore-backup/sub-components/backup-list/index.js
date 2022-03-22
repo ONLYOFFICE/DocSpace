@@ -220,7 +220,7 @@ class BackupListModalDialog extends React.Component {
                         {t("UserAgreement")}
                         <HelpButton
                           className="backup-list_tooltip"
-                          offsetLeft={60}
+                          offsetLeft={100}
                           offsetTop={120}
                           iconName={"/static/images/help.react.svg"}
                           getContent={helpContent}
