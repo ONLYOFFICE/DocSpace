@@ -549,10 +549,7 @@ const Selector = (props) => {
 
   return (
     <StyledSelector
-      options={options}
-      groups={groups}
       isMultiSelect={isMultiSelect}
-      allowGroupSelection={allowGroupSelection}
       hasSelected={hasSelected()}
       className="selector-wrapper"
     >
