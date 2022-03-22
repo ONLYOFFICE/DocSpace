@@ -59,7 +59,7 @@ namespace ASC.Files.Thirdparty.OneDrive
                 if (_token == null) throw new Exception("Cannot create OneDrive session with given token");
                 if (_token.IsExpired)
                 {
-                    _token = OAuth20TokenHelper.RefreshToken<OneDriveLoginProvider>(ConsumerFactory, _token);
+                    _token = _oAuth20TokenHelper.RefreshToken<OneDriveLoginProvider>(ConsumerFactory, _token);
                     _onedriveClientCache = null;
                 }
                 return _token.AccessToken;
@@ -76,13 +76,15 @@ namespace ASC.Files.Thirdparty.OneDrive
         public bool IsOpened { get; private set; }
         private ConsumerFactory ConsumerFactory { get; }
         private IHttpClientFactory ClientFactory { get; }
+        private OAuth20TokenHelper _oAuth20TokenHelper;
 
         public long MaxChunkedUploadFileSize = 10L * 1024L * 1024L * 1024L;
 
-        public OneDriveStorage(ConsumerFactory consumerFactory, IHttpClientFactory clientFactory)
+        public OneDriveStorage(ConsumerFactory consumerFactory, IHttpClientFactory clientFactory, OAuth20TokenHelper oAuth20TokenHelper)
         {
             ConsumerFactory = consumerFactory;
             ClientFactory = clientFactory;
+            _oAuth20TokenHelper = oAuth20TokenHelper;
         }
 
         public void Open(OAuth20Token token)

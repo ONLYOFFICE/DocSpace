@@ -220,14 +220,15 @@ namespace ASC.Common.Threading
             var token = cancelation.Token;
             Cancelations[distributedTask.Id] = cancelation;
 
-            var task = new Task(async () =>
+            var task = new Task(() =>
             {
                 var t = action(distributedTask, token);
                 t.ConfigureAwait(false)
                 .GetAwaiter()
                 .OnCompleted(() => OnCompleted(t, distributedTask.Id));
-                await t;
             }, token, TaskCreationOptions.LongRunning);
+
+            task.ConfigureAwait(false);
 
             distributedTask.Status = DistributedTaskStatus.Running;
 

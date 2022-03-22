@@ -94,6 +94,8 @@ namespace ASC.FederatedLogin.LoginProviders
             get { return BaseDomain + "/rs/prns/"; }
         }
 
+        private readonly RequestHelper _requestHelper;
+
         public GosUslugiLoginProvider()
         {
         }
@@ -108,9 +110,11 @@ namespace ASC.FederatedLogin.LoginProviders
             ConsumerFactory consumerFactory,
             Signature signature,
             InstanceCrypto instanceCrypto,
+            RequestHelper requestHelper,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
             : base(oAuth20TokenHelper, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, signature, instanceCrypto, name, order, props, additional)
         {
+            _requestHelper = requestHelper;
         }
 
 
@@ -216,7 +220,7 @@ namespace ASC.FederatedLogin.LoginProviders
                 };
             var requestQuery = string.Join("&", requestParams.Select(pair => pair.Key + "=" + HttpUtility.UrlEncode(pair.Value)));
 
-            var result = RequestHelper.PerformRequest(AccessTokenUrl, "application/x-www-form-urlencoded", "POST", requestQuery);
+            var result = _requestHelper.PerformRequest(AccessTokenUrl, "application/x-www-form-urlencoded", "POST", requestQuery);
 
             return OAuth20Token.FromJson(result);
         }
@@ -231,7 +235,7 @@ namespace ASC.FederatedLogin.LoginProviders
             }
             var oid = tokenPayload.Value<string>("urn:esia:sbj_id");
 
-            var userInfoString = RequestHelper.PerformRequest(GosUslugiProfileUrl + oid, "application/x-www-form-urlencoded", headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
+            var userInfoString = _requestHelper.PerformRequest(GosUslugiProfileUrl + oid, "application/x-www-form-urlencoded", headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
             var userInfo = JObject.Parse(userInfoString);
             if (userInfo == null)
             {
@@ -247,7 +251,7 @@ namespace ASC.FederatedLogin.LoginProviders
                 Provider = ProviderConstants.GosUslugi,
             };
 
-            var userContactsString = RequestHelper.PerformRequest(GosUslugiProfileUrl + oid + "/ctts", "application/x-www-form-urlencoded", headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
+            var userContactsString = _requestHelper.PerformRequest(GosUslugiProfileUrl + oid + "/ctts", "application/x-www-form-urlencoded", headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
             var userContacts = JObject.Parse(userContactsString);
             if (userContacts == null)
             {
@@ -262,7 +266,7 @@ namespace ASC.FederatedLogin.LoginProviders
 
             foreach (var contactElement in contactElements.ToObject<List<string>>())
             {
-                var userContactString = RequestHelper.PerformRequest(contactElement, "application/x-www-form-urlencoded", headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
+                var userContactString = _requestHelper.PerformRequest(contactElement, "application/x-www-form-urlencoded", headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
 
                 var userContact = JObject.Parse(userContactString);
                 if (userContact == null)

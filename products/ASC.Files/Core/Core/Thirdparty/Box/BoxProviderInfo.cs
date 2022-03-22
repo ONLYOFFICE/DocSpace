@@ -181,12 +181,14 @@ namespace ASC.Files.Thirdparty.Box
         private ConsumerFactory ConsumerFactory { get; }
         private TempStream TempStream { get; }
         private IServiceProvider ServiceProvider { get; }
+        private readonly OAuth20TokenHelper _oAuth20TokenHelper;
 
-        public BoxStorageDisposableWrapper(ConsumerFactory consumerFactory, TempStream tempStream, IServiceProvider serviceProvider)
+        public BoxStorageDisposableWrapper(ConsumerFactory consumerFactory, TempStream tempStream, IServiceProvider serviceProvider, OAuth20TokenHelper oAuth20TokenHelper)
         {
             ConsumerFactory = consumerFactory;
             TempStream = tempStream;
             ServiceProvider = serviceProvider;
+            _oAuth20TokenHelper = oAuth20TokenHelper;
         }
 
         internal Task<BoxStorage> CreateStorageAsync(OAuth20Token token, int id)
@@ -215,7 +217,7 @@ namespace ASC.Files.Thirdparty.Box
         {
             if (token.IsExpired)
             {
-                token = OAuth20TokenHelper.RefreshToken<BoxLoginProvider>(ConsumerFactory, token);
+                token = _oAuth20TokenHelper.RefreshToken<BoxLoginProvider>(ConsumerFactory, token);
 
                 var dbDao = ServiceProvider.GetService<ProviderAccountDao>();
                 await dbDao.UpdateProviderInfoAsync(id, new AuthData(token: token.ToJson())).ConfigureAwait(false);

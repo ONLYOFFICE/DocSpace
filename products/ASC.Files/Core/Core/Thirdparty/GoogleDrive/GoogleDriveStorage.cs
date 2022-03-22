@@ -71,7 +71,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             get
             {
                 if (_token == null) throw new Exception("Cannot create GoogleDrive session with given token");
-                if (_token.IsExpired) _token = OAuth20TokenHelper.RefreshToken<GoogleLoginProvider>(ConsumerFactory, _token);
+                if (_token.IsExpired) _token = _oAuth20TokenHelper.RefreshToken<GoogleLoginProvider>(ConsumerFactory, _token);
                 return _token.AccessToken;
             }
         }
@@ -83,7 +83,9 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         private FileUtility FileUtility { get; }
         public ILog Log { get; }
         private TempStream TempStream { get; }
-        private IHttpClientFactory ClientFactory { get; }
+
+        private readonly OAuth20TokenHelper _oAuth20TokenHelper;
+        private readonly IHttpClientFactory _clientFactory;
 
         public const long MaxChunkedUploadFileSize = 2L * 1024L * 1024L * 1024L;
 
@@ -92,13 +94,15 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             FileUtility fileUtility,
             IOptionsMonitor<ILog> monitor,
             TempStream tempStream,
+            OAuth20TokenHelper oAuth20TokenHelper,
             IHttpClientFactory clientFactory)
         {
             ConsumerFactory = consumerFactory;
             FileUtility = fileUtility;
             Log = monitor.Get("ASC.Files");
             TempStream = tempStream;
-            ClientFactory = clientFactory;
+            _oAuth20TokenHelper = oAuth20TokenHelper;
+            _clientFactory = clientFactory;
         }
 
         public void Open(OAuth20Token token)
@@ -284,7 +288,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             request.Method = HttpMethod.Get;
             request.Headers.Add("Authorization", "Bearer " + AccessToken);
 
-            var httpClient = ClientFactory.CreateClient();
+            var httpClient = _clientFactory.CreateClient();
             using var response = await httpClient.SendAsync(request);
 
             if (offset == 0 && file.Size.HasValue && file.Size > 0)
@@ -530,7 +534,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             request.Headers.Add("Authorization", "Bearer " + AccessToken);
             request.Content = new StringContent(body, Encoding.UTF8, "application/json");
 
-            var httpClient = ClientFactory.CreateClient();
+            var httpClient = _clientFactory.CreateClient();
             using var response = await httpClient.SendAsync(request);
 
             var uploadSession = new ResumableUploadSession(driveFile.Id, folderId, contentLength);
@@ -563,7 +567,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                                                                googleDriveSession.BytesTransfered + chunkLength - 1,
                                                                googleDriveSession.BytesToTransfer));
             request.Content = new StreamContent(stream);
-            var httpClient = ClientFactory.CreateClient();
+            var httpClient = _clientFactory.CreateClient();
             HttpResponseMessage response;
 
             try
