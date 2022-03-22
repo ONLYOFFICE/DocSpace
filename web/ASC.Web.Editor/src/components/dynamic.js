@@ -11,6 +11,7 @@ export function loadComponent(scope, module, moduleName = null) {
     const container = window[scope]; // or get the container somewhere else
     // Initialize the container, it may provide shared modules
     await container.init(__webpack_share_scopes__.default);
+    console.log(container);
     const factory = await window[scope].get(module);
     const Module = factory();
     if (moduleName)

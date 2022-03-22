@@ -1,6 +1,11 @@
 import { getFavicon } from "../helpers/utils";
 import pkg from "../../package.json";
-import { FILES_SCOPE, FILES_REMOTE_ENTRY_URL } from "../helpers/constants";
+import {
+  FILES_SCOPE,
+  FILES_REMOTE_ENTRY_URL,
+  STUDIO_SCOPE,
+  STUDIO_REMOTE_ENTRY_URL,
+} from "../helpers/constants";
 
 export default function template(
   initialState = {},
@@ -23,8 +28,7 @@ export default function template(
       window.initialLanguage = '${initialLanguage}'
     </script>
     <script type='text/javascript' id='scripDocServiceAddress' src="${docApiUrl}" async></script>
-    <script id=${FILES_SCOPE} src=${FILES_REMOTE_ENTRY_URL} type="text/javascript" async=""></script>
-    ${scriptTags}
+   ${scriptTags}
 `;
 
   const page = `
@@ -45,6 +49,8 @@ export default function template(
           <meta name="apple-mobile-web-app-capable" content="yes" />
           <link rel="apple-touch-icon" href="/appIcon.png" />
           ${styleTags}
+          <script id=${FILES_SCOPE} src=${FILES_REMOTE_ENTRY_URL} type="text/javascript" async=""></script>
+          <script id=${STUDIO_SCOPE} src=${STUDIO_REMOTE_ENTRY_URL} type="text/javascript" async=""></script>      
         </head>
         <body>
           <div id="root">${content}</div>
