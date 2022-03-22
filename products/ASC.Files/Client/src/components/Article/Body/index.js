@@ -33,10 +33,14 @@ const ArticleBodyContent = (props) => {
     isDesktopClient,
     enableThirdParty,
     isVisitor,
-    campaigns,
     FirebaseHelper,
     isArticleLoading,
   } = props;
+
+  const campaigns = (localStorage.getItem("campaigns") || "")
+    .split(",")
+    .filter((campaign) => campaign.length > 0);
+
   const onClick = React.useCallback((data) => {
     const {
       toggleArticleOpen,
