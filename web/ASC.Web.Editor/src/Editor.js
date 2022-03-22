@@ -17,12 +17,9 @@ import {
 
 import { EditorWrapper } from "./StyledEditor";
 import { useTranslation } from "react-i18next";
-import {
-  useFilesUtils,
-  useSelectFileDialog,
-  useSelectFolderDialog,
-  useSharingDialog,
-} from "./hooks";
+import useFilesUtils from "./helpers/useFilesUtils";
+
+import withDialogs from "./helpers/withDialogs";
 
 const LoaderComponent = (
   <Loader
@@ -114,6 +111,16 @@ function Editor({
   actionLink,
   error,
   needLoader,
+  sharingDialog,
+  onSDKRequestSharingSettings,
+  loadUsersRightsList,
+  isVisible,
+  selectFileDialog,
+  onSDKRequestInsertImage,
+  onSDKRequestMailMergeRecipients,
+  onSDKRequestCompareFile,
+  selectFolderDialog,
+  onSDKRequestSaveAs,
 }) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [documentTitle, setNewDocumentTitle] = useState("Loading...");
@@ -121,25 +128,6 @@ function Editor({
   useFilesUtils();
 
   const { t } = useTranslation();
-
-  const [
-    sharingDialog,
-    onSDKRequestSharingSettings,
-    loadUsersRightsList,
-    isVisible,
-  ] = useSharingDialog(fileInfo, fileId, docEditor);
-
-  const [
-    selectFileDialog,
-    onSDKRequestInsertImage,
-    onSDKRequestMailMergeRecipients,
-    onSDKRequestCompareFile,
-  ] = useSelectFileDialog(docEditor, t);
-
-  const [selectFolderDialog, onSDKRequestSaveAs] = useSelectFolderDialog(
-    t,
-    docEditor
-  );
 
   useEffect(() => {
     if (error) {
@@ -325,7 +313,7 @@ function Editor({
     documentIsReady = true;
 
     if (isSharingAccess) {
-      loadUsersRightsList();
+      loadUsersRightsList(docEditor);
     }
   };
 
@@ -526,8 +514,12 @@ function Editor({
 
       const newConfig = Object.assign(config, events);
 
-      docEditor = window.DocsAPI.DocEditor("editor", newConfig);
+      docEditor = window.docEditor = window.DocsAPI.DocEditor(
+        "editor",
+        newConfig
+      );
 
+      console.log(docEditor, "docEditor");
       setIsLoaded(true);
     } catch (error) {
       console.log(error, "init error");
@@ -552,4 +544,4 @@ function Editor({
   );
 }
 
-export default Editor;
+export default withDialogs(Editor);

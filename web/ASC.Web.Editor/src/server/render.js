@@ -6,6 +6,7 @@ import { ServerStyleSheet } from "styled-components";
 import { ChunkExtractor } from "@loadable/server";
 import path from "path";
 import { I18nextProvider } from "react-i18next";
+
 const sheet = new ServerStyleSheet();
 const statsFile = path.resolve("clientBuild/stats.json");
 export default async (req) => {
