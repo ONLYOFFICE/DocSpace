@@ -39,4 +39,4 @@ Heading.defaultProps = {
   className: "",
 };
 
-export default Heading;
+export default React.memo(Heading);
