@@ -5,6 +5,8 @@ import combineUrl from "@appserver/common/utils/combineUrl";
 import { AppServerConfig } from "@appserver/common/constants";
 import throttle from "lodash/throttle";
 import Loader from "@appserver/components/loader";
+import Toast from "@appserver/components/toast";
+import { toast } from "react-toastify";
 
 import {
   restoreDocumentsVersion,
@@ -18,6 +20,7 @@ import {
 import { EditorWrapper } from "./StyledEditor";
 import { useTranslation } from "react-i18next";
 import useFilesUtils from "./helpers/useFilesUtils";
+import useToastr from "./helpers/useToastr";
 
 import withDialogs from "./helpers/withDialogs";
 
@@ -32,6 +35,8 @@ const LoaderComponent = (
     }}
   />
 );
+
+toast.configure();
 
 const onSDKInfo = (event) => {
   console.log(
@@ -79,12 +84,12 @@ const initDesktop = (cfg) => {
         })
         .catch((error) => {
           console.log(error);
-          // toastr.error(
-          //   typeof error === "string" ? error : error.message,
-          //   null,
-          //   0,
-          //   true
-          // );
+          window.toastr.error(
+            typeof error === "string" ? error : error.message,
+            null,
+            0,
+            true
+          );
         });
     },
     t
@@ -126,6 +131,7 @@ function Editor({
   const [documentTitle, setNewDocumentTitle] = useState("Loading...");
 
   useFilesUtils();
+  useToastr();
 
   const { t } = useTranslation();
 
@@ -523,7 +529,7 @@ function Editor({
       setIsLoaded(true);
     } catch (error) {
       console.log(error, "init error");
-      //toastr.error(error.message, null, 0, true);
+      window.toastr.error(error.message, null, 0, true);
     }
   };
 
@@ -540,6 +546,7 @@ function Editor({
       {sharingDialog}
       {selectFileDialog}
       {selectFolderDialog}
+      <Toast />
     </EditorWrapper>
   );
 }
