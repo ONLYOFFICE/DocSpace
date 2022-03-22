@@ -159,7 +159,7 @@ global using ICSharpCode.SharpZipLib.GZip;
 global using ICSharpCode.SharpZipLib.Tar;
 global using ICSharpCode.SharpZipLib.Zip;
 
-global using JWT;
+global using JWT.Exceptions;
 
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.AspNetCore.Http;
