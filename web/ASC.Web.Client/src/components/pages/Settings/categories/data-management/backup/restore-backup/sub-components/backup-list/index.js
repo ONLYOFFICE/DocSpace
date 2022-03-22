@@ -16,6 +16,8 @@ import toastr from "@appserver/components/toast/toastr";
 import Loaders from "@appserver/common/components/Loaders";
 import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
+import Checkbox from "@appserver/components/checkbox";
+import HelpButton from "@appserver/components/help-button";
 import config from "../../../../../../../../../../package.json";
 import { StyledBackupList } from "../../../StyledBackup";
 import BackupListBody from "./BackupListBody";
@@ -28,6 +30,7 @@ class BackupListModalDialog extends React.Component {
       filesList: [],
       selectedFileIndex: null,
       selectedFileId: null,
+      isChecked: false,
     };
   }
   componentDidMount() {
@@ -124,9 +127,27 @@ class BackupListModalDialog extends React.Component {
         );
     });
   };
+
+  onChangeCheckbox = () => {
+    this.setState({
+      isChecked: !this.state.isChecked,
+    });
+  };
+
   render() {
     const { onModalClose, isVisibleDialog, t, isCopyingToLocal } = this.props;
-    const { filesList, isLoading, selectedFileIndex } = this.state;
+    const { filesList, isLoading, selectedFileIndex, isChecked } = this.state;
+
+    const helpContent = () => (
+      <>
+        <Text className="restore-backup_warning-description">
+          {t("RestoreBackupWarningText")}{" "}
+          <Text as="span" className="restore-backup_warning-link">
+            {t("RestoreBackupResetInfoWarningText")}
+          </Text>
+        </Text>
+      </>
+    );
 
     return (
       <ModalDialog
@@ -135,71 +156,95 @@ class BackupListModalDialog extends React.Component {
         displayType="aside"
         removeScroll
         contentHeight="100%"
+        contentPaddingBottom="0px"
       >
         <ModalDialog.Header>{t("BackupList")}</ModalDialog.Header>
         <ModalDialog.Body>
           <StyledBackupList isCopyingToLocal={isCopyingToLocal}>
-            {filesList.length > 0 && (
-              <div className="backup-restore_dialog-header">
-                <Text fontSize="12px" style={{ marginBottom: "10px" }}>
-                  {t("BackupListWarningText")}
-                </Text>
-                <Link
-                  onClick={this.onCleanBackupList}
-                  fontWeight={600}
-                  style={{ textDecoration: "underline dotted" }}
-                >
-                  {t("ClearBackupList")}
-                </Link>
-              </div>
-            )}
-            <div className="backup-restore_dialog-scroll-body">
-              {!isLoading ? (
-                filesList.length > 0 ? (
-                  <BackupListBody
-                    filesList={filesList}
-                    onDeleteBackup={this.onDeleteBackup}
-                    onSelectFile={this.onSelectFile}
-                    selectedFileIndex={selectedFileIndex}
-                  />
-                ) : (
-                  <Text
-                    fontSize="12px"
-                    color="#A3A9AE"
-                    textAlign="center"
-                    className="backup-restore_empty-list"
-                  >
-                    {t("EmptyBackupList")}
+            <div className="backup-list_content">
+              {filesList.length > 0 && (
+                <div className="backup-restore_dialog-header">
+                  <Text fontSize="12px" style={{ marginBottom: "10px" }}>
+                    {t("BackupListWarningText")}
                   </Text>
-                )
-              ) : (
-                <div className="loader" key="loader">
-                  <Loaders.ListLoader />
+                  <Link
+                    onClick={this.onCleanBackupList}
+                    fontWeight={600}
+                    style={{ textDecoration: "underline dotted" }}
+                  >
+                    {t("ClearBackupList")}
+                  </Link>
                 </div>
               )}
+
+              <div className="backup-restore_dialog-scroll-body">
+                {!isLoading ? (
+                  filesList.length > 0 ? (
+                    <BackupListBody
+                      filesList={filesList}
+                      onDeleteBackup={this.onDeleteBackup}
+                      onSelectFile={this.onSelectFile}
+                      selectedFileIndex={selectedFileIndex}
+                    />
+                  ) : (
+                    <Text
+                      fontSize="12px"
+                      color="#A3A9AE"
+                      textAlign="center"
+                      className="backup-restore_empty-list"
+                    >
+                      {t("EmptyBackupList")}
+                    </Text>
+                  )
+                ) : (
+                  <div className="loader" key="loader">
+                    <Loaders.ListLoader />
+                  </div>
+                )}
+              </div>
+
+              <div className="backup-list_footer">
+                {filesList.length > 0 && (
+                  <div>
+                    <div id="backup-list_help">
+                      <Checkbox
+                        truncate
+                        className="backup-list_checkbox"
+                        onChange={this.onChangeCheckbox}
+                        isChecked={isChecked}
+                      />
+                      <Text as="span" className="backup-list_agreement-text">
+                        {t("UserAgreement")}
+                        <HelpButton
+                          className="backup-list_tooltip"
+                          offsetLeft={60}
+                          offsetTop={120}
+                          iconName={"/static/images/help.react.svg"}
+                          getContent={helpContent}
+                          tooltipMaxWidth={"286px"}
+                        />
+                      </Text>
+                    </div>
+                    <div className="restore_dialog-button">
+                      <Button
+                        primary
+                        size="medium"
+                        label={t("Common:Restore")}
+                        onClick={this.onRestorePortal}
+                        isDisabled={isCopyingToLocal || !isChecked}
+                      />
+                      <Button
+                        size="medium"
+                        label={t("Common:CloseButton")}
+                        onClick={onModalClose}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </StyledBackupList>
         </ModalDialog.Body>
-        <ModalDialog.Footer>
-          {filesList.length > 0 && (
-            <StyledBackupList>
-              <Button
-                primary
-                className="restore_dialog-button"
-                size="medium"
-                label={t("Common:Restore")}
-                onClick={this.onRestorePortal}
-                isDisabled={isCopyingToLocal}
-              />
-              <Button
-                className="restore_dialog-button"
-                size="medium"
-                label={t("Common:CloseButton")}
-                onClick={onModalClose}
-              />
-            </StyledBackupList>
-          )}
-        </ModalDialog.Footer>
       </ModalDialog>
     );
   }

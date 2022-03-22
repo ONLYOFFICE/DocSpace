@@ -4,6 +4,7 @@ import globalColors from "@appserver/components/utils/globalColors";
 import { isMobileOnly } from "react-device-detect";
 
 const linkColor = globalColors.black;
+const borderColor = globalColors.grayLightMid;
 
 const INPUT_LENGTH = "350px";
 const TEXT_LENGTH = "700px";
@@ -348,14 +349,6 @@ const StyledBackupList = styled.div`
     width: 100%;
   }
 
-  .restore_dialog-button {
-    ${(props) =>
-      props.displayType === "aside" &&
-      css`
-        width: 293px;
-      `}
-  }
-
   .backup-list_trash-icon {
     width: 16px;
     height: 16px;
@@ -422,24 +415,56 @@ const StyledBackupList = styled.div`
     padding-right: 10px;
   }
 
-  .restore_dialog-button:first-child {
-    margin-right: 10px;
-  }
-
   .backup-restore_dialog-scroll-body {
-    height: calc(100% - 64px);
     margin-left: -17px;
     margin-right: -17px;
 
-    .scroll-body {
-      height: calc(100% - 48px);
-    }
     .nav-thumb-vertical {
       margin-left: -8px !important;
     }
   }
   .backup-restore_empty-list {
     margin-top: 96px;
+  }
+
+  #backup-list_help {
+    display: flex;
+    background-color: white;
+    margin-bottom: 16px;
+  }
+  .backup-list_tooltip {
+    margin-left: 8px;
+  }
+
+  .backup-list_content {
+    display: grid;
+    height: calc(100% - 32px);
+    grid-template-rows: max-content auto max-content;
+
+    .backup-list_agreement-text {
+      user-select: none;
+      div:first-child {
+        display: inline-block;
+      }
+    }
+
+    .backup-list_footer {
+      padding: 16px 16px 0 16px;
+      border-top: ${`1px solid ${borderColor}`};
+      margin-left: -16px;
+      margin-right: -16px;
+
+      .restore_dialog-button {
+        display: flex;
+        button:first-child {
+          margin-right: 10px;
+          width: 50%;
+        }
+        button:last-child {
+          width: 50%;
+        }
+      }
+    }
   }
 `;
 
