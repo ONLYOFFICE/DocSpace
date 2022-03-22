@@ -252,9 +252,9 @@ public class DocbuilderReportsUtility
 
     public static string TmpFileName => $"tmp{DateTime.UtcNow.Ticks}.xlsx";
 
-    public DocbuilderReportsUtility(DistributedTaskQueueOptionsManager distributedTaskQueueOptionsManager)
+    public DocbuilderReportsUtility(IDistributedTaskQueueFactory queueFactory)
     {
-        _tasks = distributedTaskQueueOptionsManager.Get("DocbuilderReportsUtility");
+        _tasks = queueFactory.CreateQueue();
         _locker = new object();
     }
 

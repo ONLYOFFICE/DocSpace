@@ -40,12 +40,15 @@ public class StorageUploader
         _locker = new object();
     }
 
-    public StorageUploader(IServiceProvider serviceProvider, TempStream tempStream, ICacheNotify<MigrationProgress> cacheMigrationNotify, DistributedTaskQueueOptionsManager options)
+    public StorageUploader(IServiceProvider serviceProvider, 
+                          TempStream tempStream, 
+                          ICacheNotify<MigrationProgress> cacheMigrationNotify, 
+                          IDistributedTaskQueueFactory queueFactory)
     {
         _serviceProvider = serviceProvider;
         _tempStream = tempStream;
         _cacheMigrationNotify = cacheMigrationNotify;
-        Queue = options.Get(nameof(StorageUploader));
+        Queue = queueFactory.CreateQueue();
     }
 
     public void Start(int tenantId, StorageSettings newStorageSettings, StorageFactoryConfig storageFactoryConfig)

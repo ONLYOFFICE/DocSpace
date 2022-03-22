@@ -44,11 +44,11 @@ namespace ASC.Data.Reassigns
         public QueueWorker(
             IHttpContextAccessor httpContextAccessor,
             IServiceProvider serviceProvider,
-            DistributedTaskQueueOptionsManager options)
+            IDistributedTaskQueueFactory queueFactory)
         {
             HttpContextAccessor = httpContextAccessor;
             ServiceProvider = serviceProvider;
-            Queue = options.Get<T>();
+            Queue = queueFactory.CreateQueue<T>();
         }
 
         public static string GetProgressItemId(int tenantId, Guid userId)
@@ -102,8 +102,8 @@ namespace ASC.Data.Reassigns
         public QueueWorkerReassign(
             IHttpContextAccessor httpContextAccessor,
             IServiceProvider serviceProvider,
-            DistributedTaskQueueOptionsManager options) :
-            base(httpContextAccessor, serviceProvider, options)
+            IDistributedTaskQueueFactory queueFactory) :
+            base(httpContextAccessor, serviceProvider, queueFactory)
         {
         }
 
@@ -125,8 +125,8 @@ namespace ASC.Data.Reassigns
         public QueueWorkerRemove(
             IHttpContextAccessor httpContextAccessor,
             IServiceProvider serviceProvider,
-            DistributedTaskQueueOptionsManager options) :
-            base(httpContextAccessor, serviceProvider, options)
+            IDistributedTaskQueueFactory queueFactory) :
+            base(httpContextAccessor, serviceProvider, queueFactory)
         {
         }
 

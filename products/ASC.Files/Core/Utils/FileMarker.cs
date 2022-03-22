@@ -35,11 +35,11 @@ public class FileMarkerHelper<T>
     public FileMarkerHelper(
         IServiceProvider serviceProvider,
         IOptionsMonitor<ILog> optionsMonitor,
-        DistributedTaskQueueOptionsManager distributedTaskQueueOptionsManager)
+        IDistributedTaskQueueFactory queueFactory)
     {
         _serviceProvider = serviceProvider;
         Logger = optionsMonitor.CurrentValue;
-        Tasks = distributedTaskQueueOptionsManager.Get<AsyncTaskData<T>>();
+        Tasks = queueFactory.CreateQueue<AsyncTaskData<T>>();
     }
 
     internal void Add(AsyncTaskData<T> taskData)

@@ -104,6 +104,8 @@ public abstract class BaseStartup
             DIHelper.RegisterProducts(Configuration, HostEnvironment.ContentRootPath);
         }
 
+        services.AddOptions();
+
         services.AddMvcCore(config =>
         {
             config.Conventions.Add(new ControllerNameAttributeConvention());

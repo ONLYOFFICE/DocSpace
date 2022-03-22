@@ -32,11 +32,12 @@ public class EncryptionWorker
     private readonly FactoryOperation _factoryOperation;
     private readonly DistributedTaskQueue _queue;
 
-    public EncryptionWorker(FactoryOperation factoryOperation, DistributedTaskQueueOptionsManager options)
+    public EncryptionWorker(FactoryOperation factoryOperation, 
+                            IDistributedTaskQueueFactory queueFactory)
     {
         _locker = new object();
         _factoryOperation = factoryOperation;
-        _queue = options.Get<EncryptionOperation>();
+        _queue = queueFactory.CreateQueue<EncryptionOperation>();
     }
 
     public void Start(EncryptionSettingsProto encryptionSettings)

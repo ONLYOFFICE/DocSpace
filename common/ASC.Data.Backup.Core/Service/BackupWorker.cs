@@ -42,12 +42,12 @@ public class BackupWorker
 
     public BackupWorker(
         IOptionsMonitor<ILog> options,
-        DistributedTaskQueueOptionsManager progressQueue,
+        IDistributedTaskQueueFactory queueFactory,
         FactoryProgressItem factoryProgressItem,
         TempPath tempPath)
     {
         _logger = options.CurrentValue;
-        _progressQueue = progressQueue.Get<BaseBackupProgressItem>();
+        _progressQueue = queueFactory.CreateQueue<BackupProgressItem>();
         _factoryProgressItem = factoryProgressItem;
         _tempPath = tempPath;
     }

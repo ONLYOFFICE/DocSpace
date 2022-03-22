@@ -194,11 +194,11 @@ namespace ASC.Web.Core.Users
             StorageFactory storageFactory,
             UserPhotoManagerCache userPhotoManagerCache,
             IOptionsMonitor<ILog> options,
-            DistributedTaskQueueOptionsManager optionsQueue,
+            IDistributedTaskQueueFactory queueFactory,
             SettingsManager settingsManager,
             IServiceProvider serviceProvider)
         {
-            ResizeQueue = optionsQueue.Get<ResizeWorkerItem>();
+            ResizeQueue = queueFactory.CreateQueue<ResizeWorkerItem>();
             UserManager = userManager;
             WebImageSupplier = webImageSupplier;
             TenantManager = tenantManager;

@@ -63,4 +63,7 @@
     <Protobuf Include="protos\distributed_task_cache.proto" />
     <Protobuf Include="protos\distributed_task_cancelation.proto" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Threading\Extensions\" />
+  </ItemGroup>
 </Project>

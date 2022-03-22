@@ -32,9 +32,9 @@ public class FileOperationsManager
     private readonly TempStream _tempStream;
     private readonly IServiceProvider _serviceProvider;
 
-    public FileOperationsManager(TempStream tempStream, DistributedTaskQueueOptionsManager distributedTaskQueueOptionsManager, IServiceProvider serviceProvider)
+    public FileOperationsManager(TempStream tempStream, IDistributedTaskQueueFactory queueFactory, IServiceProvider serviceProvider)
     {
-        _tasks = distributedTaskQueueOptionsManager.Get<FileOperation>();
+        _tasks = queueFactory.CreateQueue<FileOperation>();
         _tempStream = tempStream;
         _serviceProvider = serviceProvider;
     }

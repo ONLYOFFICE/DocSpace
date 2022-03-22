@@ -51,14 +51,14 @@ public class StaticUploader
         SettingsManager settingsManager,
         StorageSettingsHelper storageSettingsHelper,
         ICache cache,
-        DistributedTaskQueueOptionsManager options)
+        IDistributedTaskQueueFactory queueFactory)
     {
         _cache = cache;
         _serviceProvider = serviceProvider;
         _tenantManager = tenantManager;
         _settingsManager = settingsManager;
         _storageSettingsHelper = storageSettingsHelper;
-        Queue = options.Get<UploadOperationProgress>();
+        Queue = queueFactory.CreateQueue<UploadOperationProgress>();
     }
 
     public string UploadFile(string relativePath, string mappedPath, Action<string> onComplete = null)
