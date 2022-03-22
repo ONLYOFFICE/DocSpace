@@ -72,7 +72,10 @@ const useDynamicScript = (args) => {
   };
 };
 
-const DynamicComponent = ({ system, ...rest }) => {
+const DynamicComponent = React.memo(({ system, ...rest }) => {
+  const [isInitialized, setIsInitialized] = React.useState(false);
+  const [LoadedComponent, setLoadedComponent] = React.useState();
+
   const { ready, failed } = useDynamicScript({
     url: system && system.url,
     id: system && system.scope,
@@ -93,15 +96,22 @@ const DynamicComponent = ({ system, ...rest }) => {
     throw Error("failed");
   }
 
-  const Component = React.lazy(
-    loadComponent(system.scope, system.module, system?.name)
-  );
+  if (ready && !isInitialized) {
+    setIsInitialized(true);
+    const Component = React.lazy(
+      loadComponent(system.scope, system.module, system?.name)
+    );
+
+    setLoadedComponent(Component);
+  }
+
+  console.log("render dynamic", system);
 
   return (
     <React.Suspense fallback={<div />}>
-      <Component {...rest} />
+      <LoadedComponent {...rest} />
     </React.Suspense>
   );
-};
+});
 
 export default DynamicComponent;
