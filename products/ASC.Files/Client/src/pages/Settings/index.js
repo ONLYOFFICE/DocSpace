@@ -1,18 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { withRouter } from "react-router";
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
 import Loaders from "@appserver/common/components/Loaders";
 import { showLoader, hideLoader } from "@appserver/common/utils";
-import {
-  ArticleHeaderContent,
-  ArticleBodyContent,
-  ArticleMainButtonContent,
-} from "../../components/Article";
-import {
-  CatalogBodyContent,
-  CatalogHeaderContent,
-  CatalogMainButtonContent,
-} from "../../components/Catalog";
+
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { withTranslation } from "react-i18next";
 import { setDocumentTitle } from "../../helpers/utils";
@@ -67,50 +58,16 @@ const PureSettings = ({
 
   return (
     <>
-      <PageLayout>
-        {!showCatalog && (
-          <PageLayout.ArticleHeader>
-            <ArticleHeaderContent />
-          </PageLayout.ArticleHeader>
-        )}
-
-        {!showCatalog && (
-          <PageLayout.ArticleMainButton>
-            <ArticleMainButtonContent isDisabled={true} />
-          </PageLayout.ArticleMainButton>
-        )}
-
-        {!showCatalog && (
-          <PageLayout.ArticleBody>
-            <ArticleBodyContent />
-          </PageLayout.ArticleBody>
-        )}
-
-        {showCatalog && (
-          <PageLayout.CatalogHeader>
-            <CatalogHeaderContent />
-          </PageLayout.CatalogHeader>
-        )}
-        {showCatalog && (
-          <PageLayout.CatalogMainButton>
-            <CatalogMainButtonContent />
-          </PageLayout.CatalogMainButton>
-        )}
-        {showCatalog && (
-          <PageLayout.CatalogBody>
-            <CatalogBodyContent />
-          </PageLayout.CatalogBody>
-        )}
-
-        <PageLayout.SectionHeader>
+      <Section>
+        <Section.SectionHeader>
           {(!isLoadedSettingsTree && isLoading) || isLoading || !tReady ? (
             <Loaders.SectionHeader />
           ) : (
             <SectionHeaderContent title={title} />
           )}
-        </PageLayout.SectionHeader>
+        </Section.SectionHeader>
 
-        <PageLayout.SectionBody>
+        <Section.SectionBody>
           {(!isLoadedSettingsTree && isLoading) || isLoading || !tReady ? (
             setting === "thirdParty" ? (
               <Loaders.Rows />
@@ -120,8 +77,8 @@ const PureSettings = ({
           ) : (
             <SectionBodyContent setting={setting} t={t} />
           )}
-        </PageLayout.SectionBody>
-      </PageLayout>
+        </Section.SectionBody>
+      </Section>
     </>
   );
 };

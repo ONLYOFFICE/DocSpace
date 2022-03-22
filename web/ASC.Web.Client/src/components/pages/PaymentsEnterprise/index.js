@@ -3,7 +3,7 @@ import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
 import Loader from "@appserver/components/loader";
 import { tablet, size } from "@appserver/components/utils/device";
 import HeaderContainer from "./sub-components/headerContainer";
@@ -74,11 +74,11 @@ class Body extends React.Component {
 const PaymentsWrapper = withTranslation("PaymentsEnterprise")(Body);
 const PaymentsEnterprise = (props) => {
   return (
-    <PageLayout>
-      <PageLayout.SectionBody>
+    <Section>
+      <Section.SectionBody>
         <PaymentsWrapper {...props} />
-      </PageLayout.SectionBody>
-    </PageLayout>
+      </Section.SectionBody>
+    </Section>
   );
 };
 

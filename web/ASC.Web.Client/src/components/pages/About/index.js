@@ -1,6 +1,6 @@
 ﻿import React, { useEffect } from "react";
 import Text from "@appserver/components/text";
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
 import { I18nextProvider, withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { isMobileOnly } from "react-device-detect";
@@ -46,11 +46,11 @@ const BodyWrapper = inject(({ auth }) => {
 const About = (props) => {
   return (
     <I18nextProvider i18n={i18n}>
-      <PageLayout>
-        <PageLayout.SectionBody>
+      <Section>
+        <Section.SectionBody>
           <BodyWrapper {...props} />
-        </PageLayout.SectionBody>
-      </PageLayout>
+        </Section.SectionBody>
+      </Section>
     </I18nextProvider>
   );
 };

@@ -1,10 +1,10 @@
 import React from "react";
-import Headline from "@appserver/common/components/Headline";
+
 import { useTranslation } from "react-i18next";
 
 const ArticleHeaderContent = () => {
   const { t } = useTranslation("Common");
-  return <Headline type="menu">{t("Settings")}</Headline>;
+  return <>{t("Settings")}</>;
 };
 
-export default ArticleHeaderContent;
+export default React.memo(ArticleHeaderContent);

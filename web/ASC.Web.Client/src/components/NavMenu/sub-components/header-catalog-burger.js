@@ -8,11 +8,9 @@ import { Base } from "@appserver/components/themes";
 
 const StyledIconBox = styled.div`
   @media ${mobile} {
-    display: ${(props) =>
-      props.isProduct && props.showCatalog ? "flex !important" : "none"};
+    display: ${(props) => (props.isProduct ? "flex !important" : "none")};
   }
-  display: ${(props) =>
-    props.isProduct && props.showCatalog && isMobileOnly ? "flex" : "none"};
+  display: ${(props) => (props.isProduct && isMobileOnly ? "flex" : "none")};
   align-items: center;
 `;
 
@@ -30,12 +28,11 @@ const StyledMenuIcon = styled(MenuIcon)`
 StyledMenuIcon.defaultProps = { theme: Base };
 
 const HeaderCatalogBurger = (props) => {
-  const { isProduct, showCatalog, onClick, ...rest } = props;
+  const { isProduct, onClick, ...rest } = props;
 
   return (
     <StyledIconBox
       isProduct={isProduct}
-      showCatalog={showCatalog}
       onClick={onClick}
       name="catalog-burger"
       {...rest}
@@ -48,7 +45,6 @@ const HeaderCatalogBurger = (props) => {
 HeaderCatalogBurger.propTypes = {
   isProduct: PropTypes.bool,
   onClick: PropTypes.func,
-  showCatalog: PropTypes.bool,
 };
 
 export default React.memo(HeaderCatalogBurger);

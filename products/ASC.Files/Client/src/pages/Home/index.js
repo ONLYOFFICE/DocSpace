@@ -2,24 +2,18 @@ import React from "react";
 //import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { isMobile } from "react-device-detect";
+import {
+  isMobile as isMobileUtils,
+  isTablet as isTabletUtils,
+} from "@appserver/components/utils/device";
 import axios from "axios";
 import toastr from "@appserver/components/toast/toastr";
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
 import { showLoader, hideLoader } from "@appserver/common/utils";
 import FilesFilter from "@appserver/common/api/files/filter";
 import { getGroup } from "@appserver/common/api/groups";
 import { getUserById } from "@appserver/common/api/people";
 import { withTranslation, Trans } from "react-i18next";
-import {
-  ArticleBodyContent,
-  ArticleHeaderContent,
-  ArticleMainButtonContent,
-} from "../../components/Article";
-import {
-  CatalogBodyContent,
-  CatalogHeaderContent,
-  CatalogMainButtonContent,
-} from "../../components/Catalog";
 
 import {
   SectionBodyContent,
@@ -27,6 +21,8 @@ import {
   SectionHeaderContent,
   SectionPagingContent,
 } from "./Section";
+
+import { ArticleMainButtonContent } from "../../components/Article";
 
 import { createTreeFolders } from "../../helpers/files-helpers";
 import MediaViewer from "./MediaViewer";
@@ -285,14 +281,12 @@ class PureHome extends React.Component {
 
       dragging,
       tReady,
-
-      showCatalog,
     } = this.props;
     return (
       <>
         <MediaViewer />
         <DragTooltip />
-        <PageLayout
+        <Section
           dragging={dragging}
           withBodyScroll
           withBodyAutoFocus={!isMobile}
@@ -317,60 +311,29 @@ class PureHome extends React.Component {
           isHeaderVisible={isHeaderVisible}
           onOpenUploadPanel={this.showUploadPanel}
           firstLoad={firstLoad}
-          dragging={dragging}
         >
-          {!showCatalog && (
-            <PageLayout.ArticleHeader>
-              <ArticleHeaderContent />
-            </PageLayout.ArticleHeader>
-          )}
-          {!showCatalog && (
-            <PageLayout.ArticleMainButton>
-              <ArticleMainButtonContent />
-            </PageLayout.ArticleMainButton>
-          )}
-          {!showCatalog && (
-            <PageLayout.ArticleBody>
-              <ArticleBodyContent onTreeDrop={this.onDrop} />
-            </PageLayout.ArticleBody>
-          )}
-
-          {showCatalog && (
-            <PageLayout.CatalogHeader>
-              <CatalogHeaderContent />
-            </PageLayout.CatalogHeader>
-          )}
-          {showCatalog && (
-            <PageLayout.CatalogMainButton>
-              <CatalogMainButtonContent />
-            </PageLayout.CatalogMainButton>
-          )}
-          {showCatalog && (
-            <PageLayout.CatalogBody>
-              <CatalogBodyContent />
-            </PageLayout.CatalogBody>
-          )}
-
-          <PageLayout.SectionHeader>
+          <Section.SectionHeader>
             <SectionHeaderContent />
-          </PageLayout.SectionHeader>
+          </Section.SectionHeader>
 
-          <PageLayout.SectionFilter>
+          <Section.SectionFilter>
             <SectionFilterContent />
-          </PageLayout.SectionFilter>
+          </Section.SectionFilter>
 
-          <PageLayout.SectionBody>
+          <Section.SectionBody>
             <Consumer>
               {(context) => (
-                <SectionBodyContent sectionWidth={context.sectionWidth} />
+                <>
+                  <SectionBodyContent sectionWidth={context.sectionWidth} />
+                </>
               )}
             </Consumer>
-          </PageLayout.SectionBody>
+          </Section.SectionBody>
 
-          <PageLayout.SectionPaging>
+          <Section.SectionPaging>
             <SectionPagingContent tReady={tReady} />
-          </PageLayout.SectionPaging>
-        </PageLayout>
+          </Section.SectionPaging>
+        </Section>
       </>
     );
   }
@@ -498,7 +461,6 @@ export default inject(
 
       setIsPrevSettingsModule,
       isPrevSettingsModule,
-      showCatalog: auth.settingsStore.showCatalog,
     };
   }
 )(withRouter(observer(Home)));

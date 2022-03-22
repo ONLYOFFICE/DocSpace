@@ -151,11 +151,13 @@ namespace ASC.Files.Thirdparty.OneDrive
         internal OneDriveStorage Storage { get; private set; }
         internal ConsumerFactory ConsumerFactory { get; }
         internal IServiceProvider ServiceProvider { get; }
+        private readonly OAuth20TokenHelper _oAuth20TokenHelper;
 
-        public OneDriveStorageDisposableWrapper(ConsumerFactory consumerFactory, IServiceProvider serviceProvider)
+        public OneDriveStorageDisposableWrapper(ConsumerFactory consumerFactory, IServiceProvider serviceProvider, OAuth20TokenHelper oAuth20TokenHelper)
         {
             ConsumerFactory = consumerFactory;
             ServiceProvider = serviceProvider;
+            _oAuth20TokenHelper = oAuth20TokenHelper;
         }
 
         public Task<OneDriveStorage> CreateStorageAsync(OAuth20Token token, int id)
@@ -185,7 +187,7 @@ namespace ASC.Files.Thirdparty.OneDrive
         {
             if (token.IsExpired)
             {
-                token = OAuth20TokenHelper.RefreshToken<OneDriveLoginProvider>(ConsumerFactory, token);
+                token = _oAuth20TokenHelper.RefreshToken<OneDriveLoginProvider>(ConsumerFactory, token);
 
                 var dbDao = ServiceProvider.GetService<ProviderAccountDao>();
                 var authData = new AuthData(token: token.ToJson());

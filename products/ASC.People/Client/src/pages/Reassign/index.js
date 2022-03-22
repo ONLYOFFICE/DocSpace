@@ -1,19 +1,9 @@
 import React from "react";
 // import PropTypes from "prop-types";
-import PageLayout from "@appserver/common/components/PageLayout";
-import {
-  ArticleHeaderContent,
-  ArticleMainButtonContent,
-  ArticleBodyContent,
-} from "../../components/Article";
-// import { SectionHeaderContent } from './Section';
+import Section from "@appserver/common/components/Section";
+
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { inject, observer } from "mobx-react";
-import {
-  CatalogBodyContent,
-  CatalogHeaderContent,
-  CatalogMainButtonContent,
-} from "../../components/Catalog";
 
 class Reassign extends React.Component {
   componentDidMount() {
@@ -34,8 +24,7 @@ class Reassign extends React.Component {
   }
 
   render() {
-    const { isAdmin } = this.props;
-    console.log("Reassign render");
+    // console.log("Reassign render");
 
     // let loaded = false;
     // const { profile, match } = this.props;
@@ -48,29 +37,15 @@ class Reassign extends React.Component {
     // }
 
     return (
-      <PageLayout>
-        <PageLayout.ArticleHeader>
-          <CatalogHeaderContent />
-        </PageLayout.ArticleHeader>
-
-        {isAdmin && (
-          <PageLayout.ArticleMainButton>
-            <CatalogMainButtonContent />
-          </PageLayout.ArticleMainButton>
-        )}
-
-        <PageLayout.ArticleBody>
-          <CatalogBodyContent />
-        </PageLayout.ArticleBody>
-
-        <PageLayout.SectionHeader>
+      <Section>
+        <Section.SectionHeader>
           <SectionHeaderContent />
-        </PageLayout.SectionHeader>
+        </Section.SectionHeader>
 
-        <PageLayout.SectionBody>
+        <Section.SectionBody>
           <SectionBodyContent />
-        </PageLayout.SectionBody>
-      </PageLayout>
+        </Section.SectionBody>
+      </Section>
     );
   }
 }

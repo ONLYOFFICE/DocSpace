@@ -6,7 +6,7 @@ import Button from "@appserver/components/button";
 import TextInput from "@appserver/components/text-input";
 import FieldContainer from "@appserver/components/field-container";
 import Text from "@appserver/components/text";
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
 import { inject, observer } from "mobx-react";
 import Box from "@appserver/components/box";
 import toastr from "studio/toastr";
@@ -144,11 +144,11 @@ const TfaAuthFormWrapper = (props) => {
   }, []);
 
   return (
-    <PageLayout>
-      <PageLayout.SectionBody>
+    <Section>
+      <Section.SectionBody>
         <TfaAuthForm {...props} />
-      </PageLayout.SectionBody>
-    </PageLayout>
+      </Section.SectionBody>
+    </Section>
   );
 };
 

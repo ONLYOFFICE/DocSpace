@@ -7,16 +7,17 @@ import { FilterType } from "@appserver/common/constants";
 import Loaders from "@appserver/common/components/Loaders";
 import FilterInput from "@appserver/common/components/FilterInput";
 import { withLayoutSize } from "@appserver/common/utils";
-import { isMobile, isMobileOnly } from "react-device-detect";
+import { isMobileOnly, isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 import withLoader from "../../../../HOCs/withLoader";
-import { FileAction } from "@appserver/common/constants";
+import { getUser } from "@appserver/common/api/people";
+
 const getFilterType = (filterValues) => {
   const filterType = result(
     find(filterValues, (value) => {
-      return value.group === 'filter-filterType';
+      return value.group === "filter-filterType";
     }),
-    'key',
+    "key"
   );
 
   return filterType ? +filterType : null;
@@ -25,94 +26,99 @@ const getFilterType = (filterValues) => {
 const getAuthorType = (filterValues) => {
   const authorType = result(
     find(filterValues, (value) => {
-      return value.group === 'filter-author';
+      return value.group === "filter-author";
     }),
-    'key',
+    "key"
   );
 
   return authorType ? authorType : null;
 };
 
-const getSelectedItem = (filterValues, type) => {
-  const selectedItem = filterValues.find((item) => item.key === type);
-  return selectedItem || null;
-};
-
 const getSearchParams = (filterValues) => {
   const searchParams = result(
     find(filterValues, (value) => {
-      return value.group === 'filter-folders';
+      return value.group === "filter-folders";
     }),
-    'key',
+    "key"
   );
 
-  return searchParams || 'true';
+  return searchParams || "true";
 };
 
-class SectionFilterContent extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isReady: false,
-    };
-  }
+const SectionFilterContent = ({
+  t,
+  customNames,
+  user,
+  filter,
+  personal,
+  isRecentFolder,
+  isFavoritesFolder,
+  sectionWidth,
+  viewAs,
+  createThumbnails,
+  setViewAs,
+  setIsLoading,
+  selectedFolderId,
+  fetchFiles,
+}) => {
+  const filterColumnCount =
+    window.innerWidth < 500
+      ? { filterColumnCount: 3 }
+      : { filterColumnCount: personal ? 2 : 3 };
 
-  onFilter = (data) => {
-    const { setIsLoading, filter, selectedFolderId, fetchFiles } = this.props;
+  const onFilter = (data) => {
+    const filterType = getFilterType(data) || null;
+    const authorType = !!getAuthorType(data)
+      ? getAuthorType(data).includes("user_")
+        ? getAuthorType(data)
+        : `user_${getAuthorType(data)}`
+      : null;
+    const withSubfolders = getSearchParams(data);
 
-    const filterType = getFilterType(data.filterValues) || null;
-    const search = data.inputValue || null;
-    const sortBy = data.sortId;
-    const sortOrder = data.sortDirection === 'desc' ? 'descending' : 'ascending';
-    const authorType = getAuthorType(data.filterValues);
-    const withSubfolders = getSearchParams(data.filterValues);
+    const newFilter = filter.clone();
+    newFilter.page = 0;
+    newFilter.filterType = filterType;
+    newFilter.authorType = authorType;
+    newFilter.withSubfolders = withSubfolders;
 
-    const selectedItem = authorType ? getSelectedItem(data.filterValues, authorType) : null;
-    const selectedFilterItem = {};
-    if (selectedItem) {
-      selectedFilterItem.key = selectedItem.selectedItem.key;
-      selectedFilterItem.label = selectedItem.selectedItem.label;
-      selectedFilterItem.type = selectedItem.typeSelector;
-    }
+    setIsLoading(true);
 
-    console.log(selectedFilterItem);
+    fetchFiles(selectedFolderId, newFilter).finally(() => setIsLoading(false));
+  };
+
+  const onSearch = (data = "") => {
+    const newFilter = filter.clone();
+    newFilter.page = 0;
+    newFilter.search = data;
+
+    setIsLoading(true);
+
+    fetchFiles(selectedFolderId, newFilter).finally(() => setIsLoading(false));
+  };
+
+  const onSort = (sortId, sortDirection) => {
+    const sortBy = sortId;
+    const sortOrder = sortDirection === "desc" ? "descending" : "ascending";
 
     const newFilter = filter.clone();
     newFilter.page = 0;
     newFilter.sortBy = sortBy;
     newFilter.sortOrder = sortOrder;
-    newFilter.filterType = filterType;
-    newFilter.search = search;
-    newFilter.authorType = authorType;
-    newFilter.withSubfolders = withSubfolders;
-    newFilter.selectedItem = selectedFilterItem;
 
     setIsLoading(true);
+
     fetchFiles(selectedFolderId, newFilter).finally(() => setIsLoading(false));
   };
 
-  onChangeViewAs = (view) => {
-    const { setViewAs, sectionWidth } = this.props;
-
-    if (view === 'row') {
-      if (sectionWidth < 1025 || isMobile) setViewAs("row");
-      else setViewAs("table");
+  const onChangeViewAs = (view) => {
+    if (view === "row") {
+      setViewAs("table");
     } else {
       setViewAs(view);
     }
   };
 
-  getData = () => {
-    const {
-      t,
-      customNames,
-      user,
-      filter,
-      personal,
-      isRecentFolder,
-      isFavoritesFolder,
-      isRecycleBinFolder,
-    } = this.props;
+  const getFilterData = () => {
     const { selectedItem } = filter;
     const { usersCaption, groupsCaption } = customNames;
 
@@ -121,179 +127,128 @@ class SectionFilterContent extends React.Component {
         ? [
             {
               key: FilterType.FoldersOnly.toString(),
-              group: 'filter-filterType',
-              label: t('Translations:Folders'),
+              group: "filter-filterType",
+              label: t("Translations:Folders"),
             },
           ]
-        : '';
+        : "";
 
     const allFiles =
       !isFavoritesFolder && !isRecentFolder
         ? [
             {
               key: FilterType.FilesOnly.toString(),
-              group: 'filter-filterType',
-              label: t('AllFiles'),
+              group: "filter-filterType",
+              label: t("AllFiles"),
             },
           ]
-        : '';
+        : "";
 
     const images = !isRecentFolder
       ? [
           {
             key: FilterType.ImagesOnly.toString(),
-            group: 'filter-filterType',
-            label: t('Images'),
+            group: "filter-filterType",
+            label: t("Images"),
           },
         ]
-      : '';
+      : "";
 
     const archives = !isRecentFolder
       ? [
           {
             key: FilterType.ArchiveOnly.toString(),
-            group: 'filter-filterType',
-            label: t('Archives'),
+            group: "filter-filterType",
+            label: t("Archives"),
           },
         ]
-      : '';
+      : "";
 
     const media = !isRecentFolder
       ? [
           {
             key: FilterType.MediaOnly.toString(),
-            group: 'filter-filterType',
-            label: t('Media'),
+            group: "filter-filterType",
+            label: t("Media"),
           },
         ]
-      : '';
+      : "";
 
-    const options = [
+    const typeOptions = [
       {
-        key: 'filter-filterType',
-        group: 'filter-filterType',
-        label: t('Common:Type'),
+        key: "filter-filterType",
+        group: "filter-filterType",
+        label: t("Common:Type"),
         isHeader: true,
+      },
+      {
+        key: FilterType.DocumentsOnly.toString(),
+        group: "filter-filterType",
+        label: t("Common:Documents"),
       },
       ...folders,
       {
-        key: FilterType.DocumentsOnly.toString(),
-        group: 'filter-filterType',
-        label: t('Common:Documents'),
+        key: FilterType.SpreadsheetsOnly.toString(),
+        group: "filter-filterType",
+        label: t("Translations:Spreadsheets"),
       },
+      ...archives,
       {
         key: FilterType.PresentationsOnly.toString(),
-        group: 'filter-filterType',
-        label: t('Translations:Presentations'),
-      },
-      {
-        key: FilterType.SpreadsheetsOnly.toString(),
-        group: 'filter-filterType',
-        label: t('Translations:Spreadsheets'),
+        group: "filter-filterType",
+        label: t("Translations:Presentations"),
       },
       ...images,
       ...media,
-      ...archives,
       ...allFiles,
     ];
 
-    const filterOptions = [...options];
+    const filterOptions = [];
 
-    if (!personal)
+    if (!personal) {
       filterOptions.push(
         {
-          key: 'filter-author',
-          group: 'filter-author',
-          label: t('ByAuthor'),
+          key: "filter-author",
+          group: "filter-author",
+          label: t("ByAuthor"),
           isHeader: true,
         },
         {
-          key: 'user',
-          group: 'filter-author',
-          label: usersCaption,
+          key: "user",
+          group: "filter-author",
+          label: t("SharingPanel:LinkText"),
           isSelector: true,
-          defaultOptionLabel: t('Common:MeLabel'),
-          defaultSelectLabel: t('Common:Select'),
-          groupsCaption,
-          defaultOption: user,
-          selectedItem,
-        },
-        {
-          key: 'group',
-          group: 'filter-author',
-          label: groupsCaption,
-          defaultSelectLabel: t('Common:Select'),
-          isSelector: true,
-          selectedItem,
-        },
+        }
       );
+    }
 
-    if (!isRecentFolder && !isFavoritesFolder && !isRecycleBinFolder)
+    filterOptions.push(...typeOptions);
+
+    if (!isRecentFolder && !isFavoritesFolder)
       filterOptions.push(
         {
-          key: 'filter-folders',
-          group: 'filter-folders',
-          label: t('Translations:Folders'),
+          key: "filter-folders",
+          group: "filter-folders",
+          label: t("Translations:Folders"),
           isHeader: true,
+          withoutHeader: true,
+          isLast: true,
         },
         {
-          key: 'false',
-          group: 'filter-folders',
-          label: t('NoSubfolders'),
-        },
+          key: "false",
+          group: "filter-folders",
+          label: t("NoSubfolders"),
+          isToggle: true,
+        }
       );
-
-    //console.log("getData (filterOptions)", filterOptions);
 
     return filterOptions;
   };
 
-  getSortData = () => {
-    const { t, personal } = this.props;
-
-    const commonOptions = [
-      { key: 'DateAndTime', label: t('ByLastModifiedDate'), default: true },
-      { key: 'DateAndTimeCreation', label: t('ByCreationDate'), default: true },
-      { key: 'AZ', label: t('ByTitle'), default: true },
-      { key: 'Type', label: t('Common:Type'), default: true },
-      { key: 'Size', label: t('Common:Size'), default: true },
-    ];
-
-    if (!personal)
-      commonOptions.push({
-        key: 'Author',
-        label: t('ByAuthor'),
-        default: true,
-      });
-
-    return commonOptions;
-  };
-
-  getViewSettingsData = () => {
-    const { t, createThumbnails } = this.props;
-
-    const viewSettings = [
-      {
-        value: 'row',
-        label: t('ViewList'),
-        icon: '/static/images/view-rows.react.svg',
-      },
-      {
-        value: 'tile',
-        label: t('ViewTiles'),
-        icon: '/static/images/view-tiles.react.svg',
-        callback: createThumbnails,
-      },
-    ];
-
-    return viewSettings;
-  };
-
-  getSelectedFilterData = () => {
-    const { filter } = this.props;
+  const getSelectedFilterData = async () => {
     const selectedFilterData = {
       filterValues: [],
-      sortDirection: filter.sortOrder === 'ascending' ? 'asc' : 'desc',
+      sortDirection: filter.sortOrder === "ascending" ? "asc" : "desc",
       sortId: filter.sortBy,
     };
 
@@ -302,92 +257,106 @@ class SectionFilterContent extends React.Component {
     if (filter.filterType) {
       selectedFilterData.filterValues.push({
         key: `${filter.filterType}`,
-        group: 'filter-filterType',
+        group: "filter-filterType",
       });
     }
 
     if (filter.authorType) {
+      const user = await getUser(filter.authorType.replace("user_", ""));
       selectedFilterData.filterValues.push({
         key: `${filter.authorType}`,
-        group: 'filter-author',
+        group: "filter-author",
+        label: user.displayName,
       });
     }
 
-    if (filter.withSubfolders === 'false') {
+    if (filter.withSubfolders === "false") {
       selectedFilterData.filterValues.push({
         key: filter.withSubfolders,
-        group: 'filter-folders',
+        group: "filter-folders",
       });
     }
-
-    // if (filter.group) {
-    //   selectedFilterData.filterValues.push({
-    //     key: filter.group,
-    //     group: "filter-group"
-    //   });
-    // }
 
     return selectedFilterData;
   };
 
-  render() {
-    //console.log("Filter render");
-    const selectedFilterData = this.getSelectedFilterData();
+  const getViewSettingsData = () => {
+    const viewSettings = [
+      {
+        value: "row",
+        label: t("ViewList"),
+        icon: "/static/images/view-rows.react.svg",
+      },
+      {
+        value: "tile",
+        label: t("ViewTiles"),
+        icon: "/static/images/view-tiles.react.svg",
+        callback: createThumbnails,
+      },
+    ];
+
+    return viewSettings;
+  };
+
+  const getSortData = () => {
+    const commonOptions = [
+      { key: "AZ", label: t("ByTitle"), default: true },
+      { key: "Type", label: t("Common:Type"), default: true },
+      { key: "Size", label: t("Common:Size"), default: true },
+      { key: "DateAndTimeCreation", label: t("ByCreationDate"), default: true },
+      { key: "DateAndTime", label: t("ByLastModifiedDate"), default: true },
+    ];
+
+    if (!personal) {
+      commonOptions.splice(1, 0, {
+        key: "Author",
+        label: t("ByAuthor"),
+        default: true,
+      });
+    }
+    return commonOptions;
+  };
+
+  return (
+    <FilterInput
+      t={t}
+      sectionWidth={sectionWidth}
+      getFilterData={getFilterData}
+      getSortData={getSortData}
+      getViewSettingsData={getViewSettingsData}
+      getSelectedFilterData={getSelectedFilterData}
+      onFilter={onFilter}
+      onSearch={onSearch}
+      onSort={onSort}
+      onChangeViewAs={onChangeViewAs}
+      viewAs={viewAs}
+      placeholder={t("Common:Search")}
+      {...filterColumnCount}
+      contextMenuHeader={t("Common:AddFilter")}
+      headerLabel={t("SharingPanel:LinkText")}
+      viewSelectorVisible={true}
+      isFavoritesFolder={isFavoritesFolder}
+      isRecentFolder={isRecentFolder}
+    />
+  );
+};
+
+export default inject(
+  ({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
     const {
-      t,
-      sectionWidth,
-      isFiltered,
+      fetchFiles,
+      filter,
+      setIsLoading,
+      setViewAs,
       viewAs,
-      personal,
-      isFavoritesFolder,
-      isRecentFolder,
-    } = this.props;
-    const filterColumnCount =
-      window.innerWidth < 500 ? {} : { filterColumnCount: personal ? 2 : 3 };
-
-    return !isFiltered ? null : (
-      <FilterInput
-        sectionWidth={sectionWidth}
-        getFilterData={this.getData}
-        getSortData={this.getSortData}
-        getViewSettingsData={this.getViewSettingsData}
-        selectedFilterData={selectedFilterData}
-        onFilter={this.onFilter}
-        onChangeViewAs={this.onChangeViewAs}
-        viewAs={viewAs}
-        directionAscLabel={t('Common:DirectionAscLabel')}
-        directionDescLabel={t('Common:DirectionDescLabel')}
-        placeholder={t('Common:Search')}
-        isReady={this.state.isReady}
-        {...filterColumnCount}
-        contextMenuHeader={t('Common:AddFilter')}
-        sortItemsVisible={!isRecentFolder}
-      />
-    );
-  }
-}
-
-export default inject(({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
-  const {
-    fetchFiles,
-    filter,
-    setIsLoading,
-    setViewAs,
-    viewAs,
-    files,
-    folders,
-    createThumbnails,
-  } = filesStore;
-
-    const { type: fileActionType } = filesStore.fileActionStore;
+      files,
+      folders,
+      createThumbnails,
+    } = filesStore;
 
     const { user } = auth.userStore;
-    const { customNames, culture, personal } = auth.settingsStore;
-    const {
-      isFavoritesFolder,
-      isRecentFolder,
-      isRecycleBinFolder,
-    } = treeFoldersStore;
+    const { customNames, personal } = auth.settingsStore;
+    const { isFavoritesFolder, isRecentFolder } = treeFoldersStore;
 
     const { search, filterType, authorType } = filter;
     const isFiltered =
@@ -395,35 +364,34 @@ export default inject(({ auth, filesStore, treeFoldersStore, selectedFolderStore
         !!folders.length ||
         search ||
         filterType ||
-        authorType ||
-        fileActionType === FileAction.Create) &&
+        authorType) &&
       !(treeFoldersStore.isPrivacyFolder && isMobile);
 
-  return {
-    customNames,
-    user,
-    selectedFolderId: selectedFolderStore.id,
-    selectedItem: filter.selectedItem,
-    filter,
-    viewAs,
-    isFiltered,
-    isFavoritesFolder,
-    isRecentFolder,
-      isRecycleBinFolder,
+    return {
+      customNames,
+      user,
+      selectedFolderId: selectedFolderStore.id,
+      selectedItem: filter.selectedItem,
+      filter,
+      viewAs,
+      isFiltered,
+      isFavoritesFolder,
+      isRecentFolder,
 
-    setIsLoading,
-    fetchFiles,
-    setViewAs,
-    createThumbnails,
+      setIsLoading,
+      fetchFiles,
+      setViewAs,
+      createThumbnails,
 
-    personal,
-  };
-})(
+      personal,
+    };
+  }
+)(
   withRouter(
     withLayoutSize(
-      withTranslation(['Home', 'Common', 'Translations'])(
-        withLoader(observer(SectionFilterContent))(<Loaders.Filter />),
-      ),
-    ),
-  ),
+      withTranslation(["Home", "Common", "SharingPanel", "Translations"])(
+        withLoader(observer(SectionFilterContent))(<Loaders.Filter />)
+      )
+    )
+  )
 );
