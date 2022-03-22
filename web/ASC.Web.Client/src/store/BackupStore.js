@@ -320,7 +320,6 @@ class BackupStore {
     }
   };
   getIntervalProgress = (t) => {
-    console.log("this.timerId", this.timerId);
     if (this.timerId) {
       return;
     }
@@ -362,7 +361,7 @@ class BackupStore {
 
             this.timerId && toastr.success(`${t("BackupCreatedSuccess")}`);
             this.timerId = null;
-            console.log("this.timerId success", this.timerId);
+
             return;
           }
         } else {
@@ -384,7 +383,6 @@ class BackupStore {
   };
 
   clearProgressInterval = () => {
-    console.log("clearInterval", this.timerId);
     this.timerId && clearInterval(this.timerId);
     this.timerId = null;
   };

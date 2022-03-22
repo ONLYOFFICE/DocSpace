@@ -185,8 +185,6 @@ class BackupMobileView extends React.Component {
       </>
     );
 
-    console.log("render");
-
     return isLoading ? (
       <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
