@@ -321,6 +321,16 @@ class PureHome extends React.Component {
             <SectionHeaderContent />
           </Section.SectionHeader>
 
+          <Section.SectionBar>
+            {checkedMaintenance && !snackbarExist && (
+              <Bar
+                firstLoad={firstLoad}
+                personal={personal}
+                setMaintenanceExist={setMaintenanceExist}
+              />
+            )}
+          </Section.SectionBar>
+
           <Section.SectionFilter>
             <SectionFilterContent />
           </Section.SectionFilter>
