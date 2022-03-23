@@ -189,11 +189,13 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         internal GoogleDriveStorage Storage { get; set; }
         internal ConsumerFactory ConsumerFactory { get; }
         internal IServiceProvider ServiceProvider { get; }
+        internal OAuth20TokenHelper _oAuth20TokenHelper { get; }
 
-        public GoogleDriveStorageDisposableWrapper(ConsumerFactory consumerFactory, IServiceProvider serviceProvider)
+        public GoogleDriveStorageDisposableWrapper(ConsumerFactory consumerFactory, IServiceProvider serviceProvider, OAuth20TokenHelper oAuth20TokenHelper)
         {
             ConsumerFactory = consumerFactory;
             ServiceProvider = serviceProvider;
+            _oAuth20TokenHelper = oAuth20TokenHelper;
         }
 
         public Task<GoogleDriveStorage> CreateStorageAsync(OAuth20Token token, int id)
@@ -223,7 +225,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         {
             if (token.IsExpired)
             {
-                token = OAuth20TokenHelper.RefreshToken<GoogleLoginProvider>(ConsumerFactory, token);
+                token = _oAuth20TokenHelper.RefreshToken<GoogleLoginProvider>(ConsumerFactory, token);
 
                 var dbDao = ServiceProvider.GetService<ProviderAccountDao>();
                 var authData = new AuthData(token: token.ToJson());

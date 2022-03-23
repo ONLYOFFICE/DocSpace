@@ -9,7 +9,7 @@ const displaySettings = css`
   flex-direction: column-reverse;
   align-items: flex-start;
   border-top: ${(props) =>
-    props.border && !props.showReminder ? "1px solid #ECEEF1" : "none"};
+    props.hasScroll && !props.showReminder ? "1px solid #ECEEF1" : "none"};
 
   .buttons-flex {
     display: flex;
@@ -27,14 +27,17 @@ const displaySettings = css`
 
   .unsaved-changes {
     position: absolute;
-    padding-top: 16px
+    padding-top: 16px;
     font-size: 12px;
     font-weight: 600;
+    width: 100%;
+    bottom: 56px;
+    background-color: white;
   }
 
   ${(props) =>
     props.showReminder &&
-    props.border &&
+    props.hasScroll &&
     css`
       .unsaved-changes {
         background-color: white;
@@ -44,26 +47,18 @@ const displaySettings = css`
         padding-top: 16px;
       }
     `}
-
-    @media (orientation: landscape) {
-      display: flex;
-
-      .unsaved-changes {
-        font-size: 12px;
-        position: static;
-        padding-bottom: 16px;
-      }
-  }
 `;
 
-const staticButtons = `
+const tabletButtons = `
   position: static;
+  display: flex;
   max-width: none;
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
+  padding-top: 0;
   padding-bottom: 24px;
-
+ 
   .buttons-flex {
     width: auto;
   }
@@ -76,8 +71,11 @@ const staticButtons = `
   }
 
   .unsaved-changes {
+    border-top: none;
     margin-left: 8px;
     margin-bottom: 0;
+    position: static;
+    padding-top: 0px;
   }
 `;
 
@@ -110,7 +108,7 @@ const StyledSaveCancelButtons = styled.div`
     ((!isMobile && props.sectionWidth > 375 && props.sectionWidth <= 1024) ||
       isTablet) &&
     `
-      ${staticButtons}
+      ${tabletButtons}
     `}
 
   @media ${tablet} {
@@ -131,12 +129,16 @@ const StyledSaveCancelButtons = styled.div`
     !isTablet &&
     props.sectionWidth > 1024 &&
     `
-      ${staticButtons}
+      ${tabletButtons}
       .save-button, .cancel-button {
         font-size: 13px;
         line-height: 20px;
         padding-top: 5px;
         padding-bottom: 5px;
+      }
+
+      .unsaved-changes {
+        padding-bottom: 0;
       }
     `}
 `;

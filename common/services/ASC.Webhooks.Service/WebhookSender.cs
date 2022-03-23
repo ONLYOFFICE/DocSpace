@@ -22,14 +22,16 @@ namespace ASC.Webhooks.Service
     public class WebhookSender
     {
         public int? RepeatCount { get; }
-        private static readonly HttpClient httpClient = new HttpClient();
+        private readonly IHttpClientFactory _httpClientFactory;
+
         private IServiceProvider ServiceProvider { get; }
         private ILog Log { get; }
 
-        public WebhookSender(IOptionsMonitor<ILog> options, IServiceProvider serviceProvider, Settings settings)
+        public WebhookSender(IOptionsMonitor<ILog> options, IServiceProvider serviceProvider, Settings settings, IHttpClientFactory httpClientFactory)
         {
             Log = options.Get("ASC.Webhooks.Core");
             ServiceProvider = serviceProvider;
+            _httpClientFactory = httpClientFactory;
             RepeatCount = settings.RepeatCount;
         }
 
@@ -60,6 +62,7 @@ namespace ASC.Webhooks.Service
                         Encoding.UTF8,
                         "application/json");
 
+                    var httpClient = _httpClientFactory.CreateClient();
                     response = await httpClient.SendAsync(request, cancellationToken);
 
                     if (response.IsSuccessStatusCode)
@@ -104,7 +107,7 @@ namespace ASC.Webhooks.Service
         private void UpdateDb(DbWorker dbWorker, int id, HttpResponseMessage response, HttpRequestMessage request, ProcessStatus status)
         {
             var responseHeaders = JsonSerializer.Serialize(response.Headers.ToDictionary(r => r.Key, v => v.Value));
-            var requestHeaders = JsonSerializer.Serialize(request.Headers.ToDictionary(r => r.Key , v => v.Value));
+            var requestHeaders = JsonSerializer.Serialize(request.Headers.ToDictionary(r => r.Key, v => v.Value));
             string responsePayload;
 
             using (var streamReader = new StreamReader(response.Content.ReadAsStream()))

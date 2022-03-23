@@ -1922,7 +1922,7 @@ const Dark = {
   menuContainer: {
     background:
       "linear-gradient(226.22deg, #EBB67A 0.24%, #E9AC6B 11.61%, #E8A25D 22.98%, #E69850 34.34%, #E58D42 45.71%, #E38235 57.08%, #E27628 68.44%, #E06A1B 79.81%)",
-    arrowTop: "#E06A1B",
+    arrowTop: "#EAB274",
     color: "#22221f",
   },
 
@@ -2148,10 +2148,15 @@ const Dark = {
   },
 
   floatingButton: {
-    backgroundColor: "#e5e5e5",
-    color: darkBlack,
+    backgroundColor: white,
+    color: black,
     boxShadow: "0px 12px 24px rgba(0, 0, 0, 0.12)",
     fill: black,
+
+    alert: {
+      fill: "#F58D31",
+      path: black,
+    },
   },
 
   mediaViewer: {
@@ -2508,6 +2513,7 @@ const Dark = {
     about: {
       linkColor: "#E06A1B",
       border: "1px solid #474747",
+      logoColor: white,
     },
 
     comingSoon: {
@@ -2608,10 +2614,10 @@ const Dark = {
   },
 
   campaignsBanner: {
-    border: "border: 1px solid #d1d1d1",
+    border: "1px solid #CCCCCC",
     color: darkBlack,
 
-    btnColor: white,
+    btnColor: black,
     btnBackgroundActive: blueMain,
   },
 

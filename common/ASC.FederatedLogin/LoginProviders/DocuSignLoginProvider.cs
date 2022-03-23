@@ -69,9 +69,11 @@ namespace ASC.FederatedLogin.LoginProviders
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
+            RequestHelper requestHelper,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
             : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, props, additional)
         {
+            _requestHelper = requestHelper;
         }
 
 
@@ -86,6 +88,8 @@ namespace ASC.FederatedLogin.LoginProviders
             }
         }
 
+        private readonly RequestHelper _requestHelper;
+
         public OAuth20Token GetAccessToken(string authCode)
         {
             if (string.IsNullOrEmpty(authCode)) throw new ArgumentNullException(nameof(authCode));
@@ -95,7 +99,7 @@ namespace ASC.FederatedLogin.LoginProviders
             var data = $"grant_type=authorization_code&code={authCode}";
             var headers = new Dictionary<string, string> { { "Authorization", AuthHeader } };
 
-            var json = RequestHelper.PerformRequest(AccessTokenUrl, "application/x-www-form-urlencoded", "POST", data, headers);
+            var json = _requestHelper.PerformRequest(AccessTokenUrl, "application/x-www-form-urlencoded", "POST", data, headers);
             if (json == null) throw new Exception("Can not get token");
 
             if (!json.StartsWith('{'))
@@ -120,7 +124,7 @@ namespace ASC.FederatedLogin.LoginProviders
             var data = $"grant_type=refresh_token&refresh_token={refreshToken}";
             var headers = new Dictionary<string, string> { { "Authorization", AuthHeader } };
 
-            var json = RequestHelper.PerformRequest(AccessTokenUrl, "application/x-www-form-urlencoded", "POST", data, headers);
+            var json = _requestHelper.PerformRequest(AccessTokenUrl, "application/x-www-form-urlencoded", "POST", data, headers);
             if (json == null) throw new Exception("Can not get token");
 
             var refreshed = OAuth20Token.FromJson(json);
