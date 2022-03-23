@@ -1,43 +1,66 @@
 import React from "react";
-import ContextMenuButton from "@appserver/components/context-menu-button";
-import PropTypes from "prop-types";
+import styled from "styled-components";
 
-class FilterButton extends React.PureComponent {
-  render() {
-    const {
-      getData,
-      id,
-      isDisabled,
-      iconSize,
-      columnCount,
-      asideHeader,
-      asideView,
-    } = this.props;
-    //console.log('render FilterButton)
-    return (
-      <ContextMenuButton
-        //className="filter-button"
-        directionY="bottom"
-        getData={getData}
-        iconName="/static/images/rectangle.filter.react.svg"
-        iconOpenName="/static/images/rectangle.filter.click.react.svg"
-        id={id}
-        isDisabled={isDisabled}
-        size={iconSize}
-        columnCount={columnCount}
-        displayType={asideView ? "aside" : "auto"}
-        asideHeader={asideHeader}
-      ></ContextMenuButton>
-    );
-  }
-}
-FilterButton.propTypes = {
-  getData: PropTypes.func,
-  iconSize: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  id: PropTypes.string,
-  isDisabled: PropTypes.bool,
-  columnCount: PropTypes.number,
-  asideHeader: PropTypes.string,
-  asideView: PropTypes.bool,
+import IconButton from "@appserver/components/icon-button";
+import { Base } from "@appserver/components/themes";
+
+import FilterBlock from "./FilterBlock";
+
+import StyledButton from "./StyledButton";
+
+const Indicator = styled.div`
+  border-radius: 50%;
+  width: 8px;
+  height: 8px;
+
+  background: ${(props) => props.theme.filterInput.filter.indicatorColor};
+
+  position: absolute;
+  top: 25px;
+  left: 25px;
+
+  z-index: 3;
+`;
+
+Indicator.defaultProps = { theme: Base };
+
+const FilterButton = ({
+  t,
+  selectedFilterData,
+  contextMenuHeader,
+  getFilterData,
+  onFilter,
+  headerLabel,
+}) => {
+  const [showFilterBlock, setShowFilterBlock] = React.useState(false);
+
+  const changeShowFilterBlock = React.useCallback(() => {
+    setShowFilterBlock((value) => !value);
+  }, [setShowFilterBlock]);
+
+  // console.log(selectedFilterData.filterValues);
+
+  return (
+    <>
+      <StyledButton onClick={changeShowFilterBlock}>
+        <IconButton iconName="/static/images/filter.react.svg" size={16} />
+        {selectedFilterData.filterValues &&
+          selectedFilterData.filterValues.length > 0 && <Indicator />}
+      </StyledButton>
+
+      {showFilterBlock && (
+        <FilterBlock
+          t={t}
+          contextMenuHeader={contextMenuHeader}
+          selectedFilterData={selectedFilterData}
+          hideFilterBlock={changeShowFilterBlock}
+          getFilterData={getFilterData}
+          onFilter={onFilter}
+          headerLabel={headerLabel}
+        />
+      )}
+    </>
+  );
 };
-export default FilterButton;
+
+export default React.memo(FilterButton);

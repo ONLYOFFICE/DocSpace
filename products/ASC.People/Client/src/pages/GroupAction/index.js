@@ -1,16 +1,7 @@
 import React from "react";
 import Loader from "@appserver/components/loader";
-import PageLayout from "@appserver/common/components/PageLayout";
-import {
-  ArticleHeaderContent,
-  ArticleMainButtonContent,
-  ArticleBodyContent,
-} from "../../components/Article";
-import {
-  CatalogHeaderContent,
-  CatalogMainButtonContent,
-  CatalogBodyContent,
-} from "../../components/Catalog";
+import Section from "@appserver/common/components/Section";
+
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
@@ -43,80 +34,28 @@ class GroupAction extends React.Component {
   }
 
   render() {
-    console.log("GroupAction render");
+    // console.log("GroupAction render");
 
     const { group, match, tReady, isAdmin, showCatalog } = this.props;
 
     return (
       <>
         {group || !match.params.groupId ? (
-          <PageLayout withBodyScroll={true}>
-            {showCatalog && (
-              <PageLayout.CatalogHeader>
-                <CatalogHeaderContent />
-              </PageLayout.CatalogHeader>
-            )}
-
-            {showCatalog && isAdmin && (
-              <PageLayout.CatalogMainButton>
-                <CatalogMainButtonContent />
-              </PageLayout.CatalogMainButton>
-            )}
-            {showCatalog && (
-              <PageLayout.CatalogBody>
-                <CatalogBodyContent />
-              </PageLayout.CatalogBody>
-            )}
-
-            {!showCatalog && (
-              <PageLayout.ArticleHeader>
-                <ArticleHeaderContent />
-              </PageLayout.ArticleHeader>
-            )}
-
-            {!showCatalog && (
-              <PageLayout.ArticleMainButton>
-                <ArticleMainButtonContent />
-              </PageLayout.ArticleMainButton>
-            )}
-
-            {!showCatalog && (
-              <PageLayout.ArticleBody>
-                <ArticleBodyContent />
-              </PageLayout.ArticleBody>
-            )}
-
-            <PageLayout.SectionHeader>
+          <Section withBodyScroll={true}>
+            <Section.SectionHeader>
               <SectionHeaderContent />
-            </PageLayout.SectionHeader>
+            </Section.SectionHeader>
 
-            <PageLayout.SectionBody>
+            <Section.SectionBody>
               <SectionBodyContent tReady={tReady} />
-            </PageLayout.SectionBody>
-          </PageLayout>
+            </Section.SectionBody>
+          </Section>
         ) : (
-          <PageLayout>
-            {showCatalog && (
-              <PageLayout.CatalogHeader>
-                <CatalogHeaderContent />
-              </PageLayout.CatalogHeader>
-            )}
-
-            {showCatalog && isAdmin && (
-              <PageLayout.CatalogMainButton>
-                <CatalogMainButtonContent />
-              </PageLayout.CatalogMainButton>
-            )}
-            {showCatalog && (
-              <PageLayout.CatalogBody>
-                <CatalogBodyContent />
-              </PageLayout.CatalogBody>
-            )}
-
-            <PageLayout.SectionBody>
+          <Section>
+            <Section.SectionBody>
               <Loader className="pageLoader" type="rombs" size="40px" />
-            </PageLayout.SectionBody>
-          </PageLayout>
+            </Section.SectionBody>
+          </Section>
         )}
       </>
     );

@@ -46,6 +46,10 @@ const StyledComponent = styled.div`
       font-weight: 700;
     }
   }
+
+  @media (orientation: landscape) {
+    max-width: 343px;
+  }
 `;
 
 StyledComponent.defaultProps = { theme: Base };

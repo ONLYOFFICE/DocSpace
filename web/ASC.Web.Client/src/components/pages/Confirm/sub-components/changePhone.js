@@ -5,7 +5,7 @@ import styled from "styled-components";
 import Button from "@appserver/components/button";
 import TextInput from "@appserver/components/text-input";
 import Text from "@appserver/components/text";
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
 import { inject, observer } from "mobx-react";
 import withLoader from "../withLoader";
 import { Base } from "@appserver/components/themes";
@@ -117,11 +117,11 @@ const PhoneForm = (props) => {
 
 const ChangePhoneForm = (props) => {
   return (
-    <PageLayout>
-      <PageLayout.SectionBody>
+    <Section>
+      <Section.SectionBody>
         <PhoneForm {...props} />
-      </PageLayout.SectionBody>
-    </PageLayout>
+      </Section.SectionBody>
+    </Section>
   );
 };
 

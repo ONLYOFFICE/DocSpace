@@ -1052,7 +1052,12 @@ class FilesActionStore {
   };
 
   openFileAction = (item) => {
-    const { setIsLoading, fetchFiles, openDocEditor } = this.filesStore;
+    const {
+      setIsLoading,
+      fetchFiles,
+      openDocEditor,
+      isPrivacyFolder,
+    } = this.filesStore;
     const {
       isRecycleBinFolder,
       setExpandedKeys,

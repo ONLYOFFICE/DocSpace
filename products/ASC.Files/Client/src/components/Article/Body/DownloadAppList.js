@@ -4,7 +4,6 @@ import { withTranslation } from "react-i18next";
 import Text from "@appserver/components/text";
 import IconButton from "@appserver/components/icon-button";
 
-import withLoader from "../../../HOCs/withLoader";
 import { Base } from "@appserver/components/themes";
 
 const StyledDownloadAppList = styled.div`
@@ -27,7 +26,7 @@ const StyledDownloadAppList = styled.div`
 
 StyledDownloadAppList.defaultProps = { theme: Base };
 
-const DownloadAppListContainer = ({ t }) => {
+const DownloadAppListContainer = React.memo(({ t }) => {
   const desktopLink = "https://www.onlyoffice.com/desktop.aspx";
   const androidLink = "https://www.onlyoffice.com/office-for-android.aspx";
   const iosLink = "https://www.onlyoffice.com/office-for-ios.aspx";
@@ -86,10 +85,10 @@ const DownloadAppListContainer = ({ t }) => {
       </div>
     </StyledDownloadAppList>
   );
-};
+});
 
 const DownloadAppList = withTranslation(["Translations"])(
-  withLoader(DownloadAppListContainer)(<></>)
+  DownloadAppListContainer
 );
 
 export default DownloadAppList;

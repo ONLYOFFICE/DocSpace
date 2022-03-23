@@ -16,7 +16,7 @@ import Text from "@appserver/components/text";
 import PasswordInput from "@appserver/components/password-input";
 import toastr from "@appserver/components/toast/toastr";
 import Loader from "@appserver/components/loader";
-import PageLayout from "@appserver/common/components/PageLayout";
+import Section from "@appserver/common/components/Section";
 import {
   AppServerConfig,
   EmployeeActivationStatus,
@@ -372,11 +372,11 @@ Confirm.propTypes = {
   history: PropTypes.object.isRequired,
 };
 const ActivateUserForm = (props) => (
-  <PageLayout>
-    <PageLayout.SectionBody>
+  <Section>
+    <Section.SectionBody>
       <Confirm {...props} />
-    </PageLayout.SectionBody>
-  </PageLayout>
+    </Section.SectionBody>
+  </Section>
 );
 
 export default inject(({ auth }) => {

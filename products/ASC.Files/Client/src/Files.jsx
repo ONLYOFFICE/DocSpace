@@ -19,11 +19,15 @@ import Home from "./pages/Home";
 import Settings from "./pages/Settings";
 import VersionHistory from "./pages/VersionHistory";
 import PrivateRoomsPage from "./pages/PrivateRoomsPage";
-import DeepLinkPage from "./pages/DeepLink";
 import ErrorBoundary from "@appserver/common/components/ErrorBoundary";
 import Panels from "./components/FilesPanels";
 import { AppServerConfig } from "@appserver/common/constants";
-import { isMobile } from "react-device-detect";
+import Article from "@appserver/common/components/Article";
+import {
+  ArticleBodyContent,
+  ArticleHeaderContent,
+  ArticleMainButtonContent,
+} from "./components/Article";
 
 const { proxyURL } = AppServerConfig;
 const homepage = config.homepage;
@@ -36,7 +40,6 @@ const HISTORY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/:fileId/history");
 const PRIVATE_ROOMS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/private");
 const FILTER_URL = combineUrl(PROXY_HOMEPAGE_URL, "/filter");
 const MEDIA_VIEW_URL = combineUrl(PROXY_HOMEPAGE_URL, "/#preview");
-const DEEP_LINK_URL = combineUrl(PROXY_HOMEPAGE_URL, "/deeplink");
 
 if (!window.AppServer) {
   window.AppServer = {};
@@ -52,6 +55,36 @@ window.AppServer.files = {
 };
 
 const Error404 = React.lazy(() => import("studio/Error404"));
+
+const FilesArticle = React.memo(() => {
+  return (
+    <Article>
+      <Article.Header>
+        <ArticleHeaderContent />
+      </Article.Header>
+      <Article.MainButton>
+        <ArticleMainButtonContent />
+      </Article.MainButton>
+      <Article.Body>
+        <ArticleBodyContent />
+      </Article.Body>
+    </Article>
+  );
+});
+
+const FilesSection = React.memo(() => {
+  return (
+    <Switch>
+      <PrivateRoute exact path={SETTINGS_URL} component={Settings} />
+      <PrivateRoute exact path={HISTORY_URL} component={VersionHistory} />
+      <PrivateRoute path={PRIVATE_ROOMS_URL} component={PrivateRoomsPage} />
+      <PrivateRoute exact path={HOME_URL} component={Home} />
+      <PrivateRoute path={FILTER_URL} component={Home} />
+      <PrivateRoute path={MEDIA_VIEW_URL} component={Home} />
+      <PrivateRoute component={Error404Route} />
+    </Switch>
+  );
+});
 
 const Error404Route = (props) => (
   <React.Suspense fallback={<AppLoader />}>
@@ -78,6 +111,7 @@ class FilesContent extends React.Component {
       .catch((err) => toastr.error(err))
       .finally(() => {
         this.props.setIsLoaded(true);
+
         updateTempContent();
       });
   }
@@ -97,7 +131,7 @@ class FilesContent extends React.Component {
       isLoaded,
       isDesktop,
     } = this.props;
-    //console.log("componentDidUpdate: ", this.props);
+    // console.log("componentDidUpdate: ", this.props);
     if (isAuthenticated && !this.isDesktopInit && isDesktop && isLoaded) {
       this.isDesktopInit = true;
       regDesktop(
@@ -124,19 +158,8 @@ class FilesContent extends React.Component {
     return (
       <>
         <Panels />
-        <Switch>
-          <PrivateRoute exact path={SETTINGS_URL} component={Settings} />
-          <PrivateRoute exact path={HISTORY_URL} component={VersionHistory} />
-          <PrivateRoute path={PRIVATE_ROOMS_URL} component={PrivateRoomsPage} />
-          <PrivateRoute exact path={HOME_URL} component={Home} />
-          <PrivateRoute path={FILTER_URL} component={Home} />
-          <PrivateRoute path={MEDIA_VIEW_URL} component={Home} />
-          <PrivateRoute
-            path={DEEP_LINK_URL}
-            component={isMobile ? DeepLinkPage : Error404Route}
-          />
-          <PrivateRoute component={Error404Route} />
-        </Switch>
+        <FilesArticle />
+        <FilesSection />
       </>
     );
   }
@@ -151,6 +174,7 @@ const Files = inject(({ auth, filesStore }) => {
     isEncryption: auth.settingsStore.isEncryptionSupport,
     isLoaded: auth.isLoaded && filesStore.isLoaded,
     setIsLoaded: filesStore.setIsLoaded,
+
     setEncryptionKeys: auth.settingsStore.setEncryptionKeys,
     loadFilesInfo: async () => {
       //await auth.init();

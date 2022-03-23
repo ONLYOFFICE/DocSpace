@@ -6,12 +6,6 @@ import withLoader from "../../../../HOCs/withLoader";
 import PeopleRowContainer from "./RowView/PeopleRowContainer";
 import TableView from "./TableView/TableContainer";
 import { Consumer } from "@appserver/components/utils/context";
-import { CatalogMainButtonContent } from "../../../../components/Catalog";
-import { isMobile } from "react-device-detect";
-import {
-  isMobile as isMobileUtils,
-  isTablet as isTabletUtils,
-} from "@appserver/components/utils/device";
 
 class SectionBodyContent extends React.Component {
   render() {
@@ -23,9 +17,6 @@ class SectionBodyContent extends React.Component {
           viewAs === "table" ? (
             <>
               <TableView sectionWidth={context.sectionWidth} tReady={tReady} />
-              {(isMobile || isMobileUtils() || isTabletUtils()) && (
-                <CatalogMainButtonContent sectionWidth={context.sectionWidth} />
-              )}
             </>
           ) : (
             <>
@@ -33,9 +24,6 @@ class SectionBodyContent extends React.Component {
                 sectionWidth={context.sectionWidth}
                 tReady={tReady}
               />
-              {(isMobile || isMobileUtils() || isTabletUtils()) && (
-                <CatalogMainButtonContent sectionWidth={context.sectionWidth} />
-              )}
             </>
           )
         }

@@ -73,16 +73,9 @@ class SettingsStore {
 
   isHeaderVisible = false;
   isTabletView = false;
-  isArticlePinned =
-    localStorage.getItem(ARTICLE_PINNED_KEY) === "true" || false;
-  isArticleVisible = false;
-  isBackdropVisible = false;
-  isArticleVisibleOnUnpin = false;
 
   showText = false;
-  catalogOpen = false;
-  userShowText = false;
-  showCatalog = true;
+  articleOpen = false;
 
   hashSettings = null;
   title = "";
@@ -143,19 +136,6 @@ class SettingsStore {
 
     return `https://helpcenter.onlyoffice.com/${lang}/administration/configuration.aspx#CustomizingPortal_block`;
   }
-
-  setIsArticleVisible = (visible) => {
-    this.isArticleVisible = this.isArticlePinned ? true : visible;
-  };
-
-  setIsBackdropVisible = (visible) => {
-    this.isBackdropVisible = visible;
-  };
-
-  hideArticle = () => {
-    this.setIsArticleVisible(false);
-    this.setIsBackdropVisible(false);
-  };
 
   setValue = (key, value) => {
     this[key] = value;
@@ -370,36 +350,20 @@ class SettingsStore {
     this.isTabletView = isTabletView;
   };
 
-  setArticlePinned = (isPinned) => {
-    isPinned
-      ? localStorage.setItem(ARTICLE_PINNED_KEY, isPinned)
-      : localStorage.removeItem(ARTICLE_PINNED_KEY);
-    this.isArticlePinned = isPinned;
-  };
-
-  setArticleVisibleOnUnpin = (visible) => {
-    this.isArticleVisibleOnUnpin = visible;
-  };
-
   setShowText = (showText) => {
     this.showText = showText;
   };
 
-  setCatalogOpen = (catalogOpen) => {
-    this.catalogOpen = catalogOpen;
-  };
-
-  setUserShowText = (userShowText) => {
-    this.userShowText = userShowText;
-  };
-
   toggleShowText = () => {
     this.showText = !this.showText;
-    this.userShowText = !this.userShowText;
   };
 
-  toggleCatalogOpen = () => {
-    this.catalogOpen = !this.catalogOpen;
+  setArticleOpen = (articleOpen) => {
+    this.articleOpen = articleOpen;
+  };
+
+  toggleArticleOpen = () => {
+    this.articleOpen = !this.articleOpen;
   };
 
   get firebaseHelper() {
