@@ -54,6 +54,12 @@ const StyledForm = styled(Box)`
   .set-app-text {
     margin-top: 14px;
   }
+
+  @media ${tablet} {
+    #qrcode {
+      display: none;
+    }
+  }
 `;
 const TfaActivationForm = withLoader((props) => {
   const {
