@@ -30,12 +30,14 @@ namespace ASC.Data.Storage.Configuration;
 public class BaseStorageSettingsListener
 {
     private readonly IServiceProvider _serviceProvider;
+    private readonly ICacheNotify<ConsumerCacheItem> _cacheNotify;
     private readonly object _locker;
     private volatile bool _subscribed;
 
-    public BaseStorageSettingsListener(IServiceProvider serviceProvider)
+    public BaseStorageSettingsListener(IServiceProvider serviceProvider, ICacheNotify<ConsumerCacheItem> cacheNotify)
     {
         _serviceProvider = serviceProvider;
+        _cacheNotify = cacheNotify;
         _locker = new object();
     }
 
@@ -55,12 +57,12 @@ public class BaseStorageSettingsListener
 
             _subscribed = true;
 
-            _serviceProvider.GetService<ICacheNotify<ConsumerCacheItem>>().Subscribe((i) =>
+            _cacheNotify.Subscribe((i) =>
             {
                 using var scope = _serviceProvider.CreateScope();
 
                 var scopeClass = scope.ServiceProvider.GetService<BaseStorageSettingsListenerScope>();
-                var (storageSettingsHelper, settingsManager, cdnStorageSettings) = scopeClass;
+                var (storageSettingsHelper, settingsManager) = scopeClass;
                 var settings = settingsManager.LoadForTenant<StorageSettings>(i.TenantId);
                 if (i.Name == settings.Module)
                 {
@@ -227,20 +229,17 @@ public class BaseStorageSettingsListenerScope
 {
     private readonly StorageSettingsHelper _storageSettingsHelper;
     private readonly SettingsManager _settingsManager;
-    private readonly CdnStorageSettings _cdnStorageSettings;
 
-    public BaseStorageSettingsListenerScope(StorageSettingsHelper storageSettingsHelper, SettingsManager settingsManager, CdnStorageSettings cdnStorageSettings)
+    public BaseStorageSettingsListenerScope(StorageSettingsHelper storageSettingsHelper, SettingsManager settingsManager)
     {
         _storageSettingsHelper = storageSettingsHelper;
         _settingsManager = settingsManager;
-        _cdnStorageSettings = cdnStorageSettings;
     }
 
-    public void Deconstruct(out StorageSettingsHelper storageSettingsHelper, out SettingsManager settingsManager, out CdnStorageSettings cdnStorageSettings)
+    public void Deconstruct(out StorageSettingsHelper storageSettingsHelper, out SettingsManager settingsManager)
     {
         storageSettingsHelper = _storageSettingsHelper;
         settingsManager = _settingsManager;
-        cdnStorageSettings = this._cdnStorageSettings;
     }
 }
 
