@@ -28,7 +28,7 @@ using JsonConverter = System.Text.Json.Serialization.JsonConverter;
 
 namespace ASC.Api.Core;
 
-public abstract class BaseStartup : Core.IStartup
+public abstract class BaseStartup
 {
     public IConfiguration Configuration { get; }
     public IHostEnvironment HostEnvironment { get; }

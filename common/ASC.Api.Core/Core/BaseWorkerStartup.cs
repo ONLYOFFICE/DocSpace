@@ -26,15 +26,13 @@
 
 namespace ASC.Api.Core;
 
-public class BaseWorkerStartup : Core.IStartup
+public class BaseWorkerStartup
 {
     public IConfiguration Configuration { get; }
-    public IHostEnvironment HostEnvironment { get; }
 
-    public BaseWorkerStartup(IConfiguration configuration, IHostEnvironment hostEnvironment)
+    public BaseWorkerStartup(IConfiguration configuration)
     {
         Configuration = configuration;
-        HostEnvironment = hostEnvironment;
     }
 
     public virtual void ConfigureServices(IServiceCollection services)
@@ -43,7 +41,7 @@ public class BaseWorkerStartup : Core.IStartup
         services.AddCustomHealthCheck(Configuration);
     }
 
-    public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    public virtual void Configure(IApplicationBuilder app)
     {
         app.UseRouting();
 
@@ -60,6 +58,4 @@ public class BaseWorkerStartup : Core.IStartup
             });
         });
     }
-
-    public void ConfigureContainer(ContainerBuilder builder) { }
 }
