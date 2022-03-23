@@ -16,15 +16,7 @@ const StyledSectionHeader = styled.div`
   height: 53px;
   margin-right: 20px;
   ${NoUserSelect}
-  ${isMobile &&
-  css`
-    height: ${(props) => (props.maintenanceExist ? "120px" : "40px")};
-    width: ${(props) => !props.isLoaded && "100%"};
-    margin-top: 62px;
-    @media ${tablet} {
-      margin-top: ${(props) => props.marginTop};
-    }
-  `}
+
   @media ${tablet} {
     height: 61px;
     margin-right: 16px;
@@ -32,12 +24,27 @@ const StyledSectionHeader = styled.div`
 
   ${isMobile &&
   css`
-    height: 61px !important;
-    margin-top: 48px !important;
     margin-right: 0px !important;
   `}
 
+  ${isMobile &&
+  css`
+    height: ${(props) =>
+      props.maintenanceExist ? "120px" : "61px"} !important;
+    width: ${(props) => !props.isLoaded && "100%"};
+    margin-top: 62px;
+    @media ${tablet} {
+      margin-top: ${(props) => props.marginTop};
+    }
+  `}
+
   .section-header {
+    height: 53px;
+    ${isMobile &&
+    css`
+      max-width: calc(100vw - 32px);
+      width: 100%;
+    `}
     ${isMobile &&
     css`
       position: fixed;
@@ -47,6 +54,7 @@ const StyledSectionHeader = styled.div`
       background-color: #fff;
       z-index: 149;
       padding-right: 16px;
+      padding-top: 5px;
     `}
   }
 
