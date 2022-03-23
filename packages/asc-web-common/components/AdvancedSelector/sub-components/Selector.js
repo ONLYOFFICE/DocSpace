@@ -254,7 +254,6 @@ const Selector = (props) => {
 
       const option = options[index];
       const isChecked = isOptionChecked(option);
-      let tooltipProps = {};
 
       ReactTooltip.rebuild();
 
@@ -264,7 +263,6 @@ const Selector = (props) => {
           style={style}
           {...option}
           isChecked={isChecked}
-          tooltipProps={tooltipProps}
           onOptionChange={onOptionChange}
           onLinkClick={onLinkClick}
           isMultiSelect={isMultiSelect}
@@ -379,6 +377,7 @@ const Selector = (props) => {
     if (groups.length === 0) {
       return <Option isLoader={true} loadingLabel={loadingLabel} />;
     }
+
     return (
       <AutoSizer>
         {({ width, height }) => (
@@ -446,7 +445,6 @@ const Selector = (props) => {
   }, [isMultiSelect, groupHeader, selectedOptionList, getGroupSelectedOptions]);
 
   const renderOptionList = React.useCallback(() => {
-    console.log("option list render");
     return (
       <AutoSizer>
         {({ width, height }) => (
@@ -486,8 +484,6 @@ const Selector = (props) => {
     }
     onArrowClick && onArrowClick();
   }, [groups, groupHeader, onArrowClick, onGroupChanged]);
-
-  console.log("render selector");
 
   return (
     <StyledSelector

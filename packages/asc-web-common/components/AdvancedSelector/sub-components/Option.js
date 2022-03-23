@@ -13,13 +13,18 @@ const Option = ({
   avatarUrl,
   label,
   keyProp,
-  tooltipProps,
   onOptionChange,
   onLinkClick,
   isLoader,
   loadingLabel,
 }) => {
-  console.log("render option", index, isLoader);
+  const onOptionChangeAction = React.useCallback(() => {
+    onOptionChange && onOptionChange(index, isChecked);
+  }, [onOptionChange, index, isChecked]);
+
+  const onLinkClickAction = React.useCallback(() => {
+    onLinkClick && onLinkClick(index);
+  }, [onLinkClick, index]);
 
   return isLoader ? (
     <div style={style} className="row-option">
@@ -43,8 +48,7 @@ const Option = ({
       className="row-option"
       value={`${index}`}
       name={`selector-row-option-${index}`}
-      onClick={() => onOptionChange(index, isChecked)}
-      {...tooltipProps}
+      onClick={onOptionChangeAction}
     >
       <div className="option-info">
         <Avatar
@@ -77,8 +81,7 @@ const Option = ({
       className="row-option"
       data-index={index}
       name={`selector-row-option-${index}`}
-      onClick={() => onLinkClick(index)}
-      {...tooltipProps}
+      onClick={onLinkClickAction}
     >
       <div className="option-info">
         <Avatar

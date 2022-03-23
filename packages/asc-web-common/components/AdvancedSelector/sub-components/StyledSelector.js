@@ -1,17 +1,14 @@
-import React from "react";
 import styled, { css } from "styled-components";
 
 import Base from "@appserver/components/themes/base";
 
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-const Container = ({ isMultiSelect, hasSelected, ...props }) => (
-  <div {...props} />
-);
+
 /* eslint-enable react/prop-types */
 /* eslint-enable no-unused-vars */
 
-const StyledSelector = styled(Container)`
+const StyledSelector = styled.div`
   display: grid;
 
   height: 100%;
