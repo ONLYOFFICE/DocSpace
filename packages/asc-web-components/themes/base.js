@@ -1919,7 +1919,7 @@ const Base = {
 
   menuContainer: {
     background: "linear-gradient(200.71deg, #2274aa 0%, #0f4071 100%)",
-    arrowTop: "#0f4071",
+    arrowTop: "#206FA4",
     color: white,
   },
 
@@ -2500,6 +2500,7 @@ const Base = {
     about: {
       linkColor: blueMain,
       border: "1px solid lightgray",
+      logoColor: black,
     },
 
     comingSoon: {
@@ -2600,7 +2601,7 @@ const Base = {
   },
 
   campaignsBanner: {
-    border: "border: 1px solid #d1d1d1",
+    border: "1px solid #d1d1d1",
     color: darkBlack,
 
     btnColor: white,

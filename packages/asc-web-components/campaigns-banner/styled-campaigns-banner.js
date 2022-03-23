@@ -42,7 +42,6 @@ const BannerWrapper = styled.div`
 
   .banner-btn:active {
     color: ${(props) => props.theme.campaignsBanner.btnColor};
-    background: ${(props) => props.theme.campaignsBanner.btnBackgroundActive};
     border: none;
   }
 `;

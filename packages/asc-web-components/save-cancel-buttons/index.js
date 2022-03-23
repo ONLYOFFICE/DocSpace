@@ -45,7 +45,7 @@ class SaveCancelButtons extends React.Component {
       cancelButtonLabel,
       sectionWidth,
       hasChanged,
-      border,
+      hasScroll,
       className,
       id,
     } = this.props;
@@ -61,7 +61,7 @@ class SaveCancelButtons extends React.Component {
         displaySettings={displaySettings}
         sectionWidth={sectionWidth}
         showReminder={showReminder}
-        border={border}
+        hasScroll={hasScroll}
       >
         <div className="buttons-flex">
           <Button
@@ -108,7 +108,7 @@ SaveCancelButtons.propTypes = {
   displaySettings: PropTypes.bool,
   sectionWidth: PropTypes.number,
   hasChanged: PropTypes.bool,
-  border: PropTypes.bool,
+  hasScroll: PropTypes.bool,
 };
 
 SaveCancelButtons.defaultProps = {
