@@ -2,6 +2,20 @@
 
 public static class HostBuilderExtension
 {
+    public static IHostBuilder ConfigureDefault(this IHostBuilder hostBuilder, string[] args,
+        Action<HostBuilderContext, IConfigurationBuilder, IHostEnvironment, string> configureApp = null,
+        Action<HostBuilderContext, IServiceCollection, DIHelper> configureServices = null)
+    {
+        hostBuilder.UseSystemd();
+        hostBuilder.UseWindowsService();
+        hostBuilder.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+        hostBuilder.ConfigureNLogLogging();
+        hostBuilder.ConfigureDefaultAppConfiguration(args, configureApp);
+        hostBuilder.ConfigureDefaultServices(configureServices);
+
+        return hostBuilder;
+    }
+
     public static IHostBuilder ConfigureDefaultAppConfiguration(this IHostBuilder hostBuilder, string[] args, Action<HostBuilderContext, IConfigurationBuilder, IHostEnvironment, string> configureDelegate = null)
     {
         hostBuilder.ConfigureAppConfiguration((hostContext, config) =>
