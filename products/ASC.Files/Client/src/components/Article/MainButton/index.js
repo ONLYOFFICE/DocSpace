@@ -1,7 +1,7 @@
 import React from "react";
-import PropTypes from "prop-types";
+
 import { inject, observer } from "mobx-react";
-import { withRouter } from "react-router";
+
 import MainButton from "@appserver/components/main-button";
 import { withTranslation } from "react-i18next";
 import { isMobile } from "react-device-detect";
@@ -12,14 +12,13 @@ import {
 import Loaders from "@appserver/common/components/Loaders";
 import { FileAction } from "@appserver/common/constants";
 import { encryptionUploadDialog } from "../../../helpers/desktop";
-import config from "../../../../package.json";
 
 import MobileView from "./MobileView";
-import withLoader from "../../../HOCs/withLoader";
 
 const ArticleMainButtonContent = (props) => {
   const {
     t,
+    showText,
     isDisabled,
     canCreate,
     isPrivacy,
@@ -28,9 +27,9 @@ const ArticleMainButtonContent = (props) => {
     startUpload,
     setAction,
     setSelectFileDialogVisible,
-    sectionWidth,
     isArticleLoading,
     isFavoritesFolder,
+    isShareFolder,
     isRecentFolder,
     isCommonFolder,
     isRecycleBinFolder,
@@ -41,6 +40,12 @@ const ArticleMainButtonContent = (props) => {
   const [actions, setActions] = React.useState([]);
   const [uploadActions, setUploadActions] = React.useState([]);
   const [model, setModel] = React.useState([]);
+
+  const [isMobileView, setIsMobileView] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsMobileView(isMobile || isMobileUtils() || isTabletUtils());
+  }, [showText]);
 
   const onCreate = React.useCallback(
     (e) => {
@@ -216,17 +221,18 @@ const ArticleMainButtonContent = (props) => {
 
   return (
     <>
-      {isMobile || isMobileUtils() || isTabletUtils() ? (
+      {isMobileView ? (
         <>
           {!isFavoritesFolder &&
             !isRecentFolder &&
             !isCommonFolder &&
-            !isRecycleBinFolder && (
+            !isShareFolder &&
+            !isRecycleBinFolder &&
+            !isArticleLoading && (
               <MobileView
                 titleProp={t("Upload")}
                 actionOptions={actions}
                 buttonOptions={uploadActions}
-                sectionWidth={sectionWidth}
               />
             )}
         </>
@@ -267,7 +273,7 @@ const ArticleMainButtonContent = (props) => {
 };
 
 export default inject(
-  ({ filesStore, dialogsStore, uploadDataStore, treeFoldersStore }) => {
+  ({ auth, filesStore, dialogsStore, uploadDataStore, treeFoldersStore }) => {
     const {
       isLoaded,
       firstLoad,
@@ -281,6 +287,7 @@ export default inject(
       isRecentFolder,
       isCommonFolder,
       isRecycleBinFolder,
+      isShareFolder,
     } = treeFoldersStore;
     const { startUpload } = uploadDataStore;
     const { setSelectFileDialogVisible } = dialogsStore;
@@ -288,12 +295,15 @@ export default inject(
     const isArticleLoading = (!isLoaded || isLoading) && firstLoad;
 
     return {
+      showText: auth.settingsStore.showText,
+
       isArticleLoading,
       isPrivacy: isPrivacyFolder,
       isFavoritesFolder,
       isRecentFolder,
       isCommonFolder,
       isRecycleBinFolder,
+      isShareFolder,
       canCreate,
 
       setAction: fileActionStore.setAction,

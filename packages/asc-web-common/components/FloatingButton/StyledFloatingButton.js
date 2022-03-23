@@ -100,6 +100,12 @@ const IconBox = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+
+  svg {
+    path {
+      fill: ${(props) => props.theme.floatingButton.fill};
+    }
+  }
 `;
 
 IconBox.defaultProps = { theme: Base };
@@ -108,8 +114,17 @@ const StyledAlertIcon = styled.div`
   position: absolute;
   width: 12px;
   height: 12px;
-  left: 19px;
+  left: 20px;
   top: 0px;
+
+  svg {
+    circle {
+      fill: ${(props) => props.theme.floatingButton.alert.fill};
+    }
+    path {
+      fill: ${(props) => props.theme.floatingButton.alert.path};
+    }
+  }
 `;
 
 export {

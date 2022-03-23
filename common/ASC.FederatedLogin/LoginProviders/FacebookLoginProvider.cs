@@ -54,6 +54,8 @@ namespace ASC.FederatedLogin.LoginProviders
         public override string CodeUrl { get { return "https://www.facebook.com/v2.7/dialog/oauth/"; } }
         public override string Scopes { get { return "email,public_profile"; } }
 
+        private readonly RequestHelper _requestHelper;
+
         public FacebookLoginProvider() { }
         public FacebookLoginProvider(
             OAuth20TokenHelper oAuth20TokenHelper,
@@ -65,8 +67,12 @@ namespace ASC.FederatedLogin.LoginProviders
             ConsumerFactory consumerFactory,
             Signature signature,
             InstanceCrypto instanceCrypto,
+            RequestHelper requestHelper,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(oAuth20TokenHelper, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, signature, instanceCrypto, name, order, props, additional) { }
+            : base(oAuth20TokenHelper, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, signature, instanceCrypto, name, order, props, additional)
+        {
+            _requestHelper = requestHelper;
+        }
 
         public override LoginProfile GetLoginProfile(string accessToken)
         {
@@ -78,7 +84,7 @@ namespace ASC.FederatedLogin.LoginProviders
 
         private LoginProfile RequestProfile(string accessToken)
         {
-            var facebookProfile = RequestHelper.PerformRequest(FacebookProfileUrl + "&access_token=" + accessToken);
+            var facebookProfile = _requestHelper.PerformRequest(FacebookProfileUrl + "&access_token=" + accessToken);
             var loginProfile = ProfileFromFacebook(facebookProfile);
             return loginProfile;
         }

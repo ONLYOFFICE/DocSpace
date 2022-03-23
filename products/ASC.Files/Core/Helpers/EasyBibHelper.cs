@@ -63,6 +63,8 @@ namespace ASC.Web.Files.Helpers
             get { return this["easyBibappkey"]; }
         }
 
+        private readonly RequestHelper _requestHelper;
+
         public EasyBibHelper()
         {
 
@@ -76,6 +78,7 @@ namespace ASC.Web.Files.Helpers
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory factory,
+            RequestHelper requestHelper,
             string name,
             int order,
             Dictionary<string, string> props,
@@ -83,9 +86,10 @@ namespace ASC.Web.Files.Helpers
             : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, factory, name, order, props, additional)
         {
             Log = option.CurrentValue;
+            _requestHelper = requestHelper;
         }
 
-        public static string GetEasyBibCitationsList(int source, string data)
+        public string GetEasyBibCitationsList(int source, string data)
         {
             var uri = "";
             switch (source)
@@ -108,7 +112,7 @@ namespace ASC.Web.Files.Helpers
             var headers = new Dictionary<string, string>() { };
             try
             {
-                return RequestHelper.PerformRequest(uri, "", method, "", headers);
+                return _requestHelper.PerformRequest(uri, "", method, "", headers);
             }
             catch (Exception)
             {
@@ -117,14 +121,14 @@ namespace ASC.Web.Files.Helpers
 
         }
 
-        public static string GetEasyBibStyles()
+        public string GetEasyBibStyles()
         {
 
             const string method = "GET";
             var headers = new Dictionary<string, string>() { };
             try
             {
-                return RequestHelper.PerformRequest(easyBibStyles, "", method, "", headers);
+                return _requestHelper.PerformRequest(easyBibStyles, "", method, "", headers);
             }
             catch (Exception)
             {
@@ -147,7 +151,7 @@ namespace ASC.Web.Files.Helpers
                 var body = citationData;
                 var headers = new Dictionary<string, string>() { };
 
-                return RequestHelper.PerformRequest(uri, contentType, method, body, headers);
+                return _requestHelper.PerformRequest(uri, contentType, method, body, headers);
 
             }
             catch (Exception)
