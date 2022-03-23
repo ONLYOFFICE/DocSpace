@@ -33,5 +33,5 @@ var builder = WebApp.CreateWebApplicationBuilder(args,
         serverOptions.Limits.MinResponseDataRate = null;
     }, null);
 
-var app = builder.BuildWithStartup<ASC.Files.Startup>();
+var app = builder.Build<ASC.Files.Startup>();
 await app.RunAsync();

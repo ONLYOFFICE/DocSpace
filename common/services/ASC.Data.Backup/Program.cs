@@ -31,5 +31,5 @@ var builder = WebApp.CreateWebApplicationBuilder(args, null, (hostContext, confi
           .AddJsonFile("backup.json");
 });
 
-var app = builder.BuildWithStartup<Startup>();
+var app = builder.Build<Startup>();
 await app.RunAsync();

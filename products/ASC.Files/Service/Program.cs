@@ -75,7 +75,7 @@ var builder = WebApp.CreateWebApplicationBuilder(args, null, (hostContext, confi
     services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
 });
 
-var app = builder.BuildWithStartup<BaseWorkerStartup>((context, builder) =>
+var app = builder.Build<BaseWorkerStartup>((context, builder) =>
 {
     builder.Register(context.Configuration, true, false, "search.json", "feed.json");
 });

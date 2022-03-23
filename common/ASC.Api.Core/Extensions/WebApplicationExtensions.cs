@@ -65,7 +65,7 @@ public static class WebApp
 
 public static class WebApplicationExtensions
 {
-    public static WebApplication BuildWithStartup<T>(this WebApplicationBuilder builder) where T : Core.IStartup
+    public static WebApplication Build<T>(this WebApplicationBuilder builder) where T : Core.IStartup
     {
         var startup = CreateStartup<T>(builder);
 
@@ -77,7 +77,7 @@ public static class WebApplicationExtensions
         return UseStartupAndBuild(builder, startup);
     }
 
-    public static WebApplication BuildWithStartup<T>(this WebApplicationBuilder builder,
+    public static WebApplication Build<T>(this WebApplicationBuilder builder,
         Action<HostBuilderContext, ContainerBuilder> configureContainer) where T : Core.IStartup
     {
         var startup = CreateStartup<T>(builder);

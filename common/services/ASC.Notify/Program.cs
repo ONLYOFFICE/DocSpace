@@ -52,7 +52,7 @@ var builder = WebApp.CreateWebApplicationBuilder(args, null, (hostContext, confi
     services.AddHostedService<NotifyCleanerService>();
 });
 
-var app = builder.BuildWithStartup<BaseWorkerStartup>((context, containerBuilder) =>
+var app = builder.Build<BaseWorkerStartup>((context, containerBuilder) =>
 {
     containerBuilder.Register(context.Configuration);
 });

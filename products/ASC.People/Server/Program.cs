@@ -26,5 +26,5 @@
 
 var builder = WebApp.CreateWebApplicationBuilder(args, null, null);
 
-var app = builder.BuildWithStartup<Startup>();
+var app = builder.Build<Startup>();
 await app.RunAsync();

@@ -40,5 +40,5 @@ var builder = WebApp.CreateWebApplicationBuilder(args, null, (hostContext, confi
     diHelper.TryAdd<WorkerService>();
 });
 
-var app = builder.BuildWithStartup<BaseWorkerStartup>();
+var app = builder.Build<BaseWorkerStartup>();
 await app.RunAsync();

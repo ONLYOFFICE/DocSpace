@@ -41,5 +41,5 @@ var builder = WebApp.CreateWebApplicationBuilder(args, null, (hostContext, confi
     services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
 });
 
-var app = builder.BuildWithStartup<BaseWorkerStartup>();
+var app = builder.Build<BaseWorkerStartup>();
 await app.RunAsync();

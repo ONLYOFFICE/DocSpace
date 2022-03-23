@@ -30,5 +30,5 @@ var build = WebApp.CreateWebApplicationBuilder(args, null, (hostContext, config,
           .AddJsonFile($"notify.{env.EnvironmentName}.json", true);
 });
 
-var ap = build.BuildWithStartup<Startup>();
+var ap = build.Build<Startup>();
 await ap.RunAsync();
