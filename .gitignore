@@ -17,3 +17,5 @@ Logs/
 build/deploy/
 /public/debuginfo.md
 TestsResults/
+serverBuild/
+clientBuild/

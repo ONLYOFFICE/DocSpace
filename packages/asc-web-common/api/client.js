@@ -1,55 +1,13 @@
-import axios from "axios";
-import { AppServerConfig } from "../constants";
-import { combineUrl } from "../utils";
+import AxiosClient from "../utils/axiosClient";
 
-const { proxyURL, apiPrefixURL, apiTimeout } = AppServerConfig;
-const origin = window.location.origin;
+const client = new AxiosClient();
 
-const apiBaseURL = combineUrl(origin, proxyURL, apiPrefixURL);
-const loginURL = combineUrl(proxyURL, "/login");
-const paymentsURL = combineUrl(proxyURL, "/payments");
-
-window.AppServer = {
-  ...window.AppServer,
-  origin,
-  proxyURL,
-  apiPrefixURL,
-  apiBaseURL,
-  apiTimeout,
-  paymentsURL,
+export const initSSR = (headers) => {
+  client.initSSR(headers);
 };
 
-/**
- * @description axios instance for ajax requests
- */
-
-const client = axios.create({
-  baseURL: apiBaseURL,
-  responseType: "json",
-  timeout: apiTimeout, // default is `0` (no timeout)
-});
-
-export function setWithCredentialsStatus(state) {
-  client.defaults.withCredentials = state;
-}
-
-export function setClientBasePath(path) {
-  if (!path) return;
-
-  client.defaults.baseURL = path;
-}
-
-const getResponseError = (res) => {
-  if (!res) return;
-
-  if (res.data && res.data.error) {
-    return res.data.error.message;
-  }
-
-  if (res.isAxiosError && res.message) {
-    //console.error(res.message);
-    return res.message;
-  }
+export const request = (options) => {
+  return client.request(options);
 };
 
 /**
@@ -104,4 +62,6 @@ export const request = function (options) {
   };
 
   return client(options).then(onSuccess).catch(onError);
+export const setWithCredentialsStatus = (state) => {
+  return client.setWithCredentialsStatus(state);
 };

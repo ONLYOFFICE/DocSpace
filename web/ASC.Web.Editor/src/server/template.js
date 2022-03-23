@@ -1,0 +1,63 @@
+import { getFavicon } from "../helpers/utils";
+import pkg from "../../package.json";
+import {
+  FILES_SCOPE,
+  FILES_REMOTE_ENTRY_URL,
+  STUDIO_SCOPE,
+  STUDIO_REMOTE_ENTRY_URL,
+} from "../helpers/constants";
+
+export default function template(
+  initialState = {},
+  content = "",
+  styleTags,
+  scriptTags,
+  initialI18nStore,
+  initialLanguage
+) {
+  const { title } = pkg;
+  const { docApiUrl } = initialState;
+  const faviconHref = getFavicon(initialState?.config?.documentType);
+
+  const scripts = `   
+    <script id="__ASC_INITIAL_STATE__">
+      window.__ASC_INITIAL_STATE__ = ${JSON.stringify(initialState)}
+      window.initialI18nStore = JSON.parse('${JSON.stringify(
+        initialI18nStore
+      )}')
+      window.initialLanguage = '${initialLanguage}'
+    </script>
+    <script type='text/javascript' id='scripDocServiceAddress' src="${docApiUrl}" async></script>
+   ${scriptTags}
+`;
+
+  const page = `
+    <!DOCTYPE html>
+      <html lang="en">
+        <head>
+          <meta charset="utf-8">
+          <title> ${title} </title>
+          <meta charset="utf-8" />
+          <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
+          />
+          <meta name="theme-color" content="#000000" />
+          <link id="favicon" rel="shortcut icon" href=${faviconHref} />
+          <link rel="manifest" href="/manifest.json" />
+          <meta name="mobile-web-app-capable" content="yes" />
+          <meta name="apple-mobile-web-app-capable" content="yes" />
+          <link rel="apple-touch-icon" href="/appIcon.png" />
+          ${styleTags}
+          <script id=${FILES_SCOPE} src=${FILES_REMOTE_ENTRY_URL} type="text/javascript" async=""></script>
+          <script id=${STUDIO_SCOPE} src=${STUDIO_REMOTE_ENTRY_URL} type="text/javascript" async=""></script>      
+        </head>
+        <body>
+          <div id="root">${content}</div>
+            ${scripts}
+          </body>
+      </html>
+  `;
+
+  return page;
+}
