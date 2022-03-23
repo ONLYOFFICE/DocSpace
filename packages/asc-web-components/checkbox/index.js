@@ -141,4 +141,4 @@ Checkbox.defaultProps = {
   truncate: false,
 };
 
-export default Checkbox;
+export default React.memo(Checkbox);
