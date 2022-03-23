@@ -24,13 +24,22 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-var builder = WebApp.CreateWebApplicationBuilder(args, null, (hostContext, config, env, path) =>
+var options = new WebApplicationOptions
+{
+    Args = args,
+    ContentRootPath = WindowsServiceHelpers.IsWindowsService() ? AppContext.BaseDirectory : default
+};
+
+var builder = WebApplication.CreateBuilder(options);
+
+builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
 {
     config.AddJsonFile($"appsettings.services.json", true)
           .AddJsonFile("notify.json")
           .AddJsonFile($"notify.{env.EnvironmentName}.json", true)
           .AddJsonFile("elastic.json", true);
-}, (hostContext, services, diHelper) =>
+}, 
+(hostContext, services, diHelper) =>
 {
     services.AddHttpClient();
 
@@ -75,9 +84,17 @@ var builder = WebApp.CreateWebApplicationBuilder(args, null, (hostContext, confi
     services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
 });
 
-var app = builder.Build<BaseWorkerStartup>((context, builder) =>
+builder.Host.ConfigureContainer<ContainerBuilder>((context, builder) =>
 {
     builder.Register(context.Configuration, true, false, "search.json", "feed.json");
 });
+
+var startup = new BaseWorkerStartup(builder.Configuration);
+
+startup.ConfigureServices(builder.Services);
+
+var app = builder.Build();
+
+startup.Configure(app);
 
 await app.RunAsync();

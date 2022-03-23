@@ -24,7 +24,28 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-var builder = WebApp.CreateWebApplicationBuilder(args, null, null);
+var options = new WebApplicationOptions
+{
+    Args = args,
+    ContentRootPath = WindowsServiceHelpers.IsWindowsService() ? AppContext.BaseDirectory : default
+};
 
-var app = builder.Build<Startup>();
+var builder = WebApplication.CreateBuilder(options);
+
+builder.Host.ConfigureDefault(args);
+builder.WebHost.ConfigureDefaultKestrel();
+
+var startup = new Startup(builder.Configuration, builder.Environment);
+
+startup.ConfigureServices(builder.Services);
+
+builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
+{
+    startup.ConfigureContainer(containerBuilder);
+});
+
+var app = builder.Build();
+
+startup.Configure(app, app.Environment);
+
 await app.RunAsync();

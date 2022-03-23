@@ -24,7 +24,15 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-var builder = WebApp.CreateWebApplicationBuilder(args, null, null, (hostContext, services, diHelper) =>
+var options = new WebApplicationOptions
+{
+    Args = args,
+    ContentRootPath = WindowsServiceHelpers.IsWindowsService() ? AppContext.BaseDirectory : default
+};
+
+var builder = WebApplication.CreateBuilder(options);
+
+builder.Host.ConfigureDefault(args, null, (hostContext, services, diHelper) =>
 {
     services.AddHostedService<ClearEventsService>();
     diHelper.TryAdd<ClearEventsService>();
