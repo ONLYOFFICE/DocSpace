@@ -6,7 +6,7 @@ import Button from "@appserver/components/button";
 import Text from "@appserver/components/text";
 import toastr from "@appserver/components/toast/toastr";
 import Section from "@appserver/common/components/Section";
-import { tryRedirectTo } from "@appserver/common/utils";
+import tryRedirectTo from "@appserver/common/utils/tryRedirectTo";
 import { inject, observer } from "mobx-react";
 import withLoader from "../withLoader";
 import { Base } from "@appserver/components/themes";
