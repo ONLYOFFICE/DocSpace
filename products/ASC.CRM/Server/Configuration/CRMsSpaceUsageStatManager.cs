@@ -61,7 +61,7 @@ namespace ASC.Web.CRM.Configuration
         }
 
 
-        public override async Task<List<UsageSpaceStatItem>> GetStatDataAsync()
+        public override async ValueTask<List<UsageSpaceStatItem>> GetStatDataAsync()
         {
             var spaceUsage = await _filesDbContext.Files.AsQueryable().Join(_filesDbContext.Tree,
                                      x => x.FolderId,
