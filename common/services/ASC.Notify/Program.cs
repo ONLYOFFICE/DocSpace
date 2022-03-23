@@ -24,28 +24,12 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-var options = new WebApplicationOptions
-{
-    Args = args,
-    ContentRootPath = WindowsServiceHelpers.IsWindowsService() ? AppContext.BaseDirectory : default
-};
-
-var builder = WebApplication.CreateBuilder(options);
-var startup = new BaseWorkerStartup(builder.Configuration);
-
-builder.Host.UseSystemd();
-builder.Host.UseWindowsService();
-builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
-
-builder.Host.ConfigureDefaultAppConfiguration(args, (hostContext, config, env, path) =>
+var builder = WebApp.CreateWebApplicationBuilder(args, null, (hostContext, config, env, path) =>
 {
     config.AddJsonFile($"appsettings.services.json", true)
           .AddJsonFile("notify.json")
           .AddJsonFile($"notify.{env.EnvironmentName}.json", true);
-});
-
-startup.ConfigureServices(builder.Services);
-builder.Host.ConfigureDefaultServices((hostContext, services, diHelper) =>
+}, (hostContext, services, diHelper) =>
 {
     diHelper.RegisterProducts(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
 
@@ -68,14 +52,9 @@ builder.Host.ConfigureDefaultServices((hostContext, services, diHelper) =>
     services.AddHostedService<NotifyCleanerService>();
 });
 
-builder.Host.ConfigureContainer<ContainerBuilder>((context, builder) =>
+var app = builder.BuildWithStartup<BaseWorkerStartup>((context, containerBuilder) =>
 {
-    builder.Register(context.Configuration);
+    containerBuilder.Register(context.Configuration);
 });
-
-builder.Host.ConfigureNLogLogging();
-
-var app = builder.Build();
-startup.Configure(app);
 
 await app.RunAsync();

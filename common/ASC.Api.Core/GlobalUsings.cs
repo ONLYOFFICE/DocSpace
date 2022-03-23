@@ -69,6 +69,7 @@ global using ASC.Web.Studio.Utility;
 global using ASC.Webhooks.Core;
 
 global using Autofac;
+global using Autofac.Extensions.DependencyInjection;
 
 global using Confluent.Kafka;
 
