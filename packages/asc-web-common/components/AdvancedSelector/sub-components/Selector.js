@@ -382,7 +382,7 @@ const Selector = (props) => {
       <AutoSizer>
         {({ width, height }) => (
           <List
-            className="options_list"
+            className="options-list"
             height={height - 8}
             width={width + 8}
             itemCount={groups.length}
@@ -456,7 +456,7 @@ const Selector = (props) => {
           >
             {({ onItemsRendered, ref }) => (
               <List
-                className="options_list"
+                className="options-list"
                 height={height - 25}
                 itemCount={itemCount}
                 itemSize={48}
@@ -495,11 +495,7 @@ const Selector = (props) => {
         headerLabel={headerLabel}
         onArrowClickAction={onArrowClickAction}
       />
-      <div
-        style={{ width: "320px", height: "100%" }}
-        className="column-options"
-        size={size}
-      >
+      <div style={{ height: "100%" }} className="column-options" size={size}>
         <Search
           isDisabled={isDisabled}
           placeholder={searchPlaceHolderLabel}

@@ -104,6 +104,12 @@ const StyledSelector = styled.div`
       grid-area: body-options;
       margin-top: 8px;
 
+      .options-list {
+        div:nth-child(3) {
+          right: 10px !important;
+        }
+      }
+
       .row-option {
         box-sizing: border-box;
         height: 48px;
