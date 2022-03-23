@@ -3,6 +3,9 @@ import PropTypes from "prop-types";
 
 import Header from "./Header";
 import Search from "./Search";
+import Group from "./Group";
+import Option from "./Option";
+
 import Footer from "./Footer";
 
 import { FixedSizeList as List } from "react-window";
@@ -13,11 +16,9 @@ import ReactTooltip from "react-tooltip";
 import Avatar from "@appserver/components/avatar";
 import Checkbox from "@appserver/components/checkbox";
 
-import Loader from "@appserver/components/loader";
 import Text from "@appserver/components/text";
 import Tooltip from "@appserver/components/tooltip";
-import Heading from "@appserver/components/heading";
-import IconButton from "@appserver/components/icon-button";
+
 import CustomScrollbarsVirtualList from "@appserver/components/scrollbar/custom-scrollbars-virtual-list";
 
 import StyledSelector from "./StyledSelector";
@@ -241,98 +242,6 @@ const Selector = (props) => {
     [options]
   );
 
-  const renderOptionItem = useCallback(
-    (index, style, option, isChecked, tooltipProps) => {
-      return isMultiSelect ? (
-        <div
-          style={style}
-          className="row-option"
-          value={`${index}`}
-          name={`selector-row-option-${index}`}
-          onClick={() => onOptionChange(index, isChecked)}
-          {...tooltipProps}
-        >
-          <div className="option-info">
-            <Avatar
-              className="option-avatar"
-              role="user"
-              size="min"
-              source={option.avatarUrl}
-              userName={option.label}
-            />
-            <Text
-              className="option-text"
-              truncate={true}
-              noSelect={true}
-              fontSize="14px"
-            >
-              {option.label}
-            </Text>
-          </div>
-          <Checkbox
-            id={option.key}
-            value={`${index}`}
-            isChecked={isChecked}
-            className="option-checkbox"
-          />
-        </div>
-      ) : (
-        <div
-          key={option.key}
-          style={style}
-          className="row-option"
-          data-index={index}
-          name={`selector-row-option-${index}`}
-          onClick={() => onLinkClick(index)}
-          {...tooltipProps}
-        >
-          <div className="option-info">
-            {" "}
-            <Avatar
-              className="option-avatar"
-              role="user"
-              size="min"
-              source={option.avatarUrl}
-              userName={option.label}
-            />
-            <Text
-              className="option-text"
-              truncate={true}
-              noSelect={true}
-              fontSize="14px"
-            >
-              {option.label}
-            </Text>
-          </div>
-        </div>
-      );
-    },
-    [isMultiSelect, onOptionChange, onLinkClick]
-  );
-
-  const renderOptionLoader = useCallback(
-    (style) => {
-      return (
-        <div style={style} className="row-option">
-          <div key="loader">
-            <Loader
-              type="oval"
-              size="16px"
-              style={{
-                display: "inline",
-                marginRight: "10px",
-              }}
-            />
-            <Text as="span" noSelect={true}>
-              {loadingLabel}
-            </Text>
-          </div>
-        </div>
-      );
-    },
-    [loadingLabel]
-  );
-
   // Render an item or a loading indicator.
   // eslint-disable-next-line react/prop-types
   const renderOption = useCallback(
@@ -340,7 +249,7 @@ const Selector = (props) => {
       const isLoaded = isItemLoaded(index);
 
       if (!isLoaded) {
-        return renderOptionLoader(style);
+        return <Option isLoader={true} loadingLabel={loadingLabel} />;
       }
 
       const option = options[index];
@@ -349,12 +258,21 @@ const Selector = (props) => {
 
       ReactTooltip.rebuild();
 
-      return renderOptionItem(index, style, option, isChecked, tooltipProps);
+      return (
+        <Option
+          index={index}
+          style={style}
+          {...option}
+          isChecked={isChecked}
+          tooltipProps={tooltipProps}
+          onOptionChange={onOptionChange}
+          onLinkClick={onLinkClick}
+          isMultiSelect={isMultiSelect}
+        />
+      );
     },
     [
       isItemLoaded,
-      renderOptionLoader,
-      renderOptionItem,
       loadingLabel,
       options,
       isOptionChecked,
@@ -362,6 +280,9 @@ const Selector = (props) => {
       onOptionChange,
       onLinkClick,
       getOptionTooltipContent,
+      isMultiSelect,
+      onOptionChange,
+      onLinkClick,
     ]
   );
 
@@ -431,37 +352,16 @@ const Selector = (props) => {
       }
 
       return (
-        <div
+        <Group
           style={style}
-          className="row-option"
-          name={`selector-row-option-${index}`}
-          onClick={() => onGroupClick(index)}
-        >
-          <div className="option-info">
-            <Avatar
-              className="option-avatar"
-              role="user"
-              size="min"
-              source={group.avatarUrl}
-              userName={group.label}
-            />
-            <Text
-              className="option-text option-text__group"
-              truncate={true}
-              noSelect={true}
-              fontSize="14px"
-            >
-              {label}
-            </Text>
-          </div>
-          {isMultiSelect && (
-            <Checkbox
-              value={`${index}`}
-              isIndeterminate={isIndeterminate}
-              className="option-checkbox"
-            />
-          )}
-        </div>
+          index={index}
+          isIndeterminate={isIndeterminate}
+          isChecked={false}
+          groupLabel={label}
+          {...group}
+          onGroupClick={onGroupClick}
+          isMultiSelect={isMultiSelect}
+        />
       );
     },
     [
@@ -470,12 +370,15 @@ const Selector = (props) => {
       currentGroup,
       selectedGroupList,
       selectedOptionList,
+      onGroupClick,
       getGroupSelectedOptions,
     ]
   );
 
   const renderGroupsList = useCallback(() => {
-    if (groups.length === 0) return renderOptionLoader();
+    if (groups.length === 0) {
+      return <Option isLoader={true} loadingLabel={loadingLabel} />;
+    }
     return (
       <AutoSizer>
         {({ width, height }) => (
@@ -492,7 +395,13 @@ const Selector = (props) => {
         )}
       </AutoSizer>
     );
-  }, [isMultiSelect, groups, selectedOptionList, getGroupSelectedOptions]);
+  }, [
+    isMultiSelect,
+    groups,
+    selectedOptionList,
+    getGroupSelectedOptions,
+    loadingLabel,
+  ]);
 
   const renderGroupHeader = useCallback(() => {
     const selectedOption = getGroupSelectedOptions(groupHeader.id);
@@ -536,6 +445,37 @@ const Selector = (props) => {
     );
   }, [isMultiSelect, groupHeader, selectedOptionList, getGroupSelectedOptions]);
 
+  const renderOptionList = React.useCallback(() => {
+    console.log("option list render");
+    return (
+      <AutoSizer>
+        {({ width, height }) => (
+          <InfiniteLoader
+            ref={listOptionsRef}
+            isItemLoaded={isItemLoaded}
+            itemCount={itemCount}
+            loadMoreItems={loadMoreItems}
+          >
+            {({ onItemsRendered, ref }) => (
+              <List
+                className="options_list"
+                height={height - 25}
+                itemCount={itemCount}
+                itemSize={48}
+                onItemsRendered={onItemsRendered}
+                ref={ref}
+                width={width + 8}
+                outerElementType={CustomScrollbarsVirtualList}
+              >
+                {renderOption}
+              </List>
+            )}
+          </InfiniteLoader>
+        )}
+      </AutoSizer>
+    );
+  }, [listOptionsRef, isItemLoaded, itemCount, loadMoreItems, renderOption]);
+
   const onArrowClickAction = useCallback(() => {
     if (groupHeader && groups.length !== 1) {
       setGroupHeader(null);
@@ -546,6 +486,8 @@ const Selector = (props) => {
     }
     onArrowClick && onArrowClick();
   }, [groups, groupHeader, onArrowClick, onGroupChanged]);
+
+  console.log("render selector");
 
   return (
     <StyledSelector
@@ -582,31 +524,7 @@ const Selector = (props) => {
                   </Text>
                 </div>
               ) : (
-                <AutoSizer>
-                  {({ width, height }) => (
-                    <InfiniteLoader
-                      ref={listOptionsRef}
-                      isItemLoaded={isItemLoaded}
-                      itemCount={itemCount}
-                      loadMoreItems={loadMoreItems}
-                    >
-                      {({ onItemsRendered, ref }) => (
-                        <List
-                          className="options_list"
-                          height={height - 25}
-                          itemCount={itemCount}
-                          itemSize={48}
-                          onItemsRendered={onItemsRendered}
-                          ref={ref}
-                          width={width + 8}
-                          outerElementType={CustomScrollbarsVirtualList}
-                        >
-                          {renderOption}
-                        </List>
-                      )}
-                    </InfiniteLoader>
-                  )}
-                </AutoSizer>
+                renderOptionList()
               )}
             </>
           )}
