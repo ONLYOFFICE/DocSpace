@@ -29,6 +29,7 @@ global using System.Globalization;
 global using System.Linq.Expressions;
 global using System.Net;
 global using System.Reflection;
+global using System.Runtime.InteropServices;
 global using System.Runtime.Serialization;
 global using System.Security;
 global using System.Security.Authentication;
@@ -66,6 +67,7 @@ global using ASC.Web.Studio.Utility;
 global using ASC.Webhooks.Core;
 
 global using Autofac;
+global using Autofac.Extensions.DependencyInjection;
 
 global using Confluent.Kafka;
 
@@ -88,6 +90,7 @@ global using Microsoft.AspNetCore.Mvc.Routing;
 global using Microsoft.AspNetCore.Routing;
 global using Microsoft.AspNetCore.Routing.Constraints;
 global using Microsoft.AspNetCore.Routing.Patterns;
+global using Microsoft.AspNetCore.Server.Kestrel.Core;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Diagnostics.HealthChecks;
