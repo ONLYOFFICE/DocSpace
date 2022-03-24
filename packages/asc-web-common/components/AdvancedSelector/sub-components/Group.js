@@ -4,23 +4,31 @@ import Avatar from "@appserver/components/avatar";
 import Text from "@appserver/components/text";
 import Checkbox from "@appserver/components/checkbox";
 
-const Group = ({
-  style,
-  index,
-  onGroupClick,
-  avatarUrl,
-  label,
-  groupLabel,
-  isMultiSelect,
-  isIndeterminate,
-  isChecked,
-}) => {
+const Group = ({ data, style, index }) => {
+  const { groupList, isMultiSelect, onGroupClick } = data;
+
+  const { label, avatarUrl, total, selectedCount } = groupList[index];
+
+  const isIndeterminate = selectedCount > 0 && selectedCount !== total;
+
+  const isChecked = total !== 0 && total === selectedCount;
+
+  let groupLabel = label;
+
+  if (isMultiSelect && selectedCount > 0) {
+    groupLabel = `${label} (${selectedCount})`;
+  }
+
+  const onGroupClickAction = React.useCallback(() => {
+    onGroupClick && onGroupClick(index);
+  }, []);
+
   return (
     <div
       style={style}
       className="row-option"
       name={`selector-row-option-${index}`}
-      onClick={() => onGroupClick(index)}
+      onClick={onGroupClickAction}
     >
       <div className="option-info">
         <Avatar

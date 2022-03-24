@@ -3,23 +3,15 @@ import PropTypes from "prop-types";
 
 import Header from "./Header";
 import Search from "./Search";
-import Group from "./Group";
+import GroupList from "./GroupList";
+import GroupHeader from "./GroupHeader";
+import OptionList from "./OptionList";
 import Option from "./Option";
 
 import Footer from "./Footer";
 
-import { FixedSizeList as List } from "react-window";
-import InfiniteLoader from "react-window-infinite-loader";
-import AutoSizer from "react-virtualized-auto-sizer";
-import ReactTooltip from "react-tooltip";
-
-import Avatar from "@appserver/components/avatar";
-import Checkbox from "@appserver/components/checkbox";
-
 import Text from "@appserver/components/text";
 import Tooltip from "@appserver/components/tooltip";
-
-import CustomScrollbarsVirtualList from "@appserver/components/scrollbar/custom-scrollbars-virtual-list";
 
 import StyledSelector from "./StyledSelector";
 
@@ -65,11 +57,11 @@ const Selector = (props) => {
     onSearchChanged,
     onGroupChanged,
     size,
-    allowGroupSelection,
     embeddedComponent,
     showCounter,
     onArrowClick,
     headerLabel,
+    total,
   } = props;
 
   const listOptionsRef = useRef(null);
@@ -80,14 +72,19 @@ const Selector = (props) => {
     resetCache();
   }, [searchValue, currentGroup, hasNextPage]);
 
+  const resetCache = useCallback(() => {
+    if (listOptionsRef && listOptionsRef.current) {
+      listOptionsRef.current.resetloadMoreItemsCache(true);
+    }
+  }, [listOptionsRef]);
+
   const [selectedOptionList, setSelectedOptionList] = useState(
     selectedOptions || []
   );
 
-  const [selectedGroupList, setSelectedGroupList] = useState(
-    selectedGroups || []
-  );
   const [searchValue, setSearchValue] = useState("");
+
+  const [groupList, setGroupList] = useState([]);
 
   const [currentGroup, setCurrentGroup] = useState(
     getCurrentGroup(convertGroups(groups))
@@ -96,101 +93,41 @@ const Selector = (props) => {
   const [groupHeader, setGroupHeader] = useState(null);
 
   useEffect(() => {
-    if (groups.length === 1) setGroupHeader(groups[0]);
-  }, [groups]);
+    if (groups.length === 0) return;
+    if (groups.length === 1) return setGroupHeader(groups[0]);
+    const newGroupList = [...groups];
 
-  // Every row is loaded except for our loading indicator row.
-  const isItemLoaded = useCallback(
-    (index) => {
-      return !hasNextPage || index < options.length;
-    },
-    [hasNextPage, options]
-  );
-
-  const onOptionChange = useCallback(
-    (index, isChecked) => {
-      const option = options[index];
-      const newSelected = !isChecked
-        ? [option, ...selectedOptionList]
-        : selectedOptionList.filter((el) => el.key !== option.key);
-      setSelectedOptionList(newSelected);
-
-      if (!option.groups) return;
-
-      const newSelectedGroups = [];
-      const removedSelectedGroups = [];
-
-      if (isChecked) {
-        option.groups.forEach((g) => {
-          let index = selectedGroupList.findIndex((sg) => sg.key === g);
-          if (index > -1) {
-            // exists
-            const selectedGroup = selectedGroupList[index];
-            const newSelected = selectedGroup.selected + 1;
-            newSelectedGroups.push(
-              Object.assign({}, selectedGroup, {
-                selected: newSelected,
-              })
-            );
-          } else {
-            index = groups.findIndex((sg) => sg.key === g);
-            if (index < 0) return;
-            const notSelectedGroup = convertGroup(groups[index]);
-            newSelectedGroups.push(
-              Object.assign({}, notSelectedGroup, {
-                selected: 1,
-              })
-            );
-          }
-        });
-      } else {
-        option.groups.forEach((g) => {
-          let index = selectedGroupList.findIndex((sg) => sg.key === g);
-          if (index > -1) {
-            // exists
-            const selectedGroup = selectedGroupList[index];
-            const newSelected = selectedGroup.selected - 1;
-            if (newSelected > 0) {
-              newSelectedGroups.push(
-                Object.assign({}, selectedGroup, {
-                  selected: newSelected,
-                })
-              );
-            } else {
-              removedSelectedGroups.push(
-                Object.assign({}, selectedGroup, {
-                  selected: newSelected,
-                })
-              );
-            }
-          }
-        });
-      }
-
-      selectedGroupList.forEach((g) => {
-        const indexNew = newSelectedGroups.findIndex((sg) => sg.key === g.key);
-
-        if (indexNew === -1) {
-          const indexRemoved = removedSelectedGroups.findIndex(
-            (sg) => sg.key === g.key
-          );
-
-          if (indexRemoved === -1) {
-            newSelectedGroups.push(g);
-          }
-        }
-      });
-
-      setSelectedGroupList(newSelectedGroups);
-    },
-    [options, selectedOptionList, groups, selectedGroupList]
-  );
-
-  const resetCache = useCallback(() => {
-    if (listOptionsRef && listOptionsRef.current) {
-      listOptionsRef.current.resetloadMoreItemsCache(true);
+    if (selectedOptions && selectedOptions.length === 0) {
+      return setGroupList(newGroupList);
     }
-  }, [listOptionsRef]);
+
+    if (selectedOptions) {
+      newGroupList[0].selectedCount = selectedOptions.length;
+
+      selectedOptions.forEach((option) => {
+        option.groups.forEach((group) => {
+          const groupIndex = newGroupList.findIndex(
+            (newGroup) => group === newGroup.id
+          );
+          if (groupIndex) {
+            newGroupList[groupIndex].selectedCount++;
+          }
+        });
+      });
+    }
+    setGroupList(newGroupList);
+  }, [groups, selectedOptions]);
+
+  useEffect(() => {
+    if (total) {
+      setGroupHeader({ ...groupHeader, total: total });
+      const newGroupList = groupList;
+
+      newGroupList.find((group) => group.key === groupHeader.key).total = total;
+
+      setGroupList(newGroupList);
+    }
+  }, [total]);
 
   const onSearchChange = useCallback(
     (value) => {
@@ -204,25 +141,70 @@ const Selector = (props) => {
     onSearchChanged && onSearchChange("");
   }, [onSearchChanged]);
 
+  // Every row is loaded except for our loading indicator row.
+  const isItemLoaded = useCallback(
+    (index) => {
+      return !hasNextPage || index < options.length;
+    },
+    [hasNextPage, options]
+  );
+
+  const onOptionChange = useCallback(
+    (idx, isChecked) => {
+      const indexList = Array.isArray(idx) ? idx : [idx];
+
+      let newSelected = selectedOptionList;
+      let newGroupList = groupList;
+      let newGroupHeader = { ...groupHeader };
+
+      indexList.forEach((index) => {
+        newGroupHeader.selectedCount = isChecked
+          ? newGroupHeader.selectedCount - 1
+          : newGroupHeader.selectedCount + 1;
+
+        const option = options[index];
+
+        newSelected = !isChecked
+          ? [option, ...newSelected]
+          : newSelected.filter((el) => el.key !== option.key);
+
+        newGroupList[0].selectedCount = isChecked
+          ? newGroupList[0].selectedCount - 1
+          : newGroupList[0].selectedCount + 1;
+
+        if (!option.groups) return setSelectedOptionList(newSelected);
+
+        option.groups.forEach((group) => {
+          const groupIndex = newGroupList.findIndex(
+            (item) => item.key === group
+          );
+
+          if (groupIndex > 0) {
+            newGroupList[groupIndex].selectedCount = isChecked
+              ? newGroupList[groupIndex].selectedCount - 1
+              : newGroupList[groupIndex].selectedCount + 1;
+          }
+        });
+      });
+
+      setSelectedOptionList(newSelected);
+      setGroupList(newGroupList);
+      setGroupHeader(newGroupHeader);
+    },
+    [options, groupList, selectedOptionList, groupHeader]
+  );
+
   const isOptionChecked = useCallback(
     (option) => {
-      const checked =
-        selectedOptionList.findIndex((el) => el.key === option.key) > -1 ||
-        (option.groups &&
-          option.groups.filter((gKey) => {
-            const selectedGroup = selectedGroupList.find(
-              (sg) => sg.key === gKey
-            );
+      const checked = selectedOptionList.find(
+        (item) => item.key === option.key
+      );
 
-            if (!selectedGroup) return false;
-
-            return selectedGroup.total === selectedGroup.selected;
-          }).length > 0);
-
-      return checked;
+      return !!checked;
     },
-    [selectedOptionList, selectedGroupList]
+    [selectedOptionList]
   );
+
   const onSelectOptions = (items) => {
     onSelect && onSelect(items);
   };
@@ -242,54 +224,7 @@ const Selector = (props) => {
     [options]
   );
 
-  // Render an item or a loading indicator.
-  // eslint-disable-next-line react/prop-types
-  const renderOption = useCallback(
-    ({ index, style }) => {
-      const isLoaded = isItemLoaded(index);
-
-      if (!isLoaded) {
-        return <Option isLoader={true} loadingLabel={loadingLabel} />;
-      }
-
-      const option = options[index];
-      const isChecked = isOptionChecked(option);
-
-      ReactTooltip.rebuild();
-
-      return (
-        <Option
-          index={index}
-          style={style}
-          {...option}
-          isChecked={isChecked}
-          onOptionChange={onOptionChange}
-          onLinkClick={onLinkClick}
-          isMultiSelect={isMultiSelect}
-        />
-      );
-    },
-    [
-      isItemLoaded,
-      loadingLabel,
-      options,
-      isOptionChecked,
-      isMultiSelect,
-      onOptionChange,
-      onLinkClick,
-      getOptionTooltipContent,
-      isMultiSelect,
-      onOptionChange,
-      onLinkClick,
-    ]
-  );
-
-  const hasSelected = useCallback(() => {
-    return selectedOptionList.length > 0 || selectedGroupList.length > 0;
-  }, [selectedOptionList, selectedGroupList]);
-
   // If there are more items to be loaded then add an extra row to hold a loading indicator.
-  const itemCount = hasNextPage ? options.length + 1 : options.length;
 
   // Only load 1 page of items at a time.
   // Pass an empty callback to InfiniteLoader in case it asks us to load more than once.
@@ -308,171 +243,35 @@ const Selector = (props) => {
     [isNextPageLoading, searchValue, currentGroup, options]
   );
 
-  const getGroupSelectedOptions = useCallback(
-    (group) => {
-      const selectedGroup = selectedOptionList.filter(
-        (o) => o.groups && o.groups.indexOf(group) > -1
-      );
+  const onSelectAll = useCallback(() => {
+    const currentSelectedOption = [];
+    selectedOptionList.forEach((selectedOption) => {
+      options.forEach((option, idx) => {
+        if (option.key === selectedOption.key) currentSelectedOption.push(idx);
+      });
+    });
 
-      if (group === "all") {
-        selectedGroup.push(...selectedOptionList);
-      }
+    if (currentSelectedOption.length > 0) {
+      return onOptionChange(currentSelectedOption, true);
+    }
 
-      return selectedGroup;
-    },
-    [selectedOptionList]
-  );
+    onOptionChange(
+      options.map((item, index) => index),
+      false
+    );
+  }, [onOptionChange, selectedOptionList, options]);
 
   const onGroupClick = useCallback(
     (index) => {
-      const group = groups[index];
+      const group = groupList[index];
 
       setGroupHeader({ ...group });
 
       onGroupChanged && onGroupChanged(group);
       setCurrentGroup(group);
     },
-    [groups, onGroupChanged]
+    [groupList, onGroupChanged]
   );
-
-  const renderGroup = useCallback(
-    ({ index, style }) => {
-      const group = groups[index];
-
-      const selectedOption = getGroupSelectedOptions(group.id);
-
-      const isIndeterminate = selectedOption.length > 0;
-
-      let label = group.label;
-
-      if (isMultiSelect && selectedOption.length > 0) {
-        label = `${group.label} (${selectedOption.length})`;
-      }
-
-      return (
-        <Group
-          style={style}
-          index={index}
-          isIndeterminate={isIndeterminate}
-          isChecked={false}
-          groupLabel={label}
-          {...group}
-          onGroupClick={onGroupClick}
-          isMultiSelect={isMultiSelect}
-        />
-      );
-    },
-    [
-      isMultiSelect,
-      groups,
-      currentGroup,
-      selectedGroupList,
-      selectedOptionList,
-      onGroupClick,
-      getGroupSelectedOptions,
-    ]
-  );
-
-  const renderGroupsList = useCallback(() => {
-    if (groups.length === 0) {
-      return <Option isLoader={true} loadingLabel={loadingLabel} />;
-    }
-
-    return (
-      <AutoSizer>
-        {({ width, height }) => (
-          <List
-            className="options-list"
-            height={height - 8}
-            width={width + 8}
-            itemCount={groups.length}
-            itemSize={48}
-            outerElementType={CustomScrollbarsVirtualList}
-          >
-            {renderGroup}
-          </List>
-        )}
-      </AutoSizer>
-    );
-  }, [
-    isMultiSelect,
-    groups,
-    selectedOptionList,
-    getGroupSelectedOptions,
-    loadingLabel,
-  ]);
-
-  const renderGroupHeader = useCallback(() => {
-    const selectedOption = getGroupSelectedOptions(groupHeader.id);
-
-    const isIndeterminate = selectedOption.length > 0;
-
-    let label = groupHeader.label;
-
-    if (isMultiSelect && selectedOption.length > 0) {
-      label = `${groupHeader.label} (${selectedOption.length})`;
-    }
-    return (
-      <>
-        <div className="row-option row-header">
-          <div className="option-info">
-            <Avatar
-              className="option-avatar"
-              role="user"
-              size="min"
-              source={groupHeader.avatarUrl}
-              userName={groupHeader.label}
-            />
-            <Text
-              className="option-text option-text__header"
-              truncate={true}
-              noSelect={true}
-              fontSize="14px"
-            >
-              {label}
-            </Text>
-          </div>
-          {isMultiSelect && (
-            <Checkbox
-              isIndeterminate={isIndeterminate}
-              className="option-checkbox"
-            />
-          )}
-        </div>
-        <div className="option-separator"></div>
-      </>
-    );
-  }, [isMultiSelect, groupHeader, selectedOptionList, getGroupSelectedOptions]);
-
-  const renderOptionList = React.useCallback(() => {
-    return (
-      <AutoSizer>
-        {({ width, height }) => (
-          <InfiniteLoader
-            ref={listOptionsRef}
-            isItemLoaded={isItemLoaded}
-            itemCount={itemCount}
-            loadMoreItems={loadMoreItems}
-          >
-            {({ onItemsRendered, ref }) => (
-              <List
-                className="options-list"
-                height={height - 25}
-                itemCount={itemCount}
-                itemSize={48}
-                onItemsRendered={onItemsRendered}
-                ref={ref}
-                width={width + 8}
-                outerElementType={CustomScrollbarsVirtualList}
-              >
-                {renderOption}
-              </List>
-            )}
-          </InfiniteLoader>
-        )}
-      </AutoSizer>
-    );
-  }, [listOptionsRef, isItemLoaded, itemCount, loadMoreItems, renderOption]);
 
   const onArrowClickAction = useCallback(() => {
     if (groupHeader && groups.length !== 1) {
@@ -483,12 +282,29 @@ const Selector = (props) => {
       return;
     }
     onArrowClick && onArrowClick();
-  }, [groups, groupHeader, onArrowClick, onGroupChanged]);
+  }, [groups, groupHeader && groupHeader.label, onArrowClick, onGroupChanged]);
+
+  const renderGroupsList = useCallback(() => {
+    if (groupList.length === 0) {
+      return <Option isLoader={true} loadingLabel={loadingLabel} />;
+    }
+
+    return (
+      <GroupList
+        groupList={groupList}
+        isMultiSelect={isMultiSelect}
+        onGroupClick={onGroupClick}
+      />
+    );
+  }, [isMultiSelect, groupList, onGroupClick, loadingLabel]);
+
+  const itemCount = hasNextPage ? options.length + 1 : options.length;
+  const hasSelected = selectedOptionList.length > 0;
 
   return (
     <StyledSelector
       isMultiSelect={isMultiSelect}
-      hasSelected={hasSelected()}
+      hasSelected={hasSelected}
       className="selector-wrapper"
     >
       <Header
@@ -508,7 +324,24 @@ const Selector = (props) => {
             renderGroupsList()
           ) : (
             <>
-              {!searchValue && renderGroupHeader()}
+              {!searchValue && (
+                <>
+                  <GroupHeader
+                    {...groupHeader}
+                    onSelectAll={onSelectAll}
+                    isMultiSelect={isMultiSelect}
+                    isIndeterminate={
+                      groupHeader.selectedCount > 0 &&
+                      groupHeader.selectedCount !== groupHeader.total
+                    }
+                    isChecked={
+                      groupHeader.total !== 0 &&
+                      groupHeader.total === groupHeader.selectedCount
+                    }
+                  />
+                  <div className="option-separator"></div>
+                </>
+              )}
               {!hasNextPage && itemCount === 0 ? (
                 <div className="row-option">
                   <Text>
@@ -516,7 +349,18 @@ const Selector = (props) => {
                   </Text>
                 </div>
               ) : (
-                renderOptionList()
+                <OptionList
+                  listOptionsRef={listOptionsRef}
+                  loadingLabel={loadingLabel}
+                  options={options}
+                  itemCount={itemCount}
+                  isMultiSelect={isMultiSelect}
+                  onOptionChange={onOptionChange}
+                  onLinkClick={onLinkClick}
+                  isItemLoaded={isItemLoaded}
+                  isOptionChecked={isOptionChecked}
+                  loadMoreItems={loadMoreItems}
+                />
               )}
             </>
           )}
@@ -535,7 +379,7 @@ const Selector = (props) => {
         selectButtonLabel={headerLabel}
         showCounter={showCounter}
         isDisabled={isDisabled}
-        isVisible={isMultiSelect && hasSelected()}
+        isVisible={isMultiSelect && hasSelected}
         onClick={onAddClick}
         embeddedComponent={embeddedComponent}
         selectedLength={selectedOptionList.length}
@@ -564,8 +408,6 @@ Selector.propTypes = {
   emptyOptionsLabel: PropTypes.string,
   loadingLabel: PropTypes.string,
 
-  size: PropTypes.oneOf(["compact", "full"]),
-
   selectedOptions: PropTypes.array,
   selectedGroups: PropTypes.array,
 
@@ -577,8 +419,4 @@ Selector.propTypes = {
   embeddedComponent: PropTypes.any,
 };
 
-Selector.defaultProps = {
-  size: "full",
-};
-
-export default Selector;
+export default React.memo(Selector);

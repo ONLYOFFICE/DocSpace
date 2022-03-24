@@ -310,6 +310,10 @@ export default inject(
       startUpload,
 
       setSelectFileDialogVisible,
+
+      isLoading,
+      isLoaded,
+      firstLoad,
     };
   }
 )(withTranslation(["Article", "Common"])(observer(ArticleMainButtonContent)));
