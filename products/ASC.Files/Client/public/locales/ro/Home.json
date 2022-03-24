@@ -13,7 +13,6 @@
     "CopyItem": "<strong>{{title}}</strong> copiat",
     "CopyItems": "<strong>{{qty}}</strong> elemente copiate",
     "Document": "Document",
-    "Duplicate": "Crează o copie",
     "EmptyFile": "Fișier gol",
     "EmptyFilterDescriptionText": "Niciun fișier sau dosar nu corespunde setărilor filtru. Aplicați un alt filtru sau îl eliminați ca să afișați toate fișiere.",
     "EmptyFilterSubheadingText": "Niciun fișier corespunzător de afișat ",

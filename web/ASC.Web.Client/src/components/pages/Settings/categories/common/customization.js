@@ -12,7 +12,7 @@ import { showLoader, hideLoader, combineUrl } from "@appserver/common/utils";
 import { inject, observer } from "mobx-react";
 import { AppServerConfig } from "@appserver/common/constants";
 import withCultureNames from "@appserver/common/hoc/withCultureNames";
-
+import commonSettingsStyles from "../../utils/commonSettingsStyles";
 const mapTimezonesToArray = (timezones) => {
   return timezones.map((timezone) => {
     return { key: timezone.id, label: timezone.displayName };
@@ -51,37 +51,7 @@ const StyledComponent = styled.div`
     max-width: 100%;
   }
 
-  .category-item-wrapper {
-    margin-bottom: 40px;
-
-    .category-item-heading {
-      display: flex;
-      align-items: center;
-      margin-bottom: 5px;
-    }
-
-    .category-item-subheader {
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 5px;
-    }
-
-    .category-item-description {
-      color: #555f65;
-      font-size: 12px;
-      max-width: 1024px;
-    }
-
-    .inherit-title-link {
-      margin-right: 7px;
-      font-size: 19px;
-      font-weight: 600;
-    }
-
-    .link-text {
-      margin: 0;
-    }
-  }
+  ${commonSettingsStyles}
 `;
 class Customization extends React.Component {
   constructor(props) {

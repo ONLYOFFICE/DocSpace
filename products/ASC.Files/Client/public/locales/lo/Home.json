@@ -13,7 +13,6 @@
   "CopyItem": "<strong>{{title}}</strong> ຄັດລອກ",
   "CopyItems": "<strong>{{qty}}</strong> ອົງປະກອບທີ່ຖືກຄັດລອກ",
   "Document": "ເອກະສານ",
-  "Duplicate": "ສ້າງສຳເນົາ",
   "EmptyFile": "ເອກະສານຫວ່າງເປົ່າ",
   "EmptyFilterDescriptionText": "ບໍ່ມີໄຟລ໌ ຫລື ແຟ້ມໃດທີ່ກົງກັບຕົວກອງນີ້. ລອງໃຊ້ຕົວກັ່ນຕອງອື່ນ ຫຼື ລຶບລ້າງຂໍ້ມູນເພື່ອເບິ່ງເອກະສານທັງໝົດ.",
   "EmptyFilterSubheadingText": "ບໍ່ມີເອກະສານທີ່ສະແດງສຳລັບຕົວກອງຢູ່ທີ່ນີ້",

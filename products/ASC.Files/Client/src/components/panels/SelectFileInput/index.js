@@ -1,5 +1,5 @@
 import React from "react";
-import { Provider as MobxProvider } from "mobx-react";
+import { Provider as MobxProvider, inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 
 import stores from "../../../store/index";
@@ -14,6 +14,10 @@ class SelectFileInputBody extends React.PureComponent {
     this.state = {
       fileName: "",
     };
+  }
+
+  componentDidMount() {
+    this.props.setFirstLoad(false);
   }
 
   onSetFileName = (fileName) => {
@@ -45,18 +49,23 @@ class SelectFileInputBody extends React.PureComponent {
       loadingLabel,
       titleFilesList,
       zIndex,
+      fontSizeInput,
+      maxInputWidth,
+      foldersList,
     } = this.props;
     const { fileName } = this.state;
 
     return (
-      <StyledComponent>
+      <StyledComponent maxInputWidth={maxInputWidth}>
         <SimpleFileInput
           name={name}
-          className="file-input"
+          className="select-file_file-input"
           textField={fileName}
           isDisabled={isDisabled}
           isError={isError}
           onClickInput={onClickInput}
+          fontSizeInput={fontSizeInput}
+          maxInputWidth={maxInputWidth}
         />
 
         {isPanelVisible && (
@@ -80,6 +89,7 @@ class SelectFileInputBody extends React.PureComponent {
             isMediaOnly={isMediaOnly}
             loadingLabel={loadingLabel}
             titleFilesList={titleFilesList}
+            foldersList={foldersList}
           />
         )}
       </StyledComponent>
@@ -98,11 +108,18 @@ SelectFileInputBody.defaultProps = {
   zIndex: 310,
 };
 
+const SelectFileInputBodyWrapper = inject(({ filesStore }) => {
+  const { setFirstLoad } = filesStore;
+  return {
+    setFirstLoad,
+  };
+})(observer(SelectFileInputBody));
+
 class SelectFileInput extends React.Component {
   render() {
     return (
       <MobxProvider {...stores}>
-        <SelectFileInputBody {...this.props} />
+        <SelectFileInputBodyWrapper {...this.props} />
       </MobxProvider>
     );
   }
