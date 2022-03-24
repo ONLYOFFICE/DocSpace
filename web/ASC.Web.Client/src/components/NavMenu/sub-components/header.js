@@ -56,6 +56,8 @@ const Header = styled.header`
   }
 
   .header-logo-icon {
+    ${(props) =>
+      (props.isPersonal || props.isPreparationPortal) && `margin-left: 20px;`}
     height: 24px;
     position: relative;
     padding-right: 20px;
@@ -139,6 +141,7 @@ const HeaderComponent = ({
   isAdmin,
   backdropClick,
   isPersonal,
+  isPreparationPortal,
   theme,
   ...props
 }) => {
@@ -215,6 +218,7 @@ const HeaderComponent = ({
         module={currentProductName}
         isLoaded={isLoaded}
         isPersonal={isPersonal}
+        isPreparationPortal={isPreparationPortal}
         isAuthenticated={isAuthenticated}
         className="navMenuHeader hidingHeader"
         needNavMenu={needNavMenu}

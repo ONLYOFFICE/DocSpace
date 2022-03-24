@@ -100,6 +100,7 @@ SaveCancelButtons.propTypes = {
   onCancelClick: PropTypes.func,
   /** Show message about unsaved changes (Only shown on desktops) */
   showReminder: PropTypes.bool,
+  /** Tells when the button should present a disabled state */
   displaySettings: PropTypes.bool,
   hasScroll: PropTypes.bool,
   minwidth: PropTypes.string,

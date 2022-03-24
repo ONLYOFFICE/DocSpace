@@ -9,6 +9,7 @@ import PortalRenaming from "./portal-renaming";
 import { Base } from "@appserver/components/themes";
 import { isSmallTablet } from "@appserver/components/utils/device";
 
+import commonSettingsStyles from "../../utils/commonSettingsStyles";
 const StyledComponent = styled.div`
   .combo-button-label {
     max-width: 100%;
