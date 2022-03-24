@@ -43,15 +43,10 @@ class SaveCancelButtons extends React.Component {
       reminderTest,
       saveButtonLabel,
       cancelButtonLabel,
-      hasChanged,
       hasScroll,
       className,
       id,
     } = this.props;
-
-    // TODO: hasChanged не нужен, тк есть showReminder?
-
-    const isDisabled = hasChanged !== undefined ? !hasChanged : false;
 
     return (
       <StyledSaveCancelButtons
@@ -65,17 +60,19 @@ class SaveCancelButtons extends React.Component {
           <Button
             className="save-button"
             size="normal"
-            isDisabled={isDisabled}
+            isDisabled={!showReminder}
             primary
             onClick={onSaveClick}
             label={saveButtonLabel}
+            minwidth={displaySettings && "auto"}
           />
           <Button
             className="cancel-button"
             size="normal"
-            isDisabled={isDisabled}
+            isDisabled={!showReminder}
             onClick={onCancelClick}
             label={cancelButtonLabel}
+            minwidth={displaySettings && "auto"}
           />
         </div>
         {showReminder && (
@@ -104,8 +101,8 @@ SaveCancelButtons.propTypes = {
   /** Show message about unsaved changes (Only shown on desktops) */
   showReminder: PropTypes.bool,
   displaySettings: PropTypes.bool,
-  hasChanged: PropTypes.bool,
   hasScroll: PropTypes.bool,
+  minwidth: PropTypes.string,
 };
 
 SaveCancelButtons.defaultProps = {
