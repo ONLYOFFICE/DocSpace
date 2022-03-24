@@ -22,7 +22,7 @@ export const useDynamicScript = (args) => {
   const [failed, setFailed] = React.useState(false);
 
   React.useEffect(() => {
-    if (!args.url) {
+    if (!args.url || args.isInit) {
       return;
     }
 
@@ -77,6 +77,7 @@ const DynamicComponent = React.memo(({ system, ...rest }) => {
   const { ready, failed } = useDynamicScript({
     url: system && system.url,
     id: system && system.scope,
+    isInit: isInitialized,
   });
 
   if (!system) {
@@ -102,8 +103,6 @@ const DynamicComponent = React.memo(({ system, ...rest }) => {
 
     setLoadedComponent(Component);
   }
-
-  console.log("render dynamic", system);
 
   return (
     <React.Suspense fallback={<div />}>
