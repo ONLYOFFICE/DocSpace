@@ -373,7 +373,7 @@ class LanguageAndTimeZone extends React.Component {
   };
 
   checkInnerWidth = () => {
-    if (window.innerWidth > 600 && !isMobileOnly) {
+    if (window.innerWidth > 600) {
       history.push(
         combineUrl(
           AppServerConfig.proxyURL,
@@ -416,7 +416,7 @@ class LanguageAndTimeZone extends React.Component {
       heightScrollBody: heightScrollBody,
     });
 
-    if (height > heightScrollBody) {
+    if (parseInt(height, 10) > parseInt(heightScrollBody, 10)) {
       this.setState({
         hasScroll: true,
       });
