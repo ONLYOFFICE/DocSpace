@@ -169,9 +169,13 @@ csharp_preserve_single_line_statements = true
 
 # Naming rules
 
-dotnet_naming_rule.private_or_internal_field_should_be_begin_with_underscore.severity = warning
-dotnet_naming_rule.private_or_internal_field_should_be_begin_with_underscore.symbols = private_or_internal_field
-dotnet_naming_rule.private_or_internal_field_should_be_begin_with_underscore.style = begin_with_underscore
+dotnet_naming_rule.private_field_should_be_begin_with_underscore.severity = warning
+dotnet_naming_rule.private_field_should_be_begin_with_underscore.symbols = private_field
+dotnet_naming_rule.private_field_should_be_begin_with_underscore.style = begin_with_underscore
+
+dotnet_naming_rule.public_field_should_be_begin_without_underscore.severity = warning
+dotnet_naming_rule.public_field_should_be_begin_without_underscore.symbols = all_public_field
+dotnet_naming_rule.public_field_should_be_begin_without_underscore.style = begin_without_underscore
 
 dotnet_naming_rule.interface_should_be_begins_with_i.severity = warning
 dotnet_naming_rule.interface_should_be_begins_with_i.symbols = interface
@@ -187,9 +191,13 @@ dotnet_naming_symbols.interface.applicable_kinds = interface
 dotnet_naming_symbols.interface.applicable_accessibilities = public, internal, private, protected, protected_internal, private_protected
 dotnet_naming_symbols.interface.required_modifiers = 
 
-dotnet_naming_symbols.private_or_internal_field.applicable_kinds = field
-dotnet_naming_symbols.private_or_internal_field.applicable_accessibilities = internal, private, private_protected
-dotnet_naming_symbols.private_or_internal_field.required_modifiers = 
+dotnet_naming_symbols.private_field.applicable_kinds = field
+dotnet_naming_symbols.private_field.applicable_accessibilities = private
+dotnet_naming_symbols.private_field.required_modifiers = 
+
+dotnet_naming_symbols.all_public_field.applicable_kinds = field
+dotnet_naming_symbols.all_public_field.applicable_accessibilities = public, internal, protected, protected_internal, private_protected
+dotnet_naming_symbols.all_public_field.required_modifiers = 
 
 dotnet_naming_symbols.types.applicable_kinds = class, struct, interface, enum
 dotnet_naming_symbols.types.applicable_accessibilities = public, internal, private, protected, protected_internal, private_protected
@@ -211,6 +219,11 @@ dotnet_naming_style.begin_with_underscore.required_prefix = _
 dotnet_naming_style.begin_with_underscore.required_suffix = 
 dotnet_naming_style.begin_with_underscore.word_separator = 
 dotnet_naming_style.begin_with_underscore.capitalization = camel_case
+
+dotnet_naming_style.begin_without_underscore.required_prefix = 
+dotnet_naming_style.begin_without_underscore.required_suffix = 
+dotnet_naming_style.begin_without_underscore.word_separator = 
+dotnet_naming_style.begin_without_underscore.capitalization = camel_case
 csharp_style_expression_bodied_lambdas = true:silent
 csharp_style_expression_bodied_local_functions = false:silent
 csharp_style_prefer_local_over_anonymous_function = true:suggestion
