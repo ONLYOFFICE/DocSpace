@@ -5,7 +5,7 @@ import { withTranslation } from "react-i18next";
 import {
   StyledPreparationPortal,
   StyledBodyPreparationPortal,
-} from "./styledPreparationPortal";
+} from "./StyledPreparationPortal";
 import Text from "@appserver/components/text";
 import { getRestoreProgress } from "../../../../../../packages/asc-web-common/api/portal";
 import { observer, inject } from "mobx-react";
