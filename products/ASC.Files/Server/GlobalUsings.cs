@@ -34,10 +34,10 @@ global using System.Web;
 
 global using ASC.Api.Core;
 global using ASC.Api.Core.Convention;
+global using ASC.Api.Core.Extensions;
 global using ASC.Api.Utils;
 global using ASC.Common;
 global using ASC.Common.Logging;
-global using ASC.Common.Utils;
 global using ASC.Common.Web;
 global using ASC.Core;
 global using ASC.Core.Billing;

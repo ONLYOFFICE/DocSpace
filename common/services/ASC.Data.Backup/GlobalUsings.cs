@@ -27,6 +27,7 @@
 global using System.Runtime.InteropServices;
 
 global using ASC.Api.Collections;
+global using ASC.Api.Core.Extensions;
 global using ASC.Api.Core;
 global using ASC.Common;
 global using ASC.Common.Caching;
@@ -49,6 +50,7 @@ global using Autofac;
 global using Autofac.Extensions.DependencyInjection;
 
 global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.Extensions.Hosting.WindowsServices;
 global using Microsoft.Extensions.Options;
 
 global using static ASC.Data.Backup.BackupAjaxHandler;
