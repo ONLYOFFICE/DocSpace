@@ -27,7 +27,7 @@
 namespace ASC.Web.Core.Utility.Settings
 {
     [Serializable]
-    public class WizardSettings : ISettings
+    public class WizardSettings : ISettings<WizardSettings>
     {
         public bool Completed { get; set; }
 
@@ -37,7 +37,7 @@ namespace ASC.Web.Core.Utility.Settings
         }
 
 
-        public ISettings GetDefault(IServiceProvider serviceProvider)
+        public WizardSettings GetDefault()
         {
             return new WizardSettings
             {

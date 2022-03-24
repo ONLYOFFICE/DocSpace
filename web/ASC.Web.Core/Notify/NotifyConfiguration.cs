@@ -205,7 +205,7 @@ namespace ASC.Web.Studio.Core.Notify
                          if (!string.IsNullOrEmpty(logoText))
                          {
                              r.CurrentMessage.Body = r.CurrentMessage.Body
-                                 .Replace("${{"+ CommonTags.LetterLogoText + "}}", logoText);
+                                 .Replace("${{" + CommonTags.LetterLogoText + "}}", logoText);
                          }
                      }
                      catch (Exception error)
@@ -250,7 +250,7 @@ namespace ASC.Web.Studio.Core.Notify
             }
 
             var logoText = TenantWhiteLabelSettings.DefaultLogoText;
-            if ((tenantExtra.Enterprise || coreBaseSettings.CustomMode) && !MailWhiteLabelSettings.IsDefault(settingsManager, configuration))
+            if ((tenantExtra.Enterprise || coreBaseSettings.CustomMode) && !MailWhiteLabelSettings.IsDefault(settingsManager))
             {
                 logoText = tenantLogoManager.GetLogoText();
             }

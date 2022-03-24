@@ -80,7 +80,7 @@ public class BaseStorageSettingsListener
 }
 
 [Serializable]
-public abstract class BaseStorageSettings<T> : ISettings where T : class, ISettings, new()
+public abstract class BaseStorageSettings<T> : ISettings<BaseStorageSettings<T>> where T : class, ISettings<T>, new()
 {
     public string Module { get; set; }
     public Dictionary<string, string> Props { get; set; }
@@ -88,25 +88,35 @@ public abstract class BaseStorageSettings<T> : ISettings where T : class, ISetti
     public abstract Guid ID { get; }
     internal ICacheNotify<DataStoreCacheItem> Cache { get; set; }
 
-    public ISettings GetDefault(IServiceProvider serviceProvider)
+    public BaseStorageSettings<T> GetDefault()
     {
-        return new T();
+        throw new NotImplementedException();
     }
 }
 
 [Serializable]
-public class StorageSettings : BaseStorageSettings<StorageSettings>
+public class StorageSettings : BaseStorageSettings<StorageSettings>, ISettings<StorageSettings>
 {
     public override Guid ID => new Guid("F13EAF2D-FA53-44F1-A6D6-A5AEDA46FA2B");
+
+    StorageSettings ISettings<StorageSettings>.GetDefault()
+    {
+        return new StorageSettings();
+    }
 }
 
 [Scope]
 [Serializable]
-public class CdnStorageSettings : BaseStorageSettings<CdnStorageSettings>
+public class CdnStorageSettings : BaseStorageSettings<CdnStorageSettings>, ISettings<CdnStorageSettings>
 {
     public override Guid ID => new Guid("0E9AE034-F398-42FE-B5EE-F86D954E9FB2");
 
     public override Func<DataStoreConsumer, DataStoreConsumer> Switch => d => d.Cdn;
+
+    CdnStorageSettings ISettings<CdnStorageSettings>.GetDefault()
+    {
+        return new CdnStorageSettings();
+    }
 }
 
 [Scope]
@@ -157,21 +167,21 @@ public class StorageSettingsHelper
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public bool Save<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings, new()
+    public bool Save<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings<T>, new()
     {
         ClearDataStoreCache();
 
         return _settingsManager.Save(baseStorageSettings);
     }
 
-    public void Clear<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings, new()
+    public void Clear<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings<T>, new()
     {
         baseStorageSettings.Module = null;
         baseStorageSettings.Props = null;
         Save(baseStorageSettings);
     }
 
-    public DataStoreConsumer DataStoreConsumer<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings, new()
+    public DataStoreConsumer DataStoreConsumer<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings<T>, new()
     {
         if (string.IsNullOrEmpty(baseStorageSettings.Module) || baseStorageSettings.Props == null)
         {
@@ -195,7 +205,7 @@ public class StorageSettingsHelper
         return _dataStoreConsumer;
     }
 
-    public IDataStore DataStore<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings, new()
+    public IDataStore DataStore<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings<T>, new()
     {
         if (_dataStore != null)
         {

@@ -27,7 +27,7 @@
 namespace ASC.Core.Tenants;
 
 [Serializable]
-public class TenantAuditSettings : ISettings
+public class TenantAuditSettings : ISettings<TenantAuditSettings>
 {
     public const int MaxLifeTime = 180;
 
@@ -37,7 +37,7 @@ public class TenantAuditSettings : ISettings
     public static readonly Guid Guid = new Guid("{8337D0FB-AD67-4552-8297-802312E7F503}");
     public Guid ID => Guid;
 
-    public ISettings GetDefault(IServiceProvider serviceProvider)
+    public TenantAuditSettings GetDefault()
     {
         return new TenantAuditSettings
         {

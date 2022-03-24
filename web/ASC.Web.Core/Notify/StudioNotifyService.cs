@@ -335,7 +335,7 @@ namespace ASC.Web.Studio.Core.Notify
             }
             else if (TenantExtra.Enterprise)
             {
-                var defaultRebranding = MailWhiteLabelSettings.IsDefault(SettingsManager, Configuration);
+                var defaultRebranding = MailWhiteLabelSettings.IsDefault(SettingsManager);
                 notifyAction = defaultRebranding
                                    ? Actions.EnterpriseUserWelcomeV10
                                    : CoreBaseSettings.CustomMode
@@ -377,7 +377,7 @@ namespace ASC.Web.Studio.Core.Notify
 
             if (TenantExtra.Enterprise)
             {
-                var defaultRebranding = MailWhiteLabelSettings.IsDefault(SettingsManager, Configuration);
+                var defaultRebranding = MailWhiteLabelSettings.IsDefault(SettingsManager);
                 notifyAction = defaultRebranding ? Actions.EnterpriseGuestWelcomeV10 : Actions.EnterpriseWhitelabelGuestWelcomeV10;
                 footer = null;
             }
@@ -415,7 +415,7 @@ namespace ASC.Web.Studio.Core.Notify
 
             if (TenantExtra.Enterprise)
             {
-                var defaultRebranding = MailWhiteLabelSettings.IsDefault(SettingsManager, Configuration);
+                var defaultRebranding = MailWhiteLabelSettings.IsDefault(SettingsManager);
                 notifyAction = defaultRebranding ? Actions.EnterpriseUserActivationV10 : Actions.EnterpriseWhitelabelUserActivationV10;
                 footer = null;
             }
@@ -453,7 +453,7 @@ namespace ASC.Web.Studio.Core.Notify
 
             if (TenantExtra.Enterprise)
             {
-                var defaultRebranding = MailWhiteLabelSettings.IsDefault(SettingsManager, Configuration);
+                var defaultRebranding = MailWhiteLabelSettings.IsDefault(SettingsManager);
                 notifyAction = defaultRebranding ? Actions.EnterpriseGuestActivationV10 : Actions.EnterpriseWhitelabelGuestActivationV10;
                 footer = null;
             }
@@ -600,7 +600,7 @@ namespace ASC.Web.Studio.Core.Notify
 
             if (TenantExtra.Enterprise)
             {
-                var defaultRebranding = MailWhiteLabelSettings.IsDefault(SettingsManager, Configuration);
+                var defaultRebranding = MailWhiteLabelSettings.IsDefault(SettingsManager);
                 notifyAction = defaultRebranding ? Actions.EnterpriseAdminWelcomeV10 : Actions.EnterpriseWhitelabelAdminWelcomeV10;
 
                 tagValues.Add(TagValues.GreenButton(() => WebstudioNotifyPatternResource.ButtonAccessControlPanel, CommonLinkUtility.GetFullAbsolutePath(SetupInfo.ControlPanelUrl)));
@@ -714,7 +714,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                 if (TenantExtra.Enterprise)
                 {
-                    var defaultRebranding = MailWhiteLabelSettings.IsDefault(SettingsManager, Configuration);
+                    var defaultRebranding = MailWhiteLabelSettings.IsDefault(SettingsManager);
                     notifyAction = defaultRebranding ? Actions.EnterpriseAdminActivationV10 : Actions.EnterpriseWhitelabelAdminActivationV10;
                     footer = null;
                 }

@@ -26,7 +26,7 @@
 
 namespace ASC.Web.Api.Controllers.Settings;
 
-public class WhitelabelController: BaseSettingsController
+public class WhitelabelController : BaseSettingsController
 {
     private Tenant Tenant { get { return _apiContext.Tenant; } }
 
@@ -340,9 +340,9 @@ public class WhitelabelController: BaseSettingsController
 
         result.Add(instance);
 
-        if (!instance.IsDefault(_coreSettings) && !instance.IsLicensor)
+        if (!instance.IsDefault() && !instance.IsLicensor)
         {
-            result.Add(instance.GetDefault(_serviceProvider) as CompanyWhiteLabelSettings);
+            result.Add(_settingsManager.GetDefault<CompanyWhiteLabelSettings>());
         }
 
         return result;
@@ -387,12 +387,13 @@ public class WhitelabelController: BaseSettingsController
     {
         DemandRebrandingPermission();
 
-        var defaultSettings = (CompanyWhiteLabelSettings)_settingsManager.LoadForDefaultTenant<CompanyWhiteLabelSettings>().GetDefault(_coreSettings);
+        var defaultSettings = _settingsManager.GetDefault<CompanyWhiteLabelSettings>();
 
         _settingsManager.SaveForDefaultTenant(defaultSettings);
 
         return defaultSettings;
     }
+
     ///<visible>false</visible>
     [Create("rebranding/additional")]
     public bool SaveAdditionalWhiteLabelSettingsFromBody([FromBody] AdditionalWhiteLabelSettingsWrapper wrapper)
@@ -430,7 +431,7 @@ public class WhitelabelController: BaseSettingsController
     {
         DemandRebrandingPermission();
 
-        var defaultSettings = (AdditionalWhiteLabelSettings)_settingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>().GetDefault(_configuration);
+        var defaultSettings = _settingsManager.GetDefault<AdditionalWhiteLabelSettings>();
 
         _settingsManager.SaveForDefaultTenant(defaultSettings);
 
@@ -501,7 +502,7 @@ public class WhitelabelController: BaseSettingsController
     {
         DemandRebrandingPermission();
 
-        var defaultSettings = (MailWhiteLabelSettings)_settingsManager.LoadForDefaultTenant<MailWhiteLabelSettings>().GetDefault(_configuration);
+        var defaultSettings = _settingsManager.GetDefault<MailWhiteLabelSettings>();
 
         _settingsManager.SaveForDefaultTenant(defaultSettings);
 

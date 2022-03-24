@@ -215,7 +215,7 @@ public class SecurityController : BaseSettingsController
             }
             else if (productId == defaultPageSettings.DefaultProductID)
             {
-                _settingsManager.Save((StudioDefaultPageSettings)defaultPageSettings.GetDefault(_serviceProvider));
+                _settingsManager.Save(_settingsManager.GetDefault<StudioDefaultPageSettings>());
             }
 
             _webItemSecurity.SetSecurity(item.Key, item.Value, subjects);

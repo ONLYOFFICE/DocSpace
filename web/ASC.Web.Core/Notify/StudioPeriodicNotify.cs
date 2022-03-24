@@ -470,8 +470,8 @@ namespace ASC.Web.Studio.Core.Notify
                 {
                     using var scope = ServiceProvider.CreateScope();
                     var scopeClass = scope.ServiceProvider.GetService<StudioPeriodicNotifyScope>();
-                    var (tenantManager, userManager, studioNotifyHelper, paymentManager, tenantExtra, _, commonLinkUtility, _, _, dbContextManager, _, configuration, settingsManager, coreBaseSettings, _, _, _) = scopeClass;
-                    var defaultRebranding = MailWhiteLabelSettings.IsDefault(settingsManager, configuration);
+                    var (tenantManager, userManager, studioNotifyHelper, paymentManager, tenantExtra, _, commonLinkUtility, _, _, dbContextManager, _, _, settingsManager, coreBaseSettings, _, _, _) = scopeClass;
+                    var defaultRebranding = MailWhiteLabelSettings.IsDefault(settingsManager);
                     tenantManager.SetCurrentTenant(tenant.Id);
                     var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
 

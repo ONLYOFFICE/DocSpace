@@ -29,7 +29,7 @@ using UnknownImageFormatException = SixLabors.ImageSharp.UnknownImageFormatExcep
 namespace ASC.Web.Core.WhiteLabel
 {
     [Serializable]
-    public class TenantWhiteLabelSettings : ISettings
+    public class TenantWhiteLabelSettings : ISettings<TenantWhiteLabelSettings>
     {
         public const string DefaultLogoText = BaseWhiteLabelSettings.DefaultLogoText;
 
@@ -90,7 +90,7 @@ namespace ASC.Web.Core.WhiteLabel
 
         #region ISettings Members
 
-        public ISettings GetDefault(IServiceProvider serviceProvider)
+        public TenantWhiteLabelSettings GetDefault()
         {
             return new TenantWhiteLabelSettings
             {
@@ -202,7 +202,6 @@ namespace ASC.Web.Core.WhiteLabel
         private WhiteLabelHelper WhiteLabelHelper { get; }
         private TenantManager TenantManager { get; }
         private SettingsManager SettingsManager { get; }
-        public IServiceProvider ServiceProvider { get; }
         private ILog Log { get; set; }
 
         public TenantWhiteLabelSettingsHelper(
@@ -212,7 +211,6 @@ namespace ASC.Web.Core.WhiteLabel
             WhiteLabelHelper whiteLabelHelper,
             TenantManager tenantManager,
             SettingsManager settingsManager,
-            IServiceProvider serviceProvider,
             IOptionsMonitor<ILog> option)
         {
             WebImageSupplier = webImageSupplier;
@@ -221,7 +219,6 @@ namespace ASC.Web.Core.WhiteLabel
             WhiteLabelHelper = whiteLabelHelper;
             TenantManager = tenantManager;
             SettingsManager = settingsManager;
-            ServiceProvider = serviceProvider;
             Log = option.CurrentValue;
         }
 
@@ -229,9 +226,7 @@ namespace ASC.Web.Core.WhiteLabel
 
         public bool IsDefault(TenantWhiteLabelSettings tenantWhiteLabelSettings)
         {
-            var defaultSettings = tenantWhiteLabelSettings.GetDefault(ServiceProvider) as TenantWhiteLabelSettings;
-
-            if (defaultSettings == null) return false;
+            var defaultSettings = SettingsManager.GetDefault<TenantWhiteLabelSettings>();
 
             return tenantWhiteLabelSettings.LogoLightSmallExt == defaultSettings.LogoLightSmallExt &&
                     tenantWhiteLabelSettings.LogoDarkExt == defaultSettings.LogoDarkExt &&

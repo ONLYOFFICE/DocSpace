@@ -27,7 +27,7 @@
 namespace ASC.Web.Studio.Core
 {
     [Serializable]
-    public class TipsSettings : ISettings
+    public class TipsSettings : ISettings<TipsSettings>
     {
         [DataMember(Name = "Show")]
         public bool Show { get; set; }
@@ -37,7 +37,7 @@ namespace ASC.Web.Studio.Core
             get { return new Guid("{27909339-B4D4-466F-8F40-A64C9D2FC041}"); }
         }
 
-        public ISettings GetDefault(IServiceProvider serviceProvider)
+        public TipsSettings GetDefault()
         {
             return new TipsSettings { Show = true };
         }

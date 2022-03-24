@@ -27,7 +27,7 @@
 namespace ASC.Web.Studio.UserControls.Management
 {
     [Serializable]
-    public class TariffSettings : ISettings
+    public class TariffSettings : ISettings<TariffSettings>
     {
         private static readonly CultureInfo CultureInfo = CultureInfo.CreateSpecificCulture("en-US");
 
@@ -40,7 +40,7 @@ namespace ASC.Web.Studio.UserControls.Management
         [JsonPropertyName("LicenseAccept")]
         public string LicenseAcceptSetting { get; set; }
 
-        public ISettings GetDefault(IServiceProvider serviceProvider)
+        public TariffSettings GetDefault()
         {
             return new TariffSettings
             {

@@ -321,7 +321,7 @@ public class TfaappController : BaseSettingsController
         if (user.IsVisitor(_userManager) || user.IsOutsider(_userManager))
             throw new NotSupportedException("Not available.");
 
-        TfaAppUserSettings.DisableForUser(_serviceProvider, _settingsManager, user.Id);
+        TfaAppUserSettings.DisableForUser(_settingsManager, user.Id);
         _messageService.Send(MessageAction.UserDisconnectedTfaApp, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
         if (isMe)

@@ -26,7 +26,7 @@
 
 namespace ASC.Web.Studio.Core
 {
-    public class StudioTrustedDomainSettings : ISettings
+    public class StudioTrustedDomainSettings : ISettings<StudioTrustedDomainSettings>
     {
         public bool InviteUsersAsVisitors { get; set; }
 
@@ -35,7 +35,7 @@ namespace ASC.Web.Studio.Core
             get { return new Guid("{00A2DB01-BAE3-48aa-BE32-CE768D7C874E}"); }
         }
 
-        public ISettings GetDefault(IServiceProvider serviceProvider)
+        public StudioTrustedDomainSettings GetDefault()
         {
             return new StudioTrustedDomainSettings { InviteUsersAsVisitors = false };
         }

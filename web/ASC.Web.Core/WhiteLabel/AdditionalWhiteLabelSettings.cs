@@ -32,8 +32,10 @@ namespace ASC.Web.Core.WhiteLabel
     }
 
     [Serializable]
-    public class AdditionalWhiteLabelSettings : ISettings
+    public class AdditionalWhiteLabelSettings : ISettings<AdditionalWhiteLabelSettings>
     {
+        private readonly AdditionalWhiteLabelSettingsHelper _additionalWhiteLabelSettingsHelper;
+
         public bool StartDocsEnabled { get; set; }
 
         public bool HelpCenterEnabled { get; set; }
@@ -58,9 +60,9 @@ namespace ASC.Web.Core.WhiteLabel
 
         public string LicenseAgreementsUrl { get; set; }
 
-        public bool IsDefault(IConfiguration configuration)
+        public bool IsDefault()
         {
-            if (!(GetDefault(configuration) is AdditionalWhiteLabelSettings defaultSettings)) return false;
+            var defaultSettings = GetDefault();
 
             return StartDocsEnabled == defaultSettings.StartDocsEnabled &&
                     HelpCenterEnabled == defaultSettings.HelpCenterEnabled &&
@@ -81,31 +83,28 @@ namespace ASC.Web.Core.WhiteLabel
             get { return new Guid("{0108422F-C05D-488E-B271-30C4032494DA}"); }
         }
 
-        public ISettings GetDefault()
+        public AdditionalWhiteLabelSettings() { }
+
+        public AdditionalWhiteLabelSettings(AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper)
         {
-            return new AdditionalWhiteLabelSettings
-            {
-                StartDocsEnabled = true,
-                LicenseAgreementsEnabled = true,
-                LicenseAgreementsUrl = DefaultLicenseAgreements
-            };
+            _additionalWhiteLabelSettingsHelper = additionalWhiteLabelSettingsHelper;
         }
 
-        public ISettings GetDefault(IConfiguration configuration)
+
+        public AdditionalWhiteLabelSettings GetDefault()
         {
-            var additionalWhiteLabelSettingsHelper = new AdditionalWhiteLabelSettingsHelper(configuration);
-            return new AdditionalWhiteLabelSettings
+            return new AdditionalWhiteLabelSettings(_additionalWhiteLabelSettingsHelper)
             {
                 StartDocsEnabled = true,
-                HelpCenterEnabled = additionalWhiteLabelSettingsHelper.DefaultHelpCenterUrl != null,
-                FeedbackAndSupportEnabled = additionalWhiteLabelSettingsHelper.DefaultFeedbackAndSupportUrl != null,
-                FeedbackAndSupportUrl = additionalWhiteLabelSettingsHelper.DefaultFeedbackAndSupportUrl,
-                UserForumEnabled = additionalWhiteLabelSettingsHelper.DefaultUserForumUrl != null,
-                UserForumUrl = additionalWhiteLabelSettingsHelper.DefaultUserForumUrl,
-                VideoGuidesEnabled = additionalWhiteLabelSettingsHelper.DefaultVideoGuidesUrl != null,
-                VideoGuidesUrl = additionalWhiteLabelSettingsHelper.DefaultVideoGuidesUrl,
-                SalesEmail = additionalWhiteLabelSettingsHelper.DefaultMailSalesEmail,
-                BuyUrl = additionalWhiteLabelSettingsHelper.DefaultBuyUrl,
+                HelpCenterEnabled = _additionalWhiteLabelSettingsHelper?.DefaultHelpCenterUrl != null,
+                FeedbackAndSupportEnabled = _additionalWhiteLabelSettingsHelper?.DefaultFeedbackAndSupportUrl != null,
+                FeedbackAndSupportUrl = _additionalWhiteLabelSettingsHelper?.DefaultFeedbackAndSupportUrl,
+                UserForumEnabled = _additionalWhiteLabelSettingsHelper?.DefaultUserForumUrl != null,
+                UserForumUrl = _additionalWhiteLabelSettingsHelper?.DefaultUserForumUrl,
+                VideoGuidesEnabled = _additionalWhiteLabelSettingsHelper?.DefaultVideoGuidesUrl != null,
+                VideoGuidesUrl = _additionalWhiteLabelSettingsHelper?.DefaultVideoGuidesUrl,
+                SalesEmail = _additionalWhiteLabelSettingsHelper?.DefaultMailSalesEmail,
+                BuyUrl = _additionalWhiteLabelSettingsHelper?.DefaultBuyUrl,
                 LicenseAgreementsEnabled = true,
                 LicenseAgreementsUrl = DefaultLicenseAgreements
             };
@@ -117,11 +116,6 @@ namespace ASC.Web.Core.WhiteLabel
             {
                 return "https://help.onlyoffice.com/Products/Files/doceditor.aspx?fileid=6795868&doc=RG5GaVN6azdUQW5kLzZQNzBXbHZ4Rm9QWVZuNjZKUmgya0prWnpCd2dGcz0_IjY3OTU4Njgi0";
             }
-        }
-
-        public ISettings GetDefault(IServiceProvider serviceProvider)
-        {
-            return GetDefault(serviceProvider.GetService<IConfiguration>());
         }
     }
 
