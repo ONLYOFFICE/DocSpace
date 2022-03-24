@@ -178,7 +178,7 @@ namespace ASC.Common.Threading
         }
 
         public void QueueTask(Action<DistributedTask, CancellationToken> action, DistributedTask distributedTask = null)
-        {
+        {   
             if (distributedTask == null)
             {
                 distributedTask = new DistributedTask();
@@ -220,14 +220,15 @@ namespace ASC.Common.Threading
             var token = cancelation.Token;
             Cancelations[distributedTask.Id] = cancelation;
 
-            var task = new Task(async () =>
+            var task = new Task(() =>
             {
                 var t = action(distributedTask, token);
                 t.ConfigureAwait(false)
                 .GetAwaiter()
                 .OnCompleted(() => OnCompleted(t, distributedTask.Id));
-                await t;
             }, token, TaskCreationOptions.LongRunning);
+
+            task.ConfigureAwait(false);
 
             distributedTask.Status = DistributedTaskStatus.Running;
 
@@ -328,7 +329,10 @@ namespace ASC.Common.Threading
             if (distributedTask != null)
             {
                 distributedTask.Status = DistributedTaskStatus.Completed;
-                distributedTask.Exception = task.Exception;
+                if (task.Exception != null)
+                {
+                    distributedTask.Exception = task.Exception;
+                }
                 if (task.IsFaulted)
                 {
                     distributedTask.Status = DistributedTaskStatus.Failted;

@@ -93,7 +93,7 @@ class ComboButton extends React.Component {
             (comboIcon ? (
               <ReactSVG
                 src={comboIcon}
-                className="custom-combo-buttons_expander-icon"
+                className="combo-buttons_expander-icon"
               />
             ) : (
               <StyledExpanderDownIcon

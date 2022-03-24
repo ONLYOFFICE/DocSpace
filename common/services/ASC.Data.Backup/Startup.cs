@@ -60,4 +60,16 @@ public class Startup : BaseStartup
         services.AddHostedService<BackupListenerService>();
         services.AddHostedService<BackupWorkerService>();
     }
+
+    public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        base.Configure(app, env);
+
+        app.MapWhen(
+            context => context.Request.Path.ToString().EndsWith("backupFileUpload.ashx"),
+            appBranch =>
+            {
+                appBranch.UseBackupFileUploadHandler();
+            });
+    }
 }

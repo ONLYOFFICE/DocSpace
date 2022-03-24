@@ -101,7 +101,7 @@ const StyledTileContainer = styled.div`
                 `}
 
               path {
-                fill: ${(props) => props.theme.newFilterInput.sort.sortFill};
+                fill: ${(props) => props.theme.filterInput.sort.sortFill};
               }
             }
 
@@ -114,7 +114,7 @@ const StyledTileContainer = styled.div`
 
           .selected-option-item {
             background: ${(props) =>
-              props.theme.newFilterInput.sort.hoverBackground};
+              props.theme.filterInput.sort.hoverBackground};
             cursor: auto;
 
             .selected-option-item__icon {
@@ -131,14 +131,13 @@ const StyledTileContainer = styled.div`
           font-size: 12px;
           font-weight: 600;
 
-          color: ${(props) => props.theme.newFilterInput.sort.tileSortColor};
+          color: ${(props) => props.theme.filterInput.sort.tileSortColor};
 
           .sort-icon {
             margin-right: 8px;
             svg {
               path {
-                fill: ${(props) =>
-                  props.theme.newFilterInput.sort.tileSortFill};
+                fill: ${(props) => props.theme.filterInput.sort.tileSortFill};
               }
             }
           }

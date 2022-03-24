@@ -73,26 +73,6 @@ class FileInput extends Component {
       ...rest
     } = this.props;
 
-    let iconSize = 0;
-
-    switch (size) {
-      case "base":
-        iconSize = 15;
-        break;
-      case "middle":
-        iconSize = 15;
-        break;
-      case "big":
-        iconSize = 16;
-        break;
-      case "huge":
-        iconSize = 16;
-        break;
-      case "large":
-        iconSize = 16;
-        break;
-    }
-
     return (
       <StyledFileInput
         size={size}
@@ -127,7 +107,6 @@ class FileInput extends Component {
             className="icon-button"
             iconName={"/static/images/catalog.folder.react.svg"}
             // color={"#A3A9AE"}
-            size={iconSize}
             isDisabled={isDisabled}
           />
         </div>

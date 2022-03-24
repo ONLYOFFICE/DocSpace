@@ -55,6 +55,109 @@ export function getInvitationLinks() {
   );
 }
 
+export function startBackup(storageType, storageParams, backupMail = false) {
+  const options = {
+    method: "post",
+    url: `/portal/startbackup`,
+    data: {
+      storageType,
+      storageParams: storageParams,
+      backupMail,
+    },
+  };
+
+  return request(options);
+}
+
+export function getBackupProgress() {
+  const options = {
+    method: "get",
+    url: "/portal/getbackupprogress",
+  };
+  return request(options);
+}
+
+export function deleteBackupSchedule() {
+  const options = {
+    method: "delete",
+    url: "/portal/deletebackupschedule",
+  };
+  return request(options);
+}
+
+export function getBackupSchedule() {
+  const options = {
+    method: "get",
+    url: "/portal/getbackupschedule",
+  };
+  return request(options);
+}
+
+export function createBackupSchedule(
+  storageType,
+  storageParams,
+  backupsStored,
+  Period,
+  Hour,
+  Day = null,
+  backupMail = false
+) {
+  const cronParams = {
+    Period: Period,
+    Hour: Hour,
+    Day: Day,
+  };
+  const options = {
+    method: "post",
+    url: "/portal/createbackupschedule",
+    data: {
+      storageType,
+      storageParams,
+      backupsStored,
+      cronParams: cronParams,
+      backupMail,
+    },
+  };
+  return request(options);
+}
+
+export function deleteBackupHistory() {
+  return request({ method: "delete", url: "/portal/deletebackuphistory" });
+}
+
+export function deleteBackup(id) {
+  return request({ method: "delete", url: `/portal/deletebackup/${id}` });
+}
+
+export function getBackupHistory() {
+  return request({ method: "get", url: "/portal/getbackuphistory" });
+}
+
+export function startRestore(backupId, storageType, storageParams, notify) {
+  return request({
+    method: "post",
+    url: `/portal/startrestore`,
+    data: {
+      backupId,
+      storageType,
+      storageParams: storageParams,
+      notify,
+    },
+  });
+}
+
+export function getRestoreProgress() {
+  return request({ method: "get", url: "/portal/getrestoreprogress" });
+}
+
+export function enableRestore() {
+  return request({ method: "get", url: "/portal/enablerestore" });
+}
+
+export function enableAutoBackup() {
+  return request({ method: "get", url: "/portal/enableAutoBackup" });
+}
+
 export function setPortalRename(alias) {
   return request({
     method: "put",

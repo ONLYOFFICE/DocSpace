@@ -85,6 +85,7 @@ class SelectFolderModalDialog extends React.Component {
       canCreate,
       showButtons,
       selectionButtonPrimary,
+      isReset,
     } = this.props;
 
     if (
@@ -97,6 +98,10 @@ class SelectFolderModalDialog extends React.Component {
         isLoading: false,
       });
     }
+
+    if (isReset && isReset !== prevProps.isReset) {
+      this.onResetInfo();
+    }
   }
   trySwitch = async () => {
     const {
@@ -106,6 +111,7 @@ class SelectFolderModalDialog extends React.Component {
       foldersType,
       id,
       selectedFolderId,
+      foldersList,
     } = this.props;
 
     switch (foldersType) {
@@ -166,7 +172,9 @@ class SelectFolderModalDialog extends React.Component {
 
       case "third-party":
         try {
-          folderList = await SelectFolderDialog.getCommonThirdPartyList();
+          folderList = foldersList
+            ? foldersList
+            : await SelectFolderDialog.getCommonThirdPartyList();
 
           this.setBaseSettings();
         } catch (err) {
@@ -327,14 +335,18 @@ class SelectFolderModalDialog extends React.Component {
       setSelectedNode,
       setSelectedFolder,
       selectionButtonPrimary,
-      //setExpandedPanelKeys
+      setExpandedPanelKeys,
+      onSetBaseFolderPath,
     } = this.props;
-    if (!selectionButtonPrimary) {
+    const isInput = !!onSetBaseFolderPath;
+
+    if (!selectionButtonPrimary || isInput) {
       //TODO:  it need for canCreate function now, will need when passed the folder id - need to come up with a different solution.
       setSelectedNode([id + ""]);
       const newPathParts = SelectFolderDialog.convertPathParts(data.pathParts);
 
-      // setExpandedPanelKeys(newPathParts)
+      isInput && setExpandedPanelKeys(newPathParts);
+
       setSelectedFolder({
         folders: data.folders,
         ...data.current,
@@ -381,6 +393,8 @@ class SelectFolderModalDialog extends React.Component {
       showButtons,
       onSetFullPath,
       selectionButtonPrimary,
+      onSetLoadingData,
+      onSetLoadingInput,
     } = this.props;
     const { folderId } = this.state;
 
@@ -389,6 +403,9 @@ class SelectFolderModalDialog extends React.Component {
     if (isArrayEqual([folder[0]], [folderId])) {
       return;
     }
+
+    onSetLoadingData && onSetLoadingData(true);
+    onSetLoadingInput && onSetLoadingInput(true);
 
     this.setState({
       folderId: folder[0],
@@ -448,6 +465,55 @@ class SelectFolderModalDialog extends React.Component {
     onSave && onSave(e, folderId);
     onClose && onClose();
   };
+
+  onResetInfo = async () => {
+    const { id, foldersType, onSelectFolder } = this.props;
+    switch (foldersType) {
+      case "common":
+        try {
+          if (!id) {
+            folderList = await SelectFolderDialog.getCommonFolders();
+          }
+
+          onSelectFolder && onSelectFolder(`${id ? id : folderList[0].id}`);
+
+          this.setState({
+            folderId: `${id ? id : folderList[0].id}`,
+          });
+
+          this.setFolderToTree(id ? id : folderList[0].id);
+
+          this.loadersCompletes();
+        } catch (err) {
+          console.error(err);
+          this.loadersCompletes();
+        }
+
+        break;
+
+      case "third-party":
+        try {
+          if (!id) {
+            folderList = await SelectFolderDialog.getCommonThirdPartyList();
+          }
+
+          onSelectFolder && onSelectFolder(`${id ? id : folderList[0].id}`);
+
+          this.setState({
+            folderId: `${id ? id : folderList[0].id}`,
+          });
+
+          this.setFolderToTree(id ? id : folderList[0].id);
+          this.loadersCompletes();
+        } catch (err) {
+          console.error(err);
+
+          this.loadersCompletes();
+        }
+        break;
+    }
+  };
+
   render() {
     const {
       t,
@@ -677,6 +743,7 @@ class SelectFolderDialog extends React.Component {
     }
     return [newArray, needHideSwitcher];
   };
+
   render() {
     return (
       <MobxProvider auth={authStore} {...stores}>

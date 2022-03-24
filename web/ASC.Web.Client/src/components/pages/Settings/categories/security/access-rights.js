@@ -17,6 +17,7 @@ import { AppServerConfig } from "@appserver/common/constants";
 import commonIconsStyles from "@appserver/components/utils/common-icons-style";
 import ArrowRightIcon from "@appserver/studio/public/images/arrow.right.react.svg";
 import Loader from "@appserver/components/loader";
+import commonSettingsStyles from "../../utils/commonSettingsStyles";
 import { Base } from "@appserver/components/themes";
 
 const StyledArrowRightIcon = styled(ArrowRightIcon)`

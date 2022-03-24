@@ -48,11 +48,11 @@ const commonStyles = css`
     //display: flex;
     //flex-direction: row;
 
+    padding-right: 0;
     outline: none;
     ${(props) =>
       props.viewAs == "tile" &&
       css`
-        padding-right: 0;
         padding-left: 20px;
       `}
 
@@ -218,7 +218,7 @@ class SectionBody extends React.Component {
               <div className="section-wrapper">
                 <div className="section-wrapper-content" {...focusProps}>
                   {children}
-                  <StyledSpacer pinned={pinned} />
+                  <StyledSpacer pinned={pinned} className="settings-mobile" />
                 </div>
               </div>
             </Scrollbar>
@@ -226,7 +226,11 @@ class SectionBody extends React.Component {
             <div className="section-wrapper">
               <div className="section-wrapper-content" {...focusProps}>
                 {children}
-                <StyledSpacer pinned={pinned} isHomepage={isHomepage} />
+                <StyledSpacer
+                  pinned={pinned}
+                  isHomepage={isHomepage}
+                  className="settings-mobile"
+                />
               </div>
             </div>
           )

@@ -34,6 +34,16 @@ const StyledAboutBody = styled.div`
   .select-el {
     ${isMobile && `user-select: text`};
   }
+
+  .logo-theme {
+    #svg_4-4 {
+      fill: ${(props) => props.theme.studio.about.logoColor};
+    }
+
+    #svg_5-5 {
+      fill: ${(props) => props.theme.studio.about.logoColor};
+    }
+  }
 `;
 
 const AboutContent = ({ personal, buildVersionInfo, theme }) => {
@@ -52,7 +62,7 @@ const AboutContent = ({ personal, buildVersionInfo, theme }) => {
         {personal ? (
           <ReactSVG
             src="/images/logo_personal_about.svg"
-            className="no-select"
+            className="logo-theme no-select"
           />
         ) : (
           <img

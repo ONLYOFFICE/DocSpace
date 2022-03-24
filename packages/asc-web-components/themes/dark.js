@@ -705,6 +705,15 @@ const Dark = {
         large: "43px",
       },
     },
+    iconButton: {
+      width: {
+        base: "15px",
+        middle: "15px",
+        big: "16px",
+        huge: "16px",
+        large: "16px",
+      },
+    },
   },
 
   passwordInput: {
@@ -1922,7 +1931,7 @@ const Dark = {
   menuContainer: {
     background:
       "linear-gradient(226.22deg, #EBB67A 0.24%, #E9AC6B 11.61%, #E8A25D 22.98%, #E69850 34.34%, #E58D42 45.71%, #E38235 57.08%, #E27628 68.44%, #E06A1B 79.81%)",
-    arrowTop: "#E06A1B",
+    arrowTop: "#EAB274",
     color: "#22221f",
   },
 
@@ -1976,61 +1985,6 @@ const Dark = {
   },
 
   filterInput: {
-    filterButton: {
-      stroke: "#474747",
-
-      fill: black,
-
-      fillSecond: grayMaxLight,
-    },
-
-    comboButtonLabelColor: grayMaxLight,
-    comboButtonLabelColorTwo: "#a9a9a9",
-
-    viewSelector: {
-      border: "#474747",
-      disabledBorder: "#474747",
-
-      disabledBackground: "#292929",
-
-      activeBackground: gray,
-      activeBorder: gray,
-    },
-
-    filterItem: {
-      border: "1px solid #474747",
-      backgroundColor: black,
-      color: grayMaxLight,
-    },
-
-    content: {
-      color: grayMaxLight,
-      background: "#292929",
-    },
-
-    closeButton: {
-      borderLeft: "1px solid #474747",
-      background: "#292929",
-
-      activeBackground: black,
-      activeFill: grayMaxLight,
-
-      hoverFill: grayMaxLight,
-    },
-
-    hideButton: {
-      border: "1px solid #474747",
-      background: black,
-
-      hoverBorder: "#858585",
-      disabledHoverBorder: "#858585",
-
-      activeBackground: "#292929",
-      disabledActiveBackground: "#292929",
-    },
-  },
-
-  newFilterInput: {
     button: {
       border: "1px solid #474747",
       hoverBorder: "1px solid #a3a9ae",
@@ -2203,10 +2157,15 @@ const Dark = {
   },
 
   floatingButton: {
-    backgroundColor: "#e5e5e5",
-    color: darkBlack,
+    backgroundColor: white,
+    color: black,
     boxShadow: "0px 12px 24px rgba(0, 0, 0, 0.12)",
     fill: black,
+
+    alert: {
+      fill: "#F58D31",
+      path: black,
+    },
   },
 
   mediaViewer: {
@@ -2563,6 +2522,7 @@ const Dark = {
     about: {
       linkColor: "#E06A1B",
       border: "1px solid #474747",
+      logoColor: white,
     },
 
     comingSoon: {
@@ -2663,10 +2623,10 @@ const Dark = {
   },
 
   campaignsBanner: {
-    border: "border: 1px solid #d1d1d1",
+    border: "1px solid #CCCCCC",
     color: darkBlack,
 
-    btnColor: white,
+    btnColor: black,
     btnBackgroundActive: blueMain,
   },
 

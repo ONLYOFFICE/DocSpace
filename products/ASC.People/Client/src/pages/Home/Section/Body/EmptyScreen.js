@@ -68,15 +68,6 @@ const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading }) => {
           </Grid>
         }
       />
-      {isMobile || isMobileUtils() || isTabletUtils() ? (
-        <Consumer>
-          {(context) => (
-            <ArticleMainButtonContent sectionWidth={context.sectionWidth} />
-          )}
-        </Consumer>
-      ) : (
-        <></>
-      )}
     </>
   );
 };

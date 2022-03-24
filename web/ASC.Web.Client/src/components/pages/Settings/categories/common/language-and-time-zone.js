@@ -1,6 +1,6 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import FieldContainer from "@appserver/components/field-container";
 import ToggleButton from "@appserver/components/toggle-button";
 import ComboBox from "@appserver/components/combobox";
@@ -20,7 +20,8 @@ import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../../../../../package.json";
 import history from "@appserver/common/history";
 import { isMobile } from "react-device-detect";
-import { Consumer } from "@appserver/components/utils/context";
+import { isSmallTablet } from "@appserver/components/utils/device";
+import Scrollbar from "@appserver/components/scrollbar";
 
 const mapTimezonesToArray = (timezones) => {
   return timezones.map((timezone) => {
@@ -32,16 +33,25 @@ const findSelectedItemByKey = (items, selectedItemKey) => {
   return items.find((item) => item.key === selectedItemKey);
 };
 
-const StyledComponent = styled.div`
-  /* .section-wrapper-content {
-    min-height: 0px;
-  } */
-  .settings-block {
-    overflow: auto;
-    min-height: calc(100vh - 164px);
-    height: calc(100vh - 164px);
-  }
+const menuHeight = "48px";
+const sectionHeight = "50px";
+const paddingSectionWrapperContent = "22px";
+const saveCancelButtons = "56px";
+//const minHeight = "64px";
+const flex = "4px";
 
+const StyledScrollbar = styled(Scrollbar)`
+  height: calc(
+    100vh -
+      (
+        ${menuHeight} + ${sectionHeight} + ${paddingSectionWrapperContent} +
+          ${saveCancelButtons} + ${flex}
+      )
+  ) !important;
+  width: 100% !important;
+`;
+
+const StyledComponent = styled.div`
   .combo-button-label {
     max-width: 100%;
     font-weight: 400;
@@ -64,13 +74,44 @@ const StyledComponent = styled.div`
     line-height: 20px;
   }
 
-  @media (orientation: landscape) {
-    max-width: 343px;
+  .settings-block {
+    height: calc(
+      100vh -
+        (
+          ${menuHeight} + ${sectionHeight} + ${paddingSectionWrapperContent} +
+            ${saveCancelButtons} + ${flex}
+        )
+    );
+  }
+
+  ${(props) =>
+    (isMobile || props.hasScroll) &&
+    css`
+      width: ${isMobile ? "100vw" : "calc(100vw - 52px)"};
+      left: -16px;
+      position: relative;
+
+      .settings-block {
+        width: ${isMobile ? "calc(100vw - 32px)" : "calc(100vw - 84px)"};
+        max-width: none;
+        padding-left: 16px;
+      }
+    `}
+
+  @media (min-width: 600px) {
     .settings-block {
-      overflow: hidden;
-      min-height: auto;
+      max-width: 350px;
       height: auto;
     }
+  }
+
+  @media (orientation: landscape) and (max-width: 601px) {
+    ${isMobile &&
+    css`
+      .settings-block {
+        height: auto;
+      }
+    `}
   }
 `;
 
@@ -128,7 +169,7 @@ class LanguageAndTimeZone extends React.Component {
       hasChanged: false,
       showReminder: false,
       sectionWidth: null,
-      border: false,
+      hasScroll: false,
     };
   }
 
@@ -141,7 +182,7 @@ class LanguageAndTimeZone extends React.Component {
     } = this.props;
     const { timezones, isLoadedData } = this.state;
 
-    window.addEventListener("resize", this.checkSectionWidth);
+    window.addEventListener("resize", this.checkInnerWidth);
 
     if (!timezones.length) {
       getPortalTimezones().then(() => {
@@ -188,7 +229,7 @@ class LanguageAndTimeZone extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { timezones, timezoneDefault, languageDefault, border } = this.state;
+    const { timezones, timezoneDefault, languageDefault } = this.state;
     const {
       i18n,
       language,
@@ -197,18 +238,16 @@ class LanguageAndTimeZone extends React.Component {
       cultureNames,
     } = this.props;
 
-    if (!this.settingsDiv) {
-      this.settingsDiv = document.getElementsByClassName("settings-block")[0];
+    this.checkHeightSettingsBlock(false);
+    window.addEventListener("resize", this.checkHeightSettingsBlock);
 
-      if (this.settingsDiv) {
-        const height = getComputedStyle(this.settingsDiv).height.slice(0, -2);
+    // TODO: Переделать, убрать div c 64 высотой
+    const settingsMobile = document.getElementsByClassName(
+      "settings-mobile"
+    )[0];
 
-        if (this.settingsDiv.scrollHeight > height) {
-          this.setState({
-            border: true,
-          });
-        }
-      }
+    if (settingsMobile) {
+      settingsMobile.style.display = "none";
     }
 
     if (timezones.length && !prevState.isLoadedData) {
@@ -234,7 +273,11 @@ class LanguageAndTimeZone extends React.Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener("resize", this.checkSectionWidth);
+    window.removeEventListener(
+      "resize",
+      this.checkInnerWidth,
+      this.checkHeightSettingsBlock
+    );
   }
 
   onLanguageSelect = (language) => {
@@ -337,11 +380,8 @@ class LanguageAndTimeZone extends React.Component {
     }
   };
 
-  checkSectionWidth = (width) => {
-    if (this.state.sectionWidth === width) return;
-    this.setState({ sectionWidth: width });
-
-    if (width > 375 && !isMobile) {
+  checkInnerWidth = () => {
+    if (window.innerWidth > 600 && !isMobile) {
       history.push(
         combineUrl(
           AppServerConfig.proxyURL,
@@ -349,6 +389,28 @@ class LanguageAndTimeZone extends React.Component {
           "/settings/common/customization"
         )
       );
+
+      return true;
+    }
+  };
+
+  checkHeightSettingsBlock = (resize) => {
+    if (!this.settingsDiv || resize) {
+      this.settingsDiv = document.getElementsByClassName("settings-block")[0];
+
+      if (this.settingsDiv) {
+        const height = getComputedStyle(this.settingsDiv).height.slice(0, -2);
+
+        if (this.settingsDiv.scrollHeight > height) {
+          this.setState({
+            hasScroll: true,
+          });
+        } else {
+          this.setState({
+            hasScroll: false,
+          });
+        }
+      }
     }
   };
 
@@ -362,97 +424,106 @@ class LanguageAndTimeZone extends React.Component {
       timezone,
       showReminder,
       hasChanged,
-      border,
+      hasScroll,
     } = this.state;
 
     const tooltipLanguageTimeSettings = (
       <LanguageTimeSettingsTooltip theme={theme} t={t} />
     );
 
-    return (
-      <Consumer>
-        {(context) => {
-          this.checkSectionWidth(context.sectionWidth);
-          return !isLoadedData ? (
-            <Loader className="pageLoader" type="rombs" size="40px" />
-          ) : (
-            <StyledComponent>
-              {`${context.sectionWidth}` > 375 && !isMobile && (
-                <div className="category-item-heading">
-                  <div className="category-item-title">
-                    {t("StudioTimeLanguageSettings")}
-                  </div>
-                  <HelpButton
-                    iconName="static/images/combined.shape.svg"
-                    size={12}
-                    tooltipContent={tooltipLanguageTimeSettings}
-                  />
-                </div>
-              )}
-              <div className="settings-block">
-                <FieldContainer
-                  id="fieldContainerLanguage"
-                  labelText={`${t("Common:Language")}:`}
-                  isVertical={true}
-                >
-                  <ComboBox
-                    id="comboBoxLanguage"
-                    options={cultureNames}
-                    selectedOption={language}
-                    onSelect={this.onLanguageSelect}
-                    isDisabled={isLoading}
-                    noBorder={false}
-                    scaled={true}
-                    scaledOptions={true}
-                    dropDownMaxHeight={300}
-                    className="dropdown-item-width"
-                  />
-                </FieldContainer>
-                <div className="field-container-flex">
-                  <div className="field-title">{`${t(
-                    "Automatic time zone"
-                  )}`}</div>
-                  <ToggleButton
-                    className="toggle"
-                    onChange={() => toastr.info(<>Not implemented</>)}
-                  />
-                </div>
-                <FieldContainer
-                  id="fieldContainerTimezone"
-                  labelText={`${t("TimeZone")}:`}
-                  isVertical={true}
-                >
-                  <ComboBox
-                    id="comboBoxTimezone"
-                    options={timezones}
-                    selectedOption={timezone}
-                    onSelect={this.onTimezoneSelect}
-                    isDisabled={isLoading}
-                    noBorder={false}
-                    scaled={true}
-                    scaledOptions={true}
-                    dropDownMaxHeight={300}
-                    className="dropdown-item-width"
-                  />
-                </FieldContainer>
-              </div>
-              <SaveCancelButtons
-                className="save-cancel-buttons"
-                onSaveClick={this.onSaveLngTZSettings}
-                onCancelClick={this.onCancelClick}
-                showReminder={showReminder}
-                reminderTest={t("YouHaveUnsavedChanges")}
-                saveButtonLabel={t("Common:SaveButton")}
-                cancelButtonLabel={t("Common:CancelButton")}
-                displaySettings={true}
-                hasChanged={hasChanged}
-                sectionWidth={context.sectionWidth}
-                border={border}
-              />
-            </StyledComponent>
-          );
-        }}
-      </Consumer>
+    const settingsBlock = (
+      <div className="settings-block">
+        <FieldContainer
+          id="fieldContainerLanguage"
+          labelText={`${t("Common:Language")}:`}
+          isVertical={true}
+        >
+          <ComboBox
+            id="comboBoxLanguage"
+            options={cultureNames}
+            selectedOption={language}
+            onSelect={this.onLanguageSelect}
+            isDisabled={isLoading}
+            noBorder={false}
+            scaled={true}
+            scaledOptions={true}
+            dropDownMaxHeight={300}
+            className="dropdown-item-width"
+          />
+        </FieldContainer>
+        <div className="field-container-flex">
+          <div className="field-title">{`${t("Automatic time zone")}`}</div>
+          <ToggleButton
+            className="toggle"
+            onChange={() => toastr.info(<>Not implemented</>)}
+          />
+        </div>
+        <FieldContainer
+          id="fieldContainerTimezone"
+          labelText={`${t("TimeZone")}:`}
+          isVertical={true}
+        >
+          <ComboBox
+            id="comboBoxTimezone"
+            options={timezones}
+            selectedOption={timezone}
+            onSelect={this.onTimezoneSelect}
+            isDisabled={isLoading}
+            noBorder={false}
+            scaled={true}
+            scaledOptions={true}
+            dropDownMaxHeight={300}
+            className="dropdown-item-width"
+          />
+        </FieldContainer>
+      </div>
+    );
+
+    return !isLoadedData ? (
+      <Loader className="pageLoader" type="rombs" size="40px" />
+    ) : (
+      <StyledComponent hasScroll={hasScroll}>
+        {this.checkInnerWidth() && (
+          <div className="category-item-heading">
+            <div className="category-item-title">
+              {t("StudioTimeLanguageSettings")}
+            </div>
+            <HelpButton
+              iconName="static/images/combined.shape.svg"
+              size={12}
+              tooltipContent={tooltipLanguageTimeSettings}
+            />
+          </div>
+        )}
+        {/* {hasScroll ? (
+                <StyledScrollbar stype="smallBlack">
+                  {settingsBlock}
+                </StyledScrollbar>
+              ) : (
+                <> {settingsBlock}</>
+              )} */}
+
+        {/* TODO: Для мобилы только с горизонтальной ориентацией и декстопа  window.innerWidth < 600 */}
+
+        {(isMobile && window.innerWidth < 600) || window.innerWidth < 600 ? (
+          <StyledScrollbar stype="smallBlack">{settingsBlock}</StyledScrollbar>
+        ) : (
+          <> {settingsBlock}</>
+        )}
+
+        <SaveCancelButtons
+          className="save-cancel-buttons"
+          onSaveClick={this.onSaveLngTZSettings}
+          onCancelClick={this.onCancelClick}
+          showReminder={showReminder}
+          reminderTest={t("YouHaveUnsavedChanges")}
+          saveButtonLabel={t("Common:SaveButton")}
+          cancelButtonLabel={t("Common:CancelButton")}
+          displaySettings={true}
+          hasChanged={hasChanged}
+          hasScroll={hasScroll}
+        />
+      </StyledComponent>
     );
   }
 }

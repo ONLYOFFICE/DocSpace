@@ -2,6 +2,10 @@ import React from "react";
 //import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { isMobile } from "react-device-detect";
+import {
+  isMobile as isMobileUtils,
+  isTablet as isTabletUtils,
+} from "@appserver/components/utils/device";
 import axios from "axios";
 import toastr from "@appserver/components/toast/toastr";
 import Section from "@appserver/common/components/Section";
@@ -18,6 +22,8 @@ import {
   SectionPagingContent,
 } from "./Section";
 import { InfoPanelBodyContent, InfoPanelHeaderContent } from "./InfoPanel";
+
+import { ArticleMainButtonContent } from "../../components/Article";
 
 import { createTreeFolders } from "../../helpers/files-helpers";
 import MediaViewer from "./MediaViewer";
@@ -319,7 +325,9 @@ class PureHome extends React.Component {
           <Section.SectionBody>
             <Consumer>
               {(context) => (
-                <SectionBodyContent sectionWidth={context.sectionWidth} />
+                <>
+                  <SectionBodyContent sectionWidth={context.sectionWidth} />
+                </>
               )}
             </Consumer>
           </Section.SectionBody>

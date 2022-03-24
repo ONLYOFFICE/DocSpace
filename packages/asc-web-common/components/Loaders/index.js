@@ -21,6 +21,7 @@ import Tiles from "./TilesLoader";
 import DialogLoader from "./DialogLoader";
 import DialogAsideLoader from "./DialogAsideLoader";
 import InfoPanelLoader from "./InfoPanelLoader";
+import ListLoader from "./ListLoader";
 
 export default {
   Rectangle,
@@ -46,4 +47,5 @@ export default {
   ArticleFolder,
   ArticleGroup,
   InfoPanelLoader,
+  ListLoader,
 };
