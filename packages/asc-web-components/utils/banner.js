@@ -12,8 +12,8 @@ export const getBannerAttribute = () => {
   const sectionHeaderMarginTop = bar
     ? "62px"
     : rects
-    ? rects.height - 30 + 36 + "px"
-    : "62px";
+    ? rects.height - 40 + 36 + "px"
+    : "46px";
 
   return { headerHeight, sectionHeaderTop, sectionHeaderMarginTop };
 };
