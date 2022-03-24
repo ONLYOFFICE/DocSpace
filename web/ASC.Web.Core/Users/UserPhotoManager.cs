@@ -179,7 +179,6 @@ namespace ASC.Web.Core.Users
         private StorageFactory StorageFactory { get; }
         private UserPhotoManagerCache UserPhotoManagerCache { get; }
         private SettingsManager SettingsManager { get; }
-        private IServiceProvider ServiceProvider { get; }
         public ILog Log { get; }
 
         private Tenant tenant;
@@ -196,8 +195,7 @@ namespace ASC.Web.Core.Users
             UserPhotoManagerCache userPhotoManagerCache,
             IOptionsMonitor<ILog> options,
             DistributedTaskQueueOptionsManager optionsQueue,
-            SettingsManager settingsManager,
-            IServiceProvider serviceProvider)
+            SettingsManager settingsManager)
         {
             ResizeQueue = optionsQueue.Get<ResizeWorkerItem>();
             UserManager = userManager;
@@ -206,7 +204,6 @@ namespace ASC.Web.Core.Users
             StorageFactory = storageFactory;
             UserPhotoManagerCache = userPhotoManagerCache;
             SettingsManager = settingsManager;
-            ServiceProvider = serviceProvider;
             Log = options.Get("ASC.Web.Photo");
         }
 
