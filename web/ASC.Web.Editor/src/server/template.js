@@ -1,11 +1,5 @@
 import { getFavicon } from "../helpers/utils";
 import pkg from "../../package.json";
-import {
-  FILES_SCOPE,
-  FILES_REMOTE_ENTRY_URL,
-  STUDIO_SCOPE,
-  STUDIO_REMOTE_ENTRY_URL,
-} from "../helpers/constants";
 
 export default function template(
   initialState = {},
@@ -48,9 +42,7 @@ export default function template(
           <meta name="mobile-web-app-capable" content="yes" />
           <meta name="apple-mobile-web-app-capable" content="yes" />
           <link rel="apple-touch-icon" href="/appIcon.png" />
-          ${styleTags}
-          <script id=${FILES_SCOPE} src=${FILES_REMOTE_ENTRY_URL} type="text/javascript" async=""></script>
-          <script id=${STUDIO_SCOPE} src=${STUDIO_REMOTE_ENTRY_URL} type="text/javascript" async=""></script>      
+          ${styleTags}     
         </head>
         <body>
           <div id="root">${content}</div>
