@@ -15,42 +15,35 @@
 */
 
 
-using ASC.Core.Common.EF.Model;
-
 namespace ASC.ActiveDirectory.Base;
 [Scope]
 public class DbHelper
 {
-    private readonly Guid id = new Guid("{197149b3-fbc9-44c2-b42a-232f7e729c16}");
-    private readonly bool enableLdapAuthentication = false;
-    private readonly Lazy<WebstudioDbContext> _lazyWebstudioDbContext;
-    private readonly Lazy<TenantDbContext> _lazyTenantDbContext;
-    private WebstudioDbContext WebstudioDbContext { get => _lazyWebstudioDbContext.Value; }
-    private TenantDbContext TenantDbContext { get => _lazyTenantDbContext.Value; }
+    private readonly Lazy<ActiveDirectoryDbContext> _lazyActiveDirectoryDbContext;
+    private readonly LdapSettings _ldapSettings;
+    private ActiveDirectoryDbContext ActiveDirectoryDbContext { get => _lazyActiveDirectoryDbContext.Value; }
 
     public DbHelper(
-        DbContextManager<WebstudioDbContext> webstudioDbContext,
-        DbContextManager<TenantDbContext> tenantDbContext)
+        DbContextManager<ActiveDirectoryDbContext> activeDirectoryDbContext,
+        LdapSettings ldapSettings)
     {
-        _lazyWebstudioDbContext = new Lazy<WebstudioDbContext>(() => webstudioDbContext.Value);
-        _lazyTenantDbContext = new Lazy<TenantDbContext>(() => tenantDbContext.Value);
+        _ldapSettings = ldapSettings;
+        _lazyActiveDirectoryDbContext = new Lazy<ActiveDirectoryDbContext>(() => activeDirectoryDbContext.Value);
     }
 
     public List<int> GetTenants()
     {
+        var id = _ldapSettings.ID;
+        var enableLdapAuthentication = _ldapSettings.EnableLdapAuthentication;
 
-        var q = WebstudioDbContext.WebstudioSettings
-            .Where(r => r.Id == id).ToList();
-
-        var data = q
-            .Join(TenantDbContext.Tenants, r => r.TenantId, r => r.Id, (settings, tenant) => new { settings, tenant })
+        var data = ActiveDirectoryDbContext.WebstudioSettings
+            .Where(r => r.Id == id)
+            .Join(ActiveDirectoryDbContext.Tenants, r => r.TenantId, r => r.Id, (settings, tenant) => new { settings, tenant })
             .Select(r => JsonExtensions.JsonValue(nameof(r.settings.Data).ToLower(), enableLdapAuthentication.ToString()))
-            //.Where()
             .Distinct()
-            .Select(r => Convert.ToInt32(r[0]))
+            .Select(r => Convert.ToInt32(r))
             .ToList();
 
         return data;
     }
-
 }

@@ -29,7 +29,7 @@ global using ASC.Common.Security.Authorizing;
 global using ASC.Common.Threading;
 global using ASC.Core;
 global using ASC.Core.Common.EF;
-global using ASC.Core.Common.EF.Context;
+global using ASC.Core.Common.EF.Model;
 global using ASC.Core.Common.Settings;
 global using ASC.Core.Tenants;
 global using ASC.Core.Users;
@@ -42,9 +42,9 @@ global using ASC.Web.Core;
 global using ASC.Web.Core.Users;
 global using ASC.Web.Studio.Utility;
 
+global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
-global using Microsoft.Extensions.Hosting;
 global using Microsoft.Extensions.Options;
 
 global using Novell.Directory.Ldap;
