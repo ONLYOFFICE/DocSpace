@@ -24,7 +24,7 @@ import {
 } from "@appserver/common/constants";
 import { combineUrl, createPasswordHash } from "@appserver/common/utils";
 
-const inputWidth = "400px";
+const inputWidth = "320px";
 
 const ConfirmContainer = styled.div`
   display: flex;

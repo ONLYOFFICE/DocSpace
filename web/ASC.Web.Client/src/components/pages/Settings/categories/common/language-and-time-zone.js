@@ -20,7 +20,7 @@ import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../../../../../package.json";
 import history from "@appserver/common/history";
 import { isMobile } from "react-device-detect";
-import { Consumer } from "@appserver/components/utils/context";
+import { isSmallTablet } from "@appserver/components/utils/device";
 import Scrollbar from "@appserver/components/scrollbar";
 
 const mapTimezonesToArray = (timezones) => {
@@ -40,42 +40,6 @@ const saveCancelButtons = "56px";
 //const minHeight = "64px";
 const flex = "4px";
 
-const heightScrollbar = css`calc(
-      100vh -
-        (
-          ${menuHeight} + ${sectionHeight} + ${paddingSectionWrapperContent} +
-            ${saveCancelButtons} + ${flex}
-        )
-    )`;
-
-const landscapeMobile = css`
-  ${(props) =>
-    (isMobile || props.sectionWidth <= 375) &&
-    css`
-      max-width: 343px;
-
-      .settings-block {
-        height: auto;
-      }
-    `}
-`;
-
-const portraitMobile = css`
-  ${(props) =>
-    (isMobile || props.sectionWidth <= 375) &&
-    css`
-      .settings-block {
-        height: calc(
-          100vh -
-            (
-              ${menuHeight} + ${sectionHeight} + ${paddingSectionWrapperContent} +
-                ${saveCancelButtons} + ${flex}
-            )
-        );
-      }
-    `}
-`;
-
 const StyledScrollbar = styled(Scrollbar)`
   height: calc(
     100vh -
@@ -83,8 +47,8 @@ const StyledScrollbar = styled(Scrollbar)`
         ${menuHeight} + ${sectionHeight} + ${paddingSectionWrapperContent} +
           ${saveCancelButtons} + ${flex}
       )
-  );
-  width: 343;
+  ) !important;
+  width: 100% !important;
 `;
 
 const StyledComponent = styled.div`
@@ -110,12 +74,44 @@ const StyledComponent = styled.div`
     line-height: 20px;
   }
 
-  @media (orientation: portrait) {
-    ${portraitMobile}
+  .settings-block {
+    height: calc(
+      100vh -
+        (
+          ${menuHeight} + ${sectionHeight} + ${paddingSectionWrapperContent} +
+            ${saveCancelButtons} + ${flex}
+        )
+    );
   }
 
-  @media (orientation: landscape) {
-    ${landscapeMobile}
+  ${(props) =>
+    (isMobile || props.hasScroll) &&
+    css`
+      width: ${isMobile ? "100vw" : "calc(100vw - 52px)"};
+      left: -16px;
+      position: relative;
+
+      .settings-block {
+        width: ${isMobile ? "calc(100vw - 32px)" : "calc(100vw - 84px)"};
+        max-width: none;
+        padding-left: 16px;
+      }
+    `}
+
+  @media (min-width: 600px) {
+    .settings-block {
+      max-width: 350px;
+      height: auto;
+    }
+  }
+
+  @media (orientation: landscape) and (max-width: 601px) {
+    ${isMobile &&
+    css`
+      .settings-block {
+        height: auto;
+      }
+    `}
   }
 `;
 
@@ -186,7 +182,7 @@ class LanguageAndTimeZone extends React.Component {
     } = this.props;
     const { timezones, isLoadedData } = this.state;
 
-    window.addEventListener("resize", this.checkSectionWidth);
+    window.addEventListener("resize", this.checkInnerWidth);
 
     if (!timezones.length) {
       getPortalTimezones().then(() => {
@@ -242,19 +238,8 @@ class LanguageAndTimeZone extends React.Component {
       cultureNames,
     } = this.props;
 
-    if (!this.settingsDiv) {
-      this.settingsDiv = document.getElementsByClassName("settings-block")[0];
-
-      if (this.settingsDiv) {
-        const height = getComputedStyle(this.settingsDiv).height.slice(0, -2);
-
-        if (this.settingsDiv.scrollHeight > height) {
-          this.setState({
-            hasScroll: true,
-          });
-        }
-      }
-    }
+    this.checkHeightSettingsBlock(false);
+    window.addEventListener("resize", this.checkHeightSettingsBlock);
 
     // TODO: Переделать, убрать div c 64 высотой
     const settingsMobile = document.getElementsByClassName(
@@ -288,7 +273,11 @@ class LanguageAndTimeZone extends React.Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener("resize", this.checkSectionWidth);
+    window.removeEventListener(
+      "resize",
+      this.checkInnerWidth,
+      this.checkHeightSettingsBlock
+    );
   }
 
   onLanguageSelect = (language) => {
@@ -391,11 +380,8 @@ class LanguageAndTimeZone extends React.Component {
     }
   };
 
-  checkSectionWidth = (width) => {
-    if (this.state.sectionWidth === width) return;
-    this.setState({ sectionWidth: width });
-
-    if (width > 375 && !isMobile) {
+  checkInnerWidth = () => {
+    if (window.innerWidth > 600 && !isMobile) {
       history.push(
         combineUrl(
           AppServerConfig.proxyURL,
@@ -403,6 +389,28 @@ class LanguageAndTimeZone extends React.Component {
           "/settings/common/customization"
         )
       );
+
+      return true;
+    }
+  };
+
+  checkHeightSettingsBlock = (resize) => {
+    if (!this.settingsDiv || resize) {
+      this.settingsDiv = document.getElementsByClassName("settings-block")[0];
+
+      if (this.settingsDiv) {
+        const height = getComputedStyle(this.settingsDiv).height.slice(0, -2);
+
+        if (this.settingsDiv.scrollHeight > height) {
+          this.setState({
+            hasScroll: true,
+          });
+        } else {
+          this.setState({
+            hasScroll: false,
+          });
+        }
+      }
     }
   };
 
@@ -471,55 +479,51 @@ class LanguageAndTimeZone extends React.Component {
       </div>
     );
 
-    return (
-      <Consumer>
-        {(context) => {
-          this.checkSectionWidth(context.sectionWidth);
-          return !isLoadedData ? (
-            <Loader className="pageLoader" type="rombs" size="40px" />
-          ) : (
-            <StyledComponent sectionWidth={context.sectionWidth}>
-              {`${context.sectionWidth}` > 375 && !isMobile && (
-                <div className="category-item-heading">
-                  <div className="category-item-title">
-                    {t("StudioTimeLanguageSettings")}
-                  </div>
-                  <HelpButton
-                    iconName="static/images/combined.shape.svg"
-                    size={12}
-                    tooltipContent={tooltipLanguageTimeSettings}
-                  />
-                </div>
-              )}
-              {hasScroll ? (
-                <StyledScrollbar
-                  style={{
-                    height: { heightScrollbar },
-                    width: 343,
-                  }}
-                >
+    return !isLoadedData ? (
+      <Loader className="pageLoader" type="rombs" size="40px" />
+    ) : (
+      <StyledComponent hasScroll={hasScroll}>
+        {this.checkInnerWidth() && (
+          <div className="category-item-heading">
+            <div className="category-item-title">
+              {t("StudioTimeLanguageSettings")}
+            </div>
+            <HelpButton
+              iconName="static/images/combined.shape.svg"
+              size={12}
+              tooltipContent={tooltipLanguageTimeSettings}
+            />
+          </div>
+        )}
+        {/* {hasScroll ? (
+                <StyledScrollbar stype="smallBlack">
                   {settingsBlock}
                 </StyledScrollbar>
               ) : (
                 <> {settingsBlock}</>
-              )}
-              <SaveCancelButtons
-                className="save-cancel-buttons"
-                onSaveClick={this.onSaveLngTZSettings}
-                onCancelClick={this.onCancelClick}
-                showReminder={showReminder}
-                reminderTest={t("YouHaveUnsavedChanges")}
-                saveButtonLabel={t("Common:SaveButton")}
-                cancelButtonLabel={t("Common:CancelButton")}
-                displaySettings={true}
-                hasChanged={hasChanged}
-                sectionWidth={context.sectionWidth}
-                hasScroll={hasScroll}
-              />
-            </StyledComponent>
-          );
-        }}
-      </Consumer>
+              )} */}
+
+        {/* TODO: Для мобилы только с горизонтальной ориентацией и декстопа  window.innerWidth < 600 */}
+
+        {(isMobile && window.innerWidth < 600) || window.innerWidth < 600 ? (
+          <StyledScrollbar stype="smallBlack">{settingsBlock}</StyledScrollbar>
+        ) : (
+          <> {settingsBlock}</>
+        )}
+
+        <SaveCancelButtons
+          className="save-cancel-buttons"
+          onSaveClick={this.onSaveLngTZSettings}
+          onCancelClick={this.onCancelClick}
+          showReminder={showReminder}
+          reminderTest={t("YouHaveUnsavedChanges")}
+          saveButtonLabel={t("Common:SaveButton")}
+          cancelButtonLabel={t("Common:CancelButton")}
+          displaySettings={true}
+          hasChanged={hasChanged}
+          hasScroll={hasScroll}
+        />
+      </StyledComponent>
     );
   }
 }
