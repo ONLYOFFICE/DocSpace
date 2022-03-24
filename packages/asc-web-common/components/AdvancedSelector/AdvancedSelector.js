@@ -68,23 +68,27 @@ class AdvancedSelector extends React.Component {
     const { isOpen, id, className, style, withoutAside } = this.props;
 
     return (
-      <div id={id} className={className} style={style}>
-        {withoutAside ? (
-          <Selector {...this.props} />
-        ) : (
-          <>
-            <Backdrop
-              onClick={this.onClose}
-              visible={isOpen}
-              zIndex={310}
-              isAside={true}
-            />
-            <StyledBlock>
+      <>
+        {isOpen && (
+          <div id={id} className={className} style={style}>
+            {withoutAside ? (
               <Selector {...this.props} />
-            </StyledBlock>
-          </>
+            ) : (
+              <>
+                <Backdrop
+                  onClick={this.onClose}
+                  visible={isOpen}
+                  zIndex={310}
+                  isAside={true}
+                />
+                <StyledBlock>
+                  <Selector {...this.props} />
+                </StyledBlock>
+              </>
+            )}
+          </div>
         )}
-      </div>
+      </>
     );
   }
 }
