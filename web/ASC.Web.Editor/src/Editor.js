@@ -19,9 +19,6 @@ import {
 
 import { EditorWrapper } from "./StyledEditor";
 import { useTranslation } from "react-i18next";
-import useFilesUtils from "./helpers/useFilesUtils";
-import useToastr from "./helpers/useToastr";
-
 import withDialogs from "./helpers/withDialogs";
 
 const LoaderComponent = (
@@ -129,9 +126,6 @@ function Editor({
 }) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [documentTitle, setNewDocumentTitle] = useState("Loading...");
-
-  useFilesUtils();
-  useToastr();
 
   const { t } = useTranslation();
 
