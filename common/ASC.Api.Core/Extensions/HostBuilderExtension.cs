@@ -71,6 +71,7 @@ public static class HostBuilderExtension
             else if (redisConfiguration != null)
             {
                 diHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCacheNotify<>));
+                services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
             }
             else
             {
