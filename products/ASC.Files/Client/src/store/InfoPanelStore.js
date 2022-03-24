@@ -3,20 +3,14 @@ import { makeAutoObservable } from "mobx";
 
 class InfoPanelStore {
   isVisible = false;
-  showCurrentFolder = false;
 
   constructor() {
     makeAutoObservable(this);
   }
 
-  setShowCurrentFolder = (bool) => {
-    this.showCurrentFolder = bool;
-  };
-
   onItemClick = (checked = true) => {
     if (localStorage.getItem("disableOpenOnFileClick")) return;
     if (!this.isVisible && isDesktop()) {
-      this.showCurrentFolder = false;
       if (checked) this.isVisible = true;
     }
   };
@@ -29,10 +23,6 @@ class InfoPanelStore {
   revertHeaderCrossClick = () => {
     localStorage.removeItem("disableOpenOnFileClick");
   };
-
-  get showCurrentFolder() {
-    return this.showCurrenFolder;
-  }
 
   toggleIsVisible = () => {
     this.isVisible = !this.isVisible;

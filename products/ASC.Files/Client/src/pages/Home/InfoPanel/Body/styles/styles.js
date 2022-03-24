@@ -1,8 +1,9 @@
 import styled from "styled-components";
 
 const StyledInfoRoomBody = styled.div`
-  padding: 0px 16px 16px;
-  height: 100%;
+  padding: 0px 0px 0 16px;
+  height: auto;
+  //margin-right: -16px;
   .no-item {
     text-align: center;
   }
@@ -21,11 +22,10 @@ const StyledInfoRoomBody = styled.div`
 
   .current-folder-loader-wrapper {
     width: 100%;
-    height: 100%;
     display: flex;
     justify-content: center;
-    align-items: center;
-    margin-top: auto;
+    height: 96px;
+    margin-top: 116.56px;
   }
 `;
 
@@ -55,17 +55,17 @@ const StyledThumbnail = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  width: calc(100% + 6px -16px);
   height: 200px;
   padding: 4px;
   border: solid 1px #eceef1;
   border-radius: 6px;
-  margin-bottom: 24px;
+  margin: 0 0 24px 0;
   img {
-    max-height: 200px;
-    max-width: 100%;
+    height: 100%;
     width: auto;
-    height: auto;
+    max-height: auto;
+    max-width: 100%;
   }
 `;
 
@@ -175,9 +175,7 @@ const StyledOpenSharingPanel = styled.div`
 
   color: #3b72a7;
 
-  flex: none;
-  order: 0;
-  flex-grow: 0;
+  display: flex;
   margin: 16px 0px;
 
   cursor: pointer;

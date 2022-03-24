@@ -66,14 +66,7 @@ const StyledCloseButtonWrapper = styled.div`
   }
 `;
 
-const InfoPanel = ({
-  children,
-  selectedItems,
-  isVisible,
-  setIsVisible,
-  showCurrentFolder,
-}) => {
-  //if (!showCurrentFolder && selectedItems.length === 0) return null;
+const InfoPanel = ({ children, selectedItems, isVisible, setIsVisible }) => {
   if (!isVisible) return null;
 
   const closeInfoPanel = () => setIsVisible(false);
@@ -119,11 +112,9 @@ InfoPanel.propTypes = {
 export default inject(({ infoPanelStore, filesStore }) => {
   let selectedItems = [];
   let isVisible = false;
-  let showCurrentFolder = false;
   let setIsVisible = () => {};
 
   if (infoPanelStore) {
-    showCurrentFolder = infoPanelStore.showCurrentFolder;
     isVisible = infoPanelStore.isVisible;
     setIsVisible = infoPanelStore.setIsVisible;
   }
@@ -135,7 +126,6 @@ export default inject(({ infoPanelStore, filesStore }) => {
   return {
     selectedItems,
     isVisible,
-    showCurrentFolder,
     setIsVisible,
   };
 })(InfoPanel);

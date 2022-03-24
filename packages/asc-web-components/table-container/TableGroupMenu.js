@@ -1,10 +1,16 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Checkbox from "../checkbox";
-import { StyledTableGroupMenu, StyledScrollbar } from "./StyledTableContainer";
+import {
+  StyledTableGroupMenu,
+  StyledScrollbar,
+  StyledInfoPanelToggleWrapper,
+} from "./StyledTableContainer";
 import ComboBox from "../combobox";
 import GroupMenuItem from "./GroupMenuItem";
 import { useTranslation } from "react-i18next";
+import styled from "styled-components";
+import IconButton from "../icon-button";
 
 const TableGroupMenu = (props) => {
   const {
@@ -14,6 +20,8 @@ const TableGroupMenu = (props) => {
     onChange,
     checkboxOptions,
     checkboxMargin,
+    isInfoPanelVisible,
+    toggleInfoPanel,
     ...rest
   } = props;
   const onCheckboxChange = (e) => {
@@ -51,6 +59,18 @@ const TableGroupMenu = (props) => {
             <GroupMenuItem key={index} item={item} />
           ))}
         </StyledScrollbar>
+        <StyledInfoPanelToggleWrapper isInfoPanelVisible={isInfoPanelVisible}>
+          <div className="info-panel-toggle-bg">
+            <IconButton
+              className="info-panel-toggle"
+              iconName="images/panel.svg"
+              size="17"
+              color={isInfoPanelVisible ? "#3B72A7" : "#A3A9AE"}
+              isFill={true}
+              onClick={toggleInfoPanel}
+            />
+          </div>
+        </StyledInfoPanelToggleWrapper>
       </StyledTableGroupMenu>
     </>
   );

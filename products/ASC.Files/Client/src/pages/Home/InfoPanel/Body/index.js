@@ -5,13 +5,11 @@ import { withRouter } from "react-router";
 import SeveralItems from "./SeveralItems";
 import SingleItem from "./SingleItem";
 import { StyledInfoRoomBody } from "./styles/styles.js";
-import Loaders from "@appserver/common/components/Loaders";
 import Loader from "@appserver/components/loader";
 
 const InfoPanelBodyContent = ({
   t,
   selectedItems,
-  bufferSelectedItem,
   getFolderInfo,
   getIcon,
   getFolderIcon,
@@ -19,7 +17,6 @@ const InfoPanelBodyContent = ({
   onSelectItem,
   setSharingPanelVisible,
   isRecycleBinFolder,
-  showCurrentFolder,
   isCommonFolder,
   isRecentFolder,
   isFavoritesFolder,
@@ -38,7 +35,7 @@ const InfoPanelBodyContent = ({
       contentLength = folderId.contentLength;
 
     folder.iconUrl = getIcon(32, fileExst, providerKey, contentLength);
-    folder.thumbnailUrl = getIcon(96, fileExst, providerKey, contentLength);
+    //folder.thumbnailUrl = getIcon(96, fileExst, providerKey, contentLength);
     folder.isFolder = true;
 
     setCurrentFolder(folder);
@@ -46,16 +43,17 @@ const InfoPanelBodyContent = ({
   };
 
   useEffect(() => {
-    if (showCurrentFolder) getCurrentFolderInfo();
-  }, [window.location.href, showCurrentFolder]);
+    getCurrentFolderInfo();
+  }, [window.location.href]);
 
   const singleItem = (item) => {
     const dontShowLocation = item.isFolder && item.parentId === 0;
     const dontShowSize = item.isFolder && (isFavoritesFolder || isRecentFolder);
     const dontShowAccess =
-      showCurrentFolder || isRecycleBinFolder || isCommonFolder;
+      isRecycleBinFolder || isCommonFolder || selectedItems.length === 0;
     return (
       <SingleItem
+        t={t}
         selectedItem={item}
         onSelectItem={onSelectItem}
         setSharingPanelVisible={setSharingPanelVisible}
@@ -72,29 +70,23 @@ const InfoPanelBodyContent = ({
 
   return (
     <StyledInfoRoomBody>
-      {showCurrentFolder && selectedItems.length === 0 ? (
-        <>
-          {currentFolderLoading ? (
-            <div className="current-folder-loader-wrapper">
-              <Loader type="dual-ring" size="60px" />
-            </div>
-          ) : (
-            singleItem(currentFolder)
-          )}
-        </>
-      ) : (
-        <>
-          {selectedItems.length === 0 && !bufferSelectedItem ? (
-            <div className="no-item">
-              <h4>{t("NoItemsSelected")}</h4>
-            </div>
-          ) : selectedItems.length === 1 || bufferSelectedItem ? (
-            singleItem(selectedItems[0] || bufferSelectedItem)
-          ) : (
-            <SeveralItems selectedItems={selectedItems} getIcon={getIcon} />
-          )}
-        </>
-      )}
+      <>
+        {selectedItems.length === 0 ? (
+          <div className="no-item">
+            {currentFolderLoading ? (
+              <div className="current-folder-loader-wrapper">
+                <Loader type="oval" size="48px" />
+              </div>
+            ) : (
+              singleItem(currentFolder)
+            )}
+          </div>
+        ) : selectedItems.length === 1 ? (
+          singleItem(selectedItems[0])
+        ) : (
+          <SeveralItems selectedItems={selectedItems} getIcon={getIcon} />
+        )}
+      </>
     </StyledInfoRoomBody>
   );
 };
@@ -109,11 +101,7 @@ export default inject(
     treeFoldersStore,
   }) => {
     const selectedItems = JSON.parse(JSON.stringify(filesStore.selection));
-    const bufferSelectedItem = JSON.parse(
-      JSON.stringify(filesStore.bufferSelection)
-    );
 
-    const { showCurrentFolder } = infoPanelStore;
     const { getFolderInfo, getShareUsers } = filesStore;
     const { getIcon, getFolderIcon } = settingsStore;
     const { onSelectItem } = filesActionsStore;
@@ -126,7 +114,6 @@ export default inject(
     } = treeFoldersStore;
 
     return {
-      bufferSelectedItem,
       selectedItems,
       getFolderInfo,
       getShareUsers,
@@ -136,9 +123,14 @@ export default inject(
       setSharingPanelVisible,
       isRecycleBinFolder,
       isCommonFolder,
-      showCurrentFolder,
       isRecentFolder,
       isFavoritesFolder,
     };
   }
-)(withRouter(withTranslation(["InfoPanel"])(observer(InfoPanelBodyContent))));
+)(
+  withRouter(
+    withTranslation(["InfoPanel", "Home", "Common", "Translations"])(
+      observer(InfoPanelBodyContent)
+    )
+  )
+);

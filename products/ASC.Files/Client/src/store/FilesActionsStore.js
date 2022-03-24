@@ -887,15 +887,6 @@ class FilesActionStore {
             iconUrl: "/static/images/move.react.svg",
           };
 
-      case "showInfo":
-        if (!this.isAvailableOption("showInfo")) return null;
-        else
-          return {
-            label: t("InfoPanel:Info"),
-            onClick: () => toggleIsVisible(),
-            iconUrl: "/static/images/info.outline.react.svg",
-          };
-
       case "delete":
         if (!this.isAvailableOption("delete")) return null;
         else

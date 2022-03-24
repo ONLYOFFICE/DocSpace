@@ -202,15 +202,6 @@ class SectionHeaderContent extends React.Component {
   };
 
   onEmptyTrashAction = () => this.props.setEmptyTrashDialogVisible(true);
-  showFolderInfo = () => {
-    if (this.props.showCurrentFolder && this.props.isInfoPanelVisible) {
-      this.props.setShowCurrentFolder(false);
-      this.props.setIsInfoPanelVisible(false);
-      return;
-    }
-    this.props.setShowCurrentFolder(true);
-    this.props.setIsInfoPanelVisible(true);
-  };
 
   getContextOptionsFolder = () => {
     const { t, personal } = this.props;
@@ -357,6 +348,8 @@ class SectionHeaderContent extends React.Component {
                 isChecked={isHeaderChecked}
                 isIndeterminate={isHeaderIndeterminate}
                 headerMenu={headerMenu}
+                isInfoPanelVisible={this.props.isInfoPanelVisible}
+                toggleInfoPanel={this.props.toggleInfoPanel}
               />
             ) : (
               <div className="header-container">
@@ -383,8 +376,7 @@ class SectionHeaderContent extends React.Component {
                     isEmptyFilesList={isEmptyFilesList}
                     clearTrash={this.onEmptyTrashAction}
                     onBackToParentFolder={this.onBackToParentFolder}
-                    showFolderInfo={this.showFolderInfo}
-                    isCurrentFolderInfo={this.props.showCurrentFolder}
+                    toggleInfoPanel={this.props.toggleInfoPanel}
                     isInfoPanelVisible={this.props.isInfoPanelVisible}
                   />
                 )}
@@ -445,12 +437,7 @@ export default inject(
       backToParentFolder,
     } = filesActionsStore;
 
-    const {
-      showCurrentFolder,
-      setShowCurrentFolder,
-      setIsVisible,
-      isVisible,
-    } = infoPanelStore;
+    const { toggleIsVisible, isVisible } = infoPanelStore;
 
     return {
       showText: auth.settingsStore.showText,
@@ -461,10 +448,8 @@ export default inject(
       pathParts: selectedFolderStore.pathParts,
       navigationPath: selectedFolderStore.navigationPath,
       canCreate,
-      setIsInfoPanelVisible: setIsVisible,
+      toggleInfoPanel: toggleIsVisible,
       isInfoPanelVisible: isVisible,
-      showCurrentFolder,
-      setShowCurrentFolder,
       isHeaderVisible,
       isHeaderIndeterminate,
       isHeaderChecked,

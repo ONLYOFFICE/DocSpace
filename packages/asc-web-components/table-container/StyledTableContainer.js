@@ -125,6 +125,32 @@ const StyledTableGroupMenu = styled.div`
 
 StyledTableGroupMenu.defaultProps = { theme: Base };
 
+const StyledInfoPanelToggleWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  align-self: center;
+  justify-content: center;
+  margin: 0 20px 0 auto;
+  height: 100%;
+  width: auto;
+  padding-left: 20px;
+
+  @media ${tablet} {
+    margin: 0 16px 0 auto;
+  }
+
+  .info-panel-toggle-bg {
+    height: 32px;
+    width: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: ${(props) =>
+      props.isInfoPanelVisible ? "#F8F9F9" : "transparent"};
+  }
+`;
+
 const StyledTableHeader = styled.div`
   position: fixed;
   background: ${(props) => props.theme.tableContainer.header.background};
@@ -302,6 +328,9 @@ const StyledScrollbar = styled(Scrollbar)`
   .scroll-body {
     display: flex;
   }
+  .nav-thumb-vertical {
+    display: none !important;
+  }
   .nav-thumb-horizontal {
     ${isMobile && "display: none !important"};
   }
@@ -318,6 +347,7 @@ export {
   StyledTableCell,
   StyledTableSettings,
   StyledTableGroupMenu,
+  StyledInfoPanelToggleWrapper,
   StyledEmptyTableContainer,
   StyledScrollbar,
 };

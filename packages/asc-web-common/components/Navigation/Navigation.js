@@ -32,6 +32,7 @@ const Navigation = ({
   clearTrash,
   showFolderInfo,
   isCurrentFolderInfo,
+  toggleInfoPanel,
   isInfoPanelVisible,
   ...rest
 }) => {
@@ -137,8 +138,7 @@ const Navigation = ({
               isRecycleBinFolder={isRecycleBinFolder}
               isEmptyFilesList={isEmptyFilesList}
               clearTrash={clearTrash}
-              showFolderInfo={showFolderInfo}
-              isCurrentFolderInfo={isCurrentFolderInfo}
+              toggleInfoPanel={toggleInfoPanel}
               isInfoPanelVisible={isInfoPanelVisible}
             />
           </StyledContainer>

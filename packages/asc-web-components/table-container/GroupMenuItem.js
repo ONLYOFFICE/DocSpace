@@ -21,6 +21,13 @@ const StyledButton = styled(Button)`
     padding-right: 8px;
   }
 
+  .button-content {
+    @media ${tablet} {
+      flex-direction: column;
+      gap: 0px;
+    }
+  }
+
   @media ${tablet} {
     display: flex;
     flex-direction: column;

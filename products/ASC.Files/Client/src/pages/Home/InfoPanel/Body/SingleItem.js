@@ -3,9 +3,7 @@ import { FileType } from "@appserver/common/constants";
 import Link from "@appserver/components/link";
 import Text from "@appserver/components/text";
 import Tooltip from "@appserver/components/tooltip";
-import { inject, observer } from "mobx-react";
 import React, { useEffect, useState } from "react";
-import { withTranslation } from "react-i18next";
 import { ReactSVG } from "react-svg";
 
 import {
@@ -117,9 +115,9 @@ const SingleItem = (props) => {
       };
 
       const itemSize = item.isFolder
-        ? `${item.foldersCount} ${t("Translations:Folders")} | ${
-            item.filesCount
-          } ${t("Files")}`
+        ? `${t("Translations:Folders")}: ${item.foldersCount} | ${t(
+            "Translations:Files"
+          )}: ${item.filesCount}`
         : item.contentLength;
 
       const itemType = getItemType(item.fileType);
@@ -417,10 +415,4 @@ const SingleItem = (props) => {
   );
 };
 
-export default inject(({}) => {
-  return {};
-})(
-  withTranslation(["InfoPanel", "Home", "Common", "Translations"])(
-    observer(SingleItem)
-  )
-);
+export default SingleItem;

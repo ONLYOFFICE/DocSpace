@@ -28,11 +28,7 @@ const StyledInfoPanelHeader = styled.div`
   }
 `;
 
-const SubInfoPanelHeader = ({
-  children,
-  onHeaderCrossClick,
-  revertHeaderCrossClick,
-}) => {
+const SubInfoPanelHeader = ({ children, onHeaderCrossClick }) => {
   const content = children?.props?.children;
 
   return (
@@ -40,16 +36,6 @@ const SubInfoPanelHeader = ({
       <Text className="header-text" fontSize="21px" fontWeight="700">
         {content}
       </Text>
-
-      <IconButton
-        className="close-btn"
-        onClick={revertHeaderCrossClick}
-        iconName="/static/images/eye.react.svg"
-        size="17"
-        color="#A3A9AE"
-        hoverColor="#657077"
-        isFill={true}
-      />
 
       <IconButton
         className="close-btn"
@@ -77,10 +63,8 @@ SubInfoPanelHeader.propTypes = {
 
 export default inject(({ infoPanelStore }) => {
   let onHeaderCrossClick = () => {};
-  let revertHeaderCrossClick = () => {};
   if (infoPanelStore) {
     onHeaderCrossClick = infoPanelStore.onHeaderCrossClick;
-    revertHeaderCrossClick = infoPanelStore.revertHeaderCrossClick;
   }
-  return { onHeaderCrossClick, revertHeaderCrossClick };
+  return { onHeaderCrossClick };
 })(observer(SubInfoPanelHeader));

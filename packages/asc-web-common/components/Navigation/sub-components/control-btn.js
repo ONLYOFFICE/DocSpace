@@ -55,9 +55,7 @@ const StyledInfoPanelToggleWrapper = styled.div`
     justify-content: center;
     border-radius: 50%;
     background-color: ${(props) =>
-      props.isInfoPanelVisible && props.isCurrentFolderInfo
-        ? "#F8F9F9"
-        : "transparent"};
+      props.isInfoPanelVisible ? "#F8F9F9" : "transparent"};
   }
 `;
 
@@ -71,9 +69,8 @@ const ControlButtons = ({
   isRecycleBinFolder,
   isEmptyFilesList,
   clearTrash,
-  showFolderInfo,
-  isCurrentFolderInfo,
   isInfoPanelVisible,
+  toggleInfoPanel,
 }) => {
   return (
     <StyledContainer isDropBox={isDropBox}>
@@ -113,7 +110,6 @@ const ControlButtons = ({
 
       <StyledInfoPanelToggleWrapper
         isRootFolder={isRootFolder}
-        isCurrentFolderInfo={isCurrentFolderInfo}
         isInfoPanelVisible={isInfoPanelVisible}
       >
         <div className="info-panel-toggle-bg">
@@ -121,11 +117,9 @@ const ControlButtons = ({
             className="info-panel-toggle"
             iconName="images/panel.svg"
             size="17"
-            color={
-              isInfoPanelVisible && isCurrentFolderInfo ? "#3B72A7" : "#A3A9AE"
-            }
+            color={isInfoPanelVisible ? "#3B72A7" : "#A3A9AE"}
             isFill={true}
-            onClick={showFolderInfo}
+            onClick={toggleInfoPanel}
           />
         </div>
       </StyledInfoPanelToggleWrapper>
