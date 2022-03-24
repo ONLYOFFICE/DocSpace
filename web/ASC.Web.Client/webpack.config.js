@@ -186,6 +186,10 @@ const config = {
           AppServerConfig.proxyURL,
           "/login/remoteEntry.js"
         )}`,
+        files: `files@${combineUrl(
+          AppServerConfig.proxyURL,
+          "/products/files/remoteEntry.js"
+        )}`,
       },
       exposes: {
         "./shell": "./src/Shell",
@@ -198,6 +202,8 @@ const config = {
         "./Layout/context": "./src/components/Layout/context.js",
         "./Main": "./src/components/Main",
         "./toastr": "./src/helpers/toastr",
+        "./PreparationPortalDialog":
+          "./src/components/dialogs/PreparationPortalDialog/PreparationPortalDialogWrapper.js",
       },
       shared: {
         ...deps,

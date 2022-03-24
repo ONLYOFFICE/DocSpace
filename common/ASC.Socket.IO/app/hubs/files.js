@@ -88,6 +88,12 @@
       logger.info(`refresh folder ${folderId} in room ${room}`);
       socket.to(room).emit("refresh-folder", folderId);
     });
+
+    socket.on("restore-backup", () => {
+      const room = getRoom("backup-restore");
+      logger.info(`restore backup in room ${room}`);
+      socket.to(room).emit("restore-backup");
+    });
   });
 
   function startEdit({ fileId, room } = {}) {
@@ -108,7 +114,7 @@
     logger.info(`create new file ${fileId} in room ${room}`);
     modifyFolder(room, "create", fileId, "file", data);
   }
-  
+
   function deleteFile({ fileId, room } = {}) {
     logger.info(`delete file ${fileId} in room ${room}`);
     modifyFolder(room, "delete", fileId, "file");

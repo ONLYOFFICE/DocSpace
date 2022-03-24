@@ -16,6 +16,7 @@ import { LayoutContextConsumer } from "../Layout/context";
 import { isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 import i18n from "./i18n";
+import PreparationPortalDialog from "../dialogs/PreparationPortalDialog";
 import { Base } from "@appserver/components/themes";
 
 const StyledContainer = styled.header`
@@ -150,14 +151,15 @@ class NavMenu extends React.Component {
       asideContent,
       history,
       isDesktop,
+      preparationPortalDialogVisible,
     } = this.props;
 
     const isAsideAvailable = !!asideContent;
     const hideHeader =
       isDesktop || history.location.pathname === "/products/files/private";
-
     //console.log("NavMenu render", this.state, this.props);
-
+    const isPreparationPortal =
+      history.location.pathname === "/preparation-portal";
     return (
       <LayoutContextConsumer>
         {(value) => (
@@ -177,8 +179,9 @@ class NavMenu extends React.Component {
             {!hideHeader &&
               (isLoaded && isAuthenticated ? (
                 <>
-                  <HeaderNav />
+                  {!isPreparationPortal && <HeaderNav />}
                   <Header
+                    isPreparationPortal={isPreparationPortal}
                     isNavOpened={isNavOpened}
                     onClick={this.showNav}
                     onNavMouseEnter={this.handleNavMouseEnter}
@@ -198,7 +201,7 @@ class NavMenu extends React.Component {
                 {asideContent}
               </Aside>
             )}
-
+            {preparationPortalDialogVisible && <PreparationPortalDialog />}
             <div id="ipl-progress-indicator"></div>
           </StyledContainer>
         )}
@@ -231,14 +234,16 @@ NavMenu.defaultProps = {
   isDesktop: false,
 };
 
-const NavMenuWrapper = inject(({ auth }) => {
+const NavMenuWrapper = inject(({ auth, backup }) => {
   const { settingsStore, isAuthenticated, isLoaded, language } = auth;
   const { isDesktopClient: isDesktop } = settingsStore;
+  const { preparationPortalDialogVisible } = backup;
   return {
     isAuthenticated,
     isLoaded,
     isDesktop,
     language,
+    preparationPortalDialogVisible,
   };
 })(observer(withTranslation(["NavMenu", "Common"])(withRouter(NavMenu))));
 

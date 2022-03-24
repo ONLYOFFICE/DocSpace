@@ -49,8 +49,6 @@ class SaveCancelButtons extends React.Component {
       id,
     } = this.props;
 
-    // TODO: hasChanged не нужен, тк есть showReminder?
-
     const isDisabled = hasChanged !== undefined ? !hasChanged : false;
 
     return (
@@ -103,6 +101,7 @@ SaveCancelButtons.propTypes = {
   onCancelClick: PropTypes.func,
   /** Show message about unsaved changes (Only shown on desktops) */
   showReminder: PropTypes.bool,
+  /** Tells when the button should present a disabled state */
   displaySettings: PropTypes.bool,
   hasChanged: PropTypes.bool,
   hasScroll: PropTypes.bool,

@@ -47,6 +47,10 @@ const ERROR_401_URL = combineUrl(PROXY_HOMEPAGE_URL, "/error401");
 const PROFILE_MY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/my");
 const ENTER_CODE_URL = combineUrl(PROXY_HOMEPAGE_URL, "/code");
 const INVALID_URL = combineUrl(PROXY_HOMEPAGE_URL, "/login/error=:error");
+const PREPARATION_PORTAL = combineUrl(
+  PROXY_HOMEPAGE_URL,
+  "/preparation-portal"
+);
 
 const Payments = React.lazy(() => import("./components/pages/Payments"));
 const Error404 = React.lazy(() => import("studio/Error404"));
@@ -62,6 +66,9 @@ const MyProfile = React.lazy(() => import("people/MyProfile"));
 const EnterCode = React.lazy(() => import("login/codeLogin"));
 const InvalidError = React.lazy(() =>
   import("./components/pages/Errors/Invalid")
+);
+const PreparationPortal = React.lazy(() =>
+  import("./components/pages/PreparationPortal")
 );
 
 const SettingsRoute = (props) => (
@@ -106,6 +113,14 @@ const ConfirmRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
     <ErrorBoundary>
       <Confirm {...props} />
+    </ErrorBoundary>
+  </React.Suspense>
+);
+
+const PreparationPortalRoute = (props) => (
+  <React.Suspense fallback={<AppLoader />}>
+    <ErrorBoundary>
+      <PreparationPortal {...props} />
     </ErrorBoundary>
   </React.Suspense>
 );
@@ -184,6 +199,8 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     language,
     FirebaseHelper,
     personal,
+    socketHelper,
+    setPreparationPortalDialogVisible,
     setTheme,
     roomsMode,
   } = rest;
@@ -212,6 +229,16 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
       toastr.error(err);
     }
   }, []);
+
+  useEffect(() => {
+    socketHelper.emit({
+      command: "subscribe",
+      data: "backup-restore",
+    });
+    socketHelper.on("restore-backup", () => {
+      setPreparationPortalDialogVisible(true);
+    });
+  }, [socketHelper]);
 
   const { t } = useTranslation("Common");
 
@@ -493,6 +520,10 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                 path={PROFILE_MY_URL}
                 component={MyProfileRoute}
               />
+              <PrivateRoute
+                path={PREPARATION_PORTAL}
+                component={PreparationPortalRoute}
+              />
               {dynamicRoutes}
               <PrivateRoute path={ERROR_401_URL} component={Error401Route} />
               <PrivateRoute
@@ -506,7 +537,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   );
 };
 
-const ShellWrapper = inject(({ auth }) => {
+const ShellWrapper = inject(({ auth, backup }) => {
   const { init, isLoaded, settingsStore, setProductVersion, language } = auth;
   const {
     personal,
@@ -514,12 +545,14 @@ const ShellWrapper = inject(({ auth }) => {
     isDesktopClient,
     firebaseHelper,
     setModuleInfo,
+    socketHelper,
     setTheme,
   } = settingsStore;
-
+  const { setPreparationPortalDialogVisible } = backup;
   return {
-    loadBaseInfo: () => {
-      init();
+    loadBaseInfo: async () => {
+      await init();
+
       setModuleInfo(config.homepage, "home");
       setProductVersion(config.version);
 
@@ -533,6 +566,8 @@ const ShellWrapper = inject(({ auth }) => {
     isDesktop: isDesktopClient,
     FirebaseHelper: firebaseHelper,
     personal,
+    socketHelper,
+    setPreparationPortalDialogVisible,
     setTheme,
     roomsMode,
   };

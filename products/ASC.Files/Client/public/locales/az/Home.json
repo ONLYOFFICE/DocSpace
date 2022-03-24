@@ -13,7 +13,6 @@
     "CopyItem": "<strong>{{title}}</strong> köçürüldü",
     "CopyItems": "<strong>{{qty}}</strong> elementlər köçürüldü",
     "Document": "Sənəd",
-    "Duplicate": "Sürətini yaratmaq",
     "EmptyFile": "Boş fayl",
     "EmptyFilterDescriptionText": "Heç bir fayl və ya qovluq bu süzgəcə uyğun deyil. Xahiş edirik digər süzgəc parametrindən istifadə edin və ya bütün faylların göstərilməsi üçün süzgəci sıfırlayın.",
     "EmptyFilterSubheadingText": "Bu süzgəc üçün heç bir fayl tapılmadı",
