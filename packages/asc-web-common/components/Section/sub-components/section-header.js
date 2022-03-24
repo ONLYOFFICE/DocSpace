@@ -30,7 +30,7 @@ const StyledSectionHeader = styled.div`
   ${isMobile &&
   css`
     height: ${(props) =>
-      props.maintenanceExist ? "120px" : "61px"} !important;
+      props.maintenanceExist ? "126px" : "61px"} !important;
     width: ${(props) => !props.isLoaded && "100%"};
     margin-top: 62px;
     @media ${tablet} {
@@ -54,7 +54,6 @@ const StyledSectionHeader = styled.div`
       background-color: #fff;
       z-index: 149;
       padding-right: 16px;
-      padding-top: 5px;
     `}
   }
 
@@ -125,7 +124,7 @@ class SectionHeader extends React.Component {
     } = this.props;
 
     let top = "48px";
-    let marginTop = "52px";
+    let marginTop = "46px";
 
     const mainBar = document.getElementById("main-bar");
 
