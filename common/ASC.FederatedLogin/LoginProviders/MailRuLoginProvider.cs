@@ -76,6 +76,8 @@ namespace ASC.FederatedLogin.LoginProviders
             get { return this["mailRuRedirectUrl"]; }
         }
 
+        private readonly RequestHelper _requestHelper;
+
         private const string MailRuApiUrl = "http://www.appsmail.ru/platform/api";
 
         public MailRuLoginProvider()
@@ -92,9 +94,11 @@ namespace ASC.FederatedLogin.LoginProviders
             ConsumerFactory consumerFactory,
             Signature signature,
             InstanceCrypto instanceCrypto,
+            RequestHelper requestHelper,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
             : base(oAuth20TokenHelper, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, signature, instanceCrypto, name, order, props, additional)
         {
+            _requestHelper = requestHelper;
         }
 
         public override LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params, IDictionary<string, string> additionalStateArgs)
@@ -150,7 +154,7 @@ namespace ASC.FederatedLogin.LoginProviders
             var mailruParams = string.Join("", sortedKeys.Select(key => key + "=" + queryDictionary[key]).ToList());
             var sig = string.Join("", md5.ComputeHash(Encoding.ASCII.GetBytes(mailruParams + ClientSecret)).Select(b => b.ToString("x2")));
 
-            var mailRuProfile = RequestHelper.PerformRequest(
+            var mailRuProfile = _requestHelper.PerformRequest(
                 MailRuApiUrl
                 + "?" + string.Join("&", queryDictionary.Select(pair => pair.Key + "=" + HttpUtility.UrlEncode(pair.Value)))
                 + "&sig=" + HttpUtility.UrlEncode(sig));

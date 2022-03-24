@@ -75,6 +75,8 @@ namespace ASC.Api.Settings
 
         public string SocketUrl { get; set; }
 
+        public TenantStatus TenantStatus { get; set; }
+
         public static SettingsWrapper GetSample()
         {
             return new SettingsWrapper

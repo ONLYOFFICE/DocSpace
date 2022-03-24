@@ -115,7 +115,11 @@ namespace ASC.Web.Files.ThirdPartyApp
         private ThirdPartyAppHandlerService ThirdPartyAppHandlerService { get; }
         private IServiceProvider ServiceProvider { get; }
         public ILog Logger { get; }
-        public IHttpClientFactory ClientFactory { get; }
+
+        private readonly IHttpClientFactory _clientFactory;
+
+        private readonly RequestHelper _requestHelper;
+        private readonly OAuth20TokenHelper _oAuth20TokenHelper;
 
         public BoxApp()
         {
@@ -150,6 +154,8 @@ namespace ASC.Web.Files.ThirdPartyApp
             ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
             IHttpClientFactory clientFactory,
+            RequestHelper requestHelper,
+            OAuth20TokenHelper oAuth20TokenHelper,
             string name, int order, Dictionary<string, string> additional)
             : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, additional)
         {
@@ -174,7 +180,9 @@ namespace ASC.Web.Files.ThirdPartyApp
             ThirdPartyAppHandlerService = thirdPartyAppHandlerService;
             ServiceProvider = serviceProvider;
             Logger = option.CurrentValue;
-            ClientFactory = clientFactory;
+            _clientFactory = clientFactory;
+            _requestHelper = requestHelper;
+            _oAuth20TokenHelper = oAuth20TokenHelper;
         }
 
         public async Task<bool> RequestAsync(HttpContext context)
@@ -318,7 +326,7 @@ namespace ASC.Web.Files.ThirdPartyApp
                 }
             }
 
-            var httpClient = ClientFactory.CreateClient();
+            var httpClient = _clientFactory.CreateClient();
 
             var request = new HttpRequestMessage();
             request.RequestUri = new Uri(BoxUrlUpload.Replace("{fileId}", fileId));
@@ -439,7 +447,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             var fileId = context.Request.Query["id"];
 
             context.Response.Redirect(FilesLinkUtility.GetFileWebEditorUrl(ThirdPartySelector.BuildAppFileId(AppAttr, fileId)), true);
-        }      
+        }
 
         private async Task StreamFileAsync(HttpContext context)
         {
@@ -479,7 +487,7 @@ namespace ASC.Web.Files.ThirdPartyApp
                 request.Method = HttpMethod.Get;
                 request.Headers.Add("Authorization", "Bearer " + token);
 
-                var httpClient = ClientFactory.CreateClient();
+                var httpClient = _clientFactory.CreateClient();
                 using var response = await httpClient.SendAsync(request);
                 using var stream = new ResponseStream(response);
                 await stream.CopyToAsync(context.Response.Body);
@@ -530,7 +538,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             var resultResponse = string.Empty;
             try
             {
-                resultResponse = RequestHelper.PerformRequest(BoxUrlUserInfo,
+                resultResponse = _requestHelper.PerformRequest(BoxUrlUserInfo,
                                                               headers: new Dictionary<string, string> { { "Authorization", "Bearer " + token } });
                 Logger.Debug("BoxApp: userinfo response - " + resultResponse);
             }
@@ -607,7 +615,7 @@ namespace ASC.Web.Files.ThirdPartyApp
 
             try
             {
-                var resultResponse = RequestHelper.PerformRequest(BoxUrlFile.Replace("{fileId}", boxFileId),
+                var resultResponse = _requestHelper.PerformRequest(BoxUrlFile.Replace("{fileId}", boxFileId),
                                                                   headers: new Dictionary<string, string> { { "Authorization", "Bearer " + token } });
                 Logger.Debug("BoxApp: file response - " + resultResponse);
                 return resultResponse;
@@ -624,7 +632,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             try
             {
                 Logger.Debug("BoxApp: GetAccessToken by code " + code);
-                var token = OAuth20TokenHelper.GetAccessToken<BoxApp>(ConsumerFactory, code);
+                var token = _oAuth20TokenHelper.GetAccessToken<BoxApp>(ConsumerFactory, code);
                 return new Token(token, AppAttr);
             }
             catch (Exception ex)

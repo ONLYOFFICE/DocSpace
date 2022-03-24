@@ -623,6 +623,16 @@ const Base = {
         large: "43px",
       },
     },
+
+    iconButton: {
+      width: {
+        base: "15px",
+        middle: "15px",
+        big: "16px",
+        huge: "16px",
+        large: "16px",
+      },
+    },
   },
 
   passwordInput: {
@@ -975,7 +985,7 @@ const Base = {
 
     slider: {
       width: "100%",
-      margin: "8px 0",
+      margin: "24px 0",
       backgroundColor: "transparent",
 
       runnableTrack: {

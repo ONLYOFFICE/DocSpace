@@ -13,7 +13,6 @@
     "CopyItem": "<strong>{{title}}</strong>のコピー",
     "CopyItems": "<strong>{{qty}}</strong>要素のコピー",
     "Document": "ドキュメント",
-    "Duplicate": "コピーの作成",
     "EmptyFile": "空きファイル",
     "EmptyFilterDescriptionText": "このフィルターに一致するファイルやフォルダーはありません。別のフィルタを試すか、フィルタを解除してすべてのファイルを表示してください。 ",
     "EmptyFilterSubheadingText": "このフィルターで表示されるファイルはありません。",
