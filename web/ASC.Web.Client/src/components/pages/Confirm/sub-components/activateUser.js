@@ -18,6 +18,7 @@ import { createPasswordHash } from "@appserver/common/utils";
 import toastr from "@appserver/components/toast/toastr";
 import { StyledPage, StyledBody, StyledHeader } from "./StyledConfirm";
 import withLoader from "../withLoader";
+import { getPasswordErrorMessage } from "../../../../helpers/utils";
 
 const ActivateUserForm = (props) => {
   const {
@@ -132,12 +133,6 @@ const ActivateUserForm = (props) => {
     }
   };
 
-  const passwordErrorMessage = `${t("Common:PasswordMinimumLength")} ${
-    settings ? settings.minLength : 8
-  } ${settings.digits ? t("Common:PasswordLimitDigits") : ""} ${
-    settings.upperCase ? t("Common:PasswordLimitUpperCase") : ""
-  } ${settings.specSymbols ? t("Common:PasswordLimitSpecialSymbols") : ""}`;
-
   return (
     <StyledPage>
       <StyledBody>
@@ -199,7 +194,7 @@ const ActivateUserForm = (props) => {
           hasError={isPasswordErrorShow && !passwordValid}
           errorMessage={`${t(
             "Common:PasswordLimitMessage"
-          )}: ${passwordErrorMessage}`}
+          )}: ${getPasswordErrorMessage(t, settings)}`}
         >
           <PasswordInput
             className="confirm-input"
