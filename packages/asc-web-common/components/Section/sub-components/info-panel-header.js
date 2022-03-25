@@ -9,15 +9,16 @@ import styled from "styled-components";
 const StyledInfoPanelHeader = styled.div`
   width: 100%;
   max-width: 100%;
-  height: 52px;
+  height: 53px;
+  min-height: 53px;
+  box-sizing: border-box;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 0;
   border-bottom: 1px solid #eceef1;
 
   .header-text {
-    margin-left: 16px;
+    margin-left: 20px;
   }
 
   .close-btn {

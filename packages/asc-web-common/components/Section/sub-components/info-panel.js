@@ -1,6 +1,5 @@
 import IconButton from "@appserver/components/icon-button";
 import { isTablet, mobile, tablet } from "@appserver/components/utils/device";
-import { set } from "mobx";
 import { inject } from "mobx-react";
 import PropTypes from "prop-types";
 import React, { useEffect } from "react";
@@ -26,7 +25,7 @@ const StyledInfoPanelWrapper = styled.div.attrs(({ title }) => ({
 
 const StyledInfoPanel = styled.div`
   height: 100%;
-  width: 368px;
+  width: 400px;
   background-color: #ffffff;
   border-left: 1px solid #eceef1;
   display: flex;
@@ -36,7 +35,7 @@ const StyledInfoPanel = styled.div`
     position: absolute;
     border: none;
     right: 0;
-    width: 448px;
+    width: 480px;
     max-width: calc(100vw - 69px);
   }
 

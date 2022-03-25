@@ -20,7 +20,6 @@ import Tile from "./TileLoader";
 import Tiles from "./TilesLoader";
 import DialogLoader from "./DialogLoader";
 import DialogAsideLoader from "./DialogAsideLoader";
-import InfoPanelLoader from "./InfoPanelLoader";
 import ListLoader from "./ListLoader";
 
 export default {
@@ -46,6 +45,5 @@ export default {
   ArticleButton,
   ArticleFolder,
   ArticleGroup,
-  InfoPanelLoader,
   ListLoader,
 };

@@ -9,7 +9,6 @@ const StyledInfoRoomBody = styled.div`
   }
 
   .no-thumbnail-img-wrapper {
-    padding: 9px 0 34px;
     height: auto;
     width: 100%;
     display: flex;
@@ -35,7 +34,7 @@ const StyledTitle = styled.div`
   align-items: center;
   width: 100%;
   height: auto;
-  padding: 24px 0;
+  padding: 29px 0;
 
   .icon {
     svg {
@@ -74,20 +73,19 @@ const StyledSubtitle = styled.div`
   flex-direction: row;
   align-items: center;
   width: 100%;
-  margin-bottom: 24px;
+  padding: 24px 0;
 `;
 
 const StyledProperties = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  margin-bottom: 24px;
   gap: 8px;
 
   .property {
     width: 100%;
     display: grid;
-    grid-template-columns: 110px 1fr;
+    grid-template-columns: 150px 1fr;
     grid-column-gap: 24px;
 
     .property-title {
