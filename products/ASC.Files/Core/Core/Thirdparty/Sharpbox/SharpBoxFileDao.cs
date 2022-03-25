@@ -106,7 +106,7 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
         if (subjectID != Guid.Empty)
         {
             files = files.Where(x => subjectGroup
-                                         ? UserManager.IsUserInGroup(x.CreateBy, subjectID)
+                                         ? _userManager.IsUserInGroup(x.CreateBy, subjectID)
                                          : x.CreateBy == subjectID);
         }
 
@@ -177,7 +177,7 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
         if (subjectID != Guid.Empty)
         {
             files = files.Where(x => subjectGroup
-                                         ? UserManager.IsUserInGroup(x.CreateBy, subjectID)
+                                         ? _userManager.IsUserInGroup(x.CreateBy, subjectID)
                                          : x.CreateBy == subjectID);
         }
 
@@ -565,7 +565,7 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
 
     public async Task<ChunkedUploadSession<string>> CreateUploadSessionAsync(File<string> file, long contentLength)
     {
-        if (SetupInfo.ChunkUploadSize > contentLength)
+        if (_setupInfo.ChunkUploadSize > contentLength)
         {
             return new ChunkedUploadSession<string>(MakeId(file), contentLength) { UseChunks = false };
         }
@@ -594,7 +594,7 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
         }
         else
         {
-            uploadSession.Items["TempPath"] = TempPath.GetTempFileName();
+            uploadSession.Items["TempPath"] = _tempPath.GetTempFileName();
         }
 
         uploadSession.File = MakeId(uploadSession.File);

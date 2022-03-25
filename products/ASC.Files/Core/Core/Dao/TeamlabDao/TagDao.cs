@@ -233,7 +233,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
             using var tx = FilesDbContext.Database.BeginTransaction();
             DeleteTagsBeforeSave();
 
-            var createOn = TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow());
+            var createOn = _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow());
             var cacheTagId = new Dictionary<string, int>();
 
             result.AddRange(tags.Select(t => SaveTagAsync(t, cacheTagId, createOn).Result));
@@ -263,7 +263,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
             using var tx = FilesDbContext.Database.BeginTransaction();
             DeleteTagsBeforeSave();
 
-            var createOn = TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow());
+            var createOn = _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow());
             var cacheTagId = new Dictionary<string, int>();
 
             result.Add(SaveTagAsync(tag, cacheTagId, createOn).Result);
@@ -280,7 +280,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
             Query(FilesDbContext.Tag)
             .Join(FilesDbContext.TagLink, r => r.Id, l => l.TagId, (tag, link) => new TagLinkData { Tag = tag, Link = link })
             .Where(r => r.Link.TenantId == r.Tag.TenantId)
-            .Where(r => (r.Tag.Flag == TagType.New || r.Tag.Flag == TagType.Recent) && r.Link.CreateOn <= TenantUtil.DateTimeNow().AddMonths(-1))
+            .Where(r => (r.Tag.Flag == TagType.New || r.Tag.Flag == TagType.Recent) && r.Link.CreateOn <= _tenantUtil.DateTimeNow().AddMonths(-1))
             .ToList();
 
         foreach (var row in mustBeDeleted)
@@ -345,7 +345,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
             TagId = id,
             EntryId = (await MappingIDAsync(t.EntryId, true)).ToString(),
             EntryType = t.EntryType,
-            CreateBy = AuthContext.CurrentAccount.ID,
+            CreateBy = _authContext.CurrentAccount.ID,
             CreateOn = createOn,
             TagCount = t.Count
         };
@@ -366,7 +366,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
         lock (_syncRoot)
         {
             using var tx = FilesDbContext.Database.BeginTransaction();
-            var createOn = TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow());
+            var createOn = _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow());
 
             foreach (var tag in tags)
             {
@@ -386,7 +386,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
         lock (_syncRoot)
         {
-            var createOn = TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow());
+            var createOn = _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow());
 
             UpdateNewTagsInDbAsync(tag, createOn).Wait();
         }
@@ -412,7 +412,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
         foreach (var f in forUpdate)
         {
-            f.CreateBy = AuthContext.CurrentAccount.ID;
+            f.CreateBy = _authContext.CurrentAccount.ID;
             f.CreateOn = createOn;
             f.TagCount = tag.Count;
         }

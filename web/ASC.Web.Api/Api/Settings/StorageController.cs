@@ -28,7 +28,7 @@ namespace ASC.Web.Api.Controllers.Settings;
 
 public class StorageController : BaseSettingsController
 {
-    private Tenant Tenant { get { return _apiContext.Tenant; } }
+    private Tenant Tenant { get { return ApiContext.Tenant; } }
 
     private readonly MessageService _messageService;
     private readonly StudioNotifyService _studioNotifyService;

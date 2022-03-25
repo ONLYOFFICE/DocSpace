@@ -28,11 +28,11 @@ namespace ASC.Core.Encryption;
 
 public class EncryptionSettings
 {
-    internal string _pass;
+    internal string Pass;
     public string Password
     {
-        get => _pass;
-        set => _pass = (value ?? string.Empty).Replace('#', '_');
+        get => Pass;
+        set => Pass = (value ?? string.Empty).Replace('#', '_');
     }
 
     public EncryprtionStatus Status { get; set; }
@@ -56,7 +56,7 @@ public class EncryptionSettings
 [Scope]
 public class EncryptionSettingsHelper
 {
-    private const string _key = "EncryptionSettings";
+    private const string Key = "EncryptionSettings";
 
     private readonly CoreConfiguration _coreConfiguration;
     private readonly AscCacheNotify _ascCacheNotify;
@@ -72,14 +72,14 @@ public class EncryptionSettingsHelper
     public void Save(EncryptionSettings encryptionSettings)
     {
         var settings = Serialize(encryptionSettings);
-        _coreConfiguration.SaveSetting(_key, settings);
+        _coreConfiguration.SaveSetting(Key, settings);
 
         _ascCacheNotify.ClearCache();
     }
 
     public EncryptionSettings Load()
     {
-        var settings = _coreConfiguration.GetSetting(_key);
+        var settings = _coreConfiguration.GetSetting(Key);
 
         return Deserialize(settings);
     }
@@ -87,7 +87,7 @@ public class EncryptionSettingsHelper
     public string Serialize(EncryptionSettings encryptionSettings)
     {
         return string.Join("#",
-            string.IsNullOrEmpty(encryptionSettings._pass) ? string.Empty : _instanceCrypto.Encrypt(encryptionSettings._pass),
+            string.IsNullOrEmpty(encryptionSettings.Pass) ? string.Empty : _instanceCrypto.Encrypt(encryptionSettings.Pass),
             (int)encryptionSettings.Status,
             encryptionSettings.NotifyUsers
         );

@@ -28,7 +28,7 @@ namespace ASC.Web.Api.Controllers.Settings;
 
 public class IpRestrictionsController: BaseSettingsController
 {
-    private Tenant Tenant { get { return _apiContext.Tenant; } }
+    private Tenant Tenant { get { return ApiContext.Tenant; } }
 
     private readonly PermissionContext _permissionContext;
     private readonly SettingsManager _settingsManager;

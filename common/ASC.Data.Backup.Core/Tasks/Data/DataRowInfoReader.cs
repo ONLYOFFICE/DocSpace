@@ -28,7 +28,7 @@ namespace ASC.Data.Backup.Tasks.Data;
 
 internal static class DataRowInfoReader
 {
-    private const string _xmlSchemaNamespace = "http://www.w3.org/2001/XMLSchema";
+    private const string XmlSchemaNamespace = "http://www.w3.org/2001/XMLSchema";
 
     public static IEnumerable<DataRowInfo> ReadFromStream(Stream stream)
     {
@@ -40,13 +40,13 @@ internal static class DataRowInfoReader
 
         using var xmlReader = XmlReader.Create(stream, readerSettings);
         xmlReader.MoveToContent();
-        xmlReader.ReadToFollowing("schema", _xmlSchemaNamespace);
+        xmlReader.ReadToFollowing("schema", XmlSchemaNamespace);
 
         var schema = new Dictionary<string, string>();
 
         if (XNode.ReadFrom(xmlReader) is XElement schemaElement)
         {
-            foreach (var entry in schemaElement.Descendants(XName.Get("sequence", _xmlSchemaNamespace)).Single().Elements(XName.Get("element", _xmlSchemaNamespace)))
+            foreach (var entry in schemaElement.Descendants(XName.Get("sequence", XmlSchemaNamespace)).Single().Elements(XName.Get("element", XmlSchemaNamespace)))
             {
                 schema.Add(entry.Attribute("name").ValueOrDefault(), entry.Attribute("type").ValueOrDefault());
             }

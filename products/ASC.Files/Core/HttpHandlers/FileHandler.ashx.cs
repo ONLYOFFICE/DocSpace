@@ -1153,7 +1153,7 @@ public class FileHandlerService
         var fileExt = FileUtility.InternalExtension[FileType.Document];
         if (!string.IsNullOrEmpty(docType))
         {
-            var tmpFileType = Configuration<T>._docType.FirstOrDefault(r => r.Value.Equals(docType, StringComparison.OrdinalIgnoreCase));
+            var tmpFileType = Configuration<T>.DocType.FirstOrDefault(r => r.Value.Equals(docType, StringComparison.OrdinalIgnoreCase));
             FileUtility.InternalExtension.TryGetValue(tmpFileType.Key, out var tmpFileExt);
             if (!string.IsNullOrEmpty(tmpFileExt))
             {

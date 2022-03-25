@@ -74,10 +74,10 @@ public class SecurityController : BaseSettingsController
     {
         if (ids == null || !ids.Any())
         {
-            ids = _webItemManager.GetItemsAll().Select(i => i.ID.ToString());
+            ids = WebItemManager.GetItemsAll().Select(i => i.ID.ToString());
         }
 
-        var subItemList = _webItemManager.GetItemsAll().Where(item => item.IsSubItem()).Select(i => i.ID.ToString());
+        var subItemList = WebItemManager.GetItemsAll().Where(item => item.IsSubItem()).Select(i => i.ID.ToString());
 
         return ids.Select(r => _webItemSecurity.GetSecurityInfo(r))
                     .Select(i => new SecurityDto
@@ -93,7 +93,7 @@ public class SecurityController : BaseSettingsController
     [Read("security/{id}")]
     public bool GetWebItemSecurityInfo(Guid id)
     {
-        var module = _webItemManager[id];
+        var module = WebItemManager[id];
 
         return module != null && !module.IsDisabled(_webItemSecurity, _authContext);
     }
@@ -206,7 +206,7 @@ public class SecurityController : BaseSettingsController
 
             if (item.Value)
             {
-                if (_webItemManager[productId] is IProduct webItem || productId == WebItemManager.MailProductID)
+                if (WebItemManager[productId] is IProduct webItem || productId == WebItemManager.MailProductID)
                 {
                     var productInfo = _webItemSecurity.GetSecurityInfo(item.Key);
                     var selectedGroups = productInfo.Groups.Select(group => group.ID).ToList();

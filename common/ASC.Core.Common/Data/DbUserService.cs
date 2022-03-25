@@ -42,26 +42,26 @@ public class ConfigureEFUserService : IConfigureNamedOptions<EFUserService>
     public void Configure(string name, EFUserService options)
     {
         DbId = name;
-        options._lazyUserDbContext = new Lazy<UserDbContext>(() => _dbContextManager.Get(name));
-        options._userDbContextManager = _dbContextManager;
+        options.LazyUserDbContext = new Lazy<UserDbContext>(() => _dbContextManager.Get(name));
+        options.UserDbContextManager = _dbContextManager;
     }
 
     public void Configure(EFUserService options)
     {
-        options._lazyUserDbContext = new Lazy<UserDbContext>(() => _dbContextManager.Value);
-        options._userDbContextManager = _dbContextManager;
+        options.LazyUserDbContext = new Lazy<UserDbContext>(() => _dbContextManager.Value);
+        options.UserDbContextManager = _dbContextManager;
     }
 }
 
 [Scope]
 public class EFUserService : IUserService
 {
-    internal UserDbContext UserDbContext => _lazyUserDbContext.Value;
-    internal Lazy<UserDbContext> _lazyUserDbContext;
-    internal DbContextManager<UserDbContext> _userDbContextManager;
+    internal UserDbContext UserDbContext => LazyUserDbContext.Value;
+    internal Lazy<UserDbContext> LazyUserDbContext;
+    internal DbContextManager<UserDbContext> UserDbContextManager;
     private readonly PasswordHasher _passwordHasher;
-    public readonly MachinePseudoKeys _machinePseudoKeys;
-    internal string _dbId;
+    public readonly MachinePseudoKeys MachinePseudoKeys;
+    private readonly string _dbId;
     private readonly IMapper _mapper;
 
     public EFUserService(
@@ -70,10 +70,10 @@ public class EFUserService : IUserService
         MachinePseudoKeys machinePseudoKeys,
         IMapper mapper)
     {
-        _userDbContextManager = userDbContextManager;
+        UserDbContextManager = userDbContextManager;
         _passwordHasher = passwordHasher;
-        _machinePseudoKeys = machinePseudoKeys;
-        _lazyUserDbContext = new Lazy<UserDbContext>(() => _userDbContextManager.Value);
+        MachinePseudoKeys = machinePseudoKeys;
+        LazyUserDbContext = new Lazy<UserDbContext>(() => UserDbContextManager.Value);
         _mapper = mapper;
     }
 
@@ -271,7 +271,7 @@ public class EFUserService : IUserService
 
     public IQueryable<UserInfo> GetUsers(int tenant, bool isAdmin, EmployeeStatus? employeeStatus, List<List<Guid>> includeGroups, List<Guid> excludeGroups, EmployeeActivationStatus? activationStatus, string text, string sortBy, bool sortOrderAsc, long limit, long offset, out int total, out int count)
     {
-        var userDbContext = _userDbContextManager.GetNew(_dbId);
+        var userDbContext = UserDbContextManager.GetNew(_dbId);
         var totalQuery = GetUserQuery(userDbContext, tenant);
         totalQuery = GetUserQueryForFilter(totalQuery, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text);
         total = totalQuery.Count();
@@ -302,7 +302,7 @@ public class EFUserService : IUserService
 
     public IQueryable<UserInfo> GetUsers(int tenant, out int total)
     {
-        var userDbContext = _userDbContextManager.GetNew(_dbId);
+        var userDbContext = UserDbContextManager.GetNew(_dbId);
         total = userDbContext.Users.Count(r => r.Tenant == tenant);
 
         return GetUserQuery(userDbContext, tenant)
@@ -716,7 +716,7 @@ public class EFUserService : IUserService
 
     protected string GetPasswordHash(Guid userId, string password)
     {
-        return Hasher.Base64Hash(password + userId + Encoding.UTF8.GetString(_machinePseudoKeys.GetMachineConstant()), HashAlg.SHA512);
+        return Hasher.Base64Hash(password + userId + Encoding.UTF8.GetString(MachinePseudoKeys.GetMachineConstant()), HashAlg.SHA512);
     }
 }
 

@@ -40,7 +40,7 @@ public class QueueWorker<T> where T : DistributedTaskProgress
     protected IServiceProvider ServiceProvider { get; }
 
     private readonly object _synchRoot = new object();
-    protected readonly DistributedTaskQueue Queue;
+    protected readonly DistributedTaskQueue _queue;
 
     public QueueWorker(
         IHttpContextAccessor httpContextAccessor,
@@ -49,7 +49,7 @@ public class QueueWorker<T> where T : DistributedTaskProgress
     {
         HttpContextAccessor = httpContextAccessor;
         ServiceProvider = serviceProvider;
-        Queue = options.Get<T>();
+        _queue = options.Get<T>();
     }
 
     public static string GetProgressItemId(int tenantId, Guid userId)
@@ -61,7 +61,7 @@ public class QueueWorker<T> where T : DistributedTaskProgress
     {
         var id = GetProgressItemId(tenantId, userId);
 
-        return Queue.GetTask<T>(id);
+        return _queue.GetTask<T>(id);
     }
 
     public void Terminate(int tenantId, Guid userId)
@@ -70,7 +70,7 @@ public class QueueWorker<T> where T : DistributedTaskProgress
 
         if (item != null)
         {
-            Queue.CancelTask(item.Id);
+            _queue.CancelTask(item.Id);
         }
     }
 
@@ -82,14 +82,14 @@ public class QueueWorker<T> where T : DistributedTaskProgress
 
             if (task != null && task.IsCompleted)
             {
-                Queue.RemoveTask(task.Id);
+                _queue.RemoveTask(task.Id);
                 task = null;
             }
 
             if (task == null)
             {
                 task = constructor();
-                Queue.QueueTask(task);
+                _queue.QueueTask(task);
             }
 
             return task;

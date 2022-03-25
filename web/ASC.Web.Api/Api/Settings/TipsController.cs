@@ -28,7 +28,7 @@ namespace ASC.Web.Api.Controllers.Settings;
 
 public class TipsController: BaseSettingsController
 {
-    private Tenant Tenant { get { return _apiContext.Tenant; } }
+    private Tenant Tenant { get { return ApiContext.Tenant; } }
 
     private readonly AuthContext _authContext;
     private readonly StudioNotifyHelper _studioNotifyHelper;

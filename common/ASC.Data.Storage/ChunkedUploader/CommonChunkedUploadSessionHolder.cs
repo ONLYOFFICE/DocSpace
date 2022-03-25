@@ -36,7 +36,7 @@ public class CommonChunkedUploadSessionHolder
     private readonly string _domain;
     private readonly long _maxChunkUploadSize;
 
-    private const string _storagePath = "sessions";
+    private const string StoragePath = "sessions";
 
     public CommonChunkedUploadSessionHolder(
         TempPath tempPath,
@@ -57,7 +57,7 @@ public class CommonChunkedUploadSessionHolder
         // clear old sessions
         try
         {
-            await DataStore.DeleteExpiredAsync(_domain, _storagePath, SlidingExpiration);
+            await DataStore.DeleteExpiredAsync(_domain, StoragePath, SlidingExpiration);
         }
         catch (Exception err)
         {
@@ -216,6 +216,6 @@ public class CommonChunkedUploadSessionHolder
 
     private string GetPathWithId(string id)
     {
-        return CrossPlatform.PathCombine(_storagePath, id + ".session");
+        return CrossPlatform.PathCombine(StoragePath, id + ".session");
     }
 }

@@ -28,7 +28,7 @@ namespace ASC.Web.Api.Controllers.Settings;
 
 public class LicenseController: BaseSettingsController
 {
-    private Tenant Tenant { get { return _apiContext.Tenant; } }
+    private Tenant Tenant { get { return ApiContext.Tenant; } }
 
     private readonly MessageService _messageService;
     private readonly FirstTimeTenantSettings _firstTimeTenantSettings;
@@ -190,7 +190,7 @@ public class LicenseController: BaseSettingsController
     {
         try
         {
-            _apiContext.AuthByClaim();
+            ApiContext.AuthByClaim();
             if (!_authContext.IsAuthenticated && _settingsManager.Load<WizardSettings>().Completed)
             {
                 throw new SecurityException(Resource.PortalSecurity);

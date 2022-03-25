@@ -28,7 +28,7 @@ namespace ASC.Common.Web;
 
 public class DisposableHttpContext : IDisposable
 {
-    private const string _key = "disposable.key";
+    private const string Key = "disposable.key";
 
     public object this[string key]
     {
@@ -53,12 +53,12 @@ public class DisposableHttpContext : IDisposable
     {
         get
         {
-            var table = (Dictionary<string, IDisposable>)_context.Items[_key];
+            var table = (Dictionary<string, IDisposable>)_context.Items[Key];
 
             if (table == null)
             {
                 table = new Dictionary<string, IDisposable>(1);
-                _context.Items.Add(_key, table);
+                _context.Items.Add(Key, table);
             }
 
             return table;

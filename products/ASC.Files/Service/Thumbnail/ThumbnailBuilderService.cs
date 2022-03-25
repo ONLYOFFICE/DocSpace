@@ -70,7 +70,7 @@ public class ThumbnailBuilderService : BackgroundService
         //var configSection = (ConfigSection)ConfigurationManager.GetSection("thumbnailBuilder") ?? new ConfigSection();
         //CommonLinkUtility.Initialize(configSection.ServerRoot, false);
 
-        var filesWithoutThumbnails = FileDataQueue._queue.Select(pair => pair.Value).ToList();
+        var filesWithoutThumbnails = FileDataQueue.Queue.Select(pair => pair.Value).ToList();
 
         if (filesWithoutThumbnails.Count == 0)
         {

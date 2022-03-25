@@ -28,7 +28,7 @@ namespace ASC.Web.Api.Controllers.Settings;
 
 public class GreetingSettingsController : BaseSettingsController
 {
-    private Tenant Tenant { get { return _apiContext.Tenant; } }
+    private Tenant Tenant { get { return ApiContext.Tenant; } }
 
     private readonly MessageService _messageService;
     private readonly TenantManager _tenantManager;

@@ -36,7 +36,7 @@ public class FacebookLoginProvider : BaseLoginProvider<FacebookLoginProvider>
     public override string CodeUrl => "https://www.facebook.com/v2.7/dialog/oauth/";
     public override string Scopes => "email,public_profile";
 
-    private const string _facebookProfileUrl = "https://graph.facebook.com/v2.7/me?fields=email,id,birthday,link,first_name,last_name,gender,timezone,locale";
+    private const string FacebookProfileUrl = "https://graph.facebook.com/v2.7/me?fields=email,id,birthday,link,first_name,last_name,gender,timezone,locale";
 
     public FacebookLoginProvider() { }
 
@@ -77,7 +77,7 @@ public class FacebookLoginProvider : BaseLoginProvider<FacebookLoginProvider>
             throw new Exception("Failed to correctly process the response");
         }
 
-        var profile = new LoginProfile(_signature, _instanceCrypto)
+        var profile = new LoginProfile(Signature, InstanceCrypto)
         {
             BirthDay = jProfile.Value<string>("birthday"),
             Link = jProfile.Value<string>("link"),
@@ -97,7 +97,7 @@ public class FacebookLoginProvider : BaseLoginProvider<FacebookLoginProvider>
 
     private LoginProfile RequestProfile(string accessToken)
     {
-        var facebookProfile = _requestHelper.PerformRequest(_facebookProfileUrl + "&access_token=" + accessToken);
+        var facebookProfile = _requestHelper.PerformRequest(FacebookProfileUrl + "&access_token=" + accessToken);
         var loginProfile = ProfileFromFacebook(facebookProfile);
 
         return loginProfile;

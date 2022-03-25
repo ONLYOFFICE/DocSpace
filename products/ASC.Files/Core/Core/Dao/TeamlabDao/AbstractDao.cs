@@ -28,7 +28,7 @@ namespace ASC.Files.Core.Data;
 
 public class AbstractDao
 {
-    protected readonly ICache Cache;
+    protected readonly ICache _cache;
 
     private readonly Lazy<FilesDbContext> _lazyFilesDbContext;
     public FilesDbContext FilesDbContext => _lazyFilesDbContext.Value;
@@ -39,23 +39,23 @@ public class AbstractDao
         {
             if (_tenantID == 0)
             {
-                _tenantID = TenantManager.GetCurrentTenant().Id;
+                _tenantID = _tenantManager.GetCurrentTenant().Id;
             }
 
             return _tenantID;
         }
     }
-    protected readonly UserManager UserManager;
-    protected readonly TenantManager TenantManager;
-    protected readonly TenantUtil TenantUtil;
-    protected readonly SetupInfo SetupInfo;
-    protected readonly TenantExtra TenantExtra;
-    protected readonly TenantStatisticsProvider TenantStatisticProvider;
-    protected readonly CoreBaseSettings CoreBaseSettings;
-    protected readonly CoreConfiguration CoreConfiguration;
-    protected readonly SettingsManager SettingsManager;
-    protected readonly AuthContext AuthContext;
-    protected readonly IServiceProvider ServiceProvider;
+    protected readonly UserManager _userManager;
+    protected readonly TenantManager _tenantManager;
+    protected readonly TenantUtil _tenantUtil;
+    protected readonly SetupInfo _setupInfo;
+    protected readonly TenantExtra _tenantExtra;
+    protected readonly TenantStatisticsProvider _tenantStatisticProvider;
+    protected readonly CoreBaseSettings _coreBaseSettings;
+    protected readonly CoreConfiguration _coreConfiguration;
+    protected readonly SettingsManager _settingsManager;
+    protected readonly AuthContext _authContext;
+    protected readonly IServiceProvider _serviceProvider;
 
     protected AbstractDao(
         DbContextManager<FilesDbContext> dbContextManager,
@@ -72,19 +72,19 @@ public class AbstractDao
         IServiceProvider serviceProvider,
         ICache cache)
     {
-        Cache = cache;
+        _cache = cache;
         _lazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
-        UserManager = userManager;
-        TenantManager = tenantManager;
-        TenantUtil = tenantUtil;
-        SetupInfo = setupInfo;
-        TenantExtra = tenantExtra;
-        TenantStatisticProvider = tenantStatisticProvider;
-        CoreBaseSettings = coreBaseSettings;
-        CoreConfiguration = coreConfiguration;
-        SettingsManager = settingsManager;
-        AuthContext = authContext;
-        ServiceProvider = serviceProvider;
+        _userManager = userManager;
+        _tenantManager = tenantManager;
+        _tenantUtil = tenantUtil;
+        _setupInfo = setupInfo;
+        _tenantExtra = tenantExtra;
+        _tenantStatisticProvider = tenantStatisticProvider;
+        _coreBaseSettings = coreBaseSettings;
+        _coreConfiguration = coreConfiguration;
+        _settingsManager = settingsManager;
+        _authContext = authContext;
+        _serviceProvider = serviceProvider;
     }
 
 

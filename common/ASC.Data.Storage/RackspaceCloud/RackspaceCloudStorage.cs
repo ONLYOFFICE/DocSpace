@@ -190,7 +190,7 @@ public class RackspaceCloudStorage : BaseStorage
                           string contentDisposition, ACL acl, string contentEncoding = null, int cacheDays = 5,
         DateTime? deleteAt = null, long? deleteAfter = null)
     {
-        var buffered = TempStream.GetBuffered(stream);
+        var buffered = _tempStream.GetBuffered(stream);
 
         if (QuotaController != null)
         {
@@ -237,7 +237,7 @@ public class RackspaceCloudStorage : BaseStorage
             try
             {
 
-                using (var emptyStream = TempStream.Create())
+                using (var emptyStream = _tempStream.Create())
                 {
 
                     var headers = new Dictionary<string, string>
@@ -734,7 +734,7 @@ public class RackspaceCloudStorage : BaseStorage
 
     private Uri GetUriShared(string domain, string path)
     {
-        return new Uri(string.Format("{0}{1}", SecureHelper.IsSecure(HttpContextAccessor?.HttpContext, Options) ? _cnameSSL : _cname, MakePath(domain, path)));
+        return new Uri(string.Format("{0}{1}", SecureHelper.IsSecure(_httpContextAccessor?.HttpContext, _options) ? _cnameSSL : _cname, MakePath(domain, path)));
     }
 
     private ACL GetDomainACL(string domain)

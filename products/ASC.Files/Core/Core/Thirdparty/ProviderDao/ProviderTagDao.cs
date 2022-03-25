@@ -41,12 +41,12 @@ internal class ProviderTagDao : ProviderDaoBase, ITagDao<string>
 
     public IAsyncEnumerable<Tag> GetTagsAsync(Guid subject, TagType tagType, IEnumerable<FileEntry<string>> fileEntries)
     {
-        return TagDao.GetTagsAsync(subject, tagType, fileEntries);
+        return _tagDao.GetTagsAsync(subject, tagType, fileEntries);
     }
 
     public IAsyncEnumerable<Tag> GetTagsAsync(TagType tagType, IEnumerable<FileEntry<string>> fileEntries)
     {
-        return TagDao.GetTagsAsync(tagType, fileEntries);
+        return _tagDao.GetTagsAsync(tagType, fileEntries);
     }
 
     public IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, Folder<string> parentFolder, bool deepSearch)
@@ -60,67 +60,67 @@ internal class ProviderTagDao : ProviderDaoBase, ITagDao<string>
 
     public IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, IEnumerable<FileEntry<string>> fileEntries)
     {
-        return TagDao.GetNewTagsAsync(subject, fileEntries);
+        return _tagDao.GetNewTagsAsync(subject, fileEntries);
     }
 
     public IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, FileEntry<string> fileEntry)
     {
-        return TagDao.GetNewTagsAsync(subject, fileEntry);
+        return _tagDao.GetNewTagsAsync(subject, fileEntry);
     }
 
     public IAsyncEnumerable<Tag> GetTagsAsync(Guid owner, TagType tagType)
     {
-        return TagDao.GetTagsAsync(owner, tagType);
+        return _tagDao.GetTagsAsync(owner, tagType);
     }
 
     public IAsyncEnumerable<Tag> GetTagsAsync(string name, TagType tagType)
     {
-        return TagDao.GetTagsAsync(name, tagType);
+        return _tagDao.GetTagsAsync(name, tagType);
     }
 
     public IAsyncEnumerable<Tag> GetTagsAsync(string[] names, TagType tagType)
     {
-        return TagDao.GetTagsAsync(names, tagType);
+        return _tagDao.GetTagsAsync(names, tagType);
     }
 
     public IEnumerable<Tag> SaveTags(IEnumerable<Tag> tag)
     {
-        return TagDao.SaveTags(tag);
+        return _tagDao.SaveTags(tag);
     }
 
     public IEnumerable<Tag> SaveTags(Tag tag)
     {
-        return TagDao.SaveTags(tag);
+        return _tagDao.SaveTags(tag);
     }
 
     public void UpdateNewTags(IEnumerable<Tag> tag)
     {
-        TagDao.UpdateNewTags(tag);
+        _tagDao.UpdateNewTags(tag);
     }
 
     public void UpdateNewTags(Tag tag)
     {
-        TagDao.UpdateNewTags(tag);
+        _tagDao.UpdateNewTags(tag);
     }
 
     public void RemoveTags(IEnumerable<Tag> tag)
     {
-        TagDao.RemoveTags(tag);
+        _tagDao.RemoveTags(tag);
     }
 
     public void RemoveTags(Tag tag)
     {
-        TagDao.RemoveTags(tag);
+        _tagDao.RemoveTags(tag);
     }
 
     public IAsyncEnumerable<Tag> GetTagsAsync(string entryID, FileEntryType entryType, TagType tagType)
     {
-        return TagDao.GetTagsAsync(entryID, entryType, tagType);
+        return _tagDao.GetTagsAsync(entryID, entryType, tagType);
     }
 
     public Task<IDictionary<object, IEnumerable<Tag>>> GetTagsAsync(Guid subject, IEnumerable<TagType> tagType, IEnumerable<FileEntry<string>> fileEntries)
     {
-        return TagDao.GetTagsAsync(subject, tagType, fileEntries);
+        return _tagDao.GetTagsAsync(subject, tagType, fileEntries);
     }
 
     #endregion

@@ -215,7 +215,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
             }
             catch (Exception ex)
             {
-                Logger.Error("Sharpbox makeId error", ex);
+                _logger.Error("Sharpbox makeId error", ex);
             }
         }
         else if (entry != null)
@@ -282,12 +282,12 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
 
         if (folder.CreateOn != DateTime.MinValue && folder.CreateOn.Kind == DateTimeKind.Utc)
         {
-            folder.CreateOn = TenantUtil.DateTimeFromUtc(folder.CreateOn);
+            folder.CreateOn = _tenantUtil.DateTimeFromUtc(folder.CreateOn);
         }
 
         if (folder.ModifiedOn != DateTime.MinValue && folder.ModifiedOn.Kind == DateTimeKind.Utc)
         {
-            folder.ModifiedOn = TenantUtil.DateTimeFromUtc(folder.ModifiedOn);
+            folder.ModifiedOn = _tenantUtil.DateTimeFromUtc(folder.ModifiedOn);
         }
 
         return folder;
@@ -357,9 +357,9 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
 
         file.ID = MakeId(fsEntry);
         file.ContentLength = fsEntry.Length;
-        file.CreateOn = fsEntry.Modified.Kind == DateTimeKind.Utc ? TenantUtil.DateTimeFromUtc(fsEntry.Modified) : fsEntry.Modified;
+        file.CreateOn = fsEntry.Modified.Kind == DateTimeKind.Utc ? _tenantUtil.DateTimeFromUtc(fsEntry.Modified) : fsEntry.Modified;
         file.FolderID = MakeId(fsEntry.Parent);
-        file.ModifiedOn = fsEntry.Modified.Kind == DateTimeKind.Utc ? TenantUtil.DateTimeFromUtc(fsEntry.Modified) : fsEntry.Modified;
+        file.ModifiedOn = fsEntry.Modified.Kind == DateTimeKind.Utc ? _tenantUtil.DateTimeFromUtc(fsEntry.Modified) : fsEntry.Modified;
         file.NativeAccessor = fsEntry;
         file.Title = MakeTitle(fsEntry);
         file.RootFolderId = RootFolderMakeId();

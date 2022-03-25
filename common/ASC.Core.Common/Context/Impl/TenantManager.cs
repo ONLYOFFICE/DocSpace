@@ -57,20 +57,20 @@ class ConfigureTenantManager : IConfigureNamedOptions<TenantManager>
     {
         Configure(options);
 
-        options._tenantService = _tenantService.Get(name);
-        options._quotaService = _quotaService.Get(name);
-        options._tariffService = _tariffService.Get(name);
+        options.TenantService = _tenantService.Get(name);
+        options.QuotaService = _quotaService.Get(name);
+        options.TariffService = _tariffService.Get(name);
     }
 
     public void Configure(TenantManager options)
     {
-        options._httpContextAccessor = _httpContextAccessor;
-        options._coreBaseSettings = _coreBaseSettings;
-        options._coreSettings = _coreSettings;
+        options.HttpContextAccessor = _httpContextAccessor;
+        options.CoreBaseSettings = _coreBaseSettings;
+        options.CoreSettings = _coreSettings;
 
-        options._tenantService = _tenantService.Value;
-        options._quotaService = _quotaService.Value;
-        options._tariffService = _tariffService.Value;
+        options.TenantService = _tenantService.Value;
+        options.QuotaService = _quotaService.Value;
+        options.TariffService = _tariffService.Value;
     }
 }
 
@@ -80,15 +80,15 @@ public class TenantManager
     private Tenant _currentTenant;
 
     public const string CurrentTenant = "CURRENT_TENANT";
-    internal ITenantService _tenantService;
-    internal IQuotaService _quotaService;
-    internal ITariffService _tariffService;
+    internal ITenantService TenantService { get; set; }
+    internal IQuotaService QuotaService { get; set; }
+    internal ITariffService TariffService { get; set; }
 
     private static readonly List<string> _thisCompAddresses = new List<string>();
 
-    internal IHttpContextAccessor _httpContextAccessor;
-    internal CoreBaseSettings _coreBaseSettings;
-    internal CoreSettings _coreSettings;
+    internal IHttpContextAccessor HttpContextAccessor { get; set; }
+    internal CoreBaseSettings CoreBaseSettings { get; set; }
+    internal CoreSettings CoreSettings { get; set; }
 
     static TenantManager()
     {
@@ -117,11 +117,11 @@ public class TenantManager
         CoreBaseSettings coreBaseSettings,
         CoreSettings coreSettings)
     {
-        _tenantService = tenantService;
-        _quotaService = quotaService;
-        _tariffService = tariffService;
-        _coreBaseSettings = coreBaseSettings;
-        _coreSettings = coreSettings;
+        TenantService = tenantService;
+        QuotaService = quotaService;
+        TariffService = tariffService;
+        CoreBaseSettings = coreBaseSettings;
+        CoreSettings = coreSettings;
     }
 
     public TenantManager(
@@ -132,22 +132,22 @@ public class TenantManager
         CoreBaseSettings coreBaseSettings,
         CoreSettings coreSettings) : this(tenantService, quotaService, tariffService, coreBaseSettings, coreSettings)
     {
-        _httpContextAccessor = httpContextAccessor;
+        HttpContextAccessor = httpContextAccessor;
     }
 
 
     public List<Tenant> GetTenants(bool active = true)
     {
-        return _tenantService.GetTenants(default, active).ToList();
+        return TenantService.GetTenants(default, active).ToList();
     }
     public List<Tenant> GetTenants(List<int> ids)
     {
-        return _tenantService.GetTenants(ids).ToList();
+        return TenantService.GetTenants(ids).ToList();
     }
 
     public Tenant GetTenant(int tenantId)
     {
-        return _tenantService.GetTenant(tenantId);
+        return TenantService.GetTenant(tenantId);
     }
 
     public Tenant GetTenant(string domain)
@@ -160,25 +160,25 @@ public class TenantManager
         Tenant t = null;
         if (_thisCompAddresses.Contains(domain, StringComparer.InvariantCultureIgnoreCase))
         {
-            t = _tenantService.GetTenant("localhost");
+            t = TenantService.GetTenant("localhost");
         }
         var isAlias = false;
         if (t == null)
         {
-            var baseUrl = _coreSettings.BaseDomain;
+            var baseUrl = CoreSettings.BaseDomain;
             if (!string.IsNullOrEmpty(baseUrl) && domain.EndsWith("." + baseUrl, StringComparison.InvariantCultureIgnoreCase))
             {
                 isAlias = true;
-                t = _tenantService.GetTenant(domain.Substring(0, domain.Length - baseUrl.Length - 1));
+                t = TenantService.GetTenant(domain.Substring(0, domain.Length - baseUrl.Length - 1));
             }
         }
         if (t == null)
         {
-            t = _tenantService.GetTenant(domain);
+            t = TenantService.GetTenant(domain);
         }
-        if (t == null && _coreBaseSettings.Standalone && !isAlias)
+        if (t == null && CoreBaseSettings.Standalone && !isAlias)
         {
-            t = _tenantService.GetTenantForStandaloneWithoutAlias(domain);
+            t = TenantService.GetTenantForStandaloneWithoutAlias(domain);
         }
 
         return t;
@@ -203,7 +203,7 @@ public class TenantManager
 
     public Tenant SaveTenant(Tenant tenant)
     {
-        var newTenant = _tenantService.SaveTenant(_coreSettings, tenant);
+        var newTenant = TenantService.SaveTenant(CoreSettings, tenant);
         if (CallContext.GetData(CurrentTenant) is Tenant)
         {
             SetCurrentTenant(newTenant);
@@ -214,7 +214,7 @@ public class TenantManager
 
     public void RemoveTenant(int tenantId, bool auto = false)
     {
-        _tenantService.RemoveTenant(tenantId, auto);
+        TenantService.RemoveTenant(tenantId, auto);
     }
 
     public Tenant GetCurrentTenant(HttpContext context)
@@ -258,7 +258,7 @@ public class TenantManager
 
     public Tenant GetCurrentTenant(bool throwIfNotFound)
     {
-        return GetCurrentTenant(throwIfNotFound, _httpContextAccessor?.HttpContext);
+        return GetCurrentTenant(throwIfNotFound, HttpContextAccessor?.HttpContext);
     }
 
     public void SetCurrentTenant(Tenant tenant)
@@ -266,9 +266,9 @@ public class TenantManager
         if (tenant != null)
         {
             _currentTenant = tenant;
-            if (_httpContextAccessor?.HttpContext != null)
+            if (HttpContextAccessor?.HttpContext != null)
             {
-                _httpContextAccessor.HttpContext.Items[CurrentTenant] = tenant;
+                HttpContextAccessor.HttpContext.Items[CurrentTenant] = tenant;
             }
 
             Thread.CurrentThread.CurrentCulture = tenant.GetCulture();
@@ -294,12 +294,12 @@ public class TenantManager
 
     public void CheckTenantAddress(string address)
     {
-        _tenantService.ValidateDomain(address);
+        TenantService.ValidateDomain(address);
     }
 
     public IEnumerable<TenantVersion> GetTenantVersions()
     {
-        return _tenantService.GetTenantVersions();
+        return TenantService.GetTenantVersions();
     }
 
 
@@ -310,16 +310,16 @@ public class TenantManager
 
     public IEnumerable<TenantQuota> GetTenantQuotas(bool all)
     {
-        return _quotaService.GetTenantQuotas().Where(q => q.Tenant < 0 && (all || q.Visible)).OrderByDescending(q => q.Tenant).ToList();
+        return QuotaService.GetTenantQuotas().Where(q => q.Tenant < 0 && (all || q.Visible)).OrderByDescending(q => q.Tenant).ToList();
     }
 
     public TenantQuota GetTenantQuota(int tenant)
     {
-        var defaultQuota = _quotaService.GetTenantQuota(tenant) ?? _quotaService.GetTenantQuota(Tenant.DefaultTenant) ?? TenantQuota.Default;
-        if (defaultQuota.Tenant != tenant && _tariffService != null)
+        var defaultQuota = QuotaService.GetTenantQuota(tenant) ?? QuotaService.GetTenantQuota(Tenant.DefaultTenant) ?? TenantQuota.Default;
+        if (defaultQuota.Tenant != tenant && TariffService != null)
         {
-            var tariff = _tariffService.GetTariff(tenant);
-            var currentQuota = _quotaService.GetTenantQuota(tariff.QuotaId);
+            var tariff = TariffService.GetTariff(tenant);
+            var currentQuota = QuotaService.GetTenantQuota(tariff.QuotaId);
             if (currentQuota != null)
             {
                 currentQuota = (TenantQuota)currentQuota.Clone();
@@ -345,23 +345,23 @@ public class TenantManager
             .Distinct()
             .ToArray();
 
-        return _tariffService.GetProductPriceInfo(productIds);
+        return TariffService.GetProductPriceInfo(productIds);
     }
 
     public TenantQuota SaveTenantQuota(TenantQuota quota)
     {
-        quota = _quotaService.SaveTenantQuota(quota);
+        quota = QuotaService.SaveTenantQuota(quota);
 
         return quota;
     }
 
     public void SetTenantQuotaRow(TenantQuotaRow row, bool exchange)
     {
-        _quotaService.SetTenantQuotaRow(row, exchange);
+        QuotaService.SetTenantQuotaRow(row, exchange);
     }
 
     public List<TenantQuotaRow> FindTenantQuotaRows(int tenantId)
     {
-        return _quotaService.FindTenantQuotaRows(tenantId).ToList();
+        return QuotaService.FindTenantQuotaRows(tenantId).ToList();
     }
 }

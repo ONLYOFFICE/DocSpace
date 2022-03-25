@@ -125,12 +125,12 @@ internal abstract class BoxDaoBase : ThirdPartyProviderDao<BoxProviderInfo>
 
         if (folder.CreateOn != DateTime.MinValue && folder.CreateOn.Kind == DateTimeKind.Utc)
         {
-            folder.CreateOn = TenantUtil.DateTimeFromUtc(folder.CreateOn);
+            folder.CreateOn = _tenantUtil.DateTimeFromUtc(folder.CreateOn);
         }
 
         if (folder.ModifiedOn != DateTime.MinValue && folder.ModifiedOn.Kind == DateTimeKind.Utc)
         {
-            folder.ModifiedOn = TenantUtil.DateTimeFromUtc(folder.ModifiedOn);
+            folder.ModifiedOn = _tenantUtil.DateTimeFromUtc(folder.ModifiedOn);
         }
 
         return folder;
@@ -186,9 +186,9 @@ internal abstract class BoxDaoBase : ThirdPartyProviderDao<BoxProviderInfo>
 
         file.ID = MakeId(boxFile.Id);
         file.ContentLength = boxFile.Size.HasValue ? (long)boxFile.Size : 0;
-        file.CreateOn = boxFile.CreatedAt.HasValue ? TenantUtil.DateTimeFromUtc(boxFile.CreatedAt.Value) : default;
+        file.CreateOn = boxFile.CreatedAt.HasValue ? _tenantUtil.DateTimeFromUtc(boxFile.CreatedAt.Value) : default;
         file.FolderID = MakeId(GetParentFolderId(boxFile));
-        file.ModifiedOn = boxFile.ModifiedAt.HasValue ? TenantUtil.DateTimeFromUtc(boxFile.ModifiedAt.Value) : default;
+        file.ModifiedOn = boxFile.ModifiedAt.HasValue ? _tenantUtil.DateTimeFromUtc(boxFile.ModifiedAt.Value) : default;
         file.NativeAccessor = boxFile;
         file.Title = MakeFileTitle(boxFile);
 

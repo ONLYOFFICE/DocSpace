@@ -29,7 +29,7 @@ namespace Textile.States;
 /// <summary>
 /// Formatting state for a standard text (i.e. just paragraphs).
 /// </summary>
-[FormatterState(SimpleBlockFormatterState._patternBegin + @"p" + SimpleBlockFormatterState._patternEnd)]
+[FormatterState(SimpleBlockFormatterState.PatternBegin + @"p" + SimpleBlockFormatterState.PatternEnd)]
 public class ParagraphFormatterState : SimpleBlockFormatterState
 {
     public ParagraphFormatterState(TextileFormatter f)

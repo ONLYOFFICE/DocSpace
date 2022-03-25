@@ -124,7 +124,7 @@ public class TfaappController : BaseSettingsController
     [Authorize(AuthenticationSchemes = "confirm", Roles = "TfaActivation,Everyone")]
     public bool TfaValidateAuthCode(TfaValidateRequestsDto inDto)
     {
-        _apiContext.AuthByClaim();
+        ApiContext.AuthByClaim();
         var user = _userManager.GetUsers(_authContext.CurrentAccount.ID);
         return _tfaManager.ValidateAuthCode(user, inDto.Code);
     }
@@ -253,7 +253,7 @@ public class TfaappController : BaseSettingsController
     [Authorize(AuthenticationSchemes = "confirm", Roles = "TfaActivation")]
     public SetupCode TfaAppGenerateSetupCode()
     {
-        _apiContext.AuthByClaim();
+        ApiContext.AuthByClaim();
         var currentUser = _userManager.GetUsers(_authContext.CurrentAccount.ID);
 
         if (!TfaAppAuthSettings.IsVisibleSettings ||

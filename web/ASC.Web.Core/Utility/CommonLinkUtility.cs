@@ -106,12 +106,12 @@ public class CommonLinkUtility : BaseCommonLinkUtility
 
     public string GetMyStaff()
     {
-        return CoreBaseSettings.Personal ? ToAbsolute("~/my") : ToAbsolute("~/products/people/view/@self");
+        return _coreBaseSettings.Personal ? ToAbsolute("~/my") : ToAbsolute("~/products/people/view/@self");
     }
 
     public string GetUnsubscribe()
     {
-        return CoreBaseSettings.Personal ? ToAbsolute("~/my?unsubscribe=tips") : ToAbsolute("~/products/people/view/@self");
+        return _coreBaseSettings.Personal ? ToAbsolute("~/my?unsubscribe=tips") : ToAbsolute("~/products/people/view/@self");
     }
 
     public string GetEmployees()
@@ -207,7 +207,7 @@ public class CommonLinkUtility : BaseCommonLinkUtility
     {
         var productID = Guid.Empty;
 
-        if (HttpContextAccessor?.HttpContext != null)
+        if (_httpContextAccessor?.HttpContext != null)
         {
             GetLocationByRequest(out var product, out _);
             if (product != null)
@@ -223,9 +223,9 @@ public class CommonLinkUtility : BaseCommonLinkUtility
     {
         var addonID = Guid.Empty;
 
-        if (HttpContextAccessor?.HttpContext != null)
+        if (_httpContextAccessor?.HttpContext != null)
         {
-            var addonName = GetAddonNameFromUrl(HttpContextAccessor.HttpContext.Request.Url().AbsoluteUri);
+            var addonName = GetAddonNameFromUrl(_httpContextAccessor.HttpContext.Request.Url().AbsoluteUri);
 
             switch (addonName)
             {
@@ -249,9 +249,9 @@ public class CommonLinkUtility : BaseCommonLinkUtility
     public void GetLocationByRequest(out IProduct currentProduct, out IModule currentModule)
     {
         var currentURL = string.Empty;
-        if (HttpContextAccessor?.HttpContext?.Request != null)
+        if (_httpContextAccessor?.HttpContext?.Request != null)
         {
-            currentURL = HttpContextAccessor.HttpContext.Request.GetUrlRewriter().AbsoluteUri;
+            currentURL = _httpContextAccessor.HttpContext.Request.GetUrlRewriter().AbsoluteUri;
 
             //TODO ?
             // http://[hostname]/[virtualpath]/[AjaxPro.Utility.HandlerPath]/[assembly],[classname].ashx
@@ -536,7 +536,7 @@ public class CommonLinkUtility : BaseCommonLinkUtility
 
     public string GetConfirmationUrlRelative(string email, ConfirmType confirmType, object postfix = null, Guid userId = default)
     {
-        return GetConfirmationUrlRelative(TenantManager.GetCurrentTenant().Id, email, confirmType, postfix, userId);
+        return GetConfirmationUrlRelative(_tenantManager.GetCurrentTenant().Id, email, confirmType, postfix, userId);
     }
 
     public string GetConfirmationUrlRelative(int tenantId, string email, ConfirmType confirmType, object postfix = null, Guid userId = default)

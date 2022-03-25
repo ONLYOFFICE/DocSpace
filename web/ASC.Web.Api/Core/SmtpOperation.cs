@@ -220,7 +220,7 @@ public class SmtpOperation
         return Progress;
     }
 
-    const string _progerssString = "Progress: {0}% {1} {2}";
+    const string ProgerssString = "Progress: {0}% {1} {2}";
 
     public void SetProgress(int? currentPercent = null, string currentStatus = null, string currentSource = null)
     {
@@ -244,7 +244,7 @@ public class SmtpOperation
             Source = currentSource;
         }
 
-        _logger.InfoFormat(_progerssString, Progress, Status, Source);
+        _logger.InfoFormat(ProgerssString, Progress, Status, Source);
 
         PublishTaskInfo();
     }

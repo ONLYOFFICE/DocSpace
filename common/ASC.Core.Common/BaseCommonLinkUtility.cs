@@ -36,12 +36,12 @@ public class CommonLinkUtilitySettings
 [Scope]
 public class BaseCommonLinkUtility
 {
-    private const string _localHost = "localhost";
+    private const string LocalHost = "localhost";
 
     private UriBuilder _serverRoot;
     private string _vpath;
 
-    protected IHttpContextAccessor HttpContextAccessor;
+    protected IHttpContextAccessor _httpContextAccessor;
 
     public BaseCommonLinkUtility(
         CoreBaseSettings coreBaseSettings,
@@ -66,22 +66,22 @@ public class BaseCommonLinkUtility
         if (!string.IsNullOrEmpty(serverUri))
         {
             var uri = new Uri(serverUri.Replace('*', 'x').Replace('+', 'x'));
-            _serverRoot = new UriBuilder(uri.Scheme, uri.Host != "x" ? uri.Host : _localHost, uri.Port);
+            _serverRoot = new UriBuilder(uri.Scheme, uri.Host != "x" ? uri.Host : LocalHost, uri.Port);
             _vpath = "/" + uri.AbsolutePath.Trim('/');
         }
         else
         {
             try
             {
-                HttpContextAccessor = httpContextAccessor;
-                var uriBuilder = new UriBuilder(Uri.UriSchemeHttp, _localHost);
-                if (HttpContextAccessor?.HttpContext?.Request != null)
+                _httpContextAccessor = httpContextAccessor;
+                var uriBuilder = new UriBuilder(Uri.UriSchemeHttp, LocalHost);
+                if (_httpContextAccessor?.HttpContext?.Request != null)
                 {
-                    var u = HttpContextAccessor?.HttpContext.Request.GetUrlRewriter();
+                    var u = _httpContextAccessor?.HttpContext.Request.GetUrlRewriter();
 
                     ArgumentNullException.ThrowIfNull(u);
 
-                    uriBuilder = new UriBuilder(u.Scheme, _localHost, u.Port);
+                    uriBuilder = new UriBuilder(u.Scheme, LocalHost, u.Port);
                 }
                 _serverRoot = uriBuilder;
             }
@@ -91,16 +91,16 @@ public class BaseCommonLinkUtility
             }
         }
 
-        CoreBaseSettings = coreBaseSettings;
+        _coreBaseSettings = coreBaseSettings;
         _coreSettings = coreSettings;
-        TenantManager = tenantManager;
+        _tenantManager = tenantManager;
     }
 
     public string VirtualRoot => ToAbsolute("~");
 
-    protected CoreBaseSettings CoreBaseSettings;
+    protected CoreBaseSettings _coreBaseSettings;
     private readonly CoreSettings _coreSettings;
-    protected TenantManager TenantManager;
+    protected TenantManager _tenantManager;
 
     private string _serverRootPath;
     public string ServerRootPath
@@ -114,15 +114,15 @@ public class BaseCommonLinkUtility
 
             UriBuilder result;
             // first, take from current request
-            if (HttpContextAccessor?.HttpContext?.Request != null)
+            if (_httpContextAccessor?.HttpContext?.Request != null)
             {
-                var u = HttpContextAccessor?.HttpContext?.Request.GetUrlRewriter();
+                var u = _httpContextAccessor?.HttpContext?.Request.GetUrlRewriter();
 
                 ArgumentNullException.ThrowIfNull(u);
 
                 result = new UriBuilder(u.Scheme, u.Host, u.Port);
 
-                if (CoreBaseSettings.Standalone && !result.Uri.IsLoopback)
+                if (_coreBaseSettings.Standalone && !result.Uri.IsLoopback)
                 {
                     // save for stanalone
                     _serverRoot.Host = result.Host;
@@ -136,14 +136,14 @@ public class BaseCommonLinkUtility
             if (result.Uri.IsLoopback)
             {
                 // take values from db if localhost or no http context thread
-                var tenant = TenantManager.GetCurrentTenant();
+                var tenant = _tenantManager.GetCurrentTenant();
                 result.Host = tenant.GetTenantDomain(_coreSettings);
 
 #if DEBUG
                 // for Visual Studio debug
-                if (tenant.Alias == _localHost)
+                if (tenant.Alias == LocalHost)
                 {
-                    result.Host = _localHost;
+                    result.Host = LocalHost;
                 }
 #endif
 
@@ -244,7 +244,7 @@ public class BaseCommonLinkUtility
     public void Initialize(string serverUri, bool localhost = true)
     {
         var uri = new Uri(serverUri.Replace('*', 'x').Replace('+', 'x'));
-        _serverRoot = new UriBuilder(uri.Scheme, localhost ? _localHost : uri.Host, uri.Port);
+        _serverRoot = new UriBuilder(uri.Scheme, localhost ? LocalHost : uri.Host, uri.Port);
         _vpath = "/" + uri.AbsolutePath.Trim('/');
     }
 }

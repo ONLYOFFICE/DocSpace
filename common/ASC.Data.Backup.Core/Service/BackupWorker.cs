@@ -317,7 +317,7 @@ public class BackupProgressItem : BaseBackupProgressItem
     public string TempFolder { get; set; }
     public override BackupProgressItemEnum BackupProgressItemEnum => BackupProgressItemEnum.Backup;
 
-    private const string _archiveFormat = "tar.gz";
+    private const string ArchiveFormat = "tar.gz";
 
     private bool _isScheduled;
     private Guid _userId;
@@ -376,7 +376,7 @@ public class BackupProgressItem : BaseBackupProgressItem
         var (tenantManager, backupStorageFactory, notifyHelper, backupRepository, backupWorker, backupPortalTask, _, _, coreBaseSettings) = scopeClass;
 
             var dateTime = coreBaseSettings.Standalone ? DateTime.Now : DateTime.UtcNow;
-            var backupName = string.Format("{0}_{1:yyyy-MM-dd_HH-mm-ss}.{2}", tenantManager.GetTenant(TenantId).Alias, dateTime, _archiveFormat);
+            var backupName = string.Format("{0}_{1:yyyy-MM-dd_HH-mm-ss}.{2}", tenantManager.GetTenant(TenantId).Alias, dateTime, ArchiveFormat);
 
         var tempFile = CrossPlatform.PathCombine(TempFolder, backupName);
         var storagePath = tempFile;

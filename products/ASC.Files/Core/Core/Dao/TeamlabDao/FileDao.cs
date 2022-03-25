@@ -198,7 +198,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         {
             if (subjectGroup)
             {
-                var users = UserManager.GetUsersByGroup(subjectID).Select(u => u.Id).ToArray();
+                var users = _userManager.GetUsersByGroup(subjectID).Select(u => u.Id).ToArray();
                 query = query.Where(r => users.Contains(r.CreateBy));
             }
             else
@@ -291,7 +291,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         {
             if (subjectGroup)
             {
-                var users = UserManager.GetUsersByGroup(subjectID).Select(u => u.Id).ToArray();
+                var users = _userManager.GetUsersByGroup(subjectID).Select(u => u.Id).ToArray();
                 q = q.Where(r => users.Contains(r.CreateBy));
             }
             else
@@ -354,7 +354,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
     {
         ArgumentNullException.ThrowIfNull(file);
 
-        var maxChunkedUploadSize = SetupInfo.MaxChunkedUploadSize(TenantExtra, TenantStatisticProvider);
+        var maxChunkedUploadSize = _setupInfo.MaxChunkedUploadSize(_tenantExtra, _tenantStatisticProvider);
         if (checkQuota && maxChunkedUploadSize < file.ContentLength)
         {
             throw FileSizeComment.GetFileSizeException(maxChunkedUploadSize);
@@ -365,10 +365,10 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     private async Task<File<int>> InternalSaveFileAsync(File<int> file, Stream fileStream, bool checkQuota = true)
     {
-        if (checkQuota && CoreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
+        if (checkQuota && _coreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
         {
-            var personalMaxSpace = CoreConfiguration.PersonalMaxSpace(SettingsManager);
-            if (personalMaxSpace - await _globalSpace.GetUserUsedSpaceAsync(file.ID == default ? AuthContext.CurrentAccount.ID : file.CreateBy) < file.ContentLength)
+            var personalMaxSpace = _coreConfiguration.PersonalMaxSpace(_settingsManager);
+            if (personalMaxSpace - await _globalSpace.GetUserUsedSpaceAsync(file.ID == default ? _authContext.CurrentAccount.ID : file.CreateBy) < file.ContentLength)
             {
                 throw FileSizeComment.GetPersonalFreeSpaceException(personalMaxSpace);
             }
@@ -394,16 +394,16 @@ internal class FileDao : AbstractDao, IFileDao<int>
             //make lowerCase
             file.Title = FileUtility.ReplaceFileExtension(file.Title, FileUtility.GetFileExtension(file.Title));
 
-            file.ModifiedBy = AuthContext.CurrentAccount.ID;
-            file.ModifiedOn = TenantUtil.DateTimeNow();
+            file.ModifiedBy = _authContext.CurrentAccount.ID;
+            file.ModifiedOn = _tenantUtil.DateTimeNow();
             if (file.CreateBy == default)
             {
-                file.CreateBy = AuthContext.CurrentAccount.ID;
+                file.CreateBy = _authContext.CurrentAccount.ID;
             }
 
             if (file.CreateOn == default)
             {
-                file.CreateOn = TenantUtil.DateTimeNow();
+                file.CreateOn = _tenantUtil.DateTimeNow();
             }
 
             var toUpdate = FilesDbContext.Files
@@ -426,9 +426,9 @@ internal class FileDao : AbstractDao, IFileDao<int>
                 ContentLength = file.ContentLength,
                 Category = (int)file.FilterType,
                 CreateBy = file.CreateBy,
-                CreateOn = TenantUtil.DateTimeToUtc(file.CreateOn),
+                CreateOn = _tenantUtil.DateTimeToUtc(file.CreateOn),
                 ModifiedBy = file.ModifiedBy,
-                ModifiedOn = TenantUtil.DateTimeToUtc(file.ModifiedOn),
+                ModifiedOn = _tenantUtil.DateTimeToUtc(file.ModifiedOn),
                 ConvertedType = file.ConvertedType,
                 Comment = file.Comment,
                 Encrypted = file.Encrypted,
@@ -461,7 +461,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
                 foreach (var f in folderToUpdate)
                 {
-                    f.ModifiedOn = TenantUtil.DateTimeToUtc(file.ModifiedOn);
+                    f.ModifiedOn = _tenantUtil.DateTimeToUtc(file.ModifiedOn);
                     f.ModifiedBy = file.ModifiedBy;
                 }
 
@@ -518,7 +518,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
             throw new ArgumentException("No file id or folder id toFolderId determine provider");
         }
 
-        var maxChunkedUploadSize = SetupInfo.MaxChunkedUploadSize(TenantExtra, TenantStatisticProvider);
+        var maxChunkedUploadSize = _setupInfo.MaxChunkedUploadSize(_tenantExtra, _tenantStatisticProvider);
 
         if (maxChunkedUploadSize < file.ContentLength)
         {
@@ -530,10 +530,10 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     private async Task<File<int>> InternalReplaceFileVersionAsync(File<int> file, Stream fileStream)
     {
-        if (CoreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
+        if (_coreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
         {
-            var personalMaxSpace = CoreConfiguration.PersonalMaxSpace(SettingsManager);
-            if (personalMaxSpace - await _globalSpace.GetUserUsedSpaceAsync(file.ID == default ? AuthContext.CurrentAccount.ID : file.CreateBy) < file.ContentLength)
+            var personalMaxSpace = _coreConfiguration.PersonalMaxSpace(_settingsManager);
+            if (personalMaxSpace - await _globalSpace.GetUserUsedSpaceAsync(file.ID == default ? _authContext.CurrentAccount.ID : file.CreateBy) < file.ContentLength)
             {
                 throw FileSizeComment.GetPersonalFreeSpaceException(personalMaxSpace);
             }
@@ -550,16 +550,16 @@ internal class FileDao : AbstractDao, IFileDao<int>
             //make lowerCase
             file.Title = FileUtility.ReplaceFileExtension(file.Title, FileUtility.GetFileExtension(file.Title));
 
-            file.ModifiedBy = AuthContext.CurrentAccount.ID;
-            file.ModifiedOn = TenantUtil.DateTimeNow();
+            file.ModifiedBy = _authContext.CurrentAccount.ID;
+            file.ModifiedOn = _tenantUtil.DateTimeNow();
             if (file.CreateBy == default)
             {
-                file.CreateBy = AuthContext.CurrentAccount.ID;
+                file.CreateBy = _authContext.CurrentAccount.ID;
             }
 
             if (file.CreateOn == default)
             {
-                file.CreateOn = TenantUtil.DateTimeNow();
+                file.CreateOn = _tenantUtil.DateTimeNow();
             }
 
             toUpdate = FilesDbContext.Files
@@ -572,9 +572,9 @@ internal class FileDao : AbstractDao, IFileDao<int>
             toUpdate.ContentLength = file.ContentLength;
             toUpdate.Category = (int)file.FilterType;
             toUpdate.CreateBy = file.CreateBy;
-            toUpdate.CreateOn = TenantUtil.DateTimeToUtc(file.CreateOn);
+            toUpdate.CreateOn = _tenantUtil.DateTimeToUtc(file.CreateOn);
             toUpdate.ModifiedBy = file.ModifiedBy;
-            toUpdate.ModifiedOn = TenantUtil.DateTimeToUtc(file.ModifiedOn);
+            toUpdate.ModifiedOn = _tenantUtil.DateTimeToUtc(file.ModifiedOn);
             toUpdate.ConvertedType = file.ConvertedType;
             toUpdate.Comment = file.Comment;
             toUpdate.Encrypted = file.Encrypted;
@@ -603,7 +603,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
                 foreach (var f in folderToUpdate)
                 {
-                    f.ModifiedOn = TenantUtil.DateTimeToUtc(file.ModifiedOn);
+                    f.ModifiedOn = _tenantUtil.DateTimeToUtc(file.ModifiedOn);
                     f.ModifiedBy = file.ModifiedBy;
                 }
 
@@ -819,7 +819,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
                 var trashId = await trashIdTask;
                 if (trashId.Equals(toFolderId))
                 {
-                    f.ModifiedBy = AuthContext.CurrentAccount.ID;
+                    f.ModifiedBy = _authContext.CurrentAccount.ID;
                     f.ModifiedOn = DateTime.UtcNow;
                 }
             }
@@ -887,7 +887,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         var file = await GetFileAsync(fileId).ConfigureAwait(false);
         if (file != null)
         {
-            var copy = ServiceProvider.GetService<File<int>>();
+            var copy = _serviceProvider.GetService<File<int>>();
             copy.FileStatus = file.FileStatus;
             copy.FolderID = toFolderId;
             copy.Title = file.Title;
@@ -939,7 +939,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
         toUpdate.Title = newTitle;
         toUpdate.ModifiedOn = DateTime.UtcNow;
-        toUpdate.ModifiedBy = AuthContext.CurrentAccount.ID;
+        toUpdate.ModifiedBy = _authContext.CurrentAccount.ID;
 
         await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
@@ -1109,7 +1109,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
             return file;
         }
 
-        var result = ServiceProvider.GetService<File<int>>();
+        var result = _serviceProvider.GetService<File<int>>();
         result.FolderID = uploadSession.File.FolderID;
         result.Title = uploadSession.File.Title;
         result.ContentLength = uploadSession.BytesTotal;
@@ -1173,7 +1173,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         {
             if (subjectGroup)
             {
-                var users = UserManager.GetUsersByGroup(subjectID).Select(u => u.Id).ToArray();
+                var users = _userManager.GetUsersByGroup(subjectID).Select(u => u.Id).ToArray();
                 q = q.Where(r => users.Contains(r.CreateBy));
             }
             else
@@ -1241,7 +1241,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         return _globalStore.GetStore().IsFileAsync(string.Empty, GetUniqFilePath(file));
     }
 
-    private const string _diffTitle = "diff.zip";
+    private const string DiffTitle = "diff.zip";
 
     public Task SaveEditHistoryAsync(File<int> file, string changes, Stream differenceStream)
     {
@@ -1270,7 +1270,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
         await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-        await _globalStore.GetStore().SaveAsync(string.Empty, GetUniqFilePath(file, _diffTitle), differenceStream, _diffTitle);
+        await _globalStore.GetStore().SaveAsync(string.Empty, GetUniqFilePath(file, DiffTitle), differenceStream, DiffTitle);
     }
 
     public async Task<List<EditHistory>> GetEditHistoryAsync(DocumentServiceHelper documentServiceHelper, int fileId, int fileVersion = 0)
@@ -1290,15 +1290,15 @@ internal class FileDao : AbstractDao, IFileDao<int>
         return dbFiles
                 .Select(r =>
                     {
-                        var item = ServiceProvider.GetService<EditHistory>();
+                        var item = _serviceProvider.GetService<EditHistory>();
 
                         item.ID = r.Id;
                         item.Version = r.Version;
                         item.VersionGroup = r.VersionGroup;
-                        item.ModifiedOn = TenantUtil.DateTimeFromUtc(r.ModifiedOn);
+                        item.ModifiedOn = _tenantUtil.DateTimeFromUtc(r.ModifiedOn);
                         item.ModifiedBy = r.ModifiedBy;
                         item.ChangesString = r.Changes;
-                        item.Key = documentServiceHelper.GetDocKey(item.ID, item.Version, TenantUtil.DateTimeFromUtc(r.CreateOn));
+                        item.Key = documentServiceHelper.GetDocKey(item.ID, item.Version, _tenantUtil.DateTimeFromUtc(r.CreateOn));
 
                         return item;
                     })
@@ -1307,7 +1307,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     public Task<Stream> GetDifferenceStreamAsync(File<int> file)
     {
-        return _globalStore.GetStore().GetReadStreamAsync(string.Empty, GetUniqFilePath(file, _diffTitle), 0);
+        return _globalStore.GetStore().GetReadStreamAsync(string.Empty, GetUniqFilePath(file, DiffTitle), 0);
     }
 
     public Task<bool> ContainChangesAsync(int fileId, int fileVersion)
@@ -1375,7 +1375,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         return q1.Union(q2);
     }
 
-    private const string _thumbnailTitle = "thumb";
+    private const string ThumbnailTitle = "thumb";
 
     public Task SaveThumbnailAsync(File<int> file, Stream thumbnail)
     {
@@ -1405,13 +1405,13 @@ internal class FileDao : AbstractDao, IFileDao<int>
             return;
         }
 
-        var thumnailName = _thumbnailTitle + "." + _global.ThumbnailExtension;
+        var thumnailName = ThumbnailTitle + "." + _global.ThumbnailExtension;
         await _globalStore.GetStore().SaveAsync(string.Empty, GetUniqFilePath(file, thumnailName), thumbnail, thumnailName);
     }
 
     public async Task<Stream> GetThumbnailAsync(File<int> file)
     {
-        var thumnailName = _thumbnailTitle + "." + _global.ThumbnailExtension;
+        var thumnailName = ThumbnailTitle + "." + _global.ThumbnailExtension;
         var path = GetUniqFilePath(file, thumnailName);
         var storage = _globalStore.GetStore();
         var isFile = await storage.IsFileAsync(string.Empty, path).ConfigureAwait(false);
@@ -1472,7 +1472,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
            {
                if (subjectGroup)
                {
-                   var users = UserManager.GetUsersByGroup(subjectID).Select(u => u.Id).ToArray();
+                   var users = _userManager.GetUsersByGroup(subjectID).Select(u => u.Id).ToArray();
                    result.In(r => r.CreateBy, users);
                }
                else
@@ -1499,7 +1499,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     protected IQueryable<DbFileQuery> FromQueryWithShared(IQueryable<DbFile> dbFiles)
     {
-        var cId = AuthContext.CurrentAccount.ID;
+        var cId = _authContext.CurrentAccount.ID;
 
         return from r in dbFiles
                select new DbFileQuery
@@ -1528,7 +1528,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     protected IQueryable<DbFileQuery> FromQuery(IQueryable<DbFile> dbFiles)
     {
-        var cId = AuthContext.CurrentAccount.ID;
+        var cId = _authContext.CurrentAccount.ID;
 
         return dbFiles
             .Select(r => new DbFileQuery
@@ -1554,7 +1554,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     public File<int> ToFile(DbFileQuery r)
     {
-        var file = ServiceProvider.GetService<File<int>>();
+        var file = _serviceProvider.GetService<File<int>>();
 
         if (r == null)
         {
@@ -1564,12 +1564,12 @@ internal class FileDao : AbstractDao, IFileDao<int>
         file.ID = r.File.Id;
         file.Title = r.File.Title;
         file.FolderID = r.File.FolderId;
-        file.CreateOn = TenantUtil.DateTimeFromUtc(r.File.CreateOn);
+        file.CreateOn = _tenantUtil.DateTimeFromUtc(r.File.CreateOn);
         file.CreateBy = r.File.CreateBy;
         file.Version = r.File.Version;
         file.VersionGroup = r.File.VersionGroup;
         file.ContentLength = r.File.ContentLength;
-        file.ModifiedOn = TenantUtil.DateTimeFromUtc(r.File.ModifiedOn);
+        file.ModifiedOn = _tenantUtil.DateTimeFromUtc(r.File.ModifiedOn);
         file.ModifiedBy = r.File.ModifiedBy;
         file.RootFolderType = r.Root?.FolderType ?? default;
         file.RootFolderCreator = r.Root?.CreateBy ?? default;
@@ -1617,7 +1617,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     private async Task<DbFile> InernalInitDocumentAsync(DbFile dbFile)
     {
-        var file = ServiceProvider.GetService<File<int>>();
+        var file = _serviceProvider.GetService<File<int>>();
         file.ID = dbFile.Id;
         file.Title = dbFile.Title;
         file.Version = dbFile.Version;

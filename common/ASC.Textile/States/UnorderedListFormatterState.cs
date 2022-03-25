@@ -29,7 +29,7 @@ namespace Textile.States;
 /// <summary>
 /// Formatting state for a bulleted list.
 /// </summary>
-[FormatterState(ListFormatterState._patternBegin + @"\*+" + ListFormatterState._patternEnd)]
+[FormatterState(ListFormatterState.PatternBegin + @"\*+" + ListFormatterState.PatternEnd)]
 public class UnorderedListFormatterState : ListFormatterState
 {
     public UnorderedListFormatterState(TextileFormatter formatter)

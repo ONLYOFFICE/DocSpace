@@ -29,7 +29,7 @@ namespace ASC.Data.Storage;
 [Scope(Additional = typeof(StaticUploaderExtension))]
 public class StaticUploader
 {
-    protected readonly DistributedTaskQueue Queue;
+    protected readonly DistributedTaskQueue _queue;
     private readonly ICache _cache;
     private static readonly TaskScheduler _scheduler;
     private static readonly CancellationTokenSource _tokenSource;
@@ -59,7 +59,7 @@ public class StaticUploader
         _tenantManager = tenantManager;
         _settingsManager = settingsManager;
         _storageSettingsHelper = storageSettingsHelper;
-        Queue = options.Get<UploadOperationProgress>();
+        _queue = options.Get<UploadOperationProgress>();
     }
 
     public string UploadFile(string relativePath, string mappedPath, Action<string> onComplete = null)
@@ -139,14 +139,14 @@ public class StaticUploader
 
         lock (_locker)
         {
-            uploadOperation = Queue.GetTask<UploadOperationProgress>(key);
+            uploadOperation = _queue.GetTask<UploadOperationProgress>(key);
             if (uploadOperation != null)
             {
                 return;
             }
 
             uploadOperation = new UploadOperationProgress(_serviceProvider, key, tenant.Id, relativePath, mappedPath);
-            Queue.QueueTask(uploadOperation);
+            _queue.QueueTask(uploadOperation);
         }
     }
 
@@ -172,7 +172,7 @@ public class StaticUploader
         {
             var key = typeof(UploadOperationProgress).FullName + tenantId;
 
-            return Queue.GetTask<UploadOperationProgress>(key);
+            return _queue.GetTask<UploadOperationProgress>(key);
         }
     }
 

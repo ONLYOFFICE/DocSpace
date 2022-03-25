@@ -29,7 +29,7 @@ using Constants = ASC.Core.Users.Constants;
 namespace ASC.Web.Api.Controllers.Settings;
 public class SettingsController: BaseSettingsController
 {
-    private Tenant Tenant { get { return _apiContext.Tenant; } }
+    private Tenant Tenant { get { return ApiContext.Tenant; } }
 
     private readonly MessageService _messageService;
     private readonly ConsumerFactory _consumerFactory;
@@ -248,7 +248,7 @@ public class SettingsController: BaseSettingsController
     [Read("quota")]
     public QuotaDto GetQuotaUsed()
     {
-        return new QuotaDto(Tenant, _coreBaseSettings, _coreConfiguration, _tenantExtra, _tenantStatisticsProvider, _authContext, _settingsManager, _webItemManager, _constants);
+        return new QuotaDto(Tenant, _coreBaseSettings, _coreConfiguration, _tenantExtra, _tenantStatisticsProvider, _authContext, _settingsManager, WebItemManager, _constants);
     }
 
     [AllowAnonymous]
@@ -262,7 +262,7 @@ public class SettingsController: BaseSettingsController
     [Read("timezones", Check = false)]
     public List<TimezonesRequestsDto> GetTimeZones()
     {
-        _apiContext.AuthByClaim();
+        ApiContext.AuthByClaim();
         var timeZones = TimeZoneInfo.GetSystemTimeZones().ToList();
 
         if (timeZones.All(tz => tz.Id != "UTC"))
@@ -348,7 +348,7 @@ public class SettingsController: BaseSettingsController
 
     private WizardSettings CompleteWizard(WizardRequestsDto wizardModel)
     {
-        _apiContext.AuthByClaim();
+        ApiContext.AuthByClaim();
 
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 

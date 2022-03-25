@@ -38,24 +38,24 @@ public partial class BaseSettingsController : ControllerBase
     //private static DistributedTaskQueue LDAPTasks { get; } = new DistributedTaskQueue("ldapOperations");
     //private static DistributedTaskQueue SMTPTasks { get; } = new DistributedTaskQueue("smtpOperations");
 
-    internal readonly ApiContext _apiContext;
-    internal readonly IMemoryCache _memoryCache;
-    internal readonly WebItemManager _webItemManager;
+    internal readonly ApiContext ApiContext;
+    internal readonly IMemoryCache MemoryCache;
+    internal readonly WebItemManager WebItemManager;
 
     private readonly int _maxCount = 10;
     private readonly int _expirationMinutes = 2;
 
     public BaseSettingsController(ApiContext apiContext, IMemoryCache memoryCache, WebItemManager webItemManager)
     {
-        _apiContext = apiContext;
-        _memoryCache = memoryCache;
-        _webItemManager = webItemManager;
+        ApiContext = apiContext;
+        MemoryCache = memoryCache;
+        WebItemManager = webItemManager;
     }
 
     internal void CheckCache(string basekey)
     {
-        var key = _apiContext.HttpContextAccessor.HttpContext.Request.GetUserHostAddress() + basekey;
-        if (_memoryCache.TryGetValue<int>(key, out var count))
+        var key = ApiContext.HttpContextAccessor.HttpContext.Request.GetUserHostAddress() + basekey;
+        if (MemoryCache.TryGetValue<int>(key, out var count))
         {
             if (count > _maxCount)
             {
@@ -63,12 +63,12 @@ public partial class BaseSettingsController : ControllerBase
             }
         }
 
-        _memoryCache.Set(key, count + 1, TimeSpan.FromMinutes(_expirationMinutes));
+        MemoryCache.Set(key, count + 1, TimeSpan.FromMinutes(_expirationMinutes));
     }
 
     internal string GetProductName(Guid productId)
     {
-        var product = _webItemManager[productId];
+        var product = WebItemManager[productId];
         return productId == Guid.Empty ? "All" : product != null ? product.Name : productId.ToString();
     }
 }

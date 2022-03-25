@@ -104,7 +104,7 @@ public class FolderDtoHelper : FileEntryDtoHelper
             else
             {
                 parentFolder = await folderDao.GetFolderAsync(folder.FolderID);
-                var canRead = await _fileSecurity.CanReadAsync(parentFolder);
+                var canRead = await FileSecurity.CanReadAsync(parentFolder);
                 if (!canRead)
                 {
                     result.ParentId = await _globalFolderHelper.GetFolderShareAsync<T>();

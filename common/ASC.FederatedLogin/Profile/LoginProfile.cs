@@ -180,8 +180,8 @@ public class LoginProfile
     public bool IsFailed => !string.IsNullOrEmpty(AuthorizationError);
     public bool IsAuthorized => !IsFailed;
 
-    private const char _keyValueSeparator = '→';
-    private const char _pairSeparator = '·';
+    private const char KeyValueSeparator = '→';
+    private const char PairSeparator = '·';
 
     private readonly Signature _signature;
     private readonly InstanceCrypto _instanceCrypto;
@@ -310,7 +310,7 @@ public class LoginProfile
 
     internal string ToSerializedString()
     {
-        return string.Join(new string(_pairSeparator, 1), _fields.Select(x => string.Join(new string(_keyValueSeparator, 1), new[] { x.Key, x.Value })).ToArray());
+        return string.Join(new string(PairSeparator, 1), _fields.Select(x => string.Join(new string(KeyValueSeparator, 1), new[] { x.Key, x.Value })).ToArray());
     }
 
     internal static LoginProfile CreateFromSerializedString(Signature signature, InstanceCrypto instanceCrypto, string serialized)
@@ -325,7 +325,7 @@ public class LoginProfile
     {
         ArgumentNullException.ThrowIfNull(serialized);
 
-        _fields = serialized.Split(_pairSeparator).ToDictionary(x => x.Split(_keyValueSeparator)[0], y => y.Split(_keyValueSeparator)[1]);
+        _fields = serialized.Split(PairSeparator).ToDictionary(x => x.Split(KeyValueSeparator)[0], y => y.Split(KeyValueSeparator)[1]);
     }
 
     internal string Transport()

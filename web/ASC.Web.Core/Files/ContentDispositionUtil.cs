@@ -120,10 +120,10 @@ public static class ContentDispositionUtil
         AddHexDigitToStringBuilder(i % 16, builder);
     }
 
-    private const string _hexDigits = "0123456789ABCDEF";
+    private const string HexDigits = "0123456789ABCDEF";
 
     private static void AddHexDigitToStringBuilder(int digit, StringBuilder builder)
     {
-        builder.Append(_hexDigits[digit]);
+        builder.Append(HexDigits[digit]);
     }
 }

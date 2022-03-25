@@ -45,28 +45,28 @@ public class ConfigureDbTenantService : IConfigureNamedOptions<DbTenantService>
     public void Configure(string name, DbTenantService options)
     {
         Configure(options);
-        options._lazyTenantDbContext = new Lazy<TenantDbContext>(() => _dbContextManager.Get(name));
+        options.LazyTenantDbContext = new Lazy<TenantDbContext>(() => _dbContextManager.Get(name));
     }
 
     public void Configure(DbTenantService options)
     {
-        options._tenantDomainValidator = _tenantDomainValidator;
-        options._lazyTenantDbContext = new Lazy<TenantDbContext>(() => _dbContextManager.Value);
+        options.TenantDomainValidator = _tenantDomainValidator;
+        options.LazyTenantDbContext = new Lazy<TenantDbContext>(() => _dbContextManager.Value);
     }
 }
 
 [Scope]
 public class DbTenantService : ITenantService
 {
-    private List<string> _forbiddenDomains;
+    internal TenantDomainValidator TenantDomainValidator { get; set; }
+    internal TenantDbContext TenantDbContext => LazyTenantDbContext.Value;
+    internal UserDbContext UserDbContext => LazyUserDbContext.Value;
+    internal Lazy<TenantDbContext> LazyTenantDbContext;
+    internal Lazy<UserDbContext> LazyUserDbContext;
 
-    internal TenantDomainValidator _tenantDomainValidator;
-    private readonly MachinePseudoKeys _machinePseudoKeys;
-    internal TenantDbContext TenantDbContext => _lazyTenantDbContext.Value;
-    internal Lazy<TenantDbContext> _lazyTenantDbContext;
-    internal UserDbContext UserDbContext => _lazyUserDbContext.Value;
-    internal Lazy<UserDbContext> _lazyUserDbContext;
     private readonly IMapper _mapper;
+    private readonly MachinePseudoKeys _machinePseudoKeys;
+    private List<string> _forbiddenDomains;
 
     public DbTenantService(
         DbContextManager<TenantDbContext> dbContextManager,
@@ -75,9 +75,9 @@ public class DbTenantService : ITenantService
         MachinePseudoKeys machinePseudoKeys,
         IMapper mapper)
     {
-        _lazyTenantDbContext = new Lazy<TenantDbContext>(() => dbContextManager.Value);
-        _lazyUserDbContext = new Lazy<UserDbContext>(() => DbContextManager.Value);
-        _tenantDomainValidator = tenantDomainValidator;
+        LazyTenantDbContext = new Lazy<TenantDbContext>(() => dbContextManager.Value);
+        LazyUserDbContext = new Lazy<UserDbContext>(() => DbContextManager.Value);
+        TenantDomainValidator = tenantDomainValidator;
         _machinePseudoKeys = machinePseudoKeys;
         _mapper = mapper;
     }
@@ -409,7 +409,7 @@ public class DbTenantService : ITenantService
     private void ValidateDomain(string domain, int tenantId, bool validateCharacters)
     {
         // size
-        _tenantDomainValidator.ValidateDomainLength(domain);
+        TenantDomainValidator.ValidateDomainLength(domain);
 
         // characters
         if (validateCharacters)

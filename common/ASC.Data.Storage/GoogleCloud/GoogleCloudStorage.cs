@@ -133,7 +133,7 @@ public class GoogleCloudStorage : BaseStorage
 
     public Uri GetUriShared(string domain, string path)
     {
-        return new Uri(SecureHelper.IsSecure(HttpContextAccessor.HttpContext, Options) ? _bucketSSlRoot : _bucketRoot, MakePath(domain, path));
+        return new Uri(SecureHelper.IsSecure(_httpContextAccessor.HttpContext, _options) ? _bucketSSlRoot : _bucketRoot, MakePath(domain, path));
     }
     public override Task<System.IO.Stream> GetReadStreamAsync(string domain, string path)
     {
@@ -142,7 +142,7 @@ public class GoogleCloudStorage : BaseStorage
 
     public override async Task<System.IO.Stream> GetReadStreamAsync(string domain, string path, int offset)
     {
-        var tempStream = TempStream.Create();
+        var tempStream = _tempStream.Create();
 
         var storage = GetStorage();
 
@@ -182,7 +182,7 @@ public class GoogleCloudStorage : BaseStorage
                   string contentDisposition, ACL acl, string contentEncoding = null, int cacheDays = 5)
     {
 
-        var buffered = TempStream.GetBuffered(stream);
+        var buffered = _tempStream.GetBuffered(stream);
 
         if (QuotaController != null)
         {
@@ -572,7 +572,7 @@ public class GoogleCloudStorage : BaseStorage
     {
         using var storage = GetStorage();
 
-        var buffered = TempStream.GetBuffered(stream);
+        var buffered = _tempStream.GetBuffered(stream);
 
         var uploadObjectOptions = new UploadObjectOptions
         {
@@ -686,7 +686,7 @@ public class GoogleCloudStorage : BaseStorage
 
             try
             {
-                var httpClient = ClientFactory.CreateClient();
+                var httpClient = _clientFactory.CreateClient();
                 using var response = await httpClient.SendAsync(request);
 
                 break;

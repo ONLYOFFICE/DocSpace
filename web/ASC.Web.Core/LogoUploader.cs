@@ -97,20 +97,20 @@ namespace ASC.Web.Studio.UserControls.CustomNavigation;
 [Scope]
 public class StorageHelper
 {
-    private const string _storageName = "customnavigation";
-    private const string _base64Start = "data:image/png;base64,";
+    private const string StorageName = "customnavigation";
+    private const string Base64Start = "data:image/png;base64,";
 
     private readonly UserPhotoManager _userPhotoManager;
     private readonly StorageFactory _storageFactory;
     private readonly TenantManager _tenantManager;
-    public readonly ILog _logger;
+    public readonly ILog Logger;
 
     public StorageHelper(UserPhotoManager userPhotoManager, StorageFactory storageFactory, TenantManager tenantManager, IOptionsMonitor<ILog> options)
     {
         _userPhotoManager = userPhotoManager;
         _storageFactory = storageFactory;
         _tenantManager = tenantManager;
-        _logger = options.CurrentValue;
+        Logger = options.CurrentValue;
     }
 
     public string SaveTmpLogo(string tmpLogoPath)
@@ -124,9 +124,9 @@ public class StorageHelper
         {
             byte[] data;
 
-            if (tmpLogoPath.StartsWith(_base64Start))
+            if (tmpLogoPath.StartsWith(Base64Start))
             {
-                data = Convert.FromBase64String(tmpLogoPath.Substring(_base64Start.Length));
+                data = Convert.FromBase64String(tmpLogoPath.Substring(Base64Start.Length));
 
                 return SaveLogo(Guid.NewGuid() + ".png", data);
             }
@@ -141,7 +141,7 @@ public class StorageHelper
         }
         catch (Exception ex)
         {
-            _logger.Error(ex);
+            Logger.Error(ex);
             return null;
         }
     }
@@ -155,7 +155,7 @@ public class StorageHelper
 
         try
         {
-            var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id.ToString(CultureInfo.InvariantCulture), _storageName);
+            var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id.ToString(CultureInfo.InvariantCulture), StorageName);
 
             var fileName = Path.GetFileName(logoPath);
 
@@ -166,13 +166,13 @@ public class StorageHelper
         }
         catch (Exception e)
         {
-            _logger.Error(e);
+            Logger.Error(e);
         }
     }
 
     private string SaveLogo(string fileName, byte[] data)
     {
-        var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id.ToString(CultureInfo.InvariantCulture), _storageName);
+        var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id.ToString(CultureInfo.InvariantCulture), StorageName);
 
         using var stream = new MemoryStream(data);
         stream.Seek(0, SeekOrigin.Begin);

@@ -29,7 +29,7 @@ namespace ASC.Data.Backup.Storage;
 [Scope]
 public class ConsumerBackupStorage : IBackupStorage
 {
-    private const string _domain = "backup";
+    private const string Domain = "backup";
 
     private IDataStore _store;
     private readonly StorageSettingsHelper _storageSettingsHelper;
@@ -49,32 +49,32 @@ public class ConsumerBackupStorage : IBackupStorage
     {
         using var stream = File.OpenRead(localPath);
         var storagePath = Path.GetFileName(localPath);
-            _store.SaveAsync(_domain, storagePath, stream, ACL.Private).Wait();
+            _store.SaveAsync(Domain, storagePath, stream, ACL.Private).Wait();
         return storagePath;
     }
 
     public void Download(string storagePath, string targetLocalPath)
     {
-        using var source = _store.GetReadStreamAsync(_domain, storagePath).Result;
+        using var source = _store.GetReadStreamAsync(Domain, storagePath).Result;
         using var destination = File.OpenWrite(targetLocalPath);
         source.CopyTo(destination);
     }
 
     public void Delete(string storagePath)
     {
-            if (_store.IsFileAsync(_domain, storagePath).Result)
+            if (_store.IsFileAsync(Domain, storagePath).Result)
         {
-                _store.DeleteAsync(_domain, storagePath).Wait();
+                _store.DeleteAsync(Domain, storagePath).Wait();
         }
     }
 
     public bool IsExists(string storagePath)
     {
-            return _store.IsFileAsync(_domain, storagePath).Result;
+            return _store.IsFileAsync(Domain, storagePath).Result;
     }
 
     public string GetPublicLink(string storagePath)
     {
-            return _store.GetInternalUriAsync(_domain, storagePath, TimeSpan.FromDays(1), null).Result.AbsoluteUri;
+            return _store.GetInternalUriAsync(Domain, storagePath, TimeSpan.FromDays(1), null).Result.AbsoluteUri;
     }
 }

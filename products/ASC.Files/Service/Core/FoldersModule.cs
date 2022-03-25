@@ -35,8 +35,8 @@ public class FoldersModule : FeedModule
     public override string Product => "documents";
     protected override string DbId => Constants.FilesDbId;
 
-    private const string _folderItem = "folder";
-    private const string _sharedFolderItem = "sharedFolder";
+    private const string FolderItem = "folder";
+    private const string SharedFolderItem = "sharedFolder";
 
     private readonly FileSecurity _fileSecurity;
     private readonly FilesLinkUtility _filesLinkUtility;
@@ -60,7 +60,7 @@ public class FoldersModule : FeedModule
 
     public override bool VisibleFor(Feed.Aggregator.Feed feed, object data, Guid userId)
     {
-        if (!WebItemSecurity.IsAvailableForUser(ProductID, userId))
+        if (!_webItemSecurity.IsAvailableForUser(ProductID, userId))
         {
             return false;
         }
@@ -120,7 +120,7 @@ public class FoldersModule : FeedModule
         {
             var feed = new Feed.Aggregator.Feed(shareRecord.ShareBy, shareRecord.ShareOn, true)
             {
-                Item = _sharedFolderItem,
+                Item = SharedFolderItem,
                 ItemId = string.Format("{0}_{1}", folder.ID, shareRecord.ShareTo),
                 ItemUrl = _filesLinkUtility.GetFileRedirectPreviewUrl(folder.ID, false),
                 Product = Product,
@@ -132,7 +132,7 @@ public class FoldersModule : FeedModule
                 HasPreview = false,
                 CanComment = false,
                 Target = shareRecord.ShareTo,
-                GroupId = GetGroupId(_sharedFolderItem, shareRecord.ShareBy, folder.FolderID.ToString())
+                GroupId = GetGroupId(SharedFolderItem, shareRecord.ShareBy, folder.FolderID.ToString())
             };
 
             return feed;
@@ -140,7 +140,7 @@ public class FoldersModule : FeedModule
 
         return new Feed.Aggregator.Feed(folder.CreateBy, folder.CreateOn)
         {
-            Item = _folderItem,
+            Item = FolderItem,
             ItemId = folder.ID.ToString(),
             ItemUrl = _filesLinkUtility.GetFileRedirectPreviewUrl(folder.ID, false),
             Product = Product,
@@ -152,7 +152,7 @@ public class FoldersModule : FeedModule
             HasPreview = false,
             CanComment = false,
             Target = null,
-            GroupId = GetGroupId(_folderItem, folder.CreateBy, folder.FolderID.ToString())
+            GroupId = GetGroupId(FolderItem, folder.CreateBy, folder.FolderID.ToString())
         };
     }
 }

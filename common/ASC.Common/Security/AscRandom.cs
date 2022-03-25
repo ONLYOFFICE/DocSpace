@@ -28,9 +28,9 @@ namespace ASC.Common.Security;
 
 public class AscRandom : Random
 {
-    private const int _mbig = int.MaxValue;
-    private const int _mseed = 161803398;
-    private const int _mz = 0;
+    private const int Mbig = int.MaxValue;
+    private const int Mseed = 161803398;
+    private const int Mz = 0;
 
     private int _inext;
     private int _inextp;

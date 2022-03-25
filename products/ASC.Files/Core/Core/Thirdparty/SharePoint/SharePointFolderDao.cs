@@ -105,7 +105,7 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
         if (subjectID != Guid.Empty)
         {
             folders = folders.Where(x => subjectGroup
-                                             ? UserManager.IsUserInGroup(x.CreateBy, subjectID)
+                                             ? _userManager.IsUserInGroup(x.CreateBy, subjectID)
                                              : x.CreateBy == subjectID);
         }
 
@@ -146,7 +146,7 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
         if (subjectID.HasValue && subjectID != Guid.Empty)
         {
             folders = folders.Where(x => subjectGroup
-                                             ? UserManager.IsUserInGroup(x.CreateBy, subjectID.Value)
+                                             ? _userManager.IsUserInGroup(x.CreateBy, subjectID.Value)
                                              : x.CreateBy == subjectID);
         }
 

@@ -36,12 +36,12 @@ public enum EditorType
 
 public class Configuration<T>
 {
-    internal static readonly Dictionary<FileType, string> _docType = new Dictionary<FileType, string>
-        {
-            { FileType.Document, "text" },
-            { FileType.Spreadsheet, "spreadsheet" },
-            { FileType.Presentation, "presentation" }
-        };
+    internal static readonly Dictionary<FileType, string> DocType = new Dictionary<FileType, string>
+    {
+        { FileType.Document, "text" },
+        { FileType.Spreadsheet, "spreadsheet" },
+        { FileType.Presentation, "presentation" }
+    };
 
     private FileType _fileTypeCache = FileType.Unknown;
 
@@ -66,7 +66,7 @@ public class Configuration<T>
     {
         get
         {
-            _docType.TryGetValue(GetFileType, out var documentType);
+            DocType.TryGetValue(GetFileType, out var documentType);
 
             return documentType;
         }
@@ -510,7 +510,7 @@ public class EditorConfiguration<T>
                 return null;
         }
 
-        Configuration<T>._docType.TryGetValue(fileType, out var documentType);
+        Configuration<T>.DocType.TryGetValue(fileType, out var documentType);
 
         return _baseCommonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.FileHandlerPath)
                + "?" + FilesLinkUtility.Action + "=create"

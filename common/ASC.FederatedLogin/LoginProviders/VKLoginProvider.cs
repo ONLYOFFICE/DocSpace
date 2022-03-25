@@ -37,7 +37,7 @@ public class VKLoginProvider : BaseLoginProvider<VKLoginProvider>
     public override string Scopes => (new[] { 4194304 }).Sum().ToString();
 
     private readonly RequestHelper _requestHelper;
-    private const string _vKProfileUrl = "https://api.vk.com/method/users.get?v=5.103";
+    private const string VKProfileUrl = "https://api.vk.com/method/users.get?v=5.103";
 
     public VKLoginProvider() { }
 
@@ -92,7 +92,7 @@ public class VKLoginProvider : BaseLoginProvider<VKLoginProvider>
         }
         catch (Exception ex)
         {
-            return LoginProfile.FromError(_signature, _instanceCrypto, ex);
+            return LoginProfile.FromError(Signature, InstanceCrypto, ex);
         }
     }
 
@@ -109,7 +109,7 @@ public class VKLoginProvider : BaseLoginProvider<VKLoginProvider>
     private LoginProfile RequestProfile(string accessToken)
     {
         var fields = new[] { "sex" };
-            var vkProfile = _requestHelper.PerformRequest(_vKProfileUrl + "&fields=" + HttpUtility.UrlEncode(string.Join(",", fields)) + "&access_token=" + accessToken);
+            var vkProfile = _requestHelper.PerformRequest(VKProfileUrl + "&fields=" + HttpUtility.UrlEncode(string.Join(",", fields)) + "&access_token=" + accessToken);
         var loginProfile = ProfileFromVK(vkProfile);
 
         return loginProfile;
@@ -141,7 +141,7 @@ public class VKLoginProvider : BaseLoginProvider<VKLoginProvider>
             throw new Exception("Failed to correctly process the response");
         }
 
-        var profile = new LoginProfile(_signature, _instanceCrypto)
+        var profile = new LoginProfile(Signature, InstanceCrypto)
         {
             Id = vkProfiles[0].Id,
             FirstName = vkProfiles[0].FirstName,

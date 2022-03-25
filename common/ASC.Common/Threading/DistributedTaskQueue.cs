@@ -113,20 +113,20 @@ public class DistributedTaskQueueOptionsManager : OptionsManager<DistributedTask
 public class ConfigureDistributedTaskQueue : IConfigureNamedOptions<DistributedTaskQueue>
 {
     private readonly DistributedTaskCacheNotify _distributedTaskCacheNotify;
-    public readonly IServiceProvider _serviceProvider;
+    public readonly IServiceProvider ServiceProvider;
 
     public ConfigureDistributedTaskQueue(
         DistributedTaskCacheNotify distributedTaskCacheNotify,
         IServiceProvider serviceProvider)
     {
         _distributedTaskCacheNotify = distributedTaskCacheNotify;
-        _serviceProvider = serviceProvider;
+        ServiceProvider = serviceProvider;
     }
 
     public void Configure(DistributedTaskQueue queue)
     {
         queue.DistributedTaskCacheNotify = _distributedTaskCacheNotify;
-        queue.ServiceProvider = _serviceProvider;
+        queue.ServiceProvider = ServiceProvider;
     }
 
     public void Configure(string name, DistributedTaskQueue options)

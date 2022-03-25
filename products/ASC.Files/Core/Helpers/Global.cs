@@ -50,15 +50,15 @@ public class GlobalNotify
             {
                 try
                 {
-                    GlobalFolder._projectsRootFolderCache.Clear();
-                    GlobalFolder._userRootFolderCache.Clear();
-                    GlobalFolder._commonFolderCache.Clear();
-                    GlobalFolder._shareFolderCache.Clear();
-                    GlobalFolder._recentFolderCache.Clear();
-                    GlobalFolder._favoritesFolderCache.Clear();
-                    GlobalFolder._templatesFolderCache.Clear();
-                    GlobalFolder._privacyFolderCache.Clear();
-                    GlobalFolder._trashFolderCache.Clear();
+                    GlobalFolder.ProjectsRootFolderCache.Clear();
+                    GlobalFolder.UserRootFolderCache.Clear();
+                    GlobalFolder.CommonFolderCache.Clear();
+                    GlobalFolder.ShareFolderCache.Clear();
+                    GlobalFolder.RecentFolderCache.Clear();
+                    GlobalFolder.FavoritesFolderCache.Clear();
+                    GlobalFolder.TemplatesFolderCache.Clear();
+                    GlobalFolder.PrivacyFolderCache.Clear();
+                    GlobalFolder.TrashFolderCache.Clear();
                 }
                 catch (Exception e)
                 {
@@ -282,7 +282,7 @@ public class GlobalFolder
         _logger = options.Get("ASC.Files");
     }
 
-    internal static readonly IDictionary<int, int> _projectsRootFolderCache =
+    internal static readonly IDictionary<int, int> ProjectsRootFolderCache =
         new ConcurrentDictionary<int, int>(); /*Use SYNCHRONIZED for cross thread blocks*/
 
     public async ValueTask<int> GetFolderProjectsAsync(IDaoFactory daoFactory)
@@ -298,11 +298,11 @@ public class GlobalFolder
         }
 
         var folderDao = daoFactory.GetFolderDao<int>();
-        if (!_projectsRootFolderCache.TryGetValue(_tenantManager.GetCurrentTenant().Id, out var result))
+        if (!ProjectsRootFolderCache.TryGetValue(_tenantManager.GetCurrentTenant().Id, out var result))
         {
             result = await folderDao.GetFolderIDProjectsAsync(true);
 
-                _projectsRootFolderCache[_tenantManager.GetCurrentTenant().Id] = result;
+                ProjectsRootFolderCache[_tenantManager.GetCurrentTenant().Id] = result;
             }
 
         return result;
@@ -313,7 +313,7 @@ public class GlobalFolder
         return (T)Convert.ChangeType(await GetFolderProjectsAsync(daoFactory), typeof(T));
     }
 
-    internal static readonly ConcurrentDictionary<string, Lazy<int>> _userRootFolderCache =
+    internal static readonly ConcurrentDictionary<string, Lazy<int>> UserRootFolderCache =
         new ConcurrentDictionary<string, Lazy<int>>(); /*Use SYNCHRONIZED for cross thread blocks*/
 
     public T GetFolderMy<T>(FileMarker fileMarker, IDaoFactory daoFactory)
@@ -335,7 +335,7 @@ public class GlobalFolder
 
         var cacheKey = string.Format("my/{0}/{1}", _tenantManager.GetCurrentTenant().Id, _authContext.CurrentAccount.ID);
 
-        var myFolderId = _userRootFolderCache.GetOrAdd(cacheKey, (a) => new Lazy<int>(() => GetFolderIdAndProccessFirstVisitAsync(fileMarker, daoFactory, true).Result));
+        var myFolderId = UserRootFolderCache.GetOrAdd(cacheKey, (a) => new Lazy<int>(() => GetFolderIdAndProccessFirstVisitAsync(fileMarker, daoFactory, true).Result));
 
         return myFolderId.Value;
     }
@@ -343,14 +343,14 @@ public class GlobalFolder
         protected internal void SetFolderMy(object value)
     {
         var cacheKey = string.Format("my/{0}/{1}", _tenantManager.GetCurrentTenant().Id, value);
-        _userRootFolderCache.Remove(cacheKey, out _);
+        UserRootFolderCache.Remove(cacheKey, out _);
     }
 
         public async ValueTask<bool> IsFirstVisit(IDaoFactory daoFactory)
     {
         var cacheKey = string.Format("my/{0}/{1}", _tenantManager.GetCurrentTenant().Id, _authContext.CurrentAccount.ID);
 
-        if (!_userRootFolderCache.TryGetValue(cacheKey, out var _))
+        if (!UserRootFolderCache.TryGetValue(cacheKey, out var _))
         {
             var folderDao = daoFactory.GetFolderDao<int>();
             var myFolderId = await folderDao.GetFolderIDUserAsync(false);
@@ -364,7 +364,7 @@ public class GlobalFolder
         return false;
     }
 
-    internal static readonly IDictionary<int, int> _commonFolderCache =
+    internal static readonly IDictionary<int, int> CommonFolderCache =
             new ConcurrentDictionary<int, int>(); /*Use SYNCHRONIZED for cross thread blocks*/
 
     public async ValueTask<T> GetFolderCommonAsync<T>(FileMarker fileMarker, IDaoFactory daoFactory)
@@ -379,19 +379,19 @@ public class GlobalFolder
             return default;
         }
 
-            if (!_commonFolderCache.TryGetValue(_tenantManager.GetCurrentTenant().Id, out var commonFolderId))
+            if (!CommonFolderCache.TryGetValue(_tenantManager.GetCurrentTenant().Id, out var commonFolderId))
         {
             commonFolderId = await GetFolderIdAndProccessFirstVisitAsync(fileMarker, daoFactory, false);
             if (!Equals(commonFolderId, 0))
             {
-                _commonFolderCache[_tenantManager.GetCurrentTenant().Id] = commonFolderId;
+                CommonFolderCache[_tenantManager.GetCurrentTenant().Id] = commonFolderId;
             }
         }
 
         return commonFolderId;
     }
 
-    internal static readonly IDictionary<int, int> _shareFolderCache =
+    internal static readonly IDictionary<int, int> ShareFolderCache =
         new ConcurrentDictionary<int, int>(); /*Use SYNCHRONIZED for cross thread blocks*/
 
     public async ValueTask<int> GetFolderShareAsync(IDaoFactory daoFactory)
@@ -406,13 +406,13 @@ public class GlobalFolder
             return default;
         }
 
-        if (!_shareFolderCache.TryGetValue(_tenantManager.GetCurrentTenant().Id, out var sharedFolderId))
+        if (!ShareFolderCache.TryGetValue(_tenantManager.GetCurrentTenant().Id, out var sharedFolderId))
         {
             sharedFolderId = await daoFactory.GetFolderDao<int>().GetFolderIDShareAsync(true);
 
             if (!sharedFolderId.Equals(default))
             {
-                _shareFolderCache[_tenantManager.GetCurrentTenant().Id] = sharedFolderId;
+                ShareFolderCache[_tenantManager.GetCurrentTenant().Id] = sharedFolderId;
             }
         }
 
@@ -424,7 +424,7 @@ public class GlobalFolder
         return (T)Convert.ChangeType(await GetFolderShareAsync(daoFactory), typeof(T));
     }
 
-    internal static readonly IDictionary<int, int> _recentFolderCache =
+    internal static readonly IDictionary<int, int> RecentFolderCache =
         new ConcurrentDictionary<int, int>(); /*Use SYNCHRONIZED for cross thread blocks*/
 
     public async ValueTask<int> GetFolderRecentAsync(IDaoFactory daoFactory)
@@ -439,21 +439,21 @@ public class GlobalFolder
             return 0;
         }
 
-        if (!_recentFolderCache.TryGetValue(_tenantManager.GetCurrentTenant().Id, out var recentFolderId))
+        if (!RecentFolderCache.TryGetValue(_tenantManager.GetCurrentTenant().Id, out var recentFolderId))
         {
             var folderDao = daoFactory.GetFolderDao<int>();
             recentFolderId = await folderDao.GetFolderIDRecentAsync(true);
 
             if (!recentFolderId.Equals(0))
             {
-                _recentFolderCache[_tenantManager.GetCurrentTenant().Id] = recentFolderId;
+                RecentFolderCache[_tenantManager.GetCurrentTenant().Id] = recentFolderId;
             }
         }
 
         return recentFolderId;
     }
 
-    internal static readonly IDictionary<int, int> _favoritesFolderCache =
+    internal static readonly IDictionary<int, int> FavoritesFolderCache =
         new ConcurrentDictionary<int, int>(); /*Use SYNCHRONIZED for cross thread blocks*/
 
     public async ValueTask<int> GetFolderFavoritesAsync(IDaoFactory daoFactory)
@@ -468,21 +468,21 @@ public class GlobalFolder
             return 0;
         }
 
-        if (!_favoritesFolderCache.TryGetValue(_tenantManager.GetCurrentTenant().Id, out var favoriteFolderId))
+        if (!FavoritesFolderCache.TryGetValue(_tenantManager.GetCurrentTenant().Id, out var favoriteFolderId))
         {
             var folderDao = daoFactory.GetFolderDao<int>();
             favoriteFolderId = await folderDao.GetFolderIDFavoritesAsync(true);
 
             if (!favoriteFolderId.Equals(0))
             {
-                _favoritesFolderCache[_tenantManager.GetCurrentTenant().Id] = favoriteFolderId;
+                FavoritesFolderCache[_tenantManager.GetCurrentTenant().Id] = favoriteFolderId;
             }
         }
 
         return favoriteFolderId;
     }
 
-    internal static readonly IDictionary<int, int> _templatesFolderCache =
+    internal static readonly IDictionary<int, int> TemplatesFolderCache =
         new ConcurrentDictionary<int, int>(); /*Use SYNCHRONIZED for cross thread blocks*/
 
     public async ValueTask<int> GetFolderTemplatesAsync(IDaoFactory daoFactory)
@@ -497,21 +497,21 @@ public class GlobalFolder
             return 0;
         }
 
-        if (!_templatesFolderCache.TryGetValue(_tenantManager.GetCurrentTenant().Id, out var templatesFolderId))
+        if (!TemplatesFolderCache.TryGetValue(_tenantManager.GetCurrentTenant().Id, out var templatesFolderId))
         {
             var folderDao = daoFactory.GetFolderDao<int>();
             templatesFolderId = await folderDao.GetFolderIDTemplatesAsync(true);
 
             if (!templatesFolderId.Equals(0))
             {
-                _templatesFolderCache[_tenantManager.GetCurrentTenant().Id] = templatesFolderId;
+                TemplatesFolderCache[_tenantManager.GetCurrentTenant().Id] = templatesFolderId;
             }
         }
 
         return templatesFolderId;
     }
 
-    internal static readonly IDictionary<string, int> _privacyFolderCache =
+    internal static readonly IDictionary<string, int> PrivacyFolderCache =
         new ConcurrentDictionary<string, int>(); /*Use SYNCHRONIZED for cross thread blocks*/
 
     public async ValueTask<T> GetFolderPrivacyAsync<T>(IDaoFactory daoFactory)
@@ -533,14 +533,14 @@ public class GlobalFolder
 
         var cacheKey = string.Format("privacy/{0}/{1}", _tenantManager.GetCurrentTenant().Id, _authContext.CurrentAccount.ID);
 
-        if (!_privacyFolderCache.TryGetValue(cacheKey, out var privacyFolderId))
+        if (!PrivacyFolderCache.TryGetValue(cacheKey, out var privacyFolderId))
         {
             var folderDao = daoFactory.GetFolderDao<int>();
             privacyFolderId = await folderDao.GetFolderIDPrivacyAsync(true);
 
             if (!Equals(privacyFolderId, 0))
             {
-                _privacyFolderCache[cacheKey] = privacyFolderId;
+                PrivacyFolderCache[cacheKey] = privacyFolderId;
             }
         }
 
@@ -548,7 +548,7 @@ public class GlobalFolder
     }
 
 
-    internal static readonly IDictionary<string, object> _trashFolderCache =
+    internal static readonly IDictionary<string, object> TrashFolderCache =
         new ConcurrentDictionary<string, object>(); /*Use SYNCHRONIZED for cross thread blocks*/
 
     public async Task<T> GetFolderTrashAsync<T>(IDaoFactory daoFactory)
@@ -565,10 +565,10 @@ public class GlobalFolder
 
         var cacheKey = string.Format("trash/{0}/{1}", _tenantManager.GetCurrentTenant().Id, _authContext.CurrentAccount.ID);
 
-        if (!_trashFolderCache.TryGetValue(cacheKey, out var trashFolderId))
+        if (!TrashFolderCache.TryGetValue(cacheKey, out var trashFolderId))
         {
             trashFolderId = _authContext.IsAuthenticated ? await daoFactory.GetFolderDao<int>().GetFolderIDTrashAsync(true) : 0;
-            _trashFolderCache[cacheKey] = trashFolderId;
+            TrashFolderCache[cacheKey] = trashFolderId;
         }
 
         return trashFolderId;
@@ -577,7 +577,7 @@ public class GlobalFolder
         protected internal void SetFolderTrash(object value)
     {
         var cacheKey = string.Format("trash/{0}/{1}", _tenantManager.GetCurrentTenant().Id, value);
-        _trashFolderCache.Remove(cacheKey);
+        TrashFolderCache.Remove(cacheKey);
     }
 
     private async Task<int> GetFolderIdAndProccessFirstVisitAsync(FileMarker fileMarker, IDaoFactory daoFactory, bool my)

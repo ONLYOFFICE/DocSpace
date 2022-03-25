@@ -162,16 +162,16 @@ internal class GoogleDriveProviderInfo : IProviderInfo
 internal class GoogleDriveStorageDisposableWrapper : IDisposable
 {
     internal GoogleDriveStorage Storage { get; set; }
-        internal OAuth20TokenHelper _oAuth20TokenHelper { get; }
+    internal OAuth20TokenHelper OAuth20TokenHelper { get; }
 
-    internal readonly ConsumerFactory _consumerFactory;
-    internal readonly IServiceProvider _serviceProvider;
+    internal readonly ConsumerFactory ConsumerFactory;
+    internal readonly IServiceProvider ServiceProvider;
 
     public GoogleDriveStorageDisposableWrapper(ConsumerFactory consumerFactory, IServiceProvider serviceProvider, OAuth20TokenHelper oAuth20TokenHelper)
     {
-        _consumerFactory = consumerFactory;
-        _serviceProvider = serviceProvider;
-        _oAuth20TokenHelper = oAuth20TokenHelper;
+        ConsumerFactory = consumerFactory;
+        ServiceProvider = serviceProvider;
+        OAuth20TokenHelper = oAuth20TokenHelper;
     }
 
     public Task<GoogleDriveStorage> CreateStorageAsync(OAuth20Token token, int id)
@@ -186,7 +186,7 @@ internal class GoogleDriveStorageDisposableWrapper : IDisposable
 
     public async Task<GoogleDriveStorage> InternalCreateStorageAsync(OAuth20Token token, int id)
     {
-        var driveStorage = _serviceProvider.GetService<GoogleDriveStorage>();
+        var driveStorage = ServiceProvider.GetService<GoogleDriveStorage>();
 
         await CheckTokenAsync(token, id).ConfigureAwait(false);
 
@@ -209,9 +209,9 @@ internal class GoogleDriveStorageDisposableWrapper : IDisposable
     {
         if (token.IsExpired)
         {
-            token = _oAuth20TokenHelper.RefreshToken<GoogleLoginProvider>(_consumerFactory, token);
+            token = OAuth20TokenHelper.RefreshToken<GoogleLoginProvider>(ConsumerFactory, token);
 
-            var dbDao = _serviceProvider.GetService<ProviderAccountDao>();
+            var dbDao = ServiceProvider.GetService<ProviderAccountDao>();
             var authData = new AuthData(token: token.ToJson());
             await dbDao.UpdateProviderInfoAsync(id, authData).ConfigureAwait(false);
         }

@@ -98,7 +98,7 @@ internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
         if (subjectID != Guid.Empty)
         {
             folders = folders.Where(x => subjectGroup
-                                             ? UserManager.IsUserInGroup(x.CreateBy, subjectID)
+                                             ? _userManager.IsUserInGroup(x.CreateBy, subjectID)
                                              : x.CreateBy == subjectID);
         }
 
@@ -139,7 +139,7 @@ internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
         if (subjectID.HasValue && subjectID != Guid.Empty)
         {
             folders = folders.Where(x => subjectGroup
-                                             ? UserManager.IsUserInGroup(x.CreateBy, subjectID.Value)
+                                             ? _userManager.IsUserInGroup(x.CreateBy, subjectID.Value)
                                              : x.CreateBy == subjectID);
         }
 
@@ -471,6 +471,6 @@ internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
         var storage = await ProviderInfo.StorageAsync.ConfigureAwait(false);
         var storageMaxUploadSize = await storage.GetMaxUploadSizeAsync();
 
-        return chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, SetupInfo.AvailableFileSize);
+        return chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, _setupInfo.AvailableFileSize);
     }
 }

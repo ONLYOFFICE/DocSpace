@@ -127,15 +127,15 @@ internal class OneDriveProviderInfo : IProviderInfo
 internal class OneDriveStorageDisposableWrapper : IDisposable
 {
     internal OneDriveStorage Storage { get; private set; }
-        private readonly OAuth20TokenHelper _oAuth20TokenHelper;
+    private readonly OAuth20TokenHelper _oAuth20TokenHelper;
 
-    internal readonly ConsumerFactory _consumerFactory;
-    internal readonly IServiceProvider _serviceProvider;
+    internal readonly ConsumerFactory ConsumerFactory;
+    internal readonly IServiceProvider ServiceProvider;
 
     public OneDriveStorageDisposableWrapper(ConsumerFactory consumerFactory, IServiceProvider serviceProvider, OAuth20TokenHelper oAuth20TokenHelper)
     {
-       _consumerFactory = consumerFactory;
-       _serviceProvider = serviceProvider;
+       ConsumerFactory = consumerFactory;
+       ServiceProvider = serviceProvider;
        _oAuth20TokenHelper = oAuth20TokenHelper;
     }
 
@@ -151,7 +151,7 @@ internal class OneDriveStorageDisposableWrapper : IDisposable
 
     private async Task<OneDriveStorage> InternalCreateStorageAsync(OAuth20Token token, int id)
     {
-        var onedriveStorage = _serviceProvider.GetService<OneDriveStorage>();
+        var onedriveStorage = ServiceProvider.GetService<OneDriveStorage>();
 
         await CheckTokenAsync(token, id);
 
@@ -174,9 +174,9 @@ internal class OneDriveStorageDisposableWrapper : IDisposable
     {
         if (token.IsExpired)
         {
-            token = _oAuth20TokenHelper.RefreshToken<OneDriveLoginProvider>(_consumerFactory, token);
+            token = _oAuth20TokenHelper.RefreshToken<OneDriveLoginProvider>(ConsumerFactory, token);
 
-            var dbDao = _serviceProvider.GetService<ProviderAccountDao>();
+            var dbDao = ServiceProvider.GetService<ProviderAccountDao>();
             var authData = new AuthData(token: token.ToJson());
             await dbDao.UpdateProviderInfoAsync(id, authData);
         }

@@ -26,7 +26,7 @@
 
 namespace Textile.States;
 
-[FormatterState(SimpleBlockFormatterState._patternBegin + @"pad[0-9]+" + SimpleBlockFormatterState._patternEnd)]
+[FormatterState(SimpleBlockFormatterState.PatternBegin + @"pad[0-9]+" + SimpleBlockFormatterState.PatternEnd)]
 public class PaddingFormatterState : SimpleBlockFormatterState
 {
     public PaddingFormatterState(TextileFormatter formatter)
@@ -74,7 +74,7 @@ public class PaddingFormatterState : SimpleBlockFormatterState
 /// <summary>
 /// Formatting state for headers and titles.
 /// </summary>
-[FormatterState(SimpleBlockFormatterState._patternBegin + @"h[0-9]+" + SimpleBlockFormatterState._patternEnd)]
+[FormatterState(SimpleBlockFormatterState.PatternBegin + @"h[0-9]+" + SimpleBlockFormatterState.PatternEnd)]
 public class HeaderFormatterState : SimpleBlockFormatterState
 {
     public int HeaderLevel { get; private set; }

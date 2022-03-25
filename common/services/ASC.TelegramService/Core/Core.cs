@@ -170,11 +170,11 @@ public abstract class CommandContext
 
 public abstract class ParamParser
 {
-    protected Type type;
+    protected Type _type;
 
     protected ParamParser(Type type)
     {
-        this.type = type;
+        _type = type;
     }
 
     public abstract object FromString(string arg);

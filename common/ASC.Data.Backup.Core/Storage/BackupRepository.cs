@@ -29,7 +29,7 @@ namespace ASC.Data.Backup.Storage;
 [Scope]
 public class BackupRepository : IBackupRepository
 {
-    private BackupsContext _backupContext => _lazyBackupContext.Value;
+    private BackupsContext BackupContext => _lazyBackupContext.Value;
     private readonly Lazy<BackupsContext> _lazyBackupContext;
 
     public BackupRepository(DbContextManager<BackupsContext> dbContactManager)
@@ -39,63 +39,63 @@ public class BackupRepository : IBackupRepository
 
     public void SaveBackupRecord(BackupRecord backup)
     {
-        _backupContext.AddOrUpdate(r => r.Backups, backup);
-        _backupContext.SaveChanges();
+        BackupContext.AddOrUpdate(r => r.Backups, backup);
+        BackupContext.SaveChanges();
     }
 
     public BackupRecord GetBackupRecord(Guid id)
     {
-        return _backupContext.Backups.Find(id);
+        return BackupContext.Backups.Find(id);
     }
 
     public BackupRecord GetBackupRecord(string hash, int tenant)
     {
-        return _backupContext.Backups.AsNoTracking().AsQueryable().SingleOrDefault(b => b.Hash == hash && b.TenantId == tenant);
+        return BackupContext.Backups.AsNoTracking().AsQueryable().SingleOrDefault(b => b.Hash == hash && b.TenantId == tenant);
     }
 
     public List<BackupRecord> GetExpiredBackupRecords()
     {
-        return _backupContext.Backups.AsNoTracking().Where(b => b.ExpiresOn != DateTime.MinValue && b.ExpiresOn <= DateTime.UtcNow).ToList();
+        return BackupContext.Backups.AsNoTracking().Where(b => b.ExpiresOn != DateTime.MinValue && b.ExpiresOn <= DateTime.UtcNow).ToList();
     }
 
     public List<BackupRecord> GetScheduledBackupRecords()
     {
-        return _backupContext.Backups.AsNoTracking().AsQueryable().Where(b => b.IsScheduled == true).ToList();
+        return BackupContext.Backups.AsNoTracking().AsQueryable().Where(b => b.IsScheduled == true).ToList();
     }
 
     public List<BackupRecord> GetBackupRecordsByTenantId(int tenantId)
     {
-        return _backupContext.Backups.AsNoTracking().AsQueryable().Where(b => b.TenantId == tenantId).ToList();
+        return BackupContext.Backups.AsNoTracking().AsQueryable().Where(b => b.TenantId == tenantId).ToList();
     }
 
     public void DeleteBackupRecord(Guid id)
     {
-        var backup = _backupContext.Backups.Find(id);
+        var backup = BackupContext.Backups.Find(id);
 
         if (backup != null)
         {
-            _backupContext.Backups.Remove(backup);
-            _backupContext.SaveChanges();
+            BackupContext.Backups.Remove(backup);
+            BackupContext.SaveChanges();
         }
     }
 
     public void SaveBackupSchedule(BackupSchedule schedule)
     {
-        _backupContext.AddOrUpdate(r => r.Schedules, schedule);
-        _backupContext.SaveChanges();
+        BackupContext.AddOrUpdate(r => r.Schedules, schedule);
+        BackupContext.SaveChanges();
     }
 
     public void DeleteBackupSchedule(int tenantId)
     {
-        var shedule = _backupContext.Schedules.AsQueryable().Where(s => s.TenantId == tenantId).ToList();
+        var shedule = BackupContext.Schedules.AsQueryable().Where(s => s.TenantId == tenantId).ToList();
 
-        _backupContext.Schedules.RemoveRange(shedule);
-        _backupContext.SaveChanges();
+        BackupContext.Schedules.RemoveRange(shedule);
+        BackupContext.SaveChanges();
     }
 
     public List<BackupSchedule> GetBackupSchedules()
     {
-        var query = _backupContext.Schedules.AsQueryable().Join(_backupContext.Tenants,
+        var query = BackupContext.Schedules.AsQueryable().Join(BackupContext.Tenants,
             s => s.TenantId,
             t => t.Id,
             (s, t) => new { schedule = s, tenant = t })
@@ -107,6 +107,6 @@ public class BackupRepository : IBackupRepository
 
     public BackupSchedule GetBackupSchedule(int tenantId)
     {
-        return _backupContext.Schedules.AsNoTracking().SingleOrDefault(s => s.TenantId == tenantId);
+        return BackupContext.Schedules.AsNoTracking().SingleOrDefault(s => s.TenantId == tenantId);
     }
 }

@@ -94,7 +94,7 @@ class FileDownloadOperation : ComposeFileOperation<FileDownloadOperationData<str
         }
 
         FillDistributedTask();
-        TaskInfo.PublishChanges();
+        _taskInfo.PublishChanges();
     }
 
     public override void PublishChanges(DistributedTask task)
@@ -114,16 +114,16 @@ class FileDownloadOperation : ComposeFileOperation<FileDownloadOperationData<str
             Error = error2;
         }
 
-        SuccessProcessed = thirdpartyTask.GetProperty<int>(Process) + daoTask.GetProperty<int>(Process);
+        _successProcessed = thirdpartyTask.GetProperty<int>(Process) + daoTask.GetProperty<int>(Process);
 
         var progressSteps = ThirdPartyOperation.Total + DaoOperation.Total + 1;
 
-        var progress = (int)(SuccessProcessed / (double)progressSteps * 100);
+        var progress = (int)(_successProcessed / (double)progressSteps * 100);
 
         base.FillDistributedTask();
 
-        TaskInfo.SetProperty(Progress, progress);
-        TaskInfo.PublishChanges();
+        _taskInfo.SetProperty(Progress, progress);
+        _taskInfo.PublishChanges();
     }
 }
 
@@ -163,7 +163,7 @@ class FileDownloadOperation<T> : FileOperation<FileDownloadOperationData<T>, T>
 
         Total = _entriesPathId.Count;
 
-        TaskInfo.PublishChanges();
+        _taskInfo.PublishChanges();
     }
 
     private async Task<ItemNameValueCollection<T>> ExecPathFromFileAsync(IServiceScope scope, File<T> file, string path)

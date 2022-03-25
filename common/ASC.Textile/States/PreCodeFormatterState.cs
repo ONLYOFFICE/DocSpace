@@ -26,7 +26,7 @@
 
 namespace Textile.States;
 
-[FormatterState(SimpleBlockFormatterState._patternBegin + @"bc" + SimpleBlockFormatterState._patternEnd)]
+[FormatterState(SimpleBlockFormatterState.PatternBegin + @"bc" + SimpleBlockFormatterState.PatternEnd)]
 public class PreCodeFormatterState : SimpleBlockFormatterState
 {
     public PreCodeFormatterState(TextileFormatter formatter)

@@ -28,7 +28,7 @@ namespace ASC.Data.Storage;
 
 public static class Extensions
 {
-    private const int _bufferSize = 2048;//NOTE: set to 2048 to fit in minimum tcp window
+    private const int BufferSize = 2048;//NOTE: set to 2048 to fit in minimum tcp window
 
         public static async Task<Stream> IronReadStreamAsync(this IDataStore store, TempStream tempStream, string domain, string path, int tryCount)
     {
@@ -66,9 +66,9 @@ public static class Extensions
             {
                 tryCurrent++;
                     using var stream = await store.GetReadStreamAsync(domain, path, offset);
-                var buffer = new byte[_bufferSize];
+                var buffer = new byte[BufferSize];
                     int readed;
-                    while ((readed = await stream.ReadAsync(buffer, 0, _bufferSize)) > 0)
+                    while ((readed = await stream.ReadAsync(buffer, 0, BufferSize)) > 0)
                 {
                         await readTo.WriteAsync(buffer, 0, readed);
                     offset += readed;

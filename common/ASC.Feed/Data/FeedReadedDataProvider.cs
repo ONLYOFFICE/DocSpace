@@ -30,7 +30,7 @@ public class FeedReadedDataProvider
 {
     private FeedDbContext FeedDbContext => _lazyFeedDbContext.Value;
 
-    private const string _dbId = Constants.FeedDbId;
+    private const string DbId = Constants.FeedDbId;
 
     private readonly AuthContext _authContext;
     private readonly TenantManager _tenantManager;
@@ -40,7 +40,7 @@ public class FeedReadedDataProvider
     {
         _authContext = authContext;
         _tenantManager = tenantManager;
-        _lazyFeedDbContext = new Lazy<FeedDbContext>(() => dbContextManager.Get(_dbId));
+        _lazyFeedDbContext = new Lazy<FeedDbContext>(() => dbContextManager.Get(DbId));
     }
 
     public DateTime GetTimeReaded()

@@ -230,7 +230,7 @@ dotnet_naming_style.begin_with_underscore.capitalization = camel_case
 dotnet_naming_style.begin_without_underscore.required_prefix = 
 dotnet_naming_style.begin_without_underscore.required_suffix = 
 dotnet_naming_style.begin_without_underscore.word_separator = 
-dotnet_naming_style.begin_without_underscore.capitalization = camel_case
+dotnet_naming_style.begin_without_underscore.capitalization = pascal_case
 
 csharp_style_expression_bodied_lambdas = true:silent
 csharp_style_expression_bodied_local_functions = false:silent

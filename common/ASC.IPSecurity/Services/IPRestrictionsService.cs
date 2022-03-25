@@ -31,20 +31,20 @@ public class IPRestrictionsServiceCache
 {
     public ICache Cache { get; set; }
 
-    private const string _cacheKey = "iprestrictions";
+    private const string CacheKey = "iprestrictions";
 
-    internal readonly ICacheNotify<IPRestrictionItem> _notify;
+    internal readonly ICacheNotify<IPRestrictionItem> Notify;
 
     public IPRestrictionsServiceCache(ICacheNotify<IPRestrictionItem> notify, ICache cache)
     {
         Cache = cache;
         notify.Subscribe((r) => Cache.Remove(GetCacheKey(r.TenantId)), CacheNotifyAction.Any);
-        _notify = notify;
+        Notify = notify;
     }
 
     public static string GetCacheKey(int tenant)
     {
-        return _cacheKey + tenant;
+        return CacheKey + tenant;
     }
 }
 
@@ -62,7 +62,7 @@ public class IPRestrictionsService
     {
         _ipRestrictionsRepository = iPRestrictionsRepository;
         _cache = iPRestrictionsServiceCache.Cache;
-        _notify = iPRestrictionsServiceCache._notify;
+        _notify = iPRestrictionsServiceCache.Notify;
     }
 
     public IEnumerable<IPRestriction> Get(int tenant)

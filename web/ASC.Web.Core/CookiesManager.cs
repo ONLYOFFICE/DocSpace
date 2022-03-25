@@ -37,8 +37,8 @@ public enum CookiesType
 [Scope]
 public class CookiesManager
 {
-    private const string _authCookiesName = "asc_auth_key";
-    private const string _socketIOCookiesName = "socketio.sid";
+    private const string AuthCookiesName = "asc_auth_key";
+    private const string SocketIOCookiesName = "socketio.sid";
 
     private IHttpContextAccessor HttpContextAccessor { get; }
     private UserManager UserManager { get; }
@@ -67,8 +67,8 @@ public class CookiesManager
     {
         return type switch
         {
-            CookiesType.AuthKey => _authCookiesName,
-            CookiesType.SocketIO => _socketIOCookiesName,
+            CookiesType.AuthKey => AuthCookiesName,
+            CookiesType.SocketIO => SocketIOCookiesName,
 
             _ => string.Empty,
         };

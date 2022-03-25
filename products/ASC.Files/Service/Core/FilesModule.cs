@@ -35,8 +35,8 @@ public class FilesModule : FeedModule
     public override string Product => "documents";
     protected override string DbId => "files";
 
-    private const string _fileItem = "file";
-    private const string _sharedFileItem = "sharedFile";
+    private const string FileItem = "file";
+    private const string SharedFileItem = "sharedFile";
 
     private readonly FileSecurity _fileSecurity;
     private readonly FilesLinkUtility _filesLinkUtility;
@@ -62,7 +62,7 @@ public class FilesModule : FeedModule
 
     public override bool VisibleFor(Feed.Aggregator.Feed feed, object data, Guid userId)
     {
-        if (!WebItemSecurity.IsAvailableForUser(ProductID, userId))
+        if (!_webItemSecurity.IsAvailableForUser(ProductID, userId))
         {
             return false;
         }
@@ -98,7 +98,7 @@ public class FilesModule : FeedModule
 
     public override void VisibleFor(List<Tuple<FeedRow, object>> feed, Guid userId)
     {
-        if (!WebItemSecurity.IsAvailableForUser(ProductID, userId))
+        if (!_webItemSecurity.IsAvailableForUser(ProductID, userId))
         {
             return;
         }
@@ -159,7 +159,7 @@ public class FilesModule : FeedModule
         {
             var feed = new Feed.Aggregator.Feed(shareRecord.ShareBy, shareRecord.ShareOn, true)
             {
-                Item = _sharedFileItem,
+                Item = SharedFileItem,
                 ItemId = string.Format("{0}_{1}", file.ID, shareRecord.ShareTo),
                 ItemUrl = _filesLinkUtility.GetFileRedirectPreviewUrl(file.ID, true),
                 Product = Product,
@@ -172,7 +172,7 @@ public class FilesModule : FeedModule
                 HasPreview = false,
                 CanComment = false,
                 Target = shareRecord.ShareTo,
-                GroupId = GetGroupId(_sharedFileItem, shareRecord.ShareBy, file.FolderID.ToString())
+                GroupId = GetGroupId(SharedFileItem, shareRecord.ShareBy, file.FolderID.ToString())
             };
 
             return feed;
@@ -182,7 +182,7 @@ public class FilesModule : FeedModule
 
         return new Feed.Aggregator.Feed(file.ModifiedBy, file.ModifiedOn, true)
         {
-            Item = _fileItem,
+            Item = FileItem,
             ItemId = string.Format("{0}_{1}", file.ID, file.Version > 1 ? 1 : 0),
             ItemUrl = _filesLinkUtility.GetFileRedirectPreviewUrl(file.ID, true),
             Product = Product,
@@ -196,7 +196,7 @@ public class FilesModule : FeedModule
             HasPreview = false,
             CanComment = false,
             Target = null,
-            GroupId = GetGroupId(_fileItem, file.ModifiedBy, file.FolderID.ToString(), updated ? 1 : 0)
+            GroupId = GetGroupId(FileItem, file.ModifiedBy, file.FolderID.ToString(), updated ? 1 : 0)
         };
     }
 

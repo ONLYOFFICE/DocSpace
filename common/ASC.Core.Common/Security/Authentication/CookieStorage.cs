@@ -29,7 +29,7 @@ namespace ASC.Core.Security.Authentication;
 [Scope]
 public class CookieStorage
 {
-    private const string _dateTimeFormat = "yyyy-MM-dd HH:mm:ss,fff";
+    private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss,fff";
 
     private readonly InstanceCrypto _instanceCrypto;
     private readonly TenantCookieSettingsHelper _tenantCookieSettingsHelper;
@@ -88,7 +88,7 @@ public class CookieStorage
             }
             if (6 < s.Length)
             {
-                expire = DateTime.ParseExact(s[6], _dateTimeFormat, CultureInfo.InvariantCulture);
+                expire = DateTime.ParseExact(s[6], DateTimeFormat, CultureInfo.InvariantCulture);
             }
             if (7 < s.Length)
             {
@@ -100,7 +100,7 @@ public class CookieStorage
         catch (Exception err)
         {
             _logger.ErrorFormat("Authenticate error: cookie {0}, tenant {1}, userid {2}, indexTenant {3}, expire {4}: {5}",
-                        cookie, tenant, userid, indexTenant, expire.ToString(_dateTimeFormat), err);
+                        cookie, tenant, userid, indexTenant, expire.ToString(DateTimeFormat), err);
         }
 
         return false;
@@ -125,7 +125,7 @@ public class CookieStorage
             GetUserDepenencySalt(),
             userid.ToString("N"),
             indexTenant,
-            expires.ToString(_dateTimeFormat, CultureInfo.InvariantCulture),
+            expires.ToString(DateTimeFormat, CultureInfo.InvariantCulture),
             indexUser);
 
         return _instanceCrypto.Encrypt(s);

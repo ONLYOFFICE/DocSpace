@@ -28,7 +28,7 @@ namespace ASC.Notify.Engine;
 
 class SingleRecipientInterceptor : ISendInterceptor
 {
-    private const string _prefix = "__singlerecipientinterceptor";
+    private const string Prefix = "__singlerecipientinterceptor";
     private readonly List<IRecipient> _sendedTo = new List<IRecipient>(10);
 
     public string Name { get; private set; }

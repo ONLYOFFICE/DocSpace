@@ -26,7 +26,7 @@
 
 namespace Textile.States;
 
-[FormatterState(SimpleBlockFormatterState._patternBegin + @"fn[0-9]+" + SimpleBlockFormatterState._patternEnd)]
+[FormatterState(SimpleBlockFormatterState.PatternBegin + @"fn[0-9]+" + SimpleBlockFormatterState.PatternEnd)]
 public class FootNoteFormatterState : SimpleBlockFormatterState
 {
     private int _noteID;

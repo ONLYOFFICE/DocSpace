@@ -38,7 +38,7 @@ public class MailRuLoginProvider : BaseLoginProvider<MailRuLoginProvider>
     public override string RedirectUri => this["mailRuRedirectUrl"];
 
     private readonly RequestHelper _requestHelper;
-    private const string _mailRuApiUrl = "http://www.appsmail.ru/platform/api";
+    private const string MailRuApiUrl = "http://www.appsmail.ru/platform/api";
 
     public MailRuLoginProvider() { }
 
@@ -85,7 +85,7 @@ public class MailRuLoginProvider : BaseLoginProvider<MailRuLoginProvider>
         }
         catch (Exception ex)
         {
-            return LoginProfile.FromError(_signature, _instanceCrypto, ex);
+            return LoginProfile.FromError(Signature, InstanceCrypto, ex);
         }
     }
 
@@ -113,7 +113,7 @@ public class MailRuLoginProvider : BaseLoginProvider<MailRuLoginProvider>
         var sig = string.Join("", md5.ComputeHash(Encoding.ASCII.GetBytes(mailruParams + ClientSecret)).Select(b => b.ToString("x2")));
 
             var mailRuProfile = _requestHelper.PerformRequest(
-            _mailRuApiUrl
+            MailRuApiUrl
             + "?" + string.Join("&", queryDictionary.Select(pair => pair.Key + "=" + HttpUtility.UrlEncode(pair.Value)))
             + "&sig=" + HttpUtility.UrlEncode(sig));
         var loginProfile = ProfileFromMailRu(mailRuProfile);
@@ -135,7 +135,7 @@ public class MailRuLoginProvider : BaseLoginProvider<MailRuLoginProvider>
             throw new Exception("Failed to correctly process the response");
         }
 
-        var profile = new LoginProfile(_signature, _instanceCrypto)
+        var profile = new LoginProfile(Signature, InstanceCrypto)
         {
             EMail = mailRuProfiles[0].Email,
             Id = mailRuProfiles[0].Uid,

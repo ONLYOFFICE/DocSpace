@@ -121,7 +121,7 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
         if (subjectID != Guid.Empty)
         {
             files = files.Where(x => subjectGroup
-                                         ? UserManager.IsUserInGroup(x.CreateBy, subjectID)
+                                         ? _userManager.IsUserInGroup(x.CreateBy, subjectID)
                                          : x.CreateBy == subjectID);
         }
 
@@ -191,7 +191,7 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
         if (subjectID != Guid.Empty)
         {
             files = files.Where(x => subjectGroup
-                                         ? UserManager.IsUserInGroup(x.CreateBy, subjectID)
+                                         ? _userManager.IsUserInGroup(x.CreateBy, subjectID)
                                          : x.CreateBy == subjectID);
         }
 
@@ -571,7 +571,7 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
 
     public Task<ChunkedUploadSession<string>> CreateUploadSessionAsync(File<string> file, long contentLength)
     {
-        if (SetupInfo.ChunkUploadSize > contentLength)
+        if (_setupInfo.ChunkUploadSize > contentLength)
         {
             return Task.FromResult(new ChunkedUploadSession<string>(RestoreIds(file), contentLength) { UseChunks = false });
         }
@@ -607,7 +607,7 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
         }
         else
         {
-            uploadSession.Items["TempPath"] = TempPath.GetTempFileName();
+            uploadSession.Items["TempPath"] = _tempPath.GetTempFileName();
         }
 
         uploadSession.File = RestoreIds(uploadSession.File);
