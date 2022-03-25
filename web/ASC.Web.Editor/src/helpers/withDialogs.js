@@ -24,7 +24,7 @@ const withDialogs = (WrappedComponent) => {
     const [extension, setExtension] = useState();
     const [openNewTab, setNewOpenTab] = useState(false);
 
-    const { t } = useTranslation();
+    const { t } = useTranslation(["Editor", "Common"]);
 
     const { fileInfo, fileId, mfReady } = props;
 
@@ -61,6 +61,7 @@ const withDialogs = (WrappedComponent) => {
     };
 
     const onSDKRequestInsertImage = (event) => {
+      console.log("onSDKRequestInsertImage", event.data, insertImageAction);
       setTypeInsertImageAction(event.data);
       setFilesType(insertImageAction);
       setIsFileDialogVisible(true);
@@ -110,13 +111,32 @@ const withDialogs = (WrappedComponent) => {
     };
 
     const fileTypeDetection = () => {
+      // console.log(
+      //   "------",
+      //   insertImageAction,
+      //   filesType,
+      //   insertImageActionProps,
+      //   "--------"
+      // );
       if (filesType === insertImageAction) {
+        // console.log(
+        //   "filesType === insertImageAction",
+        //   filesType === insertImageAction
+        // );
         return insertImageActionProps;
       }
       if (filesType === mailMergeAction) {
+        // console.log(
+        //   "filesType === mailMergeAction",
+        //   filesType === mailMergeAction
+        // );
         return mailMergeActionProps;
       }
       if (filesType === compareFilesAction) {
+        // console.log(
+        //   "filesType === compareFilesAction",
+        //   filesType === compareFilesAction
+        // );
         return compareFilesActionProps;
       }
     };
@@ -222,7 +242,8 @@ const withDialogs = (WrappedComponent) => {
       />
     );
 
-    const fileType = fileTypeDetection();
+    const typeFilter = fileTypeDetection();
+    // console.log(typeFilter, "-----------------");
 
     const selectFileDialog = mfReady && (
       <DynamicComponent
@@ -236,7 +257,7 @@ const withDialogs = (WrappedComponent) => {
         isPanelVisible={isFileDialogVisible}
         onSelectFile={onSelectFile}
         onClose={onCloseFileDialog}
-        {...fileType}
+        {...typeFilter}
         titleFilesList={selectFilesListTitle()}
         headerName={t("SelectFileTitle")}
       />

@@ -70,7 +70,7 @@ export const useDynamicScript = (args) => {
   };
 };
 
-const DynamicComponent = React.memo(({ system, ...rest }) => {
+const DynamicComponent = ({ system, ...rest }) => {
   const [isInitialized, setIsInitialized] = React.useState(false);
   const [LoadedComponent, setLoadedComponent] = React.useState();
 
@@ -95,11 +95,12 @@ const DynamicComponent = React.memo(({ system, ...rest }) => {
     throw Error("failed");
   }
 
+  // console.log("dynamic", rest);
+
   if (ready && !isInitialized) {
+    //console.log("dynamic 2", rest);
     setIsInitialized(true);
-    const Component = React.lazy(
-      loadComponent(system.scope, system.module, system?.name)
-    );
+    const Component = React.lazy(loadComponent(system.scope, system.module));
 
     setLoadedComponent(Component);
   }
@@ -109,6 +110,6 @@ const DynamicComponent = React.memo(({ system, ...rest }) => {
       <LoadedComponent {...rest} />
     </React.Suspense>
   );
-});
+};
 
 export default DynamicComponent;
