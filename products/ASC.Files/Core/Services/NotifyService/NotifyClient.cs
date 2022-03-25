@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Notify.Engine;
+
 using Context = ASC.Notify.Context;
 
 namespace ASC.Files.Core.Services.NotifyService;
@@ -32,12 +34,15 @@ namespace ASC.Files.Core.Services.NotifyService;
 public class NotifyClient
 {
     private readonly IServiceProvider _serviceProvider;
+    private readonly NotifyEngine _notifyEngine;
+
     private Context NotifyContext { get; }
 
-    public NotifyClient(IServiceProvider serviceProvider, Context notifyContext)
+    public NotifyClient(IServiceProvider serviceProvider, Context notifyContext, NotifyEngine notifyEngine)
     {
         _serviceProvider = serviceProvider;
         NotifyContext = notifyContext;
+        _notifyEngine = notifyEngine;
     }
 
     public void SendDocuSignComplete<T>(File<T> file, string sourceTitle)
@@ -45,7 +50,7 @@ public class NotifyClient
         using var scope = _serviceProvider.CreateScope();
         var scopeClass = scope.ServiceProvider.GetService<NotifyClientScope>();
         var (notifySource, securityContext, filesLinkUtility, fileUtility, baseCommonLinkUtility, _, _, _, _) = scopeClass;
-        var client = NotifyContext.NotifyService.RegisterClient(notifySource, scope);
+        var client = NotifyContext.RegisterClient(_notifyEngine, notifySource, scope);
         var recipient = notifySource.GetRecipientsProvider().GetRecipient(securityContext.CurrentAccount.ID.ToString());
 
         client.SendNoticeAsync(
@@ -64,7 +69,7 @@ public class NotifyClient
         using var scope = _serviceProvider.CreateScope();
         var scopeClass = scope.ServiceProvider.GetService<NotifyClientScope>();
         var (notifySource, securityContext, _, _, _, _, _, _, _) = scopeClass;
-        var client = NotifyContext.NotifyService.RegisterClient(notifySource, scope);
+        var client = NotifyContext.RegisterClient(_notifyEngine, notifySource, scope);
 
         var recipient = notifySource.GetRecipientsProvider().GetRecipient(securityContext.CurrentAccount.ID.ToString());
 
@@ -82,7 +87,7 @@ public class NotifyClient
     {
         using var scope = _serviceProvider.CreateScope();
         var notifySource = scope.ServiceProvider.GetService<NotifySource>();
-        var client = NotifyContext.NotifyService.RegisterClient(notifySource, scope);
+        var client = NotifyContext.RegisterClient(_notifyEngine, notifySource, scope);
 
         var recipient = notifySource.GetRecipientsProvider().GetRecipient(userId.ToString());
 
@@ -106,7 +111,7 @@ public class NotifyClient
         using var scope = _serviceProvider.CreateScope();
         var scopeClass = scope.ServiceProvider.GetService<NotifyClientScope>();
         var (notifySource, _, filesLinkUtility, fileUtility, baseCommonLinkUtility, daoFactory, pathProvider, userManager, tenantManager) = scopeClass;
-        var client = NotifyContext.NotifyService.RegisterClient(notifySource, scope);
+        var client = NotifyContext.RegisterClient(_notifyEngine, notifySource, scope);
         var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
 
         var folderDao = daoFactory.GetFolderDao<T>();
@@ -162,7 +167,7 @@ public class NotifyClient
         using var scope = _serviceProvider.CreateScope();
         var scopeClass = scope.ServiceProvider.GetService<NotifyClientScope>();
         var (notifySource, _, _, _, baseCommonLinkUtility, _, _, userManager, _) = scopeClass;
-        var client = NotifyContext.NotifyService.RegisterClient(notifySource, scope);
+        var client = NotifyContext.RegisterClient(_notifyEngine, notifySource, scope);
 
         var recipientsProvider = notifySource.GetRecipientsProvider();
 

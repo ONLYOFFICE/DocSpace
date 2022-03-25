@@ -28,16 +28,16 @@ namespace ASC.Notify.Model;
 
 class NotifyClientImpl : INotifyClient
 {
-    private readonly Context _context;
+    private readonly NotifyEngine _notifyEngine;
     private readonly InterceptorStorage _interceptors = new InterceptorStorage();
     private readonly INotifySource _notifySource;
     public readonly IServiceScope _serviceScope;
 
-    public NotifyClientImpl(Context context, INotifySource notifySource, IServiceScope serviceScope)
+    public NotifyClientImpl(NotifyEngine notifyEngine, INotifySource notifySource, IServiceScope serviceScope)
     {
         this._notifySource = notifySource ?? throw new ArgumentNullException(nameof(notifySource));
         _serviceScope = serviceScope;
-        _context = context ?? throw new ArgumentNullException(nameof(context));
+        _notifyEngine = notifyEngine;
     }
 
     public void SendNoticeToAsync(INotifyAction action, IRecipient[] recipients, string[] senderNames, params ITagValue[] args)
@@ -113,7 +113,7 @@ class NotifyClientImpl : INotifyClient
     private void SendAsync(NotifyRequest request)
     {
         request.Interceptors = _interceptors.GetAll();
-        _context.NotifyEngine.QueueRequest(request, _serviceScope);
+        _notifyEngine.QueueRequest(request, _serviceScope);
     }
 
     private NotifyRequest CreateRequest(INotifyAction action, string objectID, IRecipient recipient, ITagValue[] args, string[] senders, bool checkSubsciption)

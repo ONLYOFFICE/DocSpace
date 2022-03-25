@@ -26,6 +26,7 @@
 
 namespace ASC.Notify.Engine;
 
+[Singletone]
 public class NotifyEngine : INotifyEngine
 {
     private readonly ILog _logger;
@@ -45,10 +46,10 @@ public class NotifyEngine : INotifyEngine
     public event Action<NotifyEngine, NotifyRequest, IServiceScope> AfterTransferRequest;
 
 
-    public NotifyEngine(Context context, IServiceProvider serviceProvider)
+    public NotifyEngine(Context context, IOptionsMonitor<ILog> options, IServiceProvider serviceProvider)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
-        _logger = serviceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.Notify");
+        _logger = options.Get("ASC.Notify");
         _serviceProvider = serviceProvider;
         _notifyScheduler = new Thread(NotifyScheduler) { IsBackground = true, Name = "NotifyScheduler" };
         _notifySender = new Thread(NotifySender) { IsBackground = true, Name = "NotifySender" };
@@ -351,7 +352,7 @@ public class NotifyEngine : INotifyEngine
         {
             foreach (var sendertag in request.SenderNames)
             {
-                var channel = _context.NotifyService.GetSender(sendertag);
+                var channel = _context.GetSender(sendertag);
                 if (channel != null)
                 {
                     try

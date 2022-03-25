@@ -31,16 +31,21 @@ namespace ASC.Web.Studio.Core.Notify
     [Singletone(Additional = typeof(ServiceLauncherExtension))]
     public class StudioNotifyServiceSender
     {
+        private readonly NotifyEngine _notifyEngine;
+
         private static string EMailSenderName { get { return Constants.NotifyEMailSenderSysName; } }
 
         private IServiceProvider ServiceProvider { get; }
         private IConfiguration Configuration { get; }
+        private readonly WorkContext _workContext;
 
-        public StudioNotifyServiceSender(IServiceProvider serviceProvider, IConfiguration configuration, ICacheNotify<NotifyItem> cache)
+        public StudioNotifyServiceSender(IServiceProvider serviceProvider, IConfiguration configuration, ICacheNotify<NotifyItem> cache, NotifyEngine notifyEngine, WorkContext workContext)
         {
             cache.Subscribe(this.OnMessage, Common.Caching.CacheNotifyAction.Any);
             ServiceProvider = serviceProvider;
             Configuration = configuration;
+            _notifyEngine = notifyEngine;
+            _workContext = workContext;
         }
 
         public void OnMessage(NotifyItem item)
@@ -53,7 +58,7 @@ namespace ASC.Web.Studio.Core.Notify
             tenantManager.SetCurrentTenant(item.TenantId);
             CultureInfo culture = null;
 
-            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
+            var client = _workContext.NotifyContext.RegisterClient(_notifyEngine, studioNotifyHelper.NotifySource, scope);
 
             var tenant = tenantManager.GetCurrentTenant(false);
 
@@ -101,11 +106,11 @@ namespace ASC.Web.Studio.Core.Notify
             {
                 if (tenantExtra.Enterprise)
                 {
-                    WorkContext.RegisterSendMethod(SendEnterpriseTariffLetters, cron);
+                    _workContext.RegisterSendMethod(SendEnterpriseTariffLetters, cron);
                 }
                 else if (tenantExtra.Opensource)
                 {
-                    WorkContext.RegisterSendMethod(SendOpensourceTariffLetters, cron);
+                    _workContext.RegisterSendMethod(SendOpensourceTariffLetters, cron);
                 }
                 else if (tenantExtra.Saas)
                 {
@@ -113,19 +118,19 @@ namespace ASC.Web.Studio.Core.Notify
                     {
                         if (!coreBaseSettings.CustomMode)
                         {
-                            WorkContext.RegisterSendMethod(SendLettersPersonal, cron);
+                            _workContext.RegisterSendMethod(SendLettersPersonal, cron);
                         }
                     }
                     else
                     {
-                        WorkContext.RegisterSendMethod(SendSaasTariffLetters, cron);
+                        _workContext.RegisterSendMethod(SendSaasTariffLetters, cron);
                     }
                 }
             }
 
             if (!coreBaseSettings.Personal)
             {
-                WorkContext.RegisterSendMethod(SendMsgWhatsNew, "0 0 * ? * *"); // every hour
+                _workContext.RegisterSendMethod(SendMsgWhatsNew, "0 0 * ? * *"); // every hour
             }
         }
 

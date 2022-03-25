@@ -29,12 +29,17 @@ namespace ASC.Web.Studio.Core.Notify
     [Singletone(Additional = typeof(StudioPeriodicNotifyExtension))]
     public class StudioPeriodicNotify
     {
+        private readonly NotifyEngine _notifyEngine;
+        private readonly WorkContext _workContext;
+
         private IServiceProvider ServiceProvider { get; }
         public ILog Log { get; }
 
-        public StudioPeriodicNotify(IServiceProvider serviceProvider, IOptionsMonitor<ILog> log)
+        public StudioPeriodicNotify(IServiceProvider serviceProvider, IOptionsMonitor<ILog> log, NotifyEngine notifyEngine, WorkContext workContext)
         {
             ServiceProvider = serviceProvider;
+            _notifyEngine = notifyEngine;
+            _workContext = workContext;
             Log = log.Get("ASC.Notify");
         }
 
@@ -72,7 +77,7 @@ namespace ASC.Web.Studio.Core.Notify
                     var scopeClass = scope.ServiceProvider.GetService<StudioPeriodicNotifyScope>();
                     var (tenantManager, userManager, studioNotifyHelper, paymentManager, tenantExtra, authContext, commonLinkUtility, apiSystemHelper, setupInfo, dbContextManager, couponManager, _, _, coreBaseSettings, _, _, _) = scopeClass;
                     tenantManager.SetCurrentTenant(tenant.Id);
-                    var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
+                    var client = _workContext.NotifyContext.RegisterClient(_notifyEngine, studioNotifyHelper.NotifySource, scope);
 
                     var tariff = paymentManager.GetTariff(tenant.Id);
                     var quota = tenantManager.GetTenantQuota(tenant.Id);
@@ -473,7 +478,7 @@ namespace ASC.Web.Studio.Core.Notify
                     var (tenantManager, userManager, studioNotifyHelper, paymentManager, tenantExtra, _, commonLinkUtility, _, _, dbContextManager, _, _, settingsManager, coreBaseSettings, _, _, _) = scopeClass;
                     var defaultRebranding = MailWhiteLabelSettings.IsDefault(settingsManager);
                     tenantManager.SetCurrentTenant(tenant.Id);
-                    var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
+                    var client = _workContext.NotifyContext.RegisterClient(_notifyEngine, studioNotifyHelper.NotifySource, scope);
 
                     var tariff = paymentManager.GetTariff(tenant.Id);
                     var quota = tenantManager.GetTenantQuota(tenant.Id);
@@ -871,7 +876,7 @@ namespace ASC.Web.Studio.Core.Notify
                     var scopeClass = scope.ServiceProvider.GetService<StudioPeriodicNotifyScope>();
                     var (tenantManager, userManager, studioNotifyHelper, _, _, _, _, _, _, _, _, _, _, _, displayUserSettingsHelper, _, _) = scopeClass;
                     tenantManager.SetCurrentTenant(tenant.Id);
-                    var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
+                    var client = _workContext.NotifyContext.RegisterClient(_notifyEngine, studioNotifyHelper.NotifySource, scope);
 
                     var createdDate = tenant.CreationDateTime.Date;
 
@@ -940,7 +945,7 @@ namespace ASC.Web.Studio.Core.Notify
                     var (tenantManager, userManager, studioNotifyHelper, _, _, _, _, _, _, _, _, _, _, coreBaseSettings, _, authManager, securityContext) = scopeClass;
 
                     tenantManager.SetCurrentTenant(tenant.Id);
-                    var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
+                    var client = _workContext.NotifyContext.RegisterClient(_notifyEngine, studioNotifyHelper.NotifySource, scope);
 
                     Log.InfoFormat("Current tenant: {0}", tenant.Id);
 

@@ -88,9 +88,11 @@ namespace ASC.Web.Studio.Core.Notify
         private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
         private readonly FeedAggregateDataProvider _feedAggregateDataProvider;
         private readonly CoreSettings _coreSettings;
+        private readonly NotifyEngine _notifyEngine;
         private readonly ILog _log;
         private readonly IServiceScope _serviceScope;
         private readonly IConfiguration _confuguration;
+        private readonly WorkContext _workContext;
         private readonly IMapper _mapper;
 
         public StudioWhatsNewNotifyWorker(
@@ -106,7 +108,9 @@ namespace ASC.Web.Studio.Core.Notify
             DisplayUserSettingsHelper displayUserSettingsHelper,
             FeedAggregateDataProvider feedAggregateDataProvider,
             CoreSettings coreSettings,
+            NotifyEngine notifyEngine,
             IConfiguration confuguration,
+            WorkContext workContext,
             IOptionsMonitor<ILog> optionsMonitor,
             IMapper mapper)
         {
@@ -122,7 +126,9 @@ namespace ASC.Web.Studio.Core.Notify
             _displayUserSettingsHelper = displayUserSettingsHelper;
             _feedAggregateDataProvider = feedAggregateDataProvider;
             _coreSettings = coreSettings;
+            _notifyEngine = notifyEngine;
             _confuguration = confuguration;
+            _workContext = workContext;
             _mapper = mapper;
             _log = optionsMonitor.Get("ASC.Notify");
         }
@@ -141,7 +147,7 @@ namespace ASC.Web.Studio.Core.Notify
                 }
 
                 _tenantManager.SetCurrentTenant(tenant);
-                var client = WorkContext.NotifyContext.NotifyService.RegisterClient(_studioNotifyHelper.NotifySource, _serviceScope);
+                var client = _workContext.NotifyContext.RegisterClient(_notifyEngine, _studioNotifyHelper.NotifySource, _serviceScope);
 
                 _log.InfoFormat("Start send whats new in {0} ({1}).", tenant.GetTenantDomain(_coreSettings), tenantid);
                 foreach (var user in _userManager.GetUsers())

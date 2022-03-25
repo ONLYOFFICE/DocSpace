@@ -35,12 +35,15 @@ namespace ASC.Web.Studio.Core.Notify
         private static readonly object locker = new object();
         private static readonly Regex urlReplacer = new Regex(@"(<a [^>]*href=(('(?<url>[^>']*)')|(""(?<url>[^>""]*)""))[^>]*>)|(<img [^>]*src=(('(?<url>(?![data:|cid:])[^>']*)')|(""(?<url>(?![data:|cid:])[^>""]*)""))[^/>]*/?>)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static readonly Regex textileLinkReplacer = new Regex(@"""(?<text>[\w\W]+?)"":""(?<link>[^""]+)""", RegexOptions.Singleline | RegexOptions.Compiled);
+        private readonly NotifyEngine _notifyEngine;
+        private readonly WorkContext _workContext;
 
         private IServiceProvider ServiceProvider { get; }
 
-        public NotifyConfiguration(IServiceProvider serviceProvider)
+        public NotifyConfiguration(NotifyEngine notifyEngine, WorkContext workContext)
         {
-            ServiceProvider = serviceProvider;
+            _notifyEngine = notifyEngine;
+            _workContext = workContext;
         }
 
         public void Configure()
@@ -50,9 +53,9 @@ namespace ASC.Web.Studio.Core.Notify
                 if (!configured)
                 {
                     configured = true;
-                    WorkContext.NotifyStartUp(ServiceProvider);
-                    WorkContext.NotifyContext.NotifyClientRegistration += NotifyClientRegisterCallback;
-                    WorkContext.NotifyContext.NotifyEngine.BeforeTransferRequest += BeforeTransferRequest;
+                    _workContext.NotifyStartUp();
+                    _workContext.NotifyContext.NotifyClientRegistration += NotifyClientRegisterCallback;
+                    _notifyEngine.BeforeTransferRequest += BeforeTransferRequest;
                 }
             }
         }

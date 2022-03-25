@@ -29,17 +29,30 @@ using NotifyContext = ASC.Notify.Context;
 
 namespace ASC.Core;
 
-public static class WorkContext
+[Singletone]
+public class WorkContext
 {
     private static readonly object _syncRoot = new object();
+    private readonly IServiceProvider _serviceProvider;
+    private readonly IConfiguration _configuration;
+    private readonly ICacheNotify<NotifyMessage> _cacheNotifyMessage;
+    private readonly ICacheNotify<NotifyInvoke> _cacheNotifyInvoke;
+    private readonly IOptionsMonitor<ILog> _options;
+    private readonly DispatchEngine _dispatchEngine;
+    private readonly JabberSender _jabberSender;
+    private readonly AWSSender _awsSender;
+    private readonly SmtpSender _smtpSender;
+    private readonly NotifyServiceSender _notifyServiceSender;
+    private readonly TelegramSender _telegramSender;
     private static bool _notifyStarted;
     private static bool? _isMono;
     private static string _monoVersion;
 
 
-    public static NotifyContext NotifyContext { get; private set; }
+    public NotifyContext NotifyContext { get; private set; }
+    public NotifyEngine NotifyEngine { get; private set; }
 
-    public static string[] DefaultClientSenders => new[] { Constants.NotifyEMailSenderSysName, };
+    public static string[] DefaultClientSenders => new[] { Constants.NotifyEMailSenderSysName };
 
     public static bool IsMono
     {
@@ -67,8 +80,38 @@ public static class WorkContext
 
     public static string MonoVersion => IsMono ? _monoVersion : null;
 
+    public WorkContext(
+        IServiceProvider serviceProvider,
+        IConfiguration configuration,
+        ICacheNotify<NotifyMessage> cacheNotifyMessage,
+        ICacheNotify<NotifyInvoke> cacheNotifyInvoke,
+        IOptionsMonitor<ILog> options,
+        DispatchEngine dispatchEngine,
+        NotifyEngine notifyEngine,
+        NotifyContext notifyContext,
+        JabberSender jabberSender,
+        AWSSender awsSender,
+        SmtpSender smtpSender,
+        NotifyServiceSender notifyServiceSender,
+        TelegramSender telegramSender
+        )
+    {
+        _serviceProvider = serviceProvider;
+        _configuration = configuration;
+        _cacheNotifyMessage = cacheNotifyMessage;
+        _cacheNotifyInvoke = cacheNotifyInvoke;
+        _options = options;
+        _dispatchEngine = dispatchEngine;
+        NotifyEngine = notifyEngine;
+        NotifyContext = notifyContext;
+        _jabberSender = jabberSender;
+        _awsSender = awsSender;
+        _smtpSender = smtpSender;
+        _notifyServiceSender = notifyServiceSender;
+        _telegramSender = telegramSender;
+    }
 
-    public static void NotifyStartUp(IServiceProvider serviceProvider)
+    public void NotifyStartUp()
     {
         if (_notifyStarted)
         {
@@ -82,22 +125,15 @@ public static class WorkContext
                 return;
             }
 
-            var configuration = serviceProvider.GetService<IConfiguration>();
-            var cacheNotify = serviceProvider.GetService<ICacheNotify<NotifyMessage>>();
-            var cacheInvoke = serviceProvider.GetService<ICacheNotify<NotifyInvoke>>();
-            var options = serviceProvider.GetService<IOptionsMonitor<ILog>>();
+            INotifySender jabberSender = _notifyServiceSender;
+            INotifySender emailSender = _notifyServiceSender;
+            INotifySender telegramSender = _telegramSender;
 
-            NotifyContext = new NotifyContext(serviceProvider);
-
-            INotifySender jabberSender = new NotifyServiceSender(cacheNotify, cacheInvoke);
-            INotifySender emailSender = new NotifyServiceSender(cacheNotify, cacheInvoke);
-            INotifySender telegramSender = new TelegramSender(options, serviceProvider);
-
-            var postman = configuration["core:notify:postman"];
+            var postman = _configuration["core:notify:postman"];
 
             if ("ases".Equals(postman, StringComparison.InvariantCultureIgnoreCase) || "smtp".Equals(postman, StringComparison.InvariantCultureIgnoreCase))
             {
-                jabberSender = new JabberSender(serviceProvider);
+                jabberSender = _jabberSender;
 
                 var properties = new Dictionary<string, string>
                 {
@@ -105,37 +141,37 @@ public static class WorkContext
                 };
                 if ("ases".Equals(postman, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    emailSender = new AWSSender(serviceProvider, options);
-                    properties["accessKey"] = configuration["ses:accessKey"];
-                    properties["secretKey"] = configuration["ses:secretKey"];
-                    properties["refreshTimeout"] = configuration["ses:refreshTimeout"];
+                    emailSender = _awsSender;
+                    properties["accessKey"] = _configuration["ses:accessKey"];
+                    properties["secretKey"] = _configuration["ses:secretKey"];
+                    properties["refreshTimeout"] = _configuration["ses:refreshTimeout"];
                 }
                 else
                 {
-                    emailSender = new SmtpSender(serviceProvider, options);
+                    emailSender = _smtpSender;
                 }
 
                 emailSender.Init(properties);
             }
 
-            NotifyContext.NotifyService.RegisterSender(Constants.NotifyEMailSenderSysName, new EmailSenderSink(emailSender, serviceProvider, options));
-            NotifyContext.NotifyService.RegisterSender(Constants.NotifyMessengerSenderSysName, new JabberSenderSink(jabberSender, serviceProvider));
-            NotifyContext.NotifyService.RegisterSender(Constants.NotifyTelegramSenderSysName, new TelegramSenderSink(telegramSender, serviceProvider));
+            NotifyContext.RegisterSender(_dispatchEngine, Constants.NotifyEMailSenderSysName, new EmailSenderSink(emailSender, _serviceProvider, _options));
+            NotifyContext.RegisterSender(_dispatchEngine, Constants.NotifyMessengerSenderSysName, new JabberSenderSink(jabberSender, _serviceProvider));
+            NotifyContext.RegisterSender(_dispatchEngine, Constants.NotifyTelegramSenderSysName, new TelegramSenderSink(telegramSender, _serviceProvider));
 
-            NotifyContext.NotifyEngine.BeforeTransferRequest += NotifyEngine_BeforeTransferRequest;
-            NotifyContext.NotifyEngine.AfterTransferRequest += NotifyEngine_AfterTransferRequest;
+            NotifyEngine.BeforeTransferRequest += NotifyEngine_BeforeTransferRequest;
+            NotifyEngine.AfterTransferRequest += NotifyEngine_AfterTransferRequest;
             _notifyStarted = true;
         }
     }
 
-    public static void RegisterSendMethod(Action<DateTime> method, string cron)
+    public void RegisterSendMethod(Action<DateTime> method, string cron)
     {
-        NotifyContext.NotifyEngine.RegisterSendMethod(method, cron);
+        NotifyEngine.RegisterSendMethod(method, cron);
     }
 
-    public static void UnregisterSendMethod(Action<DateTime> method)
+    public void UnregisterSendMethod(Action<DateTime> method)
     {
-        NotifyContext.NotifyEngine.UnregisterSendMethod(method);
+        NotifyEngine.UnregisterSendMethod(method);
 
     }
     private static void NotifyEngine_BeforeTransferRequest(NotifyEngine sender, NotifyRequest request, IServiceScope serviceScope)
