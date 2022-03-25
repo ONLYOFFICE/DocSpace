@@ -55,7 +55,6 @@ const SimpleHeader = () => {
 };
 
 const DeepLinkPage = (props) => {
-  console.log(props);
   const { fileInfo } = props;
   const [isChecked, setIsChecked] = useState(false);
   const { t } = useTranslation(["Editor", "Common"]);
@@ -65,7 +64,7 @@ const DeepLinkPage = (props) => {
   };
 
   const getFileIcon = () => {
-    const fileExst = ".docx";
+    const fileExst = fileInfo.fileExst.slice(1);
     const iconPath = "/static/images/icons/32/";
     return `${iconPath}${fileExst}.svg`;
   };
@@ -80,7 +79,7 @@ const DeepLinkPage = (props) => {
         <StyledFileTile>
           <img src={getFileIcon()} />
           <Text fontSize="14px" fontWeight="600" truncate>
-            Hello
+            {fileInfo.title}
           </Text>
         </StyledFileTile>
         <Text className="description" fontSize="13px" fontWeight="400">

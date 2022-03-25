@@ -20,6 +20,7 @@ import {
 import { EditorWrapper } from "./StyledEditor";
 import { useTranslation } from "react-i18next";
 import withDialogs from "./helpers/withDialogs";
+import DeepLinkPage from "./DeepLink";
 
 const LoaderComponent = (
   <Loader
@@ -527,6 +528,7 @@ function Editor({
     }
   };
 
+  if (isMobile) return <DeepLinkPage fileInfo={fileInfo} />;
   return (
     <EditorWrapper isVisibleSharingDialog={isVisible}>
       {needLoader ? (

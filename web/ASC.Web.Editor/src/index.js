@@ -5,6 +5,7 @@ import i18nextMiddleware from "i18next-express-middleware";
 import i18next from "i18next";
 import Backend from "i18next-fs-backend";
 import path, { join } from "path";
+import useragent from "express-useragent";
 
 const loadPath = (lng, ns) => {
   let resourcePath =
@@ -18,7 +19,6 @@ const loadPath = (lng, ns) => {
 
 const app = express();
 const port = process.env.PORT || 5013;
-const useragent = require("express-useragent");
 
 app.use(useragent.express());
 
@@ -53,6 +53,7 @@ app.use(
 app.use(express.static(path.resolve(__dirname, "../clientBuild")));
 
 app.get("/products/files/doceditor", async (req, res) => {
+  //console.log(req.useragent);
   const { props, content, styleTags, scriptTags } = await render(req);
   const userLng = props?.user?.cultureName || "en";
 
