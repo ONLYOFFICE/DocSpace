@@ -16,6 +16,7 @@ const FilesListRow = ({
   iconSrc,
   isMultiSelect, // it will be needed
   isChecked,
+  noCheckBox,
   theme,
 }) => {
   return (
@@ -24,6 +25,7 @@ const FilesListRow = ({
       theme={theme}
       needRowSelection={needRowSelection}
       isChecked={isChecked}
+      noCheckBox={noCheckBox}
     >
       <div
         data-index={index}
@@ -50,6 +52,7 @@ const FilesListRow = ({
             className="select-file-dialog_checked"
           />
         )}
+
         <ReactSVG src={iconSrc} className="select-file-dialog_icon" />
         <div data-index={index} className="files-list_full-name">
           <Text theme={theme} data-index={index} className="entry-title">
@@ -71,7 +74,6 @@ const FilesListRow = ({
 };
 
 FilesListRow.defaultProps = {
-  needRowSelection: true,
   isMultiSelect: false,
 };
 

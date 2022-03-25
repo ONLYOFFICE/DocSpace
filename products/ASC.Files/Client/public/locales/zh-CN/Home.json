@@ -13,7 +13,6 @@
     "CopyItem": "<strong>{{title}}</strong>已复制",
     "CopyItems": "<strong>{{qty}}</strong>元素已复制",
     "Document": "文档",
-    "Duplicate": "创建副本",
     "EmptyFile": "空文件",
     "EmptyFilterDescriptionText": "没有符合此过滤条件的文件或文件夹。请尝试另一个过滤条件或清除条件以查看所有文件。",
     "EmptyFilterSubheadingText": "此过滤条件下无可在此处展示的文件",

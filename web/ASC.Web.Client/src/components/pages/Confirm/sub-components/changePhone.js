@@ -132,7 +132,7 @@ export default inject(({ auth }) => ({
 }))(
   withRouter(
     withTranslation(["Confirm", "Common"])(
-      observer(withLoader(ChangePhoneForm))
+      withLoader(observer(ChangePhoneForm))
     )
   )
 );

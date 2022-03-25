@@ -7,9 +7,9 @@ import LanguageAndTimeZone from "./language-and-time-zone";
 import CustomTitles from "./custom-titles";
 import PortalRenaming from "./portal-renaming";
 import { Base } from "@appserver/components/themes";
-import { isMobile } from "react-device-detect";
-import { Consumer } from "@appserver/components/utils/context";
+import { isSmallTablet } from "@appserver/components/utils/device";
 
+import commonSettingsStyles from "../../utils/commonSettingsStyles";
 const StyledComponent = styled.div`
   .combo-button-label {
     max-width: 100%;
@@ -17,7 +17,6 @@ const StyledComponent = styled.div`
 
   .settings-block {
     margin-bottom: 24px;
-    max-width: 350px;
   }
 
   .category-description {
@@ -49,6 +48,13 @@ const StyledComponent = styled.div`
     line-height: 22px;
     margin-right: 4px;
   }
+
+  @media (min-width: 600px) {
+    .settings-block {
+      max-width: 350px;
+      height: auto;
+    }
+  }
 `;
 
 StyledComponent.defaultProps = { theme: Base };
@@ -57,7 +63,7 @@ const Customization = ({ t }) => {
   const [mobileView, setMobileView] = useState();
 
   const checkInnerWidth = () => {
-    if (window.innerWidth <= 375) {
+    if (window.innerWidth < 600) {
       setMobileView(true);
     } else {
       setMobileView(false);
@@ -69,29 +75,23 @@ const Customization = ({ t }) => {
     return () => window.removeEventListener("resize", checkInnerWidth);
   }, [checkInnerWidth]);
 
-  return (
-    <Consumer>
-      {(context) =>
-        `${context.sectionWidth}` <= 375 || isMobile || mobileView ? (
-          <CustomizationNavbar />
-        ) : (
-          <StyledComponent>
-            <div className="category-description">{`${t(
-              "Settings:CustomizationDescription"
-            )}`}</div>
-            <div className="category-item-wrapper">
-              <LanguageAndTimeZone />
-            </div>
-            {/* <div className="category-item-wrapper">
+  return isSmallTablet() || mobileView ? (
+    <CustomizationNavbar />
+  ) : (
+    <StyledComponent>
+      <div className="category-description">{`${t(
+        "Settings:CustomizationDescription"
+      )}`}</div>
+      <div className="category-item-wrapper">
+        <LanguageAndTimeZone />
+      </div>
+      {/* <div className="category-item-wrapper">
               <CustomTitles />
             </div>
             <div className="category-item-wrapper">
               <PortalRenaming />
             </div> */}
-          </StyledComponent>
-        )
-      }
-    </Consumer>
+    </StyledComponent>
   );
 };
 

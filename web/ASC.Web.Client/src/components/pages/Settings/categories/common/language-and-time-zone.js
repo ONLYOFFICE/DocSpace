@@ -19,8 +19,7 @@ import { combineUrl } from "@appserver/common/utils";
 import { AppServerConfig } from "@appserver/common/constants";
 import config from "../../../../../../package.json";
 import history from "@appserver/common/history";
-import { isMobile } from "react-device-detect";
-import { Consumer } from "@appserver/components/utils/context";
+import { isMobileOnly } from "react-device-detect";
 import Scrollbar from "@appserver/components/scrollbar";
 
 const mapTimezonesToArray = (timezones) => {
@@ -37,44 +36,7 @@ const menuHeight = "48px";
 const sectionHeight = "50px";
 const paddingSectionWrapperContent = "22px";
 const saveCancelButtons = "56px";
-//const minHeight = "64px";
 const flex = "4px";
-
-const heightScrollbar = css`calc(
-      100vh -
-        (
-          ${menuHeight} + ${sectionHeight} + ${paddingSectionWrapperContent} +
-            ${saveCancelButtons} + ${flex}
-        )
-    )`;
-
-const landscapeMobile = css`
-  ${(props) =>
-    (isMobile || props.sectionWidth <= 375) &&
-    css`
-      max-width: 343px;
-
-      .settings-block {
-        height: auto;
-      }
-    `}
-`;
-
-const portraitMobile = css`
-  ${(props) =>
-    (isMobile || props.sectionWidth <= 375) &&
-    css`
-      .settings-block {
-        height: calc(
-          100vh -
-            (
-              ${menuHeight} + ${sectionHeight} + ${paddingSectionWrapperContent} +
-                ${saveCancelButtons} + ${flex}
-            )
-        );
-      }
-    `}
-`;
 
 const StyledScrollbar = styled(Scrollbar)`
   height: calc(
@@ -83,8 +45,8 @@ const StyledScrollbar = styled(Scrollbar)`
         ${menuHeight} + ${sectionHeight} + ${paddingSectionWrapperContent} +
           ${saveCancelButtons} + ${flex}
       )
-  );
-  width: 343;
+  ) !important;
+  width: 100% !important;
 `;
 
 const StyledComponent = styled.div`
@@ -110,12 +72,36 @@ const StyledComponent = styled.div`
     line-height: 20px;
   }
 
-  @media (orientation: portrait) {
-    ${portraitMobile}
+  @media (max-width: 600px) {
+    ${(props) =>
+      props.hasScroll &&
+      css`
+        width: ${isMobileOnly ? "100vw" : "calc(100vw - 52px)"};
+        left: -16px;
+        position: relative;
+
+        .settings-block {
+          width: ${isMobileOnly ? "calc(100vw - 32px)" : "calc(100vw - 84px)"};
+          max-width: none;
+          padding-left: 16px;
+        }
+      `}
   }
 
-  @media (orientation: landscape) {
-    ${landscapeMobile}
+  @media (min-width: 600px) {
+    .settings-block {
+      max-width: 350px;
+      height: auto;
+    }
+  }
+
+  @media (orientation: landscape) and (max-width: 600px) {
+    ${isMobileOnly &&
+    css`
+      .settings-block {
+        height: auto;
+      }
+    `}
   }
 `;
 
@@ -174,6 +160,8 @@ class LanguageAndTimeZone extends React.Component {
       showReminder: false,
       sectionWidth: null,
       hasScroll: false,
+      heightSettingsBlock: null,
+      heightScrollBody: null,
     };
   }
 
@@ -186,7 +174,7 @@ class LanguageAndTimeZone extends React.Component {
     } = this.props;
     const { timezones, isLoadedData } = this.state;
 
-    window.addEventListener("resize", this.checkSectionWidth);
+    window.addEventListener("resize", this.checkInnerWidth);
 
     if (!timezones.length) {
       getPortalTimezones().then(() => {
@@ -242,21 +230,10 @@ class LanguageAndTimeZone extends React.Component {
       cultureNames,
     } = this.props;
 
-    if (!this.settingsDiv) {
-      this.settingsDiv = document.getElementsByClassName("settings-block")[0];
+    this.checkHeightSettingsBlock();
+    window.addEventListener("resize", this.checkHeightSettingsBlock);
 
-      if (this.settingsDiv) {
-        const height = getComputedStyle(this.settingsDiv).height.slice(0, -2);
-
-        if (this.settingsDiv.scrollHeight > height) {
-          this.setState({
-            hasScroll: true,
-          });
-        }
-      }
-    }
-
-    // TODO: Переделать, убрать div c 64 высотой
+    // TODO: Remove div with height 64 and remove settings-mobile class
     const settingsMobile = document.getElementsByClassName(
       "settings-mobile"
     )[0];
@@ -288,7 +265,11 @@ class LanguageAndTimeZone extends React.Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener("resize", this.checkSectionWidth);
+    window.removeEventListener(
+      "resize",
+      this.checkInnerWidth,
+      this.checkHeightSettingsBlock
+    );
   }
 
   onLanguageSelect = (language) => {
@@ -391,11 +372,8 @@ class LanguageAndTimeZone extends React.Component {
     }
   };
 
-  checkSectionWidth = (width) => {
-    if (this.state.sectionWidth === width) return;
-    this.setState({ sectionWidth: width });
-
-    if (width > 375 && !isMobile) {
+  checkInnerWidth = () => {
+    if (window.innerWidth > 600) {
       history.push(
         combineUrl(
           AppServerConfig.proxyURL,
@@ -403,6 +381,49 @@ class LanguageAndTimeZone extends React.Component {
           "/settings/common/customization"
         )
       );
+      return true;
+    }
+  };
+
+  checkHeightSettingsBlock = () => {
+    if (this.settingsDiv && this.scrollBody) return;
+
+    this.settingsDiv = document.getElementsByClassName("settings-block")[0];
+
+    if (!this.settingsDiv) return;
+
+    this.scrollBody = this.settingsDiv.closest(".scroll-body");
+
+    if (!this.scrollBody) return;
+
+    const height = getComputedStyle(this.settingsDiv).height.slice(0, -2);
+    const heightScrollBody = getComputedStyle(this.scrollBody).height.slice(
+      0,
+      -2
+    );
+
+    if (
+      this.state.heightSettingsBlock === height &&
+      this.state.heightScrollBody === heightScrollBody
+    ) {
+      return;
+    }
+
+    this.setState({
+      heightSettingsBlock: height,
+    });
+    this.setState({
+      heightScrollBody: heightScrollBody,
+    });
+
+    if (parseInt(height, 10) > parseInt(heightScrollBody, 10)) {
+      this.setState({
+        hasScroll: true,
+      });
+    } else {
+      this.setState({
+        hasScroll: false,
+      });
     }
   };
 
@@ -415,7 +436,6 @@ class LanguageAndTimeZone extends React.Component {
       timezones,
       timezone,
       showReminder,
-      hasChanged,
       hasScroll,
     } = this.state;
 
@@ -471,55 +491,40 @@ class LanguageAndTimeZone extends React.Component {
       </div>
     );
 
-    return (
-      <Consumer>
-        {(context) => {
-          this.checkSectionWidth(context.sectionWidth);
-          return !isLoadedData ? (
-            <Loader className="pageLoader" type="rombs" size="40px" />
-          ) : (
-            <StyledComponent sectionWidth={context.sectionWidth}>
-              {`${context.sectionWidth}` > 375 && !isMobile && (
-                <div className="category-item-heading">
-                  <div className="category-item-title">
-                    {t("StudioTimeLanguageSettings")}
-                  </div>
-                  <HelpButton
-                    iconName="static/images/combined.shape.svg"
-                    size={12}
-                    tooltipContent={tooltipLanguageTimeSettings}
-                  />
-                </div>
-              )}
-              {hasScroll ? (
-                <StyledScrollbar
-                  style={{
-                    height: { heightScrollbar },
-                    width: 343,
-                  }}
-                >
-                  {settingsBlock}
-                </StyledScrollbar>
-              ) : (
-                <> {settingsBlock}</>
-              )}
-              <SaveCancelButtons
-                className="save-cancel-buttons"
-                onSaveClick={this.onSaveLngTZSettings}
-                onCancelClick={this.onCancelClick}
-                showReminder={showReminder}
-                reminderTest={t("YouHaveUnsavedChanges")}
-                saveButtonLabel={t("Common:SaveButton")}
-                cancelButtonLabel={t("Common:CancelButton")}
-                displaySettings={true}
-                hasChanged={hasChanged}
-                sectionWidth={context.sectionWidth}
-                hasScroll={hasScroll}
-              />
-            </StyledComponent>
-          );
-        }}
-      </Consumer>
+    return !isLoadedData ? (
+      <Loader className="pageLoader" type="rombs" size="40px" />
+    ) : (
+      <StyledComponent hasScroll={hasScroll}>
+        {this.checkInnerWidth() && (
+          <div className="category-item-heading">
+            <div className="category-item-title">
+              {t("StudioTimeLanguageSettings")}
+            </div>
+            <HelpButton
+              iconName="static/images/combined.shape.svg"
+              size={12}
+              tooltipContent={tooltipLanguageTimeSettings}
+            />
+          </div>
+        )}
+        {(isMobileOnly && window.innerWidth < 600) ||
+        window.innerWidth < 600 ? (
+          <StyledScrollbar stype="smallBlack">{settingsBlock}</StyledScrollbar>
+        ) : (
+          <> {settingsBlock}</>
+        )}
+        <SaveCancelButtons
+          className="save-cancel-buttons"
+          onSaveClick={this.onSaveLngTZSettings}
+          onCancelClick={this.onCancelClick}
+          showReminder={showReminder}
+          reminderTest={t("YouHaveUnsavedChanges")}
+          saveButtonLabel={t("Common:SaveButton")}
+          cancelButtonLabel={t("Common:CancelButton")}
+          displaySettings={true}
+          hasScroll={hasScroll}
+        />
+      </StyledComponent>
     );
   }
 }

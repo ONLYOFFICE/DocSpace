@@ -1,5 +1,5 @@
 import React from "react";
-import { Provider as MobxProvider } from "mobx-react";
+import { Provider as MobxProvider, inject, observer } from "mobx-react";
 
 import PropTypes from "prop-types";
 
@@ -18,35 +18,34 @@ class SelectFolderInputBody extends React.PureComponent {
       isLoading: false,
       baseFolderPath: "",
       fullFolderPath: "",
-      fullFolderPathDefault: "",
     };
   }
   componentDidMount() {
-    const { folderPath } = this.props;
+    const { folderPath, setFirstLoad } = this.props;
 
     if (folderPath.length !== 0) {
       this.setState({
         fullFolderPath: folderPath,
-        fullFolderPathDefault: folderPath,
       });
     }
+
+    setFirstLoad(false);
   }
 
   componentDidUpdate(prevProps) {
-    const { isSetDefaultFolderPath, folderPath } = this.props;
+    const { isSuccessSave, isReset } = this.props;
+    const { fullFolderPath, baseFolderPath } = this.state;
 
-    if (
-      isSetDefaultFolderPath &&
-      isSetDefaultFolderPath !== prevProps.isSetDefaultFolderPath
-    ) {
-      this.setState({
-        fullFolderPath: this.state.fullFolderPathDefault,
-      });
+    if (isSuccessSave && isSuccessSave !== prevProps.isSuccessSave) {
+      fullFolderPath &&
+        this.setState({
+          baseFolderPath: fullFolderPath,
+        });
     }
-    if (folderPath !== prevProps.folderPath) {
+
+    if (isReset && isReset !== prevProps.isReset) {
       this.setState({
-        fullFolderPath: folderPath,
-        fullFolderPathDefault: folderPath,
+        fullFolderPath: baseFolderPath,
       });
     }
   }
@@ -96,20 +95,26 @@ class SelectFolderInputBody extends React.PureComponent {
       headerName,
       footer,
       selectionButtonPrimary,
+      fontSizeInput,
+      maxInputWidth,
+      isReset,
+      foldersList,
       theme,
     } = this.props;
     const { isLoading, baseFolderPath, fullFolderPath } = this.state;
 
     return (
-      <StyledComponent theme={theme}>
+      <StyledComponent maxInputWidth={maxInputWidth} theme={theme}>
         <SimpleFileInput
           theme={theme}
           name={name}
-          className="input-with-folder-path"
+          className="select-folder_file-input"
           textField={fullFolderPath || baseFolderPath}
           isDisabled={isLoading || isSavingProcess || isDisabled}
           isError={isError}
           onClickInput={onClickInput}
+          fontSizeInput={fontSizeInput}
+          maxInputWidth={maxInputWidth}
         />
 
         <SelectFolderDialog
@@ -138,6 +143,8 @@ class SelectFolderInputBody extends React.PureComponent {
           headerName={headerName}
           footer={footer}
           selectionButtonPrimary={selectionButtonPrimary}
+          isReset={isReset}
+          foldersList={foldersList}
         />
       </StyledComponent>
     );
@@ -163,6 +170,12 @@ SelectFolderInputBody.defaultProps = {
   folderPath: "",
 };
 
+const SelectFolderInputBodyWrapper = inject(({ filesStore }) => {
+  const { setFirstLoad } = filesStore;
+  return {
+    setFirstLoad,
+  };
+})(observer(SelectFolderInputBody));
 class SelectFolderInput extends React.Component {
   static setFullFolderPath = (foldersArray) => {
     path = "";
@@ -182,7 +195,7 @@ class SelectFolderInput extends React.Component {
   render() {
     return (
       <MobxProvider {...stores}>
-        <SelectFolderInputBody {...this.props} />
+        <SelectFolderInputBodyWrapper {...this.props} />
       </MobxProvider>
     );
   }

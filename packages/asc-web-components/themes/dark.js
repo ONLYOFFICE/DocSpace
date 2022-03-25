@@ -705,6 +705,15 @@ const Dark = {
         large: "43px",
       },
     },
+    iconButton: {
+      width: {
+        base: "15px",
+        middle: "15px",
+        big: "16px",
+        huge: "16px",
+        large: "16px",
+      },
+    },
   },
 
   passwordInput: {
