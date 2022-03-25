@@ -8,6 +8,9 @@ import Backend from "i18next-node-fs-backend";
 
 const app = express();
 const port = process.env.PORT || 5013;
+const useragent = require("express-useragent");
+
+app.use(useragent.express());
 
 i18next.use(Backend).init({
   backend: {
