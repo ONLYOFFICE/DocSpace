@@ -137,14 +137,14 @@ public class StaticUploader
 
         lock (_locker)
         {
-            if (Queue.GetTasks().Any(x => x.Id != key))
+            if (Queue.GetAllTasks().Any(x => x.Id != key))
             {
                 return;
             }
 
             var uploadOperation = new UploadOperationProgress(_serviceProvider, key, tenant.Id, relativePath, mappedPath);
 
-            Queue.QueueTask(uploadOperation);
+            Queue.EnqueueTask(uploadOperation);
         }
     }
 
@@ -170,7 +170,7 @@ public class StaticUploader
         {
             var key = typeof(UploadOperationProgress).FullName + tenantId;
 
-            return Queue.GetTask<UploadOperationProgress>(key);
+            return Queue.PeekTask<UploadOperationProgress>(key);
         }
     }
 

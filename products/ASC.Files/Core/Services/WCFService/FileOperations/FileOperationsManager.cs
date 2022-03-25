@@ -41,7 +41,7 @@ public class FileOperationsManager
 
     public List<FileOperationResult> GetOperationResults(Guid userId)
     {
-        var operations = _tasks.GetTasks();
+        var operations = _tasks.GetAllTasks();
         var processlist = Process.GetProcesses();
 
         //TODO: replace with distributed cache
@@ -50,7 +50,7 @@ public class FileOperationsManager
             foreach (var o in operations.Where(o => processlist.All(p => p.Id != o.InstanceId)))
             {
                 o[FileOperation.Progress] = "100";
-                _tasks.RemoveTask(o.Id);
+                _tasks.DequeueTask(o.Id);
             }
         }
 
@@ -59,7 +59,7 @@ public class FileOperationsManager
         {
             o[FileOperation.Progress] = "100";
 
-            _tasks.RemoveTask(o.Id);
+            _tasks.DequeueTask(o.Id);
         }
 
         var results = operations
@@ -82,7 +82,7 @@ public class FileOperationsManager
 
     public List<FileOperationResult> CancelOperations(Guid userId)
     {
-        var operations = _tasks.GetTasks()
+        var operations = _tasks.GetAllTasks()
             .Where(t => new Guid(t[FileOperation.Owner]) == userId);
 
         foreach (var o in operations)
@@ -108,7 +108,7 @@ public class FileOperationsManager
 
     public List<FileOperationResult> Download(Guid userId, Tenant tenant, Dictionary<JsonElement, string> folders, Dictionary<JsonElement, string> files, IDictionary<string, StringValues> headers)
     {
-        var operations = _tasks.GetTasks()
+        var operations = _tasks.GetAllTasks()
             .Where(t => new Guid(t[FileOperation.Owner]) == userId)
             .Where(t => (FileOperationType)Convert.ToInt32(t[FileOperation.OpType]) == FileOperationType.Download);
 
@@ -161,14 +161,14 @@ public class FileOperationsManager
 
     private List<FileOperationResult> QueueTask(Guid userId, FileOperation op)
     {
-        _tasks.QueueTask(op.RunJobAsync, op.GetDistributedTask());
+        _tasks.EnqueueTask(op.RunJobAsync, op.GetDistributedTask());
 
         return GetOperationResults(userId);
     }
 
     private List<FileOperationResult> QueueTask<T, TId>(Guid userId, FileOperation<T, TId> op) where T : FileOperationData<TId>
     {
-        _tasks.QueueTask(op.RunJobAsync, op.GetDistributedTask());
+        _tasks.EnqueueTask(op.RunJobAsync, op.GetDistributedTask());
 
         return GetOperationResults(userId);
     }

@@ -79,7 +79,7 @@ public class BackupWorker
     {
         if (_progressQueue != null)
         {
-            var tasks = _progressQueue.GetTasks();
+            var tasks = _progressQueue.GetAllTasks();
 
             foreach (var t in tasks)
             {
@@ -94,16 +94,16 @@ public class BackupWorker
     {
         lock (_synchRoot)
         {
-            var item = _progressQueue.GetTasks<BackupProgressItem>().FirstOrDefault(t => t.TenantId == request.TenantId);
+            var item = _progressQueue.GetAllTasks<BackupProgressItem>().FirstOrDefault(t => t.TenantId == request.TenantId);
             if (item != null && item.IsCompleted)
             {
-                _progressQueue.RemoveTask(item.Id);
+                _progressQueue.DequeueTask(item.Id);
                 item = null;
             }
             if (item == null)
             {
                 item = _factoryProgressItem.CreateBackupProgressItem(request, false, TempFolder, _limit, _currentRegion, _configPaths);
-                _progressQueue.QueueTask(item);
+                _progressQueue.EnqueueTask(item);
             }
 
             item.PublishChanges();
@@ -116,16 +116,16 @@ public class BackupWorker
     {
         lock (_synchRoot)
         {
-            var item = _progressQueue.GetTasks<BackupProgressItem>().FirstOrDefault(t => t.TenantId == schedule.TenantId);
+            var item = _progressQueue.GetAllTasks<BackupProgressItem>().FirstOrDefault(t => t.TenantId == schedule.TenantId);
             if (item != null && item.IsCompleted)
             {
-                _progressQueue.RemoveTask(item.Id);
+                _progressQueue.DequeueTask(item.Id);
                 item = null;
             }
             if (item == null)
             {
                 item = _factoryProgressItem.CreateBackupProgressItem(schedule, false, TempFolder, _limit, _currentRegion, _configPaths);
-                _progressQueue.QueueTask(item);
+                _progressQueue.EnqueueTask(item);
             }
         }
     }
@@ -134,7 +134,7 @@ public class BackupWorker
     {
         lock (_synchRoot)
         {
-            return ToBackupProgress(_progressQueue.GetTasks<BackupProgressItem>().FirstOrDefault(t => t.TenantId == tenantId));
+            return ToBackupProgress(_progressQueue.GetAllTasks<BackupProgressItem>().FirstOrDefault(t => t.TenantId == tenantId));
         }
     }
 
@@ -142,7 +142,7 @@ public class BackupWorker
     {
         lock (_synchRoot)
         {
-            return ToBackupProgress(_progressQueue.GetTasks<TransferProgressItem>().FirstOrDefault(t => t.TenantId == tenantId));
+            return ToBackupProgress(_progressQueue.GetAllTasks<TransferProgressItem>().FirstOrDefault(t => t.TenantId == tenantId));
         }
     }
 
@@ -150,7 +150,7 @@ public class BackupWorker
     {
         lock (_synchRoot)
         {
-            return ToBackupProgress(_progressQueue.GetTasks<RestoreProgressItem>().FirstOrDefault(t => t.TenantId == tenantId));
+            return ToBackupProgress(_progressQueue.GetAllTasks<RestoreProgressItem>().FirstOrDefault(t => t.TenantId == tenantId));
         }
     }
 
@@ -158,7 +158,7 @@ public class BackupWorker
     {
         lock (_synchRoot)
         {
-            var progress = _progressQueue.GetTasks<BackupProgressItem>().FirstOrDefault(t => t.TenantId == tenantId);
+            var progress = _progressQueue.GetAllTasks<BackupProgressItem>().FirstOrDefault(t => t.TenantId == tenantId);
             if (progress != null)
             {
                 progress.Exception = null;
@@ -170,7 +170,7 @@ public class BackupWorker
     {
         lock (_synchRoot)
         {
-            var progress = _progressQueue.GetTasks<RestoreProgressItem>().FirstOrDefault(t => t.TenantId == tenantId);
+            var progress = _progressQueue.GetAllTasks<RestoreProgressItem>().FirstOrDefault(t => t.TenantId == tenantId);
             if (progress != null)
             {
                 progress.Exception = null;
@@ -182,16 +182,16 @@ public class BackupWorker
     {
         lock (_synchRoot)
         {
-            var item = _progressQueue.GetTasks<RestoreProgressItem>().FirstOrDefault(t => t.TenantId == request.TenantId);
+            var item = _progressQueue.GetAllTasks<RestoreProgressItem>().FirstOrDefault(t => t.TenantId == request.TenantId);
             if (item != null && item.IsCompleted)
             {
-                _progressQueue.RemoveTask(item.Id);
+                _progressQueue.DequeueTask(item.Id);
                 item = null;
             }
             if (item == null)
             {
                 item = _factoryProgressItem.CreateRestoreProgressItem(request, TempFolder, _upgradesPath, _currentRegion, _configPaths);
-                _progressQueue.QueueTask(item);
+                _progressQueue.EnqueueTask(item);
             }
             return ToBackupProgress(item);
         }
@@ -201,17 +201,17 @@ public class BackupWorker
     {
         lock (_synchRoot)
         {
-            var item = _progressQueue.GetTasks<TransferProgressItem>().FirstOrDefault(t => t.TenantId == tenantId);
+            var item = _progressQueue.GetAllTasks<TransferProgressItem>().FirstOrDefault(t => t.TenantId == tenantId);
             if (item != null && item.IsCompleted)
             {
-                _progressQueue.RemoveTask(item.Id);
+                _progressQueue.DequeueTask(item.Id);
                 item = null;
             }
 
             if (item == null)
             {
                 item = _factoryProgressItem.CreateTransferProgressItem(targetRegion, transferMail, tenantId, TempFolder, _limit, notify, _currentRegion, _configPaths);
-                _progressQueue.QueueTask(item);
+                _progressQueue.EnqueueTask(item);
             }
 
             return ToBackupProgress(item);
@@ -261,7 +261,7 @@ public class BackupWorker
 
     public bool HaveBackupRestoreRequestWaitingTasks()
     {
-        var countActiveTask = _progressQueue.GetTasks<RestoreProgressItem>().Where(x => !x.IsCompleted).Count();
+        var countActiveTask = _progressQueue.GetAllTasks<RestoreProgressItem>().Where(x => !x.IsCompleted).Count();
 
         if (_progressQueue.MaxThreadsCount >= countActiveTask)
         {
@@ -276,7 +276,7 @@ public class BackupWorker
     {
         if (_progressQueue.MaxThreadsCount == -1) return false;
 
-        var countActiveTask = _progressQueue.GetTasks<TransferProgressItem>().Where(x => !x.IsCompleted).Count();
+        var countActiveTask = _progressQueue.GetAllTasks<TransferProgressItem>().Where(x => !x.IsCompleted).Count();
 
         if (_progressQueue.MaxThreadsCount >= countActiveTask)
         {
@@ -291,7 +291,7 @@ public class BackupWorker
     {
         if (_progressQueue.MaxThreadsCount == -1) return false;
 
-        var countActiveTask = _progressQueue.GetTasks<BackupProgressItem>().Where(x => !x.IsCompleted).Count();
+        var countActiveTask = _progressQueue.GetAllTasks<BackupProgressItem>().Where(x => !x.IsCompleted).Count();
 
         if (_progressQueue.MaxThreadsCount >= countActiveTask)
         {

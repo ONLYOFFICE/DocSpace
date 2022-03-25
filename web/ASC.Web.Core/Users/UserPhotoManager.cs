@@ -669,10 +669,10 @@ namespace ASC.Web.Core.Users
             }
             else
             {
-                if (!ResizeQueue.GetTasks<ResizeWorkerItem>().Any(r => r["key"] == key))
+                if (!ResizeQueue.GetAllTasks<ResizeWorkerItem>().Any(r => r["key"] == key))
                 {
                     //Add
-                    ResizeQueue.QueueTask((a, b) => ResizeImage(resizeTask), resizeTask);
+                    ResizeQueue.EnqueueTask((a, b) => ResizeImage(resizeTask), resizeTask);
                 }
                 return GetDefaultPhotoAbsoluteWebPath(size);
                 //NOTE: return default photo here. Since task will update cache

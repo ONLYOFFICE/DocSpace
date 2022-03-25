@@ -60,7 +60,7 @@ namespace ASC.Data.Reassigns
         {
             var id = GetProgressItemId(tenantId, userId);
 
-            return Queue.GetTask<T>(id);
+            return Queue.PeekTask<T>(id);
         }
 
         public void Terminate(int tenantId, Guid userId)
@@ -81,14 +81,14 @@ namespace ASC.Data.Reassigns
 
                 if (task != null && task.IsCompleted)
                 {
-                    Queue.RemoveTask(task.Id);
+                    Queue.DequeueTask(task.Id);
                     task = null;
                 }
 
                 if (task == null)
                 {
                     task = constructor();
-                    Queue.QueueTask(task);
+                    Queue.EnqueueTask(task);
                 }
 
                 return task;

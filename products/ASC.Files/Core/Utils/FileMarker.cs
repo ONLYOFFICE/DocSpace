@@ -44,7 +44,7 @@ public class FileMarkerHelper<T>
 
     internal void Add(AsyncTaskData<T> taskData)
     {
-        Tasks.QueueTask(async (d, c) => await ExecMarkFileAsNewAsync(taskData), taskData);
+        Tasks.EnqueueTask(async (d, c) => await ExecMarkFileAsNewAsync(taskData), taskData);
     }
 
     private async Task ExecMarkFileAsNewAsync(AsyncTaskData<T> obj)

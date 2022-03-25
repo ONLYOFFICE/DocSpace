@@ -262,7 +262,7 @@ public class DocbuilderReportsUtility
     {
         lock (_locker)
         {
-            _tasks.QueueTask(state.GenerateReportAsync, state.GetDistributedTask());
+            _tasks.EnqueueTask(state.GenerateReportAsync, state.GetDistributedTask());
         }
     }
 
@@ -270,7 +270,7 @@ public class DocbuilderReportsUtility
     {
         lock (_locker)
         {
-            var result = _tasks.GetTasks().Where(Predicate(origin, tenantId, userId));
+            var result = _tasks.GetAllTasks().Where(Predicate(origin, tenantId, userId));
 
             foreach (var t in result)
             {
@@ -283,7 +283,7 @@ public class DocbuilderReportsUtility
     {
         lock (_locker)
         {
-            var task = _tasks.GetTasks().LastOrDefault(Predicate(origin, tenantId, userId));
+            var task = _tasks.GetAllTasks().LastOrDefault(Predicate(origin, tenantId, userId));
             if (task == null)
             {
                 return null;
@@ -294,7 +294,7 @@ public class DocbuilderReportsUtility
 
             if ((int)status > 1)
             {
-                _tasks.RemoveTask(task.Id);
+                _tasks.DequeueTask(task.Id);
             }
 
             return result;

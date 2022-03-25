@@ -34,6 +34,7 @@ public class DistributedTaskQueue
     private readonly IServiceProvider _serviceProvider;
     private readonly ICacheNotify<DistributedTaskCancelation> _cancellationCacheNotify;
     private readonly IDistributedCache _distributedCache;
+    private readonly ILog _logger;
 
     private int _maxThreadsCount = -1;
     private string _name;
@@ -41,13 +42,15 @@ public class DistributedTaskQueue
 
     public DistributedTaskQueue(IServiceProvider serviceProvider,
                                 ICacheNotify<DistributedTaskCancelation> cancelTaskNotify,
-                                IDistributedCache distributedCache)
+                                IDistributedCache distributedCache,
+                                IOptionsMonitor<ILog> options)
 
     {
         _distributedCache = distributedCache;
         _serviceProvider = serviceProvider;
         _cancellationCacheNotify = cancelTaskNotify;
         _cancelations = new ConcurrentDictionary<string, CancellationTokenSource>();
+        _logger = options.CurrentValue;
 
         _cancellationCacheNotify.Subscribe((c) =>
         {
@@ -86,12 +89,12 @@ public class DistributedTaskQueue
 
     public static readonly int InstanceId = Process.GetCurrentProcess().Id;
 
-    public void QueueTask(DistributedTaskProgress taskProgress)
+    public void EnqueueTask(DistributedTaskProgress taskProgress)
     {
-        QueueTask((a, b) => taskProgress.RunJob(), taskProgress);
+        EnqueueTask((a, b) => taskProgress.RunJob(), taskProgress);
     }
 
-    public void QueueTask(Action<DistributedTask, CancellationToken> action, DistributedTask distributedTask = null)
+    public void EnqueueTask(Action<DistributedTask, CancellationToken> action, DistributedTask distributedTask = null)
     {
         if (distributedTask == null)
         {
@@ -120,9 +123,12 @@ public class DistributedTaskQueue
         distributedTask.PublishChanges();
 
         task.Start(Scheduler);
+
+        _logger.TraceFormat("EnqueueTask '{DistributedTaskId}' by instanse id '{InstanceId}'", distributedTask.Id, InstanceId);
+
     }
 
-    public void QueueTask(Func<DistributedTask, CancellationToken, Task> action, DistributedTask distributedTask = null)
+    public void EnqueueTask(Func<DistributedTask, CancellationToken, Task> action, DistributedTask distributedTask = null)
     {
         if (distributedTask == null)
         {
@@ -153,9 +159,12 @@ public class DistributedTaskQueue
         distributedTask.PublishChanges();
 
         task.Start(Scheduler);
+
+        _logger.TraceFormat("EnqueueTask '{DistributedTaskId}' by instanse id '{InstanceId}'", distributedTask.Id, InstanceId);
+
     }
 
-    public List<DistributedTask> GetTasks()
+    public IEnumerable<DistributedTask> GetAllTasks()
     {
         var serializedObject = _distributedCache.Get(_name);
 
@@ -177,41 +186,23 @@ public class DistributedTaskQueue
     }
 
 
-    public IEnumerable<T> GetTasks<T>() where T : DistributedTask
+    public IEnumerable<T> GetAllTasks<T>() where T : DistributedTask
     {
-       return GetTasks().Select(x => Map(x, _serviceProvider.GetService<T>()));                       
+       return GetAllTasks().Select(x => Map(x, _serviceProvider.GetService<T>()));                       
     }
 
-    public T GetTask<T>(string id) where T : DistributedTask
+    public T PeekTask<T>(string id) where T : DistributedTask
     {      
-        var taskById = GetTasks().FirstOrDefault(x => x.Id == id);
+        var taskById = GetAllTasks().FirstOrDefault(x => x.Id == id);
 
         if (taskById == null) return null;
                
         return Map(taskById, _serviceProvider.GetService<T>());
     }
 
-    public DistributedTask GetTask(string id)
+    public void DequeueTask(string id)
     {
-        return GetTasks().FirstOrDefault(x => x.Id == id);
-    }
-
-    public void SetTask(DistributedTask task)
-    {
-        var queueTasks = GetTasks().FindAll(x => x.Id != task.Id);
-
-        queueTasks.Add(task);
-
-        using var ms = new MemoryStream();
-
-        Serializer.Serialize(ms, queueTasks);
-
-        _distributedCache.Set(_name, ms.ToArray());
-    }
-
-    public void RemoveTask(string id)
-    {
-        var queueTasks = GetTasks();
+        var queueTasks = GetAllTasks().ToList();
 
         if (!queueTasks.Exists(x => x.Id == id)) return;
 
@@ -222,6 +213,9 @@ public class DistributedTaskQueue
         Serializer.Serialize(ms, queueTasks);
 
         _distributedCache.Set(_name, ms.ToArray());
+
+        _logger.TraceFormat("DequeueTask '{DistributedTaskId}' by instanse id '{InstanceId}'", id, InstanceId);
+
     }
 
     public void CancelTask(string id)
@@ -231,7 +225,7 @@ public class DistributedTaskQueue
 
     private void OnCompleted(Task task, string id)
     {
-        var distributedTask = GetTask(id);
+        var distributedTask = GetAllTasks().FirstOrDefault(x => x.Id == id);
         if (distributedTask != null)
         {
             distributedTask.Status = DistributedTaskStatus.Completed;
@@ -255,9 +249,19 @@ public class DistributedTaskQueue
 
     private Action<DistributedTask> GetPublication()
     {
-        return (t) =>
+        return (task) =>
         {
-            SetTask(t);
+            var queueTasks = GetAllTasks().ToList().FindAll(x => x.Id != task.Id);
+
+            queueTasks.Add(task);
+
+            using var ms = new MemoryStream();
+
+            Serializer.Serialize(ms, queueTasks);
+
+            _distributedCache.Set(_name, ms.ToArray());
+
+            _logger.TraceFormat("Publication DistributedTask '{DistributedTaskId}' by instanse id '{InstanceId}' ", task.Id, task.InstanceId);
         };
     }
 

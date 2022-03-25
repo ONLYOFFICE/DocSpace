@@ -57,13 +57,13 @@ public class StorageUploader
         {
             var id = GetCacheKey(tenantId);
          
-            if (Queue.GetTasks().Any(x => x.Id == id))
+            if (Queue.GetAllTasks().Any(x => x.Id == id))
             {
                 return;
             }
 
             var migrateOperation = new MigrateOperation(_serviceProvider, _cacheMigrationNotify, id, tenantId, newStorageSettings, storageFactoryConfig, _tempStream);
-            Queue.QueueTask(migrateOperation);
+            Queue.EnqueueTask(migrateOperation);
         }
     }
 
@@ -71,13 +71,13 @@ public class StorageUploader
     {
         lock (_locker)
         {
-            return Queue.GetTask<MigrateOperation>(GetCacheKey(tenantId));
+            return Queue.PeekTask<MigrateOperation>(GetCacheKey(tenantId));
         }
     }
 
     public void Stop()
     {
-        foreach (var task in Queue.GetTasks<MigrateOperation>().Where(r => r.Status == DistributedTaskStatus.Running))
+        foreach (var task in Queue.GetAllTasks<MigrateOperation>().Where(r => r.Status == DistributedTaskStatus.Running))
         {
             Queue.CancelTask(task.Id);
         }

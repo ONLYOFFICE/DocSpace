@@ -45,13 +45,13 @@ public class EncryptionWorker
         EncryptionOperation encryptionOperation;
         lock (_locker)
         {
-            if (_queue.GetTasks().Any(x => x.Id == GetCacheId()))
+            if (_queue.GetAllTasks().Any(x => x.Id == GetCacheId()))
             {
                 return;
             }
 
             encryptionOperation = _factoryOperation.CreateOperation(encryptionSettings, GetCacheId());
-            _queue.QueueTask(encryptionOperation);
+            _queue.EnqueueTask(encryptionOperation);
         }
     }
 
@@ -67,7 +67,7 @@ public class EncryptionWorker
 
     public double? GetEncryptionProgress()
     {
-        var progress = _queue.GetTasks<EncryptionOperation>().FirstOrDefault();
+        var progress = _queue.GetAllTasks<EncryptionOperation>().FirstOrDefault();
 
         return progress.Percentage;
     }
