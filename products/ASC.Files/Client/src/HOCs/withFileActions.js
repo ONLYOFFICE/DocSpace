@@ -316,7 +316,6 @@ export default function withFileActions(WrappedFileItem) {
         getModel: contextOptionsStore.getModel,
         showHotkeyBorder,
         openFileAction,
-        setShowCurrentFolder,
       };
     }
   )(observer(WithFileActions));
