@@ -1,7 +1,6 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
 import { isMobile } from "react-device-detect";
-import { isDesktop } from "@appserver/components/utils/device";
 
 export default function withFileActions(WrappedFileItem) {
   class WithFileActions extends React.Component {
@@ -10,16 +9,9 @@ export default function withFileActions(WrappedFileItem) {
     }
 
     onContentFileSelect = (checked, file) => {
-      const {
-        selectRowAction,
-        infoPanelIsVisible,
-        infoPanelonItemClick,
-        setShowCurrentFolder,
-      } = this.props;
+      const { selectRowAction } = this.props;
       if (!file || file.id === -1) return;
       selectRowAction(checked, file);
-
-      infoPanelonItemClick(checked);
     };
 
     fileContextClick = () => {
@@ -98,12 +90,7 @@ export default function withFileActions(WrappedFileItem) {
     };
 
     onMouseClick = (e) => {
-      const {
-        viewAs,
-        isItemsSelected,
-        infoPanelIsVisible,
-        infoPanelonItemClick,
-      } = this.props;
+      const { viewAs } = this.props;
 
       if (
         e.target.tagName === "INPUT" ||
@@ -123,8 +110,6 @@ export default function withFileActions(WrappedFileItem) {
           return;
         if (e.detail === 1) this.fileContextClick();
       } else this.fileContextClick();
-
-      infoPanelonItemClick();
     };
 
     onFilesClick = (e) => {
@@ -229,7 +214,6 @@ export default function withFileActions(WrappedFileItem) {
         //selectedFolderStore,
         filesStore,
         uploadDataStore,
-        infoPanelStore,
         settingsStore,
         contextOptionsStore,
       },
@@ -266,7 +250,6 @@ export default function withFileActions(WrappedFileItem) {
 
       const { startUpload } = uploadDataStore;
       const { type, extension, id } = fileActionStore;
-      const { isVisible, onItemClick, setShowCurrentFolder } = infoPanelStore;
 
       const selectedItem = selection.find(
         (x) => x.id === item.id && x.fileExst === item.fileExst
@@ -333,8 +316,6 @@ export default function withFileActions(WrappedFileItem) {
         getModel: contextOptionsStore.getModel,
         showHotkeyBorder,
         openFileAction,
-        isInfoPanelVisible: isVisible,
-        infoPanelonItemClick: onItemClick,
         setShowCurrentFolder,
       };
     }
