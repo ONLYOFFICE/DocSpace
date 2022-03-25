@@ -56,6 +56,7 @@ class AddUsersPanelComponent extends React.Component {
     for (let item of users) {
       if (item.key) {
         item.id = item.key;
+        item.groups = item.groups;
       }
       const currentItem = shareDataItems.find((x) => x.sharedTo.id === item.id);
       if (!currentItem) {
@@ -109,8 +110,18 @@ class AddUsersPanelComponent extends React.Component {
       accessOptions,
       isMultiSelect,
       theme,
+      shareDataItems,
     } = this.props;
     const { accessRight } = this.state;
+
+    const selectedOptions = [];
+    shareDataItems.forEach((item) => {
+      const { sharedTo } = item;
+      if (sharedTo.groups) {
+        const groups = sharedTo.groups.map((group) => group.id);
+        selectedOptions.push({ key: sharedTo.id, id: sharedTo.id, groups });
+      }
+    });
 
     const zIndex = 310;
 
@@ -153,6 +164,7 @@ class AddUsersPanelComponent extends React.Component {
                   isMultiSelect ? this.onPeopleSelect : this.onOwnerSelect
                 }
                 {...embeddedComponent}
+                selectedOptions={selectedOptions}
                 groupsCaption={groupsCaption}
                 showCounter
                 onArrowClick={this.onArrowClick}

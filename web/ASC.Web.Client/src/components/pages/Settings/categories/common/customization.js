@@ -49,7 +49,7 @@ const StyledComponent = styled.div`
     margin-right: 4px;
   }
 
-  @media (min-width: 601px) {
+  @media (min-width: 600px) {
     .settings-block {
       max-width: 350px;
       height: auto;

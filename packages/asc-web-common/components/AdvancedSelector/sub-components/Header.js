@@ -1,27 +1,23 @@
 import React from "react";
-import PropTypes from "prop-types";
-import StyledHeader from "./StyledHeader";
 
-class Header extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+import Heading from "@appserver/components/heading";
+import IconButton from "@appserver/components/icon-button";
 
-  render() {
-    const { children, className, style } = this.props;
-    return (
-      <StyledHeader className={className} style={style}>
-        {children}
-      </StyledHeader>
-    );
-  }
-}
-
-Header.propTypes = {
-  children: PropTypes.any,
-  className: PropTypes.string,
-  style: PropTypes.object,
-  displayType: PropTypes.oneOf(["dropdown", "aside"]),
+const Header = ({ headerLabel, onArrowClickAction }) => {
+  return (
+    <div className="header">
+      <IconButton
+        iconName="/static/images/arrow.path.react.svg"
+        size="17"
+        isFill={true}
+        className="arrow-button"
+        onClick={onArrowClickAction}
+      />
+      <Heading size="medium" truncate={true}>
+        {headerLabel.replace("()", "")}
+      </Heading>
+    </div>
+  );
 };
 
-export default Header;
+export default React.memo(Header);

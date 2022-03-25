@@ -1,11 +1,55 @@
 import React from "react";
 import PropTypes from "prop-types";
+import styled, { css } from "styled-components";
+
+import { isMobileOnly } from "react-device-detect";
+import { mobile } from "@appserver/components/utils/device";
+import { Base } from "@appserver/components/themes";
 
 import Selector from "./sub-components/Selector";
 import Backdrop from "@appserver/components/backdrop";
-import Aside from "@appserver/components/aside";
 
-const sizes = ["compact", "full"];
+const mobileView = css`
+  top: 64px;
+
+  width: 100vw !important;
+  height: calc(100vh - 64px) !important;
+`;
+
+const StyledBlock = styled.div`
+  position: fixed;
+  top: 0;
+  right: 0;
+
+  width: 480px;
+  max-width: 100vw;
+  height: 100vh;
+
+  z-index: 400;
+
+  display: flex;
+  flex-direction: column;
+
+  background: ${(props) => props.theme.filterInput.filter.background};
+
+  @media ${mobile} {
+    ${mobileView}
+  }
+
+  ${isMobileOnly && mobileView}
+
+  .people-selector {
+    height: 100%;
+    width: 100%;
+
+    .selector-wrapper,
+    .column-options {
+      width: 100%;
+    }
+  }
+`;
+
+StyledBlock.defaultProps = { theme: Base };
 
 class AdvancedSelector extends React.Component {
   constructor(props) {
@@ -21,34 +65,30 @@ class AdvancedSelector extends React.Component {
   };
 
   render() {
-    const {
-      isOpen,
-      id,
-      className,
-      style,
-      withoutAside,
-      isDefaultDisplayDropDown,
-      smallSectionWidth,
-    } = this.props;
+    const { isOpen, id, className, style, withoutAside } = this.props;
 
     return (
-      <div id={id} className={className} style={style}>
-        {withoutAside ? (
-          <Selector {...this.props} />
-        ) : (
-          <>
-            <Backdrop
-              onClick={this.onClose}
-              visible={isOpen}
-              zIndex={310}
-              isAside={true}
-            />
-            <Aside visible={isOpen} scale={false} className="aside-container">
+      <>
+        {isOpen && (
+          <div id={id} className={className} style={style}>
+            {withoutAside ? (
               <Selector {...this.props} />
-            </Aside>
-          </>
+            ) : (
+              <>
+                <Backdrop
+                  onClick={this.onClose}
+                  visible={isOpen}
+                  zIndex={310}
+                  isAside={true}
+                />
+                <StyledBlock>
+                  <Selector {...this.props} />
+                </StyledBlock>
+              </>
+            )}
+          </div>
         )}
-      </div>
+      </>
     );
   }
 }
@@ -66,8 +106,6 @@ AdvancedSelector.propTypes = {
   placeholder: PropTypes.string,
   selectAllLabel: PropTypes.string,
   buttonLabel: PropTypes.string,
-
-  size: PropTypes.oneOf(sizes),
 
   maxHeight: PropTypes.number,
 

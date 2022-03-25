@@ -500,7 +500,7 @@ Body.propTypes = {
 
 const WizardWrapper = withTranslation(["Wizard", "Common"])(Body);
 
-const WizardPage = (props) => {
+const WizardPage = observer((props) => {
   const { isLoaded } = props;
 
   return (
@@ -512,7 +512,7 @@ const WizardPage = (props) => {
       </Section>
     )
   );
-};
+});
 
 WizardPage.propTypes = {
   culture: PropTypes.string.isRequired,
@@ -573,4 +573,4 @@ export default inject(({ auth, wizard }) => {
     setLicense,
     resetLicenseUploaded,
   };
-})(withRouter(observer(withCultureNames(WizardPage))));
+})(withRouter(withCultureNames(WizardPage)));
