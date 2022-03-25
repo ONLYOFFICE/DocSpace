@@ -72,7 +72,7 @@ const StyledComponent = styled.div`
     line-height: 20px;
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: 599px) {
     ${(props) =>
       props.hasScroll &&
       css`
@@ -445,6 +445,221 @@ class LanguageAndTimeZone extends React.Component {
 
     const settingsBlock = (
       <div className="settings-block">
+        <FieldContainer
+          id="fieldContainerLanguage"
+          labelText={`${t("Common:Language")}:`}
+          isVertical={true}
+        >
+          <ComboBox
+            id="comboBoxLanguage"
+            options={cultureNames}
+            selectedOption={language}
+            onSelect={this.onLanguageSelect}
+            isDisabled={isLoading}
+            noBorder={false}
+            scaled={true}
+            scaledOptions={true}
+            dropDownMaxHeight={300}
+            className="dropdown-item-width"
+          />
+        </FieldContainer>
+        <div className="field-container-flex">
+          <div className="field-title">{`${t("Automatic time zone")}`}</div>
+          <ToggleButton
+            className="toggle"
+            onChange={() => toastr.info(<>Not implemented</>)}
+          />
+        </div>
+        <FieldContainer
+          id="fieldContainerTimezone"
+          labelText={`${t("TimeZone")}:`}
+          isVertical={true}
+        >
+          <ComboBox
+            id="comboBoxTimezone"
+            options={timezones}
+            selectedOption={timezone}
+            onSelect={this.onTimezoneSelect}
+            isDisabled={isLoading}
+            noBorder={false}
+            scaled={true}
+            scaledOptions={true}
+            dropDownMaxHeight={300}
+            className="dropdown-item-width"
+          />
+        </FieldContainer>
+        <FieldContainer
+          id="fieldContainerLanguage"
+          labelText={`${t("Common:Language")}:`}
+          isVertical={true}
+        >
+          <ComboBox
+            id="comboBoxLanguage"
+            options={cultureNames}
+            selectedOption={language}
+            onSelect={this.onLanguageSelect}
+            isDisabled={isLoading}
+            noBorder={false}
+            scaled={true}
+            scaledOptions={true}
+            dropDownMaxHeight={300}
+            className="dropdown-item-width"
+          />
+        </FieldContainer>
+        <div className="field-container-flex">
+          <div className="field-title">{`${t("Automatic time zone")}`}</div>
+          <ToggleButton
+            className="toggle"
+            onChange={() => toastr.info(<>Not implemented</>)}
+          />
+        </div>
+        <FieldContainer
+          id="fieldContainerTimezone"
+          labelText={`${t("TimeZone")}:`}
+          isVertical={true}
+        >
+          <ComboBox
+            id="comboBoxTimezone"
+            options={timezones}
+            selectedOption={timezone}
+            onSelect={this.onTimezoneSelect}
+            isDisabled={isLoading}
+            noBorder={false}
+            scaled={true}
+            scaledOptions={true}
+            dropDownMaxHeight={300}
+            className="dropdown-item-width"
+          />
+        </FieldContainer>
+        <FieldContainer
+          id="fieldContainerLanguage"
+          labelText={`${t("Common:Language")}:`}
+          isVertical={true}
+        >
+          <ComboBox
+            id="comboBoxLanguage"
+            options={cultureNames}
+            selectedOption={language}
+            onSelect={this.onLanguageSelect}
+            isDisabled={isLoading}
+            noBorder={false}
+            scaled={true}
+            scaledOptions={true}
+            dropDownMaxHeight={300}
+            className="dropdown-item-width"
+          />
+        </FieldContainer>
+        <div className="field-container-flex">
+          <div className="field-title">{`${t("Automatic time zone")}`}</div>
+          <ToggleButton
+            className="toggle"
+            onChange={() => toastr.info(<>Not implemented</>)}
+          />
+        </div>
+        <FieldContainer
+          id="fieldContainerTimezone"
+          labelText={`${t("TimeZone")}:`}
+          isVertical={true}
+        >
+          <ComboBox
+            id="comboBoxTimezone"
+            options={timezones}
+            selectedOption={timezone}
+            onSelect={this.onTimezoneSelect}
+            isDisabled={isLoading}
+            noBorder={false}
+            scaled={true}
+            scaledOptions={true}
+            dropDownMaxHeight={300}
+            className="dropdown-item-width"
+          />
+        </FieldContainer>
+        <FieldContainer
+          id="fieldContainerLanguage"
+          labelText={`${t("Common:Language")}:`}
+          isVertical={true}
+        >
+          <ComboBox
+            id="comboBoxLanguage"
+            options={cultureNames}
+            selectedOption={language}
+            onSelect={this.onLanguageSelect}
+            isDisabled={isLoading}
+            noBorder={false}
+            scaled={true}
+            scaledOptions={true}
+            dropDownMaxHeight={300}
+            className="dropdown-item-width"
+          />
+        </FieldContainer>
+        <div className="field-container-flex">
+          <div className="field-title">{`${t("Automatic time zone")}`}</div>
+          <ToggleButton
+            className="toggle"
+            onChange={() => toastr.info(<>Not implemented</>)}
+          />
+        </div>
+        <FieldContainer
+          id="fieldContainerTimezone"
+          labelText={`${t("TimeZone")}:`}
+          isVertical={true}
+        >
+          <ComboBox
+            id="comboBoxTimezone"
+            options={timezones}
+            selectedOption={timezone}
+            onSelect={this.onTimezoneSelect}
+            isDisabled={isLoading}
+            noBorder={false}
+            scaled={true}
+            scaledOptions={true}
+            dropDownMaxHeight={300}
+            className="dropdown-item-width"
+          />
+        </FieldContainer>
+        <FieldContainer
+          id="fieldContainerLanguage"
+          labelText={`${t("Common:Language")}:`}
+          isVertical={true}
+        >
+          <ComboBox
+            id="comboBoxLanguage"
+            options={cultureNames}
+            selectedOption={language}
+            onSelect={this.onLanguageSelect}
+            isDisabled={isLoading}
+            noBorder={false}
+            scaled={true}
+            scaledOptions={true}
+            dropDownMaxHeight={300}
+            className="dropdown-item-width"
+          />
+        </FieldContainer>
+        <div className="field-container-flex">
+          <div className="field-title">{`${t("Automatic time zone")}`}</div>
+          <ToggleButton
+            className="toggle"
+            onChange={() => toastr.info(<>Not implemented</>)}
+          />
+        </div>
+        <FieldContainer
+          id="fieldContainerTimezone"
+          labelText={`${t("TimeZone")}:`}
+          isVertical={true}
+        >
+          <ComboBox
+            id="comboBoxTimezone"
+            options={timezones}
+            selectedOption={timezone}
+            onSelect={this.onTimezoneSelect}
+            isDisabled={isLoading}
+            noBorder={false}
+            scaled={true}
+            scaledOptions={true}
+            dropDownMaxHeight={300}
+            className="dropdown-item-width"
+          />
+        </FieldContainer>
         <FieldContainer
           id="fieldContainerLanguage"
           labelText={`${t("Common:Language")}:`}
