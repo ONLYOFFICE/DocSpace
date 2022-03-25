@@ -127,7 +127,7 @@ function Editor({
   const [isLoaded, setIsLoaded] = useState(false);
   const [documentTitle, setNewDocumentTitle] = useState("Loading...");
 
-  const { t } = useTranslation();
+  const { t } = useTranslation(["Editor", "Common"]);
 
   useEffect(() => {
     if (error) {

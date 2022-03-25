@@ -3,7 +3,6 @@ import { hydrate } from "react-dom";
 import { registerSW } from "@appserver/common/sw/helper";
 import App from "../App.js";
 import { useSSR } from "react-i18next";
-import "../i18n";
 import useMfScripts from "../helpers/useMfScripts";
 
 const propsObj = window.__ASC_INITIAL_STATE__;
