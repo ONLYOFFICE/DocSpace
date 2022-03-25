@@ -17,7 +17,7 @@ import {
 } from "./styles/styles.js";
 
 const SingleItem = (props) => {
-  const {
+  let {
     t,
     selectedItem,
     onSelectItem,
@@ -47,6 +47,7 @@ const SingleItem = (props) => {
       others: [],
     },
   });
+  const [showAccess, setShowAccess] = useState(false);
   const [isShowAllAccessUsers, setIsShowAllAccessUsers] = useState(false);
 
   const updateItemsInfo = async (selectedItem) => {
@@ -218,52 +219,79 @@ const SingleItem = (props) => {
         ? selectedItem.parentId
         : selectedItem.folderId;
 
-      const folderInfo = await getFolderInfo(parentFolderId);
-
-      return [...displayedItem.properties].map((dip) =>
-        dip.id === "Location"
-          ? {
-              id: "Location",
-              title: t("Location"),
-              content: (
-                <Link
-                  className="property-content"
-                  href={`/products/files/filter?folder=${parentFolderId}`}
-                  isHovered={true}
-                >
-                  {folderInfo.title}
-                </Link>
-              ),
-            }
-          : dip
+      const noLocationProperties = [...displayedItem.properties].filter(
+        (dip) => dip.id !== "Location"
       );
+
+      let result;
+      await getFolderInfo(parentFolderId)
+        .catch(() => {
+          result = noLocationProperties;
+        })
+        .then((data) => {
+          if (!data) {
+            result = noLocationProperties;
+            return;
+          }
+          result = [...displayedItem.properties].map((dip) =>
+            dip.id === "Location"
+              ? {
+                  id: "Location",
+                  title: t("Location"),
+                  content: (
+                    <Link
+                      className="property-content"
+                      href={`/products/files/filter?folder=${parentFolderId}`}
+                      isHovered={true}
+                    >
+                      {data.title}
+                    </Link>
+                  ),
+                }
+              : dip
+          );
+        });
+
+      return result;
     };
 
     const updateLoadedItemAccess = async (selectedItem) => {
-      const accesses = await getShareUsers(
-        [selectedItem.folderId],
-        [selectedItem.id]
-      );
+      const parentFolderId = selectedItem.isFolder
+        ? selectedItem.parentId
+        : selectedItem.folderId;
 
-      const result = {
-        owner: {},
-        others: [],
-      };
+      let result;
+      await getShareUsers([parentFolderId], [selectedItem.id])
+        .catch((e) => {
+          setShowAccess(false);
+        })
+        .then((accesses) => {
+          if (!accesses) {
+            setShowAccess(false);
+            return;
+          }
+          const accessResult = {
+            owner: {},
+            others: [],
+          };
 
-      accesses.forEach((access) => {
-        const user = access.sharedTo;
-        const userData = {
-          key: user.id,
-          img: user.avatarSmall,
-          link: user.profileUrl,
-          name: user.displayName,
-          email: user.email,
-        };
+          accesses.forEach((access) => {
+            const user = access.sharedTo;
+            const userData = {
+              key: user.id,
+              img: user.avatarSmall,
+              link: user.profileUrl,
+              name: user.displayName,
+              email: user.email,
+            };
 
-        if (access.isOwner) result.owner = userData;
-        else if (userData.email !== undefined) result.others.push(userData);
-      });
+            if (access.isOwner) accessResult.owner = userData;
+            else if (userData.email !== undefined)
+              accessResult.others.push(userData);
+          });
 
+          result = accessResult;
+        });
       return result;
     };
 
@@ -273,14 +301,18 @@ const SingleItem = (props) => {
     );
 
     let access;
-    if (!dontShowAccess) access = await updateLoadedItemAccess(selectedItem);
+    if (!dontShowAccess) {
+      access = await updateLoadedItemAccess(selectedItem);
+    }
 
-    if (updateSubscription)
+    if (updateSubscription) {
       setItem({
         ...displayedItem,
         properties: properties,
         access: access,
       });
+      if (access) setShowAccess(true);
+    }
   };
 
   const showAllAccessUsers = () => {
@@ -289,7 +321,6 @@ const SingleItem = (props) => {
 
   const openSharingPanel = () => {
     const { id, isFolder } = item;
-    console.log(id, isFolder);
     onSelectItem({ id, isFolder });
     setSharingPanelVisible(true);
   };
@@ -338,7 +369,7 @@ const SingleItem = (props) => {
         })}
       </StyledProperties>
 
-      {!dontShowAccess && (
+      {showAccess && (
         <>
           <StyledSubtitle>
             <Text fontWeight="600" fontSize="14px" color="#000000">

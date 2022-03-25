@@ -64,7 +64,7 @@ const TableGroupMenu = (props) => {
             <IconButton
               className="info-panel-toggle"
               iconName="images/panel.svg"
-              size="17"
+              size="16"
               color={isInfoPanelVisible ? "#3B72A7" : "#A3A9AE"}
               isFill={true}
               onClick={toggleInfoPanel}

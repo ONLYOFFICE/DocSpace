@@ -7,28 +7,29 @@ import { ReactSVG } from "react-svg";
 import { StyledTitle } from "./styles/styles.js";
 
 const SeveralItems = (props) => {
-    const { t, selectedItems, getIcon, getFolderInfo } = props;
-    const itemsIcon = getIcon(24, ".file");
+  const { t, selectedItems, getIcon, getFolderInfo } = props;
+  const itemsIcon = getIcon(24, ".file");
 
-    return (
-        <>
-            <StyledTitle>
-                <ReactSVG className="icon" src={itemsIcon} />
-                <Text className="text" fontWeight={600} fontSize="16px">
-                    {`${t("ItemsSelected")}: ${selectedItems.length}`}
-                </Text>
-            </StyledTitle>
+  return (
+    <>
+      <StyledTitle>
+        <ReactSVG className="icon" src={itemsIcon} />
+        <Text className="text" fontWeight={600} fontSize="16px">
+          {`${t("ItemsSelected")}: ${selectedItems.length}`}
+        </Text>
+      </StyledTitle>
 
-            <div className="no-thumbnail-img-wrapper">
-                <img
-                    className="no-thumbnail-img"
-                    src="images/empty_screen.png"
-                />
-            </div>
-        </>
-    );
+      <div className="no-thumbnail-img-wrapper">
+        <img
+          size="96px"
+          className="no-thumbnail-img"
+          src="images/empty_screen.png"
+        />
+      </div>
+    </>
+  );
 };
 
 export default inject(({}) => {
-    return {};
+  return {};
 })(withTranslation(["InfoPanel"])(observer(SeveralItems)));

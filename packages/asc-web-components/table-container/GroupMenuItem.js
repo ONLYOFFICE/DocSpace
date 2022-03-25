@@ -42,9 +42,10 @@ const StyledButton = styled(Button)`
 
   @media ${tablet} {
     display: flex;
+    justify-content: center;
     flex-direction: column;
     height: 60px;
-    padding: 22px 12px 0 12px;
+    padding: 0px 12px;
     .btnIcon {
       padding: 0;
       margin: 0 auto;
@@ -52,7 +53,7 @@ const StyledButton = styled(Button)`
   }
 
   @media ${mobile} {
-    padding: 18px 16px 0 16px;
+    padding: 0 16px;
     height: 50px;
     font-size: 0;
     line-height: 0;
