@@ -31,11 +31,11 @@ public class Consumer : IDictionary<string, string>
     public bool CanSet { get; private set; }
     public int Order { get; private set; }
     public string Name { get; private set; }
-    protected readonly Dictionary<string, string> Props;
-    public IEnumerable<string> ManagedKeys => Props.Select(r => r.Key);
+    protected readonly Dictionary<string, string> _props;
+    public IEnumerable<string> ManagedKeys => _props.Select(r => r.Key);
 
-    protected readonly Dictionary<string, string> Additional;
-    public virtual IEnumerable<string> AdditionalKeys => Additional.Select(r => r.Key);
+    protected readonly Dictionary<string, string> _additional;
+    public virtual IEnumerable<string> AdditionalKeys => _additional.Select(r => r.Key);
 
     public ICollection<string> Keys => AllProps.Keys;
     public ICollection<string> Values => AllProps.Values;
@@ -44,9 +44,9 @@ public class Consumer : IDictionary<string, string>
     {
         get
         {
-            var result = Props.ToDictionary(item => item.Key, item => item.Value);
+            var result = _props.ToDictionary(item => item.Key, item => item.Value);
 
-            foreach (var item in Additional.Where(item => !result.ContainsKey(item.Key)))
+            foreach (var item in _additional.Where(item => !result.ContainsKey(item.Key)))
             {
                 result.Add(item.Key, item.Value);
             }
@@ -64,14 +64,14 @@ public class Consumer : IDictionary<string, string>
     internal protected readonly IConfiguration Configuration;
     internal protected readonly ICacheNotify<ConsumerCacheItem> Cache;
 
-    public bool IsSet => Props.Count > 0 && !Props.All(r => string.IsNullOrEmpty(this[r.Key]));
+    public bool IsSet => _props.Count > 0 && !_props.All(r => string.IsNullOrEmpty(this[r.Key]));
 
     static Consumer() { }
 
     public Consumer()
     {
-        Props = new Dictionary<string, string>();
-        Additional = new Dictionary<string, string>();
+        _props = new Dictionary<string, string>();
+        _additional = new Dictionary<string, string>();
     }
 
     public Consumer(
@@ -105,8 +105,8 @@ public class Consumer : IDictionary<string, string>
     {
         Name = name;
         Order = order;
-        Props = new Dictionary<string, string>();
-        Additional = additional;
+        _props = new Dictionary<string, string>();
+        _additional = additional;
     }
 
     public Consumer(
@@ -121,8 +121,8 @@ public class Consumer : IDictionary<string, string>
     {
         Name = name;
         Order = order;
-        Props = props ?? new Dictionary<string, string>();
-        Additional = additional ?? new Dictionary<string, string>();
+        _props = props ?? new Dictionary<string, string>();
+        _additional = additional ?? new Dictionary<string, string>();
 
         if (props != null && props.Count > 0)
         {
@@ -149,7 +149,7 @@ public class Consumer : IDictionary<string, string>
             throw new NotSupportedException("Key for read only. Consumer " + Name);
         }
 
-        foreach (var providerProp in Props)
+        foreach (var providerProp in _props)
         {
             this[providerProp.Key] = null;
         }
@@ -226,13 +226,13 @@ public class Consumer : IDictionary<string, string>
 
         if (!ManagedKeys.Contains(name))
         {
-            if (Additional.ContainsKey(name))
+            if (_additional.ContainsKey(name))
             {
-                Additional[name] = value;
+                _additional[name] = value;
             }
             else
             {
-                Additional.Add(name, value);
+                _additional.Add(name, value);
             }
 
             return;
@@ -337,7 +337,7 @@ public class DataStoreConsumer : Consumer, ICloneable
 
     public object Clone()
     {
-        return new DataStoreConsumer(TenantManager, CoreBaseSettings, CoreSettings, Configuration, Cache, ConsumerFactory, Name, Order, Props.ToDictionary(r => r.Key, r => r.Value), Additional.ToDictionary(r => r.Key, r => r.Value));
+        return new DataStoreConsumer(TenantManager, CoreBaseSettings, CoreSettings, Configuration, Cache, ConsumerFactory, Name, Order, _props.ToDictionary(r => r.Key, r => r.Value), _additional.ToDictionary(r => r.Key, r => r.Value));
     }
 }
 

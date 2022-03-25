@@ -452,9 +452,9 @@ public class NotifyEngine : INotifyEngine
             _sysTagFormatter.FormatMessage(
                 noticeMessage, new[]
                                        {
-                                               new TagValue(Context._sysRecipientId, request.Recipient.ID),
-                                               new TagValue(Context._sysRecipientName, request.Recipient.Name),
-                                               new TagValue(Context._sysRecipientAddress, addresses != null && addresses.Length > 0 ? addresses[0] : null)
+                                               new TagValue(Context.SysRecipientId, request.Recipient.ID),
+                                               new TagValue(Context.SysRecipientName, request.Recipient.Name),
+                                               new TagValue(Context.SysRecipientAddress, addresses != null && addresses.Length > 0 ? addresses[0] : null)
                                        }
                 );
             //Do styling here

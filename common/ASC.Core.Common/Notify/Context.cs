@@ -29,10 +29,10 @@ namespace ASC.Notify;
     [Singletone]
 public sealed class Context : INotifyRegistry
 {
-    public const string SysRecipient = "_#" + _sysRecipientId + "#_";
-    internal const string _sysRecipientId = "SYS_RECIPIENT_ID";
-    internal const string _sysRecipientName = "SYS_RECIPIENT_NAME";
-    internal const string _sysRecipientAddress = "SYS_RECIPIENT_ADDRESS";
+    public const string SysRecipient = "_#" + SysRecipientId + "#_";
+    internal const string SysRecipientId = "SYS_RECIPIENT_ID";
+    internal const string SysRecipientName = "SYS_RECIPIENT_NAME";
+    internal const string SysRecipientAddress = "SYS_RECIPIENT_ADDRESS";
 
     private readonly Dictionary<string, ISenderChannel> _channels = new Dictionary<string, ISenderChannel>(2);
 

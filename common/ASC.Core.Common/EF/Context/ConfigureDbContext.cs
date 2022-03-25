@@ -43,9 +43,9 @@ public class ConfigureDbContext<T> : IConfigureNamedOptions<T> where T : BaseDbC
 
     public void Configure(string name, T context)
     {
-        context._loggerFactory = _loggerFactory;
+        context.LoggerFactory = _loggerFactory;
         context.ConnectionStringSettings = _configuration.GetConnectionStrings(name) ?? _configuration.GetConnectionStrings(BaseName);
-        context._migrateAssembly = _migrateAssembly;
+        context.MigrateAssembly = _migrateAssembly;
     }
 
     public void Configure(T context)
@@ -68,7 +68,7 @@ public class ConfigureMultiRegionalDbContext<T> : IConfigureNamedOptions<MultiRe
 
     public void Configure(string name, MultiRegionalDbContext<T> context)
     {
-        context._context = new List<T>();
+        context.Context = new List<T>();
 
         const StringComparison cmp = StringComparison.InvariantCultureIgnoreCase;
 
@@ -77,7 +77,7 @@ public class ConfigureMultiRegionalDbContext<T> : IConfigureNamedOptions<MultiRe
         r.Name.Equals(_baseName, cmp) || r.Name.StartsWith(_baseName + ".", cmp)
         ))
         {
-            context._context.Add(_dbContext.Get(c.Name));
+            context.Context.Add(_dbContext.Get(c.Name));
         }
     }
 

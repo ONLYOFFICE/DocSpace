@@ -52,7 +52,7 @@ public class DbContext : BaseDbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ModelBuilderWrapper
-               .From(modelBuilder, Provider)
+               .From(modelBuilder, _provider)
                .AddMobileAppInstall()
                .AddDbipLocation()
                .AddRegions();

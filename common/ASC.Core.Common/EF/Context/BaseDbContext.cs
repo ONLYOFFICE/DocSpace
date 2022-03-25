@@ -36,16 +36,16 @@ public enum Provider
 
 public class BaseDbContext : DbContext
 {
+    public ConnectionStringSettings ConnectionStringSettings { get; set; }
+    internal string MigrateAssembly { get; set; }
+    internal ILoggerFactory LoggerFactory { get; set; }
+    public static readonly ServerVersion ServerVersion = ServerVersion.Parse("8.0.25");
+
+    protected virtual Dictionary<Provider, Func<BaseDbContext>> ProviderContext => null;
+    protected Provider _provider;
+
     public BaseDbContext() { }
     public BaseDbContext(DbContextOptions options) : base(options) { }
-
-    internal string _migrateAssembly;
-    internal ILoggerFactory _loggerFactory;
-    public ConnectionStringSettings ConnectionStringSettings { get; set; }
-    protected internal Provider Provider;
-
-    public static readonly ServerVersion ServerVersion = ServerVersion.Parse("8.0.25");
-    protected virtual Dictionary<Provider, Func<BaseDbContext>> ProviderContext => null;
 
     public void Migrate()
     {
@@ -55,8 +55,8 @@ public class BaseDbContext : DbContext
 
             using var sqlProvider = ProviderContext[provider]();
             sqlProvider.ConnectionStringSettings = ConnectionStringSettings;
-            sqlProvider._loggerFactory = _loggerFactory;
-            sqlProvider._migrateAssembly = _migrateAssembly;
+            sqlProvider.LoggerFactory = LoggerFactory;
+            sqlProvider.MigrateAssembly = MigrateAssembly;
 
             sqlProvider.Database.Migrate();
         }
@@ -68,17 +68,17 @@ public class BaseDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseLoggerFactory(_loggerFactory);
+        optionsBuilder.UseLoggerFactory(LoggerFactory);
         optionsBuilder.EnableSensitiveDataLogging();
-        Provider = GetProviderByConnectionString();
-        switch (Provider)
+        _provider = GetProviderByConnectionString();
+        switch (_provider)
         {
             case Provider.MySql:
                 optionsBuilder.UseMySql(ConnectionStringSettings.ConnectionString, ServerVersion, r =>
                 {
-                    if (!string.IsNullOrEmpty(_migrateAssembly))
+                    if (!string.IsNullOrEmpty(MigrateAssembly))
                     {
-                        r.MigrationsAssembly(_migrateAssembly);
+                        r.MigrationsAssembly(MigrateAssembly);
                     }
                 });
                 break;
@@ -150,16 +150,16 @@ public class MultiRegionalDbContext<T> : IDisposable, IAsyncDisposable where T :
 {
     public MultiRegionalDbContext() { }
 
-    internal List<T> _context;
+    internal List<T> Context { get; set; }
 
     public void Dispose()
     {
-        if (_context == null)
+        if (Context == null)
         {
             return;
         }
 
-        foreach (var c in _context)
+        foreach (var c in Context)
         {
             if (c != null)
             {
@@ -170,12 +170,12 @@ public class MultiRegionalDbContext<T> : IDisposable, IAsyncDisposable where T :
 
     public ValueTask DisposeAsync()
     {
-        return _context == null ? ValueTask.CompletedTask : InternalDisposeAsync();
+        return Context == null ? ValueTask.CompletedTask : InternalDisposeAsync();
     }
 
     private async ValueTask InternalDisposeAsync()
     {
-        foreach (var c in _context)
+        foreach (var c in Context)
         {
             if (c != null)
             {
