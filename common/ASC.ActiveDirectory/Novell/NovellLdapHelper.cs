@@ -137,7 +137,7 @@ public class NovellLdapHelper : LdapHelper
     public override void CheckCredentials(string login, string password, string server, int portNumber,
         bool startTls, bool ssl, bool acceptCertificate, string acceptCertificateHash)
     {
-        using var novellLdapSearcher = _serviceProvider.GetService<NovellLdapSearcher>();
+        using var novellLdapSearcher = _serviceProvider.GetRequiredService<NovellLdapSearcher>();
         novellLdapSearcher.Init(login, password, server, portNumber, startTls, ssl, acceptCertificate, acceptCertificateHash);
         novellLdapSearcher.Connect();
     }

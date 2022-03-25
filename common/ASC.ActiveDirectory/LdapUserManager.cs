@@ -618,12 +618,12 @@ public class LdapUserManager
                 new Task(() =>
                 {
                     using var scope = _serviceProvider.CreateScope();
-                    var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-                    var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
-                    var novellLdapUserImporter = scope.ServiceProvider.GetService<NovellLdapUserImporter>();
-                    var userManager = scope.ServiceProvider.GetService<UserManager>();
-                    var cookiesManager = scope.ServiceProvider.GetService<CookiesManager>();
-                    var log = scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC");
+                    var tenantManager = scope.ServiceProvider.GetRequiredService<TenantManager>();
+                    var securityContext = scope.ServiceProvider.GetRequiredService<SecurityContext>();
+                    var novellLdapUserImporter = scope.ServiceProvider.GetRequiredService<NovellLdapUserImporter>();
+                    var userManager = scope.ServiceProvider.GetRequiredService<UserManager>();
+                    var cookiesManager = scope.ServiceProvider.GetRequiredService<CookiesManager>();
+                    var log = scope.ServiceProvider.GetRequiredService<IOptionsMonitor<ILog>>().Get("ASC");
 
                     tenantManager.SetCurrentTenant(tenant);
                     securityContext.AuthenticateMe(Core.Configuration.Constants.CoreSystem);

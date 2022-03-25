@@ -101,12 +101,12 @@ public abstract class LdapOperation
     public void RunJob(DistributedTask _, CancellationToken cancellationToken)
     {
         using var scope = _serviceProvider.CreateScope();
-        TenantManager = scope.ServiceProvider.GetService<TenantManager>();
-        _securityContext = scope.ServiceProvider.GetService<SecurityContext>();
-        LDAPUserManager = scope.ServiceProvider.GetService<LdapUserManager>();
+        TenantManager = scope.ServiceProvider.GetRequiredService<TenantManager>();
+        _securityContext = scope.ServiceProvider.GetRequiredService<SecurityContext>();
+        LDAPUserManager = scope.ServiceProvider.GetRequiredService<LdapUserManager>();
         LDAPUserManager.Init(Resource);
-        _novellLdapHelper = scope.ServiceProvider.GetService<NovellLdapHelper>();
-        Importer = scope.ServiceProvider.GetService<NovellLdapUserImporter>();
+        _novellLdapHelper = scope.ServiceProvider.GetRequiredService<NovellLdapHelper>();
+        Importer = scope.ServiceProvider.GetRequiredService<NovellLdapUserImporter>();
 
         try
         {
@@ -150,7 +150,7 @@ public abstract class LdapOperation
 
                     if (LDAPSettings.EnableLdapAuthentication)
                     {
-                        var ldapSettingsChecker = scope.ServiceProvider.GetService<NovellLdapSettingsChecker>();
+                        var ldapSettingsChecker = scope.ServiceProvider.GetRequiredService<NovellLdapSettingsChecker>();
                         ldapSettingsChecker.Init(Importer);
 
                         SetProgress(5, Resource.LdapSettingsStatusLoadingBaseInfo);

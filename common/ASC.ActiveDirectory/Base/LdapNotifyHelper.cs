@@ -67,7 +67,7 @@ public class LdapNotifyHelper
             var source = new LdapNotifySource(tenant, this);
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(source, scope);
             WorkContext.RegisterSendMethod(source.AutoSync, cron);
-            _clients.Add(tenant.TenantId, new Tuple<INotifyClient, LdapNotifySource>(client, source)); //concurrent dict
+            _clients.Add(tenant.TenantId, new Tuple<INotifyClient, LdapNotifySource>(client, source));
         }
     }
 
@@ -84,7 +84,7 @@ public class LdapNotifyHelper
     public void AutoSync(Tenant tenant)
     {
         using var scope = _serviceProvider.CreateScope();
-        var settingsManager = scope.ServiceProvider.GetService<SettingsManager>();
+        var settingsManager = scope.ServiceProvider.GetRequiredService<SettingsManager>();
         var ldapSettings = settingsManager.LoadForTenant<LdapSettings>(tenant.TenantId);
 
         if (!ldapSettings.EnableLdapAuthentication)
@@ -96,7 +96,7 @@ public class LdapNotifyHelper
             return;
         }
 
-        var op = scope.ServiceProvider.GetService<LdapSaveSyncOperation>();
+        var op = scope.ServiceProvider.GetRequiredService<LdapSaveSyncOperation>();
 
         op.Init(ldapSettings, tenant, LdapOperationType.Sync);
         _ldapTasks.QueueTask(op.RunJob, op.GetDistributedTask());

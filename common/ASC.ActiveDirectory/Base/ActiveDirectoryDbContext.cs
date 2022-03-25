@@ -1,4 +1,4 @@
-﻿namespace ASC.ActiveDirectory;
+﻿namespace ASC.ActiveDirectory.Base;
 public class ActiveDirectoryDbContext : BaseDbContext
 {
     public DbSet<DbTenant> Tenants { get; set; }

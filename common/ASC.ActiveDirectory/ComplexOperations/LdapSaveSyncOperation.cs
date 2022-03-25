@@ -49,7 +49,7 @@ public class LdapSaveSyncOperation : LdapOperation
         string userId = null)
     {
         using var scope = _serviceProvider.CreateScope();
-        var userManager = _serviceProvider.GetService<UserManager>();
+        var userManager = _serviceProvider.GetRequiredService<UserManager>();
         _currentUser = userId != null ? userManager.GetUsers(Guid.Parse(userId)) : null;
         base.Init(settings, tenant, operation, resource);
     }
@@ -57,15 +57,15 @@ public class LdapSaveSyncOperation : LdapOperation
     protected override void Do()
     {
         using var scope = _serviceProvider.CreateScope();
-        _ldapChanges = scope.ServiceProvider.GetService<LdapChangeCollection>();
+        _ldapChanges = scope.ServiceProvider.GetRequiredService<LdapChangeCollection>();
         _ldapChanges.Tenant = CurrentTenant;
-        _userFormatter = scope.ServiceProvider.GetService<UserFormatter>();
-        _settingsManager = scope.ServiceProvider.GetService<SettingsManager>();
-        _userPhotoManager = scope.ServiceProvider.GetService<UserPhotoManager>();
-        _webItemSecurity = scope.ServiceProvider.GetService<WebItemSecurity>();
-        _userManager = scope.ServiceProvider.GetService<UserManager>();
-        _displayUserSettingsHelper = scope.ServiceProvider.GetService<DisplayUserSettingsHelper>();
-        _tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+        _userFormatter = scope.ServiceProvider.GetRequiredService<UserFormatter>();
+        _settingsManager = scope.ServiceProvider.GetRequiredService<SettingsManager>();
+        _userPhotoManager = scope.ServiceProvider.GetRequiredService<UserPhotoManager>();
+        _webItemSecurity = scope.ServiceProvider.GetRequiredService<WebItemSecurity>();
+        _userManager = scope.ServiceProvider.GetRequiredService<UserManager>();
+        _displayUserSettingsHelper = scope.ServiceProvider.GetRequiredService<DisplayUserSettingsHelper>();
+        _tenantManager = scope.ServiceProvider.GetRequiredService<TenantManager>();
 
         try
         {
