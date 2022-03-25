@@ -27,75 +27,42 @@ using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace ASC.Common.Threading;
 
+[ProtoContract(IgnoreUnknownSubTypes = true)]
+[ProtoInclude(100, typeof(DistributedTaskProgress))]
 public class DistributedTask
 {
+    [ProtoMember(10)]
+    protected string _exeption;
+
+    [ProtoMember(11)]
+    protected Dictionary<string, string> _props;
+
     public Action<DistributedTask> Publication { get; set; }
-    public int InstanceId
-    {
-        get => DistributedTaskCache.InstanceId;
-        set => DistributedTaskCache.InstanceId = value;
-    }
-    public string Id
-    {
-        get => DistributedTaskCache.Id;
-        protected set => DistributedTaskCache.Id = value ?? "";
-    }
-    public DistributedTaskStatus Status
-    {
-        get => Enum.Parse<DistributedTaskStatus>(DistributedTaskCache.Status);
-        set => DistributedTaskCache.Status = value.ToString();
-    }
+
+    [ProtoMember(1)]
+    public int InstanceId { get; set; }
+
+    [ProtoMember(2)]
+    public string Id { get; set; }
+
+    [ProtoMember(3)]
+    public DistributedTaskStatus Status { get; set; }
+ 
     public Exception Exception
     {
-        get => new Exception(DistributedTaskCache.Exception);
-        set => DistributedTaskCache.Exception = value?.ToString() ?? "";
+        get => new Exception(_exeption);
+        set => _exeption = value?.Message ?? "";
     }
-    protected internal DistributedTaskCache DistributedTaskCache { get; internal set; }
+
 
     public DistributedTask()
     {
-        DistributedTaskCache = new DistributedTaskCache
-        {
-            Id = Guid.NewGuid().ToString()
-        };
+        Id = Guid.NewGuid().ToString();
+
+        _exeption = String.Empty;
+        _props = new Dictionary<string, string>();
     }
-
-    public DistributedTask(DistributedTaskCache distributedTaskCache)
-    {
-        DistributedTaskCache = distributedTaskCache;
-    }
-
-    public T GetProperty<T>(string name)
-    {
-        var prop = DistributedTaskCache.Props.FirstOrDefault(r => r.Key == name);
-        if (prop == null)
-        {
-            return default;
-        }
-
-        return JsonSerializer.Deserialize<T>(prop.Value);
-    }
-
-    public void SetProperty(string name, object value)
-    {
-        var prop = new DistributedTaskCache.Types.DistributedTaskCacheProp()
-        {
-            Key = name,
-            Value = JsonSerializer.Serialize(value)
-        };
-
-        var current = DistributedTaskCache.Props.SingleOrDefault(r => r.Key == name);
-        if (current != null)
-        {
-            DistributedTaskCache.Props.Remove(current);
-        }
-
-        if (value != null)
-        {
-            DistributedTaskCache.Props.Add(prop);
-        }
-    }
-
+    
     public void PublishChanges()
     {
         if (Publication == null)
@@ -104,5 +71,22 @@ public class DistributedTask
         }
 
         Publication(this);
+    }
+
+    public string this[string propName]
+    {
+        get
+        {
+            return _props[propName];
+        }
+        set
+        {
+            _props[propName] = value;
+        }
+    }
+
+    public override int GetHashCode()
+    {
+        return Id.GetHashCode();  
     }
 }

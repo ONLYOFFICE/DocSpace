@@ -37,7 +37,7 @@ public class Startup : BaseStartup
     {
         base.ConfigureServices(services);
 
-        DIHelper.AddDistributedTaskQueueService<BaseBackupProgressItem>(1);
+        DIHelper.AddDistributedTaskQueue<BaseBackupProgressItem>(1);
 
         DIHelper.TryAdd<BackupProgressItem>();
         DIHelper.TryAdd<RestoreProgressItem>();

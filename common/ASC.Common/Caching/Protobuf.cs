@@ -2,7 +2,7 @@
 
 public class ProtobufSerializer<T> : ISerializer<T> where T : IMessage<T>, new()
 {
-    public byte[] Serialize(T data, SerializationContext context)
+    public byte[] Serialize(T data, Confluent.Kafka.SerializationContext context)
     {
         return data.ToByteArray();
     }
@@ -17,7 +17,7 @@ public class ProtobufDeserializer<T> : IDeserializer<T> where T : IMessage<T>, n
         _parser = new MessageParser<T>(() => new T());
     }
 
-    public T Deserialize(ReadOnlySpan<byte> data, bool isNull, SerializationContext context)
+    public T Deserialize(ReadOnlySpan<byte> data, bool isNull, Confluent.Kafka.SerializationContext context)
     {
         return _parser.ParseFrom(data.ToArray());
     }

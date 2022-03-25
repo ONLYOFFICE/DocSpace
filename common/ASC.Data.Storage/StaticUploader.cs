@@ -134,17 +134,16 @@ public class StaticUploader
 
         var tenant = _tenantManager.GetCurrentTenant();
         var key = typeof(UploadOperationProgress).FullName + tenant.Id;
-        UploadOperationProgress uploadOperation;
 
         lock (_locker)
         {
-            uploadOperation = Queue.GetTask<UploadOperationProgress>(key);
-            if (uploadOperation != null)
+            if (Queue.GetTasks().Any(x => x.Id != key))
             {
                 return;
             }
 
-            uploadOperation = new UploadOperationProgress(_serviceProvider, key, tenant.Id, relativePath, mappedPath);
+            var uploadOperation = new UploadOperationProgress(_serviceProvider, key, tenant.Id, relativePath, mappedPath);
+
             Queue.QueueTask(uploadOperation);
         }
     }
@@ -338,6 +337,6 @@ public static class StaticUploaderExtension
     public static void Register(DIHelper services)
     {
         services.TryAdd<StaticUploaderScope>();
-        services.AddDistributedTaskQueueService<UploadOperationProgress>(1);
+        services.AddDistributedTaskQueue<UploadOperationProgress>(1);
     }
 }

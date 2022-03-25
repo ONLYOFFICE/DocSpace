@@ -40,6 +40,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="6.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
     <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="6.0.3" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="6.0.0" />
@@ -53,6 +54,7 @@
     </PackageReference> -->
     <PackageReference Include="NLog" Version="4.7.13" />
     <PackageReference Include="NVelocity" Version="1.2.0" />
+    <PackageReference Include="protobuf-net" Version="3.0.101" />
     <PackageReference Include="RabbitMQ.Client" Version="6.2.3" />
     <PackageReference Include="StackExchange.Redis" Version="2.5.43" />
     <PackageReference Include="StackExchange.Redis.Extensions.Core" Version="8.0.4" />
@@ -62,8 +64,5 @@
     <Protobuf Include="protos\notify_item.proto" />
     <Protobuf Include="protos\distributed_task_cache.proto" />
     <Protobuf Include="protos\distributed_task_cancelation.proto" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Threading\Extensions\" />
   </ItemGroup>
 </Project>

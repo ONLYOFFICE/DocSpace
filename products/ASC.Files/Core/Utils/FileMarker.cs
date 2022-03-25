@@ -909,10 +909,10 @@ public static class FileMarkerExtention
     {
         services.TryAdd<AsyncTaskData<int>>();
         services.TryAdd<FileMarkerHelper<int>>();
-        services.AddDistributedTaskQueueService<AsyncTaskData<int>>(1);
+        services.AddDistributedTaskQueue<AsyncTaskData<int>>(1);
 
         services.TryAdd<AsyncTaskData<string>>();
         services.TryAdd<FileMarkerHelper<string>>();
-        services.AddDistributedTaskQueueService<AsyncTaskData<string>>(1);
+        services.AddDistributedTaskQueue<AsyncTaskData<string>>(1);
     }
 }

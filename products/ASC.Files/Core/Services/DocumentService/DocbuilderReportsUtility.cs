@@ -113,11 +113,11 @@ public class ReportState
         Guid userId)
     {
         var data = new ReportStateData(
-            task.GetProperty<string>("fileName"),
-            task.GetProperty<string>("tmpFileName"),
-            task.GetProperty<string>("script"),
-            task.GetProperty<int>("reportType"),
-            task.GetProperty<ReportOrigin>("reportOrigin"),
+            task["fileName"],
+            task["tmpFileName"],
+            task["script"],
+            Convert.ToInt32(task["reportType"]),
+            (ReportOrigin)Convert.ToInt32(task["reportOrigin"]),
             null,
             null,
             tenantId,
@@ -125,10 +125,10 @@ public class ReportState
 
         return new ReportState(null, data, httpContextAccessor)
         {
-            Id = task.GetProperty<string>("id"),
-            FileId = task.GetProperty<int>("fileId"),
-            Status = task.GetProperty<ReportStatus>("status"),
-            Exception = task.GetProperty<string>("exception")
+            Id = task["id"],
+            FileId = Convert.ToInt32(task["fileId"]),
+            Status = (ReportStatus)Convert.ToInt32(task["status"]),
+            Exception = task["exception"]
         };
 
     }
@@ -234,14 +234,14 @@ public class ReportState
 
     protected void FillDistributedTask()
     {
-        TaskInfo.SetProperty("id", Id);
-        TaskInfo.SetProperty("fileName", FileName);
-        TaskInfo.SetProperty("tmpFileName", TmpFileName);
-        TaskInfo.SetProperty("reportType", ReportType);
-        TaskInfo.SetProperty("fileId", FileId);
-        TaskInfo.SetProperty("status", Status);
-        TaskInfo.SetProperty("reportOrigin", Origin);
-        TaskInfo.SetProperty("exception", Exception);
+        TaskInfo["id"] = Id;
+        TaskInfo["fileName"] = FileName;
+        TaskInfo["tmpFileName"] = TmpFileName;
+        TaskInfo["reportType"] = Convert.ToString(ReportType);
+        TaskInfo["fileId"] = Convert.ToString(FileId);
+        TaskInfo["status"] = Convert.ToString((int)Status);
+        TaskInfo["reportOrigin"] = Convert.ToString((int)Origin); 
+        TaskInfo["exception"] = Exception;
     }
 }
 [Scope]
@@ -290,7 +290,7 @@ public class DocbuilderReportsUtility
             }
 
             var result = ReportState.FromTask(task, httpContextAccessor, tenantId, userId);
-            var status = task.GetProperty<ReportStatus>("status");
+            var status = (ReportStatus)Convert.ToInt32(task["status"]);
 
             if ((int)status > 1)
             {
@@ -303,7 +303,7 @@ public class DocbuilderReportsUtility
 
     private static Func<DistributedTask, bool> Predicate(ReportOrigin origin, int tenantId, Guid userId)
     {
-        return t => t.GetProperty<string>("id") == GetCacheKey(origin, tenantId, userId);
+        return t => t["id"] == GetCacheKey(origin, tenantId, userId);
     }
 
     internal static string GetCacheKey(ReportOrigin origin, int tenantId, Guid userId)

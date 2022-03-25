@@ -1,24 +1,23 @@
 ﻿namespace ASC.Common.Threading;
-using System.Threading.Tasks;
 
 [Transient]
+[ProtoContract(IgnoreUnknownSubTypes = true)]
 public class DistributedTaskProgress : DistributedTask
 {
+    [ProtoMember(1)]
+    private double _percentage;
+
     public double Percentage
     {
-        get => Math.Min(100.0, Math.Max(0, DistributedTaskCache.Percentage));
-        set => DistributedTaskCache.Percentage = value;
+        get => Math.Min(100.0, Math.Max(0, _percentage));
+        set => _percentage = value;
     }
-    public bool IsCompleted
-    {
-        get => DistributedTaskCache.IsCompleted;
-        set => DistributedTaskCache.IsCompleted = value;
-    }
-    protected int StepCount
-    {
-        get => DistributedTaskCache.StepCount;
-        set => DistributedTaskCache.StepCount = value;
-    }
+
+    [ProtoMember(2)]
+    public bool IsCompleted { get; set; }
+
+    [ProtoMember(3)]
+    protected int StepCount { get; set; }
 
     public void RunJob()
     {

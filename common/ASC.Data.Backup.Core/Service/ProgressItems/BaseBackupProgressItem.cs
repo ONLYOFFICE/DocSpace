@@ -29,11 +29,11 @@ public abstract class BaseBackupProgressItem : DistributedTaskProgress
 {
     public int TenantId
     {
-        get => _tenantId ?? GetProperty<int>(nameof(_tenantId));
+        get => _tenantId ?? Convert.ToInt32(this[nameof(_tenantId)]);
         set
         {
             _tenantId = value;
-            SetProperty(nameof(_tenantId), value);
+            this[nameof(_tenantId)] = value.ToString();
         }
     }
     public abstract BackupProgressItemEnum BackupProgressItemEnum { get; }

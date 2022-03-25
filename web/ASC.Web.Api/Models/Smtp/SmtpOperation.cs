@@ -189,7 +189,7 @@ namespace ASC.Api.Settings.Smtp
             {
                 try
                 {
-                    TaskInfo.SetProperty(FINISHED, true);
+                    TaskInfo[FINISHED] = "True";
                     PublishTaskInfo();
 
                     SecurityContext.Logout();
@@ -219,11 +219,11 @@ namespace ASC.Api.Settings.Smtp
 
         protected virtual void FillDistributedTask()
         {
-            TaskInfo.SetProperty(SOURCE, Source);
-            TaskInfo.SetProperty(OWNER, CurrentTenant);
-            TaskInfo.SetProperty(PROGRESS, Progress < 100 ? Progress : 100);
-            TaskInfo.SetProperty(RESULT, Status);
-            TaskInfo.SetProperty(ERROR, Error);
+            TaskInfo[SOURCE] = Source;
+            TaskInfo[OWNER] = CurrentTenant.ToString();
+            TaskInfo[PROGRESS] = (Progress < 100 ? Progress : 100).ToString();
+            TaskInfo[RESULT] = Status;
+            TaskInfo[ERROR] = Error;
             //TaskInfo.SetProperty(PROCESSED, successProcessed);
         }
 

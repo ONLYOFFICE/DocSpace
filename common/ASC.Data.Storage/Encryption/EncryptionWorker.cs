@@ -45,7 +45,7 @@ public class EncryptionWorker
         EncryptionOperation encryptionOperation;
         lock (_locker)
         {
-            if (_queue.GetTask<EncryptionOperation>(GetCacheId()) != null)
+            if (_queue.GetTasks().Any(x => x.Id == GetCacheId()))
             {
                 return;
             }
@@ -97,6 +97,6 @@ public static class FactoryOperationExtension
     public static void Register(DIHelper dIHelper)
     {
         dIHelper.TryAdd<EncryptionOperation>();
-        dIHelper.AddDistributedTaskQueueService<EncryptionOperation>(1);
+        dIHelper.AddDistributedTaskQueue<EncryptionOperation>(1);
     }
 }

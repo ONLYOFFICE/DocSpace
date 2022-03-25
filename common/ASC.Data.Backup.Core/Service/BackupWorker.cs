@@ -47,7 +47,7 @@ public class BackupWorker
         TempPath tempPath)
     {
         _logger = options.CurrentValue;
-        _progressQueue = queueFactory.CreateQueue<BackupProgressItem>();
+        _progressQueue = queueFactory.CreateQueue("backupQueue");
         _factoryProgressItem = factoryProgressItem;
         _tempPath = tempPath;
     }
@@ -284,7 +284,6 @@ public class BackupWorker
         }
 
         return true;
-
     }
 
 
@@ -308,6 +307,9 @@ public static class BackupWorkerExtension
 {
     public static void Register(DIHelper services)
     {
-        services.AddDistributedTaskQueueService<BackupProgressItem>(5);
+        services.AddDistributedTaskQueue("backupQueue", x =>
+        {
+            x.MaxThreadsCount = 5;
+        });
     }
 }

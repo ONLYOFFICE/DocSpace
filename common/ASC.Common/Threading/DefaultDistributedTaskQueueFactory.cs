@@ -53,6 +53,7 @@ public class DefaultDistributedTaskQueueFactory : IDistributedTaskQueueFactory
         var queue = _serviceProvider.GetRequiredService<DistributedTaskQueue>();
 
         queue.MaxThreadsCount = option.MaxThreadsCount;
+        queue.Name = name;
 
         return queue;
     }

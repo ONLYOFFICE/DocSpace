@@ -23,6 +23,8 @@
  *
 */
 
+using Microsoft.Extensions.Caching.Distributed;
+
 namespace ASC.Common.Threading;
 
 [Transient]
@@ -31,8 +33,7 @@ public class DistributedTaskQueue
     private readonly ConcurrentDictionary<string, CancellationTokenSource> _cancelations;
     private readonly IServiceProvider _serviceProvider;
     private readonly ICacheNotify<DistributedTaskCancelation> _cancellationCacheNotify;
-    private readonly ICacheNotify<DistributedTaskCache> _taskCacheNotify;
-    private readonly ICache _localCache;
+    private readonly IDistributedCache _distributedCache;
 
     private int _maxThreadsCount = -1;
     private string _name;
@@ -40,13 +41,14 @@ public class DistributedTaskQueue
 
     public DistributedTaskQueue(IServiceProvider serviceProvider,
                                 ICacheNotify<DistributedTaskCancelation> cancelTaskNotify,
-                                ICacheNotify<DistributedTaskCache> taskCacheNotify,
-                                ICache cache)
+                                IDistributedCache distributedCache)
+
     {
+        _distributedCache = distributedCache;
         _serviceProvider = serviceProvider;
         _cancellationCacheNotify = cancelTaskNotify;
         _cancelations = new ConcurrentDictionary<string, CancellationTokenSource>();
-        _localCache = cache;
+
         _cancellationCacheNotify.Subscribe((c) =>
         {
             if (_cancelations.TryGetValue(c.Id, out var s))
@@ -54,19 +56,6 @@ public class DistributedTaskQueue
                 s.Cancel();
             }
         }, CacheNotifyAction.Remove);
-
-        _taskCacheNotify = taskCacheNotify;
-
-        _taskCacheNotify.Subscribe((c) =>
-        {
-            _localCache.HashSet(c.Key, c.Id, (DistributedTaskCache)null);
-        }, CacheNotifyAction.Remove);
-
-        _taskCacheNotify.Subscribe((c) =>
-        {
-            _localCache.HashSet(c.Key, c.Id, c);
-        }, CacheNotifyAction.InsertOrUpdate);
-
     }
 
     public string Name
@@ -96,7 +85,7 @@ public class DistributedTaskQueue
     }
 
     public static readonly int InstanceId = Process.GetCurrentProcess().Id;
-    
+
     public void QueueTask(DistributedTaskProgress taskProgress)
     {
         QueueTask((a, b) => taskProgress.RunJob(), taskProgress);
@@ -166,11 +155,17 @@ public class DistributedTaskQueue
         task.Start(Scheduler);
     }
 
-    public IEnumerable<DistributedTask> GetTasks()
+    public List<DistributedTask> GetTasks()
     {
-        var tasks = _localCache.HashGetAll<DistributedTaskCache>(_name).Values.Select(r => new DistributedTask(r)).ToList();
+        var serializedObject = _distributedCache.Get(_name);
 
-        tasks.ForEach(t =>
+        if (serializedObject == null) return new List<DistributedTask>();
+
+        using var ms = new MemoryStream(serializedObject);
+
+        var queueTasks = Serializer.Deserialize<List<DistributedTask>>(ms);
+
+        queueTasks.ForEach(t =>
         {
             if (t.Publication == null)
             {
@@ -178,75 +173,55 @@ public class DistributedTaskQueue
             }
         });
 
-        return tasks;
+        return queueTasks;
     }
+
 
     public IEnumerable<T> GetTasks<T>() where T : DistributedTask
     {
-        var tasks = _localCache.HashGetAll<DistributedTaskCache>(_name).Values.Select(r =>
-        {
-            var result = _serviceProvider.GetService<T>();
-            result.DistributedTaskCache = r;
-
-            return result;
-        }).ToList();
-
-        tasks.ForEach(t =>
-        {
-            if (t.Publication == null)
-            {
-                t.Publication = GetPublication();
-            }
-        });
-
-        return tasks;
+       return GetTasks().Select(x => Map(x, _serviceProvider.GetService<T>()));                       
     }
 
     public T GetTask<T>(string id) where T : DistributedTask
-    {
-        var cache = _localCache.HashGet<DistributedTaskCache>(_name, id);
-        if (cache != null)
-        {
-            using var scope = _serviceProvider.CreateScope();
-            var task = scope.ServiceProvider.GetService<T>();
-            task.DistributedTaskCache = cache;
-            if (task.Publication == null)
-            {
-                task.Publication = GetPublication();
-            }
+    {      
+        var taskById = GetTasks().FirstOrDefault(x => x.Id == id);
 
-            return task;
-        }
-
-        return null;
+        if (taskById == null) return null;
+               
+        return Map(taskById, _serviceProvider.GetService<T>());
     }
 
     public DistributedTask GetTask(string id)
     {
-        var cache = _localCache.HashGet<DistributedTaskCache>(_name, id);
-        if (cache != null)
-        {
-            var task = new DistributedTask();
-            task.DistributedTaskCache = cache;
-            if (task.Publication == null)
-            {
-                task.Publication = GetPublication();
-            }
-
-            return task;
-        }
-
-        return null;
+        return GetTasks().FirstOrDefault(x => x.Id == id);
     }
 
     public void SetTask(DistributedTask task)
     {
-        _taskCacheNotify.Publish(task.DistributedTaskCache, CacheNotifyAction.InsertOrUpdate);
+        var queueTasks = GetTasks().FindAll(x => x.Id != task.Id);
+
+        queueTasks.Add(task);
+
+        using var ms = new MemoryStream();
+
+        Serializer.Serialize(ms, queueTasks);
+
+        _distributedCache.Set(_name, ms.ToArray());
     }
 
     public void RemoveTask(string id)
     {
-        _taskCacheNotify.Publish(new DistributedTaskCache() { Id = id, Key = id }, CacheNotifyAction.Remove);
+        var queueTasks = GetTasks();
+
+        if (!queueTasks.Exists(x => x.Id == id)) return;
+
+        queueTasks = queueTasks.FindAll(x => x.Id != id);
+
+        using var ms = new MemoryStream();
+
+        Serializer.Serialize(ms, queueTasks);
+
+        _distributedCache.Set(_name, ms.ToArray());
     }
 
     public void CancelTask(string id)
@@ -282,12 +257,48 @@ public class DistributedTaskQueue
     {
         return (t) =>
         {
-            if (t.DistributedTaskCache != null)
-            {
-                t.DistributedTaskCache.Key = _name;
-            }
-
             SetTask(t);
         };
     }
+
+    /// <summary>
+    /// Maps the source object to target object.
+    /// </summary>
+    /// <typeparam name="T">Type of destination object.</typeparam>
+    /// <typeparam name="TU">Type of source object.</typeparam>
+    /// <param name="destination">Destination object.</param>
+    /// <param name="source">Source object.</param>
+    /// <returns>Updated destination object.</returns>
+    private T Map<T, TU>(TU source, T destination)
+    {
+        destination.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance)
+                    .ToList()
+                    .ForEach(field =>
+                    {
+                        var sf = source.GetType().GetField(field.Name, BindingFlags.NonPublic | BindingFlags.Instance);
+
+                        if (sf != null)
+                        {
+                            var value = sf.GetValue(source);
+                            destination.GetType().GetField(field.Name, BindingFlags.NonPublic | BindingFlags.Instance).SetValue(destination, value);
+                        }
+                    });
+
+        destination.GetType().GetProperties().Where(p => p.CanWrite == true && !p.GetIndexParameters().Any())
+                    .ToList()
+                    .ForEach(prop =>
+                    {
+                        var sp = source.GetType().GetProperty(prop.Name);
+                        if (sp != null)
+                        {
+                            var value = sp.GetValue(source, null);
+                            destination.GetType().GetProperty(prop.Name).SetValue(destination, value, null);
+                        }
+                    });
+
+
+
+        return destination;
+    }
+
 }

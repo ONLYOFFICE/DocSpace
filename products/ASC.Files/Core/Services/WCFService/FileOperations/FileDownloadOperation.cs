@@ -101,8 +101,8 @@ class FileDownloadOperation : ComposeFileOperation<FileDownloadOperationData<str
         var thirdpartyTask = ThirdPartyOperation.GetDistributedTask();
         var daoTask = DaoOperation.GetDistributedTask();
 
-        var error1 = thirdpartyTask.GetProperty<string>(Err);
-        var error2 = daoTask.GetProperty<string>(Err);
+        var error1 = thirdpartyTask[Err];
+        var error2 = daoTask[Err];
 
         if (!string.IsNullOrEmpty(error1))
         {
@@ -113,7 +113,7 @@ class FileDownloadOperation : ComposeFileOperation<FileDownloadOperationData<str
             Error = error2;
         }
 
-        SuccessProcessed = thirdpartyTask.GetProperty<int>(Process) + daoTask.GetProperty<int>(Process);
+        SuccessProcessed = Convert.ToInt32(thirdpartyTask[Process]) + Convert.ToInt32(daoTask[Process]);
 
         var progressSteps = ThirdPartyOperation.Total + DaoOperation.Total + 1;
 
@@ -121,7 +121,7 @@ class FileDownloadOperation : ComposeFileOperation<FileDownloadOperationData<str
 
         base.FillDistributedTask();
 
-        TaskInfo.SetProperty(Progress, progress);
+        TaskInfo[Progress] = progress.ToString();
         TaskInfo.PublishChanges();
     }
 }

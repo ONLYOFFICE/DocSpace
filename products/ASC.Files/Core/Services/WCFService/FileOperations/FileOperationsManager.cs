@@ -49,30 +49,31 @@ public class FileOperationsManager
         {
             foreach (var o in operations.Where(o => processlist.All(p => p.Id != o.InstanceId)))
             {
-                o.SetProperty(FileOperation.Progress, 100);
+                o[FileOperation.Progress] = "100";
                 _tasks.RemoveTask(o.Id);
             }
         }
 
-        operations = operations.Where(t => t.GetProperty<Guid>(FileOperation.Owner) == userId);
+        operations = operations.Where(t => new Guid(t[FileOperation.Owner]) == userId).ToList();
         foreach (var o in operations.Where(o => o.Status > DistributedTaskStatus.Running))
         {
-            o.SetProperty(FileOperation.Progress, 100);
+            o[FileOperation.Progress] = "100";
+
             _tasks.RemoveTask(o.Id);
         }
 
         var results = operations
-            .Where(o => o.GetProperty<bool>(FileOperation.Hold) || o.GetProperty<int>(FileOperation.Progress) != 100)
+            .Where(o =>  bool.Parse(o[FileOperation.Hold]) || Convert.ToInt32(o[FileOperation.Progress]) != 100)
             .Select(o => new FileOperationResult
             {
                 Id = o.Id,
-                OperationType = o.GetProperty<FileOperationType>(FileOperation.OpType),
-                Source = o.GetProperty<string>(FileOperation.Src),
-                Progress = o.GetProperty<int>(FileOperation.Progress),
-                Processed = o.GetProperty<int>(FileOperation.Process).ToString(),
-                Result = o.GetProperty<string>(FileOperation.Res),
-                Error = o.GetProperty<string>(FileOperation.Err),
-                Finished = o.GetProperty<bool>(FileOperation.Finish),
+                OperationType = (FileOperationType)Convert.ToInt32(o[FileOperation.OpType]),
+                Source = o[FileOperation.Src],
+                Progress = Convert.ToInt32(o[FileOperation.Progress]),
+                Processed = o[FileOperation.Process].ToString(),
+                Result = o[FileOperation.Res],
+                Error = o[FileOperation.Err],
+                Finished = bool.Parse(o[FileOperation.Finish])
             })
             .ToList();
 
@@ -82,7 +83,7 @@ public class FileOperationsManager
     public List<FileOperationResult> CancelOperations(Guid userId)
     {
         var operations = _tasks.GetTasks()
-            .Where(t => t.GetProperty<Guid>(FileOperation.Owner) == userId);
+            .Where(t => new Guid(t[FileOperation.Owner]) == userId);
 
         foreach (var o in operations)
         {
@@ -108,8 +109,8 @@ public class FileOperationsManager
     public List<FileOperationResult> Download(Guid userId, Tenant tenant, Dictionary<JsonElement, string> folders, Dictionary<JsonElement, string> files, IDictionary<string, StringValues> headers)
     {
         var operations = _tasks.GetTasks()
-            .Where(t => t.GetProperty<Guid>(FileOperation.Owner) == userId)
-            .Where(t => t.GetProperty<FileOperationType>(FileOperation.OpType) == FileOperationType.Download);
+            .Where(t => new Guid(t[FileOperation.Owner]) == userId)
+            .Where(t => (FileOperationType)Convert.ToInt32(t[FileOperation.OpType]) == FileOperationType.Download);
 
         if (operations.Any(o => o.Status <= DistributedTaskStatus.Running))
         {
@@ -252,6 +253,6 @@ public static class FileOperationsManagerHelperExtention
         services.TryAdd<FileOperationScope>();
         services.TryAdd<FileDownloadOperationScope>();
         services.TryAdd<CompressToArchive>();
-        services.AddDistributedTaskQueueService<FileOperation>(10);
+        services.AddDistributedTaskQueue<FileOperation>(10);
     }
 }

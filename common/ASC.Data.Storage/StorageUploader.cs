@@ -56,13 +56,13 @@ public class StorageUploader
         lock (_locker)
         {
             var id = GetCacheKey(tenantId);
-            var migrateOperation = Queue.GetTask<MigrateOperation>(id);
-            if (migrateOperation != null)
+         
+            if (Queue.GetTasks().Any(x => x.Id == id))
             {
                 return;
             }
 
-            migrateOperation = new MigrateOperation(_serviceProvider, _cacheMigrationNotify, id, tenantId, newStorageSettings, storageFactoryConfig, _tempStream);
+            var migrateOperation = new MigrateOperation(_serviceProvider, _cacheMigrationNotify, id, tenantId, newStorageSettings, storageFactoryConfig, _tempStream);
             Queue.QueueTask(migrateOperation);
         }
     }

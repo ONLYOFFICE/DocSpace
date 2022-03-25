@@ -78,6 +78,11 @@ public abstract class BaseStartup
 
         services.AddEventBus(Configuration);
 
+        services.AddStackExchangeRedisCache(config =>
+        {
+            config.ConfigurationOptions = redisConfiguration.ConfigurationOptions;
+        });
+
         if (kafkaConfiguration != null)
         {
             DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCacheNotify<>));
@@ -88,6 +93,7 @@ public abstract class BaseStartup
         }
         else if (redisConfiguration != null)
         {
+           
             DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(RedisCacheNotify<>));
 
             services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);

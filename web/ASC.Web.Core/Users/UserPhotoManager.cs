@@ -659,7 +659,7 @@ namespace ASC.Web.Core.Users
 
             var resizeTask = new ResizeWorkerItem(userID, data, maxFileSize, size, GetDataStore(), SettingsManager.LoadForUser<UserPhotoThumbnailSettings>(userID));
             var key = $"{userID}{size}";
-            resizeTask.SetProperty("key", key);
+            resizeTask["key"] = key;
 
             if (now)
             {
@@ -669,7 +669,7 @@ namespace ASC.Web.Core.Users
             }
             else
             {
-                if (!ResizeQueue.GetTasks<ResizeWorkerItem>().Any(r => r.GetProperty<string>("key") == key))
+                if (!ResizeQueue.GetTasks<ResizeWorkerItem>().Any(r => r["key"] == key))
                 {
                     //Add
                     ResizeQueue.QueueTask((a, b) => ResizeImage(resizeTask), resizeTask);
@@ -1003,7 +1003,7 @@ namespace ASC.Web.Core.Users
     {
         public static void Register(DIHelper services)
         {
-            services.AddDistributedTaskQueueService<ResizeWorkerItem>(2);
+            services.AddDistributedTaskQueue<ResizeWorkerItem>(2);
         }
     }
 }

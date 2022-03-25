@@ -1,10 +1,19 @@
 ﻿namespace ASC.Common.Threading;
 public static class DistributedTaskQueueExtention
 {
-    public static DIHelper AddDistributedTaskQueueService<T>(this DIHelper services, int maxThreadsCount) where T : DistributedTask
+    public static DIHelper AddDistributedTaskQueue(this DIHelper services, string name, Action<DistributedTaskQueueFactoryOptions> options)
     {
         services.TryAdd<DistributedTaskQueue>();
 
+        services.Configure<DistributedTaskQueueFactoryOptions>(name, options);
+
+        services.TryAddSingleton<IDistributedTaskQueueFactory, DefaultDistributedTaskQueueFactory>();
+
+        return services;
+        
+    }
+    public static DIHelper AddDistributedTaskQueue<T>(this DIHelper services, int maxThreadsCount) where T : DistributedTask
+    {
         var type = typeof(T);
 
         if (!type.IsAbstract)
@@ -12,12 +21,10 @@ public static class DistributedTaskQueueExtention
             services.TryAdd<T>();
         }
 
-        services.Configure<DistributedTaskQueueFactoryOptions>(type.FullName, r =>
+        services.AddDistributedTaskQueue(type.FullName, x =>
         {
-            r.MaxThreadsCount = maxThreadsCount;
+            x.MaxThreadsCount = maxThreadsCount;
         });
-
-        services.TryAddSingleton<IDistributedTaskQueueFactory, DefaultDistributedTaskQueueFactory>();
 
         return services;
     }
