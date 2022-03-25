@@ -687,6 +687,18 @@ class PortalAdmins extends Component {
       ? this.getFilteredAdmins(admins, searchValue)
       : admins;
 
+    const selectedAdmins = admins.map((admin) => {
+      const groups = admin.groups.map((group) => group.id);
+
+      return {
+        label: admin.displayName,
+        avatarUrl: admin.avatar,
+        groups,
+        id: admin.id,
+        key: admin.id,
+      };
+    });
+
     const fullAccessIsLoading = this.toggleIsLoading(fullAccessId);
 
     return (
@@ -703,17 +715,20 @@ class PortalAdmins extends Component {
                 onClearSearch={this.onSearchChange}
                 value={searchValue}
               />
-              <PeopleSelector
-                isMultiSelect={true}
-                displayType="aside"
-                isOpen={!!selectorIsOpen}
-                onSelect={this.onSelect}
-                groupsCaption={groupsCaption}
-                onCancel={this.onCancelSelector}
-                headerLabel={t("AddAdmins")}
-                onArrowClick={this.onCancelSelector}
-                showCounter
-              />
+              {selectorIsOpen && (
+                <PeopleSelector
+                  isMultiSelect={true}
+                  displayType="aside"
+                  isOpen={!!selectorIsOpen}
+                  onSelect={this.onSelect}
+                  groupsCaption={groupsCaption}
+                  onCancel={this.onCancelSelector}
+                  headerLabel={t("AddAdmins")}
+                  onArrowClick={this.onCancelSelector}
+                  showCounter
+                  selectedOptions={selectedAdmins}
+                />
+              )}
               {selectedUser && (
                 <ModalDialog
                   visible={modalIsVisible}
